@@ -227,7 +227,7 @@ function rebuildSearchIndex() {
 function ensureUniverseDirectory() {
   if(universeDirectoryPromise || !window.SecUniverseShares) return universeDirectoryPromise;
   universeDirectory={state:"LOADING"};
-  universeDirectoryPromise=SecUniverseShares.loadInputs(window).then(inputs=>{
+  universeDirectoryPromise=DataRefresh.shares(window).then(inputs=>{
     universeDirectory=inputs?{state:"READY",as_of:inputs.as_of,records:inputs.publicShares}:{state:"NOT_AVAILABLE",reason:"SEC_UNIVERSE_SHARES_NOT_PUBLISHED"};
   }).catch(e=>{universeDirectory={state:"NOT_AVAILABLE",reason:["SEC_UNIVERSE_SHARES_INVALID","SEC_UNIVERSE_SHARES_SCHEMA_NEWER"].includes(e?.message)?e.message:"SEC_UNIVERSE_SHARES_UNAVAILABLE"};}).then(()=>{
     if(!searchIndex) return;rebuildSearchIndex();paintGlobalSearch();
@@ -398,18 +398,16 @@ function companyGroups(id){return `<p class="small">${t("관심·그룹은 이 �
 function weekFilings(){const p=publicScreens["sec-filing-windows.json"],rows=p?.data?.companies;if(!rows)return "NOT_AVAILABLE";const known=prefs.interests.filter(id=>rows[id]&&rows[id].state!=="NOT_AVAILABLE");if(!known.length)return "NOT_AVAILABLE";const en=appSettings.display_locale==="en-US",week=Date.now()-7*86400000,status=known.map(id=>PublicScreens.earningsStatus(rows[id])).filter(Boolean),estimated=status.filter(s=>s.status==="ESTIMATED"&&s.window.days_until_start<=6).length,confirmed=status.filter(s=>s.status==="CONFIRMED"&&Date.parse(s.date+"T00:00:00Z")>=week).length;return (estimated+confirmed)+" · "+esc(en?"estimated "+estimated+" · confirmed "+confirmed:"추정 "+estimated+" · 확인 "+confirmed)+" · "+esc(t("예상 시기 · 확정일 아님"));}
 // '공시·확정' (SEC 8-K, DART when its reader exists) + '뉴스·신호' (news-signals.json) in one chronological list; one lazy public read each.
 // S07 lists all (or the company in context), S15 the interest companies. Nothing here changes any score.
-let disclosuresPromise=null;
+// The files are read once per publication by DataRefresh and shared with the 4.3 tree example (D6).
 function paintDisclosures(host,companyIds,emptyText){if(!host||typeof SecDisclosures!=="object")return;const dart=typeof DartDisclosures==="object"&&!$(host.id==="news-disclosures"?"#news-dart-disclosures":"#watch-dart-disclosures")?DartDisclosures:null,news=typeof NewsSignals==="object"?NewsSignals:null;
- disclosuresPromise=disclosuresPromise||Promise.all([SecDisclosures.load(window),news?news.load(window):null,dart?dart.load(window):null]);
- disclosuresPromise.then(([sec,signals,dartPayload])=>{if(!host.isConnected)return;const options={locale:appSettings.display_locale,companyIds,emptyText};if(news)news.mount(host,{sec,news:signals,dart:dartPayload},Object.assign(options,{secApi:SecDisclosures,dartApi:dart,...newsTiers()}));else SecDisclosures.mount(host,sec,options);});}
+ Promise.all([DataRefresh.list(window,'sec'),news?DataRefresh.list(window,'news'):null,dart?DataRefresh.list(window,'dart'):null]).then(([sec,signals,dartPayload])=>{if(!host.isConnected)return;const options={locale:appSettings.display_locale,companyIds,emptyText};if(news)news.mount(host,{sec,news:signals,dart:dartPayload},Object.assign(options,{secApi:SecDisclosures,dartApi:dart,...newsTiers()}));else SecDisclosures.mount(host,sec,options);});}
 // Importance tiers for the news/disclosure list: interests = this device's watchlist (prefs), held = companies in the
 // portfolio snapshot already in page memory (D.portfolio, the same set paintNews uses). Device ACTUAL holdings live in
 // IndexedDB and are not read here; without a snapshot in memory held stays null (the list then says "holdings not connected").
 function newsTiers(){const rows=D&&D.portfolio&&D.portfolio.data&&Array.isArray(D.portfolio.data.holdings)?D.portfolio.data.holdings:null;
  return{interests:[...prefs.interests],held:rows?rows.map(h=>h&&h.company_id).filter(x=>typeof x==='string'):null};}
 // DART disclosures (042700): same '공시·확정' record format as SEC 8-K, own public file; one lazy read. S07 all (or the company in context), S15 interest companies.
-let dartDisclosuresPromise=null;
-function paintDartDisclosures(host,companyIds,emptyText){if(!host||typeof DartDisclosures!=="object")return;dartDisclosuresPromise=dartDisclosuresPromise||DartDisclosures.load(window);dartDisclosuresPromise.then(p=>{if(host.isConnected)DartDisclosures.mount(host,p,{locale:appSettings.display_locale,companyIds,emptyText});});}
+function paintDartDisclosures(host,companyIds,emptyText){if(!host||typeof DartDisclosures!=="object")return;DataRefresh.list(window,'dart').then(p=>{if(host.isConnected)DartDisclosures.mount(host,p,{locale:appSettings.display_locale,companyIds,emptyText});});}
 function watchlist(){return heading("WATCHLIST",t("관심 기업"))+directoryFilters("watch",true)+`<p class="meta">${t("이 휴대폰에만 저장 · 백업으로 이동")}</p><div class="grid">${["평균 QGV","재평가 신호","이번 주 실적","새 뉴스"].map(x=>`<section class="card"><h2>${t(x)}</h2><p${x==="이번 주 실적"?" data-week-filings":""}>${x==="이번 주 실적"?weekFilings():"NOT_AVAILABLE"}</p></section>`).join("")}</div><ul class="list" id="watchlist-company-list"></ul><div id="watch-disclosures"></div><div id="watch-dart-disclosures"></div><a href="#leaderboard/interest">${t("리더보드에서 관심 기업만 보기 →")}</a><details><summary>${t("관심기업 · Groups(그룹) 관리")}</summary>${groupsUI()}</details>`;}
 function companies() {
   return heading("COMPANIES",t("기업 탐색"))+`<input type="search" id="search" aria-label="${t("기업 검색")}" placeholder="${t("티커 또는 기업명 검색")}"><div class="chips"><label><input type="checkbox" id="only-interest"> ${t("관심기업만")}</label><select id="group-filter" aria-label="${t("그룹 필터")}"><option value="">${t("모든 그룹")}</option>${prefs.groups.map(g=>`<option value="${esc(g.id)}">${esc(g.name)}</option>`).join("")}</select></div><select id="company-sort" aria-label="정렬"><option value="ticker">티커 순</option><option value="name">기업명 순</option><option value="favorites">관심기업 우선</option></select><p class="meta">${D.universe.withheld?esc(D.universe.state)+" · "+esc(t(D.universe.withheld.reason || WITHHELD_REASON)):esc(D.universe.as_of)+" · FROZEN_SNAPSHOT / DEMO"}</p><ul class="list" id="company-list"></ul><button id="more-companies">${t("더보기")}</button><details><summary>${t("관심기업 · Groups(그룹) 관리")}</summary>${groupsUI()}</details>`;
@@ -667,7 +665,7 @@ function refreshScoreViews(){const[route,raw]=location.hash.slice(1).split('/');
  if(route==='leaderboard'&&leaderboardRows&&$('#leaderboard-screen'))paintLeaderboardScreen(leaderboardRows);
  else if(route==='company'&&id)repaintScores(()=>detail(id));else if(route==='analysis'&&id)repaintScores(()=>analysis(id));}
 function qgvScores(identities=identityCompanies){return QgvScores.compute({identities,publicScreens,quotes:qgv2Quotes,preset:qgv2Profile.preset,gate:qgv2Profile.gate,referenceRows:typeof dartReferenceRows==='function'?dartReferenceRows():{}});}
-async function refreshQgv2Quotes(after){const inputs=window.Qgv2Inputs?publicScreens[Qgv2Inputs.FILE]:null;if(!inputs)return;let catalog=null;try{catalog=await deviceCatalog();}catch(_){catalog=null;}
+async function refreshQgv2Quotes(after){if(DataRefresh.quiet())return;const inputs=window.Qgv2Inputs?publicScreens[Qgv2Inputs.FILE]:null;if(!inputs)return;let catalog=null;try{catalog=await deviceCatalog();}catch(_){catalog=null;}
  let q={};try{q=await QgvScores.collectQuotes(window,{identities:identityCompanies,v2Inputs:inputs,catalog});}catch(_){q={};}// Quotes accumulate for this page session (the Universe read is dropped on navigation); a Universe read/clear resets them.
  const next={...qgv2Quotes,...q},k=JSON.stringify(next);if(k===qgv2QuotesKey)return;qgv2Quotes=next;qgv2QuotesKey=k;if(after)after();}
 // M3 ranks come from the open Universe read (RAM only) and are repainted into S06 when that read finishes or is cleared.
@@ -911,7 +909,7 @@ function renderRoute() {
   if(route==='validation') ForwardValidation.mount($('#forward-validation-root'),{locale:appSettings.display_locale,config:window.InvestmentAppConfig});
   if(route==='types') DeviceProfiles.mount($('#device-type-editor'),{locale:appSettings.display_locale,mode:'types'});
   if(route==='macro') MacroLights.mount($('#macro-lights-root'),{bundle:publicScreens,locale:appSettings.display_locale,config:window.InvestmentAppConfig});
-  for(const kind of ['qg','types','filings','macro','thirteenf']) PublicScreens.mount($('#public-'+kind),publicScreens,{kind,companyId:route==='company'?id:route==='settings'?rawDataCompanyId()||undefined:undefined,locale:appSettings.display_locale,...(kind==='thirteenf'?{catalog:publicCatalog,interests:[...prefs.interests]}:{})});
+  mountPublicPanels(route,id);
   syncNavigation(route);
   const menu=window.AppShell?.menuFor(route);
   if(menu) $("#content").insertAdjacentHTML("afterbegin",`<p class="flow-step" data-flow-step="${esc(menu.num)}" data-menu="${esc(menu.key)}"><span class="flow-number">${esc(menu.num)}</span> ${esc(menu.label)}</p>`+AppShell.subNavHtml(route));
@@ -1179,10 +1177,10 @@ function dartReferenceRows(){
 }
 Promise.all([...(["data.json","entities.json","sec-m2-candidates.json"].map(path=>fetch(path,{cache:"no-store"}).then(r=>{
   if(!r.ok) throw Error("HTTP "+r.status);return r.json();
-}).catch(error=>{if(path==="sec-m2-candidates.json")return null;throw error;}))),SecReported.load(window),PublicScreens.load(window).then(s=>typeof ClassificationScreens==="object"?ClassificationScreens.load(window).then(c=>{if(c)s[ClassificationScreens.FILE]=c;return s;}):s).then(s=>typeof Qgv2Inputs==="object"?Qgv2Inputs.load(window).then(v=>{if(v)s[Qgv2Inputs.FILE]=v;return s;}):s),deviceCatalog().catch(()=>null)]).then(([data,catalog,candidates,reported,screens,identities])=>{
+}).catch(error=>{if(path==="sec-m2-candidates.json")return null;throw error;}))),DataRefresh.load(window),deviceCatalog().catch(()=>null)]).then(([data,catalog,candidates,{reported,screens},identities])=>{
   try{if(identities){DeviceMarket.emptyMarket(identities);identityCompanies=DeviceWatchlist.identities(identities);}}catch(_){identityCompanies=[];}
   publicScreens=screens;publicCatalog=identities||null;
-  if(window.DartDisclosures?.loadFinancials)void DartDisclosures.loadFinancials(window).then(financials=>{if(financials){publicScreens['dart-financials.json']=financials;if(window.QgvScores)refreshScoreViews();}});
+  if(window.DartDisclosures?.loadFinancials)void DataRefresh.financials(window).then(financials=>{if(financials){publicScreens['dart-financials.json']=financials;if(window.QgvScores)refreshScoreViews();}});
   // Macro lights v1: public lights only until the device loads SPY on the macro screen (RAM, read by MacroLights.current()).
   try{MacroLights.setPublic(publicScreens);}catch(_){}
   secReported=reported;
@@ -1196,6 +1194,17 @@ Promise.all([...(["data.json","entities.json","sec-m2-candidates.json"].map(path
   // App open: with the price store on and Google connected, append the core symbols' daily bars after the last stored date.
   try{if(window.PriceStore) PriceStore.autoSync(window,{coreSymbols:priceStoreCore});}catch(_){}
 }).catch(showUnavailable);
+// '자료 새로고침' (data-refresh.js; FRONTEND_DATA_CONTRACT D1, D2, D5, D6): DataRefresh reads one public publication set and hands
+// it over here at once. Device quotes, settings and private sessions stay. The open screen is repainted in place (no route
+// re-mount, and no device quote collection while DataRefresh.quiet()), so no Worker or Sheets request is made.
+function mountPublicPanels(route,id){for(const kind of ['qg','types','filings','macro','thirteenf']) PublicScreens.mount($('#public-'+kind),publicScreens,{kind,companyId:route==='company'?id:route==='settings'?rawDataCompanyId()||undefined:undefined,locale:appSettings.display_locale,...(kind==='thirteenf'?{catalog:publicCatalog,interests:[...prefs.interests]}:{})});}
+DataRefresh.attach(window,{route:()=>D?currentRoute:null,render,
+ apply(set){publicScreens=set.screens;secReported=set.reported;try{MacroLights.setPublic(publicScreens);}catch(_){}if(set.shares)universeDirectory=set.shares;if(searchIndex){rebuildSearchIndex();paintGlobalSearch();}},
+ inPlace(){if(!D)return false;const[route,raw]=location.hash.slice(1).split('/');let id='';try{id=decodeURIComponent(raw||'');}catch(_){id='';}
+  if(route==='leaderboard'&&$('#leaderboard-screen')){paintDirectory(route);return true;}
+  if((route==='company'||route==='analysis')&&id){refreshScoreViews();if(window.UniverseCompany&&universeCode(id))UniverseCompany.repaint($('#content'),{locale:appSettings.display_locale,screens:publicScreens,shares:universeDirectory,quotes:qgv2Quotes,names:companyNames});SecReported.mount($('#sec-reported-panel'),secReported,{companyId:id,locale:appSettings.display_locale});mountPublicPanels(route,id);return true;}
+  if(route==='settings'&&$('#ops-status')){OpsStatus.mount($('#ops-status'),{secReported,secStatus:SecReported.status?.()||null,screens:publicScreens},{locale:appSettings.display_locale});mountRawData();return true;}
+  return false;}});
 
 async function exportDeviceBackup(){
   try{const catalog=await deviceCatalog();DeviceBackup.download(window,await DeviceBackup.read(window,catalog));}

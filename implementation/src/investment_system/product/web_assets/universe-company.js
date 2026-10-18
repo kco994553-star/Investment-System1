@@ -147,7 +147,9 @@ function html(code,ctx={}){
  const head='<a class="small" href="#companies">'+esc(T('← 기업 목록','← Companies'))+'</a><div class="eyebrow">UNIVERSE504</div><h1>'+logo+esc(title)+'</h1><p class="muted">'+esc(code)+'</p>'
   +'<p class="chips uc-chips"><span class="badge">Universe504</span><span class="badge" data-uc-name="'+esc(names?names.ko_status:names===null?'NO_RECORD':'NOT_LOADED')+'">'+esc(names?label(KO_STATUS,names.ko_status,locale==='en-US'):T('기업명 자료 없음','Names not loaded'))+'</span><span class="badge">'+esc(T('공개 파일에 가격 없음','No prices in public files'))+'</span>'+(rs.rec&&rs.rec.sic?'<span class="badge">SIC '+esc(rs.rec.sic)+'</span>':'')+'</p>'
   +namesHtml(names,locale)+(target?'<p class="small" data-uc-target="'+esc(target)+'"><a href="#company/'+encodeURIComponent(target)+'">'+esc(T('이 발행인은 TARGET 기업입니다 · TARGET 기업 페이지 →','This issuer is a TARGET company · open the TARGET page →'))+'</a></p>':'');
- const top=rs.state==='NO_FILE'||rs.state==='NOT_IN_FILE'?'<p class="small" data-uc-file="'+esc(rs.reason)+'">'+na(rs.reason==='SEC_QGV2_SCHEMA_NEWER'?T('자료 형식이 새 버전입니다. 새로고침하세요','The data format is newer. Reload the page'):rs.reason,locale)+'</p>':'';
+ // No file: say whether the read failed or the file is not published yet (DataRefresh read status, D5); the reason code stays.
+ const read=rs.state==='NO_FILE'&&g.DataRefresh?g.DataRefresh.status('sec-qgv2.json'):null,readNote=read&&(read.state==='FAILED'||read.state==='NOT_PUBLISHED')?' · <span data-uc-read="'+esc(read.state)+'">'+esc(g.DataRefresh.readText('sec-qgv2.json'))+'</span>':'';
+ const top=rs.state==='NO_FILE'||rs.state==='NOT_IN_FILE'?'<p class="small" data-uc-file="'+esc(rs.reason)+'">'+na(rs.reason==='SEC_QGV2_SCHEMA_NEWER'?T('자료 형식이 새 버전입니다. 새로고침하세요','The data format is newer. Reload the page'):rs.reason,locale)+readNote+'</p>':'';
  return '<div class="uc-page" data-universe-page="'+esc(code)+'" data-universe-state="'+esc(rs.state)+'" data-universe-reason="'+esc(rs.reason||'')+'" data-universe-v="PENDING">'+head+top
   +'<div class="uc-cards"><section class="card uc-card uc-card-q" data-universe-card="qgv">'+qgvCard(code,rs,d,inputs,c,now)+'</section><section class="card uc-card uc-card-g" data-universe-card="technical">'+chartCard(target,locale)+'</section><section class="card uc-card uc-card-v" data-universe-card="macro">'+macroCard(locale)+'</section></div>'
   +'<section class="card" data-universe-card="factors">'+factorsCard(rs,d,inputs,c,now)+'</section>'
@@ -156,6 +158,7 @@ function html(code,ctx={}){
 }
 /* After html(): read this device's quotes for the code (existing V path, RAM only) and repaint the QGV and factor cards; mount the
    daily chart only for a code in its price scope. ctx adds {catalogPromise, config}. Stale mounts (re-render) stop silently. */
+const collected=new WeakMap();
 async function mount(host,ctx={}){
  const page=host&&host.querySelector?host.querySelector('[data-universe-page]'):null;if(!page)return;
  const code=page.dataset.universePage,locale=ctx.locale==='en-US'?'en-US':'ko-KR',inputs=inputsOf(ctx.screens),rs=rowState(inputs,code),target=targetIdOf(rs.rec),p=codeParts(code);
@@ -167,7 +170,16 @@ async function mount(host,ctx={}){
  const c={...ctx,locale,quotes},now=finite(ctx.now)?ctx.now:Date.now(),d=rs.rec?scored(code,c):null;
  const q=page.querySelector('[data-universe-card="qgv"]'),f=page.querySelector('[data-universe-card="factors"]');
  if(q)q.innerHTML=qgvCard(code,rs,d,inputs,c,now);if(f)f.innerHTML=factorsCard(rs,d,inputs,c,now);
- page.dataset.universeV=Object.hasOwn(quotes,code)?'DEVICE_PRICED':'NO_DEVICE_PRICE';
+ page.dataset.universeV=Object.hasOwn(quotes,code)?'DEVICE_PRICED':'NO_DEVICE_PRICE';collected.set(page,quotes);
 }
-return Object.freeze({html,mount,rowState,codeParts,namesHtml,SOURCE_REASON,GROUP_LABEL,PEER_LABEL});
+/* In-place repaint after the app's public data changed (data-refresh.js '자료 새로고침' / freshness re-judging): the same page
+   HTML built from the new files and the quotes this page already holds in RAM (no quote collection, no request). The mounted
+   daily chart card is moved over unchanged, so a loaded private chart is not reset. */
+function repaint(host,ctx={}){
+ const page=host&&host.querySelector?host.querySelector('[data-universe-page]'):null;if(!page)return false;const code=page.dataset.universePage;
+ const quotes={...(object(ctx.quotes)?ctx.quotes:{}),...(collected.get(page)||{})},box=page.ownerDocument.createElement('div');box.innerHTML=html(code,{...ctx,quotes});
+ const next=box.querySelector('[data-universe-page]');if(!next)return false;const chart=page.querySelector('[data-universe-card="technical"]'),slot=next.querySelector('[data-universe-card="technical"]');if(chart&&slot)slot.replaceWith(chart);
+ next.dataset.universeV=Object.hasOwn(quotes,code)?'DEVICE_PRICED':'NO_DEVICE_PRICE';collected.set(next,quotes);page.replaceWith(next);return true;
+}
+return Object.freeze({html,mount,repaint,rowState,codeParts,namesHtml,SOURCE_REASON,GROUP_LABEL,PEER_LABEL});
 });

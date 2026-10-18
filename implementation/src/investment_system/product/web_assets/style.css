@@ -758,3 +758,12 @@ details.evidence code {overflow-wrap: anywhere;}
 .explore-filter button[aria-pressed="true"] {background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700;}
 .badge.check-data {background: #edf0ed; color: #5e6863; box-shadow: inset 0 0 0 1px #8f9993;}
 [data-leaderboard-table] [data-leaderboard-unranked] {display: block; width: fit-content; max-width: 16em; white-space: normal; margin-top: 4px;}
+/* '자료 새로고침' bar (data-refresh.js): one button and the score-basis / last-check line; per-file read status folded below. */
+.data-refresh {max-width: 1100px; margin: auto; padding: 8px 18px 0; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px;}
+.data-refresh > button {min-height: 44px; padding: 6px 12px; font-size: 13px;}
+.data-refresh > p {margin: 0; flex: 1 1 16em; overflow-wrap: anywhere;}
+.data-refresh > details {flex: 1 1 100%; font-size: 13px;}
+.data-refresh > details ul {margin: 4px 0 0; padding-left: 1.2em;}
+.data-refresh[data-refresh-state="FAILED"] > p {color: var(--bad-ink, #852d2d); font-weight: 650;}
+[data-refresh-outdated] button {margin-left: 8px; min-height: 36px;}
+@media (min-width: 1024px) {.data-refresh {max-width: 1320px; padding-left: 40px; padding-right: 40px;}}

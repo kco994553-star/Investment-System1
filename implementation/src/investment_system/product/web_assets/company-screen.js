@@ -45,8 +45,9 @@ function priceBadge(q,locale){
 function dataBadges(screens,locale,withPit,sr=null,quote=null){
  const T=tr(locale),p=screens?.['sec-qg-factors.json'],state=p?p.state:'NOT_AVAILABLE',aged=p&&state!=='NOT_AVAILABLE'&&Date.now()-Date.parse(p.as_of)>p.stale_after_seconds*1000,v2AsOf=sr&&sr.S?sr.S.v2_as_of:null;
  // Score time = sec-qgv2.json as_of (v2). sec-qg-factors.json is labelled as the v1 PREVIEW input only (its existing STALE rule unchanged).
+ // Its aged badge names its input (D4, 2026-10-18): a bare 'STALE' beside the v2 score time read as if the v2 score were old.
  return '<div class="chips data-badges" data-company-badges><span class="badge" data-score-as-of="'+(v2AsOf?'v2':'NOT_AVAILABLE')+'">'+esc(T('점수 기준 ','Score as of ')+(v2AsOf||'NOT_AVAILABLE'))+'</span><span class="badge" data-scoring-default="v2">'+esc(sr&&g.QgvScores?g.QgvScores.basisText(sr.S,locale==='en-US'):T('점수 기준 v2 · PROVISIONAL','Score basis v2 · PROVISIONAL'))+'</span>'+priceBadge(quote,locale)
-  +'<span class="badge '+esc(state)+'" data-badge="data" data-v1-preview-as-of>'+esc(T('v1 미리보기 입력 ','v1 PREVIEW input ')+state+' · '+(p?T('기준 ','as of ')+p.as_of:T('기준 시각 없음','no as-of')))+'</span>'+(aged?'<span class="badge freshness STALE">STALE</span>':'')
+  +'<span class="badge '+esc(state)+'" data-badge="data" data-v1-preview-as-of>'+esc(T('v1 미리보기 입력 ','v1 PREVIEW input ')+state+' · '+(p?T('기준 ','as of ')+p.as_of:T('기준 시각 없음','no as-of')))+'</span>'+(aged?'<span class="badge freshness STALE" data-v1-input-stale>'+esc(T('v1 입력 STALE','v1 input STALE'))+'</span>':'')
   +(withPit?'<span class="badge" data-badge="pit">'+esc('PIT '+(p&&p.data.availability_basis?p.data.availability_basis:'NOT_AVAILABLE'))+'</span>':'')+'</div>';
 }
 /* The one next-earnings line of the company summary: '다음 실적 MM/DD경 (확정 아님) · D-n'. Source: the same SEC filing-timing

@@ -63,3 +63,4 @@ universe_company_browser_test.js
 company_names_browser_test.js
 preset_candidates_browser_test.js
 update_propagation_browser_test.js
+data_refresh_browser_test.js
