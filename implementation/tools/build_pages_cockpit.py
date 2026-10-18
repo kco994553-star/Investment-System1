@@ -26,6 +26,9 @@ def build_public_cockpit(out: Path, *, sec_m2_candidate=None) -> Path:
     # Price-free Universe504 code list for the Google sheet Universe tab (validated by the guard).
     from investment_system.universe.universe_codes import FILENAME as UNIVERSE_CODES, public_payload
     (out / UNIVERSE_CODES).write_text(json.dumps(public_payload(), ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
+    # Reviewed Korean company-name table (KR-NAMES): display and search only, validated by the guard against the reviewed file.
+    from investment_system.universe.company_names_ko import FILENAME as COMPANY_NAMES, public_payload as names_payload
+    (out / COMPANY_NAMES).write_text(json.dumps(names_payload(), ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
     # Company domains and local PNG logo bundle; the browser never contacts logo providers.
     from universe_domains_pipeline import emit as emit_domains
     emit_domains(out)

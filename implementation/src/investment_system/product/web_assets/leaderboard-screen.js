@@ -70,7 +70,7 @@ function rowsFor(identities,{publicScreens={},engine=null,filings=null,weights=n
   const fa=r&&r.axes?['Q','G'].map(a=>r.axes[a]):null;
   const earnings=disclosures?.qgvEarningsStatus?.(windows[c.company_id],publicScreens['sec-qgv2.json']?.target?.[c.company_id]);
   return{earnings_status:earnings?.status||'NOT_CONFIRMED',company_id:c.company_id,ticker:c.ticker,name:c.name,q:axis('Q'),g:axis('G'),factors:fa&&fa.every(x=>Number.isInteger(x.factors_available))?(fa[0].factors_available+fa[1].factors_available)+'/'+(fa[0].factors_total+fa[1].factors_total):null,partial:partial('Q')||partial('G'),qg_total:typeof r?.qg_preview_total==='number'?r.qg_preview_total:null,next_window:w?w.start+'–'+w.end:null,m3:m3For(deviceRanks,c),score:S&&S.rows[c.company_id]?S.rows[c.company_id]:null};});}
-function mount(host,identities,{publicScreens={},locale,view='default',profiles=[],profileId=null,onView=()=>{},engine=globalThis.EnginePreview,filings=globalThis.PublicScreens,deviceRanks=null,scores=null,explore='all'}={}){
+function mount(host,identities,{publicScreens={},locale,view='default',profiles=[],profileId=null,onView=()=>{},engine=globalThis.EnginePreview,filings=globalThis.PublicScreens,deviceRanks=null,scores=null,explore='all',nameOf=null}={}){
  if(!host)return;const doc=host.ownerDocument,en=locale==='en-US',el=(tag,text,attrs={})=>{const n=doc.createElement(tag);if(text!==undefined)n.textContent=text;for(const[k,v]of Object.entries(attrs))n.setAttribute(k,v);return n;};
  const card=el('section',undefined,{class:'card','data-leaderboard-screen':view});
  card.append(el('div',undefined,{class:'chips data-badges'}));const QS=qgvScores(),S=view!=='profile'&&QS?(scores||QS.compute({identities,publicScreens})):null;
@@ -117,6 +117,8 @@ function mount(host,identities,{publicScreens={},locale,view='default',profiles=
  const wrap=el('div',undefined,{class:'table-wrap'}),table=el('table',undefined,{'data-leaderboard-table':''}),head=el('tr'),body=el('tbody'),thead=el('thead');const narrow=Boolean(doc.defaultView&&doc.defaultView.matchMedia&&doc.defaultView.matchMedia(NARROW).matches),cols=COLUMNS.filter(c=>!(narrow&&c[3]));
  for(const[id,ko,enl]of cols)head.append(el('th',en?enl:ko,{scope:'col','data-leaderboard-col':id}));thead.append(head);table.setAttribute('data-leaderboard-layout',narrow?'narrow':'wide');
  for(const r of rows){const tr=el('tr',undefined,{'data-leaderboard-row':r.company_id}),link=el('a',r.ticker,{href:'#company/'+encodeURIComponent(r.company_id)}),company=el('td');if(globalThis.CompanyLogos)company.append(globalThis.CompanyLogos.node(doc,r.ticker,20));company.append(link);
+  // KR-NAMES: display-only company name from the caller's name lookup (company-names-ko.json); never a sort key or score input.
+  {const nm=typeof nameOf==='function'?nameOf(r.company_id):null;if(typeof nm==='string'&&nm)company.append(el('span',' '+nm,{class:'small','data-leaderboard-name':''}));}
   if(r.m3.rank!==null)company.append(el('span',' · M3 #'+r.m3.rank+(r.m3.quality==='MISMATCH'?(en?' (mismatch)':' (불일치)'):'')+(r.m3.group_id?(en?' · class sum':' · 종류 합산'):''),{class:'badge','data-leaderboard-m3-rank':String(r.m3.rank),title:M3_LABEL[en?1:0]}));
   else company.append(el('span',' · '+(ready?'M3 — · '+r.m3.reason_codes.join(' / '):'—'),{class:'small','data-leaderboard-m3':'NOT_AVAILABLE','data-reason':r.m3.reason_codes.join(' ')}));
   // Q·G·V detail: the v2 summary with its flags (or the v2 NOT_AVAILABLE reason); in the profile view the v1 PREVIEW Q/G.

@@ -73,8 +73,8 @@ if(!base.pathname.endsWith("/")) base.pathname+="/";
       await page.keyboard.press("Enter");
       await page.getByRole("heading",{name:"반도체",exact:true}).waitFor();
       assert.ok(page.url().endsWith("#entity/INDUSTRY%3Asemiconductor"));
-      // Company identities come from the price-free directory (ticker / catalog label); no Korean names are published,
-      // so a Korean query finds no fabricated company.
+      // Company identities come from the price-free directory (ticker / catalog label). Korean names come only from the
+      // reviewed KR-NAMES table (company-names-ko.json, sourced); a Korean query never finds a fabricated company.
       for(const q of ["NVDA","nvda","NVIDIA"]) {
         await page.locator("#global-search").fill(q);
         assert.equal(await page.locator("#global-results li").first().getAttribute("data-entity-id"),"COMPANY:nvda",q);
@@ -82,6 +82,8 @@ if(!base.pathname.endsWith("/")) base.pathname+="/";
         assert.ok(!/\d+\.\d{2}|\$/.test(await page.locator("#global-results").textContent()),q);
       }
       await page.locator("#global-search").fill("엔비디아");
+      await page.waitForFunction(()=>document.querySelector("#global-results li")?.dataset.entityId==="COMPANY:nvda");
+      await page.locator("#global-search").fill("가짜전자");
       assert.equal(await page.locator("#global-results [data-entity-id^='COMPANY:']").count(),0);
       await go("companies");await page.locator("#search").fill("ASML");
       assert.equal(await page.locator("#company-list li").count(),1);

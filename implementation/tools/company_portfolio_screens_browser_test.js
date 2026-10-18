@@ -33,7 +33,9 @@ const text=async(page,selector)=>(await page.locator(selector).first().textConte
   {const context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block'});await routeEmptyPublicScreens(context);const page=await context.newPage();page.setDefaultTimeout(15000);let errors=0;page.on('pageerror',()=>errors++);
    try{
     phase='S04-EMPTY';await open(page,'company/nvda','[data-company-card="qgv"]');
-    assert.equal(await text(page,'main h1'),'NVDA');assert.equal(await page.locator('main button.star').count(),1);
+    // KR-NAMES: "<Korean name> · <ticker>"; NVIDIA's official Korean page writes the Latin brand (company-names-ko.json).
+    await page.waitForFunction(()=>document.querySelector('main h1')?.textContent==='NVIDIA · NVDA');
+    assert.equal(await page.locator('[data-company-names="OFFICIAL"] [data-name-en="PRESENT"]').count(),1);assert.equal(await page.locator('main button.star').count(),1);
     assert.equal(await page.locator('[data-company-card="classification"] [data-axis]').count(),3);
     for(const axis of ['industry','theme','type'])assert.ok((await text(page,'[data-axis="'+axis+'"]')).includes('NOT_AVAILABLE'),axis+' NOT_AVAILABLE');
     assert.ok((await text(page,'[data-company-card="classification"]')).includes('서로 다른 축'));
