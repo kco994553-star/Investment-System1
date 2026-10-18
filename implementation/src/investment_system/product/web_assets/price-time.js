@@ -97,6 +97,13 @@
       + '<span data-price-read-at>' + esc(en ? desc.read_label_en : desc.read_label_ko) + '</span>'
       + (fresh ? ' · <span data-price-stale="' + desc.freshness + '">' + esc(fresh) + '</span>' : '') + '</span>';
   }
+  /* One labelled line for a source's price record (e.g. PrivateSubsetView.priceBasis() after "Universe 읽기"); '' for no record. */
+  const SOURCE_LABEL = {GOOGLEFINANCE_PRIVATE_UNIVERSE: ['Universe 시트(GOOGLEFINANCE) 가격', 'Universe sheet (GOOGLEFINANCE) prices']};
+  function sourceHtml(record, {locale = 'ko-KR', now, staleness} = {}) {
+    if (record === null || typeof record !== 'object') return '';
+    const en = locale === 'en-US', name = SOURCE_LABEL[record.source] ? SOURCE_LABEL[record.source][en ? 1 : 0] : String(record.source || (en ? 'Price' : '가격'));
+    return '<span data-price-source="' + esc(record.source || '') + '">' + esc(name) + '</span> · ' + html(describe(record, {now, staleness}), {locale});
+  }
   /* summarize(quotes, {now}) -> {rows, confirmed, unconfirmed, stale, from, to, read_from, read_to}: from/to span the confirmed
      price times/dates (as in QgvScores.vCoverage price_time), read_from/read_to the read times. Old prices are never hidden
      behind a newer read time. */
@@ -113,5 +120,5 @@
     }
     return Object.freeze(out);
   }
-  return Object.freeze({UNCONFIRMED_KO, UNCONFIRMED_EN, describe, label, html, summarize, clock});
+  return Object.freeze({UNCONFIRMED_KO, UNCONFIRMED_EN, describe, label, html, sourceHtml, summarize, clock});
 });
