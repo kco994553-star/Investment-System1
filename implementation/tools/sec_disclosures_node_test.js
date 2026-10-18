@@ -12,7 +12,9 @@ test('8-K and 8-K/A of one event share a group; amendments are REPEAT',()=>{cons
 test('bodies, prices, score changes, reordering and forged links fail closed',()=>{for(const mutate of [p=>p.events[0].body='text',p=>p.events[0].price=1,p=>p.score_effect='Q',p=>p.events.reverse(),
   p=>p.events[0].link='https://example.com/',p=>p.events[0].exhibit_99_1.title='<b>x</b>',p=>p.events[3].occurrence='NEW',p=>p.events[0].items=['99.99'],p=>p.channel='NEWS',p=>p.companies.nvda.state='STALE',p=>delete p.companies.asml]){
   const p=structuredClone(fixture.payload());mutate(p);assert.throws(()=>api.validate(p),/SEC_DISCLOSURES_INVALID/);}});
-test('one chronological list: disclosures and later news items merge by time, filtered by company',()=>{const p=fixture.payload(),news={channel:'NEWS',time:p.events[1].accepted_at.replace(/:\d\d\+/,':59+'),company_id:'msft'};
+test('one chronological list: disclosures and later news items merge by time, filtered by company',()=>{const p=fixture.payload(),news={channel:'NEWS',time:new Date(Date.parse(p.events[1].accepted_at)+30000).toISOString().replace('.000Z','+00:00'),company_id:'msft'};
+ // 30 s after the second event, strictly later at any clock second (setting the seconds to :59 tied when the run's own second was 59).
+
  const rows=api.timeline(p,{news:[news]});assert.deepEqual(rows.map(r=>r.channel),['DISCLOSURE','NEWS','DISCLOSURE','DISCLOSURE','DISCLOSURE','DISCLOSURE']);
  assert.deepEqual(api.timeline(p,{companyIds:['nvda']}).map(r=>r.event.form),['8-K/A','8-K']);assert.deepEqual(api.CHANNELS.DISCLOSURE,['공시·확정','Disclosure · confirmed']);assert.deepEqual(api.CHANNELS.NEWS,['뉴스·신호','News · signal']);
  assert.equal(api.classLabel('RESULTS',false,['2.02']),'실적 (Results)');assert.equal(api.classLabel('OTHER',false,['7.01','9.01']),'공정공시(Regulation FD) (Regulation FD Disclosure)');assert.equal(api.classLabel('OTHER',true,['9.01']),'Financial Statements and Exhibits (재무제표 및 첨부서류)');assert.equal(api.classLabel('OTHER',false,[]),'기타 공시 (Other disclosure)');});
