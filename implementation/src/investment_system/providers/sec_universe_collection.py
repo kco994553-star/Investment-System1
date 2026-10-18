@@ -16,6 +16,10 @@ from .sec_submissions import URL as SUBMISSIONS_URL
 _REGISTRY_TOKEN=object()
 TICKER_EXCHANGE_URL='https://www.sec.gov/files/company_tickers_exchange.json'
 COVER_INSTANCE_URL='https://www.sec.gov/Archives/edgar/data/{cik}/{accession}/{document}'
+# Exact (SEC exchange, SEC ticker) -> approved Universe code pairs for exchanges outside the Nasdaq/NYSE venue map.
+# Cboe Global Markets lists its own stock on Cboe BZX (code venue BATS); SEC's ticker file names that exchange 'CBOE'.
+# One pair per code, never a venue-wide mapping; a code missing from the approved roster binds nothing.
+VENUE_CODE_ALIASES={('CBOE','CBOE'):'BATS:CBOE'}
 
 
 def fetch_ticker_exchange(client):
@@ -50,8 +54,12 @@ def universe_registry(body):
     """Bind only approved 504 codes to supplied SEC exchange/ticker metadata.
 
     NYSE BRK.B/SEC BRK-B is an explicit punctuation alias, never a share-basis
-    conversion. Conflicting CIKs and unrecognized exchange/ticker pairs remain
-    unresolved. Names are ignored; the caller verifies official source origin.
+    conversion. SEC exchange 'CBOE' is bound only through the explicit
+    VENUE_CODE_ALIASES pairs (SEC 'CBOE'/'CBOE' -> code BATS:CBOE); any other
+    ticker SEC lists on that exchange stays outside the roster. Conflicting CIKs
+    and unrecognized exchange/ticker pairs remain unresolved (the single-CIK rule
+    applies to aliased codes as well). Names are ignored; the caller verifies
+    official source origin.
     """
     def pairs(items):
         d={}
@@ -73,8 +81,8 @@ def universe_registry(body):
             d=dict(zip(fields,row));cik=d['cik'];ticker=d['ticker'];exchange=d['exchange']
             if type(cik) is not int or not 0<cik<10**10 or type(ticker) is not str or type(exchange) is not str:continue
             venue={'Nasdaq':'NASDAQ','NYSE':'NYSE'}.get(exchange)
-            code=lookup.get((venue,ticker))
-            if code is not None:bindings[code].add(str(cik).zfill(10))
+            code=lookup.get((venue,ticker)) if venue is not None else VENUE_CODE_ALIASES.get((exchange,ticker))
+            if code is not None and code in bindings:bindings[code].add(str(cik).zfill(10))
         grouped={}
         for code,ciks in bindings.items():
             if len(ciks)==1:grouped.setdefault(next(iter(ciks)),[]).append(code)
