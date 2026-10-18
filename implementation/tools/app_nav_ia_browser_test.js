@@ -9,21 +9,23 @@ const base = new URL(process.env.APP_NAV_IA_URL || process.env.PAGES_COCKPIT_URL
 base.hash = "";
 if (!base.pathname.endsWith("/")) base.pathname += "/";
 const evidence = path.resolve(process.env.APP_NAV_IA_EVIDENCE_DIR || "/tmp/app-nav-ia-evidence");
-// Search-home IA (2026-10-17): five destinations (홈 · 기업 탐색 · 내 투자 · 시장·뉴스 · 기록) plus 더보기 / 전체 메뉴.
-// Phone: bottom bar 홈 · 탐색 · 내 투자 · 더보기. PC: header menu 기업 탐색 · 내 투자 · 시장·뉴스 · 기록 · 전체 메뉴.
-const tabs = ["home", "explore", "invest", "market", "records"];
-const tabHref = { home: "#home", explore: "#companies", invest: "#portfolio", market: "#news", records: "#validation" };
-const phoneTabs = ["home", "explore", "invest"], desktopTabs = ["explore", "invest", "market", "records"];
-// Every route belongs to one destination (settings to none).
-const TAB_OF = { home: "home", companies: "explore", leaderboard: "explore", watchlist: "explore", company: "explore", analysis: "explore", entity: "explore", types: "explore", qgv: "explore",
-  portfolio: "invest", actual: "invest", profiles: "invest", model: "invest", playbook: "invest", brief: "invest",
-  news: "market", macro: "market", technical: "market", thirteenf: "market", validation: "records", research: "records", report: "records", settings: null };
+// Owner IA (2026-10-18): 홈 + eight menus (1 QGV · 2 기술적 분석 · 3 매크로 · 4 뉴스·공시·기업 관계 · 5 포트폴리오 ·
+// 6 프롬프트 라이브러리 · 7 투자시스템 안내·구조 · 8 Lab) plus 전체 메뉴.
+// Phone: bottom bar 홈 · QGV · 뉴스·공시 · 포트폴리오 · 전체 메뉴. PC: header menu 01~08 · 전체 메뉴 (home = brand link).
+const tabs = ["home", "qgv", "technical", "macro", "news", "portfolio", "prompts", "system", "lab"];
+const tabHref = { home: "#home", qgv: "#leaderboard", technical: "#technical", macro: "#macro", news: "#news", portfolio: "#portfolio", prompts: "#research", system: "#system", lab: "#validation" };
+const phoneTabs = ["home", "qgv", "news", "portfolio"], desktopTabs = ["qgv", "technical", "macro", "news", "portfolio", "prompts", "system", "lab"];
+// Every route belongs to one menu (settings to none).
+const TAB_OF = { home: "home", companies: "qgv", leaderboard: "qgv", watchlist: "qgv", company: "qgv", analysis: "qgv", entity: "qgv", types: "qgv", qgv: "qgv", profiles: "qgv",
+  portfolio: "portfolio", actual: "portfolio", model: "portfolio", playbook: "portfolio", brief: "portfolio", report: "portfolio",
+  news: "news", thirteenf: "news", macro: "macro", technical: "technical", research: "prompts", system: "system", validation: "lab", "lab-13f": "lab", settings: null };
 const tabOf = hash => { const r = hash.replace(/^#/, "").split("/")[0]; return TAB_OF[r.startsWith("validation-") ? "validation" : r.startsWith("technical-") ? "technical" : r]; };
 const groups = ["investments", "companies", "market", "performance"];
 // Official Macro v0.1.4 Candidate §15, also retained by IA v1 §3/S09.
 const macroAxes = ["Growth", "Inflation", "Liquidity", "Monetary Policy", "Credit", "Labor", "Fiscal", "FX"];
 const macroStates = ["Level", "Direction", "Momentum", "Surprise", "Stress", "Confidence"];
-const labels = { "ko-KR": ["홈", "기업 탐색", "내 투자", "시장·뉴스", "기록"], "en-US": ["Home", "Companies", "My investments", "Market & news", "Records"] };
+// Visible labels: short names on phones and PCs below 1360 px (full names in the 전체 메뉴 sheet and on wide PCs).
+const labels = { "ko-KR": ["홈", "QGV", "기술적 분석", "매크로", "뉴스·공시", "포트폴리오", "프롬프트", "시스템 안내", "Lab"], "en-US": ["Home", "QGV", "Technical", "Macro", "News", "Portfolio", "Prompts", "System", "Lab"] };
 const checks = [], screenshots = [];
 let browser, current = "browser launch", operation = "browser launch";
 const traffic = { external: 0, unsafe: 0, failed_responses: 0, page_errors: 0, csp_violations: 0, console_csp_warnings: 0 };
@@ -52,7 +54,7 @@ async function go(page, hash) {
   await page.goto(new URL("#" + hash, base).href, { waitUntil: "domcontentloaded" });
   operation = "wait for rendered destination #" + hash;
   const route = hash.split("/")[0], parent = tabOf(hash);
-  const selector = {home: "[data-home]", qgv: '[data-hub="qgv"]', technical: '[data-ia-screen="technical"]', macro: '[data-ia-screen="macro"]', validation: '[data-hub="validation"]', companies: "#search", portfolio: "#device-actual-summary", actual: "#device-actual-root", news: "#news-pane", research: "#research-frame", settings: "#display-locale"}[route];
+  const selector = {home: "[data-home]", qgv: '[data-hub="qgv"]', system: '[data-pending-page="system"]', "lab-13f": '[data-pending-page="lab-13f"]', technical: '[data-ia-screen="technical"]', macro: '[data-ia-screen="macro"]', validation: '[data-hub="validation"]', companies: "#search", portfolio: "#device-actual-summary", actual: "#device-actual-root", news: "#news-pane", research: "#research-frame", settings: "#display-locale"}[route];
   const ticker = page.__iaCompanyTickers?.[decodeURIComponent(hash.slice(route.length + 1))] || null;
   await page.waitForFunction(({hash, parent, selector, route, ticker}) => {
     if (location.hash !== "#" + hash || !document.querySelector("main h1, main h2, main iframe")) return false;
@@ -117,10 +119,10 @@ async function unavailableNewScreen(page, selector) {
         verify(await page.locator("#primary-nav").count() === 1, "primary navigation exists");
         const desktop = width >= 1024, visibleTabs = desktop ? desktopTabs : phoneTabs;
         const primary = page.locator("#primary-nav [data-nav-tab]");
-        verify(JSON.stringify(await primary.evaluateAll(nodes => nodes.map(node => node.dataset.navTab))) === JSON.stringify(tabs), "five destinations follow the IA order");
-        verify(JSON.stringify(await primary.evaluateAll(nodes => nodes.map(node => node.getAttribute("href")))) === JSON.stringify(tabs.map(tab => tabHref[tab])), "five primary links use existing route hashes");
-        verify(JSON.stringify(await primary.evaluateAll(nodes => nodes.filter(node => node.getBoundingClientRect().height > 0).map(node => node.dataset.navTab))) === JSON.stringify(visibleTabs), "phone shows 홈·탐색·내 투자, PC shows 기업 탐색·내 투자·시장·뉴스·기록");
-        verify(await page.locator("#more-button").isVisible(), "더보기 / 전체 메뉴 is always reachable");
+        verify(JSON.stringify(await primary.evaluateAll(nodes => nodes.map(node => node.dataset.navTab))) === JSON.stringify(tabs), "home and the eight menus follow the IA order");
+        verify(JSON.stringify(await primary.evaluateAll(nodes => nodes.map(node => node.getAttribute("href")))) === JSON.stringify(tabs.map(tab => tabHref[tab])), "primary links use existing route hashes (system: its 준비 중 page)");
+        verify(JSON.stringify(await primary.evaluateAll(nodes => nodes.filter(node => node.getBoundingClientRect().height > 0).map(node => node.dataset.navTab))) === JSON.stringify(visibleTabs), "phone shows 홈·QGV·뉴스·공시·포트폴리오, PC shows the eight numbered menus");
+        verify(await page.locator("#more-button").isVisible(), "전체 메뉴 is always reachable");
         verify(await page.locator("#primary-nav [data-nav-tab], #more-button").evaluateAll(nodes => nodes.filter(node => node.getBoundingClientRect().height > 0).every(node => node.getBoundingClientRect().height >= 44 && node.getBoundingClientRect().width >= 44)), "primary targets are touch-sized");
         // Labels must be meaningful in the selected locale, without rejecting optional short labels.
         verify(await primary.evaluateAll((nodes, expected) => nodes.every((node, index) => node.textContent.includes(expected[index])), labels[locale]), "primary destination labels follow the display language");
@@ -129,13 +131,15 @@ async function unavailableNewScreen(page, selector) {
           return desktop ? header.top <= box.top && box.bottom <= header.bottom + 1 && box.bottom <= main.top + 1 : Math.abs(box.bottom - innerHeight) <= 2 && box.width <= innerWidth;
         }, desktop), "phone bottom bar or PC header menu occupies its expected area");
         await active(page, "home");
-        // 더보기 lists every existing destination; Escape closes it and returns focus to the button.
+        // 전체 메뉴 lists every existing destination under its menu; Escape closes it and returns focus to the button.
         await page.locator("#more-button").click(); await page.locator("#more-menu").waitFor();
         const moreLinks = await page.locator("#more-menu a").evaluateAll(nodes => nodes.map(node => node.getAttribute("href")));
-        for (const href of ["#companies", "#leaderboard", "#watchlist", "#types", "#qgv", "#portfolio", "#actual", "#brief", "#profiles", "#model", "#playbook", "#news", "#macro", "#technical", "#thirteenf", "#report/mock", "#report/real", "#validation", "#research", "#settings"])
-          verify(moreLinks.includes(href), "더보기 lists " + href);
+        for (const href of ["#companies", "#leaderboard", "#watchlist", "#types", "#qgv", "#portfolio", "#actual", "#brief", "#profiles", "#model", "#playbook", "#news", "#macro", "#technical", "#thirteenf", "#report/mock", "#report/real", "#validation", "#research", "#system", "#lab-13f", "#settings"])
+          verify(moreLinks.includes(href), "전체 메뉴 lists " + href);
+        verify(JSON.stringify(await page.locator("#more-menu [data-menu-group]").evaluateAll(nodes => nodes.map(node => node.dataset.menuGroup))) === JSON.stringify(["qgv", "technical", "macro", "news", "portfolio", "prompts", "system", "lab", "settings"]), "전체 메뉴 groups follow the eight menus, then settings");
+        verify(await page.locator("#more-menu [data-menu-pending]").evaluateAll(nodes => nodes.map(node => node.getAttribute("href")).join()) === "#system,#lab-13f", "menus without a screen are marked 준비 중");
         await page.keyboard.press("Escape");
-        verify(await page.locator("#more-menu").isHidden() && await page.evaluate(() => document.activeElement?.id === "more-button"), "Escape closes 더보기 and returns focus to its button");
+        verify(await page.locator("#more-menu").isHidden() && await page.evaluate(() => document.activeElement?.id === "more-button"), "Escape closes 전체 메뉴 and returns focus to its button");
         await page.evaluate(() => { window.__iaSpaSentinel = true; });
         for (const tab of tabs) {
           if (visibleTabs.includes(tab)) await page.locator('#primary-nav [data-nav-tab="' + tab + '"]').click();
@@ -159,7 +163,7 @@ async function unavailableNewScreen(page, selector) {
           const other = entities.find(entity => entity.entity_type !== "COMPANY");
           return ["company/" + encodeURIComponent(company), "entity/" + encodeURIComponent(other.entity_type + ":" + other.canonical_id)];
         }, listed.id);
-        await go(page, "qgv"); await active(page, "explore");
+        await go(page, "qgv"); await active(page, "qgv");
         verify(await page.locator('[data-hub="qgv"] .hub-group').count() === 4, "QGV hub preserves all four groups");
         const destinations = ["#portfolio", "#profiles", "#model", "#actual", "#leaderboard", "#watchlist", "#companies", "#types", "#news", "#thirteenf", "#validation"];
         verify(JSON.stringify(await page.locator('[data-hub="qgv"] a.hub-card').evaluateAll(nodes => nodes.map(node => node.getAttribute("href")))) === JSON.stringify(destinations), "QGV available cards link to existing destinations");
@@ -173,7 +177,7 @@ async function unavailableNewScreen(page, selector) {
           verify(await page.evaluate(() => window.__iaSpaSentinel === true), "QGV card click opens its destination without a document reload");
         }
         for (const group of groups) {
-          await go(page, "qgv/" + group); await active(page, "explore");
+          await go(page, "qgv/" + group); await active(page, "qgv");
           verify(await page.locator('[data-hub="qgv"] .hub-group').count() === 4, "group deep link retains the complete hub");
           verify(await page.evaluate(group => document.querySelector("#qgv-" + group)?.contains(document.activeElement), group), "group deep link focuses its section");
           verify(await page.evaluate(group => { const node = document.activeElement, section = document.querySelector("#qgv-" + group), box = node.getBoundingClientRect(); return section?.contains(node) && box.top >= -1 && box.bottom <= innerHeight + 1; }, group), "group deep link scrolls the requested heading into view");
@@ -185,23 +189,23 @@ async function unavailableNewScreen(page, selector) {
           verify(await page.locator('main > .parent-row > .parent-link[href="#qgv"]').evaluate(node => { const box = node.getBoundingClientRect(); return box.width >= 44 && box.height >= 44; }), "legacy parent navigation meets minimum target size");
           verify(page.url().endsWith("#" + hash), "legacy deep-link hash is preserved");
         }
-        await page.locator('main > .parent-row > .parent-link[href="#qgv"]').click(); await page.locator('[data-hub="qgv"]').waitFor(); await active(page, "explore");
+        await page.locator('main > .parent-row > .parent-link[href="#qgv"]').click(); await page.locator('[data-hub="qgv"]').waitFor(); await active(page, "qgv");
         await page.goBack(); await page.waitForFunction(() => !!document.querySelector('main > .parent-row > .parent-link[href="#qgv"]')); await active(page, tabOf(routes[1]));
-        await go(page, "technical"); await active(page, "market"); await unavailableNewScreen(page, '[data-ia-screen="technical"]');
+        await go(page, "technical"); await active(page, "technical"); await unavailableNewScreen(page, '[data-ia-screen="technical"]');
         verify(JSON.stringify(await page.locator('[data-ia-screen="technical"] [data-tech-status]').evaluateAll(nodes => nodes.map(node => node.dataset.techStatus))) === JSON.stringify(["chart", "engine", "execution", "record"]), "technical chart, engine, execution and record availability stay separate");
         verify(await page.locator('[data-ia-screen="technical"] [data-tech-status="engine"], [data-ia-screen="technical"] [data-tech-status="execution"], [data-ia-screen="technical"] [data-tech-status="record"]').evaluateAll(nodes => nodes.length === 3 && nodes.every(node => node.textContent.includes("NOT_AVAILABLE"))), "technical engine, execution and record cards preserve missing-data status");
         await capture(page, "technical", locale, width);
-        await go(page, "macro"); await active(page, "market"); await unavailableNewScreen(page, '[data-ia-screen="macro"]');
+        await go(page, "macro"); await active(page, "macro"); await unavailableNewScreen(page, '[data-ia-screen="macro"]');
         verify(await page.locator("[data-macro-axis]").count() === 8, "macro preserves eight independent axes");
         verify(JSON.stringify(await page.locator("[data-macro-axis]").evaluateAll(nodes => nodes.map(node => node.dataset.macroAxis))) === JSON.stringify(macroAxes), "macro axes preserve their official identities and order");
         verify(await page.locator("[data-macro-axis]").evaluateAll((nodes, expected) => nodes.every(node => JSON.stringify([...node.querySelectorAll("[data-macro-state]")].map(state => state.dataset.macroState)) === JSON.stringify(expected)), macroStates), "macro states preserve their official identities and order");
         verify(await page.locator("[data-macro-axis]").evaluateAll(nodes => nodes.every(node => node.querySelectorAll("[data-macro-state]").length === 6 && [...node.querySelectorAll("[data-macro-state]")].every(state => state.textContent.includes("NOT_AVAILABLE")))), "every macro axis preserves six unavailable states");
         await capture(page, "macro", locale, width);
-        await go(page, "validation"); await active(page, "records"); await unavailableNewScreen(page, '[data-hub="validation"]');
+        await go(page, "validation"); await active(page, "lab"); await unavailableNewScreen(page, '[data-hub="validation"]');
         verify(await page.locator('[data-hub="validation"] a[href="#research"]').count() === 1, "validation keeps existing research reachable");
         verify(await page.locator('[data-hub="validation"] .card').filter({ hasText: "NOT_AVAILABLE" }).count() === 5, "five S10 validation areas (paper, backtest, forward, track record, trials) remain unavailable");
         await capture(page, "validation", locale, width);
-        await page.locator('[data-hub="validation"] a[href="#research"]').click(); await page.locator("#research-frame").waitFor(); await active(page, "records");
+        await page.locator('[data-hub="validation"] a[href="#research"]').click(); await page.locator("#research-frame").waitFor(); await active(page, "prompts");
         verify(await page.locator('main > .parent-row > .parent-link[href="#validation"]').count() === 1, "existing research offers its validation parent");
         verify(await page.locator('main > .parent-row > .parent-link[href="#validation"]').evaluate(node => { const box = node.getBoundingClientRect(); return box.width >= 44 && box.height >= 44; }), "research parent navigation meets minimum target size");
         await go(page, "settings"); await active(page, null);
@@ -211,7 +215,13 @@ async function unavailableNewScreen(page, selector) {
         await page.locator("#display-locale").selectOption(otherLocale); await active(page, null);
         verify(await page.locator("html").getAttribute("lang") === otherLocale, "settings changes display language without selecting a primary tab");
         await page.locator("#display-locale").selectOption(locale);
-        await go(page, "qgv"); await page.reload(); await page.locator('[data-hub="qgv"]').waitFor(); await active(page, "explore");
+        // Menus without a screen: a 준비 중 page that states what is missing, with no invented value, under its menu.
+        for (const [hash, tab] of [["system", "system"], ["lab-13f", "lab"]]) {
+          await go(page, hash); await active(page, tab); await unavailableNewScreen(page, '[data-pending-page="' + hash + '"]');
+          verify(await page.locator('[data-pending-page="' + hash + '"] [data-pending-needs] li').count() >= 3, hash + " lists the data and decisions it needs");
+          verify(await page.locator('[data-pending-page="' + hash + '"] .pending-links a').count() >= 2, hash + " links the closest existing screens");
+        }
+        await go(page, "qgv"); await page.reload(); await page.locator('[data-hub="qgv"]').waitFor(); await active(page, "qgv");
         verify(await page.locator("html").getAttribute("lang") === locale, "language survives deep-link reload");
         verify(await page.evaluate(() => fetch("data.json").then(response => response.text())) === original, "navigation and language changes preserve the served read model");
       } finally { await context.close(); }

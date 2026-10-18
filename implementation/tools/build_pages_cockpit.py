@@ -14,9 +14,6 @@ if str(Path(__file__).resolve().parent) not in sys.path:
 from investment_system.product.web_mvp import build, repository_bundle
 
 
-HOME_BACKGROUNDS = tuple('home-bg-%s-%s.svg' % (time, layout) for time in ('day', 'night') for layout in ('wide', 'narrow'))
-
-
 def build_public_cockpit(out: Path, *, sec_m2_candidate=None) -> Path:
     out = Path(out)
     if out.is_symlink() or (out.exists() and (not out.is_dir() or any(out.iterdir()))):
@@ -25,9 +22,6 @@ def build_public_cockpit(out: Path, *, sec_m2_candidate=None) -> Path:
     result = build(out, bundle=bundle, sec_m2_candidate=sec_m2_candidate)
     assets = Path(__file__).resolve().parents[1] / 'src/investment_system/product/web_assets'
     for name in ('manifest.json', 'icon-192.png', 'icon-512.png'):
-        shutil.copyfile(assets / name, out / name)
-    # Self-made home background illustrations (vector SVG, day/night x wide/narrow); pinned by the artifact guard.
-    for name in HOME_BACKGROUNDS:
         shutil.copyfile(assets / name, out / name)
     # Price-free Universe504 code list for the Google sheet Universe tab (validated by the guard).
     from investment_system.universe.universe_codes import FILENAME as UNIVERSE_CODES, public_payload

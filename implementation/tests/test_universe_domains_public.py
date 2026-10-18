@@ -170,9 +170,6 @@ def test_previous_copy_fetch_rejects_invalid_or_redirected_copies():
         tool.fetch_previous(open_response=lambda r, timeout: Response(good, url='https://example.com/x'))
 
 
-HOME_BACKGROUNDS = ['home-bg-day-narrow.svg', 'home-bg-day-wide.svg', 'home-bg-night-narrow.svg', 'home-bg-night-wide.svg']
-
-
 def test_build_publishes_domains_and_local_logo_bundle_and_the_guard_checks_it():
     build = load('build_pages_cockpit', ROOT / 'tools/build_pages_cockpit.py')
     guard = load('pages_artifact_guard', ROOT / 'tools/pages_artifact_guard.py')
@@ -183,8 +180,8 @@ def test_build_publishes_domains_and_local_logo_bundle_and_the_guard_checks_it()
         assert guard.scan_artifact(site)['pages_artifact_guard'] == 'PASS'
         # Logo PNGs are local data images in company-logos.json, never runtime external images.
         images = sorted(p.name for p in site.iterdir() if p.suffix.lower() in {'.png', '.ico', '.svg', '.jpg', '.jpeg', '.webp', '.gif'})
-        # Besides the app icons, only the self-made home background illustrations (pinned by the guard); no logo files.
-        assert images == sorted(['icon-192.png', 'icon-512.png', *HOME_BACKGROUNDS])
+        # Only the app icons: no logo files and no background images (the monochrome home has none).
+        assert images == ['icon-192.png', 'icon-512.png']
         payload = json.loads((site / FILENAME).read_text())
         payload['rows'][0][1:] = ['evil.example', 'sec']
         (site / FILENAME).write_text(json.dumps(payload))
@@ -192,4 +189,4 @@ def test_build_publishes_domains_and_local_logo_bundle_and_the_guard_checks_it()
         payload['rows'][0][2] = 'guess'
         (site / FILENAME).write_text(json.dumps(payload))
         assert guard.scan_artifact(site)['violations'] == {'universe_domains_boundary': 1}
-    assert sorted(p.name for p in ASSETS.iterdir() if p.suffix.lower() in {'.png', '.ico', '.svg', '.jpg', '.jpeg', '.webp', '.gif'}) == sorted(['icon-192.png', 'icon-512.png', *HOME_BACKGROUNDS])
+    assert sorted(p.name for p in ASSETS.iterdir() if p.suffix.lower() in {'.png', '.ico', '.svg', '.jpg', '.jpeg', '.webp', '.gif'}) == ['icon-192.png', 'icon-512.png']
