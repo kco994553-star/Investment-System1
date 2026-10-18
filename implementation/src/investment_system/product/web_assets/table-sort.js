@@ -1,7 +1,8 @@
 /* PC table sorting (>= 1024px). Display only: rows are reordered in the DOM, nothing is stored or sent.
    Click or press Enter/Space on a column header button; order cycles ascending → descending → original.
    Stable (ties keep their original order) and NOT_AVAILABLE-like values (—, N/A, NOT_AVAILABLE, empty) always sort last.
-   Phones (< 1024px) keep the original table untouched; leaving PC width restores the original order and headers. */
+   Phones (< 1024px) keep the original table untouched; leaving PC width restores the original order and headers.
+   A cell may carry a structured key in data-sort-value (a number, or '' = NOT_AVAILABLE); it is used instead of the display text. */
 (function(root,factory){const api=factory(root);if(typeof module==='object'&&module.exports)module.exports=api;else root.TableSort=api;})(typeof globalThis==='object'?globalThis:this,function(g){
 'use strict';
 const QUERY='(min-width: 1024px)';
@@ -27,6 +28,18 @@ function compareKeys(a,b,dir){
  else c=collator?collator.compare(a.value,b.value):(a.value<b.value?-1:a.value>b.value?1:0);
  return c*dir;
 }
+// Structured key of one cell: data-sort-value ('' -> missing, a finite number -> number, else text) or the display text.
+function cellKey(cell){
+ if(!cell)return keyOf('');
+ if(cell.hasAttribute&&cell.hasAttribute('data-sort-value')){const v=cell.getAttribute('data-sort-value').trim();if(v==='')return{kind:'missing'};const n=Number(v);return Number.isFinite(n)?{kind:'number',value:n}:{kind:'text',value:v};}
+ return keyOf(cell.textContent);
+}
+// Pure: stable order of row indexes for the given keys ({kind,value}).
+function orderKeys(keys,dir){
+ const keyed=keys.map((k,i)=>({k,i}));
+ keyed.sort((x,y)=>compareKeys(x.k,y.k,dir)||x.i-y.i);
+ return keyed.map(x=>x.i);
+}
 // Pure: stable order of row indexes for the given cell texts.
 function order(texts,dir){
  const keyed=texts.map((t,i)=>({k:keyOf(t),i}));
@@ -50,7 +63,7 @@ function sortable(table){
 function apply(table,col,dir){
  const st=state.get(table);if(!st)return;
  const body=table.tBodies[0],rows=st.original.filter(r=>r.parentNode===body);
- const seq=dir===0?rows:order(rows.map(r=>r.cells[col]?r.cells[col].textContent:''),dir).map(i=>rows[i]);
+ const seq=dir===0?rows:orderKeys(rows.map(r=>cellKey(r.cells[col])),dir).map(i=>rows[i]);
  st.col=col;st.dir=dir;
  body.append(...seq);
  for(const[i,th]of st.heads.entries()){const v=i===col&&dir!==0?(dir===1?'ascending':'descending'):'none';th.setAttribute('aria-sort',v);}
@@ -88,5 +101,5 @@ function init(win){
  if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',start);else start();
 }
 if(typeof window==='object'&&window&&window.document)init(window);
-return Object.freeze({QUERY,SELECTOR,keyOf,compareKeys,order,init});
+return Object.freeze({QUERY,SELECTOR,keyOf,cellKey,compareKeys,order,orderKeys,init});
 });

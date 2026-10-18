@@ -20,6 +20,44 @@ const STAGES=[['정상','Normal'],['관찰','Watch'],['근접','Near'],['재평�
 const EXPLORE=[['all','전체','All'],['ranked','QGV 산출 가능','QGV available'],['partial','일부 축만 가능','Some axes only'],['check','자료 확인 필요','Check data']];
 const EXPLORE_OF={RANKED:'ranked',PARTIAL_AXES:'partial',CHECK_DATA:'check'},EXPLORE_IDS=EXPLORE.map(e=>e[0]);
 function exploreOf(r){const QS=qgvScores();return EXPLORE_OF[QS&&QS.exploreGroup?QS.exploreGroup(r.score):'CHECK_DATA']||'check';}
+/* S06 structured sort (owner directive 2026-10-18 §4.4). [id, key, direction (1 asc, -1 desc), [ko, en]]. Keys are numbers or
+   strings from the score rows, never display text. NA is last in both directions; ties: QGV by ticker (= the official rank
+   order), market cap by company_id (M3 rule), others by ticker. Sorting only orders rows: the rank shown is always the official
+   device rank. 'ticker', 'name' and 'favorites' are the legacy ids that DeviceWatchlist.filter already orders (unchanged).
+   Market cap = the M3 cap rank of this device's private Universe read (offered only while that subset is READY). No per-company
+   return column exists (spec §19 only), so no return sort is offered. */
+const SORTS=[['qgv','qgv',-1,['QGV v2 순','QGV v2 (high first)']],['qgv-asc','qgv',1,['QGV 낮은 순','QGV v2 (low first)']],
+ ['q-desc','q',-1,['Q 높은 순','Q (high first)']],['q-asc','q',1,['Q 낮은 순','Q (low first)']],['g-desc','g',-1,['G 높은 순','G (high first)']],['g-asc','g',1,['G 낮은 순','G (low first)']],
+ ['v-desc','v',-1,['V 높은 순','V (high first)']],['v-asc','v',1,['V 낮은 순','V (low first)']],
+ ['ticker','ticker',1,['티커 순','Ticker']],['ticker-desc','ticker',-1,['티커 역순','Ticker (Z–A)']],['name','name',1,['기업명 순','Name']],['name-desc','name',-1,['기업명 역순','Name (Z–A)']],
+ ['favorites','favorites',-1,['관심기업 우선','Favorites first']],['asof-desc','asof',-1,['자료 기준일 최신 순','Data date (newest first)']],['asof-asc','asof',1,['자료 기준일 오래된 순','Data date (oldest first)']],
+ ['cap-desc','cap',-1,['시가총액 큰 순 · 내 기기','Market cap (largest) · my device']],['cap-asc','cap',1,['시가총액 작은 순 · 내 기기','Market cap (smallest) · my device']]];
+const SORT_IDS=Object.freeze(SORTS.map(s=>s[0])),LEGACY_SORTS=['qgv','ticker','name','favorites'],DEFAULT_SORT='qgv';
+function sortSpec(id){return SORTS.find(s=>s[0]===id)||SORTS[0];}
+function sortLabel(id,en){const s=SORTS.find(x=>x[0]===id);return s?s[3][en?1:0]:null;}
+// New options for the S06 sort selector (the legacy four keep their app labels and come first).
+function sortOptions(en){return SORTS.filter(s=>!LEGACY_SORTS.includes(s[0])).map(s=>[s[0],s[3][en?1:0]]);}
+// The id of the same key in the other direction (null for favorites, which has one direction).
+function oppositeSort(id){const[,key,dir]=sortSpec(id),o=SORTS.find(s=>s[1]===key&&s[2]===-dir);return o?o[0]:null;}
+function sortAvailable(id,{deviceRanks=null}={}){return sortSpec(id)[1]!=='cap'||deviceRanks?.state==='READY';}
+/* Pure: rows ({company_id, ticker, name}) ordered by sort id over the QgvScores result S (rows[cid].rank / primary) and the M3
+   ranks. Returns a new array (input untouched). */
+function sortRows(rows,S,id,{deviceRanks=null}={}){
+ if(['ticker','name','favorites'].includes(id))return rows;
+ const[,key,dir]=sortSpec(id),num=v=>typeof v==='number'&&Number.isFinite(v)?v:null,score=r=>S&&S.rows?S.rows[r.company_id]:null;
+ const value=r=>{const x=score(r),p=x?x.primary:null;
+  if(key==='qgv')return x&&Number.isInteger(x.rank)?num(p.total):null;if(['q','g','v'].includes(key))return p?num(p[key]):null;
+  if(key==='ticker'||key==='name')return typeof r[key]==='string'?r[key]:null;
+  if(key==='asof'){const t=p&&p.coverage&&p.coverage.source?Date.parse(p.coverage.source.acquired_at):NaN;return Number.isFinite(t)?t:null;}
+  if(key==='cap'){const m=m3For(deviceRanks,r);return Number.isInteger(m.rank)?m.rank:null;}return null;};
+ const tie=key==='cap'?(a,b)=>(a.company_id<b.company_id?-1:a.company_id>b.company_id?1:0):(a,b)=>String(a.ticker).localeCompare(String(b.ticker));
+ // Market cap: the M3 rank is 1 = largest, so 'largest first' is rank ascending.
+ const m=key==='cap'?-dir:dir,keyed=rows.map(r=>({r,v:value(r)}));
+ keyed.sort((a,b)=>(a.v===null)-(b.v===null)||(a.v!==null&&b.v!==null?(typeof a.v==='string'?a.v.localeCompare(b.v):a.v<b.v?-1:a.v>b.v?1:0)*m:0)||tie(a.r,b.r));
+ return keyed.map(x=>x.r);}
+// Analysis population (pooled sec-qgv2 cross-section points), not the screen's identities nor the device market-cap subset.
+function populationOf(publicScreens){const inputs=publicScreens&&publicScreens['sec-qgv2.json'];if(!inputs||!inputs.records||typeof inputs.records!=='object')return null;
+ let n=0;for(const r of Object.values(inputs.records))if(r&&r.in_cross_section===true&&['LIVE','STALE'].includes(r.state)&&r.calc_version_mismatch!==true&&r.identity_withdrawn!==true)n++;return n;}
 // Pure: one row per identity, using only published price-free inputs.
 const M3_LABEL=['M3 · 내 기기 기준 · v0','M3 · My device · v0'];
 function m3For(ranks,c){if(!ranks||ranks.state!=='READY')return{state:'NOT_AVAILABLE',rank:null,reason_codes:[...(ranks?.reason_codes||['UNIVERSE_NOT_READ'])]};const e=ranks.entries.get('id:'+c.company_id)||ranks.entries.get('sym:'+String(c.ticker||'').replaceAll('.','-'));return e?{state:e.state,rank:e.rank,quality:e.quality||null,group_id:e.group_id||null,reason_codes:[...e.reason_codes]}:{state:'NOT_AVAILABLE',rank:null,reason_codes:['NOT_IN_UNIVERSE']};}
@@ -51,6 +89,19 @@ function mount(host,identities,{publicScreens={},locale,view='default',profiles=
   const chosen=profiles.find(p=>p.id===profileId);if(chosen)weights=chosen.weights;card.append(el('p',(en?'v1 preview (not the official v2 score) · ':'v1 미리보기 (공식 v2 점수 아님) · ')+(chosen?(en?'PREVIEW · RAM only · Q/G recalculated with your profile; not mixed with official results':'PREVIEW · 메모리 전용 · 내 프로필로 Q/G 재계산, 공식 결과와 섞지 않음'):(en?'No saved profile selected. Create one in Strategy profile.':'선택한 프로필이 없습니다. 전략 프로필에서 만드세요.')),{class:'small','data-leaderboard-preview-note':''}));}
  if(view==='device'){card.append(el('p',en?'My device view reads your private Universe sheet in RAM. Open it below.':'내 기기 기준은 비공개 Universe 시트를 메모리에서 읽습니다. 아래에서 여세요.',{class:'small'}));}
  const all=rowsFor(identities,{publicScreens,engine,filings,weights,deviceRanks,scores:S}),show=v=>v===null?'—':(Math.round(v*10)/10).toFixed(1);
+ /* Direction and reset next to the S06 sort selector (#leader-sort, app.js, the phone sort control too): they change only that
+    selector's value and fire its change event, so the app keeps one sort state. Unavailable keys (market cap without the device
+    subset) are disabled in the selector with the reason. */
+ function sortControls(){const select=doc.getElementById('leader-sort');if(!select)return;const id=SORT_IDS.includes(select.value)?select.value:DEFAULT_SORT,[,key,dir]=sortSpec(id),opp=oppositeSort(id);
+  for(const o of select.options){const off=!sortAvailable(o.value,{deviceRanks});if(!o.dataset.label)o.dataset.label=o.textContent;o.disabled=off;o.textContent=o.dataset.label+(off?(en?' (read the Universe on this device first)':' (내 기기 Universe 읽은 뒤)'):'');}
+  const set=v=>{select.value=v;select.dispatchEvent(new Event('change',{bubbles:true}));};
+  const box=el('div',undefined,{class:'chips','data-leaderboard-sort':id,role:'group','aria-label':en?'Sort order':'정렬 방향'});
+  const turn=el('button',dir===1?(en?'↑ Ascending':'↑ 오름차순'):(en?'↓ Descending':'↓ 내림차순'),{type:'button','data-leaderboard-sort-dir':dir===1?'asc':'desc','aria-label':(en?'Sort direction: ':'정렬 방향: ')+(dir===1?(en?'ascending':'오름차순'):(en?'descending':'내림차순'))+(opp?(en?' (switch)':' (바꾸기)'):'')});
+  if(opp)turn.onclick=()=>set(opp);else turn.disabled=true;
+  const reset=el('button',en?'Default sort (QGV high first)':'기본 정렬(QGV 높은 순)',{type:'button','data-leaderboard-sort-reset':''});if(id===DEFAULT_SORT)reset.disabled=true;else reset.onclick=()=>set(DEFAULT_SORT);
+  box.append(el('span',(en?'Sort: ':'정렬: ')+(sortLabel(id,en)||id),{class:'small'}),turn,reset);
+  if(key==='cap'&&!sortAvailable(id,{deviceRanks}))box.append(el('span',en?'Market cap needs the Universe read on this device; all rows are — until then.':'시가총액은 내 기기 Universe를 읽어야 합니다. 그 전에는 모두 —입니다.',{class:'small','data-leaderboard-sort-na':'cap'}));
+  box.append(el('span',en?'NA is last in both directions; the rank number stays the official device rank.':'NA는 양방향 모두 맨 뒤 · 순위 번호는 공식 기기 순위 그대로',{class:'small'}));card.append(box);}
  // Exploration filter: only with v2 scores (not in the v1 profile preview). Counts are over the rows the other filters left.
  const ex=S&&EXPLORE_IDS.includes(explore)?explore:'all',rows=ex==='all'?all:all.filter(r=>exploreOf(r)===ex);
  if(S){const counts={all:all.length,ranked:0,partial:0,check:0};for(const r of all)counts[exploreOf(r)]++;
@@ -58,7 +109,11 @@ function mount(host,identities,{publicScreens={},locale,view='default',profiles=
   for(const[id,ko,enl]of EXPLORE){const b=el('button',(en?enl:ko)+' '+counts[id],{type:'button','data-leaderboard-explore-option':id,'aria-pressed':String(ex===id)});b.onclick=()=>onView({explore:id});group.append(b);}
   card.append(group);
   if(ex==='partial')card.append(el('p',en?'These companies have only some axes (e.g. Q·G). They have no QGV total, so they are not in the QGV total order and have no rank.':'이 기업들은 일부 축(예: Q·G)만 산출되어 QGV 종합 점수가 없습니다. QGV 종합 순서에 넣지 않으며 순위가 없습니다.',{class:'small','data-leaderboard-explore-note':'partial'}));
-  if(ex==='check')card.append(el('p',en?'No axis could be calculated for these companies. Open a company to see why.':'이 기업들은 어느 축도 산출되지 않았습니다. 기업을 열면 이유를 볼 수 있습니다.',{class:'small','data-leaderboard-explore-note':'check'}));}
+  if(ex==='check')card.append(el('p',en?'No axis could be calculated for these companies. Open a company to see why.':'이 기업들은 어느 축도 산출되지 않았습니다. 기업을 열면 이유를 볼 수 있습니다.',{class:'small','data-leaderboard-explore-note':'check'}));
+  // Three different scopes, never claimed to be the same: the public analysis population, the ranked screen identities, the shown rows.
+  const pop=populationOf(publicScreens),rankable=all.filter(r=>r.score&&Number.isInteger(r.score.rank)).length;
+  card.append(el('p',(en?'Analysis population ':'분석 모집단 ')+(pop===null?'—':pop)+(en?' (public SEC records, percentile peers)':'개 (공개 SEC 기록 · 백분위 비교 대상)')+' · '+(en?'rankable ':'순위 가능 ')+rankable+(en?' of the '+all.length+' screen companies':'개 (이 화면 '+all.length+'개 기업 중)')+' · '+(en?'shown ':'표시 ')+rows.length+(en?'':'개')+(ready?' · '+(en?'device cap subset ':'기기 시총 부분집합 ')+deviceRanks.verified_count+(en?' verified rows':'개 검증 행'):''),{class:'small','data-leaderboard-counts':'','data-population':pop===null?'':String(pop),'data-rankable':String(rankable),'data-shown':String(rows.length)}));
+  sortControls();}
  const wrap=el('div',undefined,{class:'table-wrap'}),table=el('table',undefined,{'data-leaderboard-table':''}),head=el('tr'),body=el('tbody'),thead=el('thead');const narrow=Boolean(doc.defaultView&&doc.defaultView.matchMedia&&doc.defaultView.matchMedia(NARROW).matches),cols=COLUMNS.filter(c=>!(narrow&&c[3]));
  for(const[id,ko,enl]of cols)head.append(el('th',en?enl:ko,{scope:'col','data-leaderboard-col':id}));thead.append(head);table.setAttribute('data-leaderboard-layout',narrow?'narrow':'wide');
  for(const r of rows){const tr=el('tr',undefined,{'data-leaderboard-row':r.company_id}),link=el('a',r.ticker,{href:'#company/'+encodeURIComponent(r.company_id)}),company=el('td');if(globalThis.CompanyLogos)company.append(globalThis.CompanyLogos.node(doc,r.ticker,20));company.append(link);
@@ -74,13 +129,13 @@ function mount(host,identities,{publicScreens={},locale,view='default',profiles=
   else detail.push(doc.createTextNode('—'));
   const earningsText=r.earnings_status==='CONFIRMED'?(en?'Confirmed':'확인'):(r.next_window?r.next_window+(en?' (est.)':' (예상)'):'—');
   // QGV total: the v2 total, or — (NOT_AVAILABLE is never shown as 0).
-  const total=sc&&typeof sc.primary.total==='number'&&Number.isFinite(sc.primary.total)?sc.primary.total:null,qgv=el('td',undefined,{'data-leaderboard-qgv-cell':''});
+  const total=sc&&typeof sc.primary.total==='number'&&Number.isFinite(sc.primary.total)?sc.primary.total:null,qgv=el('td',undefined,{'data-leaderboard-qgv-cell':'','data-sort-value':total===null?'':String(total)});
   qgv.append(total===null?el('span','—',{'data-leaderboard-total':'NOT_AVAILABLE'}):el('b',show(total),{class:'num','data-leaderboard-total':show(total)}));
   // A row without a device rank says so next to the — total (any width): partial axes are shown, but outside the QGV total order.
   let unranked=null;if(group==='partial'&&sc.rank===null){const p=sc.primary,axes=[['Q',p.q],['G',p.g],['V',p.v]].filter(([,v])=>typeof v==='number'&&Number.isFinite(v)).map(([a,v])=>a+' '+show(v)).join(' · ');
    unranked=el('span',(p.reference_only?(en?'Reference ranking':'참고 순위'):(en?'Not in the QGV total order':'QGV 종합 순위 밖'))+(axes?' · '+axes:''),{class:'badge partial','data-leaderboard-unranked':'PARTIAL_AXES'});}
   else if(group==='check')unranked=el('span',en?'Check data':'자료 확인 필요',{class:'badge check-data','data-leaderboard-unranked':'CHECK_DATA'});
-  const rank=el('td',sc&&sc.rank!==null?String(sc.rank):'—',sc&&sc.rank!==null?{'data-leaderboard-rank':String(sc.rank)}:{});
+  const rank=el('td',sc&&sc.rank!==null?String(sc.rank):'—',sc&&sc.rank!==null?{'data-leaderboard-rank':String(sc.rank),'data-sort-value':String(sc.rank)}:{'data-sort-value':''});
   if(narrow){// Phone: one button per row opens Q·G·V and earnings under the total (keyboard/touch; no hover-only control).
    const detailId='lb-detail-'+r.company_id,open=OPEN.has(r.company_id),toggle=el('button',en?'Details':'상세',{type:'button',class:'lb-toggle','aria-expanded':String(open),'aria-controls':detailId,'aria-label':r.ticker+(en?' Q·G·V details':' Q·G·V 상세')});
    const more=el('div',undefined,{id:detailId,class:'lb-detail small','data-leaderboard-detail':''});more.append(...detail,el('div',(en?'Earnings ':'실적 ')+earningsText,{'data-earnings-qg-confirmation':r.earnings_status}));more.hidden=!open;
@@ -94,5 +149,5 @@ function mount(host,identities,{publicScreens={},locale,view='default',profiles=
  const stages=el('details',undefined,{'data-reeval-stages':''});stages.append(el('summary',en?'Re-evaluation signal stages':'재평가 신호 단계'));const list=el('ol');for(const[ko,enl]of STAGES)list.append(el('li',en?enl:ko));stages.append(list,el('p',en?'Price change, threshold and distance are shown once the signal is connected (NOT_AVAILABLE now).':'신호가 연결되면 가격 변화량·임계값·거리를 함께 보여 줍니다(현재 NOT_AVAILABLE).',{class:'small'}));card.append(stages);
  const actions=el('div',undefined,{class:'chips'});for(const label of [en?'Send selection to paper trading':'선택 종목 모의투자',en?'Send to backtest':'백테스트로 보내기']){const b=el('button',label,{type:'button',disabled:''});actions.append(b);}card.append(actions,el('p',en?'Paper trading and backtest are not connected yet.':'모의투자·백테스트는 아직 연결되지 않았습니다.',{class:'small'}));
  host.replaceChildren(card);return{shown:rows.length,explore:ex};}
-return Object.freeze({COLUMNS,UNCONNECTED,NARROW,M3_LABEL,EXPLORE,rowsFor,mount});
+return Object.freeze({COLUMNS,UNCONNECTED,NARROW,M3_LABEL,EXPLORE,SORTS,SORT_IDS,DEFAULT_SORT,sortLabel,sortOptions,oppositeSort,sortAvailable,sortRows,populationOf,rowsFor,mount});
 });

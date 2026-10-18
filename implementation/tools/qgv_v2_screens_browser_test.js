@@ -33,6 +33,112 @@ async function withdrawnS06(page) {
   const all = await page.evaluate(() => Object.values(qgvScores().rows).filter((r) => r.rank !== null).map((r) => r.company_id));
   assert.ok(!all.includes('amd') && !all.includes('msft') && all.length >= 1);assert.ok(ranks.every((r) => r >= 1 && r <= all.length));
 }
+/* S06 structured sort (owner directive 2026-10-18 §4.4): the sort selector (#leader-sort, also the phone control) orders rows by
+   structured values from qgvScores(), NA last in both directions; direction and reset buttons; the rank number is always the
+   official device rank; three scopes (analysis population / rankable / shown) are named apart; PC header sort uses numeric keys. */
+async function sortFlow(page, width) {
+  const T = '[data-leaderboard-table]', SHOTS = process.env.PAGES_COCKPIT_EVIDENCE_DIR;
+  phase = 'SORT_SETUP';await page.locator('#leader-query').fill('');await page.waitForFunction(() => document.querySelectorAll('[data-leaderboard-row]').length === 19);
+  const official = await page.evaluate(() => Object.fromEntries(Object.entries(qgvScores().rows).map(([k, r]) => [k, { rank: r.rank, q: r.primary.q, v: r.primary.v, total: r.primary.total }])));
+  const shownRanks = async () => Object.fromEntries(await page.locator(T + ' tbody tr').evaluateAll((rows) => rows.map((r) => [r.dataset.leaderboardRow, r.cells[0].textContent])));
+  const check = async (id, key, dir) => {
+    await page.locator('[data-leaderboard-sort="' + id + '"]').waitFor();
+    const ids = await rowIds(page), vals = ids.map((x) => official[x][key]), firstNa = vals.findIndex((v) => v === null);
+    if (firstNa >= 0) assert.ok(vals.slice(firstNa).every((v) => v === null), id + ' NA last ' + JSON.stringify(vals));
+    const known = vals.slice(0, firstNa < 0 ? vals.length : firstNa);for (let i = 1; i < known.length; i++) assert.ok(dir * (known[i] - known[i - 1]) >= 0, id + ' order ' + JSON.stringify(known));
+    const ranks = await shownRanks();for (const [cid, r] of Object.entries(ranks)) assert.equal(r, official[cid].rank === null ? '—' : String(official[cid].rank), id + ' official rank kept ' + cid);
+    return ids;
+  };
+  phase = 'SORT_Q';assert.ok(await page.locator('#leader-sort').isVisible(), 'sort selector visible at ' + width);
+  const options = await page.locator('#leader-sort option').evaluateAll((o) => o.map((x) => x.value));
+  for (const id of ['qgv', 'qgv-asc', 'q-desc', 'q-asc', 'g-desc', 'v-desc', 'v-asc', 'ticker-desc', 'name-desc', 'asof-desc', 'cap-desc']) assert.ok(options.includes(id), id);
+  assert.ok(!options.some((o) => /return|1d|5d|20d/i.test(o)), 'no return sort without data');
+  await page.locator('#leader-sort').selectOption('q-desc');await check('q-desc', 'q', -1);
+  assert.equal(await page.locator('[data-leaderboard-sort-dir]').getAttribute('data-leaderboard-sort-dir'), 'desc');
+  await page.locator('[data-leaderboard-sort-dir]').click();assert.equal(await page.locator('#leader-sort').inputValue(), 'q-asc');await check('q-asc', 'q', 1);
+  phase = 'SORT_V';await page.locator('#leader-sort').selectOption('v-asc');const vIds = await check('v-asc', 'v', 1);assert.equal(official[vIds[vIds.length - 1]].v, null, 'V NA last ascending');
+  await page.locator('[data-leaderboard-sort-dir]').click();const vDesc = await check('v-desc', 'v', -1);assert.equal(official[vDesc[vDesc.length - 1]].v, null, 'V NA last descending');
+  assert.match(await page.locator('[data-leaderboard-summary]').textContent(), /^정렬: V 높은 순 · /);
+  phase = 'SORT_QGV_ASC';await page.locator('#leader-sort').selectOption('qgv-asc');await check('qgv-asc', 'total', 1);
+  phase = 'SORT_CAP';const capOption = page.locator('#leader-sort option[value="cap-desc"]'), m3 = await page.locator('[data-leaderboard-m3-basis]').getAttribute('data-leaderboard-m3-basis');
+  assert.equal(await capOption.isDisabled(), m3 !== 'READY', 'market cap only with the device subset');
+  if (m3 === 'READY') { await page.locator('#leader-sort').selectOption('cap-desc');await page.locator('[data-leaderboard-sort="cap-desc"]').waitFor();
+    const caps = await page.locator(T + ' tbody tr').evaluateAll((rows) => rows.map((r) => { const b = r.querySelector('[data-leaderboard-m3-rank]');return b ? Number(b.dataset.leaderboardM3Rank) : null; }));
+    const firstNa = caps.indexOf(null), known = caps.slice(0, firstNa < 0 ? caps.length : firstNa);assert.ok(known.length >= 1);assert.ok(caps.slice(known.length).every((c) => c === null));for (let i = 1; i < known.length; i++) assert.ok(known[i] >= known[i - 1]); }
+  phase = 'SORT_COUNTS';const counts = page.locator('[data-leaderboard-counts]');assert.match(await counts.textContent(), /^분석 모집단 \d+개 \(공개 SEC 기록 · 백분위 비교 대상\) · 순위 가능 \d+개 \(이 화면 19개 기업 중\) · 표시 19개/);
+  const pop = Number(await counts.getAttribute('data-population')), rankable = Number(await counts.getAttribute('data-rankable'));
+  assert.equal(pop, await page.evaluate(() => Object.values(publicScreens['sec-qgv2.json'].records).filter((r) => r.in_cross_section === true && ['LIVE', 'STALE'].includes(r.state) && r.calc_version_mismatch !== true && r.identity_withdrawn !== true).length));
+  assert.equal(rankable, Object.values(official).filter((r) => r.rank !== null).length);assert.ok(pop !== 19 || rankable !== 19);
+  if (SHOTS && width >= 1024) await page.screenshot({ path: SHOTS + '/s06-sort-' + width + '.png' });
+  phase = 'SORT_RESET';await page.locator('[data-leaderboard-sort-reset]').click();assert.equal(await page.locator('#leader-sort').inputValue(), 'qgv');
+  assert.ok(await page.locator('[data-leaderboard-sort-reset]').isDisabled());const def = await check('qgv', 'total', -1);
+  assert.deepEqual(def.filter((x) => official[x].rank !== null).map((x) => official[x].rank), def.filter((x) => official[x].rank !== null).map((_, i) => i + 1));
+  if (width >= 1024) {
+    phase = 'SORT_PC_HEADER';const th = page.locator(T + ' thead th').nth(2);await th.locator('.th-sort').click();assert.equal(await th.getAttribute('aria-sort'), 'ascending');
+    const cells = await page.locator(T + ' tbody tr').evaluateAll((rows) => rows.map((r) => r.cells[2].getAttribute('data-sort-value')));
+    const firstNa = cells.indexOf(''), nums = cells.slice(0, firstNa < 0 ? cells.length : firstNa).map(Number);assert.ok(cells.slice(nums.length).every((c) => c === ''), 'NA last');
+    assert.deepEqual(nums, [...nums].sort((a, b) => a - b), 'numeric key, not text');
+    await th.locator('.th-sort').click();await th.locator('.th-sort').click();assert.equal(await th.getAttribute('aria-sort'), 'none');
+  } else if (SHOTS) await page.screenshot({ path: SHOTS + '/s06-sort-' + width + '.png' });
+  phase = 'SORT_DONE';
+}
+/* S13 QGV v2 two-level editor (owner directive 2026-10-18 §4.2/§4.3): product presets without numbers, the code presets under
+   their own label, 3 axis + 15 inner weights, shares, zero = excluded, lock + fit, invalid sum, reset, before/after compare
+   (personal key, official result untouched) and versioned save in this browser. */
+async function editorFlow(page, width) {
+  const E = '[data-qgv2-weights-editor]', SHOTS = process.env.PAGES_COCKPIT_EVIDENCE_DIR;
+  phase = 'ED_OPEN';await page.goto(BASE + '#leaderboard');await page.locator('[data-leaderboard-table]').waitFor();
+  const officialBefore = await page.evaluate(() => JSON.stringify(Object.fromEntries(Object.entries(qgvScores().rows).map(([k, r]) => [k, [r.rank, r.primary.total, r.primary.q]]))));
+  await page.goto(BASE + '#profiles');await page.locator(E).waitFor();
+  phase = 'ED_PRESETS';assert.deepEqual(await page.locator(E + ' [data-product-preset]').allTextContents(), ['공격형', '균형형', '수비형', '사용자 설정']);
+  assert.equal(await page.locator(E + ' [data-product-preset="custom"]').getAttribute('aria-pressed'), 'true');
+  const code = await page.locator(E + ' [data-code-preset]').allTextContents();assert.equal(code.length, 4);assert.ok(code[0].startsWith('balanced · 균형 · Q34/G33/V33'));assert.ok(code.every((t) => !/공격|수비|균형형/.test(t)));
+  assert.match(await page.locator(E).textContent(), /기존 축 비중 프리셋\(balanced\/quality\/growth\/value\)/);
+  await page.locator(E + ' [data-product-preset="aggressive"]').click();const status = page.locator(E + ' [data-product-preset-status="aggressive"]');
+  assert.match(await status.textContent(), /수치 미정 · 결정 대기/);assert.match(await status.locator('[data-product-preset-decision]').getAttribute('href'), /USER_DECISIONS_PENDING\.md$/);
+  assert.equal(await page.locator(E + ' [data-qgv2w]').count(), 0, 'no numbers for 공격형');
+  await page.locator(E + ' [data-product-preset="custom"]').click();
+  phase = 'ED_FIELDS';assert.equal(await page.locator(E + ' [data-qgv2w^="axis."]').count(), 3);assert.equal(await page.locator(E + ' [data-qgv2w^="inner."]').count(), 15);
+  assert.equal(await page.locator(E + ' input[type="range"]').count(), 18);assert.equal(await page.locator(E + ' [data-qgv2w-lock]').count(), 18);
+  assert.match(await page.locator(E + ' [data-qgv2w-row="inner.Q.q_profitability"]').textContent(), /수익성 \(Q1\)/);
+  assert.equal(await page.locator(E + ' [data-qgv2w-share="inner.Q.q_profitability"]').textContent(), '축 내 25.0% · 전체 8.5%');
+  assert.equal(await page.locator(E + ' [data-qgv2w-share="axis.Q"]').textContent(), '전체 34.0%');
+  phase = 'ED_EDIT';await page.locator('#qgv2w-inner-Q-q_profitability').fill('40');
+  assert.equal(await page.locator(E + ' [data-qgv2w-share="inner.Q.q_profitability"]').textContent(), '축 내 34.8% · 전체 11.8%');
+  assert.match(await page.locator(E + ' [data-qgv2w-sum="Q"]').textContent(), /^합계 115\.0 · 계산 때 100으로 정규화$/);
+  await page.locator('#qgv2w-inner-Q-q_moat_proxy').fill('0');assert.equal(await page.locator(E + ' [data-qgv2w-share="inner.Q.q_moat_proxy"]').textContent(), '0 = 제외(결측 아님)');
+  phase = 'ED_INVALID';for (const a of ['Q', 'G', 'V']) await page.locator('#qgv2w-axis-' + a).fill('0');
+  assert.match(await page.locator(E + ' [data-qgv2w-error]').textContent(), /축 비중 합계가 0/);assert.ok(await page.locator(E + ' [data-qgv2w-compare]').isDisabled());
+  phase = 'ED_FIT';await page.locator('#qgv2w-axis-Q').fill('60');await page.locator(E + ' [data-qgv2w-lock="axis.Q"]').check();assert.ok(await page.locator('#qgv2w-axis-Q').isDisabled());
+  await page.locator('#qgv2w-axis-G').fill('10');await page.locator('#qgv2w-axis-V').fill('10');await page.locator(E + ' [data-qgv2w-fit="axis"]').click();
+  assert.equal(await page.locator('#qgv2w-axis-Q').inputValue(), '60');assert.equal(await page.locator('#qgv2w-axis-G').inputValue(), '20');assert.equal(await page.locator(E + ' [data-qgv2w-sum="axis"]').textContent(), '합계 100.0');
+  phase = 'ED_COMPARE';await page.locator(E + ' [data-qgv2w-compare]').click();await page.locator(E + ' [data-qgv2w-result-state="READY"]').waitFor();
+  assert.match(await page.locator(E + ' [data-qgv2w-result-label]').textContent(), /^개인 설정 미리보기 · 공식 점수 아님 · qgv-v2\/custom\/[0-9a-f]{16}\/gate-on$/);
+  assert.equal(await page.locator(E + ' [data-qgv2w-compare-row]').count(), 19);
+  const table = await page.locator(E + ' [data-qgv2w-company-table] tbody tr').evaluateAll((rows) => rows.map((r) => [...r.cells].map((c) => c.textContent)));
+  assert.deepEqual(table.map((r) => r[0]), ['Q', 'G', 'V', 'QGV', '순위', '산출 요인', 'Q 축 충족률', 'G 축 충족률', 'V 축 충족률', '순위·후보 자격', '가치 함정 관문']);
+  assert.ok(table.some((r) => r[1] !== r[2]), 'personal values differ from the official ones');
+  const cmpRows = await page.locator(E + ' [data-qgv2w-compare-row]').evaluateAll((r) => r.map((x) => [...x.cells].map((c) => c.textContent)));
+  assert.ok(cmpRows.some((r) => r[1] !== r[2] && r[1] !== '— (—)'), 'some totals move ' + JSON.stringify(cmpRows));
+  // Ranked rows first (personal rank order), unranked — rows last; rank change ▲/▼/0 or — (never a number for an unranked row).
+  const mineRanks = cmpRows.map((r) => (/\((\d+)\)$/.exec(r[2]) || [])[1]).map((x) => (x ? Number(x) : null)), firstNa = mineRanks.indexOf(null);
+  assert.deepEqual(mineRanks.slice(0, firstNa), mineRanks.slice(0, firstNa).map((_, i) => i + 1));assert.ok(mineRanks.slice(firstNa).every((x) => x === null));
+  assert.ok(cmpRows.every((r, i) => (mineRanks[i] === null ? r[3] === '—' : /^(▲\d+|▼\d+|0)$/.test(r[3]))));
+  await page.locator(E + ' [data-qgv2w-company]').selectOption('msft');await page.locator(E + ' [data-qgv2w-company-table="msft"]').waitFor();
+  if (SHOTS) await page.screenshot({ path: SHOTS + '/s13-compare-' + width + '.png', fullPage: false });
+  assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'no horizontal scroll S13 editor');
+  assert.equal(await page.evaluate(() => JSON.stringify(Object.fromEntries(Object.entries(qgvScores().rows).map(([k, r]) => [k, [r.rank, r.primary.total, r.primary.q]])))), officialBefore, 'official result unchanged');
+  phase = 'ED_SAVE';await page.locator('#qgv2w-name').fill('Synthetic two-level');await page.locator(E + ' [data-qgv2w-save]').click();
+  await page.locator(E + ' [data-qgv2w-open]').filter({ hasText: 'Synthetic two-level · v1 · ' }).waitFor();await page.locator(E + ' [data-qgv2w-save]').click();
+  await page.locator(E + ' [data-qgv2w-open]').filter({ hasText: 'Synthetic two-level · v2 · ' }).waitFor();assert.equal(await page.locator(E + ' [data-qgv2w-open]').count(), 1);
+  const stored = await page.evaluate(() => localStorage.getItem(DeviceProfiles.V2_KEY));assert.ok(stored && !/rank|total|price|score/i.test(stored));assert.equal(JSON.parse(stored).schema, 'device-profile-drafts/2');
+  phase = 'ED_REOPEN';await page.reload();await page.locator(E).waitFor();await page.locator(E + ' [data-qgv2w-open]').click();
+  assert.equal(await page.locator('#qgv2w-axis-Q').inputValue(), '60');assert.equal(await page.locator('#qgv2w-inner-Q-q_moat_proxy').inputValue(), '0');assert.equal(await page.locator('#qgv2w-name').inputValue(), 'Synthetic two-level');
+  phase = 'ED_RESET';await page.locator(E + ' [data-qgv2w-reset]').click();assert.equal(await page.locator('#qgv2w-axis-Q').inputValue(), '34');assert.equal(await page.locator('#qgv2w-inner-Q-q_profitability').inputValue(), '25');
+  await page.locator(E + ' [data-qgv2w-remove]').click();assert.equal(await page.locator(E + ' [data-qgv2w-open]').count(), 0);
+  await page.evaluate(() => localStorage.removeItem(DeviceProfiles.V2_KEY));
+  phase = 'ED_DONE';
+}
 const h1Focused = (page) => page.evaluate(() => document.activeElement?.tagName === 'H1' && document.querySelector('#content h1') === document.activeElement);
 const rowIds = (page) => page.locator('[data-leaderboard-row]').evaluateAll((rows) => rows.map((r) => r.dataset.leaderboardRow));
 /* S06 -> S04 -> S06 flow (first frontend flow): ranks over all identities, 'QGV v2 순' default, filter/sort/scroll restored by the
@@ -239,7 +345,7 @@ async function missingFlow(page) {
           assert.match(await gev.locator('[data-leaderboard-qgv2]').textContent(), /^QGV v2 산출 불가 · /);
         }
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'no horizontal scroll S06');
-        if (mode === 'v2') await flow(page, width);
+        if (mode === 'v2') { await flow(page, width);await page.goto(BASE + '#leaderboard');await page.locator('[data-leaderboard-table]').waitFor();await sortFlow(page, width); }
         phase = 'S13';await page.goto(BASE + '#profiles');await page.locator('[data-profile-editor]').waitFor();
         assert.equal(await page.locator('[data-profile-v2] h3').count(),1);
         {assert.equal(await page.locator('[data-v2-official-axis]').count(),3);assert.equal(await page.locator('[data-v2-preset]').count(),4);assert.equal(await page.locator('[data-v2-performance]').getAttribute('data-v2-performance'),'NOT_AVAILABLE');}
@@ -290,6 +396,7 @@ async function missingFlow(page) {
         phase = 'BOUNDARY';const keysAfter = await page.evaluate(() => Object.keys(localStorage).sort());
         assert.deepEqual(keysAfter.filter((k) => !keysBefore.includes(k) && !/google-sheet|sheet-settings/.test(k)), []);
         assert.equal(await page.evaluate(() => Object.keys(localStorage).some((k) => /qgv|price|scor/i.test(k) && !/virtual-trading-v-scores/.test(k))), false);
+        if (mode === 'v2') await editorFlow(page, width);
         if (mode === 'v2') {
           // A star toggled from the S06 list keeps keyboard focus after the list is re-rendered.
           phase = 'STAR_FOCUS';await page.goto(BASE + '#leaderboard');const starButton = page.locator('#leader-company-list [data-star="amd"]');await starButton.focus();await page.keyboard.press('Enter');
