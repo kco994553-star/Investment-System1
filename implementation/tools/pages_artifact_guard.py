@@ -74,7 +74,7 @@ APPROVED_SHA256 = {
     "technical-cards.js": "42bb2d1e8de0997eb8e7a2a3a25441d2ac29b010fb58b5fff1d879ba5eb03aad",
     "leaderboard-screen.js": "442c94720284a79130c52a5306d9c2b25f94daff8cc1ca124e8065cf1b590b30",
     "portfolio-screen.js": "b3488b83540dbdb06377f011984a8bdb27959bc627d8f9836235c2322493b038",
-    "company-screen.js": "96e7ef0d49ef73e4e1156ad9bff682b8a6457fa90db6663c847a3db39c4850eb",
+    "company-screen.js": "c6ad8a4376ca1fd7946900d9a513277c6d8f47e61c475aa97d7c0203a6d07aab",
     "ops-status.js": "bccccba913e0887ee2bb3c38fd61f27fcc2a6d37acb67aeeffea227df422c7a9",
     "type-config-defaults.js": "8b287dde54fb194469bd13d62c356e51eb78c4c04c415eafc6f5091935fed131",
     "private-subset-view.js": "016d74e3e870a404172b0b2e51ee649204cfaf288ee013afd32f0a8e834c17a4",
@@ -134,11 +134,11 @@ APPROVED_SHA256 = {
     "home-screen.js": "09d58f31c5597c2315ffb0699dbc11ce6331294087659bf03eeb063295089432",
     "home-quotes.js": "46487b40e170c3291b023bebcb0fd01da19bb3beb53bfad3006be6377cfe3a96",
     "doodles.js": "413afcb07c5ef5f4edcb0ab544ba61a7d19954db0951ccdf85742c04cf5bb57e",
-    "ia-screens.js": "181c03c0cf256167f1441639e7b243cab3c249b3e1a1956e7da7c6d7b2103a4b",
-    "universe-company.js": "661dd28d2c36b4a9c558084ca271c6fd92276ac18612a83a297f76f6d64919dd",
+    "ia-screens.js": "9c6564dcf2b8dc4506ff6780a412dd3b31f56c141340a72aacda2122376c5c68",
+    "universe-company.js": "d57c8e144a23dad5d21762171815a5eeb03d31492fa49d207abeee4711fadcec",
     "universe-company.css": "5b1b0236290f91c95b7f25d49bc93d032bf1718754c1cfae7789e92bb74b11b8",
-    "stat-radar.js": "8f13d18c77f875e8fcf3a80a0697151b86c80dc47003638895e45f2b8e29ae90",
-    "stat-radar.css": "79965aa89b91b70b38ca74e20972d828daecc16fc27f574adc8cd76c755b179e",
+    "stat-radar.js": "dd82c149d55ed2d783006669877be8b42fd438d47bcbadc82d919963b0bad700",
+    "stat-radar.css": "1e1b1e225aae664dfd872fd0c1154727c2e221854ce6a54a94548bbcc5371c4a",
 }
 ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, COMPANY_NAMES_FILENAME, UNIVERSE_DOMAINS_FILENAME, COMPANY_LOGOS_FILENAME, QGV2_FILENAME, DISCLOSURES_FILENAME, NEWS_SIGNALS_FILENAME} | set(SCREEN_FILENAMES) | set(DART_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024

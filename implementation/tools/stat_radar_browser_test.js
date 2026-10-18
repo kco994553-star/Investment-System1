@@ -87,17 +87,13 @@ function walk(seed, n, end) {
   return out;
 }
 const symbolOf = (code) => code.slice(code.indexOf(':') + 1).replace(/\./g, '-');
-// Independent window metrics on the SPY calendar: a missing close is a gap (no return across it), never filled.
+// Independent window metrics on the SPY calendar (confirmed adjusted basis): a missing close is a gap; a daily return needs both
+// adjacent sessions; volatility needs >= 227 closes and >= 226 valid returns, drawdown >= 227 closes, RS both endpoints + 113/126.
 function metrics(closes, spy, cal) {
   const pts = cal.map((d) => (Object.hasOwn(closes, d) ? closes[d] : null)), sp = cal.map((d) => spy[d]), present = pts.filter((x) => x !== null).length, out = {};
-  // Raw closes: a split-like close-to-close ratio (±3 % of 2, 3, 4, 5, 10 or their inverses, 3/2, 2/3) -> not measured.
-  const ratios = [2, 3, 4, 5, 10, 1 / 2, 1 / 3, 1 / 4, 1 / 5, 1 / 10, 3 / 2, 2 / 3], seq = pts.filter((x) => x !== null);
-  if (seq.some((x, i) => i > 0 && ratios.some((q) => Math.abs(x / seq[i - 1] / q - 1) <= 0.03))) return { price_stability: null, drawdown_defense: null, relative_strength: null };
-  if (present >= 227) {
-    const r = []; for (let i = 1; i < pts.length; i++) if (pts[i] !== null && pts[i - 1] !== null) r.push(pts[i] / pts[i - 1] - 1);
-    const m = mean(r); out.price_stability = Math.sqrt(r.reduce((a, x) => a + (x - m) ** 2, 0) / (r.length - 1)) * Math.sqrt(252);
-    let peak = -Infinity, mdd = 0; for (const x of pts) { if (x === null) continue; peak = Math.max(peak, x); mdd = Math.min(mdd, x / peak - 1); } out.drawdown_defense = mdd;
-  } else { out.price_stability = null; out.drawdown_defense = null; }
+  const r = []; for (let i = 1; i < pts.length; i++) if (pts[i] !== null && pts[i - 1] !== null) r.push(pts[i] / pts[i - 1] - 1);
+  if (present >= 227 && r.length >= 226) { const m = mean(r); out.price_stability = Math.sqrt(r.reduce((a, x) => a + (x - m) ** 2, 0) / (r.length - 1)) * Math.sqrt(252); } else out.price_stability = null;
+  if (present >= 227) { let peak = -Infinity, mdd = 0; for (const x of pts) { if (x === null) continue; peak = Math.max(peak, x); mdd = Math.min(mdd, x / peak - 1); } out.drawdown_defense = mdd; } else out.drawdown_defense = null;
   const t = pts.length - 1, b = t - 126, recent = pts.slice(t - 125).filter((x) => x !== null).length;
   out.relative_strength = pts[t] !== null && pts[b] !== null && recent >= 113 ? (pts[t] / pts[b] - 1) - (sp[t] / sp[b] - 1) : null;
   return out;
@@ -153,6 +149,9 @@ async function checkCommon(page, el, label) {
     for (const k of ['data-sr-unit', 'data-sr-period', 'data-sr-asof', 'data-sr-basis', 'data-sr-population']) assert.ok((await row.getAttribute(k)) !== null, label + ' ' + axis + ' ' + k); }
   const aria = await el.locator('svg[data-sr-svg]').getAttribute('aria-label'); assert.ok(aria.includes('Q 질') && aria.includes('낙폭 방어력') && aria.includes('면적은 점수가 아님'), label + ' aria-label');
   assert.equal(await el.locator('table caption').count(), 1);
+  assert.equal(await el.getAttribute('data-sr-decision'), 'CANDIDATE'); assert.match(await el.locator('[data-sr-axis-set]').textContent(), /후보 축\(커버리지 확인 전\)/);
+  for (const axis of [...AXES, 'margin_stability']) assert.equal(await el.locator('[data-sr-members="' + axis + '"]').count(), 1, label + ' comparison list ' + axis);
+  for (const axis of Object.keys(PRICE)) { const row = el.locator('tr[data-sr-axis="' + axis + '"]'); assert.ok(Number(await row.getAttribute('data-sr-coverage')) >= 0); assert.match(await row.textContent(), /채택 기준 454/); }
   assert.equal(await page.locator('[data-stat-radar] [style], [data-stat-radar][style]').count(), 0, label + ' no inline styles');
   assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), label + ' no horizontal overflow');
 }
@@ -168,6 +167,16 @@ async function checkNoDevice(el, label, financial) {
   for (const axis of ['v', ...Object.keys(PRICE)]) assert.equal(await el.locator('.sr-mark[data-sr-axis="' + axis + '"]').count(), 0, label + ' no vertex for 미산출 ' + axis);
 }
 async function shot(el, name) { if (!SHOTS) return; fs.mkdirSync(SHOTS, { recursive: true }); await el.screenshot({ path: path.join(SHOTS, name + '.png') }); }
+/* A synthetic price snapshot rendered in-page through StatRadar.html ctx.device (RAM only): bases default to TOTAL_RETURN. */
+async function snapshot(page, bars, code, bases) {
+  await page.evaluate(async ({ bars, code, bases }) => {
+    const inputs = await Qgv2Inputs.load(window), series = new Map();
+    for (const [s, c] of Object.entries(bars)) series.set(s, { closes: c, basis: bases[s] || 'TOTAL_RETURN', source: 'SYNTHETIC_TEST', storage: 'TEST_RAM', as_of: Object.keys(c).sort().pop() });
+    let box = document.getElementById('sr-snap'); if (!box) { box = document.createElement('div'); box.id = 'sr-snap'; document.querySelector('main').append(box); }
+    box.innerHTML = StatRadar.html({ code }, { screens: { 'sec-qgv2.json': inputs }, device: { state: 'READY', series, priced: series.size - 1 } });
+  }, { bars, code, bases });
+  return page.locator('#sr-snap [data-stat-radar]');
+}
 const FAKE_STORE = (b) => { const real = window.PriceStore; window.PriceStore = { ...real, status: () => ({ state: 'READY' }), subscribe: () => () => {}, dailyCloses: async (s) => (Object.hasOwn(b, s) ? { ...b[s] } : {}) }; };
 
 (async () => {
@@ -194,12 +203,19 @@ const FAKE_STORE = (b) => { const real = window.PriceStore; window.PriceStore = 
         assert.equal(await el.getAttribute('data-stat-radar'), spec.code ? 'code:' + spec.code : 'target:' + spec.targetId);
         pass += await checkPublic(el, exp, phase); await checkNoDevice(el, phase, exp.subject.r.profile === 'FINANCIAL'); await checkCommon(page, el, phase); pass += 3;
         await shot(el, 'radar-' + kind.toLowerCase() + '-' + width + '-light-nodevice');
+        // Financial detail: the published operating_margin_std_5y_pp (raw %p, FY basis, source) or its missing-data reason.
+        const r = exp.subject.r, want = marginStd(r), hist = ((r.v_inputs_v2 && r.v_inputs_v2.operating_margin_history) || []).map((h) => h.fiscal_year_end).filter(Boolean).sort().slice(-5);
+        if (spec.targetId) await page.goto(BASE + '#analysis/' + encodeURIComponent(spec.targetId) + '/financials');
+        const fd = page.locator(spec.targetId ? '[data-analysis-panel="financials"] [data-sr-margin-detail]' : '[data-universe-card="financials"] [data-sr-margin-detail]');
+        await fd.waitFor({ state: 'attached' }); same(await fd.getAttribute('data-sr-margin-detail'), want, phase + ' financial detail margin std');
+        if (want === null) assert.ok((await fd.getAttribute('data-sr-margin-reason')).length > 3); else { assert.equal(await fd.getAttribute('data-sr-margin-years'), hist.length === 5 ? hist.join(',') : ''); assert.match(await fd.textContent(), /%p/); }
+        assert.match(await fd.textContent(), /sec-qgv2\.json/); pass += 2;
       }
       if (treeCode) {
         phase = width + ' TREE'; await page.goto(BASE + '#tree/qgv'); const el = await radar(page);
         assert.equal(await el.getAttribute('data-sr-subject'), treeCode, 'tree radar uses the tree example row');
         assert.equal(await page.locator('[data-tree-examples="qgv"] [data-example-code]').getAttribute('data-example-code'), treeCode);
-        assert.match(await page.locator('[data-tree-radar-node]').textContent(), /PROVISIONAL|결정됨/);
+        assert.match(await page.locator('[data-tree-radar-node]').textContent(), /후보 축 포함|결정됨/);
         const te = expectPublic(p, { code: treeCode }); pass += await checkPublic(el, te, phase); await checkNoDevice(el, phase, te.subject.r.profile === 'FINANCIAL'); await checkCommon(page, el, phase); pass += 3;
         await shot(el, 'radar-tree-' + width + '-light-nodevice');
       }
@@ -211,63 +227,94 @@ const FAKE_STORE = (b) => { const real = window.PriceStore; window.PriceStore = 
         const m = expectPublic(p, { code: uni.code }).axes.margin_stability; if (m.company.score !== null) assert.equal(await el.locator('.sr-mark[data-sr-series="company"][data-sr-axis="margin_stability"]').count(), 1);
         await el.locator('[data-sr-aux-toggle]').click(); assert.equal(await el.locator('svg[data-sr-svg]').getAttribute('data-sr-axes'), '6'); pass += 3;
       }
-      // 3) Synthetic device bars: SPY, the subject, 7 industry peers, 3 other issuers, one gapped peer (still >= 90 %), one peer
-      //    below the 90 % minimum, one 2:1 unadjusted split and one 100-bar history.
+      // 3) Price data, synthetic bars only (made-up random walks; never real prices, never committed as data).
+      //    (a) The price tab's raw closes (fake PriceStore): every price axis is 미산출 ADJUSTMENT_BASIS_UNCONFIRMED — a raw series
+      //        cannot confirm corporate-action handling, and the jump check never confirms continuity.
+      //    (b) A confirmed TOTAL_RETURN snapshot rendered in-page (StatRadar.html ctx.device, RAM): window, raw values, relative
+      //        scores, group means, the RAW-basis member left out, gaps, few members and a stale window vs independent formulas.
       if (uni) {
         phase = width + ' DEVICE'; const exp = expectPublic(p, { code: uni.code }), ind = exp.gr.industry.m, others = points.filter((x) => x.cik !== uni.cik && !ind.includes(x));
         const chosen = [uni, ...ind.slice(0, 7), ...others.slice(0, 3)], bars = { SPY: walk(7, 320, today) };
         chosen.forEach((x, i) => { bars[symbolOf(x.code)] = walk(1000 + i * 37, 320, today); });
-        const gapped = chosen[2], sparse = ind[7], split = ind[8], short = ind[9], cal = Object.keys(bars.SPY).sort().slice(-252);
-        { const c = bars[symbolOf(gapped.code)]; for (let i = 20; i < 220; i += 10) delete c[cal[i]]; }               // 20 gaps -> 232 present
-        if (sparse) { const c = walk(4321, 320, today); for (let i = 5; i < 120; i += 4) delete c[cal[i]]; bars[symbolOf(sparse.code)] = c; } // 29 gaps -> 223 present, RS window intact
-        if (split) { const c = walk(999, 320, today); for (const d of cal.slice(200)) c[d] = Math.round(c[d] / 2 * 1e4) / 1e4; bars[symbolOf(split.code)] = c; }
+        const cal = Object.keys(bars.SPY).sort().slice(-252), gapped = chosen[2], gapped10 = chosen[3], sparse = ind[7], short = ind[8], mixed = ind[9];
+        { const c = bars[symbolOf(gapped.code)]; for (let i = 20; i < 220; i += 10) delete c[cal[i]]; }                    // 20 isolated gaps: 232 closes, 211 valid returns
+        { const c = bars[symbolOf(gapped10.code)]; for (let i = 20; i < 220; i += 20) delete c[cal[i]]; }                  // 10 isolated gaps: 242 closes, 231 valid returns
+        if (sparse) { const c = walk(4321, 320, today); for (let i = 5; i < 120; i += 4) delete c[cal[i]]; bars[symbolOf(sparse.code)] = c; } // 223 closes
         if (short) bars[symbolOf(short.code)] = walk(77, 100, today);
+        if (mixed) bars[symbolOf(mixed.code)] = walk(555, 320, today);
         await page.goto(BASE + '#company/' + encodeURIComponent(uni.code)); await radar(page);
         const before = await page.evaluate(() => JSON.stringify([Object.keys(localStorage).sort(), Object.keys(sessionStorage).sort()]));
-        // Official QGV rows before the radar reads device data (same accessor, same identities).
         const official = () => page.evaluate(async (codes) => { const inputs = await Qgv2Inputs.load(window); const S = QgvScores.compute({ identities: codes.map((c) => ({ company_id: c, ticker: c.slice(c.indexOf(':') + 1) })), v2Inputs: inputs });
           return JSON.stringify(codes.map((c) => { const d = S.rows[c].primary; return [d.q, d.g, d.v, d.total, S.rows[c].rank]; })); }, chosen.map((x) => x.code));
         const off0 = await official();
-        await page.evaluate(FAKE_STORE, bars);
-        await page.goto(BASE + '#home'); await page.goto(BASE + '#company/' + encodeURIComponent(uni.code));
-        const el = await radar(page, 'READY');
-        const all = [...chosen, ...[sparse, split, short].filter(Boolean)], vals = {}; for (const x of all) vals[x.code] = metrics(bars[symbolOf(x.code)], bars.SPY, cal);
+        // (a) raw closes from the price tab
+        await page.evaluate(FAKE_STORE, bars); await page.goto(BASE + '#home'); await page.goto(BASE + '#company/' + encodeURIComponent(uni.code));
+        { const el = await radar(page, 'READY'); assert.equal(await el.getAttribute('data-sr-basis'), 'RAW');
+          for (const axis of Object.keys(PRICE)) { const c = await cellOf(el, axis, 'company'); assert.equal(c.raw, 'NA', 'raw basis: no raw value ' + axis); assert.equal(c.score, 'NA'); assert.equal(c.reason, 'ADJUSTMENT_BASIS_UNCONFIRMED', 'raw basis -> ' + axis);
+            for (const k of exp.gr.same ? ['industry'] : ['industry', 'sic']) assert.equal((await cellOf(el, axis, k)).reason, 'ADJUSTMENT_BASIS_UNCONFIRMED');
+            assert.match(await el.locator('tr[data-sr-axis="' + axis + '"]').getAttribute('data-sr-storage'), /구글 시트 Prices_D/);
+            assert.match(await el.locator('tr[data-sr-axis="' + axis + '"] th').textContent(), /후보 축\(커버리지 확인 전\)/); }
+          assert.equal(await el.locator('.sr-mark[data-sr-axis="price_stability"]').count(), 0); assert.match(await el.locator('[data-sr-device-line]').textContent(), /비공개 구글 시트 Prices_D/);
+          assert.doesNotMatch(await el.textContent(), /기기 안에서만/); await checkCommon(page, el, phase + ' raw'); await shot(el, 'radar-universe-' + width + '-light-device-raw-unconfirmed'); pass += 5; }
+        // (b) confirmed TOTAL_RETURN snapshot (the mixed member stays RAW)
+        const bases = mixed ? { [symbolOf(mixed.code)]: 'RAW' } : {};
+        const el = await snapshot(page, bars, uni.code, bases);
+        const all = [...chosen, ...[sparse, short].filter(Boolean)], vals = {}; for (const x of all) vals[x.code] = metrics(bars[symbolOf(x.code)], bars.SPY, cal);
         assert.equal(await el.getAttribute('data-sr-window-end'), cal[cal.length - 1], 'window ends at the latest common session');
+        assert.equal(await el.getAttribute('data-sr-stale'), 'CURRENT'); assert.equal(await el.getAttribute('data-sr-basis'), 'TOTAL_RETURN');
         assert.ok((await el.locator('tr[data-sr-axis="price_stability"]').getAttribute('data-sr-period')).startsWith(cal[0] + ' ~ ' + cal[251]), 'window = last 252 SPY sessions');
         assert.ok((await el.locator('tr[data-sr-axis="relative_strength"]').getAttribute('data-sr-period')).startsWith(cal[125] + ' ~ ' + cal[251]), 'RS window = 126 sessions');
-        assert.match(await el.locator('tr[data-sr-axis="price_stability"]').getAttribute('data-sr-basis'), /미수정 종가/);
+        assert.match(await el.locator('tr[data-sr-axis="price_stability"]').getAttribute('data-sr-basis'), /총수익/);
         for (const [axis, dir] of Object.entries(PRICE)) {
           const m = new Map(all.filter((x) => x !== uni && vals[x.code][axis] !== null).map((x) => [x.code, vals[x.code][axis]])), e = rankExpect(dir, m, vals[uni.code][axis], exp.gr);
           pass += await checkAxis(el, axis, e, exp.gr, phase);
-          // Outer = better: the best raw value in the population has the top score.
+          assert.match(await el.locator('tr[data-sr-axis="' + axis + '"] td[data-sr-series="company"]').textContent(), /기기 보유 데이터 내 상대점수/);
           const best = [...m.values(), vals[uni.code][axis]].sort((a, b) => dir * b - dir * a)[0]; if (best === vals[uni.code][axis]) same((await cellOf(el, axis, 'company')).score, 100, phase + ' ' + axis + ' best is outermost');
+          assert.equal(Number(await el.locator('[data-sr-members="' + axis + '"]').getAttribute('data-sr-members-n')), m.size, phase + ' ' + axis + ' comparison list');
+          if (mixed) assert.match(await el.locator('[data-sr-members="' + axis + '"] [data-sr-excluded]').textContent(), new RegExp(symbolOf(mixed.code).replace(/[-.]/g, '\\$&') + ' \\(BASIS_MISMATCH\\)'), 'RAW member left out');
         }
-        // Minimum observations and the split: excluded members are named by their raw-value absence in the population counts.
-        assert.equal(vals[gapped.code].price_stability !== null, true, 'gapped peer (>= 90 %) is measured');
-        if (sparse) assert.equal(vals[sparse.code].price_stability, null, 'sparse peer (< 90 %) is excluded');
-        assert.equal(await el.locator('.sr-mark[data-sr-series="company"][data-sr-axis="price_stability"]').count(), 1, 'priced axis gets a vertex');
-        await checkCommon(page, el, phase);
-        await shot(el, 'radar-universe-' + width + '-light-synthetic-device');
-        // Pure rules in the page: split, basis mismatch, adjusted basis, 90 % minimums, endpoints.
+        assert.equal(vals[gapped.code].price_stability, null, '20 isolated gaps: 211 valid returns < 226 -> volatility not measured');
+        assert.notEqual(vals[gapped.code].drawdown_defense, null, '20 isolated gaps: 232 closes -> drawdown measured');
+        await checkCommon(page, el, phase); await shot(el, 'radar-universe-' + width + '-light-synthetic-total-return');
+        // Gap rule on the pure function: closes and valid returns counted apart; a multi-day move across a gap is no daily return.
+        const gap = await page.evaluate(({ c10, c20, spy }) => { const f = (c) => StatRadar.priceAxes({ basis: 'TOTAL_RETURN', closes: c }, { basis: 'TOTAL_RETURN', closes: spy }).axes; return { a: f(c10), b: f(c20) }; }, { c10: bars[symbolOf(gapped10.code)], c20: bars[symbolOf(gapped.code)], spy: bars.SPY });
+        { const pts = cal.map((d) => bars[symbolOf(gapped10.code)][d] ?? null), seq = pts.filter((x) => x !== null), naive = []; for (let i = 1; i < seq.length; i++) naive.push(seq[i] / seq[i - 1] - 1);
+          const nm = mean(naive), naiveVol = Math.sqrt(naive.reduce((a, x) => a + (x - nm) ** 2, 0) / (naive.length - 1)) * Math.sqrt(252);
+          assert.equal(gap.a.price_stability.closes, 242); assert.equal(gap.a.price_stability.returns, 231); assert.ok(close(gap.a.price_stability.value, vals[gapped10.code].price_stability), 'adjacent-pair volatility');
+          assert.ok(!close(gap.a.price_stability.value, naiveVol), 'gap-spanning moves are not daily returns');
+          assert.equal(gap.b.price_stability.closes, 232); assert.equal(gap.b.price_stability.returns, 211); assert.equal(gap.b.price_stability.reason, 'INSUFFICIENT_SAMPLE');
+          assert.equal(gap.b.drawdown_defense.note, 'MDD_GAPS', 'MDD with gaps says the trough may be missed'); pass += 4; }
+        // Raw value shown while the relative score is 미산출 (population below 8): the subject and 4 peers only.
+        { const few = { SPY: bars.SPY }; for (const x of chosen.slice(0, 5)) few[symbolOf(x.code)] = bars[symbolOf(x.code)];
+          const e2 = await snapshot(page, few, uni.code, {}); const c = await cellOf(e2, 'drawdown_defense', 'company');
+          same(c.raw, vals[uni.code].drawdown_defense, 'raw shown with few members'); assert.equal(c.score, 'NA'); assert.equal(c.reason, 'PEERS_TOO_FEW'); assert.match(c.text, /원값/); assert.match(c.text, /미산출/);
+          assert.equal(await e2.locator('.sr-mark[data-sr-series="company"][data-sr-axis="drawdown_defense"]').count(), 0, 'no vertex without a score'); pass += 2; }
+        // Stale window: every series ends 20 calendar days ago.
+        { const old = new Date(Date.now() - 20 * 864e5).toISOString().slice(0, 10), stale = { SPY: walk(7, 320, old) }; for (const [i, x] of chosen.entries()) stale[symbolOf(x.code)] = walk(1000 + i * 37, 320, old);
+          const e3 = await snapshot(page, stale, uni.code, {}); assert.equal(await e3.getAttribute('data-sr-stale'), 'STALE'); assert.equal(await e3.locator('svg.sr-stale .sr-stale-label').count(), 1);
+          assert.match(await e3.locator('[data-sr-freshness]').textContent(), /STALE/); assert.ok(Number(await e3.locator('[data-sr-freshness]').getAttribute('data-sr-days')) >= 20);
+          await shot(e3, 'radar-universe-' + width + '-light-synthetic-stale'); pass += 2; }
+        await page.evaluate(() => { const b = document.getElementById('sr-snap'); if (b) b.remove(); });
+        // Pure rules: raw / unstated basis, split diagnostic, adjusted bases, mismatch, 90 % minimums, endpoints.
         const rules = await page.evaluate(({ spy, base, splitDay }) => {
-          const S = StatRadar, rs = (o) => Object.fromEntries(Object.entries(o.axes).map(([k, v]) => [k, v.reason]));
+          const S = StatRadar, rs = (o) => Object.fromEntries(Object.entries(o.axes).map(([k, v]) => [k, v.reason])), TR = 'TOTAL_RETURN';
           const cut = (c, n) => { const d = Object.keys(c).sort(), out = { ...c }; for (const x of d.slice(-252, -252 + n)) delete out[x]; return out; };
           const halved = { ...base }; for (const d of Object.keys(base).sort().filter((d) => d >= splitDay)) halved[d] = base[d] / 2;
           const keepRecent = (c, n) => { const d = Object.keys(c).sort().slice(-126), out = { ...c }; for (const x of d.slice(1, 1 + n)) delete out[x]; return out; };
           const noStart = { ...base }; delete noStart[Object.keys(spy).sort().slice(-127)[0]];
-          return { split: rs(S.priceAxes({ basis: 'RAW', closes: halved }, { basis: 'RAW', closes: spy })), splitAdjusted: rs(S.priceAxes({ basis: 'ADJUSTED', closes: halved }, { basis: 'ADJUSTED', closes: spy })),
-            mismatch: rs(S.priceAxes({ basis: 'ADJUSTED', closes: base }, { basis: 'RAW', closes: spy })), min227: rs(S.priceAxes({ basis: 'RAW', closes: cut(base, 25) }, { basis: 'RAW', closes: spy })),
-            min226: rs(S.priceAxes({ basis: 'RAW', closes: cut(base, 26) }, { basis: 'RAW', closes: spy })), rs113: rs(S.priceAxes({ basis: 'RAW', closes: keepRecent(base, 13) }, { basis: 'RAW', closes: spy })),
-            rs112: rs(S.priceAxes({ basis: 'RAW', closes: keepRecent(base, 14) }, { basis: 'RAW', closes: spy })), endpoint: rs(S.priceAxes({ basis: 'RAW', closes: noStart }, { basis: 'RAW', closes: spy })),
-            noSpy: rs(S.priceAxes({ basis: 'RAW', closes: base }, { basis: 'RAW', closes: {} })), hasArea: Object.keys(S).some((k) => /area/i.test(k)) };
+          const ax = (c, b, s = b) => rs(S.priceAxes({ basis: b, closes: c }, { basis: s, closes: spy }));
+          return { raw: ax(base, 'RAW'), split: ax(halved, 'RAW'), unstated: ax(base, 'ADJUSTED'), splitAdj: ax(base, 'SPLIT_ADJUSTED'), trHalved: ax(halved, TR), mismatch: ax(base, TR, 'SPLIT_ADJUSTED'),
+            min227: ax(cut(base, 25), TR), min226: ax(cut(base, 26), TR), rs113: ax(keepRecent(base, 13), TR), rs112: ax(keepRecent(base, 14), TR), endpoint: ax(noStart, TR),
+            noSpy: rs(S.priceAxes({ basis: TR, closes: base }, { basis: TR, closes: {} })), hasArea: Object.keys(S).some((k) => /area/i.test(k)) };
         }, { spy: bars.SPY, base: bars[symbolOf(uni.code)], splitDay: cal[200] });
-        assert.deepEqual(rules.split, { price_stability: 'CORPORATE_ACTION_UNADJUSTED', drawdown_defense: 'CORPORATE_ACTION_UNADJUSTED', relative_strength: 'CORPORATE_ACTION_UNADJUSTED' });
-        assert.deepEqual(rules.splitAdjusted, { price_stability: null, drawdown_defense: null, relative_strength: null }, 'adjusted basis is not split-checked');
-        assert.deepEqual(rules.mismatch, { price_stability: 'BASIS_MISMATCH', drawdown_defense: 'BASIS_MISMATCH', relative_strength: 'BASIS_MISMATCH' });
+        const allOf = (r) => ({ price_stability: r, drawdown_defense: r, relative_strength: r });
+        assert.deepEqual(rules.raw, allOf('ADJUSTMENT_BASIS_UNCONFIRMED'), 'raw basis is unconfirmed even without a jump');
+        assert.deepEqual(rules.split, allOf('CORPORATE_ACTION_UNADJUSTED')); assert.deepEqual(rules.unstated, allOf('ADJUSTMENT_BASIS_UNCONFIRMED'), 'adjusted with no stated basis');
+        assert.deepEqual(rules.splitAdj, allOf(null), 'split-adjusted basis on both sides'); assert.deepEqual(rules.trHalved, allOf(null), 'a confirmed adjusted basis is not jump-checked');
+        assert.deepEqual(rules.mismatch, allOf('BASIS_MISMATCH'));
         assert.equal(rules.min227.price_stability, null); assert.equal(rules.min226.price_stability, 'INSUFFICIENT_SAMPLE'); assert.equal(rules.min226.drawdown_defense, 'INSUFFICIENT_SAMPLE');
         assert.equal(rules.rs113.relative_strength, null); assert.equal(rules.rs112.relative_strength, 'INSUFFICIENT_SAMPLE'); assert.equal(rules.endpoint.relative_strength, 'ENDPOINT_MISSING');
-        assert.equal(rules.noSpy.price_stability, 'SPY_NOT_AVAILABLE'); assert.equal(rules.hasArea, false, 'no area function'); pass += 10;
-        if (split) { const v = await page.evaluate(({ c, s }) => StatRadar.priceAxes({ basis: 'RAW', closes: c }, { basis: 'RAW', closes: s }).axes.price_stability.reason, { c: bars[symbolOf(split.code)], s: bars.SPY }); assert.equal(v, 'CORPORATE_ACTION_UNADJUSTED', 'split peer'); }
+        assert.equal(rules.noSpy.price_stability, 'SPY_NOT_AVAILABLE'); assert.equal(rules.hasArea, false, 'no area function'); pass += 11;
         // Identical industry / SIC member sets are drawn once ("업종 = SIC"): synthetic normalized rows, same SIC and group.
         const once = await page.evaluate(() => { const rec = (i) => ({ state: 'LIVE', in_cross_section: true, cik: String(9000000 + i), profile: 'GENERAL', industry_group: 'manufacturing_industrial_tech', sic: '3674', qg_axes: { Q: { score: 40 + i }, G: { score: 30 + i } }, metrics: { operating_margin_std_5y_pp: 1 + i / 10 }, factors: {}, na_reasons: [] });
           const records = {}; for (let i = 0; i < 9; i++) records['NYSE:SYNT' + i] = rec(i); const box = document.createElement('div'); box.innerHTML = StatRadar.html({ code: 'NYSE:SYNT0' }, { screens: { 'sec-qgv2.json': { as_of: null, records } } });
@@ -283,9 +330,8 @@ const FAKE_STORE = (b) => { const real = window.PriceStore; window.PriceStore = 
           await dp.route('**/*', (r) => (new URL(r.request().url()).origin === ORIGIN ? r.fallback() : r.abort()));
           if (!live) await dp.route('**/sec-qgv2.json*', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(p) }));
           await dp.goto(BASE + '#company/' + encodeURIComponent(uni.code)); await shot(await radar(dp), 'radar-universe-' + width + '-dark-nodevice');
-          await dp.evaluate(FAKE_STORE, bars); await dp.goto(BASE + '#home'); await dp.goto(BASE + '#company/' + encodeURIComponent(uni.code));
-          const d = await radar(dp, 'READY'); await shot(d, 'radar-universe-' + width + '-dark-synthetic-device');
-          await d.locator('[data-sr-aux-toggle]').click(); await shot(d, 'radar-universe-' + width + '-dark-synthetic-device-aux7');
+          const d = await snapshot(dp, bars, uni.code, bases); await shot(d, 'radar-universe-' + width + '-dark-synthetic-total-return');
+          await d.locator('[data-sr-aux-toggle]').click(); await shot(dp.locator('#sr-snap [data-stat-radar]'), 'radar-universe-' + width + '-dark-synthetic-total-return-aux7');
           await dctx.close();
         }
       }
