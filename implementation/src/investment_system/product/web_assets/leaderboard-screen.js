@@ -93,7 +93,7 @@ function mount(host,identities,{publicScreens={},locale,view='default',profiles=
     selector's value and fire its change event, so the app keeps one sort state. Unavailable keys (market cap without the device
     subset) are disabled in the selector with the reason. */
  function sortControls(){const select=doc.getElementById('leader-sort');if(!select)return;const id=SORT_IDS.includes(select.value)?select.value:DEFAULT_SORT,[,key,dir]=sortSpec(id),opp=oppositeSort(id);
-  for(const o of select.options){const off=!sortAvailable(o.value,{deviceRanks});o.disabled=off;if(off&&!o.dataset.na){o.dataset.na='1';o.textContent+=en?' (read the Universe on this device first)':' (내 기기 Universe 읽은 뒤)';}}
+  for(const o of select.options){const off=!sortAvailable(o.value,{deviceRanks});if(!o.dataset.label)o.dataset.label=o.textContent;o.disabled=off;o.textContent=o.dataset.label+(off?(en?' (read the Universe on this device first)':' (내 기기 Universe 읽은 뒤)'):'');}
   const set=v=>{select.value=v;select.dispatchEvent(new Event('change',{bubbles:true}));};
   const box=el('div',undefined,{class:'chips','data-leaderboard-sort':id,role:'group','aria-label':en?'Sort order':'정렬 방향'});
   const turn=el('button',dir===1?(en?'↑ Ascending':'↑ 오름차순'):(en?'↓ Descending':'↓ 내림차순'),{type:'button','data-leaderboard-sort-dir':dir===1?'asc':'desc','aria-label':(en?'Sort direction: ':'정렬 방향: ')+(dir===1?(en?'ascending':'오름차순'):(en?'descending':'내림차순'))+(opp?(en?' (switch)':' (바꾸기)'):'')});
