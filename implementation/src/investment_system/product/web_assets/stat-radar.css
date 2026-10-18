@@ -1,4 +1,4 @@
-/* Stat window radar (stat-radar.js). Hand-drawn on the theme.css paper/chalkboard tokens: red marker = the company (solid line,
+/* Stat window radar (stat-radar.js; outer = better on every axis). Hand-drawn on the theme.css paper/chalkboard tokens: red marker = the company (solid line,
    circles, light fill), QGV blue = industry average (long dashes, squares), technical green = SIC average (short dots, triangles).
    Every series also has its own line style, marker shape and text label, so nothing depends on colour alone. Class-based only
    (CSP style-src 'self'); the SVG scales to the card width; on phones the value table becomes a list. */
@@ -7,7 +7,7 @@
 .stat-radar .sr-layout { display: grid; gap: 12px 24px; grid-template-columns: minmax(0, 1fr); align-items: center; margin: 8px 0 4px; }
 @media (min-width: 900px) { .stat-radar .sr-layout { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); } }
 .stat-radar .sr-figure { margin: 0; min-width: 0; }
-.stat-radar .sr-svg { display: block; width: 100%; max-width: 480px; height: auto; margin: 0 auto; overflow: visible; }
+.stat-radar .sr-svg { display: block; width: 100%; max-width: 520px; height: auto; margin: 0 auto; overflow: visible; }
 .stat-radar .sr-notes { margin: 4px 0 0; text-align: center; font-family: var(--font-hand, cursive); }
 /* grid: pencil rings and spokes; the 50 ring a little stronger, the outer ring drawn in ink */
 .stat-radar .sr-ring, .stat-radar .sr-spoke { fill: none; stroke: var(--sr-grid); stroke-width: 1.2; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
@@ -33,6 +33,10 @@
 .stat-radar .sr-legend { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
 .stat-radar .sr-legend li { display: flex; gap: 8px; align-items: flex-start; min-width: 0; overflow-wrap: anywhere; }
 .stat-radar .sr-legend li[data-sr-legend-state="NOT_AVAILABLE"] { color: var(--muted, #4a4a4a); }
+.stat-radar .sr-aux { margin-top: 12px; padding-top: 10px; border-top: 1.5px dashed var(--line-strong, #6f6f6f); }
+.stat-radar .sr-aux p { margin: 0 0 8px; overflow-wrap: anywhere; }
+.stat-radar .sr-aux-toggle { min-height: 40px; padding: 6px 12px; font: inherit; font-weight: 700; cursor: pointer; }
+.stat-radar .sr-aux-toggle[aria-pressed="true"] { box-shadow: 3px 3px 0 var(--sr-company); }
 /* value table (also the screen-reader table) */
 .stat-radar .sr-table { max-width: 100%; margin-top: 12px; }  /* .table-wrap: pc-layout.css owns the PC table rules (sticky header) */
 .stat-radar .sr-table table { width: 100%; border-collapse: collapse; font-size: var(--fs-s, 13px); }
