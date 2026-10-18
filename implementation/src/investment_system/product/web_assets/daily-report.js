@@ -69,7 +69,7 @@ function buildModel({kind='MOCK',tab='SET_A',reportDate,baseDates={},ledger=null
  return {kind,tab,scoring,report_date:reportDate||null,base_dates:baseDates,started,ledger_state:ledger?ledger.state:'NOT_AVAILABLE',ledger_reasons:ledger?ledger.reason_codes:['LEDGER_NOT_AVAILABLE'],
   start_date:cfg.start_date??null,invest_start:investStart,buy_limit:cfg.buy_limit??null,sell_limit:cfg.sell_limit??null,
   summary:started?ledger.summary:null,last,days:started?ledger.days.slice(-5):[],holdings,executed,orders,cancelled,runner,hits:Array.isArray(hits)?hits:[],
-  buy_total:started?sum(executed,'BUY'):null,sell_total:started?sum(executed,'SELL'):null,ram_state:ram?ram.state:'NOT_AVAILABLE',
+  buy_total:started?sum(executed,'BUY'):null,sell_total:started?sum(executed,'SELL'):null,ram_state:ram?ram.state:'NOT_AVAILABLE',ram_reason:ram&&ram.reason||null,ram_quote_as_of:ram&&ram.quote_as_of||null,
   mode:mode==='REHEARSAL'?'REHEARSAL':'RECORDING',signals:signals||null,rehearsal:mode==='REHEARSAL'&&rehearsal?rehearsal:null,
   bench:bench||null,track:track||null};
 }
@@ -190,11 +190,14 @@ function renderTemplate(m,{hidden=true,guide=true}={}){
 }
 // Numbers in the AI answer that the template does not contain (warning only; the answer is stored as-is).
 function numbersIn(text){return (String(text).match(/\d[\d,]*(?:\.\d+)?/g)||[]).map(x=>x.replace(/,/g,'').replace(/\.0+$/,''));}
+// A pasted answer that still carries the guide (지침 v1) is checked without it: the guide's own rule numbers, quoted banned
+// words and check lines must neither raise nor satisfy a check.
+const withoutGuide=answer=>String(answer).split(GUIDE_A).join('');
 function checkAnswer(answer,template){
- const known=new Set(numbersIn(template)),foreign=[...new Set(numbersIn(answer).filter(n=>!known.has(n)))];
- const missing=CHECK_LINES.filter(l=>!String(answer).includes(l.slice(2)));
- const dateLine=/보고일 (\d{4}-\d{2}-\d{2})/.exec(template),versionOk=String(answer).includes(TEMPLATE_VERSION)&&String(answer).includes(GUIDE_VERSION);
- return {foreign_numbers:foreign,format_ok:missing.length===0&&versionOk,missing_checks:missing,version_ok:versionOk,date_ok:!dateLine||String(answer).includes(dateLine[1])};
+ const a=withoutGuide(answer),known=new Set(numbersIn(template)),foreign=[...new Set(numbersIn(a).filter(n=>!known.has(n)))];
+ const missing=CHECK_LINES.filter(l=>!a.includes(l.slice(2)));
+ const dateLine=/보고일 (\d{4}-\d{2}-\d{2})/.exec(template),versionOk=a.includes(TEMPLATE_VERSION)&&a.includes(GUIDE_VERSION);
+ return {foreign_numbers:foreign,format_ok:missing.length===0&&versionOk,missing_checks:missing,version_ok:versionOk,date_ok:!dateLine||a.includes(dateLine[1])};
 }
 async function hash(text,cryptoImpl){
  const c=cryptoImpl||(typeof crypto!=='undefined'?crypto:null);if(!c||!c.subtle)throw new Error('HASH_UNAVAILABLE');
@@ -206,6 +209,42 @@ function saveAnswer(storage,key,entry){
  const all=answers(storage);all[key]={answer:String(entry.answer).slice(0,200000),saved_at:entry.saved_at,source:entry.source,model:entry.model||null,report_date:entry.report_date||null};
  const keep=Object.entries(all).sort((a,b)=>String(b[1].saved_at).localeCompare(String(a[1].saved_at))).slice(0,MAX_ANSWERS);
  try{storage.setItem(AI_KEY,JSON.stringify(Object.fromEntries(keep)));return true;}catch(_){return false;}
+}
+/* Review before save (directive §9): a pasted answer is parsed and checked first, nothing is stored until the user presses
+   '검토한 답변 보관'. Pure: no storage, no network. Saving (saveAnswer) writes only AI_KEY; holdings, official judgements,
+   virtual ledgers and sheets are never touched by a pasted answer. */
+const SECTION_HEADS=Object.freeze(['## 요약','## ①','## ②','## ③','## ④','## ⑤','## ⑥','## ⑦','## ⑧','## ⑨','## ⑩','## ⑪','## ⑫','## ⑬','## 최종 투자판단','## 각주']);
+// Guide rule 13 (지침 v1): assertive or pushing wording the answer must not use.
+const BANNED_PHRASES=Object.freeze(['반드시','확실히','지금 사야','놓치면']);
+const ANSWER_EFFECTS=Object.freeze({stores:AI_KEY,holdings:false,official_judgements:false,ledgers:false,sheets:false});
+function reviewAnswer(answer,template){
+ const text=withoutGuide(answer),base=checkAnswer(text,template),at=SECTION_HEADS.map(h=>text.indexOf(h));
+ const sections=SECTION_HEADS.map((head,i)=>{
+  if(at[i]<0)return{head,present:false,ai_left:0,first:''};
+  const end=at.filter(j=>j>at[i]).sort((a,b)=>a-b)[0],body=text.slice(at[i],end===undefined?text.length:end);
+  const lines=body.split('\n').slice(1).map(l=>l.trim()).filter(Boolean),rows=lines.filter(l=>l.startsWith('|')&&!/^\|[-|\s]*\|?$/.test(l)).length;
+  const first=(lines.find(l=>!l.startsWith('|'))||(rows?'표 '+rows+'행':'')).slice(0,120);
+  return{head,present:true,ai_left:(body.match(/【AI】/g)||[]).length,first};
+ });
+ const summary=/한 줄 요약:\s*(.+)/.exec(text);
+ return{...base,sections,missing_sections:sections.filter(s=>!s.present).map(s=>s.head),ai_left:(text.match(/【AI】/g)||[]).length,
+  banned_phrases:BANNED_PHRASES.filter(w=>text.includes(w)),summary_line:summary?summary[1].trim().slice(0,200):null,chars:String(answer).length,too_long:String(answer).length>200000,effects:ANSWER_EFFECTS};
+}
+function reviewHtml(r){
+ const li=(id,ok,t)=>'<li data-review-check="'+id+'" data-review-ok="'+(ok===null?'info':ok?'1':'0')+'">'+(ok===null?'· ':ok?'✔ ':'△ ')+esc(t)+'</li>';
+ const present=r.sections.filter(s=>s.present).length;
+ let h='<div data-answer-review-result data-review-format="'+(r.format_ok?'ok':'check')+'"><h3>붙여넣은 답변 검토 <span class="badge STALE">아직 보관 전</span></h3><ul class="small" data-review-checks>'
+  +li('format',r.format_ok,r.format_ok?'형식 확인됨(점검 4줄·버전 표기)':'형식 확인 필요 · 빠진 점검 '+r.missing_checks.length+'줄'+(r.version_ok?'':' · 템플릿 v1·지침 v1 표기 없음'))
+  +li('date',r.date_ok,r.date_ok?'보고일 일치':'보고일이 템플릿과 다름')
+  +li('numbers',!r.foreign_numbers.length,r.foreign_numbers.length?'템플릿에 없는 숫자 '+r.foreign_numbers.length+'개: '+r.foreign_numbers.slice(0,12).join(', ')+(r.foreign_numbers.length>12?' …':''):'템플릿에 없는 숫자 없음')
+  +li('sections',!r.missing_sections.length,'절 '+present+'/'+r.sections.length+(r.missing_sections.length?' · 빠진 절: '+r.missing_sections.map(s=>s.slice(3)).join(', '):''))
+  +li('phrases',!r.banned_phrases.length,r.banned_phrases.length?'단정·권유 표현: '+r.banned_phrases.join(', '):'단정·권유 표현 없음')
+  +li('ai',null,'【AI】 표시 '+r.ai_left+'개 남음(채우지 않은 칸일 수 있음)')
+  +(r.too_long?li('length',false,'200,000자를 넘는 부분은 보관하지 않습니다'):'')+'</ul>';
+ h+='<details data-review-preview open><summary>해석 미리보기</summary>'+(r.summary_line?'<p data-review-summary-line>'+esc('한 줄 요약: '+r.summary_line)+'</p>':'')
+  +'<ul class="small" data-review-sections>'+r.sections.map(s=>'<li data-review-section="'+esc(s.head.slice(3))+'" data-review-present="'+(s.present?'1':'0')+'">'+esc(s.head.slice(3)+' · '+(s.present?(s.first||'(내용 없음)'):'없음'))+'</li>').join('')+'</ul></details>';
+ return h+'<p class="small" data-review-effects>보관하면 이 브라우저의 \'AI 해석\' 칸에만 저장됩니다. 실제 보유(ACTUAL)·공식 판단·가상 장부·구글 시트는 바뀌지 않습니다. 경고가 있어도 보관할 수 있으며, 경고는 보관 뒤에도 표시됩니다.</p>'
+  +'<div class="sheet-actions"><button type="button" data-review-cancel>보관하지 않고 다시 붙여넣기</button></div></div>';
 }
 /* Mailbox (template §8, GSQ-019 pending): the user's own sheet, tabs ReportInbox / ReportOutbox. Default OFF.
    Inbox row: created_at | report_date | kind | template_version | sha256 | data_sha256 | status(NEW) | template.
@@ -287,7 +326,136 @@ function dashboardCard(m,{locale='ko-KR'}={}){
   +D.series.map(x=>'<tr data-bench-series-row="'+esc(x.key)+'" data-bench-series-state="'+esc(x.state)+'"><td>'+(RB?RB.swatchSvg(x.key,x.key===target):'')+esc(seriesName(x.key,locale)+(x.key===target?' · 대상':''))+'</td><td>'+esc(x.return===null?NA:pct(x.return))+'</td><td class="small">'+esc(seriesState(x,locale))+'</td></tr>').join('')+'</tbody></table></div>';
  return h+'<p class="small">'+esc('S&P 500은 SPY 일봉. 결측 종가·환율은 보간하지 않고 선을 끊습니다. 지수와 수익률은 %라 금액 숨김 대상이 아닙니다. 위험지표(MDD·변동성 등)는 아직 연결 전(N/A)입니다.')+'</p></section>';
 }
+/* ---------- 보고 불가 (directive §9): reason (existing codes, Korean labels) → minimum missing inputs → copyable prompt.
+   Built only from the model's states, reason codes, dates, versions and counts: never an amount, quantity, return or P&L,
+   and never a filled number. Template v1 and its export are unchanged. ---------- */
+const NEED=Object.freeze({
+ START_DATE:['USER','가상매매 시작일(사용자 결정 D-13)'],FIRST_SESSION:['WAIT','가상매매 시작일 이후 첫 완료 거래일(NYSE 정규장 마감 뒤 생김)'],
+ SIGN_IN:['USER','구글 로그인(설정 → Google 첫 설정) · 비공개 가격 Worker 접근에 필요'],WORKER:['SYSTEM','비공개 가격 Worker 설정·허용 주소'],
+ PRICES:['USER','기기 가격: 완료 거래일 종가(날짜 명시)'],FX:['USER','같은 거래일의 원/달러 환율(KRW=X)'],SESSIONS:['USER','S&P 500(SPY) 일봉 · 거래일 달력'],
+ HOLDINGS:['USER','기기 실제 보유(ACTUAL): 종목·수량 입력(포트폴리오 → 실제 보유)'],TARGET:['SYSTEM','목표 비중(TARGET) 공개 카탈로그'],CATALOG:['SYSTEM','공개 카탈로그(actual-catalog.json)'],
+ SET_DEF:['USER','세트 구성(내 구글 시트 VirtualMeta의 세트 정의)'],SHEET:['USER','내 구글 시트 연결(설정 → Google 첫 설정)'],LEDGER:['USER','가상 장부 기록(내 구글 시트의 장부 행)'],
+ QG_SNAPSHOT:['SYSTEM','해당 거래일 Q·G 스냅샷(공개 전진 검증 장부)'],FORWARD_LEDGER:['SYSTEM','공개 전진 검증 장부 게시'],SAMPLES:['WAIT','적중률 표본 30건(가상 체결이 쌓이면 생김)'],LEDGER_DAYS:['WAIT','가상 장부 거래일이 비교 기간만큼 쌓이는 시간'],
+ SIC:['SYSTEM','업종군(SIC v0)별 목표 대비 실제 구성 연결'],CONTRIB:['SYSTEM','종목별 성과기여 계산 연결'],TA:['SYSTEM','기술적 분석 지표 연결'],
+ MACRO:['SYSTEM','거시 국면 매핑 채택(사용자 결정 대기)'],DRIVER:['SYSTEM','Portfolio Driver 노출·기여 계산 연결'],RISK:['SYSTEM','위험지표(MDD·변동성) 계산 연결'],BENCH:['SYSTEM','⑪⑫⑬ 비교 계산 결과(S&P 500·환율 일봉 기반)'],QGV:['SYSTEM','보유 종목의 QGV v2 점수(공개 화면)']});
+const NEED_KIND=Object.freeze({USER:'사용자 입력',WAIT:'기다림',SYSTEM:'시스템 연결 전',CHECK:'사유 확인'});
+const CODE_NEED=Object.freeze({START_DATE_NOT_SET:'START_DATE',BEFORE_START_DATE:'FIRST_SESSION',NO_SESSION_ON_OR_AFTER_START:'FIRST_SESSION',NO_SESSION_AFTER_RECORDED:'FIRST_SESSION',SESSION_NOT_AVAILABLE:'FIRST_SESSION',
+ AUTH_REQUIRED:'SIGN_IN',AUTH_FORBIDDEN:'SIGN_IN',AUTH_FAILED:'SIGN_IN',AUTH_UNAVAILABLE:'SIGN_IN',OFF:'WORKER',CONFIG_UNAVAILABLE:'WORKER',ORIGIN_UNAPPROVED:'WORKER',ORIGIN_FORBIDDEN:'WORKER',REQUEST_INVALID:'WORKER',
+ DATA_PRICE_MISSING:'PRICES',HISTORY_UNAVAILABLE:'PRICES',HISTORY_FORMAT_INVALID:'PRICES',EXEC_PRICE_MISSING:'PRICES',INITIAL_VALUE_NOT_AVAILABLE:'PRICES',WEIGHTS_NOT_AVAILABLE:'PRICES',VALUATION_NOT_AVAILABLE:'PRICES',
+ INPUTS_INCOMPLETE:'PRICES',YAHOO_UNAVAILABLE:'PRICES',RATE_LIMITED:'PRICES',READ_FAILED:'PRICES',PRICE_NOT_ALIGNED:'PRICES',HISTORY_INSUFFICIENT:'PRICES',
+ DATA_FX_MISSING:'FX',EXEC_FX_MISSING:'FX',INITIAL_COST_FX_MISSING:'FX',SESSIONS_NOT_AVAILABLE:'SESSIONS',NO_ACTUAL:'HOLDINGS',ACTUAL_INVALID:'HOLDINGS',
+ TARGET_NOT_AVAILABLE:'TARGET',TARGET_CATALOG_INVALID:'TARGET',PUBLIC_CATALOG_UNAVAILABLE:'CATALOG',SET_NOT_DEFINED:'SET_DEF',SET_B_NOT_DEFINED:'SET_DEF',SET_INVALID:'SET_DEF',SET_B_INVALID:'SET_DEF',
+ NOT_CONNECTED:'SHEET',LEDGER_NOT_AVAILABLE:'LEDGER',SHEET_NOT_LOADED:'LEDGER',SHEET_NOT_READY:'LEDGER',SHADOW_NOT_STARTED:'LEDGER',DATA_SNAPSHOT_MISSING:'QG_SNAPSHOT',WAITING_FOR_QG_RECORD:'QG_SNAPSHOT',
+ LEDGER_UNREACHABLE:'FORWARD_LEDGER',LEDGER_NOT_PUBLISHED:'FORWARD_LEDGER',LEDGER_INVALID:'FORWARD_LEDGER',INSUFFICIENT_SAMPLE:'SAMPLES',
+ // ReportBenchmarks (⑪⑫⑬)
+ SAMPLE_BELOW_MINIMUM:'SAMPLES',WINDOW_NOT_ELAPSED:'SAMPLES',NO_TRADES:'SAMPLES',NO_SESSION_BEFORE_START:'FIRST_SESSION',HISTORY_TOO_SHORT:'PRICES',PERIOD_BEFORE_LEDGER_START:'LEDGER_DAYS',
+ BASE_CLOSE_MISSING:'PRICES',LAST_CLOSE_MISSING:'PRICES',CLOSE_MISSING:'PRICES',PRICE_OR_BENCHMARK_MISSING:'PRICES',BASE_FX_MISSING:'FX',LAST_FX_MISSING:'FX',FX_MISSING:'FX',FX_NOT_AVAILABLE:'FX',
+ BASE_VALUE_MISSING:'LEDGER',LAST_VALUE_MISSING:'LEDGER',VALUE_MISSING:'LEDGER',NO_COMPARABLE_PERIOD:'LEDGER_DAYS'});
+// Progress states, not causes: never listed as a reason.
+const NOT_A_CAUSE=new Set(['NOT_REQUESTED','RUNNER_LOADING','CANCELED','OK','READY']);
+const AREAS=Object.freeze([['summary','요약'],['1','① 전체 투자장부'],['2','② 포트폴리오 구성'],['3','③ 전 종목 장부'],['4','④ 성과기여'],['5','⑤ QGV'],['6','⑥ 기술적 분석'],['7','⑦ 거시환경'],
+ ['8','⑧ 뉴스·경쟁기업·산업'],['9','⑨ Portfolio Driver'],['10','⑩ 행동요령·가상 장부'],['11','⑪ 누적 검증'],['12','⑫ 기간별 성과'],['13','⑬ 성과·위험']]);
+const uniq=a=>[...new Set(a.filter(c=>c&&!NOT_A_CAUSE.has(c)))];
+function ledgerCodes(m){const r=m.runner||{},bad=(Array.isArray(r.sources)?r.sources:[]).filter(x=>x.state!=='OK').map(x=>x.code||x.state);return uniq([...(m.ledger_reasons||[]),...(r.reason_codes||[]),...bad]);}
+const codeKo=c=>(VT.codeLabel(c,'ko-KR')||(RB&&RB.codeLabel(c,'ko-KR'))||'라벨 없는 사유')+'('+c+')';
+/* Per-area state from the model: OK | PARTIAL | UNAVAILABLE | AI (⑧ is written by the AI from dated, sourced searches). */
+function unavailability(m){
+ const L=ledgerCodes(m),real=m.kind==='REAL',H=m.holdings||[],B=m.bench,D=B&&B.dashboard,T=m.track;
+ const ledger=()=>m.started?{}:{codes:L.length?L:['LEDGER_NOT_AVAILABLE']},noBench=()=>m.started?{needs:['BENCH']}:ledger();
+ const holdingsCodes=real?uniq([m.ram_reason||'NO_ACTUAL']):(L.length?L:['LEDGER_NOT_AVAILABLE']);
+ const scored=H.filter(h=>num(h.total)).length;
+ const spec={summary:ledger(),'1':ledger(),'2':{needs:['SIC']},'3':H.length?{}:{codes:holdingsCodes},'4':{codes:m.started?[]:ledger().codes,needs:['CONTRIB']},
+  '5':!H.length?{codes:holdingsCodes}:!scored?{needs:['QGV']}:scored<H.length?{partial:true,needs:['QGV']}:{},'6':{needs:['TA']},'7':{needs:['MACRO']},'8':{ai:true},'9':{needs:['DRIVER']},'10':ledger(),
+  '11':T&&Array.isArray(T.windows)&&T.windows.length?(T.windows.some(w=>w.state==='OK')?{}:{codes:uniq(T.windows.map(w=>w.state==='INSUFFICIENT_SAMPLE'?'INSUFFICIENT_SAMPLE':w.reason||w.state))}):noBench(),
+  '12':B?(B.state==='OK'?{}:{codes:[B.reason||'NO_COMPARABLE_PERIOD']}):noBench(),
+  '13':D&&D.state==='OK'?{partial:true,needs:['RISK']}:B?{codes:[(D&&D.reason)||B.reason||'NO_COMPARABLE_PERIOD'],needs:['RISK']}:{codes:noBench().codes||[],needs:[...(noBench().needs||[]),'RISK']}};
+ const areas=AREAS.map(([id,name])=>{const s=spec[id],codes=s.codes||[],needs=s.needs||[];
+  const state=s.ai?'AI':codes.length||(needs.length&&!s.partial)?'UNAVAILABLE':s.partial?'PARTIAL':'OK';
+  return{id,name,state,codes,needs,sentence:areaSentence(name,state,codes,needs,{scored,total:H.length})};});
+ const loading=!!(m.runner&&m.runner.state==='LOADING');
+ const whole=!m.started&&!H.length;
+ const reportCodes=whole?uniq([...(real?holdingsCodes:[]),...L]):[];
+ const blocked=areas.filter(a=>a.state==='UNAVAILABLE'||a.state==='PARTIAL');
+ return{state:loading?'LOADING':whole?'UNAVAILABLE':blocked.length?'PARTIAL':'OK',report_codes:reportCodes,
+  sentence:whole?'오늘 '+KINDS[m.kind].ko+'를 만들 수 없습니다: '+(reportCodes.length?reportCodes.map(codeKo).join(', '):'사유 코드 없음')+'. 숫자는 채우지 않습니다.'
+   :blocked.length?'일부 영역('+blocked.length+'개)은 만들 수 없거나 일부만 계산됩니다. 해당 칸은 N/A로 두고 숫자를 채우지 않습니다.':'모든 영역을 계산했습니다.',
+  areas,missing:missingInputs(m,blocked)};
+}
+function areaSentence(name,state,codes,needs,{scored,total}){
+ if(state==='OK')return name+': 계산됨.';if(state==='AI')return name+': AI가 날짜·출처가 있는 외부 정보로만 씁니다(검색 불가 시 "외부 정보 확인 불가").';
+ const parts=[];if(codes.length)parts.push(codes.map(codeKo).join(', ')+' 때문에 만들 수 없습니다');
+ if(state==='PARTIAL'&&needs.includes('QGV'))parts.push('QGV v2 총점은 '+scored+'/'+total+'종목만 산출됐습니다');
+ else if(state==='PARTIAL'&&needs.includes('RISK'))parts.push('수익률 비교는 계산됐고, 위험지표는 아직 앱 계산에 연결되지 않았습니다');
+ else if(needs.some(k=>NEED[k][0]==='SYSTEM'))parts.push('아직 앱 계산에 연결되지 않아 N/A로 둡니다');
+ return name+': '+parts.join('. ')+'.';
+}
+// Minimum missing inputs for the given areas, de-duplicated, in a fixed order (user inputs first). Unknown codes stay verbatim.
+function missingInputs(m,areas){
+ const byKey=new Map(),add=(key,code)=>{const e=byKey.get(key)||{key,kind:key.startsWith('CODE:')?'CHECK':NEED[key][0],codes:[]};if(code&&!e.codes.includes(code))e.codes.push(code);byKey.set(key,e);};
+ for(const a of areas){for(const c of a.codes)add(CODE_NEED[c]||('CODE:'+c),c);for(const n of a.needs)add(n,null);}
+ const r=m.runner||{},symbols=(Array.isArray(r.sources)?r.sources:[]).filter(x=>x.state!=='OK'&&CODE_NEED[x.code||x.state]==='PRICES').map(x=>x.symbol);
+ const base=m.base_dates&&Object.keys(m.base_dates).length?Object.entries(m.base_dates).map(([k,v])=>k+' '+v).join(' · '):null;
+ const order=['USER','WAIT','CHECK','SYSTEM'];
+ return [...byKey.values()].sort((a,b)=>order.indexOf(a.kind)-order.indexOf(b.kind)).map(e=>{
+  let text=e.kind==='CHECK'?'사유 코드 '+e.codes[0]+' 확인(라벨 없는 코드는 그대로 둠)':NEED[e.key][1];
+  if(e.key==='PRICES')text='기기 가격: '+(base?base+' 기준':'보고일 '+(m.report_date||NA)+' 직전')+' 완료 거래일 종가'+(symbols.length?' · '+symbols.slice(0,12).join(', ')+(symbols.length>12?' 외 '+(symbols.length-12)+'개':''):'')+(m.ram_quote_as_of?' · 이 기기 시세 기준 '+m.ram_quote_as_of:'');
+  if(e.key==='FIRST_SESSION'&&m.start_date)text+=' · 시작일 '+m.start_date;
+  return{key:e.key,kind:e.kind,kind_ko:NEED_KIND[e.kind],text,codes:e.codes};});
+}
+function availableInputs(m){
+ const H=m.holdings||[],out=[],withTarget=H.filter(h=>num(h.target_weight)).length,scored=H.filter(h=>num(h.total)).length,r=m.runner||{},src=Array.isArray(r.sources)?r.sources:[];
+ if(H.length)out.push((m.kind==='REAL'&&!m.started?'실제 보유(ACTUAL, 이 기기) ':'')+H.length+'종목 · 종목명·비중(금액·수량 제외)');
+ if(withTarget)out.push('목표 비중(TARGET) '+withTarget+'종목');
+ if(H.length)out.push('QGV v2 총점 '+scored+'/'+H.length+'종목');
+ if(m.started)out.push('가상 장부 '+m.days.length+'거래일 표시분 · 오늘 가상 체결 '+m.executed.length+'건');
+ if(src.length)out.push('시세 '+src.filter(x=>x.state==='OK').length+'/'+src.length+' 사용 가능');
+ const B=m.bench;if(B&&Array.isArray(B.periods)){const ok=B.periods.filter(p=>p.state==='OK').map(p=>periodName(p.period));if(ok.length)out.push('⑫ 비교 가능 기간: '+ok.join(', '));}
+ const T=m.track;if(T&&Array.isArray(T.windows)){const ok=T.windows.filter(w=>w.state==='OK').map(w=>'D+'+w.window);if(ok.length)out.push('⑪ 적중률 계산 창: '+ok.join(', '));}
+ return out;
+}
+function sourceLines(m){
+ return ['가격·환율·S&P 500 일봉: 비공개 가격 Worker(구글 로그인) → 이 기기 메모리 · 저장·전송 없음','목표 비중: 공개 카탈로그(actual-catalog.json, TARGET v0)','QGV: 공개 화면 점수 v2(SEC 공시 기반, PROVISIONAL)',
+  ...(m.kind==='REAL'?['실제 보유: 이 기기 입력(ACTUAL) · 금액·수량은 이 프롬프트에 넣지 않음']:[]),'가상 장부·세트 구성: 내 구글 시트(연결했을 때만)','판단 규칙: 가상매매 규칙 v1(PROVISIONAL) · 사유 코드 사전 D-19'];
+}
+/* The copyable prompt: 대상·기간·버전·가용 자료·누락 자료·출처·계산 가능 범위 + an explicit no-invention instruction. */
+function unavailablePrompt(m,{area=null}={}){
+ const u=unavailability(m),picked=area?u.areas.filter(a=>a.id===area):u.areas,blocked=picked.filter(a=>a.state==='UNAVAILABLE'||a.state==='PARTIAL');
+ const missing=area?missingInputs(m,blocked):u.missing,base=Object.entries(m.base_dates||{}).map(([k,v])=>k+' '+v).join(' · ')||NA;
+ const target=(m.kind==='REAL'?'투자 일일보고서 · 내 실제 포트폴리오(그림자 장부는 "규칙대로 했다면"의 가상 기록)':'모의투자 일일보고서 · '+(TABS[m.tab]||m.tab)+' 가상 장부(실제 자금 아님)')+(area&&picked[0]?' · 영역 '+picked[0].name:'');
+ const avail=availableInputs(m),L=[];
+ L.push('[Investment-System1 · 보고 불가 확인 프롬프트 · '+TEMPLATE_VERSION+' · '+GUIDE_VERSION+']','',
+  '너는 Investment-System1의 해석 보조자다. 아래 보고서는 '+(u.state==='UNAVAILABLE'?'지금 만들 수 없다':'일부 영역을 만들 수 없다')+'. 투자 자문이나 매매 지시를 하지 않는다.',
+  '자료가 없는 수익률·손익·평가액·기여도·적중률·점수·가격을 추정하거나 만들지 마라. 없는 값은 "계산 불가(누락: …)"로 쓰고, 아래에 적힌 사실만 사용한다.','',
+  '대상: '+target,
+  '기간: 보고일 '+(m.report_date||NA)+' · 기준 완료 거래일 '+base+' · 가상매매 시작일 '+(m.start_date||'미정')+(m.kind==='REAL'?' · 투자 시작일 '+(m.invest_start||NA):''),
+  '버전: '+TEMPLATE_VERSION+' · '+GUIDE_VERSION+' · 포트폴리오 v1.1 · '+scoringText()+' · 가상매매 규칙 v1(PROVISIONAL) · '+(m.mode==='REHEARSAL'?'리허설 · 기록 없음':'기록 모드'),
+  '상태: '+(area&&picked[0]?picked[0].sentence:u.sentence),'',
+  '가용 자료(값이 아니라 항목만 적음, 금액·수량 없음):',...(avail.length?avail.map(x=>'- '+x):['- 없음']),'',
+  '누락 자료(최소 입력):',...(missing.length?missing.map(x=>'- ['+x.kind_ko+'] '+x.text+(x.codes.length?' ('+x.codes.join(', ')+')':'')):['- 없음']),'',
+  '출처:',...sourceLines(m).map(x=>'- '+x),'',
+  '계산 가능 범위:',...picked.map(a=>'- '+(a.state==='OK'?'가능':a.state==='PARTIAL'?'일부':a.state==='AI'?'AI 작성':'불가')+' · '+a.sentence),'',
+  '요청:','1. 계산 가능 범위 안에서 확인되는 사실만 짧게 정리한다. 위에 없는 숫자는 쓰지 않는다.',
+  '2. 누락 자료마다 내가 준비할 최소 입력을 체크리스트로 돌려준다: 무엇을, 어느 날짜 기준으로, 어디에서.',
+  '3. 누락 자료가 필요한 수익률·손익·평가액은 "계산 불가(누락: …)"로만 쓴다. 대체 추정치·가정값을 만들지 않는다.',
+  '4. 실제 계좌 매수·매도 권유를 쓰지 않는다. 한국어, 중립적, 짧게.');
+ return L.join('\n')+'\n';
+}
+function unavailableCard(m){
+ const u=unavailability(m);if(u.state==='OK'||u.state==='LOADING')return '';
+ const whole=u.state==='UNAVAILABLE',shown=u.areas.filter(a=>a.state==='UNAVAILABLE'||a.state==='PARTIAL');
+ let h='<section class="card" data-report-unavailable data-unavailable-state="'+u.state+'"><h2>'+(whole?'보고 불가':'일부 영역 보고 불가 · '+shown.length+'개')+' <span class="badge NOT_AVAILABLE">숫자를 채우지 않음</span></h2>'
+  +'<p data-unavailable-reason>'+esc(u.sentence)+'</p>';
+ h+='<h3>빠진 최소 입력</h3><ul data-unavailable-missing>'+(u.missing.length?u.missing.map(x=>'<li data-missing-key="'+esc(x.key)+'" data-missing-kind="'+x.kind+'"><span class="badge">'+esc(x.kind_ko)+'</span> '+esc(x.text)+(x.codes.length?' <span class="small">'+esc(x.codes.join(', '))+'</span>':'')+'</li>').join(''):'<li>없음</li>')+'</ul>';
+ h+='<details data-unavailable-areas'+(whole?'':' open')+'><summary>영역별 사유 ('+shown.length+')</summary><ul class="small">'+shown.map(a=>'<li data-unavailable-area="'+a.id+'" data-area-state="'+a.state+'">'+esc(a.sentence)+' <button type="button" data-unavailable-copy="'+a.id+'">이 영역 프롬프트</button></li>').join('')+'</ul></details>';
+ h+='<label for="unavailable-prompt">복사용 프롬프트 <span class="small" data-unavailable-scope>· 전체</span></label><textarea id="unavailable-prompt" data-unavailable-prompt readonly rows="8">'+esc(unavailablePrompt(m))+'</textarea>'
+  +'<div class="sheet-actions"><button type="button" data-unavailable-copy="all">전체 프롬프트 복사</button></div>'
+  +'<p class="small">프롬프트에는 대상·기간·버전·가용 자료·누락 자료·출처·계산 가능 범위만 들어가고 금액·수량·수익률은 들어가지 않습니다. 자료 없는 수익률·손익을 만들지 말라는 지시가 포함됩니다. 직접 복사할 때만 기기 밖으로 나갑니다.</p><p role="status" data-unavailable-status></p></section>';
+ return h;
+}
+// The model of the S17 screen painted last (RAM only): the review and the 보고 불가 buttons read it on click.
+let current=null;
 function screenHtml(m,{hidden=true,answer=null,check=null,locale='ko-KR'}={}){
+ current=m;
  const H={hidden,mode:'screen'},s=m.summary,en=locale==='en-US',kindName=KINDS[m.kind][en?'en':'ko'];
  const base=Object.entries(m.base_dates||{}).map(([k,v])=>k+' '+v).join(' · ')||NA;
  const tabs=m.kind==='MOCK'?(Array.isArray(m.tabs)?m.tabs:[...MOCK_TABS]):['REAL'];
@@ -307,6 +475,7 @@ function screenHtml(m,{hidden=true,answer=null,check=null,locale='ko-KR'}={}){
   +(vp?'<p class="small" data-v-progress data-v-state="'+esc(sig.v_progress.state)+'">'+esc(vp+' · V 기울기(D-21)는 첫 기록 뒤 20거래일부터 · 이 기기에만 V 점수 저장(가격 없음)')+'</p>':'')
   +(cap?'<p class="small" data-v-capture="'+esc(cap.state)+'">'+esc(cap.state==='RECORDED'?'오늘 V 기록: '+cap.date+' · '+cap.added.length+'개 기업':'오늘 V 기록 없음 · '+(cap.reason?VT.codeText(cap.reason):NA))+'</p>':'')+(cap&&cap.v2?'<p class="small" data-v2-capture="'+esc(cap.v2.state)+'">'+esc(cap.v2.state==='RECORDED'?'오늘 v2 V 기록: '+cap.v2.date+' · '+cap.v2.added.length+'개 기업':'v2 V 기록 없음 · 오늘 완료된 미국 거래일과 같은 공시 입력·V 요인을 확인합니다.')+'</p>':'')+'</section>';
  h+=inputsCard(m.runner);
+ const blocked=unavailableCard(m);if(!m.started&&!(m.holdings||[]).length)h+=blocked;
  h+='<section class="card" data-report-ai-summary><h2>오늘의 요약 <span class="badge">AI 해석</span></h2>'+(answer?'<pre class="ai-answer" data-ai-answer>'+esc(answer.answer)+'</pre><p class="small">'+esc((answer.model?answer.model+' · ':'')+'보관 '+(answer.saved_at||'')+' · '+(answer.source==='MAILBOX'?'우체통':'붙여넣기'))+'</p>':'<p data-rule-summary>'+esc('【규칙】 '+ruleSummary(m))+'</p>')
   +(check?'<p class="badge '+(check.format_ok?'LIVE':'NOT_AVAILABLE')+'" data-answer-format>'+esc(check.format_ok?'형식 확인됨':'형식 확인 필요')+'</p>'+(check.foreign_numbers.length?'<p class="badge STALE" data-foreign-numbers>'+esc('템플릿에 없는 숫자 '+check.foreign_numbers.length+'개')+'</p>':''):'')
   +'<p class="small">숫자는 앱 계산, 문장은 붙여넣은 AI 해석입니다. AI 해석이 없으면 규칙 문장으로 대신 채웁니다.</p></section>';
@@ -325,18 +494,55 @@ function screenHtml(m,{hidden=true,answer=null,check=null,locale='ko-KR'}={}){
  if(s)h+='<p class="small">'+esc('가상 현금 '+money(s.cash,H)+' · 실현손익 '+money(s.realized_pnl,H)+' · 미실현손익 '+money(s.unrealized_pnl,H))+'</p>';
  h+='<p class="small">체결은 다음 완료 정규장 종가 가정입니다. 가상 매도대금은 가상 현금으로 가며 다음 날 한도를 늘리지 않습니다. 이 장부는 실제 평가액과 합산하지 않습니다. 주문 기능은 없습니다.</p></section>';
  h+='<section class="card" data-report-section="rest"><h2>①②④⑤⑥⑦⑧⑨</h2><p>'+esc('이 절들은 보고서 템플릿 내보내기에 같은 순서로 들어갑니다. 연결되지 않은 값은 N/A로 표시합니다.')+'</p></section>';
+ if(m.started||(m.holdings||[]).length)h+=blocked;
  h+=trackCard(m,{hidden,locale})+periodsCard(m,{locale})+dashboardCard(m,{locale});
  h+='<section class="card" data-report-export><h2>AI 해석 받기 <span class="badge">템플릿 v1</span></h2><p>숫자가 모두 채워진 보고서 템플릿과 \'AI 해석 지침 v1\'을 함께 복사합니다. AI는 【AI】 칸만 채워 같은 형식으로 돌려줍니다.</p>'
   +'<label class="toggle"><input type="checkbox" data-hide-amounts-export'+(hidden?' checked':'')+'> 금액 숨김 <span class="small">· 기본 켜짐, 금액은 [숨김]·한도 대비 %로</span></label>'
   +'<label class="toggle"><input type="checkbox" data-include-guide checked> 지침 포함 <span class="small">· 프로젝트 지침에 넣어 두었다면 끄기</span></label>'
   +'<div class="sheet-actions"><button type="button" data-export-template>보고서 템플릿 내보내기</button></div>'
-  +'<label for="ai-answer-input">AI 답변 붙여넣기 → \'AI 해석\'에 보관</label><textarea id="ai-answer-input" data-ai-input rows="6"></textarea><div class="sheet-actions"><button type="button" data-save-answer>AI 답변 보관</button></div>'
+  +'<label for="ai-answer-input">AI 답변 붙여넣기 → 검토 → \'AI 해석\'에 보관</label><textarea id="ai-answer-input" data-ai-input rows="6"></textarea>'
+  +'<div class="sheet-actions"><button type="button" data-review-answer>붙여넣은 답변 검토</button><button type="button" data-save-answer disabled aria-describedby="ai-answer-save-note">검토한 답변 보관</button></div>'
+  +'<div data-answer-review aria-live="polite"></div><p class="small" id="ai-answer-save-note" data-answer-save-note>붙여넣기만으로는 아무것도 저장되지 않습니다. 먼저 검토하고, 보관 버튼을 눌러야 이 브라우저의 \'AI 해석\' 칸에 저장됩니다. 실제 보유·공식 판단·가상 장부·시트는 바뀌지 않습니다.</p>'
   +'<p class="small">개인 금액이 포함될 수 있습니다. 앱은 자동으로 전송하지 않고, 사용자가 직접 복사할 때만 기기 밖으로 나갑니다. 시트 ID·토큰·이메일은 어떤 설정에서도 내보내지 않습니다.</p><p role="status" data-report-status></p></section>';
  h+='<section class="card" data-report-mailbox><h2>AI 우체통 <span class="badge">선택 · 기본 OFF</span></h2><p class="small">켜면 연결된 내 구글 시트의 ReportInbox 탭에 오늘 템플릿(금액 숨김 상태)을 쓰고, ReportOutbox 탭에서 해시가 같은 답만 가져옵니다. 종목·비중·점수는 사용자가 연결한 AI 공급자에게 전달됩니다. Worker를 쓰지 않습니다.</p>'
   +'<div class="sheet-actions"><button type="button" data-mailbox-post>우체통에 오늘 템플릿 넣기</button><button type="button" data-mailbox-read>우체통 답 확인</button></div></section>';
  h+='<section class="card" data-report-footnote><h2>고정 각주</h2><p class="small">'+esc((TABS[m.tab]||'')+' · 포트폴리오 v1.1 · '+scoringText(m,true)+' · 유형 v1 잠정 · 평가액 '+(s?money(s.total_value,H):NA)+' · 가상매매 실제 평가액 미반영 · 결측 N/A')+'</p><p class="small">'+esc('보고일: '+(m.report_date||NA)+' · 가상매매 시작일: '+(m.start_date||'미정 (D-13)'))+'</p></section>';
  return h;
 }
+/* Browser wiring owned by this module (app.js wires export/save/mailbox; these buttons are rendered and handled here).
+   Review: '붙여넣은 답변 검토' parses and checks the textarea against the canonical data template and only then enables
+   app.js's '검토한 답변 보관' button; any edit of the pasted text disables it again. 보고 불가: copy the prompt. */
+function canonicalOf(m){return m?renderTemplate(m,{hidden:true,guide:false}):'';}
+function reviewInto(card,model=current){
+ if(!card)return null;const input=card.querySelector('[data-ai-input]'),out=card.querySelector('[data-answer-review]'),save=card.querySelector('[data-save-answer]'),status=card.querySelector('[data-report-status]');
+ const text=input?input.value.trim():'';
+ if(!text){if(out)out.innerHTML='';if(save)save.disabled=true;if(status)status.textContent='붙여넣은 답변이 없습니다.';return null;}
+ const r=reviewAnswer(text,canonicalOf(model));if(out)out.innerHTML=reviewHtml(r);if(save)save.disabled=false;
+ if(status)status.textContent='검토했습니다. 아직 보관하지 않았습니다. 확인 뒤 \'검토한 답변 보관\'을 누르세요.';return r;
+}
+function resetReview(card,clear){
+ if(!card)return;const out=card.querySelector('[data-answer-review]'),save=card.querySelector('[data-save-answer]');
+ if(out)out.innerHTML='';if(save)save.disabled=true;
+ if(clear){const input=card.querySelector('[data-ai-input]');if(input){input.value='';input.focus();}const status=card.querySelector('[data-report-status]');if(status)status.textContent='보관하지 않았습니다.';}
+}
+async function copyUnavailable(view,button){
+ const card=button.closest('[data-report-unavailable]');if(!card||!current)return;
+ const area=button.getAttribute('data-unavailable-copy'),box=card.querySelector('[data-unavailable-prompt]'),scope=card.querySelector('[data-unavailable-scope]'),status=card.querySelector('[data-unavailable-status]');
+ const name=area==='all'?'전체':(AREAS.find(a=>a[0]===area)||[0,area])[1];
+ box.value=unavailablePrompt(current,{area:area==='all'?null:area});if(scope)scope.textContent='· '+name;
+ try{await view.navigator.clipboard.writeText(box.value);if(status)status.textContent=name+' 프롬프트를 복사했습니다.';}
+ catch(_){box.focus();box.select();if(status)status.textContent='클립보드를 쓸 수 없어 프롬프트를 선택했습니다. 직접 복사하세요.';}
+}
+function wire(view){
+ const doc=view&&view.document;if(!doc||!doc.addEventListener||wire.done)return;wire.done=true;
+ doc.addEventListener('click',e=>{const t=e.target&&e.target.closest?e.target:null;if(!t)return;
+  const review=t.closest('[data-review-answer]');if(review){reviewInto(review.closest('[data-report-export]'));return;}
+  const cancel=t.closest('[data-review-cancel]');if(cancel){resetReview(cancel.closest('[data-report-export]'),true);return;}
+  const copy=t.closest('[data-unavailable-copy]');if(copy)void copyUnavailable(view,copy);});
+ doc.addEventListener('input',e=>{const t=e.target;if(t&&t.matches&&t.matches('[data-ai-input]'))resetReview(t.closest('[data-report-export]'),false);});
+}
+if(typeof window==='object'&&window&&window.document)wire(window);
 return Object.freeze({TEMPLATE_VERSION,GUIDE_VERSION,KINDS,TABS,MOCK_TABS,tabsNav,CHECK_LINES,GUIDE_A,HEADER_B,KIND_LINE,HIDE_KEY,AI_KEY,INBOX,OUTBOX,MODE_LABEL,basisText,vProgressText,
- formatKrw,money,quantity,hiddenSetting,buildModel,renderTemplate,checkAnswer,hash,answers,saveAnswer,ensureTabs,postInbox,readOutbox,screenHtml});
+ formatKrw,money,quantity,hiddenSetting,buildModel,renderTemplate,checkAnswer,hash,answers,saveAnswer,ensureTabs,postInbox,readOutbox,screenHtml,
+ SECTION_HEADS,ANSWER_EFFECTS,reviewAnswer,reviewHtml,reviewInto,NEED,CODE_NEED,AREAS,unavailability,missingInputs,unavailablePrompt,unavailableCard});
 });
