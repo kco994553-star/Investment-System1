@@ -44,7 +44,7 @@ function v2Display(r){
  if(!r)return{version:'v2',q:null,g:null,v:null,total:null,partial:true,factors_available:0,factors_total:qgvV2().FACTORS.length,flags:['V2_INPUTS_NOT_AVAILABLE'],state:'NOT_AVAILABLE',total_reason:'V2_INPUTS_NOT_AVAILABLE'};
  const ax=a=>r.axes[a].score;
  return{version:'v2',q:ax('Q'),g:ax('G'),v:ax('V'),total:r.total,total_reason:r.total===null?(r.total_reason||'AXIS_WEIGHT_INSUFFICIENT'):null,partial:['Q','G','V'].some(a=>r.axes[a].state!=='READY'),factors_available:r.factors_available,factors_total:r.factors_total,flags:[...r.flags],state:r.total===null?'NOT_AVAILABLE':'READY',
-  axes:r.axes,factors:r.factors,weights:r.weights,profile:r.profile,q_industry_percentile:r.q_industry_percentile,v_excluded:r.v_excluded,detail:r.detail,reference_range:r.reference_range,selected_types:r.selected_types,type_reason:r.type_reason,value_trap_gate:r.value_trap_gate===true};
+  axes:r.axes,factors:r.factors,weights:r.weights,profile:r.profile,q_industry_percentile:r.q_industry_percentile,v_excluded:r.v_excluded,detail:r.detail,reference_range:r.reference_range,selected_types:r.selected_types,type_reason:r.type_reason,value_trap_gate:r.value_trap_gate===true,...(r.weight_stages?{weight_stages:r.weight_stages}:{})};
 }
 /* TYPE-SCOPE: the memberships of one v2 record — the same approved rule for every row (QgvV2.pricefreeMemberships on the row's
    own published metrics); a row of another calc_version is not scored, so it has none (null, never 0). */
@@ -57,7 +57,9 @@ function typeMemberships({identity,publicScreens={},v2Inputs}={}){
  if(!object(identity)||!inputs||!object(inputs.records))return null;const code=codeIndex(inputs)(identity),m=code?rowMemberships(inputs.records[code]):null;
  return m?{code,type_scope:typeScope(),memberships:m}:null;}
 /* Two memos: the official result (memo) and the PERSONAL_PREVIEW result of a two-level weight tree (personalMemo, owner
-   directive 2026-10-18 §4.2). A personal result never overwrites or replaces the official one and is never `primary`. */
+   directive 2026-10-18 §4.2). A personal result never overwrites or replaces the official one and is never `primary`. The
+   personal result also carries the engine's read-only weight stages (QgvV2 weightStages: base / type-adjusted / applied, owner
+   decision 2026-10-18 preset v0.1), passed through as rows[cid].personal.weight_stages; the official result never has them. */
 let memo=null,personalMemo=null;
 function universeScores(v2Inputs,quotes,preset,gate,cyclicalBasis={},personal=null){
  const mk=JSON.stringify(personal?['personal',personal.weights,personal.typeWeights,gate,cyclicalBasis]:[preset,gate,cyclicalBasis]),held=personal?personalMemo:memo;
@@ -67,7 +69,7 @@ function universeScores(v2Inputs,quotes,preset,gate,cyclicalBasis={},personal=nu
  // same approved rule (QgvV2.pricefreeMemberships), for every Universe code and TARGET row alike. TARGET membership no longer
  // decides who is typed (formerly only TARGET ids, via company-types-pricefree.json, got type weights).
  const companies={};for(const[code,r]of Object.entries(v2Inputs.records))if(r.calc_version_mismatch!==true)companies[code]={cyclical_basis:cyclicalBasis[code]===true,cik:r.cik,industry_group:r.industry_group,profile:r.profile,factors:r.factors,v_inputs:r.v_inputs,qg_axes:r.qg_axes,in_cross_section:r.in_cross_section!==false,memberships:rowMemberships(r)};
- const result=qgvV2().scoreUniverse(companies,quotes,personal?{gate,weights:personal.weights,typeWeights:personal.typeWeights}:{preset,gate}),next={inputs:v2Inputs,quotes,key:mk,result};
+ const result=qgvV2().scoreUniverse(companies,quotes,personal?{gate,weights:personal.weights,typeWeights:personal.typeWeights,weightStages:true}:{preset,gate}),next={inputs:v2Inputs,quotes,key:mk,result};
  if(personal)personalMemo=next;else memo=next;return result;
 }
 // Label of every personal result (S06, S13): it is a preview of the user's own weights, never an official score.
@@ -182,6 +184,8 @@ function compute({identities=[],publicScreens={},v2Inputs,quotes={},preset,gate=
   const src=inputs&&code&&Object.hasOwn(inputs.records,code)?inputs.records[code]:null;if(src&&(src.state==='NOT_AVAILABLE'||src.identity_withdrawn===true)&&src.calc_version_mismatch!==true&&v2.total===null){v2.total_reason='SOURCE_NOT_AVAILABLE';v2.source_reason_codes=[...(src.na_reasons||[])];}
   if(blocked.has(code)){v2.v=null;v2.total=null;v2.state='NOT_AVAILABLE';v2.total_reason='PRICE_IDENTITY_CONFLICT';if(!v2.flags.includes('PRICE_IDENTITY_CONFLICT'))v2.flags.push('PRICE_IDENTITY_CONFLICT');}
   if(newer){v2.total_reason='DATA_FORMAT_NEWER';}
+  // Personal weight stages (engine diagnostic): a total this accessor stops (price identity conflict) has no applied weights.
+  if(v2.weight_stages&&v2.total===null&&v2.weight_stages.applied.state==='READY')v2.weight_stages={...v2.weight_stages,display_stop:v2.total_reason};
   const ref=object(referenceRows)?referenceRows[c.company_id]:null;if(ref?.reference_only===true&&object(ref.factors)&&object(ref.axes)){try{const factors={},qg_axes={};for(const axis of ['Q','G']){let coverage=0;for(const[f,w]of Object.entries(V2.WEIGHTS[axis])){const s=ref.factors[f];factors[f]=finite(s)&&s>=0&&s<=100?s:null;if(factors[f]!==null)coverage+=w;}qg_axes[axis]={score:coverage>=50&&finite(ref.axes[axis]?.score)?ref.axes[axis].score:null};}
    v2=v2Display(V2.scoreUniverse({reference:{profile:'GENERAL',industry_group:null,factors,qg_axes,v_inputs:null,memberships:null}}, {},{preset:chosen,gate:gateOn,...extra}).reference);v2.reference_only=true;v2.reference_label='참고 순위';v2.reference_label_en='Reference ranking';}catch(_){}}
   if(inputs&&!newer){try{v2.coverage=coverageFor(v2,src,extra.weights?{blocked:blocked.has(code),inner:extra.weights.inner}:{blocked:blocked.has(code)});}catch(_){v2.coverage=null;}}else if(newer)v2.coverage={axes:null,states:['FORMAT_NEWER'],v_inputs_missing:[],v_periods:{},source:null};

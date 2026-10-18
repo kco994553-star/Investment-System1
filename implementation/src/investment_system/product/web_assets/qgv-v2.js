@@ -56,6 +56,16 @@ function hex64(v){const view=new DataView(new ArrayBuffer(8));view.setFloat64(0,
 function weightsId(tree,typeWeights=true){
  const parts=[WEIGHTS_SCHEMA];for(const p of PILLARS)parts.push(hex64(tree.axis[p]));for(const p of PILLARS)for(const f of Object.keys(WEIGHTS[p]))parts.push(hex64(tree.inner[p][f]));parts.push(typeWeights?'types-on':'types-off');
  let h=0xcbf29ce484222325n;const text=parts.join('|');for(let i=0;i<text.length;i++){h^=BigInt(text.charCodeAt(i));h=BigInt.asUintN(64,h*0x100000001b3n);}return h.toString(16).padStart(16,'0');}
+/* User presets v0.1 (owner decision 2026-10-18 '프리셋 v0.1 후보 정의'): CANDIDATE_UNVALIDATED axis weights under their own ids and
+   version; inner weights = the current official 15-factor WEIGHTS (resolved at call time, never copied). PERSONAL_PREVIEW only: the
+   official default and the code presets balanced/quality/growth/value are unchanged and never renamed. Type weights and the
+   value-trap gate default ON. Python twin: qgv_v2.USER_PRESETS / user_preset (parity: tests/test_qgv_v2_user_presets.py). */
+const USER_PRESET_SCHEMA='qgv-v2-user-preset/1',USER_PRESET_STATUS='CANDIDATE_UNVALIDATED',USER_PRESET_INNER='OFFICIAL_15_FACTOR',USER_PRESET_DECIDED='2026-10-18';
+const USER_PRESETS=deep({'user-preset/aggressive@0.1':{key:'aggressive',version:'0.1',name:'공격형',name_en:'Aggressive',axis:{Q:30,G:50,V:20}},
+ 'user-preset/balanced@0.1':{key:'balanced',version:'0.1',name:'균형형',name_en:'Balanced',axis:{Q:40,G:30,V:30}},
+ 'user-preset/defensive@0.1':{key:'defensive',version:'0.1',name:'수비형',name_en:'Defensive',axis:{Q:55,G:15,V:30}}});
+function userPreset(id){if(typeof id!=='string'||!Object.hasOwn(USER_PRESETS,id))throw Error('USER_PRESET_INVALID');const d=USER_PRESETS[id],inner={};for(const p of PILLARS)inner[p]={...WEIGHTS[p]};
+ return{schema:USER_PRESET_SCHEMA,id,key:d.key,version:d.version,name:d.name,name_en:d.name_en,status:USER_PRESET_STATUS,official_default:false,decided:USER_PRESET_DECIDED,inner_basis:USER_PRESET_INNER,type_weights:true,gate:true,weights:validateWeights({axis:{...d.axis},inner})};}
 function officialInner(tree,axis){return Object.entries(WEIGHTS[axis]).every(([f,w])=>tree.inner[axis][f]===w);}
 // GSQ-017 mixing (type_config/1): memberships {type_id: 0..1|null} -> parent Q/G/V weights.
 function typeAxisWeights(memberships,cfg){
@@ -135,6 +145,46 @@ function cross(values,groups,ids,pooled,industry,issuers={}){
 // Q/G axis from the published sec-qgv2 score (the Q·G side's peer rules) with this side's coverage fields.
 function publishedAxis(axis,scores,pub){const out=axisScore(scores,axis),s=object(pub)?pub.score:null;
  if(finite(s)&&s>=0&&s<=100){out.score=s;out.state=out.missing.length?'PARTIAL':'READY';out.reason=null;}else{out.score=null;out.state='NOT_AVAILABLE';out.reason='AXIS_NOT_PUBLISHED';}return out;}
+/* Weight stages (owner decision 2026-10-18, PERSONAL_PREVIEW diagnostic only): (a) base tree normalized, (b) axis weights after the
+   company-type adjustment (the very `weights` the total uses), (c) the shares that actually produced the total after missing-factor
+   renormalization, the 50% rules and the value-trap gate. Read-only, built after the scoring of a row: no other field changes.
+   Python: qgv_v2._weight_stages (same left-to-right loops). */
+const WEIGHT_STAGES_SCHEMA='qgv-v2-weight-stages/1',STAGE_EPS=1e-9;
+function shares(row,keys){let total=0;for(const k of keys)total+=row[k];const out={};for(const k of keys)out[k]=100*row[k]/total;return out;}
+function buildWeightStages(custom,typesOn,weights,typeReason,selected,axes,factors,included,trap,total,totalReason,basis){
+ const keysOf=p=>Object.keys(WEIGHTS[p]),baseAxis=shares(custom.axis,PILLARS),baseInner={},baseFactor={},typeAxis={},typeFactor={};
+ for(const p of PILLARS)baseInner[p]=shares(custom.inner[p],keysOf(p));
+ for(const p of PILLARS){typeAxis[p]=weights[p];for(const f of keysOf(p)){baseFactor[f]=baseAxis[p]*baseInner[p][f]/100;typeFactor[f]=typeAxis[p]*baseInner[p][f]/100;}}
+ const typeChanges=PILLARS.filter(p=>Math.abs(typeAxis[p]-baseAxis[p])>STAGE_EPS).map(p=>({level:'axis',key:p,axis:p,from:baseAxis[p],to:typeAxis[p],reason:'TYPE_WEIGHTS',detail:typeReason}));
+ const axisStatus={},factorStatus={};
+ for(const p of PILLARS){
+  if(custom.axis[p]===0)axisStatus[p]={status:'ZERO_WEIGHT',reason:null};
+  else if(axes[p].score===null)axisStatus[p]={status:'AXIS_NOT_AVAILABLE',reason:Object.hasOwn(axes[p],'reason')?axes[p].reason:null};
+  else if(p==='V'&&trap)axisStatus[p]={status:'VALUE_TRAP_GATE',reason:'VALUE_TRAP_GATE'};
+  else if(total===null)axisStatus[p]={status:'TOTAL_NOT_AVAILABLE',reason:totalReason};
+  else axisStatus[p]={status:'USED',reason:null};
+  for(const f of keysOf(p)){
+   if(custom.inner[p][f]===0)factorStatus[f]={status:'ZERO_WEIGHT',reason:null};
+   else if(factors[f].score===null)factorStatus[f]={status:'MISSING',reason:factors[f].reason};
+   else if(axisStatus[p].status!=='USED')factorStatus[f]={status:'AXIS_NOT_USED',reason:axisStatus[p].status};
+   else factorStatus[f]={status:'USED',reason:null};}}
+ const appliedAxis={},appliedInner={},appliedFactor={},changes=[];
+ for(const p of PILLARS){appliedAxis[p]=null;appliedInner[p]={};for(const f of keysOf(p)){appliedInner[p][f]=null;appliedFactor[f]=null;}}
+ if(total===null)changes.push({level:'total',key:'QGV',axis:null,from:100,to:null,reason:'TOTAL_NOT_AVAILABLE',detail:totalReason});
+ else{let used=0;for(const p of included)used+=weights[p];
+  for(const p of PILLARS){appliedAxis[p]=included.includes(p)?100*weights[p]/used:0;let innerUsed=0;for(const f of keysOf(p))if(factors[f].score!==null)innerUsed+=custom.inner[p][f];
+   for(const f of keysOf(p)){if(!included.includes(p)||factors[f].score===null)appliedInner[p][f]=0;else if(innerUsed>0)appliedInner[p][f]=100*custom.inner[p][f]/innerUsed;
+    appliedFactor[f]=appliedInner[p][f]===null?null:appliedAxis[p]*appliedInner[p][f]/100;}}}
+ for(const p of PILLARS){const st=axisStatus[p];
+  if(st.status!=='ZERO_WEIGHT'){if(total===null){if(st.status==='AXIS_NOT_AVAILABLE'||st.status==='VALUE_TRAP_GATE')changes.push({level:'axis',key:p,axis:p,from:typeAxis[p],to:null,reason:st.status,detail:st.reason});}
+   else if(Math.abs(appliedAxis[p]-typeAxis[p])>STAGE_EPS)changes.push({level:'axis',key:p,axis:p,from:typeAxis[p],to:appliedAxis[p],reason:st.status==='USED'?'RENORMALIZED':st.status,detail:st.reason});}
+  for(const f of keysOf(p)){const fs=factorStatus[f];if(fs.status==='ZERO_WEIGHT')continue;
+   if(total===null){if(fs.status==='MISSING')changes.push({level:'factor',key:f,axis:p,from:typeFactor[f],to:null,reason:'MISSING',detail:fs.reason});}
+   else if(appliedFactor[f]===null)changes.push({level:'factor',key:f,axis:p,from:typeFactor[f],to:null,reason:'INNER_NOT_DERIVABLE',detail:basis[p]});
+   else if(Math.abs(appliedFactor[f]-typeFactor[f])>STAGE_EPS)changes.push({level:'factor',key:f,axis:p,from:typeFactor[f],to:appliedFactor[f],reason:fs.status==='USED'?'RENORMALIZED':fs.status,detail:fs.reason});}}
+ return{schema:WEIGHT_STAGES_SCHEMA,base:{axis:baseAxis,inner:baseInner,factor:baseFactor},
+  type_adjusted:{applied:typesOn,type_reason:typesOn?typeReason:null,selected_types:typesOn?[...selected]:[],axis:typeAxis,factor:typeFactor,changes:typeChanges},
+  applied:{state:total===null?'NOT_AVAILABLE':'READY',reason:totalReason,axis:appliedAxis,inner:appliedInner,factor:appliedFactor,axis_status:axisStatus,factor_status:factorStatus,inner_basis:basis,changes}};}
 /* companies: {code: {industry_group, profile, factors, v_inputs, memberships}}; quotes: {code: {price, currency, month_closes?: {YYYY-MM: close}}} (RAM).
    Returns {code: result}. */
 /* weights (PERSONAL_PREVIEW, optional; absent = the official path, unchanged): two-level tree in place of the preset. An axis
@@ -142,9 +192,10 @@ function publishedAxis(axis,scores,pub){const out=axisScore(scores,axis),s=objec
    factor scores, and the gate's Q industry percentile is recomputed over all pooled rows. typeWeights (default true) applies the
    type weights on top of the custom axis weights as on presets. recomputePublished (verification only) recomputes Q/G even at
    the official inner weights. Python: qgv_v2.score_universe. */
-function scoreUniverse(companies,quotes,{typeConfig=typeDefaults(),parameters=dcfDefaults(),preset=DEFAULT_PRESET,gate=null,weights=null,typeWeights=true,recomputePublished=false}={}){
+function scoreUniverse(companies,quotes,{typeConfig=typeDefaults(),parameters=dcfDefaults(),preset=DEFAULT_PRESET,gate=null,weights=null,typeWeights=true,recomputePublished=false,weightStages=false}={}){
  if(!Object.hasOwn(PRESETS,preset))throw Error('PRESET_INVALID');
- const custom=weights===null||weights===undefined?null:validateWeights(weights),typesOn=Boolean(typeWeights),recomputed=custom?['Q','G'].filter(a=>recomputePublished||!officialInner(custom,a)):[];
+ const custom=weights===null||weights===undefined?null:validateWeights(weights);if(weightStages&&!custom)throw Error('WEIGHT_STAGES_PERSONAL_ONLY');
+ const typesOn=Boolean(typeWeights),recomputed=custom?['Q','G'].filter(a=>recomputePublished||!officialInner(custom,a)):[];
  const axisOf=(i,a,pub)=>recomputed.includes(a)?{...axisScore(qg[i],a,custom.inner[a]),recomputed:true}:pub?publishedAxis(a,qg[i],pub[a]):axisScore(qg[i],a);
  const gateOn=gate===null||gate===undefined?GATE_DEFAULT:Boolean(gate),ids=Object.keys(object(companies)?companies:{}).sort(),groups={},fallback={};
  for(const i of ids){const g=companies[i].industry_group;groups[i]=g===undefined?null:g;}for(const p of PILLARS)fallback[p]=typeConfig.fallback.weights[p];
@@ -176,8 +227,10 @@ function scoreUniverse(companies,quotes,{typeConfig=typeDefaults(),parameters=dc
   results[i]={version:VERSION,status:STATUS,profile:profileOf(),axes,factors,factors_available:available,factors_total:FACTORS.length,
    q_industry_percentile:qPercentile,q_industry_basis:qBasis,type_weights:tw,type_reason:typeReason,selected_types:selected,weights,v_excluded:trap?'VALUE_TRAP_GATE':null,value_trap_gate:trap,total,total_reason:totalReason,flags,
    detail:{earnings_basis:x.earnings_basis,ebit_yield:x.ebit_yield,fcf_yield:x.fcf_yield,implied_growth:x.implied_growth,realized_growth:x.realized_growth,expectation_gap:x.gap,industry_basis:factors.v_vs_industry.basis,industry_peers:Object.hasOwn(ind,i)?ind[i][3]:null},
-   reference_range:referenceRange(c,parameters)};}
+   reference_range:referenceRange(c,parameters)};
+  if(weightStages){const basis={};for(const a of ['Q','G'])basis[a]=recomputed.includes(a)?'RECOMPUTED':object(c.qg_axes)?'PUBLISHED':'DEVICE';basis.V='DEVICE';
+   results[i].weight_stages=buildWeightStages(custom,typesOn,weights,typeReason,selected,axes,factors,included,trap,total,totalReason,basis);}}
  return results;}
 return Object.freeze({VERSION,STATUS,PILLARS,WEIGHTS,FACTORS,QG_FACTORS,PRESETS,DEFAULT_PRESET,GATE_DEFAULT,GATE_PERCENTILE,MIN_PEERS,MIN_UNIVERSE,MIN_AXIS_WEIGHT,MIN_HISTORY,
- PRICEFREE_TYPE_METRICS,TYPE_SCOPE,PERSONAL_NAMESPACE,WEIGHTS_SCHEMA,validateWeights,officialWeights,weightsId,percentile,axisScore,typeAxisWeights,pricefreeMemberships,compositeWeights,monthClose,normalizedEbit,scoreUniverse});
+ PRICEFREE_TYPE_METRICS,TYPE_SCOPE,PERSONAL_NAMESPACE,WEIGHTS_SCHEMA,USER_PRESET_SCHEMA,USER_PRESET_STATUS,USER_PRESETS,WEIGHT_STAGES_SCHEMA,userPreset,validateWeights,officialWeights,weightsId,percentile,axisScore,typeAxisWeights,pricefreeMemberships,compositeWeights,monthClose,normalizedEbit,scoreUniverse});
 });
