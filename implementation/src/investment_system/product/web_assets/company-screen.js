@@ -154,6 +154,7 @@ function holdingHtml({locale,catalog,inst,ram}){
   +'<p class="small">'+esc(row?T('ACTUAL은 이 기기의 보유·시세로만 계산합니다(RAM).','ACTUAL is computed only from this device (RAM).'):T('ACTUAL 없음: ','ACTUAL unavailable: ')+why+T(' · TARGET으로 채우지 않습니다.',' · TARGET is not used as a substitute.'))+'</p><a href="#actual">'+esc(T('ACTUAL 입력·관리 →','Enter / manage ACTUAL →'))+'</a>';
 }
 async function mountHolding(host,{locale,ticker,catalogPromise,actual=g.DeviceActual,view=g}){
+ if(g.StatRadar&&host)void g.StatRadar.mount(host.ownerDocument);  // the summary's stat window: device price axes, RAM only (stat-radar.js)
  if(!host)return;let catalog=null;try{catalog=await catalogPromise;}catch(_){}
  if(!host.isConnected)return;
  const inst=catalog&&ticker?catalog.instruments.find(i=>i.ticker===ticker):null;
@@ -172,6 +173,7 @@ function summary(ctx){
   +'<section class="card" data-company-card="qgv"><h2><span class="flow-number">1</span> QGV</h2>'+qgvBody(screens,id,locale,sr)
   +'<dl class="kv"><dt>'+esc(T('리더보드 순위','Leaderboard rank'))+'</dt><dd data-qgv="rank">'+(sr&&sr.row.rank!==null?'<span class="num">'+esc(String(sr.row.rank))+'</span> <span class="small">'+esc(T('이 기기 표시 순서 · 공식 순위 아님','Order on this device · not an official rank'))+'</span>':na('',locale))+'</dd><dt>'+esc(T('재평가 신호','Re-evaluation signal'))+'</dt><dd data-qgv="reeval">'+na('',locale)+'</dd></dl>'+coverageHtml(sr,locale,{compact:true})
   +'<p>'+link('#analysis/'+cid+'/factors',T('QGV 요소 자세히 보기 →','Open QGV factors →'),' data-analysis-link="factors"')+'</p></section>'
+  +(g.StatRadar?'<section class="card" data-company-card="radar">'+g.StatRadar.html({targetId:id},{screens,locale})+'</section>':'')
   +'<section class="card" data-company-card="value"><h2>'+esc(T('가치 (이 기기)','Value (this device)'))+'</h2><div id="company-value" data-company-value>'+valueHtml({locale,compact:true})+'</div><p>'+link('#analysis/'+cid+'/value',T('가치·시나리오 자세히 →','Value / scenarios details →'),' data-analysis-link="value"')+'</p></section>'
   +'<section class="card" data-company-card="technical"><h2><span class="flow-number">2</span> '+esc(T('기술','Technical'))+'</h2><div id="private-history-chart"></div><div id="tradingview-mini" data-company-tradingview></div><dl class="kv"><dt>'+esc(T('상태·국면','State / regime'))+'</dt><dd>'+na('',locale)+'</dd></dl><p>'+link('#technical/'+cid,T('기술적 분석에서 이어 보기 →','Continue in technical analysis →'))+'</p></section>'
   +'<section class="card" data-company-card="macro"><h2><span class="flow-number">3</span> '+esc(T('매크로 영향','Macro impact'))+'</h2><p>'+na(T('시장 국면·업종 영향·종목 영향이 아직 검증되지 않았습니다.','Market regime, industry and company impact are not yet validated.'),locale)+'</p><p>'+link('#macro',T('매크로 보기 →','Open macro →'))+'</p></section>'

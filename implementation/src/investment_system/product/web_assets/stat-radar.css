@@ -1,0 +1,59 @@
+/* Stat window radar (stat-radar.js). Hand-drawn on the theme.css paper/chalkboard tokens: red marker = the company (solid line,
+   circles, light fill), QGV blue = industry average (long dashes, squares), technical green = SIC average (short dots, triangles).
+   Every series also has its own line style, marker shape and text label, so nothing depends on colour alone. Class-based only
+   (CSP style-src 'self'); the SVG scales to the card width; on phones the value table becomes a list. */
+.stat-radar { --sr-company: var(--marker, #d7322a); --sr-industry: var(--m-qgv, #2457c5); --sr-sic: var(--m-technical, #1f8a4c); --sr-grid: var(--line, #d4d2ca); --sr-grid-strong: var(--line-strong, #6f6f6f); min-width: 0; }
+.stat-radar .sr-title { margin: 0 0 4px; font-size: var(--fs-l, 17px); }
+.stat-radar .sr-layout { display: grid; gap: 12px 24px; grid-template-columns: minmax(0, 1fr); align-items: center; margin: 8px 0 4px; }
+@media (min-width: 900px) { .stat-radar .sr-layout { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); } }
+.stat-radar .sr-figure { margin: 0; min-width: 0; }
+.stat-radar .sr-svg { display: block; width: 100%; max-width: 480px; height: auto; margin: 0 auto; overflow: visible; }
+.stat-radar .sr-notes { margin: 4px 0 0; text-align: center; font-family: var(--font-hand, cursive); }
+/* grid: pencil rings and spokes; the 50 ring a little stronger, the outer ring drawn in ink */
+.stat-radar .sr-ring, .stat-radar .sr-spoke { fill: none; stroke: var(--sr-grid); stroke-width: 1.2; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.stat-radar .sr-ring-mid { stroke: var(--sr-grid-strong); stroke-dasharray: 2 4; }
+.stat-radar .sr-ring-out { stroke: var(--ink, #161616); stroke-width: 1.6; }
+.stat-radar .sr-tick { fill: var(--muted, #4a4a4a); font: 600 10px var(--font-mono, monospace); }
+.stat-radar .sr-label { fill: var(--ink, #161616); font: 700 13px var(--font-display, system-ui, sans-serif); }
+.stat-radar .sr-label-val { fill: var(--marker-ink, #b4231c); font: 800 13px var(--font-mono, monospace); }
+.stat-radar .sr-label-na { fill: var(--muted, #4a4a4a); }
+/* series: line style + marker shape + colour */
+.stat-radar .sr-poly { fill: none; stroke-width: 2.4; stroke-linejoin: round; stroke-linecap: round; }
+.stat-radar .sr-poly.sr-s-company { stroke: var(--sr-company); stroke-width: 3.4; }
+.stat-radar .sr-poly.sr-s-industry { stroke: var(--sr-industry); stroke-dasharray: 9 6; }
+.stat-radar .sr-poly.sr-s-sic { stroke: var(--sr-sic); stroke-dasharray: 1.5 5; stroke-width: 2.8; }
+.stat-radar .sr-fill { fill: var(--sr-company); fill-opacity: .1; }
+.stat-radar .sr-mark { stroke: var(--card, #fff); stroke-width: 1.2; }
+.stat-radar .sr-mark.sr-s-company { fill: var(--sr-company); }
+.stat-radar .sr-mark.sr-s-industry { fill: var(--sr-industry); }
+.stat-radar .sr-mark.sr-s-sic { fill: var(--sr-sic); }
+.stat-radar .sr-swatch { flex: 0 0 auto; width: 34px; height: 14px; margin-top: 4px; overflow: visible; }
+.stat-radar .sr-swatch .sr-poly { stroke-width: 2.6; }
+.stat-radar .sr-swatch .sr-poly.sr-s-competitor { stroke: var(--sr-grid-strong); stroke-dasharray: 1 4; }
+.stat-radar .sr-legend { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.stat-radar .sr-legend li { display: flex; gap: 8px; align-items: flex-start; min-width: 0; overflow-wrap: anywhere; }
+.stat-radar .sr-legend li[data-sr-legend-state="NOT_AVAILABLE"] { color: var(--muted, #4a4a4a); }
+/* value table (also the screen-reader table) */
+.stat-radar .sr-table { max-width: 100%; overflow-x: auto; margin-top: 12px; }
+.stat-radar .sr-table table { width: 100%; border-collapse: collapse; font-size: var(--fs-s, 13px); }
+.stat-radar .sr-table th, .stat-radar .sr-table td { padding: 7px 8px; border-bottom: 1.5px solid var(--ink, #161616); text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+.stat-radar .sr-table tbody th { font-weight: 400; min-width: 12em; }
+.stat-radar .sr-table .badge { white-space: normal; }
+.stat-radar .sr-fresh { margin: 8px 0 0; overflow-wrap: anywhere; }
+@media (max-width: 749.98px) {
+  .stat-radar .sr-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .stat-radar .sr-table tr { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; padding: 8px 0; border-bottom: 1.5px solid var(--ink, #161616); }
+  .stat-radar .sr-table th, .stat-radar .sr-table td { display: block; border: 0; padding: 0; }
+  .stat-radar .sr-table tbody th { min-width: 0; }
+  .stat-radar .sr-table td[data-label]::before { content: attr(data-label) " · "; color: var(--muted, #4a4a4a); font-size: var(--fs-xs, 12px); }
+  .stat-radar .sr-label, .stat-radar .sr-label-val { font-size: 14.5px; }
+  .stat-radar .sr-tick { font-size: 12px; }
+}
+/* the company shape is drawn in once; nothing moves with reduced motion */
+@media (prefers-reduced-motion: no-preference) {
+  .stat-radar .sr-series-company { animation: sr-in .45s var(--ease, ease-out) both; transform-box: view-box; transform-origin: center; }
+  @keyframes sr-in { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: none; } }
+}
+@media (prefers-reduced-motion: reduce) { .stat-radar .sr-series-company { animation: none; } }
+/* mount spots */
+.tree-radar { margin-top: 16px; padding-top: 12px; border-top: 1.5px dashed var(--line-strong, #6f6f6f); }

@@ -135,6 +135,7 @@ function html(code,ctx={}){
  return '<div class="uc-page" data-universe-page="'+esc(code)+'" data-universe-state="'+esc(rs.state)+'" data-universe-reason="'+esc(rs.reason||'')+'" data-universe-v="PENDING">'+head+top
   +'<div class="uc-cards"><section class="card uc-card uc-card-q" data-universe-card="qgv">'+qgvCard(code,rs,d,inputs,c,now)+'</section><section class="card uc-card uc-card-g" data-universe-card="technical">'+chartCard(target,locale)+'</section><section class="card uc-card uc-card-v" data-universe-card="macro">'+macroCard(locale)+'</section></div>'
   +'<section class="card" data-universe-card="factors">'+factorsCard(rs,d,inputs,c,now)+'</section>'
+  +(g.StatRadar?'<section class="card" data-universe-card="radar">'+g.StatRadar.html({code},{screens:ctx.screens,locale})+'</section>':'')
   +'<section class="card" data-universe-card="classification">'+classificationCard(code,rs,inputs,c,now)+'</section>'
   +'<section class="card" data-universe-company="'+esc(sh.state)+'"><h2>'+esc(T('SEC 표지 정보','SEC cover facts'))+'</h2>'+sh.html+'<p class="small">'+esc(T('가격·시가총액·순위: 공개 화면에서는 NOT_AVAILABLE (GSQ-010). V와 종합 점수는 이 기기 시세로만 계산합니다.','Price, market cap and rank: NOT_AVAILABLE on public screens (GSQ-010). V and the total are computed only from this device’s quotes.'))+'</p></section></div>';
 }
@@ -143,6 +144,7 @@ function html(code,ctx={}){
 async function mount(host,ctx={}){
  const page=host&&host.querySelector?host.querySelector('[data-universe-page]'):null;if(!page)return;
  const code=page.dataset.universePage,locale=ctx.locale==='en-US'?'en-US':'ko-KR',inputs=inputsOf(ctx.screens),rs=rowState(inputs,code),target=targetIdOf(rs.rec),p=codeParts(code);
+ if(g.StatRadar)void g.StatRadar.mount(page);  // stat window: device price axes from RAM (stat-radar.js)
  const chartHost=page.querySelector('[data-uc-chart-host]');if(chartHost&&target&&g.PrivateHistory)try{void g.PrivateHistory.mount(chartHost,{companyId:target,locale,config:ctx.config||{}});}catch(_){}
  let quotes=object(ctx.quotes)?{...ctx.quotes}:{};
  if(inputs&&rs.rec&&p&&g.QgvScores&&g.QgvScores.collectQuotes){let catalog=null;try{catalog=await ctx.catalogPromise;}catch(_){catalog=null;}

@@ -52,7 +52,7 @@
   const tree=node('root',esc(T(l,'QGV 점수','QGV score')),esc(weightNote(l)),[
    node('input',esc(T(l,'입력','Inputs')),esc(T(l,'SEC companyfacts · submissions(10-K/10-Q) → 지표 계산 → 업종 안 백분위(0~100). V는 공개 v_inputs_v2 + 이 기기 시세','SEC companyfacts · submissions (10-K/10-Q) → metrics → percentile within the industry (0–100). V: public v_inputs_v2 + this device’s prices'))),
    axisNode('Q'),axisNode('G'),axisNode('V'),
-   node('extra',esc(T(l,'스탯창(레이더) — QGV가 못 담는 것','Stat window (radar) — what QGV misses')),'<span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> '+esc(T(l,'축·공식·비교군 결정 대기(RADAR-AXES, IA-10). 그림을 만들지 않습니다.','Axes, formulas and peer groups pending (RADAR-AXES, IA-10). Nothing is drawn.')))]);
+   node('extra',esc(T(l,'스탯창(레이더) — QGV가 못 담는 것','Stat window (radar) — what QGV misses')),root.StatRadar?'<span class="badge partial">PROVISIONAL</span> '+esc(root.StatRadar.AXES.map(a=>T(l,...a.name)+(a.kind==='DEVICE'?T(l,'(기기)',' (device)'):T(l,'(공개)',' (public)'))).join(' · ')+T(l,' · 비교군: 업종 · SIC · 경쟁사(NA, REL-SOURCE 대기) · 첫 축 묶음(IA-10), RADAR-AXES 결정 대기 · 예시는 아래',' · groups: industry · SIC · competitors (NA, REL-SOURCE pending) · first axis set (IA-10), RADAR-AXES pending · example below')):'<span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span>',null,' data-tree-radar-node')]);
   const rules=V?[
    esc(T(l,'축 안 비례 재정규화: 없는 요인을 빼고 남은 비중을 같은 비율로 키웁니다(0으로 채우지 않음).','Proportional renormalisation within an axis: missing factors are dropped and the remaining weights scale up (never filled with 0).')),
    esc(T(l,'축 최소 ','Axis minimum ')+Math.round(V.MIN_AXIS_WEIGHT*100)+T(l,'%: 남은 비중이 이보다 작으면 그 축은 NA.','%: below this remaining weight the axis is NA.')),
@@ -80,6 +80,7 @@
    '<div><dt>V</dt><dd>NA · '+esc(T(l,'기기 계산','device only'))+'</dd></div>'+
    '<div><dt>'+esc(T(l,'자료 기준','As of'))+'</dt><dd data-example-field="as_of">'+esc((p.as_of||'NA')+' · '+T(l,'수집 ','acquired ')+(r.acquired_at||'NA')+' · FY '+(r.fiscal_year_end||'NA'))+'</dd></div></dl>'+
    '<div class="tree-table"><table><thead><tr><th scope="col">'+esc(T(l,'요인','Factor'))+'</th><th scope="col">'+esc(T(l,'비중','Weight'))+'</th><th scope="col">'+esc(T(l,'백분위','Percentile'))+'</th><th scope="col">'+esc(T(l,'세부 지표 원값','Sub-metric raw values'))+'</th></tr></thead><tbody>'+rows.join('')+vRows.join('')+'</tbody></table></div>'+
+   (root.StatRadar?'<div class="tree-radar" data-tree-radar>'+root.StatRadar.html({code},{screens,locale:l})+'</div>':'')+
    '</div>';
  }
  // ---------- 2.4 기술적 분석 ----------
@@ -200,7 +201,7 @@
   const l=locale||'ko-KR',box=host&&host.querySelector('[data-tree-examples]');if(!box)return;const key=box.dataset.treeExamples,body=box.querySelector('[data-tree-example-body]');
   if(key==='system'){systemExamples(host,l,screens,catalog);return;}
   const put=html=>{if(body&&body.isConnected)body.outerHTML=html;};
-  if(key==='qgv')put(qgvExamples(l,screens));
+  if(key==='qgv'){put(qgvExamples(l,screens));if(root.StatRadar)void root.StatRadar.mount(box);}
   else if(key==='macro')put(macroExamples(l,screens));
   else if(key==='portfolio')put(portfolioExamples(l,catalog));
   else if(key==='news')void newsExamples(l).then(put);
