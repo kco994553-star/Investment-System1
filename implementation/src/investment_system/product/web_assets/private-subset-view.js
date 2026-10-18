@@ -27,6 +27,11 @@
  /* QGV v2 V (QgvScores.collectQuotes): code -> {price, currency} of the last Universe read on this device, RAM only. Sheet price
     only (V v2 market cap = price × SEC diluted shares; the sheet marketcap column is not used). US exchange codes, USD. */
  function prices(){let parsed=null;for(const state of active)if(!state.disposed&&state.parsed)parsed=state.parsed;if(!parsed)return null;const out=new Map();for(const r of parsed.rows)if(typeof r.code==='string'&&/^(?:NYSE|NASDAQ|BATS):/.test(r.code)&&typeof r.sheet_price==='number'&&Number.isFinite(r.sheet_price)&&r.sheet_price>0&&!out.has(r.code))out.set(r.code,Object.freeze({price:r.sheet_price,currency:'USD'}));return out;}
+ /* Price basis of the last Universe read (QgvScores.pageResult revision, VCoverage): read_id (the read's job id), acquired_at = when
+    the tab was FETCHED (not a price time) and the currency prices() reports. price_time is null: the GOOGLEFINANCE column has no
+    trade time (M3_SUBSET_IMPLEMENTATION_SPEC.md), so the price's own time is 미확인. No price, count or code: RAM only, never
+    stored, sent or logged. null before any read (or after it is cleared). */
+ function priceBasis(){let parsed=null;for(const state of active)if(!state.disposed&&state.parsed)parsed=state.parsed;return parsed?Object.freeze({source:'GOOGLEFINANCE_PRIVATE_UNIVERSE',read_id:typeof parsed.receipt?.job_id==='string'?parsed.receipt.job_id:null,acquired_at:typeof parsed.receipt?.acquired_at==='string'?parsed.receipt.acquired_at:null,currency:'USD',price_time:null}):null;}
  function clear(state){state.revision++;state.controller?.abort();state.controller=null;state.parsed=null;state.selection=null;state.inputs=null;state.busy=false;state.results.replaceChildren();const had=Boolean(state.ranks);state.ranks=null;if(had&&!state.disposing)try{state.onRanks?.();}catch(_){}}
  function dispose(state){if(state.disposed)return;state.disposing=true;clear(state);state.disposed=true;state.unsubscribe?.();state.view.removeEventListener('pagehide',state.pagehide);state.observer?.disconnect();active.delete(state);}
  function disposeAll(){for(const state of [...active])dispose(state);}
@@ -57,5 +62,5 @@
   });
   cancel.addEventListener('click',()=>{clear(state);status.textContent='NOT_AVAILABLE';update();});state.pagehide=()=>dispose(state);view.addEventListener('pagehide',state.pagehide);if(view.MutationObserver){state.observer=new view.MutationObserver(()=>{if(!host.isConnected)dispose(state);});state.observer.observe(doc.documentElement,{childList:true,subtree:true});}update();return Object.freeze({dispose:()=>dispose(state)});
  }
- return Object.freeze({RANGE,roster,rankIndex,rankFor,ranks,prices,mountSettings,mount,disposeAll});
+ return Object.freeze({RANGE,roster,rankIndex,rankFor,ranks,prices,priceBasis,mountSettings,mount,disposeAll});
 });
