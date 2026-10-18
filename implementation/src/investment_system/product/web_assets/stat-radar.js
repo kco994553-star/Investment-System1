@@ -43,8 +43,8 @@
    here — into this browser's memory (RAM) only; nothing is written to localStorage/IndexedDB, logs or files, and nothing is
    published. On that basis every price axis is ADJUSTMENT_BASIS_UNCONFIRMED today. The Worker's bars also carry
    adjusted_close (Yahoo chart adjclose; Tiingo adjClose on fallback) but the Worker does not state its basis and those bars stay
-   inside the chart view's RAM, so no adjusted series is connected yet. V uses its existing quote path unchanged (the Universe
-   tab of the user's private Google Sheet, quotes stored in this browser, Worker closes; computed in RAM).
+   inside the chart view's RAM, so no adjusted series is connected yet. V comes from the shared page result (QgvScores.pageResult; quotes from the Universe tab of the user's
+   private Google Sheet, quotes stored in this browser and Worker closes, computed in RAM).
 
    Normalization: the QGV average-rank percentile 100 · (less + (equal − 1) / 2) / (n − 1) (qgv/v2_scoring.py percentile) over
    the published cross-section (Qgv2Inputs in_cross_section: one point per issuer CIK, the file's calc_version) with the subject
@@ -67,9 +67,9 @@ const MIN_PEERS=8,MIN_GROUP=5,SESSIONS=252,MIN_SESSIONS=227,MIN_RETURNS=226,RS_S
 const STALE_SESSIONS=5,STALE_DAYS=7;
 const SPLIT_RATIOS=Object.freeze([2,3,4,5,10,1/2,1/3,1/4,1/5,1/10,3/2,2/3]);
 const CONFIRMED_BASES=Object.freeze(['SPLIT_ADJUSTED','TOTAL_RETURN']),BASES=Object.freeze(['RAW','SPLIT_ADJUSTED','TOTAL_RETURN','ADJUSTED_UNCONFIRMED']);
-const FILE='sec-qgv2.json',SPY='SPY',EMPTY=Object.freeze({});
+const FILE='sec-qgv2.json',SPY='SPY';
 /* Financial-profile V: a model scope, shown with this exact text and never styled or counted as a data failure. */
-const FIN_V_TEXT=Object.freeze(['현재 금융업 가치평가 모델 미지원','Financial-sector valuation model not supported yet']),FIN_V=Object.freeze([['금융업','모델 미지원'],['Financials','not supported']]);
+const FIN_V_FALLBACK=Object.freeze(['현재 금융업 가치평가 모델 미지원','Financial-sector valuation model not supported yet']),FIN_V=Object.freeze([['금융업','모델 미지원'],['Financials','not supported']]);
 /* Axis-set label (owner rule 2026-10-18): Q·G·V are the core axes; the three price axes are CANDIDATES until coverage is
    confirmed. Adoption rule: an axis needs a verified value AND a displayed score for ≥ ADOPT_MIN of the 504 Universe
    companies. The 이익률 안정성 auxiliary display is approved. */
@@ -104,7 +104,7 @@ const REASON={
  REL_SOURCE_PENDING_LONG:['경쟁사 집합 없음: 관계 자료원(REL-SOURCE) 결정 전이라 경쟁사를 만들지 않습니다','No competitor set: the relationship source (REL-SOURCE) is undecided, so none is invented'],
  SIC_NOT_AVAILABLE:['SIC 코드가 없습니다','No SIC code'],
  MDD_GAPS:['결측 구간 때문에 실제 저점을 놓쳤을 수 있음','The true trough may have been missed because of gaps'],
- PENDING:['내 가격 자료를 확인하는 중','Checking your price data'],
+ PENDING:['확인하는 중','Checking'],
  OFF:['이 브라우저에서 가격 탭(내 구글 시트 Prices_D) 사용이 꺼져 있습니다','Price tabs (Prices_D in your Google Sheet) are off in this browser'],
  AUTH_REQUIRED:['구글 로그인이 필요합니다','Google sign-in is required'],
  SHEET_NOT_CONNECTED:['연결된 시트가 없습니다','No sheet is connected'],
@@ -117,6 +117,8 @@ function reasonText(code,en){
 const na=(reason,detail)=>({value:null,score:null,reason,score_reason:null,detail:detail||null});
 
 
+/* The financial-profile V text from the engine's own reason text (QgvScores.reasonText), the same words as every screen. */
+const finText=en=>{const QS=g.QgvScores,t=QS&&QS.REASON&&QS.REASON.FINANCIAL_PROFILE_V_NOT_DEFINED;return t?t[en?1:0]:FIN_V_FALLBACK[en?1:0];};
 /* ---------- published rows ---------- */
 function inputsOf(screens){const F=g.Qgv2Inputs?g.Qgv2Inputs.FILE:FILE;return object(screens)&&object(screens[F])&&object(screens[F].records)?screens[F]:null;}
 const scoredRow=r=>object(r)&&(r.state==='LIVE'||r.state==='STALE')&&r.identity_withdrawn!==true&&r.calc_version_mismatch!==true;
@@ -227,29 +229,24 @@ function priceTable(dev,end){
  const spy=dev.series.get(SPY),w=spy&&end?priceWindow(spy.closes,end):null,values=new Map(),ok=!!(w&&!w.short);
  if(ok)for(const[s,ser]of dev.series)if(s!==SPY)values.set(s,priceAxesOn(ser,spy,w.sessions));
  memo={dev,end,sessions:ok?w.sessions:null,window:ok?windowInfo(w.sessions,series(spy).basis,w.behind):null,short:!!(w&&w.short),values};return memo;}
-/* One V path: the subject and every cross-section issuer come from ONE QgvScores.compute call on the same inputs and quotes
-   (no second single-identity compute), so the subject's V, its detail and the peers' V share one population. Interim until
-   the shared page result (QgvScores.pageResult, owned elsewhere) lands. total: the QGV total of the same row, kept only to
-   label it 'Q·G만 반영(V 미포함)' when V is missing. Memoised for the last (inputs, quotes, subject) in RAM. */
-let vMemo=null;
+/* V comes only from the shared page result (QgvScores.pageResult: ONE collectQuotes + ONE compute over every Universe code,
+   shared with the V coverage panel and the other screens), so the same input gives the same V everywhere. The radar reads the
+   subject's row and the peers' rows of that one computed result; it never computes V or collects quotes itself. total: the
+   QGV total of the same row, shown only with the label 'Q·G만 반영(V 미포함)' when V is missing. */
 function vOne(S,id,full=false){const row=S&&S.rows?S.rows[id]:null,d=row?row.primary:null,cov=d&&d.coverage&&d.coverage.axes?d.coverage.axes.V:null;
- const x=d&&finite(d.v)?{value:d.v,score:d.v,reason:null}:na(cov&&cov.reason||'NO_DEVICE_PRICE');
+ const x=!S?na('PENDING'):d&&finite(d.v)?{value:d.v,score:d.v,reason:null}:na(cov&&cov.reason||'NO_DEVICE_PRICE');
  if(full){x.v_detail={detail:d&&object(d.detail)?d.detail:null,factors:cov&&Array.isArray(cov.factors)?cov.factors.map(f=>({id:f.id,reason:f.reason})):[]};x.total=d&&finite(d.total)?d.total:null;}return x;}
-function vScores(inputs,subject,points,quotes){
- const QS=g.QgvScores,q=object(quotes)?quotes:EMPTY,sid=subject.identity.company_id;if(!inputs||!QS||typeof QS.compute!=='function')return{map:new Map(),subject:na('NO_DEVICE_PRICE')};
- if(!vMemo||vMemo.inputs!==inputs||vMemo.quotes!==q||vMemo.sid!==sid){let S=null;
-  try{S=QS.compute({identities:[...points.map(p=>({company_id:p.code,ticker:tickerOf(p.code)})),subject.identity],v2Inputs:inputs,quotes:q});}catch(_){S=null;}
-  const map=new Map();for(const p of points)map.set(p.code,vOne(S,p.code));vMemo={inputs,quotes:q,sid,map,subject:vOne(S,sid,true)};}
- return{map:vMemo.map,subject:{...vMemo.subject}};}
-
+function vScores(result,subject,points){
+ const S=object(result)&&object(result.computed)?result.computed:null,map=new Map();for(const p of points)map.set(p.code,vOne(S,p.code));
+ return{map,subject:vOne(S,subject.identity.company_id,true),priced:!!(object(result)&&object(result.quotes)&&Object.keys(result.quotes).length)};}
 
 /* ---------- model ---------- */
 function mean(xs){let s=0;for(const x of xs)s+=x;return s/xs.length;}
-function build(inputs,spec,dev,quotes,{aux=false,now=Date.now()}={}){
+function build(inputs,spec,dev,result,{aux=false,now=Date.now()}={}){
  const subject=subjectOf(inputs,spec),points=inputs?crossSection(inputs):[],noFile={state:'NOT_AVAILABLE',reason:'SEC_QGV2_NOT_AVAILABLE',members:[]};
  const gi=inputs?industryGroup(subject,points):noFile,gs=inputs?sicGroup(subject,points):noFile,same=sameMembers(gi,gs);
  const others=points.filter(p=>p.cik!==subject.cik),withdrawn=subject.rec&&subject.rec.identity_withdrawn===true,financial=scoredRow(subject.rec)&&subject.rec.profile==='FINANCIAL';
- const V=vScores(inputs,subject,points,quotes),priced=object(quotes)&&Object.keys(quotes).length>0;
+ const V=vScores(result,subject,points),priced=V.priced;
  const universeCodes=inputs?Object.keys(inputs.records).filter(k=>!k.startsWith('TARGET:')):[];
  // Price window: the latest session common to SPY and the subject, else the latest SPY session.
  const spy=dev.series.get(SPY),own=subject.symbol?dev.series.get(subject.symbol):null,sc=spy?spy.closes:null;
@@ -340,7 +337,7 @@ function svg(model,locale){
   const y0=s<-0.9?y-lh*(lines.length-1):s>0.9?y+lh*0.8:y-lh*(lines.length-1)/2+4;
   return '<text class="sr-label" x="'+f2(x)+'" y="'+f2(y0)+'" text-anchor="'+anchor+'" data-sr-label="'+a.id+'">'+lines.map((t,k)=>'<tspan x="'+f2(x)+'" dy="'+(k?lh:0)+'"'+(k===lines.length-1?' class="sr-label-val'+(finite(a.company.score)?'':' sr-label-na')+'"':'')+'>'+esc(t)+'</tspan>').join('')+'</text>';}).join('');
  const summary=T('스탯창(설명용). 모든 축에서 바깥이 더 좋은 평가. 면적은 점수가 아님. ','Stat window (explanatory). Outer is better on every axis. The area is not a score. ')
-  +model.axes.map(a=>T(a.name[0],a.name[1])+': '+T('기업 ','company ')+(a.company.reason==='FINANCIAL_PROFILE_V_NOT_DEFINED'?FIN_V_TEXT[en?1:0]:scoreText(a.company.score,locale))+', '+T(same?'업종 = SIC ':'업종 평균 ',same?'industry = SIC ':'industry ')+scoreText(a.industry.score,locale)+(same?'':', SIC '+scoreText(a.sic.score,locale))+', '+T('경쟁사 미산출','competitors n/a')).join('; ');
+  +model.axes.map(a=>T(a.name[0],a.name[1])+': '+T('기업 ','company ')+(a.company.reason==='FINANCIAL_PROFILE_V_NOT_DEFINED'?finText(en):scoreText(a.company.score,locale))+', '+T(same?'업종 = SIC ':'업종 평균 ',same?'industry = SIC ':'industry ')+scoreText(a.industry.score,locale)+(same?'':', SIC '+scoreText(a.sic.score,locale))+', '+T('경쟁사 미산출','competitors n/a')).join('; ');
  const stale=!!(model.fresh&&model.fresh.stale);
  return '<svg class="sr-svg'+(stale?' sr-stale':'')+'" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+esc(summary)+'" focusable="false" data-sr-svg data-sr-axes="'+n+'">'
   +'<defs><filter id="'+id+'" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="7" result="n"></feTurbulence><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4"></feDisplacementMap></filter></defs>'
@@ -368,7 +365,7 @@ function cell(series,a,x,locale){
  const T=tr(locale),en=locale==='en-US',hasRaw=finite(x.value),hasScore=finite(x.score),why=hasRaw?(x.score_reason||x.reason||''):(x.reason||'');
  const attrs=' data-sr-series="'+series+'" data-sr-raw="'+(hasRaw?String(x.value):'NA')+'" data-sr-score="'+(hasScore?String(x.score):'NA')+'" data-sr-reason="'+esc(why)+'"'+(Number.isInteger(x.n)?' data-sr-n="'+x.n+'"':'')+(Number.isInteger(x.closes)?' data-sr-closes="'+x.closes+'"':'')+(Number.isInteger(x.returns)?' data-sr-returns="'+x.returns+'"':'')+(x.note?' data-sr-note="'+esc(x.note)+'"':'');
  const label=series==='company'?T('기업','Company'):series==='industry'?T('업종 평균','Industry'):series==='sic'?T('SIC 평균','SIC'):T('경쟁사 평균','Competitors');
- const badge=r=>r==='FINANCIAL_PROFILE_V_NOT_DEFINED'?'<span class="badge sr-model-scope" data-sr-model-scope>'+esc(FIN_V_TEXT[en?1:0])+'</span>':'<span class="badge NOT_AVAILABLE">'+esc(T('미산출','n/a'))+'</span>';
+ const badge=r=>r==='FINANCIAL_PROFILE_V_NOT_DEFINED'?'<span class="badge sr-model-scope" data-sr-model-scope>'+esc(finText(en))+'</span>':'<span class="badge NOT_AVAILABLE">'+esc(T('미산출','n/a'))+'</span>';
  const counts=(Number.isInteger(x.closes)?T(' · 종가 ',' · closes ')+x.closes:'')+(Number.isInteger(x.returns)?T(' · 유효 일간 수익률 ',' · valid daily returns ')+x.returns:'');
  let body;
  if(series==='company'&&hasRaw&&!isScore(a)){
@@ -402,7 +399,7 @@ function membersHtml(model,locale){
    FINANCIAL subject shows only the model-scope text (no general-company formula is applied). */
 function vDetailHtml(model,locale){
  const T=tr(locale),en=locale==='en-US',v=model.axes.find(a=>a.id==='v')||null,x=v?v.company:null,r=model.subject.rec;if(!x)return '';
- if(x.reason==='FINANCIAL_PROFILE_V_NOT_DEFINED')return '<div class="sr-v-detail" data-sr-v-detail="FINANCIAL"><h3 class="small">'+esc(T('V 상세','V detail'))+'</h3><p><span class="badge sr-model-scope" data-sr-model-scope>'+esc(FIN_V_TEXT[en?1:0])+'</span></p></div>';
+ if(x.reason==='FINANCIAL_PROFILE_V_NOT_DEFINED')return '<div class="sr-v-detail" data-sr-v-detail="FINANCIAL"><h3 class="small">'+esc(T('V 상세','V detail'))+'</h3><p><span class="badge sr-model-scope" data-sr-model-scope>'+esc(finText(en))+'</span></p></div>';
  const vi=r&&object(r.v_inputs)?r.v_inputs:null,per=r&&object(r.periods)?r.periods:{},cur=vi&&typeof vi.currency==='string'?vi.currency:null,asOf=model.inputs?clock(model.inputs.as_of):'—';
  const det=x.v_detail&&x.v_detail.detail,fr=id=>{const f=x.v_detail&&x.v_detail.factors.find(y=>y.id===id);return f&&f.reason||x.reason||'NO_DEVICE_PRICE';};
  const money=v=>cur?new Intl.NumberFormat(en?'en-US':'ko-KR',{style:'currency',currency:cur,notation:'compact',maximumFractionDigits:2}).format(v):fmtNum(v,locale,0);
@@ -426,7 +423,7 @@ function freshLine(model,locale){
  return '<p class="small sr-fresh" data-sr-freshness="'+(f.stale?'STALE':'CURRENT')+'" data-sr-days="'+f.days+'">'+(f.stale?'<span class="badge partial">STALE</span> ':'')+esc(T('가격 기준 시각(마지막 공통 종가일) ','price as-of (latest common close) ')+f.end+' · '+f.days+T('일 전',' days ago')+' · '+T('최신 SPY 거래일보다 ','behind the latest SPY session by ')+f.behind+T('거래일 뒤',' sessions')+(f.stale?T(' · '+STALE_SESSIONS+'거래일 또는 '+STALE_DAYS+'일 초과라 STALE',' · beyond '+STALE_SESSIONS+' sessions or '+STALE_DAYS+' days: STALE'):''))+'</p>';}
 function body(model,locale){
  const T=tr(locale),en=locale==='en-US',d=model.device,dev=d.state==='READY'?T('읽음 · 가격 있는 종목 ','read · symbols with prices ')+d.priced+(d.series.has(SPY)?' · SPY':T(' · SPY 없음',' · no SPY')):d.state==='PENDING'?reasonText('PENDING',en):d.state+' · '+reasonText(d.state==='NOT_AVAILABLE'?'NO_DEVICE_PRICE':d.state,en);
- return '<div class="sr-layout"><figure class="sr-figure">'+svg(model,locale)+'<figcaption class="sr-notes small">'+(model.axes.some(a=>a.id==='v'&&a.company.reason==='FINANCIAL_PROFILE_V_NOT_DEFINED')?'<span class="badge sr-model-scope" data-sr-model-scope>V · '+esc(FIN_V_TEXT[en?1:0])+'</span> ':'')+esc(T('모든 축에서 바깥이 더 좋은 평가입니다. 설명용이며 공식 QGV 점수·비중·순위를 바꾸지 않습니다. 면적은 계산하지 않습니다. 미산출 축에는 점을 찍지 않습니다(0이나 평균으로 채우지 않음).','Outer is the better evaluation on every axis. Explanatory only: official QGV scores, weights and ranks are unchanged. The area is not computed. 미산출 axes get no point (never 0 or an average).'))+'</figcaption></figure>'
+ return '<div class="sr-layout"><figure class="sr-figure">'+svg(model,locale)+'<figcaption class="sr-notes small">'+(model.axes.some(a=>a.id==='v'&&a.company.reason==='FINANCIAL_PROFILE_V_NOT_DEFINED')?'<span class="badge sr-model-scope" data-sr-model-scope>V · '+esc(finText(en))+'</span> ':'')+esc(T('모든 축에서 바깥이 더 좋은 평가입니다. 설명용이며 공식 QGV 점수·비중·순위를 바꾸지 않습니다. 면적은 계산하지 않습니다. 미산출 축에는 점을 찍지 않습니다(0이나 평균으로 채우지 않음).','Outer is the better evaluation on every axis. Explanatory only: official QGV scores, weights and ranks are unchanged. The area is not computed. 미산출 axes get no point (never 0 or an average).'))+'</figcaption></figure>'
   +'<div class="sr-side">'+legend(model,locale)+auxBox(model,locale)+'</div></div>'+freshLine(model,locale)+table(model,locale)+vDetailHtml(model,locale)+membersHtml(model,locale)
   +'<p class="small sr-fresh" data-sr-fresh>'+esc([T('Q·G·이익률 출처 sec-qgv2.json','Q·G·margin: sec-qgv2.json'),'as_of '+(model.inputs?clock(model.inputs.as_of):'—'),T('단면 ','cross-section ')+model.points+T('곳(발행사당 한 점)',' issuers (one point each)'),T('가격 후보 축 점수 = 기기 보유 데이터 내 상대점수(504 전체·시장 전체 백분위 아님, 모집단 8곳 이상) · 비교군 평균은 5곳 이상','candidate price-axis score = relative score within the price data you hold (not a 504- or market-wide percentile; population ≥ 8) · group averages need ≥ 5')].join(' · '))+'</p>'
   +'<p class="small sr-fresh" data-sr-device-line>'+esc([T('가격 입력: ','Price input: ')+(model.storage?storageText(model,T):T('내 비공개 구글 시트 Prices_D 탭(가격 탭 사용 시) → 이 브라우저 메모리','the Prices_D tab of your private Google Sheet (when price tabs are on) → this browser’s memory'))+T(' · Worker 요청 없음 · 공개 안 함',' · no Worker request · never published'),T('기준 ','basis ')+(model.basis?BASIS_TEXT[model.basis][en?1:0]:'—'),T('상태 ','state ')+dev,T('V: 기존 V 경로(시세 '+(model.priced?'있음':'없음')+')','V: existing V path (quotes '+(model.priced?'present':'none')+')')].join(' · '))+'</p>';}
@@ -439,26 +436,24 @@ const stateAttrs=model=>Object.entries(stateOf(model)).map(([k,v])=>' '+k+'="'+e
 const live=new Map();
 const keyOf=spec=>spec&&typeof spec.targetId==='string'?'target:'+spec.targetId:'code:'+(spec&&spec.code||'');
 const decisionBadge=T=>DECISION.state==='DECIDED'?T('결정됨','DECIDED'):DECISION.state==='CANDIDATE'?T('후보 축 포함','with candidate axes'):'PROVISIONAL';
-/* Synchronous HTML from the loaded public file (ctx.screens), quotes already in RAM (ctx.quotes) and the price data already
+/* Synchronous HTML from the loaded public file (ctx.screens), the last shared page result of this radar and the price data already
    read (if any; ctx.device: a price-data snapshot to render instead, RAM only). spec: {code} or {targetId}. */
 function html(spec,ctx={}){
- const locale=ctx.locale==='en-US'?'en-US':'ko-KR',T=tr(locale),inputs=inputsOf(ctx.screens),key=keyOf(spec),quotes=object(ctx.quotes)?ctx.quotes:EMPTY,prev=live.get(key),aux=!!(prev&&prev.aux),dev=object(ctx.device)?ctx.device:null;
- live.set(key,{spec,inputs,locale,quotes,aux,dev});const model=build(inputs,spec,dev||device,quotes,{aux});
+ const locale=ctx.locale==='en-US'?'en-US':'ko-KR',T=tr(locale),inputs=inputsOf(ctx.screens),key=keyOf(spec),prev=live.get(key),aux=!!(prev&&prev.aux),dev=object(ctx.device)?ctx.device:null;
+ const result=prev&&prev.inputs===inputs?prev.result:null;live.set(key,{spec,inputs,locale,result,aux,dev});const model=build(inputs,spec,dev||device,result,{aux});
  return '<div class="stat-radar" data-stat-radar="'+esc(key)+'" data-sr-decision="'+DECISION.state+'"'+stateAttrs(model)+'><h2 class="sr-title"><span class="hl">'+esc(T('스탯창','Stat window'))+'</span> <span class="badge partial">'+esc(decisionBadge(T))+'</span></h2>'
   +'<p class="small" data-sr-axis-set>'+esc(T('축: ','Axes: ')+DECISION.set[locale==='en-US'?1:0]+' · '+DECISION.ref[locale==='en-US'?1:0]+T(' · 설명용 · 추천 아님',' · explanatory · not a recommendation'))+'</p><div data-sr-body>'+body(model,locale)+'</div></div>';}
-function paint(el){const entry=live.get(el.dataset.statRadar);if(!entry)return;const model=build(entry.inputs,entry.spec,entry.dev||device,entry.quotes,{aux:entry.aux}),b=el.querySelector('[data-sr-body]');
+function paint(el){const entry=live.get(el.dataset.statRadar);if(!entry)return;const model=build(entry.inputs,entry.spec,entry.dev||device,entry.result,{aux:entry.aux}),b=el.querySelector('[data-sr-body]');
  if(b)b.innerHTML=body(model,entry.locale);for(const[k,v]of Object.entries(stateOf(model)))el.setAttribute(k,v);}
 function symbolsFor(){const out=new Set();for(const{spec,inputs}of live.values()){if(!inputs)continue;const s=subjectOf(inputs,spec);if(s.symbol)out.add(s.symbol);for(const p of crossSection(inputs)){const y=universeSymbol(p.code);if(y)out.add(y);}}return[...out];}
 async function refreshDevice(){
  if(inflight)return inflight;
  inflight=(async()=>{try{device=await readDevice(symbolsFor());}catch(_){device={state:'ERROR',series:new Map(),priced:0};}finally{inflight=null;}})();
  return inflight;}
-/* Device quotes for V through the existing accessor (QgvScores.collectQuotes, RAM) unless the caller already holds them. */
-async function quotesFor(entry,opts){
- if(object(opts.quotes))return opts.quotes;const QS=g.QgvScores;if(!entry.inputs||!QS||typeof QS.collectQuotes!=='function')return entry.quotes;
+/* The shared page result for V (QgvScores.pageResult; memoised there per inputs, Universe read, catalog and identities). */
+async function resultFor(entry,opts){const QS=g.QgvScores;if(!entry.inputs||!QS||typeof QS.pageResult!=='function')return null;
  let catalog=null;try{catalog=await opts.catalogPromise;}catch(_){catalog=null;}
- const s=subjectOf(entry.inputs,entry.spec);let q=null;try{q=await QS.collectQuotes(g,{identities:[s.identity],v2Inputs:entry.inputs,catalog});}catch(_){q=null;}
- return object(q)&&Object.keys(q).length?{...entry.quotes,...q}:entry.quotes;}
+ try{return await QS.pageResult(g,{v2Inputs:entry.inputs,catalog:catalog||null,identities:[subjectOf(entry.inputs,entry.spec).identity]});}catch(_){return null;}}
 function radarsIn(root){if(!root)return[];const list=[];if(root.matches&&root.matches('[data-stat-radar]'))list.push(root);if(root.querySelectorAll)list.push(...root.querySelectorAll('[data-stat-radar]'));return list;}
 let again=false,wired=false;
 function subscribeOnce(){const PS=g.PriceStore;if(subscribed||!PS||typeof PS.subscribe!=='function')return;subscribed=true;
@@ -467,14 +462,14 @@ function subscribeOnce(){const PS=g.PriceStore;if(subscribed||!PS||typeof PS.sub
 function wireOnce(doc){if(wired||!doc||typeof doc.addEventListener!=='function')return;wired=true;
  doc.addEventListener('click',e=>{const b=e.target&&e.target.closest?e.target.closest('[data-sr-aux-toggle]'):null;if(!b)return;const el=b.closest('[data-stat-radar]'),entry=el?live.get(el.dataset.statRadar):null;if(!entry)return;
   entry.aux=!entry.aux;paint(el);const nb=el.querySelector('[data-sr-aux-toggle]');if(nb)nb.focus();});}
-/* After html(): read the device quotes (V) and this device's price tab (price axes) and repaint every radar under root.
-   opts: {quotes} (quotes the caller already collected) or {catalogPromise} (device catalog for the quote accessor). */
+/* After html(): read the shared page result (V) and the price data (price axes) and repaint every radar under root.
+   opts: {catalogPromise} (the device catalog the page result reads quotes with). */
 async function mount(root,opts={}){
  const els=radarsIn(root);if(!els.length)return;subscribeOnce();wireOnce(els[0].ownerDocument);
- for(const el of els){const entry=live.get(el.dataset.statRadar);if(entry)entry.quotes=await quotesFor(entry,opts||{});}
+ for(const el of els){const entry=live.get(el.dataset.statRadar);if(entry)entry.result=await resultFor(entry,opts||{});}
  await refreshDevice();for(const el of els)if(el.isConnected)paint(el);}
 /* Model for tests and other screens (no DOM). */
-function compute(spec,{screens,quotes,aux=false,now}={},dev=device){return build(inputsOf(screens),spec,dev,object(quotes)?quotes:EMPTY,{aux,now:finite(now)?now:Date.now()});}
+function compute(spec,{screens,result=null,aux=false,now}={},dev=device){return build(inputsOf(screens),spec,dev,result,{aux,now:finite(now)?now:Date.now()});}
 /* Financial detail row (TARGET analysis 재무 tab, Universe504 page): the published operating_margin_std_5y_pp with its basis
    (FY0..FY-4: the fiscal years of v_inputs_v2.operating_margin_history when published, else "5개 회계연도"), source and as_of,
    or the missing-data reason. Returns '<dt>…</dt><dd>…</dd>' for a <dl class="kv">. */

@@ -251,6 +251,21 @@ const FAKE_STORE = (b) => { const real = window.PriceStore; window.PriceStore = 
         const m = expectPublic(p, { code: uni.code }).axes.margin_stability; if (m.company.score !== null) assert.equal(await el.locator('.sr-mark[data-sr-series="company"][data-sr-axis="margin_stability"]').count(), 1);
         await el.locator('[data-sr-aux-toggle]').click(); assert.equal(await el.locator('svg[data-sr-svg]').getAttribute('data-sr-axes'), '6'); pass += 3;
       }
+      // 2b) One V path: with synthetic Universe-tab quotes (made-up prices, never real), the radar's V equals the shared
+      //     QgvScores.pageResult V for the same quotes, and its peers are the rows of that same result.
+      if (uni) {
+        phase = width + ' V-PATH'; const general = points.filter((x) => x.r.profile === 'GENERAL').slice(0, 80), quotes = {}; if (!general.includes(uni)) general.push(uni);
+        general.forEach((x, i) => { quotes[x.code] = { price: 20 + ((i * 13) % 70), currency: 'USD' }; });
+        await page.goto(BASE + '#company/' + encodeURIComponent(uni.code)); await radar(page);
+        await page.evaluate((q) => { const real = window.PrivateSubsetView; window.PrivateSubsetView = { ...real, prices: () => new Map(Object.entries(q)), priceBasis: () => ({ source: 'SYNTHETIC_TEST', read_id: 'synthetic-v-path', acquired_at: null, currency: 'USD', price_time: null }) }; }, quotes);
+        await page.goto(BASE + '#home'); await page.goto(BASE + '#company/' + encodeURIComponent(uni.code)); const el = await radar(page);
+        await page.waitForFunction(() => { const c = document.querySelector('[data-stat-radar] tr[data-sr-axis="v"] td[data-sr-series="company"]'); return c && c.dataset.srReason !== 'PENDING'; });
+        const shared = await page.evaluate(async (code) => { const inputs = await Qgv2Inputs.load(window), r = await QgvScores.pageResult(window, { v2Inputs: inputs, catalog: null, identities: [{ company_id: code, ticker: code.slice(code.indexOf(':') + 1) }] });
+          const d = r.computed.rows[code].primary; return { v: Number.isFinite(d.v) ? d.v : null, reason: d.coverage && d.coverage.axes && d.coverage.axes.V ? d.coverage.axes.V.reason : null }; }, uni.code);
+        const c = await cellOf(el, 'v', 'company'); same(c.score, shared.v, phase + ' radar V = pageResult V'); if (shared.v === null) assert.equal(c.reason, shared.reason || 'NO_DEVICE_PRICE');
+        assert.equal(await el.getAttribute('data-sr-quotes'), 'PRESENT'); pass += 2; if (width === 390) console.log('V_PATH ' + uni.code + ' v=' + (shared.v === null ? 'NA:' + shared.reason : shared.v.toFixed(3)));
+        await page.evaluate(() => { window.location.reload(); }); await page.waitForLoadState('load');
+      }
       // 3) Price data, synthetic bars only (made-up random walks; never real prices, never committed as data).
       //    (a) The price tab's raw closes (fake PriceStore): every price axis is 미산출 ADJUSTMENT_BASIS_UNCONFIRMED — a raw series
       //        cannot confirm corporate-action handling, and the jump check never confirms continuity.

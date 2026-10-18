@@ -154,7 +154,7 @@ function holdingHtml({locale,catalog,inst,ram}){
   +'<p class="small">'+esc(row?T('ACTUAL은 이 기기의 보유·시세로만 계산합니다(RAM).','ACTUAL is computed only from this device (RAM).'):T('ACTUAL 없음: ','ACTUAL unavailable: ')+why+T(' · TARGET으로 채우지 않습니다.',' · TARGET is not used as a substitute.'))+'</p><a href="#actual">'+esc(T('ACTUAL 입력·관리 →','Enter / manage ACTUAL →'))+'</a>';
 }
 async function mountHolding(host,{locale,ticker,catalogPromise,actual=g.DeviceActual,view=g}){
- if(g.StatRadar&&host)void g.StatRadar.mount(host.ownerDocument,{catalogPromise});  // the summary's stat window: device V and price axes, RAM only (stat-radar.js)
+ if(g.StatRadar&&host)void g.StatRadar.mount(host.ownerDocument,{catalogPromise});  // the summary's stat window: V from the shared page result, price axes in RAM (stat-radar.js)
  if(!host)return;let catalog=null;try{catalog=await catalogPromise;}catch(_){}
  if(!host.isConnected)return;
  const inst=catalog&&ticker?catalog.instruments.find(i=>i.ticker===ticker):null;
