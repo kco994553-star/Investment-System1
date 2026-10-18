@@ -33,8 +33,10 @@ function recount(rows) {
     total: rows.length, general: G.length, financial: rows.filter((r) => r.cls === 'FINANCIAL').length, noData: rows.filter((r) => r.cls === 'NO_DATA').length, stopped: rows.filter((r) => r.cls === 'STOPPED').length,
     vFull: rows.filter((r) => r.v).length, vGeneral: G.filter((r) => r.v).length, qgvFull: rows.filter((r) => r.v && r.q && r.g).length, qgvGeneral: G.filter((r) => r.v && r.q && r.g).length,
     complete: G.filter((r) => r.missing === 0).length, upper: G.filter((r) => r.shares && (r.ebit || r.fcf)).length, sharesRows: G.filter((r) => r.shares).length, from: periods[0] || null, to: periods.at(-1) || null,
-    qgOnly: rows.filter((r) => r.total && (!r.v || r.vx)).length, qgOnlyGeneral: G.filter((r) => r.total && (!r.v || r.vx)).length, qgOnlyFin: rows.filter((r) => r.cls === 'FINANCIAL' && r.total && (!r.v || r.vx)).length,
-    qgOnlyNoV: rows.filter((r) => r.cls !== 'FINANCIAL' && r.total && !r.v).length, qgOnlyGate: rows.filter((r) => r.cls !== 'FINANCIAL' && r.total && r.v && r.vx).length,
+    // Q·G-only totals: no V in the row (financial or no price / V not computed). Gate rows (V computed, excluded by the rule) apart.
+    qgOnly: rows.filter((r) => r.total && !r.v).length, qgOnlyGeneral: G.filter((r) => r.total && !r.v).length, qgOnlyFin: rows.filter((r) => r.cls === 'FINANCIAL' && r.total && !r.v).length,
+    gateFull: rows.filter((r) => r.total && r.v && r.vx).length, gateGeneral: G.filter((r) => r.total && r.v && r.vx).length,
+    qgOnlyNoV: rows.filter((r) => r.cls !== 'FINANCIAL' && r.total && !r.v).length,
     priced: rows.filter((r) => r.priced).length, mismatch: G.filter((r) => r.priced && r.vi && r.qc !== r.vic).length, reasons, factor,
   };
 }
@@ -92,7 +94,7 @@ async function noOverflow(page, what) {
         // Before any Universe read: the price-free facts only, and no V count anywhere in the summary.
         phase = 'BEFORE ' + width;const S = page.locator('[data-v-coverage]');await page.locator('[data-v-coverage="NOT_CONNECTED"]').waitFor();
         assert.equal(await S.locator('[data-v-coverage-state]').textContent(), '가격 미연결: V 실제 산출 수는 Universe 읽기 뒤 표시');
-        for (const sel of ['[data-v-full]', '[data-v-general]', '[data-qgv-full]', '[data-qgv-general]', '[data-qg-only-full]', '[data-qg-only-general]']) { assert.equal(await S.locator(sel).textContent(), '—', sel);assert.equal(await S.locator(sel).getAttribute(sel.slice(1, -1)), '', sel + ' has no count'); }
+        for (const sel of ['[data-v-full]', '[data-v-general]', '[data-qgv-full]', '[data-qgv-general]', '[data-qg-only-full]', '[data-qg-only-general]', '[data-gate-full]', '[data-gate-general]']) { assert.equal(await S.locator(sel).textContent(), '—', sel);assert.equal(await S.locator(sel).getAttribute(sel.slice(1, -1)), '', sel + ' has no count'); }
         assert.equal(await S.locator('[data-v-met]').count(), 0);assert.equal(await S.locator('[data-v-reasons]').count(), 0);assert.equal(await S.locator('[data-currency-mismatch]').count(), 0);
         assert.match(await S.locator('[data-v-target]').textContent(), /^관찰 지표 · 목표 \d+\/\d+ \(일반 기업 90%\) · 현재 — \(가격 미연결\)$/);
         assert.equal(await S.locator('[data-v-price-time]').getAttribute('data-v-price-time'), 'NOT_READ');
@@ -117,11 +119,14 @@ async function noOverflow(page, what) {
         assert.equal(await S.locator('[data-v-full]').textContent(), c.vFull + '/' + c.total);assert.equal(await S.locator('[data-v-general]').textContent(), c.vGeneral + '/' + c.general);
         assert.equal(await num(S.locator('[data-complete]'), 'data-complete'), c.complete);assert.equal(await num(S.locator('[data-v-upper]'), 'data-v-upper'), c.upper);
         // Totals made from Q·G alone (no V in the total) are counted on both bases, financials and no-V rows named apart.
-        const gate = (n) => (n ? ' · 가치 함정 관문 V 제외 ' + n : '');
         assert.equal(await num(S.locator('[data-qg-only-full]'), 'data-qg-only-full'), c.qgOnly);assert.equal(await num(S.locator('[data-qg-only-general]'), 'data-qg-only-general'), c.qgOnlyGeneral);
-        assert.equal(c.qgOnly, c.qgOnlyFin + c.qgOnlyNoV + c.qgOnlyGate);
-        assert.equal(await S.locator('[data-qg-only-full]').textContent(), c.qgOnly + ' (금융 ' + c.qgOnlyFin + ' · 가격 없음/V 미산출 ' + c.qgOnlyNoV + gate(c.qgOnlyGate) + ')');
-        assert.equal(await S.locator('[data-qg-only-general]').textContent(), c.qgOnlyGeneral + ' (가격 없음/V 미산출 ' + c.qgOnlyNoV + gate(c.qgOnlyGate) + ')');
+        assert.equal(c.qgOnly, c.qgOnlyFin + c.qgOnlyNoV);assert.equal(c.qgOnlyGeneral, c.qgOnlyNoV);
+        assert.equal(await S.locator('[data-qg-only-full]').textContent(), c.qgOnly + ' (금융 ' + c.qgOnlyFin + ' · 가격 없음/V 미산출 ' + c.qgOnlyNoV + ')');
+        assert.equal(await S.locator('[data-qg-only-general]').textContent(), c.qgOnlyGeneral + ' (가격 없음/V 미산출 ' + c.qgOnlyNoV + ')');
+        // Value-trap gate rows: V computed, excluded from the total by the approved rule, kept in the ranking: their own line.
+        assert.equal(await num(S.locator('[data-gate-full]'), 'data-gate-full'), c.gateFull);assert.equal(await num(S.locator('[data-gate-general]'), 'data-gate-general'), c.gateGeneral);
+        assert.equal(c.gateFull, c.gateGeneral, 'gate rows all have V, so all are general');
+        assert.match(await S.locator('[data-v-row="gate"]').textContent(), new RegExp('^가치 함정 관문으로 V 제외\\(공식 규칙 · 순위 유지\\)' + c.gateFull + '/' + c.total + c.gateGeneral + '/' + c.general + '$'));
         if (c.financial) assert.ok(c.qgOnlyFin >= 1, 'financial rows with a Q·G total are visible');
         assert.ok(c.vGeneral <= c.upper || basis === 'SYNTHETIC_FIXTURE', 'V count within the public-input upper bound');
         // Not-computed reasons: every engine reason code with its count, summing to the general rows without V.
