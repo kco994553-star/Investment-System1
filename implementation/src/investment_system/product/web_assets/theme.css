@@ -649,3 +649,17 @@ svg .scenario-up { stroke: var(--up); } svg .scenario-down { stroke: var(--down)
 :root[data-theme="dark"] .tree-node.root, :root[data-theme="dark"] .sys-core span, :root[data-theme="dark"] .more-sources { background: var(--soft); }
 :root[data-theme="dark"] .brand-mark { color: #161616; }
 :root[data-theme="dark"] .private-history .chart-axis { fill: var(--chart-muted); }
+
+/* ---------- Universe504 company page (universe-company.js/.css, QGV 1.1 · search results): paper-and-ink restyle ----------
+   universe-company.css loads after this file, so these rules are anchored on html for precedence. Axis colours come from the
+   menu tokens (Q = QGV blue, G = technical green, V = macro orange; chalk versions on the dark board) and keep their labels. */
+html { --uc-q: var(--m-qgv); --uc-g: var(--m-technical); --uc-v: var(--m-macro); }
+html .uc-cards { gap: 18px; }
+html .uc-cards > .uc-card { border-top-width: var(--sketch); border-top-color: var(--ink); }
+html .uc-card-q { box-shadow: 5px 5px 0 var(--uc-q); } html .uc-card-g { box-shadow: 5px 5px 0 var(--uc-g); } html .uc-card-v { box-shadow: 5px 5px 0 var(--uc-v); }
+html .uc-axis::before { width: .8em; height: .8em; border: 1.5px solid var(--ink); border-radius: 50%; }
+html .uc-bar { border: 1.5px solid var(--ink); border-radius: 6px; box-sizing: border-box; height: 12px; overflow: hidden; }
+html .uc-bar-na { border: 1.5px dashed var(--ink); border-radius: 6px; height: 12px; }
+html .uc-track { fill: var(--card); }
+html .uc-table th, html .uc-table td { border-bottom: 1.5px solid var(--ink); }
+html .uc-table thead th { border-bottom-width: 3px; font-family: var(--font-display); font-weight: 800; }
