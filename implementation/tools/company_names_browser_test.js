@@ -4,7 +4,7 @@
 // - An UNREGISTERED company is still found by its English name and ticker and shows "English name · TICKER".
 // - Share classes of one issuer are told apart ("알파벳 A · GOOGL" vs "알파벳 C · GOOG").
 // - Titles read "한국어명 · 티커"; the company page lists the English name and the name source.
-// - QGV values on the page are the same with and without the names file (names are display/search only).
+// - QGV values on the page and the leaderboard order are the same with and without the names file (display/search only).
 // Synthetic Universe identity rows (sec_universe_shares_fixture.js) make the 504 codes searchable; sec-qgv2.json is the served
 // file when the build carries one (REAL) or the strict synthetic payload (qgv_v2_fixture.js). External requests are aborted.
 const { chromium } = require('playwright'), assert = require('node:assert/strict'), path = require('node:path');
@@ -114,12 +114,20 @@ async function qgvValues(page, hash) {
         assert.deepEqual(a, b, 'QGV values differ with the names file on ' + h);
         assert.ok(a.axes.length || a.target, 'values read on ' + h);
       }
+      // Leaderboard (S06): the name is a display-only addition; row order and QGV cells are the same without the file.
+      const board = async (pg) => { await pg.goto(BASE + '#leaderboard');await pg.locator('[data-leaderboard-row]').first().waitFor();
+        return pg.evaluate(() => [...document.querySelectorAll('[data-leaderboard-row]')].map((r) => [r.dataset.leaderboardRow, [...r.querySelectorAll('[data-leaderboard-qgv2],[data-leaderboard-total],[data-leaderboard-qg]')].map((c) => c.textContent.trim()).join('|')])); };
+      const la = await board(withNames.page), lb = await board(without.page);
+      assert.deepEqual(la, lb, 'leaderboard order or QGV cells differ with the names file');
+      assert.equal((await withNames.page.locator('[data-leaderboard-row="nvda"] [data-leaderboard-name]').textContent()).trim(), 'NVIDIA');
+      assert.equal((await withNames.page.locator('[data-leaderboard-row="googl"] [data-leaderboard-name]').textContent()).trim(), '알파벳 A');
+      assert.equal(await without.page.locator('[data-leaderboard-name]').count(), 0);
       // Without the file the page falls back to the ticker and says so; the company is still there.
       await without.page.goto(BASE + '#company/' + encodeURIComponent(sample[0]));await without.page.locator('[data-uc-name="NOT_LOADED"]').waitFor();
       assert.equal(await without.page.locator('main h1').textContent(), sample[0].slice(sample[0].indexOf(':') + 1));
       assert.deepEqual(withNames.errors, []);assert.deepEqual(without.errors, []);
     } finally { await withNames.ctx.close();await without.ctx.close(); }
-    pass++;console.log('PASS QGV values unchanged with and without company-names-ko.json (' + hashes.length + ' pages, mode=' + mode + ')');
+    pass++;console.log('PASS QGV values and leaderboard order unchanged with and without company-names-ko.json (' + hashes.length + ' pages + S06, mode=' + mode + ')');
     console.log('COMPANY_NAMES_BROWSER_OK checks=' + pass);
   } catch (e) {
     console.log('COMPANY_NAMES_BROWSER_FAIL phase=' + phase + ' ' + (e && e.message ? e.message.split('\n').slice(0, 6).join(' | ') : e));process.exitCode = 1;
