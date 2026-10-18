@@ -56,16 +56,22 @@ function typeMemberships({identity,publicScreens={},v2Inputs}={}){
  const inputs=v2Inputs===undefined?(publicScreens&&qgv2Inputs()?publicScreens[qgv2Inputs().FILE]||null:null):v2Inputs;
  if(!object(identity)||!inputs||!object(inputs.records))return null;const code=codeIndex(inputs)(identity),m=code?rowMemberships(inputs.records[code]):null;
  return m?{code,type_scope:typeScope(),memberships:m}:null;}
-let memo=null;
-function universeScores(v2Inputs,quotes,preset,gate,cyclicalBasis={}){
- const mk=JSON.stringify([preset,gate,cyclicalBasis]);if(memo&&memo.inputs===v2Inputs&&memo.quotes===quotes&&memo.key===mk)return memo.result;
+/* Two memos: the official result (memo) and the PERSONAL_PREVIEW result of a two-level weight tree (personalMemo, owner
+   directive 2026-10-18 §4.2). A personal result never overwrites or replaces the official one and is never `primary`. */
+let memo=null,personalMemo=null;
+function universeScores(v2Inputs,quotes,preset,gate,cyclicalBasis={},personal=null){
+ const mk=JSON.stringify(personal?['personal',personal.weights,personal.typeWeights,gate,cyclicalBasis]:[preset,gate,cyclicalBasis]),held=personal?personalMemo:memo;
+ if(held&&held.inputs===v2Inputs&&held.quotes===quotes&&held.key===mk)return held.result;
  // A row of another calculation-rule version never joins this device's ranking population (QGV_V2_QG_METHOD.md 5, calc_version).
  // TYPE-SCOPE (owner instruction 2026-10-17): type memberships come from each row's own published price-free metrics with the
  // same approved rule (QgvV2.pricefreeMemberships), for every Universe code and TARGET row alike. TARGET membership no longer
  // decides who is typed (formerly only TARGET ids, via company-types-pricefree.json, got type weights).
  const companies={};for(const[code,r]of Object.entries(v2Inputs.records))if(r.calc_version_mismatch!==true)companies[code]={cyclical_basis:cyclicalBasis[code]===true,cik:r.cik,industry_group:r.industry_group,profile:r.profile,factors:r.factors,v_inputs:r.v_inputs,qg_axes:r.qg_axes,in_cross_section:r.in_cross_section!==false,memberships:rowMemberships(r)};
- const result=qgvV2().scoreUniverse(companies,quotes,{preset,gate});memo={inputs:v2Inputs,quotes,key:mk,result};return result;
+ const result=qgvV2().scoreUniverse(companies,quotes,personal?{gate,weights:personal.weights,typeWeights:personal.typeWeights}:{preset,gate}),next={inputs:v2Inputs,quotes,key:mk,result};
+ if(personal)personalMemo=next;else memo=next;return result;
 }
+// Label of every personal result (S06, S13): it is a preview of the user's own weights, never an official score.
+const PERSONAL_LABEL=['개인 설정 미리보기 · 공식 점수 아님','Personal setting preview · not an official score'];
 /* FE-MISSING-2 (owner instruction 2026-10-17): why a company's QGV is partial or missing, read only from fields the public
    contract already carries (sec-qgv2.json row state/acquired_at/fiscal_year_end/profile/metrics, the published Q/G axis coverage,
    the engine's factor reasons and v_inputs). Display only: nothing here feeds a score, total, rank or candidate, and nothing is
@@ -114,26 +120,29 @@ function qgReason(factor,rec,ctx,pub){
  const sub=subMetrics(ctx.profile,factor);if(!sub)return 'SEC_FACTOR_NOT_AVAILABLE';if(!sub.length)return 'NOT_APPLICABLE_PROFILE';
  return sub.some(m=>object(rec.metrics)&&finite(rec.metrics[m]))?'PEERS_TOO_FEW':'SEC_ITEMS_MISSING';}
 function axisCoverage(axis,d,rec,ctx){
- const W=qgvV2().WEIGHTS[axis],pub=axis!=='V'&&rec&&object(rec.qg_axes)&&object(rec.qg_axes[axis])?rec.qg_axes[axis]:null,score=axis==='Q'?d.q:axis==='G'?d.g:d.v;
+ // ctx.inner (PERSONAL_PREVIEW): the effective inner weights; 0 = excluded (not missing). Absent: the official weights, unchanged.
+ const OW=qgvV2().WEIGHTS[axis],custom=ctx.inner&&object(ctx.inner[axis])?ctx.inner[axis]:null,W=custom||OW,pub=axis!=='V'&&rec&&object(rec.qg_axes)&&object(rec.qg_axes[axis])?rec.qg_axes[axis]:null,score=axis==='Q'?d.q:axis==='G'?d.g:d.v;
  const factors=Object.entries(W).map(([id,weight])=>{const x=d.factors&&object(d.factors[id])?d.factors[id]:null,s=x&&finite(x.score)?x.score:null;let reason=null;
   if(s===null){if(axis==='V'){reason=ctx.withdrawn?'IDENTITY_CONFLICT_WITHDRAWN':ctx.blocked?'PRICE_IDENTITY_CONFLICT':ctx.mismatch?'CALC_VERSION_MISMATCH':!rec||rec.state==='NOT_AVAILABLE'?'SOURCE_NOT_AVAILABLE':x&&x.reason?x.reason:'V_INPUTS_NOT_AVAILABLE';}else reason=qgReason(id,rec,ctx,pub);}
-  return{id,weight,score:s,reason,raw:x&&x.reason?x.reason:null,category:s===null?(CATEGORY[reason]||'PARTIAL'):'OK',basis:x&&x.basis?x.basis:null,metrics:axis!=='V'&&ctx.profile?[...(subMetrics(ctx.profile,id)||[])]:[]};});
- let total=0,used=0,n=0,na=0;for(const f of factors){total+=f.weight;if(f.score!==null){used+=f.weight;n++;}else if(f.category==='NOT_APPLICABLE')na++;}
+  const out={id,weight,score:s,reason,raw:x&&x.reason?x.reason:null,category:s===null?(CATEGORY[reason]||'PARTIAL'):'OK',basis:x&&x.basis?x.basis:null,metrics:axis!=='V'&&ctx.profile?[...(subMetrics(ctx.profile,id)||[])]:[]};
+  if(custom){out.official_weight=OW[id];out.excluded=weight===0;}return out;});
+ let total=0,used=0,n=0,na=0,officialUsed=0;for(const f of factors){if(custom&&f.score!==null)officialUsed+=f.official_weight;if(f.excluded)continue;total+=f.weight;if(f.score!==null){used+=f.weight;n++;}else if(f.category==='NOT_APPLICABLE')na++;}
  // Renormalized share inside the axis (the engine's Σ(w·s)/Σ(w available)), only when the axis itself has a score.
- for(const f of factors)f.share=score!==null&&f.score!==null&&used>0?100*f.weight/used:null;
- const lacking=factors.some(f=>f.score===null&&f.category!=='NOT_APPLICABLE');
+ for(const f of factors)f.share=score!==null&&f.score!==null&&used>0&&!f.excluded?100*f.weight/used:null;
+ const lacking=factors.some(f=>f.score===null&&f.category!=='NOT_APPLICABLE'&&!f.excluded);
  const status=ctx.withdrawn||axis==='V'&&ctx.blocked?'STOPPED':axis==='V'&&ctx.profile==='FINANCIAL'?'NOT_APPLICABLE':score===null?'NOT_AVAILABLE':lacking?'PARTIAL':'READY';
  const codes=pub&&Array.isArray(pub.reason_codes)?[...pub.reason_codes]:[];let reason=null;
  if(status==='STOPPED')reason=ctx.withdrawn?'IDENTITY_CONFLICT_WITHDRAWN':'PRICE_IDENTITY_CONFLICT';else if(status==='NOT_APPLICABLE')reason='FINANCIAL_PROFILE_V_NOT_DEFINED';
- else if(status==='NOT_AVAILABLE'){const first=factors.find(f=>f.score===null);reason=ctx.mismatch?'CALC_VERSION_MISMATCH':codes.find(c=>['ROW_NOT_AVAILABLE','PEERS_BELOW_MINIMUM','CALC_VERSION_MISMATCH'].includes(c))||(!rec||rec.state==='NOT_AVAILABLE'?'SOURCE_NOT_AVAILABLE':n&&used/total<qgvV2().MIN_AXIS_WEIGHT?'AXIS_COVERAGE_BELOW_50':factors.every(f=>f.reason===first.reason)?first.reason:'AXIS_COVERAGE_BELOW_50');}
+ else if(status==='NOT_AVAILABLE'){const first=factors.find(f=>f.score===null&&!f.excluded)||factors.find(f=>f.score===null);reason=ctx.mismatch?'CALC_VERSION_MISMATCH':codes.find(c=>['ROW_NOT_AVAILABLE','PEERS_BELOW_MINIMUM','CALC_VERSION_MISMATCH'].includes(c))||(!rec||rec.state==='NOT_AVAILABLE'?'SOURCE_NOT_AVAILABLE':n&&used/total<qgvV2().MIN_AXIS_WEIGHT?'AXIS_COVERAGE_BELOW_50':factors.every(f=>f.reason===first.reason)?first.reason:'AXIS_COVERAGE_BELOW_50');}
  const inTotal=finite(d.total)&&score!==null&&!(axis==='V'&&d.v_excluded),use=inTotal?'INCLUDED':!finite(d.total)?'TOTAL_NOT_AVAILABLE':score===null?'AXIS_NOT_AVAILABLE':'VALUE_TRAP_GATE';
- return{axis,status,score,weight_available:total?used/total:null,factors_available:n,factors_total:factors.length,not_applicable:na,reason,use,factors,
+ const extra=custom?{weights:'PERSONAL',weight_available_official:officialUsed/100,excluded:factors.filter(f=>f.excluded).map(f=>f.id)}:{};
+ return{axis,status,score,weight_available:total?used/total:null,factors_available:n,factors_total:custom?factors.filter(f=>!f.excluded).length:factors.length,not_applicable:na,reason,use,factors,...extra,
   published:pub?{factors_available:pub.factors_available??null,available_weight:pub.available_weight??null,peer_basis:pub.peer_basis??null,peer_count:pub.peer_count??null,submetric_fallbacks:pub.submetric_fallbacks??null,reason_codes:codes}:null};}
 /* Display coverage of one v2 display row d and its source record rec (null when no record). Returns null for a reference-only
    row (no published record behind it). */
-function coverageFor(d,rec,{blocked=false}={}){
+function coverageFor(d,rec,{blocked=false,inner=null}={}){
  if(!d||d.reference_only)return null;const withdrawn=!!rec&&rec.identity_withdrawn===true,mismatch=!!rec&&rec.calc_version_mismatch===true,profile=rec&&['GENERAL','FINANCIAL'].includes(rec.published_profile)?rec.published_profile:null;
- const ctx={withdrawn,mismatch,blocked,profile},axes={};for(const a of ['Q','G','V'])axes[a]=axisCoverage(a,d,rec,ctx);
+ const ctx={withdrawn,mismatch,blocked,profile,inner},axes={};for(const a of ['Q','G','V'])axes[a]=axisCoverage(a,d,rec,ctx);
  const v=rec&&object(rec.v_inputs)?rec.v_inputs:null,missing=[];
  if(rec&&!withdrawn&&rec.state!=='NOT_AVAILABLE'&&profile!=='FINANCIAL'){if(!v)missing.push('v_inputs');else for(const k of Object.keys(V_INPUT)){const x=v[k];if(k==='ebit_per_share_history'?!(Array.isArray(x)&&x.length>=qgvV2().MIN_HISTORY):!finite(x))missing.push(k);}}
  const all=Object.values(axes).flatMap(a=>a.factors),has=c=>all.some(f=>f.category===c),states=[];
@@ -151,7 +160,11 @@ function vInputText(key,en){return Object.hasOwn(V_INPUT,key)?V_INPUT[key][en?1:
 /* The accessor. identities: [{company_id, ticker}] rows to show; publicScreens: the app's loaded public screens (sec-qgv2.json
    under SecQgv2.FILE; type memberships come from its rows, company-types-pricefree.json is display-only); quotes:
    {code:{price,currency}} RAM. Returns rows with v2 (= primary). reference is always null: there is no comparison score on screens. */
-function compute({identities=[],publicScreens={},v2Inputs,quotes={},preset,gate=null,referenceRows={}}={}){
+/* weights (optional, PERSONAL_PREVIEW two-level tree {axis, inner}; typeWeights default true): also computes the personal
+   result with its own memo and returns it under `personal` (top level: state, profile, label) and rows[cid].personal /
+   personal_rank. `primary`, `v2`, `rank` and every other field stay the official result, byte-identical to a call without
+   weights. An invalid tree gives personal.state 'INVALID' (reason WEIGHTS_INVALID) and no personal rows. */
+function compute({identities=[],publicScreens={},v2Inputs,quotes={},preset,gate=null,referenceRows={},weights=null,typeWeights=true}={}){
  const V2=qgvV2(),intended='v2',inputs=v2Inputs===undefined?(publicScreens&&qgv2Inputs()?publicScreens[qgv2Inputs().FILE]||null:null):v2Inputs;
  const chosen=preset&&Object.hasOwn(V2.PRESETS,preset)?preset:V2.DEFAULT_PRESET,gateOn=gate===null||gate===undefined?V2.GATE_DEFAULT:Boolean(gate);
  const codeFor=codeIndex(inputs);
@@ -163,20 +176,31 @@ function compute({identities=[],publicScreens={},v2Inputs,quotes={},preset,gate=
  let universe=null,v2Reason=inputs?null:newer?'SEC_QGV2_SCHEMA_NEWER':'SEC_QGV2_NOT_AVAILABLE';if(inputs){try{universe=universeScores(inputs,priced,chosen,gateOn,cyclicalBasis);}catch(_){universe=null;v2Reason='V2_CALCULATION_FAILED';}}
  const v2Ready=!!universe&&Object.values(universe).some(r=>finite(r.total));if(universe&&!v2Ready)v2Reason='V2_SCORES_NOT_AVAILABLE';
  const b=basis(intended,v2Ready),current=b.basis,rows={};let ranked=[];
- for(const c of identities){const code=codeFor(c);let v2=v2Display(universe&&code?universe[code]:null);if(universe&&code&&inputs.records[code]?.calc_version_mismatch===true){v2.flags=['CALC_VERSION_MISMATCH'];v2.reason='CALC_VERSION_MISMATCH';}if(universe&&code&&universe[code]&&ebitEstimated(inputs.records[code])){v2.flags.push('EBIT_ESTIMATED');const ys=inputs.records[code].metrics.ebit_estimated_fiscal_years;if(Array.isArray(ys))v2.ebit_estimated_fiscal_years=[...ys];}
+ // One display row of universe u (official: extra {}; personal: the weight tree), with the same flags, stops and coverage.
+ const display=(u,c,code,extra)=>{let v2=v2Display(u&&code?u[code]:null);const universe=u;if(universe&&code&&inputs.records[code]?.calc_version_mismatch===true){v2.flags=['CALC_VERSION_MISMATCH'];v2.reason='CALC_VERSION_MISMATCH';}if(universe&&code&&universe[code]&&ebitEstimated(inputs.records[code])){v2.flags.push('EBIT_ESTIMATED');const ys=inputs.records[code].metrics.ebit_estimated_fiscal_years;if(Array.isArray(ys))v2.ebit_estimated_fiscal_years=[...ys];}
   // identity_withdrawn (Qgv2Inputs): a TARGET issuer withdrawn for an identity conflict, its TARGET row and same-CIK Universe codes.
   const src=inputs&&code&&Object.hasOwn(inputs.records,code)?inputs.records[code]:null;if(src&&(src.state==='NOT_AVAILABLE'||src.identity_withdrawn===true)&&src.calc_version_mismatch!==true&&v2.total===null){v2.total_reason='SOURCE_NOT_AVAILABLE';v2.source_reason_codes=[...(src.na_reasons||[])];}
   if(blocked.has(code)){v2.v=null;v2.total=null;v2.state='NOT_AVAILABLE';v2.total_reason='PRICE_IDENTITY_CONFLICT';if(!v2.flags.includes('PRICE_IDENTITY_CONFLICT'))v2.flags.push('PRICE_IDENTITY_CONFLICT');}
   if(newer){v2.total_reason='DATA_FORMAT_NEWER';}
   const ref=object(referenceRows)?referenceRows[c.company_id]:null;if(ref?.reference_only===true&&object(ref.factors)&&object(ref.axes)){try{const factors={},qg_axes={};for(const axis of ['Q','G']){let coverage=0;for(const[f,w]of Object.entries(V2.WEIGHTS[axis])){const s=ref.factors[f];factors[f]=finite(s)&&s>=0&&s<=100?s:null;if(factors[f]!==null)coverage+=w;}qg_axes[axis]={score:coverage>=50&&finite(ref.axes[axis]?.score)?ref.axes[axis].score:null};}
-   v2=v2Display(V2.scoreUniverse({reference:{profile:'GENERAL',industry_group:null,factors,qg_axes,v_inputs:null,memberships:null}}, {},{preset:chosen,gate:gateOn}).reference);v2.reference_only=true;v2.reference_label='참고 순위';v2.reference_label_en='Reference ranking';}catch(_){}}
-  if(inputs&&!newer){try{v2.coverage=coverageFor(v2,src,{blocked:blocked.has(code)});}catch(_){v2.coverage=null;}}else if(newer)v2.coverage={axes:null,states:['FORMAT_NEWER'],v_inputs_missing:[],v_periods:{},source:null};
+   v2=v2Display(V2.scoreUniverse({reference:{profile:'GENERAL',industry_group:null,factors,qg_axes,v_inputs:null,memberships:null}}, {},{preset:chosen,gate:gateOn,...extra}).reference);v2.reference_only=true;v2.reference_label='참고 순위';v2.reference_label_en='Reference ranking';}catch(_){}}
+  if(inputs&&!newer){try{v2.coverage=coverageFor(v2,src,extra.weights?{blocked:blocked.has(code),inner:extra.weights.inner}:{blocked:blocked.has(code)});}catch(_){v2.coverage=null;}}else if(newer)v2.coverage={axes:null,states:['FORMAT_NEWER'],v_inputs_missing:[],v_periods:{},source:null};
+  return v2;};
+ for(const c of identities){const code=codeFor(c),v2=display(universe,c,code,{});
   const row={company_id:c.company_id,ticker:c.ticker,code,v2,primary:v2,reference:null,rank:null};rows[c.company_id]=row;}
  ranked=Object.values(rows).filter(r=>finite(r.primary.total)&&r.primary.reference_only!==true).sort((a,b)=>b.primary.total-a.primary.total||(a.ticker<b.ticker?-1:1));
  ranked.forEach((r,i)=>{r.rank=i+1;});
+ // PERSONAL_PREVIEW: same identities, inputs, quotes, stops and tie rule; a separate memo, rows[cid].personal, never primary.
+ let personal=null;if(weights!==null&&weights!==undefined){let tree=null;try{tree=V2.validateWeights(weights);}catch(_){tree=null;}const typesOn=typeWeights!==false;
+  personal={state:'NOT_AVAILABLE',reason:null,label:PERSONAL_LABEL,profile:tree?{id:V2.VERSION+'/custom/'+V2.weightsId(tree,typesOn)+'/gate-'+(gateOn?'on':'off'),namespace:V2.PERSONAL_NAMESPACE,gate:gateOn,type_weights:typesOn,weights:tree}:null};
+  if(!tree){personal.state='INVALID';personal.reason='WEIGHTS_INVALID';}
+  else{let pu=null;if(inputs){try{pu=universeScores(inputs,priced,chosen,gateOn,cyclicalBasis,{weights:tree,typeWeights:typesOn});}catch(_){pu=null;personal.reason='V2_CALCULATION_FAILED';}}else personal.reason=v2Reason;
+   const extra={weights:tree,typeWeights:typesOn};for(const c of identities){const row=rows[c.company_id];row.personal=display(pu,c,row.code,extra);row.personal_rank=null;}
+   Object.values(rows).filter(r=>finite(r.personal.total)&&r.personal.reference_only!==true).sort((a,b)=>b.personal.total-a.personal.total||(a.ticker<b.ticker?-1:1)).forEach((r,i)=>{r.personal_rank=i+1;});
+   if(pu&&Object.values(pu).some(r=>finite(r.total)))personal.state='READY';else if(!personal.reason)personal.reason='V2_SCORES_NOT_AVAILABLE';}}
  const quoted=object(quotes)?Object.keys(quotes).length:0;
  return{default:current,basis:b,label:LABEL[current],profile:{preset:chosen,gate:gateOn,id:V2.VERSION+'/'+chosen+'/gate-'+(gateOn?'on':'off'),name:V2.PRESETS[chosen],type_scope:b.type_scope},
-  v2_state:v2Ready?'READY':'NOT_AVAILABLE',v2_reason:v2Reason,v2_reason_text:v2Reason==='SEC_QGV2_SCHEMA_NEWER'?NEWER_TEXT:null,v2_as_of:inputs?inputs.as_of:null,priced_codes:quoted,rows};
+  v2_state:v2Ready?'READY':'NOT_AVAILABLE',v2_reason:v2Reason,v2_reason_text:v2Reason==='SEC_QGV2_SCHEMA_NEWER'?NEWER_TEXT:null,v2_as_of:inputs?inputs.as_of:null,priced_codes:quoted,rows,...(personal?{personal}:{})};
 }
 /* Rows for the virtual-trading rehearsal snapshot and the daily report (+ export): {cid:{q,g,partial,...}} from v2 only.
    compare is always null (no comparison score). */
@@ -239,5 +263,5 @@ function label(version,en){return(LABEL[version]||LABEL.v2)[en?1:0];}
 // (+ ' · 유형 범위 qgv2-type-scope/…' = the type-application scope id the scores use).
 function basisText(S,en){const b=S&&S.basis?S.basis:basis('v2',false);return label('v2',en)+' · '+(en?b.label_en:b.label)+(b.since?(en?' · since ':' · ')+b.since+(en?'':'부터'):'')+(b.type_scope?(en?' · type scope ':' · 유형 범위 ')+b.type_scope:'');}
 function presets(){return qgvV2().PRESETS;}
-return Object.freeze({MODES,LABEL,FLAG,DATA_STATE,AXIS_STATUS,REASON,coverageFor,exploreGroup,reasonText,stateText,axisStatusText,vInputText,scoringDefault,compute,typeMemberships,judgmentRows,collectQuotes,summaryText,naText,flagText,label,basis,basisText,presets,symbolOf});
+return Object.freeze({MODES,LABEL,PERSONAL_LABEL,FLAG,DATA_STATE,AXIS_STATUS,REASON,coverageFor,exploreGroup,reasonText,stateText,axisStatusText,vInputText,scoringDefault,compute,typeMemberships,judgmentRows,collectQuotes,summaryText,naText,flagText,label,basis,basisText,presets,symbolOf});
 });
