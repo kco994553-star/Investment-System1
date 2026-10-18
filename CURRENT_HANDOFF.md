@@ -1,7 +1,8 @@
 # 현재 인수인계 — 2026-10-18 (Claude Code)
 
 먼저 읽기: [WORKING_RULES.md](WORKING_RULES.md) → 이 파일 → [USER_DECISIONS_PENDING.md](implementation/docs/USER_DECISIONS_PENDING.md) → [PLAYBOOK_V1.md](implementation/docs/playbook/PLAYBOOK_V1.md)(17·18절 포함).
-**최신 제품 지시(2026-10-18, 원문):** [PRODUCT_FRONTEND_REDESIGN_20261018.md](implementation/docs/PRODUCT_FRONTEND_REDESIGN_20261018.md) — 공격·균형·수비형 / 2단계 가중치 / 13F 가중치 연구 / 무채색 디자인 / 8개 메뉴. 확정 방향과 미정 수치는 결정 기록 2026-10-18. 기능 대응표: [PRODUCT_FEATURE_MAP_20261018.md](implementation/docs/PRODUCT_FEATURE_MAP_20261018.md).
+**최신 내용구조·디자인 지시(2026-10-18 후속, 원문 — 아래 재설계 지시보다 우선):** [PRODUCT_IA_DIRECTIVE_20261018.md](implementation/docs/PRODUCT_IA_DIRECTIVE_20261018.md). 메뉴는 0 검색 / 1 QGV / 2 기술적 분석 / 3 매크로 / 4 뉴스 / 5 포트폴리오 / 6 프롬프트 / n 구조 트리 / n+1 Lab이다. 디자인은 손그림 칠판 느낌(색 허용)이고 모바일도 함께 설계한다. 대응·온톨로지 점검: [PRODUCT_IA_ONTOLOGY_CHECK_20261018.md](implementation/docs/PRODUCT_IA_ONTOLOGY_CHECK_20261018.md).
+**앞선 제품 지시(2026-10-18, 원문):** [PRODUCT_FRONTEND_REDESIGN_20261018.md](implementation/docs/PRODUCT_FRONTEND_REDESIGN_20261018.md) — 공격·균형·수비형 / 2단계 가중치 / 13F 가중치 연구 / 무채색 디자인 / 8개 메뉴. 확정 방향과 미정 수치는 결정 기록 2026-10-18. 기능 대응표: [PRODUCT_FEATURE_MAP_20261018.md](implementation/docs/PRODUCT_FEATURE_MAP_20261018.md).
 **실행 대기열(지시 원문):** [QUEUE_20261017.md](implementation/docs/QUEUE_20261017.md), 보완 [QUEUE_20261017_SUPPLEMENT_INTEGRATED.md](implementation/docs/QUEUE_20261017_SUPPLEMENT_INTEGRATED.md). 최신 사용자 결정이 대기열보다 우선한다.
 이전 기록: [HANDOFF_HISTORY_THROUGH_20261013.md](implementation/docs/handoff/HANDOFF_HISTORY_THROUGH_20261013.md), [HANDOFF_HISTORY_20261014_15.md](implementation/docs/handoff/HANDOFF_HISTORY_20261014_15.md), [HANDOFF_HISTORY_20261016_17.md](implementation/docs/handoff/HANDOFF_HISTORY_20261016_17.md)(10/14~10/16 실행 증거, 504 일괄 실행 1·2차, 10/17 대기열·병합 표 원문).
 보고 규칙: 시각은 UTC와 KST를 함께 적는다. `PUBLISHED_COVERAGE`는 같은 실행의 deploy 성공을 확인했을 때만 "실제 게시 커버리지"라고 부른다. 구현·병합·게시·운영 확인을 나눠 적는다.
@@ -59,7 +60,7 @@
 
 세션 밖 자동 재개: 예약 점검(21:40, 23:15, 00:17 UTC)은 이 세션으로 들어온다. 세션이 끝나면 하위 작업자는 이어지지 않는다.
 
-## 병합 상태 (2026-10-18 03:20 UTC / 12:20 KST 기준, canonical 0eeb933a)
+## 병합 상태 (2026-10-18 05:00 UTC / 14:00 KST 기준, canonical a346deeb)
 
 10/17 05:06 UTC 이전 병합은 기록 파일에 있다. 모두 기준과 동기화한 최신 HEAD에서 필수 6체크 성공 뒤 병합했다.
 
@@ -80,9 +81,16 @@
 | 10/18 02:17 / 11:17 | #296 | 10/18 제품 지시 원문·기능 대응표·결정 기록 | 506fc4ae |
 | 10/18 02:56 / 11:56 | #298 | 뉴스 필터·근거 표시·영향 경로 설계 문서 | ea2dc8b4 |
 | 10/18 03:20 / 12:20 | #299 | 보고 불가 카드·저장 전 검토, 프롬프트 즐겨찾기·개인 사본 | 0eeb933a |
+| 10/18 03:52 / 12:52 | #301 | 인수인계·숫자 재대조 0-2-4·결정 등록 | e44bb767 |
+| 10/18 04:15 / 13:15 | #302 | 무채색 디자인·8개 메뉴(새 지시로 다시 바뀜) | b25c6c2e |
+| 10/18 04:31 / 13:31 | #303 | 13F 가중치 연구 준비 문서 | 35ffbf84 |
+| 10/18 04:54 / 13:54 | #297 | 수집 식별 복구(승인): 문자열 CIK·CBOE 별칭 | bfe91d30 |
+| 10/18 05:13 / 14:13 | #304 | 뉴스 보유·관심 연결, 우체통 검토 후 보관, 비교 탭 보고 불가 카드, 문구·너비·뒤로 가기 | a346deeb |
 
 **열린 PR**(모두 #299 병합 뒤 정규 기준보다 뒤짐 → 병합 직전에 다시 동기화)
-- 승인 필요: #297(수집 식별 복구), #300(2단계 가중치), #262(매크로 재생), #248 → #263(TARGET v1, 기기 FCF 확인 뒤).
+- 손그림 WIP 브랜치 `claude/fe-doodle-map`은 새 내용구조 구현의 재료로만 쓰고 그대로 병합하지 않는다.
+- 승인 필요: #300(2단계 가중치), #262(매크로 재생), #248 → #263(TARGET v1, 기기 FCF 확인 뒤).
+- #297 복구 확인 예약: 10/19(CBOE)·10/20(XOM)·10/21(HONA) 23:15 UTC.
 - 로컬 전용: `claude/withdrawn-peer`. 하위 작업자의 커밋이 권한 검사에서 거부됐다. Main이 대신 커밋하지 않고 사용자 확인을 기다린다.
 - 보류: #267(합성 데이터 투자 스튜디오).
 
