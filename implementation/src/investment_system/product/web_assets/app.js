@@ -468,7 +468,7 @@ function m2Panel(id,companyIds) {
 
 function detail(id) {
   const c=company(id);
-  if(!c && universeCode(id)) {void ensureUniverseDirectory();return universeDetail(id);}
+  if(!c && universeCode(id)) {void ensureUniverseDirectory();return window.UniverseCompany?UniverseCompany.html(id,{locale:appSettings.display_locale,screens:publicScreens,shares:universeDirectory,quotes:qgv2Quotes}):universeDetail(id);}
   const candidate=Object.hasOwn(m2Candidates.companies,id)?m2Candidates.companies[id]:null;
   const historySymbol=PrivateHistory.symbolFor(id);
   if((!c || c.identity_only) && (candidate || historySymbol)) return CompanyScreen.summary({locale:appSettings.display_locale,id,screens:publicScreens,scores:qgvScores(),quote:companyQuote.id===id?companyQuote.quote:null,
@@ -878,6 +878,7 @@ function renderRoute() {
   if(route==='brief'&&window.PlaybookScreen){try{$('#content').insertAdjacentHTML('afterbegin',PlaybookScreen.todayHtml(localStorage));}catch(_){}}
   if(route==='actual') attachDeviceActual('#device-actual-root',true);
   if(route==='portfolio') {attachDeviceActual('#device-actual-summary',false);paintPortfolio();}
+  if(route==='company' && window.UniverseCompany && !company(id) && universeCode(id)) void UniverseCompany.mount($('#content'),{locale:appSettings.display_locale,screens:publicScreens,shares:universeDirectory,quotes:qgv2Quotes,catalogPromise:deviceCatalog(),config:window.InvestmentAppConfig});
   if(route==='company' && $('#company-holding')) void CompanyScreen.mountHolding($('#company-holding'),{locale:appSettings.display_locale,ticker:company(id)?.identity_only?company(id).ticker:null,catalogPromise:deviceCatalog()});
   // Tab choice is mirrored into the hash ('#analysis/<id>/<tab>') with replaceState: no new history entry, back leaves S05.
   if(route==='analysis') CompanyScreen.wireTabs($('#content'),{onSelect:key=>{try{history.replaceState(history.state,'','#analysis/'+encodeURIComponent(id)+(key==='summary'?'':'/'+key));currentHash=location.hash;}catch(_){}}});
