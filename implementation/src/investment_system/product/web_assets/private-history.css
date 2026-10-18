@@ -10,8 +10,9 @@
 .chart-controls { display:flex; flex-wrap:wrap; gap:.35rem; }
 .chart-controls button[aria-pressed="true"] { background:var(--acc,#1e4d43); color:#fff; }
 .daily-candle { stroke-width:1; }
-.candle-up { stroke:#1e4d43; fill:#1e4d43; }
-.candle-down { stroke:#1d4a80; fill:#1d4a80; }
+/* Candle colours follow the device chart convention (theme.css --up / --down; default Korean: up red, down blue). */
+.candle-up { stroke:var(--up,#D7322A); fill:var(--up,#D7322A); }
+.candle-down { stroke:var(--down,#2457C5); fill:var(--down,#2457C5); }
 .daily-candle[data-session="UNKNOWN"], .daily-candle[data-session="IN_PROGRESS"] { opacity:.5; }
 .research-line { stroke-width:1.5; stroke:#7a4600; }
 .sma_5 { stroke:#1e4d43; } .sma_20 { stroke:#1d4a80; }

@@ -512,7 +512,7 @@ function leaderboard() {
 function news(id) {
   const c=company(id);
   return heading("NEWS / NETWORK",t("뉴스와 연결"),c?esc(c.ticker)+" "+t("기업 문맥"):t("Portfolio · 관심기업 · 기타 중요뉴스"))+
-  `<div class="chips toolbar" role="group" aria-label="${t("콘텐츠 전환")}"><button id="show-news" aria-pressed="true">${t("뉴스")}</button><button id="show-network" aria-pressed="false">${t("관계망")}</button>${c?star(id):""}</div><p class="small" data-news-overlay>${t("정보 제공용, 투자 판단 덧씌우기(Overlay)는 기본 OFF")} · ${t("뉴스 무료 출처 미정: NOT_AVAILABLE")}</p><div class="chips" data-news-scopes>${["전체","관심 기업","내 포트폴리오","업종","매크로","정치","경제"].map(x=>`<span class="badge">${esc(t(x))}</span>`).join("")}</div><div id="news-disclosures"></div><div id="news-dart-disclosures"></div><section id="news-pane"><select id="news-scope" aria-label="${t("뉴스 범위")}"><option value="all">${t("전체 중요뉴스")}</option><option value="interest">${t("관심기업")}</option><option value="portfolio">Portfolio</option></select>${state(D.news)}<ul id="news-list" class="list"></ul></section><section id="network-pane" hidden><p class="muted">${t("Fact = 확인된 관계 · Impact = 잠재 영향 경로")}</p>${state(D.relationships)}${D.relationships.data?'<iframe title="'+esc(t("News Network(뉴스 관계망)"))+'" data-src="network.html" id="network-frame"></iframe>':'<p class="empty">'+t("기업 관계 · 미연결")+"</p>"}</section>`;
+  `<div class="chips toolbar" id="news-network" role="group" aria-label="${t("콘텐츠 전환")}"><button id="show-news" aria-pressed="true">${t("뉴스")}</button><button id="show-network" aria-pressed="false">${t("관계망")}</button>${c?star(id):""}</div><p class="small" data-news-overlay>${t("정보 제공용, 투자 판단 덧씌우기(Overlay)는 기본 OFF")} · ${t("뉴스 무료 출처 미정: NOT_AVAILABLE")}</p><div class="chips" data-news-scopes>${["전체","관심 기업","내 포트폴리오","업종","매크로","정치","경제"].map(x=>`<span class="badge">${esc(t(x))}</span>`).join("")}</div><div id="news-disclosures"></div><div id="news-dart-disclosures"></div><section id="news-pane"><select id="news-scope" aria-label="${t("뉴스 범위")}"><option value="all">${t("전체 중요뉴스")}</option><option value="interest">${t("관심기업")}</option><option value="portfolio">Portfolio</option></select>${state(D.news)}<ul id="news-list" class="list"></ul></section><section id="network-pane" hidden><p class="muted">${t("Fact = 확인된 관계 · Impact = 잠재 영향 경로")}</p>${state(D.relationships)}${D.relationships.data?'<iframe title="'+esc(t("News Network(뉴스 관계망)"))+'" data-src="network.html" id="network-frame"></iframe>':'<p class="empty">'+t("기업 관계 · 미연결")+"</p>"}</section>`;
 }
 function research() {
   return heading("RESEARCH",t("질문에서 근거로"),t("Prompt → Context / Variables → Preview → Copy"))+'<p class="badge">FROZEN_SNAPSHOT · PLV1_CONTENT_V1.0</p><iframe title="'+esc(t("Prompt Library(프롬프트 라이브러리)"))+'" src="research.html" id="research-frame"></iframe>';
@@ -575,7 +575,7 @@ function technical() {
     ${TechnicalCards.sectionsHtml(appSettings.display_locale)}
     <section class="card" id="technical-execution" data-tech-status="execution"><h2>${t("실행 구간 (시스템 주문 아님)")}</h2><p><span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> ${esc(t("검증된 모델 입력이 없어 실행 구간을 만들지 않습니다."))}</p></section>
     <section class="card" id="technical-record" data-tech-status="record"><h2>${t("기술적 기록")}</h2><p><span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> ${esc(t("과거 신호와 실제 결과 기록이 아직 없습니다."))}</p></section>
-    </div>`;
+    ${window.IaScreens?IaScreens.technicalHtml(appSettings.display_locale):""}</div>`;
 }
 function macro() {
   return `<div data-ia-screen="macro">${heading("MACRO",t("매크로"),t("공식 축별 상태를 확인합니다."))}
@@ -583,7 +583,7 @@ function macro() {
     <div id="macro-lights-root"></div>
     <section class="card" data-macro-status><h2>${t("상태판")}</h2><p class="small">${esc(t("정상·경고·위기는 위의 경고등 5개로 정합니다. 8개 축 국면 판정은 보류합니다."))}</p>
     <h3>${t("현재 국면")}</h3><p data-macro-regime>${esc(t("자료 없음"))}</p><p class="small">${esc(t("8개 축의 6칸은 따로 보관하며 하나의 점수로 합치지 않습니다. FRED/ALFRED는 사용하지 않습니다."))}</p></section>
-    <div id="public-macro"></div>${ScreenDetail.macroHtml(appSettings.display_locale)}</div>`;
+    <div id="public-macro"></div>${ScreenDetail.macroHtml(appSettings.display_locale)}${window.IaScreens?IaScreens.macroHtml(appSettings.display_locale):""}</div>`;
 }
 function thirteenf() {
   return heading("SEC 13F",t("투자자 13F"))+ '<div id="public-thirteenf"></div>';
@@ -856,9 +856,9 @@ function renderRoute() {
   notice("");syncShell();
   let [route,id,sub]=location.hash.slice(1).split("/");route=route || "home";
   let anchor=null;
-  for(const screen of ["validation","technical"]) if(route.startsWith(screen+"-")) {anchor=route;route=screen;}
+  for(const screen of ["validation","technical","macro","news"]) if(route.startsWith(screen+"-")) {anchor=route;route=screen;}
   try {id=decodeURIComponent(id || "");} catch(e) {id="";}
-  const routes={home,brief,qgv,analysis:()=>analysis(id,sub||null),profiles,types,model,watchlist,technical,macro,thirteenf,validation,companies,portfolio,actual,leaderboard,news:()=>news(id),research,company:()=>detail(id),settings:settingsUI,entity:()=>entityDetail(id),report:()=>report(id),system:()=>AppShell.pendingHtml("system",appSettings.display_locale),"lab-13f":()=>AppShell.pendingHtml("lab-13f",appSettings.display_locale),playbook:()=>heading("PLAYBOOK","플레이북 · 기록·채점·TARGET v1")+'<div id="playbook-screen"></div>'};
+  const routes={home,brief,qgv,analysis:()=>analysis(id,sub||null),profiles,types,model,watchlist,technical,macro,thirteenf,validation,companies,portfolio,actual,leaderboard,news:()=>news(id),research,company:()=>detail(id),settings:settingsUI,entity:()=>entityDetail(id),report:()=>report(id),system:()=>IaScreens.treeHtml("system",appSettings.display_locale),tree:()=>IaScreens.treeHtml(AppShell.TREE_KEYS.includes(id)?id:"qgv",appSettings.display_locale),"lab-13f":()=>AppShell.pendingHtml("lab-13f",appSettings.display_locale),playbook:()=>heading("PLAYBOOK","플레이북 · 기록·채점·TARGET v1")+'<div id="playbook-screen"></div>'};
   if(!routes[route]) route="home";
   HomeScreen.park(route);
   if((route==='company'||route==='analysis')&&id) rawDataCompany=id;
@@ -905,7 +905,7 @@ function renderRoute() {
   for(const kind of ['qg','types','filings','macro','thirteenf']) PublicScreens.mount($('#public-'+kind),publicScreens,{kind,companyId:route==='company'?id:route==='settings'?rawDataCompanyId()||undefined:undefined,locale:appSettings.display_locale,...(kind==='thirteenf'?{catalog:publicCatalog,interests:[...prefs.interests]}:{})});
   syncNavigation(route);
   const menu=window.AppShell?.menuFor(route);
-  if(menu) $("#content").insertAdjacentHTML("afterbegin",`<p class="flow-step" data-flow-step="${menu.n}" data-menu="${esc(menu.key)}"><span class="flow-number">${esc(menu.num)}</span> ${esc(menu.label)}</p>`);
+  if(menu) $("#content").insertAdjacentHTML("afterbegin",`<p class="flow-step" data-flow-step="${esc(menu.num)}" data-menu="${esc(menu.key)}"><span class="flow-number">${esc(menu.num)}</span> ${esc(menu.label)}</p>`+AppShell.subNavHtml(route));
   if(QGV_CHILDREN.includes(route) || route==="research") {
     const parent=route==="research"?"validation":"qgv",key=parent==="qgv"?"← QGV":"← Lab",sub=QGV_SUBCATEGORY[route];
     const origin=(route==='company'||route==='analysis') && companyOrigin && companyOrigin.id===id?companyOrigin:null,back=origin?LIST_ORIGIN[origin.hash.slice(1).split('/')[0]]:null;
@@ -948,7 +948,7 @@ function renderRoute() {
       $("#show-news").setAttribute("aria-pressed",name==="news");$("#show-network").setAttribute("aria-pressed",name==="network");
       const f=$("#network-frame");if(name==="network" && f && !f.getAttribute("src")) f.src=f.dataset.src;
     };
-    $("#news-scope").onchange=()=>paintNews(id);paintNews(id);
+    $("#news-scope").onchange=()=>paintNews(id);paintNews(id);if(anchor==="news-network")$("#show-network").click();
     {const c=company(id);paintDisclosures($("#news-disclosures"),c?[c.company_id]:null);}
     {const c=company(id);paintDartDisclosures($("#news-dart-disclosures"),c?[c.company_id]:null);}
   }
@@ -961,6 +961,7 @@ function renderRoute() {
     group.scrollIntoView({block:"start"});title.focus({preventScroll:true});
   }
   AppShell.afterRender(route);
+  if(route==="tree"||route==="system") IaScreens.mount($("#content"),{screens:publicScreens,catalog:publicCatalog,locale:appSettings.display_locale});
   HomeScreen.afterRender(route,{locale:appSettings.display_locale,id,resolve:(type,key)=>searchIndex.resolve(type,key),interests:[...prefs.interests],company});
 }
 function wireGroups() {
