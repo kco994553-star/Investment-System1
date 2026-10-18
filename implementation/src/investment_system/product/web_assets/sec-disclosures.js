@@ -68,6 +68,18 @@ function timeline(payload,{companyIds=null,news=[]}={}){const rows=(payload?.eve
 function itemLabel(code,en){const [e,k]=ITEMS[code];return en?code+' '+e+' ('+k+')':code+' '+k+' ('+e+')';}
 // The four highlighted kinds use short labels; any other report is labelled by its first official item name (9.01 exhibits last).
 function classLabel(name,en,items=[]){const first=name==='OTHER'?items.find(c=>c!=='9.01')||items[0]:null;if(first){const [e,k]=ITEMS[first];return en?e+' ('+k+')':k+' ('+e+')';}const [k,e]=CLASSES[name];return en?e+' ('+k+')':k+' ('+e+')';}
+// '근거 보기' for one 8-K/6-K row: SEC filing index and EX-99.1 links, acceptance/filing/event dates, first-seen time, amendment grouping.
+function evidence(doc,e,en){const T=(k,x)=>en?x:k,el=(tag,text,attrs={})=>{const n=doc.createElement(tag);if(text!==undefined)n.textContent=text;for(const[k,v]of Object.entries(attrs))n.setAttribute(k,v);return n;};
+ const d=el('details',undefined,{class:'evidence','data-evidence':'SEC'}),dl=el('dl',undefined,{class:'kv'}),add=(k,v)=>{const dd=el('dd');if(typeof v==='string')dd.textContent=v;else dd.append(v);dl.append(el('dt',k),dd);},utc=v=>v.slice(0,16).replace('T',' ')+' UTC';
+ d.append(el('summary',T('근거 보기','Show evidence')));
+ add(T('구분','Kind'),T('공시·확정 · 회사가 SEC에 제출한 원문','Disclosure · confirmed · filed with the SEC'));
+ const src=el('span');src.append(el('a','SEC EDGAR '+e.form+' ↗',{href:e.link,target:'_blank',rel:'noopener noreferrer','data-evidence-link':''}));
+ if(e.exhibit_99_1.state==='AVAILABLE')src.append(doc.createTextNode(' · '),el('a','EX-99.1 ↗',{href:e.exhibit_99_1.url,target:'_blank',rel:'noopener noreferrer','data-evidence-link':''}));add(T('출처','Source'),src);
+ add(T('접수 시각','Accepted'),utc(e.accepted_at));add(T('제출일 · 사건일','Filed · event date'),e.filing_date+' · '+(e.event_date||T('미제공','not provided')));
+ add(T('수집 시각','Collected'),utc(e.first_seen_at)+' · '+T('처음 확인','first seen'));
+ const own=e.company_id+':'+e.accession;add(T('중복 처리','Dedup'),e.occurrence==='NEW'?T('새 공시 · 묶음 시작','New · starts its group'):e.group_id===own?T('정정·반복 · 원 공시를 하나로 특정하지 못해 단독 표시','Amendment / repeat · no single original found, shown alone'):T('정정·반복 · 원 공시 묶음 ','Amendment / repeat · group ')+e.group_id);
+ add(T('점수 영향','Score effect'),T('없음','None'));
+ d.append(dl);return d;}
 // One 8-K row (also used by NewsSignals.mount for the combined '공시·확정'/'뉴스·신호' list).
 function renderRow(doc,e,en){const T=(k,x)=>en?x:k,el=(tag,text,attrs={})=>{const n=doc.createElement(tag);if(text!==undefined)n.textContent=text;for(const[k,v]of Object.entries(attrs))n.setAttribute(k,v);return n;};
  const li=el('li',undefined,{class:'card','data-disclosure':e.accession,'data-occurrence':e.occurrence,'data-classification':e.classification});
@@ -77,6 +89,7 @@ function renderRow(doc,e,en){const T=(k,x)=>en?x:k,el=(tag,text,attrs={})=>{cons
   else li.append(el('p','EX-99.1 · NOT_AVAILABLE · '+x.reason_code,{class:'small'}));
   li.append(el('p',e.items.map(c=>itemLabel(c,en)).join(' / ')||(['6-K','6-K/A'].includes(e.form)?T('분기 실적 6-K · 공시 첨부 제목 확인','Quarterly earnings 6-K · filing exhibit title verified'):T('항목 미제공','Items not provided')),{class:'small','data-items':e.items.join(',')}));
   li.append(el('a',T('SEC 원문 목록 보기 ↗','Open SEC filing index ↗'),{href:e.link,target:'_blank',rel:'noopener noreferrer','data-filing-link':''}));
+  li.append(evidence(doc,e,en));
  return li;}
 function mount(host,payload,{locale,companyIds=null,limit=30,emptyText}={}){
  if(!host)return;const doc=host.ownerDocument,en=locale==='en-US',T=(k,e)=>en?e:k,el=(tag,text,attrs={})=>{const n=doc.createElement(tag);if(text!==undefined)n.textContent=text;for(const[k,v]of Object.entries(attrs))n.setAttribute(k,v);return n;};
@@ -91,5 +104,5 @@ function mount(host,payload,{locale,companyIds=null,limit=30,emptyText}={}){
  for(const row of rows)list.append(renderRow(doc,row.event,en));
  section.append(list);host.replaceChildren(section);
 }
-return Object.freeze({FILENAME,KIND,CIKS,ITEMS,CLASSES,CHANNELS,PRIORITY,classify,classLabel,qgvEarningsStatus,groups,indexUrl,validate,load,timeline,renderRow,mount});
+return Object.freeze({FILENAME,KIND,CIKS,ITEMS,CLASSES,CHANNELS,PRIORITY,classify,classLabel,qgvEarningsStatus,groups,indexUrl,validate,load,timeline,evidence,renderRow,mount});
 });
