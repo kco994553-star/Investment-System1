@@ -69,6 +69,16 @@ async function sortFlow(page, width) {
   const pop = Number(await counts.getAttribute('data-population')), rankable = Number(await counts.getAttribute('data-rankable'));
   assert.equal(pop, await page.evaluate(() => Object.values(publicScreens['sec-qgv2.json'].records).filter((r) => r.in_cross_section === true && ['LIVE', 'STALE'].includes(r.state) && r.calc_version_mismatch !== true && r.identity_withdrawn !== true).length));
   assert.equal(rankable, Object.values(official).filter((r) => r.rank !== null).length);assert.ok(pop !== 19 || rankable !== 19);
+  // D3: the footnote states the device-rank population (every screen identity in qgvScores().rows and the rows with a rank), never the
+  // filtered row count; a search filter changes the shown rows but not the footnote scope.
+  phase = 'RANK_SCOPE';const scopeOf = async () => { const n = page.locator('[data-leaderboard-rank-scope]');return { base: Number(await n.getAttribute('data-rank-base')), ranked: Number(await n.getAttribute('data-ranked')), text: await n.textContent() }; };
+  const truth = await page.evaluate(() => { const rows = Object.values(qgvScores().rows);return { base: rows.length, ranked: rows.filter((r) => Number.isInteger(r.rank)).length }; });
+  let scope = await scopeOf();assert.deepEqual([scope.base, scope.ranked], [truth.base, truth.ranked], 'footnote scope = rank population');
+  assert.ok(scope.text.includes('포트폴리오 대상(TARGET) ' + truth.base + '개 기업 중 순위가 매겨진 ' + truth.ranked + '개 안의 기기 순위입니다(전체 Universe 순위 아님'), 'footnote text states both counts');assert.ok(!/19개 기업 전체 기준/.test(scope.text), 'no fixed 19');
+  const firstTicker = await page.locator(T + ' tbody tr[data-leaderboard-row] a').first().textContent();
+  await page.locator('#leader-query').fill(firstTicker.trim());await page.waitForFunction(() => document.querySelectorAll('[data-leaderboard-row]').length < 19);
+  scope = await scopeOf();assert.deepEqual([scope.base, scope.ranked], [truth.base, truth.ranked], 'a search filter does not change the footnote scope');
+  await page.locator('#leader-query').fill('');await page.waitForFunction(() => document.querySelectorAll('[data-leaderboard-row]').length === 19);
   if (SHOTS && width >= 1024) await page.screenshot({ path: SHOTS + '/s06-sort-' + width + '.png' });
   phase = 'SORT_RESET';await page.locator('[data-leaderboard-sort-reset]').click();assert.equal(await page.locator('#leader-sort').inputValue(), 'qgv');
   assert.ok(await page.locator('[data-leaderboard-sort-reset]').isDisabled());const def = await check('qgv', 'total', -1);
