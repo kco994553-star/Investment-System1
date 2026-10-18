@@ -268,8 +268,11 @@ function vCoverage(result,v2Inputs){
   if(cls==='unknown')unknownRows.push({code,reasons:Array.isArray(rec.na_reasons)?[...rec.na_reasons]:[]});
   if(q){priced++;const m=object(M[code])?M[code]:UNIVERSE_META,t=times[m.source]||(times[m.source]={source:m.source,rows:0,unconfirmed:0,from:null,to:null,stale:0});t.rows++;if(m.stale)t.stale++;if(typeof m.as_of!=='string')t.unconfirmed++;else{if(t.from===null||m.as_of<t.from)t.from=m.as_of;if(t.to===null||m.as_of>t.to)t.to=m.as_of;}}
   if(hasV){v.full++;if(gen)v.general++;}if(all){qgv.full++;if(gen)qgv.general++;}
-  // A total without V in it (the engine renormalizes over the available axes and ranks every finite total): counted, not changed.
-  if(p&&finite(p.total)&&(!hasV||p.v_excluded)){qgOnly.full++;if(gen)qgOnly.general++;if(cls==='financial')qgOnly.financial++;else if(!hasV)qgOnly.no_v++;else qgOnly.gate++;}
+  // A total without V in the row (the engine renormalizes over the available axes and ranks every finite total): counted, not
+  // changed. full/general = financial + no price / V not computed. Value-trap-gate rows had V computed and the approved gate rule
+  // excluded it from the total (kept in the official ranking): their own field `gate`, never in full/general.
+  if(p&&finite(p.total)&&!hasV){qgOnly.full++;if(gen)qgOnly.general++;if(cls==='financial')qgOnly.financial++;else qgOnly.no_v++;}
+  if(p&&finite(p.total)&&hasV&&p.v_excluded)qgOnly.gate++;
   if(!gen)continue;
   if(p&&p.coverage&&Array.isArray(p.coverage.v_inputs_missing)&&!p.coverage.v_inputs_missing.length)complete++;
   if(vi&&finite(vi.diluted_shares)&&vi.diluted_shares>0){shares++;if(finite(vi.ebit)||finite(vi.fcf))upper++;const pe=object(rec.periods)?rec.periods.diluted_shares:null;if(typeof pe==='string'){if(from===null||pe<from)from=pe;if(to===null||pe>to)to=pe;}}

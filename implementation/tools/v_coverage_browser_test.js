@@ -126,6 +126,9 @@ async function noOverflow(page, what) {
         // Value-trap gate rows: V computed, excluded from the total by the approved rule, kept in the ranking: their own line.
         assert.equal(await num(S.locator('[data-gate-full]'), 'data-gate-full'), c.gateFull);assert.equal(await num(S.locator('[data-gate-general]'), 'data-gate-general'), c.gateGeneral);
         assert.equal(c.gateFull, c.gateGeneral, 'gate rows all have V, so all are general');
+        // The shared API already excludes gate rows from qg_only_total (one definition for every screen); the panel reads it as is.
+        const api = await page.evaluate(async () => { const inputs = publicScreens[Qgv2Inputs.FILE], R = await QgvScores.pageResult(window, { v2Inputs: inputs, catalog: await deviceCatalog().catch(() => null), identities: identityCompanies, preset: qgv2Profile.preset, gate: qgv2Profile.gate });return QgvScores.vCoverage(R, inputs).qg_only_total; });
+        assert.deepEqual(api, { full: c.qgOnly, general: c.qgOnlyGeneral, financial: c.qgOnlyFin, no_v: c.qgOnlyNoV, gate: c.gateFull });
         assert.match(await S.locator('[data-v-row="gate"]').textContent(), new RegExp('^가치 함정 관문으로 V 제외\\(공식 규칙 · 순위 유지\\)' + c.gateFull + '/' + c.total + c.gateGeneral + '/' + c.general + '$'));
         if (c.financial) assert.ok(c.qgOnlyFin >= 1, 'financial rows with a Q·G total are visible');
         assert.ok(c.vGeneral <= c.upper || basis === 'SYNTHETIC_FIXTURE', 'V count within the public-input upper bound');

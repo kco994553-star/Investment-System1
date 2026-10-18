@@ -469,7 +469,13 @@ test('pageResult: one memoized quote set + compute over the whole file; same V p
   assert.equal(cov.v.general, rows.filter((x) => x.rec.published_profile === 'GENERAL' && Number.isFinite(x.p.v)).length);
   assert.equal(cov.target.n, Math.ceil(0.9 * P.general - 1e-9));assert.equal(cov.target.observation_only, true);assert.equal(cov.target.met, cov.v.general >= cov.target.n);
   assert.equal(cov.reasons.reduce((a, [, n]) => a + n, 0), P.general - cov.v.general);assert.ok(!cov.reasons.some(([c]) => c === 'FINANCIAL_PROFILE_V_NOT_DEFINED'));
-  assert.equal(cov.qg_only_total.full, cov.qg_only_total.financial + cov.qg_only_total.no_v + cov.qg_only_total.gate);
+  // Q·G-only totals exclude value-trap-gate rows (V computed, excluded by the approved rule): financial + no-V only; gate apart.
+  const total = (x) => Number.isFinite(x.p.total), hasV = (x) => Number.isFinite(x.p.v);
+  assert.equal(cov.qg_only_total.full, cov.qg_only_total.financial + cov.qg_only_total.no_v);
+  assert.equal(cov.qg_only_total.full, rows.filter((x) => total(x) && !hasV(x)).length);
+  assert.equal(cov.qg_only_total.general, rows.filter((x) => x.rec.published_profile === 'GENERAL' && total(x) && !hasV(x)).length);
+  assert.equal(cov.qg_only_total.financial, rows.filter((x) => x.rec.published_profile === 'FINANCIAL' && total(x) && !hasV(x)).length);
+  assert.equal(cov.qg_only_total.gate, rows.filter((x) => total(x) && hasV(x) && x.p.v_excluded).length);assert.ok(cov.qg_only_total.gate >= 1, 'fixture has gate rows');
   assert.deepEqual(cov.price_time.map((t) => [t.source, t.rows === t.unconfirmed]), [['UNIVERSE_SHEET', true]]);assert.equal(cov.read_at, basis.acquired_at);
   // A device quote that carries its own time keeps it per source (meta); the Universe tab never does.
   const meta = {}, dq = await QS.collectQuotes({ DeviceValuation: { deviceQuote: async () => ({ price: 10, currency: 'USD', as_of: '2026-10-16', source: 'WORKER_CLOSE', stale: true }) } }, { identities, v2Inputs: inputs, catalog: {}, meta });
