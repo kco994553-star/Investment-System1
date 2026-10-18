@@ -8,7 +8,9 @@
    1 Q 질          the published Q axis score of sec-qgv2.json (qg_axes.Q.score, as published, no re-ranking)
    2 G 성장        the published G axis score (same)
    3 V 가치        the V axis score of the existing device path (QgvScores.collectQuotes -> QgvScores.compute); 미산출 without
-                   quotes (NO_DEVICE_PRICE), 해당 없음 for the FINANCIAL profile (FINANCIAL_PROFILE_V_NOT_DEFINED)
+                   quotes, with the engine's own reason (NO_DEVICE_PRICE, DEBT_CASH_NOT_AVAILABLE, EV_NON_POSITIVE, …); for the FINANCIAL
+                   profile exactly '현재 금융업 가치평가 모델 미지원' (FINANCIAL_PROFILE_V_NOT_DEFINED) — a model scope, not a data failure;
+                   no other metric ever stands in for V. The V detail lists the individual value inputs (vDetailHtml)
    4 가격 안정성   raw: 1-year volatility = sample std of VALID daily simple returns × √252 (%) — the VirtualTradingCompare
                    estimator, returns via VirtualTradingCompare.pointReturns on the SPY-session-aligned series, so a return is
                    valid only when both adjacent sessions have a close (a multi-day move across a gap is never a daily return)
@@ -66,6 +68,8 @@ const STALE_SESSIONS=5,STALE_DAYS=7;
 const SPLIT_RATIOS=Object.freeze([2,3,4,5,10,1/2,1/3,1/4,1/5,1/10,3/2,2/3]);
 const CONFIRMED_BASES=Object.freeze(['SPLIT_ADJUSTED','TOTAL_RETURN']),BASES=Object.freeze(['RAW','SPLIT_ADJUSTED','TOTAL_RETURN','ADJUSTED_UNCONFIRMED']);
 const FILE='sec-qgv2.json',SPY='SPY',EMPTY=Object.freeze({});
+/* Financial-profile V: a model scope, shown with this exact text and never styled or counted as a data failure. */
+const FIN_V_TEXT=Object.freeze(['현재 금융업 가치평가 모델 미지원','Financial-sector valuation model not supported yet']),FIN_V=Object.freeze([['금융업','모델 미지원'],['Financials','not supported']]);
 /* Axis-set label (owner rule 2026-10-18): Q·G·V are the core axes; the three price axes are CANDIDATES until coverage is
    confirmed. Adoption rule: an axis needs a verified value AND a displayed score for ≥ ADOPT_MIN of the 504 Universe
    companies. The 이익률 안정성 auxiliary display is approved. */
@@ -224,13 +228,14 @@ function priceTable(dev,end){
  if(ok)for(const[s,ser]of dev.series)if(s!==SPY)values.set(s,priceAxesOn(ser,spy,w.sessions));
  memo={dev,end,sessions:ok?w.sessions:null,window:ok?windowInfo(w.sessions,series(spy).basis,w.behind):null,short:!!(w&&w.short),values};return memo;}
 let vMemo=null;
-function vOne(S,id){const row=S&&S.rows?S.rows[id]:null,d=row?row.primary:null,cov=d&&d.coverage&&d.coverage.axes?d.coverage.axes.V:null;
- return d&&finite(d.v)?{value:d.v,score:d.v,reason:null}:na(cov&&cov.reason||'NO_DEVICE_PRICE');}
+function vOne(S,id,full=false){const row=S&&S.rows?S.rows[id]:null,d=row?row.primary:null,cov=d&&d.coverage&&d.coverage.axes?d.coverage.axes.V:null;
+ const x=d&&finite(d.v)?{value:d.v,score:d.v,reason:null}:na(cov&&cov.reason||'NO_DEVICE_PRICE');
+ if(full)x.v_detail={detail:d&&object(d.detail)?d.detail:null,factors:cov&&Array.isArray(cov.factors)?cov.factors.map(f=>({id:f.id,reason:f.reason})):[]};return x;}
 function vScores(inputs,subject,points,quotes){
  const QS=g.QgvScores,q=object(quotes)?quotes:EMPTY;if(!inputs||!QS||typeof QS.compute!=='function')return{map:new Map(),subject:na('NO_DEVICE_PRICE')};
  const run=ids=>{try{return QS.compute({identities:ids,v2Inputs:inputs,quotes:q});}catch(_){return null;}};
  if(!vMemo||vMemo.inputs!==inputs||vMemo.quotes!==q){const S=run(points.map(p=>({company_id:p.code,ticker:tickerOf(p.code)}))),map=new Map();for(const p of points)map.set(p.code,vOne(S,p.code));vMemo={inputs,quotes:q,map};}
- return{map:vMemo.map,subject:vOne(run([subject.identity]),subject.identity.company_id)};}
+ return{map:vMemo.map,subject:vOne(run([subject.identity]),subject.identity.company_id,true)};}
 
 
 /* ---------- model ---------- */
@@ -325,12 +330,12 @@ function svg(model,locale){
   +model.axes.map((_,i)=>{const q=pt(i,n,100);return '<line class="sr-spoke" x1="'+CX+'" y1="'+CY+'" x2="'+f2(q[0])+'" y2="'+f2(q[1])+'"></line>';}).join('')+'</g>';
  const ticks='<text class="sr-tick" x="'+(CX-5)+'" y="'+f2(CY-R*0.5+4)+'" text-anchor="end">50</text>';
  const labels=model.axes.map((a,i)=>{const ang=-Math.PI/2+2*Math.PI*i/n,c=Math.cos(ang),s=Math.sin(ang),x=CX+(R+16)*c,y=CY+(R+16)*s;
-  const none=a.company.reason==='FINANCIAL_PROFILE_V_NOT_DEFINED'?T('해당 없음','n/a'):T('미산출','n/a');
-  const anchor=Math.abs(c)<0.2?'middle':c>0?'start':'end',lines=[...a.lines[en?1:0],(finite(a.company.score)?fmtNum(a.company.score,locale,0):none)],lh=15;
+  const none=a.company.reason==='FINANCIAL_PROFILE_V_NOT_DEFINED'?FIN_V[en?1:0][1]:T('미산출','n/a');
+  const anchor=Math.abs(c)<0.2?'middle':c>0?'start':'end',lines=[...a.lines[en?1:0],...(a.company.reason==='FINANCIAL_PROFILE_V_NOT_DEFINED'&&!finite(a.company.score)?[FIN_V[en?1:0][0]]:[]),(finite(a.company.score)?fmtNum(a.company.score,locale,0):none)],lh=15;
   const y0=s<-0.9?y-lh*(lines.length-1):s>0.9?y+lh*0.8:y-lh*(lines.length-1)/2+4;
   return '<text class="sr-label" x="'+f2(x)+'" y="'+f2(y0)+'" text-anchor="'+anchor+'" data-sr-label="'+a.id+'">'+lines.map((t,k)=>'<tspan x="'+f2(x)+'" dy="'+(k?lh:0)+'"'+(k===lines.length-1?' class="sr-label-val'+(finite(a.company.score)?'':' sr-label-na')+'"':'')+'>'+esc(t)+'</tspan>').join('')+'</text>';}).join('');
  const summary=T('스탯창(설명용). 모든 축에서 바깥이 더 좋은 평가. 면적은 점수가 아님. ','Stat window (explanatory). Outer is better on every axis. The area is not a score. ')
-  +model.axes.map(a=>T(a.name[0],a.name[1])+': '+T('기업 ','company ')+scoreText(a.company.score,locale)+', '+T(same?'업종 = SIC ':'업종 평균 ',same?'industry = SIC ':'industry ')+scoreText(a.industry.score,locale)+(same?'':', SIC '+scoreText(a.sic.score,locale))+', '+T('경쟁사 미산출','competitors n/a')).join('; ');
+  +model.axes.map(a=>T(a.name[0],a.name[1])+': '+T('기업 ','company ')+(a.company.reason==='FINANCIAL_PROFILE_V_NOT_DEFINED'?FIN_V_TEXT[en?1:0]:scoreText(a.company.score,locale))+', '+T(same?'업종 = SIC ':'업종 평균 ',same?'industry = SIC ':'industry ')+scoreText(a.industry.score,locale)+(same?'':', SIC '+scoreText(a.sic.score,locale))+', '+T('경쟁사 미산출','competitors n/a')).join('; ');
  const stale=!!(model.fresh&&model.fresh.stale);
  return '<svg class="sr-svg'+(stale?' sr-stale':'')+'" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+esc(summary)+'" focusable="false" data-sr-svg data-sr-axes="'+n+'">'
   +'<defs><filter id="'+id+'" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="7" result="n"></feTurbulence><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4"></feDisplacementMap></filter></defs>'
@@ -358,7 +363,7 @@ function cell(series,a,x,locale){
  const T=tr(locale),en=locale==='en-US',hasRaw=finite(x.value),hasScore=finite(x.score),why=hasRaw?(x.score_reason||x.reason||''):(x.reason||'');
  const attrs=' data-sr-series="'+series+'" data-sr-raw="'+(hasRaw?String(x.value):'NA')+'" data-sr-score="'+(hasScore?String(x.score):'NA')+'" data-sr-reason="'+esc(why)+'"'+(Number.isInteger(x.n)?' data-sr-n="'+x.n+'"':'')+(Number.isInteger(x.closes)?' data-sr-closes="'+x.closes+'"':'')+(Number.isInteger(x.returns)?' data-sr-returns="'+x.returns+'"':'')+(x.note?' data-sr-note="'+esc(x.note)+'"':'');
  const label=series==='company'?T('기업','Company'):series==='industry'?T('업종 평균','Industry'):series==='sic'?T('SIC 평균','SIC'):T('경쟁사 평균','Competitors');
- const badge=r=>'<span class="badge NOT_AVAILABLE">'+esc(r==='FINANCIAL_PROFILE_V_NOT_DEFINED'?T('해당 없음','n/a'):T('미산출','n/a'))+'</span>';
+ const badge=r=>r==='FINANCIAL_PROFILE_V_NOT_DEFINED'?'<span class="badge sr-model-scope" data-sr-model-scope>'+esc(FIN_V_TEXT[en?1:0])+'</span>':'<span class="badge NOT_AVAILABLE">'+esc(T('미산출','n/a'))+'</span>';
  const counts=(Number.isInteger(x.closes)?T(' · 종가 ',' · closes ')+x.closes:'')+(Number.isInteger(x.returns)?T(' · 유효 일간 수익률 ',' · valid daily returns ')+x.returns:'');
  let body;
  if(series==='company'&&hasRaw&&!isScore(a)){
@@ -366,7 +371,7 @@ function cell(series,a,x,locale){
    +'<span class="small">'+esc(counts)+'</span>'+(x.note?'<br><span class="small sr-note">'+esc(reasonText(x.note,en))+'</span>':'');}
  else if(hasScore)body=T(series==='company'?'점수 ':'평균 ',series==='company'?'score ':'mean ')+'<b class="num">'+esc(scoreText(x.score,locale))+'</b>'+(series!=='company'&&Number.isInteger(x.n)?' <span class="small">n='+x.n+'</span>':'');
  else{const code=series!=='company'&&why==='NO_DEVICE_PRICE'?'GROUP_NO_DEVICE_PRICE':why;
-  body=badge(why)+' <span class="small">'+esc(reasonText(code,en)+(x.detail?' · '+reasonText(x.detail,en):'')+(Number.isInteger(x.n)&&series!=='company'?' (n='+x.n+')':'')+counts)+'</span>';}
+  body=why==='FINANCIAL_PROFILE_V_NOT_DEFINED'?badge(why):badge(why)+' <span class="small">'+esc(reasonText(code,en)+(x.detail?' · '+reasonText(x.detail,en):'')+(Number.isInteger(x.n)&&series!=='company'?' (n='+x.n+')':'')+counts)+'</span>';}
  return '<td'+attrs+' data-label="'+esc(label)+'">'+body+'</td>';}
 function table(model,locale){
  const T=tr(locale),en=locale==='en-US',same=model.groups.same,rows=[...model.axes.filter(a=>!a.aux),model.aux];
@@ -386,13 +391,37 @@ function membersHtml(model,locale){
    +'<p class="small" data-sr-members-list>'+esc(T('모집단(값 있는 기업): ','population (with a value): ')+list(a.population_codes))+'</p>'
    +groups.map(([name,x])=>'<p class="small" data-sr-group-list="'+esc(name)+'">'+esc(name+' ('+x.codes.length+T('곳): ',' cos): ')+list(x.codes))+'</p>').join('')
    +(a.excluded.length?'<p class="small" data-sr-excluded>'+esc(T('가격 자료는 있으나 제외: ','price data held but excluded: ')+a.excluded.map(e=>tickerOf(e.code)+' ('+e.reason+')').join(' · '))+'</p>':'')+'</details>';}).join('')+'</div>';}
+/* V detail: the individual value inputs, each with its raw value, period and source, or 미산출 and the reason. EBIT / FCF yield
+   come from the existing V computation (device quote, RAM); the reference inputs are the published v_inputs_v2 fields. A
+   FINANCIAL subject shows only the model-scope text (no general-company formula is applied). */
+function vDetailHtml(model,locale){
+ const T=tr(locale),en=locale==='en-US',v=model.axes.find(a=>a.id==='v')||null,x=v?v.company:null,r=model.subject.rec;if(!x)return '';
+ if(x.reason==='FINANCIAL_PROFILE_V_NOT_DEFINED')return '<div class="sr-v-detail" data-sr-v-detail="FINANCIAL"><h3 class="small">'+esc(T('V 상세','V detail'))+'</h3><p><span class="badge sr-model-scope" data-sr-model-scope>'+esc(FIN_V_TEXT[en?1:0])+'</span></p></div>';
+ const vi=r&&object(r.v_inputs)?r.v_inputs:null,per=r&&object(r.periods)?r.periods:{},cur=vi&&typeof vi.currency==='string'?vi.currency:null,asOf=model.inputs?clock(model.inputs.as_of):'—';
+ const det=x.v_detail&&x.v_detail.detail,fr=id=>{const f=x.v_detail&&x.v_detail.factors.find(y=>y.id===id);return f&&f.reason||x.reason||'NO_DEVICE_PRICE';};
+ const money=v=>cur?new Intl.NumberFormat(en?'en-US':'ko-KR',{style:'currency',currency:cur,notation:'compact',maximumFractionDigits:2}).format(v):fmtNum(v,locale,0);
+ const pubSrc=T('공개 sec-qgv2.json v_inputs_v2 · as_of ','published sec-qgv2.json v_inputs_v2 · as_of ')+asOf,devSrc=T('기존 V 경로(공개 입력 + 이 브라우저 메모리의 시세)','existing V path (published inputs + quote in this browser’s memory)');
+ const noInputs=!scoredRow(r)?rowReason(r):'V_INPUTS_NOT_AVAILABLE';
+ const rows=[
+  ['ebit_yield',T('EBIT 수익률 (EBIT ÷ EV)','EBIT yield (EBIT ÷ EV)'),det&&finite(det.ebit_yield)?det.ebit_yield:null,v=>fmtNum(v*100,locale,2)+'%',(per.ebit||'—')+T(' · 현재 시세',' · current quote'),devSrc,fr('v_earnings_yield')],
+  ['fcf_yield',T('FCF 수익률 (FCF ÷ EV)','FCF yield (FCF ÷ EV)'),det&&finite(det.fcf_yield)?det.fcf_yield:null,v=>fmtNum(v*100,locale,2)+'%',(per.fcf||'—')+T(' · 현재 시세',' · current quote'),devSrc,fr('v_fcf_yield')],
+  ['ebit','EBIT',vi&&finite(vi.ebit)?vi.ebit:null,money,per.ebit||'—',pubSrc,vi?'EBIT_NOT_AVAILABLE':noInputs],
+  ['fcf','FCF',vi&&finite(vi.fcf)?vi.fcf:null,money,per.fcf||'—',pubSrc,vi?'FCF_NOT_AVAILABLE':noInputs],
+  ['total_debt',T('총부채','Total debt'),vi&&finite(vi.total_debt)?vi.total_debt:null,money,per.total_debt||'—',pubSrc,vi?'DEBT_CASH_NOT_AVAILABLE':noInputs],
+  ['cash',T('현금성 자산','Cash'),vi&&finite(vi.cash)?vi.cash:null,money,per.cash_and_equivalents||'—',pubSrc,vi?'DEBT_CASH_NOT_AVAILABLE':noInputs],
+  ['diluted_shares',T('희석 주식수','Diluted shares'),vi&&finite(vi.diluted_shares)?vi.diluted_shares:null,v=>new Intl.NumberFormat(en?'en-US':'ko-KR',{notation:'compact',maximumFractionDigits:2}).format(v),per.diluted_shares||'—',pubSrc,vi?'SHARES_NOT_AVAILABLE':noInputs],
+  ['revenue_cagr_3y',T('3년 매출 성장(CAGR)','3-year revenue CAGR'),vi&&finite(vi.revenue_cagr_3y)?vi.revenue_cagr_3y:null,v=>fmtNum(v*100,locale,1)+'%',T('최근 3개 회계연도','latest 3 fiscal years'),pubSrc,vi?'REALIZED_GROWTH_NOT_AVAILABLE':noInputs],
+  ['ebit_per_share_history',T('연도별 EBIT/주','EBIT per share by year'),vi&&Array.isArray(vi.ebit_per_share_history)&&vi.ebit_per_share_history.length?vi.ebit_per_share_history.length:null,v=>v+T('개 연도',' years'),vi&&Array.isArray(vi.ebit_per_share_history)&&vi.ebit_per_share_history.length?'FY '+vi.ebit_per_share_history[0].period_end+' ~ '+vi.ebit_per_share_history[vi.ebit_per_share_history.length-1].period_end:'—',pubSrc,vi?'HISTORY_TOO_SHORT':noInputs]];
+ return '<div class="sr-v-detail table-wrap" data-sr-v-detail="GENERAL"><h3 class="small">'+esc(T('V 상세 · 가치 입력','V detail · value inputs'))+'</h3><table><thead><tr><th scope="col">'+esc(T('입력','Input'))+'</th><th scope="col">'+esc(T('원값','Raw value'))+'</th><th scope="col">'+esc(T('기간','Period'))+'</th><th scope="col">'+esc(T('출처','Source'))+'</th></tr></thead><tbody>'
+  +rows.map(([id,name,val,fmt,period,src,why])=>'<tr data-sr-v-input="'+id+'" data-sr-raw="'+(val===null?'NA':String(val))+'" data-sr-reason="'+esc(val===null?why:'')+'"><th scope="row">'+esc(name)+'</th><td data-label="'+esc(T('원값','Raw value'))+'">'+(val===null?'<span class="badge NOT_AVAILABLE">'+esc(T('미산출','n/a'))+'</span> <span class="small">'+esc(reasonText(why,en))+'</span>':'<span class="num">'+esc(fmt(val))+'</span>')+'</td><td data-label="'+esc(T('기간','Period'))+'">'+esc(period)+'</td><td class="small" data-label="'+esc(T('출처','Source'))+'">'+esc(src)+'</td></tr>').join('')
+  +'</tbody></table></div>';}
 function freshLine(model,locale){
  const T=tr(locale),f=model.fresh;if(!f)return '';
  return '<p class="small sr-fresh" data-sr-freshness="'+(f.stale?'STALE':'CURRENT')+'" data-sr-days="'+f.days+'">'+(f.stale?'<span class="badge partial">STALE</span> ':'')+esc(T('기준 거래일 ','as of session ')+f.end+' · '+f.days+T('일 전',' days ago')+' · '+T('최신 SPY 거래일보다 ','behind the latest SPY session by ')+f.behind+T('거래일 뒤',' sessions')+(f.stale?T(' · '+STALE_SESSIONS+'거래일 또는 '+STALE_DAYS+'일 초과라 STALE',' · beyond '+STALE_SESSIONS+' sessions or '+STALE_DAYS+' days: STALE'):''))+'</p>';}
 function body(model,locale){
  const T=tr(locale),en=locale==='en-US',d=model.device,dev=d.state==='READY'?T('읽음 · 가격 있는 종목 ','read · symbols with prices ')+d.priced+(d.series.has(SPY)?' · SPY':T(' · SPY 없음',' · no SPY')):d.state==='PENDING'?reasonText('PENDING',en):d.state+' · '+reasonText(d.state==='NOT_AVAILABLE'?'NO_DEVICE_PRICE':d.state,en);
- return '<div class="sr-layout"><figure class="sr-figure">'+svg(model,locale)+'<figcaption class="sr-notes small">'+esc(T('모든 축에서 바깥이 더 좋은 평가입니다. 설명용이며 공식 QGV 점수·비중·순위를 바꾸지 않습니다. 면적은 계산하지 않습니다. 미산출 축에는 점을 찍지 않습니다(0이나 평균으로 채우지 않음).','Outer is the better evaluation on every axis. Explanatory only: official QGV scores, weights and ranks are unchanged. The area is not computed. 미산출 axes get no point (never 0 or an average).'))+'</figcaption></figure>'
-  +'<div class="sr-side">'+legend(model,locale)+auxBox(model,locale)+'</div></div>'+freshLine(model,locale)+table(model,locale)+membersHtml(model,locale)
+ return '<div class="sr-layout"><figure class="sr-figure">'+svg(model,locale)+'<figcaption class="sr-notes small">'+(model.axes.some(a=>a.id==='v'&&a.company.reason==='FINANCIAL_PROFILE_V_NOT_DEFINED')?'<span class="badge sr-model-scope" data-sr-model-scope>V · '+esc(FIN_V_TEXT[en?1:0])+'</span> ':'')+esc(T('모든 축에서 바깥이 더 좋은 평가입니다. 설명용이며 공식 QGV 점수·비중·순위를 바꾸지 않습니다. 면적은 계산하지 않습니다. 미산출 축에는 점을 찍지 않습니다(0이나 평균으로 채우지 않음).','Outer is the better evaluation on every axis. Explanatory only: official QGV scores, weights and ranks are unchanged. The area is not computed. 미산출 axes get no point (never 0 or an average).'))+'</figcaption></figure>'
+  +'<div class="sr-side">'+legend(model,locale)+auxBox(model,locale)+'</div></div>'+freshLine(model,locale)+table(model,locale)+vDetailHtml(model,locale)+membersHtml(model,locale)
   +'<p class="small sr-fresh" data-sr-fresh>'+esc([T('Q·G·이익률 출처 sec-qgv2.json','Q·G·margin: sec-qgv2.json'),'as_of '+(model.inputs?clock(model.inputs.as_of):'—'),T('단면 ','cross-section ')+model.points+T('곳(발행사당 한 점)',' issuers (one point each)'),T('가격 후보 축 점수 = 기기 보유 데이터 내 상대점수(504 전체·시장 전체 백분위 아님, 모집단 8곳 이상) · 비교군 평균은 5곳 이상','candidate price-axis score = relative score within the price data you hold (not a 504- or market-wide percentile; population ≥ 8) · group averages need ≥ 5')].join(' · '))+'</p>'
   +'<p class="small sr-fresh" data-sr-device-line>'+esc([T('가격 입력: ','Price input: ')+(model.storage?storageText(model,T):T('내 비공개 구글 시트 Prices_D 탭(가격 탭 사용 시) → 이 브라우저 메모리','the Prices_D tab of your private Google Sheet (when price tabs are on) → this browser’s memory'))+T(' · Worker 요청 없음 · 공개 안 함',' · no Worker request · never published'),T('기준 ','basis ')+(model.basis?BASIS_TEXT[model.basis][en?1:0]:'—'),T('상태 ','state ')+dev,T('V: 기존 V 경로(시세 '+(model.priced?'있음':'없음')+')','V: existing V path (quotes '+(model.priced?'present':'none')+')')].join(' · '))+'</p>';}
 function stateOf(model){return{'data-sr-subject':model.subject.label,'data-sr-device':model.device.state,'data-sr-quotes':model.priced?'PRESENT':'NONE','data-sr-groups':model.groups.same?'SAME':'DISTINCT','data-sr-aux':model.auxOn?'ON':'OFF','data-sr-window-end':model.window?model.window.end:'NA',

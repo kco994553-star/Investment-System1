@@ -6,7 +6,9 @@
 // Everything below is recomputed here independently of the page code:
 //  - Q and G equal the published axis scores; group values are the mean published score of the members (same 0–100 scale);
 //  - the auxiliary margin-stability row: raw value, average-rank percentile of −std and the group means of member percentiles;
-//  - V is 미산출 without device prices (해당 없음 for FINANCIAL); price axes are 미산출 (NO_DEVICE_PRICE) without device bars;
+//  - V is 미산출 with the engine reason without quotes; FINANCIAL shows exactly '현재 금융업 가치평가 모델 미지원' (a model scope, not
+//    a data failure) and no general V formula; the V detail lists each value input (raw, period, source) or its reason;
+//    price axes are 미산출 (NO_DEVICE_PRICE) without price data, ADJUSTMENT_BASIS_UNCONFIRMED on raw closes;
 //    a 미산출 axis has no vertex and the polygon is not filled;
 //  - with SYNTHETIC device bars (made-up random walks incl. a synthetic SPY, never real prices, never committed as data): the
 //    252-SPY-session window, volatility / max drawdown / 6-month excess return vs SPY raw values and their percentiles (outer =
@@ -142,7 +144,7 @@ async function checkCommon(page, el, label) {
   const scores = await el.locator('td[data-sr-series="company"]').evaluateAll((ns) => ns.filter((n) => !n.closest('[data-sr-aux-row]')).map((n) => n.dataset.srScore));
   assert.equal(await el.locator('.sr-mark[data-sr-series="company"]').count(), scores.filter((v) => v !== 'NA').length, label + ' company vertices');
   assert.equal(await el.locator('[data-sr-shape="company"].sr-fill').count(), scores.every((v) => v !== 'NA') ? 1 : 0, label + ' fill only when complete');
-  for (const [i, v] of scores.entries()) if (v === 'NA') assert.match(await el.locator('[data-sr-label="' + AXES[i] + '"]').textContent(), /미산출|해당 없음/, label + ' 미산출 label ' + AXES[i]);
+  for (const [i, v] of scores.entries()) if (v === 'NA') assert.match(await el.locator('[data-sr-label="' + AXES[i] + '"]').textContent(), /미산출|모델 미지원/, label + ' 미산출 label ' + AXES[i]);
   assert.match(await el.textContent(), /면적은 계산하지 않습니다/); assert.equal(await el.locator('[data-sr-area]').count(), 0);
   // Detail: unit, period, as_of, basis, population on every row.
   for (const axis of [...AXES, 'margin_stability']) { const row = el.locator('tr[data-sr-axis="' + axis + '"]');
@@ -161,10 +163,21 @@ async function checkNoDevice(el, label, financial) {
   for (const axis of Object.keys(PRICE)) for (const s of ['company', 'industry', 'sic']) { const c = await cellOf(el, axis, s); if (!c) continue;
     assert.equal(c.raw, 'NA', label + ' ' + axis + ' ' + s); assert.equal(c.score, 'NA'); assert.equal(c.reason, 'NO_DEVICE_PRICE', label + ' ' + axis + ' ' + s + ' reason'); }
   for (const s of ['company', 'industry', 'sic']) { const c = await cellOf(el, 'v', s); if (!c) continue; assert.equal(c.score, 'NA', label + ' V ' + s);
-    if (financial) { assert.equal(c.reason, 'FINANCIAL_PROFILE_V_NOT_DEFINED', label + ' V ' + s + ' financial'); assert.match(c.text, /해당 없음/); }
+    if (financial) { assert.equal(c.reason, 'FINANCIAL_PROFILE_V_NOT_DEFINED', label + ' V ' + s + ' financial'); assert.match(c.text, /현재 금융업 가치평가 모델 미지원/); assert.doesNotMatch(c.text, /미산출/, 'model scope is not a data failure');
+      assert.equal(await el.locator('tr[data-sr-axis="v"] td[data-sr-series="' + s + '"] .badge.NOT_AVAILABLE').count(), 0); }
     else if (s === 'company') { assert.ok(c.reason && c.reason !== 'FINANCIAL_PROFILE_V_NOT_DEFINED'); assert.match(c.text, /미산출/); }
     else assert.equal(c.reason, 'NO_DEVICE_PRICE', label + ' V ' + s); }
   for (const axis of ['v', ...Object.keys(PRICE)]) assert.equal(await el.locator('.sr-mark[data-sr-axis="' + axis + '"]').count(), 0, label + ' no vertex for 미산출 ' + axis);
+}
+/* V detail: financial -> the model-scope text only; general -> each value input with its published raw value or a reason. */
+async function checkVDetail(el, r, label) {
+  if (r.profile === 'FINANCIAL') { const d = el.locator('[data-sr-v-detail="FINANCIAL"]'); assert.equal(await d.count(), 1, label + ' financial V detail'); assert.match(await d.textContent(), /현재 금융업 가치평가 모델 미지원/);
+    assert.equal(await el.locator('[data-sr-v-input]').count(), 0, label + ' no general V formula for financials'); assert.match(await el.locator('figcaption').textContent(), /현재 금융업 가치평가 모델 미지원/); return 3; }
+  const v = r.v_inputs_v2 && /^[A-Z]{3}$/.test(r.v_inputs_v2.currency || '') ? r.v_inputs_v2 : null, flow = (x) => (x && Number.isFinite(x.ttm_value) ? x.ttm_value : x && Number.isFinite(x.fy_value) ? x.fy_value : null), val = (x) => (x && Number.isFinite(x.value) ? x.value : null);
+  const want = { ebit: v ? flow(v.ebit) : null, fcf: v ? flow(v.fcf) : null, total_debt: v ? val(v.total_debt) : null, cash: v ? val(v.cash_and_equivalents) : null, diluted_shares: v ? val(v.diluted_shares) : null, revenue_cagr_3y: v && Number.isFinite(v.revenue_cagr_3y) ? v.revenue_cagr_3y : null };
+  for (const [k, w] of Object.entries(want)) { const row = el.locator('[data-sr-v-input="' + k + '"]'); same(await row.getAttribute('data-sr-raw'), w, label + ' V input ' + k); if (w === null) assert.ok((await row.getAttribute('data-sr-reason')).length > 3); }
+  for (const k of ['ebit_yield', 'fcf_yield']) { const row = el.locator('[data-sr-v-input="' + k + '"]'); assert.equal(await row.getAttribute('data-sr-raw'), 'NA', label + ' ' + k + ' needs a quote'); assert.ok((await row.getAttribute('data-sr-reason')).length > 3); assert.match(await row.textContent(), /미산출/); }
+  return 8;
 }
 async function shot(el, name) { if (!SHOTS) return; fs.mkdirSync(SHOTS, { recursive: true }); await el.screenshot({ path: path.join(SHOTS, name + '.png') }); }
 /* A synthetic price snapshot rendered in-page through StatRadar.html ctx.device (RAM only): bases default to TOTAL_RETURN. */
@@ -202,6 +215,7 @@ const FAKE_STORE = (b) => { const real = window.PriceStore; window.PriceStore = 
         const el = await radar(page), exp = expectPublic(p, spec);
         assert.equal(await el.getAttribute('data-stat-radar'), spec.code ? 'code:' + spec.code : 'target:' + spec.targetId);
         pass += await checkPublic(el, exp, phase); await checkNoDevice(el, phase, exp.subject.r.profile === 'FINANCIAL'); await checkCommon(page, el, phase); pass += 3;
+        pass += await checkVDetail(el, exp.subject.r, phase);
         await shot(el, 'radar-' + kind.toLowerCase() + '-' + width + '-light-nodevice');
         // Financial detail: the published operating_margin_std_5y_pp (raw %p, FY basis, source) or its missing-data reason.
         const r = exp.subject.r, want = marginStd(r), hist = ((r.v_inputs_v2 && r.v_inputs_v2.operating_margin_history) || []).map((h) => h.fiscal_year_end).filter(Boolean).sort().slice(-5);
