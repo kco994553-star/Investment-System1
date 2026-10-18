@@ -203,6 +203,10 @@ table th { font-weight: 650; }
 #primary-nav > a span, #primary-nav > button span { display: block; margin: 0; font-size: 12px; }
 #primary-nav .nav-long, #primary-nav .nav-num { display: none; }
 #primary-nav > a[data-nav-phone="0"] { display: none; }
+/* Phone order: 홈 · QGV · 포트폴리오 · 뉴스·공시 · 전체 메뉴 (the PC menu keeps the 01~08 order). */
+#primary-nav > a[data-nav-tab="portfolio"] { order: 1; }
+#primary-nav > a[data-nav-tab="news"] { order: 2; }
+#primary-nav > button { order: 3; }
 #primary-nav > a[aria-current="page"] { color: var(--ink); background: transparent; box-shadow: none; font-weight: 800; }
 #primary-nav > a[aria-current="page"]::before { content: ""; position: absolute; top: -5px; left: 30%; right: 30%; height: 2px; background: var(--ink); }
 #primary-nav > a[aria-current="page"] .nav-icon { stroke-width: 2; }
@@ -238,7 +242,8 @@ table th { font-weight: 650; }
   #primary-nav > a[data-nav-tab="home"] { display: none; }
   #primary-nav > a[data-nav-phone="0"] { display: flex; }
   #primary-nav > a .nav-icon { display: none; }
-  #primary-nav > button { margin-left: auto; }
+  #primary-nav > a[data-nav-tab] { order: 0; }
+  #primary-nav > button { margin-left: auto; order: 1; }
   #primary-nav > button .nav-icon { width: 18px; height: 18px; }
   #primary-nav > a:hover, #primary-nav > button:hover { color: var(--ink); background: transparent; }
   #primary-nav > a[aria-current="page"] { color: var(--ink); background: transparent; font-weight: 650; box-shadow: inset 0 -2px 0 var(--ink); }

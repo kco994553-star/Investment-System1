@@ -18,8 +18,10 @@ const phoneTabs = ["home", "qgv", "news", "portfolio"], desktopTabs = ["qgv", "t
 // Every route belongs to one menu (settings to none).
 const TAB_OF = { home: "home", companies: "qgv", leaderboard: "qgv", watchlist: "qgv", company: "qgv", analysis: "qgv", entity: "qgv", types: "qgv", qgv: "qgv", profiles: "qgv",
   portfolio: "portfolio", actual: "portfolio", model: "portfolio", playbook: "portfolio", brief: "portfolio", report: "portfolio",
-  news: "news", thirteenf: "news", macro: "macro", technical: "technical", research: "prompts", system: "system", validation: "lab", "lab-13f": "lab", settings: null };
-const tabOf = hash => { const r = hash.replace(/^#/, "").split("/")[0]; return TAB_OF[r.startsWith("validation-") ? "validation" : r.startsWith("technical-") ? "technical" : r]; };
+  news: "news", thirteenf: "lab", macro: "macro", technical: "technical", research: "prompts", system: "system", validation: "lab", "lab-13f": "lab", settings: null };
+// Entity pages follow their kind: MACRO → 매크로, INVESTOR → Lab, others (industry) → QGV.
+const ENTITY_TAB = { MACRO: "macro", INVESTOR: "lab" };
+const tabOf = hash => { const [r, id = ""] = hash.replace(/^#/, "").split("/"); if (r === "entity") return ENTITY_TAB[decodeURIComponent(id).split(":")[0]] || "qgv"; return TAB_OF[r.startsWith("validation-") ? "validation" : r.startsWith("technical-") ? "technical" : r]; };
 const groups = ["investments", "companies", "market", "performance"];
 // Official Macro v0.1.4 Candidate §15, also retained by IA v1 §3/S09.
 const macroAxes = ["Growth", "Inflation", "Liquidity", "Monetary Policy", "Credit", "Labor", "Fiscal", "FX"];

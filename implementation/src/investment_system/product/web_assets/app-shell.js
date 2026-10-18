@@ -23,8 +23,8 @@
    desc:['거시 8축·경고등','Eight macro axes and lights'],routes:['macro'],
    items:[['#macro','매크로','Macro']]},
   {key:'news',n:4,href:'#news',ko:'뉴스·공시·기업 관계',en:'News, filings & relations',short:['뉴스·공시','News'],
-   desc:['공시·뉴스, 관계망, 기관 보유 공시','Filings, news, network, institutional filings'],routes:['news','thirteenf'],
-   items:[['#news','뉴스·공시 · 기업 관계망','News & filings · company network'],['#thirteenf','투자자 13F 보유 공시','Investor 13F filings']]},
+   desc:['공시·뉴스와 기업 관계망','Filings, news and the company network'],routes:['news'],
+   items:[['#news','뉴스·공시 · 기업 관계망','News & filings · company network']]},
   {key:'portfolio',n:5,href:'#portfolio',ko:'포트폴리오',en:'Portfolio',short:['포트폴리오','Portfolio'],
    desc:['보유·모델·플레이북·일일보고','Holdings, model, playbook, daily reports'],routes:['portfolio','actual','model','playbook','brief','report'],
    items:[['#portfolio','포트폴리오','Portfolio'],['#actual','실제 보유 입력','Actual holdings'],['#model','모델 포트폴리오','Model portfolio'],['#playbook','플레이북','Playbook'],['#brief','오늘의 투자 화면','Today’s investment view'],['#report/real','투자 일일보고서','Investment daily report'],['#report/mock','모의투자 일일보고서','Paper trading daily report']]},
@@ -35,8 +35,8 @@
    desc:['데이터에서 판단까지의 구조','How data becomes a judgement'],routes:['system'],
    items:[['#system','투자시스템 안내·구조','System guide & structure',true]]},
   {key:'lab',n:8,href:'#validation',ko:'Lab',en:'Lab',short:['Lab','Lab'],
-   desc:['백테스트·전진검증·13F 가중치 연구','Backtests, forward validation, 13F weight research'],routes:['validation','lab-13f'],
-   items:[['#validation','검증·연구 개요','Validation overview'],['#validation-backtest','백테스트','Backtest'],['#validation-forward','전진 검증','Forward validation'],['#lab-13f','13F 가중치 연구','13F weight research',true]]}
+   desc:['백테스트·전진검증·13F 가중치 연구','Backtests, forward validation, 13F weight research'],routes:['validation','lab-13f','thirteenf'],
+   items:[['#validation','검증·연구 개요','Validation overview'],['#validation-backtest','백테스트','Backtest'],['#validation-forward','전진 검증','Forward validation'],['#thirteenf','투자자 13F 보유','Investor 13F holdings'],['#lab-13f','13F 가중치 연구','13F weight research',true]]}
  ]);
  const HOME=Object.freeze({key:'home',n:0,href:'#home',ko:'홈',en:'Home',short:['홈','Home'],routes:['home']});
  const TABS=Object.freeze([HOME,...MENUS]);
@@ -45,10 +45,14 @@
  const MORE=Object.freeze([...MENUS.map(m=>({ko:m.ko,en:m.en,items:m.items})),SETTINGS]);
  const THEME_LABEL={light:['라이트','Light'],dark:['다크','Dark'],system:['시스템 설정','System']};
  let locale='ko-KR',route=null;
- const tabFor=r=>TABS.find(t=>t.routes.includes(r))||null;
+ // An entity page belongs to the menu of its kind (feature map 2026-10-18 §8): macro indicator → 매크로, investor → Lab
+ // (13F research), industry and others → QGV. The kind is read from the current hash ('#entity/MACRO:...').
+ const ENTITY_MENU=Object.freeze({MACRO:'macro',INVESTOR:'lab'});
+ function entityMenu(){let id='';try{id=decodeURIComponent(root.location.hash.split('/')[1]||'');}catch(_){id='';}return ENTITY_MENU[id.split(':')[0]]||'qgv';}
+ const tabFor=r=>r==='entity'?TABS.find(t=>t.key===entityMenu()):TABS.find(t=>t.routes.includes(r))||null;
  const pad=n=>String(n).padStart(2,'0');
  // Route → menu (number and label) for the screen's "01 / QGV" line; null for home and settings.
- function menuFor(r){const m=MENUS.find(x=>x.routes.includes(r));return m?{key:m.key,n:m.n,num:pad(m.n),label:T(locale,m.ko,m.en)}:null;}
+ function menuFor(r){const m=r==='entity'?MENUS.find(x=>x.key===entityMenu()):MENUS.find(x=>x.routes.includes(r));return m?{key:m.key,n:m.n,num:pad(m.n),label:T(locale,m.ko,m.en)}:null;}
 
  function label(){
   const nav=$('#primary-nav');if(!nav)return;
