@@ -1,16 +1,18 @@
 'use strict';
-// Stat window radar (stat-radar.js, owner item 1.4) at 390 and 1280 on its three mount points: the Universe504 company page,
-// the TARGET company summary and the 1.4 QGV tree example. REAL mode reads the sec-qgv2.json the build serves; SYNTHETIC mode
-// (PR builds publish no data file) serves the strictly valid synthetic payload (qgv_v2_fixture.js) by route.
-// Checks, each recomputed here independently of the page code:
-//  - public axes (revenue size, operating-margin stability): raw value, average-rank percentile over the cross-section (one point
-//    per CIK, the subject's issuer point replaced), industry / SIC group choice and group averages (raw mean, mean percentile, n);
-//  - price axes are NA (NO_DEVICE_PRICE) without device prices, and no vertex is drawn for an NA axis (never 0);
+// Stat window radar (stat-radar.js, owner item 1.4: Q · G · V + volatility · max drawdown · margin stability) at 390 and 1280 on
+// its three mount points: the Universe504 company page, the TARGET company summary and the 1.4 QGV tree example. REAL mode reads
+// the sec-qgv2.json the build serves; SYNTHETIC mode (PR builds publish no data file) serves the strictly valid synthetic payload
+// (qgv_v2_fixture.js) by route. Checks, each recomputed here independently of the page code:
+//  - Q and G equal the published axis scores (0–100, no re-ranking); their industry / SIC averages are the mean published score
+//    of the group members (group choice, n and the 5-member minimum recomputed here);
+//  - margin stability: raw value, average-rank percentile over the cross-section (one point per CIK, the subject's issuer point
+//    replaced) and the group averages (raw mean, mean percentile, n);
+//  - V is NA without device prices (not applicable for FINANCIAL); volatility and drawdown are NA (NO_DEVICE_PRICE) without
+//    device prices, and no vertex is drawn for an NA axis (never 0);
 //  - with SYNTHETIC device bars installed in the page (made-up random walks, never real prices, never committed as data): the
-//    1-year volatility, max drawdown and 12-1 momentum, their percentiles and the industry average equal an independent formula;
-//    liquidity is NA (the price tab has no volume) and the pure function's median trading value equals an independent median;
-//  - the competitor series is NOT_AVAILABLE (REL_SOURCE_PENDING); no inline styles; no horizontal overflow; nothing is written to
-//    localStorage / sessionStorage by the radar.
+//    1-year volatility and max drawdown, their percentiles and the industry / SIC averages equal an independent formula;
+//  - every axis label states its direction (↑); the competitor series is NOT_AVAILABLE (REL_SOURCE_PENDING); no inline styles;
+//    no horizontal overflow; nothing is written to localStorage / sessionStorage by the radar.
 const { chromium } = require('playwright'), assert = require('node:assert/strict'), fs = require('node:fs'), path = require('node:path');
 const F = require('./qgv_v2_fixture.js'), SQ = require('../src/investment_system/product/web_assets/sec-qgv2.js');
 const BASE = process.env.PAGES_COCKPIT_URL, ORIGIN = new URL(BASE).origin, SHOTS = process.env.STAT_RADAR_SHOTS || '';
@@ -28,9 +30,9 @@ function crossSection(p) {
     if (!scored(r, p) || typeof r.cik !== 'string' || bad.has(r.cik) || seen.has(r.cik)) continue; seen.add(r.cik); out.push({ code, cik: r.cik, r }); }
   return out;
 }
-function revenue(r) { const v = r.v_inputs_v2; if (!v || v.currency !== 'USD' || !v.revenue) return null; const x = v.revenue; return Number.isFinite(x.ttm_value) ? x.ttm_value : Number.isFinite(x.fy_value) ? x.fy_value : null; }
 const marginStd = (r) => (r.metrics && Number.isFinite(r.metrics.operating_margin_std_5y_pp) ? r.metrics.operating_margin_std_5y_pp : null);
-const PUBLIC = { revenue_size: { dir: 1, get: revenue }, margin_stability: { dir: -1, get: marginStd } };
+const axisScore = (axis) => (r) => (r.axes && r.axes[axis] && Number.isFinite(r.axes[axis].score) ? r.axes[axis].score : null);
+const PUBLIC = { q: { score: true, get: axisScore('Q') }, g: { score: true, get: axisScore('G') }, margin_stability: { dir: -1, get: marginStd } };
 // QGV average-rank percentile by direct counting (no shared code with the page).
 function pct(values, x) { const n = values.length; if (n < MIN_PEERS) return null; let less = 0, eq = 0; for (const v of values) { if (v < x) less++; else if (v === x) eq++; } return 100 * (less + (eq - 1) / 2) / (n - 1); }
 function groups(subject, points) {
@@ -42,6 +44,13 @@ function groups(subject, points) {
   const withSic = others.filter((p) => typeof p.r.sic === 'string'), m4 = withSic.filter((p) => p.r.sic === r.sic);
   const sic = m4.length + 1 >= MIN_PEERS ? { basis: 'SIC4', key: r.sic, m: m4 } : { basis: 'SIC2', key: r.sic.slice(0, 2), m: withSic.filter((p) => p.r.sic.slice(0, 2) === r.sic.slice(0, 2)) };
   return { industry: ind, sic };
+}
+/* Published 0–100 score axes (Q, G): drawn as published; group value = mean member score. */
+function scoreExpect(values, own, gr) {
+  const out = { population: values.size + (own === null ? 0 : 1), company: { raw: own, pct: own } };
+  for (const k of ['industry', 'sic']) { const mem = gr[k].m.filter((p) => values.has(p.code)), xs = mem.map((p) => values.get(p.code));
+    out[k] = mem.length < MIN_GROUP ? { raw: null, pct: null, n: mem.length } : { raw: xs.reduce((a, b) => a + b, 0) / xs.length, pct: xs.reduce((a, b) => a + b, 0) / xs.length, n: mem.length }; }
+  return out;
 }
 /* values: Map code -> raw (others), own raw or null; returns company / industry / sic expectations for one axis. */
 function axisExpect(dir, values, own, gr) {
@@ -62,7 +71,7 @@ function subjectFor(p, spec) {
 function expectPublic(p, spec) {
   const points = crossSection(p), subject = subjectFor(p, spec), gr = groups(subject, points), others = points.filter((x) => x.cik !== subject.cik), axes = {};
   for (const [id, a] of Object.entries(PUBLIC)) { const vals = new Map(); for (const x of others) { const v = a.get(x.r); if (v !== null) vals.set(x.code, v); }
-    axes[id] = axisExpect(a.dir, vals, a.get(subject.r), gr); }
+    axes[id] = a.score ? scoreExpect(vals, a.get(subject.r), gr) : axisExpect(a.dir, vals, a.get(subject.r), gr); }
   return { subject, points, gr, axes };
 }
 
@@ -75,15 +84,16 @@ function walk(seed, n, end) {
   return out;
 }
 const symbolOf = (code) => code.slice(code.indexOf(':') + 1).replace(/\./g, '-');
-// Independent 1-year metrics: last 253 closes, sample std of simple returns × √252, running-peak drawdown, C[-22]/C[-253]-1.
+// Independent 1-year metrics: last 253 closes, sample std of simple returns × √252, running-peak drawdown.
 function metrics(closes) {
   const c = Object.keys(closes).sort().map((d) => closes[d]).slice(-253); if (c.length < 253) return null;
   const r = []; for (let i = 1; i < c.length; i++) r.push(c[i] / c[i - 1] - 1);
   const m = r.reduce((a, b) => a + b, 0) / r.length, sd = Math.sqrt(r.reduce((a, x) => a + (x - m) ** 2, 0) / (r.length - 1));
   let peak = -Infinity, mdd = 0; for (const x of c) { peak = Math.max(peak, x); mdd = Math.min(mdd, x / peak - 1); }
-  return { volatility_1y: sd * Math.sqrt(252), max_drawdown_1y: mdd, momentum_12_1: c[c.length - 22] / c[c.length - 253] - 1 };
+  return { volatility_1y: sd * Math.sqrt(252), max_drawdown_1y: mdd };
 }
-const DEVICE = { volatility_1y: 1, max_drawdown_1y: -1, momentum_12_1: 1 };
+const DEVICE = { volatility_1y: 1, max_drawdown_1y: -1 };
+const ALL_AXES = ['q', 'g', 'v', 'volatility_1y', 'max_drawdown_1y', 'margin_stability'];
 
 /* ---------- page checks ---------- */
 async function radar(page, want = null) {
@@ -112,7 +122,7 @@ async function checkPublic(el, exp, label) {
   return checks;
 }
 async function checkCommon(page, el, label) {
-  for (const axis of ['revenue_size', 'margin_stability', 'volatility_1y', 'max_drawdown_1y', 'liquidity', 'momentum_12_1']) {
+  for (const axis of ALL_AXES) {
     const c = await cellOf(el, axis, 'competitor'); assert.equal(c.raw, 'NA'); assert.equal(c.pct, 'NA'); assert.equal(c.reason, 'REL_SOURCE_PENDING', label + ' competitor ' + axis); }
   assert.equal(await el.locator('[data-sr-legend="competitor"]').getAttribute('data-sr-legend-state'), 'NOT_AVAILABLE');
   assert.match(await el.locator('[data-sr-legend="competitor"]').textContent(), /REL-SOURCE/);
@@ -120,17 +130,27 @@ async function checkCommon(page, el, label) {
   const pcts = await el.locator('td[data-sr-series="company"]').evaluateAll((ns) => ns.map((n) => n.dataset.srPct));
   assert.equal(await el.locator('.sr-mark[data-sr-series="company"]').count(), pcts.filter((v) => v !== 'NA').length, label + ' company vertices');
   assert.equal(await el.locator('[data-sr-shape="company"].sr-fill').count(), pcts.every((v) => v !== 'NA') ? 1 : 0, label + ' fill only when complete');
-  const aria = await el.locator('svg[data-sr-svg]').getAttribute('aria-label'); assert.ok(aria.includes('매출 규모') && aria.includes('면적은 점수가 아님'), label + ' aria-label');
+  const aria = await el.locator('svg[data-sr-svg]').getAttribute('aria-label'); assert.ok(aria.includes('Q 질') && aria.includes('최대 낙폭') && aria.includes('면적은 점수가 아님'), label + ' aria-label');
+  assert.deepEqual(await el.locator('[data-sr-label]').evaluateAll((ns) => ns.map((n) => n.dataset.srLabel)), ALL_AXES, label + ' hexagon axis order');
+  for (const [axis, word] of [['q', '점수 ↑'], ['g', '점수 ↑'], ['v', '점수 ↑'], ['volatility_1y', '변동성 ↑'], ['max_drawdown_1y', '낙폭 ↑'], ['margin_stability', '안정성 ↑']])
+    assert.ok((await el.locator('[data-sr-label="' + axis + '"]').textContent()).includes(word), label + ' direction label ' + axis);
   assert.equal(await el.locator('table caption').count(), 1);
   for (const s of ['company', 'industry', 'sic', 'competitor']) assert.equal(await el.locator('[data-sr-legend="' + s + '"] b').count(), 1, label + ' legend text ' + s);
   assert.equal(await page.locator('[data-stat-radar] [style], [data-stat-radar][style]').count(), 0, label + ' no inline styles');
   assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), label + ' no horizontal overflow');
 }
-async function checkNoDevice(el, label) {
+async function checkNoDevice(el, label, financial) {
   const state = await el.getAttribute('data-sr-device'); assert.ok(['OFF', 'NOT_AVAILABLE', 'AUTH_REQUIRED', 'SHEET_NOT_CONNECTED'].includes(state), label + ' device state ' + state);
-  for (const axis of ['volatility_1y', 'max_drawdown_1y', 'liquidity', 'momentum_12_1']) for (const s of ['company', 'industry', 'sic']) {
+  assert.equal(await el.getAttribute('data-sr-quotes'), 'NONE', label + ' no device quotes');
+  for (const axis of ['volatility_1y', 'max_drawdown_1y']) for (const s of ['company', 'industry', 'sic']) {
     const c = await cellOf(el, axis, s); assert.equal(c.raw, 'NA', label + ' ' + axis + ' ' + s); assert.equal(c.pct, 'NA'); assert.equal(c.reason, 'NO_DEVICE_PRICE', label + ' ' + axis + ' ' + s + ' reason'); }
-  assert.equal(await el.locator('.sr-mark[data-sr-axis="volatility_1y"]').count(), 0, label + ' no vertex for an NA price axis');
+  // V: NA without device prices; FINANCIAL -> not applicable (해당 없음), for the company and its groups alike.
+  for (const s of ['company', 'industry', 'sic']) { const c = await cellOf(el, 'v', s); assert.equal(c.raw, 'NA', label + ' V ' + s); assert.equal(c.pct, 'NA');
+    if (financial) assert.equal(c.reason, 'FINANCIAL_PROFILE_V_NOT_DEFINED', label + ' V ' + s + ' financial');
+    else if (s === 'company') assert.ok(c.reason && c.reason !== 'FINANCIAL_PROFILE_V_NOT_DEFINED', label + ' V reason ' + c.reason);
+    else assert.equal(c.reason, 'NO_DEVICE_PRICE', label + ' V ' + s + ' group without device quotes'); }
+  if (financial) assert.match(await el.locator('tr[data-sr-axis="v"] td[data-sr-series="company"]').textContent(), /해당 없음/);
+  for (const axis of ['v', 'volatility_1y', 'max_drawdown_1y']) assert.equal(await el.locator('.sr-mark[data-sr-axis="' + axis + '"]').count(), 0, label + ' no vertex for an NA axis ' + axis);
 }
 async function shot(el, name) { if (!SHOTS) return; fs.mkdirSync(SHOTS, { recursive: true }); await el.screenshot({ path: path.join(SHOTS, name + '.png') }); }
 
@@ -139,7 +159,7 @@ async function shot(el, name) { if (!SHOTS) return; fs.mkdirSync(SHOTS, { recurs
   try {
     const live = await served(), mode = live ? 'REAL' : 'SYNTHETIC', p = live || F.strictPayload(); SQ.validate(p);
     const points = crossSection(p);
-    const uni = points.find((x) => x.r.profile === 'GENERAL' && x.r.industry_group && x.r.sic && revenue(x.r) !== null && marginStd(x.r) !== null && groups({ cik: x.cik, r: x.r }, points).industry.basis === 'INDUSTRY_GROUP') || points.find((x) => x.r.profile === 'GENERAL' && x.r.sic);
+    const uni = points.find((x) => x.r.profile === 'GENERAL' && x.r.industry_group && x.r.sic && axisScore('Q')(x.r) !== null && axisScore('G')(x.r) !== null && marginStd(x.r) !== null && groups({ cik: x.cik, r: x.r }, points).industry.basis === 'INDUSTRY_GROUP') || points.find((x) => x.r.profile === 'GENERAL' && x.r.sic);
     const fin = points.find((x) => x.r.profile === 'FINANCIAL' && x.r.sic);
     const targetId = Object.keys(p.target || {}).sort().find((id) => scored(p.target[id], p) && typeof p.target[id].sic === 'string') || null;
     const treeCode = Object.keys(p.records).filter((c) => !c.startsWith('TARGET:')).sort().find((c) => points.some((x) => x.code === c) && p.records[c].state === 'LIVE' && Number.isFinite(p.records[c].axes.Q.score) && Number.isFinite(p.records[c].axes.G.score));
@@ -156,15 +176,15 @@ async function shot(el, name) { if (!SHOTS) return; fs.mkdirSync(SHOTS, { recurs
         phase = width + ' ' + kind; await page.goto(BASE + '#company/' + encodeURIComponent(spec.code || spec.targetId));
         const el = await radar(page), exp = expectPublic(p, spec);
         assert.equal(await el.getAttribute('data-stat-radar'), spec.code ? 'code:' + spec.code : 'target:' + spec.targetId);
-        pass += await checkPublic(el, exp, phase); await checkNoDevice(el, phase); await checkCommon(page, el, phase); pass += 3;
+        pass += await checkPublic(el, exp, phase); await checkNoDevice(el, phase, exp.subject.r.profile === 'FINANCIAL'); await checkCommon(page, el, phase); pass += 3;
         await shot(el, 'radar-' + kind.toLowerCase() + '-' + width + '-light-nodevice');
       }
       if (treeCode) {
         phase = width + ' TREE'; await page.goto(BASE + '#tree/qgv'); const el = await radar(page);
         assert.equal(await el.getAttribute('data-sr-subject'), treeCode, 'tree radar uses the tree example row');
         assert.equal(await page.locator('[data-tree-examples="qgv"] [data-example-code]').getAttribute('data-example-code'), treeCode);
-        assert.match(await page.locator('[data-tree-radar-node]').textContent(), /PROVISIONAL/);
-        pass += await checkPublic(el, expectPublic(p, { code: treeCode }), phase); await checkNoDevice(el, phase); await checkCommon(page, el, phase); pass += 3;
+        assert.match(await page.locator('[data-tree-radar-node]').textContent(), /PROVISIONAL|결정됨/);
+        const te = expectPublic(p, { code: treeCode }); pass += await checkPublic(el, te, phase); await checkNoDevice(el, phase, te.subject.r.profile === 'FINANCIAL'); await checkCommon(page, el, phase); pass += 3;
         await shot(el, 'radar-tree-' + width + '-light-nodevice');
       }
       // 2) synthetic device bars in RAM: the subject, 7 same-industry peers, 3 other issuers, 1 industry peer with only 100 bars.
@@ -185,14 +205,9 @@ async function shot(el, name) { if (!SHOTS) return; fs.mkdirSync(SHOTS, { recurs
           for (const k of ['industry', 'sic']) { const x = await cellOf(el, axis, k); assert.equal(Number(x.n), e[k].n, phase + ' ' + axis + ' ' + k + ' n'); same(x.raw, e[k].raw, phase + ' ' + axis + ' ' + k); same(x.pct, e[k].pct, phase + ' ' + axis + ' ' + k + ' pct'); }
           pass += 6;
         }
-        const liq = await cellOf(el, 'liquidity', 'company'); assert.equal(liq.raw, 'NA'); assert.equal(liq.reason, 'VOLUME_NOT_IN_PRICE_STORE');
         assert.equal(await el.locator('.sr-mark[data-sr-series="company"][data-sr-axis="volatility_1y"]').count(), 1, 'priced axis gets a vertex');
         await checkCommon(page, el, phase);
         await shot(el, 'radar-universe-' + width + '-light-synthetic-device');
-        // Pure function with volume (synthetic): median of close × volume over the last 252 sessions.
-        const synth = walk(4242, 260, today), days = Object.keys(synth).sort(), withVol = days.map((d, i) => ({ date: d, close: synth[d], volume: 1000 + ((i * 7919) % 5000) }));
-        const got = await page.evaluate((b) => StatRadar.priceMetrics(b).liquidity.value, withVol);
-        const tv = withVol.slice(-252).map((b) => b.close * b.volume).sort((a, b) => a - b), med = (tv[125] + tv[126]) / 2; assert.ok(close(got, med), 'median trading value'); pass++;
         const after = await page.evaluate(() => JSON.stringify([Object.keys(localStorage).sort(), Object.keys(sessionStorage).sort()]));
         assert.equal(after, before, 'the radar writes nothing to browser storage');
         const leaked = await page.evaluate((v) => [JSON.stringify(localStorage), JSON.stringify(sessionStorage)].some((s) => s.includes(String(v))), Object.values(bars[symbolOf(uni.code)])[10]);
