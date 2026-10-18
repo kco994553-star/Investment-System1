@@ -351,3 +351,75 @@ test('coverage: partial / below-50% axis, FINANCIAL not-applicable, STALE source
     for (const li of html.split('<li data-factor-coverage=').slice(1)) if (/data-factor-state="(?!OK)/.test(li)) assert.ok(!/점수 0/.test(li), id);
   }
 });
+
+// PERSONAL_PREVIEW two-level weights (owner directive 2026-10-18 §4.2): own memo and output key, never `primary`.
+test('personal weights: separate output key, official rows byte-identical, coverage from the effective weights', () => {
+  const V2 = globalThis.QgvV2, base = { identities, publicScreens: screens, quotes };
+  const official = JSON.stringify(QS.compute(base));
+  const tree = V2.officialWeights(); tree.inner.Q.q_profitability = 40; tree.inner.Q.q_moat_proxy = 0; tree.axis = { Q: 50, G: 30, V: 20 };
+  const S = QS.compute({ ...base, weights: tree });
+  const { personal, ...rest } = JSON.parse(JSON.stringify(S)), plain = JSON.parse(official);
+  for (const r of Object.values(rest.rows)) { delete r.personal; delete r.personal_rank; }
+  assert.deepEqual(rest, plain);                 // official result unchanged
+  assert.equal(JSON.stringify(QS.compute(base)), official);                  // official memo not overwritten
+  assert.equal(personal.state, 'READY'); assert.deepEqual(personal.label, QS.PERSONAL_LABEL);
+  assert.equal(personal.label[0], '개인 설정 미리보기 · 공식 점수 아님');
+  assert.equal(personal.profile.namespace, 'PERSONAL_PREVIEW'); assert.match(personal.profile.id, /^qgv-v2\/custom\/[0-9a-f]{16}\/gate-on$/);
+  assert.notEqual(personal.profile.id, S.profile.id);
+  let moved = 0;
+  for (const [cid, row] of Object.entries(S.rows)) {
+    assert.ok(row.primary === row.v2 && row.personal !== row.primary);
+    if (row.personal.total !== null && row.primary.total !== null && Math.abs(row.personal.total - row.primary.total) > 1e-9) moved++;
+    const q = row.personal.coverage && row.personal.coverage.axes ? row.personal.coverage.axes.Q : null;
+    if (q) { assert.equal(q.weights, 'PERSONAL'); assert.deepEqual(q.excluded, ['q_moat_proxy']); assert.equal(q.factors_total, 4);
+      const moat = q.factors.find((f) => f.id === 'q_moat_proxy'); assert.equal(moat.weight, 0); assert.equal(moat.official_weight, 20); assert.equal(moat.excluded, true); assert.equal(moat.share, null);
+      assert.equal(q.factors.find((f) => f.id === 'q_profitability').weight, 40); }
+    const oq = row.primary.coverage && row.primary.coverage.axes ? row.primary.coverage.axes.Q : null;
+    if (oq) { assert.equal(oq.weights, undefined); assert.equal(oq.factors_total, 5); }
+    // Personal ranks follow the same rule (total desc, ticker asc, NA unranked) and never replace the official rank.
+    assert.equal(row.personal_rank === null, !(Number.isFinite(row.personal.total) && row.personal.reference_only !== true), cid);
+  }
+  assert.ok(moved > 0);
+  const order = Object.values(S.rows).filter((r) => r.personal_rank !== null).sort((a, b) => a.personal_rank - b.personal_rank);
+  for (let i = 1; i < order.length; i++) assert.ok(order[i - 1].personal.total > order[i].personal.total || (order[i - 1].personal.total === order[i].personal.total && order[i - 1].ticker < order[i].ticker));
+  const bad = QS.compute({ ...base, weights: { axis: { Q: 0, G: 0, V: 0 }, inner: tree.inner } });
+  assert.equal(bad.personal.state, 'INVALID'); assert.equal(bad.personal.reason, 'WEIGHTS_INVALID'); assert.ok(Object.values(bad.rows).every((r) => !('personal' in r)));
+  const same = QS.compute({ ...base, weights: V2.officialWeights() });
+  for (const row of Object.values(same.rows)) { assert.equal(row.personal.total, row.primary.total); assert.equal(row.personal_rank, row.rank); }
+});
+
+// S06 structured sort (owner directive 2026-10-18 §4.4): numeric keys, NA last both ways, QGV ties by ticker, cap ties by company_id.
+test('S06 sortRows: structured keys, NA last in both directions, ties, official rank untouched', () => {
+  const S = QS.compute({ identities, publicScreens: screens, quotes }), rows = identities.map((c) => ({ ...c, name: c.ticker.toLowerCase() }));
+  const before = JSON.stringify(S), ranks = Object.fromEntries(Object.entries(S.rows).map(([k, r]) => [k, r.rank]));
+  const values = (out, f) => out.map((r) => f(S.rows[r.company_id]));
+  const check = (id, f, dir) => {
+    const out = L.sortRows(rows, S, id), v = values(out, f), firstNa = v.findIndex((x) => x === null);
+    if (firstNa >= 0) assert.ok(v.slice(firstNa).every((x) => x === null), id + ' NA last');
+    const known = v.slice(0, firstNa < 0 ? v.length : firstNa);
+    for (let i = 1; i < known.length; i++) assert.ok(dir * (known[i] - known[i - 1]) >= 0, id + ' order');
+    const na = out.slice(firstNa < 0 ? out.length : firstNa).map((r) => r.ticker);assert.deepEqual(na, [...na].sort((a, b) => a.localeCompare(b)), id + ' NA by ticker');
+    return out;
+  };
+  const qgvDesc = check('qgv', (r) => (r.rank === null ? null : r.primary.total), -1);
+  assert.deepEqual(qgvDesc.filter((r) => S.rows[r.company_id].rank !== null).map((r) => S.rows[r.company_id].rank), qgvDesc.filter((r) => S.rows[r.company_id].rank !== null).map((_, i) => i + 1));
+  check('qgv-asc', (r) => (r.rank === null ? null : r.primary.total), 1);
+  for (const a of ['q', 'g', 'v']) { check(a + '-desc', (r) => r.primary[a], -1); check(a + '-asc', (r) => r.primary[a], 1); }
+  assert.ok(values(L.sortRows(rows, S, 'v-desc'), (r) => r.primary.v).some((x) => x === null), 'fixture has a V NA row');
+  // Legacy ids are ordered by DeviceWatchlist.filter: unchanged here.
+  for (const id of ['ticker', 'name', 'favorites']) assert.equal(L.sortRows(rows, S, id), rows);
+  assert.deepEqual(L.sortRows(rows, S, 'ticker-desc').map((r) => r.ticker), rows.map((r) => r.ticker).sort((a, b) => b.localeCompare(a)));
+  // QGV ties by ticker in both directions.
+  const tieS = { rows: { a: { rank: 1, primary: { total: 50 } }, b: { rank: 2, primary: { total: 50 } }, c: { rank: null, primary: { total: null } } } }, tieRows = [{ company_id: 'c', ticker: 'AAA' }, { company_id: 'b', ticker: 'BBB' }, { company_id: 'a', ticker: 'ZZZ' }];
+  assert.deepEqual(L.sortRows(tieRows, tieS, 'qgv').map((r) => r.company_id), ['b', 'a', 'c']);assert.deepEqual(L.sortRows(tieRows, tieS, 'qgv-asc').map((r) => r.company_id), ['b', 'a', 'c']);
+  // Market cap: M3 rank (1 = largest), ties by company_id, NA last; unavailable without the device subset.
+  const ranksM3 = { state: 'READY', entries: new Map([['id:nvda', { state: 'READY', rank: 1, reason_codes: [] }], ['id:amd', { state: 'READY', rank: 2, reason_codes: [] }], ['id:asml', { state: 'READY', rank: 2, reason_codes: [] }]]) };
+  const cap = L.sortRows(rows, S, 'cap-desc', { deviceRanks: ranksM3 }).map((r) => r.company_id);assert.deepEqual(cap.slice(0, 3), ['nvda', 'amd', 'asml']);
+  assert.deepEqual(L.sortRows(rows, S, 'cap-asc', { deviceRanks: ranksM3 }).map((r) => r.company_id).slice(0, 3), ['amd', 'asml', 'nvda']);
+  assert.equal(L.sortAvailable('cap-desc', { deviceRanks: null }), false);assert.equal(L.sortAvailable('cap-desc', { deviceRanks: ranksM3 }), true);assert.equal(L.sortAvailable('q-asc', {}), true);
+  assert.equal(L.oppositeSort('qgv'), 'qgv-asc');assert.equal(L.oppositeSort('name'), 'name-desc');assert.equal(L.oppositeSort('favorites'), null);
+  assert.ok(L.SORT_IDS.includes('asof-desc') && !L.SORT_IDS.some((id) => /return|1d|5d|20d/i.test(id)), 'no return sort without a return column');
+  check('asof-desc', (r) => { const t = Date.parse(r.primary.coverage?.source?.acquired_at); return Number.isFinite(t) ? t : null; }, -1);
+  assert.equal(JSON.stringify(S), before);assert.deepEqual(Object.fromEntries(Object.entries(S.rows).map(([k, r]) => [k, r.rank])), ranks);
+  assert.equal(L.populationOf(screens), Object.values(screens[SQ.FILE].records).filter((r) => r.in_cross_section === true && ['LIVE', 'STALE'].includes(r.state) && r.calc_version_mismatch !== true).length);
+});
