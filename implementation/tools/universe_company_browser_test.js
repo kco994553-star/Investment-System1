@@ -76,7 +76,7 @@ async function check(page, p, kind, code) {
   // V: no device price in this browser -> NOT_AVAILABLE with the engine reason; financial -> not applicable.
   phase = kind + ' V';assert.equal(await pg.getAttribute('data-universe-v'), 'NO_DEVICE_PRICE');
   const v = page.locator('[data-universe-card="qgv"] [data-uc-axis="V"]');assert.equal(await v.getAttribute('data-uc-score'), 'NA');
-  if (kind === 'FINANCIAL') { assert.equal(await v.getAttribute('data-uc-axis-state'), 'NOT_APPLICABLE');assert.match(await v.textContent(), /해당 없음/); }
+  if (kind === 'FINANCIAL') { assert.equal(await v.getAttribute('data-uc-axis-state'), 'NOT_APPLICABLE');assert.match(await v.textContent(), /현재 금융업 가치평가 모델 미지원/); }
   else if (kind === 'LIVE' || kind === 'POLICY_NA') { assert.equal(await v.getAttribute('data-uc-axis-state'), 'DEVICE_NA');assert.match(await v.textContent(), /가격 입력 필요/); }
   for (const f of Object.keys(require('../src/investment_system/product/web_assets/qgv-v2.js').WEIGHTS.V)) assert.equal(await page.locator('[data-uc-factor="' + f + '"]').getAttribute('data-uc-value'), 'NA');
   // Freshness and classification blocks.

@@ -255,7 +255,7 @@ async function missingFlow(page) {
   assert.match(await q.locator('[data-axis-fill]').textContent(), /^충족률 80% · 4\/5 요인 \(해당 없음 1개 제외\)$/);
   await q.locator('summary').first().click();const eq = q.locator('[data-factor-coverage="q_earnings_quality"]');assert.equal(await eq.getAttribute('data-factor-state'), 'NOT_APPLICABLE');
   assert.ok(await eq.isVisible());assert.match(await eq.textContent(), /해당 없음: 금융업 기준에는/);
-  const v = page.locator('[data-qgv-coverage] [data-axis-coverage="V"]');assert.equal(await v.getAttribute('data-axis-status'), 'NOT_APPLICABLE');assert.match(await v.textContent(), /해당 없음: 금융업은 EV·FCF/);
+  const v = page.locator('[data-qgv-coverage] [data-axis-coverage="V"]');assert.equal(await v.getAttribute('data-axis-status'), 'NOT_APPLICABLE');assert.match(await v.textContent(), /현재 금융업 가치평가 모델 미지원/);
   assert.equal(await page.locator('[data-data-state="NOT_APPLICABLE"]').count(), 1);assert.equal(await page.locator('[data-data-state="SOURCE_MISSING"], [data-data-state="PARTIAL"]').count(), 0);
   assert.equal(await page.locator('[data-qgv-usable]').getAttribute('data-qgv-usable'), 'EXCLUDED');assert.match(await page.locator('[data-source-period]').textContent(), /^FY \d{4}-\d{2}-\d{2}$/);
   await noWideScroll(page, 'S04 financial');
