@@ -33,7 +33,7 @@
    items:[['#research','프롬프트 라이브러리','Prompt library']]},
   {key:'system',n:7,href:'#system',ko:'투자시스템 안내·구조',en:'System guide & structure',short:['시스템 안내','System'],
    desc:['데이터에서 판단까지의 구조','How data becomes a judgement'],routes:['system'],
-   items:[['#system','투자시스템 안내·구조','System guide & structure',true]]},
+   items:[['#system','투자시스템 안내·구조','System guide & structure']]},
   {key:'lab',n:8,href:'#validation',ko:'Lab',en:'Lab',short:['Lab','Lab'],
    desc:['백테스트·전진검증·13F 가중치 연구','Backtests, forward validation, 13F weight research'],routes:['validation','lab-13f','thirteenf'],
    items:[['#validation','검증·연구 개요','Validation overview'],['#validation-backtest','백테스트','Backtest'],['#validation-forward','전진 검증','Forward validation'],['#thirteenf','투자자 13F 보유','Investor 13F holdings'],['#lab-13f','13F 가중치 연구','13F weight research',true]]}
@@ -129,7 +129,38 @@
          ['학습·검증 기간, 평가 지표, 별도 실험 ID·버전 결정','Training and test periods, metrics, and a separate experiment ID and version']],
    links:[['#thirteenf','투자자 13F 보유 공시','Investor 13F filings'],['#validation','검증·연구 개요','Validation overview']]}
  });
+
+ // A product map, not a directory tree. Routes reuse the existing screen/data owners.
+ function systemHtml(loc){
+  const t=(ko,en)=>T(loc,ko,en);
+  const cards=[
+   ['01','QGV','#leaderboard',t('좋은 기업인가, 성장하는가, 가격은 합리적인가?','Quality, growth, and a reasonable price?'),
+    [t('공시 재무 → 15개 요인 → Q·G·V → 비교·순위','Filings → 15 factors → Q/G/V → comparison & rank'),t('Q·G는 공개 산출값, V는 기기 가격을 사용합니다. 결측은 0이 아닙니다.','Q/G use published scores; V uses device prices. Missing does not mean zero.')],
+    t('연결됨 · 점수·결측·기업 상세','Connected · scores, missing data, company detail'),t('추가 연결: 두 단계 개인 가중치, 추가 특성 축·비교군','Next: two-level personal weights and extra axes / peers')],
+   ['02',t('기술적 분석','Technical analysis'),'#technical',t('가격 흐름에서 무엇을 확인할까?','What can the price history tell us?'),
+    [t('기기 가격 → 지표 → 추세·모멘텀 → 관찰','Device prices → indicators → trend / momentum → observation'),t('기존 지표와 차트를 사용합니다. 사용자 시나리오는 공식 신호와 분리합니다.','Uses existing indicators and charts. Personal scenarios stay separate from signals.')],
+    t('일부 연결 · 지표·차트','Partial · indicators and charts'),t('설계·결정 대기: 패턴·가격 좌표 노트','Pending design / decisions: patterns and price-anchored notes')],
+   ['03',t('매크로','Macro'),'#macro',t('기업 바깥의 환경은 어떤가?','What is happening around the company?'),
+    [t('거시 관측 → 8개 분석 축 → 5개 경고등 → 판단 참고','Macro observations → 8 axes → 5 lights → context'),t('성장·물가·유동성·통화정책·신용·노동·재정·외환을 구분합니다.','Growth, inflation, liquidity, policy, credit, labor, fiscal and FX remain distinct.')],
+    t('참고 모드 · 기존 관측과 경고등','Reference mode · observations and lights'),t('새 모델 필요: 경기·산업 위치, 검증된 확률','New models needed: cycle position and validated probabilities')],
+   ['04',t('뉴스·공시·기업 관계','News, filings & relations'),'#news',t('무슨 일이 생겼고, 누구에게 연결될까?','What happened, and who is connected?'),
+    [t('출처 → 같은 사건 묶기 → 내 기업 → 관계·영향 경로','Sources → shared event → my companies → relations / impact paths'),t('공시·확정과 뉴스·신호, 사실과 추론을 구분합니다. 보유·관심 기업을 함께 사용합니다.','Separate confirmed filings from news signals, and facts from inference. Reuse held and watched companies.')],
+    t('일부 연결 · 공개 피드·필터','Partial · public feeds and filters'),t('자료 연결 대기: 기업 관계와 사건의 근거','Data connection pending: company relations and event evidence')],
+   ['05',t('포트폴리오','Portfolio'),'#portfolio',t('내 결정이 어떤 구성과 결과를 만드는가?','What do my decisions add up to?'),
+    [t('목표·실제·모의 → 구성·쏠림 → 일일 보고 → 검토 기록','Target / actual / paper → exposures → daily report → review'),t('산업·투자 유형·유형 중복·테마를 구분합니다. 목표를 실제 보유로 채우지 않습니다.','Separate industry, investment types, overlaps and themes. Targets do not become actual holdings.')],
+    t('연결됨 · 기기 보유·보고 흐름','Connected · device holdings and reports'),t('추가 구현: 주간 집계·계정별 동기화','Next: weekly aggregation and account synchronization')],
+   ['06',t('프롬프트 라이브러리','Prompt library'),'#research',t('다음 질문을 정확하게 만들기','Ask the next question precisely'),
+    [t('공식 템플릿 → 기업·기간 입력 → 복사 → 답변 검토','Official template → company / period → copy → review'),t('공식 원문과 개인 사본을 분리합니다. AI 답변이 장부를 자동 변경하지 않습니다.','Keep official text and personal copies separate. AI replies do not alter the ledger.')],
+    t('연결됨 · 카탈로그·개인 사본','Connected · catalogue and personal copies'),t('추가 연결: 보고 영역별 문맥과 주간 자료','Next: report context and weekly inputs')],
+   ['08','Lab','#validation',t('그 판단은 다른 기간에도 통하는가?','Does the approach hold up in other periods?'),
+    [t('가설 → 가중치 후보 → 시간순 검증 → 유사도·성과','Hypothesis → weight candidates → chronological tests → similarity / returns'),t('13F 보유를 설명하는 비중과 투자 수익은 별도로 평가합니다.','Evaluate weights that explain 13F holdings separately from investment returns.')],
+    t('일부 연결 · 검증 기록·13F 조회','Partial · validation records and 13F holdings'),t('새 연구 연결: 다년 자료·가중치 탐색·미사용 기간 검증','New research wiring: long history, weight search, held-out evaluation')]
+  ];
+  return '<section class="atlas-guide" data-system-guide><p class="eyebrow">07 / THE INVESTMENT ATLAS</p><h1>'+esc(t('정보가 판단이 되기까지','From information to judgement'))+'</h1><p class="atlas-intro">'+esc(t('각 분석이 무엇을 읽고, 무엇을 알려 주며, 어디까지 연결됐는지 살펴보세요.','Explore what each analysis reads, what it tells you, and what is connected.'))+'</p><ol class="atlas-journey">'+[t('자료','Data'),t('지표','Indicators'),t('판단','Judgement'),t('비교','Comparison'),t('기록·검증','Records & tests')].map((x,i)=>'<li><span>0'+(i+1)+'</span>'+esc(x)+'</li>').join('')+'</ol><div class="atlas-map">'+cards.map(c=>'<article class="card atlas-map-card"><div class="atlas-section-head"><span class="eyebrow">'+c[0]+'</span><span class="small">'+esc(c[5])+'</span></div><h2><a href="'+c[2]+'">'+esc(c[1])+' <span aria-hidden="true">↗</span></a></h2><p>'+esc(c[3])+'</p><details><summary>'+esc(t('입력과 판단 과정','Inputs and reasoning'))+'</summary>'+c[4].map(x=>'<p>'+esc(x)+'</p>').join('')+'</details><p class="atlas-next small">'+esc(c[6])+'</p></article>').join('')+'</div><section class="card atlas-principles"><h2>'+esc(t('같은 대상을, 정확하게 연결','Connect the right things'))+'</h2><div class="atlas-map"><p><b>'+esc(t('기업 · 증권 · 상장','Company · security · listing'))+'</b><br>'+esc(t('재무는 기업에, 보유는 증권에, 가격은 상장에 연결합니다. 티커만으로 같은 기업이라고 판단하지 않습니다.','Financials belong to companies, holdings to securities, prices to listings. A ticker alone is not identity.'))+'</p><p><b>'+esc(t('사실 · 가설 · 내 기록','Facts · hypotheses · my records'))+'</b><br>'+esc(t('출처와 기준 시각을 보존합니다. 개인 설정·모의 실험·AI 해석이 공식 점수와 원장을 덮어쓰지 않습니다.','Keep sources and timestamps. Personal settings, simulations and AI interpretations do not overwrite scores or ledgers.'))+'</p></div></section></section>';
+ }
+
  function pendingHtml(key,loc){
+  if(key==='system')return systemHtml(loc||locale);
   const l=loc||locale,p=PENDING[key];if(!p)return '';const t=(ko,en)=>T(l,ko,en);
   return '<section class="pending-page" data-pending-page="'+esc(key)+'" aria-labelledby="pending-title">'+
    '<p class="eyebrow">'+esc(p.eyebrow)+'</p><h1 id="pending-title">'+esc(t(p.ko,p.en))+'</h1>'+
@@ -179,5 +210,5 @@
  doc.addEventListener('keydown',e=>{const m=$('#theme-menu');if(!m||m.hidden||!m.contains(doc.activeElement)||!['ArrowDown','ArrowUp'].includes(e.key))return;e.preventDefault();
   const items=[...m.querySelectorAll('[data-theme-choice]')],i=items.indexOf(doc.activeElement);items[(i+(e.key==='ArrowDown'?1:items.length-1))%items.length].focus();});
  if(root.AppTheme)AppTheme.subscribe(()=>paintThemeButton());
- root.AppShell=Object.freeze({MENUS,TABS,MORE,PENDING,sync,afterRender,tabFor,menuFor,pendingHtml,openMore,closeMore});
+ root.AppShell=Object.freeze({MENUS,TABS,MORE,PENDING,sync,afterRender,tabFor,menuFor,systemHtml,pendingHtml,openMore,closeMore});
 })(window);

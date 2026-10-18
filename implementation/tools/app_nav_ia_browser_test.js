@@ -14,7 +14,7 @@ const evidence = path.resolve(process.env.APP_NAV_IA_EVIDENCE_DIR || "/tmp/app-n
 // Phone: bottom bar 홈 · QGV · 뉴스·공시 · 포트폴리오 · 전체 메뉴. PC: header menu 01~08 · 전체 메뉴 (home = brand link).
 const tabs = ["home", "qgv", "technical", "macro", "news", "portfolio", "prompts", "system", "lab"];
 const tabHref = { home: "#home", qgv: "#leaderboard", technical: "#technical", macro: "#macro", news: "#news", portfolio: "#portfolio", prompts: "#research", system: "#system", lab: "#validation" };
-const phoneTabs = ["home", "qgv", "news", "portfolio"], desktopTabs = ["qgv", "technical", "macro", "news", "portfolio", "prompts", "system", "lab"];
+const phoneTabs = ["home", "qgv", "news", "portfolio"], desktopTabs = ["home", "qgv", "technical", "macro", "news", "portfolio", "prompts", "system", "lab"];
 // Every route belongs to one menu (settings to none).
 const TAB_OF = { home: "home", companies: "qgv", leaderboard: "qgv", watchlist: "qgv", company: "qgv", analysis: "qgv", entity: "qgv", types: "qgv", qgv: "qgv", profiles: "qgv",
   portfolio: "portfolio", actual: "portfolio", model: "portfolio", playbook: "portfolio", brief: "portfolio", report: "portfolio",
@@ -56,7 +56,7 @@ async function go(page, hash) {
   await page.goto(new URL("#" + hash, base).href, { waitUntil: "domcontentloaded" });
   operation = "wait for rendered destination #" + hash;
   const route = hash.split("/")[0], parent = tabOf(hash);
-  const selector = {home: "[data-home]", qgv: '[data-hub="qgv"]', system: '[data-pending-page="system"]', "lab-13f": '[data-pending-page="lab-13f"]', technical: '[data-ia-screen="technical"]', macro: '[data-ia-screen="macro"]', validation: '[data-hub="validation"]', companies: "#search", portfolio: "#device-actual-summary", actual: "#device-actual-root", news: "#news-pane", research: "#research-frame", settings: "#display-locale"}[route];
+  const selector = {home: "[data-home]", qgv: '[data-hub="qgv"]', system: '[data-system-guide]', "lab-13f": '[data-pending-page="lab-13f"]', technical: '[data-ia-screen="technical"]', macro: '[data-ia-screen="macro"]', validation: '[data-hub="validation"]', companies: "#search", portfolio: "#device-actual-summary", actual: "#device-actual-root", news: "#news-pane", research: "#research-frame", settings: "#display-locale"}[route];
   const ticker = page.__iaCompanyTickers?.[decodeURIComponent(hash.slice(route.length + 1))] || null;
   await page.waitForFunction(({hash, parent, selector, route, ticker}) => {
     if (location.hash !== "#" + hash || !document.querySelector("main h1, main h2, main iframe")) return false;
@@ -130,8 +130,8 @@ async function unavailableNewScreen(page, selector) {
         verify(await primary.evaluateAll((nodes, expected) => nodes.every((node, index) => node.textContent.includes(expected[index])), labels[locale]), "primary destination labels follow the display language");
         verify(await page.locator("#primary-nav").evaluate((nav, desktop) => {
           const box = nav.getBoundingClientRect(), main = document.querySelector("main").getBoundingClientRect(), header = document.querySelector("header").getBoundingClientRect();
-          return desktop ? header.top <= box.top && box.bottom <= header.bottom + 1 && box.bottom <= main.top + 1 : Math.abs(box.bottom - innerHeight) <= 2 && box.width <= innerWidth;
-        }, desktop), "phone bottom bar or PC header menu occupies its expected area");
+          return desktop ? box.left === 0 && box.top === 0 && box.right <= main.left + 1 && Math.abs(box.bottom - innerHeight) <= 2 : Math.abs(box.bottom - innerHeight) <= 2 && box.width <= innerWidth;
+        }, desktop), "phone bottom bar or PC sidebar occupies its expected area");
         await active(page, "home");
         // 전체 메뉴 lists every existing destination under its menu; Escape closes it and returns focus to the button.
         await page.locator("#more-button").click(); await page.locator("#more-menu").waitFor();
@@ -139,7 +139,7 @@ async function unavailableNewScreen(page, selector) {
         for (const href of ["#companies", "#leaderboard", "#watchlist", "#types", "#qgv", "#portfolio", "#actual", "#brief", "#profiles", "#model", "#playbook", "#news", "#macro", "#technical", "#thirteenf", "#report/mock", "#report/real", "#validation", "#research", "#system", "#lab-13f", "#settings"])
           verify(moreLinks.includes(href), "전체 메뉴 lists " + href);
         verify(JSON.stringify(await page.locator("#more-menu [data-menu-group]").evaluateAll(nodes => nodes.map(node => node.dataset.menuGroup))) === JSON.stringify(["qgv", "technical", "macro", "news", "portfolio", "prompts", "system", "lab", "settings"]), "전체 메뉴 groups follow the eight menus, then settings");
-        verify(await page.locator("#more-menu [data-menu-pending]").evaluateAll(nodes => nodes.map(node => node.getAttribute("href")).join()) === "#system,#lab-13f", "menus without a screen are marked 준비 중");
+        verify(await page.locator("#more-menu [data-menu-pending]").evaluateAll(nodes => nodes.map(node => node.getAttribute("href")).join()) === "#lab-13f", "menus without a screen are marked 준비 중");
         await page.keyboard.press("Escape");
         verify(await page.locator("#more-menu").isHidden() && await page.evaluate(() => document.activeElement?.id === "more-button"), "Escape closes 전체 메뉴 and returns focus to its button");
         await page.evaluate(() => { window.__iaSpaSentinel = true; });
@@ -218,7 +218,11 @@ async function unavailableNewScreen(page, selector) {
         verify(await page.locator("html").getAttribute("lang") === otherLocale, "settings changes display language without selecting a primary tab");
         await page.locator("#display-locale").selectOption(locale);
         // Menus without a screen: a 준비 중 page that states what is missing, with no invented value, under its menu.
-        for (const [hash, tab] of [["system", "system"], ["lab-13f", "lab"]]) {
+        await go(page, "system"); await active(page, "system");
+        verify(await page.locator("[data-system-guide] .atlas-map-card").count() === 7, "system guide links seven analysis areas");
+        await page.locator("[data-system-guide] details").first().locator("summary").click();
+        verify(await page.locator("[data-system-guide] details").first().getAttribute("open") !== null, "system guide reasoning expands with native disclosure");
+        for (const [hash, tab] of [["lab-13f", "lab"]]) {
           await go(page, hash); await active(page, tab); await unavailableNewScreen(page, '[data-pending-page="' + hash + '"]');
           verify(await page.locator('[data-pending-page="' + hash + '"] [data-pending-needs] li').count() >= 3, hash + " lists the data and decisions it needs");
           verify(await page.locator('[data-pending-page="' + hash + '"] .pending-links a').count() >= 2, hash + " links the closest existing screens");
