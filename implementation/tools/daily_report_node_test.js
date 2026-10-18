@@ -129,3 +129,102 @@ test('module performs no network I/O by itself', () => {
   const src = fs.readFileSync(require.resolve('../src/investment_system/product/web_assets/daily-report.js'), 'utf8');
   for (const word of ['fetch(', 'XMLHttpRequest', 'sendBeacon', 'WebSocket', 'indexedDB']) assert.ok(!src.includes(word), word);
 });
+
+// Directive §9 (2026-10-18): review before save. Pasting stores nothing; the review is pure; saving writes only AI_KEY.
+test('AI answer review before save: pure parse and checks, explicit save writes only the answer store', () => {
+  const { model } = startedModel();
+  const t = R.renderTemplate(model, { hidden: true, guide: false });
+  const good = t.replace('한 줄 요약: 【AI】', '한 줄 요약: 시장 대비 약세') + '\n' + R.CHECK_LINES.join('\n');
+  const writes = [], base = { 'investment.web.v1.personal': '{"keep":1}', 'investment.web.v1.playbook': '{"theses":{}}' };
+  const store = new Map(Object.entries(base)), storage = { getItem: (k) => (store.has(k) ? store.get(k) : null), setItem: (k, v) => { writes.push(k); store.set(k, String(v)); } };
+  const r = R.reviewAnswer(good, t);
+  assert.equal(writes.length, 0, 'review never writes');
+  assert.equal(r.format_ok, true);
+  assert.deepEqual(r.foreign_numbers, []);
+  assert.equal(r.sections.length, R.SECTION_HEADS.length);
+  assert.deepEqual(r.missing_sections, []);
+  assert.ok(r.summary_line.startsWith('시장 대비 약세'));
+  assert.deepEqual(r.effects, { stores: R.AI_KEY, holdings: false, official_judgements: false, ledgers: false, sheets: false });
+  const bad = R.reviewAnswer('## 요약\n지금 사야 합니다. 목표가 312.5', t);
+  assert.equal(bad.format_ok, false);
+  assert.ok(bad.foreign_numbers.includes('312.5'));
+  assert.deepEqual(bad.banned_phrases, ['지금 사야']);
+  assert.ok(bad.missing_sections.includes('## ⑬'));
+  const html = R.reviewHtml(bad);
+  for (const id of ['format', 'date', 'numbers', 'sections', 'phrases']) assert.ok(html.includes('data-review-check="' + id + '"'), id);
+  assert.ok(html.includes('아직 보관 전') && html.includes('data-review-cancel') && html.includes('data-review-effects'));
+  assert.ok(R.saveAnswer(storage, 'k', { answer: good, saved_at: '2026-10-18T00:00:00Z', source: 'PASTE' }));
+  assert.deepEqual(writes, [R.AI_KEY]);
+  for (const [k, v] of Object.entries(base)) assert.equal(store.get(k), v, k + ' unchanged');
+  // The screen asks for a review first: the save button is rendered disabled.
+  const screen = R.screenHtml(model, { hidden: true });
+  assert.ok(/<button type="button" data-save-answer disabled/.test(screen));
+  assert.ok(screen.includes('data-review-answer') && screen.includes('data-answer-review'));
+});
+
+const SECTIONS_TEXT = ['대상:', '기간:', '버전:', '가용 자료', '누락 자료', '출처:', '계산 가능 범위:'];
+test('보고 불가: not started mock report → reason, minimum missing inputs and a copyable prompt without numbers', () => {
+  const m = R.buildModel({ kind: 'MOCK', tab: 'SET_A', reportDate: '2026-10-18', config: VT.defaultConfig(), ledger: { state: 'NOT_STARTED', reason_codes: ['BEFORE_START_DATE'] }, runner: { state: 'NOT_STARTED', reason_codes: ['BEFORE_START_DATE'], sources: [] } });
+  const u = R.unavailability(m);
+  assert.equal(u.state, 'UNAVAILABLE');
+  assert.ok(u.sentence.includes('가상매매 시작일 전(BEFORE_START_DATE)'));
+  assert.deepEqual(u.missing.map((x) => x.key), ['FIRST_SESSION', 'SIC', 'CONTRIB', 'TA', 'MACRO', 'DRIVER', 'RISK']);
+  assert.equal(u.areas.find((a) => a.id === '8').state, 'AI');
+  const prompt = R.unavailablePrompt(m);
+  for (const s of SECTIONS_TEXT) assert.ok(prompt.includes(s), s);
+  assert.ok(prompt.includes('자료가 없는 수익률·손익·평가액·기여도·적중률·점수·가격을 추정하거나 만들지 마라'));
+  assert.ok(prompt.includes('보고일 2026-10-18') && prompt.includes('가상매매 시작일 2026-10-19') && prompt.includes(R.TEMPLATE_VERSION));
+  assert.ok(!/%|원\b|\d+만원/.test(prompt), 'no return or amount');
+  const screen = R.screenHtml(m, { hidden: true });
+  assert.ok(screen.includes('data-report-unavailable data-unavailable-state="UNAVAILABLE"'));
+  assert.ok(screen.indexOf('data-report-unavailable') < screen.indexOf('data-report-section="3"'), 'card comes before the sections');
+  assert.ok(screen.includes('data-unavailable-copy="all"') && screen.includes('data-unavailable-prompt readonly'));
+  // Export is unchanged: template v1 has no 보고 불가 block.
+  assert.ok(!R.renderTemplate(m, { hidden: true, guide: false }).includes('보고 불가'));
+});
+
+test('보고 불가: real report lists holdings, sign-in and device prices date; unknown codes stay verbatim', () => {
+  const runner = { state: 'NOT_AVAILABLE', reason_codes: ['AUTH_REQUIRED'], sources: [{ symbol: 'AAA', state: 'NOT_AVAILABLE', code: 'HISTORY_UNAVAILABLE' }, { symbol: 'BBB', state: 'NOT_AVAILABLE', code: 'WORKER_E42' }] };
+  const none = R.buildModel({ kind: 'REAL', tab: 'REAL', reportDate: '2026-10-20', baseDates: { NYSE: '2026-10-19' }, config: VT.defaultConfig(), ledger: null, ram: { state: 'NOT_AVAILABLE', reason: 'NO_ACTUAL', rows: [] }, runner });
+  const u = R.unavailability(none);
+  assert.equal(u.state, 'UNAVAILABLE');
+  const keys = u.missing.map((x) => x.key);
+  for (const k of ['HOLDINGS', 'SIGN_IN', 'PRICES', 'LEDGER', 'CODE:WORKER_E42']) assert.ok(keys.includes(k), k);
+  const prices = u.missing.find((x) => x.key === 'PRICES').text;
+  assert.ok(prices.includes('NYSE 2026-10-19') && prices.includes('AAA'), prices);
+  assert.equal(u.missing.find((x) => x.key === 'CODE:WORKER_E42').kind, 'CHECK');
+  const area = R.unavailablePrompt(none, { area: '3' });
+  assert.ok(area.includes('영역 ③ 전 종목 장부') && area.includes('NO_ACTUAL') && !area.includes('SIGN_IN'));
+  // With ACTUAL weights but no shadow ledger the report is partial: ③ and ⑤ are computable.
+  const held = R.buildModel({ kind: 'REAL', tab: 'REAL', reportDate: '2026-10-20', config: VT.defaultConfig(), ledger: null, ram: { state: 'OK', rows: [{ ticker: 'AAA', weight: 0.6 }, { ticker: 'BBB', weight: 0.4 }] }, qg: { AAA: { total: 61.2, factors_available: 9, factors_total: 10 } }, runner });
+  const p = R.unavailability(held);
+  assert.equal(p.state, 'PARTIAL');
+  assert.equal(p.areas.find((a) => a.id === '3').state, 'OK');
+  assert.equal(p.areas.find((a) => a.id === '5').state, 'PARTIAL');
+  assert.ok(R.unavailablePrompt(held).includes('QGV v2 총점 1/2종목'));
+});
+
+test('보고 불가: a started report is partial (unconnected areas only) and its card leaks no amount', () => {
+  const { model, ledger } = startedModel();
+  const u = R.unavailability(model);
+  assert.equal(u.state, 'PARTIAL');
+  for (const id of ['2', '4', '6', '7', '9']) assert.equal(u.areas.find((a) => a.id === id).state, 'UNAVAILABLE', id);
+  for (const id of ['summary', '1', '3', '10']) assert.equal(u.areas.find((a) => a.id === id).state, 'OK', id);
+  assert.ok(u.missing.every((x) => x.kind === 'SYSTEM'), JSON.stringify(u.missing));
+  assert.ok(u.missing.some((x) => x.key === 'BENCH'), 'no ⑪⑫⑬ inputs in this fixture');
+  const card = R.unavailableCard(model), prompt = R.unavailablePrompt(model);
+  for (const text of sensitive(ledger)) { assert.ok(!card.includes(text), text); assert.ok(!prompt.includes(text), text); }
+  const screen = R.screenHtml(model, { hidden: false });
+  assert.ok(screen.indexOf('data-report-section="rest"') < screen.indexOf('data-report-unavailable'), 'partial card follows the section cards');
+  assert.ok(screen.indexOf('data-report-unavailable') < screen.indexOf('data-report-section="11"'));
+});
+
+test('an answer pasted with the guide is checked without it (rule numbers, quoted words and check lines ignored)', () => {
+  const { model } = startedModel();
+  const t = R.renderTemplate(model, { hidden: true, guide: false }), withGuide = R.renderTemplate(model, { hidden: true, guide: true });
+  const r = R.reviewAnswer(withGuide, t);
+  assert.deepEqual(r.banned_phrases, [], 'the guide quotes the banned words');
+  assert.deepEqual(r.foreign_numbers, [], 'the guide rule numbers are not foreign numbers');
+  assert.equal(r.format_ok, false, 'the guide check lines do not satisfy the answer check');
+  assert.deepEqual(R.checkAnswer(withGuide, t).foreign_numbers, r.foreign_numbers, 'review and post-save check agree');
+});

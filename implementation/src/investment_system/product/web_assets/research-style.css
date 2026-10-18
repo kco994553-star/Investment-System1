@@ -132,3 +132,15 @@ details .row {
     flex-basis: 180px;
   }
 }
+/* Favorites and personal copies (this browser only). Monochrome; state is also given in text. */
+.pl-domains {display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0;}
+.pl-domains button, .pl-actions button, #pl-fav {background: var(--card); color: var(--ink); border: 1px solid var(--line); padding: 6px 10px; font-size: 14px;}
+.pl-domains button[aria-pressed="true"], #pl-fav[aria-pressed="true"] {background: var(--ink); color: var(--paper); border-color: var(--ink);}
+.pl-note {margin: 6px 0;}
+.pl-store p {margin: 4px 0 8px;}
+.pl-actions {display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0;}
+#pl-personal {border-top: 1px solid var(--line); margin-top: 18px; padding-top: 6px;}
+#pl-personal textarea {width: 100%; min-height: 180px; font-family: ui-monospace, Menlo, monospace; font-size: 14px;}
+.pl-official {margin: 6px 0 0;}
+.pl-mine {margin-left: 6px;}
+.pl-domains button:focus-visible, .pl-actions button:focus-visible, #pl-fav:focus-visible, #pl-view:focus-visible, #pl-body:focus-visible {outline: 3px solid var(--acc); outline-offset: 2px;}
