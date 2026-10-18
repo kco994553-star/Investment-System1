@@ -1,0 +1,15 @@
+/* "V 산출 현황 · 이 기기" (v-coverage.js) on S06. Class-based only (CSP: no inline style). Wraps at 390px: no page-wide scroll. */
+.v-coverage { min-width: 0; overflow-wrap: anywhere; }
+.v-coverage-state { font-weight: 700; }
+.v-coverage-target { font-weight: 700; font-variant-numeric: tabular-nums; }
+.v-coverage-table-wrap { max-width: 100%; overflow-x: auto; }
+.v-coverage-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-variant-numeric: tabular-nums; }
+.v-coverage-table th, .v-coverage-table td { text-align: left; vertical-align: top; padding: 4px 6px; border-bottom: 1px solid var(--line, #ddd); font-size: 13px; white-space: normal; overflow-wrap: anywhere; }
+.v-coverage-table th[scope="row"] { font-weight: 400; width: 44%; }
+.v-coverage-reasons { margin: 4px 0; padding-left: 1.2em; font-size: 13px; }
+.v-coverage-reasons li { overflow-wrap: anywhere; }
+.v-coverage-basis { display: grid; grid-template-columns: minmax(0, 8em) minmax(0, 1fr); gap: 4px 8px; font-size: 13px; }
+.v-coverage-basis dt { font-weight: 700; }
+.v-coverage-basis dd { margin: 0; text-align: left; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.v-coverage-pop { display: flex; flex-wrap: wrap; gap: 4px 12px; margin: 4px 0 8px; padding: 0; list-style: none; font-size: 13px; }
+.v-coverage-pop li { overflow-wrap: anywhere; }
