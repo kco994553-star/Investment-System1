@@ -7,7 +7,9 @@
    device prices stay in RAM and are never shown, stored or sent; without them V is NOT_AVAILABLE with the engine's reason code.
    The daily-candle chart (PrivateHistory) is mounted only for a code in its price scope (a TARGET issuer by CIK); any other code
    shows NOT_AVAILABLE (TA G2 undecided). Missing values are NOT_AVAILABLE with a reason, never 0, and no number is invented.
-   No inline styles: bars are SVG rect widths, colours come from universe-company.css classes. Names stay unpublished (KR-NAMES). */
+   No inline styles: bars are SVG rect widths, colours come from universe-company.css classes. Names (KR-NAMES, 2026-10-18) come
+   from the reviewed company-names-ko.json: the title is "한국어명 · 티커" (English name, then the ticker, as fallbacks) and the
+   page lists the English (SEC) name and the name source. Names are display only and never reach a score. */
 (function(root,factory){const api=factory(root);if(typeof module==='object'&&module.exports)module.exports=api;else root.UniverseCompany=api;})(typeof globalThis!=='undefined'?globalThis:this,function(g){
 'use strict';
 const esc=v=>String(v??'—').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -121,6 +123,19 @@ function classificationCard(code,rs,inputs,ctx,now){const T=tr(ctx.locale),en=ct
 function chartCard(target,locale){const T=tr(locale),inScope=!!(target&&g.PrivateHistory&&g.PrivateHistory.symbolFor(target));
  return '<h2><span class="flow-number">2</span> '+esc(T('기술적 분석','Technical'))+'</h2>'+(inScope?'<div data-uc-chart-host></div>':'<p data-uc-chart="NA">'+na(T('일봉 차트의 가격 범위는 TARGET 19개입니다. 그 밖의 코드는 TA G2 결정 전이라 표시하지 않습니다.','The daily chart’s price scope is the 19 TARGET companies; other codes wait for the TA G2 decision.'),locale)+'</p>')
   +freshLine([T('가격은 이 기기에서만(공개 파일에 가격 없음)','Prices on this device only (public files carry none)')]);}
+/* Company names of a page (also used by the TARGET page header in app.js). rec: a CompanyNames record, null (no record for this
+   id) or undefined (names file not loaded). Shows the English (SEC) name, the Korean name with its status and source, aliases
+   and the share class; a missing Korean name is said plainly (English name used), never invented. */
+const KO_STATUS={OFFICIAL:['공식 한국어명','Official Korean name'],COMMON:['통용 한국어명(출처 기록)','Common Korean name (sourced)'],UNREGISTERED:['한국어명 미등록 · 영문명으로 표시','No Korean name registered · shown in English']};
+function link(url,text){return /^https:\/\/[A-Za-z0-9.\-]+\//.test(url||'')?'<a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">'+esc(text)+'</a>':'';}
+function namesHtml(rec,locale){const T=tr(locale),en=locale==='en-US';
+ if(rec===undefined)return '<p class="small" data-company-names="NOT_LOADED">'+esc(T('기업명 자료를 불러오지 못했습니다 · 티커로 표시합니다','Company names not loaded · shown by ticker'))+'</p>';
+ if(!rec)return '<p class="small" data-company-names="NO_RECORD">'+esc(T('기업명 기록 없음 · 티커로 표시합니다','No company-name record · shown by ticker'))+'</p>';
+ const rows=[[T('영문명','English name'),'<span data-name-en="'+(rec.en_name?'PRESENT':'MISSING')+'">'+(rec.en_name?esc(rec.en_name)+' <span class="small">'+link(rec.en_source,rec.en_source&&rec.en_source.includes('sec.gov')?'SEC':T('출처','source'))+'</span>':esc(T('없음 · 이 코드의 SEC 이름이 없습니다','None · no SEC name for this code')))+'</span>'],
+  [T('한국어명','Korean name'),'<span data-name-ko="'+esc(rec.ko_status)+'">'+(rec.ko_name?esc(rec.ko_name)+' · ':'')+esc(label(KO_STATUS,rec.ko_status,en))+(rec.ko_source?' · '+link(rec.ko_source,T('출처','source')):'')+'</span>']];
+ if(rec.aliases.length)rows.push([T('별칭(검색)','Aliases (search)'),'<span data-name-aliases="'+rec.aliases.length+'">'+rec.aliases.map(a=>esc(a.text)).join(', ')+'</span>']);
+ if(rec.share_class_note)rows.push([T('주식 종류','Share class'),'<span data-name-class="'+esc(rec.class_label)+'">'+esc(rec.share_class_note)+'</span>']);
+ return '<dl class="kv uc-names" data-company-names="'+esc(rec.ko_status)+'">'+rows.map(([k,v])=>'<dt>'+esc(k)+'</dt><dd>'+v+'</dd>').join('')+'</dl><p class="small">'+esc(T('이름은 표시·검색에만 씁니다. QGV 계산·순위·기업 식별·기록은 바뀌지 않습니다.','Names are for display and search only; QGV calculation, ranking, identity and records do not change.'))+'</p>';}
 function macroCard(locale){const T=tr(locale);return '<h2><span class="flow-number">3</span> '+esc(T('매크로','Macro'))+'</h2><p data-uc-macro="NA">'+na(T('기업별 매크로 노출이 아직 없습니다.','No per-company macro exposure yet.'),locale)+'</p>';}
 /* Page HTML (synchronous: public files are already loaded by the app). ctx: {locale, screens, shares, quotes, now}. */
 function html(code,ctx={}){
@@ -128,9 +143,10 @@ function html(code,ctx={}){
  if(!p)return '<p class="empty" data-universe-page="INVALID">NOT_AVAILABLE · INVALID_CODE</p>';
  const inputs=inputsOf(ctx.screens),rs=rowState(inputs,code),d=rs.rec?scored(code,c):null,target=targetIdOf(rs.rec),sh=sharesBlock(code,c);
  const logo=g.CompanyLogos&&g.CompanyLogos.html?g.CompanyLogos.html(code,40):'';
- const head='<a class="small" href="#companies">'+esc(T('← 기업 목록','← Companies'))+'</a><div class="eyebrow">UNIVERSE504</div><h1>'+logo+esc(p.ticker)+'</h1><p class="muted">'+esc(code)+'</p>'
-  +'<p class="chips uc-chips"><span class="badge">Universe504</span><span class="badge" data-uc-name="NOT_PUBLISHED">'+esc(T('이름 미공개 · KR-NAMES 결정 대기','Name not published · KR-NAMES pending'))+'</span><span class="badge">'+esc(T('공개 파일에 가격 없음','No prices in public files'))+'</span>'+(rs.rec&&rs.rec.sic?'<span class="badge">SIC '+esc(rs.rec.sic)+'</span>':'')+'</p>'
-  +(target?'<p class="small" data-uc-target="'+esc(target)+'"><a href="#company/'+encodeURIComponent(target)+'">'+esc(T('이 발행인은 TARGET 기업입니다 · TARGET 기업 페이지 →','This issuer is a TARGET company · open the TARGET page →'))+'</a></p>':'');
+ const names=ctx.names&&typeof ctx.names.get==='function'?ctx.names.get(code):undefined,ES=g.EntitySearch,title=ES&&ES.companyTitle?ES.companyTitle(names||null,p.ticker,locale):p.ticker;
+ const head='<a class="small" href="#companies">'+esc(T('← 기업 목록','← Companies'))+'</a><div class="eyebrow">UNIVERSE504</div><h1>'+logo+esc(title)+'</h1><p class="muted">'+esc(code)+'</p>'
+  +'<p class="chips uc-chips"><span class="badge">Universe504</span><span class="badge" data-uc-name="'+esc(names?names.ko_status:names===null?'NO_RECORD':'NOT_LOADED')+'">'+esc(names?label(KO_STATUS,names.ko_status,locale==='en-US'):T('기업명 자료 없음','Names not loaded'))+'</span><span class="badge">'+esc(T('공개 파일에 가격 없음','No prices in public files'))+'</span>'+(rs.rec&&rs.rec.sic?'<span class="badge">SIC '+esc(rs.rec.sic)+'</span>':'')+'</p>'
+  +namesHtml(names,locale)+(target?'<p class="small" data-uc-target="'+esc(target)+'"><a href="#company/'+encodeURIComponent(target)+'">'+esc(T('이 발행인은 TARGET 기업입니다 · TARGET 기업 페이지 →','This issuer is a TARGET company · open the TARGET page →'))+'</a></p>':'');
  const top=rs.state==='NO_FILE'||rs.state==='NOT_IN_FILE'?'<p class="small" data-uc-file="'+esc(rs.reason)+'">'+na(rs.reason==='SEC_QGV2_SCHEMA_NEWER'?T('자료 형식이 새 버전입니다. 새로고침하세요','The data format is newer. Reload the page'):rs.reason,locale)+'</p>':'';
  return '<div class="uc-page" data-universe-page="'+esc(code)+'" data-universe-state="'+esc(rs.state)+'" data-universe-reason="'+esc(rs.reason||'')+'" data-universe-v="PENDING">'+head+top
   +'<div class="uc-cards"><section class="card uc-card uc-card-q" data-universe-card="qgv">'+qgvCard(code,rs,d,inputs,c,now)+'</section><section class="card uc-card uc-card-g" data-universe-card="technical">'+chartCard(target,locale)+'</section><section class="card uc-card uc-card-v" data-universe-card="macro">'+macroCard(locale)+'</section></div>'
@@ -155,5 +171,5 @@ async function mount(host,ctx={}){
  if(q)q.innerHTML=qgvCard(code,rs,d,inputs,c,now);if(f)f.innerHTML=factorsCard(rs,d,inputs,c,now);
  page.dataset.universeV=Object.hasOwn(quotes,code)?'DEVICE_PRICED':'NO_DEVICE_PRICE';
 }
-return Object.freeze({html,mount,rowState,codeParts,SOURCE_REASON,GROUP_LABEL,PEER_LABEL});
+return Object.freeze({html,mount,rowState,codeParts,namesHtml,SOURCE_REASON,GROUP_LABEL,PEER_LABEL});
 });

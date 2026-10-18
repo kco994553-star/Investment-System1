@@ -98,7 +98,7 @@ if (!base.pathname.endsWith("/")) base.pathname += "/";
     await check("companies to company and fail-closed QGV", async () => {
       await route("companies");
       await page.locator('a[href="#company/nvda"]').click();
-      await page.getByRole("heading", { name: "NVDA", exact: true }).waitFor();
+      await page.getByRole("heading", { name: "NVIDIA · NVDA", exact: true }).waitFor(); // KR-NAMES title "<name> · <ticker>"
       const text = await page.locator("main").innerText();
       // No producer score is invented: the original QGV view is unavailable, never a number.
       assert.ok(text.includes("NOT_AVAILABLE"));
@@ -296,7 +296,7 @@ if (!base.pathname.endsWith("/")) base.pathname += "/";
       await page.goBack();
       await page.locator("#search").waitFor();
       await route("company/nvda");
-      await page.getByRole("heading", { name: "NVDA", exact: true }).waitFor();
+      await page.getByRole("heading", { name: "NVIDIA · NVDA", exact: true }).waitFor(); // KR-NAMES title "<name> · <ticker>"
     });
     await check("no page errors, external calls or failed responses", async () => {
       assert.deepEqual(errors, []);

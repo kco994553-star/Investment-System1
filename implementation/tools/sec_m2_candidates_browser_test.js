@@ -27,7 +27,7 @@ const must=(v,label)=>{if(!v){const e=Error(label);e.safeReason=label;throw e;}}
   must(await panel.locator('[data-m2-company="asml"] [data-score="Q"]').textContent()==='0','zero preserved');
   must(await panel.locator('[data-m2-company="stry"] [data-score="Q"]').textContent()==='NOT_AVAILABLE','missing preserved');
   phase='asml-route';await panel.locator('a[href="#company/asml"]').click();
-  await page.waitForFunction(()=>document.querySelector('h1')?.textContent==='ASML');
+  await page.waitForFunction(()=>/(^| · )ASML$/.test(document.querySelector('h1')?.textContent||''));
   must(await page.locator('[data-score="V"]').textContent()==='NOT_AVAILABLE','V unavailable');
   must((await page.locator('[data-m2-candidates]').textContent()).includes('ASML'),'ASML exact route');
   phase='stry-route';await page.goto(base+'candidate/#company/stry');await page.locator('[data-m2-company="stry"]').waitFor();

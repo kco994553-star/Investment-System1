@@ -35,7 +35,10 @@
   if(e.scope==='UNIVERSE504'&&e.canonical_id.includes(':'))return e.canonical_id.split(':')[0];
   const sym=root.TradingViewWidgets?.SYMBOLS?.[e.canonical_id];return typeof sym==='string'&&sym.includes(':')?sym.split(':')[0]:null;
  }
+ // KR-NAMES (2026-10-18): a company with a reviewed names record reads "한국어명 · 티커" (English name, then the ticker alone,
+ // as fallbacks; EntitySearch.companyTitle). Without the names file the earlier labels stay.
  function displayName(e){
+  if(e.entity_type==='COMPANY'&&e.names&&root.EntitySearch&&EntitySearch.companyTitle)return EntitySearch.companyTitle(e.names,e.ticker,locale);
   if(e.entity_type==='COMPANY'){if(e.scope==='UNIVERSE504')return e.ticker||e.canonical_id;return locale==='ko-KR'&&KO_NAMES[e.canonical_id]?KO_NAMES[e.canonical_id]:e.canonical_label;}
   const names=e.localized_names||{};return names[locale]||e.canonical_label;
  }
@@ -44,8 +47,9 @@
  function row(hit,i){
   const e=hit.entity,company=e.entity_type==='COMPANY',ex=company?exchangeOf(e):null,name=displayName(e);
   const logo=company&&root.CompanyLogos?CompanyLogos.html(e.ticker||e.canonical_id,20):'';
-  const sub=company?[e.ticker,ex,e.scope==='UNIVERSE504'?T(locale,'이름 미공개','name not published'):(name!==e.canonical_label?e.canonical_label:null)].filter(Boolean):[T(locale,...TYPE_LABEL[e.entity_type]||[e.entity_type,e.entity_type]),name!==e.canonical_label?e.canonical_label:null].filter(Boolean);
-  return '<li class="item search-hit" role="option" id="search-opt-'+i+'" aria-selected="false" data-entity-id="'+esc(hit.canonical_entity_id)+'"'+(e.scope?' data-entity-scope="'+esc(e.scope)+'"':'')+'>'+
+  const named=company&&e.names,shown=named&&locale!=='en-US'&&e.names.ko_name&&e.names.en_name?e.names.en_name:null;
+  const sub=company?(named?[ex,shown,e.scope==='UNIVERSE504'?'Universe504':null]:[e.ticker,ex,e.scope==='UNIVERSE504'?T(locale,'이름 미공개','name not published'):(name!==e.canonical_label?e.canonical_label:null)]).filter(Boolean):[T(locale,...TYPE_LABEL[e.entity_type]||[e.entity_type,e.entity_type]),name!==e.canonical_label?e.canonical_label:null].filter(Boolean);
+  return '<li class="item search-hit" role="option" id="search-opt-'+i+'" aria-selected="false" data-entity-id="'+esc(hit.canonical_entity_id)+'"'+(e.scope?' data-entity-scope="'+esc(e.scope)+'"':'')+(company&&e.names?' data-name-status="'+esc(e.names.ko_status)+'"':'')+'>'+
    '<a href="'+href(e)+'" tabindex="-1">'+logo+'<span class="hit-main"><b class="hit-name">'+esc(name)+'</b><span class="hit-sub">'+sub.map(x=>'<span>'+esc(x)+'</span>').join('<span aria-hidden="true"> · </span>')+'</span></span>'+
    '<span class="badge hit-type">'+esc(T(locale,...TYPE_LABEL[e.entity_type]||[e.entity_type,e.entity_type]))+'</span></a></li>';
  }

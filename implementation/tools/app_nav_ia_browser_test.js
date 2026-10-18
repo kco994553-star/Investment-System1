@@ -71,9 +71,10 @@ async function go(page, hash) {
   await page.waitForFunction(({hash, parent, selector, route, ticker}) => {
     if (location.hash !== "#" + hash || !document.querySelector("main h1, main h2, main iframe")) return false;
     if (selector && !document.querySelector("main " + selector)) return false;
-    // Identity-only companies (public build) open as COMPANY RESEARCH; producer-backed ones as COMPANY DETAIL. The title is the ticker either way.
+    // Identity-only companies (public build) open as COMPANY RESEARCH; producer-backed ones as COMPANY DETAIL. The title ends with the
+    // ticker either way ("<name> · <ticker>" once the KR-NAMES table is loaded, the ticker alone before).
     if (route === "company" && !["COMPANY DETAIL", "COMPANY RESEARCH"].includes(document.querySelector("main .eyebrow")?.textContent.trim())) return false;
-    if (route === "company" && ticker && document.querySelector("main h1")?.textContent.trim() !== ticker) return false;
+    if (route === "company" && ticker && !((t) => t === ticker || t?.endsWith(" · " + ticker))(document.querySelector("main h1")?.textContent.trim())) return false;
     if (route === "entity" && document.querySelector("main .eyebrow")?.textContent.trim() !== decodeURIComponent(hash.slice("entity/".length)).split(":")[0]) return false;
     if (route === "leaderboard" && document.querySelector("main .eyebrow")?.textContent.trim() !== "LEADERBOARD") return false;
     if (route === "news" && ticker && !document.querySelector("main p.muted")?.textContent.includes(ticker)) return false;
