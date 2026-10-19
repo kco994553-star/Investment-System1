@@ -282,6 +282,13 @@ function pageProfile(){let p=null;try{p=profileOf?profileOf():null;}catch(_){p=n
 // loaded rows (PriceStore status counts; never its read time, so a no-op sync does not change the key).
 function deviceKey(win){if(win&&win.document&&typeof win.document.addEventListener==='function'&&!watched.has(win.document)){watched.add(win.document);try{win.document.addEventListener('device-actual-changed',()=>{deviceEpoch++;});}catch(_){}}
  let store=null;try{const st=win&&win.PriceStore&&typeof win.PriceStore.status==='function'?win.PriceStore.status():null;store=object(st)?[st.state,st.tabs||null,st.symbols||null]:null;}catch(_){store=null;}return[deviceEpoch,store];}
+/* Is a pageResult held by a screen still the one for the current Universe read and the current official preset/gate? A screen
+   that keeps a result between paints (the stat radar) shows it again only when this is true; otherwise it shows 확인하는 중 until
+   the new result arrives, so a V of an older read or another setting is never shown as current. */
+function isCurrent(win,result){if(!object(result)||!object(result.computed)||!object(result.computed.profile))return false;
+ const id=b=>b?b.read_id||b.acquired_at||'READ':null;if(id(readBasis(win))!==id(object(result.price_basis)?result.price_basis:null))return false;
+ let V2=null;try{V2=qgvV2();}catch(_){return false;}const P=pageProfile(),preset=P.preset&&Object.hasOwn(V2.PRESETS,P.preset)?P.preset:V2.DEFAULT_PRESET,gate=P.gate===null?V2.GATE_DEFAULT:P.gate;
+ return result.computed.profile.preset===preset&&result.computed.profile.gate===gate;}
 function pageResult(win,{v2Inputs,catalog=null,identities=[],preset,gate}={}){
  if(!v2Inputs||!object(v2Inputs.records))return Promise.resolve(null);
  // preset/gate not given (undefined): the registered official page profile (S06), else the engine defaults.
@@ -373,5 +380,5 @@ function label(version,en){return(LABEL[version]||LABEL.v2)[en?1:0];}
 // (+ ' · 유형 범위 qgv2-type-scope/…' = the type-application scope id the scores use).
 function basisText(S,en){const b=S&&S.basis?S.basis:basis('v2',false);return label('v2',en)+' · '+(en?b.label_en:b.label)+(b.since?(en?' · since ':' · ')+b.since+(en?'':'부터'):'')+(b.type_scope?(en?' · type scope ':' · 유형 범위 ')+b.type_scope:'');}
 function presets(){return qgvV2().PRESETS;}
-return Object.freeze({MODES,LABEL,PERSONAL_LABEL,PERSONAL_V0_LABEL,QG_REFERENCE_LABEL,NO_OFFICIAL_RANK,qgReference,FLAG,DATA_STATE,AXIS_STATUS,REASON,coverageFor,exploreGroup,reasonText,stateText,axisStatusText,vInputText,scoringDefault,compute,typeMemberships,judgmentRows,collectQuotes,pageResult,setPageIdentities,setPageProfile,pageProfile,vCoverage,V_TARGET_SHARE,summaryText,naText,flagText,label,basis,basisText,presets,symbolOf});
+return Object.freeze({MODES,LABEL,PERSONAL_LABEL,PERSONAL_V0_LABEL,QG_REFERENCE_LABEL,NO_OFFICIAL_RANK,qgReference,FLAG,DATA_STATE,AXIS_STATUS,REASON,coverageFor,exploreGroup,reasonText,stateText,axisStatusText,vInputText,scoringDefault,compute,typeMemberships,judgmentRows,collectQuotes,pageResult,setPageIdentities,setPageProfile,pageProfile,isCurrent,vCoverage,V_TARGET_SHARE,summaryText,naText,flagText,label,basis,basisText,presets,symbolOf});
 });
