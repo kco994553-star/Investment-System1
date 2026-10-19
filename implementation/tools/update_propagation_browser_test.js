@@ -11,13 +11,23 @@
      - NYSE:ABT crosses the file's own stale_after_seconds (14 days) -> STALE without any new collection;
      - sec-disclosures.json / news-signals.json one day later with the AMD 8-K and the AMD news item gone;
      - macro-screen.json with a new yield-curve observation (employment and inflation unchanged: no new release).
-   Checked after a fresh load of day 2: leaderboard order, ranks and totals; TARGET and Universe504 company pages; the 1.4 tree
-   example; the radar Q/G vertex when stat-radar.js is on the page (PR #311, pending merge: skipped and logged otherwise); every
-   shown as_of / acquired_at / state / calc_version EQUAL to the source values (not just present); STALE; the policy-NA reason
-   without a number; the filing / news list; the macro light; no day-1 value anywhere it should have changed. Also: the
-   in-tab (SPA) behaviour after a publication, a failed reload (no old value shown as current), Korean names and personal
-   settings never changing an official rank or score, and the service-worker / fetch cache rule (statically and with a real
-   service worker). The browser clock is fixed per day. Synthetic only: no prices, no network outside the local origin. */
+   Checked on day 1, after '자료 새로고침' (data-refresh.js, #321) in the same tab, and after a fresh load of day 2: leaderboard
+   order, ranks and totals; TARGET and Universe504 company pages; the 1.4 tree example; the stat-radar Q/G vertex (#311);
+   every shown as_of / acquired_at / state / calc_version EQUAL to the source values (not just present); STALE; the policy-NA
+   reason without a number; the filing / news list; the macro light; no day-1 value anywhere it should have changed. Also:
+   the in-tab (SPA) behaviour after a publication (rule R: nothing is swapped until the user presses '자료 새로고침'; D2: the
+   row state is re-judged by the clock), a failed reload (no old value shown as current), Korean names and personal settings
+   never changing an official rank or score, and the service-worker / fetch cache rule (statically and with a real service
+   worker). The browser clock is fixed per day. No network outside the local origin.
+   S06 population display (D3 / D11, #320 / #318), read only from stable attributes, never from a sentence: the footnote
+   [data-leaderboard-rank-scope] data-rank-base / data-ranked and the counts line [data-leaderboard-counts] data-population /
+   data-rankable / data-qg-reference / data-shown, plus the visible rows. The truth is computed apart from the screen: the page's
+   own leaderScores() rows (official ranked = Number.isInteger(rank); QG 참고 목록 = qg_reference), checked against the engine in
+   Node over the same file (and the same device quotes), and the filters re-applied by the test. Required after every sort,
+   search, group / interest filter and explore view, on day 1, in the open tab before and after '자료 새로고침', after the day-2
+   reload, and with SYNTHETIC device prices (made-up numbers in RAM: the QGV / Q·G split with a non-empty official ranking):
+   base = the TARGET identity count; ranked = the official ranked rows; the QG list is a separate set in its own order; shown =
+   the visible rows. A missing attribute or a mismatch fails the test. */
 const { chromium } = require('playwright'), assert = require('node:assert/strict'), fs = require('node:fs'), path = require('node:path');
 const WA = path.join(__dirname, '../src/investment_system/product/web_assets');
 globalThis.QgvV2 = require(path.join(WA, 'qgv-v2.js'));
@@ -34,7 +44,7 @@ const RECOLLECTED = 'NASDAQ:AKAM', KEPT = 'NASDAQ:ABNB', AGING = 'NYSE:ABT', AGI
 const clock = (x) => x.slice(0, 10) + ' ' + x.slice(11, 16) + ' UTC';
 const fmt = (v) => new Intl.NumberFormat('ko-KR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(v);
 const fmt1 = (v) => (Math.round(v * 10) / 10).toFixed(1);
-let phase = 'BUILD', checks = 0, radarLogged = false, radarChecks = 0;
+let phase = 'BUILD', checks = 0, radarChecks = 0, popChecks = 0;
 const ok = (cond, msg) => { assert.ok(cond, msg); checks++; };
 const eq = (a, b, msg) => { assert.deepEqual(a, b, msg); checks++; };
 
@@ -76,20 +86,133 @@ function macroDay(n) {
 const PUB = {};
 for (const n of [1, 2]) { const sec = secDay(n); PUB[n] = { 'sec-qgv2.json': n === 1 ? qgv2Day1() : qgv2Day2(), 'sec-disclosures.json': sec, 'news-signals.json': newsDay(n, sec), 'macro-screen.json': macroDay(n) }; }
 // Expected values, from the engine modules in Node over the same payloads and the same fixed clock (independent of the page).
-function inputsOf(n) { return QI.fromInputs(SQ.toInputs(PUB[n]['sec-qgv2.json'], { now: DAYS[n].now })); }
+function inputsAt(n, now) { return QI.fromInputs(SQ.toInputs(PUB[n]['sec-qgv2.json'], { now })); }
+function inputsOf(n) { return inputsAt(n, DAYS[n].now); }
 /* D11 (owner rule 'Q·G만 있는 결과를 QGV 종합순위와 섞지 않는다'): these days carry no device price, so no row has V and the official
    ranking is empty; every total is in the QG 참고 목록 (V 미포함) in its own order. `rank` here is the S06 list position: the
    official rank, else the QG list order (list says which). Before D11 the Q·G-only totals were ranked directly. */
-function expectedRanks(n, identities) {
-  const S = QS.compute({ identities, publicScreens: { 'sec-qgv2.json': inputsOf(n) } }), out = {};
+function expectedRanks(n, identities, now = DAYS[n].now, quotes = {}) {
+  const S = QS.compute({ identities, publicScreens: { 'sec-qgv2.json': inputsAt(n, now) }, quotes }), out = {};
   for (const [id, r] of Object.entries(S.rows)) if (Number.isInteger(r.rank) || r.qg_reference) out[id] = { rank: Number.isInteger(r.rank) ? r.rank : r.qg_reference.order, list: Number.isInteger(r.rank) ? 'RANKED' : 'QG_REFERENCE', total: fmt1(r.primary.total), q: r.primary.q, g: r.primary.g };
   return out;
 }
+// The two lists the engine gives in Node: official ranked ids in rank order, QG 참고 목록 ids in their own order.
+function expectedLists(e) {
+  const of = (list) => Object.entries(e).filter(([, x]) => x.list === list).sort((a, b) => a[1].rank - b[1].rank).map(([id]) => id);
+  return { ranked: of('RANKED'), qg: of('QG_REFERENCE') };
+}
+/* Analysis population of the counts line: the pooled sec-qgv2 cross-section points of the file (in cross-section, LIVE or STALE,
+   no calc_version mismatch, not withdrawn), counted here in Node from the same file — not the screen identities. */
+function populationOf(n, now = DAYS[n].now) {
+  return Object.values(inputsAt(n, now).records).filter((r) => r && r.in_cross_section === true && ['LIVE', 'STALE'].includes(r.state) && r.calc_version_mismatch !== true && r.identity_withdrawn !== true).length;
+}
+
+// ---------- S06 population display: stable attributes vs. the truth from leaderScores() and the filters ----------
+// Device-only filter inputs (localStorage, set before the app reads it): one group and two interests. They only hide rows.
+const PREFS_KEY = 'investment.web.v1.personal', GROUP = { id: 'g-population-test', name: '모집단 시험 그룹', members: ['msft', 'nvda', 'amd', 'googl', 'amzn'] }, INTERESTS = ['msft', 'amd'];
+const PREFS = { version: 1, interests: INTERESTS, groups: [GROUP] };
+const SORTS_SWEPT = ['ticker', 'name-desc', 'q-desc', 'g-asc', 'v-desc', 'qgv-asc', 'asof-desc'], SEARCHES = ['a', 'MSFT', 'zz-no-such-company'];
+const popSnapshot = (page) => page.evaluate(() => {
+  const S = leaderScores(), fin = (x) => typeof x === 'number' && Number.isFinite(x);
+  const attrs = (sel) => { const n = document.querySelectorAll(sel); return n.length === 1 ? Object.fromEntries([...n[0].attributes].filter((a) => a.name.startsWith('data-')).map((a) => [a.name, a.value])) : { __count: n.length }; };
+  return {
+    truth: { identities: identityCompanies.map((c) => ({ id: c.company_id, ticker: c.ticker, name: c.name })), asOf: publicScreens['sec-qgv2.json']?.as_of || null,
+      rows: Object.fromEntries(Object.entries(S.rows || {}).map(([k, r]) => [k, { rank: Number.isInteger(r.rank) ? r.rank : null, qg: r.qg_reference ? r.qg_reference.order : null, axes: !!r.primary && [r.primary.q, r.primary.g, r.primary.v].some(fin) }])) },
+    controls: { query: document.getElementById('leader-query')?.value ?? null, group: document.getElementById('leader-group')?.value ?? null, interest: document.getElementById('leader-interest')?.checked === true, sort: document.getElementById('leader-sort')?.value ?? null, explore: leaderboardView.explore },
+    dom: { scope: attrs('[data-leaderboard-rank-scope]'), counts: attrs('[data-leaderboard-counts]'), explore: document.querySelector('[data-leaderboard-explore]')?.dataset.leaderboardExplore ?? null,
+      buttons: Object.fromEntries([...document.querySelectorAll('[data-leaderboard-explore-option]')].map((b) => [b.dataset.leaderboardExploreOption, Number((b.textContent.match(/(\d+)\s*$/) || [])[1])])),
+      rows: [...document.querySelectorAll('[data-leaderboard-table] tbody tr[data-leaderboard-row]')].map((tr) => ({ id: tr.dataset.leaderboardRow, rank: tr.querySelector('[data-leaderboard-rank]')?.dataset.leaderboardRank ?? null, qg: tr.querySelector('[data-leaderboard-unranked="QG_REFERENCE"]')?.dataset.qgOrder ?? null })) } };
+});
+const sortIds = (a) => [...a].sort();
+/* One S06 state. `expect` = { asOf, population, ranked: [ids in rank order], qg: [ids in QG order] } from Node (independent of
+   the page). Returns the sizes so that a sweep can show sorting moves no row in or out. */
+function checkPopulation(label, { truth: T, controls: C, dom: D }, expect) {
+  const L = (m) => label + ': ' + m, ids = T.identities.map((x) => x.id), R = T.rows;
+  eq(T.asOf, expect.asOf, L('the leaderboard reads the expected publication'));
+  // The rank population = every TARGET identity of the screen (D3), with the D11 split; the truth comes from leaderScores().
+  eq(sortIds(Object.keys(R)), sortIds(ids), L('leaderScores() has one row per TARGET identity'));
+  const ranked = ids.filter((id) => R[id].rank !== null).sort((a, b) => R[a].rank - R[b].rank), qg = ids.filter((id) => R[id].qg !== null).sort((a, b) => R[a].qg - R[b].qg);
+  eq(ids.filter((id) => R[id].rank !== null && R[id].qg !== null), [], L('QG 참고 목록 is separate: no row is both officially ranked and in the QG list'));
+  eq(ranked.map((id) => R[id].rank), ranked.map((_, i) => i + 1), L('official ranks are 1..N over the identities'));
+  eq([ranked, qg], [expect.ranked, expect.qg], L('official ranking and QG list (leaderScores) = the engine in Node over the same file'));
+  // Footnote scope: base = TARGET identity count, ranked = official ranked count; never the filtered rows.
+  ok(!('__count' in D.scope), L('exactly one footnote [data-leaderboard-rank-scope] (found ' + D.scope.__count + ')'));
+  eq([D.scope['data-rank-base'], D.scope['data-ranked']], [String(ids.length), String(ranked.length)], L('footnote data-rank-base = TARGET identities, data-ranked = official ranked'));
+  // The filters, applied again by the test (search over ticker + name, the device group, interests only).
+  const q = (C.query || '').trim().toLocaleLowerCase(), g = C.group === GROUP.id ? GROUP : null;
+  ok(C.group === '' || g, L('group filter is the test group'));
+  const filtered = T.identities.filter((x) => (!q || (x.ticker + ' ' + x.name).toLocaleLowerCase().includes(q)) && (!g || g.members.includes(x.id)) && (!C.interest || INTERESTS.includes(x.id))).map((x) => x.id), inF = new Set(filtered);
+  const fr = ranked.filter((id) => inF.has(id)), fq = qg.filter((id) => inF.has(id)), rest = filtered.filter((id) => R[id].rank === null && R[id].qg === null);
+  const fp = rest.filter((id) => R[id].axes), fc = rest.filter((id) => !R[id].axes), visible = { all: filtered, ranked: fr, qg: fq, partial: fp, check: fc }[C.explore];
+  eq(D.explore, C.explore, L('explore view shown = the chosen one'));
+  ok(Array.isArray(visible), L('known explore view ' + C.explore));
+  eq(sortIds(D.rows.map((r) => r.id)), sortIds(visible), L('visible rows = the identities the filters and the explore view leave'));
+  if (C.explore === 'qg') eq(D.rows.map((r) => r.id), fq, L('QG 참고 목록 view in its own order'));
+  if (C.explore === 'ranked') eq(D.rows.map((r) => r.id), fr, L('official ranking view in rank order'));
+  const head = { all: [...fr, ...fq], ranked: fr, qg: fq }[C.explore];
+  if (C.sort === 'qgv' && head) eq(D.rows.map((r) => r.id).slice(0, head.length), head, L('QGV order: official ranking first, then the QG list, never interleaved'));
+  for (const r of D.rows) eq([r.rank, r.qg], [R[r.id].rank === null ? null : String(R[r.id].rank), R[r.id].qg === null ? null : String(R[r.id].qg)], L(r.id + ' shows its official rank / QG order, whatever the sort or filter'));
+  // Counts line: population of the file, official ranked / QG rows among the filtered rows, shown = visible rows.
+  ok(!('__count' in D.counts), L('exactly one counts line [data-leaderboard-counts] (found ' + D.counts.__count + ')'));
+  eq([D.counts['data-population'], D.counts['data-rankable'], D.counts['data-qg-reference'], D.counts['data-shown']], [String(expect.population), String(fr.length), String(fq.length), String(visible.length)],
+    L('counts line data-population / data-rankable / data-qg-reference / data-shown'));
+  eq(D.counts['data-shown'], String(D.rows.length), L('data-shown = the rows on screen'));
+  eq(D.buttons, { all: filtered.length, ranked: fr.length, qg: fq.length, partial: fp.length, check: fc.length }, L('explore option counts'));
+  popChecks++;
+  return { ranked: ranked.length, qg: qg.length, shown: D.rows.length, filtered: filtered.length };
+}
+// S06 controls, used as a user does (the app repaints synchronously on change / input / click).
+async function setExplore(page, id) { await page.locator('[data-leaderboard-explore-option="' + id + '"]').click(); await page.locator('[data-leaderboard-explore="' + id + '"]').waitFor(); }
+async function setSort(page, id) { await page.locator('#leader-sort').selectOption(id); await page.waitForFunction((s) => leaderboardView.sort === s, id); }
+async function setQuery(page, q) { await page.locator('#leader-query').fill(q); await page.waitForFunction((s) => leaderboardView.query === s, q); }
+async function setGroup(page, id) { await page.locator('#leader-group').selectOption(id); await page.waitForFunction((s) => leaderboardView.group === s, id); }
+async function setInterest(page, on) { await page.locator('#leader-interest').setChecked(on); await page.waitForFunction((s) => leaderboardView.interest === s, on); }
+async function resetLeader(page) { await setQuery(page, ''); await setGroup(page, ''); await setInterest(page, false); await setSort(page, 'qgv'); await setExplore(page, 'all'); }
+/* Every population check of one publication state: default, each sort, searches, the group and interest filters, each explore
+   view (alone and combined with a filter). Leaves the screen back at the defaults. */
+async function populationSweep(page, label, expect) {
+  phase = label + ' POPULATION';
+  await go(page, 'leaderboard', '[data-leaderboard-table]'); await resetLeader(page);
+  const read = async (what) => checkPopulation(label + ' · ' + what, await popSnapshot(page), expect);
+  const base = await read('default');
+  eq(base.shown, base.filtered, label + ': default view shows every identity');
+  for (const s of SORTS_SWEPT) { await setSort(page, s); const r = await read('sort ' + s); eq([r.ranked, r.qg, r.shown], [base.ranked, base.qg, base.shown], label + ': sort ' + s + ' moves no row in or out'); }
+  await setSort(page, 'qgv');
+  for (const s of SEARCHES) { await setQuery(page, s); await read('search "' + s + '"'); }
+  await setQuery(page, 'a'); for (const e of ['ranked', 'qg', 'partial', 'check', 'all']) { await setExplore(page, e); await read('search "a" + explore ' + e); }
+  await setQuery(page, '');
+  await setGroup(page, GROUP.id); for (const e of ['all', 'ranked', 'qg', 'partial', 'check']) { await setExplore(page, e); await read('group + explore ' + e); }
+  await setExplore(page, 'all'); await setGroup(page, '');
+  await setInterest(page, true); await read('interests only'); await setInterest(page, false);
+  for (const e of ['ranked', 'qg', 'partial', 'check']) { await setExplore(page, e); await read('explore ' + e); }
+  await resetLeader(page); const again = await read('back to default');
+  eq(again, base, label + ': back at the defaults the population display is the first one again');
+  console.log('UPDATE_PROPAGATION POPULATION ' + label + ' base=' + base.filtered + ' ranked=' + base.ranked + ' qg=' + base.qg + ' population=' + expect.population + ' (sorts ' + SORTS_SWEPT.length + ', searches ' + SEARCHES.length + ', group, interests, explore views)');
+  return base;
+}
+// Synthetic device prices (made-up numbers, RAM only) through a stubbed PrivateSubsetView, as in data_refresh_browser_test.js;
+// a stubbed sheet session must never be read. Re-applied after a reload (a reload drops every stub).
+const PRICES = Object.fromEntries(F.strictUniverseValues().slice(1).map(([code, , price]) => [code, { price, currency: 'USD' }]));
+async function stubPrices(page) {
+  await page.evaluate((q) => { window.__sheetReads = 0; const real = window.PrivateSubsetView; window.PrivateSubsetView = { ...real, prices: () => new Map(Object.entries(q)), priceBasis: () => ({ source: 'SYNTHETIC_TEST', read_id: 'synthetic-propagation', acquired_at: null, currency: 'USD', price_time: null }) };
+    const session = { state: () => ({ enabled: true, connected: true }), revision: () => 1, setEnabled() {}, subscribe: () => () => {}, async fetchValues() { window.__sheetReads++; return { values: [] }; } };
+    window.GoogleSheetQuotes = { ...GoogleSheetQuotes, sessionFor: () => session }; location.hash = 'home'; }, PRICES);
+  await page.locator('main').waitFor(); await page.evaluate(() => { location.hash = 'leaderboard'; });
+}
+// The leaderboard reads the shared page result of the current inputs object, with device prices, and shows official ranks.
+const pricedSettled = (page, asOf) => page.waitForFunction((a) => typeof leaderPage === 'object' && leaderPage && leaderPage.inputs === publicScreens['sec-qgv2.json'] && publicScreens['sec-qgv2.json'].as_of === a
+  && leaderPage.result.price_basis && document.querySelectorAll('[data-leaderboard-rank]').length > 0, asOf);
+async function press(page, expect) {
+  await page.locator('#data-refresh [data-refresh-button]').click();
+  await page.waitForFunction((s) => document.getElementById('data-refresh')?.dataset.refreshState === s, expect);
+}
 
 // ---------- browser helpers ----------
-async function newContext(browser, state, { sw = 'block', names = null } = {}) {
+async function newContext(browser, state, { sw = 'block', names = null, prefs = false } = {}) {
   const context = await browser.newContext({ viewport: { width: 1280, height: 900 }, serviceWorkers: sw });
   await context.clock.setFixedTime(new Date(DAYS[state.day].now));
+  // The device group / interests the population sweep filters by: written once, before the app first reads them.
+  if (prefs) await context.addInitScript(([k, v]) => { try { if (!localStorage.getItem(k)) localStorage.setItem(k, v); } catch (_) {} }, [PREFS_KEY, JSON.stringify(PREFS)]);
   await routeEmptyPublicScreens(context);
   for (const file of Object.keys(PUB[1])) await context.route('**/' + file + '*', (r) => {
     if (state.fail && state.fail.includes(file)) return r.fulfill({ status: 503, contentType: 'text/plain', body: 'unavailable' });
@@ -109,13 +232,13 @@ async function leaderboard(page) {
     asOf: document.querySelector('[data-score-as-of]')?.textContent || null,
     rows: [...document.querySelectorAll('[data-leaderboard-row]')].map((tr) => ({ id: tr.dataset.leaderboardRow, rank: tr.querySelector('[data-leaderboard-rank]')?.dataset.leaderboardRank || tr.querySelector('[data-leaderboard-unranked="QG_REFERENCE"]')?.dataset.qgOrder || null,
       list: tr.querySelector('[data-leaderboard-rank]') ? 'RANKED' : tr.querySelector('[data-leaderboard-unranked="QG_REFERENCE"]') ? 'QG_REFERENCE' : null,
-      total: tr.querySelector('[data-leaderboard-total]')?.dataset.leaderboardTotal || null, name: tr.querySelector('[data-leaderboard-name]')?.textContent.trim() || null })),
-    footnote: [...document.querySelectorAll('[data-leaderboard-screen] p.small')].map((p) => p.textContent).find((t) => t.startsWith('— = NOT_AVAILABLE')) || '' }));
+      total: tr.querySelector('[data-leaderboard-total]')?.dataset.leaderboardTotal || null, name: tr.querySelector('[data-leaderboard-name]')?.textContent.trim() || null })) }));
 }
 function ranked(lb) { return Object.fromEntries(lb.rows.filter((r) => r.rank !== null).map((r) => [r.id, { rank: Number(r.rank), list: r.list, total: r.total }])); }
 async function universePage(page, code) {
   await go(page, 'company/' + encodeURIComponent(code), '[data-universe-page]');
-  await page.waitForFunction((c) => document.querySelector('[data-universe-page]')?.dataset.universePage === c && document.querySelector('[data-universe-page]')?.dataset.universeV !== 'PENDING', code);
+  await page.waitForFunction((c) => document.querySelector('[data-universe-page]')?.dataset.universePage === c && document.querySelector('[data-universe-page]')?.dataset.universeV !== 'PENDING'
+    && ['q', 'g'].every((a) => { const x = document.querySelector('[data-universe-card="radar"] tr[data-sr-axis="' + a + '"] [data-sr-series="company"]'); return x && x.dataset.srReason !== 'PENDING' && x.dataset.srScore !== undefined; }), code);
   return page.evaluate(() => {
     const pg = document.querySelector('[data-universe-page]'), ax = (a) => { const r = document.querySelector('[data-universe-card="qgv"] [data-uc-axis="' + a + '"]'); return { score: r.dataset.ucScore, state: r.dataset.ucAxisState, num: r.querySelector('.num')?.textContent.trim() || null, text: r.textContent }; };
     return { state: pg.dataset.universeState, reason: pg.dataset.universeReason, Q: ax('Q'), G: ax('G'), fresh: document.querySelector('[data-universe-card="qgv"] [data-uc-fresh]').textContent.split(' · '),
@@ -123,8 +246,8 @@ async function universePage(page, code) {
       radar: ['q', 'g'].map((a) => document.querySelector('[data-universe-card="radar"] tr[data-sr-axis="' + a + '"] [data-sr-series="company"]')?.dataset.srScore).filter((x) => x !== undefined), text: pg.textContent };
   });
 }
-function freshExpected(n, code) {
-  const p = PUB[n]['sec-qgv2.json'], r = p.records[code], st = SQ.restate(r, DAYS[n].now, p.stale_after_seconds).state, age = Math.floor((Date.parse(DAYS[n].now) - Date.parse(r.acquired_at)) / 864e5);
+function freshExpected(n, code, now = DAYS[n].now) {
+  const p = PUB[n]['sec-qgv2.json'], r = p.records[code], st = SQ.restate(r, now, p.stale_after_seconds).state, age = Math.floor((Date.parse(now) - Date.parse(r.acquired_at)) / 864e5);
   return ['출처 sec-qgv2.json', 'as_of ' + clock(p.as_of), '수집 ' + clock(r.acquired_at), '수집 후 ' + age + '일', '상태 ' + st, 'calc_version ' + p.calc_version];
 }
 function checkUniverse(n, code, u) {
@@ -137,8 +260,9 @@ function checkUniverse(n, code, u) {
     else { eq(u[a].state, 'SCORED'); ok(Math.abs(Number(u[a].score) - s) <= 1e-9, code + ' ' + a + ' ' + u[a].score + ' vs ' + s); eq(u[a].num, fmt(s), code + ' ' + a + ' shown number'); }
   }
   for (const [f, v] of Object.entries(r.factors)) { if (v === null) eq(u.factors[f], 'NA', code + ' ' + f); else ok(Math.abs(Number(u.factors[f]) - v) <= 1e-9, code + ' ' + f + ' ' + u.factors[f] + ' vs ' + v); }
-  if (u.radar.length !== 2 && !radarLogged) { radarLogged = true; console.log('UPDATE_PROPAGATION RADAR_ABSENT stat-radar.js not on this build (PR #311 pending merge): radar Q/G vertex checks skipped'); }
-  if (u.radar.length === 2) { radarChecks++; for (const [i, a] of ['Q', 'G'].entries()) { const s = r.axes[a].score; if (s === null) eq(u.radar[i], 'NA', 'radar ' + a + ' NA'); else ok(Math.abs(Number(u.radar[i]) - s) <= 1e-9, 'radar ' + a + ' vertex ' + u.radar[i] + ' vs ' + s); } }
+  // stat-radar.js is part of the build since #311: its Q/G vertices are required on every Universe page.
+  eq(u.radar.length, 2, code + ' day ' + n + ' stat radar shows its Q and G company vertices');
+  radarChecks++; for (const [i, a] of ['Q', 'G'].entries()) { const s = r.axes[a].score; if (s === null) eq(u.radar[i], 'NA', 'radar ' + a + ' NA'); else ok(Math.abs(Number(u.radar[i]) - s) <= 1e-9, 'radar ' + a + ' vertex ' + u.radar[i] + ' vs ' + s); }
 }
 async function targetPage(page, id) {
   await go(page, 'company/' + id, '[data-company-card="qgv"]');
@@ -205,14 +329,18 @@ function checkMacro(n, m) {
 
     // ---------- day 1, then a new publication while the tab stays open, then a reload ----------
     const state = { day: 1, fail: null };
-    const { context, page, seen } = await newContext(browser, state);
+    const { context, page, seen } = await newContext(browser, state, { prefs: true });
     phase = 'DAY1_LOAD'; await page.goto(BASE + '#home'); await page.locator('main').waitFor();
     await page.waitForFunction(() => typeof D === 'object' && D !== null && Array.isArray(identityCompanies) && identityCompanies.length > 0);
     const identities = await page.evaluate(() => JSON.parse(JSON.stringify(identityCompanies)));
     ok(identities.length > 3, 'identities read from the served catalog');
+    ok(GROUP.members.every((id) => identities.some((c) => c.company_id === id)), 'the test group members are TARGET identities');
     const exp = { 1: expectedRanks(1, identities), 2: expectedRanks(2, identities) };
     eq(Object.entries(exp[1]).sort((a, b) => a[1].rank - b[1].rank).map(([id]) => id).slice(0, 3), ['nvda', 'amd', 'msft'], 'day-1 order (engine)');
     eq(Object.entries(exp[2]).sort((a, b) => a[1].rank - b[1].rank).map(([id]) => id).slice(0, 3), ['msft', 'nvda', 'amd'], 'day-2 order (engine)');
+    // Without device prices (these days) the official ranking is empty and every total is in the QG list (D11).
+    const popExpect = (n, now = DAYS[n].now) => ({ asOf: PUB[n]['sec-qgv2.json'].as_of, population: populationOf(n, now), ...expectedLists(expectedRanks(n, identities, now)) });
+    for (const n of [1, 2]) { const e = popExpect(n); eq(e.ranked, [], 'no official rank without device prices day ' + n); ok(e.qg.length > 3 && e.population > identities.length, 'day ' + n + ' QG list ' + e.qg.length + ', population ' + e.population); }
     const seenDay = {};
     async function checkDay(n, label) {
       phase = label + ' LEADERBOARD'; const lb = await leaderboard(page);
@@ -220,8 +348,7 @@ function checkMacro(n, m) {
       eq(ranked(lb), Object.fromEntries(Object.entries(exp[n]).map(([id, x]) => [id, { rank: x.rank, list: x.list, total: x.total }])), 'leaderboard ranks and totals day ' + n);
       ok(lb.rows.every((r) => r.list !== 'RANKED'), 'D11: no device price, so no official QGV rank (Q·G-only totals are in the QG 참고 목록) day ' + n);
       eq(lb.rows.filter((r) => r.rank !== null).map((r) => r.id), Object.entries(exp[n]).sort((a, b) => a[1].rank - b[1].rank).map(([id]) => id), 'leaderboard order day ' + n);
-      const scope = (lb.footnote.match(/(\d+)개 기업 전체 기준 순위/) || [])[1];
-      if (scope !== String(identities.length)) log('GAP hard-coded rank scope in the leaderboard note: shows ' + scope + ', identities ' + identities.length);
+      await populationSweep(page, label, popExpect(n));
       seenDay[n] = { lb };
       phase = label + ' TARGET msft'; const t = await targetPage(page, 'msft'), m = PUB[n]['sec-qgv2.json'].target.msft;
       eq([t.asOf, t.Q, t.G, t.acquired, t.rank], ['점수 기준 ' + PUB[n]['sec-qgv2.json'].as_of, fmt(m.axes.Q.score), fmt(m.axes.G.score), clock(m.acquired_at), String(exp[n].msft.rank)], 'TARGET msft page day ' + n);
@@ -236,16 +363,24 @@ function checkMacro(n, m) {
     }
     await checkDay(1, 'DAY1');
     // A new publication is deployed while this tab stays open (clock moves to day 2, routes now serve day 2).
+    // Rule R (FRONTEND_DATA_CONTRACT §2-3): a screen change re-reads nothing, so the tab keeps the whole day-1 set (one
+    // consistent snapshot, no silent swap) until the user presses '자료 새로고침'; D2: the row states are re-judged by the clock.
     phase = 'SPA_AFTER_PUBLICATION'; state.day = 2; await context.clock.setFixedTime(new Date(DAYS[2].now));
-    const spa = await leaderboard(page), spaDay = spa.asOf === '점수 기준 ' + DAYS[2].as_of ? 2 : 1;
-    eq(ranked(spa), ranked(seenDay[spaDay].lb), 'SPA re-render shows one consistent snapshot (as_of and ranks of the same day)');
-    const spaNews = await newsScreen(page), spaNewsDay = spaNews.meta.some((x) => x.includes(PUB[2]['sec-disclosures.json'].as_of)) ? 2 : 1;
-    eq(spaNews.keys, timelineKeys(spaNewsDay), 'SPA news list matches its own as_of (day ' + spaNewsDay + ')');
-    log('SPA_REFRESH qgv=' + (spaDay === 2 ? 'REFETCHED' : 'KEPT_UNTIL_RELOAD') + ' news=' + (spaNewsDay === 2 ? 'REFETCHED' : 'KEPT_UNTIL_RELOAD'));
+    const spa = await leaderboard(page);
+    eq([spa.asOf, ranked(spa)], ['점수 기준 ' + DAYS[1].as_of, ranked(seenDay[1].lb)], 'open tab before 자료 새로고침: the day-1 snapshot (as_of and ranks of the same day)');
+    const spaNews = await newsScreen(page);
+    eq(spaNews.keys, timelineKeys(1), 'open tab before 자료 새로고침: the day-1 news / filings list');
+    ok(spaNews.meta.some((x) => x.startsWith('SEC 8-K · 기준: ' + PUB[1]['sec-disclosures.json'].as_of + ' ·')), 'open tab news as_of = the day-1 file: ' + spaNews.meta.join(' | '));
     {
-      const u = await universePage(page, AGING), st = u.state, age = u.fresh.find((x) => x.startsWith('수집 후 '));
-      if (spaDay === 1 && st === 'LIVE') log('GAP in-tab state frozen at load: ' + AGING + ' shows 상태 LIVE with ' + age + ' after the 14-day window (reload restates it)');
+      const u = await universePage(page, AGING);
+      eq([u.state, u.fresh], ['STALE', freshExpected(1, AGING, DAYS[2].now)], 'D2: ' + AGING + ' is re-judged STALE in the open tab once the clock passes its 14-day window (no new file read)');
     }
+    await populationSweep(page, 'SPA_BEFORE_REFRESH', popExpect(1, DAYS[2].now));
+    // '자료 새로고침' (#321) in the same tab, no reload: the open leaderboard follows day 2 in place, then every screen shows day 2.
+    phase = 'REFRESH_DAY2'; await go(page, 'leaderboard', '[data-leaderboard-table]'); await press(page, 'APPLIED');
+    await page.waitForFunction((a) => document.querySelector('[data-score-as-of]')?.textContent === '점수 기준 ' + a, DAYS[2].as_of);
+    checkPopulation('REFRESH_DAY2 · open leaderboard repainted in place', await popSnapshot(page), popExpect(2));
+    await checkDay(2, 'DAY2_REFRESH');
     phase = 'DAY2_RELOAD'; await page.reload(); await page.locator('main').waitFor();
     await checkDay(2, 'DAY2');
     // Nothing still shows a day-1 value where the data changed.
@@ -261,6 +396,36 @@ function checkMacro(n, m) {
     }
     eq(seen.errors, [], 'no page errors'); eq(seen.outside, [], 'no request outside the local origin');
     await context.close();
+
+    // ---------- the QGV / Q·G split with device prices: day 1, '자료 새로고침' to day 2 in the same tab, then a reload ----------
+    // HARNESS_PRICES: synthetic Universe-tab prices (made-up numbers, never real prices) in RAM; the public files come over the
+    // page's own requests. Expected lists = the engine in Node over the same file with the very quotes the page used.
+    phase = 'QGV_QG_SPLIT';
+    {
+      const st = { day: 1 }, { context: c, page: p, seen: s } = await newContext(browser, st, { prefs: true });
+      const quotes = () => p.evaluate(() => JSON.parse(JSON.stringify(leaderPage.result.quotes)));
+      const priced = (n, q) => ({ asOf: PUB[n]['sec-qgv2.json'].as_of, population: populationOf(n), ...expectedLists(expectedRanks(n, identities, DAYS[n].now, q)) });
+      await p.goto(BASE + '#leaderboard'); await p.locator('[data-leaderboard-table]').waitFor();
+      await stubPrices(p); await pricedSettled(p, DAYS[1].as_of);
+      const q1 = await quotes(), e1 = priced(1, q1);
+      ok(Object.keys(q1).length > 3, 'device quotes from the synthetic price tab: ' + Object.keys(q1).length);
+      ok(e1.ranked.length > 0 && e1.qg.length > 0, 'day 1 with prices has an official ranking and a separate QG list (ranked ' + e1.ranked.length + ', QG ' + e1.qg.length + ')');
+      const b1 = await populationSweep(p, 'PRICED_DAY1', e1);
+      st.day = 2; await c.clock.setFixedTime(new Date(DAYS[2].now));
+      phase = 'PRICED_REFRESH_DAY2'; await go(p, 'leaderboard', '[data-leaderboard-table]'); await press(p, 'APPLIED'); await pricedSettled(p, DAYS[2].as_of);
+      const q2 = await quotes(), e2 = priced(2, q2);
+      eq(q2, q1, 'the refresh keeps the same RAM device quotes');
+      ok(e2.ranked.length > 0 && e2.qg.length > 0, 'day 2 with prices has an official ranking and a separate QG list (ranked ' + e2.ranked.length + ', QG ' + e2.qg.length + ')');
+      checkPopulation('PRICED_REFRESH_DAY2 · open leaderboard repainted in place', await popSnapshot(p), e2);
+      const b2 = await populationSweep(p, 'PRICED_REFRESH_DAY2', e2);
+      phase = 'PRICED_RELOAD_DAY2'; await p.reload(); await p.locator('[data-leaderboard-table]').waitFor();
+      await stubPrices(p); await pricedSettled(p, DAYS[2].as_of);
+      eq(await quotes(), q1, 'the reload uses the same synthetic quotes');
+      eq(await populationSweep(p, 'PRICED_RELOAD_DAY2', e2), b2, 'reload of day 2 = the in-tab refresh of day 2 (same population display)');
+      eq(await p.evaluate(() => window.__sheetReads), 0, 'no Google Sheets read'); eq(s.errors, [], 'no page errors (prices)'); eq(s.outside, [], 'no request outside the local origin (prices)');
+      log('QGV_QG_SPLIT day1 ranked=' + b1.ranked + ' qg=' + b1.qg + ' · day2 ranked=' + b2.ranked + ' qg=' + b2.qg + ' · base=' + identities.length);
+      await c.close();
+    }
 
     // ---------- a reload where the new file fails: no old value is shown as current ----------
     phase = 'FAILED_RELOAD';
@@ -303,6 +468,7 @@ function checkMacro(n, m) {
       const st = { day: 1 }, { context: c, page: p, seen: s } = await newContext(browser, st, { sw: 'allow' });
       await p.goto(BASE + '#leaderboard'); await p.locator('[data-leaderboard-table]').waitFor();
       const active = await p.evaluate(async () => { if (!('serviceWorker' in navigator) || !isSecureContext) return 'NO_SW'; try { await Promise.race([navigator.serviceWorker.ready, new Promise((_, j) => setTimeout(() => j(Error('t')), 8000))]); return 'READY'; } catch (_) { return 'NOT_READY'; } });
+      eq(active, 'READY', 'the real service worker is active (localhost is a secure context)');
       st.day = 2; await c.clock.setFixedTime(new Date(DAYS[2].now)); await p.reload(); const lb = await leaderboard(p);
       eq(lb.asOf, '점수 기준 ' + DAYS[2].as_of, 'reload after the publication shows day 2 with the service worker (' + active + ')');
       const cached = await p.evaluate(async () => { if (!self.caches) return []; const out = []; for (const k of await caches.keys()) for (const r of await (await caches.open(k)).keys()) out.push(new URL(r.url).pathname.split('/').pop()); return out; });
@@ -310,6 +476,6 @@ function checkMacro(n, m) {
       log('SERVICE_WORKER ' + active + ' cached=' + cached.sort().join(','));
       eq(s.errors, []); await c.close();
     }
-    console.log('UPDATE_PROPAGATION_BROWSER_OK checks=' + checks + ' radar_pages=' + radarChecks);
+    console.log('UPDATE_PROPAGATION_BROWSER_OK checks=' + checks + ' radar_pages=' + radarChecks + ' population_states=' + popChecks);
   } catch (e) { console.error('UPDATE_PROPAGATION_BROWSER_FAIL phase=' + phase + ' ' + (e && e.message)); process.exitCode = 1; } finally { await browser.close(); }
 })();

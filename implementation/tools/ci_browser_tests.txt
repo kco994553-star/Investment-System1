@@ -69,3 +69,4 @@ update_propagation_browser_test.js
 data_refresh_browser_test.js
 qgv_rank_split_browser_test.js
 v_session_state_browser_test.js
+candidate_rank_split_browser_test.js

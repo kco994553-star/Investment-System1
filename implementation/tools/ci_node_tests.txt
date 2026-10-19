@@ -51,6 +51,7 @@ price_store_node_test.js
 sec_qgv2_node_test.js
 macro_lights_node_test.js
 playbook_screen_node_test.js
+candidate_rank_split_node_test.js
 qgv_v2_node_test.js
 qgv_scores_node_test.js
 type_scope_node_test.js
