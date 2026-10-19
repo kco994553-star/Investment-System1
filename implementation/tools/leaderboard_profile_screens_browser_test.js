@@ -9,7 +9,11 @@ function qg(){const at=new Date().toISOString(),a='a'.repeat(64),b='b'.repeat(64
 (async()=>{const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH});let phase='START',pass=0,fail=0;
  try{for(const width of [390,1440]){const context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block'});await context.route('**/sec-qg-factors.json',r=>r.fulfill({status:200,contentType:'application/json',body:JSON.stringify(qg())}));const page=await context.newPage();let errors=0;page.on('pageerror',()=>errors++);
   try{phase='S06';await page.goto(process.env.PAGES_COCKPIT_URL+'#leaderboard');await page.locator('[data-leaderboard-table]').waitFor();
-   assert.equal(await page.locator('[data-leaderboard-table] thead th').count(),width<750?3:5);assert.match(await page.locator('[data-leaderboard-unconnected]').textContent(),/일간 · 컨센서스 · 목표 · QGV 시나리오 · 재평가 · VMR/);assert.equal(await page.locator('[data-leaderboard-row]').count(),19);
+   assert.equal(await page.locator('[data-leaderboard-table] thead th').count(),width<750?3:5);assert.match(await page.locator('[data-leaderboard-unconnected]').textContent(),/일간 · 컨센서스 · 목표 · QGV 시나리오 · 재평가 · VMR/);// D12 (owner decision 2026-10-19): with a published sec-qgv2.json the leaderboard lists the Universe codes (one row per
+   // security); without it (PR builds) it falls back to the TARGET identities. Count follows the screen's own population.
+   const population=await page.locator('[data-leaderboard-population]').getAttribute('data-leaderboard-population');
+   const expectedRows=population==='UNIVERSE'?await page.evaluate(async()=>Object.keys((await (await fetch('sec-qgv2.json',{cache:'no-store'})).json()).records||{}).length):19;
+   assert.ok(expectedRows>=19);assert.equal(await page.locator('[data-leaderboard-row]').count(),expectedRows);
    // QGV v2 is the only score (owner decision 2026-10-14): the v1 Q·G (Q 58.0 from sec-qg-factors.json) is not shown; each row
    // shows v2 or the v2 NOT_AVAILABLE reason (LIVE builds may publish sec-qgv2.json).
    const nvda=await page.locator('[data-leaderboard-row="nvda"] [data-leaderboard-qgv2]').textContent();assert.ok(!nvda.includes('Q 58.0'));assert.match(nvda,/^(QGV |QGV v2 산출 불가 · )/);assert.equal(await page.locator('[data-leaderboard-row="amd"] [data-leaderboard-qg]').count(),0);

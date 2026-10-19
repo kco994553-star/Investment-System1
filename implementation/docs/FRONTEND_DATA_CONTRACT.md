@@ -13,6 +13,7 @@
 
 - [PRODUCT_FEATURE_MAP_20261018](PRODUCT_FEATURE_MAP_20261018.md): 기능 단위 구현 상태(엔진·계약·화면·검증 근거). 이 문서는 그 표를 되풀이하지 않는다.
 - [PRODUCT_IA_ONTOLOGY_CHECK_20261018](PRODUCT_IA_ONTOLOGY_CHECK_20261018.md): 메뉴 대응·엔티티·결정 후보 IA-1~IA-18.
+- 관련: [FRONTEND_INTERACTION_CONTRACT_20261019](FRONTEND_INTERACTION_CONTRACT_20261019.md) — 화면 조작 요소 목록, 조작 × 갱신(새 게시본 뒤 보기 상태), 순환 국면 링 명세.
 - 이 문서: **화면 요소 하나하나**가 어디서 값을 읽고, 언제 바뀌고, 언제 바뀌면 안 되는지. 같은 역할의 기존 문서는 없었다(`implementation/docs` 안 data/screen contract 문서 없음, `daily_data_pipeline/PUBLIC_ENGINE_SCREENS.md`는 생산 쪽 계약).
 
 ### 0-2. 칸의 뜻
