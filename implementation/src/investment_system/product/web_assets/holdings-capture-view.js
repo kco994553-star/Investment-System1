@@ -51,12 +51,13 @@
     for (const position of positions) {
       const codes = new Set(codesFor(position)), rows = (values || []).filter(row => Array.isArray(row) && typeof row[0] === 'string' && codes.has(row[0].trim()));
       const price = rows.length === 1 ? strictPrice(rows[0][1]) : null;
-      if (price !== null) { result[position.symbol] = {state: 'AVAILABLE', price, currency: position.currency, source: 'GOOGLEFINANCE', as_of: readAt}; continue; }
+      // D10: the Quotes row has no parsed trade time here, so the price time is unconfirmed; readAt is only the read time.
+      if (price !== null) { result[position.symbol] = {state: 'AVAILABLE', price, currency: position.currency, source: 'GOOGLEFINANCE', time_status: 'UNKNOWN', as_of: readAt, available_at: readAt}; continue; }
       const target = view.WorkerQuoteFallback ? view.WorkerQuoteFallback.workerSymbol(position.symbol) : null;
       if (!target || !allow.has(target)) { result[position.symbol] = {state: 'NOT_AVAILABLE', reason: 'QUOTE_NOT_AVAILABLE_OUT_OF_SCOPE'}; continue; }
       const close = await view.WorkerQuoteFallback.readClose(view, {symbol: position.symbol, currency: position.currency, config, session});
       result[position.symbol] = close.state === 'AVAILABLE'
-        ? {state: 'AVAILABLE', price: close.price, currency: close.currency, source: 'WORKER_CLOSE', as_of: close.session_date}
+        ? {state: 'AVAILABLE', price: close.price, currency: close.currency, source: 'WORKER_CLOSE', time_status: 'SESSION_CLOSE', as_of: close.session_date + 'T00:00:00Z', available_at: new Date().toISOString()}
         : {state: 'NOT_AVAILABLE', reason: close.reason};
     }
     return result;
@@ -235,7 +236,9 @@
         card.append(make(doc, 'strong', position.symbol + (position.name ? ' · ' + position.name : '') + ' · ' + words(locale, '분석 범위 밖', 'Outside analysis scope')));
         const dl = make(doc, 'dl');
         const workerLabel = doc.defaultView && doc.defaultView.WorkerQuoteFallback ? doc.defaultView.WorkerQuoteFallback.label(locale) : 'WORKER_CLOSE';
-        const source = quote.state === 'AVAILABLE' ? (quote.source === 'WORKER_CLOSE' ? workerLabel : words(locale, 'GOOGLEFINANCE · 최대 20분 지연 · 정보용', 'GOOGLEFINANCE · Up to 20 minutes delayed · For information only')) + ' · ' + quote.as_of : 'NOT_AVAILABLE · ' + quote.reason;
+        const PT = doc.defaultView && doc.defaultView.PriceTime, DM = doc.defaultView && doc.defaultView.DeviceMarket;
+        const time = quote.state !== 'AVAILABLE' ? '' : PT ? (d => locale === 'en-US' ? d.label_en : d.label_ko)(PT.describe(quote, {staleness: DM ? DM.staleness : undefined})) : String(quote.as_of);
+        const source = quote.state === 'AVAILABLE' ? (quote.source === 'WORKER_CLOSE' ? workerLabel : words(locale, 'GOOGLEFINANCE · 최대 20분 지연 · 정보용', 'GOOGLEFINANCE · Up to 20 minutes delayed · For information only')) + ' · ' + time : 'NOT_AVAILABLE · ' + quote.reason;
         for (const [label, value] of [[words(locale, '수량', 'Quantity'), position.quantity], [words(locale, '가격 출처', 'Price source'), source],
           [words(locale, '원통화 평가액', 'Native value'), native === null ? 'NOT_AVAILABLE' : format(locale, native, 2) + ' ' + position.currency],
           [words(locale, '원화 평가액', 'KRW value'), krw === null ? 'NOT_AVAILABLE' + (native !== null ? ' · FX_NOT_AVAILABLE' : '') : format(locale, krw, 0) + ' KRW'],

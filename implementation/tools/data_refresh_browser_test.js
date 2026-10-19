@@ -6,6 +6,8 @@
      HARNESS_CLOCK the browser clock is moved by the test (Playwright clock); the data still comes over REAL_FETCH.
      HARNESS_EVENT the test fires the tab's 'visibilitychange' (what a phone does when the app comes back) instead of waiting
                    for the one-minute timer.
+     HARNESS_PRICES synthetic device prices (made-up numbers) through a stubbed PrivateSubsetView, a stubbed sheet session that
+                   counts reads, and a fake loaded price tab that records the fetch option of every read — all in RAM.
      NODE / STATIC expected values from the engine modules in Node, and source checks.
    Publications (synthetic, price-free; the same two days as update_propagation_browser_test.js):
      day 1 = strict sec-qgv2.json fixture + NYSE:ABT collected 2026-09-30T06:00Z (LIVE until 2026-10-14T06:00Z);
@@ -14,7 +16,9 @@
    Checked: the open leaderboard follows day 2 in place, every other screen and the calculation inputs show day 2 (one set),
    no Worker / Sheets / outside request, settings unchanged, a failed refresh keeps every old value with '갱신 실패' and the old
    basis time, re-judging makes a row STALE as the clock passes its window (no new publication), the v1 badge names its input,
-   and a failed read and a not-published file read differently. */
+   and a failed read and a not-published file read differently. With device prices: the D11 official ranking / QG list, the V
+   coverage panel counts, its PriceTime line, the footnote scope and the stat-radar V all come from the one page result of the
+   new inputs object, and every price-tab read the refresh causes is RAM only (no Worker sync, no Sheets read). */
 const { chromium } = require('playwright'), assert = require('node:assert/strict'), fs = require('node:fs'), path = require('node:path');
 const WA = path.join(__dirname, '../src/investment_system/product/web_assets');
 globalThis.QgvV2 = require(path.join(WA, 'qgv-v2.js'));
@@ -88,9 +92,10 @@ for (const n of [1, 2]) { const sec = secDay(n); PUB[n] = { 'sec-qgv2.json': n =
 // Day 3 (only served while sec-qgv2.json fails): every other file moves on. None of it may show (all or nothing).
 PUB[3] = { ...PUB[2], 'macro-screen.json': macroDay(1) };
 const inputsAt = (n, now) => QI.fromInputs(SQ.toInputs(PUB[n]['sec-qgv2.json'], { now }));
-function expectedRanks(n, now, identities, preset = null) {
-  const S = QS.compute({ identities, publicScreens: { 'sec-qgv2.json': inputsAt(n, now) }, preset, gate: null }), out = {};
-  for (const [id, r] of Object.entries(S.rows)) if (Number.isInteger(r.rank)) out[id] = { rank: r.rank, total: fmt1(r.primary.total) };
+// D11 (#318): without device prices there is no official rank; rows with a Q·G total are in the QG reference list (own order).
+function expectedRanks(n, now, identities, preset = null, quotes = {}) {
+  const S = QS.compute({ identities, publicScreens: { 'sec-qgv2.json': inputsAt(n, now) }, quotes, preset, gate: null }), out = {};
+  for (const [id, r] of Object.entries(S.rows)) if (Number.isInteger(r.rank) || r.qg_reference) out[id] = { rank: Number.isInteger(r.rank) ? r.rank : r.qg_reference.order, list: Number.isInteger(r.rank) ? 'RANKED' : 'QG_REFERENCE', total: fmt1(r.primary.total) };
   return out;
 }
 function freshExpected(n, code, now) {
@@ -118,9 +123,12 @@ async function newContext(browser, state, extra = {}) {
 async function go(page, hash, selector) { await page.evaluate((h) => { location.hash = h; }, hash); await page.locator(selector).first().waitFor(); }
 const readLeaderboard = (page) => page.evaluate(() => ({
   asOf: document.querySelector('[data-score-as-of]')?.textContent || null,
-  rows: [...document.querySelectorAll('[data-leaderboard-row]')].map((tr) => ({ id: tr.dataset.leaderboardRow, rank: tr.querySelector('[data-leaderboard-rank]')?.dataset.leaderboardRank || null, total: tr.querySelector('[data-leaderboard-total]')?.dataset.leaderboardTotal || null })) }));
+  rows: [...document.querySelectorAll('[data-leaderboard-row]')].map((tr) => ({ id: tr.dataset.leaderboardRow, rank: tr.querySelector('[data-leaderboard-rank]')?.dataset.leaderboardRank || tr.querySelector('[data-leaderboard-unranked="QG_REFERENCE"]')?.dataset.qgOrder || null,
+    list: tr.querySelector('[data-leaderboard-rank]') ? 'RANKED' : tr.querySelector('[data-leaderboard-unranked="QG_REFERENCE"]') ? 'QG_REFERENCE' : null, total: tr.querySelector('[data-leaderboard-total]')?.dataset.leaderboardTotal || null })),
+  scope: (() => { const n = document.querySelector('[data-leaderboard-rank-scope]'); return n ? { ranked: n.dataset.ranked, base: n.dataset.rankBase } : null; })(),
+  counts: (() => { const n = document.querySelector('[data-leaderboard-counts]'); return n ? { rankable: n.dataset.rankable, qg: n.dataset.qgReference } : null; })() }));
 async function leaderboard(page) { await go(page, 'leaderboard', '[data-leaderboard-table]'); await page.waitForFunction(() => document.querySelectorAll('[data-leaderboard-row]').length > 0); return readLeaderboard(page); }
-const ranked = (lb) => Object.fromEntries(lb.rows.filter((r) => r.rank !== null).map((r) => [r.id, { rank: Number(r.rank), total: r.total }]));
+const ranked = (lb) => Object.fromEntries(lb.rows.filter((r) => r.rank !== null).map((r) => [r.id, { rank: Number(r.rank), list: r.list, total: r.total }]));
 const readUniverse = (page) => page.evaluate(() => {
   const pg = document.querySelector('[data-universe-page]'), ax = (a) => { const r = document.querySelector('[data-universe-card="qgv"] [data-uc-axis="' + a + '"]'); return { score: r.dataset.ucScore, state: r.dataset.ucAxisState, num: r.querySelector('.num')?.textContent.trim() || null, text: r.textContent }; };
   return { code: pg.dataset.universePage, state: pg.dataset.universeState, Q: ax('Q'), G: ax('G'), fresh: document.querySelector('[data-universe-card="qgv"] [data-uc-fresh]').textContent.split(' · '),
@@ -145,7 +153,7 @@ async function targetPage(page, id) {
   await go(page, 'company/' + id, '[data-company-card="qgv"]'); await page.locator('[data-company-card="qgv"] [data-qgv="Q"]').waitFor();
   return page.evaluate(() => ({ asOf: document.querySelector('[data-company-badges] [data-score-as-of]')?.textContent || null, Q: document.querySelector('[data-company-card="qgv"] [data-qgv="Q"]').textContent.trim(),
     G: document.querySelector('[data-company-card="qgv"] [data-qgv="G"]').textContent.trim(), acquired: document.querySelector('[data-source-acquired]')?.textContent || null,
-    rank: document.querySelector('[data-company-card="qgv"] [data-qgv="rank"] .num')?.textContent || null,
+    rank: document.querySelector('[data-company-card="qgv"] [data-qgv="rank"] .num')?.textContent || document.querySelector('[data-company-card="qgv"] [data-qgv-rank="QG_REFERENCE"]')?.dataset.qgOrder || null,
     v1Stale: [...document.querySelectorAll('[data-company-badges] .badge.freshness.STALE')].map((b) => b.textContent) }));
 }
 async function treeQgv(page) {
@@ -241,11 +249,11 @@ function requestsCheck(label, reqs, what) {
     eq('REAL_FETCH', after, before, 'settings unchanged: localStorage, sessionStorage, v2 profile, device quotes in RAM, theme, language');
     eq('REAL_FETCH', await page.locator('#leader-sort').inputValue(), 'name', 'the leaderboard sort the user chose is kept');
     // One consistent input set behind every screen and calculation cache.
-    const caches = await page.evaluate(() => { const S = qgvScores(), S2 = qgvScores();
+    const caches = await page.evaluate(() => { const S = leaderScores(), S2 = leaderScores();
       return { file: publicScreens['sec-qgv2.json'].as_of, v2: S.v2_as_of, memo: S.rows === S2.rows || JSON.stringify(S.rows) === JSON.stringify(S2.rows), macro: publicScreens['macro-screen.json'].as_of, pub: DataRefresh.publication().basis,
-        ranks: Object.fromEntries(Object.entries(S.rows).filter(([, r]) => Number.isInteger(r.rank)).map(([id, r]) => [id, r.rank])), events: window.__events }; });
+        ranks: Object.fromEntries(Object.entries(S.rows).filter(([, r]) => Number.isInteger(r.rank) || r.qg_reference).map(([id, r]) => [id, Number.isInteger(r.rank) ? 'R' + r.rank : 'QG' + r.qg_reference.order])), events: window.__events }; });
     eq('REAL_FETCH', [caches.file, caches.v2, caches.pub, caches.macro], [DAYS[2].as_of, DAYS[2].as_of, DAYS[2].as_of, DAYS[2].as_of.replace('Z', '+00:00')], 'publicScreens, the QgvScores result and the publication all carry day 2');
-    eq('REAL_FETCH', caches.ranks, Object.fromEntries(Object.entries(exp2).map(([id, x]) => [id, x.rank])), 'QgvScores (memo) recomputed on the new inputs = engine day 2');
+    eq('REAL_FETCH', caches.ranks, Object.fromEntries(Object.entries(exp2).map(([id, x]) => [id, (x.list === 'RANKED' ? 'R' : 'QG') + x.rank])), 'leaderScores (QgvScores memo) recomputed on the new inputs = engine day 2 (rank / QG list)');
     eq('REAL_FETCH', caches.events.length, 1, 'one public-data-updated event');
     const ev = caches.events[0];
     eq('REAL_FETCH', [ev.reason, ev.publication.basis, ev.previous.basis], ['REFRESH', DAYS[2].as_of, DAYS[1].as_of], 'event: reason, new and previous basis');
@@ -317,6 +325,84 @@ function requestsCheck(label, reqs, what) {
       eq(label, tp.asOf, '점수 기준 ' + DAYS[1].as_of, 'the v2 score time beside it is unchanged');
       const lbc = await leaderboard(p);
       eq(label, ranked(lbc), expectedRanks(1, PAST_WINDOW, identities), 'leaderboard = engine on the re-judged inputs');
+      eq(label, s.errors, [], 'no page errors'); await c.close();
+    }
+
+    // ---------- E. with device prices: rank / QG list, V panel, radar V, PriceTime and footnote follow one new set ----------
+    // HARNESS_PRICES: synthetic Universe-tab prices (made-up numbers) through a stubbed PrivateSubsetView in RAM, as in
+    // stat_radar_browser_test.js; the public files still come over REAL_FETCH. A stubbed sheet session counts reads: none may happen.
+    phase = 'E_PRICES';
+    {
+      const st = { day: 1 }, { context: c, page: p, seen: s } = await newContext(browser, st), prices = {};
+      for (const [code, , price] of F.strictUniverseValues().slice(1)) prices[code] = { price, currency: 'USD' };
+      await p.goto(BASE + '#leaderboard'); await p.locator('[data-leaderboard-table]').waitFor();
+      await p.evaluate((q) => { window.__sheetReads = 0; const real = window.PrivateSubsetView; window.PrivateSubsetView = { ...real, prices: () => new Map(Object.entries(q)), priceBasis: () => ({ source: 'SYNTHETIC_TEST', read_id: 'synthetic-refresh', acquired_at: null, currency: 'USD', price_time: null }) };
+        const session = { state: () => ({ enabled: true, connected: true }), revision: () => 1, setEnabled() {}, subscribe: () => () => {}, async fetchValues() { window.__sheetReads++; return { values: [] }; } };
+        window.GoogleSheetQuotes = { ...GoogleSheetQuotes, sessionFor: () => session };
+        // A price tab that is connected and already loaded (fake, RAM): it records the fetch option of every read.
+        window.__storeCalls = []; const PS = window.PriceStore; window.PriceStore = { ...PS, status: () => ({ ...PS.status(), state: 'READY', tabs: { Prices_D: { present: true, read: true, rows: 0 }, Prices_M: { present: true, read: true, rows: 0 } } }),
+          monthEndCloses: async (sym, o) => { window.__storeCalls.push(o && o.fetch); return {}; }, dailyCloses: async (sym, from, o) => { window.__storeCalls.push(o && o.fetch); return {}; } };
+        location.hash = 'home'; }, prices);
+      await p.locator('main').waitFor(); await p.evaluate(() => { location.hash = 'leaderboard'; });
+      const settled = (asOf) => p.waitForFunction((a) => typeof leaderPage === 'object' && leaderPage && leaderPage.inputs === publicScreens['sec-qgv2.json'] && publicScreens['sec-qgv2.json'].as_of === a
+        && document.querySelector('[data-v-coverage="READY"], [data-v-coverage-state="READY"]') && (document.querySelector('[data-v-calc-version]')?.textContent || '').includes(a) && document.querySelectorAll('[data-leaderboard-rank]').length > 0, asOf);
+      await settled(DAYS[1].as_of);
+      const snap = () => p.evaluate(async () => { const inputs = publicScreens['sec-qgv2.json'], R = await QgvScores.pageResult(window, { v2Inputs: inputs, catalog: await deviceCatalog().catch(() => null), identities: identityCompanies, preset: qgv2Profile.preset, gate: qgv2Profile.gate }), cov = QgvScores.vCoverage(R, inputs), S = leaderScores();
+        const q = (sel, a) => document.querySelector(sel)?.getAttribute(a) ?? null;
+        return { same: leaderPage.result === R, quotes: leaderPage.result.quotes, asOf: inputs.as_of,
+          rows: Object.fromEntries(Object.entries(S.rows).filter(([, r]) => Number.isInteger(r.rank) || r.qg_reference).map(([k, r]) => [k, Number.isInteger(r.rank) ? 'R' + r.rank : 'QG' + r.qg_reference.order])),
+          dom: Object.fromEntries([...document.querySelectorAll('[data-leaderboard-row]')].map((tr) => [tr.dataset.leaderboardRow, tr.querySelector('[data-leaderboard-rank]') ? 'R' + tr.querySelector('[data-leaderboard-rank]').dataset.leaderboardRank : tr.querySelector('[data-leaderboard-unranked="QG_REFERENCE"]') ? 'QG' + tr.querySelector('[data-leaderboard-unranked="QG_REFERENCE"]').dataset.qgOrder : null]).filter(([, v]) => v)),
+          panel: { v: q('[data-v-full]', 'data-v-full'), qg: q('[data-qg-only-full]', 'data-qg-only-full'), time: q('[data-v-price-time]', 'data-v-price-time'), calc: document.querySelector('[data-v-calc-version]')?.textContent || '' },
+          cov: cov ? { v: String(cov.v.full), qg: String(cov.qg_only_total.full) } : null, scope: q('[data-leaderboard-rank-scope]', 'data-ranked'), rankable: q('[data-leaderboard-counts]', 'data-rankable'), base: q('[data-leaderboard-rank-scope]', 'data-rank-base') }; });
+      const s1 = await snap();
+      ok('HARNESS_PRICES', s1.same && Object.keys(s1.quotes).length > 3, 'day 1: the leaderboard uses the shared page result with device prices');
+      const expect = (n, now, quotes) => expectedRanks(n, now, identities, null, quotes);
+      const e1 = Object.fromEntries(Object.entries(expect(1, DAYS[1].now, s1.quotes)).map(([k, x]) => [k, (x.list === 'RANKED' ? 'R' : 'QG') + x.rank]));
+      eq('HARNESS_PRICES', [s1.rows, s1.dom], [e1, e1], 'day 1 official ranking and QG list = engine with the same quotes');
+      // The open Universe page of a priced code: its stat radar V comes from the same page result.
+      const code = KEPT; ok('HARNESS_PRICES', Object.hasOwn(prices, code), code + ' has a synthetic price');
+      const opened = await p.evaluate(() => window.__storeCalls.splice(0));
+      ok('HARNESS_PRICES', opened.length > 0 && opened.every((x) => x !== false), 'a normal screen open reads the price tab with its default (sync allowed): ' + opened.length + ' reads');
+      st.day = 2; await c.clock.setFixedTime(new Date(DAYS[2].now)); const mark3 = s.requests.length, reads0 = await p.evaluate(() => window.__sheetReads);
+      await press(p, 'APPLIED'); await settled(DAYS[2].as_of);
+      const s2 = await snap(), label = 'REAL_FETCH+HARNESS_PRICES';
+      const reqs = requestsCheck(label, s.requests.slice(mark3), 'refresh with device prices (leaderboard open)');
+      eq(label, await p.evaluate(() => window.__sheetReads), reads0, 'no Google Sheets read during the refresh');
+      const during = await p.evaluate(() => window.__storeCalls.splice(0));
+      ok(label, during.length > 0 && during.every((x) => x === false), 'every price-tab read caused by the refresh is RAM only (fetch:false, no Worker sync): ' + during.length + ' reads');
+      eq(label, [s2.same, s2.asOf], [true, DAYS[2].as_of], 'after the refresh the leaderboard reads the page result of the NEW inputs object (memo keyed by the inputs object)');
+      const e2 = Object.fromEntries(Object.entries(expect(2, DAYS[2].now, s2.quotes)).map(([k, x]) => [k, (x.list === 'RANKED' ? 'R' : 'QG') + x.rank]));
+      eq(label, [s2.rows, s2.dom], [e2, e2], 'D11 leaderScores(): official ranking and QG list on screen = engine day 2 with the same device quotes');
+      eq(label, s2.quotes, s1.quotes, 'device quotes are the same RAM quotes (prices did not change, nothing was read again)');
+      eq(label, [s2.panel.v, s2.panel.qg], [s2.cov.v, s2.cov.qg], 'V panel counts = QgvScores.vCoverage of the same day-2 page result');
+      ok(label, s2.panel.calc.includes(DAYS[2].as_of) && !s2.panel.calc.includes(DAYS[1].as_of), 'V panel names the day-2 public file: ' + s2.panel.calc);
+      eq(label, s2.panel.time, s1.panel.time, 'PriceTime display of the panel unchanged (same quotes, same price time rule): ' + s2.panel.time);
+      const rankedCount = String(Object.values(e2).filter((x) => x.startsWith('R')).length);
+      eq(label, [s2.rankable, s2.scope === null ? rankedCount : s2.scope], [rankedCount, rankedCount], 'counts line and footnote scope = day-2 official ranked count');
+      if (s2.scope !== null) eq(label, s2.base, String(identities.length), 'footnote rank base = the S06 identities');
+      // Radar V on a Universe page, refreshed in place.
+      await go(p, 'company/' + encodeURIComponent(code), '[data-universe-page] [data-stat-radar]');
+      const radarV = () => p.evaluate(async (cd) => { await new Promise((r) => setTimeout(r, 50)); const cell = document.querySelector('[data-stat-radar] tr[data-sr-axis="v"] td[data-sr-series="company"]'); const R = await QgvScores.pageResult(window, { v2Inputs: publicScreens['sec-qgv2.json'], catalog: await deviceCatalog().catch(() => null), identities: [{ company_id: cd, ticker: cd.slice(cd.indexOf(':') + 1) }] });
+        const d = R.computed.rows[cd].primary; return { cell: cell ? { score: cell.dataset.srScore, reason: cell.dataset.srReason } : null, v: Number.isFinite(d.v) ? d.v : null, asOf: publicScreens['sec-qgv2.json'].as_of, quotes: R.quotes[cd] || null, all: R.quotes }; }, code);
+      await p.waitForFunction(() => { const c2 = document.querySelector('[data-stat-radar] tr[data-sr-axis="v"] td[data-sr-series="company"]'); return c2 && c2.dataset.srReason !== 'PENDING'; });
+      const rv = await radarV();
+      ok(label, rv.v !== null && rv.quotes && Math.abs(Number(rv.cell.score) - rv.v) <= 1e-9, 'radar V on the Universe page = page result V of the day-2 inputs (' + rv.cell.score + ' vs ' + rv.v + ')');
+      // The next publication arrives while this Universe page is open (the server now answers the day-1 file again): the page
+      // and its radar are repainted in place from that set.
+      st.day = 1; const mark4 = s.requests.length; await p.evaluate(() => { window.__samePage = document.querySelector('[data-universe-card="technical"]'); });
+      await press(p, 'APPLIED');
+      await p.waitForFunction((a) => (document.querySelector('[data-universe-card="qgv"] [data-uc-fresh]')?.textContent || '').includes('as_of ' + a), clock(DAYS[1].as_of));
+      await p.waitForFunction((a) => { const c2 = document.querySelector('[data-stat-radar] tr[data-sr-axis="v"] td[data-sr-series="company"]'); return c2 && c2.dataset.srReason !== 'PENDING' && publicScreens['sec-qgv2.json'].as_of === a; }, DAYS[1].as_of);
+      const rv1 = await radarV();
+      ok(label, rv1.asOf === DAYS[1].as_of && rv1.v !== null && Math.abs(Number(rv1.cell.score) - rv1.v) <= 1e-9, 'radar repainted in place = page result V of the newly applied inputs (' + rv1.cell.score + ' vs ' + rv1.v + ')');
+      eq(label, await p.evaluate(() => window.__samePage === document.querySelector('[data-universe-card="technical"]')), true, 'the mounted chart card was kept (no route re-mount)');
+      requestsCheck(label, s.requests.slice(mark4), 'in-place refresh of the Universe page');
+      const in2 = inputsAt(2, DAYS[2].now), every = Object.keys(in2.records).filter((k) => !k.startsWith('TARGET:')).map((k) => ({ company_id: k, ticker: k.slice(k.indexOf(':') + 1) }));
+      const nodeV = QS.compute({ identities: every, publicScreens: { 'sec-qgv2.json': in2 }, quotes: rv.all }).rows[code].primary.v;
+      ok('NODE', Math.abs(nodeV - rv.v) <= 1e-9, 'engine in Node gives the same V for the day-2 file and the same quotes (' + nodeV + ')');
+      eq(label, await p.evaluate(() => [window.__sheetReads, DataRefresh.pricesGuarded()]), [reads0, true], 'no Google Sheets read on the in-place refresh either; the device price guard is still on (no screen change yet)');
+      await go(p, 'leaderboard', '[data-leaderboard-table]'); eq(label, await p.evaluate(() => DataRefresh.pricesGuarded()), false, 'the guard ends with the next screen change');
+      ok(label, !reqs.some((f) => /^prices?/i.test(f)), 'no price file read');
       eq(label, s.errors, [], 'no page errors'); await c.close();
     }
 

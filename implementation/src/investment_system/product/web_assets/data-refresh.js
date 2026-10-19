@@ -17,7 +17,9 @@
    - status(file) / readText(file): a failed read (network, HTTP n, invalid, newer format) and a file that is not published
      (HTTP 404) never get the same words (D5).
    Never: a request to the private Worker or Google Sheets, a storage write, a change to a user setting or a Cache Storage
-   entry. While DataRefresh repaints a screen, quiet() is true: the app skips its device quote collection then. */
+   entry. While DataRefresh repaints a screen, quiet() is true: the app skips its own device quote collection then; the shared
+   QgvScores.pageResult that the leaderboard, V panel and stat radar recompute on the new inputs reads device prices from RAM only
+   (guardPrices below). */
 (function(root,factory){const api=factory(root);if(typeof module==='object'&&module.exports)module.exports=api;else root.DataRefresh=api;})(typeof globalThis==='object'?globalThis:this,function(g){
 'use strict';
 const EVENT='public-data-updated',TICK=60000;
@@ -104,10 +106,22 @@ async function refresh(){
 }
 // Hand one set to the app, repaint the open screen, tell every other cache owner.
 function hand(G,reason,changed,previous,trigger='BUTTON'){
+ guardPrices();
  try{if(typeof hooks.apply==='function')hooks.apply(Object.freeze({screens:G.screens,reported:G.reported,shares:G.sharesDir}));}catch(_){}
  last.repaint=repaint(reason);
  try{view.dispatchEvent(new view.CustomEvent(EVENT,{detail:Object.freeze({reason,trigger,generation:G.id,publication:publication(),changed:Object.freeze([...changed]),previous,checked_at:G.checked_at})}));}catch(_){}
 }
+/* While the screens recompute on the new set (the shared QgvScores.pageResult runs collectQuotes again for the new inputs object),
+   the device price reads stay inside this browser: PriceStore month-end / daily closes are read with fetch:false and only when the
+   user's Prices tabs are already loaded in RAM; otherwise they answer {} (no Worker sync, no Sheets read). The guard ends at the next
+   screen change (before the app draws it) or after GUARD_MS. Device quotes (Universe read, stored quotes) are RAM reads already. */
+const GUARD_MS=30000;let guardTimer=0,guarded=null;
+function guardPrices(){const PS=view.PriceStore;if(!PS||guarded||typeof PS.monthEndCloses!=='function')return;const orig=PS;
+ const loaded=()=>{try{const s=orig.status();return s.state==='READY'&&Object.values(object(s.tabs)?s.tabs:{}).every(t=>!t||!t.present||t.read);}catch(_){return false;}};
+ const wrap=(name)=>typeof orig[name]==='function'?(...a)=>{if(!loaded())return Promise.resolve({});const o=a[name==='dailyCloses'?2:1];a[name==='dailyCloses'?2:1]={...(object(o)?o:{}),fetch:false};return orig[name](...a);}:orig[name];
+ try{view.PriceStore=Object.freeze({...orig,monthEndCloses:wrap('monthEndCloses'),dailyCloses:wrap('dailyCloses')});guarded=orig;}catch(_){return;}
+ guardTimer=view.setTimeout(unguardPrices,GUARD_MS);}
+function unguardPrices(){if(!guarded)return;try{view.clearTimeout(guardTimer);view.PriceStore=guarded;}catch(_){}guarded=null;}
 function repaint(reason){
  const route=typeof hooks.route==='function'?hooks.route()||'home':'home';let how='NONE';quiet=true;
  try{if(typeof hooks.inPlace==='function'&&hooks.inPlace())how='IN_PLACE';else if(FULL.has(route)&&typeof hooks.render==='function'){hooks.render();how='RENDER';}else if(!NONE.has(route)){outdated(reason);how='NOTICE';}}
@@ -191,7 +205,9 @@ function attach(win,h={}){view=win;hooks=h||{};current();
  win.document.addEventListener('visibilitychange',()=>{if(win.document.visibilityState==='visible')void rejudge('VISIBLE');});
  // After a screen change too: the new screen was drawn from the states judged earlier; a crossed boundary repaints it.
  win.addEventListener('hashchange',()=>{void rejudge('NAVIGATE');});
+ // A screen the user opens is a normal screen open: the device price guard of a refresh ends before the app draws it (capture).
+ win.addEventListener('hashchange',unguardPrices,true);
  return api;}
-const api=Object.freeze({EVENT,LISTS,attach,load,list,shares,financials,refresh,rejudge,status,readText,publication,quiet:()=>quiet,last:()=>Object.freeze({...last})});
+const api=Object.freeze({EVENT,LISTS,pricesGuarded:()=>guarded!==null,attach,load,list,shares,financials,refresh,rejudge,status,readText,publication,quiet:()=>quiet,last:()=>Object.freeze({...last})});
 return api;
 });
