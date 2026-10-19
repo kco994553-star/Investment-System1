@@ -30,6 +30,13 @@ const NOT_PROVIDED = { "ko-KR": "미제공", "en-US": "Not provided" };
 // Home's Attention card; the fixture gives every section the same as_of, so the universe snapshot sentence is checked there only.
 const ATTENTION = 'main section.card:has(.chips a[href="#companies"])';
 const FIXTURE_MODULE = path.join(__dirname, "build_web_research_guard_fixture.py");
+// The probe checks below search the whole outerHTML, so the page's own wall-clock stamps are in scope too: data-refresh.js
+// writes new Date().toISOString() into section#data-refresh[data-refresh-checked] ("...T07:46:11.115Z"). On the real
+// clock that stamp contains "11.11" / "22.22" / "33.33" / "44.44" whenever a page loads at ss.mmm = 11.11x, 22.22x, ...,
+// which made the withheld-route check fail at random (CI runs 39216131374, 39221276009) with no research value rendered.
+// Every context runs on this fixed clock instead (Date only; timers keep running), so each run sees the same page.
+// main() asserts that the stamp itself contains no probe; the probe assertions stay on the full outerHTML.
+const FIXED_NOW = "2026-10-19T09:30:30.500Z";
 
 // The fixture's literal vectors, computed in memory by its own pure functions (the withheld build entry points are not used).
 function loadFixture() {
@@ -53,6 +60,9 @@ async function main() {
   if (!base.pathname.endsWith("/")) base.pathname += "/";
   const { bundle, manifest, variants } = loadFixture();
   assert.equal(manifest.kind, "WEB_RESEARCH_GUARD_FIXTURE_V1");
+  for (const probe of [...manifest.withheld_probes, ...manifest.validation_probes, "44.44", "TEST DEMO / NOT ACTUAL"]) {
+    assert.ok(!new Date(FIXED_NOW).toISOString().includes(probe), `fixed test clock must not spell probe ${probe}`);
+  }
   const launch = { headless: true };
   if (process.env.WEB_TEST_CHROMIUM_PATH) launch.executablePath = process.env.WEB_TEST_CHROMIUM_PATH;
   const checks = [], errors = [], traffic = { external: 0, unsafe: 0, failed_responses: 0 };
@@ -61,6 +71,7 @@ async function main() {
 
   async function openPage(served = null) {
     const context = await browser.newContext({ viewport: { width: 390, height: 844 } });await displayOnlyOff(context);
+    await context.clock.setFixedTime(new Date(FIXED_NOW));
     await context.route("**/*", async (route) => {
       const request = route.request(), url = new URL(request.url());
       if (request.method() !== "GET" || request.postData()) { traffic.unsafe++; await route.abort(); return; }
@@ -82,6 +93,7 @@ async function main() {
       await page.goto(new URL("#" + hash, base).href);
       await page.reload();
       await page.waitForFunction(() => typeof window.investmentSearch === "function" && !!document.querySelector("main h1"));
+      assert.equal(await page.evaluate(() => new Date().toISOString()), FIXED_NOW, "page runs on the fixed test clock");
     };
     // Run a bundle through the shipped render-time guard and re-render the current route (browser memory only).
     page.apply = async (data) => {

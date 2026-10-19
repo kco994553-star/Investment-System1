@@ -4,6 +4,9 @@ Offline (default): every value NOT_AVAILABLE with reason codes, so the device ne
 --live (GitHub Actions only): SEC submissions SIC, latest 10-K Item 1 and basket-ETF N-PORT holdings
 identifiers through the fixed-URL client, User-Agent from the SEC_USER_AGENT secret. Raw bodies stay in
 RAM; only the validated public projection is written. Output lines carry counts and fixed codes only.
+--preserve-only (cockpit-pages.yml UI-only deploys): the live Pages copy, validated with the producer's validator, is
+re-published byte for byte (its as_of, states, reasons and sources unchanged; no SEC request). 404 keeps the build's
+NOT_AVAILABLE file; a served copy that is invalid, or a network failure, exits 1 (fail closed).
 """
 import argparse
 from datetime import datetime, timedelta, timezone
@@ -14,7 +17,9 @@ import sys
 import tempfile
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
-from investment_system.product.public_classification import FILENAME, build_classification, company_identity
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from investment_system.product.public_classification import (FILENAME, build_classification, company_identity,
+                                                              require_public_classification)
 
 # Daily acquisition cadence, same as the other public screens. Not a model threshold.
 ACQUISITION_TTL = timedelta(hours=24)
@@ -69,6 +74,13 @@ def collect(directory, *, environ=None, client_factory=None):
     return write(directory, payload)
 
 
+def preserve(directory, *, open_response=None):
+    """UI-only deploys: the validated live copy, unchanged. Returns PREVIOUS_RESTORED or PREVIOUS_NOT_AVAILABLE (404)."""
+    from preserve_public_screens import restore
+    restored = restore(directory, {FILENAME: require_public_classification}, open_response=open_response)
+    return 'PUBLIC_CLASSIFICATION PREVIOUS_RESTORED' if restored else 'PUBLIC_CLASSIFICATION PREVIOUS_NOT_AVAILABLE'
+
+
 def summary(payload):
     rows = payload['data']['companies'].values()
     etfs = payload['data']['etfs']
@@ -84,7 +96,18 @@ def main(argv=None):
     parser = Parser(description=__doc__)
     parser.add_argument('--out', required=True, type=Path)
     parser.add_argument('--live', action='store_true')
+    parser.add_argument('--preserve-only', action='store_true')
     args = parser.parse_args(argv)
+    if args.preserve_only:
+        if args.live:
+            print('PUBLIC_CLASSIFICATION_ARGUMENTS_INVALID')
+            return 2
+        try:
+            print(preserve(args.out))
+        except Exception:
+            print('PUBLIC_CLASSIFICATION PREVIOUS_RESTORE_FAILED')
+            return 1
+        return 0
     try:
         payload = collect(args.out) if args.live else emit(args.out)
     except Exception:
