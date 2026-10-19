@@ -124,7 +124,7 @@ APPROVED_SHA256 = {
     "qgv-v2.js": "0f06a8904b156e18f503c47844b540b4b12f3368933ff21bc3157afe482b3717",
     "qgv-scores.js": "56ec15eafcbadd67dfaaaa7364d6350e2ff6427cd7cfc813a8ad004c99a7469e",
     "playbook-screen.js": "346bec41b97cc13e5c48a496e8024b152db239a8b83f0254bdd0af5120eeda15",
-    "news-signals.js": "c0e4d3a23afbd5162508f54aab98a836ecfae9980796f66d13a6019c0fba4405",
+    "news-signals.js": "a7da310c577f838a8beeb7d0a58854b6fcaaae03bbc75ba9216d5b56e47fc519",
     "dart-disclosures.js": "7ea88fa32ffa0be446e28f3b91532532bf2b98073f31d4ec1d62db8e73d7efdf",
     "macro-lights.js": "d64e3d4c68fb8c0ffdbfe16ad3220af2648bda4d331edd387ca337d52c42d741",
     "sec-disclosures.js": "849cbfbf2b21badd52c06cf5887dcd259e08864552a76fde39f065f82c6a7194",
