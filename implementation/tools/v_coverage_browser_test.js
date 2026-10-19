@@ -29,7 +29,7 @@ function recount(rows) {
   for (const r of G.filter((x) => !x.v)) { reasons[r.vreason] = (reasons[r.vreason] || 0) + 1;for (const f of new Set(r.freasons)) factor[f] = (factor[f] || 0) + 1; }
   const periods = G.filter((r) => r.shares).map((r) => r.period).filter(Boolean).sort();
   return {
-    same: rows.every((r) => r.same), sources: rows.filter((r) => r.priced).reduce((o, r) => { o[r.source] = o[r.source] || { rows: 0, unconfirmed: 0 };o[r.source].rows++;if (!r.asOf) o[r.source].unconfirmed++;return o; }, {}),
+    same: rows.every((r) => r.same), sources: rows.filter((r) => r.priced).reduce((o, r) => { o[r.source] = o[r.source] || { rows: 0, unconfirmed: 0, stale: 0 };o[r.source].rows++;if (!r.asOf) o[r.source].unconfirmed++;if (r.stale === true) o[r.source].stale++;return o; }, {}),
     total: rows.length, general: G.length, financial: rows.filter((r) => r.cls === 'FINANCIAL').length, noData: rows.filter((r) => r.cls === 'NO_DATA').length, stopped: rows.filter((r) => r.cls === 'STOPPED').length,
     vFull: rows.filter((r) => r.v).length, vGeneral: G.filter((r) => r.v).length, qgvFull: rows.filter((r) => r.v && r.q && r.g).length, qgvGeneral: G.filter((r) => r.v && r.q && r.g).length,
     complete: G.filter((r) => r.missing === 0).length, upper: G.filter((r) => r.shares && (r.ebit || r.fcf)).length, sharesRows: G.filter((r) => r.shares).length, from: periods[0] || null, to: periods.at(-1) || null,
@@ -54,7 +54,7 @@ async function pageRows(page) {
       return { code, cls, total: !!p && fin(p.total), vx: !!p && !!p.v_excluded, v: !!p && fin(p.v), q: !!p && fin(p.q), g: !!p && fin(p.g), missing: p && p.coverage ? p.coverage.v_inputs_missing.length : -1, vreason: ax && ax.reason ? ax.reason : null,
         freasons: ax ? ax.factors.filter((f) => f.score === null && f.reason).map((f) => f.reason) : [], vi: !!vi, vic: vi ? vi.currency : null, qc: q ? q.currency : null, priced: !!q && fin(q.price) && q.price > 0,
         shares: !!vi && fin(vi.diluted_shares) && vi.diluted_shares > 0, ebit: !!vi && fin(vi.ebit), fcf: !!vi && fin(vi.fcf), period: rec.periods ? rec.periods.diluted_shares || null : null,
-        source: m ? m.source : null, asOf: m ? m.as_of : null, same };
+        source: m ? m.source : null, asOf: m ? m.as_of : null, stale: m ? m.stale : null, same };
     });
   });
 }
@@ -155,8 +155,9 @@ async function noOverflow(page, what) {
         // Price time is not the read time: GOOGLEFINANCE rows have none (미확인); per source, rows without a time are 미확인.
         const allUnconfirmed = Object.values(c.sources).every((x) => x.rows === x.unconfirmed);
         assert.equal(await S.locator('[data-v-price-time]').getAttribute('data-v-price-time'), allUnconfirmed ? 'UNCONFIRMED' : 'PER_SOURCE');
-        assert.deepEqual(Object.fromEntries(await S.locator('[data-price-source]').evaluateAll((n) => n.map((x) => [x.dataset.priceSource, { rows: Number(x.dataset.rows), unconfirmed: Number(x.dataset.unconfirmed) }]))), c.sources);
-        assert.equal(c.sources.UNIVERSE_SHEET.rows, c.sources.UNIVERSE_SHEET.unconfirmed);assert.match(await S.locator('[data-price-source="UNIVERSE_SHEET"]').textContent(), /미확인 \(가격 자체 시각 없음\)$/);
+        assert.deepEqual(Object.fromEntries(await S.locator('[data-price-source]').evaluateAll((n) => n.map((x) => [x.dataset.priceSource, { rows: Number(x.dataset.rows), unconfirmed: Number(x.dataset.unconfirmed), stale: Number(x.dataset.stale) }]))), c.sources);
+        assert.equal(c.sources.UNIVERSE_SHEET.rows, c.sources.UNIVERSE_SHEET.unconfirmed);assert.match(await S.locator('[data-price-source="UNIVERSE_SHEET"]').textContent(), / · 가격 기준 시각 미확인 · 신선도 판정 불가$/);assert.equal(c.sources.UNIVERSE_SHEET.stale, 0, 'Universe rows never stale (D10)');
+        if (allUnconfirmed) assert.ok((await S.locator('[data-v-price-time]').textContent()).startsWith('가격 기준 시각 미확인'), 'exact D10 text');
         assert.equal(await num(S.locator('[data-currency-mismatch]'), 'data-currency-mismatch'), c.mismatch);
         assert.equal(await S.locator('[data-v-currency]').textContent(), 'USD · 가격 반영 ' + c.priced + '/' + c.total + '행 · 통화 불일치 ' + c.mismatch + '행(일반 기업, 환율 변환 없음)');
         const shares = await S.locator('[data-v-shares]').textContent();assert.ok(shares.startsWith('SEC v_inputs_v2.diluted_shares · 기간 말 ' + (c.from ? c.from + ' ~ ' + c.to : '—') + ' · ' + c.sharesRows + '/' + c.general + '행 · V-SHARES-SCALE'), shares);

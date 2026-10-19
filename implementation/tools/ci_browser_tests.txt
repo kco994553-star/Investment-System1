@@ -64,4 +64,5 @@ stat_radar_browser_test.js
 company_names_browser_test.js
 preset_candidates_browser_test.js
 v_coverage_browser_test.js
+price_time_browser_test.js
 update_propagation_browser_test.js

@@ -6,7 +6,7 @@
    not-applicable and unknown rows in its denominator. '공개 입력 기준 상한' is an upper bound, never a count. The 90% target is an
    observation metric only (applicable n and target computed live from the loaded file), wired to nothing else.
    Price time: the sheet READ time is shown apart from the price's own time; the GOOGLEFINANCE column has no trade time, so it is
-   '미확인' and a fresh read never makes an old price look current.
+   '가격 기준 시각 미확인' (freshness '신선도 판정 불가') and a fresh read never makes an old price look current.
    RAM only: no price, count or result is stored, sent or logged; the panel shows counts, never a price. No inline style (CSP). */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.VCoverage=api;})(typeof globalThis==='object'?globalThis:this,function(){
 'use strict';
@@ -15,8 +15,13 @@ const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 const SHARES_RULE=['V-SHARES-SCALE: 같은 공시 표지 주식수의 0.1~10배 밖이면 NA (1,000배 등 배율 보정 없음)','V-SHARES-SCALE: NA when outside 0.1–10× the cover share count of the same filing (no ×1,000 rescaling)'];
 const SOURCE_REASON={NOT_COLLECTED:['아직 수집 안 됨','not collected yet'],CIK_UNRESOLVED:['CIK 미해결','CIK unresolved'],NO_ANNUAL_SEC_FINANCIALS:['연간 SEC 재무 없음','no annual SEC financials'],NON_SEC_ISSUER:['SEC 공시 대상 아님','not an SEC filer']};
 const PRICE_SOURCE={UNIVERSE_SHEET:['Universe 시트(GOOGLEFINANCE)','Universe sheet (GOOGLEFINANCE)']};
-/* '2026-10-18 09:31 UTC · 2026-10-18 18:31 KST' (KST = UTC+9, no DST). */
-function clock(iso){const t=typeof iso==='string'?Date.parse(iso):NaN;if(!Number.isFinite(t))return null;const f=ms=>new Date(ms).toISOString().slice(0,16).replace('T',' ');return f(t)+' UTC · '+f(t+9*3600e3)+' KST';}
+/* D10: price time text comes from the shared PriceTime (price-time.js): clock() = '2026-10-18 09:31 UTC · 2026-10-18 18:31 KST',
+   no price time = exactly '가격 기준 시각 미확인' with '신선도 판정 불가'. Per-source counts are QgvScores.vCoverage price_time
+   (PriceTime.summarize over the same priced rows). */
+function priceTimeApi(){return globalThis.PriceTime||(typeof require==='function'?require('./price-time.js'):null);}
+function clock(iso){const PT=priceTimeApi();return PT?PT.clock(iso):null;}
+const UNCONFIRMED=['가격 기준 시각 미확인','Price time unconfirmed'],UNDETERMINED=['신선도 판정 불가','Freshness undetermined'];
+function ownTime(v){return typeof v==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(v)?v:clock(v)||'—';}
 const frac=(a,b)=>a===null||a===undefined?'—':a+'/'+b;
 /* HTML of one QgvScores.vCoverage result (s). */
 function html(s,{en=false,reasonText=c=>c}={}){
@@ -47,11 +52,12 @@ function html(s,{en=false,reasonText=c=>c}={}){
   h+='<details data-v-factor-details><summary>'+T('미산출 행의 요인별 엔진 사유 (한 행이 여러 사유에 들어감)','Engine reasons of the missing factors in those rows (a row can count under several)')+'</summary><ul class="v-coverage-reasons" data-v-factor-reasons>'+s.factor_reasons.map(([c,k])=>'<li data-v-factor-reason="'+esc(c)+'" data-count="'+k+'"><b>'+k+'</b> · '+esc(c)+' · '+esc(reasonText(c))+'</li>').join('')+'</ul></details>';
  }
  // Price time per source: the GOOGLEFINANCE column has no trade time (미확인); a device quote with its own time shows it.
- const times=on?s.price_time.map(t=>'<li data-price-source="'+esc(t.source)+'" data-rows="'+t.rows+'" data-unconfirmed="'+t.unconfirmed+'">'+esc((PRICE_SOURCE[t.source]?PRICE_SOURCE[t.source][en?1:0]:t.source)+' '+t.rows+T('행 · ',' rows · ')+(t.unconfirmed===t.rows?T('미확인 (가격 자체 시각 없음)','unconfirmed (no price time)'):(t.from===t.to?t.from:t.from+' ~ '+t.to)+(t.unconfirmed?T(' · 미확인 ',' · unconfirmed ')+t.unconfirmed+T('행',' rows'):'')+(t.stale?T(' · 오래됨 ',' · stale ')+t.stale+T('행',' rows'):'')))+'</li>').join(''):'';
+ const L=pair=>pair[en?1:0];
+ const times=on?s.price_time.map(t=>'<li data-price-source="'+esc(t.source)+'" data-rows="'+t.rows+'" data-unconfirmed="'+t.unconfirmed+'" data-stale="'+t.stale+'">'+esc((PRICE_SOURCE[t.source]?PRICE_SOURCE[t.source][en?1:0]:t.source)+' '+t.rows+T('행 · ',' rows · ')+(t.unconfirmed===t.rows?L(UNCONFIRMED)+' · '+L(UNDETERMINED):T('가격 기준 ','price time ')+(t.from===t.to?ownTime(t.from):ownTime(t.from)+' ~ '+ownTime(t.to))+(t.unconfirmed?' · '+L(UNCONFIRMED)+' '+t.unconfirmed+T('행',' rows'):'')+(t.stale?' · STALE '+t.stale+T('행',' rows'):'')))+'</li>').join(''):'';
  const read=clock(s.read_at),unconfirmed=on?s.price_time.every(t=>t.unconfirmed===t.rows):true,shareText='SEC v_inputs_v2.diluted_shares · '+T('기간 말 ','period end ')+(s.shares.period_from?s.shares.period_from+' ~ '+s.shares.period_to:'—')+' · '+s.shares.rows+'/'+G+T('행',' rows')+' · '+SHARES_RULE[en?1:0];
  h+='<h3>'+T('가격 기준','Price basis')+'</h3><dl class="v-coverage-basis" data-v-price-basis>';
  h+='<dt>'+T('시트 읽은 시각','Sheet read at')+'</dt><dd data-v-acquired>'+esc(on?(read||'—')+T(' · Universe 탭을 가져온 시각 (가격 시각 아님)',' · when the Universe tab was fetched (not a price time)'):T('읽기 전','not read yet'))+'</dd>';
- h+='<dt>'+T('가격 기준 시각','Price time')+'</dt><dd data-v-price-time="'+(on?(unconfirmed?'UNCONFIRMED':'PER_SOURCE'):'NOT_READ')+'">'+esc(on?(unconfirmed?T('미확인','unconfirmed'):T('출처별','per source')):T('읽기 전','not read yet'))+(on?'<ul class="v-coverage-reasons">'+times+'</ul>':'')+'</dd>';
+ h+='<dt>'+T('가격 기준 시각','Price time')+'</dt><dd data-v-price-time="'+(on?(unconfirmed?'UNCONFIRMED':'PER_SOURCE'):'NOT_READ')+'">'+esc(on?(unconfirmed?L(UNCONFIRMED):T('출처별','per source')):T('읽기 전','not read yet'))+(on?'<ul class="v-coverage-reasons">'+times+'</ul>':'')+'</dd>';
  h+='<dt>'+T('통화','Currency')+'</dt><dd data-v-currency'+(on?' data-currency-mismatch="'+s.currency_mismatch+'"':'')+'>'+esc('USD'+(on?T(' · 가격 반영 '+s.priced+'/'+N+'행 · 통화 불일치 '+s.currency_mismatch+'행(일반 기업, 환율 변환 없음)',' · priced '+s.priced+'/'+N+' rows · currency mismatch '+s.currency_mismatch+' rows (general, no FX conversion)'):''))+'</dd>';
  h+='<dt>'+T('주식수 기준','Share count basis')+'</dt><dd data-v-shares>'+esc(shareText)+'</dd>';
  h+='<dt>'+T('계산 버전','Calc version')+'</dt><dd data-v-calc-version>'+esc((s.calc_version||'—')+(s.as_of?T(' · 공개 파일 기준 ',' · public file as of ')+s.as_of:''))+'</dd></dl>';

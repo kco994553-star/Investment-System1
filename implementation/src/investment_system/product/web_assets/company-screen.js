@@ -33,12 +33,22 @@ function classification(screens,id,locale){
    :na(rec?T('소속도 0.3 이상 유형 없음 또는 자료 없음','No type with membership ≥ 0.3, or no data'):T('공개 유형 자료가 연결되지 않았습니다.','Public type data is not connected.'),locale)]];
  return '<section class="card" data-company-card="classification"><h2>'+esc(T('분류 3축','Three classification axes'))+'</h2><ul class="axis-chips">'+items.map(([k,name,body])=>'<li data-axis="'+k+'"><b>'+esc(name)+'</b> '+body+'</li>').join('')+'</ul><p class="small">'+esc(T('산업 / 전략 테마 / 투자 유형은 서로 다른 축입니다. 서로 대신 채우지 않습니다.','Industry / strategy theme / investment type are separate axes. None substitutes for another.'))+'</p></section>';
 }
+/* D10 price time (PriceTime): the read time and the price's own trade time/date are shown apart. as_of here is the price's own
+   time (null when unconfirmed, e.g. GOOGLEFINANCE time_status UNKNOWN); read_at is when this device read it. Freshness only
+   from a confirmed time with the source's existing rule (DeviceMarket.staleness for device market quotes); otherwise
+   '신선도 판정 불가'. */
+const DEVICE_MARKET_SOURCES=['MANUAL','API','GOOGLEFINANCE','WORKER_CLOSE'];
+function priceTimeApi(){return g.PriceTime||(typeof require==='function'?require('./price-time.js'):null);}
+function quoteTime(q){const PT=priceTimeApi();if(!PT||!q)return null;const dm=g.DeviceMarket;
+ return PT.describe({source:q.source,as_of:q.as_of===undefined?null:q.as_of,read_at:q.read_at===undefined?null:q.read_at,...(typeof q.time_status==='string'?{time_status:q.time_status}:{})},{staleness:dm&&DEVICE_MARKET_SOURCES.includes(q.source)?dm.staleness:undefined});}
+const quoteTimeText=(d,en)=>d?(en?d.label_en:d.label_ko):'—';
 /* Device quote state of the price badge: the same quote the value card uses (mountValue -> onQuote; no extra request).
-   {state:'PENDING'} before the value card has read it, {state:'AVAILABLE',source,as_of,stale} or {state:'NOT_AVAILABLE',reason}.
+   {state:'PENDING'} before the value card has read it, {state:'AVAILABLE',source,as_of,read_at,time_status} or {state:'NOT_AVAILABLE',reason}.
    The price itself is never shown here. */
 function priceBadge(q,locale){
  const T=tr(locale),en=locale==='en-US'?1:0;
- if(q&&q.state==='AVAILABLE')return '<span class="badge '+(q.stale?'STALE':'LIVE')+'" data-badge="price" data-price-state="AVAILABLE">'+esc(T('시세 ','Quote ')+(QUOTE_SOURCE[q.source]||['기기 시세','Device quote'])[en]+' · '+(q.as_of||'—')+(q.stale?' · STALE':''))+'</span>';
+ if(q&&q.state==='AVAILABLE'){const d=quoteTime(q),fresh=d?d.freshness:'UNDETERMINED';
+  return '<span class="badge '+(fresh==='STALE'?'STALE':fresh==='CURRENT'?'LIVE':'')+'" data-badge="price" data-price-state="AVAILABLE" data-price-time-status="'+(d?d.status:'UNCONFIRMED')+'" data-price-freshness="'+fresh+'">'+esc(T('시세 ','Quote ')+(QUOTE_SOURCE[q.source]||['기기 시세','Device quote'])[en]+' · '+quoteTimeText(d,en))+'</span>';}
  if(q&&q.state==='NOT_AVAILABLE')return '<span class="badge NOT_AVAILABLE" data-badge="price" data-price-state="NOT_AVAILABLE">'+esc(T('시세 NOT_AVAILABLE · ','Quote NOT_AVAILABLE · ')+(q.reason||'NO_DEVICE_PRICE'))+'</span>';
  return '<span class="badge" data-badge="price" data-price-state="PENDING">'+esc(T('시세 확인 중','Checking quote'))+'</span>';
 }
@@ -237,7 +247,8 @@ function valueHtml({locale,row=null,result=null,quote=null,quoteReason=null,comp
  const basis=p&&typeof p.currency==='string'?p.currency:null,qc=quote&&typeof quote.currency==='string'?quote.currency:null,cc=f&&typeof f.currency==='string'?f.currency:null;
  const ccyMismatch=cc&&(basis&&cc!==basis||qc&&cc!==qc);
  const ccyRow=ccyMismatch?'<dt>'+esc(T('통화','Currency'))+'</dt><dd data-value="currency-basis">'+na('CURRENCY_BASIS_UNCONFIRMED',locale)+' <span class="small">'+esc(T('보고 통화 ','Reported currency ')+cc+(qc&&qc!==cc?T(' · 가격 통화 ',' · price currency ')+qc:'')+(basis&&basis!==cc?T(' · 기준 통화 ',' · basis currency ')+basis:'')+T(' · 환율 변환 없음',' · no FX conversion'))+'</span></dd>':'';
- const q=quote?'<span data-value-quote-source="'+esc(quote.source||'')+'">'+esc((QUOTE_SOURCE[quote.source]||['기기 시세','Device quote'])[en])+'</span> <span class="small">'+esc((quote.as_of||'—')+(quote.stale?' · STALE':'')+' · '+T('RAM 전용 · 저장·전송 안 함','RAM only · not stored or sent'))+'</span>'
+ const qt=quote?quoteTime(quote):null,PT=priceTimeApi();
+ const q=quote?'<span data-value-quote-source="'+esc(quote.source||'')+'">'+esc((QUOTE_SOURCE[quote.source]||['기기 시세','Device quote'])[en])+'</span> <span class="small" data-value-quote-time>'+(qt&&PT?PT.html(qt,{locale}):esc('—'))+esc(' · '+T('RAM 전용 · 저장·전송 안 함','RAM only · not stored or sent'))+'</span>'
   :na(T('이 기기에 이 종목 시세가 없습니다 (NO_DEVICE_PRICE)','No device quote for this company (NO_DEVICE_PRICE)')+(quoteReason?' · '+T('Worker 종가','Worker close')+' NOT_AVAILABLE · '+quoteReason:''),locale);
  const rev=result&&result.reverse_dcf.state!=='NOT_AVAILABLE'?'<span class="num" data-implied-growth>'+esc(pct(result.reverse_dcf.implied_growth))+'</span> <span class="small">'+esc(T('현재 기기 가격이 함의하는 명시 '+(p?p.explicit_years:'—')+'년 연 FCFE 성장률','Annual FCFE growth over the explicit '+(p?p.explicit_years:'—')+' years implied by the device price'))+'</span>'
   :na(result?reasons(result.reverse_dcf.reason_codes):'NO_DEVICE_PRICE',locale);
@@ -272,8 +283,9 @@ async function mountValue(host,{locale,id,ticker=null,catalogPromise=null,inputs
  if(!host.isConnected||host.__valueToken!==token)return;
  const row=V.row(payload,id),result=V.view({row,quote:q?{price:q.price,currency:q.currency}:null});
  let quoteReason=null;if(!q&&ticker&&win.WorkerQuoteFallback){try{const s=win.WorkerQuoteFallback.status(win,ticker);quoteReason=s&&s.state==='NOT_AVAILABLE'?s.reason:null;}catch(_){}}
- host.innerHTML=valueHtml({locale,row,result,quote:q?{source:q.source,as_of:q.as_of,stale:q.stale===true,currency:q.currency}:null,quoteReason,compact});
- if(onQuote)onQuote(q?{state:'AVAILABLE',source:q.source||null,as_of:q.as_of||null,stale:q.stale===true}:{state:'NOT_AVAILABLE',reason:'NO_DEVICE_PRICE'+(quoteReason?' · '+quoteReason:'')});
+ const time=q?{source:q.source||null,as_of:q.as_of||null,read_at:q.read_at||null,...(typeof q.time_status==='string'?{time_status:q.time_status}:{})}:null;
+ host.innerHTML=valueHtml({locale,row,result,quote:q?{...time,currency:q.currency}:null,quoteReason,compact});
+ if(onQuote)onQuote(q?{state:'AVAILABLE',...time}:{state:'NOT_AVAILABLE',reason:'NO_DEVICE_PRICE'+(quoteReason?' · '+quoteReason:'')});
 }
 // onSelect(key) runs after a user tab change (the app mirrors it into the hash with replaceState).
 function wireTabs(rootEl,{onSelect=null}={}){
@@ -281,5 +293,5 @@ function wireTabs(rootEl,{onSelect=null}={}){
  const select=key=>{for(const b of tabs){const on=b.dataset.analysisTab===key;b.setAttribute('aria-selected',String(on));b.tabIndex=on?0:-1;}for(const p of rootEl.querySelectorAll('[data-analysis-panel]'))p.hidden=p.dataset.analysisPanel!==key;if(onSelect)onSelect(key);};
  tabs.forEach((b,i)=>{b.addEventListener('click',()=>select(b.dataset.analysisTab));b.addEventListener('keydown',e=>{const d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:e.key==='Home'?-i:e.key==='End'?tabs.length-1-i:0;if(!d&&e.key!=='Home')return;e.preventDefault();const n=tabs[(i+d+tabs.length)%tabs.length];select(n.dataset.analysisTab);n.focus();});});
 }
-return Object.freeze({esc,na,fmtPct,fmtPp,num,tr,typeName,record,selectTypes,V2_LABEL,scoreRow,qgvBody,coverageHtml,factorTable,classification,nextEarningsLine,summary,analysis,mountHolding,mountValue,valueHtml,wireTabs,tabKey,priceBadge,TYPES,TAB_KEYS});
+return Object.freeze({esc,na,fmtPct,fmtPp,num,tr,typeName,record,selectTypes,V2_LABEL,scoreRow,qgvBody,coverageHtml,factorTable,classification,nextEarningsLine,summary,analysis,mountHolding,mountValue,valueHtml,wireTabs,tabKey,priceBadge,quoteTime,TYPES,TAB_KEYS});
 });
