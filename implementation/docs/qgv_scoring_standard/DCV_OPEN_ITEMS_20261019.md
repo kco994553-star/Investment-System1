@@ -185,7 +185,7 @@
 
 ### 3-1. D-CV 밖에서 새로 생긴 선택(#330에서 나옴)
 
-- **기준일 하루 지연.** IEX TOPS는 종가 뒤 약 14시간(10-17 10:21 UTC 생성)에 나온다. 22:17 UTC 실행은 D−1 파일만 쓸 수 있다. 선택: 지연 수용(게시본 `price.basis_date` = D−1, 정직 표시) / V 단계만 다음 날 11:00 UTC 이후 별도 실행. D-CV1과 함께 정한다.
+- **기준일 하루 지연.** IEX TOPS는 종가 뒤 약 14시간(10-17 10:21 UTC 생성)에 나온다. 22:17 UTC 실행은 직전 실제 미국 거래일의 파일만 쓸 수 있다(달력상 전날이 아니다. 월요일 실행은 금요일 파일, 휴장일 다음 실행은 휴장 전 마지막 거래일 파일). 선택: 지연 수용(게시본 `price.basis_date` = 직전 실제 거래일, 정직 표시) / V 단계만 다음 날 11:00 UTC 이후 별도 실행. D-CV1과 함께 정한다.
 - **기준 종류.** IEX 값은 마지막 유효 체결이다(15:57:18~15:59:59 ET). 게시본 `price.basis_kind`를 `SESSION_CLOSE`가 아니라 `IEX_LAST_ELIGIBLE_TRADE`로 적어야 한다. CENTRAL §4-1 표의 `basis_kind:'SESSION_CLOSE'` 고정값을 고친다.
 
 ## 4. D-CV16 — 라이브 게시본 손상: 충돌과 해결
@@ -305,7 +305,7 @@
 
 1. **가격.** `NASDAQ:ASML` 미국 상장 라인, 통화 USD, 기준일 D. 출처는 D-CV1 공급자다. IEX면 마지막 유효 체결(종가 아님)이고 기준일은 하루 늦다(§3-1). 유로넥스트 가격은 쓰지 않는다.
 2. **환율 계열.** ECB 유로 기준환율 USD(1 EUR당 USD). ECB 공지(2026-10-19 06:56 UTC 확인): "The reference rates are usually updated at around 16:00 CET every working day, except on TARGET closing days. They are based on the daily concertation procedure between central banks across Europe, which normally takes place around 14:10 CET. The reference rates are published for information purposes only." 소수 4자리.
-3. **날짜 짝.** 가격 기준일 D(뉴욕 거래일)와 **같은 날짜**의 ECB 값을 쓴다. 기준일이 D−1이면 ECB도 D−1.
+3. **날짜 짝.** 가격 기준일 D(뉴욕 거래일)와 **같은 날짜**의 ECB 값을 쓴다. 기준일이 직전 실제 미국 거래일이면 ECB도 그 날짜다(달력상 전날이 아니다).
 4. **계산.** EUR 가격 = USD 가격 ÷ (1 EUR당 USD). 나눗셈 한 번이다. 다른 배수는 곱하지 않는다. V 단계 어댑터 RAM에서만 한다.
 5. **시각 차이.** ECB 값은 14:10 CET 무렵 스냅샷이다. 뉴욕 16:00 ET는 보통 22:00 CET라 약 **7시간 50분** 차이다. 미국·유럽 서머타임이 어긋나는 주(2026-03-08~03-28, 2026-10-25~10-31)는 약 6시간 50분이다. 보정하지 않는다. 게시본에 "ECB 기준환율 역수 · 같은 날짜 · 시각 차이 있음"만 적는다. (V_STAGE §9의 "약 6시간"은 공표 시각 16:00 CET 기준이었다. 스냅샷 기준으로 고친다.)
 6. **ECB 값이 없는 날.** TARGET 휴무일(1월 1일, 성금요일, 부활절 월요일, 5월 1일, 12월 25·26일) 중 미국 거래일(부활절 월요일, 평일인 5월 1일·12월 26일)에는 그날 값이 없다. 그 게시본에서 ASML만 `FX_RATE_NOT_AVAILABLE`로 NA다. 전날 값으로 채우지 않는다. 다른 회사는 계속 계산한다(ASML 점이 빠져 이웃 백분위가 그날만 조금 바뀐다).
