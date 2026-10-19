@@ -51,9 +51,10 @@ function rowState(inputs,code){
  if(rec.state==='NOT_AVAILABLE')return{state:'SOURCE_NA',reason:(rec.na_reasons&&rec.na_reasons[0])||'NOT_COLLECTED',reasons:[...(rec.na_reasons||[])],rec};
  return{state:rec.state,reason:rec.state==='STALE'?'STALE_INPUT':null,rec};
 }
-/* Device computation through the one score accessor (same engine, same population as S04/S06). Rank is not used here. */
+/* Device computation through the one score accessor (same engine, same population as S04/S06) with the official page profile
+   (QgvScores.pageProfile: the S06 preset/gate). Rank is not used here. */
 function scored(code,ctx){const QS=g.QgvScores,p=codeParts(code);if(!QS||!p)return null;
- try{const S=QS.compute({identities:[{company_id:code,ticker:p.ticker}],publicScreens:ctx.screens||{},quotes:object(ctx.quotes)?ctx.quotes:{}});const row=S&&S.rows?S.rows[code]:null;return row&&row.code===code?row.primary:null;}catch(_){return null;}}
+ try{const P=typeof QS.pageProfile==='function'?QS.pageProfile():{preset:null,gate:null},S=QS.compute({identities:[{company_id:code,ticker:p.ticker}],publicScreens:ctx.screens||{},quotes:object(ctx.quotes)?ctx.quotes:{},preset:P.preset,gate:P.gate});const row=S&&S.rows?S.rows[code]:null;return row&&row.code===code?row.primary:null;}catch(_){return null;}}
 function bar(axis,value){if(!finite(value))return '<span class="uc-bar-na" aria-hidden="true"></span>';const w=Math.max(0,Math.min(100,value));
  return '<svg class="uc-bar" viewBox="0 0 100 8" preserveAspectRatio="none" aria-hidden="true" focusable="false"><rect class="uc-track" x="0" y="0" width="100" height="8"></rect><rect class="uc-fill uc-fill-'+axis.toLowerCase()+'" x="0" y="0" width="'+w.toFixed(2)+'" height="8"></rect></svg>';}
 function freshLine(parts){return '<p class="small uc-fresh" data-uc-fresh>'+parts.filter(Boolean).map(esc).join(' · ')+'</p>';}

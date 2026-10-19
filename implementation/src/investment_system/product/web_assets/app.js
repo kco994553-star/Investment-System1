@@ -1194,7 +1194,7 @@ function dartReferenceRows(){
 Promise.all([...(["data.json","entities.json","sec-m2-candidates.json"].map(path=>fetch(path,{cache:"no-store"}).then(r=>{
   if(!r.ok) throw Error("HTTP "+r.status);return r.json();
 }).catch(error=>{if(path==="sec-m2-candidates.json")return null;throw error;}))),DataRefresh.load(window),deviceCatalog().catch(()=>null)]).then(([data,catalog,candidates,{reported,screens},identities])=>{
-  try{if(identities){DeviceMarket.emptyMarket(identities);identityCompanies=DeviceWatchlist.identities(identities);}}catch(_){identityCompanies=[];}QgvScores.setPageIdentities?.(identityCompanies);// one quote set for every screen's V (qgv-scores.js pageResult)
+  try{if(identities){DeviceMarket.emptyMarket(identities);identityCompanies=DeviceWatchlist.identities(identities);}}catch(_){identityCompanies=[];}QgvScores.setPageIdentities?.(identityCompanies);QgvScores.setPageProfile?.(()=>qgv2Profile);// one quote set and the S06 official preset/gate for every screen (qgv-scores.js)
   publicScreens=screens;publicCatalog=identities||null;
   if(window.DartDisclosures?.loadFinancials)void DataRefresh.financials(window).then(financials=>{if(financials){publicScreens['dart-financials.json']=financials;if(window.QgvScores)refreshScoreViews();}});
   // Macro lights v1: public lights only until the device loads SPY on the macro screen (RAM, read by MacroLights.current()).

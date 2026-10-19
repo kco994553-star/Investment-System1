@@ -272,12 +272,20 @@ const cleanIds=list=>(Array.isArray(list)?list:[]).filter(c=>object(c)&&typeof c
    Universe page, stat radar), so one screen never prices a different cross-section. A caller's own identity is added only when it
    is not a Universe code of the file (Universe codes are priced from the shared Universe read like every other code). */
 function setPageIdentities(list){pageIds=cleanIds(list);quoteMemo=null;pageMemo=null;}
+/* PAGE PROFILE (owner rule 2026-10-19: same inputs AND settings -> same scores on every screen). The app registers a read-only
+   getter of its current official preset/gate (S06 qgv2Profile, RAM only); pageResult, the radar, the Universe page and any caller
+   that does not pass its own preset/gate read it here, so a preset or gate change on S06 reaches every screen. */
+let profileOf=null;
+function setPageProfile(getter){profileOf=typeof getter==='function'?getter:null;}
+function pageProfile(){let p=null;try{p=profileOf?profileOf():null;}catch(_){p=null;}return Object.freeze({preset:object(p)&&typeof p.preset==='string'?p.preset:null,gate:object(p)&&typeof p.gate==='boolean'?p.gate:null});}
 // Device inputs of collectQuotes besides the Universe read: stored/Worker quotes ('device-actual-changed') and the price tabs'
 // loaded rows (PriceStore status counts; never its read time, so a no-op sync does not change the key).
 function deviceKey(win){if(win&&win.document&&typeof win.document.addEventListener==='function'&&!watched.has(win.document)){watched.add(win.document);try{win.document.addEventListener('device-actual-changed',()=>{deviceEpoch++;});}catch(_){}}
  let store=null;try{const st=win&&win.PriceStore&&typeof win.PriceStore.status==='function'?win.PriceStore.status():null;store=object(st)?[st.state,st.tabs||null,st.symbols||null]:null;}catch(_){store=null;}return[deviceEpoch,store];}
-function pageResult(win,{v2Inputs,catalog=null,identities=[],preset=null,gate=null}={}){
+function pageResult(win,{v2Inputs,catalog=null,identities=[],preset,gate}={}){
  if(!v2Inputs||!object(v2Inputs.records))return Promise.resolve(null);
+ // preset/gate not given (undefined): the registered official page profile (S06), else the engine defaults.
+ {const P=pageProfile();if(preset===undefined)preset=P.preset;if(gate===undefined)gate=P.gate;}
  const basis=readBasis(win),given=cleanIds(identities),seen=new Set(),ids=[];
  for(const c of pageIds?[...pageIds,...given.filter(c=>c.company_id.startsWith('TARGET:')||!Object.hasOwn(v2Inputs.records,c.company_id))]:given)if(!seen.has(c.company_id)){seen.add(c.company_id);ids.push(c);}
  // ONE quote set per (inputs, catalog, Universe read, identities, device inputs); every preset/gate is computed over it.
@@ -365,5 +373,5 @@ function label(version,en){return(LABEL[version]||LABEL.v2)[en?1:0];}
 // (+ ' · 유형 범위 qgv2-type-scope/…' = the type-application scope id the scores use).
 function basisText(S,en){const b=S&&S.basis?S.basis:basis('v2',false);return label('v2',en)+' · '+(en?b.label_en:b.label)+(b.since?(en?' · since ':' · ')+b.since+(en?'':'부터'):'')+(b.type_scope?(en?' · type scope ':' · 유형 범위 ')+b.type_scope:'');}
 function presets(){return qgvV2().PRESETS;}
-return Object.freeze({MODES,LABEL,PERSONAL_LABEL,PERSONAL_V0_LABEL,QG_REFERENCE_LABEL,NO_OFFICIAL_RANK,qgReference,FLAG,DATA_STATE,AXIS_STATUS,REASON,coverageFor,exploreGroup,reasonText,stateText,axisStatusText,vInputText,scoringDefault,compute,typeMemberships,judgmentRows,collectQuotes,pageResult,setPageIdentities,vCoverage,V_TARGET_SHARE,summaryText,naText,flagText,label,basis,basisText,presets,symbolOf});
+return Object.freeze({MODES,LABEL,PERSONAL_LABEL,PERSONAL_V0_LABEL,QG_REFERENCE_LABEL,NO_OFFICIAL_RANK,qgReference,FLAG,DATA_STATE,AXIS_STATUS,REASON,coverageFor,exploreGroup,reasonText,stateText,axisStatusText,vInputText,scoringDefault,compute,typeMemberships,judgmentRows,collectQuotes,pageResult,setPageIdentities,setPageProfile,pageProfile,vCoverage,V_TARGET_SHARE,summaryText,naText,flagText,label,basis,basisText,presets,symbolOf});
 });
