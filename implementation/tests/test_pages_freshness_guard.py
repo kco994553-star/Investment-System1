@@ -150,8 +150,9 @@ def test_manual_artifact_built_before_a_newer_daily_deploy_rolls_the_public_data
     for name in UNIVERSE:
         assert acquired(rolled[name], 'NASDAQ:ADBE') is None and rolled[name]['records']['NASDAQ:ADBE']['state'] == 'NOT_AVAILABLE'
         assert acquired(rolled[name], 'NYSE:BRK.B') == '2026-10-11T22:30:00Z'
-        # `as_of` alone hides the rollback: the preserve-only build re-stamps it to its own build time.
-        assert rolled[name]['as_of'] == '2026-10-12T09:00:00Z'
+        # The preserve-only build re-publishes the live bytes it read (as_of of that copy, never its own build time),
+        # so the rolled-back copy looks like an ordinary older publication: only the row markers show the retreat.
+        assert rolled[name]['as_of'] == '2026-10-11T22:30:00Z'
     assert rolled[us.FILENAME]['records']['NASDAQ:ADBE']['shares'] is None
     assert rolled[fl.FILENAME]['as_of'] == '2026-10-11T22:30:00+00:00'
 
@@ -199,12 +200,19 @@ def test_older_daily_artifact_after_a_newer_daily_deploy_is_refused(tmp_path, ca
 
 
 def test_build_time_as_of_is_not_a_freshness_marker(tmp_path, capsys):
-    """Daily collect reads the 10/11 copy at 10/13 22:30; a manual build from that same copy is made and deployed at
-    10/14 01:00 (its Universe `as_of` is later). The daily artifact still carries newer data and must deploy."""
+    """Daily collect reads the 10/11 copy at 10/13 22:30; a copy of that same 10/11 data whose Universe `as_of` is later
+    (10/14 01:00) is deployed first. The daily artifact still carries newer data and must deploy. The manual build
+    itself keeps the live `as_of` (it re-publishes the live bytes), so the later `as_of` is set here explicitly."""
     site = Site()
     site.deploy(daily(tmp_path / 'day-a', site, DAY_A))
     late = daily(tmp_path / 'day-b', site, DAY_B)
-    site.deploy(manual_build(tmp_path / 'manual', site, MANUAL_LATE))
+    manual = manual_build(tmp_path / 'manual', site, MANUAL_LATE)
+    assert all((manual / name).read_bytes() == site.files[name] for name in UNIVERSE)
+    for name in UNIVERSE:
+        data = json.loads((manual / name).read_bytes())
+        data['as_of'] = MANUAL_LATE.strftime('%Y-%m-%dT%H:%M:%SZ')
+        (manual / name).write_text(json.dumps(data))
+    site.deploy(manual)
     assert files(site)[us.FILENAME]['as_of'] > files(late)[us.FILENAME]['as_of']
     code, out = guard(late, site, capsys)
     assert code == 0 and 'rows_regressed=0' in out and 'marker=as_of verdict=NEWER' in out

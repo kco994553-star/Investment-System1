@@ -11,7 +11,11 @@ from investment_system.product.public_engine_screens import FILENAMES, parse_jso
 BASE = 'https://kco994553-star.github.io/Investment-System1/'
 MAX = 2 * 1024 * 1024
 
-def preserve(directory, *, open_response=None):
+def restore(directory, validators, *, open_response=None):
+    """Live Pages copy of each named file -> its original bytes in `directory`, unchanged (no restatement, no new `as_of`).
+
+    `validators` maps a file name to the producer's validator of its parsed payload. 404 keeps the build's file; a copy
+    that is served but invalid, oversized or redirected, or a network failure, writes nothing (all or none, fail closed)."""
     prepared = []
     try:
         directory = Path(directory)
@@ -19,7 +23,7 @@ def preserve(directory, *, open_response=None):
             raise ValueError
         fetch = open_response or urllib.request.build_opener(NoRedirect()).open
         bodies = {}
-        for name in sorted(FILENAMES):
+        for name in sorted(validators):
             if (directory / name).is_symlink():
                 raise ValueError
             url = BASE + name
@@ -35,7 +39,7 @@ def preserve(directory, *, open_response=None):
                 raise ValueError from None
             if len(body) > MAX:
                 raise ValueError
-            require_public_screen(name, parse_json(body))
+            validators[name](parse_json(body))
             bodies[name] = body
         for name, body in bodies.items():
             with tempfile.NamedTemporaryFile(dir=directory, delete=False) as handle:
@@ -48,6 +52,10 @@ def preserve(directory, *, open_response=None):
     finally:
         for path, _ in prepared:
             path.unlink(missing_ok=True)
+
+def preserve(directory, *, open_response=None):
+    return restore(directory, {name: (lambda payload, name=name: require_public_screen(name, payload)) for name in FILENAMES},
+                   open_response=open_response)
 
 def main(argv=None):
     parser = Parser(description=__doc__); parser.add_argument('--out', required=True, type=Path)
