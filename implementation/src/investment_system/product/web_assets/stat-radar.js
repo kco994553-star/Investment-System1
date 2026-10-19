@@ -440,7 +440,9 @@ const decisionBadge=T=>DECISION.state==='DECIDED'?T('결정됨','DECIDED'):DECIS
    read (if any; ctx.device: a price-data snapshot to render instead, RAM only). spec: {code} or {targetId}. */
 function html(spec,ctx={}){
  const locale=ctx.locale==='en-US'?'en-US':'ko-KR',T=tr(locale),inputs=inputsOf(ctx.screens),key=keyOf(spec),prev=live.get(key),aux=!!(prev&&prev.aux),dev=object(ctx.device)?ctx.device:null;
- const result=prev&&prev.inputs===inputs?prev.result:null;live.set(key,{spec,inputs,locale,result,aux,dev});const model=build(inputs,spec,dev||device,result,{aux});
+ // The held result is shown again only while it is current (same inputs, same Universe read, same official preset/gate);
+ // otherwise V is 확인하는 중 until mount() reads the shared page result (never a V of an older read shown as current).
+ const QS=g.QgvScores,current=r=>!!r&&(!QS||typeof QS.isCurrent!=='function'||QS.isCurrent(g,r)),result=prev&&prev.inputs===inputs&&current(prev.result)?prev.result:null;live.set(key,{spec,inputs,locale,result,aux,dev});const model=build(inputs,spec,dev||device,result,{aux});
  return '<div class="stat-radar" data-stat-radar="'+esc(key)+'" data-sr-decision="'+DECISION.state+'"'+stateAttrs(model)+'><h2 class="sr-title"><span class="hl">'+esc(T('스탯창','Stat window'))+'</span> <span class="badge partial">'+esc(decisionBadge(T))+'</span></h2>'
   +'<p class="small" data-sr-axis-set>'+esc(T('축: ','Axes: ')+DECISION.set[locale==='en-US'?1:0]+' · '+DECISION.ref[locale==='en-US'?1:0]+T(' · 설명용 · 추천 아님',' · explanatory · not a recommendation'))+'</p><div data-sr-body>'+body(model,locale)+'</div></div>';}
 function paint(el){const entry=live.get(el.dataset.statRadar);if(!entry)return;const model=build(entry.inputs,entry.spec,entry.dev||device,entry.result,{aux:entry.aux}),b=el.querySelector('[data-sr-body]');

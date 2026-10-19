@@ -51,9 +51,10 @@ function rowState(inputs,code){
  if(rec.state==='NOT_AVAILABLE')return{state:'SOURCE_NA',reason:(rec.na_reasons&&rec.na_reasons[0])||'NOT_COLLECTED',reasons:[...(rec.na_reasons||[])],rec};
  return{state:rec.state,reason:rec.state==='STALE'?'STALE_INPUT':null,rec};
 }
-/* Device computation through the one score accessor (same engine, same population as S04/S06). Rank is not used here. */
+/* Device computation through the one score accessor (same engine, same population as S04/S06) with the official page profile
+   (QgvScores.pageProfile: the S06 preset/gate). Rank is not used here. */
 function scored(code,ctx){const QS=g.QgvScores,p=codeParts(code);if(!QS||!p)return null;
- try{const S=QS.compute({identities:[{company_id:code,ticker:p.ticker}],publicScreens:ctx.screens||{},quotes:object(ctx.quotes)?ctx.quotes:{}});const row=S&&S.rows?S.rows[code]:null;return row&&row.code===code?row.primary:null;}catch(_){return null;}}
+ try{const P=typeof QS.pageProfile==='function'?QS.pageProfile():{preset:null,gate:null},S=QS.compute({identities:[{company_id:code,ticker:p.ticker}],publicScreens:ctx.screens||{},quotes:object(ctx.quotes)?ctx.quotes:{},preset:P.preset,gate:P.gate});const row=S&&S.rows?S.rows[code]:null;return row&&row.code===code?row.primary:null;}catch(_){return null;}}
 function bar(axis,value){if(!finite(value))return '<span class="uc-bar-na" aria-hidden="true"></span>';const w=Math.max(0,Math.min(100,value));
  return '<svg class="uc-bar" viewBox="0 0 100 8" preserveAspectRatio="none" aria-hidden="true" focusable="false"><rect class="uc-track" x="0" y="0" width="100" height="8"></rect><rect class="uc-fill uc-fill-'+axis.toLowerCase()+'" x="0" y="0" width="'+w.toFixed(2)+'" height="8"></rect></svg>';}
 function freshLine(parts){return '<p class="small uc-fresh" data-uc-fresh>'+parts.filter(Boolean).map(esc).join(' · ')+'</p>';}
@@ -160,32 +161,38 @@ function html(code,ctx={}){
   +'<section class="card" data-universe-card="classification">'+classificationCard(code,rs,inputs,c,now)+'</section>'
   +'<section class="card" data-universe-company="'+esc(sh.state)+'"><h2>'+esc(T('SEC 표지 정보','SEC cover facts'))+'</h2>'+sh.html+'<p class="small">'+esc(T('가격·시가총액·순위: 공개 화면에서는 NOT_AVAILABLE (GSQ-010). V와 종합 점수는 이 기기 시세로만 계산합니다.','Price, market cap and rank: NOT_AVAILABLE on public screens (GSQ-010). V and the total are computed only from this device’s quotes.'))+'</p></section></div>';
 }
-/* After html(): read this device's quotes for the code (existing V path, RAM only) and repaint the QGV and factor cards; mount the
-   daily chart only for a code in its price scope. ctx adds {catalogPromise, config}. Stale mounts (re-render) stop silently. */
+/* After html(): V and the total from the SHARED page result (QgvScores.pageResult: the same quote set and the same engine call as S06,
+   the V coverage panel and the stat radar, so this page never shows a different V for the same inputs; RAM only), then repaint the
+   QGV and factor cards; mount the daily chart only for a code in its price scope. ctx adds {catalogPromise, config}. Stale mounts
+   (re-render) stop silently. */
 const collected=new WeakMap();
-async function mount(host,ctx={}){
- const page=host&&host.querySelector?host.querySelector('[data-universe-page]'):null;if(!page)return;
- const code=page.dataset.universePage,locale=ctx.locale==='en-US'?'en-US':'ko-KR',inputs=inputsOf(ctx.screens),rs=rowState(inputs,code),target=targetIdOf(rs.rec),p=codeParts(code);
- const chartHost=page.querySelector('[data-uc-chart-host]');if(chartHost&&target&&g.PrivateHistory)try{void g.PrivateHistory.mount(chartHost,{companyId:target,locale,config:ctx.config||{}});}catch(_){}
- let quotes=object(ctx.quotes)?{...ctx.quotes}:{};
- if(inputs&&rs.rec&&p&&g.QgvScores&&g.QgvScores.collectQuotes){let catalog=null;try{catalog=await ctx.catalogPromise;}catch(_){catalog=null;}
-  try{quotes={...quotes,...await g.QgvScores.collectQuotes(g,{identities:[{company_id:code,ticker:p.ticker}],v2Inputs:inputs,catalog})};}catch(_){}}
- if(!page.isConnected)return;
- const c={...ctx,locale,quotes},now=finite(ctx.now)?ctx.now:Date.now(),d=rs.rec?scored(code,c):null;
+async function sharedScores(page,ctx,code,inputs,rs){const QS=g.QgvScores,p=codeParts(code);if(!inputs||!rs.rec||!p||!QS||typeof QS.pageResult!=='function')return null;
+ let catalog=null;try{catalog=await ctx.catalogPromise;}catch(_){catalog=null;}
+ try{const r=await QS.pageResult(g,{v2Inputs:inputs,catalog,identities:[{company_id:code,ticker:p.ticker}]});const row=r&&r.computed&&r.computed.rows?r.computed.rows[code]:null;return r?{quotes:r.quotes,d:row&&row.code===code?row.primary:null}:null;}catch(_){return null;}}
+async function paintScores(page,ctx){
+ const code=page.dataset.universePage,locale=ctx.locale==='en-US'?'en-US':'ko-KR',inputs=inputsOf(ctx.screens),rs=rowState(inputs,code),shared=await sharedScores(page,ctx,code,inputs,rs);
+ if(!page.isConnected)return false;
+ const quotes=shared?shared.quotes:object(ctx.quotes)?{...ctx.quotes}:{},c={...ctx,locale,quotes},now=finite(ctx.now)?ctx.now:Date.now(),d=shared?shared.d:rs.rec?scored(code,c):null;
  const q=page.querySelector('[data-universe-card="qgv"]'),f=page.querySelector('[data-universe-card="factors"]');
  if(q)q.innerHTML=qgvCard(code,rs,d,inputs,c,now);if(f)f.innerHTML=factorsCard(rs,d,inputs,c,now);
- page.dataset.universeV=Object.hasOwn(quotes,code)?'DEVICE_PRICED':'NO_DEVICE_PRICE';collected.set(page,quotes);
+ page.dataset.universeV=Object.hasOwn(quotes,code)?'DEVICE_PRICED':'NO_DEVICE_PRICE';collected.set(page,quotes);return true;}
+async function mount(host,ctx={}){
+ const page=host&&host.querySelector?host.querySelector('[data-universe-page]'):null;if(!page)return;
+ const locale=ctx.locale==='en-US'?'en-US':'ko-KR',inputs=inputsOf(ctx.screens),rs=rowState(inputs,page.dataset.universePage),target=targetIdOf(rs.rec);
+ const chartHost=page.querySelector('[data-uc-chart-host]');if(chartHost&&target&&g.PrivateHistory)try{void g.PrivateHistory.mount(chartHost,{companyId:target,locale,config:ctx.config||{}});}catch(_){}
+ if(!await paintScores(page,ctx))return;
  if(g.StatRadar)await g.StatRadar.mount(page,{catalogPromise:ctx.catalogPromise});  // stat window: V from the shared page result (stat-radar.js)
 }
 /* In-place repaint after the app's public data changed (data-refresh.js '자료 새로고침' / freshness re-judging): the same page
-   HTML built from the new files and the quotes this page already holds in RAM (no quote collection, no request). The mounted
-   daily chart card is moved over unchanged, so a loaded private chart is not reset. */
+   HTML built from the new files and the quotes this page already holds in RAM, then V and the total again from the shared page
+   result on the new files (the kept Universe read; no Sheets or Worker request). The mounted daily chart card is moved over
+   unchanged, so a loaded private chart is not reset. */
 function repaint(host,ctx={}){
  const page=host&&host.querySelector?host.querySelector('[data-universe-page]'):null;if(!page)return false;const code=page.dataset.universePage;
  const quotes={...(object(ctx.quotes)?ctx.quotes:{}),...(collected.get(page)||{})},box=page.ownerDocument.createElement('div');box.innerHTML=html(code,{...ctx,quotes});
  const next=box.querySelector('[data-universe-page]');if(!next)return false;const chart=page.querySelector('[data-universe-card="technical"]'),slot=next.querySelector('[data-universe-card="technical"]');if(chart&&slot)slot.replaceWith(chart);
- next.dataset.universeV=Object.hasOwn(quotes,code)?'DEVICE_PRICED':'NO_DEVICE_PRICE';collected.set(next,quotes);page.replaceWith(next);
- if(g.StatRadar)void g.StatRadar.mount(next,{catalogPromise:ctx.catalogPromise});  // the stat window on the new set: V from the shared page result
+ next.dataset.universeV='PENDING';collected.set(next,quotes);page.replaceWith(next);
+ void paintScores(next,ctx).then(ok=>{if(ok&&g.StatRadar)return g.StatRadar.mount(next,{catalogPromise:ctx.catalogPromise});}).catch(()=>{});  // the stat window on the new set: V from the shared page result
  return true;
 }
 return Object.freeze({html,mount,repaint,rowState,codeParts,namesHtml,SOURCE_REASON,GROUP_LABEL,PEER_LABEL});
