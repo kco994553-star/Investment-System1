@@ -672,20 +672,17 @@ function qgvScores(identities=identityCompanies){return QgvScores.compute({ident
    the same memoized result), and the screen identities are ranked with exactly those quotes (the rank population stays the S06
    identities; QgvScores splits the official ranking from the QG 참고 목록, D11). Before that result exists no device price is used.
    RAM only: nothing is stored, sent or logged. */
-let leaderPage=null;
-function leaderScores(){const inputs=window.Qgv2Inputs?publicScreens[Qgv2Inputs.FILE]:null,page=leaderPage&&leaderPage.inputs===inputs?leaderPage.result:null;// quotes do not depend on preset/gate
+let leaderPage=null,leaderShown=null;// leaderShown: the page result the last S06 paint used (a paint made before the result arrived is repainted)
+function leaderScores(){const inputs=window.Qgv2Inputs?publicScreens[Qgv2Inputs.FILE]:null,page=leaderPage&&leaderPage.inputs===inputs?leaderPage.result:null;leaderShown=page;// quotes do not depend on preset/gate
  return QgvScores.compute({identities:identityCompanies,publicScreens,quotes:page?page.quotes:{},preset:qgv2Profile.preset,gate:qgv2Profile.gate,referenceRows:typeof dartReferenceRows==='function'?dartReferenceRows():{}});}
 async function refreshLeaderPage(after){const inputs=window.Qgv2Inputs?publicScreens[Qgv2Inputs.FILE]:null;if(!inputs||typeof QgvScores.pageResult!=='function')return;const{preset,gate}=qgv2Profile;let catalog=null;try{catalog=await deviceCatalog();}catch(_){catalog=null;}
- let r=null;try{r=await QgvScores.pageResult(window,{v2Inputs:inputs,catalog,identities:identityCompanies,preset,gate});}catch(_){r=null;}if(!r||leaderPage&&leaderPage.result===r)return;
- // The Universe read is dropped when the user navigates away (PrivateSubsetView dispose, no onRanks): S06 keeps this page session's
- // last read, as before. A new read or 'clear device results' (onRanks) resets leaderPage, so a clear does show the no-price state.
- if(leaderPage&&leaderPage.inputs===inputs&&leaderPage.result.price_basis&&!r.price_basis)return;
+ let r=null;try{r=await QgvScores.pageResult(window,{v2Inputs:inputs,catalog,identities:identityCompanies,preset,gate});}catch(_){r=null;}if(!r)return;if(leaderPage&&leaderPage.result===r){if(after&&leaderShown!==r)after();return;}
+ // The Universe read is one shared RAM state (PrivateSubsetView: the last successful read survives navigation), so the page result
+ // is used as is: no 'keep the older result' guard. A new read or 'clear device results' (onRanks) resets leaderPage.
  leaderPage={inputs,result:r};
- // The same quotes also seed this page session's quotes (S04/S05/S13 read them after navigation, as the S06 refresh did before).
- const next={...qgv2Quotes,...r.quotes},k=JSON.stringify(next);if(k!==qgv2QuotesKey){qgv2Quotes=next;qgv2QuotesKey=k;}if(after)after();}
-async function refreshQgv2Quotes(after){if(DataRefresh.quiet())return;const inputs=window.Qgv2Inputs?publicScreens[Qgv2Inputs.FILE]:null;if(!inputs)return;let catalog=null;try{catalog=await deviceCatalog();}catch(_){catalog=null;}
- let q={};try{q=await QgvScores.collectQuotes(window,{identities:identityCompanies,v2Inputs:inputs,catalog});}catch(_){q={};}// Quotes accumulate for this page session (the Universe read is dropped on navigation); a Universe read/clear resets them.
- const next={...qgv2Quotes,...q},k=JSON.stringify(next);if(k===qgv2QuotesKey)return;qgv2Quotes=next;qgv2QuotesKey=k;if(after)after();}
+ // S04/S05/S13 score with exactly these quotes (replaced, never merged with an older set), so every screen prices the same rows.
+ const k=JSON.stringify(r.quotes);if(k!==qgv2QuotesKey){qgv2Quotes=r.quotes;qgv2QuotesKey=k;}if(after)after();}
+async function refreshQgv2Quotes(after){if(DataRefresh.quiet())return;const before=qgv2QuotesKey;await refreshLeaderPage();if(qgv2QuotesKey!==before&&after)after();}// the same shared page result as S06
 // M3 ranks come from the open Universe read (RAM only) and are repainted into S06 when that read finishes or is cleared.
 // Ranks and totals are computed over ALL identities (the same population as S04), then only the filtered rows are shown.
 // A repaint keeps keyboard focus on the same control (preset, gate, view, profile, detail button) instead of dropping it.
@@ -1197,7 +1194,7 @@ function dartReferenceRows(){
 Promise.all([...(["data.json","entities.json","sec-m2-candidates.json"].map(path=>fetch(path,{cache:"no-store"}).then(r=>{
   if(!r.ok) throw Error("HTTP "+r.status);return r.json();
 }).catch(error=>{if(path==="sec-m2-candidates.json")return null;throw error;}))),DataRefresh.load(window),deviceCatalog().catch(()=>null)]).then(([data,catalog,candidates,{reported,screens},identities])=>{
-  try{if(identities){DeviceMarket.emptyMarket(identities);identityCompanies=DeviceWatchlist.identities(identities);}}catch(_){identityCompanies=[];}
+  try{if(identities){DeviceMarket.emptyMarket(identities);identityCompanies=DeviceWatchlist.identities(identities);}}catch(_){identityCompanies=[];}QgvScores.setPageIdentities?.(identityCompanies);QgvScores.setPageProfile?.(()=>qgv2Profile);// one quote set and the S06 official preset/gate for every screen (qgv-scores.js)
   publicScreens=screens;publicCatalog=identities||null;
   if(window.DartDisclosures?.loadFinancials)void DataRefresh.financials(window).then(financials=>{if(financials){publicScreens['dart-financials.json']=financials;if(window.QgvScores)refreshScoreViews();}});
   // Macro lights v1: public lights only until the device loads SPY on the macro screen (RAM, read by MacroLights.current()).
@@ -1217,6 +1214,7 @@ Promise.all([...(["data.json","entities.json","sec-m2-candidates.json"].map(path
 // it over here at once. Device quotes, settings and private sessions stay. The open screen is repainted in place (no route
 // re-mount, and no device quote collection while DataRefresh.quiet()), so no Worker or Sheets request is made.
 function mountPublicPanels(route,id){for(const kind of ['qg','types','filings','macro','thirteenf']) PublicScreens.mount($('#public-'+kind),publicScreens,{kind,companyId:route==='company'?id:route==='settings'?rawDataCompanyId()||undefined:undefined,locale:appSettings.display_locale,...(kind==='thirteenf'?{catalog:publicCatalog,interests:[...prefs.interests]}:{})});}
+window.addEventListener('public-data-updated',()=>{void refreshQgv2Quotes(refreshScoreViews);});// new inputs + the kept Universe read: S04/S05 rescore from the new page result
 DataRefresh.attach(window,{route:()=>D?currentRoute:null,render,
  apply(set){publicScreens=set.screens;secReported=set.reported;try{MacroLights.setPublic(publicScreens);}catch(_){}if(set.shares)universeDirectory=set.shares;if(searchIndex){rebuildSearchIndex();paintGlobalSearch();}},
  inPlace(){if(!D)return false;const[route,raw]=location.hash.slice(1).split('/');let id='';try{id=decodeURIComponent(raw||'');}catch(_){id='';}

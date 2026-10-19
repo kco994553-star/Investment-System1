@@ -24,11 +24,15 @@ const UNCONFIRMED=['가격 기준 시각 미확인','Price time unconfirmed'],UN
 function ownTime(v){return typeof v==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(v)?v:clock(v)||'—';}
 const frac=(a,b)=>a===null||a===undefined?'—':a+'/'+b;
 /* HTML of one QgvScores.vCoverage result (s). */
-function html(s,{en=false,reasonText=c=>c}={}){
+/* failure (optional): PrivateSubsetView.readStatus().failure, a Universe read that failed after (or without) the kept successful
+   read. It is shown next to the kept state; the counts stay those of the kept read (owner rule 2026-10-19). */
+function html(s,{en=false,reasonText=c=>c,failure=null}={}){
  const T=(ko,e)=>en?e:ko,P=s.population,G=P.general,N=P.total,on=s.connected,cell=(attr,val)=>'<td'+(attr?' '+attr:'')+'>'+esc(val)+'</td>',count=(name,val)=>name+(on?'="'+val+'"':'');
  let h='<section class="card v-coverage" data-v-coverage="'+(on?'READY':'NOT_CONNECTED')+'"><h2>'+T('V 산출 현황 · 이 기기','V coverage · this device')+'</h2>';
  h+='<p class="small">'+esc(T('이 기기 RAM에서만 계산 · 저장·전송 없음 · 공개 sec-qgv2.json '+N+'개 코드 × 내 Universe 시트 가격 · 실제 엔진 규칙','Computed in this device’s RAM only · not stored or sent · public sec-qgv2.json '+N+' codes × my Universe sheet prices · real engine rules'))+'</p>';
  if(!on)h+='<p class="v-coverage-state" data-v-coverage-state>'+esc(T('가격 미연결: V 실제 산출 수는 Universe 읽기 뒤 표시','No prices connected: the actual V count is shown after the Universe read'))+'</p>';
+ if(failure&&typeof failure.code==='string'){const at=clock(failure.at)||'—',read=clock(s.read_at)||'—';
+  h+='<p class="v-coverage-state" data-v-read-failure="'+esc(failure.code)+'" data-v-read-kept="'+(on?'KEPT':'NONE')+'">'+esc(on?T('새 Universe 읽기 실패('+failure.code+') · 시도 '+at+' · 아래 수치는 마지막 성공 읽기(시트 읽은 시각 '+read+') 기준','New Universe read failed ('+failure.code+') · tried '+at+' · the counts below are from the last successful read (sheet read at '+read+')'):T('Universe 읽기 실패('+failure.code+') · 시도 '+at+' · 유지할 이전 성공 읽기 없음','Universe read failed ('+failure.code+') · tried '+at+' · no earlier successful read to keep'))+'</p>';}
  h+='<p class="v-coverage-target" data-v-target="'+s.target.n+'"'+(on?' data-v-met="'+(s.target.met?'MET':'NOT_MET')+'"':'')+'>'+esc(T('관찰 지표 · 목표 ','Observation metric · target ')+s.target.n+'/'+G+T(' (일반 기업 90%) · 현재 ',' (90% of general) · now ')+(on?s.v.general+'/'+G+' ('+(s.target.met?T('달성','met'):T('미달','not met'))+')':'— ('+T('가격 미연결','no prices')+')'))+'</p>';
  h+='<p class="small" data-v-target-note>'+esc(T('관찰용 지표이며 TARGET 확정 조건에 쓰이지 않습니다 · 적용 n과 목표는 불러온 파일에서 계산','An observation metric, not a TARGET confirmation condition · applicable n and target computed from the loaded file'))+'</p>';
  h+='<ul class="v-coverage-pop" data-v-population><li data-pop-total="'+N+'">'+esc(T('전체 Universe ','All Universe ')+N)+'</li><li data-pop-general="'+G+'">'+esc(T('일반 기업(V 적용) ','General (V applies) ')+G)+'</li><li data-pop-financial="'+P.financial+'">'+esc(T('금융업 · ','Financials · ')+reasonText(FINANCIAL)+' '+P.financial)+'</li><li data-pop-unknown="'+P.unknown+'">'+esc(T('프로필·업종 미확인(자료 없음) ','Profile/industry unknown (no data) ')+P.unknown)+'</li>'+(P.stopped?'<li data-pop-stopped="'+P.stopped+'">'+esc(T('식별 충돌로 사용 중지 ','Stopped: identity conflict ')+P.stopped)+'</li>':'')+'</ul>';
@@ -74,10 +78,11 @@ async function paint(host,{publicScreens={},catalog=null,identities=[],preset=nu
   if(!inputs||typeof QS.pageResult!=='function'){host.innerHTML='<section class="card v-coverage" data-v-coverage="NOT_AVAILABLE"><h2>'+(en?'V coverage · this device':'V 산출 현황 · 이 기기')+'</h2><p class="small">'+(en?'Public sec-qgv2.json not loaded: V coverage cannot be shown':'공개 sec-qgv2.json이 없어 V 산출 현황을 표시할 수 없습니다')+'</p></section>';painted=null;return null;}
   let cat=null;try{cat=typeof catalog==='function'?await catalog():await catalog;}catch(_){cat=null;}
   const result=await QS.pageResult(view,{v2Inputs:inputs,catalog:cat,identities,preset,gate});if(mine!==ticket||!host.isConnected||!result)return null;
-  if(painted&&painted.host===host&&painted.result===result&&painted.locale===locale)return painted.summary;
+  let failure=null;try{const r=view.PrivateSubsetView&&typeof view.PrivateSubsetView.readStatus==='function'?view.PrivateSubsetView.readStatus():null;failure=r&&r.failure?r.failure:null;}catch(_){failure=null;}
+  if(painted&&painted.host===host&&painted.result===result&&painted.locale===locale&&painted.failure===failure)return painted.summary;
   const s=QS.vCoverage(result,inputs),open=host.querySelector('[data-v-factor-details]')?.open===true;if(!s)return null;
-  host.innerHTML=html(s,{en,reasonText:c=>QS.reasonText(c,en)});if(open){const d=host.querySelector('[data-v-factor-details]');if(d)d.open=true;}
-  painted={host,result,locale,summary:s};return s;
+  host.innerHTML=html(s,{en,reasonText:c=>QS.reasonText(c,en),failure});if(open){const d=host.querySelector('[data-v-factor-details]');if(d)d.open=true;}
+  painted={host,result,locale,failure,summary:s};return s;
  }catch(_){return null;}
 }
 return Object.freeze({html,paint,clock});
