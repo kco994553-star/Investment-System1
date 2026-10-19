@@ -175,6 +175,12 @@
     const age = nowMillis(now) - clock(asOf); if (age < 0) fail();
     return age >= WEEK ? 'STALE' : 'CURRENT';
   }
+  // D10: a GOOGLEFINANCE observation without its own trade time (time_status UNKNOWN / FX_UNKNOWN) keeps as_of = the read
+  // time. That is not a price time, so its freshness is UNCONFIRMED (판정 불가), never judged from the read time.
+  function observationStatus(record, now) {
+    if (record && (record.time_status === 'UNKNOWN' || record.time_status === 'FX_UNKNOWN')) return 'UNCONFIRMED';
+    return staleness(record ? record.as_of : null, now);
+  }
   function finiteSum(values) {
     let result = 0;
     for (const value of values) {
@@ -209,12 +215,12 @@
         market_currency_native: currency, market_value_native: native, market_value: converted, weight: null, delta: null,
         quote_as_of: quote ? quote.as_of : null, quote_available_at: quote ? quote.available_at : null,
         quote_time_status: quote ? quote.time_status || 'KNOWN' : null,
-        quote_source: quote ? quote.source : null, quote_status: staleness(quote ? quote.as_of : null, current),
+        quote_source: quote ? quote.source : null, quote_status: observationStatus(quote, current),
         fx_as_of: currency !== 'KRW' && rate ? rate.as_of : null,
         fx_available_at: currency !== 'KRW' && rate ? rate.available_at : null,
         fx_time_status: currency !== 'KRW' && rate ? rate.time_status || 'KNOWN' : null,
         fx_source: currency !== 'KRW' && rate ? rate.source : null,
-        fx_status: currency === 'KRW' ? 'NOT_REQUIRED' : staleness(rate ? rate.as_of : null, current)};
+        fx_status: currency === 'KRW' ? 'NOT_REQUIRED' : observationStatus(rate, current)};
     }));
     const total = finiteSum(rows.map(row => row.market_value));
     if (!missingQuote && !missingFX && total === null) calculationError = true;

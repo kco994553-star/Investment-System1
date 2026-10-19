@@ -8,8 +8,8 @@
    RAM only: nothing here is stored, logged or sent, and no result carries a price, market cap or EV. Missing is null, never 0. */
 (function(root,factory){const node=typeof module==='object'&&module.exports;
  const dep=(file,name)=>node?()=>require('./'+file):()=>root[name];
- const api=factory(dep('qgv-v2.js','QgvV2'),dep('scoring-default.js','ScoringDefault'),dep('qgv2-inputs.js','Qgv2Inputs'),dep('sec-qgv2.js','SecQgv2'));
- if(node)module.exports=api;else root.QgvScores=api;})(typeof globalThis==='object'?globalThis:this,function(qgvV2,scoringConfig,qgv2Inputs,secQgv2){
+ const api=factory(dep('qgv-v2.js','QgvV2'),dep('scoring-default.js','ScoringDefault'),dep('qgv2-inputs.js','Qgv2Inputs'),dep('sec-qgv2.js','SecQgv2'),dep('price-time.js','PriceTime'));
+ if(node)module.exports=api;else root.QgvScores=api;})(typeof globalThis==='object'?globalThis:this,function(qgvV2,scoringConfig,qgv2Inputs,secQgv2,priceTime){
 'use strict';
 const MODES=['v2'];
 const LABEL={v2:['점수 기준 v2 · PROVISIONAL','Score basis v2 · PROVISIONAL']};
@@ -94,7 +94,7 @@ const REASON={
  CALC_VERSION_MISMATCH:['계산 규칙 버전이 달라 이 기기 계산에서 뺐습니다','Left out: different calculation-rule version'],
  IDENTITY_CONFLICT_WITHDRAWN:['식별 충돌로 사용 중지된 행이라 쓰지 않습니다','Stopped: identity conflict'],
  PRICE_IDENTITY_CONFLICT:['가격 식별 충돌로 가격·V를 쓰지 않습니다','Stopped: price identity conflict'],
- FINANCIAL_PROFILE_V_NOT_DEFINED:['해당 없음: 금융업은 EV·FCF 기반 가치 요인을 정의하지 않습니다','Not applicable: EV/FCF value factors are not defined for financials'],
+ FINANCIAL_PROFILE_V_NOT_DEFINED:['현재 금융업 가치평가 모델 미지원','Valuation model for financials not supported yet'],
  NO_DEVICE_PRICE:['가격 입력 필요: 이 기기에 이 종목 가격이 없습니다','Price needed: no price for this company on this device'],
  PRICE_HISTORY_NOT_AVAILABLE:['가격 입력 필요: 이 기기 가격 탭에 월말 종가가 없습니다','Price needed: no month-end closes in this device’s Prices tab'],
  V_INPUTS_NOT_AVAILABLE:['자료 미확보: 가치 계산용 SEC 입력이 없습니다','Not collected: no SEC value inputs'],
@@ -217,14 +217,16 @@ function judgmentRows(computed){
 /* Device quotes for the v2 cross-section (RAM): the Universe tab read on this device (PrivateSubsetView.prices) first, then
    this device's stored/sheet/Worker quote per shown company (DeviceValuation.deviceQuote), plus PriceStore month-end closes
    for the own-history factor. Never stored or sent. */
-async function collectQuotes(win,{identities=[],v2Inputs=null,catalog=null}={}){
+/* meta (optional {}): filled with {code:{source,as_of}} of each collected quote, so a screen can show the price's own time per
+   source. The Universe tab (GOOGLEFINANCE) carries no trade time: as_of null = 미확인, never the read time. */
+async function collectQuotes(win,{identities=[],v2Inputs=null,catalog=null,meta=null}={}){
  const out={};if(!v2Inputs||!object(v2Inputs.records))return out;const codeFor=codeIndex(v2Inputs),tickers={},symbols=conflictedSymbols(v2Inputs);
  // No price is read for a stopped code (identity withdrawal) or a TARGET whose price symbol is in conflict (UNI-TARGET above).
  let universe=null;try{universe=win.PrivateSubsetView&&typeof win.PrivateSubsetView.prices==='function'?win.PrivateSubsetView.prices():null;}catch(_){universe=null;}
- const bySymbol=new Map();if(universe&&typeof universe.forEach==='function')universe.forEach((q,code)=>{if(!(q&&finite(q.price)&&q.price>0&&typeof q.currency==='string'))return;bySymbol.set(symbolOf(code),{price:q.price,currency:q.currency});if(Object.hasOwn(v2Inputs.records,code)&&v2Inputs.records[code]?.identity_withdrawn!==true)out[code]={price:q.price,currency:q.currency};});
+ const bySymbol=new Map();if(universe&&typeof universe.forEach==='function')universe.forEach((q,code)=>{if(!(q&&finite(q.price)&&q.price>0&&typeof q.currency==='string'))return;bySymbol.set(symbolOf(code),{price:q.price,currency:q.currency});if(Object.hasOwn(v2Inputs.records,code)&&v2Inputs.records[code]?.identity_withdrawn!==true){out[code]={price:q.price,currency:q.currency};if(meta)meta[code]=UNIVERSE_META;}});
  const dq=catalog&&win.DeviceValuation&&typeof win.DeviceValuation.deviceQuote==='function';
- for(const c of identities){const code=codeFor(c);if(!code||v2Inputs.records[code]?.identity_withdrawn===true||priceConflict(v2Inputs,c,code,symbols))continue;tickers[code]=c.ticker;if(Object.hasOwn(out,code))continue;if(bySymbol.has(key(c.ticker))){out[code]={...bySymbol.get(key(c.ticker))};continue;}if(!dq)continue;
-  let q=null;try{q=await win.DeviceValuation.deviceQuote(win,catalog,c.ticker);}catch(_){q=null;}if(q&&finite(q.price)&&q.price>0)out[code]={price:q.price,currency:q.currency};}
+ for(const c of identities){const code=codeFor(c);if(!code||v2Inputs.records[code]?.identity_withdrawn===true||priceConflict(v2Inputs,c,code,symbols))continue;tickers[code]=c.ticker;if(Object.hasOwn(out,code))continue;if(bySymbol.has(key(c.ticker))){out[code]={...bySymbol.get(key(c.ticker))};if(meta)meta[code]=UNIVERSE_META;continue;}if(!dq)continue;
+  let q=null;try{q=await win.DeviceValuation.deviceQuote(win,catalog,c.ticker);}catch(_){q=null;}if(q&&finite(q.price)&&q.price>0){out[code]={price:q.price,currency:q.currency};if(meta)meta[code]=Object.freeze({source:typeof q.source==='string'?q.source:'DEVICE_QUOTE',as_of:typeof q.as_of==='string'?q.as_of:null,stale:q.stale===true?true:typeof q.as_of==='string'&&q.freshness!=='UNDETERMINED'?false:null});}}
  // v_vs_own_history: month-end closes of the user's sheet Prices tab (PriceStore device module, RAM). Absent -> the factor is
  // NOT_AVAILABLE (PRICE_HISTORY_NOT_AVAILABLE); never filled.
  const store=win.PriceStore&&typeof win.PriceStore.monthEndCloses==='function'?win.PriceStore:null;
@@ -232,6 +234,67 @@ async function collectQuotes(win,{identities=[],v2Inputs=null,catalog=null}={}){
   const clean={};if(object(m))for(const[k,v]of Object.entries(m))if(/^\d{4}-(0[1-9]|1[0-2])$/.test(k)&&finite(v)&&v>0)clean[k]=v;if(Object.keys(clean).length)out[code]={...out[code],month_closes:clean};}
  return out;
 }
+/* SHARED PAGE RESULT (owner decision 2026-10-18; V coverage panel + stat radar): ONE collectQuotes and ONE compute over every
+   Universe code of the loaded file plus the given identities, memoized by the inputs object, the Universe-read revision
+   (PrivateSubsetView.priceBasis().read_id), catalog, identities, preset and gate. Screens that show V values or V counts read
+   this result so the same input gives the same V everywhere (V percentiles depend on which rows have prices). No new rule:
+   the existing collectQuotes/compute calls. RAM only. Resolves {computed, quotes, quote_meta, price_basis, identities} or null. */
+// D10: the Universe column has no price time, so its freshness is 판정 불가 (stale null), never 'not stale'.
+const UNIVERSE_META=Object.freeze({source:'UNIVERSE_SHEET',as_of:null,stale:null});
+/* PriceTime.summarize input for one quote_meta entry: as_of is the price's own time (ISO = CONFIRMED, YYYY-MM-DD = DATE_ONLY,
+   null = UNCONFIRMED); stale is the source rule's verdict already made (true / false / null = 판정 불가). */
+function metaTime(m){const t=typeof m.as_of==='string'?m.as_of:null,date=t!==null&&/^\d{4}-\d{2}-\d{2}$/.test(t);
+ return{status:t===null?'UNCONFIRMED':date?'DATE_ONLY':'CONFIRMED',price_time:t!==null&&!date?t:null,price_date:date?t:null,read_at:null,stale:m.stale===true?true:m.stale===false&&t!==null?false:null,freshness:m.stale===true?'STALE':m.stale===false&&t!==null?'CURRENT':'UNDETERMINED'};}
+let pageMemo=null;
+function readBasis(win){try{const b=win&&win.PrivateSubsetView&&typeof win.PrivateSubsetView.priceBasis==='function'?win.PrivateSubsetView.priceBasis():null;return object(b)?b:null;}catch(_){return null;}}
+function pageResult(win,{v2Inputs,catalog=null,identities=[],preset=null,gate=null}={}){
+ if(!v2Inputs||!object(v2Inputs.records))return Promise.resolve(null);
+ const basis=readBasis(win),ids=(Array.isArray(identities)?identities:[]).filter(c=>object(c)&&typeof c.company_id==='string'&&typeof c.ticker==='string').map(c=>({company_id:c.company_id,ticker:c.ticker}));
+ const k=JSON.stringify([basis?basis.read_id||basis.acquired_at||'READ':null,ids,preset,gate]);
+ if(pageMemo&&pageMemo.inputs===v2Inputs&&pageMemo.catalog===catalog&&pageMemo.key===k)return pageMemo.promise;
+ const promise=(async()=>{const quote_meta={},quotes=await collectQuotes(win,{identities:ids,v2Inputs,catalog,meta:quote_meta}),seen=new Set(ids.map(c=>c.company_id)),all=[...ids];
+  for(const code of Object.keys(v2Inputs.records))if(!code.startsWith('TARGET:')&&!seen.has(code))all.push({company_id:code,ticker:symbolOf(code)});
+  return Object.freeze({computed:compute({identities:all,v2Inputs,quotes,preset,gate}),quotes,quote_meta,price_basis:basis,identities:all});})();
+ const memo={inputs:v2Inputs,catalog,key:k,promise};pageMemo=memo;promise.catch(()=>{if(pageMemo===memo)pageMemo=null;});return promise;}
+/* V coverage counts of one pageResult (the V coverage panel; owner 2026-10-18). Read only from the engine's rows: V = a finite
+   axis score, reasons = coverageFor's V axis reason (+ the missing factors' own reasons), input-complete = coverageFor
+   v_inputs_missing; no new required input. Financials (FINANCIAL_PROFILE_V_NOT_DEFINED) are their own population, never a
+   shortage; the full basis keeps every code in its denominator. V numbers are null before a Universe read (connected false).
+   target = ceil(GENERAL n × 0.9): an observation metric only, wired to nothing else. */
+const V_TARGET_SHARE=0.9;
+/* Per-source price time of the priced rows (PriceTime.summarize): rows, confirmed, unconfirmed, stale (stale===true only), from/to
+   over confirmed price times/dates. Without PriceTime every row stays unconfirmed (never dated, never stale). */
+function sourceTimes(source,list){let PT=null;try{PT=priceTime();}catch(_){PT=null;}
+ if(PT&&typeof PT.summarize==='function'){const t=PT.summarize(list);return{source,rows:t.rows,confirmed:t.confirmed,unconfirmed:t.unconfirmed,stale:t.stale,from:t.from,to:t.to};}
+ return{source,rows:list.length,confirmed:0,unconfirmed:list.length,stale:0,from:null,to:null};}
+function vCoverage(result,v2Inputs){
+ if(!object(result)||!object(result.computed)||!v2Inputs||!object(v2Inputs.records))return null;
+ const rows=object(result.computed.rows)?result.computed.rows:{},Q=object(result.quotes)?result.quotes:{},M=object(result.quote_meta)?result.quote_meta:{},on=!!result.price_basis;
+ const codes=Object.keys(v2Inputs.records).filter(c=>!c.startsWith('TARGET:')).sort(),bump=(m,k)=>{m[k]=(m[k]||0)+1;},list=m=>Object.entries(m).sort((a,b)=>b[1]-a[1]||(a[0]<b[0]?-1:1));
+ const pop={total:codes.length,general:0,financial:0,unknown:0,stopped:0},v={full:0,general:0},qgv={full:0,general:0},qgOnly={full:0,general:0,financial:0,no_v:0,gate:0},reasons={},factorReasons={},unknownRows=[],times={};
+ let complete=0,upper=0,priced=0,mismatch=0,shares=0,from=null,to=null,missingV=0;
+ for(const code of codes){const rec=v2Inputs.records[code],row=rows[code],p=row&&row.code===code?row.primary:null,vi=object(rec.v_inputs)?rec.v_inputs:null,q=object(Q[code])&&finite(Q[code].price)&&Q[code].price>0?Q[code]:null;
+  const cls=rec.identity_withdrawn===true?'stopped':rec.published_profile==='GENERAL'?'general':rec.published_profile==='FINANCIAL'?'financial':'unknown',hasV=!!p&&finite(p.v),all=hasV&&finite(p.q)&&finite(p.g),gen=cls==='general';pop[cls]++;
+  if(cls==='unknown')unknownRows.push({code,reasons:Array.isArray(rec.na_reasons)?[...rec.na_reasons]:[]});
+  if(q){priced++;const m=object(M[code])?M[code]:UNIVERSE_META;(times[m.source]||(times[m.source]=[])).push(metaTime(m));}
+  if(hasV){v.full++;if(gen)v.general++;}if(all){qgv.full++;if(gen)qgv.general++;}
+  // A total without V in the row (the engine renormalizes over the available axes and ranks every finite total): counted, not
+  // changed. full/general = financial + no price / V not computed. Value-trap-gate rows had V computed and the approved gate rule
+  // excluded it from the total (kept in the official ranking): their own field `gate`, never in full/general.
+  if(p&&finite(p.total)&&!hasV){qgOnly.full++;if(gen)qgOnly.general++;if(cls==='financial')qgOnly.financial++;else qgOnly.no_v++;}
+  if(p&&finite(p.total)&&hasV&&p.v_excluded)qgOnly.gate++;
+  if(!gen)continue;
+  if(p&&p.coverage&&Array.isArray(p.coverage.v_inputs_missing)&&!p.coverage.v_inputs_missing.length)complete++;
+  if(vi&&finite(vi.diluted_shares)&&vi.diluted_shares>0){shares++;if(finite(vi.ebit)||finite(vi.fcf))upper++;const pe=object(rec.periods)?rec.periods.diluted_shares:null;if(typeof pe==='string'){if(from===null||pe<from)from=pe;if(to===null||pe>to)to=pe;}}
+  if(q&&vi&&q.currency!==vi.currency)mismatch++;
+  if(!hasV){missingV++;const ax=p&&p.coverage&&p.coverage.axes?p.coverage.axes.V:null,seen=new Set();bump(reasons,ax&&ax.reason?ax.reason:p&&p.total_reason?p.total_reason:'V2_INPUTS_NOT_AVAILABLE');
+   for(const f of ax&&Array.isArray(ax.factors)?ax.factors:[])if(f.score===null&&f.reason&&!seen.has(f.reason)){seen.add(f.reason);bump(factorReasons,f.reason);}}}
+ const target=Math.ceil(V_TARGET_SHARE*pop.general-1e-9);
+ return{connected:on,read_at:on&&typeof result.price_basis.acquired_at==='string'?result.price_basis.acquired_at:null,population:pop,applicable:pop.general,
+  target:{share:V_TARGET_SHARE,n:target,observation_only:true,met:on?v.general>=target:null},v:on?v:null,qgv:on?qgv:null,qg_only_total:on?qgOnly:null,input_complete:complete,
+  not_computed:on?missingV:null,reasons:on?list(reasons):null,factor_reasons:on?list(factorReasons):null,upper_bound:upper,priced:on?priced:null,currency_mismatch:on?mismatch:null,
+  price_time:on?Object.entries(times).map(([source,list])=>sourceTimes(source,list)).sort((a,b)=>b.rows-a.rows||(a.source<b.source?-1:1)):null,shares:{rows:shares,period_from:from,period_to:to,rule:'V-SHARES-SCALE'},
+  calc_version:typeof v2Inputs.calc_version==='string'?v2Inputs.calc_version:null,as_of:typeof v2Inputs.as_of==='string'?v2Inputs.as_of:null,unknown_rows:unknownRows};}
 const num=(v,d=1)=>finite(v)?(Math.round(v*10**d)/10**d).toFixed(d):'—';
 /* `row` (optional display row): EBIT_ESTIMATED names the substituted fiscal years, e.g. '추정(대체 계산): FY2023·FY2024'. */
 function flagText(flags,en,row){const years=row&&Array.isArray(row.ebit_estimated_fiscal_years)?row.ebit_estimated_fiscal_years.filter(y=>Number.isInteger(y)):[];
@@ -255,7 +318,7 @@ function naText(d,en){
  // Q/G come from the published file: its axis reason (coverage below 50%, too few peers) is used when the axis is not published.
  for(const a of ['Q','G','V']){const x=d.axes&&d.axes[a],c=d.coverage&&d.coverage.axes?d.coverage.axes[a]:null,pub=c&&c.published?c.published.reason_codes:[];if(!x)continue;
   if(a==='V'&&c&&x.score===null&&c.status==='STOPPED')continue;
-  if(a==='V'&&c&&x.score===null&&c.status==='NOT_APPLICABLE'){parts.push(en?'V not applicable (financial)':'V 해당 없음(금융업)');continue;}
+  if(a==='V'&&c&&x.score===null&&c.status==='NOT_APPLICABLE'){parts.push(en?'V: valuation model for financials not supported yet':'V '+REASON.FINANCIAL_PROFILE_V_NOT_DEFINED[0]);continue;}
   if(a==='V'&&c&&x.score===null&&c.factors.every(f=>f.category==='PRICE_NEEDED')){parts.push(en?'V needs a price input':'V 가격 입력 필요');continue;}
   if(x.reason==='AXIS_WEIGHT_INSUFFICIENT'||x.reason==='AXIS_NOT_PUBLISHED'&&pub.includes('AXIS_COVERAGE_BELOW_50')){below=true;parts.push(a+(en?' axis below 50% of its weight':' 축 비중 50% 미만'));}
   else if(x.reason==='AXIS_NOT_PUBLISHED'&&pub.includes('PEERS_BELOW_MINIMUM'))parts.push(a+(en?' axis: fewer than 8 peers':' 축 비교 기업 8곳 미만'));}
@@ -267,5 +330,5 @@ function label(version,en){return(LABEL[version]||LABEL.v2)[en?1:0];}
 // (+ ' · 유형 범위 qgv2-type-scope/…' = the type-application scope id the scores use).
 function basisText(S,en){const b=S&&S.basis?S.basis:basis('v2',false);return label('v2',en)+' · '+(en?b.label_en:b.label)+(b.since?(en?' · since ':' · ')+b.since+(en?'':'부터'):'')+(b.type_scope?(en?' · type scope ':' · 유형 범위 ')+b.type_scope:'');}
 function presets(){return qgvV2().PRESETS;}
-return Object.freeze({MODES,LABEL,PERSONAL_LABEL,FLAG,DATA_STATE,AXIS_STATUS,REASON,coverageFor,exploreGroup,reasonText,stateText,axisStatusText,vInputText,scoringDefault,compute,typeMemberships,judgmentRows,collectQuotes,summaryText,naText,flagText,label,basis,basisText,presets,symbolOf});
+return Object.freeze({MODES,LABEL,PERSONAL_LABEL,FLAG,DATA_STATE,AXIS_STATUS,REASON,coverageFor,exploreGroup,reasonText,stateText,axisStatusText,vInputText,scoringDefault,compute,typeMemberships,judgmentRows,collectQuotes,pageResult,vCoverage,V_TARGET_SHARE,summaryText,naText,flagText,label,basis,basisText,presets,symbolOf});
 });

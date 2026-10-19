@@ -151,6 +151,8 @@ function html(code,ctx={}){
  return '<div class="uc-page" data-universe-page="'+esc(code)+'" data-universe-state="'+esc(rs.state)+'" data-universe-reason="'+esc(rs.reason||'')+'" data-universe-v="PENDING">'+head+top
   +'<div class="uc-cards"><section class="card uc-card uc-card-q" data-universe-card="qgv">'+qgvCard(code,rs,d,inputs,c,now)+'</section><section class="card uc-card uc-card-g" data-universe-card="technical">'+chartCard(target,locale)+'</section><section class="card uc-card uc-card-v" data-universe-card="macro">'+macroCard(locale)+'</section></div>'
   +'<section class="card" data-universe-card="factors">'+factorsCard(rs,d,inputs,c,now)+'</section>'
+  +(g.StatRadar?'<section class="card" data-universe-card="radar">'+g.StatRadar.html({code},{screens:ctx.screens,locale})+'</section>':'')
+  +(g.StatRadar?'<section class="card" data-universe-card="financials"><h2>'+esc(T('재무 상세','Financial detail'))+'</h2><dl class="kv">'+g.StatRadar.marginDetail({code},{screens:ctx.screens,locale})+'</dl></section>':'')
   +'<section class="card" data-universe-card="classification">'+classificationCard(code,rs,inputs,c,now)+'</section>'
   +'<section class="card" data-universe-company="'+esc(sh.state)+'"><h2>'+esc(T('SEC 표지 정보','SEC cover facts'))+'</h2>'+sh.html+'<p class="small">'+esc(T('가격·시가총액·순위: 공개 화면에서는 NOT_AVAILABLE (GSQ-010). V와 종합 점수는 이 기기 시세로만 계산합니다.','Price, market cap and rank: NOT_AVAILABLE on public screens (GSQ-010). V and the total are computed only from this device’s quotes.'))+'</p></section></div>';
 }
@@ -168,6 +170,7 @@ async function mount(host,ctx={}){
  const q=page.querySelector('[data-universe-card="qgv"]'),f=page.querySelector('[data-universe-card="factors"]');
  if(q)q.innerHTML=qgvCard(code,rs,d,inputs,c,now);if(f)f.innerHTML=factorsCard(rs,d,inputs,c,now);
  page.dataset.universeV=Object.hasOwn(quotes,code)?'DEVICE_PRICED':'NO_DEVICE_PRICE';
+ if(g.StatRadar)await g.StatRadar.mount(page,{catalogPromise:ctx.catalogPromise});  // stat window: V from the shared page result (stat-radar.js)
 }
 return Object.freeze({html,mount,rowState,codeParts,namesHtml,SOURCE_REASON,GROUP_LABEL,PEER_LABEL});
 });

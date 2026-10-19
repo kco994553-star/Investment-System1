@@ -443,3 +443,49 @@ test('S06 sortRows: structured keys, NA last in both directions, ties, official 
   assert.equal(JSON.stringify(S), before);assert.deepEqual(Object.fromEntries(Object.entries(S.rows).map(([k, r]) => [k, r.rank])), ranks);
   assert.equal(L.populationOf(screens), Object.values(screens[SQ.FILE].records).filter((r) => r.in_cross_section === true && ['LIVE', 'STALE'].includes(r.state) && r.calc_version_mismatch !== true).length);
 });
+
+/* Shared page result (owner decision 2026-10-18): the V coverage panel and the stat radar read ONE collectQuotes + compute over the
+   whole loaded file. One input gives the same V per row through pageResult as through a direct compute over the same quotes. */
+test('pageResult: one memoized quote set + compute over the whole file; same V per row as a direct compute; vCoverage counts', async () => {
+  const inputs = screens[SQ.FILE], prices = new Map(Object.entries(F.quotes()));let basis = null;
+  const win = { PrivateSubsetView: { prices: () => (basis ? prices : null), priceBasis: () => basis } };
+  const before = await QS.pageResult(win, { v2Inputs: inputs, identities });
+  assert.equal(before.price_basis, null);assert.deepEqual(before.quotes, {});const c0 = QS.vCoverage(before, inputs);
+  assert.equal(c0.connected, false);assert.equal(c0.v, null);assert.equal(c0.reasons, null);assert.equal(c0.price_time, null);
+  basis = { source: 'GOOGLEFINANCE_PRIVATE_UNIVERSE', read_id: 'job_a', acquired_at: '2026-10-18T09:00:00.000Z', currency: 'USD', price_time: null };
+  const r = await QS.pageResult(win, { v2Inputs: inputs, identities });assert.notEqual(r, before, 'a Universe read is a new revision');
+  assert.equal(QS.pageResult(win, { v2Inputs: inputs, identities }), QS.pageResult(win, { v2Inputs: inputs, identities }), 'memoized');
+  const codes = Object.keys(inputs.records).filter((c) => !c.startsWith('TARGET:'));
+  assert.deepEqual(r.identities.map((c) => c.company_id), [...identities.map((c) => c.company_id), ...codes.filter((c) => !identities.some((x) => x.company_id === c))]);
+  assert.deepEqual(r.quotes, await QS.collectQuotes(win, { identities, v2Inputs: inputs }), 'the existing collectQuotes, unchanged');
+  const direct = QS.compute({ identities: r.identities, v2Inputs: inputs, quotes: structuredClone(r.quotes) }), small = QS.compute({ identities, v2Inputs: inputs, quotes: structuredClone(r.quotes) });
+  let withV = 0;for (const c of r.identities) { const a = r.computed.rows[c.company_id].primary, b = direct.rows[c.company_id].primary;assert.equal(a.v, b.v, c.company_id);assert.equal(a.total, b.total, c.company_id);if (Number.isFinite(a.v)) withV++; }
+  for (const c of identities) assert.equal(small.rows[c.company_id].primary.v, r.computed.rows[c.company_id].primary.v, 'identity subset ' + c.company_id);
+  assert.ok(withV >= 3);
+  for (const code of Object.keys(r.quotes)) assert.deepEqual(r.quote_meta[code], { source: 'UNIVERSE_SHEET', as_of: null, stale: null }, 'GOOGLEFINANCE has no price time: freshness 판정 불가 (D10)');
+  const cov = QS.vCoverage(r, inputs), P = cov.population, rows = codes.map((c) => ({ rec: inputs.records[c], p: r.computed.rows[c].primary }));
+  assert.equal(P.total, codes.length);assert.equal(P.general + P.financial + P.unknown + P.stopped, P.total);
+  assert.equal(P.general, rows.filter((x) => x.rec.published_profile === 'GENERAL').length);assert.ok(P.financial >= 1);
+  assert.equal(cov.v.general, rows.filter((x) => x.rec.published_profile === 'GENERAL' && Number.isFinite(x.p.v)).length);
+  assert.equal(cov.target.n, Math.ceil(0.9 * P.general - 1e-9));assert.equal(cov.target.observation_only, true);assert.equal(cov.target.met, cov.v.general >= cov.target.n);
+  assert.equal(cov.reasons.reduce((a, [, n]) => a + n, 0), P.general - cov.v.general);assert.ok(!cov.reasons.some(([c]) => c === 'FINANCIAL_PROFILE_V_NOT_DEFINED'));
+  // Q·G-only totals exclude value-trap-gate rows (V computed, excluded by the approved rule): financial + no-V only; gate apart.
+  const total = (x) => Number.isFinite(x.p.total), hasV = (x) => Number.isFinite(x.p.v);
+  assert.equal(cov.qg_only_total.full, cov.qg_only_total.financial + cov.qg_only_total.no_v);
+  assert.equal(cov.qg_only_total.full, rows.filter((x) => total(x) && !hasV(x)).length);
+  assert.equal(cov.qg_only_total.general, rows.filter((x) => x.rec.published_profile === 'GENERAL' && total(x) && !hasV(x)).length);
+  assert.equal(cov.qg_only_total.financial, rows.filter((x) => x.rec.published_profile === 'FINANCIAL' && total(x) && !hasV(x)).length);
+  assert.equal(cov.qg_only_total.gate, rows.filter((x) => total(x) && hasV(x) && x.p.v_excluded).length);assert.ok(cov.qg_only_total.gate >= 1, 'fixture has gate rows');
+  assert.deepEqual(cov.price_time.map((t) => [t.source, t.rows === t.unconfirmed]), [['UNIVERSE_SHEET', true]]);
+  assert.deepEqual(cov.price_time.map((t) => [t.confirmed, t.stale, t.from, t.to]), [[0, 0, null, null]], 'Universe rows: never dated, never stale (D10)');assert.equal(cov.read_at, basis.acquired_at);
+  // A device quote that carries its own time keeps it per source (meta); the Universe tab never does.
+  const meta = {}, dq = await QS.collectQuotes({ DeviceValuation: { deviceQuote: async () => ({ price: 10, currency: 'USD', as_of: '2026-10-16', source: 'WORKER_CLOSE', stale: true }) } }, { identities, v2Inputs: inputs, catalog: {}, meta });
+  assert.ok(Object.keys(dq).length >= 3);for (const code of Object.keys(dq)) assert.deepEqual(meta[code], { source: 'WORKER_CLOSE', as_of: '2026-10-16', stale: true });
+  assert.ok(Object.values(dq).every((q) => Object.keys(q).sort().join() === 'currency,price'), 'quotes themselves unchanged (no time field)');
+  // D10: a device quote without its own price time (ramQuote as_of null, GOOGLEFINANCE UNKNOWN) is 판정 불가, not 'not stale'.
+  const meta2 = {};await QS.collectQuotes({ DeviceValuation: { deviceQuote: async () => ({ price: 10, currency: 'USD', as_of: null, read_at: '2026-10-18T09:00:00.000Z', time_status: 'UNKNOWN', freshness: 'UNDETERMINED', source: 'GOOGLEFINANCE', stale: false }) } }, { identities, v2Inputs: inputs, catalog: {}, meta: meta2 });
+  for (const code of Object.keys(meta2)) assert.deepEqual(meta2[code], { source: 'GOOGLEFINANCE', as_of: null, stale: null });
+  const meta3 = {};await QS.collectQuotes({ DeviceValuation: { deviceQuote: async () => ({ price: 10, currency: 'USD', as_of: '2026-10-17T20:00:00Z', freshness: 'CURRENT', source: 'GOOGLEFINANCE', stale: false }) } }, { identities, v2Inputs: inputs, catalog: {}, meta: meta3 });
+  for (const code of Object.keys(meta3)) assert.deepEqual(meta3[code], { source: 'GOOGLEFINANCE', as_of: '2026-10-17T20:00:00Z', stale: false });
+  assert.equal(QS.reasonText('FINANCIAL_PROFILE_V_NOT_DEFINED'), '현재 금융업 가치평가 모델 미지원');assert.equal(QS.reasonText('FINANCIAL_PROFILE_V_NOT_DEFINED', true), 'Valuation model for financials not supported yet');
+});
