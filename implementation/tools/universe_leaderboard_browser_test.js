@@ -28,16 +28,19 @@ const official = (page) => page.evaluate(async () => {
   const inputs = publicScreens[Qgv2Inputs.FILE], R = await QgvScores.pageResult(window, { v2Inputs: inputs, catalog: await deviceCatalog().catch(() => null), identities: identityCompanies, preset: qgv2Profile.preset, gate: qgv2Profile.gate });
   const S = leaderScores(), fin = (x) => typeof x === 'number' && Number.isFinite(x), codes = Object.keys(inputs.records).filter((c) => !c.startsWith('TARGET:'));
   const rows = Object.fromEntries(Object.entries(S.rows).map(([k, r]) => [k, { ticker: r.ticker, code: r.code, uc: r.universe_code ?? 'MISSING', rank: r.rank, qg: r.qg_reference ? r.qg_reference.order : null, v: r.primary.v, total: r.primary.total, q: r.primary.q, g: r.primary.g, gate: r.primary.value_trap_gate === true }]));
-  // Approved eligibility, recomputed here: official rank (Universe row), Q·G·V present, no gate, net debt/EBITDA < 3 and interest
-  // coverage >= 3 when published, at most 4 per #20 subgroup (PlaybookEngine.sectorFor), then the first N.
-  const order = Object.entries(rows).filter(([, r]) => Number.isInteger(r.rank) && typeof r.uc === 'string').sort((a, b) => a[1].rank - b[1].rank), per = {}, picked = [];
-  for (const [id, r] of order) {
+  // Approved eligibility, recomputed here on the OFFICIAL default profile (balanced, gate on) with the same identities and quotes,
+  // whatever the S06 preset: official rank (Universe row), Q·G·V present, no gate, net debt/EBITDA < 3 and interest coverage >= 3
+  // with both metrics present (NA excluded, owner decision 2026-10-15), at most 4 per #20 subgroup, then the first N.
+  const D = QgvScores.compute({ identities: R.identities, v2Inputs: inputs, quotes: structuredClone(R.quotes), preset: 'balanced', gate: true, official: R.official });
+  const order = Object.entries(D.rows).filter(([, r]) => Number.isInteger(r.rank) && typeof r.universe_code === 'string').sort((a, b) => a[1].rank - b[1].rank), per = {}, picked = [];
+  for (const [id, x] of order) {
+    const r = { ticker: x.ticker, code: x.code, q: x.primary.q, g: x.primary.g, v: x.primary.v, gate: x.primary.value_trap_gate === true };
     const m = inputs.records[r.code]?.metrics || {}, sub = PlaybookEngine.sectorFor(PlaybookConfigDefaults, r.ticker, null, inputs.records[r.code]?.sic ?? null).sector;
-    if (![r.q, r.g, r.v].every(fin) || r.gate || (fin(m.net_debt_to_ebitda) && m.net_debt_to_ebitda >= 3) || (fin(m.interest_coverage) && m.interest_coverage < 3)) continue;
+    if (![r.q, r.g, r.v].every(fin) || r.gate || !fin(m.net_debt_to_ebitda) || !fin(m.interest_coverage) || m.net_debt_to_ebitda >= 3 || m.interest_coverage < 3) continue;
     if (sub && (per[sub] || 0) >= 4) continue;if (sub) per[sub] = (per[sub] || 0) + 1;picked.push(id);if (picked.length === 20) break; }
   return { same: S === R.computed, sameAgain: (await QgvScores.pageResult(window, { v2Inputs: inputs, catalog: await deviceCatalog().catch(() => null), identities: identityCompanies })) === R, rows, codes: codes.length,
     byCode: { ...S.official.by_code }, outside: [...S.official.outside], tin: S.official.target_in_universe.map((x) => x.company_id), ranked: S.official.ranked, targets: identityCompanies.map((c) => c.company_id),
-    vPanel: QgvScores.vCoverage(R, inputs).v.full, vByCode: codes.filter((c) => fin(QgvScores.codeRow(S, c)?.primary.v)).length, picked };
+    vPanel: QgvScores.vCoverage(R, inputs).v.full, vByCode: codes.filter((c) => fin(QgvScores.codeRow(S, c)?.primary.v)).length, picked, officialRank: Object.fromEntries(Object.entries(D.rows).map(([k, r]) => [k, r.rank])), profile: S.profile.id, officialProfile: D.profile.id };
 });
 const attrs = (page, sel) => page.evaluate((s) => { const n = document.querySelectorAll(s);return n.length === 1 ? Object.fromEntries([...n[0].attributes].filter((a) => a.name.startsWith('data-')).map((a) => [a.name, a.value])) : { __count: n.length }; }, sel);
 const tableRows = (page) => page.locator('[data-leaderboard-table] tbody tr[data-leaderboard-row]').evaluateAll((rs) => rs.map((r) => ({ id: r.dataset.leaderboardRow, ticker: r.querySelector('a')?.textContent, rank: r.querySelector('[data-leaderboard-rank]')?.dataset.leaderboardRank ?? null, prank: r.querySelector('[data-leaderboard-portfolio-rank]')?.textContent ?? null })));
@@ -119,8 +122,20 @@ async function settle(page) { await page.waitForFunction(() => typeof leaderPage
         assert.equal(await page.locator('[data-model-portfolio]').getAttribute('data-model-portfolio'), 'READY');
         assert.deepEqual(m1.map((x) => x[0]), X.picked, 'N20 = the first eligible rows of the official order (independent recomputation)');
         for (const [n, k] of [[10, 'N10'], [15, 'N15'], [20, 'N20']]) assert.deepEqual(m1.filter((x) => x[2].split(' ').includes(k)).map((x) => x[0]), X.picked.slice(0, n), k + ' = top-' + n + ' eligible');
-        for (const [id, rank] of m1) { assert.equal(rank, String(R[id].rank));assert.ok(!X.outside.includes(id) && R[id].qg === null && !R[id].gate, id + ' eligible'); }
-        assert.equal(await page.locator('[data-model-rules]').getAttribute('data-model-rules'), 'OFFICIAL_RANK AXES_50 VALUE_TRAP_GATE FINANCIAL_SAFETY SUBGROUP_MAX_4');
+        for (const [id, rank] of m1) { assert.equal(rank, String(X.officialRank[id]));assert.ok(!X.outside.includes(id) && R[id].qg === null, id + ' eligible'); }
+        assert.equal(await page.locator('[data-model-rules]').getAttribute('data-model-rules'), 'OFFICIAL_RANK AXES_50 VALUE_TRAP_GATE FINANCIAL_SAFETY FINANCIAL_SAFETY_NA SUBGROUP_MAX_4');
+        { const ex = JSON.parse(await page.locator('[data-model-excluded]').getAttribute('data-model-excluded'));assert.deepEqual(Object.keys(ex), ['AXES_50', 'VALUE_TRAP_GATE', 'FINANCIAL_SAFETY', 'FINANCIAL_SAFETY_NA', 'SUBGROUP_MAX_4']);
+          assert.match(await page.locator('[data-model-excluded]').textContent(), new RegExp('재무 안전 지표 NA ' + ex.FINANCIAL_SAFETY_NA + ' · '));assert.match(await page.locator('[data-model-not-applied]').textContent(), /^미적용 · 소유자 결정 필요: 16절 비중 한도 · 핵심\/일반 등급 · 10-K 숫자 대조 · /); }
+        assert.equal(await page.locator('[data-model-counts]').getAttribute('data-model-profile'), X.officialProfile);assert.equal(X.officialProfile, 'qgv-v2/balanced/gate-on');
+        // A different device preset/gate on S06 changes the S06 ranking but never the N sets (official default profile).
+        phase = 'MODEL_PRESET';await page.locator('[data-qgv2-preset="growth"]').click();await page.locator('[data-qgv2-preset="growth"][aria-pressed="true"]').waitFor();
+        await page.locator('[data-qgv2-gate]').uncheck();await page.waitForFunction(() => qgv2Profile.gate === false);await settle(page);
+        if ((await page.locator('[data-model-portfolio]').getAttribute('open')) === null) await page.locator('[data-model-portfolio] > summary').click();
+        assert.deepEqual(await modelRows(page), m1, 'N sets unchanged by the device preset');assert.equal(await page.locator('[data-model-counts]').getAttribute('data-model-profile-differs'), 'true');
+        assert.match(await page.locator('[data-model-counts]').textContent(), /이 기기 S06 프로필 qgv-v2\/growth\/gate-off은 이 선정에 영향 없음/);
+        await page.locator('[data-qgv2-preset="balanced"]').click();await page.locator('[data-qgv2-gate]').check();await page.waitForFunction(() => qgv2Profile.gate === true && qgv2Profile.preset === 'balanced');await settle(page);
+        if ((await page.locator('[data-model-portfolio]').getAttribute('open')) === null) await page.locator('[data-model-portfolio] > summary').click();
+        assert.equal(await page.locator('[data-model-counts]').getAttribute('data-model-profile-differs'), 'false');
         // 1. The same V / total / rank on the company detail, the radar, the Universe page and the candidates.
         phase = 'DETAIL';const tgt = ranked.find((id) => X.tin.includes(id)), uni = ranked.find((id) => !X.tin.includes(id) && !X.outside.includes(id));
         await page.evaluate((id) => { location.hash = 'company/' + id; }, tgt);await page.locator('[data-company-card="qgv"] [data-qgv="rank"] .num').waitFor();

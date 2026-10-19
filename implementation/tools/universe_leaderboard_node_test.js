@@ -24,6 +24,9 @@ function payload() {
   const p = F.payload(), amd = p.target.amd;
   for (const k of Object.keys(V2.WEIGHTS.Q)) amd.factors[k] = 1;
   amd.axes.Q = { ...amd.axes.Q, score: V2.axisScore(amd.factors, 'Q').score };
+  // Synthetic financial-safety metrics (made-up): every 5th row fails (net debt / EBITDA 3.5), every 7th has no interest coverage (NA).
+  Object.values(p.records).forEach((r, i) => { if (r.state === 'LIVE') r.metrics = { ...r.metrics, net_debt_to_ebitda: i % 5 === 4 ? 3.5 : 1, ...(i % 7 === 6 ? {} : { interest_coverage: 12 }) }; });
+  for (const r of Object.values(p.target)) if (r.state === 'LIVE') r.metrics = { ...r.metrics, net_debt_to_ebitda: 1, interest_coverage: 12 };
   return p;
 }
 let inputs = null, quotes = null;
@@ -111,20 +114,22 @@ test('modelPortfolios: approved eligibility in official rank order; N10 ⊂ N15 
   spec[2].gate = true;                      // VALUE_TRAP_GATE
   spec[3].nd = 3;                           // FINANCIAL_SAFETY: net debt / EBITDA >= 3
   spec[4].ic = 2.9;                         // FINANCIAL_SAFETY: interest coverage < 3
-  spec[5].nd = null;spec[5].ic = null;      // safety not judged: kept and counted
-  for (const i of [6, 7, 8, 9, 10]) spec[i].sic = '3674';   // semiconductors: the 5th one is over the cap of 4
+  spec[5].nd = null;                        // FINANCIAL_SAFETY_NA: net debt / EBITDA NA (owner decision 2026-10-15: excluded)
+  spec[11].ic = null;                       // FINANCIAL_SAFETY_NA: interest coverage NA
+  for (const i of [6, 7, 8, 9, 10]) spec[i].sic = '3674';   // semiconductors: the 5th one (rank 11) is over the cap of 4
   const { computed, inputs: recs } = fakeResult(spec), sector = (t, sic) => (sic === '3674' ? 'semiconductors' : null);
   const M = QS.modelPortfolios(computed, recs, { sectorOf: sector });
-  assert.deepEqual(M.rules, ['OFFICIAL_RANK', 'AXES_50', 'VALUE_TRAP_GATE', 'FINANCIAL_SAFETY', 'SUBGROUP_MAX_4']);
-  assert.deepEqual(M.excluded, { AXES_50: 1, VALUE_TRAP_GATE: 1, FINANCIAL_SAFETY: 2, SUBGROUP_MAX_4: 1 });
-  const expectRanks = [1, 6, 7, 8, 9, 10, ...Array.from({ length: 30 - 11 }, (_, k) => 12 + k)].slice(0, 20);
+  assert.deepEqual(M.rules, ['OFFICIAL_RANK', 'AXES_50', 'VALUE_TRAP_GATE', 'FINANCIAL_SAFETY', 'FINANCIAL_SAFETY_NA', 'SUBGROUP_MAX_4']);
+  assert.deepEqual(M.excluded, { AXES_50: 1, VALUE_TRAP_GATE: 1, FINANCIAL_SAFETY: 2, FINANCIAL_SAFETY_NA: 2, SUBGROUP_MAX_4: 1 });
+  const expectRanks = [1, 7, 8, 9, 10, ...Array.from({ length: 30 - 12 }, (_, k) => 13 + k)].slice(0, 20);
   assert.deepEqual(M.sets.N20.selected.map((e) => e.rank), expectRanks, 'first 20 eligible rows in official rank order');
   for (const n of [10, 15, 20]) {
     const set = M.sets['N' + n];assert.equal(set.selected.length, n);assert.equal(set.complete, true);
     assert.deepEqual(set.selected.map((e) => e.rank), expectRanks.slice(0, n), 'N' + n + ' = top-' + n + ' eligible (prefix of N20)');
     for (const e of set.selected) assert.ok(Math.abs(e.weight_pct - 100 / n) < 1e-12, 'equal weight');
   }
-  assert.equal(M.primary, 'N15');assert.equal(M.unknown.safety, 1);assert.ok(M.sets.N20.selected.find((e) => e.rank === 6).safety === 'UNKNOWN');
+  assert.equal(M.primary, 'N15');assert.ok(M.sets.N20.selected.every((e) => e.safety === 'PASS'), 'every selected row passes financial safety with both metrics present');
+  assert.ok(!M.sets.N20.selected.some((e) => e.rank === 6 || e.rank === 12), 'NA safety rows excluded');assert.deepEqual(M.provisional, ['SUBGROUP_UNKNOWN_NOT_CAPPED']);
   assert.equal(M.sets.N20.selected.filter((e) => e.subgroup === 'semiconductors').length, 4, 'at most 4 per subgroup');
   assert.deepEqual(QS.modelPortfolios(computed, recs, { sectorOf: sector }), M, 'deterministic: the same result gives the same selection');
   // Never a TARGET outside the Universe, never a row without an official rank.
@@ -140,7 +145,8 @@ test('modelPortfolios on the shared result: subgroups from the approved #20 rule
     const S = (await QS.pageResult(win(), { v2Inputs: inputs })).computed, M = QS.modelPortfolios(S, inputs);
     const official = Object.values(S.rows).filter((r) => Number.isInteger(r.rank)).sort((a, b) => a.rank - b.rank);
     const picked = M.sets.N20.selected.map((e) => e.company_id);
-    assert.ok(picked.length > 0);assert.ok(!picked.includes('asml'), 'outside row never selected');assert.ok(picked.every((id) => S.rows[id].primary.value_trap_gate !== true), 'gate rows never selected');
+    assert.ok(picked.length > 0);assert.ok(M.excluded.FINANCIAL_SAFETY_NA >= 1, JSON.stringify(M.excluded));
+    for (const id of picked) { const m = inputs.records[S.rows[id].code].metrics;assert.ok(m.net_debt_to_ebitda < 3 && m.interest_coverage >= 3, id + ' passes financial safety with both metrics'); }assert.ok(!picked.includes('asml'), 'outside row never selected');assert.ok(picked.every((id) => S.rows[id].primary.value_trap_gate !== true), 'gate rows never selected');
     assert.ok(picked.every((id) => Number.isInteger(S.rows[id].rank) && typeof S.rows[id].universe_code === 'string'));
     assert.deepEqual(picked, official.map((r) => r.company_id).filter((id) => picked.includes(id)), 'official order kept');
     const subgroups = {};for (const e of M.sets.N20.selected) if (e.subgroup) subgroups[e.subgroup] = (subgroups[e.subgroup] || 0) + 1;
@@ -157,5 +163,19 @@ test('candidateRanking over the official result: candidate rank = official rank;
     assert.equal(c.filter((x) => x.rank !== null).length, S.official.ranked, 'every officially ranked Universe row is a ranked candidate');
     assert.ok(!c.some((x) => x.symbol === 'ASML'), 'TARGET outside the Universe is not a Universe candidate');
     assert.equal(new Set(c.map((x) => x.code)).size, c.length, 'one candidate row per code');
+  } finally { QS.setPageIdentities(null); }
+});
+
+test('officialModel: N10/N15/N20 on the official default profile (balanced, gate on), whatever the device preset', async () => {
+  QS.setPageIdentities(TARGETS);
+  try {
+    const U = QS.universeIdentities(inputs, TARGETS), official = QS.compute({ identities: U.identities, v2Inputs: inputs, quotes, preset: 'balanced', gate: true, official: U });
+    const want = QS.modelPortfolios(official, inputs), ids = (M) => ['N10', 'N15', 'N20'].map((k) => M.sets[k].selected.map((e) => e.company_id));
+    for (const [preset, gate] of [['value', true], ['growth', false], ['quality', false], ['balanced', true]]) {
+      const device = QS.compute({ identities: U.identities, v2Inputs: inputs, quotes, preset, gate, official: U });
+      const M = QS.officialModel({ identities: U.identities, v2Inputs: inputs, quotes, official: U, computed: device });
+      assert.deepEqual(ids(M), ids(want), preset + '/gate-' + gate + ': the selection does not follow the device preset');
+      assert.deepEqual(M.official_profile, { preset: 'balanced', gate: true, id: official.profile.id });assert.equal(M.profile_id, official.profile.id);
+    }
   } finally { QS.setPageIdentities(null); }
 });
