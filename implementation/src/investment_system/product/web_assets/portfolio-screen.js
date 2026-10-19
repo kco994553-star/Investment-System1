@@ -36,7 +36,9 @@ function badges({locale,catalog,ram}){
  if(!ram||ram.reason==='NO_ACTUAL'||ram.reason==='READ_FAILED')actual='ACTUAL NOT_AVAILABLE · '+T('기기에 보유 없음','no holdings on this device');
  else if(ram.state==='AVAILABLE')actual='ACTUAL · '+T('시세 반영','valued with quotes');
  else actual='ACTUAL · '+T('입력됨, 시세 부족','entered, quotes incomplete');
- quote=ram&&ram.quote_as_of?T('시세 기준 ','Quotes as of ')+ram.quote_as_of:T('시세 기준 NOT_AVAILABLE','Quote time NOT_AVAILABLE');
+ // D10: quote_as_of = the oldest CONFIRMED price time/date only; unconfirmed prices and the read time are named apart.
+ const PT=g.PriceTime,unc=ram&&ram.quote_unconfirmed>0?ram.quote_unconfirmed:0,read=ram&&ram.quote_read_at&&PT?PT.clock(ram.quote_read_at):null;
+ quote=ram&&(ram.quote_as_of||unc)?[ram.quote_as_of?T('가격 기준 ','Price time ')+(PT&&PT.clock(ram.quote_as_of)||ram.quote_as_of):null,unc?(PT?T(PT.UNCONFIRMED_KO,PT.UNCONFIRMED_EN):'UNCONFIRMED')+' '+unc+T('건',' rows'):null,read?T('읽은 시각 ','Read at ')+read:null].filter(Boolean).join(' · '):T('시세 기준 NOT_AVAILABLE','Quote time NOT_AVAILABLE');
  return '<span class="badge" data-badge="target">'+esc('TARGET '+T('사용자 ','user ')+(catalog&&catalog.target_root_version?catalog.target_root_version:'NOT_AVAILABLE'))+'</span>'
   +'<span class="badge '+(ram&&ram.state==='AVAILABLE'?'LIVE':'NOT_AVAILABLE')+'" data-badge="actual">'+esc(actual)+'</span>'
   +'<span class="badge NOT_AVAILABLE" data-badge="quote">'+esc(quote)+'</span>'+(ram&&ram.stale?'<span class="badge freshness STALE">STALE</span>':'')

@@ -33,12 +33,22 @@ function classification(screens,id,locale){
    :na(rec?T('소속도 0.3 이상 유형 없음 또는 자료 없음','No type with membership ≥ 0.3, or no data'):T('공개 유형 자료가 연결되지 않았습니다.','Public type data is not connected.'),locale)]];
  return '<section class="card" data-company-card="classification"><h2>'+esc(T('분류 3축','Three classification axes'))+'</h2><ul class="axis-chips">'+items.map(([k,name,body])=>'<li data-axis="'+k+'"><b>'+esc(name)+'</b> '+body+'</li>').join('')+'</ul><p class="small">'+esc(T('산업 / 전략 테마 / 투자 유형은 서로 다른 축입니다. 서로 대신 채우지 않습니다.','Industry / strategy theme / investment type are separate axes. None substitutes for another.'))+'</p></section>';
 }
+/* D10 price time (PriceTime): the read time and the price's own trade time/date are shown apart. as_of here is the price's own
+   time (null when unconfirmed, e.g. GOOGLEFINANCE time_status UNKNOWN); read_at is when this device read it. Freshness only
+   from a confirmed time with the source's existing rule (DeviceMarket.staleness for device market quotes); otherwise
+   '신선도 판정 불가'. */
+const DEVICE_MARKET_SOURCES=['MANUAL','API','GOOGLEFINANCE','WORKER_CLOSE'];
+function priceTimeApi(){return g.PriceTime||(typeof require==='function'?require('./price-time.js'):null);}
+function quoteTime(q){const PT=priceTimeApi();if(!PT||!q)return null;const dm=g.DeviceMarket;
+ return PT.describe({source:q.source,as_of:q.as_of===undefined?null:q.as_of,read_at:q.read_at===undefined?null:q.read_at,...(typeof q.time_status==='string'?{time_status:q.time_status}:{})},{staleness:dm&&DEVICE_MARKET_SOURCES.includes(q.source)?dm.staleness:undefined});}
+const quoteTimeText=(d,en)=>d?(en?d.label_en:d.label_ko):'—';
 /* Device quote state of the price badge: the same quote the value card uses (mountValue -> onQuote; no extra request).
-   {state:'PENDING'} before the value card has read it, {state:'AVAILABLE',source,as_of,stale} or {state:'NOT_AVAILABLE',reason}.
+   {state:'PENDING'} before the value card has read it, {state:'AVAILABLE',source,as_of,read_at,time_status} or {state:'NOT_AVAILABLE',reason}.
    The price itself is never shown here. */
 function priceBadge(q,locale){
  const T=tr(locale),en=locale==='en-US'?1:0;
- if(q&&q.state==='AVAILABLE')return '<span class="badge '+(q.stale?'STALE':'LIVE')+'" data-badge="price" data-price-state="AVAILABLE">'+esc(T('시세 ','Quote ')+(QUOTE_SOURCE[q.source]||['기기 시세','Device quote'])[en]+' · '+(q.as_of||'—')+(q.stale?' · STALE':''))+'</span>';
+ if(q&&q.state==='AVAILABLE'){const d=quoteTime(q),fresh=d?d.freshness:'UNDETERMINED';
+  return '<span class="badge '+(fresh==='STALE'?'STALE':fresh==='CURRENT'?'LIVE':'')+'" data-badge="price" data-price-state="AVAILABLE" data-price-time-status="'+(d?d.status:'UNCONFIRMED')+'" data-price-freshness="'+fresh+'">'+esc(T('시세 ','Quote ')+(QUOTE_SOURCE[q.source]||['기기 시세','Device quote'])[en]+' · '+quoteTimeText(d,en))+'</span>';}
  if(q&&q.state==='NOT_AVAILABLE')return '<span class="badge NOT_AVAILABLE" data-badge="price" data-price-state="NOT_AVAILABLE">'+esc(T('시세 NOT_AVAILABLE · ','Quote NOT_AVAILABLE · ')+(q.reason||'NO_DEVICE_PRICE'))+'</span>';
  return '<span class="badge" data-badge="price" data-price-state="PENDING">'+esc(T('시세 확인 중','Checking quote'))+'</span>';
 }
@@ -154,6 +164,7 @@ function holdingHtml({locale,catalog,inst,ram}){
   +'<p class="small">'+esc(row?T('ACTUAL은 이 기기의 보유·시세로만 계산합니다(RAM).','ACTUAL is computed only from this device (RAM).'):T('ACTUAL 없음: ','ACTUAL unavailable: ')+why+T(' · TARGET으로 채우지 않습니다.',' · TARGET is not used as a substitute.'))+'</p><a href="#actual">'+esc(T('ACTUAL 입력·관리 →','Enter / manage ACTUAL →'))+'</a>';
 }
 async function mountHolding(host,{locale,ticker,catalogPromise,actual=g.DeviceActual,view=g}){
+ if(g.StatRadar&&host)void g.StatRadar.mount(host.ownerDocument,{catalogPromise});  // the summary's stat window: V from the shared page result, price axes in RAM (stat-radar.js)
  if(!host)return;let catalog=null;try{catalog=await catalogPromise;}catch(_){}
  if(!host.isConnected)return;
  const inst=catalog&&ticker?catalog.instruments.find(i=>i.ticker===ticker):null;
@@ -177,6 +188,7 @@ function summary(ctx){
   +'<section class="card" data-company-card="macro"><h2><span class="flow-number">3</span> '+esc(T('매크로 영향','Macro impact'))+'</h2><p>'+na(T('시장 국면·업종 영향·종목 영향이 아직 검증되지 않았습니다.','Market regime, industry and company impact are not yet validated.'),locale)+'</p><p>'+link('#macro',T('매크로 보기 →','Open macro →'))+'</p></section>'
   +'<section class="card" data-company-card="news"><h2>'+esc(T('뉴스·관계','News / relations'))+'</h2><p>'+na(T('공개 뉴스·관계망 자료가 연결되지 않았습니다.','No public news or relationship data connected.'),locale)+'</p><p>'+link('#news/'+encodeURIComponent(id),T('뉴스·관계망 화면 →','News / network screen →'))+'</p></section>'
   +'<section class="card" data-company-card="vmr"><h2>'+esc(T('가격 맥락 (VMR)','Price context (VMR)'))+'</h2><p>'+na(T('정상 범위 대비 위치는 가격이 필요합니다.','Position vs normal range needs prices.'),locale)+'</p></section>'
+  +(g.StatRadar?'<section class="card" data-company-card="radar">'+g.StatRadar.html({targetId:id},{screens,locale})+'</section>':'')
   +'<h2 class="section-title">'+esc(T('근거 자료','Source data'))+'</h2><div id="sec-reported-panel"></div><p class="small" data-raw-data-link><a href="#settings">'+esc(T('원자료 보기(개발자용)는 설정에 있습니다 →','Raw data (developer) is in Settings →'))+'</a></p>'+(ctx.candidateHtml||'');
 }
 function v2FactorTable(d,locale){
@@ -204,7 +216,7 @@ function analysis(ctx){
  const overview=panel('summary',T('종합','Overview'),'<dl class="kv">'+(v2&&v2.total!==null?'<dt>'+esc(T('종합 매력도','Overall attractiveness'))+'</dt><dd data-overall="v2"><span class="num">'+esc(num(v2.total,locale))+'</span> <span class="small">QGV v2 PROVISIONAL · '+esc(v2.profile?v2.profile.id:'')+'</span>'+flagsHtml(v2,locale)+'</dd>':naRow(T('종합 매력도','Overall attractiveness'),why,locale,'overall'))
   +'<dt>'+esc(T('신뢰도','Confidence'))+'</dt><dd data-confidence>'+na('',locale)+'</dd></dl><p class="small" data-confidence-note>'+esc(T('신뢰도: 확률 아님. 데이터 충분도와 근거 일관성을 뜻합니다.','Confidence: not a probability. It means data sufficiency and evidence consistency.'))+(v2?' '+esc(T('QGV v2 산출 요인 ','QGV v2 factors available: '))+v2.factors_available+'/'+v2.factors_total+'.':'')+'</p>'+qgvBody(screens,id,locale,sr),open!=='summary');
  const business=panel('business',T('사업·경쟁','Business / competition'),'<dl class="kv">'+naRow(T('사업 설명','Business description'),T('연간 보고서 출처 연결 전','Annual-report source not connected'),locale)+naRow(T('경쟁우위·열위','Strengths / weaknesses'),'',locale)+naRow(T('시장 지위','Market position'),T('요소 점수는 QGV 요소 탭','Factor score is in the QGV factors tab'),locale)+naRow(T('시장 점유율','Market share'),T('출처·추정 여부 표시 전 자료 없음','No sourced, estimate-flagged data'),locale)+naRow(T('매출 구성','Revenue mix'),'',locale)+'</dl>'+classification(screens,id,locale).replace('class="card"','class="subcard"'),open!=='business');
- const financials=panel('financials',T('재무','Financials'),'<div id="sec-reported-panel"></div><dl class="kv">'+naRow(T('재무 추이 (L03)','Financial trend (L03)'),T('공개 SEC 보고 패널만 연결됨','Only the public SEC reported panel is connected'),locale)+naRow(T('주주환원 (L06)','Shareholder returns (L06)'),'',locale)+'</dl>',open!=='financials');
+ const financials=panel('financials',T('재무','Financials'),'<div id="sec-reported-panel"></div><dl class="kv">'+naRow(T('재무 추이 (L03)','Financial trend (L03)'),T('공개 SEC 보고 패널만 연결됨','Only the public SEC reported panel is connected'),locale)+naRow(T('주주환원 (L06)','Shareholder returns (L06)'),'',locale)+(g.StatRadar?g.StatRadar.marginDetail({targetId:id},{screens,locale}):'')+'</dl>',open!=='financials');
  const events=panel('events',T('주가·이벤트','Price / events'),'<p><a href="#company/'+encodeURIComponent(id)+'" data-chart-link>'+esc(T('요약 화면의 가격 차트 열기 →','Open the price chart on the summary →'))+'</a> · <a href="#technical/'+encodeURIComponent(id)+'" data-technical-link>'+esc(T('기술적 분석 →','Technical analysis →'))+'</a></p><dl class="kv"><dt>E '+esc(T('실적 시기','Earnings timing'))+'</dt><dd>'+nextEarnings(screens,id,locale)+'</dd>'
   +['P '+T('제품','Product'),'L '+T('법률·규제','Legal / regulatory'),'M '+T('경영','Management'),'R '+T('재평가 신호','Re-evaluation signal'),'B·S '+T('내 거래','My trades')].map(x=>'<dt>'+esc(x)+'</dt><dd>'+na('',locale)+'</dd>').join('')+'</dl>',open!=='events');
  const factors=panel('factors',T('QGV 요소','QGV factors'),factorTable(screens,id,locale,sr),open!=='factors');
@@ -235,7 +247,8 @@ function valueHtml({locale,row=null,result=null,quote=null,quoteReason=null,comp
  const basis=p&&typeof p.currency==='string'?p.currency:null,qc=quote&&typeof quote.currency==='string'?quote.currency:null,cc=f&&typeof f.currency==='string'?f.currency:null;
  const ccyMismatch=cc&&(basis&&cc!==basis||qc&&cc!==qc);
  const ccyRow=ccyMismatch?'<dt>'+esc(T('통화','Currency'))+'</dt><dd data-value="currency-basis">'+na('CURRENCY_BASIS_UNCONFIRMED',locale)+' <span class="small">'+esc(T('보고 통화 ','Reported currency ')+cc+(qc&&qc!==cc?T(' · 가격 통화 ',' · price currency ')+qc:'')+(basis&&basis!==cc?T(' · 기준 통화 ',' · basis currency ')+basis:'')+T(' · 환율 변환 없음',' · no FX conversion'))+'</span></dd>':'';
- const q=quote?'<span data-value-quote-source="'+esc(quote.source||'')+'">'+esc((QUOTE_SOURCE[quote.source]||['기기 시세','Device quote'])[en])+'</span> <span class="small">'+esc((quote.as_of||'—')+(quote.stale?' · STALE':'')+' · '+T('RAM 전용 · 저장·전송 안 함','RAM only · not stored or sent'))+'</span>'
+ const qt=quote?quoteTime(quote):null,PT=priceTimeApi();
+ const q=quote?'<span data-value-quote-source="'+esc(quote.source||'')+'">'+esc((QUOTE_SOURCE[quote.source]||['기기 시세','Device quote'])[en])+'</span> <span class="small" data-value-quote-time>'+(qt&&PT?PT.html(qt,{locale}):esc('—'))+esc(' · '+T('RAM 전용 · 저장·전송 안 함','RAM only · not stored or sent'))+'</span>'
   :na(T('이 기기에 이 종목 시세가 없습니다 (NO_DEVICE_PRICE)','No device quote for this company (NO_DEVICE_PRICE)')+(quoteReason?' · '+T('Worker 종가','Worker close')+' NOT_AVAILABLE · '+quoteReason:''),locale);
  const rev=result&&result.reverse_dcf.state!=='NOT_AVAILABLE'?'<span class="num" data-implied-growth>'+esc(pct(result.reverse_dcf.implied_growth))+'</span> <span class="small">'+esc(T('현재 기기 가격이 함의하는 명시 '+(p?p.explicit_years:'—')+'년 연 FCFE 성장률','Annual FCFE growth over the explicit '+(p?p.explicit_years:'—')+' years implied by the device price'))+'</span>'
   :na(result?reasons(result.reverse_dcf.reason_codes):'NO_DEVICE_PRICE',locale);
@@ -270,8 +283,9 @@ async function mountValue(host,{locale,id,ticker=null,catalogPromise=null,inputs
  if(!host.isConnected||host.__valueToken!==token)return;
  const row=V.row(payload,id),result=V.view({row,quote:q?{price:q.price,currency:q.currency}:null});
  let quoteReason=null;if(!q&&ticker&&win.WorkerQuoteFallback){try{const s=win.WorkerQuoteFallback.status(win,ticker);quoteReason=s&&s.state==='NOT_AVAILABLE'?s.reason:null;}catch(_){}}
- host.innerHTML=valueHtml({locale,row,result,quote:q?{source:q.source,as_of:q.as_of,stale:q.stale===true,currency:q.currency}:null,quoteReason,compact});
- if(onQuote)onQuote(q?{state:'AVAILABLE',source:q.source||null,as_of:q.as_of||null,stale:q.stale===true}:{state:'NOT_AVAILABLE',reason:'NO_DEVICE_PRICE'+(quoteReason?' · '+quoteReason:'')});
+ const time=q?{source:q.source||null,as_of:q.as_of||null,read_at:q.read_at||null,...(typeof q.time_status==='string'?{time_status:q.time_status}:{})}:null;
+ host.innerHTML=valueHtml({locale,row,result,quote:q?{...time,currency:q.currency}:null,quoteReason,compact});
+ if(onQuote)onQuote(q?{state:'AVAILABLE',...time}:{state:'NOT_AVAILABLE',reason:'NO_DEVICE_PRICE'+(quoteReason?' · '+quoteReason:'')});
 }
 // onSelect(key) runs after a user tab change (the app mirrors it into the hash with replaceState).
 function wireTabs(rootEl,{onSelect=null}={}){
@@ -279,5 +293,5 @@ function wireTabs(rootEl,{onSelect=null}={}){
  const select=key=>{for(const b of tabs){const on=b.dataset.analysisTab===key;b.setAttribute('aria-selected',String(on));b.tabIndex=on?0:-1;}for(const p of rootEl.querySelectorAll('[data-analysis-panel]'))p.hidden=p.dataset.analysisPanel!==key;if(onSelect)onSelect(key);};
  tabs.forEach((b,i)=>{b.addEventListener('click',()=>select(b.dataset.analysisTab));b.addEventListener('keydown',e=>{const d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:e.key==='Home'?-i:e.key==='End'?tabs.length-1-i:0;if(!d&&e.key!=='Home')return;e.preventDefault();const n=tabs[(i+d+tabs.length)%tabs.length];select(n.dataset.analysisTab);n.focus();});});
 }
-return Object.freeze({esc,na,fmtPct,fmtPp,num,tr,typeName,record,selectTypes,V2_LABEL,scoreRow,qgvBody,coverageHtml,factorTable,classification,nextEarningsLine,summary,analysis,mountHolding,mountValue,valueHtml,wireTabs,tabKey,priceBadge,TYPES,TAB_KEYS});
+return Object.freeze({esc,na,fmtPct,fmtPp,num,tr,typeName,record,selectTypes,V2_LABEL,scoreRow,qgvBody,coverageHtml,factorTable,classification,nextEarningsLine,summary,analysis,mountHolding,mountValue,valueHtml,wireTabs,tabKey,priceBadge,quoteTime,TYPES,TAB_KEYS});
 });

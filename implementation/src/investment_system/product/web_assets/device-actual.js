@@ -298,9 +298,20 @@
     if (value === 'SESSION_CLOSE') return state.locale === 'en-US' ? ' · Session date (close)' : ' · 세션일 종가';
     return '';
   }
+  // D10: the read time (available_at) and the price's own time are shown apart (PriceTime). A GOOGLEFINANCE UNKNOWN as_of is
+  // the read time, never a price time; staleness comes only from a confirmed price time with the DeviceMarket rule.
+  function priceTimeText(state, record) {
+    const PT = state.view.PriceTime;
+    if (!PT) return record.as_of + timeStatus(state, record.time_status);
+    const d = PT.describe(record, { staleness: marketApi(state).staleness });
+    return state.locale === 'en-US' ? d.label_en : d.label_ko;
+  }
   function provenance(state, record) {
     if (!record) return t(state, 'none') + ' · NOT_AVAILABLE';
-    return source(state, record.source) + ' · ' + record.as_of + timeStatus(state, record.time_status) + ' · ' + marketApi(state).staleness(record.as_of);
+    return source(state, record.source) + ' · ' + priceTimeText(state, record);
+  }
+  function rowRecord(row, prefix) {
+    return { source: row[prefix + '_source'], as_of: row[prefix + '_as_of'], available_at: row[prefix + '_available_at'], time_status: row[prefix + '_time_status'] };
   }
   function valuesFor(state) {
     if (state.snapshot) validate(state.snapshot, state.catalog);
@@ -355,10 +366,10 @@
         if (!state.externalQuotes) {
           fields.push([t(state, 'native'), row.market_value_native === null ? 'NOT_AVAILABLE' : number(state, row.market_value_native) + ' ' + row.market_currency_native]);
           const fallback = !row.quote_source && state.view.WorkerQuoteFallback ? state.view.WorkerQuoteFallback.status(state.view, instrument.ticker) : null;
-          fields.push([t(state, 'provenance'), source(state, row.quote_source) + ' · ' + (row.quote_as_of || 'NOT_AVAILABLE') + timeStatus(state, row.quote_time_status) + ' · ' + row.quote_status + (fallback && fallback.state === 'NOT_AVAILABLE' ? ' · ' + source(state, 'WORKER_CLOSE') + ' NOT_AVAILABLE · ' + fallback.reason : '')]);
+          fields.push([t(state, 'provenance'), (row.quote_source ? provenance(state, rowRecord(row, 'quote')) : source(state, null) + ' · NOT_AVAILABLE') + (fallback && fallback.state === 'NOT_AVAILABLE' ? ' · ' + source(state, 'WORKER_CLOSE') + ' NOT_AVAILABLE · ' + fallback.reason : '')]);
           const captured = effective.source === 'HOLDINGS_TAB' ? effective.capture.in_scope.find(item => item.ticker === instrument.ticker) : null;
           if (captured) fields.push([t(state, 'basis'), t(state, captured.cost_basis === 'COST_KRW_DIV_QTY' ? 'basisCost' : 'basisAvg')]);
-          if (instrument.currency !== 'KRW') fields.push([t(state, 'fxProvenance'), source(state, row.fx_source) + ' · ' + (row.fx_as_of || 'NOT_AVAILABLE') + timeStatus(state, row.fx_time_status) + ' · ' + row.fx_status]);
+          if (instrument.currency !== 'KRW') fields.push([t(state, 'fxProvenance'), row.fx_source ? provenance(state, rowRecord(row, 'fx')) : source(state, null) + ' · NOT_AVAILABLE']);
         }
         const details = el(state, 'dl'); for (const [label, value] of fields) details.append(el(state, 'dt', label), el(state, 'dd', value)); card.append(details); list.append(card);
       }
@@ -695,7 +706,7 @@
   }
   // RAM-only read projection for the S03/S04 screens: weights and quote status, never amounts. Not persisted or sent anywhere.
   async function ramView(view, catalog) {
-    const none = reason => ({ state: 'NOT_AVAILABLE', reason, stale: false, quote_as_of: null, rows: [], themes: [] });
+    const none = reason => ({ state: 'NOT_AVAILABLE', reason, stale: false, quote_as_of: null, quote_read_at: null, quote_unconfirmed: 0, rows: [], themes: [] });
     try {
       const index = catalogIndex(catalog), api = view.DeviceMarket, raw = await readStored(view, [KEY, MARKET_KEY]);
       if (!api) return none('READ_FAILED');
@@ -703,8 +714,11 @@
       if (!snapshot) return none('NO_ACTUAL');
       const market = raw[MARKET_KEY] === MISSING_RECORD ? null : api.validateMarket(raw[MARKET_KEY], catalog);
       const result = api.valuation(snapshot, catalog, ramMarket(view, catalog, market), { ramOverlay: true });
-      const stamps = result.rows.map(row => row.quote_as_of).filter(value => typeof value === 'string').sort();
-      return { state: result.state, reason: result.reason, stale: result.stale === true, quote_as_of: stamps.length ? stamps[0] : null,
+      // D10: quote_as_of is the oldest CONFIRMED price time/date only; read times and unconfirmed prices are reported apart.
+      const PT = view.PriceTime, quoted = result.rows.filter(row => row.quote_source).map(row => ({ source: row.quote_source, as_of: row.quote_as_of, available_at: row.quote_available_at, time_status: row.quote_time_status }));
+      const times = PT ? PT.summarize(quoted, { staleness: api.staleness }) : null;
+      return { state: result.state, reason: result.reason, stale: result.stale === true, quote_as_of: times ? times.from : null,
+        quote_read_at: times ? times.read_to : null, quote_unconfirmed: times ? times.unconfirmed : 0,
         rows: result.rows.map(row => ({ ticker: index.instruments.get(canonical(row.security_reference)).ticker, theme_id: row.theme_id, weight: row.weight, delta: row.delta })),
         themes: result.themes.map(theme => ({ theme_id: theme.theme_id, weight: theme.weight, delta: theme.delta })) };
     } catch (_) { return none('READ_FAILED'); }
@@ -720,7 +734,12 @@
       if (!quote) return null;
       const price = typeof quote.price === 'number' ? quote.price : Number(quote.price);
       if (!Number.isFinite(price) || price <= 0) return null;
-      return { price, currency: quote.currency, as_of: quote.source === 'WORKER_CLOSE' ? quote.as_of.slice(0, 10) : quote.as_of, source: quote.source, stale: api.staleness(quote.as_of) === 'STALE' };
+      // D10: as_of is the price's own time (trade time, or the session date of a Worker close) and null when unconfirmed;
+      // read_at is when this device read it. stale only from a confirmed time with the DeviceMarket rule.
+      const d = view.PriceTime ? view.PriceTime.describe(quote, { staleness: api.staleness }) : null;
+      if (!d) return { price, currency: quote.currency, as_of: null, read_at: quote.available_at, time_status: quote.time_status || 'KNOWN', price_time_status: 'UNCONFIRMED', freshness: 'UNDETERMINED', source: quote.source, stale: false };
+      return { price, currency: quote.currency, as_of: d.price_time || d.price_date, read_at: d.read_at, time_status: quote.time_status || 'KNOWN',
+        price_time_status: d.status, freshness: d.freshness, source: quote.source, stale: d.stale === true };
     } catch (_) { return null; }
   }
   // Shadow-ledger / screen input: stored ACTUAL or the RAM Holdings tab, whichever is newer (see effectiveSnapshot).
