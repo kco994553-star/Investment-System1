@@ -77,9 +77,12 @@ const PUB = {};
 for (const n of [1, 2]) { const sec = secDay(n); PUB[n] = { 'sec-qgv2.json': n === 1 ? qgv2Day1() : qgv2Day2(), 'sec-disclosures.json': sec, 'news-signals.json': newsDay(n, sec), 'macro-screen.json': macroDay(n) }; }
 // Expected values, from the engine modules in Node over the same payloads and the same fixed clock (independent of the page).
 function inputsOf(n) { return QI.fromInputs(SQ.toInputs(PUB[n]['sec-qgv2.json'], { now: DAYS[n].now })); }
+/* D11 (owner rule 'Q·G만 있는 결과를 QGV 종합순위와 섞지 않는다'): these days carry no device price, so no row has V and the official
+   ranking is empty; every total is in the QG 참고 목록 (V 미포함) in its own order. `rank` here is the S06 list position: the
+   official rank, else the QG list order (list says which). Before D11 the Q·G-only totals were ranked directly. */
 function expectedRanks(n, identities) {
   const S = QS.compute({ identities, publicScreens: { 'sec-qgv2.json': inputsOf(n) } }), out = {};
-  for (const [id, r] of Object.entries(S.rows)) if (Number.isInteger(r.rank)) out[id] = { rank: r.rank, total: fmt1(r.primary.total), q: r.primary.q, g: r.primary.g };
+  for (const [id, r] of Object.entries(S.rows)) if (Number.isInteger(r.rank) || r.qg_reference) out[id] = { rank: Number.isInteger(r.rank) ? r.rank : r.qg_reference.order, list: Number.isInteger(r.rank) ? 'RANKED' : 'QG_REFERENCE', total: fmt1(r.primary.total), q: r.primary.q, g: r.primary.g };
   return out;
 }
 
@@ -104,11 +107,12 @@ async function leaderboard(page) {
   await page.waitForFunction(() => document.querySelectorAll('[data-leaderboard-row]').length > 0);
   return page.evaluate(() => ({
     asOf: document.querySelector('[data-score-as-of]')?.textContent || null,
-    rows: [...document.querySelectorAll('[data-leaderboard-row]')].map((tr) => ({ id: tr.dataset.leaderboardRow, rank: tr.querySelector('[data-leaderboard-rank]')?.dataset.leaderboardRank || null,
+    rows: [...document.querySelectorAll('[data-leaderboard-row]')].map((tr) => ({ id: tr.dataset.leaderboardRow, rank: tr.querySelector('[data-leaderboard-rank]')?.dataset.leaderboardRank || tr.querySelector('[data-leaderboard-unranked="QG_REFERENCE"]')?.dataset.qgOrder || null,
+      list: tr.querySelector('[data-leaderboard-rank]') ? 'RANKED' : tr.querySelector('[data-leaderboard-unranked="QG_REFERENCE"]') ? 'QG_REFERENCE' : null,
       total: tr.querySelector('[data-leaderboard-total]')?.dataset.leaderboardTotal || null, name: tr.querySelector('[data-leaderboard-name]')?.textContent.trim() || null })),
     footnote: [...document.querySelectorAll('[data-leaderboard-screen] p.small')].map((p) => p.textContent).find((t) => t.startsWith('— = NOT_AVAILABLE')) || '' }));
 }
-function ranked(lb) { return Object.fromEntries(lb.rows.filter((r) => r.rank !== null).map((r) => [r.id, { rank: Number(r.rank), total: r.total }])); }
+function ranked(lb) { return Object.fromEntries(lb.rows.filter((r) => r.rank !== null).map((r) => [r.id, { rank: Number(r.rank), list: r.list, total: r.total }])); }
 async function universePage(page, code) {
   await go(page, 'company/' + encodeURIComponent(code), '[data-universe-page]');
   await page.waitForFunction((c) => document.querySelector('[data-universe-page]')?.dataset.universePage === c && document.querySelector('[data-universe-page]')?.dataset.universeV !== 'PENDING', code);
@@ -141,7 +145,7 @@ async function targetPage(page, id) {
   await page.locator('[data-company-card="qgv"] [data-qgv="Q"]').waitFor();
   return page.evaluate(() => ({ asOf: document.querySelector('[data-company-badges] [data-score-as-of]')?.textContent || null, Q: document.querySelector('[data-company-card="qgv"] [data-qgv="Q"]').textContent.trim(),
     G: document.querySelector('[data-company-card="qgv"] [data-qgv="G"]').textContent.trim(), total: document.querySelector('[data-company-card="qgv"] [data-qgv="total"]').textContent.trim(),
-    rank: document.querySelector('[data-company-card="qgv"] [data-qgv="rank"] .num')?.textContent || null, acquired: document.querySelector('[data-source-acquired]')?.textContent || null,
+    rank: document.querySelector('[data-company-card="qgv"] [data-qgv="rank"] .num')?.textContent || document.querySelector('[data-company-card="qgv"] [data-qgv-rank="QG_REFERENCE"]')?.dataset.qgOrder || null, acquired: document.querySelector('[data-source-acquired]')?.textContent || null,
     used: document.querySelector('[data-source-used]')?.textContent || null }));
 }
 async function treeExample(page) {
@@ -213,7 +217,8 @@ function checkMacro(n, m) {
     async function checkDay(n, label) {
       phase = label + ' LEADERBOARD'; const lb = await leaderboard(page);
       eq(lb.asOf, '점수 기준 ' + PUB[n]['sec-qgv2.json'].as_of, 'leaderboard score time = file as_of');
-      eq(ranked(lb), Object.fromEntries(Object.entries(exp[n]).map(([id, x]) => [id, { rank: x.rank, total: x.total }])), 'leaderboard ranks and totals day ' + n);
+      eq(ranked(lb), Object.fromEntries(Object.entries(exp[n]).map(([id, x]) => [id, { rank: x.rank, list: x.list, total: x.total }])), 'leaderboard ranks and totals day ' + n);
+      ok(lb.rows.every((r) => r.list !== 'RANKED'), 'D11: no device price, so no official QGV rank (Q·G-only totals are in the QG 참고 목록) day ' + n);
       eq(lb.rows.filter((r) => r.rank !== null).map((r) => r.id), Object.entries(exp[n]).sort((a, b) => a[1].rank - b[1].rank).map(([id]) => id), 'leaderboard order day ' + n);
       const scope = (lb.footnote.match(/(\d+)개 기업 전체 기준 순위/) || [])[1];
       if (scope !== String(identities.length)) log('GAP hard-coded rank scope in the leaderboard note: shows ' + scope + ', identities ' + identities.length);
