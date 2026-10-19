@@ -117,6 +117,7 @@
 - 같은 출처 공개 JSON은 모두 `cache:'no-store'` 또는 `'no-cache'`로 읽는다(HTTP 캐시를 거치지 않거나 재검증). 예외는 Google API·Worker 호출뿐이다. 시험이 모든 `fetch(`를 정적으로 검사한다(§7).
 - 서비스 워커는 정적 셸 5개(offline.html, style.css, manifest.json, 아이콘 2개)만 캐시한다. 데이터 JSON은 손대지 않고 네트워크로 보낸다(`service-worker.js:1-4,17`). 워커 스크립트도 HTTP 캐시를 쓰지 않는다(`pwa.js:15 updateViaCache:'none'`).
 - 앱은 공개 파일을 페이지를 열 때 한 번 읽어 RAM에 둔다(`app.js:1180-1198`). 공시·뉴스 목록도 페이지당 한 번이다(`app.js:401-403`). 해시 이동(SPA 화면 전환)은 다시 읽지 않는다. 다시 읽는 때는 새로고침뿐이다.
+- (2026-10-18 `claude/fe-data-refresh`) 열린 탭에서는 **'자료 새로고침' 버튼**(`data-refresh.js`)이 같은 판독기로 공개 파일 묶음 전체를 다시 읽는다. 하나라도 읽기 실패면 아무것도 바꾸지 않고 '갱신 실패 · 이전 값 유지'와 옛 기준 시각을 쓴다. 성공하면 묶음을 한 번에 바꾸고 열린 화면을 제자리에서 다시 그린 뒤 `public-data-updated` 이벤트를 보낸다. 비공개 Worker·시트 요청과 설정 변경은 없다. 새 게시가 없어도 파일마다 자기 기준(행 acquired_at 또는 파일 as_of + stale_after_seconds)의 경계를 지나면 이미 읽은 본문으로 상태를 다시 판정한다(1분마다, 탭 복귀, 화면 이동, 버튼). 자동 재취득(폴링)은 하지 않는다.
 - 읽기에 실패하면 그 파일의 값은 RAM에 남기지 않는다(`qgv2-inputs.js:82-94`). 화면은 NOT_AVAILABLE을 쓴다. 옛 값을 현재 값처럼 보여 주지 않는다.
 - 더 새 스키마(schema_version > 2)는 값으로 쓰지 않고 새로고침을 요구한다(`sec-qgv2.js:41-43`, `universe-company.js:38`).
 - GitHub Pages CDN 자체의 짧은 캐시(배포 직후 몇 분)는 앱이 통제하지 못한다. 배포 직후 새로고침에도 옛 as_of가 보이면 몇 분 뒤 다시 연다.
@@ -353,12 +354,12 @@
 ### 8-2. 결함 내용
 
 
-- **D1 · 열린 탭은 새 게시를 다시 읽지 않고 알리지도 않는다.** 공개 파일은 페이지당 한 번 읽는다(`app.js:1180-1198`, `app.js:401-403`). 각 화면의 as_of는 맞게 보이므로 거짓 표시는 아니다. 다만 "새 자료가 있음"이나 "마지막 확인 시각" 표시가 없다. 시험 기록: `SPA_REFRESH qgv=KEPT_UNTIL_RELOAD news=KEPT_UNTIL_RELOAD`. 앱 단위 재취득 설계가 필요하다.
-- **D2 · 열린 탭에서는 sec-qgv2 행 상태가 읽은 시점에 굳는다.** LIVE/STALE는 읽을 때 계산한다(`sec-qgv2.js:167-180 restate/toInputs`). "수집 후 N일"은 화면 시각으로 늘어난다(`universe-company.js:41,60-61`). 그래서 14일을 넘긴 뒤에도 "수집 후 14일 · 상태 LIVE"가 보일 수 있다(시험 기록 `GAP in-tab state frozen at load`, 실제 경과 14.9일). 새로고침하면 STALE이 된다. 고치려면 판독기가 stale 기준을 넘겨줘야 해서 화면만의 수정이 아니다.
+- **D1 · 열린 탭은 새 게시를 다시 읽지 않고 알리지도 않는다.** 공개 파일은 페이지당 한 번 읽는다(`app.js:1180-1198`, `app.js:401-403`). 각 화면의 as_of는 맞게 보이므로 거짓 표시는 아니다. 다만 "새 자료가 있음"이나 "마지막 확인 시각" 표시가 없다. 시험 기록: `SPA_REFRESH qgv=KEPT_UNTIL_RELOAD news=KEPT_UNTIL_RELOAD`. 앱 단위 재취득 설계가 필요하다. **고침(fe-data-refresh)**: '자료 새로고침' 버튼과 마지막 확인 시각(`data-refresh.js`).
+- **D2 · 열린 탭에서는 sec-qgv2 행 상태가 읽은 시점에 굳는다.** LIVE/STALE는 읽을 때 계산한다(`sec-qgv2.js:167-180 restate/toInputs`). "수집 후 N일"은 화면 시각으로 늘어난다(`universe-company.js:41,60-61`). 그래서 14일을 넘긴 뒤에도 "수집 후 14일 · 상태 LIVE"가 보일 수 있다(시험 기록 `GAP in-tab state frozen at load`, 실제 경과 14.9일). 새로고침하면 STALE이 된다. 고치려면 판독기가 stale 기준을 넘겨줘야 해서 화면만의 수정이 아니다. **고침(fe-data-refresh)**: 경계를 지나면 같은 판독기로 다시 판정하고 제자리에서 다시 그린다.
 - **D3 · 리더보드 각주의 "19개 기업"이 고정 문자열이다**(`leaderboard-screen.js:149`, 주석 `app.js:646`). 지금은 식별자 19개와 같아 오표시는 아니다. TARGET 구성이 바뀌면 틀린다. 제안: 문구의 19를 `all.length`로 바꾸고 `pages_artifact_guard.py`의 `leaderboard-screen.js` 해시를 다시 고정한다. 같은 고정값이 `universe-company.js:122,124`("TARGET 19개")에도 있다.
-- **D4 · TARGET 기업 화면의 "STALE" 배지가 v1 미리보기 입력(sec-qg-factors.json) 기준인데 배지에는 "STALE"만 쓴다**(`company-screen.js:46-49`). 바로 옆이 v2 "점수 기준" 배지라 v2 점수가 오래된 것으로 읽힐 수 있다. 제안: "v1 입력 STALE"로 쓴다(해시 재고정 필요).
-- **D5 · 읽기 실패와 미게시를 구분하지 않는다.** 503이든 404든 리더보드는 "v2 · NOT_AVAILABLE · SEC_QGV2_NOT_AVAILABLE", 기업 화면은 "상태 NO_FILE"이다(`qgv2-inputs.js:82-94`, `universe-company.js:38`). 옛 값을 보여 주지 않는 점은 맞다. "새로 읽기 실패"라는 말은 없다. 판독기의 사유 코드를 나눠야 해서 화면만의 수정이 아니다.
-- **D6 · 같은 탭에서 4.3 트리 예시와 4.2 목록이 서로 다른 게시본을 보일 수 있다.** 예시는 열 때마다 다시 읽고(`ia-screens.js:134`), 목록은 페이지당 한 번이다(`app.js:401-403`). 둘 다 자기 as_of를 쓰므로 거짓 표시는 아니다.
+- **D4 · TARGET 기업 화면의 "STALE" 배지가 v1 미리보기 입력(sec-qg-factors.json) 기준인데 배지에는 "STALE"만 쓴다**(`company-screen.js:46-49`). 바로 옆이 v2 "점수 기준" 배지라 v2 점수가 오래된 것으로 읽힐 수 있다. 제안: "v1 입력 STALE"로 쓴다(해시 재고정 필요). **고침(fe-data-refresh)**: 배지가 'v1 입력 STALE'이라고 쓴다. 기존 v1 STALE 규칙은 그대로다.
+- **D5 · 읽기 실패와 미게시를 구분하지 않는다.** 503이든 404든 리더보드는 "v2 · NOT_AVAILABLE · SEC_QGV2_NOT_AVAILABLE", 기업 화면은 "상태 NO_FILE"이다(`qgv2-inputs.js:82-94`, `universe-company.js:38`). 옛 값을 보여 주지 않는 점은 맞다. "새로 읽기 실패"라는 말은 없다. 판독기의 사유 코드를 나눠야 해서 화면만의 수정이 아니다. **고침(fe-data-refresh)**: 막대와 Universe 기업 화면이 '읽기 실패(HTTP n)'와 '아직 게시되지 않음(HTTP 404)'을 따로 쓴다. 리더보드 사유 코드(qgv-scores.js)는 그대로다.
+- **D6 · 같은 탭에서 4.3 트리 예시와 4.2 목록이 서로 다른 게시본을 보일 수 있다.** 예시는 열 때마다 다시 읽고(`ia-screens.js:134`), 목록은 페이지당 한 번이다(`app.js:401-403`). 둘 다 자기 as_of를 쓰므로 거짓 표시는 아니다. **고침(fe-data-refresh)**: 목록 파일은 게시본마다 한 번 읽고 4.2·4.3·홈·플레이북이 같이 쓴다.
 - **D7 · 검색 라벨의 한국어 이름 두 개가 코드에 고정돼 있다**(`home-screen.js:30,42`: 한미반도체·도쿄일렉트론). 수동 검토 표(company-names-ko.json)와 출처가 둘이다. 표를 고쳐도 이 라벨은 따라가지 않는다. 표시 전용이라 점수에는 영향이 없다.
 - **D8 · 매크로 근거 시각은 실제 발표 시각이 아니다**(release_basis NOT_VERIFIED, `macro/growth_inflation_v0.py:166,178`; 화면은 "수집 상한 시각", `ia-screens.js:118`). 기존 IA-16.
 - **D9 · 13F 접수 시각이 공개 파일에 없다.** 제출일(날짜)만 있다(§1-4).

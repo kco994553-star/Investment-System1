@@ -120,6 +120,9 @@
    '<div class="tree-table"><table><thead><tr><th scope="col">'+esc(T(l,'축','Axis'))+'</th><th scope="col">'+esc(T(l,'계열','Series'))+'</th><th scope="col">'+esc(T(l,'기간','Period'))+'</th><th scope="col">'+esc(T(l,'값','Value'))+'</th><th scope="col">'+esc(T(l,'수집 상한 시각','Available at (capture bound)'))+'</th></tr></thead><tbody>'+
    pick.map(o=>'<tr data-example-series="'+esc(o.source_id)+'"><th scope="row">'+esc(o.axis)+'</th><td>'+esc(o.provider+' · '+o.source_id)+'</td><td>'+esc(o.observation_period)+'</td><td data-example-value>'+esc(o.value+' '+o.unit)+'</td><td>'+esc(o.available_at||'NA')+'</td></tr>').join('')+'</tbody></table></div><p class="small">'+esc(T(l,'파일 기준 ','File as of ')+(p.as_of||'NA'))+'</p></div>';
  }
+ // The same in-tab copy of a public list file as the 4.2 list (DataRefresh: one read per publication, D6); the reader directly
+ // only on a page without DataRefresh.
+ function shared(key,api){return root.DataRefresh&&typeof root.DataRefresh.list==='function'?root.DataRefresh.list(root,key):api.load(root);}
  // ---------- 4.3 뉴스 ----------
  function newsTree(l){
   const tree=node('root',esc(T(l,'뉴스','News')),esc(T(l,'점수를 바꾸지 않음(score_effect NONE) · 정보 제공용','Never changes scores (score_effect NONE) · information only')),[
@@ -133,7 +136,7 @@
  }
  async function newsExamples(l){
   const SD=root.SecDisclosures,NS=root.NewsSignals;let sec=null,news=null;
-  try{[sec,news]=await Promise.all([SD?SD.load(root):null,NS?NS.load(root):null]);}catch(_){sec=null;news=null;}
+  try{[sec,news]=await Promise.all([SD?shared('sec',SD):null,NS?shared('news',NS):null]);}catch(_){sec=null;news=null;}
   const ev=Array.isArray(sec?.events)?[...sec.events].sort((a,b)=>String(b.accepted_at).localeCompare(String(a.accepted_at))):[],it=Array.isArray(news?.items)?[...news.items].sort((a,b)=>String(b.published_at).localeCompare(String(a.published_at))):[];
   const line=(label,file,p,rows,show)=>'<div><dt>'+esc(label)+'</dt><dd data-example-source="'+file+'" data-example-count="'+(p?rows.length:'NA')+'">'+(p?esc(rows.length+T(l,'건 · 파일 기준 ',' items · file as of ')+(p.as_of||'NA'))+(rows[0]?'<br><span class="small">'+esc(T(l,'최신: ','Latest: ')+show(rows[0]))+'</span>':''):na(l,T(l,'파일을 읽을 수 없습니다.','File could not be read.')))+'</dd></div>';
   return '<div data-tree-example-body data-example-state="'+(sec||news?'LOADED':'NOT_AVAILABLE')+'"><p class="small">'+esc(T(l,'공개 파일의 건수와 가장 최근 한 건입니다.','Counts and the newest item of the public files.'))+'</p><dl class="tree-facts">'+
@@ -192,7 +195,7 @@
   set('portfolio',object(catalog)&&Array.isArray(catalog.instruments)?esc(T(l,'예: TARGET ','e.g. TARGET ')+(catalog.target_root_version||'NA')+' · '+catalog.instruments.length+T(l,'종목',' instruments')):na(l,T(l,'목표 목록 없음','no target catalogue')));
   set('prompts',esc(T(l,'공식 카탈로그 · 동결본(PLV1)','Official catalogue · frozen (PLV1)')));
   set('lab',na(l,T(l,'검증 기록은 n+1.2 전진 검증 화면에서 읽습니다','Records are read on the n+1.2 forward-validation screen')));
-  const SD=root.SecDisclosures;if(SD)Promise.resolve(SD.load(root)).then(sec=>{if(!host.isConnected)return;set('news',Array.isArray(sec?.events)?esc(T(l,'예: 8-K ','e.g. 8-K: ')+sec.events.length+T(l,'건 · ',' · ')+(sec.as_of||'NA')):na(l,T(l,'공시 파일 없음','no disclosure file')));}).catch(()=>{});
+  const SD=root.SecDisclosures;if(SD)Promise.resolve(shared('sec',SD)).then(sec=>{if(!host.isConnected)return;set('news',Array.isArray(sec?.events)?esc(T(l,'예: 8-K ','e.g. 8-K: ')+sec.events.length+T(l,'건 · ',' · ')+(sec.as_of||'NA')):na(l,T(l,'공시 파일 없음','no disclosure file')));}).catch(()=>{});
   else set('news',na(l,T(l,'공시 파일 없음','no disclosure file')));
  }
  const TREES={qgv:qgvTree,technical:technicalTree,macro:macroTree,news:newsTree,portfolio:portfolioTree,system:systemTree};
