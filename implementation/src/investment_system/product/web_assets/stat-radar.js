@@ -286,7 +286,7 @@ function build(inputs,spec,dev,result,{aux=false,now=Date.now()}={}){
   return{...a,population:n,population_codes:[...vals.keys()],excluded,coverage,company:mine,industry:group(gi),sic:same?{...na('SAME_AS_INDUSTRY'),n:null,codes:[]}:group(gs),competitor:{...na('REL_SOURCE_PENDING'),n:null,codes:[]}};};
  const auxAxis=axisModel(AUX),axes=AXES.map(axisModel),win=pt&&!priceReason?pt.window:null;
  return{subject,inputs,groups:{industry:gi,sic:gs,same},axes:aux?[...axes,auxAxis]:axes,aux:auxAxis,auxOn:!!aux,device:dev,priced,window:win,fresh:freshness(win,now),
-  basis:spy?series(spy).basis:null,storage:spy?series(spy).storage:null,source:spy?series(spy).source:null,universe:universeCodes.length,points:points.length};}
+  basis:spy?series(spy).basis:null,storage:spy?series(spy).storage:null,source:spy?series(spy).source:null,universe:universeCodes.length,points:points.length,cx:cxMarks(result,subject)};}
 
 /* ---------- formatting ---------- */
 function fmtNum(v,locale,d=1){return new Intl.NumberFormat(locale==='en-US'?'en-US':'ko-KR',{minimumFractionDigits:d,maximumFractionDigits:d}).format(v);}
@@ -428,7 +428,11 @@ function body(model,locale){
   +'<div class="sr-side">'+legend(model,locale)+auxBox(model,locale)+'</div></div>'+freshLine(model,locale)+table(model,locale)+vDetailHtml(model,locale)+membersHtml(model,locale)
   +'<p class="small sr-fresh" data-sr-fresh>'+esc([T('Q·G·이익률 출처 sec-qgv2.json','Q·G·margin: sec-qgv2.json'),'as_of '+(model.inputs?clock(model.inputs.as_of):'—'),T('단면 ','cross-section ')+model.points+T('곳(발행사당 한 점)',' issuers (one point each)'),T('가격 후보 축 점수 = 기기 보유 데이터 내 상대점수(504 전체·시장 전체 백분위 아님, 모집단 8곳 이상) · 비교군 평균은 5곳 이상','candidate price-axis score = relative score within the price data you hold (not a 504- or market-wide percentile; population ≥ 8) · group averages need ≥ 5')].join(' · '))+'</p>'
   +'<p class="small sr-fresh" data-sr-device-line>'+esc([T('가격 입력: ','Price input: ')+(model.storage?storageText(model,T):T('내 비공개 구글 시트 Prices_D 탭(가격 탭 사용 시) → 이 브라우저 메모리','the Prices_D tab of your private Google Sheet (when price tabs are on) → this browser’s memory'))+T(' · Worker 요청 없음 · 공개 안 함',' · no Worker request · never published'),T('기준 ','basis ')+(model.basis?BASIS_TEXT[model.basis][en?1:0]:'—'),T('상태 ','state ')+dev,T('V: 기존 V 경로(시세 '+(model.priced?'있음':'없음')+')','V: existing V path (quotes '+(model.priced?'present':'none')+')')].join(' · '))+'</p>';}
-function stateOf(model){return{'data-sr-subject':model.subject.label,'data-sr-device':model.device.state,'data-sr-quotes':model.priced?'PRESENT':'NONE','data-sr-groups':model.groups.same?'SAME':'DISTINCT','data-sr-aux':model.auxOn?'ON':'OFF','data-sr-window-end':model.window?model.window.end:'NA',
+// data-cx-* marks (QgvScores.marks): the subject's row of the shared result and the Universe read it was priced from; all
+// keys always present (a pending radar names no read), so a repaint never leaves marks of an older result behind.
+function cxMarks(result,subject){const QS=g.QgvScores;if(!QS||typeof QS.marks!=='function')return{};const S=object(result)&&object(result.computed)?result.computed:null;
+ return QS.marks(S&&typeof QS.rowOf==='function'?QS.rowOf(S,subject.identity.company_id):null,S?result.price_basis:null,g);}
+function stateOf(model){return{...(model.cx||{}),'data-sr-subject':model.subject.label,'data-sr-device':model.device.state,'data-sr-quotes':model.priced?'PRESENT':'NONE','data-sr-groups':model.groups.same?'SAME':'DISTINCT','data-sr-aux':model.auxOn?'ON':'OFF','data-sr-window-end':model.window?model.window.end:'NA',
  'data-sr-stale':model.fresh?(model.fresh.stale?'STALE':'CURRENT'):'NA','data-sr-basis':model.basis||'NA',
  'data-sr-industry-basis':model.groups.industry.basis||'NA','data-sr-industry-key':model.groups.industry.key||'','data-sr-sic-basis':model.groups.sic.basis||'NA','data-sr-sic-key':model.groups.sic.key||''};}
 const stateAttrs=model=>Object.entries(stateOf(model)).map(([k,v])=>' '+k+'="'+esc(v)+'"').join('');
