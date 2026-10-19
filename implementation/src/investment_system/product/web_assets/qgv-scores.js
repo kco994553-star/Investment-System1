@@ -253,8 +253,9 @@ async function collectQuotes(win,{identities=[],v2Inputs=null,catalog=null,meta=
  return out;
 }
 /* SHARED PAGE RESULT (owner decision 2026-10-18; V coverage panel + stat radar): ONE collectQuotes and ONE compute over every
-   Universe code of the loaded file plus the given identities, memoized by the inputs object, the Universe-read revision
-   (PrivateSubsetView.priceBasis().read_id), catalog, identities, preset and gate. Screens that show V values or V counts read
+   Universe code of the loaded file plus the given identities (the registered page identities when set), memoized by the inputs
+   object, the Universe-read revision (PrivateSubsetView.priceBasis().read_id of the kept read, which survives navigation),
+   catalog, identities and device inputs (one quote set), then by preset and gate (one compute each). Screens that show V values or V counts read
    this result so the same input gives the same V everywhere (V percentiles depend on which rows have prices). No new rule:
    the existing collectQuotes/compute calls. RAM only. Resolves {computed, quotes, quote_meta, price_basis, identities} or null. */
 // D10: the Universe column has no price time, so its freshness is 판정 불가 (stale null), never 'not stale'.
@@ -263,17 +264,33 @@ const UNIVERSE_META=Object.freeze({source:'UNIVERSE_SHEET',as_of:null,stale:null
    null = UNCONFIRMED); stale is the source rule's verdict already made (true / false / null = 판정 불가). */
 function metaTime(m){const t=typeof m.as_of==='string'?m.as_of:null,date=t!==null&&/^\d{4}-\d{2}-\d{2}$/.test(t);
  return{status:t===null?'UNCONFIRMED':date?'DATE_ONLY':'CONFIRMED',price_time:t!==null&&!date?t:null,price_date:date?t:null,read_at:null,stale:m.stale===true?true:m.stale===false&&t!==null?false:null,freshness:m.stale===true?'STALE':m.stale===false&&t!==null?'CURRENT':'UNDETERMINED'};}
-let pageMemo=null;
+let pageMemo=null,quoteMemo=null,pageIds=null,deviceEpoch=0;const watched=new WeakSet();
 function readBasis(win){try{const b=win&&win.PrivateSubsetView&&typeof win.PrivateSubsetView.priceBasis==='function'?win.PrivateSubsetView.priceBasis():null;return object(b)?b:null;}catch(_){return null;}}
+const cleanIds=list=>(Array.isArray(list)?list:[]).filter(c=>object(c)&&typeof c.company_id==='string'&&typeof c.ticker==='string').map(c=>({company_id:c.company_id,ticker:c.ticker}));
+/* PAGE IDENTITIES (owner rule 2026-10-19: the same inputs give the same V on every screen). The app registers its S06 identities
+   once; every pageResult then collects device quotes over that same set, whichever screen asks (S06, V panel, company detail,
+   Universe page, stat radar), so one screen never prices a different cross-section. A caller's own identity is added only when it
+   is not a Universe code of the file (Universe codes are priced from the shared Universe read like every other code). */
+function setPageIdentities(list){pageIds=cleanIds(list);quoteMemo=null;pageMemo=null;}
+// Device inputs of collectQuotes besides the Universe read: stored/Worker quotes ('device-actual-changed') and the price tabs'
+// loaded rows (PriceStore status counts; never its read time, so a no-op sync does not change the key).
+function deviceKey(win){if(win&&win.document&&typeof win.document.addEventListener==='function'&&!watched.has(win.document)){watched.add(win.document);try{win.document.addEventListener('device-actual-changed',()=>{deviceEpoch++;});}catch(_){}}
+ let store=null;try{const st=win&&win.PriceStore&&typeof win.PriceStore.status==='function'?win.PriceStore.status():null;store=object(st)?[st.state,st.tabs||null,st.symbols||null]:null;}catch(_){store=null;}return[deviceEpoch,store];}
 function pageResult(win,{v2Inputs,catalog=null,identities=[],preset=null,gate=null}={}){
  if(!v2Inputs||!object(v2Inputs.records))return Promise.resolve(null);
- const basis=readBasis(win),ids=(Array.isArray(identities)?identities:[]).filter(c=>object(c)&&typeof c.company_id==='string'&&typeof c.ticker==='string').map(c=>({company_id:c.company_id,ticker:c.ticker}));
- const k=JSON.stringify([basis?basis.read_id||basis.acquired_at||'READ':null,ids,preset,gate]);
- if(pageMemo&&pageMemo.inputs===v2Inputs&&pageMemo.catalog===catalog&&pageMemo.key===k)return pageMemo.promise;
- const promise=(async()=>{const quote_meta={},quotes=await collectQuotes(win,{identities:ids,v2Inputs,catalog,meta:quote_meta}),seen=new Set(ids.map(c=>c.company_id)),all=[...ids];
+ const basis=readBasis(win),given=cleanIds(identities),seen=new Set(),ids=[];
+ for(const c of pageIds?[...pageIds,...given.filter(c=>c.company_id.startsWith('TARGET:')||!Object.hasOwn(v2Inputs.records,c.company_id))]:given)if(!seen.has(c.company_id)){seen.add(c.company_id);ids.push(c);}
+ // ONE quote set per (inputs, catalog, Universe read, identities, device inputs); every preset/gate is computed over it.
+ const qk=JSON.stringify([basis?basis.read_id||basis.acquired_at||'READ':null,ids,deviceKey(win)]);
+ if(!(quoteMemo&&quoteMemo.inputs===v2Inputs&&quoteMemo.catalog===catalog&&quoteMemo.key===qk)){
+  const q={inputs:v2Inputs,catalog,key:qk,promise:(async()=>{const quote_meta={},quotes=await collectQuotes(win,{identities:ids,v2Inputs,catalog,meta:quote_meta});return{quotes,quote_meta};})()};
+  quoteMemo=q;q.promise.catch(()=>{if(quoteMemo===q)quoteMemo=null;});}
+ const held=quoteMemo,k=JSON.stringify([preset,gate]);
+ if(pageMemo&&pageMemo.quotes===held&&pageMemo.key===k)return pageMemo.promise;
+ const promise=held.promise.then(({quotes,quote_meta})=>{const all=[...ids];
   for(const code of Object.keys(v2Inputs.records))if(!code.startsWith('TARGET:')&&!seen.has(code))all.push({company_id:code,ticker:symbolOf(code)});
-  return Object.freeze({computed:compute({identities:all,v2Inputs,quotes,preset,gate}),quotes,quote_meta,price_basis:basis,identities:all});})();
- const memo={inputs:v2Inputs,catalog,key:k,promise};pageMemo=memo;promise.catch(()=>{if(pageMemo===memo)pageMemo=null;});return promise;}
+  return Object.freeze({computed:compute({identities:all,v2Inputs,quotes,preset,gate}),quotes,quote_meta,price_basis:basis,identities:all});});
+ const memo={quotes:held,key:k,promise};pageMemo=memo;promise.catch(()=>{if(pageMemo===memo)pageMemo=null;});return promise;}
 /* V coverage counts of one pageResult (the V coverage panel; owner 2026-10-18). Read only from the engine's rows: V = a finite
    axis score, reasons = coverageFor's V axis reason (+ the missing factors' own reasons), input-complete = coverageFor
    v_inputs_missing; no new required input. Financials (FINANCIAL_PROFILE_V_NOT_DEFINED) are their own population, never a
@@ -348,5 +365,5 @@ function label(version,en){return(LABEL[version]||LABEL.v2)[en?1:0];}
 // (+ ' · 유형 범위 qgv2-type-scope/…' = the type-application scope id the scores use).
 function basisText(S,en){const b=S&&S.basis?S.basis:basis('v2',false);return label('v2',en)+' · '+(en?b.label_en:b.label)+(b.since?(en?' · since ':' · ')+b.since+(en?'':'부터'):'')+(b.type_scope?(en?' · type scope ':' · 유형 범위 ')+b.type_scope:'');}
 function presets(){return qgvV2().PRESETS;}
-return Object.freeze({MODES,LABEL,PERSONAL_LABEL,PERSONAL_V0_LABEL,QG_REFERENCE_LABEL,NO_OFFICIAL_RANK,qgReference,FLAG,DATA_STATE,AXIS_STATUS,REASON,coverageFor,exploreGroup,reasonText,stateText,axisStatusText,vInputText,scoringDefault,compute,typeMemberships,judgmentRows,collectQuotes,pageResult,vCoverage,V_TARGET_SHARE,summaryText,naText,flagText,label,basis,basisText,presets,symbolOf});
+return Object.freeze({MODES,LABEL,PERSONAL_LABEL,PERSONAL_V0_LABEL,QG_REFERENCE_LABEL,NO_OFFICIAL_RANK,qgReference,FLAG,DATA_STATE,AXIS_STATUS,REASON,coverageFor,exploreGroup,reasonText,stateText,axisStatusText,vInputText,scoringDefault,compute,typeMemberships,judgmentRows,collectQuotes,pageResult,setPageIdentities,vCoverage,V_TARGET_SHARE,summaryText,naText,flagText,label,basis,basisText,presets,symbolOf});
 });
