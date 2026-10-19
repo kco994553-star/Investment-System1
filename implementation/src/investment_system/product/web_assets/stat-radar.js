@@ -233,7 +233,8 @@ function priceTable(dev,end){
    shared with the V coverage panel and the other screens), so the same input gives the same V everywhere. The radar reads the
    subject's row and the peers' rows of that one computed result; it never computes V or collects quotes itself. total: the
    QGV total of the same row, shown only with the label 'Q·G만 반영(V 미포함)' when V is missing. */
-function vOne(S,id,full=false){const row=S&&S.rows?S.rows[id]:null,d=row?row.primary:null,cov=d&&d.coverage&&d.coverage.axes?d.coverage.axes.V:null;
+// D12: the row standing for an id (QgvScores.rowOf): a Universe code merged into its TARGET row reads that one row.
+function vOne(S,id,full=false){const QS=g.QgvScores,row=S&&S.rows?(QS&&typeof QS.rowOf==='function'?QS.rowOf(S,id):S.rows[id]):null,d=row?row.primary:null,cov=d&&d.coverage&&d.coverage.axes?d.coverage.axes.V:null;
  const x=!S?na('PENDING'):d&&finite(d.v)?{value:d.v,score:d.v,reason:null}:na(cov&&cov.reason||'NO_DEVICE_PRICE');
  if(full){x.v_detail={detail:d&&object(d.detail)?d.detail:null,factors:cov&&Array.isArray(cov.factors)?cov.factors.map(f=>({id:f.id,reason:f.reason})):[]};x.total=d&&finite(d.total)?d.total:null;}return x;}
 function vScores(result,subject,points){

@@ -470,14 +470,20 @@ test('pageResult: one memoized quote set + compute over the whole file; same V p
   const r = await QS.pageResult(win, { v2Inputs: inputs, identities });assert.notEqual(r, before, 'a Universe read is a new revision');
   assert.equal(QS.pageResult(win, { v2Inputs: inputs, identities }), QS.pageResult(win, { v2Inputs: inputs, identities }), 'memoized');
   const codes = Object.keys(inputs.records).filter((c) => !c.startsWith('TARGET:'));
-  assert.deepEqual(r.identities.map((c) => c.company_id), [...identities.map((c) => c.company_id), ...codes.filter((c) => !identities.some((x) => x.company_id === c))]);
+  // D12: the identities are the official populations, one row per security: a TARGET identity whose ticker is a Universe code IS
+  // that code (no second row), then every other Universe code; TARGET outside the Universe stay rows (never ranked).
+  const U = QS.universeIdentities(inputs, identities);
+  assert.deepEqual(r.identities.map((c) => c.company_id), U.identities.map((c) => c.company_id));
+  assert.deepEqual(r.identities.map((c) => c.company_id), [...identities.map((c) => c.company_id), ...codes.filter((c) => !identities.some((x) => x.company_id === c || x.ticker.replaceAll('.', '-').toUpperCase() === c.slice(c.indexOf(':') + 1)))]);
+  for (const { company_id, code } of U.target_in_universe) assert.ok(!r.computed.rows[code] && r.computed.rows[company_id], code + ' is the row ' + company_id);
   assert.deepEqual(r.quotes, await QS.collectQuotes(win, { identities, v2Inputs: inputs }), 'the existing collectQuotes, unchanged');
   const direct = QS.compute({ identities: r.identities, v2Inputs: inputs, quotes: structuredClone(r.quotes) }), small = QS.compute({ identities, v2Inputs: inputs, quotes: structuredClone(r.quotes) });
   let withV = 0;for (const c of r.identities) { const a = r.computed.rows[c.company_id].primary, b = direct.rows[c.company_id].primary;assert.equal(a.v, b.v, c.company_id);assert.equal(a.total, b.total, c.company_id);if (Number.isFinite(a.v)) withV++; }
   for (const c of identities) assert.equal(small.rows[c.company_id].primary.v, r.computed.rows[c.company_id].primary.v, 'identity subset ' + c.company_id);
   assert.ok(withV >= 3);
   for (const code of Object.keys(r.quotes)) assert.deepEqual(r.quote_meta[code], { source: 'UNIVERSE_SHEET', as_of: null, stale: null }, 'GOOGLEFINANCE has no price time: freshness 판정 불가 (D10)');
-  const cov = QS.vCoverage(r, inputs), P = cov.population, rows = codes.map((c) => ({ rec: inputs.records[c], p: r.computed.rows[c].primary }));
+  // D12: per code, the row standing for it (a TARGET company's code is its TARGET row) and the record that row was scored from.
+  const cov = QS.vCoverage(r, inputs), P = cov.population, rows = codes.map((c) => { const row = QS.codeRow(r.computed, c), own = inputs.records[c], src = row && row.code !== c && inputs.records[row.code] && own.identity_withdrawn !== true ? row.code : c;return { rec: inputs.records[src], p: row.primary }; });
   assert.equal(P.total, codes.length);assert.equal(P.general + P.financial + P.unknown + P.stopped, P.total);
   assert.equal(P.general, rows.filter((x) => x.rec.published_profile === 'GENERAL').length);assert.ok(P.financial >= 1);
   assert.equal(cov.v.general, rows.filter((x) => x.rec.published_profile === 'GENERAL' && Number.isFinite(x.p.v)).length);
