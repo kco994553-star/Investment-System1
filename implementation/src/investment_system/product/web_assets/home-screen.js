@@ -169,8 +169,10 @@
    '<div data-home-personal-feed aria-busy="true"><p class="small">'+esc(T(locale,'불러오는 중…','Loading…'))+'</p></div>'+
    '<a class="home-personal-all" href="#watchlist">'+esc(T(locale,'관심 기업 화면에서 전체 보기','See everything on the watchlist screen'))+' <span aria-hidden="true">→</span></a>';
   const news=typeof root.NewsSignals==='object'?root.NewsSignals:null,dart=typeof root.DartDisclosures==='object'?root.DartDisclosures:null;
-  personalLoad=personalLoad||Promise.all([root.SecDisclosures.load(root),news?news.load(root):null,dart?dart.load(root):null]).catch(()=>[null,null,null]);
-  personalLoad.then(([sec,signals,dartPayload])=>{
+  // The same in-tab copy of the list files as every other screen (DataRefresh: one read per publication, D6).
+  const R=root.DataRefresh,lists=R?Promise.all([R.list(root,'sec'),news?R.list(root,'news'):null,dart?R.list(root,'dart'):null]).catch(()=>[null,null,null])
+   :(personalLoad=personalLoad||Promise.all([root.SecDisclosures.load(root),news?news.load(root):null,dart?dart.load(root):null]).catch(()=>[null,null,null]));
+  lists.then(([sec,signals,dartPayload])=>{
    const feed=host.querySelector('[data-home-personal-feed]');if(token!==personalToken||!feed||!feed.isConnected)return;
    // storage:null keeps the news screen's own view options untouched (home shows the default, newest first).
    const tmp=doc.createElement('div'),opts={locale,companyIds:ids,limit:5,interests:ids,storage:null};

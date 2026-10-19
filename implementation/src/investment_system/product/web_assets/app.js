@@ -227,7 +227,7 @@ function rebuildSearchIndex() {
 function ensureUniverseDirectory() {
   if(universeDirectoryPromise || !window.SecUniverseShares) return universeDirectoryPromise;
   universeDirectory={state:"LOADING"};
-  universeDirectoryPromise=SecUniverseShares.loadInputs(window).then(inputs=>{
+  universeDirectoryPromise=DataRefresh.shares(window).then(inputs=>{
     universeDirectory=inputs?{state:"READY",as_of:inputs.as_of,records:inputs.publicShares}:{state:"NOT_AVAILABLE",reason:"SEC_UNIVERSE_SHARES_NOT_PUBLISHED"};
   }).catch(e=>{universeDirectory={state:"NOT_AVAILABLE",reason:["SEC_UNIVERSE_SHARES_INVALID","SEC_UNIVERSE_SHARES_SCHEMA_NEWER"].includes(e?.message)?e.message:"SEC_UNIVERSE_SHARES_UNAVAILABLE"};}).then(()=>{
     if(!searchIndex) return;rebuildSearchIndex();paintGlobalSearch();
@@ -398,18 +398,16 @@ function companyGroups(id){return `<p class="small">${t("관심·그룹은 이 �
 function weekFilings(){const p=publicScreens["sec-filing-windows.json"],rows=p?.data?.companies;if(!rows)return "NOT_AVAILABLE";const known=prefs.interests.filter(id=>rows[id]&&rows[id].state!=="NOT_AVAILABLE");if(!known.length)return "NOT_AVAILABLE";const en=appSettings.display_locale==="en-US",week=Date.now()-7*86400000,status=known.map(id=>PublicScreens.earningsStatus(rows[id])).filter(Boolean),estimated=status.filter(s=>s.status==="ESTIMATED"&&s.window.days_until_start<=6).length,confirmed=status.filter(s=>s.status==="CONFIRMED"&&Date.parse(s.date+"T00:00:00Z")>=week).length;return (estimated+confirmed)+" · "+esc(en?"estimated "+estimated+" · confirmed "+confirmed:"추정 "+estimated+" · 확인 "+confirmed)+" · "+esc(t("예상 시기 · 확정일 아님"));}
 // '공시·확정' (SEC 8-K, DART when its reader exists) + '뉴스·신호' (news-signals.json) in one chronological list; one lazy public read each.
 // S07 lists all (or the company in context), S15 the interest companies. Nothing here changes any score.
-let disclosuresPromise=null;
+// The files are read once per publication by DataRefresh and shared with the 4.3 tree example (D6).
 function paintDisclosures(host,companyIds,emptyText){if(!host||typeof SecDisclosures!=="object")return;const dart=typeof DartDisclosures==="object"&&!$(host.id==="news-disclosures"?"#news-dart-disclosures":"#watch-dart-disclosures")?DartDisclosures:null,news=typeof NewsSignals==="object"?NewsSignals:null;
- disclosuresPromise=disclosuresPromise||Promise.all([SecDisclosures.load(window),news?news.load(window):null,dart?dart.load(window):null]);
- disclosuresPromise.then(([sec,signals,dartPayload])=>{if(!host.isConnected)return;const options={locale:appSettings.display_locale,companyIds,emptyText};if(news)news.mount(host,{sec,news:signals,dart:dartPayload},Object.assign(options,{secApi:SecDisclosures,dartApi:dart,...newsTiers()}));else SecDisclosures.mount(host,sec,options);});}
+ Promise.all([DataRefresh.list(window,'sec'),news?DataRefresh.list(window,'news'):null,dart?DataRefresh.list(window,'dart'):null]).then(([sec,signals,dartPayload])=>{if(!host.isConnected)return;const options={locale:appSettings.display_locale,companyIds,emptyText};if(news)news.mount(host,{sec,news:signals,dart:dartPayload},Object.assign(options,{secApi:SecDisclosures,dartApi:dart,...newsTiers()}));else SecDisclosures.mount(host,sec,options);});}
 // Importance tiers for the news/disclosure list: interests = this device's watchlist (prefs), held = companies in the
 // portfolio snapshot already in page memory (D.portfolio, the same set paintNews uses). Device ACTUAL holdings live in
 // IndexedDB and are not read here; without a snapshot in memory held stays null (the list then says "holdings not connected").
 function newsTiers(){const rows=D&&D.portfolio&&D.portfolio.data&&Array.isArray(D.portfolio.data.holdings)?D.portfolio.data.holdings:null;
  return{interests:[...prefs.interests],held:rows?rows.map(h=>h&&h.company_id).filter(x=>typeof x==='string'):null};}
 // DART disclosures (042700): same '공시·확정' record format as SEC 8-K, own public file; one lazy read. S07 all (or the company in context), S15 interest companies.
-let dartDisclosuresPromise=null;
-function paintDartDisclosures(host,companyIds,emptyText){if(!host||typeof DartDisclosures!=="object")return;dartDisclosuresPromise=dartDisclosuresPromise||DartDisclosures.load(window);dartDisclosuresPromise.then(p=>{if(host.isConnected)DartDisclosures.mount(host,p,{locale:appSettings.display_locale,companyIds,emptyText});});}
+function paintDartDisclosures(host,companyIds,emptyText){if(!host||typeof DartDisclosures!=="object")return;DataRefresh.list(window,'dart').then(p=>{if(host.isConnected)DartDisclosures.mount(host,p,{locale:appSettings.display_locale,companyIds,emptyText});});}
 function watchlist(){return heading("WATCHLIST",t("관심 기업"))+directoryFilters("watch",true)+`<p class="meta">${t("이 휴대폰에만 저장 · 백업으로 이동")}</p><div class="grid">${["평균 QGV","재평가 신호","이번 주 실적","새 뉴스"].map(x=>`<section class="card"><h2>${t(x)}</h2><p${x==="이번 주 실적"?" data-week-filings":""}>${x==="이번 주 실적"?weekFilings():"NOT_AVAILABLE"}</p></section>`).join("")}</div><ul class="list" id="watchlist-company-list"></ul><div id="watch-disclosures"></div><div id="watch-dart-disclosures"></div><a href="#leaderboard/interest">${t("리더보드에서 관심 기업만 보기 →")}</a><details><summary>${t("관심기업 · Groups(그룹) 관리")}</summary>${groupsUI()}</details>`;}
 function companies() {
   return heading("COMPANIES",t("기업 탐색"))+`<input type="search" id="search" aria-label="${t("기업 검색")}" placeholder="${t("티커 또는 기업명 검색")}"><div class="chips"><label><input type="checkbox" id="only-interest"> ${t("관심기업만")}</label><select id="group-filter" aria-label="${t("그룹 필터")}"><option value="">${t("모든 그룹")}</option>${prefs.groups.map(g=>`<option value="${esc(g.id)}">${esc(g.name)}</option>`).join("")}</select></div><select id="company-sort" aria-label="정렬"><option value="ticker">티커 순</option><option value="name">기업명 순</option><option value="favorites">관심기업 우선</option></select><p class="meta">${D.universe.withheld?esc(D.universe.state)+" · "+esc(t(D.universe.withheld.reason || WITHHELD_REASON)):esc(D.universe.as_of)+" · FROZEN_SNAPSHOT / DEMO"}</p><ul class="list" id="company-list"></ul><button id="more-companies">${t("더보기")}</button><details><summary>${t("관심기업 · Groups(그룹) 관리")}</summary>${groupsUI()}</details>`;
@@ -516,7 +514,7 @@ function portfolio() {
 function leaderboard() {
   const l=D.leaderboard.data;
   return heading("LEADERBOARD",appSettings.display_locale==='en-US'?"Company research":"기업 연구")+
-  `<details><summary>${appSettings.display_locale==='en-US'?'My device':'내 기기 기준'}</summary><div id="private-subset-root"></div></details>`+directoryFilters('leader')+'<p class="small leader-summary" id="leader-summary" data-leaderboard-summary role="status"></p><div id="leaderboard-screen"></div><div id="v-coverage-root"></div><p class="small">고정 대상 기업의 이름·코드 · 가격·공식 순위 미포함</p><ul class="list" id="leader-company-list"></ul><div id="sec-reported-panel"></div><div id="public-qg"></div><div id="leader-m2-panel">'+m2Panel()+'</div>'+block("leaderboard",t("제공된 Leaderboard"),`<ul class="list">${(l?.rows || []).map(r=>`<li class="card"><a href="#company/${encodeURIComponent(r.company_id)}"><b>#${esc(r.rank)} ${esc(r.ticker)}</b></a>${star(r.company_id)}<dl>${[[t("시총 순위"),r.market_cap_rank],["QGV",r.total_score],[t("Daily move(전일 등락)"),r.daily_move],[t("Consensus(컨센서스)"),r.consensus],[t("Scenario(시나리오)"),r.scenario],[t("Reevaluation(재평가 기준)"),r.reevaluation_trigger]].map(([k,v])=>`<dt>${t(k)}</dt><dd>${fmt(v)}</dd>`).join("")}</dl>${evidence(r)}</li>`).join("")}</ul>`);
+  `<details><summary>${appSettings.display_locale==='en-US'?'My device':'내 기기 기준'}</summary><div id="private-subset-root"></div><p class="small" id="universe-price-time" data-universe-price-time></p></details>`+directoryFilters('leader')+'<p class="small leader-summary" id="leader-summary" data-leaderboard-summary role="status"></p><div id="leaderboard-screen"></div><div id="v-coverage-root"></div><p class="small">고정 대상 기업의 이름·코드 · 가격·공식 순위 미포함</p><ul class="list" id="leader-company-list"></ul><div id="sec-reported-panel"></div><div id="public-qg"></div><div id="leader-m2-panel">'+m2Panel()+'</div>'+block("leaderboard",t("제공된 Leaderboard"),`<ul class="list">${(l?.rows || []).map(r=>`<li class="card"><a href="#company/${encodeURIComponent(r.company_id)}"><b>#${esc(r.rank)} ${esc(r.ticker)}</b></a>${star(r.company_id)}<dl>${[[t("시총 순위"),r.market_cap_rank],["QGV",r.total_score],[t("Daily move(전일 등락)"),r.daily_move],[t("Consensus(컨센서스)"),r.consensus],[t("Scenario(시나리오)"),r.scenario],[t("Reevaluation(재평가 기준)"),r.reevaluation_trigger]].map(([k,v])=>`<dt>${t(k)}</dt><dd>${fmt(v)}</dd>`).join("")}</dl>${evidence(r)}</li>`).join("")}</ul>`);
 }
 function news(id) {
   const c=company(id);
@@ -624,8 +622,9 @@ function directoryRows(prefix){return DeviceWatchlist.filter(identityCompanies,p
    storage is unavailable). No score, rank, price or v2 profile is stored: the v2 preset/gate stay in page memory (qgv2Profile). */
 const S06_KEY='investment.web.v1.s06-view',LEADER_SORTS=LeaderboardScreen.SORT_IDS;
 let leaderboardView={view:'default',profileId:null,interest:false,group:'',sort:'qgv',query:'',explore:'all',scrollY:0,anchor:null,offset:0},leaderboardRows=null,companyOrigin=null;
-// S06 exploration filter (FE-MISSING-2): all / QGV available / some axes only / check data (LeaderboardScreen.EXPLORE).
-const LEADER_EXPLORE=['all','ranked','partial','check'];
+// S06 exploration filter (FE-MISSING-2): all / official QGV ranking / QG 참고 목록 (V 미포함, D11) / some axes only / check data
+// (LeaderboardScreen.EXPLORE).
+const LEADER_EXPLORE=['all','ranked','qg','partial','check'];
 // Last value written (or the defaults): nothing is written until the state differs from it, so screens never touched
 // leave sessionStorage empty.
 let leaderSaved=JSON.stringify({...leaderboardView,origin:null});
@@ -643,7 +642,8 @@ function restoreLeaderScroll(){const v=leaderboardView,row=v.anchor?document.que
 // position is not overwritten in between.
 let leaderRestoring=false;
 function restoreLeaderView(){leaderRestoring=true;restoreLeaderScroll();requestAnimationFrame(()=>requestAnimationFrame(()=>{if(currentRoute==='leaderboard')restoreLeaderScroll();leaderRestoring=false;}));}
-// 'QGV v2 순': the v2 rank over all 19 identities (QgvScores); filters only hide rows. No rank (NOT_AVAILABLE) goes last, by ticker.
+// 'QGV v2 순': the official v2 rank over all 19 identities (QgvScores, rows with V), then the QG 참고 목록 (V 미포함) in its own
+// order (D11); filters only hide rows. No total (NOT_AVAILABLE) goes last, by ticker.
 // Other S06 sort keys (Q/G/V, direction, data date, M3 market cap): structured values, NA last (LeaderboardScreen.sortRows).
 function rankOrder(rows,S){return LeaderboardScreen.sortRows(rows,S,leaderboardView.sort,{deviceRanks:window.PrivateSubsetView?.ranks?.()||null});}
 function paintLeaderSummary(S,shown){const host=$('#leader-summary');if(!host)return;const en=appSettings.display_locale==='en-US',v=leaderboardView,group=prefs.groups.find(g=>g.id===v.group);
@@ -667,7 +667,23 @@ function refreshScoreViews(){const[route,raw]=location.hash.slice(1).split('/');
  if(route==='leaderboard'&&leaderboardRows&&$('#leaderboard-screen'))paintLeaderboardScreen(leaderboardRows);
  else if(route==='company'&&id)repaintScores(()=>detail(id));else if(route==='analysis'&&id)repaintScores(()=>analysis(id));}
 function qgvScores(identities=identityCompanies){return QgvScores.compute({identities,publicScreens,quotes:qgv2Quotes,preset:qgv2Profile.preset,gate:qgv2Profile.gate,referenceRows:typeof dartReferenceRows==='function'?dartReferenceRows():{}});}
-async function refreshQgv2Quotes(after){const inputs=window.Qgv2Inputs?publicScreens[Qgv2Inputs.FILE]:null;if(!inputs)return;let catalog=null;try{catalog=await deviceCatalog();}catch(_){catalog=null;}
+/* S06 scores (owner rule 2026-10-18: the same input gives the same V and counts on every screen): the device quotes come from the ONE
+   shared QgvScores.pageResult that the V coverage panel and the stat radar read (same inputs, catalog, identities, preset, gate ->
+   the same memoized result), and the screen identities are ranked with exactly those quotes (the rank population stays the S06
+   identities; QgvScores splits the official ranking from the QG 참고 목록, D11). Before that result exists no device price is used.
+   RAM only: nothing is stored, sent or logged. */
+let leaderPage=null;
+function leaderScores(){const inputs=window.Qgv2Inputs?publicScreens[Qgv2Inputs.FILE]:null,page=leaderPage&&leaderPage.inputs===inputs?leaderPage.result:null;// quotes do not depend on preset/gate
+ return QgvScores.compute({identities:identityCompanies,publicScreens,quotes:page?page.quotes:{},preset:qgv2Profile.preset,gate:qgv2Profile.gate,referenceRows:typeof dartReferenceRows==='function'?dartReferenceRows():{}});}
+async function refreshLeaderPage(after){const inputs=window.Qgv2Inputs?publicScreens[Qgv2Inputs.FILE]:null;if(!inputs||typeof QgvScores.pageResult!=='function')return;const{preset,gate}=qgv2Profile;let catalog=null;try{catalog=await deviceCatalog();}catch(_){catalog=null;}
+ let r=null;try{r=await QgvScores.pageResult(window,{v2Inputs:inputs,catalog,identities:identityCompanies,preset,gate});}catch(_){r=null;}if(!r||leaderPage&&leaderPage.result===r)return;
+ // The Universe read is dropped when the user navigates away (PrivateSubsetView dispose, no onRanks): S06 keeps this page session's
+ // last read, as before. A new read or 'clear device results' (onRanks) resets leaderPage, so a clear does show the no-price state.
+ if(leaderPage&&leaderPage.inputs===inputs&&leaderPage.result.price_basis&&!r.price_basis)return;
+ leaderPage={inputs,result:r};
+ // The same quotes also seed this page session's quotes (S04/S05/S13 read them after navigation, as the S06 refresh did before).
+ const next={...qgv2Quotes,...r.quotes},k=JSON.stringify(next);if(k!==qgv2QuotesKey){qgv2Quotes=next;qgv2QuotesKey=k;}if(after)after();}
+async function refreshQgv2Quotes(after){if(DataRefresh.quiet())return;const inputs=window.Qgv2Inputs?publicScreens[Qgv2Inputs.FILE]:null;if(!inputs)return;let catalog=null;try{catalog=await deviceCatalog();}catch(_){catalog=null;}
  let q={};try{q=await QgvScores.collectQuotes(window,{identities:identityCompanies,v2Inputs:inputs,catalog});}catch(_){q={};}// Quotes accumulate for this page session (the Universe read is dropped on navigation); a Universe read/clear resets them.
  const next={...qgv2Quotes,...q},k=JSON.stringify(next);if(k===qgv2QuotesKey)return;qgv2Quotes=next;qgv2QuotesKey=k;if(after)after();}
 // M3 ranks come from the open Universe read (RAM only) and are repainted into S06 when that read finishes or is cleared.
@@ -676,14 +692,14 @@ async function refreshQgv2Quotes(after){const inputs=window.Qgv2Inputs?publicScr
 function focusKey(n){if(!n||!n.dataset)return null;for(const k of ['qgv2Preset','leaderboardView','leaderboardProfile','qgv2Gate','leaderboardExploreOption'])if(Object.hasOwn(n.dataset,k))return '[data-'+k.replace(/[A-Z]/g,c=>'-'+c.toLowerCase())+(n.dataset[k]?'="'+CSS.escape(n.dataset[k])+'"':'')+']';
   return n.getAttribute('aria-controls')?'[aria-controls="'+CSS.escape(n.getAttribute('aria-controls'))+'"]':null;}
 function paintLeaderboardScreen(rows){leaderboardRows=rows;let profiles=[];try{profiles=DeviceProfiles.read(localStorage).strategies;}catch(_){profiles=[];}
- const host=$('#leaderboard-screen'),S=qgvScores(),shown=rankOrder(rows,S),active=host&&host.contains(document.activeElement)?focusKey(document.activeElement):null;
+ const host=$('#leaderboard-screen'),S=leaderScores(),shown=rankOrder(rows,S),active=host&&host.contains(document.activeElement)?focusKey(document.activeElement):null;
  const mounted=LeaderboardScreen.mount(host,shown,{publicScreens,locale:appSettings.display_locale,nameOf:id=>EntitySearch.companyName(companyNames?.get(id)||null,appSettings.display_locale),profiles,deviceRanks:window.PrivateSubsetView?.ranks?.()||null,view:leaderboardView.view,profileId:leaderboardView.profileId,scores:S,explore:leaderboardView.explore,onView:patch=>{if(Object.hasOwn(patch,'preset')||Object.hasOwn(patch,'gate')){qgv2Profile={...qgv2Profile,...patch};paintLeaderboardScreen(rows);return;}leaderboardView={...leaderboardView,...patch};saveLeaderView();if(leaderboardView.view==='device'){const d=$('#private-subset-root')?.closest('details');if(d)d.open=true;}paintLeaderboardScreen(rows);}});
  if(active){const n=host&&host.querySelector(active);if(n)n.focus({preventScroll:true});}
  paintLeaderSummary(S,mounted&&Number.isInteger(mounted.shown)?mounted.shown:shown.length);
  void window.VCoverage?.paint($('#v-coverage-root'),{publicScreens,catalog:deviceCatalog,identities:identityCompanies,preset:qgv2Profile.preset,gate:qgv2Profile.gate,locale:appSettings.display_locale});// V 산출 현황 · 이 기기 (QgvScores.pageResult, RAM only)
- void refreshQgv2Quotes(()=>{if(leaderboardRows===rows&&$('#leaderboard-screen'))paintLeaderboardScreen(rows);});}
+ void refreshLeaderPage(()=>{if(leaderboardRows===rows&&$('#leaderboard-screen'))paintLeaderboardScreen(rows);});}
 function paintDirectory(route){const prefix=route==='watchlist'?'watch':'leader';if(route==='leaderboard')syncLeaderView();
- const rows=route==='leaderboard'?rankOrder(directoryRows(prefix),qgvScores()):directoryRows(prefix),list=$('#'+(route==='watchlist'?'watchlist':'leader')+'-company-list');list.innerHTML=rows.map(row).join('')||'<li class="empty">'+t("일치하는 기업이 없습니다.")+'</li>';if(route==='leaderboard'){const companyIds=rows.map(r=>r.company_id);paintLeaderboardScreen(rows);$('#leader-m2-panel').innerHTML=m2Panel(undefined,companyIds);SecReported.mount($('#sec-reported-panel'),secReported,{companyIds,locale:appSettings.display_locale});PublicScreens.mount($('#public-qg'),publicScreens,{kind:'qg',companyIds,locale:appSettings.display_locale});}}
+ const rows=route==='leaderboard'?rankOrder(directoryRows(prefix),leaderScores()):directoryRows(prefix),list=$('#'+(route==='watchlist'?'watchlist':'leader')+'-company-list');list.innerHTML=rows.map(row).join('')||'<li class="empty">'+t("일치하는 기업이 없습니다.")+'</li>';if(route==='leaderboard'){const companyIds=rows.map(r=>r.company_id);paintLeaderboardScreen(rows);$('#leader-m2-panel').innerHTML=m2Panel(undefined,companyIds);SecReported.mount($('#sec-reported-panel'),secReported,{companyIds,locale:appSettings.display_locale});PublicScreens.mount($('#public-qg'),publicScreens,{kind:'qg',companyIds,locale:appSettings.display_locale});}}
 
 function paintNews(id) {
   const c=company(id),scope=$("#news-scope").value,held=D.portfolio.data?.holdings?.map(h=>h.company_id) || [];
@@ -883,7 +899,7 @@ function renderRoute() {
   const restoreLeader=route==='leaderboard' && ['company','analysis'].includes(previousRoute);
   if(route==='leaderboard' && id==='interest') leaderboardView={...leaderboardView,interest:true};
   $("#content").innerHTML=routes[route]();
-  if(route==='leaderboard') void PrivateSubsetView.mount($('#private-subset-root'),{locale:appSettings.display_locale,config:window.InvestmentAppConfig,interests:()=>[...prefs.interests],onRanks:()=>{qgv2Quotes={};qgv2QuotesKey='';if(leaderboardRows&&$('#leaderboard-screen'))paintLeaderboardScreen(leaderboardRows);}});
+  if(route==='leaderboard') void PrivateSubsetView.mount($('#private-subset-root'),{locale:appSettings.display_locale,config:window.InvestmentAppConfig,interests:()=>[...prefs.interests],onRanks:()=>{qgv2Quotes={};qgv2QuotesKey='';leaderPage=null;const pt=$('#universe-price-time');if(pt)pt.innerHTML=window.PriceTime?PriceTime.sourceHtml(PrivateSubsetView.priceBasis?.()||null,{locale:appSettings.display_locale}):'';if(leaderboardRows&&$('#leaderboard-screen'))paintLeaderboardScreen(leaderboardRows);}});
   if(['playbook','portfolio','company'].includes(route)&&window.PlaybookScreen){const place=route==='playbook'?$('#playbook-screen'):document.createElement('div');if(route!=='playbook')$('#content').append(place);void PlaybookScreen.mount(place,{catalogPromise:deviceCatalog(),scoreOptions:playbookScoreOptions,screens:publicScreens,idByTicker:new Map(identityCompanies.map(r=>[r.ticker,r.company_id])),publicCatalog,interests:[...prefs.interests],universeCodesPromise:fetch('universe-codes.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(p=>p?.schema==='universe-codes/1'&&Array.isArray(p.codes)?p.codes:[]).catch(()=>[]),full:route==='playbook'}).catch(()=>{if(place.isConnected)place.textContent='플레이북 확인 불가 · 기기 기록을 읽을 수 없습니다.';});}
   if(route==='brief'&&window.PlaybookScreen){try{$('#content').insertAdjacentHTML('afterbegin',PlaybookScreen.todayHtml(localStorage));}catch(_){}}
   if(route==='actual') attachDeviceActual('#device-actual-root',true);
@@ -903,7 +919,7 @@ function renderRoute() {
     if(tvSymbol) tvSymbol.addEventListener('change',tvChart);tvChart();}
   if(route==='brief') TradingViewWidgets.mountTickerTape($('#tv-ticker-tape'),{locale:appSettings.display_locale});
   if(route==='company' && $('#tradingview-mini')) TradingViewWidgets.mountMini($('#tradingview-mini'),{companyId:id,locale:appSettings.display_locale});
-  if(route==='company' && $('#private-history-chart')) void PrivateHistory.mount($('#private-history-chart'),{companyId:id,locale:appSettings.display_locale,config:window.InvestmentAppConfig,getAverage:deviceAverageCost,onData:value=>paintValue(route,id,value&&typeof value.close==='number'?{price:value.close,currency:value.currency,as_of:value.asOf,source:'PRIVATE_HISTORY_CLOSE'}:null)});
+  if(route==='company' && $('#private-history-chart')) void PrivateHistory.mount($('#private-history-chart'),{companyId:id,locale:appSettings.display_locale,config:window.InvestmentAppConfig,getAverage:deviceAverageCost,onData:value=>paintValue(route,id,value&&typeof value.close==='number'?{price:value.close,currency:value.currency,as_of:value.asOf,read_at:value.readAt||null,source:'PRIVATE_HISTORY_CLOSE'}:null)});
   // Price store (user's Prices_M tab): the first open of a company stores its 5-year month-ends once (counts shown only).
   if(route==='company' && window.PriceStore) {const symbol=PrivateHistory.symbolFor(id)||PriceStore.universeSymbol(id);if(symbol){const host=document.createElement('div');host.id='company-price-store';const anchor=$('#private-history-chart');if(anchor)anchor.after(host);else $('#content').append(host);PriceStore.mountCompany(host,{symbol,locale:appSettings.display_locale});}}
   if(route==='company'||route==='leaderboard'||route==='analysis') SecReported.mount($('#sec-reported-panel'),secReported,{companyId:route==='leaderboard'?undefined:id,locale:appSettings.display_locale});
@@ -912,7 +928,7 @@ function renderRoute() {
   if(route==='validation') ForwardValidation.mount($('#forward-validation-root'),{locale:appSettings.display_locale,config:window.InvestmentAppConfig});
   if(route==='types') DeviceProfiles.mount($('#device-type-editor'),{locale:appSettings.display_locale,mode:'types'});
   if(route==='macro') MacroLights.mount($('#macro-lights-root'),{bundle:publicScreens,locale:appSettings.display_locale,config:window.InvestmentAppConfig});
-  for(const kind of ['qg','types','filings','macro','thirteenf']) PublicScreens.mount($('#public-'+kind),publicScreens,{kind,companyId:route==='company'?id:route==='settings'?rawDataCompanyId()||undefined:undefined,locale:appSettings.display_locale,...(kind==='thirteenf'?{catalog:publicCatalog,interests:[...prefs.interests]}:{})});
+  mountPublicPanels(route,id);
   syncNavigation(route);
   const menu=window.AppShell?.menuFor(route);
   if(menu) $("#content").insertAdjacentHTML("afterbegin",`<p class="flow-step" data-flow-step="${esc(menu.num)}" data-menu="${esc(menu.key)}"><span class="flow-number">${esc(menu.num)}</span> ${esc(menu.label)}</p>`+AppShell.subNavHtml(route));
@@ -1180,10 +1196,10 @@ function dartReferenceRows(){
 }
 Promise.all([...(["data.json","entities.json","sec-m2-candidates.json"].map(path=>fetch(path,{cache:"no-store"}).then(r=>{
   if(!r.ok) throw Error("HTTP "+r.status);return r.json();
-}).catch(error=>{if(path==="sec-m2-candidates.json")return null;throw error;}))),SecReported.load(window),PublicScreens.load(window).then(s=>typeof ClassificationScreens==="object"?ClassificationScreens.load(window).then(c=>{if(c)s[ClassificationScreens.FILE]=c;return s;}):s).then(s=>typeof Qgv2Inputs==="object"?Qgv2Inputs.load(window).then(v=>{if(v)s[Qgv2Inputs.FILE]=v;return s;}):s),deviceCatalog().catch(()=>null)]).then(([data,catalog,candidates,reported,screens,identities])=>{
+}).catch(error=>{if(path==="sec-m2-candidates.json")return null;throw error;}))),DataRefresh.load(window),deviceCatalog().catch(()=>null)]).then(([data,catalog,candidates,{reported,screens},identities])=>{
   try{if(identities){DeviceMarket.emptyMarket(identities);identityCompanies=DeviceWatchlist.identities(identities);}}catch(_){identityCompanies=[];}
   publicScreens=screens;publicCatalog=identities||null;
-  if(window.DartDisclosures?.loadFinancials)void DartDisclosures.loadFinancials(window).then(financials=>{if(financials){publicScreens['dart-financials.json']=financials;if(window.QgvScores)refreshScoreViews();}});
+  if(window.DartDisclosures?.loadFinancials)void DataRefresh.financials(window).then(financials=>{if(financials){publicScreens['dart-financials.json']=financials;if(window.QgvScores)refreshScoreViews();}});
   // Macro lights v1: public lights only until the device loads SPY on the macro screen (RAM, read by MacroLights.current()).
   try{MacroLights.setPublic(publicScreens);}catch(_){}
   secReported=reported;
@@ -1197,6 +1213,18 @@ Promise.all([...(["data.json","entities.json","sec-m2-candidates.json"].map(path
   // App open: with the price store on and Google connected, append the core symbols' daily bars after the last stored date.
   try{if(window.PriceStore) PriceStore.autoSync(window,{coreSymbols:priceStoreCore});}catch(_){}
 }).catch(showUnavailable);
+// '자료 새로고침' (data-refresh.js; FRONTEND_DATA_CONTRACT D1, D2, D5, D6): DataRefresh reads one public publication set and hands
+// it over here at once. Device quotes, settings and private sessions stay. The open screen is repainted in place (no route
+// re-mount, and no device quote collection while DataRefresh.quiet()), so no Worker or Sheets request is made.
+function mountPublicPanels(route,id){for(const kind of ['qg','types','filings','macro','thirteenf']) PublicScreens.mount($('#public-'+kind),publicScreens,{kind,companyId:route==='company'?id:route==='settings'?rawDataCompanyId()||undefined:undefined,locale:appSettings.display_locale,...(kind==='thirteenf'?{catalog:publicCatalog,interests:[...prefs.interests]}:{})});}
+DataRefresh.attach(window,{route:()=>D?currentRoute:null,render,
+ apply(set){publicScreens=set.screens;secReported=set.reported;try{MacroLights.setPublic(publicScreens);}catch(_){}if(set.shares)universeDirectory=set.shares;if(searchIndex){rebuildSearchIndex();paintGlobalSearch();}},
+ inPlace(){if(!D)return false;const[route,raw]=location.hash.slice(1).split('/');let id='';try{id=decodeURIComponent(raw||'');}catch(_){id='';}
+  if(route==='leaderboard'&&$('#leaderboard-screen')){paintDirectory(route);return true;}
+  if((route==='company'||route==='analysis')&&id){refreshScoreViews();if(window.UniverseCompany&&universeCode(id))UniverseCompany.repaint($('#content'),{locale:appSettings.display_locale,screens:publicScreens,shares:universeDirectory,quotes:qgv2Quotes,names:companyNames,catalogPromise:deviceCatalog()});
+   else{if(route==='analysis'){const f=document.createElement('div');f.innerHTML=analysis(id,location.hash.slice(1).split('/')[2]||null);const live=$('#content [data-analysis-panel="financials"]'),next=f.querySelector('[data-analysis-panel="financials"]');if(live&&next)live.innerHTML=next.innerHTML;}if(window.StatRadar)void StatRadar.mount(document,{catalogPromise:deviceCatalog()});}SecReported.mount($('#sec-reported-panel'),secReported,{companyId:id,locale:appSettings.display_locale});mountPublicPanels(route,id);return true;}
+  if(route==='settings'&&$('#ops-status')){OpsStatus.mount($('#ops-status'),{secReported,secStatus:SecReported.status?.()||null,screens:publicScreens},{locale:appSettings.display_locale});mountRawData();return true;}
+  return false;}});
 
 async function exportDeviceBackup(){
   try{const catalog=await deviceCatalog();DeviceBackup.download(window,await DeviceBackup.read(window,catalog));}

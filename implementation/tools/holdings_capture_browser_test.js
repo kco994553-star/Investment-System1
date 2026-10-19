@@ -159,7 +159,7 @@ function verify(value, label) { if (!value) { const error = new Error(label); er
       const summary = page.locator('[data-actual-summary]');
       await summary.locator('[data-holdings-source="HOLDINGS_TAB"]').waitFor();
       const summaryText = await summary.textContent();
-      verify(summaryText.includes('Worker 종가 · 일봉 · 정보용') && summaryText.includes('세션일 종가'), 'TEL valued with the Worker close in the actual view');
+      verify(summaryText.includes('Worker 종가 · 일봉 · 정보용') && summaryText.includes('가격 기준일 '), 'TEL valued with the Worker close in the actual view');
       verify(summaryText.includes('cost_krw ÷ quantity (원화 매입금액 기준)'), 'in-scope cost basis shown');
       const ko = await summary.locator('[data-outside-symbol="KO"]').textContent();
       verify(ko.includes('Worker 종가 · 일봉 · 정보용') && ko.includes('QGV') && ko.includes('OUT_OF_SCOPE'), 'approved Universe KO has price without expanding QGV allocation');

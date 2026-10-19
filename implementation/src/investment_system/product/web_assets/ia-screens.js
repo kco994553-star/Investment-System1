@@ -4,7 +4,8 @@
    ResearchIndicators, MacroLights, VirtualTrading); nothing here restates a number of its own. "예시 값" under a tree come
    only from published public data already loaded by the app (sec-qgv2.json, macro-screen.json, sec-disclosures.json,
    news-signals.json, actual-catalog.json), each with its file and time. Where no real value exists the example says NA
-   and why; a price-based value is never shown here (prices stay on the device, GSQ-010). Sections without an engine say
+   and why; a price-based value is never shown here (prices are never published, GSQ-010: they live in this browser's memory,
+   the user's private Google Sheet or this browser's storage). Sections without an engine say
    NOT_AVAILABLE and what is missing; no position, probability or chart is drawn for them. Presentation only: no storage,
    no request of its own except reading the same public disclosure/news files the news screen reads. */
 (function(root){
@@ -52,7 +53,7 @@
   const tree=node('root',esc(T(l,'QGV 점수','QGV score')),esc(weightNote(l)),[
    node('input',esc(T(l,'입력','Inputs')),esc(T(l,'SEC companyfacts · submissions(10-K/10-Q) → 지표 계산 → 업종 안 백분위(0~100). V는 공개 v_inputs_v2 + 이 기기 시세','SEC companyfacts · submissions (10-K/10-Q) → metrics → percentile within the industry (0–100). V: public v_inputs_v2 + this device’s prices'))),
    axisNode('Q'),axisNode('G'),axisNode('V'),
-   node('extra',esc(T(l,'스탯창(레이더) — QGV가 못 담는 것','Stat window (radar) — what QGV misses')),'<span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> '+esc(T(l,'축·공식·비교군 결정 대기(RADAR-AXES, IA-10). 그림을 만들지 않습니다.','Axes, formulas and peer groups pending (RADAR-AXES, IA-10). Nothing is drawn.')))]);
+   node('extra',esc(T(l,'스탯창(레이더) — QGV + QGV가 못 담는 것','Stat window (radar) — QGV + what QGV misses')),root.StatRadar?'<span class="badge'+(root.StatRadar.DECISION.state==='DECIDED'?'':' partial')+'">'+esc(root.StatRadar.DECISION.state==='DECIDED'?T(l,'결정됨','DECIDED'):root.StatRadar.DECISION.state==='CANDIDATE'?T(l,'후보 축 포함','with candidate axes'):'PROVISIONAL')+'</span> '+esc(root.StatRadar.AXES.map(a=>T(l,...a.name)+(a.kind==='PRICE'?T(l,'(후보 축 · 내 가격 자료)',' (candidate · your price data)'):a.kind==='DEVICE_SCORE'?T(l,'(기존 V 경로)',' (existing V path)'):T(l,'(공개)',' (public)'))).join(' · ')+T(l,' · 모든 축 바깥 = 더 좋은 평가 · 보조: 이익률 안정성(선택) · 비교군: 업종 · SIC · 경쟁사(미산출, REL-SOURCE 대기) · ',' · outer = better on every axis · auxiliary: margin stability (optional) · groups: industry · SIC · competitors (n/a, REL-SOURCE pending) · ')+T(l,...root.StatRadar.DECISION.ref)+T(l,' · 예시는 아래',' · example below')):'<span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span>',null,' data-tree-radar-node')]);
   const rules=V?[
    esc(T(l,'축 안 비례 재정규화: 없는 요인을 빼고 남은 비중을 같은 비율로 키웁니다(0으로 채우지 않음).','Proportional renormalisation within an axis: missing factors are dropped and the remaining weights scale up (never filled with 0).')),
    esc(T(l,'축 최소 ','Axis minimum ')+Math.round(V.MIN_AXIS_WEIGHT*100)+T(l,'%: 남은 비중이 이보다 작으면 그 축은 NA.','%: below this remaining weight the axis is NA.')),
@@ -80,6 +81,7 @@
    '<div><dt>V</dt><dd>NA · '+esc(T(l,'기기 계산','device only'))+'</dd></div>'+
    '<div><dt>'+esc(T(l,'자료 기준','As of'))+'</dt><dd data-example-field="as_of">'+esc((p.as_of||'NA')+' · '+T(l,'수집 ','acquired ')+(r.acquired_at||'NA')+' · FY '+(r.fiscal_year_end||'NA'))+'</dd></div></dl>'+
    '<div class="tree-table"><table><thead><tr><th scope="col">'+esc(T(l,'요인','Factor'))+'</th><th scope="col">'+esc(T(l,'비중','Weight'))+'</th><th scope="col">'+esc(T(l,'백분위','Percentile'))+'</th><th scope="col">'+esc(T(l,'세부 지표 원값','Sub-metric raw values'))+'</th></tr></thead><tbody>'+rows.join('')+vRows.join('')+'</tbody></table></div>'+
+   (root.StatRadar?'<div class="tree-radar" data-tree-radar>'+root.StatRadar.html({code},{screens,locale:l})+'</div>':'')+
    '</div>';
  }
  // ---------- 2.4 기술적 분석 ----------
@@ -92,7 +94,7 @@
    node('','2.2 '+esc(T(l,'차트 패턴','Chart patterns')),'<span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> '+esc(T(l,'설계만(FORMED·CONFIRMED·FAILED·INVALIDATED·EXPIRED). 형태 적합도는 상승 확률이 아님','Design only (FORMED · CONFIRMED · FAILED · INVALIDATED · EXPIRED). Shape fit is not a probability'))),
    node('','2.1–2.2 '+esc(T(l,'가격 시나리오','Price scenarios')),'<span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> '+esc(T(l,'확률 근거 = 같은 패턴·정도에서 과거 결과 빈도 · 미산출','Probability basis = past outcome frequency for the same pattern and degree · not computed'))),
    node('','2.3 '+esc(T(l,'내 노트(보라색 펜)','My notes (purple pen)')),'<span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> '+esc(T(l,'저장 위치 결정 대기(DRAW-STORE) · 공식 증거로 쓰지 않음','Storage pending (DRAW-STORE) · never official evidence')))]);
-  const ex='<div data-tree-example-body data-example-state="NOT_AVAILABLE"><p>'+na(l,T(l,'기술적 분석 값은 가격에서 나옵니다. 가격은 이 기기에서만 계산하고 공개하지 않으므로 이 화면에 예시 값이 없습니다. 2.1 화면에서 내 기기 값을 볼 수 있습니다.','Technical values come from prices, which stay on this device and are never published, so no example is shown here. See your device values on 2.1.'))+'</p><p><a href="#technical">2.1 '+esc(T(l,'지표 · 시나리오 →','Indicators →'))+'</a></p></div>';
+  const ex='<div data-tree-example-body data-example-state="NOT_AVAILABLE"><p>'+na(l,T(l,'기술적 분석 값은 가격에서 나옵니다. 가격은 공개하지 않습니다(이 브라우저 메모리에서 계산하며, 저장은 사용자 비공개 구글 시트·이 브라우저에만 둡니다). 그래서 이 화면에 예시 값이 없습니다. 2.1 화면에서 내 값을 볼 수 있습니다.','Technical values come from prices, which are never published (computed in this browser’s memory; stored only in the user’s private Google Sheet or this browser), so no example is shown here. See your values on 2.1.'))+'</p><p><a href="#technical">2.1 '+esc(T(l,'지표 · 시나리오 →','Indicators →'))+'</a></p></div>';
   return page('technical',l,{eyebrow:'2.4 · TECHNICAL STRUCTURE',title:T(l,'기술적 분석 내용구성','Technical analysis structure'),lede:T(l,'입력 → 지표 → 신호 → 패턴 → 시나리오 → 내 노트.','Input → indicators → signals → patterns → scenarios → my notes.'),tree,examples:ex});
  }
  // ---------- 3.6 매크로 ----------
@@ -118,6 +120,9 @@
    '<div class="tree-table"><table><thead><tr><th scope="col">'+esc(T(l,'축','Axis'))+'</th><th scope="col">'+esc(T(l,'계열','Series'))+'</th><th scope="col">'+esc(T(l,'기간','Period'))+'</th><th scope="col">'+esc(T(l,'값','Value'))+'</th><th scope="col">'+esc(T(l,'수집 상한 시각','Available at (capture bound)'))+'</th></tr></thead><tbody>'+
    pick.map(o=>'<tr data-example-series="'+esc(o.source_id)+'"><th scope="row">'+esc(o.axis)+'</th><td>'+esc(o.provider+' · '+o.source_id)+'</td><td>'+esc(o.observation_period)+'</td><td data-example-value>'+esc(o.value+' '+o.unit)+'</td><td>'+esc(o.available_at||'NA')+'</td></tr>').join('')+'</tbody></table></div><p class="small">'+esc(T(l,'파일 기준 ','File as of ')+(p.as_of||'NA'))+'</p></div>';
  }
+ // The same in-tab copy of a public list file as the 4.2 list (DataRefresh: one read per publication, D6); the reader directly
+ // only on a page without DataRefresh.
+ function shared(key,api){return root.DataRefresh&&typeof root.DataRefresh.list==='function'?root.DataRefresh.list(root,key):api.load(root);}
  // ---------- 4.3 뉴스 ----------
  function newsTree(l){
   const tree=node('root',esc(T(l,'뉴스','News')),esc(T(l,'점수를 바꾸지 않음(score_effect NONE) · 정보 제공용','Never changes scores (score_effect NONE) · information only')),[
@@ -131,7 +136,7 @@
  }
  async function newsExamples(l){
   const SD=root.SecDisclosures,NS=root.NewsSignals;let sec=null,news=null;
-  try{[sec,news]=await Promise.all([SD?SD.load(root):null,NS?NS.load(root):null]);}catch(_){sec=null;news=null;}
+  try{[sec,news]=await Promise.all([SD?shared('sec',SD):null,NS?shared('news',NS):null]);}catch(_){sec=null;news=null;}
   const ev=Array.isArray(sec?.events)?[...sec.events].sort((a,b)=>String(b.accepted_at).localeCompare(String(a.accepted_at))):[],it=Array.isArray(news?.items)?[...news.items].sort((a,b)=>String(b.published_at).localeCompare(String(a.published_at))):[];
   const line=(label,file,p,rows,show)=>'<div><dt>'+esc(label)+'</dt><dd data-example-source="'+file+'" data-example-count="'+(p?rows.length:'NA')+'">'+(p?esc(rows.length+T(l,'건 · 파일 기준 ',' items · file as of ')+(p.as_of||'NA'))+(rows[0]?'<br><span class="small">'+esc(T(l,'최신: ','Latest: ')+show(rows[0]))+'</span>':''):na(l,T(l,'파일을 읽을 수 없습니다.','File could not be read.')))+'</dd></div>';
   return '<div data-tree-example-body data-example-state="'+(sec||news?'LOADED':'NOT_AVAILABLE')+'"><p class="small">'+esc(T(l,'공개 파일의 건수와 가장 최근 한 건입니다.','Counts and the newest item of the public files.'))+'</p><dl class="tree-facts">'+
@@ -156,7 +161,7 @@
   return '<div data-tree-example-body data-example-state="'+(ok?'LOADED':'NOT_AVAILABLE')+'"'+(ok?' data-example-source="actual-catalog.json"':'')+'><p class="small">'+esc(T(l,'실제 보유는 예시로 쓰지 않습니다. 공개 목표 목록만 읽습니다.','Actual holdings are never used as examples. Only the public target catalogue is read.'))+'</p><dl class="tree-facts">'+
    '<div><dt>TARGET</dt><dd data-example-count="'+(ok?catalog.instruments.length:'NA')+'">'+(ok?esc(T(l,'확정 목표 ','Confirmed target ')+(catalog.target_root_version||'NA')+' · '+catalog.instruments.length+T(l,'종목',' instruments')+(Array.isArray(catalog.themes)?' · '+catalog.themes.length+T(l,'개 테마',' themes'):'')):na(l,T(l,'actual-catalog.json을 읽을 수 없습니다.','actual-catalog.json could not be read.')))+'</dd></div>'+
    '<div><dt>MODEL</dt><dd>'+na(l,T(l,'생성기 없음','No generator'))+'</dd></div>'+
-   '<div><dt>ACTUAL · PAPER</dt><dd>'+na(l,T(l,'개인 자료 · 이 기기에만 있음','Personal data · on this device only'))+'</dd></div></dl></div>';
+   '<div><dt>ACTUAL · PAPER</dt><dd>'+na(l,T(l,'개인 자료 · 공개 안 함(ACTUAL은 이 브라우저, PAPER 원장은 사용자 비공개 구글 시트)','Personal data · never published (ACTUAL in this browser, the PAPER ledger in the user’s private Google Sheet)'))+'</dd></div></dl></div>';
  }
  // ---------- n 전체 시스템 ----------
  function systemTree(l){
@@ -184,13 +189,13 @@
   if(p&&object(p.records)){const codes=Object.keys(p.records).filter(c=>!c.startsWith('TARGET:'));const live=codes.filter(c=>p.records[c].state==='LIVE'&&finite(p.records[c].qg_axes?.Q?.score)).length;
    set('qgv',esc(T(l,'예: Q 산출 LIVE ','e.g. LIVE rows with Q: ')+live+' / '+codes.length+' · '+(p.as_of||'NA')));}
   else set('qgv',na(l,T(l,'sec-qgv2.json 없음','sec-qgv2.json missing')));
-  set('technical',na(l,T(l,'가격 기반 · 이 기기에서만','price-based · device only')));
+  set('technical',na(l,T(l,'가격 기반 · 공개 안 함(사용자 비공개 시트·이 브라우저)','price-based · never published (private sheet / this browser)')));
   const m=screens&&screens['macro-screen.json'],obs=Array.isArray(m?.data?.observations)?m.data.observations.length:0;
   set('macro',obs?esc(T(l,'예: 공개 관측 ','e.g. published observations: ')+obs+' · '+(m.as_of||'NA')):na(l,T(l,'공개 관측 없음','no published observation')));
   set('portfolio',object(catalog)&&Array.isArray(catalog.instruments)?esc(T(l,'예: TARGET ','e.g. TARGET ')+(catalog.target_root_version||'NA')+' · '+catalog.instruments.length+T(l,'종목',' instruments')):na(l,T(l,'목표 목록 없음','no target catalogue')));
   set('prompts',esc(T(l,'공식 카탈로그 · 동결본(PLV1)','Official catalogue · frozen (PLV1)')));
   set('lab',na(l,T(l,'검증 기록은 n+1.2 전진 검증 화면에서 읽습니다','Records are read on the n+1.2 forward-validation screen')));
-  const SD=root.SecDisclosures;if(SD)Promise.resolve(SD.load(root)).then(sec=>{if(!host.isConnected)return;set('news',Array.isArray(sec?.events)?esc(T(l,'예: 8-K ','e.g. 8-K: ')+sec.events.length+T(l,'건 · ',' · ')+(sec.as_of||'NA')):na(l,T(l,'공시 파일 없음','no disclosure file')));}).catch(()=>{});
+  const SD=root.SecDisclosures;if(SD)Promise.resolve(shared('sec',SD)).then(sec=>{if(!host.isConnected)return;set('news',Array.isArray(sec?.events)?esc(T(l,'예: 8-K ','e.g. 8-K: ')+sec.events.length+T(l,'건 · ',' · ')+(sec.as_of||'NA')):na(l,T(l,'공시 파일 없음','no disclosure file')));}).catch(()=>{});
   else set('news',na(l,T(l,'공시 파일 없음','no disclosure file')));
  }
  const TREES={qgv:qgvTree,technical:technicalTree,macro:macroTree,news:newsTree,portfolio:portfolioTree,system:systemTree};
@@ -200,7 +205,7 @@
   const l=locale||'ko-KR',box=host&&host.querySelector('[data-tree-examples]');if(!box)return;const key=box.dataset.treeExamples,body=box.querySelector('[data-tree-example-body]');
   if(key==='system'){systemExamples(host,l,screens,catalog);return;}
   const put=html=>{if(body&&body.isConnected)body.outerHTML=html;};
-  if(key==='qgv')put(qgvExamples(l,screens));
+  if(key==='qgv'){put(qgvExamples(l,screens));if(root.StatRadar)void root.StatRadar.mount(box);}
   else if(key==='macro')put(macroExamples(l,screens));
   else if(key==='portfolio')put(portfolioExamples(l,catalog));
   else if(key==='news')void newsExamples(l).then(put);
