@@ -7,6 +7,7 @@
 - 기준 브랜치: `claude/investment-system-top500-validation-alrugm` `fe7bbc90`(#326 병합 뒤).
 - 앞선 문서: [V_GENERAL_COVERAGE_20261018](V_GENERAL_COVERAGE_20261018.md)(418·360·341 처음 보고), [CENTRAL_V_PUBLICATION_DESIGN_20261018](CENTRAL_V_PUBLICATION_DESIGN_20261018.md) §13(D-CV1~16), [FREE_SOURCE_COMBINATION_20261018](../daily_data_pipeline/FREE_SOURCE_COMBINATION_20261018.md)(가격 출처).
 - 문의 초안(IEX·Alpaca, 미발송): [PRICE_PROVIDER_INQUIRY_DRAFTS_20261019](../daily_data_pipeline/PRICE_PROVIDER_INQUIRY_DRAFTS_20261019.md).
+- **후속(2026-10-19 06:58 UTC / 15:58 KST):** 남은 D-CV 항목별 현재 구현·선택지·권장·영향·충돌, D-CV16 해결안, ASML 근거·입력 단계는 [DCV_OPEN_ITEMS_20261019](DCV_OPEN_ITEMS_20261019.md)에 있다. §7·§9보다 그 문서가 최신이다.
 
 ## 요약
 
@@ -118,6 +119,8 @@
 434행 전체는 [부록 A](#부록-a--기업별-단계-434행)에 있다. 열: 코드, 도달 단계, 첫 실패 규칙, (a), 418, (b), (c), (d).
 
 ## 7. D-CV1~16 — 이미 결정된 것과 실제로 열린 것
+
+> 후속: 항목별 상세와 D-CV16 해결안은 [DCV_OPEN_ITEMS_20261019](DCV_OPEN_ITEMS_20261019.md) §2~§4.
 
 표기: **(i) 결정됨** = 기존 소유자 결정이 그 선택을 이미 정함. **(ii) 열림** = 소유자 선택이 남음. "원칙"은 선택지를 좁히는 기존 결정이다. 소유자는 보완 자료 전에 일괄 승인하지 않는다. 그래서 권장안을 승인된 것처럼 쓰지 않는다.
 
@@ -263,6 +266,8 @@
 - 어느 쪽이든 기존 기록·calc_version 값은 바꾸지 않는다.
 
 ## 9. ASML 통화 방법론 — 결정 전까지 미산출
+
+> 후속: [DCV_OPEN_ITEMS_20261019](DCV_OPEN_ITEMS_20261019.md) §5. 정정 둘 — ECB 시각 차이는 스냅샷(14:10 CET) 기준 약 7시간 50분이다. 유로넥스트안(D)의 최대 비중은 85가 아니라 70이다(DCF 매개변수 USD). 상장 증권 근거는 SEC 20-F FY2025 Exhibit 2.1에서 찾았다(소유자 확인 전).
 
 **근거(이 파일).**
 - `NASDAQ:ASML` 행: `currency` **EUR**, `taxonomy` us-gaap, 회계연도 말 2025-12-31, LIVE, `TARGET:asml`도 EUR. V 입력 7항목은 모두 있다((a) 완비).
