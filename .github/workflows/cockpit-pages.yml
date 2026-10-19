@@ -32,6 +32,7 @@ jobs:
         run: |
           python implementation/tools/preserve_public_sec_inputs.py --out "$RUNNER_TEMP/public-cockpit"
           python implementation/tools/preserve_public_screens.py --out "$RUNNER_TEMP/public-cockpit"
+          python implementation/tools/public_classification_pipeline.py --preserve-only --out "$RUNNER_TEMP/public-cockpit"
           python implementation/tools/sec_universe_shares.py --preserve-only --out "$RUNNER_TEMP/public-cockpit"
           python implementation/tools/dart_daily.py --preserve-only --out "$RUNNER_TEMP/public-cockpit"
           python implementation/tools/forward_validation_ledger.py --preserve-only --out "$RUNNER_TEMP/public-cockpit"
