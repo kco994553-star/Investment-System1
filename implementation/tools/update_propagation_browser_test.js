@@ -26,8 +26,11 @@
    Node over the same file (and the same device quotes), and the filters re-applied by the test. Required after every sort,
    search, group / interest filter and explore view, on day 1, in the open tab before and after '자료 새로고침', after the day-2
    reload, and with SYNTHETIC device prices (made-up numbers in RAM: the QGV / Q·G split with a non-empty official ranking):
-   base = the TARGET identity count; ranked = the official ranked rows; the QG list is a separate set in its own order; shown =
-   the visible rows. A missing attribute or a mismatch fails the test. */
+   D12 (owner decision 2026-10-19, was D3 'TARGET identity count'): base = the Universe codes of the file (data-rank-population
+   UNIVERSE; one row per security, a TARGET company in the Universe IS that code's row, checked against
+   QgvScores.universeIdentities in Node); the TARGET outside the Universe only in their own list, never ranked; ranked = the
+   official ranked rows; the QG list is a separate set in its own order; the TARGET filter only hides rows, and its in-filter rank
+   is shown only as '포트폴리오 내 순위'; shown = the visible rows. A missing attribute or a mismatch fails the test. */
 const { chromium } = require('playwright'), assert = require('node:assert/strict'), fs = require('node:fs'), path = require('node:path');
 const WA = path.join(__dirname, '../src/investment_system/product/web_assets');
 globalThis.QgvV2 = require(path.join(WA, 'qgv-v2.js'));
@@ -91,8 +94,11 @@ function inputsOf(n) { return inputsAt(n, DAYS[n].now); }
 /* D11 (owner rule 'Q·G만 있는 결과를 QGV 종합순위와 섞지 않는다'): these days carry no device price, so no row has V and the official
    ranking is empty; every total is in the QG 참고 목록 (V 미포함) in its own order. `rank` here is the S06 list position: the
    official rank, else the QG list order (list says which). Before D11 the Q·G-only totals were ranked directly. */
+/* D12 (owner decision 2026-10-19): the official evaluation is the Universe of the file: every Universe code once (a TARGET company in
+   the Universe IS that code's row), TARGET outside the Universe never ranked (QgvScores.universeIdentities). */
+function officialOf(n, identities, now = DAYS[n].now) { return QS.universeIdentities(inputsAt(n, now), identities); }
 function expectedRanks(n, identities, now = DAYS[n].now, quotes = {}) {
-  const S = QS.compute({ identities, publicScreens: { 'sec-qgv2.json': inputsAt(n, now) }, quotes }), out = {};
+  const U = officialOf(n, identities, now), S = QS.compute({ identities: U.identities, publicScreens: { 'sec-qgv2.json': inputsAt(n, now) }, quotes, official: U }), out = {};
   for (const [id, r] of Object.entries(S.rows)) if (Number.isInteger(r.rank) || r.qg_reference) out[id] = { rank: Number.isInteger(r.rank) ? r.rank : r.qg_reference.order, list: Number.isInteger(r.rank) ? 'RANKED' : 'QG_REFERENCE', total: fmt1(r.primary.total), q: r.primary.q, g: r.primary.g };
   return out;
 }
@@ -116,12 +122,16 @@ const popSnapshot = (page) => page.evaluate(() => {
   const S = leaderScores(), fin = (x) => typeof x === 'number' && Number.isFinite(x);
   const attrs = (sel) => { const n = document.querySelectorAll(sel); return n.length === 1 ? Object.fromEntries([...n[0].attributes].filter((a) => a.name.startsWith('data-')).map((a) => [a.name, a.value])) : { __count: n.length }; };
   return {
-    truth: { identities: identityCompanies.map((c) => ({ id: c.company_id, ticker: c.ticker, name: c.name })), asOf: publicScreens['sec-qgv2.json']?.as_of || null,
+    // D12: the S06 rows are the Universe rows of the official evaluation (names as the app filters them); TARGET outside the Universe apart.
+    truth: { identities: officialPopulation().rows.map((c) => ({ id: c.company_id, ticker: c.ticker, name: c.name, target: c.target === true })), outside: officialPopulation().outside.map((c) => c.company_id), outsideRows: officialPopulation().outside.map((c) => ({ id: c.company_id, ticker: c.ticker, name: c.name })), targets: identityCompanies.map((c) => c.company_id),
+      codes: Object.keys(publicScreens['sec-qgv2.json']?.records || {}).filter((c) => !c.startsWith('TARGET:')).length, asOf: publicScreens['sec-qgv2.json']?.as_of || null,
       rows: Object.fromEntries(Object.entries(S.rows || {}).map(([k, r]) => [k, { rank: Number.isInteger(r.rank) ? r.rank : null, qg: r.qg_reference ? r.qg_reference.order : null, axes: !!r.primary && [r.primary.q, r.primary.g, r.primary.v].some(fin) }])) },
-    controls: { query: document.getElementById('leader-query')?.value ?? null, group: document.getElementById('leader-group')?.value ?? null, interest: document.getElementById('leader-interest')?.checked === true, sort: document.getElementById('leader-sort')?.value ?? null, explore: leaderboardView.explore },
+    controls: { query: document.getElementById('leader-query')?.value ?? null, group: document.getElementById('leader-group')?.value ?? null, interest: document.getElementById('leader-interest')?.checked === true, target: document.getElementById('leader-target')?.checked === true, sort: document.getElementById('leader-sort')?.value ?? null, explore: leaderboardView.explore },
     dom: { scope: attrs('[data-leaderboard-rank-scope]'), counts: attrs('[data-leaderboard-counts]'), explore: document.querySelector('[data-leaderboard-explore]')?.dataset.leaderboardExplore ?? null,
       buttons: Object.fromEntries([...document.querySelectorAll('[data-leaderboard-explore-option]')].map((b) => [b.dataset.leaderboardExploreOption, Number((b.textContent.match(/(\d+)\s*$/) || [])[1])])),
-      rows: [...document.querySelectorAll('[data-leaderboard-table] tbody tr[data-leaderboard-row]')].map((tr) => ({ id: tr.dataset.leaderboardRow, rank: tr.querySelector('[data-leaderboard-rank]')?.dataset.leaderboardRank ?? null, qg: tr.querySelector('[data-leaderboard-unranked="QG_REFERENCE"]')?.dataset.qgOrder ?? null })) } };
+      rows: [...document.querySelectorAll('[data-leaderboard-table] tbody tr[data-leaderboard-row]')].map((tr) => ({ id: tr.dataset.leaderboardRow, rank: tr.querySelector('[data-leaderboard-rank]')?.dataset.leaderboardRank ?? null, qg: tr.querySelector('[data-leaderboard-unranked="QG_REFERENCE"]')?.dataset.qgOrder ?? null,
+        prank: tr.querySelector('[data-leaderboard-portfolio-rank]')?.dataset.leaderboardPortfolioRank ?? null, prankText: tr.querySelector('[data-leaderboard-portfolio-rank]')?.textContent ?? null })),
+      outside: [...document.querySelectorAll('[data-leaderboard-outside-row]')].map((li) => li.dataset.leaderboardOutsideRow), outsideList: document.querySelector('[data-leaderboard-outside]')?.dataset.leaderboardOutside ?? null } };
 });
 const sortIds = (a) => [...a].sort();
 /* One S06 state. `expect` = { asOf, population, ranked: [ids in rank order], qg: [ids in QG order] } from Node (independent of
@@ -129,19 +139,31 @@ const sortIds = (a) => [...a].sort();
 function checkPopulation(label, { truth: T, controls: C, dom: D }, expect) {
   const L = (m) => label + ': ' + m, ids = T.identities.map((x) => x.id), R = T.rows;
   eq(T.asOf, expect.asOf, L('the leaderboard reads the expected publication'));
-  // The rank population = every TARGET identity of the screen (D3), with the D11 split; the truth comes from leaderScores().
-  eq(sortIds(Object.keys(R)), sortIds(ids), L('leaderScores() has one row per TARGET identity'));
+  // D12: the rank population = the Universe of the file, one row per security (a TARGET company in the Universe is that code's
+  // row); the TARGET outside the Universe are rows of the same result but never ranked and never in the table. Truth: leaderScores()
+  // and, independently, QgvScores.universeIdentities in Node over the same file (expect.official).
+  eq(sortIds(Object.keys(R)), sortIds([...ids, ...T.outside]), L('leaderScores() = one row per Universe security + the TARGET outside the Universe'));
+  eq([ids.length, new Set(T.identities.map((x) => x.ticker)).size, T.codes], [expect.official.codes, ids.length, expect.official.codes], L('one row per Universe code: no security twice (dedupe)'));
+  eq(sortIds(ids), sortIds(expect.official.identities.filter((c) => expect.official.universe[c.company_id]).map((c) => c.company_id)), L('S06 rows = the Universe rows of the official evaluation (Node)'));
+  eq([sortIds(T.outside), sortIds(T.identities.filter((x) => x.target).map((x) => x.id).concat(T.outside))], [sortIds(expect.official.outside), sortIds(T.targets)], L('TARGET split: in the Universe (merged rows) + outside = every TARGET identity'));
+  eq(T.outside.filter((id) => R[id].rank !== null || R[id].qg !== null), [], L('TARGET outside the Universe: never ranked, never in the QG list'));
   const ranked = ids.filter((id) => R[id].rank !== null).sort((a, b) => R[a].rank - R[b].rank), qg = ids.filter((id) => R[id].qg !== null).sort((a, b) => R[a].qg - R[b].qg);
   eq(ids.filter((id) => R[id].rank !== null && R[id].qg !== null), [], L('QG 참고 목록 is separate: no row is both officially ranked and in the QG list'));
   eq(ranked.map((id) => R[id].rank), ranked.map((_, i) => i + 1), L('official ranks are 1..N over the identities'));
   eq([ranked, qg], [expect.ranked, expect.qg], L('official ranking and QG list (leaderScores) = the engine in Node over the same file'));
-  // Footnote scope: base = TARGET identity count, ranked = official ranked count; never the filtered rows.
+  // Footnote scope (D12): base = the Universe codes of the file, ranked = official ranked count, outside = TARGET outside the
+  // Universe; never the filtered rows.
   ok(!('__count' in D.scope), L('exactly one footnote [data-leaderboard-rank-scope] (found ' + D.scope.__count + ')'));
-  eq([D.scope['data-rank-base'], D.scope['data-ranked']], [String(ids.length), String(ranked.length)], L('footnote data-rank-base = TARGET identities, data-ranked = official ranked'));
+  eq([D.scope['data-rank-population'], D.scope['data-rank-base'], D.scope['data-ranked'], D.scope['data-outside-universe']], ['UNIVERSE', String(expect.official.codes), String(ranked.length), String(expect.official.outside.length)],
+    L('footnote data-rank-population = UNIVERSE, data-rank-base = Universe codes, data-ranked = official ranked, data-outside-universe = TARGET outside'));
   // The filters, applied again by the test (search over ticker + name, the device group, interests only).
   const q = (C.query || '').trim().toLocaleLowerCase(), g = C.group === GROUP.id ? GROUP : null;
   ok(C.group === '' || g, L('group filter is the test group'));
-  const filtered = T.identities.filter((x) => (!q || (x.ticker + ' ' + x.name).toLocaleLowerCase().includes(q)) && (!g || g.members.includes(x.id)) && (!C.interest || INTERESTS.includes(x.id))).map((x) => x.id), inF = new Set(filtered);
+  const keep = (x) => (!q || (x.ticker + ' ' + x.name).toLocaleLowerCase().includes(q)) && (!g || g.members.includes(x.id)) && (!C.interest || INTERESTS.includes(x.id));
+  const filtered = T.identities.filter((x) => keep(x) && (!C.target || x.target)).map((x) => x.id), inF = new Set(filtered);
+  // TARGET outside the Universe: only in their own list (after the same filters), never in the table.
+  eq(D.rows.filter((r) => T.outside.includes(r.id)), [], L('no TARGET outside the Universe in the table'));
+  eq([D.outsideList, sortIds(D.outside)], [String(T.outsideRows.filter(keep).length), sortIds(T.outsideRows.filter(keep).map((x) => x.id))], L('TARGET outside the Universe only in their own list, after the same search / group / interest filters'));
   const fr = ranked.filter((id) => inF.has(id)), fq = qg.filter((id) => inF.has(id)), rest = filtered.filter((id) => R[id].rank === null && R[id].qg === null);
   const fp = rest.filter((id) => R[id].axes), fc = rest.filter((id) => !R[id].axes), visible = { all: filtered, ranked: fr, qg: fq, partial: fp, check: fc }[C.explore];
   eq(D.explore, C.explore, L('explore view shown = the chosen one'));
@@ -152,10 +174,20 @@ function checkPopulation(label, { truth: T, controls: C, dom: D }, expect) {
   const head = { all: [...fr, ...fq], ranked: fr, qg: fq }[C.explore];
   if (C.sort === 'qgv' && head) eq(D.rows.map((r) => r.id).slice(0, head.length), head, L('QGV order: official ranking first, then the QG list, never interleaved'));
   for (const r of D.rows) eq([r.rank, r.qg], [R[r.id].rank === null ? null : String(R[r.id].rank), R[r.id].qg === null ? null : String(R[r.id].qg)], L(r.id + ' shows its official rank / QG order, whatever the sort or filter'));
+  // The TARGET filter only hides rows: the official rank stays; a rank inside the filter is shown only as '포트폴리오 내 순위' (the
+  // official order reduced to every ranked TARGET row in the Universe), never without the filter.
+  const tRanked = ranked.filter((id) => T.identities.some((x) => x.id === id && x.target));
+  for (const r of D.rows) {
+    const want = C.target && tRanked.includes(r.id) ? String(tRanked.indexOf(r.id) + 1) : null;
+    eq(r.prank, want, L(r.id + ' 포트폴리오 내 순위 ' + want));
+    if (want !== null) eq(r.prankText, ' · 포트폴리오 내 순위 ' + want, L(r.id + ' in-filter rank is labelled 포트폴리오 내 순위'));
+  }
   // Counts line: population of the file, official ranked / QG rows among the filtered rows, shown = visible rows.
   ok(!('__count' in D.counts), L('exactly one counts line [data-leaderboard-counts] (found ' + D.counts.__count + ')'));
   eq([D.counts['data-population'], D.counts['data-rankable'], D.counts['data-qg-reference'], D.counts['data-shown']], [String(expect.population), String(fr.length), String(fq.length), String(visible.length)],
     L('counts line data-population / data-rankable / data-qg-reference / data-shown'));
+  eq([D.counts['data-evaluated'], D.counts['data-target-in-universe'], D.counts['data-outside-universe']], [String(expect.official.codes), String(expect.official.target_in_universe.length), String(expect.official.outside.length)],
+    L('counts line data-evaluated / data-target-in-universe / data-outside-universe (D12 populations)'));
   eq(D.counts['data-shown'], String(D.rows.length), L('data-shown = the rows on screen'));
   eq(D.buttons, { all: filtered.length, ranked: fr.length, qg: fq.length, partial: fp.length, check: fc.length }, L('explore option counts'));
   popChecks++;
@@ -167,7 +199,8 @@ async function setSort(page, id) { await page.locator('#leader-sort').selectOpti
 async function setQuery(page, q) { await page.locator('#leader-query').fill(q); await page.waitForFunction((s) => leaderboardView.query === s, q); }
 async function setGroup(page, id) { await page.locator('#leader-group').selectOption(id); await page.waitForFunction((s) => leaderboardView.group === s, id); }
 async function setInterest(page, on) { await page.locator('#leader-interest').setChecked(on); await page.waitForFunction((s) => leaderboardView.interest === s, on); }
-async function resetLeader(page) { await setQuery(page, ''); await setGroup(page, ''); await setInterest(page, false); await setSort(page, 'qgv'); await setExplore(page, 'all'); }
+async function setTarget(page, on) { await page.locator('#leader-target').setChecked(on); await page.waitForFunction((s) => leaderboardView.target === s, on); }
+async function resetLeader(page) { await setQuery(page, ''); await setGroup(page, ''); await setInterest(page, false); await setTarget(page, false); await setSort(page, 'qgv'); await setExplore(page, 'all'); }
 /* Every population check of one publication state: default, each sort, searches, the group and interest filters, each explore
    view (alone and combined with a filter). Leaves the screen back at the defaults. */
 async function populationSweep(page, label, expect) {
@@ -184,6 +217,9 @@ async function populationSweep(page, label, expect) {
   await setGroup(page, GROUP.id); for (const e of ['all', 'ranked', 'qg', 'partial', 'check']) { await setExplore(page, e); await read('group + explore ' + e); }
   await setExplore(page, 'all'); await setGroup(page, '');
   await setInterest(page, true); await read('interests only'); await setInterest(page, false);
+  // D12 TARGET filter: hides the non-TARGET rows, never re-ranks (alone, with each explore view, with a sort and with a search).
+  await setTarget(page, true); for (const e of ['all', 'ranked', 'qg', 'partial', 'check']) { await setExplore(page, e); await read('TARGET + explore ' + e); }
+  await setExplore(page, 'all'); await setSort(page, 'ticker'); await read('TARGET + sort ticker'); await setSort(page, 'qgv'); await setQuery(page, 'MSFT'); await read('TARGET + search "MSFT"'); await setQuery(page, ''); await setTarget(page, false);
   for (const e of ['ranked', 'qg', 'partial', 'check']) { await setExplore(page, e); await read('explore ' + e); }
   await resetLeader(page); const again = await read('back to default');
   eq(again, base, label + ': back at the defaults the population display is the first one again');
@@ -336,10 +372,12 @@ function checkMacro(n, m) {
     ok(identities.length > 3, 'identities read from the served catalog');
     ok(GROUP.members.every((id) => identities.some((c) => c.company_id === id)), 'the test group members are TARGET identities');
     const exp = { 1: expectedRanks(1, identities), 2: expectedRanks(2, identities) };
-    eq(Object.entries(exp[1]).sort((a, b) => a[1].rank - b[1].rank).map(([id]) => id).slice(0, 3), ['nvda', 'amd', 'msft'], 'day-1 order (engine)');
-    eq(Object.entries(exp[2]).sort((a, b) => a[1].rank - b[1].rank).map(([id]) => id).slice(0, 3), ['msft', 'nvda', 'amd'], 'day-2 order (engine)');
+    // The re-collected TARGET msft moves ahead of nvda and amd (relative order in the Universe-wide list, D12).
+    const three = (e) => Object.entries(e).filter(([id]) => ['nvda', 'amd', 'msft'].includes(id)).sort((a, b) => a[1].rank - b[1].rank).map(([id]) => id);
+    eq(three(exp[1]), ['nvda', 'amd', 'msft'], 'day-1 order (engine)');
+    eq(three(exp[2]), ['msft', 'nvda', 'amd'], 'day-2 order (engine)');
     // Without device prices (these days) the official ranking is empty and every total is in the QG list (D11).
-    const popExpect = (n, now = DAYS[n].now) => ({ asOf: PUB[n]['sec-qgv2.json'].as_of, population: populationOf(n, now), ...expectedLists(expectedRanks(n, identities, now)) });
+    const popExpect = (n, now = DAYS[n].now) => ({ asOf: PUB[n]['sec-qgv2.json'].as_of, population: populationOf(n, now), official: officialOf(n, identities, now), ...expectedLists(expectedRanks(n, identities, now)) });
     for (const n of [1, 2]) { const e = popExpect(n); eq(e.ranked, [], 'no official rank without device prices day ' + n); ok(e.qg.length > 3 && e.population > identities.length, 'day ' + n + ' QG list ' + e.qg.length + ', population ' + e.population); }
     const seenDay = {};
     async function checkDay(n, label) {
@@ -404,7 +442,7 @@ function checkMacro(n, m) {
     {
       const st = { day: 1 }, { context: c, page: p, seen: s } = await newContext(browser, st, { prefs: true });
       const quotes = () => p.evaluate(() => JSON.parse(JSON.stringify(leaderPage.result.quotes)));
-      const priced = (n, q) => ({ asOf: PUB[n]['sec-qgv2.json'].as_of, population: populationOf(n), ...expectedLists(expectedRanks(n, identities, DAYS[n].now, q)) });
+      const priced = (n, q) => ({ asOf: PUB[n]['sec-qgv2.json'].as_of, population: populationOf(n), official: officialOf(n, identities), ...expectedLists(expectedRanks(n, identities, DAYS[n].now, q)) });
       await p.goto(BASE + '#leaderboard'); await p.locator('[data-leaderboard-table]').waitFor();
       await stubPrices(p); await pricedSettled(p, DAYS[1].as_of);
       const q1 = await quotes(), e1 = priced(1, q1);
@@ -423,7 +461,7 @@ function checkMacro(n, m) {
       eq(await quotes(), q1, 'the reload uses the same synthetic quotes');
       eq(await populationSweep(p, 'PRICED_RELOAD_DAY2', e2), b2, 'reload of day 2 = the in-tab refresh of day 2 (same population display)');
       eq(await p.evaluate(() => window.__sheetReads), 0, 'no Google Sheets read'); eq(s.errors, [], 'no page errors (prices)'); eq(s.outside, [], 'no request outside the local origin (prices)');
-      log('QGV_QG_SPLIT day1 ranked=' + b1.ranked + ' qg=' + b1.qg + ' · day2 ranked=' + b2.ranked + ' qg=' + b2.qg + ' · base=' + identities.length);
+      log('QGV_QG_SPLIT day1 ranked=' + b1.ranked + ' qg=' + b1.qg + ' · day2 ranked=' + b2.ranked + ' qg=' + b2.qg + ' · base=' + b1.filtered + ' (Universe rows; TARGET identities ' + identities.length + ')');
       await c.close();
     }
 

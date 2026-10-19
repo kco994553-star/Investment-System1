@@ -160,6 +160,10 @@ function coverageFor(d,rec,{blocked=false,inner=null}={}){
    flag. Display only: no total, axis score or engine rule changes. Reference-only rows (DART 참고 순위) keep their own state.
    qgReference(d): {reason} (the V axis reason code of the row's coverage, else the engine's) for such a row, else null. */
 const QG_REFERENCE_LABEL=['QG 참고 목록 (V 미포함)','Q·G reference list (V not included)'];
+// D12 labels: the rank population and the separate lists (owner decision 2026-10-19).
+const OUTSIDE_UNIVERSE_LABEL=['Universe 밖 TARGET · 공식 순위 대상 아님','TARGET outside the Universe · not in the official ranking'];
+const PORTFOLIO_RANK_LABEL=['포트폴리오 내 순위','Rank within the portfolio'];
+const POPULATION_LABEL=Object.freeze({EVALUATION:['평가 모집단','Evaluation population'],RANK:['순위 모집단','Rank population'],ELIGIBLE:['후보 자격','Candidate eligibility'],FILTER:['화면 필터','Screen filters']});
 const NO_OFFICIAL_RANK=['가격 연결 전: 공식 QGV 순위 없음 · QG 참고 목록 보기','Before prices: no official QGV ranking · see the Q·G reference list'];
 const PERSONAL_V0_LABEL=['개인 설정 결과 (V 비중 0) · 공식 순위 아님','Personal setting result (V weight 0) · not the official ranking'];
 function qgReference(d){if(!d||d.reference_only===true||!finite(d.total)||finite(d.v))return null;const ax=d.coverage&&d.coverage.axes?d.coverage.axes.V:null,f=ax&&Array.isArray(ax.factors)?ax.factors.find(x=>x.score===null&&x.reason):null;
@@ -178,7 +182,12 @@ function vInputText(key,en){return Object.hasOwn(V_INPUT,key)?V_INPUT[key][en?1:
    result with its own memo and returns it under `personal` (top level: state, profile, label) and rows[cid].personal /
    personal_rank. `primary`, `v2`, `rank` and every other field stay the official result, byte-identical to a call without
    weights. An invalid tree gives personal.state 'INVALID' (reason WEIGHTS_INVALID) and no personal rows. */
-function compute({identities=[],publicScreens={},v2Inputs,quotes={},preset,gate=null,referenceRows={},weights=null,typeWeights=true}={}){
+/* official (optional, D12): the population split of universeIdentities() (the shared page result passes it). When given, only a
+   row that stands for a Universe code of the file (official.universe[cid] !== null) can get an official rank or a QG 참고 목록 order;
+   a TARGET outside the Universe keeps its score display but no rank or list place (outside_universe true), and every row carries
+   universe_code. The result then has `official` (the counts of the four populations' first two; see universeIdentities). Without
+   it the result is unchanged: every identity with a total is ranked (callers that score their own identities). */
+function compute({identities=[],publicScreens={},v2Inputs,quotes={},preset,gate=null,referenceRows={},weights=null,typeWeights=true,official=null}={}){
  const V2=qgvV2(),intended='v2',inputs=v2Inputs===undefined?(publicScreens&&qgv2Inputs()?publicScreens[qgv2Inputs().FILE]||null:null):v2Inputs;
  const chosen=preset&&Object.hasOwn(V2.PRESETS,preset)?preset:V2.DEFAULT_PRESET,gateOn=gate===null||gate===undefined?V2.GATE_DEFAULT:Boolean(gate);
  const codeFor=codeIndex(inputs);
@@ -202,10 +211,11 @@ function compute({identities=[],publicScreens={},v2Inputs,quotes={},preset,gate=
    v2=v2Display(V2.scoreUniverse({reference:{profile:'GENERAL',industry_group:null,factors,qg_axes,v_inputs:null,memberships:null}}, {},{preset:chosen,gate:gateOn,...extra}).reference);v2.reference_only=true;v2.reference_label='참고 순위';v2.reference_label_en='Reference ranking';}catch(_){}}
   if(inputs&&!newer){try{v2.coverage=coverageFor(v2,src,extra.weights?{blocked:blocked.has(code),inner:extra.weights.inner}:{blocked:blocked.has(code)});}catch(_){v2.coverage=null;}}else if(newer)v2.coverage={axes:null,states:['FORMAT_NEWER'],v_inputs_missing:[],v_periods:{},source:null};
   return v2;};
+ const U=object(official)&&object(official.universe)?official.universe:null,inRank=r=>!U||U[r.company_id]!==null&&U[r.company_id]!==undefined;
  for(const c of identities){const code=codeFor(c),v2=display(universe,c,code,{});
-  const row={company_id:c.company_id,ticker:c.ticker,code,v2,primary:v2,reference:null,rank:null,qg_reference:null};rows[c.company_id]=row;}
+  const row={company_id:c.company_id,ticker:c.ticker,code,v2,primary:v2,reference:null,rank:null,qg_reference:null};if(U){row.universe_code=typeof U[c.company_id]==='string'?U[c.company_id]:null;row.outside_universe=row.universe_code===null;}rows[c.company_id]=row;}
  // D11: official rank = rows with a total AND a V score; Q·G-only totals get qg_reference {order, reason} in their own order.
- const byTotal=k=>(a,b)=>b[k].total-a[k].total||(a.ticker<b.ticker?-1:1),scored=Object.values(rows).filter(r=>finite(r.primary.total)&&r.primary.reference_only!==true);
+ const byTotal=k=>(a,b)=>b[k].total-a[k].total||(a.ticker<b.ticker?-1:1),scored=Object.values(rows).filter(r=>finite(r.primary.total)&&r.primary.reference_only!==true&&inRank(r));
  ranked=scored.filter(r=>!qgReference(r.primary)).sort(byTotal('primary'));ranked.forEach((r,i)=>{r.rank=i+1;});
  scored.filter(r=>qgReference(r.primary)).sort(byTotal('primary')).forEach((r,i)=>{r.qg_reference={order:i+1,...qgReference(r.primary)};});
  // PERSONAL_PREVIEW: same identities, inputs, quotes, stops and tie rule; a separate memo, rows[cid].personal, never primary.
@@ -217,12 +227,15 @@ function compute({identities=[],publicScreens={},v2Inputs,quotes={},preset,gate=
   else{let pu=null;if(inputs){try{pu=universeScores(inputs,priced,chosen,gateOn,cyclicalBasis,{weights:tree,typeWeights:typesOn});}catch(_){pu=null;personal.reason='V2_CALCULATION_FAILED';}}else personal.reason=v2Reason;
    const extra={weights:tree,typeWeights:typesOn};for(const c of identities){const row=rows[c.company_id];row.personal=display(pu,c,row.code,extra);row.personal_rank=null;row.personal_qg_reference=null;}
    // Same D11 split for the personal result (V weight > 0); with V weight 0 every personal total is ranked under PERSONAL_V0_LABEL.
-   const mine=Object.values(rows).filter(r=>finite(r.personal.total)&&r.personal.reference_only!==true),qgOnly=r=>!personal.v_weight_zero&&qgReference(r.personal);
+   const mine=Object.values(rows).filter(r=>finite(r.personal.total)&&r.personal.reference_only!==true&&inRank(r)),qgOnly=r=>!personal.v_weight_zero&&qgReference(r.personal);
    mine.filter(r=>!qgOnly(r)).sort(byTotal('personal')).forEach((r,i)=>{r.personal_rank=i+1;});mine.filter(qgOnly).sort(byTotal('personal')).forEach((r,i)=>{r.personal_qg_reference={order:i+1,...qgReference(r.personal)};});
    if(pu&&Object.values(pu).some(r=>finite(r.total)))personal.state='READY';else if(!personal.reason)personal.reason='V2_SCORES_NOT_AVAILABLE';}}
  const quoted=object(quotes)?Object.keys(quotes).length:0;
+ // D12 counts of the official result (rank population = Universe rows with an official rank; the QG 참고 목록 apart).
+ const off=U?{evaluated:Object.values(rows).filter(r=>r.universe_code!==null).length,codes:Number.isInteger(official.codes)?official.codes:null,ranked:Object.values(rows).filter(r=>Number.isInteger(r.rank)).length,qg_reference:Object.values(rows).filter(r=>r.qg_reference).length,
+  target_in_universe:Array.isArray(official.target_in_universe)?official.target_in_universe.map(x=>({...x})):[],outside:Array.isArray(official.outside)?[...official.outside]:[],by_code:object(official.by_code)?{...official.by_code}:{}}:null;
  return{default:current,basis:b,label:LABEL[current],profile:{preset:chosen,gate:gateOn,id:V2.VERSION+'/'+chosen+'/gate-'+(gateOn?'on':'off'),name:V2.PRESETS[chosen],type_scope:b.type_scope},
-  v2_state:v2Ready?'READY':'NOT_AVAILABLE',v2_reason:v2Reason,v2_reason_text:v2Reason==='SEC_QGV2_SCHEMA_NEWER'?NEWER_TEXT:null,v2_as_of:inputs?inputs.as_of:null,priced_codes:quoted,rows,...(personal?{personal}:{})};
+  v2_state:v2Ready?'READY':'NOT_AVAILABLE',v2_reason:v2Reason,v2_reason_text:v2Reason==='SEC_QGV2_SCHEMA_NEWER'?NEWER_TEXT:null,v2_as_of:inputs?inputs.as_of:null,priced_codes:quoted,rows,...(off?{official:off}:{}),...(personal?{personal}:{})};
 }
 /* Rows for the virtual-trading rehearsal snapshot and the daily report (+ export): {cid:{q,g,partial,...}} from v2 only.
    compare is always null (no comparison score). */
@@ -275,8 +288,12 @@ function setPageIdentities(list){pageIds=cleanIds(list);quoteMemo=null;pageMemo=
 /* PAGE PROFILE (owner rule 2026-10-19: same inputs AND settings -> same scores on every screen). The app registers a read-only
    getter of its current official preset/gate (S06 qgv2Profile, RAM only); pageResult, the radar, the Universe page and any caller
    that does not pass its own preset/gate read it here, so a preset or gate change on S06 reaches every screen. */
-let profileOf=null;
+let profileOf=null,referencesOf=null;
 function setPageProfile(getter){profileOf=typeof getter==='function'?getter:null;}
+/* PAGE REFERENCES: the app's read-only getter of its reference-only rows (DART 참고 순위, {company_id: row}); the shared result shows
+   them like S04/S06 always did. A reference row is never ranked (reference_only), so no official rank or V changes with it. */
+function setPageReferences(getter){referencesOf=typeof getter==='function'?getter:null;}
+function pageReferences(){let r=null;try{r=referencesOf?referencesOf():null;}catch(_){r=null;}return object(r)?r:{};}
 function pageProfile(){let p=null;try{p=profileOf?profileOf():null;}catch(_){p=null;}return Object.freeze({preset:object(p)&&typeof p.preset==='string'?p.preset:null,gate:object(p)&&typeof p.gate==='boolean'?p.gate:null});}
 // Device inputs of collectQuotes besides the Universe read: stored/Worker quotes ('device-actual-changed') and the price tabs'
 // loaded rows (PriceStore status counts; never its read time, so a no-op sync does not change the key).
@@ -289,6 +306,35 @@ function isCurrent(win,result){if(!object(result)||!object(result.computed)||!ob
  const id=b=>b?b.read_id||b.acquired_at||'READ':null;if(id(readBasis(win))!==id(object(result.price_basis)?result.price_basis:null))return false;
  let V2=null;try{V2=qgvV2();}catch(_){return false;}const P=pageProfile(),preset=P.preset&&Object.hasOwn(V2.PRESETS,P.preset)?P.preset:V2.DEFAULT_PRESET,gate=P.gate===null?V2.GATE_DEFAULT:P.gate;
  return result.computed.profile.preset===preset&&result.computed.profile.gate===gate;}
+/* D12 (owner decision 2026-10-19: '공식 리더보드는 Universe 전체 평가를 기준으로 한다. 기존 TARGET 19개는 별도 목록·필터로
+   유지한다.'). Four populations, kept apart by name in code and on screen:
+   - EVALUATION: every security of the ONE shared result (pageResult): each Universe code of the published sec-qgv2.json once, plus
+     each TARGET identity outside the Universe (scored and shown, never ranked);
+   - RANK: the rows of that result standing for a Universe code with an official rank (a total WITH a V axis score, D11; value-trap
+     gate rows stay ranked);
+   - ELIGIBLE: the approved model-portfolio eligibility rules over the RANK population (modelPortfolios below);
+   - FILTER: the screen filters (search, group, interest, TARGET) only hide rows and never re-rank.
+   One security, one row (dedupe): a TARGET identity whose ticker is the symbol of a Universe code of the file IS that code (the
+   identity mapping every score and price already uses: codeIndex, collectQuotes), so the code gets no second row; the TARGET row
+   keeps its existing score source (its TARGET record when it has data, else the Universe code; an identity withdrawal stops both).
+   A TARGET identity whose ticker matches no Universe code (e.g. TSE 8035, KRX 042700) is OUTSIDE: listed apart, never ranked.
+   Returns {identities, universe:{cid: code|null}, by_code:{code: cid}, target_in_universe:[{company_id,code}], outside:[cid], codes}
+   or null without a readable file. No score, weight or engine input changes: the engine cross-section is the file itself. */
+function universeIdentities(v2Inputs,page=[]){
+ if(!v2Inputs||!object(v2Inputs.records))return null;
+ const codes=Object.keys(v2Inputs.records).filter(c=>!c.startsWith('TARGET:')).sort(),bySymbol=new Map();for(const c of codes)if(!bySymbol.has(symbolOf(c)))bySymbol.set(symbolOf(c),c);
+ const identities=[],universe={},by_code={},target_in_universe=[],outside=[],seen=new Set();
+ for(const c of cleanIds(page)){if(seen.has(c.company_id))continue;seen.add(c.company_id);const own=codes.includes(c.company_id),code=own?c.company_id:bySymbol.get(key(c.ticker))||null;
+  if(code&&Object.hasOwn(by_code,code))continue;// the same security is already one row
+  identities.push(c);universe[c.company_id]=code;if(code){by_code[code]=c.company_id;if(!own)target_in_universe.push({company_id:c.company_id,code});}else outside.push(c.company_id);}
+ for(const code of codes)if(!Object.hasOwn(by_code,code)){by_code[code]=code;universe[code]=code;identities.push({company_id:code,ticker:symbolOf(code)});}
+ return{identities,universe,by_code,target_in_universe,outside,codes:codes.length};}
+/* The row of a computed result for an id: its own row, else the row that stands for that Universe code (D12 dedupe: e.g.
+   'NASDAQ:NVDA' -> the TARGET row 'nvda'). null when neither exists. */
+function rowOf(computed,id){if(!object(computed)||!object(computed.rows)||typeof id!=='string')return null;if(Object.hasOwn(computed.rows,id))return computed.rows[id];
+ const o=object(computed.official)&&object(computed.official.by_code)?computed.official.by_code:null,cid=o&&Object.hasOwn(o,id)?o[id]:null;return cid&&Object.hasOwn(computed.rows,cid)?computed.rows[cid]:null;}
+// The row standing for Universe code `code` (its own scored row, or the TARGET row merged into it); null otherwise.
+function codeRow(computed,code){const r=rowOf(computed,code);return r&&(r.code===code||r.universe_code===code)?r:null;}
 function pageResult(win,{v2Inputs,catalog=null,identities=[],preset,gate}={}){
  if(!v2Inputs||!object(v2Inputs.records))return Promise.resolve(null);
  // preset/gate not given (undefined): the registered official page profile (S06), else the engine defaults.
@@ -300,11 +346,11 @@ function pageResult(win,{v2Inputs,catalog=null,identities=[],preset,gate}={}){
  if(!(quoteMemo&&quoteMemo.inputs===v2Inputs&&quoteMemo.catalog===catalog&&quoteMemo.key===qk)){
   const q={inputs:v2Inputs,catalog,key:qk,promise:(async()=>{const quote_meta={},quotes=await collectQuotes(win,{identities:ids,v2Inputs,catalog,meta:quote_meta});return{quotes,quote_meta};})()};
   quoteMemo=q;q.promise.catch(()=>{if(quoteMemo===q)quoteMemo=null;});}
- const held=quoteMemo,k=JSON.stringify([preset,gate]);
+ const held=quoteMemo,refs=pageReferences(),k=JSON.stringify([preset,gate,refs]);
  if(pageMemo&&pageMemo.quotes===held&&pageMemo.key===k)return pageMemo.promise;
- const promise=held.promise.then(({quotes,quote_meta})=>{const all=[...ids];
-  for(const code of Object.keys(v2Inputs.records))if(!code.startsWith('TARGET:')&&!seen.has(code))all.push({company_id:code,ticker:symbolOf(code)});
-  return Object.freeze({computed:compute({identities:all,v2Inputs,quotes,preset,gate}),quotes,quote_meta,price_basis:basis,identities:all});});
+ // D12: the identities are deduplicated into the official populations (universeIdentities): one row per security.
+ const promise=held.promise.then(({quotes,quote_meta})=>{const U=universeIdentities(v2Inputs,ids);
+  return Object.freeze({computed:compute({identities:U.identities,v2Inputs,quotes,preset,gate,referenceRows:refs,official:U}),quotes,quote_meta,price_basis:basis,identities:U.identities,official:U,reference_key:JSON.stringify(refs)});});
  const memo={quotes:held,key:k,promise};pageMemo=memo;promise.catch(()=>{if(pageMemo===memo)pageMemo=null;});return promise;}
 /* V coverage counts of one pageResult (the V coverage panel; owner 2026-10-18). Read only from the engine's rows: V = a finite
    axis score, reasons = coverageFor's V axis reason (+ the missing factors' own reasons), input-complete = coverageFor
@@ -323,10 +369,14 @@ function vCoverage(result,v2Inputs){
  const codes=Object.keys(v2Inputs.records).filter(c=>!c.startsWith('TARGET:')).sort(),bump=(m,k)=>{m[k]=(m[k]||0)+1;},list=m=>Object.entries(m).sort((a,b)=>b[1]-a[1]||(a[0]<b[0]?-1:1));
  const pop={total:codes.length,general:0,financial:0,unknown:0,stopped:0},v={full:0,general:0},qgv={full:0,general:0},qgOnly={full:0,general:0,financial:0,no_v:0,gate:0},reasons={},factorReasons={},unknownRows=[],times={};
  let complete=0,upper=0,priced=0,mismatch=0,shares=0,from=null,to=null,missingV=0;
- for(const code of codes){const rec=v2Inputs.records[code],row=rows[code],p=row&&row.code===code?row.primary:null,vi=object(rec.v_inputs)?rec.v_inputs:null,q=object(Q[code])&&finite(Q[code].price)&&Q[code].price>0?Q[code]:null;
-  const cls=rec.identity_withdrawn===true?'stopped':rec.published_profile==='GENERAL'?'general':rec.published_profile==='FINANCIAL'?'financial':'unknown',hasV=!!p&&finite(p.v),all=hasV&&finite(p.q)&&finite(p.g),gen=cls==='general';pop[cls]++;
+ for(const code of codes){
+  // D12: the row standing for the code (a TARGET company's code is its TARGET row) and the record + price that row was scored
+  // from, so the panel counts the same evaluation as S06 and the company pages. A withdrawn code stays 'stopped'.
+  const own=v2Inputs.records[code],row=codeRow(result.computed,code),src=row&&typeof row.code==='string'&&row.code!==code&&Object.hasOwn(v2Inputs.records,row.code)&&own.identity_withdrawn!==true?row.code:code;
+  const rec=v2Inputs.records[src],p=row?row.primary:null,vi=object(rec.v_inputs)?rec.v_inputs:null,q=object(Q[src])&&finite(Q[src].price)&&Q[src].price>0?Q[src]:null;
+  const cls=own.identity_withdrawn===true?'stopped':rec.published_profile==='GENERAL'?'general':rec.published_profile==='FINANCIAL'?'financial':'unknown',hasV=!!p&&finite(p.v),all=hasV&&finite(p.q)&&finite(p.g),gen=cls==='general';pop[cls]++;
   if(cls==='unknown')unknownRows.push({code,reasons:Array.isArray(rec.na_reasons)?[...rec.na_reasons]:[]});
-  if(q){priced++;const m=object(M[code])?M[code]:UNIVERSE_META;(times[m.source]||(times[m.source]=[])).push(metaTime(m));}
+  if(q){priced++;const m=object(M[src])?M[src]:UNIVERSE_META;(times[m.source]||(times[m.source]=[])).push(metaTime(m));}
   if(hasV){v.full++;if(gen)v.general++;}if(all){qgv.full++;if(gen)qgv.general++;}
   // A total without V in the row (the engine renormalizes over the available axes and ranks every finite total): counted, not
   // changed. full/general = financial + no price / V not computed. Value-trap-gate rows had V computed and the approved gate rule
@@ -345,6 +395,56 @@ function vCoverage(result,v2Inputs){
   not_computed:on?missingV:null,reasons:on?list(reasons):null,factor_reasons:on?list(factorReasons):null,upper_bound:upper,priced:on?priced:null,currency_mismatch:on?mismatch:null,
   price_time:on?Object.entries(times).map(([source,list])=>sourceTimes(source,list)).sort((a,b)=>b.rows-a.rows||(a.source<b.source?-1:1)):null,shares:{rows:shares,period_from:from,period_to:to,rule:'V-SHARES-SCALE'},
   calc_version:typeof v2Inputs.calc_version==='string'?v2Inputs.calc_version:null,as_of:typeof v2Inputs.as_of==='string'?v2Inputs.as_of:null,unknown_rows:unknownRows};}
+/* MODEL PORTFOLIO N10 / N15 / N20 (D12; owner decisions 2026-10-14 TARGET v1 (b)(c) and set B, backtest protocol 2026-10-18 'N15
+   주검정과 N10·N20 민감도', CENTRAL_V_PUBLICATION_DESIGN §10-4; D-CV15: computed on this device in RAM, never stored or sent).
+   Input: ONE official result (pageResult().computed with `official`). Approved eligibility, applied in this order over the RANK
+   population in official rank order:
+   OFFICIAL_RANK  an official rank (a total with V; D11), a Universe row (never a TARGET outside the Universe);
+   AXES_50        Q, G and V axis scores all present (each axis needs 50% of its original weight; '축 50% 미만 제외');
+   VALUE_TRAP_GATE the approved value-trap gate did not fire on the row ('가치 함정 관문 제외');
+   FINANCIAL_SAFETY not below the safety line: net debt/EBITDA >= 3 or interest coverage < 3 excludes ('재무 안전 미달 제외'), read
+                  from the published metrics of the record that scored the row;
+   FINANCIAL_SAFETY_NA a row whose net debt/EBITDA or interest coverage is NA is excluded too (owner decision 2026-10-15: '재무 안전
+                  지표가 NA인 회사는 후보에서 뺀다(핵심·일반 모두)'; QGV_V2_NUMBER_CHECK_20261017.md §3-2), with its own count;
+   SUBGROUP_MAX_4 at most 4 per industry subgroup (approved #20 subgroups: PlaybookEngine.sectorFor on the symbol / SIC, no ETF
+                  input here). PROVISIONAL (open, no approved rule): a row whose subgroup cannot be determined is not capped
+                  (subgroup UNKNOWN, counted).
+   modelPortfolios reads the result it is given; officialModel() below gives it the OFFICIAL DEFAULT profile (balanced, gate on,
+   official weights) whatever preset the device shows on S06.
+   Selection = the first N eligible rows in official rank order (so N10 ⊂ N15 ⊂ N20), equal weight 100/N (set B). Not applied
+   (no approved mechanical rule): §16 weight limits (40% sector group), core/general grades, the 10-K number check (TARGET v1
+   confirmation step) and BT-14 '업종 분산' beyond the subgroup cap. Returns null without an official result. */
+const MODEL_NS=Object.freeze([10,15,20]),MODEL_PRIMARY=15,SUBGROUP_MAX=4,SAFETY={net_debt_to_ebitda_min_fail:3,interest_coverage_below_fail:3};
+const MODEL_RULES=Object.freeze(['OFFICIAL_RANK','AXES_50','VALUE_TRAP_GATE','FINANCIAL_SAFETY','FINANCIAL_SAFETY_NA','SUBGROUP_MAX_4']);
+const MODEL_LABEL=Object.freeze({OFFICIAL_RANK:['공식 QGV 순위 있음 (V 포함 · Universe)','Official QGV rank (with V · Universe)'],AXES_50:['Q·G·V 세 축 모두 산출 (축 50% 규칙)','Q, G and V all calculated (50% axis rule)'],
+ VALUE_TRAP_GATE:['가치 함정 관문 행 제외','Value-trap gate rows excluded'],FINANCIAL_SAFETY:['재무 안전 미달 제외 (순부채/EBITDA ≥ 3 또는 이자보상 < 3)','Financial safety fails excluded (net debt/EBITDA ≥ 3 or interest coverage < 3)'],
+ FINANCIAL_SAFETY_NA:['재무 안전 지표 NA 제외 (핵심·일반 모두)','Financial safety metric NA excluded (core and general)'],
+ SUBGROUP_MAX_4:['업종 하위 묶음당 최대 4종목','At most 4 per industry subgroup']});
+function defaultSectorOf(ticker,sic){try{const E=globalThis.PlaybookEngine,C=globalThis.PlaybookConfigDefaults;const s=E&&C&&typeof E.sectorFor==='function'?E.sectorFor(C,ticker,null,sic):null;return s&&typeof s.sector==='string'?s.sector:null;}catch(_){return null;}}
+function modelPortfolios(computed,v2Inputs,{sectorOf=defaultSectorOf}={}){
+ if(!object(computed)||!object(computed.rows)||!object(computed.official)||!v2Inputs||!object(v2Inputs.records))return null;
+ const recs=v2Inputs.records,rows=Object.values(computed.rows).filter(r=>Number.isInteger(r.rank)&&typeof r.universe_code==='string').sort((a,b)=>a.rank-b.rank);
+ const excluded={AXES_50:0,VALUE_TRAP_GATE:0,FINANCIAL_SAFETY:0,FINANCIAL_SAFETY_NA:0,SUBGROUP_MAX_4:0},unknown={subgroup:0},counts={},picked=[],checked=[];
+ for(const r of rows){const p=r.primary,rec=Object.hasOwn(recs,r.code)?recs[r.code]:null,m=rec&&object(rec.metrics)?rec.metrics:{},nd=finite(m.net_debt_to_ebitda)?m.net_debt_to_ebitda:null,ic=finite(m.interest_coverage)?m.interest_coverage:null;
+  const fail=nd!==null&&nd>=SAFETY.net_debt_to_ebitda_min_fail||ic!==null&&ic<SAFETY.interest_coverage_below_fail,safety=fail?'FAIL':nd!==null&&ic!==null?'PASS':'UNKNOWN';
+  let sub=null;try{sub=typeof sectorOf==='function'?sectorOf(r.ticker,rec?rec.sic:null):null;}catch(_){sub=null;}if(typeof sub!=='string'||!sub)sub=null;
+  let reason=null;if(![p.q,p.g,p.v].every(finite))reason='AXES_50';else if(p.value_trap_gate===true)reason='VALUE_TRAP_GATE';else if(fail)reason='FINANCIAL_SAFETY';else if(safety==='UNKNOWN')reason='FINANCIAL_SAFETY_NA';else if(sub!==null&&(counts[sub]||0)>=SUBGROUP_MAX)reason='SUBGROUP_MAX_4';
+  const entry={company_id:r.company_id,ticker:r.ticker,code:r.code,universe_code:r.universe_code,rank:r.rank,total:p.total,q:p.q,g:p.g,v:p.v,subgroup:sub,safety,excluded:reason};checked.push(entry);
+  if(reason){excluded[reason]++;continue;}if(sub===null)unknown.subgroup++;if(sub!==null)counts[sub]=(counts[sub]||0)+1;picked.push(entry);if(picked.length>=Math.max(...MODEL_NS))break;}
+ const sets={};for(const n of MODEL_NS){const list=picked.slice(0,n);sets['N'+n]={n,selected:list.map(e=>({...e,weight_pct:100/n})),complete:list.length===n,weight_pct:100/n};}
+ return{version:'model-portfolio/v1',provisional:['SUBGROUP_UNKNOWN_NOT_CAPPED'],primary:'N'+MODEL_PRIMARY,ns:[...MODEL_NS],rules:[...MODEL_RULES],sets,excluded,unknown,checked:checked.length,ranked:rows.length,profile_id:object(computed.profile)?computed.profile.id:null,as_of:computed.v2_as_of||null,weighting:'EQUAL'};}
+/* The model portfolio on the OFFICIAL evaluation (owner instruction: 'N10/N15/N20 selection uses the official evaluation and the
+   approved eligibility rules'): the same identities, inputs and quotes as the shared result, scored with the official default
+   profile (QgvV2.DEFAULT_PRESET, gate on, official weights) whatever preset/gate the device shows on S06. `computed` (optional) is
+   reused when it already is that profile. Own memo (inputs, quotes, official split). RAM only. Returns modelPortfolios(...) plus
+   profile {preset, gate, id} or null. */
+let officialModelMemo=null;
+function officialModel({identities,v2Inputs,quotes={},official,computed=null}={}){
+ if(!v2Inputs||!object(v2Inputs.records)||!object(official)||!Array.isArray(identities))return null;const V2=qgvV2(),preset=V2.DEFAULT_PRESET,gate=true;
+ const m=officialModelMemo;if(m&&m.inputs===v2Inputs&&m.quotes===quotes&&m.official===official)return m.value;
+ const own=object(computed)&&object(computed.official)&&object(computed.profile)&&computed.profile.preset===preset&&computed.profile.gate===gate;
+ const S=own?computed:compute({identities,v2Inputs,quotes,preset,gate,official}),M=modelPortfolios(S,v2Inputs);
+ const value=M?Object.freeze({...M,official_profile:Object.freeze({preset,gate,id:S.profile.id})}):null;officialModelMemo={inputs:v2Inputs,quotes,official,value};return value;}
 const num=(v,d=1)=>finite(v)?(Math.round(v*10**d)/10**d).toFixed(d):'—';
 /* `row` (optional display row): EBIT_ESTIMATED names the substituted fiscal years, e.g. '추정(대체 계산): FY2023·FY2024'. */
 function flagText(flags,en,row){const years=row&&Array.isArray(row.ebit_estimated_fiscal_years)?row.ebit_estimated_fiscal_years.filter(y=>Number.isInteger(y)):[];
@@ -380,5 +480,5 @@ function label(version,en){return(LABEL[version]||LABEL.v2)[en?1:0];}
 // (+ ' · 유형 범위 qgv2-type-scope/…' = the type-application scope id the scores use).
 function basisText(S,en){const b=S&&S.basis?S.basis:basis('v2',false);return label('v2',en)+' · '+(en?b.label_en:b.label)+(b.since?(en?' · since ':' · ')+b.since+(en?'':'부터'):'')+(b.type_scope?(en?' · type scope ':' · 유형 범위 ')+b.type_scope:'');}
 function presets(){return qgvV2().PRESETS;}
-return Object.freeze({MODES,LABEL,PERSONAL_LABEL,PERSONAL_V0_LABEL,QG_REFERENCE_LABEL,NO_OFFICIAL_RANK,qgReference,FLAG,DATA_STATE,AXIS_STATUS,REASON,coverageFor,exploreGroup,reasonText,stateText,axisStatusText,vInputText,scoringDefault,compute,typeMemberships,judgmentRows,collectQuotes,pageResult,setPageIdentities,setPageProfile,pageProfile,isCurrent,vCoverage,V_TARGET_SHARE,summaryText,naText,flagText,label,basis,basisText,presets,symbolOf});
+return Object.freeze({OUTSIDE_UNIVERSE_LABEL,PORTFOLIO_RANK_LABEL,POPULATION_LABEL,universeIdentities,rowOf,codeRow,setPageReferences,modelPortfolios,officialModel,MODEL_NS,MODEL_PRIMARY,MODEL_RULES,MODEL_LABEL,MODES,LABEL,PERSONAL_LABEL,PERSONAL_V0_LABEL,QG_REFERENCE_LABEL,NO_OFFICIAL_RANK,qgReference,FLAG,DATA_STATE,AXIS_STATUS,REASON,coverageFor,exploreGroup,reasonText,stateText,axisStatusText,vInputText,scoringDefault,compute,typeMemberships,judgmentRows,collectQuotes,pageResult,setPageIdentities,setPageProfile,pageProfile,isCurrent,vCoverage,V_TARGET_SHARE,summaryText,naText,flagText,label,basis,basisText,presets,symbolOf});
 });
