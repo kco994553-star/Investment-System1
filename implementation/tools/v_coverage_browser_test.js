@@ -46,11 +46,15 @@ async function pageRows(page) {
     // The shared page result the panel (and the stat radar) reads; a direct compute over a copy of the same quotes must agree per row.
     const R = await QgvScores.pageResult(window, { v2Inputs: inputs, catalog: await deviceCatalog().catch(() => null), identities: identityCompanies, preset: qgv2Profile.preset, gate: qgv2Profile.gate });
     const S = R.computed, quotes = R.quotes, D = QgvScores.compute({ identities: R.identities, v2Inputs: inputs, quotes: structuredClone(R.quotes), preset: qgv2Profile.preset, gate: qgv2Profile.gate });
-    const same = R.identities.every((c) => Object.is(S.rows[c.company_id].primary.v, D.rows[c.company_id].primary.v) && Object.is(S.rows[c.company_id].primary.total, D.rows[c.company_id].primary.total));
+    const same = R.identities.every((c) => Object.is(S.rows[c.company_id].primary.v, D.rows[c.company_id].primary.v) && Object.is(S.rows[c.company_id].primary.total, D.rows[c.company_id].primary.total))
+      // D12 dedupe: every Universe code stands for exactly one row and no row stands for two codes.
+      && codes.every((c) => typeof S.official.by_code[c] === 'string') && new Set(Object.values(S.official.by_code)).size === codes.length && Object.keys(S.rows).length === codes.length + S.official.outside.length;
     const fin = (x) => typeof x === 'number' && Number.isFinite(x);
     return codes.map((code) => {
-      const rec = inputs.records[code], row = S.rows[code], p = row && row.code === code ? row.primary : null, vi = rec.v_inputs, q = quotes[code], m = R.quote_meta[code] || null, ax = p && p.coverage && p.coverage.axes ? p.coverage.axes.V : null;
-      const cls = rec.identity_withdrawn === true ? 'STOPPED' : rec.published_profile === 'GENERAL' ? 'GENERAL' : rec.published_profile === 'FINANCIAL' ? 'FINANCIAL' : 'NO_DATA';
+      // D12: one row per security. A TARGET company's code is its TARGET row (S.official.by_code); that row's record and price count.
+      const own = inputs.records[code], cid = S.official.by_code[code], row = cid ? S.rows[cid] : null, src = row && row.code !== code && inputs.records[row.code] && own.identity_withdrawn !== true ? row.code : code;
+      const rec = inputs.records[src], p = row && (row.code === code || row.universe_code === code) ? row.primary : null, vi = rec.v_inputs, q = quotes[src], m = R.quote_meta[src] || null, ax = p && p.coverage && p.coverage.axes ? p.coverage.axes.V : null;
+      const cls = own.identity_withdrawn === true ? 'STOPPED' : rec.published_profile === 'GENERAL' ? 'GENERAL' : rec.published_profile === 'FINANCIAL' ? 'FINANCIAL' : 'NO_DATA';
       return { code, cls, total: !!p && fin(p.total), vx: !!p && !!p.v_excluded, v: !!p && fin(p.v), q: !!p && fin(p.q), g: !!p && fin(p.g), missing: p && p.coverage ? p.coverage.v_inputs_missing.length : -1, vreason: ax && ax.reason ? ax.reason : null,
         freasons: ax ? ax.factors.filter((f) => f.score === null && f.reason).map((f) => f.reason) : [], vi: !!vi, vic: vi ? vi.currency : null, qc: q ? q.currency : null, priced: !!q && fin(q.price) && q.price > 0,
         shares: !!vi && fin(vi.diluted_shares) && vi.diluted_shares > 0, ebit: !!vi && fin(vi.ebit), fcf: !!vi && fin(vi.fcf), period: rec.periods ? rec.periods.diluted_shares || null : null,

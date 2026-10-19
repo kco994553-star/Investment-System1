@@ -93,8 +93,11 @@ for (const n of [1, 2]) { const sec = secDay(n); PUB[n] = { 'sec-qgv2.json': n =
 PUB[3] = { ...PUB[2], 'macro-screen.json': macroDay(1) };
 const inputsAt = (n, now) => QI.fromInputs(SQ.toInputs(PUB[n]['sec-qgv2.json'], { now }));
 // D11 (#318): without device prices there is no official rank; rows with a Q·G total are in the QG reference list (own order).
+// D12: the official evaluation = every Universe code of the file once (a TARGET in the Universe is that code's row), TARGET outside
+// the Universe never ranked (QgvScores.universeIdentities, the population the leaderboard ranks).
 function expectedRanks(n, now, identities, preset = null, quotes = {}) {
-  const S = QS.compute({ identities, publicScreens: { 'sec-qgv2.json': inputsAt(n, now) }, quotes, preset, gate: null }), out = {};
+  const inputs = inputsAt(n, now), U = QS.universeIdentities(inputs, identities);
+  const S = QS.compute({ identities: U.identities, publicScreens: { 'sec-qgv2.json': inputs }, quotes, preset, gate: null, official: U }), out = {};
   for (const [id, r] of Object.entries(S.rows)) if (Number.isInteger(r.rank) || r.qg_reference) out[id] = { rank: Number.isInteger(r.rank) ? r.rank : r.qg_reference.order, list: Number.isInteger(r.rank) ? 'RANKED' : 'QG_REFERENCE', total: fmt1(r.primary.total) };
   return out;
 }
@@ -379,7 +382,7 @@ function requestsCheck(label, reqs, what) {
       eq(label, s2.panel.time, s1.panel.time, 'PriceTime display of the panel unchanged (same quotes, same price time rule): ' + s2.panel.time);
       const rankedCount = String(Object.values(e2).filter((x) => x.startsWith('R')).length);
       eq(label, [s2.rankable, s2.scope === null ? rankedCount : s2.scope], [rankedCount, rankedCount], 'counts line and footnote scope = day-2 official ranked count');
-      if (s2.scope !== null) eq(label, s2.base, String(identities.length), 'footnote rank base = the S06 identities');
+      if (s2.scope !== null) eq(label, s2.base, String(Object.keys(PUB[2]['sec-qgv2.json'].records).length), 'footnote rank base = the Universe codes of the file (D12)');
       // Radar V on a Universe page, refreshed in place.
       await go(p, 'company/' + encodeURIComponent(code), '[data-universe-page] [data-stat-radar]');
       const radarV = () => p.evaluate(async (cd) => { await new Promise((r) => setTimeout(r, 50)); const cell = document.querySelector('[data-stat-radar] tr[data-sr-axis="v"] td[data-sr-series="company"]'); const R = await QgvScores.pageResult(window, { v2Inputs: publicScreens['sec-qgv2.json'], catalog: await deviceCatalog().catch(() => null), identities: [{ company_id: cd, ticker: cd.slice(cd.indexOf(':') + 1) }] });

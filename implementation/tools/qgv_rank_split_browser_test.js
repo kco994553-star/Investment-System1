@@ -22,8 +22,9 @@ const state = (page) => page.evaluate(async () => {
   const inputs = publicScreens[Qgv2Inputs.FILE], R = await QgvScores.pageResult(window, { v2Inputs: inputs, catalog: await deviceCatalog().catch(() => null), identities: identityCompanies, preset: qgv2Profile.preset, gate: qgv2Profile.gate });
   const S = leaderScores(), fin = (x) => typeof x === 'number' && Number.isFinite(x), cov = QgvScores.vCoverage(R, inputs);
   const rows = Object.fromEntries(Object.entries(S.rows).map(([k, r]) => [k, { rank: r.rank, qg: r.qg_reference, v: r.primary.v, total: r.primary.total, gate: r.primary.value_trap_gate === true, flags: r.primary.flags, page_v: R.computed.rows[k] ? R.computed.rows[k].primary.v : 'MISSING', page_total: R.computed.rows[k] ? R.computed.rows[k].primary.total : 'MISSING' }]));
-  const uni = Object.keys(inputs.records).filter((c) => !c.startsWith('TARGET:')).map((c) => R.computed.rows[c]).filter((r) => r && r.code === r.company_id);
-  return { rows, priced: S.priced_codes, cov: cov ? { connected: cov.connected, qg_full: cov.qg_only_total ? cov.qg_only_total.full : null, gate: cov.qg_only_total ? cov.qg_only_total.gate : null, v_full: cov.v ? cov.v.full : null } : null,
+  // D12: one row per Universe code (a TARGET company's code is its TARGET row): the rows standing for the codes of the file.
+  const uni = Object.keys(inputs.records).filter((c) => !c.startsWith('TARGET:')).map((c) => R.computed.rows[R.computed.official.by_code[c]]).filter(Boolean);
+  return { rows, priced: S.priced_codes, evaluated: S.official ? S.official.evaluated : null, codes: Object.keys(inputs.records).filter((c) => !c.startsWith('TARGET:')).length, cov: cov ? { connected: cov.connected, qg_full: cov.qg_only_total ? cov.qg_only_total.full : null, gate: cov.qg_only_total ? cov.qg_only_total.gate : null, v_full: cov.v ? cov.v.full : null } : null,
     uni: { qg: uni.filter((r) => r.qg_reference).length, ranked: uni.filter((r) => Number.isInteger(r.rank)).length, vTotal: uni.filter((r) => fin(r.primary.v) && fin(r.primary.total)).length, gateRanked: uni.filter((r) => r.primary.value_trap_gate && Number.isInteger(r.rank)).length,
       gateRows: uni.filter((r) => fin(r.primary.v) && fin(r.primary.total) && r.primary.v_excluded).length, mixed: uni.filter((r) => Number.isInteger(r.rank) && !fin(r.primary.v)).length } };
 });
@@ -92,7 +93,8 @@ const officialSnapshot = (page) => page.evaluate(() => JSON.stringify(Object.ent
         // official ranked count as the D11 split; the rank population stays the S06 identities.
         assert.equal(await page.locator('[data-leaderboard-counts]').getAttribute('data-rankable'), String(counts.ranked));
         const scope = page.locator('[data-leaderboard-rank-scope]');
-        if (await scope.count()) { assert.equal(await scope.getAttribute('data-ranked'), String(counts.ranked), 'footnote ranked == official ranked');assert.equal(await scope.getAttribute('data-rank-base'), String(Object.keys(R).length)); }
+        // D12: the rank base is the Universe of the file (one row per code), not the screen identities.
+        if (await scope.count()) { assert.equal(await scope.getAttribute('data-ranked'), String(counts.ranked), 'footnote ranked == official ranked');assert.equal(s.evaluated, s.codes);assert.equal(await scope.getAttribute('data-rank-base'), String(s.codes));assert.equal(await scope.getAttribute('data-rank-population'), 'UNIVERSE'); }
         else console.log('INFO ' + width + ' footnote rank scope (D3, #320) not on this build: footnote check skipped');
         // The V coverage panel (same page result): QG list rows == qg_only_total.full; ranked == rows with V and a total (gate included).
         phase = 'PANEL';assert.equal(s.cov.connected, true);assert.equal(s.uni.qg, s.cov.qg_full);assert.equal(s.uni.ranked, s.uni.vTotal);assert.equal(s.uni.mixed, 0);
