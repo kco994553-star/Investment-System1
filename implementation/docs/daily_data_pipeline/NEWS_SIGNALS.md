@@ -112,7 +112,7 @@
 - 직전 Pages 사본: 404 → 새로 시작, 형식 불일치 → 폐기(`PREVIOUS_DISCARDED`), 네트워크 실패 → 아무것도 쓰지 않음(빌드의 NOT_AVAILABLE 사본 유지).
 - 소스 실패: 그 회사는 직전 행·취득 시각 유지(48시간 지나면 `STALE`), 직전도 없으면 `NOT_AVAILABLE`(`NOT_COLLECTED`).
 - **뉴스 실패로 SEC 일일 배포를 막지 않는다**: 소스·직전 사본 실패는 모두 exit 0. 로컬 출력이 검증에 실패할 때만 exit 1(DART 단계와 같은 원칙).
-- `--preserve-only`(cockpit-pages): 직전 사본을 현재 시각 기준으로 다시 씀(창 밖 제거·상태 재계산), 소스 요청 없음. 404·실패·형식 불일치는 빌드 사본 유지, exit 0.
+- `--preserve-only`(cockpit-pages 전용): 검증한 직전 게시본을 바이트 그대로 다시 씀(`as_of`·상태 그대로, 배포 시각으로 재계산하지 않음), 소스 요청 없음. 404·실패·형식 불일치는 빌드 사본 유지, exit 0. 일일 실행은 이 옵션을 쓰지 않음.
 - PR 빌드: `build_pages_cockpit.py`가 NOT_AVAILABLE 사본을 낸다. `tools/fixtures/empty_public_screens.json` 포함.
 
 ## 로그 (고정 코드·개수만)

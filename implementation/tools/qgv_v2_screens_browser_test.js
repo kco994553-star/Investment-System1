@@ -22,6 +22,9 @@ function withdrawnPayload() {
   SQ.validate(p);return p;
 }
 // S06 with the withdrawn fixture: AMD and MSFT have no total and no rank; ranks of the others stay contiguous from 1.
+// D12 (owner decision 2026-10-19): S06 lists the Universe rows of the official evaluation (one row per security; the TARGET
+// companies in the Universe are those rows), not the 19 TARGET identities; this is that row count on the open page.
+const universeRows = (page) => page.evaluate(() => officialPopulation().rows.length);
 async function withdrawnS06(page) {
   for (const id of ['amd', 'msft']) {
     const row = page.locator('[data-leaderboard-row="' + id + '"]');if (!(await row.count())) continue;
@@ -38,7 +41,7 @@ async function withdrawnS06(page) {
    official device rank; three scopes (analysis population / rankable / shown) are named apart; PC header sort uses numeric keys. */
 async function sortFlow(page, width) {
   const T = '[data-leaderboard-table]', SHOTS = process.env.PAGES_COCKPIT_EVIDENCE_DIR;
-  phase = 'SORT_SETUP';await page.locator('#leader-query').fill('');await page.waitForFunction(() => document.querySelectorAll('[data-leaderboard-row]').length === 19);
+  phase = 'SORT_SETUP';await page.locator('#leader-query').fill('');await page.waitForFunction(() => document.querySelectorAll('[data-leaderboard-row]').length === officialPopulation().rows.length);const N = await universeRows(page);assert.ok(N > 19, 'Universe rows ' + N);
   // S06 reads leaderScores() (the screen identities ranked with the shared QgvScores.pageResult quotes; was qgvScores()).
   const official = await page.evaluate(() => Object.fromEntries(Object.entries(leaderScores().rows).map(([k, r]) => [k, { rank: r.rank, qg: r.qg_reference ? r.qg_reference.order : null, q: r.primary.q, v: r.primary.v, total: r.primary.total }])));
   const shownRanks = async () => Object.fromEntries(await page.locator(T + ' tbody tr').evaluateAll((rows) => rows.map((r) => [r.dataset.leaderboardRow, r.cells[0].textContent])));
@@ -68,7 +71,7 @@ async function sortFlow(page, width) {
   if (m3 === 'READY') { await page.locator('#leader-sort').selectOption('cap-desc');await page.locator('[data-leaderboard-sort="cap-desc"]').waitFor();
     const caps = await page.locator(T + ' tbody tr').evaluateAll((rows) => rows.map((r) => { const b = r.querySelector('[data-leaderboard-m3-rank]');return b ? Number(b.dataset.leaderboardM3Rank) : null; }));
     const firstNa = caps.indexOf(null), known = caps.slice(0, firstNa < 0 ? caps.length : firstNa);assert.ok(known.length >= 1);assert.ok(caps.slice(known.length).every((c) => c === null));for (let i = 1; i < known.length; i++) assert.ok(known[i] >= known[i - 1]); }
-  phase = 'SORT_COUNTS';const counts = page.locator('[data-leaderboard-counts]');assert.match(await counts.textContent(), /^분석 모집단 \d+개 \(공개 SEC 기록 · 백분위 비교 대상\) · 공식 순위 \d+개 \(이 화면 19개 기업 중\) · QG 참고 \d+개 · 표시 19개/);  // D11: '순위 가능' -> '공식 순위' + QG 참고
+  phase = 'SORT_COUNTS';const counts = page.locator('[data-leaderboard-counts]');assert.match(await counts.textContent(), /^분석 모집단 \d+개 \(공개 SEC 기록 · 백분위 비교 대상\) · 공식 순위 \d+개 \(이 화면 (\d+)개 기업 중\) · QG 참고 \d+개 · 표시 \1개/);assert.equal(Number((await counts.textContent()).match(/이 화면 (\d+)개/)[1]), N);  // D11: '순위 가능' -> '공식 순위' + QG 참고
   const pop = Number(await counts.getAttribute('data-population')), rankable = Number(await counts.getAttribute('data-rankable'));
   assert.equal(pop, await page.evaluate(() => Object.values(publicScreens['sec-qgv2.json'].records).filter((r) => r.in_cross_section === true && ['LIVE', 'STALE'].includes(r.state) && r.calc_version_mismatch !== true && r.identity_withdrawn !== true).length));
   assert.equal(rankable, Object.values(official).filter((r) => r.rank !== null).length);assert.ok(pop !== 19 || rankable !== 19);
@@ -76,14 +79,16 @@ async function sortFlow(page, width) {
   // an official rank; D11: Q·G-only totals are in the QG 참고 목록, not counted as ranked), never the
   // filtered row count; a search filter changes the shown rows but not the footnote scope.
   phase = 'RANK_SCOPE';const scopeOf = async () => { const n = page.locator('[data-leaderboard-rank-scope]');return { base: Number(await n.getAttribute('data-rank-base')), ranked: Number(await n.getAttribute('data-ranked')), text: await n.textContent() }; };
-  const truth = await page.evaluate(() => { const rows = Object.values(leaderScores().rows);return { base: rows.length, ranked: rows.filter((r) => Number.isInteger(r.rank)).length, rankedWithV: rows.filter((r) => Number.isInteger(r.rank) && Number.isFinite(r.primary.v)).length, qgRanked: rows.filter((r) => r.qg_reference && Number.isInteger(r.rank)).length }; });
+  // D12: base = the Universe codes of the official result (S.official.evaluated), not every row of S (the TARGET outside the
+  // Universe are rows of S but never ranked).
+  const truth = await page.evaluate(() => { const rows = Object.values(leaderScores().rows);return { base: leaderScores().official.evaluated, outside: leaderScores().official.outside.length, ranked: rows.filter((r) => Number.isInteger(r.rank)).length, rankedWithV: rows.filter((r) => Number.isInteger(r.rank) && Number.isFinite(r.primary.v)).length, qgRanked: rows.filter((r) => r.qg_reference && Number.isInteger(r.rank)).length }; });
   assert.equal(truth.ranked, truth.rankedWithV, 'footnote ranked = official rows with V');assert.equal(truth.qgRanked, 0, 'QG list stays separate');
   let scope = await scopeOf();assert.deepEqual([scope.base, scope.ranked], [truth.base, truth.ranked], 'footnote scope = rank population');
-  assert.ok(scope.text.includes('포트폴리오 대상(TARGET) ' + truth.base + '개 기업 중 순위가 매겨진 ' + truth.ranked + '개 안의 기기 순위입니다(전체 Universe 순위 아님'), 'footnote text states both counts');assert.ok(!/19개 기업 전체 기준/.test(scope.text), 'no fixed 19');
+  assert.ok(scope.text.includes('공개 sec-qgv2.json의 Universe ' + truth.base + '개 종목 중 V가 산출된 ' + truth.ranked + '개 안의 순위입니다') && scope.text.includes('Universe 밖 TARGET ' + truth.outside + '개는 따로') && scope.text.includes('필터(검색·그룹·관심·TARGET)는 행만 숨기며 순위를 다시 매기지 않습니다'), 'footnote text states the Universe rank population, the outside list and the filters');assert.ok(!scope.text.includes('전체 Universe 순위 아님'), 'no TARGET-only wording');assert.ok(!/19개 기업 전체 기준/.test(scope.text), 'no fixed 19');
   const firstTicker = await page.locator(T + ' tbody tr[data-leaderboard-row] a').first().textContent();
-  await page.locator('#leader-query').fill(firstTicker.trim());await page.waitForFunction(() => document.querySelectorAll('[data-leaderboard-row]').length < 19);
+  await page.locator('#leader-query').fill(firstTicker.trim());await page.waitForFunction((n) => document.querySelectorAll('[data-leaderboard-row]').length < n, N);
   scope = await scopeOf();assert.deepEqual([scope.base, scope.ranked], [truth.base, truth.ranked], 'a search filter does not change the footnote scope');
-  await page.locator('#leader-query').fill('');await page.waitForFunction(() => document.querySelectorAll('[data-leaderboard-row]').length === 19);
+  await page.locator('#leader-query').fill('');await page.waitForFunction((n) => document.querySelectorAll('[data-leaderboard-row]').length === n, N);
   if (SHOTS && width >= 1024) await page.screenshot({ path: SHOTS + '/s06-sort-' + width + '.png' });
   phase = 'SORT_RESET';await page.locator('[data-leaderboard-sort-reset]').click();assert.equal(await page.locator('#leader-sort').inputValue(), 'qgv');
   assert.ok(await page.locator('[data-leaderboard-sort-reset]').isDisabled());const def = await check('qgv', 'total', -1);
@@ -191,8 +196,8 @@ async function flow(page, width) {
   assert.equal(await page.locator('[data-leaderboard-row="' + second + '"] [data-leaderboard-rank]').getAttribute('data-leaderboard-rank'), '2');
   // Filter + sort + scroll, then S04 and back.
   phase = 'FLOW_STATE';await page.locator('#leader-query').fill('a');await page.locator('#leader-sort').selectOption('name');
-  const ids = await rowIds(page);assert.ok(ids.includes('nvda') && ids.length < 19);
-  const summary = await page.locator('[data-leaderboard-summary]').textContent();assert.match(summary, /정렬: 기업명 순 · 필터: 검색 “a” · 보기: 기본 · 프로필: 가치\(관문 켬\) · 관문 끔 · 19개 중 \d+개 표시/);
+  const N = await universeRows(page), ids = await rowIds(page);assert.ok(ids.includes('nvda') && ids.length < N);
+  const summary = await page.locator('[data-leaderboard-summary]').textContent();assert.match(summary, new RegExp('정렬: 기업명 순 · 필터: 검색 “a” · 보기: 기본 · 프로필: 가치\\(관문 켬\\) · 관문 끔 · ' + N + '개 중 \\d+개 표시'));
   const nvdaRank = await page.locator('[data-leaderboard-row="nvda"] [data-leaderboard-rank]').getAttribute('data-leaderboard-rank'), nvdaTotal = await page.locator('[data-leaderboard-row="nvda"] [data-leaderboard-total]').getAttribute('data-leaderboard-total');
   const asOf = await page.locator('[data-leaderboard-screen] [data-score-as-of="v2"]').textContent();assert.match(asOf, /^점수 기준 20\d\d-/);
   await page.evaluate(() => { const r = document.querySelector('[data-leaderboard-row="nvda"]').getBoundingClientRect();window.scrollTo(0, Math.max(1, r.top + scrollY - innerHeight / 2)); });
@@ -250,7 +255,7 @@ async function missingFlow(page) {
   phase = 'M_FILTER';await page.locator(E).waitFor();assert.equal(await page.locator(E + ' button').count(), 5);  // D11: + 'QG 참고 목록 (V 미포함)'
   assert.equal(await page.locator(E + ' [data-leaderboard-explore-option="all"]').getAttribute('aria-pressed'), 'true');
   const counts = await page.locator(E + ' button').evaluateAll((b) => Object.fromEntries(b.map((x) => [x.dataset.leaderboardExploreOption, Number(x.textContent.match(/(\d+)$/)[1])])));
-  assert.equal(counts.ranked + counts.qg + counts.partial + counts.check, counts.all);assert.equal(counts.all, 19);
+  assert.equal(counts.ranked + counts.qg + counts.partial + counts.check, counts.all);assert.equal(counts.all, await universeRows(page));
   // Value preset: FINANCIAL rows have only Q·G (25+20 < 50% of the preset weight) -> no total, no rank, listed under '일부 축만 가능'.
   await page.locator('[data-qgv2-preset="value"]').click();await page.locator('[data-qgv2-preset="value"][aria-pressed="true"]').waitFor();
   // In 'all' the ranked rows come first in rank order and no unranked row is mixed into them.
@@ -262,7 +267,7 @@ async function missingFlow(page) {
   assert.equal(await page.locator('[data-leaderboard-rank]').count(), 0, 'no rank in the partial view');
   for (const id of ids) { const label = page.locator('[data-leaderboard-row="' + id + '"] [data-leaderboard-unranked="PARTIAL_AXES"]');assert.ok(await label.isVisible(), id);assert.match(await label.textContent(), /QGV 종합 순위 밖 · Q \d+\.\d · G \d+\.\d/); }
   assert.match(await page.locator('[data-leaderboard-explore-note="partial"]').textContent(), /QGV 종합 순서에 넣지 않으며 순위가 없습니다/);
-  const summary = await page.locator('[data-leaderboard-summary]').textContent();assert.match(summary, /필터: 일부 축만 가능 · 보기: 기본/);assert.match(summary, new RegExp('19개 중 ' + ids.length + '개 표시'));
+  const summary = await page.locator('[data-leaderboard-summary]').textContent();assert.match(summary, /필터: 일부 축만 가능 · 보기: 기본/);assert.match(summary, new RegExp((await universeRows(page)) + '개 중 ' + ids.length + '개 표시'));
   assert.equal(await page.locator('[data-leaderboard-table] [data-leaderboard-total="0.0"]').count(), 0);await noWideScroll(page, 'S06 partial');
   // S04 FINANCIAL (GOOGL): earnings quality and V are '해당 없음', separate from missing data; Q fill against the original weights.
   phase = 'M_S04_FIN';await page.locator('[data-leaderboard-row="googl"] a').first().click();await page.locator('[data-qgv-coverage]').waitFor();
@@ -349,7 +354,10 @@ async function missingFlow(page) {
           // D11 (owner rule: Q·G-only totals are not mixed into the QGV ranking): only the TARGET rows with V (nvda, amd) have an
           // official rank; msft (no device price) and the financial rows (googl, amzn) are in the QG 참고 목록 with their reason.
           // (Was '>= 3 ranks' under the old mixing, which also ranked msft/googl/amzn by their Q·G-only totals.)
-          assert.equal(await page.locator('[data-leaderboard-rank]').count(), 2);
+          // D12: the official ranking is the Universe one; among the TARGET identities exactly nvda and amd are ranked, and the
+          // ranked rows on screen are exactly the ranked rows of leaderScores() (all Universe rows are shown here).
+          assert.deepEqual(await page.evaluate(() => identityCompanies.filter((c) => Number.isInteger(leaderScores().rows[c.company_id]?.rank)).map((c) => c.company_id).sort()), ['amd', 'nvda']);
+          assert.equal(await page.locator('[data-leaderboard-rank]').count(), await page.evaluate(() => Object.values(leaderScores().rows).filter((r) => Number.isInteger(r.rank)).length));
           assert.equal(await msft.locator('[data-leaderboard-unranked="QG_REFERENCE"]').getAttribute('data-qg-reason'), 'NO_DEVICE_PRICE');
           assert.equal(await page.locator('[data-leaderboard-row="googl"] [data-leaderboard-unranked="QG_REFERENCE"]').getAttribute('data-qg-reason'), 'FINANCIAL_PROFILE_V_NOT_DEFINED');
           // No v1 anywhere on S06: no [자세히] v1 reference, no v1 Q·G, no v2-for-comparison line, no '임시 기본'.
@@ -458,7 +466,7 @@ async function missingFlow(page) {
         assert.deepEqual(state.cand, [[null, null], [null, null]]);
         // Filter/sort/scroll round trip with the stopped rows on screen.
         phase = 'W_STATE';await page.locator('#leader-sort').selectOption('ticker');await page.locator('#leader-query').fill('a');
-        const ids = await rowIds(page);assert.ok(ids.includes('amd') && ids.includes('nvda') && ids.length < 19);
+        const ids = await rowIds(page);assert.ok(ids.includes('amd') && ids.includes('nvda') && ids.length < await universeRows(page));
         await page.evaluate(() => { const r = document.querySelector('[data-leaderboard-row="amd"]').getBoundingClientRect();window.scrollTo(0, Math.max(1, r.top + scrollY - innerHeight / 2)); });
         await page.waitForTimeout(300);
         await page.evaluate(() => document.addEventListener('click', (e) => { const row = e.target.closest && e.target.closest('[data-leaderboard-row]'); if (row) { window.__leaveId = row.dataset.leaderboardRow;window.__leaveTop = row.getBoundingClientRect().top; } }, true));
@@ -472,7 +480,7 @@ async function missingFlow(page) {
         assert.equal(await page.locator('[data-company-card="qgv"] [data-qgv="total"] .num').count(), 0);assert.equal(await page.locator('[data-company-card="qgv"] [data-qgv="rank"] .num').count(), 0);
         assert.match(await page.locator('[data-company-card="qgv"] [data-qgv2-na]').textContent(), /식별 충돌로 사용 중지/);
         await page.locator('[data-origin-link="leaderboard"]').click();phase = 'W_BACKLINK';await back('back link');
-        phase = 'W_S04_MSFT';await page.locator('#leader-query').fill('');await page.locator('[data-leaderboard-row="msft"]').waitFor();const ids2 = await rowIds(page);assert.equal(ids2.length, 19);
+        phase = 'W_S04_MSFT';await page.locator('#leader-query').fill('');await page.locator('[data-leaderboard-row="msft"]').waitFor();const ids2 = await rowIds(page);assert.equal(ids2.length, await universeRows(page));
         await page.evaluate(() => { const r = document.querySelector('[data-leaderboard-row="msft"]').getBoundingClientRect();window.scrollTo(0, Math.max(1, r.top + scrollY - innerHeight / 2)); });await page.waitForTimeout(300);
         await page.locator('[data-leaderboard-row="msft"] a').first().click();await page.locator('[data-company-card="qgv"]').waitFor();
         assert.equal(await page.locator('[data-company-card="qgv"] [data-qgv="total"] .num').count(), 0);assert.equal(await page.locator('[data-company-card="qgv"] [data-qgv="V"] .num').count(), 0);

@@ -392,7 +392,7 @@ function brief() {
 function directoryFilters(prefix,watch=false) {
  const v=prefix==='leader'?leaderboardView:null,en=appSettings.display_locale==='en-US',pick=(a,b)=>a===b?" selected":"";
  const sorts=(v?[["qgv",en?"QGV v2 (high first)":"QGV v2 순"]]:[]).concat([[watch?"added":"ticker",watch?t("추가한 순"):t("티커 순")],["name",t("기업명 순")],["favorites",t("관심기업 우선")]],v?LeaderboardScreen.sortOptions(en):[]);
- return `<div class="chips">${v?`<input type="search" id="leader-query" aria-label="${en?"Search companies":"기업 검색"}" placeholder="${en?"Ticker or name":"티커 또는 기업명"}" value="${esc(v.query)}">`:""}<label><input type="checkbox" id="${prefix}-interest" ${watch?"checked disabled":v?.interest?"checked":""}>${t("관심기업만")}</label><select id="${prefix}-group" aria-label="${t("그룹 필터")}"><option value="">${t("모든 그룹")}</option>${prefs.groups.map(g=>`<option value="${esc(g.id)}"${pick(v?.group,g.id)}>${esc(g.name)}</option>`).join("")}</select><select id="${prefix}-sort" aria-label="${t("정렬")}">${sorts.map(([k,l])=>`<option value="${k}"${pick(v?.sort,k)}>${esc(l)}</option>`).join("")}</select></div>`;
+ return `<div class="chips">${v?`<input type="search" id="leader-query" aria-label="${en?"Search companies":"기업 검색"}" placeholder="${en?"Ticker or name":"티커 또는 기업명"}" value="${esc(v.query)}">`:""}<label><input type="checkbox" id="${prefix}-interest" ${watch?"checked disabled":v?.interest?"checked":""}>${t("관심기업만")}</label>${v?`<label data-leader-target-filter><input type="checkbox" id="leader-target" ${v.target?"checked":""}>${en?"TARGET only (hides rows, ranks unchanged)":"TARGET만 (행만 숨김 · 순위 그대로)"}</label>`:""}<select id="${prefix}-group" aria-label="${t("그룹 필터")}"><option value="">${t("모든 그룹")}</option>${prefs.groups.map(g=>`<option value="${esc(g.id)}"${pick(v?.group,g.id)}>${esc(g.name)}</option>`).join("")}</select><select id="${prefix}-sort" aria-label="${t("정렬")}">${sorts.map(([k,l])=>`<option value="${k}"${pick(v?.sort,k)}>${esc(l)}</option>`).join("")}</select></div>`;
 }
 function companyGroups(id){return `<p class="small">${t("관심·그룹은 이 기기에만 저장됩니다.")}</p>${prefs.groups.length?prefs.groups.map(g=>`<label><input type="checkbox" data-group="${esc(g.id)}" data-member="${esc(id)}" ${g.members.includes(id)?"checked":""} ${prefs.interests.includes(id)?"":"disabled"}>${esc(g.name)}</label>`).join(""):`<a href="#watchlist">${t("그룹 관리 →")}</a>`}`;}
 function weekFilings(){const p=publicScreens["sec-filing-windows.json"],rows=p?.data?.companies;if(!rows)return "NOT_AVAILABLE";const known=prefs.interests.filter(id=>rows[id]&&rows[id].state!=="NOT_AVAILABLE");if(!known.length)return "NOT_AVAILABLE";const en=appSettings.display_locale==="en-US",week=Date.now()-7*86400000,status=known.map(id=>PublicScreens.earningsStatus(rows[id])).filter(Boolean),estimated=status.filter(s=>s.status==="ESTIMATED"&&s.window.days_until_start<=6).length,confirmed=status.filter(s=>s.status==="CONFIRMED"&&Date.parse(s.date+"T00:00:00Z")>=week).length;return (estimated+confirmed)+" · "+esc(en?"estimated "+estimated+" · confirmed "+confirmed:"추정 "+estimated+" · 확인 "+confirmed)+" · "+esc(t("예상 시기 · 확정일 아님"));}
@@ -476,7 +476,7 @@ function detail(id) {
   if(!c && universeCode(id)) {void ensureUniverseDirectory();return window.UniverseCompany?UniverseCompany.html(id,{locale:appSettings.display_locale,screens:publicScreens,shares:universeDirectory,quotes:qgv2Quotes,names:companyNames}):universeDetail(id);}
   const candidate=Object.hasOwn(m2Candidates.companies,id)?m2Candidates.companies[id]:null;
   const historySymbol=PrivateHistory.symbolFor(id);
-  if((!c || c.identity_only) && (candidate || historySymbol)) return CompanyScreen.summary({locale:appSettings.display_locale,id,screens:publicScreens,scores:qgvScores(),quote:companyQuote.id===id?companyQuote.quote:null,
+  if((!c || c.identity_only) && (candidate || historySymbol)) return CompanyScreen.summary({locale:appSettings.display_locale,id,screens:publicScreens,scores:leaderScores(),quote:companyQuote.id===id?companyQuote.quote:null,
     headerHtml:`<div class="row">${heading("COMPANY RESEARCH",CompanyLogos.html(candidate?.ticker || historySymbol || c?.ticker || id,40)+esc(companyTitle(id,candidate?.ticker || historySymbol || c?.ticker || "")),esc(c?.name || ""))}${star(id)}</div>`+namesBlock(id),groupsHtml:companyGroups(id),candidateHtml:m2Panel(id)});
   if(!c) return heading("COMPANIES",t("기업을 찾을 수 없습니다."))+'<a href="#companies">'+t("기업 목록 →")+"</a>";
   const h=D.portfolio.data?.holdings?.find(r=>r.company_id===id),e=searchIndex.resolve("COMPANY",id);
@@ -490,7 +490,7 @@ function analysis(id,tab=null) {
   const c=company(id),candidate=Object.hasOwn(m2Candidates.companies,id)?m2Candidates.companies[id]:null,historySymbol=PrivateHistory.symbolFor(id);
   if(!c && !candidate && !historySymbol) return heading("COMPANIES",t("기업을 찾을 수 없습니다."))+'<a href="#companies">'+t("기업 목록 →")+"</a>";
   const ticker=candidate?.ticker || historySymbol || c?.ticker || "";
-  return CompanyScreen.analysis({locale:appSettings.display_locale,id,ticker,tab,quote:companyQuote.id===id?companyQuote.quote:null,screens:publicScreens,scores:qgvScores(),headerHtml:`<div class="row">${heading("COMPANY ANALYSIS",CompanyLogos.html(ticker||id,40)+esc(ticker),esc(c?.name || ""))}${star(id)}</div>`});
+  return CompanyScreen.analysis({locale:appSettings.display_locale,id,ticker,tab,quote:companyQuote.id===id?companyQuote.quote:null,screens:publicScreens,scores:leaderScores(),headerHtml:`<div class="row">${heading("COMPANY ANALYSIS",CompanyLogos.html(ticker||id,40)+esc(ticker),esc(c?.name || ""))}${star(id)}</div>`});
 }
 function paintPortfolio() {
   const host=$("#portfolio-screen");
@@ -621,7 +621,7 @@ function directoryRows(prefix){return DeviceWatchlist.filter(identityCompanies,p
    from (origin, for its back link). RAM first, mirrored to sessionStorage as a per-tab convenience (try/catch: RAM only when
    storage is unavailable). No score, rank, price or v2 profile is stored: the v2 preset/gate stay in page memory (qgv2Profile). */
 const S06_KEY='investment.web.v1.s06-view',LEADER_SORTS=LeaderboardScreen.SORT_IDS;
-let leaderboardView={view:'default',profileId:null,interest:false,group:'',sort:'qgv',query:'',explore:'all',scrollY:0,anchor:null,offset:0},leaderboardRows=null,companyOrigin=null;
+let leaderboardView={view:'default',profileId:null,interest:false,target:false,group:'',sort:'qgv',query:'',explore:'all',scrollY:0,anchor:null,offset:0},leaderboardRows=null,companyOrigin=null;
 // S06 exploration filter (FE-MISSING-2): all / official QGV ranking / QG 참고 목록 (V 미포함, D11) / some axes only / check data
 // (LeaderboardScreen.EXPLORE).
 const LEADER_EXPLORE=['all','ranked','qg','partial','check'];
@@ -629,10 +629,10 @@ const LEADER_EXPLORE=['all','ranked','qg','partial','check'];
 // leave sessionStorage empty.
 let leaderSaved=JSON.stringify({...leaderboardView,origin:null});
 function readLeaderView(){try{const raw=sessionStorage.getItem(S06_KEY),v=JSON.parse(raw||'null');if(!v||typeof v!=='object')return;leaderSaved=raw;
-  leaderboardView={view:['default','profile','device'].includes(v.view)?v.view:'default',profileId:typeof v.profileId==='string'?v.profileId:null,interest:v.interest===true,group:typeof v.group==='string'?v.group:'',sort:LEADER_SORTS.includes(v.sort)?v.sort:'qgv',query:typeof v.query==='string'?v.query.slice(0,60):'',explore:LEADER_EXPLORE.includes(v.explore)?v.explore:'all',scrollY:Number.isFinite(v.scrollY)&&v.scrollY>0?Math.round(v.scrollY):0,anchor:typeof v.anchor==='string'&&v.anchor.length<=64?v.anchor:null,offset:Number.isFinite(v.offset)?Math.round(v.offset):0};
+  leaderboardView={view:['default','profile','device'].includes(v.view)?v.view:'default',profileId:typeof v.profileId==='string'?v.profileId:null,interest:v.interest===true,target:v.target===true,group:typeof v.group==='string'?v.group:'',sort:LEADER_SORTS.includes(v.sort)?v.sort:'qgv',query:typeof v.query==='string'?v.query.slice(0,60):'',explore:LEADER_EXPLORE.includes(v.explore)?v.explore:'all',scrollY:Number.isFinite(v.scrollY)&&v.scrollY>0?Math.round(v.scrollY):0,anchor:typeof v.anchor==='string'&&v.anchor.length<=64?v.anchor:null,offset:Number.isFinite(v.offset)?Math.round(v.offset):0};
   const o=v.origin;companyOrigin=o&&typeof o.id==='string'&&typeof o.hash==='string'&&/^#(leaderboard|leaderboard\/interest|companies|watchlist)$/.test(o.hash)?{id:o.id,hash:o.hash}:null;}catch(_){}}
 function saveLeaderView(){const json=JSON.stringify({...leaderboardView,origin:companyOrigin});if(json===leaderSaved)return;leaderSaved=json;try{sessionStorage.setItem(S06_KEY,json);}catch(_){}}
-function syncLeaderView(){const q=$('#leader-query'),g=$('#leader-group');leaderboardView={...leaderboardView,interest:$('#leader-interest').checked,group:g?g.value:'',sort:LEADER_SORTS.includes($('#leader-sort').value)?$('#leader-sort').value:'qgv',query:q?q.value:''};saveLeaderView();}
+function syncLeaderView(){const q=$('#leader-query'),g=$('#leader-group');leaderboardView={...leaderboardView,interest:$('#leader-interest').checked,target:$('#leader-target')?.checked===true,group:g?g.value:'',sort:LEADER_SORTS.includes($('#leader-sort').value)?$('#leader-sort').value:'qgv',query:q?q.value:''};saveLeaderView();}
 /* Scroll position of S06: the first table row in view and its distance from the viewport top (falls back to scrollY when no row
    is in view). Restoring by row keeps the same rows in view even when content above it (e.g. the 'My device' panel) changed. */
 function leaderAnchor(){for(const r of document.querySelectorAll('#leaderboard-screen [data-leaderboard-row]')){const b=r.getBoundingClientRect();if(b.bottom>0&&b.top<window.innerHeight)return{anchor:r.dataset.leaderboardRow,offset:Math.round(b.top)};}return{anchor:null,offset:0};}
@@ -642,15 +642,15 @@ function restoreLeaderScroll(){const v=leaderboardView,row=v.anchor?document.que
 // position is not overwritten in between.
 let leaderRestoring=false;
 function restoreLeaderView(){leaderRestoring=true;restoreLeaderScroll();requestAnimationFrame(()=>requestAnimationFrame(()=>{if(currentRoute==='leaderboard')restoreLeaderScroll();leaderRestoring=false;}));}
-// 'QGV v2 순': the official v2 rank over all 19 identities (QgvScores, rows with V), then the QG 참고 목록 (V 미포함) in its own
-// order (D11); filters only hide rows. No total (NOT_AVAILABLE) goes last, by ticker.
+// 'QGV v2 순': the official v2 rank over the Universe rows of the official evaluation (QgvScores, rows with V; D12), then the QG 참고
+// 목록 (V 미포함) in its own order (D11); filters (search, group, interest, TARGET) only hide rows. No total goes last, by ticker.
 // Other S06 sort keys (Q/G/V, direction, data date, M3 market cap): structured values, NA last (LeaderboardScreen.sortRows).
 function rankOrder(rows,S){return LeaderboardScreen.sortRows(rows,S,leaderboardView.sort,{deviceRanks:window.PrivateSubsetView?.ranks?.()||null});}
-function paintLeaderSummary(S,shown){const host=$('#leader-summary');if(!host)return;const en=appSettings.display_locale==='en-US',v=leaderboardView,group=prefs.groups.find(g=>g.id===v.group);
-  const sort={qgv:en?'QGV v2 (high first)':'QGV v2 순',ticker:t('티커 순'),name:t('기업명 순'),favorites:t('관심기업 우선')}[v.sort]||LeaderboardScreen.sortLabel(v.sort,en),filters=[v.interest?t('관심기업만'):null,group?(en?'group ':'그룹 ')+group.name:null,v.query.trim()?(en?'search “':'검색 “')+v.query.trim()+'”':null,v.explore!=='all'&&v.view!=='profile'?(LeaderboardScreen.EXPLORE.find(e=>e[0]===v.explore)||[])[en?2:1]:null].filter(Boolean);
+function paintLeaderSummary(S,shown,total=identityCompanies.length){const host=$('#leader-summary');if(!host)return;const en=appSettings.display_locale==='en-US',v=leaderboardView,group=prefs.groups.find(g=>g.id===v.group);
+  const sort={qgv:en?'QGV v2 (high first)':'QGV v2 순',ticker:t('티커 순'),name:t('기업명 순'),favorites:t('관심기업 우선')}[v.sort]||LeaderboardScreen.sortLabel(v.sort,en),filters=[v.interest?t('관심기업만'):null,v.target?(en?'TARGET only':'TARGET만'):null,group?(en?'group ':'그룹 ')+group.name:null,v.query.trim()?(en?'search “':'검색 “')+v.query.trim()+'”':null,v.explore!=='all'&&v.view!=='profile'?(LeaderboardScreen.EXPLORE.find(e=>e[0]===v.explore)||[])[en?2:1]:null].filter(Boolean);
   const view={default:en?'Default':'기본',profile:en?'My profile (v1 preview, not the official v2 score)':'내 프로필(v1 미리보기 · 공식 v2 점수 아님)',device:en?'My device (M3)':'내 기기 기준(M3)'}[v.view];
   const p=S&&S.profile?(en?S.profile.name.name_en:S.profile.name.name)+' · '+(en?'gate ':'관문 ')+(S.profile.gate?(en?'on':'켬'):(en?'off':'끔')):'—';
-  const text=(en?'Sort: ':'정렬: ')+sort+' · '+(en?'Filter: ':'필터: ')+(filters.join(' · ')||(en?'none':'없음'))+' · '+(en?'View: ':'보기: ')+view+' · '+(en?'Profile: ':'프로필: ')+p+' · '+(en?shown+' of '+identityCompanies.length+' shown':identityCompanies.length+'개 중 '+shown+'개 표시');
+  const text=(en?'Sort: ':'정렬: ')+sort+' · '+(en?'Filter: ':'필터: ')+(filters.join(' · ')||(en?'none':'없음'))+' · '+(en?'View: ':'보기: ')+view+' · '+(en?'Profile: ':'프로필: ')+p+' · '+(en?shown+' of '+total+' shown':total+'개 중 '+shown+'개 표시');
   if(host.textContent!==text)host.textContent=text;}
 // Scores (S04/S05/S06, report, rehearsal) come only from QgvScores (the scoring_default setting). QGV v2 profile choice and the
 // device quotes of the v2 V cross-section live in this page's memory only: never stored, logged or sent.
@@ -664,17 +664,34 @@ function repaintScores(build){const fresh=document.createElement('div');fresh.in
 // Late score inputs (the DART reference row) repaint only the score views of the open screen. A full render() here
 // discarded typed weights, open tabs and in-flight save messages on whatever screen was open (e.g. the ledger sheet).
 function refreshScoreViews(){const[route,raw]=location.hash.slice(1).split('/');let id='';try{id=decodeURIComponent(raw||'');}catch(_){id='';}
- if(route==='leaderboard'&&leaderboardRows&&$('#leaderboard-screen'))paintLeaderboardScreen(leaderboardRows);
+ if(route==='leaderboard'&&leaderboardRows&&$('#leaderboard-screen'))paintLeaderboardScreen();
  else if(route==='company'&&id)repaintScores(()=>detail(id));else if(route==='analysis'&&id)repaintScores(()=>analysis(id));}
 function qgvScores(identities=identityCompanies){return QgvScores.compute({identities,publicScreens,quotes:qgv2Quotes,preset:qgv2Profile.preset,gate:qgv2Profile.gate,referenceRows:typeof dartReferenceRows==='function'?dartReferenceRows():{}});}
-/* S06 scores (owner rule 2026-10-18: the same input gives the same V and counts on every screen): the device quotes come from the ONE
-   shared QgvScores.pageResult that the V coverage panel and the stat radar read (same inputs, catalog, identities, preset, gate ->
-   the same memoized result), and the screen identities are ranked with exactly those quotes (the rank population stays the S06
-   identities; QgvScores splits the official ranking from the QG 참고 목록, D11). Before that result exists no device price is used.
-   RAM only: nothing is stored, sent or logged. */
-let leaderPage=null,leaderShown=null;// leaderShown: the page result the last S06 paint used (a paint made before the result arrived is repainted)
-function leaderScores(){const inputs=window.Qgv2Inputs?publicScreens[Qgv2Inputs.FILE]:null,page=leaderPage&&leaderPage.inputs===inputs?leaderPage.result:null;leaderShown=page;// quotes do not depend on preset/gate
- return QgvScores.compute({identities:identityCompanies,publicScreens,quotes:page?page.quotes:{},preset:qgv2Profile.preset,gate:qgv2Profile.gate,referenceRows:typeof dartReferenceRows==='function'?dartReferenceRows():{}});}
+/* OFFICIAL EVALUATION (D12, owner decision 2026-10-19: '공식 리더보드는 Universe 전체 평가를 기준으로 한다. 기존 TARGET 19개는 별도
+   목록·필터로 유지한다.'). ONE result feeds S06, the company detail rank, the playbook candidates, the radar and the V panel: the
+   shared QgvScores.pageResult (one collectQuotes + one compute over every Universe code of the published sec-qgv2.json and the TARGET
+   identities, deduplicated into one row per security; qgv-scores.js universeIdentities). leaderScores() returns that result's
+   `computed` itself while it is current (same Universe read, preset/gate and reference rows); otherwise the same call over the same
+   identities with the shared quote set it has (that result's quotes, else the last shared set after new public inputs, none before
+   a price read: no official rank, the QG 참고 목록 shows, D11). Populations:
+   evaluation = every security of that result; rank = Universe rows with an official rank (V); eligibility = the approved
+   model-portfolio rules (QgvScores.modelPortfolios); filters (search, group, interest, TARGET) only hide rows. RAM only. */
+const NO_QUOTES=Object.freeze({});let leaderQuotes=NO_QUOTES,leaderPage=null,leaderShown=null,officialMemo=null,populationMemo=null;// leaderShown: the page result the last S06 paint used (a paint made before the result arrived is repainted)
+function officialPopulation(){const inputs=window.Qgv2Inputs?publicScreens[Qgv2Inputs.FILE]:null;
+ if(populationMemo&&populationMemo.inputs===inputs&&populationMemo.ids===identityCompanies&&populationMemo.names===companyNames)return populationMemo.value;
+ const U=inputs&&typeof QgvScores.universeIdentities==='function'?QgvScores.universeIdentities(inputs,identityCompanies):null,byId=new Map(identityCompanies.map(c=>[c.company_id,c]));
+ // Universe rows: a TARGET identity keeps its catalog name; a Universe code is named from company-names-ko.json (search only).
+ const named=c=>{const t=byId.get(c.company_id),code=U?U.universe[c.company_id]:null;if(t)return{...t,universe_code:code||null,target:true};const n=companyNames?companyNames.get(c.company_id):null;
+  return{company_id:c.company_id,ticker:c.ticker,name:[n&&n.ko_name,n&&n.en_name].filter(Boolean).join(' '),universe_code:code||null,target:false};};
+ const value=U?{official:U,rows:U.identities.filter(c=>U.universe[c.company_id]).map(named),outside:U.outside.map(id=>({...byId.get(id),universe_code:null,target:true}))}:{official:null,rows:identityCompanies.map(c=>({...c,universe_code:null,target:true})),outside:[]};
+ populationMemo={inputs,ids:identityCompanies,names:companyNames,value};return value;}
+function leaderScores(){const inputs=window.Qgv2Inputs?publicScreens[Qgv2Inputs.FILE]:null,page=leaderPage&&leaderPage.inputs===inputs?leaderPage.result:null;leaderShown=page;
+ const refs=typeof dartReferenceRows==='function'?dartReferenceRows():{},refKey=JSON.stringify(refs);
+ if(page&&page.official&&page.reference_key===refKey&&QgvScores.isCurrent(window,page)){leaderQuotes=page.quotes;return page.computed;}// the ONE shared result itself
+ const pop=officialPopulation(),quotes=page?page.quotes:qgv2QuotesKey?qgv2Quotes:NO_QUOTES;leaderQuotes=quotes;const key=JSON.stringify([qgv2Profile.preset,qgv2Profile.gate,refKey]);// quotes do not depend on preset/gate
+ if(officialMemo&&officialMemo.inputs===inputs&&officialMemo.quotes===quotes&&officialMemo.pop===pop&&officialMemo.key===key)return officialMemo.S;
+ const S=QgvScores.compute({identities:pop.official?pop.official.identities:identityCompanies,publicScreens,quotes,preset:qgv2Profile.preset,gate:qgv2Profile.gate,referenceRows:refs,official:pop.official});
+ officialMemo={inputs,quotes,pop,key,S};return S;}
 async function refreshLeaderPage(after){const inputs=window.Qgv2Inputs?publicScreens[Qgv2Inputs.FILE]:null;if(!inputs||typeof QgvScores.pageResult!=='function')return;const{preset,gate}=qgv2Profile;let catalog=null;try{catalog=await deviceCatalog();}catch(_){catalog=null;}
  let r=null;try{r=await QgvScores.pageResult(window,{v2Inputs:inputs,catalog,identities:identityCompanies,preset,gate});}catch(_){r=null;}if(!r)return;if(leaderPage&&leaderPage.result===r){if(after&&leaderShown!==r)after();return;}
  // The Universe read is one shared RAM state (PrivateSubsetView: the last successful read survives navigation), so the page result
@@ -688,15 +705,24 @@ async function refreshQgv2Quotes(after){if(DataRefresh.quiet())return;const befo
 // A repaint keeps keyboard focus on the same control (preset, gate, view, profile, detail button) instead of dropping it.
 function focusKey(n){if(!n||!n.dataset)return null;for(const k of ['qgv2Preset','leaderboardView','leaderboardProfile','qgv2Gate','leaderboardExploreOption'])if(Object.hasOwn(n.dataset,k))return '[data-'+k.replace(/[A-Z]/g,c=>'-'+c.toLowerCase())+(n.dataset[k]?'="'+CSS.escape(n.dataset[k])+'"':'')+']';
   return n.getAttribute('aria-controls')?'[aria-controls="'+CSS.escape(n.getAttribute('aria-controls'))+'"]':null;}
-function paintLeaderboardScreen(rows){leaderboardRows=rows;let profiles=[];try{profiles=DeviceProfiles.read(localStorage).strategies;}catch(_){profiles=[];}
- const host=$('#leaderboard-screen'),S=leaderScores(),shown=rankOrder(rows,S),active=host&&host.contains(document.activeElement)?focusKey(document.activeElement):null;
- const mounted=LeaderboardScreen.mount(host,shown,{publicScreens,locale:appSettings.display_locale,nameOf:id=>EntitySearch.companyName(companyNames?.get(id)||null,appSettings.display_locale),profiles,deviceRanks:window.PrivateSubsetView?.ranks?.()||null,view:leaderboardView.view,profileId:leaderboardView.profileId,scores:S,explore:leaderboardView.explore,onView:patch=>{if(Object.hasOwn(patch,'preset')||Object.hasOwn(patch,'gate')){qgv2Profile={...qgv2Profile,...patch};paintLeaderboardScreen(rows);return;}leaderboardView={...leaderboardView,...patch};saveLeaderView();if(leaderboardView.view==='device'){const d=$('#private-subset-root')?.closest('details');if(d)d.open=true;}paintLeaderboardScreen(rows);}});
+/* S06 rows (D12): the Universe rows of the official evaluation after the screen filters (search, group, interest, TARGET), and the
+   TARGET identities outside the Universe after the same filters, for their own labelled list. Filters only hide rows. */
+function leaderFiltered(){const pop=officialPopulation(),v=leaderboardView,f=list=>DeviceWatchlist.filter(list,prefs,{query:v.query,group:v.group,onlyInterest:v.interest,sort:v.sort});
+ return{rows:f(v.target?pop.rows.filter(r=>r.target):pop.rows),outside:f(pop.outside),pop};}
+let leaderPaint=0;
+function paintLeaderboardScreen(){const paint=++leaderPaint;leaderboardRows=true;let profiles=[];try{profiles=DeviceProfiles.read(localStorage).strategies;}catch(_){profiles=[];}
+ const host=$('#leaderboard-screen'),S=leaderScores(),F=leaderFiltered(),shown=rankOrder(F.rows,S),
+  // N10/N15/N20 on the OFFICIAL default profile (balanced, gate on), the same inputs and quotes as S, whatever the S06 preset.
+  model=F.pop.official&&typeof QgvScores.officialModel==='function'?QgvScores.officialModel({identities:F.pop.official.identities,v2Inputs:publicScreens[Qgv2Inputs.FILE],quotes:leaderQuotes,official:F.pop.official,computed:S}):null,active=host&&host.contains(document.activeElement)?focusKey(document.activeElement):null;
+ const mounted=LeaderboardScreen.mount(host,shown,{publicScreens,locale:appSettings.display_locale,nameOf:id=>EntitySearch.companyName(companyNames?.get(id)||null,appSettings.display_locale),profiles,deviceRanks:window.PrivateSubsetView?.ranks?.()||null,view:leaderboardView.view,profileId:leaderboardView.profileId,scores:S,explore:leaderboardView.explore,outside:F.outside,targetOnly:leaderboardView.target===true,model,onView:patch=>{if(Object.hasOwn(patch,'preset')||Object.hasOwn(patch,'gate')){qgv2Profile={...qgv2Profile,...patch};paintLeaderboardScreen();return;}leaderboardView={...leaderboardView,...patch};saveLeaderView();if(leaderboardView.view==='device'){const d=$('#private-subset-root')?.closest('details');if(d)d.open=true;}paintLeaderboardScreen();}});
  if(active){const n=host&&host.querySelector(active);if(n)n.focus({preventScroll:true});}
- paintLeaderSummary(S,mounted&&Number.isInteger(mounted.shown)?mounted.shown:shown.length);
+ paintLeaderSummary(S,mounted&&Number.isInteger(mounted.shown)?mounted.shown:shown.length,F.pop.rows.length);
  void window.VCoverage?.paint($('#v-coverage-root'),{publicScreens,catalog:deviceCatalog,identities:identityCompanies,preset:qgv2Profile.preset,gate:qgv2Profile.gate,locale:appSettings.display_locale});// V 산출 현황 · 이 기기 (QgvScores.pageResult, RAM only)
- void refreshLeaderPage(()=>{if(leaderboardRows===rows&&$('#leaderboard-screen'))paintLeaderboardScreen(rows);});}
+ void refreshLeaderPage(()=>{if(leaderPaint===paint&&$('#leaderboard-screen'))paintLeaderboardScreen();});}
+// The TARGET directory list under S06 (the separate TARGET 19 list, owner decision D12) keeps its own filters (search, group,
+// interest) and the official order; the S06 table above holds the Universe rows of the official evaluation.
 function paintDirectory(route){const prefix=route==='watchlist'?'watch':'leader';if(route==='leaderboard')syncLeaderView();
- const rows=route==='leaderboard'?rankOrder(directoryRows(prefix),leaderScores()):directoryRows(prefix),list=$('#'+(route==='watchlist'?'watchlist':'leader')+'-company-list');list.innerHTML=rows.map(row).join('')||'<li class="empty">'+t("일치하는 기업이 없습니다.")+'</li>';if(route==='leaderboard'){const companyIds=rows.map(r=>r.company_id);paintLeaderboardScreen(rows);$('#leader-m2-panel').innerHTML=m2Panel(undefined,companyIds);SecReported.mount($('#sec-reported-panel'),secReported,{companyIds,locale:appSettings.display_locale});PublicScreens.mount($('#public-qg'),publicScreens,{kind:'qg',companyIds,locale:appSettings.display_locale});}}
+ const rows=route==='leaderboard'?rankOrder(directoryRows(prefix),leaderScores()):directoryRows(prefix),list=$('#'+(route==='watchlist'?'watchlist':'leader')+'-company-list');list.innerHTML=rows.map(row).join('')||'<li class="empty">'+t("일치하는 기업이 없습니다.")+'</li>';if(route==='leaderboard'){const companyIds=rows.map(r=>r.company_id);paintLeaderboardScreen();$('#leader-m2-panel').innerHTML=m2Panel(undefined,companyIds);SecReported.mount($('#sec-reported-panel'),secReported,{companyIds,locale:appSettings.display_locale});PublicScreens.mount($('#public-qg'),publicScreens,{kind:'qg',companyIds,locale:appSettings.display_locale});}}
 
 function paintNews(id) {
   const c=company(id),scope=$("#news-scope").value,held=D.portfolio.data?.holdings?.map(h=>h.company_id) || [];
@@ -964,7 +990,7 @@ function renderRoute() {
     $("#search").oninput=$("#only-interest").onchange=$("#group-filter").onchange=$("#company-sort").onchange=()=>{listLimit=30;paintCompanies();};
     $("#more-companies").onclick=()=>{listLimit+=30;paintCompanies();};wireGroups();
   }
-  if(route==='watchlist'||route==='leaderboard'){const prefix=route==='watchlist'?'watch':'leader';if(route==='leaderboard'&&id==='interest')$('#leader-interest').checked=true;for(const key of ['interest','group','sort'])$('#'+prefix+'-'+key).onchange=()=>paintDirectory(route);if(route==='leaderboard')$('#leader-query').oninput=()=>paintDirectory(route);paintDirectory(route);if(route==='watchlist'){wireGroups();paintDisclosures($('#watch-disclosures'),prefs.interests,appSettings.display_locale==='en-US'?'No disclosures or news for your interest companies.':'관심 기업의 공시·뉴스가 없습니다.');paintDartDisclosures($('#watch-dart-disclosures'),prefs.interests,appSettings.display_locale==='en-US'?'No DART disclosures for your interest companies.':'관심 기업의 DART 공시가 없습니다.');}}
+  if(route==='watchlist'||route==='leaderboard'){const prefix=route==='watchlist'?'watch':'leader';if(route==='leaderboard'&&id==='interest')$('#leader-interest').checked=true;for(const key of ['interest','group','sort'])$('#'+prefix+'-'+key).onchange=()=>paintDirectory(route);if(route==='leaderboard'&&$('#leader-target'))$('#leader-target').onchange=()=>paintDirectory(route);if(route==='leaderboard')$('#leader-query').oninput=()=>paintDirectory(route);paintDirectory(route);if(route==='watchlist'){wireGroups();paintDisclosures($('#watch-disclosures'),prefs.interests,appSettings.display_locale==='en-US'?'No disclosures or news for your interest companies.':'관심 기업의 공시·뉴스가 없습니다.');paintDartDisclosures($('#watch-dart-disclosures'),prefs.interests,appSettings.display_locale==='en-US'?'No DART disclosures for your interest companies.':'관심 기업의 DART 공시가 없습니다.');}}
   if(route==="news") {
     for(const name of ["news","network"]) $("#show-"+name).onclick=()=>{
       $("#news-pane").hidden=name!=="news";$("#network-pane").hidden=name!=="network";$("#news-disclosures").hidden=name!=="news";$("#news-dart-disclosures").hidden=name!=="news";
@@ -1176,7 +1202,7 @@ window.addEventListener("hashchange", () => D && render());
 window.addEventListener("hashchange", () => {if(!D)return;const a=document.activeElement;if(!a||a===document.body||!$('#content').contains(a))focusHeading();});
 // S06 scroll position is kept while S06 is the open screen (RAM + sessionStorage, debounced).
 // Crossing the phone width redraws the S06 table (narrow: rank, company, QGV + details button; wide: all shown columns).
-try{const mq=window.matchMedia(window.LeaderboardScreen?.NARROW||'(max-width: 749.98px)');if(mq.addEventListener)mq.addEventListener('change',()=>{if(currentRoute==='leaderboard'&&leaderboardRows&&$('#leaderboard-screen'))paintLeaderboardScreen(leaderboardRows);});}catch(_){}
+try{const mq=window.matchMedia(window.LeaderboardScreen?.NARROW||'(max-width: 749.98px)');if(mq.addEventListener)mq.addEventListener('change',()=>{if(currentRoute==='leaderboard'&&leaderboardRows&&$('#leaderboard-screen'))paintLeaderboardScreen();});}catch(_){}
 let leaderScrollTimer=0,leaderScrollFrame=0;
 window.addEventListener("scroll",()=>{if(currentRoute!=='leaderboard'||leaderRestoring||leaderScrollFrame)return;leaderScrollFrame=requestAnimationFrame(()=>{leaderScrollFrame=0;if(currentRoute!=='leaderboard'||leaderRestoring)return;
   leaderboardView={...leaderboardView,scrollY:Math.max(0,Math.round(window.scrollY)),...leaderAnchor()};clearTimeout(leaderScrollTimer);leaderScrollTimer=setTimeout(saveLeaderView,200);});},{passive:true});
@@ -1194,7 +1220,7 @@ function dartReferenceRows(){
 Promise.all([...(["data.json","entities.json","sec-m2-candidates.json"].map(path=>fetch(path,{cache:"no-store"}).then(r=>{
   if(!r.ok) throw Error("HTTP "+r.status);return r.json();
 }).catch(error=>{if(path==="sec-m2-candidates.json")return null;throw error;}))),DataRefresh.load(window),deviceCatalog().catch(()=>null)]).then(([data,catalog,candidates,{reported,screens},identities])=>{
-  try{if(identities){DeviceMarket.emptyMarket(identities);identityCompanies=DeviceWatchlist.identities(identities);}}catch(_){identityCompanies=[];}QgvScores.setPageIdentities?.(identityCompanies);QgvScores.setPageProfile?.(()=>qgv2Profile);// one quote set and the S06 official preset/gate for every screen (qgv-scores.js)
+  try{if(identities){DeviceMarket.emptyMarket(identities);identityCompanies=DeviceWatchlist.identities(identities);}}catch(_){identityCompanies=[];}QgvScores.setPageIdentities?.(identityCompanies);QgvScores.setPageProfile?.(()=>qgv2Profile);QgvScores.setPageReferences?.(()=>dartReferenceRows());// one quote set and the S06 official preset/gate for every screen (qgv-scores.js)
   publicScreens=screens;publicCatalog=identities||null;
   if(window.DartDisclosures?.loadFinancials)void DataRefresh.financials(window).then(financials=>{if(financials){publicScreens['dart-financials.json']=financials;if(window.QgvScores)refreshScoreViews();}});
   // Macro lights v1: public lights only until the device loads SPY on the macro screen (RAM, read by MacroLights.current()).

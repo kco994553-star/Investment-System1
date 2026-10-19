@@ -23,6 +23,7 @@ Python([`product/public_classification.py`](../../src/investment_system/product/
 - 담는 것: 업종군·테마 id/이름, 기업별 SIC·업종군·소속(true/false/null)·근거 종류·보유 ETF 티커, ETF별 보고 기준일, as-of, reason code, 원문 SHA-256.
 - 담지 않는 것: ETF 비중·평가액·수량·가격, 10-K 본문·키워드 빈도.
 - 오프라인 빌드(`build_pages_cockpit.py`)는 전부 NOT_AVAILABLE 파일을 만든다. 실데이터는 Actions의 `tools/public_classification_pipeline.py --live`가 채운다(SEC_USER_AGENT). 실시간 수집 실패 시 NOT_AVAILABLE 파일로 대체하고 배포를 막지 않는다.
+- UI 전용 수동 배포(cockpit-pages)는 `public_classification_pipeline.py --preserve-only`로 검증한 게시본을 바이트 그대로 다시 쓴다(SEC 요청 없음, `as_of`·state·sources 그대로). 게시본 404는 빌드의 NOT_AVAILABLE 유지, 형식 불일치·접속 실패는 exit 1(배포 중단).
 
 ## 쏠림 경고 (기기 전용)
 

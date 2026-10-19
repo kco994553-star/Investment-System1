@@ -10,7 +10,8 @@ releases that repeat an 8-K Exhibit 99.1. The previous Pages copy is carried for
 - network failure reading the previous copy -> nothing written (the build's NOT_AVAILABLE copy stays), exit 0;
 - source failures -> the company keeps its previous rows (STALE after 48h) or is NOT_AVAILABLE, exit 0,
   so the SEC daily deployment is never blocked by news; only an invalid local output exits 1;
-- --preserve-only (UI-only deploys) -> the previous copy restated at the current time, no source requests.
+- --preserve-only (UI-only deploys, cockpit-pages.yml only) -> the validated previous copy re-published byte for byte
+  (its as_of and states as published, never restated at the deploy time), no source requests.
 
 Only fixed codes and counts are printed: no company names, titles, URLs or upstream messages.
 """
@@ -58,6 +59,11 @@ def _code(error):
 
 def fetch_previous(*, open_response=None):
     """Live Pages copy -> validated payload; None on 404. Network errors raise OSError, invalid copies ValueError."""
+    return _previous(open_response)[0]
+
+
+def _previous(open_response=None):
+    """(validated payload, live bytes); (None, None) on 404. Network errors raise OSError, invalid copies ValueError."""
     request = urllib.request.Request(SOURCE, headers={'Accept': 'application/json', 'Cache-Control': 'no-cache'})
     fetch = open_response or urllib.request.build_opener(NoRedirect()).open
     try:
@@ -67,11 +73,11 @@ def fetch_previous(*, open_response=None):
             body = response.read(ns.MAX_BYTES + 1)
     except urllib.error.HTTPError as error:
         if error.code == 404:
-            return None
+            return None, None
         raise OSError('PREVIOUS_FETCH_FAILED') from None
     except (urllib.error.URLError, OSError, ValueError):
         raise OSError('PREVIOUS_FETCH_FAILED') from None
-    return ns.require_news_signals(ns.parse_json(body))
+    return ns.require_news_signals(ns.parse_json(body)), body
 
 
 def read_sec(directory):
@@ -86,11 +92,14 @@ def read_sec(directory):
 
 
 def write(directory, payload):
+    return write_bytes(directory, ns.encode(ns.require_news_signals(payload)))
+
+
+def write_bytes(directory, body):
     directory = Path(directory)
     destination = directory / ns.FILENAME
     if directory.is_symlink() or not directory.is_dir() or destination.is_symlink():
         raise ValueError('NEWS_SIGNALS_OUTPUT_INVALID')
-    body = ns.encode(ns.require_news_signals(payload))
     if len(body) > ns.MAX_BYTES:
         raise ValueError('NEWS_SIGNALS_OUTPUT_INVALID')
     with tempfile.NamedTemporaryFile(dir=directory, prefix='.news-signals-', delete=False) as handle:
@@ -170,10 +179,10 @@ def _summary(payload):
 
 def run(out, *, live, preserve_only=False, now=_utc_now, gdelt_kwargs=None, ir_kwargs=None, open_previous=None):
     try:
-        previous = fetch_previous(open_response=open_previous)
+        previous, previous_body = _previous(open_previous)
     except ValueError:
         print('NEWS_SIGNALS PREVIOUS_DISCARDED')
-        previous = None
+        previous = previous_body = None
     except Exception:
         print('NEWS_SIGNALS PREVIOUS_FETCH_FAILED nothing_written')
         return 0
@@ -181,13 +190,14 @@ def run(out, *, live, preserve_only=False, now=_utc_now, gdelt_kwargs=None, ir_k
         if previous is None:
             print('NEWS_SIGNALS PREVIOUS_NOT_AVAILABLE')
             return 0
+        # The live copy, validated, is re-published byte for byte: nothing was collected, so its as_of and every
+        # state stay as published (never restated at the deploy time). Only cockpit-pages.yml passes --preserve-only.
         try:
-            payload = ns.merge(previous, {}, as_of=now())
-            write(out, payload)
+            write_bytes(out, previous_body)
         except Exception:
             print('NEWS_SIGNALS OUTPUT_FAILED')
             return 1
-        print(f"NEWS_SIGNALS PREVIOUS_RESTORED items={len(payload['items'])} state={payload['state']}")
+        print(f"NEWS_SIGNALS PREVIOUS_RESTORED items={len(previous['items'])} state={previous['state']}")
         return 0
     if not live:
         print('NEWS_SIGNALS LIVE_OPT_IN_REQUIRED')
