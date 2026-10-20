@@ -132,3 +132,13 @@ def test_invalid_input_fails_with_fixed_code(mutate):
     mutate(h)
     with pytest.raises(CB.ChartBarsError, match='^CHART_BARS_INPUT_INVALID$'):
         CB.normalize(h)
+
+
+def test_merge_revised_view_takes_new_values_and_keeps_the_mark():
+    c = _case('merge_revision')
+    old, new = CB.normalize(c['input']['previous']), CB.normalize(c['input']['incoming'])
+    view = CB.merge(old, new, prefer='INCOMING')
+    bar = next(b for b in view['series']['bars'] if b['session_date'] == '2030-01-10')
+    assert view['revised'] == ['2030-01-10'] and bar['close'] == 10.5 and 'PRICE_REVISED' in bar['codes']
+    with pytest.raises(CB.ChartBarsError):
+        CB.merge(old, new, prefer='LATEST')

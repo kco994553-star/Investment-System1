@@ -2,7 +2,8 @@
 """Synthetic reference vectors for ChartBars (chart-bars.js) and PatternEngine (pattern-engine.js).
 
 Usage: pattern_reference.py --write
-  regenerates tests/fixtures/chart_bars_reference_v1.json, tests/fixtures/pattern_engine_reference_v1.json and the
+  regenerates tests/fixtures/chart_bars_reference_v1.json, tests/fixtures/pattern_engine_reference_v1.json,
+  tests/fixtures/pattern_signals_reference_v1.json and the
   device copy web_assets/pattern-config-defaults.js (from technical/pattern_rules_v1.json).
 Every bar below is invented (symbol SYNTH1, made-up dates and prices); never a real price, holding or account value.
 """
@@ -120,6 +121,45 @@ def rules_with(**overrides):
     rules['params'].update(overrides)
     rules['params_sha256'] = P.params_sha256(rules['params'])
     return rules
+
+
+# ---------------------------------------------------------------- pattern scenario builders (TA_PREP §6)
+
+def path(start, legs, warmup=20):
+    """Closes: `warmup` flat bars at `start`, then legs of (bars, total change) in equal steps."""
+    closes, price = [float(start)] * warmup, float(start)
+    for count, delta in legs:
+        for _ in range(count):
+            price = round(price + delta / count, 6)
+            closes.append(price)
+    return closes
+
+
+# Box base: peaks at 24 and 34 (high 110.5), troughs at 29 and 39 (low 99.5); the box is FORMED at bar 42.
+BOX_BASE = [(5, 5), (5, -10), (5, 10), (5, -10)]
+# Double bottom base: troughs at 24 and 34 (low 99.5), neckline peak at 29 (high 110.5); FORMED at bar 37.
+DB_BASE = [(5, -5), (5, 10), (5, -10)]
+
+
+def scenario(legs, base=BOX_BASE, start=105, spread=0.5, edit=None, warmup=20):
+    closes = path(start, base + legs, warmup)
+    raw = from_closes(weekdays('2030-01-07', len(closes)), closes, spread=spread)
+    for index, change in (edit or {}).items():
+        raw[index].update(change)
+    return raw
+
+
+def mirror(raw, axis=200):
+    """Upside-down copy: double top / breakdown cases are the mirrored bottom / breakout cases."""
+    out = []
+    for b in raw:
+        m = dict(b)
+        for k in ('open', 'close', 'adjusted_close'):
+            m[k] = None if b[k] is None else round(axis - b[k], 6)
+        m['high'] = None if b['low'] is None else round(axis - b['low'], 6)
+        m['low'] = None if b['high'] is None else round(axis - b['high'], 6)
+        out.append(m)
+    return out
 
 
 # ---------------------------------------------------------------- chart-bars cases
@@ -251,6 +291,159 @@ def run_engine_case(case):
     raise ValueError(case['operation'])
 
 
+# ---------------------------------------------------------------- pattern run cases (TA_PREP §6) and history cases (P1-6)
+
+SIGNAL_FIXTURE = FIXTURES / 'pattern_signals_reference_v1.json'
+MISSING = {'open': None, 'high': None, 'low': None, 'close': None}
+B1_TAIL = [(3, 6), (1, 3), (1, 4), (10, 0)]       # 40-42 up to 106, 43: 109, 44: 113 (> U + 0.25 ATR), then flat
+D1_TAIL = [(3, 6), (1, 3), (1, 4), (6, 0)]        # 35-37 up to 106, 38: 109, 39: 113 (> H + 0.25 ATR)
+
+
+def box_level(raw, index=42):
+    """U + 0.25 x ATR at the formation bar: the exact B2 boundary value."""
+    ctx = P.prepare(CB.normalize(history(raw)), P.load_rules(), ALL_SPLIT_FREE)
+    return 110.5 + P.param(ctx['rules'], 'BREAK_BUFFER_ATR') * ctx['atr'][index]
+
+
+def split_at(raw, index):
+    return {'status': 'AVAILABLE', 'covered_from': '2030-01-01', 'covered_to': '2031-12-31',
+            'events': [{'kind': 'SPLIT', 'effective_date': raw[index]['day']}]}
+
+
+def scenarios():
+    """(id, raw daily bars, timeframe, corporate actions). Every bar is invented."""
+    b1 = scenario(B1_TAIL)
+    level = box_level(b1)
+    b3 = scenario(B1_TAIL, edit={44: {'session_status': 'IN_PROGRESS'}})[:45]
+    b9_edit = {i: {'open': 105, 'close': 105, 'high': 118, 'low': 92} for i in (43, 44, 45)}
+    b9_edit[46] = {'open': 105, 'close': level + 0.01, 'high': level + 0.5, 'low': 104}
+    b12a = scenario([(5, 3)], base=[(20, 6), (20, -12), (20, 12), (20, -12)], start=104, edit={63: MISSING})
+    b13 = scenario([(3, 6), (10, 0)])
+    out = [
+        ('B1_box_breakout_confirmed', b1, 'D', ALL_SPLIT_FREE),
+        ('B2_close_equal_to_level_is_not_confirmed', scenario([(3, 6), (1, 3), (1, 4), (2, -6), (10, 0)], edit={44: {'close': level, 'high': level + 0.5}}), 'D', ALL_SPLIT_FREE),
+        ('B3_provisional_bar_only', b3, 'D', ALL_SPLIT_FREE),
+        ('B4_failed_within_fail_window', scenario([(3, 6), (1, 3), (1, 4), (2, -5), (6, 0)]), 'D', ALL_SPLIT_FREE),
+        ('B5_return_after_fail_window', scenario([(3, 6), (1, 3), (1, 4), (5, 0), (1, -5), (4, 0)]), 'D', ALL_SPLIT_FREE),
+        ('B6_breakdown_first_invalidates_breakout', scenario([(3, 3), (2, -8), (6, 0)]), 'D', ALL_SPLIT_FREE),
+        ('B7_expired_at_box_max_bars', scenario([(5, 10), (5, -10)] * 11 + [(3, 3)]), 'D', ALL_SPLIT_FREE),
+        ('B8_1_length_below_min', scenario([], base=[(3, 5), (3, -10), (3, 10), (3, -10), (4, 3)]), 'D', ALL_SPLIT_FREE),
+        ('B8_1b_length_at_min_forms', scenario([], base=[(3, 5), (3, -10), (3, 10), (3, -10), (5, 3)]), 'D', ALL_SPLIT_FREE),
+        ('B8_2_one_upper_touch', scenario([(3, 3)], base=[(5, 5), (5, -10), (5, 7), (5, -7)]), 'D', ALL_SPLIT_FREE),
+        ('B8_3_one_lower_touch', scenario([(3, 3)], base=[(5, 5), (5, -10), (5, 10), (5, -7)]), 'D', ALL_SPLIT_FREE),
+        ('B8_4_close_outside_box', scenario([(2, 8), (1, 6), (3, 0)]), 'D', ALL_SPLIT_FREE),
+        ('B8_5_too_shallow', scenario([(3, 1)], base=[(5, 1), (5, -2), (5, 2), (5, -2)], spread=1.0), 'D', ALL_SPLIT_FREE),
+        ('B8_5b_too_deep', scenario([(3, 3)], base=[(15, 15), (15, -30), (15, 30), (15, -30)], spread=0.05), 'D', ALL_SPLIT_FREE),
+        ('B9_levels_fixed_when_atr_changes', scenario(B1_TAIL, edit=b9_edit), 'D', ALL_SPLIT_FREE),
+        ('B10_gap_breakout', scenario(B1_TAIL, edit={44: {'open': 112, 'low': 111.5}}), 'D', ALL_SPLIT_FREE),
+        ('B11_confirm_bar_volume_missing', scenario(B1_TAIL, edit={44: {'volume': None}}), 'D', ALL_SPLIT_FREE),
+        ('B12_missing_bar_in_box_window', b12a, 'D', ALL_SPLIT_FREE),
+        ('B12b_missing_bar_while_formed', scenario([(3, 6), (10, 0)], edit={43: MISSING}), 'D', ALL_SPLIT_FREE),
+        ('B13_split_crosses_live_window', b13, 'D', split_at(b13, 45)),
+        ('B13b_split_lookup_failed', b1, 'D', {'status': 'LOOKUP_FAILED'}),
+        ('B13c_no_split_events', b1, 'D', None),
+        ('B1_mirror_breakdown', mirror(b1), 'D', ALL_SPLIT_FREE),
+        ('B4_mirror_breakdown_failed', mirror(scenario([(3, 6), (1, 3), (1, 4), (2, -5), (6, 0)])), 'D', ALL_SPLIT_FREE),
+        ('D1_double_bottom_confirmed', scenario(D1_TAIL, base=DB_BASE), 'D', ALL_SPLIT_FREE),
+        ('D2_double_bottom_failed', scenario([(3, 6), (1, 3), (1, 4), (1, -3), (1, -3), (6, 0)], base=DB_BASE), 'D', ALL_SPLIT_FREE),
+        ('D3_double_bottom_invalidated', scenario([(3, 6), (1, -3), (1, -6), (5, 0)], base=DB_BASE), 'D', ALL_SPLIT_FREE),
+        ('D4_double_bottom_expired', scenario([(3, 6), (14, 0)], base=DB_BASE), 'D', ALL_SPLIT_FREE),
+        ('D5_neckline_passed_before_known', scenario([(1, 4), (1, 8), (1, 2), (5, 0)], base=DB_BASE), 'D', ALL_SPLIT_FREE),
+        ('D6_nearest_p1_only', scenario([(3, 6), (6, 0)], base=DB_BASE + [(5, 10), (5, -10)]), 'D', ALL_SPLIT_FREE),
+        ('D7_separation_min_minus_one', scenario([(3, 6), (6, 0)], base=[(5, -5), (4, 10), (5, -10)]), 'D', ALL_SPLIT_FREE),
+        ('D7b_separation_max_plus_one', scenario([(3, 6), (6, 0)], base=[(5, -5), (60, 60), (61, -60)]), 'D', ALL_SPLIT_FREE),
+        ('D7c_separation_max_forms', scenario([(3, 6), (6, 0)], base=[(5, -5), (60, 60), (60, -60)]), 'D', ALL_SPLIT_FREE),
+        ('D1_mirror_double_top', mirror(scenario(D1_TAIL, base=DB_BASE)), 'D', ALL_SPLIT_FREE),
+        ('P6_weekly_patterns', scenario([(15, 6), (5, 3), (5, 4), (30, 0)], base=[(25, 5), (25, -10), (25, 10), (25, -10)], warmup=100), 'W', ALL_SPLIT_FREE),
+        ('random_walk_3', random_walk(3, 200), 'D', ALL_SPLIT_FREE),
+    ]
+    return out
+
+
+def run_raw(raw, timeframe, actions, rules=None):
+    daily = CB.normalize(history(raw))
+    return P.run(daily if timeframe == 'D' else CB.weekly(daily, actions), rules or P.load_rules(), actions)
+
+
+def signal_cases():
+    cases = [{'id': cid, 'operation': 'run', 'input': {'history': history(raw), 'timeframe': tf, 'actions': actions}}
+             for cid, raw, tf, actions in scenarios()]
+    b1 = dict((c[0], c[1]) for c in scenarios())['B1_box_breakout_confirmed']
+    b3 = dict((c[0], c[1]) for c in scenarios())['B3_provisional_bar_only']
+    cases.append({'id': 'B3_preview_note', 'operation': 'preview', 'input': {'history': history(b3), 'timeframe': 'D', 'actions': ALL_SPLIT_FREE}})
+    revised = [dict(b) for b in b1]
+    revised[44].update(close=110.8, high=111.3)          # the provider later revises the breakout bar below the level
+    cases.append({'id': 'P4_P5_history', 'operation': 'history', 'input': {
+        'history': history(b1), 'timeframe': 'D', 'actions': ALL_SPLIT_FREE,
+        'revised_incoming': history(revised[40:], read_at='2031-01-02T23:00:00Z'),
+        'not_judgeable_history': history(b1)}})
+    for case in cases:
+        case['synthetic'] = True
+    return cases
+
+
+def run_signal_case(case):
+    i, op = case['input'], case['operation']
+    if op == 'run':
+        return run_raw_history(i['history'], i['timeframe'], i['actions'])
+    if op == 'preview':
+        s = CB.normalize(i['history'])
+        return P.preview(s, P.run(s, P.load_rules(), i['actions']))
+    if op == 'history':
+        return history_steps(i)
+    raise ValueError(op)
+
+
+def run_raw_history(h, timeframe, actions, rules=None):
+    daily = CB.normalize(h)
+    return P.run(daily if timeframe == 'D' else CB.weekly(daily, actions), rules or P.load_rules(), actions)
+
+
+def history_steps(i):
+    """P4 repeat / prefix order, user-settings and version refusal, NOT_JUDGEABLE withholding, P5 DATA_REVISION."""
+    from investment_system.technical import pattern_history as H
+    rules = P.load_rules()
+    daily = CB.normalize(i['history'])
+    full = P.run(daily, rules, i['actions'])
+    log = []
+    hist = H.PatternHistory(full['symbol'], full['timeframe'], full['rule_version'], full['params_sha256'])
+    for n in (30, 43, 44, 45, len(daily['bars'])):
+        part = {**i['history'], 'bars': i['history']['bars'][:n]}
+        log.append(['prefix', n, hist.append(P.run(CB.normalize(part), rules, i['actions']), 'T%03d' % n)])
+    log.append(['repeat', hist.append(full, 'T999')])
+    for label, run_ in (('user_settings', P.run(daily, rules_with(SWING_MIN_ATR=2), i['actions'])),):
+        try:
+            hist.append(run_, 'TX')
+            log.append([label, 'ACCEPTED'])
+        except H.PatternHistoryError as error:
+            log.append([label, str(error)])
+    other = dict(full)
+    other['rule_version'] = 'pattern-rules/2'
+    try:
+        hist.append(other, 'TX')
+        log.append(['version_mixed', 'ACCEPTED'])
+    except H.PatternHistoryError as error:
+        log.append(['version_mixed', str(error)])
+    once = H.PatternHistory(full['symbol'], full['timeframe'], full['rule_version'], full['params_sha256'])
+    log.append(['full_once', once.append(full, 'T999')])
+    same = [{k: v for k, v in r.items() if k not in ('seq', 'computed_at')} for r in once.records()] == \
+           [{k: v for k, v in r.items() if k not in ('seq', 'computed_at')} for r in hist.records()]
+    log.append(['prefix_order_equals_full_once', same])
+    na = H.PatternHistory(full['symbol'], full['timeframe'], full['rule_version'], full['params_sha256'])
+    log.append(['no_split_events', na.append(P.run(CB.normalize(i['not_judgeable_history']), rules, None), 'T999'), len(na.records())])
+    partial = H.PatternHistory(full['symbol'], full['timeframe'], full['rule_version'], full['params_sha256'])
+    partial.append({**full, 'transitions': [t for t in full['transitions'] if t.get('pattern') != 'BOX_BREAKOUT_UP']}, 'T999')
+    log.append(['late_object', partial.append(full, 'T1000')])
+    incoming = CB.normalize(i['revised_incoming'])
+    held = CB.merge(daily, incoming)
+    view = CB.merge(daily, incoming, prefer='INCOMING')
+    official, revised = P.run(held['series'], rules, i['actions']), P.run(view['series'], rules, i['actions'])
+    log.append(['revised_dates', held['revised']])
+    log.append(['revision', hist.record_revision(official, revised, held['revised'], incoming['bars'][-1]['session_date'], 'T1000')])
+    log.append(['after_revision_append', hist.append(official, 'T1001')])
+    return {'log': log, 'records': hist.records()}
+
+
 # ---------------------------------------------------------------- fixtures and device config copy
 
 def _build(cases, runner, title):
@@ -266,6 +459,10 @@ def build_engine():
     return _build(engine_cases(), run_engine_case, 'PatternEngine synthetic reference vectors')
 
 
+def build_signals():
+    return _build(signal_cases(), run_signal_case, 'PatternEngine/PatternHistory synthetic signal vectors (TA_PREP §6)')
+
+
 def config_js():
     rules = P.load_rules()
     body = json.dumps(rules, ensure_ascii=False, separators=(',', ':'))
@@ -279,8 +476,12 @@ def main(argv):
     if argv[1:] != ['--write']:
         print(__doc__)
         return 2
-    for path, value in ((CHART_FIXTURE, build_chart()), (ENGINE_FIXTURE, build_engine())):
-        path.write_text(json.dumps(value, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
+    for target, value in ((CHART_FIXTURE, build_chart()), (ENGINE_FIXTURE, build_engine()), (SIGNAL_FIXTURE, build_signals())):
+        compact = target == SIGNAL_FIXTURE   # large synthetic inputs: one case per line keeps the file reviewable and small
+        text = ('{"schema":%s,"title":%s,"synthetic":true,"cases":[\n' % (json.dumps(value['schema']), json.dumps(value['title'], ensure_ascii=False))
+                + ',\n'.join(json.dumps(c, ensure_ascii=False, separators=(',', ':')) for c in value['cases']) + '\n]}'
+                if compact else json.dumps(value, ensure_ascii=False, indent=1))
+        target.write_text(text + '\n', encoding='utf-8')
     CONFIG_JS.write_text(config_js(), encoding='utf-8')
     print('PATTERN_REFERENCE_WRITTEN')
     return 0

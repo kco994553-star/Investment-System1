@@ -1,4 +1,5 @@
-/* Pattern engine (TECHNICAL_PATTERN_CHART_V1_DESIGN §8-§9): engine bars, split segments, swing pivots.
+/* Pattern engine (TECHNICAL_PATTERN_CHART_V1_DESIGN §8-§9): engine bars, split segments, swing pivots, support/resistance
+   zones, box breakout/breakdown, double bottom/top and the common state machine (FORMED/CONFIRMED/FAILED/INVALIDATED/EXPIRED).
    Pure functions: no network, storage, DOM, QGV or clock reads. Python reference: investment_system/technical/patterns.py
    (vectors: tests/fixtures/pattern_engine_reference_v1.json). ATR14 comes from ResearchIndicators (chart-indicators.js);
    bars come from ChartBars (chart-bars.js). Parameters are pattern-rules/1 research defaults, never validated investment
@@ -138,5 +139,199 @@
     return {role: ROLE, label_ko: rules.label_ko, rule_version: ctx.rule_version, params_sha256: ctx.params_sha256, run_mode: ctx.run_mode, timeframe: ctx.timeframe,
       segments: ctx.segments, transitions: result.transitions, skipped: result.skipped, structure: structure(result.confirmed)};
   }
-  return Object.freeze({ROLE, STRUCTURE_LABELS, canonicalJson, checkRules, param, runMode, engineBars, segments, prepare, judgement, objectId, pivots, structure, runPivots});
+
+  // ------------------------------------------------------------ signals, zones and the common state machine (P1-3..P1-5)
+  // Per bar t of a segment, in this fixed order: A. live objects take bar t (signals: expiry, missing bar, confirmation,
+  // invalidation, failure, observation end; zones: expiry, break; first bar of a later segment: every live object becomes
+  // NOT_JUDGEABLE / CORPORATE_ACTION_IN_WINDOW), B. pivots known at t, C. zone re-clustering when a pivot changed,
+  // D. new signals formed at t (box when none is live, double bottom/top for a new pivot). A new signal is first checked on
+  // the next bar. Thresholds use the formation-bar ATR and never move.
+  const PREVIEW_NOTE_KO = '잠정 봉 기준 조건 충족 · 확정 아님';
+  const hit = (rule, close) => (rule[0] === 'ABOVE' ? close > rule[1] : close < rule[1]);
+  const failed = (rule, close) => (rule[0] === 'IN_RANGE' ? rule[1] <= close && close <= rule[2] : hit(rule, close));
+  function avg(values) { let total = 0; for (const v of values) total = total + v; return total / values.length; }
+  function volumeNote(ctx, segStart, t) {
+    const n = param(ctx.rules, 'VOL_AVG_N', ctx.timeframe), mult = param(ctx.rules, 'VOL_MULT'), bars = ctx.bars;
+    if (bars[t].volume === null) return {state: 'NOT_AVAILABLE', reason_code: 'VOLUME_MISSING'};
+    if (t - n < segStart) return {state: 'NOT_AVAILABLE', reason_code: 'INSUFFICIENT_BARS'};
+    const previous = bars.slice(t - n, t).map(b => b.volume);
+    if (previous.some(v => v === null)) return {state: 'NOT_AVAILABLE', reason_code: 'VOLUME_MISSING'};
+    return {state: bars[t].volume >= mult * avg(previous) ? 'WITH_VOLUME' : 'WITHOUT_VOLUME', reason_code: null};
+  }
+  function makeRun(ctx) {
+    const r = {ctx, out: [], seen: new Set(), failWindow: param(ctx.rules, 'FAIL_WINDOW', ctx.timeframe)};
+    r.emit = (obj, event, t, state, detail) => {
+      const bars = ctx.bars;
+      r.out.push({object_id: obj.object_id, object_kind: obj.object_kind, pattern: obj.pattern, event, state, timeframe: ctx.timeframe, rule_version: ctx.rule_version,
+        params_sha256: ctx.params_sha256, anchor_index: obj.start, anchor_at: bars[obj.start].date, known_index: t, known_at: bars[t].known_at, detail, judgement: judgement(ctx, obj.start, t)});
+    };
+    r.end = (obj, event, t, state, detail) => { obj.state = state; r.emit(obj, event, t, state, detail); };
+    r.signal = (pattern, oid, start, t, confirm, invalidation, fail, expireAfter, atrValue, detail) => {
+      const obj = {object_id: oid, object_kind: 'SIGNAL', pattern, start, state: 'FORMED', confirm, invalidation, fail, expire_after: expireAfter, confirmed_index: null};
+      r.seen.add(oid);
+      r.emit(obj, 'FORMED', t, 'FORMED', {...detail, confirm_level: confirm[1], invalidation_level: invalidation[1], atr: atrValue, atr_at: ctx.bars[t].date, expire_after_index: expireAfter});
+      return obj;
+    };
+    r.step = (obj, t, segStart) => {
+      const bar = ctx.bars[t];
+      if (obj.state === 'FORMED') {
+        if (t > obj.expire_after) return r.end(obj, 'EXPIRED', t, 'EXPIRED', {});
+        if (!bar.ok) return r.end(obj, 'NOT_JUDGEABLE', t, 'NOT_JUDGEABLE', {reason_codes: ['MISSING_BARS_IN_WINDOW']});
+        if (hit(obj.confirm, bar.close)) { obj.state = 'CONFIRMED'; obj.confirmed_index = t; return r.emit(obj, 'CONFIRMED', t, 'CONFIRMED', {gap: hit(obj.confirm, bar.open), volume: volumeNote(ctx, segStart, t)}); }
+        if (hit(obj.invalidation, bar.close)) return r.end(obj, 'INVALIDATED', t, 'INVALIDATED', {});
+      } else if (obj.state === 'CONFIRMED') {
+        if (!bar.ok) return r.end(obj, 'NOT_JUDGEABLE', t, 'NOT_JUDGEABLE', {reason_codes: ['MISSING_BARS_IN_WINDOW']});
+        if (failed(obj.fail, bar.close)) return r.end(obj, 'FAILED', t, 'FAILED', {});
+        if (t - obj.confirmed_index >= r.failWindow) { obj.ended = true; return r.emit(obj, 'OBSERVATION_ENDED', t, 'CONFIRMED', {}); }
+      }
+      return undefined;
+    };
+    r.live = obj => (obj.object_kind === 'ZONE' ? obj.state === 'ACTIVE' : obj.state === 'FORMED' || (obj.state === 'CONFIRMED' && !obj.ended));
+    return r;
+  }
+  function clusters(items, tol) {
+    const groups = []; let current = [];
+    for (const item of items) { if (current.length && item.price - current[current.length - 1].price > tol) { groups.push(current); current = []; } current.push(item); }
+    if (current.length) groups.push(current);
+    const out = [];
+    while (groups.length) {
+      const g = groups.shift();
+      if (g.length > 1 && g[g.length - 1].price - g[0].price > 2 * tol) {
+        const gaps = g.slice(0, -1).map((x, n) => g[n + 1].price - x.price), cut = gaps.indexOf(Math.max(...gaps)) + 1;
+        groups.unshift(g.slice(0, cut), g.slice(cut));
+      } else out.push(g);
+    }
+    return out;
+  }
+  const dateList = (ctx, anchors) => anchors.map(a => ctx.bars[a].date);
+  function recluster(r, ctx, zones, confirmed, t, s, p, tolAtr) {
+    const tol = tolAtr * ctx.atr[t], lookback = p('ZONE_LOOKBACK');
+    const members = confirmed.filter(c => c.anchor_index >= Math.max(s, t - lookback + 1)).sort((a, b) => a.price - b.price || a.anchor_index - b.anchor_index);
+    const fresh = [];
+    for (const g of clusters(members, tol)) {
+      if (g.length < p('ZONE_MIN_TOUCHES')) continue;
+      const anchors = g.map(c => c.anchor_index).sort((a, b) => a - b), kinds = new Set(g.map(c => c.pivot));
+      fresh.push([objectId(ctx, 'ZONE', dateList(ctx, anchors).join(',')), g, anchors, kinds.size > 1 ? 'MIXED' : kinds.has('HIGH') ? 'RESISTANCE' : 'SUPPORT']);
+    }
+    const ids = new Set(fresh.map(f => f[0]));
+    for (const z of zones) if (z.state === 'ACTIVE' && !ids.has(z.object_id)) r.end(z, 'SUPERSEDED', t, 'SUPERSEDED', {});
+    for (const [oid, g, anchors, role] of fresh) {
+      if (r.seen.has(oid)) continue;
+      r.seen.add(oid);
+      const z = {object_id: oid, object_kind: 'ZONE', pattern: 'SUPPORT_RESISTANCE_ZONE', start: anchors[0], state: 'ACTIVE', low: g[0].price, high: g[g.length - 1].price, atr: ctx.atr[t], formed_index: t, last_touch: anchors[anchors.length - 1]};
+      const close = ctx.bars[t].close;
+      z.side = close > z.high ? 'ABOVE' : close < z.low ? 'BELOW' : 'INSIDE';
+      zones.push(z);
+      r.emit(z, 'ACTIVE', t, 'ACTIVE', {low: z.low, high: z.high, touches: g.length, role, close_side: z.side, role_mixed: role === 'MIXED', atr: z.atr, atr_at: ctx.bars[t].date, anchors: dateList(ctx, anchors)});
+    }
+  }
+  function naCandidate(r, pattern, oid, start, t) {
+    if (r.seen.has(oid)) return;
+    r.seen.add(oid);
+    r.emit({object_id: oid, object_kind: 'SIGNAL', pattern, start}, 'NOT_JUDGEABLE', t, 'NOT_JUDGEABLE', {reason_codes: ['MISSING_BARS_IN_WINDOW']});
+  }
+  function formBox(r, ctx, confirmed, t, s, p, bufferAtr, tolAtr) {
+    const bars = ctx.bars, atr = ctx.atr[t], tol = tolAtr * atr, loLen = p('BOX_MIN_BARS'), hiLen = p('BOX_MAX_BARS'), hMin = p('BOX_HEIGHT_ATR').min, hMax = p('BOX_HEIGHT_ATR').max;
+    const pool = confirmed.filter(c => c.anchor_index >= Math.max(s, t - hiLen + 1));
+    for (const start of [...new Set(pool.map(c => c.anchor_index))].sort((a, b) => a - b)) {
+      const length = t - start + 1;
+      if (!(loLen <= length && length <= hiLen)) continue;
+      const inside = pool.filter(c => c.anchor_index >= start), highs = inside.filter(c => c.pivot === 'HIGH'), lows = inside.filter(c => c.pivot === 'LOW');
+      if (!highs.length || !lows.length) continue;
+      const upperPrice = Math.max(...highs.map(c => c.price)), lowerPrice = Math.min(...lows.map(c => c.price));
+      const upper = highs.filter(c => c.price >= upperPrice - tol), lower = lows.filter(c => c.price <= lowerPrice + tol);
+      if (upper.length < 2 || lower.length < 2 || !upper.concat(lower).some(c => c.anchor_index === start)) continue;
+      const window = bars.slice(start, t + 1);
+      if (window.some(b => b.ok && !(lowerPrice <= b.close && b.close <= upperPrice))) continue;
+      const height = upperPrice - lowerPrice;
+      if (!(hMin * atr <= height && height <= hMax * atr)) continue;
+      const anchorDates = dateList(ctx, upper.concat(lower).map(c => c.anchor_index).sort((a, b) => a - b)), anchors = anchorDates.join(','), boxId = objectId(ctx, 'BOX', anchors);
+      if (!window.every(b => b.ok)) { naCandidate(r, 'BOX', boxId, start, t); continue; }
+      if (r.seen.has(boxId)) continue;
+      r.seen.add(boxId);
+      const buf = bufferAtr * atr, expire = start + hiLen - 1;
+      const detail = {box_id: boxId, upper: upperPrice, lower: lowerPrice, upper_touches: upper.length, lower_touches: lower.length, anchors: anchorDates};
+      return [r.signal('BOX_BREAKOUT_UP', objectId(ctx, 'BOX_BREAKOUT_UP', anchors), start, t, ['ABOVE', upperPrice + buf], ['BELOW', lowerPrice - buf], ['IN_RANGE', lowerPrice, upperPrice], expire, atr, detail),
+        r.signal('BOX_BREAKDOWN', objectId(ctx, 'BOX_BREAKDOWN', anchors), start, t, ['BELOW', lowerPrice - buf], ['ABOVE', upperPrice + buf], ['IN_RANGE', lowerPrice, upperPrice], expire, atr, detail)];
+    }
+    return null;
+  }
+  function formDouble(r, ctx, confirmed, p2, t, s, p, bufferAtr) {
+    const bars = ctx.bars, atr = ctx.atr[t], bottom = p2.pivot === 'LOW', pattern = bottom ? 'DOUBLE_BOTTOM' : 'DOUBLE_TOP';
+    const sepMin = p('DB_SEP_MIN'), sepMax = p('DB_SEP_MAX'), buf = bufferAtr * atr, a2 = p2.anchor_index;
+    const candidates = confirmed.filter(c => c.pivot === p2.pivot && c.anchor_index < a2).sort((a, b) => b.anchor_index - a.anchor_index);
+    for (const p1 of candidates) {
+      const a1 = p1.anchor_index, sep = a2 - a1;
+      if (sep < sepMin) continue;
+      if (sep > sepMax) break;
+      if (Math.abs(p2.price - p1.price) > p('DB_TOL_ATR') * atr) continue;
+      const between = confirmed.filter(c => c.pivot !== p2.pivot && a1 < c.anchor_index && c.anchor_index < a2).map(c => c.price);
+      if (!between.length) continue;
+      const neck = bottom ? Math.max(...between) : Math.min(...between), edge = bottom ? Math.min(p1.price, p2.price) : Math.max(p1.price, p2.price);
+      const depth = bottom ? neck - Math.max(p1.price, p2.price) : Math.min(p1.price, p2.price) - neck;
+      if (depth < p('DB_DEPTH_ATR') * atr) continue;
+      if (bars.slice(a1, a2 + 1).some(b => b.ok && (bottom ? b.close < edge : b.close > edge))) continue;
+      const level = bottom ? neck + buf : neck - buf;
+      if (bars.slice(a2 + 1, t + 1).some(b => b.ok && (bottom ? b.close > level : b.close < level))) continue;
+      const oid = objectId(ctx, pattern, bars[a1].date, bars[a2].date);
+      if (!bars.slice(a1, t + 1).every(b => b.ok)) { naCandidate(r, pattern, oid, a1, t); return null; }
+      if (r.seen.has(oid)) return null;
+      const detail = {p1: p1.price, p2: p2.price, neckline: neck, p1_at: bars[a1].date, p2_at: bars[a2].date, separation_bars: sep};
+      return bottom ? r.signal(pattern, oid, a1, t, ['ABOVE', level], ['BELOW', edge - buf], ['BELOW', neck], t + sep, atr, detail)
+        : r.signal(pattern, oid, a1, t, ['BELOW', level], ['ABOVE', edge + buf], ['ABOVE', neck], t + sep, atr, detail);
+    }
+    return null;
+  }
+  function run(series, rules, actions) {
+    const ctx = prepare(series, rules, actions), piv = pivots(ctx), byBar = new Map();
+    for (const tr of piv.transitions) { if (!byBar.has(tr.known_index)) byBar.set(tr.known_index, []); byBar.get(tr.known_index).push(tr); }
+    const r = makeRun(ctx), tf = ctx.timeframe, bars = ctx.bars, atr = ctx.atr, p = name => param(rules, name, tf);
+    const bufferAtr = p('BREAK_BUFFER_ATR'), tolAtr = p('ZONE_TOL_ATR'), skipped = {...piv.skipped};
+    let priorLive = [];
+    ctx.segments.forEach(([s, e], n) => {
+      const signals = [], zones = []; let confirmed = [], liveBox = null;
+      if (n > 0) for (const obj of priorLive) r.end(obj, 'NOT_JUDGEABLE', s, 'NOT_JUDGEABLE', {reason_codes: ['CORPORATE_ACTION_IN_WINDOW']});
+      for (let t = s; t <= e; t++) {
+        const bar = bars[t];
+        for (const obj of signals) if (r.live(obj)) r.step(obj, t, s);
+        for (const z of zones) {
+          if (z.state !== 'ACTIVE' || z.formed_index >= t) continue;
+          if (t - z.last_touch + 1 > p('ZONE_LOOKBACK')) r.end(z, 'EXPIRED', t, 'EXPIRED', {});
+          else if (bar.ok && z.side !== 'ABOVE' && bar.close > z.high + bufferAtr * z.atr) r.end(z, 'BROKEN', t, 'BROKEN', {direction: 'UP'});
+          else if (bar.ok && z.side !== 'BELOW' && bar.close < z.low - bufferAtr * z.atr) r.end(z, 'BROKEN', t, 'BROKEN', {direction: 'DOWN'});
+        }
+        if (liveBox && !liveBox.some(o => r.live(o))) liveBox = null;
+        const events = byBar.get(t) || [], newPivots = [];
+        for (const tr of events) {
+          r.out.push(tr);
+          if (tr.event === 'SUPERSEDED') confirmed = confirmed.filter(c => c.object_id !== tr.object_id);
+          else { const item = {object_id: tr.object_id, pivot: tr.detail.pivot, anchor_index: tr.anchor_index, price: tr.detail.price, anchor_at: tr.anchor_at}; confirmed.push(item); newPivots.push(item); }
+        }
+        if (events.length && atr[t] !== null) recluster(r, ctx, zones, confirmed, t, s, p, tolAtr);
+        if (atr[t] === null) continue;
+        if (!liveBox) { liveBox = formBox(r, ctx, confirmed, t, s, p, bufferAtr, tolAtr); if (liveBox) signals.push(...liveBox); }
+        for (const item of newPivots) { const obj = formDouble(r, ctx, confirmed, item, t, s, p, bufferAtr); if (obj) signals.push(obj); }
+      }
+      priorLive = signals.concat(zones).filter(o => r.live(o));
+    });
+    const objects = new Map();
+    for (const tr of r.out) objects.set(tr.object_id, {object_id: tr.object_id, object_kind: tr.object_kind, pattern: tr.pattern === undefined ? null : tr.pattern,
+      state: tr.object_kind !== 'PIVOT' ? tr.state : tr.event === 'PIVOT_CONFIRMED' ? 'CONFIRMED' : 'SUPERSEDED', last_event: tr.event, last_known_at: tr.known_at, judgement: tr.judgement});
+    return {role: ROLE, label_ko: rules.label_ko, rule_version: ctx.rule_version, params_sha256: ctx.params_sha256, run_mode: ctx.run_mode, symbol: ctx.symbol, timeframe: tf,
+      segments: ctx.segments, transitions: r.out, skipped, structure: structure(piv.confirmed), objects: [...objects.keys()].sort().map(k => objects.get(k))};
+  }
+  function preview(series, result) {
+    const last = series.bars.length ? series.bars[series.bars.length - 1] : null;
+    if (!last || last.state !== 'PROVISIONAL' || last.ohlc !== 'PRESENT') return [];
+    const formed = new Map();
+    for (const tr of result.transitions) if (tr.object_kind === 'SIGNAL' && tr.event === 'FORMED') formed.set(tr.object_id, tr.detail);
+    const out = [];
+    for (const obj of result.objects) {
+      if (obj.object_kind !== 'SIGNAL' || obj.state !== 'FORMED' || !formed.has(obj.object_id)) continue;
+      const d = formed.get(obj.object_id), above = ['BOX_BREAKOUT_UP', 'DOUBLE_BOTTOM'].includes(obj.pattern);
+      if (above ? last.close > d.confirm_level : last.close < d.confirm_level) out.push({object_id: obj.object_id, note_ko: PREVIEW_NOTE_KO, provisional_at: last.session_date || last.week_start});
+    }
+    return out;
+  }
+  return Object.freeze({ROLE, STRUCTURE_LABELS, PREVIEW_NOTE_KO, canonicalJson, checkRules, param, runMode, engineBars, segments, prepare, judgement, objectId, pivots, structure, runPivots, run, preview});
 });

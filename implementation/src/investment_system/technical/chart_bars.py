@@ -279,12 +279,16 @@ def weekly(series, actions=None):
     return result
 
 
-def merge(previous, incoming):
+def merge(previous, incoming, prefer='PREVIOUS'):
     """Merges a newer response (e.g. 1mo refresh) into a held daily series by session date (§6.3).
 
     A date that was COMPLETE before and now differs in raw OHLCV (or is no longer COMPLETE) keeps the earlier
     values and gains `PRICE_REVISED`; the date is listed in `revised`. Provisional bars are replaced.
+    prefer='INCOMING' builds the separate "revised data" view (§8.6): revised dates take the new values, still
+    marked `PRICE_REVISED`. The official history keeps running on the default view.
     """
+    if prefer not in ('PREVIOUS', 'INCOMING'):
+        _fail('CHART_BARS_INPUT_INVALID')
     for s in (previous, incoming):
         if not isinstance(s, dict) or s.get('schema') != SCHEMA or s.get('timeframe') != 'D':
             _fail('CHART_BARS_INPUT_INVALID')
@@ -299,7 +303,8 @@ def merge(previous, incoming):
             continue
         if bar['state'] != 'COMPLETE' or any(old[k] != bar[k] for k in COMPARED):
             revised.append(bar['session_date'])
-            held[bar['session_date']] = {**old, 'codes': sorted(set(old['codes']) | {'PRICE_REVISED'})}
+            kept = bar if prefer == 'INCOMING' else old
+            held[bar['session_date']] = {**kept, 'codes': sorted(set(kept['codes']) | {'PRICE_REVISED'})}
     bars = [dict(held[d]) for d in sorted(held)]
     merged = {k: v for k, v in previous.items() if k not in ('bars', 'quality')}
     merged['read_at'] = incoming['read_at']

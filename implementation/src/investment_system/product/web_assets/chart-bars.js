@@ -146,14 +146,16 @@
     result.timeframe = 'W'; result.bars = out; result.quality = quality(out, headerCodes(series));
     return result;
   }
-  function merge(previous, incoming) {
+  // prefer 'INCOMING' builds the separate revised-data view (§8.6); the official history keeps the default view.
+  function merge(previous, incoming, prefer = 'PREVIOUS') {
+    if (!['PREVIOUS', 'INCOMING'].includes(prefer)) fail('CHART_BARS_INPUT_INVALID');
     for (const s of [previous, incoming]) if (!s || s.schema !== SCHEMA || s.timeframe !== 'D') fail('CHART_BARS_INPUT_INVALID');
     if (previous.symbol !== incoming.symbol || previous.timezone !== incoming.timezone) fail('CHART_BARS_MERGE_MISMATCH');
     const held = new Map(previous.bars.map(b => [b.session_date, b])), revised = [];
     for (const bar of incoming.bars) {
       const old = held.get(bar.session_date);
       if (!old || old.state !== 'COMPLETE') { held.set(bar.session_date, {...bar, codes: bar.codes.filter(c => c !== 'PRICE_REVISED')}); continue; }
-      if (bar.state !== 'COMPLETE' || COMPARED.some(k => old[k] !== bar[k])) { revised.push(bar.session_date); held.set(bar.session_date, {...old, codes: uniqSorted([...old.codes, 'PRICE_REVISED'])}); }
+      if (bar.state !== 'COMPLETE' || COMPARED.some(k => old[k] !== bar[k])) { revised.push(bar.session_date); const kept = prefer === 'INCOMING' ? bar : old; held.set(bar.session_date, {...kept, codes: uniqSorted([...kept.codes, 'PRICE_REVISED'])}); }
     }
     const bars = sorted(held.keys()).map(d => ({...held.get(d), codes: [...held.get(d).codes]}));
     const merged = {};
