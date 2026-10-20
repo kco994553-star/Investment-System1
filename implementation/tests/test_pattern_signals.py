@@ -215,3 +215,16 @@ def test_back_dated_new_object_is_withheld_entirely():
     counts = hist.append(full, 'T2')
     assert counts['late'] == 3 and counts['added'] == 0
     assert not [r for r in hist.records() if r.get('pattern') == 'BOX_BREAKOUT_UP']
+
+
+def test_split_with_adjusted_prices_keeps_one_segment_and_flags_the_volume_basis():
+    adjusted, unadjusted = _run('B13d_split_adjusted_prices_stay_judgeable'), _run('B13e_split_unadjusted_prices')
+    assert len(adjusted['segments']) == 1 and len(unadjusted['segments']) == 2
+    assert not any(t['event'] == 'NOT_JUDGEABLE' for t in adjusted['transitions'])
+    assert all('PRICE_BASIS_UNADJUSTED' in t['judgement']['reason_codes'] for t in unadjusted['transitions'] if t['event'] == 'NOT_JUDGEABLE')
+    confirm = [t for t in _run('B13g_split_adjusted_volume_basis_unconfirmed')['transitions'] if t['event'] == 'CONFIRMED' and t['object_kind'] == 'SIGNAL']
+    assert confirm and all(t['judgement'] == {'state': 'CONFIRMED', 'reason_codes': ['SPLIT_IN_WINDOW_PRICE_ADJUSTED']} for t in confirm)
+    assert all(t['detail']['volume'] == {'state': 'NOT_AVAILABLE', 'reason_code': 'VOLUME_BASIS_UNCONFIRMED'} for t in confirm)
+    both = [t for t in _run('B13h_split_adjusted_price_and_volume')['transitions'] if t['event'] == 'CONFIRMED' and t['object_kind'] == 'SIGNAL']
+    assert both and all(t['detail']['volume']['state'] in ('WITH_VOLUME', 'WITHOUT_VOLUME') for t in both)
+    assert all(t['judgement']['state'] == 'NOT_JUDGEABLE' for t in _run('B13f_split_not_reported')['transitions'])

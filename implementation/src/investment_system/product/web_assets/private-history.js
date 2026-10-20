@@ -17,6 +17,27 @@
     if (typeof value !== 'string' || !new RegExp('^https://' + label + '\\.' + label + '\\.workers\\.dev/?$').test(value)) fail('REQUEST_INVALID');
     return value.replace(/\/$/, '');
   }
+  // Optional split block (Worker P1-W, additive to private-history/1). A response without it (older Worker) yields null and
+  // stays "not provided"; a malformed block becomes INVALID (prices are still shown). Missing is never "no split".
+  const SPLIT_STATUSES=['CONFIRMED','NOT_REPORTED','NOT_AVAILABLE','INVALID'],SPLIT_BASES=['SPLIT_ADJUSTED','UNADJUSTED','UNKNOWN'],BASIS_SOURCES=['PROVIDER_CONVENTION','PROVIDER_DOCUMENTATION'];
+  function splitInfo(value,bars,timezone) {
+    if(!['split_coverage','splits','split_basis'].some(key=>Object.hasOwn(value,key)))return null;
+    const plain=o=>!!o&&typeof o==='object'&&!Array.isArray(o),positive=x=>typeof x==='number'&&Number.isFinite(x)&&x>0;
+    const isDay=d=>typeof d==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(d)&&new Date(Date.parse(d+'T00:00:00Z')).toISOString().slice(0,10)===d;
+    const dayOf=bar=>bar.session_date||(()=>{const p=new Intl.DateTimeFormat('en-CA',{timeZone:timezone,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(bar.timestamp*1000),g=n=>p.find(x=>x.type===n).value;return g('year')+'-'+g('month')+'-'+g('day');})();
+    const coverage=value.split_coverage,raw=value.split_basis;
+    const basis=plain(raw)&&SPLIT_BASES.includes(raw.price)&&SPLIT_BASES.includes(raw.volume)&&BASIS_SOURCES.includes(raw.source)?{price:raw.price,volume:raw.volume,source:raw.source}:null;
+    const invalid={split_coverage:{status:'INVALID',from:null,to:null},splits:null,split_basis:basis||{price:'UNKNOWN',volume:'UNKNOWN',source:'UNKNOWN'}};
+    if(!basis||!plain(coverage)||!SPLIT_STATUSES.includes(coverage.status))return invalid;
+    if(coverage.status!=='CONFIRMED')return coverage.from===null&&coverage.to===null&&value.splits===null?{split_coverage:{status:coverage.status,from:null,to:null},splits:null,split_basis:basis}:invalid;
+    if(coverage.from!==dayOf(bars[0])||coverage.to!==dayOf(bars[bars.length-1])||!Array.isArray(value.splits)||value.splits.length>64)return invalid;
+    const splits=[];let previous='';
+    for(const split of value.splits){
+      if(!plain(split)||!isDay(split.date)||split.date<=previous||split.date<coverage.from||split.date>coverage.to||!positive(split.numerator)||!positive(split.denominator))return invalid;
+      previous=split.date;splits.push({date:split.date,numerator:split.numerator,denominator:split.denominator});
+    }
+    return {split_coverage:{status:'CONFIRMED',from:coverage.from,to:coverage.to},splits,split_basis:basis};
+  }
   function validateHistory(value, expected) {
     const validText = (text, pattern) => typeof text === 'string' && pattern.test(text);
     const fallback = value && ['Tiingo EOD','KRX OPEN API'].includes(value.provider);
@@ -46,7 +67,8 @@
       clean.session_status = bar.session_status; return clean;
     });
     if (!bars.length || !bars.some(bar => bar.close !== null)) fail('HISTORY_UNAVAILABLE');
-    return {schema:value.schema,provider:value.provider,symbol:value.symbol,range:value.range,currency:value.currency,exchange:value.exchange,timezone:value.timezone,interval:value.interval,basis:value.basis,delay_status:value.delay_status,read_at:value.read_at,...(fallback?{timestamp_kind:'PROVIDER_SESSION_LABEL'}:{}),bars};
+    const splits=splitInfo(value,bars,timezone);
+    return {schema:value.schema,provider:value.provider,symbol:value.symbol,range:value.range,currency:value.currency,exchange:value.exchange,timezone:value.timezone,interval:value.interval,basis:value.basis,delay_status:value.delay_status,read_at:value.read_at,...(fallback?{timestamp_kind:'PROVIDER_SESSION_LABEL'}:{}),bars,...(splits||{})};
   }
   function chartPaths(bars) {
     const values = bars.filter(bar => bar.close !== null).map(bar => bar.close);
@@ -121,8 +143,11 @@
     const data=state.data;
     state.results.replaceChildren();
     state.results.append(node(state,'p',data.provider+' · '+data.symbol+' · '+data.exchange+' · '+data.currency+' · '+data.timezone+' · '+data.interval+' · RAW_CLOSE · delay_status: UNKNOWN · read_at: '+data.read_at,{'data-history-meta':''}));
+    const split=data.split_coverage?data.split_coverage.status:'NOT_PROVIDED';
+    state.results.append(node(state,'p',words(state,'분할 정보 · ','Split info · ')+split+(split==='CONFIRMED'?' · '+data.split_coverage.from+'~'+data.split_coverage.to+' · '+words(state,'분할 ','splits ')+data.splits.length:'')+(data.split_basis?' · price '+data.split_basis.price+' · volume '+data.split_basis.volume:''),{'data-history-splits':split}));
     state.indicators=state.view.ResearchIndicators.calculate(data.bars,{includeSma240:state.selected.has('SMA_240')});
-    const lastBar=data.bars.at(-1);emit(state,{indicators:state.indicators,symbol:data.symbol,currency:data.currency,close:lastBar.close,asOf:lastBar.session_date||new Date(lastBar.timestamp*1000).toISOString().slice(0,10),readAt:data.read_at,bars:data.bars,timezone:data.timezone,provider:data.provider});
+    const lastBar=data.bars.at(-1);emit(state,{indicators:state.indicators,symbol:data.symbol,currency:data.currency,close:lastBar.close,asOf:lastBar.session_date||new Date(lastBar.timestamp*1000).toISOString().slice(0,10),readAt:data.read_at,bars:data.bars,timezone:data.timezone,provider:data.provider,
+      splitInfo:data.split_coverage?{split_coverage:data.split_coverage,splits:data.splits,split_basis:data.split_basis}:null});
     const buttons=node(state,'div',undefined,{class:'chart-controls',role:'group','aria-label':words(state,'연구용 이동평균','Research moving averages')});
     for(const id of ['SMA_5','SMA_20','SMA_60','SMA_120','SMA_240','EMA_20','AVG']){
       const button=node(state,'button',id.replace('_',''),{type:'button','data-chart-overlay':id,'aria-pressed':String(state.selected.has(id))});

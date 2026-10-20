@@ -14,6 +14,7 @@ function run(c) {
     case 'continuity': return CB.continuity(i.actions, i.start, i.end);
     case 'merge': return CB.merge(CB.normalize(i.previous), CB.normalize(i.incoming));
     case 'session_set_mismatch': return CB.sessionSetMismatch(CB.normalize(i.history), i.store_dates);
+    case 'actions_from_history': return CB.corporateActions(CB.actionsFromHistory(i.history));
     default: throw new Error(c.operation);
   }
 }
@@ -79,4 +80,37 @@ test('pure module: runs without network or storage globals', () => {
   assert.equal(context.ChartBars.normalize(vector('normalize_codes').input.history).schema, 'chart-bars/1');
   const text = fs.readFileSync(SOURCE, 'utf8');
   for (const word of ['fetch(', 'XMLHttpRequest', 'localStorage', 'sessionStorage', 'indexedDB', 'document.']) assert.ok(!text.includes(word), word);
+});
+// Worker split block (P1-W). Synthetic bars only.
+test('split info: old response, not reported, not available and invalid are never "no split"; confirmed none is distinct', () => {
+  for (const id of ['from_history_old_response', 'from_history_not_reported', 'from_history_not_available', 'from_history_invalid', 'from_history_confirmed_bad_date']) {
+    const a = run(vector(id)); assert.notEqual(a.status, 'AVAILABLE', id);
+    assert.equal(CB.continuity(a, '2030-01-07', '2030-01-14').state, 'NOT_JUDGEABLE', id);
+  }
+  assert.equal(run(vector('from_history_old_response')).status, 'NOT_PROVIDED');
+  assert.deepEqual(run(vector('continuity_not_reported')).reason_codes, ['PRICE_BASIS_CONTINUITY_UNCONFIRMED', 'CORPORATE_ACTION_EVENTS_NOT_REPORTED']);
+  const none = run(vector('from_history_confirmed_none'));
+  assert.deepEqual(CB.continuity(none, '2030-01-07', '2030-01-14'), {state: 'CONFIRMED', reason_codes: []});
+  assert.equal(CB.continuity(none, '2030-01-06', '2030-01-14').state, 'NOT_JUDGEABLE', 'a window outside the confirmed coverage is not judged');
+});
+test('split in window: adjusted prices judgeable with a note, unadjusted not judgeable; window edges', () => {
+  assert.deepEqual(run(vector('continuity_split_in_window_adjusted')), {state: 'CONFIRMED', reason_codes: ['SPLIT_IN_WINDOW_PRICE_ADJUSTED']});
+  assert.deepEqual(run(vector('continuity_split_on_window_end_adjusted')).reason_codes, ['SPLIT_IN_WINDOW_PRICE_ADJUSTED'], 'split on the last session crosses the window');
+  assert.deepEqual(run(vector('continuity_split_on_window_start_adjusted')), {state: 'CONFIRMED', reason_codes: []}, 'split on the first session does not cross');
+  assert.deepEqual(run(vector('continuity_split_in_window_unadjusted')), {state: 'NOT_JUDGEABLE', reason_codes: ['CORPORATE_ACTION_IN_WINDOW', 'PRICE_BASIS_UNADJUSTED']});
+  assert.equal(run(vector('continuity_invalid_basis')).state, 'NOT_JUDGEABLE');
+  const split = run(vector('from_history_confirmed_split'));
+  assert.deepEqual(CB.continuity(split, '2030-01-07', '2030-01-14').reason_codes, ['SPLIT_IN_WINDOW_PRICE_ADJUSTED']);
+});
+test('already-adjusted prices are never adjusted again; volume follows its own share-count basis', () => {
+  const c = vector('weekly_split_adjusted_price_volume_unknown'), plain = CB.weekly(CB.normalize(c.input.history), null);
+  const daily = CB.normalize(c.input.history), before = JSON.stringify(daily), adjusted = CB.weekly(daily, c.input.actions);
+  assert.equal(JSON.stringify(daily), before, 'daily bars untouched');
+  adjusted.bars.forEach((b, n) => { for (const k of ['open', 'high', 'low', 'close']) assert.equal(b[k], plain.bars[n][k], 'no division by the split ratio'); });
+  const week = adjusted.bars[1];
+  assert.deepEqual(week.codes, ['SPLIT_IN_BAR_PRICE_ADJUSTED', 'VOLUME_BASIS_UNCONFIRMED']); assert.equal(week.volume, null); assert.equal(week.volume_state, 'MISSING');
+  const both = run(vector('weekly_split_adjusted_price_and_volume')).bars[1];
+  assert.equal(both.volume, plain.bars[1].volume); assert.deepEqual(both.codes, ['SPLIT_IN_BAR_PRICE_ADJUSTED']);
+  const raw = run(vector('weekly_split_unadjusted')).bars[1];
+  assert.equal(raw.open, null); assert.equal(raw.volume, null); assert.deepEqual(raw.codes, ['CORPORATE_ACTION_IN_BAR']);
 });

@@ -54,7 +54,8 @@
   function segments(bars, actions) {
     actions = actionsOf(actions);
     const cuts = [];
-    for (const d of actions.status === 'AVAILABLE' ? actions.splits : []) {
+    // Already split-adjusted provider prices are one continuous basis: a split does not cut the series (never re-adjusted).
+    for (const d of actions.status === 'AVAILABLE' && actions.price_basis !== 'SPLIT_ADJUSTED' ? actions.splits : []) {
       const at = bars.find(b => b.last_session >= d);
       if (at && at.i > 0 && !cuts.includes(at.i)) cuts.push(at.i);
     }
@@ -154,6 +155,9 @@
     const n = param(ctx.rules, 'VOL_AVG_N', ctx.timeframe), mult = param(ctx.rules, 'VOL_MULT'), bars = ctx.bars;
     if (bars[t].volume === null) return {state: 'NOT_AVAILABLE', reason_code: 'VOLUME_MISSING'};
     if (t - n < segStart) return {state: 'NOT_AVAILABLE', reason_code: 'INSUFFICIENT_BARS'};
+    // Adjusted prices with an unconfirmed volume basis: a split inside the average window mixes share-count bases.
+    const acts = ctx.actions;
+    if (acts.price_basis === 'SPLIT_ADJUSTED' && acts.volume_basis !== 'SPLIT_ADJUSTED' && acts.splits.some(d => bars[t - n].first_session < d && d <= bars[t].last_session)) return {state: 'NOT_AVAILABLE', reason_code: 'VOLUME_BASIS_UNCONFIRMED'};
     const previous = bars.slice(t - n, t).map(b => b.volume);
     if (previous.some(v => v === null)) return {state: 'NOT_AVAILABLE', reason_code: 'VOLUME_MISSING'};
     return {state: bars[t].volume >= mult * avg(previous) ? 'WITH_VOLUME' : 'WITHOUT_VOLUME', reason_code: null};

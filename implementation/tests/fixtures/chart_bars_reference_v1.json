@@ -1399,6 +1399,1393 @@
    "expected_json": "{\"reason_codes\": [\"PRICE_BASIS_CONTINUITY_UNCONFIRMED\", \"CORPORATE_ACTION_COVERAGE_GAP\"], \"state\": \"NOT_JUDGEABLE\"}"
   },
   {
+   "id": "continuity_not_reported",
+   "operation": "continuity",
+   "input": {
+    "actions": {
+     "status": "NOT_REPORTED"
+    },
+    "start": "2030-01-07",
+    "end": "2030-02-07"
+   },
+   "synthetic": true,
+   "expected_json": "{\"reason_codes\": [\"PRICE_BASIS_CONTINUITY_UNCONFIRMED\", \"CORPORATE_ACTION_EVENTS_NOT_REPORTED\"], \"state\": \"NOT_JUDGEABLE\"}"
+  },
+  {
+   "id": "continuity_split_in_window_adjusted",
+   "operation": "continuity",
+   "input": {
+    "actions": {
+     "status": "AVAILABLE",
+     "covered_from": "2030-01-01",
+     "covered_to": "2030-06-30",
+     "events": [
+      {
+       "kind": "SPLIT",
+       "effective_date": "2030-03-02"
+      },
+      {
+       "kind": "DIVIDEND",
+       "effective_date": "2030-02-01"
+      }
+     ],
+     "price_basis": "SPLIT_ADJUSTED"
+    },
+    "start": "2030-02-07",
+    "end": "2030-04-02"
+   },
+   "synthetic": true,
+   "expected_json": "{\"reason_codes\": [\"SPLIT_IN_WINDOW_PRICE_ADJUSTED\"], \"state\": \"CONFIRMED\"}"
+  },
+  {
+   "id": "continuity_split_on_window_end_adjusted",
+   "operation": "continuity",
+   "input": {
+    "actions": {
+     "status": "AVAILABLE",
+     "covered_from": "2030-01-01",
+     "covered_to": "2030-06-30",
+     "events": [
+      {
+       "kind": "SPLIT",
+       "effective_date": "2030-03-02"
+      },
+      {
+       "kind": "DIVIDEND",
+       "effective_date": "2030-02-01"
+      }
+     ],
+     "price_basis": "SPLIT_ADJUSTED"
+    },
+    "start": "2030-02-07",
+    "end": "2030-03-02"
+   },
+   "synthetic": true,
+   "expected_json": "{\"reason_codes\": [\"SPLIT_IN_WINDOW_PRICE_ADJUSTED\"], \"state\": \"CONFIRMED\"}"
+  },
+  {
+   "id": "continuity_split_on_window_start_adjusted",
+   "operation": "continuity",
+   "input": {
+    "actions": {
+     "status": "AVAILABLE",
+     "covered_from": "2030-01-01",
+     "covered_to": "2030-06-30",
+     "events": [
+      {
+       "kind": "SPLIT",
+       "effective_date": "2030-03-02"
+      },
+      {
+       "kind": "DIVIDEND",
+       "effective_date": "2030-02-01"
+      }
+     ],
+     "price_basis": "SPLIT_ADJUSTED"
+    },
+    "start": "2030-03-02",
+    "end": "2030-04-02"
+   },
+   "synthetic": true,
+   "expected_json": "{\"reason_codes\": [], \"state\": \"CONFIRMED\"}"
+  },
+  {
+   "id": "continuity_split_in_window_unadjusted",
+   "operation": "continuity",
+   "input": {
+    "actions": {
+     "status": "AVAILABLE",
+     "covered_from": "2030-01-01",
+     "covered_to": "2030-06-30",
+     "events": [
+      {
+       "kind": "SPLIT",
+       "effective_date": "2030-03-02"
+      },
+      {
+       "kind": "DIVIDEND",
+       "effective_date": "2030-02-01"
+      }
+     ],
+     "price_basis": "UNADJUSTED",
+     "volume_basis": "UNADJUSTED"
+    },
+    "start": "2030-02-07",
+    "end": "2030-03-02"
+   },
+   "synthetic": true,
+   "expected_json": "{\"reason_codes\": [\"CORPORATE_ACTION_IN_WINDOW\", \"PRICE_BASIS_UNADJUSTED\"], \"state\": \"NOT_JUDGEABLE\"}"
+  },
+  {
+   "id": "continuity_no_split_unadjusted",
+   "operation": "continuity",
+   "input": {
+    "actions": {
+     "status": "AVAILABLE",
+     "covered_from": "2030-01-01",
+     "covered_to": "2030-06-30",
+     "events": [
+      {
+       "kind": "SPLIT",
+       "effective_date": "2030-03-02"
+      },
+      {
+       "kind": "DIVIDEND",
+       "effective_date": "2030-02-01"
+      }
+     ],
+     "price_basis": "UNADJUSTED"
+    },
+    "start": "2030-03-02",
+    "end": "2030-04-02"
+   },
+   "synthetic": true,
+   "expected_json": "{\"reason_codes\": [], \"state\": \"CONFIRMED\"}"
+  },
+  {
+   "id": "continuity_invalid_basis",
+   "operation": "continuity",
+   "input": {
+    "actions": {
+     "status": "AVAILABLE",
+     "covered_from": "2030-01-01",
+     "covered_to": "2030-06-30",
+     "events": [
+      {
+       "kind": "SPLIT",
+       "effective_date": "2030-03-02"
+      },
+      {
+       "kind": "DIVIDEND",
+       "effective_date": "2030-02-01"
+      }
+     ],
+     "price_basis": "ADJUSTED_SOMEHOW"
+    },
+    "start": "2030-01-07",
+    "end": "2030-02-07"
+   },
+   "synthetic": true,
+   "expected_json": "{\"reason_codes\": [\"PRICE_BASIS_CONTINUITY_UNCONFIRMED\", \"CORPORATE_ACTION_EVENTS_INVALID\"], \"state\": \"NOT_JUDGEABLE\"}"
+  },
+  {
+   "id": "weekly_split_adjusted_price_volume_unknown",
+   "operation": "weekly",
+   "input": {
+    "history": {
+     "schema": "private-history/1",
+     "provider": "Yahoo Finance(비공식)",
+     "symbol": "SYNTH1",
+     "range": "5y",
+     "currency": "USD",
+     "exchange": "NMS",
+     "timezone": "America/New_York",
+     "interval": "1d",
+     "basis": "RAW_CLOSE",
+     "delay_status": "UNKNOWN",
+     "read_at": "2030-12-31T23:00:00Z",
+     "bars": [
+      {
+       "timestamp": 1894026600,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894113000,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894199400,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894285800,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894372200,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894631400,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894717800,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894804200,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894890600,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894977000,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895236200,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895322600,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895409000,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895495400,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895581800,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      }
+     ]
+    },
+    "actions": {
+     "status": "AVAILABLE",
+     "covered_from": "2030-01-01",
+     "covered_to": "2030-12-31",
+     "events": [
+      {
+       "kind": "SPLIT",
+       "effective_date": "2030-01-16"
+      }
+     ],
+     "price_basis": "SPLIT_ADJUSTED",
+     "volume_basis": "UNKNOWN"
+    }
+   },
+   "synthetic": true,
+   "expected_json": "{\"bars\": [{\"close\": 51, \"codes\": [], \"first_session\": \"2030-01-07\", \"high\": 52, \"index\": 0, \"known_at\": \"2030-01-11\", \"last_session\": \"2030-01-11\", \"low\": 48, \"ohlc\": \"PRESENT\", \"open\": 50, \"session_count\": 5, \"state\": \"COMPLETE\", \"timestamp\": 1894372200, \"volume\": 500, \"volume_state\": \"REPORTED\", \"week_start\": \"2030-01-07\"}, {\"close\": 51, \"codes\": [\"SPLIT_IN_BAR_PRICE_ADJUSTED\", \"VOLUME_BASIS_UNCONFIRMED\"], \"first_session\": \"2030-01-14\", \"high\": 52, \"index\": 1, \"known_at\": \"2030-01-18\", \"last_session\": \"2030-01-18\", \"low\": 48, \"ohlc\": \"PRESENT\", \"open\": 50, \"session_count\": 5, \"state\": \"COMPLETE\", \"timestamp\": 1894977000, \"volume\": null, \"volume_state\": \"MISSING\", \"week_start\": \"2030-01-14\"}, {\"close\": 51, \"codes\": [], \"first_session\": \"2030-01-21\", \"high\": 52, \"index\": 2, \"known_at\": \"2030-01-25\", \"last_session\": \"2030-01-25\", \"low\": 48, \"ohlc\": \"PRESENT\", \"open\": 50, \"session_count\": 5, \"state\": \"COMPLETE\", \"timestamp\": 1895581800, \"volume\": 500, \"volume_state\": \"REPORTED\", \"week_start\": \"2030-01-21\"}], \"basis\": \"RAW_CLOSE\", \"currency\": \"USD\", \"delay_status\": \"UNKNOWN\", \"exchange\": \"NMS\", \"interval\": \"1d\", \"provider\": \"Yahoo Finance(비공식)\", \"quality\": {\"codes\": [\"DELAY_UNKNOWN\", \"SPLIT_IN_BAR_PRICE_ADJUSTED\", \"VOLUME_BASIS_UNCONFIRMED\"], \"counts\": {\"DELAY_UNKNOWN\": 1, \"SPLIT_IN_BAR_PRICE_ADJUSTED\": 1, \"VOLUME_BASIS_UNCONFIRMED\": 1}}, \"read_at\": \"2030-12-31T23:00:00Z\", \"schema\": \"chart-bars/1\", \"source_schema\": \"private-history/1\", \"symbol\": \"SYNTH1\", \"timeframe\": \"W\", \"timezone\": \"America/New_York\"}"
+  },
+  {
+   "id": "weekly_split_adjusted_price_and_volume",
+   "operation": "weekly",
+   "input": {
+    "history": {
+     "schema": "private-history/1",
+     "provider": "Yahoo Finance(비공식)",
+     "symbol": "SYNTH1",
+     "range": "5y",
+     "currency": "USD",
+     "exchange": "NMS",
+     "timezone": "America/New_York",
+     "interval": "1d",
+     "basis": "RAW_CLOSE",
+     "delay_status": "UNKNOWN",
+     "read_at": "2030-12-31T23:00:00Z",
+     "bars": [
+      {
+       "timestamp": 1894026600,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894113000,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894199400,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894285800,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894372200,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894631400,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894717800,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894804200,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894890600,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894977000,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895236200,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895322600,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895409000,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895495400,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895581800,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      }
+     ]
+    },
+    "actions": {
+     "status": "AVAILABLE",
+     "covered_from": "2030-01-01",
+     "covered_to": "2030-12-31",
+     "events": [
+      {
+       "kind": "SPLIT",
+       "effective_date": "2030-01-16"
+      }
+     ],
+     "price_basis": "SPLIT_ADJUSTED",
+     "volume_basis": "SPLIT_ADJUSTED"
+    }
+   },
+   "synthetic": true,
+   "expected_json": "{\"bars\": [{\"close\": 51, \"codes\": [], \"first_session\": \"2030-01-07\", \"high\": 52, \"index\": 0, \"known_at\": \"2030-01-11\", \"last_session\": \"2030-01-11\", \"low\": 48, \"ohlc\": \"PRESENT\", \"open\": 50, \"session_count\": 5, \"state\": \"COMPLETE\", \"timestamp\": 1894372200, \"volume\": 500, \"volume_state\": \"REPORTED\", \"week_start\": \"2030-01-07\"}, {\"close\": 51, \"codes\": [\"SPLIT_IN_BAR_PRICE_ADJUSTED\"], \"first_session\": \"2030-01-14\", \"high\": 52, \"index\": 1, \"known_at\": \"2030-01-18\", \"last_session\": \"2030-01-18\", \"low\": 48, \"ohlc\": \"PRESENT\", \"open\": 50, \"session_count\": 5, \"state\": \"COMPLETE\", \"timestamp\": 1894977000, \"volume\": 500, \"volume_state\": \"REPORTED\", \"week_start\": \"2030-01-14\"}, {\"close\": 51, \"codes\": [], \"first_session\": \"2030-01-21\", \"high\": 52, \"index\": 2, \"known_at\": \"2030-01-25\", \"last_session\": \"2030-01-25\", \"low\": 48, \"ohlc\": \"PRESENT\", \"open\": 50, \"session_count\": 5, \"state\": \"COMPLETE\", \"timestamp\": 1895581800, \"volume\": 500, \"volume_state\": \"REPORTED\", \"week_start\": \"2030-01-21\"}], \"basis\": \"RAW_CLOSE\", \"currency\": \"USD\", \"delay_status\": \"UNKNOWN\", \"exchange\": \"NMS\", \"interval\": \"1d\", \"provider\": \"Yahoo Finance(비공식)\", \"quality\": {\"codes\": [\"DELAY_UNKNOWN\", \"SPLIT_IN_BAR_PRICE_ADJUSTED\"], \"counts\": {\"DELAY_UNKNOWN\": 1, \"SPLIT_IN_BAR_PRICE_ADJUSTED\": 1}}, \"read_at\": \"2030-12-31T23:00:00Z\", \"schema\": \"chart-bars/1\", \"source_schema\": \"private-history/1\", \"symbol\": \"SYNTH1\", \"timeframe\": \"W\", \"timezone\": \"America/New_York\"}"
+  },
+  {
+   "id": "weekly_split_unadjusted",
+   "operation": "weekly",
+   "input": {
+    "history": {
+     "schema": "private-history/1",
+     "provider": "Yahoo Finance(비공식)",
+     "symbol": "SYNTH1",
+     "range": "5y",
+     "currency": "USD",
+     "exchange": "NMS",
+     "timezone": "America/New_York",
+     "interval": "1d",
+     "basis": "RAW_CLOSE",
+     "delay_status": "UNKNOWN",
+     "read_at": "2030-12-31T23:00:00Z",
+     "bars": [
+      {
+       "timestamp": 1894026600,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894113000,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894199400,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894285800,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894372200,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894631400,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894717800,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894804200,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894890600,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894977000,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895236200,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895322600,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895409000,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895495400,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895581800,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      }
+     ]
+    },
+    "actions": {
+     "status": "AVAILABLE",
+     "covered_from": "2030-01-01",
+     "covered_to": "2030-12-31",
+     "events": [
+      {
+       "kind": "SPLIT",
+       "effective_date": "2030-01-16"
+      }
+     ],
+     "price_basis": "UNADJUSTED",
+     "volume_basis": "UNADJUSTED"
+    }
+   },
+   "synthetic": true,
+   "expected_json": "{\"bars\": [{\"close\": 51, \"codes\": [], \"first_session\": \"2030-01-07\", \"high\": 52, \"index\": 0, \"known_at\": \"2030-01-11\", \"last_session\": \"2030-01-11\", \"low\": 48, \"ohlc\": \"PRESENT\", \"open\": 50, \"session_count\": 5, \"state\": \"COMPLETE\", \"timestamp\": 1894372200, \"volume\": 500, \"volume_state\": \"REPORTED\", \"week_start\": \"2030-01-07\"}, {\"close\": null, \"codes\": [\"CORPORATE_ACTION_IN_BAR\"], \"first_session\": \"2030-01-14\", \"high\": null, \"index\": 1, \"known_at\": \"2030-01-18\", \"last_session\": \"2030-01-18\", \"low\": null, \"ohlc\": \"MISSING\", \"open\": null, \"session_count\": 5, \"state\": \"COMPLETE\", \"timestamp\": 1894977000, \"volume\": null, \"volume_state\": \"MISSING\", \"week_start\": \"2030-01-14\"}, {\"close\": 51, \"codes\": [], \"first_session\": \"2030-01-21\", \"high\": 52, \"index\": 2, \"known_at\": \"2030-01-25\", \"last_session\": \"2030-01-25\", \"low\": 48, \"ohlc\": \"PRESENT\", \"open\": 50, \"session_count\": 5, \"state\": \"COMPLETE\", \"timestamp\": 1895581800, \"volume\": 500, \"volume_state\": \"REPORTED\", \"week_start\": \"2030-01-21\"}], \"basis\": \"RAW_CLOSE\", \"currency\": \"USD\", \"delay_status\": \"UNKNOWN\", \"exchange\": \"NMS\", \"interval\": \"1d\", \"provider\": \"Yahoo Finance(비공식)\", \"quality\": {\"codes\": [\"CORPORATE_ACTION_IN_BAR\", \"DELAY_UNKNOWN\"], \"counts\": {\"CORPORATE_ACTION_IN_BAR\": 1, \"DELAY_UNKNOWN\": 1}}, \"read_at\": \"2030-12-31T23:00:00Z\", \"schema\": \"chart-bars/1\", \"source_schema\": \"private-history/1\", \"symbol\": \"SYNTH1\", \"timeframe\": \"W\", \"timezone\": \"America/New_York\"}"
+  },
+  {
+   "id": "from_history_old_response",
+   "operation": "actions_from_history",
+   "input": {
+    "history": {
+     "schema": "private-history/1",
+     "provider": "Yahoo Finance(비공식)",
+     "symbol": "SYNTH1",
+     "range": "5y",
+     "currency": "USD",
+     "exchange": "NMS",
+     "timezone": "America/New_York",
+     "interval": "1d",
+     "basis": "RAW_CLOSE",
+     "delay_status": "UNKNOWN",
+     "read_at": "2030-12-31T23:00:00Z",
+     "bars": [
+      {
+       "timestamp": 1894026600,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894113000,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894199400,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894285800,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894372200,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894631400,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      }
+     ]
+    }
+   },
+   "synthetic": true,
+   "expected_json": "{\"splits\": [], \"status\": \"NOT_PROVIDED\"}"
+  },
+  {
+   "id": "from_history_not_reported",
+   "operation": "actions_from_history",
+   "input": {
+    "history": {
+     "schema": "private-history/1",
+     "provider": "Yahoo Finance(비공식)",
+     "symbol": "SYNTH1",
+     "range": "5y",
+     "currency": "USD",
+     "exchange": "NMS",
+     "timezone": "America/New_York",
+     "interval": "1d",
+     "basis": "RAW_CLOSE",
+     "delay_status": "UNKNOWN",
+     "read_at": "2030-12-31T23:00:00Z",
+     "bars": [
+      {
+       "timestamp": 1894026600,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894113000,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894199400,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894285800,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894372200,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894631400,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      }
+     ],
+     "split_coverage": {
+      "status": "NOT_REPORTED",
+      "from": null,
+      "to": null
+     },
+     "splits": null,
+     "split_basis": {
+      "price": "SPLIT_ADJUSTED",
+      "volume": "UNKNOWN",
+      "source": "PROVIDER_CONVENTION"
+     }
+    }
+   },
+   "synthetic": true,
+   "expected_json": "{\"splits\": [], \"status\": \"NOT_REPORTED\"}"
+  },
+  {
+   "id": "from_history_not_available",
+   "operation": "actions_from_history",
+   "input": {
+    "history": {
+     "schema": "private-history/1",
+     "provider": "Yahoo Finance(비공식)",
+     "symbol": "SYNTH1",
+     "range": "5y",
+     "currency": "USD",
+     "exchange": "NMS",
+     "timezone": "America/New_York",
+     "interval": "1d",
+     "basis": "RAW_CLOSE",
+     "delay_status": "UNKNOWN",
+     "read_at": "2030-12-31T23:00:00Z",
+     "bars": [
+      {
+       "timestamp": 1894026600,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894113000,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894199400,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894285800,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894372200,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894631400,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      }
+     ],
+     "split_coverage": {
+      "status": "NOT_AVAILABLE",
+      "from": null,
+      "to": null
+     },
+     "splits": null,
+     "split_basis": {
+      "price": "UNADJUSTED",
+      "volume": "UNADJUSTED",
+      "source": "PROVIDER_DOCUMENTATION"
+     }
+    }
+   },
+   "synthetic": true,
+   "expected_json": "{\"splits\": [], \"status\": \"NOT_PROVIDED\"}"
+  },
+  {
+   "id": "from_history_invalid",
+   "operation": "actions_from_history",
+   "input": {
+    "history": {
+     "schema": "private-history/1",
+     "provider": "Yahoo Finance(비공식)",
+     "symbol": "SYNTH1",
+     "range": "5y",
+     "currency": "USD",
+     "exchange": "NMS",
+     "timezone": "America/New_York",
+     "interval": "1d",
+     "basis": "RAW_CLOSE",
+     "delay_status": "UNKNOWN",
+     "read_at": "2030-12-31T23:00:00Z",
+     "bars": [
+      {
+       "timestamp": 1894026600,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894113000,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894199400,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894285800,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894372200,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894631400,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      }
+     ],
+     "split_coverage": {
+      "status": "INVALID",
+      "from": null,
+      "to": null
+     },
+     "splits": null,
+     "split_basis": {
+      "price": "SPLIT_ADJUSTED",
+      "volume": "UNKNOWN",
+      "source": "PROVIDER_CONVENTION"
+     }
+    }
+   },
+   "synthetic": true,
+   "expected_json": "{\"splits\": [], \"status\": \"INVALID\"}"
+  },
+  {
+   "id": "from_history_confirmed_none",
+   "operation": "actions_from_history",
+   "input": {
+    "history": {
+     "schema": "private-history/1",
+     "provider": "Yahoo Finance(비공식)",
+     "symbol": "SYNTH1",
+     "range": "5y",
+     "currency": "USD",
+     "exchange": "NMS",
+     "timezone": "America/New_York",
+     "interval": "1d",
+     "basis": "RAW_CLOSE",
+     "delay_status": "UNKNOWN",
+     "read_at": "2030-12-31T23:00:00Z",
+     "bars": [
+      {
+       "timestamp": 1894026600,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894113000,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894199400,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894285800,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894372200,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894631400,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      }
+     ],
+     "split_coverage": {
+      "status": "CONFIRMED",
+      "from": "2030-01-07",
+      "to": "2030-01-14"
+     },
+     "splits": [],
+     "split_basis": {
+      "price": "SPLIT_ADJUSTED",
+      "volume": "UNKNOWN",
+      "source": "PROVIDER_CONVENTION"
+     }
+    }
+   },
+   "synthetic": true,
+   "expected_json": "{\"covered_from\": \"2030-01-07\", \"covered_to\": \"2030-01-14\", \"price_basis\": \"SPLIT_ADJUSTED\", \"splits\": [], \"status\": \"AVAILABLE\", \"volume_basis\": \"UNKNOWN\"}"
+  },
+  {
+   "id": "from_history_confirmed_split",
+   "operation": "actions_from_history",
+   "input": {
+    "history": {
+     "schema": "private-history/1",
+     "provider": "Yahoo Finance(비공식)",
+     "symbol": "SYNTH1",
+     "range": "5y",
+     "currency": "USD",
+     "exchange": "NMS",
+     "timezone": "America/New_York",
+     "interval": "1d",
+     "basis": "RAW_CLOSE",
+     "delay_status": "UNKNOWN",
+     "read_at": "2030-12-31T23:00:00Z",
+     "bars": [
+      {
+       "timestamp": 1894026600,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894113000,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894199400,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894285800,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894372200,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894631400,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      }
+     ],
+     "split_coverage": {
+      "status": "CONFIRMED",
+      "from": "2030-01-07",
+      "to": "2030-01-14"
+     },
+     "splits": [
+      {
+       "date": "2030-01-10",
+       "numerator": 4,
+       "denominator": 1
+      }
+     ],
+     "split_basis": {
+      "price": "SPLIT_ADJUSTED",
+      "volume": "UNKNOWN",
+      "source": "PROVIDER_CONVENTION"
+     }
+    }
+   },
+   "synthetic": true,
+   "expected_json": "{\"covered_from\": \"2030-01-07\", \"covered_to\": \"2030-01-14\", \"price_basis\": \"SPLIT_ADJUSTED\", \"splits\": [\"2030-01-10\"], \"status\": \"AVAILABLE\", \"volume_basis\": \"UNKNOWN\"}"
+  },
+  {
+   "id": "from_history_confirmed_bad_date",
+   "operation": "actions_from_history",
+   "input": {
+    "history": {
+     "schema": "private-history/1",
+     "provider": "Yahoo Finance(비공식)",
+     "symbol": "SYNTH1",
+     "range": "5y",
+     "currency": "USD",
+     "exchange": "NMS",
+     "timezone": "America/New_York",
+     "interval": "1d",
+     "basis": "RAW_CLOSE",
+     "delay_status": "UNKNOWN",
+     "read_at": "2030-12-31T23:00:00Z",
+     "bars": [
+      {
+       "timestamp": 1894026600,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894113000,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894199400,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894285800,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894372200,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894631400,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      }
+     ],
+     "split_coverage": {
+      "status": "CONFIRMED",
+      "from": "2030-01-07",
+      "to": "2030-01-14"
+     },
+     "splits": [
+      {
+       "date": "2030-02-30",
+       "numerator": 4,
+       "denominator": 1
+      }
+     ],
+     "split_basis": {
+      "price": "SPLIT_ADJUSTED",
+      "volume": "UNKNOWN",
+      "source": "PROVIDER_CONVENTION"
+     }
+    }
+   },
+   "synthetic": true,
+   "expected_json": "{\"splits\": [], \"status\": \"INVALID\"}"
+  },
+  {
    "id": "merge_revision",
    "operation": "merge",
    "input": {

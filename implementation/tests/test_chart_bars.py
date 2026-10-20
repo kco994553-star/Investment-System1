@@ -142,3 +142,31 @@ def test_merge_revised_view_takes_new_values_and_keeps_the_mark():
     assert view['revised'] == ['2030-01-10'] and bar['close'] == 10.5 and 'PRICE_REVISED' in bar['codes']
     with pytest.raises(CB.ChartBarsError):
         CB.merge(old, new, prefer='LATEST')
+
+
+# Worker split block (P1-W). Synthetic bars only.
+def test_missing_or_unconfirmed_split_info_is_never_no_split():
+    for case_id in ('from_history_old_response', 'from_history_not_reported', 'from_history_not_available',
+                    'from_history_invalid', 'from_history_confirmed_bad_date'):
+        actions = R.run_chart_case(_case(case_id))
+        assert actions['status'] != 'AVAILABLE' and actions['splits'] == []
+        assert CB.continuity(actions, '2030-01-07', '2030-01-14')['state'] == 'NOT_JUDGEABLE'
+    none = R.run_chart_case(_case('from_history_confirmed_none'))
+    assert CB.continuity(none, '2030-01-07', '2030-01-14') == {'state': 'CONFIRMED', 'reason_codes': []}
+
+
+def test_split_in_window_depends_on_the_provider_price_basis():
+    assert R.run_chart_case(_case('continuity_split_in_window_adjusted')) == {'state': 'CONFIRMED', 'reason_codes': ['SPLIT_IN_WINDOW_PRICE_ADJUSTED']}
+    assert R.run_chart_case(_case('continuity_split_on_window_end_adjusted'))['reason_codes'] == ['SPLIT_IN_WINDOW_PRICE_ADJUSTED']
+    assert R.run_chart_case(_case('continuity_split_on_window_start_adjusted'))['reason_codes'] == []
+    assert R.run_chart_case(_case('continuity_split_in_window_unadjusted'))['reason_codes'] == ['CORPORATE_ACTION_IN_WINDOW', 'PRICE_BASIS_UNADJUSTED']
+
+
+def test_adjusted_prices_are_not_adjusted_twice_and_volume_basis_is_separate():
+    case = _case('weekly_split_adjusted_price_volume_unknown')
+    plain = CB.weekly(CB.normalize(case['input']['history']), None)
+    adjusted = R.run_chart_case(case)
+    for a, p in zip(adjusted['bars'], plain['bars']):
+        assert [a[k] for k in ('open', 'high', 'low', 'close')] == [p[k] for k in ('open', 'high', 'low', 'close')]
+    assert adjusted['bars'][1]['volume'] is None and adjusted['bars'][1]['codes'] == ['SPLIT_IN_BAR_PRICE_ADJUSTED', 'VOLUME_BASIS_UNCONFIRMED']
+    assert R.run_chart_case(_case('weekly_split_adjusted_price_and_volume'))['bars'][1]['volume'] == plain['bars'][1]['volume']

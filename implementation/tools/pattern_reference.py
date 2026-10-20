@@ -214,8 +214,42 @@ def chart_cases():
             ('continuity_dividend_only_window', avail, '2030-01-07', '2030-03-01'),
             ('continuity_split_in_window', avail, '2030-02-07', '2030-03-02'),
             ('continuity_starts_on_split', avail, '2030-03-02', '2030-04-02'),
-            ('continuity_coverage_gap', avail, '2029-12-20', '2030-02-07')):
+            ('continuity_coverage_gap', avail, '2029-12-20', '2030-02-07'),
+            # Worker P1-W: split basis declared by the provider path. Prices are never re-adjusted.
+            ('continuity_not_reported', {'status': 'NOT_REPORTED'}, '2030-01-07', '2030-02-07'),
+            ('continuity_split_in_window_adjusted', {**avail, 'price_basis': 'SPLIT_ADJUSTED'}, '2030-02-07', '2030-04-02'),
+            ('continuity_split_on_window_end_adjusted', {**avail, 'price_basis': 'SPLIT_ADJUSTED'}, '2030-02-07', '2030-03-02'),
+            ('continuity_split_on_window_start_adjusted', {**avail, 'price_basis': 'SPLIT_ADJUSTED'}, '2030-03-02', '2030-04-02'),
+            ('continuity_split_in_window_unadjusted', {**avail, 'price_basis': 'UNADJUSTED', 'volume_basis': 'UNADJUSTED'}, '2030-02-07', '2030-03-02'),
+            ('continuity_no_split_unadjusted', {**avail, 'price_basis': 'UNADJUSTED'}, '2030-03-02', '2030-04-02'),
+            ('continuity_invalid_basis', {**avail, 'price_basis': 'ADJUSTED_SOMEHOW'}, '2030-01-07', '2030-02-07')):
         cases.append({'id': cid, 'operation': 'continuity', 'input': {'actions': actions, 'start': start, 'end': end}})
+    # Weekly bars across a split when the provider's prices are already split-adjusted: OHLC kept as delivered,
+    # volume only when its share-count basis is adjusted too.
+    split_raw = [raw_bar(d, 50, 52, 48, 51, 100) for d in split_days]
+    adjusted = {'status': 'AVAILABLE', 'covered_from': '2030-01-01', 'covered_to': '2030-12-31',
+                'events': [{'kind': 'SPLIT', 'effective_date': '2030-01-16'}], 'price_basis': 'SPLIT_ADJUSTED', 'volume_basis': 'UNKNOWN'}
+    cases.append({'id': 'weekly_split_adjusted_price_volume_unknown', 'operation': 'weekly', 'input': {'history': history(split_raw), 'actions': adjusted}})
+    cases.append({'id': 'weekly_split_adjusted_price_and_volume', 'operation': 'weekly',
+                  'input': {'history': history(split_raw), 'actions': {**adjusted, 'volume_basis': 'SPLIT_ADJUSTED'}}})
+    cases.append({'id': 'weekly_split_unadjusted', 'operation': 'weekly',
+                  'input': {'history': history(split_raw), 'actions': {**adjusted, 'price_basis': 'UNADJUSTED', 'volume_basis': 'UNADJUSTED'}}})
+    # Worker split block -> corporate actions. A response without the block is NOT_PROVIDED, never "no split".
+    basis = {'price': 'SPLIT_ADJUSTED', 'volume': 'UNKNOWN', 'source': 'PROVIDER_CONVENTION'}
+    block_days = weekdays('2030-01-07', 6)
+    plain = history([raw_bar(d, 10, 11, 9, 10, 100) for d in block_days])
+    for cid, block in (
+            ('from_history_old_response', {}),
+            ('from_history_not_reported', {'split_coverage': {'status': 'NOT_REPORTED', 'from': None, 'to': None}, 'splits': None, 'split_basis': basis}),
+            ('from_history_not_available', {'split_coverage': {'status': 'NOT_AVAILABLE', 'from': None, 'to': None}, 'splits': None,
+                                            'split_basis': {'price': 'UNADJUSTED', 'volume': 'UNADJUSTED', 'source': 'PROVIDER_DOCUMENTATION'}}),
+            ('from_history_invalid', {'split_coverage': {'status': 'INVALID', 'from': None, 'to': None}, 'splits': None, 'split_basis': basis}),
+            ('from_history_confirmed_none', {'split_coverage': {'status': 'CONFIRMED', 'from': block_days[0], 'to': block_days[-1]}, 'splits': [], 'split_basis': basis}),
+            ('from_history_confirmed_split', {'split_coverage': {'status': 'CONFIRMED', 'from': block_days[0], 'to': block_days[-1]},
+                                              'splits': [{'date': block_days[3], 'numerator': 4, 'denominator': 1}], 'split_basis': basis}),
+            ('from_history_confirmed_bad_date', {'split_coverage': {'status': 'CONFIRMED', 'from': block_days[0], 'to': block_days[-1]},
+                                                 'splits': [{'date': '2030-02-30', 'numerator': 4, 'denominator': 1}], 'split_basis': basis})):
+        cases.append({'id': cid, 'operation': 'actions_from_history', 'input': {'history': {**plain, **block}}})
     old_days = weekdays('2030-01-07', 6)
     old = [raw_bar(d, 10, 11, 9, 10, 100) for d in old_days]
     old[-1]['session_status'] = 'IN_PROGRESS'
@@ -245,6 +279,8 @@ def run_chart_case(case):
         return CB.merge(CB.normalize(i['previous']), CB.normalize(i['incoming']))
     if op == 'session_set_mismatch':
         return CB.session_set_mismatch(CB.normalize(i['history']), i['store_dates'])
+    if op == 'actions_from_history':
+        return CB.corporate_actions(CB.actions_from_history(i['history']))
     raise ValueError(op)
 
 
@@ -269,6 +305,8 @@ def engine_cases():
     cases.append({'id': 'pivots_missing_bar_in_window', 'operation': 'pivots', 'input': {'history': miss, 'timeframe': 'D', 'actions': ALL_SPLIT_FREE}})
     split = {'status': 'AVAILABLE', 'covered_from': '2030-01-01', 'covered_to': '2030-12-31', 'events': [{'kind': 'SPLIT', 'effective_date': '2030-03-04'}]}
     cases.append({'id': 'pivots_split_segments', 'operation': 'pivots', 'input': {'history': history(zz), 'timeframe': 'D', 'actions': split}})
+    cases.append({'id': 'pivots_split_adjusted_one_segment', 'operation': 'pivots',
+                  'input': {'history': history(zz), 'timeframe': 'D', 'actions': {**split, 'price_basis': 'SPLIT_ADJUSTED', 'volume_basis': 'UNKNOWN'}}})
     cases.append({'id': 'pivots_user_settings', 'operation': 'pivots', 'input': {'history': history(zz), 'timeframe': 'D', 'actions': ALL_SPLIT_FREE, 'params': {'SWING_MIN_ATR': 2}}})
     rw = random_walk(7, 260)
     rw[-1]['session_status'] = 'IN_PROGRESS'
@@ -342,6 +380,11 @@ def scenarios():
         ('B13_split_crosses_live_window', b13, 'D', split_at(b13, 45)),
         ('B13b_split_lookup_failed', b1, 'D', {'status': 'LOOKUP_FAILED'}),
         ('B13c_no_split_events', b1, 'D', None),
+        ('B13d_split_adjusted_prices_stay_judgeable', b13, 'D', {**split_at(b13, 45), 'price_basis': 'SPLIT_ADJUSTED', 'volume_basis': 'UNKNOWN'}),
+        ('B13e_split_unadjusted_prices', b13, 'D', {**split_at(b13, 45), 'price_basis': 'UNADJUSTED', 'volume_basis': 'UNADJUSTED'}),
+        ('B13f_split_not_reported', b1, 'D', {'status': 'NOT_REPORTED'}),
+        ('B13g_split_adjusted_volume_basis_unconfirmed', b1, 'D', {**split_at(b1, 40), 'price_basis': 'SPLIT_ADJUSTED', 'volume_basis': 'UNKNOWN'}),
+        ('B13h_split_adjusted_price_and_volume', b1, 'D', {**split_at(b1, 40), 'price_basis': 'SPLIT_ADJUSTED', 'volume_basis': 'SPLIT_ADJUSTED'}),
         ('B1_mirror_breakdown', mirror(b1), 'D', ALL_SPLIT_FREE),
         ('B4_mirror_breakdown_failed', mirror(scenario([(3, 6), (1, 3), (1, 4), (2, -5), (6, 0)])), 'D', ALL_SPLIT_FREE),
         ('D1_double_bottom_confirmed', scenario(D1_TAIL, base=DB_BASE), 'D', ALL_SPLIT_FREE),

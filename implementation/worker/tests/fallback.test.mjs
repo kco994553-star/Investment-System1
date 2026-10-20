@@ -49,3 +49,21 @@ test('provider metadata mismatch, OHLC corruption, duplicate/future dates and up
 test('KRX duplicate listing, malformed grouping, mismatched day and zero placeholders fail closed',async()=>{
   for(const mode of ['duplicate','number','day','zero']){const s=setup('042700.KS','1mo',{provider:u=>{const day=new URL(u).searchParams.get('basDd'),row={ISU_CD:'042700',BAS_DD:mode==='day'?'20260101':day,MKT_NM:'KOSPI',TDD_OPNPRC:'100',TDD_HGPRC:'104',TDD_LWPRC:'98',TDD_CLSPRC:mode==='number'?'10,20':mode==='zero'?'0':'102',ACC_TRDVOL:'10'};return json({OutBlock_1:mode==='duplicate'?[row,row]:[row]});}});const r=await s.run();assert.equal(r.status,502);assert.deepEqual(await r.json(),{error:{code:'KRX_FORMAT_CHANGED'}});assert.equal(s.released(),1);}
 });
+test('Tiingo splitFactor confirms coverage only when every row carries it; raw prices are reported as unadjusted',async()=>{
+  const row=(day,extra)=>({date:day+'T00:00:00.000Z',open:100,high:104,low:98,close:102,adjClose:51,volume:10,...extra});
+  const run=async rows=>{const s=setup('NVDA','1mo',{provider:u=>u.includes('/prices?')?json(rows):json({ticker:'nvda',exchangeCode:'NASDAQ'})});const r=await s.run();assert.equal(r.status,200);return r.json();};
+  const none=await run([row('2026-10-06',{splitFactor:1}),row('2026-10-07',{splitFactor:1}),row('2026-10-08',{splitFactor:1})]);
+  assert.deepEqual(none.split_coverage,{status:'CONFIRMED',from:'2026-10-06',to:'2026-10-08'});assert.deepEqual(none.splits,[]);
+  assert.deepEqual(none.split_basis,{price:'UNADJUSTED',volume:'UNADJUSTED',source:'PROVIDER_DOCUMENTATION'});
+  const split=await run([row('2026-10-06',{splitFactor:1}),row('2026-10-07',{splitFactor:2}),row('2026-10-08',{splitFactor:1})]);
+  assert.deepEqual(split.splits,[{date:'2026-10-07',numerator:2,denominator:1}]);
+  assert.deepEqual(split.bars.map(b=>b.close),[102,102,102],'raw prices are never re-adjusted');
+  const missing=await run([row('2026-10-06',{splitFactor:1}),row('2026-10-07'),row('2026-10-08',{splitFactor:1})]);
+  assert.deepEqual(missing.split_coverage,{status:'NOT_AVAILABLE',from:null,to:null});assert.equal(missing.splits,null,'a missing field is never factor 1');
+  const bad=await run([row('2026-10-06',{splitFactor:0}),row('2026-10-07',{splitFactor:1})]);
+  assert.equal(bad.split_coverage.status,'INVALID');assert.equal(bad.splits,null);
+});
+test('KRX has no split events: NOT_AVAILABLE with an unadjusted basis',async()=>{
+  const s=setup('042700.KS','1mo',{provider:u=>{const day=new URL(u).searchParams.get('basDd');return json({OutBlock_1:day==='20261008'?[{ISU_CD:'042700',BAS_DD:day,MKT_NM:'KOSPI',TDD_OPNPRC:'100',TDD_HGPRC:'104',TDD_LWPRC:'98',TDD_CLSPRC:'102',ACC_TRDVOL:'10'}]:[]});}});
+  const v=await (await s.run()).json();assert.deepEqual(v.split_coverage,{status:'NOT_AVAILABLE',from:null,to:null});assert.equal(v.splits,null);assert.equal(v.split_basis.price,'UNADJUSTED');
+});

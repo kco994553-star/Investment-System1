@@ -62,3 +62,32 @@ test('isolated known closes have drawable marks on either side of a gap', () => 
   const paths=api.chartPaths(daily().bars);
   assert.ok(paths.length===2&&paths.every(path=>path.includes('L')),'a move-only SVG path would hide a known daily close');
 });
+// Worker split block (P1-W): optional, additive, never read as "no split" when missing. Synthetic bars only.
+test('split block: an older response stays without split fields; confirmed none and a confirmed split pass through', () => {
+  const old=api.validateHistory(daily(),{symbol:'NVDA',range:'1y'});
+  assert.ok(!('split_coverage' in old)&&!('splits' in old)&&!('split_basis' in old),'older Worker response is unchanged');
+  const basis={price:'SPLIT_ADJUSTED',volume:'UNKNOWN',source:'PROVIDER_CONVENTION'};
+  const none={...daily(),split_coverage:{status:'CONFIRMED',from:'2030-01-05',to:'2030-01-07'},splits:[],split_basis:basis};
+  const a=api.validateHistory(none,{symbol:'NVDA',range:'1y'});
+  assert.deepEqual(a.split_coverage,{status:'CONFIRMED',from:'2030-01-05',to:'2030-01-07'});assert.deepEqual(a.splits,[]);assert.deepEqual(a.split_basis,basis);
+  const one=api.validateHistory({...none,splits:[{date:'2030-01-07',numerator:3,denominator:2,extra:'x'}]},{symbol:'NVDA',range:'1y'});
+  assert.deepEqual(one.splits,[{date:'2030-01-07',numerator:3,denominator:2}]);
+  assert.deepEqual(one.bars.map(b=>b.close),[42,null,44],'prices are never re-adjusted');
+  for(const status of ['NOT_REPORTED','NOT_AVAILABLE','INVALID']){
+    const r=api.validateHistory({...daily(),split_coverage:{status,from:null,to:null},splits:null,split_basis:basis},{symbol:'NVDA',range:'1y'});
+    assert.equal(r.split_coverage.status,status);assert.equal(r.splits,null,'unconfirmed is never an empty list');
+  }
+});
+test('split block: malformed or inconsistent blocks become INVALID while the prices stay available', () => {
+  const basis={price:'SPLIT_ADJUSTED',volume:'UNKNOWN',source:'PROVIDER_CONVENTION'},ok={split_coverage:{status:'CONFIRMED',from:'2030-01-05',to:'2030-01-07'},splits:[],split_basis:basis};
+  const changes=[
+    b=>b.split_coverage.from='2030-01-04', b=>b.split_coverage.to='2030-01-08', b=>b.splits=null, b=>b.splits=[{date:'2030-01-04',numerator:2,denominator:1}],
+    b=>b.splits=[{date:'2030-01-06',numerator:0,denominator:1}], b=>b.splits=[{date:'2030-01-06',numerator:2,denominator:1},{date:'2030-01-06',numerator:2,denominator:1}],
+    b=>b.split_basis={...basis,price:'ADJUSTED'}, b=>b.split_basis=null, b=>b.split_coverage={status:'NONE'}, b=>{b.split_coverage={status:'NOT_REPORTED',from:null,to:null};b.splits=[];},
+    b=>{delete b.split_coverage;}];
+  for(const change of changes){
+    const block=structuredClone(ok);change(block);
+    const r=api.validateHistory({...daily(),...block},{symbol:'NVDA',range:'1y'});
+    assert.equal(r.split_coverage.status,'INVALID');assert.equal(r.splits,null);assert.equal(r.bars.length,3);
+  }
+});

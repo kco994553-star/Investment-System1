@@ -64,27 +64,40 @@
        ChartBars.normalize(private-history/1) -> daily series; ChartBars.weekly(series, actions) -> weekly series
        whose bars carry week_start, first_session, last_session, open..volume (null when missing) and state.
      This is the only place that reads ChartBars output. No aggregation happens in this file.
-     Split events are not delivered yet (P1-W), so actions stay null (NOT_PROVIDED). */
+     Split info (Worker P1-W) arrives as the optional private-history/1 block in data.splitInfo; ChartBars.actionsFromHistory
+     turns it into the corporate-action record. Without the block (older Worker) actions stay null (NOT_PROVIDED). */
   function historyOf(data) {
     return {schema: 'private-history/1', interval: '1d', basis: 'RAW_CLOSE', delay_status: 'UNKNOWN', symbol: data.symbol || '', provider: data.provider || '',
-      currency: data.currency || '', timezone: data.timezone || 'UTC', read_at: data.readAt || '', bars: data.bars};
+      currency: data.currency || '', timezone: data.timezone || 'UTC', read_at: data.readAt || '', bars: data.bars, ...(data.splitInfo || {})};
   }
-  function weeklyView(view, data) {
+  // Corporate-action record of real (device) data. Synthetic data uses syntheticActions instead.
+  function deviceActions(view, data) {
+    const api = view.ChartBars;
+    if (!data || !api || typeof api.actionsFromHistory !== 'function') return null;
+    try { return api.actionsFromHistory(historyOf(data)); } catch (_) { return {status: 'INVALID'}; }
+  }
+  function weeklyView(view, data, actions = null) {
     const api = view.ChartBars;
     if (!api || typeof api.normalize !== 'function' || typeof api.weekly !== 'function') return {code: 'WEEKLY_BARS_MODULE_PENDING', bars: null};
     let result;
-    try { result = api.weekly(api.normalize(historyOf(data)), null); } catch (_) { return {code: 'WEEKLY_BARS_FAILED', bars: null}; }
+    try { result = api.weekly(api.normalize(historyOf(data)), actions); } catch (_) { return {code: 'WEEKLY_BARS_FAILED', bars: null}; }
     const list = result && Array.isArray(result.bars) ? result.bars : null;
     if (!list || !list.length) return {code: 'WEEKLY_BARS_FAILED', bars: null};
     return {code: 'READY', bars: list.map(w => ({time: w.week_start, start: w.first_session, end: w.last_session, open: w.open, high: w.high, low: w.low, close: w.close, volume: w.volume, status: w.state === 'COMPLETE' ? 'COMPLETE' : 'PROVISIONAL'}))};
   }
-  // Price-basis continuity of the shown window from ChartBars (display reason codes only).
-  function continuityCodes(view, bars) {
-    const api = view.ChartBars;
-    if (!api || typeof api.continuity !== 'function' || !bars.length) return ['PRICE_BASIS_CONTINUITY_UNCONFIRMED'];
-    try { const r = api.continuity(null, bars[0].start, bars[bars.length - 1].end); return r && Array.isArray(r.reason_codes) && r.reason_codes.length ? r.reason_codes : ['PRICE_BASIS_CONTINUITY_UNCONFIRMED']; }
-    catch (_) { return ['PRICE_BASIS_CONTINUITY_UNCONFIRMED']; }
+  // Price-basis continuity of the shown window from ChartBars. Anything unexpected is unconfirmed, never "continuous".
+  function continuityOf(view, bars, actions = null) {
+    const api = view.ChartBars, unconfirmed = {state: 'NOT_JUDGEABLE', reason_codes: ['PRICE_BASIS_CONTINUITY_UNCONFIRMED']};
+    if (!api || typeof api.continuity !== 'function' || !bars.length) return unconfirmed;
+    try {
+      const r = api.continuity(actions, bars[0].start, bars[bars.length - 1].end);
+      if (!r || !Array.isArray(r.reason_codes)) return unconfirmed;
+      if (r.state === 'CONFIRMED') return {state: 'CONFIRMED', reason_codes: r.reason_codes};
+      return r.reason_codes.length ? {state: 'NOT_JUDGEABLE', reason_codes: r.reason_codes} : unconfirmed;
+    } catch (_) { return unconfirmed; }
   }
+  // Display reason codes only ([] or a note such as SPLIT_IN_WINDOW_PRICE_ADJUSTED when continuity is confirmed).
+  function continuityCodes(view, bars, actions = null) { return continuityOf(view, bars, actions).reason_codes; }
 
   /* ---------- patterns: engine input and result reading (no detection here) ---------- */
 
@@ -310,14 +323,23 @@
 
   function paintJudgement(state) {
     // Never a signal: without confirmed price-basis continuity the window is not judged (design §7.3, Q3).
-    const reasons = state.source === 'device' ? continuityCodes(state.view, state.daily) : [];
-    const code = !state.data ? 'NO_DATA' : state.source === 'synthetic' ? 'SYNTHETIC_PREVIEW' : reasons.includes('CORPORATE_ACTION_IN_WINDOW') ? 'CORPORATE_ACTION_IN_WINDOW' : 'PRICE_BASIS_CONTINUITY_UNCONFIRMED';
+    const cont = state.source === 'device' ? continuityOf(state.view, state.daily, deviceActions(state.view, state.data)) : {state: 'NOT_JUDGEABLE', reason_codes: []};
+    const reasons = cont.reason_codes, confirmed = state.source === 'device' && cont.state === 'CONFIRMED';
+    const code = !state.data ? 'NO_DATA' : state.source === 'synthetic' ? 'SYNTHETIC_PREVIEW' : confirmed ? 'PRICE_BASIS_CONTINUITY_CONFIRMED'
+      : reasons.includes('CORPORATE_ACTION_IN_WINDOW') ? 'CORPORATE_ACTION_IN_WINDOW' : 'PRICE_BASIS_CONTINUITY_UNCONFIRMED';
     state.judgement.dataset.code = code;
     state.judgement.dataset.reasons = reasons.join(' ');
+    if (confirmed) {
+      state.judgement.replaceChildren(node(state.doc, 'span', {class: 'badge'}, words(state, '연속성 확인', 'Continuity confirmed')), state.doc.createTextNode(' ' + (reasons.length ? reasons.join(' · ') + ' · ' : '') + (
+        reasons.includes('SPLIT_IN_WINDOW_PRICE_ADJUSTED') ? words(state, '창 안에 분할이 있으나 공급자 가격이 이미 분할 기준으로 맞춰져 있습니다(다시 조정하지 않음). ', 'A split falls in the window; the provider prices are already split-adjusted (never adjusted again). ') : '')
+        + words(state, '가격 기준 연속성을 확인했습니다. 패턴은 아래 패턴 카드에서 봅니다. 신호가 아닙니다.', 'Price-basis continuity is confirmed. See the pattern cards below. Not a signal.')));
+      return;
+    }
     state.judgement.replaceChildren(node(state.doc, 'span', {class: 'badge NOT_AVAILABLE'}, words(state, '판정 불가', 'Not judged')), state.doc.createTextNode(' ' + (reasons.length ? reasons.join(' · ') : code) + ' · ' + (
       code === 'NO_DATA' ? words(state, '차트 자료가 없습니다.', 'No chart data.')
         : code === 'SYNTHETIC_PREVIEW' ? words(state, '합성 자료는 판정하지 않습니다.', 'Synthetic data is never judged.')
-          : words(state, '가격 기준 연속성(분할 이벤트, P1-W)을 확인하지 못해 패턴을 판정하지 않습니다. 패턴 엔진 연결 전입니다.', 'Price-basis continuity (split events, P1-W) is unconfirmed, so no pattern is judged. The pattern engine is not connected.'))));
+          : code === 'CORPORATE_ACTION_IN_WINDOW' ? words(state, '창 안에 분할이 있고 가격이 분할 기준으로 맞춰져 있다는 확인이 없어 패턴을 판정하지 않습니다.', 'A split falls in the window and the prices are not confirmed as split-adjusted, so no pattern is judged.')
+            : words(state, '가격 기준 연속성(분할 정보)을 확인하지 못해 패턴을 판정하지 않습니다.', 'Price-basis continuity (split info) is unconfirmed, so no pattern is judged.'))));
   }
 
   function paintSource(state) {
@@ -375,7 +397,7 @@
     if (!engineReady(view)) { state.engine.code = 'PATTERN_ENGINE_UNAVAILABLE'; return; }
     try {
       const daily = view.ChartBars.normalize(historyOf(state.data));
-      const actions = state.source === 'synthetic' ? syntheticActions(daily) : null;
+      const actions = state.source === 'synthetic' ? syntheticActions(daily) : deviceActions(view, state.data);
       state.engine = {code: 'READY', actions, series: {D: daily, W: view.ChartBars.weekly(daily, actions)}};
     } catch (_) { state.engine = {code: 'PATTERN_INPUT_INVALID', series: {}, actions: null}; }
   }
@@ -504,7 +526,12 @@
     const short = minBars(params, tf).filter(([, need]) => complete < need);
     row('BARS', w('완결 봉 수', 'Complete bars'), complete + ' · ' + minBars(params, tf).map(([k, need]) => k + ' ' + need).join(' · ') + (short.length ? ' · INSUFFICIENT_BARS ' + short.map(x => x[0]).join(',') : ' · OK'), short.length ? 'INSUFFICIENT_BARS' : 'OK');
     const actions = state.view.ChartBars.corporateActions(state.engine.actions);
-    row('ACTIONS', w('기업행사 (분할 이벤트)', 'Corporate actions (splits)'), state.source === 'synthetic' ? w('합성 자료 · 생성 조건상 분할 없음 (기능 확인용)', 'Synthetic data · generated without splits (function check)') : actions.status + w(' · 분할 이벤트 미제공 (Worker P1-W 전)', ' · split events not provided (before Worker P1-W)'), actions.status);
+    const basis = state.data && state.data.splitInfo && state.data.splitInfo.split_basis;
+    const actionText = actions.status === 'AVAILABLE' ? w(' · 분할 ', ' · splits ') + actions.splits.length + ' · ' + actions.covered_from + '~' + actions.covered_to + ' · price ' + actions.price_basis + ' · volume ' + actions.volume_basis + (basis && basis.source ? ' · ' + basis.source : '')
+      : actions.status === 'NOT_REPORTED' ? w(' · 공급자가 분할 정보를 보내지 않음 (없음으로 보지 않음)', ' · the provider sent no split info (not read as none)')
+        : actions.status === 'NOT_PROVIDED' ? w(' · 분할 정보 없음 (이전 Worker 응답 또는 공급자 미제공)', ' · no split info (older Worker response or not offered by the provider)')
+          : w(' · 분할 정보 확인 불가', ' · split info unusable');
+    row('ACTIONS', w('기업행사 (분할 이벤트)', 'Corporate actions (splits)'), state.source === 'synthetic' ? w('합성 자료 · 생성 조건상 분할 없음 (기능 확인용)', 'Synthetic data · generated without splits (function check)') : actions.status + actionText, actions.status);
     const first = series.bars[0], last = series.bars[series.bars.length - 1], cont = state.view.ChartBars.continuity(state.engine.actions, first.first_session || first.session_date, last.last_session || last.session_date);
     row('CONTINUITY', w('가격 기준 연속성', 'Price-basis continuity'), cont.state + (cont.reason_codes.length ? ' · ' + cont.reason_codes.join(' · ') : ''), cont.state);
     const quality = series.quality && Array.isArray(series.quality.codes) ? series.quality.codes : [];
@@ -824,7 +851,8 @@
     if (!state.data) return;
     const R = state.view.ChartRenderer;
     state.daily = R.normalizeBars(dailyView(state.data.bars, state.data.timezone));
-    const weekly = weeklyView(state.view, state.data);
+    // Device weeks that straddle a split follow the split basis (NA when prices are not split-adjusted). Synthetic: unchanged.
+    const weekly = weeklyView(state.view, state.data, state.source === 'device' ? deviceActions(state.view, state.data) : null);
     state.weeklyCode = weekly.code;
     if (weekly.bars) { try { state.weekly = R.normalizeBars(weekly.bars); } catch (_) { state.weekly = null; state.weeklyCode = 'WEEKLY_BARS_FAILED'; } }
   }
@@ -981,7 +1009,7 @@
       state.data = {...state.data, indicators: payload.indicators};
       return state.timeframe === 'daily' ? render(state, {keepRange: state.renderer ? state.renderer.getVisibleRange() : null}) : Promise.resolve();
     }
-    return setData(state, {symbol: payload.symbol || '', provider: payload.provider || '', timezone: payload.timezone || 'UTC', currency: payload.currency || '', readAt: payload.readAt || '', bars: payload.bars, indicators: payload.indicators || null}, 'device');
+    return setData(state, {symbol: payload.symbol || '', provider: payload.provider || '', timezone: payload.timezone || 'UTC', currency: payload.currency || '', readAt: payload.readAt || '', bars: payload.bars, indicators: payload.indicators || null, splitInfo: payload.splitInfo || null}, 'device');
   }
 
   function dispose(state) {
@@ -1160,6 +1188,6 @@
 
   function disposeAll() { for (const state of [...active]) dispose(state); }
 
-  return Object.freeze({SETTINGS_KEY, SETTINGS_SCHEMA, SYNTHETIC_LABEL, SYNTHETIC_PATTERN_LABEL, EXPLORE_GRID, readSettings, writeSettings, dailyView, weeklyView, continuityCodes, syntheticHistory,
+  return Object.freeze({SETTINGS_KEY, SETTINGS_SCHEMA, SYNTHETIC_LABEL, SYNTHETIC_PATTERN_LABEL, EXPLORE_GRID, readSettings, writeSettings, dailyView, weeklyView, continuityCodes, continuityOf, deviceActions, syntheticHistory,
     syntheticActions, applyChanges, minBars, patternObjects, USER_KEY, USER_SCHEMA, validUserObject, createDeviceUserStore, mount, disposeAll});
 });

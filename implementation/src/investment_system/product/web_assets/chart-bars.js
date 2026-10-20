@@ -3,7 +3,8 @@
    (vectors: tests/fixtures/chart_bars_reference_v1.json). Input is a private-history/1 response already checked by
    PrivateHistory.validateHistory. Missing values stay null with a reason code (never 0, never interpolated); a
    reported volume of 0 is a real zero. Weekly bars follow rule W1. Without split events every window is
-   PRICE_BASIS_CONTINUITY_UNCONFIRMED; a window crossing a split is CORPORATE_ACTION_IN_WINDOW. Prices are never re-adjusted. */
+   PRICE_BASIS_CONTINUITY_UNCONFIRMED; a window crossing a split is CORPORATE_ACTION_IN_WINDOW unless the provider's prices are
+   already split-adjusted (then CONFIRMED with the note SPLIT_IN_WINDOW_PRICE_ADJUSTED). Prices are never re-adjusted. */
 (function (root, factory) {
   const api = factory();
   if (typeof module === 'object' && module.exports) module.exports = api;
@@ -90,33 +91,54 @@
   }
   function weekday(d) { return (new Date(d + 'T00:00:00Z').getUTCDay() + 6) % 7; } // Monday 0 ... Sunday 6
   function weekStart(d) { return new Date(Date.parse(d + 'T00:00:00Z') - weekday(d) * 86400000).toISOString().slice(0, 10); }
+  const BASES = ['SPLIT_ADJUSTED', 'UNADJUSTED', 'UNKNOWN'];
+  // NOT_REPORTED: events were requested but the provider sent no split block. Like NOT_PROVIDED it never means "no split".
+  // price_basis/volume_basis (optional, default UNKNOWN) say whether the provider's own OHLC/volume are already split-adjusted.
   function corporateActions(value) {
     if (value === null || value === undefined) return {status: 'NOT_PROVIDED', splits: []};
-    if (typeof value !== 'object' || Array.isArray(value) || !['NOT_PROVIDED', 'LOOKUP_FAILED', 'AVAILABLE'].includes(value.status)) return {status: 'INVALID', splits: []};
+    if (typeof value !== 'object' || Array.isArray(value) || !['NOT_PROVIDED', 'NOT_REPORTED', 'LOOKUP_FAILED', 'AVAILABLE'].includes(value.status)) return {status: 'INVALID', splits: []};
     if (value.status !== 'AVAILABLE') return {status: value.status, splits: []};
     const start = day(value.covered_from), end = day(value.covered_to), events = value.events;
-    if (!start || !end || start > end || !Array.isArray(events)) return {status: 'INVALID', splits: []};
+    const priceBasis = get(value, 'price_basis') === null ? 'UNKNOWN' : value.price_basis, volumeBasis = get(value, 'volume_basis') === null ? 'UNKNOWN' : value.volume_basis;
+    if (!start || !end || start > end || !Array.isArray(events) || !BASES.includes(priceBasis) || !BASES.includes(volumeBasis)) return {status: 'INVALID', splits: []};
     const splits = [];
     for (const event of events) {
       if (!event || typeof event !== 'object' || Array.isArray(event) || !['SPLIT', 'DIVIDEND'].includes(event.kind) || !day(event.effective_date)) return {status: 'INVALID', splits: []};
       if (event.kind === 'SPLIT') splits.push(event.effective_date);
     }
-    return {status: 'AVAILABLE', covered_from: start, covered_to: end, splits: uniqSorted(splits)};
+    return {status: 'AVAILABLE', covered_from: start, covered_to: end, splits: uniqSorted(splits), price_basis: priceBasis, volume_basis: volumeBasis};
   }
   function actionsOf(value) { return value && typeof value === 'object' && !Array.isArray(value) && own(value, 'splits') && own(value, 'status') ? value : corporateActions(value); }
+  const priceAdjusted = actions => actions.price_basis === 'SPLIT_ADJUSTED';
+  const volumeAdjusted = actions => priceAdjusted(actions) && actions.volume_basis === 'SPLIT_ADJUSTED';
+  // private-history/1 optional split block (Worker P1-W) -> corporateActions input. A response without the block (older Worker)
+  // gives null = NOT_PROVIDED. Provider-path NOT_AVAILABLE is NOT_PROVIDED; anything unrecognised is INVALID. Never "no split".
+  function actionsFromHistory(history) {
+    if (!history || typeof history !== 'object' || Array.isArray(history) || get(history, 'split_coverage') === null) return null;
+    const coverage = history.split_coverage, basis = get(history, 'split_basis'), status = coverage && typeof coverage === 'object' && !Array.isArray(coverage) ? coverage.status : null;
+    if (status === 'NOT_REPORTED') return {status: 'NOT_REPORTED'};
+    if (status === 'NOT_AVAILABLE') return {status: 'NOT_PROVIDED'};
+    if (status !== 'CONFIRMED' || !Array.isArray(history.splits) || !basis || typeof basis !== 'object' || Array.isArray(basis)) return {status: 'INVALID'};
+    return {status: 'AVAILABLE', covered_from: coverage.from, covered_to: coverage.to, price_basis: basis.price, volume_basis: basis.volume,
+      events: history.splits.map(s => ({kind: 'SPLIT', effective_date: s && typeof s === 'object' ? s.date : null}))};
+  }
   function continuity(actions, start, end) {
     actions = actionsOf(actions);
     if (actions.status !== 'AVAILABLE') {
-      const sub = {NOT_PROVIDED: 'CORPORATE_ACTION_EVENTS_NOT_PROVIDED', LOOKUP_FAILED: 'CORPORATE_ACTION_LOOKUP_FAILED'}[actions.status] || 'CORPORATE_ACTION_EVENTS_INVALID';
+      const sub = {NOT_PROVIDED: 'CORPORATE_ACTION_EVENTS_NOT_PROVIDED', NOT_REPORTED: 'CORPORATE_ACTION_EVENTS_NOT_REPORTED', LOOKUP_FAILED: 'CORPORATE_ACTION_LOOKUP_FAILED'}[actions.status] || 'CORPORATE_ACTION_EVENTS_INVALID';
       return {state: 'NOT_JUDGEABLE', reason_codes: ['PRICE_BASIS_CONTINUITY_UNCONFIRMED', sub]};
     }
     if (start < actions.covered_from || end > actions.covered_to) return {state: 'NOT_JUDGEABLE', reason_codes: ['PRICE_BASIS_CONTINUITY_UNCONFIRMED', 'CORPORATE_ACTION_COVERAGE_GAP']};
-    if (actions.splits.some(d => start < d && d <= end)) return {state: 'NOT_JUDGEABLE', reason_codes: ['CORPORATE_ACTION_IN_WINDOW']};
+    if (actions.splits.some(d => start < d && d <= end)) {
+      // Already split-adjusted provider prices stay continuous across the split: judgeable, with a note. Nothing is re-adjusted.
+      if (priceAdjusted(actions)) return {state: 'CONFIRMED', reason_codes: ['SPLIT_IN_WINDOW_PRICE_ADJUSTED']};
+      return {state: 'NOT_JUDGEABLE', reason_codes: actions.price_basis === 'UNADJUSTED' ? ['CORPORATE_ACTION_IN_WINDOW', 'PRICE_BASIS_UNADJUSTED'] : ['CORPORATE_ACTION_IN_WINDOW']};
+    }
     return {state: 'CONFIRMED', reason_codes: []};
   }
   function weekly(series, actions) {
     if (!series || series.schema !== SCHEMA || series.timeframe !== 'D') fail('CHART_BARS_INPUT_INVALID');
-    const splits = actionsOf(actions).splits, groups = new Map();
+    const acts = actionsOf(actions), splits = acts.splits, adjusted = priceAdjusted(acts), volAdjusted = volumeAdjusted(acts), groups = new Map();
     for (const bar of series.bars) { const key = weekStart(bar.session_date); if (!groups.has(key)) groups.set(key, []); groups.get(key).push(bar); }
     const keys = sorted(groups.keys()), out = [];
     keys.forEach((key, n) => {
@@ -132,10 +154,12 @@
       if (weekend) codes.push('WEEKEND_SESSION');
       const first = days[0].session_date, last = days[days.length - 1].session_date, straddles = splits.some(d => first < d && d <= last);
       const allOhlc = days.every(b => b.ohlc === 'PRESENT'), allVolume = days.every(b => b.volume_state === 'REPORTED');
-      const ohlcOk = allOhlc && !weekend && !straddles, volumeOk = allVolume && !straddles;
+      // Adjusted prices may be aggregated across a split; volume only when its basis is adjusted too (share-count basis).
+      const ohlcOk = allOhlc && !weekend && !(straddles && !adjusted), volumeOk = allVolume && !(straddles && !volAdjusted);
       if (!allOhlc) codes.push('OHLC_MISSING_IN_WEEK');
       if (!allVolume) codes.push('VOLUME_MISSING_IN_WEEK');
-      if (straddles) codes.push('CORPORATE_ACTION_IN_BAR');
+      if (straddles) codes.push(adjusted ? 'SPLIT_IN_BAR_PRICE_ADJUSTED' : 'CORPORATE_ACTION_IN_BAR');
+      if (straddles && adjusted && !volAdjusted) codes.push('VOLUME_BASIS_UNCONFIRMED');
       out.push({index: n, week_start: key, first_session: first, last_session: last, session_count: days.length, timestamp: days[days.length - 1].timestamp,
         open: ohlcOk ? days[0].open : null, high: ohlcOk ? Math.max(...days.map(b => b.high)) : null, low: ohlcOk ? Math.min(...days.map(b => b.low)) : null,
         close: ohlcOk ? days[days.length - 1].close : null, volume: volumeOk ? days.reduce((a, b) => a + b.volume, 0) : null,
@@ -174,5 +198,5 @@
     const missingInBars = [...b].filter(d => !a.has(d)).length, missingInStore = [...a].filter(d => !b.has(d)).length, mismatch = Boolean(missingInBars || missingInStore);
     return {state: mismatch ? 'MISMATCH' : 'MATCH', reason_codes: mismatch ? ['SESSION_SET_MISMATCH'] : [], missing_in_bars: missingInBars, missing_in_store: missingInStore};
   }
-  return Object.freeze({SCHEMA, normalize, weekly, merge, corporateActions, continuity, sessionSetMismatch, sessionDate});
+  return Object.freeze({SCHEMA, normalize, weekly, merge, corporateActions, actionsFromHistory, continuity, sessionSetMismatch, sessionDate});
 });
