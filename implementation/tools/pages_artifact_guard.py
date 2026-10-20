@@ -100,7 +100,7 @@ APPROVED_SHA256 = {
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "49495b6a0a846af1d1da932057efda910d03172c0cb9e0fd22fe0d03f76dbebf",
+    "app.js": "f6bd4928dfdbac7d456cbf0808d72048025e29d5f1ba02c97d61f0138282db48",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "1cfae1a928e74055b1536e1b8dbe26509780eb3eed2f79b3a1963de4feb25f60",
@@ -110,10 +110,10 @@ APPROVED_SHA256 = {
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "59c8bab257051b7b5b4982ba4bedfa998a2e14c63852caef643aee6072f249b2",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "3a5bc819619eb0d8d9446fde6a135c7d5ed3d5fa9ef2ebcdc3206dbb22f4744e",
+    "index.html": "197c0c86300de52df652eb4f2da9b4b3b12e57d7937c579841c551d3343d3b2c",
     "locale.js": "f3537029f859a0958c9d2440b7fcc021fef96b2845ff3320ad8b8ae045f09dc2",
     "private-history.css": "d4ce930e901e2b67b2eb6d57c8795f77be3b9f1650efa85dad6e524419c42028",
-    "private-history.js": "c8477c65c211094db0ebad90a40514e5bee9e7b7b8cbe82e05ae850aee7de182",
+    "private-history.js": "70a1b247f0e9ad2ef22154a6f94e75441244a9dc285122d7ae697a0d8574d81d",
     "research.html": "03fcceb4f7c080e76d7fd1cf27477502284fa1fa24ca16f99c79f43c24751309",
     "style.css": "8c88942eeb1fff9eb9ca73dc5fd1fba744b75a55ad54f449063ac3b007164c9c",
     "sec-disclosures.js": "849cbfbf2b21badd52c06cf5887dcd259e08864552a76fde39f065f82c6a7194",
@@ -143,6 +143,14 @@ APPROVED_SHA256 = {
     "price-time.js": "9b786d04615f3a8907f8f936db78ab3fd477808eadc27814e615ffbb7dddbc0f",
     "data-refresh.js": "42dbf569450963a19887e6fec85c28311ad0bf022ea584329ef9bcc1475f28c8",
     "v-coverage.css": "185302f9f5aa9542d2caadfa03363f084bf837e8e1ea2998da49fa1db8af9364",
+    # Self-hosted chart renderer (P1-7): lightweight-charts 5.2.1 npm file unmodified, upstream LICENSE/NOTICE, third-party notices.
+    "chart-renderer.js": "d5a8fd8c8499d770d8b1b72e3fd79b7ddb75e72b39281fd534a9a52337ad3277",
+    "chart-workbench.js": "5dca12d2c895ad6e63bc178c7476478471e15375b8793e3e8e97b7d5eb4c5ef0",
+    "chart-workbench.css": "e03cf2153b90179aaa3f4c56f1d939014e0c3d341e24a17623c2807d6f3f56ba",
+    "lightweight-charts-5.2.1.standalone.js": "e21cc5caa0226ef30bd8549c50b9ef926615f2a4ee6b4e486353477a55f598cf",
+    "lightweight-charts-5.2.1.LICENSE.txt": "70c9d5382506dd184465425c08a99ad9bd6d9ac1313c252968ba0b585e5ef823",
+    "lightweight-charts-5.2.1.NOTICE.txt": "f76c6afab94884448f0426e30d6e9d555ca7247894cd3484e477d2f87513036e",
+    "third-party-notices.txt": "01c1ecd099bc76ab6845b835c1704534eb0301e6b0eb22fcf63cc5a76668e362",
 }
 ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, COMPANY_NAMES_FILENAME, UNIVERSE_DOMAINS_FILENAME, COMPANY_LOGOS_FILENAME, QGV2_FILENAME, DISCLOSURES_FILENAME, NEWS_SIGNALS_FILENAME} | set(SCREEN_FILENAMES) | set(DART_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024

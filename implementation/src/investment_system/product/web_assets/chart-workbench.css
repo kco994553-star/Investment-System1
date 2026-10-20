@@ -1,0 +1,25 @@
+/* Technical chart workbench (chart-workbench.js). Layout only; colours come from theme tokens. */
+.chart-workbench { min-width: 0; }
+.chart-workbench .cw-toolbar { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; margin: 8px 0; }
+.chart-workbench .cw-group { display: inline-flex; flex-wrap: wrap; gap: 4px; min-width: 0; }
+.chart-workbench .cw-group button { min-height: 36px; }
+.chart-workbench .cw-group button[aria-pressed="true"] { background: var(--accent, #161616); color: var(--accent-ink, #ffffff); border-color: var(--accent, #161616); }
+.chart-workbench .cw-group button:disabled { opacity: .55; cursor: not-allowed; }
+.chart-workbench .cw-source, .chart-workbench .cw-judgement, .chart-workbench .cw-measure { overflow-wrap: anywhere; }
+.chart-workbench [data-synthetic-label] { background: var(--warn-bg, #f1e9da); color: var(--warn-ink, #6a4300); border: 1px solid var(--warn-line, #c4a26a); border-radius: 4px; padding: 0 4px; }
+.chart-workbench .cw-readout { min-height: 2.6em; padding: 6px 8px; border: 1px solid var(--line, #d4d2ca); border-radius: 6px 6px 0 0; border-bottom: 0; background: var(--chart-panel, #ffffff); color: var(--chart-ink, #161616); font-variant-numeric: tabular-nums; font-size: .9rem; overflow-wrap: anywhere; }
+.chart-workbench .cw-readout[data-tracking="touch"], .chart-workbench .cw-readout[data-tracking="touch-held"] { border-color: var(--pen, #7a4cc2); }
+.chart-workbench .cw-chart { position: relative; width: 100%; max-width: 100%; height: 300px; overflow: hidden; border: 1px solid var(--line, #d4d2ca); border-radius: 0 0 6px 6px; background: var(--chart-panel, #ffffff); }
+.chart-workbench .cw-chart[data-panes="0"] { height: 120px; }
+.chart-workbench .cw-chart:focus-visible { outline: 3px solid var(--focus, #161616); outline-offset: 2px; }
+.chart-workbench .cw-chart svg { display: block; width: 100%; height: auto; }
+.chart-workbench .cw-limits { border-left: 3px solid var(--warn-line, #c4a26a); padding-left: 8px; }
+.chart-workbench .cw-mode-panel { margin-top: 8px; padding: 8px; border: 1px dashed var(--line-strong, #6f6f6f); border-radius: 6px; }
+.chart-workbench .cw-mode-panel h3 { margin: 0 0 4px; font-size: 1rem; }
+.chart-workbench .cw-settings fieldset { border: 1px solid var(--line, #d4d2ca); border-radius: 6px; margin: 8px 0; min-width: 0; }
+.chart-workbench .cw-toggle { display: inline-flex; align-items: center; gap: 4px; margin: 4px 12px 4px 0; }
+.chart-workbench .cw-notice { overflow-wrap: anywhere; }
+@media (max-width: 480px) {
+  .chart-workbench .cw-chart { height: 280px; }
+  .chart-workbench .cw-group button { padding-left: 8px; padding-right: 8px; }
+}
