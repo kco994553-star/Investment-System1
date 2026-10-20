@@ -43,3 +43,15 @@
 .chart-workbench .cw-param-grid { display: grid; gap: 6px 12px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); margin: 6px 0; }
 .chart-workbench .cw-param { display: flex; justify-content: space-between; gap: 8px; align-items: center; min-width: 0; overflow-wrap: anywhere; }
 .chart-workbench .cw-param select { flex: 0 0 auto; max-width: 9em; }
+.chart-workbench .cw-user { margin-top: 12px; padding-top: 8px; border-top: 1px dashed var(--pen, #7a4cc2); min-width: 0; }
+.chart-workbench .cw-user h3 { margin: 0 0 6px; font-size: 1rem; }
+.chart-workbench .cw-user h4 { margin: 10px 0 4px; font-size: .95rem; }
+.chart-workbench [data-user-label] { border-color: var(--pen, #7a4cc2); color: var(--pen, #7a4cc2); }
+.chart-workbench .cw-user-list { list-style: none; margin: 4px 0; padding: 0; display: grid; gap: 6px; }
+.chart-workbench .cw-user-list > li { min-width: 0; overflow-wrap: anywhere; padding: 6px 8px; border-left: 3px solid var(--pen, #7a4cc2); background: var(--card, #ffffff); }
+.chart-workbench .cw-user-text { margin: 4px 0; }
+.chart-workbench .cw-user-form, .chart-workbench .cw-scenario { display: grid; gap: 6px 12px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); align-items: end; }
+.chart-workbench .cw-scenario { border: 1px solid var(--line, #d4d2ca); border-radius: 6px; padding: 8px; margin: 6px 0; min-width: 0; }
+.chart-workbench .cw-scenario legend { padding: 0 4px; }
+.chart-workbench .cw-field { display: flex; flex-direction: column; gap: 2px; min-width: 0; font-size: .85rem; }
+.chart-workbench .cw-field input, .chart-workbench .cw-field select { width: 100%; min-width: 0; box-sizing: border-box; }

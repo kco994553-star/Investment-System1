@@ -4,7 +4,11 @@
    Weekly bars come only from ChartBars (chart-bars.js, lane B1); this file never aggregates bars.
    Patterns come only from PatternEngine with pattern-rules/1 (pattern-engine.js); official runs go to PatternHistory
    (RAM, append only). This file never detects pivots, zones, boxes or double bottoms/tops and never computes ATR.
-   Device storage holds display toggles only (no prices). Nothing here changes official detection. */
+   User-written notes (3.3, chart-annotation/1) and scenarios (3.1.3, chart-scenario/1) are a separate layer: they are
+   stored only through a swappable user store (default: this browser), never touch PatternHistory or any record of results,
+   and are always labelled "사용자 작성".
+   Display settings hold toggles only (no prices). User-written objects hold the user's own time/price coordinates on this
+   device only (DRAW-STORE option (a), labelled "이 기기에만 저장"). Nothing here changes official detection. */
 (function (root, factory) {
   const api = factory();
   if (typeof module === 'object' && module.exports) module.exports = api;
@@ -166,6 +170,56 @@
     const digest = await view.crypto.subtle.digest('SHA-256', new view.TextEncoder().encode(canonical));
     return [...new Uint8Array(digest)].map(b => b.toString(16).padStart(2, '0')).join('');
   }
+
+  /* ---------- user-written objects: notes (3.3) and scenarios (3.1.3) ---------- */
+
+  const USER_KEY = 'investment.web.v1.chart-user-objects', USER_SCHEMA = 'chart-user-objects/1', USER_LIMIT = 500, TEXT_LIMIT = 500;
+  const USER_LABEL = Object.freeze(['사용자 작성', 'User-written']);
+  const DIRECTIONS = Object.freeze({UP: ['상승', 'Up', '↑'], SIDEWAYS: ['횡보', 'Sideways', '→'], DOWN: ['하락', 'Down', '↓']});
+  const NOTE_KINDS = Object.freeze({LINE: ['선', 'Line'], RANGE: ['구간', 'Range'], MEMO: ['메모', 'Memo']});
+  const isDate = v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) && Number.isFinite(Date.parse(v + 'T00:00:00Z'));
+  const isPrice = v => typeof v === 'number' && Number.isFinite(v) && v > 0;
+  const isText = v => typeof v === 'string' && v.length <= TEXT_LIMIT;
+  const isId = v => typeof v === 'string' && /^u-[a-z0-9]{6,32}$/.test(v);
+  // Anchors (chart-annotation/1): listing symbol, interval D/W, price basis, time/price points.
+  function validUserObject(o) {
+    if (!o || typeof o !== 'object' || !isId(o.id) || typeof o.symbol !== 'string' || !/^[A-Z0-9.\-]{1,16}$/.test(o.symbol) || !['D', 'W'].includes(o.interval) || o.price_basis !== 'RAW_CLOSE' || o.author !== 'USER'
+      || !isText(o.text || '') || !isDate(String(o.created_at || '').slice(0, 10)) || !isDate(String(o.updated_at || '').slice(0, 10))) return false;
+    if (o.schema === 'chart-annotation/1') {
+      if (!NOTE_KINDS[o.kind] || !Array.isArray(o.points) || o.points.length !== (o.kind === 'MEMO' ? 1 : 2) || !o.points.every(pt => pt && isDate(pt.time) && isPrice(pt.price))) return false;
+      return true;
+    }
+    if (o.schema === 'chart-scenario/1') {
+      return !!DIRECTIONS[o.direction] && ['long', 'swing'].includes(o.horizon) && Array.isArray(o.levels) && o.levels.length >= 1 && o.levels.length <= 3
+        && o.levels.every(l => l && isPrice(l.price) && isText(l.label || '') && (l.label || '').length <= 40) && isText(o.condition || '') && isText(o.invalidation || '')
+        && (o.invalidation_price === null || isPrice(o.invalidation_price)) && isDate(o.anchor_time);
+    }
+    return false;
+  }
+  // Storage adapter (DRAW-STORE option (a): this browser only). Another adapter with the same three methods
+  // (load / save / clear) can replace it later, e.g. option (b); nothing here talks to the network.
+  function createDeviceUserStore(storage) {
+    return Object.freeze({
+      kind: 'THIS_BROWSER',
+      load() {
+        let raw = null;
+        try { raw = storage ? storage.getItem(USER_KEY) : null; } catch (_) { return {code: 'STORAGE_UNAVAILABLE', items: []}; }
+        if (raw === null) return {code: 'EMPTY', items: []};
+        let parsed = null; try { parsed = JSON.parse(raw); } catch (_) { return {code: 'STORE_INVALID', items: []}; }
+        if (!parsed || parsed.schema !== USER_SCHEMA || !Array.isArray(parsed.items)) return {code: 'STORE_INVALID', items: []};
+        const items = parsed.items.filter(validUserObject).slice(0, USER_LIMIT);
+        return {code: items.length === parsed.items.length ? 'LOADED' : 'PARTLY_INVALID', items};
+      },
+      save(items) { try { storage.setItem(USER_KEY, JSON.stringify({schema: USER_SCHEMA, items})); return true; } catch (_) { return false; } },
+      clear() { try { storage.removeItem(USER_KEY); return true; } catch (_) { return false; } }
+    });
+  }
+  function newId(view) {
+    const bytes = new Uint8Array(8);
+    if (view.crypto && view.crypto.getRandomValues) view.crypto.getRandomValues(bytes); else for (let i = 0; i < bytes.length; i++) bytes[i] = Math.floor(Math.random() * 256);
+    return 'u-' + [...bytes].map(b => b.toString(36)).join('').slice(0, 16).padEnd(6, '0');
+  }
+  const roundPrice = v => Number(v.toPrecision(6));
 
   /* ---------- synthetic preview (generated, deterministic, never market data) ---------- */
 
@@ -385,8 +439,11 @@
         overlays.push(...overlaysFor(state, selected, source, 'selected'));
         if (p.showAll) for (const o of objects) if (o !== selected) overlays.push(...overlaysFor(state, o, source, 'dim'));
       } else for (const o of p.showAll ? objects : defaultShown(objects)) overlays.push(...overlaysFor(state, o, source, 'normal'));
-      drawn = renderer.setOverlays(overlays);
-    } else if (renderer) renderer.setOverlays([]);
+      const user = userOverlays(state), R = state.view.ChartRenderer;
+      drawn = R.normalizeOverlays(overlays, state.bars).length;
+      renderer.setOverlays(overlays.concat(user));
+      setAttr(state, 'data-user-drawn', R.normalizeOverlays(user, state.bars).length);
+    } else { if (renderer) renderer.setOverlays([]); setAttr(state, 'data-user-drawn', 0); }
     setAttr(state, 'data-pattern-drawn', drawn);
   }
 
@@ -542,7 +599,7 @@
     const views = node(doc, 'div', {class: 'cw-group', role: 'group', 'aria-label': w('결과 종류', 'Result kind')});
     views.append(node(doc, 'button', {type: 'button', 'data-pattern-view-button': 'official', 'aria-pressed': 'true'}, w('공식 탐지', 'Official detection')),
       node(doc, 'button', {type: 'button', 'data-pattern-view-button': 'user', 'aria-pressed': 'false', disabled: ''}, w('사용자 설정 탐색', 'User-settings exploration')),
-      node(doc, 'button', {type: 'button', 'data-pattern-view-button': 'scenario', 'aria-pressed': 'false', disabled: ''}, w('사용자 시나리오 · 다음 단계', 'User scenarios · next step')));
+      node(doc, 'button', {type: 'button', 'data-pattern-view-button': 'scenario', 'aria-pressed': 'false'}, w('사용자 시나리오 · 사용자 작성 절로', 'User scenarios · go to user-written')));
     state.patternShowAll = node(doc, 'button', {type: 'button', 'data-pattern-show-all': '', 'aria-pressed': 'false'}, w('모든 패턴 보기', 'Show all patterns'));
     views.append(state.patternShowAll);
     state.patternStatus = node(doc, 'p', {class: 'cw-judgement', 'data-pattern-status': ''});
@@ -557,6 +614,204 @@
     state.patternMore = node(doc, 'button', {type: 'button', 'data-pattern-more': '', hidden: ''});
     section.append(state.patternSource, views, state.patternStatus, state.patternRun, state.patternHistory, state.patternOverlayNote, suit, state.patternCards, state.patternMore,
       node(doc, 'p', {class: 'small'}, w('카드를 누르면 차트가 그 패턴 범위로 확대됩니다. 차트에 초점이 있을 때 Enter는 십자선 위치의 패턴 카드를 고릅니다. 판정·신호·매매 지시가 아닙니다.', 'Choosing a card zooms the chart to that pattern. With the chart focused, Enter picks the card at the crosshair. Not a judgement, signal or trading instruction.')));
+    return section;
+  }
+
+  /* ---------- user layer: drawing, editing, storage ---------- */
+
+  const userWord = state => words(state, ...USER_LABEL);
+  function userHere(state) {
+    const tf = tfKey(state.timeframe);
+    return state.user.items.filter(o => o.symbol === state.symbol && o.interval === tf);
+  }
+  function userPersist(state) {
+    const ok = state.userStore.save(state.user.items);
+    state.userStatus.dataset.code = ok ? 'SAVED' : 'STORAGE_UNAVAILABLE';
+    state.userStatus.textContent = ok ? words(state, '이 기기에만 저장함 · ', 'Saved on this device only · ') + state.user.items.length + words(state, '개', ' items') : 'STORAGE_UNAVAILABLE';
+    return ok;
+  }
+  function userOverlays(state) {
+    if (!state.user.visible || !state.bars.length) return [];
+    const bars = state.bars, last = bars[bars.length - 1].time, out = [], times = new Set(bars.map(b => b.time));
+    for (const o of userHere(state)) {
+      const emphasis = o.id === state.user.editing ? 'selected' : 'normal';
+      if (o.schema === 'chart-annotation/1') {
+        const [a, b] = o.points.length === 2 ? [...o.points].sort((x, y) => (x.time < y.time ? -1 : 1)) : o.points;
+        if (o.kind === 'LINE') out.push({id: o.id, kind: 'segment', source: 'USER', tone: 'user', emphasis, from: a.time, to: b.time, fromPrice: a.price, toPrice: b.price});
+        else if (o.kind === 'RANGE') for (const [suffix, price] of [['|low', Math.min(a.price, b.price)], ['|high', Math.max(a.price, b.price)]]) out.push({id: o.id + suffix, kind: 'line', source: 'USER', tone: 'user', emphasis, from: a.time, to: b.time, price});
+        if (times.has(a.time)) out.push({id: o.id + '|label', kind: 'marker', source: 'USER', tone: 'user', emphasis, time: a.time, label: (o.kind === 'MEMO' ? (o.text || words(state, ...NOTE_KINDS.MEMO)) : words(state, ...NOTE_KINDS[o.kind])).slice(0, 10), position: 'aboveBar'});
+      } else {
+        const from = times.has(o.anchor_time) && o.anchor_time < last ? o.anchor_time : bars[Math.max(0, bars.length - 30)].time, dir = DIRECTIONS[o.direction];
+        o.levels.forEach((l, n) => out.push({id: o.id + '|l' + n, kind: 'line', source: 'USER', tone: 'user', emphasis, from, to: last, price: l.price}));
+        if (o.invalidation_price) out.push({id: o.id + '|inv', kind: 'line', source: 'USER', tone: 'invalidation', emphasis, from, to: last, price: o.invalidation_price});
+        out.push({id: o.id + '|label', kind: 'marker', source: 'USER', tone: 'user', emphasis, time: last, label: dir[2] + ' ' + words(state, dir[0], dir[1]), position: o.direction === 'DOWN' ? 'belowBar' : 'aboveBar'});
+      }
+    }
+    return out;
+  }
+
+  function startTool(state, tool) {
+    state.user.tool = state.user.tool === tool ? null : tool; state.user.points = [];
+    if (state.user.tool && state.measuring) { state.measuring = false; state.measure = null; state.measureStart = null; if (state.renderer) state.renderer.setMeasure(null); paintMeasure(state); paintButtons(state); }
+    paintUserTools(state);
+  }
+  function paintUserTools(state) {
+    for (const b of state.root.querySelectorAll('[data-user-tool]')) { b.setAttribute('aria-pressed', String(b.dataset.userTool === state.user.tool)); b.disabled = !state.bars.length || !(state.renderer && state.renderer.capabilities.overlays); }
+    const need = state.user.tool === 'MEMO' ? 1 : 2;
+    setAttr(state, 'data-user-tool', state.user.tool || 'off');
+    state.userToolStatus.textContent = !state.user.tool ? words(state, '그리기 꺼짐 · 선·구간은 두 점, 메모는 한 점을 차트에서 누릅니다 (키보드: 차트 초점에서 N).', 'Drawing off · lines and ranges take two points, memos one point (keyboard: N with the chart focused).')
+      : words(state, NOTE_KINDS[state.user.tool][0] + ' · 점 ' + (state.user.points.length + 1) + '/' + need + '을 고르세요', NOTE_KINDS[state.user.tool][1] + ' · pick point ' + (state.user.points.length + 1) + ' of ' + need);
+  }
+  function addUserPoint(state, hit) {
+    const bar = state.bars[hit.index];
+    if (!bar || !state.user.tool || !state.symbol) return;
+    state.user.points.push({time: bar.time, price: roundPrice(hit.price)});
+    const need = state.user.tool === 'MEMO' ? 1 : 2;
+    if (state.user.points.length < need) { paintUserTools(state); return; }
+    const now = new Date().toISOString(), item = {schema: 'chart-annotation/1', id: newId(state.view), kind: state.user.tool, symbol: state.symbol, interval: tfKey(state.timeframe), price_basis: 'RAW_CLOSE', author: 'USER',
+      points: state.user.points, text: '', created_at: now, updated_at: now};
+    if (state.user.items.length >= USER_LIMIT || !validUserObject(item)) { state.userStatus.dataset.code = 'USER_OBJECT_REFUSED'; state.userStatus.textContent = 'USER_OBJECT_REFUSED'; state.user.points = []; paintUserTools(state); return; }
+    state.user.items.push(item); state.user.editing = item.id; state.user.tool = null; state.user.points = [];
+    userPersist(state); paintUser(state); drawPatterns(state); paintUserTools(state);
+    state.live.textContent = words(state, '사용자 작성 ' + NOTE_KINDS[item.kind][0] + ' 추가 · 이 기기에만 저장', 'User-written ' + NOTE_KINDS[item.kind][1] + ' added · saved on this device only');
+    const field = state.userNotes.querySelector('[data-user-item="' + item.id + '"] [data-user-field="text"]');
+    if (field) field.focus();
+  }
+
+  function field(doc, label, input) { const wrap = doc.createElement('label'); wrap.className = 'cw-field'; wrap.append(doc.createTextNode(label + ' '), input); return wrap; }
+  function input(doc, attrs, value) { const el = doc.createElement('input'); for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v); el.value = value === null || value === undefined ? '' : String(value); return el; }
+  function noteTitle(state, o) {
+    const pts = o.points.map(pt => pt.time + ' ' + fmt(state, pt.price)).join(' → ');
+    return words(state, ...NOTE_KINDS[o.kind]) + ' · ' + pts + ' · ' + (o.interval === 'W' ? words(state, '주봉', 'weekly') : words(state, '일봉', 'daily'));
+  }
+  function scenarioTitle(state, o) {
+    const dir = DIRECTIONS[o.direction];
+    return dir[2] + ' ' + words(state, dir[0], dir[1]) + ' · ' + (o.horizon === 'long' ? words(state, '장기', 'long-term') : words(state, '스윙', 'swing')) + ' · ' + o.levels.map(l => (l.label ? l.label + ' ' : '') + fmt(state, l.price)).join(' · ');
+  }
+  function userItem(state, o) {
+    const doc = state.doc, li = node(doc, 'li', {'data-user-item': o.id, 'data-user-schema': o.schema}), drawn = new Set(state.bars.map(b => b.time));
+    const times = o.schema === 'chart-annotation/1' ? o.points.map(pt => pt.time) : [];
+    li.append(node(doc, 'span', {class: 'badge', 'data-user-label': ''}, userWord(state)), doc.createTextNode(' ' + (o.schema === 'chart-annotation/1' ? noteTitle(state, o) : scenarioTitle(state, o))));
+    if (times.some(t => !drawn.has(t))) li.append(node(doc, 'span', {class: 'small'}, words(state, ' · 지금 봉 범위 밖', ' · outside the current bars')));
+    if (o.text && o.schema === 'chart-annotation/1') li.append(node(doc, 'p', {class: 'small cw-user-text'}, o.text));
+    if (o.schema === 'chart-scenario/1') li.append(node(doc, 'p', {class: 'small cw-user-text'}, words(state, '조건: ', 'Condition: ') + (o.condition || '—') + ' · ' + words(state, '무효화: ', 'Invalidation: ') + (o.invalidation || '—') + (o.invalidation_price ? ' (' + fmt(state, o.invalidation_price) + ')' : '')));
+    const edit = node(doc, 'details', {class: 'cw-user-edit', 'data-user-edit': o.id});
+    if (o.id === state.user.editing) edit.open = true;
+    edit.append(node(doc, 'summary', {}, words(state, '고치기 · 지우기', 'Edit · delete')));
+    const form = node(doc, 'div', {class: 'cw-user-form'});
+    if (o.schema === 'chart-annotation/1') {
+      form.append(field(doc, words(state, '메모', 'Text'), input(doc, {type: 'text', maxlength: String(TEXT_LIMIT), 'data-user-field': 'text'}, o.text)));
+      o.points.forEach((pt, n) => form.append(field(doc, words(state, '날짜 ', 'Date ') + (n + 1), input(doc, {type: 'text', inputmode: 'numeric', 'data-user-field': 'time' + n, pattern: '\\d{4}-\\d{2}-\\d{2}'}, pt.time)),
+        field(doc, words(state, '가격 ', 'Price ') + (n + 1), input(doc, {type: 'number', step: 'any', min: '0', 'data-user-field': 'price' + n}, pt.price))));
+    } else form.append(...scenarioFields(state, o));
+    form.append(node(doc, 'button', {type: 'button', 'data-user-save': o.id}, words(state, '저장', 'Save')), node(doc, 'button', {type: 'button', 'data-user-delete': o.id}, words(state, '지우기', 'Delete')));
+    edit.append(form); li.append(edit);
+    return li;
+  }
+  function scenarioFields(state, o) {
+    const doc = state.doc, w = (ko, en) => words(state, ko, en), out = [];
+    const horizon = node(doc, 'select', {'data-user-field': 'horizon'});
+    for (const [v, ko, en] of [['long', '장기', 'Long-term'], ['swing', '스윙', 'Swing']]) { const opt = node(doc, 'option', {value: v}, w(ko, en)); if ((o ? o.horizon : (state.settings.mode === 'swing' ? 'swing' : 'long')) === v) opt.selected = true; horizon.append(opt); }
+    const direction = node(doc, 'select', {'data-user-field': 'direction'});
+    for (const [v, d] of Object.entries(DIRECTIONS)) { const opt = node(doc, 'option', {value: v}, d[2] + ' ' + w(d[0], d[1])); if (o && o.direction === v) opt.selected = true; direction.append(opt); }
+    out.push(field(doc, w('보기', 'View'), horizon), field(doc, w('경로', 'Path'), direction));
+    for (let n = 0; n < 3; n++) {
+      const level = o && o.levels[n];
+      out.push(field(doc, w('핵심 가격 이름 ', 'Key level name ') + (n + 1), input(doc, {type: 'text', maxlength: '40', 'data-user-field': 'levelLabel' + n}, level ? level.label : '')),
+        field(doc, w('핵심 가격 ', 'Key level ') + (n + 1), input(doc, {type: 'number', step: 'any', min: '0', 'data-user-field': 'level' + n}, level ? level.price : '')));
+    }
+    out.push(field(doc, w('조건', 'Condition'), input(doc, {type: 'text', maxlength: String(TEXT_LIMIT), 'data-user-field': 'condition'}, o ? o.condition : '')),
+      field(doc, w('무효화 조건', 'Invalidation condition'), input(doc, {type: 'text', maxlength: String(TEXT_LIMIT), 'data-user-field': 'invalidation'}, o ? o.invalidation : '')),
+      field(doc, w('무효화 가격 (선택)', 'Invalidation price (optional)'), input(doc, {type: 'number', step: 'any', min: '0', 'data-user-field': 'invalidationPrice'}, o && o.invalidation_price ? o.invalidation_price : '')));
+    return out;
+  }
+  function readScenario(state, box, base) {
+    const get = name => { const el = box.querySelector('[data-user-field="' + name + '"]'); return el ? el.value.trim() : ''; }, levels = [];
+    for (let n = 0; n < 3; n++) { const price = Number(get('level' + n)); if (get('level' + n) !== '' && isPrice(price)) levels.push({label: get('levelLabel' + n), price}); }
+    const inv = get('invalidationPrice'), now = new Date().toISOString();
+    return {...base, schema: 'chart-scenario/1', horizon: get('horizon'), direction: get('direction'), levels, condition: get('condition'), invalidation: get('invalidation'),
+      invalidation_price: inv === '' ? null : Number(inv), updated_at: now};
+  }
+  function saveUserItem(state, id) {
+    const at = state.user.items.findIndex(o => o.id === id), box = state.root.querySelector('[data-user-edit="' + id + '"]');
+    if (at < 0 || !box) return;
+    const old = state.user.items[at], get = name => { const el = box.querySelector('[data-user-field="' + name + '"]'); return el ? el.value.trim() : ''; };
+    const next = old.schema === 'chart-annotation/1'
+      ? {...old, text: get('text'), points: old.points.map((pt, n) => ({time: get('time' + n), price: Number(get('price' + n))})), updated_at: new Date().toISOString()}
+      : readScenario(state, box, old);
+    if (!validUserObject(next)) { state.userStatus.dataset.code = 'USER_OBJECT_INVALID'; state.userStatus.textContent = words(state, '입력을 확인하세요 (날짜 YYYY-MM-DD, 가격 0보다 큼)', 'Check the input (date YYYY-MM-DD, price above 0)'); return; }
+    state.user.items[at] = next; state.user.editing = id;
+    userPersist(state); paintUser(state); drawPatterns(state);
+  }
+  function deleteUserItem(state, id) {
+    state.user.items = state.user.items.filter(o => o.id !== id); if (state.user.editing === id) state.user.editing = null;
+    userPersist(state); paintUser(state); drawPatterns(state);
+    state.live.textContent = words(state, '사용자 작성 객체를 지웠습니다', 'User-written object deleted');
+  }
+  function addScenario(state) {
+    if (!state.symbol || !state.bars.length) return;
+    const now = new Date().toISOString(), item = readScenario(state, state.scenarioForm, {id: newId(state.view), symbol: state.symbol, interval: tfKey(state.timeframe), price_basis: 'RAW_CLOSE', author: 'USER', text: '',
+      anchor_time: state.bars[state.bars.length - 1].time, created_at: now});
+    if (state.user.items.length >= USER_LIMIT || !validUserObject(item)) { state.userStatus.dataset.code = 'USER_OBJECT_INVALID'; state.userStatus.textContent = words(state, '핵심 가격을 하나 이상 넣으세요 (0보다 큼)', 'Enter at least one key level above 0'); return; }
+    state.user.items.push(item); state.user.editing = null;
+    for (const el of state.scenarioForm.querySelectorAll('input')) el.value = '';
+    state.scenarioDetails.open = false;
+    userPersist(state); paintUser(state); drawPatterns(state);
+  }
+  function exportUser(state) {
+    const view = state.view, blob = new view.Blob([JSON.stringify({schema: USER_SCHEMA, exported_at: new Date().toISOString(), items: state.user.items}, null, 2)], {type: 'application/json'});
+    const url = view.URL.createObjectURL(blob), a = state.doc.createElement('a');
+    a.href = url; a.download = 'chart-user-objects.json'; state.doc.body.append(a); a.click(); a.remove();
+    view.setTimeout(() => view.URL.revokeObjectURL(url), 1000);
+  }
+  function clearUser(state, scope) {
+    const here = new Set(userHere(state).map(o => o.id));
+    state.user.items = scope === 'here' ? state.user.items.filter(o => !here.has(o.id)) : [];
+    state.user.editing = null;
+    if (!state.user.items.length) state.userStore.clear(); else userPersist(state);
+    if (!state.user.items.length) { state.userStatus.dataset.code = 'CLEARED'; state.userStatus.textContent = words(state, '이 기기 저장을 비웠습니다', 'Cleared on this device'); }
+    paintUser(state); drawPatterns(state);
+  }
+
+  function paintUser(state) {
+    const doc = state.doc, here = userHere(state), notes = here.filter(o => o.schema === 'chart-annotation/1'), scenarios = here.filter(o => o.schema === 'chart-scenario/1');
+    state.userNotes.replaceChildren(...notes.map(o => userItem(state, o)));
+    state.userScenarios.replaceChildren();
+    for (const dir of Object.keys(DIRECTIONS)) for (const o of scenarios.filter(x => x.direction === dir)) state.userScenarios.append(userItem(state, o));
+    if (!notes.length) state.userNotes.append(node(doc, 'li', {class: 'small'}, words(state, '이 종목·봉 주기에 노트가 없습니다.', 'No notes for this symbol and interval.')));
+    if (!scenarios.length) state.userScenarios.append(node(doc, 'li', {class: 'small'}, words(state, '이 종목·봉 주기에 시나리오가 없습니다.', 'No scenarios for this symbol and interval.')));
+    setAttr(state, 'data-user-count', here.length); setAttr(state, 'data-user-total', state.user.items.length);
+    state.userAnchor.textContent = state.symbol ? words(state, '좌표 기준: ', 'Anchors: ') + state.symbol + ' · ' + (state.timeframe === 'weekly' ? words(state, '주봉', 'weekly') : words(state, '일봉', 'daily')) + ' · RAW_CLOSE · ' + words(state, '날짜/가격', 'date/price') : words(state, '자료를 불러오면 노트·시나리오를 쓸 수 있습니다.', 'Load data to write notes and scenarios.');
+    state.scenarioSave.disabled = !state.bars.length;
+    state.swingSlot.hidden = state.settings.mode !== 'swing';
+    paintUserTools(state);
+  }
+
+  function buildUserPanel(state) {
+    const doc = state.doc, w = (ko, en) => words(state, ko, en), section = node(doc, 'section', {class: 'cw-user', 'data-user-panel': '', 'aria-labelledby': state.id + '-user'});
+    section.append(node(doc, 'h3', {id: state.id + '-user'}, w('사용자 작성 · 시나리오(3.1.3) · 차트 노트(3.3)', 'User-written · scenarios (3.1.3) · chart notes (3.3)')),
+      node(doc, 'p', {class: 'small', 'data-user-boundary': ''}, w('사용자 작성 객체는 공식 탐지 이력과 성과 기록에 쓰지 않고, 공식 탐지를 바꾸지 않습니다. 이 기기에만 저장 (저장 위치 결정 전 기본값) · 서버·Google 시트·계정으로 보내지 않습니다. 주문 아님.', 'User-written objects are never written to the official detection history or any results record and never change official detection. Saved on this device only (default until the storage decision) · never sent to a server, Google Sheet or account. Not an order.')));
+    state.userAnchor = node(doc, 'p', {class: 'small', 'data-user-anchor': ''});
+    const tools = node(doc, 'div', {class: 'cw-group', role: 'group', 'aria-label': w('그리기', 'Draw')});
+    for (const [kind, names] of Object.entries(NOTE_KINDS)) tools.append(node(doc, 'button', {type: 'button', 'data-user-tool': kind, 'aria-pressed': 'false'}, w(names[0], names[1])));
+    const visible = node(doc, 'label', {class: 'cw-toggle'}), box = node(doc, 'input', {type: 'checkbox', 'data-user-visible': ''});
+    box.checked = true; visible.append(box, doc.createTextNode(' ' + w('차트에 사용자 작성 보이기', 'Show user-written objects on the chart')));
+    state.userToolStatus = node(doc, 'p', {class: 'small', role: 'status', 'data-user-tool-status': ''});
+    state.userNotes = node(doc, 'ul', {class: 'cw-user-list', 'data-user-notes': ''});
+    const scenarioBox = node(doc, 'fieldset', {class: 'cw-scenario', 'data-user-scenario-form': ''});
+    scenarioBox.append(node(doc, 'legend', {}, w('시나리오 쓰기 (상승·횡보·하락 · 핵심 가격 · 조건 · 무효화)', 'Write a scenario (up / sideways / down · key levels · condition · invalidation)')), ...scenarioFields(state, null));
+    state.scenarioSave = node(doc, 'button', {type: 'button', 'data-user-scenario-save': ''}, w('시나리오 저장', 'Save scenario'));
+    state.swingSlot = node(doc, 'p', {class: 'small', 'data-user-swing-slot': '', hidden: ''}, w('스윙 가정 계산(손익비·수량, 설계 §12.2) 자리 · 이 단계 범위 밖 · 주문 아님 · 가정 계산', 'Swing assumption calculator (reward/risk, size; design §12.2) slot · out of scope here · not an order · assumption only'));
+    scenarioBox.append(state.scenarioSave, state.swingSlot);
+    state.scenarioForm = scenarioBox;
+    state.userScenarios = node(doc, 'ul', {class: 'cw-user-list', 'data-user-scenarios': ''});
+    state.userStatus = node(doc, 'p', {class: 'small', role: 'status', 'data-user-status': ''});
+    const footer = node(doc, 'div', {class: 'cw-group', role: 'group', 'aria-label': w('이 기기 저장', 'Device storage')});
+    footer.append(node(doc, 'button', {type: 'button', 'data-user-clear': 'here'}, w('이 종목·봉 주기 지우기', 'Clear this symbol and interval')), node(doc, 'button', {type: 'button', 'data-user-clear': 'all'}, w('모두 지우기', 'Clear all')),
+      node(doc, 'button', {type: 'button', 'data-user-export': ''}, w('이 기기 파일로 내보내기', 'Export to a file on this device')));
+    state.scenarioDetails = node(doc, 'details', {class: 'cw-scenario-new', 'data-user-scenario-new': ''});
+    state.scenarioDetails.append(node(doc, 'summary', {}, w('새 시나리오 쓰기', 'Write a new scenario')), scenarioBox);
+    section.append(state.userAnchor, tools, visible, state.userToolStatus, node(doc, 'h4', {}, w('차트 노트', 'Chart notes')), state.userNotes, node(doc, 'h4', {}, w('시나리오', 'Scenarios')), state.scenarioDetails, state.userScenarios, footer, state.userStatus);
     return section;
   }
 
@@ -619,7 +874,7 @@
 
   async function render(state, {keepRange = null} = {}) {
     const generation = ++state.renderGeneration;
-    if (!state.data && !state.renderer) { state.bars = []; setAttr(state, 'data-bar-count', 0); setAttr(state, 'data-provisional-count', 0); state.patterns.key = null; runPatterns(state); paintReadout(state, null, null); paintAll(state); paintPatterns(state); return; }
+    if (!state.data && !state.renderer) { state.bars = []; setAttr(state, 'data-bar-count', 0); setAttr(state, 'data-provisional-count', 0); state.patterns.key = null; runPatterns(state); paintReadout(state, null, null); paintAll(state); paintUser(state); paintPatterns(state); return; }
     const renderer = await ensureRenderer(state);
     if (!renderer || state.disposed || generation !== state.renderGeneration) return;
     state.bars = state.timeframe === 'weekly' && state.weekly ? state.weekly : state.daily;
@@ -647,6 +902,7 @@
     }
     paintReadout(state, null, null);
     paintAll(state);
+    paintUser(state);
     paintPatterns(state);
   }
 
@@ -690,6 +946,10 @@
         if (card) card.scrollIntoView({block: 'nearest'});
         break;
       }
+      case 'n': case 'N':
+        if (state.user.tool && state.keyboardCursor !== null && state.bars[state.keyboardCursor].ohlc) addUserPoint(state, {index: state.keyboardCursor, price: state.bars[state.keyboardCursor].close});
+        else handled = false;
+        break;
       case 'm': case 'M':
         if (state.measuring && state.keyboardCursor !== null && state.bars[state.keyboardCursor].ohlc) addMeasurePoint(state, {index: state.keyboardCursor, price: state.bars[state.keyboardCursor].close});
         else handled = false;
@@ -763,7 +1023,7 @@
     const help = node(doc, 'p', {class: 'small', id: state.id + '-help'}, w('키보드(차트에 초점): ←/→ 한 봉 · Shift+←/→ 열 봉 · +/− 확대·축소 · Home/End 처음·끝 · Esc 십자선 지우기 · 측정 켜짐에서 M 점 찍기. 폰: 끌어서 이동, 두 손가락 확대, 길게 눌러 값 추적.', 'Keyboard (chart focused): ←/→ one bar · Shift+←/→ ten bars · +/− zoom · Home/End first/last · Esc clear crosshair · M marks a point while measuring. Phone: drag to pan, pinch to zoom, long-press to track values.'));
     state.live = node(doc, 'div', {class: 'sr-only', 'aria-live': 'polite', 'data-cw-live': ''});
     state.modePanel = node(doc, 'div', {class: 'cw-mode-panel', 'data-cw-mode-panel': ''});
-    root.append(toolbar, state.sourceLine, state.judgement, state.weeklyStatus, state.rendererStatus, state.readout, state.chartBox, state.limits, state.measureOut, state.indicatorNote, help, state.live, state.modePanel, buildPatternPanel(state), buildSettings(state), buildNotice(state));
+    root.append(toolbar, state.sourceLine, state.judgement, state.weeklyStatus, state.rendererStatus, state.readout, state.chartBox, state.limits, state.measureOut, state.indicatorNote, help, state.live, state.modePanel, buildPatternPanel(state), buildUserPanel(state), buildSettings(state), buildNotice(state));
     return root;
   }
 
@@ -821,18 +1081,26 @@
         if (state.settings.mode === 'long' && state.weeklyCode === 'READY' && state.timeframe !== 'weekly') switchTimeframe(state, 'weekly'); else paintAll(state);
       } else if (button.dataset.cwTimeframe) switchTimeframe(state, button.dataset.cwTimeframe);
       else if (button.dataset.cwRenderer) { state.settings.renderer = button.dataset.cwRenderer; persist(state); void render(state); }
-      else if (button.hasAttribute('data-cw-measure')) { state.measuring = !state.measuring; state.measure = null; state.measureStart = null; if (state.renderer) state.renderer.setMeasure(null); paintButtons(state); paintMeasure(state); }
+      else if (button.hasAttribute('data-cw-measure')) { state.user.tool = null; state.user.points = []; paintUserTools(state); state.measuring = !state.measuring; state.measure = null; state.measureStart = null; if (state.renderer) state.renderer.setMeasure(null); paintButtons(state); paintMeasure(state); }
       else if (button.dataset.cwZoom && state.renderer) { if (button.dataset.cwZoom === 'fit') state.renderer.fit(); else state.renderer.zoom(button.dataset.cwZoom === 'in' ? 0.7 : 1.4); }
       else if (button.hasAttribute('data-cw-synthetic')) void preview(state);
+      else if (button.dataset.patternViewButton === 'scenario') { state.scenarioDetails.open = true; state.scenarioForm.scrollIntoView({block: 'nearest'}); const first = state.scenarioForm.querySelector('select'); if (first) first.focus(); }
       else if (button.dataset.patternViewButton) { if (['official', 'user'].includes(button.dataset.patternViewButton)) { state.patterns.view = button.dataset.patternViewButton; state.patterns.selected = null; setAttr(state, 'data-pattern-selected', ''); paintPatterns(state); } }
       else if (button.hasAttribute('data-pattern-show-all')) { state.patterns.showAll = !state.patterns.showAll; paintPatterns(state); }
       else if (button.dataset.patternCard) selectPattern(state, button.dataset.patternCard);
       else if (button.hasAttribute('data-pattern-more')) { state.patterns.expanded = !state.patterns.expanded; paintCards(state); }
       else if (button.hasAttribute('data-pattern-explore-run')) void runUserSettings(state);
       else if (button.hasAttribute('data-pattern-explore-reset')) resetUserSettings(state);
+      else if (button.dataset.userTool) startTool(state, button.dataset.userTool);
+      else if (button.dataset.userSave) saveUserItem(state, button.dataset.userSave);
+      else if (button.dataset.userDelete) deleteUserItem(state, button.dataset.userDelete);
+      else if (button.hasAttribute('data-user-scenario-save')) addScenario(state);
+      else if (button.dataset.userClear) clearUser(state, button.dataset.userClear);
+      else if (button.hasAttribute('data-user-export')) exportUser(state);
     });
     root.addEventListener('change', event => {
       const box = event.target;
+      if (box.hasAttribute && box.hasAttribute('data-user-visible')) { state.user.visible = box.checked; drawPatterns(state); return; }
       if (box.dataset && box.dataset.cwPattern) { state.settings.patterns[box.dataset.cwPattern] = box.checked; persist(state); state.patterns.selected = null; paintPatterns(state); return; }
       if (box.dataset && box.dataset.cwIndicator) { state.settings.indicators[box.dataset.cwIndicator] = box.checked; persist(state); if (state.bars.length) void render(state, {keepRange: state.renderer ? state.renderer.getVisibleRange() : null}); }
     });
@@ -843,9 +1111,9 @@
     state.chartBox.addEventListener('pointerup', event => {
       const press = state.press; state.press = null;
       if (event.pointerType === 'touch') { state.touching = false; if (state.readout.dataset.tracking === 'touch') state.readout.dataset.tracking = 'touch-held'; }
-      if (!state.measuring || !press || !state.renderer || Math.hypot(event.clientX - press.x, event.clientY - press.y) > 6 || event.timeStamp - press.at > 500) return;
+      if ((!state.measuring && !state.user.tool) || !press || !state.renderer || Math.hypot(event.clientX - press.x, event.clientY - press.y) > 6 || event.timeStamp - press.at > 500) return;
       const hit = state.renderer.pointAt(event.clientX, event.clientY);
-      if (hit) addMeasurePoint(state, hit);
+      if (hit && state.user.tool) addUserPoint(state, hit); else if (hit) addMeasurePoint(state, hit);
     });
     state.chartBox.addEventListener('pointercancel', event => { state.press = null; if (event.pointerType === 'touch') state.touching = false; });
   }
@@ -868,7 +1136,8 @@
   function mount(host, options = {}) {
     const doc = host.ownerDocument, view = doc.defaultView;
     let storage = null; try { storage = options.storage || view.localStorage; } catch (_) { storage = null; }
-    const state = {doc, view, host, storage, locale: options.locale, qgvHref: options.qgvHref || null, id: 'cw' + (++counter), settings: readSettings(storage), data: null, source: 'none', symbol: '',
+    const userStore = options.userStore || createDeviceUserStore(storage), loaded = userStore.load();
+    const state = {doc, view, host, storage, userStore, user: {items: loaded.items, code: loaded.code, tool: null, points: [], editing: null, visible: true}, locale: options.locale, qgvHref: options.qgvHref || null, id: 'cw' + (++counter), settings: readSettings(storage), data: null, source: 'none', symbol: '',
       daily: [], weekly: null, bars: [], timeframe: 'daily', weeklyCode: 'WEEKLY_BARS_MODULE_PENDING', renderer: null, rendererCode: 'READY', pending: null, renderGeneration: 0,
       cursor: null, keyboardCursor: null, lastInput: null, press: null, measuring: false, measureStart: null, measure: null, touching: false, disposed: false,
       engine: {code: 'NO_DATA', series: {}, actions: null},
@@ -878,6 +1147,8 @@
     host.replaceChildren(state.root);
     wire(state);
     buildExploreControls(state);
+    state.userStatus.dataset.code = loaded.code;
+    state.userStatus.textContent = words(state, '이 기기에만 저장 · ', 'Saved on this device only · ') + loaded.items.length + words(state, '개', ' items') + (loaded.code === 'LOADED' || loaded.code === 'EMPTY' ? '' : ' · ' + loaded.code);
     active.add(state);
     state.pagehide = () => dispose(state);
     view.addEventListener('pagehide', state.pagehide);
@@ -890,5 +1161,5 @@
   function disposeAll() { for (const state of [...active]) dispose(state); }
 
   return Object.freeze({SETTINGS_KEY, SETTINGS_SCHEMA, SYNTHETIC_LABEL, SYNTHETIC_PATTERN_LABEL, EXPLORE_GRID, readSettings, writeSettings, dailyView, weeklyView, continuityCodes, syntheticHistory,
-    syntheticActions, applyChanges, minBars, patternObjects, mount, disposeAll});
+    syntheticActions, applyChanges, minBars, patternObjects, USER_KEY, USER_SCHEMA, validUserObject, createDeviceUserStore, mount, disposeAll});
 });
