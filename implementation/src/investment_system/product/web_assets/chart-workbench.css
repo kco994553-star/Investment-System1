@@ -1,0 +1,57 @@
+/* Technical chart workbench (chart-workbench.js). Layout only; colours come from theme tokens. */
+.chart-workbench { min-width: 0; }
+.chart-workbench .cw-toolbar { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; margin: 8px 0; }
+.chart-workbench .cw-group { display: inline-flex; flex-wrap: wrap; gap: 4px; min-width: 0; }
+.chart-workbench .cw-group button { min-height: 36px; }
+.chart-workbench .cw-group button[aria-pressed="true"] { background: var(--accent, #161616); color: var(--accent-ink, #ffffff); border-color: var(--accent, #161616); }
+.chart-workbench .cw-group button:disabled { opacity: .55; cursor: not-allowed; }
+.chart-workbench .cw-source, .chart-workbench .cw-judgement, .chart-workbench .cw-measure { overflow-wrap: anywhere; }
+.chart-workbench [data-synthetic-label] { background: var(--warn-bg, #f1e9da); color: var(--warn-ink, #6a4300); border: 1px solid var(--warn-line, #c4a26a); border-radius: 4px; padding: 0 4px; }
+.chart-workbench .cw-readout { min-height: 2.6em; padding: 6px 8px; border: 1px solid var(--line, #d4d2ca); border-radius: 6px 6px 0 0; border-bottom: 0; background: var(--chart-panel, #ffffff); color: var(--chart-ink, #161616); font-variant-numeric: tabular-nums; font-size: .9rem; overflow-wrap: anywhere; }
+.chart-workbench .cw-readout[data-tracking="touch"], .chart-workbench .cw-readout[data-tracking="touch-held"] { border-color: var(--pen, #7a4cc2); }
+.chart-workbench .cw-chart { position: relative; width: 100%; max-width: 100%; height: 300px; overflow: hidden; border: 1px solid var(--line, #d4d2ca); border-radius: 0 0 6px 6px; background: var(--chart-panel, #ffffff); }
+.chart-workbench .cw-chart[data-panes="0"] { height: 120px; }
+.chart-workbench .cw-chart:focus-visible { outline: 3px solid var(--focus, #161616); outline-offset: 2px; }
+.chart-workbench .cw-chart svg { display: block; width: 100%; height: auto; }
+.chart-workbench .cw-limits { border-left: 3px solid var(--warn-line, #c4a26a); padding-left: 8px; }
+.chart-workbench .cw-mode-panel { margin-top: 8px; padding: 8px; border: 1px dashed var(--line-strong, #6f6f6f); border-radius: 6px; }
+.chart-workbench .cw-mode-panel h3 { margin: 0 0 4px; font-size: 1rem; }
+.chart-workbench .cw-settings fieldset { border: 1px solid var(--line, #d4d2ca); border-radius: 6px; margin: 8px 0; min-width: 0; }
+.chart-workbench .cw-toggle { display: inline-flex; align-items: center; gap: 4px; margin: 4px 12px 4px 0; }
+.chart-workbench .cw-notice { overflow-wrap: anywhere; }
+@media (max-width: 480px) {
+  .chart-workbench .cw-chart { height: 280px; }
+  .chart-workbench .cw-group button { padding-left: 8px; padding-right: 8px; }
+}
+.chart-workbench .cw-patterns { margin-top: 12px; padding-top: 8px; border-top: 1px solid var(--line, #d4d2ca); min-width: 0; }
+.chart-workbench .cw-patterns h3 { margin: 0 0 6px; font-size: 1rem; }
+.chart-workbench [data-pattern-synthetic-label] { background: var(--warn-bg, #f1e9da); color: var(--warn-ink, #6a4300); border: 1px solid var(--warn-line, #c4a26a); border-radius: 4px; padding: 0 4px; }
+.chart-workbench .cw-suitability dl { display: grid; grid-template-columns: minmax(0, 10em) minmax(0, 1fr); gap: 2px 8px; margin: 6px 0; }
+.chart-workbench .cw-suitability dd { margin: 0; overflow-wrap: anywhere; }
+.chart-workbench .cw-pattern-cards { list-style: none; margin: 8px 0; padding: 0; display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); }
+.chart-workbench .cw-pattern-card { display: block; width: 100%; text-align: left; padding: 8px; border: 1px solid var(--line, #d4d2ca); border-radius: 6px; background: var(--card, #ffffff); color: var(--ink, #161616); font: inherit; min-width: 0; }
+.chart-workbench .cw-pattern-cards li:has([aria-pressed="true"]) { border: 2px solid var(--ink, #161616); }
+.chart-workbench .cw-pattern-card[aria-pressed="true"] .cw-card-title { text-decoration: underline; }
+.chart-workbench .cw-pattern-cards li { min-width: 0; border: 1px solid var(--line, #d4d2ca); border-radius: 6px; }
+.chart-workbench .cw-pattern-card { border: 0; }
+.chart-workbench .cw-pattern-card .cw-card-title { display: block; font-weight: 600; text-align: left; }
+.chart-workbench .cw-pattern-card .cw-card-state { display: block; margin-top: 4px; font-size: .85rem; text-align: left; overflow-wrap: anywhere; }
+.chart-workbench .cw-card-detail { padding: 0 8px 8px; font-size: .85rem; }
+.chart-workbench .cw-card-detail dl { display: grid; grid-template-columns: minmax(0, 7em) minmax(0, 1fr); gap: 2px 8px; margin: 6px 0 0; text-align: left; }
+.chart-workbench .cw-card-detail dt, .chart-workbench .cw-card-detail dd { text-align: left; }
+.chart-workbench .cw-card-detail dd { margin: 0; overflow-wrap: anywhere; }
+.chart-workbench .cw-param-grid { display: grid; gap: 6px 12px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); margin: 6px 0; }
+.chart-workbench .cw-param { display: flex; justify-content: space-between; gap: 8px; align-items: center; min-width: 0; overflow-wrap: anywhere; }
+.chart-workbench .cw-param select { flex: 0 0 auto; max-width: 9em; }
+.chart-workbench .cw-user { margin-top: 12px; padding-top: 8px; border-top: 1px dashed var(--pen, #7a4cc2); min-width: 0; }
+.chart-workbench .cw-user h3 { margin: 0 0 6px; font-size: 1rem; }
+.chart-workbench .cw-user h4 { margin: 10px 0 4px; font-size: .95rem; }
+.chart-workbench [data-user-label] { border-color: var(--pen, #7a4cc2); color: var(--pen, #7a4cc2); }
+.chart-workbench .cw-user-list { list-style: none; margin: 4px 0; padding: 0; display: grid; gap: 6px; }
+.chart-workbench .cw-user-list > li { min-width: 0; overflow-wrap: anywhere; padding: 6px 8px; border-left: 3px solid var(--pen, #7a4cc2); background: var(--card, #ffffff); }
+.chart-workbench .cw-user-text { margin: 4px 0; }
+.chart-workbench .cw-user-form, .chart-workbench .cw-scenario { display: grid; gap: 6px 12px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); align-items: end; }
+.chart-workbench .cw-scenario { border: 1px solid var(--line, #d4d2ca); border-radius: 6px; padding: 8px; margin: 6px 0; min-width: 0; }
+.chart-workbench .cw-scenario legend { padding: 0 4px; }
+.chart-workbench .cw-field { display: flex; flex-direction: column; gap: 2px; min-width: 0; font-size: .85rem; }
+.chart-workbench .cw-field input, .chart-workbench .cw-field select { width: 100%; min-width: 0; box-sizing: border-box; }
