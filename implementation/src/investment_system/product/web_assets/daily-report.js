@@ -452,6 +452,26 @@ function unavailableCard(m){
   +'<p class="small">프롬프트에는 대상·기간·버전·가용 자료·누락 자료·출처·계산 가능 범위만 들어가고 금액·수량·수익률은 들어가지 않습니다. 자료 없는 수익률·손익을 만들지 말라는 지시가 포함됩니다. 직접 복사할 때만 기기 밖으로 나갑니다.</p><p role="status" data-unavailable-status></p></section>';
  return h;
 }
+/* Owner draft "투자시스템 화면 시안 (손그림 칠판)" (design lane D4): the report cards carry the numbered stamp of their function,
+   6.2 실제 포트폴리오 일일·주간 보고 (menu 5.2) or 6.3 모의 포트폴리오 일일·주간 보고 (menu 5.3). The stamp numbers are function
+   numbers, not menu numbers. Presentation only: each card keeps its content, order and attributes; a stamp and data-fn are
+   added to the cards painted by screenHtml (the 비교 tab's cards are not touched), and an index of the functions sits on top. */
+const FN_GROUP=Object.freeze({REAL:['6.2','실제 포트폴리오 일일·주간 보고','Actual portfolio daily · weekly report','5.2'],MOCK:['6.3','모의 포트폴리오 일일·주간 보고','Paper portfolio daily · weekly report','5.3']});
+const FN_ITEMS=Object.freeze({REAL:[['6.2.1','보고 내용','Report contents'],['6.2.2','기간 선택','Period'],['6.2.3','보고 불가 시 프롬프트','Prompt when no report'],['6.2.4','결과 검토','Review the result']],
+ MOCK:[['6.3.1','모의 성과','Paper performance'],['6.3.2','판단 추적','Judgement tracking'],['6.3.3','보고 불가 시 프롬프트','Prompt when no report']]});
+// Card attribute → function number per report kind (footnote: none).
+const FN_CARD=Object.freeze([['data-report-summary','6.2.1','6.3.1'],['data-report-mode-card','6.2.1','6.3.2'],['data-report-inputs','6.2.1','6.3.1'],['data-report-unavailable','6.2.3','6.3.3'],
+ ['data-report-ai-summary','6.2.1','6.3.2'],['data-report-section="3"','6.2.1','6.3.2'],['data-report-section="10"','6.2.1','6.3.1'],['data-report-section="rest"','6.2.1','6.3.2'],
+ ['data-report-section="11"','6.2.1','6.3.2'],['data-report-section="12"','6.2.2','6.3.1'],['data-report-section="13"','6.2.2','6.3.1'],['data-report-export','6.2.4','6.3.2'],['data-report-mailbox','6.2.4','6.3.2']]);
+function fnOf(attrs,kind){const hit=FN_CARD.find(([a])=>(' '+attrs+' ').includes(' '+a+' '));return hit?hit[kind==='REAL'?1:2]:null;}
+function stampCards(html,kind){return html.replace(/<section ([^>]*)><h2>/g,(all,attrs)=>{const fn=fnOf(attrs,kind);return fn?'<section '+attrs+' data-fn="'+fn+'"><h2><span class="ia-sec" data-fn-stamp>'+fn+'</span> ':all;});}
+function fnIndex(kind,{blocked=false,locale='ko-KR'}={}){
+ const en=locale==='en-US',g=FN_GROUP[kind],items=FN_ITEMS[kind],none=en?' · not needed now':' · 지금은 해당 없음';
+ return '<div class="pf-index" data-fn-index="'+g[0]+'"><p class="pf-index-title"><span class="ia-sec" data-fn-stamp>'+g[0]+'</span> <span class="hl">'+esc(en?g[2]:g[1])+'</span></p>'
+  +'<p class="small pf-legend" data-fn-legend="'+g[0]+'">'+esc(en?'Menu '+g[3]+' · the stamp numbers are function numbers, not menu numbers · weekly report: decision pending':'메뉴 '+g[3]+' · 상자의 번호는 기능 번호이며 메뉴 번호가 아닙니다 · 주간 보고는 결정 대기')+'</p>'
+  +'<ol>'+items.map(([n,ko,enl])=>{const off=!blocked&&(n==='6.2.3'||n==='6.3.3');
+   return '<li><button type="button" data-fn-jump="'+n+'"'+(off?' disabled':'')+'><span class="ia-sec">'+n+'</span> '+esc(en?enl:ko)+(off?'<span class="small">'+esc(none)+'</span>':'')+'</button></li>';}).join('')+'</ol></div>';
+}
 // The model of the S17 screen painted last (RAM only): the review and the 보고 불가 buttons read it on click.
 let current=null;
 function screenHtml(m,{hidden=true,answer=null,check=null,locale='ko-KR'}={}){
@@ -507,7 +527,7 @@ function screenHtml(m,{hidden=true,answer=null,check=null,locale='ko-KR'}={}){
  h+='<section class="card" data-report-mailbox><h2>AI 우체통 <span class="badge">선택 · 기본 OFF</span></h2><p class="small">켜면 연결된 내 구글 시트의 ReportInbox 탭에 오늘 템플릿(금액 숨김 상태)을 쓰고, ReportOutbox 탭에서 해시가 같은 답만 가져옵니다. 종목·비중·점수는 사용자가 연결한 AI 공급자에게 전달됩니다. Worker를 쓰지 않습니다.</p>'
   +'<div class="sheet-actions"><button type="button" data-mailbox-post>우체통에 오늘 템플릿 넣기</button><button type="button" data-mailbox-read>우체통 답 확인</button></div></section>';
  h+='<section class="card" data-report-footnote><h2>고정 각주</h2><p class="small">'+esc((TABS[m.tab]||'')+' · 포트폴리오 v1.1 · '+scoringText(m,true)+' · 유형 v1 잠정 · 평가액 '+(s?money(s.total_value,H):NA)+' · 가상매매 실제 평가액 미반영 · 결측 N/A')+'</p><p class="small">'+esc('보고일: '+(m.report_date||NA)+' · 가상매매 시작일: '+(m.start_date||'미정 (D-13)'))+'</p></section>';
- return h;
+ return fnIndex(m.kind,{blocked:!!blocked,locale})+stampCards(h,m.kind);
 }
 /* Browser wiring owned by this module (app.js wires export/save/mailbox; these buttons are rendered and handled here).
    Review: '붙여넣은 답변 검토' parses and checks the textarea against the canonical data template and only then enables
@@ -538,6 +558,7 @@ function wire(view){
  doc.addEventListener('click',e=>{const t=e.target&&e.target.closest?e.target:null;if(!t)return;
   const review=t.closest('[data-review-answer]');if(review){reviewInto(review.closest('[data-report-export]'));return;}
   const cancel=t.closest('[data-review-cancel]');if(cancel){resetReview(cancel.closest('[data-report-export]'),true);return;}
+  const jump=t.closest('[data-fn-jump]');if(jump){const to=doc.querySelector('#daily-report [data-fn="'+jump.getAttribute('data-fn-jump')+'"]');if(to&&to.scrollIntoView)to.scrollIntoView({block:'start'});return;}
   const copy=t.closest('[data-unavailable-copy]');if(copy)void copyUnavailable(view,copy);});
  doc.addEventListener('input',e=>{const t=e.target;if(t&&t.matches&&t.matches('[data-ai-input]'))resetReview(t.closest('[data-report-export]'),false);});
 }
