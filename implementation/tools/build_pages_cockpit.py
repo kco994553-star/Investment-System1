@@ -21,7 +21,9 @@ def build_public_cockpit(out: Path, *, sec_m2_candidate=None) -> Path:
     bundle = repository_bundle()
     result = build(out, bundle=bundle, sec_m2_candidate=sec_m2_candidate)
     assets = Path(__file__).resolve().parents[1] / 'src/investment_system/product/web_assets'
-    for name in ('manifest.json', 'icon-192.png', 'icon-512.png'):
+    # Licence texts for the vendored chart renderer (lightweight-charts 5.2.1), pinned by the guard.
+    for name in ('manifest.json', 'icon-192.png', 'icon-512.png', 'lightweight-charts-5.2.1.LICENSE.txt',
+                 'lightweight-charts-5.2.1.NOTICE.txt', 'third-party-notices.txt'):
         shutil.copyfile(assets / name, out / name)
     # Price-free Universe504 code list for the Google sheet Universe tab (validated by the guard).
     from investment_system.universe.universe_codes import FILENAME as UNIVERSE_CODES, public_payload
