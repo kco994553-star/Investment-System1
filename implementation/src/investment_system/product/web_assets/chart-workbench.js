@@ -2,6 +2,8 @@
    Real prices arrive only at run time from PrivateHistory (private Worker, RAM only) through update().
    The built-in preview uses generated synthetic bars and is always labelled as such.
    Weekly bars come only from ChartBars (chart-bars.js, lane B1); this file never aggregates bars.
+   Patterns come only from PatternEngine with pattern-rules/1 (pattern-engine.js); official runs go to PatternHistory
+   (RAM, append only). This file never detects pivots, zones, boxes or double bottoms/tops and never computes ATR.
    Device storage holds display toggles only (no prices). Nothing here changes official detection. */
 (function (root, factory) {
   const api = factory();
@@ -19,7 +21,8 @@
     MACD: Object.freeze([['MACD_12_26', 'macd', 0], ['MACD_SIGNAL_9', 'macd', 1], ['MACD_HISTOGRAM_12_26_9', 'macd', 0, 'histogram']]),
     ATR: Object.freeze([['ATR_14', 'atr', 2]])
   });
-  const DEFAULT_SETTINGS = Object.freeze({schema: SETTINGS_SCHEMA, mode: 'long', renderer: 'lwc', indicators: Object.freeze({SMA: true, EMA: false, BOLL: false, RSI: false, MACD: false, ATR: false})});
+  const DEFAULT_SETTINGS = Object.freeze({schema: SETTINGS_SCHEMA, mode: 'long', renderer: 'lwc', indicators: Object.freeze({SMA: true, EMA: false, BOLL: false, RSI: false, MACD: false, ATR: false}),
+    patterns: Object.freeze({ZONES: true, BOX: true, DOUBLE: true})});
   const SYNTHETIC_LABEL = Object.freeze(['합성 자료 · 미리보기 · 실데이터 검증 아님', 'Synthetic data · Preview · Not validated on real data']);
   const NOTICE_TEXT = 'TradingView Lightweight Charts™ Copyright (с) 2025 TradingView, Inc. https://www.tradingview.com/';
   const active = new Set();
@@ -29,16 +32,16 @@
   function readSettings(storage) {
     let parsed = null;
     try { const raw = storage && storage.getItem(SETTINGS_KEY); parsed = raw ? JSON.parse(raw) : null; } catch (_) { parsed = null; }
-    const out = {schema: SETTINGS_SCHEMA, mode: DEFAULT_SETTINGS.mode, renderer: DEFAULT_SETTINGS.renderer, indicators: {...DEFAULT_SETTINGS.indicators}};
+    const out = {schema: SETTINGS_SCHEMA, mode: DEFAULT_SETTINGS.mode, renderer: DEFAULT_SETTINGS.renderer, indicators: {...DEFAULT_SETTINGS.indicators}, patterns: {...DEFAULT_SETTINGS.patterns}};
     if (parsed && parsed.schema === SETTINGS_SCHEMA) {
       if (['long', 'swing'].includes(parsed.mode)) out.mode = parsed.mode;
       if (['lwc', 'svg'].includes(parsed.renderer)) out.renderer = parsed.renderer;
-      if (parsed.indicators && typeof parsed.indicators === 'object') for (const key of Object.keys(out.indicators)) if (typeof parsed.indicators[key] === 'boolean') out.indicators[key] = parsed.indicators[key];
+      for (const group of ['indicators', 'patterns']) if (parsed[group] && typeof parsed[group] === 'object') for (const key of Object.keys(out[group])) if (typeof parsed[group][key] === 'boolean') out[group][key] = parsed[group][key];
     }
     return out;
   }
   function writeSettings(storage, settings) {
-    try { storage.setItem(SETTINGS_KEY, JSON.stringify({schema: SETTINGS_SCHEMA, mode: settings.mode, renderer: settings.renderer, indicators: settings.indicators})); return true; } catch (_) { return false; }
+    try { storage.setItem(SETTINGS_KEY, JSON.stringify({schema: SETTINGS_SCHEMA, mode: settings.mode, renderer: settings.renderer, indicators: settings.indicators, patterns: settings.patterns || DEFAULT_SETTINGS.patterns})); return true; } catch (_) { return false; }
   }
 
   /* ---------- bars: daily view and the ChartBars weekly boundary ---------- */
@@ -77,6 +80,91 @@
     if (!api || typeof api.continuity !== 'function' || !bars.length) return ['PRICE_BASIS_CONTINUITY_UNCONFIRMED'];
     try { const r = api.continuity(null, bars[0].start, bars[bars.length - 1].end); return r && Array.isArray(r.reason_codes) && r.reason_codes.length ? r.reason_codes : ['PRICE_BASIS_CONTINUITY_UNCONFIRMED']; }
     catch (_) { return ['PRICE_BASIS_CONTINUITY_UNCONFIRMED']; }
+  }
+
+  /* ---------- patterns: engine input and result reading (no detection here) ---------- */
+
+  const SYNTHETIC_PATTERN_LABEL = Object.freeze(['합성 자료 · 기능 확인용 · 실데이터 검증 아님', 'Synthetic data · Function check · Not validated on real data']);
+  const PATTERN_NAMES = Object.freeze({BOX_BREAKOUT_UP: ['박스 상향 돌파', 'Box breakout'], BOX_BREAKDOWN: ['박스 하향 이탈', 'Box breakdown'], DOUBLE_BOTTOM: ['이중 바닥', 'Double bottom'],
+    DOUBLE_TOP: ['이중 천장', 'Double top'], SUPPORT_RESISTANCE_ZONE: ['지지·저항 구간', 'Support/resistance zone']});
+  const STATE_NAMES = Object.freeze({FORMED: ['형성 완료 · 확인 대기', 'Formed · awaiting confirmation'], CONFIRMED: ['확인', 'Confirmed'], FAILED: ['확인 후 실패', 'Failed after confirmation'],
+    INVALIDATED: ['무효화', 'Invalidated'], EXPIRED: ['만료', 'Expired'], NOT_JUDGEABLE: ['판정 불가', 'Not judgeable'], ACTIVE: ['유효 구간', 'Active zone'], BROKEN: ['구간 이탈', 'Zone broken'], SUPERSEDED: ['대체됨', 'Superseded']});
+  const PATTERN_GROUP = Object.freeze({BOX_BREAKOUT_UP: 'BOX', BOX_BREAKDOWN: 'BOX', DOUBLE_BOTTOM: 'DOUBLE', DOUBLE_TOP: 'DOUBLE', SUPPORT_RESISTANCE_ZONE: 'ZONES'});
+  // User-settings exploration grid: the sensitivity sets that pattern-rules/1 lists per parameter (design §8.8).
+  // Values outside these sets are not offered. DB_SEP_MAX follows BOX_MAX_BARS (§8.8).
+  const EXPLORE_GRID = Object.freeze([
+    ['PIVOT_K', {D: [2, 3, 5], W: [1, 2, 3]}, ['피벗 좌우 봉 수', 'Pivot bars each side']],
+    ['SWING_MIN_ATR', [0.5, 1, 1.5, 2], ['스윙 최소 진폭 (ATR 배)', 'Swing minimum (×ATR)']],
+    ['ZONE_LOOKBACK', {D: [120, 250, 500], W: [52, 104, 208]}, ['구간 조회 창 (봉)', 'Zone lookback (bars)']],
+    ['ZONE_TOL_ATR', [0.25, 0.5, 0.75, 1], ['구간 허용오차 (ATR 배)', 'Zone tolerance (×ATR)']],
+    ['ZONE_MIN_TOUCHES', [2, 3], ['구간 최소 접촉', 'Zone minimum touches']],
+    ['BREAK_BUFFER_ATR', [0, 0.25, 0.5], ['돌파 여유 (ATR 배)', 'Break buffer (×ATR)']],
+    ['BOX_MIN_BARS', {D: [10, 15, 20], W: [4, 6, 8]}, ['박스 최소 길이 (봉)', 'Box minimum length (bars)']],
+    ['BOX_MAX_BARS', {D: [60, 120, 250], W: [26, 52, 104]}, ['박스 최대 길이 (봉) · 이중 최대 간격도 같음', 'Box maximum length (bars) · also double max separation']],
+    ['BOX_HEIGHT_ATR.min', [1.5, 2, 3], ['박스 높이 최소 (ATR 배)', 'Box height minimum (×ATR)']],
+    ['BOX_HEIGHT_ATR.max', [8, 10, 15], ['박스 높이 최대 (ATR 배)', 'Box height maximum (×ATR)']],
+    ['FAIL_WINDOW', {D: [3, 5, 10], W: [1, 2, 3]}, ['실패 창 (봉)', 'Failure window (bars)']],
+    ['DB_TOL_ATR', [0.5, 0.75, 1, 1.5], ['이중 높이 차 허용 (ATR 배)', 'Double height tolerance (×ATR)']],
+    ['DB_SEP_MIN', {D: [5, 10, 20], W: [3, 4, 6]}, ['이중 최소 간격 (봉)', 'Double minimum separation (bars)']],
+    ['DB_DEPTH_ATR', [1.5, 2, 3], ['이중 깊이 (ATR 배)', 'Double depth (×ATR)']],
+    ['VOL_AVG_N', {D: [10, 20, 50], W: [5, 10, 20]}, ['거래량 평균 봉 수 (참고)', 'Volume average bars (note)']],
+    ['VOL_MULT', [1, 1.5, 2], ['거래량 배수 (참고)', 'Volume multiple (note)']]
+  ]);
+  const tfKey = timeframe => (timeframe === 'weekly' ? 'W' : 'D');
+  function paramValue(params, name, tf) {
+    const [head, sub] = name.split('.'), value = params[head];
+    if (sub) return value[sub];
+    return value && typeof value === 'object' ? value[tf] : value;
+  }
+  function gridOptions(spec, tf) { return Array.isArray(spec) ? spec : spec[tf]; }
+  // Changed parameters -> a full pattern-rules/1 params object (the shipped defaults are never modified).
+  function applyChanges(params, changes, tf) {
+    const out = JSON.parse(JSON.stringify(params)), diff = [];
+    for (const [name, spec] of EXPLORE_GRID) {
+      if (!Object.prototype.hasOwnProperty.call(changes, name)) continue;
+      const value = changes[name];
+      if (!gridOptions(spec, tf).includes(value)) throw new Error('PATTERN_SETTING_OUT_OF_GRID');
+      const before = paramValue(params, name, tf);
+      if (value === before) continue;
+      const [head, sub] = name.split('.');
+      if (sub) out[head][sub] = value; else if (out[head] && typeof out[head] === 'object') out[head][tf] = value; else out[head] = value;
+      if (name === 'BOX_MAX_BARS') out.DB_SEP_MAX[tf] = value;
+      diff.push({name, timeframe: sub || !(params[head] && typeof params[head] === 'object') ? null : tf, from: before, to: value});
+    }
+    return {params: out, diff};
+  }
+  // Synthetic bars are generated without splits; their corporate-action record says so explicitly (function check only).
+  function syntheticActions(series) {
+    const bars = series.bars;
+    return {status: 'AVAILABLE', covered_from: bars[0].first_session || bars[0].session_date, covered_to: bars[bars.length - 1].last_session || bars[bars.length - 1].session_date, events: []};
+  }
+  // Minimum bars per item (design §7.6) for the rules in use.
+  function minBars(params, tf) {
+    const k = paramValue(params, 'PIVOT_K', tf);
+    return [['ATR14', 15], ['PIVOT', 2 * k + 1], ['ZONE', 15], ['BOX', 15 + paramValue(params, 'BOX_MIN_BARS', tf) + k], ['DOUBLE', 15 + paramValue(params, 'DB_SEP_MIN', tf) + 2 * k], ['VOLUME_NOTE', paramValue(params, 'VOL_AVG_N', tf)]];
+  }
+  // Display view of one engine result: signals and zones (pivots are inputs, not shown as objects).
+  function patternObjects(result) {
+    const groups = new Map();
+    for (const tr of result.transitions) {
+      if (tr.object_kind === 'PIVOT') continue;
+      if (!groups.has(tr.object_id)) groups.set(tr.object_id, []);
+      groups.get(tr.object_id).push(tr);
+    }
+    return [...groups.values()].map(list => {
+      const first = list[0], last = list[list.length - 1], confirm = list.find(t => t.event === 'CONFIRMED') || null;
+      const judgeable = first.event !== 'NOT_JUDGEABLE' && !!first.judgement && first.judgement.state === 'CONFIRMED';
+      const ended = ['FAILED', 'INVALIDATED', 'EXPIRED', 'NOT_JUDGEABLE', 'BROKEN', 'SUPERSEDED'].includes(last.state) || last.event === 'OBSERVATION_ENDED';
+      return {id: first.object_id, kind: first.object_kind, pattern: first.pattern, state: last.state, event: last.event, knownAt: last.known_at, knownIndex: last.known_index,
+        startIndex: first.anchor_index, anchorAt: first.anchor_at, formedAt: first.known_at, formedIndex: first.known_index, detail: first.detail || {}, confirm, ended,
+        observationEnded: list.some(t => t.event === 'OBSERVATION_ENDED'), judgeable, reasons: (last.judgement && last.judgement.reason_codes) || [],
+        ruleVersion: first.rule_version, paramsSha: first.params_sha256};
+    });
+  }
+  async function hashParams(view, canonical) {
+    if (!view.crypto || !view.crypto.subtle || typeof view.TextEncoder !== 'function') throw new Error('USER_SETTINGS_HASH_UNAVAILABLE');
+    const digest = await view.crypto.subtle.digest('SHA-256', new view.TextEncoder().encode(canonical));
+    return [...new Uint8Array(digest)].map(b => b.toString(16).padStart(2, '0')).join('');
   }
 
   /* ---------- synthetic preview (generated, deterministic, never market data) ---------- */
@@ -219,11 +307,265 @@
 
   function paintAll(state) { paintSource(state); paintJudgement(state); paintButtons(state); paintMode(state); paintMeasure(state); paintRange(state); setAttr(state, 'data-timeframe', state.timeframe); setAttr(state, 'data-renderer', state.renderer ? state.renderer.kind : 'none'); setAttr(state, 'data-mode', state.settings.mode); }
 
+  /* ---------- pattern panel (3.1 / 3.2) ---------- */
+
+  const nameOf = (state, pattern) => words(state, ...(PATTERN_NAMES[pattern] || [pattern, pattern]));
+  const stateOf = (state, code) => words(state, ...(STATE_NAMES[code] || [code, code]));
+  function engineReady(view) { return !!(view.ChartBars && view.PatternEngine && view.PatternHistory && view.PatternConfigDefaults); }
+
+  // Engine input for the current data: ChartBars series per timeframe and the corporate-action record.
+  function patternInputs(state) {
+    const view = state.view;
+    state.engine = {code: 'NO_DATA', series: {}, actions: null};
+    if (!state.data) return;
+    if (!engineReady(view)) { state.engine.code = 'PATTERN_ENGINE_UNAVAILABLE'; return; }
+    try {
+      const daily = view.ChartBars.normalize(historyOf(state.data));
+      const actions = state.source === 'synthetic' ? syntheticActions(daily) : null;
+      state.engine = {code: 'READY', actions, series: {D: daily, W: view.ChartBars.weekly(daily, actions)}};
+    } catch (_) { state.engine = {code: 'PATTERN_INPUT_INVALID', series: {}, actions: null}; }
+  }
+
+  // Official run (shipped defaults -> PatternHistory, append only) and the optional user-settings run (never recorded).
+  function runPatterns(state) {
+    const view = state.view, tf = tfKey(state.timeframe), p = state.patterns;
+    p.official = null; p.user = null; p.objects = {official: [], user: []}; p.counts = null;
+    if (state.engine.code !== 'READY' || !state.engine.series[tf]) return;
+    const series = state.engine.series[tf], computedAt = new Date().toISOString();
+    try {
+      const official = view.PatternEngine.run(series, view.PatternConfigDefaults, state.engine.actions);
+      if (official.run_mode !== 'OFFICIAL') throw new Error('PATTERN_RUN_MODE');
+      const book = state.source === 'synthetic' ? p.books.synthetic : p.books.device;
+      p.counts = book.append(official, computedAt);
+      p.records = book.historyFor(official).records().length;
+      p.official = {result: official, computedAt};
+      p.objects.official = patternObjects(official);
+      if (p.userRules) {
+        const user = view.PatternEngine.run(series, p.userRules.rules, state.engine.actions);
+        if (user.run_mode !== 'USER_SETTINGS') throw new Error('PATTERN_RUN_MODE');
+        p.user = {result: user, computedAt, diff: p.userRules.diff, paramsSha: p.userRules.rules.params_sha256};
+        p.objects.user = patternObjects(user);
+      }
+      p.code = 'READY';
+    } catch (error) { p.code = error && /^[A-Z_]+$/.test(error.message) ? error.message : 'PATTERN_ENGINE_FAILED'; }
+  }
+
+  function viewObjects(state) {
+    const p = state.patterns, list = p.view === 'user' ? p.objects.user : p.objects.official;
+    return list.filter(o => o.judgeable && state.settings.patterns[PATTERN_GROUP[o.pattern]] !== false);
+  }
+  function endIndex(state, o) { return o.ended && typeof o.knownIndex === 'number' ? o.knownIndex : state.bars.length - 1; }
+  function defaultShown(objects) {
+    const zones = objects.filter(o => o.kind === 'ZONE' && o.state === 'ACTIVE');
+    const signals = objects.filter(o => o.kind === 'SIGNAL').sort((a, b) => b.formedIndex - a.formedIndex).slice(0, 3);
+    return zones.concat(signals);
+  }
+
+  function overlaysFor(state, o, source, emphasis) {
+    const bars = state.bars, at = i => (bars[i] ? bars[i].time : null), end = at(endIndex(state, o)), start = at(o.startIndex), d = o.detail, out = [];
+    const line = (suffix, tone, from, price) => { if (from && end && from < end && typeof price === 'number') out.push({id: o.id + suffix, kind: 'line', source, tone, emphasis, from, to: end, price}); };
+    if (o.kind === 'ZONE') { line('|low', 'zone', start, d.low); line('|high', 'zone', start, d.high); }
+    else if (PATTERN_GROUP[o.pattern] === 'BOX') { line('|upper', 'box', start, d.upper); line('|lower', 'box', start, d.lower); line('|inv', 'invalidation', at(o.formedIndex), d.invalidation_level); }
+    else if (PATTERN_GROUP[o.pattern] === 'DOUBLE') {
+      const bottom = o.pattern === 'DOUBLE_BOTTOM', position = bottom ? 'belowBar' : 'aboveBar';
+      line('|neck', 'double', start, d.neckline); line('|inv', 'invalidation', at(o.formedIndex), d.invalidation_level);
+      if (start) out.push({id: o.id + '|p1', kind: 'marker', source, tone: 'double', emphasis, time: start, label: 'P1', position});
+      if (d.p2_at) out.push({id: o.id + '|p2', kind: 'marker', source, tone: 'double', emphasis, time: d.p2_at, label: 'P2', position});
+    }
+    if (emphasis === 'selected' && o.confirm && at(o.confirm.known_index)) out.push({id: o.id + '|confirm', kind: 'marker', source, tone: PATTERN_GROUP[o.pattern] === 'BOX' ? 'box' : 'double', emphasis, time: at(o.confirm.known_index), label: words(state, '확인', 'Conf.'), position: 'aboveBar'});
+    return out;
+  }
+
+  function drawPatterns(state) {
+    const p = state.patterns, renderer = state.renderer;
+    let drawn = 0;
+    if (renderer && renderer.capabilities.overlays && state.bars.length) {
+      const objects = viewObjects(state), source = p.view === 'user' ? 'USER_SETTINGS' : 'AUTO', selected = objects.find(o => o.id === p.selected) || null, overlays = [];
+      if (selected) {
+        overlays.push(...overlaysFor(state, selected, source, 'selected'));
+        if (p.showAll) for (const o of objects) if (o !== selected) overlays.push(...overlaysFor(state, o, source, 'dim'));
+      } else for (const o of p.showAll ? objects : defaultShown(objects)) overlays.push(...overlaysFor(state, o, source, 'normal'));
+      drawn = renderer.setOverlays(overlays);
+    } else if (renderer) renderer.setOverlays([]);
+    setAttr(state, 'data-pattern-drawn', drawn);
+  }
+
+  function fmtLevel(state, value) { return typeof value === 'number' ? fmt(state, value) : '—'; }
+  function cardRows(state, o, tfLabel) {
+    const d = o.detail, w = (ko, en) => words(state, ko, en), rows = [], above = ['BOX_BREAKOUT_UP', 'DOUBLE_BOTTOM'].includes(o.pattern);
+    rows.push([w('상태', 'State'), stateOf(state, o.state) + ' (' + o.state + ')' + (o.observationEnded ? w(' · 관찰 창 종료', ' · observation window ended') : '') + ' · known_at ' + o.knownAt]);
+    if (o.kind === 'ZONE') {
+      rows.push([w('구간', 'Zone'), fmtLevel(state, d.low) + ' ~ ' + fmtLevel(state, d.high) + ' · ' + w('접촉 ', 'touches ') + d.touches + ' · ' + (d.role || '')]);
+      rows.push([w('탐지 근거', 'Evidence'), w('기준 피벗 ', 'pivots ') + (d.anchors || []).join(', ') + ' · ATR ' + fmtLevel(state, d.atr) + ' (' + d.atr_at + ')']);
+      rows.push([w('이탈 기준', 'Break rule'), w('완결 종가가 구간 밖으로 돌파 여유(ATR 배) 이상', 'Complete close beyond the zone by the break buffer (×ATR)')]);
+    } else {
+      const dates = PATTERN_GROUP[o.pattern] === 'BOX' ? (d.anchors || []).join(', ') : (d.p1_at + ', ' + d.p2_at + ' · ' + w('간격 ', 'separation ') + d.separation_bars + w('봉', ' bars'));
+      const levels = PATTERN_GROUP[o.pattern] === 'BOX' ? w('상단 ', 'upper ') + fmtLevel(state, d.upper) + ' · ' + w('하단 ', 'lower ') + fmtLevel(state, d.lower) : 'P1 ' + fmtLevel(state, d.p1) + ' · P2 ' + fmtLevel(state, d.p2) + ' · ' + w('넥라인 ', 'neckline ') + fmtLevel(state, d.neckline);
+      rows.push([w('기준 가격', 'Reference prices'), levels + ' · ' + w('확인 기준 ', 'confirm level ') + fmtLevel(state, d.confirm_level)]);
+      rows.push([w('탐지 근거', 'Evidence'), w('기준 날짜 ', 'anchors ') + dates + ' · ' + w('고정 ATR ', 'fixed ATR ') + fmtLevel(state, d.atr) + ' (' + d.atr_at + ')'
+        + (o.confirm ? ' · ' + w('거래량 ', 'volume ') + (o.confirm.detail.volume ? o.confirm.detail.volume.state : 'NOT_AVAILABLE') + (o.confirm.detail.gap ? w(' · 갭 돌파', ' · gap') : '') : '')]);
+      if (o.state === 'FORMED') rows.push([w('남은 조건', 'Remaining condition'), w('완결 종가 ', 'Complete close ') + (above ? '> ' : '< ') + fmtLevel(state, d.confirm_level)]);
+      rows.push([w('무효화', 'Invalidation'), w('확인 전 완결 종가 ', 'Before confirmation, complete close ') + (above ? '< ' : '> ') + fmtLevel(state, d.invalidation_level)]);
+    }
+    rows.push([w('일봉·주봉', 'Daily/weekly'), 'NOT_AVAILABLE · ALIGNMENT_NOT_COMPUTED · ' + tfLabel]);
+    rows.push([w('자료 품질', 'Data quality'), (o.judgeable ? w('가격 기준 연속성 확인', 'price-basis continuity confirmed') : 'NOT_JUDGEABLE') + (o.reasons.length ? ' · ' + o.reasons.join(' · ') : '')]);
+    rows.push([w('투자 유용성', 'Investment usefulness'), w('미검증 · 형태가 맞아도 오른다는 뜻이 아님', 'Unverified · a matching shape does not mean the price will rise')]);
+    rows.push([w('규칙', 'Rules'), o.ruleVersion + ' · ' + String(o.paramsSha).slice(0, 8)]);
+    return rows;
+  }
+
+  function paintCards(state) {
+    const doc = state.doc, p = state.patterns, list = state.patternCards, tfLabel = state.timeframe === 'weekly' ? words(state, '주봉', 'weekly') : words(state, '일봉', 'daily');
+    list.replaceChildren();
+    const objects = viewObjects(state).sort((a, b) => (a.kind === b.kind ? b.formedIndex - a.formedIndex : a.kind === 'SIGNAL' ? -1 : 1));
+    const shown = p.expanded ? objects : objects.slice(0, 6);
+    // A selected pattern always has its card listed, even when the list is collapsed.
+    if (p.selected && !shown.some(o => o.id === p.selected)) { const picked = objects.find(o => o.id === p.selected); if (picked) shown.push(picked); }
+    const label = p.view === 'user' ? words(state, '사용자 설정 탐색 · 공식 이력 아님', 'User-settings exploration · not official history') : words(state, '연구 기본값 · 투자 유용성 미검증', 'Research default · investment usefulness unverified');
+    for (const o of shown) {
+      const item = node(doc, 'li'), button = node(doc, 'button', {type: 'button', class: 'cw-pattern-card', 'data-pattern-card': o.id, 'data-pattern-state': o.state, 'data-pattern-kind': p.view === 'user' ? 'USER_SETTINGS' : 'OFFICIAL', 'aria-pressed': String(o.id === p.selected)});
+      const rows = cardRows(state, o, tfLabel);
+      button.append(node(doc, 'span', {class: 'cw-card-title'}, nameOf(state, o.pattern) + ' · ' + tfLabel), node(doc, 'span', {class: 'badge', 'data-pattern-label': ''}, label),
+        node(doc, 'span', {class: 'cw-card-state', 'data-pattern-card-state': ''}, rows[0][1]));
+      // Full card fields (design §11.1) sit next to the select button, so the button stays one control.
+      const more = node(doc, 'details', {class: 'cw-card-detail'}), dl = node(doc, 'dl', {'data-pattern-card-fields': ''});
+      for (const [term, value] of rows.slice(1)) dl.append(node(doc, 'dt', {}, term), node(doc, 'dd', {}, value));
+      more.append(node(doc, 'summary', {}, words(state, '근거·기준 가격·무효화', 'Evidence, levels, invalidation')), dl);
+      item.append(button, more); list.append(item);
+    }
+    state.patternMore.hidden = objects.length <= 6;
+    state.patternMore.textContent = p.expanded ? words(state, '최근 6개만 보기', 'Show the latest 6') : words(state, '모두 보기 (', 'Show all (') + objects.length + ')';
+    setAttr(state, 'data-pattern-cards', shown.length);
+  }
+
+  function paintSuitability(state) {
+    const doc = state.doc, dl = state.patternSuitability, p = state.patterns, w = (ko, en) => words(state, ko, en), tf = tfKey(state.timeframe);
+    dl.replaceChildren();
+    const series = state.engine.series[tf], row = (key, term, value, code) => dl.append(node(doc, 'dt', {}, term), node(doc, 'dd', {'data-suitability': key, 'data-code': code}, value));
+    if (!series) { row('ENGINE', w('패턴 엔진', 'Pattern engine'), state.engine.code, state.engine.code); return; }
+    const complete = series.bars.filter(b => b.state === 'COMPLETE').length, params = (p.view === 'user' && p.userRules ? p.userRules.rules : state.view.PatternConfigDefaults).params;
+    const short = minBars(params, tf).filter(([, need]) => complete < need);
+    row('BARS', w('완결 봉 수', 'Complete bars'), complete + ' · ' + minBars(params, tf).map(([k, need]) => k + ' ' + need).join(' · ') + (short.length ? ' · INSUFFICIENT_BARS ' + short.map(x => x[0]).join(',') : ' · OK'), short.length ? 'INSUFFICIENT_BARS' : 'OK');
+    const actions = state.view.ChartBars.corporateActions(state.engine.actions);
+    row('ACTIONS', w('기업행사 (분할 이벤트)', 'Corporate actions (splits)'), state.source === 'synthetic' ? w('합성 자료 · 생성 조건상 분할 없음 (기능 확인용)', 'Synthetic data · generated without splits (function check)') : actions.status + w(' · 분할 이벤트 미제공 (Worker P1-W 전)', ' · split events not provided (before Worker P1-W)'), actions.status);
+    const first = series.bars[0], last = series.bars[series.bars.length - 1], cont = state.view.ChartBars.continuity(state.engine.actions, first.first_session || first.session_date, last.last_session || last.session_date);
+    row('CONTINUITY', w('가격 기준 연속성', 'Price-basis continuity'), cont.state + (cont.reason_codes.length ? ' · ' + cont.reason_codes.join(' · ') : ''), cont.state);
+    const quality = series.quality && Array.isArray(series.quality.codes) ? series.quality.codes : [];
+    row('QUALITY', w('자료 품질 코드', 'Data quality codes'), quality.length ? quality.join(' · ') : '—', quality.length ? 'CODES' : 'NONE');
+  }
+
+  function paintPatterns(state) {
+    const p = state.patterns, w = (ko, en) => words(state, ko, en), doc = state.doc;
+    const objects = p.view === 'user' ? p.objects.user : p.objects.official, judgeable = objects.filter(o => o.judgeable).length, withheld = objects.length - judgeable;
+    setAttr(state, 'data-pattern-view', p.view);
+    for (const b of state.root.querySelectorAll('[data-pattern-view-button]')) { b.setAttribute('aria-pressed', String(b.dataset.patternViewButton === p.view)); if (b.dataset.patternViewButton === 'user') b.disabled = !p.user; }
+    state.patternShowAll.setAttribute('aria-pressed', String(p.showAll));
+    state.patternSource.replaceChildren();
+    if (state.source === 'synthetic') state.patternSource.append(node(doc, 'strong', {'data-pattern-synthetic-label': ''}, words(state, ...SYNTHETIC_PATTERN_LABEL)));
+    const status = !state.data ? 'NO_DATA' : state.engine.code !== 'READY' ? state.engine.code : p.code !== 'READY' ? p.code : judgeable ? 'SHOWN' : 'NOT_JUDGEABLE';
+    state.patternStatus.dataset.code = status;
+    const reasons = [...new Set(objects.filter(o => !o.judgeable).flatMap(o => o.reasons))];
+    state.patternStatus.replaceChildren();
+    if (status === 'NOT_JUDGEABLE') state.patternStatus.append(node(doc, 'span', {class: 'badge NOT_AVAILABLE'}, w('판정 불가', 'Not judgeable')), doc.createTextNode(' ' + (reasons.length ? reasons.join(' · ') : 'PRICE_BASIS_CONTINUITY_UNCONFIRMED') + ' · ' + w('패턴 상태를 신호로 보이지 않습니다. 판정 불가 객체 ', 'No pattern state is shown as a signal. Withheld objects ') + withheld));
+    else if (status === 'SHOWN') state.patternStatus.textContent = w('표시 ', 'Shown ') + judgeable + w('개 · 구조 설명 ', ' · structure ') + ((p.view === 'user' ? p.user : p.official).result.structure.label_ko || 'NOT_AVAILABLE') + w(' (국면 판정 아님)', ' (not a regime call)');
+    else state.patternStatus.textContent = status;
+    state.patternStatus.dataset.reasons = reasons.join(' ');
+    const run = p.view === 'user' ? p.user : p.official;
+    state.patternRun.textContent = !run ? '' : (p.view === 'user'
+      ? w('사용자 설정 탐색 · 공식 이력에 쓰지 않음 · 바꾼 값 ', 'User-settings exploration · never written to the official history · changed ') + (p.user.diff.map(x => x.name + (x.timeframe ? ' ' + x.timeframe : '') + ' ' + x.from + '→' + x.to).join(', ') || '—') + ' · params ' + p.user.paramsSha.slice(0, 8)
+      : w('공식 탐지 · ', 'Official detection · ') + run.result.label_ko + ' · ' + run.result.rule_version + ' · params ' + run.result.params_sha256.slice(0, 8)) + ' · ' + w('계산 ', 'computed ') + run.computedAt;
+    state.patternRun.dataset.runMode = run ? run.result.run_mode : '';
+    const counts = p.counts || {added: 0, duplicates: 0, withheld: 0};
+    state.patternHistory.dataset.records = String(p.records || 0); state.patternHistory.dataset.added = String(counts.added); state.patternHistory.dataset.notJudgeable = String(counts.withheld); // not data-withheld: that attribute marks research sections withheld from publication
+    state.patternHistory.textContent = w('공식 이력 (RAM · 추가만 · ', 'Official history (RAM · append only · ') + (state.source === 'synthetic' ? w('합성 자료 전용 장부', 'synthetic-only book') : w('기기 자료 장부', 'device-data book')) + '): '
+      + w('기록 ', 'records ') + (p.records || 0) + w(' · 이번 추가 ', ' · added now ') + counts.added + w(' · 중복 ', ' · duplicates ') + counts.duplicates + w(' · 판정 불가 보류 ', ' · withheld (not judgeable) ') + counts.withheld;
+    state.patternHistory.hidden = !p.official;
+    state.patternOverlayNote.textContent = state.renderer && state.renderer.kind === 'svg' ? w('SVG 대체 경로에서는 패턴을 그리지 않습니다 · 카드만 봅니다.', 'The SVG fallback draws no patterns · cards only.') : '';
+    paintSuitability(state); paintCards(state); drawPatterns(state);
+  }
+
+  function selectPattern(state, id, {zoom = true} = {}) {
+    const p = state.patterns, objects = viewObjects(state), o = objects.find(x => x.id === id) || null;
+    p.selected = o && p.selected !== o.id ? o.id : null;
+    setAttr(state, 'data-pattern-selected', p.selected || '');
+    if (o && p.selected && zoom && state.renderer) {
+      const from = o.startIndex, to = o.confirm ? o.confirm.known_index : endIndex(state, o), pad = Math.max(2, Math.round((to - from) * 0.2));
+      state.renderer.setVisibleRange({from: Math.max(0, from - pad), to: Math.min(state.bars.length - 1, to + pad)});
+    }
+    paintCards(state); drawPatterns(state);
+    if (o) state.live.textContent = p.selected ? words(state, '선택: ', 'Selected: ') + nameOf(state, o.pattern) + ' · ' + stateOf(state, o.state) : words(state, '선택 해제', 'Selection cleared');
+  }
+
+  async function runUserSettings(state) {
+    const p = state.patterns, view = state.view, tf = tfKey(state.timeframe), changes = {};
+    for (const select of state.root.querySelectorAll('[data-pattern-param]')) changes[select.dataset.patternParam] = Number(select.value);
+    try {
+      const {params, diff} = applyChanges(view.PatternConfigDefaults.params, changes, tf);
+      if (!diff.length) { p.userRules = null; p.view = 'official'; state.exploreStatus.dataset.code = 'SAME_AS_DEFAULTS'; state.exploreStatus.textContent = words(state, '기본값과 같음 · 공식 탐지를 봅니다.', 'Same as defaults · showing official detection.'); runPatterns(state); paintPatterns(state); return; }
+      const sha = await hashParams(view, view.PatternEngine.canonicalJson(params));
+      if (state.disposed) return;
+      const D = view.PatternConfigDefaults;
+      p.userRules = {rules: {schema: D.schema, rule_version: D.rule_version, status: D.status, label_ko: '사용자 설정 탐색 · 공식 이력 아님', label_en: 'User-settings exploration · not official history', params, params_sha256: sha}, diff};
+      p.view = 'user'; p.selected = null;
+      runPatterns(state);
+      state.exploreStatus.dataset.code = p.user ? 'USER_RUN' : p.code;
+      state.exploreStatus.textContent = p.user ? words(state, '사용자 설정 탐색을 실행했습니다 · 공식 이력은 그대로입니다.', 'User-settings exploration ran · the official history is unchanged.') : p.code;
+    } catch (error) { state.exploreStatus.dataset.code = error && /^[A-Z_]+$/.test(error.message) ? error.message : 'PATTERN_ENGINE_FAILED'; state.exploreStatus.textContent = state.exploreStatus.dataset.code; }
+    paintPatterns(state);
+  }
+
+  function resetUserSettings(state) {
+    const p = state.patterns;
+    p.userRules = null; p.user = null; p.objects.user = []; p.view = 'official'; p.selected = null;
+    buildExploreControls(state); runPatterns(state); paintPatterns(state);
+    state.exploreStatus.dataset.code = 'DEFAULTS'; state.exploreStatus.textContent = words(state, '기본값으로 돌아왔습니다.', 'Back to defaults.');
+  }
+
+  function buildExploreControls(state) {
+    const doc = state.doc, tf = tfKey(state.timeframe), grid = state.exploreGrid, view = state.view;
+    grid.replaceChildren();
+    if (!view.PatternConfigDefaults) return;
+    const current = state.patterns.userRules ? state.patterns.userRules.rules.params : view.PatternConfigDefaults.params;
+    for (const [name, spec, label] of EXPLORE_GRID) {
+      const wrap = node(doc, 'label', {class: 'cw-param'}), select = node(doc, 'select', {'data-pattern-param': name});
+      const def = paramValue(view.PatternConfigDefaults.params, name, tf), value = paramValue(current, name, tf);
+      for (const option of gridOptions(spec, tf)) { const o = node(doc, 'option', {value: String(option)}, String(option) + (option === def ? words(state, ' (기본)', ' (default)') : '')); if (option === value) o.selected = true; select.append(o); }
+      wrap.append(doc.createTextNode(words(state, ...label) + ' '), select);
+      grid.append(wrap);
+    }
+  }
+
+  function buildPatternPanel(state) {
+    const doc = state.doc, w = (ko, en) => words(state, ko, en), section = node(doc, 'section', {class: 'cw-patterns', 'data-pattern-panel': '', 'aria-labelledby': state.id + '-patterns'});
+    section.append(node(doc, 'h3', {id: state.id + '-patterns'}, w('패턴 · 연구 기본값 · 투자 유용성 미검증', 'Patterns · Research default · investment usefulness unverified')));
+    state.patternSource = node(doc, 'p', {class: 'small', 'data-pattern-source': ''});
+    const views = node(doc, 'div', {class: 'cw-group', role: 'group', 'aria-label': w('결과 종류', 'Result kind')});
+    views.append(node(doc, 'button', {type: 'button', 'data-pattern-view-button': 'official', 'aria-pressed': 'true'}, w('공식 탐지', 'Official detection')),
+      node(doc, 'button', {type: 'button', 'data-pattern-view-button': 'user', 'aria-pressed': 'false', disabled: ''}, w('사용자 설정 탐색', 'User-settings exploration')),
+      node(doc, 'button', {type: 'button', 'data-pattern-view-button': 'scenario', 'aria-pressed': 'false', disabled: ''}, w('사용자 시나리오 · 다음 단계', 'User scenarios · next step')));
+    state.patternShowAll = node(doc, 'button', {type: 'button', 'data-pattern-show-all': '', 'aria-pressed': 'false'}, w('모든 패턴 보기', 'Show all patterns'));
+    views.append(state.patternShowAll);
+    state.patternStatus = node(doc, 'p', {class: 'cw-judgement', 'data-pattern-status': ''});
+    state.patternRun = node(doc, 'p', {class: 'small', 'data-pattern-run': ''});
+    state.patternHistory = node(doc, 'p', {class: 'small', 'data-pattern-history': '', hidden: ''});
+    state.patternOverlayNote = node(doc, 'p', {class: 'small', 'data-pattern-overlay-note': ''});
+    const suit = node(doc, 'details', {class: 'cw-suitability', 'data-pattern-suitability-box': ''});
+    suit.append(node(doc, 'summary', {}, w('자료 적합성 (최소 봉 수 · 기업행사 · 가격 기준 연속성)', 'Data suitability (minimum bars · corporate actions · price-basis continuity)')));
+    state.patternSuitability = node(doc, 'dl', {'data-pattern-suitability': ''});
+    suit.append(state.patternSuitability);
+    state.patternCards = node(doc, 'ul', {class: 'cw-pattern-cards', 'data-pattern-cards': ''});
+    state.patternMore = node(doc, 'button', {type: 'button', 'data-pattern-more': '', hidden: ''});
+    section.append(state.patternSource, views, state.patternStatus, state.patternRun, state.patternHistory, state.patternOverlayNote, suit, state.patternCards, state.patternMore,
+      node(doc, 'p', {class: 'small'}, w('카드를 누르면 차트가 그 패턴 범위로 확대됩니다. 차트에 초점이 있을 때 Enter는 십자선 위치의 패턴 카드를 고릅니다. 판정·신호·매매 지시가 아닙니다.', 'Choosing a card zooms the chart to that pattern. With the chart focused, Enter picks the card at the crosshair. Not a judgement, signal or trading instruction.')));
+    return section;
+  }
+
   /* ---------- rendering ---------- */
 
   function computeBars(state) {
     state.weeklyCode = 'WEEKLY_BARS_MODULE_PENDING';
     state.daily = []; state.weekly = null;
+    patternInputs(state);
     if (!state.data) return;
     const R = state.view.ChartRenderer;
     state.daily = R.normalizeBars(dailyView(state.data.bars, state.data.timezone));
@@ -277,7 +619,7 @@
 
   async function render(state, {keepRange = null} = {}) {
     const generation = ++state.renderGeneration;
-    if (!state.data && !state.renderer) { state.bars = []; setAttr(state, 'data-bar-count', 0); setAttr(state, 'data-provisional-count', 0); paintReadout(state, null, null); paintAll(state); return; }
+    if (!state.data && !state.renderer) { state.bars = []; setAttr(state, 'data-bar-count', 0); setAttr(state, 'data-provisional-count', 0); state.patterns.key = null; runPatterns(state); paintReadout(state, null, null); paintAll(state); paintPatterns(state); return; }
     const renderer = await ensureRenderer(state);
     if (!renderer || state.disposed || generation !== state.renderGeneration) return;
     state.bars = state.timeframe === 'weekly' && state.weekly ? state.weekly : state.daily;
@@ -296,8 +638,16 @@
     }
     setAttr(state, 'data-bar-count', state.bars.length);
     setAttr(state, 'data-provisional-count', state.bars.filter(bar => !bar.complete).length);
+    const patternKey = [state.data ? state.data.bars : null, state.source, state.timeframe, state.patterns.userRules ? state.patterns.userRules.rules.params_sha256 : ''];
+    if (!state.patterns.key || patternKey.some((v, i) => v !== state.patterns.key[i])) {
+      if (state.patterns.key && state.patterns.key[2] !== state.timeframe) buildExploreControls(state);
+      state.patterns.key = patternKey; state.patterns.selected = null; setAttr(state, 'data-pattern-selected', '');
+      runPatterns(state);
+      if (state.patterns.view === 'user' && !state.patterns.user) state.patterns.view = 'official';
+    }
     paintReadout(state, null, null);
     paintAll(state);
+    paintPatterns(state);
   }
 
   function addMeasurePoint(state, hit) {
@@ -331,6 +681,15 @@
       case '+': case '=': state.renderer.zoom(0.7); break;
       case '-': case '_': state.renderer.zoom(1.4); break;
       case 'Escape': state.keyboardCursor = null; state.renderer.clearCrosshair(); paintReadout(state, null, null); state.live.textContent = words(state, '십자선 지움', 'Crosshair cleared'); break;
+      case 'Enter': {
+        // Picks the most recent shown pattern whose span holds the keyboard bar (design §11.3).
+        const at = state.keyboardCursor, hit = at === null ? null : viewObjects(state).filter(o => o.startIndex <= at && at <= endIndex(state, o)).sort((a, b) => b.formedIndex - a.formedIndex)[0];
+        if (!hit) { handled = false; break; }
+        if (state.patterns.selected !== hit.id) selectPattern(state, hit.id, {zoom: false});
+        const card = state.patternCards.querySelector('[data-pattern-card="' + (state.view.CSS && state.view.CSS.escape ? state.view.CSS.escape(hit.id) : hit.id) + '"]');
+        if (card) card.scrollIntoView({block: 'nearest'});
+        break;
+      }
       case 'm': case 'M':
         if (state.measuring && state.keyboardCursor !== null && state.bars[state.keyboardCursor].ohlc) addMeasurePoint(state, {index: state.keyboardCursor, price: state.bars[state.keyboardCursor].close});
         else handled = false;
@@ -356,7 +715,7 @@
 
   function update(state, payload) {
     if (state.disposed) return Promise.resolve();
-    if (!payload) { return state.source === 'device' ? setData(state, null, 'none') : Promise.resolve(); }
+    if (!payload) { if (state.source === 'device') { state.patterns.books.device.clear(); return setData(state, null, 'none'); } return Promise.resolve(); }
     if (!Array.isArray(payload.bars) || !payload.bars.length) return Promise.resolve();
     if (state.source === 'device' && state.data && state.data.symbol === payload.symbol && state.data.readAt === payload.readAt && state.data.bars === payload.bars) {
       state.data = {...state.data, indicators: payload.indicators};
@@ -370,6 +729,8 @@
     state.disposed = true;
     if (state.renderer) state.renderer.destroy();
     state.renderer = null; state.data = null; state.daily = []; state.weekly = null; state.bars = [];
+    state.patterns.books.device.clear(); state.patterns.books.synthetic.clear(); state.patterns.official = null; state.patterns.user = null; state.patterns.objects = {official: [], user: []};
+    state.engine = {code: 'NO_DATA', series: {}, actions: null};
     if (state.observer) state.observer.disconnect();
     state.view.removeEventListener('pagehide', state.pagehide);
     active.delete(state);
@@ -402,7 +763,7 @@
     const help = node(doc, 'p', {class: 'small', id: state.id + '-help'}, w('키보드(차트에 초점): ←/→ 한 봉 · Shift+←/→ 열 봉 · +/− 확대·축소 · Home/End 처음·끝 · Esc 십자선 지우기 · 측정 켜짐에서 M 점 찍기. 폰: 끌어서 이동, 두 손가락 확대, 길게 눌러 값 추적.', 'Keyboard (chart focused): ←/→ one bar · Shift+←/→ ten bars · +/− zoom · Home/End first/last · Esc clear crosshair · M marks a point while measuring. Phone: drag to pan, pinch to zoom, long-press to track values.'));
     state.live = node(doc, 'div', {class: 'sr-only', 'aria-live': 'polite', 'data-cw-live': ''});
     state.modePanel = node(doc, 'div', {class: 'cw-mode-panel', 'data-cw-mode-panel': ''});
-    root.append(toolbar, state.sourceLine, state.judgement, state.weeklyStatus, state.rendererStatus, state.readout, state.chartBox, state.limits, state.measureOut, state.indicatorNote, help, state.live, state.modePanel, buildSettings(state), buildNotice(state));
+    root.append(toolbar, state.sourceLine, state.judgement, state.weeklyStatus, state.rendererStatus, state.readout, state.chartBox, state.limits, state.measureOut, state.indicatorNote, help, state.live, state.modePanel, buildPatternPanel(state), buildSettings(state), buildNotice(state));
     return root;
   }
 
@@ -419,14 +780,22 @@
       label.append(box, doc.createTextNode(' ' + labels[key]));
       fieldset.append(label);
     }
-    const patterns = node(doc, 'fieldset', {'data-cw-pattern-shell': ''});
-    patterns.append(node(doc, 'legend', {}, w('패턴 표시 (엔진 연결 전)', 'Pattern display (engine not connected)')));
+    const patterns = node(doc, 'fieldset', {'data-cw-pattern-display': ''});
+    patterns.append(node(doc, 'legend', {}, w('패턴 표시 (화면만 · 탐지에 영향 없음)', 'Pattern display (screen only · no effect on detection)')));
     for (const [key, text] of [['ZONES', w('지지·저항 구간', 'Support/resistance zones')], ['BOX', w('박스 돌파·이탈', 'Box breakout/breakdown')], ['DOUBLE', w('이중 바닥·천장', 'Double bottom/top')]]) {
-      const label = node(doc, 'label', {class: 'cw-toggle'}), box = node(doc, 'input', {type: 'checkbox', disabled: '', 'data-cw-pattern': key});
+      const label = node(doc, 'label', {class: 'cw-toggle'}), box = node(doc, 'input', {type: 'checkbox', 'data-cw-pattern': key});
+      box.checked = state.settings.patterns[key] !== false;
       label.append(box, doc.createTextNode(' ' + text));
       patterns.append(label);
     }
-    details.append(fieldset, patterns, node(doc, 'p', {class: 'small'}, w('표시 설정은 이 기기 화면에만 적용됩니다. 공식 탐지·규칙 버전·QGV·TARGET에 영향을 주지 않으며, 가격은 저장하지 않습니다.', 'Display settings apply to this screen only. They never affect official detection, rule versions, QGV or TARGET, and no prices are saved.')),
+    const explore = node(doc, 'fieldset', {'data-pattern-explore': ''});
+    explore.append(node(doc, 'legend', {}, w('사용자 설정 탐색 (pattern-rules/1 민감도 범위 · 지금 봉 주기 값)', 'User-settings exploration (pattern-rules/1 sensitivity sets · current interval)')));
+    state.exploreGrid = node(doc, 'div', {class: 'cw-param-grid'});
+    state.exploreStatus = node(doc, 'p', {class: 'small', role: 'status', 'data-pattern-explore-status': ''});
+    explore.append(state.exploreGrid, node(doc, 'button', {type: 'button', 'data-pattern-explore-run': ''}, w('이 설정으로 탐색', 'Explore with these settings')), node(doc, 'button', {type: 'button', 'data-pattern-explore-reset': ''}, w('기본값으로', 'Back to defaults')),
+      node(doc, 'p', {class: 'small'}, w('탐색 결과는 "사용자 설정 탐색"으로 따로 보이며 공식 탐지 이력에 쓰지 않습니다. 바꾼 값과 params 해시를 결과와 함께 적습니다. 탐색 설정은 저장하지 않습니다.', 'Exploration results appear separately as “user-settings exploration” and are never written to the official history. Changed values and the params hash are shown with the result. Exploration settings are not saved.')),
+      state.exploreStatus);
+    details.append(fieldset, patterns, explore, node(doc, 'p', {class: 'small'}, w('표시 설정은 이 기기 화면에만 적용됩니다. 공식 탐지·규칙 버전·QGV·TARGET에 영향을 주지 않으며, 가격은 저장하지 않습니다.', 'Display settings apply to this screen only. They never affect official detection, rule versions, QGV or TARGET, and no prices are saved.')),
       state.settingsStatus = node(doc, 'p', {class: 'small', role: 'status', 'data-cw-settings-status': ''}));
     return details;
   }
@@ -455,9 +824,16 @@
       else if (button.hasAttribute('data-cw-measure')) { state.measuring = !state.measuring; state.measure = null; state.measureStart = null; if (state.renderer) state.renderer.setMeasure(null); paintButtons(state); paintMeasure(state); }
       else if (button.dataset.cwZoom && state.renderer) { if (button.dataset.cwZoom === 'fit') state.renderer.fit(); else state.renderer.zoom(button.dataset.cwZoom === 'in' ? 0.7 : 1.4); }
       else if (button.hasAttribute('data-cw-synthetic')) void preview(state);
+      else if (button.dataset.patternViewButton) { if (['official', 'user'].includes(button.dataset.patternViewButton)) { state.patterns.view = button.dataset.patternViewButton; state.patterns.selected = null; setAttr(state, 'data-pattern-selected', ''); paintPatterns(state); } }
+      else if (button.hasAttribute('data-pattern-show-all')) { state.patterns.showAll = !state.patterns.showAll; paintPatterns(state); }
+      else if (button.dataset.patternCard) selectPattern(state, button.dataset.patternCard);
+      else if (button.hasAttribute('data-pattern-more')) { state.patterns.expanded = !state.patterns.expanded; paintCards(state); }
+      else if (button.hasAttribute('data-pattern-explore-run')) void runUserSettings(state);
+      else if (button.hasAttribute('data-pattern-explore-reset')) resetUserSettings(state);
     });
     root.addEventListener('change', event => {
       const box = event.target;
+      if (box.dataset && box.dataset.cwPattern) { state.settings.patterns[box.dataset.cwPattern] = box.checked; persist(state); state.patterns.selected = null; paintPatterns(state); return; }
       if (box.dataset && box.dataset.cwIndicator) { state.settings.indicators[box.dataset.cwIndicator] = box.checked; persist(state); if (state.bars.length) void render(state, {keepRange: state.renderer ? state.renderer.getVisibleRange() : null}); }
     });
     state.chartBox.addEventListener('keydown', event => { state.lastInput = 'keyboard'; onKey(state, event); });
@@ -494,10 +870,14 @@
     let storage = null; try { storage = options.storage || view.localStorage; } catch (_) { storage = null; }
     const state = {doc, view, host, storage, locale: options.locale, qgvHref: options.qgvHref || null, id: 'cw' + (++counter), settings: readSettings(storage), data: null, source: 'none', symbol: '',
       daily: [], weekly: null, bars: [], timeframe: 'daily', weeklyCode: 'WEEKLY_BARS_MODULE_PENDING', renderer: null, rendererCode: 'READY', pending: null, renderGeneration: 0,
-      cursor: null, keyboardCursor: null, lastInput: null, press: null, measuring: false, measureStart: null, measure: null, touching: false, disposed: false};
+      cursor: null, keyboardCursor: null, lastInput: null, press: null, measuring: false, measureStart: null, measure: null, touching: false, disposed: false,
+      engine: {code: 'NO_DATA', series: {}, actions: null},
+      patterns: {view: 'official', code: 'NO_DATA', official: null, user: null, userRules: null, objects: {official: [], user: []}, counts: null, records: 0, selected: null, showAll: false, expanded: false, key: null,
+        books: view.PatternHistory ? {device: view.PatternHistory.createBook(), synthetic: view.PatternHistory.createBook()} : {device: {clear() {}}, synthetic: {clear() {}}}}};
     state.root = build(state);
     host.replaceChildren(state.root);
     wire(state);
+    buildExploreControls(state);
     active.add(state);
     state.pagehide = () => dispose(state);
     view.addEventListener('pagehide', state.pagehide);
@@ -509,5 +889,6 @@
 
   function disposeAll() { for (const state of [...active]) dispose(state); }
 
-  return Object.freeze({SETTINGS_KEY, SETTINGS_SCHEMA, SYNTHETIC_LABEL, readSettings, writeSettings, dailyView, weeklyView, continuityCodes, syntheticHistory, mount, disposeAll});
+  return Object.freeze({SETTINGS_KEY, SETTINGS_SCHEMA, SYNTHETIC_LABEL, SYNTHETIC_PATTERN_LABEL, EXPLORE_GRID, readSettings, writeSettings, dailyView, weeklyView, continuityCodes, syntheticHistory,
+    syntheticActions, applyChanges, minBars, patternObjects, mount, disposeAll});
 });

@@ -23,3 +23,23 @@
   .chart-workbench .cw-chart { height: 280px; }
   .chart-workbench .cw-group button { padding-left: 8px; padding-right: 8px; }
 }
+.chart-workbench .cw-patterns { margin-top: 12px; padding-top: 8px; border-top: 1px solid var(--line, #d4d2ca); min-width: 0; }
+.chart-workbench .cw-patterns h3 { margin: 0 0 6px; font-size: 1rem; }
+.chart-workbench [data-pattern-synthetic-label] { background: var(--warn-bg, #f1e9da); color: var(--warn-ink, #6a4300); border: 1px solid var(--warn-line, #c4a26a); border-radius: 4px; padding: 0 4px; }
+.chart-workbench .cw-suitability dl { display: grid; grid-template-columns: minmax(0, 10em) minmax(0, 1fr); gap: 2px 8px; margin: 6px 0; }
+.chart-workbench .cw-suitability dd { margin: 0; overflow-wrap: anywhere; }
+.chart-workbench .cw-pattern-cards { list-style: none; margin: 8px 0; padding: 0; display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); }
+.chart-workbench .cw-pattern-card { display: block; width: 100%; text-align: left; padding: 8px; border: 1px solid var(--line, #d4d2ca); border-radius: 6px; background: var(--card, #ffffff); color: var(--ink, #161616); font: inherit; min-width: 0; }
+.chart-workbench .cw-pattern-cards li:has([aria-pressed="true"]) { border: 2px solid var(--ink, #161616); }
+.chart-workbench .cw-pattern-card[aria-pressed="true"] .cw-card-title { text-decoration: underline; }
+.chart-workbench .cw-pattern-cards li { min-width: 0; border: 1px solid var(--line, #d4d2ca); border-radius: 6px; }
+.chart-workbench .cw-pattern-card { border: 0; }
+.chart-workbench .cw-pattern-card .cw-card-title { display: block; font-weight: 600; text-align: left; }
+.chart-workbench .cw-pattern-card .cw-card-state { display: block; margin-top: 4px; font-size: .85rem; text-align: left; overflow-wrap: anywhere; }
+.chart-workbench .cw-card-detail { padding: 0 8px 8px; font-size: .85rem; }
+.chart-workbench .cw-card-detail dl { display: grid; grid-template-columns: minmax(0, 7em) minmax(0, 1fr); gap: 2px 8px; margin: 6px 0 0; text-align: left; }
+.chart-workbench .cw-card-detail dt, .chart-workbench .cw-card-detail dd { text-align: left; }
+.chart-workbench .cw-card-detail dd { margin: 0; overflow-wrap: anywhere; }
+.chart-workbench .cw-param-grid { display: grid; gap: 6px 12px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); margin: 6px 0; }
+.chart-workbench .cw-param { display: flex; justify-content: space-between; gap: 8px; align-items: center; min-width: 0; overflow-wrap: anywhere; }
+.chart-workbench .cw-param select { flex: 0 0 auto; max-width: 9em; }
