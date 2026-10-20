@@ -48,7 +48,11 @@ Self-hosted fonts (IA-11, owner decision 2026-10-20)
 
 Both fonts are licensed under the SIL Open Font License, Version 1.1. The files here are
 subsets converted to WOFF2 (a modification permitted by the OFL); no Reserved Font Name is
-declared in either copyright notice. The fonts are served from this site only.
+declared in either copyright notice (OFL.txt first line or the font's copyright name record),
+so the modified fonts keep their names. As the OFL requires, each font is distributed with
+its copyright notice and the full licence (the OFL texts below, and the copyright and licence
+name records kept inside each WOFF2), stays under the OFL, and is not sold by itself.
+The fonts are served from this site only.
 
 File: jua-regular-ksx1001.woff2 (CSS family "IS Jua", display role)
 Font: Jua Regular. Copyright 2018 The Jua Project Authors. Designer: Woowahan Brothers.
@@ -71,3 +75,4 @@ U+0020-007E, U+00A0-00FF (Latin), the 2,350 KS X 1001 Hangul syllables (EUC-KR r
 0xB0-0xC8), U+3131-318E (compatibility jamo), U+2010-2027, U+2030-203A, U+20A9,
 U+3000-3011, U+301C, U+FF01-FF5E (punctuation), where the source font has the glyph.
 Other characters fall back to the system font per glyph.
+Reproduce: implementation/tools/font_subset_ksx1001.py (source and output hashes pinned).
