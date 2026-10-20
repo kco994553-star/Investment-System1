@@ -1399,6 +1399,64 @@
    "expected_json": "{\"reason_codes\": [\"PRICE_BASIS_CONTINUITY_UNCONFIRMED\", \"CORPORATE_ACTION_COVERAGE_GAP\"], \"state\": \"NOT_JUDGEABLE\"}"
   },
   {
+   "id": "continuity_coverage_gap_end",
+   "operation": "continuity",
+   "input": {
+    "actions": {
+     "status": "AVAILABLE",
+     "covered_from": "2030-01-01",
+     "covered_to": "2030-06-30",
+     "events": []
+    },
+    "start": "2030-05-07",
+    "end": "2030-07-07"
+   },
+   "synthetic": true,
+   "expected_json": "{\"reason_codes\": [\"PRICE_BASIS_CONTINUITY_UNCONFIRMED\", \"CORPORATE_ACTION_COVERAGE_GAP\"], \"state\": \"NOT_JUDGEABLE\"}"
+  },
+  {
+   "id": "continuity_coverage_gap_end_adjusted_split",
+   "operation": "continuity",
+   "input": {
+    "actions": {
+     "status": "AVAILABLE",
+     "covered_from": "2030-01-01",
+     "covered_to": "2030-06-30",
+     "events": [
+      {
+       "kind": "SPLIT",
+       "effective_date": "2030-03-02"
+      },
+      {
+       "kind": "DIVIDEND",
+       "effective_date": "2030-02-01"
+      }
+     ],
+     "price_basis": "SPLIT_ADJUSTED"
+    },
+    "start": "2030-02-07",
+    "end": "2030-07-01"
+   },
+   "synthetic": true,
+   "expected_json": "{\"reason_codes\": [\"PRICE_BASIS_CONTINUITY_UNCONFIRMED\", \"CORPORATE_ACTION_COVERAGE_GAP\"], \"state\": \"NOT_JUDGEABLE\"}"
+  },
+  {
+   "id": "continuity_coverage_exact_bounds",
+   "operation": "continuity",
+   "input": {
+    "actions": {
+     "status": "AVAILABLE",
+     "covered_from": "2030-01-01",
+     "covered_to": "2030-06-30",
+     "events": []
+    },
+    "start": "2030-01-01",
+    "end": "2030-06-30"
+   },
+   "synthetic": true,
+   "expected_json": "{\"reason_codes\": [], \"state\": \"CONFIRMED\"}"
+  },
+  {
    "id": "continuity_not_reported",
    "operation": "continuity",
    "input": {
@@ -2784,6 +2842,492 @@
    },
    "synthetic": true,
    "expected_json": "{\"splits\": [], \"status\": \"INVALID\"}"
+  },
+  {
+   "id": "history_window_inside_coverage",
+   "operation": "history_window_continuity",
+   "input": {
+    "history": {
+     "schema": "private-history/1",
+     "provider": "Yahoo Finance(비공식)",
+     "symbol": "SYNTH1",
+     "range": "5y",
+     "currency": "USD",
+     "exchange": "NMS",
+     "timezone": "America/New_York",
+     "interval": "1d",
+     "basis": "RAW_CLOSE",
+     "delay_status": "UNKNOWN",
+     "read_at": "2030-12-31T23:00:00Z",
+     "bars": [
+      {
+       "timestamp": 1894026600,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894113000,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894199400,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894285800,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894372200,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894631400,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      }
+     ],
+     "split_coverage": {
+      "status": "CONFIRMED",
+      "from": "2030-01-07",
+      "to": "2030-01-14"
+     },
+     "splits": [],
+     "split_basis": {
+      "price": "SPLIT_ADJUSTED",
+      "volume": "UNKNOWN",
+      "source": "PROVIDER_CONVENTION"
+     }
+    },
+    "start": "2030-01-07",
+    "end": "2030-01-14"
+   },
+   "synthetic": true,
+   "expected_json": "{\"reason_codes\": [], \"state\": \"CONFIRMED\"}"
+  },
+  {
+   "id": "history_window_starts_before_coverage",
+   "operation": "history_window_continuity",
+   "input": {
+    "history": {
+     "schema": "private-history/1",
+     "provider": "Yahoo Finance(비공식)",
+     "symbol": "SYNTH1",
+     "range": "5y",
+     "currency": "USD",
+     "exchange": "NMS",
+     "timezone": "America/New_York",
+     "interval": "1d",
+     "basis": "RAW_CLOSE",
+     "delay_status": "UNKNOWN",
+     "read_at": "2030-12-31T23:00:00Z",
+     "bars": [
+      {
+       "timestamp": 1894026600,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894113000,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894199400,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894285800,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894372200,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894631400,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      }
+     ],
+     "split_coverage": {
+      "status": "CONFIRMED",
+      "from": "2030-01-09",
+      "to": "2030-01-14"
+     },
+     "splits": [],
+     "split_basis": {
+      "price": "SPLIT_ADJUSTED",
+      "volume": "UNKNOWN",
+      "source": "PROVIDER_CONVENTION"
+     }
+    },
+    "start": "2030-01-07",
+    "end": "2030-01-14"
+   },
+   "synthetic": true,
+   "expected_json": "{\"reason_codes\": [\"PRICE_BASIS_CONTINUITY_UNCONFIRMED\", \"CORPORATE_ACTION_COVERAGE_GAP\"], \"state\": \"NOT_JUDGEABLE\"}"
+  },
+  {
+   "id": "history_window_ends_after_coverage",
+   "operation": "history_window_continuity",
+   "input": {
+    "history": {
+     "schema": "private-history/1",
+     "provider": "Yahoo Finance(비공식)",
+     "symbol": "SYNTH1",
+     "range": "5y",
+     "currency": "USD",
+     "exchange": "NMS",
+     "timezone": "America/New_York",
+     "interval": "1d",
+     "basis": "RAW_CLOSE",
+     "delay_status": "UNKNOWN",
+     "read_at": "2030-12-31T23:00:00Z",
+     "bars": [
+      {
+       "timestamp": 1894026600,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894113000,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894199400,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894285800,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894372200,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894631400,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      }
+     ],
+     "split_coverage": {
+      "status": "CONFIRMED",
+      "from": "2030-01-07",
+      "to": "2030-01-10"
+     },
+     "splits": [],
+     "split_basis": {
+      "price": "SPLIT_ADJUSTED",
+      "volume": "UNKNOWN",
+      "source": "PROVIDER_CONVENTION"
+     }
+    },
+    "start": "2030-01-07",
+    "end": "2030-01-14"
+   },
+   "synthetic": true,
+   "expected_json": "{\"reason_codes\": [\"PRICE_BASIS_CONTINUITY_UNCONFIRMED\", \"CORPORATE_ACTION_COVERAGE_GAP\"], \"state\": \"NOT_JUDGEABLE\"}"
+  },
+  {
+   "id": "history_window_outside_coverage_adjusted_split",
+   "operation": "history_window_continuity",
+   "input": {
+    "history": {
+     "schema": "private-history/1",
+     "provider": "Yahoo Finance(비공식)",
+     "symbol": "SYNTH1",
+     "range": "5y",
+     "currency": "USD",
+     "exchange": "NMS",
+     "timezone": "America/New_York",
+     "interval": "1d",
+     "basis": "RAW_CLOSE",
+     "delay_status": "UNKNOWN",
+     "read_at": "2030-12-31T23:00:00Z",
+     "bars": [
+      {
+       "timestamp": 1894026600,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894113000,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894199400,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894285800,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894372200,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894631400,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      }
+     ],
+     "split_coverage": {
+      "status": "CONFIRMED",
+      "from": "2030-01-07",
+      "to": "2030-01-10"
+     },
+     "splits": [
+      {
+       "date": "2030-01-09",
+       "numerator": 2,
+       "denominator": 1
+      }
+     ],
+     "split_basis": {
+      "price": "SPLIT_ADJUSTED",
+      "volume": "UNKNOWN",
+      "source": "PROVIDER_CONVENTION"
+     }
+    },
+    "start": "2030-01-07",
+    "end": "2030-01-14"
+   },
+   "synthetic": true,
+   "expected_json": "{\"reason_codes\": [\"PRICE_BASIS_CONTINUITY_UNCONFIRMED\", \"CORPORATE_ACTION_COVERAGE_GAP\"], \"state\": \"NOT_JUDGEABLE\"}"
+  },
+  {
+   "id": "history_window_not_reported",
+   "operation": "history_window_continuity",
+   "input": {
+    "history": {
+     "schema": "private-history/1",
+     "provider": "Yahoo Finance(비공식)",
+     "symbol": "SYNTH1",
+     "range": "5y",
+     "currency": "USD",
+     "exchange": "NMS",
+     "timezone": "America/New_York",
+     "interval": "1d",
+     "basis": "RAW_CLOSE",
+     "delay_status": "UNKNOWN",
+     "read_at": "2030-12-31T23:00:00Z",
+     "bars": [
+      {
+       "timestamp": 1894026600,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894113000,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894199400,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894285800,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894372200,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894631400,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      }
+     ],
+     "split_coverage": {
+      "status": "NOT_REPORTED",
+      "from": null,
+      "to": null
+     },
+     "splits": null,
+     "split_basis": {
+      "price": "SPLIT_ADJUSTED",
+      "volume": "UNKNOWN",
+      "source": "PROVIDER_CONVENTION"
+     }
+    },
+    "start": "2030-01-07",
+    "end": "2030-01-14"
+   },
+   "synthetic": true,
+   "expected_json": "{\"reason_codes\": [\"PRICE_BASIS_CONTINUITY_UNCONFIRMED\", \"CORPORATE_ACTION_EVENTS_NOT_REPORTED\"], \"state\": \"NOT_JUDGEABLE\"}"
   },
   {
    "id": "merge_revision",

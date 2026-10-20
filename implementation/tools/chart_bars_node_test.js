@@ -15,6 +15,7 @@ function run(c) {
     case 'merge': return CB.merge(CB.normalize(i.previous), CB.normalize(i.incoming));
     case 'session_set_mismatch': return CB.sessionSetMismatch(CB.normalize(i.history), i.store_dates);
     case 'actions_from_history': return CB.corporateActions(CB.actionsFromHistory(i.history));
+    case 'history_window_continuity': return CB.continuity(CB.actionsFromHistory(i.history), i.start, i.end);
     default: throw new Error(c.operation);
   }
 }

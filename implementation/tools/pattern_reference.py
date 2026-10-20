@@ -215,6 +215,10 @@ def chart_cases():
             ('continuity_split_in_window', avail, '2030-02-07', '2030-03-02'),
             ('continuity_starts_on_split', avail, '2030-03-02', '2030-04-02'),
             ('continuity_coverage_gap', avail, '2029-12-20', '2030-02-07'),
+            # A confirmation covers only its own range: a window partly outside it stays unconfirmed, even with no events.
+            ('continuity_coverage_gap_end', {**avail, 'events': []}, '2030-05-07', '2030-07-07'),
+            ('continuity_coverage_gap_end_adjusted_split', {**avail, 'price_basis': 'SPLIT_ADJUSTED'}, '2030-02-07', '2030-07-01'),
+            ('continuity_coverage_exact_bounds', {**avail, 'events': []}, '2030-01-01', '2030-06-30'),
             # Worker P1-W: split basis declared by the provider path. Prices are never re-adjusted.
             ('continuity_not_reported', {'status': 'NOT_REPORTED'}, '2030-01-07', '2030-02-07'),
             ('continuity_split_in_window_adjusted', {**avail, 'price_basis': 'SPLIT_ADJUSTED'}, '2030-02-07', '2030-04-02'),
@@ -250,6 +254,18 @@ def chart_cases():
             ('from_history_confirmed_bad_date', {'split_coverage': {'status': 'CONFIRMED', 'from': block_days[0], 'to': block_days[-1]},
                                                  'splits': [{'date': '2030-02-30', 'numerator': 4, 'denominator': 1}], 'split_basis': basis})):
         cases.append({'id': cid, 'operation': 'actions_from_history', 'input': {'history': {**plain, **block}}})
+    # Worker block -> continuity for an analysis window: confirmation applies only where the window lies inside split_coverage.
+    def confirmed(frm, to, splits=()):
+        return {'split_coverage': {'status': 'CONFIRMED', 'from': frm, 'to': to},
+                'splits': [{'date': d, 'numerator': 2, 'denominator': 1} for d in splits], 'split_basis': basis}
+    for cid, block, start, end in (
+            ('history_window_inside_coverage', confirmed(block_days[0], block_days[-1]), block_days[0], block_days[-1]),
+            ('history_window_starts_before_coverage', confirmed(block_days[2], block_days[-1]), block_days[0], block_days[-1]),
+            ('history_window_ends_after_coverage', confirmed(block_days[0], block_days[3]), block_days[0], block_days[-1]),
+            ('history_window_outside_coverage_adjusted_split', confirmed(block_days[0], block_days[3], [block_days[2]]), block_days[0], block_days[-1]),
+            ('history_window_not_reported', {'split_coverage': {'status': 'NOT_REPORTED', 'from': None, 'to': None}, 'splits': None, 'split_basis': basis},
+             block_days[0], block_days[-1])):
+        cases.append({'id': cid, 'operation': 'history_window_continuity', 'input': {'history': {**plain, **block}, 'start': start, 'end': end}})
     old_days = weekdays('2030-01-07', 6)
     old = [raw_bar(d, 10, 11, 9, 10, 100) for d in old_days]
     old[-1]['session_status'] = 'IN_PROGRESS'
@@ -281,6 +297,8 @@ def run_chart_case(case):
         return CB.session_set_mismatch(CB.normalize(i['history']), i['store_dates'])
     if op == 'actions_from_history':
         return CB.corporate_actions(CB.actions_from_history(i['history']))
+    if op == 'history_window_continuity':
+        return CB.continuity(CB.actions_from_history(i['history']), i['start'], i['end'])
     raise ValueError(op)
 
 

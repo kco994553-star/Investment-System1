@@ -85,6 +85,14 @@ def test_weekly_known_at_never_precedes_its_last_session():
     ('continuity_split_in_window', 'NOT_JUDGEABLE', ['CORPORATE_ACTION_IN_WINDOW']),
     ('continuity_starts_on_split', 'CONFIRMED', []),
     ('continuity_coverage_gap', 'NOT_JUDGEABLE', ['PRICE_BASIS_CONTINUITY_UNCONFIRMED', 'CORPORATE_ACTION_COVERAGE_GAP']),
+    ('continuity_coverage_gap_end', 'NOT_JUDGEABLE', ['PRICE_BASIS_CONTINUITY_UNCONFIRMED', 'CORPORATE_ACTION_COVERAGE_GAP']),
+    ('continuity_coverage_gap_end_adjusted_split', 'NOT_JUDGEABLE', ['PRICE_BASIS_CONTINUITY_UNCONFIRMED', 'CORPORATE_ACTION_COVERAGE_GAP']),
+    ('continuity_coverage_exact_bounds', 'CONFIRMED', []),
+    ('history_window_inside_coverage', 'CONFIRMED', []),
+    ('history_window_starts_before_coverage', 'NOT_JUDGEABLE', ['PRICE_BASIS_CONTINUITY_UNCONFIRMED', 'CORPORATE_ACTION_COVERAGE_GAP']),
+    ('history_window_ends_after_coverage', 'NOT_JUDGEABLE', ['PRICE_BASIS_CONTINUITY_UNCONFIRMED', 'CORPORATE_ACTION_COVERAGE_GAP']),
+    ('history_window_outside_coverage_adjusted_split', 'NOT_JUDGEABLE', ['PRICE_BASIS_CONTINUITY_UNCONFIRMED', 'CORPORATE_ACTION_COVERAGE_GAP']),
+    ('history_window_not_reported', 'NOT_JUDGEABLE', ['PRICE_BASIS_CONTINUITY_UNCONFIRMED', 'CORPORATE_ACTION_EVENTS_NOT_REPORTED']),
 ])
 def test_continuity(cid, state, codes):
     assert R.run_chart_case(_case(cid)) == {'state': state, 'reason_codes': codes}
