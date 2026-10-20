@@ -98,7 +98,8 @@ async function capture(page, hash, locale, width) {
 }
 async function unavailableNewScreen(page, selector) {
   const root = page.locator(selector); await root.waitFor();
-  verify(await root.locator("svg, canvas").count() === 0, "unavailable screen renders no invented chart");
+  verify(await root.locator('svg:not([data-cycle-kind="concept"]), canvas').count() === 0, "unavailable screen renders no invented chart (only the cycle ring concept diagram)");
+  verify(await root.locator("[data-cycle-interval], [data-cycle-point]").count() === 0, "concept ring carries no estimated interval or point without a model");
   verify(await root.locator("dd, [data-value], .metric").evaluateAll(nodes => nodes.every(node => !/^\s*[+-]?(?:\d|\.\d)/.test(node.textContent))), "unavailable screen exposes no invented numeric value");
   verify((await root.textContent()).includes("NOT_AVAILABLE"), "unavailable screen states NOT_AVAILABLE");
 }
