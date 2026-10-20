@@ -74,7 +74,7 @@ APPROVED_SHA256 = {
     "virtual-trading.js": "41a834f13d86ed2bd6a046cf63788992350294714ee9b9ee159ae50de8e20206",
     "technical-cards.js": "cc6164ac1ca510bb7fddd3403e128198db90c7d7a98b860792bb53df5c1bf814",
     "leaderboard-screen.js": "c2cc760f88655b5b723662325dbdf2f3ce9dae476ab45938437ab336cef85326",
-    "portfolio-screen.js": "e8a549e13337b368aa5c1687aced2ee965422a46fea458b94824da302331efa1",
+    "portfolio-screen.js": "64469dab95d407dbba1d5e68a1614223b6e83c46742ce05205380a44ef71dc72",
     "company-screen.js": "5c55833a4a0cf36f827f41b98d9e5c783524489a4aae2dbdca860c0a4628bfae",
     "ops-status.js": "bccccba913e0887ee2bb3c38fd61f27fcc2a6d37acb67aeeffea227df422c7a9",
     "type-config-defaults.js": "8b287dde54fb194469bd13d62c356e51eb78c4c04c415eafc6f5091935fed131",

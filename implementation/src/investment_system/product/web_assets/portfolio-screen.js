@@ -27,7 +27,7 @@ function kinds({locale,ram=null,virtual=null}){
  const card=(kind,title,badge,body,href,link)=>'<article class="pf-kind" data-kind="'+kind+'"><h3>'+esc(title)+'</h3><p class="pf-kind-state">'+badge+'</p><p class="small">'+esc(body)+'</p><a href="'+href+'">'+esc(link)+'</a></article>';
  return card('model',T('모델 적합 포트폴리오','Model portfolio'),'<span class="badge NOT_AVAILABLE pf-mark" data-kind-state="NOT_COMPUTED">'+esc(T('미산출','Not computed'))+'</span>',
    T('전략 규칙대로 만드는 기준 포트폴리오 · 생성기 없음','Reference portfolio built by the strategy rules · no generator yet'),'#model',T('모델 포트폴리오 →','Model portfolio →'))
-  +card('mine',T('내 포트폴리오 (실제)','My portfolio (actual)'),'<span class="badge '+mine[0]+'" data-kind-state="'+mine[0]+'">'+esc(mine[1])+'</span>',
+  +card('mine',T('실제 (내 것)','Actual (mine)'),'<span class="badge '+mine[0]+'" data-kind-state="'+mine[0]+'">'+esc(mine[1])+'</span>',
    T('실제 보유(ACTUAL) · 이 기기에만 저장 · 공개하지 않음','Actual holdings · stored on this device only · never published'),'#actual',T('실제 보유 입력 →','Actual holdings →'))
   +card('paper',T('모의 포트폴리오','Paper portfolio'),'<span class="badge '+(js?'LIVE':'NOT_AVAILABLE')+'" data-kind-state="'+(js?'LIVE':'NOT_AVAILABLE')+'">'+esc(js?T('그림자 장부 판단 있음 · 이 페이지','Shadow-ledger judgements · this page'):T('보고서에서 계산 전','Not computed on the report yet'))+'</span>',
    T('가상 매매 세트 A~D + 규칙대로 했다면(그림자 장부) · 가상 기록','Virtual sets A–D + “had the rules been followed” (shadow ledger) · virtual records'),'#report/mock',T('모의 일일 보고 →','Paper daily report →'));
