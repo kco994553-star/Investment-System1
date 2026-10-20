@@ -92,7 +92,7 @@
 | sec-qgv2.json | :101 Universe 샤드 + :83 TARGET | 일일 실행. Universe는 샤드 순환(7일에 한 번), TARGET은 매일. 게시마다 전체 재계산 | 다시 받은 행의 값·acquired_at. 모든 행의 백분위·축 점수 | 파일 as_of, 행 acquired_at, 행 상태 LIVE/STALE(14일), calc_version |
 | sec-universe-shares.json / sec-universe-qg.json | :101 | 샤드 순환 | 다시 받은 행 | 행 acquired_at |
 | sec-disclosures.json | :142 | 일일 실행 | 최근 90일 8-K | 파일 as_of, 48시간 STALE |
-| news-signals.json | :147 | 일일 실행 | 최근 14일 뉴스·IR | 파일 as_of, 48시간 STALE |
+| news-signals.json | :147 | 일일 실행 | 최근 14일 뉴스·IR | 파일 as_of, 48시간 STALE. schema 2: 회사별 이번 결과(UPDATED/NO_NEW_ITEMS/FAILED/NOT_RUN)와 출처별 `refresh`(마지막 시도·성공, 이월 시작). 실패는 state를 바꾸지 않고 reason_codes `REFRESH_FAILED`·`REFRESH_PARTIAL_FAILED`로 적는다 |
 | dart-disclosures.json / dart-financials.json | :90 | 일일 실행 | 한국 공시 | 파일 as_of |
 | macro-screen.json | :83 (`--macro-v0`) | 일일 실행, 값은 발표 기준 | 새 발표가 있는 계열만 | 관측 기간, 수집 상한 시각(available_at), 파일 as_of |
 | sec-13f-changes.json | :135 | 일일 실행, 내용은 분기 | 최근 두 분기 | 분기말, 제출일, 수집 시각 |
@@ -119,6 +119,7 @@
 - 서비스 워커는 정적 셸 5개(offline.html, style.css, manifest.json, 아이콘 2개)만 캐시한다. 데이터 JSON은 손대지 않고 네트워크로 보낸다(`service-worker.js:1-4,17`). 워커 스크립트도 HTTP 캐시를 쓰지 않는다(`pwa.js:15 updateViaCache:'none'`).
 - 앱은 공개 파일을 페이지를 열 때 한 번 읽어 RAM에 둔다(`app.js:1180-1198`). 공시·뉴스 목록도 페이지당 한 번이다(`app.js:401-403`). 해시 이동(SPA 화면 전환)은 다시 읽지 않는다. 다시 읽는 때는 새로고침뿐이다.
 - (2026-10-18 `claude/fe-data-refresh`) 열린 탭에서는 **'자료 새로고침' 버튼**(`data-refresh.js`)이 같은 판독기로 공개 파일 묶음 전체를 다시 읽는다. 하나라도 읽기 실패면 아무것도 바꾸지 않고 '갱신 실패 · 이전 값 유지'와 옛 기준 시각을 쓴다. 성공하면 묶음을 한 번에 바꾸고 열린 화면을 제자리에서 다시 그린 뒤 `public-data-updated` 이벤트를 보낸다. 비공개 Worker·시트 요청과 설정 변경은 없다. 새 게시가 없어도 파일마다 자기 기준(행 acquired_at 또는 파일 as_of + stale_after_seconds)의 경계를 지나면 이미 읽은 본문으로 상태를 다시 판정한다(1분마다, 탭 복귀, 화면 이동, 버튼). 자동 재취득(폴링)은 하지 않는다.
+- (2026-10-19 `claude/refresh-keeps-view-state`, G2) 버튼 새로고침·경계 재판정이 화면 전체를 다시 그려도(QGV 허브·13F·뉴스·관심 기업·매크로·구조 트리·전체 트리·기업 목록·엔티티) **보기 상태는 남는다**: 페이지 위치(창 안 같은 요소가 같은 높이), 포커스(같은 요소가 남아 있을 때), 펼친 details, 검색·필터·정렬 입력, 고른 보기 버튼(13F 보기·유형, 뉴스/관계망), 표 안 가로 스크롤, 기업 목록 '더 보기' 개수. 값은 늘 새 묶음에서 다시 그린다(옛 DOM을 두지 않음). 사용자가 화면을 여는 이동(해시 변경)은 전처럼 맨 위에서 시작한다. ★(관심 기업·투자자)은 설정이라 건드리지 않는다. `data-refresh.js` captureView/restoreFields/restoreView, 시험 `refresh_view_state_browser_test.js`.
 - 읽기에 실패하면 그 파일의 값은 RAM에 남기지 않는다(`qgv2-inputs.js:82-94`). 화면은 NOT_AVAILABLE을 쓴다. 옛 값을 현재 값처럼 보여 주지 않는다.
 - 더 새 스키마(schema_version > 2)는 값으로 쓰지 않고 새로고침을 요구한다(`sec-qgv2.js:41-43`, `universe-company.js:38`).
 - GitHub Pages CDN 자체의 짧은 캐시(배포 직후 몇 분)는 앱이 통제하지 못한다. 배포 직후 새로고침에도 옛 as_of가 보이면 몇 분 뒤 다시 연다.
@@ -190,7 +191,7 @@
 
 | 요소 | 출처 → 소비 | 상태·저장 | 계기·재취득 | 시각 | 없음·STALE | 바뀌면 안 되는 것 | 시험 |
 |---|---|---|---|---|---|---|---|
-| 4.2 공시·뉴스 목록 | sec-disclosures.json + news-signals.json + dart(`news-signals.js:123-132`, `app.js:401-404`) | 연결 완료 · 공개 | 일일 실행 · 페이지당 한 번 | 파일 as_of, 행마다 발표·수집 시각(근거 보기) | 48시간 지나면 "STALE · 수집 갱신 시각 경과" | score_effect NONE: 점수에 반영 안 함 | **update_propagation**(목록·as_of 일치, 삭제 반영), news_signals, sec_disclosures |
+| 4.2 공시·뉴스 목록 | sec-disclosures.json + news-signals.json + dart(`news-signals.js:123-132`, `app.js:401-404`) | 연결 완료 · 공개 | 일일 실행 · 페이지당 한 번 | 파일 as_of, 행마다 발표·수집 시각(근거 보기) | 48시간 지나면 "STALE · 수집 갱신 시각 경과". 출처마다 '새 뉴스 없음 · 확인 t' 또는 '이전 자료 유지 · 마지막 성공 t · 최근 갱신 실패(출처 코드, t)'(`news-signals.js` refreshText) | score_effect NONE: 점수에 반영 안 함 | **update_propagation**(목록·as_of 일치, 삭제 반영), news_signals, sec_disclosures |
 | 4.2 필터 | sessionStorage `news-filters`(`news-signals.js:103`) | 연결 완료 · 기기 저장(탭) | 사용자 조작 | — | — | 자료 | news_signals |
 | 4.3 트리 예시 | 같은 두 파일을 **매번 다시 읽음**(`ia-screens.js:132-141`) | 연결 완료 · 공개 | 화면을 열 때마다 | 파일 as_of | 읽기 실패 → NA | — | app_nav_ia |
 | 4.1 관계망 | 없음(`ia-screens.js:126`) | 설계만(REL-SOURCE) | — | — | NOT_AVAILABLE | — | app_nav_ia |

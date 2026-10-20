@@ -82,8 +82,9 @@ def test_listed_hard_coded_strings_go_through_i18n():
 
 
 def test_render_errors_fall_back_to_data_unavailable():
-    m = re.search(r'function render\(\) \{(.*?)\n\}', APP, re.S)
-    assert m and 'try {renderRoute();}' in m.group(1) and 'showUnavailable()' in m.group(1)
+    # render(options) forwards the refresh keep-view option (G2) to renderRoute; errors still fall back to showUnavailable.
+    m = re.search(r'function render\(options\) \{(.*?)\n\}', APP, re.S)
+    assert m and 'try {renderRoute(options);}' in m.group(1) and 'showUnavailable()' in m.group(1)
     assert 'window.addEventListener("hashchange", () => D && render());' in APP
     assert '.catch(showUnavailable)' in APP
 
