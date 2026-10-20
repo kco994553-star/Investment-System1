@@ -155,12 +155,53 @@
       const index = indexOf(param.time);
       listeners.crosshair(index === undefined || !param.point ? null : {index, source: 'pointer'});
     });
+    // LWC applies setVisibleLogicalRange on its next animation frame, and getVisibleLogicalRange returns the
+    // old range until then. The renderer keeps the requested range as the visible one until that frame has
+    // run, so callers never read a stale or intermediate range (timeframe switch, keyboard, settings).
+    const view = doc.defaultView;
+    let pending = null, frame = 0;
+    const currentLogical = () => pending || chart.timeScale().getVisibleLogicalRange();
+    const emitRange = () => { if (!disposed && typeof listeners.range === 'function') { const span = visible(); if (span) listeners.range(span); } };
+    // Later layout changes (price-axis width measured at first paint, autosize after a pane-height change)
+    // shift the applied range. A requested range holds until the user moves the chart: a range change with
+    // no user input since the request is re-applied (bounded), and settle() re-checks a few frames.
+    function settle(target, tries) {
+      // Registered after LWC's own frame request, so it runs once the range has been applied.
+      frame = view.requestAnimationFrame(() => {
+        frame = 0;
+        if (disposed || pending !== target) return;
+        const applied = chart.timeScale().getVisibleLogicalRange();
+        if (applied && tries > 0 && (Math.abs(applied.from - target.from) > 0.01 || Math.abs(applied.to - target.to) > 0.01)) {
+          chart.timeScale().setVisibleLogicalRange(target); settle(target, tries - 1); return;
+        }
+        pending = null; emitRange();
+      });
+    }
+    let lastRequest = null;
+    const userMoved = () => { if (lastRequest) lastRequest.user = true; };
+    for (const type of ['pointerdown', 'wheel', 'touchstart']) host.addEventListener(type, userMoved, {capture: true, passive: true});
+    function request(logical) {
+      const target = {from: logical.from, to: logical.to};
+      lastRequest = {target, user: false, reapplied: 0};
+      pending = target;
+      chart.timeScale().setVisibleLogicalRange(target);
+      if (frame) view.cancelAnimationFrame(frame);
+      settle(target, 3);
+    }
     chart.timeScale().subscribeVisibleLogicalRangeChange(range => {
-      if (!disposed && range && typeof listeners.range === 'function') { const span = clampRange(range, bars.length); if (span) listeners.range(span); }
+      if (!range || disposed) return;
+      const last = lastRequest;
+      if (last && !last.user && pending === null && last.reapplied < 5 && (Math.abs(range.from - last.target.from) > 0.01 || Math.abs(range.to - last.target.to) > 0.01)) {
+        last.reapplied++; pending = last.target; chart.timeScale().setVisibleLogicalRange(last.target);
+        if (frame) view.cancelAnimationFrame(frame);
+        settle(last.target, 3);
+      }
+      emitRange();
     });
 
     function setData(model) {
       bars = normalizeBars(model.bars);
+      pending = null; lastRequest = null;
       const lines = normalizeLines(model.lines, bars.length);
       byTime.clear(); bars.forEach((bar, i) => byTime.set(bar.time, i));
       for (const item of extra) chart.removeSeries(item.series);
@@ -187,14 +228,21 @@
       return panes.length;
     }
 
-    function visible() { const range = chart.timeScale().getVisibleLogicalRange(); return range ? clampRange(range, bars.length) : null; }
-    function setVisible(range) { const span = clampRange(range, bars.length); if (span) chart.timeScale().setVisibleLogicalRange({from: span.from - 0.5, to: span.to + 0.5}); }
-    function zoom(factor) {
-      const range = chart.timeScale().getVisibleLogicalRange(); if (!range) return;
-      const center = (range.from + range.to) / 2, half = Math.max(2, (range.to - range.from) / 2 * factor);
-      chart.timeScale().setVisibleLogicalRange({from: center - half, to: center + half});
+    // Bar i spans logical [i - 0.5, i + 0.5]; a bar counts as visible when its centre is inside the range.
+    function visible() {
+      const range = currentLogical();
+      if (!range || !bars.length) return null;
+      let from = Math.ceil(range.from - 1e-6), to = Math.floor(range.to + 1e-6);
+      if (from > to) from = to = Math.round((range.from + range.to) / 2);
+      return clampRange({from, to}, bars.length);
     }
-    function scroll(delta) { const range = chart.timeScale().getVisibleLogicalRange(); if (range) chart.timeScale().setVisibleLogicalRange({from: range.from + delta, to: range.to + delta}); }
+    function setVisible(range) { const span = clampRange(range, bars.length); if (span) request({from: span.from - 0.5, to: span.to + 0.5}); }
+    function zoom(factor) {
+      const range = currentLogical(); if (!range) return;
+      const center = (range.from + range.to) / 2, half = Math.max(2, (range.to - range.from) / 2 * factor);
+      request({from: center - half, to: center + half});
+    }
+    function scroll(delta) { const range = currentLogical(); if (range) request({from: range.from + delta, to: range.to + delta}); }
     function showCrosshair(index) {
       const bar = bars[index]; if (!bar) return;
       if (bar.ohlc) chart.setCrosshairPosition(bar.close, bar.time, candles); else chart.clearCrosshairPosition();
@@ -215,9 +263,9 @@
       const index = Math.round(logical);
       return index >= 0 && index < bars.length ? {index, price} : null;
     }
-    function destroy() { if (disposed) return; disposed = true; chart.remove(); host.replaceChildren(); }
+    function destroy() { if (disposed) return; disposed = true; if (frame) view.cancelAnimationFrame(frame); frame = 0; pending = null; lastRequest = null; host.removeEventListener('pointerdown', userMoved, {capture: true}); host.removeEventListener('wheel', userMoved, {capture: true}); host.removeEventListener('touchstart', userMoved, {capture: true}); chart.remove(); host.replaceChildren(); }
     return Object.freeze({kind: 'lwc', capabilities: LWC_CAPABILITIES, setData, getVisibleRange: visible, setVisibleRange: setVisible, zoom, scroll,
-      fit: () => chart.timeScale().fitContent(), showCrosshair, clearCrosshair: () => chart.clearCrosshairPosition(), setMeasure, pointAt, destroy});
+      fit: () => { if (bars.length) request({from: -0.5, to: bars.length - 0.5}); }, showCrosshair, clearCrosshair: () => chart.clearCrosshairPosition(), setMeasure, pointAt, destroy});
   }
 
   /* ---------- SVG fallback (existing TechnicalChart, unchanged) ---------- */

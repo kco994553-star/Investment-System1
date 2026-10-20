@@ -237,7 +237,11 @@
       locale: state.locale, provisionalLabel: words(state, '잠정', 'Prov.'),
       onCrosshair: hit => {
         if (state.disposed) return;
+        // While the keyboard drives the cursor, crosshair events from a resting mouse (LWC re-hit-tests it
+        // after every scroll or zoom) must not move the readout away from the keyboard bar.
+        const keyboard = state.lastInput === 'keyboard' && state.keyboardCursor !== null;
         if (!hit) { paintReadout(state, state.keyboardCursor, state.keyboardCursor !== null ? 'keyboard' : null); return; }
+        if (keyboard && hit.index !== state.keyboardCursor) return;
         paintReadout(state, hit.index, state.touching ? 'touch' : hit.index === state.keyboardCursor ? 'keyboard' : 'pointer');
       },
       onRange: () => { if (!state.disposed) paintRange(state); }
@@ -456,9 +460,10 @@
       const box = event.target;
       if (box.dataset && box.dataset.cwIndicator) { state.settings.indicators[box.dataset.cwIndicator] = box.checked; persist(state); if (state.bars.length) void render(state, {keepRange: state.renderer ? state.renderer.getVisibleRange() : null}); }
     });
-    state.chartBox.addEventListener('keydown', event => onKey(state, event));
+    state.chartBox.addEventListener('keydown', event => { state.lastInput = 'keyboard'; onKey(state, event); });
+    for (const type of ['pointermove', 'wheel']) state.chartBox.addEventListener(type, () => { state.lastInput = 'pointer'; }, {passive: true});
     // A tap or click (little movement, short press) marks a measure point while measuring.
-    state.chartBox.addEventListener('pointerdown', event => { if (event.pointerType === 'touch') state.touching = true; state.press = {x: event.clientX, y: event.clientY, at: event.timeStamp}; });
+    state.chartBox.addEventListener('pointerdown', event => { state.lastInput = 'pointer'; if (event.pointerType === 'touch') state.touching = true; state.press = {x: event.clientX, y: event.clientY, at: event.timeStamp}; });
     state.chartBox.addEventListener('pointerup', event => {
       const press = state.press; state.press = null;
       if (event.pointerType === 'touch') { state.touching = false; if (state.readout.dataset.tracking === 'touch') state.readout.dataset.tracking = 'touch-held'; }
@@ -489,7 +494,7 @@
     let storage = null; try { storage = options.storage || view.localStorage; } catch (_) { storage = null; }
     const state = {doc, view, host, storage, locale: options.locale, qgvHref: options.qgvHref || null, id: 'cw' + (++counter), settings: readSettings(storage), data: null, source: 'none', symbol: '',
       daily: [], weekly: null, bars: [], timeframe: 'daily', weeklyCode: 'WEEKLY_BARS_MODULE_PENDING', renderer: null, rendererCode: 'READY', pending: null, renderGeneration: 0,
-      cursor: null, keyboardCursor: null, press: null, measuring: false, measureStart: null, measure: null, touching: false, disposed: false};
+      cursor: null, keyboardCursor: null, lastInput: null, press: null, measuring: false, measureStart: null, measure: null, touching: false, disposed: false};
     state.root = build(state);
     host.replaceChildren(state.root);
     wire(state);
