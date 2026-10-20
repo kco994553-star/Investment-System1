@@ -47,7 +47,7 @@ class PagesArtifactGuardTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         receipt = json.loads(result.stdout)
         self.assertEqual(receipt["pages_artifact_guard"], "PASS")
-        self.assertEqual(receipt["files_scanned"], 126)  # 119 (macro-cycle-ring.js/.css; incl. TA P1 modules chart-bars.js, pattern-config-defaults.js, pattern-engine.js, pattern-history.js, 2026-10-20) + chart renderer (P1-7/P1-8, 2026-10-20): chart-renderer.js, chart-workbench.js/.css, vendored lightweight-charts 5.2.1 + LICENSE/NOTICE/third-party notices; before that: 106 - the four removed home-bg-*.svg (2026-10-18) + universe-company.js/.css + doodles.js + ia-screens.js (owner IA 2026-10-18) + company-names-ko.json (KR-NAMES 2026-10-18) + stat-radar.js/.css + v-coverage.js/.css + price-time.js (D10 price time 2026-10-18) + data-refresh.js (2026-10-18)
+        self.assertEqual(receipt["files_scanned"], 129)  # 126 + macro evidence (#351, owner approval 2026-10-20): macro-evidence.js/.css/.json; 119 (macro-cycle-ring.js/.css; incl. TA P1 modules chart-bars.js, pattern-config-defaults.js, pattern-engine.js, pattern-history.js, 2026-10-20) + chart renderer (P1-7/P1-8, 2026-10-20): chart-renderer.js, chart-workbench.js/.css, vendored lightweight-charts 5.2.1 + LICENSE/NOTICE/third-party notices; before that: 106 - the four removed home-bg-*.svg (2026-10-18) + universe-company.js/.css + doodles.js + ia-screens.js (owner IA 2026-10-18) + company-names-ko.json (KR-NAMES 2026-10-18) + stat-radar.js/.css + v-coverage.js/.css + price-time.js (D10 price time 2026-10-18) + data-refresh.js (2026-10-18)
         self.assertEqual(receipt["violations"], {})
         self.assertEqual(result.stderr, "")
 
@@ -381,7 +381,7 @@ class PagesArtifactGuardTests(unittest.TestCase):
     def test_github_pages_tar_shape_passes_same_guard(self):
         receipt = self.tar_receipt()
         self.assertEqual(receipt["pages_artifact_guard"], "PASS")
-        self.assertEqual(receipt["files_scanned"], 126)  # 119 (macro-cycle-ring.js/.css; incl. TA P1 modules chart-bars.js, pattern-config-defaults.js, pattern-engine.js, pattern-history.js, 2026-10-20) + chart renderer (P1-7/P1-8, 2026-10-20): chart-renderer.js, chart-workbench.js/.css, vendored lightweight-charts 5.2.1 + LICENSE/NOTICE/third-party notices; before that: 106 - the four removed home-bg-*.svg (2026-10-18) + universe-company.js/.css + doodles.js + ia-screens.js (owner IA 2026-10-18) + company-names-ko.json (KR-NAMES 2026-10-18) + stat-radar.js/.css + v-coverage.js/.css + price-time.js (D10 price time 2026-10-18) + data-refresh.js (2026-10-18)
+        self.assertEqual(receipt["files_scanned"], 129)  # 126 + macro evidence (#351, owner approval 2026-10-20): macro-evidence.js/.css/.json; 119 (macro-cycle-ring.js/.css; incl. TA P1 modules chart-bars.js, pattern-config-defaults.js, pattern-engine.js, pattern-history.js, 2026-10-20) + chart renderer (P1-7/P1-8, 2026-10-20): chart-renderer.js, chart-workbench.js/.css, vendored lightweight-charts 5.2.1 + LICENSE/NOTICE/third-party notices; before that: 106 - the four removed home-bg-*.svg (2026-10-18) + universe-company.js/.css + doodles.js + ia-screens.js (owner IA 2026-10-18) + company-names-ko.json (KR-NAMES 2026-10-18) + stat-radar.js/.css + v-coverage.js/.css + price-time.js (D10 price time 2026-10-18) + data-refresh.js (2026-10-18)
         self.assertEqual(receipt["violations"], {})
 
     def test_exact_upload_action_tar_command_with_normalized_owners_passes(self):

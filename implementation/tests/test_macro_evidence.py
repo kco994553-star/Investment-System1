@@ -426,13 +426,47 @@ def test_tool_writes_validated_file_and_preserves_the_live_copy(tmp_path, capsys
     assert tool.main(['--out', str(empty)]) == 2
 
 
-def test_core_adds_nothing_to_the_pages_artifact(tmp_path):
-    """Approval-free core: the collector and contract exist, but the Pages build publishes no macro-evidence file and the
-    unchanged guard passes. Publication (guard registration, screen) is the separate approval-required change."""
-    import build_pages_cockpit
+def test_guard_accepts_the_file_and_rejects_a_tampered_copy(tmp_path):
     import pages_artifact_guard as guard
+    from collections import Counter
+    assert el.FILENAME in guard.ALLOWED_NAMES
+    assert 'macro-evidence.js' in guard.APPROVED_SHA256 and 'macro-evidence.css' in guard.APPROVED_SHA256
+    violations = Counter()
+    guard._check_payload(el.FILENAME, el.encode(fx.runs()[-1]), violations)
+    assert not violations
+    bad = fx.runs()[-1]
+    bad['scope']['probability'] = True
+    guard._check_payload(el.FILENAME, json.dumps(bad).encode(), violations)
+    assert violations['macro_evidence_boundary'] == 1
+
+
+def test_build_emits_the_not_collected_placeholder(tmp_path):
+    import build_pages_cockpit
     out = tmp_path / 'site'
     build_pages_cockpit.build_public_cockpit(out)
-    assert not any(p.name.startswith('macro-evidence') for p in out.iterdir())
-    assert el.FILENAME not in guard.ALLOWED_NAMES
+    payload = el.require_macro_evidence(json.loads((out / el.FILENAME).read_text(encoding='utf-8')))
+    assert payload['state'] == 'NOT_AVAILABLE' and payload['generated_at'] is None and payload['continuity'] == 'NOT_COLLECTED'
+    assert (out / 'macro-evidence.js').is_file() and (out / 'macro-evidence.css').is_file()
+    index = (out / 'index.html').read_text(encoding='utf-8')
+    assert '<script src="macro-evidence.js"></script>' in index and 'href="macro-evidence.css"' in index
+    import pages_artifact_guard as guard
     assert guard.scan_artifact(out)['pages_artifact_guard'] == 'PASS'
+
+
+def test_pipeline_hook_never_stops_the_sec_collection(monkeypatch, capsys):
+    import public_screens_pipeline as pipeline
+    seen = {}
+
+    def boom(root, manifest):
+        seen['called'] = (Path(root).is_dir(), sorted(manifest))
+        raise RuntimeError('source text that must not be printed')
+
+    def stop(*a, **k):
+        raise pipeline.CollectionFailure([], [], 0) if False else SystemExit('stop-after-hook')
+    monkeypatch.setattr(pipeline, 'collect_public_inputs', stop)
+    with pytest.raises(SystemExit):
+        pipeline.collect(Path('.'), macro_v0=lambda root: [], macro_curve=lambda root: [], macro_evidence=boom,
+                         client_factory=lambda agent: None)
+    assert seen['called'] == (True, ['macro', 'macro_curve_v1', 'macro_v0', 'schema_version', 'sec', 'thirteen_f'])
+    out = capsys.readouterr().out
+    assert 'MACRO_EVIDENCE BUILD_FAILED nothing_written' in out and 'source text' not in out

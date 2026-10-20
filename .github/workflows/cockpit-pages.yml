@@ -43,6 +43,7 @@ jobs:
           python implementation/tools/company_logos_pipeline.py --live --out "$RUNNER_TEMP/public-cockpit"
           python implementation/tools/sec_disclosures.py --preserve-only --out "$RUNNER_TEMP/public-cockpit"
           python implementation/tools/news_signals.py --preserve-only --out "$RUNNER_TEMP/public-cockpit"
+          python implementation/tools/macro_evidence.py --preserve-only --out "$RUNNER_TEMP/public-cockpit"
           python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:

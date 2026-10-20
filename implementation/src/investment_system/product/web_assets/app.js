@@ -588,6 +588,7 @@ function macro() {
   return `<div data-ia-screen="macro">${heading("MACRO",t("매크로"),t("공식 축별 상태를 확인합니다."))}
     <div class="chips data-badges"><span class="badge">${esc(t("매크로 상태 v1 · UNCALIBRATED · 경고등 5개"))}</span></div>
     <div id="macro-lights-root"></div>
+    <div id="macro-evidence-root"></div>
     <section class="card" data-macro-status><h2>${t("상태판")}</h2><p class="small">${esc(t("정상·경고·위기는 위의 경고등 5개로 정합니다. 8개 축 국면 판정은 보류합니다."))}</p>
     <h3>${t("현재 국면")}</h3><p data-macro-regime>${esc(t("자료 없음"))}</p><p class="small">${esc(t("8개 축의 6칸은 따로 보관하며 하나의 점수로 합치지 않습니다. FRED/ALFRED는 사용하지 않습니다."))}</p></section>
     <div id="public-macro"></div>${ScreenDetail.macroHtml(appSettings.display_locale)}${window.IaScreens?IaScreens.macroHtml(appSettings.display_locale):""}</div>`;
@@ -963,6 +964,7 @@ function renderRoute(options) {
   if(route==='types') DeviceProfiles.mount($('#device-type-editor'),{locale:appSettings.display_locale,mode:'types'});
   if(route==='macro') MacroLights.mount($('#macro-lights-root'),{bundle:publicScreens,locale:appSettings.display_locale,config:window.InvestmentAppConfig});
   if(route==='macro'&&window.MacroCycleRing) MacroCycleRing.mount($('#macro-cycle-ring-root'),{bundle:publicScreens,locale:appSettings.display_locale});
+  if(route==='macro' && window.MacroEvidence) MacroEvidence.mount($('#macro-evidence-root'),{locale:appSettings.display_locale});
   mountPublicPanels(route,id);
   syncNavigation(route);
   const menu=window.AppShell?.menuFor(route);

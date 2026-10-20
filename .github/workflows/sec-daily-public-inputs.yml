@@ -79,8 +79,12 @@ jobs:
         env:
           SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
           BEA_USERID: ${{ secrets.BEA_USERID }}
+          # Optional (owner decision): without it the Census series stay NOT_AVAILABLE (SOURCE_KEY_NOT_CONFIGURED).
+          CENSUS_API_KEY: ${{ secrets.CENSUS_API_KEY }}
+        # --macro-evidence: macro-evidence.json (MEV-1 P1 13, exploration only). It reuses the macro v0 files in the same
+        # private directory and never stops the SEC collection (fixed codes only).
         run: |
-          python implementation/tools/public_screens_pipeline.py --live --macro-v0 --out "$RUNNER_TEMP/public-cockpit"
+          python implementation/tools/public_screens_pipeline.py --live --macro-v0 --macro-evidence --out "$RUNNER_TEMP/public-cockpit"
           python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
       - name: Collect OpenDART disclosures and periodic financials for 042700 (fixed codes and call count only)
         continue-on-error: true
