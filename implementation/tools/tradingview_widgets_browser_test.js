@@ -12,7 +12,9 @@ try{for(const width of [390,1280]){
  assert.equal(await page.locator('script[src*="s3.tradingview.com"]').count(),0);assert.equal(scripts,0);
  assert.equal(await page.locator('[data-tv-unverified]').count(),1);assert.ok((await page.locator('[data-tv-unverified]').textContent()).includes('TSE:8035'));
  await page.goto(BASE+'#company/hanmi');await page.locator('[data-tv-widget="mini"] iframe').waitFor();assert.ok((await page.locator('[data-tv-unverified]').textContent()).includes('확인 불가'));
- const frame=page.locator('[data-tv-widget="mini"] iframe');assert.equal(await frame.evaluate(f=>f.contentDocument),null);assert.ok(decodeURIComponent(await frame.getAttribute('src')).includes('KRX:042700'));
+ const frame=page.locator('[data-tv-widget="mini"] iframe');
+ // The widget iframe is loading="lazy": bring it into view and wait until it has left about:blank before the cross-origin check.
+ await frame.scrollIntoViewIfNeeded();await page.waitForFunction(()=>document.querySelector('[data-tv-widget="mini"] iframe').contentDocument===null);assert.equal(await frame.evaluate(f=>f.contentDocument),null);assert.ok(decodeURIComponent(await frame.getAttribute('src')).includes('KRX:042700'));
  assert.equal(await page.evaluate(()=>JSON.stringify({...localStorage,...sessionStorage}).includes('123456789')),false);assert.equal(await page.locator('main').evaluate(n=>n.textContent.includes('123456789')),false);
  await page.locator('[data-tv-toggle="off"]').click();await page.locator('[data-tv-disabled]').waitFor();assert.equal(await page.locator('iframe[data-tv-iframe]').count(),0);assert.equal(await page.evaluate(()=>TradingViewWidgets.enabled(localStorage)),false);
  assert.equal(errors,0);assert.equal(external,0);assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
