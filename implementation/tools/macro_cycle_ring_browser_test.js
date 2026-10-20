@@ -2,7 +2,8 @@
 // Macro cycle rings (FRONTEND_INTERACTION_CONTRACT_20261019 §4-8) at 390 (touch) and 1280 (mouse): wrap-around both ways by drag,
 // keyboard and buttons, no rewind, vertical swipe is page scroll, no model = no arc ("미산출"), abstain, interval edges incl. the
 // last→first wrap, reaction to a new publication (focus kept once turned), validated-only transition text, reduced motion, no
-// overflow, separate rings, the device-only user estimate kept apart from the official layer, no probability text, no non-GET
+// overflow, separate rings, the device-only user estimate history (append, compare, delete, cap, /1 migration) kept apart from
+// the official layer, no probability text, no non-GET
 // request. Publications here are synthetic draft §4-2 objects passed to MacroCycleRing.setPublication (publication file and
 // schema are not decided: PM-2). Not model output, not market data.
 const assert=require('node:assert/strict');const {chromium}=require('playwright');
@@ -140,7 +141,8 @@ async function drag(page,c,cells,touch,cdp){
    await page.locator(R('economy')+' [data-cycle-user-note]').fill('synthetic note');
    await page.locator(R('economy')+' [data-cycle-user-save]').click();
    {const v=JSON.parse(await page.evaluate(k=>localStorage.getItem(k),'investment.web.v1.macro-cycle-user-estimate'));
-    assert.equal(v.schema,'macro-cycle-user-estimate/1');assert.deepEqual(Object.keys(v.rings),['economy']);assert.deepEqual(v.rings.economy.from,{phase:'확장',part:'후반'});}
+    assert.equal(v.schema,'macro-cycle-user-estimate/2');assert.deepEqual(Object.keys(v.rings),['economy']);assert.equal(v.rings.economy.length,1);assert.deepEqual(v.rings.economy[0].from,{phase:'확장',part:'후반'});
+    assert.equal(v.rings.economy[0].note,'synthetic note');assert.deepEqual(v.rings.economy[0].system,{state:'NOT_COMPUTED',reason:'NO_MODEL_OUTPUT',layer:null,model_id:null,as_of:null,text:'미산출'},'system snapshot = what was shown (미산출)');}
    assert.equal(await page.locator(R('economy')+' [data-cycle-user-arc]').count(),1);assert.equal(await page.locator('[data-cycle-interval]').count(),0,'user arc is not the official interval');
    assert.equal(await page.locator(R('economy')+' [data-cycle-user-arc]').getAttribute('data-cycle-user-from'),'확장 후반');
    assert.equal(await page.locator(R('economy')).getAttribute('data-cycle-state'),'NOT_COMPUTED');assert.ok((await page.locator(R('economy')+' [data-cycle-official]').textContent()).includes('미산출'));
@@ -151,6 +153,58 @@ async function drag(page,c,cells,touch,cdp){
    await page.locator(R('economy')+' [data-cycle-user-clear]').click();
    assert.equal(await page.evaluate(k=>localStorage.getItem(k),'investment.web.v1.macro-cycle-user-estimate'),null);assert.equal(await page.locator('[data-cycle-user-arc]').count(),0);
    pass++;console.log('PASS cycle ring user estimate '+width);
+   // user estimate history (functional hierarchy 4.4.2): append-only per ring, reason + system snapshot, compare, delete, cap, /1 migration
+   phase='USER HISTORY '+width;
+   {const KEY='investment.web.v1.macro-cycle-user-estimate',E=R('economy'),store=async()=>JSON.parse(await page.evaluate(k=>localStorage.getItem(k),KEY)||'null');
+    const save=async(from,to,note)=>{await page.locator(E+' select[data-cycle-user-from]').selectOption(from);await page.locator(E+' select[data-cycle-user-to]').selectOption(to);await page.locator(E+' [data-cycle-user-note]').fill(note);await page.locator(E+' [data-cycle-user-save]').click();};
+    const entries=()=>page.locator(E+' [data-cycle-user-history] > li').evaluateAll(n=>n.map(x=>x.dataset.cycleUserEntry));
+    await save('확장|후반','둔화|초입','synthetic reason one');await save('둔화|초입','둔화|후반','synthetic reason two');
+    {const v=await store();assert.equal(v.rings.economy.length,2);assert.deepEqual(v.rings.economy.map(e=>e.seq),[1,2]);assert.ok(v.rings.economy.every(e=>e.system.state==='NOT_COMPUTED'&&e.system.text==='미산출'));}
+    assert.deepEqual(await entries(),['2','1'],'newest first');
+    const first=page.locator(E+' [data-cycle-user-entry="2"]');
+    assert.ok((await first.textContent()).includes('현재'));assert.equal(await first.locator('[data-cycle-user-entry-system]').textContent(),'시스템: 미산출');
+    assert.equal(await first.locator('[data-cycle-user-entry-compare]').textContent(),'이전 사용자 추정 확장 후반~둔화 초입 → 둔화 초입~둔화 후반');
+    assert.equal(await first.locator('[data-cycle-user-entry-note]').textContent(),'근거: synthetic reason two');
+    assert.equal(await page.locator(E+' [data-cycle-user-entry="1"] [data-cycle-user-entry-compare]').textContent(),'첫 기록');
+    assert.equal(await page.locator(E+' [data-cycle-user-now]').textContent(),'지금 시스템: 미산출');
+    assert.equal(await page.locator(E+' [data-cycle-user-arc]').getAttribute('data-cycle-user-from'),'둔화 초입','arc = latest estimate');
+    assert.ok((await page.locator(E+' [data-cycle-user] legend').textContent()).includes('사용자 추정 · 공식 판정 아님 · 이 기기에만 저장'));
+    assert.equal(await page.locator(R('market')+' [data-cycle-user-history]').count(),0,'other rings keep their own history');
+    await page.evaluate(()=>{location.hash='#home';});await page.locator('[data-home]').first().waitFor();await page.evaluate(()=>{location.hash='#macro';});await page.locator('[data-cycle-root]').waitFor();
+    assert.deepEqual(await entries(),['2','1'],'kept after navigating away and back');
+    await reloadMacro(page);assert.deepEqual(await entries(),['2','1'],'kept after reload');
+    await page.locator(E+' [data-cycle-user-delete="2"]').click();assert.deepEqual(await entries(),['1']);assert.deepEqual((await store()).rings.economy.map(e=>e.seq),[1]);
+    assert.equal(await page.locator(E+' [data-cycle-user-arc]').getAttribute('data-cycle-user-from'),'확장 후반');
+    // a save while a (synthetic) publication is shown keeps that snapshot; a later withdrawal does not rewrite it
+    await page.evaluate(o=>MacroCycleRing.setPublication({outputs:o}),[out('economy',P('확장','후반'),P('둔화','초입'))]);
+    await save('수축|초입','수축|후반','synthetic reason three');
+    await page.evaluate(()=>MacroCycleRing.setPublication({outputs:[]}));
+    assert.equal(await page.locator(E+' [data-cycle-user-entry="2"] [data-cycle-user-entry-system]').textContent(),'시스템: 확장 후반~둔화 초입 · 탐색 층 v0 · synthetic-phase/economy · 기준 2026-10-15T00:00:00Z');
+    assert.equal(await page.locator(E+' [data-cycle-user-entry="1"] [data-cycle-user-entry-system]').textContent(),'시스템: 미산출');
+    assert.equal(await page.locator(E+' [data-cycle-user-now]').textContent(),'지금 시스템: 미산출');assert.equal(await page.locator(E).getAttribute('data-cycle-state'),'NOT_COMPUTED');
+    // cap: 55 stored entries read as the newest 50; one more save keeps 50 and drops the oldest
+    await page.evaluate(k=>{const rings={economy:[]};for(let i=1;i<=55;i++)rings.economy.push({seq:i,saved_at:'2026-10-20T00:'+String(i).padStart(2,'0')+':00Z',from:{phase:'회복',part:'초입'},to:{phase:'회복',part:'후반'},note:'',system:{state:'NOT_COMPUTED',text:'미산출',reason:'NO_MODEL_OUTPUT',layer:null,model_id:null,as_of:null}});localStorage.setItem(k,JSON.stringify({schema:'macro-cycle-user-estimate/2',rings}));},KEY);
+    await reloadMacro(page);
+    const show=width<900?5:10;
+    assert.equal((await entries()).length,show,'recent '+show+' shown, rest under 더 보기');
+    assert.equal(await page.locator(E+' [data-cycle-user-more] summary').textContent(),'더 보기 ('+(50-show)+')');
+    assert.ok((await page.locator(E+' [data-cycle-user-cap]').textContent()).startsWith('기록 50개 · 링마다 최근 50개까지 보관'));
+    await save('확장|초입','확장|후반','');{const v=await store();assert.equal(v.rings.economy.length,50);assert.equal(v.rings.economy[0].seq,7);assert.equal(v.rings.economy[49].seq,56);}
+    // migration from a /1 value: read as a one-entry history without loss, written as /2 only on the next change
+    const v1={schema:'macro-cycle-user-estimate/1',rings:{economy:{from:{phase:'확장',part:'초입'},to:{phase:'둔화',part:'후반'},note:'synthetic v1 note',saved_at:'2026-10-19 08:00'}}};
+    await page.evaluate(([k,v])=>localStorage.setItem(k,JSON.stringify(v)),[KEY,v1]);await reloadMacro(page);
+    assert.deepEqual(await entries(),['1']);assert.equal(await page.locator(E+' [data-cycle-user-entry="1"] [data-cycle-user-entry-system]').textContent(),'시스템: 기록 없음(이전 형식)');
+    assert.ok((await page.locator(E+' [data-cycle-user-entry="1"]').textContent()).includes('2026-10-19 08:00 UTC'));
+    assert.equal(await page.locator(E+' [data-cycle-user-entry="1"] [data-cycle-user-entry-note]').textContent(),'근거: synthetic v1 note');
+    assert.deepEqual(await store(),v1,'reading does not rewrite the stored value');
+    await save('둔화|초입','둔화|후반','');
+    {const v=await store();assert.equal(v.schema,'macro-cycle-user-estimate/2');assert.equal(v.rings.economy.length,2);
+     assert.deepEqual(v.rings.economy[0],{seq:1,saved_at:'2026-10-19 08:00',from:{phase:'확장',part:'초입'},to:{phase:'둔화',part:'후반'},note:'synthetic v1 note',system:{state:'NOT_RECORDED',text:'',reason:null,layer:null,model_id:null,as_of:null}});}
+    assert.ok(!/%|확률\s*[:：]?\s*\d/.test(await page.locator(E+' [data-cycle-user]').textContent()),'no probability text');
+    await noOverflow(page,'history '+width);
+    await page.locator(E+' [data-cycle-user]').screenshot({path:SHOTS+'/macro-cycle-ring-history-'+width+'.png'}).catch(()=>{});
+    await page.locator(E+' [data-cycle-user-clear]').click();assert.equal(await page.evaluate(k=>localStorage.getItem(k),KEY),null);assert.equal(await page.locator(E+' [data-cycle-user-history]').count(),0);}
+   pass++;console.log('PASS cycle ring user estimate history '+width);
    // 10, 9 synthetic estimated interval (fresh page: nothing turned yet), incl. last→first wrap on the market ring
    phase='ESTIMATED '+width;
    await reloadMacro(page);
