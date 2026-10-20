@@ -137,11 +137,18 @@ function mount(host,options={}){
  const el=(tag,text,attrs={})=>{const n=doc.createElement(tag);if(text!==undefined)n.textContent=text;for(const[k,v]of Object.entries(attrs))n.setAttribute(k,v);return n;};
  const state={host,view,series:new Map(),result:null,busy:false,revision:0,message:'',controller:null,ledger:null,disposed:false};active.add(state);
  state.pagehide=()=>dispose(state);view.addEventListener('pagehide',state.pagehide);
+ // Optional layout hosts (Lab 9.2.2 / 9.2.3): the price block and the evaluation segments render there instead of inside
+ // the ledger card. Same elements, attributes and states; without hosts the card is unchanged.
+ const hosts=options.hosts||{},hosted=!!(hosts.outcome||hosts.eligibility),H2=hosted?'h4':'h2',H3=hosted?'h5':'h3';
  const section=el('section',undefined,{class:'card','data-forward-validation':''});
- section.append(el('h2',x('전진 검증 기록 · 가격 미포함','Forward validation ledger · price-free')));
+ section.append(el(H2,x('전진 검증 기록 · 가격 미포함','Forward validation ledger · price-free')));
  const badges=el('div',undefined,{class:'chips','data-forward-badges':''});badges.append(el('span',STRATEGY,{class:'badge'}),el('span',VERSION+' · '+CALIBRATION,{class:'badge'}),el('span','Holdout UNCONFIRMED · '+x('사용 금지','Do not use'),{class:'badge','data-forward-holdout':''}));
  const facts=el('dl',undefined,{class:'kv'}),summary=el('div',undefined,{'data-forward-summary':''}),prices=el('div',undefined,{'data-forward-prices':''});
- section.append(badges,facts,summary,prices);host.replaceChildren(section);
+ const eligibility=hosts.eligibility?el('div',undefined,{'data-forward-eligibility':''}):null;
+ section.append(badges,facts,summary);if(hosts.outcome)hosts.outcome.replaceChildren(prices);else section.append(prices);
+ if(eligibility)hosts.eligibility.replaceChildren(eligibility);host.replaceChildren(section);
+ const rule=()=>el('p',x('주 평가는 Q·G 각 454개 이상, 계산 버전 일치, 행별 실제 수집 시각 7일 이내를 모두 충족한 기록만 씁니다. 나머지는 "준비 관측·주 평가 대상 아님"으로 사유와 함께 보존합니다.','Primary evaluation uses only records with Q and G each at least 454, one consistent calc version and every row acquired within 7 days. Other records are kept as "preparatory observation · not a primary evaluation target" with their reasons.'),{class:'small','data-forward-evaluation-rule':''});
+ const eligibilityEmpty=text=>{if(eligibility)eligibility.append(el('p',text,{class:'empty','data-forward-eligibility-empty':''}),rule());};
  const fact=(k,v,attr)=>{facts.append(el('dt',k),el('dd',v,attr?{[attr]:''}:{}));};
  const pct=v=>v===null?'NOT_AVAILABLE':(v*100).toFixed(2)+'%',num=v=>v===null?'NOT_AVAILABLE':v.toFixed(2);
  const PREP=x('준비 관측·주 평가 대상 아님','Preparatory observation · not a primary evaluation target');
@@ -154,15 +161,15 @@ function mount(host,options={}){
   if(r.state!=='RECORDED')return{code:'NOT_AVAILABLE',text:'—'};
   return{code:'LEGACY',text:x('관측 기준 미기록(이전 기록, 별도 구간)','Basis not recorded (earlier record, own segment)')};}
  function paintLedger(res){
-  facts.replaceChildren();summary.replaceChildren();
-  if(res.state!=='LOADED'){fact(x('상태','Status'),'NOT_AVAILABLE · '+res.reason,'data-forward-status');fact(x('시작일','Start date'),START,'data-forward-start');fact(x('기록 수','Records'),'0','data-forward-count');fact(x('전략 · 버전','Strategy · version'),STRATEGY+' · '+VERSION);return;}
+  facts.replaceChildren();summary.replaceChildren();if(eligibility)eligibility.replaceChildren();
+  if(res.state!=='LOADED'){eligibilityEmpty('NOT_AVAILABLE · '+res.reason);fact(x('상태','Status'),'NOT_AVAILABLE · '+res.reason,'data-forward-status');fact(x('시작일','Start date'),START,'data-forward-start');fact(x('기록 수','Records'),'0','data-forward-count');fact(x('전략 · 버전','Strategy · version'),STRATEGY+' · '+VERSION);return;}
   const p=res.ledger,primary=p.schema_version===2?V2_VERSION:VERSION,rows=p.versions[primary];
   fact(x('상태','Status'),p.status,'data-forward-status');fact(x('시작일','Start date'),p.start_date,'data-forward-start');fact(x('기록 수','Records'),String(rows.length),'data-forward-count');
   fact(x('전략 · 버전','Strategy · version'),p.strategy+' · '+primary+' · '+p.calibration,'data-forward-strategy');
   fact(x('V 포함 버전','V-bearing version'),V_VERSION+' · NOT_AVAILABLE · '+V_REASON+' · '+x('기록 0건','0 records'),'data-forward-v-version');
   fact(x('대상 포트폴리오','Target portfolio'),'TARGET v0 · 19');fact(x('기준 시각','As of'),p.as_of);
-  summary.append(el('h3',x('일별 Q·G 요약 (V 없음)','Daily Q·G summary (no V)')));
-  if(!rows.length){summary.append(el('p',p.status==='NOT_STARTED'?x('NOT_STARTED · 시작일 전이라 기록이 없습니다.','NOT_STARTED · No records before the start date.'):x('NOT_AVAILABLE · 아직 완료된 미국 거래일 기록이 없습니다.','NOT_AVAILABLE · No completed US session has been recorded yet.'),{class:'empty','data-forward-empty':''}));return;}
+  summary.append(el(H3,x('일별 Q·G 요약 (V 없음)','Daily Q·G summary (no V)')));
+  if(!rows.length){eligibilityEmpty(p.status+' · '+x('평가할 기록이 없습니다.','No record to evaluate.'));summary.append(el('p',p.status==='NOT_STARTED'?x('NOT_STARTED · 시작일 전이라 기록이 없습니다.','NOT_STARTED · No records before the start date.'):x('NOT_AVAILABLE · 아직 완료된 미국 거래일 기록이 없습니다.','NOT_AVAILABLE · No completed US session has been recorded yet.'),{class:'empty','data-forward-empty':''}));return;}
   const wrap=el('div',undefined,{class:'table-wrap'}),table=el('table',undefined,{'data-forward-days':''}),head=el('tr');
   for(const h of [x('날짜','Date'),x('상태','State'),x('Q 가용','Q available'),x('Q 가중평균','Q weighted mean'),x('G 가용','G available'),x('G 가중평균','G weighted mean'),x('평가 구분','Evaluation')])head.append(el('th',h,{scope:'col'}));
   const thead=el('thead');thead.append(head);const body=el('tbody');
@@ -180,13 +187,13 @@ function mount(host,options={}){
    const segThead=el('thead');segThead.append(segHead);const segBody=el('tbody');
    for(const s of segments(rows)){const tr=el('tr',undefined,{'data-forward-segment':s.segment});tr.append(el('td',s.segment),el('td',s.first_date+' → '+s.last_date),el('td',String(s.eligible_dates.length)),el('td',String(s.preparatory_dates.length)));segBody.append(tr);}
    segTable.append(segThead,segBody);segWrap.append(segTable);
-   summary.append(el('h3',x('평가 구간 · 서로 다른 계산 버전은 잇지 않음','Evaluation segments · different calc versions are never chained')),segWrap,
-    el('p',x('주 평가는 Q·G 각 454개 이상, 계산 버전 일치, 행별 실제 수집 시각 7일 이내를 모두 충족한 기록만 씁니다. 나머지는 "준비 관측·주 평가 대상 아님"으로 사유와 함께 보존합니다.','Primary evaluation uses only records with Q and G each at least 454, one consistent calc version and every row acquired within 7 days. Other records are kept as "preparatory observation · not a primary evaluation target" with their reasons.'),{class:'small','data-forward-evaluation-rule':''}));}
+   (eligibility||summary).append(el(H3,x('평가 구간 · 서로 다른 계산 버전은 잇지 않음','Evaluation segments · different calc versions are never chained')),segWrap,rule());}
+  else eligibilityEmpty(x('관측 기준이 기록된 행이 없어 평가 구간이 없습니다.','No record carries an observation basis, so there is no evaluation segment.'));
   summary.append(el('p',x('가중평균은 점수가 있는 종목만 TARGET v0 비중으로 평균한 화면 표시값이며 저장하지 않습니다. 보정 전(UNCALIBRATED).','Weighted means average only companies with a score using TARGET v0 weights; display only, never stored. UNCALIBRATED.'),{class:'small'}));
  }
  // Price readiness mirrors the private history chart: feature ON, approved Worker origin saved on this device, Google session connected.
  const status=el('p','',{role:'status','data-forward-price-status':''}),load_=el('button',x('TARGET 가격 불러오기 (RAM)','Load TARGET prices (RAM)'),{type:'button','data-forward-action':'load'}),clear=el('button',x('가격 지우기','Clear prices'),{type:'button','data-forward-action':'clear'}),results=el('div',undefined,{'data-forward-results':''});
- prices.append(el('h3',x('TARGET v0 전진 수익률 · 기기 RAM 전용','TARGET v0 forward return · device RAM only')),el('p',x('가격은 누를 때만 비공개 Worker에서 읽고 메모리에만 둡니다. 계산한 수익률은 저장·전송하지 않습니다. 현지통화 수정종가 기준이며 환율은 적용하지 않습니다.','Prices are read from the private Worker only when you click and stay in memory. Computed returns are never stored or sent. Adjusted close in local currency; FX is not applied.'),{class:'small'}),status,load_,clear,results);
+ prices.append(el(H3,x('TARGET v0 전진 수익률 · 기기 RAM 전용','TARGET v0 forward return · device RAM only')),el('p',x('가격은 누를 때만 비공개 Worker에서 읽고 메모리에만 둡니다. 계산한 수익률은 저장·전송하지 않습니다. 현지통화 수정종가 기준이며 환율은 적용하지 않습니다.','Prices are read from the private Worker only when you click and stay in memory. Computed returns are never stored or sent. Adjusted close in local currency; FX is not applied.'),{class:'small'}),status,load_,clear,results);
  function storedOrigin(){try{const v=view.localStorage.getItem(HISTORY_KEY);return v&&view.PrivateHistory?view.PrivateHistory.parseWorkerOrigin(v):'';}catch(_){return null;}}
  function readiness(){
   if(!state.ledger)return'LEDGER_NOT_AVAILABLE';if(state.ledger.status!=='ACTIVE')return'NOT_STARTED';

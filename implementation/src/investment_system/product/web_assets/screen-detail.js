@@ -1,4 +1,4 @@
-/* S09 macro and S10 validation canon sections. Static markup only: every value is NOT_AVAILABLE with a reason
+/* S09 macro and S10 validation canon sections, and the stamp layout of menu 6 (7.1) and menu n+1 Lab (9.1 / 9.2). Static markup only: every value is NOT_AVAILABLE with a reason
    (live raw values render in #public-macro from macro-screen.json).
    No inputs are connected, no numbers are invented, nothing is fetched, stored or sent. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.ScreenDetail=api;})(typeof globalThis!=='undefined'?globalThis:this,function(){
@@ -30,13 +30,46 @@
    <p>${na} ${x('요인 → 경제 경로 → 업종 → 기업 → Q·G·V 맥락(유리·중립·불리) 연결은 매크로 8축 대응표가 확정되기 전에는 만들지 않습니다.','The chain factor → economic path → industry → company → Q·G·V context (favorable / neutral / unfavorable) is not built before the 8-axis mapping is confirmed.')}</p>
    <ol class="chain" data-transmission-chain>${[['요인','Factor'],['경제 경로','Economic path'],['업종','Industry'],['기업','Company'],['Q·G·V 맥락','Q·G·V context']].map(([k,e])=>`<li>${x(k,e)} ${dash}</li>`).join('')}</ol></section>`;
  }
- // S10: canon blocks under the existing tabs. No engine is connected, so every input is disabled and no period is selected.
+ // Stamp layout shared by menu 6 (프롬프트 라이브러리) and menu n+1 (Lab), owner draft "투자시스템 화면 시안 (손그림 칠판)".
+ // Stamp numbers are the functional hierarchy (7.1.x, 9.x), not the menu numbers. Presentation only: states are
+ // fixed labels of what is connected today; live values stay in the screens they come from (no number is made up).
+ const STATE={ready:['사용 가능','Available'],partial:['일부 연결','Partly connected'],pending:['준비 중','In preparation'],na:['미산출','Not computed'],rule:['조건','Condition']};
+ const stamp=n=>`<span class="plab-stamp" data-fn="${n}">${n}</span>`;
+ const chip=(x,k)=>k?`<span class="plab-state" data-plab-state="${k}">${x(...STATE[k])}</span>`:'';
+ const note=(x,ko,en)=>`<p class="plab-note" data-fn-note>${x(ko,en)}</p>`;
+ function row(x,n,title,desc,state,body,attrs=''){
+  return `<li class="plab-row" data-fn-row="${n}"${attrs}><div class="plab-label"><h3>${stamp(n)} <span class="plab-title">${title}</span></h3>${chip(x,state)}<p class="plab-desc">${desc}</p></div><div class="plab-body">${body}</div></li>`;}
+ const doodle=name=>{const d=typeof globalThis!=='undefined'&&globalThis.Doodles;return d&&d.icon?d.icon(name,'plab-doodle'):'';};
+ function group(x,n,id,title,lede,rows){
+  return `<section class="plab-group" data-fn-group="${n}" aria-labelledby="${id}"><h2 class="plab-head" id="${id}">${stamp(n)} <span class="hl">${title}</span>${doodle(n.startsWith('7')?'prompts':'lab')}</h2>${lede?`<p class="plab-lede">${lede}</p>`:''}<ol class="plab-rows">${rows.join('')}</ol></section>`;}
+ const links=list=>`<p class="plab-links">${list.map(([h,t])=>`<a href="${h}">${t}</a>`).join('')}</p>`;
+ // Menu 6 · 7.1 프롬프트 탐색·사용·개인화. The library itself (frameHtml) is the existing frozen-catalog page, unchanged.
+ function promptsHtml(locale,frameHtml){
+  const x=pick(locale);
+  const rows=[
+   row(x,'7.1.1',x('분야별 탐색','Browse by field'),x('공식 카탈로그(동결본)의 영역 바로가기 · 키워드 · 역할 · 범위 · Starter · Bundle.','Domain shortcuts, keyword, role, scope, Starter and Bundle over the frozen official catalogue.'),'ready',
+    `<p>${x('뉴스·포트폴리오·백테스트 영역은 공식 카탈로그에 아직 없습니다.','News, portfolio and backtest domains are not in the official catalogue yet.')} ${chip(x,'pending')}</p>`),
+   row(x,'7.1.2',x('맥락 반영','Context'),x('변수 칸을 채워 질문에 맥락을 넣습니다. 앱에 공개 분석 자료가 있으면 ‘가져오기’로 넣습니다.','Fill the variables to give the question its context. When the app has public analysis data, “Import” fills it in.'),'partial',
+    `<p>${x('자료가 없으면 직접 입력합니다. 지금 보던 기업·기간을 자동으로 넘기는 연결은','Without data you type it in. Passing the company and period you were viewing automatically is')} ${chip(x,'pending')}</p>`),
+   row(x,'7.1.3',x('복사와 실행 안내','Copy and run'),x('필수 변수 검사 → 미리보기 → 복사.','Required-variable check → preview → copy.'),'ready',
+    `<p>${x('이 앱은 AI를 부르지 않습니다. 복사한 글을 쓰는 AI 대화창에 붙여 넣고, 답은 직접 검토합니다.','This app never calls an AI. Paste the copied text into the AI chat you use and review the answer yourself.')}</p>`),
+   row(x,'7.1.4',x('내 사본','My copies'),x('즐겨찾기와 개인 수정본 · 이 브라우저 기준. 공식 원문은 바뀌지 않습니다.','Favourites and personal copies · this browser only. The official text never changes.'),'ready',
+    `<p>${x('로그인 계정 동기화는','Account sync after sign-in is')} ${chip(x,'pending')}</p>`),
+   row(x,'7.1.5',x('화면 연결','Screen links'),x('다른 화면에서 프롬프트가 필요한 자리.','Places on other screens that hand you a prompt.'),'partial',
+    links([['#report/real',x('메뉴 5.2 · 보고 불가 → 프롬프트','Menu 5.2 · report unavailable → prompt')],['#playbook',x('플레이북 · 기록용 프롬프트','Playbook · record prompt')],['#validation',x('메뉴 n+1 · Lab','Menu n+1 · Lab')]]))];
+  return note(x,'도장 번호(7.1.x)는 기능 번호입니다. 위 메뉴 번호(6)와 다릅니다.','Stamp numbers (7.1.x) are function numbers, not the menu number above (6).')+
+   group(x,'7.1','plab-71',x('프롬프트 탐색·사용·개인화','Find, use and personalise prompts'),'',rows)+
+   `<section class="plab-frame" aria-labelledby="plab-frame-title"><h2 class="plab-frame-title" id="plab-frame-title">${['7.1.1','7.1.2','7.1.3','7.1.4'].map(n=>`<span class="plab-stamp" data-fn-ref="${n}">${n}</span>`).join('')} <span>${x('라이브러리에서 바로 쓰기','Use it in the library')}</span></h2>${frameHtml||''}</section>`;
+ }
+ // Menu n+1 · Lab = 9.1 백테스트 + 9.2 전진검증. The six S10 canon sections keep their ids and DOM order
+ // (setup, equity-curve, quarterly, track-record, baseline, promotion); the forward ledger mounts into 9.2.1-9.2.3.
+ // No engine is connected, so every input is disabled and no period is selected.
  function validationHtml(locale){
   const x=pick(locale),noEngine=x('검증 엔진이 연결되지 않았습니다.','No validation engine is connected.');
   const dis=(id,label,control)=>`<label for="${id}">${label}</label>${control}`;
   const select=(id,opts)=>`<select id="${id}" disabled aria-disabled="true"><option value="">NOT_AVAILABLE</option>${opts.map(o=>`<option>${o}</option>`).join('')}</select>`;
   const text=(id,ph)=>`<input id="${id}" type="text" disabled aria-disabled="true" placeholder="${ph}">`;
-  return `<section class="card" id="validation-experiment-setup" data-validation-section="setup"><h2>${x('실험 설정','Experiment setup')}</h2>
+  const setup=`<section class="card" id="validation-experiment-setup" data-validation-section="setup"><h4>${x('실험 설정','Experiment setup')}</h4>
    <p>${na} ${noEngine} ${x('기간은 사용자가 결정하며 에이전트는 선택하지 않습니다.','The period is your decision; no period is selected for you.')}</p>
    <div class="setup-form" role="group" aria-label="${x('실험 설정','Experiment setup')}">
    ${dis('exp-profile',x('전략·프로필','Strategy · profile'),select('exp-profile',[x('균형','Balanced'),x('공격','Aggressive'),x('방어','Defensive')]))}
@@ -44,23 +77,48 @@
    ${dis('exp-count',x('종목 수 (1~30)','Number of stocks (1~30)'),'<input id="exp-count" type="number" min="1" max="30" disabled aria-disabled="true" placeholder="1~30">')}
    ${dis('exp-rebalance',x('리밸런싱','Rebalancing'),select('exp-rebalance',[]))}
    ${dis('exp-cost',x('거래비용·세금','Trading cost · tax'),text('exp-cost','NOT_AVAILABLE'))}
-   </div></section>
-  <section class="card" id="validation-equity-curve" data-validation-section="equity-curve"><h2>${x('자산 곡선','Equity curve')}</h2>
+   </div></section>`;
+  const equity=`<section class="card" id="validation-equity-curve" data-validation-section="equity-curve"><h4>${x('자산 곡선','Equity curve')}</h4>
    <p>${na} ${x('시작값 100. 시리즈가 없어 곡선을 그리지 않습니다.','Starts at 100. There is no series, so no curve is drawn.')}</p>
-   <dl class="kv"><dt>${x('시작값','Start value')}</dt><dd class="num">100</dd><dt>${x('성과 지표','Performance metrics')}</dt><dd data-na="NOT_AVAILABLE">—</dd></dl></section>
-  <section class="card" id="validation-quarterly" data-validation-section="quarterly"><h2>${x('분기 성과','Quarterly performance')}</h2>
+   <dl class="kv"><dt>${x('시작값','Start value')}</dt><dd class="num">100</dd><dt>${x('성과 지표','Performance metrics')}</dt><dd data-na="NOT_AVAILABLE">—</dd></dl></section>`;
+  const quarterly=`<section class="card" id="validation-quarterly" data-validation-section="quarterly"><h4>${x('분기 성과','Quarterly performance')}</h4>
    <p>${na} ${noEngine}</p>
-   ${table([x('분기','Quarter'),x('보유','Holdings'),x('비중','Weight'),'QGV',x('노출','Exposure'),x('분기 수익률','Quarter return'),x('S&P 500 초과','vs S&P 500')],[[dash,dash,dash,dash,dash,dash,dash]])}</section>
-  <section class="card" id="validation-track-record" data-validation-section="track-record"><h2>Track Record</h2>
+   ${table([x('분기','Quarter'),x('보유','Holdings'),x('비중','Weight'),'QGV',x('노출','Exposure'),x('분기 수익률','Quarter return'),x('S&P 500 초과','vs S&P 500')],[[dash,dash,dash,dash,dash,dash,dash]])}</section>`;
+  const track=`<section class="card" id="validation-track-record" data-validation-section="track-record"><h4>Track Record</h4>
    <p><strong>${x('과거 판단은 다시 쓰지 않음','Past judgements are never rewritten')}</strong> ${na}</p>
    ${table(['D+5','D+20','D+63','D+252'],[[dash,dash,dash,dash]])}
-   <dl class="kv"><dt>${x('시나리오·신뢰도 보정 곡선','Scenario · confidence calibration curve')}</dt><dd data-na="NOT_AVAILABLE">—</dd><dt>${x('QGV 버전별 성과·표본 수·코호트','Performance, sample size, cohort by QGV version')}</dt><dd data-na="NOT_AVAILABLE">—</dd></dl></section>
-  <section class="card" id="validation-baseline" data-validation-section="baseline"><h2>${x('기준선 · Track A','Baseline · Track A')}</h2>
+   <dl class="kv"><dt>${x('시나리오·신뢰도 보정 곡선','Scenario · confidence calibration curve')}</dt><dd data-na="NOT_AVAILABLE">—</dd><dt>${x('QGV 버전별 성과·표본 수·코호트','Performance, sample size, cohort by QGV version')}</dt><dd data-na="NOT_AVAILABLE">—</dd></dl></section>`;
+  const baseline=`<section class="card" id="validation-baseline" data-validation-section="baseline"><h4>${x('기준선 · Track A','Baseline · Track A')}</h4>
    <p>${x('Track A 미국 상위 500 · 3개 시점 동결. 동결된 기록은 바꾸지 않습니다.','Track A US top 500 · 3 frozen points. Frozen records are not changed.')}</p>
-   <p class="small">Holdout: ${x('사용 금지 · UNCONFIRMED','Do not use · UNCONFIRMED')}</p></section>
-  <section class="card" id="validation-promotion" data-validation-section="promotion"><h2>${x('프로필 승격 (연구 → 검증됨)','Profile promotion (research → validated)')}</h2>
+   <p class="small">Holdout: ${x('사용 금지 · UNCONFIRMED','Do not use · UNCONFIRMED')}</p></section>`;
+  const promotion=`<section class="card" id="validation-promotion" data-validation-section="promotion"><h4>${x('프로필 승격 (연구 → 검증됨)','Profile promotion (research → validated)')}</h4>
    <p>${na} ${x('통과한 검증 기록이 없어 승격할 수 없습니다.','There is no passed validation record, so promotion is unavailable.')}</p>
    <button type="button" disabled aria-disabled="true">${x('검증됨으로 승격','Promote to validated')}</button></section>`;
+  const conditions=[x('PIT 시점 기준 데이터만','Point-in-time data only'),x('Holdout 기간 미정 · 사용 금지 · UNCONFIRMED','Holdout period undecided · do not use · UNCONFIRMED'),x('가격은 공개 파일에 두지 않음 · 기기 RAM 전용','No prices in public files · device RAM only')];
+  const backtest=[
+   row(x,'9.1.1',x('연구 목적','Research question'),x('무엇을 무엇과 견주어 확인할지 먼저 적는 칸.','Where the question and its comparison are written first.'),'pending',
+    `<p>${na} ${x('공개 앱에 등록된 실험이 없습니다. 실험 기록(질문·비교 대상·기간)은 연결 전입니다.','No experiment is registered in the public app. The experiment record (question, comparison, period) is not connected yet.')}</p>`),
+   row(x,'9.1.2',x('실험 구성','Experiment design'),x('전략·프로필 · 기간 · 종목 수 · 리밸런싱 · 비용.','Strategy/profile · period · count · rebalancing · cost.'),'pending',setup),
+   row(x,'9.1.3',x('가중치 연구','Weight research'),x('축·세부 요인 가중치를 연구 프로필로 탐색합니다. 공식 기본값은 자동으로 바뀌지 않습니다.','Axis and factor weights are explored as research profiles. Official defaults never change automatically.'),'pending',
+    links([['#lab-13f',x('QGV 1.3 · 13F 가중치 연구','QGV 1.3 · 13F weight research')],['#profiles',x('QGV 1.2 · 가중치 · 사용자 설정','QGV 1.2 · weights · user settings')]])),
+   row(x,'9.1.4',x('평가 기준','Evaluation criteria'),x('무엇과 비교하고 어디를 넘어야 통과인지.','What it is compared with and what counts as a pass.'),'na',
+    `<dl class="kv"><dt>${x('비교 대상','Benchmark')}</dt><dd>S&amp;P 500</dd><dt>${x('기준선','Baseline')}</dt><dd>Track A · ${x('9.2.3에서 확인','see 9.2.3')}</dd><dt>${x('성과 지표 · 통과 기준','Metrics · pass rule')}</dt><dd data-na="NOT_AVAILABLE">${x('미산출','Not computed')}</dd></dl>`),
+   row(x,'9.1.5',x('데이터 조건','Data conditions'),x('결과를 믿기 위해 지키는 자료 규칙.','Data rules kept so results can be trusted.'),'rule',
+    `<ul class="plab-rules">${conditions.map(c=>`<li>${c}</li>`).join('')}</ul>`),
+   row(x,'9.1.6',x('결과 보고','Result report'),x('자산 곡선과 분기 성과. 결과가 없으면 그리지 않습니다.','Equity curve and quarterly results. Nothing is drawn without results.'),'na',equity+quarterly)];
+  const forward=[
+   row(x,'9.2.1',x('관측 기록','Observation record'),x('그날의 Q·G를 가격 없이 추가만 하는 원장. 아래 상태와 기록 수가 그대로입니다.','An append-only, price-free ledger of each day’s Q·G. The status and record count below are shown as published.'),'',
+    '<div id="forward-validation-root"></div>'),
+   row(x,'9.2.2',x('이후 성과','Later outcome'),x('기록 이후의 결과. 가격은 누를 때만 기기 메모리에서 계산합니다.','What happened after each record. Prices are computed in device memory only when you ask.'),'',
+    '<div id="forward-validation-outcome" class="plab-slot"></div>'+track),
+   row(x,'9.2.3',x('평가 가능 여부','Can it be evaluated?'),x('주 평가 조건을 채운 기록인지, 기준선·Holdout·승격 상태.','Whether records meet the primary rule; baseline, holdout and promotion state.'),'',
+    '<div id="forward-validation-eligibility" class="plab-slot"></div>'+baseline+promotion),
+   row(x,'9.2.4',x('운영 증거','Operating evidence'),x('기록이 제때, 고쳐 쓰이지 않고 쌓였다는 증거.','Evidence that records were added on time and never rewritten.'),'pending',
+    `<p>${x('원장은 추가만 하며 지난 기록을 고쳐 쓰지 않습니다. 공개 원장에는 가격이 없습니다. 실행 기록은 이 화면에 아직 연결되지 않았습니다.','The ledger is append-only and past records are never rewritten. The public ledger holds no prices. Run records are not connected to this screen yet.')}</p>`+
+    links([['#settings',x('설정 · 공개 자료 운영 상태','Settings · public data operations status')]]))];
+  return note(x,'도장 번호(9.x)는 기능 번호입니다. 위 메뉴 번호(n+1)와 다릅니다.','Stamp numbers (9.x) are function numbers, not the menu numbers above (n+1).')+
+   group(x,'9.1','plab-91',x('백테스트','Backtest'),x('공개 앱에 연결된 백테스트 결과가 없습니다. 아래 칸은 결과가 생기면 채울 자리입니다.','No backtest result is connected to the public app. The boxes below are where results will go.'),backtest)+
+   group(x,'9.2','plab-92',x('전진검증','Forward validation'),x('결과를 미리 알 수 없는 날부터 쌓는 기록입니다. 기록이 없으면 없다고 적습니다.','Records kept from days whose outcome was not yet known. When there is no record, it says so.'),forward);
  }
- return Object.freeze({macroHtml,validationHtml});
+ return Object.freeze({macroHtml,validationHtml,promptsHtml});
 });

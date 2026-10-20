@@ -522,7 +522,7 @@ function news(id) {
   `<div class="chips toolbar" id="news-network" role="group" aria-label="${t("콘텐츠 전환")}"><button id="show-news" aria-pressed="true">${t("뉴스")}</button><button id="show-network" aria-pressed="false">${t("관계망")}</button>${c?star(id):""}</div><p class="small" data-news-overlay>${t("정보 제공용, 투자 판단 덧씌우기(Overlay)는 기본 OFF")} · ${t("뉴스 무료 출처 미정: NOT_AVAILABLE")}</p><div class="chips" data-news-scopes>${["전체","관심 기업","내 포트폴리오","업종","매크로","정치","경제"].map(x=>`<span class="badge">${esc(t(x))}</span>`).join("")}</div><div id="news-disclosures"></div><div id="news-dart-disclosures"></div><section id="news-pane"><select id="news-scope" aria-label="${t("뉴스 범위")}"><option value="all">${t("전체 중요뉴스")}</option><option value="interest">${t("관심기업")}</option><option value="portfolio">Portfolio</option></select>${state(D.news)}<ul id="news-list" class="list"></ul></section><section id="network-pane" hidden><p class="muted">${t("Fact = 확인된 관계 · Impact = 잠재 영향 경로")}</p>${state(D.relationships)}${D.relationships.data?'<iframe title="'+esc(t("News Network(뉴스 관계망)"))+'" data-src="network.html" id="network-frame"></iframe>':'<p class="empty">'+t("기업 관계 · 미연결")+"</p>"}</section>`;
 }
 function research() {
-  return heading("RESEARCH",t("질문에서 근거로"),t("Prompt → Context / Variables → Preview → Copy"))+'<p class="badge">FROZEN_SNAPSHOT · PLV1_CONTENT_V1.0</p><iframe title="'+esc(t("Prompt Library(프롬프트 라이브러리)"))+'" src="research.html" id="research-frame"></iframe>';
+  return heading("RESEARCH",t("질문에서 근거로"),t("Prompt → Context / Variables → Preview → Copy"))+'<p class="badge">FROZEN_SNAPSHOT · PLV1_CONTENT_V1.0</p>'+ScreenDetail.promptsHtml(appSettings.display_locale,'<iframe title="'+esc(t("Prompt Library(프롬프트 라이브러리)"))+'" src="research.html" id="research-frame"></iframe>');
 }
 // Navigation only. Availability describes the existing public screens, not investment results.
 function hubCard(title,status,description,href) {
@@ -601,7 +601,7 @@ function validation() {
   return heading("VALIDATION",t("검증·연구"),t("리서치와 검증 기록의 준비 상태를 확인합니다."))+
     `<div class="chips data-badges"><span class="badge">${esc(t("PIT 시점 기준 데이터만"))}</span><span class="badge">${esc(t("Holdout 기간 미정·사용 금지 · 보호 판정 UNCONFIRMED"))}</span></div>`+
     `<nav class="chips screen-tabs" aria-label="${esc(t("검증·연구"))}">${tabs.map(([id,label])=>`<a href="#validation-${id}" data-screen-tab="${id}">${esc(t(label))}</a>`).join("")}<a href="#research" data-screen-tab="research">${esc(t("리서치"))}</a></nav>`+
-    `<div class="hub-grid" data-hub="validation">${tabs.map(([id,title,status,reason])=>`<div id="validation-${id}">${hubCard(title,status,reason)}</div>`).join("")}${hubCard("리서치","사용 가능","기존 프롬프트 라이브러리를 엽니다.","#research")}</div><div id="forward-validation-root"></div>`+ScreenDetail.validationHtml(appSettings.display_locale);
+    `<div class="hub-grid" data-hub="validation">${tabs.map(([id,title,status,reason])=>`<div id="validation-${id}">${hubCard(title,status,reason)}</div>`).join("")}${hubCard("리서치","사용 가능","기존 프롬프트 라이브러리를 엽니다.","#research")}</div>`+ScreenDetail.validationHtml(appSettings.display_locale);
 }
 // QGV sub-categories (navigation only). The "01 / QGV" line above a screen follows the menu of its route (app-shell.js).
 const QGV_SUBCATEGORY=Object.freeze({portfolio:"내 투자",actual:"내 투자",profiles:"내 투자",model:"내 투자",companies:"종목 찾기",company:"종목 찾기",analysis:"종목 찾기",entity:"종목 찾기",leaderboard:"종목 찾기",watchlist:"종목 찾기",types:"종목 찾기",news:"시장 정보",thirteenf:"시장 정보"});
@@ -959,7 +959,7 @@ function renderRoute(options) {
   if(route==='profiles') DeviceProfiles.mount($('#device-profile-editor'),{locale:appSettings.display_locale,qgFactors:()=>publicScreens['sec-qg-factors.json'],sessionQuotes:()=>qgv2Quotes,
    // S13 compare reads the same public inputs object, catalog and identities as every other screen (QgvScores.pageResult memo).
    v2Context:async()=>{let catalog=null;try{catalog=await deviceCatalog();}catch(_){catalog=null;}let inputs=window.Qgv2Inputs?publicScreens[Qgv2Inputs.FILE]||null:null;if(!inputs&&window.Qgv2Inputs){try{inputs=await Qgv2Inputs.load(window);}catch(_){inputs=null;}}return{inputs,identities:identityCompanies,catalog};}});
-  if(route==='validation') ForwardValidation.mount($('#forward-validation-root'),{locale:appSettings.display_locale,config:window.InvestmentAppConfig});
+  if(route==='validation') ForwardValidation.mount($('#forward-validation-root'),{locale:appSettings.display_locale,config:window.InvestmentAppConfig,hosts:{outcome:$('#forward-validation-outcome'),eligibility:$('#forward-validation-eligibility')}});
   if(route==='types') DeviceProfiles.mount($('#device-type-editor'),{locale:appSettings.display_locale,mode:'types'});
   if(route==='macro') MacroLights.mount($('#macro-lights-root'),{bundle:publicScreens,locale:appSettings.display_locale,config:window.InvestmentAppConfig});
   if(route==='macro'&&window.MacroCycleRing) MacroCycleRing.mount($('#macro-cycle-ring-root'),{bundle:publicScreens,locale:appSettings.display_locale});
