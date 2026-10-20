@@ -74,6 +74,30 @@ function universeScores(v2Inputs,quotes,preset,gate,cyclicalBasis={},personal=nu
 }
 // Label of every personal result (S06, S13): it is a preview of the user's own weights, never an official score.
 const PERSONAL_LABEL=['개인 설정 미리보기 · 공식 점수 아님','Personal setting preview · not an official score'];
+/* PROVENANCE (owner instruction 2026-10-19: '개인 프리셋 결과의 ‘공식’ 표시를 수정한다. 공식 가중치 사용 여부, 개인 설정 여부, 기기 가격
+   사용 여부, 중앙 게시 결과 여부를 구분한다. 문구를 고치기 위해 계산 결과를 바꾸지 않는다.'; D11: a personal result says 개인). Four
+   independent facts of one shown value, read only from the profile it was computed with. Labels only: nothing is computed here.
+   weights  OFFICIAL = the official default profile (QgvV2.DEFAULT_PRESET, gate GATE_DEFAULT, official weights) | PERSONAL;
+   setting  the personal choices behind the value: PRESET (another preset), GATE_OFF (gate toggled), WEIGHTS (personal weights);
+   prices   DEVICE = this device's prices went in (every V needs them; PrivateSubsetView read, device quotes) | NONE;
+   source   DEVICE_COMPUTED = computed on this device | PUBLISHED = read as published (sec-qgv2.json Q·G axes).
+   There is no central V/QGV publication yet (design only), so a QGV total, rank or N set is always DEVICE_COMPUTED, also on the
+   official weights. kind: 'QGV' (a total, rank, list or N set: axis weights and gate count), 'V' (the V axis alone: preset and
+   gate do not change it, personal inner weights do), 'QG' (a published Q·G axis). */
+const RANK_LABEL={OFFICIAL:['Universe 공식 QGV 순위','Official Universe QGV rank'],PERSONAL:['개인 프리셋 순위 (Universe 기준)','Personal preset rank (Universe basis)']};
+function provenance({kind='QGV',profile=null,priced=false}={}){let V2=null;try{V2=qgvV2();}catch(_){V2=null;}const p=object(profile)?profile:{},qg=kind==='QG';
+ const setting=qg?[]:p.preset==='custom'||object(p.weights)?['WEIGHTS']:kind==='V'?[]:[...(V2&&typeof p.preset==='string'&&p.preset!==V2.DEFAULT_PRESET?['PRESET']:[]),...(V2&&typeof p.gate==='boolean'&&p.gate!==V2.GATE_DEFAULT?['GATE_OFF']:[])];
+ return Object.freeze({kind,weights:setting.length?'PERSONAL':'OFFICIAL',setting:Object.freeze(setting),prices:!qg&&priced===true?'DEVICE':'NONE',source:qg?'PUBLISHED':'DEVICE_COMPUTED',
+  profile_id:!qg&&typeof p.id==='string'?p.id:null,preset:typeof p.preset==='string'?p.preset:null,gate:typeof p.gate==='boolean'?p.gate:null});}
+// '공식 가중치 · 이 기기 가격 · 기기 계산' / '개인 프리셋(성장 친화) · 이 기기 가격 · 기기 계산' / '공식 가중치 · 가격 없음 · 중앙 게시(sec-qgv2.json)'.
+function provenanceText(x,en){const V2=(()=>{try{return qgvV2();}catch(_){return null;}})(),pr=V2&&x.preset&&Object.hasOwn(V2.PRESETS,x.preset)?V2.PRESETS[x.preset]:null,off=x.setting.includes('GATE_OFF');
+ const w=x.weights==='OFFICIAL'?(en?'Official weights':'공식 가중치'):x.setting.includes('WEIGHTS')?(en?'Personal weights':'개인 가중치'):(en?'Personal preset (':'개인 프리셋(')+(pr?(en?pr.name_en:pr.name):(x.preset||'—'))+(off?(en?' · gate off':' · 관문 끔'):'')+')';
+ return [w,x.prices==='DEVICE'?(en?'this device’s prices':'이 기기 가격'):(en?'no prices':'가격 없음'),x.source==='PUBLISHED'?(en?'published centrally (sec-qgv2.json)':'중앙 게시(sec-qgv2.json)'):(en?'computed on this device':'기기 계산')].join(' · ');}
+function provenanceAttrs(x){return{'data-qgv-weights':x.weights,'data-qgv-setting':x.setting.join(' ')||'NONE','data-qgv-prices':x.prices,'data-qgv-source':x.source,'data-qgv-profile':x.profile_id||''};}
+// The same attributes as an HTML attribute string (screens built from strings); values are fixed codes and a profile id.
+function provenanceAttrHtml(x){return Object.entries(provenanceAttrs(x)).map(([k,v])=>' '+k+'="'+String(v).replace(/[&"<>]/g,c=>({'&':'&amp;','"':'&quot;','<':'&lt;','>':'&gt;'})[c])+'"').join('');}
+// Rank heading of a result computed with `profile`: 'Universe 공식 QGV 순위' only on the official default profile.
+function rankLabel(profile,en){return RANK_LABEL[provenance({profile}).weights][en?1:0];}
 /* FE-MISSING-2 (owner instruction 2026-10-17): why a company's QGV is partial or missing, read only from fields the public
    contract already carries (sec-qgv2.json row state/acquired_at/fiscal_year_end/profile/metrics, the published Q/G axis coverage,
    the engine's factor reasons and v_inputs). Display only: nothing here feeds a score, total, rank or candidate, and nothing is
@@ -480,5 +504,5 @@ function label(version,en){return(LABEL[version]||LABEL.v2)[en?1:0];}
 // (+ ' · 유형 범위 qgv2-type-scope/…' = the type-application scope id the scores use).
 function basisText(S,en){const b=S&&S.basis?S.basis:basis('v2',false);return label('v2',en)+' · '+(en?b.label_en:b.label)+(b.since?(en?' · since ':' · ')+b.since+(en?'':'부터'):'')+(b.type_scope?(en?' · type scope ':' · 유형 범위 ')+b.type_scope:'');}
 function presets(){return qgvV2().PRESETS;}
-return Object.freeze({OUTSIDE_UNIVERSE_LABEL,PORTFOLIO_RANK_LABEL,POPULATION_LABEL,universeIdentities,rowOf,codeRow,setPageReferences,modelPortfolios,officialModel,MODEL_NS,MODEL_PRIMARY,MODEL_RULES,MODEL_LABEL,MODES,LABEL,PERSONAL_LABEL,PERSONAL_V0_LABEL,QG_REFERENCE_LABEL,NO_OFFICIAL_RANK,qgReference,FLAG,DATA_STATE,AXIS_STATUS,REASON,coverageFor,exploreGroup,reasonText,stateText,axisStatusText,vInputText,scoringDefault,compute,typeMemberships,judgmentRows,collectQuotes,pageResult,setPageIdentities,setPageProfile,pageProfile,isCurrent,vCoverage,V_TARGET_SHARE,summaryText,naText,flagText,label,basis,basisText,presets,symbolOf});
+return Object.freeze({RANK_LABEL,provenance,provenanceText,provenanceAttrs,provenanceAttrHtml,rankLabel,OUTSIDE_UNIVERSE_LABEL,PORTFOLIO_RANK_LABEL,POPULATION_LABEL,universeIdentities,rowOf,codeRow,setPageReferences,modelPortfolios,officialModel,MODEL_NS,MODEL_PRIMARY,MODEL_RULES,MODEL_LABEL,MODES,LABEL,PERSONAL_LABEL,PERSONAL_V0_LABEL,QG_REFERENCE_LABEL,NO_OFFICIAL_RANK,qgReference,FLAG,DATA_STATE,AXIS_STATUS,REASON,coverageFor,exploreGroup,reasonText,stateText,axisStatusText,vInputText,scoringDefault,compute,typeMemberships,judgmentRows,collectQuotes,pageResult,setPageIdentities,setPageProfile,pageProfile,isCurrent,vCoverage,V_TARGET_SHARE,summaryText,naText,flagText,label,basis,basisText,presets,symbolOf});
 });
