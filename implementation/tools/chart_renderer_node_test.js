@@ -155,5 +155,25 @@ test('synthetic engine run: official result is recorded, user settings are refus
   assert.ok(realObjects.length > 0 && realObjects.every(o => !o.judgeable) && realObjects.every(o => o.reasons.includes('PRICE_BASIS_CONTINUITY_UNCONFIRMED')));
   assert.equal(H.createBook().append(real, 't').added, 0);
 });
+
+test('user-written objects: anchors validated, this-device store, never routed to the pattern history', () => {
+  const now = '2026-10-20T00:00:00.000Z', base = {id: 'u-abc123', symbol: 'SYNTH', interval: 'D', price_basis: 'RAW_CLOSE', author: 'USER', text: '', created_at: now, updated_at: now};
+  const line = {...base, schema: 'chart-annotation/1', kind: 'LINE', points: [{time: '2025-01-06', price: 100}, {time: '2025-02-03', price: 110}]};
+  const scenario = {...base, id: 'u-def456', schema: 'chart-scenario/1', horizon: 'swing', direction: 'SIDEWAYS', levels: [{label: 'a', price: 95}], condition: 'c', invalidation: 'i', invalidation_price: null, anchor_time: '2025-02-03'};
+  assert.ok(W.validUserObject(line) && W.validUserObject(scenario));
+  for (const bad of [{...line, author: 'AUTO'}, {...line, interval: 'M'}, {...line, points: [{time: 'x', price: 1}, {time: '2025-01-07', price: 1}]}, {...line, points: [{time: '2025-01-06', price: 0}, {time: '2025-01-07', price: 1}]},
+    {...line, kind: 'MEMO'}, {...line, text: 'x'.repeat(501)}, {...line, id: 'BOX|SYNTH'}, {...scenario, direction: 'BUY'}, {...scenario, levels: []}, {...scenario, horizon: 'day'}, {...line, schema: 'pattern-history/1'}]) assert.equal(W.validUserObject(bad), false);
+  const map = new Map(), storage = {getItem: k => (map.has(k) ? map.get(k) : null), setItem: (k, v) => map.set(k, v), removeItem: k => map.delete(k)}, store = W.createDeviceUserStore(storage);
+  assert.equal(store.kind, 'THIS_BROWSER'); assert.equal(store.load().code, 'EMPTY');
+  assert.ok(store.save([line, scenario])); assert.deepEqual(JSON.parse(map.get(W.USER_KEY)).schema, 'chart-user-objects/1');
+  assert.equal(store.load().items.length, 2);
+  map.set(W.USER_KEY, JSON.stringify({schema: 'chart-user-objects/1', items: [line, {...line, author: 'AUTO'}]}));
+  assert.deepEqual([store.load().code, store.load().items.length], ['PARTLY_INVALID', 1]);
+  map.set(W.USER_KEY, '{'); assert.equal(store.load().code, 'STORE_INVALID');
+  assert.ok(store.clear()); assert.equal(map.has(W.USER_KEY), false);
+  assert.equal(W.createDeviceUserStore({getItem() { throw new Error('x'); }}).load().code, 'STORAGE_UNAVAILABLE');
+  const code = fs.readFileSync(path.join(assets, 'chart-workbench.js'), 'utf8'), userLayer = code.slice(code.indexOf('/* ---------- user layer'), code.indexOf('/* ---------- rendering'));
+  assert.ok(userLayer.length > 1000 && !/books|PatternHistory|\.append\(official|fetch\(|XMLHttpRequest|sheets|gapi/.test(userLayer));
+});
 console.log('COUNTS pass=' + pass + ' fail=' + fail);
 if (fail) process.exitCode = 1;

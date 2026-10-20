@@ -50,7 +50,8 @@
 
   // Overlay objects (design §4.4): display geometry only, each with its origin. AUTO = official detection,
   // USER_SETTINGS = user-settings exploration (drawn dashed). The renderer draws; it never judges.
-  const OVERLAY_SOURCES = new Set(['AUTO', 'USER_SETTINGS']), OVERLAY_TONES = new Set(['zone', 'box', 'double', 'invalidation']);
+  // USER = user-written notes and scenarios (purple pen, dashed): never official detection.
+  const OVERLAY_SOURCES = new Set(['AUTO', 'USER_SETTINGS', 'USER']), OVERLAY_TONES = new Set(['zone', 'box', 'double', 'invalidation', 'user']);
   const EMPHASIS = new Set(['normal', 'selected', 'dim']);
   function normalizeOverlays(list, bars) {
     if (!Array.isArray(list)) return Object.freeze([]);
@@ -59,6 +60,7 @@
       if (!o || typeof o.id !== 'string' || !OVERLAY_SOURCES.has(o.source) || !OVERLAY_TONES.has(o.tone)) continue;
       const emphasis = EMPHASIS.has(o.emphasis) ? o.emphasis : 'normal';
       if (o.kind === 'line' && times.has(o.from) && times.has(o.to) && o.from < o.to && positive(o.price)) out.push(Object.freeze({id: o.id, kind: 'line', source: o.source, tone: o.tone, emphasis, from: o.from, to: o.to, price: o.price}));
+      else if (o.kind === 'segment' && times.has(o.from) && times.has(o.to) && o.from < o.to && positive(o.fromPrice) && positive(o.toPrice)) out.push(Object.freeze({id: o.id, kind: 'segment', source: o.source, tone: o.tone, emphasis, from: o.from, to: o.to, fromPrice: o.fromPrice, toPrice: o.toPrice}));
       else if (o.kind === 'marker' && times.has(o.time) && typeof o.label === 'string' && o.label.length <= 12) out.push(Object.freeze({id: o.id, kind: 'marker', source: o.source, tone: o.tone, emphasis, time: o.time, label: o.label, position: o.position === 'belowBar' ? 'belowBar' : 'aboveBar'}));
     }
     return Object.freeze(out);
@@ -286,13 +288,13 @@
     // Pattern objects: solid lines for official detection, dashed for user-settings exploration, dotted invalidation levels.
     function setOverlays(list) {
       clearOverlays();
-      const toneColor = {zone: c.tones[1], box: c.tones[2], double: c.tones[3], invalidation: c.muted};
+      const toneColor = {zone: c.tones[1], box: c.tones[2], double: c.tones[3], invalidation: c.muted, user: c.pen};
       for (const o of normalizeOverlays(list, bars)) {
         const color = o.emphasis === 'dim' ? alpha(toneColor[o.tone], 0.3) : toneColor[o.tone];
         if (o.kind === 'marker') { overlayMarkers.push({time: o.time, position: o.position, shape: o.position === 'belowBar' ? 'arrowUp' : 'arrowDown', color, text: o.label}); continue; }
-        const style = o.tone === 'invalidation' ? lib.LineStyle.Dotted : o.source === 'USER_SETTINGS' ? lib.LineStyle.Dashed : lib.LineStyle.Solid;
-        const series = chart.addSeries(lib.LineSeries, {color, lineWidth: o.emphasis === 'selected' ? 3 : 1, lineStyle: style, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false, pointMarkersVisible: false}, 0);
-        series.setData([{time: o.from, value: o.price}, {time: o.to, value: o.price}]);
+        const style = o.tone === 'invalidation' ? lib.LineStyle.Dotted : o.source === 'USER' ? lib.LineStyle.LargeDashed : o.source === 'USER_SETTINGS' ? lib.LineStyle.Dashed : lib.LineStyle.Solid;
+        const series = chart.addSeries(lib.LineSeries, {color, lineWidth: o.emphasis === 'selected' ? 3 : o.source === 'USER' ? 2 : 1, lineStyle: style, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false, pointMarkersVisible: o.kind === 'segment'}, 0);
+        series.setData(o.kind === 'segment' ? [{time: o.from, value: o.fromPrice}, {time: o.to, value: o.toPrice}] : [{time: o.from, value: o.price}, {time: o.to, value: o.price}]);
         overlaySeries.push(series);
       }
       applyMarkers();

@@ -150,9 +150,9 @@ APPROVED_SHA256 = {
     "data-refresh.js": "8040b88ca9a8083c92879067ff84a01f5db8aa6019c42a0c2b2098b68435c6f2",
     "v-coverage.css": "185302f9f5aa9542d2caadfa03363f084bf837e8e1ea2998da49fa1db8af9364",
     # Self-hosted chart renderer (P1-7): lightweight-charts 5.2.1 npm file unmodified, upstream LICENSE/NOTICE, third-party notices.
-    "chart-renderer.js": "ac496da6da696651743f5530c088b28d53666668a16f6dca73976f2facc892c0",
-    "chart-workbench.js": "f9fededce79d9c0e08874ab4034afd0c7e9c37a2a1c043ebcca15e403c28c3d0",
-    "chart-workbench.css": "df973c6f090980866b423f37104e1734780342a843e02f1deda8f450adffd13a",
+    "chart-renderer.js": "1202337fb83d7c0c69cd8f4c14ee876f80912cce667809323f53a694dc8a0757",
+    "chart-workbench.js": "8152421d70e9924c53b68d3d46d176e3a81fc767bd1c44918f676839dfc460bc",
+    "chart-workbench.css": "6824369fd724e8ebd36d62ea498318dceab65cd12c69975f7b3f542048ebfb9f",
     "lightweight-charts-5.2.1.standalone.js": "e21cc5caa0226ef30bd8549c50b9ef926615f2a4ee6b4e486353477a55f598cf",
     "lightweight-charts-5.2.1.LICENSE.txt": "70c9d5382506dd184465425c08a99ad9bd6d9ac1313c252968ba0b585e5ef823",
     "lightweight-charts-5.2.1.NOTICE.txt": "f76c6afab94884448f0426e30d6e9d555ca7247894cd3484e477d2f87513036e",
