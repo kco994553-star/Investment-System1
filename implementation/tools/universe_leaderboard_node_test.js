@@ -7,7 +7,9 @@
 //   over Universe rows with V (D11), TARGET outside the Universe never ranked nor in the QG list, Q·G-only rows in the QG list;
 // - QgvScores.pageResult: the ONE shared result carries that split; rowOf / codeRow / vCoverage read the merged row;
 // - QgvScores.modelPortfolios: N10 / N15 / N20 = the first N rows of the official order that pass the approved eligibility
-//   (official rank, Q·G·V all present, no value-trap gate, financial safety, at most 4 per industry subgroup), equal weight;
+//   (official rank, Q·G·V all present, no value-trap gate, financial safety, at most 4 per industry subgroup, PLAYBOOK §16 limits per N
+//   at equal weight: shortfall weight + cause, never filled or rescaled), the R-C tier weights on N15 as a check only, and the
+//   same-issuer summed weight (recommendation, selection unchanged);
 // - PlaybookScreen.candidateRanking over the official result: the candidate rank is the official rank.
 const test = require('node:test'), assert = require('node:assert/strict'), path = require('node:path');
 const W = path.join(__dirname, '../src/investment_system/product/web_assets'), F = require('./qgv_v2_fixture.js');
@@ -101,9 +103,9 @@ function fakeResult(spec) {
   const rows = {}, records = {};
   spec.forEach((x, i) => {
     const code = x.code || 'NYSE:R' + i, id = x.id || code;
-    records[code] = { metrics: { net_debt_to_ebitda: x.nd === undefined ? 1 : x.nd, interest_coverage: x.ic === undefined ? 10 : x.ic }, sic: x.sic || null };
+    records[code] = { metrics: { net_debt_to_ebitda: x.nd === undefined ? 1 : x.nd, interest_coverage: x.ic === undefined ? 10 : x.ic }, sic: x.sic || null, cik: x.cik || null };
     rows[id] = { company_id: id, ticker: x.ticker || code.split(':')[1], code, universe_code: x.outside ? null : code, rank: x.rank === undefined ? i + 1 : x.rank,
-      primary: { q: x.q === undefined ? 60 : x.q, g: 60, v: x.v === undefined ? 60 : x.v, total: 90 - i, value_trap_gate: x.gate === true } };
+      primary: { q: x.q === undefined ? 60 : x.q, g: 60, v: x.v === undefined ? 60 : x.v, total: 90 - i, value_trap_gate: x.gate === true, factors_available: x.fa === undefined ? 15 : x.fa, factors_total: 15 } };
   });
   return { computed: { rows, official: { evaluated: spec.length }, profile: { id: 'qgv-v2/balanced/gate-on' }, v2_as_of: '2026-10-19T00:00:00Z' }, inputs: { records } };
 }
@@ -119,7 +121,7 @@ test('modelPortfolios: approved eligibility in official rank order; N10 ⊂ N15 
   for (const i of [6, 7, 8, 9, 10]) spec[i].sic = '3674';   // semiconductors: the 5th one (rank 11) is over the cap of 4
   const { computed, inputs: recs } = fakeResult(spec), sector = (t, sic) => (sic === '3674' ? 'semiconductors' : null);
   const M = QS.modelPortfolios(computed, recs, { sectorOf: sector });
-  assert.deepEqual(M.rules, ['OFFICIAL_RANK', 'AXES_50', 'VALUE_TRAP_GATE', 'FINANCIAL_SAFETY', 'FINANCIAL_SAFETY_NA', 'SUBGROUP_MAX_4']);
+  assert.deepEqual(M.rules, ['OFFICIAL_RANK', 'AXES_50', 'VALUE_TRAP_GATE', 'FINANCIAL_SAFETY', 'FINANCIAL_SAFETY_NA', 'SUBGROUP_MAX_4', 'LIMITS_16']);
   assert.deepEqual(M.excluded, { AXES_50: 1, VALUE_TRAP_GATE: 1, FINANCIAL_SAFETY: 2, FINANCIAL_SAFETY_NA: 2, SUBGROUP_MAX_4: 1 });
   const expectRanks = [1, 7, 8, 9, 10, ...Array.from({ length: 30 - 12 }, (_, k) => 13 + k)].slice(0, 20);
   assert.deepEqual(M.sets.N20.selected.map((e) => e.rank), expectRanks, 'first 20 eligible rows in official rank order');
@@ -139,6 +141,111 @@ test('modelPortfolios: approved eligibility in official rank order; N10 ⊂ N15 
   assert.equal(QS.modelPortfolios({ rows: {} }, out.inputs), null, 'no official result, no selection');
 });
 
+/* §16 (PLAYBOOK_V1 §16 via TARGET v1 (c), owner decision 2026-10-14): single name 10%, sector group 40% with semiconductors and
+   semiconductor equipment as ONE group, at least 10 names; per N at equal weight 100/N. Known groups only from the sectorOf below. */
+const SECTOR_BY_SIC = (t, sic) => (sic === '3674' ? 'semiconductors' : sic === '3559' ? 'semi_equipment' : sic === null ? null : 'sector_' + sic);
+const ranksOf = (set) => set.selected.map((e) => e.rank);
+test('§16 limits: the frozen copy is the approved config; tiers are the 2026-10-14 R-C rule', () => {
+  const C = globalThis.PlaybookConfigDefaults.portfolio_limits;
+  assert.equal(QS.LIMITS_16.single_max_pct, C.single_max_pct);assert.equal(QS.LIMITS_16.sector_group_max_pct, C.sector_group_max_pct);assert.equal(QS.LIMITS_16.min_holdings, C.min_holdings);
+  assert.deepEqual(QS.LIMITS_16.combined_groups.map((g) => [g.id, [...g.sectors]]), C.combined_groups.map((g) => [g.id, [...g.sectors]]));
+  assert.deepEqual([QS.LIMITS_16.single_max_pct, QS.LIMITS_16.sector_group_max_pct, QS.LIMITS_16.min_holdings], [10, 40, 10], 'PLAYBOOK_V1 §16 values');
+  assert.deepEqual({ ...QS.TIERS_RC }, { n: 15, core_n: 5, core_pct: 8, general_pct: 6, core_factors_min: 0.8 }, '10-14: core 5 x 8% + general 10 x 6%');
+  assert.equal(QS.TIERS_RC.core_n * QS.TIERS_RC.core_pct + (QS.TIERS_RC.n - QS.TIERS_RC.core_n) * QS.TIERS_RC.general_pct, 100);
+});
+test('§16 group cap per N: semiconductors + equipment one 40% group; skipped rows replaced by the next eligible rank', () => {
+  const spec = [];for (let i = 0; i < 30; i++) spec.push({ sic: String(5000 + i) });
+  for (const i of [0, 1, 2, 3]) spec[i].sic = '3674';for (const i of [4, 5, 6]) spec[i].sic = '3559';   // 7 rows of the combined group
+  const { computed, inputs: recs } = fakeResult(spec), M = QS.modelPortfolios(computed, recs, { sectorOf: SECTOR_BY_SIC });
+  // N10 (10% each): 4 names = 40% -> equipment ranks 5-7 skipped; N15 (6.67%): 6 names = 40% -> rank 7 skipped; N20 (5%): 8 names fit.
+  assert.deepEqual(ranksOf(M.sets.N10), [1, 2, 3, 4, 8, 9, 10, 11, 12, 13]);
+  assert.deepEqual(ranksOf(M.sets.N15), [1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
+  assert.deepEqual(ranksOf(M.sets.N20), Array.from({ length: 20 }, (_, k) => k + 1));
+  assert.deepEqual(M.sets.N10.group_capped.map((c) => [c.rank, c.group]), [[5, 'semiconductor_combined'], [6, 'semiconductor_combined'], [7, 'semiconductor_combined']]);
+  assert.equal(M.sets.N15.skipped.SECTOR_GROUP_MAX_40, 1);assert.equal(M.sets.N20.skipped.SECTOR_GROUP_MAX_40, 0);
+  for (const n of [10, 15, 20]) {
+    const s = M.sets['N' + n], g = s.limits.group.groups.find((x) => x.id === 'semiconductor_combined');
+    assert.equal(s.status, 'FEASIBLE', 'N' + n);assert.equal(s.shortfall_pct, 0);assert.deepEqual(s.causes, []);
+    assert.ok(g.pct <= 40 + 1e-9, 'N' + n + ' combined group ' + g.pct);assert.equal(s.limits.group.status, 'PASS');assert.ok(s.limits.single.ok);assert.ok(s.limits.min_holdings.ok);
+    assert.ok(Math.abs(s.limits.sum_pct - 100) < 1e-9);for (const e of s.selected) assert.ok(Math.abs(e.weight_pct - 100 / n) < 1e-12, 'equal weight, never rescaled');
+  }
+  assert.ok(Math.abs(M.sets.N10.limits.group.top_pct - 40) < 1e-9);assert.ok(M.sets.N10.selected.every((e) => M.sets.N15.selected.some((x) => x.company_id === e.company_id)), 'N10 within N15 here');
+});
+test('§16 shortfall: not enough eligible replacements -> short set, shortfall weight and cause; never filled or rescaled', () => {
+  const spec = [];for (let i = 0; i < 12; i++) spec.push({ sic: String(6000 + i) });
+  for (const i of [0, 1, 2, 3]) spec[i].sic = '3674';for (const i of [4, 5, 6, 7]) spec[i].sic = '3559';
+  spec.push({ nd: 4 }, { ic: null });   // two more ranked rows, both excluded (safety fail / NA): never put back
+  const { computed, inputs: recs } = fakeResult(spec), M = QS.modelPortfolios(computed, recs, { sectorOf: SECTOR_BY_SIC });
+  const want = { N10: [8, 20, 4], N15: [10, 100 / 3, 2], N20: [12, 40, 0] };
+  for (const [k, [picked, short, capped]] of Object.entries(want)) {
+    const s = M.sets[k];assert.equal(s.selected.length, picked, k);assert.equal(s.complete, false);assert.equal(s.status, 'SHORTFALL');
+    assert.ok(Math.abs(s.shortfall_pct - short) < 1e-9, k + ' shortfall ' + s.shortfall_pct);assert.ok(Math.abs(s.limits.sum_pct + s.shortfall_pct - 100) < 1e-9, k + ' sum + shortfall = 100');
+    for (const e of s.selected) assert.ok(Math.abs(e.weight_pct - s.weight_pct) < 1e-12, 'weights stay 100/N');
+    assert.equal(s.causes[0].code, 'ELIGIBLE_EXHAUSTED');assert.equal(s.skipped.SECTOR_GROUP_MAX_40, capped, k);
+    if (capped) assert.deepEqual(s.causes.find((c) => c.code === 'SECTOR_GROUP_MAX_40'), { code: 'SECTOR_GROUP_MAX_40', count: capped, groups: ['semiconductor_combined'] });
+    assert.ok(!s.selected.some((e) => e.rank > 12), 'excluded rows are never put back');
+  }
+  assert.ok(M.sets.N10.causes.some((c) => c.code === 'MIN_HOLDINGS'), 'N10 with 8 names is below the §16 minimum of 10');assert.ok(!M.sets.N15.causes.some((c) => c.code === 'MIN_HOLDINGS'));
+});
+test('§16 unknown group: not capped (provisional) and the 40% check is UNVERIFIED unless it provably holds', () => {
+  const none = [];for (let i = 0; i < 20; i++) none.push({});
+  const A = QS.modelPortfolios(fakeResult(none).computed, fakeResult(none).inputs, { sectorOf: () => null });
+  assert.equal(A.sets.N10.status, 'UNVERIFIED');assert.deepEqual(A.sets.N10.causes, [{ code: 'GROUP_UNKNOWN', count: 10, pct: 100 }]);assert.equal(A.sets.N10.selected.length, 10);
+  const one = [];for (let i = 0; i < 20; i++) one.push({ sic: i === 0 ? null : String(7000 + i) });
+  const B = QS.modelPortfolios(fakeResult(one).computed, fakeResult(one).inputs, { sectorOf: SECTOR_BY_SIC });
+  assert.equal(B.sets.N10.status, 'FEASIBLE', 'one unknown (10%) + largest known group (10%) <= 40%');assert.equal(B.sets.N10.limits.group.unknown.count, 1);
+});
+test('issuer check: GOOG / GOOGL stay two securities and both keep their seats; the summed weight is a recommendation check', () => {
+  const spec = [{ code: 'NASDAQ:GOOG', cik: '0001652044' }, { code: 'NASDAQ:GOOGL', id: 'googl', ticker: 'GOOGL', cik: '0001652044' }];for (let i = 0; i < 20; i++) spec.push({ cik: 'C' + i });
+  const { computed, inputs: recs } = fakeResult(spec), M = QS.modelPortfolios(computed, recs, { sectorOf: () => null });
+  for (const n of [10, 15, 20]) {
+    const s = M.sets['N' + n], c = s.issuer_check;
+    assert.deepEqual(ranksOf(s).slice(0, 2), [1, 2], 'both share classes selected: the selection does not apply the recommendation');
+    assert.equal(c.status, 'RECOMMENDATION_DECISION_NEEDED');assert.equal(c.applied, false);assert.equal(c.rule, 'ISSUER_ONE_SEAT');
+    assert.deepEqual(c.issuers.map((x) => [x.issuer, x.tickers]), [['0001652044', ['GOOG', 'GOOGL']]]);assert.ok(Math.abs(c.issuers[0].pct - 200 / n) < 1e-9);
+    assert.equal(c.issuers[0].over_single_max, 200 / n > 10 + 1e-9, 'N' + n);assert.ok(Math.abs(c.max_issuer_pct - 200 / n) < 1e-9);
+  }
+  assert.deepEqual(M.sets.N20.selected.slice(0, 2).map((e) => [e.code, e.issuer]), [['NASDAQ:GOOG', '0001652044'], ['NASDAQ:GOOGL', '0001652044']]);
+});
+test('R-C tier check on N15 (check only): core = top 5 with factors >= 80% and safety passed; weights never change the selection', () => {
+  const spec = [];for (let i = 0; i < 20; i++) spec.push({ sic: String(8000 + i) });
+  let M = QS.modelPortfolios(fakeResult(spec).computed, fakeResult(spec).inputs, { sectorOf: SECTOR_BY_SIC });
+  let t = M.sets.N15.tier_check;assert.equal(t.status, 'PASS');assert.equal(t.core, 5);assert.deepEqual(t.rows.slice(0, 6).map((r) => [r.tier, r.weight_pct]), [['CORE', 8], ['CORE', 8], ['CORE', 8], ['CORE', 8], ['CORE', 8], ['GENERAL', 6]]);
+  assert.equal(t.applied_to_selection, false);assert.ok(Math.abs(t.limits.sum_pct - 100) < 1e-9);assert.equal(M.sets.N10.tier_check, null);assert.equal(M.sets.N20.tier_check, null);
+  spec[2].fa = 11;   // 11/15 = 73% < 80%: not core, and nothing is promoted in its place (core 4, sum 98%)
+  M = QS.modelPortfolios(fakeResult(spec).computed, fakeResult(spec).inputs, { sectorOf: SECTOR_BY_SIC });t = M.sets.N15.tier_check;
+  assert.equal(t.status, 'CORE_SHORT');assert.equal(t.core, 4);assert.ok(Math.abs(t.limits.sum_pct - 98) < 1e-9);assert.equal(t.rows[2].tier, 'GENERAL');
+  assert.deepEqual(ranksOf(M.sets.N15), Array.from({ length: 15 }, (_, k) => k + 1), 'selection unchanged by the tier check');
+  const semi = [];for (let i = 0; i < 20; i++) semi.push({ sic: i < 6 ? (i < 4 ? '3674' : '3559') : String(8100 + i) });   // 6 combined names: 5 core x 8 + 1 x 6 = 46%
+  t = QS.modelPortfolios(fakeResult(semi).computed, fakeResult(semi).inputs, { sectorOf: SECTOR_BY_SIC }).sets.N15.tier_check;
+  assert.equal(t.status, 'FAIL', 'tier weights can break §16 even when the equal-weight N15 passes');assert.ok(Math.abs(t.limits.group.groups.find((g) => g.id === 'semiconductor_combined').pct - 46) < 1e-9);
+});
+
+/* The screen text: one line per N with the feasibility (data attributes + Korean words), the R-C tier check and the issuer check. */
+function textTree(node) { return [node.text || '', ...(node.children || []).map(textTree)].join(''); }
+const fakeEl = (tag, text, attrs = {}) => ({ tag, text, attrs: { ...attrs }, children: [], append(...xs) { this.children.push(...xs); } });
+test('modelChecks screen text: Korean feasibility, shortfall weight and cause, tier and issuer lines', () => {
+  const LB = require(path.join(W, 'leaderboard-screen.js'));
+  const spec = [];for (let i = 0; i < 12; i++) spec.push({ sic: String(6000 + i), cik: 'C' + i });
+  for (const i of [0, 1, 2, 3]) spec[i].sic = '3674';for (const i of [4, 5, 6, 7]) spec[i].sic = '3559';spec[8].cik = 'C0';
+  const { computed, inputs: recs } = fakeResult(spec), M = QS.modelPortfolios(computed, recs, { sectorOf: SECTOR_BY_SIC }), box = LB.modelChecks(M, QS, false, fakeEl);
+  const by = (k, v) => box.children.find((c) => c.attrs[k] === v);
+  const n10 = by('data-model-limits', 'N10');assert.equal(n10.attrs['data-model-feasible'], 'SHORTFALL');assert.equal(n10.attrs['data-model-shortfall-pct'], '20.00');assert.equal(n10.attrs['data-model-group-skipped'], '4');
+  assert.equal(n10.attrs['data-model-causes'], 'ELIGIBLE_EXHAUSTED SECTOR_GROUP_MAX_40 MIN_HOLDINGS');
+  assert.match(n10.text, /^N10 · 구성 불가 · 부족 비중 20\.00% \(8\/10 · 채우지 않음 · 비중 재조정 없음\) · 원인: 반도체 묶음 40% 한도로 4종목 초과, 대체 후보 부족, 최소 10종목 미달 · /);
+  assert.match(n10.text, /업종 묶음 40% 한도로 건너뜀: R4 #5 \(반도체 묶음\), R5 #6 \(반도체 묶음\), R6 #7 \(반도체 묶음\), R7 #8 \(반도체 묶음\) → 다음 자격 순위로 대체/);
+  assert.equal(JSON.parse(n10.attrs['data-model-group-pct']).semiconductor_combined, 40);
+  assert.match(by('data-model-limits', 'N20').text, /^N20 · 구성 불가 · 부족 비중 40\.00% \(12\/20/);
+  assert.equal(by('data-model-tier-check', 'INCOMPLETE').attrs['data-model-tier-core'], '5');
+  const i10 = by('data-model-issuer', 'N10');assert.equal(i10.attrs['data-model-issuer-status'], 'RECOMMENDATION_DECISION_NEEDED');assert.equal(i10.attrs['data-model-issuer-applied'], 'false');
+  assert.match(i10.text, /^N10 · 같은 발행사 합산 비중 \(권장안 · 결정 필요 · 선정 불변\): R0\+R8 20\.00% \(발행사 기준으로 읽으면 단일 10% 초과\) · 발행사 최대 20\.00%$/);
+  const ok = [];for (let i = 0; i < 20; i++) ok.push({ sic: String(9000 + i) });
+  const B = LB.modelChecks(QS.modelPortfolios(fakeResult(ok).computed, fakeResult(ok).inputs, { sectorOf: SECTOR_BY_SIC }), QS, false, fakeEl);
+  assert.match(B.children.find((c) => c.attrs['data-model-limits'] === 'N15').text, /^N15 · 16절 한도 아래 구성 가능 · 각 6\.67% ≤ 10% · 최대 업종 묶음 /);
+  assert.match(textTree(B), /참고 검사 · R-C\(TARGET v1\) 등급 비중을 N15에 넣으면 \(선정 불변\): 핵심 5 × 8% .* → 16절 통과/);
+  assert.match(B.children.find((c) => c.attrs['data-model-issuer'] === 'N20').text, /같은 발행사 중복 없음 · 발행사 최대 5\.00%$/);
+});
+
 test('modelPortfolios on the shared result: subgroups from the approved #20 rule; outside / Q·G-only never selected', async () => {
   QS.setPageIdentities(TARGETS);
   try {
@@ -152,6 +259,13 @@ test('modelPortfolios on the shared result: subgroups from the approved #20 rule
     const subgroups = {};for (const e of M.sets.N20.selected) if (e.subgroup) subgroups[e.subgroup] = (subgroups[e.subgroup] || 0) + 1;
     assert.ok(Object.values(subgroups).every((n) => n <= 4), JSON.stringify(subgroups));
     assert.equal(M.sets.N20.selected.find((e) => e.company_id === 'nvda')?.subgroup ?? 'semiconductors', 'semiconductors', 'TARGET assignment (#20)');
+    for (const n of [10, 15, 20]) {
+      const s = M.sets['N' + n];assert.ok(['FEASIBLE', 'SHORTFALL', 'UNVERIFIED'].includes(s.status), s.status);
+      for (const g of s.limits.group.groups) assert.ok(g.pct <= 40 + 1e-9, 'N' + n + ' ' + g.id + ' ' + g.pct);
+      for (const e of s.selected) assert.ok(Math.abs(e.weight_pct - 100 / n) < 1e-12);
+      const ciks = {};for (const e of s.selected) if (e.issuer) ciks[e.issuer] = (ciks[e.issuer] || 0) + 1;
+      assert.deepEqual(s.issuer_check.issuers.map((x) => x.issuer).sort(), Object.keys(ciks).filter((k) => ciks[k] > 1).sort(), 'issuer check = CIKs with two selected codes');
+    }
   } finally { QS.setPageIdentities(null); }
 });
 
