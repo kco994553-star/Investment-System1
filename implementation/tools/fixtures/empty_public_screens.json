@@ -3312,102 +3312,141 @@
   "reason_codes": [
    "NO_ELIGIBLE_INPUT"
   ],
-  "schema_version": 1,
+  "refresh": null,
+  "schema_version": 2,
   "score_effect": "NONE",
   "sources": {
    "GDELT": {
     "amd": {
      "acquired_at": null,
+     "last_result": null,
+     "last_result_code": null,
      "reason_code": "NOT_COLLECTED",
      "state": "NOT_AVAILABLE"
     },
     "amzn": {
      "acquired_at": null,
+     "last_result": null,
+     "last_result_code": null,
      "reason_code": "NOT_COLLECTED",
      "state": "NOT_AVAILABLE"
     },
     "asml": {
      "acquired_at": null,
+     "last_result": null,
+     "last_result_code": null,
      "reason_code": "NOT_COLLECTED",
      "state": "NOT_AVAILABLE"
     },
     "avgo": {
      "acquired_at": null,
+     "last_result": null,
+     "last_result_code": null,
      "reason_code": "NOT_COLLECTED",
      "state": "NOT_AVAILABLE"
     },
     "etn": {
      "acquired_at": null,
+     "last_result": null,
+     "last_result_code": null,
      "reason_code": "NOT_COLLECTED",
      "state": "NOT_AVAILABLE"
     },
     "gev": {
      "acquired_at": null,
+     "last_result": null,
+     "last_result_code": null,
      "reason_code": "NOT_COLLECTED",
      "state": "NOT_AVAILABLE"
     },
     "googl": {
      "acquired_at": null,
+     "last_result": null,
+     "last_result_code": null,
      "reason_code": "NOT_COLLECTED",
      "state": "NOT_AVAILABLE"
     },
     "hanmi": {
      "acquired_at": null,
+     "last_result": null,
+     "last_result_code": null,
      "reason_code": "NOT_COLLECTED",
      "state": "NOT_AVAILABLE"
     },
     "hubb": {
      "acquired_at": null,
+     "last_result": null,
+     "last_result_code": null,
      "reason_code": "NOT_COLLECTED",
      "state": "NOT_AVAILABLE"
     },
     "intc": {
      "acquired_at": null,
+     "last_result": null,
+     "last_result_code": null,
      "reason_code": "NOT_COLLECTED",
      "state": "NOT_AVAILABLE"
     },
     "klac": {
      "acquired_at": null,
+     "last_result": null,
+     "last_result_code": null,
      "reason_code": "NOT_COLLECTED",
      "state": "NOT_AVAILABLE"
     },
     "lrcx": {
      "acquired_at": null,
+     "last_result": null,
+     "last_result_code": null,
      "reason_code": "NOT_COLLECTED",
      "state": "NOT_AVAILABLE"
     },
     "msft": {
      "acquired_at": null,
+     "last_result": null,
+     "last_result_code": null,
      "reason_code": "NOT_COLLECTED",
      "state": "NOT_AVAILABLE"
     },
     "nvda": {
      "acquired_at": null,
+     "last_result": null,
+     "last_result_code": null,
      "reason_code": "NOT_COLLECTED",
      "state": "NOT_AVAILABLE"
     },
     "qcom": {
      "acquired_at": null,
+     "last_result": null,
+     "last_result_code": null,
      "reason_code": "NOT_COLLECTED",
      "state": "NOT_AVAILABLE"
     },
     "rok": {
      "acquired_at": null,
+     "last_result": null,
+     "last_result_code": null,
      "reason_code": "NOT_COLLECTED",
      "state": "NOT_AVAILABLE"
     },
     "rtx": {
      "acquired_at": null,
+     "last_result": null,
+     "last_result_code": null,
      "reason_code": "NOT_COLLECTED",
      "state": "NOT_AVAILABLE"
     },
     "stry": {
      "acquired_at": null,
+     "last_result": null,
+     "last_result_code": null,
      "reason_code": "NOT_COLLECTED",
      "state": "NOT_AVAILABLE"
     },
     "tokyo_electron": {
      "acquired_at": null,
+     "last_result": null,
+     "last_result_code": null,
      "reason_code": "NOT_COLLECTED",
      "state": "NOT_AVAILABLE"
     }
@@ -3416,102 +3455,136 @@
     "amd": {
      "acquired_at": null,
      "feed_status": "UNVERIFIED_URL",
+     "last_result": null,
+     "last_result_code": null,
      "reason_code": "NOT_COLLECTED",
      "state": "NOT_AVAILABLE"
     },
     "amzn": {
      "acquired_at": null,
      "feed_status": "UNVERIFIED_URL",
+     "last_result": null,
+     "last_result_code": null,
      "reason_code": "NOT_COLLECTED",
      "state": "NOT_AVAILABLE"
     },
     "asml": {
      "acquired_at": null,
      "feed_status": "NOT_AVAILABLE",
+     "last_result": null,
+     "last_result_code": null,
      "reason_code": "NO_OFFICIAL_FEED_KNOWN",
      "state": "NOT_AVAILABLE"
     },
     "avgo": {
      "acquired_at": null,
      "feed_status": "UNVERIFIED_URL",
+     "last_result": null,
+     "last_result_code": null,
      "reason_code": "NOT_COLLECTED",
      "state": "NOT_AVAILABLE"
     },
     "etn": {
      "acquired_at": null,
      "feed_status": "NOT_AVAILABLE",
+     "last_result": null,
+     "last_result_code": null,
      "reason_code": "NO_OFFICIAL_FEED_KNOWN",
      "state": "NOT_AVAILABLE"
     },
     "gev": {
      "acquired_at": null,
      "feed_status": "NOT_AVAILABLE",
+     "last_result": null,
+     "last_result_code": null,
      "reason_code": "NO_OFFICIAL_FEED_KNOWN",
      "state": "NOT_AVAILABLE"
     },
     "googl": {
      "acquired_at": null,
      "feed_status": "NOT_AVAILABLE",
+     "last_result": null,
+     "last_result_code": null,
      "reason_code": "NO_OFFICIAL_FEED_KNOWN",
      "state": "NOT_AVAILABLE"
     },
     "hubb": {
      "acquired_at": null,
      "feed_status": "NOT_AVAILABLE",
+     "last_result": null,
+     "last_result_code": null,
      "reason_code": "NO_OFFICIAL_FEED_KNOWN",
      "state": "NOT_AVAILABLE"
     },
     "intc": {
      "acquired_at": null,
      "feed_status": "UNVERIFIED_URL",
+     "last_result": null,
+     "last_result_code": null,
      "reason_code": "NOT_COLLECTED",
      "state": "NOT_AVAILABLE"
     },
     "klac": {
      "acquired_at": null,
      "feed_status": "UNVERIFIED_URL",
+     "last_result": null,
+     "last_result_code": null,
      "reason_code": "NOT_COLLECTED",
      "state": "NOT_AVAILABLE"
     },
     "lrcx": {
      "acquired_at": null,
      "feed_status": "UNVERIFIED_URL",
+     "last_result": null,
+     "last_result_code": null,
      "reason_code": "NOT_COLLECTED",
      "state": "NOT_AVAILABLE"
     },
     "msft": {
      "acquired_at": null,
      "feed_status": "UNVERIFIED_URL",
+     "last_result": null,
+     "last_result_code": null,
      "reason_code": "NOT_COLLECTED",
      "state": "NOT_AVAILABLE"
     },
     "nvda": {
      "acquired_at": null,
      "feed_status": "UNVERIFIED_URL",
+     "last_result": null,
+     "last_result_code": null,
      "reason_code": "NOT_COLLECTED",
      "state": "NOT_AVAILABLE"
     },
     "qcom": {
      "acquired_at": null,
      "feed_status": "UNVERIFIED_URL",
+     "last_result": null,
+     "last_result_code": null,
      "reason_code": "NOT_COLLECTED",
      "state": "NOT_AVAILABLE"
     },
     "rok": {
      "acquired_at": null,
      "feed_status": "NOT_AVAILABLE",
+     "last_result": null,
+     "last_result_code": null,
      "reason_code": "NO_OFFICIAL_FEED_KNOWN",
      "state": "NOT_AVAILABLE"
     },
     "rtx": {
      "acquired_at": null,
      "feed_status": "NOT_AVAILABLE",
+     "last_result": null,
+     "last_result_code": null,
      "reason_code": "NO_OFFICIAL_FEED_KNOWN",
      "state": "NOT_AVAILABLE"
     },
     "stry": {
      "acquired_at": null,
      "feed_status": "UNVERIFIED_URL",
+     "last_result": null,
+     "last_result_code": null,
      "reason_code": "NOT_COLLECTED",
      "state": "NOT_AVAILABLE"
     }

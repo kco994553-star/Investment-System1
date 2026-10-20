@@ -36,6 +36,9 @@ MAX_BODY_BYTES = 1024 * 1024
 REQUEST_TIMEOUT = 30
 MAX_ATTEMPTS = 2
 RETRY_WAIT = 10.0
+# 429 / 5xx: one retry after RETRY_WAIT, or after the server's Retry-After when it is longer. A Retry-After above
+# MAX_RETRY_AFTER is honoured by not retrying in this run (no further request). Never more attempts, budget or parallelism.
+MAX_RETRY_AFTER = 60.0
 USER_AGENT = 'Investment-System1 news-signals/1 (+https://github.com/kco994553-star/Investment-System1)'
 XML_ITEMS_MAX = 200
 
@@ -49,6 +52,23 @@ class NewsResponse:
     status: int
     body: bytes = field(repr=False)
     final_url: str = field(repr=False)
+    retry_after: str | None = field(default=None, repr=False)  # raw Retry-After header of an error response
+
+
+def retry_after_seconds(value, now):
+    """Retry-After (delta-seconds or HTTP-date) -> seconds >= 0 from `now`, or None when absent or unreadable."""
+    if not isinstance(value, str) or not value.strip() or len(value) > 64:
+        return None
+    text = value.strip()
+    if text.isascii() and text.isdigit():
+        return float(int(text))
+    try:
+        moment = parsedate_to_datetime(text)
+    except (TypeError, ValueError, IndexError):
+        return None
+    if moment is None or moment.utcoffset() is None or not isinstance(now, datetime) or now.utcoffset() is None:
+        return None
+    return max(0.0, (moment - now).total_seconds())
 
 
 class _RejectRedirects(HTTPRedirectHandler):
@@ -80,7 +100,8 @@ def default_transport(url, *, headers, timeout, max_body_bytes):
                 raise NewsFetchError('RESPONSE_TOO_LARGE') from None
             return NewsResponse(response.status, body, response.geturl())
     except HTTPError as error:
-        return NewsResponse(error.code, b'', error.geturl())
+        header = error.headers.get('Retry-After') if error.headers is not None else None
+        return NewsResponse(error.code, b'', error.geturl(), header if isinstance(header, str) else None)
 
 
 class PacedClient:
@@ -132,8 +153,10 @@ class PacedClient:
                     raise NewsFetchError('CLOCK_INVALID')
                 return response.body, at.astimezone(timezone.utc)
             if response.status in (429, 500, 502, 503, 504) and attempt < MAX_ATTEMPTS - 1:
-                self._sleep(RETRY_WAIT)
-                continue
+                asked = retry_after_seconds(response.retry_after, self._now())
+                if asked is None or asked <= MAX_RETRY_AFTER:
+                    self._sleep(max(RETRY_WAIT, asked or 0.0))
+                    continue
             raise NewsFetchError('HTTP_429' if response.status == 429 else 'HTTP_FAILED')
         raise NewsFetchError('TRANSPORT_FAILED')
 
