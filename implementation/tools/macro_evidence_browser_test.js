@@ -36,6 +36,8 @@ async function pick(page,id){await page.locator('[data-me-indicator]').selectOpt
     assert.equal(await page.locator('[data-macro-evidence] svg').count(),0,'no chart without observations');
     assert.ok((await text(page,'[data-me-no-obs]')).includes('NOT_AVAILABLE'));
     assert.equal(await page.locator('[data-macro-lights]').count(),1,'macro lights still mounted');
+    await page.locator('[data-cycle-ring="economy"] [data-cycle-evidence-slot] [data-me-ring-empty]').first().waitFor();
+    assert.ok((await text(page,'[data-cycle-ring="economy"] [data-me-ring-empty]')).includes('NOT_AVAILABLE'));
     await noOverflow(page,'empty '+width);
     assert.deepEqual(seen.errors,[]);assert.deepEqual(seen.outside,[]);await ctx.close();pass++;}
    phase='DATA '+width;
@@ -80,6 +82,21 @@ async function pick(page,id){await page.locator('[data-me-indicator]').selectOpt
     // Catalog list (13 indicators) is separate from the event list; the held DOL series shows no data.
     assert.equal(await page.locator('[data-me-catalog-row="E14"]').getAttribute('data-me-catalog-state'),'NOT_AVAILABLE');
     assert.equal(await page.locator('[data-me-catalog-row="E21"]').getAttribute('data-me-catalog-state'),'NOT_AVAILABLE');
+    // Cycle ring (C1): observations -> evidence slots of the focused phase; 관측 그래프 selects the indicator here.
+    await page.locator('[data-me-tab="economy"]').click();
+    const ring='[data-cycle-ring="economy"]';
+    await page.locator(ring+' [data-me-ring-line]').first().waitFor();
+    const lines=await page.locator(ring+' [data-me-ring-line]').evaluateAll(n=>n.map(x=>[x.dataset.meRingLine,x.dataset.meRingState]));
+    assert.ok(lines.length>=4&&lines.some(([c,st])=>c==='E25'&&st==='LIVE')&&lines.some(([c,st])=>c==='E14'&&st==='NOT_AVAILABLE'),JSON.stringify(lines));
+    const slotText=await page.locator(ring+' [data-me-ring-line="E25"]').first().textContent();
+    for(const s of['v0 · 미검증','최신 관측','E25.v0'])assert.ok(slotText.includes(s),s);
+    assert.equal(await page.locator(ring+' [data-cycle-interval], '+ring+' [data-cycle-point]').count(),0,'evidence gives the ring no position');
+    await page.locator(ring+' [data-me-ring-show="E25"]').first().click();
+    await page.waitForFunction(()=>document.querySelector('[data-me-indicator]')?.value==='E25');
+    assert.equal(await page.locator('[data-me-meta="E25"]').count(),1);
+    await page.locator('[data-me-tab="market"]').click();
+    await page.locator('[data-cycle-ring="economy"] [data-cycle-next]').click();
+    await page.waitForFunction(()=>document.querySelector('[data-me-tab="economy"]')?.getAttribute('aria-selected')==='true');
     // API for the cycle ring (C1).
     const api=await page.evaluate(()=>({c:MacroEvidence.current(),m:MacroEvidence.events({cycle:'market'}).length,i:MacroEvidence.events({cycle:'industry'}).map(e=>e.indicator),
      r:MacroEvidence.events({cycle:'economy',layer:'REPLAY'}).every(e=>e.layer==='REPLAY')}));

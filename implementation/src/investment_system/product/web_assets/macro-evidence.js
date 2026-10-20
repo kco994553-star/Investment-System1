@@ -8,7 +8,8 @@
    - Mobile: the 5 most recent lines (same day = one line with a count), the rest under "더 보기 (n)" (up to 8 drawn).
      PC: up to 10. Tabs 경기 / 주식시장 / 산업 are counted separately; one family counts once.
    - This module only reads one public file; it stores nothing (selected tab/lines live in this page's RAM only).
-   API for the cycle ring (lane C1): MacroEvidence.current(), .events({cycle, layer}), .subscribe(fn), .load(). */
+   API for the cycle ring (lane C1): MacroEvidence.current(), .events({cycle, layer}), .subscribe(fn), .load(); the ring's evidence
+   slots are filled through MacroCycleRing.attachEvidence(MacroEvidence.ringEvidence) and its macro-cycle-focus event selects the tab. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.MacroEvidence=api;})(typeof globalThis==='object'?globalThis:this,function(){
 'use strict';
 const FILENAME='macro-evidence.json',SCHEMA='macro-evidence/1',MAX=2*1024*1024;
@@ -33,7 +34,7 @@ function validate(p){
  }catch(_){return null;}
 }
 function notify(){for(const fn of S.listeners){try{fn(current());}catch(_){}}}
-function setPayload(p,status){S.payload=p?validate(p):null;S.status=S.payload?(S.payload.state==='NOT_AVAILABLE'?'NOT_AVAILABLE':'LOADED'):(status||'INVALID');notify();return S.payload;}
+function setPayload(p,status){S.payload=p?validate(p):null;S.status=S.payload?(S.payload.state==='NOT_AVAILABLE'?'NOT_AVAILABLE':'LOADED'):(status||'INVALID');notify();attachRing();return S.payload;}
 async function load(view=globalThis){
  if(S.loading)return S.loading;
  S.loading=(async()=>{
@@ -77,6 +78,32 @@ const fmtTime=t=>typeof t==='string'?t.slice(0,16).replace('T',' ')+' UTC':'—'
 function fmtNum(v){if(typeof v!=='number'||!Number.isFinite(v))return'—';const a=Math.abs(v);return a>=1000?Math.round(v).toLocaleString('en-US'):a>=100?v.toFixed(1):v.toFixed(2);}
 function eventLabel(p,e){const ind=byId(p,e.indicator),edge=ind&&ind.edges[e.direction];const base=edge?edge.label:e.direction;return e.kind==='REVISION_CLEARED'?'수정 발표로 조건 해제: '+base:e.cause==='REVISION'?'수정 발표로 조건 성립: '+base:base;}
 function basisLabel(b,rd){return b==='SOURCE_LAST_MODIFIED'?'발표 시각(게시 파일 시각)':'수집 시각 기준'+(rd?' · 기관 발표일 '+rd+'(시각 미상)':'');}
+
+// ------------------------------------------------------------------ cycle ring (lane C1) evidence slots
+// MacroCycleRing calls this for each evidence slot of the focused phase with the catalog codes of that cell. Observations,
+// release records and the current candidate state go in; the ring stays a concept diagram and gets no position from here.
+function ringEvidence({cycle,codes=[],locale}={}){
+ const p=S.payload,box=el('div',{class:'me-ring','data-me-ring-evidence':cycle||''});
+ if(!p||p.generated_at===null){box.append(el('p',{class:'small','data-me-ring-empty':''},'관측 근거 없음 · NOT_AVAILABLE (근거 지표 자료 수집 전)'));return box;}
+ const ul=el('ul',{class:'cycle-list me-ring-list'});
+ for(const code of codes){const ind=byId(p,code);
+  if(!ind){ul.append(el('li',{class:'small','data-me-ring-line':code,'data-me-ring-state':'OUTSIDE_P1'},code+' · P1 13 밖 · 수집 안 함'));continue;}
+  for(const sid of ind.series){const row=p.series[sid],last=row.obs[row.obs.length-1],rel=(p.releases||[]).filter(r=>r.series===sid).slice(-1)[0];
+   const cur=row.current||{},edge=cur.state&&ind.edges[cur.state];
+   const li=el('li',{'data-me-ring-line':code,'data-me-ring-state':row.state});
+   li.append(el('b',{},code+' '+ind.name),document.createTextNode(' '),el('span',{class:'badge'},'v0 · 미검증'));
+   const facts=row.state!=='LIVE'?'NOT_AVAILABLE · '+(REASON[row.reason]||row.reason):
+    '최신 관측 '+(last?last[0]+' = '+fmtNum(last[1])+' '+ind.unit:'—')+' · '+(rel?(rel.kind==='FIRST'?'발표 ':'수정 ')+fmtTime(rel.at)+' · '+basisLabel(rel.basis,rel.rd):'발표 기록 없음(수집 시작 기준선 '+fmtTime(row.baseline_at)+')')+
+    ' · 현재 조건: '+(edge?edge.label+' (기준 기간 '+cur.since+')':'없음')+(edge?' · 해석 후보 · 미승인: '+edge.interpretation:'')+(row.delayed?' · 자료 지연':'');
+   li.append(el('br'),el('span',{class:'small'},facts+' · '+ind.rule.version));
+   if(row.state==='LIVE'){const b=el('button',{type:'button',class:'chip','data-me-ring-show':code},'관측 그래프');b.addEventListener('click',()=>show(code,cycle));li.append(document.createTextNode(' '),b);}
+   ul.append(li);}}
+ box.append(ul,el('p',{class:'small'},'관측 근거 · 위치 판정 아님 · 공식 판정·확률·매크로 게이트에 쓰지 않음'));
+ return box;
+}
+function attachRing(){try{const R=globalThis.MacroCycleRing;if(R&&typeof R.attachEvidence==='function')R.attachEvidence(ringEvidence);}catch(_){}}
+// Ask the mounted observation graph to show one indicator (from a ring evidence slot).
+function show(indicator,cycle){S.focus={indicator,cycle:TABS.some(t=>t[0]===cycle)?cycle:null};notify();}
 
 // ------------------------------------------------------------------ rendering
 function el(tag,attrs={},text){const n=document.createElement(tag);for(const[k,v]of Object.entries(attrs))if(v!==undefined&&v!==null&&v!==false)n.setAttribute(k,v===true?'':String(v));if(text!==undefined)n.textContent=text;return n;}
@@ -130,6 +157,7 @@ function mount(host,{locale,view=globalThis}={}){
  const root=el('section',{class:'card macro-evidence','data-macro-evidence':''});host.replaceChildren(root);
  const paint=()=>{
   const p=S.payload;root.replaceChildren();root.setAttribute('data-macro-evidence-status',S.status);
+  if(S.focus&&p){const f=S.focus,ind=byId(p,f.indicator);S.focus=null;if(ind){ui.cycle=f.cycle&&ind.cycles.includes(f.cycle)?f.cycle:ind.cycles[0];ui.indicator=ind.id;ui.extra.clear();ui.scroll=true;}}
   root.append(el('h2',{},'근거 지표 · 관측 그래프'));
   const chips=el('p',{class:'chips me-badges'});chips.append(el('span',{class:'badge','data-me-scope':''},'탐색 화면 전용 · 공식 판정·확률·매크로 게이트에 쓰지 않음'),el('span',{class:'badge','data-me-interp-label':''},'해석 후보 · 미승인'),el('span',{class:'badge'},'v0 · 미검증'));root.append(chips);
   root.append(el('p',{class:'small','data-me-panel':'observation'},'관측 그래프 · 실제 자료 (사이클 개념도가 아님). 세로선은 발표 시각에, 발표 시각을 모르면 수집 시각에 그리고 그렇게 표시합니다.'));
@@ -184,10 +212,13 @@ function mount(host,{locale,view=globalThis}={}){
    for(const v of[i.id+' '+i.name,FAMILY[i.family]||i.family,i.cycles.map(c=>(TABS.find(x=>x[0]===c)||[c,c])[1]).join('·'),i.state==='LIVE'?'수집됨':i.state==='PARTIAL'?'일부 · '+(REASON[i.reason]||i.reason):'NOT_AVAILABLE · '+(REASON[i.reason]||i.reason),i.source.official_statistic?'Y':'N',i.source.license_class,i.source.publication==='PUBLIC'?'공개':'보류'])tr.append(el('td',{},v));tbody.append(tr);}
   cat.append(wrap);root.append(cat);
  };
- const off=subscribe(()=>{if(root.isConnected)paint();else off();});
- paint();
+ const off=subscribe(()=>{if(root.isConnected){paint();if(ui.scroll){ui.scroll=false;try{root.scrollIntoView({block:'start'});}catch(_){}}}else{off();view.document&&view.document.removeEventListener('macro-cycle-focus',onFocus);}});
+ // The ring's focused cycle selects the same tab here (economy / market / industry:<group> -> industry).
+ const onFocus=e=>{const c=e&&e.detail&&String(e.detail.cycle||'');if(!root.isConnected||!TABS.some(t=>t[0]===c)||c===ui.cycle)return;ui.cycle=c;ui.indicator=null;ui.extra.clear();paint();};
+ try{view.document.addEventListener('macro-cycle-focus',onFocus);}catch(_){}
+ paint();attachRing();
  if(S.status==='NOT_LOADED')void load(view);
  return{paint,state:ui};
 }
-return Object.freeze({FILENAME,SCHEMA,TABS,LIMIT,validate,load,setPayload,current,events,summary,subscribe,lineGroups,periodTime,mount});
+return Object.freeze({FILENAME,SCHEMA,TABS,LIMIT,validate,load,setPayload,current,events,summary,subscribe,lineGroups,periodTime,ringEvidence,show,mount});
 });
