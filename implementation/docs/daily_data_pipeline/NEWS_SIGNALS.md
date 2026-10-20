@@ -12,7 +12,7 @@
 ### GDELT DOC 2.0 (artlist, JSON)
 
 - 회사마다 1회: `https://api.gdeltproject.org/api/v2/doc/doc?query=<표의 query> sourcelang:english&mode=artlist&format=json&maxrecords=75&timespan=7d&sort=hybridrel`.
-- 간격 5.5초 이상(GDELT 요청: 5초에 1회 이하), 실행당 요청 상한 40(19개사 = 19회, 재시도 1회 포함 상한 안). 429·속도 제한 문구를 받으면 남은 회사는 요청하지 않는다(`NOT_RUN_…`, 직전 행 유지).
+- 간격 5.5초 이상(GDELT 요청: 5초에 1회 이하), 실행당 요청 상한 40(19개사 = 19회, 재시도 1회 포함 상한 안). 429·속도 제한 문구를 받으면 남은 회사는 요청하지 않는다(`NOT_RUN_…`, 직전 행 유지). 재시도 정책은 아래 '429 재시도 정책'.
 - 기사에서 `url`·`title`·`seendate`만 읽는다(이미지·도메인·국가는 버림). 시각은 GDELT가 처음 본 시각(`seendate`, UTC).
 - 관련성 통과 행 중 GDELT 순서(관련도+최신) 앞 15개만 남긴다.
 
@@ -85,24 +85,46 @@
 | PRODUCT | 제품·서비스 | launch(es/ed), unveil(s/ed), introduce(s/d), rolls out, debut(s), release(s/d), product(s), platform |
 | OTHER | 기타 | 그 밖 |
 
-## 공개 파일 형식 (schema_version 1, 별도 파일)
+## 429 재시도 정책 (2026-10-19 확인)
+
+관측(10/19 정기 실행): GDELT 1번 회사가 HTTP 429 → 10초 뒤 1회 재시도도 429 → `HTTP_429`로 GDELT 중단, 2~19번은 `NOT_RUN_HTTP_429`. 그래서 `gdelt_requests=2`다(예산 40 중 2). 같은 실행에서 IR 9개 피드도 실패(`HTTP_FAILED`, `REDIRECT_REJECTED`), 1개만 응답(새 항목 0).
+
+| 항목 | 현재(이 변경 후) |
+| --- | --- |
+| 간격 | 요청 사이 5.5초 이상(직렬, 병렬 없음) |
+| 재시도 | 429·5xx·전송 실패에 1회만(`MAX_ATTEMPTS=2`). 기본 대기 10초 |
+| Retry-After | 응답에 있으면 따른다. 대기 = max(10초, Retry-After). 60초(`MAX_RETRY_AFTER`)를 넘으면 이번 실행에서는 재시도하지 않는다(요청 추가 없음). 초·HTTP 날짜 형식 모두 읽고, 못 읽으면 기본 10초 |
+| 429 뒤 | 그 회사는 `FAILED HTTP_429`, 남은 GDELT 회사는 요청하지 않고 `NOT_RUN HTTP_429`. IR은 별도 호스트라 계속 |
+| 바꾸지 않은 것 | 요청 예산(GDELT 40, IR 20), 시도 횟수, 직렬 실행, 같은 User-Agent·같은 엔드포인트. 주소·신원 교체, 병렬화, 우회는 하지 않는다 |
+
+근거: 저장소에 있는 GDELT 쪽 지침은 응답 문구 'Please limit requests to one every 5 seconds'(→ 5초 1회)뿐이다(`providers/news_feeds.py` `GDELT_MIN_INTERVAL`, `parse_gdelt`). GDELT의 429·Retry-After·일일 한도에 대한 문서는 저장소에 없다(**미확인**). 그래서 예산은 그대로 둔다. GitHub Actions 실행기는 IP를 여럿이 함께 쓰므로, 첫 요청부터 429면 우리 요청량과 무관하게 제한일 수 있다. 권고(결정 필요, 미구현): 실행 시각 조정, 또는 회사 질의를 묶어 요청 수를 줄이는 방안(매칭 규칙 변경이 따름).
+
+## 공개 파일 형식 (schema_version 2, 별도 파일)
 
 공시 파일(`sec-disclosures.json`)은 채널 DISCLOSURE·8-K 전용 키로 고정되어 있어 뉴스를 넣지 않고 별도 파일로 둔다.
 
 ```json
-{"schema_version":1,"kind":"NEWS_SIGNALS","as_of":"…+00:00","state":"LIVE|STALE|NOT_AVAILABLE","reason_codes":[],
+{"schema_version":2,"kind":"NEWS_SIGNALS","as_of":"…+00:00","state":"LIVE|STALE|NOT_AVAILABLE","reason_codes":[],
  "freshness_basis":"SOURCE_ACQUISITION","stale_after_seconds":172800,"window_days":14,"channel":"NEWS","score_effect":"NONE",
  "attribution":{"GDELT":{"name":"The GDELT Project","url":"https://www.gdeltproject.org/","citation":"…"},"IR":{"name":"…","url":null,"citation":"…"}},
  "matching_rule":"TITLE_NAME_OR_TICKER_V0",
- "sources":{"GDELT":{"nvda":{"state":"LIVE","acquired_at":"…","reason_code":null},"…":{}},
-            "IR":{"nvda":{"state":"LIVE","acquired_at":"…","reason_code":null,"feed_status":"UNVERIFIED_URL"},
-                  "googl":{"state":"NOT_AVAILABLE","acquired_at":null,"reason_code":"NO_OFFICIAL_FEED_KNOWN","feed_status":"NOT_AVAILABLE"}}},
+ "sources":{"GDELT":{"nvda":{"state":"LIVE","acquired_at":"…","reason_code":null,"last_result":"NOT_RUN","last_result_code":"HTTP_429"},"…":{}},
+            "IR":{"nvda":{"state":"LIVE","acquired_at":"…","reason_code":null,"feed_status":"UNVERIFIED_URL","last_result":"NO_NEW_ITEMS","last_result_code":null},
+                  "googl":{"state":"NOT_AVAILABLE","acquired_at":null,"reason_code":"NO_OFFICIAL_FEED_KNOWN","feed_status":"NOT_AVAILABLE","last_result":null,"last_result_code":null}}},
+ "refresh":{"attempted_at":"<as_of>","result":"UPDATED|NO_NEW_ITEMS|PARTIAL_FAILED|FAILED|NOT_RUN",
+            "sources":{"GDELT":{"last_attempt_at":"…","last_success_at":"…","last_result":"FAILED","last_result_code":"HTTP_429",
+                                "items_carried_from":"…","companies":{"succeeded":0,"failed":1,"not_run":18},"new_items":0},"IR":{"…":"…"}}},
  "items":[{"company_id":"nvda","source":"GDELT|IR","title":"…","link":"https://…","published_at":"…+00:00",
            "classification":"EARNINGS|PRODUCT|MA|LEGAL|OTHER","group_id":"news:nvda:20261008T210000Z:0","occurrence":"NEW|REPEAT",
            "relation":"NONE|RELATED_TO_8K","related_8k_accession":null}]}
 ```
 
 - GDELT 19개사(미국 17 + tokyo_electron + hanmi), IR 17개사(목록 10개 + NOT_AVAILABLE 7개).
+- 회사별 이번 실행 결과 `last_result`: `UPDATED`(응답, 새 항목 있음) · `NO_NEW_ITEMS`(응답, 새 항목 0 = '새 뉴스 없음') · `FAILED`(요청 실패 = '조회 실패', 코드) · `NOT_RUN`(앞선 429 등으로 요청 안 함, 코드) · `null`(피드 없음, 또는 수집 없이 만든 사본). '새 항목'은 직전 게시본에 없던 링크로, 게시 목록에 남은 것만 센다.
+- `refresh.sources[S]`: `last_attempt_at`(= 이 실행 as_of), `last_success_at`(그 출처 회사들의 가장 늦은 acquired_at = 마지막으로 응답을 받은 시각), `last_result`(회사 결과에서 유도: 모두 응답 → UPDATED/NO_NEW_ITEMS, 일부 실패 → PARTIAL_FAILED, 응답 0 → FAILED 또는 NOT_RUN), `last_result_code`(목록 순서상 첫 실패 코드), `items_carried_from`(이번에 갱신되지 않고 유지된 회사의 가장 오래된 acquired_at), 회사 수, `new_items`. 검증기가 회사 항목에서 다시 계산해 대조한다.
+- `refresh.result`: 두 출처 종합. `refresh`는 수집 없이 만든 사본(PR 빌드)에서 `null`.
+- **state는 의미를 바꾸지 않는다**: 게시된 acquired_at의 신선도(48시간 지나면 STALE). 이번 실행이 실패해도 이전 자료가 48시간 안이면 LIVE로 둔다(STALE은 '수집 갱신 시각 경과'라는 뜻이라 한 번의 실패로 바꾸면 계약과 어긋난다; `sec-public-inputs.json`의 `preserved_previous`와 같은 방식). 대신 `reason_codes`에 `REFRESH_FAILED`(모든 출처 응답 0) / `REFRESH_PARTIAL_FAILED`(일부 실패) / `REFRESH_NOT_RUN`을 더한다. 예: `["REFRESH_FAILED"]`, 48시간이 지나면 `["STALE_INPUT","REFRESH_FAILED"]`. 그래서 실패한 갱신이 'LIVE'만으로 보이지 않는다.
+- schema 1(이 변경 전 게시본)도 읽는다: 직전 사본 이월과 `--preserve-only` 바이트 재게시. 새로 쓰는 파일은 항상 2.
 - 창 14일(질의는 7일, 이월로 14일 유지), 회사·출처당 GDELT 40·IR 30개 상한, 전체 1,500개, 크기 예산 950KB(상한 1MiB, 넘으면 오래된 것부터 제외).
 - 크기: 빈 파일 약 4.3KB, 행당 약 0.3~0.45KB. 상한까지 차도 약 0.45MB, 평상시 수십~200KB 예상.
 - 검증: Python `product/news_signals.require_news_signals`(Pages 가드 `news_signals_boundary`, 허용 이름 `ALLOWED_NAMES`), JS `NewsSignals.validate`, 같은 벡터로 대조(`tests/test_news_signals.py`). 가드 비밀값 패턴에 걸리는 제목·링크는 쓰기 전에 버린다(`rows_secret_like`).
@@ -110,14 +132,14 @@
 ## 실패·이월
 
 - 직전 Pages 사본: 404 → 새로 시작, 형식 불일치 → 폐기(`PREVIOUS_DISCARDED`), 네트워크 실패 → 아무것도 쓰지 않음(빌드의 NOT_AVAILABLE 사본 유지).
-- 소스 실패: 그 회사는 직전 행·취득 시각 유지(48시간 지나면 `STALE`), 직전도 없으면 `NOT_AVAILABLE`(`NOT_COLLECTED`).
+- 소스 실패: 그 회사는 직전 행·취득 시각 유지(48시간 지나면 `STALE`), 직전도 없으면 `NOT_AVAILABLE`(`NOT_COLLECTED`). 이전 자료 보존은 그대로이고, 회사 `last_result`(FAILED/NOT_RUN + 코드)와 `refresh`가 실패를 적는다. 실패 시각을 acquired_at으로 쓰지 않는다.
 - **뉴스 실패로 SEC 일일 배포를 막지 않는다**: 소스·직전 사본 실패는 모두 exit 0. 로컬 출력이 검증에 실패할 때만 exit 1(DART 단계와 같은 원칙).
 - `--preserve-only`(cockpit-pages 전용): 검증한 직전 게시본을 바이트 그대로 다시 씀(`as_of`·상태 그대로, 배포 시각으로 재계산하지 않음), 소스 요청 없음. 404·실패·형식 불일치는 빌드 사본 유지, exit 0. 일일 실행은 이 옵션을 쓰지 않음.
 - PR 빌드: `build_pages_cockpit.py`가 NOT_AVAILABLE 사본을 낸다. `tools/fixtures/empty_public_screens.json` 포함.
 
 ## 로그 (고정 코드·개수만)
 
-`NEWS_SIGNALS gdelt_companies=19 gdelt_collected= gdelt_requests= gdelt_budget=40 ir_feeds=10 ir_collected= ir_requests= sec_reference=AVAILABLE|NOT_AVAILABLE rows_irrelevant= rows_invalid= rows_out_of_window= rows_foreign_link= rows_secret_like= duplicates= state= items= gdelt_items= ir_items= new= repeat= related_8k= earnings= product= ma= legal= other=`, `NEWS_SIGNALS_FAILURE source=GDELT|IR company_index=n code=…`. 회사 이름·제목·URL·응답 본문은 출력하지 않는다(company_index는 GDELT는 `GDELT_COMPANIES`, IR은 위 표의 index 순서).
+`NEWS_SIGNALS gdelt_companies=19 gdelt_collected= gdelt_requests= gdelt_budget=40 ir_feeds=10 ir_collected= ir_requests= sec_reference=AVAILABLE|NOT_AVAILABLE rows_irrelevant= rows_invalid= rows_out_of_window= rows_foreign_link= rows_secret_like= duplicates= state= refresh= gdelt_result=<결과>[:<코드>] gdelt_added= ir_result=… ir_added= items= gdelt_items= ir_items= occurrence_new= occurrence_repeat= related_8k= earnings= product= ma= legal= other=`. `occurrence_new/repeat`은 게시 목록 전체(이월 항목 포함)의 묶음 표시(첫 보도/반복) 개수다. 이번 실행이 더한 항목 수는 `*_added`다. (10/19 로그의 `new=27`은 이 묶음 표시 개수였고 셈 오류는 아니지만 '이번에 새로 받음'으로 읽혀 이름을 바꿨다.), `NEWS_SIGNALS_FAILURE source=GDELT|IR company_index=n code=…`. 회사 이름·제목·URL·응답 본문은 출력하지 않는다(company_index는 GDELT는 `GDELT_COMPANIES`, IR은 위 표의 index 순서).
 
 ## 화면
 
@@ -126,6 +148,13 @@ S07 뉴스 탭(뉴스 영역 밖 카드, 뉴스 탭에서만)과 S15 관심 기�
 - 뉴스 행: 새 소식/반복 보도, 분류, 출처(GDELT·회사 IR), 시각(UTC), 링크 호스트, 제목 링크(새 창, noopener). 같은 사건의 반복 보도는 접힌 목록.
 - 8-K 행: 기존 표시 + 같은 발표의 회사 IR 보도자료를 접힌 '관련 IR 보도자료'로.
 - 카드 상단: 각 자료 상태, 기준 시각, GDELT 출처 링크, '점수에 반영하지 않음'.
+- 갱신 결과 줄(출처마다 한 줄, 보고 있는 기업 기준: S07 전체·기업, S15 관심 기업), `data-news-refresh`:
+  - 응답, 새 항목: `GDELT · 새 뉴스 반영 · 확인 <시각>`
+  - 응답, 새 항목 0: `GDELT · 새 뉴스 없음 · 확인 <시각>`
+  - 응답 0: `GDELT · 이전 자료 유지 · 마지막 성공 <시각> · 최근 갱신 실패(GDELT HTTP_429, <시각>)`(요청 안 한 회사만이면 `요청 안 함 · HTTP_429`, 이전 자료가 없으면 `이전 자료 없음`)
+  - 일부 실패: `회사 IR · 일부 갱신 실패 9/10곳 · 이전 자료 유지 · 마지막 성공 <시각> · 최근 갱신 실패(회사 IR HTTP_FAILED 등, <시각>) · 나머지 1곳 새 뉴스 없음 · 확인 <시각>`
+  - schema 1 사본: `… · 최근 갱신 결과 미기록(이전 형식)`.
+- 실패가 있으면 상태 배지 옆에 '최근 갱신 실패 · 이전 자료 유지' 또는 '일부 갱신 실패' 배지. 이월 항목은 그대로 목록에 남고 자기 발표 시각을 보인다. 근거 보기에 '최근 갱신'(이 기업의 이번 결과, 실패면 '이 행은 이전 수집분').
 
 ## 결정 필요
 
