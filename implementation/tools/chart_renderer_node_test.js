@@ -175,5 +175,26 @@ test('user-written objects: anchors validated, this-device store, never routed t
   const code = fs.readFileSync(path.join(assets, 'chart-workbench.js'), 'utf8'), userLayer = code.slice(code.indexOf('/* ---------- user layer'), code.indexOf('/* ---------- rendering'));
   assert.ok(userLayer.length > 1000 && !/books|PatternHistory|\.append\(official|fetch\(|XMLHttpRequest|sheets|gapi/.test(userLayer));
 });
+test('user objects: exact fields, export/import merge, nothing dropped, failed save keeps the stored value', () => {
+  const now = '2026-10-20T00:00:00.000Z', base = {id: 'u-ghi789', symbol: 'SYNTH', interval: 'D', price_basis: 'RAW_CLOSE', author: 'USER', text: '', created_at: now, updated_at: now};
+  const line = {...base, schema: 'chart-annotation/1', kind: 'LINE', points: [{time: '2025-01-06', price: 100}, {time: '2025-02-03', price: 110}]};
+  const scenario = {...base, id: 'u-jkl012', schema: 'chart-scenario/1', horizon: 'long', direction: 'UP', levels: [{label: 'a', price: 95}], condition: 'c', invalidation: 'i', invalidation_price: 90, anchor_time: '2025-02-03'};
+  for (const bad of [{...line, close: 101}, {...line, bars: []}, {...line, points: [{time: '2025-01-06', price: 100, volume: 1}, {time: '2025-02-03', price: 110}]}, {...scenario, quote: {}}, {...scenario, levels: [{label: 'a', price: 95, source: 'x'}]}, [line]])
+    assert.equal(W.validUserObject(bad), false);
+  assert.deepEqual(W.parseUserExport({schema: W.USER_SCHEMA, exported_at: now, items: [line, scenario, line]}).map(o => o.id), ['u-ghi789', 'u-jkl012']);
+  for (const bad of [null, [], {schema: W.USER_SCHEMA}, {schema: 'chart-user-objects/2', items: []}, {schema: W.USER_SCHEMA, items: [line], series: [1]}, {schema: W.USER_SCHEMA, items: [{...line, close: 1}]}])
+    assert.throws(() => W.parseUserExport(bad), /USER_IMPORT_INVALID/);
+  const copy = {...line, id: 'u-copy01'}, other = {...line, id: 'u-other1', text: 'x'}, merged = W.mergeUserItems([line], [line, copy, other, scenario]);
+  assert.deepEqual([merged.items.map(o => o.id), merged.added, merged.skipped], [['u-ghi789', 'u-other1', 'u-jkl012'], 2, 2]);
+  const map = new Map(), storage = {getItem: k => (map.has(k) ? map.get(k) : null), setItem: (k, v) => map.set(k, v), removeItem: k => map.delete(k)}, store = W.createDeviceUserStore(storage);
+  const many = Array.from({length: W.USER_LIMIT + 5}, (_, i) => ({...line, id: 'u-n' + String(i).padStart(5, '0')})), future = {schema: 'chart-annotation/9', id: 'u-future'};
+  map.set(W.USER_KEY, JSON.stringify({schema: W.USER_SCHEMA, items: [...many, future]}));
+  const loaded = store.load(); assert.deepEqual([loaded.code, loaded.items.length, loaded.unreadable], ['PARTLY_INVALID', W.USER_LIMIT + 5, 1], 'every valid object loaded; unreadable counted');
+  assert.ok(store.save(loaded.items.slice(1))); assert.deepEqual(JSON.parse(map.get(W.USER_KEY)).items.slice(-1), [future], 'unreadable entries written back unchanged');
+  map.set(W.USER_KEY, '{broken'); assert.equal(store.load().code, 'STORE_INVALID'); assert.equal(store.save([line]), false); assert.equal(map.get(W.USER_KEY), '{broken', 'unreadable value not overwritten');
+  assert.ok(store.clear()); assert.ok(store.save([line]));
+  const before = map.get(W.USER_KEY), full = {getItem: storage.getItem, removeItem: storage.removeItem, setItem() { const e = new Error('quota'); e.name = 'QuotaExceededError'; throw e; }}, quota = W.createDeviceUserStore(full);
+  quota.load(); assert.equal(quota.save([line, scenario]), false); assert.equal(map.get(W.USER_KEY), before, 'quota failure keeps the stored value');
+});
 console.log('COUNTS pass=' + pass + ' fail=' + fail);
 if (fail) process.exitCode = 1;

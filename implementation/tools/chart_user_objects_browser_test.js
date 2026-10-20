@@ -1,7 +1,8 @@
 'use strict';
 // User-written scenarios (3.1.3) and chart notes (3.3) on the technical chart. Synthetic bars only.
 // Checks: create -> move away -> back -> reload -> still there; edit; delete; timeframe/symbol anchors; user objects never
-// enter the official pattern history; this-device storage only; GET only; no horizontal overflow.
+// enter the official pattern history; this-device storage only; quota failure keeps stored objects (message + export hint);
+// export -> clear -> import round trip without duplicates; malformed / price-bearing imports refused; GET only; no horizontal overflow.
 const {chromium} = require('playwright');
 const BASE = process.env.PAGES_COCKPIT_URL || 'http://127.0.0.1:8990/';
 const ORIGIN = new URL(BASE).origin;
@@ -116,7 +117,40 @@ const KEY = 'investment.web.v1.chart-user-objects';
       phase = 'EXPORT ' + width;
       const download = page.waitForEvent('download');
       await page.locator('[data-user-export]').click();
-      check('export saves a file on this device ' + width, (await (await download).suggestedFilename()) === 'chart-user-objects.json');
+      const exportFile = await download, exported = JSON.parse(require('node:fs').readFileSync(await exportFile.path(), 'utf8'));
+      check('export saves a file on this device ' + width, exportFile.suggestedFilename() === 'chart-user-objects.json' && exported.schema === 'chart-user-objects/1' && exported.items.length === 4);
+
+      phase = 'QUOTA ' + width;
+      const rawBefore = await page.evaluate(key => localStorage.getItem(key), KEY);
+      await page.evaluate(key => { window.__setItem = Storage.prototype.setItem; Storage.prototype.setItem = function (k, v) { if (k === key) throw new DOMException('synthetic quota', 'QuotaExceededError'); return window.__setItem.call(this, k, v); }; }, KEY);
+      await draw(page, 'MEMO', [[0.45, 0.25]]);
+      await page.waitForFunction(() => document.querySelector('[data-user-status]').dataset.code === 'SAVE_FAILED');
+      const failText = await page.locator('[data-user-status]').textContent();
+      check('quota failure keeps stored objects and shows a save-failure message with the export hint ' + width, await page.evaluate(key => localStorage.getItem(key), KEY) === rawBefore
+        && failText.includes('저장 실패') && failText.includes('그대로') && failText.includes('내보내기') && !banned.test(failText));
+      await page.evaluate(() => { Storage.prototype.setItem = window.__setItem; delete window.__setItem; });
+
+      phase = 'IMPORT ' + width;
+      const importFile = async (obj, name) => {
+        await page.evaluate(() => { delete document.querySelector('[data-user-status]').dataset.code; });
+        await page.locator('[data-user-import]').setInputFiles({name, mimeType: 'application/json', buffer: Buffer.from(typeof obj === 'string' ? obj : JSON.stringify(obj))});
+        await page.waitForFunction(() => !!document.querySelector('[data-user-status]').dataset.code);
+        return page.locator('[data-user-status]').getAttribute('data-code');
+      };
+      await page.locator('[data-user-clear="all"]').click();
+      check('clear all empties the device store before the round trip ' + width, await page.evaluate(key => localStorage.getItem(key), KEY) === null && (await attrs(page)).userCount === '0');
+      const roundCode = await importFile(exported, 'round.json');
+      saved = await stored(page);
+      check('export -> clear -> import restores every note and scenario ' + width, roundCode === 'IMPORTED' && JSON.stringify(saved.items) === JSON.stringify(exported.items) && (await attrs(page)).userCount === '4'
+        && (await page.locator('[data-user-notes]').textContent()).includes('합성 메모 B') && (await page.locator('[data-user-scenarios]').textContent()).includes('합성 조건'));
+      await importFile(exported, 'again.json');
+      check('importing the same file again adds no duplicates ' + width, (await stored(page)).items.length === 4 && (await page.locator('[data-user-status]').textContent()).includes('4'));
+      const keptRaw = await page.evaluate(key => localStorage.getItem(key), KEY), first = exported.items[0], scen = exported.items.find(o => o.schema === 'chart-scenario/1');
+      const refusedAll = [];
+      for (const [bad, name] of [[{...exported, series: [{time: '2026-01-02', close: 1}]}, 'series.json'], [{...exported, items: [{...first, id: 'u-zz0001', close: 101}]}, 'close.json'],
+        [{...exported, items: [{...scen, id: 'u-zz0002', quote: {last: 1}}]}, 'quote.json'], [{...exported, items: [{...first, id: 'u-zz0003', points: first.points.map(pt => ({...pt, volume: 9}))}]}, 'volume.json'],
+        [{...exported, schema: 'chart-user-objects/9'}, 'schema.json'], ['{not json', 'broken.json']]) refusedAll.push((await importFile(bad, name)) === 'IMPORT_REFUSED' && await page.evaluate(key => localStorage.getItem(key), KEY) === keptRaw);
+      check('malformed or price-bearing imports are refused and write nothing ' + width, refusedAll.length === 6 && refusedAll.every(Boolean) && !banned.test(await page.locator('[data-user-status]').textContent()));
       await page.locator('[data-user-visible]').uncheck();
       check('user objects can be hidden from the chart ' + width, (await attrs(page)).userDrawn === '0');
       await page.locator('[data-user-visible]').check();

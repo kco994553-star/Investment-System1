@@ -8,7 +8,11 @@
    stored only through a swappable user store (default: this browser), never touch PatternHistory or any record of results,
    and are always labelled "사용자 작성".
    Display settings hold toggles only (no prices). User-written objects hold the user's own time/price coordinates on this
-   device only (DRAW-STORE option (a), labelled "이 기기에만 저장"). Nothing here changes official detection. */
+   device only (DRAW-STORE option (a), labelled "이 기기에만 저장"). Nothing here changes official detection.
+   Owner storage policy 2026-10-20 item 6: only these user-drawn anchor coordinates may be kept in this browser; no supplier
+   quote or price series is ever stored or exported here. User objects can be exported to / imported from a file on this device
+   (strict fields, merged without duplicates) and ride in the opt-in device backup section. A failed save (quota reached or
+   storage blocked) never removes what is already stored; the screen says so and points to the export. */
 (function (root, factory) {
   const api = factory();
   if (typeof module === 'object' && module.exports) module.exports = api;
@@ -173,7 +177,7 @@
 
   /* ---------- user-written objects: notes (3.3) and scenarios (3.1.3) ---------- */
 
-  const USER_KEY = 'investment.web.v1.chart-user-objects', USER_SCHEMA = 'chart-user-objects/1', USER_LIMIT = 500, TEXT_LIMIT = 500;
+  const USER_KEY = 'investment.web.v1.chart-user-objects', USER_SCHEMA = 'chart-user-objects/1', USER_LIMIT = 500, TEXT_LIMIT = 500, USER_IMPORT_MAX_BYTES = 16 * 1024 * 1024;
   const USER_LABEL = Object.freeze(['사용자 작성', 'User-written']);
   const DIRECTIONS = Object.freeze({UP: ['상승', 'Up', '↑'], SIDEWAYS: ['횡보', 'Sideways', '→'], DOWN: ['하락', 'Down', '↓']});
   const NOTE_KINDS = Object.freeze({LINE: ['선', 'Line'], RANGE: ['구간', 'Range'], MEMO: ['메모', 'Memo']});
@@ -181,38 +185,71 @@
   const isPrice = v => typeof v === 'number' && Number.isFinite(v) && v > 0;
   const isText = v => typeof v === 'string' && v.length <= TEXT_LIMIT;
   const isId = v => typeof v === 'string' && /^u-[a-z0-9]{6,32}$/.test(v);
+  // Exact field sets: a user object carries the user's own anchors and words only. Anything else (a price series, quote fields,
+  // OHLC, volume, a supplier name...) makes the object invalid, so it can be neither imported nor restored.
+  const NOTE_FIELDS = ['schema', 'id', 'kind', 'symbol', 'interval', 'price_basis', 'author', 'points', 'text', 'created_at', 'updated_at'];
+  const SCENARIO_FIELDS = ['schema', 'id', 'symbol', 'interval', 'price_basis', 'author', 'text', 'anchor_time', 'created_at', 'updated_at', 'horizon', 'direction', 'levels', 'condition', 'invalidation', 'invalidation_price'];
+  const onlyFields = (o, keys) => !!o && typeof o === 'object' && !Array.isArray(o) && Object.keys(o).every(k => keys.includes(k));
   // Anchors (chart-annotation/1): listing symbol, interval D/W, price basis, time/price points.
   function validUserObject(o) {
-    if (!o || typeof o !== 'object' || !isId(o.id) || typeof o.symbol !== 'string' || !/^[A-Z0-9.\-]{1,16}$/.test(o.symbol) || !['D', 'W'].includes(o.interval) || o.price_basis !== 'RAW_CLOSE' || o.author !== 'USER'
+    if (!o || typeof o !== 'object' || Array.isArray(o) || !onlyFields(o, o.schema === 'chart-scenario/1' ? SCENARIO_FIELDS : NOTE_FIELDS) || !isId(o.id) || typeof o.symbol !== 'string' || !/^[A-Z0-9.\-]{1,16}$/.test(o.symbol) || !['D', 'W'].includes(o.interval) || o.price_basis !== 'RAW_CLOSE' || o.author !== 'USER'
       || !isText(o.text || '') || !isDate(String(o.created_at || '').slice(0, 10)) || !isDate(String(o.updated_at || '').slice(0, 10))) return false;
     if (o.schema === 'chart-annotation/1') {
-      if (!NOTE_KINDS[o.kind] || !Array.isArray(o.points) || o.points.length !== (o.kind === 'MEMO' ? 1 : 2) || !o.points.every(pt => pt && isDate(pt.time) && isPrice(pt.price))) return false;
+      if (!NOTE_KINDS[o.kind] || !Array.isArray(o.points) || o.points.length !== (o.kind === 'MEMO' ? 1 : 2) || !o.points.every(pt => onlyFields(pt, ['time', 'price']) && isDate(pt.time) && isPrice(pt.price))) return false;
       return true;
     }
     if (o.schema === 'chart-scenario/1') {
       return !!DIRECTIONS[o.direction] && ['long', 'swing'].includes(o.horizon) && Array.isArray(o.levels) && o.levels.length >= 1 && o.levels.length <= 3
-        && o.levels.every(l => l && isPrice(l.price) && isText(l.label || '') && (l.label || '').length <= 40) && isText(o.condition || '') && isText(o.invalidation || '')
+        && o.levels.every(l => onlyFields(l, ['label', 'price']) && isPrice(l.price) && isText(l.label || '') && (l.label || '').length <= 40) && isText(o.condition || '') && isText(o.invalidation || '')
         && (o.invalidation_price === null || isPrice(o.invalidation_price)) && isDate(o.anchor_time);
     }
     return false;
   }
   // Storage adapter (DRAW-STORE option (a): this browser only). Another adapter with the same three methods
   // (load / save / clear) can replace it later, e.g. option (b); nothing here talks to the network.
+  // Nothing is dropped silently: every valid stored object is loaded (USER_LIMIT only limits adding new ones), stored entries
+  // this version cannot read are written back unchanged on the next save, and a stored value that cannot be read at all (broken
+  // JSON, unknown schema) is never overwritten — save() refuses until the user clears it. save() returns false when nothing was
+  // written (quota reached, storage blocked); the stored value is then exactly what it was before.
   function createDeviceUserStore(storage) {
+    let kept = [], locked = false;
     return Object.freeze({
       kind: 'THIS_BROWSER',
       load() {
-        let raw = null;
-        try { raw = storage ? storage.getItem(USER_KEY) : null; } catch (_) { return {code: 'STORAGE_UNAVAILABLE', items: []}; }
-        if (raw === null) return {code: 'EMPTY', items: []};
-        let parsed = null; try { parsed = JSON.parse(raw); } catch (_) { return {code: 'STORE_INVALID', items: []}; }
-        if (!parsed || parsed.schema !== USER_SCHEMA || !Array.isArray(parsed.items)) return {code: 'STORE_INVALID', items: []};
-        const items = parsed.items.filter(validUserObject).slice(0, USER_LIMIT);
-        return {code: items.length === parsed.items.length ? 'LOADED' : 'PARTLY_INVALID', items};
+        let raw = null; kept = []; locked = false;
+        try { raw = storage ? storage.getItem(USER_KEY) : null; } catch (_) { locked = true; return {code: 'STORAGE_UNAVAILABLE', items: [], unreadable: 0}; }
+        if (raw === null) return {code: 'EMPTY', items: [], unreadable: 0};
+        let parsed = null; try { parsed = JSON.parse(raw); } catch (_) { locked = true; return {code: 'STORE_INVALID', items: [], unreadable: 0}; }
+        if (!parsed || parsed.schema !== USER_SCHEMA || !Array.isArray(parsed.items)) { locked = true; return {code: 'STORE_INVALID', items: [], unreadable: 0}; }
+        const items = parsed.items.filter(validUserObject);
+        kept = parsed.items.filter(o => !validUserObject(o));
+        return {code: kept.length ? 'PARTLY_INVALID' : 'LOADED', items, unreadable: kept.length};
       },
-      save(items) { try { storage.setItem(USER_KEY, JSON.stringify({schema: USER_SCHEMA, items})); return true; } catch (_) { return false; } },
-      clear() { try { storage.removeItem(USER_KEY); return true; } catch (_) { return false; } }
+      save(items) {
+        if (locked || !storage) return false;
+        try { if (items.length + kept.length) storage.setItem(USER_KEY, JSON.stringify({schema: USER_SCHEMA, items: [...items, ...kept]})); else storage.removeItem(USER_KEY); return true; } catch (_) { return false; }
+      },
+      clear() { try { storage.removeItem(USER_KEY); kept = []; locked = false; return true; } catch (_) { return false; } }
     });
+  }
+  // Export file / backup section: {schema, items[, exported_at]}. Every item must pass validUserObject (exact fields); duplicates
+  // inside the file collapse to one. Throws USER_IMPORT_INVALID otherwise; nothing is written by parsing.
+  function parseUserExport(payload) {
+    const bad = () => { throw new Error('USER_IMPORT_INVALID'); };
+    if (!onlyFields(payload, ['schema', 'exported_at', 'items']) || payload.schema !== USER_SCHEMA || !Array.isArray(payload.items)
+      || (payload.exported_at !== undefined && !(typeof payload.exported_at === 'string' && payload.exported_at.length <= 40))) bad();
+    const seen = new Set(), items = [];
+    for (const o of payload.items) { if (!validUserObject(o)) bad(); if (seen.has(o.id)) continue; seen.add(o.id); items.push(JSON.parse(JSON.stringify(o))); }
+    return items;
+  }
+  // Merge without duplicates: an incoming object whose id is already present, or whose content (all but id/created/updated)
+  // matches one already present, is skipped; existing objects are never replaced or removed.
+  function mergeUserItems(existing, incoming) {
+    const body = o => { const {id, created_at, updated_at, ...rest} = o; return JSON.stringify(rest, Object.keys(rest).sort()); };
+    const ids = new Set(existing.map(o => o.id)), bodies = new Set(existing.map(body)), items = [...existing];
+    let added = 0, skipped = 0;
+    for (const o of incoming) { const b = body(o); if (ids.has(o.id) || bodies.has(b)) { skipped++; continue; } ids.add(o.id); bodies.add(b); items.push(o); added++; }
+    return {items, added, skipped};
   }
   function newId(view) {
     const bytes = new Uint8Array(8);
@@ -624,10 +661,14 @@
     const tf = tfKey(state.timeframe);
     return state.user.items.filter(o => o.symbol === state.symbol && o.interval === tf);
   }
+  const saveFailedText = state => words(state, '저장 실패 · 이 브라우저 저장 공간이 가득 찼거나 쓸 수 없습니다. 이미 저장된 노트·시나리오는 그대로 두었고, 방금 바꾼 내용은 이 화면에만 있습니다(새로 고치면 사라짐). 「이 기기 파일로 내보내기」로 파일에 보관한 뒤 필요 없는 항목을 지우세요.',
+    'Save failed · this browser’s storage is full or not writable. Notes and scenarios already stored were kept; the latest change exists on this screen only (lost on reload). Use “Export to a file on this device” to keep a file, then delete items you no longer need.');
   function userPersist(state) {
     const ok = state.userStore.save(state.user.items);
-    state.userStatus.dataset.code = ok ? 'SAVED' : 'STORAGE_UNAVAILABLE';
-    state.userStatus.textContent = ok ? words(state, '이 기기에만 저장함 · ', 'Saved on this device only · ') + state.user.items.length + words(state, '개', ' items') : 'STORAGE_UNAVAILABLE';
+    state.user.unsaved = !ok;
+    state.userStatus.dataset.code = ok ? 'SAVED' : 'SAVE_FAILED';
+    state.userStatus.textContent = ok ? words(state, '이 기기에만 저장함 · ', 'Saved on this device only · ') + state.user.items.length + words(state, '개', ' items') : saveFailedText(state);
+    if (!ok) state.live.textContent = state.userStatus.textContent;
     return ok;
   }
   function userOverlays(state) {
@@ -764,12 +805,29 @@
     a.href = url; a.download = 'chart-user-objects.json'; state.doc.body.append(a); a.click(); a.remove();
     view.setTimeout(() => view.URL.revokeObjectURL(url), 1000);
   }
+  async function importUser(state, input) {
+    const file = input.files && input.files[0]; if (!file) return;
+    const refuse = (code, text) => { input.value = ''; state.userStatus.dataset.code = code; state.userStatus.textContent = text; state.live.textContent = text; };
+    let incoming;
+    try { if (file.size > USER_IMPORT_MAX_BYTES) throw new Error('USER_IMPORT_TOO_LARGE'); incoming = parseUserExport(JSON.parse(await file.text())); }
+    catch (_) { refuse('IMPORT_REFUSED', words(state, '가져오지 않음 · 노트·시나리오 파일 형식이 아니거나 허용되지 않은 항목(가격 시계열·시세 필드 등)이 있습니다. 기존 항목은 그대로입니다.', 'Not imported · not a notes/scenarios file, or it has fields that are not allowed (price series, quote fields, …). Existing items are unchanged.')); return; }
+    if (state.disposed) return;
+    const before = state.user.items, merged = mergeUserItems(before, incoming);
+    if (!merged.added) { refuse('IMPORTED', words(state, '새로 합칠 항목 없음 · 이미 있던 ' + merged.skipped + '개는 건너뜀', 'Nothing new to merge · skipped ' + merged.skipped + ' already present')); return; }
+    if (!state.userStore.save(merged.items)) { refuse('SAVE_FAILED', saveFailedText(state)); return; }
+    state.user.items = merged.items; state.user.unsaved = false; input.value = '';
+    paintUser(state); drawPatterns(state);
+    state.userStatus.dataset.code = 'IMPORTED';
+    state.userStatus.textContent = words(state, '가져와 합침 · ' + merged.added + '개 추가 · 이미 있던 ' + merged.skipped + '개는 건너뜀 · 이 기기에만 저장', 'Imported and merged · ' + merged.added + ' added · ' + merged.skipped + ' already present skipped · this device only');
+    state.live.textContent = state.userStatus.textContent;
+  }
   function clearUser(state, scope) {
     const here = new Set(userHere(state).map(o => o.id));
     state.user.items = scope === 'here' ? state.user.items.filter(o => !here.has(o.id)) : [];
     state.user.editing = null;
-    if (!state.user.items.length) state.userStore.clear(); else userPersist(state);
-    if (!state.user.items.length) { state.userStatus.dataset.code = 'CLEARED'; state.userStatus.textContent = words(state, '이 기기 저장을 비웠습니다', 'Cleared on this device'); }
+    const ok = scope === 'here' ? userPersist(state) : state.userStore.clear();
+    if (ok && !state.user.items.length) { state.user.unsaved = false; state.userStatus.dataset.code = 'CLEARED'; state.userStatus.textContent = words(state, '이 기기 저장을 비웠습니다', 'Cleared on this device'); }
+    else if (!ok && scope !== 'here') { state.userStatus.dataset.code = 'SAVE_FAILED'; state.userStatus.textContent = saveFailedText(state); }
     paintUser(state); drawPatterns(state);
   }
 
@@ -809,6 +867,9 @@
     const footer = node(doc, 'div', {class: 'cw-group', role: 'group', 'aria-label': w('이 기기 저장', 'Device storage')});
     footer.append(node(doc, 'button', {type: 'button', 'data-user-clear': 'here'}, w('이 종목·봉 주기 지우기', 'Clear this symbol and interval')), node(doc, 'button', {type: 'button', 'data-user-clear': 'all'}, w('모두 지우기', 'Clear all')),
       node(doc, 'button', {type: 'button', 'data-user-export': ''}, w('이 기기 파일로 내보내기', 'Export to a file on this device')));
+    const importLabel = node(doc, 'label', {class: 'cw-field cw-user-import'});
+    importLabel.append(doc.createTextNode(w('파일에서 가져오기 (합치기)', 'Import from a file (merge)') + ' '), node(doc, 'input', {type: 'file', accept: 'application/json,.json', 'data-user-import': ''}));
+    footer.append(importLabel);
     state.scenarioDetails = node(doc, 'details', {class: 'cw-scenario-new', 'data-user-scenario-new': ''});
     state.scenarioDetails.append(node(doc, 'summary', {}, w('새 시나리오 쓰기', 'Write a new scenario')), scenarioBox);
     section.append(state.userAnchor, tools, visible, state.userToolStatus, node(doc, 'h4', {}, w('차트 노트', 'Chart notes')), state.userNotes, node(doc, 'h4', {}, w('시나리오', 'Scenarios')), state.scenarioDetails, state.userScenarios, footer, state.userStatus);
@@ -1101,6 +1162,7 @@
     root.addEventListener('change', event => {
       const box = event.target;
       if (box.hasAttribute && box.hasAttribute('data-user-visible')) { state.user.visible = box.checked; drawPatterns(state); return; }
+      if (box.hasAttribute && box.hasAttribute('data-user-import')) { void importUser(state, box); return; }
       if (box.dataset && box.dataset.cwPattern) { state.settings.patterns[box.dataset.cwPattern] = box.checked; persist(state); state.patterns.selected = null; paintPatterns(state); return; }
       if (box.dataset && box.dataset.cwIndicator) { state.settings.indicators[box.dataset.cwIndicator] = box.checked; persist(state); if (state.bars.length) void render(state, {keepRange: state.renderer ? state.renderer.getVisibleRange() : null}); }
     });
@@ -1148,7 +1210,9 @@
     wire(state);
     buildExploreControls(state);
     state.userStatus.dataset.code = loaded.code;
-    state.userStatus.textContent = words(state, '이 기기에만 저장 · ', 'Saved on this device only · ') + loaded.items.length + words(state, '개', ' items') + (loaded.code === 'LOADED' || loaded.code === 'EMPTY' ? '' : ' · ' + loaded.code);
+    state.userStatus.textContent = words(state, '이 기기에만 저장 · ', 'Saved on this device only · ') + loaded.items.length + words(state, '개', ' items') + (loaded.code === 'LOADED' || loaded.code === 'EMPTY' ? '' : ' · ' + loaded.code)
+      + (loaded.unreadable ? words(state, ' · 읽지 못한 항목 ' + loaded.unreadable + '개는 지우지 않고 그대로 둡니다', ' · ' + loaded.unreadable + ' unreadable items are kept as they are') : '')
+      + (loaded.code === 'STORE_INVALID' ? words(state, ' · 저장된 값을 읽을 수 없어 덮어쓰지 않습니다(모두 지우기 전까지 저장하지 않음)', ' · the stored value cannot be read, so it is not overwritten (no saving until Clear all)') : '');
     active.add(state);
     state.pagehide = () => dispose(state);
     view.addEventListener('pagehide', state.pagehide);
@@ -1161,5 +1225,5 @@
   function disposeAll() { for (const state of [...active]) dispose(state); }
 
   return Object.freeze({SETTINGS_KEY, SETTINGS_SCHEMA, SYNTHETIC_LABEL, SYNTHETIC_PATTERN_LABEL, EXPLORE_GRID, readSettings, writeSettings, dailyView, weeklyView, continuityCodes, syntheticHistory,
-    syntheticActions, applyChanges, minBars, patternObjects, USER_KEY, USER_SCHEMA, validUserObject, createDeviceUserStore, mount, disposeAll});
+    syntheticActions, applyChanges, minBars, patternObjects, USER_KEY, USER_SCHEMA, USER_LIMIT, validUserObject, createDeviceUserStore, parseUserExport, mergeUserItems, mount, disposeAll});
 });
