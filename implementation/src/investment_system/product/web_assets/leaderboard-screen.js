@@ -27,7 +27,7 @@ const fnId=key=>'lb-fn-'+FN[key][0].replaceAll('.','-');
 const escHtml=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
 // Stamp heading of one section (HTML, for the app's 2.1.3 row) and the 2.1.3 note on the filters that are not connected.
 function fnHeadHtml(key,locale){const[fn,ko,en]=FN[key];return '<h2 class="fn-head" id="'+fnId(key)+'"><span class="ia-sec">'+fn+'</span> <span class="fn-title">'+escHtml(locale==='en-US'?en:ko)+'</span></h2>';}
-function filterNoteHtml(locale){const en=locale==='en-US';return '<p class="small fn-na" data-fn-na="2.1.3"><span class="badge NOT_AVAILABLE">'+(en?'Not connected':'미연결')+'</span> '+escHtml(en?'Filter by SIC class or company type: not connected yet. Each company page shows its classification (three axes). Filters only hide rows; ranks never change.':'SIC 분류 · 기업 유형으로 거르기: 아직 연결되지 않았습니다. 분류는 기업 화면의 "분류 3축"에서 봅니다. 필터는 행만 숨기며 순위는 바뀌지 않습니다.')+'</p>';}
+function filterNoteHtml(locale){const en=locale==='en-US';return '<p class="small fn-na" data-fn-na="2.1.3"><span class="badge fn-unconnected">'+(en?'Not connected':'미연결')+'</span> '+escHtml(en?'Filter by SIC class or company type: not connected yet. Each company page shows its classification (three axes). Filters only hide rows; ranks never change.':'SIC 분류 · 기업 유형으로 거르기: 아직 연결되지 않았습니다. 분류는 기업 화면의 "분류 3축"에서 봅니다. 필터는 행만 숨기며 순위는 바뀌지 않습니다.')+'</p>';}
 /* Q·G·V bars of one score row (decoration: aria-hidden; the numbers and their words are in the QGV / detail cells). Widths are
    SVG attributes (CSP style-src 'self': no inline style). A missing axis is an empty dashed track, never a 0 bar; no axis at all draws nothing. */
 const SVG_NS='http://www.w3.org/2000/svg';
@@ -188,7 +188,7 @@ function mount(host,identities,{publicScreens={},locale,view='default',profiles=
   sortControls();}
  else for(const s of [sState,sSort])s.append(el('p',en?'Available in the QGV v2 views (Default · My device); the v1 profile preview has no calculation states or rank order.':'QGV v2 보기(기본 · 내 기기)에서 씁니다. v1 프로필 미리보기에는 산출 상태와 순위 순서가 없습니다.',{class:'small','data-fn-na':s.getAttribute('data-fn')}));
  // 2.1.4: the periods the owner named, each 미산출 (a return needs prices; prices are used on this device only and no return column exists yet).
- {const chips=el('div',undefined,{class:'chips fn-periods',role:'list','aria-label':en?'Return periods':'수익률 기간'});for(const p of PERIODS)chips.append(el('span',p+' · '+(en?'not calculated':'미산출'),{class:'badge NOT_AVAILABLE',role:'listitem','data-period':p,'data-period-state':'NOT_AVAILABLE'}));
+ {const chips=el('div',undefined,{class:'chips fn-periods',role:'list','aria-label':en?'Return periods':'수익률 기간'});for(const p of PERIODS)chips.append(el('span',p+' · '+(en?'not calculated':'미산출'),{class:'badge fn-unconnected',role:'listitem','data-period':p,'data-period-state':'NOT_AVAILABLE'}));
   sPeriod.insertBefore(chips,sPeriod.children[1]||null);sPeriod.insertBefore(el('p',en?'Returns come from prices, so they are computed on this device only (prices are never published). The period column is not connected yet: price not connected.':'수익률은 가격으로 계산하므로 이 기기에서만 계산합니다(가격은 게시하지 않음). 기간 열은 아직 연결되지 않았습니다 · 가격 미연결.',{class:'small','data-fn-na':'2.1.4'}),chips.nextSibling);}
  // Footnote scope (D12, owner decision 2026-10-19; was D3 TARGET-only): the official rank is assigned over the Universe rows of the
  // ONE official result (S.official: every Universe code of the published sec-qgv2.json once; a TARGET in the Universe is that
