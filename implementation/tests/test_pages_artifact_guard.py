@@ -47,7 +47,7 @@ class PagesArtifactGuardTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         receipt = json.loads(result.stdout)
         self.assertEqual(receipt["pages_artifact_guard"], "PASS")
-        self.assertEqual(receipt["files_scanned"], 126)  # 119 (macro-cycle-ring.js/.css; incl. TA P1 modules chart-bars.js, pattern-config-defaults.js, pattern-engine.js, pattern-history.js, 2026-10-20) + chart renderer (P1-7/P1-8, 2026-10-20): chart-renderer.js, chart-workbench.js/.css, vendored lightweight-charts 5.2.1 + LICENSE/NOTICE/third-party notices; before that: 106 - the four removed home-bg-*.svg (2026-10-18) + universe-company.js/.css + doodles.js + ia-screens.js (owner IA 2026-10-18) + company-names-ko.json (KR-NAMES 2026-10-18) + stat-radar.js/.css + v-coverage.js/.css + price-time.js (D10 price time 2026-10-18) + data-refresh.js (2026-10-18)
+        self.assertEqual(receipt["files_scanned"], 130)  # 126 + self-hosted OFL fonts (IA-11, 2026-10-20): jua/gaegu WOFF2 subsets + jua-OFL.txt/gaegu-OFL.txt; 126 = 119 (macro-cycle-ring.js/.css; incl. TA P1 modules chart-bars.js, pattern-config-defaults.js, pattern-engine.js, pattern-history.js, 2026-10-20) + chart renderer (P1-7/P1-8, 2026-10-20): chart-renderer.js, chart-workbench.js/.css, vendored lightweight-charts 5.2.1 + LICENSE/NOTICE/third-party notices; before that: 106 - the four removed home-bg-*.svg (2026-10-18) + universe-company.js/.css + doodles.js + ia-screens.js (owner IA 2026-10-18) + company-names-ko.json (KR-NAMES 2026-10-18) + stat-radar.js/.css + v-coverage.js/.css + price-time.js (D10 price time 2026-10-18) + data-refresh.js (2026-10-18)
         self.assertEqual(receipt["violations"], {})
         self.assertEqual(result.stderr, "")
 
@@ -107,6 +107,20 @@ class PagesArtifactGuardTests(unittest.TestCase):
                 icon.write_bytes(original + b'SYNTHETIC_PRIVATE_ICON_CANARY')
                 self.assert_rejected('unapproved_content')
                 icon.write_bytes(original)
+
+    def test_font_bytes_are_pinned_binary_without_allowing_other_binary_data(self):
+        for name in ('jua-regular-ksx1001.woff2', 'gaegu-regular-ksx1001.woff2'):
+            font = self.site / name
+            original = font.read_bytes()
+            self.assertTrue(original.startswith(b'wOF2'))
+            for altered in (original + b'SYNTHETIC_PRIVATE_FONT_CANARY', b'wOFF' + original[4:]):
+                with self.subTest(name=name, size=len(altered)):
+                    font.write_bytes(altered)
+                    self.assert_rejected('unapproved_content')
+            font.write_bytes(original)
+        # The binary exemption is by exact name: another .woff2 is an unexpected entry, never scanned as a font.
+        (self.site / 'extra-ksx1001.woff2').write_bytes((self.site / 'jua-regular-ksx1001.woff2').read_bytes())
+        self.assert_rejected('unexpected_entries')
 
     def test_legacy_ranked_membership_is_rejected_in_directory_and_tar(self):
         self.write_json(lambda data: data["universe"].update({"data": {
@@ -381,7 +395,7 @@ class PagesArtifactGuardTests(unittest.TestCase):
     def test_github_pages_tar_shape_passes_same_guard(self):
         receipt = self.tar_receipt()
         self.assertEqual(receipt["pages_artifact_guard"], "PASS")
-        self.assertEqual(receipt["files_scanned"], 126)  # 119 (macro-cycle-ring.js/.css; incl. TA P1 modules chart-bars.js, pattern-config-defaults.js, pattern-engine.js, pattern-history.js, 2026-10-20) + chart renderer (P1-7/P1-8, 2026-10-20): chart-renderer.js, chart-workbench.js/.css, vendored lightweight-charts 5.2.1 + LICENSE/NOTICE/third-party notices; before that: 106 - the four removed home-bg-*.svg (2026-10-18) + universe-company.js/.css + doodles.js + ia-screens.js (owner IA 2026-10-18) + company-names-ko.json (KR-NAMES 2026-10-18) + stat-radar.js/.css + v-coverage.js/.css + price-time.js (D10 price time 2026-10-18) + data-refresh.js (2026-10-18)
+        self.assertEqual(receipt["files_scanned"], 130)  # 126 + self-hosted OFL fonts (IA-11, 2026-10-20): jua/gaegu WOFF2 subsets + jua-OFL.txt/gaegu-OFL.txt; 126 = 119 (macro-cycle-ring.js/.css; incl. TA P1 modules chart-bars.js, pattern-config-defaults.js, pattern-engine.js, pattern-history.js, 2026-10-20) + chart renderer (P1-7/P1-8, 2026-10-20): chart-renderer.js, chart-workbench.js/.css, vendored lightweight-charts 5.2.1 + LICENSE/NOTICE/third-party notices; before that: 106 - the four removed home-bg-*.svg (2026-10-18) + universe-company.js/.css + doodles.js + ia-screens.js (owner IA 2026-10-18) + company-names-ko.json (KR-NAMES 2026-10-18) + stat-radar.js/.css + v-coverage.js/.css + price-time.js (D10 price time 2026-10-18) + data-refresh.js (2026-10-18)
         self.assertEqual(receipt["violations"], {})
 
     def test_exact_upload_action_tar_command_with_normalized_owners_passes(self):

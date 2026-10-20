@@ -135,7 +135,7 @@ APPROVED_SHA256 = {
     "macro-cycle-ring.css": "2d36990bb39d56f8f1827341a4a71f54432044eaf8e55c94638b291abaf47a80",
     "sec-disclosures.js": "849cbfbf2b21badd52c06cf5887dcd259e08864552a76fde39f065f82c6a7194",
     "theme-boot.js": "4aaf08ecd900e1216a95159a277f8a7c51c32e41784f1ac9530ecf1dc77a6f2c",
-    "theme.css": "a5e89c0da9b0af8ee3662989c33e2c4c19f2a4bf14ef0e864a41ff2f4e4fa3f7",
+    "theme.css": "bef6d817e19f474884e14367c23f5fbe25c6a191e2499eaf7ac2839a4c7e015a",
     "app-shell.js": "e7cdd03821e5f543925c16bbb2fb67b977df4c1d5c88e2f532f86cb3b8d31199",
     "home-screen.js": "5cf68ce2b98a7bfb90251fabbf7f357a5638408467ee4d1479c05d45da98da73",
     "home-quotes.js": "46487b40e170c3291b023bebcb0fd01da19bb3beb53bfad3006be6377cfe3a96",
@@ -156,8 +156,16 @@ APPROVED_SHA256 = {
     "lightweight-charts-5.2.1.standalone.js": "e21cc5caa0226ef30bd8549c50b9ef926615f2a4ee6b4e486353477a55f598cf",
     "lightweight-charts-5.2.1.LICENSE.txt": "70c9d5382506dd184465425c08a99ad9bd6d9ac1313c252968ba0b585e5ef823",
     "lightweight-charts-5.2.1.NOTICE.txt": "f76c6afab94884448f0426e30d6e9d555ca7247894cd3484e477d2f87513036e",
-    "third-party-notices.txt": "01c1ecd099bc76ab6845b835c1704534eb0301e6b0eb22fcf63cc5a76668e362",
+    "third-party-notices.txt": "f205cbf89adc29550295e11ae8f79f914d84aedebc05861017a69bf6e38599e3",
+    # Self-hosted SIL OFL 1.1 fonts (IA-11, owner "호스팅해" 2026-10-20): google/fonts 47d54ca1 Jua/Gaegu Regular, subset to
+    # Latin + KS X 1001 Hangul as WOFF2 (binary, see FONT_FILES), and the unmodified upstream OFL texts.
+    "jua-regular-ksx1001.woff2": "2699d0318876afef41d823cec84d30d08d98ab6723d9958b6d5f79f57ade1cc2",
+    "gaegu-regular-ksx1001.woff2": "91e086f4668132cd51a70ba2b6d7d9706da87f8a7f8be4b198f968ddb69894c0",
+    "jua-OFL.txt": "44a7c6e4c5572392ae122d3b1d8c6ba6fd640a7797e675384585d947f2773e3c",
+    "gaegu-OFL.txt": "53a9ce47085d9fef613c7ecb3730dc80d25962510bbea231b89564f58240f251",
 }
+# Binary files other than the PWA icons: exactly these names, WOFF2 signature and the pinned hash, nothing else.
+FONT_FILES = frozenset({"jua-regular-ksx1001.woff2", "gaegu-regular-ksx1001.woff2"})
 ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, COMPANY_NAMES_FILENAME, UNIVERSE_DOMAINS_FILENAME, COMPANY_LOGOS_FILENAME, QGV2_FILENAME, DISCLOSURES_FILENAME, NEWS_SIGNALS_FILENAME} | set(SCREEN_FILENAMES) | set(DART_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024
 MAX_ARCHIVE_BYTES = 4 * 1024 * 1024
@@ -244,6 +252,10 @@ def _check_payload(name: str, payload: bytes, violations: Counter) -> None:
     try:
         if name in {'icon-192.png', 'icon-512.png'}:
             if not payload.startswith(b'\x89PNG\r\n\x1a\n') or hashlib.sha256(payload).hexdigest() != APPROVED_SHA256[name]:
+                violations['unapproved_content'] += 1
+            return
+        if name in FONT_FILES:
+            if not payload.startswith(b'wOF2') or hashlib.sha256(payload).hexdigest() != APPROVED_SHA256[name]:
                 violations['unapproved_content'] += 1
             return
         text = payload.decode("utf-8", errors="strict")
