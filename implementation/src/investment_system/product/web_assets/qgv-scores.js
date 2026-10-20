@@ -74,6 +74,30 @@ function universeScores(v2Inputs,quotes,preset,gate,cyclicalBasis={},personal=nu
 }
 // Label of every personal result (S06, S13): it is a preview of the user's own weights, never an official score.
 const PERSONAL_LABEL=['개인 설정 미리보기 · 공식 점수 아님','Personal setting preview · not an official score'];
+/* PROVENANCE (owner instruction 2026-10-19: '개인 프리셋 결과의 ‘공식’ 표시를 수정한다. 공식 가중치 사용 여부, 개인 설정 여부, 기기 가격
+   사용 여부, 중앙 게시 결과 여부를 구분한다. 문구를 고치기 위해 계산 결과를 바꾸지 않는다.'; D11: a personal result says 개인). Four
+   independent facts of one shown value, read only from the profile it was computed with. Labels only: nothing is computed here.
+   weights  OFFICIAL = the official default profile (QgvV2.DEFAULT_PRESET, gate GATE_DEFAULT, official weights) | PERSONAL;
+   setting  the personal choices behind the value: PRESET (another preset), GATE_OFF (gate toggled), WEIGHTS (personal weights);
+   prices   DEVICE = this device's prices went in (every V needs them; PrivateSubsetView read, device quotes) | NONE;
+   source   DEVICE_COMPUTED = computed on this device | PUBLISHED = read as published (sec-qgv2.json Q·G axes).
+   There is no central V/QGV publication yet (design only), so a QGV total, rank or N set is always DEVICE_COMPUTED, also on the
+   official weights. kind: 'QGV' (a total, rank, list or N set: axis weights and gate count), 'V' (the V axis alone: preset and
+   gate do not change it, personal inner weights do), 'QG' (a published Q·G axis). */
+const RANK_LABEL={OFFICIAL:['Universe 공식 QGV 순위','Official Universe QGV rank'],PERSONAL:['개인 프리셋 순위 (Universe 기준)','Personal preset rank (Universe basis)']};
+function provenance({kind='QGV',profile=null,priced=false}={}){let V2=null;try{V2=qgvV2();}catch(_){V2=null;}const p=object(profile)?profile:{},qg=kind==='QG';
+ const setting=qg?[]:p.preset==='custom'||object(p.weights)?['WEIGHTS']:kind==='V'?[]:[...(V2&&typeof p.preset==='string'&&p.preset!==V2.DEFAULT_PRESET?['PRESET']:[]),...(V2&&typeof p.gate==='boolean'&&p.gate!==V2.GATE_DEFAULT?['GATE_OFF']:[])];
+ return Object.freeze({kind,weights:setting.length?'PERSONAL':'OFFICIAL',setting:Object.freeze(setting),prices:!qg&&priced===true?'DEVICE':'NONE',source:qg?'PUBLISHED':'DEVICE_COMPUTED',
+  profile_id:!qg&&typeof p.id==='string'?p.id:null,preset:typeof p.preset==='string'?p.preset:null,gate:typeof p.gate==='boolean'?p.gate:null});}
+// '공식 가중치 · 이 기기 가격 · 기기 계산' / '개인 프리셋(성장 친화) · 이 기기 가격 · 기기 계산' / '공식 가중치 · 가격 없음 · 중앙 게시(sec-qgv2.json)'.
+function provenanceText(x,en){const V2=(()=>{try{return qgvV2();}catch(_){return null;}})(),pr=V2&&x.preset&&Object.hasOwn(V2.PRESETS,x.preset)?V2.PRESETS[x.preset]:null,off=x.setting.includes('GATE_OFF');
+ const w=x.weights==='OFFICIAL'?(en?'Official weights':'공식 가중치'):x.setting.includes('WEIGHTS')?(en?'Personal weights':'개인 가중치'):(en?'Personal preset (':'개인 프리셋(')+(pr?(en?pr.name_en:pr.name):(x.preset||'—'))+(off?(en?' · gate off':' · 관문 끔'):'')+')';
+ return [w,x.prices==='DEVICE'?(en?'this device’s prices':'이 기기 가격'):(en?'no prices':'가격 없음'),x.source==='PUBLISHED'?(en?'published centrally (sec-qgv2.json)':'중앙 게시(sec-qgv2.json)'):(en?'computed on this device':'기기 계산')].join(' · ');}
+function provenanceAttrs(x){return{'data-qgv-weights':x.weights,'data-qgv-setting':x.setting.join(' ')||'NONE','data-qgv-prices':x.prices,'data-qgv-source':x.source,'data-qgv-profile':x.profile_id||''};}
+// The same attributes as an HTML attribute string (screens built from strings); values are fixed codes and a profile id.
+function provenanceAttrHtml(x){return Object.entries(provenanceAttrs(x)).map(([k,v])=>' '+k+'="'+String(v).replace(/[&"<>]/g,c=>({'&':'&amp;','"':'&quot;','<':'&lt;','>':'&gt;'})[c])+'"').join('');}
+// Rank heading of a result computed with `profile`: 'Universe 공식 QGV 순위' only on the official default profile.
+function rankLabel(profile,en){return RANK_LABEL[provenance({profile}).weights][en?1:0];}
 /* FE-MISSING-2 (owner instruction 2026-10-17): why a company's QGV is partial or missing, read only from fields the public
    contract already carries (sec-qgv2.json row state/acquired_at/fiscal_year_end/profile/metrics, the published Q/G axis coverage,
    the engine's factor reasons and v_inputs). Display only: nothing here feeds a score, total, rank or candidate, and nothing is
@@ -409,6 +433,7 @@ function vCoverage(result,v2Inputs){
   calc_version:typeof v2Inputs.calc_version==='string'?v2Inputs.calc_version:null,as_of:typeof v2Inputs.as_of==='string'?v2Inputs.as_of:null,unknown_rows:unknownRows};}
 /* MODEL PORTFOLIO N10 / N15 / N20 (D12; owner decisions 2026-10-14 TARGET v1 (b)(c) and set B, backtest protocol 2026-10-18 'N15
    주검정과 N10·N20 민감도', CENTRAL_V_PUBLICATION_DESIGN §10-4; D-CV15: computed on this device in RAM, never stored or sent).
+   Rule precedence and sources: docs/qgv_scoring_standard/N_SELECTION_RULES_20261019.md.
    Input: ONE official result (pageResult().computed with `official`). Approved eligibility, applied in this order over the RANK
    population in official rank order:
    OFFICIAL_RANK  an official rank (a total with V; D11), a Universe row (never a TARGET outside the Universe);
@@ -420,31 +445,85 @@ function vCoverage(result,v2Inputs){
                   지표가 NA인 회사는 후보에서 뺀다(핵심·일반 모두)'; QGV_V2_NUMBER_CHECK_20261017.md §3-2), with its own count;
    SUBGROUP_MAX_4 at most 4 per industry subgroup (approved #20 subgroups: PlaybookEngine.sectorFor on the symbol / SIC, no ETF
                   input here). PROVISIONAL (open, no approved rule): a row whose subgroup cannot be determined is not capped
-                  (subgroup UNKNOWN, counted).
+                  (subgroup UNKNOWN, counted);
+   LIMITS_16      PLAYBOOK_V1 §16 (TARGET v1 (c) '16절 한도'): single name <= 10%, sector group <= 40% with semiconductors and
+                  semiconductor equipment as ONE group (portfolio_limits.combined_groups), at least 10 names. Per N at its equal
+                  weight 100/N: a row whose group would pass 40% is skipped and the next eligible rank takes the seat (the same
+                  replacement as the subgroup cap); a row of unknown group is not capped (same provisional rule) and makes the 40%
+                  check UNVERIFIED when the unknown weight plus the largest known group could pass 40%. Never relaxed: when the
+                  eligible rows run out the set stays short; its shortfall weight and causes are returned, never filled or
+                  rescaled (owner decision 2026-10-15: '적격 후보가 모자라도 조건을 완화하거나 제외한 종목을 다시 넣지 않는다').
    modelPortfolios reads the result it is given; officialModel() below gives it the OFFICIAL DEFAULT profile (balanced, gate on,
    official weights) whatever preset the device shows on S06.
-   Selection = the first N eligible rows in official rank order (so N10 ⊂ N15 ⊂ N20), equal weight 100/N (set B). Not applied
-   (no approved mechanical rule): §16 weight limits (40% sector group), core/general grades, the 10-K number check (TARGET v1
-   confirmation step) and BT-14 '업종 분산' beyond the subgroup cap. Returns null without an official result. */
-const MODEL_NS=Object.freeze([10,15,20]),MODEL_PRIMARY=15,SUBGROUP_MAX=4,SAFETY={net_debt_to_ebitda_min_fail:3,interest_coverage_below_fail:3};
-const MODEL_RULES=Object.freeze(['OFFICIAL_RANK','AXES_50','VALUE_TRAP_GATE','FINANCIAL_SAFETY','FINANCIAL_SAFETY_NA','SUBGROUP_MAX_4']);
+   Selection per N = the first eligible rows in official rank order under the caps above, equal weight 100/N (set B). Computed
+   checks that never change the selection: `tier_check` (N15 only: the TARGET v1 / R-C core 5 x 8% + general 10 x 6% weights of
+   2026-10-14 put on the N15 rows, §16 re-checked; R-C itself needs the 10-K check and card answers) and `issuer_check` (same
+   issuer = same CIK across share classes, e.g. GOOG/GOOGL: the summed weight; one seat per issuer is a RECOMMENDATION that needs
+   an owner decision, not applied). Every code keeps its own price, V, analysis, official rank and percentile treatment. Not
+   applied (no approved mechanical rule): the 10-K number check (TARGET v1 confirmation step) and BT-14 '업종 분산' beyond the caps.
+   Returns null without an official result. */
+const MODEL_NS=Object.freeze([10,15,20]),MODEL_PRIMARY=15,SUBGROUP_MAX=4,SAFETY={net_debt_to_ebitda_min_fail:3,interest_coverage_below_fail:3},EPS=1e-9;
+const MODEL_RULES=Object.freeze(['OFFICIAL_RANK','AXES_50','VALUE_TRAP_GATE','FINANCIAL_SAFETY','FINANCIAL_SAFETY_NA','SUBGROUP_MAX_4','LIMITS_16']);
 const MODEL_LABEL=Object.freeze({OFFICIAL_RANK:['공식 QGV 순위 있음 (V 포함 · Universe)','Official QGV rank (with V · Universe)'],AXES_50:['Q·G·V 세 축 모두 산출 (축 50% 규칙)','Q, G and V all calculated (50% axis rule)'],
  VALUE_TRAP_GATE:['가치 함정 관문 행 제외','Value-trap gate rows excluded'],FINANCIAL_SAFETY:['재무 안전 미달 제외 (순부채/EBITDA ≥ 3 또는 이자보상 < 3)','Financial safety fails excluded (net debt/EBITDA ≥ 3 or interest coverage < 3)'],
  FINANCIAL_SAFETY_NA:['재무 안전 지표 NA 제외 (핵심·일반 모두)','Financial safety metric NA excluded (core and general)'],
- SUBGROUP_MAX_4:['업종 하위 묶음당 최대 4종목','At most 4 per industry subgroup']});
+ SUBGROUP_MAX_4:['업종 하위 묶음당 최대 4종목','At most 4 per industry subgroup'],
+ LIMITS_16:['16절 한도 (단일 종목 10% · 업종 묶음 40%, 반도체+반도체 장비 한 묶음 · 최소 10종목)','§16 limits (single name 10% · sector group 40%, semiconductors + equipment one group · at least 10 names)']});
+/* §16 values from the approved playbook config (PlaybookConfigDefaults.portfolio_limits, PLAYBOOK_V1 §16); the frozen copy below is
+   the same §16 text for a page without the config (node test pins it equal to the config). */
+const LIMITS_16=Object.freeze({single_max_pct:10,sector_group_max_pct:40,min_holdings:10,combined_groups:Object.freeze([Object.freeze({id:'semiconductor_combined',ko:'반도체 묶음',sectors:Object.freeze(['semiconductors','semi_equipment'])})])});
+// TARGET v1 / R-C tiers (owner decision 2026-10-14, PLAYBOOK_V1 §18 T-PB over §15-2): 15 names, core = top 5 with calculated factors >= 80% and financial safety passed, x 8%; general 10 x 6%.
+const TIERS_RC=Object.freeze({n:15,core_n:5,core_pct:8,general_pct:6,core_factors_min:0.8});
+function limits16(){try{const C=globalThis.PlaybookConfigDefaults,l=C&&object(C.portfolio_limits)?C.portfolio_limits:null;
+ if(l&&finite(l.single_max_pct)&&finite(l.sector_group_max_pct)&&Number.isInteger(l.min_holdings)&&Array.isArray(l.combined_groups))return l;}catch(_){}return LIMITS_16;}
+function sectorName(id,en){if(id===null)return en?'unknown':'미정';const L=limits16(),g=L.combined_groups.find(x=>x.id===id);if(g)return en?id:g.ko;
+ try{const C=globalThis.PlaybookConfigDefaults,s=C&&Array.isArray(C.sector_checks)?C.sector_checks.find(x=>x.id===id):null;if(s&&!en&&typeof s.name==='string')return s.name;}catch(_){}return id;}
 function defaultSectorOf(ticker,sic){try{const E=globalThis.PlaybookEngine,C=globalThis.PlaybookConfigDefaults;const s=E&&C&&typeof E.sectorFor==='function'?E.sectorFor(C,ticker,null,sic):null;return s&&typeof s.sector==='string'?s.sector:null;}catch(_){return null;}}
+/* §16 check of a weighted list [{weight_pct, group}] (group null = unknown). group.status: FAIL when a known group passes 40%,
+   UNVERIFIED when unknown rows exist and unknown weight + the largest known group could pass 40% (their group is not defined by an
+   approved rule), PASS otherwise. */
+function limitCheck(list,L){const sums={},counts={};let unknownN=0,unknownPct=0,single=0,sum=0;
+ for(const e of list){const w=e.weight_pct;single=Math.max(single,w);sum+=w;if(e.group===null){unknownN++;unknownPct+=w;continue;}sums[e.group]=(sums[e.group]||0)+w;counts[e.group]=(counts[e.group]||0)+1;}
+ const max=L.sector_group_max_pct,groups=Object.keys(sums).sort().map(id=>({id,pct:sums[id],count:counts[id],over:sums[id]>max+EPS})),top=groups.reduce((a,g)=>Math.max(a,g.pct),0);
+ const status=groups.some(g=>g.over)?'FAIL':unknownN&&top+unknownPct>max+EPS?'UNVERIFIED':'PASS';
+ return{single:{limit:L.single_max_pct,max_pct:single,ok:single<=L.single_max_pct+EPS},group:{limit:max,status,groups,top_pct:top,unknown:{count:unknownN,pct:unknownPct}},
+  min_holdings:{limit:L.min_holdings,count:list.length,ok:list.length>=L.min_holdings},sum_pct:sum};}
+function pickN(entries,n,L){const w=100/n,sub={},grp={},sel=[],skipped={SUBGROUP_MAX_4:0,SECTOR_GROUP_MAX_40:0},capped=[];let examined=0;
+ for(const e of entries){if(sel.length>=n)break;examined++;if(e.excluded)continue;
+  if(e.subgroup!==null&&(sub[e.subgroup]||0)>=SUBGROUP_MAX){skipped.SUBGROUP_MAX_4++;continue;}
+  if(e.group!==null&&(grp[e.group]||0)+w>L.sector_group_max_pct+EPS){skipped.SECTOR_GROUP_MAX_40++;capped.push({company_id:e.company_id,ticker:e.ticker,rank:e.rank,group:e.group});continue;}
+  if(e.subgroup!==null)sub[e.subgroup]=(sub[e.subgroup]||0)+1;if(e.group!==null)grp[e.group]=(grp[e.group]||0)+w;sel.push({...e,weight_pct:w});}
+ return{sel,skipped,capped,examined};}
+function issuerCheck(list,L){const by=new Map();for(const e of list){const k=e.issuer||'code:'+e.code;if(!by.has(k))by.set(k,{issuer:e.issuer,codes:[],tickers:[],pct:0});const x=by.get(k);x.codes.push(e.code);x.tickers.push(e.ticker);x.pct+=e.weight_pct;}
+ const all=[...by.values()],multi=all.filter(x=>x.codes.length>1).map(x=>({...x,over_single_max:x.pct>L.single_max_pct+EPS}));
+ return{rule:'ISSUER_ONE_SEAT',status:'RECOMMENDATION_DECISION_NEEDED',applied:false,limit:L.single_max_pct,issuers:multi,max_issuer_pct:all.reduce((a,x)=>Math.max(a,x.pct),0)};}
+function tierCheck(set,L){if(set.n!==TIERS_RC.n)return null;
+ const rows=set.selected.map((e,i)=>{const core=i<TIERS_RC.core_n&&finite(e.factors_ratio)&&e.factors_ratio>=TIERS_RC.core_factors_min-EPS&&e.safety==='PASS';return{company_id:e.company_id,ticker:e.ticker,rank:e.rank,tier:core?'CORE':'GENERAL',weight_pct:core?TIERS_RC.core_pct:TIERS_RC.general_pct,group:e.group};});
+ const core=rows.filter(r=>r.tier==='CORE').length,lim=limitCheck(rows,L),status=!set.complete?'INCOMPLETE':core!==TIERS_RC.core_n?'CORE_SHORT':lim.single.ok&&lim.group.status!=='FAIL'&&lim.min_holdings.ok&&Math.abs(lim.sum_pct-100)<EPS?(lim.group.status==='UNVERIFIED'?'UNVERIFIED':'PASS'):'FAIL';
+ return{rule:'TIERS_RC_20261014',applied_to_selection:false,status,core,general:rows.length-core,rows,limits:lim};}
 function modelPortfolios(computed,v2Inputs,{sectorOf=defaultSectorOf}={}){
  if(!object(computed)||!object(computed.rows)||!object(computed.official)||!v2Inputs||!object(v2Inputs.records))return null;
- const recs=v2Inputs.records,rows=Object.values(computed.rows).filter(r=>Number.isInteger(r.rank)&&typeof r.universe_code==='string').sort((a,b)=>a.rank-b.rank);
- const excluded={AXES_50:0,VALUE_TRAP_GATE:0,FINANCIAL_SAFETY:0,FINANCIAL_SAFETY_NA:0,SUBGROUP_MAX_4:0},unknown={subgroup:0},counts={},picked=[],checked=[];
+ const L=limits16(),combined={};for(const g of L.combined_groups)for(const s of g.sectors)combined[s]=g.id;
+ const recs=v2Inputs.records,rows=Object.values(computed.rows).filter(r=>Number.isInteger(r.rank)&&typeof r.universe_code==='string').sort((a,b)=>a.rank-b.rank),entries=[];
  for(const r of rows){const p=r.primary,rec=Object.hasOwn(recs,r.code)?recs[r.code]:null,m=rec&&object(rec.metrics)?rec.metrics:{},nd=finite(m.net_debt_to_ebitda)?m.net_debt_to_ebitda:null,ic=finite(m.interest_coverage)?m.interest_coverage:null;
   const fail=nd!==null&&nd>=SAFETY.net_debt_to_ebitda_min_fail||ic!==null&&ic<SAFETY.interest_coverage_below_fail,safety=fail?'FAIL':nd!==null&&ic!==null?'PASS':'UNKNOWN';
   let sub=null;try{sub=typeof sectorOf==='function'?sectorOf(r.ticker,rec?rec.sic:null):null;}catch(_){sub=null;}if(typeof sub!=='string'||!sub)sub=null;
-  let reason=null;if(![p.q,p.g,p.v].every(finite))reason='AXES_50';else if(p.value_trap_gate===true)reason='VALUE_TRAP_GATE';else if(fail)reason='FINANCIAL_SAFETY';else if(safety==='UNKNOWN')reason='FINANCIAL_SAFETY_NA';else if(sub!==null&&(counts[sub]||0)>=SUBGROUP_MAX)reason='SUBGROUP_MAX_4';
-  const entry={company_id:r.company_id,ticker:r.ticker,code:r.code,universe_code:r.universe_code,rank:r.rank,total:p.total,q:p.q,g:p.g,v:p.v,subgroup:sub,safety,excluded:reason};checked.push(entry);
-  if(reason){excluded[reason]++;continue;}if(sub===null)unknown.subgroup++;if(sub!==null)counts[sub]=(counts[sub]||0)+1;picked.push(entry);if(picked.length>=Math.max(...MODEL_NS))break;}
- const sets={};for(const n of MODEL_NS){const list=picked.slice(0,n);sets['N'+n]={n,selected:list.map(e=>({...e,weight_pct:100/n})),complete:list.length===n,weight_pct:100/n};}
- return{version:'model-portfolio/v1',provisional:['SUBGROUP_UNKNOWN_NOT_CAPPED'],primary:'N'+MODEL_PRIMARY,ns:[...MODEL_NS],rules:[...MODEL_RULES],sets,excluded,unknown,checked:checked.length,ranked:rows.length,profile_id:object(computed.profile)?computed.profile.id:null,as_of:computed.v2_as_of||null,weighting:'EQUAL'};}
+  let reason=null;if(![p.q,p.g,p.v].every(finite))reason='AXES_50';else if(p.value_trap_gate===true)reason='VALUE_TRAP_GATE';else if(fail)reason='FINANCIAL_SAFETY';else if(safety==='UNKNOWN')reason='FINANCIAL_SAFETY_NA';
+  const fa=finite(p.factors_available)&&finite(p.factors_total)&&p.factors_total>0?p.factors_available/p.factors_total:null;
+  entries.push({company_id:r.company_id,ticker:r.ticker,code:r.code,universe_code:r.universe_code,issuer:rec&&typeof rec.cik==='string'&&rec.cik?rec.cik:null,rank:r.rank,total:p.total,q:p.q,g:p.g,v:p.v,factors_ratio:fa,subgroup:sub,group:sub===null?null:combined[sub]||sub,safety,excluded:reason});}
+ const sets={};let walk20=null;
+ for(const n of MODEL_NS){const w=100/n,x=pickN(entries,n,L),lim=limitCheck(x.sel,L),complete=x.sel.length===n,causes=[];if(n===Math.max(...MODEL_NS))walk20=x;
+  if(!complete){causes.push({code:'ELIGIBLE_EXHAUSTED',picked:x.sel.length,n});if(x.skipped.SECTOR_GROUP_MAX_40)causes.push({code:'SECTOR_GROUP_MAX_40',count:x.skipped.SECTOR_GROUP_MAX_40,groups:[...new Set(x.capped.map(c=>c.group))]});
+   if(x.skipped.SUBGROUP_MAX_4)causes.push({code:'SUBGROUP_MAX_4',count:x.skipped.SUBGROUP_MAX_4});if(!lim.min_holdings.ok)causes.push({code:'MIN_HOLDINGS',count:x.sel.length,limit:L.min_holdings});}
+  if(lim.group.status==='UNVERIFIED')causes.push({code:'GROUP_UNKNOWN',count:lim.group.unknown.count,pct:lim.group.unknown.pct});
+  const status=!complete?'SHORTFALL':!lim.single.ok||lim.group.status==='FAIL'||!lim.min_holdings.ok?'FAIL':lim.group.status==='UNVERIFIED'?'UNVERIFIED':'FEASIBLE';
+  sets['N'+n]={n,selected:x.sel,complete,weight_pct:w,status,shortfall_pct:(n-x.sel.length)*w,causes,skipped:x.skipped,group_capped:x.capped,limits:lim,issuer_check:issuerCheck(x.sel,L)};
+  sets['N'+n].tier_check=tierCheck(sets['N'+n],L);}
+ // Exclusion counts over the rows the N20 walk examined (as before): the base eligibility reasons + the subgroup cap of that walk.
+ const excluded={AXES_50:0,VALUE_TRAP_GATE:0,FINANCIAL_SAFETY:0,FINANCIAL_SAFETY_NA:0,SUBGROUP_MAX_4:walk20.skipped.SUBGROUP_MAX_4},unknown={subgroup:walk20.sel.filter(e=>e.subgroup===null).length};
+ for(const e of entries.slice(0,walk20.examined))if(e.excluded)excluded[e.excluded]++;
+ return{version:'model-portfolio/v2',provisional:['SUBGROUP_UNKNOWN_NOT_CAPPED'],primary:'N'+MODEL_PRIMARY,ns:[...MODEL_NS],rules:[...MODEL_RULES],limits:{single_max_pct:L.single_max_pct,sector_group_max_pct:L.sector_group_max_pct,min_holdings:L.min_holdings,combined_groups:L.combined_groups.map(g=>({id:g.id,sectors:[...g.sectors]}))},
+  sets,excluded,unknown,checked:walk20.examined,ranked:rows.length,profile_id:object(computed.profile)?computed.profile.id:null,as_of:computed.v2_as_of||null,weighting:'EQUAL'};}
 /* The model portfolio on the OFFICIAL evaluation (owner instruction: 'N10/N15/N20 selection uses the official evaluation and the
    approved eligibility rules'): the same identities, inputs and quotes as the shared result, scored with the official default
    profile (QgvV2.DEFAULT_PRESET, gate on, official weights) whatever preset/gate the device shows on S06. `computed` (optional) is
@@ -492,5 +571,5 @@ function label(version,en){return(LABEL[version]||LABEL.v2)[en?1:0];}
 // (+ ' · 유형 범위 qgv2-type-scope/…' = the type-application scope id the scores use).
 function basisText(S,en){const b=S&&S.basis?S.basis:basis('v2',false);return label('v2',en)+' · '+(en?b.label_en:b.label)+(b.since?(en?' · since ':' · ')+b.since+(en?'':'부터'):'')+(b.type_scope?(en?' · type scope ':' · 유형 범위 ')+b.type_scope:'');}
 function presets(){return qgvV2().PRESETS;}
-return Object.freeze({OUTSIDE_UNIVERSE_LABEL,PORTFOLIO_RANK_LABEL,POPULATION_LABEL,universeIdentities,rowOf,codeRow,setPageReferences,modelPortfolios,officialModel,MODEL_NS,MODEL_PRIMARY,MODEL_RULES,MODEL_LABEL,MODES,LABEL,PERSONAL_LABEL,PERSONAL_V0_LABEL,QG_REFERENCE_LABEL,NO_OFFICIAL_RANK,qgReference,FLAG,DATA_STATE,AXIS_STATUS,REASON,coverageFor,exploreGroup,reasonText,stateText,axisStatusText,vInputText,scoringDefault,compute,typeMemberships,judgmentRows,collectQuotes,pageResult,setPageIdentities,setPageProfile,pageProfile,isCurrent,vCoverage,V_TARGET_SHARE,summaryText,naText,flagText,label,basis,basisText,presets,symbolOf,pageReferences,marks,readMarks,markAttrs});
+return Object.freeze({RANK_LABEL,provenance,provenanceText,provenanceAttrs,provenanceAttrHtml,rankLabel,OUTSIDE_UNIVERSE_LABEL,PORTFOLIO_RANK_LABEL,POPULATION_LABEL,universeIdentities,rowOf,codeRow,setPageReferences,modelPortfolios,officialModel,MODEL_NS,MODEL_PRIMARY,MODEL_RULES,MODEL_LABEL,MODES,LABEL,PERSONAL_LABEL,PERSONAL_V0_LABEL,QG_REFERENCE_LABEL,NO_OFFICIAL_RANK,qgReference,FLAG,DATA_STATE,AXIS_STATUS,REASON,coverageFor,exploreGroup,reasonText,stateText,axisStatusText,vInputText,scoringDefault,compute,typeMemberships,judgmentRows,collectQuotes,pageResult,setPageIdentities,setPageProfile,pageProfile,isCurrent,vCoverage,V_TARGET_SHARE,summaryText,naText,flagText,label,basis,basisText,presets,symbolOf,LIMITS_16,TIERS_RC,limits16,sectorName,pageReferences,marks,readMarks,markAttrs});
 });

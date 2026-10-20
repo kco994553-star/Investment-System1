@@ -26,10 +26,13 @@ const frac=(a,b)=>a===null||a===undefined?'—':a+'/'+b;
 /* HTML of one QgvScores.vCoverage result (s). */
 /* failure (optional): PrivateSubsetView.readStatus().failure, a Universe read that failed after (or without) the kept successful
    read. It is shown next to the kept state; the counts stay those of the kept read (owner rule 2026-10-19). */
-function html(s,{en=false,reasonText=c=>c,failure=null}={}){
+/* provenance (optional, QgvScores.provenance of the shared result's S06 preset/gate): its text and data-qgv-* attributes. The V counts
+   do not depend on the preset; the Q·G-only and value-trap-gate rows do (gate off: no gate row), so a personal setting says 개인. */
+function html(s,{en=false,reasonText=c=>c,failure=null,provenance=null}={}){
  const T=(ko,e)=>en?e:ko,P=s.population,G=P.general,N=P.total,on=s.connected,cell=(attr,val)=>'<td'+(attr?' '+attr:'')+'>'+esc(val)+'</td>',count=(name,val)=>name+(on?'="'+val+'"':'');
  let h='<section class="card v-coverage" data-v-coverage="'+(on?'READY':'NOT_CONNECTED')+'"><h2>'+T('V 산출 현황 · 이 기기','V coverage · this device')+'</h2>';
  h+='<p class="small">'+esc(T('이 기기 RAM에서만 계산 · 저장·전송 없음 · 공개 sec-qgv2.json '+N+'개 코드 × 내 Universe 시트 가격 · 실제 엔진 규칙','Computed in this device’s RAM only · not stored or sent · public sec-qgv2.json '+N+' codes × my Universe sheet prices · real engine rules'))+'</p>';
+ if(provenance&&provenance.attrs)h+='<p class="small" data-v-provenance'+Object.entries(provenance.attrs).map(([k,v])=>' '+k+'="'+esc(v)+'"').join('')+'>'+esc(T('계산 근거: ','Basis: ')+provenance.text)+'</p>';
  if(!on)h+='<p class="v-coverage-state" data-v-coverage-state>'+esc(T('가격 미연결: V 실제 산출 수는 Universe 읽기 뒤 표시','No prices connected: the actual V count is shown after the Universe read'))+'</p>';
  if(failure&&typeof failure.code==='string'){const at=clock(failure.at)||'—',read=clock(s.read_at)||'—';
   h+='<p class="v-coverage-state" data-v-read-failure="'+esc(failure.code)+'" data-v-read-kept="'+(on?'KEPT':'NONE')+'">'+esc(on?T('새 Universe 읽기 실패('+failure.code+') · 시도 '+at+' · 아래 수치는 마지막 성공 읽기(시트 읽은 시각 '+read+') 기준','New Universe read failed ('+failure.code+') · tried '+at+' · the counts below are from the last successful read (sheet read at '+read+')'):T('Universe 읽기 실패('+failure.code+') · 시도 '+at+' · 유지할 이전 성공 읽기 없음','Universe read failed ('+failure.code+') · tried '+at+' · no earlier successful read to keep'))+'</p>';}
@@ -81,7 +84,7 @@ async function paint(host,{publicScreens={},catalog=null,identities=[],preset=nu
   let failure=null;try{const r=view.PrivateSubsetView&&typeof view.PrivateSubsetView.readStatus==='function'?view.PrivateSubsetView.readStatus():null;failure=r&&r.failure?r.failure:null;}catch(_){failure=null;}
   if(painted&&painted.host===host&&painted.result===result&&painted.locale===locale&&painted.failure===failure)return painted.summary;
   const s=QS.vCoverage(result,inputs),open=host.querySelector('[data-v-factor-details]')?.open===true;if(!s)return null;
-  host.innerHTML=html(s,{en,reasonText:c=>QS.reasonText(c,en),failure});{const sec=host.querySelector('[data-v-coverage]');if(sec&&typeof QS.readMarks==='function')for(const[k,v]of Object.entries(QS.readMarks(result.price_basis,view)))sec.setAttribute(k,v);}if(open){const d=host.querySelector('[data-v-factor-details]');if(d)d.open=true;}
+  const px=typeof QS.provenance==='function'&&result.computed?QS.provenance({profile:result.computed.profile,priced:s.connected}):null;host.innerHTML=html(s,{en,reasonText:c=>QS.reasonText(c,en),failure,provenance:px?{text:QS.provenanceText(px,en),attrs:QS.provenanceAttrs(px)}:null});{const sec=host.querySelector('[data-v-coverage]');if(sec&&typeof QS.readMarks==='function')for(const[k,v]of Object.entries(QS.readMarks(result.price_basis,view)))sec.setAttribute(k,v);}if(open){const d=host.querySelector('[data-v-factor-details]');if(d)d.open=true;}
   painted={host,result,locale,failure,summary:s};return s;
  }catch(_){return null;}
 }

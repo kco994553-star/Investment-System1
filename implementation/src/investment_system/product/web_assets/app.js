@@ -694,9 +694,12 @@ function leaderScores(){const inputs=window.Qgv2Inputs?publicScreens[Qgv2Inputs.
  const S=QgvScores.compute({identities:pop.official?pop.official.identities:identityCompanies,publicScreens,quotes,preset:qgv2Profile.preset,gate:qgv2Profile.gate,referenceRows:refs,official:pop.official});
  officialMemo={inputs,quotes,pop,key,S};return S;}
 async function refreshLeaderPage(after){const inputs=window.Qgv2Inputs?publicScreens[Qgv2Inputs.FILE]:null;if(!inputs||typeof QgvScores.pageResult!=='function')return;const{preset,gate}=qgv2Profile;let catalog=null;try{catalog=await deviceCatalog();}catch(_){catalog=null;}
- let r=null;try{r=await QgvScores.pageResult(window,{v2Inputs:inputs,catalog,identities:identityCompanies,preset,gate});}catch(_){r=null;}if(!r)return;if(leaderPage&&leaderPage.result===r){if(after&&leaderShown!==r)after();return;}
- // The Universe read is one shared RAM state (PrivateSubsetView: the last successful read survives navigation), so the page result
- // is used as is: no 'keep the older result' guard. A new read or 'clear device results' (onRanks) resets leaderPage.
+ let r=null;try{r=await QgvScores.pageResult(window,{v2Inputs:inputs,catalog,identities:identityCompanies,preset,gate});}catch(_){r=null;}if(!r)return;
+ // A call that started before a new Universe read, new inputs or a preset/gate change can finish after the call made for them:
+ // its result is no longer the current one and never replaces leaderPage or the shared quotes (the newer call writes them).
+ if(publicScreens[Qgv2Inputs.FILE]!==inputs||!QgvScores.isCurrent(window,r))return;if(leaderPage&&leaderPage.result===r){if(after&&leaderShown!==r)after();return;}
+ // The Universe read is one shared RAM state (PrivateSubsetView: the last successful read survives navigation), so the current
+ // page result is used as is (never compared with the one it replaces). A new read or 'clear device results' (onRanks) resets leaderPage.
  leaderPage={inputs,result:r};
  // S04/S05/S13 score with exactly these quotes (replaced, never merged with an older set), so every screen prices the same rows.
  const k=JSON.stringify(r.quotes);if(k!==qgv2QuotesKey){qgv2Quotes=r.quotes;qgv2QuotesKey=k;}qgv2QuotesBasis=r.price_basis||null;if(after)after();}
@@ -893,13 +896,16 @@ function showUnavailable() {
   $("#retry").onclick=()=>location.reload();
   window.SearchUI?.setUnavailable();
 }
-function render() {
+function render(options) {
   // A render error (e.g. after a hashchange) shows the existing DATA UNAVAILABLE fallback instead of escaping
   // as an uncaught exception; the next navigation renders normally again.
-  try {renderRoute();}
+  try {renderRoute(options);}
   catch(e) {console.error(e);showUnavailable();}
 }
-function renderRoute() {
+function renderRoute(options) {
+  // {keep:true}: '자료 새로고침' or a freshness re-judgement draws the open screen again (data-refresh.js, G2). The user's scroll,
+  // focus, open details, fields and view buttons come back; a screen the user opens (hash change) starts at the top as before.
+  const kept=options&&options.keep&&location.hash===currentHash&&window.DataRefresh?.captureView?DataRefresh.captureView($("#content")):null;
   window.PrivateHistory?.disposeAll();window.PrivateSubsetView?.disposeAll();
   window.GoogleSheetSetup?.disposeAll();
   window.ForwardValidation?.disposeAll();disposeReport();
@@ -923,6 +929,7 @@ function renderRoute() {
   const restoreLeader=route==='leaderboard' && ['company','analysis'].includes(previousRoute);
   if(route==='leaderboard' && id==='interest') leaderboardView={...leaderboardView,interest:true};
   $("#content").innerHTML=routes[route]();
+  if(kept) DataRefresh.restoreFields($("#content"),kept);
   if(route==='leaderboard') void PrivateSubsetView.mount($('#private-subset-root'),{locale:appSettings.display_locale,config:window.InvestmentAppConfig,interests:()=>[...prefs.interests],onRanks:()=>{qgv2Quotes={};qgv2QuotesKey='';qgv2QuotesBasis=null;leaderPage=null;const pt=$('#universe-price-time');if(pt)pt.innerHTML=window.PriceTime?PriceTime.sourceHtml(PrivateSubsetView.priceBasis?.()||null,{locale:appSettings.display_locale}):'';if(leaderboardRows&&$('#leaderboard-screen'))paintLeaderboardScreen(leaderboardRows);}});
   if(['playbook','portfolio','company'].includes(route)&&window.PlaybookScreen){const place=route==='playbook'?$('#playbook-screen'):document.createElement('div');if(route!=='playbook')$('#content').append(place);void PlaybookScreen.mount(place,{catalogPromise:deviceCatalog(),scoreOptions:playbookScoreOptions,screens:publicScreens,idByTicker:new Map(identityCompanies.map(r=>[r.ticker,r.company_id])),publicCatalog,interests:[...prefs.interests],universeCodesPromise:fetch('universe-codes.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(p=>p?.schema==='universe-codes/1'&&Array.isArray(p.codes)?p.codes:[]).catch(()=>[]),full:route==='playbook'}).catch(()=>{if(place.isConnected)place.textContent='플레이북 확인 불가 · 기기 기록을 읽을 수 없습니다.';});}
   if(route==='brief'&&window.PlaybookScreen){try{$('#content').insertAdjacentHTML('afterbegin',PlaybookScreen.todayHtml(localStorage));}catch(_){}}
@@ -989,7 +996,7 @@ function renderRoute() {
     $("#source-language").onchange=e=>updateSettings({source_language:e.target.value});
   }
   if(route==="companies") {
-    listLimit=30;paintCompanies();
+    if(!kept) listLimit=30;paintCompanies();
     $("#search").oninput=$("#only-interest").onchange=$("#group-filter").onchange=$("#company-sort").onchange=()=>{listLimit=30;paintCompanies();};
     $("#more-companies").onclick=()=>{listLimit+=30;paintCompanies();};wireGroups();
   }
@@ -1006,9 +1013,10 @@ function renderRoute() {
   }
   for(const f of document.querySelectorAll("iframe")) f.onload=()=>f.contentWindow.postMessage({type:"display_locale",locale:appSettings.display_locale},location.origin);
   if(restoreLeader) restoreLeaderView();
+  else if(kept) DataRefresh.restoreView($("#content"),kept);
   else window.scrollTo(0,0);
-  if(anchor) document.getElementById(anchor)?.scrollIntoView({block:"start"});
-  if(route==="qgv" && ["investments","companies","market","performance"].includes(id)) {
+  if(anchor && !kept) document.getElementById(anchor)?.scrollIntoView({block:"start"});
+  if(!kept && route==="qgv" && ["investments","companies","market","performance"].includes(id)) {
     const group=$("#qgv-"+id),title=group.querySelector("h2");
     group.scrollIntoView({block:"start"});title.focus({preventScroll:true});
   }

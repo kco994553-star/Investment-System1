@@ -14,6 +14,8 @@
      acquired_at + the file's stale_after_seconds; other files: as_of + stale_after_seconds), the same readers recompute the row
      states from the text already read and the open screen is repainted (D2). It runs every minute, when the tab is shown again,
      after a screen change, and inside refresh() when there is no new publication.
+   - A FULL screen drawn again by refresh() or rejudge() keeps the user's view state (scroll, focus, open details, filter / sort /
+     search fields, the chosen view button); only the values are new (captureView / restoreFields / restoreView, G2).
    - status(file) / readText(file): a failed read (network, HTTP n, invalid, newer format) and a file that is not published
      (HTTP 404) never get the same words (D5).
    Never: a request to the private Worker or Google Sheets, a storage write, a change to a user setting or a Cache Storage
@@ -124,10 +126,63 @@ function guardPrices(){const PS=view.PriceStore;if(!PS||guarded||typeof PS.month
 function unguardPrices(){if(!guarded)return;try{view.clearTimeout(guardTimer);view.PriceStore=guarded;}catch(_){}guarded=null;}
 function repaint(reason){
  const route=typeof hooks.route==='function'?hooks.route()||'home':'home';let how='NONE';quiet=true;
- try{if(typeof hooks.inPlace==='function'&&hooks.inPlace())how='IN_PLACE';else if(FULL.has(route)&&typeof hooks.render==='function'){hooks.render();how='RENDER';}else if(!NONE.has(route)){outdated(reason);how='NOTICE';}}
+ try{if(typeof hooks.inPlace==='function'&&hooks.inPlace())how='IN_PLACE';else if(FULL.has(route)&&typeof hooks.render==='function'){hooks.render({keep:true});how='RENDER';}else if(!NONE.has(route)){outdated(reason);how='NOTICE';}}
  catch(_){how='ERROR';}finally{quiet=false;}
  return how;
 }
+
+/* ---------- the view state of a screen drawn again (G2) ----------
+   A refresh or a re-judgement draws a FULL screen again from the new set (hooks.render({keep:true})); nothing the user did to the
+   open screen is lost: the app calls captureView(root) before it replaces the screen, restoreFields(root,s) right after the new
+   markup is in (before the screen reads its controls), restoreView(root,s) at the end. Kept: text / select / checkbox values,
+   open details, the pressed view button of a button group or the selected tab, inner scroll, the page position (the same element
+   at the same height in the window) and the focused element.
+   Elements are matched by id, else by tag + data-* / name / href / type attributes (+ the nearest ancestor id) + order; a focused
+   element whose state attribute changed is matched by attribute names. Values are never kept: every number and state comes from
+   the new markup. A screen opened by the user (hash change) still starts at the top. Stars (data-star, data-investor-star) are
+   settings, not view state, and are never pressed here. */
+const VIEW_TABS='[role="group"] button[aria-pressed]:not([data-star]):not([data-investor-star]),[role="tab"][aria-selected]',VIEW_SETTLE_TICKS=30;
+let viewSeq=0;
+const KEY_ATTR=/^(data-|name$|href$|type$|aria-controls$)/;
+function viewSig(n,values){if(n.id)return'#'+n.id;let s=n.tagName;for(const a of n.attributes)if(KEY_ATTR.test(a.name))s+='['+a.name+(values?'='+a.value:'')+']';
+ let p=n.parentElement;while(p&&!p.id)p=p.parentElement;return(p?'#'+p.id+' ':'')+s;}
+function keyed(root,sel,values=true){const seen=new Map(),out=new Map();for(const n of root.querySelectorAll(sel)){const k=viewSig(n,values),i=seen.get(k)||0;seen.set(k,i+1);out.set(k+'@'+i,n);}return out;}
+const keyOf=(root,n,values)=>{for(const[k,m]of keyed(root,n.tagName,values))if(m===n)return k;return null;};
+function captureView(root){if(!root)return null;const win=root.ownerDocument.defaultView,doc=root.ownerDocument,s={x:win.scrollX,y:win.scrollY,anchor:null,fields:[],details:[],tabs:[],scrolled:[],focus:null};
+ for(const[k,n]of keyed(root,'input,select,textarea')){const type=(n.type||'').toLowerCase();if(['file','hidden','submit','button','reset','image','password'].includes(type))continue;
+  s.fields.push([k,type==='checkbox'||type==='radio'?{checked:n.checked}:{value:n.value}]);}
+ for(const[k,n]of keyed(root,'details'))s.details.push([k,n.open]);
+ for(const[k,n]of keyed(root,VIEW_TABS))s.tabs.push([k,n.getAttribute('aria-pressed')==='true'||n.getAttribute('aria-selected')==='true']);
+ // The page position is the first element that starts inside the window and its distance from the window top (the scroll
+ // position itself when none): text above it may grow or shrink with the new values and the bar above the screen changes height.
+ for(const n of root.querySelectorAll('*')){if(n.scrollLeft>0||n.scrollTop>0){const k=keyOf(root,n,true);if(k)s.scrolled.push([n.tagName,k,n.scrollLeft,n.scrollTop]);}
+  if(!s.anchor&&s.y>0){const r=n.getBoundingClientRect();if(r.height>0&&r.top>=0&&r.top<win.innerHeight)s.anchor={tag:n.tagName,key:keyOf(root,n,true),alt:keyOf(root,n,false),top:r.top};}}
+ const a=doc.activeElement;if(a&&a!==root&&root.contains(a)){s.focus={tag:a.tagName,key:keyOf(root,a,true),alt:keyOf(root,a,false),sel:null};try{if(typeof a.selectionStart==='number')s.focus.sel=[a.selectionStart,a.selectionEnd];}catch(_){}}
+ return s;}
+function restoreFields(root,s){if(!root||!s)return;const now=keyed(root,'input,select,textarea');
+ for(const[k,v]of s.fields){const n=now.get(k);if(!n)continue;if('checked'in v)n.checked=v.checked;else if(n.tagName!=='SELECT'||[...n.options].some(o=>o.value===v.value))n.value=v.value;}
+ openDetails(root,s);}
+function openDetails(root,s){const now=keyed(root,'details');for(const[k,open]of s.details){const n=now.get(k);if(n&&n.open!==open)n.open=open;}}
+const pressed=n=>n.getAttribute('aria-pressed')==='true'||n.getAttribute('aria-selected')==='true';
+// A view button re-draws its panel on click; the buttons are looked up again after every click. First the buttons that were on
+// (a button group's choice), then the independent toggles that were off.
+function pressTabs(root,s){for(const want of[true,false])for(const[k,on]of s.tabs){if(on!==want)continue;const n=keyed(root,VIEW_TABS).get(k);if(n&&pressed(n)!==on&&!n.disabled)n.click();}}
+const find=(root,f)=>(f.key&&keyed(root,f.tag,true).get(f.key))||(f.alt&&keyed(root,f.tag,false).get(f.alt))||null;
+function targetY(root,s,win){const n=s.anchor&&find(root,s.anchor);return n?Math.max(0,Math.round(n.getBoundingClientRect().top+win.scrollY-s.anchor.top)):s.y;}
+function focusKept(root,s){const f=s.focus;if(!f)return true;const n=find(root,f);if(!n)return false;
+ try{n.focus({preventScroll:true});if(f.sel&&typeof n.setSelectionRange==='function')n.setSelectionRange(f.sel[0],f.sel[1]);}catch(_){}return root.ownerDocument.activeElement===n;}
+function restoreView(root,s){if(!root||!s)return;const win=root.ownerDocument.defaultView,doc=root.ownerDocument,hash=win.location.hash,seq=++viewSeq;
+ openDetails(root,s);pressTabs(root,s);
+ for(const[tag,k,l,t]of s.scrolled){const n=keyed(root,tag,true).get(k);if(n){n.scrollLeft=l;n.scrollTop=t;}}
+ let focused=focusKept(root,s);win.scrollTo(s.x,targetY(root,s,win));
+ // Parts filled after the screen (lists read once per publication, panels) can still grow the page: the position and the focus are
+ // put back for 1.5 s (30 ticks of 50 ms) unless the user scrolls or presses something, the screen changes or it is drawn again.
+ let user=false;const stop=()=>{user=true;},ev=['wheel','touchstart','pointerdown','keydown'];for(const e of ev)win.addEventListener(e,stop,{capture:true,passive:true,once:true});
+ let ticks=0;const end=()=>{for(const e of ev)win.removeEventListener(e,stop,{capture:true});};
+ const settle=()=>{if(user||seq!==viewSeq||!root.isConnected||win.location.hash!==hash||++ticks>VIEW_SETTLE_TICKS){end();return;}
+  if(!focused&&(doc.activeElement===doc.body||!doc.activeElement)){openDetails(root,s);focused=focusKept(root,s);}
+  const y=targetY(root,s,win);if(Math.abs(win.scrollY-y)>1||Math.abs(win.scrollX-s.x)>1)win.scrollTo(s.x,y);win.setTimeout(settle,50);};
+ win.setTimeout(settle,50);}
 
 // ---------- re-judging freshness as time passes (no network) ----------
 function rowBounds(p,file){const out=[];if(!object(p)||!finite(p.stale_after_seconds))return out;const ttl=p.stale_after_seconds*1000;
@@ -208,6 +263,6 @@ function attach(win,h={}){view=win;hooks=h||{};current();
  // A screen the user opens is a normal screen open: the device price guard of a refresh ends before the app draws it (capture).
  win.addEventListener('hashchange',unguardPrices,true);
  return api;}
-const api=Object.freeze({EVENT,LISTS,pricesGuarded:()=>guarded!==null,attach,load,list,shares,financials,refresh,rejudge,status,readText,publication,quiet:()=>quiet,last:()=>Object.freeze({...last})});
+const api=Object.freeze({EVENT,LISTS,pricesGuarded:()=>guarded!==null,attach,load,list,shares,financials,refresh,rejudge,status,readText,publication,captureView,restoreFields,restoreView,quiet:()=>quiet,last:()=>Object.freeze({...last})});
 return api;
 });
