@@ -22,8 +22,10 @@ def build_public_cockpit(out: Path, *, sec_m2_candidate=None) -> Path:
     result = build(out, bundle=bundle, sec_m2_candidate=sec_m2_candidate)
     assets = Path(__file__).resolve().parents[1] / 'src/investment_system/product/web_assets'
     # Licence texts for the vendored chart renderer (lightweight-charts 5.2.1), pinned by the guard.
+    # Self-hosted OFL fonts (IA-11): WOFF2 subsets and their licence texts, also pinned by exact name and hash.
     for name in ('manifest.json', 'icon-192.png', 'icon-512.png', 'lightweight-charts-5.2.1.LICENSE.txt',
-                 'lightweight-charts-5.2.1.NOTICE.txt', 'third-party-notices.txt'):
+                 'lightweight-charts-5.2.1.NOTICE.txt', 'third-party-notices.txt',
+                 'jua-regular-ksx1001.woff2', 'gaegu-regular-ksx1001.woff2', 'jua-OFL.txt', 'gaegu-OFL.txt'):
         shutil.copyfile(assets / name, out / name)
     # Price-free Universe504 code list for the Google sheet Universe tab (validated by the guard).
     from investment_system.universe.universe_codes import FILENAME as UNIVERSE_CODES, public_payload
