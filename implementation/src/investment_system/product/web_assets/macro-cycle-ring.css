@@ -1,0 +1,51 @@
+/* Macro cycle rings (macro-cycle-ring.js; FRONTEND_INTERACTION_CONTRACT_20261019 §4-4, §4-6). Concept diagram on the theme.css
+   tokens: ink cells, yellow-marker outer band = a published estimated interval (only when one exists), dashed purple pen inner
+   band = the user's own estimate. Every layer also has a text label, so nothing depends on colour alone. Class-based only
+   (CSP style-src 'self'). The ring area takes horizontal drags and leaves vertical movement to page scroll (touch-action: pan-y). */
+.cycle-root { overflow-wrap: anywhere; }
+.cycle-root h3 { margin: 4px 0; }
+.cycle-root h4 { margin: 10px 0 4px; font-size: var(--fs-m, 15px); }
+.cycle-switch, .cycle-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+.cycle-switch { margin: 8px 0 12px; }
+.cycle-switch [role="tab"], .cycle-tabs [role="tab"] { min-height: 40px; padding: 6px 12px; border: var(--sketch, 2px) solid var(--line-strong, #6f6f6f); border-radius: 999px; background: var(--card, #fff); color: var(--ink, #161616); font: inherit; cursor: pointer; }
+.cycle-switch [aria-selected="true"], .cycle-tabs [aria-selected="true"] { background: var(--hl-soft, #fff6cc); border-color: var(--ink, #161616); font-weight: 800; }
+.cycle-switch [role="tab"]:focus-visible, .cycle-tabs [role="tab"]:focus-visible, .cycle-nav button:focus-visible, .cycle-detail:focus-visible { outline: 3px solid var(--focus, #161616); outline-offset: 2px; }
+.cycle-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.cycle-layout > * { min-width: 0; }
+@media (min-width: 900px) {
+  .cycle-layout { grid-template-columns: minmax(0, 360px) minmax(0, 1fr); grid-template-areas: "fig state" "fig evidence" "fig detail" "user detail" ". detail"; align-items: start; column-gap: 24px; }
+  .cycle-figure { grid-area: fig; } .cycle-state { grid-area: state; } .cycle-detail { grid-area: detail; } .cycle-evidence-box { grid-area: evidence; } .cycle-user-box { grid-area: user; }
+}
+.cycle-figure { margin: 0; }
+.cycle-drag { touch-action: pan-y; user-select: none; -webkit-user-select: none; cursor: grab; max-width: 340px; margin: 0 auto; }
+.cycle-drag:active { cursor: grabbing; }
+.cycle-svg { display: block; width: 100%; height: auto; }
+.cycle-cell { fill: var(--soft, #f4f3ef); stroke: var(--ink, #161616); stroke-width: 1.4; cursor: pointer; }
+.cycle-cell.is-focus { fill: var(--hl-soft, #fff6cc); stroke-width: 2.6; }
+.cycle-tick { stroke: var(--line-strong, #6f6f6f); stroke-width: 1; pointer-events: none; }
+.cycle-label { fill: var(--ink, #161616); font: 700 13px var(--font-display, system-ui, sans-serif); pointer-events: none; }
+.cycle-center { fill: var(--ink, #161616); font: 800 18px var(--font-display, system-ui, sans-serif); pointer-events: none; }
+.cycle-center-sub { fill: var(--muted, #4a4a4a); font: 600 11px var(--font-sans, system-ui, sans-serif); pointer-events: none; }
+.cycle-pin { fill: var(--ink, #161616); pointer-events: none; }
+.cycle-interval { fill: var(--hl, #ffe45c); stroke: var(--ink, #161616); stroke-width: 1.4; pointer-events: none; }
+.cycle-user-arc { fill: none; stroke: var(--pen, #7a4cc2); stroke-width: 2.4; stroke-dasharray: 5 4; pointer-events: none; }
+.cycle-nav { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 8px; margin-top: 8px; }
+.cycle-nav > button { min-width: 44px; min-height: 44px; border: var(--sketch, 2px) solid var(--ink, #161616); border-radius: 999px; background: var(--card, #fff); color: var(--ink, #161616); font: 800 16px var(--font-sans, system-ui, sans-serif); cursor: pointer; }
+.cycle-tabs { justify-content: center; }
+.cycle-list { margin: 4px 0; padding-left: 18px; }
+.cycle-list li { margin: 4px 0; }
+.cycle-evidence { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px 16px; }
+@media (min-width: 600px) { .cycle-evidence { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.cycle-conds { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin: 8px 0; }
+.cycle-conds > div { border: 1px solid var(--line, #d4d2ca); border-radius: 8px; padding: 6px; display: flex; flex-direction: column; gap: 2px; font-size: var(--fs-s, 13px); }
+.cycle-conds span { color: var(--muted, #4a4a4a); }
+.cycle-detail details { margin: 6px 0; }
+.cycle-detail summary { cursor: pointer; font-weight: 700; }
+.cycle-user { border: var(--sketch, 2px) dashed var(--pen, #7a4cc2); border-radius: 10px; padding: 8px 10px; margin: 0; min-width: 0; }
+.cycle-user legend { color: var(--pen, #7a4cc2); font-weight: 800; padding: 0 4px; }
+.cycle-user-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0; }
+.cycle-user-row label, .cycle-user-note { display: flex; flex-direction: column; gap: 2px; min-width: 0; font-size: var(--fs-s, 13px); }
+.cycle-user-note input, .cycle-user select, .cycle-group select { max-width: 100%; min-height: 36px; }
+.cycle-user-note { margin: 6px 0; }
+.cycle-user-note input { width: 100%; box-sizing: border-box; }
+.cycle-group { display: inline-flex; flex-direction: column; gap: 2px; max-width: 100%; margin-bottom: 6px; }

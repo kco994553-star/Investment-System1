@@ -9,7 +9,8 @@
    3. TARGET outside the Universe (TSE 8035, KRX 042700) only in their own labelled list: never in the table, the ranking or the
       candidates.
    4. The TARGET filter only hides rows: the rank column never changes; the in-filter rank is shown only as '포트폴리오 내 순위'.
-   5. N10 / N15 / N20 = the top-N of the official order after the approved eligibility (recomputed here independently), stable
+   5. N10 / N15 / N20 = the first N of the official order after the approved eligibility, the subgroup cap and the PLAYBOOK §16
+      group cap at 100/N (recomputed here independently), with the per-N §16 feasibility and the issuer check shown, stable
       across navigation, '자료 새로고침' with a new publication object and a reload + the same synthetic read.
    6. The footnote / counts data attributes name the populations. Before any price: no official rank, no selection.
    7. Performance: the S06 paint of all Universe rows and a fresh compute of the official result are timed and reported. */
@@ -30,17 +31,24 @@ const official = (page) => page.evaluate(async () => {
   const rows = Object.fromEntries(Object.entries(S.rows).map(([k, r]) => [k, { ticker: r.ticker, code: r.code, uc: r.universe_code ?? 'MISSING', rank: r.rank, qg: r.qg_reference ? r.qg_reference.order : null, v: r.primary.v, total: r.primary.total, q: r.primary.q, g: r.primary.g, gate: r.primary.value_trap_gate === true }]));
   // Approved eligibility, recomputed here on the OFFICIAL default profile (balanced, gate on) with the same identities and quotes,
   // whatever the S06 preset: official rank (Universe row), Q·G·V present, no gate, net debt/EBITDA < 3 and interest coverage >= 3
-  // with both metrics present (NA excluded, owner decision 2026-10-15), at most 4 per #20 subgroup, then the first N.
+  // with both metrics present (NA excluded, owner decision 2026-10-15), at most 4 per #20 subgroup, then per N the first N whose
+  // PLAYBOOK §16 sector group (semiconductors + semiconductor equipment one group) stays within 40% at 100/N each.
   const D = QgvScores.compute({ identities: R.identities, v2Inputs: inputs, quotes: structuredClone(R.quotes), preset: 'balanced', gate: true, official: R.official });
-  const order = Object.entries(D.rows).filter(([, r]) => Number.isInteger(r.rank) && typeof r.universe_code === 'string').sort((a, b) => a[1].rank - b[1].rank), per = {}, picked = [];
+  const order = Object.entries(D.rows).filter(([, r]) => Number.isInteger(r.rank) && typeof r.universe_code === 'string').sort((a, b) => a[1].rank - b[1].rank), eligible = [];
   for (const [id, x] of order) {
     const r = { ticker: x.ticker, code: x.code, q: x.primary.q, g: x.primary.g, v: x.primary.v, gate: x.primary.value_trap_gate === true };
     const m = inputs.records[r.code]?.metrics || {}, sub = PlaybookEngine.sectorFor(PlaybookConfigDefaults, r.ticker, null, inputs.records[r.code]?.sic ?? null).sector;
     if (![r.q, r.g, r.v].every(fin) || r.gate || !fin(m.net_debt_to_ebitda) || !fin(m.interest_coverage) || m.net_debt_to_ebitda >= 3 || m.interest_coverage < 3) continue;
-    if (sub && (per[sub] || 0) >= 4) continue;if (sub) per[sub] = (per[sub] || 0) + 1;picked.push(id);if (picked.length === 20) break; }
+    eligible.push([id, sub || null, sub === 'semiconductors' || sub === 'semi_equipment' ? 'semiconductor_combined' : sub || null]); }
+  const pickedN = {};
+  for (const n of [10, 15, 20]) { const per = {}, grp = {}, out = [];
+    for (const [id, sub, group] of eligible) { if (out.length === n) break;if (sub && (per[sub] || 0) >= 4) continue;if (group && ((grp[group] || 0) + 1) * (100 / n) > 40 + 1e-9) continue;
+      if (sub) per[sub] = (per[sub] || 0) + 1;if (group) grp[group] = (grp[group] || 0) + 1;out.push(id); }
+    pickedN['N' + n] = out; }
+  const picked = pickedN.N20;
   return { same: S === R.computed, sameAgain: (await QgvScores.pageResult(window, { v2Inputs: inputs, catalog: await deviceCatalog().catch(() => null), identities: identityCompanies })) === R, rows, codes: codes.length,
     byCode: { ...S.official.by_code }, outside: [...S.official.outside], tin: S.official.target_in_universe.map((x) => x.company_id), ranked: S.official.ranked, targets: identityCompanies.map((c) => c.company_id),
-    vPanel: QgvScores.vCoverage(R, inputs).v.full, vByCode: codes.filter((c) => fin(QgvScores.codeRow(S, c)?.primary.v)).length, picked, officialRank: Object.fromEntries(Object.entries(D.rows).map(([k, r]) => [k, r.rank])), profile: S.profile.id, officialProfile: D.profile.id };
+    vPanel: QgvScores.vCoverage(R, inputs).v.full, vByCode: codes.filter((c) => fin(QgvScores.codeRow(S, c)?.primary.v)).length, picked, pickedN, officialRank: Object.fromEntries(Object.entries(D.rows).map(([k, r]) => [k, r.rank])), profile: S.profile.id, officialProfile: D.profile.id };
 });
 const attrs = (page, sel) => page.evaluate((s) => { const n = document.querySelectorAll(s);return n.length === 1 ? Object.fromEntries([...n[0].attributes].filter((a) => a.name.startsWith('data-')).map((a) => [a.name, a.value])) : { __count: n.length }; }, sel);
 const tableRows = (page) => page.locator('[data-leaderboard-table] tbody tr[data-leaderboard-row]').evaluateAll((rs) => rs.map((r) => ({ id: r.dataset.leaderboardRow, ticker: r.querySelector('a')?.textContent, rank: r.querySelector('[data-leaderboard-rank]')?.dataset.leaderboardRank ?? null, prank: r.querySelector('[data-leaderboard-portfolio-rank]')?.textContent ?? null })));
@@ -120,12 +128,22 @@ async function settle(page) { await page.waitForFunction(() => typeof leaderPage
         // 5. Model portfolio N10 / N15 / N20.
         phase = 'MODEL';await page.locator('[data-model-portfolio] > summary').click();const m1 = await modelRows(page);
         assert.equal(await page.locator('[data-model-portfolio]').getAttribute('data-model-portfolio'), 'READY');
-        assert.deepEqual(m1.map((x) => x[0]), X.picked, 'N20 = the first eligible rows of the official order (independent recomputation)');
-        for (const [n, k] of [[10, 'N10'], [15, 'N15'], [20, 'N20']]) assert.deepEqual(m1.filter((x) => x[2].split(' ').includes(k)).map((x) => x[0]), X.picked.slice(0, n), k + ' = top-' + n + ' eligible');
+        const union = [...new Set([...X.pickedN.N10, ...X.pickedN.N15, ...X.pickedN.N20])].sort((a, b) => X.officialRank[a] - X.officialRank[b]);
+        assert.deepEqual(m1.map((x) => x[0]), union, 'table = the N sets in official rank order (independent recomputation)');
+        for (const k of ['N10', 'N15', 'N20']) {
+          assert.deepEqual(m1.filter((x) => x[2].split(' ').includes(k)).map((x) => x[0]), X.pickedN[k], k + ' = first eligible under the subgroup and §16 caps');
+          const a = await attrs(page, '[data-model-limits="' + k + '"]'), n = Number(k.slice(1)), short = (n - X.pickedN[k].length) * 100 / n;
+          assert.equal(a['data-model-feasible'], X.pickedN[k].length < n ? 'SHORTFALL' : a['data-model-group-status'] === 'UNVERIFIED' ? 'UNVERIFIED' : 'FEASIBLE', k);assert.equal(a['data-model-shortfall-pct'], short.toFixed(2), k);
+          for (const v of Object.values(JSON.parse(a['data-model-group-pct']))) assert.ok(v <= 40 + 1e-9, k + ' group ' + v);
+          assert.match(await page.locator('[data-model-limits="' + k + '"]').textContent(), new RegExp('^' + k + ' · (16절 한도 아래 구성 가능 · |구성 불가 · 부족 비중 ' + short.toFixed(2).replace('.', '\\.') + '% \\(' + X.pickedN[k].length + '/' + n + ' · 채우지 않음 · 비중 재조정 없음\\) · 원인: |' + n + '종목 구성 · 업종 묶음 40% 확인 불가 · )'));
+          const iss = await attrs(page, '[data-model-issuer="' + k + '"]');assert.equal(iss['data-model-issuer-status'], 'RECOMMENDATION_DECISION_NEEDED');assert.equal(iss['data-model-issuer-applied'], 'false');
+          assert.match(await page.locator('[data-model-issuer="' + k + '"]').textContent(), new RegExp('^' + k + ' · 같은 발행사 합산 비중 \\(권장안 · 결정 필요 · 선정 불변\\): '));
+        }
+        assert.ok(['PASS', 'UNVERIFIED', 'FAIL', 'CORE_SHORT', 'INCOMPLETE'].includes(await page.locator('[data-model-tier-check]').getAttribute('data-model-tier-check')));
         for (const [id, rank] of m1) { assert.equal(rank, String(X.officialRank[id]));assert.ok(!X.outside.includes(id) && R[id].qg === null, id + ' eligible'); }
-        assert.equal(await page.locator('[data-model-rules]').getAttribute('data-model-rules'), 'OFFICIAL_RANK AXES_50 VALUE_TRAP_GATE FINANCIAL_SAFETY FINANCIAL_SAFETY_NA SUBGROUP_MAX_4');
+        assert.equal(await page.locator('[data-model-rules]').getAttribute('data-model-rules'), 'OFFICIAL_RANK AXES_50 VALUE_TRAP_GATE FINANCIAL_SAFETY FINANCIAL_SAFETY_NA SUBGROUP_MAX_4 LIMITS_16');
         { const ex = JSON.parse(await page.locator('[data-model-excluded]').getAttribute('data-model-excluded'));assert.deepEqual(Object.keys(ex), ['AXES_50', 'VALUE_TRAP_GATE', 'FINANCIAL_SAFETY', 'FINANCIAL_SAFETY_NA', 'SUBGROUP_MAX_4']);
-          assert.match(await page.locator('[data-model-excluded]').textContent(), new RegExp('재무 안전 지표 NA ' + ex.FINANCIAL_SAFETY_NA + ' · '));assert.match(await page.locator('[data-model-not-applied]').textContent(), /^미적용 · 소유자 결정 필요: 16절 비중 한도 · 핵심\/일반 등급 · 10-K 숫자 대조 · /); }
+          assert.match(await page.locator('[data-model-excluded]').textContent(), new RegExp('재무 안전 지표 NA ' + ex.FINANCIAL_SAFETY_NA + ' · '));assert.match(await page.locator('[data-model-not-applied]').textContent(), /^미적용 · 소유자 결정 필요: 10-K 숫자 대조 · 하위 묶음·16절 한도 밖의 업종 분산\(BT-14\) · 같은 발행사 한 자리\(권장안\) · /); }
         assert.equal(await page.locator('[data-model-counts]').getAttribute('data-model-profile'), X.officialProfile);assert.equal(X.officialProfile, 'qgv-v2/balanced/gate-on');
         // A different device preset/gate on S06 changes the S06 ranking but never the N sets (official default profile).
         phase = 'MODEL_PRESET';await page.locator('[data-qgv2-preset="growth"]').click();await page.locator('[data-qgv2-preset="growth"][aria-pressed="true"]').waitFor();
@@ -181,7 +199,7 @@ async function settle(page) { await page.waitForFunction(() => typeof leaderPage
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'no page-wide horizontal scroll');
         assert.equal(await page.evaluate(() => Object.keys(localStorage).filter((k) => /price|quote|model/i.test(k) && /\d{2}\.\d/.test(localStorage.getItem(k) || '')).length), 0, 'no price or selection stored');
         assert.deepEqual(external, []);assert.equal(errors, 0);
-        console.log('INFO ' + width + ' codes=' + codes + ' ranked=' + ranked.length + ' qg=' + ids.filter((id) => R[id].qg !== null).length + ' target_in_universe=' + X.tin.length + ' outside=' + X.outside.join(',') + ' N20=' + m1.length + ' (N10 ' + Math.min(10, m1.length) + ', N15 ' + Math.min(15, m1.length) + ')');
+        console.log('INFO ' + width + ' codes=' + codes + ' ranked=' + ranked.length + ' qg=' + ids.filter((id) => R[id].qg !== null).length + ' target_in_universe=' + X.tin.length + ' outside=' + X.outside.join(',') + ' N20=' + X.pickedN.N20.length + ' (N10 ' + X.pickedN.N10.length + ', N15 ' + X.pickedN.N15.length + ')');
         console.log('PERF ' + width + ' paint_ms=' + t.paint.toFixed(1) + ' compute_ms=' + t.compute.toFixed(1) + ' rows=' + t.rows);
         pass++;console.log('PASS D12 Universe leaderboard ' + width + ' (synthetic fixture + synthetic prices)');
       } catch (e) { fail++;console.log('FAIL D12 Universe leaderboard ' + width + ' ' + phase + ' · ' + (e && e.message ? e.message.split('\n')[0] : e)); } finally { await context.close(); }

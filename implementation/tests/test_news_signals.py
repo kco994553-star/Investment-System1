@@ -320,8 +320,10 @@ def test_merge_relevance_dedupe_grouping_and_8k_relation():
     assert dividend['relation'] == 'NONE' and dividend['related_8k_accession'] is None and dividend['occurrence'] == 'NEW'
     assert p['sources']['IR']['nvda']['feed_status'] == 'UNVERIFIED_URL'
     assert p['sources']['IR']['googl'] == {'state': 'NOT_AVAILABLE', 'acquired_at': None, 'reason_code': 'NO_OFFICIAL_FEED_KNOWN',
-                                           'feed_status': 'NOT_AVAILABLE'}
-    assert p['sources']['GDELT']['asml'] == {'state': 'NOT_AVAILABLE', 'acquired_at': None, 'reason_code': 'NOT_COLLECTED'}
+                                           'feed_status': 'NOT_AVAILABLE', 'last_result': None, 'last_result_code': None}
+    # asml was not in this run's collection (and no failure was given): NOT_RUN / NOT_COLLECTED, never success
+    assert p['sources']['GDELT']['asml'] == {'state': 'NOT_AVAILABLE', 'acquired_at': None, 'reason_code': 'NOT_COLLECTED',
+                                             'last_result': 'NOT_RUN', 'last_result_code': 'NOT_COLLECTED'}
     body = ns.encode(p).decode()
     for forbidden in ('never be stored', 'socialimage', 'img.example.com', 'price', 'description'):
         assert forbidden not in body
@@ -387,7 +389,32 @@ def bad_payloads():
         lambda p: p['sources']['IR']['googl'].update(feed_status='VERIFIED'), lambda p: p['sources']['GDELT'].pop('asml'),
         lambda p: p['sources']['GDELT']['nvda'].update(state='STALE'), lambda p: p['items'].append(dict(p['items'][0])),
         lambda p: p.update(state='STALE'), lambda p: p['items'][0].update(group_id='news:x'),
+        # schema 2 refresh outcome: forged success, missing failure reason, inconsistent summaries
+        lambda p: p['refresh'].update(result='UPDATED'), lambda p: p.update(reason_codes=[]),
+        lambda p: p['sources']['GDELT']['asml'].update(last_result='NO_NEW_ITEMS', last_result_code=None),
+        lambda p: p['sources']['GDELT']['nvda'].update(last_result_code='HTTP_429'),
+        lambda p: p['sources']['GDELT']['asml'].update(last_result='FAILED', last_result_code='bad code'),
+        lambda p: p['sources']['IR']['googl'].update(last_result='FAILED', last_result_code='HTTP_FAILED'),
+        lambda p: p['refresh']['sources']['GDELT'].update(new_items=-1), lambda p: p['refresh']['sources']['IR'].update(new_items=0),
+        lambda p: p['refresh']['sources']['GDELT'].update(last_success_at=None),
+        lambda p: p['refresh']['sources']['GDELT'].update(items_carried_from='2026-10-11T22:00:00+00:00'),
+        lambda p: p['refresh']['sources']['GDELT']['companies'].update(failed=1),
+        lambda p: p['refresh'].update(attempted_at='2026-10-11T22:00:00+00:00'), lambda p: p.pop('refresh'),
+        lambda p: p.update(schema_version=3),
     ]
+
+
+def as_v1(p):
+    """The same payload as published before schema 2 (no run results, no refresh, base reason codes)."""
+    q = copy.deepcopy(p)
+    q['schema_version'] = 1
+    q.pop('refresh')
+    q['reason_codes'] = [] if q['state'] == 'LIVE' else ['STALE_INPUT'] if q['state'] == 'STALE' else ['NO_ELIGIBLE_INPUT']
+    for entries in q['sources'].values():
+        for entry in entries.values():
+            entry.pop('last_result')
+            entry.pop('last_result_code')
+    return q
 
 
 @pytest.mark.parametrize('mutate', bad_payloads())
@@ -396,6 +423,89 @@ def test_validator_fails_closed(mutate):
     mutate(p)
     with pytest.raises(ValueError, match='NEWS_SIGNALS_INVALID'):
         ns.require_news_signals(p)
+
+
+def test_schema_1_copies_stay_readable_and_are_carried_into_schema_2():
+    p, _ = payload()
+    v1 = ns.require_news_signals(as_v1(p))
+    assert v1['schema_version'] == 1 and 'refresh' not in v1
+    bad = as_v1(p)
+    bad['refresh'] = None
+    with pytest.raises(ValueError):
+        ns.require_news_signals(bad)
+    later = NOW + timedelta(hours=1)
+    q = ns.merge(v1, {}, as_of=later, failures={('GDELT', ns.GDELT_COMPANIES[0]): ('FAILED', 'HTTP_429')})
+    assert q['schema_version'] == ns.SCHEMA_VERSION == 2 and {i['link'] for i in q['items']} == {i['link'] for i in p['items']}
+
+
+# --- refresh outcome (schema 2) --------------------------------------------------------------------
+
+def test_company_results_updated_no_new_items_failed_not_run_and_carried_items():
+    p, _ = payload()
+    later = NOW + timedelta(hours=20)
+    run = {'GDELT': {'nvda': {'acquired_at': later - timedelta(minutes=5),
+                              'rows': raw([('Nvidia opens new Taiwan office', 'https://n.example.com/tw', '2026-10-12T10:00:00')])},
+                     'googl': {'acquired_at': later - timedelta(minutes=4), 'rows': raw(GDELT_ROWS['googl'])}},  # nothing new
+           'IR': {'msft': {'acquired_at': later - timedelta(minutes=3), 'rows': []}}}  # answered, empty feed
+    failures = {('GDELT', 'amd'): ('FAILED', 'HTTP_429')}
+    failures.update({('GDELT', cid): ('NOT_RUN', 'HTTP_429') for cid in ns.GDELT_COMPANIES if cid not in ('amd', 'nvda', 'googl')})
+    failures.update({('IR', cid): ('FAILED', 'REDIRECT_REJECTED' if cid == 'amzn' else 'HTTP_FAILED') for cid in ns.IR_FEEDS if cid != 'msft'})
+    q = ns.merge(p, run, as_of=later, failures=failures)
+    g, ir = q['sources']['GDELT'], q['sources']['IR']
+    assert (g['nvda']['last_result'], g['nvda']['last_result_code']) == ('UPDATED', None)
+    assert (g['googl']['last_result'], g['googl']['last_result_code']) == ('NO_NEW_ITEMS', None)
+    assert (g['amd']['last_result'], g['amd']['last_result_code']) == ('FAILED', 'HTTP_429')
+    assert (g['intc']['last_result'], g['intc']['last_result_code']) == ('NOT_RUN', 'HTTP_429')
+    # failed / not run companies keep their previous rows and acquisition time; nothing is restamped as a success
+    assert g['intc']['acquired_at'] == p['sources']['GDELT']['intc']['acquired_at'] and g['intc']['state'] == 'LIVE'
+    assert g['asml']['acquired_at'] is None and g['asml']['last_result'] == 'NOT_RUN'
+    assert {i['link'] for i in p['items']} <= {i['link'] for i in q['items']}
+    assert (ir['msft']['last_result'], ir['nvda']['last_result'], ir['amzn']['last_result_code']) == ('NO_NEW_ITEMS', 'FAILED', 'REDIRECT_REJECTED')
+    assert ir['googl']['last_result'] is None  # no listed feed
+    gs, irs = q['refresh']['sources']['GDELT'], q['refresh']['sources']['IR']
+    assert gs == {'last_attempt_at': ns.instant(later), 'last_success_at': ns.instant(later - timedelta(minutes=4)),
+                  'last_result': 'PARTIAL_FAILED', 'last_result_code': 'HTTP_429',
+                  'items_carried_from': p['sources']['GDELT']['intc']['acquired_at'],
+                  'companies': {'succeeded': 2, 'failed': 1, 'not_run': 16}, 'new_items': 1}
+    assert irs['last_result'] == 'PARTIAL_FAILED' and irs['last_result_code'] == 'HTTP_FAILED'  # first listed failure (amd)
+    assert irs['companies'] == {'succeeded': 1, 'failed': 9, 'not_run': 0} and irs['new_items'] == 0
+    assert irs['items_carried_from'] == p['sources']['IR']['nvda']['acquired_at']
+    assert q['state'] == 'LIVE' and q['refresh']['result'] == 'PARTIAL_FAILED' and q['reason_codes'] == ['REFRESH_PARTIAL_FAILED']
+
+
+def test_all_sources_failed_keeps_items_and_never_reads_as_a_plain_live_refresh():
+    p, _ = payload()
+    later = NOW + timedelta(hours=20)
+    failures = {('GDELT', ns.GDELT_COMPANIES[0]): ('FAILED', 'HTTP_429')}
+    failures.update({('GDELT', cid): ('NOT_RUN', 'HTTP_429') for cid in ns.GDELT_COMPANIES[1:]})
+    failures.update({('IR', cid): ('FAILED', 'HTTP_FAILED') for cid in ns.IR_FEEDS})
+    q = ns.merge(p, {}, as_of=later, failures=failures)
+    assert [i['link'] for i in q['items']] == [i['link'] for i in p['items']]  # every previous item kept
+    assert q['state'] == 'LIVE' and q['reason_codes'] == ['REFRESH_FAILED'] and q['refresh']['result'] == 'FAILED'
+    g = q['refresh']['sources']['GDELT']
+    assert (g['last_result'], g['last_result_code'], g['new_items']) == ('FAILED', 'HTTP_429', 0)
+    assert g['last_success_at'] == max(c['acquired_at'] for c in p['sources']['GDELT'].values() if c['acquired_at'])
+    assert g['last_attempt_at'] == ns.instant(later) and g['companies'] == {'succeeded': 0, 'failed': 1, 'not_run': 18}
+    # past 48h without a success: STALE as before, and the failed refresh is still named
+    r = ns.merge(q, {}, as_of=NOW + timedelta(days=3), failures=failures)
+    assert r['state'] == 'STALE' and r['reason_codes'] == ['STALE_INPUT', 'REFRESH_FAILED']
+    # a build copy (no run) has no refresh record
+    assert ns.merge(None, {}, as_of=NOW)['refresh'] is None and ns.merge(p, {}, as_of=later)['refresh'] is None
+
+
+def test_no_new_items_and_request_failure_are_different_results():
+    p, _ = payload()
+    later = NOW + timedelta(hours=20)
+    quiet = ns.merge(p, {'GDELT': {cid: {'acquired_at': later, 'rows': []} for cid in ns.GDELT_COMPANIES},
+                         'IR': {cid: {'acquired_at': later, 'rows': []} for cid in ns.IR_FEEDS}}, as_of=later, failures={})
+    assert quiet['refresh']['result'] == 'NO_NEW_ITEMS' and quiet['reason_codes'] == []
+    assert all(c['last_result'] == 'NO_NEW_ITEMS' for c in quiet['sources']['GDELT'].values())
+    assert all(s['new_items'] == 0 and s['last_success_at'] == ns.instant(later) and s['items_carried_from'] is None
+               for s in quiet['refresh']['sources'].values())
+    failed = ns.merge(p, {}, as_of=later, failures={(s, cid): ('FAILED', 'HTTP_FAILED') for s in ns.SOURCES
+                                                   for cid in (ns.GDELT_COMPANIES if s == 'GDELT' else ns.IR_FEEDS)})
+    assert failed['refresh']['result'] == 'FAILED' and failed['reason_codes'] == ['REFRESH_FAILED']
+    assert all(s['last_success_at'] != ns.instant(later) for s in failed['refresh']['sources'].values())
 
 
 def test_verified_feed_status_stays_valid():
@@ -493,12 +603,22 @@ def test_tool_failures_never_block_and_previous_paths(tmp_path, capsys):
     assert len([u for u, _ in transport.calls if u.startswith(nf.GDELT_API)]) == 2
     carried = ns.require_news_signals(json.loads((tmp_path / ns.FILENAME).read_text()))
     assert len(carried['items']) == len(json.loads(previous)['items'])
+    first_ok, limited_id, skipped = ns.GDELT_COMPANIES[0], ns.GDELT_COMPANIES[1], ns.GDELT_COMPANIES[2]
+    assert carried['sources']['GDELT'][first_ok]['last_result'] == 'NO_NEW_ITEMS'
+    assert (carried['sources']['GDELT'][limited_id]['last_result'], carried['sources']['GDELT'][limited_id]['last_result_code']) == (
+        'FAILED', 'GDELT_RATE_LIMITED')
+    assert (carried['sources']['GDELT'][skipped]['last_result'], carried['sources']['GDELT'][skipped]['last_result_code']) == (
+        'NOT_RUN', 'GDELT_RATE_LIMITED')
+    assert carried['refresh']['sources']['GDELT']['last_result'] == 'PARTIAL_FAILED' and carried['reason_codes'] == ['REFRESH_PARTIAL_FAILED']
+    assert 'refresh=PARTIAL_FAILED gdelt_result=PARTIAL_FAILED:GDELT_RATE_LIMITED gdelt_added=0 ir_result=NO_NEW_ITEMS ir_added=0' in out
     # every source down, no previous copy: NOT_AVAILABLE file, exit 0
     (tmp_path / ns.FILENAME).unlink()
     dead = Transport({})
     code, out, _, _ = run_tool(tmp_path, capsys, transport=dead, sec=False)
     assert code == 0 and 'ALL_SOURCES_FAILED not_available' in out and 'code=HTTP_FAILED' in out
-    assert json.loads((tmp_path / ns.FILENAME).read_text())['state'] == 'NOT_AVAILABLE'
+    dead_file = json.loads((tmp_path / ns.FILENAME).read_text())
+    assert dead_file['state'] == 'NOT_AVAILABLE' and dead_file['reason_codes'] == ['NO_ELIGIBLE_INPUT', 'REFRESH_FAILED']
+    assert dead_file['refresh']['sources']['GDELT']['last_result'] == 'FAILED' and dead_file['refresh']['sources']['GDELT']['last_success_at'] is None
     # preserve-only: no source requests, previous restated; 404 / failures keep the build copy
     quiet = Transport({})
     code, out, _, _ = run_tool(tmp_path, capsys, previous=opener(200, previous), transport=quiet, live=False, preserve=True)
@@ -512,6 +632,48 @@ def test_tool_failures_never_block_and_previous_paths(tmp_path, capsys):
     with pytest.raises(SystemExit):
         importlib.import_module('news_signals').main(['--out', str(tmp_path), '--bogus'])
     assert capsys.readouterr().out == 'NEWS_SIGNALS ARGUMENTS_INVALID\n'
+
+
+def test_tool_observed_429_run_records_failures_and_keeps_previous_items(tmp_path, capsys):
+    # 2026-10-19 shape: GDELT company 1 answers 429 twice (one retry), companies 2-19 not requested; IR feeds fail.
+    code, out, _, _ = run_tool(tmp_path, capsys)
+    previous = (tmp_path / ns.FILENAME).read_bytes()
+    limited = routes()
+    limited[nf.gdelt_url(ns.GDELT_COMPANIES[0])] = (429, b'')
+    for cid in sorted(ns.IR_FEEDS)[1:]:
+        limited[ns.IR_FEEDS[cid]['url']] = (503, b'')
+    transport = Transport(limited)
+    code, out, transport, clock = run_tool(tmp_path, capsys, previous=opener(200, previous), transport=transport)
+    assert code == 0 and 'source=GDELT company_index=1 code=HTTP_429' in out and 'company_index=19 code=NOT_RUN_HTTP_429' in out
+    assert 'gdelt_collected=0 gdelt_requests=2 gdelt_budget=40' in out
+    assert 'refresh=PARTIAL_FAILED gdelt_result=FAILED:HTTP_429 gdelt_added=0 ir_result=PARTIAL_FAILED:HTTP_FAILED ir_added=0' in out
+    assert 'occurrence_new=' in out and ' new=' not in out
+    p = ns.require_news_signals(json.loads((tmp_path / ns.FILENAME).read_text()))
+    old = json.loads(previous)
+    assert [i['link'] for i in p['items']] == [i['link'] for i in old['items']]
+    g = p['refresh']['sources']['GDELT']
+    assert (g['last_result'], g['last_result_code'], g['companies']) == ('FAILED', 'HTTP_429', {'succeeded': 0, 'failed': 1, 'not_run': 18})
+    assert g['last_success_at'] == old['refresh']['sources']['GDELT']['last_success_at'] == g['items_carried_from']
+    assert p['state'] == 'LIVE' and p['reason_codes'] == ['REFRESH_PARTIAL_FAILED']
+
+
+def test_retry_after_is_honoured_without_extra_requests():
+    url = nf.gdelt_url('nvda')
+    for header, waits, used, ok in (('30', [30.0], 2, True), (None, [nf.RETRY_WAIT], 2, True), ('3', [nf.RETRY_WAIT], 2, True),
+                                    ('120', [], 1, False), ('soon', [nf.RETRY_WAIT], 2, True),
+                                    ('Sun, 11 Oct 2026 22:40:45 GMT', [45.0], 2, True)):
+        answers = iter([nf.NewsResponse(429, b'', url, header), nf.NewsResponse(200, b'{}', url)])
+        clock = Clock()
+        c = client(lambda u, **kw: next(answers), clock)
+        if ok:
+            assert c.get(url, accept='x')[0] == b'{}'
+        else:
+            with pytest.raises(nf.NewsFetchError, match='HTTP_429'):
+                c.get(url, accept='x')
+        assert [w for w in clock.sleeps if w != nf.GDELT_MIN_INTERVAL] == waits and c.used == used, header
+    assert nf.retry_after_seconds('Sun, 11 Oct 2026 22:39:00 GMT', NOW) == 0.0 and nf.retry_after_seconds('x' * 65, NOW) is None
+    # the default transport passes the header through from an HTTP error
+    assert 'retry_after' in nf.NewsResponse.__dataclass_fields__ and nf.MAX_RETRY_AFTER <= 60
 
 
 def test_tool_drops_secret_like_rows(tmp_path, capsys):
@@ -550,7 +712,8 @@ TITLES = [t for rows in list(GDELT_ROWS.values()) + list(IR_ROWS.values()) for t
 @pytest.mark.skipif(NODE is None, reason='node not installed')
 def test_js_reader_matches_python_vectors():
     p, _ = payload()
-    cases = {'valid': p, 'empty': ns.merge(None, {}, as_of=NOW)}
+    cases = {'valid': p, 'empty': ns.merge(None, {}, as_of=NOW), 'v1': as_v1(p),
+             'failed': ns.merge(p, {}, as_of=NOW + timedelta(hours=1), failures={('GDELT', 'amd'): ('FAILED', 'HTTP_429')})}
     for i, mutate in enumerate(bad_payloads()):
         bad = copy.deepcopy(p)
         mutate(bad)
@@ -582,7 +745,7 @@ def test_js_reader_matches_python_vectors():
     assert out.pop('stop') == sorted(ns.STOPWORDS) and out.pop('attribution') == ns.ATTRIBUTION
     assert out.pop('gdelt') == list(ns.GDELT_COMPANIES) and out.pop('irc') == list(ns.IR_COMPANIES)
     assert out.pop('valid') is True
-    assert out.pop('empty') is True
+    assert out.pop('empty') is True and out.pop('v1') is True and out.pop('failed') is True
     assert all(v is False for v in out.values()), out
 
 

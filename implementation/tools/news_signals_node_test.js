@@ -50,3 +50,14 @@ test('display filters narrow or reorder rows only; 실적 joins news earnings an
  assert.equal(ordered.length,rows.length);assert.deepEqual(tiers,[...tiers].sort((a,b)=>['HELD','INTEREST','OTHER','MARKET'].indexOf(a)-['HELD','INTEREST','OTHER','MARKET'].indexOf(b)));
  for(const t of ['HELD','INTEREST','OTHER']){const times=ordered.filter(r=>api.rowTier(r,ctx)===t).map(r=>r.time);assert.deepEqual(times,[...times].sort().reverse());}
  assert.equal(api.rowTier({company_id:null}),'MARKET');assert.equal(api.rowTier(rows[0]),'OTHER');});
+test('refresh outcome: "새 뉴스 없음" (answered) and "최근 갱신 실패" (failed / not requested) are different lines; schema 1 says not recorded',()=>{
+ const failed=fixture.payload(NOW,SEC,{scenario:'GDELT_429'}),utc=v=>v.slice(0,16).replace('T',' ')+' UTC',t=utc(failed.as_of);
+ assert.deepEqual(failed.reason_codes,['REFRESH_PARTIAL_FAILED']);assert.equal(failed.state,'LIVE');assert.equal(failed.items.length,NEWS.items.length);
+ const [g,ir]=api.refreshStatus(failed,{companyIds:['stry']});
+ assert.equal(api.refreshText(ir),'회사 IR · 새 뉴스 없음 · 확인 '+t);
+ assert.equal(api.refreshText(g),'GDELT · 이전 자료 유지 · 마지막 성공 '+utc(failed.refresh.sources.GDELT.last_success_at)+' · 최근 갱신 실패(GDELT 요청 안 함 · HTTP_429, '+t+')');
+ assert.equal(api.refreshText(api.refreshStatus(failed)[0],true),'GDELT · previous items kept · last success '+utc(failed.refresh.sources.GDELT.last_success_at)+' · latest refresh failed (GDELT HTTP_429, '+t+')');
+ const v1=structuredClone(NEWS);v1.schema_version=1;delete v1.refresh;v1.reason_codes=[];for(const e of Object.values(v1.sources))for(const c of Object.values(e)){delete c.last_result;delete c.last_result_code;}
+ assert.equal(api.validate(v1).schema_version,1);assert.ok(api.refreshText(api.refreshStatus(v1)[0]).endsWith('최근 갱신 결과 미기록(이전 형식)'));
+ for(const mutate of [p=>{p.refresh.result='UPDATED';},p=>{p.reason_codes=[];},p=>{p.sources.GDELT.amd.last_result='NO_NEW_ITEMS';p.sources.GDELT.amd.last_result_code=null;}]){
+  const p=structuredClone(failed);mutate(p);assert.throws(()=>api.validate(p),/NEWS_SIGNALS_INVALID/);}});
