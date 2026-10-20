@@ -156,6 +156,33 @@ test('synthetic engine run: official result is recorded, user settings are refus
   assert.equal(H.createBook().append(real, 't').added, 0);
 });
 
+test('device continuity follows the Worker split block; older responses and unconfirmed info are never judged', () => {
+  const E = require(path.join(assets, 'pattern-engine.js')), B = require(path.join(assets, 'chart-bars.js')), Defaults = require(path.join(assets, 'pattern-config-defaults.js'));
+  const view = {ChartBars: B}, s = W.syntheticHistory(), bars = s.bars.slice(0, -1).map(b => ({...b, session_status: 'COMPLETE'}));
+  const daily = R.normalizeBars(W.dailyView(bars, s.timezone)), first = daily[0].start, last = daily.at(-1).end, mid = daily.find((b, i) => i > 150 && new Date(b.start + 'T00:00:00Z').getUTCDay() === 3).start;
+  const data = splitInfo => ({symbol: 'SYNTH', provider: 'Yahoo Finance(비공식)', timezone: s.timezone, readAt: '', bars, splitInfo});
+  const block = (status, splits, price = 'SPLIT_ADJUSTED') => ({split_coverage: {status, from: status === 'CONFIRMED' ? first : null, to: status === 'CONFIRMED' ? last : null},
+    splits: status === 'CONFIRMED' ? splits : null, split_basis: {price, volume: price === 'SPLIT_ADJUSTED' ? 'UNKNOWN' : price, source: 'PROVIDER_CONVENTION'}});
+  assert.equal(W.deviceActions(view, data(null)), null, 'older Worker response: NOT_PROVIDED');
+  assert.deepEqual(W.continuityOf(view, daily, W.deviceActions(view, data(null))).reason_codes, ['PRICE_BASIS_CONTINUITY_UNCONFIRMED', 'CORPORATE_ACTION_EVENTS_NOT_PROVIDED']);
+  for (const status of ['NOT_REPORTED', 'NOT_AVAILABLE', 'INVALID']) assert.equal(W.continuityOf(view, daily, W.deviceActions(view, data(block(status)))).state, 'NOT_JUDGEABLE', status);
+  assert.deepEqual(W.continuityOf(view, daily, W.deviceActions(view, data(block('CONFIRMED', [])))), {state: 'CONFIRMED', reason_codes: []});
+  assert.deepEqual(W.continuityCodes(view, daily, W.deviceActions(view, data(block('CONFIRMED', [])))), []);
+  const split = [{date: mid, numerator: 2, denominator: 1}];
+  assert.deepEqual(W.continuityOf(view, daily, W.deviceActions(view, data(block('CONFIRMED', split)))), {state: 'CONFIRMED', reason_codes: ['SPLIT_IN_WINDOW_PRICE_ADJUSTED']});
+  assert.deepEqual(W.continuityOf(view, daily, W.deviceActions(view, data(block('CONFIRMED', split, 'UNADJUSTED')))).reason_codes, ['CORPORATE_ACTION_IN_WINDOW', 'PRICE_BASIS_UNADJUSTED']);
+  const series = B.normalize({schema: 'private-history/1', interval: '1d', basis: 'RAW_CLOSE', delay_status: 'UNKNOWN', symbol: 'SYNTH', provider: '', currency: '', timezone: s.timezone, read_at: '', bars});
+  const confirmed = W.patternObjects(E.run(series, Defaults, W.deviceActions(view, data(block('CONFIRMED', [])))));
+  assert.ok(confirmed.length > 0 && confirmed.every(o => o.judgeable), 'confirmed none: judgeable');
+  const adjusted = W.patternObjects(E.run(series, Defaults, W.deviceActions(view, data(block('CONFIRMED', split)))));
+  assert.ok(adjusted.some(o => o.judgeable && o.reasons.includes('SPLIT_IN_WINDOW_PRICE_ADJUSTED')), 'adjusted split: judgeable with a note');
+  const raw = W.patternObjects(E.run(series, Defaults, W.deviceActions(view, data(block('CONFIRMED', split, 'UNADJUSTED')))));
+  assert.ok(raw.some(o => o.state === 'NOT_JUDGEABLE' && o.reasons.includes('PRICE_BASIS_UNADJUSTED')), 'unadjusted split: live objects end not judgeable with a reason');
+  assert.ok(adjusted.every(o => !o.reasons.includes('CORPORATE_ACTION_IN_WINDOW')), 'adjusted split: no object ends at the split');
+  assert.equal(W.weeklyView(view, data(block('CONFIRMED', split, 'UNADJUSTED')), W.deviceActions(view, data(block('CONFIRMED', split, 'UNADJUSTED')))).bars.filter(b => b.open === null).length,
+    W.weeklyView(view, data(null)).bars.filter(b => b.open === null).length + 1, 'only the week straddling an unadjusted split becomes NA');
+  assert.deepEqual(W.syntheticActions(series), {status: 'AVAILABLE', covered_from: first, covered_to: last, events: []}, 'synthetic record unchanged');
+});
 test('user-written objects: anchors validated, this-device store, never routed to the pattern history', () => {
   const now = '2026-10-20T00:00:00.000Z', base = {id: 'u-abc123', symbol: 'SYNTH', interval: 'D', price_basis: 'RAW_CLOSE', author: 'USER', text: '', created_at: now, updated_at: now};
   const line = {...base, schema: 'chart-annotation/1', kind: 'LINE', points: [{time: '2025-01-06', price: 100}, {time: '2025-02-03', price: 110}]};

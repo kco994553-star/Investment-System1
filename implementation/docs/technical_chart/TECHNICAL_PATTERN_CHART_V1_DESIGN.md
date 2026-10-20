@@ -321,6 +321,10 @@ Worker 응답(RAM) ─▶ chart-bars ─▶ pattern-engine ─▶ pattern-histor
   - P1-W가 들어오면 분할 효력일을 패턴 창의 경계로 쓴다. 창이 분할일을 가로지르면 `CORPORATE_ACTION_IN_WINDOW`로 판정 불가다. 가격을 다시 계산해 이어 붙이지 않는다.
   - P1-W 전이나 이벤트 조회가 실패한 종목은 창 전체가 연속성 미확인이므로 판정 불가다.
 - 배당은 원시 OHLC 단위를 바꾸지 않으므로 연속성 판정 대상이 아니다. 조정 종가와 섞지 않는 원칙(§7.2)은 그대로다.
+- **P1-W 응답(2026-10-20, 배포 전).** Worker는 `private-history/1`에 선택 필드 `split_coverage {status, from, to}`, `splits`, `split_basis {price, volume, source}`를 더한다. 이 필드가 없는 응답(이전 Worker)은 이벤트 미제공이다.
+  - 상태는 셋으로 나눈다. 확인 불가(`NOT_REPORTED`·`NOT_AVAILABLE`·`INVALID`, 필드 없음), 확인됨·분할 없음(`CONFIRMED`·`splits: []`), 확인됨·분할 있음. 확인 불가를 "분할 없음"으로 읽지 않는다.
+  - 창 안에 분할이 있어도 공급자 가격이 이미 분할 기준으로 맞춰져 있으면(`split_basis.price = SPLIT_ADJUSTED`) 판정하고 `SPLIT_IN_WINDOW_PRICE_ADJUSTED`를 적는다. 원시(`UNADJUSTED`)이거나 기준을 모르면 `CORPORATE_ACTION_IN_WINDOW`로 판정 불가다. 어느 경우에도 가격을 다시 계산하지 않는다.
+  - 거래량 기준이 분할 기준으로 확인되지 않으면 분할을 걸친 주봉 거래량과 거래량 참고는 NA(`VOLUME_BASIS_UNCONFIRMED`)다.
 
 ### 7.4 주봉
 

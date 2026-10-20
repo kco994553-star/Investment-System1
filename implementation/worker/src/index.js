@@ -63,6 +63,19 @@ const MIN_SPACING_MS = 5000;
 const WINDOW_MS = 60_000;
 const LEASE_MS = 30_000;
 const NO_CACHE = { cache: 'no-store', cf: { cacheTtl: 0, cacheEverything: false }, redirect: 'error' };
+// Split-event block (optional, additive to private-history/1). Old clients ignore it; a missing block is never "no split".
+//   split_coverage.status CONFIRMED     the provider answered for every session from..to; `splits` lists all of them ([] = none)
+//                         NOT_REPORTED  events were requested but the provider sent no split block (omission is not "none")
+//                         NOT_AVAILABLE this provider path has no split events (or a row lacked the field)
+//                         INVALID       the provider's split block failed validation
+//   splits is null unless CONFIRMED. Prices are passed through untouched: the Worker never re-adjusts a value.
+//   split_basis states how the provider's own OHLC/volume relate to splits (a declaration per provider, not a measurement).
+const MAX_SPLITS = 64;
+const SPLIT_BASIS = {
+  YAHOO: { price: 'SPLIT_ADJUSTED', volume: 'UNKNOWN', source: 'PROVIDER_CONVENTION' },
+  TIINGO: { price: 'UNADJUSTED', volume: 'UNADJUSTED', source: 'PROVIDER_DOCUMENTATION' },
+  KRX: { price: 'UNADJUSTED', volume: 'UNADJUSTED', source: 'PROVIDER_DOCUMENTATION' },
+};
 
 class Failure extends Error {
   constructor(code, status) { super(code); this.code = code; this.status = status; }
@@ -144,6 +157,44 @@ function sessionStatus(timestamp, regular, readAt) {
   return nowSeconds >= regular.start ? 'IN_PROGRESS' : 'UNKNOWN';
 }
 
+function splitBlock(status, from = null, to = null, splits = null, basis) {
+  return { split_coverage: { status, from: status === 'CONFIRMED' ? from : null, to: status === 'CONFIRMED' ? to : null },
+    splits: status === 'CONFIRMED' ? splits : null, split_basis: { ...basis } };
+}
+
+// Yahoo events.splits is a map; its keys are not dates (repo evidence: key and `date` differ), so only `date` is used.
+function yahooSplits(events, from, to, timezone) {
+  const invalid = () => splitBlock('INVALID', null, null, null, SPLIT_BASIS.YAHOO);
+  if (events === undefined || events === null) return splitBlock('NOT_REPORTED', null, null, null, SPLIT_BASIS.YAHOO);
+  if (typeof events !== 'object' || Array.isArray(events)) return invalid();
+  if (events.splits === undefined || events.splits === null) return splitBlock('NOT_REPORTED', null, null, null, SPLIT_BASIS.YAHOO);
+  if (typeof events.splits !== 'object' || Array.isArray(events.splits)) return invalid();
+  const values = Object.values(events.splits);
+  if (values.length > MAX_SPLITS) return invalid();
+  const splits = [];
+  for (const event of values) {
+    const ok = (x) => typeof x === 'number' && Number.isFinite(x) && x > 0;
+    if (!event || typeof event !== 'object' || !Number.isSafeInteger(event.date) || event.date <= 0 || !ok(event.numerator) || !ok(event.denominator)) return invalid();
+    const date = localDate(event.date * 1000, timezone);
+    if (date < from || date > to || splits.some((s) => s.date === date)) return invalid();
+    splits.push({ date, numerator: event.numerator, denominator: event.denominator });
+  }
+  splits.sort((a, b) => (a.date < b.date ? -1 : 1));
+  return splitBlock('CONFIRMED', from, to, splits, SPLIT_BASIS.YAHOO);
+}
+
+// Tiingo rows carry splitFactor (1 = no split that session). Every row must carry it, else nothing is confirmed.
+function tiingoSplits(rows, from, to) {
+  const splits = [];
+  for (const row of rows) {
+    if (!Object.hasOwn(row, 'splitFactor') || row.splitFactor === null) return splitBlock('NOT_AVAILABLE', null, null, null, SPLIT_BASIS.TIINGO);
+    if (typeof row.splitFactor !== 'number' || !Number.isFinite(row.splitFactor) || row.splitFactor <= 0) return splitBlock('INVALID', null, null, null, SPLIT_BASIS.TIINGO);
+    if (row.splitFactor !== 1) splits.push({ date: row.date.slice(0, 10), numerator: row.splitFactor, denominator: 1 });
+  }
+  if (splits.length > MAX_SPLITS) return splitBlock('INVALID', null, null, null, SPLIT_BASIS.TIINGO);
+  return splitBlock('CONFIRMED', from, to, splits, SPLIT_BASIS.TIINGO);
+}
+
 function normalizeHistory(payload, symbol, range, readAt) {
   const invalid = () => { throw new Failure('YAHOO_FORMAT_CHANGED', 502); };
   const unavailable = () => { throw new Failure('HISTORY_UNAVAILABLE', 404); };
@@ -196,10 +247,12 @@ function normalizeHistory(payload, symbol, range, readAt) {
     };
   });
   if (!hasClose) unavailable();
+  const splitInfo = yahooSplits(result.events, localDate(bars[0].timestamp * 1000, market.timezone),
+    localDate(bars[bars.length - 1].timestamp * 1000, market.timezone), market.timezone);
   return {
     schema: 'private-history/1', provider: 'Yahoo Finance(비공식)', symbol, range, currency: market.currency,
     exchange: meta.exchangeName, timezone: market.timezone, interval: '1d', basis: 'RAW_CLOSE', delay_status: 'UNKNOWN',
-    read_at: new Date(readAt).toISOString(), bars,
+    read_at: new Date(readAt).toISOString(), bars, ...splitInfo,
   };
 }
 
@@ -237,12 +290,12 @@ function fallbackBar(row, day, end, code, adjusted = null) {
     session_status: day < end ? 'COMPLETE' : 'UNKNOWN' };
 }
 
-function fallbackResult(provider, symbol, range, readAt, exchange, bars) {
+function fallbackResult(provider, symbol, range, readAt, exchange, bars, splitInfo) {
   if (!bars.length) throw new Failure('HISTORY_UNAVAILABLE', 404);
   const market = MARKETS.get(symbol);
   return { schema: 'private-history/1', provider, symbol, range, currency: market.currency, exchange,
     timezone: market.timezone, interval: '1d', basis: 'RAW_CLOSE', delay_status: 'UNKNOWN',
-    timestamp_kind: 'PROVIDER_SESSION_LABEL', read_at: new Date(readAt).toISOString(), bars };
+    timestamp_kind: 'PROVIDER_SESSION_LABEL', read_at: new Date(readAt).toISOString(), bars, ...splitInfo };
 }
 
 function providerSecret(env, name) {
@@ -312,7 +365,8 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
   async function history(symbol, range) {
     try {
       return await timed(10_000, 'YAHOO_TIMEOUT', 504, async (signal) => {
-        const response = await fetchImpl(`${YAHOO_ROOT}${symbol}?interval=1d&range=${range}`, {
+        // Split events ride on the same single request (no extra upstream call).
+        const response = await fetchImpl(`${YAHOO_ROOT}${symbol}?interval=1d&range=${range}&events=split`, {
           ...NO_CACHE, method: 'GET', signal, headers: { Accept: 'application/json' },
         });
         if ([401, 403, 429].includes(response.status)) return closeAndFail(response, 'YAHOO_BLOCKED', 502);
@@ -359,7 +413,8 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
             previous = day;
             return fallbackBar(row, day, window.end, 'TIINGO_FORMAT_CHANGED', row.adjClose === undefined ? null : row.adjClose);
           });
-          return fallbackResult('Tiingo EOD', symbol, range, readAt, meta.exchangeCode, bars);
+          return fallbackResult('Tiingo EOD', symbol, range, readAt, meta.exchangeCode, bars,
+            bars.length ? tiingoSplits(rows, bars[0].session_date, bars[bars.length - 1].session_date) : null);
         }
         const bars = [], start = Date.parse(window.start + 'T00:00:00Z'), end = Date.parse(window.end + 'T00:00:00Z');
         // One market-wide response per calendar day. No long-range truncation or cache.
@@ -378,7 +433,8 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
           bars.push(fallbackBar({ open: krxNumber(row.TDD_OPNPRC), high: krxNumber(row.TDD_HGPRC), low: krxNumber(row.TDD_LWPRC),
             close: krxNumber(row.TDD_CLSPRC), volume: krxNumber(row.ACC_TRDVOL) }, day, window.end, 'KRX_FORMAT_CHANGED'));
         }
-        return fallbackResult('KRX OPEN API', symbol, range, readAt, 'KOSPI', bars);
+        // KRX stk_bydd_trd is unadjusted daily data without corporate-action events.
+        return fallbackResult('KRX OPEN API', symbol, range, readAt, 'KOSPI', bars, splitBlock('NOT_AVAILABLE', null, null, null, SPLIT_BASIS.KRX));
       });
     } catch (error) {
       if (error instanceof Failure) throw error;

@@ -121,7 +121,72 @@ test('authenticated daily history preserves raw and adjusted closes with explici
       { timestamp: NOW / 1000 - 86400, open: 100, high: 104, low: 98, close: 101, adjusted_close: 99, volume: 0, session_status: 'COMPLETE' },
       { timestamp: NOW / 1000 - 7200, open: null, high: 106, low: null, close: 105, adjusted_close: 103, volume: 50, session_status: 'IN_PROGRESS' },
     ],
+    split_coverage: { status: 'NOT_REPORTED', from: null, to: null }, splits: null,
+    split_basis: { price: 'SPLIT_ADJUSTED', volume: 'UNKNOWN', source: 'PROVIDER_CONVENTION' },
   });
+});
+
+// Split events (synthetic). The Worker reports what the provider said and never touches a price.
+function splitFixture(events, days = 6) {
+  const value = fixture('NVDA'), result = value.chart.result[0], start = NOW / 1000 - days * 86400;
+  result.meta.currentTradingPeriod.regular = { start: NOW / 1000 + 3600, end: NOW / 1000 + 7200 };
+  result.timestamp = Array.from({ length: days }, (_, i) => start + i * 86400);
+  result.indicators.quote = [{ open: result.timestamp.map(() => 10), high: result.timestamp.map(() => 12), low: result.timestamp.map(() => 9), close: result.timestamp.map(() => 11), volume: result.timestamp.map(() => 100) }];
+  result.indicators.adjclose = [{ adjclose: result.timestamp.map(() => 10.5) }];
+  if (events !== undefined) result.events = events;
+  return value;
+}
+const dayOf = (seconds) => new Date(seconds * 1000).toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
+async function splitRun(events) {
+  const yahoo = splitFixture(events), s = setup({ yahoo });
+  const response = await s.run(s.request('/history?symbol=NVDA&range=1mo'));
+  assert.equal(response.status, 200);
+  return { data: await response.json(), yahoo, calls: s.calls };
+}
+
+test('split events ride on the single Yahoo request and confirmed none is distinct from not reported', async () => {
+  const none = await splitRun({ splits: {} });
+  assert.equal(none.calls.length, 2, 'token check plus one Yahoo request only');
+  assert.ok(none.calls[1].url.endsWith('&events=split'));
+  const ts = none.yahoo.chart.result[0].timestamp;
+  assert.deepEqual(none.data.split_coverage, { status: 'CONFIRMED', from: dayOf(ts[0]), to: dayOf(ts.at(-1)) });
+  assert.deepEqual(none.data.splits, [], 'confirmed: no split in the window');
+  for (const events of [undefined, null, {}, { dividends: {} }]) {
+    const { data } = await splitRun(events);
+    assert.deepEqual(data.split_coverage, { status: 'NOT_REPORTED', from: null, to: null }, JSON.stringify(events));
+    assert.equal(data.splits, null, 'a missing block is never an empty split list');
+  }
+});
+
+test('split inside the window and on the window edges keeps every price untouched (no re-adjustment)', async () => {
+  const ts = splitFixture().chart.result[0].timestamp;
+  for (const at of [ts[0], ts[3], ts.at(-1)]) {
+    // Map key deliberately differs from the event date (repo evidence: keys are not dates).
+    const { data, yahoo } = await splitRun({ splits: { [String(at - 777600)]: { date: at, numerator: 4, denominator: 1, splitRatio: '4:1' } } });
+    assert.equal(data.split_coverage.status, 'CONFIRMED');
+    assert.deepEqual(data.splits, [{ date: dayOf(at), numerator: 4, denominator: 1 }]);
+    const quote = yahoo.chart.result[0].indicators.quote[0];
+    assert.deepEqual(data.bars.map((b) => [b.open, b.high, b.low, b.close, b.adjusted_close, b.volume]), quote.close.map((_, i) => [quote.open[i], quote.high[i], quote.low[i], quote.close[i], 10.5, quote.volume[i]]));
+    assert.equal(data.split_basis.price, 'SPLIT_ADJUSTED');
+    assert.equal(data.split_basis.volume, 'UNKNOWN', 'volume basis is not claimed');
+  }
+});
+
+test('malformed split blocks become INVALID without failing the price response', async () => {
+  const ts = splitFixture().chart.result[0].timestamp;
+  for (const events of [
+    { splits: [] }, { splits: 'x' }, 'x',
+    { splits: { a: { date: ts[2], numerator: 0, denominator: 1 } } },
+    { splits: { a: { date: ts[2], numerator: 2, denominator: null } } },
+    { splits: { a: { date: String(ts[2]), numerator: 2, denominator: 1 } } },
+    { splits: { a: { date: ts[0] - 30 * 86400, numerator: 2, denominator: 1 } } },
+    { splits: { a: { date: ts[2], numerator: 2, denominator: 1 }, b: { date: ts[2], numerator: 2, denominator: 1 } } },
+  ]) {
+    const { data } = await splitRun(events);
+    assert.deepEqual(data.split_coverage, { status: 'INVALID', from: null, to: null }, JSON.stringify(events));
+    assert.equal(data.splits, null);
+    assert.equal(data.bars.length, 6);
+  }
 });
 
 for (const symbol of SYMBOLS) {
@@ -133,7 +198,7 @@ for (const symbol of SYMBOLS) {
     assert.equal(data.symbol, symbol);
     assert.equal(data.currency, ccyOf(symbol));
     assert.equal(data.timezone, tzOf(symbol));
-    assert.equal(s.calls[1].url, `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=1mo`);
+    assert.equal(s.calls[1].url, `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=1mo&events=split`);
   });
 }
 for (const range of RANGES) {
@@ -151,7 +216,7 @@ test('every approved Universe504 symbol routes to authenticated daily history', 
     const response = await s.run(s.request(`/history?symbol=${q(symbol)}&range=5y`));
     assert.equal(response.status, 200, symbol);
     assert.equal((await response.json()).symbol, symbol);
-    assert.equal(s.calls[1].url, `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=5y`);
+    assert.equal(s.calls[1].url, `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=5y&events=split`);
   }
 });
 

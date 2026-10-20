@@ -13,7 +13,7 @@ const WORKER = 'https://synthetic-history.example-account.workers.dev';
 const NOW = Date.UTC(2030, 0, 8, 12);
 const json = value => new Response(JSON.stringify(value), { headers: {'Content-Type':'application/json'} });
 
-function harness(tokenOverrides = {}) {
+function harness(tokenOverrides = {}, events) {
   let record, callback;
   const upstream = [], appRequests = [];
   const storage = {
@@ -32,7 +32,7 @@ function harness(tokenOverrides = {}) {
     const symbol = decodeURIComponent(new URL(url).pathname.split('/').at(-1));
     const currency = symbol.endsWith('.KS')?'KRW':symbol.endsWith('.T')?'JPY':'USD';
     const timezone = symbol.endsWith('.KS')?'Asia/Seoul':symbol.endsWith('.T')?'Asia/Tokyo':'America/New_York';
-    return json({chart:{error:null,result:[{meta:{symbol,currency,exchangeName:'TEST',exchangeTimezoneName:timezone,dataGranularity:'1d'},timestamp:[NOW/1000-86400,NOW/1000-3600],indicators:{quote:[{open:[10,null],high:[12,null],low:[9,null],close:[11,null],volume:[0,null]}],adjclose:[{adjclose:[110,null]}]}}]}});
+    return json({chart:{error:null,result:[{meta:{symbol,currency,exchangeName:'TEST',exchangeTimezoneName:timezone,dataGranularity:'1d'},timestamp:[NOW/1000-86400,NOW/1000-3600],indicators:{quote:[{open:[10,null],high:[12,null],low:[9,null],close:[11,null],volume:[0,null]}],adjclose:[{adjclose:[110,null]}]},...(events===undefined?{}:{events})}]}});
   }});
   const view = {AbortController,setTimeout:()=>1,clearTimeout(){},addEventListener(){},google:{accounts:{oauth2:{
     initTokenClient(options) { callback=options.callback;return {requestAccessToken(){}}; },revoke(_token,done){done();}
@@ -74,4 +74,18 @@ test('Worker owner rejection invalidates the shared app login before Yahoo',asyn
     assert.equal(s.session.state().connected,false);
     assert.equal(s.upstream.length,1);
   } finally {await s.session.disconnect();}
+});
+
+test('Worker split block reaches the app intact; confirmed none, a split and an omitted block stay distinct',async()=>{
+  const at=NOW/1000-3600,day=new Date(at*1000).toLocaleDateString('en-CA',{timeZone:'America/New_York'}),first=new Date((NOW/1000-86400)*1000).toLocaleDateString('en-CA',{timeZone:'America/New_York'});
+  for(const [events,status,splits] of [[{splits:{}},'CONFIRMED',[]],[{splits:{x:{date:at,numerator:2,denominator:1}}},'CONFIRMED',[{date:day,numerator:2,denominator:1}]],[undefined,'NOT_REPORTED',null]]){
+    const s=harness({},events);
+    try {
+      const data=history.validateHistory(await s.session.fetchHistory(WORKER,'NVDA','1y',{approvedOrigin:WORKER}),{symbol:'NVDA',range:'1y'});
+      assert.equal(data.split_coverage.status,status);assert.deepEqual(data.splits,splits);
+      if(status==='CONFIRMED')assert.deepEqual([data.split_coverage.from,data.split_coverage.to],[first,day]);
+      assert.equal(data.split_basis.price,'SPLIT_ADJUSTED');assert.equal(data.bars[0].close,11,'prices untouched');
+      assert.equal(s.upstream.length,2,'split events add no upstream request');assert.ok(s.upstream[1].url.endsWith('&events=split'));
+    } finally {await s.session.disconnect();}
+  }
 });

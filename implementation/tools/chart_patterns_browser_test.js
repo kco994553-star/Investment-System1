@@ -143,6 +143,48 @@ const ORIGIN = new URL(BASE).origin;
       check('no overflow on the device path', await noOverflow(page));
       await context.close();
     }
+
+    // Worker split block (P1-W): confirmed no split -> judgeable; a split with already split-adjusted prices -> judgeable
+    // with a note; unadjusted prices -> not judgeable. Same synthetic bars; the block only adds dates and ratios.
+    for (const [variant, splitAt, price] of [['CONFIRMED_NONE', null, 'SPLIT_ADJUSTED'], ['ADJUSTED_SPLIT', 150, 'SPLIT_ADJUSTED'], ['UNADJUSTED_SPLIT', 150, 'UNADJUSTED']]) {
+      phase = 'DEVICE_SPLITS_' + variant;
+      const context = await browser.newContext({viewport: {width: 390, height: 900}, serviceWorkers: 'block'});
+      await context.route('**/*', route => (route.request().url().startsWith(ORIGIN) ? route.continue() : route.abort()));
+      const {page} = await open(context, '#settings');
+      await page.locator('#device-backup-export').waitFor();
+      await page.evaluate(async ({splitAt, price}) => {
+        await DeviceActual.sheetSettings(window, {schema: 'device-google-sheet-settings/1', enabled: true, spreadsheet_id: '', range: 'Quotes!A1:C22'});
+        localStorage.setItem('investment.web.v1.private-history-origin', InvestmentAppConfig.privateHistoryWorkerOrigin);
+        const synth = ChartWorkbench.syntheticHistory(), bars = synth.bars.slice(0, -1).map(b => ({timestamp: b.timestamp, open: b.open, high: b.high, low: b.low, close: b.close, adjusted_close: null, volume: b.volume, session_status: 'COMPLETE'}));
+        const day = t => new Date(t * 1000).toLocaleDateString('en-CA', {timeZone: 'America/New_York'});
+        const block = {split_coverage: {status: 'CONFIRMED', from: day(bars[0].timestamp), to: day(bars[bars.length - 1].timestamp)},
+          splits: splitAt === null ? [] : [{date: day(bars[splitAt].timestamp), numerator: 2, denominator: 1}], split_basis: {price, volume: price === 'UNADJUSTED' ? 'UNADJUSTED' : 'UNKNOWN', source: 'PROVIDER_CONVENTION'}};
+        const session = {state: () => ({enabled: true, connected: true}), revision: () => 1, setEnabled() {}, subscribe: () => () => {}, async fetchHistory(origin, symbol, range) {
+          return {schema: 'private-history/1', provider: 'Yahoo Finance(비공식)', symbol, range, currency: 'USD', exchange: 'NMS', timezone: 'America/New_York', interval: '1d', basis: 'RAW_CLOSE', delay_status: 'UNKNOWN', read_at: new Date().toISOString(), bars, ...block};
+        }};
+        window.GoogleSheetQuotes = {...GoogleSheetQuotes, sessionFor: () => session}; location.hash = 'technical/nvda';
+      }, {splitAt, price});
+      await page.locator('[data-private-history] [data-history-action="fetch"]:enabled').waitFor();
+      await page.locator('[data-private-history] [data-history-action="fetch"]').click();
+      await page.waitForFunction(() => document.querySelector('[data-chart-workbench]').dataset.source === 'device');
+      await page.locator('[data-cw-timeframe="daily"]').click();
+      await page.waitForFunction(() => document.querySelector('[data-chart-workbench]').dataset.timeframe === 'daily');
+      const status = await page.locator('[data-pattern-status]').evaluate(el => ({code: el.dataset.code, reasons: el.dataset.reasons}));
+      const suit = await page.locator('[data-pattern-suitability] dd').evaluateAll(n => Object.fromEntries(n.map(x => [x.dataset.suitability, x.dataset.code])));
+      const judgement = await page.locator('[data-cw-judgement]').evaluate(el => ({code: el.dataset.code, reasons: el.dataset.reasons}));
+      const notes = await page.locator('[data-pattern-card-fields]').allTextContents();
+      if (variant === 'CONFIRMED_NONE') {
+        check('confirmed no split: device patterns are judgeable', status.code === 'SHOWN' && suit.ACTIONS === 'AVAILABLE' && suit.CONTINUITY === 'CONFIRMED' && judgement.code === 'PRICE_BASIS_CONTINUITY_CONFIRMED' && judgement.reasons === '');
+        check('confirmed no split: cards stay research labelled, not synthetic', await page.locator('[data-pattern-card]').count() > 0 && await page.locator('[data-pattern-synthetic-label]').count() === 0);
+      } else if (variant === 'ADJUSTED_SPLIT') {
+        check('split with adjusted prices: judgeable with a note', status.code === 'SHOWN' && judgement.code === 'PRICE_BASIS_CONTINUITY_CONFIRMED' && judgement.reasons === 'SPLIT_IN_WINDOW_PRICE_ADJUSTED' && suit.CONTINUITY === 'CONFIRMED');
+        check('split with adjusted prices: a card that spans the split carries the note', notes.some(t => t.includes('SPLIT_IN_WINDOW_PRICE_ADJUSTED')));
+      } else {
+        check('split with unadjusted prices: the window is not judged and says why', judgement.code === 'CORPORATE_ACTION_IN_WINDOW' && judgement.reasons.includes('PRICE_BASIS_UNADJUSTED') && suit.CONTINUITY === 'NOT_JUDGEABLE');
+      }
+      check('split info line shows the coverage status ' + variant, (await page.locator('[data-history-splits]').getAttribute('data-history-splits')) === 'CONFIRMED');
+      await context.close();
+    }
   } catch (error) {
     fail++; console.log('FAIL chart patterns ' + phase + ' ' + (error && error.name || 'Error'));
   } finally { await browser.close(); }

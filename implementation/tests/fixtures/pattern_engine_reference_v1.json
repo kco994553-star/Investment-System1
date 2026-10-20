@@ -9014,6 +9014,1243 @@
    "expected_json": "{\"label_ko\": \"연구 기본값 · 투자 유용성 미검증\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"role\": \"RESEARCH_DEFAULT\", \"rule_version\": \"pattern-rules/1\", \"run_mode\": \"OFFICIAL\", \"segments\": [[0, 39], [40, 119]], \"skipped\": {\"ATR_UNAVAILABLE\": 4, \"MISSING_BARS_IN_WINDOW\": 0}, \"structure\": {\"label_ko\": \"고점·저점 상승\", \"reason_code\": null, \"state\": \"HH_HL\"}, \"timeframe\": \"D\", \"transitions\": [{\"anchor_at\": \"2030-01-25\", \"anchor_index\": 14, \"detail\": {\"atr\": 2.639868804664724, \"pivot\": \"HIGH\", \"price\": 112.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-01-30\", \"known_index\": 17, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|HIGH|2030-01-25\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}, {\"anchor_at\": \"2030-02-01\", \"anchor_index\": 19, \"detail\": {\"atr\": 2.6097139735124864, \"pivot\": \"LOW\", \"price\": 102.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-02-06\", \"known_index\": 22, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|LOW|2030-02-01\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}, {\"anchor_at\": \"2030-02-08\", \"anchor_index\": 24, \"detail\": {\"atr\": 2.4251720458130763, \"pivot\": \"HIGH\", \"price\": 110.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-02-13\", \"known_index\": 27, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|HIGH|2030-02-08\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}, {\"anchor_at\": \"2030-02-15\", \"anchor_index\": 29, \"detail\": {\"atr\": 2.550545167947274, \"pivot\": \"LOW\", \"price\": 105.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-02-20\", \"known_index\": 32, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|LOW|2030-02-15\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}, {\"anchor_at\": \"2030-02-22\", \"anchor_index\": 34, \"detail\": {\"atr\": 2.733831452375958, \"pivot\": \"HIGH\", \"price\": 118.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-02-27\", \"known_index\": 37, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|HIGH|2030-02-22\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}, {\"anchor_at\": \"2030-03-22\", \"anchor_index\": 54, \"detail\": {\"atr\": 2.639868804664724, \"pivot\": \"HIGH\", \"price\": 120.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-03-27\", \"known_index\": 57, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|HIGH|2030-03-22\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}, {\"anchor_at\": \"2030-03-29\", \"anchor_index\": 59, \"detail\": {\"atr\": 2.6097139735124864, \"pivot\": \"LOW\", \"price\": 110.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-04-03\", \"known_index\": 62, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|LOW|2030-03-29\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}, {\"anchor_at\": \"2030-04-05\", \"anchor_index\": 64, \"detail\": {\"atr\": 2.4251720458130763, \"pivot\": \"HIGH\", \"price\": 118.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-04-10\", \"known_index\": 67, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|HIGH|2030-04-05\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}, {\"anchor_at\": \"2030-04-12\", \"anchor_index\": 69, \"detail\": {\"atr\": 2.550545167947274, \"pivot\": \"LOW\", \"price\": 113.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-04-17\", \"known_index\": 72, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|LOW|2030-04-12\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}, {\"anchor_at\": \"2030-04-19\", \"anchor_index\": 74, \"detail\": {\"atr\": 2.733831452375958, \"pivot\": \"HIGH\", \"price\": 126.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-04-24\", \"known_index\": 77, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|HIGH|2030-04-19\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}, {\"anchor_at\": \"2030-04-26\", \"anchor_index\": 79, \"detail\": {\"atr\": 2.736509864652798, \"pivot\": \"LOW\", \"price\": 115.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-05-01\", \"known_index\": 82, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|LOW|2030-04-26\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}, {\"anchor_at\": \"2030-05-03\", \"anchor_index\": 84, \"detail\": {\"atr\": 2.6145035498165408, \"pivot\": \"HIGH\", \"price\": 124.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-05-08\", \"known_index\": 87, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|HIGH|2030-05-03\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}, {\"anchor_at\": \"2030-05-10\", \"anchor_index\": 89, \"detail\": {\"atr\": 2.645632523877761, \"pivot\": \"LOW\", \"price\": 117.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-05-15\", \"known_index\": 92, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|LOW|2030-05-10\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}, {\"anchor_at\": \"2030-05-17\", \"anchor_index\": 94, \"detail\": {\"atr\": 2.7154895220149085, \"pivot\": \"HIGH\", \"price\": 128.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-05-22\", \"known_index\": 97, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|HIGH|2030-05-17\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}, {\"anchor_at\": \"2030-05-24\", \"anchor_index\": 99, \"detail\": {\"atr\": 2.661919607710852, \"pivot\": \"LOW\", \"price\": 118.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-05-29\", \"known_index\": 102, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|LOW|2030-05-24\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}, {\"anchor_at\": \"2030-05-31\", \"anchor_index\": 104, \"detail\": {\"atr\": 2.461212807360374, \"pivot\": \"HIGH\", \"price\": 126.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-06-05\", \"known_index\": 107, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|HIGH|2030-05-31\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}, {\"anchor_at\": \"2030-06-07\", \"anchor_index\": 109, \"detail\": {\"atr\": 2.5754263232642174, \"pivot\": \"LOW\", \"price\": 121.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-06-12\", \"known_index\": 112, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|LOW|2030-06-07\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}, {\"anchor_at\": \"2030-06-14\", \"anchor_index\": 114, \"detail\": {\"atr\": 2.7510084448513665, \"pivot\": \"HIGH\", \"price\": 134.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-06-19\", \"known_index\": 117, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|HIGH|2030-06-14\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}]}"
   },
   {
+   "id": "pivots_split_adjusted_one_segment",
+   "operation": "pivots",
+   "input": {
+    "history": {
+     "schema": "private-history/1",
+     "provider": "Yahoo Finance(비공식)",
+     "symbol": "SYNTH1",
+     "range": "5y",
+     "currency": "USD",
+     "exchange": "NMS",
+     "timezone": "America/New_York",
+     "interval": "1d",
+     "basis": "RAW_CLOSE",
+     "delay_status": "UNKNOWN",
+     "read_at": "2030-12-31T23:00:00Z",
+     "bars": [
+      {
+       "timestamp": 1894026600,
+       "open": 101.6,
+       "high": 102.1,
+       "low": 101.1,
+       "close": 101.6,
+       "adjusted_close": 101.6,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894113000,
+       "open": 101.6,
+       "high": 103.7,
+       "low": 101.1,
+       "close": 103.2,
+       "adjusted_close": 103.2,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894199400,
+       "open": 103.2,
+       "high": 105.3,
+       "low": 102.7,
+       "close": 104.8,
+       "adjusted_close": 104.8,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894285800,
+       "open": 104.8,
+       "high": 106.9,
+       "low": 104.3,
+       "close": 106.4,
+       "adjusted_close": 106.4,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894372200,
+       "open": 106.4,
+       "high": 108.5,
+       "low": 105.9,
+       "close": 108.0,
+       "adjusted_close": 108.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894631400,
+       "open": 108.0,
+       "high": 108.5,
+       "low": 106.3,
+       "close": 106.8,
+       "adjusted_close": 106.8,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894717800,
+       "open": 106.8,
+       "high": 107.3,
+       "low": 105.1,
+       "close": 105.6,
+       "adjusted_close": 105.6,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894804200,
+       "open": 105.6,
+       "high": 106.1,
+       "low": 103.9,
+       "close": 104.4,
+       "adjusted_close": 104.4,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894890600,
+       "open": 104.4,
+       "high": 104.9,
+       "low": 102.7,
+       "close": 103.2,
+       "adjusted_close": 103.2,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894977000,
+       "open": 103.2,
+       "high": 103.7,
+       "low": 101.5,
+       "close": 102.0,
+       "adjusted_close": 102.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895236200,
+       "open": 102.0,
+       "high": 104.5,
+       "low": 101.5,
+       "close": 104.0,
+       "adjusted_close": 104.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895322600,
+       "open": 104.0,
+       "high": 106.5,
+       "low": 103.5,
+       "close": 106.0,
+       "adjusted_close": 106.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895409000,
+       "open": 106.0,
+       "high": 108.5,
+       "low": 105.5,
+       "close": 108.0,
+       "adjusted_close": 108.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895495400,
+       "open": 108.0,
+       "high": 110.5,
+       "low": 107.5,
+       "close": 110.0,
+       "adjusted_close": 110.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895581800,
+       "open": 110.0,
+       "high": 112.5,
+       "low": 109.5,
+       "close": 112.0,
+       "adjusted_close": 112.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895841000,
+       "open": 112.0,
+       "high": 112.5,
+       "low": 109.7,
+       "close": 110.2,
+       "adjusted_close": 110.2,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895927400,
+       "open": 110.2,
+       "high": 110.7,
+       "low": 107.9,
+       "close": 108.4,
+       "adjusted_close": 108.4,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1896013800,
+       "open": 108.4,
+       "high": 108.9,
+       "low": 106.1,
+       "close": 106.6,
+       "adjusted_close": 106.6,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1896100200,
+       "open": 106.6,
+       "high": 107.1,
+       "low": 104.3,
+       "close": 104.8,
+       "adjusted_close": 104.8,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1896186600,
+       "open": 104.8,
+       "high": 105.3,
+       "low": 102.5,
+       "close": 103.0,
+       "adjusted_close": 103.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1896445800,
+       "open": 103.0,
+       "high": 104.9,
+       "low": 102.5,
+       "close": 104.4,
+       "adjusted_close": 104.4,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1896532200,
+       "open": 104.4,
+       "high": 106.3,
+       "low": 103.9,
+       "close": 105.8,
+       "adjusted_close": 105.8,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1896618600,
+       "open": 105.8,
+       "high": 107.7,
+       "low": 105.3,
+       "close": 107.2,
+       "adjusted_close": 107.2,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1896705000,
+       "open": 107.2,
+       "high": 109.1,
+       "low": 106.7,
+       "close": 108.6,
+       "adjusted_close": 108.6,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1896791400,
+       "open": 108.6,
+       "high": 110.5,
+       "low": 108.1,
+       "close": 110.0,
+       "adjusted_close": 110.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1897050600,
+       "open": 110.0,
+       "high": 110.5,
+       "low": 108.7,
+       "close": 109.2,
+       "adjusted_close": 109.2,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1897137000,
+       "open": 109.2,
+       "high": 109.7,
+       "low": 107.9,
+       "close": 108.4,
+       "adjusted_close": 108.4,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1897223400,
+       "open": 108.4,
+       "high": 108.9,
+       "low": 107.1,
+       "close": 107.6,
+       "adjusted_close": 107.6,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1897309800,
+       "open": 107.6,
+       "high": 108.1,
+       "low": 106.3,
+       "close": 106.8,
+       "adjusted_close": 106.8,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1897396200,
+       "open": 106.8,
+       "high": 107.3,
+       "low": 105.5,
+       "close": 106.0,
+       "adjusted_close": 106.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1897655400,
+       "open": 106.0,
+       "high": 108.9,
+       "low": 105.5,
+       "close": 108.4,
+       "adjusted_close": 108.4,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1897741800,
+       "open": 108.4,
+       "high": 111.3,
+       "low": 107.9,
+       "close": 110.8,
+       "adjusted_close": 110.8,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1897828200,
+       "open": 110.8,
+       "high": 113.7,
+       "low": 110.3,
+       "close": 113.2,
+       "adjusted_close": 113.2,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1897914600,
+       "open": 113.2,
+       "high": 116.1,
+       "low": 112.7,
+       "close": 115.6,
+       "adjusted_close": 115.6,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1898001000,
+       "open": 115.6,
+       "high": 118.5,
+       "low": 115.1,
+       "close": 118.0,
+       "adjusted_close": 118.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1898260200,
+       "open": 118.0,
+       "high": 118.5,
+       "low": 115.5,
+       "close": 116.0,
+       "adjusted_close": 116.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1898346600,
+       "open": 116.0,
+       "high": 116.5,
+       "low": 113.5,
+       "close": 114.0,
+       "adjusted_close": 114.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1898433000,
+       "open": 114.0,
+       "high": 114.5,
+       "low": 111.5,
+       "close": 112.0,
+       "adjusted_close": 112.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1898519400,
+       "open": 112.0,
+       "high": 112.5,
+       "low": 109.5,
+       "close": 110.0,
+       "adjusted_close": 110.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1898605800,
+       "open": 110.0,
+       "high": 110.5,
+       "low": 107.5,
+       "close": 108.0,
+       "adjusted_close": 108.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1898865000,
+       "open": 108.0,
+       "high": 110.1,
+       "low": 107.5,
+       "close": 109.6,
+       "adjusted_close": 109.6,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1898951400,
+       "open": 109.6,
+       "high": 111.7,
+       "low": 109.1,
+       "close": 111.2,
+       "adjusted_close": 111.2,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1899037800,
+       "open": 111.2,
+       "high": 113.3,
+       "low": 110.7,
+       "close": 112.8,
+       "adjusted_close": 112.8,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1899124200,
+       "open": 112.8,
+       "high": 114.9,
+       "low": 112.3,
+       "close": 114.4,
+       "adjusted_close": 114.4,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1899210600,
+       "open": 114.4,
+       "high": 116.5,
+       "low": 113.9,
+       "close": 116.0,
+       "adjusted_close": 116.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1899469800,
+       "open": 116.0,
+       "high": 116.5,
+       "low": 114.3,
+       "close": 114.8,
+       "adjusted_close": 114.8,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1899556200,
+       "open": 114.8,
+       "high": 115.3,
+       "low": 113.1,
+       "close": 113.6,
+       "adjusted_close": 113.6,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1899642600,
+       "open": 113.6,
+       "high": 114.1,
+       "low": 111.9,
+       "close": 112.4,
+       "adjusted_close": 112.4,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1899729000,
+       "open": 112.4,
+       "high": 112.9,
+       "low": 110.7,
+       "close": 111.2,
+       "adjusted_close": 111.2,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1899815400,
+       "open": 111.2,
+       "high": 111.7,
+       "low": 109.5,
+       "close": 110.0,
+       "adjusted_close": 110.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1900074600,
+       "open": 110.0,
+       "high": 112.5,
+       "low": 109.5,
+       "close": 112.0,
+       "adjusted_close": 112.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1900161000,
+       "open": 112.0,
+       "high": 114.5,
+       "low": 111.5,
+       "close": 114.0,
+       "adjusted_close": 114.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1900247400,
+       "open": 114.0,
+       "high": 116.5,
+       "low": 113.5,
+       "close": 116.0,
+       "adjusted_close": 116.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1900333800,
+       "open": 116.0,
+       "high": 118.5,
+       "low": 115.5,
+       "close": 118.0,
+       "adjusted_close": 118.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1900420200,
+       "open": 118.0,
+       "high": 120.5,
+       "low": 117.5,
+       "close": 120.0,
+       "adjusted_close": 120.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1900679400,
+       "open": 120.0,
+       "high": 120.5,
+       "low": 117.7,
+       "close": 118.2,
+       "adjusted_close": 118.2,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1900765800,
+       "open": 118.2,
+       "high": 118.7,
+       "low": 115.9,
+       "close": 116.4,
+       "adjusted_close": 116.4,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1900852200,
+       "open": 116.4,
+       "high": 116.9,
+       "low": 114.1,
+       "close": 114.6,
+       "adjusted_close": 114.6,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1900938600,
+       "open": 114.6,
+       "high": 115.1,
+       "low": 112.3,
+       "close": 112.8,
+       "adjusted_close": 112.8,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1901025000,
+       "open": 112.8,
+       "high": 113.3,
+       "low": 110.5,
+       "close": 111.0,
+       "adjusted_close": 111.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1901284200,
+       "open": 111.0,
+       "high": 112.9,
+       "low": 110.5,
+       "close": 112.4,
+       "adjusted_close": 112.4,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1901370600,
+       "open": 112.4,
+       "high": 114.3,
+       "low": 111.9,
+       "close": 113.8,
+       "adjusted_close": 113.8,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1901457000,
+       "open": 113.8,
+       "high": 115.7,
+       "low": 113.3,
+       "close": 115.2,
+       "adjusted_close": 115.2,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1901543400,
+       "open": 115.2,
+       "high": 117.1,
+       "low": 114.7,
+       "close": 116.6,
+       "adjusted_close": 116.6,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1901629800,
+       "open": 116.6,
+       "high": 118.5,
+       "low": 116.1,
+       "close": 118.0,
+       "adjusted_close": 118.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1901889000,
+       "open": 118.0,
+       "high": 118.5,
+       "low": 116.7,
+       "close": 117.2,
+       "adjusted_close": 117.2,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1901975400,
+       "open": 117.2,
+       "high": 117.7,
+       "low": 115.9,
+       "close": 116.4,
+       "adjusted_close": 116.4,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1902061800,
+       "open": 116.4,
+       "high": 116.9,
+       "low": 115.1,
+       "close": 115.6,
+       "adjusted_close": 115.6,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1902148200,
+       "open": 115.6,
+       "high": 116.1,
+       "low": 114.3,
+       "close": 114.8,
+       "adjusted_close": 114.8,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1902234600,
+       "open": 114.8,
+       "high": 115.3,
+       "low": 113.5,
+       "close": 114.0,
+       "adjusted_close": 114.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1902493800,
+       "open": 114.0,
+       "high": 116.9,
+       "low": 113.5,
+       "close": 116.4,
+       "adjusted_close": 116.4,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1902580200,
+       "open": 116.4,
+       "high": 119.3,
+       "low": 115.9,
+       "close": 118.8,
+       "adjusted_close": 118.8,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1902666600,
+       "open": 118.8,
+       "high": 121.7,
+       "low": 118.3,
+       "close": 121.2,
+       "adjusted_close": 121.2,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1902753000,
+       "open": 121.2,
+       "high": 124.1,
+       "low": 120.7,
+       "close": 123.6,
+       "adjusted_close": 123.6,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1902839400,
+       "open": 123.6,
+       "high": 126.5,
+       "low": 123.1,
+       "close": 126.0,
+       "adjusted_close": 126.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1903098600,
+       "open": 126.0,
+       "high": 126.5,
+       "low": 123.5,
+       "close": 124.0,
+       "adjusted_close": 124.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1903185000,
+       "open": 124.0,
+       "high": 124.5,
+       "low": 121.5,
+       "close": 122.0,
+       "adjusted_close": 122.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1903271400,
+       "open": 122.0,
+       "high": 122.5,
+       "low": 119.5,
+       "close": 120.0,
+       "adjusted_close": 120.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1903357800,
+       "open": 120.0,
+       "high": 120.5,
+       "low": 117.5,
+       "close": 118.0,
+       "adjusted_close": 118.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1903444200,
+       "open": 118.0,
+       "high": 118.5,
+       "low": 115.5,
+       "close": 116.0,
+       "adjusted_close": 116.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1903703400,
+       "open": 116.0,
+       "high": 118.1,
+       "low": 115.5,
+       "close": 117.6,
+       "adjusted_close": 117.6,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1903789800,
+       "open": 117.6,
+       "high": 119.7,
+       "low": 117.1,
+       "close": 119.2,
+       "adjusted_close": 119.2,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1903876200,
+       "open": 119.2,
+       "high": 121.3,
+       "low": 118.7,
+       "close": 120.8,
+       "adjusted_close": 120.8,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1903962600,
+       "open": 120.8,
+       "high": 122.9,
+       "low": 120.3,
+       "close": 122.4,
+       "adjusted_close": 122.4,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1904049000,
+       "open": 122.4,
+       "high": 124.5,
+       "low": 121.9,
+       "close": 124.0,
+       "adjusted_close": 124.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1904308200,
+       "open": 124.0,
+       "high": 124.5,
+       "low": 122.3,
+       "close": 122.8,
+       "adjusted_close": 122.8,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1904394600,
+       "open": 122.8,
+       "high": 123.3,
+       "low": 121.1,
+       "close": 121.6,
+       "adjusted_close": 121.6,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1904481000,
+       "open": 121.6,
+       "high": 122.1,
+       "low": 119.9,
+       "close": 120.4,
+       "adjusted_close": 120.4,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1904567400,
+       "open": 120.4,
+       "high": 120.9,
+       "low": 118.7,
+       "close": 119.2,
+       "adjusted_close": 119.2,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1904653800,
+       "open": 119.2,
+       "high": 119.7,
+       "low": 117.5,
+       "close": 118.0,
+       "adjusted_close": 118.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1904913000,
+       "open": 118.0,
+       "high": 120.5,
+       "low": 117.5,
+       "close": 120.0,
+       "adjusted_close": 120.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1904999400,
+       "open": 120.0,
+       "high": 122.5,
+       "low": 119.5,
+       "close": 122.0,
+       "adjusted_close": 122.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1905085800,
+       "open": 122.0,
+       "high": 124.5,
+       "low": 121.5,
+       "close": 124.0,
+       "adjusted_close": 124.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1905172200,
+       "open": 124.0,
+       "high": 126.5,
+       "low": 123.5,
+       "close": 126.0,
+       "adjusted_close": 126.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1905258600,
+       "open": 126.0,
+       "high": 128.5,
+       "low": 125.5,
+       "close": 128.0,
+       "adjusted_close": 128.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1905517800,
+       "open": 128.0,
+       "high": 128.5,
+       "low": 125.7,
+       "close": 126.2,
+       "adjusted_close": 126.2,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1905604200,
+       "open": 126.2,
+       "high": 126.7,
+       "low": 123.9,
+       "close": 124.4,
+       "adjusted_close": 124.4,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1905690600,
+       "open": 124.4,
+       "high": 124.9,
+       "low": 122.1,
+       "close": 122.6,
+       "adjusted_close": 122.6,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1905777000,
+       "open": 122.6,
+       "high": 123.1,
+       "low": 120.3,
+       "close": 120.8,
+       "adjusted_close": 120.8,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1905863400,
+       "open": 120.8,
+       "high": 121.3,
+       "low": 118.5,
+       "close": 119.0,
+       "adjusted_close": 119.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1906122600,
+       "open": 119.0,
+       "high": 120.9,
+       "low": 118.5,
+       "close": 120.4,
+       "adjusted_close": 120.4,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1906209000,
+       "open": 120.4,
+       "high": 122.3,
+       "low": 119.9,
+       "close": 121.8,
+       "adjusted_close": 121.8,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1906295400,
+       "open": 121.8,
+       "high": 123.7,
+       "low": 121.3,
+       "close": 123.2,
+       "adjusted_close": 123.2,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1906381800,
+       "open": 123.2,
+       "high": 125.1,
+       "low": 122.7,
+       "close": 124.6,
+       "adjusted_close": 124.6,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1906468200,
+       "open": 124.6,
+       "high": 126.5,
+       "low": 124.1,
+       "close": 126.0,
+       "adjusted_close": 126.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1906727400,
+       "open": 126.0,
+       "high": 126.5,
+       "low": 124.7,
+       "close": 125.2,
+       "adjusted_close": 125.2,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1906813800,
+       "open": 125.2,
+       "high": 125.7,
+       "low": 123.9,
+       "close": 124.4,
+       "adjusted_close": 124.4,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1906900200,
+       "open": 124.4,
+       "high": 124.9,
+       "low": 123.1,
+       "close": 123.6,
+       "adjusted_close": 123.6,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1906986600,
+       "open": 123.6,
+       "high": 124.1,
+       "low": 122.3,
+       "close": 122.8,
+       "adjusted_close": 122.8,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1907073000,
+       "open": 122.8,
+       "high": 123.3,
+       "low": 121.5,
+       "close": 122.0,
+       "adjusted_close": 122.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1907332200,
+       "open": 122.0,
+       "high": 124.9,
+       "low": 121.5,
+       "close": 124.4,
+       "adjusted_close": 124.4,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1907418600,
+       "open": 124.4,
+       "high": 127.3,
+       "low": 123.9,
+       "close": 126.8,
+       "adjusted_close": 126.8,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1907505000,
+       "open": 126.8,
+       "high": 129.7,
+       "low": 126.3,
+       "close": 129.2,
+       "adjusted_close": 129.2,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1907591400,
+       "open": 129.2,
+       "high": 132.1,
+       "low": 128.7,
+       "close": 131.6,
+       "adjusted_close": 131.6,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1907677800,
+       "open": 131.6,
+       "high": 134.5,
+       "low": 131.1,
+       "close": 134.0,
+       "adjusted_close": 134.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1907937000,
+       "open": 134.0,
+       "high": 134.5,
+       "low": 131.5,
+       "close": 132.0,
+       "adjusted_close": 132.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1908023400,
+       "open": 132.0,
+       "high": 132.5,
+       "low": 129.5,
+       "close": 130.0,
+       "adjusted_close": 130.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1908109800,
+       "open": 130.0,
+       "high": 130.5,
+       "low": 127.5,
+       "close": 128.0,
+       "adjusted_close": 128.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1908196200,
+       "open": 128.0,
+       "high": 128.5,
+       "low": 125.5,
+       "close": 126.0,
+       "adjusted_close": 126.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1908282600,
+       "open": 126.0,
+       "high": 126.5,
+       "low": 123.5,
+       "close": 124.0,
+       "adjusted_close": 124.0,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      }
+     ]
+    },
+    "timeframe": "D",
+    "actions": {
+     "status": "AVAILABLE",
+     "covered_from": "2030-01-01",
+     "covered_to": "2030-12-31",
+     "events": [
+      {
+       "kind": "SPLIT",
+       "effective_date": "2030-03-04"
+      }
+     ],
+     "price_basis": "SPLIT_ADJUSTED",
+     "volume_basis": "UNKNOWN"
+    }
+   },
+   "synthetic": true,
+   "expected_json": "{\"label_ko\": \"연구 기본값 · 투자 유용성 미검증\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"role\": \"RESEARCH_DEFAULT\", \"rule_version\": \"pattern-rules/1\", \"run_mode\": \"OFFICIAL\", \"segments\": [[0, 119]], \"skipped\": {\"ATR_UNAVAILABLE\": 2, \"MISSING_BARS_IN_WINDOW\": 0}, \"structure\": {\"label_ko\": \"고점·저점 상승\", \"reason_code\": null, \"state\": \"HH_HL\"}, \"timeframe\": \"D\", \"transitions\": [{\"anchor_at\": \"2030-01-25\", \"anchor_index\": 14, \"detail\": {\"atr\": 2.639868804664724, \"pivot\": \"HIGH\", \"price\": 112.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-01-30\", \"known_index\": 17, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|HIGH|2030-01-25\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}, {\"anchor_at\": \"2030-02-01\", \"anchor_index\": 19, \"detail\": {\"atr\": 2.6097139735124864, \"pivot\": \"LOW\", \"price\": 102.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-02-06\", \"known_index\": 22, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|LOW|2030-02-01\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}, {\"anchor_at\": \"2030-02-08\", \"anchor_index\": 24, \"detail\": {\"atr\": 2.4251720458130763, \"pivot\": \"HIGH\", \"price\": 110.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-02-13\", \"known_index\": 27, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|HIGH|2030-02-08\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}, {\"anchor_at\": \"2030-02-15\", \"anchor_index\": 29, \"detail\": {\"atr\": 2.550545167947274, \"pivot\": \"LOW\", \"price\": 105.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-02-20\", \"known_index\": 32, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|LOW|2030-02-15\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}, {\"anchor_at\": \"2030-02-22\", \"anchor_index\": 34, \"detail\": {\"atr\": 2.733831452375958, \"pivot\": \"HIGH\", \"price\": 118.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-02-27\", \"known_index\": 37, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|HIGH|2030-02-22\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}, {\"anchor_at\": \"2030-03-01\", \"anchor_index\": 39, \"detail\": {\"atr\": 2.736509864652798, \"pivot\": \"LOW\", \"price\": 107.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [\"SPLIT_IN_WINDOW_PRICE_ADJUSTED\"], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-03-06\", \"known_index\": 42, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|LOW|2030-03-01\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}, {\"anchor_at\": \"2030-03-08\", \"anchor_index\": 44, \"detail\": {\"atr\": 2.6145035498165408, \"pivot\": \"HIGH\", \"price\": 116.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-03-13\", \"known_index\": 47, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|HIGH|2030-03-08\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}, {\"anchor_at\": \"2030-03-15\", \"anchor_index\": 49, \"detail\": {\"atr\": 2.645632523877761, \"pivot\": \"LOW\", \"price\": 109.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-03-20\", \"known_index\": 52, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|LOW|2030-03-15\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}, {\"anchor_at\": \"2030-03-22\", \"anchor_index\": 54, \"detail\": {\"atr\": 2.7154895220149085, \"pivot\": \"HIGH\", \"price\": 120.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-03-27\", \"known_index\": 57, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|HIGH|2030-03-22\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}, {\"anchor_at\": \"2030-03-29\", \"anchor_index\": 59, \"detail\": {\"atr\": 2.661919607710852, \"pivot\": \"LOW\", \"price\": 110.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-04-03\", \"known_index\": 62, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|LOW|2030-03-29\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}, {\"anchor_at\": \"2030-04-05\", \"anchor_index\": 64, \"detail\": {\"atr\": 2.461212807360374, \"pivot\": \"HIGH\", \"price\": 118.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-04-10\", \"known_index\": 67, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|HIGH|2030-04-05\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}, {\"anchor_at\": \"2030-04-12\", \"anchor_index\": 69, \"detail\": {\"atr\": 2.5754263232642183, \"pivot\": \"LOW\", \"price\": 113.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-04-17\", \"known_index\": 72, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|LOW|2030-04-12\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}, {\"anchor_at\": \"2030-04-19\", \"anchor_index\": 74, \"detail\": {\"atr\": 2.7510084448513665, \"pivot\": \"HIGH\", \"price\": 126.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-04-24\", \"known_index\": 77, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|HIGH|2030-04-19\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}, {\"anchor_at\": \"2030-04-26\", \"anchor_index\": 79, \"detail\": {\"atr\": 2.748368199474546, \"pivot\": \"LOW\", \"price\": 115.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-05-01\", \"known_index\": 82, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|LOW|2030-04-26\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}, {\"anchor_at\": \"2030-05-03\", \"anchor_index\": 84, \"detail\": {\"atr\": 2.6226900879981225, \"pivot\": \"HIGH\", \"price\": 124.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-05-08\", \"known_index\": 87, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|HIGH|2030-05-03\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}, {\"anchor_at\": \"2030-05-10\", \"anchor_index\": 89, \"detail\": {\"atr\": 2.651284194909649, \"pivot\": \"LOW\", \"price\": 117.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-05-15\", \"known_index\": 92, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|LOW|2030-05-10\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}, {\"anchor_at\": \"2030-05-17\", \"anchor_index\": 94, \"detail\": {\"atr\": 2.7193912182806796, \"pivot\": \"HIGH\", \"price\": 128.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-05-22\", \"known_index\": 97, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|HIGH|2030-05-17\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}, {\"anchor_at\": \"2030-05-24\", \"anchor_index\": 99, \"detail\": {\"atr\": 2.6646131887180347, \"pivot\": \"LOW\", \"price\": 118.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-05-29\", \"known_index\": 102, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|LOW|2030-05-24\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}, {\"anchor_at\": \"2030-05-31\", \"anchor_index\": 104, \"detail\": {\"atr\": 2.4630723520681217, \"pivot\": \"HIGH\", \"price\": 126.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-06-05\", \"known_index\": 107, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|HIGH|2030-05-31\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}, {\"anchor_at\": \"2030-06-07\", \"anchor_index\": 109, \"detail\": {\"atr\": 2.5767100813954538, \"pivot\": \"LOW\", \"price\": 121.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-06-12\", \"known_index\": 112, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|LOW|2030-06-07\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}, {\"anchor_at\": \"2030-06-14\", \"anchor_index\": 114, \"detail\": {\"atr\": 2.7518947020801647, \"pivot\": \"HIGH\", \"price\": 134.5}, \"event\": \"PIVOT_CONFIRMED\", \"judgement\": {\"reason_codes\": [], \"state\": \"CONFIRMED\"}, \"known_at\": \"2030-06-19\", \"known_index\": 117, \"object_id\": \"PIVOT|SYNTH1|D|pattern-rules/1|HIGH|2030-06-14\", \"object_kind\": \"PIVOT\", \"params_sha256\": \"941af1ffd8d6cfdb8afdfd48eb13d32ba0978131b468197e44d851096ba03e5b\", \"rule_version\": \"pattern-rules/1\", \"timeframe\": \"D\"}]}"
+  },
+  {
    "id": "pivots_user_settings",
    "operation": "pivots",
    "input": {

@@ -7,7 +7,8 @@ Pure functions on RAM values. No network, no storage, no price repair:
 - A reported volume of 0 is a real zero; a missing volume is None (`VOLUME_MISSING`).
 - Weekly bars follow rule W1 (§7.4) without an exchange calendar.
 - Price-basis continuity (§7.3, owner decision Q3) never re-adjusts prices. Without split events every
-  window is `PRICE_BASIS_CONTINUITY_UNCONFIRMED`; a window that crosses a split is `CORPORATE_ACTION_IN_WINDOW`.
+  window is `PRICE_BASIS_CONTINUITY_UNCONFIRMED`; a window that crosses a split is `CORPORATE_ACTION_IN_WINDOW` unless the
+  provider's prices are already split-adjusted (then CONFIRMED with the note `SPLIT_IN_WINDOW_PRICE_ADJUSTED`).
 """
 from __future__ import annotations
 
@@ -168,22 +169,29 @@ def _week_start(day):
     return (d - timedelta(days=d.weekday())).isoformat()
 
 
+BASES = ('SPLIT_ADJUSTED', 'UNADJUSTED', 'UNKNOWN')
+
+
 def corporate_actions(value):
     """Normalizes the client-side corporate-action input. Unknown or malformed input never counts as 'no events'.
 
-    Accepted shape (G1 field names are an open owner decision; nothing is sent by the Worker today):
+    Accepted shape (built from the Worker's optional split block by actions_from_history):
       None / {'status': 'NOT_PROVIDED'}            -> no event data was supplied
+      {'status': 'NOT_REPORTED'}                    -> events were requested but the provider sent no split block
       {'status': 'LOOKUP_FAILED'}                   -> the lookup was attempted and failed
-      {'status': 'AVAILABLE', 'covered_from': d, 'covered_to': d, 'events': [{'kind': 'SPLIT'|'DIVIDEND', 'effective_date': d}]}
+      {'status': 'AVAILABLE', 'covered_from': d, 'covered_to': d, 'events': [{'kind': 'SPLIT'|'DIVIDEND', 'effective_date': d}],
+       'price_basis': 'SPLIT_ADJUSTED'|'UNADJUSTED'|'UNKNOWN' (optional, default UNKNOWN), 'volume_basis': same}
     """
     if value is None:
         return {'status': 'NOT_PROVIDED', 'splits': []}
-    if not isinstance(value, dict) or value.get('status') not in ('NOT_PROVIDED', 'LOOKUP_FAILED', 'AVAILABLE'):
+    if not isinstance(value, dict) or value.get('status') not in ('NOT_PROVIDED', 'NOT_REPORTED', 'LOOKUP_FAILED', 'AVAILABLE'):
         return {'status': 'INVALID', 'splits': []}
     if value['status'] != 'AVAILABLE':
         return {'status': value['status'], 'splits': []}
     start, end, events = _day(value.get('covered_from')), _day(value.get('covered_to')), value.get('events')
-    if not start or not end or start > end or not isinstance(events, list):
+    price_basis = 'UNKNOWN' if value.get('price_basis') is None else value['price_basis']
+    volume_basis = 'UNKNOWN' if value.get('volume_basis') is None else value['volume_basis']
+    if not start or not end or start > end or not isinstance(events, list) or price_basis not in BASES or volume_basis not in BASES:
         return {'status': 'INVALID', 'splits': []}
     splits = []
     for event in events:
@@ -191,28 +199,63 @@ def corporate_actions(value):
             return {'status': 'INVALID', 'splits': []}
         if event['kind'] == 'SPLIT':
             splits.append(event['effective_date'])
-    return {'status': 'AVAILABLE', 'covered_from': start, 'covered_to': end, 'splits': sorted(set(splits))}
+    return {'status': 'AVAILABLE', 'covered_from': start, 'covered_to': end, 'splits': sorted(set(splits)),
+            'price_basis': price_basis, 'volume_basis': volume_basis}
 
 
 def _actions(value):
     return value if isinstance(value, dict) and 'splits' in value and 'status' in value else corporate_actions(value)
 
 
+def price_adjusted(actions):
+    return actions.get('price_basis') == 'SPLIT_ADJUSTED'
+
+
+def volume_adjusted(actions):
+    return price_adjusted(actions) and actions.get('volume_basis') == 'SPLIT_ADJUSTED'
+
+
+def actions_from_history(history):
+    """private-history/1 optional split block (Worker P1-W) -> corporate_actions input.
+
+    A response without the block (older Worker) gives None = NOT_PROVIDED. Provider-path NOT_AVAILABLE is NOT_PROVIDED;
+    anything unrecognised is INVALID. A missing block never means "no split".
+    """
+    if not isinstance(history, dict) or history.get('split_coverage') is None:
+        return None
+    coverage, basis = history['split_coverage'], history.get('split_basis')
+    status = coverage.get('status') if isinstance(coverage, dict) else None
+    if status == 'NOT_REPORTED':
+        return {'status': 'NOT_REPORTED'}
+    if status == 'NOT_AVAILABLE':
+        return {'status': 'NOT_PROVIDED'}
+    if status != 'CONFIRMED' or not isinstance(history.get('splits'), list) or not isinstance(basis, dict):
+        return {'status': 'INVALID'}
+    return {'status': 'AVAILABLE', 'covered_from': coverage.get('from'), 'covered_to': coverage.get('to'),
+            'price_basis': basis.get('price'), 'volume_basis': basis.get('volume'),
+            'events': [{'kind': 'SPLIT', 'effective_date': s.get('date') if isinstance(s, dict) else None} for s in history['splits']]}
+
+
 def continuity(actions, start, end):
     """Price-basis continuity of a window [start, end] (session dates). Never re-adjusts prices.
 
     A window crosses a split when start < effective_date <= end (the effective date is the first session on the
-    new basis). Dividends do not change the raw OHLC basis and are not judged.
+    new basis). Dividends do not change the raw OHLC basis and are not judged. A crossing window stays judgeable only
+    when the provider's prices are already split-adjusted (note SPLIT_IN_WINDOW_PRICE_ADJUSTED).
     """
     actions = _actions(actions)
     status = actions['status']
     if status != 'AVAILABLE':
-        sub = {'NOT_PROVIDED': 'CORPORATE_ACTION_EVENTS_NOT_PROVIDED', 'LOOKUP_FAILED': 'CORPORATE_ACTION_LOOKUP_FAILED'}
+        sub = {'NOT_PROVIDED': 'CORPORATE_ACTION_EVENTS_NOT_PROVIDED', 'NOT_REPORTED': 'CORPORATE_ACTION_EVENTS_NOT_REPORTED',
+               'LOOKUP_FAILED': 'CORPORATE_ACTION_LOOKUP_FAILED'}
         return {'state': 'NOT_JUDGEABLE', 'reason_codes': ['PRICE_BASIS_CONTINUITY_UNCONFIRMED', sub.get(status, 'CORPORATE_ACTION_EVENTS_INVALID')]}
     if start < actions['covered_from'] or end > actions['covered_to']:
         return {'state': 'NOT_JUDGEABLE', 'reason_codes': ['PRICE_BASIS_CONTINUITY_UNCONFIRMED', 'CORPORATE_ACTION_COVERAGE_GAP']}
     if any(start < d <= end for d in actions['splits']):
-        return {'state': 'NOT_JUDGEABLE', 'reason_codes': ['CORPORATE_ACTION_IN_WINDOW']}
+        if price_adjusted(actions):
+            return {'state': 'CONFIRMED', 'reason_codes': ['SPLIT_IN_WINDOW_PRICE_ADJUSTED']}
+        unadjusted = actions.get('price_basis') == 'UNADJUSTED'
+        return {'state': 'NOT_JUDGEABLE', 'reason_codes': ['CORPORATE_ACTION_IN_WINDOW'] + (['PRICE_BASIS_UNADJUSTED'] if unadjusted else [])}
     return {'state': 'CONFIRMED', 'reason_codes': []}
 
 
@@ -222,11 +265,13 @@ def weekly(series, actions=None):
     A week (ISO Monday-Sunday of the session date) is complete when its Friday session is COMPLETE, otherwise when
     the first COMPLETE daily bar of a later week appears; its known_at is that session date. A week holding a
     non-complete daily bar stays provisional. Any missing OHLC (volume) inside the week makes the weekly OHLC
-    (volume) None; partial sums are never used. A week that straddles a split effective date is NA as well.
+    (volume) None; partial sums are never used. A week that straddles a split effective date is NA as well, unless the
+    provider's prices are already split-adjusted (OHLC kept; volume kept only when its basis is adjusted too).
     """
     if not isinstance(series, dict) or series.get('schema') != SCHEMA or series.get('timeframe') != 'D':
         _fail('CHART_BARS_INPUT_INVALID')
-    splits = _actions(actions)['splits']
+    acts = _actions(actions)
+    splits, adjusted, vol_adjusted = acts['splits'], price_adjusted(acts), volume_adjusted(acts)
     groups = {}
     for bar in series['bars']:
         groups.setdefault(_week_start(bar['session_date']), []).append(bar)
@@ -252,14 +297,17 @@ def weekly(series, actions=None):
             codes.append('WEEKEND_SESSION')
         first, last = days[0]['session_date'], days[-1]['session_date']
         straddles = any(first < d <= last for d in splits)
-        ohlc_ok = all(b['ohlc'] == 'PRESENT' for b in days) and not weekend and not straddles
-        volume_ok = all(b['volume_state'] == 'REPORTED' for b in days) and not straddles
+        # Adjusted prices may be aggregated across a split; volume only when its basis is adjusted too (share-count basis).
+        ohlc_ok = all(b['ohlc'] == 'PRESENT' for b in days) and not weekend and not (straddles and not adjusted)
+        volume_ok = all(b['volume_state'] == 'REPORTED' for b in days) and not (straddles and not vol_adjusted)
         if not all(b['ohlc'] == 'PRESENT' for b in days):
             codes.append('OHLC_MISSING_IN_WEEK')
         if not all(b['volume_state'] == 'REPORTED' for b in days):
             codes.append('VOLUME_MISSING_IN_WEEK')
         if straddles:
-            codes.append('CORPORATE_ACTION_IN_BAR')
+            codes.append('SPLIT_IN_BAR_PRICE_ADJUSTED' if adjusted else 'CORPORATE_ACTION_IN_BAR')
+        if straddles and adjusted and not vol_adjusted:
+            codes.append('VOLUME_BASIS_UNCONFIRMED')
         out.append({
             'index': n, 'week_start': key, 'first_session': first, 'last_session': last, 'session_count': len(days),
             'timestamp': days[-1]['timestamp'],

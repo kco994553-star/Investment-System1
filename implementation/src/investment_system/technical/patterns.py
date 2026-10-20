@@ -166,7 +166,8 @@ def segments(bars, actions):
     """Split effective dates bound every pattern window (§7.3); returns [start, end] index pairs."""
     actions = CB._actions(actions)
     cuts = []
-    for d in actions['splits'] if actions['status'] == 'AVAILABLE' else []:
+    # Already split-adjusted provider prices are one continuous basis: a split does not cut the series (never re-adjusted).
+    for d in actions['splits'] if actions['status'] == 'AVAILABLE' and actions.get('price_basis') != 'SPLIT_ADJUSTED' else []:
         at = next((b['i'] for b in bars if b['last_session'] >= d), None)
         if at is not None and at > 0 and at not in cuts:
             cuts.append(at)
@@ -340,6 +341,11 @@ def _volume_note(ctx, seg_start, t):
         return {'state': 'NOT_AVAILABLE', 'reason_code': 'VOLUME_MISSING'}
     if t - n < seg_start:
         return {'state': 'NOT_AVAILABLE', 'reason_code': 'INSUFFICIENT_BARS'}
+    # Adjusted prices with an unconfirmed volume basis: a split inside the average window mixes share-count bases.
+    acts = ctx['actions']
+    if CB.price_adjusted(acts) and not CB.volume_adjusted(acts) \
+            and any(bars[t - n]['first_session'] < d <= bars[t]['last_session'] for d in acts['splits']):
+        return {'state': 'NOT_AVAILABLE', 'reason_code': 'VOLUME_BASIS_UNCONFIRMED'}
     previous = [bars[j]['volume'] for j in range(t - n, t)]
     if any(v is None for v in previous):
         return {'state': 'NOT_AVAILABLE', 'reason_code': 'VOLUME_MISSING'}
