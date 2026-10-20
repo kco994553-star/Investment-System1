@@ -34,4 +34,3 @@
 .macro-evidence .me-events li { margin: 3px 0; overflow-wrap: anywhere; }
 .macro-evidence .me-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
 .macro-evidence .me-table th, .macro-evidence .me-table td { padding: 3px 4px; border-bottom: 1px solid var(--me-grid); text-align: left; vertical-align: top; overflow-wrap: anywhere; font-size: 12px; }
-@media (max-width: 599px) { .macro-evidence .me-table th:nth-child(n+5), .macro-evidence .me-table td:nth-child(n+5) { display: none; } }

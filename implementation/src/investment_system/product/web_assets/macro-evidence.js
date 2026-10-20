@@ -179,10 +179,10 @@ function mount(host,{locale,view=globalThis}={}){
    ul.append(el('li',{'data-me-event':e.id,'data-me-event-basis':e.basis},fmtTime(e.at)+' · '+e.indicator+' '+eventLabel(p,e)+' · 기준 기간 '+e.period+' · '+basisLabel(e.basis,e.rd)+' · '+e.rule+' · 해석 후보 · 미승인: '+(edge.interpretation||'—')));}
   root.append(ul);
   const cat=el('details',{'data-me-catalog':''});cat.append(el('summary',{},'지표 목록 (P1 13 · 카탈로그, 발생 사건과 별개)'));
-  const t=el('table',{class:'me-table'});const head=el('tr');for(const h of['지표','계열','사이클','상태','공식','라이선스','공개'])head.append(el('th',{},h));t.append(head);
+  const wrap=el('div',{class:'table-wrap'}),t=el('table',{class:'me-table'}),thead=el('thead'),tbody=el('tbody'),head=el('tr');for(const h of['지표','계열','사이클','상태','공식','라이선스','공개'])head.append(el('th',{scope:'col'},h));thead.append(head);t.append(thead,tbody);wrap.append(t);
   for(const i of p.indicators){const tr=el('tr',{'data-me-catalog-row':i.id,'data-me-catalog-state':i.state});
-   for(const v of[i.id+' '+i.name,FAMILY[i.family]||i.family,i.cycles.map(c=>(TABS.find(x=>x[0]===c)||[c,c])[1]).join('·'),i.state==='LIVE'?'수집됨':i.state==='PARTIAL'?'일부 · '+(REASON[i.reason]||i.reason):'NOT_AVAILABLE · '+(REASON[i.reason]||i.reason),i.source.official_statistic?'Y':'N',i.source.license_class,i.source.publication==='PUBLIC'?'공개':'보류'])tr.append(el('td',{},v));t.append(tr);}
-  cat.append(t);root.append(cat);
+   for(const v of[i.id+' '+i.name,FAMILY[i.family]||i.family,i.cycles.map(c=>(TABS.find(x=>x[0]===c)||[c,c])[1]).join('·'),i.state==='LIVE'?'수집됨':i.state==='PARTIAL'?'일부 · '+(REASON[i.reason]||i.reason):'NOT_AVAILABLE · '+(REASON[i.reason]||i.reason),i.source.official_statistic?'Y':'N',i.source.license_class,i.source.publication==='PUBLIC'?'공개':'보류'])tr.append(el('td',{},v));tbody.append(tr);}
+  cat.append(wrap);root.append(cat);
  };
  const off=subscribe(()=>{if(root.isConnected)paint();else off();});
  paint();
