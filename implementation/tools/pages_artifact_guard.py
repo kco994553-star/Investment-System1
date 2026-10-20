@@ -72,7 +72,7 @@ APPROVED_SHA256 = {
     "manager-styles-v0.js": "b32f434b17ba00d6ec1e4813517884e5caded996779df9b1976dfc38964ab38e",
     "screen-detail.js": "fdb5bb47c1a9b59ce1840640bc1a7f4bff69914a4d2985acc31dc0518d21af9c",
     "virtual-trading.js": "41a834f13d86ed2bd6a046cf63788992350294714ee9b9ee159ae50de8e20206",
-    "technical-cards.js": "42bb2d1e8de0997eb8e7a2a3a25441d2ac29b010fb58b5fff1d879ba5eb03aad",
+    "technical-cards.js": "cc6164ac1ca510bb7fddd3403e128198db90c7d7a98b860792bb53df5c1bf814",
     "leaderboard-screen.js": "a51e3831df1dbbac3a0de83f888320a6c8feb7b02e507b052dcb6bd1c43c4e23",
     "portfolio-screen.js": "5fdeea24f9d144e706226b687e9279bef141671d5987c194e4bb647db2fa2e69",
     "company-screen.js": "6f929b225cb6f9999d61befa51fdb39b0ad8b96d7bb5171146a265f47d6aa92c",
@@ -105,7 +105,7 @@ APPROVED_SHA256 = {
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "f8a98c57c1867087b8c9ada3de926ab6dd478ddcbfffb911d5e43bc7abcd29c8",
+    "app.js": "dc8e779fd58887766bf9793ca71de38f93dfbb3a05cb8595c893094f3d34fda7",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "1cfae1a928e74055b1536e1b8dbe26509780eb3eed2f79b3a1963de4feb25f60",
@@ -115,10 +115,10 @@ APPROVED_SHA256 = {
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "59c8bab257051b7b5b4982ba4bedfa998a2e14c63852caef643aee6072f249b2",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "0153f12ece131c96d6a004f8a6d2cc57e619ec5727cdf9a419dcc80d4e332330",
+    "index.html": "c13524131b6542d549837e1a87011f71aae14c735f9f34cfebae2fec2f6455fc",
     "locale.js": "f3537029f859a0958c9d2440b7fcc021fef96b2845ff3320ad8b8ae045f09dc2",
     "private-history.css": "d4ce930e901e2b67b2eb6d57c8795f77be3b9f1650efa85dad6e524419c42028",
-    "private-history.js": "c8477c65c211094db0ebad90a40514e5bee9e7b7b8cbe82e05ae850aee7de182",
+    "private-history.js": "70a1b247f0e9ad2ef22154a6f94e75441244a9dc285122d7ae697a0d8574d81d",
     "research.html": "03fcceb4f7c080e76d7fd1cf27477502284fa1fa24ca16f99c79f43c24751309",
     "style.css": "8c88942eeb1fff9eb9ca73dc5fd1fba744b75a55ad54f449063ac3b007164c9c",
     "sec-disclosures.js": "849cbfbf2b21badd52c06cf5887dcd259e08864552a76fde39f065f82c6a7194",
@@ -132,8 +132,8 @@ APPROVED_SHA256 = {
     "news-signals.js": "a7da310c577f838a8beeb7d0a58854b6fcaaae03bbc75ba9216d5b56e47fc519",
     "dart-disclosures.js": "7ea88fa32ffa0be446e28f3b91532532bf2b98073f31d4ec1d62db8e73d7efdf",
     "macro-lights.js": "d64e3d4c68fb8c0ffdbfe16ad3220af2648bda4d331edd387ca337d52c42d741",
-    "macro-cycle-ring.js": "1ab7c093df2082f198241a57f32374f1b2f5007a424715e70f1682965a2999b3",
-    "macro-cycle-ring.css": "34c32dd266a77168df8b6bf40fa23a2843eba7f84cf4971167677dd29e503e0a",
+    "macro-cycle-ring.js": "e29b395607c9a06614ff14453fb5188a0c886bb5c1a0025d31e422bf682fe8a4",
+    "macro-cycle-ring.css": "2d36990bb39d56f8f1827341a4a71f54432044eaf8e55c94638b291abaf47a80",
     "sec-disclosures.js": "849cbfbf2b21badd52c06cf5887dcd259e08864552a76fde39f065f82c6a7194",
     "theme-boot.js": "4aaf08ecd900e1216a95159a277f8a7c51c32e41784f1ac9530ecf1dc77a6f2c",
     "theme.css": "a5e89c0da9b0af8ee3662989c33e2c4c19f2a4bf14ef0e864a41ff2f4e4fa3f7",
@@ -150,11 +150,23 @@ APPROVED_SHA256 = {
     "price-time.js": "9b786d04615f3a8907f8f936db78ab3fd477808eadc27814e615ffbb7dddbc0f",
     "data-refresh.js": "8040b88ca9a8083c92879067ff84a01f5db8aa6019c42a0c2b2098b68435c6f2",
     "v-coverage.css": "185302f9f5aa9542d2caadfa03363f084bf837e8e1ea2998da49fa1db8af9364",
+    "macro-evidence.js": "41efb4a48c6a6bf0363fcac28bd414bc7014224df0e8a907549078758e2a19b6",
+    "macro-evidence.css": "5270ef2e2c80eb70125ed39f8fbef5f3f0d87172d3dff3a79c888b92ec9520cd",
+    # Self-hosted chart renderer (P1-7): lightweight-charts 5.2.1 npm file unmodified, upstream LICENSE/NOTICE, third-party notices.
+    "chart-renderer.js": "c6053c2633788813d363d3346833f416fa954fbf8db7e1e18252b191c0dd040b",
+    "chart-workbench.js": "384db7708b52deb23b0e0a08bdad8cdfe4dd35d97e4cc974881cc34930abf83c",
+    "chart-workbench.css": "6824369fd724e8ebd36d62ea498318dceab65cd12c69975f7b3f542048ebfb9f",
+    "lightweight-charts-5.2.1.standalone.js": "e21cc5caa0226ef30bd8549c50b9ef926615f2a4ee6b4e486353477a55f598cf",
+    "lightweight-charts-5.2.1.LICENSE.txt": "70c9d5382506dd184465425c08a99ad9bd6d9ac1313c252968ba0b585e5ef823",
+    "lightweight-charts-5.2.1.NOTICE.txt": "f76c6afab94884448f0426e30d6e9d555ca7247894cd3484e477d2f87513036e",
+    "third-party-notices.txt": "01c1ecd099bc76ab6845b835c1704534eb0301e6b0eb22fcf63cc5a76668e362",
 }
 ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, COMPANY_NAMES_FILENAME, UNIVERSE_DOMAINS_FILENAME, COMPANY_LOGOS_FILENAME, QGV2_FILENAME, DISCLOSURES_FILENAME, NEWS_SIGNALS_FILENAME, MACRO_EVIDENCE_FILENAME} | set(SCREEN_FILENAMES) | set(DART_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024
 MAX_ARCHIVE_BYTES = 4 * 1024 * 1024
-MAX_ENTRIES = 128
+# 192 (was 128, owner approval 2026-10-20): a real deploy (build + ledger/public data) reached about 131 entries with the
+# chart renderer. Only the entry count changes; the allow-list, pinned hashes, size limits and price/personal checks stay.
+MAX_ENTRIES = 192
 MAX_JSON_DEPTH = 64
 
 SENSITIVE_KEYS = frozenset({
