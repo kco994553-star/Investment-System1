@@ -58,3 +58,5 @@ type_scope_node_test.js
 qgv2_inputs_node_test.js
 price_time_node_test.js
 universe_leaderboard_node_test.js
+chart_bars_node_test.js
+pattern_engine_node_test.js

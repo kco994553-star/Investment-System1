@@ -1,0 +1,1688 @@
+{
+ "schema": "reference-vectors/1",
+ "title": "ChartBars synthetic reference vectors",
+ "synthetic": true,
+ "cases": [
+  {
+   "id": "normalize_codes",
+   "operation": "normalize",
+   "input": {
+    "history": {
+     "schema": "private-history/1",
+     "provider": "Yahoo Finance(비공식)",
+     "symbol": "SYNTH1",
+     "range": "5y",
+     "currency": "USD",
+     "exchange": "NMS",
+     "timezone": "America/New_York",
+     "interval": "1d",
+     "basis": "RAW_CLOSE",
+     "delay_status": "UNKNOWN",
+     "read_at": "2030-12-31T23:00:00Z",
+     "bars": [
+      {
+       "timestamp": 1894026600,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10.5,
+       "adjusted_close": 10.5,
+       "volume": 1000,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894113000,
+       "open": 11,
+       "high": 12,
+       "low": 10,
+       "close": 11.5,
+       "adjusted_close": 11.5,
+       "volume": 1001,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894199400,
+       "open": 12,
+       "high": 13,
+       "low": 11,
+       "close": 12.5,
+       "adjusted_close": 12.5,
+       "volume": 0,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894285800,
+       "open": 13,
+       "high": 14,
+       "low": 12,
+       "close": 13.5,
+       "adjusted_close": 13.5,
+       "volume": null,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894372200,
+       "open": null,
+       "high": null,
+       "low": null,
+       "close": null,
+       "adjusted_close": 14.5,
+       "volume": 1004,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894631400,
+       "open": 30.0,
+       "high": 16,
+       "low": 14,
+       "close": 15.5,
+       "adjusted_close": 15.5,
+       "volume": 1005,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894717800,
+       "open": 16,
+       "high": 17,
+       "low": 15,
+       "close": 16.5,
+       "adjusted_close": 16.5,
+       "volume": 1006,
+       "session_status": "UNKNOWN"
+      },
+      {
+       "timestamp": 1894804200,
+       "open": 17,
+       "high": 18,
+       "low": 16,
+       "close": 17.5,
+       "adjusted_close": 17.5,
+       "volume": 1007,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894890600,
+       "open": 18,
+       "high": 19,
+       "low": 17,
+       "close": 18.5,
+       "adjusted_close": 18.5,
+       "volume": 1008,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894977000,
+       "open": 19,
+       "high": 20,
+       "low": 18,
+       "close": 19.5,
+       "adjusted_close": 19.5,
+       "volume": 1009,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895236200,
+       "open": 20,
+       "high": 21,
+       "low": 19,
+       "close": 20.5,
+       "adjusted_close": 20.5,
+       "volume": 1010,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895322600,
+       "open": 21,
+       "high": 22,
+       "low": 20,
+       "close": 21.5,
+       "adjusted_close": 21.5,
+       "volume": 1011,
+       "session_status": "IN_PROGRESS"
+      }
+     ]
+    }
+   },
+   "synthetic": true,
+   "expected_json": "{\"bars\": [{\"adjusted_close\": 10.5, \"close\": 10.5, \"codes\": [], \"high\": 11, \"index\": 0, \"low\": 9, \"ohlc\": \"PRESENT\", \"open\": 10, \"session_date\": \"2030-01-07\", \"session_status\": \"COMPLETE\", \"state\": \"COMPLETE\", \"timestamp\": 1894026600, \"volume\": 1000, \"volume_state\": \"REPORTED\"}, {\"adjusted_close\": 11.5, \"close\": 11.5, \"codes\": [], \"high\": 12, \"index\": 1, \"low\": 10, \"ohlc\": \"PRESENT\", \"open\": 11, \"session_date\": \"2030-01-08\", \"session_status\": \"COMPLETE\", \"state\": \"COMPLETE\", \"timestamp\": 1894113000, \"volume\": 1001, \"volume_state\": \"REPORTED\"}, {\"adjusted_close\": 12.5, \"close\": 12.5, \"codes\": [], \"high\": 13, \"index\": 2, \"low\": 11, \"ohlc\": \"PRESENT\", \"open\": 12, \"session_date\": \"2030-01-09\", \"session_status\": \"COMPLETE\", \"state\": \"COMPLETE\", \"timestamp\": 1894199400, \"volume\": 0, \"volume_state\": \"REPORTED\"}, {\"adjusted_close\": 13.5, \"close\": 13.5, \"codes\": [\"VOLUME_MISSING\"], \"high\": 14, \"index\": 3, \"low\": 12, \"ohlc\": \"PRESENT\", \"open\": 13, \"session_date\": \"2030-01-10\", \"session_status\": \"COMPLETE\", \"state\": \"COMPLETE\", \"timestamp\": 1894285800, \"volume\": null, \"volume_state\": \"MISSING\"}, {\"adjusted_close\": 14.5, \"close\": null, \"codes\": [\"OHLC_MISSING\"], \"high\": null, \"index\": 4, \"low\": null, \"ohlc\": \"MISSING\", \"open\": null, \"session_date\": \"2030-01-11\", \"session_status\": \"COMPLETE\", \"state\": \"COMPLETE\", \"timestamp\": 1894372200, \"volume\": 1004, \"volume_state\": \"REPORTED\"}, {\"adjusted_close\": 15.5, \"close\": 15.5, \"codes\": [\"OHLC_INCONSISTENT\"], \"high\": 16, \"index\": 5, \"low\": 14, \"ohlc\": \"MISSING\", \"open\": 30.0, \"session_date\": \"2030-01-14\", \"session_status\": \"COMPLETE\", \"state\": \"COMPLETE\", \"timestamp\": 1894631400, \"volume\": 1005, \"volume_state\": \"REPORTED\"}, {\"adjusted_close\": 16.5, \"close\": 16.5, \"codes\": [\"NON_COMPLETE_IN_HISTORY\", \"PROVISIONAL_SESSION\"], \"high\": 17, \"index\": 6, \"low\": 15, \"ohlc\": \"PRESENT\", \"open\": 16, \"session_date\": \"2030-01-15\", \"session_status\": \"UNKNOWN\", \"state\": \"PROVISIONAL\", \"timestamp\": 1894717800, \"volume\": 1006, \"volume_state\": \"REPORTED\"}, {\"adjusted_close\": 17.5, \"close\": 17.5, \"codes\": [], \"high\": 18, \"index\": 7, \"low\": 16, \"ohlc\": \"PRESENT\", \"open\": 17, \"session_date\": \"2030-01-16\", \"session_status\": \"COMPLETE\", \"state\": \"COMPLETE\", \"timestamp\": 1894804200, \"volume\": 1007, \"volume_state\": \"REPORTED\"}, {\"adjusted_close\": 18.5, \"close\": 18.5, \"codes\": [], \"high\": 19, \"index\": 8, \"low\": 17, \"ohlc\": \"PRESENT\", \"open\": 18, \"session_date\": \"2030-01-17\", \"session_status\": \"COMPLETE\", \"state\": \"COMPLETE\", \"timestamp\": 1894890600, \"volume\": 1008, \"volume_state\": \"REPORTED\"}, {\"adjusted_close\": 19.5, \"close\": 19.5, \"codes\": [], \"high\": 20, \"index\": 9, \"low\": 18, \"ohlc\": \"PRESENT\", \"open\": 19, \"session_date\": \"2030-01-18\", \"session_status\": \"COMPLETE\", \"state\": \"COMPLETE\", \"timestamp\": 1894977000, \"volume\": 1009, \"volume_state\": \"REPORTED\"}, {\"adjusted_close\": 20.5, \"close\": 20.5, \"codes\": [], \"high\": 21, \"index\": 10, \"low\": 19, \"ohlc\": \"PRESENT\", \"open\": 20, \"session_date\": \"2030-01-21\", \"session_status\": \"COMPLETE\", \"state\": \"COMPLETE\", \"timestamp\": 1895236200, \"volume\": 1010, \"volume_state\": \"REPORTED\"}, {\"adjusted_close\": 21.5, \"close\": 21.5, \"codes\": [\"PROVISIONAL_SESSION\"], \"high\": 22, \"index\": 11, \"low\": 20, \"ohlc\": \"PRESENT\", \"open\": 21, \"session_date\": \"2030-01-22\", \"session_status\": \"IN_PROGRESS\", \"state\": \"PROVISIONAL\", \"timestamp\": 1895322600, \"volume\": 1011, \"volume_state\": \"REPORTED\"}], \"basis\": \"RAW_CLOSE\", \"currency\": \"USD\", \"delay_status\": \"UNKNOWN\", \"exchange\": \"NMS\", \"interval\": \"1d\", \"provider\": \"Yahoo Finance(비공식)\", \"quality\": {\"codes\": [\"DELAY_UNKNOWN\", \"NON_COMPLETE_IN_HISTORY\", \"OHLC_INCONSISTENT\", \"OHLC_MISSING\", \"PROVISIONAL_SESSION\", \"VOLUME_MISSING\"], \"counts\": {\"DELAY_UNKNOWN\": 1, \"NON_COMPLETE_IN_HISTORY\": 1, \"OHLC_INCONSISTENT\": 1, \"OHLC_MISSING\": 1, \"PROVISIONAL_SESSION\": 2, \"VOLUME_MISSING\": 1}}, \"read_at\": \"2030-12-31T23:00:00Z\", \"schema\": \"chart-bars/1\", \"source_schema\": \"private-history/1\", \"symbol\": \"SYNTH1\", \"timeframe\": \"D\", \"timezone\": \"America/New_York\"}"
+  },
+  {
+   "id": "normalize_seoul_session_date",
+   "operation": "normalize",
+   "input": {
+    "history": {
+     "schema": "private-history/1",
+     "provider": "Yahoo Finance(비공식)",
+     "symbol": "SYNTH1",
+     "range": "5y",
+     "currency": "KRW",
+     "exchange": "NMS",
+     "timezone": "Asia/Seoul",
+     "interval": "1d",
+     "basis": "RAW_CLOSE",
+     "delay_status": "UNKNOWN",
+     "read_at": "2030-12-31T23:00:00Z",
+     "bars": [
+      {
+       "timestamp": 1894030200,
+       "open": 100,
+       "high": 101,
+       "low": 99,
+       "close": 100.5,
+       "adjusted_close": 100.5,
+       "volume": 10,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894116600,
+       "open": 100,
+       "high": 101,
+       "low": 99,
+       "close": 100.5,
+       "adjusted_close": 100.5,
+       "volume": 10,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894203000,
+       "open": 100,
+       "high": 101,
+       "low": 99,
+       "close": 100.5,
+       "adjusted_close": 100.5,
+       "volume": 10,
+       "session_status": "COMPLETE"
+      }
+     ]
+    }
+   },
+   "synthetic": true,
+   "expected_json": "{\"bars\": [{\"adjusted_close\": 100.5, \"close\": 100.5, \"codes\": [], \"high\": 101, \"index\": 0, \"low\": 99, \"ohlc\": \"PRESENT\", \"open\": 100, \"session_date\": \"2030-01-08\", \"session_status\": \"COMPLETE\", \"state\": \"COMPLETE\", \"timestamp\": 1894030200, \"volume\": 10, \"volume_state\": \"REPORTED\"}, {\"adjusted_close\": 100.5, \"close\": 100.5, \"codes\": [], \"high\": 101, \"index\": 1, \"low\": 99, \"ohlc\": \"PRESENT\", \"open\": 100, \"session_date\": \"2030-01-09\", \"session_status\": \"COMPLETE\", \"state\": \"COMPLETE\", \"timestamp\": 1894116600, \"volume\": 10, \"volume_state\": \"REPORTED\"}, {\"adjusted_close\": 100.5, \"close\": 100.5, \"codes\": [], \"high\": 101, \"index\": 2, \"low\": 99, \"ohlc\": \"PRESENT\", \"open\": 100, \"session_date\": \"2030-01-10\", \"session_status\": \"COMPLETE\", \"state\": \"COMPLETE\", \"timestamp\": 1894203000, \"volume\": 10, \"volume_state\": \"REPORTED\"}], \"basis\": \"RAW_CLOSE\", \"currency\": \"KRW\", \"delay_status\": \"UNKNOWN\", \"exchange\": \"NMS\", \"interval\": \"1d\", \"provider\": \"Yahoo Finance(비공식)\", \"quality\": {\"codes\": [\"DELAY_UNKNOWN\"], \"counts\": {\"DELAY_UNKNOWN\": 1}}, \"read_at\": \"2030-12-31T23:00:00Z\", \"schema\": \"chart-bars/1\", \"source_schema\": \"private-history/1\", \"symbol\": \"SYNTH1\", \"timeframe\": \"D\", \"timezone\": \"Asia/Seoul\"}"
+  },
+  {
+   "id": "normalize_fallback_session_label",
+   "operation": "normalize",
+   "input": {
+    "history": {
+     "schema": "private-history/1",
+     "provider": "Tiingo EOD",
+     "symbol": "SYNTH1",
+     "range": "5y",
+     "currency": "USD",
+     "exchange": "NMS",
+     "timezone": "America/New_York",
+     "interval": "1d",
+     "basis": "RAW_CLOSE",
+     "delay_status": "UNKNOWN",
+     "read_at": "2030-12-31T23:00:00Z",
+     "timestamp_kind": "PROVIDER_SESSION_LABEL",
+     "bars": [
+      {
+       "timestamp": 1893974400,
+       "open": 20,
+       "high": 21,
+       "low": 19,
+       "close": 20.5,
+       "adjusted_close": 20.5,
+       "volume": 5,
+       "session_status": "COMPLETE",
+       "session_date": "2030-01-07"
+      },
+      {
+       "timestamp": 1894060800,
+       "open": 20,
+       "high": 21,
+       "low": 19,
+       "close": 20.5,
+       "adjusted_close": 20.5,
+       "volume": 5,
+       "session_status": "COMPLETE",
+       "session_date": "2030-01-08"
+      },
+      {
+       "timestamp": 1894147200,
+       "open": 20,
+       "high": 21,
+       "low": 19,
+       "close": 20.5,
+       "adjusted_close": 20.5,
+       "volume": 5,
+       "session_status": "COMPLETE",
+       "session_date": "2030-01-09"
+      },
+      {
+       "timestamp": 1894233600,
+       "open": 20,
+       "high": 21,
+       "low": 19,
+       "close": 20.5,
+       "adjusted_close": 20.5,
+       "volume": 5,
+       "session_status": "UNKNOWN",
+       "session_date": "2030-01-10"
+      }
+     ]
+    }
+   },
+   "synthetic": true,
+   "expected_json": "{\"bars\": [{\"adjusted_close\": 20.5, \"close\": 20.5, \"codes\": [], \"high\": 21, \"index\": 0, \"low\": 19, \"ohlc\": \"PRESENT\", \"open\": 20, \"session_date\": \"2030-01-07\", \"session_status\": \"COMPLETE\", \"state\": \"COMPLETE\", \"timestamp\": 1893974400, \"volume\": 5, \"volume_state\": \"REPORTED\"}, {\"adjusted_close\": 20.5, \"close\": 20.5, \"codes\": [], \"high\": 21, \"index\": 1, \"low\": 19, \"ohlc\": \"PRESENT\", \"open\": 20, \"session_date\": \"2030-01-08\", \"session_status\": \"COMPLETE\", \"state\": \"COMPLETE\", \"timestamp\": 1894060800, \"volume\": 5, \"volume_state\": \"REPORTED\"}, {\"adjusted_close\": 20.5, \"close\": 20.5, \"codes\": [], \"high\": 21, \"index\": 2, \"low\": 19, \"ohlc\": \"PRESENT\", \"open\": 20, \"session_date\": \"2030-01-09\", \"session_status\": \"COMPLETE\", \"state\": \"COMPLETE\", \"timestamp\": 1894147200, \"volume\": 5, \"volume_state\": \"REPORTED\"}, {\"adjusted_close\": 20.5, \"close\": 20.5, \"codes\": [\"PROVISIONAL_SESSION\"], \"high\": 21, \"index\": 3, \"low\": 19, \"ohlc\": \"PRESENT\", \"open\": 20, \"session_date\": \"2030-01-10\", \"session_status\": \"UNKNOWN\", \"state\": \"PROVISIONAL\", \"timestamp\": 1894233600, \"volume\": 5, \"volume_state\": \"REPORTED\"}], \"basis\": \"RAW_CLOSE\", \"currency\": \"USD\", \"delay_status\": \"UNKNOWN\", \"exchange\": \"NMS\", \"interval\": \"1d\", \"provider\": \"Tiingo EOD\", \"quality\": {\"codes\": [\"DELAY_UNKNOWN\", \"PROVIDER_FALLBACK\", \"PROVISIONAL_SESSION\"], \"counts\": {\"DELAY_UNKNOWN\": 1, \"PROVIDER_FALLBACK\": 1, \"PROVISIONAL_SESSION\": 1}}, \"read_at\": \"2030-12-31T23:00:00Z\", \"schema\": \"chart-bars/1\", \"source_schema\": \"private-history/1\", \"symbol\": \"SYNTH1\", \"timeframe\": \"D\", \"timezone\": \"America/New_York\"}"
+  },
+  {
+   "id": "normalize_duplicate_session_date",
+   "operation": "normalize",
+   "input": {
+    "history": {
+     "schema": "private-history/1",
+     "provider": "Yahoo Finance(비공식)",
+     "symbol": "SYNTH1",
+     "range": "5y",
+     "currency": "USD",
+     "exchange": "NMS",
+     "timezone": "America/New_York",
+     "interval": "1d",
+     "basis": "RAW_CLOSE",
+     "delay_status": "UNKNOWN",
+     "read_at": "2030-12-31T23:00:00Z",
+     "bars": [
+      {
+       "timestamp": 1894026600,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 1,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894048200,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 1,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894113000,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 1,
+       "session_status": "COMPLETE"
+      }
+     ]
+    }
+   },
+   "synthetic": true,
+   "expected_json": "{\"bars\": [{\"adjusted_close\": 10, \"close\": 10, \"codes\": [\"DUPLICATE_SESSION_DATE\"], \"high\": 11, \"index\": 0, \"low\": 9, \"ohlc\": \"MISSING\", \"open\": 10, \"session_date\": \"2030-01-07\", \"session_status\": \"COMPLETE\", \"state\": \"COMPLETE\", \"timestamp\": 1894026600, \"volume\": 1, \"volume_state\": \"MISSING\"}, {\"adjusted_close\": 10, \"close\": 10, \"codes\": [\"DUPLICATE_SESSION_DATE\"], \"high\": 11, \"index\": 1, \"low\": 9, \"ohlc\": \"MISSING\", \"open\": 10, \"session_date\": \"2030-01-07\", \"session_status\": \"COMPLETE\", \"state\": \"COMPLETE\", \"timestamp\": 1894048200, \"volume\": 1, \"volume_state\": \"MISSING\"}, {\"adjusted_close\": 10, \"close\": 10, \"codes\": [], \"high\": 11, \"index\": 2, \"low\": 9, \"ohlc\": \"PRESENT\", \"open\": 10, \"session_date\": \"2030-01-08\", \"session_status\": \"COMPLETE\", \"state\": \"COMPLETE\", \"timestamp\": 1894113000, \"volume\": 1, \"volume_state\": \"REPORTED\"}], \"basis\": \"RAW_CLOSE\", \"currency\": \"USD\", \"delay_status\": \"UNKNOWN\", \"exchange\": \"NMS\", \"interval\": \"1d\", \"provider\": \"Yahoo Finance(비공식)\", \"quality\": {\"codes\": [\"DELAY_UNKNOWN\", \"DUPLICATE_SESSION_DATE\"], \"counts\": {\"DELAY_UNKNOWN\": 1, \"DUPLICATE_SESSION_DATE\": 2}}, \"read_at\": \"2030-12-31T23:00:00Z\", \"schema\": \"chart-bars/1\", \"source_schema\": \"private-history/1\", \"symbol\": \"SYNTH1\", \"timeframe\": \"D\", \"timezone\": \"America/New_York\"}"
+  },
+  {
+   "id": "weekly_w1_holiday_missing",
+   "operation": "weekly",
+   "input": {
+    "history": {
+     "schema": "private-history/1",
+     "provider": "Yahoo Finance(비공식)",
+     "symbol": "SYNTH1",
+     "range": "5y",
+     "currency": "USD",
+     "exchange": "NMS",
+     "timezone": "America/New_York",
+     "interval": "1d",
+     "basis": "RAW_CLOSE",
+     "delay_status": "UNKNOWN",
+     "read_at": "2030-12-31T23:00:00Z",
+     "bars": [
+      {
+       "timestamp": 1894026600,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894113000,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894199400,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894285800,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894372200,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894631400,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894717800,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894804200,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894890600,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895236200,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895322600,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895409000,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895495400,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895581800,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895841000,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895927400,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1896013800,
+       "open": null,
+       "high": null,
+       "low": null,
+       "close": null,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1896100200,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1896186600,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1896445800,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1896532200,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": null,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1896618600,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1896705000,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1896791400,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1897050600,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1897137000,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 0,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1897223400,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1897309800,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      }
+     ]
+    },
+    "actions": null
+   },
+   "synthetic": true,
+   "expected_json": "{\"bars\": [{\"close\": 51, \"codes\": [], \"first_session\": \"2030-01-07\", \"high\": 52, \"index\": 0, \"known_at\": \"2030-01-11\", \"last_session\": \"2030-01-11\", \"low\": 48, \"ohlc\": \"PRESENT\", \"open\": 50, \"session_count\": 5, \"state\": \"COMPLETE\", \"timestamp\": 1894372200, \"volume\": 500, \"volume_state\": \"REPORTED\", \"week_start\": \"2030-01-07\"}, {\"close\": 51, \"codes\": [], \"first_session\": \"2030-01-14\", \"high\": 52, \"index\": 1, \"known_at\": \"2030-01-21\", \"last_session\": \"2030-01-17\", \"low\": 48, \"ohlc\": \"PRESENT\", \"open\": 50, \"session_count\": 4, \"state\": \"COMPLETE\", \"timestamp\": 1894890600, \"volume\": 400, \"volume_state\": \"REPORTED\", \"week_start\": \"2030-01-14\"}, {\"close\": 51, \"codes\": [], \"first_session\": \"2030-01-21\", \"high\": 52, \"index\": 2, \"known_at\": \"2030-01-25\", \"last_session\": \"2030-01-25\", \"low\": 48, \"ohlc\": \"PRESENT\", \"open\": 50, \"session_count\": 5, \"state\": \"COMPLETE\", \"timestamp\": 1895581800, \"volume\": 500, \"volume_state\": \"REPORTED\", \"week_start\": \"2030-01-21\"}, {\"close\": null, \"codes\": [\"OHLC_MISSING_IN_WEEK\"], \"first_session\": \"2030-01-28\", \"high\": null, \"index\": 3, \"known_at\": \"2030-02-01\", \"last_session\": \"2030-02-01\", \"low\": null, \"ohlc\": \"MISSING\", \"open\": null, \"session_count\": 5, \"state\": \"COMPLETE\", \"timestamp\": 1896186600, \"volume\": 500, \"volume_state\": \"REPORTED\", \"week_start\": \"2030-01-28\"}, {\"close\": 51, \"codes\": [\"VOLUME_MISSING_IN_WEEK\"], \"first_session\": \"2030-02-04\", \"high\": 52, \"index\": 4, \"known_at\": \"2030-02-08\", \"last_session\": \"2030-02-08\", \"low\": 48, \"ohlc\": \"PRESENT\", \"open\": 50, \"session_count\": 5, \"state\": \"COMPLETE\", \"timestamp\": 1896791400, \"volume\": null, \"volume_state\": \"MISSING\", \"week_start\": \"2030-02-04\"}, {\"close\": 51, \"codes\": [\"WEEK_NOT_CLOSED\"], \"first_session\": \"2030-02-11\", \"high\": 52, \"index\": 5, \"known_at\": null, \"last_session\": \"2030-02-14\", \"low\": 48, \"ohlc\": \"PRESENT\", \"open\": 50, \"session_count\": 4, \"state\": \"PROVISIONAL\", \"timestamp\": 1897309800, \"volume\": 300, \"volume_state\": \"REPORTED\", \"week_start\": \"2030-02-11\"}], \"basis\": \"RAW_CLOSE\", \"currency\": \"USD\", \"delay_status\": \"UNKNOWN\", \"exchange\": \"NMS\", \"interval\": \"1d\", \"provider\": \"Yahoo Finance(비공식)\", \"quality\": {\"codes\": [\"DELAY_UNKNOWN\", \"OHLC_MISSING_IN_WEEK\", \"VOLUME_MISSING_IN_WEEK\", \"WEEK_NOT_CLOSED\"], \"counts\": {\"DELAY_UNKNOWN\": 1, \"OHLC_MISSING_IN_WEEK\": 1, \"VOLUME_MISSING_IN_WEEK\": 1, \"WEEK_NOT_CLOSED\": 1}}, \"read_at\": \"2030-12-31T23:00:00Z\", \"schema\": \"chart-bars/1\", \"source_schema\": \"private-history/1\", \"symbol\": \"SYNTH1\", \"timeframe\": \"W\", \"timezone\": \"America/New_York\"}"
+  },
+  {
+   "id": "weekly_tail_not_closed",
+   "operation": "weekly",
+   "input": {
+    "history": {
+     "schema": "private-history/1",
+     "provider": "Yahoo Finance(비공식)",
+     "symbol": "SYNTH1",
+     "range": "5y",
+     "currency": "USD",
+     "exchange": "NMS",
+     "timezone": "America/New_York",
+     "interval": "1d",
+     "basis": "RAW_CLOSE",
+     "delay_status": "UNKNOWN",
+     "read_at": "2030-12-31T23:00:00Z",
+     "bars": [
+      {
+       "timestamp": 1894026600,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894113000,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894199400,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894285800,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894372200,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894631400,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894717800,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894804200,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894890600,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      }
+     ]
+    },
+    "actions": null
+   },
+   "synthetic": true,
+   "expected_json": "{\"bars\": [{\"close\": 51, \"codes\": [], \"first_session\": \"2030-01-07\", \"high\": 52, \"index\": 0, \"known_at\": \"2030-01-11\", \"last_session\": \"2030-01-11\", \"low\": 48, \"ohlc\": \"PRESENT\", \"open\": 50, \"session_count\": 5, \"state\": \"COMPLETE\", \"timestamp\": 1894372200, \"volume\": 500, \"volume_state\": \"REPORTED\", \"week_start\": \"2030-01-07\"}, {\"close\": 51, \"codes\": [\"WEEK_NOT_CLOSED\"], \"first_session\": \"2030-01-14\", \"high\": 52, \"index\": 1, \"known_at\": null, \"last_session\": \"2030-01-17\", \"low\": 48, \"ohlc\": \"PRESENT\", \"open\": 50, \"session_count\": 4, \"state\": \"PROVISIONAL\", \"timestamp\": 1894890600, \"volume\": 400, \"volume_state\": \"REPORTED\", \"week_start\": \"2030-01-14\"}], \"basis\": \"RAW_CLOSE\", \"currency\": \"USD\", \"delay_status\": \"UNKNOWN\", \"exchange\": \"NMS\", \"interval\": \"1d\", \"provider\": \"Yahoo Finance(비공식)\", \"quality\": {\"codes\": [\"DELAY_UNKNOWN\", \"WEEK_NOT_CLOSED\"], \"counts\": {\"DELAY_UNKNOWN\": 1, \"WEEK_NOT_CLOSED\": 1}}, \"read_at\": \"2030-12-31T23:00:00Z\", \"schema\": \"chart-bars/1\", \"source_schema\": \"private-history/1\", \"symbol\": \"SYNTH1\", \"timeframe\": \"W\", \"timezone\": \"America/New_York\"}"
+  },
+  {
+   "id": "weekly_friday_in_progress",
+   "operation": "weekly",
+   "input": {
+    "history": {
+     "schema": "private-history/1",
+     "provider": "Yahoo Finance(비공식)",
+     "symbol": "SYNTH1",
+     "range": "5y",
+     "currency": "USD",
+     "exchange": "NMS",
+     "timezone": "America/New_York",
+     "interval": "1d",
+     "basis": "RAW_CLOSE",
+     "delay_status": "UNKNOWN",
+     "read_at": "2030-12-31T23:00:00Z",
+     "bars": [
+      {
+       "timestamp": 1894026600,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894113000,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894199400,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894285800,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894372200,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894631400,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894717800,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894804200,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894890600,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894977000,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "IN_PROGRESS"
+      }
+     ]
+    },
+    "actions": null
+   },
+   "synthetic": true,
+   "expected_json": "{\"bars\": [{\"close\": 51, \"codes\": [], \"first_session\": \"2030-01-07\", \"high\": 52, \"index\": 0, \"known_at\": \"2030-01-11\", \"last_session\": \"2030-01-11\", \"low\": 48, \"ohlc\": \"PRESENT\", \"open\": 50, \"session_count\": 5, \"state\": \"COMPLETE\", \"timestamp\": 1894372200, \"volume\": 500, \"volume_state\": \"REPORTED\", \"week_start\": \"2030-01-07\"}, {\"close\": 51, \"codes\": [\"PROVISIONAL_DAILY_IN_WEEK\"], \"first_session\": \"2030-01-14\", \"high\": 52, \"index\": 1, \"known_at\": null, \"last_session\": \"2030-01-18\", \"low\": 48, \"ohlc\": \"PRESENT\", \"open\": 50, \"session_count\": 5, \"state\": \"PROVISIONAL\", \"timestamp\": 1894977000, \"volume\": 500, \"volume_state\": \"REPORTED\", \"week_start\": \"2030-01-14\"}], \"basis\": \"RAW_CLOSE\", \"currency\": \"USD\", \"delay_status\": \"UNKNOWN\", \"exchange\": \"NMS\", \"interval\": \"1d\", \"provider\": \"Yahoo Finance(비공식)\", \"quality\": {\"codes\": [\"DELAY_UNKNOWN\", \"PROVISIONAL_DAILY_IN_WEEK\"], \"counts\": {\"DELAY_UNKNOWN\": 1, \"PROVISIONAL_DAILY_IN_WEEK\": 1}}, \"read_at\": \"2030-12-31T23:00:00Z\", \"schema\": \"chart-bars/1\", \"source_schema\": \"private-history/1\", \"symbol\": \"SYNTH1\", \"timeframe\": \"W\", \"timezone\": \"America/New_York\"}"
+  },
+  {
+   "id": "weekly_provisional_inside",
+   "operation": "weekly",
+   "input": {
+    "history": {
+     "schema": "private-history/1",
+     "provider": "Yahoo Finance(비공식)",
+     "symbol": "SYNTH1",
+     "range": "5y",
+     "currency": "USD",
+     "exchange": "NMS",
+     "timezone": "America/New_York",
+     "interval": "1d",
+     "basis": "RAW_CLOSE",
+     "delay_status": "UNKNOWN",
+     "read_at": "2030-12-31T23:00:00Z",
+     "bars": [
+      {
+       "timestamp": 1894026600,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894113000,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894199400,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894285800,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894372200,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894631400,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894717800,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894804200,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "UNKNOWN"
+      },
+      {
+       "timestamp": 1894890600,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894977000,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895236200,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895322600,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895409000,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895495400,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895581800,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      }
+     ]
+    },
+    "actions": null
+   },
+   "synthetic": true,
+   "expected_json": "{\"bars\": [{\"close\": 51, \"codes\": [], \"first_session\": \"2030-01-07\", \"high\": 52, \"index\": 0, \"known_at\": \"2030-01-11\", \"last_session\": \"2030-01-11\", \"low\": 48, \"ohlc\": \"PRESENT\", \"open\": 50, \"session_count\": 5, \"state\": \"COMPLETE\", \"timestamp\": 1894372200, \"volume\": 500, \"volume_state\": \"REPORTED\", \"week_start\": \"2030-01-07\"}, {\"close\": 51, \"codes\": [\"PROVISIONAL_DAILY_IN_WEEK\"], \"first_session\": \"2030-01-14\", \"high\": 52, \"index\": 1, \"known_at\": null, \"last_session\": \"2030-01-18\", \"low\": 48, \"ohlc\": \"PRESENT\", \"open\": 50, \"session_count\": 5, \"state\": \"PROVISIONAL\", \"timestamp\": 1894977000, \"volume\": 500, \"volume_state\": \"REPORTED\", \"week_start\": \"2030-01-14\"}, {\"close\": 51, \"codes\": [], \"first_session\": \"2030-01-21\", \"high\": 52, \"index\": 2, \"known_at\": \"2030-01-25\", \"last_session\": \"2030-01-25\", \"low\": 48, \"ohlc\": \"PRESENT\", \"open\": 50, \"session_count\": 5, \"state\": \"COMPLETE\", \"timestamp\": 1895581800, \"volume\": 500, \"volume_state\": \"REPORTED\", \"week_start\": \"2030-01-21\"}], \"basis\": \"RAW_CLOSE\", \"currency\": \"USD\", \"delay_status\": \"UNKNOWN\", \"exchange\": \"NMS\", \"interval\": \"1d\", \"provider\": \"Yahoo Finance(비공식)\", \"quality\": {\"codes\": [\"DELAY_UNKNOWN\", \"PROVISIONAL_DAILY_IN_WEEK\"], \"counts\": {\"DELAY_UNKNOWN\": 1, \"PROVISIONAL_DAILY_IN_WEEK\": 1}}, \"read_at\": \"2030-12-31T23:00:00Z\", \"schema\": \"chart-bars/1\", \"source_schema\": \"private-history/1\", \"symbol\": \"SYNTH1\", \"timeframe\": \"W\", \"timezone\": \"America/New_York\"}"
+  },
+  {
+   "id": "weekly_split_straddles_week",
+   "operation": "weekly",
+   "input": {
+    "history": {
+     "schema": "private-history/1",
+     "provider": "Yahoo Finance(비공식)",
+     "symbol": "SYNTH1",
+     "range": "5y",
+     "currency": "USD",
+     "exchange": "NMS",
+     "timezone": "America/New_York",
+     "interval": "1d",
+     "basis": "RAW_CLOSE",
+     "delay_status": "UNKNOWN",
+     "read_at": "2030-12-31T23:00:00Z",
+     "bars": [
+      {
+       "timestamp": 1894026600,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894113000,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894199400,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894285800,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894372200,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894631400,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894717800,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894804200,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894890600,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894977000,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895236200,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895322600,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895409000,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895495400,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1895581800,
+       "open": 50,
+       "high": 52,
+       "low": 48,
+       "close": 51,
+       "adjusted_close": 51,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      }
+     ]
+    },
+    "actions": {
+     "status": "AVAILABLE",
+     "covered_from": "2030-01-01",
+     "covered_to": "2030-12-31",
+     "events": [
+      {
+       "kind": "SPLIT",
+       "effective_date": "2030-01-16"
+      },
+      {
+       "kind": "DIVIDEND",
+       "effective_date": "2030-01-23"
+      }
+     ]
+    }
+   },
+   "synthetic": true,
+   "expected_json": "{\"bars\": [{\"close\": 51, \"codes\": [], \"first_session\": \"2030-01-07\", \"high\": 52, \"index\": 0, \"known_at\": \"2030-01-11\", \"last_session\": \"2030-01-11\", \"low\": 48, \"ohlc\": \"PRESENT\", \"open\": 50, \"session_count\": 5, \"state\": \"COMPLETE\", \"timestamp\": 1894372200, \"volume\": 500, \"volume_state\": \"REPORTED\", \"week_start\": \"2030-01-07\"}, {\"close\": null, \"codes\": [\"CORPORATE_ACTION_IN_BAR\"], \"first_session\": \"2030-01-14\", \"high\": null, \"index\": 1, \"known_at\": \"2030-01-18\", \"last_session\": \"2030-01-18\", \"low\": null, \"ohlc\": \"MISSING\", \"open\": null, \"session_count\": 5, \"state\": \"COMPLETE\", \"timestamp\": 1894977000, \"volume\": null, \"volume_state\": \"MISSING\", \"week_start\": \"2030-01-14\"}, {\"close\": 51, \"codes\": [], \"first_session\": \"2030-01-21\", \"high\": 52, \"index\": 2, \"known_at\": \"2030-01-25\", \"last_session\": \"2030-01-25\", \"low\": 48, \"ohlc\": \"PRESENT\", \"open\": 50, \"session_count\": 5, \"state\": \"COMPLETE\", \"timestamp\": 1895581800, \"volume\": 500, \"volume_state\": \"REPORTED\", \"week_start\": \"2030-01-21\"}], \"basis\": \"RAW_CLOSE\", \"currency\": \"USD\", \"delay_status\": \"UNKNOWN\", \"exchange\": \"NMS\", \"interval\": \"1d\", \"provider\": \"Yahoo Finance(비공식)\", \"quality\": {\"codes\": [\"CORPORATE_ACTION_IN_BAR\", \"DELAY_UNKNOWN\"], \"counts\": {\"CORPORATE_ACTION_IN_BAR\": 1, \"DELAY_UNKNOWN\": 1}}, \"read_at\": \"2030-12-31T23:00:00Z\", \"schema\": \"chart-bars/1\", \"source_schema\": \"private-history/1\", \"symbol\": \"SYNTH1\", \"timeframe\": \"W\", \"timezone\": \"America/New_York\"}"
+  },
+  {
+   "id": "continuity_not_provided",
+   "operation": "continuity",
+   "input": {
+    "actions": null,
+    "start": "2030-01-07",
+    "end": "2030-02-07"
+   },
+   "synthetic": true,
+   "expected_json": "{\"reason_codes\": [\"PRICE_BASIS_CONTINUITY_UNCONFIRMED\", \"CORPORATE_ACTION_EVENTS_NOT_PROVIDED\"], \"state\": \"NOT_JUDGEABLE\"}"
+  },
+  {
+   "id": "continuity_not_provided_explicit",
+   "operation": "continuity",
+   "input": {
+    "actions": {
+     "status": "NOT_PROVIDED"
+    },
+    "start": "2030-01-07",
+    "end": "2030-02-07"
+   },
+   "synthetic": true,
+   "expected_json": "{\"reason_codes\": [\"PRICE_BASIS_CONTINUITY_UNCONFIRMED\", \"CORPORATE_ACTION_EVENTS_NOT_PROVIDED\"], \"state\": \"NOT_JUDGEABLE\"}"
+  },
+  {
+   "id": "continuity_lookup_failed",
+   "operation": "continuity",
+   "input": {
+    "actions": {
+     "status": "LOOKUP_FAILED"
+    },
+    "start": "2030-01-07",
+    "end": "2030-02-07"
+   },
+   "synthetic": true,
+   "expected_json": "{\"reason_codes\": [\"PRICE_BASIS_CONTINUITY_UNCONFIRMED\", \"CORPORATE_ACTION_LOOKUP_FAILED\"], \"state\": \"NOT_JUDGEABLE\"}"
+  },
+  {
+   "id": "continuity_invalid_kind",
+   "operation": "continuity",
+   "input": {
+    "actions": {
+     "status": "AVAILABLE",
+     "covered_from": "2030-01-01",
+     "covered_to": "2030-06-30",
+     "events": [
+      {
+       "kind": "SPINOFF",
+       "effective_date": "2030-02-01"
+      }
+     ]
+    },
+    "start": "2030-01-07",
+    "end": "2030-02-07"
+   },
+   "synthetic": true,
+   "expected_json": "{\"reason_codes\": [\"PRICE_BASIS_CONTINUITY_UNCONFIRMED\", \"CORPORATE_ACTION_EVENTS_INVALID\"], \"state\": \"NOT_JUDGEABLE\"}"
+  },
+  {
+   "id": "continuity_no_events",
+   "operation": "continuity",
+   "input": {
+    "actions": {
+     "status": "AVAILABLE",
+     "covered_from": "2030-01-01",
+     "covered_to": "2030-06-30",
+     "events": []
+    },
+    "start": "2030-01-07",
+    "end": "2030-05-07"
+   },
+   "synthetic": true,
+   "expected_json": "{\"reason_codes\": [], \"state\": \"CONFIRMED\"}"
+  },
+  {
+   "id": "continuity_dividend_only_window",
+   "operation": "continuity",
+   "input": {
+    "actions": {
+     "status": "AVAILABLE",
+     "covered_from": "2030-01-01",
+     "covered_to": "2030-06-30",
+     "events": [
+      {
+       "kind": "SPLIT",
+       "effective_date": "2030-03-02"
+      },
+      {
+       "kind": "DIVIDEND",
+       "effective_date": "2030-02-01"
+      }
+     ]
+    },
+    "start": "2030-01-07",
+    "end": "2030-03-01"
+   },
+   "synthetic": true,
+   "expected_json": "{\"reason_codes\": [], \"state\": \"CONFIRMED\"}"
+  },
+  {
+   "id": "continuity_split_in_window",
+   "operation": "continuity",
+   "input": {
+    "actions": {
+     "status": "AVAILABLE",
+     "covered_from": "2030-01-01",
+     "covered_to": "2030-06-30",
+     "events": [
+      {
+       "kind": "SPLIT",
+       "effective_date": "2030-03-02"
+      },
+      {
+       "kind": "DIVIDEND",
+       "effective_date": "2030-02-01"
+      }
+     ]
+    },
+    "start": "2030-02-07",
+    "end": "2030-03-02"
+   },
+   "synthetic": true,
+   "expected_json": "{\"reason_codes\": [\"CORPORATE_ACTION_IN_WINDOW\"], \"state\": \"NOT_JUDGEABLE\"}"
+  },
+  {
+   "id": "continuity_starts_on_split",
+   "operation": "continuity",
+   "input": {
+    "actions": {
+     "status": "AVAILABLE",
+     "covered_from": "2030-01-01",
+     "covered_to": "2030-06-30",
+     "events": [
+      {
+       "kind": "SPLIT",
+       "effective_date": "2030-03-02"
+      },
+      {
+       "kind": "DIVIDEND",
+       "effective_date": "2030-02-01"
+      }
+     ]
+    },
+    "start": "2030-03-02",
+    "end": "2030-04-02"
+   },
+   "synthetic": true,
+   "expected_json": "{\"reason_codes\": [], \"state\": \"CONFIRMED\"}"
+  },
+  {
+   "id": "continuity_coverage_gap",
+   "operation": "continuity",
+   "input": {
+    "actions": {
+     "status": "AVAILABLE",
+     "covered_from": "2030-01-01",
+     "covered_to": "2030-06-30",
+     "events": [
+      {
+       "kind": "SPLIT",
+       "effective_date": "2030-03-02"
+      },
+      {
+       "kind": "DIVIDEND",
+       "effective_date": "2030-02-01"
+      }
+     ]
+    },
+    "start": "2029-12-20",
+    "end": "2030-02-07"
+   },
+   "synthetic": true,
+   "expected_json": "{\"reason_codes\": [\"PRICE_BASIS_CONTINUITY_UNCONFIRMED\", \"CORPORATE_ACTION_COVERAGE_GAP\"], \"state\": \"NOT_JUDGEABLE\"}"
+  },
+  {
+   "id": "merge_revision",
+   "operation": "merge",
+   "input": {
+    "previous": {
+     "schema": "private-history/1",
+     "provider": "Yahoo Finance(비공식)",
+     "symbol": "SYNTH1",
+     "range": "5y",
+     "currency": "USD",
+     "exchange": "NMS",
+     "timezone": "America/New_York",
+     "interval": "1d",
+     "basis": "RAW_CLOSE",
+     "delay_status": "UNKNOWN",
+     "read_at": "2030-12-31T23:00:00Z",
+     "bars": [
+      {
+       "timestamp": 1894026600,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894113000,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894199400,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894285800,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894372200,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894631400,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "IN_PROGRESS"
+      }
+     ]
+    },
+    "incoming": {
+     "schema": "private-history/1",
+     "provider": "Tiingo EOD",
+     "symbol": "SYNTH1",
+     "range": "5y",
+     "currency": "USD",
+     "exchange": "NMS",
+     "timezone": "America/New_York",
+     "interval": "1d",
+     "basis": "RAW_CLOSE",
+     "delay_status": "UNKNOWN",
+     "read_at": "2031-01-01T23:00:00Z",
+     "timestamp_kind": "PROVIDER_SESSION_LABEL",
+     "bars": [
+      {
+       "timestamp": 1894285800,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10.5,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894372200,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894631400,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 101,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894717800,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894804200,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 100,
+       "session_status": "COMPLETE"
+      }
+     ]
+    }
+   },
+   "synthetic": true,
+   "expected_json": "{\"revised\": [\"2030-01-10\"], \"series\": {\"bars\": [{\"adjusted_close\": 10, \"close\": 10, \"codes\": [], \"high\": 11, \"index\": 0, \"low\": 9, \"ohlc\": \"PRESENT\", \"open\": 10, \"session_date\": \"2030-01-07\", \"session_status\": \"COMPLETE\", \"state\": \"COMPLETE\", \"timestamp\": 1894026600, \"volume\": 100, \"volume_state\": \"REPORTED\"}, {\"adjusted_close\": 10, \"close\": 10, \"codes\": [], \"high\": 11, \"index\": 1, \"low\": 9, \"ohlc\": \"PRESENT\", \"open\": 10, \"session_date\": \"2030-01-08\", \"session_status\": \"COMPLETE\", \"state\": \"COMPLETE\", \"timestamp\": 1894113000, \"volume\": 100, \"volume_state\": \"REPORTED\"}, {\"adjusted_close\": 10, \"close\": 10, \"codes\": [], \"high\": 11, \"index\": 2, \"low\": 9, \"ohlc\": \"PRESENT\", \"open\": 10, \"session_date\": \"2030-01-09\", \"session_status\": \"COMPLETE\", \"state\": \"COMPLETE\", \"timestamp\": 1894199400, \"volume\": 100, \"volume_state\": \"REPORTED\"}, {\"adjusted_close\": 10, \"close\": 10, \"codes\": [\"PRICE_REVISED\"], \"high\": 11, \"index\": 3, \"low\": 9, \"ohlc\": \"PRESENT\", \"open\": 10, \"session_date\": \"2030-01-10\", \"session_status\": \"COMPLETE\", \"state\": \"COMPLETE\", \"timestamp\": 1894285800, \"volume\": 100, \"volume_state\": \"REPORTED\"}, {\"adjusted_close\": 10, \"close\": 10, \"codes\": [], \"high\": 11, \"index\": 4, \"low\": 9, \"ohlc\": \"PRESENT\", \"open\": 10, \"session_date\": \"2030-01-11\", \"session_status\": \"COMPLETE\", \"state\": \"COMPLETE\", \"timestamp\": 1894372200, \"volume\": 100, \"volume_state\": \"REPORTED\"}, {\"adjusted_close\": 10, \"close\": 10, \"codes\": [], \"high\": 11, \"index\": 5, \"low\": 9, \"ohlc\": \"PRESENT\", \"open\": 10, \"session_date\": \"2030-01-14\", \"session_status\": \"COMPLETE\", \"state\": \"COMPLETE\", \"timestamp\": 1894631400, \"volume\": 101, \"volume_state\": \"REPORTED\"}, {\"adjusted_close\": 10, \"close\": 10, \"codes\": [], \"high\": 11, \"index\": 6, \"low\": 9, \"ohlc\": \"PRESENT\", \"open\": 10, \"session_date\": \"2030-01-15\", \"session_status\": \"COMPLETE\", \"state\": \"COMPLETE\", \"timestamp\": 1894717800, \"volume\": 100, \"volume_state\": \"REPORTED\"}, {\"adjusted_close\": 10, \"close\": 10, \"codes\": [], \"high\": 11, \"index\": 7, \"low\": 9, \"ohlc\": \"PRESENT\", \"open\": 10, \"session_date\": \"2030-01-16\", \"session_status\": \"COMPLETE\", \"state\": \"COMPLETE\", \"timestamp\": 1894804200, \"volume\": 100, \"volume_state\": \"REPORTED\"}], \"basis\": \"RAW_CLOSE\", \"currency\": \"USD\", \"delay_status\": \"UNKNOWN\", \"exchange\": \"NMS\", \"interval\": \"1d\", \"provider\": \"Yahoo Finance(비공식)\", \"quality\": {\"codes\": [\"DELAY_UNKNOWN\", \"PRICE_REVISED\", \"PROVIDER_MIXED\"], \"counts\": {\"DELAY_UNKNOWN\": 1, \"PRICE_REVISED\": 1, \"PROVIDER_MIXED\": 1}}, \"read_at\": \"2031-01-01T23:00:00Z\", \"schema\": \"chart-bars/1\", \"source_schema\": \"private-history/1\", \"symbol\": \"SYNTH1\", \"timeframe\": \"D\", \"timezone\": \"America/New_York\"}}"
+  },
+  {
+   "id": "session_set_mismatch",
+   "operation": "session_set_mismatch",
+   "input": {
+    "history": {
+     "schema": "private-history/1",
+     "provider": "Yahoo Finance(비공식)",
+     "symbol": "SYNTH1",
+     "range": "5y",
+     "currency": "USD",
+     "exchange": "NMS",
+     "timezone": "America/New_York",
+     "interval": "1d",
+     "basis": "RAW_CLOSE",
+     "delay_status": "UNKNOWN",
+     "read_at": "2030-12-31T23:00:00Z",
+     "bars": [
+      {
+       "timestamp": 1894026600,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 1,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894113000,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 1,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894199400,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 1,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894285800,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 1,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894372200,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 1,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894631400,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 1,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894717800,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 1,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894804200,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 1,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894890600,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 1,
+       "session_status": "COMPLETE"
+      },
+      {
+       "timestamp": 1894977000,
+       "open": 10,
+       "high": 11,
+       "low": 9,
+       "close": 10,
+       "adjusted_close": 10,
+       "volume": 1,
+       "session_status": "COMPLETE"
+      }
+     ]
+    },
+    "store_dates": [
+     "2030-01-09",
+     "2030-01-10",
+     "2030-01-11",
+     "2030-01-15",
+     "2030-01-16",
+     "2030-01-17",
+     "2030-01-18",
+     "2030-01-21",
+     "2030-01-22",
+     "2030-01-23",
+     "2030-01-24",
+     "2030-01-25"
+    ]
+   },
+   "synthetic": true,
+   "expected_json": "{\"missing_in_bars\": 0, \"missing_in_store\": 1, \"reason_codes\": [\"SESSION_SET_MISMATCH\"], \"state\": \"MISMATCH\"}"
+  }
+ ]
+}
