@@ -63,9 +63,8 @@ function secDay(n) {
   SD.groups(events).forEach((g, i) => Object.assign(events[i], g)); return SD.validate({ ...p, events });
 }
 function newsDay(n, sec) {
-  const p = newsFx.payload(Date.parse(DAYS[n].now), sec); if (n === 1) return p;
-  const items = p.items.filter((i) => i.company_id !== 'amd').map((i) => i.relation === 'RELATED_TO_8K' ? { ...i, occurrence: null } : { ...i, group_id: null, occurrence: null });
-  NS.groups(items).forEach((g, i) => Object.assign(items[i], g)); return NS.validate({ ...p, items });
+  // Day 2: the AMD news item is gone (the fixture regroups the rest and records AMD as answered with nothing new).
+  return newsFx.payload(Date.parse(DAYS[n].now), sec, { without: n === 1 ? [] : ['amd'] });
 }
 const CURVE = { 1: { date: '2026-10-12', ten_year: 4.2, three_month: 4.5, run_days: 25 }, 2: { date: '2026-10-13', ten_year: 4.4, three_month: 4.1, run_days: 0 } };
 function macroDay(n) {

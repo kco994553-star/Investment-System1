@@ -92,7 +92,7 @@
 | sec-qgv2.json | :101 Universe 샤드 + :83 TARGET | 일일 실행. Universe는 샤드 순환(7일에 한 번), TARGET은 매일. 게시마다 전체 재계산 | 다시 받은 행의 값·acquired_at. 모든 행의 백분위·축 점수 | 파일 as_of, 행 acquired_at, 행 상태 LIVE/STALE(14일), calc_version |
 | sec-universe-shares.json / sec-universe-qg.json | :101 | 샤드 순환 | 다시 받은 행 | 행 acquired_at |
 | sec-disclosures.json | :142 | 일일 실행 | 최근 90일 8-K | 파일 as_of, 48시간 STALE |
-| news-signals.json | :147 | 일일 실행 | 최근 14일 뉴스·IR | 파일 as_of, 48시간 STALE |
+| news-signals.json | :147 | 일일 실행 | 최근 14일 뉴스·IR | 파일 as_of, 48시간 STALE. schema 2: 회사별 이번 결과(UPDATED/NO_NEW_ITEMS/FAILED/NOT_RUN)와 출처별 `refresh`(마지막 시도·성공, 이월 시작). 실패는 state를 바꾸지 않고 reason_codes `REFRESH_FAILED`·`REFRESH_PARTIAL_FAILED`로 적는다 |
 | dart-disclosures.json / dart-financials.json | :90 | 일일 실행 | 한국 공시 | 파일 as_of |
 | macro-screen.json | :83 (`--macro-v0`) | 일일 실행, 값은 발표 기준 | 새 발표가 있는 계열만 | 관측 기간, 수집 상한 시각(available_at), 파일 as_of |
 | sec-13f-changes.json | :135 | 일일 실행, 내용은 분기 | 최근 두 분기 | 분기말, 제출일, 수집 시각 |
@@ -190,7 +190,7 @@
 
 | 요소 | 출처 → 소비 | 상태·저장 | 계기·재취득 | 시각 | 없음·STALE | 바뀌면 안 되는 것 | 시험 |
 |---|---|---|---|---|---|---|---|
-| 4.2 공시·뉴스 목록 | sec-disclosures.json + news-signals.json + dart(`news-signals.js:123-132`, `app.js:401-404`) | 연결 완료 · 공개 | 일일 실행 · 페이지당 한 번 | 파일 as_of, 행마다 발표·수집 시각(근거 보기) | 48시간 지나면 "STALE · 수집 갱신 시각 경과" | score_effect NONE: 점수에 반영 안 함 | **update_propagation**(목록·as_of 일치, 삭제 반영), news_signals, sec_disclosures |
+| 4.2 공시·뉴스 목록 | sec-disclosures.json + news-signals.json + dart(`news-signals.js:123-132`, `app.js:401-404`) | 연결 완료 · 공개 | 일일 실행 · 페이지당 한 번 | 파일 as_of, 행마다 발표·수집 시각(근거 보기) | 48시간 지나면 "STALE · 수집 갱신 시각 경과". 출처마다 '새 뉴스 없음 · 확인 t' 또는 '이전 자료 유지 · 마지막 성공 t · 최근 갱신 실패(출처 코드, t)'(`news-signals.js` refreshText) | score_effect NONE: 점수에 반영 안 함 | **update_propagation**(목록·as_of 일치, 삭제 반영), news_signals, sec_disclosures |
 | 4.2 필터 | sessionStorage `news-filters`(`news-signals.js:103`) | 연결 완료 · 기기 저장(탭) | 사용자 조작 | — | — | 자료 | news_signals |
 | 4.3 트리 예시 | 같은 두 파일을 **매번 다시 읽음**(`ia-screens.js:132-141`) | 연결 완료 · 공개 | 화면을 열 때마다 | 파일 as_of | 읽기 실패 → NA | — | app_nav_ia |
 | 4.1 관계망 | 없음(`ia-screens.js:126`) | 설계만(REL-SOURCE) | — | — | NOT_AVAILABLE | — | app_nav_ia |
