@@ -71,3 +71,5 @@ qgv_rank_split_browser_test.js
 v_session_state_browser_test.js
 candidate_rank_split_browser_test.js
 universe_leaderboard_browser_test.js
+refresh_view_state_browser_test.js
+official_personal_labels_browser_test.js

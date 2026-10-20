@@ -71,7 +71,10 @@ async function sortFlow(page, width) {
   if (m3 === 'READY') { await page.locator('#leader-sort').selectOption('cap-desc');await page.locator('[data-leaderboard-sort="cap-desc"]').waitFor();
     const caps = await page.locator(T + ' tbody tr').evaluateAll((rows) => rows.map((r) => { const b = r.querySelector('[data-leaderboard-m3-rank]');return b ? Number(b.dataset.leaderboardM3Rank) : null; }));
     const firstNa = caps.indexOf(null), known = caps.slice(0, firstNa < 0 ? caps.length : firstNa);assert.ok(known.length >= 1);assert.ok(caps.slice(known.length).every((c) => c === null));for (let i = 1; i < known.length; i++) assert.ok(known[i] >= known[i - 1]); }
-  phase = 'SORT_COUNTS';const counts = page.locator('[data-leaderboard-counts]');assert.match(await counts.textContent(), /^분석 모집단 \d+개 \(공개 SEC 기록 · 백분위 비교 대상\) · 공식 순위 \d+개 \(이 화면 (\d+)개 기업 중\) · QG 참고 \d+개 · 표시 \1개/);assert.equal(Number((await counts.textContent()).match(/이 화면 (\d+)개/)[1]), N);  // D11: '순위 가능' -> '공식 순위' + QG 참고
+  phase = 'SORT_COUNTS';const counts = page.locator('[data-leaderboard-counts]');
+  // The rank is called 공식 only on the official default profile; this flow runs after a personal preset/gate change (owner 2026-10-19).
+  const rankWord = (await page.evaluate(() => QgvScores.provenance({ profile: leaderScores().profile }).weights)) === 'OFFICIAL' ? '공식 순위' : '개인 프리셋 순위';
+  assert.match(await counts.textContent(), new RegExp('^분석 모집단 \\d+개 \\(공개 SEC 기록 · 백분위 비교 대상\\) · ' + rankWord + ' \\d+개 \\(이 화면 (\\d+)개 기업 중\\) · QG 참고 \\d+개 · 표시 \\1개'));assert.equal(Number((await counts.textContent()).match(/이 화면 (\d+)개/)[1]), N);  // D11: '순위 가능' -> '공식 순위' + QG 참고
   const pop = Number(await counts.getAttribute('data-population')), rankable = Number(await counts.getAttribute('data-rankable'));
   assert.equal(pop, await page.evaluate(() => Object.values(publicScreens['sec-qgv2.json'].records).filter((r) => r.in_cross_section === true && ['LIVE', 'STALE'].includes(r.state) && r.calc_version_mismatch !== true && r.identity_withdrawn !== true).length));
   assert.equal(rankable, Object.values(official).filter((r) => r.rank !== null).length);assert.ok(pop !== 19 || rankable !== 19);
