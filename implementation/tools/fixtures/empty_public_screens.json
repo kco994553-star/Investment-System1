@@ -2724,6 +2724,905 @@
   "stale_after_seconds": 172800,
   "state": "NOT_AVAILABLE"
  },
+ "macro-evidence.json": {
+  "catalog": "MACRO_EVIDENCE_LINES_CATALOG_20261018 \u00a75 (P1 13)",
+  "collection_started_at": null,
+  "continuity": "NOT_COLLECTED",
+  "events": [],
+  "generated_at": null,
+  "indicators": [
+   {
+    "cycles": [
+     "economy"
+    ],
+    "edges": {
+     "down": {
+      "candidate": "WARNING",
+      "interpretation": "\ud655\uc7a5\u2192\ub454\ud654 \uacbd\uace0",
+      "label": "\uc5ed\uc804 \uc2dc\uc791"
+     }
+    },
+    "family": "C",
+    "frequency": "M",
+    "id": "E09",
+    "name": "\uae08\ub9ac\uace1\uc120 \uc5ed\uc804 (10\ub144\u22123\uac1c\uc6d4 \uc6d4\ud3c9\uade0)",
+    "reason": "SOURCE_NOT_COLLECTED",
+    "rule": {
+     "realtime_validation": "POST_HOC_LITERATURE_ONLY",
+     "source_class": "LITERATURE",
+     "text": "\uc6d4\ud3c9\uade0 10\ub144\u22123\uac1c\uc6d4\uc774 \uc74c\uc218\uac00 \ub41c \uccab \ub2ec",
+     "version": "E09.v0"
+    },
+    "series": [
+     "TREASURY:BC_10YEAR-BC_3MONTH:MONTHLY_MEAN"
+    ],
+    "source": {
+     "agency": "TREASURY",
+     "collection": "REUSED_MACRO_V1_CURVE",
+     "license_class": "FREE_OFFICIAL",
+     "official_statistic": true,
+     "publication": "PUBLIC",
+     "source": "U.S. Treasury daily par yield curve (10 Yr, 3 Mo) \u00b7 \uc6d4\ud3c9\uade0\uc740 \uc774 \uc2dc\uc2a4\ud15c \uacc4\uc0b0",
+     "terms_checked_on": "2026-10-10",
+     "terms_note": "\uc7ac\ubb34\ubd80 \uae08\ub9ac\uace1\uc120 \uc7ac\uc0ac\uc6a9 \ubb38\uad6c \uc6d0\ubb38 \uac80\uc99d \ub300\uae30. \uac19\uc740 \uacc4\uc5f4\uc740 \uacbd\uace0\ub4f1 v1\uc73c\ub85c \uc774\ubbf8 \uacf5\uac1c \uc911",
+     "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve"
+    },
+    "state": "NOT_AVAILABLE",
+    "system_validation": "UNVALIDATED",
+    "unit": "%p",
+    "v0": true
+   },
+   {
+    "cycles": [
+     "economy"
+    ],
+    "edges": {
+     "down": {
+      "candidate": "WARNING",
+      "interpretation": "\ud655\uc7a5\u2192\uc218\ucd95 \uc804\ud658(\uce68\uccb4 \ucd08\uae30 \ud655\uc778)",
+      "label": "Sahm \ubc1c\ub3d9"
+     }
+    },
+    "family": "LU",
+    "frequency": "M",
+    "id": "E13",
+    "name": "Sahm \uaddc\uce59 (\uc2e4\uc5c5\ub960)",
+    "reason": "SOURCE_NOT_COLLECTED",
+    "rule": {
+     "realtime_validation": "POST_HOC_LITERATURE_ONLY",
+     "source_class": "LITERATURE",
+     "text": "\uc2e4\uc5c5\ub960 3\uac1c\uc6d4 \ud3c9\uade0 \u2212 \uc9c1\uc804 12\uac1c\uc6d4 \uc911 3\uac1c\uc6d4 \ud3c9\uade0 \ucd5c\uc800 \u2265 0.50%p",
+     "version": "E13.v0"
+    },
+    "series": [
+     "BLS:LNS14000000"
+    ],
+    "source": {
+     "agency": "BLS",
+     "collection": "REUSED_MACRO_V0_BLS",
+     "license_class": "FREE_OFFICIAL",
+     "official_statistic": true,
+     "publication": "PUBLIC",
+     "source": "BLS LNS14000000 \u00b7 \uc2e4\uc5c5\ub960, SA, \uc6d4\uac04",
+     "terms_checked_on": "2026-10-10",
+     "terms_note": "BLS public domain(\uc6d0\ubb38 \ud655\uc778). \uac00\uacf5 \uacb0\uacfc\ub97c BLS \uc6d0\ubcf8\uc774\ub77c\uace0 \ud558\uc9c0 \uc54a\uc74c",
+     "url": "https://api.bls.gov/publicAPI/v1/timeseries/data/"
+    },
+    "state": "NOT_AVAILABLE",
+    "system_validation": "UNVALIDATED",
+    "unit": "%",
+    "v0": true
+   },
+   {
+    "cycles": [
+     "economy"
+    ],
+    "edges": {
+     "down": {
+      "candidate": "IMPROVING",
+      "interpretation": "\uac1c\uc120",
+      "label": "\uc2e0\uaddc \uccad\uad6c \u2193 (4\uc8fc \ud3c9\uade0 \ud558\ud5a5 \uad50\ucc28)"
+     },
+     "up": {
+      "candidate": "WARNING",
+      "interpretation": "\uc545\ud654",
+      "label": "\uc2e0\uaddc \uccad\uad6c \u2191 (4\uc8fc \ud3c9\uade0 \uc0c1\ud5a5 \uad50\ucc28)"
+     }
+    },
+    "family": "LU",
+    "frequency": "W",
+    "id": "E14",
+    "name": "\uc2e0\uaddc \uc2e4\uc5c5\uc218\ub2f9 \uccad\uad6c (SA, \uc8fc\uac04)",
+    "reason": "SOURCE_NOT_COLLECTED",
+    "rule": {
+     "realtime_validation": "UNVALIDATED",
+     "source_class": "PROPOSAL",
+     "text": "4\uc8fc \ud3c9\uade0\uc774 26\uc8fc \ud3c9\uade0\uc744 \uc704(\uc544\ub798)\ub85c \uad50\ucc28",
+     "version": "E14.v0"
+    },
+    "series": [
+     "DOL:ETA539:INITIAL_CLAIMS_SA"
+    ],
+    "source": {
+     "agency": "DOL",
+     "collection": "NEW_DOL_WEEKLY_XML",
+     "license_class": "FREE_OFFICIAL",
+     "official_statistic": true,
+     "publication": "HELD_TERMS_UNVERIFIED",
+     "source": "DOL ETA 539 \u00b7 \uc2e0\uaddc \uccad\uad6c, SA, \uc8fc\uac04",
+     "terms_checked_on": "2026-10-20",
+     "terms_note": "DOL \uc800\uc791\uad8c \ud398\uc774\uc9c0\uac00 \uc218\uc9d1 \ud658\uacbd\uc5d0\uc11c HTTP 403. \uc6d0\ubb38 \ubbf8\ud655\uc778\uc774\ub77c \uacf5\uac1c \ubcf4\ub958",
+     "url": "https://oui.doleta.gov/unemploy/claims.asp"
+    },
+    "state": "NOT_AVAILABLE",
+    "system_validation": "UNVALIDATED",
+    "unit": "\uac74",
+    "v0": true
+   },
+   {
+    "cycles": [
+     "economy"
+    ],
+    "edges": {
+     "down": {
+      "candidate": "WARNING",
+      "interpretation": "\uc545\ud654",
+      "label": "\uc784\uc2dc\uc9c1 \u2193 (6\uac1c\uc6d4 \uc21c\ubcc0\ud654 \uc74c\uc804\ud658)"
+     },
+     "up": {
+      "candidate": "IMPROVING",
+      "interpretation": "\uac1c\uc120",
+      "label": "\uc784\uc2dc\uc9c1 \u2191 (6\uac1c\uc6d4 \uc21c\ubcc0\ud654 \uc591\uc804\ud658)"
+     }
+    },
+    "family": "LD",
+    "frequency": "M",
+    "id": "E16",
+    "name": "\uc784\uc2dc\uc9c1 \uace0\uc6a9 (CES)",
+    "reason": "SOURCE_NOT_COLLECTED",
+    "rule": {
+     "realtime_validation": "UNVALIDATED",
+     "source_class": "PROPOSAL",
+     "text": "6\uac1c\uc6d4 \uc21c\ubcc0\ud654 \ubd80\ud638 \uc804\ud658",
+     "version": "E16.v0"
+    },
+    "series": [
+     "BLS:CES6056132001"
+    ],
+    "source": {
+     "agency": "BLS",
+     "collection": "NEW_BLS_V1",
+     "license_class": "FREE_OFFICIAL",
+     "official_statistic": true,
+     "publication": "PUBLIC",
+     "source": "BLS CES6056132001 \u00b7 \uc784\uc2dc\uc9c1 \uace0\uc6a9, SA, \uc6d4\uac04",
+     "terms_checked_on": "2026-10-10",
+     "terms_note": "BLS public domain(\uc6d0\ubb38 \ud655\uc778)",
+     "url": "https://api.bls.gov/publicAPI/v1/timeseries/data/"
+    },
+    "state": "NOT_AVAILABLE",
+    "system_validation": "UNVALIDATED",
+    "unit": "\ucc9c \uba85",
+    "v0": true
+   },
+   {
+    "cycles": [
+     "economy"
+    ],
+    "edges": {
+     "down": {
+      "candidate": "WARNING",
+      "interpretation": "\uc545\ud654",
+      "label": "\uc81c\uc870 \uadfc\ub85c\uc2dc\uac04 \u2193"
+     },
+     "up": {
+      "candidate": "IMPROVING",
+      "interpretation": "\uac1c\uc120",
+      "label": "\uc81c\uc870 \uadfc\ub85c\uc2dc\uac04 \u2191"
+     }
+    },
+    "family": "LD",
+    "frequency": "M",
+    "id": "E17",
+    "name": "\uc81c\uc870\uc5c5 \uc8fc\ub2f9 \ud3c9\uade0 \uadfc\ub85c\uc2dc\uac04",
+    "reason": "SOURCE_NOT_COLLECTED",
+    "rule": {
+     "realtime_validation": "UNVALIDATED",
+     "source_class": "PROPOSAL",
+     "text": "3\uac1c\uc6d4 \ud3c9\uade0\uc774 12\uac1c\uc6d4 \uc804 3\uac1c\uc6d4 \ud3c9\uade0\ubcf4\ub2e4 \ub192\uc544\uc9d0(\ub0ae\uc544\uc9d0)",
+     "version": "E17.v0"
+    },
+    "series": [
+     "BLS:CES3000000007"
+    ],
+    "source": {
+     "agency": "BLS",
+     "collection": "NEW_BLS_V1",
+     "license_class": "FREE_OFFICIAL",
+     "official_statistic": true,
+     "publication": "PUBLIC",
+     "source": "BLS CES3000000007 \u00b7 \uc81c\uc870\uc5c5 \uc0dd\uc0b0\uc9c1 \uc8fc\ub2f9 \ud3c9\uade0 \uadfc\ub85c\uc2dc\uac04, SA, \uc6d4\uac04",
+     "terms_checked_on": "2026-10-10",
+     "terms_note": "BLS public domain(\uc6d0\ubb38 \ud655\uc778)",
+     "url": "https://api.bls.gov/publicAPI/v1/timeseries/data/"
+    },
+    "state": "NOT_AVAILABLE",
+    "system_validation": "UNVALIDATED",
+    "unit": "\uc2dc\uac04",
+    "v0": true
+   },
+   {
+    "cycles": [
+     "economy"
+    ],
+    "edges": {
+     "down": {
+      "candidate": "WARNING",
+      "interpretation": "\ub454\ud654",
+      "label": "\uc790\ubcf8\uc7ac \uc8fc\ubb38 \u2193"
+     },
+     "up": {
+      "candidate": "IMPROVING",
+      "interpretation": "\ud68c\ubcf5\u2192\ud655\uc7a5",
+      "label": "\uc790\ubcf8\uc7ac \uc8fc\ubb38 \u2191"
+     }
+    },
+    "family": "MO",
+    "frequency": "M",
+    "id": "E21",
+    "name": "\ud575\uc2ec \uc790\ubcf8\uc7ac \uc8fc\ubb38 (\ube44\uad6d\ubc29, \ud56d\uacf5\uae30 \uc81c\uc678)",
+    "reason": "SOURCE_NOT_COLLECTED",
+    "rule": {
+     "realtime_validation": "UNVALIDATED",
+     "source_class": "PROPOSAL",
+     "text": "3\uac1c\uc6d4 \ud3c9\uade0 \uc804\ub144\ube44 \ubd80\ud638 \uc804\ud658",
+     "version": "E21.v0"
+    },
+    "series": [
+     "CENSUS:M3:NXA:NO:SA"
+    ],
+    "source": {
+     "agency": "CENSUS",
+     "collection": "NEW_CENSUS_EITS_API",
+     "license_class": "FREE_OFFICIAL",
+     "official_statistic": true,
+     "publication": "PUBLIC",
+     "source": "Census M3 \u00b7 \ube44\uad6d\ubc29 \uc790\ubcf8\uc7ac(\ud56d\uacf5\uae30 \uc81c\uc678) \uc2e0\uaddc \uc8fc\ubb38, SA",
+     "terms_checked_on": "2026-10-18",
+     "terms_note": "Census Data API TOS \uc6d0\ubb38 \ud655\uc778(\ucd9c\ucc98 \ud45c\uc2dc \ubb38\uad6c \ud544\uc694). API \ud0a4 \uc5c6\uc774\ub294 \uc218\uc9d1 \ubd88\uac00",
+     "url": "https://www.census.gov/manufacturing/m3/index.html"
+    },
+    "state": "NOT_AVAILABLE",
+    "system_validation": "UNVALIDATED",
+    "unit": "\ubc31\ub9cc \ub2ec\ub7ec",
+    "v0": true
+   },
+   {
+    "cycles": [
+     "economy"
+    ],
+    "edges": {
+     "down": {
+      "candidate": "WARNING",
+      "interpretation": "\ub454\ud654",
+      "label": "\uc0b0\uc5c5\uc0dd\uc0b0 \uac10\uc18c (\uc804\ub144\ube44 \uc74c\uc804\ud658)"
+     },
+     "up": {
+      "candidate": "IMPROVING",
+      "interpretation": "\uc218\ucd95\u2192\ud68c\ubcf5",
+      "label": "\uc0b0\uc5c5\uc0dd\uc0b0 \ubc18\ub4f1 (\uc804\ub144\ube44 \uc591\uc804\ud658)"
+     }
+    },
+    "family": "PO",
+    "frequency": "M",
+    "id": "E22",
+    "name": "\uc0b0\uc5c5\uc0dd\uc0b0 (\ucd1d\uc9c0\uc218, SA)",
+    "reason": "SOURCE_NOT_COLLECTED",
+    "rule": {
+     "realtime_validation": "POST_HOC_LITERATURE_ONLY",
+     "source_class": "LITERATURE_UP_PROPOSAL_DOWN",
+     "text": "\uc804\ub144\ube44 \uc74c\u2192\uc591 [\ubb38\ud5cc], \uc591\u2192\uc74c [\uc81c\uc548]",
+     "version": "E22.v0"
+    },
+    "series": [
+     "FED:G17:IP.B50001.S"
+    ],
+    "source": {
+     "agency": "FED_G17",
+     "collection": "NEW_FED_DDP_CSV",
+     "license_class": "FREE_OFFICIAL",
+     "official_statistic": true,
+     "publication": "PUBLIC",
+     "source": "Fed G.17 IP.B50001.S \u00b7 \uc0b0\uc5c5\uc0dd\uc0b0 \ucd1d\uc9c0\uc218, SA",
+     "terms_checked_on": "2026-10-18",
+     "terms_note": "Fed Board public domain(\uc6d0\ubb38 \ud655\uc778). \ucd9c\ucc98 \ud45c\uc2dc",
+     "url": "https://www.federalreserve.gov/releases/g17/About.htm"
+    },
+    "state": "NOT_AVAILABLE",
+    "system_validation": "UNVALIDATED",
+    "unit": "\uc9c0\uc218 2017=100",
+    "v0": true
+   },
+   {
+    "cycles": [
+     "economy"
+    ],
+    "edges": {
+     "down": {
+      "candidate": "WARNING",
+      "interpretation": "\uc218\ucd95",
+      "label": "GDP \uac10\uc18c (\uc591\u2192\uc74c)"
+     },
+     "up": {
+      "candidate": "IMPROVING",
+      "interpretation": "\uc218\ucd95\u2192\ud68c\ubcf5",
+      "label": "GDP \ubc18\ub4f1 (\uc74c\u2192\uc591)"
+     }
+    },
+    "family": "PO",
+    "frequency": "Q",
+    "id": "E25",
+    "name": "\uc2e4\uc9c8 GDP (\uc804\uae30\ube44 \uc5f0\uc728)",
+    "reason": "SOURCE_NOT_COLLECTED",
+    "rule": {
+     "realtime_validation": "POST_HOC_LITERATURE_ONLY",
+     "source_class": "LITERATURE_UP_PROPOSAL_DOWN",
+     "text": "\uc804\uae30\ube44 \uc5f0\uc728 \uc74c\u2192\uc591 [\ubb38\ud5cc], \uc591\u2192\uc74c [\uc81c\uc548]",
+     "version": "E25.v0"
+    },
+    "series": [
+     "BEA:NIPA:A191RL:Q"
+    ],
+    "source": {
+     "agency": "BEA",
+     "collection": "REUSED_MACRO_V0_BEA",
+     "license_class": "FREE_OFFICIAL",
+     "official_statistic": true,
+     "publication": "PUBLIC",
+     "source": "BEA NIPA T10101 line 1 (A191RL) \u00b7 \uc2e4\uc9c8 GDP \uc804\uae30\ube44 \uc5f0\uc728",
+     "terms_checked_on": "2026-10-18",
+     "terms_note": "BEA public domain(\uc6d0\ubb38 \ud655\uc778)",
+     "url": "https://apps.bea.gov/national/Release/TXT/NipaDataQ.txt"
+    },
+    "state": "NOT_AVAILABLE",
+    "system_validation": "UNVALIDATED",
+    "unit": "%",
+    "v0": true
+   },
+   {
+    "cycles": [
+     "economy"
+    ],
+    "edges": {
+     "down": {
+      "candidate": "WARNING",
+      "interpretation": "\ub454\ud654",
+      "label": "\uac74\ucd95\ud5c8\uac00 \u2193"
+     },
+     "up": {
+      "candidate": "IMPROVING",
+      "interpretation": "\ud68c\ubcf5",
+      "label": "\uac74\ucd95\ud5c8\uac00 \u2191"
+     }
+    },
+    "family": "HO",
+    "frequency": "M",
+    "id": "E26",
+    "name": "\uac74\ucd95\ud5c8\uac00 (SA \uc5f0\uc728)",
+    "reason": "SOURCE_NOT_COLLECTED",
+    "rule": {
+     "realtime_validation": "UNVALIDATED",
+     "source_class": "PROPOSAL",
+     "text": "3\uac1c\uc6d4 \ud3c9\uade0\uc758 6\uac1c\uc6d4 \ubcc0\ud654 \ubd80\ud638 \uc804\ud658",
+     "version": "E26.v0"
+    },
+    "series": [
+     "CENSUS:RESCONST:APERMITS:TOTAL:SA"
+    ],
+    "source": {
+     "agency": "CENSUS",
+     "collection": "NEW_CENSUS_EITS_API",
+     "license_class": "FREE_OFFICIAL",
+     "official_statistic": true,
+     "publication": "PUBLIC",
+     "source": "Census NRC \u00b7 \uac74\ucd95\ud5c8\uac00 \uc804\uccb4, SA \uc5f0\uc728",
+     "terms_checked_on": "2026-10-18",
+     "terms_note": "Census Data API TOS \uc6d0\ubb38 \ud655\uc778(\ucd9c\ucc98 \ud45c\uc2dc \ubb38\uad6c \ud544\uc694). API \ud0a4 \uc5c6\uc774\ub294 \uc218\uc9d1 \ubd88\uac00",
+     "url": "https://www.census.gov/construction/nrc/index.html"
+    },
+    "state": "NOT_AVAILABLE",
+    "system_validation": "UNVALIDATED",
+    "unit": "\ucc9c \ud638",
+    "v0": true
+   },
+   {
+    "cycles": [
+     "economy"
+    ],
+    "edges": {
+     "down": {
+      "candidate": "IMPROVING",
+      "interpretation": "\uae34\ucd95 \uc885\ub8cc",
+      "label": "\ub300\ucd9c\uae30\uc900 \uc644\ud654 (0 \ud558\ud5a5)"
+     },
+     "up": {
+      "candidate": "WARNING",
+      "interpretation": "\uae34\ucd95",
+      "label": "\ub300\ucd9c\uae30\uc900 \uac15\ud654 (0 \uc0c1\ud5a5)"
+     }
+    },
+    "family": "BK",
+    "frequency": "Q",
+    "id": "E36",
+    "name": "\ub300\ucd9c\uae30\uc900 \uc21c\uac15\ud654 \ube44\uc728 (SLOOS, C&I \ub300\u00b7\uc911\uae30\uc5c5)",
+    "reason": "SOURCE_NOT_COLLECTED",
+    "rule": {
+     "realtime_validation": "UNVALIDATED",
+     "source_class": "PROPOSAL",
+     "text": "\uc21c\uac15\ud654 \ube44\uc728 0 \uad50\ucc28",
+     "version": "E36.v0"
+    },
+    "series": [
+     "FED:SLOOS:SUBLPDCILS_N.Q"
+    ],
+    "source": {
+     "agency": "FED_SLOOS",
+     "collection": "NEW_FED_DDP_CSV",
+     "license_class": "FREE_OFFICIAL",
+     "official_statistic": true,
+     "publication": "PUBLIC",
+     "source": "Fed SLOOS SUBLPDCILS_N.Q \u00b7 C&I \ub300\ucd9c\uae30\uc900 \uc21c\uac15\ud654 \ube44\uc728(\ub300\u00b7\uc911\uae30\uc5c5)",
+     "terms_checked_on": "2026-10-18",
+     "terms_note": "Fed Board public domain(\uc6d0\ubb38 \ud655\uc778). \ucd9c\ucc98 \ud45c\uc2dc",
+     "url": "https://www.federalreserve.gov/data/sloos.htm"
+    },
+    "state": "NOT_AVAILABLE",
+    "system_validation": "UNVALIDATED",
+    "unit": "%",
+    "v0": true
+   },
+   {
+    "cycles": [
+     "economy"
+    ],
+    "edges": {
+     "down": {
+      "candidate": null,
+      "interpretation": "\ubbf8\uc815",
+      "label": "\uadfc\uc6d0\ubb3c\uac00 \ub454\ud654 (3\uac1c\uc6d4 \uc5f0\uc18d)"
+     },
+     "up": {
+      "candidate": null,
+      "interpretation": "\ud655\uc7a5 \ud6c4\uae30",
+      "label": "\uadfc\uc6d0\ubb3c\uac00 \uac00\uc18d (3\uac1c\uc6d4 \uc5f0\uc18d)"
+     }
+    },
+    "family": "IN",
+    "frequency": "M",
+    "id": "E39",
+    "name": "\uadfc\uc6d0 \ubb3c\uac00 \ucd94\uc138 (\uadfc\uc6d0 CPI \u00b7 \uadfc\uc6d0 PCE)",
+    "reason": "SOURCE_NOT_COLLECTED",
+    "rule": {
+     "realtime_validation": "UNVALIDATED",
+     "source_class": "PROPOSAL",
+     "text": "3\uac1c\uc6d4 \uc5f0\uc728 > 12\uac1c\uc6d4 \uc0c1\uc2b9\ub960 3\uac1c\uc6d4 \uc5f0\uc18d(\uac00\uc18d), \ubc18\ub300(\ub454\ud654)",
+     "version": "E39.v0"
+    },
+    "series": [
+     "BLS:CUSR0000SA0L1E",
+     "BEA:NIPA:DPCCRG:M"
+    ],
+    "source": {
+     "agency": "BLS+BEA",
+     "collection": "NEW_BLS_V1+NEW_BEA_FLAT_M",
+     "license_class": "FREE_OFFICIAL",
+     "official_statistic": true,
+     "publication": "PUBLIC",
+     "source": "BLS CUSR0000SA0L1E \u00b7 \uadfc\uc6d0 CPI SA / BEA DPCCRG \u00b7 \uadfc\uc6d0 PCE \ubb3c\uac00\uc9c0\uc218",
+     "terms_checked_on": "2026-10-18",
+     "terms_note": "BLS\u00b7BEA public domain(\uc6d0\ubb38 \ud655\uc778)",
+     "url": "https://apps.bea.gov/national/Release/TXT/NipaDataM.txt"
+    },
+    "state": "NOT_AVAILABLE",
+    "system_validation": "UNVALIDATED",
+    "unit": "\uc9c0\uc218",
+    "v0": true
+   },
+   {
+    "cycles": [
+     "economy",
+     "market"
+    ],
+    "edges": {
+     "down": {
+      "candidate": null,
+      "interpretation": "\ud574\uc11d \ud6c4\ubcf4: \uccab \uc778\ud558 = \ub454\ud654\u00b7\uc218\ucd95 (\ubc18\ub840 \uc8fc\uc758)",
+      "label": "\uae08\ub9ac \uc778\ud558(FOMC)"
+     },
+     "up": {
+      "candidate": null,
+      "interpretation": "\ud574\uc11d \ud6c4\ubcf4: \uccab \uc778\uc0c1 = \ud6c4\uae30 (\ubc18\ub840 \uc8fc\uc758)",
+      "label": "\uae08\ub9ac \uc778\uc0c1(FOMC)"
+     }
+    },
+    "family": "PL",
+    "frequency": "E",
+    "id": "E40",
+    "name": "FOMC \ubaa9\ud45c\ubc94\uc704 \ubcc0\uacbd (\uc0ac\uac74)",
+    "reason": "SOURCE_NOT_COLLECTED",
+    "rule": {
+     "realtime_validation": "EVENT_FACT_NOT_REQUIRED",
+     "source_class": "AGENCY_EVENT",
+     "text": "\uc0ac\uac74: \ubaa9\ud45c\ubc94\uc704\uac00 \ubc14\ub010 FOMC \uacb0\uc815. \ud574\uc11d \uaddc\uce59\uc740 \ubcc4\ub3c4(\ubbf8\uc2b9\uc778)",
+     "version": "E40.v0"
+    },
+    "series": [
+     "FED:FOMC:TARGET_RANGE"
+    ],
+    "source": {
+     "agency": "FED_FOMC",
+     "collection": "NEW_FED_OPENMARKET_HTML",
+     "license_class": "FREE_OFFICIAL",
+     "official_statistic": true,
+     "publication": "PUBLIC",
+     "source": "Fed Board 'Open market operations' \ubaa9\ud45c \uae08\ub9ac(\ubc94\uc704) \ubcc0\uacbd\ud45c",
+     "terms_checked_on": "2026-10-18",
+     "terms_note": "Fed Board public domain(\uc6d0\ubb38 \ud655\uc778). \ub0a0\uc9dc\ub294 \ubcc0\uacbd\ud45c\uc758 \ub0a0\uc9dc(\ud6a8\ub825\uc77c)",
+     "url": "https://www.federalreserve.gov/monetarypolicy/openmarket.htm"
+    },
+    "state": "NOT_AVAILABLE",
+    "system_validation": "UNVALIDATED",
+    "unit": "% (\uc0c1\ub2e8)",
+    "v0": true
+   },
+   {
+    "cycles": [
+     "economy",
+     "industry"
+    ],
+    "edges": {
+     "down": {
+      "candidate": "WARNING",
+      "interpretation": "\ub454\ud654",
+      "label": "\ud654\ubb3c \uc6b4\uc1a1 \u2193 (\ud558\ub77d \uc804\ud658 3\uac1c\uc6d4 \uc720\uc9c0)"
+     },
+     "up": {
+      "candidate": "IMPROVING",
+      "interpretation": "\ud68c\ubcf5",
+      "label": "\ud654\ubb3c \uc6b4\uc1a1 \u2191 (\uc0c1\uc2b9 \uc804\ud658 3\uac1c\uc6d4 \uc720\uc9c0)"
+     }
+    },
+    "family": "T",
+    "frequency": "M",
+    "id": "E01",
+    "name": "\ud654\ubb3c \uc6b4\uc1a1\uc11c\ube44\uc2a4\uc9c0\uc218 (BTS Freight TSI)",
+    "reason": "SOURCE_NOT_COLLECTED",
+    "rule": {
+     "realtime_validation": "POST_HOC_LITERATURE_ONLY",
+     "source_class": "LITERATURE",
+     "text": "\ubc29\ud5a5 \uc804\ud658\uc774 3\uac1c\uc6d4 \uc774\uc0c1 \uc720\uc9c0\ub418\uba74 \uc120",
+     "version": "E01.v0"
+    },
+    "series": [
+     "BTS:TSI:FREIGHT"
+    ],
+    "source": {
+     "agency": "BTS",
+     "collection": "NEW_BTS_SOCRATA_JSON",
+     "license_class": "FREE_OFFICIAL",
+     "official_statistic": true,
+     "publication": "PUBLIC",
+     "source": "BTS Transportation Services Index \u00b7 Freight, SA",
+     "terms_checked_on": "2026-10-20",
+     "terms_note": "data.bts.gov \ub370\uc774\ud130\uc14b \ub77c\uc774\uc120\uc2a4 \ud45c\uae30 'Public Domain U.S. Government'. \ud2b8\ub7ed \ubd80\ubd84\uc740 ATA \uc785\ub825(\uc81c3\uc790 \uad8c\ub9ac \ubcc4\ub3c4 \ud655\uc778 \ud544\uc694)",
+     "url": "https://data.bts.gov/resource/bw6n-ddqk.json"
+    },
+    "state": "NOT_AVAILABLE",
+    "system_validation": "UNVALIDATED",
+    "unit": "\uc9c0\uc218 2000=100",
+    "v0": true
+   }
+  ],
+  "kind": "MACRO_EVIDENCE_LINES",
+  "labels": {
+   "collection_time": "\uc218\uc9d1 \uc2dc\uac01 \uae30\uc900",
+   "interpretation": "\ud574\uc11d \ud6c4\ubcf4 \u00b7 \ubbf8\uc2b9\uc778",
+   "market_price": "\uac00\uaca9 \uae30\ubc18 \uc2dc\uc7a5 \uadfc\uac70\uc120\uc740 \uae30\uae30 \uc804\uc6a9(B-PRICE) \u00b7 \uacf5\uac1c \uc5c6\uc74c",
+   "replay": "\uc7ac\uad6c\uc131 \u00b7 \ud604\uc7ac \ube48\ud2f0\uc9c0(\uc218\uc815\uce58) \uae30\uc900 \u00b7 \ubc1c\ud45c \uc2dc\uac01 \uc544\ub2d8",
+   "rule": "v0 \u00b7 \ubbf8\uac80\uc99d",
+   "scope": "\ud0d0\uc0c9 \ud654\uba74 \uc804\uc6a9 \u00b7 \uacf5\uc2dd \ud310\uc815\u00b7\ud655\ub960\u00b7\ub9e4\ud06c\ub85c \uac8c\uc774\ud2b8\uc5d0 \uc4f0\uc9c0 \uc54a\uc74c (MEV-10)",
+   "summary": "\ud604\uc7ac \uc720\ud6a8 \ud6c4\ubcf4 \uc815\uc758(EVL-1) \u00b7 \ubbf8\uc2b9\uc778"
+  },
+  "previous": "NOT_COLLECTED",
+  "releases": [],
+  "replay_events": [],
+  "schema": "macro-evidence/1",
+  "scope": {
+   "decision": "MEV-10",
+   "macro_gate": false,
+   "official_judgement": false,
+   "probability": false,
+   "screen": "EXPLORATION_ONLY"
+  },
+  "series": {
+   "BEA:NIPA:A191RL:Q": {
+    "acquired_at": null,
+    "baseline_at": null,
+    "current": {
+     "latest": null,
+     "since": null,
+     "state": null
+    },
+    "delayed": null,
+    "frequency": "Q",
+    "history": {},
+    "indicator": "E25",
+    "last_success_at": null,
+    "obs": [],
+    "reason": "SOURCE_NOT_COLLECTED",
+    "release_evidence": null,
+    "state": "NOT_AVAILABLE"
+   },
+   "BEA:NIPA:DPCCRG:M": {
+    "acquired_at": null,
+    "baseline_at": null,
+    "current": {
+     "latest": null,
+     "since": null,
+     "state": null
+    },
+    "delayed": null,
+    "frequency": "M",
+    "history": {},
+    "indicator": "E39",
+    "last_success_at": null,
+    "obs": [],
+    "reason": "SOURCE_NOT_COLLECTED",
+    "release_evidence": null,
+    "state": "NOT_AVAILABLE"
+   },
+   "BLS:CES3000000007": {
+    "acquired_at": null,
+    "baseline_at": null,
+    "current": {
+     "latest": null,
+     "since": null,
+     "state": null
+    },
+    "delayed": null,
+    "frequency": "M",
+    "history": {},
+    "indicator": "E17",
+    "last_success_at": null,
+    "obs": [],
+    "reason": "SOURCE_NOT_COLLECTED",
+    "release_evidence": null,
+    "state": "NOT_AVAILABLE"
+   },
+   "BLS:CES6056132001": {
+    "acquired_at": null,
+    "baseline_at": null,
+    "current": {
+     "latest": null,
+     "since": null,
+     "state": null
+    },
+    "delayed": null,
+    "frequency": "M",
+    "history": {},
+    "indicator": "E16",
+    "last_success_at": null,
+    "obs": [],
+    "reason": "SOURCE_NOT_COLLECTED",
+    "release_evidence": null,
+    "state": "NOT_AVAILABLE"
+   },
+   "BLS:CUSR0000SA0L1E": {
+    "acquired_at": null,
+    "baseline_at": null,
+    "current": {
+     "latest": null,
+     "since": null,
+     "state": null
+    },
+    "delayed": null,
+    "frequency": "M",
+    "history": {},
+    "indicator": "E39",
+    "last_success_at": null,
+    "obs": [],
+    "reason": "SOURCE_NOT_COLLECTED",
+    "release_evidence": null,
+    "state": "NOT_AVAILABLE"
+   },
+   "BLS:LNS14000000": {
+    "acquired_at": null,
+    "baseline_at": null,
+    "current": {
+     "latest": null,
+     "since": null,
+     "state": null
+    },
+    "delayed": null,
+    "frequency": "M",
+    "history": {},
+    "indicator": "E13",
+    "last_success_at": null,
+    "obs": [],
+    "reason": "SOURCE_NOT_COLLECTED",
+    "release_evidence": null,
+    "state": "NOT_AVAILABLE"
+   },
+   "BTS:TSI:FREIGHT": {
+    "acquired_at": null,
+    "baseline_at": null,
+    "current": {
+     "latest": null,
+     "since": null,
+     "state": null
+    },
+    "delayed": null,
+    "frequency": "M",
+    "history": {},
+    "indicator": "E01",
+    "last_success_at": null,
+    "obs": [],
+    "reason": "SOURCE_NOT_COLLECTED",
+    "release_evidence": null,
+    "state": "NOT_AVAILABLE"
+   },
+   "CENSUS:M3:NXA:NO:SA": {
+    "acquired_at": null,
+    "baseline_at": null,
+    "current": {
+     "latest": null,
+     "since": null,
+     "state": null
+    },
+    "delayed": null,
+    "frequency": "M",
+    "history": {},
+    "indicator": "E21",
+    "last_success_at": null,
+    "obs": [],
+    "reason": "SOURCE_NOT_COLLECTED",
+    "release_evidence": null,
+    "state": "NOT_AVAILABLE"
+   },
+   "CENSUS:RESCONST:APERMITS:TOTAL:SA": {
+    "acquired_at": null,
+    "baseline_at": null,
+    "current": {
+     "latest": null,
+     "since": null,
+     "state": null
+    },
+    "delayed": null,
+    "frequency": "M",
+    "history": {},
+    "indicator": "E26",
+    "last_success_at": null,
+    "obs": [],
+    "reason": "SOURCE_NOT_COLLECTED",
+    "release_evidence": null,
+    "state": "NOT_AVAILABLE"
+   },
+   "DOL:ETA539:INITIAL_CLAIMS_SA": {
+    "acquired_at": null,
+    "baseline_at": null,
+    "current": {
+     "latest": null,
+     "since": null,
+     "state": null
+    },
+    "delayed": null,
+    "frequency": "W",
+    "history": {},
+    "indicator": "E14",
+    "last_success_at": null,
+    "obs": [],
+    "reason": "SOURCE_NOT_COLLECTED",
+    "release_evidence": null,
+    "state": "NOT_AVAILABLE"
+   },
+   "FED:FOMC:TARGET_RANGE": {
+    "acquired_at": null,
+    "baseline_at": null,
+    "current": {
+     "latest": null,
+     "since": null,
+     "state": null
+    },
+    "delayed": null,
+    "frequency": "E",
+    "history": {},
+    "indicator": "E40",
+    "last_success_at": null,
+    "obs": [],
+    "reason": "SOURCE_NOT_COLLECTED",
+    "release_evidence": null,
+    "state": "NOT_AVAILABLE"
+   },
+   "FED:G17:IP.B50001.S": {
+    "acquired_at": null,
+    "baseline_at": null,
+    "current": {
+     "latest": null,
+     "since": null,
+     "state": null
+    },
+    "delayed": null,
+    "frequency": "M",
+    "history": {},
+    "indicator": "E22",
+    "last_success_at": null,
+    "obs": [],
+    "reason": "SOURCE_NOT_COLLECTED",
+    "release_evidence": null,
+    "state": "NOT_AVAILABLE"
+   },
+   "FED:SLOOS:SUBLPDCILS_N.Q": {
+    "acquired_at": null,
+    "baseline_at": null,
+    "current": {
+     "latest": null,
+     "since": null,
+     "state": null
+    },
+    "delayed": null,
+    "frequency": "Q",
+    "history": {},
+    "indicator": "E36",
+    "last_success_at": null,
+    "obs": [],
+    "reason": "SOURCE_NOT_COLLECTED",
+    "release_evidence": null,
+    "state": "NOT_AVAILABLE"
+   },
+   "TREASURY:BC_10YEAR-BC_3MONTH:MONTHLY_MEAN": {
+    "acquired_at": null,
+    "baseline_at": null,
+    "current": {
+     "latest": null,
+     "since": null,
+     "state": null
+    },
+    "delayed": null,
+    "frequency": "M",
+    "history": {},
+    "indicator": "E09",
+    "last_success_at": null,
+    "obs": [],
+    "reason": "SOURCE_NOT_COLLECTED",
+    "release_evidence": null,
+    "state": "NOT_AVAILABLE"
+   }
+  },
+  "state": "NOT_AVAILABLE",
+  "summary": {
+   "economy": {
+    "basis": "CURRENT_VINTAGE_CANDIDATE_RULES",
+    "improving_families": [],
+    "mixed_families": [],
+    "realtime_event_indicators": [],
+    "warning_families": []
+   },
+   "industry": {
+    "basis": "CURRENT_VINTAGE_CANDIDATE_RULES",
+    "improving_families": [],
+    "mixed_families": [],
+    "realtime_event_indicators": [],
+    "warning_families": []
+   },
+   "market": {
+    "basis": "CURRENT_VINTAGE_CANDIDATE_RULES",
+    "improving_families": [],
+    "mixed_families": [],
+    "realtime_event_indicators": [],
+    "warning_families": []
+   }
+  }
+ },
  "macro-screen.json": {
   "as_of": "2026-01-01T00:00:00+00:00",
   "data": {
