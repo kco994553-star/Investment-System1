@@ -27,6 +27,9 @@ async function focusOf(page,c){return page.locator(R(c)+' [data-cycle-phase][ari
 async function turnDeg(page,c){return Number(await page.locator(R(c)+' svg').getAttribute('data-cycle-turn-deg'));}
 async function live(page){return page.locator('[data-cycle-live]').textContent();}
 async function settle(page,c){await page.waitForFunction(sel=>{const s=document.querySelector(sel+' svg');return s&&Math.abs(Number(s.dataset.cycleDisplayDeg)-Number(s.dataset.cycleTurnDeg))<1e-6;},R(c));}
+// After a reload the macro screen re-renders (and re-mounts the ring) once its data arrives; wait for that like openMacro
+// does, then for the network to go idle, so no later re-render replaces nodes a step is reading.
+async function reloadMacro(page){await page.reload();await page.locator('[data-cycle-root]').waitFor();await page.locator('[data-macro-lights]').waitFor();await page.waitForLoadState('networkidle');}
 async function openMacro(page){await page.goto(BASE+'#macro');await page.locator('[data-cycle-root]').waitFor();await page.locator('[data-macro-lights]').waitFor();}
 // drag horizontally by `cells` ring cells (pixels per cell = max(60, drag width / 3), a UI constant of the ring)
 async function drag(page,c,cells,touch,cdp){
@@ -143,14 +146,14 @@ async function drag(page,c,cells,touch,cdp){
    assert.equal(await page.locator(R('economy')).getAttribute('data-cycle-state'),'NOT_COMPUTED');assert.ok((await page.locator(R('economy')+' [data-cycle-official]').textContent()).includes('미산출'));
    assert.ok((await page.locator(R('economy')+' [data-cycle-user] legend').textContent()).includes('사용자 추정 · 공식 판정 아님'));
    assert.equal(await page.locator(R('market')+' [data-cycle-user-arc]').count(),0);
-   await page.reload();await page.locator('[data-cycle-root]').waitFor();
+   await reloadMacro(page);
    assert.equal(await page.locator(R('economy')+' [data-cycle-user-arc]').count(),1,'kept on this device');assert.ok((await page.locator(R('economy')+' [data-cycle-user-current]').textContent()).includes('확장 후반~둔화 초입'));
    await page.locator(R('economy')+' [data-cycle-user-clear]').click();
    assert.equal(await page.evaluate(k=>localStorage.getItem(k),'investment.web.v1.macro-cycle-user-estimate'),null);assert.equal(await page.locator('[data-cycle-user-arc]').count(),0);
    pass++;console.log('PASS cycle ring user estimate '+width);
    // 10, 9 synthetic estimated interval (fresh page: nothing turned yet), incl. last→first wrap on the market ring
    phase='ESTIMATED '+width;
-   await page.reload();await page.locator('[data-cycle-root]').waitFor();
+   await reloadMacro(page);
    await page.evaluate(o=>MacroCycleRing.setPublication({outputs:o}),[out('economy',P('확장','후반'),P('둔화','초입')),out('market',P('하락','후반'),P('바닥','초입'))]);
    {const iv=page.locator(R('economy')+' [data-cycle-interval]');assert.equal(await iv.count(),1);
     assert.equal(await iv.getAttribute('data-cycle-from'),'확장 후반');assert.equal(await iv.getAttribute('data-cycle-to'),'둔화 초입');assert.equal(await iv.getAttribute('data-cycle-span-deg'),'90.0');
@@ -169,10 +172,11 @@ async function drag(page,c,cells,touch,cdp){
     assert.equal(await focusOf(page,'market'),'하락');
     await settle(page,'market');
     // one continuous band reaching both sides of the 하락|바닥 boundary (the boundary before cell 0)
-    const crosses=await iv.evaluate(p=>{if((p.getAttribute('d').match(/M/g)||[]).length!==1)return false;const t=p.ownerSVGElement.querySelector('[data-cycle-boundary="0"]'),ang=(x,y)=>Math.atan2(x-160,160-y)*180/Math.PI;
+    // query and measure in one page task: a locator handle can be detached by a re-render between resolve and evaluate
+    const crosses=await page.evaluate(sel=>{const p=document.querySelector(sel);if(!p||!p.ownerSVGElement)return 'DETACHED';if((p.getAttribute('d').match(/M/g)||[]).length!==1)return false;const t=p.ownerSVGElement.querySelector('[data-cycle-boundary="0"]'),ang=(x,y)=>Math.atan2(x-160,160-y)*180/Math.PI;
      const b=ang(Number(t.getAttribute('x2')),Number(t.getAttribute('y2'))),L=p.getTotalLength();let before=false,after=false;
-     for(let i=0;i<=400;i++){const q=p.getPointAtLength(L*i/400);let d=((ang(q.x,q.y)-b+540)%360)-180;if(d<-5)before=true;if(d>5)after=true;}return before&&after;});
-    assert.ok(crosses,'wrap interval drawn across the first/last boundary without a gap');
+     for(let i=0;i<=400;i++){const q=p.getPointAtLength(L*i/400);let d=((ang(q.x,q.y)-b+540)%360)-180;if(d<-5)before=true;if(d>5)after=true;}return before&&after;},R('market')+' [data-cycle-interval]');
+    assert.equal(crosses,true,'wrap interval drawn across the first/last boundary without a gap');
     await page.locator('#macro-cycle-ring').screenshot({path:SHOTS+'/macro-cycle-ring-synthetic-'+width+'.png'}).catch(()=>{});
     await page.locator('[data-cycle-tab="economy"]').click();}
    assert.ok(!/%/.test(await root.textContent()));
