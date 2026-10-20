@@ -4,7 +4,8 @@
    an interval arc taken unchanged from a published model output; no model output is published today, so every ring reads
    "미산출" and no arc, point or probability is drawn. Phase panels quote the approved drafts only; where a draft leaves a value
    open the panel says "미정(소유자 결정)".
-   The user's own estimate (사용자 추정 · 공식 판정 아님) is a separate dashed purple arc, kept in this browser's localStorage only,
+   The user's own estimates (사용자 추정 · 공식 판정 아님) are an append-only history per ring (the latest is a separate dashed purple
+   arc), each with its reason and a snapshot of what the system layer showed then, kept in this browser's localStorage only,
    never sent and never mixed with the official layer. Focus (rotation) lives in module RAM per ring key, so the full re-render of
    the macro screen keeps it. No request of its own, no price, no score. Macro lights, their reference mode and the macro gate are
    untouched. Evidence for a phase can be attached by another module through attachEvidence() (the observation graph is separate). */
@@ -13,7 +14,7 @@
  const T=(l,ko,en)=>l==='en-US'?en:ko;
  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
  const OPEN='미정(소유자 결정)';
- const USER_KEY='investment.web.v1.macro-cycle-user-estimate',USER_SCHEMA='macro-cycle-user-estimate/1';
+ const USER_KEY='investment.web.v1.macro-cycle-user-estimate',USER_SCHEMA='macro-cycle-user-estimate/2',USER_SCHEMA_V1='macro-cycle-user-estimate/1',USER_CAP=50;
  const PARTS=['초입','후반'];
  const SLOP_PX=8,SNAP_SHARE=1/3,ANIM_MS=260;// UI constants (contract §4-5), not methodology values
  // ---------- draft text (MACRO_PHASE_MODEL_DRAFT_20261019). Interpretation candidates, not approved (MEV-1). ----------
@@ -119,9 +120,24 @@
   if(!st.userRotated&&o.state==='ESTIMATED'){st.turns+=nearest(st.turns,n,o.from.p);}
   st.init=true;}
  // ---------- device-only user estimate (사용자 추정 · 공식 판정 아님) ----------
- function readUser(){try{const v=JSON.parse(root.localStorage.getItem(USER_KEY)||'null');return v&&v.schema===USER_SCHEMA&&v.rings&&typeof v.rings==='object'?v:{schema:USER_SCHEMA,rings:{}};}catch(_){return{schema:USER_SCHEMA,rings:{}};}}
- function writeUser(v){try{if(Object.keys(v.rings).length)root.localStorage.setItem(USER_KEY,JSON.stringify(v));else root.localStorage.removeItem(USER_KEY);return true;}catch(_){return false;}}
- function userFor(key,model){const u=readUser().rings[key];if(!u)return null;const a=cellIndex(model,u.from),b=cellIndex(model,u.to);return a&&b&&a.part&&b.part?{from:a,to:b,note:typeof u.note==='string'?u.note:'',saved:typeof u.saved_at==='string'?u.saved_at:''}:null;}
+ // Schema /2 (2026-10-20, functional hierarchy 4.4.2): an append-only history per ring key, oldest first, at most USER_CAP entries
+ // (the oldest is dropped beyond that). Each entry keeps when, which interval, the user's own reason, and what the system layer
+ // showed at that moment (status code/text, model id and as_of when a publication existed) — never a made-up system position.
+ // A /1 value (one estimate per ring) is read as a one-entry history without loss; it is written as /2 on the next change.
+ const refOk=r=>r&&typeof r==='object'&&typeof r.phase==='string'&&typeof r.part==='string';
+ function cleanEntry(e,seq){if(!e||typeof e!=='object'||!refOk(e.from)||!refOk(e.to))return null;const sys=e.system&&typeof e.system==='object'?e.system:null;
+  return{seq:Number.isInteger(e.seq)&&e.seq>0?e.seq:seq,saved_at:typeof e.saved_at==='string'?e.saved_at:'',from:{phase:e.from.phase,part:e.from.part},to:{phase:e.to.phase,part:e.to.part},note:typeof e.note==='string'?e.note.slice(0,200):'',
+   system:sys&&typeof sys.state==='string'?{state:sys.state,text:typeof sys.text==='string'?sys.text:'',reason:typeof sys.reason==='string'?sys.reason:null,layer:typeof sys.layer==='string'?sys.layer:null,model_id:typeof sys.model_id==='string'?sys.model_id:null,as_of:typeof sys.as_of==='string'?sys.as_of:null}:{state:'NOT_RECORDED',text:'',reason:null,layer:null,model_id:null,as_of:null}};}
+ function readUser(){const empty={schema:USER_SCHEMA,rings:{}};let v;try{v=JSON.parse(root.localStorage.getItem(USER_KEY)||'null');}catch(_){return empty;}
+  if(!v||typeof v!=='object'||!v.rings||typeof v.rings!=='object')return empty;const out={schema:USER_SCHEMA,rings:{}};
+  for(const [k,r] of Object.entries(v.rings)){const list=v.schema===USER_SCHEMA_V1?[r]:v.schema===USER_SCHEMA&&Array.isArray(r)?r:[];
+   const clean=list.map((e,i)=>cleanEntry(e,i+1)).filter(Boolean);if(clean.length)out.rings[k]=clean.slice(-USER_CAP);}
+  return out;}
+ function writeUser(v){try{for(const k of Object.keys(v.rings))if(!v.rings[k].length)delete v.rings[k];if(Object.keys(v.rings).length)root.localStorage.setItem(USER_KEY,JSON.stringify(v));else root.localStorage.removeItem(USER_KEY);return true;}catch(_){return false;}}
+ function historyFor(key,model){return (key&&readUser().rings[key]||[]).map(e=>{const a=cellIndex(model,e.from),b=cellIndex(model,e.to);return a&&b&&a.part&&b.part?{...e,a,b}:null;}).filter(Boolean);}
+ function userFor(key,model){const h=historyFor(key,model),u=h[h.length-1];return u?{from:u.a,to:u.b,note:u.note,saved:u.saved_at}:null;}
+ function systemSnapshot(key){const o=outputFor(key),base={state:o.state,reason:o.state==='NOT_COMPUTED'?o.reason||null:o.state==='ABSTAINED'?o.reasons.join(' · '):null,layer:o.state==='NOT_COMPUTED'?null:o.layer,model_id:o.state==='NOT_COMPUTED'?null:o.modelId,as_of:o.asOf||null};
+  const model=MODELS[key.split(':')[0]];return{...base,text:o.state==='ESTIMATED'?intervalText(model,o):STATE_TEXT[o.state][0]};}
  // ---------- groups for the industry ring: industry_group values of the published sec-qgv2.json rows (§4-9) ----------
  function groupsOf(bundle){const p=bundle&&bundle['sec-qgv2.json'],out=new Set();
   if(p&&p.records&&typeof p.records==='object')for(const r of Object.values(p.records))if(r&&typeof r.industry_group==='string'&&r.industry_group)out.add(r.industry_group);
@@ -173,15 +189,36 @@
    (st!=='NOT_COMPUTED'?'<p class="small" data-cycle-counts>'+esc(T(l,'받치는 근거 '+o.supporting.length+'계열 · 반대 근거 '+o.opposing.length+'계열 · 엇갈림 '+o.mixed.length+' · 자료 없음 '+o.missing.length,'Supporting '+o.supporting.length+' families · opposing '+o.opposing.length+' · mixed '+o.mixed.length+' · missing '+o.missing.length))+(o.oldest?' · '+esc(T(l,'가장 오래된 근거 발표 ','oldest input released ')+o.oldest):'')+'</p>':'')+
    '\u0000<div class="cycle-evidence"><div><h4>'+esc(T(l,'찬성 근거','Supporting evidence'))+'</h4>'+rows(o.supporting,'for')+'</div><div><h4>'+esc(T(l,'반대 근거','Opposing evidence'))+'</h4>'+rows(o.opposing,'against')+'</div></div>';
  }
+ const stamp=t=>t?(/T/.test(t)?t.slice(0,16).replace('T',' '):t)+' UTC':'NA';
+ function systemText(sys,l){if(sys.state==='NOT_RECORDED')return T(l,'시스템: 기록 없음(이전 형식)','System: not recorded (older format)');
+  const lay=sys.layer==='OFFICIAL'?'':sys.layer?T(l,' · 탐색 층 v0',' · exploratory v0'):'';return T(l,'시스템: ','System: ')+(sys.text||sys.state)+lay+(sys.model_id?' · '+sys.model_id:'')+(sys.as_of?T(l,' · 기준 ',' · as of ')+sys.as_of:'');}
+ function historyHtml(model,key,l){
+  const h=historyFor(key,model).reverse();if(!h.length)return '';
+  const now=key?systemSnapshot(key):null,iv=e=>label(model,e.a)+'~'+label(model,e.b);
+  const wide=(()=>{try{return !!(root.matchMedia&&root.matchMedia('(min-width: 900px)').matches);}catch(_){return false;}})(),show=wide?10:5;
+  const row=(e,i)=>{const prev=h[i+1],same=prev&&iv(prev)===iv(e);
+   return '<li data-cycle-user-entry="'+e.seq+'"><b>'+esc(iv(e))+'</b> <span class="small">'+esc(stamp(e.saved_at))+(i===0?T(l,' · 현재',' · current'):'')+'</span>'+
+    '<br><span class="small" data-cycle-user-entry-system>'+esc(systemText(e.system,l))+'</span>'+
+    (e.note?'<br><span class="small" data-cycle-user-entry-note>'+esc(T(l,'근거: ','Reason: ')+e.note)+'</span>':'')+
+    '<br><span class="small" data-cycle-user-entry-compare>'+esc(prev?(same?T(l,'이전 사용자 추정과 같음','Same as the previous user estimate'):T(l,'이전 사용자 추정 '+iv(prev)+' → '+iv(e),'Previous user estimate '+iv(prev)+' → '+iv(e))):T(l,'첫 기록','First record'))+'</span>'+
+    ' <button type="button" class="cycle-user-del" data-cycle-user-delete="'+e.seq+'" aria-label="'+esc(T(l,'이 기록 지우기 · ','Delete this record · ')+iv(e)+' · '+stamp(e.saved_at))+'">'+esc(T(l,'지우기','Delete'))+'</button></li>';};
+  const first=h.slice(0,show).map(row).join(''),rest=h.slice(show).map((e,i)=>row(e,i+show)).join('');
+  return '<h4>'+esc(T(l,'내 추정 기록 · 비교','My estimate history · comparison'))+'</h4>'+
+   '<p class="small" data-cycle-user-now>'+esc(T(l,'지금 ','Now · ')+systemText(now,l))+'</p>'+
+   '<ol class="cycle-list cycle-user-history" data-cycle-user-history>'+first+'</ol>'+
+   (rest?'<details data-cycle-user-more><summary>'+esc(T(l,'더 보기 (','More (')+(h.length-show)+')')+'</summary><ol class="cycle-list cycle-user-history" start="'+(show+1)+'">'+rest+'</ol></details>':'')+
+   '<p class="small" data-cycle-user-cap>'+esc(T(l,'기록 '+h.length+'개 · 링마다 최근 '+USER_CAP+'개까지 보관하고, 넘으면 가장 오래된 기록부터 지웁니다.',h.length+' records · up to '+USER_CAP+' per ring are kept; beyond that the oldest is dropped.'))+'</p>';
+ }
  function userHtml(model,key,l){
   const opts=sel=>model.phases.flatMap(ph=>PARTS.map(pa=>{const v=ph+'|'+pa;return '<option value="'+esc(v)+'"'+(sel===v?' selected':'')+'>'+esc(ph+' '+pa)+'</option>';})).join('');
   const u=key?userFor(key,model):null,v=r=>r?model.phases[r.p]+'|'+r.part:'';
-  return '<fieldset class="cycle-user" data-cycle-user'+(key?'':' disabled')+'><legend>'+esc(T(l,'사용자 추정 · 공식 판정 아님','User estimate · not an official judgement'))+'</legend>'+
-   '<p class="small">'+esc(T(l,'이 기기(브라우저)에만 저장합니다. 어디에도 보내지 않고 공식 판정·점수에 쓰지 않습니다. 보라색 점선 호로 따로 그립니다. 초입·후반 세분은 초안 후보(PM-1)입니다.','Stored in this browser only. Never sent, never used for the official judgement or scores. Drawn as a separate dashed purple arc. The early/late split is a draft candidate (PM-1).'))+'</p>'+
+  return '<fieldset class="cycle-user" data-cycle-user'+(key?'':' disabled')+'><legend>'+esc(T(l,'사용자 추정 · 공식 판정 아님 · 이 기기에만 저장','User estimate · not an official judgement · this device only'))+'</legend>'+
+   '<p class="small">'+esc(T(l,'이 기기(브라우저)에만 저장합니다. 어디에도 보내지 않고 공식 판정·점수에 쓰지 않습니다. 저장할 때마다 기록을 덧붙이고, 그때 시스템 표시(지금은 미산출)를 함께 남깁니다. 보라색 점선 호는 가장 최근 추정입니다. 초입·후반 세분은 초안 후보(PM-1)입니다.','Stored in this browser only. Never sent, never used for the official judgement or scores. Each save adds a record together with what the system showed then. The dashed purple arc is the latest estimate. The early/late split is a draft candidate (PM-1).'))+'</p>'+
    '<div class="cycle-user-row"><label>'+esc(T(l,'시작','From'))+' <select data-cycle-user-from>'+opts(v(u&&u.from))+'</select></label><label>'+esc(T(l,'끝','To'))+' <select data-cycle-user-to>'+opts(v(u&&u.to))+'</select></label></div>'+
-   '<label class="cycle-user-note">'+esc(T(l,'이유(선택)','Reason (optional)'))+' <input type="text" maxlength="200" data-cycle-user-note value="'+esc(u?u.note:'')+'"></label>'+
-   '<div class="cycle-user-row"><button type="button" data-cycle-user-save>'+esc(T(l,'이 기기에 저장','Save on this device'))+'</button><button type="button" data-cycle-user-clear>'+esc(T(l,'지우기','Clear'))+'</button></div>'+
-   '<p data-cycle-user-current>'+(u?esc(T(l,'사용자 추정: ','User estimate: ')+label(model,u.from)+'~'+label(model,u.to)+' · '+T(l,'이 기기에만 저장','this device only')+(u.saved?' · '+T(l,'기록 ','saved ')+u.saved:'')):esc(T(l,'저장된 사용자 추정 없음','No saved user estimate')))+'</p></fieldset>';
+   '<label class="cycle-user-note">'+esc(T(l,'근거(선택)','Reason (optional)'))+' <input type="text" maxlength="200" data-cycle-user-note value=""></label>'+
+   '<div class="cycle-user-row"><button type="button" data-cycle-user-save>'+esc(T(l,'이 기기에 기록','Record on this device'))+'</button><button type="button" data-cycle-user-clear>'+esc(T(l,'모두 지우기','Clear all'))+'</button></div>'+
+   '<p data-cycle-user-current>'+(u?esc(T(l,'최근 사용자 추정: ','Latest user estimate: ')+label(model,u.from)+'~'+label(model,u.to)+' · '+T(l,'이 기기에만 저장','this device only')+(u.saved?' · '+T(l,'기록 ','saved ')+stamp(u.saved):'')):esc(T(l,'저장된 사용자 추정 없음','No saved user estimate')))+'</p>'+
+   (key?historyHtml(model,key,l):'')+'</fieldset>';
  }
  function ringPanel(cycle,l,groups){
   const model=MODELS[cycle],id='cycle-'+cycle;
@@ -263,9 +300,14 @@
     else if(t.hasAttribute('data-cycle-phase'))goTo(Number(t.dataset.cycleIndex));
     else if(t.hasAttribute('data-cycle-goto-interval')){const k=keyOf(cycle),o=k?outputFor(k):null;st().changed=null;if(o&&o.state==='ESTIMATED'){const d=nearest(st().turns,n,o.from.p);if(d)turn(d);else update();}else update();}
     else if(t.hasAttribute('data-cycle-user-save')){const k=keyOf(cycle);if(!k)return;const pick=s=>{const [phase,part]=String(el.querySelector(s).value).split('|');return{phase,part};};
-     const v=readUser();v.rings[k]={from:pick('[data-cycle-user-from]'),to:pick('[data-cycle-user-to]'),note:String(el.querySelector('[data-cycle-user-note]').value||'').slice(0,200),saved_at:new Date().toISOString().slice(0,16).replace('T',' ')};
+     const from=pick('select[data-cycle-user-from]'),to=pick('select[data-cycle-user-to]');if(!cellIndex(model,from)||!cellIndex(model,to)||!from.part||!to.part)return;// the arc carries data-cycle-user-from too: read the selects only
+     const v=readUser(),list=v.rings[k]||[],seq=list.reduce((m,e)=>Math.max(m,e.seq),0)+1;
+     list.push({seq,saved_at:new Date().toISOString().slice(0,19)+'Z',from,to,note:String(el.querySelector('[data-cycle-user-note]').value||'').slice(0,200),system:systemSnapshot(k)});
+     v.rings[k]=list.slice(-USER_CAP);
      say(writeUser(v)?T(l,'사용자 추정을 이 기기에 저장했습니다','User estimate saved on this device'):T(l,'이 브라우저에 저장할 수 없습니다','This browser cannot store it'));update();el.querySelector('[data-cycle-user-save]').focus();}
-    else if(t.hasAttribute('data-cycle-user-clear')){const k=keyOf(cycle);if(!k)return;const v=readUser();delete v.rings[k];writeUser(v);say(T(l,'사용자 추정을 지웠습니다','User estimate cleared'));update();el.querySelector('[data-cycle-user-clear]').focus();}});
+    else if(t.hasAttribute('data-cycle-user-clear')){const k=keyOf(cycle);if(!k)return;const v=readUser();delete v.rings[k];writeUser(v);say(T(l,'이 링의 사용자 추정 기록을 모두 지웠습니다','All user estimates of this ring cleared'));update();el.querySelector('[data-cycle-user-clear]').focus();}
+    else if(t.hasAttribute('data-cycle-user-delete')){const k=keyOf(cycle);if(!k)return;const seq=Number(t.dataset.cycleUserDelete),v=readUser();v.rings[k]=(v.rings[k]||[]).filter(e=>e.seq!==seq);writeUser(v);
+     say(T(l,'사용자 추정 기록 하나를 지웠습니다','One user estimate record deleted'));update();el.querySelector('[data-cycle-user-save]').focus();}});
    el.querySelector('[data-cycle-tabs]').addEventListener('keydown',e=>{const k=e.key;
     if(k==='ArrowRight'||k==='ArrowDown'){e.preventDefault();turn(1,'key');}else if(k==='ArrowLeft'||k==='ArrowUp'){e.preventDefault();turn(-1,'key');}
     else if(k==='Home'){e.preventDefault();goTo(0,'key');}else if(k==='End'){e.preventDefault();goTo(n-1,'key');}});

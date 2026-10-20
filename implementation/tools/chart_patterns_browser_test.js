@@ -14,6 +14,10 @@ const ORIGIN = new URL(BASE).origin;
   const open = async (context, hash) => {
     const methods = [], page = await context.newPage();
     page.on('request', r => methods.push(r.method()));
+    // Optional slow-runner reproduction: CHART_TEST_CPU_THROTTLE=4..6 slows the page CPU like a loaded CI runner.
+    // CHART_TEST_SLOW_FRAMES=ms delays every animation frame like a slow CI runner (frames arrive late, not lost).
+    if (Number(process.env.CHART_TEST_SLOW_FRAMES) > 0) await page.addInitScript(ms => { const raf = window.requestAnimationFrame.bind(window); window.requestAnimationFrame = cb => raf(t => setTimeout(() => cb(t), ms)); }, Number(process.env.CHART_TEST_SLOW_FRAMES));
+    if (Number(process.env.CHART_TEST_CPU_THROTTLE) > 1) await (await context.newCDPSession(page)).send('Emulation.setCPUThrottlingRate', {rate: Number(process.env.CHART_TEST_CPU_THROTTLE)});
     await page.goto(BASE + hash);
     return {page, methods};
   };
@@ -35,7 +39,7 @@ const ORIGIN = new URL(BASE).origin;
       const run = await page.locator('[data-pattern-run]').evaluate(el => [el.dataset.runMode, el.textContent]);
       const history = await page.locator('[data-pattern-history]').evaluate(el => ({...el.dataset}));
       check('synthetic input runs the engine and is labelled for function check ' + width, label === '합성 자료 · 기능 확인용 · 실데이터 검증 아님' && run[0] === 'OFFICIAL' && run[1].includes('연구 기본값 · 투자 유용성 미검증 · pattern-rules/1 · params 941af1ff'));
-      check('official run is appended to the RAM history ' + width, Number(history.records) > 0 && Number(history.added) > 0 && history.withheld === '0');
+      check('official run is appended to the RAM history ' + width, Number(history.records) > 0 && Number(history.added) > 0 && history.notJudgeable === '0');
       check('zones, boxes and double bottoms/tops are drawn on the chart ' + width, Number(a.patternDrawn) > 0);
       const cards = await page.locator('[data-pattern-card]').evaluateAll(n => n.map(x => ({id: x.dataset.patternCard, state: x.dataset.patternState, kind: x.dataset.patternKind, label: x.querySelector('[data-pattern-label]').textContent})));
       const states = new Set(['FORMED', 'CONFIRMED', 'FAILED', 'INVALIDATED', 'EXPIRED', 'ACTIVE', 'BROKEN', 'SUPERSEDED']);
@@ -123,7 +127,7 @@ const ORIGIN = new URL(BASE).origin;
       const suit = await page.locator('[data-pattern-suitability] dd').evaluateAll(n => Object.fromEntries(n.map(x => [x.dataset.suitability, x.dataset.code])));
       check('real-data path is not judgeable and says why', status.code === 'NOT_JUDGEABLE' && status.reasons.includes('PRICE_BASIS_CONTINUITY_UNCONFIRMED') && status.reasons.includes('CORPORATE_ACTION_EVENTS_NOT_PROVIDED') && status.text.startsWith('판정 불가'));
       check('no pattern state is shown or drawn as a signal on real-data input', await page.locator('[data-pattern-card]').count() === 0 && (await attrs(page)).patternDrawn === '0' && await page.locator('[data-pattern-synthetic-label]').count() === 0);
-      check('official history withholds every not-judgeable object', history.added === '0' && Number(history.withheld) > 0 && history.records === '0');
+      check('official history withholds every not-judgeable object', history.added === '0' && Number(history.notJudgeable) > 0 && history.records === '0');
       check('suitability shows missing split events and unconfirmed continuity', suit.ACTIONS === 'NOT_PROVIDED' && suit.CONTINUITY === 'NOT_JUDGEABLE');
       await page.locator('[data-cw-settings] summary').click();
       await page.locator('[data-pattern-param="PIVOT_K"]').selectOption('2');

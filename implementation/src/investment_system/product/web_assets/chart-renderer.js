@@ -191,13 +191,15 @@
         frame = 0;
         if (disposed || pending !== target) return;
         const applied = chart.timeScale().getVisibleLogicalRange();
-        if (applied && tries > 0 && (Math.abs(applied.from - target.from) > 0.01 || Math.abs(applied.to - target.to) > 0.01)) {
+        if (applied && tries > 0 && !(lastRequest && lastRequest.user) && (Math.abs(applied.from - target.from) > 0.01 || Math.abs(applied.to - target.to) > 0.01)) {
           chart.timeScale().setVisibleLogicalRange(target); settle(target, tries - 1); return;
         }
         pending = null; emitRange();
       });
     }
     let lastRequest = null;
+    // User input ends the hold: the requested range is never re-applied after it. LWC still applies the queued request
+    // on its next frame (before the user's drag), so the request stays the reported range until that frame.
     const userMoved = () => { if (lastRequest) lastRequest.user = true; };
     for (const type of ['pointerdown', 'wheel', 'touchstart']) host.addEventListener(type, userMoved, {capture: true, passive: true});
     function request(logical) {
@@ -207,6 +209,9 @@
       chart.timeScale().setVisibleLogicalRange(target);
       if (frame) view.cancelAnimationFrame(frame);
       settle(target, 3);
+      // Report the requested range now: listeners (visible-range attributes, chart aria-label) must not wait for
+      // LWC's next frame, which can arrive late on a slow device.
+      emitRange();
     }
     chart.timeScale().subscribeVisibleLogicalRangeChange(range => {
       if (!range || disposed) return;
@@ -300,7 +305,16 @@
       applyMarkers();
       return overlaySeries.length + overlayMarkers.length;
     }
-    function destroy() { if (disposed) return; disposed = true; if (frame) view.cancelAnimationFrame(frame); frame = 0; pending = null; lastRequest = null; host.removeEventListener('pointerdown', userMoved, {capture: true}); host.removeEventListener('wheel', userMoved, {capture: true}); host.removeEventListener('touchstart', userMoved, {capture: true}); chart.remove(); host.replaceChildren(); }
+    // LWC may still run frame work it queued (autosize resize, redraw); disposing the chart inside that window throws
+    // "Object is disposed". The DOM is detached at once; the chart is disposed after the frames already queued.
+    function destroy() {
+      if (disposed) return;
+      disposed = true; if (frame) view.cancelAnimationFrame(frame); frame = 0; pending = null; lastRequest = null;
+      for (const type of ['pointerdown', 'wheel', 'touchstart']) host.removeEventListener(type, userMoved, {capture: true});
+      try { chart.applyOptions({autoSize: false}); } catch (_) { /* already gone */ }
+      host.replaceChildren();
+      view.requestAnimationFrame(() => view.setTimeout(() => { try { chart.remove(); } catch (_) { /* already gone */ } }, 0));
+    }
     return Object.freeze({kind: 'lwc', capabilities: LWC_CAPABILITIES, setData, getVisibleRange: visible, setVisibleRange: setVisible, zoom, scroll,
       fit: () => { if (bars.length) request({from: -0.5, to: bars.length - 0.5}); }, showCrosshair, clearCrosshair: () => chart.clearCrosshairPosition(), setMeasure, setOverlays, pointAt, destroy});
   }
