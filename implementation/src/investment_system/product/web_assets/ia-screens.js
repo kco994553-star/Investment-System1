@@ -146,15 +146,28 @@
  }
  // ---------- 5.4 포트폴리오 ----------
  function portfolioTree(l){
-  const VT=root.VirtualTrading?.CONFIG;
-  const tree=node('root',esc(T(l,'포트폴리오','Portfolio')),esc(T(l,'실거래 없음 · 장부는 추가만(덮어쓰지 않음)','No real trades · ledgers are append-only')),[
-   node('','5.1 '+esc(T(l,'모델 적합 포트폴리오','Model portfolio')),'<span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> '+esc(T(l,'모델 포트폴리오 생성기 없음. 확정 목표(TARGET)는 따로 표시','No model generator yet. The confirmed TARGET is shown separately'))),
-   node('','5.1 '+esc(T(l,'내 포트폴리오','My portfolio')),esc(T(l,'실제 보유(ACTUAL) · 이 기기 IndexedDB / 내 비공개 시트 · 공개하지 않음','Actual holdings · this device / my private sheet · never published'))),
-   node('','5.1 '+esc(T(l,'모의 포트폴리오','Paper portfolio')),esc(T(l,'가상 매매 세트 A~D + 규칙대로 했다면(SHADOW)','Virtual sets A–D + “if the rules were followed” (SHADOW)')+(VT?' · '+VT.config_version+' · '+T(l,'시작 ','start ')+VT.start_date:'')),[]),
-   node('','5.2 '+esc(T(l,'일일 보고','Daily report')),esc(T(l,'템플릿 v1 · 주간 보고는 결정 대기(WEEKLY-REPORT)','Template v1 · weekly report pending (WEEKLY-REPORT)'))),
-   node('','5.3 '+esc(T(l,'모의 일일 보고','Paper daily report')),esc(T(l,'세트별 보고 · 비교','Per set · compare'))),
-   node('',esc(T(l,'보고 불가 → 프롬프트','Cannot report → prompt')),esc(T(l,'사유 코드 → 최소 누락 입력 → 복사할 프롬프트(금액 없음) → AI 답 검토 후 저장','Reason code → smallest missing input → prompt to copy (no amounts) → review the AI answer, then save')))]);
-  return page('portfolio',l,{eyebrow:'5.4 · PORTFOLIO STRUCTURE',title:T(l,'포트폴리오 시스템 내용구성','Portfolio structure'),lede:T(l,'모델 · 내 것 · 모의 → 매일 보고 → 보고 불가 시 프롬프트.','Model · mine · paper → daily report → prompt when a report cannot be made.'),tree,examples:loading(l)});
+  // Function numbers 6.1–6.3 on stamp boxes (owner draft, design lane D4); the menu numbers are 5.1–5.4 (stated in the lede).
+  const VT=root.VirtualTrading?.CONFIG,st=n=>'<span class="ia-sec" data-fn-stamp>'+n+'</span> ';
+  const tree=node('root',st('6.4')+esc(T(l,'포트폴리오','Portfolio')),esc(T(l,'실거래 없음 · 장부는 추가만(덮어쓰지 않음)','No real trades · ledgers are append-only')),[
+   node('',st('6.1')+esc(T(l,'포트폴리오 구성','Portfolio composition')),esc(T(l,'메뉴 5.1','Menu 5.1')),[
+    node('',st('6.1.1')+esc(T(l,'종류 구분','Kinds')),'',[
+     node('',esc(T(l,'모델 적합 포트폴리오','Model portfolio')),'<span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> '+esc(T(l,'모델 포트폴리오 생성기 없음. 확정 목표(TARGET)는 따로 표시','No model generator yet. The confirmed TARGET is shown separately'))),
+     node('',esc(T(l,'내 포트폴리오','My portfolio')),esc(T(l,'실제 보유(ACTUAL) · 이 기기 IndexedDB / 내 비공개 시트 · 공개하지 않음','Actual holdings · this device / my private sheet · never published'))),
+     node('',esc(T(l,'모의 포트폴리오','Paper portfolio')),esc(T(l,'가상 매매 세트 A~D + 규칙대로 했다면(SHADOW)','Virtual sets A–D + “if the rules were followed” (SHADOW)')+(VT?' · '+VT.config_version+' · '+T(l,'시작 ','start ')+VT.start_date:'')),[])]),
+    node('',st('6.1.2')+esc(T(l,'모델 후보와 선정','Model candidates and selection')),'<span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> '+esc(T(l,'후보 생성기 없음 · 지금 기준은 확정 목표(TARGET)','No candidate generator · the current reference is the confirmed TARGET'))),
+    node('',st('6.1.3')+esc(T(l,'비중과 조건','Weights and conditions')),esc(T(l,'TARGET 대비 ACTUAL · 산업·유형·테마 구성 · 쏠림 경고(v0 기본값)','TARGET vs ACTUAL · industry, type and theme mix · concentration warning (v0 default)'))),
+    node('',st('6.1.4')+esc(T(l,'입력과 버전','Inputs and versions')),esc(T(l,'실제 보유는 이 기기에서 입력 · TARGET 버전 · 시세 기준 시각','Actual holdings entered on this device · TARGET version · quote time'))),
+    node('',st('6.1.5')+esc(T(l,'개인·모의 구성 관리','Personal and paper sets')),esc(T(l,'세트 B~D는 내 비공개 시트에 정의 · 플레이북(산 이유·무효화 조건)','Sets B–D defined in my private sheet · playbook (reasons, invalidation)')))]),
+   node('',st('6.2')+esc(T(l,'실제 포트폴리오 일일·주간 보고','Actual portfolio daily · weekly report')),esc(T(l,'메뉴 5.2','Menu 5.2')),[
+    node('',st('6.2.1')+esc(T(l,'보고 내용','Report contents')),esc(T(l,'템플릿 v1 · 그림자 장부는 "규칙대로 했다면"의 가상 기록','Template v1 · the shadow ledger is a virtual “had the rules been followed” record'))),
+    node('',st('6.2.2')+esc(T(l,'기간 선택','Period')),esc(T(l,'기간별 성과·상대지수 · 주간 보고는 결정 대기(WEEKLY-REPORT)','Per-period and relative performance · weekly report pending (WEEKLY-REPORT)'))),
+    node('',st('6.2.3')+esc(T(l,'보고 불가 시 프롬프트','Prompt when no report')),esc(T(l,'사유 코드 → 최소 누락 입력 → 복사할 프롬프트(금액 없음)','Reason code → smallest missing input → prompt to copy (no amounts)'))),
+    node('',st('6.2.4')+esc(T(l,'결과 검토','Review the result')),esc(T(l,'AI 답 붙여넣기 → 검토 → 보관 · 템플릿에 없는 숫자 표시','Paste the AI answer → review → keep · numbers not in the template are flagged')))]),
+   node('',st('6.3')+esc(T(l,'모의 포트폴리오 일일·주간 보고','Paper portfolio daily · weekly report')),esc(T(l,'메뉴 5.3','Menu 5.3')),[
+    node('',st('6.3.1')+esc(T(l,'모의 성과','Paper performance')),esc(T(l,'세트별 보고 · 비교','Per set · compare'))),
+    node('',st('6.3.2')+esc(T(l,'판단 추적','Judgement tracking')),esc(T(l,'규칙 판단 · 리허설(기록 없음) · 누적 검증','Rule judgements · rehearsal (not recorded) · cumulative check'))),
+    node('',st('6.3.3')+esc(T(l,'보고 불가 시 프롬프트','Prompt when no report')),esc(T(l,'세트별 사유 · 복사할 프롬프트','Per-set reason · prompt to copy')))])]);
+  return page('portfolio',l,{eyebrow:'5.4 · PORTFOLIO STRUCTURE',title:T(l,'포트폴리오 시스템 내용구성','Portfolio structure'),lede:T(l,'모델 · 내 것 · 모의 → 매일 보고 → 보고 불가 시 프롬프트. 상자의 번호(6.x)는 기능 번호이며 메뉴 번호(5.x)가 아닙니다.','Model · mine · paper → daily report → prompt when a report cannot be made. The stamp numbers (6.x) are function numbers, not menu numbers (5.x).'),tree,examples:loading(l)});
  }
  function portfolioExamples(l,catalog){
   const ok=object(catalog)&&Array.isArray(catalog.instruments);
