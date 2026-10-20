@@ -80,3 +80,4 @@ chart_workbench_browser_test.js
 chart_network_recording_browser_test.js
 chart_patterns_browser_test.js
 chart_user_objects_browser_test.js
+home_search_result_browser_test.js
