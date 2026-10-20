@@ -150,7 +150,7 @@ APPROVED_SHA256 = {
     "data-refresh.js": "8040b88ca9a8083c92879067ff84a01f5db8aa6019c42a0c2b2098b68435c6f2",
     "v-coverage.css": "185302f9f5aa9542d2caadfa03363f084bf837e8e1ea2998da49fa1db8af9364",
     # Self-hosted chart renderer (P1-7): lightweight-charts 5.2.1 npm file unmodified, upstream LICENSE/NOTICE, third-party notices.
-    "chart-renderer.js": "ac496da6da696651743f5530c088b28d53666668a16f6dca73976f2facc892c0",
+    "chart-renderer.js": "ee22d44aa4ad43a4d2a44053a24dc6f56bbcf82fcec8ecf52dd4d5d5ebd64261",
     "chart-workbench.js": "1849669270350eed215e387d7b908a99b3b4a1a1abb5c51f01234b7665bde89f",
     "chart-workbench.css": "df973c6f090980866b423f37104e1734780342a843e02f1deda8f450adffd13a",
     "lightweight-charts-5.2.1.standalone.js": "e21cc5caa0226ef30bd8549c50b9ef926615f2a4ee6b4e486353477a55f598cf",

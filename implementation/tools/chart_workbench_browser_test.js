@@ -37,10 +37,12 @@ function installChartBarsDouble() {
       phase = 'BOOT ' + width;
       const context = await browser.newContext({viewport: {width, height: 900}, serviceWorkers: 'block'});
       await context.addInitScript(installChartBarsDouble);
+      // CHART_TEST_SLOW_FRAMES=ms delays every animation frame like a slow CI runner.
+      if (Number(process.env.CHART_TEST_SLOW_FRAMES) > 0) await context.addInitScript(ms => { const raf = window.requestAnimationFrame.bind(window); window.requestAnimationFrame = cb => raf(t => setTimeout(() => cb(t), ms)); }, Number(process.env.CHART_TEST_SLOW_FRAMES));
       await context.addInitScript(() => { window.__csp = 0; document.addEventListener('securitypolicyviolation', () => { window.__csp++; }); });
       await context.route('**/*', route => new URL(route.request().url()).origin === new URL(BASE).origin ? route.continue() : route.abort());
       const page = await context.newPage();
-      let pageErrors = 0; page.on('pageerror', () => { pageErrors++; });
+      let pageErrors = 0; page.on('pageerror', error => { pageErrors++; if (process.env.CHART_TEST_DEBUG) console.log('DEBUG pageerror ' + error.message + ' ' + String(error.stack).split('\n').slice(0, 4).join(' | ')); });
       await page.goto(BASE + '#technical');
       const bench = page.locator('[data-chart-workbench]');
       await bench.waitFor();
@@ -157,6 +159,8 @@ function installChartBarsDouble() {
     {
       const context = await browser.newContext({viewport: {width: 390, height: 844}, hasTouch: true, isMobile: true, deviceScaleFactor: 2, serviceWorkers: 'block'});
       await context.addInitScript(installChartBarsDouble);
+      // CHART_TEST_SLOW_FRAMES=ms delays every animation frame like a slow CI runner.
+      if (Number(process.env.CHART_TEST_SLOW_FRAMES) > 0) await context.addInitScript(ms => { const raf = window.requestAnimationFrame.bind(window); window.requestAnimationFrame = cb => raf(t => setTimeout(() => cb(t), ms)); }, Number(process.env.CHART_TEST_SLOW_FRAMES));
       await context.route('**/*', route => new URL(route.request().url()).origin === new URL(BASE).origin ? route.continue() : route.abort());
       const page = await context.newPage();
       await page.goto(BASE + '#technical');
@@ -180,6 +184,8 @@ function installChartBarsDouble() {
     {
       const context = await browser.newContext({viewport: {width: 390, height: 900}, serviceWorkers: 'block'});
       await context.addInitScript(installChartBarsDouble);
+      // CHART_TEST_SLOW_FRAMES=ms delays every animation frame like a slow CI runner.
+      if (Number(process.env.CHART_TEST_SLOW_FRAMES) > 0) await context.addInitScript(ms => { const raf = window.requestAnimationFrame.bind(window); window.requestAnimationFrame = cb => raf(t => setTimeout(() => cb(t), ms)); }, Number(process.env.CHART_TEST_SLOW_FRAMES));
       await context.route('**/*', route => new URL(route.request().url()).origin === new URL(BASE).origin ? route.continue() : route.abort());
       const page = await context.newPage();
       await page.goto(BASE + '#settings'); await page.locator('#device-backup-export').waitFor();

@@ -14,6 +14,10 @@ const ORIGIN = new URL(BASE).origin;
   const open = async (context, hash) => {
     const methods = [], page = await context.newPage();
     page.on('request', r => methods.push(r.method()));
+    // Optional slow-runner reproduction: CHART_TEST_CPU_THROTTLE=4..6 slows the page CPU like a loaded CI runner.
+    // CHART_TEST_SLOW_FRAMES=ms delays every animation frame like a slow CI runner (frames arrive late, not lost).
+    if (Number(process.env.CHART_TEST_SLOW_FRAMES) > 0) await page.addInitScript(ms => { const raf = window.requestAnimationFrame.bind(window); window.requestAnimationFrame = cb => raf(t => setTimeout(() => cb(t), ms)); }, Number(process.env.CHART_TEST_SLOW_FRAMES));
+    if (Number(process.env.CHART_TEST_CPU_THROTTLE) > 1) await (await context.newCDPSession(page)).send('Emulation.setCPUThrottlingRate', {rate: Number(process.env.CHART_TEST_CPU_THROTTLE)});
     await page.goto(BASE + hash);
     return {page, methods};
   };
