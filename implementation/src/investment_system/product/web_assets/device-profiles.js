@@ -284,13 +284,22 @@ function mountV2(box,el,view,en,{v2Context=defaultV2Context,sessionQuotes=null}=
    if(!st.result)results.replaceChildren();}
   function sumText(v){return v===null?T('합계 — (잘못된 값)','Sum — (invalid value)'):T('합계 ','Sum ')+num(v)+(Math.abs(v-100)<1e-9?'':T(' · 계산 때 100으로 정규화',' · normalized to 100 when calculating'));}
   function compare(){if(treeProblem(st.tree,en))return;const token=++st.token;results.replaceChildren(el('p',T('계산 중…','Calculating…'),{class:'small'}));
-   Promise.resolve(v2Context(view)).then(ctx=>{if(token!==st.token)return;
-    // Device prices of this page session (S06 Universe read, RAM only; app.js qgv2Quotes) under the freshly collected ones, so V and the
-    // value-trap gate stage are not lost when the Universe read is dropped on navigation. Official and mine always share the same quotes.
-    let session={};try{session=typeof sessionQuotes==='function'?sessionQuotes()||{}:{};}catch(_){session={};}const base={identities:ctx.identities,v2Inputs:ctx.inputs,quotes:{...session,...ctx.quotes}};
-    const off=QS.compute(base),mine=QS.compute({...base,gate:st.gate,weights:st.tree,typeWeights:st.typeWeights});st.result={off,mine,rows:compareRows(off,mine)};renderResult();})
+   Promise.resolve(v2Context(view)).then(async ctx=>{if(token!==st.token)return;
+    /* D12 + 'V 일치' (owner 2026-10-19): '공식' here is the ONE official evaluation every other screen shows: the shared
+       QgvScores.pageResult (the same Universe read, quotes, identities and Universe rank population as S06, the company pages, the
+       radar, the V panel and the candidates) on the official default profile (balanced, gate on), whatever the S06 preset; '내 설정'
+       is the personal result over that same population and quotes. The TARGET rows are listed, as before. Without the shared
+       result: the former own computation (this page session's quotes under the freshly collected ones). */
+    let R=null;try{R=ctx.inputs&&typeof QS.pageResult==='function'?await QS.pageResult(view,{v2Inputs:ctx.inputs,catalog:ctx.catalog||null,identities:ctx.identities}):null;}catch(_){R=null;}if(token!==st.token)return;
+    let off,mine,shown=null,basis=null;
+    if(R&&R.computed&&R.official){const p=R.computed.profile,base={identities:R.identities,v2Inputs:ctx.inputs,quotes:R.quotes,official:R.official,referenceRows:typeof QS.pageReferences==='function'?QS.pageReferences():{}};
+     off=p&&p.preset===api.DEFAULT_PRESET&&p.gate===true?R.computed:QS.compute(base);mine=QS.compute({...base,gate:st.gate,weights:st.tree,typeWeights:st.typeWeights});shown=new Set(ctx.identities.map(c=>c.company_id));basis=R.price_basis||null;}
+    else{let session={};try{session=typeof sessionQuotes==='function'?sessionQuotes()||{}:{};}catch(_){session={};}const base={identities:ctx.identities,v2Inputs:ctx.inputs,quotes:{...session,...(ctx.quotes||{})}};
+     off=QS.compute(base);mine=QS.compute({...base,gate:st.gate,weights:st.tree,typeWeights:st.typeWeights});}
+    const only=x=>shown?{...x,rows:Object.fromEntries(Object.entries(x.rows||{}).filter(([k])=>shown.has(k)))}:x;
+    st.result={off:only(off),mine:only(mine),rows:compareRows(only(off),only(mine)),basis};renderResult();})
     .catch(()=>{if(token===st.token)results.replaceChildren(el('p',T('비교 자료를 불러오지 못했습니다 · NOT_AVAILABLE','Compare inputs could not be loaded · NOT_AVAILABLE'),{class:'small','data-qgv2w-result-state':'NOT_AVAILABLE'}));});}
-  function renderResult(){results.replaceChildren();const r=st.result;if(!r)return;const P=r.mine.personal,rows=r.rows;
+  function renderResult(){results.replaceChildren();const r=st.result;if(!r)return;if(typeof QS.readMarks==='function')for(const[k,v]of Object.entries(QS.readMarks(r.basis||null,view)))results.setAttribute(k,v);const P=r.mine.personal,rows=r.rows;
    // V axis weight 0: a personal Q·G-only result, labelled '개인 설정 결과 (V 비중 0)' (QgvScores personal.label); never the official ranking.
    const plabel=P&&Array.isArray(P.label)?P.label:(QS.PERSONAL_LABEL||['개인 설정 미리보기 · 공식 점수 아님','Personal setting preview · not an official score']);
    results.append(el('p',plabel[en?1:0]+' · '+(P&&P.profile?P.profile.id:'—'),{class:'badge partial','data-qgv2w-result-label':P&&P.v_weight_zero?'V_WEIGHT_ZERO':''}));
@@ -310,7 +319,7 @@ function mountV2(box,el,view,en,{v2Context=defaultV2Context,sessionQuotes=null}=
    const th1=el('thead');th1.append(h1);t1.append(th1,b1);const w1=el('div',undefined,{class:'table-scroll'});w1.append(t1);results.append(w1);
    results.append(companyStagesBox(r.mine.rows[st.company]));
    const t2=el('table',undefined,{'data-qgv2w-compare-table':''}),h2=el('tr'),b2=el('tbody');for(const h of [T('기업','Company'),T('공식 QGV (순위)','Official QGV (rank)'),T('내 설정 QGV (순위)','Mine QGV (rank)'),T('순위 변화','Rank change'),T('관문 공식→내 설정','Gate official→mine')])h2.append(el('th',h,{scope:'col'}));
-   for(const y of rows){const tr=el('tr',undefined,{'data-qgv2w-compare-row':y.company_id}),qr=s=>s?num(s.total)+(s.rank!==null?' ('+s.rank+')':s.qg?' ('+qgText(s.qg)+')':' (—)'):'—',chg=y.rank_change===null?'—':y.rank_change>0?'▲'+y.rank_change:y.rank_change<0?'▼'+(-y.rank_change):'0';
+   for(const y of rows){const tr=el('tr',undefined,{'data-qgv2w-compare-row':y.company_id});if(typeof QS.marks==='function'){const pr=r.mine.rows[y.company_id],pp=pr&&pr.personal?pr.personal:null;for(const[k,v]of Object.entries({...QS.marks(r.off.rows[y.company_id]||null,r.basis||null,view),'data-cx-personal-total':pp&&finiteNum(pp.total)?String(pp.total):'NA','data-cx-personal-v':pp&&finiteNum(pp.v)?String(pp.v):'NA','data-cx-personal-rank':pr&&Number.isInteger(pr.personal_rank)?String(pr.personal_rank):''}))tr.setAttribute(k,v);}const qr=s=>s?num(s.total)+(s.rank!==null?' ('+s.rank+')':s.qg?' ('+qgText(s.qg)+')':' (—)'):'—',chg=y.rank_change===null?'—':y.rank_change>0?'▲'+y.rank_change:y.rank_change<0?'▼'+(-y.rank_change):'0';
     tr.append(el('td',y.ticker),el('td',qr(y.official)),el('td',qr(y.mine)),el('td',chg),el('td',(y.official?gateText(y.official.gate):'—')+' → '+(y.mine?gateText(y.mine.gate):'—')));b2.append(tr);}
    const th2=el('thead');th2.append(h2);t2.append(th2,b2);const w2=el('div',undefined,{class:'table-scroll'});w2.append(t2);
    results.append(el('h4',P.v_weight_zero?T('상위 목록 · 개인 설정 결과 (V 비중 0) 순 · 공식 순위 아님','Top list · personal setting result (V weight 0) · not the official ranking'):T('상위 목록 · 내 설정 순','Top list · by my setting'),{'data-qgv2w-top-title':P.v_weight_zero?'V_WEIGHT_ZERO':'PERSONAL'}),w2,el('p',T('순위 —: QGV 종합 점수가 없어 순위·후보에 넣지 않습니다(0점 아님). QG 참고: Q·G만으로 낸 종합점수라 공식 QGV 순위와 섞지 않습니다(V 해당 없음·미산출). 공식 순위 번호는 바뀌지 않습니다.','Rank —: no QGV total, so no rank or candidate place (never 0). QG ref: a total from Q·G only, kept apart from the official QGV ranking (V not applicable or not computed). The official rank numbers do not change.'),{class:'small'}));}
