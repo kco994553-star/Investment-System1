@@ -17,11 +17,17 @@
 
 | 영역 | 담당 | 브랜치 | 주로 고치는 파일 | 공통 의존성 |
 |---|---|---|---|---|
-| A. QGV·공통 V·리더보드·포트폴리오 선정 | Main | 대기열 PR별 브랜치(#347 · #346 · #341 · #340 · #344 등) | `qgv-scores.js`, `leaderboard-screen.js`, `portfolio-screen.js`, `playbook-*` | 가격 접근(`price-store.js`·`private-history.js`), 데이터 계약 |
-| B1. 기술적 분석 엔진 | 작업자 B1 | `claude/ta-bars-core` → `claude/ta-patterns-v1`(쌓음) | 새 `chart-bars.js`, 패턴 규칙·피벗·상태 기계·공식 탐지 이력, Python 참조 `technical/` | `chart-indicators.js`(ATR14 재사용), `private-history/1` 응답 형식 |
-| B2. 기술적 분석 차트 화면 | 작업자 B2 | `claude/ta-renderer` | Lightweight Charts 5.2.1 벤더링·고지, 렌더러 어댑터, `technical-chart.js`(SVG 대체 유지), 설정 패널 | B1의 `ChartBars`(주봉), Pages 가드 고정 |
-| C1. 매크로 순환 화면 | 작업자 C1 | `claude/macro-cycle-ring` | 새 순환 링 모듈·css, 링 브라우저 시험 | 국면 모델 초안(#339), `macro-lights.js` 참고 모드 |
-| C2. 매크로 근거 지표 | 작업자 C2 | `claude/macro-evidence`(코드) + 워크플로 PR(승인 필요) | 근거 지표 수집기, 공개 `macro-evidence` 계약, 관측 그래프·근거 세로선 | 기존 `--macro-v0` 수집기, FRED·원기관 권리 기록 |
+| A. QGV·공통 V·리더보드·포트폴리오 선정 | Main | 대기열 PR별 브랜치. 10/20 병합: #339 · #347 · #346 · #341 · #340 · #344 · #348 | `qgv-scores.js`, `leaderboard-screen.js`, `portfolio-screen.js`, `playbook-*` | 가격 접근(`price-store.js`·`private-history.js`), 데이터 계약 |
+| B1. 기술적 분석 엔진 | 작업자 B1 | `claude/ta-bars-core` (#350) → `claude/ta-patterns-v1` (#355, #350 위에 쌓음) | 새 `chart-bars.js`, 패턴 규칙·피벗·상태 기계·공식 탐지 이력, Python 참조 `technical/` | `chart-indicators.js`(ATR14 재사용), `private-history/1` 응답 형식 |
+| B2. 기술적 분석 차트 화면 | 작업자 B2 | `claude/ta-renderer` (#354) | Lightweight Charts 5.2.1 벤더링·고지, 렌더러 어댑터, `technical-chart.js`(SVG 대체 유지), 설정 패널 | B1의 `ChartBars`(주봉), Pages 가드 고정 |
+| C1. 매크로 순환 화면 | 작업자 C1 | `claude/macro-cycle-ring` (#353) | 새 순환 링 모듈·css, 링 브라우저 시험 | 국면 모델 초안(#339), `macro-lights.js` 참고 모드 |
+| C2. 매크로 근거 지표 | 작업자 C2 | `claude/macro-evidence` (#351, 가드 변경 사용자 결정 대기) + `claude/macro-evidence-workflow` (#352, 승인 필요) | 근거 지표 수집기, 공개 `macro-evidence` 계약, 관측 그래프·근거 세로선 | 기존 `--macro-v0` 수집기, FRED·원기관 권리 기록 |
+
+## 1-1. 현재 막힌 것 (2026-10-20 02:15 UTC)
+
+- #351: 가드 허용 이름·검증 분기·고정값 변경이 자동 권한 검사에서 거부됐다. 우회하지 않는다. 사용자 결정 대기.
+- 가드 파일 수 상한 128: 네 영역을 모두 넣으면 129개. 줄이는 안(차트 고지 파일 합치기)과 상한 변경안(승인 필요) 중 결정 대기.
+- #352: 워크플로 변경이라 승인 필요.
 
 ## 2. 공통 파일 — 통합 순서는 Main이 정한다
 
