@@ -588,13 +588,14 @@ function technical() {
     ${window.IaScreens?IaScreens.technicalHtml(appSettings.display_locale):""}</div>`;
 }
 function macro() {
+  // Menu 3 stamp layout (4.1–4.6) lives in IaScreens.macroHtml; the parts below are placed there unchanged.
+  const parts={lights:'<div id="macro-lights-root"></div>',evidence:'<div id="macro-evidence-root"></div>',
+    status:`<section class="card" data-macro-status><h2>${t("상태판")}</h2><p class="small">${esc(t("정상·경고·위기는 위의 경고등 5개로 정합니다. 8개 축 국면 판정은 보류합니다."))}</p>
+    <h3>${t("현재 국면")}</h3><p data-macro-regime>${esc(t("자료 없음"))}</p><p class="small">${esc(t("8개 축의 6칸은 따로 보관하며 하나의 점수로 합치지 않습니다. FRED/ALFRED는 사용하지 않습니다."))}</p></section>`,
+    raw:'<div id="public-macro"></div>',canon:ScreenDetail.macroHtml(appSettings.display_locale)};
   return `<div data-ia-screen="macro">${heading("MACRO",t("매크로"),t("공식 축별 상태를 확인합니다."))}
     <div class="chips data-badges"><span class="badge">${esc(t("매크로 상태 v1 · UNCALIBRATED · 경고등 5개"))}</span></div>
-    <div id="macro-lights-root"></div>
-    <div id="macro-evidence-root"></div>
-    <section class="card" data-macro-status><h2>${t("상태판")}</h2><p class="small">${esc(t("정상·경고·위기는 위의 경고등 5개로 정합니다. 8개 축 국면 판정은 보류합니다."))}</p>
-    <h3>${t("현재 국면")}</h3><p data-macro-regime>${esc(t("자료 없음"))}</p><p class="small">${esc(t("8개 축의 6칸은 따로 보관하며 하나의 점수로 합치지 않습니다. FRED/ALFRED는 사용하지 않습니다."))}</p></section>
-    <div id="public-macro"></div>${ScreenDetail.macroHtml(appSettings.display_locale)}${window.IaScreens?IaScreens.macroHtml(appSettings.display_locale):""}</div>`;
+    ${window.IaScreens?IaScreens.macroHtml(appSettings.display_locale,parts):parts.lights+parts.evidence+parts.status+parts.raw+parts.canon}</div>`;
 }
 function thirteenf() {
   return heading("SEC 13F",t("투자자 13F"))+ '<div id="public-thirteenf"></div>';
