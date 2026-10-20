@@ -48,6 +48,22 @@
       .map(line => Object.freeze({id: line.id, pane: line.pane, type: line.type === 'histogram' ? 'histogram' : 'line', values: Object.freeze(line.values.map(v => finite(v) ? v : null)), tone: line.tone || 0})));
   }
 
+  // Overlay objects (design §4.4): display geometry only, each with its origin. AUTO = official detection,
+  // USER_SETTINGS = user-settings exploration (drawn dashed). The renderer draws; it never judges.
+  const OVERLAY_SOURCES = new Set(['AUTO', 'USER_SETTINGS']), OVERLAY_TONES = new Set(['zone', 'box', 'double', 'invalidation']);
+  const EMPHASIS = new Set(['normal', 'selected', 'dim']);
+  function normalizeOverlays(list, bars) {
+    if (!Array.isArray(list)) return Object.freeze([]);
+    const times = new Set(bars.map(bar => bar.time)), out = [];
+    for (const o of list) {
+      if (!o || typeof o.id !== 'string' || !OVERLAY_SOURCES.has(o.source) || !OVERLAY_TONES.has(o.tone)) continue;
+      const emphasis = EMPHASIS.has(o.emphasis) ? o.emphasis : 'normal';
+      if (o.kind === 'line' && times.has(o.from) && times.has(o.to) && o.from < o.to && positive(o.price)) out.push(Object.freeze({id: o.id, kind: 'line', source: o.source, tone: o.tone, emphasis, from: o.from, to: o.to, price: o.price}));
+      else if (o.kind === 'marker' && times.has(o.time) && typeof o.label === 'string' && o.label.length <= 12) out.push(Object.freeze({id: o.id, kind: 'marker', source: o.source, tone: o.tone, emphasis, time: o.time, label: o.label, position: o.position === 'belowBar' ? 'belowBar' : 'aboveBar'}));
+    }
+    return Object.freeze(out);
+  }
+
   /* ---------- range and measurement helpers (pure) ---------- */
 
   function clampRange(range, length) {
@@ -125,8 +141,8 @@
 
   /* ---------- LWC renderer ---------- */
 
-  const LWC_CAPABILITIES = Object.freeze({zoom: true, pan: true, crosshair: true, volume: true, measure: true, keyboard: true, indicatorPanes: true});
-  const SVG_CAPABILITIES = Object.freeze({zoom: false, pan: false, crosshair: false, volume: false, measure: false, keyboard: false, indicatorPanes: false});
+  const LWC_CAPABILITIES = Object.freeze({zoom: true, pan: true, crosshair: true, volume: true, measure: true, keyboard: true, indicatorPanes: true, overlays: true});
+  const SVG_CAPABILITIES = Object.freeze({zoom: false, pan: false, crosshair: false, volume: false, measure: false, keyboard: false, indicatorPanes: false, overlays: false});
 
   function createLwc(host, lib, options = {}) {
     const doc = host.ownerDocument, c = colors(doc), provisionalLabel = options.provisionalLabel || 'PROVISIONAL';
@@ -144,7 +160,9 @@
     const candles = chart.addSeries(lib.CandlestickSeries, {upColor: c.up, downColor: c.down, borderUpColor: c.up, borderDownColor: c.down, wickUpColor: c.up, wickDownColor: c.down, borderVisible: true, priceLineVisible: false}, 0);
     const volume = chart.addSeries(lib.HistogramSeries, {priceFormat: {type: 'volume'}, priceLineVisible: false, lastValueVisible: false, color: alpha(c.muted, 0.5)}, 1);
     const markers = lib.createSeriesMarkers(candles, []);
-    let bars = [], extra = [], measureSeries = null, disposed = false;
+    let bars = [], extra = [], measureSeries = null, overlaySeries = [], provisionalMarkers = [], overlayMarkers = [], disposed = false;
+    const applyMarkers = () => markers.setMarkers([...provisionalMarkers, ...overlayMarkers].sort((a, b) => (a.time < b.time ? -1 : a.time > b.time ? 1 : 0)));
+    function clearOverlays() { for (const series of overlaySeries) chart.removeSeries(series); overlaySeries = []; overlayMarkers = []; }
     const listeners = {crosshair: options.onCrosshair, range: options.onRange};
     const byTime = new Map();
     const indexOf = time => typeof time === 'string' ? byTime.get(time) : undefined;
@@ -207,12 +225,14 @@
       for (const item of extra) chart.removeSeries(item.series);
       extra = [];
       if (measureSeries) { chart.removeSeries(measureSeries); measureSeries = null; }
+      clearOverlays();
       candles.setData(bars.map(bar => !bar.ohlc ? {time: bar.time} : bar.complete
         ? {time: bar.time, open: bar.open, high: bar.high, low: bar.low, close: bar.close}
         : {time: bar.time, open: bar.open, high: bar.high, low: bar.low, close: bar.close, color: 'rgba(0,0,0,0)', borderColor: c.muted, wickColor: c.muted}));
       volume.setData(bars.map(bar => bar.volume === null ? {time: bar.time}
         : {time: bar.time, value: bar.volume, color: !bar.complete ? alpha(c.muted, 0.25) : bar.ohlc && bar.close < bar.open ? alpha(c.down, 0.45) : alpha(c.up, 0.45)}));
-      markers.setMarkers(bars.filter(bar => !bar.complete).map(bar => ({time: bar.time, position: 'aboveBar', shape: 'square', color: c.muted, text: provisionalLabel, size: 0.5})));
+      provisionalMarkers = bars.filter(bar => !bar.complete).map(bar => ({time: bar.time, position: 'aboveBar', shape: 'square', color: c.muted, text: provisionalLabel, size: 0.5}));
+      applyMarkers();
       // Declare panes in fixed order so pane indices are stable.
       for (const pane of PANES) for (const line of lines.filter(l => l.pane === pane)) extra.push({pane, line});
       for (const item of extra) {
@@ -263,9 +283,24 @@
       const index = Math.round(logical);
       return index >= 0 && index < bars.length ? {index, price} : null;
     }
+    // Pattern objects: solid lines for official detection, dashed for user-settings exploration, dotted invalidation levels.
+    function setOverlays(list) {
+      clearOverlays();
+      const toneColor = {zone: c.tones[1], box: c.tones[2], double: c.tones[3], invalidation: c.muted};
+      for (const o of normalizeOverlays(list, bars)) {
+        const color = o.emphasis === 'dim' ? alpha(toneColor[o.tone], 0.3) : toneColor[o.tone];
+        if (o.kind === 'marker') { overlayMarkers.push({time: o.time, position: o.position, shape: o.position === 'belowBar' ? 'arrowUp' : 'arrowDown', color, text: o.label}); continue; }
+        const style = o.tone === 'invalidation' ? lib.LineStyle.Dotted : o.source === 'USER_SETTINGS' ? lib.LineStyle.Dashed : lib.LineStyle.Solid;
+        const series = chart.addSeries(lib.LineSeries, {color, lineWidth: o.emphasis === 'selected' ? 3 : 1, lineStyle: style, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false, pointMarkersVisible: false}, 0);
+        series.setData([{time: o.from, value: o.price}, {time: o.to, value: o.price}]);
+        overlaySeries.push(series);
+      }
+      applyMarkers();
+      return overlaySeries.length + overlayMarkers.length;
+    }
     function destroy() { if (disposed) return; disposed = true; if (frame) view.cancelAnimationFrame(frame); frame = 0; pending = null; lastRequest = null; host.removeEventListener('pointerdown', userMoved, {capture: true}); host.removeEventListener('wheel', userMoved, {capture: true}); host.removeEventListener('touchstart', userMoved, {capture: true}); chart.remove(); host.replaceChildren(); }
     return Object.freeze({kind: 'lwc', capabilities: LWC_CAPABILITIES, setData, getVisibleRange: visible, setVisibleRange: setVisible, zoom, scroll,
-      fit: () => { if (bars.length) request({from: -0.5, to: bars.length - 0.5}); }, showCrosshair, clearCrosshair: () => chart.clearCrosshairPosition(), setMeasure, pointAt, destroy});
+      fit: () => { if (bars.length) request({from: -0.5, to: bars.length - 0.5}); }, showCrosshair, clearCrosshair: () => chart.clearCrosshairPosition(), setMeasure, setOverlays, pointAt, destroy});
   }
 
   /* ---------- SVG fallback (existing TechnicalChart, unchanged) ---------- */
@@ -288,7 +323,7 @@
     const all = () => bars.length ? {from: 0, to: bars.length - 1} : null;
     const none = () => {};
     return Object.freeze({kind: 'svg', capabilities: SVG_CAPABILITIES, setData, getVisibleRange: all, setVisibleRange: none, zoom: none, scroll: none, fit: none,
-      showCrosshair: none, clearCrosshair: none, setMeasure: none, pointAt: () => null, destroy: () => host.replaceChildren()});
+      showCrosshair: none, clearCrosshair: none, setMeasure: none, setOverlays: () => 0, pointAt: () => null, destroy: () => host.replaceChildren()});
   }
 
   // kind 'lwc' resolves to the LWC renderer or rejects with RENDERER_UNAVAILABLE; callers fall back to 'svg'.
@@ -299,5 +334,5 @@
     return createLwc(host, lib, options);
   }
 
-  return Object.freeze({LWC_VERSION, LWC_FILE, LWC_INTEGRITY, LWC_CAPABILITIES, SVG_CAPABILITIES, normalizeBars, normalizeLines, clampRange, mapRange, measure, calendarDays, create, loadLibrary});
+  return Object.freeze({LWC_VERSION, LWC_FILE, LWC_INTEGRITY, LWC_CAPABILITIES, SVG_CAPABILITIES, normalizeBars, normalizeLines, normalizeOverlays, clampRange, mapRange, measure, calendarDays, create, loadLibrary});
 });

@@ -73,7 +73,8 @@ test('display settings store toggles only and reject unknown values', () => {
   assert.equal(W.readSettings(storage).indicators.SMA, true);
   assert.equal(W.writeSettings(storage, {mode: 'swing', renderer: 'svg', indicators: {SMA: false, EMA: true, BOLL: false, RSI: true, MACD: false, ATR: false}}), true);
   const saved = JSON.parse(store.get(W.SETTINGS_KEY));
-  assert.deepEqual(Object.keys(saved).sort(), ['indicators', 'mode', 'renderer', 'schema']);
+  assert.deepEqual(Object.keys(saved).sort(), ['indicators', 'mode', 'patterns', 'renderer', 'schema']);
+  assert.deepEqual(saved.patterns, {ZONES: true, BOX: true, DOUBLE: true});
   const back = W.readSettings(storage); assert.equal(back.mode, 'swing'); assert.equal(back.renderer, 'svg'); assert.equal(back.indicators.RSI, true);
   store.set(W.SETTINGS_KEY, JSON.stringify({schema: W.SETTINGS_SCHEMA, mode: 'auto', renderer: 'canvas', indicators: {RSI: 'yes', price: 1}}));
   const bad = W.readSettings(storage); assert.equal(bad.mode, 'long'); assert.equal(bad.renderer, 'lwc'); assert.equal(bad.indicators.RSI, false); assert.equal('price' in bad.indicators, false);
@@ -117,6 +118,42 @@ test('synthetic preview is deterministic, labelled and never a real symbol', () 
 test('workbench wording has no buy/sell, probability, win-rate or score terms', () => {
   const text = fs.readFileSync(path.join(assets, 'chart-workbench.js'), 'utf8') + fs.readFileSync(path.join(assets, 'chart-renderer.js'), 'utf8');
   for (const word of ['매수', '매도', '확률', '승률', '점수', '신뢰도', 'probability', 'win rate', 'win-rate', 'Buy', 'Sell']) assert.ok(!text.includes(word), word);
+});
+
+test('pattern helpers read engine output without detecting anything themselves', () => {
+  const code = fs.readFileSync(path.join(assets, 'chart-workbench.js'), 'utf8');
+  for (const word of ['function pivots', 'function atr', 'formBox', 'formDouble', 'recluster', 'ResearchIndicators.calculate(series']) assert.ok(!code.includes(word), word);
+  const Defaults = require(path.join(assets, 'pattern-config-defaults.js'));
+  const {params, diff} = W.applyChanges(Defaults.params, {PIVOT_K: 5, BOX_MAX_BARS: 60, 'BOX_HEIGHT_ATR.min': 3, ZONE_TOL_ATR: 0.5}, 'D');
+  assert.equal(params.PIVOT_K.D, 5); assert.equal(params.PIVOT_K.W, Defaults.params.PIVOT_K.W); assert.equal(params.DB_SEP_MAX.D, 60); assert.equal(params.BOX_HEIGHT_ATR.min, 3);
+  assert.deepEqual(diff.map(x => x.name), ['PIVOT_K', 'BOX_MAX_BARS', 'BOX_HEIGHT_ATR.min']);
+  assert.equal(Defaults.params.PIVOT_K.D, 3);
+  assert.throws(() => W.applyChanges(Defaults.params, {PIVOT_K: 4}, 'D'), /PATTERN_SETTING_OUT_OF_GRID/);
+  assert.deepEqual(W.minBars(Defaults.params, 'D'), [['ATR14', 15], ['PIVOT', 7], ['ZONE', 15], ['BOX', 33], ['DOUBLE', 31], ['VOLUME_NOTE', 20]]);
+  for (const [name, spec] of W.EXPLORE_GRID) for (const tf of ['D', 'W']) {
+    const [head, sub] = name.split('.'), value = Defaults.params[head], def = sub ? value[sub] : value && typeof value === 'object' ? value[tf] : value;
+    assert.ok((Array.isArray(spec) ? spec : spec[tf]).includes(def), name + ' grid holds the default');
+  }
+});
+test('user-settings params hash uses the engine canonical JSON and reproduces the shipped hash', () => {
+  const E = require(path.join(assets, 'pattern-engine.js')), Defaults = require(path.join(assets, 'pattern-config-defaults.js'));
+  assert.equal(crypto.createHash('sha256').update(E.canonicalJson(Defaults.params)).digest('hex'), Defaults.params_sha256);
+});
+test('synthetic engine run: official result is recorded, user settings are refused by the history', () => {
+  const E = require(path.join(assets, 'pattern-engine.js')), B = require(path.join(assets, 'chart-bars.js')), H = require(path.join(assets, 'pattern-history.js')), Defaults = require(path.join(assets, 'pattern-config-defaults.js'));
+  const s = W.syntheticHistory(), daily = B.normalize({schema: 'private-history/1', interval: '1d', basis: 'RAW_CLOSE', delay_status: 'UNKNOWN', symbol: s.symbol, provider: '', currency: '', timezone: 'UTC', read_at: '', bars: s.bars});
+  const actions = W.syntheticActions(daily), official = E.run(daily, Defaults, actions), objects = W.patternObjects(official);
+  assert.deepEqual(actions, {status: 'AVAILABLE', covered_from: '2025-01-06', covered_to: '2026-03-27', events: []});
+  assert.ok(objects.length > 0 && objects.every(o => o.judgeable) && objects.every(o => o.kind !== 'PIVOT'));
+  assert.ok(objects.some(o => o.pattern === 'SUPPORT_RESISTANCE_ZONE') && objects.some(o => o.pattern && o.pattern.startsWith('BOX')) && objects.some(o => o.pattern && o.pattern.startsWith('DOUBLE')));
+  const book = H.createBook(); assert.ok(book.append(official, 't').added > 0);
+  const {params} = W.applyChanges(Defaults.params, {PIVOT_K: 5}, 'D');
+  const user = E.run(daily, {...Defaults, params, params_sha256: crypto.createHash('sha256').update(E.canonicalJson(params)).digest('hex')}, actions);
+  assert.equal(user.run_mode, 'USER_SETTINGS');
+  assert.throws(() => book.append(user, 't'), /HISTORY_USER_SETTINGS_REFUSED/);
+  const real = E.run(daily, Defaults, null), realObjects = W.patternObjects(real);
+  assert.ok(realObjects.length > 0 && realObjects.every(o => !o.judgeable) && realObjects.every(o => o.reasons.includes('PRICE_BASIS_CONTINUITY_UNCONFIRMED')));
+  assert.equal(H.createBook().append(real, 't').added, 0);
 });
 console.log('COUNTS pass=' + pass + ' fail=' + fail);
 if (fail) process.exitCode = 1;
