@@ -28,6 +28,10 @@ const R=c=>'[data-cycle-ring="'+c+'"]';
 async function focusOf(page,c){return page.locator(R(c)+' [data-cycle-phase][aria-selected="true"]').getAttribute('data-cycle-phase');}
 async function turnDeg(page,c){return Number(await page.locator(R(c)+' svg').getAttribute('data-cycle-turn-deg'));}
 async function live(page){return page.locator('[data-cycle-live]').textContent();}
+// A touch swipe ends in an inertial (fling) scroll that keeps moving the page after touchEnd, for a variable time. Wait until
+// scrollY has not changed for 10 consecutive animation frames, so later steps do not measure a box that is still moving.
+async function scrollSettled(page){await page.evaluate(()=>new Promise((ok,no)=>{let last=scrollY,same=0,frames=0;
+ const tick=()=>{if(scrollY===last)same++;else{same=0;last=scrollY;}if(same>=10)return ok();if(++frames>600)return no(Error('scroll did not settle'));requestAnimationFrame(tick);};requestAnimationFrame(tick);}));}
 async function settle(page,c){await page.waitForFunction(sel=>{const s=document.querySelector(sel+' svg');return s&&Math.abs(Number(s.dataset.cycleDisplayDeg)-Number(s.dataset.cycleTurnDeg))<1e-6;},R(c));}
 // After a reload the macro screen re-renders (and re-mounts the ring) once its data arrives; wait for that like openMacro
 // does, then for the network to go idle, so no later re-render replaces nodes a step is reading.
@@ -112,15 +116,19 @@ async function drag(page,c,cells,touch,cdp){
    {const box=await page.locator(R('economy')+' [data-cycle-drag]').boundingBox(),x=box.x+box.width/2,y=box.y+box.height*0.7,f=await focusOf(page,'economy'),deg=await turnDeg(page,'economy');
     if(touch){const sy=await page.evaluate(()=>scrollY);await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y}]});
      for(let i=1;i<=10;i++)await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:x+1,y:y-16*i}]});await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
-     await page.waitForTimeout(200);assert.ok(await page.evaluate(()=>scrollY)>sy,'vertical swipe scrolls the page');}
+     await scrollSettled(page);assert.ok(await page.evaluate(()=>scrollY)>sy,'vertical swipe scrolls the page');}
     else{await page.mouse.move(x,y);await page.mouse.down();await page.mouse.move(x+3,y-160,{steps:8});await page.mouse.up();}
     assert.equal(await focusOf(page,'economy'),f);assert.equal(await turnDeg(page,'economy'),deg);
     assert.equal(await page.locator(R('economy')+' [data-cycle-drag]').evaluate(n=>getComputedStyle(n).touchAction),'pan-y');}
    pass++;console.log('PASS cycle ring vertical '+width);
    // cell tap turns to that cell
    phase='TAP '+width;
-   {const cell=page.locator(R('economy')+' [data-cycle-cell="2"]'),b=await cell.boundingBox();
-    if(touch)await page.touchscreen.tap(b.x+b.width/2,b.y+b.height/2);else await page.mouse.click(b.x+b.width/2,b.y+b.height/2);
+   // The vertical swipe above scrolls the page by a fling of variable length, which can leave cell 2 partly or wholly above the
+   // viewport; tapping its old viewport coordinates then hits nothing. Bring the cell into view and wait for the page to stop.
+   {const cell=page.locator(R('economy')+' [data-cycle-cell="2"]');await scrollSettled(page);await cell.evaluate(n=>n.scrollIntoView({block:'center',inline:'center',behavior:'instant'}));await scrollSettled(page);
+    const b=await cell.boundingBox(),x=b.x+b.width/2,y=b.y+b.height/2;
+    assert.ok(await cell.evaluate((n,[x,y])=>document.elementFromPoint(x,y)===n,[x,y]),'the tap point is on cell 2');
+    if(touch)await page.touchscreen.tap(x,y);else await page.mouse.click(x,y);
     await settle(page,'economy');assert.equal(await focusOf(page,'economy'),'둔화');}
    pass++;console.log('PASS cycle ring tap '+width);
    // 16 separate rings
