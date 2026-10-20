@@ -41,6 +41,7 @@ from investment_system.universe.universe_codes import FILENAME as UNIVERSE_CODES
 from investment_system.universe.company_names_ko import FILENAME as COMPANY_NAMES_FILENAME, require_company_names_ko
 from investment_system.universe.universe_domains import FILENAME as UNIVERSE_DOMAINS_FILENAME, require_universe_domains
 from investment_system.product.company_logos import FILENAME as COMPANY_LOGOS_FILENAME, require_company_logos
+from investment_system.macro.evidence_lines import FILENAME as MACRO_EVIDENCE_FILENAME, require_macro_evidence
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
@@ -59,8 +60,8 @@ APPROVED_SHA256 = {
     "table-sort.js": "db8ebe8e6a81a67309e925646ffe557db06452fb89e5735de7baad9770c0b778",
     "pc-layout.css": "d3a270238df767d49ef23ea3d53d60fca62d65dc017af19338269602190af2b4",
     "share-class-groups.js": "088bbfaec559937753533572330a6be3c2f9280910f9f6cf62b53f39119c0997",
-    "forward-validation.js": "da7345bf97393f8cf986fd97f09b8044bc6d2f7051fff9020a00005239ad6dd3",
-    "daily-report.js": "3d13a6e26992bda32e1a136f34895490941fba104a6ed4e09a285fc7ef22ca5a",
+    "forward-validation.js": "85432c469bce8466d2df24b90e2caf1985c2036d596e37725e9073368216f009",
+    "daily-report.js": "c719625827b965f0ac26b766a69ab46ed9d3c923660a44675074791b9f085389",
     "sec-universe-shares.js": "7a64bf6c280b81258ebd13e78b6761876f7056565f18ba9e64da897d953f600d",
     "virtual-trading-v-history.js": "944124763c2682dff373f9ec86e8b938ee2400f3084b5e3d62d8b44c8bd8099f",
     "virtual-trading-signals.js": "b8d73d216d9697bea31f15f0061831f81a144b518b5aa5cc54ba4620dafbe6ef",
@@ -70,12 +71,12 @@ APPROVED_SHA256 = {
     "dcf-parameters-defaults.js": "3f9498ef6177b9dcd3c4fa80077c8480750be93668f57bd5ed5ed3b5509a8473",
     "classification-screens.js": "23ed7302742bf769068ef128dc48075fe6c88d6610585356e6b4e88d14db0a8f",
     "manager-styles-v0.js": "b32f434b17ba00d6ec1e4813517884e5caded996779df9b1976dfc38964ab38e",
-    "screen-detail.js": "fdb5bb47c1a9b59ce1840640bc1a7f4bff69914a4d2985acc31dc0518d21af9c",
+    "screen-detail.js": "e178c80fa5b32698b4ff410be7da298f5f6c2032f437e734cdfa97be9e7725ee",
     "virtual-trading.js": "41a834f13d86ed2bd6a046cf63788992350294714ee9b9ee159ae50de8e20206",
     "technical-cards.js": "cc6164ac1ca510bb7fddd3403e128198db90c7d7a98b860792bb53df5c1bf814",
-    "leaderboard-screen.js": "a51e3831df1dbbac3a0de83f888320a6c8feb7b02e507b052dcb6bd1c43c4e23",
-    "portfolio-screen.js": "5fdeea24f9d144e706226b687e9279bef141671d5987c194e4bb647db2fa2e69",
-    "company-screen.js": "6f929b225cb6f9999d61befa51fdb39b0ad8b96d7bb5171146a265f47d6aa92c",
+    "leaderboard-screen.js": "c2cc760f88655b5b723662325dbdf2f3ce9dae476ab45938437ab336cef85326",
+    "portfolio-screen.js": "64469dab95d407dbba1d5e68a1614223b6e83c46742ce05205380a44ef71dc72",
+    "company-screen.js": "5c55833a4a0cf36f827f41b98d9e5c783524489a4aae2dbdca860c0a4628bfae",
     "ops-status.js": "bccccba913e0887ee2bb3c38fd61f27fcc2a6d37acb67aeeffea227df422c7a9",
     "type-config-defaults.js": "8b287dde54fb194469bd13d62c356e51eb78c4c04c415eafc6f5091935fed131",
     "private-subset-view.js": "bd93b7d5cd7d5c13950d5786a77fabb6a9c1d2d41cfdd328773c1e941d982237",
@@ -105,9 +106,9 @@ APPROVED_SHA256 = {
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "8bab9f815afbab53bf80358649915eccd0234d8bda3d1a3fa24eef96a2c0501a",
+    "app.js": "e09405028f54bbd7a4e96a0bc283f8d285fa2da981614dcf43ea11ed39612e0b",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
-    "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
+    "device-actual.css": "57a6f74deb228391ae65085bde62f3cef2126937cf5063dda41f4807abf44845",
     "device-actual.js": "1cfae1a928e74055b1536e1b8dbe26509780eb3eed2f79b3a1963de4feb25f60",
     "device-market.js": "c0824cb68bc2121ea88b2cd10081336f394736b773189c3f2ba865fa799261a7",
     "entities.json": "8a452006b4821bb0c1fed05de17a2a81da7457fe546f6d9161a1d8b4bda16ac2",
@@ -115,12 +116,12 @@ APPROVED_SHA256 = {
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "59c8bab257051b7b5b4982ba4bedfa998a2e14c63852caef643aee6072f249b2",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "05e5ce842e48c8cef2b177e934c1eb5672603d72b22aa304cc8d440d5c18f7a8",
+    "index.html": "c13524131b6542d549837e1a87011f71aae14c735f9f34cfebae2fec2f6455fc",
     "locale.js": "f3537029f859a0958c9d2440b7fcc021fef96b2845ff3320ad8b8ae045f09dc2",
     "private-history.css": "d4ce930e901e2b67b2eb6d57c8795f77be3b9f1650efa85dad6e524419c42028",
     "private-history.js": "70a1b247f0e9ad2ef22154a6f94e75441244a9dc285122d7ae697a0d8574d81d",
-    "research.html": "03fcceb4f7c080e76d7fd1cf27477502284fa1fa24ca16f99c79f43c24751309",
-    "style.css": "8c88942eeb1fff9eb9ca73dc5fd1fba744b75a55ad54f449063ac3b007164c9c",
+    "research.html": "573b249119fcb221d0db50235b269cca5b207023b36ac3f5fed8ca6949db425e",
+    "style.css": "35d5eee322071f069cb7b4fc92c2ca5e7e0dfad358a5c57991d87cde0106d34a",
     "sec-disclosures.js": "849cbfbf2b21badd52c06cf5887dcd259e08864552a76fde39f065f82c6a7194",
     "sec-qgv2.js": "419b49c42921b2792a18ff051e3864620cfacec3918b3b98e74adf90d61cb48d",
     "price-store.js": "52b723d9e7dfc189252a870c57f5a044373427d3a9009bb9a119c322ebb8c4de",
@@ -129,27 +130,29 @@ APPROVED_SHA256 = {
     "qgv-v2.js": "0f06a8904b156e18f503c47844b540b4b12f3368933ff21bc3157afe482b3717",
     "qgv-scores.js": "02573dc9b02839af4220d4a63e0685a41c7b99f66fc9ebe846e4f42ed2f37866",
     "playbook-screen.js": "b0a4a0dcde24b80877250d78ad12f229806abeb058db1b69173a44afafdc7498",
-    "news-signals.js": "a7da310c577f838a8beeb7d0a58854b6fcaaae03bbc75ba9216d5b56e47fc519",
+    "news-signals.js": "6a85c92329ca6968175d357ec10a81198b692d762a29ab1a30374a3f0b3c718c",
     "dart-disclosures.js": "7ea88fa32ffa0be446e28f3b91532532bf2b98073f31d4ec1d62db8e73d7efdf",
     "macro-lights.js": "d64e3d4c68fb8c0ffdbfe16ad3220af2648bda4d331edd387ca337d52c42d741",
     "macro-cycle-ring.js": "e29b395607c9a06614ff14453fb5188a0c886bb5c1a0025d31e422bf682fe8a4",
     "macro-cycle-ring.css": "2d36990bb39d56f8f1827341a4a71f54432044eaf8e55c94638b291abaf47a80",
     "sec-disclosures.js": "849cbfbf2b21badd52c06cf5887dcd259e08864552a76fde39f065f82c6a7194",
     "theme-boot.js": "4aaf08ecd900e1216a95159a277f8a7c51c32e41784f1ac9530ecf1dc77a6f2c",
-    "theme.css": "bef6d817e19f474884e14367c23f5fbe25c6a191e2499eaf7ac2839a4c7e015a",
+    "theme.css": "4cd7dc3f0c69a9f99cf946aa61f76f3cefa12e4d529b3d22b8fb7721f63b932c",
     "app-shell.js": "e7cdd03821e5f543925c16bbb2fb67b977df4c1d5c88e2f532f86cb3b8d31199",
-    "home-screen.js": "5cf68ce2b98a7bfb90251fabbf7f357a5638408467ee4d1479c05d45da98da73",
+    "home-screen.js": "f35d9c2c1e0b400ca7ef337b5f90d13be6660b6f321aaeea3ea5239d86c05219",
     "home-quotes.js": "46487b40e170c3291b023bebcb0fd01da19bb3beb53bfad3006be6377cfe3a96",
     "doodles.js": "413afcb07c5ef5f4edcb0ab544ba61a7d19954db0951ccdf85742c04cf5bb57e",
-    "ia-screens.js": "05f9db8e152a75c543518ab072ac07051852c3c0d2b1db1fb7f080d72a391250",
+    "ia-screens.js": "51af7928fc30dad0afd7e2b446e459667ae24b50c1b615c2c216fd66c39e422c",
     "universe-company.js": "f28e53e7269932790d45339a80761db451664f0a7b44b7d173b759050a946d82",
     "universe-company.css": "5b1b0236290f91c95b7f25d49bc93d032bf1718754c1cfae7789e92bb74b11b8",
     "stat-radar.js": "f46686ac9391e398d9c0cc0af19c00aa9de2b32cd1a37cc5c4abb0dabb047750",
-    "stat-radar.css": "bae106529a7b0897d9fe41fa8cb60630e15ae961bdf25ef9ea38b21d247d1b6d",
+    "stat-radar.css": "1afcc9df3d0eeadb87b7d80251ef17091146bf62f2da40a9f7e249b2969bd6db",
     "v-coverage.js": "8031a5cf658ecc287df71dcbe5f6fdc61cc754057e39086eefa210847d37aa4c",
     "price-time.js": "9b786d04615f3a8907f8f936db78ab3fd477808eadc27814e615ffbb7dddbc0f",
     "data-refresh.js": "8040b88ca9a8083c92879067ff84a01f5db8aa6019c42a0c2b2098b68435c6f2",
     "v-coverage.css": "185302f9f5aa9542d2caadfa03363f084bf837e8e1ea2998da49fa1db8af9364",
+    "macro-evidence.js": "41efb4a48c6a6bf0363fcac28bd414bc7014224df0e8a907549078758e2a19b6",
+    "macro-evidence.css": "5270ef2e2c80eb70125ed39f8fbef5f3f0d87172d3dff3a79c888b92ec9520cd",
     # Self-hosted chart renderer (P1-7): lightweight-charts 5.2.1 npm file unmodified, upstream LICENSE/NOTICE, third-party notices.
     "chart-renderer.js": "c6053c2633788813d363d3346833f416fa954fbf8db7e1e18252b191c0dd040b",
     "chart-workbench.js": "384db7708b52deb23b0e0a08bdad8cdfe4dd35d97e4cc974881cc34930abf83c",
@@ -174,7 +177,7 @@ APPROVED_SHA256 = {
 # including the fonts' OFL licence texts, still goes through all text checks.
 FONT_FILES = frozenset({"jua-regular-ksx1001.woff2", "gaegu-regular-ksx1001.woff2"})
 FONT_MAX_BYTES = 256 * 1024  # pinned subsets are 187,292 and 83,968 bytes; tighter than MAX_FILE_BYTES on purpose
-ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, COMPANY_NAMES_FILENAME, UNIVERSE_DOMAINS_FILENAME, COMPANY_LOGOS_FILENAME, QGV2_FILENAME, DISCLOSURES_FILENAME, NEWS_SIGNALS_FILENAME} | set(SCREEN_FILENAMES) | set(DART_FILENAMES)
+ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, COMPANY_NAMES_FILENAME, UNIVERSE_DOMAINS_FILENAME, COMPANY_LOGOS_FILENAME, QGV2_FILENAME, DISCLOSURES_FILENAME, NEWS_SIGNALS_FILENAME, MACRO_EVIDENCE_FILENAME} | set(SCREEN_FILENAMES) | set(DART_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024
 MAX_ARCHIVE_BYTES = 4 * 1024 * 1024
 # 192 (was 128, owner approval 2026-10-20): a real deploy (build + ledger/public data) reached about 131 entries with the
@@ -358,6 +361,9 @@ def _check_payload(name: str, payload: bytes, violations: Counter) -> None:
         elif name == NEWS_SIGNALS_FILENAME:
             try: require_news_signals(value)
             except ValueError: violations['news_signals_boundary'] += 1
+        elif name == MACRO_EVIDENCE_FILENAME:
+            try: require_macro_evidence(value)
+            except ValueError: violations['macro_evidence_boundary'] += 1
         elif name in DART_FILENAMES:
             try: require_dart_public(name, value)
             except ValueError: violations['dart_public_boundary'] += 1

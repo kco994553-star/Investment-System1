@@ -48,6 +48,8 @@ def build_public_cockpit(out: Path, *, sec_m2_candidate=None) -> Path:
     emit_disclosures(out)
     from news_signals import emit_empty as emit_news
     emit_news(out)
+    from macro_evidence import emit_empty as emit_macro_evidence
+    emit_macro_evidence(out)
     return result
 
 

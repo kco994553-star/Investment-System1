@@ -115,7 +115,7 @@ def load_previous_inputs(*, open_response=None):
 
 
 def collect(directory, *, environ=None, client_factory=None, macro_v0=None, macro_curve=None, previous=None,
-            previous_state=None, now=None):
+            previous_state=None, now=None, macro_evidence=None):
     if client_factory is None:
         from investment_system.providers.sec_collection import SecCollectionClient
         client_factory = SecCollectionClient
@@ -128,6 +128,13 @@ def collect(directory, *, environ=None, client_factory=None, macro_v0=None, macr
         if macro_curve is not None:
             # Treasury daily par yield curve (government statistics, macro lights v1); raw XML stays private here.
             manifest['macro_curve_v1'] = macro_curve(root)
+        if macro_evidence is not None:
+            # Macro evidence lines (exploration only, MEV-10): reuses the macro files above from this private directory
+            # and writes only macro-evidence.json. Any failure prints a fixed code and never stops the SEC collection.
+            try:
+                macro_evidence(root, manifest)
+            except Exception:
+                print('MACRO_EVIDENCE BUILD_FAILED nothing_written')
         class Capture:
             def __init__(self, agent):
                 self.client = client_factory(agent)
@@ -172,6 +179,7 @@ def main(argv=None):
     parser = Parser(description=__doc__)
     parser.add_argument('--out', required=True, type=Path)
     parser.add_argument('--live', action='store_true')
+    parser.add_argument('--macro-evidence', action='store_true', help='with --live --macro-v0, also write macro-evidence.json (MEV-1 P1 13 evidence lines, exploration only)')
     parser.add_argument('--macro-v0', action='store_true', help='with --live, also collect the macro v0 official series (BLS CUUR0000SA0+LNS14000000, BEA T10101 line 1, Fed H.15/H.4.1/H.8 DDP CSV, Treasury MTS Table 1) and the Treasury daily par yield curve XML for the macro lights v1')
     args = parser.parse_args(argv)
     try:
@@ -196,9 +204,15 @@ def main(argv=None):
                         print('MACRO_V1_CURVE_FETCH stage=%s code=%s http=%s content=%s size=%s' % tuple(
                             (d.get(k) if d.get(k) is not None else '-') for k in ('stage', 'code', 'http', 'content', 'size')))
                     return entries
+            macro_evidence = None
+            if args.macro_v0 and args.macro_evidence:
+                import macro_evidence as evidence_tool
+
+                def macro_evidence(root, manifest):
+                    evidence_tool.run_from_capture(args.out, root, manifest, environ=os.environ)
             previous, previous_state = load_previous_inputs()
             result = collect(args.out, macro_v0=macro_v0, macro_curve=macro_curve, previous=previous,
-                             previous_state=previous_state)
+                             previous_state=previous_state, macro_evidence=macro_evidence)
             _print_diagnostics(result['diagnostics']); _print_exclusions(result['exclusions'])
             _print_collection(result, previous_state)
             if args.macro_v0:
