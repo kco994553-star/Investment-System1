@@ -104,7 +104,7 @@ APPROVED_SHA256 = {
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "f3e40978eb51b6bb519ad7fc13296ba2cb585788068febfbd12299e61e1b402d",
+    "app.js": "8bab9f815afbab53bf80358649915eccd0234d8bda3d1a3fa24eef96a2c0501a",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "1cfae1a928e74055b1536e1b8dbe26509780eb3eed2f79b3a1963de4feb25f60",
@@ -114,7 +114,7 @@ APPROVED_SHA256 = {
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "59c8bab257051b7b5b4982ba4bedfa998a2e14c63852caef643aee6072f249b2",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "3057e48acd9d2d9ebbca93958d31ceb728ac1275498410d69453e36f43678e73",
+    "index.html": "2994492795692b1a127c3db1f380d6dd1667a59556ca5d37096f7585204f0b9d",
     "locale.js": "f3537029f859a0958c9d2440b7fcc021fef96b2845ff3320ad8b8ae045f09dc2",
     "private-history.css": "d4ce930e901e2b67b2eb6d57c8795f77be3b9f1650efa85dad6e524419c42028",
     "private-history.js": "70a1b247f0e9ad2ef22154a6f94e75441244a9dc285122d7ae697a0d8574d81d",
@@ -131,6 +131,8 @@ APPROVED_SHA256 = {
     "news-signals.js": "a7da310c577f838a8beeb7d0a58854b6fcaaae03bbc75ba9216d5b56e47fc519",
     "dart-disclosures.js": "7ea88fa32ffa0be446e28f3b91532532bf2b98073f31d4ec1d62db8e73d7efdf",
     "macro-lights.js": "d64e3d4c68fb8c0ffdbfe16ad3220af2648bda4d331edd387ca337d52c42d741",
+    "macro-cycle-ring.js": "1ab7c093df2082f198241a57f32374f1b2f5007a424715e70f1682965a2999b3",
+    "macro-cycle-ring.css": "34c32dd266a77168df8b6bf40fa23a2843eba7f84cf4971167677dd29e503e0a",
     "sec-disclosures.js": "849cbfbf2b21badd52c06cf5887dcd259e08864552a76fde39f065f82c6a7194",
     "theme-boot.js": "4aaf08ecd900e1216a95159a277f8a7c51c32e41784f1ac9530ecf1dc77a6f2c",
     "theme.css": "a5e89c0da9b0af8ee3662989c33e2c4c19f2a4bf14ef0e864a41ff2f4e4fa3f7",
@@ -138,7 +140,7 @@ APPROVED_SHA256 = {
     "home-screen.js": "5cf68ce2b98a7bfb90251fabbf7f357a5638408467ee4d1479c05d45da98da73",
     "home-quotes.js": "46487b40e170c3291b023bebcb0fd01da19bb3beb53bfad3006be6377cfe3a96",
     "doodles.js": "413afcb07c5ef5f4edcb0ab544ba61a7d19954db0951ccdf85742c04cf5bb57e",
-    "ia-screens.js": "314618697c70a441b4367e4192af61995c41910158d4d404ed595d63d5bc6219",
+    "ia-screens.js": "05f9db8e152a75c543518ab072ac07051852c3c0d2b1db1fb7f080d72a391250",
     "universe-company.js": "f28e53e7269932790d45339a80761db451664f0a7b44b7d173b759050a946d82",
     "universe-company.css": "5b1b0236290f91c95b7f25d49bc93d032bf1718754c1cfae7789e92bb74b11b8",
     "stat-radar.js": "f46686ac9391e398d9c0cc0af19c00aa9de2b32cd1a37cc5c4abb0dabb047750",
@@ -159,7 +161,9 @@ APPROVED_SHA256 = {
 ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, COMPANY_NAMES_FILENAME, UNIVERSE_DOMAINS_FILENAME, COMPANY_LOGOS_FILENAME, QGV2_FILENAME, DISCLOSURES_FILENAME, NEWS_SIGNALS_FILENAME} | set(SCREEN_FILENAMES) | set(DART_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024
 MAX_ARCHIVE_BYTES = 4 * 1024 * 1024
-MAX_ENTRIES = 128
+# 192 (was 128, owner approval 2026-10-20): a real deploy (build + ledger/public data) reached about 131 entries with the
+# chart renderer. Only the entry count changes; the allow-list, pinned hashes, size limits and price/personal checks stay.
+MAX_ENTRIES = 192
 MAX_JSON_DEPTH = 64
 
 SENSITIVE_KEYS = frozenset({

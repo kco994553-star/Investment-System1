@@ -962,6 +962,7 @@ function renderRoute(options) {
   if(route==='validation') ForwardValidation.mount($('#forward-validation-root'),{locale:appSettings.display_locale,config:window.InvestmentAppConfig});
   if(route==='types') DeviceProfiles.mount($('#device-type-editor'),{locale:appSettings.display_locale,mode:'types'});
   if(route==='macro') MacroLights.mount($('#macro-lights-root'),{bundle:publicScreens,locale:appSettings.display_locale,config:window.InvestmentAppConfig});
+  if(route==='macro'&&window.MacroCycleRing) MacroCycleRing.mount($('#macro-cycle-ring-root'),{bundle:publicScreens,locale:appSettings.display_locale});
   mountPublicPanels(route,id);
   syncNavigation(route);
   const menu=window.AppShell?.menuFor(route);
