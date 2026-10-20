@@ -172,10 +172,27 @@ function rowTier(row,{held=[],interests=[]}={}){if(!row.company_id)return 'MARKE
 // Same tier: newest first (input order), as in the relation feed order.
 function filterRows(rows,f=FILTER_DEFAULT,ctx={}){const out=rows.filter(r=>(f.channel==='ALL'||r.channel===f.channel)&&(f.category==='ALL'||rowCategory(r)===f.category)&&(f.occurrence==='ALL'||rowOccurrence(r)===f.occurrence));
  if(f.order!=='IMPORTANCE')return out;const rank=r=>TIER_ORDER.indexOf(rowTier(r,ctx));return out.map((r,i)=>[r,i]).sort((a,b)=>rank(a[0])-rank(b[0])||a[1]-b[1]).map(x=>x[0]);}
+// 5.2.5 (news screen layout only): counts of the newest `limit` rows the list shows, from the same rows (no new rule): new
+// items and filings, repeat reports and amended filings, and repeat reports folded under a row (same event, or IR under its 8-K).
+function occurrenceSummary(doc,rows,limit,en){const T=(k,e)=>en?e:k;let fresh=0,again=0,folded=0;
+ for(const row of rows){if(rowOccurrence(row)==='NEW')fresh++;else again++;folded+=row.channel==='NEWS'?row.repeats.length:Array.isArray(row.related)?row.related.length:0;}
+ const dl=doc.createElement('dl');dl.className='kv nw-counts';dl.setAttribute('data-news-occurrence-summary','');
+ for(const[k,v,key]of [[T('새 소식 · 새 공시','New items · new filings'),fresh,'NEW'],[T('반복 보도 · 정정 공시','Repeat reports · amended filings'),again,'REPEAT'],[T('묶어 접은 반복 보도','Folded repeat reports'),folded,'FOLDED']]){
+  const dt=doc.createElement('dt'),dd=doc.createElement('dd');dt.textContent=k;dd.textContent=String(v);dd.className='num';dd.setAttribute('data-occurrence-count',key);dl.append(dt,dd);}
+ const frag=doc.createDocumentFragment(),note=doc.createElement('p');note.className='small';
+ note.textContent=T('최신 '+limit+'행 기준 · 72시간 안 비슷한 제목은 한 사건으로 묶음 · 8-K와 같은 IR 보도자료는 그 8-K 아래 · 목록의 "신규·반복" 조건으로 거를 수 있음','Within the newest '+limit+' rows · similar titles within 72h are one event · an IR release repeating an 8-K sits under that 8-K · filter with “New / repeat” in the list');
+ frag.append(dl,note);return frag;}
 function mount(host,{sec=null,dart=null,news=null}={},{locale,companyIds=null,limit=30,emptyText,secApi=root.SecDisclosures,dartApi=root.DartDisclosures,held=null,interests=null,storage=session()}={}){
  if(!host)return;const doc=host.ownerDocument,en=locale==='en-US',T=(k,e)=>en?e:k,el=(tag,text,attrs={})=>{const n=doc.createElement(tag);if(text!==undefined)n.textContent=text;for(const[k,v]of Object.entries(attrs))n.setAttribute(k,v);return n;};
  const when=v=>v.slice(0,16).replace('T',' ')+' UTC',srcLabel=s=>s==='IR'?T('회사 IR','Company IR'):'GDELT',classLabel=c=>{const [k,e]=CLASSES[c];return en?e+' ('+k+')':k+' ('+e+')';};
  const section=el('section',undefined,{class:'card','data-sec-disclosures':'','data-news-signals':''});section.append(el('h2',T('뉴스·공시 · 공시·확정 + 뉴스·신호','News & disclosures · confirmed disclosures + news signals')));
+ // Menu 4 news layout (design lane D3): inside the news screen ([data-news-layout]) the same nodes go into three numbered stamp
+ // boxes, function numbers 5.2.1 list, 5.2.5 new/repeat, 5.2.7 collection status. Elsewhere (watchlist) the section is unchanged.
+ const fnLayout=!!(host.closest&&host.closest('[data-news-layout]'));let listBox=section,occBox=null,statusBox=section;
+ if(fnLayout){const box=(n,ko,e)=>{const id='nw-fn-'+n.replaceAll('.','-'),b=el('section',undefined,{class:'nw-sec','data-fn':n,'aria-labelledby':id}),h=el('h3',undefined,{class:'nw-head',id});
+   h.append(el('span',n,{class:'ia-sec'}),doc.createTextNode(' '),el('span',T(ko,e),{class:'nw-title'}));b.append(h);return b;};
+  listBox=box('5.2.1','목록과 개인화','List and personal');occBox=box('5.2.5','신규 · 중복 · 변경','New · repeat · amended');statusBox=box('5.2.7','수집 상태','Collection status');
+  const grid=el('div',undefined,{class:'nw-mount-grid'});grid.append(listBox,occBox,statusBox);section.append(grid);}
  const secState=sec?sec.state:'NOT_AVAILABLE',newsState=news?news.state:'NOT_AVAILABLE',chips=el('p',undefined,{class:'chips'});
  chips.append(el('span',CHANNELS.DISCLOSURE[en?1:0]+' · SEC 8-K',{class:'badge'}),el('span',secState,{class:'badge '+secState,'data-disclosure-state':secState}));
  if(dart)chips.append(el('span','DART',{class:'badge'}),el('span',dart.state,{class:'badge disclosure-state','data-dart-state':dart.state}));
@@ -183,17 +200,18 @@ function mount(host,{sec=null,dart=null,news=null}={},{locale,companyIds=null,li
  const refreshRows=refreshStatus(news,{companyIds}),recorded=refreshRows.filter(r=>r.kind==='RECORDED');
  if(recorded.length){const r=recorded.every(x=>SUCCEEDED.includes(x.result))?'OK':recorded.some(x=>SUCCEEDED.includes(x.result)||x.result==='PARTIAL_FAILED')?'PARTIAL_FAILED':'FAILED';
   if(r!=='OK')chips.append(el('span',r==='FAILED'?T('최근 갱신 실패 · 이전 자료 유지','Latest refresh failed · previous items kept'):T('일부 갱신 실패','Refresh partly failed'),{class:'badge partial','data-news-refresh-badge':r}));}
- section.append(chips);
- for(const[p,label,window]of [[sec,'SEC 8-K',90],[news,T('뉴스·신호','News'),WINDOW_DAYS]])if(p){section.append(el('p',label+' · '+T('기준: ','as of: ')+p.as_of+' · '+T('최근 '+window+'일','last '+window+' days'),{class:'meta'}));
-  if(p.state!=='NOT_AVAILABLE'&&Date.now()-Date.parse(p.as_of)>p.stale_after_seconds*1000)section.append(el('p','STALE · '+label+' · '+T('수집 갱신 시각 경과','Acquisition refresh overdue'),{class:'warning','data-disclosure-stale':''}));
+ statusBox.append(chips);
+ for(const[p,label,window]of [[sec,'SEC 8-K',90],[news,T('뉴스·신호','News'),WINDOW_DAYS]])if(p){statusBox.append(el('p',label+' · '+T('기준: ','as of: ')+p.as_of+' · '+T('최근 '+window+'일','last '+window+' days'),{class:'meta'}));
+  if(p.state!=='NOT_AVAILABLE'&&Date.now()-Date.parse(p.as_of)>p.stale_after_seconds*1000)statusBox.append(el('p','STALE · '+label+' · '+T('수집 갱신 시각 경과','Acquisition refresh overdue'),{class:'warning','data-disclosure-stale':''}));
   if(p===news)for(const r of refreshRows){const bad=r.kind==='RECORDED'&&!SUCCEEDED.includes(r.result);
-   section.append(el('p',refreshText(r,en),{class:bad?'small warning':'small','data-news-refresh':r.source,'data-news-refresh-result':r.kind==='RECORDED'?r.result:r.kind,'data-news-refresh-code':r.code||''}));}}
- if(!sec)section.append(el('p',T('공개 공시 자료가 연결되지 않았습니다.','Public disclosure data is not connected.'),{class:'small','data-disclosure-missing':''}));
- if(news){const a=el('p',undefined,{class:'small','data-news-attribution':''});a.append(doc.createTextNode(T('뉴스·신호 출처: ','News signals source: ')),el('a',ATTRIBUTION.GDELT.name,{href:ATTRIBUTION.GDELT.url,target:'_blank',rel:'noopener noreferrer','data-gdelt-attribution':''}),doc.createTextNode(' (GDELT DOC 2.0 API) · '+T('회사 IR 보도자료 피드 · 제목·링크만 표시, 기사는 각 언론사 소유','company IR press-release feeds · titles and links only; articles belong to their publishers')));section.append(a);}
- else section.append(el('p',T('뉴스·신호 자료가 연결되지 않았습니다.','News signal data is not connected.'),{class:'small','data-news-missing':''}));
- section.append(el('p',T('점수에 반영하지 않음 · 제목·링크·시각·기업·분류만 표시','Never changes scores · title, link, time, company and classification only'),{class:'small','data-score-effect':'NONE'}));
+   statusBox.append(el('p',refreshText(r,en),{class:bad?'small warning':'small','data-news-refresh':r.source,'data-news-refresh-result':r.kind==='RECORDED'?r.result:r.kind,'data-news-refresh-code':r.code||''}));}}
+ if(!sec)statusBox.append(el('p',T('공개 공시 자료가 연결되지 않았습니다.','Public disclosure data is not connected.'),{class:'small','data-disclosure-missing':''}));
+ if(news){const a=el('p',undefined,{class:'small','data-news-attribution':''});a.append(doc.createTextNode(T('뉴스·신호 출처: ','News signals source: ')),el('a',ATTRIBUTION.GDELT.name,{href:ATTRIBUTION.GDELT.url,target:'_blank',rel:'noopener noreferrer','data-gdelt-attribution':''}),doc.createTextNode(' (GDELT DOC 2.0 API) · '+T('회사 IR 보도자료 피드 · 제목·링크만 표시, 기사는 각 언론사 소유','company IR press-release feeds · titles and links only; articles belong to their publishers')));statusBox.append(a);}
+ else statusBox.append(el('p',T('뉴스·신호 자료가 연결되지 않았습니다.','News signal data is not connected.'),{class:'small','data-news-missing':''}));
+ statusBox.append(el('p',T('점수에 반영하지 않음 · 제목·링크·시각·기업·분류만 표시','Never changes scores · title, link, time, company and classification only'),{class:'small','data-score-effect':'NONE'}));
  const all=timeline({sec,dart,news},{companyIds,dartApi}),rows=all.slice(0,limit);
- if(!rows.length){section.append(el('p',emptyText||T('표시할 공시·뉴스가 없습니다.','No disclosures or news to show.'),{class:'empty'}));host.replaceChildren(section);return;}
+ if(occBox)occBox.append(occurrenceSummary(doc,rows,limit,en));
+ if(!rows.length){listBox.append(el('p',emptyText||T('표시할 공시·뉴스가 없습니다.','No disclosures or news to show.'),{class:'empty'}));host.replaceChildren(section);return;}
  const ctx={held:Array.isArray(held)?held:[],interests:Array.isArray(interests)?interests:readInterests()};
  const catOrder=k=>k==='RESULTS'?'0':k.startsWith('NEWS:')?'1'+k:k.startsWith('SEC:')?'2'+k:'3'+k,cats=[...new Set(all.map(rowCategory))].sort((a,b)=>catOrder(a)<catOrder(b)?-1:1);
  const catLabel=key=>{if(key==='RESULTS')return T('실적','Results');const [src,c]=key.split(':'),table=src==='NEWS'?CLASSES:src==='SEC'?secApi?.CLASSES:dartApi?.CLASSES,pair=table&&table[c];return (pair?pair[en?1:0]:c)+' · '+(src==='NEWS'?T('뉴스','news'):src);};
@@ -207,8 +225,8 @@ function mount(host,{sec=null,dart=null,news=null}={},{locale,companyIds=null,li
  control('occurrence',T('신규·반복','New / repeat'),[['ALL',all_],['NEW',T('새 소식·새 공시','New only')],['REPEAT',T('반복·정정','Repeat / amendment')]]);
  control('order',T('정렬','Order'),[['TIME',T('시간순 (최신 먼저)','Newest first')],['IMPORTANCE',T('중요도 순 (보유→관심→기타→시장)','Importance (held→watchlist→other→market)')]]);
  const reset=el('button',T('조건 초기화','Reset'),{type:'button','data-news-filter-reset':''});reset.onclick=()=>{f={...FILTER_DEFAULT};writeFilters(f,storage);for(const[k,s]of Object.entries(selects))s.value=f[k];paint();};bar.append(reset);
- section.append(bar,el('p',T('중요도 기준: 보유·관심 여부','Importance basis: held / watchlist')+' · '+T('사건 자체의 중요도는 계산하지 않음','event materiality is not computed')+' · '+T('같은 그룹은 최신 먼저','newest first within a group')+(Array.isArray(held)?'':' · '+T('보유 정보 미연결','holdings not connected')),{class:'small','data-importance-basis':''}));
- const count=el('p',undefined,{class:'small','data-news-filter-count':'',role:'status'}),body=el('div',undefined,{'data-news-body':''});section.append(count,body);
+ listBox.append(bar,el('p',T('중요도 기준: 보유·관심 여부','Importance basis: held / watchlist')+' · '+T('사건 자체의 중요도는 계산하지 않음','event materiality is not computed')+' · '+T('같은 그룹은 최신 먼저','newest first within a group')+(Array.isArray(held)?'':' · '+T('보유 정보 미연결','holdings not connected')),{class:'small','data-importance-basis':''}));
+ const count=el('p',undefined,{class:'small','data-news-filter-count':'',role:'status'}),body=el('div',undefined,{'data-news-body':''});listBox.append(count,body);
  const tierBadge=t=>el('span',TIERS[t][en?1:0],{class:'badge','data-importance':t});
  const evidenceBox=(kind,entries)=>{const d=el('details',undefined,{class:'evidence','data-evidence':kind}),dl=el('dl',undefined,{class:'kv'});d.append(el('summary',T('근거 보기','Show evidence')));
   for(const[k,v]of entries){const dd=el('dd');if(typeof v==='string')dd.textContent=v;else dd.append(v);dl.append(el('dt',k),dd);}d.append(dl);return d;};
@@ -247,5 +265,53 @@ function mount(host,{sec=null,dart=null,news=null}={},{locale,companyIds=null,li
   const list=el('ol',undefined,{class:'list','data-disclosure-list':'','data-timeline':''});for(const row of shown){const li=render(row);if(li)list.append(li);}body.replaceChildren(list);}
  paint();host.replaceChildren(section);
 }
-return Object.freeze({FILENAME,KIND,SCHEMA_VERSION:2,sourceRefresh,refreshResult,refreshStatus,refreshText,MATCH,IR_DOMAINS,CLASS_RULES,STOPWORDS,ATTRIBUTION,CLASSES,CHANNELS,GDELT_COMPANIES,IR_COMPANIES,STRUCTURAL_RULES,structuralCandidates,tokens,significant,classify,relevant,similar,validTitle,linkHost,irLinkAllowed,groups,validate,load,timeline,FILTER_KEY,FILTER_DEFAULT,TIERS,readFilters,writeFilters,rowCategory,rowOccurrence,rowTier,filterRows,mount});
+// ---------- Menu 4 뉴스 screen layout (design lane D3; owner draft "투자시스템 화면 시안 (손그림 칠판)", PRODUCT_IA_DIRECTIVE_20261018) ----------
+// Numbered stamp boxes with FUNCTION numbers (5.1 관계망 5.1.1–5.1.4, 5.2 공시·뉴스 5.2.1–5.2.7, 5.3 뉴스 내용구성 트리); the menu strip
+// keeps its menu numbers (4 / 4.1 / 4.2 / 4.3). app.js passes its own pieces (heading, toolbar, panes) unchanged; this only places
+// them. The draft's example companies and numbers are never shown: what has no data says 미산출 / NOT_AVAILABLE and which open
+// decision it waits on. No price or price-derived value, no request, no storage. The 5.1 / 5.2 groups follow the existing
+// 뉴스 | 관계망 toggle (CSS :has on the pane's hidden attribute). Decoration SVG is aria-hidden; the text carries the meaning.
+const escHtml=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+function screenHtml(parts={},{locale,company=null,interests=null,relations=false}={}){
+ const en=locale==='en-US',T=(k,e)=>escHtml(en?e:k),D=root.Doodles,P=k=>typeof parts[k]==='string'?parts[k]:'';
+ const na=why=>'<p class="nw-na"><span class="badge NOT_AVAILABLE">'+T('미산출','Not computed')+'</span> <span class="small">'+why+'</span></p>';
+ const id=(n,x='')=>'nw-fn-'+n.replaceAll('.','-')+x;
+ const head=(n,ko,e,tag='h3',x='')=>'<'+tag+' class="nw-head" id="'+id(n,x)+'"><span class="ia-sec">'+n+'</span> <span class="nw-title">'+T(ko,e)+'</span></'+tag+'>';
+ const sec=(n,ko,e,body,cls='',x='')=>'<section class="nw-sec'+(cls?' '+cls:'')+'" data-fn="'+n+'"'+(x?' data-fn-part="'+x.slice(1)+'"':'')+' aria-labelledby="'+id(n,x)+'">'+head(n,ko,e,'h3',x)+body+'</section>';
+ const group=(n,ko,e,note,body)=>'<section class="nw-group" data-fn="'+n+'" aria-labelledby="'+id(n)+'"><div class="nw-group-top">'+(D?D.icon('news','nw-doodle'):'')+head(n,ko,e,'h2')+(note?'<span class="nw-hand">'+note+'</span>':'')+'</div>'+(D?D.underline('nw-line'):'')+body+'</section>';
+ const who=company&&typeof company.ticker==='string'?escHtml(company.ticker):'';
+ const count=Number.isInteger(interests)?interests:readInterests().length;
+ // 5.1.1: decoration only when no relation data: the company in view (red ring) and dashed empty links (nothing invented).
+ const sketch=relations?'':'<svg class="nw-net" viewBox="0 0 240 120" aria-hidden="true" focusable="false"><path class="nw-net-link" d="M120 60 L42 26 M120 60 L200 24 M120 60 L206 96 M120 60 L36 98"/><circle class="nw-net-empty" cx="42" cy="26" r="13"/><circle class="nw-net-empty" cx="200" cy="24" r="13"/><circle class="nw-net-empty" cx="206" cy="96" r="13"/><circle class="nw-net-empty" cx="36" cy="98" r="13"/><circle class="nw-net-me" cx="120" cy="60" r="22"/></svg>'+
+  '<p class="small nw-caption">'+T('빨간 원 = 지금 보는 기업','Red ring = the company in view')+(who?' ('+who+')':' ('+T('선택 안 함','none selected')+')')+' · '+T('점선 = 관계 자료 미연결','dashed = relationship data not connected')+'</p>';
+ const g51=group('5.1','관계망','Company network',T('기업 하나를 가운데 두고 연결을 봅니다','One company in the middle, its links around it'),
+  '<div class="nw-grid nw-grid-51">'+
+  sec('5.1.1','기업 중심 관계','Relations around a company','<p class="small" data-news-center>'+(who?T('가운데 기업: ','Company in the middle: ')+'<b>'+who+'</b>':T('가운데 기업 없음 · 기업을 검색하거나 관심 기업을 고르세요','No company in the middle · search a company or pick a watchlist company'))+'</p>'+sketch+P('networkPane'),'nw-main')+
+  sec('5.1.2','연결 근거','Link evidence',na(T('관계 자료 미연결 · 확인된 관계(공시)와 추론 관계를 나눠 근거를 보일 자리 · 자료원 결정 대기(REL-SOURCE)','Relationship data not connected · will separate confirmed (filed) and inferred links with their evidence · source pending (REL-SOURCE)')))+
+  sec('5.1.3','검색 전 추천','Before a search',(who?'<p class="small">'+T('검색한 기업 기준으로 봅니다: ','Showing the searched company: ')+'<b>'+who+'</b></p>':'')+
+   na(T('검색어가 없을 때 매크로 주목 기업을 보여 줄 자리 · 매크로 근거 미산출(IA-13 결정 대기)','Where macro-highlighted companies will show when nothing is searched · macro basis not computed (IA-13 pending)'))+
+   '<p class="small"><a href="#home">'+T('기업 검색하기 →','Search a company →')+'</a></p>')+
+  sec('5.1.4','개인 설정','Personal settings','<p class="nw-fav"><span aria-hidden="true">★</span> '+T('관심 기업 ','Watchlist: ')+'<b class="num" data-news-interest-count>'+count+'</b>'+T('곳 · 이 기기에만 저장',' companies · stored on this device only')+'</p>'+
+   '<p class="small">'+T('관계 종류 고르기는 관계 자료 연결 뒤 · 로그인 저장은 결정 대기','Choosing relation types comes after relationship data · account storage pending')+'</p><p class="small"><a href="#watchlist">'+T('관심 기업 관리 →','Manage watchlist →')+'</a></p>')+
+  '</div>');
+ const five=[['무슨 일','What happened'],['Q 예상','Q outlook'],['G 예상','G outlook'],['성격 · 단기/구조적 · 호재/악재','Nature · short-term/structural · positive/negative'],['주가 반영','Price reaction']];
+ const g52=group('5.2','공시 · 뉴스','Filings · news',T('최신순 · 관심 기업 · 범위','Newest first · watchlist · scope'),
+  P('scopes')+'<div id="news-disclosures"></div>'+
+  sec('5.2.1','목록 · DART · 제공 뉴스','List · DART · provided news','<div id="news-dart-disclosures"></div>'+P('newsPane'),'nw-more','-more')+
+  '<p class="small nw-legend nw-analysis-note">'+T('한 건마다 붙을 요약·영향 칸입니다. 아직 계산하지 않아 모두 미산출입니다. 점수에 반영하지 않습니다.','Per-item summary and impact slots. Not computed yet, so all say not computed. Never changes scores.')+'</p>'+
+  '<div class="nw-grid nw-grid-52">'+
+  sec('5.2.2','요약','Summary','<ol class="nw-five" data-news-five>'+five.map(([k,e])=>'<li><span class="nw-five-k">'+T(k,e)+'</span> <span class="badge NOT_AVAILABLE">'+T('미산출','Not computed')+'</span></li>').join('')+'</ol>'+
+   '<p class="small">'+T('지금은 제목·링크·시각·분류만 · 5줄 요약 방식 결정 대기(IA-14)','Title, link, time and category only for now · five-line summary method pending (IA-14)')+'</p>')+
+  sec('5.2.3','영향 분석','Impact',na(T('Q·G 예상 · 단기/구조적 · 호재/악재 모두 미산출 · 점수 영향 없음(score_effect NONE)','Q·G outlook, short-term/structural and positive/negative are not computed · no score effect (score_effect NONE)')))+
+  sec('5.2.4','주가 반영 여부','Price reaction','<p class="nw-q"><span class="hl">'+T('주가 반영 여부는 알 수 있나?','Can “priced in” be known?')+'</span></p>'+
+   '<p class="small">'+T('직접 알 수는 없습니다. 사건 전후 반응만 이 기기에서 볼 수 있고, 창·기준은 결정 대기(IA-15)입니다.','Not directly. Only the reaction around the event can be seen, on this device; the window and baseline are pending (IA-15).')+'</p>'+
+   na(T('공개 자료에 가격이 없어 계산하지 않음','No prices in public data, so not computed'))+'<p class="small nw-marker">'+T('가격·가격에서 나온 값은 공개 화면에 싣지 않습니다.','Prices and values derived from them are never on the public pages.')+'</p>')+
+  sec('5.2.6','컨센서스 변화','Consensus change',na(T('컨센서스 자료 미연결','Consensus data not connected')))+
+  '</div>');
+ const s53=sec('5.3','뉴스 내용구성 트리','News structure tree','<p class="small">'+T('수집 → 분류 → 관계망 · 목록 → 요약 → 개인화 구조와, 공개 자료에서 읽은 예시 값.','Collect → classify → network · list → summary → personal, with example values read from public data.')+'</p>'+
+  '<p><a class="nw-tree-link" href="#tree/news">'+T('트리 보기 (메뉴 4.3)','Open the tree (menu 4.3)')+(D?' '+D.arrowShort('nw-arrow'):' →')+'</a></p>','nw-tree');
+ return '<div class="nw-screen" data-news-layout>'+P('head')+
+  '<p class="small nw-legend" data-fn-legend="5">'+T('도장 번호는 기능 번호(5.x)입니다. 위 메뉴 번호(4.x)와 다릅니다.','Stamp numbers are function numbers (5.x), not the menu numbers (4.x) above.')+'</p>'+
+  P('toolbar')+P('overlay')+g51+g52+s53+'</div>';}
+return Object.freeze({FILENAME,KIND,SCHEMA_VERSION:2,sourceRefresh,refreshResult,refreshStatus,refreshText,MATCH,IR_DOMAINS,CLASS_RULES,STOPWORDS,ATTRIBUTION,CLASSES,CHANNELS,GDELT_COMPANIES,IR_COMPANIES,STRUCTURAL_RULES,structuralCandidates,tokens,significant,classify,relevant,similar,validTitle,linkHost,irLinkAllowed,groups,validate,load,timeline,FILTER_KEY,FILTER_DEFAULT,TIERS,readFilters,writeFilters,rowCategory,rowOccurrence,rowTier,filterRows,mount,occurrenceSummary,screenHtml});
 });
