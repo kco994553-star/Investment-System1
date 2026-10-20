@@ -544,3 +544,34 @@ test('D11 rank split: official rank needs V, QG reference list, gate row ranked,
   const P2 = QS.compute({ identities: ids, v2Inputs: inputs, quotes, weights: globalThis.QgvV2.officialWeights() });assert.notEqual(P2.personal.v_weight_zero, true);assert.deepEqual(P2.personal.label, QS.PERSONAL_LABEL);
   assert.equal(P2.rows.msft.personal_rank, null);assert.equal(P2.rows.msft.personal_qg_reference.reason, 'NO_DEVICE_PRICE');
 });
+test('provenance labels (owner 2026-10-19): official weights vs personal preset vs gate off, device prices, central publication; values untouched', () => {
+  const inputs = screens[SQ.FILE], V2 = globalThis.QgvV2, run = (preset, gate) => QS.compute({ identities, v2Inputs: inputs, quotes, preset, gate });
+  // The four facts per profile. QGV totals, ranks and N sets are always computed on this device (no central V/QGV publication).
+  const cases = [[undefined, undefined, 'OFFICIAL', 'NONE', '공식 가중치 · 이 기기 가격 · 기기 계산'], ['balanced', true, 'OFFICIAL', 'NONE', '공식 가중치 · 이 기기 가격 · 기기 계산'],
+    ['growth', true, 'PERSONAL', 'PRESET', '개인 프리셋(성장 친화) · 이 기기 가격 · 기기 계산'], ['balanced', false, 'PERSONAL', 'GATE_OFF', '개인 프리셋(균형 · 관문 끔) · 이 기기 가격 · 기기 계산'],
+    ['value', false, 'PERSONAL', 'PRESET GATE_OFF', '개인 프리셋(가치(관문 켬) · 관문 끔) · 이 기기 가격 · 기기 계산']];
+  for (const [preset, gate, weights, setting, text] of cases) {
+    const S = run(preset, gate), snap = JSON.stringify(S), x = QS.provenance({ profile: S.profile, priced: S.priced_codes > 0 });
+    assert.equal(x.weights, weights, String(preset));assert.equal(x.setting.join(' ') || 'NONE', setting);assert.equal(x.prices, 'DEVICE');assert.equal(x.source, 'DEVICE_COMPUTED');assert.equal(x.profile_id, S.profile.id);
+    assert.equal(QS.provenanceText(x, false), text);assert.deepEqual(QS.provenanceAttrs(x), { 'data-qgv-weights': weights, 'data-qgv-setting': setting, 'data-qgv-prices': 'DEVICE', 'data-qgv-source': 'DEVICE_COMPUTED', 'data-qgv-profile': S.profile.id });
+    assert.equal(QS.rankLabel(S.profile, false), weights === 'OFFICIAL' ? 'Universe 공식 QGV 순위' : '개인 프리셋 순위 (Universe 기준)');
+    // A display row carries the same profile, so a per-row label says the same.
+    for (const r of Object.values(S.rows)) if (Number.isFinite(r.primary.total)) assert.equal(QS.provenance({ profile: r.primary.profile }).weights, weights, r.company_id);
+    // Labels never change a value: the result is byte-identical after every label call, and equal to a fresh compute.
+    assert.equal(JSON.stringify(S), snap);assert.equal(JSON.stringify(run(preset, gate)), snap);
+  }
+  // Q·G axes are read as published (central, sec-qgv2.json); the V axis alone is official inner weights whatever the preset/gate.
+  const qg = QS.provenance({ kind: 'QG' });assert.deepEqual([qg.weights, qg.prices, qg.source], ['OFFICIAL', 'NONE', 'PUBLISHED']);assert.equal(QS.provenanceText(qg, false), '공식 가중치 · 가격 없음 · 중앙 게시(sec-qgv2.json)');
+  const v = QS.provenance({ kind: 'V', profile: run('growth', false).profile, priced: true });assert.deepEqual([v.weights, v.prices, v.source], ['OFFICIAL', 'DEVICE', 'DEVICE_COMPUTED']);
+  // Personal weights (S13 PERSONAL_PREVIEW) are personal for every kind but the published Q·G.
+  const P = QS.compute({ identities, v2Inputs: inputs, quotes, weights: V2.officialWeights() }), pid = P.personal.profile, prow = Object.values(P.rows).find((r) => Number.isFinite(r.personal.total));
+  assert.equal(QS.provenance({ profile: prow.personal.profile }).weights, 'PERSONAL');assert.equal(QS.provenance({ kind: 'V', profile: prow.personal.profile }).setting.join(), 'WEIGHTS');assert.ok(pid.id.includes('/custom/'));
+  // No prices: NONE; English text.
+  const bare = QS.compute({ identities, v2Inputs: inputs, quotes: {}, preset: 'growth' }), nx = QS.provenance({ profile: bare.profile, priced: bare.priced_codes > 0 });
+  assert.equal(nx.prices, 'NONE');assert.equal(QS.provenanceText(nx, true), 'Personal preset (Growth friendly) · no prices · computed on this device');
+  assert.equal(QS.provenanceAttrHtml(nx), ' data-qgv-weights="PERSONAL" data-qgv-setting="PRESET" data-qgv-prices="NONE" data-qgv-source="DEVICE_COMPUTED" data-qgv-profile="qgv-v2/growth/gate-on"');
+  // N10/N15/N20 stay on the official default profile whatever the S06 preset: same selection, official provenance.
+  const U = QS.universeIdentities(inputs, identities), off = (preset, gate) => QS.compute({ identities: U.identities, v2Inputs: inputs, quotes, preset, gate, official: U });
+  const M1 = QS.officialModel({ identities: U.identities, v2Inputs: inputs, quotes, official: U, computed: off('growth', false) });
+  assert.equal(QS.provenance({ profile: M1.official_profile }).weights, 'OFFICIAL');assert.deepEqual(M1.sets, QS.modelPortfolios(off('balanced', true), inputs).sets);
+});
