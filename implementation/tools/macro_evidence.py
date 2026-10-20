@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """Public `macro-evidence.json` (MEV-1 P1 13 macro evidence lines; exploration only, MEV-10).
 
-- `emit_empty` writes a NOT_AVAILABLE copy without source data;
-- `run_from_capture(directory, root, manifest, ...)` collects inside the private capture directory of the macro v0
-  collection, so BLS LNS14000000, BEA A191RL and the Treasury curve are reused (never fetched twice). The previous
-  Pages copy is carried forward (append-only vintages): 404 -> baseline; an invalid copy -> discarded (baseline,
-  PREVIOUS_DISCARDED); a network failure -> a new baseline marked continuity=RESET_PREVIOUS_UNAVAILABLE;
-- --preserve-only -> the validated live copy re-published byte for byte.
+- build (build_pages_cockpit.py): `emit_empty` writes a NOT_AVAILABLE copy without source data;
+- daily run: `public_screens_pipeline.py --live --macro-v0 --macro-evidence` calls `run_from_capture` inside its
+  private capture directory, so BLS LNS14000000, BEA A191RL and the Treasury curve are reused from the macro v0 /
+  lights v1 collection (never fetched twice). The previous Pages copy is carried forward (append-only vintages):
+  404 -> baseline; an invalid copy -> discarded (baseline, PREVIOUS_DISCARDED); a network failure -> a new baseline
+  marked continuity=RESET_PREVIOUS_UNAVAILABLE (the earlier history is not on this runner);
+- --preserve-only (UI-only deploys, cockpit-pages.yml) -> the validated live copy re-published byte for byte.
 
-Nothing here is wired into the Pages build or the daily workflow yet: publishing macro-evidence.json needs the guard
-registration, the screen and the workflow change (separate, approval-required changes).
-Only fixed codes and counts are printed (no URL, key, value or provider message).
+A failure here never fails the SEC step that hosts it: only fixed codes and counts are printed (no URL, key, value or
+provider message).
 """
 from __future__ import annotations
 
@@ -168,7 +168,7 @@ def main(argv=None):
     parser.add_argument('--preserve-only', action='store_true')
     args = parser.parse_args(argv)
     if not args.preserve_only:
-        print('MACRO_EVIDENCE PRESERVE_ONLY_REQUIRED')
+        print('MACRO_EVIDENCE PRESERVE_ONLY_REQUIRED (daily collection runs inside public_screens_pipeline.py --macro-evidence)')
         return 2
     return preserve(args.out)
 
