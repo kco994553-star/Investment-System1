@@ -6,7 +6,9 @@
    open the panel says "미정(소유자 결정)".
    The user's own estimates (사용자 추정 · 공식 판정 아님) are an append-only history per ring (the latest is a separate dashed purple
    arc), each with its reason and a snapshot of what the system layer showed then, kept in this browser's localStorage only,
-   never sent and never mixed with the official layer. Focus (rotation) lives in module RAM per ring key, so the full re-render of
+   never sent and never mixed with the official layer. Every record is kept (owner storage policy 2026-10-20 item 6): the screen
+   shows the latest USER_SHOW per ring, and the full history leaves the device only as a file the user exports (or the opt-in
+   device backup). A failed write never removes what is already stored. Focus (rotation) lives in module RAM per ring key, so the full re-render of
    the macro screen keeps it. No request of its own, no price, no score. Macro lights, their reference mode and the macro gate are
    untouched. Evidence for a phase can be attached by another module through attachEvidence() (the observation graph is separate). */
 (function(root){
@@ -14,8 +16,9 @@
  const T=(l,ko,en)=>l==='en-US'?en:ko;
  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
  const OPEN='미정(소유자 결정)';
- const USER_KEY='investment.web.v1.macro-cycle-user-estimate',USER_SCHEMA='macro-cycle-user-estimate/2',USER_SCHEMA_V1='macro-cycle-user-estimate/1',USER_CAP=50;
- const PARTS=['초입','후반'];
+ const USER_KEY='investment.web.v1.macro-cycle-user-estimate',USER_SCHEMA='macro-cycle-user-estimate/2',USER_SCHEMA_V1='macro-cycle-user-estimate/1',USER_SHOW=50;
+ const PARTS=['초입','후반'],USER_IMPORT_MAX_BYTES=16*1024*1024;
+ const SAVE_FAILED_TEXT=l=>T(l,'저장 실패 · 이 브라우저 저장 공간이 가득 찼거나 쓸 수 없습니다. 기존 기록은 그대로 두었고 이번 변경만 저장하지 않았습니다. 「기록 내보내기」로 파일에 보관한 뒤 필요 없는 기록을 지우면 다시 저장할 수 있습니다.','Save failed · this browser’s storage is full or not writable. Existing records were kept; only this change was not saved. Use “Export records” to keep a file, then delete records you no longer need and save again.');
  const SLOP_PX=8,SNAP_SHARE=1/3,ANIM_MS=260;// UI constants (contract §4-5), not methodology values
  // ---------- draft text (MACRO_PHASE_MODEL_DRAFT_20261019). Interpretation candidates, not approved (MEV-1). ----------
  const SHARED_ABSTAIN=[['충돌·과대·v0만·규칙 미승인','경기 모델(§5-6)과 같은 형태','CONFLICTING_FAMILIES · INTERVAL_TOO_WIDE · NO_APPROVED_STATE_RULE']];
@@ -120,20 +123,55 @@
   if(!st.userRotated&&o.state==='ESTIMATED'){st.turns+=nearest(st.turns,n,o.from.p);}
   st.init=true;}
  // ---------- device-only user estimate (사용자 추정 · 공식 판정 아님) ----------
- // Schema /2 (2026-10-20, functional hierarchy 4.4.2): an append-only history per ring key, oldest first, at most USER_CAP entries
- // (the oldest is dropped beyond that). Each entry keeps when, which interval, the user's own reason, and what the system layer
+ // Schema /2 (2026-10-20, functional hierarchy 4.4.2): an append-only history per ring key, oldest first. Nothing is removed for
+ // being old or many (owner storage policy 2026-10-20 item 6: the number shown is not the number kept); only the user's own
+ // delete/clear removes records. Each entry keeps when, which interval, the user's own reason, and what the system layer
  // showed at that moment (status code/text, model id and as_of when a publication existed) — never a made-up system position.
  // A /1 value (one estimate per ring) is read as a one-entry history without loss; it is written as /2 on the next change.
+ // A stored value that cannot be read (broken JSON, unknown schema) is never overwritten: writes are refused until the user clears it.
  const refOk=r=>r&&typeof r==='object'&&typeof r.phase==='string'&&typeof r.part==='string';
  function cleanEntry(e,seq){if(!e||typeof e!=='object'||!refOk(e.from)||!refOk(e.to))return null;const sys=e.system&&typeof e.system==='object'?e.system:null;
   return{seq:Number.isInteger(e.seq)&&e.seq>0?e.seq:seq,saved_at:typeof e.saved_at==='string'?e.saved_at:'',from:{phase:e.from.phase,part:e.from.part},to:{phase:e.to.phase,part:e.to.part},note:typeof e.note==='string'?e.note.slice(0,200):'',
    system:sys&&typeof sys.state==='string'?{state:sys.state,text:typeof sys.text==='string'?sys.text:'',reason:typeof sys.reason==='string'?sys.reason:null,layer:typeof sys.layer==='string'?sys.layer:null,model_id:typeof sys.model_id==='string'?sys.model_id:null,as_of:typeof sys.as_of==='string'?sys.as_of:null}:{state:'NOT_RECORDED',text:'',reason:null,layer:null,model_id:null,as_of:null}};}
- function readUser(){const empty={schema:USER_SCHEMA,rings:{}};let v;try{v=JSON.parse(root.localStorage.getItem(USER_KEY)||'null');}catch(_){return empty;}
-  if(!v||typeof v!=='object'||!v.rings||typeof v.rings!=='object')return empty;const out={schema:USER_SCHEMA,rings:{}};
-  for(const [k,r] of Object.entries(v.rings)){const list=v.schema===USER_SCHEMA_V1?[r]:v.schema===USER_SCHEMA&&Array.isArray(r)?r:[];
-   const clean=list.map((e,i)=>cleanEntry(e,i+1)).filter(Boolean);if(clean.length)out.rings[k]=clean.slice(-USER_CAP);}
+ const store=s=>s||root.localStorage;
+ function readUser(storage){const empty={schema:USER_SCHEMA,rings:{}};let raw,v;try{raw=store(storage).getItem(USER_KEY);}catch(_){return{...empty,unreadable:true};}
+  if(raw===null||raw===undefined)return empty;try{v=JSON.parse(raw);}catch(_){return{...empty,unreadable:true};}
+  if(!v||typeof v!=='object'||!v.rings||typeof v.rings!=='object'||(v.schema!==USER_SCHEMA&&v.schema!==USER_SCHEMA_V1))return{...empty,unreadable:true};const out={schema:USER_SCHEMA,rings:{}};
+  for(const [k,r] of Object.entries(v.rings)){const list=v.schema===USER_SCHEMA_V1?[r]:Array.isArray(r)?r:[];
+   const clean=list.map((e,i)=>cleanEntry(e,i+1)).filter(Boolean);if(clean.length)out.rings[k]=clean;}
   return out;}
- function writeUser(v){try{for(const k of Object.keys(v.rings))if(!v.rings[k].length)delete v.rings[k];if(Object.keys(v.rings).length)root.localStorage.setItem(USER_KEY,JSON.stringify(v));else root.localStorage.removeItem(USER_KEY);return true;}catch(_){return false;}}
+ // false = nothing written (quota reached, storage blocked, or an unreadable stored value that must not be overwritten); what was
+ // stored before stays as it was.
+ function writeUser(v,storage){if(v.unreadable)return false;const out={schema:USER_SCHEMA,rings:{}};for(const k of Object.keys(v.rings))if(v.rings[k].length)out.rings[k]=v.rings[k];
+  try{if(Object.keys(out.rings).length)store(storage).setItem(USER_KEY,JSON.stringify(out));else store(storage).removeItem(USER_KEY);return true;}catch(_){return false;}}
+ // ---- export / import (a file on this device; also the opt-in section of the device backup). Strict: only the fields a record
+ // has (when, interval cells, the user's reason, the system status text); anything else — prices, quotes, series — is refused.
+ const RING_KEY=/^(economy|market|industry:[A-Za-z0-9_.-]{1,64})$/,ENTRY_KEYS=['seq','saved_at','from','to','note','system'],SYS_KEYS=['state','text','reason','layer','model_id','as_of'];
+ const plain=x=>x!==null&&typeof x==='object'&&!Array.isArray(x),only=(x,keys)=>plain(x)&&Object.keys(x).every(k=>keys.includes(k));
+ const str=(x,max)=>typeof x==='string'&&x.length<=max&&!/[\x00-\x1f]/.test(x),strOrNull=(x,max)=>x===null||str(x,max);
+ function strictEntry(cycle,e){const ph=MODELS[cycle].phases,ref=r=>only(r,['phase','part'])&&ph.includes(r.phase)&&PARTS.includes(r.part);
+  if(!only(e,ENTRY_KEYS)||!ref(e.from)||!ref(e.to))return null;
+  if(e.seq!==undefined&&!(Number.isInteger(e.seq)&&e.seq>0))return null;if(e.saved_at!==undefined&&!str(e.saved_at,40))return null;if(e.note!==undefined&&!str(e.note,200))return null;
+  if(e.system!==undefined){const s=e.system;if(!only(s,SYS_KEYS)||!(typeof s.state==='string'&&/^[A-Z_]{1,40}$/.test(s.state))||(s.text!==undefined&&!str(s.text,200))||[['reason',400],['layer',40],['model_id',128],['as_of',40]].some(([k,m])=>s[k]!==undefined&&!strOrNull(s[k],m)))return null;}
+  return cleanEntry(e,1);}
+ function parseUserExport(p){const bad=()=>{throw Error('USER_IMPORT_INVALID');};
+  if(!only(p,['schema','exported_at','rings'])||p.schema!==USER_SCHEMA||(p.exported_at!==undefined&&!str(p.exported_at,40))||!plain(p.rings))bad();
+  const rings={};for(const [k,list] of Object.entries(p.rings)){if(!RING_KEY.test(k)||!Array.isArray(list))bad();const cycle=k.split(':')[0];rings[k]=list.map(e=>strictEntry(cycle,e)||bad());}
+  return{schema:USER_SCHEMA,rings};}
+ // Merge without duplicates (same time, interval and reason = the same record); each ring stays ordered oldest first by saved_at.
+ const sig=e=>JSON.stringify([e.saved_at,e.from.phase,e.from.part,e.to.phase,e.to.part,e.note]);
+ function mergeUserHistory(cur,inc){const out={schema:USER_SCHEMA,rings:{}};let added=0,skipped=0;
+  for(const k of new Set([...Object.keys(cur.rings),...Object.keys(inc.rings)])){const list=(cur.rings[k]||[]).map(e=>({...e})),had=list.length,seen=new Set(list.map(sig));let grew=false;
+   for(const e of inc.rings[k]||[]){const s=sig(e);if(seen.has(s)){skipped++;continue;}seen.add(s);list.push({...e});added++;grew=true;}
+   // into an empty ring the file's own order and numbers are kept; otherwise (or with clashing numbers) order by time, renumber
+   if(grew&&(had||!list.every((e,i)=>!i||e.seq>list[i-1].seq))){list.sort((a,b)=>a.saved_at<b.saved_at?-1:a.saved_at>b.saved_at?1:0);list.forEach((e,i)=>{e.seq=i+1;});}
+   if(list.length)out.rings[k]=list;}
+  return{value:out,added,skipped};}
+ function exportUserHistory(storage){const v=readUser(storage);if(v.unreadable)throw Error('USER_STORE_UNREADABLE');return{schema:USER_SCHEMA,exported_at:new Date().toISOString().slice(0,19)+'Z',rings:v.rings};}
+ function importUserHistory(payload,storage){const inc=parseUserExport(payload),cur=readUser(storage);if(cur.unreadable)throw Error('USER_STORE_UNREADABLE');
+  const m=mergeUserHistory(cur,inc);if(m.added&&!writeUser(m.value,storage))throw Error('USER_SAVE_FAILED');return{added:m.added,skipped:m.skipped};}
+ function downloadUserHistory(){const doc=root.document,payload=exportUserHistory(),url=root.URL.createObjectURL(new root.Blob([JSON.stringify(payload,null,2)],{type:'application/json'})),a=doc.createElement('a');
+  a.href=url;a.download='macro-cycle-user-estimates.json';doc.body.append(a);a.click();a.remove();root.setTimeout(()=>root.URL.revokeObjectURL(url),1000);}
  function historyFor(key,model){return (key&&readUser().rings[key]||[]).map(e=>{const a=cellIndex(model,e.from),b=cellIndex(model,e.to);return a&&b&&a.part&&b.part?{...e,a,b}:null;}).filter(Boolean);}
  function userFor(key,model){const h=historyFor(key,model),u=h[h.length-1];return u?{from:u.a,to:u.b,note:u.note,saved:u.saved_at}:null;}
  function systemSnapshot(key){const o=outputFor(key),base={state:o.state,reason:o.state==='NOT_COMPUTED'?o.reason||null:o.state==='ABSTAINED'?o.reasons.join(' · '):null,layer:o.state==='NOT_COMPUTED'?null:o.layer,model_id:o.state==='NOT_COMPUTED'?null:o.modelId,as_of:o.asOf||null};
@@ -193,7 +231,7 @@
  function systemText(sys,l){if(sys.state==='NOT_RECORDED')return T(l,'시스템: 기록 없음(이전 형식)','System: not recorded (older format)');
   const lay=sys.layer==='OFFICIAL'?'':sys.layer?T(l,' · 탐색 층 v0',' · exploratory v0'):'';return T(l,'시스템: ','System: ')+(sys.text||sys.state)+lay+(sys.model_id?' · '+sys.model_id:'')+(sys.as_of?T(l,' · 기준 ',' · as of ')+sys.as_of:'');}
  function historyHtml(model,key,l){
-  const h=historyFor(key,model).reverse();if(!h.length)return '';
+  const all=historyFor(key,model).reverse();if(!all.length)return '';const h=all.slice(0,USER_SHOW),hidden=all.length-h.length;
   const now=key?systemSnapshot(key):null,iv=e=>label(model,e.a)+'~'+label(model,e.b);
   const wide=(()=>{try{return !!(root.matchMedia&&root.matchMedia('(min-width: 900px)').matches);}catch(_){return false;}})(),show=wide?10:5;
   const row=(e,i)=>{const prev=h[i+1],same=prev&&iv(prev)===iv(e);
@@ -207,7 +245,8 @@
    '<p class="small" data-cycle-user-now>'+esc(T(l,'지금 ','Now · ')+systemText(now,l))+'</p>'+
    '<ol class="cycle-list cycle-user-history" data-cycle-user-history>'+first+'</ol>'+
    (rest?'<details data-cycle-user-more><summary>'+esc(T(l,'더 보기 (','More (')+(h.length-show)+')')+'</summary><ol class="cycle-list cycle-user-history" start="'+(show+1)+'">'+rest+'</ol></details>':'')+
-   '<p class="small" data-cycle-user-cap>'+esc(T(l,'기록 '+h.length+'개 · 링마다 최근 '+USER_CAP+'개까지 보관하고, 넘으면 가장 오래된 기록부터 지웁니다.',h.length+' records · up to '+USER_CAP+' per ring are kept; beyond that the oldest is dropped.'))+'</p>';
+   (hidden?'<p class="small" data-cycle-user-hidden="'+hidden+'">'+esc(T(l,'화면에 없는 이전 기록 '+hidden+'개도 지우지 않고 이 기기에 그대로 보관합니다. 전체 기록은 「기록 내보내기」 파일이나 기기 백업(사용자 작성 객체 포함)에서 볼 수 있습니다.',hidden+' older records not shown here are still kept on this device, never deleted. See every record in the “Export records” file or the device backup (with user-written objects).'))+'</p>':'')+
+   '<p class="small" data-cycle-user-cap>'+esc(T(l,'기록 '+all.length+'개 · 모두 보관 · 화면에는 최근 '+USER_SHOW+'개까지 표시합니다. 오래되었거나 많다는 이유로 지우지 않습니다.',all.length+' records · all kept · the latest '+USER_SHOW+' are shown. Nothing is deleted for being old or many.'))+'</p>';
  }
  function userHtml(model,key,l){
   const opts=sel=>model.phases.flatMap(ph=>PARTS.map(pa=>{const v=ph+'|'+pa;return '<option value="'+esc(v)+'"'+(sel===v?' selected':'')+'>'+esc(ph+' '+pa)+'</option>';})).join('');
@@ -217,6 +256,8 @@
    '<div class="cycle-user-row"><label>'+esc(T(l,'시작','From'))+' <select data-cycle-user-from>'+opts(v(u&&u.from))+'</select></label><label>'+esc(T(l,'끝','To'))+' <select data-cycle-user-to>'+opts(v(u&&u.to))+'</select></label></div>'+
    '<label class="cycle-user-note">'+esc(T(l,'근거(선택)','Reason (optional)'))+' <input type="text" maxlength="200" data-cycle-user-note value=""></label>'+
    '<div class="cycle-user-row"><button type="button" data-cycle-user-save>'+esc(T(l,'이 기기에 기록','Record on this device'))+'</button><button type="button" data-cycle-user-clear>'+esc(T(l,'모두 지우기','Clear all'))+'</button></div>'+
+   '<div class="cycle-user-row" data-cycle-user-file><button type="button" data-cycle-user-export>'+esc(T(l,'기록 내보내기(파일)','Export records (file)'))+'</button><label>'+esc(T(l,'기록 가져오기(파일 · 합치기)','Import records (file · merge)'))+' <input type="file" accept="application/json,.json" data-cycle-user-import></label></div>'+
+   '<p class="small" role="status" data-cycle-user-status></p>'+
    '<p data-cycle-user-current>'+(u?esc(T(l,'최근 사용자 추정: ','Latest user estimate: ')+label(model,u.from)+'~'+label(model,u.to)+' · '+T(l,'이 기기에만 저장','this device only')+(u.saved?' · '+T(l,'기록 ','saved ')+stamp(u.saved):'')):esc(T(l,'저장된 사용자 추정 없음','No saved user estimate')))+'</p>'+
    (key?historyHtml(model,key,l):'')+'</fieldset>';
  }
@@ -287,6 +328,11 @@
     const ch=el.querySelector('[data-cycle-change-box]');ch.innerHTML=s.changed?'<span class="badge partial" data-cycle-changed>'+esc(s.changed)+'</span> '+(o.state==='ESTIMATED'?'<button type="button" data-cycle-goto-interval>'+esc(T(l,'추정 구간으로','Go to the interval'))+'</button>':''):'';
 }
    function update(){texts();el.querySelector('[data-cycle-user-box]').innerHTML=userHtml(model,keyOf(cycle),l);draw();animate();}
+   function userStatus(code,text){const p=el.querySelector('[data-cycle-user-status]');if(p){p.dataset.code=code;p.textContent=text;}say(text);}
+   el.addEventListener('change',async e=>{const input=e.target.closest&&e.target.closest('[data-cycle-user-import]');if(!input||!el.contains(input))return;const f=input.files&&input.files[0];if(!f)return;
+    let r;try{if(f.size>USER_IMPORT_MAX_BYTES)throw Error('USER_IMPORT_TOO_LARGE');r=importUserHistory(JSON.parse(await f.text()));}
+    catch(err){const m=err&&err.message;input.value='';userStatus(m==='USER_SAVE_FAILED'?'SAVE_FAILED':'IMPORT_REFUSED',m==='USER_SAVE_FAILED'?SAVE_FAILED_TEXT(l):m==='USER_STORE_UNREADABLE'?T(l,'가져오지 않음 · 이 기기에 저장된 기록을 읽을 수 없어 덮어쓰지 않습니다.','Not imported · the stored records cannot be read, so they are not overwritten.'):T(l,'가져오지 않음 · 추정 기록 파일 형식이 아니거나 허용되지 않은 항목(가격·시계열 등)이 있습니다. 기존 기록은 그대로입니다.','Not imported · not an estimate-record file, or it has fields that are not allowed (prices, series, …). Existing records are unchanged.'));return;}
+    update();userStatus('IMPORTED',T(l,'기록 '+r.added+'개를 합쳤습니다 · 이미 있던 '+r.skipped+'개는 건너뜀','Merged '+r.added+' records · skipped '+r.skipped+' already present'));});
    function turn(d,how){const s=st(),before=mod(s.turns,n);s.turns+=d;s.userRotated=true;const f=mod(s.turns,n);
     let msg=T(l,'보는 국면 '+model.phases[f]+'('+(f+1)+'/'+n+')','Viewing '+model.phases[f]+' ('+(f+1)+'/'+n+')');
     if(d===1&&before===n-1)msg=T(l,model.phases[before]+' 다음은 '+model.phases[f]+' · 처음으로','After '+model.phases[before]+' comes '+model.phases[f]+' · back to the start');
@@ -303,10 +349,12 @@
      const from=pick('select[data-cycle-user-from]'),to=pick('select[data-cycle-user-to]');if(!cellIndex(model,from)||!cellIndex(model,to)||!from.part||!to.part)return;// the arc carries data-cycle-user-from too: read the selects only
      const v=readUser(),list=v.rings[k]||[],seq=list.reduce((m,e)=>Math.max(m,e.seq),0)+1;
      list.push({seq,saved_at:new Date().toISOString().slice(0,19)+'Z',from,to,note:String(el.querySelector('[data-cycle-user-note]').value||'').slice(0,200),system:systemSnapshot(k)});
-     v.rings[k]=list.slice(-USER_CAP);
-     say(writeUser(v)?T(l,'사용자 추정을 이 기기에 저장했습니다','User estimate saved on this device'):T(l,'이 브라우저에 저장할 수 없습니다','This browser cannot store it'));update();el.querySelector('[data-cycle-user-save]').focus();}
-    else if(t.hasAttribute('data-cycle-user-clear')){const k=keyOf(cycle);if(!k)return;const v=readUser();delete v.rings[k];writeUser(v);say(T(l,'이 링의 사용자 추정 기록을 모두 지웠습니다','All user estimates of this ring cleared'));update();el.querySelector('[data-cycle-user-clear]').focus();}
-    else if(t.hasAttribute('data-cycle-user-delete')){const k=keyOf(cycle);if(!k)return;const seq=Number(t.dataset.cycleUserDelete),v=readUser();v.rings[k]=(v.rings[k]||[]).filter(e=>e.seq!==seq);writeUser(v);
+     v.rings[k]=list;
+     if(!writeUser(v)){userStatus('SAVE_FAILED',v.unreadable?T(l,'저장하지 않음 · 이 기기에 저장된 추정 기록을 읽을 수 없어 덮어쓰지 않습니다. 기존 값은 그대로입니다.','Not saved · the stored estimate records cannot be read, so they are not overwritten. The stored value is unchanged.'):SAVE_FAILED_TEXT(l));return;}
+     say(T(l,'사용자 추정을 이 기기에 저장했습니다','User estimate saved on this device'));update();el.querySelector('[data-cycle-user-save]').focus();}
+    else if(t.hasAttribute('data-cycle-user-export')){try{downloadUserHistory();userStatus('EXPORTED',T(l,'모든 링의 추정 기록 전체를 파일로 내보냈습니다(이 기기에 저장).','Every record of every ring exported to a file on this device.'));}catch(_){userStatus('EXPORT_FAILED',T(l,'내보내지 못했습니다 · 저장된 기록을 읽을 수 없습니다.','Export failed · the stored records cannot be read.'));}}
+    else if(t.hasAttribute('data-cycle-user-clear')){const k=keyOf(cycle);if(!k)return;const v=readUser();delete v.rings[k];if(v.unreadable){try{root.localStorage.removeItem(USER_KEY);}catch(_){}}else writeUser(v);say(T(l,'이 링의 사용자 추정 기록을 모두 지웠습니다','All user estimates of this ring cleared'));update();el.querySelector('[data-cycle-user-clear]').focus();}
+    else if(t.hasAttribute('data-cycle-user-delete')){const k=keyOf(cycle);if(!k)return;const seq=Number(t.dataset.cycleUserDelete),v=readUser();v.rings[k]=(v.rings[k]||[]).filter(e=>e.seq!==seq);if(!writeUser(v)){userStatus('SAVE_FAILED',SAVE_FAILED_TEXT(l));return;}
      say(T(l,'사용자 추정 기록 하나를 지웠습니다','One user estimate record deleted'));update();el.querySelector('[data-cycle-user-save]').focus();}});
    el.querySelector('[data-cycle-tabs]').addEventListener('keydown',e=>{const k=e.key;
     if(k==='ArrowRight'||k==='ArrowDown'){e.preventDefault();turn(1,'key');}else if(k==='ArrowLeft'||k==='ArrowUp'){e.preventDefault();turn(-1,'key');}
@@ -340,5 +388,6 @@
  }
  // Test/diagnostic view of the RAM state (no storage, no request).
  function snapshot(){return JSON.parse(JSON.stringify({activeCycle,industryGroup,rings:Object.fromEntries(Object.entries(RING).map(([k,v])=>[k,{turns:v.turns,userRotated:v.userRotated}]))}));}
- root.MacroCycleRing=Object.freeze({mount,setPublication,refreshFailed,attachEvidence,snapshot,USER_KEY,MODELS:Object.freeze(Object.fromEntries(Object.entries(MODELS).map(([k,v])=>[k,Object.freeze({phases:Object.freeze([...v.phases])})])))});
+ root.MacroCycleRing=Object.freeze({mount,setPublication,refreshFailed,attachEvidence,snapshot,USER_KEY,USER_SCHEMA,USER_SHOW,
+  readUserStore:storage=>{const v=readUser(storage);if(v.unreadable)throw Error('USER_STORE_UNREADABLE');return v;},writeUserStore:(v,storage)=>writeUser(v,storage),parseUserExport,mergeUserHistory,exportUserHistory,importUserHistory,MODELS:Object.freeze(Object.fromEntries(Object.entries(MODELS).map(([k,v])=>[k,Object.freeze({phases:Object.freeze([...v.phases])})])))});
 })(typeof window!=='undefined'?window:globalThis);

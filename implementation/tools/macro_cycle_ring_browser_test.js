@@ -2,7 +2,8 @@
 // Macro cycle rings (FRONTEND_INTERACTION_CONTRACT_20261019 §4-8) at 390 (touch) and 1280 (mouse): wrap-around both ways by drag,
 // keyboard and buttons, no rewind, vertical swipe is page scroll, no model = no arc ("미산출"), abstain, interval edges incl. the
 // last→first wrap, reaction to a new publication (focus kept once turned), validated-only transition text, reduced motion, no
-// overflow, separate rings, the device-only user estimate history (append, compare, delete, cap, /1 migration) kept apart from
+// overflow, separate rings, the device-only user estimate history (append, compare, delete, all kept / latest 50 shown, quota failure,
+// export/import round trip, /1 migration) kept apart from
 // the official layer, no probability text, no non-GET
 // request. Publications here are synthetic draft §4-2 objects passed to MacroCycleRing.setPublication (publication file and
 // schema are not decided: PM-2). Not model output, not market data.
@@ -27,6 +28,10 @@ const R=c=>'[data-cycle-ring="'+c+'"]';
 async function focusOf(page,c){return page.locator(R(c)+' [data-cycle-phase][aria-selected="true"]').getAttribute('data-cycle-phase');}
 async function turnDeg(page,c){return Number(await page.locator(R(c)+' svg').getAttribute('data-cycle-turn-deg'));}
 async function live(page){return page.locator('[data-cycle-live]').textContent();}
+// A touch swipe ends in an inertial (fling) scroll that keeps moving the page after touchEnd, for a variable time. Wait until
+// scrollY has not changed for 10 consecutive animation frames, so later steps do not measure a box that is still moving.
+async function scrollSettled(page){await page.evaluate(()=>new Promise((ok,no)=>{let last=scrollY,same=0,frames=0;
+ const tick=()=>{if(scrollY===last)same++;else{same=0;last=scrollY;}if(same>=10)return ok();if(++frames>600)return no(Error('scroll did not settle'));requestAnimationFrame(tick);};requestAnimationFrame(tick);}));}
 async function settle(page,c){await page.waitForFunction(sel=>{const s=document.querySelector(sel+' svg');return s&&Math.abs(Number(s.dataset.cycleDisplayDeg)-Number(s.dataset.cycleTurnDeg))<1e-6;},R(c));}
 // After a reload the macro screen re-renders (and re-mounts the ring) once its data arrives; wait for that like openMacro
 // does, then for the network to go idle, so no later re-render replaces nodes a step is reading.
@@ -111,15 +116,19 @@ async function drag(page,c,cells,touch,cdp){
    {const box=await page.locator(R('economy')+' [data-cycle-drag]').boundingBox(),x=box.x+box.width/2,y=box.y+box.height*0.7,f=await focusOf(page,'economy'),deg=await turnDeg(page,'economy');
     if(touch){const sy=await page.evaluate(()=>scrollY);await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y}]});
      for(let i=1;i<=10;i++)await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:x+1,y:y-16*i}]});await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
-     await page.waitForTimeout(200);assert.ok(await page.evaluate(()=>scrollY)>sy,'vertical swipe scrolls the page');}
+     await scrollSettled(page);assert.ok(await page.evaluate(()=>scrollY)>sy,'vertical swipe scrolls the page');}
     else{await page.mouse.move(x,y);await page.mouse.down();await page.mouse.move(x+3,y-160,{steps:8});await page.mouse.up();}
     assert.equal(await focusOf(page,'economy'),f);assert.equal(await turnDeg(page,'economy'),deg);
     assert.equal(await page.locator(R('economy')+' [data-cycle-drag]').evaluate(n=>getComputedStyle(n).touchAction),'pan-y');}
    pass++;console.log('PASS cycle ring vertical '+width);
    // cell tap turns to that cell
    phase='TAP '+width;
-   {const cell=page.locator(R('economy')+' [data-cycle-cell="2"]'),b=await cell.boundingBox();
-    if(touch)await page.touchscreen.tap(b.x+b.width/2,b.y+b.height/2);else await page.mouse.click(b.x+b.width/2,b.y+b.height/2);
+   // The vertical swipe above scrolls the page by a fling of variable length, which can leave cell 2 partly or wholly above the
+   // viewport; tapping its old viewport coordinates then hits nothing. Bring the cell into view and wait for the page to stop.
+   {const cell=page.locator(R('economy')+' [data-cycle-cell="2"]');await scrollSettled(page);await cell.evaluate(n=>n.scrollIntoView({block:'center',inline:'center',behavior:'instant'}));await scrollSettled(page);
+    const b=await cell.boundingBox(),x=b.x+b.width/2,y=b.y+b.height/2;
+    assert.ok(await cell.evaluate((n,[x,y])=>document.elementFromPoint(x,y)===n,[x,y]),'the tap point is on cell 2');
+    if(touch)await page.touchscreen.tap(x,y);else await page.mouse.click(x,y);
     await settle(page,'economy');assert.equal(await focusOf(page,'economy'),'둔화');}
    pass++;console.log('PASS cycle ring tap '+width);
    // 16 separate rings
@@ -182,14 +191,41 @@ async function drag(page,c,cells,touch,cdp){
     assert.equal(await page.locator(E+' [data-cycle-user-entry="2"] [data-cycle-user-entry-system]').textContent(),'시스템: 확장 후반~둔화 초입 · 탐색 층 v0 · synthetic-phase/economy · 기준 2026-10-15T00:00:00Z');
     assert.equal(await page.locator(E+' [data-cycle-user-entry="1"] [data-cycle-user-entry-system]').textContent(),'시스템: 미산출');
     assert.equal(await page.locator(E+' [data-cycle-user-now]').textContent(),'지금 시스템: 미산출');assert.equal(await page.locator(E).getAttribute('data-cycle-state'),'NOT_COMPUTED');
-    // cap: 55 stored entries read as the newest 50; one more save keeps 50 and drops the oldest
-    await page.evaluate(k=>{const rings={economy:[]};for(let i=1;i<=55;i++)rings.economy.push({seq:i,saved_at:'2026-10-20T00:'+String(i).padStart(2,'0')+':00Z',from:{phase:'회복',part:'초입'},to:{phase:'회복',part:'후반'},note:'',system:{state:'NOT_COMPUTED',text:'미산출',reason:'NO_MODEL_OUTPUT',layer:null,model_id:null,as_of:null}});localStorage.setItem(k,JSON.stringify({schema:'macro-cycle-user-estimate/2',rings}));},KEY);
+    // storage policy 2026-10-20 item 6: 60 stored entries are all kept; the latest 50 are shown; one more save keeps 61
+    await page.evaluate(k=>{const rings={economy:[]};for(let i=1;i<=60;i++)rings.economy.push({seq:i,saved_at:'2026-10-20T'+String(Math.floor(i/60)).padStart(2,'0')+':'+String(i%60).padStart(2,'0')+':00Z',from:{phase:'회복',part:'초입'},to:{phase:'회복',part:'후반'},note:'synthetic '+i,system:{state:'NOT_COMPUTED',text:'미산출',reason:'NO_MODEL_OUTPUT',layer:null,model_id:null,as_of:null}});localStorage.setItem(k,JSON.stringify({schema:'macro-cycle-user-estimate/2',rings}));},KEY);
     await reloadMacro(page);
-    const show=width<900?5:10;
+    const show=width<900?5:10,allShown=()=>page.locator(E+' [data-cycle-user-history] > li[data-cycle-user-entry], '+E+' [data-cycle-user-more] li[data-cycle-user-entry]').evaluateAll(n=>n.map(x=>Number(x.dataset.cycleUserEntry)));
     assert.equal((await entries()).length,show,'recent '+show+' shown, rest under 더 보기');
     assert.equal(await page.locator(E+' [data-cycle-user-more] summary').textContent(),'더 보기 ('+(50-show)+')');
-    assert.ok((await page.locator(E+' [data-cycle-user-cap]').textContent()).startsWith('기록 50개 · 링마다 최근 50개까지 보관'));
-    await save('확장|초입','확장|후반','');{const v=await store();assert.equal(v.rings.economy.length,50);assert.equal(v.rings.economy[0].seq,7);assert.equal(v.rings.economy[49].seq,56);}
+    {const seen=await allShown();assert.equal(seen.length,50,'50 shown');assert.equal(seen[0],60);assert.equal(seen[49],11);}
+    assert.equal(await page.locator(E+' [data-cycle-user-hidden]').getAttribute('data-cycle-user-hidden'),'10','10 older records kept but not shown');
+    assert.ok((await page.locator(E+' [data-cycle-user-hidden]').textContent()).includes('기록 내보내기'),'hidden records point to the export');
+    assert.ok((await page.locator(E+' [data-cycle-user-cap]').textContent()).startsWith('기록 60개 · 모두 보관 · 화면에는 최근 50개까지 표시'));
+    assert.equal((await store()).rings.economy.length,60,'reading keeps all 60');
+    await save('확장|초입','확장|후반','');{const v=await store();assert.equal(v.rings.economy.length,61,'nothing auto-deleted');assert.equal(v.rings.economy[0].seq,1);assert.equal(v.rings.economy[60].seq,61);}
+    // quota reached: the stored records stay, a save-failure message with the export hint is shown, the inputs are kept
+    {const before=await page.evaluate(k=>localStorage.getItem(k),KEY);
+     await page.evaluate(k=>{window.__setItem=Storage.prototype.setItem;Storage.prototype.setItem=function(key,v){if(key===k)throw new DOMException('synthetic quota','QuotaExceededError');return window.__setItem.call(this,key,v);};},KEY);
+     await save('수축|초입','수축|후반','synthetic quota note');
+     assert.equal(await page.evaluate(k=>localStorage.getItem(k),KEY),before,'stored records untouched on quota failure');
+     const st=page.locator(E+' [data-cycle-user-status]');assert.equal(await st.getAttribute('data-code'),'SAVE_FAILED');
+     const msg=await st.textContent();assert.ok(msg.includes('저장 실패')&&msg.includes('기존 기록은 그대로')&&msg.includes('기록 내보내기'),'failure message with export hint');
+     assert.equal(await page.locator(E+' [data-cycle-user-note]').inputValue(),'synthetic quota note','typed reason kept for a retry');
+     await page.evaluate(()=>{Storage.prototype.setItem=window.__setItem;delete window.__setItem;});}
+    // export -> clear -> import round trip (merge without duplicates); malformed or price-bearing files are refused
+    {const fs=require('node:fs'),before=await store(),dl=page.waitForEvent('download');await page.locator(E+' [data-cycle-user-export]').click();const file=await dl;
+     assert.equal(file.suggestedFilename(),'macro-cycle-user-estimates.json');const exported=JSON.parse(fs.readFileSync(await file.path(),'utf8'));
+     assert.equal(exported.schema,'macro-cycle-user-estimate/2');assert.equal(exported.rings.economy.length,61);assert.ok(!/price|close|quote/i.test(Object.keys(exported).join()+Object.keys(exported.rings.economy[0]).join()));
+     await page.locator(E+' [data-cycle-user-clear]').click();assert.equal(await store(),null);
+     const put=async(obj,name)=>{await page.locator(E+' [data-cycle-user-import]').setInputFiles({name,mimeType:'application/json',buffer:Buffer.from(typeof obj==='string'?obj:JSON.stringify(obj))});await page.waitForFunction(sel=>document.querySelector(sel+' [data-cycle-user-status]')?.dataset.code,E);};
+     await put(exported,'round.json');await page.waitForFunction(sel=>document.querySelector(sel+' [data-cycle-user-status]').dataset.code==='IMPORTED',E);
+     assert.deepEqual((await store()).rings.economy,before.rings.economy,'round trip restores every record');
+     assert.equal((await entries()).length,show);assert.equal(await page.locator(E+' [data-cycle-user-hidden]').getAttribute('data-cycle-user-hidden'),'11');
+     await put(exported,'again.json');assert.ok((await page.locator(E+' [data-cycle-user-status]').textContent()).includes('기록 0개를 합쳤습니다'));assert.equal((await store()).rings.economy.length,61,'no duplicates');
+     const kept=await page.evaluate(k=>localStorage.getItem(k),KEY);
+     for(const [bad,name] of [[{...exported,rings:{economy:[{...exported.rings.economy[0],price:101}]}},'price.json'],[{...exported,series:[{t:1,close:2}]},'series.json'],[{...exported,rings:{economy:[{...exported.rings.economy[0],from:{phase:'없음',part:'초입'}}]}},'phase.json'],[{schema:'other/1',rings:{}},'schema.json'],['{not json','broken.json']]){
+      await page.evaluate(sel=>{delete document.querySelector(sel+' [data-cycle-user-status]').dataset.code;},E);await put(bad,name);
+      assert.equal(await page.locator(E+' [data-cycle-user-status]').getAttribute('data-code'),'IMPORT_REFUSED',name);assert.equal(await page.evaluate(k=>localStorage.getItem(k),KEY),kept,'refused import writes nothing '+name);}}
     // migration from a /1 value: read as a one-entry history without loss, written as /2 only on the next change
     const v1={schema:'macro-cycle-user-estimate/1',rings:{economy:{from:{phase:'확장',part:'초입'},to:{phase:'둔화',part:'후반'},note:'synthetic v1 note',saved_at:'2026-10-19 08:00'}}};
     await page.evaluate(([k,v])=>localStorage.setItem(k,JSON.stringify(v)),[KEY,v1]);await reloadMacro(page);
