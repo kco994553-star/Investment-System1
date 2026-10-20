@@ -146,8 +146,10 @@ async function editorFlow(page, width) {
   const cmpRows = await page.locator(E + ' [data-qgv2w-compare-row]').evaluateAll((r) => r.map((x) => [...x.cells].map((c) => c.textContent)));
   assert.ok(cmpRows.some((r) => r[1] !== r[2] && r[1] !== '— (—)'), 'some totals move ' + JSON.stringify(cmpRows));
   // Ranked rows first (personal rank order), unranked — rows last; rank change ▲/▼/0 or — (never a number for an unranked row).
+  // The personal rank is over the same Universe rank population as the official one (D12, shared page result), so the listed
+  // TARGET rows carry increasing ranks of that population, not 1..k.
   const mineRanks = cmpRows.map((r) => (/\((\d+)\)$/.exec(r[2]) || [])[1]).map((x) => (x ? Number(x) : null)), firstNa = mineRanks.indexOf(null);
-  assert.deepEqual(mineRanks.slice(0, firstNa), mineRanks.slice(0, firstNa).map((_, i) => i + 1));assert.ok(mineRanks.slice(firstNa).every((x) => x === null));
+  assert.ok(firstNa > 0 && mineRanks.slice(0, firstNa).every((x, i, a) => x >= 1 && (i === 0 || x > a[i - 1])), 'personal ranks increase ' + JSON.stringify(mineRanks));assert.ok(mineRanks.slice(firstNa).every((x) => x === null));
   assert.ok(cmpRows.every((r, i) => (mineRanks[i] === null ? r[3] === '—' : /^(▲\d+|▼\d+|0)$/.test(r[3]))));
   await page.locator(E + ' [data-qgv2w-company]').selectOption('msft');await page.locator(E + ' [data-qgv2w-company-table="msft"]').waitFor();
   if (SHOTS) await page.screenshot({ path: SHOTS + '/s13-compare-' + width + '.png', fullPage: false });

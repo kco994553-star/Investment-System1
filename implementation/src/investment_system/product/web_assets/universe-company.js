@@ -175,13 +175,13 @@ async function sharedScores(page,ctx,code,inputs,rs){const QS=g.QgvScores,p=code
  let catalog=null;try{catalog=await ctx.catalogPromise;}catch(_){catalog=null;}
  try{const r=await QS.pageResult(g,{v2Inputs:inputs,catalog,identities:[{company_id:code,ticker:p.ticker}]}),C=r&&r.computed?r.computed:null;
   // D12: one row per security: a code of a TARGET company reads that TARGET row of the same result (QgvScores.codeRow).
-  const row=C&&typeof QS.codeRow==='function'?QS.codeRow(C,code):C&&C.rows&&C.rows[code]&&C.rows[code].code===code?C.rows[code]:null;return r?{quotes:r.quotes,d:row?row.primary:null,row}:null;}catch(_){return null;}}
+  const row=C&&typeof QS.codeRow==='function'?QS.codeRow(C,code):C&&C.rows&&C.rows[code]&&C.rows[code].code===code?C.rows[code]:null;return r?{quotes:r.quotes,d:row?row.primary:null,row,basis:r.price_basis||null}:null;}catch(_){return null;}}
 async function paintScores(page,ctx){
  const code=page.dataset.universePage,locale=ctx.locale==='en-US'?'en-US':'ko-KR',inputs=inputsOf(ctx.screens),rs=rowState(inputs,code),shared=await sharedScores(page,ctx,code,inputs,rs);
  if(!page.isConnected)return false;
  const quotes=shared?shared.quotes:object(ctx.quotes)?{...ctx.quotes}:{},c={...ctx,locale,quotes},now=finite(ctx.now)?ctx.now:Date.now(),row=shared?shared.row:null,d=shared?(shared.d&&row?{...shared.d,official_rank:Number.isInteger(row.rank)?row.rank:null,merged_target:row.company_id!==code?row.company_id:null}:shared.d):rs.rec?scored(code,c):null;
  const q=page.querySelector('[data-universe-card="qgv"]'),f=page.querySelector('[data-universe-card="factors"]');
- if(q)q.innerHTML=qgvCard(code,rs,d,inputs,c,now);if(f)f.innerHTML=factorsCard(rs,d,inputs,c,now);
+ if(q){q.innerHTML=qgvCard(code,rs,d,inputs,c,now);const QS=g.QgvScores;if(QS&&typeof QS.marks==='function')for(const[k,v]of Object.entries(QS.marks(row,shared?shared.basis:null,g)))q.setAttribute(k,v);}if(f)f.innerHTML=factorsCard(rs,d,inputs,c,now);
  page.dataset.universeV=Object.hasOwn(quotes,code)?'DEVICE_PRICED':'NO_DEVICE_PRICE';collected.set(page,quotes);return true;}
 async function mount(host,ctx={}){
  const page=host&&host.querySelector?host.querySelector('[data-universe-page]'):null;if(!page)return;

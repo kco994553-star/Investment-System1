@@ -84,7 +84,7 @@ async function paint(host,{publicScreens={},catalog=null,identities=[],preset=nu
   let failure=null;try{const r=view.PrivateSubsetView&&typeof view.PrivateSubsetView.readStatus==='function'?view.PrivateSubsetView.readStatus():null;failure=r&&r.failure?r.failure:null;}catch(_){failure=null;}
   if(painted&&painted.host===host&&painted.result===result&&painted.locale===locale&&painted.failure===failure)return painted.summary;
   const s=QS.vCoverage(result,inputs),open=host.querySelector('[data-v-factor-details]')?.open===true;if(!s)return null;
-  const px=typeof QS.provenance==='function'&&result.computed?QS.provenance({profile:result.computed.profile,priced:s.connected}):null;host.innerHTML=html(s,{en,reasonText:c=>QS.reasonText(c,en),failure,provenance:px?{text:QS.provenanceText(px,en),attrs:QS.provenanceAttrs(px)}:null});if(open){const d=host.querySelector('[data-v-factor-details]');if(d)d.open=true;}
+  const px=typeof QS.provenance==='function'&&result.computed?QS.provenance({profile:result.computed.profile,priced:s.connected}):null;host.innerHTML=html(s,{en,reasonText:c=>QS.reasonText(c,en),failure,provenance:px?{text:QS.provenanceText(px,en),attrs:QS.provenanceAttrs(px)}:null});{const sec=host.querySelector('[data-v-coverage]');if(sec&&typeof QS.readMarks==='function')for(const[k,v]of Object.entries(QS.readMarks(result.price_basis,view)))sec.setAttribute(k,v);}if(open){const d=host.querySelector('[data-v-factor-details]');if(d)d.open=true;}
   painted={host,result,locale,failure,summary:s};return s;
  }catch(_){return null;}
 }

@@ -196,6 +196,18 @@ function qgReference(d){if(!d||d.reference_only===true||!finite(d.total)||finite
    the QG 참고 목록, no official rank), PARTIAL_AXES (some axis score but no total: never in either order) or CHECK_DATA (no axis
    score). */
 function exploreGroup(row){if(!row||!row.primary)return 'CHECK_DATA';if(row.rank!==null&&row.rank!==undefined)return 'RANKED';const p=row.primary;if(qgReference(p))return 'QG_REFERENCE';return [p.q,p.g,p.v].some(finite)?'PARTIAL_AXES':'CHECK_DATA';}
+/* Cross-screen marks (owner 2026-10-19 'V 일치': the same input, version and settings show the same values and states on every
+   screen; tools/v_cross_screen_consistency_browser_test.js). The values a screen shows for one row of a computed result and the
+   Universe read that result was priced from, as data-cx-* attributes. Display only: nothing is computed, stored or sent, and no
+   price, market cap or EV is named. read failure = the last failed re-read after the kept read (PrivateSubsetView.readStatus). */
+function readMarks(basis,win){const b=object(basis)?basis:null;let f='';try{const s=win&&win.PrivateSubsetView&&typeof win.PrivateSubsetView.readStatus==='function'?win.PrivateSubsetView.readStatus():null;f=s&&s.failure&&typeof s.failure.code==='string'?s.failure.code:'';}catch(_){f='';}
+ return{'data-cx-read-id':b&&typeof b.read_id==='string'?b.read_id:'','data-cx-read-at':b&&typeof b.acquired_at==='string'?b.acquired_at:'','data-cx-read-failure':f};}
+function marks(row,basis,win){const p=row&&object(row.primary)?row.primary:null,ax=p&&object(p.coverage)&&object(p.coverage.axes)?p.coverage.axes.V:null,n=v=>finite(v)?String(v):'NA';
+ return{'data-cx-v':n(p&&p.v),'data-cx-v-status':ax&&typeof ax.status==='string'?ax.status:'NA','data-cx-v-reason':ax&&typeof ax.reason==='string'?ax.reason:'','data-cx-total':n(p&&p.total),
+  'data-cx-rank':row&&Number.isInteger(row.rank)?String(row.rank):'','data-cx-qg-order':row&&object(row.qg_reference)&&Number.isInteger(row.qg_reference.order)?String(row.qg_reference.order):'',
+  'data-cx-group':row?exploreGroup(row):'NA','data-cx-scope':row&&row.outside_universe===true?'OUTSIDE_UNIVERSE':row&&typeof row.universe_code==='string'?'UNIVERSE':'NA',...readMarks(basis,win)};}
+// The same marks as an HTML attribute string (screens built from strings).
+function markAttrs(m){return Object.entries(object(m)?m:{}).map(([k,v])=>' '+k+'="'+String(v).replace(/[&"<>]/g,c=>({'&':'&amp;','"':'&quot;','<':'&lt;','>':'&gt;'})[c])+'"').join('');}
 function stateText(code,en){return Object.hasOwn(DATA_STATE,code)?DATA_STATE[code][en?1:0]:code;}
 function axisStatusText(code,en){return Object.hasOwn(AXIS_STATUS,code)?AXIS_STATUS[code][en?1:0]:code;}
 function vInputText(key,en){return Object.hasOwn(V_INPUT,key)?V_INPUT[key][en?1:0]:(en?'value inputs':'가치 입력 전체');}
@@ -559,5 +571,5 @@ function label(version,en){return(LABEL[version]||LABEL.v2)[en?1:0];}
 // (+ ' · 유형 범위 qgv2-type-scope/…' = the type-application scope id the scores use).
 function basisText(S,en){const b=S&&S.basis?S.basis:basis('v2',false);return label('v2',en)+' · '+(en?b.label_en:b.label)+(b.since?(en?' · since ':' · ')+b.since+(en?'':'부터'):'')+(b.type_scope?(en?' · type scope ':' · 유형 범위 ')+b.type_scope:'');}
 function presets(){return qgvV2().PRESETS;}
-return Object.freeze({RANK_LABEL,provenance,provenanceText,provenanceAttrs,provenanceAttrHtml,rankLabel,OUTSIDE_UNIVERSE_LABEL,PORTFOLIO_RANK_LABEL,POPULATION_LABEL,universeIdentities,rowOf,codeRow,setPageReferences,modelPortfolios,officialModel,MODEL_NS,MODEL_PRIMARY,MODEL_RULES,MODEL_LABEL,MODES,LABEL,PERSONAL_LABEL,PERSONAL_V0_LABEL,QG_REFERENCE_LABEL,NO_OFFICIAL_RANK,qgReference,FLAG,DATA_STATE,AXIS_STATUS,REASON,coverageFor,exploreGroup,reasonText,stateText,axisStatusText,vInputText,scoringDefault,compute,typeMemberships,judgmentRows,collectQuotes,pageResult,setPageIdentities,setPageProfile,pageProfile,isCurrent,vCoverage,V_TARGET_SHARE,summaryText,naText,flagText,label,basis,basisText,presets,symbolOf,LIMITS_16,TIERS_RC,limits16,sectorName});
+return Object.freeze({RANK_LABEL,provenance,provenanceText,provenanceAttrs,provenanceAttrHtml,rankLabel,OUTSIDE_UNIVERSE_LABEL,PORTFOLIO_RANK_LABEL,POPULATION_LABEL,universeIdentities,rowOf,codeRow,setPageReferences,modelPortfolios,officialModel,MODEL_NS,MODEL_PRIMARY,MODEL_RULES,MODEL_LABEL,MODES,LABEL,PERSONAL_LABEL,PERSONAL_V0_LABEL,QG_REFERENCE_LABEL,NO_OFFICIAL_RANK,qgReference,FLAG,DATA_STATE,AXIS_STATUS,REASON,coverageFor,exploreGroup,reasonText,stateText,axisStatusText,vInputText,scoringDefault,compute,typeMemberships,judgmentRows,collectQuotes,pageResult,setPageIdentities,setPageProfile,pageProfile,isCurrent,vCoverage,V_TARGET_SHARE,summaryText,naText,flagText,label,basis,basisText,presets,symbolOf,LIMITS_16,TIERS_RC,limits16,sectorName,pageReferences,marks,readMarks,markAttrs});
 });
