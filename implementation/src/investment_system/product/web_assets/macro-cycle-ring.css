@@ -52,3 +52,4 @@
 .cycle-user-history li { padding: 4px 0; border-bottom: 1px solid var(--line, #d4d2ca); }
 .cycle-user-del { margin-top: 2px; min-height: 32px; padding: 2px 10px; border: 1px solid var(--line-strong, #6f6f6f); border-radius: 999px; background: var(--card, #fff); color: var(--ink, #161616); font: inherit; font-size: var(--fs-s, 13px); cursor: pointer; }
 .cycle-user details summary { cursor: pointer; font-weight: 700; }
+.cycle-user input[type="file"] { max-width: 100%; min-width: 0; font-size: var(--fs-s, 13px); }
