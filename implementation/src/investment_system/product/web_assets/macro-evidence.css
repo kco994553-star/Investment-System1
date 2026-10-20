@@ -1,0 +1,37 @@
+/* Macro evidence lines (macro-evidence.js). Class-based only (CSP style-src 'self'). Lines differ by dash pattern and
+   label, not by colour alone: solid = recorded release time, dashed = collection time, dotted = reconstruction layer. */
+.macro-evidence { --me-series: var(--m-qgv, #2457c5); --me-line: var(--marker, #d7322a); --me-muted: var(--muted, #4a4a4a); --me-grid: var(--line, #d4d2ca); min-width: 0; }
+.macro-evidence .me-badges { flex-wrap: wrap; }
+.macro-evidence .me-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+.macro-evidence .me-tabs button { min-height: 36px; padding: 4px 12px; border: 1px solid var(--me-grid); border-radius: 18px; background: transparent; color: inherit; font: inherit; cursor: pointer; }
+.macro-evidence .me-tabs button[aria-selected="true"] { border-color: var(--ink, #161616); font-weight: 700; text-decoration: underline; }
+.macro-evidence .me-summary { margin: 6px 0; padding: 6px 10px; border-left: 3px solid var(--me-grid); }
+.macro-evidence .me-summary p { margin: 2px 0; }
+.macro-evidence .me-pick { display: block; margin: 8px 0; }
+.macro-evidence .me-pick select { max-width: 100%; min-height: 36px; font: inherit; }
+.macro-evidence .me-figure { margin: 6px 0 2px; min-width: 0; }
+.macro-evidence .me-svg { display: block; width: 100%; max-width: 900px; height: auto; overflow: visible; }
+.macro-evidence .me-plot { fill: none; stroke: var(--me-grid); stroke-width: 1; }
+.macro-evidence .me-zero { stroke: var(--me-muted); stroke-width: 1; stroke-dasharray: 2 3; }
+.macro-evidence .me-series { fill: none; stroke: var(--me-series); stroke-width: 1.8; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.macro-evidence .me-revision { fill: var(--paper, #fff); stroke: var(--me-line); stroke-width: 1.6; }
+.macro-evidence .me-release { fill: var(--me-muted); }
+.macro-evidence .me-release-revision { fill: var(--me-line); }
+.macro-evidence .me-line { stroke: var(--me-line); stroke-width: 1.6; }
+.macro-evidence .me-line-collection { stroke-dasharray: 5 3; }
+.macro-evidence .me-line-replay { stroke: var(--me-muted); stroke-dasharray: 1 3; stroke-width: 1.2; }
+.macro-evidence .me-line-label { fill: var(--me-line); font: 700 10px var(--font-mono, monospace); }
+.macro-evidence .me-axis { fill: var(--me-muted); font: 600 10px var(--font-mono, monospace); }
+.macro-evidence .me-axis-end { text-anchor: end; }
+.macro-evidence .me-empty { color: var(--me-muted); margin: 8px 0; }
+.macro-evidence .me-more-item { display: block; margin: 4px 0; overflow-wrap: anywhere; }
+.macro-evidence .me-replay-toggle { display: block; margin: 6px 0; }
+.macro-evidence .me-meta { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2px 12px; margin: 8px 0; }
+.macro-evidence .me-meta dt { font-weight: 700; }
+.macro-evidence .me-meta dd { margin: 0 0 4px; text-align: left; overflow-wrap: anywhere; }
+@media (min-width: 900px) { .macro-evidence .me-meta { grid-template-columns: max-content minmax(0, 1fr); } }
+.macro-evidence .me-events { padding-left: 18px; }
+.macro-evidence .me-events li { margin: 3px 0; overflow-wrap: anywhere; }
+.macro-evidence .me-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.macro-evidence .me-table th, .macro-evidence .me-table td { padding: 3px 4px; border-bottom: 1px solid var(--me-grid); text-align: left; vertical-align: top; overflow-wrap: anywhere; font-size: 12px; }
+@media (max-width: 599px) { .macro-evidence .me-table th:nth-child(n+5), .macro-evidence .me-table td:nth-child(n+5) { display: none; } }
