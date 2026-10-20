@@ -7,7 +7,10 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    # 60 (was 30): the full Python suite plus the browser list now takes about 28 minutes on an empty PR build and
+    # longer on a manual deploy, whose artifact carries the published data (504 Universe rows); the 2026-10-19 run
+    # 39251288211 was cancelled at 30:00 while its tests were still passing.
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:

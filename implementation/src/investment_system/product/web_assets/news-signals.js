@@ -1,7 +1,11 @@
 /* Public `news-signals.json` reader ('뉴스·신호': GDELT DOC 2.0 + company IR feeds). Mirrors Python product/news_signals.
    One chronological list with '공시·확정' (SEC 8-K, DART when present): distinct badges, new/repeat markers, GDELT attribution,
    IR releases that repeat an 8-K Exhibit 99.1 collapsed under that 8-K. Title, link, time, company and classification only;
-   nothing changes any score. DOM is built with textContent only. */
+   nothing changes any score. DOM is built with textContent only.
+   Schema 2 adds this run's result per company and a `refresh` summary per source: the card says, per source and for the
+   companies in view, '새 뉴스 반영' / '새 뉴스 없음 · 확인 <time>' (request answered) or '이전 자료 유지 · 마지막 성공 <time> ·
+   최근 갱신 실패(<source> <code>, <time>)' (request failed or not made). Carried items stay listed with their own times.
+   Schema 1 copies stay readable (result not recorded). */
 (function(root,factory){const api=factory(root);if(typeof module==='object'&&module.exports)module.exports=api;else root.NewsSignals=api;})(typeof globalThis==='object'?globalThis:this,function(root){
 'use strict';
 const FILENAME='news-signals.json',KIND='NEWS_SIGNALS',MAX=1024*1024,WINDOW_DAYS=14,STALE_AFTER=172800,MAX_ITEMS=1500,TITLE_MAX=200,LINK_MAX=600,HOUR=3600000;
@@ -33,6 +37,8 @@ const STRUCTURAL_RULES={"EXPORT_RESTRICTION":[["asml","lrcx","klac","tokyo_elect
 function structuralCandidates(items){const result=[],seen=new Set();for(const item of items||[]){if(item.occurrence!=='NEW'||seen.has(item.group_id))continue;for(const[kind,[companies,pattern]]of Object.entries(STRUCTURAL_RULES)){if(companies.includes(item.company_id)&&new RegExp(pattern,'i').test(item.title||'')){result.push({company_id:item.company_id,code:'E4',reason_code:'NEWS_STRUCTURAL_EVENT',event_kind:kind,evidence_grade:'SIGNAL',score_effect:'NONE',info_only:true,group_id:item.group_id,link:item.link,published_at:item.published_at});seen.add(item.group_id);break;}}}return result;}
 const CHANNELS={DISCLOSURE:['공시·확정','Disclosure · confirmed'],NEWS:['뉴스·신호','News · signal']};
 const TOP=['schema_version','kind','as_of','state','reason_codes','freshness_basis','stale_after_seconds','window_days','channel','score_effect','attribution','matching_rule','sources','items'];
+const TOP2=[...TOP,'refresh'],SRC_REFRESH=['last_attempt_at','last_success_at','last_result','last_result_code','items_carried_from','companies','new_items'];
+const SUCCEEDED=['UPDATED','NO_NEW_ITEMS'],REFRESH_REASONS={PARTIAL_FAILED:'REFRESH_PARTIAL_FAILED',FAILED:'REFRESH_FAILED',NOT_RUN:'REFRESH_NOT_RUN'},RESULT_CODE=/^[A-Z][A-Z0-9_]{0,39}$/;
 const ITEM=['company_id','source','title','link','published_at','classification','group_id','occurrence','relation','related_8k_accession'];
 const LABEL='[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?',LINK=new RegExp('^(https?)://('+LABEL+'(?:\\.'+LABEL+')+)(?::[0-9]{1,5})?(?:[/?][A-Za-z0-9!$%&\'()*+,./:;=?@\\[\\]_~-]*)?$');
 const TITLE_BAD=/[\u0000-\u001f\u007f-\u009f<>\u00a0\u1680\u180e\u2000-\u200b\u2028\u2029\u202f\u205f\u3000\ufeff]/u;
@@ -41,6 +47,16 @@ const plain=v=>v!==null&&typeof v==='object'&&!Array.isArray(v),keys=(v,k)=>plai
 function instant(v){need(typeof v==='string'&&/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+00:00$/.test(v));const t=Date.parse(v);need(Number.isFinite(t)&&new Date(t).toISOString().slice(0,19)===v.slice(0,19));return t;}
 const fresh=(at,cut)=>cut-at>STALE_AFTER*1000?'STALE':'LIVE';
 function same(a,b){if(plain(a)&&plain(b)){const k=Object.keys(a);return k.length===Object.keys(b).length&&k.every(n=>Object.hasOwn(b,n)&&same(a[n],b[n]));}return a===b;}
+// Mirrors Python source_refresh / refresh_result. `ids` narrows the summary to the companies in view (screen only).
+function sourceRefresh(source,entries,attemptedAt,newItems,ids=null){
+ const all=source==='GDELT'?GDELT_COMPANIES:IR_COMPANIES,scope=ids?all.filter(id=>ids.includes(id)):all,list=scope.filter(id=>source==='GDELT'||Object.hasOwn(IR_DOMAINS,id));
+ const ok=list.filter(id=>SUCCEEDED.includes(entries[id].last_result)),failed=list.filter(id=>entries[id].last_result==='FAILED').map(id=>entries[id].last_result_code),notRun=list.filter(id=>entries[id].last_result==='NOT_RUN').map(id=>entries[id].last_result_code);
+ let result,code=null;if(ok.length&&!failed.length&&!notRun.length)result=ok.some(id=>entries[id].last_result==='UPDATED')?'UPDATED':'NO_NEW_ITEMS';
+ else{result=ok.length?'PARTIAL_FAILED':failed.length?'FAILED':'NOT_RUN';code=failed.length||notRun.length?[...failed,...notRun][0]:'NOT_COLLECTED';}
+ const acq=scope.map(id=>entries[id].acquired_at).filter(v=>v!==null).sort(),carried=list.filter(id=>!SUCCEEDED.includes(entries[id].last_result)&&entries[id].acquired_at!==null).map(id=>entries[id].acquired_at).sort();
+ return{last_attempt_at:attemptedAt,last_success_at:acq.length?acq[acq.length-1]:null,last_result:result,last_result_code:code,items_carried_from:carried.length?carried[0]:null,companies:{succeeded:ok.length,failed:failed.length,not_run:notRun.length},new_items:newItems};}
+function refreshResult(s){const r=SOURCES.map(x=>s[x].last_result);if(r.every(x=>SUCCEEDED.includes(x)))return r.includes('UPDATED')?'UPDATED':'NO_NEW_ITEMS';
+ if(r.some(x=>SUCCEEDED.includes(x)||x==='PARTIAL_FAILED'))return 'PARTIAL_FAILED';return r.includes('FAILED')?'FAILED':'NOT_RUN';}
 // --- rules (mirror Python) ---
 function tokens(title){return title.replace(/[A-Z]/g,c=>c.toLowerCase()).replace(/[^a-z0-9]+/g,' ').split(' ').filter(Boolean);}
 function significant(title){return new Set(tokens(title).filter(t=>!STOPWORDS.has(t)));}
@@ -61,14 +77,18 @@ function groups(items){const out=new Map(),heads=[],counters=new Map();
  return items.map(i=>i.relation==='RELATED_TO_8K'?{group_id:i.group_id,occurrence:'REPEAT'}:out.get(i));}
 function validate(p){
  try{
-  need(keys(p,TOP)&&p.schema_version===1&&p.kind===KIND&&p.freshness_basis==='SOURCE_ACQUISITION'&&p.channel==='NEWS'&&p.score_effect==='NONE'&&p.stale_after_seconds===STALE_AFTER&&p.window_days===WINDOW_DAYS&&p.matching_rule===MATCHING_RULE&&same(p.attribution,ATTRIBUTION));
-  const cut=instant(p.as_of),acquired={},states=[];need(keys(p.sources,SOURCES));
+  need(plain(p)&&Number.isInteger(p.schema_version)&&[1,2].includes(p.schema_version));const v2=p.schema_version===2;
+  need(keys(p,v2?TOP2:TOP)&&p.kind===KIND&&p.freshness_basis==='SOURCE_ACQUISITION'&&p.channel==='NEWS'&&p.score_effect==='NONE'&&p.stale_after_seconds===STALE_AFTER&&p.window_days===WINDOW_DAYS&&p.matching_rule===MATCHING_RULE&&same(p.attribution,ATTRIBUTION));
+  const cut=instant(p.as_of),acquired={},states=[];need(keys(p.sources,SOURCES));const refresh=v2?p.refresh:null;
+  if(refresh!==null)need(keys(refresh,['attempted_at','result','sources'])&&refresh.attempted_at===p.as_of);
   for(const source of SOURCES){const ids=source==='GDELT'?GDELT_COMPANIES:IR_COMPANIES,entries=p.sources[source];need(plain(entries)&&Object.keys(entries).length===ids.length&&ids.every(id=>Object.hasOwn(entries,id)));
-   for(const id of ids){const c=entries[id];need(keys(c,source==='IR'?['state','acquired_at','reason_code','feed_status']:['state','acquired_at','reason_code']));const listed=Object.hasOwn(IR_DOMAINS,id);
+   for(const id of ids){const c=entries[id];need(keys(c,[...(source==='IR'?['state','acquired_at','reason_code','feed_status']:['state','acquired_at','reason_code']),...(v2?['last_result','last_result_code']:[])]));const listed=Object.hasOwn(IR_DOMAINS,id);
     if(source==='IR'){need((listed?['VERIFIED','UNVERIFIED_URL']:['NOT_AVAILABLE']).includes(c.feed_status));if(!listed)need(c.acquired_at===null&&c.reason_code==='NO_OFFICIAL_FEED_KNOWN');}
     if(c.acquired_at===null)need(c.state==='NOT_AVAILABLE'&&(c.reason_code==='NOT_COLLECTED'||source==='IR'&&!listed&&c.reason_code==='NO_OFFICIAL_FEED_KNOWN'));
-    else{const at=instant(c.acquired_at);need(at<=cut&&c.reason_code===null&&c.state===fresh(at,cut));acquired[source+'|'+id]=at;}states.push(c.state);}}
-  const state=states.includes('LIVE')?'LIVE':states.includes('STALE')?'STALE':'NOT_AVAILABLE';need(p.state===state&&Array.isArray(p.reason_codes)&&JSON.stringify(p.reason_codes)===JSON.stringify(state==='LIVE'?[]:state==='STALE'?['STALE_INPUT']:['NO_ELIGIBLE_INPUT']));
+    else{const at=instant(c.acquired_at);need(at<=cut&&c.reason_code===null&&c.state===fresh(at,cut));acquired[source+'|'+id]=at;}states.push(c.state);
+    if(v2){const r=c.last_result,code=c.last_result_code;if(refresh===null||source==='IR'&&!listed)need(r===null&&code===null);else if(SUCCEEDED.includes(r))need(code===null&&c.acquired_at!==null);else need((r==='FAILED'||r==='NOT_RUN')&&typeof code==='string'&&RESULT_CODE.test(code));}}}
+  const state=states.includes('LIVE')?'LIVE':states.includes('STALE')?'STALE':'NOT_AVAILABLE',extra=refresh!==null&&typeof refresh.result==='string'&&Object.hasOwn(REFRESH_REASONS,refresh.result)?[REFRESH_REASONS[refresh.result]]:[];
+  need(p.state===state&&Array.isArray(p.reason_codes)&&JSON.stringify(p.reason_codes)===JSON.stringify([...(state==='LIVE'?[]:state==='STALE'?['STALE_INPUT']:['NO_ELIGIBLE_INPUT']),...extra]));
   const items=p.items;need(Array.isArray(items)&&items.length<=MAX_ITEMS);const cutoff=cut-WINDOW_DAYS*86400000,links=new Set(),titles=new Set(),per=new Map();
   for(const i of items){need(keys(i,ITEM)&&SOURCES.includes(i.source)&&typeof i.company_id==='string'&&Object.hasOwn(acquired,i.source+'|'+i.company_id));
    need(validTitle(i.title)&&linkHost(i.link)!==null);need(i.source==='GDELT'?relevant(i.company_id,i.title):irLinkAllowed(i.company_id,i.link));
@@ -78,7 +98,13 @@ function validate(p){
    else need(i.related_8k_accession===null);
    const key=i.company_id+' '+tokens(i.title).join(' ');need(!links.has(i.link)&&!titles.has(key));links.add(i.link);titles.add(key);const k=i.source+'|'+i.company_id;per.set(k,(per.get(k)||0)+1);need(per.get(k)<=PER_COMPANY_MAX[i.source]);}
   for(let n=1;n<items.length;n++)need(asc(items[n-1],items[n])>0);
-  const expected=groups(items);need(items.every((e,n)=>e.group_id===expected[n].group_id&&e.occurrence===expected[n].occurrence));return p;
+  const expected=groups(items);need(items.every((e,n)=>e.group_id===expected[n].group_id&&e.occurrence===expected[n].occurrence));
+  if(refresh!==null){need(keys(refresh.sources,SOURCES));for(const source of SOURCES){const got=refresh.sources[source],entries=p.sources[source];need(keys(got,SRC_REFRESH));
+    const n=got.new_items,updated=Object.keys(entries).filter(id=>entries[id].last_result==='UPDATED'),count=id=>per.get(source+'|'+id)||0;
+    need(updated.every(id=>count(id)>0)&&Number.isInteger(n)&&n>=0&&(n>0)===(updated.length>0)&&n<=updated.reduce((a,id)=>a+count(id),0));
+    need(keys(got.companies,['succeeded','failed','not_run'])&&same(got,sourceRefresh(source,entries,refresh.attempted_at,n)));}
+   need(refresh.result===refreshResult(refresh.sources));}
+  return p;
  }catch(_){throw Error('NEWS_SIGNALS_INVALID');}
 }
 async function load(view){const control=new AbortController(),timer=setTimeout(()=>control.abort(),20000);
@@ -97,6 +123,32 @@ function timeline({sec=null,dart=null,news=null}={},{companyIds=null,dartApi=nul
  for(const list of byGroup.values()){const head=list.find(i=>i.occurrence==='NEW')||list[list.length-1];rows.push({channel:'NEWS',source:head.source,time:head.published_at,company_id:head.company_id,item:head,repeats:list.filter(i=>i!==head),orphan:false});}
  return rows.sort((a,b)=>a.time<b.time?1:a.time>b.time?-1:0);}
 const COMPANY_LABEL={hanmi:'042700',tokyo_electron:'8035'};
+// Refresh status per source for the companies in view (all, or companyIds). kind: RECORDED (schema 2 run), NO_RUN (schema 2
+// copy written without a collection), UNRECORDED (schema 1 copy), NO_FEED (no listed IR feed in view). For a failed or partly
+// failed source, carried_last / carried_from are the newest / oldest acquisition kept from earlier runs.
+function refreshStatus(news,{companyIds=null}={}){if(!news)return [];const ids=Array.isArray(companyIds)?companyIds:null;
+ return SOURCES.map(source=>{const entries=news.sources[source],all=source==='GDELT'?GDELT_COMPANIES:IR_COMPANIES,scope=ids?all.filter(id=>ids.includes(id)):all;
+  const list=scope.filter(id=>source==='GDELT'||Object.hasOwn(IR_DOMAINS,id));if(!list.length)return{source,kind:'NO_FEED',companies:0};
+  const acq=list.map(id=>entries[id].acquired_at).filter(v=>v!==null).sort(),last=acq.length?acq[acq.length-1]:null;
+  if(news.schema_version===1)return{source,kind:'UNRECORDED',companies:list.length,last_success_at:last};
+  if(!news.refresh)return{source,kind:'NO_RUN',companies:list.length,last_success_at:last};
+  const sum=sourceRefresh(source,entries,news.refresh.attempted_at,null,ids),bad=list.filter(id=>!SUCCEEDED.includes(entries[id].last_result));
+  const carried=bad.map(id=>entries[id].acquired_at).filter(v=>v!==null).sort(),codes=[...new Set(bad.map(id=>entries[id].last_result_code))];
+  const notRunOnly=bad.length>0&&bad.every(id=>entries[id].last_result==='NOT_RUN');
+  return{source,kind:'RECORDED',companies:list.length,result:sum.last_result,code:sum.last_result_code,mixed_codes:codes.length>1,not_run_only:notRunOnly,
+   checked_at:news.refresh.attempted_at,last_success_at:sum.last_success_at,carried_last:carried.length?carried[carried.length-1]:null,carried_from:carried.length?carried[0]:null,
+   succeeded:sum.companies.succeeded,failed:sum.companies.failed+sum.companies.not_run,any_updated:list.some(id=>entries[id].last_result==='UPDATED')};});}
+// One line per source. '새 뉴스 없음' (request answered, nothing new) and '조회 실패' (request failed or not made) never share a text.
+function refreshText(st,en=false){const T=(k,e)=>en?e:k,when=v=>v.slice(0,16).replace('T',' ')+' UTC',S=st.source==='IR'?T('회사 IR','Company IR'):'GDELT';
+ if(st.kind==='NO_FEED')return S+' · '+T('보는 기업에 확인된 공식 피드 없음','no listed official feed for these companies');
+ if(st.kind==='UNRECORDED')return S+' · '+(st.last_success_at?T('마지막 수집 ','last collected ')+when(st.last_success_at):T('수집 자료 없음','nothing collected'))+' · '+T('최근 갱신 결과 미기록(이전 형식)','latest refresh result not recorded (older format)');
+ if(st.kind==='NO_RUN')return S+' · '+T('이 파일은 수집 없이 만들어짐','this copy was written without a collection');
+ const checked=when(st.checked_at),fail=()=>T('최근 갱신 실패(','latest refresh failed (')+S+' '+(st.not_run_only?T('요청 안 함 · ','not requested · '):'')+st.code+(st.mixed_codes?T(' 등',' etc.'):'')+', '+checked+')';
+ const kept=()=>st.carried_last?T('이전 자료 유지 · 마지막 성공 ','previous items kept · last success ')+when(st.carried_last)+(st.carried_from&&st.carried_from!==st.carried_last?T(' (가장 오래된 수집 ',' (oldest kept ')+when(st.carried_from)+')':''):T('이전 자료 없음','no previous items');
+ if(st.result==='UPDATED')return S+' · '+T('새 뉴스 반영 · 확인 ','new items added · checked ')+checked;
+ if(st.result==='NO_NEW_ITEMS')return S+' · '+T('새 뉴스 없음 · 확인 ','no new news · checked ')+checked;
+ if(st.result==='PARTIAL_FAILED')return S+' · '+T('일부 갱신 실패 ','partly failed ')+st.failed+'/'+st.companies+T('곳',' companies')+' · '+kept()+' · '+fail()+' · '+T('나머지 ','other ')+st.succeeded+T('곳 ',' ')+(st.any_updated?T('새 뉴스 반영','new items added'):T('새 뉴스 없음','no new news'))+T(' · 확인 ',' · checked ')+checked;
+ return S+' · '+kept()+' · '+fail();}
 // Display-only filters for the combined list: channel, category, new/repeat and order. Kept per browser tab in sessionStorage so
 // #news and #watchlist share them across screen moves; unreadable storage falls back to the defaults. Filters only narrow or
 // reorder the newest-`limit` rows; they never widen that set (the disclosure minimum, NEWS-CAP, is an open owner decision).
@@ -127,9 +179,15 @@ function mount(host,{sec=null,dart=null,news=null}={},{locale,companyIds=null,li
  const secState=sec?sec.state:'NOT_AVAILABLE',newsState=news?news.state:'NOT_AVAILABLE',chips=el('p',undefined,{class:'chips'});
  chips.append(el('span',CHANNELS.DISCLOSURE[en?1:0]+' · SEC 8-K',{class:'badge'}),el('span',secState,{class:'badge '+secState,'data-disclosure-state':secState}));
  if(dart)chips.append(el('span','DART',{class:'badge'}),el('span',dart.state,{class:'badge disclosure-state','data-dart-state':dart.state}));
- chips.append(el('span',CHANNELS.NEWS[en?1:0]+' · GDELT · IR',{class:'badge news-signal'}),el('span',newsState,{class:'badge news-state','data-news-state':newsState}));section.append(chips);
+ chips.append(el('span',CHANNELS.NEWS[en?1:0]+' · GDELT · IR',{class:'badge news-signal'}),el('span',newsState,{class:'badge news-state','data-news-state':newsState}));
+ const refreshRows=refreshStatus(news,{companyIds}),recorded=refreshRows.filter(r=>r.kind==='RECORDED');
+ if(recorded.length){const r=recorded.every(x=>SUCCEEDED.includes(x.result))?'OK':recorded.some(x=>SUCCEEDED.includes(x.result)||x.result==='PARTIAL_FAILED')?'PARTIAL_FAILED':'FAILED';
+  if(r!=='OK')chips.append(el('span',r==='FAILED'?T('최근 갱신 실패 · 이전 자료 유지','Latest refresh failed · previous items kept'):T('일부 갱신 실패','Refresh partly failed'),{class:'badge partial','data-news-refresh-badge':r}));}
+ section.append(chips);
  for(const[p,label,window]of [[sec,'SEC 8-K',90],[news,T('뉴스·신호','News'),WINDOW_DAYS]])if(p){section.append(el('p',label+' · '+T('기준: ','as of: ')+p.as_of+' · '+T('최근 '+window+'일','last '+window+' days'),{class:'meta'}));
-  if(p.state!=='NOT_AVAILABLE'&&Date.now()-Date.parse(p.as_of)>p.stale_after_seconds*1000)section.append(el('p','STALE · '+label+' · '+T('수집 갱신 시각 경과','Acquisition refresh overdue'),{class:'warning','data-disclosure-stale':''}));}
+  if(p.state!=='NOT_AVAILABLE'&&Date.now()-Date.parse(p.as_of)>p.stale_after_seconds*1000)section.append(el('p','STALE · '+label+' · '+T('수집 갱신 시각 경과','Acquisition refresh overdue'),{class:'warning','data-disclosure-stale':''}));
+  if(p===news)for(const r of refreshRows){const bad=r.kind==='RECORDED'&&!SUCCEEDED.includes(r.result);
+   section.append(el('p',refreshText(r,en),{class:bad?'small warning':'small','data-news-refresh':r.source,'data-news-refresh-result':r.kind==='RECORDED'?r.result:r.kind,'data-news-refresh-code':r.code||''}));}}
  if(!sec)section.append(el('p',T('공개 공시 자료가 연결되지 않았습니다.','Public disclosure data is not connected.'),{class:'small','data-disclosure-missing':''}));
  if(news){const a=el('p',undefined,{class:'small','data-news-attribution':''});a.append(doc.createTextNode(T('뉴스·신호 출처: ','News signals source: ')),el('a',ATTRIBUTION.GDELT.name,{href:ATTRIBUTION.GDELT.url,target:'_blank',rel:'noopener noreferrer','data-gdelt-attribution':''}),doc.createTextNode(' (GDELT DOC 2.0 API) · '+T('회사 IR 보도자료 피드 · 제목·링크만 표시, 기사는 각 언론사 소유','company IR press-release feeds · titles and links only; articles belong to their publishers')));section.append(a);}
  else section.append(el('p',T('뉴스·신호 자료가 연결되지 않았습니다.','News signal data is not connected.'),{class:'small','data-news-missing':''}));
@@ -154,6 +212,9 @@ function mount(host,{sec=null,dart=null,news=null}={},{locale,companyIds=null,li
  const tierBadge=t=>el('span',TIERS[t][en?1:0],{class:'badge','data-importance':t});
  const evidenceBox=(kind,entries)=>{const d=el('details',undefined,{class:'evidence','data-evidence':kind}),dl=el('dl',undefined,{class:'kv'});d.append(el('summary',T('근거 보기','Show evidence')));
   for(const[k,v]of entries){const dd=el('dd');if(typeof v==='string')dd.textContent=v;else dd.append(v);dl.append(el('dt',k),dd);}d.append(dl);return d;};
+ const latest=i=>{const c=news?.sources?.[i.source]?.[i.company_id],r=c?.last_result;if(!news||news.schema_version===1||!news.refresh||!r)return T('결과 미기록','not recorded');
+  const at=' · '+when(news.refresh.attempted_at);return r==='UPDATED'?T('새 뉴스 반영','new items added')+at:r==='NO_NEW_ITEMS'?T('새 뉴스 없음','no new news')+at
+   :(r==='FAILED'?T('조회 실패 ','request failed '):T('요청 안 함 ','not requested '))+c.last_result_code+at+' · '+T('이 행은 이전 수집분','this row is from an earlier collection');};
  const newsEvidence=row=>{const i=row.item,src=el('span'),acq=news?.sources?.[i.source]?.[i.company_id]?.acquired_at;
   src.append(el('a',linkHost(i.link)[1]+' ↗',{href:i.link,target:'_blank',rel:'noopener noreferrer','data-evidence-link':''}));if(i.source==='GDELT')src.append(doc.createTextNode(' · '+T('수집 경로: ','via ')+ATTRIBUTION.GDELT.name));
   const dedup=row.orphan?T('8-K 관련 IR 보도자료 · 그 8-K('+i.related_8k_accession+')가 목록에 없어 단독 표시','IR release related to 8-K '+i.related_8k_accession+' · that 8-K is not listed, so shown alone')
@@ -161,6 +222,7 @@ function mount(host,{sec=null,dart=null,news=null}={},{locale,companyIds=null,li
    :i.occurrence==='NEW'?T('새 소식 · 반복 보도 없음','New · no repeat reports'):T('반복 보도 · 첫 보도는 목록 범위 밖','Repeat · first report outside the window');
   return evidenceBox('NEWS',[[T('구분','Kind'),i.source==='IR'?T('뉴스·신호 · 회사 IR 보도자료 (공시 아님)','News · signal · company IR release (not a filing)'):T('뉴스·신호 · 언론 보도 제목 (내용 미확인)','News · signal · press headline (content unverified)')],
    [T('출처','Source'),src],[T('발표 시각','Published'),when(i.published_at)],[T('수집 시각','Collected'),acq?when(acq)+' · '+T('이 기업 피드 수집','feed collected for this company'):T('미제공','not provided')],
+   [T('최근 갱신','Latest refresh'),latest(i)],
    [T('기업 연결','Company match'),i.source==='GDELT'?T('제목 속 회사 이름·티커','company name or ticker in the title'):T('회사 공식 IR 도메인','company IR domain')],[T('분류 근거','Category basis'),T('제목 단어 규칙','title keyword rule')],
    [T('중복 처리','Dedup'),dedup],[T('점수 영향','Score effect'),T('없음','None')]]);};
  const line=i=>{const li=el('li',undefined,{'data-news-item':'','data-news-source':i.source,'data-news-occurrence':i.occurrence,'data-relation':i.relation});li.append(el('a',i.title,{href:i.link,target:'_blank',rel:'noopener noreferrer','data-news-link':''}),doc.createTextNode(' · '+srcLabel(i.source)+' · '+when(i.published_at)+' · '+linkHost(i.link)[1]));return li;};
@@ -185,5 +247,5 @@ function mount(host,{sec=null,dart=null,news=null}={},{locale,companyIds=null,li
   const list=el('ol',undefined,{class:'list','data-disclosure-list':'','data-timeline':''});for(const row of shown){const li=render(row);if(li)list.append(li);}body.replaceChildren(list);}
  paint();host.replaceChildren(section);
 }
-return Object.freeze({FILENAME,KIND,MATCH,IR_DOMAINS,CLASS_RULES,STOPWORDS,ATTRIBUTION,CLASSES,CHANNELS,GDELT_COMPANIES,IR_COMPANIES,STRUCTURAL_RULES,structuralCandidates,tokens,significant,classify,relevant,similar,validTitle,linkHost,irLinkAllowed,groups,validate,load,timeline,FILTER_KEY,FILTER_DEFAULT,TIERS,readFilters,writeFilters,rowCategory,rowOccurrence,rowTier,filterRows,mount});
+return Object.freeze({FILENAME,KIND,SCHEMA_VERSION:2,sourceRefresh,refreshResult,refreshStatus,refreshText,MATCH,IR_DOMAINS,CLASS_RULES,STOPWORDS,ATTRIBUTION,CLASSES,CHANNELS,GDELT_COMPANIES,IR_COMPANIES,STRUCTURAL_RULES,structuralCandidates,tokens,significant,classify,relevant,similar,validTitle,linkHost,irLinkAllowed,groups,validate,load,timeline,FILTER_KEY,FILTER_DEFAULT,TIERS,readFilters,writeFilters,rowCategory,rowOccurrence,rowTier,filterRows,mount});
 });

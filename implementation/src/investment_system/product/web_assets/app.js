@@ -693,9 +693,12 @@ function leaderScores(){const inputs=window.Qgv2Inputs?publicScreens[Qgv2Inputs.
  const S=QgvScores.compute({identities:pop.official?pop.official.identities:identityCompanies,publicScreens,quotes,preset:qgv2Profile.preset,gate:qgv2Profile.gate,referenceRows:refs,official:pop.official});
  officialMemo={inputs,quotes,pop,key,S};return S;}
 async function refreshLeaderPage(after){const inputs=window.Qgv2Inputs?publicScreens[Qgv2Inputs.FILE]:null;if(!inputs||typeof QgvScores.pageResult!=='function')return;const{preset,gate}=qgv2Profile;let catalog=null;try{catalog=await deviceCatalog();}catch(_){catalog=null;}
- let r=null;try{r=await QgvScores.pageResult(window,{v2Inputs:inputs,catalog,identities:identityCompanies,preset,gate});}catch(_){r=null;}if(!r)return;if(leaderPage&&leaderPage.result===r){if(after&&leaderShown!==r)after();return;}
- // The Universe read is one shared RAM state (PrivateSubsetView: the last successful read survives navigation), so the page result
- // is used as is: no 'keep the older result' guard. A new read or 'clear device results' (onRanks) resets leaderPage.
+ let r=null;try{r=await QgvScores.pageResult(window,{v2Inputs:inputs,catalog,identities:identityCompanies,preset,gate});}catch(_){r=null;}if(!r)return;
+ // A call that started before a new Universe read, new inputs or a preset/gate change can finish after the call made for them:
+ // its result is no longer the current one and never replaces leaderPage or the shared quotes (the newer call writes them).
+ if(publicScreens[Qgv2Inputs.FILE]!==inputs||!QgvScores.isCurrent(window,r))return;if(leaderPage&&leaderPage.result===r){if(after&&leaderShown!==r)after();return;}
+ // The Universe read is one shared RAM state (PrivateSubsetView: the last successful read survives navigation), so the current
+ // page result is used as is (never compared with the one it replaces). A new read or 'clear device results' (onRanks) resets leaderPage.
  leaderPage={inputs,result:r};
  // S04/S05/S13 score with exactly these quotes (replaced, never merged with an older set), so every screen prices the same rows.
  const k=JSON.stringify(r.quotes);if(k!==qgv2QuotesKey){qgv2Quotes=r.quotes;qgv2QuotesKey=k;}if(after)after();}

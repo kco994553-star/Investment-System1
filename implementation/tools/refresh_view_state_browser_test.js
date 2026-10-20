@@ -15,7 +15,7 @@ globalThis.QgvV2 = require(path.join(WA, 'qgv-v2.js'));
 const SQ = globalThis.SecQgv2 = require(path.join(WA, 'sec-qgv2.js'));
 globalThis.Qgv2Inputs = require(path.join(WA, 'qgv2-inputs.js'));
 globalThis.MacroLights = require(path.join(WA, 'macro-lights.js'));
-const PS = require(path.join(WA, 'public-screens.js')), SD = require(path.join(WA, 'sec-disclosures.js')), NS = require(path.join(WA, 'news-signals.js'));
+const PS = require(path.join(WA, 'public-screens.js')), SD = require(path.join(WA, 'sec-disclosures.js'));
 const F = require('./qgv_v2_fixture.js'), secFx = require('./sec_disclosures_fixture.js'), newsFx = require('./news_signals_fixture.js');
 const { EMPTY, routeEmptyPublicScreens } = require('./empty_public_screens.js');
 const BASE = process.env.PAGES_COCKPIT_URL, ORIGIN = new URL(BASE).origin;
@@ -43,9 +43,8 @@ function secDay(n) {
   SD.groups(events).forEach((g, i) => Object.assign(events[i], g)); return SD.validate({ ...p, events });
 }
 function newsDay(n, sec) {
-  const p = newsFx.payload(Date.parse(DAYS[n].now), sec); if (n === 1) return p;
-  const items = p.items.filter((i) => i.company_id !== 'amd').map((i) => i.relation === 'RELATED_TO_8K' ? { ...i, occurrence: null } : { ...i, group_id: null, occurrence: null });
-  NS.groups(items).forEach((g, i) => Object.assign(items[i], g)); return NS.validate({ ...p, items });
+  // news-signals schema 2: a later day without amd's items is built by the fixture so the refresh summary stays consistent.
+  return newsFx.payload(Date.parse(DAYS[n].now), sec, n === 1 ? {} : { without: ['amd'] });
 }
 const CURVE = { 1: { date: '2026-10-12', ten_year: 4.2, three_month: 4.5, run_days: 25 }, 2: { date: '2026-10-13', ten_year: 4.4, three_month: 4.1, run_days: 0 } };
 function macroDay(n) {
