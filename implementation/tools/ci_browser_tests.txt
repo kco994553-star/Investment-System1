@@ -77,3 +77,4 @@ v_cross_screen_consistency_browser_test.js
 macro_cycle_ring_browser_test.js
 chart_workbench_browser_test.js
 chart_network_recording_browser_test.js
+chart_patterns_browser_test.js
