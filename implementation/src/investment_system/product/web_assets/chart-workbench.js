@@ -476,7 +476,7 @@
       : w('공식 탐지 · ', 'Official detection · ') + run.result.label_ko + ' · ' + run.result.rule_version + ' · params ' + run.result.params_sha256.slice(0, 8)) + ' · ' + w('계산 ', 'computed ') + run.computedAt;
     state.patternRun.dataset.runMode = run ? run.result.run_mode : '';
     const counts = p.counts || {added: 0, duplicates: 0, withheld: 0};
-    state.patternHistory.dataset.records = String(p.records || 0); state.patternHistory.dataset.added = String(counts.added); state.patternHistory.dataset.withheld = String(counts.withheld);
+    state.patternHistory.dataset.records = String(p.records || 0); state.patternHistory.dataset.added = String(counts.added); state.patternHistory.dataset.notJudgeable = String(counts.withheld); // not data-withheld: that attribute marks research sections withheld from publication
     state.patternHistory.textContent = w('공식 이력 (RAM · 추가만 · ', 'Official history (RAM · append only · ') + (state.source === 'synthetic' ? w('합성 자료 전용 장부', 'synthetic-only book') : w('기기 자료 장부', 'device-data book')) + '): '
       + w('기록 ', 'records ') + (p.records || 0) + w(' · 이번 추가 ', ' · added now ') + counts.added + w(' · 중복 ', ' · duplicates ') + counts.duplicates + w(' · 판정 불가 보류 ', ' · withheld (not judgeable) ') + counts.withheld;
     state.patternHistory.hidden = !p.official;
