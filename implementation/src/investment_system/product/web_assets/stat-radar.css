@@ -80,3 +80,61 @@
 }
 /* mount spots */
 .tree-radar { margin-top: 16px; padding-top: 12px; border-top: 1.5px dashed var(--line-strong, #6f6f6f); }
+/* ---------- QGV menu layout (design lane D2; owner draft "투자시스템 화면 시안 (손그림 칠판)") ----------
+   Numbered stamp sections of 2.1 리더보드 (leaderboard-screen.js, app.js 2.1.3 row) and 2.4 QGV 상세 (company-screen.js), and the
+   Q·G·V bars. Paper/ink tokens of theme.css only; the stamp shadow is the menu colour (QGV blue under html[data-menu="qgv"]);
+   yellow highlighter on the list title, red marker on the "no official rank" note. Q blue · G green · V orange as in the QGV tree,
+   always next to the letter. No overflow is set on any wrapper (the PC table header stays sticky). Presentation only. */
+.fn-sec { min-width: 0; margin: 14px 0 0; padding: 12px 14px 14px; border: 1.5px solid var(--ink, #161616); border-radius: var(--sketch-radius-s, 18px 6px 16px 6px / 6px 16px 6px 18px); background: var(--card, #fff); overflow-wrap: anywhere; }
+.fn-sec > .fn-head { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin: 0 0 10px; font-family: var(--font-display, system-ui, sans-serif); font-size: var(--fs-l, 17px); font-weight: 800; line-height: 1.3; }
+.fn-sec > .fn-head .ia-sec, .fn-head-p .ia-sec { box-shadow: 3px 3px 0 var(--menu, #2457c5); }
+.fn-sec > .chips:last-child, .fn-sec > p:last-child { margin-bottom: 0; }
+.fn-legend { margin: 0 0 8px; font-family: var(--font-hand, cursive); }
+h2 .fn-legend { margin: 0 0 0 6px; font-weight: 400; font-size: var(--fs-s, 13px); }
+.fn-grid { display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); margin: 4px 0 0; }
+.fn-grid > .fn-sec { margin: 0; }
+.fn-alert { padding: 4px 0 4px 12px; border-left: 4px solid var(--marker, #d7322a); border-radius: 2px; color: var(--ink, #161616); }
+.fn-na .badge, .fn-periods .badge { white-space: normal; }
+.fn-periods { margin: 0 0 8px; }
+/* 2.1.6: the view buttons keep their words on one line; the v2 state badge takes its own row under them. */
+.fn-sec .screen-tabs { flex-wrap: wrap; }
+.fn-sec .screen-tabs > button { flex: 0 0 auto; white-space: nowrap; }
+.fn-sec .screen-tabs > .badge { flex: 1 1 100%; white-space: normal; overflow-wrap: anywhere; }
+.fn-filters { margin-bottom: 12px; }
+.fn-filters > .chips { margin: 0 0 6px; }
+.card[data-leaderboard-screen] { box-shadow: 6px 6px 0 var(--menu, #2457c5); }
+.card[data-leaderboard-screen] [data-fn="2.1.1"] { border-width: 2px; }
+.qgv-detail .fn-sec { margin-top: 12px; }
+.qgv-detail > h2, .card[data-fn="2.4.4"] > h2 { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+.card[data-fn="2.4.4"] > h2 .ia-sec { box-shadow: 3px 3px 0 var(--menu, #2457c5); }
+.fn-head-p { display: flex; align-items: center; gap: 10px; margin: 0 0 6px; font-family: var(--font-display, system-ui, sans-serif); font-weight: 800; }
+@media (min-width: 1024px) {
+  .fn-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+  /* 2.4: total (2.4.1) and rank (2.4.2) side by side, status (2.4.3) under both */
+  .qgv-detail { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 12px; align-items: start; }
+  .qgv-detail > * { grid-column: 1 / -1; min-width: 0; }
+  .qgv-detail > [data-fn="2.4.1"] { grid-column: 1; }
+  .qgv-detail > [data-fn="2.4.2"] { grid-column: 2; }
+}
+@media (max-width: 749.98px) {
+  .fn-sec { padding: 10px 8px 12px; }
+  .card .fn-sec { margin-left: -4px; margin-right: -4px; }
+  .fn-grid > .fn-sec { margin: 0 -4px; }
+  .fn-sec > .fn-head { font-size: var(--fs-m, 15px); gap: 8px; }
+}
+/* Q·G·V bars: letter (CSS, not text content) + a hand-drawn track; the fill has the axis colour; NA = empty dashed track. */
+.qgv-bars { display: inline-grid; gap: 2px; vertical-align: middle; margin: 2px 0 2px 8px; }
+.qgv-bars .qb { display: grid; grid-template-columns: 1.1em 56px; align-items: center; gap: 4px; line-height: 1; }
+.qgv-bars .qb::before { content: attr(data-axis); font: 800 11px/1 var(--font-display, system-ui, sans-serif); color: var(--ink, #161616); }
+.qgv-bars svg { display: block; width: 100%; height: 8px; overflow: visible; }
+.qgv-bars .qb-track { fill: none; stroke: var(--ink, #161616); stroke-width: 1.2; vector-effect: non-scaling-stroke; }
+.qgv-bars .qb[data-state="NA"] .qb-track { stroke: var(--line-strong, #6f6f6f); stroke-dasharray: 3 3; }
+.qgv-bars .qb-fill { stroke: none; }
+.qgv-bars .qb[data-axis="Q"] .qb-fill { fill: var(--m-qgv, #2457c5); }
+.qgv-bars .qb[data-axis="G"] .qb-fill { fill: var(--m-technical, #1f8a4c); }
+.qgv-bars .qb[data-axis="V"] .qb-fill { fill: var(--m-macro, #e98a12); }
+.qgv-bars-l { display: grid; gap: 6px; max-width: 360px; margin: 0 0 10px; }
+.qgv-bars-l .qb { grid-template-columns: 1.4em minmax(0, 1fr); }
+.qgv-bars-l .qb::before { font-size: 14px; }
+.qgv-bars-l svg { height: 14px; }
+td[data-leaderboard-qgv-cell] .qgv-bars { display: grid; margin: 4px 0 0; }
