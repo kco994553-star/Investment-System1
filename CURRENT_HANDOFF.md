@@ -1,6 +1,6 @@
 # 현재 인수인계 — 2026-10-21 (Codex Main)
 
-확인 시각: **2026-10-21 09:06 UTC / 18:06 KST**. 이 시점 이후 PR·Actions·게시 증거는 다시 확인한다. 구현 / 시험 / 병합 / 게시 / 실사이트 확인을 구분한다.
+확인 시각: **2026-10-21 09:12 UTC / 18:12 KST**. 이 시점 이후 PR·Actions·게시 증거는 다시 확인한다. 구현 / 시험 / 병합 / 게시 / 실사이트 확인을 구분한다.
 
 먼저 읽기: [WORKING_RULES.md](WORKING_RULES.md) → 이 파일 → [사용자 결정](implementation/docs/USER_DECISIONS_PENDING.md) → [기존 분담](implementation/docs/PARALLEL_LANES_20261020.md) → [제품 IA](implementation/docs/PRODUCT_IA_DIRECTIVE_20261018.md) → [자료 계약](implementation/docs/FRONTEND_DATA_CONTRACT.md) → 작업 영역 계약·시험. 이전 원문은 [10/20 기록](implementation/docs/handoff/HANDOFF_HISTORY_20261020.md)에 보존했다. 과거 “다음 실행/병합 대기”보다 아래 실제 증거를 따른다. 사용자 결정은 구현과 다르다는 이유로 폐기하지 않는다.
 
@@ -35,7 +35,7 @@
 
 | 담당 | 소유 범위 | 상태·의존성 |
 | --- | --- | --- |
-| Main | codex/frontend-links-20261021; app/style/guard/CI/handoff 통합 | #372 f013440d 필수5 CI 성공, cockpit 노트 문구2검사 실패. 모바일 QGV 기존3열 줄바꿈 보완16캡처/독립리뷰/필터60/정렬564 PASS. 최종HEAD6CI·병합·게시 잔여 |
+| Main | codex/frontend-links-20261021; app/style/guard/CI/handoff 통합 | #372 f013440d 필수5 CI 성공, cockpit 노트 문구2검사 실패. 모바일 QGV 기존3열 줄바꿈 보완16캡처/독립리뷰/필터60/정렬564 PASS. 노트 문구44 PASS/독립 APPROVE. UI로고 보존 보완114 PASS·실제25해시보존. 최종HEAD6CI·병합·게시 잔여 |
 | Darwin | 별도 worktree의 chart_user_objects_browser_test.js만 | 승인 저장문구 변경과 기존 시험 비교 완료, red42/2·기준44·green44 PASS. app/style 수정 없음. 로컬9영역49캡처 실제 시각감사 완료 |
 | Kierkegaard | recovery/최종 실사이트 브라우저 검사 | recovery236 assertions PASS. #262 가설 통합/리뷰 완료. 최종 frontend 실제배포 신호 대기 |
 | Lovelace | TARGET·공용 변경 독립 리뷰 | #248 원본ancestry/15파일 PASS, #263/공용app APPROVE. 좁은 모바일 CSS 독립 APPROVE |
@@ -109,3 +109,5 @@ Main #370 검증: macro 브라우저 390/1280 **10단계 통과**(초기 읽기�
 - 사용자 시나리오·노트의 직접 입력 좌표만 승인된 브라우저 저장 대상. 공급자 가격·파생값·개인 보유/거래·시트 ID·토큰을 저장소/Pages/Actions 로그에 넣지 않는다. NA를 0/평균으로 채우지 않는다. Frozen/history/PIT/no-lookahead/provenance 유지.
 - 글꼴 예외는 승인된 두 파일의 정확한 경로·서명·크기·해시뿐. 가드 범위/파일 수 상한 확대 금지. 권한 거부 우회 금지, 원문 이유와 영향 보고.
 - 다른 작업자의 worktree·scratchpad·원자료를 삭제하지 않는다. 정리 전 소유자·병합·미커밋·재현 가능성 확인.
+
+일반 UI 배포의 로고만 재수집하던 경로를 --preserve-only로 보완했다. 로고/보존/공개경계114 PASS와 실제 게시25파일 바이트 동일·원장2건보존·가드138 PASS 확인. 정기 로고 수집과 권한은 유지한다. 노트 안내문 시험도 독립 APPROVE를 받았다. 최종 PR HEAD 변경 후 필수6CI를 새로 확인한다.
