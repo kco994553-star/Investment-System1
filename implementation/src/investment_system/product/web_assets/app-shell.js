@@ -25,15 +25,15 @@
     ['1.3','#lab-13f','13F 가중치','13F weights',['lab-13f','thirteenf']],['1.4','#tree/qgv','구조 트리','Structure tree',['tree/qgv']]]},
   {key:'technical',n:2,num:'2',href:'#technical',ko:'기술적 분석',en:'Technical analysis',short:['기술적 분석','Technical'],
    desc:['지표 · 패턴 · 내 노트 · 구조','Indicators · patterns · my notes · structure'],routes:['technical'],
-   items:[['#technical','2.1','지표 · 정도 · 시나리오','Indicators · degree · scenarios'],['#technical-pattern','2.2','차트 패턴','Chart patterns',true],
-    ['#technical-notes','2.3','차트 위 내 노트','My notes on the chart',true],['#tree/technical','2.4','기술적 분석 구조 트리','Technical structure tree']],
+   items:[['#technical','2.1','지표 · 정도 · 시나리오','Indicators · degree · scenarios'],['#technical-pattern','2.2','차트 패턴','Chart patterns'],
+    ['#technical-notes','2.3','차트 위 내 노트','My notes on the chart'],['#tree/technical','2.4','기술적 분석 구조 트리','Technical structure tree']],
    subs:[['2.1','#technical','지표 · 시나리오','Indicators',['technical','technical-chart','technical-state','technical-execution','technical-record']],['2.2','#technical-pattern','차트 패턴','Patterns',['technical-pattern']],
     ['2.3','#technical-notes','내 노트','My notes',['technical-notes']],['2.4','#tree/technical','구조 트리','Structure tree',['tree/technical']]]},
   {key:'macro',n:3,num:'3',href:'#macro',ko:'매크로',en:'Macro',short:['매크로','Macro'],
    desc:['경고등 · 위치 · 순환매 · 연쇄 효과 · 구조','Lights · position · rotation · chains · structure'],routes:['macro'],
-   items:[['#macro','3','매크로 상태판 · 경고등','Macro board · lights'],['#macro-cycle','3.1','경기 · 시장 위치','Economy · market position',true],
-    ['#macro-rotation','3.2','순환매 위치','Sector rotation',true],['#macro-industry','3.3','산업 사이클 (SIC)','Industry cycles (SIC)',true],
-    ['#macro-mine','3.4','내가 고른 위치','My chosen position',true],['#macro-chain','3.5','연쇄 효과 지도','Causal-chain map',true],
+   items:[['#macro','3','매크로 상태판 · 경고등','Macro board · lights'],['#macro-cycle','3.1','경기 · 시장 위치','Economy · market position'],
+    ['#macro-rotation','3.2','순환매 위치','Sector rotation',true],['#macro-industry','3.3','산업 사이클 (SIC)','Industry cycles (SIC)'],
+    ['#macro-mine','3.4','내가 고른 위치','My chosen position'],['#macro-chain','3.5','연쇄 효과 지도','Causal-chain map',true],
     ['#tree/macro','3.6','매크로 구조 트리','Macro structure tree']],
    subs:[['3.1','#macro-cycle','위치','Position',['macro','macro-cycle']],['3.2','#macro-rotation','순환매','Rotation',['macro-rotation']],['3.3','#macro-industry','산업 사이클','Industry',['macro-industry']],
     ['3.4','#macro-mine','내 위치','Mine',['macro-mine']],['3.5','#macro-chain','연쇄 효과 지도','Causal-chain map',['macro-chain']],['3.6','#tree/macro','구조 트리','Structure tree',['tree/macro']]]},
@@ -83,10 +83,13 @@
  // Numbered sub-menu strip (stamp boxes) for the current menu. "Here" is shown by a mark and hidden text, not aria-current,
  // so each route keeps exactly one aria-current (the primary menu).
  function rawKey(){const h=root.location.hash.slice(1).split('/');return h[0]==='tree'||h[0]==='report'?h[0]+'/'+(h[1]||''):h[0];}
+ function contextHref(href){const [r,id]=root.location.hash.slice(1).split('/');
+  if(/^technical(?:-|$)/.test(r)&&id&&/^#technical(?:-[a-z]+)?$/.test(href)){try{return href+'/'+encodeURIComponent(decodeURIComponent(id));}catch(_){}}
+  return href;}
  function subNavHtml(r){
   const m=MENUS.find(x=>x.key===menuKeyFor(r));if(!m||!m.subs.length)return '';const key=rawKey();
   return '<nav class="ia-sub" data-ia-sub="'+m.key+'" aria-label="'+esc(T(locale,m.ko+' 세부 메뉴',m.en+' sections'))+'"><ol>'+m.subs.map(([sec,href,ko,en,keys])=>{const here=keys.includes(key);
-   return '<li><a href="'+href+'" data-ia-sec="'+esc(sec)+'"'+(here?' data-here="1"':'')+'><span class="ia-sec">'+esc(sec)+'</span><span class="ia-sub-label">'+esc(T(locale,ko,en))+'</span>'+(here?'<span class="sr-only"> '+esc(T(locale,'(지금 화면)','(this screen)'))+'</span>':'')+'</a></li>';}).join('')+'</ol></nav>';
+   return '<li><a href="'+esc(contextHref(href))+'" data-ia-sec="'+esc(sec)+'"'+(here?' data-here="1"':'')+'><span class="ia-sec">'+esc(sec)+'</span><span class="ia-sub-label">'+esc(T(locale,ko,en))+'</span>'+(here?'<span class="sr-only"> '+esc(T(locale,'(지금 화면)','(this screen)'))+'</span>':'')+'</a></li>';}).join('')+'</ol></nav>';
  }
  function label(){
   const nav=$('#primary-nav');if(!nav)return;
@@ -125,7 +128,7 @@
   const host=$('#more-menu');if(!host)return;const here='#'+(root.location.hash.slice(1)||'home');
   host.setAttribute('aria-label',T(locale,'전체 메뉴','All menus'));host.setAttribute('aria-modal','true');
   const pendingTag='<span class="more-pending">'+esc(T(locale,'준비 중','Pending'))+'</span>';
-  const link=([href,sec,ko,en,pending])=>'<li><a href="'+href+'"'+(here===href?' aria-current="page"':'')+(pending?' data-menu-pending':'')+'><span class="more-sec" aria-hidden="true">'+esc(sec)+'</span><span class="more-label">'+esc(T(locale,ko,en))+'</span>'+(pending?' '+pendingTag:'')+'</a></li>';
+  const link=([href,sec,ko,en,pending])=>'<li><a href="'+esc(contextHref(href))+'"'+(here===contextHref(href)?' aria-current="page"':'')+(pending?' data-menu-pending':'')+'><span class="more-sec" aria-hidden="true">'+esc(sec)+'</span><span class="more-label">'+esc(T(locale,ko,en))+'</span>'+(pending?' '+pendingTag:'')+'</a></li>';
   host.innerHTML='<div class="more-head"><h2 id="more-title">'+esc(T(locale,'전체 메뉴','All menus'))+'</h2><button type="button" class="tool" data-more-close aria-label="'+esc(T(locale,'메뉴 닫기','Close menu'))+'"><span aria-hidden="true">×</span></button></div>'+
    '<p class="more-lede">'+esc(T(locale,'= 투자시스템 한 장 지도 (n 구조 트리)','= the whole system on one page (n structure tree)'))+'</p>'+
    '<p class="more-sources">'+esc(T(locale,'재료: SEC 공시 · DART · 시세(이 기기) · 경제지표 · 뉴스 · 내 정보(비공개)','Inputs: SEC filings · DART · prices (this device) · economic data · news · my data (private)'))+'</p>'+

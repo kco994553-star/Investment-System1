@@ -575,11 +575,11 @@ function paintModel() {
       `<tr><td colspan="5" class="small">TARGET ${esc(catalog.target_root_version || "")} · — = NOT_AVAILABLE</td></tr>`;
   }).catch(()=>{if(body?.isConnected) body.innerHTML=`<tr><td colspan="5">TARGET NOT_AVAILABLE</td></tr>`;});
 }
-function technical() {
+function technical(id) {
   const s=D.technical,tabs=[["chart","차트"],["state","상태"],["execution","실행"],["record","기록"]];
   return `<div data-ia-screen="technical">${heading("TECHNICAL",t("기술적 분석"),t("기존 기록의 연결 상태를 확인합니다."))}
     <div class="chips data-badges"><span class="badge">${esc(t("실데이터 검증 전 · 일봉·수정주가 기준"))}</span></div>
-    <nav class="chips screen-tabs" aria-label="${esc(t("기술적 분석"))}">${tabs.map(([id,label])=>`<a href="#technical-${id}" data-screen-tab="${id}">${esc(t(label))}</a>`).join("")}</nav>
+    <nav class="chips screen-tabs" aria-label="${esc(t("기술적 분석"))}">${tabs.map(([key,label])=>`<a href="#technical-${key}${id?'/'+encodeURIComponent(id):''}" data-screen-tab="${key}">${esc(t(label))}</a>`).join("")}</nav>
     <div id="technical-chart"><div id="technical-price-chart" data-tech-status="chart"></div><div id="technical-workbench"></div><div id="technical-tv-chart"></div><div id="technical-indicators"></div></div>
     <section class="card status-card" id="technical-state" data-tech-status="engine"><h2>${t("기술적 분석 엔진")}</h2>${state(s)}<p>${esc(t(s.data===null?s.reason || "운영 Snapshot이 연결되지 않았습니다.":"기존 종목 화면에서 제공된 기술적 분석 기록을 확인합니다."))}</p><p class="small">${esc(t("QGV 원점수와 기술적 상태는 나란히 볼 뿐 통합하지 않습니다."))}</p></section>
     ${TechnicalCards.sectionsHtml(appSettings.display_locale)}
@@ -591,7 +591,6 @@ function macro() {
   return `<div data-ia-screen="macro">${heading("MACRO",t("매크로"),t("공식 축별 상태를 확인합니다."))}
     <div class="chips data-badges"><span class="badge">${esc(t("매크로 상태 v1 · UNCALIBRATED · 경고등 5개"))}</span></div>
     <div id="macro-lights-root"></div>
-    <div id="macro-evidence-root"></div>
     <section class="card" data-macro-status><h2>${t("상태판")}</h2><p class="small">${esc(t("정상·경고·위기는 위의 경고등 5개로 정합니다. 8개 축 국면 판정은 보류합니다."))}</p>
     <h3>${t("현재 국면")}</h3><p data-macro-regime>${esc(t("자료 없음"))}</p><p class="small">${esc(t("8개 축의 6칸은 따로 보관하며 하나의 점수로 합치지 않습니다. FRED/ALFRED는 사용하지 않습니다."))}</p></section>
     <div id="public-macro"></div>${ScreenDetail.macroHtml(appSettings.display_locale)}${window.IaScreens?IaScreens.macroHtml(appSettings.display_locale):""}</div>`;
@@ -601,11 +600,11 @@ function thirteenf() {
 }
 
 function validation() {
-  const tabs=[["paper","모의투자","준비 중","공개 앱에 연결된 모의투자 결과가 없습니다."],["backtest","백테스트","준비 중","공개 앱에 연결된 백테스트 결과가 없습니다."],["forward","전진 검증","준비 중","공개 앱에 연결된 전진검증 결과가 없습니다. 시작 시점은 사용자가 결정합니다."],["track","Track Record","준비 중","공개 앱에 연결된 성과 기록이 없습니다."],["trials","실험 기록","준비 중","공개 앱에 연결된 실험 기록이 없습니다."]];
+  const tabs=[["paper","모의투자","준비 중","공개 앱에 연결된 모의투자 결과가 없습니다."],["backtest","백테스트","준비 중","공개 앱에 연결된 백테스트 결과가 없습니다."],["forward","전진 검증","부분",appSettings.display_locale==='en-US'?"Read the published ledger and evaluation eligibility below. Outcomes requiring prices are calculated on your device only.":"공개 원장의 관측 기록과 평가 가능 여부를 아래에서 확인합니다. 가격을 포함한 이후 성과는 기기에서만 계산합니다."],["track","Track Record","준비 중","공개 앱에 연결된 성과 기록이 없습니다."],["trials","실험 기록","준비 중","공개 앱에 연결된 실험 기록이 없습니다."]];
   return heading("VALIDATION",t("검증·연구"),t("리서치와 검증 기록의 준비 상태를 확인합니다."))+
     `<div class="chips data-badges"><span class="badge">${esc(t("PIT 시점 기준 데이터만"))}</span><span class="badge">${esc(t("Holdout 기간 미정·사용 금지 · 보호 판정 UNCONFIRMED"))}</span></div>`+
     `<nav class="chips screen-tabs" aria-label="${esc(t("검증·연구"))}">${tabs.map(([id,label])=>`<a href="#validation-${id}" data-screen-tab="${id}">${esc(t(label))}</a>`).join("")}<a href="#research" data-screen-tab="research">${esc(t("리서치"))}</a></nav>`+
-    `<div class="hub-grid" data-hub="validation">${tabs.map(([id,title,status,reason])=>`<div id="validation-${id}">${hubCard(title,status,reason)}</div>`).join("")}${hubCard("리서치","사용 가능","기존 프롬프트 라이브러리를 엽니다.","#research")}</div>`+ScreenDetail.validationHtml(appSettings.display_locale);
+    `<div class="hub-grid" data-hub="validation">${tabs.map(([id,title,status,reason])=>`<div id="validation-${id}">${hubCard(title,status,reason,id==='forward'?'#validation-forward':null)}</div>`).join("")}${hubCard("리서치","사용 가능","기존 프롬프트 라이브러리를 엽니다.","#research")}</div>`+ScreenDetail.validationHtml(appSettings.display_locale);
 }
 // QGV sub-categories (navigation only). The "01 / QGV" line above a screen follows the menu of its route (app-shell.js).
 const QGV_SUBCATEGORY=Object.freeze({portfolio:"내 투자",actual:"내 투자",profiles:"내 투자",model:"내 투자",companies:"종목 찾기",company:"종목 찾기",analysis:"종목 찾기",entity:"종목 찾기",leaderboard:"종목 찾기",watchlist:"종목 찾기",types:"종목 찾기",news:"시장 정보",thirteenf:"시장 정보"});
@@ -910,15 +909,23 @@ function renderRoute(options) {
   // {keep:true}: '자료 새로고침' or a freshness re-judgement draws the open screen again (data-refresh.js, G2). The user's scroll,
   // focus, open details, fields and view buttons come back; a screen the user opens (hash change) starts at the top as before.
   const kept=options&&options.keep&&location.hash===currentHash&&window.DataRefresh?.captureView?DataRefresh.captureView($("#content")):null;
-  window.PrivateHistory?.disposeAll();window.PrivateSubsetView?.disposeAll();
-  window.GoogleSheetSetup?.disposeAll();
-  window.ForwardValidation?.disposeAll();disposeReport();
-  notice("");syncShell();
   let [route,id,sub]=location.hash.slice(1).split("/");route=route || "home";
   let anchor=null;
   for(const screen of ["validation","technical","macro","news"]) if(route.startsWith(screen+"-")) {anchor=route;route=screen;}
   try {id=decodeURIComponent(id || "");} catch(e) {id="";}
-  const routes={home,brief,qgv,analysis:()=>analysis(id,sub||null),profiles,types,model,watchlist,technical,macro,thirteenf,validation,companies,portfolio,actual,leaderboard,news:()=>news(id),research,company:()=>detail(id),settings:settingsUI,entity:()=>entityDetail(id),report:()=>report(id),system:()=>IaScreens.treeHtml("system",appSettings.display_locale),tree:()=>IaScreens.treeHtml(AppShell.TREE_KEYS.includes(id)?id:"qgv",appSettings.display_locale),"lab-13f":()=>AppShell.pendingHtml("lab-13f",appSettings.display_locale),playbook:()=>heading("PLAYBOOK","플레이북 · 기록·채점·TARGET v1")+'<div id="playbook-screen"></div>'};
+  // Same-company chart section navigation keeps the existing mount and its RAM inputs/results.
+  // Company changes, screen exit and private-session disposal retain the normal lifecycle.
+  if(!kept&&(anchor||id)&&route==='technical'&&currentRoute==='technical'&&currentHash!==location.hash&&
+    (id||'asml')===$('[data-technical-symbol]')?.value&&$('[data-chart-workbench]')){
+    currentHash=location.hash;syncNavigation(route);
+    const nav=$('[data-ia-sub="technical"]');if(nav)nav.outerHTML=AppShell.subNavHtml(route);
+    focusImplementedSection(anchor||'technical-chart');AppShell.afterRender(route);return;
+  }
+  window.PrivateHistory?.disposeAll();window.PrivateSubsetView?.disposeAll();
+  window.GoogleSheetSetup?.disposeAll();
+  window.ForwardValidation?.disposeAll();disposeReport();
+  notice("");syncShell();
+  const routes={home,brief,qgv,analysis:()=>analysis(id,sub||null),profiles,types,model,watchlist,technical:()=>technical(id),macro,thirteenf,validation,companies,portfolio,actual,leaderboard,news:()=>news(id),research,company:()=>detail(id),settings:settingsUI,entity:()=>entityDetail(id),report:()=>report(id),system:()=>IaScreens.treeHtml("system",appSettings.display_locale),tree:()=>IaScreens.treeHtml(AppShell.TREE_KEYS.includes(id)?id:"qgv",appSettings.display_locale),"lab-13f":()=>AppShell.pendingHtml("lab-13f",appSettings.display_locale),playbook:()=>heading("PLAYBOOK","플레이북 · 기록·채점·TARGET v1")+'<div id="playbook-screen"></div>'};
   if(!routes[route]) route="home";
   HomeScreen.park(route);
   if((route==='company'||route==='analysis')&&id) rawDataCompany=id;
@@ -952,7 +959,12 @@ function renderRoute(options) {
     PrivateHistory.mountTechnical($('#technical-price-chart'),{companyId:id,locale:appSettings.display_locale,config:window.InvestmentAppConfig,getAverage:deviceAverageCost,onData:value=>{cards.update(value);if(bench)void bench.update(value);}});
     // Display-only TradingView chart: follows the symbol picker; nothing is read back from it.
     const tvSymbol=$('#technical-price-chart [data-technical-symbol]'),tvChart=()=>TradingViewWidgets.mountAdvanced($('#technical-tv-chart'),{companyId:tvSymbol?tvSymbol.value:id,locale:appSettings.display_locale});
-    if(tvSymbol) tvSymbol.addEventListener('change',tvChart);tvChart();}
+    if(tvSymbol) tvSymbol.addEventListener('change',()=>{const suffix='/'+encodeURIComponent(tvSymbol.value);
+      const section=location.hash.slice(1).split('/')[0]||'technical';
+      history.replaceState(history.state,'','#'+section+suffix);currentHash=location.hash;
+      const subnav=$('[data-ia-sub="technical"]');if(subnav)subnav.outerHTML=AppShell.subNavHtml('technical');
+      for(const a of document.querySelectorAll('[data-screen-tab]'))a.href='#technical-'+a.dataset.screenTab+suffix;
+      tvChart();});tvChart();}
   if(route==='brief') TradingViewWidgets.mountTickerTape($('#tv-ticker-tape'),{locale:appSettings.display_locale});
   if(route==='company' && $('#tradingview-mini')) TradingViewWidgets.mountMini($('#tradingview-mini'),{companyId:id,locale:appSettings.display_locale});
   if(route==='company' && $('#private-history-chart')) void PrivateHistory.mount($('#private-history-chart'),{companyId:id,locale:appSettings.display_locale,config:window.InvestmentAppConfig,getAverage:deviceAverageCost,onData:value=>paintValue(route,id,value&&typeof value.close==='number'?{price:value.close,currency:value.currency,as_of:value.asOf,read_at:value.readAt||null,source:'PRIVATE_HISTORY_CLOSE'}:null)});
@@ -1022,7 +1034,7 @@ function renderRoute(options) {
   if(restoreLeader) restoreLeaderView();
   else if(kept) DataRefresh.restoreView($("#content"),kept);
   else window.scrollTo(0,0);
-  if(anchor && !kept) document.getElementById(anchor)?.scrollIntoView({block:"start"});
+  if(anchor && !kept)focusImplementedSection(anchor);
   if(!kept && route==="qgv" && ["investments","companies","market","performance"].includes(id)) {
     const group=$("#qgv-"+id),title=group.querySelector("h2");
     group.scrollIntoView({block:"start"});title.focus({preventScroll:true});
@@ -1030,6 +1042,17 @@ function renderRoute(options) {
   AppShell.afterRender(route);
   if(route==="tree"||route==="system") IaScreens.mount($("#content"),{screens:publicScreens,catalog:publicCatalog,locale:appSettings.display_locale});
   HomeScreen.afterRender(route,{locale:appSettings.display_locale,id,resolve:(type,key)=>searchIndex.resolve(type,key),interests:[...prefs.interests],company,screens:()=>publicScreens,scores:leaderScores,catalog:deviceCatalog});
+}
+function focusImplementedSection(anchor){
+  // Existing controls, never a generated model result. Keep a market view; leave industry when entering economy/market.
+  const cycle=anchor==='macro-industry'?'industry':anchor==='macro-cycle'?(window.MacroCycleRing?.snapshot().activeCycle==='market'?'market':'economy'):null;
+  if(cycle){$('[data-cycle-tab="'+cycle+'"]')?.click();document.dispatchEvent(new CustomEvent('macro-cycle-focus',{detail:{cycle}}));}
+  const targets={'technical-pattern':'[data-pattern-panel]','technical-notes':'[data-user-panel]',
+    'macro-cycle':'#macro-cycle','macro-industry':'[data-cycle-ring="industry"]',
+    'macro-mine':'[data-cycle-ring]:not([hidden]) [data-cycle-user-box]',
+    'validation-backtest':'#plab-91','validation-forward':'#plab-92'};
+  const section=targets[anchor]?$(targets[anchor]):document.getElementById(anchor);
+  if(section){const title=section.querySelector('h2,h3')||section;title.setAttribute('tabindex','-1');title.focus({preventScroll:true});section.scrollIntoView({block:'start'});}
 }
 function wireGroups() {
   $("#new-group").onsubmit = (e) => {
