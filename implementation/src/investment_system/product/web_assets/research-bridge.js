@@ -77,7 +77,7 @@ localizeControls();
 new MutationObserver(localizeControls).observe(document.body,{childList:true,subtree:true});
 window.addEventListener("message",e=>{
   if(e.source===parent && e.origin===location.origin && e.data?.type==="display_locale" && AppLanguage.LOCALES.includes(e.data.locale)) {
-    displayLocale=e.data.locale;localizeControls();
+    displayLocale=e.data.locale;localizeControls();renderPublicImports();
   }
 });
 
@@ -85,6 +85,56 @@ window.addEventListener("message",e=>{
 // this page never reads device storage, fetches a snapshot or serializes arbitrary parent objects.
 let publicResearchContext={fields:{},companies:[]};
 const importText=key=>AppLanguage.text(key,displayLocale);
+// Selected public identity is an offer, never an automatic form update. Draft inputs stay in
+// this frame; only the parent's public projection crosses the existing origin/source boundary.
+const selectionText=(ko,en)=>displayLocale==='en-US'?en:ko;
+function selectedPublicCompany() {
+  const c=publicResearchContext.selection?.company;
+  const token=v=>typeof v==='string' && /^[A-Za-z0-9_.:-]{1,128}$/.test(v);
+  if(!c || !token(c.company_id) || !token(c.ticker) ||
+    !(c.name===null || typeof c.name==='string' && c.name.trim() && c.name.length<=512 && !/[\r\n]/.test(c.name))) return null;
+  return {company_id:c.company_id,ticker:c.ticker,name:c.name};
+}
+function selectedCompanyFields() {
+  const names=['company','ticker','seed_company','seed_ticker'];
+  return names.filter(name=>cur?.variables.some(v=>v.name===name)).map(name=>document.querySelector('[data-v="'+name+'"]')).filter(Boolean);
+}
+function renderSelectedContext() {
+  const form=document.getElementById('form');if(!form || !cur) return;
+  let panel=form.querySelector('[data-selected-context]');
+  if(!panel) {
+    panel=document.createElement('section');panel.className='field-group';panel.dataset.selectedContext='';
+    panel.innerHTML='<p data-selected-company-label></p><button type="button" data-selected-company-import></button><p class="muted" data-selected-company-status role="status"></p><p class="muted" data-selected-period-status="UNSUPPORTED"></p>';
+    form.prepend(panel);
+    panel.querySelector('button').onclick=()=>{
+      const company=selectedPublicCompany(),fields=selectedCompanyFields();
+      if(!company || !fields.length || fields.some(field=>field.value!=='' || field.dataset.v.endsWith('company') && !company.name)) return;
+      // Fill the declared identity as one pair. Input events use the Frozen page's ordinary
+      // validation/preview path; analysis, dates, mode and user text are never copied here.
+      for(const field of fields) field.value=field.dataset.v.endsWith('company')?company.name:company.ticker;
+      for(const field of fields) field.dispatchEvent(new Event('input',{bubbles:true}));
+    };
+  }
+  const company=selectedPublicCompany(),fields=selectedCompanyFields(),button=panel.querySelector('button'),
+    status=panel.querySelector('[data-selected-company-status]'),label=panel.querySelector('[data-selected-company-label]'),
+    put=(node,text)=>{if(node.textContent!==text)node.textContent=text;};
+  button.hidden=!fields.length;label.hidden=!fields.length;status.hidden=!fields.length;
+  put(label,selectionText('선택한 공개 기업: ','Selected public company: ')+(company?((company.name?company.name+' · ':'')+company.ticker):selectionText('없음','None')));
+  put(button,selectionText('선택 기업 가져오기','Import selected company'));
+  const state=!company?'MISSING':fields.some(field=>field.value!=='')?'INPUT_RETAINED':
+    fields.some(field=>field.dataset.v.endsWith('company') && !company.name)?'NAME_UNAVAILABLE':'AVAILABLE';
+  button.disabled=state!=='AVAILABLE';status.dataset.selectedCompanyStatus=state;
+  const notes={
+    MISSING:['확인된 공개 기업 선택이 없습니다. 기업 화면에서 선택하거나 직접 입력하세요.','No verified public company is selected. Open a company screen or enter it yourself.'],
+    INPUT_RETAINED:['입력한 기업 값은 유지합니다. 다른 기업을 가져오려면 기업 입력칸을 모두 비우세요.','Existing company inputs are kept. Clear all company fields to import another company.'],
+    NAME_UNAVAILABLE:['선택 기업의 공개 회사명이 없습니다. 회사명과 종목 코드를 직접 입력하세요.','The selected company has no published name. Enter its name and ticker yourself.'],
+    AVAILABLE:['가져오기를 누르면 빈 기업 입력칸만 채웁니다.','Import fills the empty company fields only.']
+  };
+  put(status,selectionText(...notes[state]));
+  put(panel.querySelector('[data-selected-period-status]'),selectionText(
+    '프롬프트마다 기간의 뜻이 달라 자동으로 옮기지 않습니다. 필요한 기간은 직접 입력합니다.',
+    'Periods mean different things in different prompts, so they are not transferred automatically. Enter the period you need.'));
+}
 function publicImportValue(name) {
   const value=publicResearchContext.fields?.[name];if(!value) return null;
   if(["qgv_snapshot_summary","technical_input"].includes(name)) {
@@ -99,6 +149,7 @@ function publicImportValue(name) {
   return value;
 }
 function renderPublicImports() {
+  renderSelectedContext();
   for(const slot of document.querySelectorAll('[data-system-import]')) {
     const name=slot.dataset.systemImport,value=publicImportValue(name),button=slot.querySelector('button');
     if(value) {
@@ -122,7 +173,7 @@ function renderPublicImports() {
 }
 document.getElementById('form')?.addEventListener('input',renderPublicImports);
 document.getElementById('detail').addEventListener('input',event=>{
-  if(event.target.matches('[data-v="ticker"],[data-v="seed_ticker"]')) renderPublicImports();
+  if(event.target.matches('[data-v="ticker"],[data-v="seed_ticker"],[data-v="company"],[data-v="seed_company"]')) renderPublicImports();
 });
 new MutationObserver(renderPublicImports).observe(document.getElementById('detail'),{childList:true,subtree:true});
 window.addEventListener('message',event=>{

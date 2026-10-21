@@ -217,9 +217,17 @@
   function mountTechnical(host,options={}) {
     const state={doc:host.ownerDocument,view:host.ownerDocument.defaultView,locale:options.locale};
     const select=node(state,'select',undefined,{'data-technical-symbol':'','aria-label':words(state,'기술 차트 종목','Technical chart symbol')}),child=node(state,'div');
+    // Only the menu entry without a company chooses a default. A search/deep link keeps its identity even outside TARGET19.
+    const companyId=options.companyId||'asml';
+    if(!symbolFor(companyId))select.append(node(state,'option',companyId+' · '+words(state,'지원 범위 밖','Unsupported'),{value:companyId}));
     for(const[id,symbol]of Object.entries(TARGETS))select.append(node(state,'option',symbol,{value:id}));
-    select.value=symbolFor(options.companyId)?options.companyId:'asml';
-    host.replaceChildren(select,child);const show=()=>{disposeAll();child.replaceChildren();void mount(child,{...options,companyId:select.value});};select.addEventListener('change',show);show();
+    select.value=companyId;
+    const unavailable=node(state,'p','',{'data-technical-unavailable':'',role:'status'});
+    host.replaceChildren(select,unavailable,child);const show=()=>{
+      disposeAll();child.replaceChildren();unavailable.hidden=!!symbolFor(select.value);
+      unavailable.textContent=unavailable.hidden?'':words(state,'선택한 기업 ('+select.value+')은 현재 가격 이력 지원 19종목에 포함되지 않아 가격을 요청하지 않습니다.','The selected company ('+select.value+') is outside the 19 supported companies for price history. No prices are requested.');
+      void mount(child,{...options,companyId:select.value});
+    };select.addEventListener('change',show);show();
   }
   function disposeAll() { for(const state of [...active])dispose(state); }
   return Object.freeze({mount,mountTechnical,mountSettings,disposeAll,validateHistory,chartPaths,symbolFor,parseWorkerOrigin});
