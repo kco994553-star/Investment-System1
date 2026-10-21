@@ -24,3 +24,11 @@
 통합 프롬프트 검사 첫 실행은 이미 사용한 비어 있지 않은 output 경로로 빌드를 시도해 거부되었고, 이전 생성본에서 새 컨트롤이 없다는 예상 실패였다. 비어 있는 새 경로로 정상 build 후 실제 소스 바이트로 152검사와 가드가 통과했다. 시험 단언·빌드 경계는 완화하지 않았다.
 
 Main 통합 소스는 nav adb12d04, QGV 57ec02dc, search a5ad8cc0, prompt b05f06f5 및 Main app 연결이다. 공용 app/guard/CI는 Main만 수정했다. 독립 리뷰 파일은 작업 공간에 보존하며 필요한 재현 명령은 각 CI registry와 전용 시험에 있다. 실제 배포 완료 뒤 새 컨텍스트에서 저장/새로고침/검색 흐름과 승인 글꼴·가로 넘침을 확인해야 한다.
+
+## 원격 검사에서 확인한 font fixture 간섭
+
+cb593bbd의 원격 5 workflow는 같은 두 font transport 시험에서 실패했다. 정상 전체 raw TAR는 4,024,320 bytes이고, gaegu 크기 변조를 더하면 4,198,400 bytes로 기존 4,194,304-byte 상한을 먼저 넘는다. 제품 가드는 올바르게 oversized_archive로 거부했지만 시험은 폰트 개별 사유를 기대했다. 환경 문제나 글꼴 허용 범위 변경이 아니다.
+
+전체 디렉터리의 변조 검사·전체 정상 TAR·압축/메타데이터 거부를 유지하고, font transport 반례만 두 승인 폰트의 작은 raw TAR fixture로 분리했다. 첫 분리 시도는 필수 파일 누락도 보고되는 것을 빠뜨려 실패했다. 최종 fixture는 정상 폰트도 missing_files=115로 거부되고, 각 변조는 정확한 추가 폰트 사유까지 요구한다. 크기 상한 시험은 4MiB·scanned=0·oversized_archive=1 전체 receipt를 확인하도록 강화했다. production guard와 승인 글꼴 파일·해시는 변경하지 않았다.
+
+최종 집중 검사: 6 PASS / 25 subtests PASS. 독립 최신 리뷰 APPROVE. 첫 불완전한 분리안의 리뷰 판정은 폐기하고 최종 파일 해시 기준으로 다시 검토했다. 이후 최종 HEAD의 전체 필수 CI는 별도다.

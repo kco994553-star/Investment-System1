@@ -34,7 +34,7 @@
 
 | 담당 | 브랜치 / 파일 범위 | 상태·의존성 |
 | --- | --- | --- |
-| Main | codex/frontend-links-20261021; app·공용 시험/가드·인수인계 | #372에 기존 메뉴 연결·기업 맥락·QGV 분류 필터·검색 복귀·프롬프트 선택 기업을 통합(fa6dd669). canonical ae34eb90 동기화 중. cb593bbd 원격 CI에서 글꼴 TAR fixture가 4MiB 상한에 먼저 걸림; 실제 경계 유지하며 시험 분리 수정 중. 최종 HEAD 6 CI·병합·배포 잔여 |
+| Main | codex/frontend-links-20261021; app·공용 시험/가드·인수인계 | #372에 기존 메뉴 연결·기업 맥락·QGV 분류 필터·검색 복귀·프롬프트 선택 기업을 통합(fa6dd669). canonical ae34eb90 동기화 완료. cb593bbd 원격 CI의 글꼴 TAR fixture 간섭을 production 경계 변경 없이 분리; 최종 6검사/25subtests와 독립 리뷰 통과. G6 중복 정렬 수정 중. 최종 HEAD 6 CI·병합·배포 잔여 |
 | Kierkegaard | codex/qgv-classification-filters-20261021; leaderboard/portfolio·전용 시험 | QGV 표시 필터 통합·60개 브라우저 검사 통과. 검색 독립 리뷰 70 assertions 통과. 실사이트 격리 검증 도구 준비(운영 실행 전). #262 기존 승인 가설 동기화 89e65364: Python44/Node302/화면64 PASS, 원PR 미갱신 |
 | Darwin | codex/replay-20261020-artifact 및 codex/search-continuity-20261021 | #371 최종 9066c67e의 CI 6/6 성공·병합 ae34eb90. 검색·프롬프트 독립 리뷰 완료. 현재 G6 PC 중복 정렬 결함의 단일 상태 수정 담당 |
 | Lovelace | codex/target-v1-integration-20261021 및 codex/prompt-context-20261021 | TARGET #248→#263 로컬 준비 완료·각 최신 canonical/6 CI 잔여. 프롬프트 b05f06f5 통합·152단언 통과. 계약 갱신 및 공용 app 통합 독립 리뷰 완료. #263 동기화 97bf56df 독립 APPROVE; 폰트 fixture 경계 독립 리뷰 중 |
