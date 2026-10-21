@@ -6,7 +6,8 @@
 (function(root,factory){const api=factory(root);if(typeof module==='object'&&module.exports)module.exports=api;else root.TableSort=api;})(typeof globalThis==='object'?globalThis:this,function(g){
 'use strict';
 const QUERY='(min-width: 1024px)';
-const SELECTOR='main .table-wrap table, main .table-scroll table';
+// G6: S06 owns one structured sort (#leader-sort, direction/reset and summary). Never override it on a repaint.
+const SELECTOR='main .table-wrap table:not([data-leaderboard-table]), main .table-scroll table:not([data-leaderboard-table])';
 const MISSING=/^(?:|—|–|-|\[—\]|N\/?A|NA|NOT_AVAILABLE|NOT_STARTED|NULL)(?:\s|·|$)/i;
 const collator=typeof Intl==='object'?new Intl.Collator(undefined,{numeric:true,sensitivity:'base'}):null;
 // Sort key for one cell text: {kind:'missing'} | {kind:'number',value} | {kind:'text',value}.

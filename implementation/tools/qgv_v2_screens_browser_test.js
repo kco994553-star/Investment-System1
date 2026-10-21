@@ -38,7 +38,7 @@ async function withdrawnS06(page) {
 }
 /* S06 structured sort (owner directive 2026-10-18 §4.4): the sort selector (#leader-sort, also the phone control) orders rows by
    structured values from qgvScores(), NA last in both directions; direction and reset buttons; the rank number is always the
-   official device rank; three scopes (analysis population / rankable / shown) are named apart; PC header sort uses numeric keys. */
+   official device rank; three scopes (analysis population / rankable / shown) are named apart. G6: this is S06's only sort owner. */
 async function sortFlow(page, width) {
   const T = '[data-leaderboard-table]', SHOTS = process.env.PAGES_COCKPIT_EVIDENCE_DIR;
   phase = 'SORT_SETUP';await page.locator('#leader-query').fill('');await page.waitForFunction(() => document.querySelectorAll('[data-leaderboard-row]').length === officialPopulation().rows.length);const N = await universeRows(page);assert.ok(N > 19, 'Universe rows ' + N);
@@ -97,11 +97,13 @@ async function sortFlow(page, width) {
   assert.ok(await page.locator('[data-leaderboard-sort-reset]').isDisabled());const def = await check('qgv', 'total', -1);
   assert.deepEqual(def.filter((x) => official[x].rank !== null).map((x) => official[x].rank), def.filter((x) => official[x].rank !== null).map((_, i) => i + 1));
   if (width >= 1024) {
-    phase = 'SORT_PC_HEADER';const th = page.locator(T + ' thead th').nth(2);await th.locator('.th-sort').click();assert.equal(await th.getAttribute('aria-sort'), 'ascending');
-    const cells = await page.locator(T + ' tbody tr').evaluateAll((rows) => rows.map((r) => r.cells[2].getAttribute('data-sort-value')));
-    const firstNa = cells.indexOf(''), nums = cells.slice(0, firstNa < 0 ? cells.length : firstNa).map(Number);assert.ok(cells.slice(nums.length).every((c) => c === ''), 'NA last');
-    assert.deepEqual(nums, [...nums].sort((a, b) => a - b), 'numeric key, not text');
-    await th.locator('.th-sort').click();await th.locator('.th-sort').click();assert.equal(await th.getAttribute('aria-sort'), 'none');
+    // G6: independent PC header order conflicted with the selector/summary. Numeric/NA/rank assertions above still apply.
+    phase = 'SORT_PC_SINGLE_OWNER';assert.equal(await page.locator(T + ' .th-sort, ' + T + ' th[aria-sort]').count(), 0);
+    await page.evaluate(() => paintLeaderboardScreen());
+    await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+    assert.equal(await page.locator('#leader-sort').inputValue(), 'qgv');
+    assert.match(await page.locator('[data-leaderboard-summary]').textContent(), /^정렬: QGV v2 순 · /);
+    assert.deepEqual(await check('qgv', 'total', -1), def, 'same-data repaint preserves the one structured order');
   } else if (SHOTS) await page.screenshot({ path: SHOTS + '/s06-sort-' + width + '.png' });
   phase = 'SORT_DONE';
 }
