@@ -6,6 +6,8 @@ let D,
 let identityCompanies=[],publicScreens={},publicCatalog=null,deviceCatalogPromise;
 // Settings > 원자료 보기(개발자용): the company whose raw public cards are shown (the last company viewed; RAM only).
 let rawDataCompany=null;
+// Explicit public company selection for prompt imports. RAM only; never a quote or user form value.
+let researchCompanyId=null;
 function deviceCatalog() {
   if(!deviceCatalogPromise) deviceCatalogPromise=fetch('actual-catalog.json',{cache:'no-store'}).then(r=>{
     if(!r.ok) throw Error('PUBLIC_CATALOG_UNAVAILABLE');return r.json();
@@ -916,6 +918,7 @@ function renderRoute(options) {
   let anchor=null;
   for(const screen of ["validation","technical","macro","news"]) if(route.startsWith(screen+"-")) {anchor=route;route=screen;}
   try {id=decodeURIComponent(id || "");} catch(e) {id="";}
+  if(['company','analysis','technical'].includes(route)) researchCompanyId=id || null;
   // Same-company chart section navigation keeps the existing mount and its RAM inputs/results.
   // Company changes, screen exit and private-session disposal retain the normal lifecycle.
   if(!kept&&(anchor||id)&&route==='technical'&&currentRoute==='technical'&&currentHash!==location.hash&&
@@ -972,7 +975,7 @@ function renderRoute(options) {
     PrivateHistory.mountTechnical($('#technical-price-chart'),{companyId:id,locale:appSettings.display_locale,config:window.InvestmentAppConfig,getAverage:deviceAverageCost,onData:value=>{cards.update(value);if(bench)void bench.update(value);}});
     // Display-only TradingView chart: follows the symbol picker; nothing is read back from it.
     const tvSymbol=$('#technical-price-chart [data-technical-symbol]'),tvChart=()=>TradingViewWidgets.mountAdvanced($('#technical-tv-chart'),{companyId:tvSymbol?tvSymbol.value:id,locale:appSettings.display_locale});
-    if(tvSymbol) tvSymbol.addEventListener('change',()=>{const suffix='/'+encodeURIComponent(tvSymbol.value);
+    if(tvSymbol) tvSymbol.addEventListener('change',()=>{researchCompanyId=tvSymbol.value;const suffix='/'+encodeURIComponent(tvSymbol.value);
       const section=location.hash.slice(1).split('/')[0]||'technical';
       history.replaceState(history.state,'','#'+section+suffix);currentHash=location.hash;
       const subnav=$('[data-ia-sub="technical"]');if(subnav)subnav.outerHTML=AppShell.subNavHtml('technical');
@@ -1209,6 +1212,25 @@ function researchPublicContext() {
       out.fields.macro_input={...meta("macro",m),values};out.fields.macro_snapshot_summary=out.fields.macro_input;
     }
   }
+  // Resolve the explicit route/picker identity from public directories only. Do not infer from
+  // quotes, holdings, the first catalog entry or a default technical chart symbol.
+  let selected=null;
+  if(token(researchCompanyId) && !privateMetadata(researchCompanyId)) {
+    const matches=[...D.companies,...identityCompanies].filter(c=>c.company_id===researchCompanyId);
+    if(matches.length) {
+      const tickers=new Set(matches.map(c=>token(c.ticker) && !privateMetadata(c.ticker)?c.ticker:null));
+      const names=new Set(matches.map(c=>text(c.name)).filter(Boolean));
+      if(tickers.size===1 && !tickers.has(null) && names.size<=1)
+        selected={company_id:researchCompanyId,ticker:[...tickers][0],name:[...names][0] || null};
+    } else if(universeCode(researchCompanyId)) {
+      const c=companyNames?.get(researchCompanyId);
+      if(c && c.ticker===researchCompanyId.split(':')[1] && token(c.ticker) && !privateMetadata(c.ticker))
+        selected={company_id:researchCompanyId,ticker:c.ticker,name:text(c.en_name)};
+    }
+  }
+  // Frozen period/horizon/earnings_period/cutoffs have distinct meanings. No approved
+  // mapping exists from chart ranges; never transfer a private chart object as metadata.
+  out.selection={company:selected,period:null,period_reason:'PERIOD_MAPPING_UNSUPPORTED'};
   // This Web contract has no integrated judgment, coverage or its snapshot references.
   // Individual QGV coverage and available snapshot IDs do not establish those relationships.
   return out;

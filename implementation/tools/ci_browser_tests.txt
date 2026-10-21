@@ -84,3 +84,4 @@ home_search_result_browser_test.js
 implemented_navigation_browser_test.js
 qgv_classification_filters_browser_test.js
 search_continuity_browser_test.js
+prompt_selected_context_browser_test.js

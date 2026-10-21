@@ -63,3 +63,4 @@ pattern_engine_node_test.js
 pattern_signals_node_test.js
 chart_renderer_node_test.js
 qgv_classification_filters_node_test.js
+prompt_selected_context_test.js
