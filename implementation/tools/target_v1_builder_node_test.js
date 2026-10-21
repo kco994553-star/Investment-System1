@@ -134,20 +134,51 @@ test('반대 replaces the name with the next-ranked one, re-checks limits; 모�
 // A published sec-qgv2.json payload in the raw shape (records[code]: cik, state, reason_codes, acquired_at, axes, metrics,
 // calc_version), 504 US rows: the given universe's codes first (their metrics, for the financial-safety re-check), then fillers.
 const ACQ='2026-10-13T20:00:00Z';
-function published({calc='calc-2026-10-15',records=calc,asOf='2026-10-14T21:00:00Z',q=504,g=504,u=null,acquired=ACQ,patch={}}={}){
+function published({calc='qgv2-calc/2026-10-15.1',records=calc,asOf='2026-10-14T21:00:00Z',q=504,g=504,u=null,acquired=ACQ,patch={}}={}){
  const out={kind:'SEC_QGV2',as_of:asOf,shard_count:7,records:{},target:{x:{axes:{Q:{score:1}}}}};if(calc!==null)out.calc_version=calc;
  const src=u?.inputs?.records||{},codes=Object.keys(src);for(let i=codes.length;i<504;i++)codes.push('NYSE:P'+i);
  codes.forEach((code,i)=>{const r={cik:src[code]?.cik||('P'+i),state:'LIVE',reason_codes:[],acquired_at:acquired,axes:{Q:{score:i<q?50:null},G:{score:i<g?50:null}},metrics:src[code]?{...src[code].metrics}:{}};if(records!==null)r.calc_version=records;out.records[code]=r;});
  for(const[code,f]of Object.entries(patch))f(out.records[code]);return out;}
-const passed=(calc='calc-2026-10-15',extra={})=>({...CFG,number_check:{...CFG.number_check,result:{calc_version:calc,passed:true,date:'2026-10-15',companies:10,...extra}}});
+const passed=(calc='qgv2-calc/2026-10-15.1',extra={})=>({...CFG,number_check:{...CFG.number_check,result:{calc_version:calc,passed:true,date:'2026-10-15',companies:10,...extra}}});
 // finalize with the basis of the payload computed the way the screen does; → the new state, or the error's blockers.
 async function tryFinalize(state,{date='2026-10-15',pub=null,cfg=passed()}={}){const basis=pub?await B.inputBasis(pub):null;try{return B.finalize(state,{date,published:pub,basis,cfg});}catch(e){if(!e.blockers)throw e;return e.blockers;}}
 const NA_ROW=r=>{r.state='NOT_AVAILABLE';r.reason_codes=['NOT_COLLECTED'];r.acquired_at=null;r.axes={Q:{score:null},G:{score:null}};r.metrics={};delete r.calc_version;};
 
+test('production calc_version: published check and input basis retain the exact production version',async()=>{
+ // Current public artifact plus the production contract's 1–4 digit revision boundary.
+ for(const calc of ['qgv2-calc/2026-10-17.1','qgv2-calc/2026-10-17.12','qgv2-calc/2026-10-17.123','qgv2-calc/2026-10-17.1234']){
+  const pub=published({calc}),check=B.publishedCheck(pub,{date:'2026-10-15'});
+  assert.equal(check.calc_version,calc);assert.deepEqual(check.reasons,[]);assert.equal(check.ok,true);
+  assert.equal((await B.inputBasis(pub)).calc_version,calc);
+ }
+});
+
+test('production calc_version: malformed or missing versions stay blocked, not broadly slash-allowed',async()=>{
+ for(const calc of [undefined,null,17,'','calc-2026-10-15','cv-test','other/2026-10-17.1','qgv2-calc/2026-1-17.1',
+  'qgv2-calc/2026-10-7.1','qgv2-calc/26-10-17.1','qgv2-calc/2026-10-17','qgv2-calc/2026-10-17.',
+  'qgv2-calc/2026-10-17.12345','qgv2-calc/2026-10-17.x','qgv2-calc/2026-10-17.1/extra',' qgv2-calc/2026-10-17.1','qgv2-calc/2026-10-17.1 ']){
+  const pub=published();if(calc===undefined)delete pub.calc_version;else pub.calc_version=calc;
+  const check=B.publishedCheck(pub,{date:'2026-10-15'});
+  assert.equal(check.calc_version,null,String(calc));assert.deepEqual(check.reasons,['CALC_VERSION_MISSING'],String(calc));assert.equal(check.ok,false);
+  assert.equal((await B.inputBasis(pub)).calc_version,null,String(calc));
+ }
+});
+
+test('production calc_version: valid mixed rows and another number-check version remain blocked',()=>{
+ const calc='qgv2-calc/2026-10-17.1',other='qgv2-calc/2026-10-17.2',pub=published({calc});
+ assert.deepEqual(B.publishedCheck(pub,{date:'2026-10-15'}).reasons,[]);
+ pub.records['NYSE:P0'].calc_version=other;
+ const mixed=B.publishedCheck(pub,{date:'2026-10-15'});assert.equal(mixed.mixed_rows,1);assert.deepEqual(mixed.reasons,['CALC_VERSION_MIXED']);
+ assert.deepEqual(CFG.number_check.result,{calc_version:null,passed:false,date:null,companies:0});
+ assert.equal(B.numberCheck(calc).reason,'NUMBER_CHECK_NOT_PASSED');
+ assert.equal(B.numberCheck(calc,passed(other)).reason,'NUMBER_CHECK_CALC_VERSION_MISMATCH');
+ assert.equal(B.numberCheck(calc,passed(calc)).ok,true);
+});
+
 test('finalize: cards, shortfall, limits, LATEST file (calc_version, row freshness 7 days, Q·G 90%), draft basis, safety re-check, number check',async()=>{
  assert.equal(Object.hasOwn(CFG,'number_check_passed'),false);assert.deepEqual(CFG.number_check.result,{calc_version:null,passed:false,date:null,companies:0});assert.equal(CFG.number_check.companies_required,10);
  assert.equal(CFG.status,'v0');assert.equal(CFG.calibration,'UNCALIBRATED');assert.equal(CFG.finalize_check.freshness_max_days,7);assert.equal(CFG.finalize_check.freshness_basis,'ROW_ACQUIRED_AT');
- const u=wide(40),pub=published({u}),basis=await B.inputBasis(pub);assert.equal(basis.calc_version,'calc-2026-10-15');assert.equal(basis.shard_count,7);assert.match(basis.shards,/^(\d=2026-10-13T20:00:00Z\|?)+$/);
+ const u=wide(40),pub=published({u}),basis=await B.inputBasis(pub);assert.equal(basis.calc_version,'qgv2-calc/2026-10-15.1');assert.equal(basis.shard_count,7);assert.match(basis.shards,/^(\d=2026-10-13T20:00:00Z\|?)+$/);
  const draft=B.buildDraft({...u,existing:[],date:'2026-10-14',basis});assert.deepEqual(draft.basis,basis);let state={...B.emptyState(),draft};B.validateState(state);
  assert.equal((await tryFinalize(state,{pub}))[0],'TARGET_V1_CARDS_PENDING');
  for(const r of B.currentSelection(state).rows)state=B.answer(state,{symbol:r.symbol,answer:'AGREE',date:'2026-10-14'});assert.equal(B.currentSelection(state).complete,true);
@@ -156,14 +187,14 @@ test('finalize: cards, shortfall, limits, LATEST file (calc_version, row freshne
  // (a) calc_version: legacy file; valued rows without / with another calc_version → CALC_VERSION_MIXED.
  assert.deepEqual(await tryFinalize(state,{pub:published({u,calc:null,records:null})}),['CALC_VERSION_MISSING','DRAFT_BASIS_CHANGED','NUMBER_CHECK_CALC_VERSION_MISMATCH']);
  assert.deepEqual(await tryFinalize(state,{pub:published({u,records:null})}),['CALC_VERSION_MIXED']);
- assert.deepEqual(await tryFinalize(state,{pub:published({u,records:'calc-old'})}),['CALC_VERSION_MIXED']);
+ assert.deepEqual(await tryFinalize(state,{pub:published({u,records:'qgv2-calc/2026-10-14.1'})}),['CALC_VERSION_MIXED']);
  // Normal NA vs version mixing: 1 normal-NA row (no value, NA reason, no calc_version) + the rest current → allowed;
  // the same row carrying the current calc_version is also normal; 1 valued old-calculation row → CALC_VERSION_MIXED.
  const okNa=published({u,patch:{'NYSE:P500':NA_ROW}}),chkNa=B.publishedCheck(okNa,{date:'2026-10-15'});assert.deepEqual([chkNa.ok,chkNa.na_rows,chkNa.q,chkNa.size],[true,1,503,504]);
- assert.equal((await tryFinalize(state,{pub:published({u,patch:{'NYSE:P500':r=>{NA_ROW(r);r.calc_version='calc-2026-10-15';}}})})).versions.length,1);
+ assert.equal((await tryFinalize(state,{pub:published({u,patch:{'NYSE:P500':r=>{NA_ROW(r);r.calc_version='qgv2-calc/2026-10-15.1';}}})})).versions.length,1);
  const doneNa=await tryFinalize(state,{pub:okNa});assert.equal(doneNa.versions.length,1,JSON.stringify(doneNa));
- assert.deepEqual(await tryFinalize(state,{pub:published({u,patch:{'NYSE:P500':r=>{r.calc_version='calc-old';}}})}),['CALC_VERSION_MIXED']);
- assert.deepEqual(await tryFinalize(state,{pub:published({u,patch:{'NYSE:P500':r=>{NA_ROW(r);r.calc_version='calc-old';}}})}),['CALC_VERSION_MIXED']);
+ assert.deepEqual(await tryFinalize(state,{pub:published({u,patch:{'NYSE:P500':r=>{r.calc_version='qgv2-calc/2026-10-14.1';}}})}),['CALC_VERSION_MIXED']);
+ assert.deepEqual(await tryFinalize(state,{pub:published({u,patch:{'NYSE:P500':r=>{NA_ROW(r);r.calc_version='qgv2-calc/2026-10-14.1';}}})}),['CALC_VERSION_MIXED']);
  assert.deepEqual(await tryFinalize(state,{pub:published({u,patch:{'NYSE:P500':r=>{NA_ROW(r);r.reason_codes=[];}}})}),['CALC_VERSION_MIXED']);
  // (b) freshness per valued row's acquired_at (7 days from the finalize date), never the file as_of.
  assert.equal(B.publishedCheck(pub,{date:'2026-10-19'}).ok,true);assert.deepEqual(B.publishedCheck(pub,{date:'2026-10-20'}).reasons,['ROW_DATA_STALE']);
@@ -174,7 +205,7 @@ test('finalize: cards, shortfall, limits, LATEST file (calc_version, row freshne
  assert.match(CFG.finalize_check.stale_action_ko,/workflow_dispatch all_shards=true/);
  // (c) Q and G each ≥ 90% of 504 (454); TARGET rows are not counted.
  assert.deepEqual(await tryFinalize(state,{pub:published({u,q:453})}),['Q_COVERAGE_LOW']);assert.deepEqual(await tryFinalize(state,{pub:published({u,g:453})}),['G_COVERAGE_LOW']);
- const chk=B.publishedCheck(published({u,q:454,g:454}),{date:'2026-10-15'});assert.deepEqual([chk.ok,chk.q,chk.g,chk.rows,chk.calc_version],[true,454,454,504,'calc-2026-10-15']);
+ const chk=B.publishedCheck(published({u,q:454,g:454}),{date:'2026-10-15'});assert.deepEqual([chk.ok,chk.q,chk.g,chk.rows,chk.calc_version],[true,454,454,504,'qgv2-calc/2026-10-15.1']);
  // (d) draft basis: a newer acquisition in any shard (or another calc_version) is a changed input basis.
  const newer=published({u,patch:{'NYSE:P498':r=>{r.acquired_at='2026-10-14T05:00:00Z';}}});assert.equal(B.basisChanged(draft.basis,await B.inputBasis(newer)),true);
  assert.deepEqual(await tryFinalize(state,{pub:newer}),['DRAFT_BASIS_CHANGED']);assert.equal(B.basisChanged(draft.basis,await B.inputBasis(regenerated)),false);
@@ -184,29 +215,29 @@ test('finalize: cards, shortfall, limits, LATEST file (calc_version, row freshne
  assert.deepEqual(await tryFinalize(state,{pub:worse}),['FINANCIAL_SAFETY_RECHECK_FAILED']);assert.deepEqual(B.finalizeBlockers(state,{date:'2026-10-15',published:worse,basis:wb,cfg:passed()}).safety_failed,[first.symbol]);
  assert.deepEqual(await tryFinalize(state,{pub:published({u,patch:{[first.code]:r=>{r.metrics.interest_coverage=null;}}})}),['FINANCIAL_SAFETY_RECHECK_FAILED']);
  // Number check: default not passed; another calc_version → mismatch; fewer than 10 companies → not passed.
- assert.deepEqual(await tryFinalize(state,{pub,cfg:CFG}),['NUMBER_CHECK_NOT_PASSED']);assert.deepEqual(await tryFinalize(state,{pub,cfg:passed('calc-old')}),['NUMBER_CHECK_CALC_VERSION_MISMATCH']);
- assert.deepEqual(await tryFinalize(state,{pub,cfg:passed('calc-2026-10-15',{companies:9})}),['NUMBER_CHECK_NOT_PASSED']);
+ assert.deepEqual(await tryFinalize(state,{pub,cfg:CFG}),['NUMBER_CHECK_NOT_PASSED']);assert.deepEqual(await tryFinalize(state,{pub,cfg:passed('qgv2-calc/2026-10-14.1')}),['NUMBER_CHECK_CALC_VERSION_MISMATCH']);
+ assert.deepEqual(await tryFinalize(state,{pub,cfg:passed('qgv2-calc/2026-10-15.1',{companies:9})}),['NUMBER_CHECK_NOT_PASSED']);
  const done=await tryFinalize(state,{pub});
  assert.equal(done.versions.length,1);assert.equal(done.versions[0].version,'v1');assert.deepEqual(done.rule_c,{start:'2026-10-15',version:'v1'});
- assert.equal(done.versions[0].calc_version,'calc-2026-10-15');assert.equal(done.versions[0].sec_qgv2_as_of,'2026-10-14T21:00:00Z');assert.equal(done.versions[0].input_shards,basis.shards);
- assert.deepEqual(done.versions[0].number_check,{calc_version:'calc-2026-10-15',passed:true,date:'2026-10-15',companies:10});
+ assert.equal(done.versions[0].calc_version,'qgv2-calc/2026-10-15.1');assert.equal(done.versions[0].sec_qgv2_as_of,'2026-10-14T21:00:00Z');assert.equal(done.versions[0].input_shards,basis.shards);
+ assert.deepEqual(done.versions[0].number_check,{calc_version:'qgv2-calc/2026-10-15.1',passed:true,date:'2026-10-15',companies:10});
  let sum=done.versions[0].cash_pct;for(const r of done.versions[0].rows)sum+=r.pct;assert.equal(sum,100);assert.ok(done.versions[0].rows.every(r=>r.confirmed));
  // A later file with a new calc_version: changed basis + a new number check needed; after regeneration (all names kept) → v1.1.
- const next=published({u,calc:'calc-2026-11-16',asOf:'2026-11-15T00:00:00Z',acquired:'2026-11-14T00:00:00Z'});
+ const next=published({u,calc:'qgv2-calc/2026-11-16.1',asOf:'2026-11-15T00:00:00Z',acquired:'2026-11-14T00:00:00Z'});
  assert.deepEqual(await tryFinalize(done,{date:'2026-11-16',pub:next}),['DRAFT_BASIS_CHANGED','NUMBER_CHECK_CALC_VERSION_MISMATCH']);
  const re=B.regenerateDraft(done,{...u,existing:[],date:'2026-11-16',basis:await B.inputBasis(next)});assert.deepEqual(re.fresh,[]);assert.equal(re.carried.length,15);
- assert.equal((await tryFinalize(re.state,{date:'2026-11-16',pub:next,cfg:passed('calc-2026-11-16')})).versions[1].version,'v1.1');B.validateState(done);
+ assert.equal((await tryFinalize(re.state,{date:'2026-11-16',pub:next,cfg:passed('qgv2-calc/2026-11-16.1')})).versions[1].version,'v1.1');B.validateState(done);
  // The stored version rides in the playbook store.
- const s=memory(),pb=P.empty();pb.target_v1=done;P.write(s,pb);assert.equal(P.read(s).target_v1.versions[0].number_check.calc_version,'calc-2026-10-15');
+ const s=memory(),pb=P.empty();pb.target_v1=done;P.write(s,pb);assert.equal(P.read(s).target_v1.versions[0].number_check.calc_version,'qgv2-calc/2026-10-15.1');
 });
 
 test('input basis: shard = sha256(cik) mod shard_count (same rule as tools/published_coverage.py), newest acquisition per shard',async()=>{
- const crypto=require('node:crypto'),pub={calc_version:'c1',as_of:'2026-10-14T00:00:00Z',shard_count:7,records:{
+ const crypto=require('node:crypto'),pub={calc_version:'qgv2-calc/2026-10-14.1',as_of:'2026-10-14T00:00:00Z',shard_count:7,records:{
   'NYSE:A':{cik:'0000320193',acquired_at:'2026-10-12T00:00:00Z'},'NYSE:B':{cik:'0000789019',acquired_at:'2026-10-13T00:00:00Z'},'NYSE:C':{cik:'0000320193',acquired_at:'2026-10-14T00:00:00Z'},
   'NYSE:D':{cik:null,acquired_at:null,reason_codes:['CIK_UNRESOLVED']},'TARGET:x':{cik:'0000000001',acquired_at:'2026-10-14T00:00:00Z'}}};
  const shard=c=>Number(BigInt('0x'+crypto.createHash('sha256').update(c).digest('hex'))%7n),b=await B.inputBasis(pub);
  const want=[[shard('0000320193'),'2026-10-14T00:00:00Z'],[shard('0000789019'),'2026-10-13T00:00:00Z']].sort((x,y)=>x[0]-y[0]).map(([k,v])=>k+'='+v).join('|');
- assert.deepEqual(b,{calc_version:'c1',as_of:'2026-10-14T00:00:00Z',shard_count:7,shards:want,type_scope:require(W+'qgv-v2.js').TYPE_SCOPE,withdrawn:''});assert.equal(await B.inputBasis(null),null);
+ assert.deepEqual(b,{calc_version:'qgv2-calc/2026-10-14.1',as_of:'2026-10-14T00:00:00Z',shard_count:7,shards:want,type_scope:require(W+'qgv-v2.js').TYPE_SCOPE,withdrawn:''});assert.equal(await B.inputBasis(null),null);
  // A regenerated file (new as_of only) keeps the basis; a new acquisition changes it.
  assert.equal(B.basisChanged(b,await B.inputBasis({...pub,as_of:'2026-10-20T00:00:00Z'})),false);
  assert.equal(B.basisChanged(b,await B.inputBasis({...pub,records:{...pub.records,'NYSE:B':{cik:'0000789019',acquired_at:'2026-10-15T00:00:00Z'}}})),true);
@@ -269,15 +300,15 @@ test('withdrawal in the input basis: a new TARGET or Universe withdrawal blocks 
 });
 
 test('draft regeneration: answers carry over only for the same symbols; new names need a fresh card',()=>{
- const u=wide(40),draft=B.buildDraft({...u,existing:[],date:'2026-10-14',basis:{calc_version:'a',as_of:null,shard_count:7,shards:'0=x'}});let state={...B.emptyState(),draft};
+ const u=wide(40),draft=B.buildDraft({...u,existing:[],date:'2026-10-14',basis:{calc_version:'qgv2-calc/2026-10-14.1',as_of:null,shard_count:7,shards:'0=x'}});let state={...B.emptyState(),draft};
  const sel=B.currentSelection(state);state=B.answer(state,{symbol:sel.rows[1].symbol,answer:'DISAGREE',reason:'합성',date:'2026-10-14'});
  for(const r of B.currentSelection(state).rows)state=B.answer(state,{symbol:r.symbol,answer:'AGREE',date:'2026-10-14'});
  // New scores: a new top name appears and the former #3 leaves the Universe (its answer is dropped).
  const gone=B.currentSelection(state).rows[2].symbol,u2=wide(40,[{symbol:'NEWTOP',total:99}]);
  u2.universeCodes=u2.universeCodes.filter(c=>c!=='NASDAQ:'+gone);
- const re=B.regenerateDraft(state,{...u2,existing:[],date:'2026-11-16',basis:{calc_version:'b',as_of:null,shard_count:7,shards:'0=y'}});
+ const re=B.regenerateDraft(state,{...u2,existing:[],date:'2026-11-16',basis:{calc_version:'qgv2-calc/2026-11-16.1',as_of:null,shard_count:7,shards:'0=y'}});
  assert.deepEqual(re.fresh,['NEWTOP'].concat(re.fresh.filter(x=>x!=='NEWTOP')));assert.ok(re.fresh.includes('NEWTOP'));assert.ok(re.dropped.includes(gone));
- assert.equal(re.state.draft.basis.calc_version,'b');assert.equal(re.state.draft.created,'2026-11-16');
+ assert.equal(re.state.draft.basis.calc_version,'qgv2-calc/2026-11-16.1');assert.equal(re.state.draft.created,'2026-11-16');
  const after=B.currentSelection(re.state);assert.ok(!after.rows.some(r=>r.symbol===sel.rows[1].symbol),'반대 stays applied');assert.ok(after.pending.includes('NEWTOP'));assert.equal(after.complete,false);
  assert.ok(re.carried.every(s=>re.state.answers.some(a=>a.symbol===s)));assert.equal(re.carried.length+re.fresh.length,after.rows.length);
 });
