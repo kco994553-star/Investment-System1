@@ -2,10 +2,57 @@ name: cockpit-pages
 on:
   pull_request:
   workflow_dispatch:
+    inputs:
+      replay_20261020:
+        description: '10/20 수집 artifact의 데이터만 복구 (재수집·관측 추가 없음)'
+        type: boolean
+        required: false
+        default: false
 permissions:
   contents: read
 jobs:
+  replay_source:
+    if: github.event_name == 'workflow_dispatch' && inputs.replay_20261020 && github.ref_name == 'claude/investment-system-top500-validation-alrugm'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Cross-run reads cover this repository's Actions data, not just the pinned ID.
+    # Keep the token out of PR builds; this job executes no checked-out code.
+    permissions:
+      actions: read
+    outputs:
+      artifact_id: ${{ steps.handoff.outputs.artifact-id }}
+    steps:
+      - name: Read only the required metadata for the fixed 10/20 recovery source
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir "$RUNNER_TEMP/replay-source"
+          gh api --method GET repos/kco994553-star/Investment-System1/actions/runs/39522288311 --jq '{id, head_sha, head_branch, event, status, conclusion, path, repository: {full_name: .repository.full_name}, head_repository: {full_name: .head_repository.full_name}}' > "$RUNNER_TEMP/replay-source/run-metadata.json" 2>/dev/null || { echo 'REPLAY_20261020_FAILED reason=RUN_METADATA_FETCH_FAILED'; exit 1; }
+          gh api --method GET repos/kco994553-star/Investment-System1/actions/artifacts/12311543375 --jq '{id, name, size_in_bytes, digest, expired, expires_at, workflow_run: {id: .workflow_run.id, head_sha: .workflow_run.head_sha, head_branch: .workflow_run.head_branch}}' > "$RUNNER_TEMP/replay-source/artifact-metadata.json" 2>/dev/null || { echo 'REPLAY_20261020_FAILED reason=ARTIFACT_METADATA_FETCH_FAILED'; exit 1; }
+      - name: Download the fixed 10/20 recovery artifact
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          artifact-ids: '12311543375'
+          run-id: '39522288311'
+          repository: kco994553-star/Investment-System1
+          github-token: ${{ github.token }}
+          merge-multiple: true # A single fixed ID; place artifact.tar directly in replay-source.
+          path: ${{ runner.temp }}/replay-source
+      - name: Hand the public source to this run's unprivileged build
+        id: handoff
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: replay-20261020-source-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/replay-source/artifact.tar
+            ${{ runner.temp }}/replay-source/run-metadata.json
+            ${{ runner.temp }}/replay-source/artifact-metadata.json
+          retention-days: 1
+          if-no-files-found: error
   build:
+    needs: replay_source
+    # A skipped opt-in source must not skip ordinary PR/manual builds. Failed/cancelled sources block replay.
+    if: ${{ !cancelled() && (needs.replay_source.result == 'success' || (needs.replay_source.result == 'skipped' && !inputs.replay_20261020)) }}
     runs-on: ubuntu-latest
     # 60 (was 30): the full Python suite plus the browser list now takes about 28 minutes on an empty PR build and
     # longer on a manual deploy, whose artifact carries the published data (504 Universe rows); the 2026-10-19 run
@@ -31,7 +78,7 @@ jobs:
           python implementation/tools/build_pages_cockpit.py --out "$RUNNER_TEMP/public-cockpit"
           python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
       - name: Preserve previously published validated SEC observations for UI deployment
-        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch' && !inputs.replay_20261020
         run: |
           python implementation/tools/preserve_public_sec_inputs.py --out "$RUNNER_TEMP/public-cockpit"
           python implementation/tools/preserve_public_screens.py --out "$RUNNER_TEMP/public-cockpit"
@@ -44,6 +91,18 @@ jobs:
           python implementation/tools/sec_disclosures.py --preserve-only --out "$RUNNER_TEMP/public-cockpit"
           python implementation/tools/news_signals.py --preserve-only --out "$RUNNER_TEMP/public-cockpit"
           python implementation/tools/macro_evidence.py --preserve-only --out "$RUNNER_TEMP/public-cockpit"
+          python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
+      - name: Download this run's public recovery source
+        if: github.event_name == 'workflow_dispatch' && inputs.replay_20261020
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          artifact-ids: ${{ needs.replay_source.outputs.artifact_id }}
+          merge-multiple: true
+          path: ${{ runner.temp }}/replay-source
+      - name: Restore only the fixed collected JSON into fresh code and inspect it
+        if: github.event_name == 'workflow_dispatch' && inputs.replay_20261020
+        run: |
+          python implementation/tools/replay_pages_20261020.py --archive "$RUNNER_TEMP/replay-source/artifact.tar" --run-metadata "$RUNNER_TEMP/replay-source/run-metadata.json" --artifact-metadata "$RUNNER_TEMP/replay-source/artifact-metadata.json" --out "$RUNNER_TEMP/public-cockpit"
           python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
@@ -112,6 +171,9 @@ jobs:
           mkdir "$RUNNER_TEMP/deploy-check"
           tar -xf "$RUNNER_TEMP/pages-artifact/artifact.tar" -C "$RUNNER_TEMP/deploy-check"
           python implementation/tools/pages_freshness_guard.py --artifact-dir "$RUNNER_TEMP/deploy-check"
+      - name: Refuse recovery unless all 25 live files are audited baseline or fixed source bytes
+        if: inputs.replay_20261020
+        run: python implementation/tools/replay_pages_20261020.py --check-deploy --out "$RUNNER_TEMP/deploy-check"
       - name: Deploy checked Pages artifact
         id: deployment
         uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
