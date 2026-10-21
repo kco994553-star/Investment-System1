@@ -41,7 +41,14 @@ const KEY = 'investment.web.v1.chart-user-objects';
       let pageErrors = 0; page.on('pageerror', () => { pageErrors++; });
       await page.goto(BASE + '#technical');
       await page.locator('[data-chart-workbench]').waitFor();
-      check('user panel says this-device storage and separation from official history ' + width, (await page.locator('[data-user-boundary]').textContent()).includes('이 기기에만 저장') && (await page.locator('[data-user-boundary]').textContent()).includes('공식 탐지 이력'));
+      // USER_DECISIONS_PENDING.md: 2026-10-20 DRAW-STORE permits browser storage and optional export/import/backup;
+      // account/sheet sync remains separate. Require every boundary, not the obsolete "storage decision pending" wording.
+      const boundary = await page.locator('[data-user-boundary]').textContent();
+      check('user panel states browser storage, portability and official/remote separation ' + width,
+        boundary.includes('사용자 작성 객체는 공식 탐지 이력과 성과 기록에 쓰지 않고, 공식 탐지를 바꾸지 않습니다.')
+        && boundary.includes('이 브라우저에 저장 · 내보내기·가져오기·백업 가능')
+        && boundary.includes('서버·Google 시트·계정으로 보내지 않습니다.')
+        && boundary.includes('주문 아님.') && !boundary.includes('저장 위치 결정 전'));
       await syntheticDaily(page);
       const records0 = await page.locator('[data-pattern-history]').getAttribute('data-records'), cards0 = await page.locator('[data-pattern-card]').evaluateAll(n => n.map(x => x.dataset.patternCard));
       await draw(page, 'LINE', [[0.3, 0.3], [0.6, 0.45]]);
