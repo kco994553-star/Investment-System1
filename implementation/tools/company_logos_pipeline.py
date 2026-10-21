@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build local logo images from Wikidata website domains; failures retain initials."""
+"""Build local logos, or preserve the validated published bytes for UI-only deployments."""
 from __future__ import annotations
 import argparse
 import json
@@ -8,6 +8,7 @@ import sys
 from urllib.parse import urlencode, urlsplit, unquote
 from urllib.request import Request, urlopen
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 from investment_system.product.company_logos import FILENAME, MAX_IMAGE_BYTES, public_payload, require_company_logos, sanitize_png
 from investment_system.universe.universe_domains import FILENAME as DOMAINS, normalize_domain, require_universe_domains
 
@@ -89,12 +90,31 @@ def emit(out, *, live=False, fetcher=fetch):
     return payload
 
 
-def main():
+def preserve(out, *, open_response=None):
+    """No collection or re-encoding: carry the current public bundle byte for byte."""
+    from preserve_public_screens import restore
+    try:
+        count = restore(out, {FILENAME: require_company_logos}, open_response=open_response)
+    except ValueError:
+        raise ValueError('LOGO_PREVIOUS_RESTORE_FAILED') from None
+    return 'LOGO_PREVIOUS_RESTORED' if count else 'LOGO_PREVIOUS_NOT_AVAILABLE'
+
+
+def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--out', required=True)
-    parser.add_argument('--live', action='store_true')
-    args = parser.parse_args()
-    emit(args.out, live=args.live)
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument('--live', action='store_true')
+    mode.add_argument('--preserve-only', action='store_true')
+    args = parser.parse_args(argv)
+    if args.preserve_only:
+        try:
+            print(preserve(args.out))
+        except ValueError:
+            print('LOGO_PREVIOUS_RESTORE_FAILED')
+            return 1
+    else:
+        emit(args.out, live=args.live)
     return 0
 
 if __name__ == '__main__':

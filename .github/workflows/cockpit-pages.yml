@@ -158,7 +158,7 @@ jobs:
           python implementation/tools/dart_daily.py --preserve-only --out "$RUNNER_TEMP/public-cockpit"
           python implementation/tools/forward_validation_ledger.py --preserve-only --out "$RUNNER_TEMP/public-cockpit"
           python implementation/tools/universe_domains_pipeline.py --preserve-only --out "$RUNNER_TEMP/public-cockpit"
-          python implementation/tools/company_logos_pipeline.py --live --out "$RUNNER_TEMP/public-cockpit"
+          python implementation/tools/company_logos_pipeline.py --preserve-only --out "$RUNNER_TEMP/public-cockpit"
           python implementation/tools/sec_disclosures.py --preserve-only --out "$RUNNER_TEMP/public-cockpit"
           python implementation/tools/news_signals.py --preserve-only --out "$RUNNER_TEMP/public-cockpit"
           python implementation/tools/macro_evidence.py --preserve-only --out "$RUNNER_TEMP/public-cockpit"
