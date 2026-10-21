@@ -149,9 +149,9 @@ APPROVED_SHA256 = {
     "stat-radar.css": "1afcc9df3d0eeadb87b7d80251ef17091146bf62f2da40a9f7e249b2969bd6db",
     "v-coverage.js": "8031a5cf658ecc287df71dcbe5f6fdc61cc754057e39086eefa210847d37aa4c",
     "price-time.js": "9b786d04615f3a8907f8f936db78ab3fd477808eadc27814e615ffbb7dddbc0f",
-    "data-refresh.js": "8040b88ca9a8083c92879067ff84a01f5db8aa6019c42a0c2b2098b68435c6f2",
+    "data-refresh.js": "ee4d9745536dd0c698518820d1c82be297d3b28f2e0075601c21c5d000a0a76d",
     "v-coverage.css": "185302f9f5aa9542d2caadfa03363f084bf837e8e1ea2998da49fa1db8af9364",
-    "macro-evidence.js": "41efb4a48c6a6bf0363fcac28bd414bc7014224df0e8a907549078758e2a19b6",
+    "macro-evidence.js": "b87449fcb0edea5de6a6ac74cd9e7579ad81a28af970f2fc2f59f7594207070b",
     "macro-evidence.css": "5270ef2e2c80eb70125ed39f8fbef5f3f0d87172d3dff3a79c888b92ec9520cd",
     # Self-hosted chart renderer (P1-7): lightweight-charts 5.2.1 npm file unmodified, upstream LICENSE/NOTICE, third-party notices.
     "chart-renderer.js": "c6053c2633788813d363d3346833f416fa954fbf8db7e1e18252b191c0dd040b",

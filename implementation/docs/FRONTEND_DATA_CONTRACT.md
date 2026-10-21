@@ -95,6 +95,7 @@
 | news-signals.json | :147 | 일일 실행 | 최근 14일 뉴스·IR | 파일 as_of, 48시간 STALE. schema 2: 회사별 이번 결과(UPDATED/NO_NEW_ITEMS/FAILED/NOT_RUN)와 출처별 `refresh`(마지막 시도·성공, 이월 시작). 실패는 state를 바꾸지 않고 reason_codes `REFRESH_FAILED`·`REFRESH_PARTIAL_FAILED`로 적는다 |
 | dart-disclosures.json / dart-financials.json | :90 | 일일 실행 | 한국 공시 | 파일 as_of |
 | macro-screen.json | :83 (`--macro-v0`) | 일일 실행, 값은 발표 기준 | 새 발표가 있는 계열만 | 관측 기간, 수집 상한 시각(available_at), 파일 as_of |
+| macro-evidence.json | 일일 P1 근거 수집 (#352) | 일일 실행, 재취득은 규칙 R | 정부통계 관측·발표/수정 기록·현재 빈티지 재생(서로 구분) | generated_at, 계열 acquired_at/last_success_at, NOT_AVAILABLE 사유·자료 지연. 공식 국면/확률/게이트 아님 |
 | sec-13f-changes.json | :135 | 일일 실행, 내용은 분기 | 최근 두 분기 | 분기말, 제출일, 수집 시각 |
 | forward-validation-ledger.json | :114 | 일일 실행, 추가만 | 새 기록 행만 | 기록 세션 날짜 |
 | company-classification.json | :122 | 일일 실행 | 분류 | 파일 as_of |
@@ -120,6 +121,7 @@
 - 앱은 공개 파일을 페이지를 열 때 한 번 읽어 RAM에 둔다(`app.js:1180-1198`). 공시·뉴스 목록도 페이지당 한 번이다(`app.js:401-403`). 해시 이동(SPA 화면 전환)은 다시 읽지 않는다. 다시 읽는 때는 새로고침뿐이다.
 - (2026-10-18 `claude/fe-data-refresh`) 열린 탭에서는 **'자료 새로고침' 버튼**(`data-refresh.js`)이 같은 판독기로 공개 파일 묶음 전체를 다시 읽는다. 하나라도 읽기 실패면 아무것도 바꾸지 않고 '갱신 실패 · 이전 값 유지'와 옛 기준 시각을 쓴다. 성공하면 묶음을 한 번에 바꾸고 열린 화면을 제자리에서 다시 그린 뒤 `public-data-updated` 이벤트를 보낸다. 비공개 Worker·시트 요청과 설정 변경은 없다. 새 게시가 없어도 파일마다 자기 기준(행 acquired_at 또는 파일 as_of + stale_after_seconds)의 경계를 지나면 이미 읽은 본문으로 상태를 다시 판정한다(1분마다, 탭 복귀, 화면 이동, 버튼). 자동 재취득(폴링)은 하지 않는다.
 - (2026-10-19 `claude/refresh-keeps-view-state`, G2) 버튼 새로고침·경계 재판정이 화면 전체를 다시 그려도(QGV 허브·13F·뉴스·관심 기업·매크로·구조 트리·전체 트리·기업 목록·엔티티) **보기 상태는 남는다**: 페이지 위치(창 안 같은 요소가 같은 높이), 포커스(같은 요소가 남아 있을 때), 펼친 details, 검색·필터·정렬 입력, 고른 보기 버튼(13F 보기·유형, 뉴스/관계망), 표 안 가로 스크롤, 기업 목록 '더 보기' 개수. 값은 늘 새 묶음에서 다시 그린다(옛 DOM을 두지 않음). 사용자가 화면을 여는 이동(해시 변경)은 전처럼 맨 위에서 시작한다. ★(관심 기업·투자자)은 설정이라 건드리지 않는다. `data-refresh.js` captureView/restoreFields/restoreView, 시험 `refresh_view_state_browser_test.js`.
+- (2026-10-21) `macro-evidence.json`도 같은 공개 묶음에서 읽기·검증 후 함께 적용한다. 근거 파일만 바뀌어도 새 게시로 인식한다. 404는 첫 읽기에서 미게시이며, 이전 유효 파일이 사라진 새로고침에서는 실패로 처리하여 이전 묶음을 보존한다. 초기 묶음 읽기가 끝날 때까지 새로고침을 막아 응답 경합을 피한다. 근거 탭·지표·재구성 선택은 탭 RAM에서 이동/다시 그리기 후 유지하며 관측값을 저장하지 않는다.
 - 읽기에 실패하면 그 파일의 값은 RAM에 남기지 않는다(`qgv2-inputs.js:82-94`). 화면은 NOT_AVAILABLE을 쓴다. 옛 값을 현재 값처럼 보여 주지 않는다.
 - 더 새 스키마(schema_version > 2)는 값으로 쓰지 않고 새로고침을 요구한다(`sec-qgv2.js:41-43`, `universe-company.js:38`).
 - GitHub Pages CDN 자체의 짧은 캐시(배포 직후 몇 분)는 앱이 통제하지 못한다. 배포 직후 새로고침에도 옛 as_of가 보이면 몇 분 뒤 다시 연다.

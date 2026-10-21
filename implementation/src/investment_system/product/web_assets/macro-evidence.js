@@ -22,25 +22,46 @@ const REASON=Object.freeze({SOURCE_NOT_COLLECTED:'수집 전',SOURCE_NOT_AVAILAB
 const LIMIT=Object.freeze({mobile:5,pc:10,mobileMax:8,pcMax:14}),MOBILE_PX=600;
 const S={payload:null,status:'NOT_LOADED',listeners:new Set(),loading:null};
 const obj=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
+const strings=a=>Array.isArray(a)&&a.every(v=>typeof v==='string');
+const time=v=>typeof v==='string'&&Number.isFinite(Date.parse(v));
 function validate(p){
  try{
   if(!obj(p)||p.schema!==SCHEMA||p.kind!=='MACRO_EVIDENCE_LINES')return null;
   const sc=p.scope;if(!obj(sc)||sc.screen!=='EXPLORATION_ONLY'||sc.official_judgement!==false||sc.probability!==false||sc.macro_gate!==false)return null;
   if(!Array.isArray(p.indicators)||p.indicators.length!==13||!obj(p.series)||!Array.isArray(p.events)||!Array.isArray(p.releases)||!Array.isArray(p.replay_events)||!obj(p.summary))return null;
-  for(const i of p.indicators){if(!obj(i)||typeof i.id!=='string'||!Array.isArray(i.series)||!Array.isArray(i.cycles)||!obj(i.edges)||!obj(i.rule)||!obj(i.source))return null;for(const s of i.series)if(!obj(p.series[s])||!Array.isArray(p.series[s].obs))return null;}
-  for(const e of p.events)if(!obj(e)||e.layer!=='REALTIME'||typeof e.at!=='string'||!['up','down'].includes(e.direction))return null;
-  for(const [c] of TABS)if(!obj(p.summary[c]))return null;
+  if(!['LIVE','PARTIAL','NOT_AVAILABLE'].includes(p.state)||(p.generated_at!==null&&!time(p.generated_at)))return null;
+  if(!obj(p.labels)||!['summary','market_price','replay'].every(k=>typeof p.labels[k]==='string'))return null;
+  for(const i of p.indicators){
+   if(!obj(i)||typeof i.id!=='string'||!strings(i.series)||!strings(i.cycles)||!obj(i.edges)||!obj(i.rule)||!obj(i.source))return null;
+   if(!Object.values(i.edges).every(e=>obj(e)&&typeof e.label==='string'&&typeof e.interpretation==='string'))return null;
+   for(const s of i.series){const row=p.series[s];
+    if(!obj(row)||!['E','W','M','Q'].includes(row.frequency)||!Array.isArray(row.obs)||!obj(row.history))return null;
+    if(!row.obs.every(o=>Array.isArray(o)&&o.length===2&&typeof o[0]==='string'&&Number.isFinite(periodTime(o[0],row.frequency))&&typeof o[1]==='number'&&Number.isFinite(o[1])))return null;
+    if(!Object.values(row.history).every(vs=>Array.isArray(vs)&&vs.every(v=>obj(v)&&typeof v.kind==='string')))return null;
+   }
+  }
+  const event=e=>obj(e)&&p.indicators.some(i=>i.id===e.indicator&&i.series.includes(e.series))&&['up','down'].includes(e.direction);
+  for(const e of p.events)if(!event(e)||e.layer!=='REALTIME'||!time(e.at))return null;
+  for(const e of p.replay_events)if(!event(e)||typeof e.period!=='string'||!Number.isFinite(periodTime(e.period,p.series[e.series].frequency)))return null;
+  for(const r of p.releases)if(!obj(r)||!obj(p.series[r.series])||!['FIRST','REVISION'].includes(r.kind)||!time(r.at))return null;
+  for(const [c] of TABS){const b=p.summary[c];if(!obj(b)||!['warning_families','improving_families','mixed_families','realtime_event_indicators'].every(k=>strings(b[k])))return null;}
   return p;
  }catch(_){return null;}
 }
 function notify(){for(const fn of S.listeners){try{fn(current());}catch(_){}}}
-function setPayload(p,status){S.payload=p?validate(p):null;S.status=S.payload?(S.payload.state==='NOT_AVAILABLE'?'NOT_AVAILABLE':'LOADED'):(status||'INVALID');notify();attachRing();return S.payload;}
+function setPayload(p,status,{silent=false}={}){S.payload=p?validate(p):null;S.status=S.payload?(S.payload.state==='NOT_AVAILABLE'?'NOT_AVAILABLE':'LOADED'):(status||'INVALID');if(!silent){notify();attachRing();}return S.payload;}
+// Stage a public read without changing the screen. DataRefresh commits it only after the whole publication succeeds.
+async function read(view=globalThis){
+ try{const r=await view.fetch(FILENAME,{cache:'no-store',credentials:'omit',referrerPolicy:'no-referrer',redirect:'error'});
+  if(!r.ok)return{payload:null,status:'NOT_AVAILABLE'};const text=await r.text();if(new TextEncoder().encode(text).length>MAX)return{payload:null,status:'INVALID'};
+  let p;try{p=validate(JSON.parse(text));}catch(_){return{payload:null,status:'INVALID'};}
+  return{payload:p,status:p?(p.state==='NOT_AVAILABLE'?'NOT_AVAILABLE':'LOADED'):'INVALID'};
+ }catch(_){return{payload:null,status:'NOT_AVAILABLE'};}
+}
 async function load(view=globalThis){
  if(S.loading)return S.loading;
  S.loading=(async()=>{
-  try{const r=await view.fetch(FILENAME,{cache:'no-store',credentials:'omit',referrerPolicy:'no-referrer',redirect:'error'});
-   if(!r.ok)return setPayload(null,'NOT_AVAILABLE');const text=await r.text();if(new TextEncoder().encode(text).length>MAX)return setPayload(null,'INVALID');
-   return setPayload(JSON.parse(text));}catch(_){return setPayload(null,'NOT_AVAILABLE');}
+  try{const r=await read(view);return setPayload(r.payload,r.status);}
   finally{S.loading=null;}
  })();
  return S.loading;
@@ -153,7 +174,8 @@ function metaBlock(p,ind){
 }
 function mount(host,{locale,view=globalThis}={}){
  if(!host)return null;
- const ui={cycle:'economy',indicator:null,replay:false,extra:new Set()};
+ // View choices stay in this tab's RAM across the common refresh redraw and route changes; observations are never stored.
+ const ui=S.ui||(S.ui={cycle:'economy',indicator:null,replay:false,extra:new Set()});
  const root=el('section',{class:'card macro-evidence','data-macro-evidence':''});host.replaceChildren(root);
  const paint=()=>{
   const p=S.payload;root.replaceChildren();root.setAttribute('data-macro-evidence-status',S.status);
@@ -220,5 +242,5 @@ function mount(host,{locale,view=globalThis}={}){
  if(S.status==='NOT_LOADED')void load(view);
  return{paint,state:ui};
 }
-return Object.freeze({FILENAME,SCHEMA,TABS,LIMIT,validate,load,setPayload,current,events,summary,subscribe,lineGroups,periodTime,ringEvidence,show,mount});
+return Object.freeze({FILENAME,SCHEMA,TABS,LIMIT,validate,read,load,setPayload,current,events,summary,subscribe,lineGroups,periodTime,ringEvidence,show,mount});
 });
