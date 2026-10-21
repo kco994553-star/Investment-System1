@@ -1,6 +1,6 @@
 # 현재 인수인계 — 2026-10-21 (Codex Main)
 
-확인 시각: **2026-10-21 08:15 UTC / 17:15 KST**. 이 시점 이후 PR·Actions·게시 증거는 다시 확인한다. 구현 / 시험 / 병합 / 게시 / 실사이트 확인을 구분한다.
+확인 시각: **2026-10-21 08:20 UTC / 17:20 KST**. 이 시점 이후 PR·Actions·게시 증거는 다시 확인한다. 구현 / 시험 / 병합 / 게시 / 실사이트 확인을 구분한다.
 
 먼저 읽기: [WORKING_RULES.md](WORKING_RULES.md) → 이 파일 → [사용자 결정](implementation/docs/USER_DECISIONS_PENDING.md) → [기존 분담](implementation/docs/PARALLEL_LANES_20261020.md) → [제품 IA](implementation/docs/PRODUCT_IA_DIRECTIVE_20261018.md) → [자료 계약](implementation/docs/FRONTEND_DATA_CONTRACT.md) → 작업 영역 계약·시험. 이전 원문은 [10/20 기록](implementation/docs/handoff/HANDOFF_HISTORY_20261020.md)에 보존했다. 과거 “다음 실행/병합 대기”보다 아래 실제 증거를 따른다. 사용자 결정은 구현과 다르다는 이유로 폐기하지 않는다.
 
@@ -34,10 +34,10 @@
 
 | 담당 | 브랜치 / 파일 범위 | 상태·의존성 |
 | --- | --- | --- |
-| Main | codex/frontend-links-20261021; app·공용 시험/가드·인수인계 | #372에 기존 메뉴 연결·기업 맥락·QGV 분류 필터·검색 복귀·프롬프트 선택 기업을 통합(fa6dd669). canonical ae34eb90 동기화 완료. cb593bbd 원격 CI의 글꼴 TAR fixture 간섭을 production 경계 변경 없이 분리; 최종 6검사/25subtests와 독립 리뷰 통과. G6 중복 정렬 수정 중. 최종 HEAD 6 CI·병합·배포 잔여 |
+| Main | codex/frontend-links-20261021; app·공용 시험/가드·인수인계 | #372에 기존 메뉴 연결·기업 맥락·QGV 분류 필터·검색 복귀·프롬프트 선택 기업을 통합(fa6dd669). canonical ae34eb90 동기화 완료. cb593bbd 원격 CI의 글꼴 TAR fixture 간섭을 production 경계 변경 없이 분리; 최종 6검사/25subtests와 독립 리뷰 통과. G6 중복 정렬을 단일 상태로 수정·통합 완료(c945f4a3), 로컬 회귀 564검사 및 기존 PC/QGV/13F 검사 통과. 최종 HEAD 6 CI·병합·배포 잔여 |
 | Kierkegaard | codex/qgv-classification-filters-20261021; leaderboard/portfolio·전용 시험 | QGV 표시 필터 통합·60개 브라우저 검사 통과. 검색 독립 리뷰 70 assertions 통과. 실사이트 격리 검증 도구 준비(운영 실행 전). #262 기존 승인 가설 동기화 89e65364: Python44/Node302/화면64 PASS, 원PR 미갱신 |
-| Darwin | codex/replay-20261020-artifact 및 codex/search-continuity-20261021 | #371 최종 9066c67e의 CI 6/6 성공·병합 ae34eb90. 검색·프롬프트 독립 리뷰 완료. 현재 G6 PC 중복 정렬 결함의 단일 상태 수정 담당 |
-| Lovelace | codex/target-v1-integration-20261021 및 codex/prompt-context-20261021 | TARGET #248→#263 로컬 준비 완료·각 최신 canonical/6 CI 잔여. 프롬프트 b05f06f5 통합·152단언 통과. 계약 갱신 및 공용 app 통합 독립 리뷰 완료. #263 동기화 97bf56df 독립 APPROVE; 폰트 fixture 경계 독립 리뷰 중 |
+| Darwin | codex/replay-20261020-artifact 및 codex/search-continuity-20261021 | #371 최종 9066c67e의 CI 6/6 성공·병합 ae34eb90. 검색·프롬프트 독립 리뷰 완료. G6 단일 정렬 수정 Main 통합 및 564검사·독립 리뷰 완료 |
+| Lovelace | codex/target-v1-integration-20261021 및 codex/prompt-context-20261021 | TARGET #248→#263 로컬 준비 완료·각 최신 canonical/6 CI 잔여. 프롬프트 b05f06f5 통합·152단언 통과. 계약 갱신 및 공용 app 통합 독립 리뷰 완료. #263 동기화 97bf56df 독립 APPROVE; 폰트 fixture 경계·G6 단일 정렬·#262 가설 통합 독립 리뷰 완료 |
 
 Main #370 검증: macro 브라우저 390/1280 **10단계 통과**(초기 읽기·빈 상태·실제 제공 artifact·합성 새로고침·상세). 실제 10/20 artifact에 수정된 두 JS만 적용해 확인했다. 리뷰 지적 초기 읽기 경합·404·필수 labels/summary/관측 누락을 회귀에 추가했고 수정 전 실패를 확인했다. 최종 공통 새로고침 **159 checks**, 화면 보존 **20 screens**, 실제 artifact 경계 가드 **138파일** 통과. 관련 Python **73 passed/150 subtests**는 JS 리뷰 보완 전 실행 결과이며 Python 코드는 변경하지 않았다. 최종 HEAD e967cbd3의 원격 필수 **6/6 CI 성공**: cockpit-pages 39555638059, web-mvp-validation 39555637884, autonomy-gate-a 39555637886, web-research-guard 39555638018, web-state-presentation 39555637868, c21-real-data 39555637896. #370 병합 완료, 배포 전. 수집기·공식 계산·저장 정책·공개 범위는 변경하지 않는다.
 
@@ -49,7 +49,7 @@ Main #370 검증: macro 브라우저 390/1280 **10단계 통과**(초기 읽기�
 
 프런트엔드 연결 검증: navigation 40 PASS(light/dark × 390/1280), private-history 60 PASS, IA 1530 checks·16개 빈 기기 캡처 PASS, macro 10단계 PASS. 마지막 같은 기업 2.1 복귀 유지 보완은 navigation 40 및 독립 6개 lifecycle 확인에 포함한다. 실제 10/20 공개 파일 위의 자산 가드 138파일 PASS. 합성 봉으로 RAM 보존을 확인했으며 실가격/기업행사 검증 완료가 아니다. 기존 다른 기업·화면 이탈·로그아웃 정리 동작 유지. PC 라이트/모바일 다크 캡처를 실제 열람했지만 18쪽 PDF 전체 대조는 미완료다. 필수 CI 최종 HEAD와 배포는 별도로 확인한다.
 
-추가 #372 통합 검증: QGV 표시 필터 Node 24 PASS(전체 Universe/공식 모델 불변 포함), 실제 통합 브라우저 60 PASS. 검색 복귀·홈 갱신 12시나리오/120단언 PASS 및 독립 리뷰 70단언 PASS. 선택 기업 프롬프트 projection 15·통합 브라우저 152단언/4폭·언어 조합 PASS, 관련 Python 41 PASS. 새 정확한 자산 해시를 고정했고 고정 10/20 데이터 위 공개 가드 138파일 PASS. 실가격 검증이나 실사이트 실행을 뜻하지 않는다. [상세 통합 기록](implementation/docs/handoff/FRONTEND_WIRING_20261021.md).
+추가 #372 통합 검증: QGV 표시 필터 Node 24 PASS(전체 Universe/공식 모델 불변 포함), 실제 통합 브라우저 60 PASS. 검색 복귀·홈 갱신 12시나리오/120단언 PASS 및 독립 리뷰 70단언 PASS. 선택 기업 프롬프트 projection 15·통합 브라우저 152단언/4폭·언어 조합 PASS, 관련 Python 41 PASS. 새 정확한 자산 해시를 고정했고 고정 10/20 데이터 위 공개 가드 138파일 PASS. G6 최종 실제 통합 build에서도 3/3·48 snapshots·564 checks PASS, guard138 PASS. 원격 cb593bbd의 font fixture 실패는 원인/최종 집중 검사/독립 재리뷰를 상세 기록했다. 실가격 검증이나 실사이트 실행을 뜻하지 않는다. [상세 통합 기록](implementation/docs/handoff/FRONTEND_WIRING_20261021.md).
 
 ## 4. 기능 1.1 계층별 상태
 
