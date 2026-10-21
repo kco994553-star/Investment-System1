@@ -1,12 +1,12 @@
 # 현재 인수인계 — 2026-10-21 (Codex Main)
 
-확인 시각: **2026-10-21 09:12 UTC / 18:12 KST**. 이 시점 이후 PR·Actions·게시 증거는 다시 확인한다. 구현 / 시험 / 병합 / 게시 / 실사이트 확인을 구분한다.
+확인 시각: **2026-10-21 09:53 UTC / 18:53 KST**. 이 시점 이후 PR·Actions·게시 증거는 다시 확인한다. 구현 / 시험 / 병합 / 게시 / 실사이트 확인을 구분한다.
 
 먼저 읽기: [WORKING_RULES.md](WORKING_RULES.md) → 이 파일 → [사용자 결정](implementation/docs/USER_DECISIONS_PENDING.md) → [기존 분담](implementation/docs/PARALLEL_LANES_20261020.md) → [제품 IA](implementation/docs/PRODUCT_IA_DIRECTIVE_20261018.md) → [자료 계약](implementation/docs/FRONTEND_DATA_CONTRACT.md) → 작업 영역 계약·시험. 이전 원문은 [10/20 기록](implementation/docs/handoff/HANDOFF_HISTORY_20261020.md)에 보존했다. 과거 “다음 실행/병합 대기”보다 아래 실제 증거를 따른다. 사용자 결정은 구현과 다르다는 이유로 폐기하지 않는다.
 
 ## 1. 기준·인수 범위
 
-- 실제 기본·canonical: **claude/investment-system-top500-validation-alrugm**, HEAD **ae34eb9035200fd47991dbb5878330ac4ca32db6** (#371). #371의 최종 9066c67e 필수 6 CI 성공과 직전 canonical 87bdc1c3 일치를 확인하고 병합했다. #370 최종 HEAD e967cbd3의 필수 6 CI가 모두 성공했고, 병합 직전 base=8c671ae4와 원격 canonical 일치를 확인했다.
+- 실제 기본·canonical: **claude/investment-system-top500-validation-alrugm**, HEAD **a66faf8f8bdbbc5e8ac2076185db6ef2ea6f391f** (#372). #372 최종13a58584의 필수6CI·직전canonical ae34·로컬/원격SHA 동일을 확인하고 병합했다. #371의 최종 9066c67e 필수 6 CI 성공과 직전 canonical 87bdc1c3 일치를 확인하고 병합했다. #370 최종 HEAD e967cbd3의 필수 6 CI가 모두 성공했고, 병합 직전 base=8c671ae4와 원격 canonical 일치를 확인했다.
 - **실제 게시: ae34eb9035200fd47991dbb5878330ac4ca32db6**. [복구 run 39567157784](https://github.com/kco994553-star/Investment-System1/actions/runs/39567157784)은 **2026-10-21 08:49:17 UTC / 17:49:17 KST 성공**. 사이트 138/138파일·고정 데이터25/25 SHA 일치. 이전 afb06868 게시 상태는 대체됐다. [25개 해시·원장·배포 직전 최신자료 검사·실사이트 증거](implementation/docs/handoff/RECOVERY_PUBLICATION_20261021.md).
 - 실사이트 recovery 프로필: 390/1280 × light/dark **236 assertions / 실패0**, 28 PASS / 후속 #372 기능12 NOT_EXPECTED. 검색→5카드→동일기업상세·기존메뉴·새로고침 UNCHANGED/필터보존·승인폰트2개 확인. 합성 기기 노트/시나리오 저장·복귀·reload·수정·삭제와 개인추정 추가/삭제·공식이력 불변 확인. 실가격·#372 새 기능 통과로 확대하지 않는다.
 - 원격 400개 브랜치 이름·SHA 전수 대조. 기술 #350/#354/#355/#357/#359, 매크로 #351/#352/#353/#356/#358은 병합되어 게시 커밋에 포함된다. 별도의 후속 기술·매크로 배치 브랜치는 발견하지 못했다. Claude 미푸시 작업이 없다는 뜻은 아니다.
@@ -35,17 +35,18 @@
 
 | 담당 | 소유 범위 | 상태·의존성 |
 | --- | --- | --- |
-| Main | codex/frontend-links-20261021; app/style/guard/CI/handoff 통합 | #372 f013440d 필수5 CI 성공, cockpit 노트 문구2검사 실패. 모바일 QGV 기존3열 줄바꿈 보완16캡처/독립리뷰/필터60/정렬564 PASS. 노트 문구44 PASS/독립 APPROVE. UI로고 보존 보완114 PASS·실제25해시보존. 최종HEAD6CI·병합·게시 잔여 |
-| Darwin | 별도 worktree의 chart_user_objects_browser_test.js만 | 승인 저장문구 변경과 기존 시험 비교 완료, red42/2·기준44·green44 PASS. app/style 수정 없음. 로컬9영역49캡처 실제 시각감사 완료 |
-| Kierkegaard | recovery/최종 실사이트 브라우저 검사 | recovery236 assertions PASS. #262 가설 통합/리뷰 완료. 최종 frontend 실제배포 신호 대기 |
-| Lovelace | TARGET·공용 변경 독립 리뷰 | #248 원본ancestry/15파일 PASS, #263/공용app APPROVE. 좁은 모바일 CSS 독립 APPROVE |
+| Main | 원본 #248→#263→#262 통합·공용 파일·인수인계 | #372 병합 a66faf8f. #248에 실제 최신canonical 병합 완료; 현재 원본PR 게시·최종6CI 단계. 중간 배포 금지 |
+| Darwin | 독립 리뷰·기존 PR 설명 | 노트 문구·모바일 CSS·UI로고 보존·TARGET 생산버전 수정 독립 APPROVE. 배포 후 시각 확인 준비 |
+| Kierkegaard | 실사이트 검증 | recovery236 PASS. 최종 frontend용 기존 검사 및 보충188검사 준비; 최종배포 신호 대기 |
+| Lovelace | TARGET 통합·실제 공개 경로 | #263 생산 버전 호환 수정·Node28·합성browser2·실제공개browser2 PASS. Main통합 완료, 소스 추가 수정 없음 |
 
-기존 PR 재사용 준비 브랜치는 모두 원격에 보존·로컬/원격 SHA 동일 확인했다. 원본 PR 브랜치 자체는 아직 갱신 전이다.
+기존 PR 원본 ancestry를 유지하고 준비 브랜치를 원격에 보존했다. 원본 PR를 재사용하며 force push하지 않는다.
 
-- #248: 원본 claude/target-v1-builder 8c6990e2 → codex/target248-sync-20261021 **e1248fd1**, f013 포함·원본 ancestry/owned11파일 유지·총15파일, build136 PASS. 중간 배포 금지.
-- #263: 원본 claude/target-v1-followups 194148f5 → codex/target263-sync-20261021 **48b91213**, #248+f013 포함. 실제 통합 build141·TARGET390/1280·build/config/font12 PASS. 최종 재조회/coverage/안전/같은calc/실제사용자응답 조건 유지, number_check.result null/false/null/0.
-- #262: 원본 claude/macro-rule-c-clean b7db9b60 → codex/macro262-sync-20261021 **5ad6d000**, #263+f013 포함. Python44/Node302/화면64·최종 통합macro6 PASS. C는 HYPOTHESIS/UNCALIBRATED, gate_active=false/automatic=false, report/owner승인 요구 유지.
-- 실제 #372 canonical 병합 커밋에 다시 동기화한 뒤 **#248→#263→#262 각각 최종HEAD 필수6체크 후 순차 병합**한다. 원본 PR 재사용, force push 없음. 준비 단계 성공을 최종 HEAD CI로 세지 않는다.
+- **#248**: 원본 claude/target-v1-builder 8c6990e2, 준비5c7630f1에 실제 canonical **a66faf8f**를 동기화했다. 담당11파일 및 구현15파일 유지·build136 PASS. 이 PR HEAD의 최종6CI를 확인한 후 병합한다. **#248 중간 배포 금지**.
+- **#263**: 원본 claude/target-v1-followups 194148f5, 준비 **35bdd5a2**. 최신 frontend13a + 실제 생산 calc_version 호환 수정450f1cfc/정확한guard핀 포함. Node28, 기존 합성 TARGET390/1280 및 별도 실제 공개자료390/1280 PASS. number_check.result null/false/null/0·실제가격/V0·답변/확정0 유지. #248 실제 병합 후 canonical 동기화·원본PR 게시·최종6CI 필요.
+- **#262**: 원본 claude/macro-rule-c-clean b7db9b60, 준비 **f62dc659**에 #263 호환 수정까지 통합했다. 전체조합 새 build141·공개25파일 동일·repo/privacy/email guard28records PASS. 기존 Python44/Node302/화면64·통합macro6 PASS. C는 HYPOTHESIS/UNCALIBRATED, gate_active=false/automatic=false, report/owner승인 요구 유지. #263 실제 병합 후 최종동기화/6CI 필요.
+
+**#372 최종검사 완료**: HEAD13a58584, [cockpit-pages39575257248](https://github.com/kco994553-star/Investment-System1/actions/runs/39575257248) build119139076551 **2026-10-21 09:50:34 UTC / 18:50:34 KST 성공**. 전체Python3630 PASS/1 skipped/298subtests, 브라우저 전체 통과(노트44·QGV필터60·G6정렬564 포함). 나머지필수5CI: research39575257366, presentation39575257277, c2139575257326, autonomy39575257289, webmvp39575257195 모두 같은HEAD 성공. PR의source/deploy는 조건대로 skipped다. #372는 병합했지만 아직 게시하지 않았다. 기존 복구 배포ae34의 실사이트236통과를 이 기능의 운영검증으로 세지 않는다.
 
 Main #370 검증: macro 브라우저 390/1280 **10단계 통과**(초기 읽기·빈 상태·실제 제공 artifact·합성 새로고침·상세). 실제 10/20 artifact에 수정된 두 JS만 적용해 확인했다. 리뷰 지적 초기 읽기 경합·404·필수 labels/summary/관측 누락을 회귀에 추가했고 수정 전 실패를 확인했다. 최종 공통 새로고침 **159 checks**, 화면 보존 **20 screens**, 실제 artifact 경계 가드 **138파일** 통과. 관련 Python **73 passed/150 subtests**는 JS 리뷰 보완 전 실행 결과이며 Python 코드는 변경하지 않았다. 최종 HEAD e967cbd3의 원격 필수 **6/6 CI 성공**: cockpit-pages 39555638059, web-mvp-validation 39555637884, autonomy-gate-a 39555637886, web-research-guard 39555638018, web-state-presentation 39555637868, c21-real-data 39555637896. #370 병합·복구 배포 완료. 수집기·공식 계산·저장 정책·공개 범위는 변경하지 않는다.
 
@@ -65,22 +66,22 @@ Main #370 검증: macro 브라우저 390/1280 **10단계 통과**(초기 읽기�
 
 | 기능 | 구현 / 시험 | 병합 | 게시 | 실사이트 확인·잔여 |
 | --- | --- | --- | --- | --- |
-| 1.1 기업검색 | 기존5요약·상세 + #372 연속성 시험 완료 | #362; #372 대기 | 기존 ae34 | 기존검색 PASS; 확장기능 미게시 |
-| 2.1 리더보드 | Universe504·공식/QG참고/개인 분리; #372 표시필터·단일정렬 시험 완료 | #364; #372 대기 | 기존 ae34 | 기존메뉴 PASS; 모바일 표 보완 중 |
+| 1.1 기업검색 | 기존5요약·상세 + #372 연속성 시험 완료 | #362; #372 병합 | 기존 ae34 | 기존검색 PASS; 확장기능 미게시 |
+| 2.1 리더보드 | Universe504·공식/QG참고/개인 분리; #372 표시필터·단일정렬 시험 완료 | #364; #372 병합 | 기존 ae34 | 기존메뉴 PASS; 모바일 표 보완·시험·병합 완료, 미게시 |
 | 2.2 가중치 | 2단계·개인 프로필 / 기존CI | #300 | ae34 | 공식과 개인 분리; 미승인 수치 생성 금지 |
 | 2.3 13F 연구 | 공개 과거보유 조회 / 기존CI | 기존 | ae34 | 가중치 학습·채택 미구현; 기관 실제공식 아님 |
 | 2.4 상세·레이더 | 가치·비교·후보3축/NA / 기존CI | #311/#344/#364 | ae34 | 실제가격·권리 경계 유지 |
 | 2.5 QGV 트리 | 기존 설명·경로 | 기존 | ae34 | 18쪽 시안 미확보 |
-| 3.1 차트·시나리오 | 기존 + #372 기업ID/RAM 유지 / 합성시험 | #354/#359; #372 대기 | 기존 ae34 | 합성저장·reload PASS, 실제연속성 미확인 |
+| 3.1 차트·시나리오 | 기존 + #372 기업ID/RAM 유지 / 합성시험 | #354/#359; #372 병합 | 기존 ae34 | 합성저장·reload PASS, 실제연속성 미확인 |
 | 3.2 패턴 | 감지·이력·설정 / 합성시험 | #355/#357 | ae34 | 노트/공식이력 분리 PASS; 실가격검증 아님 |
 | 3.3 노트 | 저장·편집·삭제·교환 / 기존CI | #359/#363 | ae34 | 실사이트 합성생성/수정/삭제/reload PASS; 계정동기화 아님 |
 | 4.1 국면·근거 | P1수집/링·#370 수정 / 최종6CI | #351/#352/#353/#356/#370 | ae34+10/20자료 | 국면·확률 미산출; 새로고침 UNCHANGED PASS |
-| 4.2~4.6 기존매크로 | 산업·개인·트리; #372 연결 / 로컬시험 | #358/#363; #372 대기 | 기존 ae34 | 개인추정 추가/삭제/reload PASS; C가설 #262 준비 |
+| 4.2~4.6 기존매크로 | 산업·개인·트리; #372 연결 / 로컬시험 | #358/#363; #372 병합 | 기존 ae34 | 개인추정 추가/삭제/reload PASS; C가설 #262 준비 |
 | 5.1 관계망 | 틀·검색안내 / 기존CI | #367 | ae34 | 생산자 미연결, 임의관계 없음 |
 | 5.2 공시·뉴스 | SEC/DART·schema2/필터 / 기존CI | #346/#367 | ae34 | NEWS LIVE/필터보존 PASS, 영향·가격반영 미산출 |
 | 6.1 포트폴리오 | 모델/실제/모의 분리; TARGET 준비 | #366; #248/#263 대기 | 기존 ae34 | 기존메뉴 PASS; TARGET 확정 미실행 |
 | 6.2~6.3 보고 | 일일·누락입력·실행프롬프트·답변검토 | 기존/#366 | ae34 | 주간집계 미결 |
-| 7.1 프롬프트 | 라이브러리·개인복사본; #372 기업가져오기 시험 완료 | #368; #372 대기 | 기존 ae34 | 기간의미 미정→수동, 자동공식적용 없음 |
+| 7.1 프롬프트 | 라이브러리·개인복사본; #372 기업가져오기 시험 완료 | #368; #372 병합 | 기존 ae34 | 기간의미 미정→수동, 자동공식적용 없음 |
 | 8 구조트리 | 기존전체연결 / 로컬시각 확인 | 기존 | ae34 | 18쪽·원본없는 하위번호 미확인 |
 | 9.1 백테스트 | 화면·설명·연구어댑터 | #368 | ae34 | 운영 실험등록/결과 미구현 |
 | 9.2 전진검증 | 가격없는 원장·기기계산 / 운영보존 확인 | 기존/#368 | 10/19+10/20 ae34 | v1/v2 날짜각1건·hash일치; 실제이후성과 별도 |
@@ -89,7 +90,7 @@ Main #370 검증: macro 브라우저 390/1280 **10단계 통과**(초기 읽기�
 
 ## 5. 열린 PR·승인 경계
 
-인수 시 열린 PR 7개: **#361, #305(draft), #281(draft), #267, #263, #262, #248**, 할당자 없음. 작성 계정이 같아도 Claude 로컬 작업 소유권을 넘겨받았다고 단정하지 않는다.
+#372 병합 후 기존 열린 PR 7개: **#361, #305(draft), #281(draft), #267, #263, #262, #248**, 할당자 없음. 작성 계정이 같아도 Claude 로컬 작업 소유권을 넘겨받았다고 단정하지 않는다.
 
 - **#248→#263**: 최신 결정상 구현 통합 승인. 최신 canonical 동기화·필수 검사 후 순서대로 통합 대상. TARGET 확정은 같은 calc_version 숫자 검증·coverage·실제 사용자 응답 등 별도 조건 유지.
 - **#262**: 규칙 C는 승인된 가설. 재생·동기화 잔여. M-REENABLE은 기존 조건 및 별도 승인 필요, 참고 모드 유지.
@@ -100,7 +101,7 @@ Main #370 검증: macro 브라우저 390/1280 **10단계 통과**(초기 읽기�
 
 ## 6. 다음 실행·예약·보존
 
-다음 할 일은 순서대로 (1) 완료된 복구 증거 보존, (2) #372 노트 안내문 시험 실패 원인 확인과 모바일 QGV 줄바꿈 보완·최신 canonical 동기화·최종 6 CI·병합, (3) 기존 #248→#263 최신 canonical 동기화·각 6 CI·순차 병합(중간 확정 화면 배포 금지), (4) 기존 #262 가설 동기화·최종 6 CI·참고 모드 유지, (5) 최종 화면 배포에서 최신 데이터/원장 보존·실사이트 확인, (6) 18쪽 시안·미푸시 작업 확보 후 남은 배치 대조다. CI 대기 중에는 독립적인 승인 작업을 계속한다.
+다음 할 일은 (1) #248 원본PR 최종HEAD6CI·병합, (2) #263 실제canonical 동기화·원본PR 최종6CI·병합, (3) #262 같은 절차·가설참고모드 유지, (4) 정상 수동UI배포 전 진행실행/최신게시자료 확인·데이터/원장보존·141자산/브라우저실사이트검사, (5) 결과인수인계갱신과18쪽/미푸시자료확보후 남은시안대조다. #248 단독 중간 배포는 하지 않는다. 최종HEAD의 필수6CI를 과거 성공으로 대신하지 않는다.
 
 - 정기 cron 22:17 UTC / 다음 날 07:17 KST. 점검 기준 23:15 UTC / 다음 날 08:15 KST, 지연 점검 다음 날 00:17 UTC / 09:17 KST. 10/20 실행은 2시간19분 지연됐으므로 과거 “보통 15~20분”을 보장으로 쓰지 않는다.
 - **새 예약을 만들지 않았다.** 확인 가능한 자동화 목록에서 기존 Claude 결과/지연 점검의 계속 실행 증거를 찾지 못했다. Claude 세션 예약 상태 미확인. 현재 가능한 작업을 예약 시각까지 미루지 않는다.
@@ -110,4 +111,4 @@ Main #370 검증: macro 브라우저 390/1280 **10단계 통과**(초기 읽기�
 - 글꼴 예외는 승인된 두 파일의 정확한 경로·서명·크기·해시뿐. 가드 범위/파일 수 상한 확대 금지. 권한 거부 우회 금지, 원문 이유와 영향 보고.
 - 다른 작업자의 worktree·scratchpad·원자료를 삭제하지 않는다. 정리 전 소유자·병합·미커밋·재현 가능성 확인.
 
-일반 UI 배포의 로고만 재수집하던 경로를 --preserve-only로 보완했다. 로고/보존/공개경계114 PASS와 실제 게시25파일 바이트 동일·원장2건보존·가드138 PASS 확인. 정기 로고 수집과 권한은 유지한다. 노트 안내문 시험도 독립 APPROVE를 받았다. 최종 PR HEAD 변경 후 필수6CI를 새로 확인한다.
+일반 UI 배포의 로고만 재수집하던 경로를 --preserve-only로 보완했다. 로고/보존/공개경계114 PASS와 실제 게시25파일 바이트 동일·원장2건보존·가드138 PASS 확인. 정기 로고 수집과 권한은 유지한다. 노트 안내문 시험도 독립 APPROVE를 받았다. #372 최종13a58584 필수6CI 성공·병합 완료. 후속 PR는 각 최종HEAD를 따로 확인한다.
