@@ -1,12 +1,12 @@
 # 현재 인수인계 — 2026-10-21 (Codex Main)
 
-확인 시각: **2026-10-21 07:50 UTC / 16:50 KST**. 이 시점 이후 PR·Actions·게시 증거는 다시 확인한다. 구현 / 시험 / 병합 / 게시 / 실사이트 확인을 구분한다.
+확인 시각: **2026-10-21 08:15 UTC / 17:15 KST**. 이 시점 이후 PR·Actions·게시 증거는 다시 확인한다. 구현 / 시험 / 병합 / 게시 / 실사이트 확인을 구분한다.
 
 먼저 읽기: [WORKING_RULES.md](WORKING_RULES.md) → 이 파일 → [사용자 결정](implementation/docs/USER_DECISIONS_PENDING.md) → [기존 분담](implementation/docs/PARALLEL_LANES_20261020.md) → [제품 IA](implementation/docs/PRODUCT_IA_DIRECTIVE_20261018.md) → [자료 계약](implementation/docs/FRONTEND_DATA_CONTRACT.md) → 작업 영역 계약·시험. 이전 원문은 [10/20 기록](implementation/docs/handoff/HANDOFF_HISTORY_20261020.md)에 보존했다. 과거 “다음 실행/병합 대기”보다 아래 실제 증거를 따른다. 사용자 결정은 구현과 다르다는 이유로 폐기하지 않는다.
 
 ## 1. 기준·인수 범위
 
-- 실제 기본·canonical: **claude/investment-system-top500-validation-alrugm**, HEAD **87bdc1c39739d9a204ed58a8670e3a79ff6fd264** (#370). #370 최종 HEAD e967cbd3의 필수 6 CI가 모두 성공했고, 병합 직전 base=8c671ae4와 원격 canonical 일치를 확인했다.
+- 실제 기본·canonical: **claude/investment-system-top500-validation-alrugm**, HEAD **ae34eb9035200fd47991dbb5878330ac4ca32db6** (#371). #371의 최종 9066c67e 필수 6 CI 성공과 직전 canonical 87bdc1c3 일치를 확인하고 병합했다. #370 최종 HEAD e967cbd3의 필수 6 CI가 모두 성공했고, 병합 직전 base=8c671ae4와 원격 canonical 일치를 확인했다.
 - 실제 게시: **afb06868a97cc823580480566b9a4e998953f567**, [수동 run 39455397782](https://github.com/kco994553-star/Investment-System1/actions/runs/39455397782). 완료 **2026-10-20 16:48:04 UTC / 2026-10-21 01:48:04 KST**. artifact와 [사이트](https://kco994553-star.github.io/Investment-System1/) **134/134 파일** 바이트 일치. 이전 d993b1ea는 최신 게시가 아니다.
 - 원격 400개 브랜치 이름·SHA 전수 대조. 기술 #350/#354/#355/#357/#359, 매크로 #351/#352/#353/#356/#358은 병합되어 게시 커밋에 포함된다. 별도의 후속 기술·매크로 배치 브랜치는 발견하지 못했다. Claude 미푸시 작업이 없다는 뜻은 아니다.
 - 새 checkout이며 Claude worktree·미커밋 변경·예약 작업이 이전됐다고 가정하지 않는다. AGENTS.md와 사용자 기능 계층 원본 Investment_System_Function_Hierarchy_v1.0.md는 저장소에서 발견하지 못했다.
@@ -34,18 +34,18 @@
 
 | 담당 | 브랜치 / 파일 범위 | 상태·의존성 |
 | --- | --- | --- |
-| Main | codex/frontend-links-20261021; app·공용 시험/가드·인수인계 | #372에 기존 메뉴 연결·기업 맥락·QGV 분류 필터·검색 복귀·프롬프트 선택 기업을 통합(fa6dd669). 최신 canonical 동기화 후 최종 HEAD 6 CI·병합·배포 잔여 |
-| Kierkegaard | codex/qgv-classification-filters-20261021; leaderboard/portfolio·전용 시험 | QGV 표시 필터 통합·60개 브라우저 검사 통과. 검색 독립 리뷰 70 assertions 통과. 실사이트 격리 검증 도구 준비(운영 실행 전), #262 현황 읽기 전용 조사 |
-| Darwin | codex/replay-20261020-artifact 및 codex/search-continuity-20261021 | #371 최종 9066c67e의 CI 5/6 성공·cockpit 진행. 검색 a5ad8cc0 통합·12시나리오/120단언 통과. 프롬프트 독립 리뷰 담당 |
-| Lovelace | codex/target-v1-integration-20261021 및 codex/prompt-context-20261021 | TARGET #248→#263 로컬 준비 완료·각 최신 canonical/6 CI 잔여. 프롬프트 b05f06f5 통합·152단언 통과. 자료/상호작용 계약 갱신 담당 |
+| Main | codex/frontend-links-20261021; app·공용 시험/가드·인수인계 | #372에 기존 메뉴 연결·기업 맥락·QGV 분류 필터·검색 복귀·프롬프트 선택 기업을 통합(fa6dd669). canonical ae34eb90 동기화 중. cb593bbd 원격 CI에서 글꼴 TAR fixture가 4MiB 상한에 먼저 걸림; 실제 경계 유지하며 시험 분리 수정 중. 최종 HEAD 6 CI·병합·배포 잔여 |
+| Kierkegaard | codex/qgv-classification-filters-20261021; leaderboard/portfolio·전용 시험 | QGV 표시 필터 통합·60개 브라우저 검사 통과. 검색 독립 리뷰 70 assertions 통과. 실사이트 격리 검증 도구 준비(운영 실행 전). #262 기존 승인 가설 동기화 89e65364: Python44/Node302/화면64 PASS, 원PR 미갱신 |
+| Darwin | codex/replay-20261020-artifact 및 codex/search-continuity-20261021 | #371 최종 9066c67e의 CI 6/6 성공·병합 ae34eb90. 검색·프롬프트 독립 리뷰 완료. 현재 G6 PC 중복 정렬 결함의 단일 상태 수정 담당 |
+| Lovelace | codex/target-v1-integration-20261021 및 codex/prompt-context-20261021 | TARGET #248→#263 로컬 준비 완료·각 최신 canonical/6 CI 잔여. 프롬프트 b05f06f5 통합·152단언 통과. 계약 갱신 및 공용 app 통합 독립 리뷰 완료. #263 동기화 97bf56df 독립 APPROVE; 폰트 fixture 경계 독립 리뷰 중 |
 
 Main #370 검증: macro 브라우저 390/1280 **10단계 통과**(초기 읽기·빈 상태·실제 제공 artifact·합성 새로고침·상세). 실제 10/20 artifact에 수정된 두 JS만 적용해 확인했다. 리뷰 지적 초기 읽기 경합·404·필수 labels/summary/관측 누락을 회귀에 추가했고 수정 전 실패를 확인했다. 최종 공통 새로고침 **159 checks**, 화면 보존 **20 screens**, 실제 artifact 경계 가드 **138파일** 통과. 관련 Python **73 passed/150 subtests**는 JS 리뷰 보완 전 실행 결과이며 Python 코드는 변경하지 않았다. 최종 HEAD e967cbd3의 원격 필수 **6/6 CI 성공**: cockpit-pages 39555638059, web-mvp-validation 39555637884, autonomy-gate-a 39555637886, web-research-guard 39555638018, web-state-presentation 39555637868, c21-real-data 39555637896. #370 병합 완료, 배포 전. 수집기·공식 계산·저장 정책·공개 범위는 변경하지 않는다.
 
 기존 수동 화면 배포는 **현재 게시 데이터**를 보존하므로 10/20 미게시 데이터를 복구하지 않는다. 실패 run 재실행은 원래 SHA의 시험을 쓰므로 해결책이 아니다. [10/21 복구 승인](implementation/docs/USER_DECISIONS_PENDING.md)을 적용한다. 권한은 이 저장소 Actions 읽기이며 artifact 제한은 코드상의 제한이다. 기존 deploy 잠금·SEC/원장 freshness·공개 경계 가드·전체 검증을 유지하고, 최종 배포 직전에 25개 게시 파일이 감사한 기존본 또는 고정 원본인지 비교한다. 알려지지 않은 새 데이터·404·망 오류이면 중단한다. 복구 후보 25개는 모두 고정 원본 해시여야 한다. 재수집·원장 추가 없음.
 
-복구 로컬 검증: 실제 ZIP/TAR 해시·25/25 JSON 바이트 일치, 새 코드/manifest 113개 불변, 공개 가드 138파일 PASS. 기존 게시본 대비 원장 v1/v2 각각 10/19 보존·원본 10/20 1건, 누락/변경/이동 0. 복구 전용 시험 130 PASS(실제 다운로드와 구분); 기존 workflow 경계 5개와 최종 freshness 형태 2개를 합쳐 **137 PASS**. #371 첫 CI의 5개 workflow는 같은 `test_affected_workflows_have_no_publication_sinks`의 업로드 수 1개 가정 때문에 실패했다. 승인된 복구 전용 upload의 job·조건·정확한 3경로를 검사하며 기존 Pages upload 앞의 공개 가드·브라우저 검사는 유지하도록 수정했다. 이어 기존 freshness 시험이 마지막 직전 단계만 가정해 실패했다. 기존 무조건 SEC/원장 검사와 추가 복구 전용 25파일 검사가 모두 deploy 잠금 안에서 배포보다 앞서는 정확한 구조를 검사하도록 정정했다. 독립 리뷰 통과. 최종 9066c67e의 6 CI 성공을 확인한 뒤에만 병합한다.
+복구 로컬 검증: 실제 ZIP/TAR 해시·25/25 JSON 바이트 일치, 새 코드/manifest 113개 불변, 공개 가드 138파일 PASS. 기존 게시본 대비 원장 v1/v2 각각 10/19 보존·원본 10/20 1건, 누락/변경/이동 0. 복구 전용 시험 130 PASS(실제 다운로드와 구분); 기존 workflow 경계 5개와 최종 freshness 형태 2개를 합쳐 **137 PASS**. #371 첫 CI의 5개 workflow는 같은 `test_affected_workflows_have_no_publication_sinks`의 업로드 수 1개 가정 때문에 실패했다. 승인된 복구 전용 upload의 job·조건·정확한 3경로를 검사하며 기존 Pages upload 앞의 공개 가드·브라우저 검사는 유지하도록 수정했다. 이어 기존 freshness 시험이 마지막 직전 단계만 가정해 실패했다. 기존 무조건 SEC/원장 검사와 추가 복구 전용 25파일 검사가 모두 deploy 잠금 안에서 배포보다 앞서는 정확한 구조를 검사하도록 정정했다. 독립 리뷰 통과. 최종 9066c67e의 필수 6개 job이 모두 성공: build 39563380368, guard 39563380409, repository-guard 39563380427, ingest-and-gate 39563380389, presentation 39563380373, validate 39563380383. #371은 ae34eb90으로 병합했다.
 
-전송 확인의 제한: 로컬 `gh` ZIP GET은 `Forbidden`/exit 1/0 bytes로 실패했고 다른 경로로 우회하지 않았다. 같은 principal의 artifact metadata는 200이지만 ZIP 거부가 API 권한 또는 전송 계층인지 미분류이며 실제 scope를 단정하지 않는다. 앞서 보관한 공식 ZIP의 정확한 바이트 검증과 GitHub 복구 job의 실제 전송 성공은 별개다. GitHub 복구 job은 아직 실행 전이다. 최신 게시 25파일의 production CLI는 한 차례 읽기 실패 후 코드 변경 없이 재확인해 exit 0으로 통과했다. 배포 시 잠금 안의 검사 자체가 다시 성공해야 한다.
+전송 확인의 제한: 로컬 `gh` ZIP GET은 `Forbidden`/exit 1/0 bytes로 실패했고 다른 경로로 우회하지 않았다. 같은 principal의 artifact metadata는 200이지만 ZIP 거부가 API 권한 또는 전송 계층인지 미분류이며 실제 scope를 단정하지 않는다. 앞서 보관한 공식 ZIP의 정확한 바이트 검증과 GitHub 복구 job의 실제 전송 성공은 별개다. 승인된 GitHub 복구 run 39567157784(HEAD ae34eb90)은 2026-10-21 08:09:27 UTC / 17:09:27 KST에 시작했다. source job 119112084667은 성공했고 08:09:35 UTC / 17:09:35 KST에 ZIP_VERIFIED를 기록했다. build/복구/최종 검사/배포/실사이트는 진행 중으로 별도 확인한다. 최신 게시 25파일의 production CLI는 한 차례 읽기 실패 후 코드 변경 없이 재확인해 exit 0으로 통과했다. 복구 dispatch 직전에도 최신 게시 25파일 검사 PASS, in_progress/queued 실행 0을 확인했다. 배포 시 잠금 안의 검사 자체가 다시 성공해야 한다.
 
 프런트엔드 연결 검증: navigation 40 PASS(light/dark × 390/1280), private-history 60 PASS, IA 1530 checks·16개 빈 기기 캡처 PASS, macro 10단계 PASS. 마지막 같은 기업 2.1 복귀 유지 보완은 navigation 40 및 독립 6개 lifecycle 확인에 포함한다. 실제 10/20 공개 파일 위의 자산 가드 138파일 PASS. 합성 봉으로 RAM 보존을 확인했으며 실가격/기업행사 검증 완료가 아니다. 기존 다른 기업·화면 이탈·로그아웃 정리 동작 유지. PC 라이트/모바일 다크 캡처를 실제 열람했지만 18쪽 PDF 전체 대조는 미완료다. 필수 CI 최종 HEAD와 배포는 별도로 확인한다.
 
@@ -90,7 +90,7 @@ Main #370 검증: macro 브라우저 390/1280 **10단계 통과**(초기 읽기�
 
 ## 6. 다음 실행·예약·보존
 
-다음 할 일은 순서대로 (1) #371 9066c67e 최종 6 CI·병합, (2) 기존 잠금/최신 자료 검사하에 복구 배포와 25해시·원장·실사이트 확인, (3) #372 통합 기능 최신 canonical 동기화·최종 6 CI·병합, (4) 기존 #248→#263 최신 canonical 동기화·각 6 CI·순차 병합(중간 확정 화면 배포 금지), (5) 18쪽 시안·미푸시 작업 확보 후 남은 배치 대조다. CI 대기 중에는 독립적인 승인 작업을 계속한다.
+다음 할 일은 순서대로 (1) 실행 중인 복구 run 39567157784의 최종 검사/배포와 25해시·원장·실사이트 확인, (2) #372 G6 정렬과 폰트 fixture 검사 보완·최신 canonical 동기화·최종 6 CI·병합, (3) 기존 #248→#263 최신 canonical 동기화·각 6 CI·순차 병합(중간 확정 화면 배포 금지), (4) 기존 #262 가설 동기화·최종 6 CI·참고 모드 유지, (5) 최종 화면 배포에서 최신 데이터/원장 보존·실사이트 확인, (6) 18쪽 시안·미푸시 작업 확보 후 남은 배치 대조다. CI 대기 중에는 독립적인 승인 작업을 계속한다.
 
 - 정기 cron 22:17 UTC / 다음 날 07:17 KST. 점검 기준 23:15 UTC / 다음 날 08:15 KST, 지연 점검 다음 날 00:17 UTC / 09:17 KST. 10/20 실행은 2시간19분 지연됐으므로 과거 “보통 15~20분”을 보장으로 쓰지 않는다.
 - **새 예약을 만들지 않았다.** 확인 가능한 자동화 목록에서 기존 Claude 결과/지연 점검의 계속 실행 증거를 찾지 못했다. Claude 세션 예약 상태 미확인. 현재 가능한 작업을 예약 시각까지 미루지 않는다.
