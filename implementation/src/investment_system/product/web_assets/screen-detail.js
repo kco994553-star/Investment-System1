@@ -50,7 +50,7 @@
    row(x,'7.1.1',x('분야별 탐색','Browse by field'),x('공식 카탈로그(동결본)의 영역 바로가기 · 키워드 · 역할 · 범위 · Starter · Bundle.','Domain shortcuts, keyword, role, scope, Starter and Bundle over the frozen official catalogue.'),'ready',
     `<p>${x('뉴스·포트폴리오·백테스트 영역은 공식 카탈로그에 아직 없습니다.','News, portfolio and backtest domains are not in the official catalogue yet.')} ${chip(x,'pending')}</p>`),
    row(x,'7.1.2',x('맥락 반영','Context'),x('변수 칸을 채워 질문에 맥락을 넣습니다. 앱에 공개 분석 자료가 있으면 ‘가져오기’로 넣습니다.','Fill the variables to give the question its context. When the app has public analysis data, “Import” fills it in.'),'partial',
-    `<p>${x('자료가 없으면 직접 입력합니다. 지금 보던 기업·기간을 자동으로 넘기는 연결은','Without data you type it in. Passing the company and period you were viewing automatically is')} ${chip(x,'pending')}</p>`),
+    `<p>${x('선택한 공개 기업은 라이브러리의 ‘선택 기업 가져오기’로 빈 기업 입력칸에 넣습니다. 이미 입력한 값은 유지합니다.','Use “Import selected company” in the library to fill empty company fields with the selected public identity. Existing inputs are kept.')}</p><p>${x('프롬프트마다 기간의 뜻이 달라 자동으로 옮기지 않습니다. 필요한 기간은 직접 입력합니다.','Periods mean different things in different prompts, so they are not transferred automatically. Enter the period you need.')}</p>`),
    row(x,'7.1.3',x('복사와 실행 안내','Copy and run'),x('필수 변수 검사 → 미리보기 → 복사.','Required-variable check → preview → copy.'),'ready',
     `<p>${x('이 앱은 AI를 부르지 않습니다. 복사한 글을 쓰는 AI 대화창에 붙여 넣고, 답은 직접 검토합니다.','This app never calls an AI. Paste the copied text into the AI chat you use and review the answer yourself.')}</p>`),
    row(x,'7.1.4',x('내 사본','My copies'),x('즐겨찾기와 개인 수정본 · 이 브라우저 기준. 공식 원문은 바뀌지 않습니다.','Favourites and personal copies · this browser only. The official text never changes.'),'ready',

@@ -734,6 +734,12 @@ td .co-logo {float: left; margin: 1px 6px 0 0;}
 [data-leaderboard-table] .lb-toggle {min-height: 44px; min-width: 44px; padding: 4px 10px; margin-left: 4px; font-size: 12px;}
 [data-leaderboard-table] .lb-detail {white-space: normal; margin-top: 4px; max-width: 18em; overflow-wrap: anywhere;}
 [data-leaderboard-table] [data-leaderboard-total] {font-size: 14px;}
+/* The existing phone table keeps company, score and its details button visible together. */
+[data-leaderboard-table][data-leaderboard-layout="narrow"] {table-layout: fixed;}
+[data-leaderboard-table][data-leaderboard-layout="narrow"] th,
+[data-leaderboard-table][data-leaderboard-layout="narrow"] td {white-space: normal; overflow-wrap: anywhere; vertical-align: top; padding: 6px 4px;}
+[data-leaderboard-table][data-leaderboard-layout="narrow"] th:first-child {width: 3rem;}
+[data-leaderboard-table][data-leaderboard-layout="narrow"] th:nth-child(2) {width: 38%;}
 h1[tabindex="-1"]:focus {outline: none;}
 h1[tabindex="-1"]:focus-visible {outline: 2px solid var(--accent); outline-offset: 2px;}
 /* FE-MISSING-2 (S04 QGV card, S05 factors tab, S06): calculation status per axis, missing-factor reasons, data-state chips and

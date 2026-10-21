@@ -110,10 +110,11 @@ class PagesArtifactGuardTests(unittest.TestCase):
 
     FONTS = ('jua-regular-ksx1001.woff2', 'gaegu-regular-ksx1001.woff2')
 
-    def tar_of_site(self, extra=()):
+    def tar_of_site(self, extra=(), names=None):
         archive = Path(self.temp.name) / 'site.tar'
         with tarfile.open(archive, 'w', format=tarfile.USTAR_FORMAT) as handle:
-            members = [('./' + path.name, path.read_bytes()) for path in sorted(self.site.iterdir())] + list(extra)
+            members = [('./' + path.name, path.read_bytes()) for path in sorted(self.site.iterdir())
+                       if names is None or path.name in names] + list(extra)
             for name, body in members:
                 info = tarfile.TarInfo(name)
                 info.size, info.mode, info.uid, info.gid, info.uname, info.gname = len(body), 0o644, 0, 0, '', ''
@@ -132,6 +133,12 @@ class PagesArtifactGuardTests(unittest.TestCase):
         return self.guard().validate_pages_tar(archive)
 
     def test_tampered_fonts_are_rejected(self):
+        missing = len(self.guard().APPROVED_SHA256.keys() - set(self.FONTS))
+        # A focused transport fixture is deliberately incomplete, never publishable.
+        # Valid font bytes must produce only the exact missing-file rejection.
+        self.assertEqual(self.tar_receipt(self.tar_of_site(names=self.FONTS)),
+                         {'pages_artifact_guard': 'FAIL', 'files_scanned': len(self.FONTS),
+                          'violations': {'missing_files': missing}})
         for name in self.FONTS:
             font = self.site / name
             original = font.read_bytes()
@@ -157,7 +164,14 @@ class PagesArtifactGuardTests(unittest.TestCase):
                     with self.subTest(name=name, category=category, size=len(payload), head=payload[:12]):
                         font.write_bytes(payload)
                         receipt = self.assert_rejected(category)
-                        self.assertEqual(self.tar_receipt(self.tar_of_site()), receipt)
+                        # Keep the complete directory check above. Isolate the two font
+                        # entries in the transport check so growing UI assets cannot make
+                        # the independent 4 MiB archive cap mask a font-specific failure.
+                        archive = self.tar_of_site(names=self.FONTS)
+                        self.assertLessEqual(archive.stat().st_size, self.guard().MAX_ARCHIVE_BYTES)
+                        self.assertEqual(self.tar_receipt(archive),
+                                         {**receipt, 'files_scanned': len(self.FONTS),
+                                          'violations': {**receipt['violations'], 'missing_files': missing}})
             font.write_bytes(original)
         self.assertEqual(self.scan()["pages_artifact_guard"], "PASS")
 
@@ -170,7 +184,9 @@ class PagesArtifactGuardTests(unittest.TestCase):
         receipt = self.assert_rejected('unexpected_entries')
         self.assertIn('nonregular_entries', receipt['violations'])
         shutil.rmtree(self.site / 'sub')
-        tar_receipt = self.tar_receipt(self.tar_of_site([('./sub/dir/' + self.FONTS[0], font)]))
+        archive = self.tar_of_site([('./sub/dir/' + self.FONTS[0], font)], names=self.FONTS)
+        self.assertLessEqual(archive.stat().st_size, self.guard().MAX_ARCHIVE_BYTES)
+        tar_receipt = self.tar_receipt(archive)
         self.assertEqual(tar_receipt['pages_artifact_guard'], 'FAIL')
         self.assertIn('unexpected_entries', tar_receipt['violations'])
         # Another *.woff2 name with the approved bytes: no extension-wide allowance.
@@ -178,7 +194,9 @@ class PagesArtifactGuardTests(unittest.TestCase):
             with self.subTest(other=other):
                 (self.site / other).write_bytes(font)
                 self.assert_rejected('unexpected_entries')
-                tar_receipt = self.tar_receipt(self.tar_of_site())
+                archive = self.tar_of_site([(other, font)], names=self.FONTS)
+                self.assertLessEqual(archive.stat().st_size, self.guard().MAX_ARCHIVE_BYTES)
+                tar_receipt = self.tar_receipt(archive)
                 self.assertIn('unexpected_entries', tar_receipt['violations'])
                 (self.site / other).unlink()
 
@@ -635,7 +653,12 @@ class PagesArtifactGuardTests(unittest.TestCase):
         archive_path.unlink()
         for payload in (b"not an archive", b"x" * (4 * 1024 * 1024 + 1)):
             archive_path.write_bytes(payload)
-            self.assertEqual(self.tar_receipt(archive_path)["pages_artifact_guard"], "FAIL")
+            receipt = self.tar_receipt(archive_path)
+            self.assertEqual(receipt["pages_artifact_guard"], "FAIL")
+            if len(payload) > 4 * 1024 * 1024:
+                self.assertEqual(self.guard().MAX_ARCHIVE_BYTES, 4 * 1024 * 1024)
+                self.assertEqual(receipt, {'pages_artifact_guard': 'FAIL', 'files_scanned': 0,
+                                           'violations': {'oversized_archive': 1}})
         valid = self.make_tar()
         archive_path.write_bytes(valid.read_bytes()[:10000])
         self.assertEqual(self.tar_receipt(archive_path)["pages_artifact_guard"], "FAIL")
