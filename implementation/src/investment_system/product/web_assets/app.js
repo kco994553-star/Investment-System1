@@ -612,6 +612,8 @@ const QGV_CHILDREN=Object.freeze(["companies","company","analysis","leaderboard"
 // Main menu / bottom navigation (app-shell.js): one current destination per route, none in settings.
 function syncNavigation(route) {window.AppShell?.sync(route,appSettings.display_locale);}
 let listLimit=30;
+// List navigation state lives only in this tab, never in settings/storage. Rows are always drawn from current identities.
+const directoryViews=new Map();
 // Route history of this page (for the S04 back link and S06 scroll restore).
 let currentRoute=null,previousRoute=null,currentHash='';
 const LIST_ORIGIN=Object.freeze({leaderboard:['← 리더보드','← Leaderboard'],companies:['← 기업 목록','← Company list'],watchlist:['← 관심 기업','← Watchlist']}),LIST_ORIGIN_HASH=/^#(leaderboard|leaderboard\/interest|companies|watchlist)$/;
@@ -908,7 +910,7 @@ function render(options) {
 }
 function renderRoute(options) {
   // {keep:true}: '자료 새로고침' or a freshness re-judgement draws the open screen again (data-refresh.js, G2). The user's scroll,
-  // focus, open details, fields and view buttons come back; a screen the user opens (hash change) starts at the top as before.
+  // focus, open details, fields and view buttons come back. Detail -> source list also restores its in-tab view (G3).
   const kept=options&&options.keep&&location.hash===currentHash&&window.DataRefresh?.captureView?DataRefresh.captureView($("#content")):null;
   let [route,id,sub]=location.hash.slice(1).split("/");route=route || "home";
   let anchor=null;
@@ -921,6 +923,13 @@ function renderRoute(options) {
     currentHash=location.hash;syncNavigation(route);
     const nav=$('[data-ia-sub="technical"]');if(nav)nav.outerHTML=AppShell.subNavHtml(route);
     focusImplementedSection(anchor||'technical-chart');AppShell.afterRender(route);return;
+  }
+  if(currentHash!==location.hash&&['companies','watchlist'].includes(currentRoute)&&window.DataRefresh?.captureView){
+    const view=DataRefresh.captureView($('#content'));
+    // Keep only navigation controls. Group membership/name inputs must reflect settings changed on the detail screen.
+    const fields=new Set(['search','only-interest','group-filter','company-sort','watch-group','watch-sort'].map(id=>'#'+id+'@0'));
+    view.fields=view.fields.filter(([key])=>fields.has(key));
+    directoryViews.set(currentRoute,{view,limit:listLimit});
   }
   window.PrivateHistory?.disposeAll();window.PrivateSubsetView?.disposeAll();
   window.GoogleSheetSetup?.disposeAll();
@@ -939,9 +948,12 @@ function renderRoute(options) {
   }
   // Coming back to S06 from S04/S05 (back link or browser back) restores its scroll; filters and sort always come from leaderboardView.
   const restoreLeader=route==='leaderboard' && ['company','analysis'].includes(previousRoute);
+  const directoryView=!kept&&route!==previousRoute?directoryViews.get(route):null;
+  const restoreDirectory=directoryView&&['company','analysis'].includes(previousRoute)&&companyOrigin?.hash===currentHash;
   if(route==='leaderboard' && id==='interest') leaderboardView={...leaderboardView,interest:true};
   $("#content").innerHTML=routes[route]();
   if(kept) DataRefresh.restoreFields($("#content"),kept);
+  else if(directoryView) DataRefresh.restoreFields($('#content'),directoryView.view);
   if(route==='leaderboard') void PrivateSubsetView.mount($('#private-subset-root'),{locale:appSettings.display_locale,config:window.InvestmentAppConfig,interests:()=>[...prefs.interests],onRanks:()=>{qgv2Quotes={};qgv2QuotesKey='';qgv2QuotesBasis=null;leaderPage=null;const pt=$('#universe-price-time');if(pt)pt.innerHTML=window.PriceTime?PriceTime.sourceHtml(PrivateSubsetView.priceBasis?.()||null,{locale:appSettings.display_locale}):'';if(leaderboardRows&&$('#leaderboard-screen'))paintLeaderboardScreen(leaderboardRows);}});
   if(['playbook','portfolio','company'].includes(route)&&window.PlaybookScreen){const place=route==='playbook'?$('#playbook-screen'):document.createElement('div');if(route!=='playbook')$('#content').append(place);void PlaybookScreen.mount(place,{catalogPromise:deviceCatalog(),scoreOptions:playbookScoreOptions,screens:publicScreens,idByTicker:new Map(identityCompanies.map(r=>[r.ticker,r.company_id])),publicCatalog,interests:[...prefs.interests],universeCodesPromise:fetch('universe-codes.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(p=>p?.schema==='universe-codes/1'&&Array.isArray(p.codes)?p.codes:[]).catch(()=>[]),full:route==='playbook'}).catch(()=>{if(place.isConnected)place.textContent='플레이북 확인 불가 · 기기 기록을 읽을 수 없습니다.';});}
   if(route==='brief'&&window.PlaybookScreen){try{$('#content').insertAdjacentHTML('afterbegin',PlaybookScreen.todayHtml(localStorage));}catch(_){}}
@@ -1016,7 +1028,7 @@ function renderRoute(options) {
     $("#source-language").onchange=e=>updateSettings({source_language:e.target.value});
   }
   if(route==="companies") {
-    if(!kept) listLimit=30;paintCompanies();
+    if(!kept) listLimit=directoryView?directoryView.limit:30;paintCompanies();
     $("#search").oninput=$("#only-interest").onchange=$("#group-filter").onchange=$("#company-sort").onchange=()=>{listLimit=30;paintCompanies();};
     $("#more-companies").onclick=()=>{listLimit+=30;paintCompanies();};wireGroups();
   }
@@ -1034,6 +1046,7 @@ function renderRoute(options) {
   for(const f of document.querySelectorAll("iframe")) f.onload=()=>f.contentWindow.postMessage({type:"display_locale",locale:appSettings.display_locale},location.origin);
   if(restoreLeader) restoreLeaderView();
   else if(kept) DataRefresh.restoreView($("#content"),kept);
+  else if(restoreDirectory) DataRefresh.restoreView($('#content'),directoryView.view);
   else window.scrollTo(0,0);
   if(anchor && !kept)focusImplementedSection(anchor);
   if(!kept && route==="qgv" && ["investments","companies","market","performance"].includes(id)) {
@@ -1286,6 +1299,7 @@ window.addEventListener('public-data-updated',()=>{void refreshQgv2Quotes(refres
 DataRefresh.attach(window,{route:()=>D?currentRoute:null,render,
  apply(set){publicScreens=set.screens;secReported=set.reported;try{MacroLights.setPublic(publicScreens);}catch(_){}if(set.shares)universeDirectory=set.shares;if(searchIndex){rebuildSearchIndex();paintGlobalSearch();}},
  inPlace(){if(!D)return false;const[route,raw]=location.hash.slice(1).split('/');let id='';try{id=decodeURIComponent(raw||'');}catch(_){id='';}
+  if(!route||route==='home')return HomeScreen.refreshPersonal([...prefs.interests]);
   if(route==='leaderboard'&&$('#leaderboard-screen')){paintDirectory(route);return true;}
   if((route==='company'||route==='analysis')&&id){refreshScoreViews();if(window.UniverseCompany&&universeCode(id))UniverseCompany.repaint($('#content'),{locale:appSettings.display_locale,screens:publicScreens,shares:universeDirectory,quotes:qgv2Quotes,names:companyNames,catalogPromise:deviceCatalog()});
    else{if(route==='analysis'){const f=document.createElement('div');f.innerHTML=analysis(id,location.hash.slice(1).split('/')[2]||null);const live=$('#content [data-analysis-panel="financials"]'),next=f.querySelector('[data-analysis-panel="financials"]');if(live&&next)live.innerHTML=next.innerHTML;}if(window.StatRadar)void StatRadar.mount(document,{catalogPromise:deviceCatalog()});}SecReported.mount($('#sec-reported-panel'),secReported,{companyId:id,locale:appSettings.display_locale});mountPublicPanels(route,id);return true;}

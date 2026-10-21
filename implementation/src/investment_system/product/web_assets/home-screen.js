@@ -403,6 +403,12 @@
   if(route==='home')mount(ctx);else backLink(route,ctx.id);
   setLocale(ctx.locale);paint();
  }
+ // DataRefresh calls this only after applying a complete public generation (or re-judging that generation).
+ // Leave the home/search DOM, IME/caret and highlighted result in place; the failed-refresh path never calls it.
+ function refreshPersonal(interests){
+  if(currentRoute!=='home'||!home.ctx)return false;
+  home.ctx={...home.ctx,interests};personal(home.ctx);return true;
+ }
  // A company / entity opened from the home results offers the way back to them (query, scope and row are restored).
  function backLink(route,id){
   if(!home.pending||!home.saved||!['company','analysis','entity'].includes(route))return;
@@ -414,5 +420,5 @@
  }
  wire();
  root.SearchUI=Object.freeze({refresh,setUnavailable,setLocale,paint,readRecent,clearRecent,KO_NAMES});
- root.HomeScreen=Object.freeze({html,afterRender,park,state:()=>({route:currentRoute,quoteId:home.quoteId,filter:S.filter})});
+ root.HomeScreen=Object.freeze({html,afterRender,park,refreshPersonal,state:()=>({route:currentRoute,quoteId:home.quoteId,filter:S.filter})});
 })(window);
