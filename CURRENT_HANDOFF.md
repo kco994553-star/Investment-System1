@@ -1,6 +1,6 @@
 # 현재 인수인계 — 2026-10-21 (Codex Main)
 
-확인 시각: **2026-10-21 09:53 UTC / 18:53 KST**. 이 시점 이후 PR·Actions·게시 증거는 다시 확인한다. 구현 / 시험 / 병합 / 게시 / 실사이트 확인을 구분한다.
+확인 시각: **2026-10-21 09:59 UTC / 18:59 KST**. 이 시점 이후 PR·Actions·게시 증거는 다시 확인한다. 구현 / 시험 / 병합 / 게시 / 실사이트 확인을 구분한다.
 
 먼저 읽기: [WORKING_RULES.md](WORKING_RULES.md) → 이 파일 → [사용자 결정](implementation/docs/USER_DECISIONS_PENDING.md) → [기존 분담](implementation/docs/PARALLEL_LANES_20261020.md) → [제품 IA](implementation/docs/PRODUCT_IA_DIRECTIVE_20261018.md) → [자료 계약](implementation/docs/FRONTEND_DATA_CONTRACT.md) → 작업 영역 계약·시험. 이전 원문은 [10/20 기록](implementation/docs/handoff/HANDOFF_HISTORY_20261020.md)에 보존했다. 과거 “다음 실행/병합 대기”보다 아래 실제 증거를 따른다. 사용자 결정은 구현과 다르다는 이유로 폐기하지 않는다.
 
@@ -112,3 +112,5 @@ Main #370 검증: macro 브라우저 390/1280 **10단계 통과**(초기 읽기�
 - 다른 작업자의 worktree·scratchpad·원자료를 삭제하지 않는다. 정리 전 소유자·병합·미커밋·재현 가능성 확인.
 
 일반 UI 배포의 로고만 재수집하던 경로를 --preserve-only로 보완했다. 로고/보존/공개경계114 PASS와 실제 게시25파일 바이트 동일·원장2건보존·가드138 PASS 확인. 정기 로고 수집과 권한은 유지한다. 노트 안내문 시험도 독립 APPROVE를 받았다. #372 최종13a58584 필수6CI 성공·병합 완료. 후속 PR는 각 최종HEAD를 따로 확인한다.
+
+#248 첫 최종006c1b80 CI는 5개workflow의 동일한 TAR 중복 fixture 2건에서 실패했다. a66 기준 전체TAR+app.js 중복은4,177,920bytes로 중복을 검사했지만, TARGET3자산을 추가하면4,239,360bytes로 기존4,194,304byte 상한이 먼저 거부했다(scanned0/oversized_archive1). 환경 문제가 아니라 시험 반례의 간섭이었다. 전체 정상TAR을 유지하고 508byte의 승인된 app-config.js를 일반/./경로로 중복시켰다. 4,085,760bytes, scanned137/duplicate_entries1만을 정확히 요구하며 크기 상한도 단언한다. 원래기준1 PASS/2subtests, 수정전2subtest실패, 수정후4 PASS/2subtests 및 독립실측/리뷰APPROVE. 생산가드·상한·기능코드는 변경하지 않았다. 새 최종HEAD의 필수6CI를 다시 확인한다.
