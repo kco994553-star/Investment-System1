@@ -220,7 +220,7 @@ function judgementRecord({row,answer:kind,reason='',date,id},cfg=CFG){
   ai_summary:'',verdict:spec.verdict,action:{kind:spec.action},next_check_date:null,memo:kind==='UNKNOWN'?(reason||spec.memo):reason};
 }
 /* ---------- finalize gate (2026-10-15 supplement): re-checked at the moment finalize runs ---------- */
-const CALC_VERSION=/^[A-Za-z0-9][A-Za-z0-9._:+\-]{0,63}$/;
+const CALC_VERSION=/^qgv2-calc\/\d{4}-\d{2}-\d{2}\.\d{1,4}$/;
 function axisScore(r,a){const ax=object(r?.axes)?r.axes:object(r?.qg_axes)?r.qg_axes:{},v=ax[a]?.score;return finite(v)&&v>=0&&v<=100?v:null;}
 /* The LATEST published sec-qgv2.json payload (re-read by the caller at finalize; never the draft-time inputs) → {ok, reasons}.
    (a) file calc_version present (else CALC_VERSION_MISSING); a row WITH a value (Q or G score, or LIVE / STALE) must carry the
