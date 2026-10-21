@@ -124,7 +124,7 @@ APPROVED_SHA256 = {
     "private-history.css": "d4ce930e901e2b67b2eb6d57c8795f77be3b9f1650efa85dad6e524419c42028",
     "private-history.js": "289a8a2c1053a0d280504cd785d188316b5ac9fd99eaa5590a3aa57c82e3958c",
     "research.html": "eb5f673078ded25737b85b532c6d8c88f457d14bf1c433299e7e70be022aa57c",
-    "style.css": "35d5eee322071f069cb7b4fc92c2ca5e7e0dfad358a5c57991d87cde0106d34a",
+    "style.css": "a3deb2677f4335021a37ba0546823732aade654e3b7374ad4e39d2ff8e5e1841",
     "sec-disclosures.js": "849cbfbf2b21badd52c06cf5887dcd259e08864552a76fde39f065f82c6a7194",
     "sec-qgv2.js": "419b49c42921b2792a18ff051e3864620cfacec3918b3b98e74adf90d61cb48d",
     "price-store.js": "52b723d9e7dfc189252a870c57f5a044373427d3a9009bb9a119c322ebb8c4de",
