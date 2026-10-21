@@ -1,0 +1,3157 @@
+{
+ "catalog": "MACRO_EVIDENCE_LINES_CATALOG_20261018 §5 (P1 13)",
+ "collection_started_at": "2026-10-01T10:00:00Z",
+ "continuity": "CONTINUOUS",
+ "events": [
+  {
+   "at": "2026-10-02T08:00:00Z",
+   "basis": "SOURCE_LAST_MODIFIED",
+   "cause": "FIRST",
+   "direction": "down",
+   "id": "86e8bfc279fe4df4f2a4",
+   "indicator": "E40",
+   "kind": "AGENCY_EVENT",
+   "layer": "REALTIME",
+   "period": "2026-10-02",
+   "rd": null,
+   "rule": "E40.v0",
+   "series": "FED:FOMC:TARGET_RANGE"
+  },
+  {
+   "at": "2026-10-03T10:00:00Z",
+   "basis": "COLLECTION_TIME",
+   "cause": "FIRST",
+   "direction": "down",
+   "id": "540eeaa86b43cef4bc21",
+   "indicator": "E13",
+   "kind": "EDGE",
+   "layer": "REALTIME",
+   "period": "2026-08",
+   "rd": null,
+   "rule": "E13.v0",
+   "series": "BLS:LNS14000000"
+  },
+  {
+   "at": "2026-10-03T10:00:00Z",
+   "basis": "COLLECTION_TIME",
+   "cause": "FIRST",
+   "direction": "down",
+   "id": "073be7da34fcbc3cc809",
+   "indicator": "E40",
+   "kind": "AGENCY_EVENT",
+   "layer": "REALTIME",
+   "period": "2026-10-03",
+   "rd": null,
+   "rule": "E40.v0",
+   "series": "FED:FOMC:TARGET_RANGE"
+  },
+  {
+   "at": "2026-10-04T08:00:00Z",
+   "basis": "SOURCE_LAST_MODIFIED",
+   "cause": "FIRST",
+   "direction": "up",
+   "id": "3adf7fa1446b0638d554",
+   "indicator": "E40",
+   "kind": "AGENCY_EVENT",
+   "layer": "REALTIME",
+   "period": "2026-10-04",
+   "rd": null,
+   "rule": "E40.v0",
+   "series": "FED:FOMC:TARGET_RANGE"
+  },
+  {
+   "at": "2026-10-05T10:00:00Z",
+   "basis": "COLLECTION_TIME",
+   "cause": "FIRST",
+   "direction": "down",
+   "id": "192ce069c656c5b1ddb8",
+   "indicator": "E09",
+   "kind": "EDGE",
+   "layer": "REALTIME",
+   "period": "2026-09",
+   "rd": null,
+   "rule": "E09.v0",
+   "series": "TREASURY:BC_10YEAR-BC_3MONTH:MONTHLY_MEAN"
+  },
+  {
+   "at": "2026-10-05T10:00:00Z",
+   "basis": "COLLECTION_TIME",
+   "cause": "FIRST",
+   "direction": "up",
+   "id": "4bd67016199e4ac76f08",
+   "indicator": "E40",
+   "kind": "AGENCY_EVENT",
+   "layer": "REALTIME",
+   "period": "2026-10-05",
+   "rd": null,
+   "rule": "E40.v0",
+   "series": "FED:FOMC:TARGET_RANGE"
+  },
+  {
+   "at": "2026-10-06T08:00:00Z",
+   "basis": "SOURCE_LAST_MODIFIED",
+   "cause": "FIRST",
+   "direction": "down",
+   "id": "73a87e6a5f4c40d07f83",
+   "indicator": "E40",
+   "kind": "AGENCY_EVENT",
+   "layer": "REALTIME",
+   "period": "2026-10-06",
+   "rd": null,
+   "rule": "E40.v0",
+   "series": "FED:FOMC:TARGET_RANGE"
+  },
+  {
+   "at": "2026-10-06T08:00:00Z",
+   "basis": "SOURCE_LAST_MODIFIED",
+   "cause": "FIRST",
+   "direction": "down",
+   "id": "fa99dac756e95c0bbb89",
+   "indicator": "E01",
+   "kind": "EDGE",
+   "layer": "REALTIME",
+   "period": "2026-08",
+   "rd": null,
+   "rule": "E01.v0",
+   "series": "BTS:TSI:FREIGHT"
+  },
+  {
+   "at": "2026-10-07T10:00:00Z",
+   "basis": "COLLECTION_TIME",
+   "cause": "FIRST",
+   "direction": "up",
+   "id": "2cb83aa9f5e375acbf4b",
+   "indicator": "E36",
+   "kind": "EDGE",
+   "layer": "REALTIME",
+   "period": "2026Q3",
+   "rd": null,
+   "rule": "E36.v0",
+   "series": "FED:SLOOS:SUBLPDCILS_N.Q"
+  },
+  {
+   "at": "2026-10-07T10:00:00Z",
+   "basis": "COLLECTION_TIME",
+   "cause": "FIRST",
+   "direction": "up",
+   "id": "71f46c1b544e11d83194",
+   "indicator": "E39",
+   "kind": "EDGE",
+   "layer": "REALTIME",
+   "period": "2026-09",
+   "rd": null,
+   "rule": "E39.v0",
+   "series": "BLS:CUSR0000SA0L1E"
+  },
+  {
+   "at": "2026-10-07T10:00:00Z",
+   "basis": "COLLECTION_TIME",
+   "cause": "FIRST",
+   "direction": "down",
+   "id": "45e23e57f27d82f54665",
+   "indicator": "E40",
+   "kind": "AGENCY_EVENT",
+   "layer": "REALTIME",
+   "period": "2026-10-07",
+   "rd": null,
+   "rule": "E40.v0",
+   "series": "FED:FOMC:TARGET_RANGE"
+  },
+  {
+   "at": "2026-10-08T10:00:00Z",
+   "basis": "COLLECTION_TIME",
+   "cause": "REVISION",
+   "direction": "down",
+   "id": "480d851ffa580acdeb9d",
+   "indicator": "E13",
+   "kind": "REVISION_CLEARED",
+   "layer": "REALTIME",
+   "period": "2026-08",
+   "rd": null,
+   "rule": "E13.v0",
+   "series": "BLS:LNS14000000"
+  },
+  {
+   "at": "2026-10-08T10:00:00Z",
+   "basis": "COLLECTION_TIME",
+   "cause": "REVISION",
+   "direction": "down",
+   "id": "7bb406389d9d2bce9fa4",
+   "indicator": "E36",
+   "kind": "EDGE",
+   "layer": "REALTIME",
+   "period": "2026Q3",
+   "rd": null,
+   "rule": "E36.v0",
+   "series": "FED:SLOOS:SUBLPDCILS_N.Q"
+  },
+  {
+   "at": "2026-10-08T08:00:00Z",
+   "basis": "SOURCE_LAST_MODIFIED",
+   "cause": "FIRST",
+   "direction": "down",
+   "id": "b081893a84cdf0936c16",
+   "indicator": "E40",
+   "kind": "AGENCY_EVENT",
+   "layer": "REALTIME",
+   "period": "2026-10-08",
+   "rd": null,
+   "rule": "E40.v0",
+   "series": "FED:FOMC:TARGET_RANGE"
+  }
+ ],
+ "generated_at": "2026-10-08T10:00:00Z",
+ "indicators": [
+  {
+   "cycles": [
+    "economy"
+   ],
+   "edges": {
+    "down": {
+     "candidate": "WARNING",
+     "interpretation": "확장→둔화 경고",
+     "label": "역전 시작"
+    }
+   },
+   "family": "C",
+   "frequency": "M",
+   "id": "E09",
+   "name": "금리곡선 역전 (10년−3개월 월평균)",
+   "reason": null,
+   "rule": {
+    "realtime_validation": "POST_HOC_LITERATURE_ONLY",
+    "source_class": "LITERATURE",
+    "text": "월평균 10년−3개월이 음수가 된 첫 달",
+    "version": "E09.v0"
+   },
+   "series": [
+    "TREASURY:BC_10YEAR-BC_3MONTH:MONTHLY_MEAN"
+   ],
+   "source": {
+    "agency": "TREASURY",
+    "collection": "REUSED_MACRO_V1_CURVE",
+    "license_class": "FREE_OFFICIAL",
+    "official_statistic": true,
+    "publication": "PUBLIC",
+    "source": "U.S. Treasury daily par yield curve (10 Yr, 3 Mo) · 월평균은 이 시스템 계산",
+    "terms_checked_on": "2026-10-10",
+    "terms_note": "재무부 금리곡선 재사용 문구 원문 검증 대기. 같은 계열은 경고등 v1으로 이미 공개 중",
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve"
+   },
+   "state": "LIVE",
+   "system_validation": "UNVALIDATED",
+   "unit": "%p",
+   "v0": true
+  },
+  {
+   "cycles": [
+    "economy"
+   ],
+   "edges": {
+    "down": {
+     "candidate": "WARNING",
+     "interpretation": "확장→수축 전환(침체 초기 확인)",
+     "label": "Sahm 발동"
+    }
+   },
+   "family": "LU",
+   "frequency": "M",
+   "id": "E13",
+   "name": "Sahm 규칙 (실업률)",
+   "reason": null,
+   "rule": {
+    "realtime_validation": "POST_HOC_LITERATURE_ONLY",
+    "source_class": "LITERATURE",
+    "text": "실업률 3개월 평균 − 직전 12개월 중 3개월 평균 최저 ≥ 0.50%p",
+    "version": "E13.v0"
+   },
+   "series": [
+    "BLS:LNS14000000"
+   ],
+   "source": {
+    "agency": "BLS",
+    "collection": "REUSED_MACRO_V0_BLS",
+    "license_class": "FREE_OFFICIAL",
+    "official_statistic": true,
+    "publication": "PUBLIC",
+    "source": "BLS LNS14000000 · 실업률, SA, 월간",
+    "terms_checked_on": "2026-10-10",
+    "terms_note": "BLS public domain(원문 확인). 가공 결과를 BLS 원본이라고 하지 않음",
+    "url": "https://api.bls.gov/publicAPI/v1/timeseries/data/"
+   },
+   "state": "LIVE",
+   "system_validation": "UNVALIDATED",
+   "unit": "%",
+   "v0": true
+  },
+  {
+   "cycles": [
+    "economy"
+   ],
+   "edges": {
+    "down": {
+     "candidate": "IMPROVING",
+     "interpretation": "개선",
+     "label": "신규 청구 ↓ (4주 평균 하향 교차)"
+    },
+    "up": {
+     "candidate": "WARNING",
+     "interpretation": "악화",
+     "label": "신규 청구 ↑ (4주 평균 상향 교차)"
+    }
+   },
+   "family": "LU",
+   "frequency": "W",
+   "id": "E14",
+   "name": "신규 실업수당 청구 (SA, 주간)",
+   "reason": "TERMS_UNVERIFIED",
+   "rule": {
+    "realtime_validation": "UNVALIDATED",
+    "source_class": "PROPOSAL",
+    "text": "4주 평균이 26주 평균을 위(아래)로 교차",
+    "version": "E14.v0"
+   },
+   "series": [
+    "DOL:ETA539:INITIAL_CLAIMS_SA"
+   ],
+   "source": {
+    "agency": "DOL",
+    "collection": "NEW_DOL_WEEKLY_XML",
+    "license_class": "FREE_OFFICIAL",
+    "official_statistic": true,
+    "publication": "HELD_TERMS_UNVERIFIED",
+    "source": "DOL ETA 539 · 신규 청구, SA, 주간",
+    "terms_checked_on": "2026-10-20",
+    "terms_note": "DOL 저작권 페이지가 수집 환경에서 HTTP 403. 원문 미확인이라 공개 보류",
+    "url": "https://oui.doleta.gov/unemploy/claims.asp"
+   },
+   "state": "NOT_AVAILABLE",
+   "system_validation": "UNVALIDATED",
+   "unit": "건",
+   "v0": true
+  },
+  {
+   "cycles": [
+    "economy"
+   ],
+   "edges": {
+    "down": {
+     "candidate": "WARNING",
+     "interpretation": "악화",
+     "label": "임시직 ↓ (6개월 순변화 음전환)"
+    },
+    "up": {
+     "candidate": "IMPROVING",
+     "interpretation": "개선",
+     "label": "임시직 ↑ (6개월 순변화 양전환)"
+    }
+   },
+   "family": "LD",
+   "frequency": "M",
+   "id": "E16",
+   "name": "임시직 고용 (CES)",
+   "reason": null,
+   "rule": {
+    "realtime_validation": "UNVALIDATED",
+    "source_class": "PROPOSAL",
+    "text": "6개월 순변화 부호 전환",
+    "version": "E16.v0"
+   },
+   "series": [
+    "BLS:CES6056132001"
+   ],
+   "source": {
+    "agency": "BLS",
+    "collection": "NEW_BLS_V1",
+    "license_class": "FREE_OFFICIAL",
+    "official_statistic": true,
+    "publication": "PUBLIC",
+    "source": "BLS CES6056132001 · 임시직 고용, SA, 월간",
+    "terms_checked_on": "2026-10-10",
+    "terms_note": "BLS public domain(원문 확인)",
+    "url": "https://api.bls.gov/publicAPI/v1/timeseries/data/"
+   },
+   "state": "LIVE",
+   "system_validation": "UNVALIDATED",
+   "unit": "천 명",
+   "v0": true
+  },
+  {
+   "cycles": [
+    "economy"
+   ],
+   "edges": {
+    "down": {
+     "candidate": "WARNING",
+     "interpretation": "악화",
+     "label": "제조 근로시간 ↓"
+    },
+    "up": {
+     "candidate": "IMPROVING",
+     "interpretation": "개선",
+     "label": "제조 근로시간 ↑"
+    }
+   },
+   "family": "LD",
+   "frequency": "M",
+   "id": "E17",
+   "name": "제조업 주당 평균 근로시간",
+   "reason": null,
+   "rule": {
+    "realtime_validation": "UNVALIDATED",
+    "source_class": "PROPOSAL",
+    "text": "3개월 평균이 12개월 전 3개월 평균보다 높아짐(낮아짐)",
+    "version": "E17.v0"
+   },
+   "series": [
+    "BLS:CES3000000007"
+   ],
+   "source": {
+    "agency": "BLS",
+    "collection": "NEW_BLS_V1",
+    "license_class": "FREE_OFFICIAL",
+    "official_statistic": true,
+    "publication": "PUBLIC",
+    "source": "BLS CES3000000007 · 제조업 생산직 주당 평균 근로시간, SA, 월간",
+    "terms_checked_on": "2026-10-10",
+    "terms_note": "BLS public domain(원문 확인)",
+    "url": "https://api.bls.gov/publicAPI/v1/timeseries/data/"
+   },
+   "state": "LIVE",
+   "system_validation": "UNVALIDATED",
+   "unit": "시간",
+   "v0": true
+  },
+  {
+   "cycles": [
+    "economy"
+   ],
+   "edges": {
+    "down": {
+     "candidate": "WARNING",
+     "interpretation": "둔화",
+     "label": "자본재 주문 ↓"
+    },
+    "up": {
+     "candidate": "IMPROVING",
+     "interpretation": "회복→확장",
+     "label": "자본재 주문 ↑"
+    }
+   },
+   "family": "MO",
+   "frequency": "M",
+   "id": "E21",
+   "name": "핵심 자본재 주문 (비국방, 항공기 제외)",
+   "reason": "SOURCE_KEY_NOT_CONFIGURED",
+   "rule": {
+    "realtime_validation": "UNVALIDATED",
+    "source_class": "PROPOSAL",
+    "text": "3개월 평균 전년비 부호 전환",
+    "version": "E21.v0"
+   },
+   "series": [
+    "CENSUS:M3:NXA:NO:SA"
+   ],
+   "source": {
+    "agency": "CENSUS",
+    "collection": "NEW_CENSUS_EITS_API",
+    "license_class": "FREE_OFFICIAL",
+    "official_statistic": true,
+    "publication": "PUBLIC",
+    "source": "Census M3 · 비국방 자본재(항공기 제외) 신규 주문, SA",
+    "terms_checked_on": "2026-10-18",
+    "terms_note": "Census Data API TOS 원문 확인(출처 표시 문구 필요). API 키 없이는 수집 불가",
+    "url": "https://www.census.gov/manufacturing/m3/index.html"
+   },
+   "state": "NOT_AVAILABLE",
+   "system_validation": "UNVALIDATED",
+   "unit": "백만 달러",
+   "v0": true
+  },
+  {
+   "cycles": [
+    "economy"
+   ],
+   "edges": {
+    "down": {
+     "candidate": "WARNING",
+     "interpretation": "둔화",
+     "label": "산업생산 감소 (전년비 음전환)"
+    },
+    "up": {
+     "candidate": "IMPROVING",
+     "interpretation": "수축→회복",
+     "label": "산업생산 반등 (전년비 양전환)"
+    }
+   },
+   "family": "PO",
+   "frequency": "M",
+   "id": "E22",
+   "name": "산업생산 (총지수, SA)",
+   "reason": null,
+   "rule": {
+    "realtime_validation": "POST_HOC_LITERATURE_ONLY",
+    "source_class": "LITERATURE_UP_PROPOSAL_DOWN",
+    "text": "전년비 음→양 [문헌], 양→음 [제안]",
+    "version": "E22.v0"
+   },
+   "series": [
+    "FED:G17:IP.B50001.S"
+   ],
+   "source": {
+    "agency": "FED_G17",
+    "collection": "NEW_FED_DDP_CSV",
+    "license_class": "FREE_OFFICIAL",
+    "official_statistic": true,
+    "publication": "PUBLIC",
+    "source": "Fed G.17 IP.B50001.S · 산업생산 총지수, SA",
+    "terms_checked_on": "2026-10-18",
+    "terms_note": "Fed Board public domain(원문 확인). 출처 표시",
+    "url": "https://www.federalreserve.gov/releases/g17/About.htm"
+   },
+   "state": "LIVE",
+   "system_validation": "UNVALIDATED",
+   "unit": "지수 2017=100",
+   "v0": true
+  },
+  {
+   "cycles": [
+    "economy"
+   ],
+   "edges": {
+    "down": {
+     "candidate": "WARNING",
+     "interpretation": "수축",
+     "label": "GDP 감소 (양→음)"
+    },
+    "up": {
+     "candidate": "IMPROVING",
+     "interpretation": "수축→회복",
+     "label": "GDP 반등 (음→양)"
+    }
+   },
+   "family": "PO",
+   "frequency": "Q",
+   "id": "E25",
+   "name": "실질 GDP (전기비 연율)",
+   "reason": null,
+   "rule": {
+    "realtime_validation": "POST_HOC_LITERATURE_ONLY",
+    "source_class": "LITERATURE_UP_PROPOSAL_DOWN",
+    "text": "전기비 연율 음→양 [문헌], 양→음 [제안]",
+    "version": "E25.v0"
+   },
+   "series": [
+    "BEA:NIPA:A191RL:Q"
+   ],
+   "source": {
+    "agency": "BEA",
+    "collection": "REUSED_MACRO_V0_BEA",
+    "license_class": "FREE_OFFICIAL",
+    "official_statistic": true,
+    "publication": "PUBLIC",
+    "source": "BEA NIPA T10101 line 1 (A191RL) · 실질 GDP 전기비 연율",
+    "terms_checked_on": "2026-10-18",
+    "terms_note": "BEA public domain(원문 확인)",
+    "url": "https://apps.bea.gov/national/Release/TXT/NipaDataQ.txt"
+   },
+   "state": "LIVE",
+   "system_validation": "UNVALIDATED",
+   "unit": "%",
+   "v0": true
+  },
+  {
+   "cycles": [
+    "economy"
+   ],
+   "edges": {
+    "down": {
+     "candidate": "WARNING",
+     "interpretation": "둔화",
+     "label": "건축허가 ↓"
+    },
+    "up": {
+     "candidate": "IMPROVING",
+     "interpretation": "회복",
+     "label": "건축허가 ↑"
+    }
+   },
+   "family": "HO",
+   "frequency": "M",
+   "id": "E26",
+   "name": "건축허가 (SA 연율)",
+   "reason": "SOURCE_KEY_NOT_CONFIGURED",
+   "rule": {
+    "realtime_validation": "UNVALIDATED",
+    "source_class": "PROPOSAL",
+    "text": "3개월 평균의 6개월 변화 부호 전환",
+    "version": "E26.v0"
+   },
+   "series": [
+    "CENSUS:RESCONST:APERMITS:TOTAL:SA"
+   ],
+   "source": {
+    "agency": "CENSUS",
+    "collection": "NEW_CENSUS_EITS_API",
+    "license_class": "FREE_OFFICIAL",
+    "official_statistic": true,
+    "publication": "PUBLIC",
+    "source": "Census NRC · 건축허가 전체, SA 연율",
+    "terms_checked_on": "2026-10-18",
+    "terms_note": "Census Data API TOS 원문 확인(출처 표시 문구 필요). API 키 없이는 수집 불가",
+    "url": "https://www.census.gov/construction/nrc/index.html"
+   },
+   "state": "NOT_AVAILABLE",
+   "system_validation": "UNVALIDATED",
+   "unit": "천 호",
+   "v0": true
+  },
+  {
+   "cycles": [
+    "economy"
+   ],
+   "edges": {
+    "down": {
+     "candidate": "IMPROVING",
+     "interpretation": "긴축 종료",
+     "label": "대출기준 완화 (0 하향)"
+    },
+    "up": {
+     "candidate": "WARNING",
+     "interpretation": "긴축",
+     "label": "대출기준 강화 (0 상향)"
+    }
+   },
+   "family": "BK",
+   "frequency": "Q",
+   "id": "E36",
+   "name": "대출기준 순강화 비율 (SLOOS, C&I 대·중기업)",
+   "reason": null,
+   "rule": {
+    "realtime_validation": "UNVALIDATED",
+    "source_class": "PROPOSAL",
+    "text": "순강화 비율 0 교차",
+    "version": "E36.v0"
+   },
+   "series": [
+    "FED:SLOOS:SUBLPDCILS_N.Q"
+   ],
+   "source": {
+    "agency": "FED_SLOOS",
+    "collection": "NEW_FED_DDP_CSV",
+    "license_class": "FREE_OFFICIAL",
+    "official_statistic": true,
+    "publication": "PUBLIC",
+    "source": "Fed SLOOS SUBLPDCILS_N.Q · C&I 대출기준 순강화 비율(대·중기업)",
+    "terms_checked_on": "2026-10-18",
+    "terms_note": "Fed Board public domain(원문 확인). 출처 표시",
+    "url": "https://www.federalreserve.gov/data/sloos.htm"
+   },
+   "state": "LIVE",
+   "system_validation": "UNVALIDATED",
+   "unit": "%",
+   "v0": true
+  },
+  {
+   "cycles": [
+    "economy"
+   ],
+   "edges": {
+    "down": {
+     "candidate": null,
+     "interpretation": "미정",
+     "label": "근원물가 둔화 (3개월 연속)"
+    },
+    "up": {
+     "candidate": null,
+     "interpretation": "확장 후기",
+     "label": "근원물가 가속 (3개월 연속)"
+    }
+   },
+   "family": "IN",
+   "frequency": "M",
+   "id": "E39",
+   "name": "근원 물가 추세 (근원 CPI · 근원 PCE)",
+   "reason": null,
+   "rule": {
+    "realtime_validation": "UNVALIDATED",
+    "source_class": "PROPOSAL",
+    "text": "3개월 연율 > 12개월 상승률 3개월 연속(가속), 반대(둔화)",
+    "version": "E39.v0"
+   },
+   "series": [
+    "BLS:CUSR0000SA0L1E",
+    "BEA:NIPA:DPCCRG:M"
+   ],
+   "source": {
+    "agency": "BLS+BEA",
+    "collection": "NEW_BLS_V1+NEW_BEA_FLAT_M",
+    "license_class": "FREE_OFFICIAL",
+    "official_statistic": true,
+    "publication": "PUBLIC",
+    "source": "BLS CUSR0000SA0L1E · 근원 CPI SA / BEA DPCCRG · 근원 PCE 물가지수",
+    "terms_checked_on": "2026-10-18",
+    "terms_note": "BLS·BEA public domain(원문 확인)",
+    "url": "https://apps.bea.gov/national/Release/TXT/NipaDataM.txt"
+   },
+   "state": "LIVE",
+   "system_validation": "UNVALIDATED",
+   "unit": "지수",
+   "v0": true
+  },
+  {
+   "cycles": [
+    "economy",
+    "market"
+   ],
+   "edges": {
+    "down": {
+     "candidate": null,
+     "interpretation": "해석 후보: 첫 인하 = 둔화·수축 (반례 주의)",
+     "label": "금리 인하(FOMC)"
+    },
+    "up": {
+     "candidate": null,
+     "interpretation": "해석 후보: 첫 인상 = 후기 (반례 주의)",
+     "label": "금리 인상(FOMC)"
+    }
+   },
+   "family": "PL",
+   "frequency": "E",
+   "id": "E40",
+   "name": "FOMC 목표범위 변경 (사건)",
+   "reason": null,
+   "rule": {
+    "realtime_validation": "EVENT_FACT_NOT_REQUIRED",
+    "source_class": "AGENCY_EVENT",
+    "text": "사건: 목표범위가 바뀐 FOMC 결정. 해석 규칙은 별도(미승인)",
+    "version": "E40.v0"
+   },
+   "series": [
+    "FED:FOMC:TARGET_RANGE"
+   ],
+   "source": {
+    "agency": "FED_FOMC",
+    "collection": "NEW_FED_OPENMARKET_HTML",
+    "license_class": "FREE_OFFICIAL",
+    "official_statistic": true,
+    "publication": "PUBLIC",
+    "source": "Fed Board 'Open market operations' 목표 금리(범위) 변경표",
+    "terms_checked_on": "2026-10-18",
+    "terms_note": "Fed Board public domain(원문 확인). 날짜는 변경표의 날짜(효력일)",
+    "url": "https://www.federalreserve.gov/monetarypolicy/openmarket.htm"
+   },
+   "state": "LIVE",
+   "system_validation": "UNVALIDATED",
+   "unit": "% (상단)",
+   "v0": true
+  },
+  {
+   "cycles": [
+    "economy",
+    "industry"
+   ],
+   "edges": {
+    "down": {
+     "candidate": "WARNING",
+     "interpretation": "둔화",
+     "label": "화물 운송 ↓ (하락 전환 3개월 유지)"
+    },
+    "up": {
+     "candidate": "IMPROVING",
+     "interpretation": "회복",
+     "label": "화물 운송 ↑ (상승 전환 3개월 유지)"
+    }
+   },
+   "family": "T",
+   "frequency": "M",
+   "id": "E01",
+   "name": "화물 운송서비스지수 (BTS Freight TSI)",
+   "reason": null,
+   "rule": {
+    "realtime_validation": "POST_HOC_LITERATURE_ONLY",
+    "source_class": "LITERATURE",
+    "text": "방향 전환이 3개월 이상 유지되면 선",
+    "version": "E01.v0"
+   },
+   "series": [
+    "BTS:TSI:FREIGHT"
+   ],
+   "source": {
+    "agency": "BTS",
+    "collection": "NEW_BTS_SOCRATA_JSON",
+    "license_class": "FREE_OFFICIAL",
+    "official_statistic": true,
+    "publication": "PUBLIC",
+    "source": "BTS Transportation Services Index · Freight, SA",
+    "terms_checked_on": "2026-10-20",
+    "terms_note": "data.bts.gov 데이터셋 라이선스 표기 'Public Domain U.S. Government'. 트럭 부분은 ATA 입력(제3자 권리 별도 확인 필요)",
+    "url": "https://data.bts.gov/resource/bw6n-ddqk.json"
+   },
+   "state": "LIVE",
+   "system_validation": "UNVALIDATED",
+   "unit": "지수 2000=100",
+   "v0": true
+  }
+ ],
+ "kind": "MACRO_EVIDENCE_LINES",
+ "labels": {
+  "collection_time": "수집 시각 기준",
+  "interpretation": "해석 후보 · 미승인",
+  "market_price": "가격 기반 시장 근거선은 기기 전용(B-PRICE) · 공개 없음",
+  "replay": "재구성 · 현재 빈티지(수정치) 기준 · 발표 시각 아님",
+  "rule": "v0 · 미검증",
+  "scope": "탐색 화면 전용 · 공식 판정·확률·매크로 게이트에 쓰지 않음 (MEV-10)",
+  "summary": "현재 유효 후보 정의(EVL-1) · 미승인"
+ },
+ "previous": "LOADED",
+ "releases": [
+  {
+   "at": "2026-10-02T08:00:00Z",
+   "basis": "SOURCE_LAST_MODIFIED",
+   "kind": "FIRST",
+   "period": "2026-10-02",
+   "rd": null,
+   "series": "FED:FOMC:TARGET_RANGE"
+  },
+  {
+   "at": "2026-10-03T10:00:00Z",
+   "basis": "COLLECTION_TIME",
+   "kind": "FIRST",
+   "period": "2026-08",
+   "rd": null,
+   "series": "BLS:LNS14000000"
+  },
+  {
+   "at": "2026-10-03T10:00:00Z",
+   "basis": "COLLECTION_TIME",
+   "kind": "FIRST",
+   "period": "2026-10-03",
+   "rd": null,
+   "series": "FED:FOMC:TARGET_RANGE"
+  },
+  {
+   "at": "2026-10-04T10:00:00Z",
+   "basis": "COLLECTION_TIME",
+   "kind": "REVISION",
+   "period": "2026-06",
+   "rd": "2026-10-01",
+   "series": "FED:G17:IP.B50001.S"
+  },
+  {
+   "at": "2026-10-04T10:00:00Z",
+   "basis": "COLLECTION_TIME",
+   "kind": "FIRST",
+   "period": "2026-09",
+   "rd": "2026-10-01",
+   "series": "FED:G17:IP.B50001.S"
+  },
+  {
+   "at": "2026-10-04T08:00:00Z",
+   "basis": "SOURCE_LAST_MODIFIED",
+   "kind": "FIRST",
+   "period": "2026-10-04",
+   "rd": null,
+   "series": "FED:FOMC:TARGET_RANGE"
+  },
+  {
+   "at": "2026-10-04T08:00:00Z",
+   "basis": "SOURCE_LAST_MODIFIED",
+   "kind": "FIRST",
+   "period": "2026-06",
+   "rd": null,
+   "series": "BTS:TSI:FREIGHT"
+  },
+  {
+   "at": "2026-10-05T10:00:00Z",
+   "basis": "COLLECTION_TIME",
+   "kind": "FIRST",
+   "period": "2026-09",
+   "rd": null,
+   "series": "TREASURY:BC_10YEAR-BC_3MONTH:MONTHLY_MEAN"
+  },
+  {
+   "at": "2026-10-05T10:00:00Z",
+   "basis": "COLLECTION_TIME",
+   "kind": "FIRST",
+   "period": "2026-07",
+   "rd": null,
+   "series": "BLS:CUSR0000SA0L1E"
+  },
+  {
+   "at": "2026-10-05T10:00:00Z",
+   "basis": "COLLECTION_TIME",
+   "kind": "FIRST",
+   "period": "2026-10-05",
+   "rd": null,
+   "series": "FED:FOMC:TARGET_RANGE"
+  },
+  {
+   "at": "2026-10-05T08:00:00Z",
+   "basis": "SOURCE_LAST_MODIFIED",
+   "kind": "FIRST",
+   "period": "2026-07",
+   "rd": null,
+   "series": "BTS:TSI:FREIGHT"
+  },
+  {
+   "at": "2026-10-06T10:00:00Z",
+   "basis": "COLLECTION_TIME",
+   "kind": "FIRST",
+   "period": "2026-08",
+   "rd": null,
+   "series": "BLS:CUSR0000SA0L1E"
+  },
+  {
+   "at": "2026-10-06T08:00:00Z",
+   "basis": "SOURCE_LAST_MODIFIED",
+   "kind": "FIRST",
+   "period": "2026-10-06",
+   "rd": null,
+   "series": "FED:FOMC:TARGET_RANGE"
+  },
+  {
+   "at": "2026-10-06T08:00:00Z",
+   "basis": "SOURCE_LAST_MODIFIED",
+   "kind": "FIRST",
+   "period": "2026-08",
+   "rd": null,
+   "series": "BTS:TSI:FREIGHT"
+  },
+  {
+   "at": "2026-10-07T10:00:00Z",
+   "basis": "COLLECTION_TIME",
+   "kind": "FIRST",
+   "period": "2026Q3",
+   "rd": null,
+   "series": "FED:SLOOS:SUBLPDCILS_N.Q"
+  },
+  {
+   "at": "2026-10-07T10:00:00Z",
+   "basis": "COLLECTION_TIME",
+   "kind": "FIRST",
+   "period": "2026-09",
+   "rd": null,
+   "series": "BLS:CUSR0000SA0L1E"
+  },
+  {
+   "at": "2026-10-07T10:00:00Z",
+   "basis": "COLLECTION_TIME",
+   "kind": "FIRST",
+   "period": "2026-10-07",
+   "rd": null,
+   "series": "FED:FOMC:TARGET_RANGE"
+  },
+  {
+   "at": "2026-10-08T10:00:00Z",
+   "basis": "COLLECTION_TIME",
+   "kind": "REVISION",
+   "period": "2026-08",
+   "rd": null,
+   "series": "BLS:LNS14000000"
+  },
+  {
+   "at": "2026-10-08T10:00:00Z",
+   "basis": "COLLECTION_TIME",
+   "kind": "REVISION",
+   "period": "2026Q3",
+   "rd": null,
+   "series": "FED:SLOOS:SUBLPDCILS_N.Q"
+  },
+  {
+   "at": "2026-10-08T08:00:00Z",
+   "basis": "SOURCE_LAST_MODIFIED",
+   "kind": "FIRST",
+   "period": "2026-10-08",
+   "rd": null,
+   "series": "FED:FOMC:TARGET_RANGE"
+  }
+ ],
+ "replay_events": [
+  {
+   "direction": "down",
+   "indicator": "E09",
+   "period": "2026-09",
+   "rule": "E09.v0",
+   "series": "TREASURY:BC_10YEAR-BC_3MONTH:MONTHLY_MEAN"
+  },
+  {
+   "direction": "down",
+   "indicator": "E25",
+   "period": "2025Q1",
+   "rule": "E25.v0",
+   "series": "BEA:NIPA:A191RL:Q"
+  },
+  {
+   "direction": "up",
+   "indicator": "E25",
+   "period": "2025Q2",
+   "rule": "E25.v0",
+   "series": "BEA:NIPA:A191RL:Q"
+  },
+  {
+   "direction": "up",
+   "indicator": "E39",
+   "period": "2024-07",
+   "rule": "E39.v0",
+   "series": "BLS:CUSR0000SA0L1E"
+  },
+  {
+   "direction": "down",
+   "indicator": "E39",
+   "period": "2025-06",
+   "rule": "E39.v0",
+   "series": "BLS:CUSR0000SA0L1E"
+  },
+  {
+   "direction": "up",
+   "indicator": "E39",
+   "period": "2026-09",
+   "rule": "E39.v0",
+   "series": "BLS:CUSR0000SA0L1E"
+  },
+  {
+   "direction": "up",
+   "indicator": "E39",
+   "period": "2024-10",
+   "rule": "E39.v0",
+   "series": "BEA:NIPA:DPCCRG:M"
+  },
+  {
+   "direction": "down",
+   "indicator": "E39",
+   "period": "2025-02",
+   "rule": "E39.v0",
+   "series": "BEA:NIPA:DPCCRG:M"
+  },
+  {
+   "direction": "up",
+   "indicator": "E39",
+   "period": "2025-11",
+   "rule": "E39.v0",
+   "series": "BEA:NIPA:DPCCRG:M"
+  },
+  {
+   "direction": "down",
+   "indicator": "E39",
+   "period": "2026-08",
+   "rule": "E39.v0",
+   "series": "BEA:NIPA:DPCCRG:M"
+  },
+  {
+   "direction": "down",
+   "indicator": "E40",
+   "period": "2024-11-08",
+   "rule": "E40.v0",
+   "series": "FED:FOMC:TARGET_RANGE"
+  },
+  {
+   "direction": "down",
+   "indicator": "E40",
+   "period": "2024-12-19",
+   "rule": "E40.v0",
+   "series": "FED:FOMC:TARGET_RANGE"
+  },
+  {
+   "direction": "down",
+   "indicator": "E40",
+   "period": "2025-09-18",
+   "rule": "E40.v0",
+   "series": "FED:FOMC:TARGET_RANGE"
+  },
+  {
+   "direction": "down",
+   "indicator": "E40",
+   "period": "2025-10-30",
+   "rule": "E40.v0",
+   "series": "FED:FOMC:TARGET_RANGE"
+  },
+  {
+   "direction": "down",
+   "indicator": "E40",
+   "period": "2025-12-11",
+   "rule": "E40.v0",
+   "series": "FED:FOMC:TARGET_RANGE"
+  },
+  {
+   "direction": "down",
+   "indicator": "E40",
+   "period": "2026-10-02",
+   "rule": "E40.v0",
+   "series": "FED:FOMC:TARGET_RANGE"
+  },
+  {
+   "direction": "down",
+   "indicator": "E40",
+   "period": "2026-10-03",
+   "rule": "E40.v0",
+   "series": "FED:FOMC:TARGET_RANGE"
+  },
+  {
+   "direction": "up",
+   "indicator": "E40",
+   "period": "2026-10-04",
+   "rule": "E40.v0",
+   "series": "FED:FOMC:TARGET_RANGE"
+  },
+  {
+   "direction": "up",
+   "indicator": "E40",
+   "period": "2026-10-05",
+   "rule": "E40.v0",
+   "series": "FED:FOMC:TARGET_RANGE"
+  },
+  {
+   "direction": "down",
+   "indicator": "E40",
+   "period": "2026-10-06",
+   "rule": "E40.v0",
+   "series": "FED:FOMC:TARGET_RANGE"
+  },
+  {
+   "direction": "down",
+   "indicator": "E40",
+   "period": "2026-10-07",
+   "rule": "E40.v0",
+   "series": "FED:FOMC:TARGET_RANGE"
+  },
+  {
+   "direction": "down",
+   "indicator": "E40",
+   "period": "2026-10-08",
+   "rule": "E40.v0",
+   "series": "FED:FOMC:TARGET_RANGE"
+  },
+  {
+   "direction": "down",
+   "indicator": "E01",
+   "period": "2026-08",
+   "rule": "E01.v0",
+   "series": "BTS:TSI:FREIGHT"
+  }
+ ],
+ "schema": "macro-evidence/1",
+ "scope": {
+  "decision": "MEV-10",
+  "macro_gate": false,
+  "official_judgement": false,
+  "probability": false,
+  "screen": "EXPLORATION_ONLY"
+ },
+ "series": {
+  "BEA:NIPA:A191RL:Q": {
+   "acquired_at": "2026-10-08T10:00:00Z",
+   "baseline_at": "2026-10-01T10:00:00Z",
+   "current": {
+    "latest": "2026Q2",
+    "since": "2025Q2",
+    "state": "up"
+   },
+   "delayed": false,
+   "frequency": "Q",
+   "history": {},
+   "indicator": "E25",
+   "last_success_at": "2026-10-08T10:00:00Z",
+   "obs": [
+    [
+     "2022Q1",
+     2.0
+    ],
+    [
+     "2022Q2",
+     2.0
+    ],
+    [
+     "2022Q3",
+     2.0
+    ],
+    [
+     "2022Q4",
+     2.0
+    ],
+    [
+     "2023Q1",
+     2.0
+    ],
+    [
+     "2023Q2",
+     2.0
+    ],
+    [
+     "2023Q3",
+     2.0
+    ],
+    [
+     "2023Q4",
+     2.0
+    ],
+    [
+     "2024Q1",
+     2.0
+    ],
+    [
+     "2024Q2",
+     2.0
+    ],
+    [
+     "2024Q3",
+     2.0
+    ],
+    [
+     "2024Q4",
+     2.0
+    ],
+    [
+     "2025Q1",
+     -0.5
+    ],
+    [
+     "2025Q2",
+     2.0
+    ],
+    [
+     "2025Q3",
+     2.0
+    ],
+    [
+     "2025Q4",
+     2.0
+    ],
+    [
+     "2026Q1",
+     2.0
+    ],
+    [
+     "2026Q2",
+     2.0
+    ]
+   ],
+   "reason": null,
+   "release_evidence": {
+    "at": null,
+    "date": null
+   },
+   "state": "LIVE"
+  },
+  "BEA:NIPA:DPCCRG:M": {
+   "acquired_at": "2026-10-08T10:00:00Z",
+   "baseline_at": "2026-10-01T10:00:00Z",
+   "current": {
+    "latest": "2026-08",
+    "since": "2026-08",
+    "state": "down"
+   },
+   "delayed": false,
+   "frequency": "M",
+   "history": {},
+   "indicator": "E39",
+   "last_success_at": "2026-10-08T10:00:00Z",
+   "obs": [
+    [
+     "2023-01",
+     120.3
+    ],
+    [
+     "2023-02",
+     120.6007
+    ],
+    [
+     "2023-03",
+     120.9022
+    ],
+    [
+     "2023-04",
+     121.2045
+    ],
+    [
+     "2023-05",
+     121.5075
+    ],
+    [
+     "2023-06",
+     121.8113
+    ],
+    [
+     "2023-07",
+     122.1158
+    ],
+    [
+     "2023-08",
+     122.4211
+    ],
+    [
+     "2023-09",
+     122.7272
+    ],
+    [
+     "2023-10",
+     123.034
+    ],
+    [
+     "2023-11",
+     123.3416
+    ],
+    [
+     "2023-12",
+     123.65
+    ],
+    [
+     "2024-01",
+     123.9591
+    ],
+    [
+     "2024-02",
+     124.269
+    ],
+    [
+     "2024-03",
+     124.5797
+    ],
+    [
+     "2024-04",
+     124.8911
+    ],
+    [
+     "2024-05",
+     125.2033
+    ],
+    [
+     "2024-06",
+     125.5163
+    ],
+    [
+     "2024-07",
+     125.8301
+    ],
+    [
+     "2024-08",
+     126.1447
+    ],
+    [
+     "2024-09",
+     126.4601
+    ],
+    [
+     "2024-10",
+     126.7763
+    ],
+    [
+     "2024-11",
+     127.0932
+    ],
+    [
+     "2024-12",
+     127.4109
+    ],
+    [
+     "2025-01",
+     127.7294
+    ],
+    [
+     "2025-02",
+     128.0487
+    ],
+    [
+     "2025-03",
+     128.3688
+    ],
+    [
+     "2025-04",
+     128.6897
+    ],
+    [
+     "2025-05",
+     129.0114
+    ],
+    [
+     "2025-06",
+     129.3339
+    ],
+    [
+     "2025-07",
+     129.6572
+    ],
+    [
+     "2025-08",
+     129.9813
+    ],
+    [
+     "2025-09",
+     130.3063
+    ],
+    [
+     "2025-10",
+     130.6321
+    ],
+    [
+     "2025-11",
+     130.9587
+    ],
+    [
+     "2025-12",
+     131.2861
+    ],
+    [
+     "2026-01",
+     131.6143
+    ],
+    [
+     "2026-02",
+     131.9433
+    ],
+    [
+     "2026-03",
+     132.2732
+    ],
+    [
+     "2026-04",
+     132.6039
+    ],
+    [
+     "2026-05",
+     132.9354
+    ],
+    [
+     "2026-06",
+     133.2677
+    ],
+    [
+     "2026-07",
+     133.6009
+    ],
+    [
+     "2026-08",
+     133.9349
+    ]
+   ],
+   "reason": null,
+   "release_evidence": {
+    "at": "2026-10-08T08:00:00Z",
+    "date": null
+   },
+   "state": "LIVE"
+  },
+  "BLS:CES3000000007": {
+   "acquired_at": "2026-10-08T10:00:00Z",
+   "baseline_at": "2026-10-01T10:00:00Z",
+   "current": {
+    "latest": "2026-08",
+    "since": "2024-03",
+    "state": null
+   },
+   "delayed": false,
+   "frequency": "M",
+   "history": {},
+   "indicator": "E17",
+   "last_success_at": "2026-10-08T10:00:00Z",
+   "obs": [
+    [
+     "2023-01",
+     40.5
+    ],
+    [
+     "2023-02",
+     40.5
+    ],
+    [
+     "2023-03",
+     40.5
+    ],
+    [
+     "2023-04",
+     40.5
+    ],
+    [
+     "2023-05",
+     40.5
+    ],
+    [
+     "2023-06",
+     40.5
+    ],
+    [
+     "2023-07",
+     40.5
+    ],
+    [
+     "2023-08",
+     40.5
+    ],
+    [
+     "2023-09",
+     40.5
+    ],
+    [
+     "2023-10",
+     40.5
+    ],
+    [
+     "2023-11",
+     40.5
+    ],
+    [
+     "2023-12",
+     40.5
+    ],
+    [
+     "2024-01",
+     40.5
+    ],
+    [
+     "2024-02",
+     40.5
+    ],
+    [
+     "2024-03",
+     40.5
+    ],
+    [
+     "2024-04",
+     40.5
+    ],
+    [
+     "2024-05",
+     40.5
+    ],
+    [
+     "2024-06",
+     40.5
+    ],
+    [
+     "2024-07",
+     40.5
+    ],
+    [
+     "2024-08",
+     40.5
+    ],
+    [
+     "2024-09",
+     40.5
+    ],
+    [
+     "2024-10",
+     40.5
+    ],
+    [
+     "2024-11",
+     40.5
+    ],
+    [
+     "2024-12",
+     40.5
+    ],
+    [
+     "2025-01",
+     40.5
+    ],
+    [
+     "2025-02",
+     40.5
+    ],
+    [
+     "2025-03",
+     40.5
+    ],
+    [
+     "2025-04",
+     40.5
+    ],
+    [
+     "2025-05",
+     40.5
+    ],
+    [
+     "2025-06",
+     40.5
+    ],
+    [
+     "2025-07",
+     40.5
+    ],
+    [
+     "2025-08",
+     40.5
+    ],
+    [
+     "2025-09",
+     40.5
+    ],
+    [
+     "2025-10",
+     40.5
+    ],
+    [
+     "2025-11",
+     40.5
+    ],
+    [
+     "2025-12",
+     40.5
+    ],
+    [
+     "2026-01",
+     40.5
+    ],
+    [
+     "2026-02",
+     40.5
+    ],
+    [
+     "2026-03",
+     40.5
+    ],
+    [
+     "2026-04",
+     40.5
+    ],
+    [
+     "2026-05",
+     40.5
+    ],
+    [
+     "2026-06",
+     40.5
+    ],
+    [
+     "2026-07",
+     40.5
+    ],
+    [
+     "2026-08",
+     40.5
+    ]
+   ],
+   "reason": null,
+   "release_evidence": {
+    "at": null,
+    "date": null
+   },
+   "state": "LIVE"
+  },
+  "BLS:CES6056132001": {
+   "acquired_at": "2026-10-08T10:00:00Z",
+   "baseline_at": "2026-10-01T10:00:00Z",
+   "current": {
+    "latest": "2026-08",
+    "since": "2023-07",
+    "state": "up"
+   },
+   "delayed": false,
+   "frequency": "M",
+   "history": {},
+   "indicator": "E16",
+   "last_success_at": "2026-10-08T10:00:00Z",
+   "obs": [
+    [
+     "2023-01",
+     2600.0
+    ],
+    [
+     "2023-02",
+     2601.0
+    ],
+    [
+     "2023-03",
+     2602.0
+    ],
+    [
+     "2023-04",
+     2603.0
+    ],
+    [
+     "2023-05",
+     2604.0
+    ],
+    [
+     "2023-06",
+     2605.0
+    ],
+    [
+     "2023-07",
+     2606.0
+    ],
+    [
+     "2023-08",
+     2607.0
+    ],
+    [
+     "2023-09",
+     2608.0
+    ],
+    [
+     "2023-10",
+     2609.0
+    ],
+    [
+     "2023-11",
+     2610.0
+    ],
+    [
+     "2023-12",
+     2611.0
+    ],
+    [
+     "2024-01",
+     2612.0
+    ],
+    [
+     "2024-02",
+     2613.0
+    ],
+    [
+     "2024-03",
+     2614.0
+    ],
+    [
+     "2024-04",
+     2615.0
+    ],
+    [
+     "2024-05",
+     2616.0
+    ],
+    [
+     "2024-06",
+     2617.0
+    ],
+    [
+     "2024-07",
+     2618.0
+    ],
+    [
+     "2024-08",
+     2619.0
+    ],
+    [
+     "2024-09",
+     2620.0
+    ],
+    [
+     "2024-10",
+     2621.0
+    ],
+    [
+     "2024-11",
+     2622.0
+    ],
+    [
+     "2024-12",
+     2623.0
+    ],
+    [
+     "2025-01",
+     2624.0
+    ],
+    [
+     "2025-02",
+     2625.0
+    ],
+    [
+     "2025-03",
+     2626.0
+    ],
+    [
+     "2025-04",
+     2627.0
+    ],
+    [
+     "2025-05",
+     2628.0
+    ],
+    [
+     "2025-06",
+     2629.0
+    ],
+    [
+     "2025-07",
+     2630.0
+    ],
+    [
+     "2025-08",
+     2631.0
+    ],
+    [
+     "2025-09",
+     2632.0
+    ],
+    [
+     "2025-10",
+     2633.0
+    ],
+    [
+     "2025-11",
+     2634.0
+    ],
+    [
+     "2025-12",
+     2635.0
+    ],
+    [
+     "2026-01",
+     2636.0
+    ],
+    [
+     "2026-02",
+     2637.0
+    ],
+    [
+     "2026-03",
+     2638.0
+    ],
+    [
+     "2026-04",
+     2639.0
+    ],
+    [
+     "2026-05",
+     2640.0
+    ],
+    [
+     "2026-06",
+     2641.0
+    ],
+    [
+     "2026-07",
+     2642.0
+    ],
+    [
+     "2026-08",
+     2643.0
+    ]
+   ],
+   "reason": null,
+   "release_evidence": {
+    "at": null,
+    "date": null
+   },
+   "state": "LIVE"
+  },
+  "BLS:CUSR0000SA0L1E": {
+   "acquired_at": "2026-10-08T10:00:00Z",
+   "baseline_at": "2026-10-01T10:00:00Z",
+   "current": {
+    "latest": "2026-09",
+    "since": "2026-09",
+    "state": "up"
+   },
+   "delayed": false,
+   "frequency": "M",
+   "history": {
+    "2026-07": [
+     {
+      "at": "2026-10-05T10:00:00Z",
+      "basis": "COLLECTION_TIME",
+      "kind": "FIRST",
+      "rd": null,
+      "v": 340.2192
+     }
+    ],
+    "2026-08": [
+     {
+      "at": "2026-10-06T10:00:00Z",
+      "basis": "COLLECTION_TIME",
+      "kind": "FIRST",
+      "rd": null,
+      "v": 342.2605
+     }
+    ],
+    "2026-09": [
+     {
+      "at": "2026-10-07T10:00:00Z",
+      "basis": "COLLECTION_TIME",
+      "kind": "FIRST",
+      "rd": null,
+      "v": 344.3141
+     }
+    ]
+   },
+   "indicator": "E39",
+   "last_success_at": "2026-10-08T10:00:00Z",
+   "obs": [
+    [
+     "2023-01",
+     300.9
+    ],
+    [
+     "2023-02",
+     301.8027
+    ],
+    [
+     "2023-03",
+     302.7081
+    ],
+    [
+     "2023-04",
+     303.6162
+    ],
+    [
+     "2023-05",
+     304.527
+    ],
+    [
+     "2023-06",
+     305.4406
+    ],
+    [
+     "2023-07",
+     306.3569
+    ],
+    [
+     "2023-08",
+     307.276
+    ],
+    [
+     "2023-09",
+     308.1978
+    ],
+    [
+     "2023-10",
+     309.1224
+    ],
+    [
+     "2023-11",
+     310.0498
+    ],
+    [
+     "2023-12",
+     310.9799
+    ],
+    [
+     "2024-01",
+     311.9128
+    ],
+    [
+     "2024-02",
+     312.8485
+    ],
+    [
+     "2024-03",
+     313.787
+    ],
+    [
+     "2024-04",
+     314.7284
+    ],
+    [
+     "2024-05",
+     315.6726
+    ],
+    [
+     "2024-06",
+     316.6196
+    ],
+    [
+     "2024-07",
+     317.5695
+    ],
+    [
+     "2024-08",
+     318.5222
+    ],
+    [
+     "2024-09",
+     319.4778
+    ],
+    [
+     "2024-10",
+     320.4362
+    ],
+    [
+     "2024-11",
+     321.3975
+    ],
+    [
+     "2024-12",
+     322.3617
+    ],
+    [
+     "2025-01",
+     323.3288
+    ],
+    [
+     "2025-02",
+     324.2988
+    ],
+    [
+     "2025-03",
+     325.2717
+    ],
+    [
+     "2025-04",
+     326.2475
+    ],
+    [
+     "2025-05",
+     327.2262
+    ],
+    [
+     "2025-06",
+     328.2079
+    ],
+    [
+     "2025-07",
+     329.1925
+    ],
+    [
+     "2025-08",
+     330.1801
+    ],
+    [
+     "2025-09",
+     331.1706
+    ],
+    [
+     "2025-10",
+     332.1641
+    ],
+    [
+     "2025-11",
+     333.1606
+    ],
+    [
+     "2025-12",
+     334.1601
+    ],
+    [
+     "2026-01",
+     334.8284
+    ],
+    [
+     "2026-02",
+     335.4981
+    ],
+    [
+     "2026-03",
+     336.1691
+    ],
+    [
+     "2026-04",
+     336.8414
+    ],
+    [
+     "2026-05",
+     337.5151
+    ],
+    [
+     "2026-06",
+     338.1901
+    ],
+    [
+     "2026-07",
+     340.2192
+    ],
+    [
+     "2026-08",
+     342.2605
+    ],
+    [
+     "2026-09",
+     344.3141
+    ]
+   ],
+   "reason": null,
+   "release_evidence": {
+    "at": null,
+    "date": null
+   },
+   "state": "LIVE"
+  },
+  "BLS:LNS14000000": {
+   "acquired_at": "2026-10-08T10:00:00Z",
+   "baseline_at": "2026-10-01T10:00:00Z",
+   "current": {
+    "latest": "2026-08",
+    "since": "2026-03",
+    "state": "clear"
+   },
+   "delayed": false,
+   "frequency": "M",
+   "history": {
+    "2026-08": [
+     {
+      "at": "2026-10-03T10:00:00Z",
+      "basis": "COLLECTION_TIME",
+      "kind": "FIRST",
+      "rd": null,
+      "v": 5.6
+     },
+     {
+      "at": "2026-10-08T10:00:00Z",
+      "basis": "COLLECTION_TIME",
+      "kind": "REVISION",
+      "rd": null,
+      "v": 4.9
+     }
+    ]
+   },
+   "indicator": "E13",
+   "last_success_at": "2026-10-08T10:00:00Z",
+   "obs": [
+    [
+     "2025-01",
+     4.0
+    ],
+    [
+     "2025-02",
+     4.0
+    ],
+    [
+     "2025-03",
+     4.0
+    ],
+    [
+     "2025-04",
+     4.0
+    ],
+    [
+     "2025-05",
+     4.0
+    ],
+    [
+     "2025-06",
+     4.0
+    ],
+    [
+     "2025-07",
+     4.0
+    ],
+    [
+     "2025-08",
+     4.0
+    ],
+    [
+     "2025-09",
+     4.0
+    ],
+    [
+     "2025-10",
+     4.0
+    ],
+    [
+     "2025-11",
+     4.0
+    ],
+    [
+     "2025-12",
+     4.0
+    ],
+    [
+     "2026-01",
+     4.0
+    ],
+    [
+     "2026-02",
+     4.0
+    ],
+    [
+     "2026-03",
+     4.0
+    ],
+    [
+     "2026-04",
+     4.0
+    ],
+    [
+     "2026-05",
+     4.0
+    ],
+    [
+     "2026-06",
+     4.0
+    ],
+    [
+     "2026-07",
+     4.0
+    ],
+    [
+     "2026-08",
+     4.9
+    ]
+   ],
+   "reason": null,
+   "release_evidence": {
+    "at": null,
+    "date": null
+   },
+   "state": "LIVE"
+  },
+  "BTS:TSI:FREIGHT": {
+   "acquired_at": "2026-10-08T10:00:00Z",
+   "baseline_at": "2026-10-01T10:00:00Z",
+   "current": {
+    "latest": "2026-08",
+    "since": "2026-08",
+    "state": "down"
+   },
+   "delayed": false,
+   "frequency": "M",
+   "history": {
+    "2026-06": [
+     {
+      "at": "2026-10-04T08:00:00Z",
+      "basis": "SOURCE_LAST_MODIFIED",
+      "kind": "FIRST",
+      "rd": null,
+      "v": 137.5
+     }
+    ],
+    "2026-07": [
+     {
+      "at": "2026-10-05T08:00:00Z",
+      "basis": "SOURCE_LAST_MODIFIED",
+      "kind": "FIRST",
+      "rd": null,
+      "v": 137.0
+     }
+    ],
+    "2026-08": [
+     {
+      "at": "2026-10-06T08:00:00Z",
+      "basis": "SOURCE_LAST_MODIFIED",
+      "kind": "FIRST",
+      "rd": null,
+      "v": 136.4
+     }
+    ]
+   },
+   "indicator": "E01",
+   "last_success_at": "2026-10-08T10:00:00Z",
+   "obs": [
+    [
+     "2023-01",
+     130.0
+    ],
+    [
+     "2023-02",
+     130.2
+    ],
+    [
+     "2023-03",
+     130.4
+    ],
+    [
+     "2023-04",
+     130.6
+    ],
+    [
+     "2023-05",
+     130.8
+    ],
+    [
+     "2023-06",
+     131.0
+    ],
+    [
+     "2023-07",
+     131.2
+    ],
+    [
+     "2023-08",
+     131.4
+    ],
+    [
+     "2023-09",
+     131.6
+    ],
+    [
+     "2023-10",
+     131.8
+    ],
+    [
+     "2023-11",
+     132.0
+    ],
+    [
+     "2023-12",
+     132.2
+    ],
+    [
+     "2024-01",
+     132.4
+    ],
+    [
+     "2024-02",
+     132.6
+    ],
+    [
+     "2024-03",
+     132.8
+    ],
+    [
+     "2024-04",
+     133.0
+    ],
+    [
+     "2024-05",
+     133.2
+    ],
+    [
+     "2024-06",
+     133.4
+    ],
+    [
+     "2024-07",
+     133.6
+    ],
+    [
+     "2024-08",
+     133.8
+    ],
+    [
+     "2024-09",
+     134.0
+    ],
+    [
+     "2024-10",
+     134.2
+    ],
+    [
+     "2024-11",
+     134.4
+    ],
+    [
+     "2024-12",
+     134.6
+    ],
+    [
+     "2025-01",
+     134.8
+    ],
+    [
+     "2025-02",
+     135.0
+    ],
+    [
+     "2025-03",
+     135.2
+    ],
+    [
+     "2025-04",
+     135.4
+    ],
+    [
+     "2025-05",
+     135.6
+    ],
+    [
+     "2025-06",
+     135.8
+    ],
+    [
+     "2025-07",
+     136.0
+    ],
+    [
+     "2025-08",
+     136.2
+    ],
+    [
+     "2025-09",
+     136.4
+    ],
+    [
+     "2025-10",
+     136.6
+    ],
+    [
+     "2025-11",
+     136.8
+    ],
+    [
+     "2025-12",
+     137.0
+    ],
+    [
+     "2026-01",
+     137.2
+    ],
+    [
+     "2026-02",
+     137.4
+    ],
+    [
+     "2026-03",
+     137.6
+    ],
+    [
+     "2026-04",
+     137.8
+    ],
+    [
+     "2026-05",
+     138.0
+    ],
+    [
+     "2026-06",
+     137.5
+    ],
+    [
+     "2026-07",
+     137.0
+    ],
+    [
+     "2026-08",
+     136.4
+    ]
+   ],
+   "reason": null,
+   "release_evidence": {
+    "at": "2026-10-08T08:00:00Z",
+    "date": null
+   },
+   "state": "LIVE"
+  },
+  "CENSUS:M3:NXA:NO:SA": {
+   "acquired_at": null,
+   "baseline_at": null,
+   "current": {
+    "latest": null,
+    "since": null,
+    "state": null
+   },
+   "delayed": null,
+   "frequency": "M",
+   "history": {},
+   "indicator": "E21",
+   "last_success_at": null,
+   "obs": [],
+   "reason": "SOURCE_KEY_NOT_CONFIGURED",
+   "release_evidence": null,
+   "state": "NOT_AVAILABLE"
+  },
+  "CENSUS:RESCONST:APERMITS:TOTAL:SA": {
+   "acquired_at": null,
+   "baseline_at": null,
+   "current": {
+    "latest": null,
+    "since": null,
+    "state": null
+   },
+   "delayed": null,
+   "frequency": "M",
+   "history": {},
+   "indicator": "E26",
+   "last_success_at": null,
+   "obs": [],
+   "reason": "SOURCE_KEY_NOT_CONFIGURED",
+   "release_evidence": null,
+   "state": "NOT_AVAILABLE"
+  },
+  "DOL:ETA539:INITIAL_CLAIMS_SA": {
+   "acquired_at": "2026-10-08T10:00:00Z",
+   "baseline_at": null,
+   "current": {
+    "latest": null,
+    "since": null,
+    "state": null
+   },
+   "delayed": null,
+   "frequency": "W",
+   "history": {},
+   "indicator": "E14",
+   "last_success_at": null,
+   "obs": [],
+   "reason": "TERMS_UNVERIFIED",
+   "release_evidence": null,
+   "state": "NOT_AVAILABLE"
+  },
+  "FED:FOMC:TARGET_RANGE": {
+   "acquired_at": "2026-10-08T10:00:00Z",
+   "baseline_at": "2026-10-01T10:00:00Z",
+   "current": {
+    "latest": "2026-10-08",
+    "since": "2026-10-08",
+    "state": "down"
+   },
+   "delayed": null,
+   "frequency": "E",
+   "history": {
+    "2026-10-02": [
+     {
+      "at": "2026-10-02T08:00:00Z",
+      "basis": "SOURCE_LAST_MODIFIED",
+      "kind": "FIRST",
+      "rd": null,
+      "v": 3.5
+     }
+    ],
+    "2026-10-03": [
+     {
+      "at": "2026-10-03T10:00:00Z",
+      "basis": "COLLECTION_TIME",
+      "kind": "FIRST",
+      "rd": null,
+      "v": 3.25
+     }
+    ],
+    "2026-10-04": [
+     {
+      "at": "2026-10-04T08:00:00Z",
+      "basis": "SOURCE_LAST_MODIFIED",
+      "kind": "FIRST",
+      "rd": null,
+      "v": 3.5
+     }
+    ],
+    "2026-10-05": [
+     {
+      "at": "2026-10-05T10:00:00Z",
+      "basis": "COLLECTION_TIME",
+      "kind": "FIRST",
+      "rd": null,
+      "v": 3.75
+     }
+    ],
+    "2026-10-06": [
+     {
+      "at": "2026-10-06T08:00:00Z",
+      "basis": "SOURCE_LAST_MODIFIED",
+      "kind": "FIRST",
+      "rd": null,
+      "v": 3.5
+     }
+    ],
+    "2026-10-07": [
+     {
+      "at": "2026-10-07T10:00:00Z",
+      "basis": "COLLECTION_TIME",
+      "kind": "FIRST",
+      "rd": null,
+      "v": 3.25
+     }
+    ],
+    "2026-10-08": [
+     {
+      "at": "2026-10-08T08:00:00Z",
+      "basis": "SOURCE_LAST_MODIFIED",
+      "kind": "FIRST",
+      "rd": null,
+      "v": 3.0
+     }
+    ]
+   },
+   "indicator": "E40",
+   "last_success_at": "2026-10-08T10:00:00Z",
+   "obs": [
+    [
+     "2024-09-19",
+     5.0
+    ],
+    [
+     "2024-11-08",
+     4.75
+    ],
+    [
+     "2024-12-19",
+     4.5
+    ],
+    [
+     "2025-09-18",
+     4.25
+    ],
+    [
+     "2025-10-30",
+     4.0
+    ],
+    [
+     "2025-12-11",
+     3.75
+    ],
+    [
+     "2026-10-02",
+     3.5
+    ],
+    [
+     "2026-10-03",
+     3.25
+    ],
+    [
+     "2026-10-04",
+     3.5
+    ],
+    [
+     "2026-10-05",
+     3.75
+    ],
+    [
+     "2026-10-06",
+     3.5
+    ],
+    [
+     "2026-10-07",
+     3.25
+    ],
+    [
+     "2026-10-08",
+     3.0
+    ]
+   ],
+   "reason": null,
+   "release_evidence": {
+    "at": "2026-10-08T08:00:00Z",
+    "date": null
+   },
+   "state": "LIVE"
+  },
+  "FED:G17:IP.B50001.S": {
+   "acquired_at": "2026-10-08T10:00:00Z",
+   "baseline_at": "2026-10-01T10:00:00Z",
+   "current": {
+    "latest": "2026-09",
+    "since": "2024-01",
+    "state": "up"
+   },
+   "delayed": false,
+   "frequency": "M",
+   "history": {
+    "2026-06": [
+     {
+      "at": "2026-10-01T10:00:00Z",
+      "basis": "BASELINE",
+      "kind": "BASELINE",
+      "rd": null,
+      "v": 104.1
+     },
+     {
+      "at": "2026-10-04T10:00:00Z",
+      "basis": "COLLECTION_TIME",
+      "kind": "REVISION",
+      "rd": "2026-10-01",
+      "v": 104.0
+     }
+    ],
+    "2026-09": [
+     {
+      "at": "2026-10-04T10:00:00Z",
+      "basis": "COLLECTION_TIME",
+      "kind": "FIRST",
+      "rd": "2026-10-01",
+      "v": 104.2
+     }
+    ]
+   },
+   "indicator": "E22",
+   "last_success_at": "2026-10-08T10:00:00Z",
+   "obs": [
+    [
+     "2023-01",
+     100.0
+    ],
+    [
+     "2023-02",
+     100.1
+    ],
+    [
+     "2023-03",
+     100.2
+    ],
+    [
+     "2023-04",
+     100.3
+    ],
+    [
+     "2023-05",
+     100.4
+    ],
+    [
+     "2023-06",
+     100.5
+    ],
+    [
+     "2023-07",
+     100.6
+    ],
+    [
+     "2023-08",
+     100.7
+    ],
+    [
+     "2023-09",
+     100.8
+    ],
+    [
+     "2023-10",
+     100.9
+    ],
+    [
+     "2023-11",
+     101.0
+    ],
+    [
+     "2023-12",
+     101.1
+    ],
+    [
+     "2024-01",
+     101.2
+    ],
+    [
+     "2024-02",
+     101.3
+    ],
+    [
+     "2024-03",
+     101.4
+    ],
+    [
+     "2024-04",
+     101.5
+    ],
+    [
+     "2024-05",
+     101.6
+    ],
+    [
+     "2024-06",
+     101.7
+    ],
+    [
+     "2024-07",
+     101.8
+    ],
+    [
+     "2024-08",
+     101.9
+    ],
+    [
+     "2024-09",
+     102.0
+    ],
+    [
+     "2024-10",
+     102.1
+    ],
+    [
+     "2024-11",
+     102.2
+    ],
+    [
+     "2024-12",
+     102.3
+    ],
+    [
+     "2025-01",
+     102.4
+    ],
+    [
+     "2025-02",
+     102.5
+    ],
+    [
+     "2025-03",
+     102.6
+    ],
+    [
+     "2025-04",
+     102.7
+    ],
+    [
+     "2025-05",
+     102.8
+    ],
+    [
+     "2025-06",
+     102.9
+    ],
+    [
+     "2025-07",
+     103.0
+    ],
+    [
+     "2025-08",
+     103.1
+    ],
+    [
+     "2025-09",
+     103.2
+    ],
+    [
+     "2025-10",
+     103.3
+    ],
+    [
+     "2025-11",
+     103.4
+    ],
+    [
+     "2025-12",
+     103.5
+    ],
+    [
+     "2026-01",
+     103.6
+    ],
+    [
+     "2026-02",
+     103.7
+    ],
+    [
+     "2026-03",
+     103.8
+    ],
+    [
+     "2026-04",
+     103.9
+    ],
+    [
+     "2026-05",
+     104.0
+    ],
+    [
+     "2026-06",
+     104.0
+    ],
+    [
+     "2026-07",
+     104.2
+    ],
+    [
+     "2026-08",
+     104.3
+    ],
+    [
+     "2026-09",
+     104.2
+    ]
+   ],
+   "reason": null,
+   "release_evidence": {
+    "at": null,
+    "date": "2026-10-01"
+   },
+   "state": "LIVE"
+  },
+  "FED:SLOOS:SUBLPDCILS_N.Q": {
+   "acquired_at": "2026-10-08T10:00:00Z",
+   "baseline_at": "2026-10-01T10:00:00Z",
+   "current": {
+    "latest": "2026Q3",
+    "since": "2019Q1",
+    "state": "down"
+   },
+   "delayed": false,
+   "frequency": "Q",
+   "history": {
+    "2026Q3": [
+     {
+      "at": "2026-10-07T10:00:00Z",
+      "basis": "COLLECTION_TIME",
+      "kind": "FIRST",
+      "rd": null,
+      "v": 5.0
+     },
+     {
+      "at": "2026-10-08T10:00:00Z",
+      "basis": "COLLECTION_TIME",
+      "kind": "REVISION",
+      "rd": null,
+      "v": -2.0
+     }
+    ]
+   },
+   "indicator": "E36",
+   "last_success_at": "2026-10-08T10:00:00Z",
+   "obs": [
+    [
+     "2019Q1",
+     -6.0
+    ],
+    [
+     "2019Q2",
+     -3.0
+    ],
+    [
+     "2019Q3",
+     -6.0
+    ],
+    [
+     "2019Q4",
+     -3.0
+    ],
+    [
+     "2020Q1",
+     -6.0
+    ],
+    [
+     "2020Q2",
+     -3.0
+    ],
+    [
+     "2020Q3",
+     -6.0
+    ],
+    [
+     "2020Q4",
+     -3.0
+    ],
+    [
+     "2021Q1",
+     -6.0
+    ],
+    [
+     "2021Q2",
+     -3.0
+    ],
+    [
+     "2021Q3",
+     -6.0
+    ],
+    [
+     "2021Q4",
+     -3.0
+    ],
+    [
+     "2022Q1",
+     -6.0
+    ],
+    [
+     "2022Q2",
+     -3.0
+    ],
+    [
+     "2022Q3",
+     -6.0
+    ],
+    [
+     "2022Q4",
+     -3.0
+    ],
+    [
+     "2023Q1",
+     -6.0
+    ],
+    [
+     "2023Q2",
+     -3.0
+    ],
+    [
+     "2023Q3",
+     -6.0
+    ],
+    [
+     "2023Q4",
+     -3.0
+    ],
+    [
+     "2024Q1",
+     -6.0
+    ],
+    [
+     "2024Q2",
+     -3.0
+    ],
+    [
+     "2024Q3",
+     -6.0
+    ],
+    [
+     "2024Q4",
+     -3.0
+    ],
+    [
+     "2025Q1",
+     -6.0
+    ],
+    [
+     "2025Q2",
+     -3.0
+    ],
+    [
+     "2025Q3",
+     -6.0
+    ],
+    [
+     "2025Q4",
+     -3.0
+    ],
+    [
+     "2026Q1",
+     -6.0
+    ],
+    [
+     "2026Q2",
+     -3.0
+    ],
+    [
+     "2026Q3",
+     -2.0
+    ]
+   ],
+   "reason": null,
+   "release_evidence": {
+    "at": null,
+    "date": null
+   },
+   "state": "LIVE"
+  },
+  "TREASURY:BC_10YEAR-BC_3MONTH:MONTHLY_MEAN": {
+   "acquired_at": "2026-10-08T10:00:00Z",
+   "baseline_at": "2026-10-01T10:00:00Z",
+   "current": {
+    "latest": "2026-09",
+    "since": "2026-09",
+    "state": "down"
+   },
+   "delayed": false,
+   "frequency": "M",
+   "history": {
+    "2026-09": [
+     {
+      "at": "2026-10-05T10:00:00Z",
+      "basis": "COLLECTION_TIME",
+      "kind": "FIRST",
+      "rd": null,
+      "v": -0.1
+     }
+    ]
+   },
+   "indicator": "E09",
+   "last_success_at": "2026-10-08T10:00:00Z",
+   "obs": [
+    [
+     "2024-11",
+     0.6
+    ],
+    [
+     "2024-12",
+     0.6
+    ],
+    [
+     "2025-01",
+     0.6
+    ],
+    [
+     "2025-02",
+     0.6
+    ],
+    [
+     "2025-03",
+     0.6
+    ],
+    [
+     "2025-04",
+     0.6
+    ],
+    [
+     "2025-05",
+     0.6
+    ],
+    [
+     "2025-06",
+     0.6
+    ],
+    [
+     "2025-07",
+     0.6
+    ],
+    [
+     "2025-08",
+     0.6
+    ],
+    [
+     "2025-09",
+     0.6
+    ],
+    [
+     "2025-10",
+     0.6
+    ],
+    [
+     "2025-11",
+     0.6
+    ],
+    [
+     "2025-12",
+     0.6
+    ],
+    [
+     "2026-01",
+     0.6
+    ],
+    [
+     "2026-02",
+     0.6
+    ],
+    [
+     "2026-03",
+     0.6
+    ],
+    [
+     "2026-04",
+     0.6
+    ],
+    [
+     "2026-05",
+     0.6
+    ],
+    [
+     "2026-06",
+     0.6
+    ],
+    [
+     "2026-07",
+     0.6
+    ],
+    [
+     "2026-08",
+     0.6
+    ],
+    [
+     "2026-09",
+     -0.1
+    ]
+   ],
+   "reason": null,
+   "release_evidence": {
+    "at": null,
+    "date": null
+   },
+   "state": "LIVE"
+  }
+ },
+ "state": "PARTIAL",
+ "summary": {
+  "economy": {
+   "basis": "CURRENT_VINTAGE_CANDIDATE_RULES",
+   "improving_families": [
+    "BK",
+    "LD",
+    "PO"
+   ],
+   "mixed_families": [],
+   "realtime_event_indicators": [
+    "E01",
+    "E09",
+    "E13",
+    "E36",
+    "E39",
+    "E40"
+   ],
+   "warning_families": [
+    "C",
+    "T"
+   ]
+  },
+  "industry": {
+   "basis": "CURRENT_VINTAGE_CANDIDATE_RULES",
+   "improving_families": [],
+   "mixed_families": [],
+   "realtime_event_indicators": [
+    "E01"
+   ],
+   "warning_families": [
+    "T"
+   ]
+  },
+  "market": {
+   "basis": "CURRENT_VINTAGE_CANDIDATE_RULES",
+   "improving_families": [],
+   "mixed_families": [],
+   "realtime_event_indicators": [
+    "E40"
+   ],
+   "warning_families": []
+  }
+ }
+}

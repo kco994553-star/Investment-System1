@@ -1,6 +1,7 @@
 "use strict";
 const {displayOnlyOff}=require('./display_only_off.js');
 const { routeEmptyPublicScreens } = require("./empty_public_screens.js");
+const QgvFixture = require("./qgv_v2_fixture.js");
 // IA behavior on the public build. Every capture requires fresh empty device storage.
 // No login, Google call, quotation, holdings or populated form is used by this test.
 const { chromium } = require("playwright");
@@ -9,12 +10,34 @@ const base = new URL(process.env.APP_NAV_IA_URL || process.env.PAGES_COCKPIT_URL
 base.hash = "";
 if (!base.pathname.endsWith("/")) base.pathname += "/";
 const evidence = path.resolve(process.env.APP_NAV_IA_EVIDENCE_DIR || "/tmp/app-nav-ia-evidence");
-const tabs = ["home", "qgv", "technical", "macro", "validation"];
+// Owner IA (2026-10-18, PRODUCT_IA_DIRECTIVE_20261018): 0 홈 · 1 QGV · 2 기술적 분석 · 3 매크로 · 4 뉴스 · 5 포트폴리오 ·
+// 6 프롬프트 라이브러리 · n 구조 트리 · n+1 Lab, plus 전체 메뉴.
+// Phone: bottom tab bar 홈 · QGV · 포트폴리오 · 뉴스 · 전체 (in that visual order). PC: numbered header menu 0 · 1~6 · n · n+1 · 전체.
+const tabs = ["home", "qgv", "technical", "macro", "news", "portfolio", "prompts", "system", "lab"];
+const tabHref = { home: "#home", qgv: "#leaderboard", technical: "#technical", macro: "#macro", news: "#news", portfolio: "#portfolio", prompts: "#research", system: "#system", lab: "#validation" };
+// phoneTabs is DOM order (the bar shows portfolio before news through CSS order; checked separately below).
+const phoneTabs = ["home", "qgv", "news", "portfolio"], desktopTabs = tabs;
+// Every route belongs to one menu (settings to none). 13F (#thirteenf, #lab-13f) is QGV 1.3 (ontology check IA-2).
+const TAB_OF = { home: "home", companies: "qgv", leaderboard: "qgv", watchlist: "qgv", company: "qgv", analysis: "qgv", entity: "qgv", types: "qgv", qgv: "qgv", profiles: "qgv",
+  portfolio: "portfolio", actual: "portfolio", model: "portfolio", playbook: "portfolio", brief: "portfolio", report: "portfolio",
+  news: "news", thirteenf: "qgv", macro: "macro", technical: "technical", research: "prompts", system: "system", validation: "lab", "lab-13f": "qgv", settings: null };
+// Entity pages follow their kind: MACRO → 매크로, others (industry, investor) → QGV. Structure trees (#tree/<menu>) follow their menu.
+const ENTITY_TAB = { MACRO: "macro" };
+const TREE_TABS = ["qgv", "technical", "macro", "news", "portfolio"];
+const tabOf = hash => { const [r, id = ""] = hash.replace(/^#/, "").split("/"); if (r === "entity") return ENTITY_TAB[decodeURIComponent(id).split(":")[0]] || "qgv"; if (r === "tree") return TREE_TABS.includes(id) ? id : "qgv";
+  const anchored = ["validation", "technical", "macro", "news"].find(screen => r.startsWith(screen + "-")); return TAB_OF[anchored || r]; };
+// Every route of the new IA, including the numbered section anchors and the structure trees.
+const IA_ROUTES = ["home", "leaderboard", "companies", "watchlist", "profiles", "types", "lab-13f", "thirteenf", "tree/qgv", "qgv",
+  "technical", "technical-pattern", "technical-notes", "tree/technical", "macro", "macro-cycle", "macro-rotation", "macro-industry", "macro-mine", "macro-chain", "tree/macro",
+  "news-network", "news", "tree/news", "portfolio", "model", "actual", "report/real", "report/mock", "playbook", "brief", "tree/portfolio", "research", "system",
+  "validation", "validation-backtest", "validation-forward", "settings"];
 const groups = ["investments", "companies", "market", "performance"];
 // Official Macro v0.1.4 Candidate §15, also retained by IA v1 §3/S09.
 const macroAxes = ["Growth", "Inflation", "Liquidity", "Monetary Policy", "Credit", "Labor", "Fiscal", "FX"];
 const macroStates = ["Level", "Direction", "Momentum", "Surprise", "Stress", "Confidence"];
-const labels = { "ko-KR": ["오늘", "QGV", "기술", "매크로", "검증"], "en-US": ["Today", "QGV", "Technical", "Macro", "Validation"] };
+// Visible labels: short names on phones and PCs below 1360 px (full names in the 전체 메뉴 sheet and on wide PCs).
+const labels = { "ko-KR": ["홈", "QGV", "기술적 분석", "매크로", "뉴스", "포트폴리오", "프롬프트", "구조 트리", "Lab"], "en-US": ["Home", "QGV", "Technical", "Macro", "News", "Portfolio", "Prompts", "Tree", "Lab"] };
+const numbers = ["0", "1", "2", "3", "4", "5", "6", "n", "n+1"];
 const checks = [], screenshots = [];
 let browser, current = "browser launch", operation = "browser launch";
 const traffic = { external: 0, unsafe: 0, failed_responses: 0, page_errors: 0, csp_violations: 0, console_csp_warnings: 0 };
@@ -34,7 +57,7 @@ async function emptyDevice(page) {
 async function active(page, expected) {
   const selected = await page.locator('#primary-nav [data-nav-tab][aria-current="page"]').evaluateAll(nodes => nodes.map(node => node.dataset.navTab));
   verify(JSON.stringify(selected) === JSON.stringify(expected ? [expected] : []), "one current primary destination (or none in settings)");
-  verify(await page.locator('#primary-nav [data-nav-group][aria-current="page"]').count() === 0, "subgroups never duplicate current-page semantics");
+  verify(await page.locator("#more-menu").isHidden() && await page.locator("#more-menu a").count() === 0, "the closed 더보기 menu exposes no second set of current-page links");
 }
 async function go(page, hash) {
   operation = "page.goto #" + hash;
@@ -42,15 +65,16 @@ async function go(page, hash) {
   // Wait for the destination's rendered state instead of iframe-dependent networkidle.
   await page.goto(new URL("#" + hash, base).href, { waitUntil: "domcontentloaded" });
   operation = "wait for rendered destination #" + hash;
-  const route = hash.split("/")[0], parent = ["companies", "portfolio", "actual", "leaderboard", "news", "company", "entity"].includes(route) ? "qgv" : route === "research" ? "validation" : route === "settings" ? null : route;
-  const selector = {home: ".hero", qgv: '[data-hub="qgv"]', technical: '[data-ia-screen="technical"]', macro: '[data-ia-screen="macro"]', validation: '[data-hub="validation"]', companies: "#search", portfolio: "#device-actual-summary", actual: "#device-actual-root", news: "#news-pane", research: "#research-frame", settings: "#display-locale"}[route];
+  const route = hash.split("/")[0], parent = tabOf(hash);
+  const selector = {home: "[data-home]", qgv: '[data-hub="qgv"]', system: '[data-tree="system"]', tree: "[data-tree]", "lab-13f": '[data-pending-page="lab-13f"]', technical: '[data-ia-screen="technical"]', macro: '[data-ia-screen="macro"]', validation: '[data-hub="validation"]', companies: "#search", portfolio: "#device-actual-summary", actual: "#device-actual-root", news: "#news-pane", research: "#research-frame", settings: "#display-locale"}[route];
   const ticker = page.__iaCompanyTickers?.[decodeURIComponent(hash.slice(route.length + 1))] || null;
   await page.waitForFunction(({hash, parent, selector, route, ticker}) => {
     if (location.hash !== "#" + hash || !document.querySelector("main h1, main h2, main iframe")) return false;
     if (selector && !document.querySelector("main " + selector)) return false;
-    // Identity-only companies (public build) open as COMPANY RESEARCH; producer-backed ones as COMPANY DETAIL. The title is the ticker either way.
+    // Identity-only companies (public build) open as COMPANY RESEARCH; producer-backed ones as COMPANY DETAIL. The title ends with the
+    // ticker either way ("<name> · <ticker>" once the KR-NAMES table is loaded, the ticker alone before).
     if (route === "company" && !["COMPANY DETAIL", "COMPANY RESEARCH"].includes(document.querySelector("main .eyebrow")?.textContent.trim())) return false;
-    if (route === "company" && ticker && document.querySelector("main h1")?.textContent.trim() !== ticker) return false;
+    if (route === "company" && ticker && !((t) => t === ticker || t?.endsWith(" · " + ticker))(document.querySelector("main h1")?.textContent.trim())) return false;
     if (route === "entity" && document.querySelector("main .eyebrow")?.textContent.trim() !== decodeURIComponent(hash.slice("entity/".length)).split(":")[0]) return false;
     if (route === "leaderboard" && document.querySelector("main .eyebrow")?.textContent.trim() !== "LEADERBOARD") return false;
     if (route === "news" && ticker && !document.querySelector("main p.muted")?.textContent.includes(ticker)) return false;
@@ -74,7 +98,8 @@ async function capture(page, hash, locale, width) {
 }
 async function unavailableNewScreen(page, selector) {
   const root = page.locator(selector); await root.waitFor();
-  verify(await root.locator("svg, canvas").count() === 0, "unavailable screen renders no invented chart");
+  verify(await root.locator('svg:not([data-cycle-kind="concept"]), canvas').count() === 0, "unavailable screen renders no invented chart (only the cycle ring concept diagram)");
+  verify(await root.locator("[data-cycle-interval], [data-cycle-point]").count() === 0, "concept ring carries no estimated interval or point without a model");
   verify(await root.locator("dd, [data-value], .metric").evaluateAll(nodes => nodes.every(node => !/^\s*[+-]?(?:\d|\.\d)/.test(node.textContent))), "unavailable screen exposes no invented numeric value");
   verify((await root.textContent()).includes("NOT_AVAILABLE"), "unavailable screen states NOT_AVAILABLE");
 }
@@ -106,25 +131,44 @@ async function unavailableNewScreen(page, selector) {
       try {
         await go(page, "home");
         verify(await page.locator("#primary-nav").count() === 1, "primary navigation exists");
+        const desktop = width >= 1024, visibleTabs = desktop ? desktopTabs : phoneTabs;
         const primary = page.locator("#primary-nav [data-nav-tab]");
-        verify(JSON.stringify(await primary.evaluateAll(nodes => nodes.map(node => node.dataset.navTab))) === JSON.stringify(tabs), "five destinations follow the IA order");
-        verify(JSON.stringify(await primary.evaluateAll(nodes => nodes.map(node => node.getAttribute("href")))) === JSON.stringify(tabs.map(tab => "#" + tab)), "five primary links use stable hashes");
-        verify(await primary.evaluateAll(nodes => nodes.every(node => node.getBoundingClientRect().height >= 44)), "primary targets are touch-sized");
-        // Labels must be meaningful in the selected locale, without rejecting optional subtitles.
+        verify(JSON.stringify(await primary.evaluateAll(nodes => nodes.map(node => node.dataset.navTab))) === JSON.stringify(tabs), "home and the eight menus follow the IA order");
+        verify(JSON.stringify(await primary.evaluateAll(nodes => nodes.map(node => node.getAttribute("href")))) === JSON.stringify(tabs.map(tab => tabHref[tab])), "primary links use existing route hashes (system: the n structure tree)");
+        verify(JSON.stringify(await page.locator("#primary-nav [data-nav-tab] .nav-num").allTextContents()) === JSON.stringify(numbers), "menus carry the owner numbers 0 · 1~6 · n · n+1");
+        verify(JSON.stringify(await primary.evaluateAll(nodes => nodes.filter(node => node.getBoundingClientRect().height > 0).map(node => node.dataset.navTab))) === JSON.stringify(visibleTabs), "phone shows 홈·QGV·뉴스·포트폴리오, PC shows 0 홈 and the eight numbered menus");
+        if (!desktop) {
+          // Phone tab bar, left to right: 홈 · QGV · 포트폴리오 · 뉴스 · 전체.
+          const bar = await page.locator("#primary-nav > a, #primary-nav > button").evaluateAll(nodes => nodes.filter(node => node.getBoundingClientRect().height > 0).map(node => [node.getBoundingClientRect().left, node.dataset.navTab || "more", node.innerText.trim()]).sort((a, b) => a[0] - b[0]));
+          verify(JSON.stringify(bar.map(x => x[1])) === JSON.stringify(["home", "qgv", "portfolio", "news", "more"]), "phone tab bar order is 홈 · QGV · 포트폴리오 · 뉴스 · 전체");
+          if (locale === "ko-KR") verify(JSON.stringify(bar.map(x => x[2])) === JSON.stringify(["홈", "QGV", "포트폴리오", "뉴스", "전체"]), "phone tab bar labels");
+        }
+        verify(await page.locator("#more-button").isVisible(), "전체 메뉴 is always reachable");
+        verify(await page.locator("#primary-nav [data-nav-tab], #more-button").evaluateAll(nodes => nodes.filter(node => node.getBoundingClientRect().height > 0).every(node => node.getBoundingClientRect().height >= 44 && node.getBoundingClientRect().width >= 44)), "primary targets are touch-sized");
+        // Labels must be meaningful in the selected locale, without rejecting optional short labels.
         verify(await primary.evaluateAll((nodes, expected) => nodes.every((node, index) => node.textContent.includes(expected[index])), labels[locale]), "primary destination labels follow the display language");
-        const subgroups = page.locator("#primary-nav [data-nav-group]");
-        verify(JSON.stringify(await subgroups.evaluateAll(nodes => nodes.map(node => node.dataset.navGroup))) === JSON.stringify(groups), "QGV exposes four purpose groups");
-        verify(JSON.stringify(await subgroups.evaluateAll(nodes => nodes.map(node => node.getAttribute("href")))) === JSON.stringify(groups.map(group => "#qgv/" + group)), "QGV groups use stable deep links");
-        verify(await page.locator(".nav-subgroups").isVisible() === (width >= 1024), "QGV subgroups appear only in desktop navigation");
         verify(await page.locator("#primary-nav").evaluate((nav, desktop) => {
-          const box = nav.getBoundingClientRect(), main = document.querySelector("main").getBoundingClientRect();
-          return desktop ? box.left < main.left && box.right <= main.left + 1 && box.height > 300 : Math.abs(box.bottom - innerHeight) <= 2 && box.width <= innerWidth;
-        }, width >= 1024), "mobile bottom bar or desktop left sidebar occupies its expected area");
+          const box = nav.getBoundingClientRect(), main = document.querySelector("main").getBoundingClientRect(), header = document.querySelector("header").getBoundingClientRect();
+          return desktop ? header.top <= box.top && box.bottom <= header.bottom + 1 && box.bottom <= main.top + 1 : Math.abs(box.bottom - innerHeight) <= 2 && box.width <= innerWidth;
+        }, desktop), "phone bottom bar or PC header menu occupies its expected area");
         await active(page, "home");
+        // 전체 메뉴 lists every existing destination under its menu; Escape closes it and returns focus to the button.
+        await page.locator("#more-button").click(); await page.locator("#more-menu").waitFor();
+        const moreLinks = await page.locator("#more-menu a").evaluateAll(nodes => nodes.map(node => node.getAttribute("href")));
+        for (const href of ["#companies", "#leaderboard", "#watchlist", "#types", "#qgv", "#portfolio", "#actual", "#brief", "#profiles", "#model", "#playbook", "#news", "#macro", "#technical", "#thirteenf", "#report/mock", "#report/real", "#validation", "#research", "#system", "#lab-13f", "#settings",
+          "#tree/qgv", "#technical-pattern", "#technical-notes", "#tree/technical", "#macro-cycle", "#macro-rotation", "#macro-industry", "#macro-mine", "#macro-chain", "#tree/macro", "#news-network", "#tree/news", "#tree/portfolio", "#validation-backtest", "#validation-forward"])
+          verify(moreLinks.includes(href), "전체 메뉴 lists " + href);
+        verify(JSON.stringify(await page.locator("#more-menu [data-menu-group]").evaluateAll(nodes => nodes.map(node => node.dataset.menuGroup))) === JSON.stringify(["qgv", "technical", "macro", "news", "portfolio", "prompts", "system", "lab", "settings"]), "전체 메뉴 groups follow the eight menus, then settings");
+        verify(await page.locator("#more-menu [data-menu-pending]").evaluateAll(nodes => nodes.map(node => node.getAttribute("href")).join()) === "#lab-13f,#technical-pattern,#technical-notes,#macro-cycle,#macro-rotation,#macro-industry,#macro-mine,#macro-chain", "items whose screen states NOT_AVAILABLE only are marked 준비 중");
+        verify(await page.locator('#more-menu a[href="#lab-13f"]').evaluate(node => node.closest("[data-menu-group]")?.dataset.menuGroup) === "qgv", "13F weight research is listed under QGV 1.3");
+        await page.keyboard.press("Escape");
+        verify(await page.locator("#more-menu").isHidden() && await page.evaluate(() => document.activeElement?.id === "more-button"), "Escape closes 전체 메뉴 and returns focus to its button");
         await page.evaluate(() => { window.__iaSpaSentinel = true; });
         for (const tab of tabs) {
-          await page.locator('#primary-nav [data-nav-tab="' + tab + '"]').click();
-          await page.waitForFunction(tab => location.hash === "#" + tab && document.querySelector('#primary-nav [data-nav-tab="' + tab + '"]')?.getAttribute("aria-current") === "page", tab);
+          if (visibleTabs.includes(tab)) await page.locator('#primary-nav [data-nav-tab="' + tab + '"]').click();
+          else if (tab === "home") await page.locator("header .brand").click();
+          else { await page.locator("#more-button").click(); await page.locator('#more-menu a[href="' + tabHref[tab] + '"]').first().click(); }
+          await page.waitForFunction(([tab, href]) => location.hash === href && document.querySelector('#primary-nav [data-nav-tab="' + tab + '"]')?.getAttribute("aria-current") === "page", [tab, tabHref[tab]]);
           await active(page, tab);
           verify(await page.evaluate(() => window.__iaSpaSentinel === true), "primary link click navigates without reloading the document");
         }
@@ -152,7 +196,7 @@ async function unavailableNewScreen(page, selector) {
           await go(page, "qgv"); await page.evaluate(() => { window.__iaSpaSentinel = true; });
           await page.locator('[data-hub="qgv"] a[href="' + href + '"]').click();
           await page.waitForFunction(href => location.hash === href && !document.querySelector('[data-hub="qgv"]'), href);
-          await active(page, href === "#validation" ? "validation" : "qgv");
+          await active(page, tabOf(href));
           verify(await page.evaluate(() => window.__iaSpaSentinel === true), "QGV card click opens its destination without a document reload");
         }
         for (const group of groups) {
@@ -163,13 +207,13 @@ async function unavailableNewScreen(page, selector) {
         }
         await go(page, "qgv"); await capture(page, "qgv", locale, width);
         for (const hash of ["companies", "portfolio", "actual", "leaderboard", "news", "news/" + routes[0].slice("company/".length), ...routes]) {
-          await go(page, hash); await active(page, "qgv");
+          await go(page, hash); await active(page, tabOf(hash));
           verify(await page.locator('main > .parent-row > .parent-link[href="#qgv"]').count() === 1, "legacy QGV destination offers a parent link");
           verify(await page.locator('main > .parent-row > .parent-link[href="#qgv"]').evaluate(node => { const box = node.getBoundingClientRect(); return box.width >= 44 && box.height >= 44; }), "legacy parent navigation meets minimum target size");
           verify(page.url().endsWith("#" + hash), "legacy deep-link hash is preserved");
         }
         await page.locator('main > .parent-row > .parent-link[href="#qgv"]').click(); await page.locator('[data-hub="qgv"]').waitFor(); await active(page, "qgv");
-        await page.goBack(); await page.waitForFunction(() => !!document.querySelector('main > .parent-row > .parent-link[href="#qgv"]')); await active(page, "qgv");
+        await page.goBack(); await page.waitForFunction(() => !!document.querySelector('main > .parent-row > .parent-link[href="#qgv"]')); await active(page, tabOf(routes[1]));
         await go(page, "technical"); await active(page, "technical"); await unavailableNewScreen(page, '[data-ia-screen="technical"]');
         verify(JSON.stringify(await page.locator('[data-ia-screen="technical"] [data-tech-status]').evaluateAll(nodes => nodes.map(node => node.dataset.techStatus))) === JSON.stringify(["chart", "engine", "execution", "record"]), "technical chart, engine, execution and record availability stay separate");
         verify(await page.locator('[data-ia-screen="technical"] [data-tech-status="engine"], [data-ia-screen="technical"] [data-tech-status="execution"], [data-ia-screen="technical"] [data-tech-status="record"]').evaluateAll(nodes => nodes.length === 3 && nodes.every(node => node.textContent.includes("NOT_AVAILABLE"))), "technical engine, execution and record cards preserve missing-data status");
@@ -180,11 +224,11 @@ async function unavailableNewScreen(page, selector) {
         verify(await page.locator("[data-macro-axis]").evaluateAll((nodes, expected) => nodes.every(node => JSON.stringify([...node.querySelectorAll("[data-macro-state]")].map(state => state.dataset.macroState)) === JSON.stringify(expected)), macroStates), "macro states preserve their official identities and order");
         verify(await page.locator("[data-macro-axis]").evaluateAll(nodes => nodes.every(node => node.querySelectorAll("[data-macro-state]").length === 6 && [...node.querySelectorAll("[data-macro-state]")].every(state => state.textContent.includes("NOT_AVAILABLE")))), "every macro axis preserves six unavailable states");
         await capture(page, "macro", locale, width);
-        await go(page, "validation"); await active(page, "validation"); await unavailableNewScreen(page, '[data-hub="validation"]');
+        await go(page, "validation"); await active(page, "lab"); await unavailableNewScreen(page, '[data-hub="validation"]');
         verify(await page.locator('[data-hub="validation"] a[href="#research"]').count() === 1, "validation keeps existing research reachable");
         verify(await page.locator('[data-hub="validation"] .card').filter({ hasText: "NOT_AVAILABLE" }).count() === 5, "five S10 validation areas (paper, backtest, forward, track record, trials) remain unavailable");
         await capture(page, "validation", locale, width);
-        await page.locator('[data-hub="validation"] a[href="#research"]').click(); await page.locator("#research-frame").waitFor(); await active(page, "validation");
+        await page.locator('[data-hub="validation"] a[href="#research"]').click(); await page.locator("#research-frame").waitFor(); await active(page, "prompts");
         verify(await page.locator('main > .parent-row > .parent-link[href="#validation"]').count() === 1, "existing research offers its validation parent");
         verify(await page.locator('main > .parent-row > .parent-link[href="#validation"]').evaluate(node => { const box = node.getBoundingClientRect(); return box.width >= 44 && box.height >= 44; }), "research parent navigation meets minimum target size");
         await go(page, "settings"); await active(page, null);
@@ -194,9 +238,79 @@ async function unavailableNewScreen(page, selector) {
         await page.locator("#display-locale").selectOption(otherLocale); await active(page, null);
         verify(await page.locator("html").getAttribute("lang") === otherLocale, "settings changes display language without selecting a primary tab");
         await page.locator("#display-locale").selectOption(locale);
+        // 13F weight research (QGV 1.3) has no screen: a 준비 중 page that states what is missing, with no invented value.
+        for (const [hash, tab] of [["lab-13f", "qgv"]]) {
+          await go(page, hash); await active(page, tab); await unavailableNewScreen(page, '[data-pending-page="' + hash + '"]');
+          verify(await page.locator('[data-pending-page="' + hash + '"] [data-pending-needs] li').count() >= 3, hash + " lists the data and decisions it needs");
+          verify(await page.locator('[data-pending-page="' + hash + '"] .pending-links a').count() >= 2, hash + " links the closest existing screens");
+        }
+        if (locale === "ko-KR") {
+          // New IA: every route (sections and trees included) maps to exactly one menu, with one aria-current on the page.
+          for (const hash of IA_ROUTES) {
+            await go(page, hash); await active(page, tabOf(hash));
+            // In-screen tabs (e.g. the report sets) keep their own aria-current; the menus (header, sheet, numbered strip) mark exactly one.
+            verify(await page.locator("header [aria-current], #more-menu [aria-current], .ia-sub [aria-current]").count() === 1, "one menu aria-current per route (" + hash + ")");
+            const flow = tabOf(hash) && tabOf(hash) !== "home" ? numbers[tabs.indexOf(tabOf(hash))] : null;
+            verify(flow === null || await page.locator('main .flow-step[data-flow-step="' + flow + '"]').count() === 1, "flow line shows the menu number (" + hash + ")");
+            if (/^(technical|macro)-/.test(hash)) verify((await page.locator("#" + hash).textContent()).includes("NOT_AVAILABLE"), hash + " states NOT_AVAILABLE");
+          }
+          // Structure trees: real engine weights; example values only from loaded data (none here: NA with a reason).
+          await go(page, "tree/qgv");
+          verify(JSON.stringify(await page.locator('[data-tree="qgv"] [data-weight]').evaluateAll(nodes => nodes.map(node => node.textContent))) === JSON.stringify(await page.evaluate(() => ["Q", "G", "V"].flatMap(a => Object.values(QgvV2.WEIGHTS[a]).map(String)))), "QGV tree weights are the engine's (QgvV2.WEIGHTS)");
+          await page.locator('[data-tree-examples="qgv"] [data-example-state]').waitFor();
+          verify(await page.locator('[data-tree-examples="qgv"] [data-example-state="NOT_AVAILABLE"]').count() === 1 && (await page.locator('[data-tree-examples="qgv"]').textContent()).includes("NA"), "without sec-qgv2.json the QGV example is NA with a reason, never a constant");
+          await go(page, "tree/technical");
+          verify(await page.locator('[data-tree-examples="technical"] [data-example-state="NOT_AVAILABLE"]').count() === 1, "technical example is NA (prices stay on the device)");
+        }
         await go(page, "qgv"); await page.reload(); await page.locator('[data-hub="qgv"]').waitFor(); await active(page, "qgv");
         verify(await page.locator("html").getAttribute("lang") === locale, "language survives deep-link reload");
         verify(await page.evaluate(() => fetch("data.json").then(response => response.text())) === original, "navigation and language changes preserve the served read model");
+      } finally { await context.close(); }
+    }
+    // Candle colours (Korean default, US toggle stored on this device) and tree examples read from the loaded sec-qgv2.json.
+    for (const width of [390, 1280]) {
+      current = width + "px candles and tree examples";
+      const context = await browser.newContext({ viewport: { width, height: 844 } }); await displayOnlyOff(context);
+      await context.route("**/*", async route => { const url = new URL(route.request().url()); if (route.request().method() !== "GET" || url.origin !== base.origin) { traffic.external++; await route.abort(); return; } await route.continue(); });
+      await routeEmptyPublicScreens(context);
+      // Synthetic Q·G test vector (qgv_v2_fixture.js), served as the published file.
+      const payload = QgvFixture.strictPayload();
+      await context.route("**/sec-qgv2.json*", route => route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(payload) }));
+      const page = await context.newPage(); page.on("pageerror", () => { traffic.page_errors++; });
+      try {
+        await go(page, "technical");
+        // Synthetic index bars (not prices): one rising (close >= open) and one falling candle drawn by the real chart renderer.
+        const colours = () => page.evaluate(() => {
+          const host = document.createElement("div"); host.id = "ia-candle-probe"; document.querySelector("#technical-price-chart").append(host);
+          const day = 86400, bars = [{ timestamp: 20 * day, session_status: "COMPLETE", open: 1, high: 3, low: 1, close: 2, adjusted_close: null }, { timestamp: 21 * day, session_status: "COMPLETE", open: 2, high: 2, low: 1, close: 1, adjusted_close: null }];
+          TechnicalChart.render(host, { bars, indicators: ResearchIndicators.calculate(bars), selected: new Set() });
+          const fill = cls => getComputedStyle(host.querySelector(".daily-candle." + cls + " rect")).fill; const out = [fill("candle-up"), fill("candle-down"), document.documentElement.dataset.candles]; host.remove(); return out;
+        });
+        verify(JSON.stringify(await colours()) === JSON.stringify(["rgb(215, 50, 42)", "rgb(36, 87, 197)", "kr"]), "Korean default: rising candle red, falling blue");
+        await go(page, "settings"); await page.locator('input[name="candle-choice"][value="us"]').check();
+        verify(await page.evaluate(() => localStorage.getItem("investment.web.v1.candle-style")) === "us", "US style is stored in this device's preferences");
+        await go(page, "technical"); await page.reload(); await page.locator('[data-ia-screen="technical"]').waitFor();
+        verify(JSON.stringify(await colours()) === JSON.stringify(["rgb(31, 138, 76)", "rgb(215, 50, 42)", "us"]), "US style after reload: rising green, falling red");
+        await go(page, "settings"); await page.locator('input[name="candle-choice"][value="kr"]').check();
+        verify(await page.evaluate(() => document.documentElement.dataset.candles) === "kr", "Korean style restored");
+        // Tree example values equal the loaded file's row (same selection rule recomputed in the page from the same payload).
+        await go(page, "tree/qgv"); await page.locator('[data-tree-examples="qgv"] [data-example-state]').waitFor();
+        const expected = await page.evaluate(p => {
+          const inputs = Qgv2Inputs.fromInputs(SecQgv2.toInputs(p)), rows = inputs.records;
+          const code = Object.keys(rows).filter(c => !c.startsWith("TARGET:")).sort().find(c => { const r = rows[c]; return r.state === "LIVE" && r.in_cross_section && Number.isFinite(r.qg_axes.Q.score) && Number.isFinite(r.qg_axes.G.score); });
+          if (!code) return { code: null };
+          return { code, as_of: inputs.as_of, factors: Object.fromEntries(Qgv2Inputs.FACTORS.map(f => [f, rows[code].factors[f] === null ? "NA" : (Math.round(rows[code].factors[f] * 10) / 10).toFixed(1)])) };
+        }, payload);
+        const shown = await page.evaluate(() => { const b = document.querySelector('[data-tree-examples="qgv"] [data-example-state]');
+          return { state: b.dataset.exampleState, code: b.dataset.exampleCode || null, as_of: b.dataset.exampleAsOf || null, factors: Object.fromEntries([...b.querySelectorAll("tr[data-example-factor]")].map(r => [r.dataset.exampleFactor, r.querySelector("[data-example-value]").textContent])) }; });
+        if (expected.code) {
+          verify(shown.state === "LIVE" && shown.code === expected.code && shown.as_of === expected.as_of, "QGV example is the first LIVE row of the loaded sec-qgv2.json, with its as_of");
+          verify(Object.entries(expected.factors).every(([f, v]) => shown.factors[f] === v), "QGV example factor values equal the loaded data");
+          verify(["v_earnings_yield", "v_fcf_yield", "v_vs_industry", "v_vs_own_history", "v_expectation_check"].every(f => shown.factors[f] === "NA"), "V examples are NA (device prices only)");
+        } else verify(shown.state === "NOT_AVAILABLE", "no LIVE row: the example is NA");
+        verify(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), "tree page has no horizontal overflow");
+        await go(page, "system");
+        verify(await page.locator('[data-tree="system"] [data-menu-col]').count() === 7, "n tree shows menus 1–6 and n+1");
       } finally { await context.close(); }
     }
     current = "all viewports and languages";

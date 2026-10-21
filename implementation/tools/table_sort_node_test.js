@@ -28,4 +28,11 @@ test('numbers before text, text uses numeric collation',()=>{
  assert.deepEqual(S.order(texts,1).map(i=>texts[i]),['3','item 2','item 10','x']);
  assert.equal(S.QUERY,'(min-width: 1024px)');
 });
+test('structured data-sort-value keys win over display text (S06 numeric columns); empty = NOT_AVAILABLE',()=>{
+ const cell=(text,value)=>({textContent:text,hasAttribute:k=>k==='data-sort-value'&&value!==undefined,getAttribute:()=>value});
+ assert.deepEqual(S.cellKey(cell('61.2 QGV 종합 순위 밖 · Q 12.0','61.234')),{kind:'number',value:61.234});
+ assert.deepEqual(S.cellKey(cell('—','')),{kind:'missing'});assert.deepEqual(S.cellKey(cell('12/19')),{kind:'number',value:12});assert.deepEqual(S.cellKey(null),{kind:'missing'});
+ const cells=[cell('9.0 x','9'),cell('—',''),cell('10.0 y','10'),cell('2.5','2.5'),cell('1e1 tie','10')],keys=cells.map(S.cellKey);
+ assert.deepEqual(S.orderKeys(keys,1),[3,0,2,4,1]);assert.deepEqual(S.orderKeys(keys,-1),[2,4,0,3,1]);
+});
 console.log('COUNTS pass='+pass+' fail='+fail);if(fail)process.exitCode=1;

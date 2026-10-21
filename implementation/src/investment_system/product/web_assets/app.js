@@ -13,7 +13,6 @@ function deviceCatalog() {
   return deviceCatalogPromise;
 }
 // Price store core symbols: runner symbols (TARGET, holdings, sets A–D from VirtualMeta, benchmarks/FX) and watchlist ★.
-// Core symbols + the TV1 scoring symbols the user added to the own sheet with a confirmed click (T-PRICE 2026-10-15; symbols only).
 async function priceStoreCore(){const core=await PriceStore.coreSymbols(window,{catalog:await deviceCatalog(),interests:[...prefs.interests]});let added=[];try{added=window.TargetV1Screen?TargetV1Screen.priceSymbols(window.PlaybookScreen,localStorage):[];}catch(_){added=[];}return [...new Set([...core,...added])];}
 let valuationInputsPromise=null;
 function valuationInputs(){if(!valuationInputsPromise)valuationInputsPromise=DeviceValuation.load(window);return valuationInputsPromise;}
@@ -196,7 +195,7 @@ function settingsUI() {
   <p>${t("표시 언어는 계산 결과에 영향을 주지 않습니다.")}</p>
   <label for="source-language">${t("뉴스 원문 언어")}</label><select id="source-language">${[["all",t("전체 언어")],["ko",t("한국어 원문")],["en",t("영어 원문")]].map(([v,k])=>`<option value="${v}" ${appSettings.source_language===v?"selected":""}>${t(k)}</option>`).join("")}</select>
   <p>${t("원문 언어는 뉴스 필터만 변경합니다.")}</p></section>
-  <div id="ops-status"></div><section class="card" id="device-pwa-settings"></section><section class="card"><h2>${t("금융 용어")}</h2>${["free_cash_flow","drawdown","operating_margin"].map(k=>`<p>${term(k)}</p>`).join("")}</section><section class="card"><h2>${appSettings.display_locale==='en-US'?'Device backup':'기기 백업·불러오기'}</h2><p>${appSettings.display_locale==='en-US'?'Interests, groups, portfolio, profiles, investor stars, playbook records and language settings. Quotes, tokens, sheet IDs and Worker address are excluded.':'관심 기업·그룹·포트폴리오·프로필·투자자 ★·플레이북 기록·언어 설정을 함께 보관합니다. 시세·토큰·시트 ID·Worker 주소는 제외합니다.'}</p><button id="device-backup-export">${t("내보내기")}</button><label>${t("가져오기")} <input id="device-backup-import" type="file" accept="application/json"></label></section><div id="google-sheet-settings"></div><div id="private-history-settings"></div><div id="price-store-settings"></div><div id="private-trades-settings"></div><div id="private-universe-settings"></div><div id="device-api-settings"></div><section class="card" id="company-logo-settings"></section><section class="card" id="tradingview-settings"></section>`+rawDataUI();
+  <div id="ops-status"></div><section class="card" id="device-pwa-settings"></section><section class="card"><h2>${t("금융 용어")}</h2>${["free_cash_flow","drawdown","operating_margin"].map(k=>`<p>${term(k)}</p>`).join("")}</section><section class="card"><h2>${appSettings.display_locale==='en-US'?'Device backup':'기기 백업·불러오기'}</h2><p>${appSettings.display_locale==='en-US'?'Interests, groups, portfolio, profiles, investor stars, playbook records and language settings. Quotes, tokens, sheet IDs and Worker address are excluded.':'관심 기업·그룹·포트폴리오·프로필·투자자 ★·플레이북 기록·언어 설정을 함께 보관합니다. 시세·토큰·시트 ID·Worker 주소는 제외합니다.'}</p><label class="small"><input type="checkbox" id="device-backup-user-objects"> ${appSettings.display_locale==='en-US'?'Include user-written objects (chart notes·scenarios, macro estimate history)':'사용자 작성 객체 포함 (차트 노트·시나리오, 매크로 추정 기록)'}</label> <button id="device-backup-export">${t("내보내기")}</button><label>${t("가져오기")} <input id="device-backup-import" type="file" accept="application/json"></label></section><div id="google-sheet-settings"></div><div id="private-history-settings"></div><div id="price-store-settings"></div><div id="private-trades-settings"></div><div id="private-universe-settings"></div><div id="device-api-settings"></div><section class="card" id="company-logo-settings"></section><section class="card" id="tradingview-settings"></section>`+rawDataUI();
 }
 /* Settings > 원자료 보기(개발자용), collapsed by default (owner decision 2026-10-14). User screens show results only; the raw
    public cards that used to sit at the bottom of the company screen live here: SEC Q·G leaf scores (sec-qg-factors.json),
@@ -207,21 +206,28 @@ function rawDataIds(){const ids=new Set();for(const f of ['sec-qg-factors.json',
 function rawDataCompanyId(){const ids=rawDataIds();return ids.includes(rawDataCompany)?rawDataCompany:(ids[0]||null);}
 function rawDataUI(){
   const en=appSettings.display_locale==='en-US',ids=rawDataIds(),chosen=rawDataCompanyId(),name=id=>{const c=company(id);return c&&c.ticker?c.ticker:String(id).toUpperCase();};
-  return `<details class="card" id="raw-data-viewer" data-raw-data><summary>${en?'Raw data (developer)':'원자료 보기(개발자용)'}</summary><p class="small">${en?'Raw public inputs for checking only: SEC Q·G leaf scores, price-free company types and estimated filing windows. Screens show results only.':'확인용 원자료입니다: SEC Q·G 개별 점수, 가격 불필요 유형, 실적 예상 시기. 사용자 화면에는 결과만 보여 줍니다.'}</p><label for="raw-data-company">${en?'Company':'기업'}</label> <select id="raw-data-company" data-raw-company>${ids.map(id=>`<option value="${esc(id)}"${id===chosen?' selected':''}>${esc(name(id))}</option>`).join('')}</select><div id="public-qg"></div><div id="public-types"></div><div id="public-filings"></div></details>`;
+  return `<details class="card" id="raw-data-viewer" data-raw-data><summary>${en?'Raw data (developer)':'원자료 보기(개발자용)'}</summary><p class="small">${en?'Raw public inputs for checking only: SEC Q·G leaf scores, price-free company types and estimated filing windows. Screens show results only.':'확인용 원자료입니다: SEC Q·G 개별 점수, 가격 불필요 유형, 실적 예상 시기. 사용자 화면에는 결과만 보여 줍니다.'}</p><label for="raw-data-company">${en?'Company':'기업'}</label> <select id="raw-data-company" data-raw-company>${ids.map(id=>`<option value="${esc(id)}"${id===chosen?' selected':''}>${esc(name(id))}</option>`).join('')}</select><div id="public-qg"></div><div id="public-types"></div><div id="public-filings"></div>${window.TargetV1Screen?TargetV1Screen.rawDataHtml():''}</details>`;
 }
 function mountRawData(){const id=rawDataCompanyId();for(const kind of ['qg','types','filings'])PublicScreens.mount($('#public-'+kind),publicScreens,{kind,companyId:id||undefined,locale:appSettings.display_locale});}
-function entityRoute(e) {return e.entity_type==="COMPANY"?"#company/"+encodeURIComponent(e.canonical_id):"#entity/"+encodeURIComponent(e.entity_type+":"+e.canonical_id);}
 // Company search (TARGET directory + public Universe504 codes): identity only, no prices/caps/ranks (GSQ-010).
 let publicEntities=[],universeDirectory=null,universeDirectoryPromise=null;
+// KR-NAMES (2026-10-18): reviewed company-names-ko.json, display and search only (never a score, rank or identity input).
+// It adds names to the entities above; which companies are searchable still comes from the directory and the shares file.
+let companyNames=null;
+const companyNamesPromise=(window.EntitySearch?.loadNames?EntitySearch.loadNames(window):Promise.resolve(null)).then(n=>{companyNames=n;
+  if(!n) return;if(searchIndex){rebuildSearchIndex();paintGlobalSearch();}
+  const [route]=location.hash.slice(1).split("/");if(route==="company" && D) render();});
+function companyTitle(id,ticker){return EntitySearch.companyTitle(companyNames?.get(id)||null,ticker,appSettings.display_locale);}
 function rebuildSearchIndex() {
   const codes={};if(universeDirectory?.state==="READY") for(const [code,r] of Object.entries(universeDirectory.records)) codes[code]=r.company_id;
-  try {searchIndex=EntitySearch.createIndex([...publicEntities,...EntitySearch.companyEntities(identityCompanies,codes)]);}
+  const ko=window.SearchUI?.KO_NAMES||{},named=e=>!e.names&&Object.hasOwn(ko,e.canonical_id)?{...e,localized_names:{"ko-KR":ko[e.canonical_id]}}:e;
+  try {searchIndex=EntitySearch.createIndex([...publicEntities,...EntitySearch.companyEntities(identityCompanies,codes,companyNames).map(named)]);}
   catch(_) {searchIndex=EntitySearch.createIndex(publicEntities);}
 }
 function ensureUniverseDirectory() {
   if(universeDirectoryPromise || !window.SecUniverseShares) return universeDirectoryPromise;
   universeDirectory={state:"LOADING"};
-  universeDirectoryPromise=SecUniverseShares.loadInputs(window).then(inputs=>{
+  universeDirectoryPromise=DataRefresh.shares(window).then(inputs=>{
     universeDirectory=inputs?{state:"READY",as_of:inputs.as_of,records:inputs.publicShares}:{state:"NOT_AVAILABLE",reason:"SEC_UNIVERSE_SHARES_NOT_PUBLISHED"};
   }).catch(e=>{universeDirectory={state:"NOT_AVAILABLE",reason:["SEC_UNIVERSE_SHARES_INVALID","SEC_UNIVERSE_SHARES_SCHEMA_NEWER"].includes(e?.message)?e.message:"SEC_UNIVERSE_SHARES_UNAVAILABLE"};}).then(()=>{
     if(!searchIndex) return;rebuildSearchIndex();paintGlobalSearch();
@@ -242,25 +248,12 @@ function universeDetail(code) {
   const rows=[[en?'SEC shares state':'SEC 주식수 상태',r.state+(r.reason_codes.length?' · '+r.reason_codes.map(reason).join(' · '):'')],[en?'Shares outstanding (SEC cover)':'발행주식수(SEC 표지)',r.shares===null?'NOT_AVAILABLE':Number(r.shares).toLocaleString(appSettings.display_locale)],[en?'Measured':'기준일',r.measurement_date||'—'],[en?'Form':'서식',r.form||'—'],[en?'Share-class basis':'주식 종류 기준',r.share_class_basis],['CIK',r.cik||'—'],[en?'Public file as of':'공개 파일 기준',universeDirectory.as_of]];
   return head+`<section class="card" data-universe-company="${esc(r.state)}"><div class="chips"><span class="badge">Universe504</span><span class="badge">${en?'Name not published':'이름 미공개'}</span><span class="badge">${en?'Price-free':'가격 없음'}</span></div><dl>${rows.map(([k,v])=>`<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("")}</dl><p class="small">${en?'Price, market cap, rank and QGV: NOT_AVAILABLE on public screens (GSQ-010). The M3 cap rank is shown only on S06 after reading your Universe sheet on this device (RAM only).':'가격·시가총액·순위·QGV: 공개 화면에서는 NOT_AVAILABLE (GSQ-010). M3 시총 순위는 S06에서 내 기기의 Universe 시트를 읽은 뒤 메모리에서만 표시됩니다.'}</p><a href="#leaderboard">${en?'S06 Company research →':'S06 기업 연구 →'}</a></section>`;
 }
-function entityRow(hit) {
-  const e=hit.entity;
-  if(e.entity_type==="COMPANY" && e.scope) {
-    const universe=e.scope==="UNIVERSE504",en=appSettings.display_locale==='en-US';
-    return `<li class="item" data-entity-id="${esc(hit.canonical_entity_id)}" data-entity-scope="${esc(e.scope)}"><a href="${entityRoute(e)}">${CompanyLogos.html(e.ticker,20)}<b>${esc(e.ticker)}</b> <span class="badge">${esc(t("기업"))}</span> <span class="badge">${universe?"Universe504":"TARGET"}</span><div class="meta">${universe?esc(e.canonical_label)+" · "+(en?"name not published":"이름 미공개"):esc(e.canonical_label)} · ${en?"price-free":"가격 없음"}</div></a></li>`;
-  }
-  const c=e.entity_type==="COMPANY"?company(e.canonical_id):null;
-  const held=c && D.portfolio.data?.holdings?.some(h=>h.company_id===c.company_id);
-  const types={COMPANY:t("기업"),INDUSTRY:t("산업"),INVESTOR:t("투자자"),MACRO:t("거시지표")};
-  return `<li class="item" data-entity-id="${esc(hit.canonical_entity_id)}"><a href="${entityRoute(e)}">${e.entity_type==="COMPANY"?CompanyLogos.html(e.ticker||e.canonical_id,20):""}<b>${esc(label(e))}</b> <span class="badge">${esc(t(types[e.entity_type] || e.entity_type))}</span><div class="meta">${esc(e.ticker || "")} · ${esc(e.canonical_label)}${e.localized_names?.["ko-KR"]?" · "+esc(e.localized_names["ko-KR"]):""}${e.industry?" · "+esc(e.industry):""}</div>${c?`<div class="meta">${held?t("Snapshot 보유")+" · ":""}${D.qgv.data?.[c.company_id]?t("QGV 제공"):t("분석 미연결")} · ${esc(D.qgv.as_of || D.universe.as_of || t("시점 미제공"))} · ${esc(D.universe.withheld && e.data_state===D.universe.withheld.claimed_state?D.universe.state:e.data_state || D.universe.state)}</div>`:""}</a></li>`;
-}
+// The search box itself (combobox, rows, keys, recent searches) lives in home-screen.js (SearchUI); app.js owns the index.
 function paintGlobalSearch() {
-  const input=$("#global-search"),out=$("#global-results");
-  if(!searchIndex || !input) return;
-  if(input.value.trim()) void ensureUniverseDirectory();
-  const hits=searchIndex.search(input.value,{limit:12});
-  out.hidden=!input.value.trim();
-  out.innerHTML=hits.map(entityRow).join("") || `<li class="empty">${t("일치하는 항목이 없습니다.")}</li>`;
+  if(!searchIndex) return;
   window.investmentSearch=(query,options)=>searchIndex.search(query,options);
+  if($("#global-search")?.value.trim()) void ensureUniverseDirectory();
+  window.SearchUI?.refresh({universe:universeDirectory?.state||null});
 }
 function entityDetail(key) {
   const cut=key.indexOf(":"),type=key.slice(0,cut),id=key.slice(cut+1),e=searchIndex.resolve(type,id);
@@ -380,7 +373,9 @@ function summaryFor(name,id) {
   const s=D[name],v=s.data?.[id];
   return `<section class="card"><h2>${name==="qgv"?"QGV":t("Technical(기술적 분석)")}</h2>${state(s)}${v?`<dl>${(name==="qgv"?["Q_score","G_score","V_score","total_score","confidence","coverage_state"]:["regime","execution_zone","invalidation"]).map(k=>`<dt>${esc(term(k))}</dt><dd>${typeof v[k]==="number"?fmt(v[k]):esc(AppLanguage.fallback(v.presentation?.[k],appSettings.display_locale,AppLanguage.status(v[k] ?? t("미제공"),appSettings.display_locale)))}</dd>`).join("")}</dl>${evidence(v)}`:'<p class="empty">'+t("이 기업의 Snapshot 미제공")+"</p>"}</section>`;
 }
-function home() {
+// Home is the search start (home-screen.js). The previous home dashboard cards live on #brief, unchanged.
+function home() {return HomeScreen.html({locale:appSettings.display_locale});}
+function brief() {
   const held=D.portfolio.data?.holdings || [];
   return heading("YOUR DAILY BRIEF",t("오늘의 투자 화면"),t("중요한 변화부터 확인하고, 근거까지 따라가세요."))+
   `<div id="tv-ticker-tape"></div><div class="home-dashboard" data-home-dashboard><section class="card" data-integrated-judgement><h2>${t("통합 판단")}</h2><p class="small">${esc(t("규칙 잠정 버전"))}</p><dl>${[["QGV","qgv"],[t("기술"),"technical"],[t("매크로"),"macro"]].map(([label,name])=>`<dt>${esc(label)}</dt><dd><span class="badge ${esc(D[name].state)}">${esc(D[name].state)}</span></dd>`).join("")}</dl><p data-judgement-result>${esc(t(["qgv","technical","macro"].every(n=>D[n].data!==null)?"세 시스템 결과를 나란히 확인하세요.":"자료가 부족해 통합 판단을 만들지 않습니다."))}</p><p class="small">${esc(t("매수·매도 지시 아님, 주문 기능 없음"))}</p></section>`+
@@ -389,27 +384,30 @@ function home() {
   <section class="card"><h2>${t("Attention(확인 필요)")}</h2><p class="small">${D.universe.state==="FROZEN_SNAPSHOT"?t("기업 목록은")+" "+esc(D.universe.as_of)+" "+t("과거 스냅샷입니다. 최신 시세·분석이 아닙니다."):t("출처와 데이터 시점을 확인하세요.")}</p><div class="chips"><a href="#companies">${t("관심기업")} ${prefs.interests.length} →</a><a href="#leaderboard">Leaderboard →</a></div></section>
   <section class="card" data-daily-reports><h2>${appSettings.display_locale==='en-US'?'Daily reports':'일일보고서'}</h2><div class="chips"><a href="#report/mock" data-report-link="mock">${appSettings.display_locale==='en-US'?'Paper trading daily report':'모의투자 일일보고서'} →</a><a href="#report/real" data-report-link="real">${appSettings.display_locale==='en-US'?'Investment daily report':'투자 일일보고서'} →</a></div><p class="small">${appSettings.display_locale==='en-US'?'Virtual records only · no orders':'가상 기록 · 주문 기능 없음'}</p></section>
   <details><summary>${t("분석 · 뉴스 · 관계 변화 더보기")}</summary><div class="grid">${block("qgv",t("QGV 변화"),"<p>"+t("변화량은 upstream changes가 제공할 때만 표시합니다.")+"</p>")}${block("technical",t("Technical 변화"),"<p>"+t("최근 신호는 기업 상세에서 확인하세요.")+"</p>")}${block("news",t("관심기업 뉴스"),'<a href="#news">'+t("뉴스 열기 →")+"</a>")}${block("relationships",t("Relationship changes(관계 변화)"),'<a href="#news">'+t("관계망 열기 →")+"</a>")}</div></details>`+
-  `<section class="card" data-system-flow><h2>${t("시스템")}</h2><div class="hub-grid">${[["1","QGV","#qgv","qgv"],["2",t("기술적 분석"),"#technical","technical"],["3",t("매크로"),"#macro","macro"],["4",t("검증·연구"),"#validation",null]].map(([n,label,href,name])=>`<a class="card hub-card" href="${href}"><h3><span class="flow-number">${n}</span> ${esc(label)}</h3><span class="badge ${name?esc(D[name].state):"NOT_AVAILABLE"}">${name?esc(D[name].state):"NOT_AVAILABLE"}</span></a>`).join("")}</div></section>
+  `<section class="card" data-system-flow><h2>${t("시스템")}</h2><div class="hub-grid">${[["1","QGV","#qgv","qgv"],["2",t("기술적 분석"),"#technical","technical"],["3",t("매크로"),"#macro","macro"],["8",t("검증·연구"),"#validation",null]].map(([n,label,href,name])=>`<a class="card hub-card" href="${href}"><h3><span class="flow-number">${n}</span> ${esc(label)}</h3><span class="badge ${name?esc(D[name].state):"NOT_AVAILABLE"}">${name?esc(D[name].state):"NOT_AVAILABLE"}</span></a>`).join("")}</div></section>
   <section class="card" data-data-basis><h2>${t("데이터 기준")}</h2><dl><dt>${t("목표 비중 버전")}</dt><dd id="home-target-version">—</dd><dt>${t("QGV 기준 버전")}</dt><dd>${esc(t("v2 · PROVISIONAL"))}</dd><dt>${t("시세·환율")}</dt><dd>${esc(t("이 기기에서만 입력·계산"))}</dd><dt>${t("보유 정보")}</dt><dd>${esc(t("이 기기에만 저장"))}</dd></dl><a href="#settings">${t("데이터 운영 상태 →")}</a></section></div>`;
 }
 // S06 ('leader') starts from the remembered view state of this tab (leaderboardView) and adds a text search and the
 // 'QGV v2 순' sort (design canvas S06: 정렬 QGV 높은 순, the default). S15 ('watch') is unchanged.
 function directoryFilters(prefix,watch=false) {
  const v=prefix==='leader'?leaderboardView:null,en=appSettings.display_locale==='en-US',pick=(a,b)=>a===b?" selected":"";
- const sorts=(v?[["qgv",en?"QGV v2 (high first)":"QGV v2 순"]]:[]).concat([[watch?"added":"ticker",watch?t("추가한 순"):t("티커 순")],["name",t("기업명 순")],["favorites",t("관심기업 우선")]]);
- return `<div class="chips">${v?`<input type="search" id="leader-query" aria-label="${en?"Search companies":"기업 검색"}" placeholder="${en?"Ticker or name":"티커 또는 기업명"}" value="${esc(v.query)}">`:""}<label><input type="checkbox" id="${prefix}-interest" ${watch?"checked disabled":v?.interest?"checked":""}>${t("관심기업만")}</label><select id="${prefix}-group" aria-label="${t("그룹 필터")}"><option value="">${t("모든 그룹")}</option>${prefs.groups.map(g=>`<option value="${esc(g.id)}"${pick(v?.group,g.id)}>${esc(g.name)}</option>`).join("")}</select><select id="${prefix}-sort" aria-label="${t("정렬")}">${sorts.map(([k,l])=>`<option value="${k}"${pick(v?.sort,k)}>${esc(l)}</option>`).join("")}</select></div>`;
+ const sorts=(v?[["qgv",en?"QGV v2 (high first)":"QGV v2 순"]]:[]).concat([[watch?"added":"ticker",watch?t("추가한 순"):t("티커 순")],["name",t("기업명 순")],["favorites",t("관심기업 우선")]],v?LeaderboardScreen.sortOptions(en):[]);
+ return `<div class="chips">${v?`<input type="search" id="leader-query" aria-label="${en?"Search companies":"기업 검색"}" placeholder="${en?"Ticker or name":"티커 또는 기업명"}" value="${esc(v.query)}">`:""}<label><input type="checkbox" id="${prefix}-interest" ${watch?"checked disabled":v?.interest?"checked":""}>${t("관심기업만")}</label>${v?`<label data-leader-target-filter><input type="checkbox" id="leader-target" ${v.target?"checked":""}>${en?"TARGET only (hides rows, ranks unchanged)":"TARGET만 (행만 숨김 · 순위 그대로)"}</label>`:""}<select id="${prefix}-group" aria-label="${t("그룹 필터")}"><option value="">${t("모든 그룹")}</option>${prefs.groups.map(g=>`<option value="${esc(g.id)}"${pick(v?.group,g.id)}>${esc(g.name)}</option>`).join("")}</select><select id="${prefix}-sort" aria-label="${t("정렬")}">${sorts.map(([k,l])=>`<option value="${k}"${pick(v?.sort,k)}>${esc(l)}</option>`).join("")}</select></div>`;
 }
 function companyGroups(id){return `<p class="small">${t("관심·그룹은 이 기기에만 저장됩니다.")}</p>${prefs.groups.length?prefs.groups.map(g=>`<label><input type="checkbox" data-group="${esc(g.id)}" data-member="${esc(id)}" ${g.members.includes(id)?"checked":""} ${prefs.interests.includes(id)?"":"disabled"}>${esc(g.name)}</label>`).join(""):`<a href="#watchlist">${t("그룹 관리 →")}</a>`}`;}
 function weekFilings(){const p=publicScreens["sec-filing-windows.json"],rows=p?.data?.companies;if(!rows)return "NOT_AVAILABLE";const known=prefs.interests.filter(id=>rows[id]&&rows[id].state!=="NOT_AVAILABLE");if(!known.length)return "NOT_AVAILABLE";const en=appSettings.display_locale==="en-US",week=Date.now()-7*86400000,status=known.map(id=>PublicScreens.earningsStatus(rows[id])).filter(Boolean),estimated=status.filter(s=>s.status==="ESTIMATED"&&s.window.days_until_start<=6).length,confirmed=status.filter(s=>s.status==="CONFIRMED"&&Date.parse(s.date+"T00:00:00Z")>=week).length;return (estimated+confirmed)+" · "+esc(en?"estimated "+estimated+" · confirmed "+confirmed:"추정 "+estimated+" · 확인 "+confirmed)+" · "+esc(t("예상 시기 · 확정일 아님"));}
 // '공시·확정' (SEC 8-K, DART when its reader exists) + '뉴스·신호' (news-signals.json) in one chronological list; one lazy public read each.
 // S07 lists all (or the company in context), S15 the interest companies. Nothing here changes any score.
-let disclosuresPromise=null;
+// The files are read once per publication by DataRefresh and shared with the 4.3 tree example (D6).
 function paintDisclosures(host,companyIds,emptyText){if(!host||typeof SecDisclosures!=="object")return;const dart=typeof DartDisclosures==="object"&&!$(host.id==="news-disclosures"?"#news-dart-disclosures":"#watch-dart-disclosures")?DartDisclosures:null,news=typeof NewsSignals==="object"?NewsSignals:null;
- disclosuresPromise=disclosuresPromise||Promise.all([SecDisclosures.load(window),news?news.load(window):null,dart?dart.load(window):null]);
- disclosuresPromise.then(([sec,signals,dartPayload])=>{if(!host.isConnected)return;const options={locale:appSettings.display_locale,companyIds,emptyText};if(news)news.mount(host,{sec,news:signals,dart:dartPayload},Object.assign(options,{secApi:SecDisclosures,dartApi:dart}));else SecDisclosures.mount(host,sec,options);});}
+ Promise.all([DataRefresh.list(window,'sec'),news?DataRefresh.list(window,'news'):null,dart?DataRefresh.list(window,'dart'):null]).then(([sec,signals,dartPayload])=>{if(!host.isConnected)return;const options={locale:appSettings.display_locale,companyIds,emptyText};if(news)news.mount(host,{sec,news:signals,dart:dartPayload},Object.assign(options,{secApi:SecDisclosures,dartApi:dart,...newsTiers()}));else SecDisclosures.mount(host,sec,options);});}
+// Importance tiers for the news/disclosure list: interests = this device's watchlist (prefs), held = companies in the
+// portfolio snapshot already in page memory (D.portfolio, the same set paintNews uses). Device ACTUAL holdings live in
+// IndexedDB and are not read here; without a snapshot in memory held stays null (the list then says "holdings not connected").
+function newsTiers(){const rows=D&&D.portfolio&&D.portfolio.data&&Array.isArray(D.portfolio.data.holdings)?D.portfolio.data.holdings:null;
+ return{interests:[...prefs.interests],held:rows?rows.map(h=>h&&h.company_id).filter(x=>typeof x==='string'):null};}
 // DART disclosures (042700): same '공시·확정' record format as SEC 8-K, own public file; one lazy read. S07 all (or the company in context), S15 interest companies.
-let dartDisclosuresPromise=null;
-function paintDartDisclosures(host,companyIds,emptyText){if(!host||typeof DartDisclosures!=="object")return;dartDisclosuresPromise=dartDisclosuresPromise||DartDisclosures.load(window);dartDisclosuresPromise.then(p=>{if(host.isConnected)DartDisclosures.mount(host,p,{locale:appSettings.display_locale,companyIds,emptyText});});}
+function paintDartDisclosures(host,companyIds,emptyText){if(!host||typeof DartDisclosures!=="object")return;DataRefresh.list(window,'dart').then(p=>{if(host.isConnected)DartDisclosures.mount(host,p,{locale:appSettings.display_locale,companyIds,emptyText});});}
 function watchlist(){return heading("WATCHLIST",t("관심 기업"))+directoryFilters("watch",true)+`<p class="meta">${t("이 휴대폰에만 저장 · 백업으로 이동")}</p><div class="grid">${["평균 QGV","재평가 신호","이번 주 실적","새 뉴스"].map(x=>`<section class="card"><h2>${t(x)}</h2><p${x==="이번 주 실적"?" data-week-filings":""}>${x==="이번 주 실적"?weekFilings():"NOT_AVAILABLE"}</p></section>`).join("")}</div><ul class="list" id="watchlist-company-list"></ul><div id="watch-disclosures"></div><div id="watch-dart-disclosures"></div><a href="#leaderboard/interest">${t("리더보드에서 관심 기업만 보기 →")}</a><details><summary>${t("관심기업 · Groups(그룹) 관리")}</summary>${groupsUI()}</details>`;}
 function companies() {
   return heading("COMPANIES",t("기업 탐색"))+`<input type="search" id="search" aria-label="${t("기업 검색")}" placeholder="${t("티커 또는 기업명 검색")}"><div class="chips"><label><input type="checkbox" id="only-interest"> ${t("관심기업만")}</label><select id="group-filter" aria-label="${t("그룹 필터")}"><option value="">${t("모든 그룹")}</option>${prefs.groups.map(g=>`<option value="${esc(g.id)}">${esc(g.name)}</option>`).join("")}</select></div><select id="company-sort" aria-label="정렬"><option value="ticker">티커 순</option><option value="name">기업명 순</option><option value="favorites">관심기업 우선</option></select><p class="meta">${D.universe.withheld?esc(D.universe.state)+" · "+esc(t(D.universe.withheld.reason || WITHHELD_REASON)):esc(D.universe.as_of)+" · FROZEN_SNAPSHOT / DEMO"}</p><ul class="list" id="company-list"></ul><button id="more-companies">${t("더보기")}</button><details><summary>${t("관심기업 · Groups(그룹) 관리")}</summary>${groupsUI()}</details>`;
@@ -475,22 +473,24 @@ function m2Panel(id,companyIds) {
 
 function detail(id) {
   const c=company(id);
-  if(!c && universeCode(id)) {void ensureUniverseDirectory();return universeDetail(id);}
+  if(!c && universeCode(id)) {void ensureUniverseDirectory();return window.UniverseCompany?UniverseCompany.html(id,{locale:appSettings.display_locale,screens:publicScreens,shares:universeDirectory,quotes:qgv2Quotes,names:companyNames}):universeDetail(id);}
   const candidate=Object.hasOwn(m2Candidates.companies,id)?m2Candidates.companies[id]:null;
   const historySymbol=PrivateHistory.symbolFor(id);
-  if((!c || c.identity_only) && (candidate || historySymbol)) return CompanyScreen.summary({locale:appSettings.display_locale,id,screens:publicScreens,scores:qgvScores(),quote:companyQuote.id===id?companyQuote.quote:null,
-    headerHtml:`<div class="row">${heading("COMPANY RESEARCH",CompanyLogos.html(candidate?.ticker || historySymbol || c?.ticker || id,40)+esc(candidate?.ticker || historySymbol || c?.ticker || ""),esc(c?.name || ""))}${star(id)}</div>`,groupsHtml:companyGroups(id),candidateHtml:m2Panel(id)});
+  if((!c || c.identity_only) && (candidate || historySymbol)) return CompanyScreen.summary({locale:appSettings.display_locale,id,screens:publicScreens,scores:leaderScores(),priceBasis:leaderBasis,quote:companyQuote.id===id?companyQuote.quote:null,
+    headerHtml:`<div class="row">${heading("COMPANY RESEARCH",CompanyLogos.html(candidate?.ticker || historySymbol || c?.ticker || id,40)+esc(companyTitle(id,candidate?.ticker || historySymbol || c?.ticker || "")),esc(c?.name || ""))}${star(id)}</div>`+namesBlock(id),groupsHtml:companyGroups(id),candidateHtml:m2Panel(id)});
   if(!c) return heading("COMPANIES",t("기업을 찾을 수 없습니다."))+'<a href="#companies">'+t("기업 목록 →")+"</a>";
   const h=D.portfolio.data?.holdings?.find(r=>r.company_id===id),e=searchIndex.resolve("COMPANY",id);
-  return `<a class="small" href="#companies">${t("← 기업 목록")}</a><div class="row">${heading("COMPANY DETAIL",CompanyLogos.html(c.ticker,40)+esc(c.ticker),esc(label(e) || c.name))}${star(id)}</div><div id="private-history-chart"></div><div id="sec-reported-panel"></div><div class="grid">${summaryFor("qgv",id)}${summaryFor("technical",id)}</div>`+
+  return `<a class="small" href="#companies">${t("← 기업 목록")}</a><div class="row">${heading("COMPANY DETAIL",CompanyLogos.html(c.ticker,40)+esc(companyTitle(id,c.ticker)),esc(label(e) || c.name))}${star(id)}</div>${namesBlock(id)}<div id="private-history-chart"></div><div id="sec-reported-panel"></div><div class="grid">${summaryFor("qgv",id)}${summaryFor("technical",id)}</div>`+
   block("macro",t("Macro exposure / context(거시 노출)"),`<p>${esc(D.macro.data?.regime || "")}</p><p>${t("기업 노출:")} ${esc(D.macro.data?.exposures?.[id] || t("미제공"))}</p>`)+
   `<section class="card"><h2>${t("Portfolio status(보유 상태)")}</h2>${state(D.portfolio)}<p>${h?t("Snapshot에 포함 · 비중")+" "+(Number.isFinite(h.actual_weight)?pct(h.actual_weight):"NOT_AVAILABLE"):D.portfolio.data?t("제공된 Snapshot에 없음"):t("실제 보유 상태 미제공")}</p>${h && Number.isFinite(h.target_weight)?`<p class="small" data-weight-kind="TARGET">TARGET · ${t("모델 비중")} ${pct(h.target_weight)}</p>`:""}${h?evidence(h):""}</section><section class="card"><h2>${t("News / Relationships(뉴스·관계)")}</h2>${state(D.news)}<a href="#news/${encodeURIComponent(id)}">${t("이 기업의 뉴스·관계망 확인 →")}</a></section>${evidence(c)}`;
 }
+// English (SEC) name, Korean name with its status and source, aliases and share class of a company page (KR-NAMES).
+function namesBlock(id){return window.UniverseCompany?.namesHtml?UniverseCompany.namesHtml(companyNames?companyNames.get(id):undefined,appSettings.display_locale):"";}
 function analysis(id,tab=null) {
   const c=company(id),candidate=Object.hasOwn(m2Candidates.companies,id)?m2Candidates.companies[id]:null,historySymbol=PrivateHistory.symbolFor(id);
   if(!c && !candidate && !historySymbol) return heading("COMPANIES",t("기업을 찾을 수 없습니다."))+'<a href="#companies">'+t("기업 목록 →")+"</a>";
   const ticker=candidate?.ticker || historySymbol || c?.ticker || "";
-  return CompanyScreen.analysis({locale:appSettings.display_locale,id,ticker,tab,quote:companyQuote.id===id?companyQuote.quote:null,screens:publicScreens,scores:qgvScores(),headerHtml:`<div class="row">${heading("COMPANY ANALYSIS",CompanyLogos.html(ticker||id,40)+esc(ticker),esc(c?.name || ""))}${star(id)}</div>`});
+  return CompanyScreen.analysis({locale:appSettings.display_locale,id,ticker,tab,quote:companyQuote.id===id?companyQuote.quote:null,screens:publicScreens,scores:leaderScores(),headerHtml:`<div class="row">${heading("COMPANY ANALYSIS",CompanyLogos.html(ticker||id,40)+esc(ticker),esc(c?.name || ""))}${star(id)}</div>`});
 }
 function paintPortfolio() {
   const host=$("#portfolio-screen");
@@ -508,21 +508,24 @@ function paintPortfolio() {
 }
 function portfolio() {
   const p=D.portfolio.data;
-  return heading("PORTFOLIO",t("내 포트폴리오"))+`<div id="portfolio-screen">${PortfolioScreen.shell(appSettings.display_locale,virtualShadow)}</div>`+`<section class="card"><h2>ACTUAL · ${appSettings.display_locale==='en-US'?'This device':'이 기기'}</h2><a href="#actual" class="button">${appSettings.display_locale==='en-US'?'Enter / manage ACTUAL holdings':'ACTUAL 입력·관리'}</a><div id="device-actual-summary" aria-live="polite"></div></section>`+block("portfolio",t("보유 현황"),`<p>${esc(p?.role || "")}</p><dl><dt>${t("수익률")}</dt><dd>${pct(p?.return)}</dd><dt>${t("평가금액")}</dt><dd>${fmt(p?.market_value)} ${esc(p?.currency || "")}</dd><dt>${t("Exposure(노출)")}</dt><dd>${esc(p?.exposure?JSON.stringify(p.exposure):t("미제공"))}</dd></dl><ul class="list">${(p?.holdings || []).map(h=>`<li class="item"><a href="#company/${encodeURIComponent(h.company_id)}"><b>${esc(h.ticker)}</b><div class="muted">${t("실제 비중")} ${Number.isFinite(h.actual_weight)?pct(h.actual_weight):"NOT_AVAILABLE"} · ${t("수익률")} ${pct(h.return)}</div>${Number.isFinite(h.target_weight)?`<div class="small" data-weight-kind="TARGET">TARGET · ${t("모델 비중")} ${pct(h.target_weight)}</div>`:""}</a>${star(h.company_id)}</li>`).join("")}</ul>`)+
+  return heading("PORTFOLIO",t("내 포트폴리오"))+`<div id="portfolio-screen">${PortfolioScreen.shell(appSettings.display_locale,virtualShadow)}</div>`+block("portfolio",t("보유 현황"),`<p>${esc(p?.role || "")}</p><dl><dt>${t("수익률")}</dt><dd>${pct(p?.return)}</dd><dt>${t("평가금액")}</dt><dd>${fmt(p?.market_value)} ${esc(p?.currency || "")}</dd><dt>${t("Exposure(노출)")}</dt><dd>${esc(p?.exposure?JSON.stringify(p.exposure):t("미제공"))}</dd></dl><ul class="list">${(p?.holdings || []).map(h=>`<li class="item"><a href="#company/${encodeURIComponent(h.company_id)}"><b>${esc(h.ticker)}</b><div class="muted">${t("실제 비중")} ${Number.isFinite(h.actual_weight)?pct(h.actual_weight):"NOT_AVAILABLE"} · ${t("수익률")} ${pct(h.return)}</div>${Number.isFinite(h.target_weight)?`<div class="small" data-weight-kind="TARGET">TARGET · ${t("모델 비중")} ${pct(h.target_weight)}</div>`:""}</a>${star(h.company_id)}</li>`).join("")}</ul>`)+
   `<div class="grid">${block("qgv",t("QGV context(QGV 맥락)"),'<a href="#companies">'+t("기업별 분석 →")+"</a>")}${block("technical",t("Technical context(기술적 분석 맥락)"),'<a href="#companies">'+t("기업별 신호 →")+"</a>")}${block("macro",t("Macro context(거시 맥락)"),`<p>${esc(D.macro.data?.regime || "")}</p>`)}</div><a href="#news">${t("중요 뉴스·관계 변화 →")}</a>`;
 }
 function leaderboard() {
   const l=D.leaderboard.data;
   return heading("LEADERBOARD",appSettings.display_locale==='en-US'?"Company research":"기업 연구")+
-  `<details><summary>${appSettings.display_locale==='en-US'?'My device':'내 기기 기준'}</summary><div id="private-subset-root"></div></details>`+directoryFilters('leader')+'<p class="small leader-summary" id="leader-summary" data-leaderboard-summary role="status"></p><div id="leaderboard-screen"></div><p class="small">고정 대상 기업의 이름·코드 · 가격·공식 순위 미포함</p><ul class="list" id="leader-company-list"></ul><div id="sec-reported-panel"></div><div id="public-qg"></div><div id="leader-m2-panel">'+m2Panel()+'</div>'+block("leaderboard",t("제공된 Leaderboard"),`<ul class="list">${(l?.rows || []).map(r=>`<li class="card"><a href="#company/${encodeURIComponent(r.company_id)}"><b>#${esc(r.rank)} ${esc(r.ticker)}</b></a>${star(r.company_id)}<dl>${[[t("시총 순위"),r.market_cap_rank],["QGV",r.total_score],[t("Daily move(전일 등락)"),r.daily_move],[t("Consensus(컨센서스)"),r.consensus],[t("Scenario(시나리오)"),r.scenario],[t("Reevaluation(재평가 기준)"),r.reevaluation_trigger]].map(([k,v])=>`<dt>${t(k)}</dt><dd>${fmt(v)}</dd>`).join("")}</dl>${evidence(r)}</li>`).join("")}</ul>`);
+  `<details><summary>${appSettings.display_locale==='en-US'?'My device':'내 기기 기준'}</summary><div id="private-subset-root"></div><p class="small" id="universe-price-time" data-universe-price-time></p></details>`+'<section class="fn-sec fn-filters" data-fn="2.1.3" aria-labelledby="lb-fn-2-1-3">'+LeaderboardScreen.fnHeadHtml('FILTER',appSettings.display_locale)+directoryFilters('leader')+LeaderboardScreen.filterNoteHtml(appSettings.display_locale)+'</section>'+'<p class="small leader-summary" id="leader-summary" data-leaderboard-summary role="status"></p><div id="leaderboard-screen"></div><div id="v-coverage-root"></div><p class="small">고정 대상 기업의 이름·코드 · 가격·공식 순위 미포함</p><ul class="list" id="leader-company-list"></ul><div id="sec-reported-panel"></div><div id="public-qg"></div><div id="leader-m2-panel">'+m2Panel()+'</div>'+block("leaderboard",t("제공된 Leaderboard"),`<ul class="list">${(l?.rows || []).map(r=>`<li class="card"><a href="#company/${encodeURIComponent(r.company_id)}"><b>#${esc(r.rank)} ${esc(r.ticker)}</b></a>${star(r.company_id)}<dl>${[[t("시총 순위"),r.market_cap_rank],["QGV",r.total_score],[t("Daily move(전일 등락)"),r.daily_move],[t("Consensus(컨센서스)"),r.consensus],[t("Scenario(시나리오)"),r.scenario],[t("Reevaluation(재평가 기준)"),r.reevaluation_trigger]].map(([k,v])=>`<dt>${t(k)}</dt><dd>${fmt(v)}</dd>`).join("")}</dl>${evidence(r)}</li>`).join("")}</ul>`);
 }
 function news(id) {
   const c=company(id);
-  return heading("NEWS / NETWORK",t("뉴스와 연결"),c?esc(c.ticker)+" "+t("기업 문맥"):t("Portfolio · 관심기업 · 기타 중요뉴스"))+
-  `<div class="chips toolbar" role="group" aria-label="${t("콘텐츠 전환")}"><button id="show-news" aria-pressed="true">${t("뉴스")}</button><button id="show-network" aria-pressed="false">${t("관계망")}</button>${c?star(id):""}</div><p class="small" data-news-overlay>${t("정보 제공용, 투자 판단 덧씌우기(Overlay)는 기본 OFF")} · ${t("뉴스 무료 출처 미정: NOT_AVAILABLE")}</p><div class="chips" data-news-scopes>${["전체","관심 기업","내 포트폴리오","업종","매크로","정치","경제"].map(x=>`<span class="badge">${esc(t(x))}</span>`).join("")}</div><div id="news-disclosures"></div><div id="news-dart-disclosures"></div><section id="news-pane"><select id="news-scope" aria-label="${t("뉴스 범위")}"><option value="all">${t("전체 중요뉴스")}</option><option value="interest">${t("관심기업")}</option><option value="portfolio">Portfolio</option></select>${state(D.news)}<ul id="news-list" class="list"></ul></section><section id="network-pane" hidden><p class="muted">${t("Fact = 확인된 관계 · Impact = 잠재 영향 경로")}</p>${state(D.relationships)}${D.relationships.data?'<iframe title="'+esc(t("News Network(뉴스 관계망)"))+'" data-src="network.html" id="network-frame"></iframe>':'<p class="empty">'+t("Track D 운영 관계망 미연결")+"</p>"}</section>`;
+  // Menu 4 layout (design lane D3): the same pieces, placed in numbered stamp boxes by NewsSignals.screenHtml; without it, the old order.
+  const parts={head:heading("NEWS / NETWORK",t("뉴스와 연결"),c?esc(c.ticker)+" "+t("기업 문맥"):t("Portfolio · 관심기업 · 기타 중요뉴스")),
+  toolbar:`<div class="chips toolbar" id="news-network" role="group" aria-label="${t("콘텐츠 전환")}"><button id="show-news" aria-pressed="true">${t("뉴스")}</button><button id="show-network" aria-pressed="false">${t("관계망")}</button>${c?star(id):""}</div>`,overlay:`<p class="small" data-news-overlay>${t("정보 제공용, 투자 판단 덧씌우기(Overlay)는 기본 OFF")} · ${t("뉴스 무료 출처 미정: NOT_AVAILABLE")}</p>`,scopes:`<div class="chips" data-news-scopes>${["전체","관심 기업","내 포트폴리오","업종","매크로","정치","경제"].map(x=>`<span class="badge">${esc(t(x))}</span>`).join("")}</div>`,newsPane:`<section id="news-pane"><select id="news-scope" aria-label="${t("뉴스 범위")}"><option value="all">${t("전체 중요뉴스")}</option><option value="interest">${t("관심기업")}</option><option value="portfolio">Portfolio</option></select>${state(D.news)}<ul id="news-list" class="list"></ul></section>`,networkPane:`<section id="network-pane" hidden><p class="muted">${t("Fact = 확인된 관계 · Impact = 잠재 영향 경로")}</p>${state(D.relationships)}${D.relationships.data?'<iframe title="'+esc(t("News Network(뉴스 관계망)"))+'" data-src="network.html" id="network-frame"></iframe>':'<p class="empty">'+t("기업 관계 · 미연결")+"</p>"}</section>`};
+  return typeof NewsSignals==="object"&&typeof NewsSignals.screenHtml==="function"?NewsSignals.screenHtml(parts,{locale:appSettings.display_locale,company:c?{id:c.company_id,ticker:c.ticker}:null,interests:prefs.interests.length,relations:!!D.relationships.data}):
+   parts.head+parts.toolbar+parts.overlay+parts.scopes+'<div id="news-disclosures"></div><div id="news-dart-disclosures"></div>'+parts.newsPane+parts.networkPane;
 }
 function research() {
-  return heading("RESEARCH",t("질문에서 근거로"),t("Prompt → Context / Variables → Preview → Copy"))+'<p class="badge">FROZEN_SNAPSHOT · PLV1_CONTENT_V1.0</p><iframe title="'+esc(t("Prompt Library(프롬프트 라이브러리)"))+'" src="research.html" id="research-frame"></iframe>';
+  return heading("RESEARCH",t("질문에서 근거로"),t("Prompt → Context / Variables → Preview → Copy"))+'<p class="badge">FROZEN_SNAPSHOT · PLV1_CONTENT_V1.0</p>'+ScreenDetail.promptsHtml(appSettings.display_locale,'<iframe title="'+esc(t("Prompt Library(프롬프트 라이브러리)"))+'" src="research.html" id="research-frame"></iframe>');
 }
 // Navigation only. Availability describes the existing public screens, not investment results.
 function hubCard(title,status,description,href) {
@@ -577,20 +580,21 @@ function technical() {
   return `<div data-ia-screen="technical">${heading("TECHNICAL",t("기술적 분석"),t("기존 기록의 연결 상태를 확인합니다."))}
     <div class="chips data-badges"><span class="badge">${esc(t("실데이터 검증 전 · 일봉·수정주가 기준"))}</span></div>
     <nav class="chips screen-tabs" aria-label="${esc(t("기술적 분석"))}">${tabs.map(([id,label])=>`<a href="#technical-${id}" data-screen-tab="${id}">${esc(t(label))}</a>`).join("")}</nav>
-    <div id="technical-chart"><div id="technical-price-chart" data-tech-status="chart"></div><div id="technical-tv-chart"></div><div id="technical-indicators"></div></div>
+    <div id="technical-chart"><div id="technical-price-chart" data-tech-status="chart"></div><div id="technical-workbench"></div><div id="technical-tv-chart"></div><div id="technical-indicators"></div></div>
     <section class="card status-card" id="technical-state" data-tech-status="engine"><h2>${t("기술적 분석 엔진")}</h2>${state(s)}<p>${esc(t(s.data===null?s.reason || "운영 Snapshot이 연결되지 않았습니다.":"기존 종목 화면에서 제공된 기술적 분석 기록을 확인합니다."))}</p><p class="small">${esc(t("QGV 원점수와 기술적 상태는 나란히 볼 뿐 통합하지 않습니다."))}</p></section>
     ${TechnicalCards.sectionsHtml(appSettings.display_locale)}
     <section class="card" id="technical-execution" data-tech-status="execution"><h2>${t("실행 구간 (시스템 주문 아님)")}</h2><p><span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> ${esc(t("검증된 모델 입력이 없어 실행 구간을 만들지 않습니다."))}</p></section>
     <section class="card" id="technical-record" data-tech-status="record"><h2>${t("기술적 기록")}</h2><p><span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> ${esc(t("과거 신호와 실제 결과 기록이 아직 없습니다."))}</p></section>
-    </div>`;
+    ${window.IaScreens?IaScreens.technicalHtml(appSettings.display_locale):""}</div>`;
 }
 function macro() {
   return `<div data-ia-screen="macro">${heading("MACRO",t("매크로"),t("공식 축별 상태를 확인합니다."))}
     <div class="chips data-badges"><span class="badge">${esc(t("매크로 상태 v1 · UNCALIBRATED · 경고등 5개"))}</span></div>
     <div id="macro-lights-root"></div>
+    <div id="macro-evidence-root"></div>
     <section class="card" data-macro-status><h2>${t("상태판")}</h2><p class="small">${esc(t("정상·경고·위기는 위의 경고등 5개로 정합니다. 8개 축 국면 판정은 보류합니다."))}</p>
     <h3>${t("현재 국면")}</h3><p data-macro-regime>${esc(t("자료 없음"))}</p><p class="small">${esc(t("8개 축의 6칸은 따로 보관하며 하나의 점수로 합치지 않습니다. FRED/ALFRED는 사용하지 않습니다."))}</p></section>
-    <div id="public-macro"></div>${ScreenDetail.macroHtml(appSettings.display_locale)}</div>`;
+    <div id="public-macro"></div>${ScreenDetail.macroHtml(appSettings.display_locale)}${window.IaScreens?IaScreens.macroHtml(appSettings.display_locale):""}</div>`;
 }
 function thirteenf() {
   return heading("SEC 13F",t("투자자 13F"))+ '<div id="public-thirteenf"></div>';
@@ -601,23 +605,17 @@ function validation() {
   return heading("VALIDATION",t("검증·연구"),t("리서치와 검증 기록의 준비 상태를 확인합니다."))+
     `<div class="chips data-badges"><span class="badge">${esc(t("PIT 시점 기준 데이터만"))}</span><span class="badge">${esc(t("Holdout 기간 미정·사용 금지 · 보호 판정 UNCONFIRMED"))}</span></div>`+
     `<nav class="chips screen-tabs" aria-label="${esc(t("검증·연구"))}">${tabs.map(([id,label])=>`<a href="#validation-${id}" data-screen-tab="${id}">${esc(t(label))}</a>`).join("")}<a href="#research" data-screen-tab="research">${esc(t("리서치"))}</a></nav>`+
-    `<div class="hub-grid" data-hub="validation">${tabs.map(([id,title,status,reason])=>`<div id="validation-${id}">${hubCard(title,status,reason)}</div>`).join("")}${hubCard("리서치","사용 가능","기존 프롬프트 라이브러리를 엽니다.","#research")}</div><div id="forward-validation-root"></div>`+ScreenDetail.validationHtml(appSettings.display_locale);
+    `<div class="hub-grid" data-hub="validation">${tabs.map(([id,title,status,reason])=>`<div id="validation-${id}">${hubCard(title,status,reason)}</div>`).join("")}${hubCard("리서치","사용 가능","기존 프롬프트 라이브러리를 엽니다.","#research")}</div>`+ScreenDetail.validationHtml(appSettings.display_locale);
 }
-// Design canvas S01~S16: analysis flow numbers and QGV sub-categories (navigation only).
-const FLOW_STEPS=Object.freeze({qgv:[1,"QGV"],technical:[2,"기술적 분석"],macro:[3,"매크로"],validation:[4,"검증·연구"]});
+// QGV sub-categories (navigation only). The "01 / QGV" line above a screen follows the menu of its route (app-shell.js).
 const QGV_SUBCATEGORY=Object.freeze({portfolio:"내 투자",actual:"내 투자",profiles:"내 투자",model:"내 투자",companies:"종목 찾기",company:"종목 찾기",analysis:"종목 찾기",entity:"종목 찾기",leaderboard:"종목 찾기",watchlist:"종목 찾기",types:"종목 찾기",news:"시장 정보",thirteenf:"시장 정보"});
 const QGV_CHILDREN=Object.freeze(["companies","company","analysis","leaderboard","news","portfolio","actual","entity","profiles","types","thirteenf","watchlist","model","playbook"]);
-function syncNavigation(route) {
-  const parent=QGV_CHILDREN.includes(route)?"qgv":route==="research"?"validation":route;
-  document.querySelectorAll("[data-nav-tab]").forEach(a=>{
-    if(a.dataset.navTab===parent) a.setAttribute("aria-current","page");
-    else a.removeAttribute("aria-current");
-  });
-}
+// Main menu / bottom navigation (app-shell.js): one current destination per route, none in settings.
+function syncNavigation(route) {window.AppShell?.sync(route,appSettings.display_locale);}
 let listLimit=30;
 // Route history of this page (for the S04 back link and S06 scroll restore).
 let currentRoute=null,previousRoute=null,currentHash='';
-const LIST_ORIGIN=Object.freeze({leaderboard:['← 리더보드','← Leaderboard'],companies:['← 기업 탐색','← Companies'],watchlist:['← 관심 기업','← Watchlist']}),LIST_ORIGIN_HASH=/^#(leaderboard|leaderboard\/interest|companies|watchlist)$/;
+const LIST_ORIGIN=Object.freeze({leaderboard:['← 리더보드','← Leaderboard'],companies:['← 기업 목록','← Company list'],watchlist:['← 관심 기업','← Watchlist']}),LIST_ORIGIN_HASH=/^#(leaderboard|leaderboard\/interest|companies|watchlist)$/;
 function paintCompanies(){
  const rows=DeviceWatchlist.filter(identityCompanies,prefs,{query:$('#search').value,group:$('#group-filter').value,onlyInterest:$('#only-interest').checked,sort:$('#company-sort').value});
  $('#company-list').innerHTML=rows.slice(0,listLimit).map(row).join('')||'<li class="empty">'+t("일치하는 기업이 없습니다.")+'</li>';$('#more-companies').hidden=rows.length<=listLimit;
@@ -626,16 +624,19 @@ function directoryRows(prefix){return DeviceWatchlist.filter(identityCompanies,p
 /* S06 view state of this tab: view/profile, filters (interest, group, text), sort and scroll, plus where S04/S05 was opened
    from (origin, for its back link). RAM first, mirrored to sessionStorage as a per-tab convenience (try/catch: RAM only when
    storage is unavailable). No score, rank, price or v2 profile is stored: the v2 preset/gate stay in page memory (qgv2Profile). */
-const S06_KEY='investment.web.v1.s06-view',LEADER_SORTS=['qgv','ticker','name','favorites'];
-let leaderboardView={view:'default',profileId:null,interest:false,group:'',sort:'qgv',query:'',scrollY:0,anchor:null,offset:0},leaderboardRows=null,companyOrigin=null;
+const S06_KEY='investment.web.v1.s06-view',LEADER_SORTS=LeaderboardScreen.SORT_IDS;
+let leaderboardView={view:'default',profileId:null,interest:false,target:false,group:'',sort:'qgv',query:'',explore:'all',scrollY:0,anchor:null,offset:0},leaderboardRows=null,companyOrigin=null;
+// S06 exploration filter (FE-MISSING-2): all / official QGV ranking / QG 참고 목록 (V 미포함, D11) / some axes only / check data
+// (LeaderboardScreen.EXPLORE).
+const LEADER_EXPLORE=['all','ranked','qg','partial','check'];
 // Last value written (or the defaults): nothing is written until the state differs from it, so screens never touched
 // leave sessionStorage empty.
 let leaderSaved=JSON.stringify({...leaderboardView,origin:null});
 function readLeaderView(){try{const raw=sessionStorage.getItem(S06_KEY),v=JSON.parse(raw||'null');if(!v||typeof v!=='object')return;leaderSaved=raw;
-  leaderboardView={view:['default','profile','device'].includes(v.view)?v.view:'default',profileId:typeof v.profileId==='string'?v.profileId:null,interest:v.interest===true,group:typeof v.group==='string'?v.group:'',sort:LEADER_SORTS.includes(v.sort)?v.sort:'qgv',query:typeof v.query==='string'?v.query.slice(0,60):'',scrollY:Number.isFinite(v.scrollY)&&v.scrollY>0?Math.round(v.scrollY):0,anchor:typeof v.anchor==='string'&&v.anchor.length<=64?v.anchor:null,offset:Number.isFinite(v.offset)?Math.round(v.offset):0};
+  leaderboardView={view:['default','profile','device'].includes(v.view)?v.view:'default',profileId:typeof v.profileId==='string'?v.profileId:null,interest:v.interest===true,target:v.target===true,group:typeof v.group==='string'?v.group:'',sort:LEADER_SORTS.includes(v.sort)?v.sort:'qgv',query:typeof v.query==='string'?v.query.slice(0,60):'',explore:LEADER_EXPLORE.includes(v.explore)?v.explore:'all',scrollY:Number.isFinite(v.scrollY)&&v.scrollY>0?Math.round(v.scrollY):0,anchor:typeof v.anchor==='string'&&v.anchor.length<=64?v.anchor:null,offset:Number.isFinite(v.offset)?Math.round(v.offset):0};
   const o=v.origin;companyOrigin=o&&typeof o.id==='string'&&typeof o.hash==='string'&&/^#(leaderboard|leaderboard\/interest|companies|watchlist)$/.test(o.hash)?{id:o.id,hash:o.hash}:null;}catch(_){}}
 function saveLeaderView(){const json=JSON.stringify({...leaderboardView,origin:companyOrigin});if(json===leaderSaved)return;leaderSaved=json;try{sessionStorage.setItem(S06_KEY,json);}catch(_){}}
-function syncLeaderView(){const q=$('#leader-query'),g=$('#leader-group');leaderboardView={...leaderboardView,interest:$('#leader-interest').checked,group:g?g.value:'',sort:LEADER_SORTS.includes($('#leader-sort').value)?$('#leader-sort').value:'qgv',query:q?q.value:''};saveLeaderView();}
+function syncLeaderView(){const q=$('#leader-query'),g=$('#leader-group');leaderboardView={...leaderboardView,interest:$('#leader-interest').checked,target:$('#leader-target')?.checked===true,group:g?g.value:'',sort:LEADER_SORTS.includes($('#leader-sort').value)?$('#leader-sort').value:'qgv',query:q?q.value:''};saveLeaderView();}
 /* Scroll position of S06: the first table row in view and its distance from the viewport top (falls back to scrollY when no row
    is in view). Restoring by row keeps the same rows in view even when content above it (e.g. the 'My device' panel) changed. */
 function leaderAnchor(){for(const r of document.querySelectorAll('#leaderboard-screen [data-leaderboard-row]')){const b=r.getBoundingClientRect();if(b.bottom>0&&b.top<window.innerHeight)return{anchor:r.dataset.leaderboardRow,offset:Math.round(b.top)};}return{anchor:null,offset:0};}
@@ -645,14 +646,15 @@ function restoreLeaderScroll(){const v=leaderboardView,row=v.anchor?document.que
 // position is not overwritten in between.
 let leaderRestoring=false;
 function restoreLeaderView(){leaderRestoring=true;restoreLeaderScroll();requestAnimationFrame(()=>requestAnimationFrame(()=>{if(currentRoute==='leaderboard')restoreLeaderScroll();leaderRestoring=false;}));}
-// 'QGV v2 순': the v2 rank over all 19 identities (QgvScores); filters only hide rows. No rank (NOT_AVAILABLE) goes last, by ticker.
-function rankOrder(rows,S){if(leaderboardView.sort!=='qgv')return rows;const rank=id=>{const r=S?.rows?.[id]?.rank;return Number.isInteger(r)?r:null;};
-  return [...rows].sort((a,b)=>{const x=rank(a.company_id),y=rank(b.company_id);return (x===null)-(y===null)||(x!==null&&y!==null?x-y:0)||a.ticker.localeCompare(b.ticker);});}
-function paintLeaderSummary(S,shown){const host=$('#leader-summary');if(!host)return;const en=appSettings.display_locale==='en-US',v=leaderboardView,group=prefs.groups.find(g=>g.id===v.group);
-  const sort={qgv:en?'QGV v2 (high first)':'QGV v2 순',ticker:t('티커 순'),name:t('기업명 순'),favorites:t('관심기업 우선')}[v.sort],filters=[v.interest?t('관심기업만'):null,group?(en?'group ':'그룹 ')+group.name:null,v.query.trim()?(en?'search “':'검색 “')+v.query.trim()+'”':null].filter(Boolean);
+// 'QGV v2 순': the official v2 rank over the Universe rows of the official evaluation (QgvScores, rows with V; D12), then the QG 참고
+// 목록 (V 미포함) in its own order (D11); filters (search, group, interest, TARGET) only hide rows. No total goes last, by ticker.
+// Other S06 sort keys (Q/G/V, direction, data date, M3 market cap): structured values, NA last (LeaderboardScreen.sortRows).
+function rankOrder(rows,S){return LeaderboardScreen.sortRows(rows,S,leaderboardView.sort,{deviceRanks:window.PrivateSubsetView?.ranks?.()||null});}
+function paintLeaderSummary(S,shown,total=identityCompanies.length){const host=$('#leader-summary');if(!host)return;const en=appSettings.display_locale==='en-US',v=leaderboardView,group=prefs.groups.find(g=>g.id===v.group);
+  const sort={qgv:en?'QGV v2 (high first)':'QGV v2 순',ticker:t('티커 순'),name:t('기업명 순'),favorites:t('관심기업 우선')}[v.sort]||LeaderboardScreen.sortLabel(v.sort,en),filters=[v.interest?t('관심기업만'):null,v.target?(en?'TARGET only':'TARGET만'):null,group?(en?'group ':'그룹 ')+group.name:null,v.query.trim()?(en?'search “':'검색 “')+v.query.trim()+'”':null,v.explore!=='all'&&v.view!=='profile'?(LeaderboardScreen.EXPLORE.find(e=>e[0]===v.explore)||[])[en?2:1]:null].filter(Boolean);
   const view={default:en?'Default':'기본',profile:en?'My profile (v1 preview, not the official v2 score)':'내 프로필(v1 미리보기 · 공식 v2 점수 아님)',device:en?'My device (M3)':'내 기기 기준(M3)'}[v.view];
   const p=S&&S.profile?(en?S.profile.name.name_en:S.profile.name.name)+' · '+(en?'gate ':'관문 ')+(S.profile.gate?(en?'on':'켬'):(en?'off':'끔')):'—';
-  const text=(en?'Sort: ':'정렬: ')+sort+' · '+(en?'Filter: ':'필터: ')+(filters.join(' · ')||(en?'none':'없음'))+' · '+(en?'View: ':'보기: ')+view+' · '+(en?'Profile: ':'프로필: ')+p+' · '+(en?shown+' of '+identityCompanies.length+' shown':identityCompanies.length+'개 중 '+shown+'개 표시');
+  const text=(en?'Sort: ':'정렬: ')+sort+' · '+(en?'Filter: ':'필터: ')+(filters.join(' · ')||(en?'none':'없음'))+' · '+(en?'View: ':'보기: ')+view+' · '+(en?'Profile: ':'프로필: ')+p+' · '+(en?shown+' of '+total+' shown':total+'개 중 '+shown+'개 표시');
   if(host.textContent!==text)host.textContent=text;}
 // Scores (S04/S05/S06, report, rehearsal) come only from QgvScores (the scoring_default setting). QGV v2 profile choice and the
 // device quotes of the v2 V cross-section live in this page's memory only: never stored, logged or sent.
@@ -660,29 +662,75 @@ let qgv2Profile={preset:null,gate:null},qgv2Quotes={},qgv2QuotesKey='';
 // New device quotes change only the score sections. Repaint those in place: a full render() would reset the open analysis
 // tab, the value panel, the loaded private history table and the playbook panel.
 const SCORE_SECTIONS=['[data-company-badges]','[data-company-card="qgv"]','[data-analysis-panel="summary"]','[data-analysis-panel="factors"]'];
-function repaintScores(build){const fresh=document.createElement('div');fresh.innerHTML=build();for(const sel of SCORE_SECTIONS){const live=$('#content '+sel),next=fresh.querySelector(sel);if(live&&next)live.innerHTML=next.innerHTML;}}
+// Coverage sections the user opened (details[data-keep-open]) stay open across the repaint.
+function repaintScores(build){const fresh=document.createElement('div');fresh.innerHTML=build();for(const sel of SCORE_SECTIONS){const live=$('#content '+sel),next=fresh.querySelector(sel);if(!live||!next)continue;
+ const open=new Set([...live.querySelectorAll('details[data-keep-open][open]')].map(d=>d.dataset.keepOpen));for(const d of next.querySelectorAll('details[data-keep-open]'))if(open.has(d.dataset.keepOpen))d.open=true;live.innerHTML=next.innerHTML;}}
 // Late score inputs (the DART reference row) repaint only the score views of the open screen. A full render() here
 // discarded typed weights, open tabs and in-flight save messages on whatever screen was open (e.g. the ledger sheet).
 function refreshScoreViews(){const[route,raw]=location.hash.slice(1).split('/');let id='';try{id=decodeURIComponent(raw||'');}catch(_){id='';}
- if(route==='leaderboard'&&leaderboardRows&&$('#leaderboard-screen'))paintLeaderboardScreen(leaderboardRows);
+ if(route==='leaderboard'&&leaderboardRows&&$('#leaderboard-screen'))paintLeaderboardScreen();
  else if(route==='company'&&id)repaintScores(()=>detail(id));else if(route==='analysis'&&id)repaintScores(()=>analysis(id));}
 function qgvScores(identities=identityCompanies){return QgvScores.compute({identities,publicScreens,quotes:qgv2Quotes,preset:qgv2Profile.preset,gate:qgv2Profile.gate,referenceRows:typeof dartReferenceRows==='function'?dartReferenceRows():{}});}
-async function refreshQgv2Quotes(after){const inputs=window.Qgv2Inputs?publicScreens[Qgv2Inputs.FILE]:null;if(!inputs)return;let catalog=null;try{catalog=await deviceCatalog();}catch(_){catalog=null;}
- let q={};try{q=await QgvScores.collectQuotes(window,{identities:identityCompanies,v2Inputs:inputs,catalog});}catch(_){q={};}// Quotes accumulate for this page session (the Universe read is dropped on navigation); a Universe read/clear resets them.
- const next={...qgv2Quotes,...q},k=JSON.stringify(next);if(k===qgv2QuotesKey)return;qgv2Quotes=next;qgv2QuotesKey=k;if(after)after();}
+/* OFFICIAL EVALUATION (D12, owner decision 2026-10-19: '공식 리더보드는 Universe 전체 평가를 기준으로 한다. 기존 TARGET 19개는 별도
+   목록·필터로 유지한다.'). ONE result feeds S06, the company detail rank, the playbook candidates, the radar and the V panel: the
+   shared QgvScores.pageResult (one collectQuotes + one compute over every Universe code of the published sec-qgv2.json and the TARGET
+   identities, deduplicated into one row per security; qgv-scores.js universeIdentities). leaderScores() returns that result's
+   `computed` itself while it is current (same Universe read, preset/gate and reference rows); otherwise the same call over the same
+   identities with the shared quote set it has (that result's quotes, else the last shared set after new public inputs, none before
+   a price read: no official rank, the QG 참고 목록 shows, D11). Populations:
+   evaluation = every security of that result; rank = Universe rows with an official rank (V); eligibility = the approved
+   model-portfolio rules (QgvScores.modelPortfolios); filters (search, group, interest, TARGET) only hide rows. RAM only. */
+const NO_QUOTES=Object.freeze({});let leaderBasis=null,qgv2QuotesBasis=null,leaderQuotes=NO_QUOTES,leaderPage=null,leaderShown=null,officialMemo=null,populationMemo=null;// leaderShown: the page result the last S06 paint used (a paint made before the result arrived is repainted)
+function officialPopulation(){const inputs=window.Qgv2Inputs?publicScreens[Qgv2Inputs.FILE]:null;
+ if(populationMemo&&populationMemo.inputs===inputs&&populationMemo.ids===identityCompanies&&populationMemo.names===companyNames)return populationMemo.value;
+ const U=inputs&&typeof QgvScores.universeIdentities==='function'?QgvScores.universeIdentities(inputs,identityCompanies):null,byId=new Map(identityCompanies.map(c=>[c.company_id,c]));
+ // Universe rows: a TARGET identity keeps its catalog name; a Universe code is named from company-names-ko.json (search only).
+ const named=c=>{const t=byId.get(c.company_id),code=U?U.universe[c.company_id]:null;if(t)return{...t,universe_code:code||null,target:true};const n=companyNames?companyNames.get(c.company_id):null;
+  return{company_id:c.company_id,ticker:c.ticker,name:[n&&n.ko_name,n&&n.en_name].filter(Boolean).join(' '),universe_code:code||null,target:false};};
+ const value=U?{official:U,rows:U.identities.filter(c=>U.universe[c.company_id]).map(named),outside:U.outside.map(id=>({...byId.get(id),universe_code:null,target:true}))}:{official:null,rows:identityCompanies.map(c=>({...c,universe_code:null,target:true})),outside:[]};
+ populationMemo={inputs,ids:identityCompanies,names:companyNames,value};return value;}
+function leaderScores(){const inputs=window.Qgv2Inputs?publicScreens[Qgv2Inputs.FILE]:null,page=leaderPage&&leaderPage.inputs===inputs?leaderPage.result:null;leaderShown=page;
+ const refs=typeof dartReferenceRows==='function'?dartReferenceRows():{},refKey=JSON.stringify(refs);
+ leaderBasis=page?page.price_basis||null:qgv2QuotesKey?qgv2QuotesBasis:null;// the Universe read of the quote set used below (data-cx marks)
+ if(page&&page.official&&page.reference_key===refKey&&QgvScores.isCurrent(window,page)){leaderQuotes=page.quotes;return page.computed;}// the ONE shared result itself
+ const pop=officialPopulation(),quotes=page?page.quotes:qgv2QuotesKey?qgv2Quotes:NO_QUOTES;leaderQuotes=quotes;const key=JSON.stringify([qgv2Profile.preset,qgv2Profile.gate,refKey]);// quotes do not depend on preset/gate
+ if(officialMemo&&officialMemo.inputs===inputs&&officialMemo.quotes===quotes&&officialMemo.pop===pop&&officialMemo.key===key)return officialMemo.S;
+ const S=QgvScores.compute({identities:pop.official?pop.official.identities:identityCompanies,publicScreens,quotes,preset:qgv2Profile.preset,gate:qgv2Profile.gate,referenceRows:refs,official:pop.official});
+ officialMemo={inputs,quotes,pop,key,S};return S;}
+async function refreshLeaderPage(after){const inputs=window.Qgv2Inputs?publicScreens[Qgv2Inputs.FILE]:null;if(!inputs||typeof QgvScores.pageResult!=='function')return;const{preset,gate}=qgv2Profile;let catalog=null;try{catalog=await deviceCatalog();}catch(_){catalog=null;}
+ let r=null;try{r=await QgvScores.pageResult(window,{v2Inputs:inputs,catalog,identities:identityCompanies,preset,gate});}catch(_){r=null;}if(!r)return;
+ // A call that started before a new Universe read, new inputs or a preset/gate change can finish after the call made for them:
+ // its result is no longer the current one and never replaces leaderPage or the shared quotes (the newer call writes them).
+ if(publicScreens[Qgv2Inputs.FILE]!==inputs||!QgvScores.isCurrent(window,r))return;if(leaderPage&&leaderPage.result===r){if(after&&leaderShown!==r)after();return;}
+ // The Universe read is one shared RAM state (PrivateSubsetView: the last successful read survives navigation), so the current
+ // page result is used as is (never compared with the one it replaces). A new read or 'clear device results' (onRanks) resets leaderPage.
+ leaderPage={inputs,result:r};
+ // S04/S05/S13 score with exactly these quotes (replaced, never merged with an older set), so every screen prices the same rows.
+ const k=JSON.stringify(r.quotes);if(k!==qgv2QuotesKey){qgv2Quotes=r.quotes;qgv2QuotesKey=k;}qgv2QuotesBasis=r.price_basis||null;if(after)after();}
+async function refreshQgv2Quotes(after){if(DataRefresh.quiet())return;const before=qgv2QuotesKey;await refreshLeaderPage();if(qgv2QuotesKey!==before&&after)after();}// the same shared page result as S06
 // M3 ranks come from the open Universe read (RAM only) and are repainted into S06 when that read finishes or is cleared.
 // Ranks and totals are computed over ALL identities (the same population as S04), then only the filtered rows are shown.
 // A repaint keeps keyboard focus on the same control (preset, gate, view, profile, detail button) instead of dropping it.
-function focusKey(n){if(!n||!n.dataset)return null;for(const k of ['qgv2Preset','leaderboardView','leaderboardProfile','qgv2Gate'])if(Object.hasOwn(n.dataset,k))return '[data-'+k.replace(/[A-Z]/g,c=>'-'+c.toLowerCase())+(n.dataset[k]?'="'+CSS.escape(n.dataset[k])+'"':'')+']';
+function focusKey(n){if(!n||!n.dataset)return null;for(const k of ['qgv2Preset','leaderboardView','leaderboardProfile','qgv2Gate','leaderboardExploreOption'])if(Object.hasOwn(n.dataset,k))return '[data-'+k.replace(/[A-Z]/g,c=>'-'+c.toLowerCase())+(n.dataset[k]?'="'+CSS.escape(n.dataset[k])+'"':'')+']';
   return n.getAttribute('aria-controls')?'[aria-controls="'+CSS.escape(n.getAttribute('aria-controls'))+'"]':null;}
-function paintLeaderboardScreen(rows){leaderboardRows=rows;let profiles=[];try{profiles=DeviceProfiles.read(localStorage).strategies;}catch(_){profiles=[];}
- const host=$('#leaderboard-screen'),S=qgvScores(),shown=rankOrder(rows,S),active=host&&host.contains(document.activeElement)?focusKey(document.activeElement):null;
- LeaderboardScreen.mount(host,shown,{publicScreens,locale:appSettings.display_locale,profiles,deviceRanks:window.PrivateSubsetView?.ranks?.()||null,view:leaderboardView.view,profileId:leaderboardView.profileId,scores:S,onView:patch=>{if(Object.hasOwn(patch,'preset')||Object.hasOwn(patch,'gate')){qgv2Profile={...qgv2Profile,...patch};paintLeaderboardScreen(rows);return;}leaderboardView={...leaderboardView,...patch};saveLeaderView();if(leaderboardView.view==='device'){const d=$('#private-subset-root')?.closest('details');if(d)d.open=true;}paintLeaderboardScreen(rows);}});
+/* S06 rows (D12): the Universe rows of the official evaluation after the screen filters (search, group, interest, TARGET), and the
+   TARGET identities outside the Universe after the same filters, for their own labelled list. Filters only hide rows. */
+function leaderFiltered(){const pop=officialPopulation(),v=leaderboardView,f=list=>DeviceWatchlist.filter(list,prefs,{query:v.query,group:v.group,onlyInterest:v.interest,sort:v.sort});
+ return{rows:f(v.target?pop.rows.filter(r=>r.target):pop.rows),outside:f(pop.outside),pop};}
+let leaderPaint=0;
+function paintLeaderboardScreen(){const paint=++leaderPaint;leaderboardRows=true;let profiles=[];try{profiles=DeviceProfiles.read(localStorage).strategies;}catch(_){profiles=[];}
+ const host=$('#leaderboard-screen'),S=leaderScores(),F=leaderFiltered(),shown=rankOrder(F.rows,S),
+  // N10/N15/N20 on the OFFICIAL default profile (balanced, gate on), the same inputs and quotes as S, whatever the S06 preset.
+  model=F.pop.official&&typeof QgvScores.officialModel==='function'?QgvScores.officialModel({identities:F.pop.official.identities,v2Inputs:publicScreens[Qgv2Inputs.FILE],quotes:leaderQuotes,official:F.pop.official,computed:S}):null,active=host&&host.contains(document.activeElement)?focusKey(document.activeElement):null;
+ const mounted=LeaderboardScreen.mount(host,shown,{publicScreens,locale:appSettings.display_locale,nameOf:id=>EntitySearch.companyName(companyNames?.get(id)||null,appSettings.display_locale),profiles,deviceRanks:window.PrivateSubsetView?.ranks?.()||null,view:leaderboardView.view,profileId:leaderboardView.profileId,scores:S,explore:leaderboardView.explore,outside:F.outside,targetOnly:leaderboardView.target===true,model,priceBasis:leaderBasis,onView:patch=>{if(Object.hasOwn(patch,'preset')||Object.hasOwn(patch,'gate')){qgv2Profile={...qgv2Profile,...patch};paintLeaderboardScreen();return;}leaderboardView={...leaderboardView,...patch};saveLeaderView();if(leaderboardView.view==='device'){const d=$('#private-subset-root')?.closest('details');if(d)d.open=true;}paintLeaderboardScreen();}});
  if(active){const n=host&&host.querySelector(active);if(n)n.focus({preventScroll:true});}
- paintLeaderSummary(S,shown.length);
- void refreshQgv2Quotes(()=>{if(leaderboardRows===rows&&$('#leaderboard-screen'))paintLeaderboardScreen(rows);});}
+ paintLeaderSummary(S,mounted&&Number.isInteger(mounted.shown)?mounted.shown:shown.length,F.pop.rows.length);
+ void window.VCoverage?.paint($('#v-coverage-root'),{publicScreens,catalog:deviceCatalog,identities:identityCompanies,preset:qgv2Profile.preset,gate:qgv2Profile.gate,locale:appSettings.display_locale});// V 산출 현황 · 이 기기 (QgvScores.pageResult, RAM only)
+ void refreshLeaderPage(()=>{if(leaderPaint===paint&&$('#leaderboard-screen'))paintLeaderboardScreen();});}
+// The TARGET directory list under S06 (the separate TARGET 19 list, owner decision D12) keeps its own filters (search, group,
+// interest) and the official order; the S06 table above holds the Universe rows of the official evaluation.
 function paintDirectory(route){const prefix=route==='watchlist'?'watch':'leader';if(route==='leaderboard')syncLeaderView();
- const rows=route==='leaderboard'?rankOrder(directoryRows(prefix),qgvScores()):directoryRows(prefix),list=$('#'+(route==='watchlist'?'watchlist':'leader')+'-company-list');list.innerHTML=rows.map(row).join('')||'<li class="empty">'+t("일치하는 기업이 없습니다.")+'</li>';if(route==='leaderboard'){const companyIds=rows.map(r=>r.company_id);paintLeaderboardScreen(rows);$('#leader-m2-panel').innerHTML=m2Panel(undefined,companyIds);SecReported.mount($('#sec-reported-panel'),secReported,{companyIds,locale:appSettings.display_locale});PublicScreens.mount($('#public-qg'),publicScreens,{kind:'qg',companyIds,locale:appSettings.display_locale});}}
+ const rows=route==='leaderboard'?rankOrder(directoryRows(prefix),leaderScores()):directoryRows(prefix),list=$('#'+(route==='watchlist'?'watchlist':'leader')+'-company-list');list.innerHTML=rows.map(row).join('')||'<li class="empty">'+t("일치하는 기업이 없습니다.")+'</li>';if(route==='leaderboard'){const companyIds=rows.map(r=>r.company_id);paintLeaderboardScreen();$('#leader-m2-panel').innerHTML=m2Panel(undefined,companyIds);SecReported.mount($('#sec-reported-panel'),secReported,{companyIds,locale:appSettings.display_locale});PublicScreens.mount($('#public-qg'),publicScreens,{kind:'qg',companyIds,locale:appSettings.display_locale});}}
 
 function paintNews(id) {
   const c=company(id),scope=$("#news-scope").value,held=D.portfolio.data?.holdings?.map(h=>h.company_id) || [];
@@ -719,7 +767,7 @@ async function paintReport(id){
   try{await refreshQgv2Quotes();}catch(_){}
   const qg={},names={};try{Object.assign(qg,QgvScores.judgmentRows(qgvScores()));for(const c of identityCompanies)names[c.company_id]=c.ticker;}catch(_){}
   const reportDate=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul'}).format(new Date());
-  let model=null,canonical='',key=null,inboxText='',benchInputs=null;
+  let model=null,canonical='',key=null,inboxText='',benchInputs=null,mailboxAnswer=null;
   // ⑬ selection change: recompute the RAM-only benchmark view (pure) and repaint; the canonical template keeps 20D·KRW.
   const rebench=focus=>{if(!benchInputs||!window.ReportBenchmarks||!model)return;model={...model,bench:ReportBenchmarks.build({...benchInputs,...benchSelection})};paint();const n=focus&&host.querySelector(focus);if(n)n.focus();};
   const paint=()=>{
@@ -731,11 +779,20 @@ async function paintReport(id){
     const status=host.querySelector('[data-report-status]'),say=text=>{if(status)status.textContent=text;};
     for(const box of host.querySelectorAll('[data-hide-amounts],[data-hide-amounts-export]'))box.onchange=()=>{if(!box.checked&&!confirm('개인 금액이 화면/복사본에 표시됩니다.')){box.checked=true;return;}R.hiddenSetting(localStorage,box.checked);paint();};
     host.querySelector('[data-export-template]').onclick=async()=>{const text=R.renderTemplate(model,{hidden:R.hiddenSetting(localStorage),guide:host.querySelector('[data-include-guide]').checked});try{await navigator.clipboard.writeText(text);say('보고서 템플릿을 복사했습니다. AI 새 대화에 붙여넣으세요.');}catch(_){const area=document.createElement('textarea');area.readOnly=true;area.value=text;area.rows=8;area.setAttribute('data-export-fallback','');host.querySelector('[data-report-export]').append(area);area.select();say('클립보드를 쓸 수 없어 아래 칸에 표시했습니다. 직접 복사하세요.');}};
-    host.querySelector('[data-save-answer]').onclick=()=>{const text=host.querySelector('[data-ai-input]').value.trim();if(!text){say('붙여넣은 답변이 없습니다.');return;}if(!key){say('HASH_UNAVAILABLE');return;}if(R.saveAnswer(localStorage,key,{answer:text,saved_at:new Date().toISOString(),source:'PASTE',report_date:reportDate}))paint();else say('DEVICE_STORAGE_UNAVAILABLE');};
+    // '검토한 답변 보관' (enabled only by DailyReport.reviewInto) is the one save. A mailbox answer keeps its source, model and
+    // Outbox time only while the reviewed text is exactly the answer that was fetched for this data key; anything else is PASTE.
+    host.querySelector('[data-save-answer]').onclick=()=>{const text=host.querySelector('[data-ai-input]').value.trim();if(!text){say('붙여넣은 답변이 없습니다.');return;}if(!key){say('HASH_UNAVAILABLE');return;}
+      const fromMailbox=!!(mailboxAnswer&&mailboxAnswer.key===key&&mailboxAnswer.answer.trim()===text);
+      const entry=fromMailbox?{answer:text,saved_at:mailboxAnswer.saved_at,source:'MAILBOX',model:mailboxAnswer.model,report_date:reportDate}:{answer:text,saved_at:new Date().toISOString(),source:'PASTE',report_date:reportDate};
+      if(R.saveAnswer(localStorage,key,entry)){mailboxAnswer=null;paint();}else say('DEVICE_STORAGE_UNAVAILABLE');};
     const mailbox=async(action)=>{try{const session=GoogleSheetQuotes.sessionFor(window,window.InvestmentAppConfig.googleSheetsClientId),sheet=GoogleSheetSetup.source(window);
       if(!session.state().connected||!sheet){say('구글 로그인과 시트 연결이 필요합니다(설정 → Google 첫 설정).');return;}
       if(action==='post'){await R.postInbox(session,sheet,{report_date:reportDate,kind,template:inboxText,data_sha256:key,now:new Date().toISOString()});say('ReportInbox에 오늘 템플릿(금액 숨김)을 넣었습니다.');}
-      else{const found=await R.readOutbox(session,sheet,await R.hash(inboxText));if(!found){say('해시가 같은 답이 아직 없습니다.');return;}R.saveAnswer(localStorage,key,{answer:found.answer,saved_at:found.created_at||new Date().toISOString(),source:'MAILBOX',model:found.model,report_date:reportDate});paint();}
+      else{const found=await R.readOutbox(session,sheet,await R.hash(inboxText));if(!found){say('해시가 같은 답이 아직 없습니다.');return;}
+        // Same path as a pasted answer: into the answer box, reviewed, and stored only by '검토한 답변 보관'.
+        const card=live()&&host.querySelector('[data-report-export]'),input=card&&card.querySelector('[data-ai-input]');if(!input)return;
+        input.value=found.answer;mailboxAnswer={key,answer:found.answer,model:found.model,saved_at:found.created_at||new Date().toISOString()};
+        R.reviewInto(card,model);card.scrollIntoView({block:'start'});say('우체통 답을 가져와 검토했습니다. 아직 보관하지 않았습니다. 확인 뒤 \'검토한 답변 보관\'을 누르세요.');}
     }catch(e){say(String(e&&e.message||'MAILBOX_FAILED'));}};
     host.querySelector('[data-mailbox-post]').onclick=()=>void mailbox('post');
     host.querySelector('[data-mailbox-read]').onclick=()=>void mailbox('read');
@@ -758,13 +815,25 @@ async function paintReport(id){
     const view=C.build(entries,{indices:result.indices||{},sources:result.sources||{},basis:benchSelection.basis,types});
     const wide=!window.matchMedia||window.matchMedia('(min-width: 1024px)').matches,ids=view.sets.map(s=>s.id);
     if(!Array.isArray(run.picked)||run.picked.some(x=>!ids.includes(x))||run.picked.length<2)run.picked=ids.slice(0,Math.min(3,Math.max(2,ids.length)));
+    // 보고 불가 per set, on the report screen's own condition: the set's report model (same inputs as its tab) is UNAVAILABLE,
+    // i.e. its ledger has not started and it holds nothing. States, reason codes and missing inputs only; no number is filled.
+    const runnerOf=l=>({state:result.state==='READY'?(l.state==='OK'?'READY':'NOT_AVAILABLE'):result.state,reason_codes:result.state==='READY'?(l.state==='OK'?[]:l.reason_codes):result.reason_codes,sources:Runner.statusRows(result),progress:''});
+    const blocked=entries.map(e=>({e,m:R.buildModel({kind:'MOCK',tab:e.kind,reportDate,ledger:e.ledger,names,config:cfg,runner:runnerOf(e.ledger),hits:e.hits,mode})})).filter(x=>R.unavailability(x.m).state==='UNAVAILABLE');
     const draw=()=>{if(!live())return;const hidden=R.hiddenSetting(localStorage);
-      host.innerHTML=R.tabsNav(mockTabs(defs),'COMPARE')+C.html(view,{money:v=>R.money(v,{hidden}),picked:run.picked,wide,locale})
+      host.innerHTML=R.tabsNav(mockTabs(defs),'COMPARE')+blocked.map(x=>'<div data-compare-unavailable="'+esc(x.e.kind)+'">'+R.unavailableCard(x.m)+'</div>').join('')+C.html(view,{money:v=>R.money(v,{hidden}),picked:run.picked,wide,locale})
         +'<section class="card" data-compare-export><div class="sheet-actions"><button type="button" data-compare-copy>비교 템플릿 내보내기</button></div><p class="small">숫자 표와 한 줄 요약(【AI】) 칸만 담습니다. 금액은 숨김 설정을 따릅니다.</p><p role="status" data-compare-status></p></section>';
       for(const box of host.querySelectorAll('[data-compare-pick]'))box.onchange=()=>{const id=box.getAttribute('data-compare-pick'),next=box.checked?[...run.picked,id]:run.picked.filter(x=>x!==id);
         if(next.length>=2&&next.length<=3){run.picked=ids.filter(x=>next.includes(x));draw();}else box.checked=!box.checked;};
       host.querySelector('[data-compare-copy]').onclick=async()=>{const text=C.template(view,{money:v=>R.money(v,{hidden:R.hiddenSetting(localStorage),mode:'export'}),reportDate}),say=t=>{const n=host.querySelector('[data-compare-status]');if(n)n.textContent=t;};
-        try{await navigator.clipboard.writeText(text);say('비교 템플릿을 복사했습니다.');}catch(_){const area=document.createElement('textarea');area.readOnly=true;area.value=text;area.rows=8;host.querySelector('[data-compare-export]').append(area);area.select();say('클립보드를 쓸 수 없어 아래 칸에 표시했습니다.');}};};
+        try{await navigator.clipboard.writeText(text);say('비교 템플릿을 복사했습니다.');}catch(_){const area=document.createElement('textarea');area.readOnly=true;area.value=text;area.rows=8;host.querySelector('[data-compare-export]').append(area);area.select();say('클립보드를 쓸 수 없어 아래 칸에 표시했습니다.');}};
+      // Each 보고 불가 card names its set, keeps its own field id and copies its own set's prompt (DailyReport's document
+      // handler copies the prompt of the report screen painted last, so the click stops here).
+      for(const{e,m}of blocked){const box=host.querySelector('[data-compare-unavailable="'+e.kind+'"]');if(!box)continue;
+        const title=box.querySelector('h2'),area=box.querySelector('[data-unavailable-prompt]'),label=box.querySelector('label[for="unavailable-prompt"]'),fid='unavailable-prompt-'+e.kind.toLowerCase();
+        if(title)title.prepend(R.TABS[e.kind]+' · ');if(area)area.id=fid;if(label)label.htmlFor=fid;
+        for(const b of box.querySelectorAll('[data-unavailable-copy]'))b.onclick=async ev=>{ev.stopPropagation();const which=b.getAttribute('data-unavailable-copy'),scope=box.querySelector('[data-unavailable-scope]'),status=box.querySelector('[data-unavailable-status]');
+          const name=which==='all'?'전체':(R.AREAS.find(a=>a[0]===which)||[0,which])[1];area.value=R.unavailablePrompt(m,{area:which==='all'?null:which});if(scope)scope.textContent='· '+name;
+          try{await navigator.clipboard.writeText(area.value);if(status)status.textContent=name+' 프롬프트를 복사했습니다.';}catch(_){area.focus();area.select();if(status)status.textContent='클립보드를 쓸 수 없어 프롬프트를 선택했습니다. 직접 복사하세요.';}};}};
     draw();
   };
   // Model from a runner result or a placeholder state. Nothing is stored: prices and ledgers stay in this closure.
@@ -829,24 +898,29 @@ async function paintReport(id){
 function showUnavailable() {
   $("#content").innerHTML=heading("DATA UNAVAILABLE",t("데이터를 열 수 없습니다."))+"<p>"+t("연결 상태를 확인한 뒤 다시 시도하세요.")+'</p><button id="retry">'+t("다시 시도")+"</button>";
   $("#retry").onclick=()=>location.reload();
+  window.SearchUI?.setUnavailable();
 }
-function render() {
+function render(options) {
   // A render error (e.g. after a hashchange) shows the existing DATA UNAVAILABLE fallback instead of escaping
   // as an uncaught exception; the next navigation renders normally again.
-  try {renderRoute();}
+  try {renderRoute(options);}
   catch(e) {console.error(e);showUnavailable();}
 }
-function renderRoute() {
+function renderRoute(options) {
+  // {keep:true}: '자료 새로고침' or a freshness re-judgement draws the open screen again (data-refresh.js, G2). The user's scroll,
+  // focus, open details, fields and view buttons come back; a screen the user opens (hash change) starts at the top as before.
+  const kept=options&&options.keep&&location.hash===currentHash&&window.DataRefresh?.captureView?DataRefresh.captureView($("#content")):null;
   window.PrivateHistory?.disposeAll();window.PrivateSubsetView?.disposeAll();
   window.GoogleSheetSetup?.disposeAll();
   window.ForwardValidation?.disposeAll();disposeReport();
   notice("");syncShell();
   let [route,id,sub]=location.hash.slice(1).split("/");route=route || "home";
   let anchor=null;
-  for(const screen of ["validation","technical"]) if(route.startsWith(screen+"-")) {anchor=route;route=screen;}
+  for(const screen of ["validation","technical","macro","news"]) if(route.startsWith(screen+"-")) {anchor=route;route=screen;}
   try {id=decodeURIComponent(id || "");} catch(e) {id="";}
-  const routes={home,qgv,analysis:()=>analysis(id,sub||null),profiles,types,model,watchlist,technical,macro,thirteenf,validation,companies,portfolio,actual,leaderboard,news:()=>news(id),research,company:()=>detail(id),settings:settingsUI,entity:()=>entityDetail(id),report:()=>report(id),playbook:()=>heading("PLAYBOOK","플레이북 · 기록·채점·TARGET v1")+'<div id="playbook-screen"></div>'};
+  const routes={home,brief,qgv,analysis:()=>analysis(id,sub||null),profiles,types,model,watchlist,technical,macro,thirteenf,validation,companies,portfolio,actual,leaderboard,news:()=>news(id),research,company:()=>detail(id),settings:settingsUI,entity:()=>entityDetail(id),report:()=>report(id),system:()=>IaScreens.treeHtml("system",appSettings.display_locale),tree:()=>IaScreens.treeHtml(AppShell.TREE_KEYS.includes(id)?id:"qgv",appSettings.display_locale),"lab-13f":()=>AppShell.pendingHtml("lab-13f",appSettings.display_locale),playbook:()=>heading("PLAYBOOK","플레이북 · 기록·채점·TARGET v1")+'<div id="playbook-screen"></div>'};
   if(!routes[route]) route="home";
+  HomeScreen.park(route);
   if((route==='company'||route==='analysis')&&id) rawDataCompany=id;
   previousRoute=currentRoute;const previousHash=currentHash;currentRoute=route;currentHash=location.hash;
   // S04/S05 back link: remember the list it was opened from; keep it while moving between this company's screens.
@@ -859,40 +933,47 @@ function renderRoute() {
   const restoreLeader=route==='leaderboard' && ['company','analysis'].includes(previousRoute);
   if(route==='leaderboard' && id==='interest') leaderboardView={...leaderboardView,interest:true};
   $("#content").innerHTML=routes[route]();
-  if(route==='leaderboard') void PrivateSubsetView.mount($('#private-subset-root'),{locale:appSettings.display_locale,config:window.InvestmentAppConfig,interests:()=>[...prefs.interests],onRanks:()=>{qgv2Quotes={};qgv2QuotesKey='';if(leaderboardRows&&$('#leaderboard-screen'))paintLeaderboardScreen(leaderboardRows);}});
+  if(kept) DataRefresh.restoreFields($("#content"),kept);
+  if(route==='leaderboard') void PrivateSubsetView.mount($('#private-subset-root'),{locale:appSettings.display_locale,config:window.InvestmentAppConfig,interests:()=>[...prefs.interests],onRanks:()=>{qgv2Quotes={};qgv2QuotesKey='';qgv2QuotesBasis=null;leaderPage=null;const pt=$('#universe-price-time');if(pt)pt.innerHTML=window.PriceTime?PriceTime.sourceHtml(PrivateSubsetView.priceBasis?.()||null,{locale:appSettings.display_locale}):'';if(leaderboardRows&&$('#leaderboard-screen'))paintLeaderboardScreen(leaderboardRows);}});
   if(['playbook','portfolio','company'].includes(route)&&window.PlaybookScreen){const place=route==='playbook'?$('#playbook-screen'):document.createElement('div');if(route!=='playbook')$('#content').append(place);void PlaybookScreen.mount(place,{catalogPromise:deviceCatalog(),scoreOptions:playbookScoreOptions,screens:publicScreens,idByTicker:new Map(identityCompanies.map(r=>[r.ticker,r.company_id])),publicCatalog,interests:[...prefs.interests],universeCodesPromise:fetch('universe-codes.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(p=>p?.schema==='universe-codes/1'&&Array.isArray(p.codes)?p.codes:[]).catch(()=>[]),full:route==='playbook'}).catch(()=>{if(place.isConnected)place.textContent='플레이북 확인 불가 · 기기 기록을 읽을 수 없습니다.';});}
-  if(route==='home'&&window.PlaybookScreen){try{$('#content').insertAdjacentHTML('afterbegin',PlaybookScreen.todayHtml(localStorage));}catch(_){}}
+  if(route==='brief'&&window.PlaybookScreen){try{$('#content').insertAdjacentHTML('afterbegin',PlaybookScreen.todayHtml(localStorage));}catch(_){}}
   if(route==='actual') attachDeviceActual('#device-actual-root',true);
   if(route==='portfolio') {attachDeviceActual('#device-actual-summary',false);paintPortfolio();}
+  if(route==='company' && window.UniverseCompany && !company(id) && universeCode(id)) void UniverseCompany.mount($('#content'),{locale:appSettings.display_locale,screens:publicScreens,shares:universeDirectory,quotes:qgv2Quotes,names:companyNames,catalogPromise:deviceCatalog(),config:window.InvestmentAppConfig});
   if(route==='company' && $('#company-holding')) void CompanyScreen.mountHolding($('#company-holding'),{locale:appSettings.display_locale,ticker:company(id)?.identity_only?company(id).ticker:null,catalogPromise:deviceCatalog()});
   // Tab choice is mirrored into the hash ('#analysis/<id>/<tab>') with replaceState: no new history entry, back leaves S05.
   if(route==='analysis') CompanyScreen.wireTabs($('#content'),{onSelect:key=>{try{history.replaceState(history.state,'','#analysis/'+encodeURIComponent(id)+(key==='summary'?'':'/'+key));currentHash=location.hash;}catch(_){}}});
   if((route==='company'||route==='analysis')&&window.Qgv2Inputs&&publicScreens[Qgv2Inputs.FILE]) void refreshQgv2Quotes(()=>{const h=location.hash.slice(1).split('/');if(h[0]===route&&$('[data-company-card="qgv"],[data-analysis-panel="factors"]'))repaintScores(routes[route]);});
   if(route==='company'||route==='analysis') paintValue(route,id);
   if(route==='model') {attachDeviceActual('#model-actual-summary',false);paintModel();}
-  if(route==='home') deviceCatalog().then(c=>{const n=$('#home-target-version');if(n?.isConnected)n.textContent=c.target_root_version||'NOT_AVAILABLE';}).catch(()=>{const n=$('#home-target-version');if(n?.isConnected)n.textContent='NOT_AVAILABLE';});
+  if(route==='brief') deviceCatalog().then(c=>{const n=$('#home-target-version');if(n?.isConnected)n.textContent=c.target_root_version||'NOT_AVAILABLE';}).catch(()=>{const n=$('#home-target-version');if(n?.isConnected)n.textContent='NOT_AVAILABLE';});
   if(route==='technical') {const cards=TechnicalCards.mount($('#technical-indicators'),{locale:appSettings.display_locale});
-    PrivateHistory.mountTechnical($('#technical-price-chart'),{companyId:id,locale:appSettings.display_locale,config:window.InvestmentAppConfig,getAverage:deviceAverageCost,onData:value=>cards.update(value)});
+    const bench=window.ChartWorkbench&&$('#technical-workbench')?ChartWorkbench.mount($('#technical-workbench'),{locale:appSettings.display_locale}):null;
+    PrivateHistory.mountTechnical($('#technical-price-chart'),{companyId:id,locale:appSettings.display_locale,config:window.InvestmentAppConfig,getAverage:deviceAverageCost,onData:value=>{cards.update(value);if(bench)void bench.update(value);}});
     // Display-only TradingView chart: follows the symbol picker; nothing is read back from it.
     const tvSymbol=$('#technical-price-chart [data-technical-symbol]'),tvChart=()=>TradingViewWidgets.mountAdvanced($('#technical-tv-chart'),{companyId:tvSymbol?tvSymbol.value:id,locale:appSettings.display_locale});
     if(tvSymbol) tvSymbol.addEventListener('change',tvChart);tvChart();}
-  if(route==='home') TradingViewWidgets.mountTickerTape($('#tv-ticker-tape'),{locale:appSettings.display_locale});
+  if(route==='brief') TradingViewWidgets.mountTickerTape($('#tv-ticker-tape'),{locale:appSettings.display_locale});
   if(route==='company' && $('#tradingview-mini')) TradingViewWidgets.mountMini($('#tradingview-mini'),{companyId:id,locale:appSettings.display_locale});
-  if(route==='company' && $('#private-history-chart')) void PrivateHistory.mount($('#private-history-chart'),{companyId:id,locale:appSettings.display_locale,config:window.InvestmentAppConfig,getAverage:deviceAverageCost,onData:value=>paintValue(route,id,value&&typeof value.close==='number'?{price:value.close,currency:value.currency,as_of:value.asOf,source:'PRIVATE_HISTORY_CLOSE'}:null)});
+  if(route==='company' && $('#private-history-chart')) void PrivateHistory.mount($('#private-history-chart'),{companyId:id,locale:appSettings.display_locale,config:window.InvestmentAppConfig,getAverage:deviceAverageCost,onData:value=>paintValue(route,id,value&&typeof value.close==='number'?{price:value.close,currency:value.currency,as_of:value.asOf,read_at:value.readAt||null,source:'PRIVATE_HISTORY_CLOSE'}:null)});
   // Price store (user's Prices_M tab): the first open of a company stores its 5-year month-ends once (counts shown only).
   if(route==='company' && window.PriceStore) {const symbol=PrivateHistory.symbolFor(id)||PriceStore.universeSymbol(id);if(symbol){const host=document.createElement('div');host.id='company-price-store';const anchor=$('#private-history-chart');if(anchor)anchor.after(host);else $('#content').append(host);PriceStore.mountCompany(host,{symbol,locale:appSettings.display_locale});}}
   if(route==='company'||route==='leaderboard'||route==='analysis') SecReported.mount($('#sec-reported-panel'),secReported,{companyId:route==='leaderboard'?undefined:id,locale:appSettings.display_locale});
   if(route==='report') void paintReport(id);
-  if(route==='profiles') DeviceProfiles.mount($('#device-profile-editor'),{locale:appSettings.display_locale,qgFactors:()=>publicScreens['sec-qg-factors.json']});
-  if(route==='validation') ForwardValidation.mount($('#forward-validation-root'),{locale:appSettings.display_locale,config:window.InvestmentAppConfig});
+  if(route==='profiles') DeviceProfiles.mount($('#device-profile-editor'),{locale:appSettings.display_locale,qgFactors:()=>publicScreens['sec-qg-factors.json'],sessionQuotes:()=>qgv2Quotes,
+   // S13 compare reads the same public inputs object, catalog and identities as every other screen (QgvScores.pageResult memo).
+   v2Context:async()=>{let catalog=null;try{catalog=await deviceCatalog();}catch(_){catalog=null;}let inputs=window.Qgv2Inputs?publicScreens[Qgv2Inputs.FILE]||null:null;if(!inputs&&window.Qgv2Inputs){try{inputs=await Qgv2Inputs.load(window);}catch(_){inputs=null;}}return{inputs,identities:identityCompanies,catalog};}});
+  if(route==='validation') ForwardValidation.mount($('#forward-validation-root'),{locale:appSettings.display_locale,config:window.InvestmentAppConfig,hosts:{outcome:$('#forward-validation-outcome'),eligibility:$('#forward-validation-eligibility')}});
   if(route==='types') DeviceProfiles.mount($('#device-type-editor'),{locale:appSettings.display_locale,mode:'types'});
   if(route==='macro') MacroLights.mount($('#macro-lights-root'),{bundle:publicScreens,locale:appSettings.display_locale,config:window.InvestmentAppConfig});
-  for(const kind of ['qg','types','filings','macro','thirteenf']) PublicScreens.mount($('#public-'+kind),publicScreens,{kind,companyId:route==='company'?id:route==='settings'?rawDataCompanyId()||undefined:undefined,locale:appSettings.display_locale,...(kind==='thirteenf'?{catalog:publicCatalog,interests:[...prefs.interests]}:{})});
+  if(route==='macro'&&window.MacroCycleRing) MacroCycleRing.mount($('#macro-cycle-ring-root'),{bundle:publicScreens,locale:appSettings.display_locale});
+  if(route==='macro' && window.MacroEvidence) MacroEvidence.mount($('#macro-evidence-root'),{locale:appSettings.display_locale});
+  mountPublicPanels(route,id);
   syncNavigation(route);
-  const flowParent=QGV_CHILDREN.includes(route)?"qgv":route==="research"?"validation":route;
-  if(FLOW_STEPS[flowParent]) $("#content").insertAdjacentHTML("afterbegin",`<p class="flow-step" data-flow-step="${FLOW_STEPS[flowParent][0]}"><span class="flow-number">${FLOW_STEPS[flowParent][0]}</span> ${esc(t(FLOW_STEPS[flowParent][1]))}</p>`);
+  const menu=window.AppShell?.menuFor(route);
+  if(menu) $("#content").insertAdjacentHTML("afterbegin",`<p class="flow-step" data-flow-step="${esc(menu.num)}" data-menu="${esc(menu.key)}"><span class="flow-number">${esc(menu.num)}</span> ${esc(menu.label)}</p>`+AppShell.subNavHtml(route));
   if(QGV_CHILDREN.includes(route) || route==="research") {
-    const parent=route==="research"?"validation":"qgv",key=parent==="qgv"?"← QGV":"← 검증",sub=QGV_SUBCATEGORY[route];
+    const parent=route==="research"?"validation":"qgv",key=parent==="qgv"?"← QGV":"← Lab",sub=QGV_SUBCATEGORY[route];
     const origin=(route==='company'||route==='analysis') && companyOrigin && companyOrigin.id===id?companyOrigin:null,back=origin?LIST_ORIGIN[origin.hash.slice(1).split('/')[0]]:null;
     $("#content").insertAdjacentHTML("afterbegin",`<p class="parent-row"><a class="parent-link" href="#${parent}">${esc(t(key))}</a>${back?`<a class="parent-link" href="${esc(origin.hash)}" data-origin-link="${esc(origin.hash.slice(1))}">${esc(back[appSettings.display_locale==='en-US'?1:0])}</a>`:""}${sub?`<span class="sub-category" data-sub-category>${esc(t(sub))}</span>`:""}</p>`);
   }
@@ -922,29 +1003,33 @@ function renderRoute() {
     $("#source-language").onchange=e=>updateSettings({source_language:e.target.value});
   }
   if(route==="companies") {
-    listLimit=30;paintCompanies();
+    if(!kept) listLimit=30;paintCompanies();
     $("#search").oninput=$("#only-interest").onchange=$("#group-filter").onchange=$("#company-sort").onchange=()=>{listLimit=30;paintCompanies();};
     $("#more-companies").onclick=()=>{listLimit+=30;paintCompanies();};wireGroups();
   }
-  if(route==='watchlist'||route==='leaderboard'){const prefix=route==='watchlist'?'watch':'leader';if(route==='leaderboard'&&id==='interest')$('#leader-interest').checked=true;for(const key of ['interest','group','sort'])$('#'+prefix+'-'+key).onchange=()=>paintDirectory(route);if(route==='leaderboard')$('#leader-query').oninput=()=>paintDirectory(route);paintDirectory(route);if(route==='watchlist'){wireGroups();paintDisclosures($('#watch-disclosures'),prefs.interests,appSettings.display_locale==='en-US'?'No disclosures or news for your interest companies.':'관심 기업의 공시·뉴스가 없습니다.');paintDartDisclosures($('#watch-dart-disclosures'),prefs.interests,appSettings.display_locale==='en-US'?'No DART disclosures for your interest companies.':'관심 기업의 DART 공시가 없습니다.');}}
+  if(route==='watchlist'||route==='leaderboard'){const prefix=route==='watchlist'?'watch':'leader';if(route==='leaderboard'&&id==='interest')$('#leader-interest').checked=true;for(const key of ['interest','group','sort'])$('#'+prefix+'-'+key).onchange=()=>paintDirectory(route);if(route==='leaderboard'&&$('#leader-target'))$('#leader-target').onchange=()=>paintDirectory(route);if(route==='leaderboard')$('#leader-query').oninput=()=>paintDirectory(route);paintDirectory(route);if(route==='watchlist'){wireGroups();paintDisclosures($('#watch-disclosures'),prefs.interests,appSettings.display_locale==='en-US'?'No disclosures or news for your interest companies.':'관심 기업의 공시·뉴스가 없습니다.');paintDartDisclosures($('#watch-dart-disclosures'),prefs.interests,appSettings.display_locale==='en-US'?'No DART disclosures for your interest companies.':'관심 기업의 DART 공시가 없습니다.');}}
   if(route==="news") {
     for(const name of ["news","network"]) $("#show-"+name).onclick=()=>{
       $("#news-pane").hidden=name!=="news";$("#network-pane").hidden=name!=="network";$("#news-disclosures").hidden=name!=="news";$("#news-dart-disclosures").hidden=name!=="news";
       $("#show-news").setAttribute("aria-pressed",name==="news");$("#show-network").setAttribute("aria-pressed",name==="network");
       const f=$("#network-frame");if(name==="network" && f && !f.getAttribute("src")) f.src=f.dataset.src;
     };
-    $("#news-scope").onchange=()=>paintNews(id);paintNews(id);
+    $("#news-scope").onchange=()=>paintNews(id);paintNews(id);if(anchor==="news-network")$("#show-network").click();
     {const c=company(id);paintDisclosures($("#news-disclosures"),c?[c.company_id]:null);}
     {const c=company(id);paintDartDisclosures($("#news-dart-disclosures"),c?[c.company_id]:null);}
   }
   for(const f of document.querySelectorAll("iframe")) f.onload=()=>f.contentWindow.postMessage({type:"display_locale",locale:appSettings.display_locale},location.origin);
   if(restoreLeader) restoreLeaderView();
+  else if(kept) DataRefresh.restoreView($("#content"),kept);
   else window.scrollTo(0,0);
-  if(anchor) document.getElementById(anchor)?.scrollIntoView({block:"start"});
-  if(route==="qgv" && ["investments","companies","market","performance"].includes(id)) {
+  if(anchor && !kept) document.getElementById(anchor)?.scrollIntoView({block:"start"});
+  if(!kept && route==="qgv" && ["investments","companies","market","performance"].includes(id)) {
     const group=$("#qgv-"+id),title=group.querySelector("h2");
     group.scrollIntoView({block:"start"});title.focus({preventScroll:true});
   }
+  AppShell.afterRender(route);
+  if(route==="tree"||route==="system") IaScreens.mount($("#content"),{screens:publicScreens,catalog:publicCatalog,locale:appSettings.display_locale});
+  HomeScreen.afterRender(route,{locale:appSettings.display_locale,id,resolve:(type,key)=>searchIndex.resolve(type,key),interests:[...prefs.interests],company,screens:()=>publicScreens,scores:leaderScores,catalog:deviceCatalog});
 }
 function wireGroups() {
   $("#new-group").onsubmit = (e) => {
@@ -1135,24 +1220,10 @@ window.addEventListener("hashchange", () => D && render());
 window.addEventListener("hashchange", () => {if(!D)return;const a=document.activeElement;if(!a||a===document.body||!$('#content').contains(a))focusHeading();});
 // S06 scroll position is kept while S06 is the open screen (RAM + sessionStorage, debounced).
 // Crossing the phone width redraws the S06 table (narrow: rank, company, QGV + details button; wide: all shown columns).
-try{const mq=window.matchMedia(window.LeaderboardScreen?.NARROW||'(max-width: 749.98px)');if(mq.addEventListener)mq.addEventListener('change',()=>{if(currentRoute==='leaderboard'&&leaderboardRows&&$('#leaderboard-screen'))paintLeaderboardScreen(leaderboardRows);});}catch(_){}
+try{const mq=window.matchMedia(window.LeaderboardScreen?.NARROW||'(max-width: 749.98px)');if(mq.addEventListener)mq.addEventListener('change',()=>{if(currentRoute==='leaderboard'&&leaderboardRows&&$('#leaderboard-screen'))paintLeaderboardScreen();});}catch(_){}
 let leaderScrollTimer=0,leaderScrollFrame=0;
 window.addEventListener("scroll",()=>{if(currentRoute!=='leaderboard'||leaderRestoring||leaderScrollFrame)return;leaderScrollFrame=requestAnimationFrame(()=>{leaderScrollFrame=0;if(currentRoute!=='leaderboard'||leaderRestoring)return;
   leaderboardView={...leaderboardView,scrollY:Math.max(0,Math.round(window.scrollY)),...leaderAnchor()};clearTimeout(leaderScrollTimer);leaderScrollTimer=setTimeout(saveLeaderView,200);});},{passive:true});
-$("#global-search").oninput=paintGlobalSearch;
-$("#global-search").onkeydown=e=>{
-  const links=[...document.querySelectorAll("#global-results a")];
-  if(e.key==="ArrowDown" && links.length) {e.preventDefault();links[0].focus();}
-  if(e.key==="Escape") {$("#global-search").value="";paintGlobalSearch();}
-};
-$("#global-results").onkeydown=e=>{
-  const links=[...document.querySelectorAll("#global-results a")],i=links.indexOf(document.activeElement);
-  if(e.key==="ArrowDown" || e.key==="ArrowUp") {e.preventDefault();(links[i+(e.key==="ArrowDown"?1:-1)] || $("#global-search")).focus();}
-  if(e.key==="Escape") {$("#global-search").value="";paintGlobalSearch();$("#global-search").focus();}
-};
-document.addEventListener("click",e=>{
-  if(e.target.closest("#global-results a")) {$("#global-search").value="";paintGlobalSearch();}
-});
 try {const saved=AppLanguage.read(localStorage);appSettings=saved.value;settingsWritable=saved.writable;}
 catch(e) {settingsWritable=false;}
 syncShell();
@@ -1166,10 +1237,10 @@ function dartReferenceRows(){
 }
 Promise.all([...(["data.json","entities.json","sec-m2-candidates.json"].map(path=>fetch(path,{cache:"no-store"}).then(r=>{
   if(!r.ok) throw Error("HTTP "+r.status);return r.json();
-}).catch(error=>{if(path==="sec-m2-candidates.json")return null;throw error;}))),SecReported.load(window),PublicScreens.load(window).then(s=>typeof ClassificationScreens==="object"?ClassificationScreens.load(window).then(c=>{if(c)s[ClassificationScreens.FILE]=c;return s;}):s).then(s=>typeof Qgv2Inputs==="object"?Qgv2Inputs.load(window).then(v=>{if(v)s[Qgv2Inputs.FILE]=v;return s;}):s),deviceCatalog().catch(()=>null)]).then(([data,catalog,candidates,reported,screens,identities])=>{
-  try{if(identities){DeviceMarket.emptyMarket(identities);identityCompanies=DeviceWatchlist.identities(identities);}}catch(_){identityCompanies=[];}
+}).catch(error=>{if(path==="sec-m2-candidates.json")return null;throw error;}))),DataRefresh.load(window),deviceCatalog().catch(()=>null)]).then(([data,catalog,candidates,{reported,screens},identities])=>{
+  try{if(identities){DeviceMarket.emptyMarket(identities);identityCompanies=DeviceWatchlist.identities(identities);}}catch(_){identityCompanies=[];}QgvScores.setPageIdentities?.(identityCompanies);QgvScores.setPageProfile?.(()=>qgv2Profile);QgvScores.setPageReferences?.(()=>dartReferenceRows());// one quote set and the S06 official preset/gate for every screen (qgv-scores.js)
   publicScreens=screens;publicCatalog=identities||null;
-  if(window.DartDisclosures?.loadFinancials)void DartDisclosures.loadFinancials(window).then(financials=>{if(financials){publicScreens['dart-financials.json']=financials;if(window.QgvScores)refreshScoreViews();}});
+  if(window.DartDisclosures?.loadFinancials)void DataRefresh.financials(window).then(financials=>{if(financials){publicScreens['dart-financials.json']=financials;if(window.QgvScores)refreshScoreViews();}});
   // Macro lights v1: public lights only until the device loads SPY on the macro screen (RAM, read by MacroLights.current()).
   try{MacroLights.setPublic(publicScreens);}catch(_){}
   secReported=reported;
@@ -1183,14 +1254,27 @@ Promise.all([...(["data.json","entities.json","sec-m2-candidates.json"].map(path
   // App open: with the price store on and Google connected, append the core symbols' daily bars after the last stored date.
   try{if(window.PriceStore) PriceStore.autoSync(window,{coreSymbols:priceStoreCore});}catch(_){}
 }).catch(showUnavailable);
+// '자료 새로고침' (data-refresh.js; FRONTEND_DATA_CONTRACT D1, D2, D5, D6): DataRefresh reads one public publication set and hands
+// it over here at once. Device quotes, settings and private sessions stay. The open screen is repainted in place (no route
+// re-mount, and no device quote collection while DataRefresh.quiet()), so no Worker or Sheets request is made.
+function mountPublicPanels(route,id){for(const kind of ['qg','types','filings','macro','thirteenf']) PublicScreens.mount($('#public-'+kind),publicScreens,{kind,companyId:route==='company'?id:route==='settings'?rawDataCompanyId()||undefined:undefined,locale:appSettings.display_locale,...(kind==='thirteenf'?{catalog:publicCatalog,interests:[...prefs.interests]}:{})});}
+window.addEventListener('public-data-updated',()=>{void refreshQgv2Quotes(refreshScoreViews);});// new inputs + the kept Universe read: S04/S05 rescore from the new page result
+DataRefresh.attach(window,{route:()=>D?currentRoute:null,render,
+ apply(set){publicScreens=set.screens;secReported=set.reported;try{MacroLights.setPublic(publicScreens);}catch(_){}if(set.shares)universeDirectory=set.shares;if(searchIndex){rebuildSearchIndex();paintGlobalSearch();}},
+ inPlace(){if(!D)return false;const[route,raw]=location.hash.slice(1).split('/');let id='';try{id=decodeURIComponent(raw||'');}catch(_){id='';}
+  if(route==='leaderboard'&&$('#leaderboard-screen')){paintDirectory(route);return true;}
+  if((route==='company'||route==='analysis')&&id){refreshScoreViews();if(window.UniverseCompany&&universeCode(id))UniverseCompany.repaint($('#content'),{locale:appSettings.display_locale,screens:publicScreens,shares:universeDirectory,quotes:qgv2Quotes,names:companyNames,catalogPromise:deviceCatalog()});
+   else{if(route==='analysis'){const f=document.createElement('div');f.innerHTML=analysis(id,location.hash.slice(1).split('/')[2]||null);const live=$('#content [data-analysis-panel="financials"]'),next=f.querySelector('[data-analysis-panel="financials"]');if(live&&next)live.innerHTML=next.innerHTML;}if(window.StatRadar)void StatRadar.mount(document,{catalogPromise:deviceCatalog()});}SecReported.mount($('#sec-reported-panel'),secReported,{companyId:id,locale:appSettings.display_locale});mountPublicPanels(route,id);return true;}
+  if(route==='settings'&&$('#ops-status')){OpsStatus.mount($('#ops-status'),{secReported,secStatus:SecReported.status?.()||null,screens:publicScreens},{locale:appSettings.display_locale});mountRawData();return true;}
+  return false;}});
 
 async function exportDeviceBackup(){
-  try{const catalog=await deviceCatalog();DeviceBackup.download(window,await DeviceBackup.read(window,catalog));}
+  try{const catalog=await deviceCatalog();DeviceBackup.download(window,await DeviceBackup.read(window,catalog,{userObjects:!!$('#device-backup-user-objects')?.checked}));}
   catch(e){notice(e.message==='BACKUP_TOO_LARGE'?'백업 파일이 16MiB 상한을 초과합니다. 기록을 임의로 줄이지 않습니다.':'BACKUP_EXPORT_FAILED');}
 }
 async function restoreDeviceBackup(payload){
   const catalog=await deviceCatalog();DeviceBackup.parse(payload,catalog,DeviceMarket,AppLanguage);
-  if(!confirm(appSettings.display_locale==='en-US'?'Replace device interests, groups, portfolio, profiles, investor stars and language settings?':'기기 관심 기업·그룹·포트폴리오·프로필·투자자 ★·플레이북 기록·언어 설정을 백업으로 바꿀까요?'))return;
+  if(!confirm((appSettings.display_locale==='en-US'?'Replace device interests, groups, portfolio, profiles, investor stars and language settings?':'기기 관심 기업·그룹·포트폴리오·프로필·투자자 ★·플레이북 기록·언어 설정을 백업으로 바꿀까요?')+(payload.user_objects?(appSettings.display_locale==='en-US'?' User-written objects in the backup are merged in (nothing on this device is removed).':' 백업의 사용자 작성 객체는 이 기기 기록에 합칩니다(지우지 않음).'):'')))return;
   await DeviceBackup.restore(window,catalog,payload);load();const read=AppLanguage.read(localStorage);appSettings=read.value;settingsWritable=read.writable;render();
 }
 document.addEventListener('device-backup-restored',()=>{load();appSettings=AppLanguage.read(localStorage).value;render();});

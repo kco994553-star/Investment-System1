@@ -8,7 +8,7 @@ TARGET 미국 기업(현재 `markets/us.US_LISTINGS` 17개)의 8-K·8-K/A 현재
 - 회사마다 submissions `filings.recent`의 form·accessionNumber·filingDate·reportDate·acceptanceDateTime·items에서 최근 90일 8-K/8-K/A만 읽는다. 같은 accession이 같은 내용이면 하나로, 다르면 충돌로 버린다(PR #16 규칙 재사용).
 - 새 accession(또는 지난번 `NOT_COLLECTED`·`INDEX_UNAVAILABLE`)만 공시 목록 페이지를 하루 최대 150건 읽어 `EX-99.1` 행의 설명(없거나 꺾쇠 등이 있으면 유형 `EX-99.1`)을 제목, 문서 이름으로 sec.gov 원문 링크를 만든다. 보도자료 시각은 8-K `acceptanceDateTime`.
 - 직전 Pages 사본: 404 → 새로 시작, 형식 불일치 → 폐기(`PREVIOUS_DISCARDED`), 네트워크 실패 → 아무것도 쓰지 않고 exit 1. 수집 실패 회사는 직전 행과 취득 시각을 유지하고 48시간이 지나면 `STALE`. 전부 실패하고 직전 사본도 없으면 exit 1.
-- UI 전용 배포(cockpit-pages)는 `--preserve-only`로 직전 사본을 현재 시각 기준으로 다시 써서(창 밖 행 제거, 상태 재계산) 보존한다. PR 빌드는 SEC 자료 없는 `NOT_AVAILABLE` 사본을 낸다.
+- UI 전용 배포(cockpit-pages)는 `--preserve-only`로 검증한 직전 게시본을 바이트 그대로 다시 써서 보존한다(`as_of`·상태 그대로, 배포 시각으로 재계산하지 않음). 일일 실행은 이 옵션을 쓰지 않는다. PR 빌드는 SEC 자료 없는 `NOT_AVAILABLE` 사본을 낸다.
 - 로그는 고정 코드와 개수만: `SEC_8K_DISCLOSURES companies= collected= failed= … results= officers_directors= …`, `SEC_8K_FAILURE company_index= code=`. 기업명·제목·URL·비밀값은 출력하지 않는다.
 
 ## 공개 파일 형식 (schema_version 1)

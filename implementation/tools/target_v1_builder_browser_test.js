@@ -166,9 +166,17 @@ async function seed({date,n=45}){
   await page.evaluate(async()=>{const catalog=await(await fetch('actual-catalog.json')).json();await TargetV1Screen.mount(document.querySelector('[data-target-v1-builder]'),{playbook:PlaybookScreen,catalog,storage:localStorage,date:'2026-10-14'});});
   assert.match(await page.locator('[data-tv1-shortfall]').textContent(),/^통과 종목 부족 3종목 · 조건 완화·제외 종목 복귀 없음 · 확정 불가 · 사유: /);assert.equal(await page.locator('[data-tv1-card]').count(),12);assert.equal(await page.locator('[data-tv1-finalize]').isDisabled(),true);
   phase=width+' layout';const text=await page.locator('[data-target-v1-builder]').textContent();assert.ok(!/매수|매도|사세요|파세요|\bbuy\b|\bsell\b/i.test(text),'buy/sell wording');
-  await page.locator('[data-tv1-raw] summary').click();assert.match(await page.locator('[data-tv1-raw]').textContent(),/무효화 지표/);
+  assert.equal(await page.locator('[data-tv1-raw]').count(),0,'TARGET raw inputs live in Settings only');
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'horizontal overflow');
   await page.screenshot({path:(process.env.TV1_SHOT_DIR||'/tmp')+'/target-v1-builder-'+width+'.png',fullPage:true});
+  phase=width+' settings raw';const beforeRaw=await page.evaluate(()=>localStorage.getItem(PlaybookScreen.KEY));
+  await page.goto(BASE+'#settings');await page.locator('[data-raw-data]').waitFor();
+  assert.equal(await page.locator('[data-raw-data]').getAttribute('open'),null,'settings raw data collapsed by default');
+  assert.equal(await page.locator('[data-raw-data] [data-tv1-raw]').count(),1);
+  await page.locator('[data-raw-data] > summary').click();await page.locator('[data-tv1-raw] > summary').click();
+  assert.match(await page.locator('[data-tv1-raw]').textContent(),/무효화 지표/);
+  assert.equal(await page.evaluate(()=>localStorage.getItem(PlaybookScreen.KEY)),beforeRaw,'viewing raw data never changes TARGET records');
+  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'settings raw horizontal overflow');
   assert.deepEqual(errors,[]);assert.deepEqual(unexpected,[]);
   console.log('PASS TARGET v1 builder empty NA, cards agree/disagree(replace)/unknown, records, number-check gate, finalize, rebalance week, compare, review rule, TV1 sheet prices, risk-only rounds, finalize re-check (calc_version, row freshness, safety), draft regeneration and shortfall '+width);
   await context.close();}}

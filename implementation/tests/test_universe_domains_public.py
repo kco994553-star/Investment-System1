@@ -180,6 +180,7 @@ def test_build_publishes_domains_and_local_logo_bundle_and_the_guard_checks_it()
         assert guard.scan_artifact(site)['pages_artifact_guard'] == 'PASS'
         # Logo PNGs are local data images in company-logos.json, never runtime external images.
         images = sorted(p.name for p in site.iterdir() if p.suffix.lower() in {'.png', '.ico', '.svg', '.jpg', '.jpeg', '.webp', '.gif'})
+        # Only the app icons: no logo files and no background images (the monochrome home has none).
         assert images == ['icon-192.png', 'icon-512.png']
         payload = json.loads((site / FILENAME).read_text())
         payload['rows'][0][1:] = ['evil.example', 'sec']

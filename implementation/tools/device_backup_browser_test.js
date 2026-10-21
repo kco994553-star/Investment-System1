@@ -60,6 +60,29 @@ const {chromium}=require('playwright');
   await page.waitForFunction(()=>JSON.parse(localStorage.getItem('investment.web.v1.personal')||'{}').interests?.[0]==='legacy-interest',undefined,{timeout:8000});
   const ui=await page.evaluate(k=>localStorage.getItem(k),K)===JSON.stringify(['0000000033'])&&await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth);
   if(stars==='ok'&&ui){pass++;console.log('PASS investor stars backup schema 3 browser '+width);}else{fail++;console.log('FAIL investor stars backup schema 3 browser '+width+' '+stars+' ui='+ui);}
+  // opt-in user-objects section (/5): chart notes/scenarios + macro estimate history (synthetic anchors only), via the settings UI
+  const CK='investment.web.v1.chart-user-objects',MK='investment.web.v1.macro-cycle-user-estimate',NOW='2026-10-20T00:00:00.000Z';
+  const note={schema:'chart-annotation/1',id:'u-bk0001',kind:'LINE',symbol:'SYNTH',interval:'D',price_basis:'RAW_CLOSE',author:'USER',points:[{time:'2025-01-06',price:100},{time:'2025-02-03',price:110}],text:'synthetic',created_at:NOW,updated_at:NOW};
+  const hist={schema:'macro-cycle-user-estimate/2',rings:{economy:Array.from({length:60},(_,i)=>({seq:i+1,saved_at:'2026-10-20T'+String(Math.floor((i+1)/60)).padStart(2,'0')+':'+String((i+1)%60).padStart(2,'0')+':00Z',from:{phase:'회복',part:'초입'},to:{phase:'확장',part:'후반'},note:'synthetic '+(i+1),system:{state:'NOT_COMPUTED',text:'미산출',reason:'NO_MODEL_OUTPUT',layer:null,model_id:null,as_of:null}}))}};
+  const chartRaw=JSON.stringify({schema:'chart-user-objects/1',items:[note]}),macroRaw=JSON.stringify(hist);
+  await page.evaluate(([a,b,c,d])=>{localStorage.setItem(a,b);localStorage.setItem(c,d);},[CK,chartRaw,MK,macroRaw]);
+  await page.locator('#device-backup-export').waitFor();
+  const grab=async()=>{const dl=page.waitForEvent('download');await page.locator('#device-backup-export').click();return JSON.parse(require('node:fs').readFileSync(await (await dl).path(),'utf8'));};
+  const plain=await grab();await page.locator('#device-backup-user-objects').check();const withUser=await grab();
+  let userOk=plain.schema==='investment-device-backup/4'&&!('user_objects' in plain)&&withUser.schema==='investment-device-backup/5'&&withUser.user_objects.chart.items.length===1&&withUser.user_objects.macro.rings.economy.length===60;
+  await page.evaluate(([a,c])=>{localStorage.removeItem(a);localStorage.removeItem(c);},[CK,MK]);
+  await page.locator('#device-backup-import').waitFor();await file(withUser,'v5.json');
+  await page.waitForFunction(k=>JSON.parse(localStorage.getItem(k)||'null')?.rings?.economy?.length===60,MK,{timeout:8000});
+  userOk=userOk&&await page.evaluate(k=>JSON.parse(localStorage.getItem(k)).items.length,CK)===1&&JSON.stringify(JSON.parse(await page.evaluate(k=>localStorage.getItem(k),MK)))===JSON.stringify(hist);
+  const merged=await page.evaluate(async([v5,CK,MK])=>{const catalog=await (await fetch('actual-catalog.json')).json();await DeviceBackup.restore(window,catalog,v5);
+   return [JSON.parse(localStorage.getItem(CK)).items.length,JSON.parse(localStorage.getItem(MK)).rings.economy.length];},[withUser,CK,MK]);
+  userOk=userOk&&merged[0]===1&&merged[1]===60;
+  const refused=await page.evaluate(async([v5,v4,CK,MK])=>{const catalog=await (await fetch('actual-catalog.json')).json(),c=localStorage.getItem(CK),m=localStorage.getItem(MK),out=[];
+   for(const bad of [{...v5,user_objects:{...v5.user_objects,chart:{...v5.user_objects.chart,items:[{...v5.user_objects.chart.items[0],close:101}]}}},{...v5,user_objects:{...v5.user_objects,macro:{...v5.user_objects.macro,series:[1]}}},{...v5,user_objects:{...v5.user_objects,quotes:[]}}]){
+    try{await DeviceBackup.restore(window,catalog,bad);out.push(false);}catch(_){out.push(localStorage.getItem(CK)===c&&localStorage.getItem(MK)===m);}}
+   await DeviceBackup.restore(window,catalog,v4);out.push(localStorage.getItem(CK)===c&&localStorage.getItem(MK)===m);return out;},[withUser,plain,CK,MK]);
+  userOk=userOk&&refused.length===4&&refused.every(Boolean)&&await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth);
+  if(userOk){pass++;console.log('PASS user objects backup schema 5 browser '+width);}else{fail++;console.log('FAIL user objects backup schema 5 browser '+width+' '+JSON.stringify(refused)+' '+JSON.stringify(merged));}
   await context.close();
  }}catch(_){fail++;console.log('FAIL backup browser fixed diagnostic');}finally{await browser.close();}
  console.log('COUNTS pass='+pass+' fail='+fail);if(fail)process.exitCode=1;

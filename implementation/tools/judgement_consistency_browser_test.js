@@ -89,7 +89,7 @@ async function open(browser, { now, width }) {
   page.setDefaultTimeout(15000);
   page.on('pageerror', (e) => { traffic.errors++; console.log('pageerror ' + String(e.message).slice(0, 200)); });
   await page.clock.install({ time: new Date(now) });
-  await page.goto(BASE + '#home');
+  await page.goto(BASE + '#brief');
   await page.locator('[data-report-link="mock"]').waitFor();
   return { context, page, traffic };
 }

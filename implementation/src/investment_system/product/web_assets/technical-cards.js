@@ -9,7 +9,7 @@
   {id:'momentum',ko:'모멘텀',en:'Momentum',items:[['RSI_14','RSI 14'],['MACD_12_26','MACD 12·26'],['MACD_SIGNAL_9','Signal 9'],['MACD_HISTOGRAM_12_26_9','Histogram']]},
   {id:'volume',ko:'거래량',en:'Volume',items:[],reasonKo:'승인된 거래량 지표 정의 없음',reasonEn:'No approved volume indicator definition'},
   {id:'relative',ko:'상대강도',en:'Relative strength',items:[],reasonKo:'승인된 상대강도 정의 없음',reasonEn:'No approved relative-strength definition'},
-  {id:'structure',ko:'구조 · 지지·저항',en:'Structure · support/resistance',items:[],reasonKo:'승인된 지지·저항 정의 없음',reasonEn:'No approved support/resistance definition'},
+  {id:'structure',ko:'구조 · 지지·저항',en:'Structure · support/resistance',items:[],reasonKo:'지표 값 아님 · 패턴 카드(연구 기본값 · 투자 유용성 미검증)는 차트 아래 패턴 절에 있음',reasonEn:'Not an indicator value · pattern cards (research default · investment usefulness unverified) are in the patterns section under the chart'},
   {id:'volatility',ko:'변동성',en:'Volatility',items:[['ATR_14','ATR 14'],['BOLL_UPPER_20_2','Bollinger upper 20·2σ'],['BOLL_MIDDLE_20','Bollinger middle 20'],['BOLL_LOWER_20_2','Bollinger lower 20·2σ']]}
  ]);
  function format(value,locale){return Number(value).toLocaleString(locale==='en-US'?'en-US':'ko-KR',{minimumFractionDigits:2,maximumFractionDigits:2});}

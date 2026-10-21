@@ -564,7 +564,8 @@ def as_version_1(folder, to):
 
 def test_schema_transition_new_files_are_version_2_and_version_1_live_copies_are_read(history, tmp_path, capsys):
     """Producers write schema_version 2. A version-1 live copy (no withdrawal rows) is read by the daily run, the
-    preserve-only path and the guard; the withdrawal is only valid in a version-2 file."""
+    preserve-only path (which re-publishes it unchanged until the next daily collection) and the guard; the withdrawal
+    is only valid in a version-2 file."""
     x, claim = history['x'], history['claim']
     assert all(payload(history['day2'], n)['schema_version'] == 2 for n in UNIVERSE)
     old_live = as_version_1(history['day1'], tmp_path / 'v1-live')
@@ -578,8 +579,8 @@ def test_schema_transition_new_files_are_version_2_and_version_1_live_copies_are
     manual = tmp_path / 'manual'
     manual.mkdir()
     assert SHARD.run(manual, live=False, preserve_only=True, now=lambda: day(2), open_previous=site) == 0
-    for n in UNIVERSE:
-        assert payload(manual, n)['schema_version'] == 2 and rows(manual, n) == rows(old_live, n) or n == qgv2.FILENAME
+    for n in UNIVERSE:   # the manual (UI-only) build re-publishes the live bytes: a version-1 copy stays version 1
+        assert (manual / n).read_bytes() == site.files[n] and payload(manual, n)['schema_version'] == 1
     code, _ = guard(manual, site, capsys)
     assert code == 0
     for n in UNIVERSE:                                                   # a withdrawal in a version-1 file is refused

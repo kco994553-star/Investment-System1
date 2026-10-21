@@ -128,7 +128,8 @@ async function main() {
     .evaluateAll((l) => Object.fromEntries(l.map((e) => [e.dataset.meta, e.textContent])));
   const metaLine = (L, entries) => Object.fromEntries(Object.entries(entries).map(([k, v]) => [k, `${L.meta[k]}: ${v}`]));
   const unitOf = (locator) => locator.locator("xpath=ancestor::*[contains(concat(' ',normalize-space(@class),' '),' card ') or @id='news-pane' or @id='network-pane'][1]");
-  const routes = ["home", "companies", "portfolio", "leaderboard", "news", "research", "settings",
+  // Home is the search start (2026-10-17 redesign); the dashboard cards checked below live on #brief.
+  const routes = ["home", "brief", "companies", "portfolio", "leaderboard", "news", "research", "settings",
     "company/" + encodeURIComponent(company), "entity/" + encodeURIComponent("MACRO:CPIAUCSL"),
     "qgv", "watchlist", "technical", "macro", "validation"];
 
@@ -136,7 +137,7 @@ async function main() {
     browser = await chromium.launch(launch);
     await check("public data.json is all NOT_AVAILABLE and stays unchanged by in-memory presentation", async () => {
       const probe = await openPage("ko-KR");
-      await probe.go("home");
+      await probe.go("brief");
       const before = await probe.evaluate(() => fetch("data.json", { cache: "no-store" }).then((r) => r.text()));
       assert.ok(Object.keys(manifest.persisted).every((name) => JSON.parse(before)[name].state === "NOT_AVAILABLE"));
       await probe.apply(bundle);
@@ -196,7 +197,7 @@ async function main() {
       });
 
       await check(`${locale}: U1 LIVE, FRESH and STALE are separate labelled badges; STALE has its own style rule`, async () => {
-        await page.view("home", bundle);
+        await page.view("brief", bundle);
         // The state line of each section: LIVE is followed by its own freshness badge (other LIVE chips are navigation summaries).
         const stateBadges = page.locator(".state > .badge.LIVE");
         assert.equal(await stateBadges.count(), 3, "macro, changes and technical state lines");
@@ -227,7 +228,7 @@ async function main() {
 
       await check(`${locale}: U1 the existing view-time rule decides FRESH vs STALE before/after expires_at; nothing else is derived`, async () => {
         const before = await openPage(locale, { clock: "2026-01-02T12:00:00Z" });
-        await before.view("home", bundle);
+        await before.view("brief", bundle);
         const changes = unitOf(before.locator(".badge.freshness").first());
         // Before changes.expires_at both changes and macro are FRESH; technical stays STALE (persisted).
         assert.deepEqual(await texts(before.locator(".badge.freshness.FRESH")), [L.FRESH, L.FRESH]);
@@ -242,7 +243,7 @@ async function main() {
         // (b) a valid future expires_at stays FRESH and (c) a valid past one is STALE (both clocks).
         for (const [clock, changes] of [[manifest.browser_clock, L.STALE], [BEFORE, L.FRESH]]) {
           const p = await openPage(locale, { clock });
-          await p.view("home", bundle);
+          await p.view("brief", bundle);
           assert.deepEqual(await texts(card(p, "TEST_CHANGES_VIEW_STALE").locator(".badge.freshness")), [changes], `changes at ${clock}`);
           assert.deepEqual(await texts(card(p, "TEST_REGIME_FRESH").locator(".badge.freshness")), [L.FRESH], `macro at ${clock}`);
           await p.context().close();
@@ -256,7 +257,7 @@ async function main() {
           assert.equal(served.producer_manifest.sections.changes.freshness, "FRESH");
           for (const clock of [manifest.browser_clock, BEFORE]) {
             const p = await openPage(locale, { clock });
-            await p.view("home", served);
+            await p.view("brief", served);
             assert.equal(await p.evaluate((v) => Number.isNaN(Date.parse(v)), form), true, `precondition: Date.parse rejects ${form}`);
             const changes = card(p, "TEST_CHANGES_VIEW_STALE");
             assert.equal(await changes.count(), 1);
@@ -271,7 +272,7 @@ async function main() {
       // One page per time zone; each case swaps the in-memory bundle and the fixed clock, then re-renders home.
       async function zonePage(timezoneId) {
         const p = await openPage(locale, { clock: null, timezoneId });
-        await p.go("home");
+        await p.go("brief");
         p.serve = async (data, clock) => {
           await p.clock.setFixedTime(new Date(clock));
           await p.apply(data);
@@ -340,7 +341,7 @@ async function main() {
         // The directory above the provided block lists price-free identities; the withheld block itself offers no ranking rows.
         assert.equal(await page.locator('main section.card:has([data-producer-meta="leaderboard"]) a[href^="#company/"]').count(), 0, "no withheld ranking rows");
         const variantPage = await openPage(locale);
-        await variantPage.view("home", variant("variant-not-usable.json"));
+        await variantPage.view("brief", variant("variant-not-usable.json"));
         const notes = variantPage.locator("[data-withheld]");
         assert.deepEqual((await notes.evaluateAll((l) => l.map((e) => e.dataset.withheld))).sort(), ["changes", "news"]);
         for (const note of await notes.all()) {
@@ -371,7 +372,7 @@ async function main() {
         await page.view("leaderboard", bundle);
         assert.deepEqual(await metaOf(page, "leaderboard"), metaLine(L, { reason_code: "EXPIRED_NOT_USABLE", as_of: "2025-12-30T00:00:00+00:00",
           methodology: "TEST_VECTOR / TEST_VECTOR_V1", freshness: "NOT_USABLE", counts: "expected_count=1, ranked_count=1" }));
-        await page.view("home", bundle);
+        await page.view("brief", bundle);
         const names = await page.locator("[data-producer-meta]").evaluateAll((l) => l.map((e) => e.dataset.producerMeta).sort());
         assert.deepEqual(names, ["news", "portfolio", "qgv", "relationships"], "only NOT_AVAILABLE sections; LIVE/FROZEN carry none");
         // Absent fields add nothing: the default registry persists no as_of and no counts for portfolio.
@@ -385,13 +386,13 @@ async function main() {
 
       await check(`${locale}: U2 sparse bundle shows only what is persisted (no fabricated metadata)`, async () => {
         const sparse = await openPage(locale);
-        for (const hash of ["home", "leaderboard", "company/" + company]) {
+        for (const hash of ["brief", "leaderboard", "company/" + company]) {
           await sparse.view(hash, variant("variant-sparse-metadata.json"));
           const names = await sparse.locator("[data-producer-meta]").evaluateAll((l) => l.map((e) => e.dataset.producerMeta));
           assert.deepEqual(names, hash === "leaderboard" ? [] : ["portfolio"], hash);
           assert.equal(await sparse.locator(".badge.freshness.NOT_USABLE").count(), 0, `${hash}: no persisted NOT_USABLE`);
         }
-        await sparse.view("home", variant("variant-sparse-metadata.json"));
+        await sparse.view("brief", variant("variant-sparse-metadata.json"));
         assert.deepEqual(await metaOf(sparse, "portfolio"), metaLine(L, { reason_code: "ONLY_REASON_CODE_PERSISTED" }));
         await sparse.context().close();
       });
@@ -408,7 +409,7 @@ async function main() {
         await p.view("company/" + company, served);
         assert.deepEqual(await metaOf(p, "qgv"), metaLine(L, { as_of: manifest.as_of, freshness: "NOT_APPLICABLE",
           counts: "COMPLETE=3, NONE=1, PARTIAL=1" }));
-        await p.view("home", served);
+        await p.view("brief", served);
         assert.deepEqual(await metaOf(p, "portfolio"), metaLine(L, { methodology: "NONE / NONE", freshness: "NOT_APPLICABLE" }));
         // 64-character code and token (the shape limits) are still displayed as persisted.
         assert.deepEqual(await metaOf(p, "relationships"), metaLine(L, {
@@ -467,7 +468,7 @@ async function main() {
       await check(`${locale}: U3 demo holdings count, news/network labels and interest toggle label are localized`, async () => {
         const demo = await openPage(locale);
         const supplied = withPortfolio({ company_id: company, ticker: "NVDA", target_weight: 0.3456, actual_weight: 0.1234, return: null });
-        await demo.view("home", supplied);
+        await demo.view("brief", supplied);
         assert.match((await demo.locator("main .metric").innerText()).trim(), new RegExp(`^\\d+ ${L.holdings}$`));
         // Track D's relationship page is not in the public build: the network pane is a NOT_AVAILABLE notice, never a frame.
         await demo.view("news", supplied);
@@ -486,14 +487,14 @@ async function main() {
 
       await check(`${locale}: U4 a render error after hashchange shows the DATA UNAVAILABLE fallback, then recovers`, async () => {
         const broken = await openPage(locale);
-        await broken.view("home", variant("variant-render-error.json"));
+        await broken.view("brief", variant("variant-render-error.json"));
         assert.equal((await broken.locator("main h1").innerText()).trim(), L.home);
         const before = errors.length;
         await broken.evaluate(() => { location.hash = "#news"; });
         await broken.waitForFunction((t) => document.querySelector("main h1")?.textContent === t, L.unavailable);
         assert.equal((await broken.locator("main .eyebrow").innerText()).trim(), "DATA UNAVAILABLE");
         assert.equal((await broken.locator("#retry").innerText()).trim(), L.retry);
-        await broken.evaluate(() => { location.hash = "#home"; });
+        await broken.evaluate(() => { location.hash = "#brief"; });
         await broken.waitForFunction((t) => document.querySelector("main h1")?.textContent === t, L.home);
         assert.equal(errors.length, before, "no uncaught exception");
         await broken.context().close();
@@ -509,7 +510,7 @@ async function main() {
           await sized.context().close();
         }
       });
-      for (const hash of ["home", "leaderboard", "company/" + company]) {
+      for (const hash of ["brief", "leaderboard", "company/" + company]) {
         await page.view(hash, bundle);
         await page.screenshot({ path: path.join(evidence, `state-${hash.replace(/\W+/g, "-")}-${locale}-390.png`), fullPage: true });
       }

@@ -292,3 +292,286 @@ test('identity-conflict withdrawal: no score or candidate via the TARGET row, sa
   // The device V population and the hanmi reference pool exclude the stopped rows.
   assert.ok(['TARGET:googl', 'NASDAQ:GOOGL', 'NASDAQ:GOOG'].every((k) => inputs.records[k].in_cross_section === false));
 });
+
+/* FE-MISSING-2 (owner instruction 2026-10-17): the reader now keeps the published Q/G axis coverage and the row's acquired_at /
+   fiscal_year_end / profile for the screens. Scores, totals, ranks, flags and reasons must be byte-identical to the same inputs
+   without those fields (the shape before this change), for every preset and gate, with and without device prices. */
+test('published coverage fields are display only: scores, totals and ranks are byte-identical without them', () => {
+  const SecQgv2 = require(path.join(W, 'sec-qgv2.js'));
+  for (const payload of [F.strictPayload(), F.missingPayload()]) {
+    const full = SQ.fromInputs(SecQgv2.toInputs(payload, { now: '2026-10-14T00:00:00Z' }));
+    const before = { ...full, records: Object.fromEntries(Object.entries(full.records).map(([k, r]) => { const { acquired_at, fiscal_year_end, published_profile, ...rest } = r;
+      return [k, { ...rest, qg_axes: { Q: { score: r.qg_axes.Q.score }, G: { score: r.qg_axes.G.score } } }]; })) };
+    assert.ok(Object.values(full.records).some((r) => typeof r.qg_axes.Q.factors_available === 'string' && r.acquired_at), 'the new fields are present');
+    const ids = Object.keys(full.records).filter((k) => !k.startsWith('TARGET:')).map((c) => ({ company_id: c.toLowerCase(), ticker: c.slice(c.indexOf(':') + 1) }))
+      .concat(['amd', 'msft', 'nvda'].map((id) => ({ company_id: 't_' + id, ticker: id.toUpperCase() })));
+    const priced = {};let i = 0;for (const [c, r] of Object.entries(full.records)) if (r.state === 'LIVE' && i++ % 3) priced[c] = { price: 10 + (i * 7) % 90, currency: 'USD' };
+    const pick = (S) => JSON.stringify(Object.entries(S.rows).map(([id, r]) => { const p = r.primary;
+      return [id, r.rank, r.code, p.q, p.g, p.v, p.total, p.total_reason, p.flags, p.factors_available, p.partial, p.state, p.axes, p.factors, p.weights, p.detail, p.value_trap_gate]; }));
+    for (const quotes of [{}, priced]) for (const preset of Object.keys(globalThis.QgvV2.PRESETS)) for (const gate of [true, false]) {
+      const a = pick(QS.compute({ identities: ids, v2Inputs: before, quotes, preset, gate })), b = pick(QS.compute({ identities: ids, v2Inputs: full, quotes, preset, gate }));
+      assert.equal(b, a, preset + ' gate ' + gate + ' quotes ' + Object.keys(quotes).length);
+    }
+  }
+});
+
+test('coverage: partial / below-50% axis, FINANCIAL not-applicable, STALE source, exploration groups; NA never 0', () => {
+  const SecQgv2 = require(path.join(W, 'sec-qgv2.js')), inputs = SQ.fromInputs(SecQgv2.toInputs(F.missingPayload(), { now: '2026-10-17T00:00:00Z' }));
+  const ids = [['amd', 'AMD'], ['msft', 'MSFT'], ['nvda', 'NVDA'], ['googl', 'GOOGL'], ['gev', 'GEV']].map(([company_id, ticker]) => ({ company_id, ticker }));
+  const quotes = { 'TARGET:amd': { price: 40, currency: 'USD' }, 'TARGET:nvda': { price: 50, currency: 'USD' } };
+  for (const [c, r] of Object.entries(inputs.records)) if (!c.startsWith('TARGET:') && r.state === 'LIVE' && c !== 'NASDAQ:MSFT') quotes[c] = { price: 20 + c.length, currency: 'USD' };
+  const S = QS.compute({ identities: ids, v2Inputs: inputs, quotes }), cov = (id) => S.rows[id].primary.coverage;
+  // AMD: Q 2/5 = 45% of the original weight -> not calculated (published AXIS_COVERAGE_BELOW_50), G 4/5 = 85% partial, renormalized.
+  const amd = cov('amd');assert.equal(amd.axes.Q.status, 'NOT_AVAILABLE');assert.equal(amd.axes.Q.reason, 'AXIS_COVERAGE_BELOW_50');
+  assert.equal(amd.axes.Q.factors_available, 2);assert.ok(Math.abs(amd.axes.Q.weight_available - 0.45) < 1e-12);assert.deepEqual(amd.axes.Q.published.reason_codes, ['AXIS_COVERAGE_BELOW_50']);
+  assert.equal(amd.axes.G.status, 'PARTIAL');assert.ok(Math.abs(amd.axes.G.weight_available - 0.85) < 1e-12);
+  const shares = Object.fromEntries(amd.axes.G.factors.map((f) => [f.id, f.share]));assert.equal(shares.g_recent_acceleration, null);
+  assert.ok(Math.abs(shares.g_revenue_growth - 100 * 25 / 85) < 1e-12);assert.ok(Math.abs(Object.values(shares).filter((x) => x !== null).reduce((a, b) => a + b, 0) - 100) < 1e-9);
+  // The renormalized shares reproduce the published axis score (the engine's Σ(w·s)/Σ(w available)).
+  assert.ok(Math.abs(amd.axes.G.factors.filter((f) => f.score !== null).reduce((a, f) => a + f.share * f.score / 100, 0) - S.rows.amd.primary.g) < 1e-9);
+  assert.equal(amd.axes.G.factors.find((f) => f.id === 'g_recent_acceleration').reason, 'SEC_ITEMS_MISSING');
+  assert.ok(amd.states.includes('PARTIAL'));assert.match(QS.naText({ ...S.rows.amd.primary, total: null, total_reason: 'AXIS_WEIGHT_INSUFFICIENT' }, false), /Q 축 비중 50% 미만/);
+  // GOOGL (FINANCIAL profile row): earnings quality and V are 해당 없음, not missing data; Q is complete at 80% (4/5, 1 not applicable).
+  const go = cov('googl');assert.equal(go.source.profile, 'FINANCIAL');assert.equal(go.axes.Q.status, 'READY');assert.equal(go.axes.Q.not_applicable, 1);
+  assert.equal(go.axes.Q.factors.find((f) => f.id === 'q_earnings_quality').category, 'NOT_APPLICABLE');assert.equal(go.axes.V.status, 'NOT_APPLICABLE');
+  assert.ok(go.states.includes('NOT_APPLICABLE') && !go.states.includes('PARTIAL') && !go.states.includes('PRICE_NEEDED'));
+  // MSFT TARGET: STALE source with its basis dates; NVDA: LIVE, no price -> nothing; GEV: no data.
+  assert.deepEqual([cov('msft').source.state, cov('msft').source.acquired_at, cov('msft').source.fiscal_year_end], ['STALE', '2026-09-20T00:00:00Z', '2025-12-31']);assert.ok(cov('msft').states.includes('STALE'));
+  assert.deepEqual(cov('gev').states, ['SOURCE_MISSING']);
+  // Exploration groups: ranked rows have a rank; Q·G-only rows (value preset, FINANCIAL: Q+G < 50%) never get one.
+  const value = QS.compute({ identities: ids, v2Inputs: inputs, quotes, preset: 'value' });
+  assert.equal(QS.exploreGroup(value.rows.googl), 'PARTIAL_AXES');assert.equal(value.rows.googl.rank, null);assert.equal(QS.exploreGroup(value.rows.gev), 'CHECK_DATA');
+  assert.equal(QS.exploreGroup(S.rows.nvda), 'RANKED');
+  // Price needed: no device price -> V says so instead of '50% 미만', and the price-free V inputs are checked separately.
+  const bare = QS.compute({ identities: ids, v2Inputs: inputs, quotes: {}, preset: 'value' });assert.ok(bare.rows.nvda.primary.coverage.states.includes('PRICE_NEEDED'));
+  assert.match(QS.naText(bare.rows.nvda.primary, false), /V 가격 입력 필요/);assert.deepEqual(bare.rows.nvda.primary.coverage.v_inputs_missing, []);
+  // Rendered S04/S05 coverage: no NA factor shows a 0 score.
+  for (const id of ['amd', 'googl', 'gev', 'msft']) {
+    const html = CS.coverageHtml({ S, row: S.rows[id] }, 'ko-KR', { compact: true });assert.ok(html.includes('data-qgv-coverage'));
+    for (const li of html.split('<li data-factor-coverage=').slice(1)) if (/data-factor-state="(?!OK)/.test(li)) assert.ok(!/점수 0/.test(li), id);
+  }
+});
+
+// PERSONAL_PREVIEW two-level weights (owner directive 2026-10-18 §4.2): own memo and output key, never `primary`.
+test('personal weights: separate output key, official rows byte-identical, coverage from the effective weights', () => {
+  const V2 = globalThis.QgvV2, base = { identities, publicScreens: screens, quotes };
+  const official = JSON.stringify(QS.compute(base));
+  const tree = V2.officialWeights(); tree.inner.Q.q_profitability = 40; tree.inner.Q.q_moat_proxy = 0; tree.axis = { Q: 50, G: 30, V: 20 };
+  const S = QS.compute({ ...base, weights: tree });
+  const { personal, ...rest } = JSON.parse(JSON.stringify(S)), plain = JSON.parse(official);
+  for (const r of Object.values(rest.rows)) { delete r.personal; delete r.personal_rank; delete r.personal_qg_reference; }
+  assert.deepEqual(rest, plain);                 // official result unchanged
+  assert.equal(JSON.stringify(QS.compute(base)), official);                  // official memo not overwritten
+  assert.equal(personal.state, 'READY'); assert.deepEqual(personal.label, QS.PERSONAL_LABEL);
+  assert.equal(personal.label[0], '개인 설정 미리보기 · 공식 점수 아님');
+  assert.equal(personal.profile.namespace, 'PERSONAL_PREVIEW'); assert.match(personal.profile.id, /^qgv-v2\/custom\/[0-9a-f]{16}\/gate-on$/);
+  assert.notEqual(personal.profile.id, S.profile.id);
+  let moved = 0;
+  for (const [cid, row] of Object.entries(S.rows)) {
+    assert.ok(row.primary === row.v2 && row.personal !== row.primary);
+    if (row.personal.total !== null && row.primary.total !== null && Math.abs(row.personal.total - row.primary.total) > 1e-9) moved++;
+    const q = row.personal.coverage && row.personal.coverage.axes ? row.personal.coverage.axes.Q : null;
+    if (q) { assert.equal(q.weights, 'PERSONAL'); assert.deepEqual(q.excluded, ['q_moat_proxy']); assert.equal(q.factors_total, 4);
+      const moat = q.factors.find((f) => f.id === 'q_moat_proxy'); assert.equal(moat.weight, 0); assert.equal(moat.official_weight, 20); assert.equal(moat.excluded, true); assert.equal(moat.share, null);
+      assert.equal(q.factors.find((f) => f.id === 'q_profitability').weight, 40); }
+    const oq = row.primary.coverage && row.primary.coverage.axes ? row.primary.coverage.axes.Q : null;
+    if (oq) { assert.equal(oq.weights, undefined); assert.equal(oq.factors_total, 5); }
+    // Personal ranks follow the same rule (total desc, ticker asc, NA unranked; D11: a total without V is in the personal QG
+    // 참고 목록, not ranked) and never replace the official rank.
+    const qgOnly = Number.isFinite(row.personal.total) && !Number.isFinite(row.personal.v) && row.personal.reference_only !== true;
+    assert.equal(row.personal_rank === null, !(Number.isFinite(row.personal.total) && row.personal.reference_only !== true) || qgOnly, cid);
+    assert.equal(row.personal_qg_reference !== null, qgOnly, cid);
+  }
+  assert.ok(moved > 0);
+  const order = Object.values(S.rows).filter((r) => r.personal_rank !== null).sort((a, b) => a.personal_rank - b.personal_rank);
+  for (let i = 1; i < order.length; i++) assert.ok(order[i - 1].personal.total > order[i].personal.total || (order[i - 1].personal.total === order[i].personal.total && order[i - 1].ticker < order[i].ticker));
+  const bad = QS.compute({ ...base, weights: { axis: { Q: 0, G: 0, V: 0 }, inner: tree.inner } });
+  assert.equal(bad.personal.state, 'INVALID'); assert.equal(bad.personal.reason, 'WEIGHTS_INVALID'); assert.ok(Object.values(bad.rows).every((r) => !('personal' in r)));
+  const same = QS.compute({ ...base, weights: V2.officialWeights() });
+  for (const row of Object.values(same.rows)) { assert.equal(row.personal.total, row.primary.total); assert.equal(row.personal_rank, row.rank); }
+});
+
+// User preset v0.1 candidates (owner decision 2026-10-18): personal rows carry the engine's weight stages; official rows never do.
+test('user preset candidates: personal weight stages from the engine, official result byte-identical', () => {
+  const V2 = globalThis.QgvV2, base = { identities, publicScreens: screens, quotes }, official = JSON.stringify(QS.compute(base));
+  for (const id of Object.keys(V2.USER_PRESETS)) {
+    const S = QS.compute({ ...base, weights: V2.userPreset(id).weights }), { personal, ...rest } = JSON.parse(JSON.stringify(S));
+    for (const r of Object.values(rest.rows)) { delete r.personal; delete r.personal_rank; delete r.personal_qg_reference; }
+    assert.deepEqual(rest, JSON.parse(official), id);assert.equal(personal.state, 'READY');
+    let staged = 0;
+    for (const row of Object.values(S.rows)) {
+      assert.ok(!('weight_stages' in row.primary), 'official row has no stages');
+      const ws = row.personal.weight_stages;if (!ws) { assert.equal(row.personal.flags[0], 'V2_INPUTS_NOT_AVAILABLE');continue; }
+      staged++;assert.deepEqual(ws.base.axis, V2.userPreset(id).weights.axis);assert.deepEqual(ws.type_adjusted.axis, row.personal.weights);
+      if (Number.isFinite(row.personal.total)) { let t = 0;for (const p of ['Q', 'G', 'V']) if (ws.applied.axis[p] > 0) t += ws.applied.axis[p] * row.personal.axes[p].score / 100;assert.ok(Math.abs(t - row.personal.total) < 1e-9); }
+      else assert.ok(ws.applied.state === 'NOT_AVAILABLE' || ws.display_stop, row.company_id);
+    }
+    assert.ok(staged > 0);
+  }
+  assert.equal(JSON.stringify(QS.compute(base)), official);
+});
+
+// S06 structured sort (owner directive 2026-10-18 §4.4): numeric keys, NA last both ways, QGV ties by ticker, cap ties by company_id.
+test('S06 sortRows: structured keys, NA last in both directions, ties, official rank untouched', () => {
+  const S = QS.compute({ identities, publicScreens: screens, quotes }), rows = identities.map((c) => ({ ...c, name: c.ticker.toLowerCase() }));
+  const before = JSON.stringify(S), ranks = Object.fromEntries(Object.entries(S.rows).map(([k, r]) => [k, r.rank]));
+  const values = (out, f) => out.map((r) => f(S.rows[r.company_id]));
+  const check = (id, f, dir) => {
+    const out = L.sortRows(rows, S, id), v = values(out, f), firstNa = v.findIndex((x) => x === null);
+    if (firstNa >= 0) assert.ok(v.slice(firstNa).every((x) => x === null), id + ' NA last');
+    const known = v.slice(0, firstNa < 0 ? v.length : firstNa);
+    for (let i = 1; i < known.length; i++) assert.ok(dir * (known[i] - known[i - 1]) >= 0, id + ' order');
+    const na = out.slice(firstNa < 0 ? out.length : firstNa).map((r) => r.ticker);assert.deepEqual(na, [...na].sort((a, b) => a.localeCompare(b)), id + ' NA by ticker');
+    return out;
+  };
+  // D11: the QGV sort lists the official ranking (rows with V) first, then the QG 참고 목록 (Q·G-only totals) in its own order, then
+  // rows without a total; the two lists are never interleaved. Each segment is checked on its own.
+  const qgvCheck = (id, dir) => {
+    const out = L.sortRows(rows, S, id), tier = (r) => (r.rank !== null ? 0 : r.qg_reference ? 1 : 2), t = out.map((r) => tier(S.rows[r.company_id]));
+    for (let i = 1; i < t.length; i++) assert.ok(t[i] >= t[i - 1], id + ' official, then QG reference, then NA');
+    for (const k of [0, 1]) { const v = out.filter((_, i) => t[i] === k).map((r) => S.rows[r.company_id].primary.total);for (let i = 1; i < v.length; i++) assert.ok(dir * (v[i] - v[i - 1]) >= 0, id + ' order in segment ' + k); }
+    const na = out.filter((_, i) => t[i] === 2).map((r) => r.ticker);assert.deepEqual(na, [...na].sort((a, b) => a.localeCompare(b)), id + ' NA by ticker');
+    return out;
+  };
+  const qgvDesc = qgvCheck('qgv', -1);
+  assert.deepEqual(qgvDesc.filter((r) => S.rows[r.company_id].rank !== null).map((r) => S.rows[r.company_id].rank), qgvDesc.filter((r) => S.rows[r.company_id].rank !== null).map((_, i) => i + 1));
+  assert.deepEqual(qgvDesc.filter((r) => S.rows[r.company_id].qg_reference).map((r) => S.rows[r.company_id].qg_reference.order), qgvDesc.filter((r) => S.rows[r.company_id].qg_reference).map((_, i) => i + 1));
+  assert.ok(Object.values(S.rows).some((r) => r.qg_reference), 'fixture has a Q·G-only row (GEV: no price)');
+  qgvCheck('qgv-asc', 1);
+  for (const a of ['q', 'g', 'v']) { check(a + '-desc', (r) => r.primary[a], -1); check(a + '-asc', (r) => r.primary[a], 1); }
+  assert.ok(values(L.sortRows(rows, S, 'v-desc'), (r) => r.primary.v).some((x) => x === null), 'fixture has a V NA row');
+  // Legacy ids are ordered by DeviceWatchlist.filter: unchanged here.
+  for (const id of ['ticker', 'name', 'favorites']) assert.equal(L.sortRows(rows, S, id), rows);
+  assert.deepEqual(L.sortRows(rows, S, 'ticker-desc').map((r) => r.ticker), rows.map((r) => r.ticker).sort((a, b) => b.localeCompare(a)));
+  // QGV ties by ticker in both directions.
+  const tieS = { rows: { a: { rank: 1, primary: { total: 50 } }, b: { rank: 2, primary: { total: 50 } }, c: { rank: null, primary: { total: null } } } }, tieRows = [{ company_id: 'c', ticker: 'AAA' }, { company_id: 'b', ticker: 'BBB' }, { company_id: 'a', ticker: 'ZZZ' }];
+  assert.deepEqual(L.sortRows(tieRows, tieS, 'qgv').map((r) => r.company_id), ['b', 'a', 'c']);assert.deepEqual(L.sortRows(tieRows, tieS, 'qgv-asc').map((r) => r.company_id), ['b', 'a', 'c']);
+  // Market cap: M3 rank (1 = largest), ties by company_id, NA last; unavailable without the device subset.
+  const ranksM3 = { state: 'READY', entries: new Map([['id:nvda', { state: 'READY', rank: 1, reason_codes: [] }], ['id:amd', { state: 'READY', rank: 2, reason_codes: [] }], ['id:asml', { state: 'READY', rank: 2, reason_codes: [] }]]) };
+  const cap = L.sortRows(rows, S, 'cap-desc', { deviceRanks: ranksM3 }).map((r) => r.company_id);assert.deepEqual(cap.slice(0, 3), ['nvda', 'amd', 'asml']);
+  assert.deepEqual(L.sortRows(rows, S, 'cap-asc', { deviceRanks: ranksM3 }).map((r) => r.company_id).slice(0, 3), ['amd', 'asml', 'nvda']);
+  assert.equal(L.sortAvailable('cap-desc', { deviceRanks: null }), false);assert.equal(L.sortAvailable('cap-desc', { deviceRanks: ranksM3 }), true);assert.equal(L.sortAvailable('q-asc', {}), true);
+  assert.equal(L.oppositeSort('qgv'), 'qgv-asc');assert.equal(L.oppositeSort('name'), 'name-desc');assert.equal(L.oppositeSort('favorites'), null);
+  assert.ok(L.SORT_IDS.includes('asof-desc') && !L.SORT_IDS.some((id) => /return|1d|5d|20d/i.test(id)), 'no return sort without a return column');
+  check('asof-desc', (r) => { const t = Date.parse(r.primary.coverage?.source?.acquired_at); return Number.isFinite(t) ? t : null; }, -1);
+  assert.equal(JSON.stringify(S), before);assert.deepEqual(Object.fromEntries(Object.entries(S.rows).map(([k, r]) => [k, r.rank])), ranks);
+  assert.equal(L.populationOf(screens), Object.values(screens[SQ.FILE].records).filter((r) => r.in_cross_section === true && ['LIVE', 'STALE'].includes(r.state) && r.calc_version_mismatch !== true).length);
+});
+
+/* Shared page result (owner decision 2026-10-18): the V coverage panel and the stat radar read ONE collectQuotes + compute over the
+   whole loaded file. One input gives the same V per row through pageResult as through a direct compute over the same quotes. */
+test('pageResult: one memoized quote set + compute over the whole file; same V per row as a direct compute; vCoverage counts', async () => {
+  const inputs = screens[SQ.FILE], prices = new Map(Object.entries(F.quotes()));let basis = null;
+  const win = { PrivateSubsetView: { prices: () => (basis ? prices : null), priceBasis: () => basis } };
+  const before = await QS.pageResult(win, { v2Inputs: inputs, identities });
+  assert.equal(before.price_basis, null);assert.deepEqual(before.quotes, {});const c0 = QS.vCoverage(before, inputs);
+  assert.equal(c0.connected, false);assert.equal(c0.v, null);assert.equal(c0.reasons, null);assert.equal(c0.price_time, null);
+  basis = { source: 'GOOGLEFINANCE_PRIVATE_UNIVERSE', read_id: 'job_a', acquired_at: '2026-10-18T09:00:00.000Z', currency: 'USD', price_time: null };
+  const r = await QS.pageResult(win, { v2Inputs: inputs, identities });assert.notEqual(r, before, 'a Universe read is a new revision');
+  assert.equal(QS.pageResult(win, { v2Inputs: inputs, identities }), QS.pageResult(win, { v2Inputs: inputs, identities }), 'memoized');
+  const codes = Object.keys(inputs.records).filter((c) => !c.startsWith('TARGET:'));
+  // D12: the identities are the official populations, one row per security: a TARGET identity whose ticker is a Universe code IS
+  // that code (no second row), then every other Universe code; TARGET outside the Universe stay rows (never ranked).
+  const U = QS.universeIdentities(inputs, identities);
+  assert.deepEqual(r.identities.map((c) => c.company_id), U.identities.map((c) => c.company_id));
+  assert.deepEqual(r.identities.map((c) => c.company_id), [...identities.map((c) => c.company_id), ...codes.filter((c) => !identities.some((x) => x.company_id === c || x.ticker.replaceAll('.', '-').toUpperCase() === c.slice(c.indexOf(':') + 1)))]);
+  for (const { company_id, code } of U.target_in_universe) assert.ok(!r.computed.rows[code] && r.computed.rows[company_id], code + ' is the row ' + company_id);
+  assert.deepEqual(r.quotes, await QS.collectQuotes(win, { identities, v2Inputs: inputs }), 'the existing collectQuotes, unchanged');
+  const direct = QS.compute({ identities: r.identities, v2Inputs: inputs, quotes: structuredClone(r.quotes) }), small = QS.compute({ identities, v2Inputs: inputs, quotes: structuredClone(r.quotes) });
+  let withV = 0;for (const c of r.identities) { const a = r.computed.rows[c.company_id].primary, b = direct.rows[c.company_id].primary;assert.equal(a.v, b.v, c.company_id);assert.equal(a.total, b.total, c.company_id);if (Number.isFinite(a.v)) withV++; }
+  for (const c of identities) assert.equal(small.rows[c.company_id].primary.v, r.computed.rows[c.company_id].primary.v, 'identity subset ' + c.company_id);
+  assert.ok(withV >= 3);
+  for (const code of Object.keys(r.quotes)) assert.deepEqual(r.quote_meta[code], { source: 'UNIVERSE_SHEET', as_of: null, stale: null }, 'GOOGLEFINANCE has no price time: freshness 판정 불가 (D10)');
+  // D12: per code, the row standing for it (a TARGET company's code is its TARGET row) and the record that row was scored from.
+  const cov = QS.vCoverage(r, inputs), P = cov.population, rows = codes.map((c) => { const row = QS.codeRow(r.computed, c), own = inputs.records[c], src = row && row.code !== c && inputs.records[row.code] && own.identity_withdrawn !== true ? row.code : c;return { rec: inputs.records[src], p: row.primary }; });
+  assert.equal(P.total, codes.length);assert.equal(P.general + P.financial + P.unknown + P.stopped, P.total);
+  assert.equal(P.general, rows.filter((x) => x.rec.published_profile === 'GENERAL').length);assert.ok(P.financial >= 1);
+  assert.equal(cov.v.general, rows.filter((x) => x.rec.published_profile === 'GENERAL' && Number.isFinite(x.p.v)).length);
+  assert.equal(cov.target.n, Math.ceil(0.9 * P.general - 1e-9));assert.equal(cov.target.observation_only, true);assert.equal(cov.target.met, cov.v.general >= cov.target.n);
+  assert.equal(cov.reasons.reduce((a, [, n]) => a + n, 0), P.general - cov.v.general);assert.ok(!cov.reasons.some(([c]) => c === 'FINANCIAL_PROFILE_V_NOT_DEFINED'));
+  // Q·G-only totals exclude value-trap-gate rows (V computed, excluded by the approved rule): financial + no-V only; gate apart.
+  const total = (x) => Number.isFinite(x.p.total), hasV = (x) => Number.isFinite(x.p.v);
+  assert.equal(cov.qg_only_total.full, cov.qg_only_total.financial + cov.qg_only_total.no_v);
+  assert.equal(cov.qg_only_total.full, rows.filter((x) => total(x) && !hasV(x)).length);
+  assert.equal(cov.qg_only_total.general, rows.filter((x) => x.rec.published_profile === 'GENERAL' && total(x) && !hasV(x)).length);
+  assert.equal(cov.qg_only_total.financial, rows.filter((x) => x.rec.published_profile === 'FINANCIAL' && total(x) && !hasV(x)).length);
+  assert.equal(cov.qg_only_total.gate, rows.filter((x) => total(x) && hasV(x) && x.p.v_excluded).length);assert.ok(cov.qg_only_total.gate >= 1, 'fixture has gate rows');
+  assert.deepEqual(cov.price_time.map((t) => [t.source, t.rows === t.unconfirmed]), [['UNIVERSE_SHEET', true]]);
+  assert.deepEqual(cov.price_time.map((t) => [t.confirmed, t.stale, t.from, t.to]), [[0, 0, null, null]], 'Universe rows: never dated, never stale (D10)');assert.equal(cov.read_at, basis.acquired_at);
+  // A device quote that carries its own time keeps it per source (meta); the Universe tab never does.
+  const meta = {}, dq = await QS.collectQuotes({ DeviceValuation: { deviceQuote: async () => ({ price: 10, currency: 'USD', as_of: '2026-10-16', source: 'WORKER_CLOSE', stale: true }) } }, { identities, v2Inputs: inputs, catalog: {}, meta });
+  assert.ok(Object.keys(dq).length >= 3);for (const code of Object.keys(dq)) assert.deepEqual(meta[code], { source: 'WORKER_CLOSE', as_of: '2026-10-16', stale: true });
+  assert.ok(Object.values(dq).every((q) => Object.keys(q).sort().join() === 'currency,price'), 'quotes themselves unchanged (no time field)');
+  // D10: a device quote without its own price time (ramQuote as_of null, GOOGLEFINANCE UNKNOWN) is 판정 불가, not 'not stale'.
+  const meta2 = {};await QS.collectQuotes({ DeviceValuation: { deviceQuote: async () => ({ price: 10, currency: 'USD', as_of: null, read_at: '2026-10-18T09:00:00.000Z', time_status: 'UNKNOWN', freshness: 'UNDETERMINED', source: 'GOOGLEFINANCE', stale: false }) } }, { identities, v2Inputs: inputs, catalog: {}, meta: meta2 });
+  for (const code of Object.keys(meta2)) assert.deepEqual(meta2[code], { source: 'GOOGLEFINANCE', as_of: null, stale: null });
+  const meta3 = {};await QS.collectQuotes({ DeviceValuation: { deviceQuote: async () => ({ price: 10, currency: 'USD', as_of: '2026-10-17T20:00:00Z', freshness: 'CURRENT', source: 'GOOGLEFINANCE', stale: false }) } }, { identities, v2Inputs: inputs, catalog: {}, meta: meta3 });
+  for (const code of Object.keys(meta3)) assert.deepEqual(meta3[code], { source: 'GOOGLEFINANCE', as_of: '2026-10-17T20:00:00Z', stale: false });
+  assert.equal(QS.reasonText('FINANCIAL_PROFILE_V_NOT_DEFINED'), '현재 금융업 가치평가 모델 미지원');assert.equal(QS.reasonText('FINANCIAL_PROFILE_V_NOT_DEFINED', true), 'Valuation model for financials not supported yet');
+});
+
+// D11 (approved owner rule 'Q·G만 있는 결과를 QGV 종합순위와 섞지 않는다'): official rank only with V; Q·G-only totals go to the QG
+// 참고 목록 with the engine's reason; the value-trap-gate row (V computed, excluded by the gate) stays ranked; totals untouched;
+// a personal tree with V weight 0 is labelled and ranked as that personal result only.
+test('D11 rank split: official rank needs V, QG reference list, gate row ranked, personal V=0 label', () => {
+  const SecQgv2 = require(path.join(W, 'sec-qgv2.js')), p = F.strictPayload(), amd = p.target.amd;
+  Object.assign(amd.metrics, { roic: -0.5, gross_profit_to_assets: -0.5, moat_proxy: -0.5, accruals_to_assets: 0.5, fcf_to_net_income: -2, net_debt_to_ebitda: 20, interest_coverage: -5, dilution_3y: 0.5, incremental_roic_5y: -0.5 });
+  const { scores } = SecQgv2.scoreRows(p.records, p.target, p.calc_version), sc = scores.get('target\u0000amd');amd.factors = sc.factors;amd.axes = sc.axes;
+  const inputs = SQ.fromInputs(SecQgv2.toInputs(SecQgv2.validate(p), { now: '2026-10-14T00:00:00Z' }));
+  const ids = [['amd', 'AMD'], ['msft', 'MSFT'], ['nvda', 'NVDA'], ['googl', 'GOOGL'], ['amzn', 'AMZN'], ['gev', 'GEV']].map(([company_id, ticker]) => ({ company_id, ticker }));
+  const quotes = { 'TARGET:amd': { price: 40, currency: 'USD' }, 'TARGET:nvda': { price: 50, currency: 'USD' } };
+  for (const [c, r] of Object.entries(inputs.records)) if (!c.startsWith('TARGET:') && r.state === 'LIVE' && c !== 'NASDAQ:MSFT') quotes[c] = { price: 20 + c.length, currency: 'USD' };
+  const S = QS.compute({ identities: ids, v2Inputs: inputs, quotes }), R = S.rows;
+  assert.equal(R.amd.primary.value_trap_gate, true);assert.ok(Number.isFinite(R.amd.primary.v));assert.equal(R.amd.primary.v_excluded, 'VALUE_TRAP_GATE');
+  assert.ok(Number.isInteger(R.amd.rank) && R.amd.qg_reference === null, 'gate row stays ranked');assert.equal(QS.exploreGroup(R.amd), 'RANKED');
+  assert.ok(Number.isInteger(R.nvda.rank));
+  for (const [id, reason] of [['msft', 'NO_DEVICE_PRICE'], ['googl', 'FINANCIAL_PROFILE_V_NOT_DEFINED'], ['amzn', 'FINANCIAL_PROFILE_V_NOT_DEFINED']]) {
+    assert.equal(R[id].rank, null, id);assert.equal(R[id].qg_reference.reason, reason, id);assert.equal(QS.exploreGroup(R[id]), 'QG_REFERENCE', id);assert.ok(Number.isFinite(R[id].primary.total), id + ' keeps its total');
+  }
+  assert.deepEqual(['msft', 'googl', 'amzn'].sort((a, b) => R[a].qg_reference.order - R[b].qg_reference.order), ['msft', 'googl', 'amzn'].sort((a, b) => R[b].primary.total - R[a].primary.total || (R[a].ticker < R[b].ticker ? -1 : 1)));
+  assert.equal(R.gev.rank, null);assert.equal(R.gev.qg_reference, null);assert.equal(QS.exploreGroup(R.gev), 'CHECK_DATA');
+  assert.deepEqual([R.amd.rank, R.nvda.rank].sort(), [1, 2]);
+  assert.equal(QS.reasonText(R.googl.qg_reference.reason, false), '현재 금융업 가치평가 모델 미지원');assert.equal(QS.QG_REFERENCE_LABEL[0], 'QG 참고 목록 (V 미포함)');
+  assert.equal(QS.NO_OFFICIAL_RANK[0], '가격 연결 전: 공식 QGV 순위 없음 · QG 참고 목록 보기');
+  // Before any price: nobody is ranked; every total is in the QG list.
+  const bare = QS.compute({ identities: ids, v2Inputs: inputs, quotes: {} });
+  assert.ok(Object.values(bare.rows).every((r) => r.rank === null));assert.ok(Object.values(bare.rows).filter((r) => Number.isFinite(r.primary.total)).every((r) => r.qg_reference));
+  // Personal V weight 0: labelled, every personal total ranked as that personal result; the official rows do not change.
+  const tree = globalThis.QgvV2.officialWeights();tree.axis = { Q: 50, G: 50, V: 0 };const P = QS.compute({ identities: ids, v2Inputs: inputs, quotes, weights: tree });
+  assert.equal(P.personal.v_weight_zero, true);assert.deepEqual(P.personal.label, QS.PERSONAL_V0_LABEL);assert.ok(P.personal.label[0].startsWith('개인 설정 결과 (V 비중 0)'));
+  for (const r of Object.values(P.rows)) { assert.equal(Number.isInteger(r.personal_rank), Number.isFinite(r.personal.total), r.company_id);assert.equal(r.personal_qg_reference, null);
+    assert.equal(r.rank, R[r.company_id].rank);assert.deepEqual(r.qg_reference, R[r.company_id].qg_reference); }
+  const P2 = QS.compute({ identities: ids, v2Inputs: inputs, quotes, weights: globalThis.QgvV2.officialWeights() });assert.notEqual(P2.personal.v_weight_zero, true);assert.deepEqual(P2.personal.label, QS.PERSONAL_LABEL);
+  assert.equal(P2.rows.msft.personal_rank, null);assert.equal(P2.rows.msft.personal_qg_reference.reason, 'NO_DEVICE_PRICE');
+});
+test('provenance labels (owner 2026-10-19): official weights vs personal preset vs gate off, device prices, central publication; values untouched', () => {
+  const inputs = screens[SQ.FILE], V2 = globalThis.QgvV2, run = (preset, gate) => QS.compute({ identities, v2Inputs: inputs, quotes, preset, gate });
+  // The four facts per profile. QGV totals, ranks and N sets are always computed on this device (no central V/QGV publication).
+  const cases = [[undefined, undefined, 'OFFICIAL', 'NONE', '공식 가중치 · 이 기기 가격 · 기기 계산'], ['balanced', true, 'OFFICIAL', 'NONE', '공식 가중치 · 이 기기 가격 · 기기 계산'],
+    ['growth', true, 'PERSONAL', 'PRESET', '개인 프리셋(성장 친화) · 이 기기 가격 · 기기 계산'], ['balanced', false, 'PERSONAL', 'GATE_OFF', '개인 프리셋(균형 · 관문 끔) · 이 기기 가격 · 기기 계산'],
+    ['value', false, 'PERSONAL', 'PRESET GATE_OFF', '개인 프리셋(가치(관문 켬) · 관문 끔) · 이 기기 가격 · 기기 계산']];
+  for (const [preset, gate, weights, setting, text] of cases) {
+    const S = run(preset, gate), snap = JSON.stringify(S), x = QS.provenance({ profile: S.profile, priced: S.priced_codes > 0 });
+    assert.equal(x.weights, weights, String(preset));assert.equal(x.setting.join(' ') || 'NONE', setting);assert.equal(x.prices, 'DEVICE');assert.equal(x.source, 'DEVICE_COMPUTED');assert.equal(x.profile_id, S.profile.id);
+    assert.equal(QS.provenanceText(x, false), text);assert.deepEqual(QS.provenanceAttrs(x), { 'data-qgv-weights': weights, 'data-qgv-setting': setting, 'data-qgv-prices': 'DEVICE', 'data-qgv-source': 'DEVICE_COMPUTED', 'data-qgv-profile': S.profile.id });
+    assert.equal(QS.rankLabel(S.profile, false), weights === 'OFFICIAL' ? 'Universe 공식 QGV 순위' : '개인 프리셋 순위 (Universe 기준)');
+    // A display row carries the same profile, so a per-row label says the same.
+    for (const r of Object.values(S.rows)) if (Number.isFinite(r.primary.total)) assert.equal(QS.provenance({ profile: r.primary.profile }).weights, weights, r.company_id);
+    // Labels never change a value: the result is byte-identical after every label call, and equal to a fresh compute.
+    assert.equal(JSON.stringify(S), snap);assert.equal(JSON.stringify(run(preset, gate)), snap);
+  }
+  // Q·G axes are read as published (central, sec-qgv2.json); the V axis alone is official inner weights whatever the preset/gate.
+  const qg = QS.provenance({ kind: 'QG' });assert.deepEqual([qg.weights, qg.prices, qg.source], ['OFFICIAL', 'NONE', 'PUBLISHED']);assert.equal(QS.provenanceText(qg, false), '공식 가중치 · 가격 없음 · 중앙 게시(sec-qgv2.json)');
+  const v = QS.provenance({ kind: 'V', profile: run('growth', false).profile, priced: true });assert.deepEqual([v.weights, v.prices, v.source], ['OFFICIAL', 'DEVICE', 'DEVICE_COMPUTED']);
+  // Personal weights (S13 PERSONAL_PREVIEW) are personal for every kind but the published Q·G.
+  const P = QS.compute({ identities, v2Inputs: inputs, quotes, weights: V2.officialWeights() }), pid = P.personal.profile, prow = Object.values(P.rows).find((r) => Number.isFinite(r.personal.total));
+  assert.equal(QS.provenance({ profile: prow.personal.profile }).weights, 'PERSONAL');assert.equal(QS.provenance({ kind: 'V', profile: prow.personal.profile }).setting.join(), 'WEIGHTS');assert.ok(pid.id.includes('/custom/'));
+  // No prices: NONE; English text.
+  const bare = QS.compute({ identities, v2Inputs: inputs, quotes: {}, preset: 'growth' }), nx = QS.provenance({ profile: bare.profile, priced: bare.priced_codes > 0 });
+  assert.equal(nx.prices, 'NONE');assert.equal(QS.provenanceText(nx, true), 'Personal preset (Growth friendly) · no prices · computed on this device');
+  assert.equal(QS.provenanceAttrHtml(nx), ' data-qgv-weights="PERSONAL" data-qgv-setting="PRESET" data-qgv-prices="NONE" data-qgv-source="DEVICE_COMPUTED" data-qgv-profile="qgv-v2/growth/gate-on"');
+  // N10/N15/N20 stay on the official default profile whatever the S06 preset: same selection, official provenance.
+  const U = QS.universeIdentities(inputs, identities), off = (preset, gate) => QS.compute({ identities: U.identities, v2Inputs: inputs, quotes, preset, gate, official: U });
+  const M1 = QS.officialModel({ identities: U.identities, v2Inputs: inputs, quotes, official: U, computed: off('growth', false) });
+  assert.equal(QS.provenance({ profile: M1.official_profile }).weights, 'OFFICIAL');assert.deepEqual(M1.sets, QS.modelPortfolios(off('balanced', true), inputs).sets);
+});

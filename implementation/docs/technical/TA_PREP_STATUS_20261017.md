@@ -2,7 +2,9 @@
 
 기준: canonical `ace73289` (`claude/investment-system-top500-validation-alrugm`), 2026-10-17 UTC.
 
-상태: **준비 문서만 · 구현 착수 아님.** 제품 코드·웹 자산·워크플로·시험·가드는 바꾸지 않았다.
+> **2026-10-20 갱신:** 사용자 결정으로 §10 착수 조건은 구현을 막지 않는다. 구현·시험·미리보기를 진행한다. 공식 판정 활성화와 투자 의사결정 사용 조건은 따로 남는다. 영역 표: [PARALLEL_LANES_20261020](../PARALLEL_LANES_20261020.md).
+
+상태(작성 당시): **준비 문서만 · 구현 착수 아님.** 제품 코드·웹 자산·워크플로·시험·가드는 바꾸지 않았다.
 
 설계 원문은 [TECHNICAL_PATTERN_CHART_V1_DESIGN.md](../technical_chart/TECHNICAL_PATTERN_CHART_V1_DESIGN.md)(이하 "설계")다. 이 문서는 설계를 다시 쓰지 않는다. 준비 항목별로 설계의 어느 절이 덮는지, 무엇이 비어 있는지만 적는다.
 

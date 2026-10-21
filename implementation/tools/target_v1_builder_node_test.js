@@ -458,3 +458,27 @@ test('identity-conflict withdrawal: a withdrawn Universe code never borrows a sa
  const draft=B.buildDraft({computed,inputs,universeCodes:codes,existing:[],date:'2026-10-17'});
  assert.ok(!draft.pool.some(r=>r.symbol==='NVDA'));assert.equal(draft.excluded_counts.IDENTITY_CONFLICT_WITHDRAWN,1);
 });
+
+test('canonical shared QGV page result feeds TARGET without QG-only candidates or a separate score calculation',async()=>{
+ const names=['EnginePreview','ProfileDefaults','TypeConfigDefaults','DcfParametersDefaults','QgvV2','Qgv2Inputs','QgvScores'];
+ const before=new Map(names.map(n=>[n,Object.getOwnPropertyDescriptor(globalThis,n)]));
+ try{
+  for(const[name,file]of [['EnginePreview','engine-preview.js'],['ProfileDefaults','profile-defaults.js'],['TypeConfigDefaults','type-config-defaults.js'],['DcfParametersDefaults','dcf-parameters-defaults.js'],['QgvV2','qgv-v2.js'],['Qgv2Inputs','qgv2-inputs.js'],['QgvScores','qgv-scores.js']])globalThis[name]=require(W+file);
+  const F=require('./qgv_v2_fixture.js'),S=require(W+'sec-qgv2.js'),Q=globalThis.QgvScores;
+  const inputs=Qgv2Inputs.fromInputs(S.toInputs(F.strictPayload(),{now:'2026-10-14T00:00:00Z'}));
+  const codes=Object.keys(inputs.records).filter(c=>!c.startsWith('TARGET:')),ids=codes.map(c=>({company_id:c,ticker:c.split(':')[1]}));
+  const quotes=new Map(F.strictUniverseValues().slice(1).map(r=>[r[0],{price:r[2],currency:'USD'}]));
+  const view={PrivateSubsetView:{prices:()=>quotes}},catalog={instruments:[]};
+  const page=await Q.pageResult(view,{v2Inputs:inputs,catalog,identities:ids});
+  assert.ok(page.computed.official);assert.equal(page.computed.v2_state,'READY');
+  globalThis.QgvScores={...Q,compute(){throw Error('unexpected separate computation');}};
+  const computed=await P.prepareScores(view,{catalog,screens:{'sec-qgv2.json':inputs},idByTicker:new Map(ids.map(r=>[r.ticker,r.company_id])),universeCodes:codes});
+  assert.equal(computed.rows,page.computed.rows,'same shared evaluated rows');
+  const draft=B.buildDraft({computed,inputs,universeCodes:codes,date:'2026-10-14'});
+  assert.ok(draft.pool.length>0,'strict synthetic fixture has eligible names');
+  const byTicker=new Map(Object.values(computed.rows).map(r=>[r.ticker,r]));
+  for(const r of draft.pool){const source=byTicker.get(r.symbol);assert.ok(Number.isInteger(source.rank));assert.equal(source.qg_reference,null);assert.ok(Number.isFinite(r.v));assert.equal(r.safety,'PASS');assert.ok(Math.abs(r.total-source.v2.total)<0.0001);}
+  for(const r of Object.values(computed.rows).filter(r=>r.qg_reference))assert.ok(!draft.pool.some(p=>p.symbol===r.ticker),'QG-only row excluded');
+  assert.equal(CFG.number_check.result.passed,false,'integration never approves the real number check');
+ }finally{for(const[n,d]of before)if(d)Object.defineProperty(globalThis,n,d);else delete globalThis[n];}
+});

@@ -8,6 +8,9 @@ from investment_system.providers.sec_universe_collection import (
 from investment_system.providers.sec_collection import SecResponse, SecCollectionError
 
 
+UA='Synthetic collector contact@example.com'
+
+
 def body(rows):
     return json.dumps({'fields':['cik','name','ticker','exchange'],'data':rows}).encode()
 
@@ -28,6 +31,37 @@ def test_bound_issuer_grouping_and_dot_class_alias():
 def test_conflicting_cik_identity_is_unresolved_not_guessed():
     r=universe_registry(body([[1,'Synthetic','GOOG','Nasdaq'],[2,'Synthetic','GOOG','Nasdaq'],[3,'Synthetic','GOOG','NYSE']]))
     assert not r.issuers and r.unresolved_code_count==504
+
+
+def test_cboe_exchange_binds_only_the_explicit_cboe_alias():
+    r=universe_registry(body([[7,'Synthetic','CBOE','CBOE'],[8,'Synthetic','GOOG','CBOE'],[9,'Synthetic','XYZ','CBOE']]))
+    assert [(x.cik,x.codes) for x in r.issuers]==[('0000000007',('BATS:CBOE',))]
+    assert r.unresolved_code_count==503 and not r.conflicting_codes
+
+
+@pytest.mark.parametrize('rows',[[[1,'x','CBOE','Nasdaq']],[[1,'x','CBOE','NYSE']],[[1,'x','CBOE','OTC']],[[1,'x','cboe','CBOE']],[[1,'x','CBOE','Cboe']]])
+def test_cboe_code_is_not_bound_from_other_exchange_or_ticker_spellings(rows):
+    assert not universe_registry(body(rows)).issuers
+
+
+def test_cboe_alias_keeps_the_single_cik_rule():
+    r=universe_registry(body([[7,'Synthetic','CBOE','CBOE'],[8,'Synthetic','CBOE','CBOE']]))
+    assert not r.issuers and r.conflicting_codes==frozenset({'BATS:CBOE'}) and r.unresolved_code_count==504
+
+
+def test_universe_client_accepts_unpadded_string_cik_only_for_the_same_issuer():
+    r=registry();seen=[]
+    def transport(url,**kwargs):
+        cik=url.split('CIK')[-1].split('.')[0];seen.append(url)
+        value=str(int(cik)) if 'companyfacts' in url else cik
+        if cik=='0000000002':value=str(int(cik)+1) if 'companyfacts' in url else cik
+        return SecResponse(200,json.dumps({'cik':value}).encode(),final_url=url)
+    clock=[0.]
+    def sleep(t):clock[0]+=t
+    c=UniverseSecClient(UA,registry=r,transport=transport,sleep=sleep,monotonic=lambda:clock[0],now=lambda:datetime(2026,1,1,tzinfo=timezone.utc))
+    facts,sub,_=c.collect_universe('0000000001')
+    assert json.loads(facts)['cik']=='1' and json.loads(sub)['cik']=='0000000001'
+    with pytest.raises(SecCollectionError,match='SEC_CIK_MISMATCH'):c.collect_universe('0000000002')
 
 
 @pytest.mark.parametrize('row',[[True,'x','GOOG','Nasdaq'],[0,'x','GOOG','Nasdaq'],[1,'x','GOOG','Unknown'],['1','x','GOOG','Nasdaq'],[1,'x','GOOG'],[1,'x','UNKNOWN','Nasdaq']])
@@ -58,7 +92,7 @@ def test_scope_and_shared_pacing_with_company_isolation():
         calls.append((url,elapsed[0]));cik=url.split('CIK')[-1].split('.')[0]
         if cik=='0000000002':return SecResponse(403,b'',final_url=url)
         return SecResponse(200,json.dumps({'cik':int(cik)}).encode(),final_url=url)
-    c=UniverseSecClient('Synthetic collector contact@example.com',registry=r,transport=transport,sleep=sleep,monotonic=lambda:elapsed[0],now=lambda:datetime(2026,1,1,tzinfo=timezone.utc))
+    c=UniverseSecClient(UA,registry=r,transport=transport,sleep=sleep,monotonic=lambda:elapsed[0],now=lambda:datetime(2026,1,1,tzinfo=timezone.utc))
     with pytest.raises(SecCollectionError,match='SEC_ISSUER_NOT_ALLOWED'):c.collect_universe('0000000003')
     assert not calls
     facts,sub,_=c.collect_universe('0000000001');assert facts==sub
@@ -69,7 +103,7 @@ def test_scope_and_shared_pacing_with_company_isolation():
 
 def test_partial_batch_preserves_good_issuer_and_reports_fixed_failures():
     from investment_system.providers.sec_universe_collection import collect_partition
-    c=UniverseSecClient('Synthetic collector contact@example.com',registry=registry())
+    c=UniverseSecClient(UA,registry=registry())
     def collect(cik):
         if cik.endswith('2'):raise SecCollectionError('PRIVATE_SENTINEL')
         return b'facts',b'sub',datetime(2026,1,1,tzinfo=timezone.utc)
@@ -81,7 +115,7 @@ def test_partial_batch_preserves_good_issuer_and_reports_fixed_failures():
 
 def test_sink_error_and_all_failed_are_fixed_and_do_not_stop_next_company():
     from investment_system.providers.sec_universe_collection import collect_partition
-    c=UniverseSecClient('Synthetic collector contact@example.com',registry=registry())
+    c=UniverseSecClient(UA,registry=registry())
     c.collect_universe=lambda cik:(b'f',b's',datetime(2026,1,1,tzinfo=timezone.utc))
     def sink(*x):raise OSError('PRIVATE_SENTINEL')
     r=collect_partition(c,registry().issuers,on_success=sink)
@@ -92,7 +126,7 @@ def test_sink_error_and_all_failed_are_fixed_and_do_not_stop_next_company():
 @pytest.mark.parametrize('code',['SEC_TRANSPORT_RETRIES_EXHAUSTED','SEC_RETRY_AFTER_EXCEEDS_BUDGET'])
 def test_retry_diagnostics_retained(code):
     from investment_system.providers.sec_universe_collection import collect_partition
-    c=UniverseSecClient('Synthetic collector contact@example.com',registry=registry())
+    c=UniverseSecClient(UA,registry=registry())
     def fail(_):raise SecCollectionError(code)
     c.collect_universe=fail
     assert collect_partition(c,registry().issuers,on_success=lambda *x:None).failures==((1,code),(2,code))
@@ -114,5 +148,5 @@ def test_cli_argparse_never_echoes_input(args):
 def test_registry_requires_approved_code_binding_factory():
     from investment_system.providers.sec_universe_collection import UniverseRegistry,UniverseIssuer
     forged=UniverseRegistry((UniverseIssuer('0000000003',('NYSE:UNKNOWN',)),),'0'*64,503)
-    with pytest.raises(SecCollectionError,match='SEC_UNIVERSE_CONFIG_INVALID'):UniverseSecClient('Synthetic collector contact@example.com',registry=forged)
+    with pytest.raises(SecCollectionError,match='SEC_UNIVERSE_CONFIG_INVALID'):UniverseSecClient(UA,registry=forged)
     with pytest.raises(SecCollectionError,match='SEC_UNIVERSE_CONFIG_INVALID'):daily_partition(forged,shard_count=1,shard_index=0)

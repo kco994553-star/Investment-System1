@@ -736,3 +736,140 @@ td .co-logo {float: left; margin: 1px 6px 0 0;}
 [data-leaderboard-table] [data-leaderboard-total] {font-size: 14px;}
 h1[tabindex="-1"]:focus {outline: none;}
 h1[tabindex="-1"]:focus-visible {outline: 2px solid var(--accent); outline-offset: 2px;}
+/* FE-MISSING-2 (S04 QGV card, S05 factors tab, S06): calculation status per axis, missing-factor reasons, data-state chips and
+   the S06 exploration filter. Every state is named in words; colour is never the only signal. */
+.qgv-coverage {margin-top: 12px; padding-top: 4px; border-top: 1px solid var(--line);}
+.qgv-coverage h3 {font-size: 14px; margin: 8px 0;}
+.axis-coverage {list-style: none; margin: 8px 0; padding: 0; display: grid; gap: 8px;}
+.axis-coverage > li {padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; min-width: 0; overflow-wrap: anywhere;}
+.axis-coverage > li[data-axis-status="PARTIAL"] {border-left: 4px solid #c9853a;}
+.axis-coverage > li[data-axis-status="NOT_AVAILABLE"], .axis-coverage > li[data-axis-status="STOPPED"] {border-left: 4px solid #8f9993;}
+.axis-coverage p {margin: 4px 0;}
+.axis-head {display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px;}
+.factor-coverage {list-style: none; margin: 4px 0; padding: 0;}
+.factor-coverage > li {display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; padding: 6px 0; border-bottom: 1px solid var(--line); min-width: 0;}
+.factor-coverage > li > span {min-width: 0;}
+.factor-coverage [data-factor-reason] {flex-basis: 100%;}
+details.evidence {border-top: 0; padding-top: 0; margin-top: 2px; flex-basis: 100%;}
+details.evidence > summary {font-size: 12px; font-weight: 600; color: var(--accent); display: flex; align-items: center;}
+details.evidence code {overflow-wrap: anywhere;}
+.explore-filter {margin: 8px 0;}
+.explore-filter button {min-height: 44px; padding: 6px 12px; border-radius: 16px; font-size: 13px;}
+.explore-filter button[aria-pressed="true"] {background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700;}
+.badge.check-data {background: #edf0ed; color: #5e6863; box-shadow: inset 0 0 0 1px #8f9993;}
+[data-leaderboard-table] [data-leaderboard-unranked] {display: block; width: fit-content; max-width: 16em; white-space: normal; margin-top: 4px;}
+/* '자료 새로고침' bar (data-refresh.js): one button and the score-basis / last-check line; per-file read status folded below. */
+.data-refresh {max-width: 1100px; margin: auto; padding: 8px 18px 0; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px;}
+.data-refresh > button {min-height: 44px; padding: 6px 12px; font-size: 13px;}
+.data-refresh > p {margin: 0; flex: 1 1 16em; overflow-wrap: anywhere;}
+.data-refresh > details {flex: 1 1 100%; font-size: 13px;}
+.data-refresh > details ul {margin: 4px 0 0; padding-left: 1.2em;}
+.data-refresh[data-refresh-state="FAILED"] > p {color: var(--bad-ink, #852d2d); font-weight: 650;}
+[data-refresh-outdated] button {margin-left: 8px; min-height: 36px;}
+@media (min-width: 1024px) {.data-refresh {max-width: 1320px; padding-left: 40px; padding-right: 40px;}}
+/* ---------- Menu 4 뉴스 layout (design lane D3; owner draft "투자시스템 화면 시안 (손그림 칠판)") ----------
+   One scoped block for the news screen (news-signals.js screenHtml / mount inside [data-news-layout]). Stamp numbers are
+   function numbers 5.1–5.3; the menu strip keeps 4 / 4.1–4.3. Paper/ink tokens of theme.css only; stamp shadows, the group
+   doodle and underline use the menu colour (news purple under html[data-menu="news"]); yellow highlighter on the 5.2.4
+   question, red marker on the "no prices" note and the ring of the company in view. Presentation only. */
+.nw-screen {min-width: 0;}
+/* the 뉴스 | 관계망 tabs: the pressed one is filled with the menu colour (text in paper colour, ≥ 4.5:1 in both themes) */
+.nw-screen #news-network button[aria-pressed="true"] {border-color: var(--menu, #7a4cc2); background: var(--menu, #7a4cc2); color: var(--paper, #fff); font-weight: 700;}
+.nw-screen .nw-legend {margin: 4px 0 10px; color: var(--muted, #4a4a4a); font-family: var(--font-hand, cursive);}
+.nw-screen .nw-group {min-width: 0; margin: 18px 0 0;}
+.nw-screen .nw-group-top {display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px;}
+.nw-screen .nw-group-top > .nw-head {margin: 0; font-size: var(--fs-xl, 22px);}
+.nw-screen .nw-group-top > .nw-head .ia-sec {font-size: 14px; box-shadow: 4px 4px 0 var(--menu, #7a4cc2);}
+.nw-screen .nw-doodle {flex: none; width: 30px; height: 30px; color: var(--menu, #7a4cc2);}
+.nw-screen .nw-hand {color: var(--muted, #4a4a4a); font-family: var(--font-hand, cursive); font-size: var(--fs-m, 15px);}
+.nw-screen .nw-line {display: block; width: min(260px, 70%); height: 10px; margin: 2px 0 8px; fill: none; stroke: var(--menu, #7a4cc2); stroke-width: 3; stroke-linecap: round;}
+.nw-screen .nw-head {display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; margin: 0 0 10px; font-family: var(--font-display, system-ui, sans-serif); font-size: var(--fs-l, 17px); font-weight: 800; line-height: 1.3;}
+.nw-screen .nw-sec {min-width: 0; margin: 12px 0 0; padding: 12px 14px 14px; border: var(--sketch, 2px) solid var(--ink, #161616); border-radius: var(--sketch-radius-s, 18px 6px 16px 6px / 6px 16px 6px 18px); background: var(--card, #fff); overflow-wrap: anywhere;}
+.nw-screen .nw-sec > :last-child {margin-bottom: 0;}
+.nw-screen .nw-sec.nw-main, .nw-screen .nw-sec.nw-tree {box-shadow: 6px 6px 0 var(--menu, #7a4cc2);}
+.nw-screen .nw-grid, .nw-screen .nw-mount-grid {display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); margin: 4px 0 0;}
+.nw-screen .nw-grid > .nw-sec, .nw-screen .nw-mount-grid > .nw-sec {margin: 0;}
+.nw-screen .nw-na {margin: 0 0 8px;}
+.nw-screen .nw-na .badge, .nw-screen .nw-five .badge {white-space: normal;}
+.nw-screen .nw-net {display: block; width: 100%; max-width: 360px; height: auto; margin: 4px auto 2px;}
+.nw-screen .nw-net-link {fill: none; stroke: var(--line-strong, #6f6f6f); stroke-width: 2; stroke-dasharray: 5 5; stroke-linecap: round;}
+.nw-screen .nw-net-empty {fill: var(--card, #fff); stroke: var(--line-strong, #6f6f6f); stroke-width: 2; stroke-dasharray: 4 4;}
+.nw-screen .nw-net-me {fill: var(--card, #fff); stroke: var(--marker, #d7322a); stroke-width: 3.5;}
+.nw-screen .nw-caption {text-align: center;}
+.nw-screen .nw-fav {margin: 0 0 6px;}
+.nw-screen .nw-fav b {font-size: var(--fs-xl, 22px);}
+.nw-screen .nw-five {display: grid; gap: 4px; margin: 0 0 8px; padding-left: 1.4em;}
+.nw-screen .nw-five-k {font-weight: 650;}
+.nw-screen .nw-q {margin: 0 0 6px; font-family: var(--font-display, system-ui, sans-serif); font-size: var(--fs-l, 17px); font-weight: 800;}
+.nw-screen .nw-marker {padding: 2px 0 2px 10px; border-left: 4px solid var(--marker, #d7322a); border-radius: 2px;}
+.nw-screen .nw-analysis-note {margin: 18px 0 8px;}
+.nw-screen .nw-tree {margin-top: 22px;}
+.nw-screen .nw-tree-link {display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-weight: 700;}
+.nw-screen .nw-arrow {width: 40px; height: 20px; fill: none; stroke: var(--menu, #7a4cc2); stroke-width: 2.4; stroke-linecap: round;}
+.nw-screen .nw-counts {margin: 0 0 6px;}
+.nw-screen .nw-more #news-pane > select {margin: 8px 0;}
+/* The 뉴스 | 관계망 toggle (app.js hides one pane) shows one function group. */
+.nw-screen .nw-group:has(#network-pane[hidden]), .nw-screen .nw-group:has(#news-pane[hidden]) {display: none;}
+@media (min-width: 750px) {.nw-screen .nw-grid-52 {grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start;}}
+@media (min-width: 1024px) {
+  .nw-screen .nw-grid-51 {grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); grid-template-rows: auto auto 1fr; align-items: start;}
+  .nw-screen .nw-grid-51 > [data-fn="5.1.1"] {grid-row: span 3;}
+  .nw-screen .nw-mount-grid {grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); grid-template-rows: auto 1fr; align-items: start;}
+  .nw-screen .nw-mount-grid > [data-fn="5.2.1"] {grid-row: span 2;}
+}
+/* below the PC grid, collection status (and any refresh-failure badge) comes before the long list */
+@media (max-width: 1023.98px) {.nw-screen .nw-mount-grid > [data-fn="5.2.7"] {order: -1;}}
+@media (max-width: 749.98px) {
+  .nw-screen .nw-sec {padding: 10px 8px 12px;}
+  .nw-screen .card .nw-sec {margin-left: -4px; margin-right: -4px;}
+  .nw-screen .nw-mount-grid > .nw-sec {margin: 0 -4px;}
+  .nw-screen .nw-sec.nw-main, .nw-screen .nw-sec.nw-tree {box-shadow: 4px 4px 0 var(--menu, #7a4cc2);}
+/* ---------- Menu 6 프롬프트 라이브러리 · menu n+1 Lab: functional stamp layout (design lane D5, 2026-10-20) ----------
+   Owner draft "투자시스템 화면 시안 (손그림 칠판)": white paper, black ink, sketch borders, numbered stamp boxes in the menu's
+   colour (theme.css --menu), yellow highlighter for what works now, red marker for 준비 중 / 미산출. Stamp numbers are the
+   functional hierarchy (7.1.x, 9.x), not menu numbers. Own .plab-* classes (the QGV .fn-sec / portfolio .pf-* stamp classes
+   are not on the base branch yet) so Main can unify them later. Markup: screen-detail.js. Presentation only. */
+.plab-note {margin: 4px 0 14px; font-size: 13px; color: var(--muted);}
+.plab-note::before {content: "※ "; color: var(--marker-ink);}
+.plab-group {margin: 22px 0 30px; min-width: 0;}
+.plab-head {display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 0 0 6px; font-family: var(--font-display); font-size: var(--fs-xl); font-weight: 900; line-height: 1.3;}
+.plab-head .plab-doodle {width: 30px; height: 30px; color: var(--menu);}
+.plab-lede {margin: 0 0 14px; max-width: 72ch; color: var(--muted); font-size: var(--fs-s);}
+.plab-stamp {display: inline-grid; place-items: center; min-width: 2.6em; height: 1.8em; padding: 0 .4em; border: var(--sketch) solid var(--ink); border-radius: 3px; background: var(--card); color: var(--ink); font: 800 13px/1 var(--font-display); letter-spacing: 0; white-space: nowrap; box-shadow: 3px 3px 0 var(--menu); transform: rotate(-2deg);}
+.plab-head > .plab-stamp {height: 1.9em; background: var(--hl-soft); font-size: 15px;}
+.plab-rows {display: grid; gap: 14px; margin: 0; padding: 0; list-style: none;}
+.plab-row {display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px 20px; min-width: 0; padding: 14px 16px; border: var(--sketch) solid var(--ink); border-radius: var(--sketch-radius-s); background: var(--card); overflow-wrap: anywhere; word-break: keep-all; align-content: start;}
+.plab-group[data-fn-group="7.1"] .plab-body p {font-size: var(--fs-s);}
+.plab-row:nth-child(even) {border-radius: 6px 18px 6px 16px / 16px 6px 18px 6px;}
+.plab-row:target {box-shadow: 6px 6px 0 var(--menu);}
+.plab-label, .plab-body {min-width: 0;}
+.plab-label h3 {display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 0 0 8px; font-size: var(--fs-l);}
+.plab-title {font-family: var(--font-display); font-weight: 800;}
+.plab-desc {margin: 8px 0 0; color: var(--muted); font-size: var(--fs-s);}
+.plab-state {display: inline-block; max-width: 100%; padding: 1px 9px; border: 1.5px solid var(--ink); border-radius: var(--radius-pill); background: var(--card); color: var(--ink); font-size: 12px; font-weight: 700; line-height: 1.6; white-space: nowrap;}
+.plab-state[data-plab-state="ready"] {background: var(--hl); color: #161616;}
+.plab-state[data-plab-state="partial"] {background: linear-gradient(transparent 55%, var(--hl) 55%, var(--hl) 92%, transparent 92%);}
+:root[data-theme="dark"] .plab-state[data-plab-state="partial"] {background: var(--hl-soft);}
+.plab-state[data-plab-state="pending"], .plab-state[data-plab-state="na"] {border-style: dashed; border-color: var(--marker); color: var(--marker-ink);}
+.plab-state[data-plab-state="rule"] {border-style: dotted;}
+.plab-body > p:first-child, .plab-body > .plab-links:first-child {margin-top: 0;}
+.plab-body > .card, .plab-body > div > .card[data-forward-validation] {margin: 0; padding: 0; border: 0; border-radius: 0; box-shadow: none; background: transparent;}
+.plab-body > * + .card, .plab-slot:not(:empty) + .card {margin-top: 14px; padding-top: 12px; border-top: 1.5px dashed var(--line-strong);}
+.plab-body h4 {margin: 0 0 6px; font-size: var(--fs-m);}
+.plab-body h5 {margin: 14px 0 6px; font-size: var(--fs-s);}
+.plab-links {display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 0;}
+.plab-links a {display: inline-flex; align-items: center; min-height: 44px; max-width: 100%; padding: 0 14px; border: var(--sketch) solid var(--ink); border-radius: var(--radius-pill); background: var(--card); color: var(--ink); font-size: var(--fs-s); font-weight: 700; text-decoration: none;}
+.plab-links a:hover {background: var(--hl-soft); box-shadow: 3px 3px 0 var(--menu);}
+.plab-rules {margin: 0; padding-left: 1.2em;}
+.plab-rules li {margin: 4px 0;}
+.plab-rules li::marker {color: var(--marker);}
+.plab-frame {min-width: 0; margin: 18px 0 0; padding: 14px; border: 3px solid var(--ink); border-radius: var(--sketch-radius); background: var(--card); box-shadow: 6px 6px 0 var(--menu);}
+.plab-frame-title {display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 12px; font-size: var(--fs-l);}
+.plab-frame iframe {display: block; border: 1.5px solid var(--ink); border-radius: 6px;}
+.plab-group[data-fn-group="7.1"] .plab-rows {grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr));}
+[data-hub="validation"] {grid-template-columns: repeat(auto-fit, minmax(min(170px, 100%), 1fr)); gap: 10px;}
+[data-hub="validation"] .hub-card p {font-size: 12px;}
+@media (min-width: 750px) {
+  .plab-group[data-fn-group^="9"] .plab-row {grid-template-columns: minmax(200px, 260px) minmax(0, 1fr);}
+  .plab-group[data-fn-group^="9"] .plab-label {padding-right: 16px; border-right: 1.5px dashed var(--line-strong);}
+}
