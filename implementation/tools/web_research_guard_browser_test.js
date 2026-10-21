@@ -30,6 +30,13 @@ const NOT_PROVIDED = { "ko-KR": "미제공", "en-US": "Not provided" };
 // Home's Attention card; the fixture gives every section the same as_of, so the universe snapshot sentence is checked there only.
 const ATTENTION = 'main section.card:has(.chips a[href="#companies"])';
 const FIXTURE_MODULE = path.join(__dirname, "build_web_research_guard_fixture.py");
+// The probe checks below search the whole outerHTML, so the page's own wall-clock stamps are in scope too: data-refresh.js
+// writes new Date().toISOString() into section#data-refresh[data-refresh-checked] ("...T07:46:11.115Z"). On the real
+// clock that stamp contains "11.11" / "22.22" / "33.33" / "44.44" whenever a page loads at ss.mmm = 11.11x, 22.22x, ...,
+// which made the withheld-route check fail at random (CI runs 39216131374, 39221276009) with no research value rendered.
+// Every context runs on this fixed clock instead (Date only; timers keep running), so each run sees the same page.
+// main() asserts that the stamp itself contains no probe; the probe assertions stay on the full outerHTML.
+const FIXED_NOW = "2026-10-19T09:30:30.500Z";
 
 // The fixture's literal vectors, computed in memory by its own pure functions (the withheld build entry points are not used).
 function loadFixture() {
@@ -53,6 +60,9 @@ async function main() {
   if (!base.pathname.endsWith("/")) base.pathname += "/";
   const { bundle, manifest, variants } = loadFixture();
   assert.equal(manifest.kind, "WEB_RESEARCH_GUARD_FIXTURE_V1");
+  for (const probe of [...manifest.withheld_probes, ...manifest.validation_probes, "44.44", "TEST DEMO / NOT ACTUAL"]) {
+    assert.ok(!new Date(FIXED_NOW).toISOString().includes(probe), `fixed test clock must not spell probe ${probe}`);
+  }
   const launch = { headless: true };
   if (process.env.WEB_TEST_CHROMIUM_PATH) launch.executablePath = process.env.WEB_TEST_CHROMIUM_PATH;
   const checks = [], errors = [], traffic = { external: 0, unsafe: 0, failed_responses: 0 };
@@ -61,6 +71,7 @@ async function main() {
 
   async function openPage(served = null) {
     const context = await browser.newContext({ viewport: { width: 390, height: 844 } });await displayOnlyOff(context);
+    await context.clock.setFixedTime(new Date(FIXED_NOW));
     await context.route("**/*", async (route) => {
       const request = route.request(), url = new URL(request.url());
       if (request.method() !== "GET" || request.postData()) { traffic.unsafe++; await route.abort(); return; }
@@ -82,6 +93,7 @@ async function main() {
       await page.goto(new URL("#" + hash, base).href);
       await page.reload();
       await page.waitForFunction(() => typeof window.investmentSearch === "function" && !!document.querySelector("main h1"));
+      assert.equal(await page.evaluate(() => new Date().toISOString()), FIXED_NOW, "page runs on the fixed test clock");
     };
     // Run a bundle through the shipped render-time guard and re-render the current route (browser memory only).
     page.apply = async (data) => {
@@ -98,13 +110,14 @@ async function main() {
 
   try {
     browser = await chromium.launch(launch);
-    const routes = ["home", "companies", "portfolio", "leaderboard", "news", "research", "settings",
+    // Home is the search start (2026-10-17 redesign); the dashboard cards checked below live on #brief.
+    const routes = ["home", "brief", "companies", "portfolio", "leaderboard", "news", "research", "settings",
       "company/" + encodeURIComponent(manifest.company), "entity/" + encodeURIComponent("MACRO:CPIAUCSL"),
       "qgv", "watchlist", "technical", "macro", "validation"];
 
     await check("public data.json is all NOT_AVAILABLE; a data.json carrying the research sections is never rendered", async () => {
       const probe = await openPage();
-      await probe.go("home");
+      await probe.go("brief");
       const served = await probe.evaluate(() => fetch("data.json").then((r) => r.json()));
       assert.deepEqual(served.companies, []);
       for (const name of Object.keys(manifest.withheld).concat(Object.keys(manifest.rendered))) assert.equal(served[name].state, "NOT_AVAILABLE", name);
@@ -144,7 +157,7 @@ async function main() {
         }
       });
       await check(`${locale}: each research-marked section is withheld where it is shown`, async () => {
-        const expect = { home: ["changes", "news", "qgv", "technical"], portfolio: ["qgv", "technical"], technical: ["technical"],
+        const expect = { brief: ["changes", "news", "qgv", "technical"], portfolio: ["qgv", "technical"], technical: ["technical"],
           leaderboard: ["leaderboard"], news: ["news"], ["company/" + manifest.company]: ["news", "qgv", "technical"] };
         for (const [hash, names] of Object.entries(expect)) {
           await page.view(hash, bundle);
@@ -161,7 +174,7 @@ async function main() {
         assert.equal(await page.locator("#news-list [data-source-original], #news-list h3").count(), 0, "no withheld news rows");
       });
       await check(`${locale}: valid LIVE, legacy FROZEN universe, DEMO and NOT_AVAILABLE still render`, async () => {
-        await page.view("home", bundle);
+        await page.view("brief", bundle);
         const macro = page.locator(".home-grid section.card", { has: page.locator(".badge.LIVE") });
         assert.equal(await macro.count(), 1);
         assert.equal((await macro.locator(".badge.LIVE").innerText()).trim(), "LIVE");
@@ -186,7 +199,7 @@ async function main() {
         await page.view("companies", bundle);
         assert.ok((await page.locator("main p.meta").first().innerText()).includes("FROZEN_SNAPSHOT / DEMO"));
       });
-      await page.view("home", bundle);
+      await page.view("brief", bundle);
       await page.screenshot({ path: path.join(evidence, `guard-home-${locale}-390.png`), fullPage: true });
       await page.context().close();
     }
@@ -201,7 +214,7 @@ async function main() {
       await vpage.view("companies", variant);
       const legend = await vpage.locator("main p.meta").first().innerText();
       assert.ok(legend.startsWith("NOT_AVAILABLE") && legend.includes(REASON["ko-KR"]) && !legend.includes("FROZEN"), legend);
-      await vpage.view("home", variant);
+      await vpage.view("brief", variant);
       assert.ok(!(await vpage.locator(ATTENTION).innerText()).includes(bundle.universe.as_of), "no withheld universe as_of");
       await vpage.context().close();
     });
@@ -230,18 +243,18 @@ async function main() {
             }
           }
           if (expect.section === "macro") {
-            for (const hash of ["home", "portfolio", "company/" + manifest.company]) {
+            for (const hash of ["brief", "portfolio", "company/" + manifest.company]) {
               await vpage.view(hash, variant);
               assert.equal(await vpage.locator('[data-withheld="macro"]').count(), 1, `${file} ${hash}: macro withheld`);
             }
-            await vpage.view("home", variant);
+            await vpage.view("brief", variant);
             const seen = await vpage.locator("[data-withheld]").evaluateAll((l) => [...new Set(l.map((e) => e.dataset.withheld))].sort());
             assert.deepEqual(seen, ["changes", "macro", "news", "qgv", "technical"], `${file}: research sections stay withheld`);
           } else {
             await vpage.view("companies", variant);
             const legend = await vpage.locator("main p.meta").first().innerText();
             assert.ok(legend.startsWith("NOT_AVAILABLE") && legend.includes(VALIDATION_REASON[locale]) && !legend.includes("FROZEN"), legend);
-            await vpage.view("home", variant);
+            await vpage.view("brief", variant);
             assert.ok(!(await vpage.locator(ATTENTION).innerText()).includes(bundle.universe.as_of), "no withheld universe as_of");
           }
         }

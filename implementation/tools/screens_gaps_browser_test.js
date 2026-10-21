@@ -43,7 +43,7 @@ const overflow=page=>page.evaluate(()=>document.documentElement.scrollWidth<=inn
   assert.equal(await page.locator('#global-results li').first().getAttribute('data-entity-scope'),'UNIVERSE504');
   await page.locator('#global-search').fill('GOOGL');assert.equal(await page.locator('#global-results li').first().getAttribute('data-entity-id'),'COMPANY:googl');assert.equal(await page.locator('#global-results [data-entity-id="COMPANY:NASDAQ:GOOGL"]').count(),0);
   await page.locator('#global-search').fill('adbe');await page.locator('#global-results li').first().locator('a').click();await page.locator('[data-universe-company="LIVE"]').waitFor();
-  assert.equal(await page.locator('main h1').textContent(),'ADBE');assert.ok(page.url().endsWith('#company/NASDAQ%3AADBE'));const detail=await page.locator('[data-universe-company]').textContent();assert.ok(detail.includes('NOT_AVAILABLE')&&!/\$|10500|R 10000/.test(detail));
+  assert.equal(await page.locator('main h1').textContent(),'어도비 · ADBE');assert.ok(page.url().endsWith('#company/NASDAQ%3AADBE'));const detail=await page.locator('[data-universe-company]').textContent();assert.ok(detail.includes('NOT_AVAILABLE')&&!/\$|10500|R 10000/.test(detail));
   await page.goto(BASE+'#company/NASDAQ%3AZZZZ');await page.reload();await page.locator('[data-universe-company="NOT_AVAILABLE"]').waitFor();
   universe=false;await page.goto(BASE+'#home');await page.reload();await page.locator('#global-search').fill('ADBE');await page.waitForFunction(()=>document.querySelector('#global-results .empty'));
   await page.locator('#global-search').fill('NVDA');await page.locator('#global-results [data-entity-id="COMPANY:nvda"]').waitFor();await page.locator('#global-search').press('Escape');

@@ -13,6 +13,13 @@ Rules v0 (mirrored by web_assets/news-signals.js, checked by shared vectors):
   title tokens and Jaccard >= 50% -> same group (first NEW, later REPEAT);
 - an IR release that repeats an 8-K Exhibit 99.1 joins that 8-K's group (RELATED_TO_8K, REPEAT).
 
+Refresh outcome (schema 2, owner instruction 2026-10-19): carried items stay, but a failed collection is never
+hidden behind LIVE alone. Each company entry records this run's result (UPDATED / NO_NEW_ITEMS / FAILED / NOT_RUN and
+a fixed code) and `refresh` summarises each source (last attempt, last success, carried-from time, counts). `state`
+keeps its meaning (freshness of the published acquisitions, 48h); a failed or partly failed refresh adds
+REFRESH_FAILED / REFRESH_PARTIAL_FAILED / REFRESH_NOT_RUN to `reason_codes`. Schema 1 copies (previous Pages copy,
+preserve-only re-publication) stay readable.
+
 Pure functions: no network, credentials or clock. `tools/news_signals.py` collects and carries
 the previous Pages copy forward (rolling window).
 """
@@ -42,6 +49,14 @@ CLASSIFICATIONS = ('EARNINGS', 'PRODUCT', 'MA', 'LEGAL', 'OTHER')
 OCCURRENCES = ('NEW', 'REPEAT')
 RELATIONS = ('NONE', 'RELATED_TO_8K')
 STATES = ('LIVE', 'STALE', 'NOT_AVAILABLE')
+SCHEMA_VERSION = 2
+SCHEMA_VERSIONS = (1, 2)  # 1: copies published before the refresh outcome (read and preserved, never written)
+# This run's outcome per company: request answered with new items / answered with none / request failed / not requested.
+COMPANY_RESULTS = ('UPDATED', 'NO_NEW_ITEMS', 'FAILED', 'NOT_RUN')
+SUCCEEDED = ('UPDATED', 'NO_NEW_ITEMS')
+SOURCE_RESULTS = ('UPDATED', 'NO_NEW_ITEMS', 'PARTIAL_FAILED', 'FAILED', 'NOT_RUN')
+REFRESH_REASONS = {'PARTIAL_FAILED': 'REFRESH_PARTIAL_FAILED', 'FAILED': 'REFRESH_FAILED', 'NOT_RUN': 'REFRESH_NOT_RUN'}
+RESULT_CODE = re.compile(r'[A-Z][A-Z0-9_]{0,39}')
 FEED_STATUSES = ('VERIFIED', 'UNVERIFIED_URL', 'NOT_AVAILABLE')
 COMPANY_REASONS = ('NOT_COLLECTED', 'NO_OFFICIAL_FEED_KNOWN')
 MATCHING_RULE = 'TITLE_NAME_OR_TICKER_V0'
@@ -179,6 +194,12 @@ _LABEL = r'[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?'
 LINK_PATTERN = re.compile(r'(https?)://(' + _LABEL + r'(?:\.' + _LABEL + r')+)(?::[0-9]{1,5})?(?:[/?][A-Za-z0-9!$%&\'()*+,./:;=?@\[\]_~-]*)?')
 TOP_KEYS = ('schema_version', 'kind', 'as_of', 'state', 'reason_codes', 'freshness_basis', 'stale_after_seconds', 'window_days',
             'channel', 'score_effect', 'attribution', 'matching_rule', 'sources', 'items')
+TOP_KEYS_V2 = TOP_KEYS + ('refresh',)
+COMPANY_KEYS_V2 = ('last_result', 'last_result_code')
+REFRESH_KEYS = ('attempted_at', 'result', 'sources')
+SOURCE_REFRESH_KEYS = ('last_attempt_at', 'last_success_at', 'last_result', 'last_result_code', 'items_carried_from',
+                       'companies', 'new_items')
+COUNT_KEYS = ('succeeded', 'failed', 'not_run')
 ITEM_KEYS = ('company_id', 'source', 'title', 'link', 'published_at', 'classification', 'group_id', 'occurrence',
              'relation', 'related_8k_accession')
 
@@ -417,17 +438,23 @@ def _dedupe(items, counts):
     return out
 
 
-def merge(previous, collected, *, as_of, sec=None, counts=None):
-    """Build the next public payload.
+def merge(previous, collected, *, as_of, sec=None, counts=None, failures=None):
+    """Build the next public payload (schema 2).
 
-    previous: validated payload or None. collected: {'GDELT'|'IR': {company_id: {'acquired_at': datetime,
-    'rows': [{'title','link','published_at'}]}}} for sources/companies collected this run. sec: validated
-    `sec-disclosures.json` payload or None (8-K relation). Items of collected companies are added to their
-    previous items; companies not collected keep previous items and acquisition time. Rolling window.
+    previous: validated payload (schema 1 or 2) or None. collected: {'GDELT'|'IR': {company_id: {'acquired_at': datetime,
+    'rows': [{'title','link','published_at'}]}}} for sources/companies collected this run. failures: {(source,
+    company_id): ('FAILED'|'NOT_RUN', fixed code)} of this run, or None. sec: validated `sec-disclosures.json` payload or
+    None (8-K relation). Items of collected companies are added to their previous items; companies not collected keep
+    previous items and acquisition time. Rolling window.
+
+    A run is recorded (`refresh`) when something was collected or `failures` is given; a listed company neither
+    collected nor failed is NOT_RUN/NOT_COLLECTED. Without a run (build copy, tests) `refresh` is null.
     """
     counts = {} if counts is None else counts
     as_of = datetime.fromisoformat(instant(as_of))
     cutoff = as_of - timedelta(days=WINDOW_DAYS)
+    attempted = failures is not None or any(collected.get(s) for s in SOURCES)
+    failures = failures or {}
     sources, items = {}, []
     previous_items = previous['items'] if previous is not None else []
     for source in SOURCES:
@@ -439,8 +466,16 @@ def merge(previous, collected, *, as_of, sec=None, counts=None):
             old_rows = [dict(i) for i in previous_items if i['source'] == source and i['company_id'] == cid
                         and _clock(i['published_at']) >= cutoff]
             if source == 'IR' and cid not in IR_FEEDS:
-                sources[source][cid] = empty
+                sources[source][cid] = dict(empty, last_result=None, last_result_code=None)
                 continue
+            if not attempted:
+                result = (None, None)
+            elif got is not None:
+                result = ('COLLECTED', None)  # UPDATED or NO_NEW_ITEMS once the published items are known
+            else:
+                result = failures.get((source, cid), ('NOT_RUN', 'NOT_COLLECTED'))
+                _need(result[0] in ('FAILED', 'NOT_RUN') and isinstance(result[1], str)
+                      and RESULT_CODE.fullmatch(result[1]) is not None)
             if got is not None:
                 acquired = datetime.fromisoformat(instant(got['acquired_at']))
                 _need(acquired <= as_of)
@@ -452,10 +487,11 @@ def merge(previous, collected, *, as_of, sec=None, counts=None):
             elif old_entry is not None and old_entry['acquired_at'] is not None:
                 rows, acquired_at = old_rows, old_entry['acquired_at']
             else:
-                sources[source][cid] = empty
+                sources[source][cid] = dict(empty, last_result=result[0], last_result_code=result[1])
                 continue
             rows = _order(rows)[:PER_COMPANY_MAX[source]]
-            sources[source][cid] = {'state': _fresh(_clock(acquired_at), as_of), 'acquired_at': acquired_at, 'reason_code': None}
+            sources[source][cid] = {'state': _fresh(_clock(acquired_at), as_of), 'acquired_at': acquired_at, 'reason_code': None,
+                                    'last_result': result[0], 'last_result_code': result[1]}
             if source == 'IR':
                 sources[source][cid]['feed_status'] = IR_FEEDS[cid]['status']
             items.extend(rows)
@@ -469,40 +505,102 @@ def merge(previous, collected, *, as_of, sec=None, counts=None):
             item.update(relation='RELATED_TO_8K', related_8k_accession=found[0], group_id=found[1], occurrence='REPEAT')
         else:
             item.update(relation='NONE', related_8k_accession=None)
-    payload = _payload(as_of, sources, items)
+    run = {'previous_links': {i['link'] for i in previous_items}} if attempted else None
+    payload = _payload(as_of, sources, items, run)
     while len(encode(payload)) > SIZE_BUDGET and payload['items']:
-        payload['items'] = _order(assign_groups(payload['items'][:-1]))
+        payload = _payload(as_of, sources, payload['items'][:-1], run)
     return require_news_signals(payload)
 
 
-def _payload(as_of, sources, items):
+def _file_state(sources):
     states = [c['state'] for s in SOURCES for c in sources[s].values()]
-    state = 'LIVE' if 'LIVE' in states else 'STALE' if 'STALE' in states else 'NOT_AVAILABLE'
+    return 'LIVE' if 'LIVE' in states else 'STALE' if 'STALE' in states else 'NOT_AVAILABLE'
+
+
+def _base_reasons(state):
+    return [] if state == 'LIVE' else ['STALE_INPUT'] if state == 'STALE' else ['NO_ELIGIBLE_INPUT']
+
+
+def _listed(source):
+    """Companies this source requests: every GDELT company, IR companies with a listed feed."""
+    return [cid for cid in _companies(source) if source == 'GDELT' or cid in IR_FEEDS]
+
+
+def source_refresh(source, entries, attempted_at, new_items):
+    """The `refresh.sources[source]` summary, derived from the company entries (shared by merge and the validator)."""
+    listed = _listed(source)
+    ok = [cid for cid in listed if entries[cid]['last_result'] in SUCCEEDED]
+    failed = [entries[cid]['last_result_code'] for cid in listed if entries[cid]['last_result'] == 'FAILED']
+    not_run = [entries[cid]['last_result_code'] for cid in listed if entries[cid]['last_result'] == 'NOT_RUN']
+    if ok and not failed and not not_run:
+        result = 'UPDATED' if any(entries[cid]['last_result'] == 'UPDATED' for cid in ok) else 'NO_NEW_ITEMS'
+        code = None
+    else:
+        result = 'PARTIAL_FAILED' if ok else 'FAILED' if failed else 'NOT_RUN'
+        code = (failed + not_run)[0] if failed or not_run else 'NOT_COLLECTED'
+    acquired = [entries[cid]['acquired_at'] for cid in _companies(source) if entries[cid]['acquired_at'] is not None]
+    carried = [entries[cid]['acquired_at'] for cid in listed
+               if entries[cid]['last_result'] not in SUCCEEDED and entries[cid]['acquired_at'] is not None]
+    return {'last_attempt_at': attempted_at, 'last_success_at': max(acquired) if acquired else None, 'last_result': result,
+            'last_result_code': code, 'items_carried_from': min(carried) if carried else None,
+            'companies': {'succeeded': len(ok), 'failed': len(failed), 'not_run': len(not_run)}, 'new_items': new_items}
+
+
+def refresh_result(summaries):
+    results = [summaries[s]['last_result'] for s in SOURCES]
+    if all(r in SUCCEEDED for r in results):
+        return 'UPDATED' if 'UPDATED' in results else 'NO_NEW_ITEMS'
+    if any(r in SUCCEEDED or r == 'PARTIAL_FAILED' for r in results):
+        return 'PARTIAL_FAILED'
+    return 'FAILED' if 'FAILED' in results else 'NOT_RUN'
+
+
+def _payload(as_of, sources, items, run):
     items = _order(assign_groups(_order(items)[:MAX_ITEMS]))
-    return {'schema_version': 1, 'kind': KIND, 'as_of': instant(as_of), 'state': state,
-            'reason_codes': [] if state == 'LIVE' else ['STALE_INPUT'] if state == 'STALE' else ['NO_ELIGIBLE_INPUT'],
-            'freshness_basis': 'SOURCE_ACQUISITION', 'stale_after_seconds': int(STALE_AFTER.total_seconds()),
+    sources = json.loads(json.dumps(sources))
+    refresh = None
+    if run is not None:
+        added = {}
+        for i in items:
+            if i['link'] not in run['previous_links']:
+                added[(i['source'], i['company_id'])] = added.get((i['source'], i['company_id']), 0) + 1
+        summaries = {}
+        for source in SOURCES:
+            for cid, entry in sources[source].items():
+                if entry['last_result'] == 'COLLECTED':
+                    entry['last_result'] = 'UPDATED' if added.get((source, cid)) else 'NO_NEW_ITEMS'
+            new = sum(n for (s, cid), n in added.items() if s == source and sources[s][cid]['last_result'] == 'UPDATED')
+            summaries[source] = source_refresh(source, sources[source], instant(as_of), new)
+        refresh = {'attempted_at': instant(as_of), 'result': refresh_result(summaries), 'sources': summaries}
+    state = _file_state(sources)
+    reasons = _base_reasons(state) + ([REFRESH_REASONS[refresh['result']]] if refresh and refresh['result'] in REFRESH_REASONS else [])
+    return {'schema_version': SCHEMA_VERSION, 'kind': KIND, 'as_of': instant(as_of), 'state': state,
+            'reason_codes': reasons, 'freshness_basis': 'SOURCE_ACQUISITION', 'stale_after_seconds': int(STALE_AFTER.total_seconds()),
             'window_days': WINDOW_DAYS, 'channel': 'NEWS', 'score_effect': 'NONE',
             'attribution': json.loads(json.dumps(ATTRIBUTION)), 'matching_rule': MATCHING_RULE,
-            'sources': sources, 'items': items}
+            'sources': sources, 'refresh': refresh, 'items': items}
 
 
 def _require(p):
-    _need(isinstance(p, dict) and set(p) == set(TOP_KEYS))
-    _need(type(p['schema_version']) is int and p['schema_version'] == 1 and p['kind'] == KIND)
+    _need(isinstance(p, dict) and type(p.get('schema_version')) is int and p['schema_version'] in SCHEMA_VERSIONS)
+    v2 = p['schema_version'] == 2
+    _need(set(p) == set(TOP_KEYS_V2 if v2 else TOP_KEYS) and p['kind'] == KIND)
     cut = _clock(p['as_of'])
     _need(p['freshness_basis'] == 'SOURCE_ACQUISITION' and p['channel'] == 'NEWS' and p['score_effect'] == 'NONE')
     _need(type(p['stale_after_seconds']) is int and p['stale_after_seconds'] == int(STALE_AFTER.total_seconds()))
     _need(type(p['window_days']) is int and p['window_days'] == WINDOW_DAYS)
     _need(p['attribution'] == ATTRIBUTION and p['matching_rule'] == MATCHING_RULE)
     _need(isinstance(p['sources'], dict) and set(p['sources']) == set(SOURCES))
-    acquired, states = {}, []
+    refresh = p['refresh'] if v2 else None
+    if refresh is not None:
+        _need(isinstance(refresh, dict) and set(refresh) == set(REFRESH_KEYS) and refresh['attempted_at'] == p['as_of'])
+    acquired = {}
     for source in SOURCES:
         entries = p['sources'][source]
         _need(isinstance(entries, dict) and set(entries) == set(_companies(source)))
         for cid, c in entries.items():
             keys = {'state', 'acquired_at', 'reason_code'} | ({'feed_status'} if source == 'IR' else set())
-            _need(isinstance(c, dict) and set(c) == keys)
+            _need(isinstance(c, dict) and set(c) == keys | (set(COMPANY_KEYS_V2) if v2 else set()))
             if source == 'IR':
                 feed = IR_FEEDS.get(cid)
                 # A listed feed may be VERIFIED later without invalidating earlier copies.
@@ -516,10 +614,18 @@ def _require(p):
                 at = _clock(c['acquired_at'])
                 _need(at <= cut and c['reason_code'] is None and c['state'] == _fresh(at, cut))
                 acquired[(source, cid)] = at
-            states.append(c['state'])
-    state = 'LIVE' if 'LIVE' in states else 'STALE' if 'STALE' in states else 'NOT_AVAILABLE'
+            if v2:
+                result, code = c['last_result'], c['last_result_code']
+                if refresh is None or (source == 'IR' and cid not in IR_FEEDS):
+                    _need(result is None and code is None)
+                elif result in SUCCEEDED:
+                    _need(code is None and c['acquired_at'] is not None)
+                else:
+                    _need(result in ('FAILED', 'NOT_RUN') and isinstance(code, str) and RESULT_CODE.fullmatch(code) is not None)
+    state = _file_state(p['sources'])
     _need(p['state'] == state)
-    _need(p['reason_codes'] == ([] if state == 'LIVE' else ['STALE_INPUT'] if state == 'STALE' else ['NO_ELIGIBLE_INPUT']))
+    extra = [REFRESH_REASONS[refresh['result']]] if refresh is not None and refresh['result'] in REFRESH_REASONS else []
+    _need(p['reason_codes'] == _base_reasons(state) + extra)
     items = p['items']
     _need(isinstance(items, list) and len(items) <= MAX_ITEMS)
     cutoff = cut - timedelta(days=WINDOW_DAYS)
@@ -551,6 +657,21 @@ def _require(p):
     _need(items == _order(items))
     expected = assign_groups([dict(i) for i in items])
     _need(all(a['group_id'] == b['group_id'] and a['occurrence'] == b['occurrence'] for a, b in zip(items, expected)))
+    if refresh is not None:
+        _need(isinstance(refresh['sources'], dict) and set(refresh['sources']) == set(SOURCES))
+        for source in SOURCES:
+            got, entries = refresh['sources'][source], p['sources'][source]
+            _need(isinstance(got, dict) and set(got) == set(SOURCE_REFRESH_KEYS))
+            new = got['new_items']
+            updated = [cid for cid in entries if entries[cid]['last_result'] == 'UPDATED']
+            # An UPDATED company has published items; new items exist exactly when some company is UPDATED.
+            _need(all(per.get((source, cid), 0) > 0 for cid in updated))
+            _need(type(new) is int and new >= 0 and (new > 0) == bool(updated)
+                  and new <= sum(per.get((source, cid), 0) for cid in updated))
+            _need(isinstance(got['companies'], dict) and set(got['companies']) == set(COUNT_KEYS)
+                  and all(type(got['companies'][k]) is int for k in COUNT_KEYS))
+            _need(got == source_refresh(source, entries, refresh['attempted_at'], new))
+        _need(refresh['result'] == refresh_result(refresh['sources']))
     return p
 
 

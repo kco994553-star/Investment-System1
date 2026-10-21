@@ -247,10 +247,13 @@ class Sec(AS.Sec):
     code claimed by several CIKs); rebind: {code: new CIK} (ticker reuse, the new holder has no annual financials);
     unticked: CIKs whose submissions no longer list the ticker; mismatch: CIKs whose SEC response names another CIK."""
 
-    def __init__(self, *, hidden=(), claims=(), rebind=None, unticked=(), mismatch=(), **kwargs):
+    def __init__(self, *, hidden=(), claims=(), rebind=None, unticked=(), mismatch=(), text_cik=None, **kwargs):
         super().__init__(**kwargs)
         self.hidden, self.claims, self.rebind = set(hidden), list(claims), dict(rebind or {})
         self.unticked, self.mismatch = set(unticked), set(mismatch)
+        # text_cik: {cik: offset}: that issuer's companyfacts names its CIK as an unpadded decimal string (as SEC
+        # does for recently registered issuers), offset 0 = its own CIK, otherwise another CIK.
+        self.text_cik = dict(text_cik or {})
 
     def ticker_body(self):
         rows = [[int(self.rebind.get(code, cik)), 'Synthetic', *AS.sec_ticker(code)]
@@ -273,6 +276,8 @@ class Sec(AS.Sec):
         body = facts if 'companyfacts' in url else subs
         if cik in self.mismatch:
             body = json.dumps(dict(json.loads(body), cik=int(cik) + 1)).encode()
+        if cik in self.text_cik and 'companyfacts' in url:
+            body = json.dumps(dict(json.loads(body), cik=str(int(cik) + self.text_cik[cik]))).encode()
         return SecResponse(200, body, final_url=url)
 
 
@@ -381,7 +386,10 @@ def test_iii_a_row_rejected_by_the_strict_check_keeps_the_verified_row_of_the_sa
     assert merged['records'][code]['acquired_at'] == previous['records'][code]['acquired_at'] and stats['preserved'] == {code}
     other = dict(bad, cik='0000999999')
     merged = qgv2.merge(previous, {code: other}, as_of=day(1), shard_index=0, stats=stats)
-    assert merged['records'][code]['reason_codes'] == ['INVALID_INPUT'] and merged['records'][code]['acquired_at'] is None
+    # Another CIK without its own collection record: the kept observation is withdrawn (UNI-WITHDRAWN), never carried.
+    row = merged['records'][code]
+    assert row['reason_codes'] == [qgv2.WITHDRAWN_REASON] and row['acquired_at'] is None and row['fiscal_year_end'] is None
+    assert (row['withdrawn_acquired_at'], row['withdrawn_cik']) == (previous['records'][code]['acquired_at'], previous['records'][code]['cik'])
     assert stats['identity_not_preserved'] == {code}
 
 
@@ -449,8 +457,9 @@ def test_e_ticker_reuse_never_carries_the_previous_issuers_values(tmp_path, caps
 
 
 def test_e_a_ticker_claimed_by_several_ciks_is_not_preserved(tmp_path, capsys, baseline):
-    """(e) Day 1: E's ticker is claimed by E and another CIK. Identity is not confirmed: E's NA row is not preserved
-    (CIK_UNRESOLVED, no record) and the guard refuses the deploy (fail closed)."""
+    """(e) Day 1: E's ticker is claimed by E and another CIK. Identity is not confirmed: E's NA row is not preserved;
+    its collection record is withdrawn (UNI-WITHDRAWN: no CIK or acquired_at, naming E's day-0 row) and the guard
+    passes it as WITHDRAWN (before: CIK_UNRESOLVED, refused as LOST_RECORD)."""
     day0, e = baseline
     code_e = AS.CODE[e]
     capsys.readouterr()
@@ -458,16 +467,17 @@ def test_e_a_ticker_claimed_by_several_ciks_is_not_preserved(tmp_path, capsys, b
     counts = collection_counts(capsys.readouterr().out)
     for name in UNIVERSE:
         row = rows(day1, name)[code_e]
-        assert row['reason_codes'] == ['CIK_UNRESOLVED'] and row['acquired_at'] is None and row['cik'] is None
+        assert row['reason_codes'] == [us.WITHDRAWN_REASON] and row['acquired_at'] is None and row['cik'] is None
+        assert (row['withdrawn_acquired_at'], row['withdrawn_cik']) == (rows(day0, name)[code_e]['acquired_at'], e)
     assert counts['preserved_unconfirmed'] == '0'
     code, out = guard_against(day1, day0, capsys)
-    assert code == 1 and f'code={code_e} kind=LOST_RECORD ' in out
+    assert code == 0 and all(section_line(out, name, 'records')['withdrawn'] == '1' for name in UNIVERSE)
 
 
 def test_e_a_response_naming_another_cik_is_not_preserved(tmp_path, capsys, baseline):
     """(e) Day 1: SEC answers M's request with another CIK (SEC_CIK_MISMATCH). Before, M's rows were kept as a failed
-    issuer. Now they are NOT_AVAILABLE with the reason (shares CIK_MISMATCH, Q·G INVALID_INPUT): no values carried; the
-    guard refuses (fail closed) because the response is not a collection record."""
+    issuer. Now no values are carried: M's day-0 collection is withdrawn in each file (UNI-WITHDRAWN, naming that file's
+    row); the guard passes it as WITHDRAWN (before: NOT_AVAILABLE without a record, refused as LOST_RECORD)."""
     day0, _ = baseline
     m = members(1)[0]
     code_m = AS.CODE[m]
@@ -476,11 +486,35 @@ def test_e_a_response_naming_another_cik_is_not_preserved(tmp_path, capsys, base
     out = capsys.readouterr().out
     counts = collection_counts(out)
     assert 'code=SEC_CIK_MISMATCH' in out and counts['failed'] == '1' and counts['identity_not_preserved'] == '1'
-    assert rows(day1, us.FILENAME)[code_m]['reason_codes'] == ['CIK_MISMATCH']
-    for name in (uqg.FILENAME, qgv2.FILENAME):
-        assert rows(day1, name)[code_m]['reason_codes'] == ['INVALID_INPUT'] and rows(day1, name)[code_m]['acquired_at'] is None
+    for name in UNIVERSE:
+        row = rows(day1, name)[code_m]
+        assert row['reason_codes'] == [us.WITHDRAWN_REASON] and row['acquired_at'] is None and row['cik'] is None
+        assert (row['withdrawn_acquired_at'], row['withdrawn_cik']) == (rows(day0, name)[code_m]['acquired_at'], m)
     code, out = guard_against(day1, day0, capsys)
-    assert code == 1 and f'code={code_m} kind=LOST_RECORD ' in out
+    assert code == 0 and all(section_line(out, name, 'records')['withdrawn'] == '1' for name in UNIVERSE)
+
+
+def test_e_a_companyfacts_cik_as_unpadded_text_of_the_same_issuer_is_a_new_collection(tmp_path, capsys, baseline):
+    """SEC companyfacts of recently registered issuers (2026-10: ExxonMobil Holdings 2115436, Honeywell Aerospace
+    2089271) name the CIK as an unpadded decimal string. Before, that was SEC_CIK_MISMATCH and the issuer's rows were
+    withdrawn as an identity conflict. The same number is the same issuer: M is collected (new acquired_at in every
+    file, no failure, nothing withdrawn); a string naming another CIK stays a mismatch with no refreshed record."""
+    day0, _ = baseline
+    m, other = members(1)[:2]
+    capsys.readouterr()
+    day1 = run(tmp_path, 'day1', Sec(text_cik={m: 0, other: 1}), 1, previous=day0)
+    out = capsys.readouterr().out
+    counts = collection_counts(out)
+    assert out.count('code=SEC_CIK_MISMATCH') == 1 and counts['failed'] == '1' and counts['identity_not_preserved'] == '1'
+    for name in UNIVERSE:
+        row, before = rows(day1, name)[AS.CODE[m]], rows(day0, name)[AS.CODE[m]]
+        assert row['cik'] == m and row['acquired_at'] > before['acquired_at']
+        assert us.WITHDRAWN_REASON not in row['reason_codes']
+        mismatched = rows(day1, name)[AS.CODE[other]]
+        assert mismatched['reason_codes'] == [us.WITHDRAWN_REASON] and mismatched['acquired_at'] is None
+    assert rows(day1, qgv2.FILENAME)[AS.CODE[m]]['state'] == rows(day0, qgv2.FILENAME)[AS.CODE[m]]['state']
+    code, out = guard_against(day1, day0, capsys)
+    assert code == 0 and all(section_line(out, name, 'records')['withdrawn'] == '1' for name in UNIVERSE)
 
 
 def test_f_a_successful_collection_with_a_policy_na_is_published_not_the_old_row(tmp_path, capsys, baseline):

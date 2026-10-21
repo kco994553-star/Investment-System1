@@ -132,3 +132,33 @@ details .row {
     flex-basis: 180px;
   }
 }
+/* Favorites and personal copies (this browser only). Monochrome; state is also given in text. */
+.pl-domains {display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0;}
+.pl-domains button, .pl-actions button, #pl-fav {background: var(--card); color: var(--ink); border: 1px solid var(--line); padding: 6px 10px; font-size: 14px;}
+.pl-domains button[aria-pressed="true"], #pl-fav[aria-pressed="true"] {background: var(--ink); color: var(--paper); border-color: var(--ink);}
+.pl-note {margin: 6px 0;}
+.pl-store p {margin: 4px 0 8px;}
+.pl-actions {display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0;}
+#pl-personal {border-top: 1px solid var(--line); margin-top: 18px; padding-top: 6px;}
+#pl-personal textarea {width: 100%; min-height: 180px; font-family: ui-monospace, Menlo, monospace; font-size: 14px;}
+.pl-official {margin: 6px 0 0;}
+.pl-mine {margin-left: 6px;}
+.pl-domains button:focus-visible, .pl-actions button:focus-visible, #pl-fav:focus-visible, #pl-view:focus-visible, #pl-body:focus-visible {outline: 3px solid var(--acc); outline-offset: 2px;}
+/* Prompt fields and the personal prompt body: the full width of their column at every size; height is the user's. */
+.field-guide textarea, #pl-personal textarea {width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box; resize: vertical;}
+/* Paper and ink (menu 6, owner draft 2026-10-18; design lane D5 2026-10-20): white paper, black ink, sketch borders, the
+   prompt menu's colour for the current item and a yellow highlighter, as in theme.css. Dark keeps the chalkboard tones.
+   Layout, controls and the frozen catalogue text are unchanged. */
+:root {--ink: #161616; --paper: #ffffff; --card: #ffffff; --line: #d4d2ca; --acc: #161616; --muted: #4a4a4a; --pl-menu: #c2416b; --pl-hl: #fff6cc;}
+@media (prefers-color-scheme: dark) {:root:not([data-theme="light"]) {--ink: #f1efe6; --paper: #1f2a26; --card: #24302b; --line: #43524b; --acc: #f1efe6; --muted: #c3c8be; --pl-menu: #f397b8; --pl-hl: #3a3a24;}}
+body {font-family: system-ui, -apple-system, "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;}
+header {border-bottom: 2px solid var(--ink);}
+aside {border-right-width: 2px; border-right-color: var(--ink);}
+h1 {font-weight: 900;}
+#list li.on {background: var(--pl-hl); box-shadow: inset 4px 0 0 var(--pl-menu);}
+pre, .field-group {border: 2px solid var(--ink); border-radius: 18px 6px 16px 6px / 6px 16px 6px 18px;}
+input, select, textarea {border-color: var(--muted); border-radius: 4px;}
+button {border-width: 2px; border-color: var(--ink); border-radius: 999px;}
+.pl-domains button, .pl-actions button, #pl-fav {border: 2px solid var(--ink); border-radius: 999px;}
+.pl-domains button[aria-pressed="true"], #pl-fav[aria-pressed="true"] {box-shadow: 3px 3px 0 var(--pl-menu);}
+.badge {border-color: var(--ink); border-radius: 3px;}

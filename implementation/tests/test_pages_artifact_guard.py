@@ -47,9 +47,17 @@ class PagesArtifactGuardTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         receipt = json.loads(result.stdout)
         self.assertEqual(receipt["pages_artifact_guard"], "PASS")
-        self.assertEqual(receipt["files_scanned"], 97)
+        self.assertEqual(receipt["files_scanned"], 133)  # 129 + self-hosted OFL fonts (IA-11, 2026-10-20): jua/gaegu WOFF2 subsets + jua-OFL.txt/gaegu-OFL.txt; 129 = 126 + macro evidence (#351, owner approval 2026-10-20): macro-evidence.js/.css/.json; 119 (macro-cycle-ring.js/.css; incl. TA P1 modules chart-bars.js, pattern-config-defaults.js, pattern-engine.js, pattern-history.js, 2026-10-20) + chart renderer (P1-7/P1-8, 2026-10-20): chart-renderer.js, chart-workbench.js/.css, vendored lightweight-charts 5.2.1 + LICENSE/NOTICE/third-party notices; before that: 106 - the four removed home-bg-*.svg (2026-10-18) + universe-company.js/.css + doodles.js + ia-screens.js (owner IA 2026-10-18) + company-names-ko.json (KR-NAMES 2026-10-18) + stat-radar.js/.css + v-coverage.js/.css + price-time.js (D10 price time 2026-10-18) + data-refresh.js (2026-10-18)
         self.assertEqual(receipt["violations"], {})
         self.assertEqual(result.stderr, "")
+
+    def test_entry_count_above_the_cap_is_rejected(self):
+        guard = self.guard()
+        self.assertEqual(guard.MAX_ENTRIES, 192)
+        present = sum(1 for _ in self.site.iterdir())
+        for n in range(guard.MAX_ENTRIES - present + 1):
+            (self.site / f"extra-{n}.txt").write_text("x", encoding="utf-8")
+        self.assert_rejected("excessive_entries")
 
     def scan(self, site=None):
         return self.guard().scan_artifact(site or self.site)
@@ -99,6 +107,107 @@ class PagesArtifactGuardTests(unittest.TestCase):
                 icon.write_bytes(original + b'SYNTHETIC_PRIVATE_ICON_CANARY')
                 self.assert_rejected('unapproved_content')
                 icon.write_bytes(original)
+
+    FONTS = ('jua-regular-ksx1001.woff2', 'gaegu-regular-ksx1001.woff2')
+
+    def tar_of_site(self, extra=()):
+        archive = Path(self.temp.name) / 'site.tar'
+        with tarfile.open(archive, 'w', format=tarfile.USTAR_FORMAT) as handle:
+            members = [('./' + path.name, path.read_bytes()) for path in sorted(self.site.iterdir())] + list(extra)
+            for name, body in members:
+                info = tarfile.TarInfo(name)
+                info.size, info.mode, info.uid, info.gid, info.uname, info.gname = len(body), 0o644, 0, 0, '', ''
+                handle.addfile(info, io.BytesIO(body))
+        return archive
+
+    def test_font_exception_is_exactly_two_root_files_with_pinned_woff2_bytes(self):
+        guard = self.guard()
+        self.assertEqual(guard.FONT_FILES, frozenset(self.FONTS))
+        self.assertLess(guard.FONT_MAX_BYTES, guard.MAX_FILE_BYTES)
+        # Text decoding and text secret patterns are skipped for these two binary files only.
+        self.assertEqual({n for n in guard.ALLOWED_NAMES if n.endswith('.woff2')}, set(self.FONTS))
+        self.assertEqual(self.tar_receipt(self.tar_of_site()), self.scan())
+
+    def tar_receipt(self, archive):
+        return self.guard().validate_pages_tar(archive)
+
+    def test_tampered_fonts_are_rejected(self):
+        for name in self.FONTS:
+            font = self.site / name
+            original = font.read_bytes()
+            self.assertTrue(original.startswith(b'wOF2'))
+            body_flip = bytearray(original)
+            body_flip[len(original) // 2] ^= 0xFF  # header stays valid: only the pinned hash catches it
+            header = bytearray(original)
+            header[4:8] = b'ttcf'  # collection flavor
+            wrong_length = bytearray(original)
+            wrong_length[8:12] = (len(original) + 4).to_bytes(4, 'big')
+            meta = bytearray(original)
+            meta[28:32] = (len(original) - 4).to_bytes(4, 'big')  # extended metadata block declared
+            private = bytearray(original)
+            private[44:48] = (4).to_bytes(4, 'big')  # private data block declared
+            cases = {
+                'unapproved_content': bytes(body_flip),
+                'invalid_font': [original + b'SYNTHETIC_PRIVATE_FONT_CANARY', b'wOFF' + original[4:], bytes(header),
+                                 bytes(wrong_length), bytes(meta), bytes(private), b'wOF2' + os.urandom(len(original) - 4), b'wOF2', b''],
+                'oversized_files': b'wOF2' + bytes(self.guard().FONT_MAX_BYTES),
+            }
+            for category, payloads in cases.items():
+                for payload in payloads if isinstance(payloads, list) else [payloads]:
+                    with self.subTest(name=name, category=category, size=len(payload), head=payload[:12]):
+                        font.write_bytes(payload)
+                        receipt = self.assert_rejected(category)
+                        self.assertEqual(self.tar_receipt(self.tar_of_site()), receipt)
+            font.write_bytes(original)
+        self.assertEqual(self.scan()["pages_artifact_guard"], "PASS")
+
+    def test_font_names_elsewhere_or_other_woff2_names_are_rejected(self):
+        font = (self.site / self.FONTS[0]).read_bytes()
+        # Same file name in a subdirectory: directory scan (root only) and tar both refuse the path.
+        nested = self.site / 'sub' / 'dir'
+        nested.mkdir(parents=True)
+        (nested / self.FONTS[0]).write_bytes(font)
+        receipt = self.assert_rejected('unexpected_entries')
+        self.assertIn('nonregular_entries', receipt['violations'])
+        shutil.rmtree(self.site / 'sub')
+        tar_receipt = self.tar_receipt(self.tar_of_site([('./sub/dir/' + self.FONTS[0], font)]))
+        self.assertEqual(tar_receipt['pages_artifact_guard'], 'FAIL')
+        self.assertIn('unexpected_entries', tar_receipt['violations'])
+        # Another *.woff2 name with the approved bytes: no extension-wide allowance.
+        for other in ('extra-ksx1001.woff2', 'Jua-Regular-KSX1001.woff2', 'jua-regular-ksx1001.woff'):
+            with self.subTest(other=other):
+                (self.site / other).write_bytes(font)
+                self.assert_rejected('unexpected_entries')
+                tar_receipt = self.tar_receipt(self.tar_of_site())
+                self.assertIn('unexpected_entries', tar_receipt['violations'])
+                (self.site / other).unlink()
+
+    def test_font_provenance_script_matches_guard_pins_and_css(self):
+        spec = importlib.util.spec_from_file_location('font_subset_ksx1001', GUARD_PATH.with_name('font_subset_ksx1001.py'))
+        script = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(script)  # fontTools is imported only when subsetting
+        guard = self.guard()
+        self.assertEqual(set(script.FONTS), set(guard.FONT_FILES))
+        for name, (_upstream, _source_digest, output_digest) in script.FONTS.items():
+            self.assertEqual(guard.APPROVED_SHA256[name], output_digest)
+        for name, (_upstream, digest) in script.LICENCES.items():
+            self.assertEqual(guard.APPROVED_SHA256[name], digest)
+        self.assertEqual(len(script.ksx1001_hangul()), 2350)
+        theme = (self.baseline / 'theme.css').read_text(encoding='utf-8')
+        self.assertEqual(theme.count('unicode-range: ' + script.UNICODE_RANGE + ';'), 2)
+        notices = (self.baseline / 'third-party-notices.txt').read_text(encoding='utf-8')
+        self.assertIn(script.UPSTREAM_COMMIT, notices)
+
+    def test_text_checks_still_apply_to_every_non_font_file(self):
+        font = (self.site / self.FONTS[0]).read_bytes()
+        # Font bytes under a pinned text name (the fonts' own licence text) fail the text decode.
+        (self.site / 'jua-OFL.txt').write_bytes(font)
+        self.assert_rejected('invalid_format')
+        shutil.copyfile(self.baseline / 'jua-OFL.txt', self.site / 'jua-OFL.txt')
+        # A contact address in the licence text is still caught by the text secret patterns.
+        text = (self.site / 'gaegu-OFL.txt').read_text(encoding='utf-8')
+        (self.site / 'gaegu-OFL.txt').write_text(text + '\n' + 'synthetic-contact' + '@' + 'example.invalid' + '\n', encoding='utf-8')
+        self.assert_rejected('secret_patterns')
 
     def test_legacy_ranked_membership_is_rejected_in_directory_and_tar(self):
         self.write_json(lambda data: data["universe"].update({"data": {
@@ -373,7 +482,7 @@ class PagesArtifactGuardTests(unittest.TestCase):
     def test_github_pages_tar_shape_passes_same_guard(self):
         receipt = self.tar_receipt()
         self.assertEqual(receipt["pages_artifact_guard"], "PASS")
-        self.assertEqual(receipt["files_scanned"], 97)
+        self.assertEqual(receipt["files_scanned"], 133)  # 129 + self-hosted OFL fonts (IA-11, 2026-10-20): jua/gaegu WOFF2 subsets + jua-OFL.txt/gaegu-OFL.txt; 129 = 126 + macro evidence (#351, owner approval 2026-10-20): macro-evidence.js/.css/.json; 119 (macro-cycle-ring.js/.css; incl. TA P1 modules chart-bars.js, pattern-config-defaults.js, pattern-engine.js, pattern-history.js, 2026-10-20) + chart renderer (P1-7/P1-8, 2026-10-20): chart-renderer.js, chart-workbench.js/.css, vendored lightweight-charts 5.2.1 + LICENSE/NOTICE/third-party notices; before that: 106 - the four removed home-bg-*.svg (2026-10-18) + universe-company.js/.css + doodles.js + ia-screens.js (owner IA 2026-10-18) + company-names-ko.json (KR-NAMES 2026-10-18) + stat-radar.js/.css + v-coverage.js/.css + price-time.js (D10 price time 2026-10-18) + data-refresh.js (2026-10-18)
         self.assertEqual(receipt["violations"], {})
 
     def test_exact_upload_action_tar_command_with_normalized_owners_passes(self):

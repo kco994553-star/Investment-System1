@@ -69,6 +69,12 @@ def test_build_reuses_canonical_prompt_payload():
         assert cat.sha256 in research
         assert render_html().split('<script type="application/json" id="plv1-data">')[1].split('</script>')[0] in research
         assert not (Path(d)/'network.html').exists()
+        # Directive §10: favorites and personal copies are a presentation layer on this browser only; the canonical
+        # renderer (and its Frozen catalog payload) is reused unchanged and no second catalog is embedded.
+        assert render_html().split('<script>')[1].split('</script>')[0] in research
+        assert research.count('id="plv1-data"') == 1
+        for marker in ('investment.web.v1.prompt-favorites', 'investment.web.v1.prompt-personal-copies', '이 브라우저 기준', 'try{localStorage.setItem'):
+            assert marker in research, marker
 
 
 def test_no_scoring_track_owner_imports():

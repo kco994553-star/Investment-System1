@@ -359,4 +359,3 @@ python3 implementation/tools/macro_lights_replay.py \
 - 보고는 대화로만 한다. 저장소·Pages·Actions 로그·PR 본문에는 넣지 않는다. 기록 범위는 사용자가 정한다.
 - 조건(4/5 이상)을 채워도 게이트는 켜지지 않는다. 재가동은 M-REENABLE 사용자 결정으로만 한다.
 - 이 재생도 수정치 기반 근사 재생이다. 앞으로의 전진 검증(§12 (b))과는 다르다.
-

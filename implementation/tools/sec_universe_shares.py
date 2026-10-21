@@ -39,7 +39,10 @@ and QGV v2 separately; counts only).
 # failure, a row the strict check rejects, a shares row without a count after the cover fetch failed), keeps its
 # verified previous row of the same CIK unchanged. Identity conflicts (another CIK for the code, a ticker claimed by
 # several CIKs, an SEC response naming another CIK) never keep an earlier row: a ticker claimed by several CIKs has no
-# row this run and is published CIK_UNRESOLVED without acquired_at. Owner rule 2026-10-17 (later): a row of a successful
+# row this run. Owner decision UNI-WITHDRAWN (a) 2026-10-17: such a code whose kept row in a file has a collection record
+# is published there as a withdrawal row (IDENTITY_CONFLICT_WITHDRAWN, detected_at, withdrawn_acquired_at, withdrawn_cik,
+# no values), kept unchanged until a confirmed new collection; without a kept record it is CIK_UNRESOLVED without
+# acquired_at (nothing invented). Each summary line counts withdrawn rows. Owner rule 2026-10-17 (later): a row of a successful
 # collection replaces the kept row also when it is NOT_AVAILABLE or INVALID_INPUT (daily and --all-shards alike).
 # `SEC_UNIVERSE_COLLECTION` counts new collections, failures and published rows of an earlier run.
 import argparse
@@ -62,8 +65,8 @@ from investment_system.providers.sec_universe_collection import (
     UniverseSecClient, collect_partition, daily_partition, fetch_ticker_exchange, universe_registry,
 )
 from investment_system.universe.sec_universe_shares import (
-    FILENAME, MAX_BYTES, build_issuer_records, empty_record, encode, load_config, merge, parse_json, require_universe_shares,
-    select_cover_filing, shard_day, shard_index_for, universe_codes, upgrade_legacy,
+    FILENAME, MAX_BYTES, build_issuer_records, empty_record, encode, is_withdrawal, load_config, merge, parse_json,
+    require_universe_shares, select_cover_filing, shard_day, shard_index_for, universe_codes, upgrade_legacy,
 )
 from investment_system.universe import sec_universe_qg as qg
 from investment_system.universe import sec_qgv2 as qgv2
@@ -110,24 +113,39 @@ def _fetch_body(source, limit, open_response):
         raise OSError('PREVIOUS_FETCH_FAILED') from None
 
 
+def _previous(source, limit, open_response, validate):
+    """(validated payload, live bytes), (None, None) on 404. Network failures raise OSError, invalid copies ValueError."""
+    body = _fetch_body(source, limit, open_response)
+    return (None, None) if body is None else (validate(body), body)
+
+
+def _shares_payload(body):
+    return require_universe_shares(upgrade_legacy(parse_json(body)))
+
+
+def _qg_payload(body):
+    return qg.require_universe_qg(qg.parse_json(body))
+
+
+def _qgv2_payload(body):
+    return qgv2.require_qgv2(qgv2.parse_json(body))
+
+
 def fetch_previous(*, open_response=None):
     """Live Pages copy -> validated payload, None on 404. Other failures raise.
 
     A copy published before `unlisted_classes` existed is upgraded (NOT_COLLECTED entries, rows unchanged)."""
-    body = _fetch_body(SOURCE, MAX_BYTES, open_response)
-    return None if body is None else require_universe_shares(upgrade_legacy(parse_json(body)))
+    return _previous(SOURCE, MAX_BYTES, open_response, _shares_payload)[0]
 
 
 def fetch_previous_qg(*, open_response=None):
     """Live Pages `sec-universe-qg.json` -> validated payload, None on 404 (start fresh). Invalid -> ValueError."""
-    body = _fetch_body(QG_SOURCE, qg.MAX_BYTES, open_response)
-    return None if body is None else qg.require_universe_qg(qg.parse_json(body))
+    return _previous(QG_SOURCE, qg.MAX_BYTES, open_response, _qg_payload)[0]
 
 
 def fetch_previous_qgv2(*, open_response=None):
     """Live Pages `sec-qgv2.json` -> validated payload, None on 404 (start fresh). Invalid -> ValueError."""
-    body = _fetch_body(QGV2_SOURCE, qgv2.MAX_BYTES, open_response)
-    return None if body is None else qgv2.require_qgv2(qgv2.parse_json(body))
+    return _previous(QGV2_SOURCE, qgv2.MAX_BYTES, open_response, _qgv2_payload)[0]
 
 
 def read_staged_target(directory):
@@ -141,11 +159,14 @@ def read_staged_target(directory):
 
 
 def write(directory, payload, *, name=FILENAME, encoder=encode):
+    return write_bytes(directory, encoder(payload), name=name)
+
+
+def write_bytes(directory, body, *, name=FILENAME):
     directory = Path(directory)
     destination = directory / name
     if directory.is_symlink() or not directory.is_dir() or destination.is_symlink():
         raise ValueError('SEC_UNIVERSE_SHARES_OUTPUT_INVALID')
-    body = encoder(payload)
     with tempfile.NamedTemporaryFile(dir=directory, prefix='.sec-universe-', delete=False) as handle:
         temporary = Path(handle.name)
         handle.write(body)
@@ -313,7 +334,7 @@ def _summary(payload):
     rows = payload['records'].values()
     count = lambda key, value: sum(1 for r in rows if r[key] == value)
     return (f"live={count('state', 'LIVE')} stale={count('state', 'STALE')} not_available={count('state', 'NOT_AVAILABLE')} "
-            f"single_class={count('share_class_basis', 'SINGLE_CLASS_CONFIRMED')} share_class_basis={count('share_class_basis', 'SHARE_CLASS_BASIS')} "
+            f"withdrawn={sum(1 for r in rows if is_withdrawal(r))} single_class={count('share_class_basis', 'SINGLE_CLASS_CONFIRMED')} share_class_basis={count('share_class_basis', 'SHARE_CLASS_BASIS')} "
             f"basis_unconfirmed={count('share_class_basis', 'BASIS_UNCONFIRMED')}")
 
 
@@ -321,7 +342,8 @@ def _qg_summary(payload):
     rows = payload['records'].values()
     count = lambda value: sum(1 for r in rows if r['state'] == value)
     scored = sum(1 for r in rows for score in r['factors'].values() if score is not None)
-    return f"live={count('LIVE')} stale={count('STALE')} not_available={count('NOT_AVAILABLE')} factor_scores={scored}"
+    return (f"live={count('LIVE')} stale={count('STALE')} not_available={count('NOT_AVAILABLE')} "
+            f"withdrawn={sum(1 for r in rows if is_withdrawal(r))} factor_scores={scored}")
 
 
 def run(out, *, live, preserve_only=False, environ=None, now=_utc_now, client_kwargs=None,
@@ -333,19 +355,19 @@ def run(out, *, live, preserve_only=False, environ=None, now=_utc_now, client_kw
         print('SEC_UNIVERSE_SHARES CONFIG_INVALID')
         return 1
     try:
-        previous = fetch_previous(open_response=open_previous)
+        previous, previous_body = _previous(SOURCE, MAX_BYTES, open_previous, _shares_payload)
     except ValueError:
         print('SEC_UNIVERSE_SHARES PREVIOUS_DISCARDED')
-        previous = None
+        previous = previous_body = None
     except Exception:
         print('SEC_UNIVERSE_SHARES PREVIOUS_FETCH_FAILED')
         return 1
     # Both previous copies are read before anything is written: a network failure on either writes nothing.
     try:
-        previous_qg = fetch_previous_qg(open_response=open_previous)
+        previous_qg, previous_qg_body = _previous(QG_SOURCE, qg.MAX_BYTES, open_previous, _qg_payload)
     except ValueError:
         print('SEC_UNIVERSE_QG PREVIOUS_DISCARDED')
-        previous_qg = None
+        previous_qg = previous_qg_body = None
     except Exception:
         print('SEC_UNIVERSE_QG PREVIOUS_FETCH_FAILED')
         return 1
@@ -356,15 +378,27 @@ def run(out, *, live, preserve_only=False, environ=None, now=_utc_now, client_kw
         print('SEC_QGV2 STAGED_TARGET_DISCARDED')
         staged_target = {}
     try:
-        previous_qgv2 = fetch_previous_qgv2(open_response=open_previous)
+        previous_qgv2, previous_qgv2_body = _previous(QGV2_SOURCE, qgv2.MAX_BYTES, open_previous, _qgv2_payload)
     except ValueError:
         print('SEC_QGV2 PREVIOUS_DISCARDED')
-        previous_qgv2 = None
+        previous_qgv2 = previous_qgv2_body = None
     except Exception:
         print('SEC_QGV2 PREVIOUS_FETCH_FAILED')
         return 1
+    # --preserve-only (cockpit-pages.yml UI-only deploys; no other caller passes it): nothing is collected, so the live
+    # copy is re-published byte for byte (its as_of, states, last_shard_index and every row unchanged), never restated at
+    # the deploy time. Exceptions, both without new data: a shares copy from before `unlisted_classes` is written in its
+    # upgraded form (NOT_COLLECTED entries; as_of and rows unchanged), and TARGET rows staged in --out take the merge
+    # below. The daily run (preserve_only False) restores and merges exactly as before.
     try:
-        if previous is not None:
+        if previous is not None and preserve_only:
+            raw = parse_json(previous_body)
+            if upgrade_legacy(raw) is raw:
+                write_bytes(out, previous_body)
+            else:
+                write(out, previous)
+            print('SEC_UNIVERSE_SHARES PREVIOUS_RESTORED')
+        elif previous is not None:
             write(out, merge(previous, {}, as_of=now(), shard_index=previous['last_shard_index'], config=cfg))
             print('SEC_UNIVERSE_SHARES PREVIOUS_RESTORED')
         elif preserve_only:
@@ -373,7 +407,10 @@ def run(out, *, live, preserve_only=False, environ=None, now=_utc_now, client_kw
         print('SEC_UNIVERSE_SHARES OUTPUT_FAILED')
         return 1
     try:
-        if previous_qg is not None:
+        if previous_qg is not None and preserve_only:
+            write_bytes(out, previous_qg_body, name=qg.FILENAME)
+            print('SEC_UNIVERSE_QG PREVIOUS_RESTORED')
+        elif previous_qg is not None:
             write_qg(out, qg.merge(previous_qg, {}, as_of=now(), shard_index=previous_qg['last_shard_index'], config=cfg))
             print('SEC_UNIVERSE_QG PREVIOUS_RESTORED')
         elif preserve_only:
@@ -383,7 +420,10 @@ def run(out, *, live, preserve_only=False, environ=None, now=_utc_now, client_kw
         return 1
     # A v2 failure is reported with a fixed code and never fails the other files (the last valid v2 copy stays).
     try:
-        if previous_qgv2 is not None or staged_target:
+        if previous_qgv2 is not None and preserve_only and not staged_target:
+            write_bytes(out, previous_qgv2_body, name=qgv2.FILENAME)
+            print('SEC_QGV2 PREVIOUS_RESTORED')
+        elif previous_qgv2 is not None or staged_target:
             write_qgv2(out, qgv2.merge(previous_qgv2, {}, as_of=now(), config=cfg, target_updates=staged_target,
                                        shard_index=previous_qgv2['last_shard_index'] if previous_qgv2 else None))
             print('SEC_QGV2 PREVIOUS_RESTORED' + (f' staged_target={len(staged_target)}' if staged_target else ''))
@@ -456,6 +496,7 @@ def run(out, *, live, preserve_only=False, environ=None, now=_utc_now, client_kw
                               failed=counts['failed'], unresolved=unresolved, attempted=counts['codes'],
                               files=(('shares', payload, updates), ('qg', qg_payload, qg_updates),
                                      ('qgv2', qgv2_payload, qgv2_updates)), stats=stats))
+        print(withdrawal_line(f"shard={index}/{cfg['shard_count']}", stats))
         if counts['all_failed']:
             print('SEC_UNIVERSE_SHARES SHARD_ALL_FAILED previous_kept')
         if token is None:
@@ -519,6 +560,15 @@ def collection_line(scope, *, issuers, collected, failed, unresolved, attempted,
             f"unresolved_codes={len(unresolved)} "
             + ' '.join(f'preserved_previous_{name}={_count(preserved_previous(p, u, codes))}' for name, p, u in files)
             + f" preserved_unconfirmed={union('preserved')} identity_not_preserved={union('identity_not_preserved')}")
+
+
+def withdrawal_line(scope, stats):
+    """UNI-WITHDRAWN run log (owner decision 2026-10-17, #289 item 2): per file, codes withdrawn this run and live
+    withdrawals that persist (re-checked by this run). The rows keep their first detected_at; nothing here is published."""
+    count = lambda name, key: len(stats.get(name, {}).get(key, ()))
+    return (f'SEC_UNIVERSE_WITHDRAWALS {scope} '
+            + ' '.join(f'new_{name}={count(name, "withdrawn_new")} kept_{name}={count(name, "withdrawal_kept")}'
+                       for name in ('shares', 'qg', 'qgv2')))
 
 
 def _run_all_shards(out, *, cfg, environ, now, client_kwargs, token, open_upload, previous, previous_qg, previous_qgv2,
@@ -646,6 +696,7 @@ def _run_all_shards(out, *, cfg, environ, now, client_kwargs, token, open_upload
     print(collection_line(f'shard=all/{count}', issuers=sum(len(i) for i in partitions.values()),
                           collected=totals['collected'], failed=totals['failed'], unresolved=unresolved,
                           attempted=set().union(*shard_codes.values()), files=files, stats=stats))
+    print(withdrawal_line(f'shard=all/{count}', stats))
     if failed_shards:
         print('SEC_UNIVERSE_SHARES ALL_SHARDS_PARTIAL failed_shards=' + ','.join(str(i) for i in failed_shards) + ' previous_kept')
     return 0

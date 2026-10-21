@@ -7,14 +7,27 @@
  const TOP=['schema_version','kind','as_of','config_version','config_status','freshness_basis','stale_after_seconds','shard_count','last_shard_index','registry_sha256','code_count','state','reason_codes','records','unlisted_classes'];
  const UNLISTED_REASONS=['NOT_COLLECTED','UNLISTED_CLASS_SHARES_NOT_AVAILABLE','UNLISTED_CLASS_AMBIGUOUS','STALE_INPUT'],UNLISTED_KEYS=['cik','valued_at','accn','measurement_date','cover_sha256','classes','state','reason_codes'];
  const KEYS=['cik','listing_id','company_id','shares','measurement_date','accn','form','filed','acquired_at','concept','share_class_basis','basis_evidence','source_sha256','state','reason_codes'];
+ /* Identity-conflict withdrawal (owner decision UNI-WITHDRAWN (a) 2026-10-17; Python sec_universe_shares.WITHDRAWN_REASON /
+    WITHDRAWAL_KEYS / require_withdrawal): the empty row with reason IDENTITY_CONFLICT_WITHDRAWN only, no CIK, acquired_at,
+    sources or values, plus detected_at (when the conflict was seen, never an acquired_at) and withdrawn_acquired_at /
+    withdrawn_cik (this file's stopped row). The three keys and the reason appear on no other row. Readers never use the stopped row. */
+ const WITHDRAWN_REASON='IDENTITY_CONFLICT_WITHDRAWN',WITHDRAWAL_KEYS=['detected_at','withdrawn_acquired_at','withdrawn_cik'];
+ /* schema_version (Python sec_universe_shares.SCHEMA_VERSIONS): 1 and 2 are read; withdrawal rows only in 2. A version above 2 is a newer
+    data format than this page knows: ERR_NEWER (the page asks for a reload), never shown as data. */
+ const SCHEMA_VERSIONS=[1,2],ERR_NEWER='SEC_UNIVERSE_SHARES_SCHEMA_NEWER';
  function need(x){if(!x)throw Error('SEC_UNIVERSE_SHARES_INVALID');}
  const plain=x=>x!==null&&typeof x==='object'&&!Array.isArray(x),keys=(x,k)=>plain(x)&&Object.keys(x).length===k.length&&k.every(n=>Object.hasOwn(x,n));
  const hash=x=>typeof x==='string'&&/^[0-9a-f]{64}$/.test(x),accn=x=>typeof x==='string'&&/^\d{10}-\d{2}-\d{6}$/.test(x);
  const day=x=>typeof x==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(x)&&new Date(x+'T00:00:00Z').toISOString().slice(0,10)===x;
  function clock(x){need(typeof x==='string'&&/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?(?:Z|[+-]\d{2}:\d{2})$/.test(x)&&day(x.slice(0,10)));const t=Date.parse(x);need(Number.isFinite(t));return t;}
  const utcDay=t=>new Date(t).toISOString().slice(0,10),positive=x=>typeof x==='number'&&Number.isFinite(x)&&x>0;
- function record(code,r,cut,ttl){
-  need(keys(r,KEYS));const at=code.indexOf(':');need(at>0);const venue=code.slice(0,at),symbol=code.slice(at+1).replaceAll('.','-'),mic={NASDAQ:'XNAS',NYSE:'XNYS'}[venue];
+ const canon=x=>Array.isArray(x)?'['+x.map(canon).join(',')+']':plain(x)?'{'+Object.keys(x).sort().map(k=>JSON.stringify(k)+':'+canon(x[k])).join(',')+'}':JSON.stringify(x);
+ const cikOk=x=>typeof x==='string'&&/^\d{10}$/.test(x)&&x!=='0000000000',withdrawal=r=>plain(r)&&Object.hasOwn(r,'detected_at');
+ function emptyRecord(reason='NOT_COLLECTED'){return{cik:null,listing_id:null,company_id:null,shares:null,measurement_date:null,accn:null,form:null,filed:null,acquired_at:null,concept:null,share_class_basis:'BASIS_UNCONFIRMED',basis_evidence:{cover_accn:null,class_count:null,class_members:[],listing_class_member:null},source_sha256:{companyfacts:null,submissions:null,cover:null},state:'NOT_AVAILABLE',reason_codes:[reason]};}
+ /* One withdrawal row's own keys (mirrors Python require_withdrawal). */
+ function withdrawn(r,cut,empty){need(keys(r,Object.keys(empty()).concat(WITHDRAWAL_KEYS))&&canon(Object.fromEntries(Object.entries(r).filter(([k])=>!WITHDRAWAL_KEYS.includes(k))))===canon(empty(WITHDRAWN_REASON)));const detected=clock(r.detected_at);need(detected<=cut&&clock(r.withdrawn_acquired_at)<=detected&&cikOk(r.withdrawn_cik));}
+ function record(code,r,cut,ttl,allowWithdrawal=true){
+  const w=withdrawal(r);if(w){need(allowWithdrawal);withdrawn(r,cut,emptyRecord);}need(keys(r,w?KEYS.concat(WITHDRAWAL_KEYS):KEYS));const at=code.indexOf(':');need(at>0);const venue=code.slice(0,at),symbol=code.slice(at+1).replaceAll('.','-'),mic={NASDAQ:'XNAS',NYSE:'XNYS'}[venue];
   need(r.cik===null||typeof r.cik==='string'&&/^\d{10}$/.test(r.cik)&&r.cik!=='0000000000');need(r.listing_id===null||mic&&r.cik!==null&&r.listing_id===mic+':'+symbol+':'+r.cik);
   need(r.company_id===null||typeof r.company_id==='string'&&/^[a-z0-9_]{1,64}$/.test(r.company_id));need((r.listing_id===null)===(r.company_id===null));need(r.shares===null||positive(r.shares));
   for(const k of ['measurement_date','filed'])need(r[k]===null||day(r[k]));need(r.accn===null||accn(r.accn));need(r.form===null||FORMS.includes(r.form));need(r.concept===null||CONCEPTS.includes(r.concept));
@@ -23,7 +36,7 @@
   need(Array.isArray(m)&&m.length<=16&&m.every(x=>typeof x==='string'&&/^[A-Za-z][A-Za-z0-9_]{0,127}$/.test(x))&&JSON.stringify(m)===JSON.stringify([...new Set(m)].sort()));
   need(e.class_count===null&&!m.length||Number.isInteger(e.class_count)&&e.class_count===m.length);need(e.listing_class_member===null||m.includes(e.listing_class_member));
   const h=r.source_sha256;need(keys(h,['companyfacts','submissions','cover'])&&Object.values(h).every(v=>v===null||hash(v)));
-  const reasons=r.reason_codes;need(Array.isArray(reasons)&&reasons.length<=4&&new Set(reasons).size===reasons.length&&reasons.every(x=>REASONS.has(x)));
+  const reasons=r.reason_codes;need(Array.isArray(reasons)&&reasons.length<=4&&new Set(reasons).size===reasons.length&&reasons.every(x=>REASONS.has(x)||w&&x===WITHDRAWN_REASON));
   const filing=['measurement_date','accn','form','filed','concept'];need(r.listing_id===null||r.acquired_at!==null&&h.companyfacts&&h.submissions);
   if(r.shares===null){need(r.state==='NOT_AVAILABLE'&&reasons.length&&filing.every(k=>r[k]===null)&&r.share_class_basis==='BASIS_UNCONFIRMED');}
   else{need(['cik','listing_id','acquired_at',...filing].every(k=>r[k]!==null)&&h.companyfacts&&h.submissions);const acquired=clock(r.acquired_at);need(r.measurement_date<=r.filed&&r.filed<=utcDay(acquired));const fresh=cut-acquired<=ttl*1000;need(r.state===(fresh?'LIVE':'STALE')&&reasons.includes('STALE_INPUT')===!fresh);}
@@ -45,11 +58,12 @@
   const listed=group.codes.map(c=>records[c]).filter(x=>x&&x.share_class_basis==='SHARE_CLASS_BASIS'&&x.accn===e.accn).map(x=>x.basis_evidence.listing_class_member);need(!names.some(n=>listed.includes(n)));return e.state;
  }
  function validate(p){
+  if(plain(p)&&p.kind==='SEC_UNIVERSE_SHARES'&&Number.isInteger(p.schema_version)&&p.schema_version>SCHEMA_VERSIONS[SCHEMA_VERSIONS.length-1])throw Error(ERR_NEWER);
   try{
-   need(keys(p,TOP)&&p.schema_version===1&&p.kind==='SEC_UNIVERSE_SHARES'&&p.config_version===CONFIG_VERSION&&p.config_status===CONFIG_STATUS&&p.freshness_basis==='SOURCE_ACQUISITION');const cut=clock(p.as_of),ttl=p.stale_after_seconds;
+   need(keys(p,TOP)&&SCHEMA_VERSIONS.includes(p.schema_version)&&p.kind==='SEC_UNIVERSE_SHARES'&&p.config_version===CONFIG_VERSION&&p.config_status===CONFIG_STATUS&&p.freshness_basis==='SOURCE_ACQUISITION');const cut=clock(p.as_of),ttl=p.stale_after_seconds;
    need(Number.isInteger(ttl)&&ttl>0&&ttl<=366*86400&&Number.isInteger(p.shard_count)&&p.shard_count>=1&&p.shard_count<=366&&(p.last_shard_index===null||Number.isInteger(p.last_shard_index)&&p.last_shard_index>=0&&p.last_shard_index<p.shard_count)&&(p.registry_sha256===null||hash(p.registry_sha256)));
    const codes=plain(p.records)?Object.keys(p.records):[];need(codes.length===504&&p.code_count===504&&codes.every(c=>/^[A-Z]{2,8}:[A-Z0-9][A-Z0-9.\-]{0,15}$/.test(c)));
-   const states=codes.map(c=>record(c,p.records[c],cut,ttl)),state=states.includes('LIVE')?'LIVE':states.includes('STALE')?'STALE':'NOT_AVAILABLE';need(p.state===state);
+   const states=codes.map(c=>record(c,p.records[c],cut,ttl,p.schema_version>=2)),state=states.includes('LIVE')?'LIVE':states.includes('STALE')?'STALE':'NOT_AVAILABLE';need(p.state===state);
    const ids=Object.keys(groups.UNLISTED);need(plain(p.unlisted_classes)&&Object.keys(p.unlisted_classes).length===ids.length&&ids.every(id=>Object.hasOwn(p.unlisted_classes,id)&&unlisted(groups.UNLISTED[id],p.unlisted_classes[id],p.records)));
    need(Array.isArray(p.reason_codes)&&new Set(p.reason_codes).size===p.reason_codes.length&&p.reason_codes.every(x=>['STALE_INPUT','NO_ELIGIBLE_INPUT'].includes(x)));return p;
   }catch(_){throw Error('SEC_UNIVERSE_SHARES_INVALID');}
@@ -69,5 +83,5 @@
   const text=await response.text();if(new TextEncoder().encode(text).length>MAX)throw Error('SEC_UNIVERSE_SHARES_INVALID');let payload;try{payload=JSON.parse(text);}catch(_){throw Error('SEC_UNIVERSE_SHARES_INVALID');}
   return toInputs(payload,{now:now||new Date().toISOString()});
  }
- return Object.freeze({FILENAME,CONFIG_STATUS,validate,restate,toInputs,loadInputs});
+ return Object.freeze({FILENAME,CONFIG_STATUS,WITHDRAWN_REASON,SCHEMA_VERSIONS,ERR_NEWER,validate,restate,toInputs,loadInputs});
 });

@@ -46,3 +46,72 @@ test('balanced preset reproduces the GSQ-017 type weights; the gate excludes V a
  assert.throws(()=>V2.scoreUniverse({}, {}, {preset:'tuned'}),/PRESET_INVALID/);});
 test('monthClose: month-end close of the fiscal period-end month from the device Prices tab shape',()=>{
  assert.equal(V2.monthClose({'2024-11':5,'2024-12':6},'2024-12-31'),6);assert.equal(V2.monthClose({'2024-11':5},'2024-12-31'),null);assert.equal(V2.monthClose({'2024-12':0},'2024-12-31'),null);assert.equal(V2.monthClose(null,'2024-12-31'),null);});
+/* PERSONAL_PREVIEW two-level weights (owner directive 2026-10-18 §4.2). Python twin: tests/test_qgv_v2_custom_weights.py,
+   vectors tests/fixtures/qgv_v2_custom_vectors_v1.json (tools/qgv_v2_custom_reference.py). */
+const custom=JSON.parse(fs.readFileSync(path.join(__dirname,'../tests/fixtures/qgv_v2_custom_vectors_v1.json'),'utf8'));
+const companiesOf=c=>c.input.companies==='scored_universe'?custom.scored_universe:c.input.companies;
+const rankedCodes=res=>Object.entries(res).filter(([,r])=>r.total!==null).sort((a,b)=>b[1].total-a[1].total||(a[0]<b[0]?-1:1)).map(([k])=>k);
+const stripProfile=res=>{const out={},profiles={};for(const[k,r]of Object.entries(res)){const{profile,...rest}=r;out[k]=rest;profiles[k]=profile;}return[out,profiles];};
+test('E1: official weights via `weights` deep-equal the preset path for every vector case (incl. published-axes)',()=>{
+ for(const c of vectors.cases){const i=c.input,preset=i.preset??'balanced';
+  const a=V2.scoreUniverse(structuredClone(i.companies),structuredClone(i.synthetic_market),{typeConfig:TC,parameters:P,preset:i.preset,gate:i.gate});
+  const b=V2.scoreUniverse(structuredClone(i.companies),structuredClone(i.synthetic_market),{typeConfig:TC,parameters:P,gate:i.gate,weights:V2.officialWeights(preset)});
+  const[ra,pa]=stripProfile(a),[rb,pb]=stripProfile(b);assert.deepStrictEqual(rb,ra,c.id);
+  for(const k of Object.keys(pa)){assert.equal(pb[k].namespace,'PERSONAL_PREVIEW');assert.match(pb[k].id,/^qgv-v2\/custom\/[0-9a-f]{16}\/gate-(on|off)$/);assert.ok(!('namespace' in pa[k]));assert.deepEqual(pb[k].recomputed_axes,[]);}
+  equal(a,c.expected);}});
+test('custom vectors: Python == JS (cases, custom axis units, stable weight ids)',()=>{
+ for(const u of custom.units.axis)equal(V2.axisScore(u.scores,u.axis,u.weights),u.expected,'axis '+u.axis);
+ for(const u of custom.units.weights_id)assert.equal(V2.weightsId(V2.validateWeights(u.weights),u.type_weights),u.expected);
+ for(const c of custom.cases){const i=c.input,input=structuredClone(companiesOf(c)),before=JSON.stringify(input);
+  const out=V2.scoreUniverse(input,structuredClone(i.synthetic_market),{typeConfig:TC,parameters:P,gate:i.gate,weights:structuredClone(i.weights),typeWeights:i.type_weights,recomputePublished:i.recompute_published});
+  equal(out,c.expected,c.id);assert.equal(JSON.stringify(input),before,'input not mutated');}});
+test('E2: forced recompute at official weights on score_rows axes: same NA, gate flags, rank order, |diff| <= 1e-9',()=>{
+ const u=custom.scored_universe,market=custom.cases.find(c=>c.id==='scored-official-forced-recompute').input.synthetic_market;
+ const pub=V2.scoreUniverse(u,market,{typeConfig:TC,parameters:P}),rec=V2.scoreUniverse(u,market,{typeConfig:TC,parameters:P,weights:V2.officialWeights(),recomputePublished:true});
+ let worst=0;for(const k of Object.keys(pub)){const a=pub[k],b=rec[k];
+  for(const ax of ['Q','G','V']){const x=a.axes[ax].score,y=b.axes[ax].score;assert.equal(x===null,y===null,k+ax);if(x!==null)worst=Math.max(worst,Math.abs(x-y));}
+  assert.equal(a.total===null,b.total===null,k);if(a.total!==null)worst=Math.max(worst,Math.abs(a.total-b.total));
+  assert.deepEqual(b.flags,a.flags,k);assert.equal(b.value_trap_gate,a.value_trap_gate,k);}
+ assert.ok(worst<=1e-9,String(worst));assert.deepEqual(rankedCodes(rec),rankedCodes(pub));assert.deepEqual(rec[Object.keys(rec)[0]].profile.recomputed_axes,['Q','G']);});
+test('E3: one inner weight changes only affected rows; the official result object is unchanged',()=>{
+ const u=custom.scored_universe,market=custom.cases.find(c=>c.id==='scored-q-profitability-40').input.synthetic_market,opts={typeConfig:TC,parameters:P};
+ const before=V2.scoreUniverse(u,market,opts),tree=V2.officialWeights();tree.inner.Q.q_profitability=40;
+ const mine=V2.scoreUniverse(u,market,{...opts,weights:tree}),after=V2.scoreUniverse(u,market,opts),base=V2.scoreUniverse(u,market,{...opts,weights:V2.officialWeights(),recomputePublished:true});
+ assert.deepStrictEqual(after,before);let changed=0;
+ for(const[k,r]of Object.entries(mine)){assert.deepStrictEqual(r.axes.G,before[k].axes.G);assert.deepStrictEqual(r.axes.V,before[k].axes.V);
+  const has=r.factors.q_profitability.score!==null,o=base[k].axes.Q.score,n=r.axes.Q.score;
+  if(!has&&(o===null)===(n===null)&&n!==null)assert.ok(Math.abs(n-o)<=1e-9,k);else if(has&&n!==null&&o!==null&&Math.abs(n-o)>1e-9)changed++;
+  const qp=r.q_industry_percentile;assert.equal(r.value_trap_gate,qp!==null&&qp<=V2.GATE_PERCENTILE);}
+ assert.ok(changed>20);});
+test('invalid weight trees are rejected (sum 0, negative, NaN, unknown factor, ...); zero = excluded, not missing',()=>{
+ const bad=custom.units.invalid.map(u=>u.weights);for(const v of [NaN,Infinity,-Infinity]){const t=V2.officialWeights();t.inner.G.g_consistency=v;bad.push(t);}bad.push('balanced',{},[]);
+ for(const t of bad)assert.throws(()=>V2.scoreUniverse({},{},{typeConfig:TC,parameters:P,weights:t}),/WEIGHTS_INVALID/,JSON.stringify(t));
+ assert.throws(()=>V2.officialWeights('tuned'),/PRESET_INVALID/);
+ const w={q_profitability:25,q_moat_proxy:0,q_earnings_quality:20,q_financial_safety:20,q_capital_allocation:15},s={q_profitability:80,q_moat_proxy:null,q_earnings_quality:40,q_financial_safety:null,q_capital_allocation:null},o=V2.axisScore(s,'Q',w);
+ assert.deepEqual(o.excluded,['q_moat_proxy']);assert.deepEqual(o.missing,['q_financial_safety','q_capital_allocation']);assert.equal(o.factors_total,4);assert.ok(Math.abs(o.weight_available_official-0.45)<1e-12);assert.equal(V2.axisScore(s,'Q').state,'NOT_AVAILABLE');
+ assert.equal(V2.weightsId(V2.validateWeights({...V2.officialWeights(),axis:{Q:34,G:33,V:-0}})),V2.weightsId(V2.validateWeights({...V2.officialWeights(),axis:{Q:34,G:33,V:0}})));});
+/* User presets v0.1 (owner decision 2026-10-18) and the PERSONAL_PREVIEW weight-stage diagnostic. Python twin and Python == JS
+   parity: tests/test_qgv_v2_user_presets.py. */
+test('user presets v0.1: own ids and version, owner axis weights, official inner weights, CANDIDATE_UNVALIDATED; code presets untouched',()=>{
+ assert.deepEqual(Object.keys(V2.USER_PRESETS),['user-preset/aggressive@0.1','user-preset/balanced@0.1','user-preset/defensive@0.1']);
+ const want={'user-preset/aggressive@0.1':['공격형',{Q:30,G:50,V:20}],'user-preset/balanced@0.1':['균형형',{Q:40,G:30,V:30}],'user-preset/defensive@0.1':['수비형',{Q:55,G:15,V:30}]};
+ for(const[id,[name,axis]]of Object.entries(want)){const d=V2.userPreset(id);assert.equal(d.name,name);assert.equal(d.version,'0.1');assert.equal(d.status,'CANDIDATE_UNVALIDATED');assert.equal(d.official_default,false);
+  assert.equal(d.type_weights,true);assert.equal(d.gate,true);assert.deepEqual(d.weights.axis,axis);assert.equal(axis.Q+axis.G+axis.V,100);
+  for(const p of V2.PILLARS)assert.deepEqual(d.weights.inner[p],{...V2.WEIGHTS[p]});d.weights.inner.Q.q_profitability=99;assert.equal(V2.WEIGHTS.Q.q_profitability,25);}
+ assert.throws(()=>V2.userPreset('balanced'),/USER_PRESET_INVALID/);assert.equal(V2.DEFAULT_PRESET,'balanced');
+ assert.deepEqual(Object.fromEntries(Object.entries(V2.PRESETS).map(([k,p])=>[k,p.weights])),{balanced:{Q:34,G:33,V:33},quality:{Q:50,G:25,V:25},growth:{Q:30,G:50,V:20},value:{Q:25,G:20,V:55}});
+ assert.ok(Object.isFrozen(V2.USER_PRESETS['user-preset/defensive@0.1'].axis));});
+test('weight stages: scores byte-identical with and without; (c) sums to 100 over the factors that produced the total; official path refuses',()=>{
+ assert.throws(()=>V2.scoreUniverse({},{},{weightStages:true}),/WEIGHT_STAGES_PERSONAL_ONLY/);
+ const runs=[...vectors.cases.map(c=>[c.input.companies,c.input.synthetic_market,c.input.gate]),[custom.scored_universe,custom.cases.find(c=>c.id==='scored-official-forced-recompute').input.synthetic_market,null]];
+ let trap=0,typed=0;
+ for(const[companies,market,gate]of runs)for(const id of Object.keys(V2.USER_PRESETS)){const opts={typeConfig:TC,parameters:P,gate,weights:V2.userPreset(id).weights};
+  const plain=V2.scoreUniverse(structuredClone(companies),structuredClone(market),opts),diag=V2.scoreUniverse(structuredClone(companies),structuredClone(market),{...opts,weightStages:true});
+  for(const[k,r]of Object.entries(diag)){const{weight_stages:ws,...rest}=r;assert.equal(JSON.stringify(rest),JSON.stringify(plain[k]),k);assert.deepEqual(ws.type_adjusted.axis,r.weights);
+   if(r.selected_types.length){typed++;assert.ok(ws.type_adjusted.changes.length);}
+   if(r.total===null){assert.equal(ws.applied.state,'NOT_AVAILABLE');continue;}
+   let sum=0,fsum=0,tot=0;for(const p of V2.PILLARS){sum+=ws.applied.axis[p];if(ws.applied.axis[p]>0)tot+=ws.applied.axis[p]*r.axes[p].score/100;}for(const v of Object.values(ws.applied.factor))fsum+=v;
+   assert.ok(Math.abs(sum-100)<1e-9&&Math.abs(fsum-100)<1e-9&&Math.abs(tot-r.total)<1e-9,k);
+   for(const[f,v]of Object.entries(ws.applied.factor))assert.equal(v>0,ws.applied.factor_status[f].status==='USED',k+' '+f);
+   if(r.value_trap_gate&&r.axes.V.score!==null){trap++;assert.equal(ws.applied.axis.V,0);assert.ok(ws.applied.changes.some(c=>c.key==='V'&&c.reason==='VALUE_TRAP_GATE'));}}}
+ assert.ok(trap>0&&typed>0);});

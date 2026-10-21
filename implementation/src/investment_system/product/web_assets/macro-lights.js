@@ -255,7 +255,7 @@ function render(host,merged,{locale,status='',onLoad=null,legacy=null}={}){
  card.append(list);
  const why=merged.reasons.join(', ');
  card.append(el('p',x('판정 근거: ','Basis: ')+why+(merged.growth!==null?' · '+x('성장(GDP) ','growth (GDP) ')+pct(merged.growth)+' ('+merged.growth_period+')':' · '+x('성장(GDP) 자료 없음','growth (GDP) not available')),{class:'small','data-macro-lights-reasons':why}));
- card.append(el('p',x('자료 없는 경고등은 판정에서 뺍니다. 매크로는 무엇을 얼마나 빨리 살지만 조절하며 매도 판단에는 쓰지 않습니다. 과거 재생(2000·2008·2020·2022) 검증 전 v1 · UNCALIBRATED.','Lights without data are excluded. Macro only paces buying and is never used for sell decisions. v1 · UNCALIBRATED until the 2000/2008/2020/2022 replay is validated.'),{class:'small'}));
+ card.append(el('p',x('자료 없는 경고등은 판정에서 뺍니다. M-RULE C는 가설(검증 중)입니다. 2022년 결과는 규칙 선택에 사용한 구간의 근사 재생으로, 독립 검증이 아닙니다. 매도 판단에는 쓰지 않습니다.','Lights without data are excluded. M-RULE C is a hypothesis under validation. The approximate 2022 replay uses a period used to choose the rule; it is not independent validation. Macro is never used for sell decisions.'),{class:'small'}));
  if(onLoad){const b=el('button',x('SPY·HYG·IEF 불러와 경고등 계산 (기기 RAM)','Load SPY, HYG and IEF to compute lights (device RAM)'),{type:'button','data-macro-lights-load':''});b.addEventListener('click',onLoad);card.append(b);}
  card.append(el('p',status,{role:'status','data-macro-lights-status':status}));
  if(legacy){const det=el('details',undefined,{'data-macro-legacy':''});det.append(el('summary',x('자세히','Details')),el('p',x('이전 기준(v0.1.1)','Previous rule (v0.1.1)')+': '+legacy.state+(legacy.rule_label?' · '+legacy.rule_label:''),{'data-macro-legacy-state':legacy.state}));card.append(det);}

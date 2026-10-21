@@ -63,4 +63,16 @@ function strictUniverseValues() {
   rows.push(['NASDAQ:NVDA', 9000, 42]);
   return rows;
 }
-module.exports = { TICKERS, codes, payload, quotes, universeValues, strictPayload, strictUniverseValues };
+/* Missing-data variant of strictPayload (FE-MISSING-2 screens), still strictly valid: TARGET amd lacks the SEC sub-metrics of
+   moat proxy, financial safety, capital allocation and recent acceleration (Q 2/5 = 45% of the original weight -> Q not
+   calculated, AXIS_COVERAGE_BELOW_50; G 4/5 = 85% -> partial), with its factors and axes recomputed by the reader's own
+   scoreRows (TARGET rows are not in the cross-section, so no other row changes); TARGET msft was collected 2026-09-20, past the
+   14-day freshness window (STALE, last valid value FY 2025-12-31). NASDAQ:GOOGL / AMZN stay the FINANCIAL profile rows. */
+function missingPayload() {
+  const SQ = require(path.join(__dirname, '../src/investment_system/product/web_assets/sec-qgv2.js')), p = strictPayload(), amd = p.target.amd;
+  for (const k of ['moat_proxy', 'net_debt_to_ebitda', 'interest_coverage', 'dilution_3y', 'incremental_roic_5y', 'revenue_acceleration']) delete amd.metrics[k];
+  const { scores } = SQ.scoreRows(p.records, p.target, p.calc_version), s = scores.get('target\u0000amd');amd.factors = s.factors;amd.axes = s.axes;
+  Object.assign(p.target.msft, { acquired_at: '2026-09-20T00:00:00Z', state: 'STALE', reason_codes: ['STALE_INPUT'] });
+  SQ.validate(p);return p;
+}
+module.exports = { TICKERS, codes, payload, quotes, universeValues, strictPayload, strictUniverseValues, missingPayload };

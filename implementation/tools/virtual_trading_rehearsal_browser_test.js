@@ -108,7 +108,7 @@ async function open(browser, { now, last, width }) {
   page.on('pageerror', (e) => { traffic.errors++; console.log('pageerror ' + String(e.message).slice(0, 200)); });
   page.on('console', (m) => { if (m.text().includes(CANARY) || m.text().includes(TOKEN)) traffic.console++; });
   await page.clock.install({ time: new Date(now) });
-  await page.goto(BASE + '#home');
+  await page.goto(BASE + '#brief');
   await page.locator('[data-report-link="mock"]').waitFor();
   return { context, page, traffic };
 }
@@ -161,7 +161,7 @@ const noWonAmount = (text) => (text.match(/\d[\d,]*\s*(?:원|만원|억)/g) || [
           assert.ok((await page.locator('[data-rehearsal-note]').textContent()).includes('어떤 장부·시트에도 기록하지 않음'));
           assert.ok((await page.locator('[data-report-section="10"] h2').textContent()).includes('리허설 · 기록 없음'));
           const bg = await page.locator('[data-report-mode="REHEARSAL"]').evaluate((n) => getComputedStyle(n).backgroundColor);
-          assert.equal(bg, 'rgb(236, 228, 247)', 'distinct rehearsal colour');
+          assert.equal(bg, 'rgb(235, 232, 240)', 'distinct rehearsal colour (theme.css --note-bg, monochrome design 2026-10-18)');
           assert.equal(await page.locator('[data-report-section="3"] tbody tr').count(), 19);
           assert.equal(await page.locator('[data-basis="msft"]').getAttribute('data-basis-benchmark'), 'XLK');
           assert.equal(await page.locator('[data-basis="msft"]').getAttribute('data-basis-state'), 'ABNORMAL');

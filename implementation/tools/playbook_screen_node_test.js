@@ -46,7 +46,7 @@ test('same-day new review supersedes prior followup and cross-version quarter sn
  assert.throws(()=>P.targetValidate({rows:[],cash_pct:-1}),/TARGET_CASH_INVALID/);
 });
 test('TARGET candidates use v2 industry ranks and comparison includes exits and remaining-difference steps',()=>{
- const computed={default:'v2',rows:{one:{ticker:'SYN1',primary:{total:80,q:75,g:70}},two:{ticker:'SYN2',primary:{total:70,q:65,g:60}},three:{ticker:'SYN3',primary:{total:null,q:null,g:null}}}},screens={'sec-qgv2.json':{records:{'NYSE:SYN1':{industry_group:'industry'},'NYSE:SYN2':{industry_group:'industry'},'NYSE:SYN3':{industry_group:null}}}};
+ const computed={default:'v2',rows:{one:{ticker:'SYN1',rank:1,qg_reference:null,primary:{total:80,q:75,g:70,v:60}},two:{ticker:'SYN2',rank:2,qg_reference:null,primary:{total:70,q:65,g:60,v:50}},three:{ticker:'SYN3',rank:null,qg_reference:null,primary:{total:null,q:null,g:null,v:null}}}},screens={'sec-qgv2.json':{records:{'NYSE:SYN1':{industry_group:'industry'},'NYSE:SYN2':{industry_group:'industry'},'NYSE:SYN3':{industry_group:null}}}};
  const ranked=P.candidateRanking(computed,screens,['NYSE:SYN1','NYSE:SYN2','NYSE:SYN3']);assert.equal(ranked[0].industry_rank,1);assert.equal(ranked[1].industry_rank,2);assert.equal(ranked[2].total,null);
  const compared=P.targetComparison({rows:[{symbol:'SYN2',pct:10,sector:'industrial'}],cash_pct:90,transition_quarters:2},{total_units:10000,instruments:[{ticker:'SYN1',target_units:1000}]},ranked);
  assert.equal(compared.changes[0].change,'제외');assert.deepEqual(compared.changes[0].steps,[5,2.5]);assert.equal(compared.changes[1].change,'편입');assert.equal(compared.trade_amount,null);assert.equal(compared.tax,null);
