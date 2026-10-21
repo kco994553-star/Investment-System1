@@ -549,14 +549,20 @@ class PagesArtifactGuardTests(unittest.TestCase):
                 self.assertFalse((Path(self.temp.name) / "outside.json").exists())
 
     def test_tar_rejects_duplicate_expected_files_even_if_both_are_approved(self):
-        payload = (self.site / "app.js").read_bytes()
-        for name in ("app.js", "./app.js"):
+        # Keep the complete, otherwise valid archive. Duplicate a small approved
+        # asset so the independent 4 MiB transport cap cannot mask this check.
+        payload = (self.site / "app-config.js").read_bytes()
+        files = len(list(self.site.iterdir()))
+        for name in ("app-config.js", "./app-config.js"):
             with self.subTest(prefix=name[:2]):
                 info = tarfile.TarInfo(name)
                 info.size = len(payload)
-                receipt = self.tar_receipt(self.make_tar(extras=((info, payload),)))
-                self.assertEqual(receipt["pages_artifact_guard"], "FAIL")
-                self.assertGreater(receipt["violations"].get("duplicate_entries", 0), 0)
+                archive = self.make_tar(extras=((info, payload),))
+                self.assertLessEqual(archive.stat().st_size, self.guard().MAX_ARCHIVE_BYTES)
+                self.assertEqual(self.tar_receipt(archive), {
+                    "pages_artifact_guard": "FAIL", "files_scanned": files + 1,
+                    "violations": {"duplicate_entries": 1},
+                })
 
     def test_tar_rejects_symlink_hardlink_directory_fifo_and_sparse_members(self):
         for type_ in (tarfile.SYMTYPE, tarfile.LNKTYPE, tarfile.DIRTYPE,
