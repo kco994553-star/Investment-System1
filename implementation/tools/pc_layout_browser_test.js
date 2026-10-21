@@ -74,11 +74,15 @@ const col=(page,sel,i)=>page.locator(sel+' tbody tr').evaluateAll((rows,i)=>rows
      if(pc){assert.ok(f.oneRow,'summary numbers in one row');assert.ok(f.twoCol,'sections in two columns');assert.ok(f.ledgerFull,'ledger full width');}else{assert.ok(!f.oneRow,'phone summary unchanged');assert.ok(!f.twoCol,'phone sections stacked');}}
     if(screen==='S16'&&pc&&width>=1440){const cols=await page.evaluate(()=>getComputedStyle(document.querySelector('[data-public-screen="thirteenf"]')).gridTemplateColumns.split(' ').length);assert.ok(cols>=2,'13F cards in columns');}
     if(screen==='S03'&&pc){const cols=await page.evaluate(()=>getComputedStyle(document.querySelector('#company-list')).gridTemplateColumns.split(' ').length);assert.ok(cols>=2,'company list in columns');}
-    if(screen==='S06'&&dataset==='LIVE'&&pc){const T='[data-leaderboard-table]',original=await col(page,T,1);
-     await page.locator(T+' thead th').nth(1).locator('.th-sort').click();assert.equal(await page.locator(T+' thead th').nth(1).getAttribute('aria-sort'),'ascending');
-     const asc=await col(page,T,1);assert.deepEqual(asc,[...original].sort(new Intl.Collator(undefined,{numeric:true,sensitivity:'base'}).compare));
-     await page.locator(T+' thead th').nth(1).locator('.th-sort').focus();await page.keyboard.press('Enter');assert.equal(await page.locator(T+' thead th').nth(1).getAttribute('aria-sort'),'descending');assert.deepEqual(await col(page,T,1),[...asc].reverse());
-     await page.keyboard.press('Space');assert.equal(await page.locator(T+' thead th').nth(1).getAttribute('aria-sort'),'none');assert.deepEqual(await col(page,T,1),original);
+    if(screen==='S06'&&dataset==='LIVE'&&pc){const T='[data-leaderboard-table]';
+     // G6 single-sort contract: S06 uses its selector/direction/reset; other tables retain generic keyboard header sorting.
+     assert.equal(await page.locator(T+' .th-sort, '+T+' th[aria-sort]').count(),0);
+     const ordered=async(id,label)=>{await page.waitForTimeout(80);assert.equal(await page.locator('#leader-sort').inputValue(),id);
+      assert.match(await page.locator('[data-leaderboard-summary]').textContent(),new RegExp('^정렬: '+label+' · '));
+      assert.deepEqual(await page.locator(T+' [data-leaderboard-row]').evaluateAll(rows=>rows.map(r=>r.dataset.leaderboardRow)),await page.evaluate(()=>rankOrder(leaderFiltered().rows,leaderScores()).map(r=>r.company_id)));};
+     await page.locator('#leader-sort').selectOption('ticker-desc');await ordered('ticker-desc','티커 역순');
+     await page.locator('[data-leaderboard-sort-dir]').press('Enter');await ordered('ticker','티커 순');
+     await page.locator('[data-leaderboard-sort-reset]').press('Space');await ordered('qgv','QGV v2 순');
      // Sticky header: scroll past the table top and the header row stays at the viewport top.
      const top=await page.evaluate(T=>{const t=document.querySelector(T);scrollTo(0,t.getBoundingClientRect().top+scrollY+120);return t.querySelector('thead th').getBoundingClientRect().top;},T);assert.ok(Math.abs(top)<=1,'sticky header top '+top);await page.evaluate(()=>scrollTo(0,0));}
     if(screen==='S10'&&dataset==='LIVE'){const T='[data-forward-days]';await page.locator(T).waitFor();if(pc){const original=await col(page,T,3);

@@ -32,3 +32,11 @@ cb593bbd의 원격 5 workflow는 같은 두 font transport 시험에서 실패�
 전체 디렉터리의 변조 검사·전체 정상 TAR·압축/메타데이터 거부를 유지하고, font transport 반례만 두 승인 폰트의 작은 raw TAR fixture로 분리했다. 첫 분리 시도는 필수 파일 누락도 보고되는 것을 빠뜨려 실패했다. 최종 fixture는 정상 폰트도 missing_files=115로 거부되고, 각 변조는 정확한 추가 폰트 사유까지 요구한다. 크기 상한 시험은 4MiB·scanned=0·oversized_archive=1 전체 receipt를 확인하도록 강화했다. production guard와 승인 글꼴 파일·해시는 변경하지 않았다.
 
 최종 집중 검사: 6 PASS / 25 subtests PASS. 독립 최신 리뷰 APPROVE. 첫 불완전한 분리안의 리뷰 판정은 폐기하고 최종 파일 해시 기준으로 다시 검토했다. 이후 최종 HEAD의 전체 필수 CI는 별도다.
+
+## G6 실제 정렬 충돌 수정
+
+PC 1024/1440에서 기업 머리글 정렬 후 Q 오름 선택·방향·reset·재렌더가 이전 기업 정렬에 덮이는 것을 확인했다. 기존 상호작용 G6의 단일 정렬 상태 완료 조건에 따라 S06만 범용 TableSort에서 제외했다. 기존 구조화 선택·방향·reset이 유일한 정렬이며, 다른 표의 헤더·키보드·NA/동점·레이아웃 시험은 유지한다. 공식 계산·숫자 순위·모델을 변경하지 않았다.
+
+수정 전 390 통과/PC 두 폭 의도한 실패. 수정 후 새 회귀 3/3, 48 snapshots, 564 checks; 기존 PC 8/8(120화면 조합), QGV v2 8/8, 13F/S13 2/2, Node5 PASS. 전체 S/모델은 각 공개 자료 세대 안에서 정렬 조작 전후 불변이고, APPLIED/REJUDGE 자체의 정상 자료/STALE 변화는 허용한다. 전부 합성/로컬이며 실가격·실사이트 검증이 아니다. 표 머리글 버튼을 요구하던 기존 두 시험은 단일 정렬 계약으로 바꿨고 수치 순서/NA/순위/가로 넘침 검사는 유지했다.
+
+최종 Main 실제 통합 build `investment-frontend-release`(고정 10/20 JSON 포함)에서도 G6 3/3·48 snapshots·564 checks 및 공개 가드138 PASS. G6 독립 리뷰 APPROVE. 마지막 원격 필수6 CI는 최신 canonical ae34eb90을 포함한 이후 HEAD에서 확인한다.

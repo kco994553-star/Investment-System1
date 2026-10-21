@@ -182,6 +182,8 @@
 
 원래 행 객체의 부분 배열만 표시한다. 전체 모집단·공식 점수·순위·N10/N15/N20 모델 후보 계산은 그대로다. 자료 없음, 확보된 소속도 기준 선택 유형 없음, 식별 철회 행을 구분한다. 선택은 RAM이며 APPLIED/REJUDGE 뒤 새 자료에 적용하고 FAILED 때 이전 자료를 유지한다. 필터 요약에도 선택을 표시한다. 시험: `qgv_classification_filters_node_test.js`, `qgv_classification_filters_browser_test.js`(§7-6). 수익률 기간 선택과 별도 SIC·유형 표 열까지 구현했다는 뜻은 아니다.
 
+**2026-10-21 G6 정정 — 정렬 상태:** 리더보드는 기존 구조화 선택·방향·기본 정렬을 단일 상태로 사용한다. S06은 PC 범용 머리글 정렬에서 제외하여 새 묶음 적용/시간 재판정/재렌더 뒤에도 선택·요약과 실제 행 순서를 일치시킨다. 공식 모집단·점수·순위 숫자·모델 후보에는 표시 순서가 반영되지 않는다. 다른 표의 머리글 정렬은 유지한다. 시험: `qgv_single_sort_browser_test.js`, 기존 `pc_layout_browser_test.js`, `qgv_v2_screens_browser_test.js`, `s16_s13_screens_browser_test.js`.
+
 ### 3-2. 기술적 분석(2.x)
 
 | 요소 | 출처 → 소비 | 상태·저장 | 계기·재취득 | 시각·버전 | 없음·실패 | 바뀌면 안 되는 것 | 시험 |

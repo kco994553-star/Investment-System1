@@ -60,7 +60,7 @@ APPROVED_SHA256 = {
     "worker-quote-fallback.js": "e72a72d1885a23c2a35706c8d4f333060b0c451d32a00e501dc63a30416b754c",
     "holdings-capture-view.js": "5f9b2952792c403ea3d005809508381432e17d0f588cfc5930f74413b1a5ba94",
     "holdings-capture.js": "a0fbd647c36d4714e743badbf445e2d3bf6b47c504766beaa14a93fdbf900d95",
-    "table-sort.js": "db8ebe8e6a81a67309e925646ffe557db06452fb89e5735de7baad9770c0b778",
+    "table-sort.js": "cd483582e80b7df2b5a5ffb16af84e7200ebfa841ed40fa5cee89bd3d8c338db",
     "pc-layout.css": "d3a270238df767d49ef23ea3d53d60fca62d65dc017af19338269602190af2b4",
     "share-class-groups.js": "088bbfaec559937753533572330a6be3c2f9280910f9f6cf62b53f39119c0997",
     "forward-validation.js": "85432c469bce8466d2df24b90e2caf1985c2036d596e37725e9073368216f009",
