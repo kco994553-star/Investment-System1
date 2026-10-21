@@ -5,11 +5,16 @@ import hashlib
 import importlib.util
 import io
 import json
+import os
 from pathlib import Path
+import stat
 import subprocess
 import sys
 import tarfile
+import textwrap
+import types
 import urllib.error
+import warnings
 import zipfile
 
 import pytest
@@ -392,6 +397,114 @@ def test_deploy_check_cli_has_no_source_override_or_secret_output(tmp_path, repl
     assert capsys.readouterr().err == 'REPLAY_20261020_FAILED reason=ARGUMENTS_INVALID\n'
 
 
+def inline_zip_source():
+    workflow = (ROOT.parent / '.github/workflows/cockpit-pages.yml').read_text()
+    source_job = workflow.split('\n  replay_source:\n', 1)[1].split('\n  build:\n', 1)[0]
+    return textwrap.dedent(source_job.split("python - <<'PY'\n", 1)[1].split('\n          PY', 1)[0])
+
+
+@pytest.fixture
+def zip_gate():
+    module = types.ModuleType('replay_source_inline_test')
+    exec(compile(inline_zip_source(), 'replay_source_inline', 'exec'), module.__dict__)
+    return module
+
+
+def zip_fixture(module, monkeypatch, kind='valid'):
+    tar_body = b'synthetic pinned tar bytes'
+    buffer = io.BytesIO()
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore', UserWarning)
+        with zipfile.ZipFile(buffer, 'w', compression=zipfile.ZIP_DEFLATED) as archive:
+            info = zipfile.ZipInfo('../artifact.tar' if kind == 'traversal' else 'artifact.tar/') if kind in ('traversal', 'directory') else zipfile.ZipInfo('artifact.tar')
+            info.external_attr = (stat.S_IFLNK | 0o644 if kind == 'symlink' else stat.S_IFREG | 0o644) << 16
+            archive.writestr(info, tar_body)
+            if kind in ('extra', 'duplicate'):
+                archive.writestr('unexpected.json' if kind == 'extra' else 'artifact.tar', tar_body)
+    body = buffer.getvalue()
+    if kind == 'malformed':
+        body = b'not a zip container'
+    if kind == 'encrypted':
+        encoded = bytearray(body)
+        encoded[6] |= 1
+        central = body.index(b'PK\x01\x02')
+        encoded[central + 8] |= 1
+        body = bytes(encoded)
+    monkeypatch.setattr(module, 'ZIP_BYTES', len(body))
+    monkeypatch.setattr(module, 'ZIP_SHA256', hashlib.sha256(body).hexdigest())
+    monkeypatch.setattr(module, 'TAR_BYTES', len(tar_body) + (kind == 'tar-size'))
+    monkeypatch.setattr(module, 'TAR_SHA256', '0' * 64 if kind == 'tar-hash' else hashlib.sha256(tar_body).hexdigest())
+    if kind == 'zip-size':
+        body += b'x'
+    elif kind == 'zip-hash':
+        body = body[:-1] + bytes([body[-1] ^ 1])
+    return body, tar_body
+
+
+def test_inline_zip_gate_writes_only_pinned_tar_after_complete_validation(tmp_path, zip_gate, monkeypatch):
+    body, tar_body = zip_fixture(zip_gate, monkeypatch)
+    zipped, target = tmp_path / 'source.zip', tmp_path / 'artifact.tar'
+    zipped.write_bytes(body)
+    zip_gate.verify_zip(zipped, target)
+    assert target.read_bytes() == tar_body
+    assert set(p.name for p in tmp_path.iterdir()) == {'source.zip', 'artifact.tar'}
+
+
+@pytest.mark.parametrize('kind', ['zip-size', 'zip-hash', 'tar-size', 'tar-hash', 'duplicate', 'extra',
+                                  'traversal', 'directory', 'symlink', 'encrypted', 'malformed'])
+def test_inline_zip_gate_rejects_untrusted_container_before_tar_write(tmp_path, zip_gate, monkeypatch, kind):
+    body, _ = zip_fixture(zip_gate, monkeypatch, kind)
+    zipped, target = tmp_path / 'source.zip', tmp_path / 'artifact.tar'
+    zipped.write_bytes(body)
+    with pytest.raises((zip_gate.ZipFailure, zipfile.BadZipFile)):
+        zip_gate.verify_zip(zipped, target)
+    assert not target.exists()
+    assert set(p.name for p in tmp_path.iterdir()) == {'source.zip'}
+
+
+def test_inline_zip_gate_never_follows_existing_target_symlink(tmp_path, zip_gate, monkeypatch):
+    body, _ = zip_fixture(zip_gate, monkeypatch)
+    zipped, target, canary = tmp_path / 'source.zip', tmp_path / 'artifact.tar', tmp_path / 'canary'
+    zipped.write_bytes(body)
+    canary.write_bytes(b'unchanged')
+    target.symlink_to(canary)
+    with pytest.raises(FileExistsError):
+        zip_gate.verify_zip(zipped, target)
+    assert canary.read_bytes() == b'unchanged'
+
+
+@pytest.mark.parametrize('kind', ['valid', 'oversized', 'http-error'])
+def test_inline_zip_download_is_bounded_fixed_id_and_suppresses_process_stderr(tmp_path, zip_gate, monkeypatch, capsys, kind):
+    body, tar_body = zip_fixture(zip_gate, monkeypatch)
+    payload = tmp_path / 'payload.zip'
+    payload.write_bytes(body + (b'x' * 65536 if kind == 'oversized' else b''))
+    args_file = tmp_path / 'arguments.json'
+    fake_gh = tmp_path / 'gh'
+    fake_gh.write_text('#!' + sys.executable + '\nimport json,os,sys\nfrom pathlib import Path\n'
+        'Path(os.environ["TEST_ARGS"]).write_text(json.dumps(sys.argv[1:]))\n'
+        'sys.stderr.write("private canary from gh must not reach logs")\n'
+        'sys.stdout.buffer.write(Path(os.environ["TEST_ZIP"]).read_bytes())\n'
+        'sys.exit(int(os.environ["TEST_EXIT"]))\n')
+    fake_gh.chmod(0o700)
+    (tmp_path / 'replay-source').mkdir()
+    for key, value in {'RUNNER_TEMP': str(tmp_path), 'TEST_ARGS': str(args_file), 'TEST_ZIP': str(payload),
+                       'TEST_EXIT': '1' if kind == 'http-error' else '0', 'PATH': str(tmp_path) + os.pathsep + os.environ['PATH']}.items():
+        monkeypatch.setenv(key, value)
+    assert zip_gate.main() == (0 if kind == 'valid' else 1)
+    logged = capsys.readouterr()
+    assert logged.err == '' and 'private canary' not in logged.out
+    assert json.loads(args_file.read_text()) == ['api', '--method', 'GET',
+        'repos/kco994553-star/Investment-System1/actions/artifacts/12311543375/zip']
+    assert (tmp_path / 'replay-source.zip').stat().st_size <= zip_gate.ZIP_BYTES + 1
+    target = tmp_path / 'replay-source/artifact.tar'
+    if kind == 'valid':
+        assert target.read_bytes() == tar_body
+        assert logged.out == 'REPLAY_20261020_ZIP_VERIFIED\n'
+    else:
+        assert not target.exists()
+        assert logged.out.startswith('REPLAY_20261020_FAILED reason=')
+
+
 def test_workflow_replay_is_opt_in_read_only_and_keeps_the_existing_deploy_gate():
     workflow = (ROOT.parent / '.github/workflows/cockpit-pages.yml').read_text()
     source_job = workflow.split('\n  replay_source:\n', 1)[1].split('\n  build:\n', 1)[0]
@@ -401,7 +514,8 @@ def test_workflow_replay_is_opt_in_read_only_and_keeps_the_existing_deploy_gate(
     # No Actions permission or credential is exposed to PR build scripts/dependencies.
     assert '\npermissions:\n  contents: read\njobs:\n' in workflow
     assert '    permissions:\n      actions: read\n' in source_job
-    assert workflow.count('actions: read') == 1 and 'write' not in source_job
+    assert workflow.count('actions: read') == 1
+    assert source_job.split('    permissions:\n', 1)[1].split('    outputs:', 1)[0].strip() == 'actions: read'
     assert 'permissions:' not in build and 'github.token' not in build and 'GH_TOKEN' not in build
     assert "if: github.event_name == 'workflow_dispatch' && inputs.replay_20261020 && github.ref_name == 'claude/investment-system-top500-validation-alrugm'" in source_job
     assert 'actions/checkout@' not in source_job and 'pip install' not in source_job and 'npm install' not in source_job
@@ -417,10 +531,12 @@ def test_workflow_replay_is_opt_in_read_only_and_keeps_the_existing_deploy_gate(
     assert 'gh api --method GET repos/kco994553-star/Investment-System1/actions/runs/39522288311' in source
     assert 'gh api --method GET repos/kco994553-star/Investment-System1/actions/artifacts/12311543375' in source
     assert '--jq' in source and 'head_repository: {full_name: .head_repository.full_name}' in source
-    assert "artifact-ids: '12311543375'" in download and "run-id: '39522288311'" in download
-    assert 'github-token: ${{ github.token }}' in download
-    # With artifact-ids (rather than name), v4 otherwise adds a github-pages subdirectory.
-    assert 'merge-multiple: true' in download
+    assert 'repos/kco994553-star/Investment-System1/actions/artifacts/12311543375/zip' in download
+    assert 'GH_TOKEN: ${{ github.token }}' in download
+    assert 'actions/download-artifact@' not in source_job
+    assert "'gh', 'api', '--method', 'GET'" in download and 'stderr=subprocess.DEVNULL' in download
+    assert '16a0af04725323edc624bc0ce503ab3700224c38d7df55cd604a9e42b22d0826' in download
+    assert 'e1ba05bf5ff43d5bf76e46a4525884e6a886b2c86e33f1b82f7e2f8cfc7b5912' in download
     assert 'actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02' in upload
     assert 'name: replay-20261020-source-${{ github.run_attempt }}' in upload
     assert 'artifact_id: ${{ steps.handoff.outputs.artifact-id }}' in source_job
