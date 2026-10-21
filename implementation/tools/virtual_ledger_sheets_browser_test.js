@@ -6,7 +6,7 @@ const {displayOnlyOff}=require('./display_only_off.js');
 // Set B form saves a definition but nothing is recorded; after the start date "장부 시트에 기록" appends only the missing
 // sessions (append-only), a second click is impossible; a changed cell (decision 2026-10-11) marks PRICE_REVISED and the
 // next sessions are written from the recorded state without rewriting anything; the user's Example_* tab is never read;
-// Set B needs a purpose and then the 비교 tab appears (phone: 2–3 sets picked); without the user's own target the shadow
+// Set B needs a purpose and then the 비교 tab appears (phone: 2–3 sets picked; before any ledger, one 보고 불가 card per set); without the user's own target the shadow
 // ledger is NOT_AVAILABLE, "세트 A 목표를 내 목표로 복사" writes the target, then TARGET → shadow snapshot → record →
 // re-sync keeps the recorded rows; no amount on screen, nothing in device storage or the console.
 const assert = require('node:assert/strict');
@@ -111,7 +111,7 @@ async function open(browser, { now, width = 390, sheet, dartGate = null }) {
   page.on('pageerror', (e) => { traffic.errors++; console.log('pageerror ' + String(e.message).slice(0, 200)); });
   page.on('console', (m) => { const t = m.text(); if (t.includes(CANARY) || t.includes(String(COST_CANARY)) || t.includes(TOKEN) || t.includes(SHEET)) traffic.console++; });
   await page.clock.install({ time: new Date(now) });
-  await page.goto(BASE + '#home');
+  await page.goto(BASE + '#brief');
   await page.locator('[data-report-link="mock"]').waitFor();
   await prepare(page);
   return { context, page, traffic };
@@ -182,6 +182,26 @@ const writes = (sheet) => sheet.log.filter((x) => x.startsWith('POST'));
         assert.equal(await page.locator('[data-compare-set]').count(), 2);
         assert.equal(await page.locator('[data-compare-row="period_return"] [data-state="NOT_AVAILABLE"]').count(), 2, 'before the start date: NA, never 0');
         assert.ok(!/장점|약점|관찰항목/.test(await page.locator('[data-compare]').textContent()));
+        // 보고 불가 on the 비교 tab, on the report screen's condition: each set with no started ledger names its missing inputs and
+        // copies its own prompt; no number is filled.
+        await page.locator('[data-compare-unavailable="SET_B"] [data-report-unavailable]').waitFor();
+        assert.deepEqual(await page.locator('[data-compare-unavailable]').evaluateAll((n) => n.map((x) => x.dataset.compareUnavailable)), ['SET_A', 'SET_B']);
+        for (const kind of ['SET_A', 'SET_B']) {
+          const card = page.locator('[data-compare-unavailable="' + kind + '"] [data-report-unavailable]');
+          assert.equal(await card.getAttribute('data-unavailable-state'), 'UNAVAILABLE');
+          assert.ok(await card.locator('[data-unavailable-missing] [data-missing-key]').count() > 0, kind + ' names its missing inputs');
+          assert.ok(noWonAmount(await card.textContent()), kind + ': no amount');
+        }
+        assert.ok((await page.locator('[data-compare-unavailable="SET_B"] h2').textContent()).startsWith('세트 B · 보고 불가'));
+        assert.equal(await page.locator('#unavailable-prompt-set_a').count(), 1); assert.equal(await page.locator('#unavailable-prompt-set_b').count(), 1);
+        assert.equal(await page.locator('label[for="unavailable-prompt-set_b"]').count(), 1);
+        const promptB = await page.locator('#unavailable-prompt-set_b').inputValue();
+        for (const s of ['대상: 모의투자 일일보고서 · 세트 B 가상 장부', '누락 자료', '추정하거나 만들지 마라']) assert.ok(promptB.includes(s), s);
+        await page.locator('[data-compare-unavailable="SET_B"] summary').click();
+        await page.locator('[data-compare-unavailable="SET_B"] [data-unavailable-copy="2"]').click();
+        await page.locator('[data-compare-unavailable="SET_B"] [data-unavailable-status]', { hasText: /복사|선택/ }).waitFor();
+        { const area = await page.locator('#unavailable-prompt-set_b').inputValue(); assert.ok(area.includes('세트 B 가상 장부') && area.includes('· 영역 ② 포트폴리오 구성')); }
+        assert.ok(!(await page.locator('#unavailable-prompt-set_a').inputValue()).includes('영역 ②'), 'the other set keeps its own prompt');
         assert.equal(traffic.worker, 0);
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
         assert.deepEqual(traffic.unexpected, []); assert.equal(traffic.errors, 0); assert.equal(traffic.console, 0);

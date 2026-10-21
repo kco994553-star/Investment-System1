@@ -21,11 +21,18 @@ def build_public_cockpit(out: Path, *, sec_m2_candidate=None) -> Path:
     bundle = repository_bundle()
     result = build(out, bundle=bundle, sec_m2_candidate=sec_m2_candidate)
     assets = Path(__file__).resolve().parents[1] / 'src/investment_system/product/web_assets'
-    for name in ('manifest.json', 'icon-192.png', 'icon-512.png'):
+    # Licence texts for the vendored chart renderer (lightweight-charts 5.2.1), pinned by the guard.
+    # Self-hosted OFL fonts (IA-11): WOFF2 subsets and their licence texts, also pinned by exact name and hash.
+    for name in ('manifest.json', 'icon-192.png', 'icon-512.png', 'lightweight-charts-5.2.1.LICENSE.txt',
+                 'lightweight-charts-5.2.1.NOTICE.txt', 'third-party-notices.txt',
+                 'jua-regular-ksx1001.woff2', 'gaegu-regular-ksx1001.woff2', 'jua-OFL.txt', 'gaegu-OFL.txt'):
         shutil.copyfile(assets / name, out / name)
     # Price-free Universe504 code list for the Google sheet Universe tab (validated by the guard).
     from investment_system.universe.universe_codes import FILENAME as UNIVERSE_CODES, public_payload
     (out / UNIVERSE_CODES).write_text(json.dumps(public_payload(), ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
+    # Reviewed Korean company-name table (KR-NAMES): display and search only, validated by the guard against the reviewed file.
+    from investment_system.universe.company_names_ko import FILENAME as COMPANY_NAMES, public_payload as names_payload
+    (out / COMPANY_NAMES).write_text(json.dumps(names_payload(), ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
     # Company domains and local PNG logo bundle; the browser never contacts logo providers.
     from universe_domains_pipeline import emit as emit_domains
     emit_domains(out)
@@ -41,6 +48,8 @@ def build_public_cockpit(out: Path, *, sec_m2_candidate=None) -> Path:
     emit_disclosures(out)
     from news_signals import emit_empty as emit_news
     emit_news(out)
+    from macro_evidence import emit_empty as emit_macro_evidence
+    emit_macro_evidence(out)
     return result
 
 

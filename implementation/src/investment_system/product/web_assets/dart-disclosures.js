@@ -53,6 +53,18 @@ async function load(view){const control=new AbortController(),timer=setTimeout((
 // Rows in the SecDisclosures.timeline shape ({channel,time,company_id,event}); time = start of the KST filing day, for ordering only.
 function timeline(payload,{companyIds=null}={}){return (payload?.events||[]).filter(e=>!companyIds||companyIds.includes(e.company_id)).map(e=>({channel:'DISCLOSURE',source:SOURCE,time:new Date(Date.parse(e.filing_date+'T00:00:00+09:00')).toISOString().slice(0,19)+'+00:00',company_id:e.company_id,event:e}));}
 function classLabel(name,en){const [k,e]=CLASSES[name];return en?e+' ('+k+')':k+' ('+e+')';}
+// '근거 보기' for one DART row: original link, filing date and first-seen time, amendment/dedup status. Display only.
+function evidence(doc,e,en){const T=(k,x)=>en?x:k,el=(tag,text,attrs={})=>{const n=doc.createElement(tag);if(text!==undefined)n.textContent=text;for(const[k,v]of Object.entries(attrs))n.setAttribute(k,v);return n;};
+ const d=el('details',undefined,{class:'evidence','data-evidence':'DART'}),dl=el('dl',undefined,{class:'kv'}),add=(k,v)=>{const dd=el('dd');if(typeof v==='string')dd.textContent=v;else dd.append(v);dl.append(el('dt',k),dd);};
+ d.append(el('summary',T('근거 보기','Show evidence')));
+ add(T('구분','Kind'),T('공시·확정 · 회사가 제출한 원문','Disclosure · confirmed · filed original'));
+ const a=el('a',T('DART 원문 열기 ↗','Open on DART ↗'),{href:e.link,target:'_blank',rel:'noopener noreferrer','data-evidence-link':''});add(T('출처','Source'),a);
+ add(T('접수일','Filing date'),e.filing_date+' KST · '+T('시각 미제공','time not provided'));
+ add(T('수집 시각','Collected'),e.first_seen_at.slice(0,16).replace('T',' ')+' UTC · '+T('처음 확인','first seen'));
+ add(T('접수번호','Receipt no.'),e.rcept_no);
+ add(T('중복 처리','Dedup'),e.occurrence==='NEW'?T('새 공시 · 묶음 시작','New · starts its group'):e.group_id===e.company_id+':'+e.rcept_no?T('정정·반복 · 원 공시를 하나로 특정하지 못해 단독 표시','Amendment / repeat · no single original found, shown alone'):T('정정·반복 · 원 공시 묶음 ','Amendment / repeat · group ')+e.group_id);
+ add(T('점수 영향','Score effect'),T('없음','None'));
+ d.append(dl);return d;}
 function mount(host,payload,{locale,companyIds=null,limit=30,emptyText}={}){
  if(!host)return;const doc=host.ownerDocument,en=locale==='en-US',T=(k,e)=>en?e:k,el=(tag,text,attrs={})=>{const n=doc.createElement(tag);if(text!==undefined)n.textContent=text;for(const[k,v]of Object.entries(attrs))n.setAttribute(k,v);return n;};
  const section=el('section',undefined,{class:'card','data-dart-disclosures':''});section.append(el('h2',T('공시·확정 · DART','Disclosures · confirmed · DART')));
@@ -68,7 +80,7 @@ function mount(host,payload,{locale,companyIds=null,limit=30,emptyText}={}){
  for(const row of rows){const e=row.event,li=el('li',undefined,{class:'card','data-disclosure':e.rcept_no,'data-source':SOURCE,'data-occurrence':e.occurrence,'data-classification':e.classification});
   const head=el('p',undefined,{class:'chips'});head.append(el('span',CHANNELS.DISCLOSURE[en?1:0],{class:'badge LIVE','data-channel':'DISCLOSURE'}),el('span',e.occurrence==='NEW'?T('새 공시','New'):T('정정·반복','Repeat / amendment'),{class:'badge','data-occurrence-label':e.occurrence}),el('span',classLabel(e.classification,en),{class:'badge','data-classification-label':e.classification}));li.append(head);
   const who=el('p');who.append(el('a',e.company_id==='hanmi'?'042700':e.company_id.toUpperCase(),{href:'#company/'+encodeURIComponent(e.company_id)}),doc.createTextNode(' · '+SOURCE+' · '+e.filing_date+' KST'));li.append(who);
-  const t=el('p');t.append(el('a',e.title,{href:e.link,target:'_blank',rel:'noopener noreferrer','data-filing-link':''}),doc.createTextNode(' ↗'));li.append(t);
+  const t=el('p');t.append(el('a',e.title,{href:e.link,target:'_blank',rel:'noopener noreferrer','data-filing-link':''}),doc.createTextNode(' ↗'));li.append(t,evidence(doc,e,en));
   list.append(li);}
  section.append(list);host.replaceChildren(section);
 }
@@ -89,5 +101,5 @@ async function loadFinancials(view){const control=new AbortController(),timer=se
   const c=payload.companies.hanmi;need(plain(c)&&c.stock_code==='042700'&&['LIVE','STALE','NOT_AVAILABLE'].includes(c.state));instant(payload.as_of);
   return payload;
  }catch(_){return null;}finally{clearTimeout(timer);}}
-return Object.freeze({FILENAME,KIND,SOURCE,CLASSES,CHANNELS,REASONS,classify,classLabel,family,amended,validTitle,groups,link,validate,load,timeline,mount,qgv2Reference,loadFinancials});
+return Object.freeze({FILENAME,KIND,SOURCE,CLASSES,CHANNELS,REASONS,classify,classLabel,family,amended,validTitle,groups,link,validate,load,timeline,evidence,mount,qgv2Reference,loadFinancials});
 });

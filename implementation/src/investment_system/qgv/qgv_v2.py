@@ -9,8 +9,10 @@ so that the JS port adds in the same order.
 """
 from __future__ import annotations
 
+import copy
 import math
 import re
+import struct
 
 from .dcf import reverse_dcf, two_stage_dcf
 
@@ -68,8 +70,15 @@ def percentile(value, population):
     return 100.0 * (less + 0.5 * (equal - 1)) / (n - 1)
 
 
-def axis_score(scores, axis):
-    """Renormalized weighted mean over available factor scores; < 50% of axis weight -> NOT_AVAILABLE."""
+def axis_score(scores, axis, weights=None):
+    """Renormalized weighted mean over available factor scores; < 50% of axis weight -> NOT_AVAILABLE.
+
+    weights=None: the official inner weights (WEIGHTS[axis]), unchanged. A custom inner-weight row (PERSONAL_PREVIEW, from
+    validate_weights) is the personal path: a 0 weight excludes the factor (listed in `excluded`, never `missing`), the 50%
+    rule applies to the custom weights, and weight_available_official is the share of the OFFICIAL axis weight whose factors
+    are available (shown next to it). JS: QgvV2.axisScore(scores, axis, weights)."""
+    if weights is not None:
+        return _custom_axis_score(scores, axis, weights)
     weights = WEIGHTS[axis]
     total = 0
     used = 0
@@ -93,6 +102,136 @@ def axis_score(scores, axis):
         return out
     out.update(score=acc / used, state='READY' if not missing else 'PARTIAL', reason=None)
     return out
+
+
+def _custom_axis_score(scores, axis, weights):
+    total = 0
+    used = 0
+    acc = 0.0
+    available = 0
+    missing = []
+    excluded = []
+    official_total = 0
+    official_used = 0
+    for f, ow in WEIGHTS[axis].items():
+        official_total += ow
+        s = scores.get(f)
+        if s is not None:
+            official_used += ow
+        w = weights[f]
+        if w == 0:
+            excluded.append(f)
+            continue
+        total += w
+        if s is None:
+            missing.append(f)
+            continue
+        available += 1
+        used += w
+        acc += w * s
+    share = used / total
+    out = {'score': None, 'state': 'NOT_AVAILABLE', 'weight_available': share, 'factors_available': available,
+           'factors_total': len(WEIGHTS[axis]) - len(excluded), 'missing': missing, 'excluded': excluded,
+           'weight_available_official': official_used / official_total}
+    if used == 0 or share < MIN_AXIS_WEIGHT:
+        out['reason'] = 'AXIS_WEIGHT_INSUFFICIENT'
+        return out
+    out.update(score=acc / used, state='READY' if not missing else 'PARTIAL', reason=None)
+    return out
+
+
+# PERSONAL_PREVIEW two-level weights (owner directive 2026-10-18 §4.2): {axis: {Q, G, V}, inner: {Q: {5 factors}, G: {...},
+# V: {...}}}. Every weight is a finite number 0..100; 0 = excluded (not missing); each axis's inner sum and the axis sum must be
+# > 0. Results land in the PERSONAL_PREVIEW namespace (profile id qgv-v2/custom/<hash>/gate-..), never the official profile.
+PERSONAL_NAMESPACE = 'PERSONAL_PREVIEW'
+WEIGHTS_SCHEMA = 'qgv-v2-weights/1'
+
+
+def _weight(v):
+    if type(v) not in (int, float) or not math.isfinite(v) or v < 0 or v > 100:
+        raise ValueError('WEIGHTS_INVALID')
+    return v + 0  # -0.0 -> 0.0
+
+
+def validate_weights(weights):
+    """Validated copy of a two-level weight tree (canonical key order) or ValueError('WEIGHTS_INVALID')."""
+    if not isinstance(weights, dict) or set(weights) != {'axis', 'inner'}:
+        raise ValueError('WEIGHTS_INVALID')
+    axis, inner = weights['axis'], weights['inner']
+    if not isinstance(axis, dict) or set(axis) != set(PILLARS) or not isinstance(inner, dict) or set(inner) != set(PILLARS):
+        raise ValueError('WEIGHTS_INVALID')
+    out = {'axis': {p: _weight(axis[p]) for p in PILLARS}, 'inner': {}}
+    total = 0.0
+    for p in PILLARS:
+        total += out['axis'][p]
+    if not total > 0:
+        raise ValueError('WEIGHTS_INVALID')
+    for p in PILLARS:
+        row = inner[p]
+        if not isinstance(row, dict) or set(row) != set(WEIGHTS[p]):
+            raise ValueError('WEIGHTS_INVALID')
+        out['inner'][p] = {f: _weight(row[f]) for f in WEIGHTS[p]}
+        total = 0.0
+        for f in WEIGHTS[p]:
+            total += out['inner'][p][f]
+        if not total > 0:
+            raise ValueError('WEIGHTS_INVALID')
+    return out
+
+
+def official_weights(preset=DEFAULT_PRESET):
+    """The official two-level tree of a preset: its axis weights and the official inner weights."""
+    if preset not in PRESETS:
+        raise ValueError('PRESET_INVALID')
+    return {'axis': dict(PRESETS[preset]['weights']), 'inner': {p: dict(WEIGHTS[p]) for p in PILLARS}}
+
+
+def weights_id(tree, type_weights=True):
+    """Stable id of a validated tree: FNV-1a 64 over the IEEE-754 bits of every weight in canonical order. JS: QgvV2.weightsId."""
+    parts = [WEIGHTS_SCHEMA]
+    for p in PILLARS:
+        parts.append(struct.pack('>d', float(tree['axis'][p])).hex())
+    for p in PILLARS:
+        for f in WEIGHTS[p]:
+            parts.append(struct.pack('>d', float(tree['inner'][p][f])).hex())
+    parts.append('types-on' if type_weights else 'types-off')
+    h = 0xcbf29ce484222325
+    for b in '|'.join(parts).encode('ascii'):
+        h ^= b
+        h = (h * 0x100000001b3) & 0xFFFFFFFFFFFFFFFF
+    return format(h, '016x')
+
+
+# User presets v0.1 (owner decision 2026-10-18 '프리셋 v0.1 후보 정의'): CANDIDATE_UNVALIDATED axis weights under their own ids and
+# version. Inner weights are the current official 15-factor weights (WEIGHTS, resolved at call time, never copied). They only feed
+# the PERSONAL_PREVIEW path (score_universe(weights=user_preset(id)['weights'])): the official default (DEFAULT_PRESET) and the code
+# presets balanced/quality/growth/value are unchanged and never renamed. Type weights and the value-trap gate default ON.
+# JS twin: QgvV2.USER_PRESETS / QgvV2.userPreset (parity: tests/test_qgv_v2_user_presets.py).
+USER_PRESET_SCHEMA = 'qgv-v2-user-preset/1'
+USER_PRESET_STATUS = 'CANDIDATE_UNVALIDATED'
+USER_PRESET_INNER = 'OFFICIAL_15_FACTOR'
+USER_PRESETS = {
+    'user-preset/aggressive@0.1': {'key': 'aggressive', 'version': '0.1', 'name': '공격형', 'name_en': 'Aggressive', 'axis': {'Q': 30, 'G': 50, 'V': 20}},
+    'user-preset/balanced@0.1': {'key': 'balanced', 'version': '0.1', 'name': '균형형', 'name_en': 'Balanced', 'axis': {'Q': 40, 'G': 30, 'V': 30}},
+    'user-preset/defensive@0.1': {'key': 'defensive', 'version': '0.1', 'name': '수비형', 'name_en': 'Defensive', 'axis': {'Q': 55, 'G': 15, 'V': 30}},
+}
+USER_PRESET_DECIDED = '2026-10-18'
+
+
+def user_preset(preset_id):
+    """Full definition of a v0.1 candidate: id, labels, status, its two-level tree (axis + the official inner weights) and the
+    default toggles (type weights on, gate on). ValueError('USER_PRESET_INVALID') for an unknown id. JS: QgvV2.userPreset."""
+    if not isinstance(preset_id, str) or preset_id not in USER_PRESETS:
+        raise ValueError('USER_PRESET_INVALID')
+    d = USER_PRESETS[preset_id]
+    return {'schema': USER_PRESET_SCHEMA, 'id': preset_id, 'key': d['key'], 'version': d['version'], 'name': d['name'],
+            'name_en': d['name_en'], 'status': USER_PRESET_STATUS, 'official_default': False, 'decided': USER_PRESET_DECIDED,
+            'inner_basis': USER_PRESET_INNER, 'type_weights': True, 'gate': True,
+            'weights': validate_weights({'axis': dict(d['axis']), 'inner': {p: dict(WEIGHTS[p]) for p in PILLARS}})}
+
+
+def _official_inner(tree, axis):
+    return all(tree['inner'][axis][f] == w for f, w in WEIGHTS[axis].items())
 
 
 def type_axis_weights(memberships, type_config):
@@ -343,12 +482,131 @@ def _published_axis(axis, scores, published):
     return out
 
 
-def score_universe(companies, quotes, *, type_config, parameters, preset=DEFAULT_PRESET, gate=None):
+def _profile(preset, gate_on, profile_id, custom, types_on, recomputed, v_custom):
+    pid = profile_id + '/gate-' + ('on' if gate_on else 'off')
+    if custom is None:
+        return {'preset': preset, 'gate': gate_on, 'id': pid}
+    return {'preset': 'custom', 'gate': gate_on, 'id': pid, 'namespace': PERSONAL_NAMESPACE, 'type_weights': types_on,
+            'weights': copy.deepcopy(custom), 'recomputed_axes': recomputed + (['V'] if v_custom else [])}
+
+
+# Weight stages (owner decision 2026-10-18, PERSONAL_PREVIEW diagnostic only): (a) base = the personal tree normalized, (b) type =
+# the axis weights after the company-type adjustment (the very `weights` the total uses), (c) applied = the shares that actually
+# produced the total after missing-factor renormalization, the 50% rules and the value-trap gate. Read-only: built from values the
+# scoring loop already computed, after it, so no score, flag, rank or other field changes. JS twin: the same left-to-right loops.
+WEIGHT_STAGES_SCHEMA = 'qgv-v2-weight-stages/1'
+_STAGE_EPS = 1e-9
+
+
+def _shares(row, keys):
+    total = 0.0
+    for k in keys:
+        total += row[k]
+    return {k: 100.0 * row[k] / total for k in keys}
+
+
+def _weight_stages(custom, types_on, weights, type_reason, selected, axes, factors, included, trap, total, total_reason, basis):
+    base_axis = _shares(custom['axis'], PILLARS)
+    base_inner = {p: _shares(custom['inner'][p], tuple(WEIGHTS[p])) for p in PILLARS}
+    base_factor = {f: base_axis[p] * base_inner[p][f] / 100.0 for p in PILLARS for f in WEIGHTS[p]}
+    type_axis = {p: weights[p] for p in PILLARS}
+    type_factor = {f: type_axis[p] * base_inner[p][f] / 100.0 for p in PILLARS for f in WEIGHTS[p]}
+    type_changes = [{'level': 'axis', 'key': p, 'axis': p, 'from': base_axis[p], 'to': type_axis[p], 'reason': 'TYPE_WEIGHTS', 'detail': type_reason}
+                    for p in PILLARS if abs(type_axis[p] - base_axis[p]) > _STAGE_EPS]
+    axis_status = {}
+    factor_status = {}
+    for p in PILLARS:
+        if custom['axis'][p] == 0:
+            axis_status[p] = {'status': 'ZERO_WEIGHT', 'reason': None}
+        elif axes[p]['score'] is None:
+            axis_status[p] = {'status': 'AXIS_NOT_AVAILABLE', 'reason': axes[p].get('reason')}
+        elif p == 'V' and trap:
+            axis_status[p] = {'status': 'VALUE_TRAP_GATE', 'reason': 'VALUE_TRAP_GATE'}
+        elif total is None:
+            axis_status[p] = {'status': 'TOTAL_NOT_AVAILABLE', 'reason': total_reason}
+        else:
+            axis_status[p] = {'status': 'USED', 'reason': None}
+        for f in WEIGHTS[p]:
+            if custom['inner'][p][f] == 0:
+                factor_status[f] = {'status': 'ZERO_WEIGHT', 'reason': None}
+            elif factors[f]['score'] is None:
+                factor_status[f] = {'status': 'MISSING', 'reason': factors[f]['reason']}
+            elif axis_status[p]['status'] != 'USED':
+                factor_status[f] = {'status': 'AXIS_NOT_USED', 'reason': axis_status[p]['status']}
+            else:
+                factor_status[f] = {'status': 'USED', 'reason': None}
+    applied_axis = {p: None for p in PILLARS}
+    applied_inner = {p: {f: None for f in WEIGHTS[p]} for p in PILLARS}
+    applied_factor = {f: None for p in PILLARS for f in WEIGHTS[p]}
+    changes = []
+    if total is None:
+        changes.append({'level': 'total', 'key': 'QGV', 'axis': None, 'from': 100.0, 'to': None, 'reason': 'TOTAL_NOT_AVAILABLE', 'detail': total_reason})
+    else:
+        used = 0.0
+        for p in included:
+            used += weights[p]
+        for p in PILLARS:
+            applied_axis[p] = 100.0 * weights[p] / used if p in included else 0.0
+            inner_used = 0.0
+            for f in WEIGHTS[p]:
+                if factors[f]['score'] is not None:
+                    inner_used += custom['inner'][p][f]
+            for f in WEIGHTS[p]:
+                if p not in included or factors[f]['score'] is None:
+                    applied_inner[p][f] = 0.0
+                elif inner_used > 0:
+                    applied_inner[p][f] = 100.0 * custom['inner'][p][f] / inner_used
+                # else: a published axis score with no factor score on this row: its inner shares cannot be derived (None).
+                applied_factor[f] = None if applied_inner[p][f] is None else applied_axis[p] * applied_inner[p][f] / 100.0
+    for p in PILLARS:
+        st = axis_status[p]
+        if st['status'] != 'ZERO_WEIGHT':
+            if total is None:
+                if st['status'] in ('AXIS_NOT_AVAILABLE', 'VALUE_TRAP_GATE'):
+                    changes.append({'level': 'axis', 'key': p, 'axis': p, 'from': type_axis[p], 'to': None, 'reason': st['status'], 'detail': st['reason']})
+            elif abs(applied_axis[p] - type_axis[p]) > _STAGE_EPS:
+                changes.append({'level': 'axis', 'key': p, 'axis': p, 'from': type_axis[p], 'to': applied_axis[p],
+                                'reason': 'RENORMALIZED' if st['status'] == 'USED' else st['status'], 'detail': st['reason']})
+        for f in WEIGHTS[p]:
+            fs = factor_status[f]
+            if fs['status'] == 'ZERO_WEIGHT':
+                continue
+            if total is None:
+                if fs['status'] == 'MISSING':
+                    changes.append({'level': 'factor', 'key': f, 'axis': p, 'from': type_factor[f], 'to': None, 'reason': 'MISSING', 'detail': fs['reason']})
+            elif applied_factor[f] is None:
+                changes.append({'level': 'factor', 'key': f, 'axis': p, 'from': type_factor[f], 'to': None, 'reason': 'INNER_NOT_DERIVABLE', 'detail': basis[p]})
+            elif abs(applied_factor[f] - type_factor[f]) > _STAGE_EPS:
+                changes.append({'level': 'factor', 'key': f, 'axis': p, 'from': type_factor[f], 'to': applied_factor[f],
+                                'reason': 'RENORMALIZED' if fs['status'] == 'USED' else fs['status'], 'detail': fs['reason']})
+    return {'schema': WEIGHT_STAGES_SCHEMA,
+            'base': {'axis': base_axis, 'inner': base_inner, 'factor': base_factor},
+            'type_adjusted': {'applied': types_on, 'type_reason': type_reason if types_on else None, 'selected_types': list(selected) if types_on else [],
+                              'axis': type_axis, 'factor': type_factor, 'changes': type_changes},
+            'applied': {'state': 'NOT_AVAILABLE' if total is None else 'READY', 'reason': total_reason, 'axis': applied_axis, 'inner': applied_inner,
+                        'factor': applied_factor, 'axis_status': axis_status, 'factor_status': factor_status, 'inner_basis': basis, 'changes': changes}}
+
+
+def score_universe(companies, quotes, *, type_config, parameters, preset=DEFAULT_PRESET, gate=None, weights=None,
+                   type_weights=True, recompute_published=False, weight_stages=False):
     """Score every company. companies: {code: {industry_group, profile, factors, v_inputs, memberships,
     qg_axes?: published {Q:{score}, G:{score}}, in_cross_section?: False for TARGET-only/duplicate-issuer rows}};
-    quotes: {code: {price, currency, month_closes?: {YYYY-MM: close}}} (device RAM). Returns {code: result}. Pure, deterministic."""
+    quotes: {code: {price, currency, month_closes?: {YYYY-MM: close}}} (device RAM). Returns {code: result}. Pure, deterministic.
+
+    weights (PERSONAL_PREVIEW, optional; absent = today's official path, unchanged): a two-level tree (validate_weights) used
+    in place of the preset. An axis whose inner weights equal the official ones keeps the published Q/G score (as today);
+    otherwise the axis is recomputed from the published factor scores (axis_score with the custom weights), and the Q industry
+    percentile of the value-trap gate is recomputed over all pooled rows from that Q. type_weights=True applies the type weights
+    on top of the custom axis weights exactly as on presets; False uses the custom axis weights as they are (normalized).
+    recompute_published=True (verification only) recomputes Q/G from factors even at the official inner weights.
+    weight_stages=True (PERSONAL_PREVIEW only; ValueError('WEIGHT_STAGES_PERSONAL_ONLY') without weights) adds a read-only
+    `weight_stages` diagnostic per row (_weight_stages); every other field is byte-identical to a call without it."""
     if preset not in PRESETS:
         raise ValueError('PRESET_INVALID')
+    custom = None if weights is None else validate_weights(weights)
+    if weight_stages and custom is None:
+        raise ValueError('WEIGHT_STAGES_PERSONAL_ONLY')
+    types_on = bool(type_weights)
     gate_on = GATE_DEFAULT if gate is None else bool(gate)
     ids = sorted(companies)
     groups = {i: companies[i].get('industry_group') for i in ids}
@@ -359,7 +617,11 @@ def score_universe(companies, quotes, *, type_config, parameters, preset=DEFAULT
     for i in ids:
         f = companies[i].get('factors') if isinstance(companies[i].get('factors'), dict) else {}
         qg[i] = {k: (f.get(k) if finite(f.get(k)) and 0 <= f.get(k) <= 100 else None) for k in QG_FACTORS}
+    recomputed = [] if custom is None else [a for a in ('Q', 'G') if recompute_published or not _official_inner(custom, a)]
+
     def axis_of(i, a):
+        if a in recomputed:
+            return dict(axis_score(qg[i], a, custom['inner'][a]), recomputed=True)
         pub = companies[i].get('qg_axes')
         return _published_axis(a, qg[i], pub.get(a)) if isinstance(pub, dict) else axis_score(qg[i], a)
     q_axis = {i: axis_of(i, 'Q') for i in ids}
@@ -375,7 +637,15 @@ def score_universe(companies, quotes, *, type_config, parameters, preset=DEFAULT
     fy = _cross({i: metrics[i]['fcf_yield'] for i in ids}, groups, ids, pooled, industry=False, issuers=issuers)
     ind = _cross({i: metrics[i]['ebit_yield'] for i in ids}, groups, ids, pooled, industry=True, issuers=issuers)
     exp = _cross({i: (None if metrics[i]['gap'] is None else -metrics[i]['gap']) for i in ids}, groups, ids, pooled, industry=False, issuers=issuers)
-    preset_weights = PRESETS[preset]['weights']
+    preset_weights = PRESETS[preset]['weights'] if custom is None else custom['axis']
+    v_inner = None if custom is None or _official_inner(custom, 'V') else custom['inner']['V']
+    plain = None
+    if custom is not None and not types_on:
+        total = 0.0
+        for p in PILLARS:
+            total += preset_weights[p]
+        plain = {p: 100.0 * preset_weights[p] / total for p in PILLARS}
+    profile_id = VERSION + '/' + preset if custom is None else VERSION + '/custom/' + weights_id(custom, types_on)
     results = {}
     for i in ids:
         c, m = companies[i], metrics[i]
@@ -392,10 +662,10 @@ def score_universe(companies, quotes, *, type_config, parameters, preset=DEFAULT
         oh = m['own_history']
         factors['v_vs_own_history'] = ({'score': oh, 'state': 'CALCULATED', 'reason': None, 'basis': 'OWN_HISTORY'} if oh is not None else
                                        {'score': None, 'state': 'NOT_AVAILABLE', 'reason': m['reasons'].get('own_history'), 'basis': None})
-        v_axis = axis_score({k: factors[k]['score'] for k in WEIGHTS['V']}, 'V')
+        v_axis = axis_score({k: factors[k]['score'] for k in WEIGHTS['V']}, 'V', v_inner)
         axes = {'Q': q_axis[i], 'G': g_axis[i], 'V': v_axis}
         tw, type_reason, selected = typed[i]
-        weights = composite_weights(preset_weights, tw, fallback)
+        weights = dict(plain) if plain is not None else composite_weights(preset_weights, tw, fallback)
         flags = []
         qp = q_pct.get(i)
         q_percentile, q_basis = (qp[0], qp[2]) if qp else (None, None)
@@ -428,7 +698,7 @@ def score_universe(companies, quotes, *, type_config, parameters, preset=DEFAULT
                 available += 1
         results[i] = {
             'version': VERSION, 'status': STATUS,
-            'profile': {'preset': preset, 'gate': gate_on, 'id': VERSION + '/' + preset + '/gate-' + ('on' if gate_on else 'off')},
+            'profile': _profile(preset, gate_on, profile_id, custom, types_on, recomputed, v_inner is not None),
             'axes': axes, 'factors': factors, 'factors_available': available, 'factors_total': len(FACTORS),
             'q_industry_percentile': q_percentile, 'q_industry_basis': q_basis,
             'type_weights': tw, 'type_reason': type_reason, 'selected_types': selected, 'weights': weights,
@@ -438,4 +708,9 @@ def score_universe(companies, quotes, *, type_config, parameters, preset=DEFAULT
                        'industry_basis': factors['v_vs_industry']['basis'], 'industry_peers': ind[i][3] if i in ind else None},
             'reference_range': _reference_range(c, parameters),
         }
+        if weight_stages:
+            basis = {a: ('RECOMPUTED' if a in recomputed else 'PUBLISHED' if isinstance(c.get('qg_axes'), dict) else 'DEVICE') for a in ('Q', 'G')}
+            basis['V'] = 'DEVICE'
+            results[i]['weight_stages'] = _weight_stages(custom, types_on, weights, type_reason, selected, axes, factors, included, trap,
+                                                         total, total_reason, basis)
     return results

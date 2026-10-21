@@ -247,10 +247,13 @@ class Sec(AS.Sec):
     code claimed by several CIKs); rebind: {code: new CIK} (ticker reuse, the new holder has no annual financials);
     unticked: CIKs whose submissions no longer list the ticker; mismatch: CIKs whose SEC response names another CIK."""
 
-    def __init__(self, *, hidden=(), claims=(), rebind=None, unticked=(), mismatch=(), **kwargs):
+    def __init__(self, *, hidden=(), claims=(), rebind=None, unticked=(), mismatch=(), text_cik=None, **kwargs):
         super().__init__(**kwargs)
         self.hidden, self.claims, self.rebind = set(hidden), list(claims), dict(rebind or {})
         self.unticked, self.mismatch = set(unticked), set(mismatch)
+        # text_cik: {cik: offset}: that issuer's companyfacts names its CIK as an unpadded decimal string (as SEC
+        # does for recently registered issuers), offset 0 = its own CIK, otherwise another CIK.
+        self.text_cik = dict(text_cik or {})
 
     def ticker_body(self):
         rows = [[int(self.rebind.get(code, cik)), 'Synthetic', *AS.sec_ticker(code)]
@@ -273,6 +276,8 @@ class Sec(AS.Sec):
         body = facts if 'companyfacts' in url else subs
         if cik in self.mismatch:
             body = json.dumps(dict(json.loads(body), cik=int(cik) + 1)).encode()
+        if cik in self.text_cik and 'companyfacts' in url:
+            body = json.dumps(dict(json.loads(body), cik=str(int(cik) + self.text_cik[cik]))).encode()
         return SecResponse(200, body, final_url=url)
 
 
@@ -485,6 +490,29 @@ def test_e_a_response_naming_another_cik_is_not_preserved(tmp_path, capsys, base
         row = rows(day1, name)[code_m]
         assert row['reason_codes'] == [us.WITHDRAWN_REASON] and row['acquired_at'] is None and row['cik'] is None
         assert (row['withdrawn_acquired_at'], row['withdrawn_cik']) == (rows(day0, name)[code_m]['acquired_at'], m)
+    code, out = guard_against(day1, day0, capsys)
+    assert code == 0 and all(section_line(out, name, 'records')['withdrawn'] == '1' for name in UNIVERSE)
+
+
+def test_e_a_companyfacts_cik_as_unpadded_text_of_the_same_issuer_is_a_new_collection(tmp_path, capsys, baseline):
+    """SEC companyfacts of recently registered issuers (2026-10: ExxonMobil Holdings 2115436, Honeywell Aerospace
+    2089271) name the CIK as an unpadded decimal string. Before, that was SEC_CIK_MISMATCH and the issuer's rows were
+    withdrawn as an identity conflict. The same number is the same issuer: M is collected (new acquired_at in every
+    file, no failure, nothing withdrawn); a string naming another CIK stays a mismatch with no refreshed record."""
+    day0, _ = baseline
+    m, other = members(1)[:2]
+    capsys.readouterr()
+    day1 = run(tmp_path, 'day1', Sec(text_cik={m: 0, other: 1}), 1, previous=day0)
+    out = capsys.readouterr().out
+    counts = collection_counts(out)
+    assert out.count('code=SEC_CIK_MISMATCH') == 1 and counts['failed'] == '1' and counts['identity_not_preserved'] == '1'
+    for name in UNIVERSE:
+        row, before = rows(day1, name)[AS.CODE[m]], rows(day0, name)[AS.CODE[m]]
+        assert row['cik'] == m and row['acquired_at'] > before['acquired_at']
+        assert us.WITHDRAWN_REASON not in row['reason_codes']
+        mismatched = rows(day1, name)[AS.CODE[other]]
+        assert mismatched['reason_codes'] == [us.WITHDRAWN_REASON] and mismatched['acquired_at'] is None
+    assert rows(day1, qgv2.FILENAME)[AS.CODE[m]]['state'] == rows(day0, qgv2.FILENAME)[AS.CODE[m]]['state']
     code, out = guard_against(day1, day0, capsys)
     assert code == 0 and all(section_line(out, name, 'records')['withdrawn'] == '1' for name in UNIVERSE)
 

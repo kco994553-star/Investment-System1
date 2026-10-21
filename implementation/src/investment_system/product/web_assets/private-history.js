@@ -94,7 +94,7 @@
     }
     host.replaceChildren(root);
   }
-  // Optional RAM-only hand-off of the research result to the indicator cards (S08). No storage, no network.
+  // Optional RAM-only hand-off of the research result to the indicator cards (S08) and the chart workbench (validated bars). No storage, no network.
   function emit(state,value) { try { if(typeof state.onData==='function') state.onData(value); } catch (_) {} }
   function mounted(state) { return !state.disposed && state.host.isConnected; }
   function status(state,code) { state.status.dataset.code=code; state.status.textContent=code==='OFF' ? words(state,'OFF · 가격 호출 없음','OFF · No price requests') : code; }
@@ -122,7 +122,7 @@
     state.results.replaceChildren();
     state.results.append(node(state,'p',data.provider+' · '+data.symbol+' · '+data.exchange+' · '+data.currency+' · '+data.timezone+' · '+data.interval+' · RAW_CLOSE · delay_status: UNKNOWN · read_at: '+data.read_at,{'data-history-meta':''}));
     state.indicators=state.view.ResearchIndicators.calculate(data.bars,{includeSma240:state.selected.has('SMA_240')});
-    const lastBar=data.bars.at(-1);emit(state,{indicators:state.indicators,symbol:data.symbol,currency:data.currency,close:lastBar.close,asOf:lastBar.session_date||new Date(lastBar.timestamp*1000).toISOString().slice(0,10)});
+    const lastBar=data.bars.at(-1);emit(state,{indicators:state.indicators,symbol:data.symbol,currency:data.currency,close:lastBar.close,asOf:lastBar.session_date||new Date(lastBar.timestamp*1000).toISOString().slice(0,10),readAt:data.read_at,bars:data.bars,timezone:data.timezone,provider:data.provider});
     const buttons=node(state,'div',undefined,{class:'chart-controls',role:'group','aria-label':words(state,'연구용 이동평균','Research moving averages')});
     for(const id of ['SMA_5','SMA_20','SMA_60','SMA_120','SMA_240','EMA_20','AVG']){
       const button=node(state,'button',id.replace('_',''),{type:'button','data-chart-overlay':id,'aria-pressed':String(state.selected.has(id))});

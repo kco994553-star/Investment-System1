@@ -17,6 +17,7 @@ import os
 from pathlib import Path
 import re
 import stat
+import struct
 import tarfile
 import sys
 
@@ -37,14 +38,16 @@ from investment_system.universe.sec_universe_qg import FILENAME as UNIVERSE_QG_F
 from investment_system.validation.forward_ledger import FILENAME as FORWARD_LEDGER_FILENAME, require_ledger as require_forward_ledger
 from investment_system.product.public_classification import FILENAME as CLASSIFICATION_FILENAME, require_public_classification
 from investment_system.universe.universe_codes import FILENAME as UNIVERSE_CODES_FILENAME, require_universe_codes
+from investment_system.universe.company_names_ko import FILENAME as COMPANY_NAMES_FILENAME, require_company_names_ko
 from investment_system.universe.universe_domains import FILENAME as UNIVERSE_DOMAINS_FILENAME, require_universe_domains
 from investment_system.product.company_logos import FILENAME as COMPANY_LOGOS_FILENAME, require_company_logos
+from investment_system.macro.evidence_lines import FILENAME as MACRO_EVIDENCE_FILENAME, require_macro_evidence
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
-    "target-v1-screen.js": "818285c31c92bd873986591610f0b1d3644d217881aa013f958db5a62c92869e",
     "target-v1-builder.js": "9b33a8b5c47319802ac06e995273870706d77cc38f579d0e38ecda789bf35589",
     "target-v1-config-defaults.js": "0da25491a474a3375324fdefb482a9aec86e407a07c44c5e0a69d6937d05b45b",
+    "target-v1-screen.js": "818285c31c92bd873986591610f0b1d3644d217881aa013f958db5a62c92869e",
     "playbook-engine.js": "b708a1772b4cd8e1af731cffdacbfab478d03c9c4e1e5fd663537babd64ee7d8",
     "playbook-config-defaults.js": "6a911d814782bcfb0aab098e9a05d0a5be494edc0026e08c8a0d124e3f2b00c2",
     "virtual-trading-compare.js": "700054fd105b979b505c09ec0dad862b0ce435c0179d2ddbe9f85b5b9c23c3f7",
@@ -55,37 +58,37 @@ APPROVED_SHA256 = {
     "virtual-ledger-sheets.js": "4fda9c5505c6525b92a9b60ec170a9412abdcae4644ef83cbca59c270e03e4ec",
     "thirteenf-quarter.js": "0f95d210026f41c14c18ceb833a7df32cfa0e35604643b37cb0c5c1bc3c50b49",
     "worker-quote-fallback.js": "e72a72d1885a23c2a35706c8d4f333060b0c451d32a00e501dc63a30416b754c",
-    "holdings-capture-view.js": "f2bebf39ca836868d19cef05c08b2d3aa9cbe99f2bdc62ee8509634f5891f65f",
+    "holdings-capture-view.js": "5f9b2952792c403ea3d005809508381432e17d0f588cfc5930f74413b1a5ba94",
     "holdings-capture.js": "a0fbd647c36d4714e743badbf445e2d3bf6b47c504766beaa14a93fdbf900d95",
-    "table-sort.js": "bd6e195298cb53b32adc8cdeaec57312e4c1807760e100b0af351f50bc4dfbf4",
+    "table-sort.js": "db8ebe8e6a81a67309e925646ffe557db06452fb89e5735de7baad9770c0b778",
     "pc-layout.css": "d3a270238df767d49ef23ea3d53d60fca62d65dc017af19338269602190af2b4",
     "share-class-groups.js": "088bbfaec559937753533572330a6be3c2f9280910f9f6cf62b53f39119c0997",
-    "forward-validation.js": "da7345bf97393f8cf986fd97f09b8044bc6d2f7051fff9020a00005239ad6dd3",
-    "daily-report.js": "a50b2ec38a01419f630273bf3c8976c8d24f310043f5dab06652c5421fdf0370",
+    "forward-validation.js": "85432c469bce8466d2df24b90e2caf1985c2036d596e37725e9073368216f009",
+    "daily-report.js": "c719625827b965f0ac26b766a69ab46ed9d3c923660a44675074791b9f085389",
     "sec-universe-shares.js": "7a64bf6c280b81258ebd13e78b6761876f7056565f18ba9e64da897d953f600d",
     "virtual-trading-v-history.js": "944124763c2682dff373f9ec86e8b938ee2400f3084b5e3d62d8b44c8bd8099f",
     "virtual-trading-signals.js": "b8d73d216d9697bea31f15f0061831f81a144b518b5aa5cc54ba4620dafbe6ef",
     "sec-universe-qg.js": "92664e67228854456739880f2314b77da73155227995065e63d9711207fa3a2c",
-    "sec-qgv2.js": "4a3a977821465c0c41961d0d5eb5c35f433de115df113def3fcb8ed62b37a868",
+    "sec-qgv2.js": "419b49c42921b2792a18ff051e3864620cfacec3918b3b98e74adf90d61cb48d",
     "device-valuation.js": "06669cda863cd4dfa87108f54e03b75c9321989967da7ed54b03c921143cfedf",
     "dcf-parameters-defaults.js": "3f9498ef6177b9dcd3c4fa80077c8480750be93668f57bd5ed5ed3b5509a8473",
     "classification-screens.js": "23ed7302742bf769068ef128dc48075fe6c88d6610585356e6b4e88d14db0a8f",
     "manager-styles-v0.js": "b32f434b17ba00d6ec1e4813517884e5caded996779df9b1976dfc38964ab38e",
-    "screen-detail.js": "fdb5bb47c1a9b59ce1840640bc1a7f4bff69914a4d2985acc31dc0518d21af9c",
+    "screen-detail.js": "e178c80fa5b32698b4ff410be7da298f5f6c2032f437e734cdfa97be9e7725ee",
     "virtual-trading.js": "41a834f13d86ed2bd6a046cf63788992350294714ee9b9ee159ae50de8e20206",
-    "technical-cards.js": "42bb2d1e8de0997eb8e7a2a3a25441d2ac29b010fb58b5fff1d879ba5eb03aad",
-    "leaderboard-screen.js": "6b444d4ea91e5ad433c9f50a96179a0d27f704cbfca5a289ea41aa14dc44b251",
-    "portfolio-screen.js": "b3488b83540dbdb06377f011984a8bdb27959bc627d8f9836235c2322493b038",
-    "company-screen.js": "f0c40ffc28c78bf65b1beb1cd35edb2d0602b9eebd537ae9616a858154fbd24a",
+    "technical-cards.js": "cc6164ac1ca510bb7fddd3403e128198db90c7d7a98b860792bb53df5c1bf814",
+    "leaderboard-screen.js": "c2cc760f88655b5b723662325dbdf2f3ce9dae476ab45938437ab336cef85326",
+    "portfolio-screen.js": "64469dab95d407dbba1d5e68a1614223b6e83c46742ce05205380a44ef71dc72",
+    "company-screen.js": "5c55833a4a0cf36f827f41b98d9e5c783524489a4aae2dbdca860c0a4628bfae",
     "ops-status.js": "bccccba913e0887ee2bb3c38fd61f27fcc2a6d37acb67aeeffea227df422c7a9",
     "type-config-defaults.js": "8b287dde54fb194469bd13d62c356e51eb78c4c04c415eafc6f5091935fed131",
-    "private-subset-view.js": "016d74e3e870a404172b0b2e51ee649204cfaf288ee013afd32f0a8e834c17a4",
+    "private-subset-view.js": "bd93b7d5cd7d5c13950d5786a77fabb6a9c1d2d41cfdd328773c1e941d982237",
     "watchlist.js": "6d707c1f7beb0d4ceaf32cea18320049bbd1ba768bf91578ba6a664596f536cf",
     "sec-m3-adapter.js": "04c835ddbf7f7c5b9e5ebd77571d8fdac70444f673b00092579f3bef4e341de6",
     "private-subset.js": "8016f30888b77c3b92ce1b5e0c11e542505a04ad6865c169c9525c78ebf4bd71",
     "engine-preview.js": "4aac27a64e569b7d6b15335384581e7f33fb51163a1bffc4a541270fc075dfa0",
     "profile-defaults.js": "4481bff54856e506f52342beb9e3747eb1dd167639b40a0d7af99290d32af3cc",
-    "device-profiles.js": "1fbf7bedcd9b0c528eb1a4fcd3c12a0e5f7e887b07474df589ebc868dc77ad06",
+    "device-profiles.js": "4a30e7ca4890a010e662836fbb612942c7b0c0d2434769dde39b37895445f487",
     "public-screens.js": "ad86eace5369424b639478d37140072a805a27df6e7d4277213318d2c7ac6355",
     "pwa.js": "84f1225bacd8c41fd0a82b65c19d28cc02e0e739ae384614df35a9801da418b0",
     "service-worker.js": "130c082cfd1fd50d68441a05daa9cf41450ea6822f2576dd949adb19561d81d8",
@@ -98,43 +101,91 @@ APPROVED_SHA256 = {
     "private-trades.js": "86d59b4c5ef341ab47f1892fe65b483ca8256e367cfde06e1c9a0b580530fb9f",
     "technical-chart.js": "64b581fd186cdcb39f31def58412052dfa777dc2920a4f2432c1842b19c65eb8",
     "chart-indicators.js": "30cf6571f32c0496acd247099feb5f71fce0acf8870dcd78781018b872291fcc",
-    "device-backup.js": "ab938511333c87255a4f9ae6102cc9508cca4c78128f7183771d87391c6e511f",
+    "chart-bars.js": "eca373c58fe78c9a0135962ef6fe3421c441345e91bb7cebe6c4de9927efa01b",
+    "pattern-config-defaults.js": "fe02afed1c54b1be999620d34666cddadb42fee751be581db1134466ffb8a324",
+    "pattern-engine.js": "1e23afd43c9b4c8aa658371dd742f9cc6059bfbe73ee697870c36d0d011c9a5d",
+    "pattern-history.js": "ae60f0458a11550152d76c50981ae786bffc1d678589feb2062c638d0a925f45",
+    "device-backup.js": "27e58a096ea0d846d29fc7a796c4b6f684727b2c51025a83eee7936948862e8e",
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "19e8a5033f00157445f741b58c5bbd55269fe5bc096c9ca83a5b4939cb724387",
+    "app.js": "df2d1ff84ce418da9309a45e2f907e12dc35ecd66cb19124087937da1e16f3b2",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
-    "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
-    "device-actual.js": "2054293a87d3355fb40d161eb8f5fab8769b04a1453c1779c6f0f9860becee18",
-    "device-market.js": "5a115f210cbe9e7c2d75c5069bda39cbfa844fa6576438529504fc919a936bd1",
+    "device-actual.css": "57a6f74deb228391ae65085bde62f3cef2126937cf5063dda41f4807abf44845",
+    "device-actual.js": "aa9acb0cd0f8a48ed6a7370a9e2e9372d5c90db609f57a973ebbf4197a617dc1",
+    "device-market.js": "c0824cb68bc2121ea88b2cd10081336f394736b773189c3f2ba865fa799261a7",
     "entities.json": "8a452006b4821bb0c1fed05de17a2a81da7457fe546f6d9161a1d8b4bda16ac2",
-    "entity-search.js": "174e1039be5c3d3757c8938070887154fe91cda0d87b5850e1330ef491554c93",
+    "entity-search.js": "97d54a29f9336cfbc67a10c886ab8de5676a542a0b59cb122d77ba2ab861319a",
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "59c8bab257051b7b5b4982ba4bedfa998a2e14c63852caef643aee6072f249b2",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "f473b0b1faf31616c5b2eb21422dada47f3a68c89906888b4fe42d3f03f1cafd",
-    "locale.js": "97fe93767ba008907e38916ad67e0412895b6ed6e4e8aeef798decd84fb76753",
-    "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
-    "private-history.js": "e7ca6fb62a3f9e494c2019988956b97581600078f9e045ea4fb933df21f73c5d",
-    "research.html": "ec9f6b90a4dd490959c244e6716a948c7cfae2fe5f060c56c19e6d5c1469763e",
-    "style.css": "d5678406a0421c8893d200b9390b1b1072c9ba6f30594af11603f086280a3a68",
-    "sec-disclosures.js": "7af4fd52b2e83ac348bb7b7b3e80e7130f6e4c32a8f29fd55d14c22e2a5f2714",
-    "sec-qgv2.js": "4a3a977821465c0c41961d0d5eb5c35f433de115df113def3fcb8ed62b37a868",
+    "index.html": "23a53e1b8bc828899a681dfe13420dbdaeba5d4e7bb117858ec262640d2066fb",
+    "locale.js": "f3537029f859a0958c9d2440b7fcc021fef96b2845ff3320ad8b8ae045f09dc2",
+    "private-history.css": "d4ce930e901e2b67b2eb6d57c8795f77be3b9f1650efa85dad6e524419c42028",
+    "private-history.js": "70a1b247f0e9ad2ef22154a6f94e75441244a9dc285122d7ae697a0d8574d81d",
+    "research.html": "573b249119fcb221d0db50235b269cca5b207023b36ac3f5fed8ca6949db425e",
+    "style.css": "35d5eee322071f069cb7b4fc92c2ca5e7e0dfad358a5c57991d87cde0106d34a",
+    "sec-disclosures.js": "849cbfbf2b21badd52c06cf5887dcd259e08864552a76fde39f065f82c6a7194",
+    "sec-qgv2.js": "419b49c42921b2792a18ff051e3864620cfacec3918b3b98e74adf90d61cb48d",
     "price-store.js": "52b723d9e7dfc189252a870c57f5a044373427d3a9009bb9a119c322ebb8c4de",
-    "qgv2-inputs.js": "3aa4606dc454c76c2504394a3ccf9df5eae59bb92642d97b23c0d7f0a92a33fe",
+    "qgv2-inputs.js": "f53cc206b1655f7a8602f8f0aab12d8199cd58a4818561eff02a9c18294c251f",
     "scoring-default.js": "02eae2182de717bf0620e9616fe2aabd78c7ec8484c60d65f4231262df868beb",
-    "qgv-v2.js": "754f46ddc6e46bcba4d448815b4672b7027aafa5e162fe534e04993d6ec300fd",
-    "qgv-scores.js": "cf96448c6432bf4bfedca538326141df7703e366651102011cca91fb7526d70c",
-    "playbook-screen.js": "cae5f6f7765de9cd5dcdc8d5a604204ecff2f8f30b8afc5b00c7ec92b185ae8f",
-    "news-signals.js": "61336bb91a39407c60573ca6b2bfbbd06b7c36d4910927ac04e0a29fc4a16868",
-    "dart-disclosures.js": "093d131ffccbb30284cabd796a3b190a4d2fdd049e1f6648c078321c33101713",
+    "qgv-v2.js": "0f06a8904b156e18f503c47844b540b4b12f3368933ff21bc3157afe482b3717",
+    "qgv-scores.js": "02573dc9b02839af4220d4a63e0685a41c7b99f66fc9ebe846e4f42ed2f37866",
+    "playbook-screen.js": "749e3a21ab28b02f1b7ce7814c2eb5f08b6bf9d4d15655dc7a4af994d994d0be",
+    "news-signals.js": "6a85c92329ca6968175d357ec10a81198b692d762a29ab1a30374a3f0b3c718c",
+    "dart-disclosures.js": "7ea88fa32ffa0be446e28f3b91532532bf2b98073f31d4ec1d62db8e73d7efdf",
     "macro-lights.js": "d64e3d4c68fb8c0ffdbfe16ad3220af2648bda4d331edd387ca337d52c42d741",
-    "sec-disclosures.js": "7af4fd52b2e83ac348bb7b7b3e80e7130f6e4c32a8f29fd55d14c22e2a5f2714",
+    "macro-cycle-ring.js": "cacb0a4a21774e9c18d29c9831d13862b9866a187ebadbe0d71084472232b012",
+    "macro-cycle-ring.css": "14567f0ec84436066b814a448efe3c16bc98c8066cf23cd21d40835d049510ca",
+    "sec-disclosures.js": "849cbfbf2b21badd52c06cf5887dcd259e08864552a76fde39f065f82c6a7194",
+    "theme-boot.js": "4aaf08ecd900e1216a95159a277f8a7c51c32e41784f1ac9530ecf1dc77a6f2c",
+    "theme.css": "4cd7dc3f0c69a9f99cf946aa61f76f3cefa12e4d529b3d22b8fb7721f63b932c",
+    "app-shell.js": "e7cdd03821e5f543925c16bbb2fb67b977df4c1d5c88e2f532f86cb3b8d31199",
+    "home-screen.js": "f35d9c2c1e0b400ca7ef337b5f90d13be6660b6f321aaeea3ea5239d86c05219",
+    "home-quotes.js": "46487b40e170c3291b023bebcb0fd01da19bb3beb53bfad3006be6377cfe3a96",
+    "doodles.js": "413afcb07c5ef5f4edcb0ab544ba61a7d19954db0951ccdf85742c04cf5bb57e",
+    "ia-screens.js": "51af7928fc30dad0afd7e2b446e459667ae24b50c1b615c2c216fd66c39e422c",
+    "universe-company.js": "f28e53e7269932790d45339a80761db451664f0a7b44b7d173b759050a946d82",
+    "universe-company.css": "5b1b0236290f91c95b7f25d49bc93d032bf1718754c1cfae7789e92bb74b11b8",
+    "stat-radar.js": "f46686ac9391e398d9c0cc0af19c00aa9de2b32cd1a37cc5c4abb0dabb047750",
+    "stat-radar.css": "1afcc9df3d0eeadb87b7d80251ef17091146bf62f2da40a9f7e249b2969bd6db",
+    "v-coverage.js": "8031a5cf658ecc287df71dcbe5f6fdc61cc754057e39086eefa210847d37aa4c",
+    "price-time.js": "9b786d04615f3a8907f8f936db78ab3fd477808eadc27814e615ffbb7dddbc0f",
+    "data-refresh.js": "ee4d9745536dd0c698518820d1c82be297d3b28f2e0075601c21c5d000a0a76d",
+    "v-coverage.css": "185302f9f5aa9542d2caadfa03363f084bf837e8e1ea2998da49fa1db8af9364",
+    "macro-evidence.js": "b87449fcb0edea5de6a6ac74cd9e7579ad81a28af970f2fc2f59f7594207070b",
+    "macro-evidence.css": "5270ef2e2c80eb70125ed39f8fbef5f3f0d87172d3dff3a79c888b92ec9520cd",
+    # Self-hosted chart renderer (P1-7): lightweight-charts 5.2.1 npm file unmodified, upstream LICENSE/NOTICE, third-party notices.
+    "chart-renderer.js": "c6053c2633788813d363d3346833f416fa954fbf8db7e1e18252b191c0dd040b",
+    "chart-workbench.js": "7329d7c03dbc3dea99d35e46ce0d1ca897782cf8cabe6379e6edc40ad53f743e",
+    "chart-workbench.css": "6824369fd724e8ebd36d62ea498318dceab65cd12c69975f7b3f542048ebfb9f",
+    "lightweight-charts-5.2.1.standalone.js": "e21cc5caa0226ef30bd8549c50b9ef926615f2a4ee6b4e486353477a55f598cf",
+    "lightweight-charts-5.2.1.LICENSE.txt": "70c9d5382506dd184465425c08a99ad9bd6d9ac1313c252968ba0b585e5ef823",
+    "lightweight-charts-5.2.1.NOTICE.txt": "f76c6afab94884448f0426e30d6e9d555ca7247894cd3484e477d2f87513036e",
+    "third-party-notices.txt": "6f24b5e4df26683877769364a388c8eac361de2c6a1caab169270d3b8b400cff",
+    # Self-hosted SIL OFL 1.1 fonts (IA-11, owner "호스팅해" 2026-10-20): google/fonts 47d54ca1 Jua/Gaegu Regular, subset to
+    # Latin + KS X 1001 Hangul as WOFF2 (binary, see FONT_FILES), and the unmodified upstream OFL texts.
+    "jua-regular-ksx1001.woff2": "2699d0318876afef41d823cec84d30d08d98ab6723d9958b6d5f79f57ade1cc2",
+    "gaegu-regular-ksx1001.woff2": "91e086f4668132cd51a70ba2b6d7d9706da87f8a7f8be4b198f968ddb69894c0",
+    "jua-OFL.txt": "44a7c6e4c5572392ae122d3b1d8c6ba6fd640a7797e675384585d947f2773e3c",
+    "gaegu-OFL.txt": "53a9ce47085d9fef613c7ecb3730dc80d25962510bbea231b89564f58240f251",
 }
-ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, UNIVERSE_DOMAINS_FILENAME, COMPANY_LOGOS_FILENAME, QGV2_FILENAME, DISCLOSURES_FILENAME, NEWS_SIGNALS_FILENAME} | set(SCREEN_FILENAMES) | set(DART_FILENAMES)
+# Font exception (IA-11, owner approval 2026-10-20, exact scope): the ONLY binary files besides the two PWA icons are
+# these two names, and only at the artifact root. Both scan modes match the full relative path against ALLOWED_NAMES
+# (the directory scan reads root entries only; a tar member under a directory keeps its directory in the name), so the
+# same file name anywhere else, or any other *.woff2 name, is an unexpected entry. No extension-wide allowance exists.
+# For these two files only, the UTF-8 decode and the text secret-pattern scan are skipped (binary payload); instead each
+# must pass the tighter FONT_MAX_BYTES cap, a structural WOFF2 header check and its pinned SHA-256. Every other file,
+# including the fonts' OFL licence texts, still goes through all text checks.
+FONT_FILES = frozenset({"jua-regular-ksx1001.woff2", "gaegu-regular-ksx1001.woff2"})
+FONT_MAX_BYTES = 256 * 1024  # pinned subsets are 187,292 and 83,968 bytes; tighter than MAX_FILE_BYTES on purpose
+ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, COMPANY_NAMES_FILENAME, UNIVERSE_DOMAINS_FILENAME, COMPANY_LOGOS_FILENAME, QGV2_FILENAME, DISCLOSURES_FILENAME, NEWS_SIGNALS_FILENAME, MACRO_EVIDENCE_FILENAME} | set(SCREEN_FILENAMES) | set(DART_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024
 MAX_ARCHIVE_BYTES = 4 * 1024 * 1024
-MAX_ENTRIES = 128
+# 192 (was 128, owner approval 2026-10-20): a real deploy (build + ledger/public data) reached about 131 entries with the
+# chart renderer. Only the entry count changes; the allow-list, pinned hashes, size limits and price/personal checks stay.
+MAX_ENTRIES = 192
 MAX_JSON_DEPTH = 64
 
 SENSITIVE_KEYS = frozenset({
@@ -211,10 +262,43 @@ def _inspect_json(value: object, violations: Counter, depth: int = 0) -> None:
             violations["secret_patterns"] += 1
 
 
+def _valid_woff2_header(payload: bytes) -> bool:
+    """WOFF2 table directory header (W3C WOFF2 5.1): 48 bytes, big-endian.
+
+    Signature wOF2, a single-font TrueType or CFF flavor (no collection), declared length equal to the real size,
+    a sane table count, zero reserved field, a compressed block inside the file, and no extended-metadata or
+    private-data block (nothing that could carry extra payload beside the glyph tables).
+    """
+    if len(payload) < 48:
+        return False
+    (signature, flavor, length, num_tables, reserved, total_sfnt_size, total_compressed_size, _major, _minor,
+     meta_offset, meta_length, meta_orig_length, priv_offset, priv_length) = struct.unpack(">4sIIHHIIHHIIIII", payload[:48])
+    return (
+        signature == b"wOF2"
+        and flavor in (0x00010000, 0x4F54544F)  # TrueType outlines or 'OTTO'
+        and length == len(payload)
+        and 0 < num_tables <= 64
+        and reserved == 0
+        and total_sfnt_size > 0
+        and 0 < total_compressed_size < length - 48
+        and meta_offset == meta_length == meta_orig_length == 0
+        and priv_offset == priv_length == 0
+    )
+
+
 def _check_payload(name: str, payload: bytes, violations: Counter) -> None:
     try:
         if name in {'icon-192.png', 'icon-512.png'}:
             if not payload.startswith(b'\x89PNG\r\n\x1a\n') or hashlib.sha256(payload).hexdigest() != APPROVED_SHA256[name]:
+                violations['unapproved_content'] += 1
+            return
+        if name in FONT_FILES:
+            # Binary font exception (see FONT_FILES): size cap, WOFF2 structure, pinned hash; no text scans.
+            if len(payload) > FONT_MAX_BYTES:
+                violations['oversized_files'] += 1
+            elif not _valid_woff2_header(payload):
+                violations['invalid_font'] += 1
+            elif hashlib.sha256(payload).hexdigest() != APPROVED_SHA256[name]:
                 violations['unapproved_content'] += 1
             return
         text = payload.decode("utf-8", errors="strict")
@@ -259,6 +343,9 @@ def _check_payload(name: str, payload: bytes, violations: Counter) -> None:
         elif name == UNIVERSE_CODES_FILENAME:
             try: require_universe_codes(value)
             except ValueError: violations['universe_codes_boundary'] += 1
+        elif name == COMPANY_NAMES_FILENAME:
+            try: require_company_names_ko(value)
+            except ValueError: violations['company_names_boundary'] += 1
         elif name == QGV2_FILENAME:
             try: require_qgv2(value)
             except ValueError: violations['qgv2_boundary'] += 1
@@ -277,6 +364,9 @@ def _check_payload(name: str, payload: bytes, violations: Counter) -> None:
         elif name == NEWS_SIGNALS_FILENAME:
             try: require_news_signals(value)
             except ValueError: violations['news_signals_boundary'] += 1
+        elif name == MACRO_EVIDENCE_FILENAME:
+            try: require_macro_evidence(value)
+            except ValueError: violations['macro_evidence_boundary'] += 1
         elif name in DART_FILENAMES:
             try: require_dart_public(name, value)
             except ValueError: violations['dart_public_boundary'] += 1
