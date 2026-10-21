@@ -1,6 +1,6 @@
 # 현재 인수인계 — 2026-10-21 (Codex Main)
 
-확인 시각: **2026-10-21 07:01 UTC / 16:01 KST**. 이 시점 이후 PR·Actions·게시 증거는 다시 확인한다. 구현 / 시험 / 병합 / 게시 / 실사이트 확인을 구분한다.
+확인 시각: **2026-10-21 07:22 UTC / 16:22 KST**. 이 시점 이후 PR·Actions·게시 증거는 다시 확인한다. 구현 / 시험 / 병합 / 게시 / 실사이트 확인을 구분한다.
 
 먼저 읽기: [WORKING_RULES.md](WORKING_RULES.md) → 이 파일 → [사용자 결정](implementation/docs/USER_DECISIONS_PENDING.md) → [기존 분담](implementation/docs/PARALLEL_LANES_20261020.md) → [제품 IA](implementation/docs/PRODUCT_IA_DIRECTIVE_20261018.md) → [자료 계약](implementation/docs/FRONTEND_DATA_CONTRACT.md) → 작업 영역 계약·시험. 이전 원문은 [10/20 기록](implementation/docs/handoff/HANDOFF_HISTORY_20261020.md)에 보존했다. 과거 “다음 실행/병합 대기”보다 아래 실제 증거를 따른다. 사용자 결정은 구현과 다르다는 이유로 폐기하지 않는다.
 
@@ -36,12 +36,16 @@
 | --- | --- | --- |
 | Main | codex/frontend-links-20261021; app·메뉴·구조 트리·공용 시험/가드·인수인계 | #370 병합 완료·미게시. 기존 패턴/노트/매크로/Lab 연결, 동일 기업 차트 RAM 유지, 기술 종목 맥락 통합 중. 기존 승인 기능 연결이며 새 모델 없음 |
 | Kierkegaard | codex/technical-company-context-20261021; private-history.js·기존 브라우저 시험 | 비지원 검색 기업을 ASML로 바꾸는 결함 수정·Main 통합. Main 링크 변경 독립 리뷰에서 산업→경기 도착·RAM 보존·문구 지적 후 수정 재검토 |
-| Darwin | codex/replay-20261020-artifact; cockpit workflow·복구 도구·시험 | 사용자 10/21 승인 반영: 고정 run/artifact만 허용, 복구 전용 actions:read, 최신 게시 25파일 비교 및 원장 guard. PR·CI·병합·배포 전 |
+| Darwin | codex/replay-20261020-artifact; cockpit workflow·복구 도구·시험 | 사용자 10/21 승인 반영. #371 게시, 로컬 130 시험·독립 리뷰 통과. 기존 업로드 수 검사 정정 후 새 HEAD의 필수 CI 대기·미병합·미배포. 후속 검색 상태 G3/G8 담당 |
 | Lovelace | codex/target-v1-integration-20261021; TARGET 담당 11파일 | #248→#263 승인 구현 로컬 통합·검증 완료. 기존 PR ancestry 보존 동기화·Main 연결·각 최종 HEAD CI 잔여. 복구안 읽기 전용 리뷰 병행 |
 
 Main #370 검증: macro 브라우저 390/1280 **10단계 통과**(초기 읽기·빈 상태·실제 제공 artifact·합성 새로고침·상세). 실제 10/20 artifact에 수정된 두 JS만 적용해 확인했다. 리뷰 지적 초기 읽기 경합·404·필수 labels/summary/관측 누락을 회귀에 추가했고 수정 전 실패를 확인했다. 최종 공통 새로고침 **159 checks**, 화면 보존 **20 screens**, 실제 artifact 경계 가드 **138파일** 통과. 관련 Python **73 passed/150 subtests**는 JS 리뷰 보완 전 실행 결과이며 Python 코드는 변경하지 않았다. 최종 HEAD e967cbd3의 원격 필수 **6/6 CI 성공**: cockpit-pages 39555638059, web-mvp-validation 39555637884, autonomy-gate-a 39555637886, web-research-guard 39555638018, web-state-presentation 39555637868, c21-real-data 39555637896. #370 병합 완료, 배포 전. 수집기·공식 계산·저장 정책·공개 범위는 변경하지 않는다.
 
 기존 수동 화면 배포는 **현재 게시 데이터**를 보존하므로 10/20 미게시 데이터를 복구하지 않는다. 실패 run 재실행은 원래 SHA의 시험을 쓰므로 해결책이 아니다. [10/21 복구 승인](implementation/docs/USER_DECISIONS_PENDING.md)을 적용한다. 권한은 이 저장소 Actions 읽기이며 artifact 제한은 코드상의 제한이다. 기존 deploy 잠금·SEC/원장 freshness·공개 경계 가드·전체 검증을 유지하고, 최종 배포 직전에 25개 게시 파일이 감사한 기존본 또는 고정 원본인지 비교한다. 알려지지 않은 새 데이터·404·망 오류이면 중단한다. 복구 후보 25개는 모두 고정 원본 해시여야 한다. 재수집·원장 추가 없음.
+
+복구 로컬 검증: 실제 ZIP/TAR 해시·25/25 JSON 바이트 일치, 새 코드/manifest 113개 불변, 공개 가드 138파일 PASS. 기존 게시본 대비 원장 v1/v2 각각 10/19 보존·원본 10/20 1건, 누락/변경/이동 0. 복구 전용 시험 130 PASS(실제 다운로드와 구분); 기존 workflow 경계 시험 5개와 합쳐 135 PASS. #371 첫 CI의 5개 workflow는 같은 `test_affected_workflows_have_no_publication_sinks`의 업로드 수 1개 가정 때문에 실패했다. 승인된 복구 전용 upload의 job·조건·정확한 3경로를 검사하며 기존 Pages upload 앞의 공개 가드·브라우저 검사는 유지하도록 수정했다. 최종 HEAD의 6 CI를 새로 확인해야 한다.
+
+전송 확인의 제한: 로컬 `gh` ZIP GET은 `Forbidden`/exit 1/0 bytes로 실패했고 다른 경로로 우회하지 않았다. 같은 principal의 artifact metadata는 200이지만 ZIP 거부가 API 권한 또는 전송 계층인지 미분류이며 실제 scope를 단정하지 않는다. 앞서 보관한 공식 ZIP의 정확한 바이트 검증과 GitHub 복구 job의 실제 전송 성공은 별개다. GitHub 복구 job은 아직 실행 전이다. 최신 게시 25파일의 production CLI는 한 차례 읽기 실패 후 코드 변경 없이 재확인해 exit 0으로 통과했다. 배포 시 잠금 안의 검사 자체가 다시 성공해야 한다.
 
 ## 4. 기능 1.1 계층별 상태
 
