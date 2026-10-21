@@ -159,7 +159,7 @@ async function unavailableNewScreen(page, selector) {
           "#tree/qgv", "#technical-pattern", "#technical-notes", "#tree/technical", "#macro-cycle", "#macro-rotation", "#macro-industry", "#macro-mine", "#macro-chain", "#tree/macro", "#news-network", "#tree/news", "#tree/portfolio", "#validation-backtest", "#validation-forward"])
           verify(moreLinks.includes(href), "전체 메뉴 lists " + href);
         verify(JSON.stringify(await page.locator("#more-menu [data-menu-group]").evaluateAll(nodes => nodes.map(node => node.dataset.menuGroup))) === JSON.stringify(["qgv", "technical", "macro", "news", "portfolio", "prompts", "system", "lab", "settings"]), "전체 메뉴 groups follow the eight menus, then settings");
-        verify(await page.locator("#more-menu [data-menu-pending]").evaluateAll(nodes => nodes.map(node => node.getAttribute("href")).join()) === "#lab-13f,#technical-pattern,#technical-notes,#macro-cycle,#macro-rotation,#macro-industry,#macro-mine,#macro-chain", "items whose screen states NOT_AVAILABLE only are marked 준비 중");
+        verify(await page.locator("#more-menu [data-menu-pending]").evaluateAll(nodes => nodes.map(node => node.getAttribute("href")).join()) === "#lab-13f,#macro-rotation,#macro-chain", "only screens without implemented controls are marked 준비 중; official macro judgements remain uncomputed");
         verify(await page.locator('#more-menu a[href="#lab-13f"]').evaluate(node => node.closest("[data-menu-group]")?.dataset.menuGroup) === "qgv", "13F weight research is listed under QGV 1.3");
         await page.keyboard.press("Escape");
         verify(await page.locator("#more-menu").isHidden() && await page.evaluate(() => document.activeElement?.id === "more-button"), "Escape closes 전체 메뉴 and returns focus to its button");
@@ -226,7 +226,8 @@ async function unavailableNewScreen(page, selector) {
         await capture(page, "macro", locale, width);
         await go(page, "validation"); await active(page, "lab"); await unavailableNewScreen(page, '[data-hub="validation"]');
         verify(await page.locator('[data-hub="validation"] a[href="#research"]').count() === 1, "validation keeps existing research reachable");
-        verify(await page.locator('[data-hub="validation"] .card').filter({ hasText: "NOT_AVAILABLE" }).count() === 5, "five S10 validation areas (paper, backtest, forward, track record, trials) remain unavailable");
+        verify(await page.locator('[data-hub="validation"] .card').filter({ hasText: "NOT_AVAILABLE" }).count() === 4, "paper, backtest, track record and trials remain unavailable");
+        verify(await page.locator('[data-hub="validation"] a[href="#validation-forward"]').count()===1,"existing forward ledger is reachable from the hub");
         await capture(page, "validation", locale, width);
         await page.locator('[data-hub="validation"] a[href="#research"]').click(); await page.locator("#research-frame").waitFor(); await active(page, "prompts");
         verify(await page.locator('main > .parent-row > .parent-link[href="#validation"]').count() === 1, "existing research offers its validation parent");
@@ -252,7 +253,9 @@ async function unavailableNewScreen(page, selector) {
             verify(await page.locator("header [aria-current], #more-menu [aria-current], .ia-sub [aria-current]").count() === 1, "one menu aria-current per route (" + hash + ")");
             const flow = tabOf(hash) && tabOf(hash) !== "home" ? numbers[tabs.indexOf(tabOf(hash))] : null;
             verify(flow === null || await page.locator('main .flow-step[data-flow-step="' + flow + '"]').count() === 1, "flow line shows the menu number (" + hash + ")");
-            if (/^(technical|macro)-/.test(hash)) verify((await page.locator("#" + hash).textContent()).includes("NOT_AVAILABLE"), hash + " states NOT_AVAILABLE");
+            const implemented={"technical-pattern":"[data-pattern-panel]","technical-notes":"[data-user-panel]","macro-cycle":"#macro-cycle-ring-root","macro-industry":"[data-cycle-ring=industry]:not([hidden])","macro-mine":"[data-cycle-ring]:not([hidden]) [data-cycle-user-box]"};
+            if(implemented[hash]) verify(await page.locator(implemented[hash]).isVisible(),hash+" reaches its implemented controls");
+            else if (/^(technical|macro)-/.test(hash)) verify((await page.locator("#" + hash).textContent()).includes("NOT_AVAILABLE"), hash + " states NOT_AVAILABLE");
           }
           // Structure trees: real engine weights; example values only from loaded data (none here: NA with a reason).
           await go(page, "tree/qgv");

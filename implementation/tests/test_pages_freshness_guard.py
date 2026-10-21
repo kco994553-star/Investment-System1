@@ -714,17 +714,27 @@ def test_both_deploy_jobs_check_freshness_immediately_before_deploy(workflow):
     assert steps[2].startswith('name: Download the Pages artifact this job deploys\n')
     assert 'uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0' in steps[2]
     assert 'name: github-pages\n' in steps[2] and 'path: ${{ runner.temp }}/pages-artifact' in steps[2]
-    check, deploy = steps[-2], steps[-1]
+    check, deploy = steps[3], steps[-1]
     assert check.startswith('name: Refuse to deploy public data older than the live Pages copy\n')
     assert [line.strip() for line in check.split('run: |\n', 1)[1].strip().splitlines()] == [
         'mkdir "$RUNNER_TEMP/deploy-check"',
         'tar -xf "$RUNNER_TEMP/pages-artifact/artifact.tar" -C "$RUNNER_TEMP/deploy-check"',
         'python implementation/tools/pages_freshness_guard.py --artifact-dir "$RUNNER_TEMP/deploy-check"']
-    # The check gates the deploy: no condition, no continue-on-error, no secret, and nothing runs between them.
-    assert 'continue-on-error' not in job and '\n        if:' not in job and 'secrets.' not in job
+    # The SEC/ledger gate remains unconditional. The approved one-off recovery
+    # adds exactly one further read-only 25-file check, under this same lock.
+    assert 'continue-on-error' not in job and 'secrets.' not in job
+    conditions = [line.strip() for line in job.splitlines() if line.startswith('        if:')]
+    if workflow == 'cockpit-pages.yml':
+        assert len(steps) == 6 and conditions == ['if: inputs.replay_20261020']
+        assert steps[4].strip() == (
+            'name: Refuse recovery unless all 25 live files are audited baseline or fixed source bytes\n'
+            '        if: inputs.replay_20261020\n'
+            '        run: python implementation/tools/replay_pages_20261020.py --check-deploy --out "$RUNNER_TEMP/deploy-check"')
+    else:
+        assert len(steps) == 5 and conditions == []
     assert deploy.startswith('name: Deploy checked Pages artifact\n        id: deployment\n'
                              '        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4')
-    assert len(steps) == 5 and text.count('pages_freshness_guard.py') == 1 and text.count('actions/deploy-pages@') == 1
+    assert text.count('pages_freshness_guard.py') == 1 and text.count('actions/deploy-pages@') == 1
     assert text.rstrip('\n').endswith(deploy.rstrip('\n'))   # the deploy step ends the workflow file
     # The comment states the amended rules, and that a broken live copy is never repaired automatically.
     comment = ' '.join(line.strip().lstrip('# ') for line in steps[2].splitlines() if line.strip().startswith('#'))
