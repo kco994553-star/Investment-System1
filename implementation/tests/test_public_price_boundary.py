@@ -138,7 +138,27 @@ def test_affected_workflows_have_no_publication_sinks(name):
     if name != 'cockpit-pages':
         assert 'actions/upload' not in source and 'actions/deploy-pages' not in source
     else:
-        assert source.count('actions/upload') == 1
+        # 10/21 owner-approved recovery adds one same-run handoff of already
+        # audited, exactly pinned bytes. It is not a general publication sink.
+        assert source.count('actions/upload') == 2
+        recovery, publication = source.split('\n  replay_source:\n', 1)[1].split('\n  build:\n', 1)
+        assert recovery.count('actions/upload') == 1
+        assert publication.count('actions/upload') == 1
+        assert "if: github.event_name == 'workflow_dispatch' && inputs.replay_20261020 && github.ref_name == 'claude/investment-system-top500-validation-alrugm'" in recovery
+        assert '    permissions:\n      actions: read\n' in recovery
+        assert 'actions/checkout@' not in recovery
+        handoff = recovery.split('uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02', 1)[1]
+        assert 'name: replay-20261020-source-${{ github.run_attempt }}' in handoff
+        paths = handoff.split('path: |\n', 1)[1].split('          retention-days:', 1)[0].splitlines()
+        assert [line.strip() for line in paths] == [
+            '${{ runner.temp }}/replay-source/artifact.tar',
+            '${{ runner.temp }}/replay-source/run-metadata.json',
+            '${{ runner.temp }}/replay-source/artifact-metadata.json',
+        ]
+        assert 'retention-days: 1' in handoff and 'if-no-files-found: error' in handoff
+        assert "hashlib.sha256(body).hexdigest() != ZIP_SHA256" in recovery
+        assert "hashlib.sha256(tar_body).hexdigest() != TAR_SHA256" in recovery
+        assert recovery.index('verify_zip(zipped,') < recovery.index('actions/upload-artifact@')
         assert source.count('actions/deploy-pages') == 1
         assert 'actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa' in source
         assert 'actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e' in source
@@ -146,8 +166,8 @@ def test_affected_workflows_have_no_publication_sinks(name):
         assert source.count(condition) == 2
         assert "path: ${{ runner.temp }}/public-cockpit" in source
         assert "needs: build" in source
-        assert source.index('pages_artifact_guard.py') < source.index('actions/upload')
-        assert source.index('ci_browser_tests.txt') < source.index('actions/upload')
+        assert publication.index('pages_artifact_guard.py') < publication.index('actions/upload-pages-artifact@')
+        assert publication.index('ci_browser_tests.txt') < publication.index('actions/upload-pages-artifact@')
         assert 'private_history_browser_test.js' in (ROOT / 'tools/ci_browser_tests.txt').read_text().split()
 
 
