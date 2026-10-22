@@ -180,7 +180,13 @@
   const USER_KEY = 'investment.web.v1.chart-user-objects', USER_SCHEMA = 'chart-user-objects/1', USER_LIMIT = 500, TEXT_LIMIT = 500, USER_IMPORT_MAX_BYTES = 16 * 1024 * 1024;
   const USER_LABEL = Object.freeze(['사용자 작성', 'User-written']);
   const DIRECTIONS = Object.freeze({UP: ['상승', 'Up', '↑'], SIDEWAYS: ['횡보', 'Sideways', '→'], DOWN: ['하락', 'Down', '↓']});
-  const NOTE_KINDS = Object.freeze({LINE: ['선', 'Line'], RANGE: ['구간', 'Range'], MEMO: ['메모', 'Memo']});
+  // Note kinds in the owner draft's tool order (펜 · 추세선 · 수평선 · 구간 상자 · 메모). PEN and HLINE were added to
+  // chart-annotation/1 without changing any existing kind, so every record written before still loads unchanged; a reader that
+  // does not know a kind keeps that record as unreadable and writes it back untouched (createDeviceUserStore).
+  const NOTE_KINDS = Object.freeze({PEN: ['펜', 'Pen'], LINE: ['추세선', 'Trend line'], HLINE: ['수평선', 'Horizontal line'], RANGE: ['구간 상자', 'Range box'], MEMO: ['메모', 'Memo']});
+  // Anchored points per kind [min, max]. A pen stroke is simplified to at most PEN_MAX_POINTS points before it is stored.
+  const PEN_MAX_POINTS = 64, UNDO_LIMIT = 30;
+  const KIND_POINTS = Object.freeze({PEN: [2, PEN_MAX_POINTS], LINE: [2, 2], HLINE: [1, 1], RANGE: [2, 2], MEMO: [1, 1]});
   const isDate = v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) && Number.isFinite(Date.parse(v + 'T00:00:00Z'));
   const isPrice = v => typeof v === 'number' && Number.isFinite(v) && v > 0;
   const isText = v => typeof v === 'string' && v.length <= TEXT_LIMIT;
@@ -195,7 +201,7 @@
     if (!o || typeof o !== 'object' || Array.isArray(o) || !onlyFields(o, o.schema === 'chart-scenario/1' ? SCENARIO_FIELDS : NOTE_FIELDS) || !isId(o.id) || typeof o.symbol !== 'string' || !/^[A-Z0-9.\-]{1,16}$/.test(o.symbol) || !['D', 'W'].includes(o.interval) || o.price_basis !== 'RAW_CLOSE' || o.author !== 'USER'
       || !isText(o.text || '') || !isDate(String(o.created_at || '').slice(0, 10)) || !isDate(String(o.updated_at || '').slice(0, 10))) return false;
     if (o.schema === 'chart-annotation/1') {
-      if (!NOTE_KINDS[o.kind] || !Array.isArray(o.points) || o.points.length !== (o.kind === 'MEMO' ? 1 : 2) || !o.points.every(pt => onlyFields(pt, ['time', 'price']) && isDate(pt.time) && isPrice(pt.price))) return false;
+      if (!NOTE_KINDS[o.kind] || !Array.isArray(o.points) || o.points.length < KIND_POINTS[o.kind][0] || o.points.length > KIND_POINTS[o.kind][1] || !o.points.every(pt => onlyFields(pt, ['time', 'price']) && isDate(pt.time) && isPrice(pt.price))) return false;
       return true;
     }
     if (o.schema === 'chart-scenario/1') {
@@ -244,8 +250,11 @@
   }
   // Merge without duplicates: an incoming object whose id is already present, or whose content (all but id/created/updated)
   // matches one already present, is skipped; existing objects are never replaced or removed.
+  // The content key sorts keys at every level (a JSON.stringify key list would also drop the nested time/price anchors, making
+  // two notes of one kind at different prices look identical).
+  const canonical = v => (Array.isArray(v) ? '[' + v.map(canonical).join(',') + ']' : v && typeof v === 'object' ? '{' + Object.keys(v).sort().map(k => JSON.stringify(k) + ':' + canonical(v[k])).join(',') + '}' : JSON.stringify(v));
   function mergeUserItems(existing, incoming) {
-    const body = o => { const {id, created_at, updated_at, ...rest} = o; return JSON.stringify(rest, Object.keys(rest).sort()); };
+    const body = o => { const {id, created_at, updated_at, ...rest} = o; return canonical(rest); };
     const ids = new Set(existing.map(o => o.id)), bodies = new Set(existing.map(body)), items = [...existing];
     let added = 0, skipped = 0;
     for (const o of incoming) { const b = body(o); if (ids.has(o.id) || bodies.has(b)) { skipped++; continue; } ids.add(o.id); bodies.add(b); items.push(o); added++; }
@@ -702,10 +711,12 @@
     for (const o of userHere(state)) {
       const emphasis = o.id === state.user.editing ? 'selected' : 'normal';
       if (o.schema === 'chart-annotation/1') {
+        if (o.kind === 'PEN') { penOverlays(o, emphasis, out); if (times.has(o.points[0].time)) out.push({id: o.id + '|label', kind: 'marker', source: 'USER', tone: 'user', emphasis, time: o.points[0].time, label: (o.text || words(state, ...NOTE_KINDS.PEN)).slice(0, 10), position: 'aboveBar'}); continue; }
         const [a, b] = o.points.length === 2 ? [...o.points].sort((x, y) => (x.time < y.time ? -1 : 1)) : o.points;
-        if (o.kind === 'LINE') out.push({id: o.id, kind: 'segment', source: 'USER', tone: 'user', emphasis, from: a.time, to: b.time, fromPrice: a.price, toPrice: b.price});
+        if (o.kind === 'HLINE') out.push({id: o.id, kind: 'line', source: 'USER', tone: 'user', emphasis, from: bars[0].time, to: last, price: a.price});
+        else if (o.kind === 'LINE') out.push({id: o.id, kind: 'segment', source: 'USER', tone: 'user', emphasis, from: a.time, to: b.time, fromPrice: a.price, toPrice: b.price});
         else if (o.kind === 'RANGE') for (const [suffix, price] of [['|low', Math.min(a.price, b.price)], ['|high', Math.max(a.price, b.price)]]) out.push({id: o.id + suffix, kind: 'line', source: 'USER', tone: 'user', emphasis, from: a.time, to: b.time, price});
-        if (times.has(a.time)) out.push({id: o.id + '|label', kind: 'marker', source: 'USER', tone: 'user', emphasis, time: a.time, label: (o.kind === 'MEMO' ? (o.text || words(state, ...NOTE_KINDS.MEMO)) : words(state, ...NOTE_KINDS[o.kind])).slice(0, 10), position: 'aboveBar'});
+        if (times.has(a.time)) out.push({id: o.id + '|label', kind: 'marker', source: 'USER', tone: 'user', emphasis, time: a.time, label: (o.kind === 'MEMO' || o.kind === 'HLINE' ? (o.text || words(state, ...NOTE_KINDS.MEMO)) : words(state, ...NOTE_KINDS[o.kind])).slice(0, 10), position: 'aboveBar'});
       } else {
         const from = times.has(o.anchor_time) && o.anchor_time < last ? o.anchor_time : bars[Math.max(0, bars.length - 30)].time, dir = DIRECTIONS[o.direction];
         o.levels.forEach((l, n) => out.push({id: o.id + '|l' + n, kind: 'line', source: 'USER', tone: 'user', emphasis, from, to: last, price: l.price}));
@@ -716,38 +727,150 @@
     return out;
   }
 
+  // A pen stroke is drawn as one segment per pair of neighbouring points (the time axis has one value per bar, so a step that
+  // stays on one bar is not drawn; its points are still kept).
+  function penOverlays(o, emphasis, out) {
+    for (let n = 1; n < o.points.length; n++) {
+      const [a, b] = [o.points[n - 1], o.points[n]].sort((x, y) => (x.time < y.time ? -1 : 1));
+      if (a.time !== b.time) out.push({id: o.id + '|s' + n, kind: 'segment', source: 'USER', tone: 'user', emphasis, from: a.time, to: b.time, fromPrice: a.price, toPrice: b.price});
+    }
+  }
+
+  /* Undo (this session, RAM only): a copy of the user objects before each change (add, edit, delete, eraser, clear, import),
+     newest last, at most UNDO_LIMIT. Undo puts the copy back and saves it through the same store; nothing else is kept. */
+  const UNDO_NAMES = Object.freeze({ADD: ['추가', 'add'], EDIT: ['고치기', 'edit'], DELETE: ['지우기', 'delete'], ERASE: ['지우개', 'eraser'], CLEAR: ['모두 지우기', 'clear'], IMPORT: ['가져오기', 'import']});
+  function remember(state, action) {
+    state.user.undo.push({action, items: JSON.parse(JSON.stringify(state.user.items))});
+    if (state.user.undo.length > UNDO_LIMIT) state.user.undo.shift();
+  }
+  function undoUser(state) {
+    const last = state.user.undo.pop();
+    if (!last) return;
+    state.user.items = last.items; state.user.editing = null;
+    const ok = userPersist(state);
+    paintUser(state); drawPatterns(state);
+    const text = words(state, '되돌림 · ' + UNDO_NAMES[last.action][0] + ' 전으로', 'Undone · back to before the ' + UNDO_NAMES[last.action][1]);
+    state.userToolStatus.textContent = text;
+    if (ok) state.live.textContent = text;
+  }
+
   function startTool(state, tool) {
-    state.user.tool = state.user.tool === tool ? null : tool; state.user.points = [];
+    if (state.user.tool === 'PEN') finishPen(state);
+    state.user.tool = state.user.tool === tool ? null : tool; state.user.points = []; state.user.stroke = null;
     if (state.user.tool && state.measuring) { state.measuring = false; state.measure = null; state.measureStart = null; if (state.renderer) state.renderer.setMeasure(null); paintMeasure(state); paintButtons(state); }
     paintUserTools(state);
   }
+  const toolName = (state, tool) => (tool === 'ERASE' ? words(state, '지우개', 'Eraser') : words(state, ...NOTE_KINDS[tool]));
   function paintUserTools(state) {
-    for (const b of state.root.querySelectorAll('[data-user-tool]')) { b.setAttribute('aria-pressed', String(b.dataset.userTool === state.user.tool)); b.disabled = !state.bars.length || !(state.renderer && state.renderer.capabilities.overlays); }
-    const need = state.user.tool === 'MEMO' ? 1 : 2;
-    setAttr(state, 'data-user-tool', state.user.tool || 'off');
-    state.userToolStatus.textContent = !state.user.tool ? words(state, '그리기 꺼짐 · 선·구간은 두 점, 메모는 한 점을 차트에서 누릅니다 (키보드: 차트 초점에서 N).', 'Drawing off · lines and ranges take two points, memos one point (keyboard: N with the chart focused).')
-      : words(state, NOTE_KINDS[state.user.tool][0] + ' · 점 ' + (state.user.points.length + 1) + '/' + need + '을 고르세요', NOTE_KINDS[state.user.tool][1] + ' · pick point ' + (state.user.points.length + 1) + ' of ' + need);
+    const off = !state.bars.length || !(state.renderer && state.renderer.capabilities.overlays), tool = state.user.tool;
+    for (const b of state.root.querySelectorAll('[data-user-tool]')) { b.setAttribute('aria-pressed', String(b.dataset.userTool === tool)); b.disabled = off; }
+    state.undoButton.disabled = !state.user.undo.length;
+    state.undoButton.setAttribute('aria-label', words(state, '되돌리기', 'Undo') + (state.user.undo.length ? ' · ' + words(state, ...UNDO_NAMES[state.user.undo[state.user.undo.length - 1].action]) : ''));
+    setAttr(state, 'data-user-tool', tool || 'off'); setAttr(state, 'data-user-undo-depth', state.user.undo.length);
+    const need = tool && KIND_POINTS[tool] ? KIND_POINTS[tool][0] : 0, w = (ko, en) => words(state, ko, en);
+    state.userToolStatus.textContent = !tool ? w('그리기 꺼짐 · 펜은 차트 위를 끌고, 추세선·구간 상자는 두 점, 수평선·메모는 한 점을 누릅니다. 지우개는 노트 가까이 누릅니다. 키보드: 차트 초점에서 N(점 찍기·지우기), Ctrl+Z(되돌리기).',
+      'Drawing off · drag on the chart with the pen; trend lines and range boxes take two points, horizontal lines and memos one. The eraser removes the note you press near. Keyboard (chart focused): N places a point or erases, Ctrl+Z undoes.')
+      : tool === 'PEN' ? w('펜 켜짐 · 차트 위를 끌어 그립니다(그리는 동안 차트는 움직이지 않음). 키보드: N으로 점 추가 · 펜 단추를 다시 누르면 마침 · 지금 점 ', 'Pen on · drag on the chart to draw (the chart does not pan meanwhile). Keyboard: N adds a point · press the pen button again to finish · points now ') + state.user.points.length
+        : tool === 'ERASE' ? w('지우개 켜짐 · 지울 노트 가까이 누르세요 (키보드: N은 십자선 봉의 가장 가까운 노트). 되돌리기로 살릴 수 있습니다.', 'Eraser on · press near the note to remove (keyboard: N removes the note nearest the crosshair bar). Undo brings it back.')
+          : w(toolName(state, tool) + ' · 점 ' + (state.user.points.length + 1) + '/' + need + '을 고르세요', toolName(state, tool) + ' · pick point ' + (state.user.points.length + 1) + ' of ' + need);
+  }
+  function commitNote(state, kind, points) {
+    const now = new Date().toISOString(), item = {schema: 'chart-annotation/1', id: newId(state.view), kind, symbol: state.symbol, interval: tfKey(state.timeframe), price_basis: 'RAW_CLOSE', author: 'USER',
+      points, text: '', created_at: now, updated_at: now};
+    if (state.user.items.length >= USER_LIMIT || !validUserObject(item)) { state.userStatus.dataset.code = 'USER_OBJECT_REFUSED'; state.userStatus.textContent = 'USER_OBJECT_REFUSED'; state.user.points = []; paintUserTools(state); return null; }
+    remember(state, 'ADD');
+    state.user.items.push(item); state.user.editing = item.id; state.user.points = [];
+    if (kind !== 'PEN') state.user.tool = null;
+    userPersist(state); paintUser(state); drawPatterns(state); paintUserTools(state);
+    state.live.textContent = words(state, '사용자 작성 ' + NOTE_KINDS[kind][0] + ' 추가 · 이 기기에만 저장', 'User-written ' + NOTE_KINDS[kind][1] + ' added · saved on this device only');
+    return item;
   }
   function addUserPoint(state, hit) {
     const bar = state.bars[hit.index];
     if (!bar || !state.user.tool || !state.symbol) return;
+    if (state.user.tool === 'ERASE') { eraseAt(state, hit.index, hit.price); return; }
     state.user.points.push({time: bar.time, price: roundPrice(hit.price)});
-    const need = state.user.tool === 'MEMO' ? 1 : 2;
-    if (state.user.points.length < need) { paintUserTools(state); return; }
-    const now = new Date().toISOString(), item = {schema: 'chart-annotation/1', id: newId(state.view), kind: state.user.tool, symbol: state.symbol, interval: tfKey(state.timeframe), price_basis: 'RAW_CLOSE', author: 'USER',
-      points: state.user.points, text: '', created_at: now, updated_at: now};
-    if (state.user.items.length >= USER_LIMIT || !validUserObject(item)) { state.userStatus.dataset.code = 'USER_OBJECT_REFUSED'; state.userStatus.textContent = 'USER_OBJECT_REFUSED'; state.user.points = []; paintUserTools(state); return; }
-    state.user.items.push(item); state.user.editing = item.id; state.user.tool = null; state.user.points = [];
-    userPersist(state); paintUser(state); drawPatterns(state); paintUserTools(state);
-    state.live.textContent = words(state, '사용자 작성 ' + NOTE_KINDS[item.kind][0] + ' 추가 · 이 기기에만 저장', 'User-written ' + NOTE_KINDS[item.kind][1] + ' added · saved on this device only');
-    const field = state.userNotes.querySelector('[data-user-item="' + item.id + '"] [data-user-field="text"]');
+    if (state.user.tool === 'PEN') { if (state.user.points.length >= PEN_MAX_POINTS) finishPen(state); else paintUserTools(state); return; }
+    if (state.user.points.length < KIND_POINTS[state.user.tool][0]) { paintUserTools(state); return; }
+    const item = commitNote(state, state.user.tool, state.user.points);
+    const field = item && state.userNotes.querySelector('[data-user-item="' + item.id + '"] [data-user-field="text"]');
     if (field) field.focus();
+  }
+  // Pen (keyboard points or a finished stroke): kept when at least two points fall on different bars, else dropped with a note.
+  function finishPen(state) {
+    const points = state.user.points.filter((pt, n, all) => !n || pt.time !== all[n - 1].time || pt.price !== all[n - 1].price);
+    state.user.points = [];
+    if (!points.length) return;
+    if (new Set(points.map(pt => pt.time)).size < 2) { state.userToolStatus.textContent = words(state, '펜 획이 너무 짧아 저장하지 않았습니다 (두 봉 이상 지나가게 그리세요).', 'Pen stroke too short, not saved (draw across two bars or more).'); state.live.textContent = state.userToolStatus.textContent; return; }
+    commitNote(state, 'PEN', points.slice(0, PEN_MAX_POINTS));
+  }
+  // Ramer–Douglas–Peucker on screen positions, then a coarser tolerance until at most `max` points remain.
+  function simplify(list, max) {
+    if (list.length <= 2) return list;
+    const dist = (p, a, b) => { const dx = b.x - a.x, dy = b.y - a.y, len = dx * dx + dy * dy; const t = len ? Math.max(0, Math.min(1, ((p.x - a.x) * dx + (p.y - a.y) * dy) / len)) : 0; return Math.hypot(p.x - a.x - t * dx, p.y - a.y - t * dy); };
+    const rdp = (pts, eps) => {
+      const keep = new Uint8Array(pts.length); keep[0] = keep[pts.length - 1] = 1;
+      const stack = [[0, pts.length - 1]];
+      while (stack.length) {
+        const [i, j] = stack.pop(); let far = -1, at = -1;
+        for (let k = i + 1; k < j; k++) { const d = dist(pts[k], pts[i], pts[j]); if (d > far) { far = d; at = k; } }
+        if (at > 0 && far > eps) { keep[at] = 1; stack.push([i, at], [at, j]); }
+      }
+      return pts.filter((_, k) => keep[k]);
+    };
+    let eps = 1.5, out = rdp(list, eps);
+    while (out.length > max) { eps *= 1.6; out = rdp(list, eps); }
+    return out;
+  }
+  // Pointer stroke: samples (screen position + chart point) while the pen is down; simplified on release.
+  function penSample(state, event) {
+    const hit = state.renderer && state.renderer.pointAt(event.clientX, event.clientY), stroke = state.user.stroke;
+    if (!hit || !state.bars[hit.index] || stroke.length >= 4000) return;
+    const prev = stroke[stroke.length - 1];
+    if (prev && Math.hypot(event.clientX - prev.x, event.clientY - prev.y) < 2) return;
+    stroke.push({x: event.clientX, y: event.clientY, time: state.bars[hit.index].time, price: roundPrice(hit.price)});
+  }
+  function endStroke(state) {
+    const stroke = state.user.stroke; state.user.stroke = null;
+    if (!stroke || !stroke.length) return;
+    state.user.points = simplify(stroke, PEN_MAX_POINTS).map(({time, price}) => ({time, price}));
+    finishPen(state);
+  }
+  // Eraser: the note of this symbol and interval nearest the pressed bar and price, measured as a share of the visible window
+  // (bars across, price span of the visible bars up and down); nothing is removed farther than ERASE_REACH of that window.
+  const ERASE_REACH = 0.06;
+  function eraseAt(state, index, price) {
+    const bars = state.bars, at = new Map(bars.map((b, n) => [b.time, n])), span = state.renderer ? state.renderer.getVisibleRange() : null;
+    const from = span ? Math.max(0, Math.floor(span.from)) : 0, to = span ? Math.min(bars.length - 1, Math.ceil(span.to)) : bars.length - 1;
+    let lo = Infinity, hi = -Infinity;
+    for (let n = from; n <= to; n++) { const b = bars[n]; if (b && b.ohlc) { lo = Math.min(lo, b.low); hi = Math.max(hi, b.high); } }
+    const sx = Math.max(1, to - from), sy = hi > lo ? hi - lo : Math.max(price * 0.1, 1e-9);
+    const pt = (i, p) => ({x: i / sx, y: p / sy}), me = pt(index, price);
+    const toSeg = (a, b) => { const dx = b.x - a.x, dy = b.y - a.y, len = dx * dx + dy * dy, t = len ? Math.max(0, Math.min(1, ((me.x - a.x) * dx + (me.y - a.y) * dy) / len)) : 0; return Math.hypot(me.x - a.x - t * dx, me.y - a.y - t * dy); };
+    let best = null, bestD = Infinity;
+    for (const o of userHere(state)) {
+      if (o.schema !== 'chart-annotation/1') continue;
+      const ps = o.points.filter(p => at.has(p.time)).map(p => pt(at.get(p.time), p.price));
+      let d = Infinity;
+      if (o.kind === 'HLINE') d = toSeg(pt(0, o.points[0].price), pt(bars.length - 1, o.points[0].price));
+      else if (!ps.length) continue;
+      else if (o.kind === 'MEMO') d = toSeg(ps[0], ps[0]);
+      else if (o.kind === 'RANGE' && ps.length === 2) {
+        const [x0, x1] = [ps[0].x, ps[1].x].sort((a, b) => a - b), [y0, y1] = [ps[0].y, ps[1].y].sort((a, b) => a - b);
+        d = me.x >= x0 && me.x <= x1 && me.y >= y0 && me.y <= y1 ? 0 : Math.min(toSeg({x: x0, y: y0}, {x: x1, y: y0}), toSeg({x: x0, y: y1}, {x: x1, y: y1}));
+      } else if (ps.length === 1) d = toSeg(ps[0], ps[0]);
+      else for (let n = 1; n < ps.length; n++) d = Math.min(d, toSeg(ps[n - 1], ps[n]));
+      if (d < bestD) { bestD = d; best = o; }
+    }
+    if (!best || bestD > ERASE_REACH) { state.userToolStatus.textContent = words(state, '지우개 · 가까운 노트가 없습니다. 노트 선 가까이 누르세요.', 'Eraser · no note nearby. Press closer to a note line.'); state.live.textContent = state.userToolStatus.textContent; return; }
+    deleteUserItem(state, best.id, 'ERASE');
   }
 
   function field(doc, label, input) { const wrap = doc.createElement('label'); wrap.className = 'cw-field'; wrap.append(doc.createTextNode(label + ' '), input); return wrap; }
   function input(doc, attrs, value) { const el = doc.createElement('input'); for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v); el.value = value === null || value === undefined ? '' : String(value); return el; }
   function noteTitle(state, o) {
-    const pts = o.points.map(pt => pt.time + ' ' + fmt(state, pt.price)).join(' → ');
+    const times = o.points.map(pt => pt.time).sort();
+    const pts = o.kind === 'PEN' ? words(state, '점 ', '') + o.points.length + words(state, '개 · ', ' points · ') + times[0] + ' ~ ' + times[times.length - 1] : o.points.map(pt => pt.time + ' ' + fmt(state, pt.price)).join(' → ');
     return words(state, ...NOTE_KINDS[o.kind]) + ' · ' + pts + ' · ' + (o.interval === 'W' ? words(state, '주봉', 'weekly') : words(state, '일봉', 'daily'));
   }
   function scenarioTitle(state, o) {
@@ -767,7 +890,8 @@
     const form = node(doc, 'div', {class: 'cw-user-form'});
     if (o.schema === 'chart-annotation/1') {
       form.append(field(doc, words(state, '메모', 'Text'), input(doc, {type: 'text', maxlength: String(TEXT_LIMIT), 'data-user-field': 'text'}, o.text)));
-      o.points.forEach((pt, n) => form.append(field(doc, words(state, '날짜 ', 'Date ') + (n + 1), input(doc, {type: 'text', inputmode: 'numeric', 'data-user-field': 'time' + n, pattern: '\\d{4}-\\d{2}-\\d{2}'}, pt.time)),
+      // A pen stroke's points are not edited one by one (up to PEN_MAX_POINTS); its words can be.
+      if (o.kind !== 'PEN') o.points.forEach((pt, n) => form.append(field(doc, words(state, '날짜 ', 'Date ') + (n + 1), input(doc, {type: 'text', inputmode: 'numeric', 'data-user-field': 'time' + n, pattern: '\\d{4}-\\d{2}-\\d{2}'}, pt.time)),
         field(doc, words(state, '가격 ', 'Price ') + (n + 1), input(doc, {type: 'number', step: 'any', min: '0', 'data-user-field': 'price' + n}, pt.price))));
     } else form.append(...scenarioFields(state, o));
     form.append(node(doc, 'button', {type: 'button', 'data-user-save': o.id}, words(state, '저장', 'Save')), node(doc, 'button', {type: 'button', 'data-user-delete': o.id}, words(state, '지우기', 'Delete')));
@@ -803,22 +927,30 @@
     if (at < 0 || !box) return;
     const old = state.user.items[at], get = name => { const el = box.querySelector('[data-user-field="' + name + '"]'); return el ? el.value.trim() : ''; };
     const next = old.schema === 'chart-annotation/1'
-      ? {...old, text: get('text'), points: old.points.map((pt, n) => ({time: get('time' + n), price: Number(get('price' + n))})), updated_at: new Date().toISOString()}
+      ? {...old, text: get('text'), points: old.kind === 'PEN' ? old.points : old.points.map((pt, n) => ({time: get('time' + n), price: Number(get('price' + n))})), updated_at: new Date().toISOString()}
       : readScenario(state, box, old);
     if (!validUserObject(next)) { state.userStatus.dataset.code = 'USER_OBJECT_INVALID'; state.userStatus.textContent = words(state, '입력을 확인하세요 (날짜 YYYY-MM-DD, 가격 0보다 큼)', 'Check the input (date YYYY-MM-DD, price above 0)'); return; }
+    remember(state, 'EDIT');
     state.user.items[at] = next; state.user.editing = id;
     userPersist(state); paintUser(state); drawPatterns(state);
   }
-  function deleteUserItem(state, id) {
+  function deleteUserItem(state, id, action) {
+    const gone = state.user.items.find(o => o.id === id);
+    if (!gone) return;
+    remember(state, action || 'DELETE');
     state.user.items = state.user.items.filter(o => o.id !== id); if (state.user.editing === id) state.user.editing = null;
-    userPersist(state); paintUser(state); drawPatterns(state);
-    state.live.textContent = words(state, '사용자 작성 객체를 지웠습니다', 'User-written object deleted');
+    const ok = userPersist(state); paintUser(state); drawPatterns(state);
+    const what = gone.schema === 'chart-annotation/1' ? words(state, ...NOTE_KINDS[gone.kind]) : words(state, '시나리오', 'scenario');
+    const text = words(state, '사용자 작성 ' + what + ' 지움 · 되돌리기로 살릴 수 있음', 'User-written ' + what + ' deleted · Undo brings it back');
+    if (action === 'ERASE') state.userToolStatus.textContent = text;
+    if (ok) state.live.textContent = text;
   }
   function addScenario(state) {
     if (!state.symbol || !state.bars.length) return;
     const now = new Date().toISOString(), item = readScenario(state, state.scenarioForm, {id: newId(state.view), symbol: state.symbol, interval: tfKey(state.timeframe), price_basis: 'RAW_CLOSE', author: 'USER', text: '',
       anchor_time: state.bars[state.bars.length - 1].time, created_at: now});
     if (state.user.items.length >= USER_LIMIT || !validUserObject(item)) { state.userStatus.dataset.code = 'USER_OBJECT_INVALID'; state.userStatus.textContent = words(state, '핵심 가격을 하나 이상 넣으세요 (0보다 큼)', 'Enter at least one key level above 0'); return; }
+    remember(state, 'ADD');
     state.user.items.push(item); state.user.editing = null;
     for (const el of state.scenarioForm.querySelectorAll('input')) el.value = '';
     state.scenarioDetails.open = false;
@@ -840,6 +972,7 @@
     const before = state.user.items, merged = mergeUserItems(before, incoming);
     if (!merged.added) { refuse('IMPORTED', words(state, '새로 합칠 항목 없음 · 이미 있던 ' + merged.skipped + '개는 건너뜀', 'Nothing new to merge · skipped ' + merged.skipped + ' already present')); return; }
     if (!state.userStore.save(merged.items)) { refuse('SAVE_FAILED', saveFailedText(state)); return; }
+    remember(state, 'IMPORT');
     state.user.items = merged.items; state.user.unsaved = false; input.value = '';
     paintUser(state); drawPatterns(state);
     state.userStatus.dataset.code = 'IMPORTED';
@@ -848,6 +981,7 @@
   }
   function clearUser(state, scope) {
     const here = new Set(userHere(state).map(o => o.id));
+    if (scope === 'here' ? here.size : state.user.items.length) remember(state, 'CLEAR');
     state.user.items = scope === 'here' ? state.user.items.filter(o => !here.has(o.id)) : [];
     state.user.editing = null;
     const ok = scope === 'here' ? userPersist(state) : state.userStore.clear();
@@ -874,11 +1008,15 @@
     const doc = state.doc, w = (ko, en) => words(state, ko, en), section = node(doc, 'section', {class: 'cw-user cw-fn-group', 'data-user-panel': '', 'data-fn-group': '3.3', 'aria-labelledby': state.id + '-user'});
     const boundary = node(doc, 'p', {class: 'small', 'data-user-boundary': ''}, w('사용자 작성 객체는 공식 탐지 이력과 성과 기록에 쓰지 않고, 공식 탐지를 바꾸지 않습니다. 이 브라우저에 저장 · 내보내기·가져오기·백업 가능 · 서버·Google 시트·계정으로 보내지 않습니다. 주문 아님.', 'User-written objects are never written to the official detection history or any results record and never change official detection. Saved in this browser · export, import and backup available · never sent to a server, Google Sheet or account. Not an order.'));
     state.userAnchor = node(doc, 'p', {class: 'small', 'data-user-anchor': ''});
-    const tools = node(doc, 'div', {class: 'cw-group', role: 'group', 'aria-label': w('그리기', 'Draw')});
+    // Drawing tools: a fieldset, not role="group", so a screen redraw never presses a tool again as if it were a view tab.
+    const tools = node(doc, 'fieldset', {class: 'cw-group cw-tools', 'data-user-tools': ''});
+    tools.append(node(doc, 'legend', {}, w('그리기 도구 · 보라 = 내 펜', 'Drawing tools · purple = my pen')));
     for (const [kind, names] of Object.entries(NOTE_KINDS)) tools.append(node(doc, 'button', {type: 'button', 'data-user-tool': kind, 'aria-pressed': 'false'}, w(names[0], names[1])));
+    state.undoButton = node(doc, 'button', {type: 'button', 'data-user-undo': '', disabled: ''}, w('되돌리기', 'Undo'));
+    tools.append(node(doc, 'button', {type: 'button', 'data-user-tool': 'ERASE', 'aria-pressed': 'false'}, w('지우개', 'Eraser')), state.undoButton);
     const visible = node(doc, 'label', {class: 'cw-toggle'}), box = node(doc, 'input', {type: 'checkbox', 'data-user-visible': ''});
     box.checked = true; visible.append(box, doc.createTextNode(' ' + w('차트에 사용자 작성 보이기', 'Show user-written objects on the chart')));
-    state.userToolStatus = node(doc, 'p', {class: 'small', role: 'status', 'data-user-tool-status': ''});
+    state.userToolStatus = node(doc, 'p', {class: 'small', role: 'status', 'aria-live': 'polite', 'data-user-tool-status': ''});
     state.userNotes = node(doc, 'ul', {class: 'cw-user-list', 'data-user-notes': ''});
     const scenarioBox = node(doc, 'fieldset', {class: 'cw-scenario', 'data-user-scenario-form': ''});
     scenarioBox.append(node(doc, 'legend', {}, w('시나리오 쓰기 (상승·횡보·하락 · 핵심 가격 · 조건 · 무효화)', 'Write a scenario (up / sideways / down · key levels · condition · invalidation)')), ...scenarioFields(state, null));
@@ -1040,6 +1178,9 @@
         if (card) card.scrollIntoView({block: 'nearest'});
         break;
       }
+      case 'z': case 'Z':
+        if ((event.ctrlKey || event.metaKey) && state.user.undo.length) undoUser(state); else handled = false;
+        break;
       case 'n': case 'N':
         if (state.user.tool && state.keyboardCursor !== null && state.bars[state.keyboardCursor].ohlc) addUserPoint(state, {index: state.keyboardCursor, price: state.bars[state.keyboardCursor].close});
         else handled = false;
@@ -1228,7 +1369,7 @@
         if (state.settings.mode === 'long' && state.weeklyCode === 'READY' && state.timeframe !== 'weekly') switchTimeframe(state, 'weekly'); else paintAll(state);
       } else if (button.dataset.cwTimeframe) switchTimeframe(state, button.dataset.cwTimeframe);
       else if (button.dataset.cwRenderer) { state.settings.renderer = button.dataset.cwRenderer; persist(state); void render(state); }
-      else if (button.hasAttribute('data-cw-measure')) { state.user.tool = null; state.user.points = []; paintUserTools(state); state.measuring = !state.measuring; state.measure = null; state.measureStart = null; if (state.renderer) state.renderer.setMeasure(null); paintButtons(state); paintMeasure(state); }
+      else if (button.hasAttribute('data-cw-measure')) { if (state.user.tool === 'PEN') finishPen(state); state.user.tool = null; state.user.points = []; paintUserTools(state); state.measuring = !state.measuring; state.measure = null; state.measureStart = null; if (state.renderer) state.renderer.setMeasure(null); paintButtons(state); paintMeasure(state); }
       else if (button.dataset.cwZoom && state.renderer) { if (button.dataset.cwZoom === 'fit') state.renderer.fit(); else state.renderer.zoom(button.dataset.cwZoom === 'in' ? 0.7 : 1.4); }
       else if (button.hasAttribute('data-cw-synthetic')) void preview(state);
       else if (button.dataset.patternViewButton === 'scenario') { state.scenarioDetails.open = true; state.scenarioForm.scrollIntoView({block: 'nearest'}); const first = state.scenarioForm.querySelector('select'); if (first) first.focus(); }
@@ -1241,6 +1382,7 @@
       else if (button.dataset.userTool) startTool(state, button.dataset.userTool);
       else if (button.dataset.userSave) saveUserItem(state, button.dataset.userSave);
       else if (button.dataset.userDelete) deleteUserItem(state, button.dataset.userDelete);
+      else if (button.hasAttribute('data-user-undo')) undoUser(state);
       else if (button.hasAttribute('data-user-scenario-save')) addScenario(state);
       else if (button.dataset.userClear) clearUser(state, button.dataset.userClear);
       else if (button.hasAttribute('data-user-export')) exportUser(state);
@@ -1259,11 +1401,24 @@
     state.chartBox.addEventListener('pointerup', event => {
       const press = state.press; state.press = null;
       if (event.pointerType === 'touch') { state.touching = false; if (state.readout.dataset.tracking === 'touch') state.readout.dataset.tracking = 'touch-held'; }
-      if ((!state.measuring && !state.user.tool) || !press || !state.renderer || Math.hypot(event.clientX - press.x, event.clientY - press.y) > 6 || event.timeStamp - press.at > 500) return;
+      if ((!state.measuring && !state.user.tool) || state.user.tool === 'PEN' || !press || !state.renderer || Math.hypot(event.clientX - press.x, event.clientY - press.y) > 6 || event.timeStamp - press.at > 500) return;
       const hit = state.renderer.pointAt(event.clientX, event.clientY);
       if (hit && state.user.tool) addUserPoint(state, hit); else if (hit) addMeasurePoint(state, hit);
     });
     state.chartBox.addEventListener('pointercancel', event => { state.press = null; if (event.pointerType === 'touch') state.touching = false; });
+    // Pen: while it is on, presses, moves and releases on the chart draw a stroke and never reach the chart library (no pan,
+    // zoom or crosshair meanwhile). Capture phase on the chart box, so the library's own handlers inside it are not called.
+    const pen = event => {
+      if (state.user.tool !== 'PEN' || !state.renderer) return;
+      event.stopPropagation();
+      if (event.cancelable) event.preventDefault();
+      if (event.type === 'pointerdown' && event.button === 0) {
+        state.user.stroke = []; penSample(state, event);
+        try { state.chartBox.setPointerCapture(event.pointerId); } catch (_) { /* pointer already gone */ }
+      } else if (event.type === 'pointermove' && state.user.stroke) penSample(state, event);
+      else if ((event.type === 'pointerup' || event.type === 'pointercancel') && state.user.stroke) { if (event.type === 'pointerup') penSample(state, event); endStroke(state); }
+    };
+    for (const type of ['pointerdown', 'pointermove', 'pointerup', 'pointercancel', 'mousedown', 'mousemove', 'mouseup', 'touchstart', 'touchmove', 'touchend']) state.chartBox.addEventListener(type, pen, {capture: true, passive: false});
   }
 
   function persist(state) {
@@ -1285,7 +1440,7 @@
     const doc = host.ownerDocument, view = doc.defaultView;
     let storage = null; try { storage = options.storage || view.localStorage; } catch (_) { storage = null; }
     const userStore = options.userStore || createDeviceUserStore(storage), loaded = userStore.load();
-    const state = {doc, view, host, storage, userStore, user: {items: loaded.items, code: loaded.code, tool: null, points: [], editing: null, visible: true}, locale: options.locale, qgvHref: options.qgvHref || null, id: 'cw' + (++counter), settings: readSettings(storage), data: null, source: 'none', symbol: '',
+    const state = {doc, view, host, storage, userStore, user: {items: loaded.items, code: loaded.code, tool: null, points: [], stroke: null, undo: [], editing: null, visible: true}, locale: options.locale, qgvHref: options.qgvHref || null, id: 'cw' + (++counter), settings: readSettings(storage), data: null, source: 'none', symbol: '',
       daily: [], weekly: null, bars: [], timeframe: 'daily', weeklyCode: 'WEEKLY_BARS_MODULE_PENDING', renderer: null, rendererCode: 'READY', pending: null, renderGeneration: 0,
       cursor: null, keyboardCursor: null, lastInput: null, press: null, measuring: false, measureStart: null, measure: null, touching: false, disposed: false,
       engine: {code: 'NO_DATA', series: {}, actions: null},

@@ -158,8 +158,8 @@ APPROVED_SHA256 = {
     "macro-evidence.css": "29cdedcdde166003fb4bac34497fe5d6abcb4bb9e7b8af18349cc9de8f10fc2c",
     # Self-hosted chart renderer (P1-7): lightweight-charts 5.2.1 npm file unmodified, upstream LICENSE/NOTICE, third-party notices.
     "chart-renderer.js": "c6053c2633788813d363d3346833f416fa954fbf8db7e1e18252b191c0dd040b",
-    "chart-workbench.js": "125d564f412e90b1a6bcb13df3f23ec77cee9e5b713ff83151b982511dc16004",
-    "chart-workbench.css": "a27cbff905f5e4e822bef4e260470ab35601b7a250a17092208475099c06554e",
+    "chart-workbench.js": "35c6774782005044bede4aa8df85bef8d7e4e99563d5224fb0c0b5cefc217a58",
+    "chart-workbench.css": "971b983df28bef4015cedd87eaf918cd2b93e09200440892041d4281e73f80cb",
     "lightweight-charts-5.2.1.standalone.js": "e21cc5caa0226ef30bd8549c50b9ef926615f2a4ee6b4e486353477a55f598cf",
     "lightweight-charts-5.2.1.LICENSE.txt": "70c9d5382506dd184465425c08a99ad9bd6d9ac1313c252968ba0b585e5ef823",
     "lightweight-charts-5.2.1.NOTICE.txt": "f76c6afab94884448f0426e30d6e9d555ca7247894cd3484e477d2f87513036e",
