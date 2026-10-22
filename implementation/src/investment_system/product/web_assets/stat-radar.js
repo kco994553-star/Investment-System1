@@ -57,7 +57,11 @@
    fewer than 5 -> 미산출 GROUP_TOO_SMALL (n). Identical member sets are drawn once ("업종 = SIC"). 경쟁사 평균: 미산출
    (REL_SOURCE_PENDING). The comparison companies of every axis (count, codes, period) are listed in the detail.
    A missing value is 미산출 with its reason: no vertex (never 0 or an average), the polygon breaks there, only a complete polygon
-   is filled. No inline styles (CSP style-src 'self'); every series has a text label, a line style and a marker shape. */
+   is filled. No inline styles (CSP style-src 'self'); every series has a text label, a line style and a marker shape.
+   비교군 바꾸기 (2.4, owner draft MQGV "비교군 바꾸기 ▾"): which series are DRAWN (company · industry average · SIC average) is a
+   display choice only — toggle buttons on PC, one select on phones; the competitor average stays disabled ("미연결",
+   REL_SOURCE_PENDING). Axes, scores, groups, the detail table and every calculation are the same whatever is drawn; the choice
+   lives in this page's RAM (the live entry), never in browser storage. */
 (function(root,factory){const api=factory(root);if(typeof module==='object'&&module.exports)module.exports=api;else root.StatRadar=api;})(typeof globalThis!=='undefined'?globalThis:this,function(g){
 'use strict';
 const esc=v=>String(v??'—').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -326,8 +330,8 @@ function seriesSvg(series,axes){
  else{const d=[];for(let i=0;i<n;i++){const a=p[i],b=p[(i+1)%n];if(a&&b)d.push('M'+f2(a[0])+' '+f2(a[1])+'L'+f2(b[0])+' '+f2(b[1]));}
   if(d.length)shape='<path class="sr-poly '+cls+'" d="'+d.join('')+'" data-sr-shape="'+series+'" data-sr-complete="false"></path>';}
  return '<g class="sr-series sr-series-'+series+'">'+shape+p.map((q,i)=>q?marker(series,q[0],q[1],axes[i].id):'').join('')+'</g>';}
-function svg(model,locale){
- const T=tr(locale),en=locale==='en-US',n=model.axes.length,id='sr-rough-'+(++uid),same=model.groups.same;
+function svg(model,locale,show){
+ const T=tr(locale),en=locale==='en-US',n=model.axes.length,id='sr-rough-'+(++uid),same=model.groups.same,drawn=shownList(model,show);
  const ring=v=>model.axes.map((_,i)=>pt(i,n,v)).map(q=>f2(q[0])+','+f2(q[1])).join(' ');
  const grid='<g class="sr-grid" filter="url(#'+id+')">'+[25,50,75,100].map(v=>'<polygon class="sr-ring'+(v===50?' sr-ring-mid':'')+(v===100?' sr-ring-out':'')+'" points="'+ring(v)+'"></polygon>').join('')
   +model.axes.map((_,i)=>{const q=pt(i,n,100);return '<line class="sr-spoke" x1="'+CX+'" y1="'+CY+'" x2="'+f2(q[0])+'" y2="'+f2(q[1])+'"></line>';}).join('')+'</g>';
@@ -338,25 +342,43 @@ function svg(model,locale){
   const y0=s<-0.9?y-lh*(lines.length-1):s>0.9?y+lh*0.8:y-lh*(lines.length-1)/2+4;
   return '<text class="sr-label" x="'+f2(x)+'" y="'+f2(y0)+'" text-anchor="'+anchor+'" data-sr-label="'+a.id+'">'+lines.map((t,k)=>'<tspan x="'+f2(x)+'" dy="'+(k?lh:0)+'"'+(k===lines.length-1?' class="sr-label-val'+(finite(a.company.score)?'':' sr-label-na')+'"':'')+'>'+esc(t)+'</tspan>').join('')+'</text>';}).join('');
  const summary=T('스탯창(설명용). 모든 축에서 바깥이 더 좋은 평가. 면적은 점수가 아님. ','Stat window (explanatory). Outer is better on every axis. The area is not a score. ')
-  +model.axes.map(a=>T(a.name[0],a.name[1])+': '+T('기업 ','company ')+(a.company.reason==='FINANCIAL_PROFILE_V_NOT_DEFINED'?finText(en):scoreText(a.company.score,locale))+', '+T(same?'업종 = SIC ':'업종 평균 ',same?'industry = SIC ':'industry ')+scoreText(a.industry.score,locale)+(same?'':', SIC '+scoreText(a.sic.score,locale))+', '+T('경쟁사 미산출','competitors n/a')).join('; ');
+  +model.axes.map(a=>T(a.name[0],a.name[1])+': '+T('기업 ','company ')+(a.company.reason==='FINANCIAL_PROFILE_V_NOT_DEFINED'?finText(en):scoreText(a.company.score,locale))+', '+T(same?'업종 = SIC ':'업종 평균 ',same?'industry = SIC ':'industry ')+scoreText(a.industry.score,locale)+(same?'':', SIC '+scoreText(a.sic.score,locale))+', '+T('경쟁사 미산출','competitors n/a')).join('; ')+'. '+T('표시 계열: ','Series drawn: ')+(drawn.length?drawn.map(x=>seriesName(x,model,T)).join(', '):T('없음','none'));
  const stale=!!(model.fresh&&model.fresh.stale);
  return '<svg class="sr-svg'+(stale?' sr-stale':'')+'" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+esc(summary)+'" focusable="false" data-sr-svg data-sr-axes="'+n+'">'
   +'<defs><filter id="'+id+'" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="7" result="n"></feTurbulence><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4"></feDisplacementMap></filter></defs>'
-  +grid+ticks+(stale?'<text class="sr-stale-label" x="8" y="20">STALE · '+esc(model.fresh.end)+'</text>':'')+(same?'':seriesSvg('sic',model.axes))+seriesSvg('industry',model.axes)+seriesSvg('company',model.axes)+labels+'</svg>';}
+  +grid+ticks+(stale?'<text class="sr-stale-label" x="8" y="20">STALE · '+esc(model.fresh.end)+'</text>':'')+(drawn.includes('sic')?seriesSvg('sic',model.axes):'')+(drawn.includes('industry')?seriesSvg('industry',model.axes):'')+(drawn.includes('company')?seriesSvg('company',model.axes):'')+labels+'</svg>';}
 /* Legend: every series by name, line style and marker (never colour alone). */
 function swatch(series){
  const m=series==='company'?'<circle class="sr-mark sr-s-company" cx="17" cy="7" r="4"></circle>':series==='industry'?'<rect class="sr-mark sr-s-industry" x="13.5" y="3.5" width="7" height="7"></rect>':series==='sic'?'<path class="sr-mark sr-s-sic" d="M17 2.4L21.2 10L12.8 10Z"></path>':'';
  return '<svg class="sr-swatch" viewBox="0 0 34 14" aria-hidden="true" focusable="false"><line class="sr-poly sr-s-'+series+'" x1="1" y1="7" x2="33" y2="7"></line>'+m+'</svg>';}
-function legend(model,locale){
- const T=tr(locale),en=locale==='en-US',gi=model.groups.industry,gs=model.groups.sic,same=model.groups.same;
+function legend(model,locale,show){
+ const T=tr(locale),en=locale==='en-US',gi=model.groups.industry,gs=model.groups.sic,same=model.groups.same,drawn=shownList(model,show);
  const cnt=(gr,pred)=>{const xs=model.axes.filter(pred).map(a=>a[gr].n).filter(Number.isInteger);return xs.length?Math.max(...xs):0;};
  const nText=gr=>T(' · 공개 n=',' · public n=')+cnt(gr,a=>a.kind==='SCORE'||a.kind==='PUBLIC')+T(' · 기기 n=',' · device n=')+cnt(gr,a=>a.kind==='PRICE'||a.kind==='DEVICE_SCORE');
- const item=(series,label,extra,state)=>'<li data-sr-legend="'+series+'" data-sr-legend-state="'+state+'">'+swatch(series)+'<span><b>'+esc(label)+'</b>'+(extra?' <span class="small">'+esc(extra)+'</span>':'')+'</span></li>';
+ const hidden=T(' · 숨김',' · hidden'),item=(series,label,extra,state)=>{const on=series!=='competitor'&&drawn.includes(series);return '<li data-sr-legend="'+series+'" data-sr-legend-state="'+state+'" data-sr-legend-shown="'+on+'">'+swatch(series)+'<span><b>'+esc(label)+'</b>'+(extra||(!on&&series!=='competitor')?' <span class="small">'+esc((extra||'')+(!on&&series!=='competitor'?hidden:''))+'</span>':'')+'</span></li>';};
  return '<ul class="sr-legend" aria-label="'+esc(T('범례','Legend'))+'">'
   +item('company',T('기업 ','Company ')+model.subject.label,T('실선 · 원','solid · circle'),model.subject.rec?'OK':'NOT_AVAILABLE')
   +item('industry',groupTitle('industry',gi,T,en,same),gi.state==='OK'?T('점선(긴) · 네모','dashed · square')+nText('industry'):T('미산출 · ','n/a · ')+reasonText(gi.reason,en),gi.state)
   +(same?'':item('sic',groupTitle('sic',gs,T,en,false),gs.state==='OK'?T('점선(짧은) · 세모','dotted · triangle')+nText('sic'):T('미산출 · ','n/a · ')+reasonText(gs.reason,en),gs.state))
   +item('competitor',T('경쟁사 평균','Competitor average'),T('미산출 · ','n/a · ')+reasonText('REL_SOURCE_PENDING_LONG',en),'NOT_AVAILABLE')+'</ul>';}
+/* 비교군 바꾸기: which series are drawn (display only, RAM). show = {company, industry, sic} booleans; a SIC series identical to the
+   industry one is never a separate choice. */
+const SERIES=Object.freeze(['company','industry','sic']);
+const showOf=x=>({company:!(object(x)&&x.company===false),industry:!(object(x)&&x.industry===false),sic:!(object(x)&&x.sic===false)});
+const shownList=(model,show)=>SERIES.filter(s=>show[s]&&!(s==='sic'&&model.groups.same));
+function seriesName(s,model,T){return s==='company'?T('기업','Company'):s==='industry'?(model.groups.same?T('업종 = SIC 평균','Industry = SIC average'):T('업종 평균','Industry average')):s==='sic'?T('SIC 평균','SIC average'):T('경쟁사 평균','Competitor average');}
+function compareValue(model,show){const same=model.groups.same;return show.industry&&show.sic&&!same?'all':show.industry?'industry':show.sic&&!same?'sic':'none';}
+let cid=0;
+function compareBox(model,locale,show){
+ const T=tr(locale),same=model.groups.same,drawn=shownList(model,show),id='sr-cmp-'+(++cid),list=same?['company','industry']:SERIES;
+ const pending=T('미연결','not connected'),note=T('경쟁사 평균 미연결: 관계 자료원(REL-SOURCE) 결정 전이라 경쟁사를 만들지 않습니다.','Competitor average not connected: the relationship source (REL-SOURCE) is undecided, so no competitor set is made.');
+ const btn=s=>'<button type="button" class="sr-compare-btn" data-sr-series-toggle="'+s+'" aria-pressed="'+(drawn.includes(s)?'true':'false')+'">'+swatch(s)+'<span>'+esc(seriesName(s,model,T))+'</span></button>';
+ const opt=(v,label,dis)=>'<option value="'+v+'"'+(dis?' disabled':'')+'>'+esc(label)+'</option>';
+ const val=compareValue(model,show),opts=(same?[['industry',T('기업 + 업종 = SIC 평균','Company + industry = SIC average')]]:[['all',T('기업 + 업종 평균 + SIC 평균','Company + industry + SIC averages')],['industry',T('기업 + 업종 평균','Company + industry average')],['sic',T('기업 + SIC 평균','Company + SIC average')]]).concat([['none',T('기업만','Company only')]]);
+ return '<div class="sr-compare" data-sr-compare role="group" aria-labelledby="'+id+'-h"><p class="sr-compare-head" id="'+id+'-h"><b>'+esc(T('비교군 바꾸기','Change comparison'))+'</b> <span class="small">'+esc(T('표시만 바뀜 · 축·점수·계산은 그대로','display only · axes, scores and calculations unchanged'))+'</span></p>'
+  +'<div class="sr-compare-buttons">'+list.map(btn).join('')+'<button type="button" class="sr-compare-btn" data-sr-series-toggle="competitor" disabled aria-describedby="'+id+'-n">'+swatch('competitor')+'<span>'+esc(seriesName('competitor',model,T)+' · '+pending)+'</span></button></div>'
+  +'<div class="sr-compare-phone"><label for="'+id+'-s">'+esc(T('비교군','Comparison'))+'</label><select id="'+id+'-s" data-sr-compare-select aria-describedby="'+id+'-n">'+opts.map(([v,l])=>opt(v,l,false)).join('').replace('value="'+val+'"','value="'+val+'" selected')+opt('competitor',T('경쟁사 평균 · 미연결(REL-SOURCE)','Competitor average · not connected (REL-SOURCE)'),true)+'</select></div>'
+  +'<p class="small sr-compare-note" id="'+id+'-n" data-sr-compare-note>'+esc(note)+'</p></div>';}
 function auxBox(model,locale){
  const T=tr(locale),en=locale==='en-US',x=model.aux.company;
  return '<div class="sr-aux" data-sr-aux-box="'+(model.auxOn?'ON':'OFF')+'"><p class="small"><b>'+esc(T('보조 지표 · 이익률 안정성','Auxiliary · margin stability'))+'</b> '+esc(finite(x.value)?fmtRaw('stdpp',x.value,locale)+T(' (5년 영업이익률 표준편차) · 공개 단면 백분위 ',' (5-year operating-margin std) · cross-section percentile ')+scoreText(x.score,locale):T('미산출 · ','n/a · ')+reasonText(x.reason,en))+'</p>'
@@ -427,20 +449,20 @@ function freshLine(model,locale){
 function provenanceLine(model,locale){const QS=g.QgvScores,en=locale==='en-US',T=tr(locale);if(!QS||typeof QS.provenance!=='function')return '';const qg=QS.provenance({kind:'QG'}),v=QS.provenance({kind:'V',priced:!!model.priced});
  const span=(x,axes)=>'<span data-sr-provenance="'+axes+'" data-qgv-weights="'+esc(x.weights)+'" data-qgv-prices="'+esc(x.prices)+'" data-qgv-source="'+esc(x.source)+'">'+esc(axes.replace('QG','Q·G')+': '+QS.provenanceText(x,en))+'</span>';
  return '<p class="small sr-fresh" data-sr-provenance-line>'+esc(T('계산 근거 · ','Basis · '))+span(qg,'QG')+' · '+span(v,'V')+'</p>';}
-function body(model,locale){
+function body(model,locale,show=showOf(null)){
  const T=tr(locale),en=locale==='en-US',d=model.device,dev=d.state==='READY'?T('읽음 · 가격 있는 종목 ','read · symbols with prices ')+d.priced+(d.series.has(SPY)?' · SPY':T(' · SPY 없음',' · no SPY')):d.state==='PENDING'?reasonText('PENDING',en):d.state+' · '+reasonText(d.state==='NOT_AVAILABLE'?'NO_DEVICE_PRICE':d.state,en);
- return '<div class="sr-layout"><figure class="sr-figure">'+svg(model,locale)+'<figcaption class="sr-notes small">'+(model.axes.some(a=>a.id==='v'&&a.company.reason==='FINANCIAL_PROFILE_V_NOT_DEFINED')?'<span class="badge sr-model-scope" data-sr-model-scope>V · '+esc(finText(en))+'</span> ':'')+esc(T('모든 축에서 바깥이 더 좋은 평가입니다. 설명용이며 공식 QGV 점수·비중·순위를 바꾸지 않습니다. 면적은 계산하지 않습니다. 미산출 축에는 점을 찍지 않습니다(0이나 평균으로 채우지 않음).','Outer is the better evaluation on every axis. Explanatory only: official QGV scores, weights and ranks are unchanged. The area is not computed. 미산출 axes get no point (never 0 or an average).'))+'</figcaption></figure>'
-  +'<div class="sr-side">'+legend(model,locale)+auxBox(model,locale)+'</div></div>'+freshLine(model,locale)+table(model,locale)+vDetailHtml(model,locale)+membersHtml(model,locale)
+ return '<div class="sr-layout"><figure class="sr-figure">'+svg(model,locale,show)+'<figcaption class="sr-notes small">'+(model.axes.some(a=>a.id==='v'&&a.company.reason==='FINANCIAL_PROFILE_V_NOT_DEFINED')?'<span class="badge sr-model-scope" data-sr-model-scope>V · '+esc(finText(en))+'</span> ':'')+esc(T('모든 축에서 바깥이 더 좋은 평가입니다. 설명용이며 공식 QGV 점수·비중·순위를 바꾸지 않습니다. 면적은 계산하지 않습니다. 미산출 축에는 점을 찍지 않습니다(0이나 평균으로 채우지 않음).','Outer is the better evaluation on every axis. Explanatory only: official QGV scores, weights and ranks are unchanged. The area is not computed. 미산출 axes get no point (never 0 or an average).'))+'</figcaption></figure>'
+  +'<div class="sr-side">'+compareBox(model,locale,show)+legend(model,locale,show)+auxBox(model,locale)+'</div></div>'+freshLine(model,locale)+table(model,locale)+vDetailHtml(model,locale)+membersHtml(model,locale)
   +provenanceLine(model,locale)+'<p class="small sr-fresh" data-sr-fresh>'+esc([T('Q·G·이익률 출처 sec-qgv2.json','Q·G·margin: sec-qgv2.json'),'as_of '+(model.inputs?clock(model.inputs.as_of):'—'),T('단면 ','cross-section ')+model.points+T('곳(발행사당 한 점)',' issuers (one point each)'),T('가격 후보 축 점수 = 기기 보유 데이터 내 상대점수(504 전체·시장 전체 백분위 아님, 모집단 8곳 이상) · 비교군 평균은 5곳 이상','candidate price-axis score = relative score within the price data you hold (not a 504- or market-wide percentile; population ≥ 8) · group averages need ≥ 5')].join(' · '))+'</p>'
   +'<p class="small sr-fresh" data-sr-device-line>'+esc([T('가격 입력: ','Price input: ')+(model.storage?storageText(model,T):T('내 비공개 구글 시트 Prices_D 탭(가격 탭 사용 시) → 이 브라우저 메모리','the Prices_D tab of your private Google Sheet (when price tabs are on) → this browser’s memory'))+T(' · Worker 요청 없음 · 공개 안 함',' · no Worker request · never published'),T('기준 ','basis ')+(model.basis?BASIS_TEXT[model.basis][en?1:0]:'—'),T('상태 ','state ')+dev,T('V: 기존 V 경로(시세 '+(model.priced?'있음':'없음')+')','V: existing V path (quotes '+(model.priced?'present':'none')+')')].join(' · '))+'</p>';}
 // data-cx-* marks (QgvScores.marks): the subject's row of the shared result and the Universe read it was priced from; all
 // keys always present (a pending radar names no read), so a repaint never leaves marks of an older result behind.
 function cxMarks(result,subject){const QS=g.QgvScores;if(!QS||typeof QS.marks!=='function')return{};const S=object(result)&&object(result.computed)?result.computed:null;
  return QS.marks(S&&typeof QS.rowOf==='function'?QS.rowOf(S,subject.identity.company_id):null,S?result.price_basis:null,g);}
-function stateOf(model){return{...(model.cx||{}),'data-sr-subject':model.subject.label,'data-sr-device':model.device.state,'data-sr-quotes':model.priced?'PRESENT':'NONE','data-sr-groups':model.groups.same?'SAME':'DISTINCT','data-sr-aux':model.auxOn?'ON':'OFF','data-sr-window-end':model.window?model.window.end:'NA',
+function stateOf(model,show=showOf(null)){return{...(model.cx||{}),'data-sr-subject':model.subject.label,'data-sr-show':shownList(model,show).join(','),'data-sr-device':model.device.state,'data-sr-quotes':model.priced?'PRESENT':'NONE','data-sr-groups':model.groups.same?'SAME':'DISTINCT','data-sr-aux':model.auxOn?'ON':'OFF','data-sr-window-end':model.window?model.window.end:'NA',
  'data-sr-stale':model.fresh?(model.fresh.stale?'STALE':'CURRENT'):'NA','data-sr-basis':model.basis||'NA',
  'data-sr-industry-basis':model.groups.industry.basis||'NA','data-sr-industry-key':model.groups.industry.key||'','data-sr-sic-basis':model.groups.sic.basis||'NA','data-sr-sic-key':model.groups.sic.key||''};}
-const stateAttrs=model=>Object.entries(stateOf(model)).map(([k,v])=>' '+k+'="'+esc(v)+'"').join('');
+const stateAttrs=(model,show)=>Object.entries(stateOf(model,show)).map(([k,v])=>' '+k+'="'+esc(v)+'"').join('');
 
 /* ---------- public API ---------- */
 const live=new Map();
@@ -449,14 +471,14 @@ const decisionBadge=T=>DECISION.state==='DECIDED'?T('결정됨','DECIDED'):DECIS
 /* Synchronous HTML from the loaded public file (ctx.screens), the last shared page result of this radar and the price data already
    read (if any; ctx.device: a price-data snapshot to render instead, RAM only). spec: {code} or {targetId}. */
 function html(spec,ctx={}){
- const locale=ctx.locale==='en-US'?'en-US':'ko-KR',T=tr(locale),inputs=inputsOf(ctx.screens),key=keyOf(spec),prev=live.get(key),aux=!!(prev&&prev.aux),dev=object(ctx.device)?ctx.device:null;
+ const locale=ctx.locale==='en-US'?'en-US':'ko-KR',T=tr(locale),inputs=inputsOf(ctx.screens),key=keyOf(spec),prev=live.get(key),aux=!!(prev&&prev.aux),show=showOf(prev&&prev.show),dev=object(ctx.device)?ctx.device:null;
  // The held result is shown again only while it is current (same inputs, same Universe read, same official preset/gate);
  // otherwise V is 확인하는 중 until mount() reads the shared page result (never a V of an older read shown as current).
- const QS=g.QgvScores,current=r=>!!r&&(!QS||typeof QS.isCurrent!=='function'||QS.isCurrent(g,r)),result=prev&&prev.inputs===inputs&&current(prev.result)?prev.result:null;live.set(key,{spec,inputs,locale,result,aux,dev});const model=build(inputs,spec,dev||device,result,{aux});
- return '<div class="stat-radar" data-stat-radar="'+esc(key)+'" data-sr-decision="'+DECISION.state+'"'+stateAttrs(model)+'><h2 class="sr-title"><span class="hl">'+esc(T('스탯창','Stat window'))+'</span> <span class="badge partial">'+esc(decisionBadge(T))+'</span></h2>'
-  +'<p class="small" data-sr-axis-set>'+esc(T('축: ','Axes: ')+DECISION.set[locale==='en-US'?1:0]+' · '+DECISION.ref[locale==='en-US'?1:0]+T(' · 설명용 · 추천 아님',' · explanatory · not a recommendation'))+'</p><div data-sr-body>'+body(model,locale)+'</div></div>';}
+ const QS=g.QgvScores,current=r=>!!r&&(!QS||typeof QS.isCurrent!=='function'||QS.isCurrent(g,r)),result=prev&&prev.inputs===inputs&&current(prev.result)?prev.result:null;live.set(key,{spec,inputs,locale,result,aux,show,dev});const model=build(inputs,spec,dev||device,result,{aux});
+ return '<div class="stat-radar" data-stat-radar="'+esc(key)+'" data-sr-decision="'+DECISION.state+'"'+stateAttrs(model,show)+'><h2 class="sr-title"><span class="hl">'+esc(T('스탯창','Stat window'))+'</span> <span class="badge partial">'+esc(decisionBadge(T))+'</span></h2>'
+  +'<p class="small" data-sr-axis-set>'+esc(T('축: ','Axes: ')+DECISION.set[locale==='en-US'?1:0]+' · '+DECISION.ref[locale==='en-US'?1:0]+T(' · 설명용 · 추천 아님',' · explanatory · not a recommendation'))+'</p><div data-sr-body>'+body(model,locale,show)+'</div></div>';}
 function paint(el){const entry=live.get(el.dataset.statRadar);if(!entry)return;const model=build(entry.inputs,entry.spec,entry.dev||device,entry.result,{aux:entry.aux}),b=el.querySelector('[data-sr-body]');
- if(b)b.innerHTML=body(model,entry.locale);for(const[k,v]of Object.entries(stateOf(model)))el.setAttribute(k,v);}
+ const show=showOf(entry.show);if(b)b.innerHTML=body(model,entry.locale,show);for(const[k,v]of Object.entries(stateOf(model,show)))el.setAttribute(k,v);}
 function symbolsFor(){const out=new Set();for(const{spec,inputs}of live.values()){if(!inputs)continue;const s=subjectOf(inputs,spec);if(s.symbol)out.add(s.symbol);for(const p of crossSection(inputs)){const y=universeSymbol(p.code);if(y)out.add(y);}}return[...out];}
 async function refreshDevice(){
  if(inflight)return inflight;
@@ -473,7 +495,12 @@ function subscribeOnce(){const PS=g.PriceStore;if(subscribed||!PS||typeof PS.sub
 /* The auxiliary-axis toggle (event delegation; no inline handlers under the CSP). The choice lives in RAM for this page only. */
 function wireOnce(doc){if(wired||!doc||typeof doc.addEventListener!=='function')return;wired=true;
  doc.addEventListener('click',e=>{const b=e.target&&e.target.closest?e.target.closest('[data-sr-aux-toggle]'):null;if(!b)return;const el=b.closest('[data-stat-radar]'),entry=el?live.get(el.dataset.statRadar):null;if(!entry)return;
-  entry.aux=!entry.aux;paint(el);const nb=el.querySelector('[data-sr-aux-toggle]');if(nb)nb.focus();});}
+  entry.aux=!entry.aux;paint(el);const nb=el.querySelector('[data-sr-aux-toggle]');if(nb)nb.focus();});
+ // 비교군 바꾸기: PC toggle buttons and the phone select change only which series are drawn (RAM, this page only).
+ doc.addEventListener('click',e=>{const b=e.target&&e.target.closest?e.target.closest('[data-sr-series-toggle]'):null;if(!b||b.disabled)return;const s=b.dataset.srSeriesToggle,el=b.closest('[data-stat-radar]'),entry=el?live.get(el.dataset.statRadar):null;if(!entry||!SERIES.includes(s))return;
+  const show=showOf(entry.show);show[s]=b.getAttribute('aria-pressed')!=='true';if(s==='industry'&&el.dataset.srGroups==='SAME')show.sic=show.industry;entry.show=show;paint(el);const nb=el.querySelector('[data-sr-series-toggle="'+s+'"]');if(nb)nb.focus();});
+ doc.addEventListener('change',e=>{const sel=e.target&&e.target.matches&&e.target.matches('select[data-sr-compare-select]')?e.target:null;if(!sel)return;const el=sel.closest('[data-stat-radar]'),entry=el?live.get(el.dataset.statRadar):null,v=sel.value;
+  if(!entry||!['all','industry','sic','none'].includes(v))return;const same=el.dataset.srGroups==='SAME';entry.show={company:true,industry:v==='all'||v==='industry',sic:v==='all'||v==='sic'||(same&&v==='industry')};paint(el);const ns=el.querySelector('select[data-sr-compare-select]');if(ns)ns.focus();});}
 /* After html(): read the shared page result (V) and the price data (price axes) and repaint every radar under root.
    opts: {catalogPromise} (the device catalog the page result reads quotes with). */
 async function mount(root,opts={}){
