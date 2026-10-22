@@ -17,6 +17,7 @@ import os
 from pathlib import Path
 import re
 import stat
+import struct
 import tarfile
 import sys
 
@@ -56,7 +57,7 @@ APPROVED_SHA256 = {
     "worker-quote-fallback.js": "e72a72d1885a23c2a35706c8d4f333060b0c451d32a00e501dc63a30416b754c",
     "holdings-capture-view.js": "5f9b2952792c403ea3d005809508381432e17d0f588cfc5930f74413b1a5ba94",
     "holdings-capture.js": "a0fbd647c36d4714e743badbf445e2d3bf6b47c504766beaa14a93fdbf900d95",
-    "table-sort.js": "db8ebe8e6a81a67309e925646ffe557db06452fb89e5735de7baad9770c0b778",
+    "table-sort.js": "cd483582e80b7df2b5a5ffb16af84e7200ebfa841ed40fa5cee89bd3d8c338db",
     "pc-layout.css": "d3a270238df767d49ef23ea3d53d60fca62d65dc017af19338269602190af2b4",
     "share-class-groups.js": "088bbfaec559937753533572330a6be3c2f9280910f9f6cf62b53f39119c0997",
     "forward-validation.js": "85432c469bce8466d2df24b90e2caf1985c2036d596e37725e9073368216f009",
@@ -70,11 +71,11 @@ APPROVED_SHA256 = {
     "dcf-parameters-defaults.js": "3f9498ef6177b9dcd3c4fa80077c8480750be93668f57bd5ed5ed3b5509a8473",
     "classification-screens.js": "23ed7302742bf769068ef128dc48075fe6c88d6610585356e6b4e88d14db0a8f",
     "manager-styles-v0.js": "b32f434b17ba00d6ec1e4813517884e5caded996779df9b1976dfc38964ab38e",
-    "screen-detail.js": "e178c80fa5b32698b4ff410be7da298f5f6c2032f437e734cdfa97be9e7725ee",
+    "screen-detail.js": "fca2898a0217dd76db5e9545b1d703c7846345df46185f5c8541f252a44be003",
     "virtual-trading.js": "41a834f13d86ed2bd6a046cf63788992350294714ee9b9ee159ae50de8e20206",
     "technical-cards.js": "7f4fb2ce3a586a9f024c6edc212c65893a7acc44a3fd58b611f2f38616b660b3",
-    "leaderboard-screen.js": "c2cc760f88655b5b723662325dbdf2f3ce9dae476ab45938437ab336cef85326",
-    "portfolio-screen.js": "64469dab95d407dbba1d5e68a1614223b6e83c46742ce05205380a44ef71dc72",
+    "leaderboard-screen.js": "083a06188d354ff6060bc80134dab544dd8d369150b136e072f7b8b0b119d43c",
+    "portfolio-screen.js": "97b7c8f0014a90e9308d1a49f992b05f2f31aac244ef75b65c388c9bc471c9c2",
     "company-screen.js": "5c55833a4a0cf36f827f41b98d9e5c783524489a4aae2dbdca860c0a4628bfae",
     "ops-status.js": "bccccba913e0887ee2bb3c38fd61f27fcc2a6d37acb67aeeffea227df422c7a9",
     "type-config-defaults.js": "8b287dde54fb194469bd13d62c356e51eb78c4c04c415eafc6f5091935fed131",
@@ -105,7 +106,7 @@ APPROVED_SHA256 = {
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "253636dc7a44436077c8856b8646b3375c9df69f93072b2ac2ee7f2c82e89071",
+    "app.js": "16dc45425464ccf9aad9b7f28671fb268fdc424ca04c3dc4b853bfec2ae6d03d",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "57a6f74deb228391ae65085bde62f3cef2126937cf5063dda41f4807abf44845",
     "device-actual.js": "1cfae1a928e74055b1536e1b8dbe26509780eb3eed2f79b3a1963de4feb25f60",
@@ -118,9 +119,9 @@ APPROVED_SHA256 = {
     "index.html": "c13524131b6542d549837e1a87011f71aae14c735f9f34cfebae2fec2f6455fc",
     "locale.js": "f3537029f859a0958c9d2440b7fcc021fef96b2845ff3320ad8b8ae045f09dc2",
     "private-history.css": "d4ce930e901e2b67b2eb6d57c8795f77be3b9f1650efa85dad6e524419c42028",
-    "private-history.js": "70a1b247f0e9ad2ef22154a6f94e75441244a9dc285122d7ae697a0d8574d81d",
-    "research.html": "573b249119fcb221d0db50235b269cca5b207023b36ac3f5fed8ca6949db425e",
-    "style.css": "35d5eee322071f069cb7b4fc92c2ca5e7e0dfad358a5c57991d87cde0106d34a",
+    "private-history.js": "289a8a2c1053a0d280504cd785d188316b5ac9fd99eaa5590a3aa57c82e3958c",
+    "research.html": "eb5f673078ded25737b85b532c6d8c88f457d14bf1c433299e7e70be022aa57c",
+    "style.css": "a3deb2677f4335021a37ba0546823732aade654e3b7374ad4e39d2ff8e5e1841",
     "sec-disclosures.js": "849cbfbf2b21badd52c06cf5887dcd259e08864552a76fde39f065f82c6a7194",
     "sec-qgv2.js": "419b49c42921b2792a18ff051e3864620cfacec3918b3b98e74adf90d61cb48d",
     "price-store.js": "52b723d9e7dfc189252a870c57f5a044373427d3a9009bb9a119c322ebb8c4de",
@@ -136,31 +137,46 @@ APPROVED_SHA256 = {
     "macro-cycle-ring.css": "14567f0ec84436066b814a448efe3c16bc98c8066cf23cd21d40835d049510ca",
     "sec-disclosures.js": "849cbfbf2b21badd52c06cf5887dcd259e08864552a76fde39f065f82c6a7194",
     "theme-boot.js": "4aaf08ecd900e1216a95159a277f8a7c51c32e41784f1ac9530ecf1dc77a6f2c",
-    "theme.css": "be30dd33bea4bdb570be02e8bc12f8800c21548f2ad627cf632c2496e134e1f6",
-    "app-shell.js": "e7cdd03821e5f543925c16bbb2fb67b977df4c1d5c88e2f532f86cb3b8d31199",
-    "home-screen.js": "f35d9c2c1e0b400ca7ef337b5f90d13be6660b6f321aaeea3ea5239d86c05219",
+    "theme.css": "4cd7dc3f0c69a9f99cf946aa61f76f3cefa12e4d529b3d22b8fb7721f63b932c",
+    "app-shell.js": "a1a789dfb521102503f3715c221015ca56d5f2220c7e2ddb5a9f26c628004d14",
+    "home-screen.js": "9979acbdf24277c3d612b4b1929d693ca9cdecd1f98a190feaa84989e5e36d4a",
     "home-quotes.js": "46487b40e170c3291b023bebcb0fd01da19bb3beb53bfad3006be6377cfe3a96",
     "doodles.js": "413afcb07c5ef5f4edcb0ab544ba61a7d19954db0951ccdf85742c04cf5bb57e",
-    "ia-screens.js": "93fc40ae7ebbb5e8bea4e2eb12e1bbb35b1532a2d9e6dd022d2cb5384e19c960",
+    "ia-screens.js": "65db9c0c7cfe9f487994272594e6518ccb5b1a4b8860a328f0f726a7d4ce73d5",
     "universe-company.js": "f28e53e7269932790d45339a80761db451664f0a7b44b7d173b759050a946d82",
     "universe-company.css": "5b1b0236290f91c95b7f25d49bc93d032bf1718754c1cfae7789e92bb74b11b8",
     "stat-radar.js": "f46686ac9391e398d9c0cc0af19c00aa9de2b32cd1a37cc5c4abb0dabb047750",
     "stat-radar.css": "1afcc9df3d0eeadb87b7d80251ef17091146bf62f2da40a9f7e249b2969bd6db",
     "v-coverage.js": "8031a5cf658ecc287df71dcbe5f6fdc61cc754057e39086eefa210847d37aa4c",
     "price-time.js": "9b786d04615f3a8907f8f936db78ab3fd477808eadc27814e615ffbb7dddbc0f",
-    "data-refresh.js": "8040b88ca9a8083c92879067ff84a01f5db8aa6019c42a0c2b2098b68435c6f2",
+    "data-refresh.js": "ee4d9745536dd0c698518820d1c82be297d3b28f2e0075601c21c5d000a0a76d",
     "v-coverage.css": "185302f9f5aa9542d2caadfa03363f084bf837e8e1ea2998da49fa1db8af9364",
-    "macro-evidence.js": "41efb4a48c6a6bf0363fcac28bd414bc7014224df0e8a907549078758e2a19b6",
+    "macro-evidence.js": "b87449fcb0edea5de6a6ac74cd9e7579ad81a28af970f2fc2f59f7594207070b",
     "macro-evidence.css": "5270ef2e2c80eb70125ed39f8fbef5f3f0d87172d3dff3a79c888b92ec9520cd",
     # Self-hosted chart renderer (P1-7): lightweight-charts 5.2.1 npm file unmodified, upstream LICENSE/NOTICE, third-party notices.
     "chart-renderer.js": "c6053c2633788813d363d3346833f416fa954fbf8db7e1e18252b191c0dd040b",
-    "chart-workbench.js": "5fc686918427e20a3fc0fff28a4df576821cb7924ecbabcdd0adac0ba4db763c",
+    "chart-workbench.js": "125d564f412e90b1a6bcb13df3f23ec77cee9e5b713ff83151b982511dc16004",
     "chart-workbench.css": "a27cbff905f5e4e822bef4e260470ab35601b7a250a17092208475099c06554e",
     "lightweight-charts-5.2.1.standalone.js": "e21cc5caa0226ef30bd8549c50b9ef926615f2a4ee6b4e486353477a55f598cf",
     "lightweight-charts-5.2.1.LICENSE.txt": "70c9d5382506dd184465425c08a99ad9bd6d9ac1313c252968ba0b585e5ef823",
     "lightweight-charts-5.2.1.NOTICE.txt": "f76c6afab94884448f0426e30d6e9d555ca7247894cd3484e477d2f87513036e",
-    "third-party-notices.txt": "01c1ecd099bc76ab6845b835c1704534eb0301e6b0eb22fcf63cc5a76668e362",
+    "third-party-notices.txt": "6f24b5e4df26683877769364a388c8eac361de2c6a1caab169270d3b8b400cff",
+    # Self-hosted SIL OFL 1.1 fonts (IA-11, owner "호스팅해" 2026-10-20): google/fonts 47d54ca1 Jua/Gaegu Regular, subset to
+    # Latin + KS X 1001 Hangul as WOFF2 (binary, see FONT_FILES), and the unmodified upstream OFL texts.
+    "jua-regular-ksx1001.woff2": "2699d0318876afef41d823cec84d30d08d98ab6723d9958b6d5f79f57ade1cc2",
+    "gaegu-regular-ksx1001.woff2": "91e086f4668132cd51a70ba2b6d7d9706da87f8a7f8be4b198f968ddb69894c0",
+    "jua-OFL.txt": "44a7c6e4c5572392ae122d3b1d8c6ba6fd640a7797e675384585d947f2773e3c",
+    "gaegu-OFL.txt": "53a9ce47085d9fef613c7ecb3730dc80d25962510bbea231b89564f58240f251",
 }
+# Font exception (IA-11, owner approval 2026-10-20, exact scope): the ONLY binary files besides the two PWA icons are
+# these two names, and only at the artifact root. Both scan modes match the full relative path against ALLOWED_NAMES
+# (the directory scan reads root entries only; a tar member under a directory keeps its directory in the name), so the
+# same file name anywhere else, or any other *.woff2 name, is an unexpected entry. No extension-wide allowance exists.
+# For these two files only, the UTF-8 decode and the text secret-pattern scan are skipped (binary payload); instead each
+# must pass the tighter FONT_MAX_BYTES cap, a structural WOFF2 header check and its pinned SHA-256. Every other file,
+# including the fonts' OFL licence texts, still goes through all text checks.
+FONT_FILES = frozenset({"jua-regular-ksx1001.woff2", "gaegu-regular-ksx1001.woff2"})
+FONT_MAX_BYTES = 256 * 1024  # pinned subsets are 187,292 and 83,968 bytes; tighter than MAX_FILE_BYTES on purpose
 ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, COMPANY_NAMES_FILENAME, UNIVERSE_DOMAINS_FILENAME, COMPANY_LOGOS_FILENAME, QGV2_FILENAME, DISCLOSURES_FILENAME, NEWS_SIGNALS_FILENAME, MACRO_EVIDENCE_FILENAME} | set(SCREEN_FILENAMES) | set(DART_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024
 MAX_ARCHIVE_BYTES = 4 * 1024 * 1024
@@ -243,10 +259,43 @@ def _inspect_json(value: object, violations: Counter, depth: int = 0) -> None:
             violations["secret_patterns"] += 1
 
 
+def _valid_woff2_header(payload: bytes) -> bool:
+    """WOFF2 table directory header (W3C WOFF2 5.1): 48 bytes, big-endian.
+
+    Signature wOF2, a single-font TrueType or CFF flavor (no collection), declared length equal to the real size,
+    a sane table count, zero reserved field, a compressed block inside the file, and no extended-metadata or
+    private-data block (nothing that could carry extra payload beside the glyph tables).
+    """
+    if len(payload) < 48:
+        return False
+    (signature, flavor, length, num_tables, reserved, total_sfnt_size, total_compressed_size, _major, _minor,
+     meta_offset, meta_length, meta_orig_length, priv_offset, priv_length) = struct.unpack(">4sIIHHIIHHIIIII", payload[:48])
+    return (
+        signature == b"wOF2"
+        and flavor in (0x00010000, 0x4F54544F)  # TrueType outlines or 'OTTO'
+        and length == len(payload)
+        and 0 < num_tables <= 64
+        and reserved == 0
+        and total_sfnt_size > 0
+        and 0 < total_compressed_size < length - 48
+        and meta_offset == meta_length == meta_orig_length == 0
+        and priv_offset == priv_length == 0
+    )
+
+
 def _check_payload(name: str, payload: bytes, violations: Counter) -> None:
     try:
         if name in {'icon-192.png', 'icon-512.png'}:
             if not payload.startswith(b'\x89PNG\r\n\x1a\n') or hashlib.sha256(payload).hexdigest() != APPROVED_SHA256[name]:
+                violations['unapproved_content'] += 1
+            return
+        if name in FONT_FILES:
+            # Binary font exception (see FONT_FILES): size cap, WOFF2 structure, pinned hash; no text scans.
+            if len(payload) > FONT_MAX_BYTES:
+                violations['oversized_files'] += 1
+            elif not _valid_woff2_header(payload):
+                violations['invalid_font'] += 1
+            elif hashlib.sha256(payload).hexdigest() != APPROVED_SHA256[name]:
                 violations['unapproved_content'] += 1
             return
         text = payload.decode("utf-8", errors="strict")

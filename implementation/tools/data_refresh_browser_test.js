@@ -33,7 +33,7 @@ const BASE = process.env.PAGES_COCKPIT_URL, ORIGIN = new URL(BASE).origin;
 const DAYS = { 1: { as_of: '2026-10-13T22:30:00Z', now: '2026-10-14T03:00:00Z' }, 2: { as_of: '2026-10-14T22:30:00Z', now: '2026-10-15T03:00:00Z' } };
 const RECOLLECTED = 'NASDAQ:AKAM', KEPT = 'NASDAQ:ABNB', AGING = 'NYSE:ABT', AGING_AT = '2026-09-30T06:00:00Z', PAST_WINDOW = '2026-10-14T07:00:00Z';
 const PRESET = 'growth';
-const PUBLIC = new Set(['sec-qgv2.json', 'sec-public-inputs.json', 'company-classification.json', 'dart-financials.json', 'sec-disclosures.json', 'news-signals.json', 'dart-disclosures.json', 'sec-universe-shares.json', ...Object.keys(PS.FILES)]);
+const PUBLIC = new Set(['sec-qgv2.json', 'sec-public-inputs.json', 'company-classification.json', 'dart-financials.json', 'sec-disclosures.json', 'news-signals.json', 'dart-disclosures.json', 'sec-universe-shares.json', 'macro-evidence.json', ...Object.keys(PS.FILES)]);
 const clock = (x) => x.slice(0, 10) + ' ' + x.slice(11, 16) + ' UTC';
 const fmt = (v) => new Intl.NumberFormat('ko-KR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(v);
 const fmt1 = (v) => (Math.round(v * 10) / 10).toFixed(1);

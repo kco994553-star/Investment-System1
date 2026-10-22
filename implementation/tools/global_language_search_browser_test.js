@@ -242,7 +242,9 @@ if(!base.pathname.endsWith("/")) base.pathname+="/";
       const images=[];p.on("request",r=>{if(["image","media","font"].includes(r.resourceType())||/\.svg$/.test(new URL(r.url()).pathname))images.push(r.url());});
       await p.reload();await p.locator("[data-home]").waitFor();
       assert.equal(await p.evaluate(()=>document.documentElement.dataset.theme),"dark","choice kept on this device");
-      assert.equal(await p.locator(".home-bg").count(),0);assert.deepEqual(images.filter(u=>!/icon-192\.png$/.test(u)),[]);
+      assert.equal(await p.locator(".home-bg").count(),0);// The only allowed loads: the app icon and the two self-hosted OFL fonts (owner decision IA-11, 2026-10-20), same origin and exact names.
+      const allowed=new Set(["icon-192.png","jua-regular-ksx1001.woff2","gaegu-regular-ksx1001.woff2"].map(n=>new URL(n,base).href));
+      assert.deepEqual(images.filter(u=>!allowed.has(u.split("?")[0])),[]);
       await home.close();
     });
     await check("no external calls, unsafe requests, failed responses or page errors",async()=>{

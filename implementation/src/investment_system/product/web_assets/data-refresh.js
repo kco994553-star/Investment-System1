@@ -1,7 +1,7 @@
 /* Public data refresh: the '자료 새로고침' button (FRONTEND_DATA_CONTRACT.md §2-3 rule R; defects D1, D2, D5, D6).
    This module owns the in-tab copy of the public, price-free publication. The file readers are the existing ones
    (PublicScreens, ClassificationScreens, Qgv2Inputs/SecQgv2, SecReported, SecDisclosures, NewsSignals, DartDisclosures,
-   SecUniverseShares); their own requests and cache options go through unchanged, only the HTTP status is noted per file.
+   SecUniverseShares, MacroEvidence); their own requests and cache options go through unchanged, only the HTTP status is noted per file.
    - load(view): the page-open read of the core files. list(view,key), shares(view), financials(view): the lazy reads (filing /
      news / DART lists, sec-universe-shares.json, dart-financials.json), read once per publication and shared by every screen,
      so the 4.2 list and the 4.3 tree example show the same file (D6).
@@ -32,7 +32,7 @@ const RAW=new Set([QGV2,SHARES]);
 // (hooks.inPlace); screens holding device work (charts, editors, reports, settings forms) get a notice and a redraw button.
 const FULL=new Set(['qgv','thirteenf','news','watchlist','macro','tree','system','companies','entity']),NONE=new Set(['home','brief','research','lab-13f']);
 const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v),finite=v=>typeof v==='number'&&Number.isFinite(v);
-let view=null,hooks={},gen=null,seq=0,busy=false,quiet=false,judgedAt=0,timer=0,last={state:'IDLE',at:null,failed:[],changed:[],previous:null,repaint:null};
+let view=null,hooks={},gen=null,seq=0,busy=false,initializing=false,quiet=false,judgedAt=0,timer=0,last={state:'IDLE',at:null,failed:[],changed:[],previous:null,repaint:null};
 function fresh(){return{id:++seq,checked_at:null,files:{},screens:{},reported:null,raw:{},bounds:{},lists:{},listValues:{},shares:null,sharesDir:undefined,financials:null};}
 function current(){if(!gen)gen=fresh();return gen;}
 const nowIso=()=>new Date(Date.now()).toISOString();
@@ -61,13 +61,17 @@ function directory(x,error){if(x)return{state:'READY',as_of:x.as_of,records:x.pu
  const m=String(error&&error.message);return{state:'NOT_AVAILABLE',reason:['SEC_UNIVERSE_SHARES_INVALID','SEC_UNIVERSE_SHARES_SCHEMA_NEWER'].includes(m)?m:'SEC_UNIVERSE_SHARES_UNAVAILABLE'};}
 async function readCore(win,rec,G,withFinancials){
  const PS=win.PublicScreens,CS=win.ClassificationScreens,QI=win.Qgv2Inputs,SR=win.SecReported,DD=withFinancials&&win.DartDisclosures&&win.DartDisclosures.loadFinancials?win.DartDisclosures:null,v=rec.view;
- const[reported,screens,classification,qgv2,financials]=await Promise.all([SR?SR.load(v):null,PS?PS.load(v):{},CS?CS.load(v):null,QI?QI.load(v):null,DD?DD.loadFinancials(v):null]);
+ const ME=win.MacroEvidence&&win.MacroEvidence.read?win.MacroEvidence:null;
+ const[reported,screens,classification,qgv2,financials,evidence]=await Promise.all([SR?SR.load(v):null,PS?PS.load(v):{},CS?CS.load(v):null,QI?QI.load(v):null,DD?DD.loadFinancials(v):null,ME?ME.read(v):null]);
  const out={...(object(screens)?screens:{})};if(classification)out[CS.FILE]=classification;if(qgv2)out[QI.FILE]=qgv2;if(financials)out[FIN]=financials;
  const newer=(()=>{try{return!!QI&&QI.lastReason()==='SCHEMA_NEWER';}catch(_){return false;}})();
  for(const n of[...(PS?Object.keys(PS.FILES):[]),CS&&CS.FILE,QI&&QI.FILE,DD&&FIN].filter(Boolean))G.files[n]=info(outcome(n,Object.hasOwn(out,n),rec,n===QGV2&&newer),out[n]);
  if(SR)G.files[REPORTED]=info(outcome(REPORTED,!!reported,rec,false),reported);
+ if(ME){G.macroEvidence=evidence;G.files[ME.FILENAME]={...outcome(ME.FILENAME,!!evidence.payload,rec,false),as_of:evidence.payload?evidence.payload.generated_at:null};}
  return{screens:out,reported};
 }
+// Silent commit keeps the old DOM intact until the app captures its view state and redraws the macro screen.
+function installEvidence(win,G){if(G.macroEvidence&&win.MacroEvidence)win.MacroEvidence.setPayload(G.macroEvidence.payload,G.macroEvidence.status,{silent:true});}
 const apiOf=(win,key)=>key==='sec'?win.SecDisclosures:key==='news'?win.NewsSignals:key==='dart'?win.DartDisclosures:null;
 function readList(win,rec,G,key){const api=apiOf(win,key),file=LISTS[key];if(!api||!file)return Promise.resolve(null);
  return Promise.resolve(api.load(rec.view)).catch(()=>null).then(p=>{G.files[file]=info(outcome(file,!!p,rec,false),p);G.listValues[key]=p;return p;});}
@@ -75,8 +79,10 @@ function readShares(win,rec,G){const S=win.SecUniverseShares;if(!S)return Promis
  return S.loadInputs(rec.view).then(x=>({x,error:null}),error=>({x:null,error})).then(r=>{G.files[SHARES]=info(r.x?outcome(SHARES,true,rec,false):outcome(SHARES,false,rec,/SCHEMA_NEWER/.test(String(r.error&&r.error.message))),r.x);G.sharesDir=directory(r.x,r.error);return r;});}
 
 // ---------- page-open and lazy reads ----------
-async function load(win){view=view||win;const G=current(),rec=recorder(win),r=await readCore(win,rec,G,false);await keepRaw(rec,G);
- G.screens=r.screens;G.reported=r.reported;G.checked_at=nowIso();judgedAt=Date.now();paint();return{screens:r.screens,reported:r.reported};}
+async function load(win){view=view||win;initializing=true;paint();
+ try{const G=current(),rec=recorder(win),r=await readCore(win,rec,G,false);await keepRaw(rec,G);
+  G.screens=r.screens;G.reported=r.reported;installEvidence(win,G);G.checked_at=nowIso();judgedAt=Date.now();return{screens:r.screens,reported:r.reported};
+ }finally{initializing=false;paint();}}
 function list(win,key){const G=current();if(!LISTS[key]||!apiOf(win,key))return Promise.resolve(null);
  if(!G.lists[key])G.lists[key]=readList(win,recorder(win),G,key).then(p=>{paint();return p;});return G.lists[key];}
 function shares(win){const G=current();if(!win.SecUniverseShares)return Promise.resolve(null);
@@ -90,13 +96,15 @@ function financials(win){const G=current(),DD=win.DartDisclosures;if(!DD||!DD.lo
 const basisOf=G=>{const q=G&&G.screens?G.screens[QGV2]:null;return q&&typeof q.as_of==='string'?q.as_of:null;};
 function changedFiles(old,G){if(!old)return Object.keys(G.files);const out=[];for(const[n,f]of Object.entries(G.files)){const o=old.files[n];if(o&&(o.state!==f.state||o.as_of!==f.as_of))out.push(n);}return out.sort();}
 async function refresh(){
- if(busy||!view)return last.state;busy=true;const old=gen,G=fresh(),rec=recorder(view);last={...last,state:'LOADING'};paint();
+ if(initializing)return 'LOADING';if(busy||!view)return last.state;busy=true;const old=gen,G=fresh(),rec=recorder(view);last={...last,state:'LOADING'};paint();
  try{
   const lists=Object.keys(LISTS).map(k=>readList(view,rec,G,k).then(p=>{G.lists[k]=Promise.resolve(p);return p;}));
   const sharesRead=old&&old.shares?readShares(view,rec,G).then(r=>{G.shares=r.error?Promise.reject(r.error):Promise.resolve(r.x);G.shares.catch(()=>{});return r;}):null;
   const[core]=await Promise.all([readCore(view,rec,G,true),...lists,sharesRead]);await keepRaw(rec,G);
   G.screens=core.screens;G.reported=core.reported;G.financials=Promise.resolve(core.screens[FIN]||null);G.checked_at=nowIso();
-  const failed=Object.entries(G.files).filter(([,f])=>f.state==='FAILED').map(([file,f])=>({file,...f}));
+  // A missing file on first load is unpublished; disappearance of a previously valid file is a failed refresh.
+  const failed=Object.entries(G.files).filter(([file,f])=>f.state==='FAILED'||(f.state==='NOT_PUBLISHED'&&old?.files[file]?.state==='OK'))
+   .map(([file,f])=>({file,...f,state:'FAILED',why:f.why||'HTTP'}));
   if(failed.length){last={state:'FAILED',at:G.checked_at,failed,changed:[],previous:null,repaint:null};paint();return 'FAILED';}
   const changed=changedFiles(old,G);
   if(old&&!changed.length){old.checked_at=G.checked_at;last={state:'UNCHANGED',at:G.checked_at,failed:[],changed:[],previous:null,repaint:null};busy=false;await rejudge('REFRESH');paint();return 'UNCHANGED';}
@@ -109,6 +117,7 @@ async function refresh(){
 // Hand one set to the app, repaint the open screen, tell every other cache owner.
 function hand(G,reason,changed,previous,trigger='BUTTON'){
  guardPrices();
+ installEvidence(view,G);
  try{if(typeof hooks.apply==='function')hooks.apply(Object.freeze({screens:G.screens,reported:G.reported,shares:G.sharesDir}));}catch(_){}
  last.repaint=repaint(reason);
  try{view.dispatchEvent(new view.CustomEvent(EVENT,{detail:Object.freeze({reason,trigger,generation:G.id,publication:publication(),changed:Object.freeze([...changed]),previous,checked_at:G.checked_at})}));}catch(_){}
@@ -197,7 +206,7 @@ function crossedFiles(G,from,to){const hit=b=>b!==null&&b>=from&&b<to,out=[];
 let judging=null;
 function rejudge(reason='TIME'){if(!judging)judging=judge(reason).finally(()=>{judging=null;});return judging;}
 async function judge(reason){
- if(!gen||!view||busy)return false;const G=gen,now=Date.now(),hit=crossedFiles(G,judgedAt,now);if(!hit.length){judgedAt=Math.max(judgedAt,now);return false;}
+ if(!gen||!view||busy||initializing)return false;const G=gen,now=Date.now(),hit=crossedFiles(G,judgedAt,now);if(!hit.length){judgedAt=Math.max(judgedAt,now);return false;}
  let screens=G.screens,dir=G.sharesDir;
  if(hit.includes(QGV2)&&G.raw[QGV2]&&view.Qgv2Inputs){const x=await view.Qgv2Inputs.load(local(view,G.raw[QGV2]));if(x)screens={...screens,[view.Qgv2Inputs.FILE]:x};}
  if(hit.includes(SHARES)&&G.raw[SHARES]&&view.SecUniverseShares){try{const x=await view.SecUniverseShares.loadInputs(local(view,G.raw[SHARES]));if(x){dir=directory(x,null);G.shares=Promise.resolve(x);}}catch(_){}}
@@ -231,8 +240,8 @@ function mountBar(){const doc=view.document,main=doc.getElementById('content');i
  box.append(button,el(doc,'p',{class:'small','data-refresh-status':'',role:'status','aria-live':'polite'}),el(doc,'details',{'data-refresh-details':''}));
  main.before(box);}
 function paint(){const box=bar();if(!box)return;const G=gen,basis=basisOf(G),button=box.querySelector('[data-refresh-button]'),line=box.querySelector('[data-refresh-status]'),det=box.querySelector('[data-refresh-details]');
- const s=busy?'LOADING':last.state;box.dataset.refreshState=s;box.dataset.refreshBasis=basis||'';box.dataset.refreshChecked=G&&G.checked_at||'';box.setAttribute('aria-label',T('공개 자료 갱신','Public data refresh'));
- button.disabled=busy;button.textContent=busy?T('확인 중…','Checking…'):T('자료 새로고침','Refresh data');
+ const loading=busy||initializing,s=loading?'LOADING':last.state;box.dataset.refreshState=s;box.dataset.refreshBasis=basis||'';box.dataset.refreshChecked=G&&G.checked_at||'';box.setAttribute('aria-label',T('공개 자료 갱신','Public data refresh'));
+ button.disabled=loading;button.textContent=loading?T('확인 중…','Checking…'):T('자료 새로고침','Refresh data');
  const b=T('점수 기준 ','Scores as of ')+(basis||T('없음','none')),c=T('마지막 확인 ','Last checked ')+clock(G&&G.checked_at);
  const text=s==='LOADING'?T('공개 자료를 다시 읽는 중…','Reading the public files again…')
   :s==='APPLIED'?T('새 게시본 적용','New publication applied')+' · '+(last.previous&&last.previous.basis&&last.previous.basis!==basis?T('점수 기준 ','Scores as of ')+last.previous.basis+' → '+(basis||T('없음','none')):b)+' · '+c

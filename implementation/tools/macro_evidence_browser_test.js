@@ -1,12 +1,21 @@
 'use strict';
-// Macro evidence lines on the macro screen at 390 and 1280: the build's NOT_COLLECTED placeholder, then the synthetic
+// Macro evidence lines on the macro screen at 390 and 1280: an explicit NOT_COLLECTED fixture, then the synthetic
 // multi-run payload (tests/fixtures/macro_evidence/browser_payload.json, written by tests/macro_evidence_fixture.py):
 // 경기/주식시장/산업 tabs counted separately, recent-5 lines + "더 보기" on mobile (10 on PC), collection-time lines
 // labelled as such, revision markers and release ticks, the reconstruction layer off by default, interpretations
-// labelled "해석 후보 · 미승인", the held DOL series and the C1 API. Nothing is stored or sent; no outside host is contacted.
-const assert=require('node:assert/strict');const fs=require('node:fs');const path=require('node:path');const {chromium}=require('playwright');
+// labelled "해석 후보 · 미승인", the held DOL series and the C1 API. Also checks the served artifact and atomic public
+// refresh (HTTP/invalid/other-file failure keep the old publication), with view choices kept across redraw/navigation.
+// Nothing is stored or sent; no outside host is contacted.
+const assert=require('node:assert/strict');const fs=require('node:fs');const path=require('node:path');const {execFileSync}=require('node:child_process');const {chromium}=require('playwright');
 const BASE=process.env.PAGES_COCKPIT_URL,SHOTS=process.env.PAGES_COCKPIT_EVIDENCE_DIR||'.';
 const PAYLOAD=fs.readFileSync(path.join(__dirname,'../tests/fixtures/macro_evidence/browser_payload.json'),'utf8');
+// Daily and manual-deploy artifacts carry observations. Generate the empty case from the production contract,
+// without editing the served artifact or assuming that its first collection has not happened yet.
+const EMPTY=execFileSync('python3',['-I','-c',[
+ 'import sys', 'from datetime import datetime, timezone', 'sys.path.insert(0,sys.argv[1])',
+ 'from investment_system.macro.evidence_lines import empty_payload, encode',
+ 'sys.stdout.buffer.write(encode(empty_payload(datetime(2026,10,1,tzinfo=timezone.utc))))'
+].join('\n'),path.resolve(__dirname,'../src')],{encoding:'utf8',maxBuffer:2*1024*1024});
 async function context(browser,width,payload){
  const ctx=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block'});
  if(payload)await ctx.route('**/macro-evidence.json*',r=>r.fulfill({status:200,contentType:'application/json',body:payload}));
@@ -24,8 +33,23 @@ async function pick(page,id){await page.locator('[data-me-indicator]').selectOpt
  try{
   for(const width of [390,1280]){
    const mobile=width<600;
+   phase='INITIAL_READ '+width;
+   {const {ctx,page,seen}=await context(browser,width,null);let release,started,calls=0;
+    const held=new Promise(resolve=>{release=resolve;}),requested=new Promise(resolve=>{started=resolve;});
+    const newer=JSON.stringify({...JSON.parse(PAYLOAD),generated_at:'2026-10-21T10:00:00Z'});
+    await ctx.route('**/macro-evidence.json*',async r=>{calls++;if(calls===1){started();await held;}
+     await r.fulfill({status:200,contentType:'application/json',body:calls===1?PAYLOAD:newer});});
+    await page.goto(BASE+'#macro',{waitUntil:'domcontentloaded'});await requested;
+    assert.equal(await page.locator('[data-refresh-button]').isDisabled(),true,'initial publication must complete before refresh');
+    assert.equal(await page.evaluate(()=>DataRefresh.refresh()),'LOADING','programmatic refresh cannot race initial read');
+    assert.equal(calls,1);release();await page.locator('[data-me-collection]').waitFor();
+    await page.locator('[data-refresh-button]').click();await page.locator('#data-refresh:not([data-refresh-state="LOADING"])').waitFor();
+    assert.equal(await page.locator('#data-refresh').getAttribute('data-refresh-state'),'APPLIED');
+    assert.equal((await page.evaluate(()=>MacroEvidence.current())).generated_at,JSON.parse(newer).generated_at);
+    assert.equal(calls,2);assert.deepEqual(seen.errors,[]);assert.deepEqual(seen.outside,[]);assert.deepEqual(seen.writes,[]);
+    await ctx.close();pass++;}
    phase='EMPTY '+width;
-   {const {ctx,page,seen}=await context(browser,width,null);
+   {const {ctx,page,seen}=await context(browser,width,EMPTY);
     await page.goto(BASE+'#macro');await page.locator('[data-macro-evidence]').waitFor();
     await page.locator('[data-me-not-collected]').waitFor();
     assert.equal(await page.locator('[data-me-catalog-row]').count(),13);
@@ -40,6 +64,55 @@ async function pick(page,id){await page.locator('[data-me-indicator]').selectOpt
     assert.ok((await text(page,'[data-cycle-ring="economy"] [data-me-ring-empty]')).includes('NOT_AVAILABLE'));
     await noOverflow(page,'empty '+width);
     assert.deepEqual(seen.errors,[]);assert.deepEqual(seen.outside,[]);await ctx.close();pass++;}
+   phase='ARTIFACT '+width;
+   {const {ctx,page,seen}=await context(browser,width,null);
+    const response=await page.request.get(BASE+'macro-evidence.json');assert.ok(response.ok(),'served macro evidence exists');
+    const actual=await response.json();
+    await page.goto(BASE+'#macro');await page.locator('[data-me-catalog-row]').first().waitFor({state:'attached'});
+    const current=await page.evaluate(()=>MacroEvidence.current());
+    assert.equal(current.status,actual.state==='NOT_AVAILABLE'?'NOT_AVAILABLE':'LOADED');
+    assert.equal(current.generated_at,actual.generated_at,'served collection timestamp reaches the screen');
+    assert.equal(await page.locator('[data-me-not-collected]').count(),actual.generated_at===null?1:0);
+    assert.equal(await page.locator('[data-me-collection]').count(),actual.generated_at===null?0:1);
+    assert.deepEqual(await page.locator('[data-me-catalog-row]').evaluateAll(rows=>rows.map(r=>[r.dataset.meCatalogRow,r.dataset.meCatalogState])),
+     actual.indicators.map(i=>[i.id,i.state]),'served indicator states reach the catalog');
+    assert.equal(current.scope.official_judgement,false);assert.equal(current.scope.probability,false);assert.equal(current.scope.macro_gate,false);
+    await noOverflow(page,'artifact '+width);assert.deepEqual(seen.errors,[]);assert.deepEqual(seen.outside,[]);assert.deepEqual(seen.writes,[]);
+    await ctx.close();pass++;}
+   phase='REFRESH '+width;
+   {const {ctx,page,seen}=await context(browser,width,EMPTY);let body=EMPTY,http=200;
+    await ctx.route('**/macro-evidence.json*',r=>r.fulfill({status:http,contentType:'application/json',body}));
+    await page.goto(BASE+'#macro');await page.locator('[data-me-not-collected]').waitFor();
+    await page.locator('[data-me-tab="industry"]').click();await page.locator('[data-me-catalog] summary').click();
+    const refresh=async()=>{await page.locator('[data-refresh-button]').click();await page.locator('#data-refresh:not([data-refresh-state="LOADING"])').waitFor();};
+    body=PAYLOAD;await refresh();
+    assert.equal(await page.locator('#data-refresh').getAttribute('data-refresh-state'),'APPLIED','macro-only publication applies');
+    assert.equal((await page.evaluate(()=>MacroEvidence.current())).generated_at,JSON.parse(PAYLOAD).generated_at);
+    assert.equal(await page.locator('[data-me-not-collected]').count(),0);
+    assert.equal(await page.locator('[data-me-tab="industry"]').getAttribute('aria-selected'),'true','cycle selection survives refresh');
+    assert.equal(await page.locator('[data-me-indicator]').inputValue(),'E01');
+    assert.equal(await page.locator('[data-me-catalog]').getAttribute('open'),'','catalog expansion survives refresh');
+    await page.locator('[data-me-tab="economy"]').click();await pick(page,'E39');await page.locator('[data-me-replay]').check();
+    await page.evaluate(()=>{location.hash='home';});await page.locator('#content h1').waitFor();
+    await page.evaluate(()=>{location.hash='macro';});await page.locator('[data-me-meta="E39"]').waitFor();
+    assert.equal(await page.locator('[data-me-replay]').isChecked(),true,'indicator and reconstruction choice survive navigation');
+    await refresh();assert.equal(await page.locator('#data-refresh').getAttribute('data-refresh-state'),'UNCHANGED');
+    const previous=await page.evaluate(()=>({macro:MacroEvidence.current(),generation:DataRefresh.publication().generation}));
+    // A failed macro fetch and a malformed response preserve the whole previous publication.
+    const invalidLabels=JSON.parse(PAYLOAD);delete invalidLabels.labels;
+    const invalidSummary=JSON.parse(PAYLOAD);invalidSummary.summary.economy.warning_families=null;
+    const invalidObservation=JSON.parse(PAYLOAD);Object.values(invalidObservation.series).find(s=>s.obs.length).obs[0]=null;
+    for(const [failure,status,payload] of [['HTTP',503,'{}'],['REMOVED',404,'{}'],['INVALID',200,'{}'],
+     ['LABELS',200,JSON.stringify(invalidLabels)],['SUMMARY',200,JSON.stringify(invalidSummary)],['OBSERVATION',200,JSON.stringify(invalidObservation)]]){http=status;body=payload;await refresh();
+     assert.equal(await page.locator('#data-refresh').getAttribute('data-refresh-state'),'FAILED',failure);
+     assert.deepEqual(await page.evaluate(()=>({macro:MacroEvidence.current(),generation:DataRefresh.publication().generation})),previous,failure+' keeps previous values');}
+    // Successful macro data is staged, never installed before all other public readers succeed.
+    http=200;body=JSON.stringify({...JSON.parse(PAYLOAD),generated_at:'2026-10-09T10:00:00Z'});
+    await ctx.route('**/sec-qgv2.json*',r=>r.fulfill({status:503,body:''}));await refresh();
+    assert.equal(await page.locator('#data-refresh').getAttribute('data-refresh-state'),'FAILED');
+    assert.deepEqual(await page.evaluate(()=>({macro:MacroEvidence.current(),generation:DataRefresh.publication().generation})),previous,'other-file failure does not install staged macro data');
+    await noOverflow(page,'refresh '+width);assert.deepEqual(seen.errors,[]);assert.deepEqual(seen.outside,[]);assert.deepEqual(seen.writes,[]);
+    await ctx.close();pass++;}
    phase='DATA '+width;
    {const {ctx,page,seen}=await context(browser,width,PAYLOAD);
     await page.goto(BASE+'#macro');await page.locator('[data-me-summary-counts]').waitFor();

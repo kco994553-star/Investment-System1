@@ -117,10 +117,10 @@
    node('input',esc(T(l,'입력','Inputs')),esc(T(l,'원기관 공개 지표(BLS · BEA · 재무부 · 연준) · 시장·신용 등 가격은 이 기기에서만 · FRED/ALFRED 사용 안 함','Primary agencies (BLS · BEA · Treasury · Fed) · market and credit prices on this device only · no FRED/ALFRED'))),
    node('',esc(T(l,'경고등 ','Lights ')+lights.length),esc(T(l,'정상·경고·위기 판정 · v1 UNCALIBRATED','Normal / warning / crisis · v1 UNCALIBRATED')),lights.map(n=>leaf(esc(T(l,...(LIGHT[n]||[n,n]))),esc(pub.includes(n)?T(l,'공개 자료','public data'):T(l,'이 기기 가격','device prices'))))),
    node('',esc(T(l,'상태판 8축 × 6칸','Board 8 axes × 6 states')),esc(T(l,'Growth · Inflation · Liquidity · Monetary Policy · Credit · Labor · Fiscal · FX × Level · Direction · Momentum · Surprise · Stress · Confidence (하나로 합치지 않음)','… kept separate, never one score'))),
-   node('','3.1 '+esc(T(l,'경기·시장 위치 + 근거선','Economy · market position + evidence lines')),'<span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> '+esc(T(l,'위치 판정 모델 없음','No position model'))),
+   node('','3.1 '+esc(T(l,'경기·시장 위치 + 근거선','Economy · market position + evidence lines')),esc(T(l,'개념 링·실제 관측 근거를 구분해 조회 · 공식 위치·확률은 미산출','Concept rings and observed evidence are shown separately · official position and probability not computed'))),
    node('','3.2 '+esc(T(l,'순환매 위치','Sector rotation')),'<span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> '+esc(T(l,'확률 근거 = 과거 국면 전환 빈도 · 미산출','Probability basis = past regime-transition frequency · not computed'))),
    node('','3.3 '+esc(T(l,'산업 사이클 (SIC 업종 그룹)','Industry cycles (SIC groups)')),'<span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> '+esc(T(l,'확률 근거 = 과거 국면 전환 빈도 · 미산출','Probability basis = past regime-transition frequency · not computed'))),
-   node('','3.4 '+esc(T(l,'내가 고른 위치','My chosen position')),'<span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> '+esc(T(l,'시스템 값과 따로 저장 예정','Will be stored apart from the system value'))),
+   node('','3.4 '+esc(T(l,'내가 고른 위치','My chosen position')),esc(T(l,'공식 값과 별도로 이 브라우저에 기록 · 내보내기/가져오기 가능 · 점수에 쓰지 않음','Recorded in this browser separately from official values · export/import available · never scored'))),
    node('','3.5 '+esc(T(l,'연쇄 효과 지도','Causal-chain map')),'<span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> '+esc(T(l,'관계 자료원 결정 대기(REL-SOURCE)','Relationship source pending (REL-SOURCE)')))]);
   return page('macro',l,{eyebrow:'3.6 · MACRO STRUCTURE',title:T(l,'매크로 시스템 내용구성','Macro structure'),lede:T(l,'입력 → 경고등 · 상태판 → 위치 · 순환매 · 산업 사이클 → 연쇄 효과.','Inputs → lights · board → position · rotation · industry cycles → causal chains.'),tree,examples:loading(l)});
  }
@@ -235,7 +235,7 @@
   else if(key==='portfolio')put(portfolioExamples(l,catalog));
   else if(key==='news')void newsExamples(l).then(put);
  }
- // ---------- numbered sections without an engine (2.2, 2.3, 3.1–3.5): what is missing, no invented value ----------
+ // Numbered sections: distinguish implemented controls from genuinely missing models; never invent a value.
  function naSection(id,sec,l,title,what,needs){
   return '<section class="card ia-na" id="'+id+'" data-ia-item="'+esc(sec)+'" aria-labelledby="'+id+'-title"><h2 id="'+id+'-title"><span class="ia-sec">'+esc(sec)+'</span> '+esc(T(l,...title))+'</h2>'+
    '<p><span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> '+esc(T(l,...what))+'</p><ul class="ia-needs">'+needs.map(x=>'<li>'+esc(T(l,...x))+'</li>').join('')+'</ul></section>';
@@ -254,12 +254,11 @@
  function macroHtml(l){
   const freq=['확률 근거 = 과거 국면 전환 빈도: 같은 국면에서 다음 국면으로 넘어간 과거 횟수의 비율, 기간·표본 수와 함께. Lab 검증 전에는 미산출','Probability basis = past regime-transition frequency: share of past moves from the same phase to the next, with period and sample size. Not computed before Lab validation'];
   return '<div class="ia-na-group" data-ia-group="macro">'+
-   naSection('macro-cycle','3.1',l,['경기 · 주식시장 현재 예상 위치 + 근거선','Economy and market position + evidence lines'],['위치 판정 모델과 시계열 이력이 없습니다. 위치 점·근거 세로선을 그리지 않습니다. 위의 상태판·경고등이 지금의 매크로입니다.','There is no position model or time-series history. No position dot or evidence line is drawn. The board and lights above are today’s macro.'],
-    [['국면 어휘 고정(IA-4: 확장·둔화·수축·회복 / 상승 초기·상승 후기·하락·바닥)','Phase vocabulary (IA-4)'],['근거선 시각: 실제 발표 시각 필요(IA-16, 지금은 수집 상한)','Evidence time: real release time needed (IA-16; today a capture bound)']])+
-   '<div id="macro-cycle-ring-root" data-cycle-ring-host></div>'+
+   '<section class="card" id="macro-cycle" data-ia-item="3.1" aria-labelledby="macro-cycle-title"><h2 id="macro-cycle-title">3.1 '+esc(T(l,'경기 · 주식시장 위치와 관측 근거','Economy and market position with observed evidence'))+'</h2><p class="small">'+esc(T(l,'링은 국면 개념도입니다. 아래 관측 그래프·근거선은 실제 공개 자료이며 공식 위치·확률을 뜻하지 않습니다. 발표 시각이 없으면 수집 시각으로 표시합니다.','Rings are phase concepts. The observation graph and evidence lines below use public data and do not establish an official position or probability. Collection time is shown when release time is unknown.'))+'</p>'+
+   '<div id="macro-cycle-ring-root" data-cycle-ring-host></div><div id="macro-evidence-root"></div></section>'+
    naSection('macro-rotation','3.2',l,['순환매 위치(저점·고점) + 조건 · 확률','Sector rotation (trough/peak) + conditions · probability'],['순환매 모델이 없습니다. 상향·유지·하향 조건과 확률은 미산출입니다.','No rotation model. Up / hold / down conditions and probabilities are not computed.'],[freq,['산업 단위 결정(IA-5)','Industry unit (IA-5)']])+
    naSection('macro-industry','3.3',l,['산업 사이클 (SIC 업종 그룹)','Industry cycles (SIC groups)'],['산업별 사이클 위치 모델이 없습니다. 위치·확률을 그리지 않습니다.','No industry-cycle model. No position or probability is drawn.'],[freq,['키 = QGV와 같은 industry_group(sic_industry_groups/v0)','Key = the same industry_group as QGV']])+
-   naSection('macro-mine','3.4',l,['내가 고르는 현재 위치','My chosen position'],['선택·저장 기능이 아직 없습니다. 내 위치는 시스템 값과 따로 저장하고 점수에 쓰지 않을 예정입니다.','Choosing and saving are not built. Your position will be stored apart from the system value and never scored.'],[['저장 위치 결정(DRAW-STORE · IA-6)','Storage decision (DRAW-STORE · IA-6)']])+
+   '<p class="small" id="macro-mine">3.4 '+esc(T(l,'내 위치는 링의 사용자 추정에서 이 브라우저에 기록합니다. 전체 이력 내보내기·가져오기를 지원하며 공식 값·점수와 분리합니다. 계정 동기화는 없습니다.','Record your position in the ring’s user estimate area in this browser. Full-history export/import is available, separately from official values and scores. There is no account sync.'))+'</p>'+
    naSection('macro-chain','3.5',l,['연쇄 효과 지도','Causal-chain map'],['사건 → 원인 고리 → 영향받는 기업 지도는 아직 화면이 없습니다. 확인된 관계·추론·가설을 나눠 보여 줄 예정이며 방향·크기·확률은 만들지 않습니다.','The event → chain → affected companies map has no screen yet. It will separate confirmed relations, inferences and hypotheses, with no direction, size or probability.'],
     [['관계 자료원 결정(REL-SOURCE)','Relationship source (REL-SOURCE)'],['고리마다 근거·시차·반대 경로·반증 필드','Per-link evidence, lag, counter-path and falsifier fields']])+'</div>';
  }

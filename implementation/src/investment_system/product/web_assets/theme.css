@@ -3,8 +3,32 @@
    marker; dark = chalkboard), the app shell (header, PC numbered menu, phone bottom tab bar, full-menu sheet drawn as the
    n tree), the search home, the IA trees, and a restyle of shared components through the same tokens. Colour carries
    identity only: every coloured thing keeps its text label. Orange is never text. Loaded last so the tokens apply to every
-   screen. Screens keep their layout and data; charts keep their own drawing and only sit on a themed panel. System font
-   stacks only (no web font, no CDN; a self-hosted handwriting font is pending decision IA-11). Presentation only. */
+   screen. Screens keep their layout and data; charts keep their own drawing and only sit on a themed panel. Fonts (IA-11,
+   owner decision 2026-10-20): two self-hosted SIL OFL 1.1 faces served from this origin (no CDN, no third-party request),
+   subset to Latin + KS X 1001 Hangul 2,350 + common punctuation: Jua for the display role (big titles, stamps, card
+   headings) and Gaegu for the handwriting role (annotations and margin notes only). Body text stays on the system stack
+   for readability. Licences: jua-OFL.txt, gaegu-OFL.txt; sources in third-party-notices.txt. Presentation only. */
+
+/* ---------- self-hosted fonts (IA-11): same origin, swap, Latin + KS X 1001 Hangul subset ---------- */
+/* Jua has one weight; the 400-900 range stops the browser from smearing a fake bold over the 800/900 titles.
+   Gaegu draws small for its size, so size-adjust brings it up to the body text's apparent size. */
+@font-face {
+  font-family: "IS Jua";
+  src: url("jua-regular-ksx1001.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+  unicode-range: U+0020-007E, U+00A0-00FF, U+2010-2027, U+2030-203A, U+20A9, U+3000-3011, U+301C, U+3131-318E, U+AC00-D7A3, U+FF01-FF5E;
+}
+@font-face {
+  font-family: "IS Gaegu";
+  src: url("gaegu-regular-ksx1001.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  size-adjust: 115%;
+  font-display: swap;
+  unicode-range: U+0020-007E, U+00A0-00FF, U+2010-2027, U+2030-203A, U+20A9, U+3000-3011, U+301C, U+3131-318E, U+AC00-D7A3, U+FF01-FF5E;
+}
 
 /* ---------- tokens: light (default) = white paper, black ink ---------- */
 :root {
@@ -57,11 +81,14 @@
   --chart-panel: #ffffff; --chart-ink: #161616; --chart-muted: #4a4a4a;
   /* spacing */
   --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px; --space-6: 32px; --space-7: 48px; --space-8: 72px;
-  /* type: system stacks only; the display stack is bold and rounded */
+  /* type: body = system stack; display = self-hosted Jua (bold, rounded) over the rounded system stack; hand = self-hosted
+     Gaegu over the system handwriting stack (annotations only). --font-serif (quotes, metrics, sheets) stays on the
+     system rounded stack so reading text is not set in the display face. Glyphs outside the subset fall back per glyph. */
   --font-sans: system-ui, -apple-system, "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
-  --font-display: ui-rounded, "SF Pro Rounded", "Arial Rounded MT Bold", "NanumSquareRound", "Nanum Square Round", "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif;
-  --font-hand: "Chalkboard SE", "Segoe Print", "Bradley Hand", "Comic Sans MS", "Apple SD Gothic Neo", "Malgun Gothic", cursive;
-  --font-serif: var(--font-display);
+  --font-display-system: ui-rounded, "SF Pro Rounded", "Arial Rounded MT Bold", "NanumSquareRound", "Nanum Square Round", "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif;
+  --font-display: "IS Jua", var(--font-display-system);
+  --font-hand: "IS Gaegu", "Chalkboard SE", "Segoe Print", "Bradley Hand", "Comic Sans MS", "Apple SD Gothic Neo", "Malgun Gothic", cursive;
+  --font-serif: var(--font-display-system);
   --font-mono: ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
   --fs-xs: 12px; --fs-s: 13px; --fs-m: 15px; --fs-l: 17px; --fs-xl: 22px; --fs-xxl: 30px;
   --fs-hero: clamp(36px, 4.6vw + 14px, 72px);

@@ -1,5 +1,5 @@
-Third-party notices for the self-hosted chart renderer
-=======================================================
+Third-party notices for self-hosted files (chart renderer, fonts)
+=================================================================
 
 File: lightweight-charts-5.2.1.standalone.js
 Package: lightweight-charts 5.2.1 (npm), dist/lightweight-charts.standalone.production.js, unmodified.
@@ -41,3 +41,38 @@ INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
 LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
 OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
+
+===============================================================================
+Self-hosted fonts (IA-11, owner decision 2026-10-20)
+===============================================================================
+
+Both fonts are licensed under the SIL Open Font License, Version 1.1. The files here are
+subsets converted to WOFF2 (a modification permitted by the OFL); no Reserved Font Name is
+declared in either copyright notice (OFL.txt first line or the font's copyright name record),
+so the modified fonts keep their names. As the OFL requires, each font is distributed with
+its copyright notice and the full licence (the OFL texts below, and the copyright and licence
+name records kept inside each WOFF2), stays under the OFL, and is not sold by itself.
+The fonts are served from this site only.
+
+File: jua-regular-ksx1001.woff2 (CSS family "IS Jua", display role)
+Font: Jua Regular. Copyright 2018 The Jua Project Authors. Designer: Woowahan Brothers.
+Licence: SIL Open Font License 1.1. Full text: jua-OFL.txt
+Source: https://raw.githubusercontent.com/google/fonts/47d54ca1ebb14fd864695f1d39dc734f39017c33/ofl/jua/Jua-Regular.ttf
+Source sha256: 769677aef240bfc3b9965f2b50748075bff885e6c6992fc591a3fb268279f898
+
+File: gaegu-regular-ksx1001.woff2 (CSS family "IS Gaegu", handwriting role)
+Font: Gaegu Regular. Copyright 2018 The Gaegu Project Authors. Designer: JIKJI SOFT.
+Licence: SIL Open Font License 1.1. Full text: gaegu-OFL.txt
+Source: https://raw.githubusercontent.com/google/fonts/47d54ca1ebb14fd864695f1d39dc734f39017c33/ofl/gaegu/Gaegu-Regular.ttf
+Source sha256: aa52c98336f7c62e2896fc8b12b56a75d5b476d88a2f104b0980f4f7ce0adfc3
+
+Licence texts are the OFL.txt files from the same commit, unmodified
+(ofl/jua/OFL.txt, ofl/gaegu/OFL.txt).
+
+Subset (fontTools 4.67.0 with brotli 1.2.0, all layout features and name records kept,
+hinting dropped, source timestamp kept so the output is reproducible):
+U+0020-007E, U+00A0-00FF (Latin), the 2,350 KS X 1001 Hangul syllables (EUC-KR rows
+0xB0-0xC8), U+3131-318E (compatibility jamo), U+2010-2027, U+2030-203A, U+20A9,
+U+3000-3011, U+301C, U+FF01-FF5E (punctuation), where the source font has the glyph.
+Other characters fall back to the system font per glyph.
+Reproduce: implementation/tools/font_subset_ksx1001.py (source and output hashes pinned).

@@ -872,7 +872,7 @@
 
   function buildUserPanel(state) {
     const doc = state.doc, w = (ko, en) => words(state, ko, en), section = node(doc, 'section', {class: 'cw-user cw-fn-group', 'data-user-panel': '', 'data-fn-group': '3.3', 'aria-labelledby': state.id + '-user'});
-    const boundary = node(doc, 'p', {class: 'small', 'data-user-boundary': ''}, w('사용자 작성 객체는 공식 탐지 이력과 성과 기록에 쓰지 않고, 공식 탐지를 바꾸지 않습니다. 이 기기에만 저장 (저장 위치 결정 전 기본값) · 서버·Google 시트·계정으로 보내지 않습니다. 주문 아님.', 'User-written objects are never written to the official detection history or any results record and never change official detection. Saved on this device only (default until the storage decision) · never sent to a server, Google Sheet or account. Not an order.'));
+    const boundary = node(doc, 'p', {class: 'small', 'data-user-boundary': ''}, w('사용자 작성 객체는 공식 탐지 이력과 성과 기록에 쓰지 않고, 공식 탐지를 바꾸지 않습니다. 이 브라우저에 저장 · 내보내기·가져오기·백업 가능 · 서버·Google 시트·계정으로 보내지 않습니다. 주문 아님.', 'User-written objects are never written to the official detection history or any results record and never change official detection. Saved in this browser · export, import and backup available · never sent to a server, Google Sheet or account. Not an order.'));
     state.userAnchor = node(doc, 'p', {class: 'small', 'data-user-anchor': ''});
     const tools = node(doc, 'div', {class: 'cw-group', role: 'group', 'aria-label': w('그리기', 'Draw')});
     for (const [kind, names] of Object.entries(NOTE_KINDS)) tools.append(node(doc, 'button', {type: 'button', 'data-user-tool': kind, 'aria-pressed': 'false'}, w(names[0], names[1])));

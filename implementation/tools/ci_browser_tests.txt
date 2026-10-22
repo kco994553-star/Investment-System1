@@ -81,3 +81,9 @@ chart_network_recording_browser_test.js
 chart_patterns_browser_test.js
 chart_user_objects_browser_test.js
 home_search_result_browser_test.js
+implemented_navigation_browser_test.js
+qgv_classification_filters_browser_test.js
+search_continuity_browser_test.js
+prompt_selected_context_browser_test.js
+qgv_single_sort_browser_test.js
+technical_layout_browser_test.js
