@@ -124,6 +124,20 @@ function segments(rows){
   if(!out.length||out.at(-1).segment!==ev.segment)out.push({segment:ev.segment,first_date:r.date,last_date:r.date,eligible_dates:[],preparatory_dates:[]});
   const s=out.at(-1);s.last_date=r.date;(ev.status==='PREPARATORY'?s.preparatory_dates:s.eligible_dates).push(r.date);}
  return out;}
+/* Operating evidence (Lab 9.2.4): only what the published price-free ledger carries — observation dates and record counts
+   per version, the latest observation date, as_of, and US session days (this module's calendar) between start_date and the
+   latest observation that have no record. A missing day stays missing (append-only: never filled later). The ledger has no
+   run kind (scheduled/manual) or run outcome, so no run streak is derived here. */
+const nextDay=d=>new Date(Date.parse(d+'T00:00:00Z')+86400000).toISOString().slice(0,10);
+function evidence(p){
+ const list=p.schema_version===2?[V2_VERSION,VERSION]:[VERSION];
+ const per=list.map(v=>{const rows=p.versions[v];return{version:v,count:rows.length,dates:rows.map(r=>r.date),states:new Map(rows.map(r=>[r.date,r.state]))};});
+ const latest=per.map(v=>v.dates.at(-1)).filter(Boolean).sort().at(-1)??null,sessions=[];
+ if(latest!==null)for(let d=p.start_date;d<=latest;d=nextDay(d))if(sessionDay(d))sessions.push(d);
+ const days=sessions.map(d=>{const by={};for(const v of per)by[v.version]=v.states.get(d)||'MISSING';const n=Object.values(by).filter(s=>s!=='MISSING').length;
+  return{date:d,state:n===per.length?'RECORDED':n?'PARTIAL':'MISSING',versions:by};});
+ return{as_of:p.as_of,start_date:p.start_date,latest,session_count:sessions.length,days,missing:days.filter(d=>d.state!=='RECORDED').map(d=>d.date),run_kind:'NOT_IN_LEDGER',
+  versions:per.map(v=>({version:v.version,count:v.count,dates:v.dates,first:v.dates[0]??null,latest:v.dates.at(-1)??null,missing:sessions.filter(d=>!v.states.has(d))}))};}
 // ---- device RAM loading through the existing private history Worker (explicit click only) ----
 function localDate(ms,timezone){const p=Object.fromEntries(new Intl.DateTimeFormat('en-CA',{timeZone:timezone,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(ms).map(x=>[x.type,x.value]));return p.year+'-'+p.month+'-'+p.day;}
 function seriesFromHistory(data){return data.bars.map(b=>({session_date:b.session_date||localDate(b.timestamp*1000,data.timezone),adjusted_close:b.adjusted_close,session_status:b.session_status}));}
@@ -145,7 +159,9 @@ function mount(host,options={}){
  const badges=el('div',undefined,{class:'chips','data-forward-badges':''});badges.append(el('span',STRATEGY,{class:'badge'}),el('span',VERSION+' · '+CALIBRATION,{class:'badge'}),el('span','Holdout UNCONFIRMED · '+x('사용 금지','Do not use'),{class:'badge','data-forward-holdout':''}));
  const facts=el('dl',undefined,{class:'kv'}),summary=el('div',undefined,{'data-forward-summary':''}),prices=el('div',undefined,{'data-forward-prices':''});
  const eligibility=hosts.eligibility?el('div',undefined,{'data-forward-eligibility':''}):null;
- section.append(badges,facts,summary);if(hosts.outcome)hosts.outcome.replaceChildren(prices);else section.append(prices);
+ // Operating evidence renders in hosts.evidence when given (Lab 9.2.4 row), otherwise inside the ledger card.
+ const proof=el('div',undefined,{'data-forward-evidence':''});if(hosts.evidence)hosts.evidence.replaceChildren(proof);
+ section.append(badges,facts,...(hosts.evidence?[]:[proof]),summary);if(hosts.outcome)hosts.outcome.replaceChildren(prices);else section.append(prices);
  if(eligibility)hosts.eligibility.replaceChildren(eligibility);host.replaceChildren(section);
  const rule=()=>el('p',x('주 평가는 Q·G 각 454개 이상, 계산 버전 일치, 행별 실제 수집 시각 7일 이내를 모두 충족한 기록만 씁니다. 나머지는 "준비 관측·주 평가 대상 아님"으로 사유와 함께 보존합니다.','Primary evaluation uses only records with Q and G each at least 454, one consistent calc version and every row acquired within 7 days. Other records are kept as "preparatory observation · not a primary evaluation target" with their reasons.'),{class:'small','data-forward-evaluation-rule':''});
  const eligibilityEmpty=text=>{if(eligibility)eligibility.append(el('p',text,{class:'empty','data-forward-eligibility-empty':''}),rule());};
@@ -160,8 +176,27 @@ function mount(host,options={}){
    return e.status==='PRIMARY'?{code:'PRIMARY',text:x('주 평가','Primary')+' · '+b.segment+counts}:{code:'PREPARATORY',text:PREP+' · '+e.reasons.join(', ')+' · '+b.segment+counts};}
   if(r.state!=='RECORDED')return{code:'NOT_AVAILABLE',text:'—'};
   return{code:'LEGACY',text:x('관측 기준 미기록(이전 기록, 별도 구간)','Basis not recorded (earlier record, own segment)')};}
+ const vName=v=>v===V2_VERSION?x('v2 기본','v2 default'):x('v1 비교용','v1 comparison');
+ const RUNS=x('공개 원장에 미기록 · 원장에 정기/수동 구분과 실행 성공 여부가 없어 연속 횟수를 세지 않음 · 정기 실행 연속 횟수는 10/22 정기 실행부터 다시 셈','Not in the public ledger · it carries no scheduled/manual kind or run outcome, so this screen counts no streak. The scheduled-run streak restarts from the 10/22 scheduled run.');
+ function paintEvidence(res){
+  const kv=el('dl',undefined,{class:'kv'}),f=(k,v,a,val='')=>kv.append(el('dt',k),el('dd',v,{[a]:val}));
+  proof.replaceChildren(el(H3,x('운영 증거 · 공개 원장 관측일','Operating evidence · public ledger observation dates')));
+  if(res.state!=='LOADED'){const na='NOT_AVAILABLE · '+res.reason;
+   for(const[k,a]of[[x('관측일 · 기록 수','Observation dates · records'),'data-forward-evidence-version'],[x('마지막 관측일','Latest observation'),'data-forward-evidence-latest'],[x('빠진 거래일','Missing session days'),'data-forward-evidence-missing'],[x('원장 기준 시각','Ledger as of'),'data-forward-evidence-as-of']])f(k,na,a);
+   f(x('정기/수동 · 실행 결과','Scheduled/manual · run outcome'),RUNS,'data-forward-evidence-runs','NOT_IN_LEDGER');proof.append(kv);return;}
+  const e=evidence(res.ledger),strip=el('div',undefined,{class:'chips','data-forward-evidence-days':''}),shown=e.days.slice(-7);
+  const mark=s=>s==='RECORDED'?'✓':s==='MISSING'?x('기록 없음','no record'):x('기록 · 입력 없음','recorded · inputs missing');
+  for(const d of shown)strip.append(el('span',d.date.slice(5)+' · '+Object.entries(d.versions).map(([v,s])=>(v===V2_VERSION?'v2 ':'v1 ')+mark(s)).join(' · '),{class:d.state==='RECORDED'?'badge':'badge partial','data-forward-evidence-day':d.date,'data-forward-evidence-state':d.state}));
+  proof.append(shown.length?strip:el('p',x('관측일 없음 · 공개 원장 기록 0건','No observation date · 0 records in the public ledger'),{class:'empty','data-forward-evidence-empty':''}));
+  if(e.session_count>shown.length)proof.append(el('p',x('최근 '+shown.length+'거래일 · 전체 '+e.session_count+'거래일','Latest '+shown.length+' sessions · '+e.session_count+' sessions in total'),{class:'small','data-forward-evidence-window':''}));
+  for(const v of e.versions)f(x('관측일 · ','Observation dates · ')+vName(v.version),x(v.count+'건','records '+v.count)+(v.count?' · '+v.first+' ~ '+v.latest:'')+' · '+(!v.count?x('관측일 없음','no observation date'):v.missing.length?x('빠진 거래일 ','missing session days ')+v.missing.join(', '):x('빠진 거래일 없음','no missing session day')),'data-forward-evidence-version',v.version);
+  f(x('마지막 관측일','Latest observation'),e.latest??x('없음 · 기록 0건','none · 0 records'),'data-forward-evidence-latest');
+  f(x('빠진 거래일','Missing session days'),e.latest===null?x('범위 없음 · 기록 0건','no range · 0 records'):(e.missing.length?e.missing.join(', ')+x(' · 기록 없음 · 나중에 채우지 않음',' · no record · never filled later'):x('없음','none'))+x(' · 범위 ',' · range ')+e.start_date+' ~ '+e.latest+' · '+x('미국 거래일 '+e.session_count+'일',e.session_count+' US sessions'),'data-forward-evidence-missing',String(e.missing.length));
+  f(x('원장 기준 시각','Ledger as of'),e.as_of,'data-forward-evidence-as-of');
+  f(x('정기/수동 · 실행 결과','Scheduled/manual · run outcome'),RUNS,'data-forward-evidence-runs',e.run_kind);
+  proof.append(kv);}
  function paintLedger(res){
-  facts.replaceChildren();summary.replaceChildren();if(eligibility)eligibility.replaceChildren();
+  paintEvidence(res);facts.replaceChildren();summary.replaceChildren();if(eligibility)eligibility.replaceChildren();
   if(res.state!=='LOADED'){eligibilityEmpty('NOT_AVAILABLE · '+res.reason);fact(x('상태','Status'),'NOT_AVAILABLE · '+res.reason,'data-forward-status');fact(x('시작일','Start date'),START,'data-forward-start');fact(x('기록 수','Records'),'0','data-forward-count');fact(x('전략 · 버전','Strategy · version'),STRATEGY+' · '+VERSION);return;}
   const p=res.ledger,primary=p.schema_version===2?V2_VERSION:VERSION,rows=p.versions[primary];
   fact(x('상태','Status'),p.status,'data-forward-status');fact(x('시작일','Start date'),p.start_date,'data-forward-start');fact(x('기록 수','Records'),String(rows.length),'data-forward-count');
@@ -248,5 +283,5 @@ function mount(host,options={}){
    state.unsubscribe=session.subscribe(()=>{if(state.disposed||!host.isConnected){dispose(state);return;}if(!session.state().connected||session.revision()!==rev){clearPrices(state);rev=session.revision();}paintPrices();});paintPrices();}catch(_){paintPrices();}})();}
  return Object.freeze({dispose(){dispose(state);}});
 }
-return Object.freeze({FILENAME,START,STRATEGY,VERSION,V_VERSION,V2_VERSION,V2_STRATEGY,BENCHMARK,PRIMARY_MIN,FRESH_DAYS,EVAL_REASONS,validate,load,instrumentReturn,forwardReturn,qgSummary,rowEvaluation,segments,seriesFromHistory,rangeFor,eastern,sessionDay,mount,disposeAll});
+return Object.freeze({FILENAME,START,STRATEGY,VERSION,V_VERSION,V2_VERSION,V2_STRATEGY,BENCHMARK,PRIMARY_MIN,FRESH_DAYS,EVAL_REASONS,validate,load,instrumentReturn,forwardReturn,qgSummary,rowEvaluation,segments,evidence,seriesFromHistory,rangeFor,eastern,sessionDay,mount,disposeAll});
 });

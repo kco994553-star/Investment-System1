@@ -55,6 +55,31 @@ await test('history bars map to New York / provider session dates and the smalle
  assert.equal(api.rangeFor('2026-10-19','2026-12-01'),'3mo');assert.equal(api.rangeFor('2026-10-19','2027-03-01'),'6mo');
  assert.equal(api.rangeFor('2026-10-19','2027-09-01'),'1y');assert.equal(api.rangeFor('2026-10-19','2028-06-01'),'2y');
 });
+await test('operating evidence: observation dates per version, gaps on US sessions only, empty ledger has no range, NA never 0',()=>{
+ // Gap fixture: no record on 2026-10-20 and 2026-10-26; weekends and the 2026-11-26 holiday are not gaps.
+ const days=['2026-10-19','2026-10-21','2026-10-22','2026-10-23','2026-10-27','2026-11-25','2026-11-27'];
+ const p=api.validate(ledger('2026-11-27T22:30:00+00:00','ACTIVE',days.map(d=>naRecord(d,d+'T22:30:00+00:00')))),e=api.evidence(p);
+ assert.equal(e.latest,'2026-11-27');assert.equal(e.as_of,'2026-11-27T22:30:00+00:00');assert.equal(e.start_date,'2026-10-19');assert.equal(e.run_kind,'NOT_IN_LEDGER');
+ assert.deepEqual(e.versions.map(v=>[v.version,v.count,v.first,v.latest]),[[V,7,'2026-10-19','2026-11-27']]);assert.deepEqual(e.versions[0].dates,days);
+ assert.deepEqual(e.missing.slice(0,2),['2026-10-20','2026-10-26']);assert.deepEqual(e.versions[0].missing,e.missing);
+ for(const d of ['2026-10-24','2026-10-25','2026-11-26','2026-11-28'])assert.ok(!e.days.some(x=>x.date===d),d);
+ assert.equal(e.session_count,e.days.length);assert.equal(e.session_count,days.length+e.missing.length);assert.ok(e.missing.includes('2026-11-24')&&!e.missing.includes('2026-11-26'));
+ assert.deepEqual(e.days.find(x=>x.date==='2026-10-20'),{date:'2026-10-20',state:'MISSING',versions:{[V]:'MISSING'}});
+ assert.deepEqual(e.days.find(x=>x.date==='2026-10-19'),{date:'2026-10-19',state:'RECORDED',versions:{[V]:'NOT_AVAILABLE'}},'a NOT_AVAILABLE record is still a record');
+ // Schema 2: v2 (default) listed first; a day present in only one version is PARTIAL.
+ const V2='forward_validation/v2',v2=d=>({...naRecord(d,d+'T22:30:00+00:00'),version:V2,strategy:'QGV_STANDARD_V2',reason_codes:['SEC_QGV2_MISSING','TARGET_CATALOG_MISSING'],source_sha256:{'sec-qgv2.json':null,'actual-catalog.json':null}});
+ const q=ledger('2026-10-21T22:30:00+00:00','ACTIVE',[naRecord('2026-10-19','2026-10-19T22:30:00+00:00'),naRecord('2026-10-21','2026-10-21T22:30:00+00:00')]);
+ q.schema_version=2;q.strategy='QGV_STANDARD_V2';q.versions[V2]=['2026-10-19','2026-10-20','2026-10-21'].map(v2);q.version_status[V2]={state:'ACTIVE',v_included:false,reason_codes:[]};
+ const f=api.evidence(api.validate(q));
+ assert.deepEqual(f.versions.map(v=>[v.version,v.count,v.missing]),[[V2,3,[]],[V,2,['2026-10-20']]]);
+ assert.deepEqual(f.days.map(d=>d.state),['RECORDED','PARTIAL','RECORDED']);assert.deepEqual(f.missing,['2026-10-20']);assert.equal(f.latest,'2026-10-21');
+ // Empty ledgers: zero records is a real count; there is no latest date and no range (null, never 0 or a made-up date).
+ for(const empty of [ledger('2026-10-16T22:30:00+00:00','NOT_STARTED'),ledger('2026-10-19T14:00:00+00:00','ACTIVE')]){const g=api.evidence(api.validate(empty));
+  assert.equal(g.latest,null);assert.equal(g.session_count,0);assert.deepEqual(g.days,[]);assert.deepEqual(g.missing,[]);
+  assert.deepEqual(g.versions,[{version:V,count:0,dates:[],first:null,latest:null,missing:[]}]);}
+ // Price-free: evidence carries only dates, counts and states.
+ const text=JSON.stringify(api.evidence(api.validate(q)));for(const banned of ['score','companies','weights','target','sha256','close','return'])assert.ok(!text.includes(banned),banned);
+});
 await test('module never persists or transmits computed values',()=>{
  for(const banned of ['setItem','removeItem','indexedDB','sessionStorage','sendBeacon','XMLHttpRequest','postMessage','caches.'])assert.ok(!source.includes(banned),banned);
  assert.equal((source.match(/\.fetch\(/g)||[]).length,1);assert.equal((source.match(/fetchHistory\(/g)||[]).length,1);

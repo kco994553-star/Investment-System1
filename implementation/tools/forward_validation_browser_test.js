@@ -108,6 +108,44 @@ async function seedSession(page){
     assert.ok(/2026-10-20 → 현재 · -?\d+\.\d{2}%/.test(await page.locator(`[data-forward-segment-return="${CALC_A}"]`).textContent()));
     await noOverflow(page,'basis '+width);assert.equal(errors,0);await context.close();pass++;}
   }
+  // Operating evidence strip (Lab 9.2.4): observation dates from the published ledger only. Gap, empty, 404 and schema-2
+  // fixtures at phone and PC widths; a missing session day reads "no record", a missing ledger is NOT_AVAILABLE (never 0).
+  function gapLedger(){const p=ledger();p.as_of='2026-10-21T22:31:00+00:00';p.versions[V]=[recorded(),{...missingDay(),date:'2026-10-21',created_at:'2026-10-21T22:30:00+00:00'}];return p;}
+  function emptyLedger(){const p=ledger();p.versions[V]=[];return p;}
+  for(const width of [390,1280]){
+   phase='EVIDENCE '+width;
+   const context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block'});let errors=0;
+   async function show(fixture){const page=await context.newPage();page.on('pageerror',()=>errors++);
+    await page.route('**/*',r=>new URL(r.request().url()).origin===new URL(BASE).origin?r.continue():r.abort());
+    await page.route('**/forward-validation-ledger.json',r=>fixture===null?r.fulfill({status:404,body:''}):r.fulfill({status:200,contentType:'application/json',body:JSON.stringify(fixture)}));
+    await page.goto(BASE+'#validation');await page.locator('[data-forward-evidence-as-of]').filter({hasNotText:'LOADING'}).waitFor();return page;}
+   const dd=(page,a)=>page.locator('[data-forward-evidence] [data-forward-evidence-'+a+']').first().textContent();
+   {const page=await show(gapLedger());
+    assert.deepEqual(await page.locator('[data-forward-evidence-day]').evaluateAll(n=>n.map(x=>x.dataset.forwardEvidenceDay+'='+x.dataset.forwardEvidenceState)),['2026-10-19=RECORDED','2026-10-20=MISSING','2026-10-21=RECORDED']);
+    const gap=page.locator('[data-forward-evidence-day="2026-10-20"]');assert.ok((await gap.textContent()).includes('기록 없음'));assert.ok(await gap.evaluate(n=>n.classList.contains('partial')&&!n.classList.contains('NOT_AVAILABLE')));
+    assert.ok((await page.locator('[data-forward-evidence-day="2026-10-21"]').textContent()).includes('기록 · 입력 없음'));
+    assert.equal(await dd(page,'latest'),'2026-10-21');assert.equal(await dd(page,'as-of'),'2026-10-21T22:31:00+00:00');
+    assert.equal(await page.locator('[data-forward-evidence-missing]').getAttribute('data-forward-evidence-missing'),'1');
+    assert.ok((await dd(page,'missing')).startsWith('2026-10-20 · 기록 없음 · 나중에 채우지 않음'));
+    assert.ok((await dd(page,'version')).startsWith('2건 · 2026-10-19 ~ 2026-10-21 · 빠진 거래일 2026-10-20'));
+    assert.equal(await page.locator('[data-forward-evidence-runs]').getAttribute('data-forward-evidence-runs'),'NOT_IN_LEDGER');
+    assert.ok((await dd(page,'runs')).includes('공개 원장에 미기록'));
+    const text=await page.locator('[data-forward-evidence]').textContent();assert.ok(!/%|\$|₩|¥/.test(text),'no price or return in the evidence strip');
+    assert.equal(await page.locator('[data-forward-evidence] .badge.NOT_AVAILABLE').count(),0);
+    await noOverflow(page,'evidence '+width);await page.screenshot({path:SHOTS+'/forward-validation-evidence-'+width+'.png',fullPage:true}).catch(()=>{});await page.close();}
+   {const page=await show(emptyLedger());
+    await page.locator('[data-forward-evidence-empty]').waitFor();assert.equal(await page.locator('[data-forward-evidence-day]').count(),0);
+    assert.equal(await dd(page,'latest'),'없음 · 기록 0건');assert.ok((await dd(page,'missing')).startsWith('범위 없음'));assert.ok((await dd(page,'version')).startsWith('0건 · 관측일 없음'));
+    await noOverflow(page,'evidence empty '+width);await page.close();}
+   {const page=await show(null);
+    for(const a of ['latest','missing','as-of','version'])assert.equal(await dd(page,a),'NOT_AVAILABLE · LEDGER_NOT_PUBLISHED',a);
+    assert.equal(await page.locator('[data-forward-evidence-day]').count(),0);await page.close();}
+   {const page=await show(ledgerV2());
+    assert.deepEqual(await page.locator('[data-forward-evidence-day]').evaluateAll(n=>n.map(x=>x.dataset.forwardEvidenceState)),['RECORDED','PARTIAL','PARTIAL']);
+    assert.ok((await page.locator('[data-forward-evidence-day="2026-10-20"]').textContent()).includes('v2 ✓ · v1 기록 없음'));
+    assert.deepEqual(await page.locator('[data-forward-evidence-version]').evaluateAll(n=>n.map(x=>x.dataset.forwardEvidenceVersion)),[V2,V]);
+    await noOverflow(page,'evidence v2 '+width);await page.close();}
+   assert.equal(errors,0);await context.close();pass++;}
   console.log('forward_validation_browser_test PASS '+pass);
  }catch(e){console.log('forward_validation_browser_test FAIL '+phase);if(process.env.DEBUG_TEST)console.log(e);process.exitCode=1;}
  finally{await browser.close();}
