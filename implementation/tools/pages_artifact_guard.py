@@ -141,7 +141,7 @@ APPROVED_SHA256 = {
     "sec-disclosures.js": "849cbfbf2b21badd52c06cf5887dcd259e08864552a76fde39f065f82c6a7194",
     "theme-boot.js": "4aaf08ecd900e1216a95159a277f8a7c51c32e41784f1ac9530ecf1dc77a6f2c",
     "theme.css": "4cd7dc3f0c69a9f99cf946aa61f76f3cefa12e4d529b3d22b8fb7721f63b932c",
-    "app-shell.js": "a1a789dfb521102503f3715c221015ca56d5f2220c7e2ddb5a9f26c628004d14",
+    "app-shell.js": "b8dd347e1872b973a857a8f66770bea7bf5cdb994b69c3a9d0b28deb9219b245",
     "home-screen.js": "9979acbdf24277c3d612b4b1929d693ca9cdecd1f98a190feaa84989e5e36d4a",
     "home-quotes.js": "46487b40e170c3291b023bebcb0fd01da19bb3beb53bfad3006be6377cfe3a96",
     "doodles.js": "413afcb07c5ef5f4edcb0ab544ba61a7d19954db0951ccdf85742c04cf5bb57e",
