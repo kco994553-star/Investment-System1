@@ -7,6 +7,8 @@
      (current revised vintage, reference-period position) is off by default and drawn dashed when turned on.
    - Mobile: the 5 most recent lines (same day = one line with a count), the rest under "더 보기 (n)" (up to 8 drawn).
      PC: up to 10. Tabs 경기 / 주식시장 / 산업 are counted separately; one family counts once.
+   - "근거 더 보기 (전체)" lists every published indicator (name, series, rule source, validation, collected or not), collapsed
+     by default; it carries no value, date, phase or probability and is not the event list.
    - This module only reads one public file; it stores nothing (selected tab/lines live in this page's RAM only).
    API for the cycle ring (lane C1): MacroEvidence.current(), .events({cycle, layer}), .subscribe(fn), .load(); the ring's evidence
    slots are filled through MacroCycleRing.attachEvidence(MacroEvidence.ringEvidence) and its macro-cycle-focus event selects the tab. */
@@ -172,10 +174,41 @@ function metaBlock(p,ind){
  add('해석 후보 · 미승인',interp,{'data-me-interpretation':''});
  return d;
 }
+// "근거 더 보기 (전체)": every indicator and series of the published file (catalog §5 P1) with its name, rule source, validation
+// and collection state, collapsed until asked (MEV-2: the indicator list is not the event list). Names and states only: no
+// observation, date, phase or probability, and a missing series shows its reason code, never a value. An indicator held for
+// unverified terms (MEV-3) shows its name and state only. The open state lives in this page's RAM (ui.catalog).
+const held=i=>i.source.publication!=='PUBLIC'||i.reason==='TERMS_UNVERIFIED';
+const collected=s=>s==='LIVE'?'YES':s==='PARTIAL'?'PARTIAL':'NO';
+const stateText=(s,r)=>s==='LIVE'?'수집됨':(s==='PARTIAL'?'일부 수집 · ':'NOT_AVAILABLE · ')+(r?r+(REASON[r]?' ('+REASON[r]+')':''):'사유 없음');
+function catalog(p,ui){
+ const d=el('details',{class:'me-catalog','data-me-catalog':''});if(ui.catalog)d.open=true;d.addEventListener('toggle',()=>{ui.catalog=d.open;});
+ d.append(el('summary',{},'근거 더 보기 (전체 지표 목록 · '+p.indicators.length+'개)'));
+ const chips=el('p',{class:'chips me-badges'});chips.append(el('span',{class:'badge'},'v0 · 미검증'),el('span',{class:'badge'},'이름·출처·수집 상태만 · 값·국면·확률 없음'));d.append(chips);
+ d.append(el('p',{class:'small','data-me-catalog-note':''},'공개 파일에 실린 지표 전부입니다'+(typeof p.catalog==='string'?' ('+p.catalog+')':'')+'. 카탈로그 문서의 나머지 후보는 공개 파일에 없어 여기에 없습니다. '+
+  '발생 사건 목록과 별개이며, 목록에 있다고 사건이 생긴 것은 아닙니다. 규칙은 모두 v0 · 미검증이고 이 시스템 안에서 검증된 규칙은 없습니다. 탐색 화면 전용 · 공식 판정·확률·매크로 게이트에 쓰지 않음.'));
+ const cols=['지표','수집 여부','근거 계열','사이클','계열 ID','규칙 출처','검증 상태','출처·공개'];
+ const wrap=el('div',{class:'table-wrap'}),t=el('table',{class:'me-table me-catalog-table'}),thead=el('thead'),tbody=el('tbody'),head=el('tr');
+ for(const h of cols)head.append(el('th',{scope:'col'},h));thead.append(head);t.append(thead,tbody);wrap.append(t);
+ for(const i of p.indicators){const h=held(i),tr=el('tr',{'data-me-catalog-row':i.id,'data-me-catalog-state':i.state,'data-me-catalog-held':h});
+  const cell=(k,v,a)=>{const c=el('td',Object.assign({'data-label':cols[k]},a||{}));if(typeof v==='string')c.textContent=v;else c.append(v);tr.append(c);return c;};
+  tr.append(el('th',{scope:'row','data-label':cols[0]},i.id+' '+i.name));
+  cell(1,stateText(i.state,i.reason)+(h&&i.reason!=='TERMS_UNVERIFIED'?' · 공개 보류(약관 원문 미확인)':''),{'data-me-catalog-collected':collected(i.state)});
+  if(h){cell(2,'약관 원문 미확인 · 이름과 상태만 표시 (계열·규칙·출처 숨김, MEV-3)',{colspan:cols.length-2,class:'me-held','data-label':'세부'});tbody.append(tr);continue;}
+  cell(2,FAMILY[i.family]||i.family);cell(3,i.cycles.map(c=>(TABS.find(x=>x[0]===c)||[c,c])[1]).join('·'));
+  const ul=el('ul',{class:'me-catalog-series'});for(const sid of i.series){const row=p.series[sid];
+   ul.append(el('li',{'data-me-catalog-series':sid,'data-me-catalog-collected':collected(row.state)},sid+' · '+stateText(row.state,row.reason)));}
+  cell(4,ul);
+  cell(5,(RULE_SOURCE[i.rule.source_class]||i.rule.source_class)+' · '+i.rule.version+' · v0 · 미검증',{'data-me-catalog-rule':''});
+  cell(6,(VALIDATION[i.rule.realtime_validation]||i.rule.realtime_validation)+' · 이 시스템 안에서는 미검증',{'data-me-catalog-validation':''});
+  cell(7,i.source.agency+' · 공식 통계 '+(i.source.official_statistic?'예':'아니오')+' · '+i.source.license_class+' · '+(i.source.publication==='PUBLIC'?'공개':'공개 보류'));
+  tbody.append(tr);}
+ d.append(wrap);return d;
+}
 function mount(host,{locale,view=globalThis}={}){
  if(!host)return null;
  // View choices stay in this tab's RAM across the common refresh redraw and route changes; observations are never stored.
- const ui=S.ui||(S.ui={cycle:'economy',indicator:null,replay:false,extra:new Set()});
+ const ui=S.ui||(S.ui={cycle:'economy',indicator:null,replay:false,extra:new Set(),catalog:false});
  const root=el('section',{class:'card macro-evidence','data-macro-evidence':''});host.replaceChildren(root);
  const paint=()=>{
   const p=S.payload;root.replaceChildren();root.setAttribute('data-macro-evidence-status',S.status);
@@ -228,11 +261,7 @@ function mount(host,{locale,view=globalThis}={}){
   for(const e of evs){const ie=byId(p,e.indicator),edge=ie.edges[e.direction]||{};
    ul.append(el('li',{'data-me-event':e.id,'data-me-event-basis':e.basis},fmtTime(e.at)+' · '+e.indicator+' '+eventLabel(p,e)+' · 기준 기간 '+e.period+' · '+basisLabel(e.basis,e.rd)+' · '+e.rule+' · 해석 후보 · 미승인: '+(edge.interpretation||'—')));}
   root.append(ul);
-  const cat=el('details',{'data-me-catalog':''});cat.append(el('summary',{},'지표 목록 (P1 13 · 카탈로그, 발생 사건과 별개)'));
-  const wrap=el('div',{class:'table-wrap'}),t=el('table',{class:'me-table'}),thead=el('thead'),tbody=el('tbody'),head=el('tr');for(const h of['지표','계열','사이클','상태','공식','라이선스','공개'])head.append(el('th',{scope:'col'},h));thead.append(head);t.append(thead,tbody);wrap.append(t);
-  for(const i of p.indicators){const tr=el('tr',{'data-me-catalog-row':i.id,'data-me-catalog-state':i.state});
-   for(const v of[i.id+' '+i.name,FAMILY[i.family]||i.family,i.cycles.map(c=>(TABS.find(x=>x[0]===c)||[c,c])[1]).join('·'),i.state==='LIVE'?'수집됨':i.state==='PARTIAL'?'일부 · '+(REASON[i.reason]||i.reason):'NOT_AVAILABLE · '+(REASON[i.reason]||i.reason),i.source.official_statistic?'Y':'N',i.source.license_class,i.source.publication==='PUBLIC'?'공개':'보류'])tr.append(el('td',{},v));tbody.append(tr);}
-  cat.append(wrap);root.append(cat);
+  root.append(catalog(p,ui));
  };
  const off=subscribe(()=>{if(root.isConnected){paint();if(ui.scroll){ui.scroll=false;try{root.scrollIntoView({block:'start'});}catch(_){}}}else{off();view.document&&view.document.removeEventListener('macro-cycle-focus',onFocus);}});
  // The ring's focused cycle selects the same tab here (economy / market / industry:<group> -> industry).

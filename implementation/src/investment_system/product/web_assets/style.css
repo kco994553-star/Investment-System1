@@ -830,6 +830,7 @@ details.evidence code {overflow-wrap: anywhere;}
   .nw-screen .card .nw-sec {margin-left: -4px; margin-right: -4px;}
   .nw-screen .nw-mount-grid > .nw-sec {margin: 0 -4px;}
   .nw-screen .nw-sec.nw-main, .nw-screen .nw-sec.nw-tree {box-shadow: 4px 4px 0 var(--menu, #7a4cc2);}
+}
 /* ---------- Menu 6 프롬프트 라이브러리 · menu n+1 Lab: functional stamp layout (design lane D5, 2026-10-20) ----------
    Owner draft "투자시스템 화면 시안 (손그림 칠판)": white paper, black ink, sketch borders, numbered stamp boxes in the menu's
    colour (theme.css --menu), yellow highlighter for what works now, red marker for 준비 중 / 미산출. Stamp numbers are the
@@ -878,4 +879,49 @@ details.evidence code {overflow-wrap: anywhere;}
 @media (min-width: 750px) {
   .plab-group[data-fn-group^="9"] .plab-row {grid-template-columns: minmax(200px, 260px) minmax(0, 1fr);}
   .plab-group[data-fn-group^="9"] .plab-label {padding-right: 16px; border-right: 1.5px dashed var(--line-strong);}
+}
+/* ---------- Menu 3 매크로: functional stamp layout (design lane D7, 2026-10-20) ----------
+   Owner draft "투자시스템 화면 시안 (손그림 칠판)": stamps carry the functional hierarchy 4.1–4.6 (the menu strip keeps 3, 3.1–3.6).
+   Reuses the .plab-* stamp classes; .mc-* only for what is macro-specific. The ring, evidence, lights and raw-data modules are
+   placed inside the stamp rows unchanged; the small stamps inside the ring are CSS-only labels (alt text "", so screen
+   readers skip them) and never touch the ring's markup or logic. Markup: ia-screens.js macroHtml. Presentation only. */
+.mc-screen {min-width: 0;}
+.mc-legend {margin: 0 0 8px; padding: 2px 0 2px 10px; border-left: 4px solid var(--marker); border-radius: 2px; color: var(--marker-ink); font-family: var(--font-hand); font-size: var(--fs-m); overflow-wrap: anywhere;}
+.mc-group .plab-rows {gap: 16px;}
+.mc-group:not([data-fn-group="4.1"]) .plab-rows {grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 14px;}
+.mc-group .plab-body h2 {font-size: var(--fs-l);}
+.mc-group .plab-body > div > .card {margin: 0; padding: 0; border: 0; border-radius: 0; box-shadow: none; background: transparent;}
+.mc-group .plab-body > * + div > .card:first-child, .mc-group .plab-body > * + .card {margin-top: 14px; padding-top: 12px; border-top: 1.5px dashed var(--line-strong);}
+.mc-group .plab-body > div:empty + div > .card:first-child {margin-top: 0; padding-top: 0; border-top: 0;}
+.mc-group .plab-body:empty {display: none;}
+.mc-na {margin: 0 0 12px; font-size: var(--fs-s);}
+.mc-na-code {display: inline-block; padding: 0 8px; border: 1.5px dashed var(--marker); border-radius: var(--radius-pill); color: var(--marker-ink); font-size: 12px; font-weight: 700; line-height: 1.7;}
+.mc-slots {display: grid; grid-template-columns: repeat(auto-fit, minmax(min(88px, 100%), 1fr)); gap: 8px; margin: 0 0 8px; padding: 0; list-style: none;}
+.mc-slots li {display: flex; flex-direction: column; gap: 2px; min-width: 0; padding: 6px 10px; border: 1.5px dashed var(--line-strong); border-radius: var(--sketch-radius-s); font-size: var(--fs-s);}
+.mc-slots span, .mc-chain span {color: var(--muted);}
+.mc-layers {margin-bottom: 12px;}
+.mc-chain {display: flex; flex-wrap: wrap; gap: 10px 34px; margin: 0 0 16px; padding: 0; list-style: none;}
+.mc-chain li {position: relative; display: flex; flex: 1 1 150px; flex-direction: column; gap: 4px; min-width: 0; padding: 10px 12px; border: var(--sketch) dashed var(--ink); border-radius: var(--sketch-radius-s); background: var(--card);}
+.mc-chain li + li::before {content: "→" / ""; position: absolute; left: -27px; top: 50%; transform: translateY(-50%); color: var(--menu); font: 900 22px/1 var(--font-display);}
+.mc-tree {padding-top: 14px; border-top: 2px dashed var(--line-strong);}
+.mc-screen .cycle-figure::before, .mc-screen .cycle-detail::before, .mc-screen [data-cycle-state-box]::before, .mc-screen [data-cycle-conditions]::before,
+.mc-screen [data-cycle-transition]::before, .mc-screen .cycle-group::before, .mc-screen .cycle-user > legend::before, .mc-screen [data-cycle-user-current]::before {
+  display: inline-grid; place-items: center; align-self: flex-start; justify-self: start; width: max-content; min-width: 2.8em; height: 1.6em; margin: 0 8px 6px 0; padding: 0 .4em; border: 1.5px solid var(--ink); border-radius: 3px; background: var(--card); color: var(--ink); font: 800 11px/1 var(--font-display); letter-spacing: 0; white-space: nowrap; vertical-align: middle; box-shadow: 2px 2px 0 var(--menu); transform: rotate(-2deg);}
+.mc-screen [data-cycle-ring="economy"] .cycle-figure::before, .mc-screen [data-cycle-ring="market"] .cycle-figure::before {content: "4.1.1" / "";}
+.mc-screen [data-cycle-ring="economy"] .cycle-detail::before, .mc-screen [data-cycle-ring="market"] .cycle-detail::before {content: "4.1.2" / "";}
+.mc-screen [data-cycle-ring="economy"] [data-cycle-state-box]::before, .mc-screen [data-cycle-ring="market"] [data-cycle-state-box]::before {content: "4.1.5" / "";}
+.mc-screen [data-cycle-ring="economy"] [data-cycle-conditions]::before, .mc-screen [data-cycle-ring="market"] [data-cycle-conditions]::before {content: "4.2.2" / "";}
+.mc-screen [data-cycle-ring="economy"] [data-cycle-transition]::before, .mc-screen [data-cycle-ring="market"] [data-cycle-transition]::before {content: "4.2.3" / "";}
+.mc-screen .cycle-group::before {content: "4.3.1" / "";}
+.mc-screen [data-cycle-ring="industry"] .cycle-figure::before, .mc-screen [data-cycle-ring="industry"] [data-cycle-state-box]::before {content: "4.3.2" / "";}
+.mc-screen [data-cycle-ring="industry"] [data-cycle-conditions]::before, .mc-screen [data-cycle-ring="industry"] [data-cycle-transition]::before {content: "4.3.3" / "";}
+.mc-screen [data-cycle-ring="industry"] .cycle-detail::before {content: none;}
+.mc-screen .cycle-user > legend::before {content: "4.4.1" / "";}
+.mc-screen [data-cycle-user-current]::before {content: "4.4.2" / "";}
+.mc-screen [data-cycle-conditions]::before {grid-column: 1 / -1;}
+@media (max-width: 749.98px) {
+  .mc-group .plab-row {padding: 12px 10px;}
+  .mc-chain {flex-direction: column; gap: 28px;}
+  .mc-chain li {flex-basis: auto;}
+  .mc-chain li + li::before {content: "↓" / ""; left: 50%; top: -25px; transform: translateX(-50%);}
 }
