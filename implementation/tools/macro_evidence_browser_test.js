@@ -3,7 +3,8 @@
 // multi-run payload (tests/fixtures/macro_evidence/browser_payload.json, written by tests/macro_evidence_fixture.py):
 // 경기/주식시장/산업 tabs counted separately, recent-5 lines + "더 보기" on mobile (10 on PC), collection-time lines
 // labelled as such, revision markers and release ticks, the reconstruction layer off by default, interpretations
-// labelled "해석 후보 · 미승인", the held DOL series and the C1 API. Also checks the served artifact and atomic public
+// labelled "해석 후보 · 미승인", the held DOL series, the "근거 더 보기 (전체)" catalog (collapsed; names and states only) and
+// the C1 API. Also checks the served artifact and atomic public
 // refresh (HTTP/invalid/other-file failure keep the old publication), with view choices kept across redraw/navigation.
 // Nothing is stored or sent; no outside host is contacted.
 const assert=require('node:assert/strict');const fs=require('node:fs');const path=require('node:path');const {execFileSync}=require('node:child_process');const {chromium}=require('playwright');
@@ -28,6 +29,41 @@ async function noOverflow(page,label){assert.ok(await page.evaluate(()=>document
 async function storage(page){return page.evaluate(()=>JSON.stringify(Object.entries(localStorage).sort())+JSON.stringify(Object.entries(sessionStorage).sort()));}
 const text=(page,sel)=>page.locator(sel).first().textContent();
 async function pick(page,id){await page.locator('[data-me-indicator]').selectOption(id);await page.locator(`[data-me-meta="${id}"]`).waitFor();}
+// "근거 더 보기 (전체)" catalog (L4): collapsed until asked, every published indicator with name, series, rule source, validation and
+// collection state; no observation value, date, phase or probability. Held (unverified terms) rows show name and state only.
+async function openCatalog(page,width){
+ const cat=page.locator('[data-me-catalog]');
+ assert.equal(await cat.evaluate(d=>d.tagName),'DETAILS');assert.equal(await cat.getAttribute('open'),null,'catalog collapsed by default');
+ assert.ok((await text(page,'[data-me-catalog] > summary')).startsWith('근거 더 보기 (전체'));
+ assert.equal(await page.locator('[data-me-catalog] [data-me-catalog-row]').first().isVisible(),false);
+ await page.locator('[data-me-catalog] > summary').click();assert.equal(await cat.getAttribute('open'),'');
+ const rowDisplay=await page.locator('[data-me-catalog-row] td').first().evaluate(n=>getComputedStyle(n).display);
+ assert.equal(rowDisplay,width<600?'block':'table-cell','phone stacks rows, PC keeps every column');
+ assert.ok(await page.locator('[data-me-catalog] .table-wrap').evaluate(n=>n.scrollWidth<=n.clientWidth+1),'no inner horizontal scroll '+width);
+ return cat;
+}
+async function catalogRows(page){return page.locator('[data-me-catalog-row]').evaluateAll(rows=>rows.map(r=>({id:r.dataset.meCatalogRow,state:r.dataset.meCatalogState,
+ held:r.hasAttribute('data-me-catalog-held'),collected:r.querySelector('[data-me-catalog-collected]')?.dataset.meCatalogCollected,text:r.textContent,
+ series:[...r.querySelectorAll('[data-me-catalog-series]')].map(n=>[n.dataset.meCatalogSeries,n.dataset.meCatalogCollected,n.textContent]),
+ rule:r.querySelector('[data-me-catalog-rule]')?.textContent||null,validation:r.querySelector('[data-me-catalog-validation]')?.textContent||null})));}
+function catalogContract(rows,payload){
+ const ind=new Map(payload.indicators.map(i=>[i.id,i]));
+ assert.deepEqual(rows.map(r=>r.id),payload.indicators.map(i=>i.id),'every published indicator is listed');
+ for(const r of rows){const i=ind.get(r.id);
+  assert.ok(r.text.includes(i.name),r.id+' name');assert.equal(r.state,i.state);
+  assert.equal(r.collected,i.state==='LIVE'?'YES':i.state==='PARTIAL'?'PARTIAL':'NO',r.id+' collected');
+  assert.ok(!/\d{4}-\d{2}|=|확률|국면/.test(r.text),r.id+' no value, date, phase or probability: '+r.text);
+  if(i.state!=='LIVE')assert.ok(r.text.includes(i.reason),r.id+' reason code shown');
+  const held=i.source.publication!=='PUBLIC'||i.reason==='TERMS_UNVERIFIED';assert.equal(r.held,held,r.id+' held');
+  if(held){assert.deepEqual(r.series,[],r.id+' held: no series');assert.equal(r.rule,null);assert.equal(r.validation,null);
+   for(const sid of i.series)assert.ok(!r.text.includes(sid),r.id+' held series id hidden');assert.ok(r.text.includes('약관 원문 미확인'));continue;}
+  assert.deepEqual(r.series.map(x=>x[0]),i.series,r.id+' series');
+  for(const [sid,collected,t] of r.series){const row=payload.series[sid];
+   assert.equal(collected,row.state==='LIVE'?'YES':'NO',sid);
+   if(row.state!=='LIVE')assert.ok(t.includes('NOT_AVAILABLE')&&t.includes(row.reason),sid+' reason, never a value: '+t);}
+  assert.ok(r.rule.includes(i.rule.version)&&r.rule.includes('v0 · 미검증'),r.id+' rule '+r.rule);
+  assert.ok(r.validation.includes('이 시스템 안에서는 미검증'),r.id+' validation');}
+}
 (async()=>{
  let pass=0,phase='INIT';const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH});
  try{
@@ -53,6 +89,10 @@ async function pick(page,id){await page.locator('[data-me-indicator]').selectOpt
     await page.goto(BASE+'#macro');await page.locator('[data-macro-evidence]').waitFor();
     await page.locator('[data-me-not-collected]').waitFor();
     assert.equal(await page.locator('[data-me-catalog-row]').count(),13);
+    await openCatalog(page,width);const emptyRows=await catalogRows(page);catalogContract(emptyRows,JSON.parse(EMPTY));
+    assert.ok(emptyRows.every(r=>r.collected==='NO'&&r.text.includes('SOURCE_NOT_COLLECTED')),'nothing collected yet');
+    assert.deepEqual(emptyRows.filter(r=>r.held).map(r=>r.id),['E14'],'DOL held for unverified terms');
+    assert.equal(await page.locator('[data-me-catalog] svg').count(),0);
     assert.equal(await text(page,'[data-me-summary-counts]'),'유효 경고 0계열 · 유효 개선 0계열');
     assert.equal(await text(page,'[data-me-scope]'),'탐색 화면 전용 · 공식 판정·확률·매크로 게이트에 쓰지 않음');
     assert.ok((await text(page,'[data-me-panel="observation"]')).includes('사이클 개념도가 아님'));
@@ -76,6 +116,7 @@ async function pick(page,id){await page.locator('[data-me-indicator]').selectOpt
     assert.equal(await page.locator('[data-me-collection]').count(),actual.generated_at===null?0:1);
     assert.deepEqual(await page.locator('[data-me-catalog-row]').evaluateAll(rows=>rows.map(r=>[r.dataset.meCatalogRow,r.dataset.meCatalogState])),
      actual.indicators.map(i=>[i.id,i.state]),'served indicator states reach the catalog');
+    await openCatalog(page,width);catalogContract(await catalogRows(page),actual);
     assert.equal(current.scope.official_judgement,false);assert.equal(current.scope.probability,false);assert.equal(current.scope.macro_gate,false);
     await noOverflow(page,'artifact '+width);assert.deepEqual(seen.errors,[]);assert.deepEqual(seen.outside,[]);assert.deepEqual(seen.writes,[]);
     await ctx.close();pass++;}
@@ -155,6 +196,18 @@ async function pick(page,id){await page.locator('[data-me-indicator]').selectOpt
     // Catalog list (13 indicators) is separate from the event list; the held DOL series shows no data.
     assert.equal(await page.locator('[data-me-catalog-row="E14"]').getAttribute('data-me-catalog-state'),'NOT_AVAILABLE');
     assert.equal(await page.locator('[data-me-catalog-row="E21"]').getAttribute('data-me-catalog-state'),'NOT_AVAILABLE');
+    await openCatalog(page,width);const rows=await catalogRows(page),payload=JSON.parse(PAYLOAD);catalogContract(rows,payload);
+    const row=id=>rows.find(r=>r.id===id);
+    assert.equal(row('E14').held,true);assert.ok(row('E14').text.includes('TERMS_UNVERIFIED'));assert.ok(!row('E14').text.includes('DOL:'));
+    for(const id of['E21','E26']){assert.equal(row(id).collected,'NO');const [[sid,c,t]]=row(id).series;
+     assert.equal(c,'NO');assert.equal(t,sid+' · NOT_AVAILABLE · SOURCE_KEY_NOT_CONFIGURED (API 키 미설정)','Census key missing is a reason, never 0');}
+    assert.equal(row('E09').collected,'YES');assert.ok(row('E09').rule.includes('[문헌]'));assert.ok(row('E09').validation.startsWith('문헌상 사후 검증만'));
+    assert.deepEqual(row('E39').series.map(x=>x[1]),['YES','YES']);assert.ok(row('E40').validation.startsWith('사건은 검증 불필요'));
+    assert.ok((await text(page,'[data-me-catalog]')).includes('발생 사건 목록과 별개'));
+    // The opened catalog stays open across this module's own redraws (tab change), in this page's RAM only.
+    await page.locator('[data-me-tab="market"]').click();assert.equal(await page.locator('[data-me-catalog]').getAttribute('open'),'');
+    await noOverflow(page,'catalog '+width);
+    await page.locator('[data-me-catalog] > summary').click();assert.equal(await page.locator('[data-me-catalog]').getAttribute('open'),null);
     // Cycle ring (C1): observations -> evidence slots of the focused phase; 관측 그래프 selects the indicator here.
     await page.locator('[data-me-tab="economy"]').click();
     const ring='[data-cycle-ring="economy"]';

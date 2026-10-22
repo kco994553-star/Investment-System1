@@ -154,8 +154,8 @@ APPROVED_SHA256 = {
     "price-time.js": "9b786d04615f3a8907f8f936db78ab3fd477808eadc27814e615ffbb7dddbc0f",
     "data-refresh.js": "ee4d9745536dd0c698518820d1c82be297d3b28f2e0075601c21c5d000a0a76d",
     "v-coverage.css": "185302f9f5aa9542d2caadfa03363f084bf837e8e1ea2998da49fa1db8af9364",
-    "macro-evidence.js": "b87449fcb0edea5de6a6ac74cd9e7579ad81a28af970f2fc2f59f7594207070b",
-    "macro-evidence.css": "5270ef2e2c80eb70125ed39f8fbef5f3f0d87172d3dff3a79c888b92ec9520cd",
+    "macro-evidence.js": "36b0d9dd52e9a2892fd1b65f7f67ca8cee69b07d8157ccdddc277b2d9158d4d2",
+    "macro-evidence.css": "29cdedcdde166003fb4bac34497fe5d6abcb4bb9e7b8af18349cc9de8f10fc2c",
     # Self-hosted chart renderer (P1-7): lightweight-charts 5.2.1 npm file unmodified, upstream LICENSE/NOTICE, third-party notices.
     "chart-renderer.js": "c6053c2633788813d363d3346833f416fa954fbf8db7e1e18252b191c0dd040b",
     "chart-workbench.js": "05d5cc2a89e68fe9e22286c6c8cea47048592e13e4ad8bec5f1299a122ee346c",
