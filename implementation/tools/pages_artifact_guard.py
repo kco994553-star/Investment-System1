@@ -63,7 +63,7 @@ APPROVED_SHA256 = {
     "table-sort.js": "cd483582e80b7df2b5a5ffb16af84e7200ebfa841ed40fa5cee89bd3d8c338db",
     "pc-layout.css": "d3a270238df767d49ef23ea3d53d60fca62d65dc017af19338269602190af2b4",
     "share-class-groups.js": "088bbfaec559937753533572330a6be3c2f9280910f9f6cf62b53f39119c0997",
-    "forward-validation.js": "85432c469bce8466d2df24b90e2caf1985c2036d596e37725e9073368216f009",
+    "forward-validation.js": "f346e98e7e15f6e357d9c7e0e608a0a90adfbca9a8f05863588bf12f79e9a7cb",
     "daily-report.js": "c719625827b965f0ac26b766a69ab46ed9d3c923660a44675074791b9f085389",
     "sec-universe-shares.js": "7a64bf6c280b81258ebd13e78b6761876f7056565f18ba9e64da897d953f600d",
     "virtual-trading-v-history.js": "944124763c2682dff373f9ec86e8b938ee2400f3084b5e3d62d8b44c8bd8099f",
