@@ -175,10 +175,10 @@ const rowIds = (page) => page.locator('[data-leaderboard-row]').evaluateAll((row
    unconnected columns, h1 focus on route change. */
 async function flow(page, width) {
   const T = '[data-leaderboard-table]';
-  // Columns: 5 drawn on PC, 3 on a phone (rank, company, QGV; the rest behind the per-row button), all th scope=col and none hidden;
+  // Columns: 6 drawn on PC (L3 adds SIC), 3 on a phone (rank, company, QGV; the rest behind the per-row button), all th scope=col and none hidden;
   // the always-— columns are named in one note instead.
-  const cols = width < 750 ? 3 : 5;assert.equal(await page.locator(T + ' thead th').count(), cols);assert.equal(await page.locator(T + ' thead th[scope="col"]').count(), cols);
-  assert.deepEqual(await page.locator(T + ' thead th').evaluateAll((ths) => ths.map((th) => th.dataset.leaderboardCol)), ['rank', 'company', 'qgv', 'qgv_detail', 'earnings'].slice(0, cols));
+  const cols = width < 750 ? 3 : 6;assert.equal(await page.locator(T + ' thead th').count(), cols);assert.equal(await page.locator(T + ' thead th[scope="col"]').count(), cols);
+  assert.deepEqual(await page.locator(T + ' thead th').evaluateAll((ths) => ths.map((th) => th.dataset.leaderboardCol)), (width < 750 ? ['rank', 'company', 'qgv'] : ['rank', 'company', 'sic', 'qgv', 'qgv_detail', 'earnings']));
   assert.match(await page.locator('[data-leaderboard-unconnected]').textContent(), /일간 · 컨센서스 · 목표 · QGV 시나리오 · 재평가 · VMR/);
   const nvdaRow = page.locator('[data-leaderboard-row="nvda"]');
   if (width < 750) {
