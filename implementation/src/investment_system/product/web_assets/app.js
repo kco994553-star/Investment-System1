@@ -577,15 +577,18 @@ function paintModel() {
 }
 function technical() {
   const s=D.technical,tabs=[["chart","차트"],["state","상태"],["execution","실행"],["record","기록"]];
-  return `<div data-ia-screen="technical">${heading("TECHNICAL",t("기술적 분석"),t("기존 기록의 연결 상태를 확인합니다."))}
-    <div class="chips data-badges"><span class="badge">${esc(t("실데이터 검증 전 · 일봉·수정주가 기준"))}</span></div>
-    <nav class="chips screen-tabs" aria-label="${esc(t("기술적 분석"))}">${tabs.map(([id,label])=>`<a href="#technical-${id}" data-screen-tab="${id}">${esc(t(label))}</a>`).join("")}</nav>
-    <div id="technical-chart"><div id="technical-price-chart" data-tech-status="chart"></div><div id="technical-workbench"></div><div id="technical-tv-chart"></div><div id="technical-indicators"></div></div>
-    <section class="card status-card" id="technical-state" data-tech-status="engine"><h2>${t("기술적 분석 엔진")}</h2>${state(s)}<p>${esc(t(s.data===null?s.reason || "운영 Snapshot이 연결되지 않았습니다.":"기존 종목 화면에서 제공된 기술적 분석 기록을 확인합니다."))}</p><p class="small">${esc(t("QGV 원점수와 기술적 상태는 나란히 볼 뿐 통합하지 않습니다."))}</p></section>
-    ${TechnicalCards.sectionsHtml(appSettings.display_locale)}
-    <section class="card" id="technical-execution" data-tech-status="execution"><h2>${t("실행 구간 (시스템 주문 아님)")}</h2><p><span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> ${esc(t("검증된 모델 입력이 없어 실행 구간을 만들지 않습니다."))}</p></section>
-    <section class="card" id="technical-record" data-tech-status="record"><h2>${t("기술적 기록")}</h2><p><span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> ${esc(t("과거 신호와 실제 결과 기록이 아직 없습니다."))}</p></section>
-    ${window.IaScreens?IaScreens.technicalHtml(appSettings.display_locale):""}</div>`;
+  // Menu 2 layout (design lane D6): TechnicalCards.screenHtml places these pieces (status cards under one h2 region, so h3);
+  // TechnicalCards.arrange (after mount) moves the indicator cards into the 3.1.4 stamp box of the workbench. The display-only
+  // TradingView card sits above the workbench so its lazy frame stays near the first screen.
+  return TechnicalCards.screenHtml({head:heading("TECHNICAL",t("기술적 분석"),t("기존 기록의 연결 상태를 확인합니다.")),
+    badges:`<div class="chips data-badges"><span class="badge">${esc(t("실데이터 검증 전 · 일봉·수정주가 기준"))}</span></div>`,
+    tabs:`<nav class="chips screen-tabs" aria-label="${esc(t("기술적 분석"))}">${tabs.map(([id,label])=>`<a href="#technical-${id}" data-screen-tab="${id}">${esc(t(label))}</a>`).join("")}</nav>`,
+    chart:`<div id="technical-chart"><div id="technical-price-chart" data-tech-status="chart"></div><div id="technical-tv-chart"></div><div id="technical-workbench"></div><div id="technical-indicators"></div></div>`,
+    engine:`<section class="card status-card" id="technical-state" data-tech-status="engine"><h3>${t("기술적 분석 엔진")}</h3>${state(s)}<p>${esc(t(s.data===null?s.reason || "운영 Snapshot이 연결되지 않았습니다.":"기존 종목 화면에서 제공된 기술적 분석 기록을 확인합니다."))}</p><p class="small">${esc(t("QGV 원점수와 기술적 상태는 나란히 볼 뿐 통합하지 않습니다."))}</p></section>`,
+    sections:TechnicalCards.sectionsHtml(appSettings.display_locale),
+    execution:`<section class="card" id="technical-execution" data-tech-status="execution"><h3>${t("실행 구간 (시스템 주문 아님)")}</h3><p><span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> ${esc(t("검증된 모델 입력이 없어 실행 구간을 만들지 않습니다."))}</p></section>`,
+    record:`<section class="card" id="technical-record" data-tech-status="record"><h3>${t("기술적 기록")}</h3><p><span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> ${esc(t("과거 신호와 실제 결과 기록이 아직 없습니다."))}</p></section>`,
+    ia:window.IaScreens?IaScreens.technicalHtml(appSettings.display_locale):""},{locale:appSettings.display_locale});
 }
 function macro() {
   return `<div data-ia-screen="macro">${heading("MACRO",t("매크로"),t("공식 축별 상태를 확인합니다."))}
@@ -949,6 +952,7 @@ function renderRoute(options) {
   if(route==='brief') deviceCatalog().then(c=>{const n=$('#home-target-version');if(n?.isConnected)n.textContent=c.target_root_version||'NOT_AVAILABLE';}).catch(()=>{const n=$('#home-target-version');if(n?.isConnected)n.textContent='NOT_AVAILABLE';});
   if(route==='technical') {const cards=TechnicalCards.mount($('#technical-indicators'),{locale:appSettings.display_locale});
     const bench=window.ChartWorkbench&&$('#technical-workbench')?ChartWorkbench.mount($('#technical-workbench'),{locale:appSettings.display_locale}):null;
+    if(bench) TechnicalCards.arrange($('#content'));
     PrivateHistory.mountTechnical($('#technical-price-chart'),{companyId:id,locale:appSettings.display_locale,config:window.InvestmentAppConfig,getAverage:deviceAverageCost,onData:value=>{cards.update(value);if(bench)void bench.update(value);}});
     // Display-only TradingView chart: follows the symbol picker; nothing is read back from it.
     const tvSymbol=$('#technical-price-chart [data-technical-symbol]'),tvChart=()=>TradingViewWidgets.mountAdvanced($('#technical-tv-chart'),{companyId:tvSymbol?tvSymbol.value:id,locale:appSettings.display_locale});
