@@ -74,7 +74,7 @@ APPROVED_SHA256 = {
     "dcf-parameters-defaults.js": "3f9498ef6177b9dcd3c4fa80077c8480750be93668f57bd5ed5ed3b5509a8473",
     "classification-screens.js": "23ed7302742bf769068ef128dc48075fe6c88d6610585356e6b4e88d14db0a8f",
     "manager-styles-v0.js": "b32f434b17ba00d6ec1e4813517884e5caded996779df9b1976dfc38964ab38e",
-    "screen-detail.js": "fca2898a0217dd76db5e9545b1d703c7846345df46185f5c8541f252a44be003",
+    "screen-detail.js": "d4bed4772a5d70daf6d03491fbc0acfbd0b878789b55de2fdfdf13706f2f354b",
     "virtual-trading.js": "41a834f13d86ed2bd6a046cf63788992350294714ee9b9ee159ae50de8e20206",
     "technical-cards.js": "cc6164ac1ca510bb7fddd3403e128198db90c7d7a98b860792bb53df5c1bf814",
     "leaderboard-screen.js": "083a06188d354ff6060bc80134dab544dd8d369150b136e072f7b8b0b119d43c",

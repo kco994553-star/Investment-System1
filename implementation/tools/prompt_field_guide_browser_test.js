@@ -274,6 +274,23 @@ async function publicImports(page, frame, payload) {
     await frame.locator("html").evaluate(() => Object.values(window.__promptGuideAccess).every(count => count === 0)), "public import never reads device, private sections, storage, database or network");
   verify(await frame.locator("#plv1-data").textContent() === frozenBefore, "imports preserve the original Frozen catalog bytes");
 }
+// Personalisation order panel on the prompt screen: fixed explanation, account layer awaiting decision, no counts or values.
+async function personalOrder(page, locale) {
+  operation = "read the personalisation order panel";
+  const en = locale === "en-US", panel = page.locator("main [data-personal-order]");
+  verify(await panel.count() === 1, "one personalisation order panel on the prompt screen");
+  verify(await panel.evaluate(node => !!node.closest("main") && !node.closest("iframe") && node.previousElementSibling?.classList.contains("plab-frame")), "panel sits under the library frame");
+  verify((await panel.locator("h2").textContent()).trim() === (en ? "Personalisation · which value comes first" : "개인화 · 어떤 값을 먼저 쓰나요"), "panel heading uses the chosen display language");
+  verify(JSON.stringify(await panel.locator("[data-order-step]").evaluateAll(nodes => nodes.map(node => node.dataset.orderStep))) === JSON.stringify(["account", "device", "default"]), "order is account, this browser, defaults");
+  const steps = await panel.locator("[data-order-step]").allTextContents();
+  verify(steps[0].includes("IA-6") && steps[0].includes("DRAW-STORE") && steps[0].includes(en ? "Awaiting decision" : "결정 대기"), "account layer is shown as awaiting decision");
+  verify(await panel.locator('[data-order-step="account"] .badge.fn-unconnected').count() === 1 && await panel.locator(".badge.NOT_AVAILABLE").count() === 0, "account layer uses the unconnected badge, not NOT_AVAILABLE");
+  verify(steps[1].includes(en ? "not shared with other devices" : "다른 기기와 공유되지 않습니다"), "browser layer says it is not shared");
+  verify(steps[2].includes(en ? "Official weights" : "공식 가중치"), "default layer names the official defaults");
+  verify(!/\d/.test(steps.join(" ").replace(/IA-6/g, "")), "no counts or numbers are shown in the order steps");
+  verify(JSON.stringify(await panel.locator(".plab-links a").evaluateAll(nodes => nodes.map(node => node.getAttribute("href")))) === JSON.stringify(["#settings"]), "backup link points to the existing settings route");
+  verify(await panel.evaluate(node => node.scrollWidth <= node.clientWidth + 1), "panel fits its width");
+}
 (async () => {
   fs.mkdirSync(evidence, { recursive: true });
   try {
@@ -310,6 +327,7 @@ async function publicImports(page, frame, payload) {
         await emptyCapture(page, frame, locale, width, "plv1.tech.001");
         await validationAndLocale(page, frame, payload, locale);
         await publicImports(page, frame, payload);
+        await personalOrder(page, locale);
       } finally { await context.close(); }
     }
     current = "all viewports and languages";
