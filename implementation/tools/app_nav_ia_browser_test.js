@@ -245,6 +245,19 @@ async function unavailableNewScreen(page, selector) {
           verify(await page.locator('[data-pending-page="' + hash + '"] [data-pending-needs] li').count() >= 3, hash + " lists the data and decisions it needs");
           verify(await page.locator('[data-pending-page="' + hash + '"] .pending-links a').count() >= 2, hash + " links the closest existing screens");
         }
+        // 13F planned flow ①→④ (owner draft QGV 1.3): one line per step, each marked not built and naming its pending decision IDs.
+        {
+          const steps = page.locator('[data-pending-page="lab-13f"] ol[data-pending-flow] > li[data-pending-step]');
+          verify(JSON.stringify(await steps.evaluateAll(nodes => nodes.map(node => node.dataset.pendingStep))) === '["1","2","3","4"]', "13F flow lists steps 1 to 4 in order");
+          verify(JSON.stringify(await steps.locator("b").allTextContents()) === JSON.stringify(locale === "ko-KR" ? ["① 운용사 고르기", "② 학습 기간에 맞추기", "③ 다른 기간에서 확인", "④ 결과"] : ["① Choose managers", "② Fit on the training period", "③ Check in another period", "④ Result"]), "13F flow step titles follow the owner draft in the display language");
+          verify(await steps.evaluateAll(nodes => nodes.every(node => node.querySelectorAll(".badge.fn-unconnected").length === 1 && !node.querySelector(".badge.NOT_AVAILABLE"))), "each 13F step is marked not built without adding NOT_AVAILABLE badges");
+          verify(JSON.stringify(await steps.locator("[data-decision-ids]").evaluateAll(nodes => nodes.map(node => (node.textContent.match(/13F-R\d+(?:~R?\d+)?|TRACKC-PORT/g) || []).join(" ")))) === JSON.stringify(["13F-R1~R9", "13F-R10~R12", "13F-R13 13F-R16", "13F-R14 13F-R15 TRACKC-PORT"]), "each 13F step names its pending decision IDs");
+          const flowText = await page.locator('[data-pending-page="lab-13f"] [data-pending-flow]').textContent();
+          verify(!/\d+(?:\.\d+)?\s*%|\b0\.\d+|\b[QGV]\s*\d{2}\b|예시|example|holdout|홀드아웃/i.test(flowText), "13F flow shows no weight, similarity, example value or holdout use");
+          const bounds = await page.locator('[data-pending-page="lab-13f"] [data-pending-bounds] li').allTextContents();
+          verify(bounds.length === 3 && (locale === "ko-KR" ? bounds[0].includes("실제 기준이 아닙니다") && bounds[1].includes("자동으로 바꾸지 않습니다") && bounds[2].includes("13F-R1~R16") : bounds[0].includes("not the institutions' actual criteria") && bounds[1].includes("never changed automatically") && bounds[2].includes("13F-R1–R16")), "13F flow states results are not institutional criteria, never change official defaults, and decisions 13F-R1~R16 are pending");
+          verify(await page.locator('[data-pending-page="lab-13f"]').evaluate(node => node.scrollWidth <= node.clientWidth + 1), "13F flow fits the page width (" + width + "px)");
+        }
         if (locale === "ko-KR") {
           // New IA: every route (sections and trees included) maps to exactly one menu, with one aria-current on the page.
           for (const hash of IA_ROUTES) {
