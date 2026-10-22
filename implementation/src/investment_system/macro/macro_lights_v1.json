@@ -6,6 +6,17 @@
   "decided_on": "2026-10-13",
   "source_section": "PLAYBOOK_V1 13-5",
   "sell_decisions": false,
+  "revisions": [
+    {
+      "id": "M-RULE-C",
+      "decided_on": "2026-10-15",
+      "source_section": "PLAYBOOK_V1 18",
+      "status": "HYPOTHESIS",
+      "validation": "MACRO_REPLAY_20261014.md 12",
+      "changes": ["state.crisis_inflation_other_lit_min"],
+      "text": "가설(검증 중): 물가 > 8%는 물가 외 다른 경고등이 1개 이상 함께 켜졌을 때만 위기, 단독이면 경고. 규칙을 고르는 데 쓴 구간(2000·2008·2020·2022)만으로 정했고, 추가 과거 재생과 앞으로의 전진 검증으로 확인 중이다"
+    }
+  ],
   "comparison_epsilon": 1e-9,
   "lights": {
     "employment": {
@@ -48,6 +59,7 @@
     "warning_inflation_gt": 0.05,
     "warning_growth_lt": 0,
     "crisis_inflation_gt": 0.08,
+    "crisis_inflation_other_lit_min": 1,
     "crisis_pair": ["market", "credit"],
     "low_confidence_available_lt": 3
   }
