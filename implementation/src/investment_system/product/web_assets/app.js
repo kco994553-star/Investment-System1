@@ -15,7 +15,7 @@ function deviceCatalog() {
   return deviceCatalogPromise;
 }
 // Price store core symbols: runner symbols (TARGET, holdings, sets A–D from VirtualMeta, benchmarks/FX) and watchlist ★.
-async function priceStoreCore(){return PriceStore.coreSymbols(window,{catalog:await deviceCatalog(),interests:[...prefs.interests]});}
+async function priceStoreCore(){const core=await PriceStore.coreSymbols(window,{catalog:await deviceCatalog(),interests:[...prefs.interests]});let added=[];try{added=window.TargetV1Screen?TargetV1Screen.priceSymbols(window.PlaybookScreen,localStorage):[];}catch(_){added=[];}return [...new Set([...core,...added])];}
 let valuationInputsPromise=null;
 function valuationInputs(){if(!valuationInputsPromise)valuationInputsPromise=DeviceValuation.load(window);return valuationInputsPromise;}
 // The S04/S05 price badge shows the same device quote state as the value card (no extra request); RAM only, never the price.
@@ -208,7 +208,7 @@ function rawDataIds(){const ids=new Set();for(const f of ['sec-qg-factors.json',
 function rawDataCompanyId(){const ids=rawDataIds();return ids.includes(rawDataCompany)?rawDataCompany:(ids[0]||null);}
 function rawDataUI(){
   const en=appSettings.display_locale==='en-US',ids=rawDataIds(),chosen=rawDataCompanyId(),name=id=>{const c=company(id);return c&&c.ticker?c.ticker:String(id).toUpperCase();};
-  return `<details class="card" id="raw-data-viewer" data-raw-data><summary>${en?'Raw data (developer)':'원자료 보기(개발자용)'}</summary><p class="small">${en?'Raw public inputs for checking only: SEC Q·G leaf scores, price-free company types and estimated filing windows. Screens show results only.':'확인용 원자료입니다: SEC Q·G 개별 점수, 가격 불필요 유형, 실적 예상 시기. 사용자 화면에는 결과만 보여 줍니다.'}</p><label for="raw-data-company">${en?'Company':'기업'}</label> <select id="raw-data-company" data-raw-company>${ids.map(id=>`<option value="${esc(id)}"${id===chosen?' selected':''}>${esc(name(id))}</option>`).join('')}</select><div id="public-qg"></div><div id="public-types"></div><div id="public-filings"></div></details>`;
+  return `<details class="card" id="raw-data-viewer" data-raw-data><summary>${en?'Raw data (developer)':'원자료 보기(개발자용)'}</summary><p class="small">${en?'Raw public inputs for checking only: SEC Q·G leaf scores, price-free company types and estimated filing windows. Screens show results only.':'확인용 원자료입니다: SEC Q·G 개별 점수, 가격 불필요 유형, 실적 예상 시기. 사용자 화면에는 결과만 보여 줍니다.'}</p><label for="raw-data-company">${en?'Company':'기업'}</label> <select id="raw-data-company" data-raw-company>${ids.map(id=>`<option value="${esc(id)}"${id===chosen?' selected':''}>${esc(name(id))}</option>`).join('')}</select><div id="public-qg"></div><div id="public-types"></div><div id="public-filings"></div>${window.TargetV1Screen?TargetV1Screen.rawDataHtml():''}</details>`;
 }
 function mountRawData(){const id=rawDataCompanyId();for(const kind of ['qg','types','filings'])PublicScreens.mount($('#public-'+kind),publicScreens,{kind,companyId:id||undefined,locale:appSettings.display_locale});}
 // Company search (TARGET directory + public Universe504 codes): identity only, no prices/caps/ranks (GSQ-010).
