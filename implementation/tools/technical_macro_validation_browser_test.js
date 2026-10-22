@@ -134,6 +134,42 @@ async function seedBars(page,bars){
    }
    pass++;console.log('PASS technical macro validation empty device '+width);
   }
+  // ---- Lab 9.1 readiness checklist (static guidance, never a result) and the Lab → macro 3.2 · 3.3 links, both languages.
+  for(const width of [390,1280])for(const locale of ['ko-KR','en-US']){
+   phase='LAB GUIDANCE '+width+' '+locale;const en=locale==='en-US';
+   const context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block'}),page=await context.newPage();let errors=0;
+   page.on('pageerror',()=>errors++);
+   await context.addInitScript(l=>localStorage.setItem('investment.web.v1.settings',JSON.stringify({version:1,display_locale:l,source_language:'all'})),locale);
+   await page.route('**/*',r=>new URL(r.request().url()).origin===new URL(BASE).origin?r.continue():r.abort());
+   await page.goto(BASE+'#validation-backtest');await page.locator('#plab-91').waitFor();
+   const fold=page.locator('[data-fn-group="9.1"] > [data-bt-readiness]');
+   assert.equal(await fold.count(),1,'one readiness fold under 9.1');
+   assert.equal(await page.locator('[data-bt-readiness]').count(),1,'checklist has one home');
+   assert.equal(await fold.evaluate(n=>n.open),false,'fold starts closed');
+   assert.equal((await fold.locator('summary').textContent()).trim(),en?'Readiness checklist · not a result':'준비 체크리스트 · 결과 아님');
+   assert.deepEqual(await fold.locator('[data-bt-item]').evaluateAll(n=>n.map(x=>[x.dataset.btItem,x.dataset.btState])),
+    [['pit-adapter','checked'],['fsds-sample','checked'],['past-universe','pending'],['bt-decisions','decide'],['regime-frequency','decide'],['returns','na']]);
+   const items=await fold.locator('[data-bt-item]').allTextContents();
+   assert.ok(items[3].includes('BT-1~17')&&items[3].includes('MD-1~12'),'decision IDs named');
+   assert.ok(items[2].includes('BT-2')&&items[4].includes('IA-3'),'universe and probability decisions named');
+   assert.ok(items[5].includes(en?'only after the decisions above':'위 결정이 끝난 뒤에만'),'returns wait for decisions');
+   assert.ok(items.slice(0,2).every(t=>t.includes(en?'✓ Checked':'✓ 확인됨')),'documented items carry ✓');
+   assert.ok(items.slice(2).every(t=>!t.includes('✓')),'undecided items carry no ✓');
+   const foldText=await fold.textContent();
+   assert.ok(!foldText.includes('%')&&!foldText.includes('NOT_AVAILABLE'),'no percent or NOT_AVAILABLE badge in the checklist');
+   assert.equal(await fold.locator('.badge.NOT_AVAILABLE').count(),0);
+   assert.deepEqual(await fold.locator('.plab-links a').evaluateAll(n=>n.map(a=>a.getAttribute('href'))),['#macro-rotation','#macro-industry']);
+   assert.deepEqual(await fold.locator('.plab-links a').allTextContents(),en?['Macro 3.2 · sector rotation','Macro 3.3 · industry cycles']:['매크로 3.2 · 순환매 위치','매크로 3.3 · 산업 사이클']);
+   await fold.locator('summary').click();assert.equal(await fold.evaluate(n=>n.open),true);
+   await noOverflow(page,'lab guidance '+width+' '+locale);
+   await page.screenshot({path:SHOTS+'/lab-readiness-'+width+'-'+(en?'en':'ko')+'.png',fullPage:true}).catch(()=>{});
+   await fold.locator('a[href="#macro-rotation"]').click();await page.locator('#macro-rotation').waitFor();
+   assert.equal(await page.evaluate(()=>location.hash),'#macro-rotation');
+   await page.goBack();await page.locator('#plab-91').waitFor();
+   await page.locator('[data-bt-readiness] summary').click();await page.locator('[data-bt-readiness] a[href="#macro-industry"]').click();
+   await page.locator('[data-cycle-ring="industry"]').waitFor({state:'attached'});assert.equal(await page.evaluate(()=>location.hash),'#macro-industry');
+   assert.equal(errors,0,'page errors');await context.close();pass++;console.log('PASS lab readiness guidance '+width+' '+locale);
+  }
  }catch(error){console.log('FAIL technical macro validation '+phase+' '+(error&&error.message?error.message.split('\n')[0]:'')); process.exitCode=1;}
  finally{await browser.close();}
  console.log('COUNTS pass='+pass+' fail='+(process.exitCode?1:0));
