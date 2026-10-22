@@ -33,6 +33,27 @@
 .stat-radar .sr-legend { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
 .stat-radar .sr-legend li { display: flex; gap: 8px; align-items: flex-start; min-width: 0; overflow-wrap: anywhere; }
 .stat-radar .sr-legend li[data-sr-legend-state="NOT_AVAILABLE"] { color: var(--muted, #4a4a4a); }
+/* 비교군 바꾸기 (display only): PC = one toggle button per series (aria-pressed; a check mark and a full-strength swatch when drawn,
+   a dashed border and a faded swatch when hidden, so the state never depends on colour alone); phones = one labelled select.
+   The competitor average is a disabled button / option ("미연결", REL-SOURCE). Targets are at least 44px. */
+.stat-radar .sr-compare { margin: 0 0 12px; min-width: 0; }
+.stat-radar .sr-compare-head { margin: 0 0 6px; overflow-wrap: anywhere; }
+.stat-radar .sr-compare-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+.stat-radar .sr-compare-btn { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; min-width: 44px; padding: 6px 12px; font: inherit; font-size: var(--fs-s, 13px); font-weight: 700; cursor: pointer; text-align: left; overflow-wrap: anywhere; }
+.stat-radar .sr-compare-btn .sr-swatch { margin-top: 0; }
+.stat-radar .sr-compare-btn[aria-pressed="true"] { box-shadow: 3px 3px 0 var(--ink, #161616); }
+.stat-radar .sr-compare-btn[aria-pressed="true"]::before { content: "\2713"; content: "\2713" / ""; font-weight: 800; }
+.stat-radar .sr-compare-btn[aria-pressed="false"] { border-style: dashed; color: var(--muted, #4a4a4a); font-weight: 400; }
+.stat-radar .sr-compare-btn[aria-pressed="false"] .sr-swatch { opacity: .35; }
+.stat-radar .sr-compare-btn:disabled { cursor: not-allowed; border-style: dotted; color: var(--muted, #4a4a4a); font-weight: 400; }
+.stat-radar .sr-compare-phone { display: none; }
+.stat-radar .sr-compare-phone label { display: block; margin: 0 0 4px; font-weight: 700; }
+.stat-radar .sr-compare-phone select { width: 100%; max-width: 100%; min-height: 44px; padding: 6px 10px; font: inherit; }
+.stat-radar .sr-compare-note { margin: 6px 0 0; color: var(--muted, #4a4a4a); overflow-wrap: anywhere; }
+@media (max-width: 749.98px) {
+  .stat-radar .sr-compare-buttons { display: none; }
+  .stat-radar .sr-compare-phone { display: block; }
+}
 .stat-radar .sr-aux { margin-top: 12px; padding-top: 10px; border-top: 1.5px dashed var(--line-strong, #6f6f6f); }
 .stat-radar .sr-aux p { margin: 0 0 8px; overflow-wrap: anywhere; }
 .stat-radar .sr-aux-toggle { min-height: 40px; padding: 6px 12px; font: inherit; font-weight: 700; cursor: pointer; }
