@@ -36,8 +36,8 @@
 /* 비교군 바꾸기 (display only): PC = one toggle button per series (aria-pressed; a check mark and a full-strength swatch when drawn,
    a dashed border and a faded swatch when hidden, so the state never depends on colour alone); phones = one labelled select.
    The competitor average is a disabled button / option ("미연결", REL-SOURCE). Targets are at least 44px. */
-.stat-radar .sr-compare { margin: 0 0 12px; min-width: 0; }
-.stat-radar .sr-compare-head { margin: 0 0 6px; overflow-wrap: anywhere; }
+.stat-radar .sr-compare { margin: 0 0 12px; min-width: 0; border: 0; padding: 0; }
+.stat-radar .sr-compare-head { margin: 0 0 6px; padding: 0; overflow-wrap: anywhere; }
 .stat-radar .sr-compare-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
 .stat-radar .sr-compare-btn { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; min-width: 44px; padding: 6px 12px; font: inherit; font-size: var(--fs-s, 13px); font-weight: 700; cursor: pointer; text-align: left; overflow-wrap: anywhere; }
 .stat-radar .sr-compare-btn .sr-swatch { margin-top: 0; }
