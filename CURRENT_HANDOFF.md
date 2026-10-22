@@ -1,116 +1,72 @@
-# 현재 인수인계 — 2026-10-21 (Codex Main)
+# 현재 인수인계 — 2026-10-22 (Claude Code Main)
 
-확인 시각: **2026-10-21 09:59 UTC / 18:59 KST**. 이 시점 이후 PR·Actions·게시 증거는 다시 확인한다. 구현 / 시험 / 병합 / 게시 / 실사이트 확인을 구분한다.
+확인 시각: **2026-10-22 10:55 UTC / 19:55 KST**. 이 시각 이후의 PR·Actions·게시 상태는 다시 확인한다. 구현 / 시험 / 병합 / 게시 / 실사이트 확인을 나눠 적는다.
 
-먼저 읽기: [WORKING_RULES.md](WORKING_RULES.md) → 이 파일 → [사용자 결정](implementation/docs/USER_DECISIONS_PENDING.md) → [기존 분담](implementation/docs/PARALLEL_LANES_20261020.md) → [제품 IA](implementation/docs/PRODUCT_IA_DIRECTIVE_20261018.md) → [자료 계약](implementation/docs/FRONTEND_DATA_CONTRACT.md) → 작업 영역 계약·시험. 이전 원문은 [10/20 기록](implementation/docs/handoff/HANDOFF_HISTORY_20261020.md)에 보존했다. 과거 “다음 실행/병합 대기”보다 아래 실제 증거를 따른다. 사용자 결정은 구현과 다르다는 이유로 폐기하지 않는다.
+먼저 읽기: [WORKING_RULES.md](WORKING_RULES.md) → 이 파일 → [사용자 결정](implementation/docs/USER_DECISIONS_PENDING.md) → [병렬 분담](implementation/docs/PARALLEL_LANES_20261020.md) → [제품 IA](implementation/docs/PRODUCT_IA_DIRECTIVE_20261018.md) → [자료 계약](implementation/docs/FRONTEND_DATA_CONTRACT.md).
+이전 기록: [10/21 Codex Main 원문](implementation/docs/handoff/HANDOFF_HISTORY_20261021.md) · [10/20](implementation/docs/handoff/HANDOFF_HISTORY_20261020.md) · [10/18~19](implementation/docs/handoff/HANDOFF_HISTORY_20261018_19.md) · [복구 게시 증거](implementation/docs/handoff/RECOVERY_PUBLICATION_20261021.md) · [프런트엔드 연결](implementation/docs/handoff/FRONTEND_WIRING_20261021.md).
 
-## 1. 기준·인수 범위
+## 0. 역할 (2026-10-22 사용자 결정)
 
-- 실제 기본·canonical: **claude/investment-system-top500-validation-alrugm**, HEAD **a66faf8f8bdbbc5e8ac2076185db6ef2ea6f391f** (#372). #372 최종13a58584의 필수6CI·직전canonical ae34·로컬/원격SHA 동일을 확인하고 병합했다. #371의 최종 9066c67e 필수 6 CI 성공과 직전 canonical 87bdc1c3 일치를 확인하고 병합했다. #370 최종 HEAD e967cbd3의 필수 6 CI가 모두 성공했고, 병합 직전 base=8c671ae4와 원격 canonical 일치를 확인했다.
-- **실제 게시: ae34eb9035200fd47991dbb5878330ac4ca32db6**. [복구 run 39567157784](https://github.com/kco994553-star/Investment-System1/actions/runs/39567157784)은 **2026-10-21 08:49:17 UTC / 17:49:17 KST 성공**. 사이트 138/138파일·고정 데이터25/25 SHA 일치. 이전 afb06868 게시 상태는 대체됐다. [25개 해시·원장·배포 직전 최신자료 검사·실사이트 증거](implementation/docs/handoff/RECOVERY_PUBLICATION_20261021.md).
-- 실사이트 recovery 프로필: 390/1280 × light/dark **236 assertions / 실패0**, 28 PASS / 후속 #372 기능12 NOT_EXPECTED. 검색→5카드→동일기업상세·기존메뉴·새로고침 UNCHANGED/필터보존·승인폰트2개 확인. 합성 기기 노트/시나리오 저장·복귀·reload·수정·삭제와 개인추정 추가/삭제·공식이력 불변 확인. 실가격·#372 새 기능 통과로 확대하지 않는다.
-- 원격 400개 브랜치 이름·SHA 전수 대조. 기술 #350/#354/#355/#357/#359, 매크로 #351/#352/#353/#356/#358은 병합되어 게시 커밋에 포함된다. 별도의 후속 기술·매크로 배치 브랜치는 발견하지 못했다. Claude 미푸시 작업이 없다는 뜻은 아니다.
-- 새 checkout이며 Claude worktree·미커밋 변경·예약 작업이 이전됐다고 가정하지 않는다. AGENTS.md와 사용자 기능 계층 원본 Investment_System_Function_Hierarchy_v1.0.md는 저장소에서 발견하지 못했다.
-- Git clone·조회·수정·시험·실제 push 성공. #370 작업 브랜치의 로컬·원격 HEAD e967cbd3 일치를 확인했다. GitHub API 커밋 게시 경로는 사용하지 않았다.
-- 시안은 [Drive의 6쪽 원본](https://drive.google.com/file/d/1T5ErGHdFPKDO2-Q9aF5pGtKcxCTzChVW/view)을 전 페이지 이미지로 렌더링·열람했다. **요청한 18쪽 (1).pdf는 미확보**. 새 배치 중 시안이 필요한 부분만 보류한다. 18쪽 PC·모바일 전체 대조 완료가 아니다. 제공된 ChatGPT library share의 공개 GET은 2026-10-21 08:40 UTC / 17:40 KST HTTP403 Forbidden이었고 다른 인증/경로로 우회하지 않았다.
-- 추가 인수 자료: 18쪽 PDF 링크, 마지막 기술/매크로 작업자의 브랜치·기준 SHA·HEAD·git status --short·미푸시 diff. 사용자는 “진행”이라 답했지만 이 자료는 아직 제공되지 않았다.
+- **병합·공용 파일·이 파일 갱신은 Claude Code 하나가 맡는다.** 공용 파일은 가드 고정값(`pages_artifact_guard.py`), CI 목록, `app.js` 통합, 이 파일, `USER_DECISIONS_PENDING.md`다.
+- **Codex는 검증·리뷰만 한다.** push·병합하지 않는다.
+- 다른 쪽이 어떤 PR을 작업하려면 아래 "작업 중" 표에 **PR 번호·담당·시작 시각**을 먼저 적고, 끝나면 지운다. 표에 다른 담당이 있는 PR은 건드리지 않는다.
 
-## 2. 10/20 관측일 운영 결과
+### 작업 중
 
-[정기 run 39522288311](https://github.com/kco994553-star/Investment-System1/actions/runs/39522288311), SHA 8c671ae4: **collect 성공 / verify 실패 / deploy 건너뜀**. 실제 시작 **2026-10-21 00:36:01 UTC / 09:36:01 KST**. 과거 “오늘 밤”은 이미 끝났다.
+| PR | 담당 | 시작 (UTC / KST) | 내용 |
+| --- | --- | --- | --- |
+| 이 인수인계 PR | Claude Code | 2026-10-22 10:55 / 19:55 | 역할 정리·10종목 재대조·차트 착수 조건 정리 문서 |
+| 디자인 화면 2·3 (브랜치 `claude/design-technical`, `claude/design-macro`) | Claude Code | 2026-10-22 08:45 / 17:45 | canonical 동기화 → 전체 시험 → PR |
 
-- 실패는 macro_evidence_browser_test.js가 실제 수집 파일에서도 미수집 배너를 기다리는 EMPTY 390 timeout. 동일 기준 코드의 빈 fixture는 통과하고 수집 파일에서는 실패하는 것을 재현했다.
-- 원장 비공개 사본 읽기: source=RAW, raw=FOUND, recovered_records=0. v1/v2 각각 **10/19 보존 + 10/20 정확히 한 번 추가**, 각각 총 2개. 기록 시각 **2026-10-21 00:48:06 UTC / 09:48:06 KST**. 버전별 한 건을 중복으로 세지 않는다.
-- 비공개 업로드 성공 로그: forward-ledger-2026-10-20, 17,858 bytes, SHA-256 **1f355c259277f855d961ad4b7d653bf2ab61bc46c2ad423f8ab638fc2b4eeb72**. artifact 원장과 일치·append-only 검사 통과. 업로드 사본 재다운로드와 배포 실패 다음 날의 실제 복구는 아직 확인하지 않았다.
-- 현재 게시 원장은 복구로 10/19+10/20을 포함하며 원본과 같은 1f355c25… 해시다. 복구 생성 관측0, 재수집0. 정기 실행 두 번째 연속 성공 또는 다음 날 private RAW 재사용은 아직 확인하지 않았다.
-- Q 486/504, G 494/504, 양쪽 478/504. 502 LIVE / 2 NA, 샤드 2/7의 77개 수집·전체 7/7 샤드. 기존 SEC 행 1,537개 보존. 데이터 JSON 25개 중 18개 변경·7개 동일.
-- **XOM 완전 복구 아님**: 발행주식 LIVE이나 COVER_UNCONFIRMED/BASIS_UNCONFIRMED. QG는 NO_ANNUAL_SEC_FINANCIALS로 NOT_AVAILABLE.
-- 매크로 P1 13지표/14계열 중 **10지표/11계열 LIVE**. E14 TERMS_UNVERIFIED, E21·E26 SOURCE_KEY_NOT_CONFIGURED이며 관측값 없음. SOURCE/PARSE 실패는 없고 이전 파일은 빈 초기 상태였다. 실패 후 이전 성공 관측 보존의 운영 사례는 아니다.
-- 기존 macro-v0는 별도: H15 HTTP 404, H41/H8 빈 응답으로 통화·유동성·신용 NA. FX는 공개 제외. P1 성공을 전체 매크로 성공으로 부르지 않는다.
-- events=0, releases=0, replay_events=137. 재생 사건은 현재 빈티지의 과거 재구성이며 당시 실시간 기록이 아니다. 공식 국면·확률·매크로 gate는 활성화하지 않았다.
+## 1. 기준·게시
 
-공개 원본 artifact **12311543375**, github-pages 138파일. ZIP SHA-256 **16a0af04725323edc624bc0ce503ab3700224c38d7df55cd604a9e42b22d0826**, tar SHA-256 **e1ba05bf5ff43d5bf76e46a4525884e6a886b2c86e33f1b82f7e2f8cfc7b5912**. 만료 **2026-10-22 00:50:43 UTC / 09:50:43 KST**. Main 환경에 원본·추출본·출처 기록 보관. 재수집 없음.
+- canonical: **claude/investment-system-top500-validation-alrugm**, HEAD **dcf489fc** (#262 병합, 2026-10-22 10:50 UTC / 19:50 KST).
+- 오늘 병합(모두 최종 HEAD가 직전 canonical과 동기화된 상태에서 필수 6체크 성공 확인 뒤):
+  - #248 TARGET v1 빌더: HEAD 87904cc6 → 병합 5691f7cd (08:54 UTC / 17:54 KST)
+  - #263 TARGET v1 후속(확정 재검사·calc_version 숫자 검증·NA 제외·일정): HEAD eaa7df68(Codex 검증본 995b0103과 같은 파일 구성) → 병합 7e821375 (10:10 UTC / 19:10 KST)
+  - #262 매크로 규칙 C(가설·UNCALIBRATED, gate_active=false 유지): HEAD c9889ce2(Codex 검증본 70a10767과 같은 파일 구성) → 병합 dcf489fc (10:50 UTC / 19:50 KST)
+- **실제 게시: a66faf8f** (#372까지). 10/21 정기 실행 [run 39701051682](https://github.com/kco994553-star/Investment-System1/actions/runs/39701051682)이 collect·verify·deploy 모두 성공했다. 실제 시작 10/22 00:40 UTC / 09:40 KST, 배포 01:19 UTC / 10:19 KST.
+- #248·#263·#262는 아직 **게시 전**이다. 오늘 정기 실행(22:17 UTC / 10/23 07:17 KST)이 dcf489fc를 게시한다. 별도 수동 배포는 하지 않는다. TARGET 확정은 `number_check_passed: false`로 계속 막혀 있다.
 
-## 3. 현재 구현·검증·병렬 담당
+## 2. 정기 실행·연속 성공
 
-| 담당 | 소유 범위 | 상태·의존성 |
-| --- | --- | --- |
-| Main | 원본 #248→#263→#262 통합·공용 파일·인수인계 | #372 병합 a66faf8f. #248에 실제 최신canonical 병합 완료; 현재 원본PR 게시·최종6CI 단계. 중간 배포 금지 |
-| Darwin | 독립 리뷰·기존 PR 설명 | 노트 문구·모바일 CSS·UI로고 보존·TARGET 생산버전 수정 독립 APPROVE. 배포 후 시각 확인 준비 |
-| Kierkegaard | 실사이트 검증 | recovery236 PASS. 최종 frontend용 기존 검사 및 보충188검사 준비; 최종배포 신호 대기 |
-| Lovelace | TARGET 통합·실제 공개 경로 | #263 생산 버전 호환 수정·Node28·합성browser2·실제공개browser2 PASS. Main통합 완료, 소스 추가 수정 없음 |
+| 관측일 | run | 결과 | 비고 |
+| --- | --- | --- | --- |
+| 10/19 | 39336213259 | 성공 | |
+| 10/20 | 39522288311 | collect 성공 · **verify 실패** · deploy 건너뜀 | 원인: `macro_evidence_browser_test.js`가 실제 수집 파일에서도 미수집 배너를 기다림. **수정 #370(e967cbd3) 병합 확인**, 10/20 자료는 #371 복구 게시 |
+| 10/21 | 39701051682 | 성공 | 원장 v1/v2 각 3건(10/19·10/20·10/21), 기존 보존. RAW 재사용(`source=RAW raw=FOUND`) |
+| 10/22 | (22:17 UTC 예정) | — | **사용자 결정(10/22): 연속 성공 집계는 이 실행부터 1로 센다.** 결과 점검 23:15 UTC / 08:15 KST, 지연 점검 00:17 UTC / 09:17 KST |
 
-기존 PR 원본 ancestry를 유지하고 준비 브랜치를 원격에 보존했다. 원본 PR를 재사용하며 force push하지 않는다.
+- 10/21 게시 커버리지: Q 486 / G 494 / 양쪽 478, 분모 504, calc_version `qgv2-calc/2026-10-17.1`, `CALC_VERSION_MIXED` 0.
+- 매크로 근거(P1) PARTIAL: 11계열 LIVE, DOL TERMS_UNVERIFIED, Census 2건 SOURCE_KEY_NOT_CONFIGURED. 공식 국면·확률은 미산출 그대로다.
+- XOM·HONA는 NOT_AVAILABLE(`NO_ANNUAL_SEC_FINANCIALS`), XOM 주식수 COVER_UNCONFIRMED.
 
-- **#248**: 원본 claude/target-v1-builder 8c6990e2, 준비5c7630f1에 실제 canonical **a66faf8f**를 동기화했다. 담당11파일 및 구현15파일 유지·build136 PASS. 이 PR HEAD의 최종6CI를 확인한 후 병합한다. **#248 중간 배포 금지**.
-- **#263**: 원본 claude/target-v1-followups 194148f5, 준비 **35bdd5a2**. 최신 frontend13a + 실제 생산 calc_version 호환 수정450f1cfc/정확한guard핀 포함. Node28, 기존 합성 TARGET390/1280 및 별도 실제 공개자료390/1280 PASS. number_check.result null/false/null/0·실제가격/V0·답변/확정0 유지. #248 실제 병합 후 canonical 동기화·원본PR 게시·최종6CI 필요.
-- **#262**: 원본 claude/macro-rule-c-clean b7db9b60, 준비 **f62dc659**에 #263 호환 수정까지 통합했다. 전체조합 새 build141·공개25파일 동일·repo/privacy/email guard28records PASS. 기존 Python44/Node302/화면64·통합macro6 PASS. C는 HYPOTHESIS/UNCALIBRATED, gate_active=false/automatic=false, report/owner승인 요구 유지. #263 실제 병합 후 최종동기화/6CI 필요.
+## 3. TARGET v1 확정 조건 (목표 2026-11 둘째 주)
 
-**#372 최종검사 완료**: HEAD13a58584, [cockpit-pages39575257248](https://github.com/kco994553-star/Investment-System1/actions/runs/39575257248) build119139076551 **2026-10-21 09:50:34 UTC / 18:50:34 KST 성공**. 전체Python3630 PASS/1 skipped/298subtests, 브라우저 전체 통과(노트44·QGV필터60·G6정렬564 포함). 나머지필수5CI: research39575257366, presentation39575257277, c2139575257326, autonomy39575257289, webmvp39575257195 모두 같은HEAD 성공. PR의source/deploy는 조건대로 skipped다. #372는 병합했지만 아직 게시하지 않았다. 기존 복구 배포ae34의 실사이트236통과를 이 기능의 운영검증으로 세지 않는다.
+| 조건 | 상태 |
+| --- | --- |
+| 구현 통합 #248 → #263 | 둘 다 병합(10/22). 게시는 10/22 정기 실행 |
+| Q·G 각 454/504 이상 | 486 / 494 충족(10/21 게시본) |
+| 10종목 숫자 재대조(같은 calc_version) | 원지표 40칸은 현재 게시본(`qgv2-calc/2026-10-17.1`, as_of 10/22 00:50 UTC)에서도 불일치 0. **기기 FCF 수익률 7칸(FIX·RL·MA·RSG·MNST·CMG·EXPE) 미검증** — 가격이 필요해 기기에서만 맞출 수 있다. [대조 문서 0-2-7절](implementation/docs/qgv_scoring_standard/QGV_V2_NUMBER_CHECK_20261017.md). `number_check.result`는 그대로 `passed: false` |
+| 실제 사용자 카드 응답 | 미시작(#263 병합·게시 뒤) |
 
-Main #370 검증: macro 브라우저 390/1280 **10단계 통과**(초기 읽기·빈 상태·실제 제공 artifact·합성 새로고침·상세). 실제 10/20 artifact에 수정된 두 JS만 적용해 확인했다. 리뷰 지적 초기 읽기 경합·404·필수 labels/summary/관측 누락을 회귀에 추가했고 수정 전 실패를 확인했다. 최종 공통 새로고침 **159 checks**, 화면 보존 **20 screens**, 실제 artifact 경계 가드 **138파일** 통과. 관련 Python **73 passed/150 subtests**는 JS 리뷰 보완 전 실행 결과이며 Python 코드는 변경하지 않았다. 최종 HEAD e967cbd3의 원격 필수 **6/6 CI 성공**: cockpit-pages 39555638059, web-mvp-validation 39555637884, autonomy-gate-a 39555637886, web-research-guard 39555638018, web-state-presentation 39555637868, c21-real-data 39555637896. #370 병합·복구 배포 완료. 수집기·공식 계산·저장 정책·공개 범위는 변경하지 않는다.
+## 4. 열린 PR
 
-기존 수동 화면 배포는 **현재 게시 데이터**를 보존하므로 10/20 미게시 데이터를 복구하지 않는다. 실패 run 재실행은 원래 SHA의 시험을 쓰므로 해결책이 아니다. [10/21 복구 승인](implementation/docs/USER_DECISIONS_PENDING.md)을 적용한다. 권한은 이 저장소 Actions 읽기이며 artifact 제한은 코드상의 제한이다. 기존 deploy 잠금·SEC/원장 freshness·공개 경계 가드·전체 검증을 유지하고, 최종 배포 직전에 25개 게시 파일이 감사한 기존본 또는 고정 원본인지 비교한다. 알려지지 않은 새 데이터·404·망 오류이면 중단한다. 복구 후보 25개는 모두 고정 원본 해시여야 한다. 재수집·원장 추가 없음.
+- **#361** Worker 분할 이벤트: 배포 보류(Yahoo 권리 미해결). Yahoo 블록 누락은 "분할 정보 미확인". 무료 우선 대안 조사 결정 D1~D7 대기.
+- #305·#281(draft, 참고 보존), #267(합성 스튜디오, 보류).
+- 디자인 화면 2·3(브랜치만, PR 없음): `claude/design-technical`, `claude/design-macro`. a66faf8f 기준 동기화·전체 시험(매크로 152/0) 완료. dcf489fc로 다시 동기화하고 PR을 연다.
 
-복구 로컬 검증: 실제 ZIP/TAR 해시·25/25 JSON 바이트 일치, 새 코드/manifest 113개 불변, 공개 가드 138파일 PASS. 기존 게시본 대비 원장 v1/v2 각각 10/19 보존·원본 10/20 1건, 누락/변경/이동 0. 복구 전용 시험 130 PASS(실제 다운로드와 구분); 기존 workflow 경계 5개와 최종 freshness 형태 2개를 합쳐 **137 PASS**. #371 첫 CI의 5개 workflow는 같은 `test_affected_workflows_have_no_publication_sinks`의 업로드 수 1개 가정 때문에 실패했다. 승인된 복구 전용 upload의 job·조건·정확한 3경로를 검사하며 기존 Pages upload 앞의 공개 가드·브라우저 검사는 유지하도록 수정했다. 이어 기존 freshness 시험이 마지막 직전 단계만 가정해 실패했다. 기존 무조건 SEC/원장 검사와 추가 복구 전용 25파일 검사가 모두 deploy 잠금 안에서 배포보다 앞서는 정확한 구조를 검사하도록 정정했다. 독립 리뷰 통과. 최종 9066c67e의 필수 6개 job이 모두 성공: build 39563380368, guard 39563380409, repository-guard 39563380427, ingest-and-gate 39563380389, presentation 39563380373, validate 39563380383. #371은 ae34eb90으로 병합했다.
+## 5. 다음 할 일
 
-전송 확인의 제한: 로컬 `gh` ZIP GET은 `Forbidden`/exit 1/0 bytes로 실패했고 다른 경로로 우회하지 않았다. 같은 principal의 artifact metadata는 200이지만 ZIP 거부가 API 권한 또는 전송 계층인지 미분류이며 실제 scope를 단정하지 않는다. 앞서 보관한 공식 ZIP의 정확한 바이트 검증과 GitHub 복구 job의 실제 전송 성공은 별개다. 승인된 GitHub 복구 run 39567157784(HEAD ae34eb90)은 2026-10-21 08:09:27 UTC / 17:09:27 KST에 시작했다. source job 119112084667은 성공했고 08:09:35 UTC / 17:09:35 KST에 ZIP_VERIFIED를 기록했다. build/복구/최종 검사/배포가 모두 성공했다. 전체 Python 3622 PASS/1 skipped/298 subtests, 공개가드138 PASS. 배포 직전 SEC1537행 후퇴0·기존원장2기록 누락/변경/이동0, 고정25파일 최신 게시 재비교 PASS. 실사이트도 위 별도 프로필로 통과했다. 최신 게시 25파일의 production CLI는 한 차례 읽기 실패 후 코드 변경 없이 재확인해 exit 0으로 통과했다. 복구 dispatch 직전에도 최신 게시 25파일 검사 PASS, in_progress/queued 실행 0을 확인했다. 배포 시 잠금 안의 검사 자체가 다시 성공해야 한다.
+1. 10/22 정기 실행이 dcf489fc(#248·#263·#262 포함)를 게시하는지 확인하고 실사이트에서 TARGET 화면이 확정을 막는지 본다.
+2. 10/22 정기 실행 결과 보고(23:15 UTC). 연속 성공은 이 실행부터 센다.
+3. 기기 FCF 수익률 7칸: 사용자 기기 절차(대조 문서 0-2-3)로 맞춘 뒤 `number_check.result`를 같은 calc_version으로 갱신하는 작은 커밋.
+4. 디자인 화면 2·3 동기화 → 전체 시험 → PR → 병합.
+5. #361 대안 공급원 결정 반영.
 
-프런트엔드 연결 검증: navigation 40 PASS(light/dark × 390/1280), private-history 60 PASS, IA 1530 checks·16개 빈 기기 캡처 PASS, macro 10단계 PASS. 마지막 같은 기업 2.1 복귀 유지 보완은 navigation 40 및 독립 6개 lifecycle 확인에 포함한다. 실제 10/20 공개 파일 위의 자산 가드 138파일 PASS. 합성 봉으로 RAM 보존을 확인했으며 실가격/기업행사 검증 완료가 아니다. 기존 다른 기업·화면 이탈·로그아웃 정리 동작 유지. PC 라이트/모바일 다크 캡처를 실제 열람했지만 18쪽 PDF 전체 대조는 미완료다. 필수 CI 최종 HEAD와 배포는 별도로 확인한다.
+## 6. 유지할 경계
 
-추가 #372 통합 검증: QGV 표시 필터 Node 24 PASS(전체 Universe/공식 모델 불변 포함), 실제 통합 브라우저 60 PASS. 검색 복귀·홈 갱신 12시나리오/120단언 PASS 및 독립 리뷰 70단언 PASS. 선택 기업 프롬프트 projection 15·통합 브라우저 152단언/4폭·언어 조합 PASS, 관련 Python 41 PASS. 새 정확한 자산 해시를 고정했고 고정 10/20 데이터 위 공개 가드 138파일 PASS. G6 최종 실제 통합 build에서도 3/3·48 snapshots·564 checks PASS, guard138 PASS. 원격 cb593bbd의 font fixture 실패는 원인/최종 집중 검사/독립 재리뷰를 상세 기록했다. 실가격 검증이나 실사이트 실행을 뜻하지 않는다. [상세 통합 기록](implementation/docs/handoff/FRONTEND_WIRING_20261021.md).
-
-## 4. 기능 1.1 계층별 상태
-
-기능 번호는 기존 handoff/PR을 따른다. **기능 1 기업검색 ↔ 메뉴 0, 2 QGV ↔ 메뉴 1, 3 기술 ↔ 메뉴 2, 4 매크로 ↔ 메뉴 3, 5 뉴스 ↔ 메뉴 4, 6 포트폴리오 ↔ 메뉴 5, 7 프롬프트 ↔ 메뉴 6, 8 트리 ↔ 메뉴 n, 9 Lab ↔ 메뉴 n+1**. 18쪽 PDF 페이지 대응은 미확인이다. 원본 없는 하위 번호를 새로 확정하지 않는다. 기존 CI 기록을 이번 재실행으로 표시하지 않는다.
-
-| 기능 | 구현 / 시험 | 병합 | 게시 | 실사이트 확인·잔여 |
-| --- | --- | --- | --- | --- |
-| 1.1 기업검색 | 기존5요약·상세 + #372 연속성 시험 완료 | #362; #372 병합 | 기존 ae34 | 기존검색 PASS; 확장기능 미게시 |
-| 2.1 리더보드 | Universe504·공식/QG참고/개인 분리; #372 표시필터·단일정렬 시험 완료 | #364; #372 병합 | 기존 ae34 | 기존메뉴 PASS; 모바일 표 보완·시험·병합 완료, 미게시 |
-| 2.2 가중치 | 2단계·개인 프로필 / 기존CI | #300 | ae34 | 공식과 개인 분리; 미승인 수치 생성 금지 |
-| 2.3 13F 연구 | 공개 과거보유 조회 / 기존CI | 기존 | ae34 | 가중치 학습·채택 미구현; 기관 실제공식 아님 |
-| 2.4 상세·레이더 | 가치·비교·후보3축/NA / 기존CI | #311/#344/#364 | ae34 | 실제가격·권리 경계 유지 |
-| 2.5 QGV 트리 | 기존 설명·경로 | 기존 | ae34 | 18쪽 시안 미확보 |
-| 3.1 차트·시나리오 | 기존 + #372 기업ID/RAM 유지 / 합성시험 | #354/#359; #372 병합 | 기존 ae34 | 합성저장·reload PASS, 실제연속성 미확인 |
-| 3.2 패턴 | 감지·이력·설정 / 합성시험 | #355/#357 | ae34 | 노트/공식이력 분리 PASS; 실가격검증 아님 |
-| 3.3 노트 | 저장·편집·삭제·교환 / 기존CI | #359/#363 | ae34 | 실사이트 합성생성/수정/삭제/reload PASS; 계정동기화 아님 |
-| 4.1 국면·근거 | P1수집/링·#370 수정 / 최종6CI | #351/#352/#353/#356/#370 | ae34+10/20자료 | 국면·확률 미산출; 새로고침 UNCHANGED PASS |
-| 4.2~4.6 기존매크로 | 산업·개인·트리; #372 연결 / 로컬시험 | #358/#363; #372 병합 | 기존 ae34 | 개인추정 추가/삭제/reload PASS; C가설 #262 준비 |
-| 5.1 관계망 | 틀·검색안내 / 기존CI | #367 | ae34 | 생산자 미연결, 임의관계 없음 |
-| 5.2 공시·뉴스 | SEC/DART·schema2/필터 / 기존CI | #346/#367 | ae34 | NEWS LIVE/필터보존 PASS, 영향·가격반영 미산출 |
-| 6.1 포트폴리오 | 모델/실제/모의 분리; TARGET 준비 | #366; #248/#263 대기 | 기존 ae34 | 기존메뉴 PASS; TARGET 확정 미실행 |
-| 6.2~6.3 보고 | 일일·누락입력·실행프롬프트·답변검토 | 기존/#366 | ae34 | 주간집계 미결 |
-| 7.1 프롬프트 | 라이브러리·개인복사본; #372 기업가져오기 시험 완료 | #368; #372 병합 | 기존 ae34 | 기간의미 미정→수동, 자동공식적용 없음 |
-| 8 구조트리 | 기존전체연결 / 로컬시각 확인 | 기존 | ae34 | 18쪽·원본없는 하위번호 미확인 |
-| 9.1 백테스트 | 화면·설명·연구어댑터 | #368 | ae34 | 운영 실험등록/결과 미구현 |
-| 9.2 전진검증 | 가격없는 원장·기기계산 / 운영보존 확인 | 기존/#368 | 10/19+10/20 ae34 | v1/v2 날짜각1건·hash일치; 실제이후성과 별도 |
-
-최종 준비본 9영역 PC1440/모바일390 라이트 및 QGV/매크로 다크49캡처 실제열람. 확보6쪽과 비교 가능한 부분만 대조했다. 모바일 QGV 초기 숨는 점수열은 기존3열 줄바꿈으로 보완해4폭/2테마·독립리뷰를 통과했다. Lab 넓은 원장표는 내부 가로스크롤 가능하지만 날짜/지표 동시읽기 제약이 남는다. 전체 시안 일치나 모든 개인입력 상태 검증은 아니다.
-
-## 5. 열린 PR·승인 경계
-
-#372 병합 후 기존 열린 PR 7개: **#361, #305(draft), #281(draft), #267, #263, #262, #248**, 할당자 없음. 작성 계정이 같아도 Claude 로컬 작업 소유권을 넘겨받았다고 단정하지 않는다.
-
-- **#248→#263**: 최신 결정상 구현 통합 승인. 최신 canonical 동기화·필수 검사 후 순서대로 통합 대상. TARGET 확정은 같은 calc_version 숫자 검증·coverage·실제 사용자 응답 등 별도 조건 유지.
-- **#262**: 규칙 C는 승인된 가설. 재생·동기화 잔여. M-REENABLE은 기존 조건 및 별도 승인 필요, 참고 모드 유지.
-- **#361**: Yahoo 권리 미해결로 Worker 배포 명시적 보류. 분할 블록 누락은 미확인이고 확인된 빈 배열과 다름. #365 공급원 비교는 병합된 문서.
-- #305/#281 이전 디자인은 후속 방향으로 대체되어 참고용 보존. #267 합성 스튜디오 명시적 보류. claude/fe-doodle-map 통째 병합 금지.
-- #369/#365/#362/#364/#366/#367/#368/#363/#360은 이미 병합. **#366/#367/#368/#363/#360은 현재 ae34 게시에 모두 포함**된다.
-- 공통 V 공급원·금융 V·경기 모델·공식 매크로 gate 등 미승인 방법론을 연구 결과만으로 활성화하지 않는다. D1/D2/D3-A·기존 승인 구현은 재승인 없이 진행한다.
-
-## 6. 다음 실행·예약·보존
-
-다음 할 일은 (1) #248 원본PR 최종HEAD6CI·병합, (2) #263 실제canonical 동기화·원본PR 최종6CI·병합, (3) #262 같은 절차·가설참고모드 유지, (4) 정상 수동UI배포 전 진행실행/최신게시자료 확인·데이터/원장보존·141자산/브라우저실사이트검사, (5) 결과인수인계갱신과18쪽/미푸시자료확보후 남은시안대조다. #248 단독 중간 배포는 하지 않는다. 최종HEAD의 필수6CI를 과거 성공으로 대신하지 않는다.
-
-- 정기 cron 22:17 UTC / 다음 날 07:17 KST. 점검 기준 23:15 UTC / 다음 날 08:15 KST, 지연 점검 다음 날 00:17 UTC / 09:17 KST. 10/20 실행은 2시간19분 지연됐으므로 과거 “보통 15~20분”을 보장으로 쓰지 않는다.
-- **새 예약을 만들지 않았다.** 확인 가능한 자동화 목록에서 기존 Claude 결과/지연 점검의 계속 실행 증거를 찾지 못했다. Claude 세션 예약 상태 미확인. 현재 가능한 작업을 예약 시각까지 미루지 않는다.
-- 다음 dispatch 직전 진행·대기 실행과 최신 게시 확인. 확인을 위한 504 재수집·추가 원장 관측 금지. 다음 정상 실행의 RAW_FIRST 복구와 HONA 샤드 3 결과는 운영 증거로 별도 확인.
-- 정기 workflow 동시 실행 방지와 두 Pages deploy의 checked-cockpit-pages 잠금·최종 freshness 검사 유지. 수동 화면 배포의 데이터 보존과 정기 수집의 정상 데이터 변경 구분.
-- 사용자 시나리오·노트의 직접 입력 좌표만 승인된 브라우저 저장 대상. 공급자 가격·파생값·개인 보유/거래·시트 ID·토큰을 저장소/Pages/Actions 로그에 넣지 않는다. NA를 0/평균으로 채우지 않는다. Frozen/history/PIT/no-lookahead/provenance 유지.
-- 글꼴 예외는 승인된 두 파일의 정확한 경로·서명·크기·해시뿐. 가드 범위/파일 수 상한 확대 금지. 권한 거부 우회 금지, 원문 이유와 영향 보고.
-- 다른 작업자의 worktree·scratchpad·원자료를 삭제하지 않는다. 정리 전 소유자·병합·미커밋·재현 가능성 확인.
-
-일반 UI 배포의 로고만 재수집하던 경로를 --preserve-only로 보완했다. 로고/보존/공개경계114 PASS와 실제 게시25파일 바이트 동일·원장2건보존·가드138 PASS 확인. 정기 로고 수집과 권한은 유지한다. 노트 안내문 시험도 독립 APPROVE를 받았다. #372 최종13a58584 필수6CI 성공·병합 완료. 후속 PR는 각 최종HEAD를 따로 확인한다.
-
-#248 첫 최종006c1b80 CI는 5개workflow의 동일한 TAR 중복 fixture 2건에서 실패했다. a66 기준 전체TAR+app.js 중복은4,177,920bytes로 중복을 검사했지만, TARGET3자산을 추가하면4,239,360bytes로 기존4,194,304byte 상한이 먼저 거부했다(scanned0/oversized_archive1). 환경 문제가 아니라 시험 반례의 간섭이었다. 전체 정상TAR을 유지하고 508byte의 승인된 app-config.js를 일반/./경로로 중복시켰다. 4,085,760bytes, scanned137/duplicate_entries1만을 정확히 요구하며 크기 상한도 단언한다. 원래기준1 PASS/2subtests, 수정전2subtest실패, 수정후4 PASS/2subtests 및 독립실측/리뷰APPROVE. 생산가드·상한·기능코드는 변경하지 않았다. 새 최종HEAD의 필수6CI를 다시 확인한다.
+- 가격·가격 파생값·보유·거래·시트 ID·토큰·환율 값을 저장소·Pages·Actions 로그에 넣지 않는다. NA를 0으로 채우지 않는다.
+- force push·ruleset·AUTONOMY_MODE(READ_ONLY) 변경 금지. 가드 비활성화·검사 생략·보호 대상 축소 금지. 권한 검사가 거부하면 우회하지 않고 보고한다.
+- Frozen 자료·전진검증 원장 보존. Holdout 사용 권한 확대 없음.
+- 다른 작업자의 worktree·scratchpad·원자료를 지우지 않는다.
