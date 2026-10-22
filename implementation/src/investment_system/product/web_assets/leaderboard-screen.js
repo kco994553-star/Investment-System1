@@ -7,9 +7,10 @@
 'use strict';
 /* Shown columns. Below 750px (NARROW) the 'wide' columns are not drawn: their content moves into the per-row details button of the
    QGV cell (phone: rank, company and the QGV total come first; no column is hidden by CSS). Columns that would always be — (no
-   price or unconnected input) are not drawn at any width; one note names them. */
+   price or unconnected input) are not drawn at any width; one note names them. SIC (L3, 2.1.3) is a wide column; on the phone the
+   published code sits in the company cell instead. */
 const NARROW='(max-width: 749.98px)';
-const COLUMNS=[['rank','순위','Rank'],['company','기업·시총 순위','Company · cap rank'],['qgv','QGV','QGV'],['qgv_detail','Q·G·V 상세','Q·G·V detail',true],['earnings','실적','Earnings',true]];
+const COLUMNS=[['rank','순위','Rank'],['company','기업·시총 순위','Company · cap rank'],['sic','SIC','SIC',true],['qgv','QGV','QGV'],['qgv_detail','Q·G·V 상세','Q·G·V detail',true],['earnings','실적','Earnings',true]];
 const UNCONNECTED=[['daily','일간','Daily'],['consensus','컨센서스','Consensus'],['target','목표','Target'],['scenario','QGV 시나리오','QGV scenario'],['reeval','재평가','Re-evaluation'],['vmr','VMR','VMR']];
 // Phone detail rows the user opened (RAM only, this page): kept across repaints after new device quotes.
 const OPEN=new Set();
@@ -27,10 +28,22 @@ const fnId=key=>'lb-fn-'+FN[key][0].replaceAll('.','-');
 const escHtml=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
 // Stamp heading and display-only classification filters for the app's 2.1.3 row.
 function fnHeadHtml(key,locale){const[fn,ko,en]=FN[key];return '<h2 class="fn-head" id="'+fnId(key)+'"><span class="ia-sec">'+fn+'</span> <span class="fn-title">'+escHtml(locale==='en-US'?en:ko)+'</span></h2>';}
-function filterNoteHtml(locale){return '<p class="small" data-classification-note>'+escHtml(locale==='en-US'?'Industry, strategy theme and investment type are separate axes. These filters use the published SIC industry group and the company page’s type rule. They only hide rows: the Universe, official scores, ranks and model candidates do not change. Missing classification is not zero or another classification.':'산업·전략 테마·투자 유형은 서로 다른 축입니다. 게시된 SIC 업종군과 기업 화면의 유형 규칙으로 행만 숨깁니다. Universe·공식 점수·순위·모델 후보는 바뀌지 않습니다. 분류 자료 없음은 0이나 다른 분류로 대신 채우지 않습니다.')+'</p>';}
+function filterNoteHtml(locale){return '<p class="small" data-classification-note>'+escHtml(locale==='en-US'?'Industry, strategy theme and investment type are separate axes. These filters use the published SIC code (4 digits and its 2-digit major group), the SIC industry group and the company page’s type rule. No public file names SIC codes, so only the code is shown. They only hide rows: the Universe, official scores, ranks and model candidates do not change. Missing classification is not zero or another classification.':'산업·전략 테마·투자 유형은 서로 다른 축입니다. 게시된 SIC 코드(4자리와 앞 2자리)·SIC 업종군과 기업 화면의 유형 규칙으로 행만 숨깁니다. SIC 이름은 공개 자료에 없어 코드만 보입니다. Universe·공식 점수·순위·모델 후보는 바뀌지 않습니다. 분류 자료 없음은 0이나 다른 분류로 대신 채우지 않습니다.')+'</p>';}
 // Selections belong to this page's RAM, not the scoring profile, sessionStorage or the published population.
 // Repainting on APPLIED/REJUDGE reuses the choices with NEW inputs. A removed option stays selected (no silent broadening).
-let classificationView={industry:'',type:''};
+let classificationView={industry:'',sic2:'',sic4:'',type:''};
+/* L3 (2.1.3 SIC display filters, SIC column): the 4-digit SIC exactly as published, from the same sources as the industry axis:
+   sec-qgv2.json `sic` for a Universe code, company-classification.json industry `sic` for a TARGET id (also when its v0 group is
+   unmatched). A withdrawn identity or no published code is null: never 0, never taken from the industry group, a theme or another
+   company. The 2-digit filter is the code's own first two digits (SIC major group). No public file carries SIC names, so no name
+   label is drawn. Filtering only hides rows: Universe, official ranks, peer groups (industry group v0) and sorting do not change. */
+const SIC4=/^\d{4}$/;
+function sicOf(identity,publicScreens={}){
+ const id=identity.company_id,code=v=>typeof v==='string'&&SIC4.test(v)&&v!=='0000'?v:null;
+ if(typeof id==='string'&&id.includes(':')){const rec=publicScreens['sec-qgv2.json']?.records?.[id];return rec&&rec.state!=='WITHDRAWN'&&rec.identity_withdrawn!==true?code(rec.sic):null;}
+ const ind=publicScreens['company-classification.json']?.data?.companies?.[id]?.industry;return ind&&ind.identity_withdrawn!==true?code(ind.sic):null;
+}
+const sicMatch=(sic,want,digits)=>!want||(want==='NOT_AVAILABLE'?sic===null:sic!==null&&sic.slice(0,digits)===want);
 function classificationOf(identity,publicScreens={}){
  const id=identity.company_id,CS=globalThis.CompanyScreen,live=r=>r&&['LIVE','STALE'].includes(r.state)&&r.identity_withdrawn!==true;
  let industry=null,memberships=null;
@@ -45,17 +58,18 @@ function classificationOf(identity,publicScreens={}){
  }
  const has=memberships&&Object.values(memberships).some(v=>typeof v==='number'&&Number.isFinite(v));
  const types=has&&CS?.selectTypes?CS.selectTypes(memberships):null;
- return{industry,types};
+ return{industry,types,sic:sicOf(identity,publicScreens)};
 }
 function filterClassifications(identities,{publicScreens={},filters=classificationView}={}){
  return identities.filter(c=>{const x=classificationOf(c,publicScreens),i=filters.industry,t=filters.type;
-  return(!i||(i==='NOT_AVAILABLE'?x.industry===null:x.industry===i))&&(!t||(t==='NOT_AVAILABLE'?x.types===null:t==='NO_SELECTED_TYPE'?Array.isArray(x.types)&&x.types.length===0:x.types?.includes(t)));});
+  return(!i||(i==='NOT_AVAILABLE'?x.industry===null:x.industry===i))&&sicMatch(x.sic,filters.sic4,4)&&sicMatch(x.sic,filters.sic2,2)&&(!t||(t==='NOT_AVAILABLE'?x.types===null:t==='NO_SELECTED_TYPE'?Array.isArray(x.types)&&x.types.length===0:x.types?.includes(t)));});
 }
 function industryLabel(id,publicScreens,locale){const x=publicScreens['company-classification.json']?.data?.industry_config?.groups?.find(x=>x.id===id);
  return x?(locale==='en-US'?x.name_en:x.name):globalThis.UniverseCompany?.GROUP_LABEL?.[id]?.[locale==='en-US'?1:0]||id;}
 function classificationSummary({publicScreens={},locale='ko-KR'}={}){
  const en=locale==='en-US',missing=en?'Classification data missing':'분류 자료 없음',out=[];
  if(classificationView.industry)out.push((en?'SIC industry group: ':'SIC 업종군: ')+(classificationView.industry==='NOT_AVAILABLE'?missing:industryLabel(classificationView.industry,publicScreens,locale)));
+ for(const[axis,ko,enl]of [['sic2','SIC 2자리: ','SIC 2-digit: '],['sic4','SIC 4자리: ','SIC 4-digit: ']])if(classificationView[axis])out.push((en?enl:ko)+(classificationView[axis]==='NOT_AVAILABLE'?missing:classificationView[axis]));
  if(classificationView.type)out.push((en?'Company type: ':'기업 유형: ')+(classificationView.type==='NOT_AVAILABLE'?missing:classificationView.type==='NO_SELECTED_TYPE'?(en?'No selected type':'선택 유형 없음'):globalThis.CompanyScreen?.typeName(classificationView.type,locale)||classificationView.type));
  return out;
 }
@@ -63,12 +77,15 @@ function classificationFiltersHtml(identities,{publicScreens={},locale='ko-KR'}=
  const en=locale==='en-US',CS=globalThis.CompanyScreen,rows=identities.map(c=>classificationOf(c,publicScreens)),groups=[...new Set(rows.map(r=>r.industry).filter(Boolean))].sort();
  const label=id=>industryLabel(id,publicScreens,locale);
  const select=(axis,title,options)=>{const chosen=classificationView[axis],opts=[['',en?'All':'전체'],...options];
-  if(chosen&&!opts.some(([id])=>id===chosen))opts.push([chosen,en?'Selected group absent from this publication':'선택한 업종군이 새 게시본에 없음']);
+  if(chosen&&!opts.some(([id])=>id===chosen))opts.push([chosen,axis.startsWith('sic')?(en?'Selected SIC '+chosen+' absent from this publication':'선택한 SIC '+chosen+'이(가) 새 게시본에 없음'):(en?'Selected group absent from this publication':'선택한 업종군이 새 게시본에 없음')]);
   return '<label for="leader-classification-'+axis+'">'+escHtml(title)+' <select id="leader-classification-'+axis+'" data-classification-filter="'+axis+'">'+opts.map(([id,name])=>'<option value="'+escHtml(id)+'"'+(chosen===id?' selected':'')+'>'+escHtml(name)+'</option>').join('')+'</select></label>';};
+ const count=(digits,code)=>rows.filter(r=>r.sic!==null&&r.sic.slice(0,digits)===code).length,codes=digits=>[...new Set(rows.map(r=>r.sic&&r.sic.slice(0,digits)).filter(Boolean))].sort();
+ const sicOptions=digits=>codes(digits).map(code=>[code,code+' ('+count(digits,code)+(en?')':'개)')]).concat([['NOT_AVAILABLE',en?'SIC missing':'SIC 자료 없음']]);
  const missing=en?'Classification data missing':'분류 자료 없음',none=en?'No selected type (available memberships)':'선택 유형 없음 (확보된 소속도 기준)';
  return '<div class="chips">'+select('industry',en?'SIC industry group':'SIC 업종군',groups.map(id=>[id,label(id)]).concat([['NOT_AVAILABLE',missing]]))
+  +select('sic2',en?'SIC 2-digit':'SIC 2자리',sicOptions(2))+select('sic4',en?'SIC 4-digit':'SIC 4자리',sicOptions(4))
   +select('type',en?'Company type':'기업 유형',(CS?.TYPES||[]).map(id=>[id,CS.typeName(id,locale)]).concat([['NOT_AVAILABLE',missing],['NO_SELECTED_TYPE',none]]))+'</div>'
-  +'<p class="small" data-classification-coverage>'+escHtml((en?'Classification in the full list: ':'전체 목록의 분류: ')+(en?'industry missing ':'업종군 자료 없음 ')+rows.filter(r=>r.industry===null).length+' · '+(en?'type missing ':'유형 자료 없음 ')+rows.filter(r=>r.types===null).length+' · '+(en?'no selected type ':'선택 유형 없음 ')+rows.filter(r=>r.types?.length===0).length)+'</p>';
+  +'<p class="small" data-classification-coverage>'+escHtml((en?'Classification in the full list: ':'전체 목록의 분류: ')+(en?'industry missing ':'업종군 자료 없음 ')+rows.filter(r=>r.industry===null).length+' · '+(en?'SIC missing ':'SIC 자료 없음 ')+rows.filter(r=>r.sic===null).length+' · '+(en?'type missing ':'유형 자료 없음 ')+rows.filter(r=>r.types===null).length+' · '+(en?'no selected type ':'선택 유형 없음 ')+rows.filter(r=>r.types?.length===0).length)+'</p>';
 }
 function mountClassificationFilters(host,identities,options={}){
  if(!host)return;const active=host.contains(host.ownerDocument.activeElement)?host.ownerDocument.activeElement.id:null;
@@ -252,6 +269,8 @@ function mount(host,identities,{publicScreens={},locale,view='default',profiles=
  for(const r of rows){const tr=el('tr',undefined,{'data-leaderboard-row':r.company_id});if(view!=='profile')mark(tr,r.score||null);const link=el('a',r.ticker,{href:'#company/'+encodeURIComponent(r.company_id)}),company=el('td');if(globalThis.CompanyLogos)company.append(globalThis.CompanyLogos.node(doc,r.ticker,20));company.append(link);
   // KR-NAMES: display-only company name from the caller's name lookup (company-names-ko.json); never a sort key or score input.
   {const nm=typeof nameOf==='function'?nameOf(r.company_id):null;if(typeof nm==='string'&&nm)company.append(el('span',' '+nm,{class:'small','data-leaderboard-name':''}));}
+  // L3 SIC: the published code or — (NOT_AVAILABLE, never 0 or another class). Row attribute at every width; phone: in the company cell.
+  const sic=sicOf(r,publicScreens);tr.setAttribute('data-leaderboard-sic',sic||'NOT_AVAILABLE');
   if(r.m3.rank!==null)company.append(el('span',' · M3 #'+r.m3.rank+(r.m3.quality==='MISMATCH'?(en?' (mismatch)':' (불일치)'):'')+(r.m3.group_id?(en?' · class sum':' · 종류 합산'):''),{class:'badge','data-leaderboard-m3-rank':String(r.m3.rank),title:M3_LABEL[en?1:0]}));
   else company.append(el('span',' · '+(ready?'M3 — · '+r.m3.reason_codes.join(' / '):'—'),{class:'small','data-leaderboard-m3':'NOT_AVAILABLE','data-reason':r.m3.reason_codes.join(' ')}));
   // Q·G·V detail: the v2 summary with its flags (or the v2 NOT_AVAILABLE reason); in the profile view the v1 PREVIEW Q/G.
@@ -279,8 +298,8 @@ function mount(host,identities,{publicScreens={},locale,view='default',profiles=
    const detailId='lb-detail-'+r.company_id,open=OPEN.has(r.company_id),toggle=el('button',en?'Details':'상세',{type:'button',class:'lb-toggle','aria-expanded':String(open),'aria-controls':detailId,'aria-label':r.ticker+(en?' Q·G·V details':' Q·G·V 상세')});
    const more=el('div',undefined,{id:detailId,class:'lb-detail small','data-leaderboard-detail':''});more.append(...detail,el('div',(en?'Earnings ':'실적 ')+earningsText,{'data-earnings-qg-confirmation':r.earnings_status}));more.hidden=!open;
    toggle.onclick=()=>{const next=more.hidden;more.hidden=!next;toggle.setAttribute('aria-expanded',String(next));if(next)OPEN.add(r.company_id);else OPEN.delete(r.company_id);};
-   qgv.append(doc.createTextNode(' '),toggle,...(unranked?[unranked]:[]),more);tr.append(rank,company,qgv);}
-  else{if(unranked)qgv.append(unranked);const cell=el('td');cell.append(...detail);tr.append(rank,company,qgv,cell,el('td',earningsText,{'data-earnings-qg-confirmation':r.earnings_status}));}
+   qgv.append(doc.createTextNode(' '),toggle,...(unranked?[unranked]:[]),more);if(sic)company.append(el('span',' · SIC '+sic,{class:'small','data-leaderboard-sic-code':sic}));tr.append(rank,company,qgv);}
+  else{if(unranked)qgv.append(unranked);const cell=el('td');cell.append(...detail);tr.append(rank,company,el('td',sic||'—',{'data-leaderboard-sic-cell':sic||'NOT_AVAILABLE'}),qgv,cell,el('td',earningsText,{'data-earnings-qg-confirmation':r.earnings_status}));}
   body.append(tr);}
  if(!rows.length){const tr=el('tr');tr.append(el('td',ex!=='all'&&all.length?(en?'No company in this view.':'이 보기에 해당하는 기업이 없습니다.'):(en?'No matching companies.':'일치하는 기업이 없습니다.'),{colspan:String(cols.length)}));body.append(tr);}
  table.append(thead,body);wrap.append(table);sList.append(wrap,el('p',off?(en?'— = NOT_AVAILABLE. Rank and QGV are QGV v2 PROVISIONAL values computed in this device’s memory. '+(personal?'The rank is a personal preset rank over the Universe (not the official QGV rank): among the ':'The rank is the official QGV rank over the Universe: among the ')+scope.ranked+' rows with a V score of the '+scope.base+' Universe securities of the published sec-qgv2.json (a TARGET company in the Universe is the same row). Filters (search, group, interest, TARGET) only hide rows and never re-rank. The '+scope.outside+' TARGET companies outside the Universe are listed apart and are not ranked. A company whose QGV v2 cannot be computed has rank — and is listed last; it is never shown as 0. Earnings are marked confirmed only after the disclosed quarter is reflected in Q/G; otherwise the filing window is an estimate. M3 rank is a personal reference from the Universe sheet read on this device (RAM only, not an official rank).':'— = NOT_AVAILABLE. 순위·QGV는 이 기기 메모리에서 계산한 QGV v2 PROVISIONAL 값입니다. 순위는 '+(personal?'개인 프리셋 순위(Universe 기준 · 공식 QGV 순위 아님)':'Universe 공식 QGV 순위')+'로, 공개 sec-qgv2.json의 Universe '+scope.base+'개 종목 중 V가 산출된 '+scope.ranked+'개 안의 순위입니다(Universe 안의 TARGET 기업은 같은 행). 필터(검색·그룹·관심·TARGET)는 행만 숨기며 순위를 다시 매기지 않습니다. Universe 밖 TARGET '+scope.outside+'개는 따로 보여 주며 순위에 넣지 않습니다. QGV v2를 계산할 수 없는 기업은 순위 —로 맨 뒤에 두며 0으로 표시하지 않습니다. 실적은 공시 분기가 Q·G에 반영됐을 때만 확인으로 표시하며, 그 외 시기는 제출 패턴의 예상입니다. M3 순위는 내 기기에서 읽은 Universe 시트 기준 개인 참고값(메모리 전용·공식 순위 아님)입니다.'):(en?'— = NOT_AVAILABLE. Rank and QGV are QGV v2 PROVISIONAL values computed in this device’s memory, ranked among the '+scope.ranked+' ranked rows of the '+scope.base+' screen companies (the published sec-qgv2.json is not loaded, so no Universe rank; filters only hide rows). A company whose QGV v2 cannot be computed has rank — and is listed last; it is never shown as 0. M3 rank is a personal reference from the Universe sheet read on this device (RAM only, not an official rank).':'— = NOT_AVAILABLE. 순위·QGV는 이 기기 메모리에서 계산한 QGV v2 PROVISIONAL 값이며 이 화면 '+scope.base+'개 기업 중 순위가 매겨진 '+scope.ranked+'개 안의 순위입니다(공개 sec-qgv2.json이 없어 Universe 순위 아님 · 필터는 행만 숨김). QGV v2를 계산할 수 없는 기업은 순위 —로 맨 뒤에 두며 0으로 표시하지 않습니다. M3 순위는 내 기기에서 읽은 Universe 시트 기준 개인 참고값(메모리 전용·공식 순위 아님)입니다.'),{class:'small','data-leaderboard-rank-scope':'',...(prov?QS.provenanceAttrs(prov):{}),'data-rank-population':off?'UNIVERSE':'IDENTITIES','data-rank-base':String(scope.base),'data-ranked':String(scope.ranked),'data-outside-universe':String(scope.outside)}));
@@ -320,5 +339,5 @@ function mount(host,identities,{publicScreens={},locale,view='default',profiles=
  const stages=el('details',undefined,{'data-reeval-stages':''});stages.append(el('summary',en?'Re-evaluation signal stages':'재평가 신호 단계'));const list=el('ol');for(const[ko,enl]of STAGES)list.append(el('li',en?enl:ko));stages.append(list,el('p',en?'Price change, threshold and distance are shown once the signal is connected (NOT_AVAILABLE now).':'신호가 연결되면 가격 변화량·임계값·거리를 함께 보여 줍니다(현재 NOT_AVAILABLE).',{class:'small'}));sCand.append(stages);
  const actions=el('div',undefined,{class:'chips'});for(const label of [en?'Send selection to paper trading':'선택 종목 모의투자',en?'Send to backtest':'백테스트로 보내기']){const b=el('button',label,{type:'button',disabled:''});actions.append(b);}sCand.append(actions,el('p',en?'Paper trading and backtest are not connected yet.':'모의투자·백테스트는 아직 연결되지 않았습니다.',{class:'small'}));
  host.replaceChildren(card);return{shown:rows.length,explore:ex};}
-return Object.freeze({COLUMNS,UNCONNECTED,NARROW,M3_LABEL,EXPLORE,SORTS,SORT_IDS,DEFAULT_SORT,FN,PERIODS,fnHeadHtml,filterNoteHtml,classificationOf,filterClassifications,classificationSummary,classificationFiltersHtml,mountClassificationFilters,sortLabel,sortOptions,oppositeSort,sortAvailable,sortRows,populationOf,rowsFor,modelChecks,mount});
+return Object.freeze({COLUMNS,UNCONNECTED,NARROW,M3_LABEL,EXPLORE,SORTS,SORT_IDS,DEFAULT_SORT,FN,PERIODS,fnHeadHtml,filterNoteHtml,sicOf,classificationOf,filterClassifications,classificationSummary,classificationFiltersHtml,mountClassificationFilters,sortLabel,sortOptions,oppositeSort,sortAvailable,sortRows,populationOf,rowsFor,modelChecks,mount});
 });

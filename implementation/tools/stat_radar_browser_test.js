@@ -251,6 +251,64 @@ const FAKE_STORE = (b) => { const real = window.PriceStore; window.PriceStore = 
         const m = expectPublic(p, { code: uni.code }).axes.margin_stability; if (m.company.score !== null) assert.equal(await el.locator('.sr-mark[data-sr-series="company"][data-sr-axis="margin_stability"]').count(), 1);
         await el.locator('[data-sr-aux-toggle]').click(); assert.equal(await el.locator('svg[data-sr-svg]').getAttribute('data-sr-axes'), '6'); pass += 3;
       }
+      // 2a) Comparison series ("비교군 바꾸기", 2.4): display only. PC = toggle buttons (aria-pressed), phone = one select; the
+      //     competitor average stays disabled with the REL-SOURCE "미연결" note. Axes, scores, table, official rows and browser
+      //     storage are unchanged; the choice lives in RAM for this page only.
+      if (uni) {
+        phase = width + ' COMPARE'; await page.goto(BASE + '#company/' + encodeURIComponent(uni.code)); const el = await radar(page), exp = expectPublic(p, { code: uni.code });
+        const series = exp.gr.same ? ['company', 'industry'] : ['company', 'industry', 'sic'], phone = width < 750;
+        const storage = () => page.evaluate(() => JSON.stringify([Object.keys(localStorage).sort(), Object.keys(sessionStorage).sort()])), st0 = await storage();
+        const cells = () => el.locator('td[data-sr-series]').evaluateAll((ns) => ns.map((n) => n.dataset.srSeries + ':' + n.dataset.srRaw + ':' + n.dataset.srScore + ':' + n.dataset.srReason).join('|'));
+        const drawn = () => el.locator('svg[data-sr-svg] g.sr-series').evaluateAll((ns) => ns.map((n) => [...n.classList].find((c) => c.startsWith('sr-series-')).slice(10)).sort());
+        const marks = () => el.locator('.sr-mark[data-sr-series="company"]').count(), cells0 = await cells(), marks0 = await marks();
+        const label0 = await el.locator('svg[data-sr-svg]').getAttribute('aria-label');
+        assert.equal(await el.getAttribute('data-sr-show'), series.join(','), phase + ' every series shown by default');
+        assert.deepEqual(await drawn(), [...series].sort(), phase + ' default drawing');
+        const group = el.locator('[data-sr-compare]'); assert.equal(await group.count(), 1, phase + ' one comparison control');
+        assert.match(await group.textContent(), /비교군 바꾸기/);
+        const buttons = el.locator('[data-sr-series-toggle]'), select = el.locator('select[data-sr-compare-select]');
+        assert.deepEqual(await buttons.evaluateAll((ns) => ns.map((n) => n.dataset.srSeriesToggle)), [...series, 'competitor'], phase + ' toggle per series');
+        const comp = el.locator('[data-sr-series-toggle="competitor"]'); assert.equal(await comp.isDisabled(), true, phase + ' competitor disabled');
+        assert.match(await comp.textContent(), /미연결/); assert.match(await group.textContent(), /REL-SOURCE/);
+        assert.equal(await select.locator('option[value="competitor"]').getAttribute('disabled'), '', phase + ' competitor option disabled');
+        assert.match(await select.locator('option[value="competitor"]').textContent(), /미연결/);
+        assert.equal(await page.locator('label[for="' + (await select.getAttribute('id')) + '"]').count(), 1, phase + ' select has a label');
+        const box = async (loc) => loc.evaluate((n) => { const r = n.getBoundingClientRect(); return { w: r.width, h: r.height }; });
+        if (phone) {
+          assert.equal(await select.isVisible(), true, phase + ' phone: select'); assert.equal(await buttons.first().isVisible(), false, phase + ' phone: no toggle row');
+          assert.ok((await box(select)).h >= 44, phase + ' select target >= 44px'); assert.equal(await select.inputValue(), exp.gr.same ? 'industry' : 'all');
+          const opts = await select.locator('option').evaluateAll((ns) => ns.map((n) => n.value));
+          assert.deepEqual(opts, exp.gr.same ? ['industry', 'none', 'competitor'] : ['all', 'industry', 'sic', 'none', 'competitor'], phase + ' options');
+          const steps = exp.gr.same ? [['none', ['company']], ['industry', ['company', 'industry']]] : [['industry', ['company', 'industry']], ['sic', ['company', 'sic']], ['none', ['company']], ['all', ['company', 'industry', 'sic']]];
+          for (const [v, want] of steps) { await select.selectOption(v); await page.waitForFunction((w) => document.querySelector('[data-stat-radar]').dataset.srShow === w, want.join(','));
+            assert.deepEqual(await drawn(), [...want].sort(), phase + ' select ' + v); assert.equal(await select.inputValue(), v, phase + ' select keeps ' + v);
+            assert.equal(await page.evaluate(() => document.activeElement && document.activeElement.matches('select[data-sr-compare-select]')), true, phase + ' focus stays on the select');
+            assert.equal(await cells(), cells0, phase + ' table unchanged ' + v); assert.equal(await marks(), marks0, phase + ' company vertices unchanged ' + v); pass += 3; }
+        } else {
+          assert.equal(await select.isVisible(), false, phase + ' PC: no select'); assert.equal(await buttons.first().isVisible(), true, phase + ' PC: toggles');
+          for (const s of series) { const b = el.locator('[data-sr-series-toggle="' + s + '"]'), bb = await box(b); assert.ok(bb.h >= 44 && bb.w >= 44, phase + ' ' + s + ' target >= 44px'); assert.equal(await b.getAttribute('aria-pressed'), 'true'); }
+          for (const s of series.slice(1)) {
+            const b = el.locator('[data-sr-series-toggle="' + s + '"]'); await b.click();
+            assert.equal(await el.locator('[data-sr-series-toggle="' + s + '"]').getAttribute('aria-pressed'), 'false', phase + ' ' + s + ' off');
+            assert.deepEqual(await drawn(), series.filter((x) => x !== s).sort(), phase + ' ' + s + ' hidden'); assert.equal(await el.getAttribute('data-sr-show'), series.filter((x) => x !== s).join(','));
+            assert.equal(await page.evaluate((s) => document.activeElement && document.activeElement.dataset.srSeriesToggle, s), s, phase + ' focus stays on the toggle');
+            assert.equal(await el.locator('[data-sr-legend="' + s + '"]').getAttribute('data-sr-legend-shown'), 'false', phase + ' legend says hidden');
+            assert.equal(await cells(), cells0, phase + ' table unchanged without ' + s); assert.equal(await marks(), marks0, phase + ' company vertices unchanged');
+            assert.equal(await el.locator('svg[data-sr-svg]').getAttribute('data-sr-axes'), '6', phase + ' axes unchanged');
+            await el.locator('[data-sr-series-toggle="' + s + '"]').click(); assert.deepEqual(await drawn(), [...series].sort(), phase + ' ' + s + ' back'); pass += 4; }
+          // the company can be hidden too (comparison groups only); keyboard works on the real buttons
+          const cb = el.locator('[data-sr-series-toggle="company"]'); await cb.focus(); await page.keyboard.press('Enter');
+          assert.equal(await marks(), 0, phase + ' company hidden'); assert.equal(await el.locator('[data-sr-shape="company"]').count(), 0); assert.equal(await cells(), cells0);
+          await page.keyboard.press(' '); assert.equal(await marks(), marks0, phase + ' company back'); pass += 2;
+        }
+        // The choice survives a repaint of the same radar (RAM), never reaches browser storage, and the summary names what is drawn.
+        if (phone) await select.selectOption('none'); else await el.locator('[data-sr-series-toggle="industry"]').click();
+        assert.match(await el.locator('svg[data-sr-svg]').getAttribute('aria-label'), /표시 계열/); assert.notEqual(await el.locator('svg[data-sr-svg]').getAttribute('aria-label'), label0);
+        const want = phone ? 'company' : series.filter((x) => x !== 'industry').join(',');
+        await page.evaluate(() => StatRadar.mount(document.querySelector('main'))); await page.waitForFunction((w) => document.querySelector('[data-stat-radar]').dataset.srShow === w, want);
+        assert.equal(await storage(), st0, phase + ' nothing written to browser storage'); pass += 3;
+        await shot(el, 'radar-universe-' + width + '-light-compare');
+      }
       // 2b) One V path: with synthetic Universe-tab quotes (made-up prices, never real), the radar's V equals the shared
       //     QgvScores.pageResult V for the same quotes, and its peers are the rows of that same result.
       if (uni) {

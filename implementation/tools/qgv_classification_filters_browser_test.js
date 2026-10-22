@@ -13,6 +13,9 @@ function types(){const at='2026-10-13T12:00:00Z',companies=Object.fromEntries(Ob
  return {schema_version:1,kind:'COMPANY_TYPES_PRICEFREE',as_of:at,state:'LIVE',sources:[{agency:'SEC_COMPANYFACTS',sha256:'a'.repeat(64),acquired_at:at},{agency:'SEC_SUBMISSIONS',sha256:'b'.repeat(64),acquired_at:at}],reason_codes:[],freshness_basis:'SOURCE_ACQUISITION',stale_after_seconds:86400,data:{companies,method_status:'PROVISIONAL_UNCALIBRATED',availability_basis:'OBSERVED_CAPTURE_ONLY'}};
 }
 const ids=page=>page.locator('[data-leaderboard-row]').evaluateAll(rs=>rs.map(r=>r.dataset.leaderboardRow));
+// L3: each shown row's published SIC (row attribute), official rank cell and the visible SIC text (wide: SIC column; phone: company cell).
+const rowsInfo=page=>page.locator('[data-leaderboard-row]').evaluateAll(rs=>rs.map(r=>({id:r.dataset.leaderboardRow,sic:r.dataset.leaderboardSic,rank:r.querySelector('[data-leaderboard-rank]')?.dataset.leaderboardRank||null,
+ cell:r.querySelector('[data-leaderboard-sic-cell]')?.textContent??null,code:r.querySelector('[data-leaderboard-sic-code]')?.textContent??null})));
 async function settle(page){await page.waitForFunction(()=>leaderPage&&leaderPage.inputs===publicScreens['sec-qgv2.json']&&QgvScores.isCurrent(window,leaderPage.result)&&leaderScores()===leaderPage.result.computed);}
 async function official(page){return page.evaluate(()=>{const S=leaderScores(),pop=officialPopulation();return {scores:S,model:QgvScores.officialModel({identities:pop.official.identities,v2Inputs:publicScreens[Qgv2Inputs.FILE],quotes:leaderQuotes,official:pop.official,computed:S})};});}
 (async()=>{const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH});let checks=0,phase='START';
@@ -40,17 +43,34 @@ async function official(page){return page.evaluate(()=>{const S=leaderScores(),p
    await page.locator('#leader-query').fill('AMD');assert.deepEqual(await ids(page),[]);await page.locator('#leader-query').fill('');assert.deepEqual(await ids(page),['nvda']);checks++;
    await type.selectOption('NO_SELECTED_TYPE');assert.deepEqual(await ids(page),['amd']);assert.deepEqual(await official(page),before);checks++;
    await page.locator('#leader-target').uncheck();await industry.selectOption('');await type.selectOption('NOT_AVAILABLE');assert.ok(!(await ids(page)).includes('amd'));assert.ok((await ids(page)).length>400);assert.deepEqual(await official(page),before);checks++;
-   await type.selectOption('');await industry.selectOption('utilities');assert.deepEqual(await ids(page),['gev']);checks++;
+   phase=width+' '+locale+' sic';await type.selectOption('');const sic2=page.locator('#leader-classification-sic2'),sic4=page.locator('#leader-classification-sic4');
+   for(const s of [sic2,sic4]){assert.equal(await s.count(),1);const b=await s.boundingBox();assert.ok(b&&b.height>=44&&b.width>=44,'SIC control is at least 44px');assert.equal(await page.locator('label[for="'+await s.getAttribute('id')+'"]').count(),1);}checks++;
+   const all=await rowsInfo(page),sicOf=Object.fromEntries(all.map(r=>[r.id,r.sic])),rankOf=Object.fromEntries(all.map(r=>[r.id,r.rank]));
+   assert.equal(all.length,504);assert.equal(sicOf.nvda,'3674');assert.equal(sicOf.amd,'3674');assert.equal(sicOf.gev,'4900');assert.ok(all.every(r=>r.sic==='NOT_AVAILABLE'||/^\d{4}$/.test(r.sic)));
+   const missing=all.filter(r=>r.sic==='NOT_AVAILABLE');assert.ok(missing.length>400&&missing.length<all.length,'synthetic data has rows without a published SIC');
+   assert.equal(await page.locator('[data-leaderboard-table] th[data-leaderboard-col="sic"]').count(),width<750?0:1);
+   for(const r of all)if(width<750){assert.equal(r.cell,null);assert.equal(r.code,r.sic==='NOT_AVAILABLE'?null:' · SIC '+r.sic,'phone: code in the company cell, nothing invented when missing');}
+    else{assert.equal(r.code,null);assert.equal(r.cell,r.sic==='NOT_AVAILABLE'?'—':r.sic,'missing SIC is —, never 0 or another class');}checks++;
+   await sic4.selectOption('3674');const want=all.filter(r=>r.sic==='3674').map(r=>r.id);assert.ok(want.includes('nvda')&&want.includes('amd'));assert.deepEqual(await ids(page),want);
+   for(const r of await rowsInfo(page))assert.equal(r.rank,rankOf[r.id],'official rank number unchanged under a SIC filter');assert.deepEqual(await official(page),before);
+   assert.match(await page.locator('#leader-summary').textContent(),locale==='en-US'?/SIC 4-digit: 3674/:/SIC 4자리: 3674/);checks++;
+   await sic4.selectOption('');await sic2.selectOption('36');assert.deepEqual(await ids(page),all.filter(r=>r.sic.startsWith('36')).map(r=>r.id));
+   assert.ok((await rowsInfo(page)).every(r=>r.sic!=='NOT_AVAILABLE'&&r.rank===rankOf[r.id]),'missing-SIC rows are never shown under a SIC code');
+   await sic4.selectOption('7372');assert.deepEqual(await ids(page),[],'2-digit and 4-digit intersect');await sic2.selectOption('');assert.deepEqual(await ids(page),all.filter(r=>r.sic==='7372').map(r=>r.id));
+   await sic4.selectOption('NOT_AVAILABLE');assert.deepEqual(await ids(page),missing.map(r=>r.id));assert.ok((await rowsInfo(page)).every(r=>r.sic==='NOT_AVAILABLE'&&r.code===null&&(width<750||r.cell==='—')),'never relabeled');
+   assert.deepEqual(await official(page),before);await sic4.selectOption('');assert.equal((await ids(page)).length,504);checks++;
+   phase=width+' '+locale+' sic+industry';await industry.selectOption('utilities');assert.deepEqual(await ids(page),['gev']);await sic4.selectOption('4900');assert.deepEqual(await ids(page),['gev']);checks++;
    phase=width+' '+locale+' refresh';served.day=2;await page.locator('[data-refresh-button]').click();await page.waitForFunction(()=>DataRefresh.last().state==='APPLIED');await settle(page);
    assert.equal(await industry.inputValue(),'utilities');assert.deepEqual(await ids(page),[]);assert.match(await industry.locator('option:checked').textContent(),locale==='en-US'?/absent.*publication/:/새 게시본에 없음/);assert.deepEqual(await official(page),before);checks++;
+   assert.equal(await sic4.inputValue(),'4900','a SIC code absent from the new publication stays selected (no silent broadening)');assert.match(await sic4.locator('option:checked').textContent(),locale==='en-US'?/SIC 4900 absent.*publication/:/SIC 4900.*새 게시본에 없음/);checks++;
    phase=width+' '+locale+' failure';served.day=1;served.fail=true;await page.locator('[data-refresh-button]').click();await page.waitForFunction(()=>DataRefresh.last().state==='FAILED');
-   assert.equal(await industry.inputValue(),'utilities');assert.deepEqual(await ids(page),[]);assert.deepEqual(await official(page),before);checks++;
+   assert.equal(await industry.inputValue(),'utilities');assert.equal(await sic4.inputValue(),'4900');assert.deepEqual(await ids(page),[]);assert.deepEqual(await official(page),before);checks++;
    phase=width+' '+locale+' rejudge';await page.clock.setSystemTime(new Date('2026-10-29T00:00:00Z'));await page.evaluate(()=>DataRefresh.rejudge('VISIBLE'));await settle(page);
-   assert.equal(await industry.inputValue(),'utilities');assert.deepEqual(await ids(page),[]);checks++;
+   assert.equal(await industry.inputValue(),'utilities');assert.equal(await sic4.inputValue(),'4900');assert.deepEqual(await ids(page),[]);checks++;
    phase=width+' '+locale+' navigation';await page.evaluate(()=>location.hash='portfolio');await page.locator('[data-model-candidates]').waitFor();
    const model=await page.locator('[data-model-candidates]').textContent();assert.doesNotMatch(model,/생성기|no generator|no selector/i);assert.match(model,/N10[\s\S]*N15[\s\S]*N20/);assert.match(model,locale==='en-US'?/TARGET.*not finalized/:/TARGET 확정 결과는 (?:아닙니다|아니며)/);checks++;
-   await page.locator('[data-model-candidates] a[href="#leaderboard"]').click();await industry.waitFor();await settle(page);assert.equal(await industry.inputValue(),'utilities');assert.deepEqual(await ids(page),[]);checks++;
-   await industry.selectOption('');assert.equal((await ids(page)).length,504);assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));checks++;
+   await page.locator('[data-model-candidates] a[href="#leaderboard"]').click();await industry.waitFor();await settle(page);assert.equal(await industry.inputValue(),'utilities');assert.equal(await sic4.inputValue(),'4900');assert.deepEqual(await ids(page),[]);checks++;
+   await sic4.selectOption('');assert.deepEqual(await ids(page),[]);await industry.selectOption('');assert.equal((await ids(page)).length,504);assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));checks++;
    assert.equal(await page.evaluate(()=>Object.values(sessionStorage).some(v=>/classificationView|leader-classification/.test(v))),false);assert.deepEqual(errors,[]);assert.equal(external,0);checks++;
   }finally{await context.close();}
  }}catch(e){console.error('FAIL qgv classification '+phase+' '+e.message);process.exitCode=1;}finally{await browser.close();}

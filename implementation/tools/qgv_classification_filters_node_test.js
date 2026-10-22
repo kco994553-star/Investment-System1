@@ -49,3 +49,52 @@ test('Universe filters reuse published groups and existing type selection, inclu
  assert.deepEqual(L.filterClassifications(rows,{publicScreens:pub,filters:{type:'NOT_AVAILABLE'}}).map(x=>x.company_id),['NYSE:SYNI1']);
  assert.deepEqual(L.filterClassifications(rows,{publicScreens:pub,filters:{industry:'NOT_AVAILABLE'}}).map(x=>x.company_id),['NYSE:SYNI1']);
 });
+// L3 (2.1.3): SIC 4-digit / 2-digit display filters and the SIC column read only the published SIC code (company-classification
+// industry.sic for a TARGET id, sec-qgv2 `sic` for a Universe code). Missing SIC is never 0, a group, a theme or a neighbour's code.
+function sicScreens(){const s=screens(),c=s['company-classification.json'].data.companies;
+ c.nvda.industry={state:'LIVE',sic:'3674',group:'manufacturing_industrial_tech'};c.amd.industry={state:'NOT_AVAILABLE',sic:'3672',group:null,reason_code:'SIC_UNMATCHED'};
+ c.msft={industry:{state:'LIVE',sic:'7372',group:'services_software_health'}};c.gev={industry:{state:'NOT_AVAILABLE',sic:null,group:null,reason_code:'SIC_NOT_AVAILABLE'}};
+ c.hanmi={themes:{memberships:{manufacturing_industrial_tech:{member:true}}}};return s;}
+const sicIds=[...ids,{company_id:'msft',ticker:'MSFT'},{company_id:'gev',ticker:'GEV'}];
+test('SIC 4-digit and 2-digit filters use only published codes; missing SIC is never relabeled or matched by a code',()=>{
+ assert.equal(typeof L.sicOf,'function','SIC reader API must exist');const s=deepFreeze(sicScreens()),rows=deepFreeze(structuredClone(sicIds));
+ assert.deepEqual(rows.map(r=>L.sicOf(r,s)),['3674','3672',null,'7372',null],'published code or null; theme and group never fill it');
+ assert.deepEqual(rows.map(r=>L.classificationOf(r,s).sic),['3674','3672',null,'7372',null]);
+ const run=filters=>L.filterClassifications(rows,{publicScreens:s,filters}).map(x=>x.company_id);
+ assert.deepEqual(run({sic4:'3674'}),['nvda']);assert.deepEqual(run({sic2:'36'}),['nvda','amd']);assert.deepEqual(run({sic2:'73'}),['msft']);
+ assert.deepEqual(run({sic4:'NOT_AVAILABLE'}),['hanmi','gev']);assert.deepEqual(run({sic2:'NOT_AVAILABLE'}),['hanmi','gev']);
+ for(const f of [{sic4:'3674'},{sic2:'36'},{sic2:'73'},{sic4:'0000'},{sic2:'00'}])for(const id of run(f))assert.ok(['nvda','amd','msft'].includes(id),'a missing-SIC row never matches a code filter');
+ assert.deepEqual(run({sic4:'9999'}),[],'a code absent from the publication never broadens to all');assert.deepEqual(run({sic2:'36',sic4:'7372'}),[],'axes intersect');
+ assert.deepEqual(run({sic2:'36',industry:'manufacturing_industrial_tech'}),['nvda'],'SIC code and industry group intersect; a group never stands in for a code');
+ assert.deepEqual(run({sic2:'36',type:'growth'}),['nvda']);assert.equal(L.filterClassifications(rows,{publicScreens:s,filters:{sic2:'',sic4:''}})[1],rows[1],'same identity objects');
+});
+test('SIC filter controls and the SIC column: codes from the data only, no invented SIC names, missing counted apart',()=>{
+ const s=deepFreeze(sicScreens()),html=L.classificationFiltersHtml(sicIds,{publicScreens:s,locale:'ko-KR'}),en=L.classificationFiltersHtml(sicIds,{publicScreens:s,locale:'en-US'});
+ for(const h of [html,en]){assert.match(h,/id="leader-classification-sic4"/);assert.match(h,/id="leader-classification-sic2"/);
+  const v=axis=>[...h.split('id="leader-classification-'+axis+'"')[1].split('</select>')[0].matchAll(/value="([^"]*)"/g)].map(m=>m[1]);
+  assert.deepEqual(v('sic4'),['','3672','3674','7372','NOT_AVAILABLE']);assert.deepEqual(v('sic2'),['','36','73','NOT_AVAILABLE']);
+  for(const axis of ['sic2','sic4'])assert.doesNotMatch(h.split('id="leader-classification-'+axis+'"')[1].split('</select>')[0],/반도체|소프트웨어|Semiconductor|Software/,'no SIC name label: no public file carries one');assert.match(h,/for="leader-classification-sic4"/);}
+ assert.match(html,/SIC 자료 없음 2/);assert.match(en,/SIC missing 2/);
+ assert.deepEqual(L.COLUMNS.find(c=>c[0]==='sic'),['sic','SIC','SIC',true],'SIC column: wide table; phone shows the code in the company cell');
+ assert.ok(L.COLUMNS.findIndex(c=>c[0]==='sic')===L.COLUMNS.findIndex(c=>c[0]==='company')+1);
+ for(const locale of ['ko-KR','en-US'])assert.match(L.filterNoteHtml(locale),locale==='en-US'?/SIC code[\s\S]*only the code/:/SIC 코드[\s\S]*코드만/);
+});
+test('Universe codes read the sec-qgv2 SIC; withdrawn identities have none',()=>{
+ const inputs=QI.fromInputs(QI.light(F.payload()));inputs.records['NYSE:SYNI1'].state='WITHDRAWN';inputs.records['NYSE:SYNI1'].identity_withdrawn=true;inputs.records['NYSE:SYNI1'].sic='3600';
+ const rows=['NASDAQ:SYNS1','NYSE:SYNF1','NYSE:SYNI1','NYSE:NOPE'].map(company_id=>({company_id,ticker:company_id.split(':')[1]})),pub={'sec-qgv2.json':inputs};
+ assert.deepEqual(rows.map(r=>L.sicOf(r,pub)),['3674','6022',null,null]);
+ assert.deepEqual(L.filterClassifications(rows,{publicScreens:pub,filters:{sic2:'60'}}).map(x=>x.company_id),['NYSE:SYNF1']);
+ assert.deepEqual(L.filterClassifications(rows,{publicScreens:pub,filters:{sic4:'NOT_AVAILABLE'}}).map(x=>x.company_id),['NYSE:SYNI1','NYSE:NOPE']);
+});
+test('SIC filter combinations leave Universe504, official scores/ranks and model eligibility unchanged',()=>{
+ const payload=F.strictPayload(),SQ=require(path.join(W,'sec-qgv2.js')),inputs=QI.fromInputs(SQ.toInputs(payload,{now:'2026-10-13T12:00:00Z'})),targets=Object.entries(F.TICKERS).map(([company_id,code])=>({company_id,ticker:code.split(':')[1]}));
+ const U=QS.universeIdentities(inputs,targets),quotes=Object.fromEntries(F.strictUniverseValues().slice(1).map(([code,,price])=>[code,{price,currency:'USD',state:'READY'}]));
+ const S=QS.compute({identities:U.identities,v2Inputs:inputs,quotes,official:U}),M=QS.officialModel({identities:U.identities,v2Inputs:inputs,quotes,official:U,computed:S});
+ const before=JSON.stringify({inputs,U,S,M}),pub=deepFreeze({...sicScreens(),'sec-qgv2.json':inputs});deepFreeze(U);deepFreeze(S);deepFreeze(M);const ranks=Object.fromEntries(Object.entries(S.rows).map(([k,r])=>[k,r.rank]));
+ let coded=0;for(const sic4 of ['','3674','6021','NOT_AVAILABLE','9999'])for(const sic2 of ['','36','60','NOT_AVAILABLE','99']){
+  const shown=L.filterClassifications(U.identities,{publicScreens:pub,filters:{sic4,sic2}});if(sic4==='3674'&&!sic2)coded=shown.length;
+  assert.ok(shown.every(r=>U.identities.includes(r)));assert.equal(JSON.stringify({inputs,U,S,M}),before);assert.deepEqual(Object.fromEntries(Object.entries(S.rows).map(([k,r])=>[k,r.rank])),ranks);
+  if(sic4&&sic4!=='NOT_AVAILABLE'||sic2&&sic2!=='NOT_AVAILABLE')assert.ok(shown.every(r=>L.sicOf(r,pub)!==null),'missing SIC never under a code filter');
+  assert.deepEqual(QS.officialModel({identities:U.identities,v2Inputs:inputs,quotes,official:U,computed:S}),M);}
+ assert.ok(coded>0,'nonempty synthetic SIC selection');
+});

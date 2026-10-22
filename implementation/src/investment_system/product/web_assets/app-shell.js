@@ -168,6 +168,14 @@
          ['분기별 13F 보유 이력(공개 시점 기준)과 증권 식별 연결','Quarterly 13F holdings history as of filing time, linked to security identifiers'],
          ['같은 시점의 요인 점수 이력','Factor score history at the same points in time'],
          ['학습·검증 기간, 평가 지표, 별도 실험 ID·버전 결정','Training and test periods, metrics, and a separate experiment ID and version']],
+   // Planned ①→④ flow (owner draft QGV 1.3). Nothing is built: decision IDs only, no result, example weight or similarity.
+   flow:[['① 운용사 고르기','① Choose managers','그 시점에 공개된 정보만으로 정한 운용사 목록과 그 분기의 13F 보유를 맞춥니다.','Match a manager list fixed with only the information public at the time to that quarter\'s 13F holdings.','13F-R1~R9'],
+         ['② 학습 기간에 맞추기','② Fit on the training period','보유 종목과 가장 닮은 선택을 만드는 Q/G/V 축 비중과 세부 요인 비중을 학습 기간 안에서만 찾습니다.','Search, within the training period only, for the Q/G/V axis and factor weights whose selection most resembles the holdings.','13F-R10~R12'],
+         ['③ 다른 기간에서 확인','③ Check in another period','학습에 쓰지 않은 기간에서 유사도를 확인하고, 투자 성과는 가격 자료가 준비된 뒤에 확인합니다.','Check similarity in a period not used for training; investment results are checked only after price data is ready.','13F-R13 · 13F-R16'],
+         ['④ 결과','④ Result','찾은 비중은 별도 실험 ID·버전으로 등록하고, 개인 실험 적용과 공식 채택은 따로 결정합니다.','Weights found are registered under a separate experiment ID and version; personal-experiment use and official adoption are decided separately.','13F-R14 · 13F-R15 · TRACKC-PORT']],
+   bounds:[['결과는 기관의 실제 기준이 아닙니다.','Results are not the institutions\' actual criteria.'],
+           ['공식 기본값을 자동으로 바꾸지 않습니다.','Official defaults are never changed automatically.'],
+           ['지금은 준비 단계입니다(결정 13F-R1~R16 대기).','This is the preparation stage (decisions 13F-R1–R16 pending).']],
    links:[['#thirteenf','투자자 13F 보유 공시','Investor 13F filings'],['#validation','Lab · 검증·연구 개요 (실험 등록)','Lab · validation overview (experiment register)']]}
  });
  function pendingHtml(key,loc){
@@ -176,6 +184,8 @@
    '<p class="eyebrow">'+esc(p.eyebrow)+'</p><h1 id="pending-title">'+esc(t(p.ko,p.en))+'</h1>'+
    '<p class="pending-state"><span class="badge" data-feature-status="준비 중">'+esc(t('준비 중','Pending'))+'</span><span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span><span class="small">'+esc(t('아직 화면이 없습니다. 예시 숫자나 결과를 넣지 않습니다.','No screen yet. No example numbers or results are shown.'))+'</span></p>'+
    '<p>'+esc(t(...p.what))+'</p>'+
+   (p.flow?'<h2>'+esc(t('계획한 흐름 ①~④','Planned flow ①–④'))+'</h2><ol class="vt-list" data-pending-flow>'+p.flow.map(([ko,en,dko,den,ids],i)=>'<li data-pending-step="'+(i+1)+'"><b>'+esc(t(ko,en))+'</b><span class="badge fn-unconnected">'+esc(t('만들지 않음','Not built'))+'</span> '+esc(t(dko,den))+' <span class="small" data-decision-ids>'+esc(t('결정 ','Decisions '))+esc(ids)+'</span></li>').join('')+'</ol>'+
+    '<ul data-pending-bounds>'+p.bounds.map(x=>'<li>'+esc(t(...x))+'</li>').join('')+'</ul>':'')+
    '<h2>'+esc(t('필요한 자료·결정','Data and decisions needed'))+'</h2><ol data-pending-needs>'+p.need.map(x=>'<li>'+esc(t(...x))+'</li>').join('')+'</ol>'+
    '<h2>'+esc(t('지금 볼 수 있는 곳','Where to look now'))+'</h2><ul class="pending-links">'+p.links.map(([href,ko,en])=>'<li><a href="'+href+'">'+esc(t(ko,en))+' <span aria-hidden="true">→</span></a></li>').join('')+'</ul></section>';
  }
