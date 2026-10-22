@@ -81,10 +81,29 @@ const text=async(page,selector)=>(await page.locator(selector).first().textConte
     assert.deepEqual(await page.locator('[data-theme-actual]').evaluateAll(n=>[...new Set(n.map(x=>x.textContent))]),['—']);
     assert.deepEqual(await page.locator('[data-theme-delta]').evaluateAll(n=>[...new Set(n.map(x=>x.textContent))]),['—']);
     assert.ok((await text(page,'[data-concentration]')).includes('NOT_AVAILABLE'));
+    // L5 (MPortfolio draft): on phones the three 6.1.1 cards (내 것 · 모델 적합 · 모의) are a segment, one card at a time; PC keeps all three.
+    phase='S03-KIND-SEG';const seg=page.locator('[data-pf-kind-seg]'),kindShown=()=>page.locator('[data-portfolio-kinds] .pf-kind:visible').evaluateAll(n=>n.map(x=>x.getAttribute('data-kind')));
+    assert.equal(await seg.count(),1);assert.deepEqual(await seg.locator('button').allTextContents(),['내 것','모델 적합','모의']);
+    if(width<750){
+     assert.ok(await seg.isVisible(),'segment on phone');assert.equal(await seg.getAttribute('role'),'group');
+     for(const b of await seg.locator('button').all()){const box=await b.boundingBox();assert.ok(box.height>=44&&box.width>=44,'44px target '+JSON.stringify(box));}
+     const pressed=()=>seg.locator('button').evaluateAll(n=>n.map(x=>x.getAttribute('data-pf-view-btn')+':'+x.getAttribute('aria-pressed')));
+     assert.deepEqual(await pressed(),['mine:true','model:false','paper:false']);assert.deepEqual(await kindShown(),['mine']);
+     assert.equal(await seg.locator('[data-pf-view-btn="mine"]').getAttribute('aria-controls'),'pf-kind-mine');assert.equal(await page.locator('#pf-kind-mine[data-kind="mine"]').count(),1);
+     assert.ok((await text(page,'#pf-kind-mine [data-kind-state]')).includes('기기에 보유 없음'),'mine state kept, never 0');
+     await seg.locator('[data-pf-view-btn="model"]').click();assert.deepEqual(await pressed(),['mine:false','model:true','paper:false']);assert.deepEqual(await kindShown(),['model']);
+     await seg.locator('[data-pf-view-btn="paper"]').focus();await page.keyboard.press('Enter');assert.deepEqual(await pressed(),['mine:false','model:false','paper:true']);assert.deepEqual(await kindShown(),['paper']);
+     await page.keyboard.press('Shift+Tab');await page.keyboard.press('Space');assert.deepEqual(await kindShown(),['model'],'keyboard Space');
+     // The other 6.1 sections stay listed (model, ACTUAL and paper are never merged or hidden behind one another).
+     for(const sel of ['[data-model-candidates]','[data-portfolio-card="themes"]','[data-portfolio-card="actual"]','[data-portfolio-card="virtual"]'])assert.ok(await page.locator(sel).isVisible(),sel+' still listed');
+     await seg.locator('[data-pf-view-btn="mine"]').click();assert.deepEqual(await kindShown(),['mine']);
+    }else{assert.equal(await seg.isVisible(),false,'no segment on PC');assert.deepEqual(await kindShown(),['model','mine','paper']);}
+    assert.equal(await page.locator('.badge.NOT_AVAILABLE',{hasText:/^(내 것|모델 적합|모의)$/}).count(),0);
     await noScroll(page,'S03 empty');
     phase='EN';await page.evaluate(()=>localStorage.setItem(AppLanguage.KEY,JSON.stringify({version:1,display_locale:'en-US',source_language:'all'})));await page.reload();
     await open(page,'company/nvda','[data-company-card="classification"]');assert.ok((await text(page,'[data-company-card="classification"]')).includes('Three classification axes'));
     await open(page,'portfolio','[data-portfolio-card="industry"]');assert.ok((await text(page,'[data-portfolio-card="industry"]')).includes('Industry composition'));
+    assert.deepEqual(await page.locator('[data-pf-kind-seg] button').allTextContents(),['Mine','Model fit','Paper']);
     assert.equal(errors,0);pass++;console.log('PASS company/portfolio screens empty '+width);
    }catch(e){fail++;console.log('FAIL company/portfolio screens empty '+width+' '+phase+' '+(e.code==='ERR_ASSERTION'?'CONTRACT '+String(e.message).split('\n')[0]:'EXECUTION '+String(e.message).split('\n')[0]));}finally{await context.close();}}
   // ---------- Phase B: synthetic public inputs + device ACTUAL ----------
@@ -128,6 +147,9 @@ const text=async(page,selector)=>(await page.locator(selector).first().textConte
     near(await text(page,'[data-combo="growth+quality"] .num'),w.nvda);near(await text(page,'[data-combo="quality"] .num'),w.hanmi);
     assert.equal(await page.locator('[data-combo="unclassified"]').count(),0);
     const sum=(await page.locator('[data-portfolio-card="combos"] [data-combo] .num').allTextContents()).reduce((a,x)=>a+parseFloat(x),0);assert.ok(Math.abs(sum-100)<0.15,'combos total '+sum);
+    // After the device ACTUAL repaint the phone segment still shows one card, with the ACTUAL state only (no weight or amount on it).
+    if(width<750){await page.locator('[data-pf-view-btn="paper"]').click();assert.deepEqual(await page.locator('[data-portfolio-kinds] .pf-kind:visible').evaluateAll(n=>n.map(x=>x.getAttribute('data-kind'))),['paper']);
+     await page.locator('[data-pf-view-btn="mine"]').click();assert.equal(await text(page,'#pf-kind-mine [data-kind-state]'),'시세 반영');assert.doesNotMatch(await text(page,'#pf-kind-mine'),/\d%/);}
     await noScroll(page,'S03 data');
     phase='S04-ACTUAL';await open(page,'company/nvda','[data-holding="theme"]');await page.waitForFunction(()=>!document.querySelector('[data-holding="actual"]').textContent.includes('NOT_AVAILABLE'));
     near(await text(page,'[data-holding="actual"]'),w.nvda);assert.ok((await text(page,'[data-holding="delta"]')).includes('%p'));

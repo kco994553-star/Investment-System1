@@ -82,7 +82,16 @@ html[data-menu="portfolio"] .ia-tree .tree-node b > [data-fn-stamp] { margin-rig
   html[data-menu="portfolio"] .pf-kinds { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   html[data-menu="portfolio"] .pf-pair { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: stretch; }
 }
+/* L5: 6.1.1 segment 내 것 · 모델 적합 · 모의 on phones only (portfolio-screen.js kindSeg); .chip-btn (theme.css) gives the 44px pill and
+   the pressed ink fill in both themes. Wider screens keep the three cards side by side. */
+html[data-menu="portfolio"] .pf-kind-seg { display: none; }
 @media (max-width: 749.98px) {
+  html[data-menu="portfolio"] .pf-kind-seg { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 10px; }
+  html[data-menu="portfolio"] .pf-kind-seg .chip-btn { min-width: 44px; font-weight: 700; }
+  html[data-menu="portfolio"] .pf-kind-seg .chip-btn:focus-visible { outline: 3px solid var(--menu, #138a8a); outline-offset: 2px; }
+  html[data-menu="portfolio"] [data-pf-view="mine"] .pf-kind:not([data-kind="mine"]),
+  html[data-menu="portfolio"] [data-pf-view="model"] .pf-kind:not([data-kind="model"]),
+  html[data-menu="portfolio"] [data-pf-view="paper"] .pf-kind:not([data-kind="paper"]) { display: none; }
   html[data-menu="portfolio"] .pf-head, html[data-menu="portfolio"] .pf-index-title { font-size: var(--fs-m, 15px); gap: 8px; }
   html[data-menu="portfolio"] .pf-index { padding: 10px 10px 12px; }
   html[data-menu="portfolio"] .pf-index li, html[data-menu="portfolio"] .pf-index button { width: 100%; }

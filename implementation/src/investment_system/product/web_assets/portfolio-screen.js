@@ -24,7 +24,7 @@ function kinds({locale,ram=null,virtual=null}){
  const T=tr(locale),js=virtual&&virtual.judgements&&typeof virtual.judgements==='object'&&Object.keys(virtual.judgements).length>0;
  const mine=!ram?['NOT_AVAILABLE',T('읽는 중','Reading')]:ram.state==='AVAILABLE'?['LIVE',T('시세 반영','Valued with quotes')]:ram.reason==='NO_ACTUAL'?['NOT_AVAILABLE',T('기기에 보유 없음','No holdings on this device')]
   :ram.reason==='READ_FAILED'?['NOT_AVAILABLE',T('기기 보유를 열 수 없음','Device holdings could not be opened')]:['NOT_AVAILABLE',T('입력됨 · 시세 부족','Entered · quotes incomplete')];
- const card=(kind,title,badge,body,href,link)=>'<article class="pf-kind" data-kind="'+kind+'"><h3>'+esc(title)+'</h3><p class="pf-kind-state">'+badge+'</p><p class="small">'+esc(body)+'</p><a href="'+href+'">'+esc(link)+'</a></article>';
+ const card=(kind,title,badge,body,href,link)=>'<article class="pf-kind" id="pf-kind-'+kind+'" data-kind="'+kind+'"><h3>'+esc(title)+'</h3><p class="pf-kind-state">'+badge+'</p><p class="small">'+esc(body)+'</p><a href="'+href+'">'+esc(link)+'</a></article>';
  return card('model',T('모델 적합 포트폴리오','Model portfolio'),'<span class="badge partial pf-mark" data-kind-state="REFERENCE">'+esc(T('공식 평가 참고','Official evaluation reference'))+'</span>',
    T('QGV의 N10·N15·N20 후보 선정 결과를 참고합니다. TARGET 확정 결과는 아닙니다.','See the QGV N10 · N15 · N20 candidate selection. TARGET is not finalized by these results.'),'#leaderboard',T('QGV 모델 후보 보기 →','View QGV model candidates →'))
   +card('mine',T('실제 (내 것)','Actual (mine)'),'<span class="badge '+mine[0]+'" data-kind-state="'+mine[0]+'">'+esc(mine[1])+'</span>',
@@ -32,10 +32,24 @@ function kinds({locale,ram=null,virtual=null}){
   +card('paper',T('모의 포트폴리오','Paper portfolio'),'<span class="badge '+(js?'LIVE':'NOT_AVAILABLE')+'" data-kind-state="'+(js?'LIVE':'NOT_AVAILABLE')+'">'+esc(js?T('그림자 장부 판단 있음 · 이 페이지','Shadow-ledger judgements · this page'):T('보고서에서 계산 전','Not computed on the report yet'))+'</span>',
    T('가상 매매 세트 A~D + 규칙대로 했다면(그림자 장부) · 가상 기록','Virtual sets A–D + “had the rules been followed” (shadow ledger) · virtual records'),'#report/mock',T('모의 일일 보고 →','Paper daily report →'));
 }
+/* L5 (owner draft MPortfolio): on phones (< 750px, device-actual.css) the three 6.1.1 cards read as a segment 내 것 · 모델 적합 · 모의,
+   one card at a time (내 것 first, as drafted); on wider screens the segment is hidden and all three stay side by side. Plain buttons
+   with aria-pressed; the choice lives only on the wrapper attribute (no storage) and survives paint(), which re-renders the cards.
+   Model, ACTUAL and paper stay separate cards; the 6.1.2–6.1.5 sections below stay listed. */
+const VIEWS=Object.freeze([['mine','내 것','Mine'],['model','모델 적합','Model fit'],['paper','모의','Paper']]);
+function kindSeg(locale){const T=tr(locale);
+ return '<div class="pf-kind-seg" role="group" data-pf-kind-seg aria-label="'+esc(T('포트폴리오 종류 고르기','Choose a portfolio kind'))+'">'
+  +VIEWS.map(([k,ko,en],i)=>'<button type="button" class="chip-btn" data-pf-view-btn="'+k+'" aria-pressed="'+(i===0)+'" aria-controls="pf-kind-'+k+'">'+esc(T(ko,en))+'</button>').join('')+'</div>';}
+function selectView(box,view){
+ if(!box||!VIEWS.some(v=>v[0]===view))return;box.setAttribute('data-pf-view',view);
+ for(const b of box.querySelectorAll('[data-pf-view-btn]'))b.setAttribute('aria-pressed',String(b.getAttribute('data-pf-view-btn')===view));
+}
+if(g.document&&typeof g.document.addEventListener==='function')g.document.addEventListener('click',e=>{
+ const b=e.target&&e.target.closest?e.target.closest('[data-pf-view-btn]'):null;if(b)selectView(b.closest('[data-pf-view]'),b.getAttribute('data-pf-view-btn'));});
 function shell(locale,virtual=null){
  const T=tr(locale),en=locale==='en-US';
  return '<p class="small pf-legend" data-fn-legend="6.1">'+esc(T('기능 6.1 포트폴리오 구성 (메뉴 5.1) · 상자의 번호는 기능 번호이며 메뉴 번호가 아닙니다.','Function 6.1 Portfolio composition (menu 5.1) · the stamp numbers are function numbers, not menu numbers.'))+'</p>'
-  +fnSec('6.1.1',locale,'<div class="pf-kinds" data-portfolio-kinds>'+kinds({locale,ram:null,virtual})+'</div>')
+  +fnSec('6.1.1',locale,'<div class="pf-kind-tabs" data-pf-view="mine">'+kindSeg(locale)+'<div class="pf-kinds" data-portfolio-kinds>'+kinds({locale,ram:null,virtual})+'</div></div>')
   +fnSec('6.1.2',locale,'<div class="pf-pair"><section class="card" data-model-candidates><h2>'+esc(T('모델 후보','Model candidates'))+'</h2><p><span class="badge partial pf-mark">'+esc(T('공식 평가 참고','Official evaluation reference'))+'</span> '+esc(T('기존 QGV 공식 평가의 N10·N15·N20 선정 결과를 리더보드에서 확인합니다. 기기 V·공식 순위가 없으면 선정하지 않고, 자격 행이 부족하면 부족 사유를 표시합니다. 개인 프리셋·화면 필터는 이 선정에 영향이 없습니다. TARGET 확정 결과는 아니며 MODEL·TARGET·ACTUAL은 서로 대신 채우지 않습니다.','View the existing official QGV N10 · N15 · N20 selection on the leaderboard. No device V or official rank means no selection; insufficient eligible rows show a shortfall reason. Personal presets and screen filters do not change this selection. TARGET is not finalized; MODEL, TARGET and ACTUAL never substitute for one another.'))+'</p><a href="#leaderboard">'+esc(T('QGV 모델 후보 보기 →','View QGV model candidates →'))+'</a> · <a href="#model">'+esc(T('모델 · TARGET · ACTUAL 비교 →','Model · TARGET · ACTUAL →'))+'</a></section>'
    +'<section class="card" data-target-v0-facts><h2>TARGET v0 · 출발점·비교 기준</h2><p>반도체 묶음 55% · 업종 묶음 상한(40%) 초과</p><a href="#playbook">TARGET v1 작성 →</a></section></div>')
   +fnSec('6.1.3',locale,'<div id="portfolio-visuals" data-portfolio-visuals>'+visuals({locale,catalog:null,ram:null,screens:null,idByTicker:new Map()})+'</div>')
