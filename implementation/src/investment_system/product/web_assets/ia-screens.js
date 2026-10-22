@@ -88,12 +88,12 @@
  function technicalTree(l){
   const tree=node('root',esc(T(l,'기술적 분석','Technical analysis')),esc(T(l,'QGV 점수와 나란히 볼 뿐 합치지 않습니다.','Shown next to QGV, never merged into it.')),[
    node('input',esc(T(l,'입력','Inputs')),esc(T(l,'일봉(이 기기 RAM · 비공개 Worker · 내 시트) · 가격 기준 RAW_CLOSE / PROVIDER_ADJUSTED_CLOSE','Daily bars (this device’s RAM · private Worker · my sheet) · price basis RAW_CLOSE / PROVIDER_ADJUSTED_CLOSE'))),
-   node('','2.1 '+esc(T(l,'지표','Indicators')),esc(T(l,'연구 표시용(RESEARCH_DISPLAY_ONLY) · 매개변수는 지금 고정 · "정도" 선택은 미구현','Research display only · parameters fixed today · “degree” presets not built')),[
+   node('','2.1 '+esc(T(l,'지표','Indicators')),esc(T(l,'연구 표시용 · 차트에서 지표 표시와 패턴 매개변수·정도를 설정합니다. 공식 결과와 개인 미리보기를 구분합니다.','Research display only · set indicator visibility and pattern parameters/degree in the chart. Official results and personal previews stay separate.')),[
     leaf('SMA','5 · 20 · 60 · 120 (· 240)'),leaf('EMA','20'),leaf('RSI','14'),leaf('MACD','12 · 26 · 9'),leaf(esc(T(l,'볼린저','Bollinger')),'20 · 2σ'),leaf('ATR','14 · RAW_CLOSE')]),
    node('','2.1 '+esc(T(l,'신호 카드','Signal cards')),esc(T(l,'추세·모멘텀 등 상태 카드(technical-cards.js) · 실행 구간·기록은 NOT_AVAILABLE','Trend/momentum state cards (technical-cards.js) · execution zone and record NOT_AVAILABLE'))),
-   node('','2.2 '+esc(T(l,'차트 패턴','Chart patterns')),'<span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> '+esc(T(l,'설계만(FORMED·CONFIRMED·FAILED·INVALIDATED·EXPIRED). 형태 적합도는 상승 확률이 아님','Design only (FORMED · CONFIRMED · FAILED · INVALIDATED · EXPIRED). Shape fit is not a probability'))),
+   node('','2.2 '+esc(T(l,'차트 패턴','Chart patterns')),esc(T(l,'패턴·감지 이력 구현. 실제 가격 기준 미확인 구간은 판정 불가. 형태 적합도는 상승 확률이 아님','Patterns and detection history are implemented. Unconfirmed real-price basis means unavailable judgement. Shape fit is not a probability'))),
    node('','2.1–2.2 '+esc(T(l,'가격 시나리오','Price scenarios')),'<span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> '+esc(T(l,'확률 근거 = 같은 패턴·정도에서 과거 결과 빈도 · 미산출','Probability basis = past outcome frequency for the same pattern and degree · not computed'))),
-   node('','2.3 '+esc(T(l,'내 노트(보라색 펜)','My notes (purple pen)')),'<span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> '+esc(T(l,'저장 위치 결정 대기(DRAW-STORE) · 공식 증거로 쓰지 않음','Storage pending (DRAW-STORE) · never official evidence')))]);
+   node('','2.3 '+esc(T(l,'내 노트(보라색 펜)','My notes (purple pen)')),esc(T(l,'이 브라우저에 저장 · 내보내기/가져오기 가능 · 공식 증거로 쓰지 않음 · 계정 동기화 없음','Saved in this browser · export/import available · never official evidence · no account sync')))]);
   const ex='<div data-tree-example-body data-example-state="NOT_AVAILABLE"><p>'+na(l,T(l,'기술적 분석 값은 가격에서 나옵니다. 가격은 공개하지 않습니다(이 브라우저 메모리에서 계산하며, 저장은 사용자 비공개 구글 시트·이 브라우저에만 둡니다). 그래서 이 화면에 예시 값이 없습니다. 2.1 화면에서 내 값을 볼 수 있습니다.','Technical values come from prices, which are never published (computed in this browser’s memory; stored only in the user’s private Google Sheet or this browser), so no example is shown here. See your values on 2.1.'))+'</p><p><a href="#technical">2.1 '+esc(T(l,'지표 · 시나리오 →','Indicators →'))+'</a></p></div>';
   return page('technical',l,{eyebrow:'2.4 · TECHNICAL STRUCTURE',title:T(l,'기술적 분석 내용구성','Technical analysis structure'),lede:T(l,'입력 → 지표 → 신호 → 패턴 → 시나리오 → 내 노트.','Input → indicators → signals → patterns → scenarios → my notes.'),tree,examples:ex});
  }
@@ -105,10 +105,10 @@
    node('input',esc(T(l,'입력','Inputs')),esc(T(l,'원기관 공개 지표(BLS · BEA · 재무부 · 연준) · 시장·신용 등 가격은 이 기기에서만 · FRED/ALFRED 사용 안 함','Primary agencies (BLS · BEA · Treasury · Fed) · market and credit prices on this device only · no FRED/ALFRED'))),
    node('',esc(T(l,'경고등 ','Lights ')+lights.length),esc(T(l,'정상·경고·위기 판정 · v1 UNCALIBRATED','Normal / warning / crisis · v1 UNCALIBRATED')),lights.map(n=>leaf(esc(T(l,...(LIGHT[n]||[n,n]))),esc(pub.includes(n)?T(l,'공개 자료','public data'):T(l,'이 기기 가격','device prices'))))),
    node('',esc(T(l,'상태판 8축 × 6칸','Board 8 axes × 6 states')),esc(T(l,'Growth · Inflation · Liquidity · Monetary Policy · Credit · Labor · Fiscal · FX × Level · Direction · Momentum · Surprise · Stress · Confidence (하나로 합치지 않음)','… kept separate, never one score'))),
-   node('','3.1 '+esc(T(l,'경기·시장 위치 + 근거선','Economy · market position + evidence lines')),'<span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> '+esc(T(l,'위치 판정 모델 없음','No position model'))),
+   node('','3.1 '+esc(T(l,'경기·시장 위치 + 근거선','Economy · market position + evidence lines')),esc(T(l,'개념 링·실제 관측 근거를 구분해 조회 · 공식 위치·확률은 미산출','Concept rings and observed evidence are shown separately · official position and probability not computed'))),
    node('','3.2 '+esc(T(l,'순환매 위치','Sector rotation')),'<span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> '+esc(T(l,'확률 근거 = 과거 국면 전환 빈도 · 미산출','Probability basis = past regime-transition frequency · not computed'))),
    node('','3.3 '+esc(T(l,'산업 사이클 (SIC 업종 그룹)','Industry cycles (SIC groups)')),'<span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> '+esc(T(l,'확률 근거 = 과거 국면 전환 빈도 · 미산출','Probability basis = past regime-transition frequency · not computed'))),
-   node('','3.4 '+esc(T(l,'내가 고른 위치','My chosen position')),'<span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> '+esc(T(l,'시스템 값과 따로 저장 예정','Will be stored apart from the system value'))),
+   node('','3.4 '+esc(T(l,'내가 고른 위치','My chosen position')),esc(T(l,'공식 값과 별도로 이 브라우저에 기록 · 내보내기/가져오기 가능 · 점수에 쓰지 않음','Recorded in this browser separately from official values · export/import available · never scored'))),
    node('','3.5 '+esc(T(l,'연쇄 효과 지도','Causal-chain map')),'<span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> '+esc(T(l,'관계 자료원 결정 대기(REL-SOURCE)','Relationship source pending (REL-SOURCE)')))]);
   return page('macro',l,{eyebrow:'3.6 · MACRO STRUCTURE',title:T(l,'매크로 시스템 내용구성','Macro structure'),lede:T(l,'입력 → 경고등 · 상태판 → 위치 · 순환매 · 산업 사이클 → 연쇄 효과.','Inputs → lights · board → position · rotation · industry cycles → causal chains.'),tree,examples:loading(l)});
  }
@@ -223,17 +223,8 @@
   else if(key==='portfolio')put(portfolioExamples(l,catalog));
   else if(key==='news')void newsExamples(l).then(put);
  }
- // ---------- numbered sections without an engine (2.2, 2.3): what is missing, no invented value ----------
- function naSection(id,sec,l,title,what,needs){
-  return '<section class="card ia-na" id="'+id+'" data-ia-item="'+esc(sec)+'" aria-labelledby="'+id+'-title"><h2 id="'+id+'-title"><span class="ia-sec">'+esc(sec)+'</span> '+esc(T(l,...title))+'</h2>'+
-   '<p><span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> '+esc(T(l,...what))+'</p><ul class="ia-needs">'+needs.map(x=>'<li>'+esc(T(l,...x))+'</li>').join('')+'</ul></section>';
- }
  function technicalHtml(l){
-  return '<div class="ia-na-group" data-ia-group="technical">'+
-   naSection('technical-pattern','2.2',l,['차트 패턴 + 정도 + 시나리오','Chart patterns + degree + scenarios'],['패턴 엔진과 공식 이력이 없습니다. 패턴·목표선·무효선·확률을 그리지 않습니다.','There is no pattern engine or official history. No pattern, target, invalidation line or probability is drawn.'],
-    [['패턴 규칙(pattern-rules/1)과 상태 FORMED·CONFIRMED·FAILED·INVALIDATED·EXPIRED는 설계만 있음','Pattern rules (pattern-rules/1) and states exist as design only'],['"정도" = 일치도 문턱값 묶음(매개변수 묶음 버전) 결정 필요','“Degree” = match-threshold presets (versioned parameter sets) to be decided'],['시나리오 확률 근거 = 같은 패턴·정도에서 과거 결과 빈도 · 미산출','Scenario probability basis = past outcome frequency for the same pattern and degree · not computed'],['착수 결정 TA-G1~G3','Start decisions TA-G1–G3']])+
-   naSection('technical-notes','2.3',l,['차트 위 내 노트','My notes on the chart'],['그리기·저장 기능이 아직 없습니다. 내 그림은 보라색 펜으로 구분할 예정이며, 공식 증거로 쓰지 않습니다.','Drawing and saving are not built yet. Your drawings will use a purple pen and are never official evidence.'],
-    [['저장 위치 결정(DRAW-STORE): 이 브라우저 / 비공개 시트 / 로그인','Storage decision (DRAW-STORE): this browser / private sheet / account'],['좌표 기준: 종목 · 봉 주기 · 가격 기준 · 시간/가격(chart-annotation/1)','Anchors: listing · interval · price basis · time/price (chart-annotation/1)']])+'</div>';
+  return '<p class="small" data-ia-group="technical">'+esc(T(l,'패턴·정도·감지 이력과 내 노트는 위 차트에서 사용합니다. 실가격 기준이 미확인인 구간은 판정 불가이며, 형태 일치도는 상승 확률이 아닙니다.','Use patterns, degree, detection history and personal notes in the chart above. Unconfirmed real-price basis means unavailable judgement; shape fit is not an upward probability.'))+'</p>';
  }
  // ---------- menu 3 매크로: functional stamp layout (design lane D7, 2026-10-20) ----------
  // Owner draft "투자시스템 화면 시안 (손그림 칠판)" with the functional hierarchy numbers 4.1–4.6 on the stamps (menu 3 /
@@ -263,7 +254,7 @@
    x('경기와 주식시장은 서로 다른 모델이고 따로 돕니다. 위치는 승인된 모델이 게시한 구간으로만 보입니다.','Economy and market are separate models that turn separately. A position appears only as an interval published by an approved model.'),[
    row(['4.1.1','4.1.2'],x('국면 그래프 · 국면 탐색','Phase graph · phase browsing'),x('개념도입니다. 칸 길이는 기간이 아닙니다. 돌리거나 국면을 눌러 근거 패턴·전환 조건을 봅니다. 링 안의 작은 도장도 기능 번호입니다.','A concept diagram; cell length is not time. Turn it or pick a phase to read its evidence pattern and transition conditions. The small stamps inside the ring are function numbers too.'),'frame',
     '<div id="macro-cycle-ring-root" data-cycle-ring-host></div>'),
-   row(['4.1.3'],x('근거 세로선','Evidence lines'),x('공개 정부 통계를 실제 발표 시각에 세로선으로 그립니다. 탐색 화면이며 공식 판정·확률에 쓰지 않습니다.','Public government statistics drawn as vertical lines at their real release time. Exploration only; never used for the official judgement or a probability.'),'explore',
+   row(['4.1.3'],x('근거 세로선','Evidence lines'),x('공개 정부 통계를 실제 발표 시각에 세로선으로 그립니다. 발표 시각이 없으면 수집 시각으로 표시합니다. 탐색 화면이며 공식 위치·판정·확률에 쓰지 않습니다.','Public government statistics drawn as vertical lines at their real release time; collection time is shown when release time is unknown. Exploration only; never used for an official position, judgement or probability.'),'explore',
     p.evidence||''),
    row(['4.1.4'],x('기존 지표 연결','Existing indicator links'),x('경고등 5개(참고 모드) · 8축 원자료 · 기존 화면 절. 국면 링과 섞지 않습니다.','The five lights (reference mode), the 8-axis raw data and the existing sections. Never mixed into the phase rings.'),'ready',
     (p.lights||'')+(p.raw||'')+(p.canon||'')),

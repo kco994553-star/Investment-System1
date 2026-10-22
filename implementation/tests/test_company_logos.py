@@ -2,7 +2,9 @@ import base64
 import copy
 import importlib.util
 import json
+import io
 import struct
+import urllib.error
 import zlib
 from pathlib import Path
 import pytest
@@ -52,6 +54,72 @@ def test_wikidata_domain_ambiguity_stays_missing():
     assert m.domain_logos(json.dumps(body))=={'nvidia.com':'Nvidia.svg'}
     body['results']['bindings'].append({'site':{'value':'https://nvidia.com'},'logo':{'value':'http://commons.wikimedia.org/wiki/Special:FilePath/Other.svg'}})
     assert m.domain_logos(json.dumps(body))=={}
+
+
+def test_ui_preserve_keeps_published_logo_bytes_without_collection(tmp_path, monkeypatch):
+    m = tool()
+    body = (json.dumps(public_payload({'NASDAQ:NVDA': png()}), indent=3) + '\n').encode()
+    (tmp_path / FILENAME).write_text(json.dumps(public_payload()))
+    calls = []
+    class Response(io.BytesIO):
+        status = 200
+        def geturl(self):
+            return 'https://kco994553-star.github.io/Investment-System1/' + FILENAME
+    def opened(request, timeout):
+        calls.append(request.full_url)
+        assert request.get_method() == 'GET'
+        return Response(body)
+    def forbidden(*args, **kwargs):
+        pytest.fail('UI preservation must not collect from logo providers')
+    monkeypatch.setattr(m, 'emit', forbidden)
+    monkeypatch.setattr(m, 'fetch', forbidden)
+    assert m.preserve(tmp_path, open_response=opened) == 'LOGO_PREVIOUS_RESTORED'
+    assert calls == ['https://kco994553-star.github.io/Investment-System1/' + FILENAME]
+    assert (tmp_path / FILENAME).read_bytes() == body
+
+
+@pytest.mark.parametrize('failure', ['404', '503', 'network', 'invalid', 'redirect'])
+def test_ui_preserve_failure_never_replaces_existing_bytes(tmp_path, failure):
+    m = tool()
+    before = json.dumps(public_payload({'NASDAQ:NVDA': png()}), indent=2).encode()
+    (tmp_path / FILENAME).write_bytes(before)
+    class Response(io.BytesIO):
+        status = 200
+        def geturl(self):
+            base = 'https://kco994553-star.github.io/Investment-System1/'
+            return ('https://example.invalid/' if failure == 'redirect' else base) + FILENAME
+    def opened(request, timeout):
+        if failure in ('404', '503'):
+            raise urllib.error.HTTPError(request.full_url, int(failure), 'hidden response', {}, None)
+        if failure == 'network':
+            raise OSError('hidden network diagnostics')
+        return Response(b'{"unsafe":"payload"}' if failure == 'invalid' else before)
+    if failure == '404':
+        assert m.preserve(tmp_path, open_response=opened) == 'LOGO_PREVIOUS_NOT_AVAILABLE'
+    else:
+        with pytest.raises(ValueError, match='^LOGO_PREVIOUS_RESTORE_FAILED$'):
+            m.preserve(tmp_path, open_response=opened)
+    assert (tmp_path / FILENAME).read_bytes() == before
+
+
+def test_manual_ui_workflow_preserves_logos_while_daily_collects():
+    ui = (ROOT.parent / '.github/workflows/cockpit-pages.yml').read_text()
+    daily = (ROOT.parent / '.github/workflows/sec-daily-public-inputs.yml').read_text()
+    assert 'company_logos_pipeline.py --preserve-only --out' in ui
+    assert 'company_logos_pipeline.py --live' not in ui
+    assert 'company_logos_pipeline.py --live --out' in daily
+
+
+def test_ui_preserve_cli_fails_closed_with_fixed_output(tmp_path, monkeypatch, capsys):
+    m = tool()
+    def broken(*args, **kwargs):
+        raise ValueError('sensitive upstream diagnostics')
+    monkeypatch.setattr(m, 'preserve', broken)
+    assert m.main(['--out', str(tmp_path), '--preserve-only']) == 1
+    assert capsys.readouterr().out == 'LOGO_PREVIOUS_RESTORE_FAILED\n'
+    with pytest.raises(SystemExit) as error:
+        m.main(['--out', str(tmp_path), '--preserve-only', '--live'])
+    assert error.value.code == 2
 
 
 def test_live_build_matches_reviewed_domain_downloads_png_and_publishes_local_bytes(tmp_path):

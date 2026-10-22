@@ -114,7 +114,7 @@ async function exportsPrivacy(page) {
     verify(await persistentPrivacy(page));
   } finally { await page.evaluate(() => { window.__historyRestoreExport(); delete window.__historyRestoreExport; delete window.__historyExportAudit; }); }
 }
-async function open({ enabled = false, deployedConfig = false, approvedOrigin = ORIGIN, locale = 'en-US', width = 1280, storageUnavailable = false } = {}) {
+async function open({ enabled = false, deployedConfig = false, approvedOrigin = ORIGIN, locale = 'en-US', width = 1280, storageUnavailable = false, universe = false } = {}) {
   const context = await browser.newContext({ viewport: { width, height: 844 }, locale, serviceWorkers: 'block' });await displayOnlyOff(context);
   const mode = { reads: 0, googleReads: 0, styles: 0, scripts: 0, revokes: 0, status: 200, code: '', malformed: false, delayed: false, pending: null };
   await context.addInitScript(({ locale, origin, storageUnavailable }) => {
@@ -138,6 +138,10 @@ async function open({ enabled = false, deployedConfig = false, approvedOrigin = 
   // Public screens as an offline (PR) build serves them. Deploy builds carry live sec-qgv2.json; with it the company page
   // also starts the QGV v2 quote refresh, which can re-render the page while history is shown (tracked separately).
   await routeEmptyPublicScreens(context);
+  if (universe) {
+    const payload = require('./sec_universe_shares_fixture.js').payload({}, Date.parse(NOW));
+    await context.route('**/sec-universe-shares.json*', route => route.fulfill({ contentType: 'application/json', body: JSON.stringify(payload) }));
+  }
   await context.route('**/*', async route => {
     const request = route.request(), url = new URL(request.url());
     try {
@@ -384,10 +388,70 @@ async function otherBoundaryChecks() {
     finally { await closeContext(session); }
   });
 }
+async function technicalContextChecks(locale, width) {
+  const session = await open({ enabled: true, locale, width, universe: true }), { page, mode } = session;
+  try {
+    await saveOrigin(session); await login(session);
+    await check('technical_supported19_keep_explicit_selection_' + locale + '_' + width, async () => {
+      await navigate(page, 'technical/nvda'); await waitCode(page, 'READY');
+      const select = page.locator('[data-technical-symbol]');
+      verify(await select.inputValue() === 'nvda');
+      const ids = await select.locator('option').evaluateAll(options => options.map(option => option.value));
+      verify(ids.length === 19);
+      for (const id of ids) {
+        await select.selectOption(id); await waitCode(page, 'READY');
+        verify(await select.inputValue() === id);
+      }
+      verify(mode.reads === 0 && await page.evaluate(() => window.__historyEvidence.requests.length) === 0);
+    });
+    let unsupportedId, unsupportedHash;
+    await check('technical_unsupported_search_company_is_not_replaced_' + locale + '_' + width, async () => {
+      await navigate(page, 'home');
+      await page.locator('#global-search').fill('AAPL');
+      const result = page.locator('#home-result[data-result-company]'); await result.waitFor();
+      unsupportedId = await result.getAttribute('data-result-company');
+      verify(!!unsupportedId && await page.evaluate(id => PrivateHistory.symbolFor(id) === null, unsupportedId));
+      unsupportedHash = await result.locator('[data-result-link="scenario"]').getAttribute('href');
+      await result.locator('[data-result-link="scenario"]').click();
+      await page.locator('[data-technical-symbol]').waitFor();
+      verify(await page.locator('[data-technical-symbol]').inputValue() === unsupportedId);
+      verify(await page.evaluate(() => location.hash) === unsupportedHash);
+      const reason = page.locator('[data-technical-unavailable]'); await reason.waitFor();
+      const text = await reason.textContent();
+      verify(text.includes(unsupportedId) && text.includes(locale === 'ko-KR' ? '지원 19종목' : '19 supported companies'));
+      await waitCode(page, 'HISTORY_UNAVAILABLE');
+      for (const selector of ['[data-history-action="fetch"]', '[data-history-action="trades"]', '[data-history-range]']) verify(await page.locator(selector).isDisabled());
+      // Even a dispatched event must not bypass availability; no real private request is ever sent by this test.
+      await page.locator('[data-history-action="fetch"]').dispatchEvent('click'); await frame(page);
+      verify(mode.reads === 0 && await page.evaluate(() => window.__historyEvidence.requests.length) === 0);
+      verify(await page.locator('[data-history-table]').count() === 0);
+      verify(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
+    });
+    await check('technical_explicit_supported_choice_then_unsupported_clears_prices_' + locale + '_' + width, async () => {
+      const select = page.locator('[data-technical-symbol]');
+      await select.selectOption('nvda'); await waitCode(page, 'READY');
+      verify(await page.locator('[data-technical-unavailable]').isHidden() && mode.reads === 0);
+      await fetchHistory(session); await verifyResults(session); verify(mode.reads === 1);
+      await select.selectOption(unsupportedId); await waitCode(page, 'HISTORY_UNAVAILABLE');
+      verify(await select.inputValue() === unsupportedId && await page.locator('[data-technical-unavailable]').isVisible());
+      verify(await page.locator('[data-history-table]').count() === 0);
+      await page.waitForFunction(() => document.querySelector('[data-chart-workbench]')?.dataset.source === 'none');
+      await page.locator('[data-history-action="fetch"]').dispatchEvent('click'); await frame(page);
+      verify(mode.reads === 1 && await page.evaluate(() => window.__historyEvidence.requests.length) === 1);
+      await page.reload({ waitUntil: 'networkidle' }); await waitCode(page, 'HISTORY_UNAVAILABLE');
+      verify(await select.inputValue() === unsupportedId && await page.evaluate(() => location.hash) === unsupportedHash);
+      verify(mode.reads === 1 && await page.locator('[data-history-table]').count() === 0);
+      await navigate(page, 'technical'); await page.locator('[data-technical-symbol]').waitFor();
+      verify(await select.inputValue() === 'asml' && await select.locator('option').count() === 19);
+      verify(mode.reads === 1 && await persistentPrivacy(page));
+    });
+  } finally { await closeContext(session); }
+}
 async function main() {
   try {
     const executablePath = process.env.CHROMIUM_EXECUTABLE_PATH || process.env.WEB_TEST_CHROMIUM_PATH;
     browser = await chromium.launch({ headless: true, ...(executablePath ? { executablePath } : {}) });
+    for (const locale of ['ko-KR', 'en-US']) for (const width of [390, 1280]) await technicalContextChecks(locale, width);
     for (const locale of ['ko-KR', 'en-US']) for (const width of [390, 1280]) await defaultChecks(locale, width);
     for (const locale of ['ko-KR', 'en-US']) for (const width of [390, 1280]) await enabledChecks(locale, width);
     for (const locale of ['ko-KR', 'en-US']) for (const width of [390, 1280]) await deployedChecks(locale, width);
@@ -396,7 +460,7 @@ async function main() {
     await check('external_requests_are_mocked_and_evidence_has_no_payloads', async () => verify(Object.values(traffic).every(value => value === 0)));
   } catch (error) {
     const frames = String(error.stack || '').match(/private_history_browser_test\.js:\d+:\d+/g) || [];
-    console.error('FAIL ' + currentCheck + ' ' + (frames[1] || frames[0] || 'BROWSER_FAILURE'));
+    console.error('FAIL ' + currentCheck + ' ' + (frames.join(' ') || 'BROWSER_FAILURE'));
     process.exitCode = 1;
   }
   finally { if (browser) await browser.close(); }

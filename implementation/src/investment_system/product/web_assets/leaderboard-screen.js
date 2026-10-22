@@ -25,9 +25,57 @@ const FN=Object.freeze({LIST:['2.1.1','평가 대상과 목록','Evaluated compa
 const PERIODS=['1D','20D'];
 const fnId=key=>'lb-fn-'+FN[key][0].replaceAll('.','-');
 const escHtml=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
-// Stamp heading of one section (HTML, for the app's 2.1.3 row) and the 2.1.3 note on the filters that are not connected.
+// Stamp heading and display-only classification filters for the app's 2.1.3 row.
 function fnHeadHtml(key,locale){const[fn,ko,en]=FN[key];return '<h2 class="fn-head" id="'+fnId(key)+'"><span class="ia-sec">'+fn+'</span> <span class="fn-title">'+escHtml(locale==='en-US'?en:ko)+'</span></h2>';}
-function filterNoteHtml(locale){const en=locale==='en-US';return '<p class="small fn-na" data-fn-na="2.1.3"><span class="badge fn-unconnected">'+(en?'Not connected':'미연결')+'</span> '+escHtml(en?'Filter by SIC class or company type: not connected yet. Each company page shows its classification (three axes). Filters only hide rows; ranks never change.':'SIC 분류 · 기업 유형으로 거르기: 아직 연결되지 않았습니다. 분류는 기업 화면의 "분류 3축"에서 봅니다. 필터는 행만 숨기며 순위는 바뀌지 않습니다.')+'</p>';}
+function filterNoteHtml(locale){return '<p class="small" data-classification-note>'+escHtml(locale==='en-US'?'Industry, strategy theme and investment type are separate axes. These filters use the published SIC industry group and the company page’s type rule. They only hide rows: the Universe, official scores, ranks and model candidates do not change. Missing classification is not zero or another classification.':'산업·전략 테마·투자 유형은 서로 다른 축입니다. 게시된 SIC 업종군과 기업 화면의 유형 규칙으로 행만 숨깁니다. Universe·공식 점수·순위·모델 후보는 바뀌지 않습니다. 분류 자료 없음은 0이나 다른 분류로 대신 채우지 않습니다.')+'</p>';}
+// Selections belong to this page's RAM, not the scoring profile, sessionStorage or the published population.
+// Repainting on APPLIED/REJUDGE reuses the choices with NEW inputs. A removed option stays selected (no silent broadening).
+let classificationView={industry:'',type:''};
+function classificationOf(identity,publicScreens={}){
+ const id=identity.company_id,CS=globalThis.CompanyScreen,live=r=>r&&['LIVE','STALE'].includes(r.state)&&r.identity_withdrawn!==true;
+ let industry=null,memberships=null;
+ if(typeof id==='string'&&id.includes(':')){
+  const rec=publicScreens['sec-qgv2.json']?.records?.[id];
+  if(live(rec)){industry=rec.industry_group||null;const m=qgvScores()?.typeMemberships({identity,publicScreens});if(m?.code===id)memberships=m.memberships;}
+ }else{
+  // Same published sources as CompanyScreen.classification: themes and financial profiles never fill either axis.
+  const ind=publicScreens['company-classification.json']?.data?.companies?.[id]?.industry;
+  if(live(ind))industry=ind.group||null;
+  const rec=publicScreens['company-types-pricefree.json']?.data?.companies?.[id];if(live(rec))memberships=rec.memberships;
+ }
+ const has=memberships&&Object.values(memberships).some(v=>typeof v==='number'&&Number.isFinite(v));
+ const types=has&&CS?.selectTypes?CS.selectTypes(memberships):null;
+ return{industry,types};
+}
+function filterClassifications(identities,{publicScreens={},filters=classificationView}={}){
+ return identities.filter(c=>{const x=classificationOf(c,publicScreens),i=filters.industry,t=filters.type;
+  return(!i||(i==='NOT_AVAILABLE'?x.industry===null:x.industry===i))&&(!t||(t==='NOT_AVAILABLE'?x.types===null:t==='NO_SELECTED_TYPE'?Array.isArray(x.types)&&x.types.length===0:x.types?.includes(t)));});
+}
+function industryLabel(id,publicScreens,locale){const x=publicScreens['company-classification.json']?.data?.industry_config?.groups?.find(x=>x.id===id);
+ return x?(locale==='en-US'?x.name_en:x.name):globalThis.UniverseCompany?.GROUP_LABEL?.[id]?.[locale==='en-US'?1:0]||id;}
+function classificationSummary({publicScreens={},locale='ko-KR'}={}){
+ const en=locale==='en-US',missing=en?'Classification data missing':'분류 자료 없음',out=[];
+ if(classificationView.industry)out.push((en?'SIC industry group: ':'SIC 업종군: ')+(classificationView.industry==='NOT_AVAILABLE'?missing:industryLabel(classificationView.industry,publicScreens,locale)));
+ if(classificationView.type)out.push((en?'Company type: ':'기업 유형: ')+(classificationView.type==='NOT_AVAILABLE'?missing:classificationView.type==='NO_SELECTED_TYPE'?(en?'No selected type':'선택 유형 없음'):globalThis.CompanyScreen?.typeName(classificationView.type,locale)||classificationView.type));
+ return out;
+}
+function classificationFiltersHtml(identities,{publicScreens={},locale='ko-KR'}={}){
+ const en=locale==='en-US',CS=globalThis.CompanyScreen,rows=identities.map(c=>classificationOf(c,publicScreens)),groups=[...new Set(rows.map(r=>r.industry).filter(Boolean))].sort();
+ const label=id=>industryLabel(id,publicScreens,locale);
+ const select=(axis,title,options)=>{const chosen=classificationView[axis],opts=[['',en?'All':'전체'],...options];
+  if(chosen&&!opts.some(([id])=>id===chosen))opts.push([chosen,en?'Selected group absent from this publication':'선택한 업종군이 새 게시본에 없음']);
+  return '<label for="leader-classification-'+axis+'">'+escHtml(title)+' <select id="leader-classification-'+axis+'" data-classification-filter="'+axis+'">'+opts.map(([id,name])=>'<option value="'+escHtml(id)+'"'+(chosen===id?' selected':'')+'>'+escHtml(name)+'</option>').join('')+'</select></label>';};
+ const missing=en?'Classification data missing':'분류 자료 없음',none=en?'No selected type (available memberships)':'선택 유형 없음 (확보된 소속도 기준)';
+ return '<div class="chips">'+select('industry',en?'SIC industry group':'SIC 업종군',groups.map(id=>[id,label(id)]).concat([['NOT_AVAILABLE',missing]]))
+  +select('type',en?'Company type':'기업 유형',(CS?.TYPES||[]).map(id=>[id,CS.typeName(id,locale)]).concat([['NOT_AVAILABLE',missing],['NO_SELECTED_TYPE',none]]))+'</div>'
+  +'<p class="small" data-classification-coverage>'+escHtml((en?'Classification in the full list: ':'전체 목록의 분류: ')+(en?'industry missing ':'업종군 자료 없음 ')+rows.filter(r=>r.industry===null).length+' · '+(en?'type missing ':'유형 자료 없음 ')+rows.filter(r=>r.types===null).length+' · '+(en?'no selected type ':'선택 유형 없음 ')+rows.filter(r=>r.types?.length===0).length)+'</p>';
+}
+function mountClassificationFilters(host,identities,options={}){
+ if(!host)return;const active=host.contains(host.ownerDocument.activeElement)?host.ownerDocument.activeElement.id:null;
+ host.innerHTML=classificationFiltersHtml(identities,options);
+ for(const select of host.querySelectorAll('[data-classification-filter]'))select.onchange=()=>{classificationView={...classificationView,[select.dataset.classificationFilter]:select.value};options.onChange?.();};
+ if(active)host.ownerDocument.getElementById(active)?.focus({preventScroll:true});
+}
 /* Q·G·V bars of one score row (decoration: aria-hidden; the numbers and their words are in the QGV / detail cells). Widths are
    SVG attributes (CSP style-src 'self': no inline style). A missing axis is an empty dashed track, never a 0 bar; no axis at all draws nothing. */
 const SVG_NS='http://www.w3.org/2000/svg';
@@ -272,5 +320,5 @@ function mount(host,identities,{publicScreens={},locale,view='default',profiles=
  const stages=el('details',undefined,{'data-reeval-stages':''});stages.append(el('summary',en?'Re-evaluation signal stages':'재평가 신호 단계'));const list=el('ol');for(const[ko,enl]of STAGES)list.append(el('li',en?enl:ko));stages.append(list,el('p',en?'Price change, threshold and distance are shown once the signal is connected (NOT_AVAILABLE now).':'신호가 연결되면 가격 변화량·임계값·거리를 함께 보여 줍니다(현재 NOT_AVAILABLE).',{class:'small'}));sCand.append(stages);
  const actions=el('div',undefined,{class:'chips'});for(const label of [en?'Send selection to paper trading':'선택 종목 모의투자',en?'Send to backtest':'백테스트로 보내기']){const b=el('button',label,{type:'button',disabled:''});actions.append(b);}sCand.append(actions,el('p',en?'Paper trading and backtest are not connected yet.':'모의투자·백테스트는 아직 연결되지 않았습니다.',{class:'small'}));
  host.replaceChildren(card);return{shown:rows.length,explore:ex};}
-return Object.freeze({COLUMNS,UNCONNECTED,NARROW,M3_LABEL,EXPLORE,SORTS,SORT_IDS,DEFAULT_SORT,FN,PERIODS,fnHeadHtml,filterNoteHtml,sortLabel,sortOptions,oppositeSort,sortAvailable,sortRows,populationOf,rowsFor,modelChecks,mount});
+return Object.freeze({COLUMNS,UNCONNECTED,NARROW,M3_LABEL,EXPLORE,SORTS,SORT_IDS,DEFAULT_SORT,FN,PERIODS,fnHeadHtml,filterNoteHtml,classificationOf,filterClassifications,classificationSummary,classificationFiltersHtml,mountClassificationFilters,sortLabel,sortOptions,oppositeSort,sortAvailable,sortRows,populationOf,rowsFor,modelChecks,mount});
 });
