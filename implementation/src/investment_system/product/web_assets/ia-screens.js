@@ -1,5 +1,5 @@
 /* Owner IA screens (PRODUCT_IA_DIRECTIVE_20261018): the structure trees (1.4 QGV, 2.4 기술적 분석, 3.6 매크로, 4.3 뉴스,
-   5.4 포트폴리오, n 전체 시스템) and the numbered sections that have no engine yet (2.2, 2.3, 3.1–3.5).
+   5.4 포트폴리오, n 전체 시스템) and the numbered sections that have no engine yet (2.2, 2.3), and the stamp layout of menu 3 매크로 (function numbers 4.1–4.6).
    The trees describe the real system. Weights and rules are read at runtime from the engine modules (QgvV2, SecQgv2,
    ResearchIndicators, MacroLights, VirtualTrading); nothing here restates a number of its own. "예시 값" under a tree come
    only from published public data already loaded by the app (sec-qgv2.json, macro-screen.json, sec-disclosures.json,
@@ -223,24 +223,79 @@
   else if(key==='portfolio')put(portfolioExamples(l,catalog));
   else if(key==='news')void newsExamples(l).then(put);
  }
- // Numbered sections: distinguish implemented controls from genuinely missing models; never invent a value.
- function naSection(id,sec,l,title,what,needs){
-  return '<section class="card ia-na" id="'+id+'" data-ia-item="'+esc(sec)+'" aria-labelledby="'+id+'-title"><h2 id="'+id+'-title"><span class="ia-sec">'+esc(sec)+'</span> '+esc(T(l,...title))+'</h2>'+
-   '<p><span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> '+esc(T(l,...what))+'</p><ul class="ia-needs">'+needs.map(x=>'<li>'+esc(T(l,...x))+'</li>').join('')+'</ul></section>';
- }
  function technicalHtml(l){
   return '<p class="small" data-ia-group="technical">'+esc(T(l,'패턴·정도·감지 이력과 내 노트는 위 차트에서 사용합니다. 실가격 기준이 미확인인 구간은 판정 불가이며, 형태 일치도는 상승 확률이 아닙니다.','Use patterns, degree, detection history and personal notes in the chart above. Unconfirmed real-price basis means unavailable judgement; shape fit is not an upward probability.'))+'</p>';
  }
- function macroHtml(l){
-  const freq=['확률 근거 = 과거 국면 전환 빈도: 같은 국면에서 다음 국면으로 넘어간 과거 횟수의 비율, 기간·표본 수와 함께. Lab 검증 전에는 미산출','Probability basis = past regime-transition frequency: share of past moves from the same phase to the next, with period and sample size. Not computed before Lab validation'];
-  return '<div class="ia-na-group" data-ia-group="macro">'+
-   '<section class="card" id="macro-cycle" data-ia-item="3.1" aria-labelledby="macro-cycle-title"><h2 id="macro-cycle-title">3.1 '+esc(T(l,'경기 · 주식시장 위치와 관측 근거','Economy and market position with observed evidence'))+'</h2><p class="small">'+esc(T(l,'링은 국면 개념도입니다. 아래 관측 그래프·근거선은 실제 공개 자료이며 공식 위치·확률을 뜻하지 않습니다. 발표 시각이 없으면 수집 시각으로 표시합니다.','Rings are phase concepts. The observation graph and evidence lines below use public data and do not establish an official position or probability. Collection time is shown when release time is unknown.'))+'</p>'+
-   '<div id="macro-cycle-ring-root" data-cycle-ring-host></div><div id="macro-evidence-root"></div></section>'+
-   naSection('macro-rotation','3.2',l,['순환매 위치(저점·고점) + 조건 · 확률','Sector rotation (trough/peak) + conditions · probability'],['순환매 모델이 없습니다. 상향·유지·하향 조건과 확률은 미산출입니다.','No rotation model. Up / hold / down conditions and probabilities are not computed.'],[freq,['산업 단위 결정(IA-5)','Industry unit (IA-5)']])+
-   naSection('macro-industry','3.3',l,['산업 사이클 (SIC 업종 그룹)','Industry cycles (SIC groups)'],['산업별 사이클 위치 모델이 없습니다. 위치·확률을 그리지 않습니다.','No industry-cycle model. No position or probability is drawn.'],[freq,['키 = QGV와 같은 industry_group(sic_industry_groups/v0)','Key = the same industry_group as QGV']])+
-   '<p class="small" id="macro-mine">3.4 '+esc(T(l,'내 위치는 링의 사용자 추정에서 이 브라우저에 기록합니다. 전체 이력 내보내기·가져오기를 지원하며 공식 값·점수와 분리합니다. 계정 동기화는 없습니다.','Record your position in the ring’s user estimate area in this browser. Full-history export/import is available, separately from official values and scores. There is no account sync.'))+'</p>'+
-   naSection('macro-chain','3.5',l,['연쇄 효과 지도','Causal-chain map'],['사건 → 원인 고리 → 영향받는 기업 지도는 아직 화면이 없습니다. 확인된 관계·추론·가설을 나눠 보여 줄 예정이며 방향·크기·확률은 만들지 않습니다.','The event → chain → affected companies map has no screen yet. It will separate confirmed relations, inferences and hypotheses, with no direction, size or probability.'],
-    [['관계 자료원 결정(REL-SOURCE)','Relationship source (REL-SOURCE)'],['고리마다 근거·시차·반대 경로·반증 필드','Per-link evidence, lag, counter-path and falsifier fields']])+'</div>';
+ // ---------- menu 3 매크로: functional stamp layout (design lane D7, 2026-10-20) ----------
+ // Owner draft "투자시스템 화면 시안 (손그림 칠판)" with the functional hierarchy numbers 4.1–4.6 on the stamps (menu 3 /
+ // sub-menus 3.1–3.6 stay on the strip above). The existing modules are placed, not changed: the cycle ring (4.1.1, 4.1.2 and
+ // the ring parts of 4.1.5, 4.2, 4.3, 4.4), the evidence lines (4.1.3), the lights, board, raw axes and S09 sections (4.1.4/4.1.5).
+ // parts = the markup app.js already builds ({lights, evidence, status, raw, canon}). The old sub-menu anchors
+ // (#macro-cycle … #macro-chain) are the group ids. Nothing is computed here: no position, no probability, no example value
+ // of the draft. States are fixed labels of what is connected today; the official layer stays in the ring ("미산출").
+ function macroHtml(l,parts){
+  const p=parts||{},x=(ko,en)=>esc(T(l,ko,en));
+  const stamp=n=>'<span class="plab-stamp" data-fn="'+n+'">'+n+'</span>';
+  const STATE={ready:['사용 가능','Available'],partial:['일부 연결','Partly connected'],frame:['화면 틀','Screen frame'],explore:['탐색 전용','Exploration only'],pending:['준비 중','In preparation'],na:['미산출','Not computed'],rule:['기준 미정','Criteria undecided']};
+  const chip=k=>k?'<span class="plab-state" data-plab-state="'+(k==='frame'||k==='explore'?'partial':k)+'">'+x(...STATE[k])+'</span>':'';
+  // "NOT_AVAILABLE" stays as text for the sub-menu contract (each 3.x section states it), on its own class (not .badge.NOT_AVAILABLE).
+  const naLine=(ko,en)=>'<p class="mc-na"><span class="mc-na-code">NOT_AVAILABLE</span> '+x(ko,en)+'</p>';
+  const link=(h,ko,en)=>'<a href="'+h+'">'+x(ko,en)+'</a>';
+  const links=list=>'<p class="plab-links">'+list.map(a=>link(...a)).join('')+'</p>';
+  const row=(ns,title,desc,state,body)=>'<li class="plab-row" data-fn-row="'+ns.join(' ')+'"><div class="plab-label"><h3>'+ns.map(stamp).join(' ')+' <span class="plab-title">'+title+'</span></h3>'+chip(state)+(desc?'<p class="plab-desc">'+desc+'</p>':'')+'</div><div class="plab-body">'+body+'</div></li>';
+  const group=(n,id,menu,title,lede,rows,extra)=>'<section class="plab-group mc-group" id="'+id+'" data-fn-group="'+n+'" data-ia-item="'+menu+'" aria-labelledby="'+id+'-title"><h2 class="plab-head" id="'+id+'-title">'+stamp(n)+' <span class="hl">'+title+'</span></h2>'+(lede?'<p class="plab-lede">'+lede+'</p>':'')+(extra||'')+'<ol class="plab-rows">'+rows.join('')+'</ol></section>';
+  const freq=x('확률 근거 = 과거 국면 전환 빈도: 같은 국면에서 다음 국면으로 넘어간 과거 횟수의 비율. 기간과 표본 수를 함께 적습니다. Lab에서 계산·검증하기 전에는 숫자를 쓰지 않습니다.','Probability basis = past phase-transition frequency: the share of past moves from the same phase to the next, shown with its period and sample size. No number before Lab computes and validates it.');
+  const slots=(list)=>'<ul class="mc-slots">'+list.map(([ko,en])=>'<li><b>'+x(ko,en)+'</b><span data-na="NOT_AVAILABLE">—</span></li>').join('')+'</ul>';
+  const conds=slots([['상향 조건','Up'],['유지 조건','Hold'],['하향 조건','Down']]);
+  const prob=slots([['비율','Share'],['기간','Period'],['표본 수','Samples']]);
+  const toRing=[['#macro-cycle-ring','4.1.1 링으로','To the 4.1.1 ring']];
+  const show=root.MacroCycleRing&&Number.isInteger(root.MacroCycleRing.USER_SHOW)?root.MacroCycleRing.USER_SHOW:null;
+  const g41=group('4.1','macro-cycle','3.1',x('경기 · 주식시장 국면','Economy · equity-market phases'),
+   x('경기와 주식시장은 서로 다른 모델이고 따로 돕니다. 위치는 승인된 모델이 게시한 구간으로만 보입니다.','Economy and market are separate models that turn separately. A position appears only as an interval published by an approved model.'),[
+   row(['4.1.1','4.1.2'],x('국면 그래프 · 국면 탐색','Phase graph · phase browsing'),x('개념도입니다. 칸 길이는 기간이 아닙니다. 돌리거나 국면을 눌러 근거 패턴·전환 조건을 봅니다. 링 안의 작은 도장도 기능 번호입니다.','A concept diagram; cell length is not time. Turn it or pick a phase to read its evidence pattern and transition conditions. The small stamps inside the ring are function numbers too.'),'frame',
+    '<div id="macro-cycle-ring-root" data-cycle-ring-host></div>'),
+   row(['4.1.3'],x('근거 세로선','Evidence lines'),x('공개 정부 통계를 실제 발표 시각에 세로선으로 그립니다. 발표 시각이 없으면 수집 시각으로 표시합니다. 탐색 화면이며 공식 위치·판정·확률에 쓰지 않습니다.','Public government statistics drawn as vertical lines at their real release time; collection time is shown when release time is unknown. Exploration only; never used for an official position, judgement or probability.'),'explore',
+    p.evidence||''),
+   row(['4.1.4'],x('기존 지표 연결','Existing indicator links'),x('경고등 5개(참고 모드) · 8축 원자료 · 기존 화면 절. 국면 링과 섞지 않습니다.','The five lights (reference mode), the 8-axis raw data and the existing sections. Never mixed into the phase rings.'),'ready',
+    (p.lights||'')+(p.raw||'')+(p.canon||'')),
+   row(['4.1.5'],x('판단 상태','Judgement state'),x('공식 판정은 각 링의 「공식 판정」 줄이 기준입니다. 게시된 모델 출력이 없으면 미산출로 둡니다.','The official judgement is the “Official judgement” line of each ring. Without a published model output it stays not computed.'),'na',
+    '<ul class="plab-rules mc-layers"><li>'+x('공식 층: 위치 · 확률 = 승인된 모델이 게시한 것만. 그 전에는 미산출.','Official layer: position and probability only as published by an approved model; until then not computed.')+'</li><li>'+
+     x('사용자 층: 내 추정은 이 기기에만 따로 저장하고 공식 층에 섞지 않습니다(4.4).','User layer: your estimate is kept apart on this device and never mixed into the official layer (4.4).')+'</li><li>'+
+     x('탐색 층: 근거 세로선은 판정에 쓰지 않습니다(4.1.3).','Exploration layer: evidence lines are never used for a judgement (4.1.3).')+'</li></ul>'+(p.status||''))]);
+  const g42=group('4.2','macro-rotation','3.2',x('순환매','Sector rotation'),
+   x('4.1 국면 위에서 저점 · 고점 어디쯤인지와, 다음으로 옮길 조건 · 확률을 붙이는 자리입니다.','Where the trough/peak position on the 4.1 phases goes, with the conditions and probability of the next move.'),[
+   row(['4.2.1'],x('위치 (저점 · 고점)','Position (trough · peak)'),x('순환매 위치 모델이 없어 점 · 구간을 그리지 않습니다.','No rotation model, so no point or interval is drawn.'),'na',links(toRing)),
+   row(['4.2.2'],x('조정 조건','Adjustment conditions'),x('상향 · 유지 · 하향 조건. 각 국면 설명(4.1.2) 안의 같은 칸과 이어집니다.','Up / hold / down conditions, the same boxes as in each phase panel (4.1.2).'),'rule',conds),
+   row(['4.2.3'],x('확률','Probability'),freq,'na',prob)],
+   naLine('순환매 모델과 검증된 전환 빈도가 없습니다.','There is no rotation model and no validated transition frequency.'));
+  const g43=group('4.3','macro-industry','3.3',x('SIC 산업 사이클','SIC industry cycles'),
+   x('QGV와 같은 업종 그룹 키(sic_industry_groups/v0)로 산업을 골라 위치 · 조건 · 확률을 봅니다.','Pick an industry by the same group key as QGV (sic_industry_groups/v0) to see its position, conditions and probability.'),[
+   row(['4.3.1'],x('산업 선택','Choose an industry'),x('링의 「SIC 산업」 탭에서 공개 sec-qgv2.json의 업종 그룹을 고릅니다. 산업 어휘는 미정입니다.','Choose a group from the public sec-qgv2.json in the ring’s “SIC industry” tab. The industry vocabulary is undecided.'),'partial',links(toRing)),
+   row(['4.3.2'],x('현재 예상 위치','Current estimated position'),x('산업별 사이클 위치 모델이 없어 위치를 그리지 않습니다.','No industry-cycle model, so no position is drawn.'),'na',''),
+   row(['4.3.3'],x('조정 조건과 확률','Conditions and probability'),freq,'na',conds+prob)],
+   naLine('산업별 사이클 모델이 없습니다.','There is no industry-cycle model.'));
+  const g44=group('4.4','macro-mine','3.4',x('사용자 국면 판단','My phase judgement'),
+   x('내가 고른 위치는 공식 판정이 아닙니다. 보라색 점선으로 따로 그리고 점수에 쓰지 않습니다.','Your chosen position is not an official judgement. It is drawn apart as a dashed purple line and never scored.'),[
+   row(['4.4.1'],x('위치 선택','Choose a position'),x('각 링 아래 「사용자 추정」 칸에서 시작 · 끝 구간과 근거(선택)를 고릅니다.','In the “User estimate” box under each ring, choose a from/to interval and an optional reason.'),'ready',links(toRing)),
+   row(['4.4.2'],x('저장과 비교','Save and compare'),x('이 기기에만 저장합니다. 기록마다 그때의 시스템 표시를 함께 남겨 비교합니다. 기록은 모두 보관하고 화면에는 최근 기록만 보입니다.','Saved on this device only. Each record keeps what the system showed then, for comparison. Every record is kept; the screen shows the latest ones.')+(show?' '+x('(최근 '+show+'개)','(latest '+show+')'):''),'ready',
+    '<p>'+x('파일 내보내기 · 가져오기(합치기)로 옮깁니다. 계정 동기화는','Move them with file export / import (merge). Account sync is')+' '+chip('pending')+'</p>')],
+   naLine('로그인 계정 간 동기화는 없습니다(저장 위치 결정 DRAW-STORE · IA-6).','There is no sync between signed-in devices (storage decision DRAW-STORE · IA-6).'));
+  const chainBox=(ko,en)=>'<li><b>'+x(ko,en)+'</b><span data-na="NOT_AVAILABLE">—</span></li>';
+  const g45=group('4.5','macro-chain','3.5',x('연쇄 효과 지도','Causal-chain map'),
+   x('사건 → 원인 고리 → 영향받는 기업. 고리마다 근거 · 시차 · 확신도를 붙입니다. 방향 · 크기 · 확률은 만들지 않습니다.','Event → causal links → affected companies, each link with evidence, lag and confidence. No direction, size or probability is made.'),[
+   row(['4.5.1'],x('사건 · 출발점','Event · starting point'),x('공시 · 뉴스 사건, 또는 매크로 동인 · 기술 · 밸류체인 단계 같은 개념.','A filing or news event, or a concept such as a macro driver, technology or value-chain stage.'),'pending',''),
+   row(['4.5.2'],x('원인 고리','Causal links'),x('걸음마다 사실 · 추론 · 가설을 나눕니다. 한 걸음이라도 가설이면 경로 전체가 가설입니다.','Each step is fact, inference or hypothesis; one hypothesis step makes the whole path a hypothesis.'),'pending',''),
+   row(['4.5.3'],x('영향받는 기업','Affected companies'),x('관계망과 같은 관계 자료를 씁니다.','Uses the same relationship data as the company network.'),'pending',links([['#news-network','뉴스 4.1 · 관계망','News 4.1 · network']])),
+   row(['4.5.4'],x('근거 · 시차 · 확신도','Evidence · lag · confidence'),x('전제 · 시차 · 반대 경로 · 상쇄 요인 · 반증 조건 · 근거(발표 시각). 사람이 적거나 근거 문서에서 옮기며 자동으로 만들지 않습니다.','Premises, lag, counter-paths, offsets, falsifiers and evidence (release time), written by a person or taken from a source, never generated.'),'rule',
+    '<p class="small">'+x('확신도 숫자는 검증 전에는 쓰지 않습니다.','No confidence number before validation.')+'</p>')],
+   naLine('사건 → 고리 → 기업 지도는 화면이 없습니다(관계 자료원 결정 REL-SOURCE).','The event → link → company map has no screen yet (relationship source decision REL-SOURCE).')+
+   '<ol class="mc-chain" aria-label="'+x('연쇄 효과 지도 틀 · 빈 칸','Causal-chain map frame · empty')+'">'+chainBox('사건','Event')+chainBox('원인 고리','Causal links')+chainBox('영향받는 기업','Affected companies')+'</ol>');
+  const g46='<section class="plab-group mc-group mc-tree" data-fn-group="4.6" data-ia-item="3.6" aria-labelledby="mc-46-title"><h2 class="plab-head" id="mc-46-title">'+stamp('4.6')+' <span class="hl">'+x('내용구성 트리','Content structure tree')+'</span></h2>'+
+   '<p class="plab-lede">'+x('입력 → 경고등 · 상태판 → 위치 · 순환매 · 산업 사이클 → 연쇄 효과를 한 장으로 봅니다. 예시 값은 공개 자료에서만 읽습니다.','Inputs → lights · board → position · rotation · industry cycles → chains on one page. Example values come from published data only.')+'</p>'+
+   links([['#tree/macro','3.6 구조 트리 열기','Open the 3.6 structure tree']])+'</section>';
+  return '<div class="mc-screen" data-ia-group="macro"><p class="plab-note" data-fn-note>'+x('도장 번호(4.x)는 기능 번호입니다. 위 메뉴 번호(3, 3.1~3.6)와 다릅니다.','Stamp numbers (4.x) are function numbers, not the menu numbers above (3, 3.1–3.6).')+'</p>'+
+   '<p class="mc-legend">'+x('공식 국면 · 확률 = 승인된 모델이 게시할 때만 · 내 추정 = 보라색 점선, 이 기기에만 · 근거 세로선 = 탐색 전용','Official phase and probability = only when an approved model publishes · my estimate = dashed purple, this device only · evidence lines = exploration only')+'</p>'+
+   g41+g42+g43+g44+g45+g46+'</div>';
  }
  root.IaScreens=Object.freeze({treeHtml,mount,technicalHtml,macroHtml,TREE_KEYS:Object.freeze(Object.keys(TREES))});
 })(window);
