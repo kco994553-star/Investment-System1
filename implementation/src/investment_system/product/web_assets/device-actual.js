@@ -718,7 +718,7 @@
       const PT = view.PriceTime, quoted = result.rows.filter(row => row.quote_source).map(row => ({ source: row.quote_source, as_of: row.quote_as_of, available_at: row.quote_available_at, time_status: row.quote_time_status }));
       const times = PT ? PT.summarize(quoted, { staleness: api.staleness }) : null;
       return { state: result.state, reason: result.reason, stale: result.stale === true, quote_as_of: times ? times.from : null,
-        quote_read_at: times ? times.read_to : null, quote_unconfirmed: times ? times.unconfirmed : 0,
+        quote_read_at: times ? times.read_to : null, quote_unconfirmed: times ? times.unconfirmed : 0, total: result.state === 'AVAILABLE' ? result.total : null,
         rows: result.rows.map(row => ({ ticker: index.instruments.get(canonical(row.security_reference)).ticker, theme_id: row.theme_id, weight: row.weight, delta: row.delta })),
         themes: result.themes.map(theme => ({ theme_id: theme.theme_id, weight: theme.weight, delta: theme.delta })) };
     } catch (_) { return none('READ_FAILED'); }

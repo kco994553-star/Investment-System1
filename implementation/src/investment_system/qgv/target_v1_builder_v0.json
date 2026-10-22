@@ -1,0 +1,155 @@
+{
+  "schema_version": 1,
+  "config_version": "target_v1_builder/v0",
+  "status": "v0",
+  "calibration": "UNCALIBRATED",
+  "decided": "2026-10-14 사용자 결정 「QGV v2 채택과 TARGET v1 재구성」",
+  "doc": "docs/playbook/PLAYBOOK_V1.md 15·16절 + 2026-10-14 사용자 결정",
+  "number_check_passed": false,
+  "number_check": {
+    "version": "v0", "decision": "OWNER_RULE",
+    "message": "숫자 검증(10-K 대조) 통과 전에는 TARGET v1을 확정 저장할 수 없습니다. 카드 응답은 기록됩니다.",
+    "flag": "number_check_passed"
+  },
+  "score_basis": {
+    "version": "v0", "decision": "OWNER_RULE",
+    "basis": "v2", "accessor": "QgvScores.compute",
+    "universe": "US_UNIVERSE_504", "dedupe_issuer": true, "exclude_reference_only": true
+  },
+  "coverage": {
+    "version": "v0", "decision": "UNCALIBRATED",
+    "universe_size": 504, "ready_min_ratio": 0.9,
+    "draft_label": "초안 · 커버리지 편향 가능",
+    "rule": "공개 sec-qgv2.json의 미국 Universe 행 중 Q·G 축 점수가 있는 수 ÷ universe_size가 둘 다 ready_min_ratio 이상이면 표시를 뗀다"
+  },
+  "filters": {
+    "version": "v0", "decision": "UNCALIBRATED",
+    "axis_min_weight": 0.5, "axes": ["Q", "G", "V"],
+    "exclude_value_trap_gate": true,
+    "financial_safety": {
+      "net_debt_to_ebitda_fail_at_or_above": 3,
+      "interest_coverage_fail_below": 3,
+      "missing_for_exclusion": "NOT_EXCLUDED",
+      "missing_for_core": "NOT_PASSED"
+    }
+  },
+  "sector_spread": {
+    "version": "v0", "decision": "UNCALIBRATED",
+    "max_per_subgroup": 4,
+    "subgroup_order": ["PLAYBOOK_ASSIGNMENT_OR_SIC_SUBGROUP", "PLAYBOOK_SECTOR_FROM_D22_ETF", "V2_INDUSTRY_GROUP"],
+    "industry_group_prefix": "industry:",
+    "limits": "playbook_v1.json portfolio_limits (16절: 단일 10%, 업종 묶음 40% · 반도체+반도체 장비 한 묶음, 최소 10종목)"
+  },
+  "candidates": {
+    "version": "v0", "decision": "UNCALIBRATED",
+    "count": 30, "pool_size": 60, "excluded_shown": 40
+  },
+  "selection": {
+    "version": "v0", "decision": "UNCALIBRATED",
+    "count": 15,
+    "core": {"id": "CORE", "ko": "핵심", "count": 5, "pct": 8, "min_factor_ratio": 0.8, "require_financial_safety_pass": true},
+    "general": {"id": "GENERAL", "ko": "일반", "count": 10, "pct": 6},
+    "sum_pct": 100,
+    "shortfall": "CASH",
+    "group_cap_on_skip": "SKIP_TO_NEXT"
+  },
+  "templates": {
+    "version": "v0", "decision": "UNCALIBRATED",
+    "count": 3,
+    "rules": {
+      "RELATIVE": "X = 현재값 × factor (현재값 > 0일 때만)",
+      "DELTA": "X = 현재값 + delta (단위 그대로, %는 %p)",
+      "FLOOR_RELATIVE": "X = max(floor, 현재값 × factor)",
+      "FIXED": "X = value"
+    },
+    "factors": [
+      {"factor": "q_profitability", "ko": "수익성", "metrics": [
+        {"metric": "roic", "label": "ROIC", "unit": "pct", "direction": "higher", "rule": "RELATIVE", "factor": 0.7},
+        {"metric": "gross_profit_to_assets", "label": "총이익/자산", "unit": "pct", "direction": "higher", "rule": "RELATIVE", "factor": 0.7}]},
+      {"factor": "q_moat_proxy", "ko": "해자(5년 ROIC 안정)", "metrics": [
+        {"metric": "moat_return_mean_5y", "label": "5년 평균 ROIC", "unit": "pct", "direction": "higher", "rule": "RELATIVE", "factor": 0.7}]},
+      {"factor": "q_earnings_quality", "ko": "이익의 질", "metrics": [
+        {"metric": "fcf_to_net_income", "label": "FCF/순이익", "unit": "x", "direction": "higher", "rule": "RELATIVE", "factor": 0.7}]},
+      {"factor": "q_financial_safety", "ko": "재무 안전", "metrics": [
+        {"metric": "interest_coverage", "label": "이자보상배율", "unit": "x", "direction": "higher", "rule": "FLOOR_RELATIVE", "factor": 0.5, "floor": 3},
+        {"metric": "net_debt_to_ebitda", "label": "순부채/EBITDA", "unit": "x", "direction": "lower", "rule": "FIXED", "value": 3}]},
+      {"factor": "q_capital_allocation", "ko": "자본 배분", "metrics": [
+        {"metric": "incremental_roic_5y", "label": "5년 증분 ROIC", "unit": "pct", "direction": "higher", "rule": "RELATIVE", "factor": 0.5},
+        {"metric": "dilution_3y", "label": "3년 연평균 주식 수 증가율", "unit": "pct", "direction": "lower", "rule": "DELTA", "delta": 0.02}]},
+      {"factor": "g_revenue_growth", "ko": "매출 성장", "metrics": [
+        {"metric": "revenue_cagr_3y", "label": "3년 매출 연평균 성장률", "unit": "pct", "direction": "higher", "rule": "DELTA", "delta": -0.05}]},
+      {"factor": "g_per_share_growth", "ko": "주당 성장", "metrics": [
+        {"metric": "eps_cagr_3y", "label": "3년 EPS 연평균 성장률", "unit": "pct", "direction": "higher", "rule": "DELTA", "delta": -0.1},
+        {"metric": "fcf_per_share_cagr_3y", "label": "3년 주당 FCF 연평균 성장률", "unit": "pct", "direction": "higher", "rule": "DELTA", "delta": -0.1}]},
+      {"factor": "g_growth_efficiency", "ko": "성장 효율", "metrics": [
+        {"metric": "incremental_roic_3y", "label": "3년 증분 ROIC", "unit": "pct", "direction": "higher", "rule": "RELATIVE", "factor": 0.5}]},
+      {"factor": "g_consistency", "ko": "성장 일관성", "metrics": [
+        {"metric": "revenue_positive_growth_share", "label": "매출 증가 연도 비율", "unit": "pct", "direction": "higher", "rule": "DELTA", "delta": -0.2}]},
+      {"factor": "g_recent_acceleration", "ko": "최근 가속", "metrics": [
+        {"metric": "revenue_ttm_growth", "label": "최근 12개월 매출 성장률", "unit": "pct", "direction": "higher", "rule": "DELTA", "delta": -0.05}]},
+      {"factor": "v_earnings_yield", "ko": "이익수익률", "metrics": [
+        {"metric": "SCORE", "label": "이익수익률 백분위(V)", "unit": "pt", "direction": "higher", "rule": "DELTA", "delta": -30}]},
+      {"factor": "v_fcf_yield", "ko": "FCF 수익률", "metrics": [
+        {"metric": "SCORE", "label": "FCF 수익률 백분위(V)", "unit": "pt", "direction": "higher", "rule": "DELTA", "delta": -30}]},
+      {"factor": "v_vs_industry", "ko": "업종 대비 가치", "metrics": [
+        {"metric": "SCORE", "label": "업종 대비 이익수익률 백분위(V)", "unit": "pt", "direction": "higher", "rule": "DELTA", "delta": -30}]},
+      {"factor": "v_vs_own_history", "ko": "자기 역사 대비 가치", "metrics": [
+        {"metric": "SCORE", "label": "자기 5년 대비 이익수익률 백분위(V)", "unit": "pt", "direction": "higher", "rule": "DELTA", "delta": -30}]},
+      {"factor": "v_expectation_check", "ko": "기대 점검", "metrics": [
+        {"metric": "SCORE", "label": "기대 점검 백분위(V)", "unit": "pt", "direction": "higher", "rule": "DELTA", "delta": -30}]}
+    ],
+    "fallback": [
+      {"id": "TOTAL_RANK", "reason": "QGV v2 총점 {total} · 전체 {rank}위", "invalidation": "QGV v2 총점 순위가 {limit}위 밖으로 밀리면 (현재 {rank}위)", "limit_from": "candidates.count"},
+      {"id": "Q_INDUSTRY_PCT", "reason": "업종 내 Q 백분위 {value}", "invalidation": "업종 내 Q 백분위가 {limit} 이하가 되면(가치 함정 관문 · 현재 {value})", "limit_from": "playbook v2_adjustments.value_trap_gate.q_industry_pct_bottom"},
+      {"id": "G_AXIS", "reason": "G 축 점수 {value}", "invalidation": "G 축 점수가 {limit} 아래로 내려가면 (현재 {value})", "delta": -15}
+    ]
+  },
+  "cards": {
+    "version": "v0", "decision": "OWNER_RULE",
+    "answers": [
+      {"id": "AGREE", "ko": "동의", "verdict": "TV1_AGREE", "action": "TARGET_V1_KEEP"},
+      {"id": "DISAGREE", "ko": "반대", "verdict": "TV1_DISAGREE", "action": "TARGET_V1_EXCLUDE", "reason_required": true, "reason_max": 200},
+      {"id": "UNKNOWN", "ko": "모름", "verdict": "TV1_UNKNOWN", "action": "TARGET_V1_KEEP_UNCONFIRMED", "memo": "미확인"}
+    ],
+    "record_primary_code": "TV1"
+  },
+  "rebalance": {
+    "version": "v0", "decision": "UNCALIBRATED",
+    "months": [2, 5, 8, 11],
+    "day_rule": "MONDAY_OF_DAYS_15_TO_21",
+    "day_rule_ko": "2·5·8·11월 셋째 주 = 15~21일 중 월요일 (PLAYBOOK 13-4)"
+  },
+  "transition": {
+    "version": "v0", "decision": "OWNER_RULE",
+    "rounds": [
+      {"round": 1, "month": "2026-11"},
+      {"round": 2, "month": "2027-02"},
+      {"round": 3, "month": "2027-05"}
+    ],
+    "step_fraction": [1, 3],
+    "basis": "TARGET_V0_TO_TARGET_V1",
+    "amount": "RAM_ONLY_TOTAL_VALUE_TIMES_STEP"
+  },
+  "virtual_sets": {
+    "version": "v0", "decision": "OWNER_RULE",
+    "A": {"ko": "세트 A · TARGET v0", "source": "CATALOG_TARGET_V0"},
+    "B": {"ko": "세트 B · v2 상위 15 균등", "source": "RULE_V2_TOP", "count": 15, "equal_weight": true, "reselect": "EVERY_REBALANCE_DAY", "start_min_eligible": 30, "start_rule": "통과 종목이 start_min_eligible 이상이고 15종목이 16절 한도를 통과한 날 시작"},
+    "C": {"ko": "세트 C · TARGET v1", "source": "TARGET_V1_CONFIRMED", "reselect": "NEVER", "rebalance_to_target": "EVERY_REBALANCE_DAY"},
+    "backfill": false,
+    "start": "DAY_READY",
+    "index_rule": "기준일 종가 = 100, 목표 비중으로 단위 계산, 리밸런싱일(또는 재선정일)에 목표 비중으로 재설정, 결측 종가는 공백(채우지 않음)",
+    "return_basis": "LOCAL_PRICE_RETURN",
+    "return_basis_ko": "현지통화 가격수익률 · 환율 효과 제외 · 배당 제외",
+    "benchmark": {"ko": "S&P 500(SPY)", "symbol": "SPY"}
+  },
+  "review_rule": {
+    "version": "v0", "decision": "OWNER_RULE",
+    "id": "HOLD_ROUND_3_SUGGESTION",
+    "before_round": 3,
+    "active_from_round": 2,
+    "condition": "B_AND_C_BELOW_A_AND_SP500",
+    "window_start": "SET_C_START",
+    "suggestion_only": true,
+    "text": "세트 B와 세트 C가 모두 세트 A와 S&P 500보다 낮습니다. 3회차 이동을 보류하는 것을 검토해 보세요(제안일 뿐입니다)."
+  }
+}
