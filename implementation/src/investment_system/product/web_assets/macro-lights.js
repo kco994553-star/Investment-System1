@@ -6,13 +6,14 @@
    Macro only paces what to buy and how fast; it is never used for sell decisions. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.MacroLights=api;})(typeof globalThis==='object'?globalThis:this,function(){
 'use strict';
-const CONFIG=Object.freeze({id:'MACRO_LIGHTS_V1',version:'v1',status:'UNCALIBRATED',marker:'v1 · UNCALIBRATED',decided_on:'2026-10-13',source_section:'PLAYBOOK_V1 13-5',sell_decisions:false,comparison_epsilon:1e-9,
+const CONFIG=Object.freeze({id:'MACRO_LIGHTS_V1',version:'v1',status:'UNCALIBRATED',marker:'v1 · UNCALIBRATED',decided_on:'2026-10-13',source_section:'PLAYBOOK_V1 13-5',sell_decisions:false,
+ revisions:[{id:'M-RULE-C',decided_on:'2026-10-15',source_section:'PLAYBOOK_V1 18',status:'HYPOTHESIS',validation:'MACRO_REPLAY_20261014.md 12',changes:['state.crisis_inflation_other_lit_min'],text:'가설(검증 중): 물가 > 8%는 물가 외 다른 경고등이 1개 이상 함께 켜졌을 때만 위기, 단독이면 경고. 규칙을 고르는 데 쓴 구간(2000·2008·2020·2022)만으로 정했고, 추가 과거 재생과 앞으로의 전진 검증으로 확인 중이다'}],comparison_epsilon:1e-9,
  lights:{employment:{series:'BLS:LNS14000000',avg_months:3,low_window_months:12,low_window_includes_latest:true,gap_pp_gte:0.5},
   inflation:{series:'BLS:CUUR0000SA0',base_lag_months:12,yoy_gt:0.05},
   curve:{series:'TREASURY:daily_treasury_yield_curve:BC_10YEAR-BC_3MONTH',spread_lt:0,min_run_days:20},
   market:{symbol:'SPY',drawdown_lte:-0.2,high_window_days:364,rv_window_returns:20,rv_annualization_days:252,rv_history_years:3,rv_top_share:0.05},
   credit:{numerator:'HYG',denominator:'IEF',window_sessions:20,change_lte:-0.05,estimate:true}},
- state:{warning_lit_count:2,crisis_lit_count:3,warning_inflation_gt:0.05,warning_growth_lt:0,crisis_inflation_gt:0.08,crisis_pair:['market','credit'],low_confidence_available_lt:3}});
+ state:{warning_lit_count:2,crisis_lit_count:3,warning_inflation_gt:0.05,warning_growth_lt:0,crisis_inflation_gt:0.08,crisis_inflation_other_lit_min:1,crisis_pair:['market','credit'],low_confidence_available_lt:3}});
 const LIGHTS=Object.freeze(['employment','inflation','curve','market','credit']),PUBLIC_LIGHTS=Object.freeze(['employment','inflation','curve']),DEVICE_LIGHTS=Object.freeze(['market','credit']);
 const FIELDS=Object.freeze({employment:['lit','reason','period','avg3','low12','low12_count','gap'],inflation:['lit','reason','period','base_period','yoy'],
  curve:['lit','reason','date','ten_year','three_month','spread','run_days'],
@@ -127,12 +128,15 @@ function litOf(v){if(v!==null&&typeof v==='object'&&!Array.isArray(v))v=v.lit;re
 function macroState(lights,cpiYoy=null,growth=null,config=CONFIG){
  const cfg=config.state,eps=config.comparison_epsilon,src=lights!==null&&typeof lights==='object'&&!Array.isArray(lights)?lights:{};
  const lit={};for(const n of LIGHTS)lit[n]=litOf(Object.prototype.hasOwnProperty.call(src,n)?src[n]:null);
- const available=LIGHTS.filter(n=>lit[n]!==null),count=available.filter(n=>lit[n]).length;
+ const available=LIGHTS.filter(n=>lit[n]!==null),count=available.filter(n=>lit[n]).length,others=available.filter(n=>n!=='inflation'&&lit[n]).length;
  const cpi=num(cpiYoy)?cpiYoy:null,grow=num(growth)?growth:null,crisis=[],warning=[];
  if(count>=cfg.crisis_lit_count)crisis.push('LIT_COUNT_GE_3');
  if(cfg.crisis_pair.every(n=>lit[n]===true))crisis.push('MARKET_AND_CREDIT_LIT');
- if(cpi!==null&&cpi>cfg.crisis_inflation_gt+eps)crisis.push('INFLATION_GT_8PCT');
+ // M-RULE C (2026-10-15, hypothesis under validation): CPI > 8% is a crisis only together with another light; alone a warning.
+ const hot=cpi!==null&&cpi>cfg.crisis_inflation_gt+eps;
+ if(hot&&others>=cfg.crisis_inflation_other_lit_min)crisis.push('INFLATION_GT_8PCT_WITH_OTHER_LIT');
  if(count===cfg.warning_lit_count)warning.push('LIT_COUNT_EQ_2');
+ if(hot&&others<cfg.crisis_inflation_other_lit_min)warning.push('INFLATION_GT_8PCT_ALONE');
  if(cpi!==null&&grow!==null&&cpi>cfg.warning_inflation_gt+eps&&grow<cfg.warning_growth_lt-eps)warning.push('INFLATION_GT_5PCT_AND_GROWTH_LT_0');
  const [state,reasons]=crisis.length?['CRISIS',crisis]:warning.length?['WARNING',warning]:['NORMAL',['LIT_COUNT_LE_1']];
  const low=available.length<cfg.low_confidence_available_lt;
@@ -251,7 +255,7 @@ function render(host,merged,{locale,status='',onLoad=null,legacy=null}={}){
  card.append(list);
  const why=merged.reasons.join(', ');
  card.append(el('p',x('판정 근거: ','Basis: ')+why+(merged.growth!==null?' · '+x('성장(GDP) ','growth (GDP) ')+pct(merged.growth)+' ('+merged.growth_period+')':' · '+x('성장(GDP) 자료 없음','growth (GDP) not available')),{class:'small','data-macro-lights-reasons':why}));
- card.append(el('p',x('자료 없는 경고등은 판정에서 뺍니다. 매크로는 무엇을 얼마나 빨리 살지만 조절하며 매도 판단에는 쓰지 않습니다. 과거 재생(2000·2008·2020·2022) 검증 전 v1 · UNCALIBRATED.','Lights without data are excluded. Macro only paces buying and is never used for sell decisions. v1 · UNCALIBRATED until the 2000/2008/2020/2022 replay is validated.'),{class:'small'}));
+ card.append(el('p',x('자료 없는 경고등은 판정에서 뺍니다. M-RULE C는 가설(검증 중)입니다. 2022년 결과는 규칙 선택에 사용한 구간의 근사 재생으로, 독립 검증이 아닙니다. 매도 판단에는 쓰지 않습니다.','Lights without data are excluded. M-RULE C is a hypothesis under validation. The approximate 2022 replay uses a period used to choose the rule; it is not independent validation. Macro is never used for sell decisions.'),{class:'small'}));
  if(onLoad){const b=el('button',x('SPY·HYG·IEF 불러와 경고등 계산 (기기 RAM)','Load SPY, HYG and IEF to compute lights (device RAM)'),{type:'button','data-macro-lights-load':''});b.addEventListener('click',onLoad);card.append(b);}
  card.append(el('p',status,{role:'status','data-macro-lights-status':status}));
  if(legacy){const det=el('details',undefined,{'data-macro-legacy':''});det.append(el('summary',x('자세히','Details')),el('p',x('이전 기준(v0.1.1)','Previous rule (v0.1.1)')+': '+legacy.state+(legacy.rule_label?' · '+legacy.rule_label:''),{'data-macro-legacy-state':legacy.state}));card.append(det);}
