@@ -101,6 +101,45 @@ WBD 공시 순서(SEC submissions에서 확인):
   - 사명 변경: BEN(Franklin Resources → Franklin Templeton Inc, ticker 그대로)과 VMRK(Equity Residential → Vivmark, 목록이 이미 VMRK)다. 나머지는 대소문자만 바뀌었다.
 - 결론: Main의 CIK → 현재 ticker 대조 결과와 같다. 코드나 CIK가 바뀐 종목은 PSKY와 WBD 둘뿐이다. 다만 지수 편출입 8건(A의 TAP, TTD, BLDR, CTVA와 B의 5건)은 CIK 대조로는 보이지 않는다. 이번 S&P 원문 대조로 처음 확인한 것이다.
 
+## 2-4. Universe 안의 과거 ticker 변경과 신규 상장(가격 이력용 근거)
+
+배경: Main의 U8 실행 39945012772에서 IEX 월말 거래가 현재 심볼로는 없는 구간이 나왔다. 아래는 그 구간을 SEC 원문으로 설명한 것이다. 모두 CIK가 같고 심볼만 바뀌었다. 따라서 과거 가격 이력은 이전 심볼로 이어 붙여야 한다(§5-3 CODE_CHANGE의 과거판, 날짜가 있는 심볼 이력표).
+
+| 현재 코드 | 이전 심볼 | 변경일(새 심볼 거래 시작) | IEX 무거래 월말(Main) | 근거(SEC) |
+| --- | --- | --- | --- | --- |
+| NASDAQ:WTW | WLTW | 2022-01-10 | 2021-12 | 8-K 2022-01-07: https://www.sec.gov/Archives/edgar/data/1140536/000119312522004045/d267396d8k.htm |
+| NYSE:BALL | BLL | 2022-05-10 | 2021-12 | 8-K 2022-05-03 Item 8.01 "changing our ticker to BALL effective May 10, 2022": https://www.sec.gov/Archives/edgar/data/9389/000000938922000010/bll-20220427x8k.htm |
+| NYSE:ELV | ANTM | 2022-06-28(사명 변경과 같은 날) | 2021-12 | 8-K 2022-06-28 표지 심볼 ELV: https://www.sec.gov/Archives/edgar/data/1156039/000119312522183957/d359422d8k.htm · 2022 위임장의 예고: https://www.sec.gov/Archives/edgar/data/1156039/000115603922000047/a2022proxystatement.htm |
+| NYSE:CPAY | FLT | 2024-03-25 | 2021-12~2024-12 | 8-K 2024-03-12 EX-99.1: https://www.sec.gov/Archives/edgar/data/1175454/000162828024010593/exhibit991corpayrebrand_re.htm |
+| NYSE:XYZ | SQ | 2025-01-21(**회사 발표 기억, SEC 원문 미확인**) | 2021-12~2024-12 | 8-K 2025-02-06 표지 심볼 XYZ: https://www.sec.gov/Archives/edgar/data/1512673/000119312525021783/d843940d8k.htm · 10-K(2025-02-24) "under the symbol XYZ" |
+| NASDAQ:EXE | CHK | 2024-10-02 | 2022-12 | 8-K 2024-10-01: https://www.sec.gov/Archives/edgar/data/895126/000110465924104976/tm2425151d1_8k.htm |
+| NYSE:COR | ABC | 2023-08-30 | 2022-09 | 8-K 2023-08-30 EX-99.1: https://www.sec.gov/Archives/edgar/data/1140859/000110465923096698/tm2324358d1_ex99-1.htm |
+| NYSE:RVTY | PKI | 2023-05-16 | 2023-01 | 8-K 2023-05-11 EX-99.1: https://www.sec.gov/Archives/edgar/data/31791/000115752323000815/a53397725ex99_1.htm |
+| NASDAQ:FISV | FISV(Nasdaq) → FI(NYSE) → FISV(Nasdaq) | FI: 2023-06-07, FISV: 2025-11-11경 | 2023-12, 2024-12 | 8-K 2023-05-25 EX-99.1: https://www.sec.gov/Archives/edgar/data/798354/000119312523154199/d470900dex991.htm · 8-K 2025-10-29("effective on or about November 11, 2025", 심볼 FISV): https://www.sec.gov/Archives/edgar/data/798354/000119312525254670/d17957d8k.htm |
+| NYSE:MRSH | MMC | 2026-01 중(2026-01-14 이전) | 2021-12~2025-12 | 2025-10-16 8-K EX-99.1 "In January 2026 … will change from MMC to MRSH": https://www.sec.gov/Archives/edgar/data/62709/000006270925000123/mmc3q2025ex991newsrelease.htm · 2026-01-14 8-K 표지 심볼 MRSH. 정확한 날짜는 미확인 |
+| NYSE:VMRK | EQR | 2026-08-18 | 2021-12~2025-12 | 8-K 2026-08-17: https://www.sec.gov/Archives/edgar/data/906107/000114036126033377/ef20080318_8k.htm |
+| NASDAQ:ECHO | SATS | 2026-06-18~06-25 사이(**정확한 날짜 미확인**) | 2021-12~2025-12 | 8-K 표지 심볼이 2026-06-18 제출분은 SATS이고, 2026-06-25 제출분은 ECHO다: https://www.sec.gov/Archives/edgar/data/1415404/000141540426000030/sats-20260623x8k.htm |
+
+Main 표의 IEX 무거래 구간은 조사한 월말만 보여 준다. 예를 들어 BALL과 ELV는 2022-01~05 월말도 이전 심볼이었다.
+
+신규 상장과 분할. 상장 전 가격 이력은 없다. 채우지 않고 NA로 둔다(V4).
+
+| 코드 | 첫 정규 거래일 | 사유 | 근거(SEC) |
+| --- | --- | --- | --- |
+| NASDAQ:GEHC | 2023-01-04 | GE에서 분할 | https://www.sec.gov/Archives/edgar/data/1932393/000119312523001161/d386556dex991.htm |
+| NYSE:VLTO | 2023-10-02 | Danaher에서 분할 | https://www.sec.gov/Archives/edgar/data/1967680/000196768023000005/exhibit992pressrelease.htm |
+| NYSE:GEV | 2024-04-02 | GE에서 분할 | https://www.sec.gov/Archives/edgar/data/1996810/000119312524084048/d807682dex991.htm |
+| NYSE:SOLV | 2024-04-01 | 3M에서 분할 | https://www.sec.gov/Archives/edgar/data/1964738/000162828024014887/exhibit992-8xksolventumpre.htm |
+| NYSE:SW | 2024-07-08 | Smurfit Kappa와 WestRock 결합(2024-07-05 완료) 뒤 NYSE 상장 | 8-K 2024-07-08: https://www.sec.gov/Archives/edgar/data/2005951/000110465924078355/tm2418700d1_ex99-2.htm |
+| NYSE:KVUE | 2023-05-04 | J&J 자회사 IPO | 8-K(2023-05-08): "May 4, 2023, the date that Kenvue Common Stock was first listed": https://www.sec.gov/Archives/edgar/data/1944048/000162828023016423/kvue-20230503.htm |
+| NASDAQ:SNDK | 2025-02-24 | Western Digital에서 분할 | https://www.sec.gov/Archives/edgar/data/2023554/000119312525033433/d849281dex991.htm |
+| NYSE:FDXF | 2026-06-01 | FedEx에서 분할 | https://www.sec.gov/Archives/edgar/data/2082247/000110465926068521/tm2615735d1_ex99-1.htm |
+
+설계에 반영할 점(§5-3 보충):
+- 이벤트 로그에 과거 CODE_CHANGE도 `effective` 날짜와 함께 싣는다. 가격 이력 레인은 이 표로 이전 심볼 구간을 찾는다.
+- 분할이나 IPO 종목은 `listed_from`을 싣는다. 그 전 기간은 NA다(대체값으로 채우지 않는다).
+- 이 표는 Universe 구성 변경이 아니다. 그래서 `universe_version`을 올리지 않는다.
+
 ## 3. Q·G·V와 백분위에 주는 영향
 
 입력: 게시 `sec-qgv2.json`
