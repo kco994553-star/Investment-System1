@@ -30,7 +30,10 @@ def test_every_section_is_v0_with_a_decision_state():
 def test_owner_numbers_and_number_check_gate():
     cfg = _config()
     assert 'number_check_passed' not in cfg
-    assert cfg['number_check']['result'] == {'calc_version': None, 'passed': False, 'date': None, 'companies': 0}
+    # 2026-10-23 user decision: app formula check with test prices passed for the published calc_version; device quote path is a follow-up.
+    assert cfg['number_check']['result'] == {'calc_version': 'qgv2-calc/2026-10-17.1', 'passed': True, 'date': '2026-10-23', 'companies': 10}
+    assert (cfg['number_check']['result_basis'], cfg['number_check']['device_quote_path']) == ('APP_FORMULA_TEST_PRICE', 'UNVERIFIED_FOLLOW_UP')
+    assert cfg['number_check']['result_label_ko'] == '앱 계산식 대조 통과(시험 가격) / 실기기 시세 경로 미검증'
     assert cfg['number_check']['companies_required'] == 10
     sel = cfg['selection']
     assert (sel['count'], sel['core']['count'], sel['core']['pct'], sel['general']['count'], sel['general']['pct']) == (15, 5, 8, 10, 6)
