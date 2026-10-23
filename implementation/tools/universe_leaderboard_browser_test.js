@@ -52,6 +52,11 @@ const official = (page) => page.evaluate(async () => {
 });
 const attrs = (page, sel) => page.evaluate((s) => { const n = document.querySelectorAll(s);return n.length === 1 ? Object.fromEntries([...n[0].attributes].filter((a) => a.name.startsWith('data-')).map((a) => [a.name, a.value])) : { __count: n.length }; }, sel);
 const tableRows = (page) => page.locator('[data-leaderboard-table] tbody tr[data-leaderboard-row]').evaluateAll((rs) => rs.map((r) => ({ id: r.dataset.leaderboardRow, ticker: r.querySelector('a')?.textContent, rank: r.querySelector('[data-leaderboard-rank]')?.dataset.leaderboardRank ?? null, prank: r.querySelector('[data-leaderboard-portfolio-rank]')?.textContent ?? null })));
+// V factor count per row (user decision 2026-10-23): the shown 'V n/5' and its attribute vs the count from the same shared result.
+const vCounts = (page) => page.locator('[data-leaderboard-table] tbody tr[data-leaderboard-row]').evaluateAll((rs) => rs.map((r) => {
+  const c = r.querySelector('[data-leaderboard-qgv-cell] [data-leaderboard-v-count]'), p = leaderScores().rows[r.dataset.leaderboardRow]?.primary, fin = (x) => typeof x === 'number' && Number.isFinite(x);
+  const want = fin(p?.v) ? Object.keys(QgvV2.WEIGHTS.V).filter((k) => fin(p.factors?.[k]?.score)).length : 0;
+  return { id: r.dataset.leaderboardRow, text: c ? c.textContent : null, n: c ? c.dataset.leaderboardVCount : null, missing: c ? c.dataset.vMissing : null, title: c ? c.title : null, want: String(want) }; }));
 const modelRows = (page) => page.locator('[data-model-portfolio] [data-model-row]').evaluateAll((rs) => rs.map((r) => [r.dataset.modelRow, r.dataset.modelRank, r.dataset.modelIn]));
 async function read(page, values) {
   await page.evaluate(async (v) => {
@@ -84,6 +89,8 @@ async function settle(page) { await page.waitForFunction(() => typeof leaderPage
         assert.deepEqual([s0['data-rank-population'], s0['data-rank-base'], s0['data-ranked'], s0['data-outside-universe']], ['UNIVERSE', String(codes0), '0', '2']);
         assert.equal(await page.locator('[data-leaderboard-rank]').count(), 0);assert.equal(await page.locator('[data-model-portfolio]').getAttribute('data-model-portfolio'), 'NO_OFFICIAL_RANK');
         assert.equal(await page.locator('[data-leaderboard-row]').count(), codes0, 'one table row per Universe code before prices too');
+        // V factor count: no V before any price → every row 'V 0/5' (never filled).
+        { const vc = await vCounts(page);assert.equal(vc.length, codes0);for (const r of vc) assert.deepEqual([r.text, r.n], ['V 0/5', '0'], r.id + ' V 0/5 before prices'); }
         // Universe read with synthetic prices.
         phase = 'READ';await read(page, values);await settle(page);
         const X = await official(page), R = X.rows;
@@ -108,6 +115,12 @@ async function settle(page) { await page.waitForFunction(() => typeof leaderPage
         assert.equal(shown.length, codes, 'table = the Universe rows');assert.equal(new Set(shown.map((r) => r.ticker)).size, codes, 'no security twice on screen');
         for (const r of shown) assert.equal(r.rank, Number.isInteger(R[r.id].rank) ? String(R[r.id].rank) : null, r.id + ' shows its official rank');
         assert.equal(await page.locator('[data-leaderboard-rank]').count(), ranked.length, 'Q·G-only rows carry no rank');
+        // V factor count (2026-10-23): every row shows 'V n/5' = the V factors its V was computed from in the same result; V null → 0/5.
+        phase = 'V_COUNT';{ const vc = await vCounts(page);assert.equal(vc.length, codes);
+          for (const r of vc) { assert.equal(r.n, r.want, r.id + ' V count');assert.equal(r.text, 'V ' + r.want + '/5', r.id + ' V text');if (!Number.isFinite(R[r.id].v)) assert.equal(r.n, '0', r.id + ' V null is 0/5'); }
+          const part = vc.find((r) => r.n !== '0' && r.n !== '5');assert.ok(part, 'synthetic prices give a partial V (some V factors missing)');
+          assert.match(part.title, new RegExp('^V 산출 요인 ' + part.n + '/5 · 빠진 요인: '));assert.ok(part.missing.split(' ').length === 5 - Number(part.n), part.id + ' missing ids');
+          assert.ok(vc.some((r) => r.n === '0'), 'rows without V show 0/5'); }
         // 6. Footnote / counts attributes.
         phase = 'ATTRS';const sc = await attrs(page, '[data-leaderboard-rank-scope]'), ct = await attrs(page, '[data-leaderboard-counts]');
         assert.deepEqual([sc['data-rank-population'], sc['data-rank-base'], sc['data-ranked'], sc['data-outside-universe']], ['UNIVERSE', String(codes), String(ranked.length), '2']);

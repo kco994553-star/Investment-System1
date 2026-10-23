@@ -45,9 +45,9 @@ from investment_system.macro.evidence_lines import FILENAME as MACRO_EVIDENCE_FI
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
-    "target-v1-builder.js": "6b0dc3d3255719c7d287f28b8cca16b43ed2739e78531d6ff9b43a406a847662",
+    "target-v1-builder.js": "01443195442809f1be5230172db0b6a4deb659f9e0a566f2f6f06fc5bf5f38f2",
     "target-v1-config-defaults.js": "a8b126e7b8200f236d4e0c52a728ce14476aa6cad6f45e1b23f97dbb0ebc8787",
-    "target-v1-screen.js": "5bf8cde5adaccfa102a74752babdaf380d0151afa1ad3402ec59afb47619e0a0",
+    "target-v1-screen.js": "b70855aba89dc2e2b22789c0ef93bfcd954b6fff8966ab2fcab9f31c89f6a3b4",
     "playbook-engine.js": "b708a1772b4cd8e1af731cffdacbfab478d03c9c4e1e5fd663537babd64ee7d8",
     "playbook-config-defaults.js": "b0dd6aeed54a11082953b83aa30497c99dd454040e7e7adbc46cdd4c0a1221a6",
     "virtual-trading-compare.js": "700054fd105b979b505c09ec0dad862b0ce435c0179d2ddbe9f85b5b9c23c3f7",
@@ -77,7 +77,7 @@ APPROVED_SHA256 = {
     "screen-detail.js": "d4bed4772a5d70daf6d03491fbc0acfbd0b878789b55de2fdfdf13706f2f354b",
     "virtual-trading.js": "41a834f13d86ed2bd6a046cf63788992350294714ee9b9ee159ae50de8e20206",
     "technical-cards.js": "7f4fb2ce3a586a9f024c6edc212c65893a7acc44a3fd58b611f2f38616b660b3",
-    "leaderboard-screen.js": "b2bf1ce1a200d897f304e6af2fe37c926ca4243986ed78dc15b5304a9a5f71c6",
+    "leaderboard-screen.js": "87f9362e70c943c6ddf559b676f0d3dea312d432fd60119c2e6386b560b6d718",
     "portfolio-screen.js": "db56518e00a7f7003f36b35b4777ca634bd563db532d5035c5a4958e57d07976",
     "company-screen.js": "5c55833a4a0cf36f827f41b98d9e5c783524489a4aae2dbdca860c0a4628bfae",
     "ops-status.js": "bccccba913e0887ee2bb3c38fd61f27fcc2a6d37acb67aeeffea227df422c7a9",
