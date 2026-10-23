@@ -66,6 +66,8 @@ QGV 정렬도 대상 membership 전원의 snapshot 존재·점수/coverage 유�
 본인이 foreground 작업을 시작한 동안 입력·시총·가격 의존 V/QGV·순위·현재 선정 membership을 기기 RAM에서만 취급한다. 늦게 도착한 응답은 작업 ID·기준시각·회사/상장·입력 version이 현재 작업과 같을 때만 사용한다. 취소·로그아웃·화면 종료·회사/작업 전환 시 해당 RAM 참조를 해제하고 이전 결과로 대체하지 않는다. 공개 빌더에는 개인 결과의 입력이나 출력 경로를 만들지 않는다.
 
 - **공개 금지:** 원가격·returns·시총·V·가격 결합 QGV·순위 및 그 순위에서 선정한 현재 Top500 구성 목록. 값이 없는 이름 목록도 개인 가격 순위의 산출물이면 공개하지 않는다. Git/Pages/public JSON/Actions 로그·아티팩트/PR 댓글로 보내지 않는다.
+
+> **2026-10-23 결정(GSQ-024)으로 공개 V로 변경:** 공식 V 점수·순위는 서버(Actions)가 IEX HIST 정규장 마지막 체결가로 매일 계산해 공개 사이트에 게시한다. 원시 가격·EV·수익률·배율·내재 성장률 비공개는 유지한다. 기기 가격 V는 공식값이 아니며 게시 전 소유자 임시용, 게시 후 대조 도구로만 쓴다.
 - **지속 저장 제외:** 가격/파생값의 파일·localStorage·IndexedDB·service worker cache·KV/D1/R2/Cache API·백업·오류/crash/관측 로그. Worker module-global 공유 price cache도 제외한다. no-store 헤더 하나만으로 모든 저장 경계가 검증됐다고 주장하지 않는다.
 - **분리 유지:** 공개 SEC/DART 재무와 권리 확인된 identity 입력은 기존 경로를 유지할 수 있다. 공개 Frozen membership은 기존 historical reference이며 개인 현재 구성으로 덮어쓰지 않는다. private 시총 순위와 개인 가격 결합 결과를 재무 public bundle에 되돌리지 않는다.
 - **오류/운영 정보:** 고정 비가격 reason code·개수·작업 상태만 최소 처리한다. 가격·회사별 순위·private 후보 목록·공급자 payload·토큰을 포함한 예외/log는 남기지 않는다. 기존 비가격 요청 제한 상태 저장은 가격 보관 허가가 아니다.

@@ -1,5 +1,7 @@
 # QGV v2 기기 V·종합 점수 — 구현 정의 (PROVISIONAL)
 
+> **2026-10-23 결정(GSQ-024)으로 공개 V로 변경:** 공식 V 점수·순위는 서버(Actions)가 IEX HIST 정규장 마지막 체결가로 매일 계산해 공개 사이트에 게시한다. 원시 가격·EV·수익률·배율·내재 성장률 비공개는 유지한다. 기기 가격 V는 공식값이 아니며 게시 전 소유자 임시용, 게시 후 대조 도구로만 쓴다.
+
 근거: [QGV v2 후보안](QGV_V2_CANDIDATE.md) 기본 비중 그대로(조정 없음, Holdout 미사용), GSQ-022(2026-10-13 사용자 승인). 계산 위치는 기기 RAM이다. 가격·시가총액·EV·V 점수·순위는 공개 파일·저장소·로그·커밋 fixture(합성 제외)에 남기지 않는다. 결측은 NOT_AVAILABLE이며 0으로 채우지 않는다.
 
 - Python 참조: `qgv/qgv_v2.py` · JS: `web_assets/qgv-v2.js` · 대조 벡터: `tests/fixtures/qgv_v2_vectors_v1.json`(`tools/qgv_v2_reference.py --write|--check`, `tools/qgv_v2_node_test.js`).
