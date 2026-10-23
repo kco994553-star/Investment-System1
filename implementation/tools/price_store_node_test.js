@@ -5,6 +5,9 @@
 // append only rows not stored (never rewrite; a provider revision is only counted); fetch only the missing range; give the
 // virtual-trading runner exactly the closes its own Worker path gives; request only allowlisted Universe504 symbols;
 // never read Example_* tabs; keep closes out of localStorage and the console.
+// CLICK-ONLY (owner decision 2026-10-23): a screen-open read (monthEndCloses / dailyCloses / runnerHistories without
+// fetch:true, autoLoad, the company view) never reaches the Worker or writes the sheet; only a button run (fetch:true,
+// syncMany / syncUniverse) requests, with progress, a working stop (AbortSignal) and a resume that skips received symbols.
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -190,12 +193,16 @@ test('daily sync: first run 5y, then only the missing range; stored rows never r
   assert.ok(![...h.local.values()].some((v) => /\d+\.\d+/.test(v) && !v.startsWith('https://')), 'no close in localStorage');
 });
 
-test('month-ends: first open of a viewed symbol stores 5 years once; then no request; non-allowlisted symbols are not requested', async () => {
+test('month-ends: a screen-open read requests nothing; the button read (fetch:true) stores 5 years once; then no request; non-allowlisted symbols are not requested', async () => {
   const h = harness(); await h.connect(); await P.enable(h.view);
   h.setReadAt('2026-10-13T21:00:00Z');
-  const now = at('2026-10-13T21:00:00Z');
+  const now = at('2026-10-13T21:00:00Z'), posts = h.requests.filter(([m]) => m === 'POST').length;
   {
-    const m = await P.monthEndCloses('NVDA', { view: h.view, now });
+    assert.deepEqual(await P.monthEndCloses('NVDA', { view: h.view, now }), {}, 'default read: stored rows only (none yet)');
+    assert.deepEqual(await P.dailyCloses('NVDA', null, { view: h.view, now }), {});
+    assert.deepEqual(h.workerCalls, [], 'a read without fetch:true never reaches the Worker');
+    assert.equal(h.requests.filter(([m]) => m === 'POST').length, posts, 'no sheet append by a read');
+    const m = await P.monthEndCloses('NVDA', { view: h.view, now, fetch: true });
     assert.deepEqual(h.workerCalls, [['NVDA', '5y']]);
     const keys = Object.keys(m);
     assert.equal(keys.at(-1), '2026-09', 'only complete months');
@@ -204,12 +211,13 @@ test('month-ends: first open of a viewed symbol stores 5 years once; then no req
     assert.equal(rows.length, keys.length);
     assert.ok(rows.every((r) => r[0] === 'NVDA' && /^\d{4}-\d{2}-\d{2}$/.test(r[1])));
     assert.equal(rows.find((r) => r[1].startsWith('2026-09'))[1], '2026-09-30');
-    assert.deepEqual(await P.monthEndCloses('NVDA', { view: h.view, now }), m);
+    assert.deepEqual(await P.monthEndCloses('NVDA', { view: h.view, now }), m, 'the stored rows are read back without a request');
+    assert.deepEqual(await P.monthEndCloses('NVDA', { view: h.view, now, fetch: true }), m);
     assert.equal(h.workerCalls.length, 1);
-    const brk = await P.monthEndCloses('BRK-B', { view: h.view, now });
+    const brk = await P.monthEndCloses('BRK-B', { view: h.view, now, fetch: true });
     assert.equal(Object.keys(brk).at(-1), '2026-09');
     assert.deepEqual(h.workerCalls.at(-1), ['BRK-B', '5y']);
-    assert.deepEqual(await P.monthEndCloses('QQQ', { view: h.view, now }), {});
+    assert.deepEqual(await P.monthEndCloses('QQQ', { view: h.view, now, fetch: true }), {});
     assert.equal(h.workerCalls.length, 2, 'QQQ is outside the approved allowlist: no request');
   }
 });
@@ -261,7 +269,7 @@ test('runner integration: stored + missing ranges give exactly the closes of the
   const direct = await R.fetchHistories(own.view, { session: own.session, origin: ORIGIN, symbols, spacingMs: 0 });
   // Store path.
   const h = harness({ worker }); await h.connect(); await P.enable(h.view);
-  const viaStore = await P.runnerHistories(h.view, { session: h.session, origin: ORIGIN, symbols, spacingMs: 0, now });
+  const viaStore = await P.runnerHistories(h.view, { session: h.session, origin: ORIGIN, symbols, spacingMs: 0, fetch: true, now });
   assert.ok(viaStore);
   for (const s of symbols) assert.deepEqual(plain(R.seriesFromHistory(viaStore[s], s, P.currencyFor(s))), plain(R.seriesFromHistory(direct[s], s, P.currencyFor(s))), s);
   const a = R.assemble({ ...v.inputs, histories: direct }), b = R.assemble({ ...v.inputs, histories: viaStore });
@@ -269,7 +277,7 @@ test('runner integration: stored + missing ranges give exactly the closes of the
   // Second run in the same session: only the symbols that failed are requested again (as the runner's own cache does).
   const calls = h.workerCalls.length, failed = symbols.filter((s) => direct[s].error);
   assert.ok(failed.includes('XLK') && failed.length < symbols.length);
-  const again = await P.runnerHistories(h.view, { session: h.session, origin: ORIGIN, symbols, spacingMs: 0, now });
+  const again = await P.runnerHistories(h.view, { session: h.session, origin: ORIGIN, symbols, spacingMs: 0, fetch: true, now });
   assert.deepEqual(h.workerCalls.slice(calls).map((c) => c[0]), failed);
   assert.deepEqual(plain(R.assemble({ ...v.inputs, histories: again })), plain(a));
 });
@@ -278,15 +286,91 @@ test('runner integration: a failed missing range gives the same {error} (never a
   let fail = false;
   const worker = (symbol, range, readAt) => (fail && symbol !== 'SPY' ? { error: 'YAHOO_UNAVAILABLE', status: 503 } : workerPayload(symbol, range, readAt, synthClose));
   const h = harness({ worker }); await h.connect(); await P.enable(h.view);
-  await P.runnerHistories(h.view, { session: h.session, origin: ORIGIN, symbols: ['SPY', 'NVDA'], spacingMs: 0, now: at('2026-10-13T21:00:00Z') });
+  await P.runnerHistories(h.view, { session: h.session, origin: ORIGIN, symbols: ['SPY', 'NVDA'], spacingMs: 0, fetch: true, now: at('2026-10-13T21:00:00Z') });
   await h.connect(); fail = true; h.setReadAt('2026-10-15T21:00:00Z');
-  const out = await P.runnerHistories(h.view, { session: h.session, origin: ORIGIN, symbols: ['SPY', 'NVDA'], spacingMs: 0, now: at('2026-10-15T21:00:00Z') });
+  const out = await P.runnerHistories(h.view, { session: h.session, origin: ORIGIN, symbols: ['SPY', 'NVDA'], spacingMs: 0, fetch: true, now: at('2026-10-15T21:00:00Z') });
   assert.deepEqual(out.NVDA, { error: 'YAHOO_UNAVAILABLE' });
   assert.equal(out.SPY.provider, 'PRICE_STORE');
   const h2 = harness({ worker: () => ({ error: 'YAHOO_UNAVAILABLE', status: 503 }) }); await h2.connect(); await P.enable(h2.view);
-  const stopped = await P.runnerHistories(h2.view, { session: h2.session, origin: ORIGIN, symbols: ['SPY', 'NVDA'], spacingMs: 0, now: at('2026-10-13T21:00:00Z') });
+  const stopped = await P.runnerHistories(h2.view, { session: h2.session, origin: ORIGIN, symbols: ['SPY', 'NVDA'], spacingMs: 0, fetch: true, now: at('2026-10-13T21:00:00Z') });
   assert.deepEqual(stopped, { SPY: { error: 'YAHOO_UNAVAILABLE' } });
   assert.deepEqual(h2.workerCalls, [['SPY', '5y']]);
+});
+
+test('runner on a screen open (fetch not true): stored rows only, no Worker request, PRICE_NOT_FETCHED for the rest; own path cache-only', async () => {
+  const h = harness(); await h.connect(); await P.enable(h.view);
+  await P.syncMany(h.view, ['SPY'], '1d', { now: at('2026-10-13T21:00:00Z') });
+  const calls = h.workerCalls.length, posts = h.requests.filter(([m]) => m === 'POST').length;
+  // Two days later the stored SPY rows are behind the due date: the open still reads them as they are and requests nothing.
+  const out = await P.runnerHistories(h.view, { session: h.session, origin: ORIGIN, symbols: ['SPY', 'NVDA'], spacingMs: 0, now: at('2026-10-15T21:00:00Z') });
+  assert.equal(out.SPY.provider, 'PRICE_STORE');
+  assert.equal(out.SPY.bars.at(-1).session_date, '2026-10-12');
+  assert.deepEqual(out.NVDA, { error: 'PRICE_NOT_FETCHED' });
+  assert.deepEqual([h.workerCalls.length, h.requests.filter(([m]) => m === 'POST').length], [calls, posts], 'no Worker request and no sheet write');
+  // Store OFF: the runner's own path answers from this window's RAM cache only.
+  const own = harness(); await own.connect(); R.clearCache();
+  const none = await R.fetchHistories(own.view, { session: own.session, origin: ORIGIN, symbols: ['SPY'], spacingMs: 0, fetch: false });
+  assert.deepEqual([none, own.workerCalls], [{ SPY: { error: 'PRICE_NOT_FETCHED' } }, []]);
+  await R.fetchHistories(own.view, { session: own.session, origin: ORIGIN, symbols: ['SPY'], spacingMs: 0 });
+  const cached = await R.fetchHistories(own.view, { session: own.session, origin: ORIGIN, symbols: ['SPY'], spacingMs: 0, fetch: false });
+  assert.equal(cached.SPY.schema, 'private-history/1');
+  assert.equal(own.workerCalls.length, 1, 'the cached answer of the earlier click is reused without a request');
+  assert.ok(R.CODES.includes('PRICE_NOT_FETCHED'));
+});
+
+test('app open (autoLoad): reads Prices_D only; no Worker request and no append, even with core symbols due', async () => {
+  const h = harness({ tabs: { Prices_D: [HEADER, ['SPY', '2026-01-02', '100', 'YAHOO', 'x']], Prices_M: [HEADER] } });
+  await h.connect(); h.local.set(P.FLAG_KEY, '1');
+  assert.equal(typeof P.autoSync, 'undefined', 'the old app-open sync is gone');
+  const stop = P.autoLoad(h.view);
+  for (let i = 0; i < 50 && P.status({ view: h.view }).state !== 'READY'; i++) await new Promise((r) => setTimeout(r, 5));
+  const s = P.status({ view: h.view });
+  assert.deepEqual([s.state, s.tabs.Prices_D.read, s.tabs.Prices_D.rows], ['READY', true, 1]);
+  assert.deepEqual(h.workerCalls, []);
+  assert.equal(h.requests.filter(([m]) => m === 'POST').length, 0);
+  await h.connect(); await new Promise((r) => setTimeout(r, 20));
+  assert.deepEqual(h.workerCalls, [], 'a new sign-in reads again, still without a request');
+  stop();
+});
+
+test('Universe504 button: progress (n/total · appended rows · current symbol), stop by AbortSignal, resume skips received symbols, spacing kept', async () => {
+  const codes = ['NASDAQ:NVDA', 'NYSE:BRK.B', 'NYSE:MMM', 'NASDAQ:MSFT', 'NASDAQ:AAPL', 'NASDAQ:QQQ'];
+  const h = harness({ codes }); await h.connect(); await P.enable(h.view);
+  const keep = setInterval(() => {}, 1000); // the harness timers are unref'd: keep the loop alive across the 40 ms spacing
+  try {
+  h.view.InvestmentAppConfig = { ...h.view.InvestmentAppConfig, virtualTradingRequestSpacingMs: 40 };
+  const times = [], fetch0 = h.view.fetch.bind(h.view);
+  h.view.fetch = async (url, o) => { if (String(url).startsWith(ORIGIN)) times.push(Date.now()); return fetch0(url, o); };
+  const now = at('2026-10-13T21:00:00Z'), controller = new AbortController(), seen = [];let live = null;
+  const first = P.syncUniverse(h.view, { now, signal: controller.signal, onProgress: (done, total, info) => { seen.push([done, total, info.appended, info.current]); if (!live) live = P.status({ view: h.view }); if (done === 2) controller.abort(); } });
+  const r1 = await first;
+  // While the run is busy the status carries the progress (counts and the current symbol only).
+  assert.equal(live.busy, 'UNIVERSE504');
+  assert.deepEqual(Object.keys(live.progress).sort(), ['appended', 'current', 'done', 'requested', 'total']);
+  assert.equal(r1.state, 'READY');
+  assert.deepEqual(seen.slice(0, 2).map((x) => [x[0], x[1], x[3]]), [[1, 6, 'NVDA'], [2, 6, 'BRK-B']]);
+  assert.ok(seen[1][2] > seen[0][2] && seen[0][2] >= 59, 'appended rows grow per symbol');
+  assert.ok(!JSON.stringify(seen).match(/\d+\.\d+/), 'progress has counts and symbols only, never a close');
+  assert.deepEqual(h.workerCalls, [['NVDA', '5y'], ['BRK-B', '5y']], 'nothing requested after the stop');
+  assert.ok(r1.failed.CANCELED >= 1);
+  assert.equal(P.status({ view: h.view }).progress, null);
+  // Press again: the received symbols are skipped without a request; the rest continue with the same spacing.
+  const r2 = await P.syncUniverse(h.view, { now });
+  assert.deepEqual(h.workerCalls.map((c) => c[0]), ['NVDA', 'BRK-B', 'MMM', 'MSFT', 'AAPL']);
+  assert.deepEqual([r2.fetched, r2.not_allowed, r2.failed], [3, 1, { WORKER_ALLOWLIST: 1 }]);
+  for (let i = 1; i < times.length; i++) assert.ok(times[i] - times[i - 1] >= 35, 'request spacing kept (' + (times[i] - times[i - 1]) + ' ms)');
+  // A reload (new window state) after the run: stored rows up to the last complete month → no request at all.
+  const fresh = harness({ codes, tabs: { Prices_D: [HEADER], Prices_M: h.sheet.get('Prices_M').map((r) => [...r]) } }); await fresh.connect(); fresh.local.set(P.FLAG_KEY, '1');
+  const r3 = await P.syncUniverse(fresh.view, { now });
+  assert.deepEqual([r3.fetched, fresh.workerCalls], [0, []]);
+  // Next month: only the new complete month is requested (smallest Worker range) and appended.
+  fresh.setReadAt('2026-11-05T21:00:00Z');
+  const before = fresh.sheet.get('Prices_M').length;
+  const r4 = await P.syncUniverse(fresh.view, { now: at('2026-11-05T21:00:00Z') });
+  assert.deepEqual(fresh.workerCalls, [['NVDA', '3mo'], ['BRK-B', '3mo'], ['MMM', '3mo'], ['MSFT', '3mo'], ['AAPL', '3mo']]);
+  assert.equal(r4.appended_rows, 5);
+  assert.deepEqual(fresh.sheet.get('Prices_M').slice(before).map((r) => r[1].slice(0, 7)), ['2026-10', '2026-10', '2026-10', '2026-10', '2026-10']);
+  } finally { clearInterval(keep); }
 });
 
 test('malformed and duplicate stored rows are skipped and counted, never rewritten', async () => {

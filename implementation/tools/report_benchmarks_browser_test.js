@@ -132,6 +132,15 @@ async function storageClean(page) {
     return !values.includes(canary) && !values.includes('private-history/1') && !/"closes"|"indices"|"points"|report-benchmarks|bench/i.test(values) && !keys.some((k) => /bench|index/i.test(k));
   }, { canary: CANARY });
 }
+// Click-only rule (owner decision 2026-10-23): opening S17 reads the stored / RAM prices only (no Worker request); prices come
+// from the report's button '가격 받아 다시 계산'. Waits for the open pass (the button is shown), presses it and waits for the
+// result of that button run (a freshly painted card that is not LOADING).
+async function fetchPrices(page) {
+  const button = page.locator('[data-runner-fetch]'); await button.waitFor({ timeout: 30000 });
+  await page.evaluate(() => { document.querySelector('[data-report-inputs]').dataset.beforeFetch = '1'; });
+  await button.click();
+  await page.waitForFunction(() => { const n = document.querySelector('[data-report-inputs]'); return !!n && !n.dataset.beforeFetch && n.dataset.runnerState !== 'LOADING'; }, null, { timeout: 60000 });
+}
 const noWonAmount = (text) => (text.match(/\d[\d,]*\s*(?:원|만원|억)/g) || []).length === 0;
 const noOverflow = (page) => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1);
 const sectionText = (page, n) => page.locator('[data-report-section="' + n + '"]').textContent();
@@ -191,6 +200,7 @@ const sectionText = (page, n) => page.locator('[data-report-section="' + n + '"]
         try {
           await signIn(page);
           await page.evaluate(() => { location.hash = 'report/mock'; });
+          await fetchPrices(page);
           await page.locator('[data-report-inputs][data-runner-state="READY"]').waitFor({ timeout: 30000 });
           await page.locator('[data-bench-chart]').waitFor();
           const periods = await page.locator('[data-bench-periods] tbody tr').evaluateAll((r) => r.map((x) => [x.dataset.benchPeriodRow, x.dataset.benchRowState, x.textContent + ' ' + [...x.querySelectorAll('[data-bench-reason]')].map((n) => n.dataset.benchReason).join(' ')]));
@@ -251,6 +261,7 @@ const sectionText = (page, n) => page.locator('[data-report-section="' + n + '"]
       try {
         await signIn(page);
         await page.evaluate(() => { location.hash = 'report/mock'; });
+        await fetchPrices(page);
         await page.locator('[data-report-inputs][data-runner-state="READY"]').waitFor({ timeout: 30000 });
         const d5 = await page.locator('[data-track-window="5"]').evaluate((x) => [x.dataset.trackState, x.cells[1].textContent, x.cells[2].textContent]);
         assert.equal(d5[0], 'INSUFFICIENT_SAMPLE', JSON.stringify(d5));
@@ -265,6 +276,7 @@ const sectionText = (page, n) => page.locator('[data-report-section="' + n + '"]
       try {
         await signIn(page, { holdings: true });
         await page.evaluate(() => { location.hash = 'report/real'; });
+        await fetchPrices(page);
         await page.locator('[data-report-inputs][data-runner-state="READY"]').waitFor({ timeout: 30000 });
         await page.locator('[data-bench-chart]').waitFor();
         const keys = await page.locator('[data-bench-series] tbody tr').evaluateAll((r) => r.map((x) => x.dataset.benchSeriesRow));

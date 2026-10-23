@@ -63,6 +63,18 @@ function safety(metrics,cfg=CFG){
  return{state:failed?'FAIL':passed?'PASS':'UNKNOWN',net_debt_to_ebitda:nd,interest_coverage:ic};
 }
 
+/* ---------- V factor count (user decision 2026-10-23) ---------- */
+/* 「가격이 일부만 있을 때 V가 '몇 개 요인으로 계산됐는지'(예: 3/5)를 리더보드와 TARGET 후보 표에 표시하고, V3·V4가 빠진 V로 TARGET v1
+   후보를 확정하지 않는다(초안은 가능, 표시 필수).」 The 5 V factors in QgvV2.WEIGHTS.V order (V1..V5); a factor counts when its score
+   is a number. A V that is null counts 0/5 (never filled). V3 (v_vs_industry) and V4 (v_vs_own_history) are required for finalize
+   (finalizeBlockers → V_FACTORS_V3_V4_MISSING); a draft without them stays allowed and shows the marker. Display and gate only: no
+   score, weight, selection count or config number changes. Kept in code (no config field) as the decision needs no number. */
+const V_FACTORS=Object.freeze(['v_earnings_yield','v_fcf_yield','v_vs_industry','v_vs_own_history','v_expectation_check']),V_REQUIRED=Object.freeze(['v_vs_industry','v_vs_own_history']);
+function vFactors(v2){const f=object(v2?.factors)?v2.factors:{},have=finite(v2?.v)?V_FACTORS.filter(k=>finite(f[k]?.score)):[];
+ return{n:have.length,total:V_FACTORS.length,missing:V_FACTORS.filter(k=>!have.includes(k)),required_ok:V_REQUIRED.every(k=>have.includes(k))};}
+// A draft row's V lacks V3 or V4. A row from a draft built before 2026-10-23 (no v_missing) cannot show it → counted as lacking.
+const vIncomplete=r=>!Array.isArray(r?.v_missing)||V_REQUIRED.some(k=>r.v_missing.includes(k));
+
 /* ---------- rows from the accessor ---------- */
 /* computed: QgvScores.compute result over Universe identities (RAM, with device quotes); inputs: Qgv2Inputs result (public);
    universeCodes: ['NYSE:XYZ', ...]; existing: the 19 TARGET tickers. → every Universe row with the fields the pipeline uses. */
@@ -76,9 +88,9 @@ function universeRows({computed,inputs,universeCodes=[],existing=[],cfg=CFG,pcfg
   const withdrawn=records[code]?.identity_withdrawn===true||rec?.identity_withdrawn===true;
   const metrics=object(rec?.metrics)?rec.metrics:{},sic=rec?.sic??null,industry=rec?.industry_group??null,sg=subgroupOf(symbol,sic,industry,cfg,pcfg);
   const axisOk=a=>{const x=v2.axes?.[a];return!!x&&finite(x.score)&&finite(x.weight_available)&&x.weight_available>=cfg.filters.axis_min_weight;};
-  const factorScores={};for(const[f,x]of Object.entries(object(v2.factors)?v2.factors:{}))if(finite(x?.score))factorScores[f]=x.score;
+  const factorScores={};for(const[f,x]of Object.entries(object(v2.factors)?v2.factors:{}))if(finite(x?.score))factorScores[f]=x.score;const vf=vFactors(v2);
   const r={symbol,code,cik:rec?.cik??null,total:!withdrawn&&finite(v2.total)?v2.total:null,q:finite(v2.q)?v2.q:null,g:finite(v2.g)?v2.g:null,v:finite(v2.v)?v2.v:null,
-   q_pct:finite(v2.q_industry_percentile)?v2.q_industry_percentile:null,factors_n:v2.factors_available??0,factors_total:v2.factors_total??15,
+   q_pct:finite(v2.q_industry_percentile)?v2.q_industry_percentile:null,factors_n:v2.factors_available??0,factors_total:v2.factors_total??15,v_n:vf.n,v_total:vf.total,v_missing:vf.missing,
    axes_ok:Object.fromEntries(cfg.filters.axes.map(a=>[a,axisOk(a)])),value_trap:v2.value_trap_gate===true,types:Array.isArray(v2.selected_types)?[...v2.selected_types]:[],
    subgroup:sg.subgroup,sector:sg.sector,subgroup_source:sg.source,industry,sic,safety:safety(metrics,cfg),metrics,factor_scores:factorScores,in19:have.has(key(symbol)),withdrawn,rank:null,industry_rank:null,industry_size:null};
   // One point per issuer (second share class of the same CIK): keep the higher total, then the first code.
@@ -159,7 +171,7 @@ function invalidated(cond,current){if(!finite(current)||!finite(cond?.threshold)
 /* ---------- draft (frozen ranking stored on this device) ---------- */
 function poolRow(r,cfg=CFG,pcfg=PCFG){const t=templates(r,cfg,pcfg);return{symbol:r.symbol,code:r.code,subgroup:r.subgroup,sector:r.sector,industry:r.industry,types:r.types.slice(0,4),
  q:round(r.q),g:round(r.g),v:round(r.v),total:round(r.total,4),q_pct:round(r.q_pct),rank:r.rank,industry_rank:r.industry_rank,industry_size:r.industry_size,factors_n:r.factors_n,factors_total:r.factors_total,
- in19:r.in19,safety:r.safety.state,reasons:t.reasons,invalidations:t.invalidations};}
+ v_n:r.v_n,v_total:r.v_total,v_missing:[...r.v_missing],in19:r.in19,safety:r.safety.state,reasons:t.reasons,invalidations:t.invalidations};}
 // basis: inputBasis() of the published file the draft was built from (null when it could not be read → regenerated at finalize).
 function buildDraft({computed,inputs,universeCodes,existing,date,basis=null,cfg=CFG,pcfg=PCFG}){
  if(!validDay(date))fail('DATE_INVALID');if(computed?.v2_state!=='READY')fail('QGV2_NOT_READY');
@@ -282,16 +294,18 @@ function numberCheck(calcVersion,cfg=CFG){
  if(!calcVersion||out.calc_version!==calcVersion)return{...out,ok:false,reason:'NUMBER_CHECK_CALC_VERSION_MISMATCH'};
  return{...out,ok:true,reason:null};
 }
-// Every reason that blocks finalize now, in order (cards → name shortfall → §16 → latest public file → draft basis → financial
-// safety re-check → number check). basis: inputBasis(published), computed by the caller at the same moment.
+// Every reason that blocks finalize now, in order (cards → name shortfall → §16 → V without V3·V4 (2026-10-23) → latest public file →
+// draft basis → financial safety re-check → number check). basis: inputBasis(published), computed by the caller at the same moment.
+// v_incomplete: the selected names whose V lacks V3 (v_vs_industry) or V4 (v_vs_own_history), or whose draft row predates the count.
 function finalizeBlockers(state,{date,published,basis=null,cfg=CFG,pcfg=PCFG}={}){
  if(!validDay(date))return{blockers:['DATE_INVALID'],check:null,number:null,sel:null};if(!state?.draft)return{blockers:['TARGET_V1_DRAFT_REQUIRED'],check:null,number:null,sel:null};
  const sel=currentSelection(state,cfg,pcfg),out=[];if(!sel.complete)out.push('TARGET_V1_CARDS_PENDING');if(sel.shortfall>0)out.push('TARGET_V1_SHORTFALL');if(sel.limits.ok!==true)out.push('TARGET_LIMITS_BLOCKED');
+ const v_incomplete=sel.rows.filter(vIncomplete).map(r=>r.symbol);if(v_incomplete.length)out.push('V_FACTORS_V3_V4_MISSING');
  const check=publishedCheck(published,{date,cfg});out.push(...check.reasons);
  const basis_changed=object(published)&&object(published.records)?basisChanged(state.draft.basis,basis):false;if(basis_changed)out.push('DRAFT_BASIS_CHANGED');
  const safety_failed=object(published)&&object(published.records)?safetyRecheck(sel.rows,published,cfg):[];if(safety_failed.length)out.push('FINANCIAL_SAFETY_RECHECK_FAILED');
  const number=numberCheck(check.calc_version,cfg);if(!number.ok)out.push(number.reason);
- return{blockers:out,check,number,sel,basis_changed,safety_failed};
+ return{blockers:out,check,number,sel,basis_changed,safety_failed,v_incomplete};
 }
 /* Step 7: TARGET v1 as a new device TARGET version once nothing blocks (finalizeBlockers, run here against `published`, the
    sec-qgv2.json payload the caller re-read at this moment). The version keeps the calc_version, the file as_of and the number
@@ -411,7 +425,7 @@ function scoringSeries(need,closes,cfg=CFG){
  const ok=x=>object(x)&&Object.keys(x).length>0;if(!ok(sp)||!ok(stock)||!ok(sector))return null;
  return{sessions:Object.keys(sp).filter(validDay).sort(),stock:{...stock},sector:{...sector},sp500:{...sp},sector_symbol:need.sector_symbol};
 }
-return Object.freeze({SCHEMA,ANSWERS,COMPARE_KEYS,publishedCheck,inputBasis,basisChanged,regenerateDraft,safetyRecheck,numberCheck,finalizeBlockers,scheduleState,roundMode,riskCodes,coverage,subgroupOf,groupOf,safety,universeRows,exclusions,spread,select,limits,templates,invalidated,buildDraft,candidates,
+return Object.freeze({SCHEMA,ANSWERS,COMPARE_KEYS,V_FACTORS,V_REQUIRED,vFactors,vIncomplete,publishedCheck,inputBasis,basisChanged,regenerateDraft,safetyRecheck,numberCheck,finalizeBlockers,scheduleState,roundMode,riskCodes,coverage,subgroupOf,groupOf,safety,universeRows,exclusions,spread,select,limits,templates,invalidated,buildDraft,candidates,
  emptyState,validateState,latestAnswers,currentSelection,answer,judgementRecord,finalize,latestVersion,rebalanceDay,rebalanceDays,lastRebalanceOnOrBefore,
  nextRebalanceOnOrAfter,rounds,transitionRows,ruleBDue,ruleBSegment,ruleIndex,compareSets,reviewRule,coreEligible,priceSymbolOf,sectorEtfOf,scoringNeeds,addPriceSymbols,scoringSeries});
 });

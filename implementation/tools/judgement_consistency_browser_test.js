@@ -107,6 +107,15 @@ const go = (page, hash) => page.evaluate((h) => { location.hash = h; }, hash);
 
 /* ---------- shared page checks ---------- */
 // Per company: [chip texts] from a container whose rows carry the company id.
+// Click-only rule (owner decision 2026-10-23): opening S17 reads the stored / RAM prices only (no Worker request); prices come
+// from the report's button '가격 받아 다시 계산'. Waits for the open pass (the button is shown), presses it and waits for the
+// result of that button run (a freshly painted card that is not LOADING).
+async function fetchPrices(page) {
+  const button = page.locator('[data-runner-fetch]'); await button.waitFor({ timeout: 30000 });
+  await page.evaluate(() => { document.querySelector('[data-report-inputs]').dataset.beforeFetch = '1'; });
+  await button.click();
+  await page.waitForFunction(() => { const n = document.querySelector('[data-report-inputs]'); return !!n && !n.dataset.beforeFetch && n.dataset.runnerState !== 'LOADING'; }, null, { timeout: 60000 });
+}
 async function chipsBy(page, rowSelector, idAttr) {
   return page.evaluate(({ rowSelector, idAttr }) => {
     const out = {};
@@ -288,6 +297,7 @@ async function vocabulary(page) {
           window.DeviceActual = { ...DeviceActual, readHoldings: async () => snapshot, effectiveHoldings: async () => ({ snapshot, source: 'ACTUAL', as_of: snapshot.effective_at }) };
         });
         await go(page, 'report/real');
+        await fetchPrices(page);
         await page.locator('[data-report-inputs][data-runner-state="READY"]').waitFor({ timeout: 30000 });
         const s17 = await chipsBy(page, '#daily-report [data-judgement-cell]', 'data-judgement-cell');
         assert.equal(Object.keys(s17).length, 19);
