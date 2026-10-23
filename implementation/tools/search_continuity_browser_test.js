@@ -91,17 +91,15 @@ async function directory(page, route) {
 }
 async function pagination(page) {
   await ready(page, 'companies');
-  // The production identity catalog is deliberately fixed at 19. Extend only this tab's identity-only directory to exercise
-  // the existing 30/60 row boundary; no catalog validator or market inputs are changed, and the detail remains real AMD.
-  await page.evaluate(() => { identityCompanies = identityCompanies.concat(Array.from({ length: 55 }, (_, i) => ({
-    company_id: 'synthetic_' + i, ticker: 'ZZ' + String(i).padStart(2, '0'), name: 'Synthetic identity ' + i, identity_only: true
-  }))); paintCompanies(); });
+  // The company list is every company (TARGET aliases + Universe504 codes, decision 2026-10-23), so the real directory already
+  // crosses the 30/60 row boundary; nothing is injected.
+  eq(await page.evaluate(() => allCompanyRows().length > 60), true, 'directory is larger than two pages');
   eq(await rows(page, 'companies').count(), 30, 'first page');
   await page.locator('#more-companies').click(); eq(await rows(page, 'companies').count(), 60, 'expanded page');
   await page.evaluate(() => document.querySelector('#company-list a[href="#company/amd"]').click());
   await page.locator('[data-origin-link="companies"]').click(); await rows(page, 'companies').first().waitFor();
   eq(await rows(page, 'companies').count(), 60, 'expanded count survives detail');
-  await page.fill('#search', 'ZZ'); eq(await rows(page, 'companies').count(), 30, 'changing a query resets pagination');
+  await page.fill('#search', 'A'); eq(await rows(page, 'companies').count(), 30, 'changing a query resets pagination');
 }
 async function membership(page, route) {
   await ready(page, route);
@@ -109,9 +107,9 @@ async function membership(page, route) {
   await page.evaluate(() => { for (const d of document.querySelectorAll('#content details')) d.open = true; });
   await page.locator((route === 'companies' ? '#company-list' : '#watchlist-company-list') + ' a[href="#company/amd"]').click();
   await page.locator('[data-origin-link="' + route + '"]').waitFor();
-  await page.evaluate(() => document.querySelector('[data-group="synthetic-group"][data-member="amd"]').click());
+  await page.evaluate(() => document.querySelector('[data-group="synthetic-group"][data-member="sec:0000002488"]').click());
   await page.locator('[data-origin-link="' + route + '"]').click(); await rows(page, route).first().waitFor();
-  eq(await page.locator('[data-group="synthetic-group"][data-member="amd"]').isChecked(), false, 'group setting changed in detail stays current');
+  eq(await page.locator('[data-group="synthetic-group"][data-member="sec:0000002488"]').isChecked(), false, 'group setting changed in detail stays current');
   eq(await rows(page, route).locator('a[href="#company/amd"]').count(), 0, 'filtered rows use the changed group');
 }
 const feedKeys = page => page.locator('#home-personal [data-timeline] > li').evaluateAll(ns => ns.map(n => n.dataset.news || n.dataset.disclosure));

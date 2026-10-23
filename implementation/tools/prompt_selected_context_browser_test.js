@@ -28,6 +28,9 @@ async function run(width, locale) {
   const failures = {external:0, unsafe:0, runtime:0};
   await context.addInitScript(locale => {
     localStorage.setItem('investment.web.v1.settings', JSON.stringify({version:1,display_locale:locale,source_language:'all'}));
+    // Decision 2026-10-23 (TA G2): the technical picker offers ACTUAL ∪ watchlist ∪ TARGET v1 candidates; this device watches the
+    // TARGET companies (old company_id record, read through the issuer-key migration).
+    if(localStorage.getItem('investment.web.v1.personal')===null)localStorage.setItem('investment.web.v1.personal',JSON.stringify({version:1,interests:['asml','lrcx','klac','tokyo_electron','hanmi','nvda','amd','avgo','qcom','intc','msft','googl','amzn','rtx','stry','etn','hubb','gev','rok'],groups:[]}));
   }, locale);
   await context.route('**/*', route => {
     const r=route.request();

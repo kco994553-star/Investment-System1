@@ -183,6 +183,8 @@ function installChartBarsDouble() {
     phase = 'DEVICE';
     {
       const context = await browser.newContext({viewport: {width: 390, height: 900}, serviceWorkers: 'block'});
+      // Decision 2026-10-23 (TA G2): the chart range is ACTUAL ∪ watchlist ∪ TARGET v1 candidates; this device watches NVIDIA (issuer key).
+      await context.addInitScript(()=>{if(localStorage.getItem('investment.web.v1.personal')===null)localStorage.setItem('investment.web.v1.personal',JSON.stringify({version:1,interests:['sec:0001045810'],groups:[]}));});
       await context.addInitScript(installChartBarsDouble);
       // CHART_TEST_SLOW_FRAMES=ms delays every animation frame like a slow CI runner.
       if (Number(process.env.CHART_TEST_SLOW_FRAMES) > 0) await context.addInitScript(ms => { const raf = window.requestAnimationFrame.bind(window); window.requestAnimationFrame = cb => raf(t => setTimeout(() => cb(t), ms)); }, Number(process.env.CHART_TEST_SLOW_FRAMES));
