@@ -15,6 +15,8 @@ Evidence levels: **D** doc exists · **F** function exists · **T** synthetic te
 
 ## Table
 
+> **2026-10-23 결정(GSQ-024)으로 공개 V로 변경:** 공식 V 점수·순위는 서버(Actions)가 IEX HIST 정규장 마지막 체결가로 매일 계산해 공개 사이트에 게시한다. 원시 가격·EV·수익률·배율·내재 성장률 비공개는 유지한다. 기기 가격 V는 공식값이 아니며 게시 전 소유자 임시용, 게시 후 대조 도구로만 쓴다.
+
 | 기능 | 기존 생산자/계산 코드 | 입력·출력 계약 | 현재 소비 화면 | 검증 근거 | 부족한 연결 | 신규 설계·백엔드 | 선행 조건·owner |
 |---|---|---|---|---|---|---|---|
 | **1a QGV v2 Q·G factor/axis engine** — 기존 구현 재사용 가능 | `qgv/v2_factors.py:1298 compute` (raw metrics, `CALC_VERSION` :38 = `qgv2-calc/2026-10-17.1`). `qgv/v2_scoring.py:118 score_rows` (sub-metric percentiles → factor = mean → axis = renormalized weighted mean, coverage < 50% → NA :230). Publishing: `universe/sec_qgv2.py:336 publish`. Strict validator recomputes every score: `sec_qgv2.py:505`, JS `sec-qgv2.js:106-144`, tolerance 1e-9 | Published `sec-qgv2.json` rows carry `metrics` (raw), `factors` (10 Q/G percentiles, unrounded floats), and `axes{Q,G}` {score, factors_available, available_weight, peer_basis, peer_count, submetric_fallbacks, reason_codes}. Weights: Q 25/20/20/20/15, G 25/25/20/15/15 (`v2_scoring.py:26-29`) | S04/S05/S06 through `QgvScores` | T: `tests/test_qgv_v2.py`, `sec_qgv2_vectors_v1.json`. P: run 38996553263 published Q 485 / G 493 / both 477 of 504 (CURRENT_HANDOFF:38-40) | Raw sub-metric **values** and sub-metric percentiles are not shown. The UI lists sub-metric names only (`company-screen.js:106`) | Drill-down: raw value → percentile → factor → inner weight → contribution | Owner of `claude/withdrawn-peer` (calc `2026-10-17.2`, local, not pushed; CURRENT_HANDOFF:66) touches the same files |
