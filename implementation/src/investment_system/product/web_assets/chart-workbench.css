@@ -15,16 +15,15 @@
 .chart-workbench .cw-chart svg { display: block; width: 100%; height: auto; }
 .chart-workbench .cw-limits { border-left: 3px solid var(--warn-line, #c4a26a); padding-left: 8px; }
 .chart-workbench .cw-mode-panel { margin-top: 8px; padding: 8px; border: 1px dashed var(--line-strong, #6f6f6f); border-radius: 6px; }
-.chart-workbench .cw-mode-panel h3 { margin: 0 0 4px; font-size: 1rem; }
-.chart-workbench .cw-settings fieldset { border: 1px solid var(--line, #d4d2ca); border-radius: 6px; margin: 8px 0; min-width: 0; }
+.chart-workbench .cw-mode-panel h4 { margin: 0 0 4px; font-size: 1rem; }
+.chart-workbench .cw-settings fieldset, .chart-workbench .cw-fieldset { border: 1px solid var(--line, #d4d2ca); border-radius: 6px; margin: 8px 0; min-width: 0; }
 .chart-workbench .cw-toggle { display: inline-flex; align-items: center; gap: 4px; margin: 4px 12px 4px 0; }
 .chart-workbench .cw-notice { overflow-wrap: anywhere; }
 @media (max-width: 480px) {
   .chart-workbench .cw-chart { height: 280px; }
   .chart-workbench .cw-group button { padding-left: 8px; padding-right: 8px; }
 }
-.chart-workbench .cw-patterns { margin-top: 12px; padding-top: 8px; border-top: 1px solid var(--line, #d4d2ca); min-width: 0; }
-.chart-workbench .cw-patterns h3 { margin: 0 0 6px; font-size: 1rem; }
+.chart-workbench .cw-patterns { min-width: 0; }
 .chart-workbench [data-pattern-synthetic-label] { background: var(--warn-bg, #f1e9da); color: var(--warn-ink, #6a4300); border: 1px solid var(--warn-line, #c4a26a); border-radius: 4px; padding: 0 4px; }
 .chart-workbench .cw-suitability dl { display: grid; grid-template-columns: minmax(0, 10em) minmax(0, 1fr); gap: 2px 8px; margin: 6px 0; }
 .chart-workbench .cw-suitability dd { margin: 0; overflow-wrap: anywhere; }
@@ -43,8 +42,7 @@
 .chart-workbench .cw-param-grid { display: grid; gap: 6px 12px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); margin: 6px 0; }
 .chart-workbench .cw-param { display: flex; justify-content: space-between; gap: 8px; align-items: center; min-width: 0; overflow-wrap: anywhere; }
 .chart-workbench .cw-param select { flex: 0 0 auto; max-width: 9em; }
-.chart-workbench .cw-user { margin-top: 12px; padding-top: 8px; border-top: 1px dashed var(--pen, #7a4cc2); min-width: 0; }
-.chart-workbench .cw-user h3 { margin: 0 0 6px; font-size: 1rem; }
+.chart-workbench .cw-user { min-width: 0; }
 .chart-workbench .cw-user h4 { margin: 10px 0 4px; font-size: .95rem; }
 .chart-workbench [data-user-label] { border-color: var(--pen, #7a4cc2); color: var(--pen, #7a4cc2); }
 .chart-workbench .cw-user-list { list-style: none; margin: 4px 0; padding: 0; display: grid; gap: 6px; }
@@ -55,3 +53,76 @@
 .chart-workbench .cw-scenario legend { padding: 0 4px; }
 .chart-workbench .cw-field { display: flex; flex-direction: column; gap: 2px; min-width: 0; font-size: .85rem; }
 .chart-workbench .cw-field input, .chart-workbench .cw-field select { width: 100%; min-width: 0; box-sizing: border-box; }
+/* ---------- Menu 2 기술적 분석 layout (design lane D6; owner draft "투자시스템 화면 시안 (손그림 칠판)") ----------
+   Function numbers 3.1–3.4 on stamp boxes (.fn-sec / .fn-head from stat-radar.css, .ia-sec from theme.css); the menu strip keeps
+   2 / 2.1–2.4. Paper/ink tokens only; stamp shadows, group doodles and underlines use the menu colour (technical green under
+   html[data-menu="technical"]; drawn in CSS, no SVG on this screen); yellow highlighter on "판정 불가", red marker on the real-price note and the not-judged lines,
+   purple pen for user-written things. Presentation only: no chart logic, code or stored value depends on these rules. */
+.ta-screen { min-width: 0; }
+.ta-screen .ta-legend { margin: 4px 0 8px; color: var(--muted, #4a4a4a); }
+.ta-screen .ta-alert { max-width: 76ch; margin: 10px 0 12px; }
+.ta-screen .chart-workbench { box-shadow: 6px 6px 0 var(--menu, #1f8a4c); }
+.chart-workbench .cw-fn-group { min-width: 0; margin: 26px 0 0; }
+.chart-workbench > .cw-fn-group:first-of-type { margin-top: 18px; }
+.chart-workbench .cw-fn-top { position: relative; display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; padding-bottom: 10px; }
+.chart-workbench .cw-fn-top::after { content: ""; position: absolute; left: 2px; bottom: 0; width: min(260px, 70%); height: 4px; border-radius: 4px 2px 5px 2px; background: var(--menu, #1f8a4c); transform: rotate(-.6deg); }
+.chart-workbench .cw-fn-head { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin: 0; font-family: var(--font-display, system-ui, sans-serif); font-size: var(--fs-xl, 22px); font-weight: 900; line-height: 1.3; }
+.chart-workbench .cw-fn-head .ia-sec { height: 1.9em; font-size: 14px; background: var(--hl-soft, #fff6cc); box-shadow: 4px 4px 0 var(--menu, #1f8a4c); transform: rotate(-2deg); }
+.chart-workbench .cw-fn-candles { flex: none; display: inline-flex; align-items: flex-end; gap: 4px; height: 28px; padding: 0 2px; }
+.chart-workbench .cw-fn-candles > span { position: relative; width: 6px; border: 2px solid var(--menu, #1f8a4c); border-radius: 2px 1px 2px 1px; }
+.chart-workbench .cw-fn-candles > span::before, .chart-workbench .cw-fn-candles > span::after { content: ""; position: absolute; left: 50%; width: 2px; margin-left: -1px; background: var(--menu, #1f8a4c); }
+.chart-workbench .cw-fn-candles > span::before { top: -7px; height: 5px; }
+.chart-workbench .cw-fn-candles > span::after { bottom: -6px; height: 4px; }
+.chart-workbench .cw-fn-candles > span:nth-child(1) { height: 12px; margin-bottom: 3px; }
+.chart-workbench .cw-fn-candles > span:nth-child(2) { height: 16px; margin-bottom: 8px; transform: rotate(-2deg); }
+.chart-workbench .cw-fn-candles > span:nth-child(3) { height: 9px; margin-bottom: 5px; }
+.chart-workbench .cw-fn-note, .chart-workbench .cw-fn-hand { color: var(--muted, #4a4a4a); font-family: var(--font-hand, cursive); }
+.chart-workbench .cw-fn-note { font-size: var(--fs-m, 15px); }
+.chart-workbench .cw-fn { margin-top: 12px; }
+.chart-workbench .cw-fn.cw-fn-main { border-width: 2px; box-shadow: 5px 5px 0 var(--menu, #1f8a4c); }
+.chart-workbench .cw-fn-grid { margin-top: 12px; }
+.chart-workbench .cw-fn-na .badge { white-space: normal; }
+.chart-workbench .cw-fn-marker { padding: 2px 0 2px 10px; border-left: 4px solid var(--marker, #d7322a); border-radius: 2px; color: var(--ink, #161616); }
+.chart-workbench .cw-fn > .cw-fn-hand:first-of-type { margin-top: 0; }
+/* 3.1.4: result kinds with the line style each has on the chart (chart-renderer.js: solid / dashed / long purple dash). */
+.chart-workbench .cw-kinds { display: grid; gap: 6px; margin: 0 0 12px; padding: 0; list-style: none; }
+.chart-workbench .cw-kinds li { display: flex; align-items: flex-start; gap: 10px; min-width: 0; overflow-wrap: anywhere; }
+.chart-workbench .cw-kind-mark { flex: none; width: 34px; height: 0; margin-top: .7em; border-top: 3px solid var(--ink, #161616); }
+.chart-workbench [data-result-kind="user-settings"] .cw-kind-mark { border-top-style: dashed; }
+.chart-workbench [data-result-kind="user"] .cw-kind-mark { border-top: 3px dashed var(--pen, #7a4cc2); }
+.chart-workbench [data-result-kind="synthetic"] .cw-kind-mark { height: .9em; margin-top: .3em; border: 0; border-radius: 2px; background: var(--hl, #ffe45c); }
+.chart-workbench [data-result-kind="not-judged"] .cw-kind-mark { border-top-color: var(--marker, #d7322a); border-top-width: 4px; }
+/* 3.2.3: the state words; confirmed in the menu colour, failed / invalidated in red marker, the rest dashed. */
+.chart-workbench .cw-states { display: grid; gap: 6px; margin: 0 0 8px; padding: 0; list-style: none; }
+.chart-workbench .cw-states li { min-width: 0; padding: 2px 0 2px 10px; border-left: 3px dashed var(--line-strong, #6f6f6f); overflow-wrap: anywhere; }
+.chart-workbench .cw-states li[data-state-code="CONFIRMED"] { border-left: 3px solid var(--menu, #1f8a4c); }
+.chart-workbench .cw-states li[data-state-code="FAILED"], .chart-workbench .cw-states li[data-state-code="INVALIDATED"] { border-left: 3px solid var(--marker, #d7322a); }
+.chart-workbench .cw-states code { margin-left: 6px; color: var(--muted, #4a4a4a); font-size: .78rem; }
+.chart-workbench .cw-state-text { display: block; }
+/* Slots: cards app.js renders, moved in by TechnicalCards.arrange (3.1.4 results; 3.2 / 3.3 status notes). */
+.chart-workbench .cw-suitability dt, .chart-workbench .cw-suitability dd { text-align: left; }
+.chart-workbench .cw-slot:empty { display: none; }
+.chart-workbench .cw-slot .card { margin: 0; padding: 12px 14px; border: 1.5px dashed var(--line-strong, #6f6f6f); box-shadow: none; }
+.chart-workbench .cw-slot .card.technical-cards { border-style: solid; border-color: var(--ink, #161616); }
+.chart-workbench .cw-slot .card h4 { margin: 0 0 8px; font-size: var(--fs-l, 17px); }
+.chart-workbench .cw-slot .card h5 { margin: 0 0 6px; font-size: var(--fs-m, 15px); }
+.chart-workbench .cw-slot[data-cw-slot="results"] { margin: 0 0 10px; }
+.chart-workbench .cw-slot[data-cw-slot="patterns"], .chart-workbench .cw-slot[data-cw-slot="notes"] { margin: 12px 0 0; }
+.chart-workbench .cw-slot .ta-gate { border-color: var(--marker, #d7322a); }
+.chart-workbench .cw-slot .ta-gate h3 { margin: 0 0 6px; font-size: var(--fs-l, 17px); }
+.chart-workbench .cw-slot .ta-gate .ia-needs { margin-bottom: 0; }
+.ta-screen .ta-official { min-width: 0; margin: 26px 0 0; }
+.ta-screen .ta-official-top { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; margin: 0 0 4px; }
+.ta-screen .ta-official-top h2 { margin: 0; font-size: var(--fs-l, 18px); }
+.ta-screen .ta-hand { color: var(--muted, #4a4a4a); font-family: var(--font-hand, cursive); }
+.ta-screen .ta-official-grid > .card { margin: 0; border-style: dashed; border-color: var(--line-strong, #6f6f6f); }
+.ta-screen .ta-official-grid h3 { margin: 0 0 8px; font-size: var(--fs-l, 17px); }
+.ta-screen .ta-tree { margin-top: 22px; border-width: 2px; box-shadow: 5px 5px 0 var(--menu, #1f8a4c); }
+.ta-screen .ta-tree-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-weight: 700; }
+.ta-screen .ta-arrow { color: var(--menu-ink, #1f7a45); font-size: 1.3em; line-height: 1; }
+@media (max-width: 749.98px) {
+  .chart-workbench .cw-fn-head { font-size: var(--fs-l, 18px); gap: 8px; }
+  .chart-workbench .cw-fn.cw-fn-main { box-shadow: 3px 3px 0 var(--menu, #1f8a4c); }
+  .chart-workbench .cw-slot .card { padding: 10px 8px; }
+  .ta-screen .chart-workbench { padding: 14px 10px; box-shadow: 4px 4px 0 var(--menu, #1f8a4c); }
+}

@@ -27,7 +27,7 @@
   const doc=host.ownerDocument,en=options.locale==='en-US',locale=options.locale;
   let mode='model',payload=null,disposed=false;
   const root=node(doc,'section',undefined,{class:'card technical-cards','data-indicator-cards':''});
-  const title=node(doc,'h2',en?'Indicators · 6 cards':'지표 6개 카드');
+  const title=node(doc,'h4',en?'Indicators · 6 cards':'지표 6개 카드');
   const toggle=node(doc,'div',undefined,{class:'chips mode-toggle',role:'group','aria-label':en?'Indicator set':'지표 구분'});
   const modeButtons={};
   for(const[id,ko,enl]of [['model','모델 지표','Model indicators'],['research','연구용 지표','Research indicators']]){
@@ -53,7 +53,7 @@
    grid.replaceChildren();
    for(const card of CARDS){
     const box=node(doc,'article',undefined,{class:'indicator-card','data-indicator-card':card.id}),list=node(doc,'dl');
-    box.append(node(doc,'h3',en?card.en:card.ko));
+    box.append(node(doc,'h5',en?card.en:card.ko));
     if(mode==='model'){
      box.append(node(doc,'p',NA+' · '+(en?'Model inputs not connected':'모델 입력 미연결'),{'data-card-value':'MODEL_'+card.id,'data-state':NA}));
     }else if(!card.items.length){
@@ -79,15 +79,45 @@
  // Canon sections with no defined data: every value is NOT_AVAILABLE with a reason. Static text only.
  function sectionsHtml(locale){
   const en=locale==='en-US',x=(ko,e)=>en?e:ko,na='<span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span>';
-  return `<section class="card" id="technical-phase" data-tech-section="phase"><h2>${x('상태·국면','State · regime')}</h2>
+  return `<section class="card" id="technical-phase" data-tech-section="phase"><h3>${x('상태·국면','State · regime')}</h3>
    <p>${na} ${x('상승·횡보·하락·변동성 확대 판정에 대한 승인된 정의가 없어 국면을 만들지 않습니다.','No approved definition for up / sideways / down / volatility-expansion, so no regime is produced.')}</p>
    <dl class="kv"><dt>${x('현재 국면','Current regime')}</dt><dd data-na="NOT_AVAILABLE">—</dd><dt>${x('바뀐 시점','Changed on')}</dt><dd data-na="NOT_AVAILABLE">—</dd></dl></section>
-  <section class="card" id="technical-qgv-context" data-tech-section="qgv-context"><h2>${x('QGV 맥락 (격리 · 공식 점수 아님)','QGV context (isolated · not an official score)')}</h2>
+  <section class="card" id="technical-qgv-context" data-tech-section="qgv-context"><h3>${x('QGV 맥락 (격리 · 공식 점수 아님)','QGV context (isolated · not an official score)')}</h3>
    <p class="small">${x('QGV 원점수와 기술적 상태를 나란히 보여 주기만 하며 합치거나 서로의 입력으로 쓰지 않습니다.','Raw QGV and the technical state are only shown side by side; they are not combined or used as inputs to each other.')}</p>
-   <div class="side-by-side"><div data-qgv-context="raw"><h3>${x('QGV 원점수','Raw QGV')}</h3><p>${na} ${x('이 화면에 연결된 점수 없음','No score connected here')}</p></div>
-   <div data-qgv-context="technical"><h3>${x('기술적 상태','Technical state')}</h3><p>${na} ${x('상태 정의 없음','No state definition')}</p></div></div></section>
-  <section class="card" id="technical-scenarios" data-tech-section="scenarios"><h2>${x('시나리오 (확률 검증 전)','Scenarios (before probability validation)')}</h2>
+   <div class="side-by-side"><div data-qgv-context="raw"><h4>${x('QGV 원점수','Raw QGV')}</h4><p>${na} ${x('이 화면에 연결된 점수 없음','No score connected here')}</p></div>
+   <div data-qgv-context="technical"><h4>${x('기술적 상태','Technical state')}</h4><p>${na} ${x('상태 정의 없음','No state definition')}</p></div></div></section>
+  <section class="card" id="technical-scenarios" data-tech-section="scenarios"><h3>${x('시나리오 (확률 검증 전)','Scenarios (before probability validation)')}</h3>
    <p>${na} ${x('확률·신뢰도·기간·범위·발동/확인·무효화·QGV 적합성은 검증이 끝난 결과만 표시합니다. 숫자 확률을 임의로 채우지 않습니다.','Probability, confidence, horizon, range, trigger/confirmation, invalidation and QGV fit appear only after validation. No numeric probability is filled in.')}</p></section>`;
  }
- return Object.freeze({CARDS,mount,latest,format,sectionsHtml});
+
+ // ---------- Menu 2 기술적 분석 layout (design lane D6; owner draft "투자시스템 화면 시안 (손그림 칠판)") ----------
+ // Function numbers 3.1–3.4 of the technical-analysis hierarchy go on stamp boxes; the site menu strip keeps 2 / 2.1–2.4.
+ // screenHtml places the pieces app.js hands over (parts: head, badges, tabs, chart, engine, sections, execution, record, ia);
+ // the 3.1–3.3 boxes themselves are drawn inside the chart workbench (chart-workbench.js). Presentation only: no value here.
+ function screenHtml(parts={},{locale}={}){
+  const en=locale==='en-US',x=(ko,e)=>en?e:ko,P=k=>typeof parts[k]==='string'?parts[k]:'';
+  return '<div class="ta-screen" data-ia-screen="technical" data-ta-layout>'+P('head')+
+   '<p class="small fn-legend ta-legend" data-fn-legend="3">'+x('도장 번호는 기능 번호(3.x)입니다. 위 메뉴 번호(2.x)와 다릅니다.','Stamp numbers are function numbers (3.x), not the menu numbers (2.x) above.')+'</p>'+
+   P('badges')+
+   '<p class="fn-alert ta-alert" data-ta-real-price>'+x('실제 가격 분석은 <span class="hl">판정 불가</span>입니다. 가격 기준 연속성(분할 이벤트)을 확인하지 못했고, 분할 이벤트 자료는 보류 중입니다. 합성 자료는 기능 확인용이며 신호가 아닙니다.','Real-price analysis is <span class="hl">not judged</span>: price-basis continuity (split events) is unconfirmed and the split-event feed is on hold. Synthetic data is for checking functions and is not a signal.')+'</p>'+
+   P('tabs')+P('chart')+
+   '<section class="ta-official" data-ta-official aria-labelledby="ta-official-title"><div class="ta-official-top"><h2 id="ta-official-title">'+x('공식 결과 · 기록 상태','Official results · record status')+'</h2>'+
+   '<span class="ta-hand">'+x('3.1.4 결과 구분의 "공식" 칸 · 지금은 모두 NOT_AVAILABLE','The “official” column of 3.1.4 result kinds · all NOT_AVAILABLE today')+'</span></div>'+
+   '<div class="fn-grid ta-official-grid">'+P('engine')+P('sections')+P('execution')+P('record')+'</div></section>'+P('ia')+
+   '<section class="fn-sec ta-tree" data-fn="3.4" aria-labelledby="ta-fn-3-4"><h2 class="fn-head" id="ta-fn-3-4"><span class="ia-sec">3.4</span> '+x('내용구성 트리','Structure tree')+'</h2>'+
+   '<p class="small">'+x('입력 → 지표 → 패턴 → 시나리오 → 내 노트 구조와 예시 값을 한 장에 봅니다.','Input → indicators → patterns → scenarios → my notes, with example values, on one page.')+'</p>'+
+   '<p><a class="ta-tree-link" href="#tree/technical">'+x('트리 보기 (메뉴 2.4)','Open the tree (menu 2.4)')+' <span class="ta-arrow" aria-hidden="true">→</span>'+'</a></p></section></div>';
+ }
+ // After ChartWorkbench.mount: the indicator cards go into the 3.1.4 box and the two status notes into the 3.2 / 3.3 groups.
+ // Nodes are moved, not copied; ids, data attributes and their own listeners stay. Without the workbench nothing moves.
+ // The official status cards stay outside the workbench (its wording rule: no probability or score words inside it).
+ const SLOTS=Object.freeze({results:['technical-indicators'],patterns:['technical-pattern'],notes:['technical-notes']});
+ function arrange(scope){
+  const bench=scope&&scope.querySelector('[data-ta-layout] [data-chart-workbench]');
+  if(!bench)return false;
+  for(const[key,ids]of Object.entries(SLOTS)){const slot=bench.querySelector('[data-cw-slot="'+key+'"]');if(!slot)continue;for(const id of ids){const n=scope.querySelector('#'+id);if(n&&!bench.contains(n))slot.append(n);}}
+  scope.querySelector('[data-ta-layout]').setAttribute('data-ta-arranged','');
+  return true;
+ }
+ return Object.freeze({CARDS,mount,latest,format,sectionsHtml,screenHtml,arrange,SLOTS});
 });
