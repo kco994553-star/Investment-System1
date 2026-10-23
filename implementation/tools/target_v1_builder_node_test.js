@@ -141,6 +141,7 @@ function published({calc='qgv2-calc/2026-10-15.1',records=calc,asOf='2026-10-14T
  const src=u?.inputs?.records||{},codes=Object.keys(src);for(let i=codes.length;i<504;i++)codes.push('NYSE:P'+i);
  codes.forEach((code,i)=>{const r={cik:src[code]?.cik||('P'+i),state:'LIVE',reason_codes:[],acquired_at:acquired,axes:{Q:{score:i<q?50:null},G:{score:i<g?50:null}},metrics:src[code]?{...src[code].metrics}:{}};if(records!==null)r.calc_version=records;out.records[code]=r;});
  for(const[code,f]of Object.entries(patch))f(out.records[code]);return out;}
+const notPassed={...CFG,number_check:{...CFG.number_check,result:{calc_version:null,passed:false,date:null,companies:0}}};
 const passed=(calc='qgv2-calc/2026-10-15.1',extra={})=>({...CFG,number_check:{...CFG.number_check,result:{calc_version:calc,passed:true,date:'2026-10-15',companies:10,...extra}}});
 // finalize with the basis of the payload computed the way the screen does; → the new state, or the error's blockers.
 async function tryFinalize(state,{date='2026-10-15',pub=null,cfg=passed()}={}){const basis=pub?await B.inputBasis(pub):null;try{return B.finalize(state,{date,published:pub,basis,cfg});}catch(e){if(!e.blockers)throw e;return e.blockers;}}
@@ -171,14 +172,15 @@ test('production calc_version: valid mixed rows and another number-check version
  assert.deepEqual(B.publishedCheck(pub,{date:'2026-10-15'}).reasons,[]);
  pub.records['NYSE:P0'].calc_version=other;
  const mixed=B.publishedCheck(pub,{date:'2026-10-15'});assert.equal(mixed.mixed_rows,1);assert.deepEqual(mixed.reasons,['CALC_VERSION_MIXED']);
- assert.deepEqual(CFG.number_check.result,{calc_version:null,passed:false,date:null,companies:0});
- assert.equal(B.numberCheck(calc).reason,'NUMBER_CHECK_NOT_PASSED');
+ // Recorded 2026-10-23 (app formula check, test prices) for qgv2-calc/2026-10-17.1 only: another calc_version is a mismatch.
+ assert.deepEqual(CFG.number_check.result,{calc_version:'qgv2-calc/2026-10-17.1',passed:true,date:'2026-10-23',companies:10});assert.equal(B.numberCheck(calc).ok,true);assert.equal(B.numberCheck(other).reason,'NUMBER_CHECK_CALC_VERSION_MISMATCH');assert.equal(B.numberCheck(null).reason,'NUMBER_CHECK_CALC_VERSION_MISMATCH');
+ assert.equal(B.numberCheck(calc,notPassed).reason,'NUMBER_CHECK_NOT_PASSED');
  assert.equal(B.numberCheck(calc,passed(other)).reason,'NUMBER_CHECK_CALC_VERSION_MISMATCH');
  assert.equal(B.numberCheck(calc,passed(calc)).ok,true);
 });
 
 test('finalize: cards, shortfall, limits, LATEST file (calc_version, row freshness 7 days, Q·G 90%), draft basis, safety re-check, number check',async()=>{
- assert.equal(Object.hasOwn(CFG,'number_check_passed'),false);assert.deepEqual(CFG.number_check.result,{calc_version:null,passed:false,date:null,companies:0});assert.equal(CFG.number_check.companies_required,10);
+ assert.equal(Object.hasOwn(CFG,'number_check_passed'),false);assert.deepEqual(CFG.number_check.result,{calc_version:'qgv2-calc/2026-10-17.1',passed:true,date:'2026-10-23',companies:10});assert.equal(CFG.number_check.companies_required,10);
  assert.equal(CFG.status,'v0');assert.equal(CFG.calibration,'UNCALIBRATED');assert.equal(CFG.finalize_check.freshness_max_days,7);assert.equal(CFG.finalize_check.freshness_basis,'ROW_ACQUIRED_AT');
  const u=wide(40),pub=published({u}),basis=await B.inputBasis(pub);assert.equal(basis.calc_version,'qgv2-calc/2026-10-15.1');assert.equal(basis.shard_count,7);assert.match(basis.shards,/^(\d=2026-10-13T20:00:00Z\|?)+$/);
  const draft=B.buildDraft({...u,existing:[],date:'2026-10-14',basis});assert.deepEqual(draft.basis,basis);let state={...B.emptyState(),draft};B.validateState(state);
@@ -216,8 +218,8 @@ test('finalize: cards, shortfall, limits, LATEST file (calc_version, row freshne
  const first=B.currentSelection(state).rows[0],worse=published({u,patch:{[first.code]:r=>{r.metrics.net_debt_to_ebitda=4;}}}),wb=await B.inputBasis(worse);
  assert.deepEqual(await tryFinalize(state,{pub:worse}),['FINANCIAL_SAFETY_RECHECK_FAILED']);assert.deepEqual(B.finalizeBlockers(state,{date:'2026-10-15',published:worse,basis:wb,cfg:passed()}).safety_failed,[first.symbol]);
  assert.deepEqual(await tryFinalize(state,{pub:published({u,patch:{[first.code]:r=>{r.metrics.interest_coverage=null;}}})}),['FINANCIAL_SAFETY_RECHECK_FAILED']);
- // Number check: default not passed; another calc_version → mismatch; fewer than 10 companies → not passed.
- assert.deepEqual(await tryFinalize(state,{pub,cfg:CFG}),['NUMBER_CHECK_NOT_PASSED']);assert.deepEqual(await tryFinalize(state,{pub,cfg:passed('qgv2-calc/2026-10-14.1')}),['NUMBER_CHECK_CALC_VERSION_MISMATCH']);
+ // Number check: not passed; another calc_version (the shipped record is for 17.1, this fixture is 15.1) → mismatch; fewer than 10 companies → not passed.
+ assert.deepEqual(await tryFinalize(state,{pub,cfg:notPassed}),['NUMBER_CHECK_NOT_PASSED']);assert.deepEqual(await tryFinalize(state,{pub,cfg:CFG}),['NUMBER_CHECK_CALC_VERSION_MISMATCH']);assert.deepEqual(await tryFinalize(state,{pub,cfg:passed('qgv2-calc/2026-10-14.1')}),['NUMBER_CHECK_CALC_VERSION_MISMATCH']);
  assert.deepEqual(await tryFinalize(state,{pub,cfg:passed('qgv2-calc/2026-10-15.1',{companies:9})}),['NUMBER_CHECK_NOT_PASSED']);
  const done=await tryFinalize(state,{pub});
  assert.equal(done.versions.length,1);assert.equal(done.versions[0].version,'v1');assert.deepEqual(done.rule_c,{start:'2026-10-15',version:'v1'});
@@ -549,6 +551,6 @@ test('canonical shared QGV page result feeds TARGET without QG-only candidates o
    // V factor count from the shared accessor row (2026-10-23): score !== null among the 5 V factors.
    const have=B.V_FACTORS.filter(k=>Number.isFinite(source.v2.factors?.[k]?.score));assert.equal(r.v_n,have.length,r.symbol);assert.deepEqual(r.v_missing,B.V_FACTORS.filter(k=>!have.includes(k)),r.symbol);}
   for(const r of Object.values(computed.rows).filter(r=>r.qg_reference))assert.ok(!draft.pool.some(p=>p.symbol===r.ticker),'QG-only row excluded');
-  assert.equal(CFG.number_check.result.passed,false,'integration never approves the real number check');
+  assert.deepEqual(CFG.number_check.result,{calc_version:'qgv2-calc/2026-10-17.1',passed:true,date:'2026-10-23',companies:10},'integration leaves the recorded number check as decided 2026-10-23');
  }finally{for(const[n,d]of before)if(d)Object.defineProperty(globalThis,n,d);else delete globalThis[n];}
 });
