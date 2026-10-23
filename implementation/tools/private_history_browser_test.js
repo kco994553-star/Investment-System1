@@ -114,12 +114,17 @@ async function exportsPrivacy(page) {
     verify(await persistentPrivacy(page));
   } finally { await page.evaluate(() => { window.__historyRestoreExport(); delete window.__historyRestoreExport; delete window.__historyExportAudit; }); }
 }
+// Device range of these sessions (page ids of the watched issuers, in added order): NVDA, MSFT, Hanmi.
+const RANGE = ['nvda', 'msft', 'hanmi'];
 async function open({ enabled = false, deployedConfig = false, approvedOrigin = ORIGIN, locale = 'en-US', width = 1280, storageUnavailable = false, universe = false } = {}) {
   const context = await browser.newContext({ viewport: { width, height: 844 }, locale, serviceWorkers: 'block' });await displayOnlyOff(context);
   const mode = { reads: 0, googleReads: 0, styles: 0, scripts: 0, revokes: 0, status: 200, code: '', malformed: false, delayed: false, pending: null };
   await context.addInitScript(({ locale, origin, storageUnavailable }) => {
     if(!storageUnavailable)localStorage.setItem('investment.web.v1.unified-sheet-source','synthetic_existing_sheet_fixture');
     localStorage.setItem('investment.web.v1.settings', JSON.stringify({ version: 1, display_locale: locale, source_language: 'all' }));
+    // Owner decision 2026-10-23 (TA G2): the chart range is ACTUAL ∪ watchlist ∪ TARGET v1 candidates. These sessions watch three
+    // issuers (IA-7 keys) so the charted companies are in range; TARGET v0 membership alone does not put a company in range.
+    if(!storageUnavailable&&localStorage.getItem('investment.web.v1.personal')===null)localStorage.setItem('investment.web.v1.personal', JSON.stringify({ version: 1, interests: ['sec:0001045810','sec:0000789019','hanmi'], groups: [] }));
     window.__historyEvidence = { requests: [], aborted: 0, csp: 0 };
     document.addEventListener('securitypolicyviolation', () => { window.__historyEvidence.csp++; });
     const original = window.fetch;
@@ -247,7 +252,7 @@ async function deployedChecks(locale, width) {
       verify(await settings.locator('[data-history-worker-url]').inputValue() === ORIGIN);
       const text = await settings.textContent();
       verify(text.includes(locale === 'ko-KR' ? '이메일 확인 권한에 다시 동의' : 'consent again to email verification'));
-      verify(await settings.locator('[data-history-company]').count() === 19);
+      verify(JSON.stringify(await settings.locator('[data-history-company]').evaluateAll(n => n.map(x => x.dataset.historyCompany))) === JSON.stringify(RANGE), 'settings list the device range, not TARGET v0');
       await chart(session); await waitCode(page, 'ORIGIN_UNAPPROVED');
       verify(mode.reads === 0 && mode.googleReads === 0 && mode.styles === 0 && mode.scripts === 0);
     });
@@ -392,12 +397,13 @@ async function technicalContextChecks(locale, width) {
   const session = await open({ enabled: true, locale, width, universe: true }), { page, mode } = session;
   try {
     await saveOrigin(session); await login(session);
-    await check('technical_supported19_keep_explicit_selection_' + locale + '_' + width, async () => {
+    await check('technical_range_choices_keep_explicit_selection_' + locale + '_' + width, async () => {
       await navigate(page, 'technical/nvda'); await waitCode(page, 'READY');
       const select = page.locator('[data-technical-symbol]');
       verify(await select.inputValue() === 'nvda');
       const ids = await select.locator('option').evaluateAll(options => options.map(option => option.value));
-      verify(ids.length === 19);
+      verify(JSON.stringify(ids) === JSON.stringify(RANGE), 'choices = ACTUAL ∪ watchlist ∪ TARGET v1 candidates (here the watchlist)');
+      verify(!ids.includes('asml') && !ids.includes('amd'), 'TARGET v0 companies outside the range are not offered');
       for (const id of ids) {
         await select.selectOption(id); await waitCode(page, 'READY');
         verify(await select.inputValue() === id);
@@ -410,7 +416,7 @@ async function technicalContextChecks(locale, width) {
       await page.locator('#global-search').fill('AAPL');
       const result = page.locator('#home-result[data-result-company]'); await result.waitFor();
       unsupportedId = await result.getAttribute('data-result-company');
-      verify(!!unsupportedId && await page.evaluate(id => PrivateHistory.symbolFor(id) === null, unsupportedId));
+      verify(!!unsupportedId && await page.evaluate(id => PrivateHistory.symbolFor(id) === null && PrivateHistory.chartSymbol(id) === null && PrivateHistory.providerSymbol(id) !== null, unsupportedId), 'on the Worker allowlist but outside the range');
       unsupportedHash = await result.locator('[data-result-link="scenario"]').getAttribute('href');
       await result.locator('[data-result-link="scenario"]').click();
       await page.locator('[data-technical-symbol]').waitFor();
@@ -418,7 +424,8 @@ async function technicalContextChecks(locale, width) {
       verify(await page.evaluate(() => location.hash) === unsupportedHash);
       const reason = page.locator('[data-technical-unavailable]'); await reason.waitFor();
       const text = await reason.textContent();
-      verify(text.includes(unsupportedId) && text.includes(locale === 'ko-KR' ? '지원 19종목' : '19 supported companies'));
+      verify(text.includes(unsupportedId) && text.includes(locale === 'ko-KR' ? '기기 시세·차트 범위(보유 · 관심 기업 · TARGET v1 후보) 밖' : 'outside the device quote and chart range (holdings, watchlist, TARGET v1 candidates)'));
+      verify(!text.includes('19'), 'no TARGET 19 wording');
       await waitCode(page, 'HISTORY_UNAVAILABLE');
       for (const selector of ['[data-history-action="fetch"]', '[data-history-action="trades"]', '[data-history-range]']) verify(await page.locator(selector).isDisabled());
       // Even a dispatched event must not bypass availability; no real private request is ever sent by this test.
@@ -442,7 +449,7 @@ async function technicalContextChecks(locale, width) {
       verify(await select.inputValue() === unsupportedId && await page.evaluate(() => location.hash) === unsupportedHash);
       verify(mode.reads === 1 && await page.locator('[data-history-table]').count() === 0);
       await navigate(page, 'technical'); await page.locator('[data-technical-symbol]').waitFor();
-      verify(await select.inputValue() === 'asml' && await select.locator('option').count() === 19);
+      verify(await select.inputValue() === RANGE[0] && await select.locator('option').count() === RANGE.length, 'menu entry: first company of the range, not a TARGET default');
       verify(mode.reads === 1 && await persistentPrivacy(page));
     });
   } finally { await closeContext(session); }

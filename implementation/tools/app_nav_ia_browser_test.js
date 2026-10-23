@@ -176,7 +176,10 @@ async function unavailableNewScreen(page, selector) {
         // The public build ships no producer company rows; companies are the price-free identities listed by the QGV company directory.
         await go(page, "companies");
         const listed = await page.locator("#company-list a[href^='#company/']").evaluateAll(nodes => {
-          const node = nodes.find(item => /^[A-Z]{1,5}$/.test(item.querySelector(".ticker")?.textContent.trim() || ""));
+          // The directory lists every company (TARGET aliases and Universe504 codes, decision 2026-10-23); the legacy-route walk below
+          // uses a TARGET identity (its news/company routes are the producer-shaped ones).
+          if (!nodes.some(item => /^#company\/(NYSE|NASDAQ|BATS)%3A/.test(item.getAttribute("href")))) return null;
+          const node = nodes.find(item => /^#company\/[a-z_]+$/.test(item.getAttribute("href")) && /^[A-Z]{1,5}$/.test(item.querySelector(".ticker")?.textContent.trim() || ""));
           return node ? { id: decodeURIComponent(node.getAttribute("href").slice("#company/".length)), ticker: node.querySelector(".ticker").textContent.trim() } : null;
         });
         verify(listed !== null, "company directory lists price-free identities");

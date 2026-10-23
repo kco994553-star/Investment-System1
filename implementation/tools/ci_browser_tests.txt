@@ -87,3 +87,4 @@ qgv_classification_filters_browser_test.js
 search_continuity_browser_test.js
 prompt_selected_context_browser_test.js
 qgv_single_sort_browser_test.js
+chart_listing_keys_browser_test.js

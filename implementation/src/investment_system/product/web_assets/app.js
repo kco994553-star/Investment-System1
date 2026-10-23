@@ -14,8 +14,33 @@ function deviceCatalog() {
   }).catch(()=>{deviceCatalogPromise=null;throw Error('PUBLIC_CATALOG_UNAVAILABLE');});
   return deviceCatalogPromise;
 }
-// Price store core symbols: runner symbols (TARGET, holdings, sets A–D from VirtualMeta, benchmarks/FX) and watchlist ★.
-async function priceStoreCore(){const core=await PriceStore.coreSymbols(window,{catalog:await deviceCatalog(),interests:[...prefs.interests]});let added=[];try{added=window.TargetV1Screen?TargetV1Screen.priceSymbols(window.PlaybookScreen,localStorage):[];}catch(_){added=[];}return [...new Set([...core,...added])];}
+// Price store core symbols: runner symbols (virtual trading: set A = TARGET v0, holdings, sets B–D from VirtualMeta, benchmarks/FX),
+// TARGET v1 price symbols and the watchlist ★. Owner decision 2026-10-23: the device quote/chart range is ACTUAL holdings ∪ the
+// watchlist ∪ TARGET v1 candidates (draft included), any company; the user's click (Settings → price store) reads that whole range.
+// The app-open path (auto) adds nothing beyond what it read before this decision (no new automatic request).
+async function priceStoreCore(auto=false){const core=await PriceStore.coreSymbols(window,{catalog:await deviceCatalog(),interests:DeviceWatchlist.allIds(prefs.interests)});let added=[];try{added=window.TargetV1Screen?TargetV1Screen.priceSymbols(window.PlaybookScreen,localStorage):[];}catch(_){added=[];}
+ let range=[];if(!auto){try{range=(await deviceScope()).symbols;}catch(_){range=[];}}return [...new Set([...core,...added,...range])];}
+/* Device quote / chart range (owner decision 2026-10-23, TA G2): ACTUAL holdings ∪ watchlist ∪ TARGET v1 candidates (draft
+   included). Company page ids (TARGET alias or Universe code), their Worker symbols (allowlist only) and labels. Reads device
+   storage only; no request. TARGET v0 is not part of it (set A and the v0 comparison read their own lists). */
+let heldScopeIds=[];// ACTUAL holdings as TARGET aliases (the ACTUAL catalog), cached after each device read
+function scopeIdList(){const W=DeviceWatchlist,ids=[];const add=id=>{if(typeof id==='string'&&id&&!ids.includes(id))ids.push(id);};
+ for(const id of W.pageIds(prefs.interests))add(id);// watchlist: one page per issuer, then its other listings
+ for(const i of prefs.interests)for(const id of W.entitiesOf(i))add(id);
+ for(const id of heldScopeIds)add(id);for(const id of targetV1Ids())add(id);return ids;}
+async function refreshHeldScope(){const before=heldScopeIds.join();try{const catalog=await deviceCatalog(),held=window.PlaybookScreen?.heldSymbolsFor?await PlaybookScreen.heldSymbolsFor(window,catalog):null;
+  heldScopeIds=(held||[]).map(t=>DeviceWatchlist.IDS[t]).filter(Boolean);}catch(_){}
+  // Holdings changed since the last read and a chart is on screen: rebuild it for the new range (prices still load only on click).
+  if(heldScopeIds.join()!==before&&D&&document.querySelector('[data-private-history],[data-technical-symbol],[data-uc-chart],[data-history-settings-status]'))render();return heldScopeIds;}
+window.addEventListener("hashchange",()=>{if(D)void refreshHeldScope();});
+async function deviceScope(){await refreshHeldScope();const ids=scopeIdList(),symbols=ids.map(id=>PrivateHistory.providerSymbol(id)).filter(Boolean);
+ return{ids,symbols:[...new Set(symbols)],has:id=>ids.includes(id)};}
+// TARGET v1 candidates on this device: the draft's candidate table and the confirmed versions (Universe codes / TARGET aliases).
+function targetV1Ids(){const out=[];try{const S=window.TargetV1Screen,B=window.TargetV1Builder;if(!S||!window.PlaybookScreen)return out;const st=S.readState(PlaybookScreen,localStorage),W=DeviceWatchlist;
+ const byTicker=t=>{if(typeof t!=='string')return null;const tid=W.IDS[t];if(tid)return tid;for(const ex of['NYSE','NASDAQ','BATS']){const code=ex+':'+t;if(W.listingOf(code))return code;}return null;};
+ const rows=[...(st.draft&&B?B.candidates(st.draft):[]),...(st.versions||[]).flatMap(v=>Array.isArray(v.rows)?v.rows:[])];
+ for(const r of rows){const id=r&&typeof r.code==='string'&&W.listingOf(r.code)?(Object.keys(W.TARGET).find(k=>W.TARGET[k][0]===r.code)||r.code):byTicker(r&&r.symbol);if(id&&!out.includes(id))out.push(id);}}catch(_){}return out;}
+PrivateHistory.setScope({has:id=>scopeIdList().includes(id),list:()=>scopeIdList().map(id=>({id,label:DeviceWatchlist.tickerOf(id)||id}))});
 let valuationInputsPromise=null;
 function valuationInputs(){if(!valuationInputsPromise)valuationInputsPromise=DeviceValuation.load(window);return valuationInputsPromise;}
 // The S04/S05 price badge shows the same device quote state as the value card (no extra request); RAM only, never the price.
@@ -217,7 +242,9 @@ let publicEntities=[],universeDirectory=null,universeDirectoryPromise=null;
 // It adds names to the entities above; which companies are searchable still comes from the directory and the shares file.
 let companyNames=null;
 const companyNamesPromise=(window.EntitySearch?.loadNames?EntitySearch.loadNames(window):Promise.resolve(null)).then(n=>{companyNames=n;
-  if(!n) return;if(searchIndex){rebuildSearchIndex();paintGlobalSearch();}
+  if(!n) return;
+  // Issuer keys of Universe codes (IA-7): the CIK column of the reviewed table; old code keys in the watchlist map to their issuer.
+  if(DeviceWatchlist.useNames(n)&&!corruptStorage){const m=DeviceWatchlist.migrate(prefs);if(m.changed){if(prefsV0Raw===null)try{prefsV0Raw=localStorage.getItem(KEY);}catch(_){}prefs=m.prefs;}}if(searchIndex){rebuildSearchIndex();paintGlobalSearch();}
   const [route]=location.hash.slice(1).split("/");if(route==="company" && D) render();});
 function companyTitle(id,ticker){return EntitySearch.companyTitle(companyNames?.get(id)||null,ticker,appSettings.display_locale);}
 function rebuildSearchIndex() {
@@ -298,6 +325,9 @@ const pct = (v) => (v == null ? t("미제공") : fmt(v * 100) + "%");
 function notice(s) {
   $("#notice").textContent = s;
 }
+// Records written before the IA-7 keys (TARGET company_id) stay on this device under V0_KEY, copied once before the first
+// write of the issuer-keyed form; the working copy reads the old keys through DeviceWatchlist.migrate (decision 2026-10-23).
+const V0_KEY="investment.web.v1.personal-v0";let prefsV0Raw=null;
 function save() {
   if (corruptStorage) {
     notice(
@@ -306,6 +336,8 @@ function save() {
     return;
   }
   try {
+    if (prefsV0Raw !== null && localStorage.getItem(V0_KEY) === null) localStorage.setItem(V0_KEY, prefsV0Raw);
+    prefsV0Raw = null;
     localStorage.setItem(KEY, JSON.stringify(prefs));
     storageOK = true;
     notice(t("저장되었습니다."));
@@ -335,7 +367,7 @@ function validatePrefs(p) {
 function load() {
   try {
     const s = localStorage.getItem(KEY);
-    if (s) prefs = validatePrefs(JSON.parse(s));
+    if (s) {const m=DeviceWatchlist.migrate(validatePrefs(JSON.parse(s)));prefs=m.prefs;prefsV0Raw=m.changed?s:null;}
   } catch (e) {
     storageOK = false;
     corruptStorage = true;
@@ -350,9 +382,18 @@ function company(id) {
 function byIssuer(id) {
   return D.companies.find((c) => c.issuer_id === id);
 }
+// ★ = this device's watchlist, keyed by Issuer (IA-7; DeviceWatchlist). Any company with an issuer key (TARGET alias, Universe
+// code with a CIK) can be starred; one issuer is one entry for all its listings. No issuer key: the star is disabled (no guess).
 function star(id) {
-  return `<button class="star" data-star="${esc(id)}" aria-label="${esc(company(id)?.ticker || id)} ${t("관심기업")}" aria-pressed="${prefs.interests.includes(id)}">${prefs.interests.includes(id)?"★":"☆"}</button>`;
+  const on=DeviceWatchlist.watched(prefs,id),key=DeviceWatchlist.issuerOf(id),name=esc(company(id)?.ticker || DeviceWatchlist.tickerOf(id) || id);
+  if(!key) return `<button class="star" data-star="${esc(id)}" disabled aria-disabled="true" data-star-state="ISSUER_UNRESOLVED" aria-label="${name} ${t("관심기업")} · NOT_AVAILABLE">☆</button>`;
+  return `<button class="star" data-star="${esc(id)}" aria-label="${name} ${t("관심기업")}" aria-pressed="${on}">${on?"★":"☆"}</button>`;
 }
+function toggleInterest(id){const key=DeviceWatchlist.issuerOf(id);if(!key)return false;
+  prefs.interests=prefs.interests.includes(key)?prefs.interests.filter(i=>i!==key):[...prefs.interests,key];
+  if(!prefs.interests.includes(key))prefs.groups.forEach(g=>(g.members=g.members.filter(i=>i!==key)));
+  save();return true;}
+function companyName(id){return EntitySearch.companyName(companyNames?.get(id)||null,appSettings.display_locale)||company(id)?.name||"";}
 function state(s) {
   const name=SECTION_NAMES.find(n=>D[n]===s);
   return `<div class="state"><span class="badge ${esc(s.state)}">${esc(s.state)}</span>${freshnessBadge(freshnessOf(name,s))} <span class="meta">${esc(s.as_of || t("시점 미제공"))}</span></div><div class="meta" data-source-original>${esc(s.source || (s.data===null?"":t("출처 미제공")))}</div>${withheldNote(s)}${producerMeta(name,s)}`;
@@ -396,8 +437,8 @@ function directoryFilters(prefix,watch=false) {
  const sorts=(v?[["qgv",en?"QGV v2 (high first)":"QGV v2 순"]]:[]).concat([[watch?"added":"ticker",watch?t("추가한 순"):t("티커 순")],["name",t("기업명 순")],["favorites",t("관심기업 우선")]],v?LeaderboardScreen.sortOptions(en):[]);
  return `<div class="chips">${v?`<input type="search" id="leader-query" aria-label="${en?"Search companies":"기업 검색"}" placeholder="${en?"Ticker or name":"티커 또는 기업명"}" value="${esc(v.query)}">`:""}<label><input type="checkbox" id="${prefix}-interest" ${watch?"checked disabled":v?.interest?"checked":""}>${t("관심기업만")}</label>${v?`<label data-leader-target-filter><input type="checkbox" id="leader-target" ${v.target?"checked":""}>${en?"TARGET only (hides rows, ranks unchanged)":"TARGET만 (행만 숨김 · 순위 그대로)"}</label>`:""}<select id="${prefix}-group" aria-label="${t("그룹 필터")}"><option value="">${t("모든 그룹")}</option>${prefs.groups.map(g=>`<option value="${esc(g.id)}"${pick(v?.group,g.id)}>${esc(g.name)}</option>`).join("")}</select><select id="${prefix}-sort" aria-label="${t("정렬")}">${sorts.map(([k,l])=>`<option value="${k}"${pick(v?.sort,k)}>${esc(l)}</option>`).join("")}</select></div>`;
 }
-function companyGroups(id){return `<p class="small">${t("관심·그룹은 이 기기에만 저장됩니다.")}</p>${prefs.groups.length?prefs.groups.map(g=>`<label><input type="checkbox" data-group="${esc(g.id)}" data-member="${esc(id)}" ${g.members.includes(id)?"checked":""} ${prefs.interests.includes(id)?"":"disabled"}>${esc(g.name)}</label>`).join(""):`<a href="#watchlist">${t("그룹 관리 →")}</a>`}`;}
-function weekFilings(){const p=publicScreens["sec-filing-windows.json"],rows=p?.data?.companies;if(!rows)return "NOT_AVAILABLE";const known=prefs.interests.filter(id=>rows[id]&&rows[id].state!=="NOT_AVAILABLE");if(!known.length)return "NOT_AVAILABLE";const en=appSettings.display_locale==="en-US",week=Date.now()-7*86400000,status=known.map(id=>PublicScreens.earningsStatus(rows[id])).filter(Boolean),estimated=status.filter(s=>s.status==="ESTIMATED"&&s.window.days_until_start<=6).length,confirmed=status.filter(s=>s.status==="CONFIRMED"&&Date.parse(s.date+"T00:00:00Z")>=week).length;return (estimated+confirmed)+" · "+esc(en?"estimated "+estimated+" · confirmed "+confirmed:"추정 "+estimated+" · 확인 "+confirmed)+" · "+esc(t("예상 시기 · 확정일 아님"));}
+function companyGroups(id){const key=DeviceWatchlist.keyOf(id);return `<p class="small">${t("관심·그룹은 이 기기에만 저장됩니다.")}</p>${prefs.groups.length?prefs.groups.map(g=>`<label><input type="checkbox" data-group="${esc(g.id)}" data-member="${esc(key)}" ${g.members.includes(key)?"checked":""} ${prefs.interests.includes(key)?"":"disabled"}>${esc(g.name)}</label>`).join(""):`<a href="#watchlist">${t("그룹 관리 →")}</a>`}`;}
+function weekFilings(){const p=publicScreens["sec-filing-windows.json"],rows=p?.data?.companies;if(!rows)return "NOT_AVAILABLE";const known=DeviceWatchlist.pageIds(prefs.interests).filter(id=>rows[id]&&rows[id].state!=="NOT_AVAILABLE");if(!known.length)return "NOT_AVAILABLE";const en=appSettings.display_locale==="en-US",week=Date.now()-7*86400000,status=known.map(id=>PublicScreens.earningsStatus(rows[id])).filter(Boolean),estimated=status.filter(s=>s.status==="ESTIMATED"&&s.window.days_until_start<=6).length,confirmed=status.filter(s=>s.status==="CONFIRMED"&&Date.parse(s.date+"T00:00:00Z")>=week).length;return (estimated+confirmed)+" · "+esc(en?"estimated "+estimated+" · confirmed "+confirmed:"추정 "+estimated+" · 확인 "+confirmed)+" · "+esc(t("예상 시기 · 확정일 아님"));}
 // '공시·확정' (SEC 8-K, DART when its reader exists) + '뉴스·신호' (news-signals.json) in one chronological list; one lazy public read each.
 // S07 lists all (or the company in context), S15 the interest companies. Nothing here changes any score.
 // The files are read once per publication by DataRefresh and shared with the 4.3 tree example (D6).
@@ -407,7 +448,7 @@ function paintDisclosures(host,companyIds,emptyText){if(!host||typeof SecDisclos
 // portfolio snapshot already in page memory (D.portfolio, the same set paintNews uses). Device ACTUAL holdings live in
 // IndexedDB and are not read here; without a snapshot in memory held stays null (the list then says "holdings not connected").
 function newsTiers(){const rows=D&&D.portfolio&&D.portfolio.data&&Array.isArray(D.portfolio.data.holdings)?D.portfolio.data.holdings:null;
- return{interests:[...prefs.interests],held:rows?rows.map(h=>h&&h.company_id).filter(x=>typeof x==='string'):null};}
+ return{interests:DeviceWatchlist.allIds(prefs.interests),held:rows?rows.map(h=>h&&h.company_id).filter(x=>typeof x==='string'):null};}
 // DART disclosures (042700): same '공시·확정' record format as SEC 8-K, own public file; one lazy read. S07 all (or the company in context), S15 interest companies.
 function paintDartDisclosures(host,companyIds,emptyText){if(!host||typeof DartDisclosures!=="object")return;DataRefresh.list(window,'dart').then(p=>{if(host.isConnected)DartDisclosures.mount(host,p,{locale:appSettings.display_locale,companyIds,emptyText});});}
 function watchlist(){return heading("WATCHLIST",t("관심 기업"))+directoryFilters("watch",true)+`<p class="meta">${t("이 휴대폰에만 저장 · 백업으로 이동")}</p><div class="grid">${["평균 QGV","재평가 신호","이번 주 실적","새 뉴스"].map(x=>`<section class="card"><h2>${t(x)}</h2><p${x==="이번 주 실적"?" data-week-filings":""}>${x==="이번 주 실적"?weekFilings():"NOT_AVAILABLE"}</p></section>`).join("")}</div><ul class="list" id="watchlist-company-list"></ul><div id="watch-disclosures"></div><div id="watch-dart-disclosures"></div><a href="#leaderboard/interest">${t("리더보드에서 관심 기업만 보기 →")}</a><details><summary>${t("관심기업 · Groups(그룹) 관리")}</summary>${groupsUI()}</details>`;}
@@ -415,7 +456,7 @@ function companies() {
   return heading("COMPANIES",t("기업 탐색"))+`<input type="search" id="search" aria-label="${t("기업 검색")}" placeholder="${t("티커 또는 기업명 검색")}"><div class="chips"><label><input type="checkbox" id="only-interest"> ${t("관심기업만")}</label><select id="group-filter" aria-label="${t("그룹 필터")}"><option value="">${t("모든 그룹")}</option>${prefs.groups.map(g=>`<option value="${esc(g.id)}">${esc(g.name)}</option>`).join("")}</select></div><select id="company-sort" aria-label="정렬"><option value="ticker">티커 순</option><option value="name">기업명 순</option><option value="favorites">관심기업 우선</option></select><p class="meta">${D.universe.withheld?esc(D.universe.state)+" · "+esc(t(D.universe.withheld.reason || WITHHELD_REASON)):esc(D.universe.as_of)+" · FROZEN_SNAPSHOT / DEMO"}</p><ul class="list" id="company-list"></ul><button id="more-companies">${t("더보기")}</button><details><summary>${t("관심기업 · Groups(그룹) 관리")}</summary>${groupsUI()}</details>`;
 }
 function groupsUI() {
-  return `<p class="muted">${t("이 기기의 브라우저에 저장됩니다. 즐겨찾기와 관심기업은 같은 목록입니다.")}</p><form id="new-group"><label for="group-name">${t("새 그룹 이름")}</label><div class="row"><input id="group-name" required maxlength="60" placeholder="${t("예: 반도체")}"><button>${t("그룹 만들기")}</button></div></form><div id="groups">${prefs.groups.map(g=>`<div class="group"><b>${esc(g.name)}</b> <span class="muted">${g.members.length} ${t("개")}</span><div class="row"><input aria-label="${t("그룹 이름")} ${esc(g.name)}" data-rename-input="${esc(g.id)}" value="${esc(g.name)}" maxlength="60"><button data-rename="${esc(g.id)}">${t("이름 변경")}</button><button data-delete="${esc(g.id)}">${t("그룹 삭제")}</button></div>${prefs.interests.map(id=>`<label><input type="checkbox" data-group="${esc(g.id)}" data-member="${esc(id)}" ${g.members.includes(id)?"checked":""}> ${esc(company(id)?.ticker || id)}</label>`).join("")}</div>`).join("")}</div><div class="toolbar"><button id="export">${t("내보내기")}</button><label>${t("설정 병합 가져오기")} <input type="file" id="import" accept="application/json"></label></div>`;
+  return `<p class="muted">${t("이 기기의 브라우저에 저장됩니다. 즐겨찾기와 관심기업은 같은 목록입니다.")}</p><form id="new-group"><label for="group-name">${t("새 그룹 이름")}</label><div class="row"><input id="group-name" required maxlength="60" placeholder="${t("예: 반도체")}"><button>${t("그룹 만들기")}</button></div></form><div id="groups">${prefs.groups.map(g=>`<div class="group"><b>${esc(g.name)}</b> <span class="muted">${g.members.length} ${t("개")}</span><div class="row"><input aria-label="${t("그룹 이름")} ${esc(g.name)}" data-rename-input="${esc(g.id)}" value="${esc(g.name)}" maxlength="60"><button data-rename="${esc(g.id)}">${t("이름 변경")}</button><button data-delete="${esc(g.id)}">${t("그룹 삭제")}</button></div>${prefs.interests.map(id=>{const page=DeviceWatchlist.primaryOf(id)||id;return `<label><input type="checkbox" data-group="${esc(g.id)}" data-member="${esc(id)}" ${g.members.includes(id)?"checked":""}> ${esc(company(page)?.ticker || DeviceWatchlist.tickerOf(page) || id)}</label>`;}).join("")}</div>`).join("")}</div><div class="toolbar"><button id="export">${t("내보내기")}</button><label>${t("설정 병합 가져오기")} <input type="file" id="import" accept="application/json"></label></div>`;
 }
 // Public M2 sidecar is separate from published snapshots and prompt context.
 let secReported=null;
@@ -475,7 +516,7 @@ function m2Panel(id,companyIds) {
 
 function detail(id) {
   const c=company(id);
-  if(!c && universeCode(id)) {void ensureUniverseDirectory();return window.UniverseCompany?UniverseCompany.html(id,{locale:appSettings.display_locale,screens:publicScreens,shares:universeDirectory,quotes:qgv2Quotes,names:companyNames}):universeDetail(id);}
+  if(!c && universeCode(id)) {void ensureUniverseDirectory();return window.UniverseCompany?UniverseCompany.html(id,{locale:appSettings.display_locale,screens:publicScreens,shares:universeDirectory,quotes:qgv2Quotes,names:companyNames,starHtml:star(id)}):universeDetail(id);}
   const candidate=Object.hasOwn(m2Candidates.companies,id)?m2Candidates.companies[id]:null;
   const historySymbol=PrivateHistory.symbolFor(id);
   if((!c || c.identity_only) && (candidate || historySymbol)) return CompanyScreen.summary({locale:appSettings.display_locale,id,screens:publicScreens,scores:leaderScores(),priceBasis:leaderBasis,quote:companyQuote.id===id?companyQuote.quote:null,
@@ -622,10 +663,13 @@ const directoryViews=new Map();
 let currentRoute=null,previousRoute=null,currentHash='';
 const LIST_ORIGIN=Object.freeze({leaderboard:['← 리더보드','← Leaderboard'],companies:['← 기업 목록','← Company list'],watchlist:['← 관심 기업','← Watchlist']}),LIST_ORIGIN_HASH=/^#(leaderboard|leaderboard\/interest|companies|watchlist)$/;
 function paintCompanies(){
- const rows=DeviceWatchlist.filter(identityCompanies,prefs,{query:$('#search').value,group:$('#group-filter').value,onlyInterest:$('#only-interest').checked,sort:$('#company-sort').value});
+ const rows=DeviceWatchlist.filter(allCompanyRows(),prefs,{query:$('#search').value,group:$('#group-filter').value,onlyInterest:$('#only-interest').checked,sort:$('#company-sort').value});
  $('#company-list').innerHTML=rows.slice(0,listLimit).map(row).join('')||'<li class="empty">'+t("일치하는 기업이 없습니다.")+'</li>';$('#more-companies').hidden=rows.length<=listLimit;
 }
-function directoryRows(prefix){return DeviceWatchlist.filter(identityCompanies,prefs,{query:prefix==='leader'?$('#leader-query')?.value||'':'',group:$('#'+prefix+'-group').value,onlyInterest:$('#'+prefix+'-interest').checked,sort:$('#'+prefix+'-sort').value});}
+// Company list = every company (TARGET aliases + Universe504 codes); watchlist = the watched issuers (any company). The S06 TARGET
+// directory ('leader') is the TARGET v0 list kept for the v0 comparison (D12).
+function allCompanyRows(){const rows=DeviceWatchlist.directory(companyName),byId=new Map(identityCompanies.map(c=>[c.company_id,c]));return rows.map(r=>byId.has(r.company_id)?byId.get(r.company_id):r);}
+function directoryRows(prefix){return DeviceWatchlist.filter(prefix==='watch'?DeviceWatchlist.watchRows(prefs,companyName).map(r=>identityCompanies.find(c=>c.company_id===r.company_id)||r):identityCompanies,prefs,{query:prefix==='leader'?$('#leader-query')?.value||'':'',group:$('#'+prefix+'-group').value,onlyInterest:$('#'+prefix+'-interest').checked,sort:$('#'+prefix+'-sort').value});}
 /* S06 view state of this tab: view/profile, filters (interest, group, text), sort and scroll, plus where S04/S05 was opened
    from (origin, for its back link). RAM first, mirrored to sessionStorage as a per-tab convenience (try/catch: RAM only when
    storage is unavailable). No score, rank, price or v2 profile is stored: the v2 preset/gate stay in page memory (qgv2Profile). */
@@ -740,7 +784,7 @@ function paintDirectory(route){const prefix=route==='watchlist'?'watch':'leader'
 
 function paintNews(id) {
   const c=company(id),scope=$("#news-scope").value,held=D.portfolio.data?.holdings?.map(h=>h.company_id) || [];
-  const interests=prefs.interests.map(i=>company(i)?.issuer_id).filter(Boolean),portfolio=held.map(i=>company(i)?.issuer_id).filter(Boolean);
+  const interests=[...prefs.interests],portfolio=held.map(i=>company(i)?.issuer_id).filter(Boolean);
   let rows=(D.news.data || []).filter(r=>(!c || (r.issuer_ids || []).includes(c.issuer_id)) && (scope==="all" || (r.issuer_ids || []).some(i=>(scope==="interest"?interests:portfolio).includes(i))) && (appSettings.source_language==="all" || r.source_language?.split("-")[0]===appSettings.source_language));
   const priority=r=>(r.issuer_ids || []).some(i=>portfolio.includes(i))?0:(r.issuer_ids || []).some(i=>interests.includes(i))?1:2;
   rows=[...rows].sort((a,b)=>priority(a)-priority(b));
@@ -959,8 +1003,8 @@ function renderRoute(options) {
   $("#content").innerHTML=routes[route]();
   if(kept) DataRefresh.restoreFields($("#content"),kept);
   else if(directoryView) DataRefresh.restoreFields($('#content'),directoryView.view);
-  if(route==='leaderboard') void PrivateSubsetView.mount($('#private-subset-root'),{locale:appSettings.display_locale,config:window.InvestmentAppConfig,interests:()=>[...prefs.interests],onRanks:()=>{qgv2Quotes={};qgv2QuotesKey='';qgv2QuotesBasis=null;leaderPage=null;const pt=$('#universe-price-time');if(pt)pt.innerHTML=window.PriceTime?PriceTime.sourceHtml(PrivateSubsetView.priceBasis?.()||null,{locale:appSettings.display_locale}):'';if(leaderboardRows&&$('#leaderboard-screen'))paintLeaderboardScreen(leaderboardRows);}});
-  if(['playbook','portfolio','company'].includes(route)&&window.PlaybookScreen){const place=route==='playbook'?$('#playbook-screen'):document.createElement('div');if(route!=='playbook')$('#content').append(place);void PlaybookScreen.mount(place,{catalogPromise:deviceCatalog(),scoreOptions:playbookScoreOptions,screens:publicScreens,idByTicker:new Map(identityCompanies.map(r=>[r.ticker,r.company_id])),publicCatalog,interests:[...prefs.interests],universeCodesPromise:fetch('universe-codes.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(p=>p?.schema==='universe-codes/1'&&Array.isArray(p.codes)?p.codes:[]).catch(()=>[]),full:route==='playbook'}).catch(()=>{if(place.isConnected)place.textContent='플레이북 확인 불가 · 기기 기록을 읽을 수 없습니다.';});}
+  if(route==='leaderboard') void PrivateSubsetView.mount($('#private-subset-root'),{locale:appSettings.display_locale,config:window.InvestmentAppConfig,interests:()=>DeviceWatchlist.pageIds(prefs.interests),onRanks:()=>{qgv2Quotes={};qgv2QuotesKey='';qgv2QuotesBasis=null;leaderPage=null;const pt=$('#universe-price-time');if(pt)pt.innerHTML=window.PriceTime?PriceTime.sourceHtml(PrivateSubsetView.priceBasis?.()||null,{locale:appSettings.display_locale}):'';if(leaderboardRows&&$('#leaderboard-screen'))paintLeaderboardScreen(leaderboardRows);}});
+  if(['playbook','portfolio','company'].includes(route)&&window.PlaybookScreen){const place=route==='playbook'?$('#playbook-screen'):document.createElement('div');if(route!=='playbook')$('#content').append(place);void PlaybookScreen.mount(place,{catalogPromise:deviceCatalog(),scoreOptions:playbookScoreOptions,screens:publicScreens,idByTicker:new Map(identityCompanies.map(r=>[r.ticker,r.company_id])),publicCatalog,interests:DeviceWatchlist.allIds(prefs.interests),universeCodesPromise:fetch('universe-codes.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(p=>p?.schema==='universe-codes/1'&&Array.isArray(p.codes)?p.codes:[]).catch(()=>[]),full:route==='playbook'}).catch(()=>{if(place.isConnected)place.textContent='플레이북 확인 불가 · 기기 기록을 읽을 수 없습니다.';});}
   if(route==='brief'&&window.PlaybookScreen){try{$('#content').insertAdjacentHTML('afterbegin',PlaybookScreen.todayHtml(localStorage));}catch(_){}}
   if(route==='actual') attachDeviceActual('#device-actual-root',true);
   if(route==='portfolio') {attachDeviceActual('#device-actual-summary',false);paintPortfolio();}
@@ -983,7 +1027,7 @@ function renderRoute(options) {
       const subnav=$('[data-ia-sub="technical"]');if(subnav)subnav.outerHTML=AppShell.subNavHtml('technical');
       for(const a of document.querySelectorAll('[data-screen-tab]'))a.href='#technical-'+a.dataset.screenTab+suffix;
       tvChart();});tvChart();}
-  if(route==='brief') TradingViewWidgets.mountTickerTape($('#tv-ticker-tape'),{locale:appSettings.display_locale});
+  if(route==='brief') TradingViewWidgets.mountTickerTape($('#tv-ticker-tape'),{locale:appSettings.display_locale,companyIds:scopeIdList()});
   if(route==='company' && $('#tradingview-mini')) TradingViewWidgets.mountMini($('#tradingview-mini'),{companyId:id,locale:appSettings.display_locale});
   if(route==='company' && $('#private-history-chart')) void PrivateHistory.mount($('#private-history-chart'),{companyId:id,locale:appSettings.display_locale,config:window.InvestmentAppConfig,getAverage:deviceAverageCost,onData:value=>paintValue(route,id,value&&typeof value.close==='number'?{price:value.close,currency:value.currency,as_of:value.asOf,read_at:value.readAt||null,source:'PRIVATE_HISTORY_CLOSE'}:null)});
   // Price store (user's Prices_M tab): the first open of a company stores its 5-year month-ends once (counts shown only).
@@ -1022,7 +1066,7 @@ function renderRoute(options) {
     OpsStatus.mount($('#ops-status'),{secReported,secStatus:SecReported.status?.()||null,screens:publicScreens},{locale:appSettings.display_locale});
     attachGoogleSheetSettings();
     PrivateHistory.mountSettings($('#private-history-settings'),{locale:appSettings.display_locale});
-    if(window.PriceStore) PriceStore.mountSettings($('#price-store-settings'),{locale:appSettings.display_locale,coreSymbols:priceStoreCore});
+    if(window.PriceStore) PriceStore.mountSettings($('#price-store-settings'),{locale:appSettings.display_locale,coreSymbols:()=>priceStoreCore(false)});
     PrivateTrades.mountSettings($('#private-trades-settings'),{locale:appSettings.display_locale});
     PrivateSubsetView.mountSettings($('#private-universe-settings'),{locale:appSettings.display_locale});
     attachDeviceApiSettings();
@@ -1060,7 +1104,7 @@ function renderRoute(options) {
   }
   AppShell.afterRender(route);
   if(route==="tree"||route==="system") IaScreens.mount($("#content"),{screens:publicScreens,catalog:publicCatalog,locale:appSettings.display_locale});
-  HomeScreen.afterRender(route,{locale:appSettings.display_locale,id,resolve:(type,key)=>searchIndex.resolve(type,key),interests:[...prefs.interests],company,screens:()=>publicScreens,scores:leaderScores,catalog:deviceCatalog});
+  HomeScreen.afterRender(route,{locale:appSettings.display_locale,id,resolve:(type,key)=>searchIndex.resolve(type,key),interests:DeviceWatchlist.pageIds(prefs.interests),company,screens:()=>publicScreens,scores:leaderScores,catalog:deviceCatalog});
 }
 function focusImplementedSection(anchor){
   // Existing controls, never a generated model result. Keep a market view; leave industry when entering economy/market.
@@ -1089,7 +1133,7 @@ function wireGroups() {
       if (!f || f.size > DeviceBackup.MAX_BYTES) throw Error(t("16MiB 이하 JSON을 선택하세요."));
       const payload = JSON.parse(await f.text());
       if (DeviceBackup.accepts(payload)) { await restoreDeviceBackup(payload); return; }
-      const p = validatePrefs(payload);
+      const p = DeviceWatchlist.migrate(validatePrefs(payload)).prefs;
       prefs.interests = [...new Set([...prefs.interests, ...p.interests])];
       for (const g of p.groups) {
         const old = prefs.groups.find((x) => x.id === g.id);
@@ -1108,20 +1152,16 @@ document.addEventListener("click", (e) => {
   if (!b) return;
   if (b.dataset.star) {
     const id = b.dataset.star;
-    if (!company(id)) return;
-    prefs.interests = prefs.interests.includes(id)
-      ? prefs.interests.filter((i) => i !== id)
-      : [...prefs.interests, id];
-    if (!prefs.interests.includes(id))
-      prefs.groups.forEach(
-        (g) => (g.members = g.members.filter((i) => i !== id)),
-      );
-    save();
+    if (!toggleInterest(id)) return;
     document.querySelectorAll("[data-star]").forEach((x) => {
-      x.textContent = prefs.interests.includes(x.dataset.star) ? "★" : "☆";
-      x.setAttribute("aria-pressed", prefs.interests.includes(x.dataset.star));
+      if (x.disabled) return;
+      const on = DeviceWatchlist.watched(prefs, x.dataset.star);
+      x.textContent = on ? "★" : "☆";
+      x.setAttribute("aria-pressed", on);
     });
     const listId=b.closest('[id]')?.id||null;
+    // A chart that said "outside the range" (or the technical picker) is rebuilt for the new range; prices still load only on click.
+    if(document.querySelector('[data-history-out-of-range],[data-uc-chart="NA"],[data-technical-unavailable]:not([hidden])')||(DeviceWatchlist.watched(prefs,id)===false&&document.querySelector('[data-technical-symbol],#private-history-chart [data-private-history],[data-uc-chart-host] [data-private-history]'))){render();return;}
     const route=location.hash.slice(1).split('/')[0];if(route==='companies'){paintCompanies();}if(route==='leaderboard'||route==='watchlist')paintDirectory(route);const groups=$('#groups');if(groups){const holder=document.createElement('div');holder.innerHTML=groupsUI();groups.innerHTML=holder.querySelector('#groups').innerHTML;}const ownGroups=$('#company-groups');if(ownGroups)ownGroups.innerHTML=companyGroups(id);
     // The list was re-rendered: keep keyboard focus on the same star (or the page title when the row was filtered out).
     if(!b.isConnected){const scope=listId&&document.getElementById(listId),next=(scope||document).querySelector('[data-star="'+CSS.escape(id)+'"]');if(next)next.focus({preventScroll:true});else focusHeading();}
@@ -1254,22 +1294,15 @@ window.addEventListener("message", (e) => {
     if(AppLanguage.LOCALES.includes(e.data.locale)) updateSettings({display_locale:e.data.locale});
     return;
   }
-  const id = byIssuer(e.data.id)?.company_id;
+  // The relationship graph key is the issuer (IA-7), the same key as the watchlist.
+  const id = typeof e.data.id === "string" && DeviceWatchlist.issuerOf(e.data.id) === e.data.id ? e.data.id : byIssuer(e.data.id)?.company_id;
   if (e.data.type === "interest") {
-    if (!company(id)) return;
-    prefs.interests = prefs.interests.includes(id)
-      ? prefs.interests.filter((i) => i !== id)
-      : [...prefs.interests, id];
-    if (!prefs.interests.includes(id))
-      prefs.groups.forEach(
-        (g) => (g.members = g.members.filter((i) => i !== id)),
-      );
-    save();
+    if (!id || !toggleInterest(id)) return;
   }
   frame.contentWindow.postMessage(
     {
       type: "interests",
-      ids: prefs.interests.map((i) => company(i)?.issuer_id).filter(Boolean),
+      ids: prefs.interests.filter((i) => /^sec:\d{10}$/.test(i)),
     },
     location.origin,
   );
@@ -1311,21 +1344,21 @@ Promise.all([...(["data.json","entities.json","sec-m2-candidates.json"].map(path
   const publicSections=["universe","qgv","technical","macro","portfolio","leaderboard","news","relationships","changes"];
   const safeData={schema_version:1,companies:[]};
   for(const name of publicSections) safeData[name]={state:"NOT_AVAILABLE",as_of:null,source:null,reason:"공개 가격 경계에 따라 제공되지 않습니다. (GSQ-010)",data:null};
-  D=guardSections(safeData);publicEntities=catalog.entities.filter(e=>e.entity_type!=="COMPANY");rebuildSearchIndex();load();readLeaderView();render();paintGlobalSearch();
+  D=guardSections(safeData);publicEntities=catalog.entities.filter(e=>e.entity_type!=="COMPANY");rebuildSearchIndex();load();readLeaderView();render();paintGlobalSearch();void refreshHeldScope();
   // App open: with the price store on and Google connected, append the core symbols' daily bars after the last stored date.
-  try{if(window.PriceStore) PriceStore.autoSync(window,{coreSymbols:priceStoreCore});}catch(_){}
+  try{if(window.PriceStore) PriceStore.autoSync(window,{coreSymbols:()=>priceStoreCore(true)});}catch(_){}
 }).catch(showUnavailable);
 // '자료 새로고침' (data-refresh.js; FRONTEND_DATA_CONTRACT D1, D2, D5, D6): DataRefresh reads one public publication set and hands
 // it over here at once. Device quotes, settings and private sessions stay. The open screen is repainted in place (no route
 // re-mount, and no device quote collection while DataRefresh.quiet()), so no Worker or Sheets request is made.
-function mountPublicPanels(route,id){for(const kind of ['qg','types','filings','macro','thirteenf']) PublicScreens.mount($('#public-'+kind),publicScreens,{kind,companyId:route==='company'?id:route==='settings'?rawDataCompanyId()||undefined:undefined,locale:appSettings.display_locale,...(kind==='thirteenf'?{catalog:publicCatalog,interests:[...prefs.interests]}:{})});}
+function mountPublicPanels(route,id){for(const kind of ['qg','types','filings','macro','thirteenf']) PublicScreens.mount($('#public-'+kind),publicScreens,{kind,companyId:route==='company'?id:route==='settings'?rawDataCompanyId()||undefined:undefined,locale:appSettings.display_locale,...(kind==='thirteenf'?{catalog:publicCatalog,interests:DeviceWatchlist.allIds(prefs.interests)}:{})});}
 window.addEventListener('public-data-updated',()=>{void refreshQgv2Quotes(refreshScoreViews);});// new inputs + the kept Universe read: S04/S05 rescore from the new page result
 DataRefresh.attach(window,{route:()=>D?currentRoute:null,render,
  apply(set){publicScreens=set.screens;secReported=set.reported;try{MacroLights.setPublic(publicScreens);}catch(_){}if(set.shares)universeDirectory=set.shares;if(searchIndex){rebuildSearchIndex();paintGlobalSearch();}},
  inPlace(){if(!D)return false;const[route,raw]=location.hash.slice(1).split('/');let id='';try{id=decodeURIComponent(raw||'');}catch(_){id='';}
-  if(!route||route==='home')return HomeScreen.refreshPersonal([...prefs.interests]);
+  if(!route||route==='home')return HomeScreen.refreshPersonal(DeviceWatchlist.pageIds(prefs.interests));
   if(route==='leaderboard'&&$('#leaderboard-screen')){paintDirectory(route);return true;}
-  if((route==='company'||route==='analysis')&&id){refreshScoreViews();if(window.UniverseCompany&&universeCode(id))UniverseCompany.repaint($('#content'),{locale:appSettings.display_locale,screens:publicScreens,shares:universeDirectory,quotes:qgv2Quotes,names:companyNames,catalogPromise:deviceCatalog()});
+  if((route==='company'||route==='analysis')&&id){refreshScoreViews();if(window.UniverseCompany&&universeCode(id))UniverseCompany.repaint($('#content'),{locale:appSettings.display_locale,screens:publicScreens,shares:universeDirectory,quotes:qgv2Quotes,names:companyNames,catalogPromise:deviceCatalog(),starHtml:star(id)});
    else{if(route==='analysis'){const f=document.createElement('div');f.innerHTML=analysis(id,location.hash.slice(1).split('/')[2]||null);const live=$('#content [data-analysis-panel="financials"]'),next=f.querySelector('[data-analysis-panel="financials"]');if(live&&next)live.innerHTML=next.innerHTML;}if(window.StatRadar)void StatRadar.mount(document,{catalogPromise:deviceCatalog()});}SecReported.mount($('#sec-reported-panel'),secReported,{companyId:id,locale:appSettings.display_locale});mountPublicPanels(route,id);return true;}
   if(route==='settings'&&$('#ops-status')){OpsStatus.mount($('#ops-status'),{secReported,secStatus:SecReported.status?.()||null,screens:publicScreens},{locale:appSettings.display_locale});mountRawData();return true;}
   return false;}});

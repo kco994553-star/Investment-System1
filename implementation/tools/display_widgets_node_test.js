@@ -10,7 +10,11 @@ test('TradingView defaults off including unavailable storage; opt-in is device o
 });
 test('direct frame symbols remain public display-only config; no third-party application script',()=>{
  assert.equal(Object.keys(TV.SYMBOLS).length,19);assert.equal(TV.availability('TSE:8035'),'UNVERIFIED');assert.equal(TV.availability('KRX:042700'),'UNVERIFIED');
- assert.equal(TV.tickerSymbols('ko-KR').length,19);
+ // Owner decision 2026-10-23: the tape shows the caller's device range (ACTUAL ∪ watchlist ∪ TARGET v1 candidates), never a
+ // fixed TARGET list; SYMBOLS is only the TARGET alias -> TradingView symbol table.
+ assert.deepEqual(TV.tickerSymbols('ko-KR'),[]);assert.deepEqual(TV.tickerSymbols('ko-KR',[]),[]);
+ assert.deepEqual(TV.tickerSymbols('ko-KR',['nvda','NASDAQ:AAPL','NYSE:BRK.B','tokyo_electron','nvda','aapl','KRX:999999']).map(s=>s.proName),['NASDAQ:NVDA','NASDAQ:AAPL','NYSE:BRK.B','TSE:8035']);
+ assert.equal(TV.symbolFor('NASDAQ:AAPL'),'NASDAQ:AAPL');assert.equal(TV.symbolFor('aapl'),null);assert.deepEqual(TV.config('ticker',null,'ko-KR',['NYSE:SYK']).symbols.map(s=>s.proName),['NYSE:SYK']);
  for(const url of Object.values(TV.FRAMES))assert.equal(new URL(url).origin,'https://www.tradingview-widget.com');
  const source=fs.readFileSync(path.join(__dirname,'../src/investment_system/product/web_assets/tradingview-widgets.js'),'utf8');
  assert.ok(!/createElement\(['"]script/.test(source));assert.ok(source.includes('종목명이 TradingView로 전달됩니다'));

@@ -190,9 +190,11 @@
   const NOTE_FIELDS = ['schema', 'id', 'kind', 'symbol', 'interval', 'price_basis', 'author', 'points', 'text', 'created_at', 'updated_at'];
   const SCENARIO_FIELDS = ['schema', 'id', 'symbol', 'interval', 'price_basis', 'author', 'text', 'anchor_time', 'created_at', 'updated_at', 'horizon', 'direction', 'levels', 'condition', 'invalidation', 'invalidation_price'];
   const onlyFields = (o, keys) => !!o && typeof o === 'object' && !Array.isArray(o) && Object.keys(o).every(k => keys.includes(k));
-  // Anchors (chart-annotation/1): listing symbol, interval D/W, price basis, time/price points.
+  // Anchors (chart-annotation/1): listing symbol, interval D/W, price basis, time/price points. IA-7 (owner decision 2026-10-23):
+  // new objects are keyed by the Listing (Universe code EXCHANGE:SYMBOL, e.g. NYSE:SYK); objects written before it carry the
+  // provider ticker (SYK) and are still read for that listing (userHere) and never rewritten or removed.
   function validUserObject(o) {
-    if (!o || typeof o !== 'object' || Array.isArray(o) || !onlyFields(o, o.schema === 'chart-scenario/1' ? SCENARIO_FIELDS : NOTE_FIELDS) || !isId(o.id) || typeof o.symbol !== 'string' || !/^[A-Z0-9.\-]{1,16}$/.test(o.symbol) || !['D', 'W'].includes(o.interval) || o.price_basis !== 'RAW_CLOSE' || o.author !== 'USER'
+    if (!o || typeof o !== 'object' || Array.isArray(o) || !onlyFields(o, o.schema === 'chart-scenario/1' ? SCENARIO_FIELDS : NOTE_FIELDS) || !isId(o.id) || typeof o.symbol !== 'string' || !/^(?:[A-Z]{2,8}:)?[A-Z0-9.\-]{1,16}$/.test(o.symbol) || !['D', 'W'].includes(o.interval) || o.price_basis !== 'RAW_CLOSE' || o.author !== 'USER'
       || !isText(o.text || '') || !isDate(String(o.created_at || '').slice(0, 10)) || !isDate(String(o.updated_at || '').slice(0, 10))) return false;
     if (o.schema === 'chart-annotation/1') {
       if (!NOTE_KINDS[o.kind] || !Array.isArray(o.points) || o.points.length !== (o.kind === 'MEMO' ? 1 : 2) || !o.points.every(pt => onlyFields(pt, ['time', 'price']) && isDate(pt.time) && isPrice(pt.price))) return false;
@@ -659,7 +661,7 @@
   const userWord = state => words(state, ...USER_LABEL);
   function userHere(state) {
     const tf = tfKey(state.timeframe);
-    return state.user.items.filter(o => o.symbol === state.symbol && o.interval === tf);
+    return state.user.items.filter(o => (o.symbol === state.symbol || (!!state.legacySymbol && o.symbol === state.legacySymbol)) && o.interval === tf);
   }
   const saveFailedText = state => words(state, '저장 실패 · 이 브라우저 저장 공간이 가득 찼거나 쓸 수 없습니다. 이미 저장된 노트·시나리오는 그대로 두었고, 방금 바꾼 내용은 이 화면에만 있습니다(새로 고치면 사라짐). 「이 기기 파일로 내보내기」로 파일에 보관한 뒤 필요 없는 항목을 지우세요.',
     'Save failed · this browser’s storage is full or not writable. Notes and scenarios already stored were kept; the latest change exists on this screen only (lost on reload). Use “Export to a file on this device” to keep a file, then delete items you no longer need.');
@@ -1023,7 +1025,7 @@
   /* ---------- public API ---------- */
 
   function setData(state, data, source) {
-    state.data = data; state.source = data ? source : 'none'; state.symbol = data ? data.symbol : '';
+    state.data = data; state.source = data ? source : 'none'; state.symbol = data ? (data.listing || data.symbol) : ''; state.legacySymbol = data && data.listing ? data.symbol : '';
     state.measuring = false; computeBars(state);
     if (state.settings.mode === 'long' && state.weeklyCode === 'READY') state.timeframe = 'weekly'; else if (state.timeframe === 'weekly' && state.weeklyCode !== 'READY') state.timeframe = 'daily';
     return render(state);
@@ -1042,7 +1044,7 @@
       state.data = {...state.data, indicators: payload.indicators};
       return state.timeframe === 'daily' ? render(state, {keepRange: state.renderer ? state.renderer.getVisibleRange() : null}) : Promise.resolve();
     }
-    return setData(state, {symbol: payload.symbol || '', provider: payload.provider || '', timezone: payload.timezone || 'UTC', currency: payload.currency || '', readAt: payload.readAt || '', bars: payload.bars, indicators: payload.indicators || null}, 'device');
+    return setData(state, {symbol: payload.symbol || '', listing: typeof payload.listing === 'string' && /^[A-Z]{2,8}:[A-Z0-9.\-]{1,16}$/.test(payload.listing) ? payload.listing : '', provider: payload.provider || '', timezone: payload.timezone || 'UTC', currency: payload.currency || '', readAt: payload.readAt || '', bars: payload.bars, indicators: payload.indicators || null}, 'device');
   }
 
   function dispose(state) {
