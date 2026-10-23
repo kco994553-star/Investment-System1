@@ -183,6 +183,7 @@ async function seed({date,n=45,vMiss={}}){
    const cfg={...TargetV1ConfigDefaults,number_check:{...TargetV1ConfigDefaults.number_check,result:{calc_version:'qgv2-calc/2026-10-17.1',passed:true,date:'2026-10-14',companies:10}}};
    await S.mount(document.querySelector('[data-target-v1-builder]'),{playbook:PlaybookScreen,config:cfg,catalog,storage:localStorage,date:'2026-10-14',publishedProvider:async()=>window.__tv1Payload('qgv2-calc/2026-10-17.1')});});
   assert.equal(await page.locator('[data-tv1-candidates] thead th').nth(6).textContent(),'V 요인');
+  assert.equal(await page.locator('[data-tv1-candidates] thead th').nth(5).textContent(),'V(임시 V)');assert.match(await page.locator('[data-tv1-v-source]').textContent(),/^V 출처: 임시 V · 기기 시세로 계산 · 중앙 V 미게시/);
   const vRow=page.locator('[data-tv1-candidate=SYN00]');assert.equal(await vRow.getAttribute('data-tv1-v-count'),'4');assert.equal(await vRow.getAttribute('data-tv1-v-incomplete'),'');
   assert.equal(await vRow.locator('[data-tv1-v-cell]').textContent(),'4/5 V4 빠짐 · 확정 불가');assert.match(await vRow.textContent(),/예$|아니오$/);
   assert.equal(await page.locator('[data-tv1-candidate=SYN01] [data-tv1-v-cell]').textContent(),'5/5');assert.equal(await page.locator('[data-tv1-candidates] [data-tv1-v-incomplete]').count(),1);

@@ -225,6 +225,7 @@ test('finalize: cards, shortfall, limits, LATEST file (calc_version, row freshne
  assert.equal(done.versions.length,1);assert.equal(done.versions[0].version,'v1');assert.deepEqual(done.rule_c,{start:'2026-10-15',version:'v1'});
  assert.equal(done.versions[0].calc_version,'qgv2-calc/2026-10-15.1');assert.equal(done.versions[0].sec_qgv2_as_of,'2026-10-14T21:00:00Z');assert.equal(done.versions[0].input_shards,basis.shards);
  assert.deepEqual(done.versions[0].number_check,{calc_version:'qgv2-calc/2026-10-15.1',passed:true,date:'2026-10-15',companies:10});
+ assert.equal(done.versions[0].v_source,'DEVICE_TEMPORARY');assert.equal(B.V_SOURCE.ko,'임시 V');  // 2026-10-23: no central V reader yet
  let sum=done.versions[0].cash_pct;for(const r of done.versions[0].rows)sum+=r.pct;assert.equal(sum,100);assert.ok(done.versions[0].rows.every(r=>r.confirmed));
  // A later file with a new calc_version: changed basis + a new number check needed; after regeneration (all names kept) → v1.1.
  const next=published({u,calc:'qgv2-calc/2026-11-16.1',asOf:'2026-11-15T00:00:00Z',acquired:'2026-11-14T00:00:00Z'});
@@ -369,6 +370,10 @@ test('schedule: finalize target 2nd week of 2026-11; unfinalized or late → tha
  assert.deepEqual(B.scheduleState(none,'2026-11-12'),{finalized:false,finalized_on:null,window:['2026-11-09','2026-11-15'],deadline:'2026-11-15',postponed:false,late:false});
  assert.equal(B.scheduleState(none,'2026-11-16').postponed,true);
  const onTime={...none,versions:[{version:'v1',date:'2026-11-12',rows:[],cash_pct:100}]};assert.equal(B.roundMode(onTime,r1),'LIST');assert.equal(B.scheduleState(onTime,'2026-11-20').late,false);
+ // B-3 F1: saved on the deadline month's round day but after the deadline → still postponed for that round (no list).
+ assert.equal(r1.date,'2026-11-16');const lateSameDay={...none,versions:[{version:'v1',date:'2026-11-16',rows:[],cash_pct:100}]};
+ assert.equal(B.roundMode(lateSameDay,r1),'RISK_CODE_CHECK_ONLY');assert.equal(B.roundMode(lateSameDay,r2),'LIST');
+ const onDeadline={...none,versions:[{version:'v1',date:'2026-11-15',rows:[],cash_pct:100}]};assert.equal(B.roundMode(onDeadline,r1),'LIST');
  const late={...none,versions:[{version:'v1',date:'2026-12-01',rows:[],cash_pct:100}]};assert.equal(B.roundMode(late,r1),'RISK_CODE_CHECK_ONLY');assert.equal(B.roundMode(late,r2),'LIST');assert.equal(B.scheduleState(late,'2026-12-02').late,true);
  assert.deepEqual(B.riskCodes().map(c=>c.code),['X1','X2','X3','R1','R2','R3','R4','R5']);assert.ok(B.riskCodes().every(c=>c.text&&!/매수|매도/.test(c.text)));
 });
