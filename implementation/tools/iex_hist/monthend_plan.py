@@ -33,8 +33,9 @@ LATEST_YEARS = 5
 # not aliased: it stays NO_TRADE and is never filled.
 SYMBOL_ALIASES: dict[str, tuple[tuple[str, str, str], ...]] = {
     # Skydance Corp (formerly Paramount Skydance, CIK 0002041610): Form 25 (Nasdaq) 2026-10-05; on IEX the line trades as SKYD
-    # (probe 2026-10-21/22: SKYD status T, PSKY no status message). Exact first SKYD day: being confirmed (probe 10-02..10-09).
-    'NASDAQ:PSKY': (('2026-10-06', 'SKYD', 'UNCONFIRMED switch date; IEX probe 2026-10-21/22 SKYD trading, PSKY absent'),),
+    # (IEX probe run 39944426209: PSKY status T with regular trades on 2026-10-02 and 10-05, no status/trade from 10-06;
+    # SKYD no status/trade through 10-05, status T with regular trades from 10-06; 10-21/22 the same).
+    'NASDAQ:PSKY': (('2026-10-06', 'SKYD', 'CONFIRMED: IEX TOPS last PSKY day 2026-10-05, first SKYD day 2026-10-06'),),
 }
 # Months before a cut date are NOT requested: V4 stays NA with the reason (owner decision 2026-10-23: Paramount Skydance's
 # pre-merger history is the predecessor's (Paramount Global) share basis, unconfirmed against the merged line).
