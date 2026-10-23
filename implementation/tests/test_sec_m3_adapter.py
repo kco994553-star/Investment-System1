@@ -81,7 +81,7 @@ def test_public_repacked_share_hashes_do_not_claim_to_be_original():
 def test_universe_static_asset_is_only_504_unique_codes_and_has_both_classes():
     p=Path(__file__).parents[1]/'src/investment_system/universe/universe_codes_v1.json'
     codes=json.loads(p.read_text());assert len(codes)==len(set(codes))==504
-    assert {'NASDAQ:ASML','NASDAQ:PSKY','NASDAQ:GOOGL','NASDAQ:GOOG','NYSE:BRK.B'}<=set(codes)
+    assert {'NASDAQ:ASML','NYSE:SKYD','NASDAQ:GOOGL','NASDAQ:GOOG','NYSE:BRK.B'}<=set(codes)
     assert all(isinstance(x,str) and len(x.split(':'))==2 for x in codes)
 
 
