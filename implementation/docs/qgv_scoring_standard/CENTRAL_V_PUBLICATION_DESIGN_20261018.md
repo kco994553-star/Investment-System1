@@ -129,7 +129,7 @@ deploy 잡: 신선도 검사에 게시본 규칙 추가 → 배포
 | `publication_id` | 이 게시본의 내용 식별자 | 예 | §5. 시각이 아니라 입력 내용에서 나온다 |
 | `state` | `OFFICIAL` | 예 | 실패 상태는 상태 파일에 둔다(§6) |
 | `calc_version` | 입력 행 규칙 버전 = `sec-qgv2.json` `calc_version`(지금 `qgv2-calc/2026-10-17.1`, `v2_factors.py:38`) | 예 | 의미를 바꾸지 않는다 |
-| `v_calc_version` | V 게시 규칙 버전(엔진 V 규칙 + 어댑터 일관성 규칙 + DCF·유형 설정) | 예 | 새 필드. 결정 D-CV7 |
+| ~~`v_calc_version`~~ | ~~V 게시 규칙 버전(엔진 V 규칙 + 어댑터 일관성 규칙 + DCF·유형 설정)~~ | — | **두지 않는다.** 2026-10-23 소유자 지시로 v_calc_version 없이 calc_version 하나로 통합(D-CV7 메모, §15-2) |
 | `engine` | `{version:'qgv-v2', status:'PROVISIONAL', python_sha256, js_sha256}` | 예 | `qgv_v2.py:19-20`. 엔진 원본 해시 |
 | `population` | `{version, universe_config_version, registry_sha256, code_count, pooled_count, pooled_digest}` | 예 | `sec-universe-shares/v0`(설정 JSON), `registry_sha256`은 `sec-qgv2.json`에서 |
 | `weights` | `{default_preset:'balanced', gate:true, profile_id:'qgv-v2/balanced/gate-on', weights_version}` | 예 | `weights_version` = `weights_id(official_weights())`(`qgv_v2.py:182-202`) 재사용 |
@@ -221,6 +221,7 @@ sec-qgv2.json(같은 실행, sha256) ─┐
 - `publication_id = 'qgvpub-' + sha256(정규 JSON 매니페스트)`.
 - 매니페스트: `calc_version`, `v_calc_version`, `inputs[].sha256`, `price.provider`, `price.basis_date`, `price.adjustment_basis`, 가격 묶음 HMAC, `population.version`·`pooled_digest`, `weights_version`, `type_scope`, `config_versions`, `engine.*_sha256`.
 - 시각은 넣지 않는다. 같은 입력을 다시 돌리면 같은 id다. 그때는 라이브 바이트를 그대로 둔다(불필요한 교체 없음).
+- **2026-10-23 메모(D-CV7 (b)):** 아래 표의 `v_calc_version` 열은 쓰지 않는다. V 게시 규칙(U7)이 바뀌면 `calc_version`을 올린다. 매니페스트에서도 `v_calc_version`을 뺀다(§15-2).
 
 | 바뀐 것 | `publication_id` | `calc_version` | `v_calc_version` |
 | --- | --- | --- | --- |
@@ -460,7 +461,7 @@ sec-qgv2.json(같은 실행, sha256) ─┐
 | D-CV4 | 개인 미리보기 | (a) 엔진에 게시 V 요인 입력 추가 + 벡터 (b) "근사" 표시 (c) V 비중 미리보기 막기 | **(a)**, 그 전까지 (b) | 중복 엔진 없이 정확히 같아진다(§9) |
 | D-CV5 | 공급 전체 실패 기준 | (a) 가격 무관 V 자격 행의 95% 이상 같은 기준일 (b) 90% (c) 기준 없음(부분 게시) | **(a)** | 빠진 행이 많으면 모든 회사 백분위가 흔들린다. 숫자는 고정값으로 게시본에 싣는다 |
 | D-CV6 | 오래된 정상본 표시 | (a) 2거래일 넘으면 "오래된 공식 결과" (b) 5거래일 (c) 숨김 | **(a)**, 숨기지 않음 | 값은 정상이고 기준일이 오래됐을 뿐이다. 기준일을 크게 보인다 |
-| D-CV7 | 버전 필드 | (a) `v_calc_version` 새로, `calc_version`은 입력 규칙 그대로 (b) `calc_version` 하나로 합침 | **(a)** | 기존 행 단위 의미(`v2_factors.py:26-29`)와 불일치 제외 규칙을 지킨다 |
+| D-CV7 | 버전 필드 | (a) `v_calc_version` 새로, `calc_version`은 입력 규칙 그대로 (b) `calc_version` 하나로 합침 | ~~(a)~~ → **(b)** | **메모: 2026-10-23 소유자 지시로 v_calc_version 없이 calc_version 하나로 통합.** 「calc_version은 U7과 묶어 한 번만 올리고, 원장 구간도 한 번만 나눈다」. `qgv2-calc/2026-10-23.1`이 그 한 번이다(§15-2) |
 | D-CV8 | TARGET 회사 순위 | (a) TARGET 행을 CIK 점 교체로 전체 순서에 넣음 (b) Universe 행만 (c) 둘 다 표시 | **(a)** | 화면마다 같은 행을 쓰고, 기존 "자기 CIK 점 교체" 규칙과 같다 |
 | D-CV9 | 다중 종류 순위 | (a) 한 CIK 한 순위(대표 코드) (b) 코드마다 순위 | **(a)** | 단면이 한 CIK 한 점이다. 같은 회사가 두 번 오르지 않는다 |
 | D-CV10 | ADR·해외 발행인 | (a) 상장 증권·비율 표 확인 전 NA (b) 보고 통화 = 가격 통화면 허용 | **(a)** | 희석 주식수는 보통주 기준이다. 비율을 모르면 EV가 틀린다. 건수는 이번에 세지 않았다 |
@@ -476,3 +477,45 @@ sec-qgv2.json(같은 실행, sha256) ─┐
 - 코드·워크플로·가드·엔진·화면 변경 없음. 시험 실행 없음(문서만).
 - 가격 조회 없음. 공급자 호출 없음.
 - 금융업 V·일반 기업 입력 결측은 다루지 않았다. 각각 `FINANCIAL_V_RESEARCH_PREP_20261018.md`, `V_GENERAL_COVERAGE_20261018.md`의 과제다.
+
+## 15. 2026-10-23 추가: 분할 기준 계수 F_k, calc_version 통합, 원장 구간 분할(설계)
+
+- 작성: 2026-10-23 UTC / 2026-10-24 KST. lane cv-fk. 근거: 소유자 결정 GSQ-024 계획 A, Main 지시 2026-10-23.
+- 계산 변경 PR(병합은 소유자 승인 뒤). 엔진(`qgv_v2.py`·`qgv-v2.js`)은 바꾸지 않는다.
+
+### 15-1. F_k(`share_basis_factor`)와 적용 위치
+
+- 문제: `ebit_per_share_history` 값은 최신 주식수 기준이다(분할 반영, `v2_factors._v_inputs` 규칙 SPLIT). IEX HIST 월말 종가는 분할 **미조정**이다.
+- 게시: `sec-qgv2.json` 각 `ebit_per_share_history` 항목에 `share_basis_factor` F_k를 싣는다. 가격 없이 SEC 자료만 쓴다.
+- 뜻: 그 회계연도 말월 월말의 거래 기준 주식수 × F_k = 게시 기준 주식수. 그래서 **게시 기준 가격 = IEX 원 월말 종가 ÷ F_k**.
+- 예: FY-2 뒤 10:1 분할 → FY-4~FY-2는 F=10, FY-1·FY0은 F=1. 원 종가 1,000 → 100.
+- 각 항목의 **자기 보고 기준**에서 나온다. 분할 날짜만으로 정하지 않는다. 가격 없는 확인식: F = (EBIT ÷ 그해 10-K 보고 주식수) ÷ 게시값. WSM(2:1, 2024-07)은 FY2022~2024가 정확히 2.0이다.
+- NA: `null` + `share_basis_factor_reason`. `SHARE_BASIS_UNCONFIRMED`(보고 기준을 잇지 못함), `SPLIT_TIMING_UNCONFIRMED`(월말 뒤·10-K 접수 전 분할 가능성). 1.0으로 가정하지 않는다.
+- 규칙 전문·실데이터 결과: `QGV_V2_QG_METHOD.md` V-PRICE-BASIS.
+- **적용 위치(Main 결정 2026-10-23):** 중앙 V 어댑터(cv-core lane)가 IEX 원 종가로 `month_closes`를 만들 때 `원 종가 ÷ F_k`를 넣는다. 엔진은 그대로 `month_close`를 읽는다.
+  - F_k가 `null`인 달은 `month_closes`에 넣지 않는다. 그 해는 자기 과거 대비에서 빠진다(`HISTORY_TOO_SHORT` 규칙 그대로). 0이나 1로 채우지 않는다.
+  - `fcf_per_share_history`에는 싣지 않는다(파일 크기). 같은 `fiscal_year_end`의 F를 쓴다. 지금 가격과 짝짓는 소비자는 없다.
+- **기기 경로는 F_k를 쓰지 않는다.** Yahoo 등 기기 가격은 이미 분할 **조정** 가격이다. `qgv2-inputs.js`·`qgv-scores.js`·`PriceStore` 경로는 바꾸지 않는다. 기기에서 F_k를 나누면 분할 전 연도가 F배 틀린다.
+
+### 15-2. calc_version 하나로 통합(D-CV7 (b))
+
+- `v2_factors.CALC_VERSION = 'qgv2-calc/2026-10-23.1'`. 이번 라운드의 **유일한** 올림이다.
+- 이 번호가 덮는 것: (1) V-PRICE-BASIS(`sec-qgv2.json` 행 규칙) (2) U7 중앙 V 게시 규칙 `qgv-official/1` 전체 — §4 스키마(`v_calc_version` 열 제외), §5 재계산·의존, §6 실패·마지막 정상본, §7 일관성 검사, D-CV2·D-CV5·D-CV10·D-CV11.
+- `qgv-official.json`의 `calc_version`은 입력 `sec-qgv2.json`의 값을 그대로 싣는다. U7 규칙이 나중에 바뀌면 그때 `calc_version`을 올린다(새 원장 구간).
+- 전환: 첫 샤드 게시 뒤 최대 7일(샤드 7개) 옛 버전 행은 순위 밖이다(`CALC_VERSION_MISMATCH`, 기존 규칙). 504 전체 샤드 수동 실행(`all_shards=true`) 한 번이면 하루로 줄어든다.
+- 옛 `sec-qgv2.js`는 새 행(`share_basis_factor`)을 파일째 거부한다. `sec-qgv2.json`과 `sec-qgv2.js`는 같은 배포로 나가야 한다(`test_old_screens_block_new_files_as_a_whole_and_show_no_value`).
+
+### 15-3. 전진 검증 원장 구간 분할(설계만, 코드·워크플로 변경 없음)
+
+- 지금 규칙으로 충분하다. 원장 기록의 `segment`는 입력 파일의 `calc_version`이다(`forward_ledger.py:190-232`). 값이 바뀐 날부터 새 구간이다(`evaluation_segments` :562-577, JS `forward-validation.js:115-122`). 구간은 잇지 않는다.
+- 그래서 `calc_version`을 **한 번** 올리면 구간도 **한 번** 나뉜다. 원장 코드를 바꿀 필요가 없다. 기존 기록은 고치지 않는다(추가 전용).
+- 전환 중 기록: 파일에 옛 버전 행이 남아 있으면 `CALC_VERSION_MIXED`, Q·G 454 미만이면 `Q_BELOW_454`·`G_BELOW_454`로 `PREPARATORY`다. 새 구간 안에 남지만 1차 평가에서 빠진다. 전 샤드 재수집 뒤 `PRIMARY`가 된다.
+- 시점(Main 결정): (a) 병합 직후 전체 샤드 수동 실행 → 다음 날 원장부터 새 구간 PRIMARY 가능 (b) 7일 자연 순환. 권장 (a). U7 게시 코드가 이 버전과 같은 배포 창에 들어가면 구간이 두 번 나뉘지 않는다.
+- 피할 것: 이 PR을 되돌리면 버전이 `2026-10-17.1`로 돌아가 구간이 또 나뉜다(세 번째 구간). 되돌림 대신 앞으로 고친다.
+- 시험 계획(코드 변경 없이 기존 시험·벡터로 확인, 시점 확정 뒤 Main이 실행):
+  1. 합성 원장: day N `2026-10-17.1` PRIMARY → day N+1 혼합 파일 → 새 구간 `qgv2-calc/2026-10-23.1`, `PREPARATORY`·`CALC_VERSION_MIXED`. 이전 기록 바이트 동일.
+  2. 전 샤드 재수집 뒤 같은 구간에서 `PRIMARY`. `evaluation_segments` 결과 구간 2개.
+  3. JS `segments`와 Python이 같은 결과(`forward_validation_reference_v1.json`에 새 버전 문자열 벡터 추가).
+  4. 추가 전용: 병합 전후 기존 원장 기록 해시 동일(가드의 기존 비교).
+  5. U7 첫 게시(`qgv-official/1`)는 `calc_version`을 바꾸지 않으므로 구간이 더 나뉘지 않음.
+  - 기존 근거 시험: `test_a_calc_version_change_starts_a_separate_segment_and_preparatory_rows_stay_out`(`tests/test_forward_validation_v2.py:284`).

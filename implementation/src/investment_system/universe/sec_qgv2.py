@@ -377,7 +377,21 @@ def _metric_ok(key, value):
     return valid
 
 
-def _v_inputs(v, cut_day, has_data):
+def _share_basis_entry(h):
+    """V-PRICE-BASIS (calc_version 2026-10-23.1): {fiscal_year_end, value, share_basis_factor} with a positive finite factor,
+    or the factor null and share_basis_factor_reason one of vf.SHARE_BASIS_REASONS."""
+    _need(type(h) is dict and 'share_basis_factor' in h)
+    factor = h['share_basis_factor']
+    if factor is None:
+        _need(set(h) == {'fiscal_year_end', 'value', *vf.SHARE_BASIS_KEYS} and h['share_basis_factor_reason'] in vf.SHARE_BASIS_REASONS)
+    else:
+        _need(set(h) == {'fiscal_year_end', 'value', 'share_basis_factor'})
+        _need(_finite(factor) and type(factor) is not bool and 0 < factor <= vf.SHARE_BASIS_FACTOR_LIMIT)
+
+
+def _v_inputs(v, cut_day, has_data, calc_version=None):
+    """`calc_version`: the row's; rows of 2026-10-23.1 or later carry share_basis_factor (+ its reason when null) in every
+    ebit_per_share_history entry, earlier and legacy rows exactly fiscal_year_end, value."""
     _need(type(v) is dict and set(v) in (set(vf.V_KEYS), set(vf.LEGACY_V_KEYS)))
     if not has_data:
         _need(v == {k: x for k, x in vf.empty_v_inputs().items() if k in v})
@@ -405,12 +419,18 @@ def _v_inputs(v, cut_day, has_data):
         _need(_date(i['period_end']) <= cut_day)
         if key == 'diluted_shares':
             _need(i['value'] > 0)
+    share_basis = vf.carries_share_basis(calc_version)
     for key in ('ebit_per_share_history', 'fcf_per_share_history', 'operating_margin_history'):
         history = v.get(key, [])
         _need(type(history) is list and len(history) <= vf.HISTORY_YEARS)
+        with_basis = share_basis and key in vf.SHARE_BASIS_HISTORY_KEYS
         ends = []
         for h in history:
-            _need(type(h) is dict and set(h) == {'fiscal_year_end', 'value'} and _finite(h['value']) and type(h['value']) is not bool)
+            if with_basis:
+                _share_basis_entry(h)
+            else:
+                _need(type(h) is dict and set(h) == {'fiscal_year_end', 'value'})
+            _need(_finite(h['value']) and type(h['value']) is not bool)
             ends.append(_date(h['fiscal_year_end']))
             _need(ends[-1] <= cut_day)
         _need(all(a < b for a, b in zip(ends, ends[1:])))
@@ -482,7 +502,7 @@ def _row(r, cut, ttl, sic_cfg, *, target_id=None, is_versioned=True, universe_wi
             _need(reasons == ['NON_SEC_ISSUER'] and r['cik'] is None and r['acquired_at'] is None)
         else:
             _need('NON_SEC_ISSUER' not in reasons)
-    _v_inputs(r['v_inputs_v2'], cut.date(), has_data)
+    _v_inputs(r['v_inputs_v2'], cut.date(), has_data, r.get('calc_version'))
     _need(type(r['factors']) is dict and set(r['factors']) == set(vs.FACTOR_IDS))
     _need(type(r['axes']) is dict and set(r['axes']) == set(vs.AXES) and all(type(a) is dict and set(a) == set(AXIS_KEYS) for a in r['axes'].values()))
     return r['state']
