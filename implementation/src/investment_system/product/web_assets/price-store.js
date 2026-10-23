@@ -449,6 +449,15 @@ function mountSettings(host,{locale='ko-KR',coreSymbols:list=null}={}){
  let note='',disposed=false;const live=()=>!disposed&&host.isConnected;
  const paint=()=>{
   if(!live()){dispose();return;}const s=status({view}),on=s.state!=='OFF',busy=!!s.busy,store=storeFor(view);
+  // While a run only advances (same state, same buttons), update the status/progress lines in place: re-rendering every
+  // tick would replace the 중단 button under the user's finger.
+  const shape=[s.state,on,busy,!!(busy&&store.abort&&!store.abort.signal.aborted),!!s.progress,note].join('|'),sec=host.querySelector('[data-price-store]');
+  if(sec&&host.dataset.priceStoreShape===shape){
+   const st=sec.querySelector('[data-price-store-status]');if(st)st.textContent=statusLine(s,locale);
+   const pr=sec.querySelector('[data-price-store-progress]');if(pr&&s.progress){pr.textContent=progressLine(s,locale);pr.dataset.done=String(s.progress.done);pr.dataset.total=String(s.progress.total);pr.dataset.appended=String(s.progress.appended||0);}
+   const la=sec.querySelector('[data-price-store-last]');if(la)la.textContent=syncLine(s.last_sync,locale);
+   return;}
+  host.dataset.priceStoreShape=shape;
   host.innerHTML='<section class="card" data-price-store data-price-store-state="'+esc(s.state)+'"><h2>'+esc(tx(locale,'title'))+'</h2><p class="small">'+esc(tx(locale,'detail'))+'</p>'
    +'<p role="status" data-price-store-status>'+esc(statusLine(s,locale))+'</p>'
    +(s.progress?'<p class="small" role="status" data-price-store-progress data-done="'+s.progress.done+'" data-total="'+s.progress.total+'" data-appended="'+(s.progress.appended||0)+'">'+esc(progressLine(s,locale))+'</p>':'')

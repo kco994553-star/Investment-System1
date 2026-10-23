@@ -127,7 +127,7 @@ APPROVED_SHA256 = {
     "style.css": "f60bb384fb8f6c490cfb4b19675ced7c85c9819472f444cdd59951ed20ef1619",
     "sec-disclosures.js": "849cbfbf2b21badd52c06cf5887dcd259e08864552a76fde39f065f82c6a7194",
     "sec-qgv2.js": "419b49c42921b2792a18ff051e3864620cfacec3918b3b98e74adf90d61cb48d",
-    "price-store.js": "4fcc61a43104375d0670602b14e1780cba4797589e366d7869c99e47d32f2144",
+    "price-store.js": "4596b34faea8ab7c3f142fe15df04f6ca9ef9c8e4ed6227eef0f511aef78971a",
     "qgv2-inputs.js": "f53cc206b1655f7a8602f8f0aab12d8199cd58a4818561eff02a9c18294c251f",
     "scoring-default.js": "02eae2182de717bf0620e9616fe2aabd78c7ec8484c60d65f4231262df868beb",
     "qgv-v2.js": "0f06a8904b156e18f503c47844b540b4b12f3368933ff21bc3157afe482b3717",
