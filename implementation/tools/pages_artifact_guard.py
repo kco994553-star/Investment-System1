@@ -76,7 +76,7 @@ APPROVED_SHA256 = {
     "manager-styles-v0.js": "b32f434b17ba00d6ec1e4813517884e5caded996779df9b1976dfc38964ab38e",
     "screen-detail.js": "d4bed4772a5d70daf6d03491fbc0acfbd0b878789b55de2fdfdf13706f2f354b",
     "virtual-trading.js": "41a834f13d86ed2bd6a046cf63788992350294714ee9b9ee159ae50de8e20206",
-    "technical-cards.js": "cc6164ac1ca510bb7fddd3403e128198db90c7d7a98b860792bb53df5c1bf814",
+    "technical-cards.js": "7f4fb2ce3a586a9f024c6edc212c65893a7acc44a3fd58b611f2f38616b660b3",
     "leaderboard-screen.js": "87f9362e70c943c6ddf559b676f0d3dea312d432fd60119c2e6386b560b6d718",
     "portfolio-screen.js": "db56518e00a7f7003f36b35b4777ca634bd563db532d5035c5a4958e57d07976",
     "company-screen.js": "5c55833a4a0cf36f827f41b98d9e5c783524489a4aae2dbdca860c0a4628bfae",
@@ -109,7 +109,7 @@ APPROVED_SHA256 = {
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "a9259bc383bec01fa1e3b5fbb40fca226bd3bc8533b1a302598b4bb6c116e9e4",
+    "app.js": "bb08a3eea8f471a753c62da2efdcbf6fe3dc871304be75a968885beb66a16dcd",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "f3797e596786fe7a80471703f7c1b5993fda1969ed5afb3a15f5664e50528d67",
     "device-actual.js": "aa9acb0cd0f8a48ed6a7370a9e2e9372d5c90db609f57a973ebbf4197a617dc1",
@@ -145,7 +145,7 @@ APPROVED_SHA256 = {
     "home-screen.js": "9979acbdf24277c3d612b4b1929d693ca9cdecd1f98a190feaa84989e5e36d4a",
     "home-quotes.js": "46487b40e170c3291b023bebcb0fd01da19bb3beb53bfad3006be6377cfe3a96",
     "doodles.js": "413afcb07c5ef5f4edcb0ab544ba61a7d19954db0951ccdf85742c04cf5bb57e",
-    "ia-screens.js": "ea15e5f23d15852dd35080dda79a7c23d7a0e0f225945125bda19c75110a7626",
+    "ia-screens.js": "454342c1ec54a7ab222c6ce6f74059de4ca7a3d9b11dcd2de3763e580a3dce84",
     "universe-company.js": "f28e53e7269932790d45339a80761db451664f0a7b44b7d173b759050a946d82",
     "universe-company.css": "5b1b0236290f91c95b7f25d49bc93d032bf1718754c1cfae7789e92bb74b11b8",
     "stat-radar.js": "674900c9443a71d33d398fc91c0a92ea4be5a26d29ce56cc19b358b832922a2b",
@@ -158,8 +158,8 @@ APPROVED_SHA256 = {
     "macro-evidence.css": "29cdedcdde166003fb4bac34497fe5d6abcb4bb9e7b8af18349cc9de8f10fc2c",
     # Self-hosted chart renderer (P1-7): lightweight-charts 5.2.1 npm file unmodified, upstream LICENSE/NOTICE, third-party notices.
     "chart-renderer.js": "c6053c2633788813d363d3346833f416fa954fbf8db7e1e18252b191c0dd040b",
-    "chart-workbench.js": "05d5cc2a89e68fe9e22286c6c8cea47048592e13e4ad8bec5f1299a122ee346c",
-    "chart-workbench.css": "6824369fd724e8ebd36d62ea498318dceab65cd12c69975f7b3f542048ebfb9f",
+    "chart-workbench.js": "125d564f412e90b1a6bcb13df3f23ec77cee9e5b713ff83151b982511dc16004",
+    "chart-workbench.css": "a27cbff905f5e4e822bef4e260470ab35601b7a250a17092208475099c06554e",
     "lightweight-charts-5.2.1.standalone.js": "e21cc5caa0226ef30bd8549c50b9ef926615f2a4ee6b4e486353477a55f598cf",
     "lightweight-charts-5.2.1.LICENSE.txt": "70c9d5382506dd184465425c08a99ad9bd6d9ac1313c252968ba0b585e5ef823",
     "lightweight-charts-5.2.1.NOTICE.txt": "f76c6afab94884448f0426e30d6e9d555ca7247894cd3484e477d2f87513036e",
@@ -182,7 +182,12 @@ FONT_FILES = frozenset({"jua-regular-ksx1001.woff2", "gaegu-regular-ksx1001.woff
 FONT_MAX_BYTES = 256 * 1024  # pinned subsets are 187,292 and 83,968 bytes; tighter than MAX_FILE_BYTES on purpose
 ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, COMPANY_NAMES_FILENAME, UNIVERSE_DOMAINS_FILENAME, COMPANY_LOGOS_FILENAME, QGV2_FILENAME, DISCLOSURES_FILENAME, NEWS_SIGNALS_FILENAME, MACRO_EVIDENCE_FILENAME} | set(SCREEN_FILENAMES) | set(DART_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024
-MAX_ARCHIVE_BYTES = 4 * 1024 * 1024
+# 8 MiB (was 4 MiB, owner approval 2026-10-23): the price-free build alone reached about 4.0 MiB as a tar, so screen
+# PRs hit the old ceiling. This limit only applies to the tar mode below (raw artifact.tar checks and tests); the deploy
+# guard runs in directory mode with the per-file 2 MiB and 192-entry limits, which stay. Above the 6 MiB warning line the
+# check still passes but the CLI prints a CI warning so the growth is reported.
+MAX_ARCHIVE_BYTES = 8 * 1024 * 1024
+ARCHIVE_WARN_BYTES = 6 * 1024 * 1024
 # 192 (was 128, owner approval 2026-10-20): a real deploy (build + ledger/public data) reached about 131 entries with the
 # chart renderer. Only the entry count changes; the allow-list, pinned hashes, size limits and price/personal checks stay.
 MAX_ENTRIES = 192
@@ -604,6 +609,11 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     receipt = scan_artifact(args.artifact_dir) if args.artifact_dir else validate_pages_tar(args.pages_artifact)
     print(json.dumps(receipt, sort_keys=True))
+    if args.pages_artifact and receipt["pages_artifact_guard"] == "PASS":
+        size = os.stat(args.pages_artifact).st_size
+        if size > ARCHIVE_WARN_BYTES:
+            print(f"::warning title=Pages artifact size::{size} bytes is above the {ARCHIVE_WARN_BYTES} byte warning line "
+                  f"(limit {MAX_ARCHIVE_BYTES})", file=sys.stderr)
     return 0 if receipt["pages_artifact_guard"] == "PASS" else 1
 
 
