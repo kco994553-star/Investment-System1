@@ -60,10 +60,13 @@ def main() -> int:
     ap.add_argument('--date')
     ap.add_argument('--max-bytes', type=int, help='local smoke test only: stop after N compressed bytes')
     ap.add_argument('--workdir', default=os.environ.get('RUNNER_TEMP', '/tmp'))
+    ap.add_argument('--extra', default=os.environ.get('PROBE_EXTRA', ''), help='comma-separated extra symbols (listing diagnostics)')
     a = ap.parse_args()
     day, feeds = hist_index(a.date)
     feed = next(f for f in feeds if (f['feed'], f['version']) == FEED)
     codes, syms = symbols()
+    extra_syms = [x.strip().upper() for x in a.extra.split(',') if x.strip()]
+    syms = syms + [x for x in extra_syms if x not in syms]
     work = Path(a.workdir) / 'iex-probe'
     work.mkdir(parents=True, exist_ok=True)
     symfile = work / 'symbols.txt'
@@ -96,10 +99,15 @@ def main() -> int:
     rss_mb = resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss / 1024
     rows = {}
     for line in out.decode('ascii').splitlines():
-        sym, status, px, _ts, n = line.split('\t')
-        rows[sym] = (status, int(px) > 0 if status != 'NO_TRADE' else False, int(n))
+        sym, status, px, _ts, n, dir_seen, last_status, all_trades = line.split('\t')
+        rows[sym] = (status, int(px) > 0 if status != 'NO_TRADE' else False, int(n), dir_seen == '1', last_status, int(all_trades))
     del out  # prices are not kept past this point
-    by = {s: rows.get(s, ('NO_TRADE', False, 0)) for s in syms}
+    by = {s: rows.get(s, ('NO_TRADE', False, 0, False, '-', 0)) for s in syms}
+    diag = {s: {'status': by[s][0], 'directory': by[s][3], 'trading_status': by[s][4], 'regular_trades': by[s][2], 'all_trades': by[s][5]}
+            for s in [c.split(':', 1)[1] for c in codes if by[c.split(':', 1)[1]][0] != 'ROUND'] + extra_syms}
+    # IEX sends Security Directory messages only for IEX-listed securities; a Trading Status message comes for every symbol
+    # IEX trades, so a code with neither a status message nor a trade is not traded on IEX under that symbol that day.
+    no_status = [c for c in codes if by[c.split(':', 1)[1]][4] == '-' and by[c.split(':', 1)[1]][5] == 0]
     universe = [c for c in codes if by[c.split(':', 1)[1]][0] == 'NO_TRADE']
     odd = [c for c in codes if by[c.split(':', 1)[1]][0] == 'ODD_ONLY']
     extra = {s: by[s][0] for s in EXTRA}
@@ -113,6 +121,7 @@ def main() -> int:
         'universe': len(codes), 'universe_round_lot_last_trade': sum(by[c.split(':', 1)[1]][0] == 'ROUND' for c in codes),
         'universe_odd_lot_only': odd, 'universe_no_trade': universe, 'etf': extra,
         'positive_price_count': sum(1 for s in syms if by[s][1]),
+        'listing_diagnostics': diag, 'universe_without_iex_status_or_trade': no_status,
         'gzip_stderr_lines': len(err2.splitlines()), 'exit_codes': [p1.returncode, p2.returncode, p3.returncode],
         'limits': LIMITS,
     }

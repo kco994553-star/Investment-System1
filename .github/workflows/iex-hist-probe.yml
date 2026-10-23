@@ -34,6 +34,7 @@ jobs:
       - name: Probe (counts only)
         env:
           PROBE_DATE: ${{ github.event.inputs.date }}
+          PROBE_EXTRA: SKYD,PSKY,WBD,SKYD+,PARA,PARAA
         run: |
           python implementation/tools/iex_hist/probe.py --parser "$RUNNER_TEMP/iex_last_trade" ${PROBE_DATE:+--date "$PROBE_DATE"}
       - name: Disk after

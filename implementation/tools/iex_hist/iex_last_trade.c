@@ -4,6 +4,8 @@
      SYMBOL \t status \t price_e4 \t timestamp_ns \t regular_trades
    status: ROUND (last regular-session trade without the odd-lot flag), ODD_ONLY (only odd-lot trades in the session),
    NO_TRADE (no regular-session trade). Extended-hours flagged trades and trades outside [start, end) are ignored.
+   Extra columns (listing diagnostics, no prices): security-directory seen 0/1, last trading status (T/H/P/O or -), trades
+   in any session.
    A summary line "#STATS ..." goes to stderr (counts only). */
 #include <stdint.h>
 #include <stdio.h>
@@ -11,7 +13,7 @@
 #include <string.h>
 
 #define MAXSYM 1024
-typedef struct { char sym[9]; uint64_t key; int64_t round_px, odd_px; uint64_t round_ts, odd_ts, n; } Rec;
+typedef struct { char sym[9]; uint64_t key; int64_t round_px, odd_px; uint64_t round_ts, odd_ts, n, all_trades; int dir_seen; char status; } Rec;
 static Rec recs[MAXSYM]; static int nrec = 0;
 static int64_t T0, T1;
 static uint64_t n_packets = 0, n_segments = 0, n_messages = 0, n_trades = 0, n_bad = 0;
@@ -33,9 +35,14 @@ static void segment(const unsigned char *p, size_t len) {
     uint16_t ml = le16(m); const unsigned char *d = m + 2; m = d + ml;
     if (m > end) { n_bad++; return; }
     n_messages++;
+    if (ml >= 18 && (d[0] == 0x44 || d[0] == 0x48)) {  /* Security Directory / Trading Status: listing diagnostics only */
+      Rec *q = find(key8(d + 10)); if (q) { if (d[0] == 0x44) q->dir_seen = 1; else q->status = (char)d[1]; }
+      continue;
+    }
     if (ml < 38 || d[0] != 0x54) continue;  /* Trade Report */
     n_trades++;
     uint8_t flags = d[1]; uint64_t ts = le64(d + 2);
+    { Rec *q = find(key8(d + 10)); if (q) q->all_trades++; }
     if (flags & 0x40) continue;  /* extended hours */
     if ((int64_t)ts < T0 || (int64_t)ts >= T1) continue;
     Rec *r = find(key8(d + 10)); if (!r) continue;
@@ -97,9 +104,9 @@ int main(int argc, char **argv) {
   int round = 0, odd = 0, none = 0;
   for (int i = 0; i < nrec; i++) {
     Rec *r = &recs[i];
-    if (r->round_ts) { round++; printf("%s\tROUND\t%lld\t%llu\t%llu\n", r->sym, (long long)r->round_px, (unsigned long long)r->round_ts, (unsigned long long)r->n); }
-    else if (r->odd_ts) { odd++; printf("%s\tODD_ONLY\t%lld\t%llu\t%llu\n", r->sym, (long long)r->odd_px, (unsigned long long)r->odd_ts, (unsigned long long)r->n); }
-    else { none++; printf("%s\tNO_TRADE\t0\t0\t0\n", r->sym); }
+    if (r->round_ts) { round++; printf("%s\tROUND\t%lld\t%llu\t%llu\t%d\t%c\t%llu\n", r->sym, (long long)r->round_px, (unsigned long long)r->round_ts, (unsigned long long)r->n, r->dir_seen, r->status ? r->status : '-', (unsigned long long)r->all_trades); }
+    else if (r->odd_ts) { odd++; printf("%s\tODD_ONLY\t%lld\t%llu\t%llu\t%d\t%c\t%llu\n", r->sym, (long long)r->odd_px, (unsigned long long)r->odd_ts, (unsigned long long)r->n, r->dir_seen, r->status ? r->status : '-', (unsigned long long)r->all_trades); }
+    else { none++; printf("%s\tNO_TRADE\t0\t0\t0\t%d\t%c\t%llu\n", r->sym, r->dir_seen, r->status ? r->status : '-', (unsigned long long)r->all_trades); }
   }
   fprintf(stderr, "#STATS packets=%llu segments=%llu messages=%llu trades=%llu bad=%llu symbols=%d round=%d odd_only=%d no_trade=%d\n",
           (unsigned long long)n_packets, (unsigned long long)n_segments, (unsigned long long)n_messages, (unsigned long long)n_trades,
