@@ -86,16 +86,28 @@
  }
  // ---------- 2.4 기술적 분석 ----------
  function technicalTree(l){
-  const tree=node('root',esc(T(l,'기술적 분석','Technical analysis')),esc(T(l,'QGV 점수와 나란히 볼 뿐 합치지 않습니다.','Shown next to QGV, never merged into it.')),[
-   node('input',esc(T(l,'입력','Inputs')),esc(T(l,'일봉(이 기기 RAM · 비공개 Worker · 내 시트) · 가격 기준 RAW_CLOSE / PROVIDER_ADJUSTED_CLOSE','Daily bars (this device’s RAM · private Worker · my sheet) · price basis RAW_CLOSE / PROVIDER_ADJUSTED_CLOSE'))),
-   node('','2.1 '+esc(T(l,'지표','Indicators')),esc(T(l,'연구 표시용 · 차트에서 지표 표시와 패턴 매개변수·정도를 설정합니다. 공식 결과와 개인 미리보기를 구분합니다.','Research display only · set indicator visibility and pattern parameters/degree in the chart. Official results and personal previews stay separate.')),[
-    leaf('SMA','5 · 20 · 60 · 120 (· 240)'),leaf('EMA','20'),leaf('RSI','14'),leaf('MACD','12 · 26 · 9'),leaf(esc(T(l,'볼린저','Bollinger')),'20 · 2σ'),leaf('ATR','14 · RAW_CLOSE')]),
-   node('','2.1 '+esc(T(l,'신호 카드','Signal cards')),esc(T(l,'추세·모멘텀 등 상태 카드(technical-cards.js) · 실행 구간·기록은 NOT_AVAILABLE','Trend/momentum state cards (technical-cards.js) · execution zone and record NOT_AVAILABLE'))),
-   node('','2.2 '+esc(T(l,'차트 패턴','Chart patterns')),esc(T(l,'패턴·감지 이력 구현. 실제 가격 기준 미확인 구간은 판정 불가. 형태 적합도는 상승 확률이 아님','Patterns and detection history are implemented. Unconfirmed real-price basis means unavailable judgement. Shape fit is not a probability'))),
-   node('','2.1–2.2 '+esc(T(l,'가격 시나리오','Price scenarios')),'<span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> '+esc(T(l,'확률 근거 = 같은 패턴·정도에서 과거 결과 빈도 · 미산출','Probability basis = past outcome frequency for the same pattern and degree · not computed'))),
-   node('','2.3 '+esc(T(l,'내 노트(보라색 펜)','My notes (purple pen)')),esc(T(l,'이 브라우저에 저장 · 내보내기/가져오기 가능 · 공식 증거로 쓰지 않음 · 계정 동기화 없음','Saved in this browser · export/import available · never official evidence · no account sync')))]);
-  const ex='<div data-tree-example-body data-example-state="NOT_AVAILABLE"><p>'+na(l,T(l,'기술적 분석 값은 가격에서 나옵니다. 가격은 공개하지 않습니다(이 브라우저 메모리에서 계산하며, 저장은 사용자 비공개 구글 시트·이 브라우저에만 둡니다). 그래서 이 화면에 예시 값이 없습니다. 2.1 화면에서 내 값을 볼 수 있습니다.','Technical values come from prices, which are never published (computed in this browser’s memory; stored only in the user’s private Google Sheet or this browser), so no example is shown here. See your values on 2.1.'))+'</p><p><a href="#technical">2.1 '+esc(T(l,'지표 · 시나리오 →','Indicators →'))+'</a></p></div>';
-  return page('technical',l,{eyebrow:'2.4 · TECHNICAL STRUCTURE',title:T(l,'기술적 분석 내용구성','Technical analysis structure'),lede:T(l,'입력 → 지표 → 신호 → 패턴 → 시나리오 → 내 노트.','Input → indicators → signals → patterns → scenarios → my notes.'),tree,examples:ex});
+  // Function numbers 3.1–3.4 on stamp boxes (owner draft, design lane D6); the menu numbers are 2.1–2.4 (stated in the lede).
+  const st=n=>'<span class="ia-sec" data-fn-stamp>'+n+'</span> ',naBadge='<span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> ';
+  const tree=node('root',st('3.4')+esc(T(l,'기술적 분석','Technical analysis')),esc(T(l,'QGV 점수와 나란히 볼 뿐 합치지 않습니다.','Shown next to QGV, never merged into it.')),[
+   node('input',esc(T(l,'입력','Inputs')),esc(T(l,'일봉(이 기기 RAM · 비공개 Worker · 내 시트) · 가격 기준 RAW_CLOSE / PROVIDER_ADJUSTED_CLOSE · 주봉은 일봉을 묶음(chart-bars.js) · 합성 미리보기','Daily bars (this device’s RAM · private Worker · my sheet) · price basis RAW_CLOSE / PROVIDER_ADJUSTED_CLOSE · weekly bars grouped from daily (chart-bars.js) · synthetic preview'))),
+   node('',st('3.1')+esc(T(l,'기술적 지표 · 시나리오','Indicators · scenarios')),esc(T(l,'메뉴 2.1','Menu 2.1')),[
+    node('',st('3.1.1')+esc(T(l,'차트 탐색','Chart explorer')),esc(T(l,'일봉·주봉 · 확대·이동·십자선·측정 · 장기/스윙 보기','Daily/weekly · zoom, pan, crosshair, measure · long-term/swing view'))),
+    node('',st('3.1.2')+esc(T(l,'지표와 정도 설정','Indicators and degree')),esc(T(l,'연구 표시용(RESEARCH_DISPLAY_ONLY) · 기간은 지금 고정 · 정도(기간 묶음) 고르기는 미연결','Research display only · periods fixed today · choosing a degree (period sets) not connected')),[
+     leaf('SMA','5 · 20 · 60 · 120 (· 240)'),leaf('EMA','20'),leaf('RSI','14'),leaf('MACD','12 · 26 · 9'),leaf(esc(T(l,'볼린저','Bollinger')),'20 · 2σ'),leaf('ATR','14 · RAW_CLOSE')]),
+    node('',st('3.1.3')+esc(T(l,'시나리오','Scenarios')),esc(T(l,'사용자 작성(chart-scenario/1): 상승·횡보·하락 · 핵심 가격 · 조건 · 무효화 · 이 기기에만','User-written (chart-scenario/1): up / sideways / down · key levels · condition · invalidation · this device only'))),
+    node('',st('3.1.4')+esc(T(l,'결과 구분','Result kinds')),esc(T(l,'공식 탐지 · 사용자 설정 탐색 · 사용자 작성 · 합성 미리보기를 나눠 표시 · 지표 카드(모델 지표 / 연구용 지표)','Official detection, user-settings exploration, user-written and synthetic preview kept apart · indicator cards (model / research)')))]),
+   node('',st('3.2')+esc(T(l,'차트 패턴 · 시나리오','Chart patterns · scenarios')),esc(T(l,'메뉴 2.2 · 연구 기본값(pattern-rules/1) · 투자 유용성 미검증','Menu 2.2 · research default (pattern-rules/1) · investment usefulness unverified')),[
+    node('',st('3.2.1')+esc(T(l,'패턴 탐색','Pattern explorer')),esc(T(l,'지지·저항 구간 · 박스 돌파·이탈 · 이중 바닥·천장','Support/resistance zones · box breakout/breakdown · double bottom/top'))),
+    node('',st('3.2.2')+esc(T(l,'정도 설정','Degree settings')),esc(T(l,'규칙의 민감도 묶음 · 바꾼 결과는 "사용자 설정 탐색"으로 따로 · 공식 이력에 쓰지 않음','Rule sensitivity sets · results shown apart as user-settings exploration · never in the official history'))),
+    node('',st('3.2.3')+esc(T(l,'확인 · 실패 · 무효화','Confirm · fail · invalidate')),esc(T(l,'FORMED → CONFIRMED → FAILED · INVALIDATED · EXPIRED · 형태 적합도는 상승 확률이 아님','FORMED → CONFIRMED → FAILED · INVALIDATED · EXPIRED · shape fit is not a probability'))),
+    node('',st('3.2.4')+esc(T(l,'패턴 카드와 시나리오','Pattern cards and scenarios')),esc(T(l,'근거 · 확인 가격 · 무효화 가격 · ','Evidence · confirmation level · invalidation level · '))+naBadge+esc(T(l,'시나리오 근거 빈도 미산출','scenario frequency basis not computed'))),
+    node('',st('3.2.5')+esc(T(l,'데이터 적합성','Data suitability')),esc(T(l,'최소 봉 수 · 기업행사 · 가격 기준 연속성 · 실제 가격은 ','Minimum bars · corporate actions · price-basis continuity · real prices: '))+naBadge+esc(T(l,'판정 불가(분할 이벤트 보류)','not judged (split events on hold)')))]),
+   node('',st('3.3')+esc(T(l,'차트 노트 (보라 펜)','Chart notes (purple pen)')),esc(T(l,'메뉴 2.3','Menu 2.3')),[
+    node('',st('3.3.1')+esc(T(l,'직접 작성','Write it yourself')),esc(T(l,'선 · 구간 · 메모 (chart-annotation/1)','Line · range · memo (chart-annotation/1)'))),
+    node('',st('3.3.2')+esc(T(l,'편집과 저장','Edit and save')),esc(T(l,'이 기기에만 저장 · 파일 내보내기·가져오기 · 계정 저장은 결정 대기(DRAW-STORE)','Saved on this device only · export/import a file · account storage pending (DRAW-STORE)'))),
+    node('',st('3.3.3')+esc(T(l,'분석과 분리','Kept apart from analysis')),esc(T(l,'공식 탐지 이력·성과 기록에 쓰지 않음 · 공식 증거 아님','Never in the official detection history or results record · not official evidence')))])]);
+ const ex='<div data-tree-example-body data-example-state="NOT_AVAILABLE"><p>'+na(l,T(l,'기술적 분석 값은 가격에서 나옵니다. 가격은 공개하지 않습니다(이 브라우저 메모리에서 계산하며, 저장은 사용자 비공개 구글 시트·이 브라우저에만 둡니다). 그래서 이 화면에 예시 값이 없습니다. 2.1 화면에서 내 값을 볼 수 있습니다.','Technical values come from prices, which are never published (computed in this browser’s memory; stored only in the user’s private Google Sheet or this browser), so no example is shown here. See your values on 2.1.'))+'</p><p><a href="#technical">2.1 '+esc(T(l,'지표 · 시나리오 →','Indicators →'))+'</a></p></div>';
+  return page('technical',l,{eyebrow:'2.4 · TECHNICAL STRUCTURE',title:T(l,'기술적 분석 내용구성','Technical analysis structure'),lede:T(l,'입력 → 지표 → 패턴 → 시나리오 → 내 노트. 상자의 번호(3.x)는 기능 번호이며 메뉴 번호(2.x)가 아닙니다.','Input → indicators → patterns → scenarios → my notes. The stamp numbers (3.x) are function numbers, not menu numbers (2.x).'),tree,examples:ex});
  }
  // ---------- 3.6 매크로 ----------
  function macroTree(l){
@@ -223,8 +235,16 @@
   else if(key==='portfolio')put(portfolioExamples(l,catalog));
   else if(key==='news')void newsExamples(l).then(put);
  }
+ // Menu 2.2 / 2.3 status notes (design lane D6): TechnicalCards.arrange moves them to the top of the workbench's 3.2 / 3.3 groups.
+ // The pattern engine and the note layer exist; what is still missing is official judgement on real prices and account storage.
  function technicalHtml(l){
-  return '<p class="small" data-ia-group="technical">'+esc(T(l,'패턴·정도·감지 이력과 내 노트는 위 차트에서 사용합니다. 실가격 기준이 미확인인 구간은 판정 불가이며, 형태 일치도는 상승 확률이 아닙니다.','Use patterns, degree, detection history and personal notes in the chart above. Unconfirmed real-price basis means unavailable judgement; shape fit is not an upward probability.'))+'</p>';
+  const box=(id,sec,title,badge,what,needs)=>'<section class="card ia-na ta-gate" id="'+id+'" data-ia-item="'+esc(sec)+'" aria-labelledby="'+id+'-title"><h3 id="'+id+'-title">'+esc(T(l,...title))+'</h3>'+
+   '<p>'+badge+' '+esc(T(l,...what))+'</p><ul class="ia-needs">'+needs.map(x=>'<li>'+esc(T(l,...x))+'</li>').join('')+'</ul></section>';
+  return '<div class="ia-na-group" data-ia-group="technical">'+
+   box('technical-pattern','2.2',['공식 판정 · 지금 상태','Official judgement · status'],'<span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span>',['실제 가격의 패턴 상태는 판정 불가입니다. 가격 기준 연속성(분할 이벤트)을 확인하지 못했습니다.','Pattern states on real prices are not judged: price-basis continuity (split events) is unconfirmed.'],
+    [['분할 이벤트 자료(Worker P1-W)는 보류 중(소유자 결정)','The split-event feed (Worker P1-W) is on hold (owner decision)'],['합성 자료 결과는 기능 확인용 · 실데이터 검증 아님','Results on synthetic data check functions only · not validated on real data'],['시나리오 근거(같은 패턴·정도의 과거 결과 빈도)는 미산출','Scenario basis (past outcome frequency for the same pattern and degree) is not computed']])+
+   box('technical-notes','2.3',['저장 위치 · 지금 상태','Storage · status'],'<span class="badge fn-unconnected">NOT_AVAILABLE</span>',['계정·비공개 시트 저장은 아직 없습니다. 저장 위치 결정(DRAW-STORE) 전에는 이 브라우저에만 둡니다.','No account or private-sheet storage yet. Until the storage decision (DRAW-STORE), notes stay in this browser only.'],
+    [['좌표 기준: 종목 · 봉 주기 · RAW_CLOSE · 날짜/가격 (chart-annotation/1)','Anchors: listing · interval · RAW_CLOSE · date/price (chart-annotation/1)'],['내 노트·시나리오는 공식 증거로 쓰지 않음','My notes and scenarios are never official evidence']])+'</div>';
  }
  // ---------- menu 3 매크로: functional stamp layout (design lane D7, 2026-10-20) ----------
  // Owner draft "투자시스템 화면 시안 (손그림 칠판)" with the functional hierarchy numbers 4.1–4.6 on the stamps (menu 3 /
