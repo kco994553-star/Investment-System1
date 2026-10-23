@@ -57,14 +57,16 @@ def test_plan_months_dates_symbols_and_aliases():
     plan = mp.build(data, INDEX, ['NASDAQ:AAA', 'NYSE:BRK.B', 'NASDAQ:PSKY', 'NASDAQ:ZZZ'])
     months = {m['month']: m for m in plan['months']}
     # latest 5 entries only (2019-06 dropped); codes outside the list (OUT) ignored
+    # PSKY 2024-06 is before its V4_NA_BEFORE cut (pre-merger basis): not requested; 2025-09 is after it
     assert sorted(months) == ['2023-06', '2024-06', '2024-12', '2025-09']
+    assert 'NASDAQ:PSKY' not in months['2024-06']['codes']
     assert months['2024-06']['date'] == '20240628' and months['2024-06']['size'] == 3000
-    assert months['2024-06']['codes'] == {'NASDAQ:AAA': 'AAA', 'NASDAQ:PSKY': 'PARA'}
-    assert months['2025-09']['codes'] == {'NASDAQ:PSKY': 'SKYD'}
+    assert months['2024-06']['codes'] == {'NASDAQ:AAA': 'AAA'}
+    assert months['2025-09']['codes'] == {'NASDAQ:PSKY': 'PSKY'}  # merged line, before the SKYD switch
     assert months['2024-12']['symbols'] == ['BRK.B']
     assert plan['months_without_file'] == ['2020-06', '2021-06', '2022-06', '2025-12']  # 2019-06: not in the latest 5
     s = mp.summary(plan, 2)
-    assert (s['months'], s['files'], s['symbols_per_month_min'], s['symbols_per_month_max'], s['codes']) == (4, 4, 1, 2, 3)
+    assert (s['months'], s['files'], s['symbols_per_month_min'], s['symbols_per_month_max'], s['codes']) == (4, 4, 1, 1, 3)
     assert s['total_gb'] == round(10000 / 1e9, 1) and len(s['shard_gb']) == 2
     assert mp.build(data, INDEX, ['NASDAQ:AAA', 'NYSE:BRK.B', 'NASDAQ:PSKY', 'NASDAQ:ZZZ']) == plan  # deterministic
 
@@ -331,14 +333,19 @@ def test_workflow_is_manual_private_and_counts_only():
     text = (Path(__file__).resolve().parents[2] / '.github/workflows/iex-v4-backfill.yml').read_text()
     body = '\n'.join(line for line in text.splitlines() if not line.lstrip().startswith('#'))
     on = body.split('\non:\n', 1)[1].split('\npermissions:', 1)[0]
-    assert on.lstrip().startswith('workflow_dispatch:') and 'push:' not in on and 'schedule:' not in on
+    # Owner go 2026-10-23: one run from this branch only (push of the workflow file), guarded by the existing-release check;
+    # the push trigger is removed after the run. No schedule, never another branch.
+    assert 'schedule:' not in on and 'workflow_dispatch:' in on
+    if 'push:' in on:
+        assert "branches: [claude/iex-v4-backfill]" in on and "paths: ['.github/workflows/iex-v4-backfill.yml']" in on
+        assert "t.startswith('iex-v4-monthend-')" in body and 'BACKFILL_SKIPPED' in body
     assert 'permissions:\n  contents: read\n' in body and 'group: iex-v4-backfill' in body
     assert 'upload-artifact' not in body and 'actions/cache' not in body and 'download-artifact' not in body
     assert body.count('persist-credentials: false') == body.count('actions/checkout@') == 3
     assert 'timeout-minutes: 120' in body and 'shard: [0, 1, 2, 3, 4, 5]' in body
-    # The token appears only in the env of the backfill step and of the read-back check step.
-    assert body.count('secrets.RAW_REPO_TOKEN') == 2
+    # The token appears only in the env of the plan step (existing-release check), the backfill step and the read-back check step.
+    assert body.count('secrets.RAW_REPO_TOKEN') == 3
     for block in body.split('      - name: ')[1:]:
         if 'secrets.RAW_REPO_TOKEN' in block:
-            assert block.startswith(('Backfill shard', 'Coverage + split consistency'))
+            assert block.startswith(('Plan (counts only)', 'Backfill shard', 'Coverage + split consistency'))
     assert "default: 'true'" in body  # plan_only by default: the first dispatch only prints counts

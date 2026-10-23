@@ -32,10 +32,14 @@ LATEST_YEARS = 5
 # names its evidence and whether it is confirmed. A code IEX does not trade (e.g. NASDAQ:WBD, no IEX trades on 2026-10-22) is
 # not aliased: it stays NO_TRADE and is never filled.
 SYMBOL_ALIASES: dict[str, tuple[tuple[str, str, str], ...]] = {
-    # Paramount Skydance: its 2023/2024 history months predate the 2025-08-07 merger, when the listed line was Paramount
-    # Global class B (PARA). The 2026-10-22 probe saw the current line trade on IEX as SKYD. Both UNCONFIRMED (Main confirming).
-    'NASDAQ:PSKY': (('2000-01-01', 'PARA', 'UNCONFIRMED predecessor listing (Paramount Global class B)'),
-                    ('2025-08-07', 'SKYD', 'UNCONFIRMED IEX probe 2026-10-22: trades under SKYD')),
+    # Skydance Corp (formerly Paramount Skydance, CIK 0002041610): Form 25 (Nasdaq) 2026-10-05; on IEX the line trades as SKYD
+    # (probe 2026-10-21/22: SKYD status T, PSKY no status message). Exact first SKYD day: being confirmed (probe 10-02..10-09).
+    'NASDAQ:PSKY': (('2026-10-06', 'SKYD', 'UNCONFIRMED switch date; IEX probe 2026-10-21/22 SKYD trading, PSKY absent'),),
+}
+# Months before a cut date are NOT requested: V4 stays NA with the reason (owner decision 2026-10-23: Paramount Skydance's
+# pre-merger history is the predecessor's (Paramount Global) share basis, unconfirmed against the merged line).
+V4_NA_BEFORE: dict[str, tuple[str, str]] = {
+    'NASDAQ:PSKY': ('2025-08-07', 'MERGER_PRE_BASIS_UNCONFIRMED'),
 }
 
 
@@ -56,7 +60,7 @@ def iex_symbol(code: str, day: str, aliases=SYMBOL_ALIASES) -> str:
     return symbol
 
 
-def history_months(qgv2: dict, codes, *, latest=LATEST_YEARS) -> dict[str, list[str]]:
+def history_months(qgv2: dict, codes, *, latest=LATEST_YEARS, na_before=V4_NA_BEFORE) -> dict[str, list[str]]:
     """{YYYY-MM: [codes]} of the latest `latest` history entries of each code (codes outside the published records skipped)."""
     records = qgv2.get('records') if isinstance(qgv2, dict) else None
     if not isinstance(records, dict):
@@ -68,7 +72,10 @@ def history_months(qgv2: dict, codes, *, latest=LATEST_YEARS) -> dict[str, list[
         history = v.get(HISTORY_KEY) if isinstance(v, dict) else None
         ends = sorted({h['fiscal_year_end'] for h in history or () if isinstance(h, dict) and isinstance(h.get('fiscal_year_end'), str)
                        and len(h['fiscal_year_end']) == 10})
+        cut = na_before.get(code, (None,))[0]
         for end in ends[-latest:]:
+            if cut and end < cut:
+                continue  # V4 NA (reason in V4_NA_BEFORE), never requested or filled
             months.setdefault(end[:7], set()).add(code)
     return {m: sorted(c) for m, c in sorted(months.items())}
 
@@ -83,10 +90,10 @@ def tops_files(index: dict) -> dict[str, dict]:
     return out
 
 
-def build(qgv2: dict, index: dict, codes, *, aliases=SYMBOL_ALIASES, latest=LATEST_YEARS) -> dict:
+def build(qgv2: dict, index: dict, codes, *, aliases=SYMBOL_ALIASES, latest=LATEST_YEARS, na_before=V4_NA_BEFORE) -> dict:
     files = tops_files(index)
     months, missing = [], []
-    for month, month_codes in history_months(qgv2, codes, latest=latest).items():
+    for month, month_codes in history_months(qgv2, codes, latest=latest, na_before=na_before).items():
         days = sorted(d for d in files if d[:6] == month.replace('-', ''))
         if not days:
             missing.append(month)
@@ -99,6 +106,7 @@ def build(qgv2: dict, index: dict, codes, *, aliases=SYMBOL_ALIASES, latest=LATE
     return {'schema': SCHEMA, 'feed': '/'.join(FEED), 'history_key': HISTORY_KEY, 'latest_years': latest,
             'qgv2_as_of': qgv2.get('as_of'), 'qgv2_calc_version': qgv2.get('calc_version'),
             'aliases': {c: [list(a) for a in v] for c, v in sorted(aliases.items())},
+            'v4_na_before': {c: list(v) for c, v in sorted(na_before.items())},
             'months': months, 'months_without_file': missing}
 
 
