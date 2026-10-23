@@ -1,4 +1,5 @@
 """Public artifact checks use temporary synthetic mutations, never private exports."""
+import contextlib
 from copy import deepcopy
 import importlib.util
 import io
@@ -11,6 +12,7 @@ import sys
 import tempfile
 import tarfile
 import unittest
+import warnings
 
 from investment_system.product.web_mvp import build, repository_bundle
 
@@ -502,6 +504,9 @@ class PagesArtifactGuardTests(unittest.TestCase):
         self.assertEqual(receipt["pages_artifact_guard"], "PASS")
         self.assertEqual(receipt["files_scanned"], 136)  # 133 + three TARGET v1 assets (#248); 129 + self-hosted OFL fonts (IA-11, 2026-10-20): jua/gaegu WOFF2 subsets + jua-OFL.txt/gaegu-OFL.txt; 129 = 126 + macro evidence (#351, owner approval 2026-10-20): macro-evidence.js/.css/.json; 119 (macro-cycle-ring.js/.css; incl. TA P1 modules chart-bars.js, pattern-config-defaults.js, pattern-engine.js, pattern-history.js, 2026-10-20) + chart renderer (P1-7/P1-8, 2026-10-20): chart-renderer.js, chart-workbench.js/.css, vendored lightweight-charts 5.2.1 + LICENSE/NOTICE/third-party notices; before that: 106 - the four removed home-bg-*.svg (2026-10-18) + universe-company.js/.css + doodles.js + ia-screens.js (owner IA 2026-10-18) + company-names-ko.json (KR-NAMES 2026-10-18) + stat-radar.js/.css + v-coverage.js/.css + price-time.js (D10 price time 2026-10-18) + data-refresh.js (2026-10-18)
         self.assertEqual(receipt["violations"], {})
+        size = self.make_tar().stat().st_size
+        if size > self.guard().ARCHIVE_WARN_BYTES:  # owner decision 2026-10-23: pass, but report the growth
+            warnings.warn(f"Pages build tar is {size} bytes, above the 6 MiB warning line (limit 8 MiB)")
 
     def test_exact_upload_action_tar_command_with_normalized_owners_passes(self):
         archive_path = Path(self.temp.name) / "action-artifact.tar"
@@ -523,6 +528,19 @@ class PagesArtifactGuardTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(json.loads(result.stdout)["pages_artifact_guard"], "PASS")
         self.assertEqual(result.stderr, "")
+
+    def test_tar_cli_warns_above_the_warning_line_and_still_passes(self):
+        guard = self.guard()
+        self.assertEqual((guard.ARCHIVE_WARN_BYTES, guard.MAX_ARCHIVE_BYTES), (6 * 1024 * 1024, 8 * 1024 * 1024))
+        archive_path = self.make_tar()
+        guard.ARCHIVE_WARN_BYTES = archive_path.stat().st_size - 1
+        out, err = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            code = guard.main(["--pages-artifact", str(archive_path)])
+        self.assertEqual(code, 0)
+        self.assertEqual(json.loads(out.getvalue())["pages_artifact_guard"], "PASS")
+        self.assertTrue(err.getvalue().startswith("::warning title=Pages artifact size::"), err.getvalue())
+        self.assertNotIn(str(archive_path), err.getvalue())
 
     def test_tar_file_names_without_dot_prefix_are_allowed(self):
         archive_path = Path(self.temp.name) / "artifact.tar"
@@ -657,12 +675,12 @@ class PagesArtifactGuardTests(unittest.TestCase):
         archive_path.symlink_to(self.make_tar())
         self.assertEqual(self.tar_receipt(archive_path)["pages_artifact_guard"], "FAIL")
         archive_path.unlink()
-        for payload in (b"not an archive", b"x" * (4 * 1024 * 1024 + 1)):
+        for payload in (b"not an archive", b"x" * (8 * 1024 * 1024 + 1)):
             archive_path.write_bytes(payload)
             receipt = self.tar_receipt(archive_path)
             self.assertEqual(receipt["pages_artifact_guard"], "FAIL")
-            if len(payload) > 4 * 1024 * 1024:
-                self.assertEqual(self.guard().MAX_ARCHIVE_BYTES, 4 * 1024 * 1024)
+            if len(payload) > 8 * 1024 * 1024:
+                self.assertEqual(self.guard().MAX_ARCHIVE_BYTES, 8 * 1024 * 1024)  # owner approval 2026-10-23 (was 4 MiB)
                 self.assertEqual(receipt, {'pages_artifact_guard': 'FAIL', 'files_scanned': 0,
                                            'violations': {'oversized_archive': 1}})
         valid = self.make_tar()
