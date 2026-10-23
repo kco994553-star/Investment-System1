@@ -336,6 +336,7 @@ def test_workflow_is_manual_private_and_counts_only():
     # Owner go 2026-10-23: one run from this branch only (push of the workflow file), guarded by the existing-release check;
     # the push trigger is removed after the run. No schedule, never another branch.
     assert 'schedule:' not in on and 'workflow_dispatch:' in on
+    assert 'push:' not in on  # the one push-triggered run completed (run 39945012772); trigger removed per the owner
     if 'push:' in on:
         assert "branches: [claude/iex-v4-backfill]" in on and "paths: ['.github/workflows/iex-v4-backfill.yml']" in on
         assert "t.startswith('iex-v4-monthend-')" in body and 'BACKFILL_SKIPPED' in body

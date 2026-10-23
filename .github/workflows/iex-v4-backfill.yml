@@ -5,11 +5,8 @@ name: iex-v4-backfill
 # (tag iex-v4-monthend-YYYYMMDD-shardI); logs carry counts and dimensionless split-check factors only (GSQ-010).
 # No artifact upload, no cache. Trigger: manual only, and the first dispatch should keep plan_only=true (counts for the owner).
 on:
-  # Owner go 2026-10-23: ONE run from this branch (push of this workflow file), skipped when an iex-v4-monthend-* release
-  # already exists in the private raw repository; the push trigger is removed right after the run. Never merged to canonical.
-  push:
-    branches: [claude/iex-v4-backfill]
-    paths: ['.github/workflows/iex-v4-backfill.yml']
+  # Owner go 2026-10-23: the ONE push-triggered run from this branch completed (run 39945012772, 62/62 months, private
+  # releases iex-v4-monthend-20261023-shard0..5); its push trigger is removed as the owner required. Never merged to canonical.
   workflow_dispatch:
     inputs:
       plan_only:
