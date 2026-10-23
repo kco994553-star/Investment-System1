@@ -293,3 +293,21 @@ test('officialModel: N10/N15/N20 on the official default profile (balanced, gate
     }
   } finally { QS.setPageIdentities(null); }
 });
+
+// User decision 2026-10-23: the leaderboard shows per row how many of the 5 V factors V was computed from ('V n/5'); a null V is
+// 0/5 (never filled). Synthetic fixture prices only; the count is read from the same shared result (no separate computation).
+test('V factor count n/5 per row from the shared result; V null → 0/5', () => {
+  const L = require(path.join(W, 'leaderboard-screen.js')), U = QS.universeIdentities(inputs, TARGETS), A = QS.compute({ identities: U.identities, v2Inputs: inputs, quotes, official: U });
+  const VF = Object.keys(V2.WEIGHTS.V), seen = new Set();
+  for (const r of Object.values(A.rows)) {
+    const p = r.primary, c = L.vCount(p), have = finite(p.v) ? VF.filter((k) => finite(p.factors?.[k]?.score)) : [];
+    assert.equal(c.total, 5);assert.equal(c.n, have.length, r.company_id);assert.deepEqual(c.missing.map((x) => x[0]), VF.filter((k) => !have.includes(k)), r.company_id);
+    if (!finite(p.v)) assert.equal(c.n, 0, r.company_id + ' V null is 0/5');seen.add(c.n);
+  }
+  assert.ok(seen.has(0) && [...seen].some((n) => n > 0), 'fixture has rows with and without V: ' + [...seen]);
+  assert.deepEqual(L.vCount(null), { n: 0, total: 5, missing: L.vCount(undefined).missing });
+  assert.equal(L.vCount({ v: 40, factors: { v_earnings_yield: { score: 50 }, v_fcf_yield: { score: null }, v_vs_industry: { score: 60 }, v_vs_own_history: { score: null }, v_expectation_check: { score: 30 } } }).n, 3);
+  // Before any price: every row has no V → 0/5.
+  const N = QS.compute({ identities: U.identities, v2Inputs: inputs, quotes: {}, official: U });
+  assert.ok(Object.values(N.rows).every((r) => L.vCount(r.primary).n === 0));
+});

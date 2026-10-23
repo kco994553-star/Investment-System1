@@ -280,7 +280,9 @@ function inputsCard(r){
  if(r.state==='LOADING')h+='<p class="small" data-runner-progress>'+esc(r.progress||'')+'</p>';
  if(rows.length)h+='<p class="small">'+esc('시세 '+(rows.length-bad.length)+'/'+rows.length+' 사용 가능')+'</p>';
  if(bad.length)h+='<ul class="small" data-runner-sources>'+bad.map(x=>'<li data-source-symbol="'+esc(x.symbol)+'" data-source-code="'+esc(x.code||'')+'">'+esc(x.symbol+' · '+x.state+(x.code&&x.code!==x.state?' · '+VT.codeText(x.code):''))+'</li>').join('')+'</ul>';
- h+='<p class="small">가격·환율은 구글 로그인 상태에서 비공개 가격 Worker로 이 기기 메모리에만 불러옵니다. 저장·전송하지 않습니다. 없는 값은 채우지 않고 N/A·사유 코드로 둡니다.</p></section>';
+ // Click-only requests (owner decision 2026-10-23): the open reads stored/RAM prices; this button is the report's request path.
+ if(r.state!=='LOADING'&&r.state!=='NOT_STARTED')h+='<div class="sheet-actions"><button type="button" data-runner-fetch>가격 받아 다시 계산 (비공개 Worker 요청)</button></div>';
+ h+='<p class="small">화면을 열 때는 내 시트 가격 탭(Prices_D)과 이 기기 메모리에 이미 있는 가격만 읽고 요청하지 않습니다. 새 가격·환율은 버튼을 눌렀을 때만 구글 로그인 상태에서 비공개 가격 Worker로 이 기기 메모리에 불러옵니다. 저장·전송하지 않습니다. 없는 값은 채우지 않고 N/A·사유 코드로 둡니다.</p></section>';
  return h;
 }
 /* ⑪ Track Record card: per window samples, hit rate only from the minimum, NA reason and expected first date. */

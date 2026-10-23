@@ -110,7 +110,7 @@
 | 자료 | 저장 | 계기 |
 |---|---|---|
 | 기기 시세(V 계산용) | 비공개 시트(Universe 탭) → 기기 계산 | 사용자가 승인된 "Universe 읽기" 버튼을 누를 때만. RAM에만 둔다(`qgv-scores.js:1-8`). 읽은 시각 있음, 가격 기준 시각 '미확인'(§1-8) |
-| 일봉(가격 탭 Prices_D/Prices_M) | 비공개 시트 | 앱을 열 때 자동 추가(`app.js:1197`, `price-store.js:1,12`) |
+| 일봉(가격 탭 Prices_D/Prices_M) | 비공개 시트 | 사용자가 버튼을 누를 때만 추가(설정 '핵심 종목 일봉 지금 갱신'·'Universe504 월말 종가 일괄 받기', 회사 화면 '이 종목 월말 종가 받기', S17 '가격 받아 다시 계산'). 화면을 열 때는 저장된 행만 읽는다(소유자 결정 2026-10-23, `price-store.js` `autoLoad`, `fetch:true`는 버튼 처리기에서만) |
 | 비공개 Worker 일봉 | 기기 계산(RAM) | 사용자가 누를 때(`private-history.js`, `forward-validation.js:1-3`) |
 | 실제 보유(ACTUAL) | 기기 저장(IndexedDB) | 사용자 입력(`device-actual.js:18,187`) |
 | 가상 장부·세트 정의·보고 우편함 | 비공개 시트 | 사용자 조작·러너 실행 |

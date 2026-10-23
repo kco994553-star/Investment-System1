@@ -3,6 +3,9 @@
 // Checks: create -> move away -> back -> reload -> still there; edit; delete; timeframe/symbol anchors; user objects never
 // enter the official pattern history; this-device storage only; quota failure keeps stored objects (message + export hint);
 // export -> clear -> import round trip without duplicates; malformed / price-bearing imports refused; GET only; no horizontal overflow.
+// Note tools (3.3, lane L1): horizontal line, freehand pen (pointer stroke simplified to a bounded point count, keyboard points),
+// eraser, undo (this session only, including delete); a fieldset palette with aria-pressed and 44px targets; new kinds survive a
+// reload and an export/import round trip; quota failure keeps the stored value; no request while drawing; no supplier fields.
 const {chromium} = require('playwright');
 const BASE = process.env.PAGES_COCKPIT_URL || 'http://127.0.0.1:8990/';
 const ORIGIN = new URL(BASE).origin;
@@ -26,11 +29,19 @@ const KEY = 'investment.web.v1.chart-user-objects';
     return page.locator('[data-cw-chart]').boundingBox();
   }
   async function draw(page, tool, points) {
-    await page.locator('[data-user-tool="' + tool + '"]').click();
+    await page.locator('button[data-user-tool="' + tool + '"]').click();
     const box = await chartBox(page);
     for (const [x, y] of points) { await page.mouse.click(box.x + box.width * x, box.y + box.height * y); await page.waitForTimeout(150); }
     if (process.env.CHART_TEST_DEBUG) console.log('DEBUG draw ' + tool + ' ' + JSON.stringify(await page.evaluate(() => [document.querySelector('[data-chart-workbench]').dataset.userCount, document.querySelector('[data-chart-workbench]').dataset.userTool, document.querySelector('[data-user-tool-status]').textContent, document.querySelector('[data-user-status]').textContent])) + ' ' + JSON.stringify(box));
   }
+  async function penStroke(page, x0, x1, yc, amp, n) {
+    const box = await chartBox(page), at = (x, y) => [box.x + box.width * x, box.y + box.height * y];
+    await page.mouse.move(...at(x0, yc)); await page.mouse.down();
+    for (let i = 1; i <= n; i++) await page.mouse.move(...at(x0 + (x1 - x0) * i / n, yc + amp * Math.sin(i / n * Math.PI * 10)));
+    await page.mouse.up(); await page.waitForTimeout(150);
+  }
+  const NOTE_KEYS = ['schema', 'id', 'kind', 'symbol', 'interval', 'price_basis', 'author', 'points', 'text', 'created_at', 'updated_at'];
+  const supplierFields = /"(open|high|low|close|volume|adjusted_close|provider|quote|bars|series|currency|read_at)"/;
   try {
     for (const width of [390, 1280]) {
       phase = 'CREATE ' + width;
@@ -80,7 +91,7 @@ const KEY = 'investment.web.v1.chart-user-objects';
         && saved.items.filter(o => o.schema === 'chart-annotation/1').length === 3 && saved.items.filter(o => o.schema === 'chart-scenario/1').length === 1);
 
       phase = 'KEYBOARD ' + width;
-      await page.locator('[data-user-tool="MEMO"]').click();
+      await page.locator('button[data-user-tool="MEMO"]').click();
       await page.locator('[data-cw-chart]').focus();
       await page.keyboard.press('End');
       await page.keyboard.press('n');
@@ -165,6 +176,112 @@ const KEY = 'investment.web.v1.chart-user-objects';
       check('no probability, win-rate, score or buy/sell wording ' + width, !banned.test(await page.locator('[data-user-panel]').textContent()));
       await page.locator('[data-user-clear="here"]').click();
       check('clear removes the objects and the device key ' + width, (await attrs(page)).userCount === '0' && await page.evaluate(key => localStorage.getItem(key), KEY) === null);
+
+      phase = 'NOTE TOOLS ' + width;
+      await page.reload(); await page.locator('[data-chart-workbench]').waitFor();
+      await syntheticDaily(page);
+      const palette = await page.locator('[data-user-tools]').evaluate(n => ({tag: n.tagName, legend: !!n.querySelector('legend'), inGroup: !!n.closest('[role="group"]'),
+        tools: [...n.querySelectorAll('[data-user-tool]')].map(b => b.dataset.userTool + ':' + b.getAttribute('aria-pressed')), undo: !!n.querySelector('button[data-user-undo]') && n.querySelector('[data-user-undo]').disabled,
+        small: [...n.querySelectorAll('button')].filter(b => { const r = b.getBoundingClientRect(); return r.height < 44 || r.width < 44; }).length, live: document.querySelector('[data-user-tool-status]').getAttribute('aria-live')}));
+      check('note tools are real buttons in a fieldset (not a view-tab group) in the draft order, aria-pressed, 44px, live status ' + width, palette.tag === 'FIELDSET' && palette.legend && !palette.inGroup
+        && palette.tools.join() === 'PEN:false,LINE:false,HLINE:false,RANGE:false,MEMO:false,ERASE:false' && palette.undo && palette.small === 0 && palette.live === 'polite');
+      const recordsT0 = await page.locator('[data-pattern-history]').getAttribute('data-records'), cardsT0 = await page.locator('[data-pattern-card]').evaluateAll(n => n.map(x => x.dataset.patternCard));
+      const reqBefore = methods.length;
+      await draw(page, 'ERASE', [[0.5, 0.3]]);
+      check('eraser with nothing near removes nothing and says so ' + width, (await attrs(page)).userCount === '0' && (await page.locator('[data-user-tool-status]').textContent()).includes('가까운 노트가 없습니다'));
+      await page.locator('button[data-user-tool="ERASE"]').click();
+      await draw(page, 'HLINE', [[0.5, 0.22]]);
+      await page.waitForFunction(() => document.querySelector('[data-chart-workbench]').dataset.userCount === '1');
+      saved = await stored(page);
+      const hline = saved.items.find(o => o.kind === 'HLINE');
+      check('horizontal line is one price-anchored point and the tool turns off ' + width, !!hline && hline.points.length === 1 && hline.schema === 'chart-annotation/1' && (await attrs(page)).userTool === 'off'
+        && Number((await attrs(page)).userDrawn) >= 1);
+      await page.locator('button[data-user-tool="PEN"]').click();
+      check('pen button is pressed while the pen is on ' + width, (await page.locator('button[data-user-tool="PEN"]').getAttribute('aria-pressed')) === 'true' && (await attrs(page)).userTool === 'PEN');
+      const rangeBefore = await attrs(page);
+      await penStroke(page, 0.15, 0.55, 0.41, 0.09, 160);
+      await page.waitForFunction(() => document.querySelector('[data-chart-workbench]').dataset.userCount === '2');
+      const rangeAfter = await attrs(page), penA = (await stored(page)).items.find(o => o.kind === 'PEN');
+      check('a pen stroke is stored as anchored points simplified to at most 64 ' + width, !!penA && penA.points.length > 2 && penA.points.length <= 64 && penA.points.every(pt => Object.keys(pt).join() === 'time,price'));
+      check('drawing with the pen does not pan the chart and the pen stays on ' + width, rangeBefore.visibleFrom === rangeAfter.visibleFrom && rangeBefore.visibleTo === rangeAfter.visibleTo && rangeAfter.userTool === 'PEN');
+      await page.locator('[data-cw-chart]').focus();
+      await page.keyboard.press('End'); await page.keyboard.press('n');
+      await page.keyboard.press('Shift+ArrowLeft'); await page.keyboard.press('n');
+      await page.keyboard.press('Shift+ArrowLeft'); await page.keyboard.press('n');
+      await page.locator('button[data-user-tool="PEN"]').click();
+      await page.waitForFunction(() => document.querySelector('[data-chart-workbench]').dataset.userCount === '3');
+      saved = await stored(page);
+      check('keyboard pen: N adds points, pressing the pen again finishes the stroke ' + width, saved.items.filter(o => o.kind === 'PEN').length === 2 && saved.items.some(o => o.kind === 'PEN' && o.points.length === 3 && o.points[0].time === '2026-03-27')
+        && (await page.locator('button[data-user-tool="PEN"]').getAttribute('aria-pressed')) === 'false');
+      check('drawing makes no network request ' + width, methods.length === reqBefore);
+
+      phase = 'NOTE TOOLS RELOAD ' + width;
+      const beforeReload = await page.evaluate(key => localStorage.getItem(key), KEY);
+      await page.reload(); await page.locator('[data-chart-workbench]').waitFor();
+      await syntheticDaily(page);
+      a = await attrs(page);
+      check('pen strokes and the horizontal line survive a reload; undo is this session only ' + width, a.userCount === '3' && Number(a.userDrawn) >= 4 && await page.evaluate(key => localStorage.getItem(key), KEY) === beforeReload
+        && await page.locator('[data-user-undo]').isDisabled() && (await page.locator('[data-user-notes]').textContent()).includes('수평선') && (await page.locator('[data-user-notes]').textContent()).includes('펜'));
+      // The price scale follows the visible bars (and lines drawn beyond them), so the line to erase is drawn inside the bars' range
+      // in the view as it is now.
+      await draw(page, 'HLINE', [[0.5, 0.3]]);
+      await page.waitForFunction(() => document.querySelector('[data-chart-workbench]').dataset.userCount === '4');
+      const rawT = await page.evaluate(key => localStorage.getItem(key), KEY), itemsT = JSON.parse(rawT).items, newLine = itemsT[itemsT.length - 1];
+      check('stored notes hold only user anchors and words (no supplier price fields) ' + width, !supplierFields.test(rawT) && itemsT.every(o => Object.keys(o).every(k => NOTE_KEYS.includes(k)) && o.points.every(pt => Object.keys(pt).join() === 'time,price')));
+
+      phase = 'ERASER ' + width;
+      const reqErase = methods.length;
+      await page.locator('button[data-user-tool="ERASE"]').click();
+      check('eraser button is pressed while on ' + width, (await page.locator('button[data-user-tool="ERASE"]').getAttribute('aria-pressed')) === 'true');
+      const boxE = await chartBox(page);
+      await page.mouse.click(boxE.x + boxE.width * 0.7, boxE.y + boxE.height * 0.3);
+      await page.waitForFunction(() => document.querySelector('[data-chart-workbench]').dataset.userCount === '3');
+      saved = await stored(page);
+      check('eraser removes the note pressed near (the horizontal line) and stays on ' + width, newLine.kind === 'HLINE' && !saved.items.some(o => o.id === newLine.id) && saved.items.filter(o => o.kind === 'PEN').length === 2
+        && (await attrs(page)).userTool === 'ERASE' && (await page.locator('[data-user-tool-status]').textContent()).includes('지움'));
+      await page.locator('[data-user-undo]').click();
+      await page.waitForFunction(() => document.querySelector('[data-chart-workbench]').dataset.userCount === '4');
+      check('undo brings the erased note back exactly ' + width, await page.evaluate(key => localStorage.getItem(key), KEY) === rawT && (await attrs(page)).userUndoDepth === '1');
+      await page.locator('button[data-user-tool="ERASE"]').click();
+      const penId = (await stored(page)).items.find(o => o.kind === 'PEN').id;
+      await page.locator('[data-user-item="' + penId + '"] summary').click();
+      await page.locator('[data-user-item="' + penId + '"] [data-user-delete]').click();
+      await page.waitForFunction(() => document.querySelector('[data-chart-workbench]').dataset.userCount === '3');
+      await page.locator('[data-cw-chart]').focus();
+      await page.keyboard.press('Control+z');
+      await page.waitForFunction(() => document.querySelector('[data-chart-workbench]').dataset.userCount === '4');
+      check('a list delete is undone with Ctrl+Z on the chart ' + width, await page.evaluate(key => localStorage.getItem(key), KEY) === rawT);
+      check('erasing and undoing make no network request ' + width, methods.length === reqErase);
+      const recordsT1 = await page.locator('[data-pattern-history]').getAttribute('data-records'), cardsT1 = await page.locator('[data-pattern-card]').evaluateAll(n => n.map(x => x.dataset.patternCard));
+      check('note tools never change the official detection history ' + width, recordsT0 === recordsT1 && JSON.stringify(cardsT0) === JSON.stringify(cardsT1) && cardsT1.every(id => !id.startsWith('u-')));
+
+      phase = 'NOTE TOOLS PORTABILITY ' + width;
+      const dl = page.waitForEvent('download');
+      await page.locator('[data-user-export]').click();
+      const exportedT = JSON.parse(require('node:fs').readFileSync(await (await dl).path(), 'utf8'));
+      await page.locator('[data-user-clear="all"]').click();
+      const codeT = await importFile(exportedT, 'tools.json');
+      check('export -> clear -> import round-trips pen strokes and both horizontal lines (different prices are not duplicates) ' + width, codeT === 'IMPORTED' && JSON.stringify((await stored(page)).items) === JSON.stringify(exportedT.items)
+        && exportedT.items.some(o => o.kind === 'HLINE') && exportedT.items.some(o => o.kind === 'PEN') && (await attrs(page)).userCount === '4');
+      const kinds = await page.evaluate(() => { const W = window.ChartWorkbench, now = '2026-10-20T00:00:00.000Z', base = {schema: 'chart-annotation/1', id: 'u-kind01', symbol: 'SYNTH', interval: 'D', price_basis: 'RAW_CLOSE', author: 'USER', text: '', created_at: now, updated_at: now};
+        const pts = n => Array.from({length: n}, (_, i) => ({time: '2025-01-' + String(6 + (i % 20)).padStart(2, '0'), price: 100 + i}));
+        return [W.validUserObject({...base, kind: 'HLINE', points: pts(1)}), W.validUserObject({...base, kind: 'PEN', points: pts(64)}), W.validUserObject({...base, kind: 'LINE', points: pts(2)}), W.validUserObject({...base, kind: 'MEMO', points: pts(1)}),
+          !W.validUserObject({...base, kind: 'HLINE', points: pts(2)}), !W.validUserObject({...base, kind: 'PEN', points: pts(1)}), !W.validUserObject({...base, kind: 'PEN', points: pts(65)}),
+          !W.validUserObject({...base, kind: 'PEN', points: pts(3).map(p => ({...p, close: 1}))}), !W.validUserObject({...base, kind: 'ARROW', points: pts(2)})]; });
+      check('chart-annotation/1 reader: old kinds still valid, new kinds bounded, extra fields refused ' + width, kinds.every(Boolean));
+
+      phase = 'NOTE TOOLS QUOTA ' + width;
+      const rawQ = await page.evaluate(key => localStorage.getItem(key), KEY);
+      await page.evaluate(key => { window.__setItem = Storage.prototype.setItem; Storage.prototype.setItem = function (k, v) { if (k === key) throw new DOMException('synthetic quota', 'QuotaExceededError'); return window.__setItem.call(this, k, v); }; }, KEY);
+      await page.evaluate(() => { delete document.querySelector('[data-user-status]').dataset.code; });
+      await draw(page, 'HLINE', [[0.6, 0.3]]);
+      await page.waitForFunction(() => document.querySelector('[data-user-status]').dataset.code === 'SAVE_FAILED');
+      const failT = await page.locator('[data-user-status]').textContent();
+      check('quota failure while drawing keeps stored notes and shows the export hint ' + width, await page.evaluate(key => localStorage.getItem(key), KEY) === rawQ && failT.includes('저장 실패') && failT.includes('내보내기'));
+      await page.evaluate(() => { Storage.prototype.setItem = window.__setItem; delete window.__setItem; });
+      check('no horizontal overflow with the note tools ' + width, await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+      check('no probability, win-rate, score or buy/sell wording with the note tools ' + width, !banned.test(await page.locator('[data-user-panel]').textContent()));
+      await page.locator('[data-user-clear="all"]').click();
       check('only GET requests and no page errors ' + width, methods.length > 0 && methods.every(m => m === 'GET') && pageErrors === 0);
       await context.close();
     }
