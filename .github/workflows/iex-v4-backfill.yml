@@ -1,0 +1,98 @@
+name: iex-v4-backfill
+# U8 one-off backfill (owner decision GSQ-024, 2026-10-23): V4 (v_vs_own_history) month-end prices from IEX HIST TOPS files.
+# Separate from the daily collect / ledger workflows. Only the months V4 uses (fiscal-year-end months of the published
+# sec-qgv2.json histories, latest 5 years). Prices stay in RAM and go ONLY to private release assets of the raw repository
+# (tag iex-v4-monthend-YYYYMMDD-shardI); logs carry counts and dimensionless split-check factors only (GSQ-010).
+# No artifact upload, no cache. Trigger: manual only, and the first dispatch should keep plan_only=true (counts for the owner).
+on:
+  workflow_dispatch:
+    inputs:
+      plan_only:
+        description: 'true = print the plan counts only (no download, no upload)'
+        type: choice
+        options: ['true', 'false']
+        default: 'true'
+      max_total_gb:
+        description: 'stop before any download when the plan exceeds this many compressed GB (owner-approved size)'
+        required: true
+        default: '400'
+permissions:
+  contents: read
+concurrency:
+  group: iex-v4-backfill
+  cancel-in-progress: false
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      go: ${{ steps.plan.outputs.go }}
+      stamp: ${{ steps.plan.outputs.stamp }}
+      plan_b64: ${{ steps.plan.outputs.plan_b64 }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - name: Plan (counts only)
+        id: plan
+        env:
+          PLAN_ONLY: ${{ github.event.inputs.plan_only }}
+          MAX_TOTAL_GB: ${{ github.event.inputs.max_total_gb }}
+        run: |
+          set -euo pipefail
+          python implementation/tools/iex_hist/monthend_plan.py --gcs-md5 --shards 6 --out "$RUNNER_TEMP/plan.json" \
+            | tee "$RUNNER_TEMP/plan-summary.json"
+          go=$(python -c "import json,os,sys; s=json.load(open(sys.argv[1])); print('true' if os.environ['PLAN_ONLY'] == 'false' and s['months'] > 0 and not s['months_without_file'] and s['total_gb'] <= float(os.environ['MAX_TOTAL_GB']) else 'false')" "$RUNNER_TEMP/plan-summary.json")
+          { echo "go=$go"; echo "stamp=$(date -u +%Y%m%d)"; echo "plan_b64=$(gzip -9n < "$RUNNER_TEMP/plan.json" | base64 -w0)"; } >> "$GITHUB_OUTPUT"
+          { echo '## IEX V4 month-end plan (counts only)'; echo; echo '```json'; cat "$RUNNER_TEMP/plan-summary.json"; echo '```'; echo "go=$go"; } >> "$GITHUB_STEP_SUMMARY"
+          rm -f "$RUNNER_TEMP/plan.json" "$RUNNER_TEMP/plan-summary.json"
+
+  backfill:
+    needs: plan
+    if: needs.plan.outputs.go == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - name: Build parser
+        run: gcc -O2 -Wall -Wextra -o "$RUNNER_TEMP/iex_last_trade" implementation/tools/iex_hist/iex_last_trade.c
+      - name: Backfill shard (counts only; result -> private release asset)
+        env:
+          PLAN_B64: ${{ needs.plan.outputs.plan_b64 }}
+          STAMP: ${{ needs.plan.outputs.stamp }}
+          SHARD: ${{ matrix.shard }}
+          RAW_REPO_TOKEN: ${{ secrets.RAW_REPO_TOKEN }}
+        run: |
+          python implementation/tools/iex_hist/monthend_backfill.py --parser "$RUNNER_TEMP/iex_last_trade" \
+            --shard "$SHARD" --shards 6 --stamp "$STAMP"
+
+  split-check:
+    needs: [plan, backfill]
+    if: needs.plan.outputs.go == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - name: Coverage + split consistency (reads the private shards back; dimensionless output only)
+        env:
+          PLAN_B64: ${{ needs.plan.outputs.plan_b64 }}
+          STAMP: ${{ needs.plan.outputs.stamp }}
+          RAW_REPO_TOKEN: ${{ secrets.RAW_REPO_TOKEN }}
+        run: python implementation/tools/iex_hist/split_check.py check --stamp "$STAMP" --shards 6

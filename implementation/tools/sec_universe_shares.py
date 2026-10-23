@@ -302,28 +302,37 @@ def _archive(raw_dir, name):
 
 def upload_raw(raw_dir, *, tag, token, open_response=None):
     """Dated private release asset (tar.gz + sha256). Returns a fixed status code; never echoes the token."""
+    try:
+        archive = _archive(raw_dir, tag)
+    except Exception:
+        return 'RAW_UPLOAD_FAILED'
+    return upload_raw_bytes(archive, tag=tag, name=tag + '.tar.gz', content_type='application/gzip', token=token,
+                            body='Private raw SEC bytes for one Universe shard (not published).', open_response=open_response)
+
+
+def upload_raw_bytes(data, *, tag, name, content_type, token, body, open_response=None):
+    """New private release `tag` in RAW_REPO with the in-memory asset `name` (+ `name`.sha256). Fixed status codes only; the
+    token is never echoed. Shared by upload_raw and the IEX V4 month-end backfill (tools/iex_hist/monthend_backfill.py)."""
     fetch = open_response or urllib.request.build_opener(NoRedirect()).open
     headers = {'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json',
                'X-GitHub-Api-Version': '2022-11-28', 'User-Agent': 'investment-system-raw-archive'}
-    def call(url, body, content_type):
-        request = urllib.request.Request(url, data=body, method='POST', headers={**headers, 'Content-Type': content_type})
+    def call(url, payload, kind):
+        request = urllib.request.Request(url, data=payload, method='POST', headers={**headers, 'Content-Type': kind})
         with fetch(request, timeout=120) as response:
             if response.status not in (200, 201):
                 raise urllib.error.HTTPError(url, response.status, '', {}, None)
             return json.loads(response.read(1024 * 1024))
     try:
-        archive = _archive(raw_dir, tag)
-        digest = hashlib.sha256(archive).hexdigest()
+        digest = hashlib.sha256(data).hexdigest()
         release = call(f'https://api.github.com/repos/{RAW_REPO}/releases', json.dumps(
-            {'tag_name': tag, 'name': tag, 'body': 'Private raw SEC bytes for one Universe shard (not published).',
-             'draft': False, 'prerelease': False}).encode(), 'application/json')
+            {'tag_name': tag, 'name': tag, 'body': body, 'draft': False, 'prerelease': False}).encode(), 'application/json')
         release_id = release.get('id') if isinstance(release, dict) else None
         if type(release_id) is not int or release_id <= 0:
             return 'RAW_UPLOAD_FAILED code=RELEASE_INVALID'
         base = f'https://uploads.github.com/repos/{RAW_REPO}/releases/{release_id}/assets?name='
-        call(base + tag + '.tar.gz', archive, 'application/gzip')
-        call(base + tag + '.tar.gz.sha256', (digest + '  ' + tag + '.tar.gz\n').encode(), 'text/plain')
-        return f'RAW_UPLOADED bytes={len(archive)} sha256={digest}'
+        call(base + name, data, content_type)
+        call(base + name + '.sha256', (digest + '  ' + name + '\n').encode(), 'text/plain')
+        return f'RAW_UPLOADED bytes={len(data)} sha256={digest}'
     except urllib.error.HTTPError as error:
         return f'RAW_UPLOAD_FAILED code=HTTP_{int(error.code)}' if isinstance(error.code, int) else 'RAW_UPLOAD_FAILED'
     except Exception:
