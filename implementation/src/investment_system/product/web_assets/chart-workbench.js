@@ -389,11 +389,11 @@
     panel.replaceChildren();
     panel.dataset.mode = state.settings.mode;
     if (state.settings.mode === 'long') {
-      panel.append(node(doc, 'h3', {}, words(state, '장기 보유 모드', 'Long-term mode')),
+      panel.append(node(doc, 'h4', {}, words(state, '장기 보유 모드', 'Long-term mode')),
         node(doc, 'p', {}, words(state, '주봉 구조를 먼저 봅니다. QGV와 나란히 볼 뿐이며, 이 차트는 QGV·TARGET·플레이북을 바꾸지 않고 입력으로도 쓰이지 않습니다.', 'Weekly structure first. Shown beside QGV only; this chart never changes QGV, TARGET or the playbook and is not an input to them.')),
         node(doc, 'a', {href: state.qgvHref || '#leaderboard', 'data-cw-qgv-link': ''}, words(state, 'QGV 나란히 보기 →', 'View QGV alongside →')));
     } else {
-      panel.append(node(doc, 'h3', {}, words(state, '스윙 모드', 'Swing mode')),
+      panel.append(node(doc, 'h4', {}, words(state, '스윙 모드', 'Swing mode')),
         node(doc, 'p', {'data-cw-swing-slot': ''}, words(state, '시나리오 그리기 자리 · 2단계(P2-2·P2-3)에서 연결합니다 · 주문 아님 · 가정 계산 · 지금은 아무것도 그리지 않습니다.', 'Scenario drawing slot · connected in phase 2 (P2-2, P2-3) · not an order · assumption only · nothing is drawn yet.')));
     }
   }
@@ -632,8 +632,7 @@
   }
 
   function buildPatternPanel(state) {
-    const doc = state.doc, w = (ko, en) => words(state, ko, en), section = node(doc, 'section', {class: 'cw-patterns', 'data-pattern-panel': '', 'aria-labelledby': state.id + '-patterns'});
-    section.append(node(doc, 'h3', {id: state.id + '-patterns'}, w('패턴 · 연구 기본값 · 투자 유용성 미검증', 'Patterns · Research default · investment usefulness unverified')));
+    const doc = state.doc, w = (ko, en) => words(state, ko, en), section = node(doc, 'section', {class: 'cw-patterns cw-fn-group', 'data-pattern-panel': '', 'data-fn-group': '3.2', 'aria-labelledby': state.id + '-patterns'});
     state.patternSource = node(doc, 'p', {class: 'small', 'data-pattern-source': ''});
     const views = node(doc, 'div', {class: 'cw-group', role: 'group', 'aria-label': w('결과 종류', 'Result kind')});
     views.append(node(doc, 'button', {type: 'button', 'data-pattern-view-button': 'official', 'aria-pressed': 'true'}, w('공식 탐지', 'Official detection')),
@@ -645,15 +644,41 @@
     state.patternRun = node(doc, 'p', {class: 'small', 'data-pattern-run': ''});
     state.patternHistory = node(doc, 'p', {class: 'small', 'data-pattern-history': '', hidden: ''});
     state.patternOverlayNote = node(doc, 'p', {class: 'small', 'data-pattern-overlay-note': ''});
-    const suit = node(doc, 'details', {class: 'cw-suitability', 'data-pattern-suitability-box': ''});
+    // 3.2.5 is its own stamp box, so the suitability list starts open; the summary still folds it.
+    const suit = node(doc, 'details', {class: 'cw-suitability', 'data-pattern-suitability-box': '', open: ''});
     suit.append(node(doc, 'summary', {}, w('자료 적합성 (최소 봉 수 · 기업행사 · 가격 기준 연속성)', 'Data suitability (minimum bars · corporate actions · price-basis continuity)')));
     state.patternSuitability = node(doc, 'dl', {'data-pattern-suitability': ''});
     suit.append(state.patternSuitability);
     state.patternCards = node(doc, 'ul', {class: 'cw-pattern-cards', 'data-pattern-cards': ''});
     state.patternMore = node(doc, 'button', {type: 'button', 'data-pattern-more': '', hidden: ''});
-    section.append(state.patternSource, views, state.patternStatus, state.patternRun, state.patternHistory, state.patternOverlayNote, suit, state.patternCards, state.patternMore,
-      node(doc, 'p', {class: 'small'}, w('카드를 누르면 차트가 그 패턴 범위로 확대됩니다. 차트에 초점이 있을 때 Enter는 십자선 위치의 패턴 카드를 고릅니다. 판정·신호·매매 지시가 아닙니다.', 'Choosing a card zooms the chart to that pattern. With the chart focused, Enter picks the card at the crosshair. Not a judgement, signal or trading instruction.')));
+    const [display, explore] = buildPatternSettings(state);
+    section.append(fnGroupHead(state, '3.2', ['차트 패턴 · 시나리오', 'Chart patterns · scenarios'], ['패턴 · 연구 기본값 · 투자 유용성 미검증', 'Patterns · Research default · investment usefulness unverified'], state.id + '-patterns'),
+      node(doc, 'div', {class: 'cw-slot', 'data-cw-slot': 'patterns'}),
+      fnBox(state, '3.2.1', ['패턴 탐색', 'Pattern explorer'], [state.patternSource, views, state.patternStatus, state.patternRun, state.patternHistory, state.patternOverlayNote], 'cw-fn-main'),
+      fnGrid(state, fnBox(state, '3.2.2', ['정도 설정', 'Degree settings'], [node(doc, 'p', {class: 'small cw-fn-hand'}, w('정도 = 패턴 규칙(pattern-rules/1)의 민감도 묶음입니다. 바꾸면 "사용자 설정 탐색"으로 따로 보이고 공식 탐지는 그대로입니다.', 'Degree = the sensitivity sets of the pattern rules (pattern-rules/1). A change shows separately as “user-settings exploration”; official detection stays as it is.')), display, explore]),
+        fnBox(state, '3.2.3', ['확인 · 실패 · 무효화', 'Confirm · fail · invalidate'], stateLegend(state))),
+      fnBox(state, '3.2.4', ['패턴 카드와 시나리오', 'Pattern cards and scenarios'], [node(doc, 'p', {class: 'small cw-fn-hand'}, w('카드마다 근거 · 확인 가격 · 무효화 가격이 그 패턴의 시나리오입니다. 내가 쓰는 시나리오는 3.1.3(사용자 작성)입니다.', 'Each card’s evidence, confirmation level and invalidation level are that pattern’s scenario. Scenarios you write are in 3.1.3 (user-written).')),
+        state.patternCards, state.patternMore,
+        node(doc, 'p', {class: 'small'}, w('카드를 누르면 차트가 그 패턴 범위로 확대됩니다. 차트에 초점이 있을 때 Enter는 십자선 위치의 패턴 카드를 고릅니다. 판정·신호·매매 지시가 아닙니다.', 'Choosing a card zooms the chart to that pattern. With the chart focused, Enter picks the card at the crosshair. Not a judgement, signal or trading instruction.'))]),
+      fnBox(state, '3.2.5', ['데이터 적합성', 'Data suitability'], [suit]));
     return section;
+  }
+
+  // 3.2.3: what each state of the common state machine means (pattern-engine.js), in words; no state is computed here.
+  function stateLegend(state) {
+    const doc = state.doc, w = (ko, en) => words(state, ko, en), list = node(doc, 'ol', {class: 'cw-states', 'data-pattern-state-legend': ''});
+    for (const [code, ko, en] of [['FORMED', '모양이 생겼고, 완결 봉 종가가 확인 가격에 닿기를 기다립니다.', 'The shape is there; waiting for a complete close at the confirmation level.'],
+      ['CONFIRMED', '완결 봉 종가가 확인 가격을 넘었습니다. 실패 창 동안 지켜봅니다.', 'A complete close passed the confirmation level; watched through the failure window.'],
+      ['FAILED', '확인 뒤 실패 창 안에서 종가가 실패 가격으로 되돌아왔습니다.', 'After confirmation, a close came back to the failure level within the window.'],
+      ['INVALIDATED', '확인 전에 종가가 무효화 가격에 닿았습니다.', 'Before confirmation, a close reached the invalidation level.'],
+      ['EXPIRED', '확인도 무효화도 없이 기한이 지났습니다.', 'The time limit passed with neither confirmation nor invalidation.']]) {
+      const item = node(doc, 'li', {'data-state-code': code});
+      item.append(node(doc, 'b', {}, words(state, ...STATE_NAMES[code])), doc.createTextNode(' '), node(doc, 'code', {}, code), node(doc, 'span', {class: 'small cw-state-text'}, w(ko, en)));
+      list.append(item);
+    }
+    return [list,
+      node(doc, 'p', {class: 'small'}, w('지지·저항 구간: 유효 구간 → 구간 이탈 또는 만료. 다음 봉이 있어야 정해지는 상태는 그 봉이 완결된 시점부터 기록합니다.', 'Support/resistance zones: active → broken or expired. A state that needs later bars is recorded from the moment that bar is complete.')),
+      node(doc, 'p', {class: 'small cw-fn-marker'}, w('지금 실제 가격은 가격 기준 연속성을 확인하지 못해 상태를 보이지 않습니다(판정 불가).', 'Real prices today: price-basis continuity is unconfirmed, so no state is shown (not judged).'))];
   }
 
   /* ---------- user layer: drawing, editing, storage ---------- */
@@ -848,9 +873,8 @@
   }
 
   function buildUserPanel(state) {
-    const doc = state.doc, w = (ko, en) => words(state, ko, en), section = node(doc, 'section', {class: 'cw-user', 'data-user-panel': '', 'aria-labelledby': state.id + '-user'});
-    section.append(node(doc, 'h3', {id: state.id + '-user'}, w('사용자 작성 · 시나리오(3.1.3) · 차트 노트(3.3)', 'User-written · scenarios (3.1.3) · chart notes (3.3)')),
-      node(doc, 'p', {class: 'small', 'data-user-boundary': ''}, w('사용자 작성 객체는 공식 탐지 이력과 성과 기록에 쓰지 않고, 공식 탐지를 바꾸지 않습니다. 이 브라우저에 저장 · 내보내기·가져오기·백업 가능 · 서버·Google 시트·계정으로 보내지 않습니다. 주문 아님.', 'User-written objects are never written to the official detection history or any results record and never change official detection. Saved in this browser · export, import and backup available · never sent to a server, Google Sheet or account. Not an order.')));
+    const doc = state.doc, w = (ko, en) => words(state, ko, en), section = node(doc, 'section', {class: 'cw-user cw-fn-group', 'data-user-panel': '', 'data-fn-group': '3.3', 'aria-labelledby': state.id + '-user'});
+    const boundary = node(doc, 'p', {class: 'small', 'data-user-boundary': ''}, w('사용자 작성 객체는 공식 탐지 이력과 성과 기록에 쓰지 않고, 공식 탐지를 바꾸지 않습니다. 이 브라우저에 저장 · 내보내기·가져오기·백업 가능 · 서버·Google 시트·계정으로 보내지 않습니다. 주문 아님.', 'User-written objects are never written to the official detection history or any results record and never change official detection. Saved in this browser · export, import and backup available · never sent to a server, Google Sheet or account. Not an order.'));
     state.userAnchor = node(doc, 'p', {class: 'small', 'data-user-anchor': ''});
     const tools = node(doc, 'div', {class: 'cw-group', role: 'group', 'aria-label': w('그리기', 'Draw')});
     for (const [kind, names] of Object.entries(NOTE_KINDS)) tools.append(node(doc, 'button', {type: 'button', 'data-user-tool': kind, 'aria-pressed': 'false'}, w(names[0], names[1])));
@@ -874,7 +898,16 @@
     footer.append(importLabel);
     state.scenarioDetails = node(doc, 'details', {class: 'cw-scenario-new', 'data-user-scenario-new': ''});
     state.scenarioDetails.append(node(doc, 'summary', {}, w('새 시나리오 쓰기', 'Write a new scenario')), scenarioBox);
-    section.append(state.userAnchor, tools, visible, state.userToolStatus, node(doc, 'h4', {}, w('차트 노트', 'Chart notes')), state.userNotes, node(doc, 'h4', {}, w('시나리오', 'Scenarios')), state.scenarioDetails, state.userScenarios, footer, state.userStatus);
+    // Scenarios are function 3.1.3: build() places these in that stamp box; notes, storage and the boundary stay here (3.3).
+    state.scenarioBlock = [node(doc, 'p', {class: 'small cw-fn-hand'}, w('상승 · 횡보 · 하락 경로와 핵심 가격 · 조건 · 무효화를 내가 씁니다. 차트에는 보라색 펜으로 그립니다.', 'Write up / sideways / down paths with key levels, a condition and invalidation. Drawn on the chart in purple pen.')),
+      state.scenarioDetails, node(doc, 'h4', {}, w('시나리오', 'Scenarios')), state.userScenarios,
+      node(doc, 'p', {class: 'small'}, w('저장 상태 · 내보내기 · 지우기는 노트와 함께 3.3.2에 있습니다(이 기기에만).', 'Save status, export and clearing sit with the notes in 3.3.2 (this device only).'))];
+    section.append(fnGroupHead(state, '3.3', ['차트 노트', 'Chart notes'], ['내가 차트 위에 직접 · 보라 펜 · 이 기기에만', 'Drawn by me on the chart · purple pen · this device only'], state.id + '-user'),
+      node(doc, 'div', {class: 'cw-slot', 'data-cw-slot': 'notes'}),
+      fnGrid(state, fnBox(state, '3.3.1', ['직접 작성', 'Write it yourself'], [state.userAnchor, tools, visible, state.userToolStatus]),
+        fnBox(state, '3.3.2', ['편집과 저장', 'Edit and save'], [node(doc, 'h4', {}, w('차트 노트', 'Chart notes')), state.userNotes, footer, state.userStatus])),
+      fnBox(state, '3.3.3', ['분석과 분리', 'Kept apart from analysis'], [boundary,
+        node(doc, 'p', {class: 'small cw-fn-marker'}, w('차트 위에서 공식 탐지는 실선, 사용자 설정 탐색은 짧은 점선, 내 노트·시나리오는 보라색 긴 점선입니다.', 'On the chart, official detection is a solid line, user-settings exploration a short dash, my notes and scenarios a long purple dash.'))]));
     return section;
   }
 
@@ -1086,14 +1119,25 @@
     const help = node(doc, 'p', {class: 'small', id: state.id + '-help'}, w('키보드(차트에 초점): ←/→ 한 봉 · Shift+←/→ 열 봉 · +/− 확대·축소 · Home/End 처음·끝 · Esc 십자선 지우기 · 측정 켜짐에서 M 점 찍기. 폰: 끌어서 이동, 두 손가락 확대, 길게 눌러 값 추적.', 'Keyboard (chart focused): ←/→ one bar · Shift+←/→ ten bars · +/− zoom · Home/End first/last · Esc clear crosshair · M marks a point while measuring. Phone: drag to pan, pinch to zoom, long-press to track values.'));
     state.live = node(doc, 'div', {class: 'sr-only', 'aria-live': 'polite', 'data-cw-live': ''});
     state.modePanel = node(doc, 'div', {class: 'cw-mode-panel', 'data-cw-mode-panel': ''});
-    root.append(toolbar, state.sourceLine, state.judgement, state.weeklyStatus, state.rendererStatus, state.readout, state.chartBox, state.limits, state.measureOut, state.indicatorNote, help, state.live, state.modePanel, buildPatternPanel(state), buildUserPanel(state), buildSettings(state), buildNotice(state));
+    // Function numbers 3.1–3.3 (owner hierarchy) on stamp boxes; the site menu strip keeps 2.1–2.3. Nodes only move between boxes.
+    const settings = buildSettings(state), user = buildUserPanel(state), patterns = buildPatternPanel(state);
+    const degree = node(doc, 'p', {class: 'small cw-fn-na'});
+    degree.append(node(doc, 'span', {class: 'badge fn-unconnected'}, w('미연결', 'Not connected')), doc.createTextNode(' ' + w('지표 정도(기간 묶음) 고르기 · 지금 기간은 고정이고 켜고 끄기만 이 기기에 저장합니다. 패턴의 정도는 3.2.2.', 'Choosing an indicator degree (period sets) · periods are fixed today; only on/off is saved on this device. Pattern degree is 3.2.2.')));
+    const g31 = node(doc, 'section', {class: 'cw-fn-group', 'data-fn-group': '3.1', 'aria-labelledby': state.id + '-fn31'});
+    g31.append(fnGroupHead(state, '3.1', ['기술적 지표 · 시나리오', 'Indicators · scenarios'], ['차트 보기 · 지표 · 내 시나리오', 'Chart · indicators · my scenarios'], state.id + '-fn31'),
+      fnBox(state, '3.1.1', ['차트 탐색', 'Chart explorer'], [toolbar, state.sourceLine, state.judgement, state.weeklyStatus, state.rendererStatus, state.readout, state.chartBox, state.limits, state.measureOut, state.indicatorNote, help, state.live, state.modePanel], 'cw-fn-main'),
+      fnGrid(state, fnBox(state, '3.1.2', ['지표와 정도 설정', 'Indicators and degree'], [degree, settings, state.settingsStatus]),
+        fnBox(state, '3.1.3', ['시나리오', 'Scenarios'], state.scenarioBlock)),
+      fnBox(state, '3.1.4', ['결과 구분', 'Result kinds'], [resultKinds(state), node(doc, 'div', {class: 'cw-slot', 'data-cw-slot': 'results'}),
+        node(doc, 'p', {class: 'small'}, w('공식 엔진 · 국면 · 실행 구간 · 기록 상태는 이 작업대 아래 "공식 결과 · 기록 상태"에 있습니다.', 'Official engine, regime, execution-zone and record status sit below this workbench under “Official results · record status”.'))]));
+    root.append(g31, patterns, user, buildNotice(state));
     return root;
   }
 
   function buildSettings(state) {
     const doc = state.doc, w = (ko, en) => words(state, ko, en);
     const details = node(doc, 'details', {class: 'cw-settings', 'data-cw-settings': ''});
-    details.append(node(doc, 'summary', {}, w('지표·패턴 표시 설정 · 이 기기 저장', 'Indicator and pattern display settings · saved on this device')));
+    details.append(node(doc, 'summary', {}, w('지표 표시 설정 · 이 기기 저장', 'Indicator display settings · saved on this device')));
     const fieldset = node(doc, 'fieldset', {}), legend = node(doc, 'legend', {}, w('연구용 지표 (RESEARCH_DISPLAY_ONLY · 일봉)', 'Research indicators (RESEARCH_DISPLAY_ONLY · daily)'));
     fieldset.append(legend);
     const labels = {SMA: 'SMA 5·20·60·120', EMA: 'EMA 20', BOLL: w('볼린저 20/2', 'Bollinger 20/2'), RSI: 'RSI 14', MACD: 'MACD 12/26/9', ATR: 'ATR 14'};
@@ -1103,7 +1147,15 @@
       label.append(box, doc.createTextNode(' ' + labels[key]));
       fieldset.append(label);
     }
-    const patterns = node(doc, 'fieldset', {'data-cw-pattern-display': ''});
+    details.append(fieldset, node(doc, 'p', {class: 'small'}, w('표시 설정은 이 기기 화면에만 적용됩니다. 공식 탐지·규칙 버전·QGV·TARGET에 영향을 주지 않으며, 가격은 저장하지 않습니다.', 'Display settings apply to this screen only. They never affect official detection, rule versions, QGV or TARGET, and no prices are saved.')));
+    state.settingsStatus = node(doc, 'p', {class: 'small', role: 'status', 'data-cw-settings-status': ''});
+    return details;
+  }
+
+  // 3.2.2: pattern display toggles and the user-settings exploration (shown open in their stamp box).
+  function buildPatternSettings(state) {
+    const doc = state.doc, w = (ko, en) => words(state, ko, en);
+    const patterns = node(doc, 'fieldset', {class: 'cw-fieldset', 'data-cw-pattern-display': ''});
     patterns.append(node(doc, 'legend', {}, w('패턴 표시 (화면만 · 탐지에 영향 없음)', 'Pattern display (screen only · no effect on detection)')));
     for (const [key, text] of [['ZONES', w('지지·저항 구간', 'Support/resistance zones')], ['BOX', w('박스 돌파·이탈', 'Box breakout/breakdown')], ['DOUBLE', w('이중 바닥·천장', 'Double bottom/top')]]) {
       const label = node(doc, 'label', {class: 'cw-toggle'}), box = node(doc, 'input', {type: 'checkbox', 'data-cw-pattern': key});
@@ -1111,16 +1163,50 @@
       label.append(box, doc.createTextNode(' ' + text));
       patterns.append(label);
     }
-    const explore = node(doc, 'fieldset', {'data-pattern-explore': ''});
+    const explore = node(doc, 'fieldset', {class: 'cw-fieldset', 'data-pattern-explore': ''});
     explore.append(node(doc, 'legend', {}, w('사용자 설정 탐색 (pattern-rules/1 민감도 범위 · 지금 봉 주기 값)', 'User-settings exploration (pattern-rules/1 sensitivity sets · current interval)')));
     state.exploreGrid = node(doc, 'div', {class: 'cw-param-grid'});
     state.exploreStatus = node(doc, 'p', {class: 'small', role: 'status', 'data-pattern-explore-status': ''});
     explore.append(state.exploreGrid, node(doc, 'button', {type: 'button', 'data-pattern-explore-run': ''}, w('이 설정으로 탐색', 'Explore with these settings')), node(doc, 'button', {type: 'button', 'data-pattern-explore-reset': ''}, w('기본값으로', 'Back to defaults')),
       node(doc, 'p', {class: 'small'}, w('탐색 결과는 "사용자 설정 탐색"으로 따로 보이며 공식 탐지 이력에 쓰지 않습니다. 바꾼 값과 params 해시를 결과와 함께 적습니다. 탐색 설정은 저장하지 않습니다.', 'Exploration results appear separately as “user-settings exploration” and are never written to the official history. Changed values and the params hash are shown with the result. Exploration settings are not saved.')),
       state.exploreStatus);
-    details.append(fieldset, patterns, explore, node(doc, 'p', {class: 'small'}, w('표시 설정은 이 기기 화면에만 적용됩니다. 공식 탐지·규칙 버전·QGV·TARGET에 영향을 주지 않으며, 가격은 저장하지 않습니다.', 'Display settings apply to this screen only. They never affect official detection, rule versions, QGV or TARGET, and no prices are saved.')),
-      state.settingsStatus = node(doc, 'p', {class: 'small', role: 'status', 'data-cw-settings-status': ''}));
-    return details;
+    return [patterns, explore];
+  }
+
+  /* ---------- layout: numbered stamp boxes (presentation only) ----------
+     Owner draft "투자시스템 화면 시안 (손그림 칠판)": function numbers 3.1–3.3 of the technical-analysis hierarchy on stamp
+     boxes. They are function numbers, not the site menu numbers (menu 2.1–2.3). Shared stamp classes: .fn-sec / .fn-head
+     (stat-radar.css), .ia-sec (theme.css), .badge.fn-unconnected; the cw-fn-* classes are local (chart-workbench.css). */
+  function fnBox(state, n, title, children, cls) {
+    const doc = state.doc, id = state.id + '-fn-' + n.split('.').join('-'), box = node(doc, 'section', {class: 'fn-sec cw-fn' + (cls ? ' ' + cls : ''), 'data-fn': n, 'aria-labelledby': id});
+    const head = node(doc, 'h3', {class: 'fn-head', id});
+    head.append(node(doc, 'span', {class: 'ia-sec'}, n), doc.createTextNode(' '), node(doc, 'span', {class: 'cw-fn-title'}, words(state, ...title)));
+    box.append(head, ...children.filter(Boolean));
+    return box;
+  }
+  function fnGrid(state, ...boxes) { const grid = node(state.doc, 'div', {class: 'fn-grid cw-fn-grid'}); grid.append(...boxes); return grid; }
+  function fnGroupHead(state, n, title, note, id) {
+    // Hand-drawn candles in CSS (three empty spans), not SVG: a screen without data draws no chart-like SVG (app_nav_ia test).
+    const doc = state.doc, top = node(doc, 'div', {class: 'cw-fn-top'}), head = node(doc, 'h2', {class: 'cw-fn-head', id}), candles = node(doc, 'span', {class: 'cw-fn-candles', 'aria-hidden': 'true'});
+    candles.append(node(doc, 'span'), node(doc, 'span'), node(doc, 'span'));
+    top.append(candles);
+    head.append(node(doc, 'span', {class: 'ia-sec'}, n), doc.createTextNode(' '), node(doc, 'span', {class: 'cw-fn-title'}, words(state, ...title)));
+    top.append(head, node(doc, 'span', {class: 'cw-fn-note'}, words(state, ...note)));
+    return top;
+  }
+  // 3.1.4: the kinds of result this screen keeps apart, with the line style each one has on the chart (chart-renderer.js).
+  function resultKinds(state) {
+    const doc = state.doc, w = (ko, en) => words(state, ko, en), list = node(doc, 'ul', {class: 'cw-kinds', 'data-result-kinds': ''});
+    for (const [kind, ko, en] of [['official', '공식 탐지 · 연구 기본값 (실선) — 투자 유용성 미검증', 'Official detection · research default (solid) — investment usefulness unverified'],
+      ['user-settings', '사용자 설정 탐색 (짧은 점선) — 공식 이력에 쓰지 않음', 'User-settings exploration (short dash) — never in the official history'],
+      ['user', '사용자 작성 · 시나리오와 노트 (보라 펜) — 이 기기에만', 'User-written · scenarios and notes (purple pen) — this device only'],
+      ['synthetic', '합성 미리보기 (노란 표시) — 판정하지 않음', 'Synthetic preview (yellow mark) — never judged'],
+      ['not-judged', '실제 가격 — 판정 불가 (가격 기준 연속성 미확인)', 'Real prices — not judged (price-basis continuity unconfirmed)']]) {
+      const item = node(doc, 'li', {'data-result-kind': kind});
+      item.append(node(doc, 'span', {class: 'cw-kind-mark', 'aria-hidden': 'true'}), node(doc, 'span', {}, w(ko, en)));
+      list.append(item);
+    }
+    return list;
   }
 
   function buildNotice(state) {
