@@ -1,0 +1,41 @@
+name: iex-hist-probe
+# One-off feasibility probe (owner decision 2026-10-23: IEX HIST as the central V price source, validate first).
+# Separate from the daily collect / ledger workflows. Streams one day's TOPS file through a C parser; nothing is stored,
+# uploaded or logged except counts and timings (no prices, GSQ-010).
+on:
+  push:
+    branches: [claude/iex-hist-probe]
+    paths: ['implementation/tools/iex_hist/**', '.github/workflows/iex-hist-probe.yml']
+  workflow_dispatch:
+    inputs:
+      date:
+        description: 'YYYYMMDD (empty = latest day with a TOPS 1.6 file)'
+        required: false
+permissions:
+  contents: read
+concurrency:
+  group: iex-hist-probe
+  cancel-in-progress: false
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - name: Build parser
+        run: gcc -O2 -Wall -Wextra -o "$RUNNER_TEMP/iex_last_trade" implementation/tools/iex_hist/iex_last_trade.c
+      - name: Disk before
+        run: df -h "$RUNNER_TEMP" /
+      - name: Probe (counts only)
+        env:
+          PROBE_DATE: ${{ github.event.inputs.date }}
+        run: |
+          python implementation/tools/iex_hist/probe.py --parser "$RUNNER_TEMP/iex_last_trade" ${PROBE_DATE:+--date "$PROBE_DATE"}
+      - name: Disk after
+        if: always()
+        run: df -h "$RUNNER_TEMP" /
