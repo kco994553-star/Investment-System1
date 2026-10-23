@@ -4,7 +4,10 @@
    malformed rows skipped and counted, first stored row wins, dedupe by symbol + date (daily) or symbol + month (month-end),
    a provider revision of a stored close is ignored and counted (PRICE_REVISED_IGNORED), only the Worker's ranges (1mo … 5y).
    Device API (RAM only): PriceStore.monthEndCloses(symbol) → {'YYYY-MM': close}, PriceStore.dailyCloses(symbol, fromDate)
-   → {date: close}, PriceStore.status(), PriceStore.coverage(symbol). Closes live in this module's memory and the user's
+   → {date: close}, PriceStore.status(), PriceStore.coverage(symbol).
+   CLICK-ONLY REQUESTS (owner decision 2026-10-23): opening a screen reads the stored rows only (the reads above never request
+   unless the caller passes fetch:true from a button handler); the Worker is asked only from a user's button (settings core /
+   Universe504 buttons, the company '받기' button, a screen's own fetch button). Closes live in this module's memory and the user's
    sheet only: nothing here logs them, puts them in localStorage/sessionStorage or sends them anywhere else; the device
    keeps one opt-in flag (no price). Missing → absent (NA), never 0. Example_* tabs are never read or written. */
 (function(root,factory){const node=typeof module==='object'&&module.exports;const api=factory(node?()=>require('./virtual-trading-runner.js'):()=>root.VirtualTradingRunner,node?()=>require('./virtual-ledger-sheets.js'):()=>root.VirtualLedgerSheets);if(node)module.exports=api;else root.PriceStore=api;})(typeof globalThis==='object'?globalThis:this,function(runner,ledger){
@@ -173,7 +176,7 @@ async function appendTab(session,id,sheet,tab,rows){await ensureTab(session,id,s
 
 /* ---------- device state (RAM only, one per window) ---------- */
 const stores=new WeakMap();
-function storeFor(view){let s=stores.get(view);if(!s){s={key:null,sheet:null,loading:null,queue:Promise.resolve(),checked:new Map(),lastNetwork:0,revised_ignored:0,lastSync:null,listeners:new Set(),busy:null,progress:null};stores.set(view,s);}return s;}
+function storeFor(view){let s=stores.get(view);if(!s){s={key:null,sheet:null,loading:null,queue:Promise.resolve(),checked:new Map(),lastNetwork:0,revised_ignored:0,lastSync:null,listeners:new Set(),busy:null,progress:null,abort:null};stores.set(view,s);}return s;}
 function notify(store){for(const f of [...store.listeners]){try{f();}catch(_){}}}
 function reset(store){store.key=null;store.sheet=null;store.loading=null;store.checked=new Map();store.revised_ignored=0;store.lastSync=null;notify(store);}
 function enabled(view){try{return view.localStorage.getItem(FLAG_KEY)==='1';}catch(_){return false;}}
@@ -216,20 +219,21 @@ function localNow(ms,tz){
  return{day:p.year+'-'+p.month+'-'+p.day,time:p.hour+':'+p.minute};
 }
 const nowIso=ms=>new Date(ms).toISOString().replace(/\.\d{3}Z$/,'Z');
-// What one symbol needs now: the Worker range to request, or null when the stored rows are current.
+// What one symbol needs now: the Worker range to request, or null when the stored rows are current; due = the date (1d) or
+// month (1mo) the stored rows must reach, so a 'current' memo ends when a new session / complete month becomes due.
 function need(sheet,symbol,interval,ms){
  const{day,time}=localNow(ms,timezoneFor(symbol));
- if(interval==='1d'){const keys=Object.keys(sheet.daily[symbol]||{});return{day,range:nextRange(keys.length?keys[keys.length-1]:null,dueDate(symbol,day,time),day)};}
- const keys=Object.keys(monthEndCloses(sheet.daily[symbol],sheet.monthly[symbol],day));return{day,range:nextMonthRange(keys.length?keys[keys.length-1]:null,day)};
+ if(interval==='1d'){const keys=Object.keys(sheet.daily[symbol]||{}),due=dueDate(symbol,day,time);return{day,due,range:nextRange(keys.length?keys[keys.length-1]:null,due,day)};}
+ const keys=Object.keys(monthEndCloses(sheet.daily[symbol],sheet.monthly[symbol],day));return{day,due:monthDue(day),range:nextMonthRange(keys.length?keys[keys.length-1]:null,day)};
 }
 /* One symbol: fetch the missing range (if any), append only rows not stored, update the RAM index. Returns
    {code, fetched, appended, payload}: code null = current; payload = the Worker answer when the write failed. */
 async function syncOne(view,store,ctx,symbol,interval,{signal=null,spacing=ctx.spacing,stop=null,now=Date.now}={}){
- const memo=interval+'|'+symbol,revision=ctx.session.revision(),sheet=store.sheet;
+ const revision=ctx.session.revision(),sheet=store.sheet;
  if(!okSymbol(symbol))return{code:'REQUEST_INVALID',fetched:false,appended:0};
- if(store.checked.get(memo)===revision)return{code:null,fetched:false,appended:0};
- const{day,range}=need(sheet,symbol,interval,now());
- if(range===null){store.checked.set(memo,revision);return{code:null,fetched:false,appended:0};}
+ const{day,due,range}=need(sheet,symbol,interval,now()),memo=interval+'|'+symbol,mark=revision+'|'+due;
+ if(store.checked.get(memo)===mark)return{code:null,fetched:false,appended:0};
+ if(range===null){store.checked.set(memo,mark);return{code:null,fetched:false,appended:0};}
  if(stop)return{code:stop,fetched:false,appended:0};
  if(ctx.fetchCode!=='READY')return{code:ctx.fetchCode,fetched:false,appended:0};
  const{payload,code}=await fetchOne(view,store,ctx,symbol,range,signal,spacing);
@@ -244,7 +248,7 @@ async function syncOne(view,store,ctx,symbol,interval,{signal=null,spacing=ctx.s
   catch(e){return{code:null,fetched:true,appended:0,write:errorCode(e,'WRITE_FAILED'),payload};}
   const next={...stored};for(const[d,close]of plan.append)next[daily?d:d.slice(0,7)]=close;target[symbol]=sortedObject(next);sheet.rows[tab]+=plan.append.length;
  }
- store.checked.set(memo,revision);
+ store.checked.set(memo,mark);
  return{code:null,fetched:true,appended:plan.append.length,revised:plan.revised_ignored};
 }
 function summary(kind,results,extra={}){
@@ -258,12 +262,14 @@ async function syncMany(view,symbols,interval,{kind='CORE',signal=null,onProgres
   const fresh=context(view);if(fresh.code!=='READY')return{state:fresh.code};
   let sheet;try{sheet=await ensureLoaded(view,fresh,store,interval);}catch(e){return{state:'ERROR',reason_codes:[errorCode(e,'READ_FAILED')]};}
   if(sheet.state!=='READY')return{state:'ERROR',reason_codes:sheet.reason_codes,tab:sheet.tab};
-  const results={},list=[...new Set(symbols)];let stop=null,notAllowed=0,done=0;store.busy=kind;store.progress={done:0,total:list.length};notify(store);
+  // progress: symbols done / total, rows appended so far, the symbol being worked on (codes and counts only, never a close).
+  const results={},list=[...new Set(symbols)];let stop=null,notAllowed=0,done=0,appended=0,requested=0;store.busy=kind;store.progress={done:0,total:list.length,appended:0,requested:0,current:null};notify(store);
   try{for(const symbol of list){
    if(signal&&signal.aborted)stop=stop||'CANCELED';
+   store.progress={...store.progress,current:symbol};notify(store);
    if(allowlistOnly&&!allowed(view,symbol)){notAllowed++;results[symbol]={code:'WORKER_ALLOWLIST',fetched:false,appended:0};}
-   else{const r=await syncOne(view,store,fresh,symbol,interval,{signal,stop,now});results[symbol]=r;if(r.code&&STOP.has(r.code))stop=r.code;}
-   done++;store.progress={done,total:list.length};if(onProgress)try{onProgress(done,list.length);}catch(_){}notify(store);
+   else{const r=await syncOne(view,store,fresh,symbol,interval,{signal,stop,now});results[symbol]=r;if(r.code&&STOP.has(r.code))stop=r.code;appended+=r.appended||0;if(r.fetched)requested++;}
+   done++;store.progress={done,total:list.length,appended,requested,current:symbol};if(onProgress)try{onProgress(done,list.length,{appended,requested,current:symbol});}catch(_){}notify(store);
   }}finally{store.busy=null;store.progress=null;}
   const out=summary(kind,results,{not_allowed:notAllowed});store.lastSync={...out,at:nowIso(now())};notify(store);
   return{state:'READY',...out,results};
@@ -274,19 +280,21 @@ function allowed(view,symbol){const list=view.GoogleSheetQuotes&&view.GoogleShee
 /* ---------- device API (RAM only) ---------- */
 const viewOf=o=>o&&o.view?o.view:globalThis;
 const clockOf=o=>o&&typeof o.now==='function'?o.now:Date.now;
-// Stored month-end closes {'YYYY-MM': close} (Prices_M first, complete months from Prices_D). fetch (default true): a missing
-// range of an allowlisted symbol is fetched once through the Worker and appended first. Not connected → {} (NA).
+// Stored month-end closes {'YYYY-MM': close} (Prices_M first, complete months from Prices_D). Stored rows only by default;
+// fetch:true (a button handler only): a missing range of an allowlisted symbol is fetched through the Worker and appended
+// first. Not connected → {} (NA).
 async function apiMonthEndCloses(symbol,options={}){
  const view=viewOf(options),ctx=context(view),store=storeFor(view);if(ctx.code!=='READY'||!okSymbol(symbol))return{};
  const now=clockOf(options);
- if(options.fetch!==false&&allowed(view,symbol))await syncMany(view,[symbol],'1mo',{kind:'API',signal:options.signal||null,now});
+ if(options.fetch===true&&allowed(view,symbol))await syncMany(view,[symbol],'1mo',{kind:'API',signal:options.signal||null,now});
  let sheet;try{sheet=await ensureLoaded(view,ctx,store,'1mo');}catch(_){return{};}if(sheet.state!=='READY')return{};
  return monthEndCloses(sheet.daily[symbol],sheet.monthly[symbol],localNow(now(),timezoneFor(symbol)).day);
 }
-// Stored daily closes {date: close} on or after fromDate; fetch (default true) appends the missing tail first.
+// Stored daily closes {date: close} on or after fromDate; stored rows only unless fetch:true (a button handler), which
+// appends the missing tail first.
 async function apiDailyCloses(symbol,fromDate=null,options={}){
  const view=viewOf(options),ctx=context(view),store=storeFor(view);if(ctx.code!=='READY'||!okSymbol(symbol))return{};
- if(options.fetch!==false&&allowed(view,symbol))await syncMany(view,[symbol],'1d',{kind:'API',signal:options.signal||null,now:clockOf(options)});
+ if(options.fetch===true&&allowed(view,symbol))await syncMany(view,[symbol],'1d',{kind:'API',signal:options.signal||null,now:clockOf(options)});
  let sheet;try{sheet=await ensureLoaded(view,ctx,store);}catch(_){return{};}if(sheet.state!=='READY')return{};
  return dailyCloses(sheet.daily[symbol],fromDate);
 }
@@ -314,8 +322,10 @@ function subscribe(listener,options={}){const store=storeFor(viewOf(options));st
 /* Histories for VirtualTradingRunner (same shape as its own fetch): read the stored daily closes first and fetch only the
    missing range per symbol through the same Worker session (same spacing, RATE_LIMITED retries, stop codes, SPY rule).
    A symbol whose missing range failed gets the same {error} as before (never a stale series). null = store not in use
-   (OFF, not connected, sheet unreadable or header mismatch): the runner then fetches exactly as before. */
-async function runnerHistories(view,{session,origin,symbols,spacingMs=DEFAULT_SPACING_MS,signal=null,onProgress=null,now=Date.now}={}){
+   (OFF, not connected, sheet unreadable or header mismatch): the runner then uses its own path.
+   fetch (default false = a screen open): the stored rows only, no Worker request; a symbol without stored rows gets
+   {error:'PRICE_NOT_FETCHED'}. fetch:true only from the report's button. */
+async function runnerHistories(view,{session,origin,symbols,spacingMs=DEFAULT_SPACING_MS,signal=null,onProgress=null,now=Date.now,fetch=false}={}){
  const ctx=context(view),store=storeFor(view);
  if(ctx.code!=='READY'||ctx.session!==session||!Array.isArray(symbols))return null;
  return exclusive(store,async()=>{
@@ -323,12 +333,14 @@ async function runnerHistories(view,{session,origin,symbols,spacingMs=DEFAULT_SP
   let sheet;try{sheet=await ensureLoaded(view,fresh,store);}catch(_){return null;}if(sheet.state!=='READY')return null;
   const run={...fresh,origin,fetchCode:fresh.fetchCode==='READY'&&origin===fresh.origin?'READY':fresh.fetchCode};
   const out={},results={};let stop=null,done=0;
+  const stored=symbol=>{const closes=store.sheet.daily[symbol]||{};return Object.keys(closes).length?runnerPayload(closes,symbol,localNow(now(),timezoneFor(symbol)).day,nowIso(now())):null;};
+  if(fetch!==true){for(const symbol of symbols){out[symbol]=stored(symbol)||{error:'PRICE_NOT_FETCHED'};done++;if(onProgress)try{onProgress(done,symbols.length);}catch(_){}}return out;}
   for(const symbol of symbols){
    if(signal&&signal.aborted)stop=stop||'CANCELED';
    const r=await syncOne(view,store,run,symbol,'1d',{signal,spacing:spacingMs,stop,now});results[symbol]=r;
    if(r.code!==null){out[symbol]={error:r.code};if(STOP.has(r.code))stop=r.code;}
    else if(r.write&&r.payload)out[symbol]=r.payload;
-   else{const closes=store.sheet.daily[symbol]||{};out[symbol]=Object.keys(closes).length?runnerPayload(closes,symbol,localNow(now(),timezoneFor(symbol)).day,nowIso(now())):{error:'HISTORY_UNAVAILABLE'};}
+   else out[symbol]=stored(symbol)||{error:'HISTORY_UNAVAILABLE'};
    done++;if(onProgress)try{onProgress(done,symbols.length);}catch(_){}
    if(symbol==='SPY'&&r.code!==null)break;
   }
@@ -354,12 +366,13 @@ async function coreSymbols(view,{catalog,interests=[]}={}){
  const starred=(Array.isArray(interests)?interests:[]).filter(c=>own(R.TARGETS,c)).map(c=>R.TARGETS[c]);
  return[...new Set([...required,...starred])];
 }
-/* App open: once per Google session (and after the user turns the store on), append the core symbols' daily bars after
-   their last stored date. Nothing happens while the store is OFF on this device or the sheet is not connected. */
-function autoSync(view,{coreSymbols:list}){
+/* App open: once per Google session (and after the user turns the store on), READ the stored Prices_D rows into RAM. No
+   Worker request and no sheet write (owner decision 2026-10-23: requests only from a button; the core symbols' daily bars
+   are appended by the settings button '핵심 종목 일봉 지금 갱신'). Nothing happens while the store is OFF or not connected. */
+function autoLoad(view){
  const ctx=context(view),store=storeFor(view);let last=null;
  const tick=()=>{const c=context(view);if(c.code!=='READY'||!c.session){if(c.code!=='READY'&&store.sheet)reset(store);return;}const key=c.sheetId+'#'+c.session.revision();if(key===last)return;last=key;
-  void (async()=>{let symbols=[];try{symbols=await list();}catch(_){symbols=[];}if(symbols.length)await syncMany(view,symbols,'1d',{kind:'CORE'});else{try{await ensureLoaded(view,context(view),store);}catch(_){}}})();};
+  void ensureLoaded(view,c,store).catch(()=>{});};
  store.retick=()=>{last=null;tick();};
  let unsubscribe=null;try{if(ctx.session)unsubscribe=ctx.session.subscribe(tick);}catch(_){unsubscribe=null;}
  tick();return()=>{if(unsubscribe)unsubscribe();store.retick=null;};
@@ -404,9 +417,11 @@ function universeProgress(view,symbols,ms=Date.now()){
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const T={
  title:['가격 저장 탭 · 내 구글 시트 (Prices_D · Prices_M)','Price tabs · my Google Sheet (Prices_D · Prices_M)'],
- detail:['한 번 받은 종가를 내 시트에 덧붙여 두고 다음부터는 시트에서 읽습니다. 핵심 종목(보유·관심 ★·세트 A–D·벤치마크/환율·판정 채점용으로 추가한 종목)은 앱을 열 때 마지막 저장일 이후 일봉만, Universe504는 버튼으로 월말 종가만(첫 실행 5년) 덧붙입니다. 기록한 행은 고치지 않습니다. 화면에는 개수·날짜·코드만 보이며 가격은 이 기기 메모리와 내 시트에만 있습니다.',
-  'Closes fetched once are appended to your own sheet and read from it afterwards. Core symbols (holdings, watchlist ★, sets A–D, benchmarks/FX, symbols added for judgement scoring): daily bars after the last stored date when the app opens. Universe504: month-end closes only, by the button (first run: 5 years). Stored rows are never rewritten. Only counts, dates and codes are shown; prices stay in this device\'s memory and your sheet.'],
- enable:['가격 탭 사용 시작','Use price tabs'],disable:['이 기기에서 끄기','Turn off on this device'],core:['핵심 종목 일봉 지금 갱신','Update core daily bars now'],universe:['Universe504 월말 종가 채우기 (첫 실행 5년)','Fill Universe504 month-ends (first run: 5 years)'],
+ detail:['한 번 받은 종가를 내 시트에 덧붙여 두고 다음부터는 시트에서 읽습니다. 화면을 열 때는 저장된 가격만 읽고, 가격 요청은 버튼을 눌렀을 때만 합니다. 핵심 종목(보유·관심 ★·세트 A–D·벤치마크/환율·판정 채점용으로 추가한 종목)은 아래 버튼으로 마지막 저장일 이후 일봉만, Universe504는 버튼으로 월말 종가만(첫 실행 5년, 다음부터 새 달치만) 덧붙입니다. 기록한 행은 고치지 않습니다. 화면에는 개수·날짜·코드만 보이며 가격은 이 기기 메모리와 내 시트에만 있습니다.',
+  'Closes fetched once are appended to your own sheet and read from it afterwards. Opening a screen reads stored prices only; prices are requested only when you press a button. Core symbols (holdings, watchlist ★, sets A–D, benchmarks/FX, symbols added for judgement scoring): daily bars after the last stored date, by the button below. Universe504: month-end closes only, by the button (first run: 5 years, then new months only). Stored rows are never rewritten. Only counts, dates and codes are shown; prices stay in this device\'s memory and your sheet.'],
+ enable:['가격 탭 사용 시작','Use price tabs'],disable:['이 기기에서 끄기','Turn off on this device'],core:['핵심 종목 일봉 지금 갱신','Update core daily bars now'],universe:['Universe504 월말 종가 일괄 받기 (첫 실행 5년 · 이어받기)','Fetch all Universe504 month-ends (first run: 5 years · resumes)'],
+ cancel:['중단','Stop'],canceled:['중단됨 · 다시 누르면 이미 받은 종목은 요청 없이 건너뛰고 이어받습니다.','Stopped · press again to resume; symbols already received are skipped without a request.'],
+ working:['받는 중','fetching'],partial:['받은 종목부터 순위·V에 반영됩니다(다 받기 전에도). 요청 간격 약 5초 · 504종목 첫 실행은 약 45분.','Received symbols count toward ranks and V right away (before the run ends). About 5 s between requests · the first 504-symbol run takes about 45 minutes.'],
  OFF:['OFF · 이 기기에서 가격 탭을 쓰지 않습니다.','OFF · Price tabs are not used on this device.'],AUTH_REQUIRED:['구글 로그인이 필요합니다.','Google sign-in is required.'],SHEET_NOT_CONNECTED:['연결된 시트가 없습니다(설정 → Google 첫 설정).','No sheet is connected (Settings → Google first setup).'],
  LOADING:['내 시트의 가격 탭을 읽는 중','Reading the price tabs of your sheet'],READY:['가격 탭 읽음','Price tabs read'],ERROR:['가격 탭을 쓸 수 없습니다','Price tabs cannot be used'],
  worker:['승인된 비공개 가격 Worker 허용 범위는 Universe504 · TARGET 19 · ETF 17(HYG·IEF 포함) · 환율입니다. 등록되지 않은 종목은 WORKER_ALLOWLIST로 세며, Worker 연결에 실패하면 확인 불가로 표시합니다.','The approved private price Worker scope is Universe504, TARGET 19, 17 ETFs (including HYG/IEF), and FX. Unlisted symbols count as WORKER_ALLOWLIST; a failed Worker connection is shown as unavailable.']};
@@ -421,6 +436,9 @@ function statusLine(s,locale){
  if(s.fetch!=='READY'&&s.state==='READY')text+=' · Worker '+s.fetch;
  return text;
 }
+// Live progress of a button run: kind · done/total · rows appended · current symbol (codes and counts only).
+function progressLine(s,locale){const p=s.progress,en=locale==='en-US';if(!p)return'';
+ return(s.busy==='UNIVERSE504'?'Universe504 ':s.busy+' ')+tx(locale,'working')+' · '+p.done+'/'+p.total+' · '+(en?'rows appended ':'덧붙인 행 ')+(p.appended||0)+(p.current?' · '+(en?'current ':'현재 ')+p.current:'');}
 function syncLine(r,locale){
  if(!r)return'';const en=locale==='en-US',f=Object.entries(r.failed||{}).map(([k,v])=>k+' '+v).join(', ');
  return(r.kind||'')+' · '+(en?'symbols ':'종목 ')+r.symbols+' · '+(en?'requests ':'요청 ')+r.fetched+' · '+(en?'rows appended ':'덧붙인 행 ')+r.appended_rows+' · '+(en?'current ':'최신 ')+r.current+(r.not_allowed?' · WORKER_ALLOWLIST '+r.not_allowed:'')+(r.write_failed?' · WRITE_FAILED '+r.write_failed:'')+(f?' · '+f:'')+(r.at?' · '+r.at:'');
@@ -430,19 +448,33 @@ function mountSettings(host,{locale='ko-KR',coreSymbols:list=null}={}){
  const view=host.ownerDocument.defaultView,old=mounted.get(host);if(old)old();
  let note='',disposed=false;const live=()=>!disposed&&host.isConnected;
  const paint=()=>{
-  if(!live()){dispose();return;}const s=status({view}),on=s.state!=='OFF',busy=!!s.busy;
+  if(!live()){dispose();return;}const s=status({view}),on=s.state!=='OFF',busy=!!s.busy,store=storeFor(view);
+  // While a run only advances (same state, same buttons), update the status/progress lines in place: re-rendering every
+  // tick would replace the 중단 button under the user's finger.
+  const shape=[s.state,on,busy,!!(busy&&store.abort&&!store.abort.signal.aborted),!!s.progress,note].join('|'),sec=host.querySelector('[data-price-store]');
+  if(sec&&host.dataset.priceStoreShape===shape){
+   const st=sec.querySelector('[data-price-store-status]');if(st)st.textContent=statusLine(s,locale);
+   const pr=sec.querySelector('[data-price-store-progress]');if(pr&&s.progress){pr.textContent=progressLine(s,locale);pr.dataset.done=String(s.progress.done);pr.dataset.total=String(s.progress.total);pr.dataset.appended=String(s.progress.appended||0);}
+   const la=sec.querySelector('[data-price-store-last]');if(la)la.textContent=syncLine(s.last_sync,locale);
+   return;}
+  host.dataset.priceStoreShape=shape;
   host.innerHTML='<section class="card" data-price-store data-price-store-state="'+esc(s.state)+'"><h2>'+esc(tx(locale,'title'))+'</h2><p class="small">'+esc(tx(locale,'detail'))+'</p>'
    +'<p role="status" data-price-store-status>'+esc(statusLine(s,locale))+'</p>'
-   +(s.progress?'<p class="small" data-price-store-progress>'+esc(s.busy+' '+s.progress.done+'/'+s.progress.total)+'</p>':'')
+   +(s.progress?'<p class="small" role="status" data-price-store-progress data-done="'+s.progress.done+'" data-total="'+s.progress.total+'" data-appended="'+(s.progress.appended||0)+'">'+esc(progressLine(s,locale))+'</p>':'')
    +'<p class="small" data-price-store-last>'+esc(syncLine(s.last_sync,locale))+'</p>'
-   +'<div class="sheet-actions">'+(on?'<button type="button" data-price-store-action="core"'+(s.state==='READY'&&!busy?'':' disabled')+'>'+esc(tx(locale,'core'))+'</button><button type="button" data-price-store-action="universe"'+(s.state==='READY'&&!busy?'':' disabled')+'>'+esc(tx(locale,'universe'))+'</button><button type="button" data-price-store-action="disable">'+esc(tx(locale,'disable'))+'</button>'
+   +'<div class="sheet-actions">'+(on?'<button type="button" data-price-store-action="core"'+(s.state==='READY'&&!busy?'':' disabled')+'>'+esc(tx(locale,'core'))+'</button><button type="button" data-price-store-action="universe"'+(s.state==='READY'&&!busy?'':' disabled')+'>'+esc(tx(locale,'universe'))+'</button>'+(busy&&store.abort&&!store.abort.signal.aborted?'<button type="button" data-price-store-action="cancel">'+esc(tx(locale,'cancel'))+'</button>':'')+'<button type="button" data-price-store-action="disable">'+esc(tx(locale,'disable'))+'</button>'
     :'<button type="button" data-price-store-action="enable">'+esc(tx(locale,'enable'))+'</button>')+'</div>'
-   +'<p class="small">'+esc(tx(locale,'worker'))+'</p><p role="status" class="small" data-price-store-note>'+esc(note)+'</p></section>';
+   +(on?'<p class="small" data-price-store-partial>'+esc(tx(locale,'partial'))+'</p>':'')+'<p class="small">'+esc(tx(locale,'worker'))+'</p><p role="status" class="small" data-price-store-note>'+esc(note)+'</p></section>';
   const act=(name,fn)=>{const b=host.querySelector('[data-price-store-action="'+name+'"]');if(b)b.onclick=()=>void(async()=>{note='';try{note=(await fn())||'';}catch(e){note=errorCode(e,'WRITE_FAILED');}if(live())paint();})();};
   act('enable',async()=>{await enable(view);return'';});
   act('disable',async()=>{disable(view);return'OFF';});
-  act('core',async()=>{const symbols=list?await list():[];const r=await syncMany(view,symbols,'1d',{kind:'CORE'});return r.state==='READY'?'':r.state+(r.reason_codes?' · '+r.reason_codes.join(', '):'');});
-  act('universe',async()=>{const r=await syncUniverse(view);return r.state==='READY'?'':r.state+(r.reason_codes?' · '+r.reason_codes.join(', '):'');});
+  // Button runs: one AbortController per window (중단); a stopped run keeps every row already appended, and pressing again
+  // skips the symbols already current (checked this session, or stored up to the last complete month) without a request.
+  const runText=r=>r.state!=='READY'?r.state+(r.reason_codes?' · '+r.reason_codes.join(', '):''):r.failed&&r.failed.CANCELED?tx(locale,'canceled'):'';
+  const withAbort=async fn=>{const c=new view.AbortController();store.abort=c;try{return await fn(c.signal);}finally{if(store.abort===c)store.abort=null;}};
+  act('core',()=>withAbort(async signal=>{const symbols=list?await list():[];return runText(await syncMany(view,symbols,'1d',{kind:'CORE',signal}));}));
+  act('universe',()=>withAbort(async signal=>runText(await syncUniverse(view,{signal}))));
+  const cancel=host.querySelector('[data-price-store-action="cancel"]');if(cancel)cancel.onclick=()=>{cancel.disabled=true;if(store.abort)store.abort.abort();};
  };
  const unsubscribe=subscribe(()=>{if(live())paint();else dispose();},{view});
  const ctx=context(view);let unsession=null;try{if(ctx.session)unsession=ctx.session.subscribe(()=>{if(live())paint();else dispose();});}catch(_){unsession=null;}
@@ -451,22 +483,24 @@ function mountSettings(host,{locale='ko-KR',coreSymbols:list=null}={}){
  if(ctx.code==='READY'&&!storeFor(view).sheet)void ensureLoaded(view,ctx,storeFor(view)).catch(()=>{});
  return dispose;
 }
-/* Company screen: the first open of a symbol stores its 5-year month-ends once (Worker-allowed symbols only); afterwards
-   only new complete months. Shows counts and the stored month range only. */
+/* Company screen: opening it READS the stored month-ends only (no Worker request). The button '이 종목 월말 종가 받기'
+   (Worker-allowed symbols only) stores its 5-year month-ends the first time and only new complete months afterwards.
+   Shows counts and the stored month range only. */
 function mountCompany(host,{symbol,locale='ko-KR'}={}){
- const view=host.ownerDocument.defaultView,en=locale==='en-US';
- const paint=(code)=>{if(!host.isConnected)return;const c=coverage(symbol,{view}),m=c.month_ends;
-  host.innerHTML='<p class="small" data-price-store-company="'+esc(code)+'" data-month-ends="'+m.count+'">'+esc((en?'Price tab · ':'가격 탭 · ')+(code==='READY'?(m.count?(en?'month-ends ':'월말 ')+m.count+(en?' stored (':'개 저장 (')+m.first+' ~ '+m.last+')':(en?'no month-ends stored':'저장된 월말 없음')):code))+'</p>';};
+ const view=host.ownerDocument.defaultView,en=locale==='en-US';let busy=false;
+ const paint=(code)=>{if(!host.isConnected)return;const c=coverage(symbol,{view}),m=c.month_ends,cx=context(view),canFetch=code!=='LOADING'&&allowed(view,symbol)&&cx.code==='READY'&&cx.fetchCode==='READY';
+  host.innerHTML='<p class="small" data-price-store-company="'+esc(code)+'" data-month-ends="'+m.count+'">'+esc((en?'Price tab · ':'가격 탭 · ')+(code==='READY'?(m.count?(en?'month-ends ':'월말 ')+m.count+(en?' stored (':'개 저장 (')+m.first+' ~ '+m.last+')':(en?'no month-ends stored':'저장된 월말 없음')):code))+'</p>'
+   +(canFetch?'<div class="sheet-actions"><button type="button" data-price-store-company-fetch>'+esc(en?'Fetch this symbol\'s month-ends':'이 종목 월말 종가 받기')+'</button></div>':'');
+  const b=host.querySelector('[data-price-store-company-fetch]');if(b)b.onclick=()=>{if(busy)return;busy=true;paint('LOADING');void(async()=>{let code='READY';
+   try{const r=await syncMany(view,[symbol],'1mo',{kind:'VIEW'}),one=r.results&&r.results[symbol];code=r.state!=='READY'?(r.reason_codes&&r.reason_codes[0])||r.state:one&&one.code?one.code:one&&one.write?one.write:'READY';}catch(_){code='HISTORY_UNAVAILABLE';}
+   busy=false;paint(code);})();};};
  const ctx=context(view);if(ctx.code==='OFF'){host.replaceChildren();return;}if(!okSymbol(symbol)){paint('REQUEST_INVALID');return;}if(ctx.code!=='READY'){paint(ctx.code);return;}
  paint('LOADING');
- void(async()=>{
-  if(!allowed(view,symbol)){try{await ensureLoaded(view,ctx,storeFor(view),'1mo');}catch(_){}paint('WORKER_ALLOWLIST');return;}
-  const r=await syncMany(view,[symbol],'1mo',{kind:'VIEW'});const one=r.results&&r.results[symbol];
-  paint(r.state!=='READY'?(r.reason_codes&&r.reason_codes[0])||r.state:one&&one.code?one.code:one&&one.write?one.write:'READY');
- })();
+ void(async()=>{let code='READY';try{const sheet=await ensureLoaded(view,ctx,storeFor(view),'1mo');if(sheet.state!=='READY')code=sheet.reason_codes[0]||'ERROR';}catch(e){code=errorCode(e,'READ_FAILED');}
+  paint(code==='READY'&&!allowed(view,symbol)?'WORKER_ALLOWLIST':code);})();
 }
 
 return Object.freeze({SCHEMA,CODES,TAB_DAILY,TAB_MONTHLY,TABS,HEAD,RANGES,FLAG_KEY,currencyFor,timezoneFor,universeSymbol,parseTab,indexRows,closesFromHistory,sourceOf,monthEnds,monthsBack,dueDate,nextRange,monthDue,
  nextMonthRange,appendPlan,sheetRows,monthEndClosesOf:monthEndCloses,dailyClosesOf:dailyCloses,runnerPayload,chunkRows,load,readValues,ensureTab,
- monthEndCloses:apiMonthEndCloses,dailyCloses:apiDailyCloses,coverage,status,subscribe,runnerHistories,coreSymbols,autoSync,enable,disable,syncMany,syncUniverse,universeSymbols,universeProgress,allowed,mountSettings,mountCompany});
+ monthEndCloses:apiMonthEndCloses,dailyCloses:apiDailyCloses,coverage,status,subscribe,runnerHistories,coreSymbols,autoLoad,enable,disable,syncMany,syncUniverse,universeSymbols,universeProgress,allowed,mountSettings,mountCompany});
 });

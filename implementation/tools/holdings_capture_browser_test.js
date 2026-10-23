@@ -146,7 +146,17 @@ function verify(value, label) { if (!value) { const error = new Error(label); er
       verify(mock.posts.length === 1, 'an existing Holdings tab is never modified');
 
       phase = 'B_RETURN_PREVIEW';
+      const workerBefore = mock.workerCalls.length;
       await page.evaluate(() => window.dispatchEvent(new Event('focus')));
+      await page.locator('[data-capture-preview="OK"]').waitFor();
+      // Click-only rule (owner decision 2026-10-23): the automatic read on return asks no Worker; the outside symbols wait for
+      // the user's 'Holdings 탭 다시 읽기' click.
+      await page.locator('[data-actual-summary] [data-outside-symbol="KO"]').waitFor();
+      verify(mock.workerCalls.length === workerBefore, 'the automatic read on return makes no Worker request');
+      verify((await page.locator('[data-actual-summary] [data-outside-symbol="KO"]').textContent()).includes('PRICE_NOT_FETCHED'), 'KO waits for the click (PRICE_NOT_FETCHED)');
+      await guide.locator('[data-capture-action="read"]').click();
+      for (let i = 0; i < 200 && !mock.workerCalls.includes('KO'); i++) await page.waitForTimeout(50);
+      await page.waitForFunction(() => (document.querySelector('[data-actual-summary] [data-outside-symbol="KO"]')?.textContent || '').includes('Worker 종가'));
       await page.locator('[data-capture-preview="OK"]').waitFor();
       verify(await page.locator('[data-capture-positions] tbody tr').count() === 6, 'six readable positions');
       const review = await page.locator('[data-capture-review] li').allTextContents();

@@ -21,7 +21,7 @@
 | 관심 기업 · ★ · 그룹 | Issuer `sec:`+CIK10. CIK가 없는 TARGET 발행인 2곳(hanmi, tokyo_electron)은 TARGET 별칭을 그대로 Issuer 키로 쓴다 | 아무 기업(TARGET 별칭, Universe504 코드). Issuer 키를 못 정하면 ★를 끈다(추정 없음) |
 | 차트 그림(노트·선·구간·시나리오) | Listing `EXCHANGE:SYMBOL` (Universe 코드. 한국·일본은 `KRX:042700`, `TSE:8035`) | 차트를 연 상장 |
 | 기기 시세·차트 범위(TA G2) | 기업 페이지 id(TARGET 별칭 또는 Universe 코드) → Worker 기호 | ACTUAL 보유 ∪ 관심 기업(발행인의 모든 상장) ∪ TARGET v1 후보(초안 후보표 + 확정 버전). Worker 허용 목록 밖은 요청하지 않음 |
-| 가격 요청 | — | 누를 때만. 앱 열기 자동 경로(`PriceStore.autoSync`)에는 새 기호를 더하지 않는다 |
+| 가격 요청 | — | 누를 때만(설정 → 가격 탭 '핵심 종목 일봉 지금 갱신', 차트 '가격 불러오기'). 앱 열기는 저장된 행만 읽는다(`PriceStore.autoLoad`, claude/price-click-only #389) |
 | TARGET v0 | `company_id` 별칭 | 가상매매 세트 A, v0 비교 화면(Forward validation, S06 TARGET 목록), 기존 기록 |
 
 Universe 코드의 CIK는 검토된 `company-names-ko.json`의 `cik` 칸에서 읽는다. TARGET 행은 코드 안의 TARGET CIK(=`SecQgv2.TARGET_CIKS`)와 상장이 같을 때만 쓰고, 다르면 그 행을 쓰지 않는다. Universe504 504개 코드 모두 CIK가 있다(시험으로 고정).
@@ -64,7 +64,7 @@ Universe 코드의 CIK는 검토된 `company-names-ko.json`의 `cik` 칸에서 �
 | `WA/private-history.js:217-230` `mountTechnical` | 선택지 = TARGET 19, 기본 `asml`, "가격 이력 지원 19종목" 문구 | 바꿈 | 선택지 = 기기 범위, 기본 = 범위 첫 기업, 범위 밖 문구(☆ 안내) |
 | `WA/universe-company.js:131`, `:189` | 일봉 차트 = TARGET 발행인만, "TARGET 19개 … TA G2 결정 전" | 바꿈 | 범위 안이면 아무 코드나 차트, 밖이면 ☆ 안내 |
 | `WA/chart-workbench.js:195`, `:662`, `:1026` 그림 키 | `symbol` = 공급자 티커 | 바꿈 | Listing 키로 쓰고 옛 티커 키도 읽음 |
-| `WA/app.js:18` `priceStoreCore` | 러너 기호 + TARGET ★만 | 바꿈 | 누를 때: + 기기 범위 전체. 자동(앱 열기): 이전과 같은 집합 |
+| `WA/app.js:18` `priceStoreCore` | 러너 기호 + TARGET ★만 | 바꿈 | 설정의 갱신 버튼(클릭)에서만 쓰임: 러너 기호(세트 A–D·벤치마크·환율) + TARGET v1 가격 기호 + 기기 범위 전체 |
 | `WA/price-store.js:354` `starred` | ★ 중 TARGET만 | 유지 | 이 브랜치는 price-store 내부를 건드리지 않음(claude/price-click-only와 충돌 회피). 범위 확장은 app.js에서 더함 |
 | `WA/tradingview-widgets.js:10-19` 시세 띠 | "TARGET 19 시세 띠" | 바꿈 | 기기 범위 시세 띠, 비면 위젯 없음. Universe 코드도 TradingView 기호 |
 | `WA/google-sheet-quotes.js:11` `HISTORY_SYMBOLS` / `worker/src/index.js:7-58` | Worker 허용 목록 = Universe504 + ASML·042700.KS·8035.T + ETF 17 + FX 2 | 유지(확인) | 504 코드와 TARGET 19 모두 들어 있음을 시험으로 고정. 넓히지 않음 |
