@@ -61,6 +61,7 @@ S&P DJI 원문 보도자료:
 WBD 공시 순서(SEC submissions에서 확인):
 - 2026-10-06: 8-K 제출. Form 25(`0001193125-26-415091`)와 Nasdaq의 25-NSE(`0001354457-26-000951`)도 이날 나왔다. POS AM 8건, S-8 POS 5건도 이날 제출했다.
 - 2026-10-07: EFFECT 7건(접수는 10-08).
+- IEX(Main 확인, 실행 39944426209): WBD 체결은 10-05가 마지막이다. 10-06부터는 상태 메시지와 체결이 없다.
 - 2026-10-16: 15-12G 제출: https://www.sec.gov/Archives/edgar/data/1437107/000119312526423513/d188095d1512g.htm . 같은 날 채권 등 15-15D 8건도 제출했다.
 - SEC `company_tickers.json`(Last-Modified 2026-10-16 11:54 UTC)에는 CIK 0001437107의 ticker가 없다. 반면 `company_tickers_exchange.json`(11:53 UTC)에는 아직 `WBD/Nasdaq`이 남아 있다. 저장소의 CIK 결합은 이 exchange 파일을 쓴다(`sec_universe_collection.py:74-84`). 그래서 지금도 WBD 행이 수집되고 LIVE로 남는다.
 
@@ -81,7 +82,11 @@ WBD 공시 순서(SEC submissions에서 확인):
 | `NASDAQ:PSKY` → `NYSE:SKYD` | 0002041610(그대로) | Nasdaq 거래는 2026-10-05 장 마감에 끝났다. NYSE 거래와 사명 변경은 2026-10-06 개장부터다 | 상장을 Nasdaq에서 NYSE로 옮기면서 ticker를 바꿨다. 사명은 Paramount Skydance에서 Skydance Corp로 바뀌었다. 같은 날 WBD 인수를 마쳤다. S&P 500 종목 자격은 그대로다([S2]: "Post merger, Paramount Skydance will switch its primary listing to the NYSE") | 8-K(2026-10-02) ticker 변경 예고: https://www.sec.gov/Archives/edgar/data/2041610/000110465926113076/tm2626659d3_8k.htm · 8-A12B(2026-10-05): https://www.sec.gov/Archives/edgar/data/2041610/000110465926113569/tm2626659d5_8a12b.htm · Form 25(2026-10-05, Nasdaq 자발 상장 폐지): https://www.sec.gov/Archives/edgar/data/2041610/000110465926113696/tm2626659d6_25.htm · 완료 8-K: https://www.sec.gov/Archives/edgar/data/2041610/000110465926113913/tm2626659d7_8k.htm |
 
 - SEC `company_tickers.json`은 CIK 0002041610을 `SKYD`와 `SKYD-WT`로 매핑한다. exchange 파일에는 `PSKY/Nasdaq`이 아직 남아 있다.
-- IEX에서 SKYD 체결이 2026-10-21과 22에 있고 PSKY 상태 메시지가 없다는 점은 Main이 확인했다. 이 레인은 IEX에 접근하지 않았으므로 독립 재확인은 하지 않았다.
+- IEX 거래 증거(Main 확인, IEX TOPS 조사 실행 39944426209, 개수만 확인). 이 레인은 IEX에 접근하지 않았다.
+  - PSKY: 2026-10-02와 10-05에 체결이 있다. 10-06부터는 없다.
+  - SKYD: 10-05까지 없다. 10-06부터 체결이 있다(10-21과 22도 같다).
+  - WBD: 10-05까지 체결이 있다. 10-06부터는 IEX 상태 메시지도 체결도 없다.
+  - SEC 공시 날짜와 맞는다. PSKY는 Form 25(10-05)와 NYSE 상장(10-06)이다. WBD는 인수 완료와 상장 폐지(10-06), POS AM(10-06), EFFECT(10-07), 15-12G(10-16)다.
 
 ### 2-3. 504개 전부를 독립적으로 다시 확인
 
