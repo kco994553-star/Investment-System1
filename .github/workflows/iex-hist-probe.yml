@@ -19,7 +19,7 @@ concurrency:
 jobs:
   probe:
     runs-on: ubuntu-latest
-    timeout-minutes: 75
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -34,9 +34,13 @@ jobs:
       - name: Probe (counts only)
         env:
           PROBE_DATE: ${{ github.event.inputs.date }}
-          PROBE_EXTRA: SKYD,PSKY,WBD,SKYD+,PARA,PARAA
+          PROBE_EXTRA: SKYD,PSKY,WBD,PARA
         run: |
-          python implementation/tools/iex_hist/probe.py --parser "$RUNNER_TEMP/iex_last_trade" ${PROBE_DATE:+--date "$PROBE_DATE"}
+          # Owner request 2026-10-23: the PSKY -> SKYD switch date (listing diagnostics only, counts and status letters).
+          for d in 20261002 20261005 20261006 20261007 20261009; do
+            echo "== $d"
+            python implementation/tools/iex_hist/probe.py --parser "$RUNNER_TEMP/iex_last_trade" --date "$d" | python -c "import json,sys; r=json.load(sys.stdin); print(json.dumps({'date': r['date'], 'minutes': r['elapsed_minutes'], 'universe_no_trade': r['universe_no_trade'], 'diag': {k: r['listing_diagnostics'][k] for k in ('PSKY','SKYD','PARA') if k in r['listing_diagnostics']}}))"
+          done
       - name: Disk after
         if: always()
         run: df -h "$RUNNER_TEMP" /
