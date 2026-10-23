@@ -1,4 +1,4 @@
-> **번호 주의 (2026-10-24).** 아래 원문의 번호(1 QGV, 2 기술적 분석…)는 지금 화면의 메뉴 번호다. 기능 보고는 2026-10-20 [기능 계층 명세 v1.0](../../docs/SPEC/FUNCTION_HIERARCHY_v1.0.md)의 번호(1 홈, 2 QGV…)만 쓴다. 대응표: [FUNCTION_STATUS §0](../../docs/SPEC/FUNCTION_STATUS.md). 3.5 이름은 CHAIN-NAME 결정 대기(DC 대장 3절).
+> **번호 주의 (2026-10-24).** 아래 원문의 번호(1 QGV, 2 기술적 분석…)는 지금 화면의 메뉴 번호다. 기능 보고는 2026-10-20 [기능 계층 명세 v1.0](../../docs/SPEC/FUNCTION_HIERARCHY_v1.0.md)의 번호(1 홈, 2 QGV…)만 쓴다. 대응표: [FUNCTION_STATUS §0](../../docs/SPEC/FUNCTION_STATUS.md). 3.5 이름은 2026-10-24 "나비효과"로 결정(DC-17).
 
 # 제품 내용구조·디자인 지시 원문 — 2026-10-18 (사용자)
 
