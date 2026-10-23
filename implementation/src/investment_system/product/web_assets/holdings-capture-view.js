@@ -46,7 +46,9 @@
     return US_PREFIXES.map(prefix => prefix + ':' + position.symbol);
   }
   // Out-of-scope prices: a unique sheet Quotes row for the symbol, else the Worker when the symbol is on its allowlist.
-  async function outsideQuotes(view, {positions, values, config, session, readAt}) {
+  // fetch false (the automatic read on return to the app): no Worker request; such a symbol is PRICE_NOT_FETCHED until the
+  // user presses 'Holdings 탭 읽기' (owner decision 2026-10-23: price requests only from a button).
+  async function outsideQuotes(view, {positions, values, config, session, readAt, fetch = true}) {
     const result = {}, allow = new Set(view.GoogleSheetQuotes && view.GoogleSheetQuotes.HISTORY_SYMBOLS || []);
     for (const position of positions) {
       const codes = new Set(codesFor(position)), rows = (values || []).filter(row => Array.isArray(row) && typeof row[0] === 'string' && codes.has(row[0].trim()));
@@ -55,6 +57,7 @@
       if (price !== null) { result[position.symbol] = {state: 'AVAILABLE', price, currency: position.currency, source: 'GOOGLEFINANCE', time_status: 'UNKNOWN', as_of: readAt, available_at: readAt}; continue; }
       const target = view.WorkerQuoteFallback ? view.WorkerQuoteFallback.workerSymbol(position.symbol) : null;
       if (!target || !allow.has(target)) { result[position.symbol] = {state: 'NOT_AVAILABLE', reason: 'QUOTE_NOT_AVAILABLE_OUT_OF_SCOPE'}; continue; }
+      if (!fetch) { result[position.symbol] = {state: 'NOT_AVAILABLE', reason: 'PRICE_NOT_FETCHED'}; continue; }
       const close = await view.WorkerQuoteFallback.readClose(view, {symbol: position.symbol, currency: position.currency, config, session});
       result[position.symbol] = close.state === 'AVAILABLE'
         ? {state: 'AVAILABLE', price: close.price, currency: close.currency, source: 'WORKER_CLOSE', time_status: 'SESSION_CLOSE', as_of: close.session_date + 'T00:00:00Z', available_at: new Date().toISOString()}
@@ -62,7 +65,7 @@
     }
     return result;
   }
-  async function readTab(state) {
+  async function readTab(state, {fetch = true} = {}) {
     const {view, config} = state, session = sessionOf(view, config);
     if (!session || !session.state().connected) return fail(state, 'AUTH_REQUIRED');
     const id = await sheetId(view); if (!id) return fail(state, 'SHEET_SOURCE_REQUIRED');
@@ -79,7 +82,7 @@
           let quotes = [];
           try { quotes = (await session.fetchValues(id, QUOTES_RANGE, {maxBytes: 1048576})).values; } catch (_) { quotes = []; }
           if (!current()) return;
-          outside = await outsideQuotes(view, {positions: split.out_of_scope, values: quotes, config, session, readAt});
+          outside = await outsideQuotes(view, {positions: split.out_of_scope, values: quotes, config, session, readAt, fetch});
           if (!current()) return;
         }
       }
@@ -199,7 +202,7 @@
     });
     state.read.addEventListener('click', () => { void readTab(state); });
     state.clear.addEventListener('click', () => { view.HoldingsCapture.clear(view); say(state, words(locale, 'RAM의 Holdings를 지웠습니다.', 'Cleared Holdings from RAM.'), 'CLEARED'); preview(state); });
-    const back = () => { if (!live(state)) { state.dispose(); return; } if (doc.visibilityState === 'visible' && state.awaiting && !state.busy) { state.awaiting = false; void readTab(state); } };
+    const back = () => { if (!live(state)) { state.dispose(); return; } if (doc.visibilityState === 'visible' && state.awaiting && !state.busy) { state.awaiting = false; void readTab(state, {fetch: false}); } };
     const changed = () => { if (!live(state)) { state.dispose(); return; } preview(state); };
     doc.addEventListener('visibilitychange', back); view.addEventListener('focus', back); doc.addEventListener('device-actual-changed', changed);
     state.dispose = () => { doc.removeEventListener('visibilitychange', back); view.removeEventListener('focus', back); doc.removeEventListener('device-actual-changed', changed); if (state.unsubscribe) state.unsubscribe(); if (states.get(host) === state) states.delete(host); };

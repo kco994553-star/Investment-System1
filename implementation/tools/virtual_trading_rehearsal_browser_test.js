@@ -134,6 +134,15 @@ async function storageOnlyV(page) {
     return { clean: !values.includes(canary) && !values.includes('private-history/1') && !/"closes"|"trades"|"positions"|EXEC_|RECHECK_/.test(values), vOk, raw };
   }, { canary: CANARY });
 }
+// Click-only rule (owner decision 2026-10-23): opening S17 reads the stored / RAM prices only (no Worker request); prices come
+// from the report's button '가격 받아 다시 계산'. Waits for the open pass (the button is shown), presses it and waits for the
+// result of that button run (a freshly painted card that is not LOADING).
+async function fetchPrices(page) {
+  const button = page.locator('[data-runner-fetch]'); await button.waitFor({ timeout: 30000 });
+  await page.evaluate(() => { document.querySelector('[data-report-inputs]').dataset.beforeFetch = '1'; });
+  await button.click();
+  await page.waitForFunction(() => { const n = document.querySelector('[data-report-inputs]'); return !!n && !n.dataset.beforeFetch && n.dataset.runnerState !== 'LOADING'; }, null, { timeout: 60000 });
+}
 const noWonAmount = (text) => (text.match(/\d[\d,]*\s*(?:원|만원|억)/g) || []).length === 0;
 
 (async () => {
@@ -201,6 +210,7 @@ const noWonAmount = (text) => (text.match(/\d[\d,]*\s*(?:원|만원|억)/g) || [
       try {
         await signIn(page);
         await page.evaluate(() => { location.hash = 'report/mock'; });
+        await fetchPrices(page);
         await page.locator('[data-report-inputs][data-runner-state="READY"]').waitFor({ timeout: 30000 });
         assert.equal((await page.locator('[data-report-mode]').textContent()).trim(), '기록 모드');
         assert.equal(await page.locator('[data-basis="msft"]').getAttribute('data-basis-benchmark'), 'XLK');
