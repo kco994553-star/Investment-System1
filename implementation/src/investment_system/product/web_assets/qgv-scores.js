@@ -295,9 +295,11 @@ async function collectQuotes(win,{identities=[],v2Inputs=null,catalog=null,meta=
  for(const c of identities){const code=codeFor(c);if(!code||v2Inputs.records[code]?.identity_withdrawn===true||priceConflict(v2Inputs,c,code,symbols))continue;tickers[code]=c.ticker;if(Object.hasOwn(out,code))continue;if(bySymbol.has(key(c.ticker))){out[code]={...bySymbol.get(key(c.ticker))};if(meta)meta[code]=UNIVERSE_META;continue;}if(!dq)continue;
   let q=null;try{q=await win.DeviceValuation.deviceQuote(win,catalog,c.ticker);}catch(_){q=null;}if(q&&finite(q.price)&&q.price>0){out[code]={price:q.price,currency:q.currency};if(meta)meta[code]=Object.freeze({source:typeof q.source==='string'?q.source:'DEVICE_QUOTE',as_of:typeof q.as_of==='string'?q.as_of:null,stale:q.stale===true?true:typeof q.as_of==='string'&&q.freshness!=='UNDETERMINED'?false:null});}}
  // v_vs_own_history: month-end closes of the user's sheet Prices tab (PriceStore device module, RAM). Absent -> the factor is
- // NOT_AVAILABLE (PRICE_HISTORY_NOT_AVAILABLE); never filled.
+ // NOT_AVAILABLE (PRICE_HISTORY_NOT_AVAILABLE); never filled. Stored rows only (fetch:false, owner decision 2026-10-23): a
+ // screen open never requests a price; the month-ends arrive by the Universe504 / company buttons, and the codes priced so
+ // far are ranked meanwhile.
  const store=win.PriceStore&&typeof win.PriceStore.monthEndCloses==='function'?win.PriceStore:null;
- if(store)for(const code of Object.keys(out)){let m=null;try{m=await store.monthEndCloses(symbolOf(Object.hasOwn(tickers,code)?tickers[code]:code));}catch(_){m=null;}
+ if(store)for(const code of Object.keys(out)){let m=null;try{m=await store.monthEndCloses(symbolOf(Object.hasOwn(tickers,code)?tickers[code]:code),{fetch:false});}catch(_){m=null;}
   const clean={};if(object(m))for(const[k,v]of Object.entries(m))if(/^\d{4}-(0[1-9]|1[0-2])$/.test(k)&&finite(v)&&v>0)clean[k]=v;if(Object.keys(clean).length)out[code]={...out[code],month_closes:clean};}
  return out;
 }

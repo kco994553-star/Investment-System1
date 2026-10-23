@@ -114,6 +114,15 @@ async function storageClean(page) {
     return !values.includes(canary) && !values.includes('private-history/1') && !/"closes"|EXEC_FX_MISSING/.test(values);
   }, { canary: CANARY });
 }
+// Click-only rule (owner decision 2026-10-23): opening S17 reads the stored / RAM prices only (no Worker request); prices come
+// from the report's button '가격 받아 다시 계산'. Waits for the open pass (the button is shown), presses it and waits for the
+// result of that button run (a freshly painted card that is not LOADING).
+async function fetchPrices(page) {
+  const button = page.locator('[data-runner-fetch]'); await button.waitFor({ timeout: 30000 });
+  await page.evaluate(() => { document.querySelector('[data-report-inputs]').dataset.beforeFetch = '1'; });
+  await button.click();
+  await page.waitForFunction(() => { const n = document.querySelector('[data-report-inputs]'); return !!n && !n.dataset.beforeFetch && n.dataset.runnerState !== 'LOADING'; }, null, { timeout: 60000 });
+}
 const noWonAmount = (text) => (text.match(/\d[\d,]*\s*(?:원|만원|억)/g) || []).length === 0;
 
 (async () => {
@@ -141,6 +150,10 @@ const noWonAmount = (text) => (text.match(/\d[\d,]*\s*(?:원|만원|억)/g) || [
         await page.evaluate((t) => { window.__runnerToken = t; }, TOKEN);
         await postDeployClient(page);
         await page.evaluate(() => { location.hash = 'report/mock'; });
+        await page.locator('[data-runner-fetch]').waitFor({ timeout: 30000 });
+        assert.equal(traffic.worker.length, 0, 'opening the report requests no price (click-only rule)');
+        assert.ok((await page.locator('[data-runner-sources]').textContent()).includes('저장된 가격 없음'), 'the open pass names the missing stored prices');
+        await fetchPrices(page);
         await page.locator('[data-report-inputs][data-runner-state="READY"]').waitFor({ timeout: 30000 });
         assert.equal(await page.locator('[data-report-not-started]').count(), 0);
         assert.equal(await page.locator('[data-report-section="3"] tbody tr').count(), 19);
@@ -176,6 +189,7 @@ const noWonAmount = (text) => (text.match(/\d[\d,]*\s*(?:원|만원|억)/g) || [
       try {
         await login(page);
         await page.evaluate(() => { location.hash = 'report/mock'; });
+        await fetchPrices(page);
         await page.locator('[data-report-inputs][data-runner-state="NOT_AVAILABLE"]').waitFor({ timeout: 30000 });
         assert.equal(await page.locator('[data-source-symbol="SPY"][data-source-code="REQUEST_INVALID"]').count(), 1);
         assert.ok((await page.locator('[data-runner-summary]').textContent()).includes('SESSIONS_NOT_AVAILABLE'));
