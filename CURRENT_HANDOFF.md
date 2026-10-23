@@ -17,7 +17,7 @@
 
 | PR | 담당 | 시작 (UTC / KST) | 내용 |
 | --- | --- | --- | --- |
-| `claude/spec-direction-register` 명세 원문·방향 전환 대장·시작 문서 | Claude Code | 2026-10-23 23:20 / 10-24 08:20 | 문서·검사만. 공용 파일은 이 파일과 USER_DECISIONS_PENDING 머리 부분만 고침 |
+| #394 `claude/spec-direction-register` 명세 원문·방향 전환 대장·시작 문서 | Claude Code | 2026-10-23 23:20 / 10-24 08:20 | 문서·검사만. 공용 파일은 이 파일과 USER_DECISIONS_PENDING 머리 부분만 고침 |
 
 ## 1. 기준·게시
 
