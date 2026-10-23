@@ -182,7 +182,12 @@ FONT_FILES = frozenset({"jua-regular-ksx1001.woff2", "gaegu-regular-ksx1001.woff
 FONT_MAX_BYTES = 256 * 1024  # pinned subsets are 187,292 and 83,968 bytes; tighter than MAX_FILE_BYTES on purpose
 ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, COMPANY_NAMES_FILENAME, UNIVERSE_DOMAINS_FILENAME, COMPANY_LOGOS_FILENAME, QGV2_FILENAME, DISCLOSURES_FILENAME, NEWS_SIGNALS_FILENAME, MACRO_EVIDENCE_FILENAME} | set(SCREEN_FILENAMES) | set(DART_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024
-MAX_ARCHIVE_BYTES = 4 * 1024 * 1024
+# 8 MiB (was 4 MiB, owner approval 2026-10-23): the price-free build alone reached about 4.0 MiB as a tar, so screen
+# PRs hit the old ceiling. This limit only applies to the tar mode below (raw artifact.tar checks and tests); the deploy
+# guard runs in directory mode with the per-file 2 MiB and 192-entry limits, which stay. Above the 6 MiB warning line the
+# check still passes but the CLI prints a CI warning so the growth is reported.
+MAX_ARCHIVE_BYTES = 8 * 1024 * 1024
+ARCHIVE_WARN_BYTES = 6 * 1024 * 1024
 # 192 (was 128, owner approval 2026-10-20): a real deploy (build + ledger/public data) reached about 131 entries with the
 # chart renderer. Only the entry count changes; the allow-list, pinned hashes, size limits and price/personal checks stay.
 MAX_ENTRIES = 192
@@ -604,6 +609,11 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     receipt = scan_artifact(args.artifact_dir) if args.artifact_dir else validate_pages_tar(args.pages_artifact)
     print(json.dumps(receipt, sort_keys=True))
+    if args.pages_artifact and receipt["pages_artifact_guard"] == "PASS":
+        size = os.stat(args.pages_artifact).st_size
+        if size > ARCHIVE_WARN_BYTES:
+            print(f"::warning title=Pages artifact size::{size} bytes is above the {ARCHIVE_WARN_BYTES} byte warning line "
+                  f"(limit {MAX_ARCHIVE_BYTES})", file=sys.stderr)
     return 0 if receipt["pages_artifact_guard"] == "PASS" else 1
 
 
