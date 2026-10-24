@@ -14,6 +14,13 @@
 
 ## 1. 지금 있는 것 (사실, 2026-10-24 01:00 UTC 확인)
 
+> **갱신 2026-10-24 10:30 UTC (PR-A·B·C 작성 뒤, Main).** 아래 표와 "확인된 문제"는 01:00 UTC 기록 그대로 둔다. 바뀐 것:
+> - 결정 D1~D10은 소유자가 2026-10-24에 정했다([사용자 결정](../USER_DECISIONS_PENDING.md) 맨 위 절). D5 (b)는 D2 (a)(읽기 전용 토큰)와 충돌해 `D5-UPDATE`로 남았다.
+> - U1·U3: PR-A(`claude/central-v-core`)에서 #393 위로 정리했다. 실패하던 시험 3개는 #393의 실제 F_k 판독기로 고쳤고, C 파서 한 벌·별칭 표 하나(`iex_hist.SYMBOL_ALIASES`)로 줄였다. 설계 §4를 코드 스키마로 고쳤다.
+> - U5: PR-B(`claude/central-v-guard`). U4: PR-C(`claude/central-v-workflow`). 첫 게시 하루 절차는 [첫 게시 점검표](CENTRAL_V_GO_LIVE_CHECKLIST_20261024.md).
+> - U8 저장소 크기는 51,796 B(자산 6개)다. 실행 사실(시간·크기·커버리지, 가격 없음)은 [프로브·U8 사실](CENTRAL_V_PROBE_U8_FACTS_20261024.md)에 있다.
+> - 검토에서 첫 게시 전에 소유자가 정할 항목 3개가 나왔다: `CV-LEAK`(사유 묶음이 가격 경계를 다 숨기지 못함), `CV-SPLIT`(주식수 서류 접수 뒤 분할을 못 잡음), `CV-CARRY`(라이브 읽기 실패한 날 게시본 하루 빠짐). 점검표 0절과 사용자 결정 표에 있다.
+
 | 묶음 | 내용 | 상태 | 위치 |
 | --- | --- | --- | --- |
 | U1 | IEX HIST 어댑터: 색인 읽기, TOPS 1.6 스트림, 길이·MD5 확인, 정규장 마지막 체결가(Last Sale Eligible) | **코드 있음, 미병합** | `claude/cv-core-publisher` `providers/iex_hist.py`, C 파서 `tools/iex_tops/iex_last_trade.c` |
@@ -56,7 +63,7 @@
 
 - 가격은 실행기 RAM에만 있다. TOPS 파일은 `curl | gzip | C 파서`로 흘려 읽고 디스크에 쓰지 않는다(프로브 실측 디스크 0).
 - 저장소·Pages·Actions 로그·아티팩트·`GITHUB_STEP_SUMMARY`에 가격, 시가총액, EV, 수익률(EBIT·FCF), 배율, 내재 성장률, 기대 차이, DCF 범위, 종목별 가격 시각·해시를 넣지 않는다. 검증기 `FORBIDDEN_KEYS`가 어디서든 거부하고, 가드 민감 키도 그대로 둔다.
-- 가격을 거꾸로 추정할 수 있는 사유 코드(`EV_NON_POSITIVE`, `ROOT_NOT_BRACKETED` 등)는 공개본에서 `PRICE_DEPENDENT_NOT_COMPUTABLE` 하나로 묶는다.
+- 가격을 거꾸로 추정할 수 있는 사유 코드(`EV_NON_POSITIVE`, `ROOT_NOT_BRACKETED` 등)는 공개본에서 `PRICE_DEPENDENT_NOT_COMPUTABLE` 하나로 묶는다. (2026-10-24 검토: 묶어도 사유가 나오는 요인 칸·V 축 유무·순위로 가격 경계가 드러난다. V 공개 자체에 딸린 한계라 소유자 확인 `CV-LEAK`로 올렸다.)
 - 공개는 최신 게시본 1개만이다. 날짜별 점수 이력은 비공개 저장소에만 둔다.
 - `publication_id`는 가격 묶음의 HMAC을 넣어 만든다. HMAC 키는 Secret이다. 공개본에는 `publication_id`만 있고, HMAC 원값·종목별 가격 해시 키(`hmac`, `price_hmac`)는 검증기가 거부한다.
 - 비공개 저장소에 남는 가격은 U8 월말가(분할 미조정 원가)뿐이다. 일일 가격은 남기지 않는다.
@@ -108,4 +115,4 @@
 - 실행기 → GCS 대역폭: 프로브는 하루 1회뿐이다(61 MB/s). 변동성 큰 날 파일이 14.6 GB까지 커진다. 시간 초과 시 직전 정상본 유지.
 - 공개 파일 크기: `qgv-official.json` 약 1.06 MiB(한도 2 MiB), #393 뒤 `sec-qgv2.json` 약 1.84 MB(여유 약 8%). Pages 묶음은 약 4.0 → 5.1 MiB(경고 6 MiB, 한도 8 MiB, 추정).
 - V 커버리지 상한은 그대로다: 금융 67개는 V 정의 없음(공식 순위 없음), 일반기업 가격 무관 상한 360/434, ASML 통화 기준 미확인, WBD 체결 없음.
-- 공휴일·반일 장 동작은 시험이 없다. PR-A에 시험을 더한다.
+- 공휴일·반일 장 동작은 시험이 없다. PR-A에 시험을 더한다. (2026-10-24: PR-A에 더했다. 실제 반일은 2026-11-27에 처음 확인한다.)
