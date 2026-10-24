@@ -137,8 +137,9 @@ jobs:
       # Secrets live in this step's env only, and only the publisher holds them: cc and the guard run without them (env -u)
       # and the publisher removes them from its environment before it starts curl, gzip, the parser or node. A live copy that
       # cannot be read (not a 404) is NOT_RUN / LIVE_UNREACHABLE (nothing computed). If the step's own artifact guard refuses
-      # the V files, they are removed (QGV_OFFICIAL_GUARD_REFUSED), the guard runs again on the rest and the step fails, so a
-      # refused file never reaches the next required step's guard (which would stop the job) and the history step is skipped.
+      # the V files, they are removed (QGV_OFFICIAL_GUARD_REFUSED) and the step fails without the final guard run, so a refused
+      # file never reaches the next required step's guard (which would stop the job; it checks the rest) and the history step
+      # is skipped. Otherwise the step ends, like every step that writes the artifact, with the artifact guard.
       # No upload, cache, push or job summary in this step.
       - name: Publish the central QGV from one IEX HIST day (prices in RAM only; scores, ranks, reasons and counts only)
         id: central_v
@@ -151,7 +152,8 @@ jobs:
         run: |
           env -u QGV_OFFICIAL_HMAC_KEY -u RAW_REPO_READ_TOKEN cc -O2 -o "$RUNNER_TEMP/iex_last_trade" implementation/tools/iex_tops/iex_last_trade.c || echo 'QGV_OFFICIAL_PARSER_BUILD_FAILED'
           timeout -k 30s 12m python implementation/tools/qgv_official_publish.py --out "$RUNNER_TEMP/public-cockpit" --parser "$RUNNER_TEMP/iex_last_trade" --monthend-stamp "$QGV_MONTHEND_STAMP" --monthend-shards 6 --raw-token-env RAW_REPO_READ_TOKEN --hmac-key-env QGV_OFFICIAL_HMAC_KEY || { echo "QGV_OFFICIAL_STEP_STOPPED exit=$?"; rm -f "$RUNNER_TEMP"/public-cockpit/.qgv-official*; }
-          env -u QGV_OFFICIAL_HMAC_KEY -u RAW_REPO_READ_TOKEN python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit" || { echo 'QGV_OFFICIAL_GUARD_REFUSED'; rm -f "$RUNNER_TEMP/public-cockpit/qgv-official.json" "$RUNNER_TEMP/public-cockpit/qgv-official-status.json"; env -u QGV_OFFICIAL_HMAC_KEY -u RAW_REPO_READ_TOKEN python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"; exit 1; }
+          env -u QGV_OFFICIAL_HMAC_KEY -u RAW_REPO_READ_TOKEN python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit" || { echo 'QGV_OFFICIAL_GUARD_REFUSED'; rm -f "$RUNNER_TEMP/public-cockpit/qgv-official.json" "$RUNNER_TEMP/public-cockpit/qgv-official-status.json"; refused=1; }
+          [ -z "${refused:-}" ] && env -u QGV_OFFICIAL_HMAC_KEY -u RAW_REPO_READ_TOKEN python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
       # Private dated score history (owner decision D9, 2026-10-24): a NEW publication of this run is copied byte for byte
       # (scores only, no prices) to the private raw repository's release qgv-official-<IEX basis day>; a kept, failed or absent
       # publication is skipped, and so is everything when the V step (its artifact guard included) did not succeed. The raw-repo

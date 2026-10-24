@@ -105,7 +105,7 @@ QGV_OFFICIAL attempt=OK reason=- published=NEW basis=YYYY-MM-DD rows=523 ranked=
 | `reason=JS_TWIN_…` 또는 `OFFICIAL_…` | 검증 실패(Python·JS 결과 불일치 등) | 직전 정상본 유지. Main에 보고 |
 | `QGV_OFFICIAL_STEP_STOPPED exit=124` | 단계 시간 한도(12분) 초과 | 다음 날 다시. 반복되면 Main에 보고 |
 | `attempt=NOT_RUN reason=LIVE_UNREACHABLE` | 라이브 `qgv-official.json`을 3번 다 읽지 못함(404가 아닌 실패). 아무것도 계산하지 않았고 그날 아티팩트에 게시본이 없다. 배포가 라이브를 읽으면 그날 사이트에서 게시본이 빠진다(0절 CV-CARRY) | 다음 날 정기 실행이 다시 낸다. 이틀 연속이면 Main에 보고 |
-| `QGV_OFFICIAL_GUARD_REFUSED` | V 단계의 아티팩트 가드가 V 파일을 거부. 두 파일을 지우고 가드를 다시 통과시킨 뒤 단계만 실패로 끝남(이력 단계 건너뜀). 다른 단계·배포는 계속 | Main에 즉시 보고(검증기와 가드의 어긋남) |
+| `QGV_OFFICIAL_GUARD_REFUSED` | V 단계의 아티팩트 가드가 V 파일을 거부. 두 파일을 지우고 단계만 실패로 끝남(이력 단계 건너뜀, 나머지 파일은 다음 필수 단계의 가드가 확인). 다른 단계·배포는 계속 | Main에 즉시 보고(검증기와 가드의 어긋남) |
 | `published=KEPT_SAME_ID` | 입력(`sec-qgv2.json` 바이트)과 가격이 모두 같아 기존 게시본 유지. 같은 날 같은 입력으로 다시 돌린 경우에만 나온다 | 정상 |
 
 어떤 경우든 V 단계는 종료 코드 0이고 `continue-on-error`라 원장·뉴스·SEC 파일 배포와 연속 실행 기록에는 영향이 없다.

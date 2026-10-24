@@ -42,9 +42,10 @@ VERIFY_STEP = 'Check the central QGV publication without prices (strict reader, 
 NODE_PIN = 'uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4'
 GUARD_LINE = 'python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"'
 NO_SECRETS = 'env -u QGV_OFFICIAL_HMAC_KEY -u RAW_REPO_READ_TOKEN '
-V_GUARD_LINE = (NO_SECRETS + GUARD_LINE + " || { echo 'QGV_OFFICIAL_GUARD_REFUSED'; "
-                'rm -f "$RUNNER_TEMP/public-cockpit/qgv-official.json" "$RUNNER_TEMP/public-cockpit/qgv-official-status.json"; '
-                + NO_SECRETS + GUARD_LINE + '; exit 1; }')
+V_GUARD_LINES = [NO_SECRETS + GUARD_LINE + " || { echo 'QGV_OFFICIAL_GUARD_REFUSED'; "
+                 'rm -f "$RUNNER_TEMP/public-cockpit/qgv-official.json" "$RUNNER_TEMP/public-cockpit/qgv-official-status.json"; '
+                 'refused=1; }',
+                 '[ -z "${refused:-}" ] && ' + NO_SECRETS + GUARD_LINE]
 
 
 def _load(name):
@@ -138,8 +139,9 @@ def test_the_v_step_holds_its_two_secrets_only_continues_on_error_and_ends_with_
                         '--parser "$RUNNER_TEMP/iex_last_trade" --monthend-stamp "$QGV_MONTHEND_STAMP" --monthend-shards 6 '
                         '--raw-token-env RAW_REPO_READ_TOKEN --hmac-key-env QGV_OFFICIAL_HMAC_KEY '
                         '|| { echo "QGV_OFFICIAL_STEP_STOPPED exit=$?"; rm -f "$RUNNER_TEMP"/public-cockpit/.qgv-official*; }')
-    # A guard refusal stays inside the step: the V files go, the guard runs again on the rest, the step fails (history skipped).
-    assert lines[2:] == [V_GUARD_LINE]
+    # A guard refusal stays inside the step: the V files go and the step fails (history skipped); otherwise the step ends with
+    # the artifact guard like every step that writes the artifact (test_public_price_boundary sink test).
+    assert lines[2:] == V_GUARD_LINES and step.endswith(GUARD_LINE)
     # One source each: the Secrets appear in this step only; the parser file and the month-end stamp are the recorded ones.
     for secret in ('secrets.QGV_OFFICIAL_HMAC_KEY', 'secrets.RAW_REPO_READ_TOKEN'):
         assert text.count(secret) == 1
@@ -366,7 +368,7 @@ def test_a_guard_refusal_stays_inside_the_v_step(tmp_path, built_site):
     assert run.returncode == 1                                         # the step fails (continue-on-error in the workflow)
     assert 'QGV_OFFICIAL_GUARD_REFUSED' in run.stdout.splitlines()
     receipts = [json.loads(l) for l in run.stdout.splitlines() if l.startswith('{')]
-    assert receipts[-1]['pages_artifact_guard'] == 'PASS'              # the second guard run, without the V files
+    assert [r['pages_artifact_guard'] for r in receipts] == ['FAIL']    # the refusal; no final guard run after it
     out = runner / 'public-cockpit'
     assert not (out / qo.FILENAME).exists() and not (out / qo.STATUS_FILENAME).exists()
     # the next required step ends with the plain guard: it passes on the same directory
