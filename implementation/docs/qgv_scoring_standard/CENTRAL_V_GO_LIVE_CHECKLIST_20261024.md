@@ -7,10 +7,21 @@
 - 목표일: **2026-11-04 전 첫 게시.** 넘길 것 같으면 그 전에 D1을 (iii)(TARGET v1 확정 11-15 뒤 #393 병합, TARGET v1은 "임시 V")로 바꾸자고 Main이 먼저 보고한다.
 - 휴대폰 브라우저만으로 할 수 있다. GitHub 화면에서 메뉴가 안 보이면 브라우저 메뉴의 "데스크톱 사이트"를 켠다.
 
+## 0. 첫 게시 전에 소유자가 정할 것 (2026-10-24 검토에서 나온 것)
+
+아래 두 가지는 **지금 규칙대로 게시하면 남는 한계**다. 첫 게시(3단계) 전에 소유자가 수락하거나 바꾸는 규칙을 승인해야 한다. Main은 이 두 줄을 `USER_DECISIONS_PENDING`의 남은 결정 표로 옮긴다.
+
+| 번호 | 무엇이 남나 | 선택지 | 결정 전 동작 |
+| --- | --- | --- | --- |
+| CV-LEAK | **사유 묶음(D-CV2 (b))은 가격 경계를 숨기지 못한다.** 원 사유는 정해진 요인 칸에만 나와 칸이 원 사유를 되돌려 준다. 예: 수익률 세 칸이 묶음 사유면 "가격 ≤ (현금 − 부채) ÷ 주식수", 기대 점검 칸이면 "가격이 공개 DCF 구간 밖". 사유가 없어도 V 축 점수 유무와 `rank`/`qg_reference_order`가 같은 사실을 보인다. 즉 V를 공개하는 것 자체에 딸린 누출이다(설계 §4-4 정정 메모, `public_price_boundary/AUDIT.md` §10-6-1) | (i) 수락하고 게시 / (ii) 해당 행 V 비공개(규칙 변경, 누출을 다 없애지는 못함) / (iii) 다른 규칙 | 묶음은 표시 어휘로만 유지, 게시 안 함(3단계 보류) |
+| CV-SPLIT | **주식수를 실은 서류의 접수 뒤~기준일에 일어난 주식분할은 잡지 못한다.** 그 행의 공식 V·순위가 분할 비율만큼 틀린 채 다음 10-Q·10-K까지 남는다(예: NVDA 2024 10:1, 약 2.5개월). 결정 D6 (a)(F_k 근거 재사용)로 연결한 규칙은 접수 **전** 분할만 보는 보수 규칙이다(설계 §7 메모, `U4_U5` §4) | (i) 수락하고 게시 / (ii) 새 장치 승인(D6 (b): V 단계 RAM에서 오늘 IEX 원가격을 비공개 최신 원 월말가와 비교해 분할 비율 대역이면 `SPLIT_AFTER_SHARE_COUNT`) | 게시 안 함(3단계 보류) |
+| CV-CARRY(선택) | V 단계가 라이브 게시본을 3번 다 못 읽고 배포는 읽는 날, 그날 배포에서 게시본이 사이트에서 하루 빠진다(`NOT_RUN LIVE_UNREACHABLE` → 배포 `MISSING` → `WITHHELD`). 다음 성공 실행이 다시 낸다 | (i) 수락 / (ii) 배포 잡이 검증된 라이브 바이트를 다시 넣어 올리기(배포 잡 새 업로드 = 게시 경로 정적 시험 변경) | (i)처럼 동작 |
+
 ## 한눈에
 
 | 순서 | 누가 | 할 일 | 끝난 표시 |
 | --- | --- | --- | --- |
+| 0 | 소유자 | 0절 CV-LEAK·CV-SPLIT 결정 | 결정 기록 |
 | 1 | 소유자 | Secret 2개 등록(`RAW_REPO_READ_TOKEN`, `QGV_OFFICIAL_HMAC_KEY`) | Secrets 목록에 이름 2개 |
 | 2 | 소유자 승인 → Main | 같은 날 병합: #393 → PR-A → PR-B → PR-C | 네 PR 모두 Merged, 각 최종 HEAD 필수 체크 녹색 |
 | 3 | 소유자 | `SEC daily public reported inputs`를 `all_shards=true`로 1회 실행 | 실행 1건이 시작됨 |
@@ -76,7 +87,7 @@ QGV_OFFICIAL attempt=OK reason=- published=NEW basis=YYYY-MM-DD rows=523 ranked=
 ```
 
 - `basis`는 실제 IEX 기준일이다. T+1이라 보통 실행일 기준 **전 거래일**이다(결정 D3). 요청 기준일은 게시본 `price_source.requested_basis_date`에 따로 있다.
-- `supplied=n/m`은 V 자격 행 중 가격을 얻은 수다. 95% 미만이면 게시하지 않는다(결정 D4).
+- `supplied=n/m`: m은 **가격 없이도 V 축 가중치 50%에 닿을 수 있는** GENERAL 단면 Universe 행 수(USD, ADR·분할 규칙 밖; `qgv_official.supply_eligible`), n은 그중 그날 IEX 가격을 얻은 행 수다. n < ceil(0.95 × m)이면 게시하지 않는다(결정 D4). V 입력 블록만 있고 가격이 있어도 V가 나올 수 없는 행은 m에 넣지 않는다(2026-10-24 검토로 바로잡음; 공개 10-24 파일로 측정하면 옛 정의 430, 지금 정의 358).
 - 같은 잡의 다음 단계 **Copy a new central QGV publication to the private dated history (…)**: `QGV_OFFICIAL_HISTORY RAW_UPLOADED tag=qgv-official-<기준일> …`(결정 D9, 비공개 저장소에 점수만).
 - **verify** 잡 → **Check the central QGV publication without prices (…)**: `QGV_OFFICIAL_CHECK publication=VALID status=VALID consistent=YES new=YES …`와 시험 통과. 이 단계가 실패하면 `QGV_OFFICIAL_VERIFY_FAILED` 주석이 붙지만 배포는 막지 않는다(게시본 자체가 틀리면 그 위 단계의 아티팩트 가드가 막는다).
 - **deploy** 잡 → 신선도 단계: `PAGES_FRESHNESS file=qgv-official.json section=publication verdict=NO_LIVE kind=NEW …`(첫 게시).
@@ -93,7 +104,9 @@ QGV_OFFICIAL attempt=OK reason=- published=NEW basis=YYYY-MM-DD rows=523 ranked=
 | `reason=SUPPLY_BELOW_THRESHOLD` | 가격 확보 95% 미만 | 직전 정상본 유지. Main에 보고 |
 | `reason=JS_TWIN_…` 또는 `OFFICIAL_…` | 검증 실패(Python·JS 결과 불일치 등) | 직전 정상본 유지. Main에 보고 |
 | `QGV_OFFICIAL_STEP_STOPPED exit=124` | 단계 시간 한도(12분) 초과 | 다음 날 다시. 반복되면 Main에 보고 |
-| `published=KEPT_SAME_ID` | 같은 입력·가격이라 기존 게시본 유지 | 정상 |
+| `attempt=NOT_RUN reason=LIVE_UNREACHABLE` | 라이브 `qgv-official.json`을 3번 다 읽지 못함(404가 아닌 실패). 아무것도 계산하지 않았고 그날 아티팩트에 게시본이 없다. 배포가 라이브를 읽으면 그날 사이트에서 게시본이 빠진다(0절 CV-CARRY) | 다음 날 정기 실행이 다시 낸다. 이틀 연속이면 Main에 보고 |
+| `QGV_OFFICIAL_GUARD_REFUSED` | V 단계의 아티팩트 가드가 V 파일을 거부. 두 파일을 지우고 가드를 다시 통과시킨 뒤 단계만 실패로 끝남(이력 단계 건너뜀). 다른 단계·배포는 계속 | Main에 즉시 보고(검증기와 가드의 어긋남) |
+| `published=KEPT_SAME_ID` | 입력(`sec-qgv2.json` 바이트)과 가격이 모두 같아 기존 게시본 유지. 같은 날 같은 입력으로 다시 돌린 경우에만 나온다 | 정상 |
 
 어떤 경우든 V 단계는 종료 코드 0이고 `continue-on-error`라 원장·뉴스·SEC 파일 배포와 연속 실행 기록에는 영향이 없다.
 
@@ -113,7 +126,11 @@ QGV_OFFICIAL attempt=OK reason=- published=NEW basis=YYYY-MM-DD rows=523 ranked=
 
 ## 7. 다음 날부터
 
-- 매일 정기 실행에서 같은 한 줄을 본다. 기준일이 바뀌면 `published=NEW`, 같으면 `KEPT_SAME_ID`, 실패면 `KEPT_LAST_GOOD`(공개 파일은 직전 정상본 그대로).
+- 매일 정기 실행에서 같은 한 줄을 본다. **보통은 매일(주말 포함) `published=NEW`다.** 샤드 단계가 매 실행 `sec-qgv2.json`을 새 `as_of`로 다시 쓰므로 입력 해시가 매일 바뀌고, 그래서 `publication_id`도 매일 바뀐다. 기준일이 새 날이든, 주말처럼 기준일은 같고 입력만 더 늦든 `NEW`이고 배포 신선도는 `NEWER`로 통과한다. 비공개 이력 단계도 매 실행 `qgv-official-<기준일>` 태그에 자산 한 쌍을 더한다(주말에는 금요일 기준일 태그에 날마다 하나씩).
+  - `KEPT_SAME_ID`는 같은 입력 바이트로 다시 돌린 경우(같은 날 재실행)에만 나온다.
+  - 실패하면 `KEPT_LAST_GOOD`(공개 파일은 직전 정상본 그대로), 라이브를 못 읽으면 `NOT_RUN LIVE_UNREACHABLE`(그날만 게시본 없음, 위 표).
+  - 연속 기록을 볼 때는 `attempt=OK`인지 보면 된다. `published` 값이 날마다 `NEW`인 것은 정상이다.
 - 월말가 저장소는 U8(2026-10-23) 한 번뿐이다. 그 뒤 끝나는 회계연도 말월은 `MONTH_END_PRICE_NOT_AVAILABLE`로 빠진다. 갱신 방식 D5 (b)는 읽기 전용 토큰과 충돌해 이번 PR에 없다(Main이 따로 올린다).
 - 첫 반일 장 2026-11-27: 그날 기준 실행의 `supplied`·`ranked` 개수를 평소와 비교한다(가격은 보지 않는다).
-- 멈추려면: Secret 두 개 중 하나를 지우면 다음 실행부터 `NOT_RUN`이고 마지막 정상본이 계속 실린다. 공개 파일 자체를 내리는 것은 별도 PR이 필요하다(자동으로 지우지 않는다).
+- 멈추려면: Secret 두 개 중 하나를 지우면 다음 실행부터 `NOT_RUN`이고 마지막 정상본이 계속 실린다(그 사본도 매일 V 단계의 가드를 다시 거친다. 가드가 거부하면 `QGV_OFFICIAL_GUARD_REFUSED`로 그 단계 안에서 빠지고 잡은 계속된다). 공개 파일 자체를 내리는 것은 별도 PR이 필요하다(자동으로 지우지 않는다).
+- 규칙(엔진·가중치·설정 버전)을 바꾸는 PR이 병합되면, 그 전 코드로 만든 라이브 게시본은 새 검증기에서 무효라 다음 성공 실행까지 사이트에서 빠진다(`AUDIT.md` §10-6-2). 그런 PR은 정기 실행 직전보다 직후에 병합하는 편이 빠지는 시간이 짧다.

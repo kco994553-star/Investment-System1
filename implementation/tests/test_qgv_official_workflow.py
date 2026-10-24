@@ -41,6 +41,10 @@ HISTORY_STEP = 'Copy a new central QGV publication to the private dated history 
 VERIFY_STEP = 'Check the central QGV publication without prices (strict reader, status, unit tests)'
 NODE_PIN = 'uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4'
 GUARD_LINE = 'python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"'
+NO_SECRETS = 'env -u QGV_OFFICIAL_HMAC_KEY -u RAW_REPO_READ_TOKEN '
+V_GUARD_LINE = (NO_SECRETS + GUARD_LINE + " || { echo 'QGV_OFFICIAL_GUARD_REFUSED'; "
+                'rm -f "$RUNNER_TEMP/public-cockpit/qgv-official.json" "$RUNNER_TEMP/public-cockpit/qgv-official-status.json"; '
+                + NO_SECRETS + GUARD_LINE + '; exit 1; }')
 
 
 def _load(name):
@@ -127,13 +131,15 @@ def test_the_v_step_holds_its_two_secrets_only_continues_on_error_and_ends_with_
     assert env_of(step) == {'QGV_OFFICIAL_HMAC_KEY': '${{ secrets.QGV_OFFICIAL_HMAC_KEY }}',
                             'RAW_REPO_READ_TOKEN': '${{ secrets.RAW_REPO_READ_TOKEN }}', 'QGV_MONTHEND_STAMP': "'20261023'"}
     lines = run_lines(step)
-    assert lines[0] == ('cc -O2 -o "$RUNNER_TEMP/iex_last_trade" implementation/tools/iex_tops/iex_last_trade.c '
+    # Only the publisher holds the two Secrets: cc and the guard run without them (the publisher pops them before its children).
+    assert lines[0] == (NO_SECRETS + 'cc -O2 -o "$RUNNER_TEMP/iex_last_trade" implementation/tools/iex_tops/iex_last_trade.c '
                         "|| echo 'QGV_OFFICIAL_PARSER_BUILD_FAILED'")
     assert lines[1] == ('timeout -k 30s 12m python implementation/tools/qgv_official_publish.py --out "$RUNNER_TEMP/public-cockpit" '
                         '--parser "$RUNNER_TEMP/iex_last_trade" --monthend-stamp "$QGV_MONTHEND_STAMP" --monthend-shards 6 '
                         '--raw-token-env RAW_REPO_READ_TOKEN --hmac-key-env QGV_OFFICIAL_HMAC_KEY '
                         '|| { echo "QGV_OFFICIAL_STEP_STOPPED exit=$?"; rm -f "$RUNNER_TEMP"/public-cockpit/.qgv-official*; }')
-    assert lines[2:] == [GUARD_LINE]
+    # A guard refusal stays inside the step: the V files go, the guard runs again on the rest, the step fails (history skipped).
+    assert lines[2:] == [V_GUARD_LINE]
     # One source each: the Secrets appear in this step only; the parser file and the month-end stamp are the recorded ones.
     for secret in ('secrets.QGV_OFFICIAL_HMAC_KEY', 'secrets.RAW_REPO_READ_TOKEN'):
         assert text.count(secret) == 1
@@ -147,7 +153,7 @@ def test_the_v_step_holds_its_two_secrets_only_continues_on_error_and_ends_with_
 def test_the_history_step_holds_only_the_raw_repo_write_token(daily):
     _, jobs = daily
     step = named(steps_of(jobs['collect']), HISTORY_STEP)
-    assert '        continue-on-error: true\n' in step
+    assert '        continue-on-error: true\n' in step and '        timeout-minutes: 5\n' in step   # a stall ends this step only
     # Only after a V step that succeeded as a whole (publisher and its artifact guard): a file the guard refused is never copied.
     assert "        if: steps.central_v.outcome == 'success'\n" in step
     assert env_of(step) == {'RAW_REPO_TOKEN': '${{ secrets.RAW_REPO_TOKEN }}'}
@@ -164,6 +170,7 @@ def test_verify_checks_the_published_files_and_runs_the_unit_tests_without_secre
         < names.index('name: Verify device features and price-free pages locally')
     assert [s for s in steps[:names.index('name: ' + VERIFY_STEP)] if s.startswith(NODE_PIN)]   # node before the JS twin test
     assert '        continue-on-error: true\n' in step and 'secrets.' not in jobs['verify'] and 'env:' not in step
+    assert '        timeout-minutes: 8\n' in step                    # a hang ends this step only, never the verify job
     lines = run_lines(step)
     assert 'python implementation/tools/qgv_official_check.py --artifact-dir "$RUNNER_TEMP/public-cockpit" || rc=1' in lines
     tests = next(l for l in lines if 'pytest' in l)
@@ -203,9 +210,22 @@ def built_site(tmp_path_factory):
     return out
 
 
-def _runner(tmp_path, built_site, *, secrets, shim=None):
+LIVE_404 = """import io, urllib.error, urllib.request
+_open = urllib.request.OpenerDirector.open
+def open(self, fullurl, *args, **kwargs):
+    url = getattr(fullurl, 'full_url', fullurl)
+    if isinstance(url, str) and url.startswith('https://kco994553-star.github.io/'):
+        raise urllib.error.HTTPError(url, 404, 'Not Found', {}, io.BytesIO(b''))
+    return _open(self, fullurl, *args, **kwargs)
+urllib.request.OpenerDirector.open = open
+"""
+
+
+def _runner(tmp_path, built_site, *, secrets, shim=None, live='404'):
     """$RUNNER_TEMP with the built price-free site plus this run's sec-qgv2.json, a `python` on PATH and a proxy on a closed
-    local port (the live-copy read and any source request fail at once; nothing leaves the machine)."""
+    local port (every source request fails at once; nothing leaves the machine). live='404': the live Pages copy answers 404
+    as before the first publication (a test-only sitecustomize on PYTHONPATH); live='closed': the live read fails like the
+    rest (LIVE_UNREACHABLE)."""
     runner = tmp_path / 'runner'
     shutil.copytree(built_site, runner / 'public-cockpit')
     bin_dir = tmp_path / 'bin'
@@ -219,6 +239,11 @@ def _runner(tmp_path, built_site, *, secrets, shim=None):
                HTTP_PROXY='http://127.0.0.1:9', NO_PROXY='', no_proxy='', QGV_MONTHEND_STAMP='20261023',
                QGV_OFFICIAL_HMAC_KEY=secrets.get('hmac', ''), RAW_REPO_READ_TOKEN=secrets.get('token', ''))
     env.pop('PYTHONPATH', None)
+    if live == '404':
+        site = tmp_path / 'live404'
+        site.mkdir()
+        (site / 'sitecustomize.py').write_text(LIVE_404)
+        env['PYTHONPATH'] = str(site)
     return runner, env
 
 
@@ -263,8 +288,19 @@ def test_the_v_step_without_secrets_is_not_run_and_the_job_goes_on(tmp_path, bui
 
 @pytest.mark.skipif(not shutil.which('cc'), reason='no C compiler')
 def test_the_v_step_with_secrets_and_no_source_is_supply_failed_and_green(tmp_path, built_site):
-    runner, env = _runner(tmp_path, built_site, secrets={'hmac': 'synthetic-test-key-0123456789', 'token': 'synthetic-token'})
+    # cc and the artifact guard record the names in their environment: neither may see the two Secrets (review 2026-10-24)
+    shim = ('#!/bin/sh\ncase "$1" in *pages_artifact_guard.py) env | cut -d= -f1 >> "$RUNNER_TEMP/guard-env.txt";; esac\n'
+            f'exec "{tmp_path / "bin" / "python-real"}" "$@"\n')
+    runner, env = _runner(tmp_path, built_site, secrets={'hmac': 'synthetic-test-key-0123456789', 'token': 'synthetic-token'},
+                          shim=shim)
+    (tmp_path / 'ccwrap').mkdir()
+    (tmp_path / 'ccwrap' / 'cc').write_text(f'#!/bin/sh\nenv | cut -d= -f1 > "$RUNNER_TEMP/cc-env.txt"\nexec "{shutil.which("cc")}" "$@"\n')
+    (tmp_path / 'ccwrap' / 'cc').chmod(0o755)
+    env['PATH'] = f'{tmp_path / "ccwrap"}:{env["PATH"]}'
     run = _run_step(V_STEP, env)
+    for name in ('cc-env.txt', 'guard-env.txt'):
+        keys = set((runner / name).read_text().split())
+        assert 'PATH' in keys and not {'QGV_OFFICIAL_HMAC_KEY', 'RAW_REPO_READ_TOKEN'} & keys, name
     assert run.returncode == 0, run.stdout[-2000:]
     first = run.stdout.splitlines()[0]
     assert first.startswith('QGV_OFFICIAL attempt=NO_OFFICIAL_YET reason=IEX_') and ' published=NONE ' in first
@@ -291,6 +327,52 @@ def test_a_stopped_publisher_leaves_no_partial_file_and_the_job_goes_on(tmp_path
     assert run.stdout.splitlines()[:2] == ['QGV_OFFICIAL_PARSER_BUILD_FAILED', 'QGV_OFFICIAL_STEP_STOPPED exit=124']
     assert _receipt(run.stdout)['pages_artifact_guard'] == 'PASS'
     assert not list((runner / 'public-cockpit').glob('.qgv-official*'))
+
+
+@pytest.mark.skipif(not shutil.which('cc'), reason='no C compiler')
+def test_the_v_step_with_an_unreachable_live_copy_is_not_run_and_never_claims_no_publication(tmp_path, built_site):
+    """Network blocked for the live read too (closed proxy): after its retries the publisher computes nothing and writes
+    NOT_RUN / LIVE_UNREACHABLE (never NO_OFFICIAL_YET); the step and the job go on."""
+    runner, env = _runner(tmp_path, built_site, secrets={'hmac': 'synthetic-test-key-0123456789', 'token': 'synthetic-token'},
+                          live='closed')
+    run = _run_step(V_STEP, env)
+    assert run.returncode == 0, run.stdout[-2000:]
+    assert run.stdout.splitlines()[0] == ('QGV_OFFICIAL attempt=NOT_RUN reason=LIVE_UNREACHABLE published=NONE basis=- rows=0 '
+                                          'ranked=0 supplied=-')
+    assert _receipt(run.stdout)['pages_artifact_guard'] == 'PASS'
+    out = runner / 'public-cockpit'
+    status = json.loads((out / qo.STATUS_FILENAME).read_bytes())
+    qo.require_status(status)
+    assert (status['attempt_state'], status['reason_code'], status['official_publication_id']) == ('NOT_RUN', 'LIVE_UNREACHABLE', None)
+    assert not (out / qo.FILENAME).exists()
+    assert check_tool.ok(check_tool.inspect(out))
+
+
+def test_a_guard_refusal_stays_inside_the_v_step(tmp_path, built_site):
+    """Review 2026-10-24: if the V step's own artifact guard refuses the V files (a future guard-vs-validator mismatch, or
+    anything a guard-only rule catches), they are removed, the guard passes on the rest, the step fails (continue-on-error;
+    the history step is skipped) and the next required step's guard passes: the collect job, upload and deploy go on."""
+    shim = ('#!/bin/sh\ncase "$1" in *qgv_official_publish.py) '
+            'printf \'{"schema":"qgv-official/1","rows":{"NYSE:ABT":{"price":1}}}\' > "$RUNNER_TEMP/public-cockpit/qgv-official.json"; '
+            'printf \'{"attempt_state":"OK"}\' > "$RUNNER_TEMP/public-cockpit/qgv-official-status.json"; '
+            'echo "QGV_OFFICIAL attempt=OK reason=- published=NEW basis=2026-10-13 rows=1 ranked=0 supplied=1/1"; exit 0;; esac\n'
+            f'exec "{tmp_path / "bin" / "python-real"}" "$@"\n')
+    runner, env = _runner(tmp_path, built_site, secrets={}, shim=shim)
+    env['PATH'] = f'{tmp_path / "nocc"}:{env["PATH"]}'
+    (tmp_path / 'nocc').mkdir()
+    (tmp_path / 'nocc' / 'cc').write_text('#!/bin/sh\nexit 1\n')
+    (tmp_path / 'nocc' / 'cc').chmod(0o755)
+    run = _run_step(V_STEP, env)
+    assert run.returncode == 1                                         # the step fails (continue-on-error in the workflow)
+    assert 'QGV_OFFICIAL_GUARD_REFUSED' in run.stdout.splitlines()
+    receipts = [json.loads(l) for l in run.stdout.splitlines() if l.startswith('{')]
+    assert receipts[-1]['pages_artifact_guard'] == 'PASS'              # the second guard run, without the V files
+    out = runner / 'public-cockpit'
+    assert not (out / qo.FILENAME).exists() and not (out / qo.STATUS_FILENAME).exists()
+    # the next required step ends with the plain guard: it passes on the same directory
+    nxt = subprocess.run(['bash', '--noprofile', '--norc', '-eo', 'pipefail', '-c', GUARD_LINE + '\n'], cwd=REPO, env=env,
+                         capture_output=True, text=True, timeout=600)
+    assert nxt.returncode == 0 and _receipt(nxt.stdout)['pages_artifact_guard'] == 'PASS'
 
 
 # ---- tools/qgv_official_check.py and tools/qgv_official_history.py on the publisher's real output ------------------------
