@@ -52,6 +52,12 @@
 | 4 | **PR-D** U6 화면 읽기 | 새 프론트엔드 P1의 V 접근자에서 `qgv-official.json`을 엄격 리더로 읽는다. 유효·같은 calc_version·신선하면 출처 `OFFICIAL_CENTRAL`, 아니면 `DEVICE_TEMPORARY`("임시 V"). 출처 문구(IEX 표시 문구·"IEX 마지막 체결가 기준(공식 종가 아님)")를 화면에 그대로 둔다. 기기 V는 "공식 V 대조" 도구로만 남기고 공식 순위에 섞지 않는다. 옛 화면 판독기는 결정 D8 | 화면 PR |
 | 5 | **PR-E** U8 후속 | 월말가 저장소 갱신 방식(결정 D5), 백필 도구가 단일 별칭 표를 import | 결정 뒤 |
 
+> **갱신 2026-10-24 (PR-D 분할, 결정 D8 (b), Main).** 위 4번 PR-D를 둘로 나눈다. 아래 규칙은 Main이 정한 것이고 소유자가 바꿀 수 있다.
+> - **PR-D(이번, 옛 화면 작은 판독기, 브랜치 `claude/central-v-reader`, 미병합):** 새 모듈 `web_assets/qgv-official.js`(전역 `QgvOfficial`, `qgv/qgv_official.py` `parse()`·`require_qgv_official()`의 엄격한 JS 쌍둥이, 같은 판정 벡터 `tests/fixtures/qgv_official_vectors_v1.json`). 쓰는 곳은 TARGET v1(2.1.7·6.1.2~6.1.4) 하나다. 다른 옛 화면(리더보드·기업·레이더·V 커버리지)과 R-B 자동 선정은 기기 V 그대로다(알려진 한계, 새 프론트엔드 P2·P3에서 표시를 정리).
+> - **PR-D2(다음, 새 프론트엔드):** `web_app/qgv.js`의 `OFFICIAL_READER` 전환. #398 병합 뒤.
+> - **사용 규칙(M4):** "규칙으로 초안 만들기"(기기 가격이 없으면 "중앙 V 게시본으로 초안 만들기")와 "TARGET v1 확정 저장"을 누르는 순간, 기존처럼 다시 읽는 `sec-qgv2.json` 옆에서 `qgv-official.json`을 읽는다. 다음이 모두 맞을 때만 공식 V(`OFFICIAL_CENTRAL`)다: ① 읽기와 엄격 검증 통과, ② `times.verified_at` 있음, ③ 게시본 calc_version = 다시 읽은 `sec-qgv2.json` calc_version, ④ `times.price_basis_date` 다음 날부터 기기의 뉴욕 날짜(오늘 포함)까지 뉴욕 거래일이 2일 이하(D-CV6 권장값, 기존 달력 `ForwardValidation.sessionDay`; 미래 기준일은 신선하지 않음). 아니면 기기 경로 "임시 V"(GSQ-024)이고, 왜 공식 V를 안 썼는지 한 줄로 보인다: `OFFICIAL_NOT_PUBLISHED`(404)·`OFFICIAL_UNAVAILABLE`·`OFFICIAL_INVALID`·`OFFICIAL_CALC_VERSION_DIFFERS`·`OFFICIAL_STALE`. 입력 as_of 일치는 요구하지 않는다(sic·지표·재무 안전은 지금처럼 다시 읽은 `sec-qgv2.json`). 공식 초안·버전은 게시본 id·가격 기준일·`inputs_as_of`를 남기고, 초안 출처와 확정 순간 출처가 다르거나 게시본 id가 바뀌면 `V_SOURCE_CHANGED`로 초안을 다시 만든다.
+> - **선행 조건(어느 V 출처든 같음):** 게시본은 calc_version `qgv2-calc/2026-10-23.1` 이상에서만 나온다. 그래서 확정 버튼은 5절 재대조·재기록 PR이 병합될 때까지 `NUMBER_CHECK_CALC_VERSION_MISMATCH`로, `all_shards=true` 1회 실행 전까지 `CALC_VERSION_MIXED`로 막힌다. 첫 게시 뒤 점검은 [점검표](CENTRAL_V_GO_LIVE_CHECKLIST_20261024.md) 5-1절.
+
 **첫 게시(배포 창 하나로 묶음)**
 1. #393, PR-A, PR-B, PR-C를 같은 날 순서대로 병합한다(텍스트 충돌 없음 확인 필요, 가드 파일은 줄이 다름).
 2. 소유자가 `SEC daily public inputs`를 `all_shards=true`로 한 번 실행한다(폰 브라우저: 저장소 → Actions → 워크플로 → Run workflow). 504행이 하루에 새 calc_version으로 바뀌어 혼합 기간이 하루로 줄어든다.
@@ -106,7 +112,7 @@
 | --- | --- |
 | 10-24~10-27 | 결정 D1~D10. PR-A 작성·CI. PR-B·PR-C 작성 |
 | 10-28~10-31 | PR-A·PR-B·PR-C 승인. Secret 등록(D2). 배포 창 하루에 #393 포함 병합 → 전체 샤드 실행 → 첫 게시 확인 |
-| 11-01~11-04 | 5절 재대조·재기록 PR 승인. PR-D(새 프론트엔드 V 접근자 전환) |
+| 11-01~11-04 | 5절 재대조·재기록 PR 승인. PR-D(옛 화면 TARGET v1 작은 판독기) 승인. PR-D2(새 프론트엔드 V 접근자 전환)는 #398 뒤 |
 | 11-09~11-15 | TARGET v1 확정 창. 중앙 V가 게시돼 있으면 중앙 V, 아니면 "임시 V" |
 
 ## 7. 위험
