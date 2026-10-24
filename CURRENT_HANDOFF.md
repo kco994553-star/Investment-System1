@@ -1,6 +1,6 @@
 # 현재 인수인계 — 2026-10-23 (Claude Code Main)
 
-> **2026-10-24 정리(23:16 UTC 10/23 확인):** 아래 1~5절은 10/23 01:40 UTC 기준이라 그 뒤 병합(#384 #378 #382 #387 #389 #388 #386)이 빠져 있었다. 작업 중 표·3절·4절·5절의 낡은 줄만 고쳤다. 10/23 결정 요지는 [USER_DECISIONS_PENDING](implementation/docs/USER_DECISIONS_PENDING.md) "결정됨 — 2026-10-23".
+> **2026-10-24 정리(23:16 UTC 10/23 확인):** 아래 1~5절은 10/23 01:40 UTC 기준이라 그 뒤 병합(#384 #378 #382 #387 #389 #388 #386)이 빠져 있었다. 작업 중 표·3절·4절·5절의 낡은 줄만 고쳤다. **2026-10-24 00:10 UTC / 09:10 KST: #395(CI 실행기 ubuntu-24.04 고정) 병합, canonical d6eaaa8a.** 10/23 결정 요지는 [USER_DECISIONS_PENDING](implementation/docs/USER_DECISIONS_PENDING.md) "결정됨 — 2026-10-23".
 
 확인 시각: **2026-10-23 01:40 UTC / 10:40 KST**. 이 시각 이후의 PR·Actions·게시 상태는 다시 확인한다. 구현 / 시험 / 병합 / 게시 / 실사이트 확인을 나눠 적는다.
 
@@ -17,11 +17,15 @@
 
 | PR | 담당 | 시작 (UTC / KST) | 내용 |
 | --- | --- | --- | --- |
-| #394 `claude/spec-direction-register` 명세 원문·방향 전환 대장·시작 문서 | Claude Code | 2026-10-23 23:20 / 10-24 08:20 | 문서·검사만. 공용 파일은 이 파일과 USER_DECISIONS_PENDING 머리 부분만 고침 |
+| #394 `claude/spec-direction-register` 명세 원문·방향 전환 대장·시작 문서 | Claude Code | 2026-10-23 23:20 / 10-24 08:20 | 문서·검사만. 공용 파일은 이 파일과 USER_DECISIONS_PENDING 머리 부분만 고침. 10-24 00:00 UTC부터 최신 기준 동기화·병합 승인 요청 |
+| (#395 병합 뒤) 10/23분 정기 실행 확인 | Claude Code | 2026-10-24 00:10 / 09:10 | #395는 67f2ca85 필수 6체크 성공 뒤 병합(d6eaaa8a). 정기 실행 collect·verify·deploy 결과로 연속 2/7 여부 기록 |
+| `claude/frontend-v2-p1`(#385 위) 새 프론트엔드 P1 자료·계산 층 | Claude Code | 2026-10-24 00:15 / 09:15 | `web_app/`·그 시험·`docs/frontend_v2/`만. 공개 파일 엄격 리더·QGV v2 점수 접근자·V 출처(OFFICIAL_CENTRAL/DEVICE_TEMPORARY)·가격(클릭할 때만)·엔진 연결. 기존 모듈 재사용 |
+| `ccr-263267c9-f5ng5h` 옛 화면 4.5 문구 "나비효과"(DC-17)·DC-02 구현 계획·#393 재대조 계획 | Claude Code | 2026-10-24 00:00 / 09:00 | `ia-screens.js`·`app-shell.js` 문구와 가드 해시 재고정, 계획 문서. 병합은 승인 뒤 |
 
 ## 1. 기준·게시
 
-- canonical: **claude/investment-system-top500-validation-alrugm**, HEAD **a4705807** (#381 병합, 2026-10-22 13:21 UTC / 22:21 KST).
+- canonical: **claude/investment-system-top500-validation-alrugm**, HEAD **d6eaaa8a** (#395 병합, 2026-10-24 00:10 UTC / 09:10 KST). 그 전 10/23 병합: #384 #378 #382 #387 #389 #388 #386(마지막 81d7b58d).
+- (이전) canonical HEAD **a4705807** (#381 병합, 2026-10-22 13:21 UTC / 22:21 KST).
 - 10/22 병합(모두 최종 HEAD가 직전 canonical과 동기화된 상태에서 필수 6체크 성공 확인 뒤):
   - #248 TARGET v1 빌더: HEAD 87904cc6 → 병합 5691f7cd (08:54 UTC / 17:54 KST)
   - #263 TARGET v1 후속(확정 재검사·calc_version 숫자 검증·NA 제외·일정): HEAD eaa7df68(Codex 검증본 995b0103과 같은 파일 구성) → 병합 7e821375 (10:10 UTC / 19:10 KST)
@@ -64,7 +68,7 @@
 
 ## 5. 다음 할 일
 
-0. (2026-10-24 정리) 1번과 3번은 10-23에 끝났다(#384·#378·#382, #386). 4번은 `docs/SPEC/FUNCTION_HIERARCHY_v1.0.md`로 들어왔다. 10-24 결정: UNI-FOLLOW=(a) 고정 유지(#390 닫음), 4.5 이름 "나비효과", #395(CI 실행기 24.04 고정) 승인. 지금 결정 대기: #391·#392·#393 승인.
+0. (2026-10-24 정리) 1번과 3번은 10-23에 끝났다(#384·#378·#382, #386). 4번은 `docs/SPEC/FUNCTION_HIERARCHY_v1.0.md`로 들어왔다. 10-24 결정: UNI-FOLLOW=(a) 고정 유지(#390 닫음), 4.5 이름 "나비효과", #395(CI 실행기 24.04 고정) 승인 → 10-24 00:10 UTC 병합(d6eaaa8a). 지금 결정 대기: #391·#392·#393 승인.
 1. tar 상한 결정 → (승인 시) 상한 조정 PR → #378 → #382 순서로 병합.
 2. 10/23 정기 실행 결과 확인(연속 2회째 여부, 01:30 UTC 무렵). 8-K·뉴스·로고 부분 실패 원인 조사.
 3. 기기 FCF 수익률 7칸: 사용자 기기 절차(대조 문서 0-2-3)로 맞춘 뒤 `number_check.result`를 같은 calc_version으로 갱신하는 작은 커밋.
