@@ -1,6 +1,6 @@
 # 현재 인수인계 — 2026-10-24 (Claude Code Main)
 
-확인 시각: **2026-10-24 15:40 UTC / 2026-10-25 00:40 KST**. 이 시각 이후의 PR·Actions·게시 상태는 `git log`와 열린 PR로 다시 확인한다. 구현 / 시험 / 병합 / 게시 / 실사이트 확인을 나눠 적는다.
+확인 시각: **2026-10-24 15:20 UTC / 2026-10-25 00:20 KST**. 이 시각 이후의 PR·Actions·게시 상태는 `git log`와 열린 PR로 다시 확인한다. 구현 / 시험 / 병합 / 게시 / 실사이트 확인을 나눠 적는다.
 
 먼저 읽기: **[START_HERE.md](START_HERE.md) → [방향 전환 대장](docs/SPEC/DIRECTION_CHANGES.md)** → [WORKING_RULES.md](WORKING_RULES.md) → 이 파일 → [기능 명세 v1.0](docs/SPEC/FUNCTION_HIERARCHY_v1.0.md) → [기능 현황](docs/SPEC/FUNCTION_STATUS.md) → [사용자 결정](implementation/docs/USER_DECISIONS_PENDING.md) → [새 프론트엔드 계획](implementation/docs/frontend_v2/FRONTEND_V2_PLAN.md)(#385) → [자료 계약](implementation/docs/FRONTEND_DATA_CONTRACT.md).
 이전 기록: [10/23](implementation/docs/handoff/HANDOFF_HISTORY_20261023.md) · [10/21 Codex Main 원문](implementation/docs/handoff/HANDOFF_HISTORY_20261021.md) · [10/20](implementation/docs/handoff/HANDOFF_HISTORY_20261020.md) · [10/18~19](implementation/docs/handoff/HANDOFF_HISTORY_20261018_19.md).
@@ -19,7 +19,7 @@
 | #398 `claude/frontend-v2-p1-decisions` P1 결정 반영·결정 기록 | Claude Code Main | 2026-10-24 06:00 / 15:00 | DC-18 기기 시세 저장 중단, 한 클릭 한 동작, 백업 /5(옛 검증기 재사용), 판정 '기록 안 됨', 10/24 결정 기록. 필수 체크 녹색 뒤 병합 승인 요청 |
 | #399 `claude/frontend-v2-p2-1-first-paint`(#398 위) P2-1a 첫 화면 구조 | Claude Code Main | 2026-10-24 06:00 / 15:00 | 셸 먼저, P1 층은 첫 그림 뒤 불러오기 + 성능 시험(느린 폰 조건 첫 화면 ≤2,000 ms·첫 전송 ≤100 KB). 측정 중앙값 848 ms / 24.4 KB(CI 837 ms). 녹색, #398 병합 뒤 기준 바꿔 동기화·병합 |
 | #400 → #403 → #404(#393 위 사슬) 중앙 V PR-A·B·C | Claude Code Main | 2026-10-24 06:00 / 15:00 | U1~U3 정리(#400), 가드 U5(#403), 워크플로 U4·첫 게시 점검표(#404). 처음 연 #401·#402는 Gate A 이메일 검사가 옛 중간 커밋의 시험 URL을 계속 잡아 같은 트리의 새 브랜치(`-r2`)로 바꾸고 닫음. Secret 2개 등록 전에는 V 단계가 NOT_RUN이고 정기 실행은 성공해야 한다. 첫 게시 전 소유자 확인 CV-LEAK·CV-SPLIT(·CV-CARRY). 첫 게시 목표 11-04 전 |
-| #405 `claude/central-v-reader`(#404 위) 중앙 V PR-D 옛 화면 작은 판독기 | Claude Code Main | 2026-10-24 10:40 / 19:40 | D8 (b): TARGET v1이 유효한 중앙 게시본이면 공식 V, 아니면 임시 V. 새 `qgv-official.js`(서버 검증기의 JS 쌍둥이), 클릭 때만 읽기. 새 프론트엔드 전환은 PR-D2(#398 뒤) |
+| #405 `claude/central-v-reader`(#404 위) 중앙 V PR-D 옛 화면 작은 판독기 | Claude Code Main | 2026-10-24 10:30 / 19:30 | D8 (b): TARGET v1이 유효한 중앙 게시본이면 공식 V, 아니면 임시 V. 새 `qgv-official.js`(서버 검증기의 JS 쌍둥이), 클릭 때만 읽기. 새 프론트엔드 전환은 PR-D2(#398 뒤) |
 
 ## 1. 기준·게시
 
@@ -58,7 +58,7 @@
 | V 출처 | 중앙 V 미게시 → "임시 V"(#391 병합, 다음 배포에 반영). 중앙 V가 11-04 전에 게시되면 옛 화면 작은 판독기(D8 (b), PR-D)로 중앙 V |
 | 실제 사용자 카드 응답 | 미시작 |
 
-## 4. 열린 PR (10-24 15:40 UTC)
+## 4. 열린 PR (10-24 15:20 UTC)
 
 | PR | 상태 | 남은 것 |
 | --- | --- | --- |
