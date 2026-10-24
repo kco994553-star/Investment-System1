@@ -5,8 +5,9 @@
    - LOAD_ORDER is the one load list. tools/build_web_app.py (plan A: a listed name with no file in web_app is an old
      web_assets file, kept byte-identical; a name found in neither folder fails the build) and tools/web_app_reuse.js read it
      from this file, so it stays a literal of plain quoted names.
-   - Each file is a same-origin <script src> with a plain file name (checked here and by the build), async=false so all of them
-     download in parallel and run in list order. No inline code, no eval; the CSP is unchanged ('self').
+   - Each file is a same-origin <script src> with a plain file name (NAME below; the build and tools/web_app_reuse.js refuse
+     the same names and a name listed twice, so a build that passes never meets LOADER_NAME_INVALID here), async=false so all
+     of them download in parallel and run in list order. No inline code, no eval; the CSP is unchanged ('self').
    - IS2.ready resolves when every file ran and the layer installed itself (IS2.action and the five namespaces). It rejects with
      Error('LOADER_FAILED <file>') for the first file in list order that did not arrive, threw while it ran, or did not install
      its namespace; it never retries (a reload does).
@@ -37,6 +38,7 @@ const LOAD_ORDER=Object.freeze([
  'virtual-trading-compare.js','data-refresh.js',
  'action.js','data.js','prices.js','store.js','qgv.js','engines.js',
 ]);
+// A plain lowercase script name. tools/build_web_app.py holds this exact line (the build fails when the two differ).
 const NAME=/^[a-z0-9][a-z0-9-]*(?:\.[a-z0-9-]+)*\.js$/;
 // The namespace each layer file installs on IS2 (action.js installs IS2.action, which has no facade: screens do not call it).
 const NAMESPACES=Object.freeze({data:'data.js',prices:'prices.js',store:'store.js',qgv:'qgv.js',engines:'engines.js'});
@@ -133,5 +135,5 @@ function create(win,{list=LOAD_ORDER}={}){
   return I;}
  return Object.freeze({ready,load,install,facades,state:()=>phase,list:order});
 }
-return Object.freeze({LOAD_ORDER,NAMESPACES,API,NOT_READY,LOAD_FAILED,MARK_READY,MARK_FAILED,create,install:root=>create(root).install()});
+return Object.freeze({LOAD_ORDER,NAME,NAMESPACES,API,NOT_READY,LOAD_FAILED,MARK_READY,MARK_FAILED,create,install:root=>create(root).install()});
 });

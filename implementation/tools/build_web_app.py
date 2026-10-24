@@ -11,8 +11,9 @@ in web_app always wins (screen-detail.js). Old files nothing references are stil
 
 What the page loads (P2-1a, owner 2026-10-24 first paint): index.html loads only web_app files (the first screen: an old module
 there fails the build); web_app/loader.js loads the rest after the first paint from its LOAD_ORDER literal, the one load list,
-which this build reads. A listed name found in neither folder, a name loaded twice, an inline script, a name that is not a plain
-local file name or a LOAD_ORDER that is not a literal of plain quoted names fails the build.
+which this build reads. A listed name found in neither folder, a name loaded twice, an inline script, an index.html reference
+that is not a plain local file name, a LOAD_ORDER that is not a literal of plain quoted names, or a LOAD_ORDER name the loader
+would refuse at runtime (its NAME rule, which loader.js must hold exactly as LOAD_NAME below) fails the build.
 """
 from __future__ import annotations
 
@@ -31,6 +32,12 @@ FRONTEND_SUFFIXES = ('.html', '.css', '.js', '.woff2', '.txt', '.png', '.svg')
 LOADER = 'loader.js'
 _LOAD_ORDER = re.compile(r'const LOAD_ORDER=Object\.freeze\(\[(.*?)\]\);', re.S)
 _QUOTED = re.compile(r"'([^'\\]*)'")
+# loader.js NAME: the only names the loader takes at runtime (any other throws LOADER_NAME_INVALID there, and the page is left
+# without the layer). The build refuses the same names, and fails unless loader.js defines NAME as exactly this line, so the
+# two rules cannot drift apart.
+LOAD_NAME = re.compile(r'^[a-z0-9][a-z0-9-]*(?:\.[a-z0-9-]+)*\.js$')
+_LOADER_NAME_LINE = f'const NAME=/{LOAD_NAME.pattern}/;'
+_NAME_DEFS = re.compile(r'\bconst NAME=.*')
 
 
 class _Refs(HTMLParser):
@@ -56,9 +63,9 @@ def _local_name(ref: str) -> str:
     return ref
 
 
-def load_order(new: Path = NEW) -> list[str]:
-    """loader.js LOAD_ORDER: the scripts the page loads after its first paint, in order (exactly one literal of quoted names)."""
-    found = _LOAD_ORDER.findall((new / LOADER).read_text(encoding='utf-8'))
+def parse_load_order(text: str) -> list[str]:
+    """LOAD_ORDER of a loader.js text: exactly one literal of quoted names, each a name the loader takes (LOAD_NAME), none twice."""
+    found = _LOAD_ORDER.findall(text)
     if len(found) != 1:
         raise ValueError('loader.js must hold exactly one LOAD_ORDER literal')
     items = [item.strip() for item in found[0].split(',')]
@@ -69,8 +76,23 @@ def load_order(new: Path = NEW) -> list[str]:
         m = _QUOTED.fullmatch(item)
         if not m:
             raise ValueError(f'loader.js LOAD_ORDER has an entry that is not a plain quoted name: {item[:40]!r}')
-        names.append(m.group(1))
+        name = m.group(1)
+        if not LOAD_NAME.fullmatch(name):
+            raise ValueError(f'loader.js LOAD_ORDER lists a name the loader refuses at runtime (LOADER_NAME_INVALID; lowercase '
+                             f'letters, digits, "-" and ".", ending .js): {name!r}')
+        if name in names:
+            raise ValueError(f'loader.js LOAD_ORDER lists a script twice (LOADER_NAME_INVALID): {name!r}')
+        names.append(name)
     return names
+
+
+def load_order(new: Path = NEW) -> list[str]:
+    """loader.js LOAD_ORDER: the scripts the page loads after its first paint, in order. loader.js must define NAME as the
+    build's LOAD_NAME line, once."""
+    text = (new / LOADER).read_text(encoding='utf-8')
+    if _NAME_DEFS.findall(text) != [_LOADER_NAME_LINE]:
+        raise ValueError(f'loader.js must define its name rule once, exactly as the build does: {_LOADER_NAME_LINE}')
+    return parse_load_order(text)
 
 
 def _index_refs(new: Path) -> _Refs:
@@ -85,7 +107,7 @@ def page_scripts(new: Path = NEW) -> tuple[list[str], list[str]]:
     first = list(map(_local_name, _index_refs(new).scripts))
     if LOADER not in first and (new / LOADER).is_file():
         raise ValueError(f'index.html does not load {LOADER}, so its LOAD_ORDER would never load')
-    later = [_local_name(n) for n in load_order(new)] if LOADER in first else []
+    later = load_order(new) if LOADER in first else []
     return first, later
 
 
@@ -100,8 +122,6 @@ def reused_old_files(new: Path = NEW, old: Path = OLD) -> list[str]:
         if not (new / src).is_file():
             raise ValueError(f'index.html loads a script that is not in web_app: {src} (old modules load after the first paint, from {LOADER} LOAD_ORDER)')
     for src in later:
-        if not src.endswith('.js'):
-            raise ValueError(f'{LOADER} LOAD_ORDER lists something that is not a script: {src}')
         if src in seen:
             raise ValueError(f'the page loads a script twice: {src}')
         seen.add(src)

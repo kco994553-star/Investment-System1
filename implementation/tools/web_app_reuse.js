@@ -20,13 +20,23 @@ function scriptsOf(html) {
 }
 const newIndex = () => fs.readFileSync(path.join(NEW, 'index.html'), 'utf8');
 const oldIndex = () => fs.readFileSync(path.join(OLD, 'index.html'), 'utf8');
-// loader.js LOAD_ORDER, parsed as build_web_app.load_order parses it: exactly one literal of plain quoted names.
+// loader.js LOAD_ORDER, parsed as build_web_app.parse_load_order parses it: exactly one literal of plain quoted names, each a
+// name the loader takes at runtime (its own NAME, read from loader.js; the build holds the same line), none twice.
+const LOAD_NAME = require(path.join(NEW, 'loader.js')).NAME;
 function loadOrderOf(text) {
   const found = [...String(text).matchAll(/const LOAD_ORDER=Object\.freeze\(\[([\s\S]*?)\]\);/g)];
   if (found.length !== 1) throw new Error('LOAD_ORDER_MISSING');
   const items = found[0][1].split(',').map((x) => x.trim());
   if (items.length && items[items.length - 1] === '') items.pop();
-  return items.map((x) => { const m = /^'([^'\\]*)'$/.exec(x); if (!m) throw new Error('LOAD_ORDER_INVALID ' + x.slice(0, 40)); return m[1]; });
+  const names = [];
+  for (const x of items) {
+    const m = /^'([^'\\]*)'$/.exec(x);
+    if (!m) throw new Error('LOAD_ORDER_INVALID ' + x.slice(0, 40));
+    if (!LOAD_NAME.test(m[1])) throw new Error('LOADER_NAME_INVALID ' + JSON.stringify(m[1]));
+    if (names.includes(m[1])) throw new Error('LOADER_NAME_INVALID twice ' + m[1]);
+    names.push(m[1]);
+  }
+  return names;
 }
 const loadOrder = () => loadOrderOf(fs.readFileSync(path.join(NEW, 'loader.js'), 'utf8'));
 // The first screen's scripts (index.html), the page's whole load order (then LOAD_ORDER), and the old page's scripts in
@@ -113,4 +123,4 @@ function nodeWindow({ files = {}, origin = 'https://site.test' } = {}) {
   return win;
 }
 
-module.exports = Object.freeze({ ROOT, OLD, NEW, scriptsOf, newIndex, oldIndex, loadOrderOf, loadOrder, firstPaint, scripts, oldScripts, reused, oldPath, requireOld, newPath, requireNew, globalName, loadOld, nodeWindow });
+module.exports = Object.freeze({ ROOT, OLD, NEW, scriptsOf, newIndex, oldIndex, LOAD_NAME, loadOrderOf, loadOrder, firstPaint, scripts, oldScripts, reused, oldPath, requireOld, newPath, requireNew, globalName, loadOld, nodeWindow });

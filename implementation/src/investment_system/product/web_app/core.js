@@ -4,8 +4,12 @@
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.IS2=Object.assign(root.IS2||{},api);})(typeof globalThis==='object'?globalThis:this,function(){
 'use strict';
 const SVG='http://www.w3.org/2000/svg';
-/* h('div',{class:'x',onclick:fn,'aria-label':'..'},child,...) - children: Node, string, number, array, null/false (skipped). */
+/* h('div',{class:'x',onclick:fn,'aria-label':'..'},child,...) - children: Node, string, number, array, null/false (skipped).
+   Never a script element, in either namespace (TAG_INVALID): scripts come from loader.js LOAD_ORDER only (P2-1a), so a screen
+   cannot add one the CSP ('self') would run outside that list. */
+const SCRIPT_TAG=/^\s*(?:svg:)?script\s*$/i;
 function h(tag,attrs,...children){
+ if(typeof tag!=='string'||SCRIPT_TAG.test(tag))throw Error('TAG_INVALID');
  const svg=tag.startsWith('svg:'),el=svg?document.createElementNS(SVG,tag.slice(4)):document.createElement(tag);
  for(const[k,v]of Object.entries(attrs||{})){
   if(v===null||v===undefined||v===false)continue;

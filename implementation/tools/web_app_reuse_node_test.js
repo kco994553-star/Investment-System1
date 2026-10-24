@@ -9,6 +9,9 @@
 //    tools/build_web_app.py applies the same rule, keeps the reused files byte-identical, removes every other old frontend
 //    file, and fails on a reference found in neither folder, a duplicate, an inline script, a non-local name, an old module in
 //    index.html, a LOAD_ORDER that is not one literal of plain quoted names, or a loader index.html does not load.
+//  - LOAD_ORDER names: the build (LOAD_NAME, and loader.js must define NAME as the build's exact line) and the helper (the
+//    loader's own NAME) refuse exactly the names, and a name twice, that the loader refuses at runtime (LOADER_NAME_INVALID),
+//    run through all three on one table.
 //  - Loader (fake window): nothing is inserted before the shell's first paint and an idle moment (at once in a hidden page);
 //    then every listed file as a same-origin <script src> with async=false, in order; IS2.ready resolves when all ran and the
 //    layer installed itself, else rejects with LOADER_FAILED <first failed file in list order> (missing, threw while it ran,
@@ -24,11 +27,12 @@
 //  - The V history is never recorded (owner 2026-10-24, D9): no web_app script and no reused module calls its capture / record.
 //  - Screen registry: a placeholder never replaces a real screen, two real screens for one route fail (SCREEN_DUPLICATE),
 //    detail screens register by name; screen-menus.js registers all eight menus as placeholders (a lane screen loaded first
-//    stays); h() refuses a style string (the CSP would drop it).
+//    stays); h() refuses a style string (the CSP would drop it) and a script tag in any case or namespace (TAG_INVALID).
 //  - Source rules for every web_app script (no console output, no HTML strings, no style attribute strings, NA never filled
 //    with 0, storage / network / Google session / engine rows / score and price views / V source words only in their P1 owner
-//    files, no old path that bypasses the price view, no order feature, no script element outside loader.js), checked to
-//    catch their examples, and the Pages guard's secret patterns.
+//    files, no old path that bypasses the price view, no order feature, no script element outside loader.js: a 'script' tag
+//    in createElement / createElementNS / h() only there, a computed tag or an indirect createElement(NS) only in core.js h(),
+//    no HTML parsing), checked to catch their examples, and the Pages guard's secret patterns.
 // Wording rules for the fixed code list are left to tools/spec_direction_guard.py and not repeated here.
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -91,7 +95,7 @@ const sha = (p) => crypto.createHash('sha256').update(fs.readFileSync(p)).digest
 const files = (dir) => fs.readdirSync(dir).filter((n) => isFile(path.join(dir, n)));
 const tags = (html) => [...String(html).replace(/<!--[\s\S]*?-->/g, '').matchAll(/<script\b([^>]*)>/gi)].map((m) => m[1]);
 const csp = (html) => (/<meta http-equiv="Content-Security-Policy" content="([^"]*)"/.exec(html) || [])[1];
-const py = (code, args = []) => execFileSync('python3', ['-c', code, ...args], { encoding: 'utf8' });
+const py = (code, args = [], input = '') => execFileSync('python3', ['-c', code, ...args], { encoding: 'utf8', input });
 
 test('index.html loads the first screen only; loader.js LOAD_ORDER loads the reused old modules, then the P1 layer', () => {
   assert.equal(REUSED.length, 59);
@@ -193,6 +197,11 @@ test('build keeps the reused old files byte-identical, removes every other old f
   } finally { fs.rmSync(out, { recursive: true, force: true }); }
 });
 
+// build_web_app.parse_load_order over several loader texts in one python run: [{ok: names} | {error}].
+const parse = (texts) => JSON.parse(py(`import json,sys\nsys.path.insert(0,sys.argv[1])\nimport build_web_app as b\nout=[]\n`
+  + `for t in json.loads(sys.stdin.read()):\n    try:\n        out.append({'ok': b.parse_load_order(t)})\n    except ValueError as e:\n        out.append({'error': str(e)})\nprint(json.dumps(out))`,
+[path.join(R.ROOT, 'implementation/tools')], JSON.stringify(texts)));
+const NAME_LINE = 'const NAME=' + String(R.requireNew(LOADER).NAME) + ';';
 test('build rule (python) equals the helper and fails on missing, duplicate, inline and non-local references', () => {
   const tools = path.join(R.ROOT, 'implementation/tools');
   const rule = (newDir, oldDir) => JSON.parse(py(`import json,sys\nsys.path.insert(0,sys.argv[1])\nimport build_web_app as b\nfrom pathlib import Path\n`
@@ -210,7 +219,7 @@ test('build rule (python) equals the helper and fails on missing, duplicate, inl
     for (const [d, n] of [[W, 'a.js'], [W, 'c.js'], [W, 'app.css'], [O, 'a.js'], [O, 'b.js'], [O, 'old.css']]) fs.writeFileSync(path.join(d, n), '//\n');
     const BASE = '<link rel="icon" href="data:,"><link rel="stylesheet" href="app.css"><script defer src="a.js"></script><!-- <script src="gone.js"></script> --><script defer src="loader.js"></script>';
     const page = (list, body = BASE) => {
-      if (list === null) fs.rmSync(path.join(W, 'loader.js'), { force: true }); else fs.writeFileSync(path.join(W, 'loader.js'), typeof list === 'string' ? list : `const X=1;\nconst LOAD_ORDER=Object.freeze([\n ${list.map((n) => `'${n}'`).join(',')},\n]);\n`);
+      if (list === null) fs.rmSync(path.join(W, 'loader.js'), { force: true }); else fs.writeFileSync(path.join(W, 'loader.js'), typeof list === 'string' ? list : `const X=1;\nconst LOAD_ORDER=Object.freeze([\n ${list.map((n) => `'${n}'`).join(',')},\n]);\n${NAME_LINE}\n`);
       fs.writeFileSync(path.join(W, 'index.html'), body); return rule(W, O);
     };
     assert.deepEqual(page(['b.js', 'c.js']), { ok: ['b.js'] }, 'web_app wins on a.js and c.js; b.js is reused from web_assets');
@@ -222,8 +231,11 @@ test('build rule (python) equals the helper and fails on missing, duplicate, inl
     assert.deepEqual(page(null, BASE.replace('<script defer src="loader.js"></script>', '')), { ok: [] }, 'no loader: the first screen only');
     assert.match(page(['b.js'], BASE + '<script>void 0</script>').error, /inline/);
     assert.match(page(['b.js'], BASE + '<link rel="stylesheet" href="old.css">').error, /links a file/);
-    for (const bad of ['../b.js', 'https://x.example/b.js', 'sub/b.js', 'b.js?v=1']) assert.match(page([bad]).error, /not a local file name/, bad);
-    assert.match(page(['old.css']).error, /not a script/);
+    for (const bad of ['../b.js', 'https://x.example/b.js', 'sub/b.js', 'b.js?v=1', 'Bad_name.js', 'old.css']) assert.match(page([bad]).error, /LOAD_ORDER lists a name the loader refuses at runtime \(LOADER_NAME_INVALID/, bad);
+    // The build reads the loader's own name rule line; a loader whose rule differs (or is missing, or defined twice) fails.
+    const plain = "const LOAD_ORDER=Object.freeze(['b.js']);\n";
+    assert.deepEqual(page(plain + NAME_LINE), { ok: ['b.js'] });
+    for (const text of [plain, plain + NAME_LINE.replace('[a-z0-9-]*', '[a-z0-9_-]*'), plain + NAME_LINE + '\n' + NAME_LINE]) assert.match(page(text).error, /must define its name rule once, exactly as the build does/, text);
     const LITERALS = {
       plain: ["const LOAD_ORDER=Object.freeze(['b.js','c.js']);", { ok: ['b.js', 'c.js'] }],
       trailing: ["const LOAD_ORDER=Object.freeze([\n 'b.js',\n 'c.js',\n]);", { ok: ['b.js', 'c.js'] }],
@@ -233,14 +245,38 @@ test('build rule (python) equals the helper and fails on missing, duplicate, inl
       comment: ["const LOAD_ORDER=Object.freeze(['b.js', // x\n 'c.js']);", /plain quoted name|LOAD_ORDER_INVALID/],
       missing: ["const ORDER=Object.freeze(['b.js']);", /exactly one|LOAD_ORDER_MISSING/],
       twice: ["const LOAD_ORDER=Object.freeze(['b.js']);\nconst LOAD_ORDER=Object.freeze(['c.js']);", /exactly one|LOAD_ORDER_MISSING/],
+      badName: ["const LOAD_ORDER=Object.freeze(['b.js','Bad_name.js']);", /LOADER_NAME_INVALID/],
+      duplicate: ["const LOAD_ORDER=Object.freeze(['b.js','b.js']);", /LOADER_NAME_INVALID/],
+      empty: ['const LOAD_ORDER=Object.freeze([]);', { ok: [] }],
     };
-    for (const [name, [text, want]] of Object.entries(LITERALS)) {
-      fs.writeFileSync(path.join(W, 'loader.js'), text);
-      const py1 = order(W), js1 = helper(text);
+    const names = Object.keys(LITERALS), pys = parse(names.map((n) => LITERALS[n][0]));
+    names.forEach((name, i) => {
+      const [text, want] = LITERALS[name], py1 = pys[i], js1 = helper(text);
       if (want instanceof RegExp) { assert.match(py1.error || '', want, 'python ' + name); assert.match(js1.error || '', want, 'helper ' + name); }
       else { assert.deepEqual(py1, want, 'python ' + name); assert.deepEqual(js1, want, 'helper ' + name); }
-    }
+    });
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('LOAD_ORDER names: the build and the helper refuse exactly what the loader refuses at runtime (LOADER_NAME_INVALID)', () => {
+  const L = R.requireNew(LOADER), tools = path.join(R.ROOT, 'implementation/tools');
+  assert.deepEqual(JSON.parse(py(`import json,sys\nsys.path.insert(0,sys.argv[1])\nimport build_web_app as b\nprint(json.dumps([b.LOAD_NAME.pattern, b.LOAD_NAME.flags & 0x1ff]))`, [tools])),
+    [L.NAME.source, 32], 'python LOAD_NAME is the loader\'s NAME (re.UNICODE only, as a str pattern always has; no other flag)');
+  assert.equal(L.NAME.flags, '', 'the loader\'s NAME has no flag');
+  assert.deepEqual([R.LOAD_NAME.source, R.LOAD_NAME.flags], [L.NAME.source, L.NAME.flags], 'the helper uses the loader\'s NAME');
+  const OK = ['a.js', 'b.js', 'a-b.js', 'a.b.js', '0.js', 'x1-2.min.js', 'data-refresh.js'];
+  const BAD = ['Bad_name.js', 'B.js', 'b.JS', 'b c.js', 'b_c.js', '-b.js', '.b.js', 'b..js', 'b.js.', 'b.css', 'b', '.js', '', 'sub/b.js', '../b.js', 'b.js?v=1',
+    'b.js#x', 'https://x.example/b.js', 'b.js\n', '\u00e9.js', 'b.js ', ' b.js', "b'.js"];
+  const lists = [...[...OK, ...BAD].map((n) => [n]), ['b.js', 'b.js'], ['a.js', 'b.js'], []];
+  const text = (list) => 'const LOAD_ORDER=Object.freeze([' + list.map((n) => "'" + n + "'").join(',') + ']);';
+  const pys = parse(lists.map(text));
+  lists.forEach((list, i) => {
+    const want = list.length === 0 || (list.every((n) => OK.includes(n)) && new Set(list).size === list.length);
+    let loader = true; try { L.create(fakePage(), { list }); } catch (e) { assert.equal(e.message, 'LOADER_NAME_INVALID'); loader = false; }
+    let helper = true; try { assert.deepEqual(R.loadOrderOf(text(list)), list); } catch (e) { assert.match(e.message, /^(?:LOADER_NAME_INVALID|LOAD_ORDER_INVALID)/); helper = false; }
+    if (pys[i].ok) assert.deepEqual(pys[i].ok, list);
+    assert.deepEqual({ loader, build: !pys[i].error, helper }, { loader: want, build: want, helper: want }, JSON.stringify(list) + ' ' + (pys[i].error || ''));
+  });
 });
 
 test('P1 layer files are UMD modules exporting create()', () => {
@@ -275,7 +311,7 @@ const code = (text) => text.replace(/\/\*[\s\S]*?\*\//g, (c) => c.replace(/[^\n]
 // [rule, pattern, files allowed to match]
 const RULES = [
   ['console output', /\bconsole\./, []],
-  ['HTML strings', /\binnerHTML\b|\bouterHTML\b|insertAdjacentHTML|document\.write/, []],
+  ['HTML strings', /\binnerHTML\b|\bouterHTML\b|insertAdjacentHTML|document\.write|createContextualFragment|\bDOMParser\b|\b(?:set|parse)HTMLUnsafe\b|\bsrcdoc\b/, []],
   ['eval', /\beval\(|\bnew Function\b/, []],
   ['NA filled with 0', /(\?\?|\|\|)\s*0(?!\d)/, []],
   ['style property writes (CSSOM helper only)', /\.style\./, ['core.js']],
@@ -293,8 +329,12 @@ const RULES = [
   // together with the stopped quote record; its quote import writes that record (DC-18). Holdings writes go through the store.
   ['old writers of the stopped device quote record', /\bDeviceActual\.(?:mount\w*|applyMarketImport)\(/, []],
   ['order features', /placeOrder|submitOrder|sendOrder|주문하기|매수 주문|매도 주문/, []],
-  // The loader inserts the listed scripts; nothing else in web_app adds a script element (GIS comes through the old modules).
-  ['script elements outside loader.js', /createElement\(\s*['"`]script['"`]/, [LOADER]],
+  // The loader inserts the listed scripts; nothing else in web_app makes a script element (GIS comes through the old modules):
+  // a 'script' tag (any case, either namespace) given to createElement / createElementNS / h() only in loader.js; an element
+  // made from a computed tag, or createElement(NS) held or called indirectly, only in core.js h(), which refuses 'script' and
+  // 'svg:script' (TAG_INVALID); HTML parsing that could make one is refused with the HTML strings above.
+  ['script elements outside loader.js', /\bcreateElement(?:NS)?\s*\([^)]*['"`](?:svg:)?script['"`]|\bh\(\s*['"`](?:svg:)?script['"`]/i, [LOADER]],
+  ['elements from a computed tag outside core.js h()', /\bcreateElement\s*\(\s*(?!(['"])[A-Za-z0-9-]+\1\s*\))|\bcreateElementNS\s*\(\s*[^,()]*,\s*(?!(['"])[A-Za-z0-9-]+\2\s*\))|\bcreateElement(?:NS)?\b(?!\s*\()/, ['core.js']],
 ];
 test('source rules for every web_app script (code, not comments)', () => {
   const scripts = files(R.NEW).filter((n) => n.endsWith('.js'));
@@ -310,16 +350,28 @@ test('source rules for every web_app script (code, not comments)', () => {
   assert.doesNotMatch(R.newIndex(), RULES.find((r) => r[0] === 'order features')[1]);
 });
 
-test('source rules catch what they name (V source words, style attribute strings)', () => {
+test('source rules catch what they name (V source words, style attribute strings, script elements, HTML parsing)', () => {
   const rule = (name) => RULES.find((r) => r[0].startsWith(name))[1];
   for (const line of ["label.textContent='공식 V'", "row.source==='DEVICE_TEMPORARY'", "note.textContent='기기 시세로 계산 · 중앙 V 미게시'", "x.textContent='임시 V'", "if(id==='OFFICIAL_CENTRAL')"])
     assert.match(line, rule('V source words'), line);
   assert.doesNotMatch("chip.textContent=row.source_label", rule('V source words'));
   for (const line of ["h('p',{style:'color:red'})", 'h("p",{style: "width:4px"})', "el.setAttribute('style','x')", "el['style']='x'"]) assert.match(line, rule('style attribute strings'), line);
   assert.doesNotMatch("h('i',{style:{width:'40%'}})", rule('style attribute strings'));
+  // Script elements: only loader.js makes one; a computed tag only in core.js h() (which refuses 'script').
+  const script = rule('script elements'), computed = rule('elements from a computed tag');
+  for (const line of ["const s=document.createElement('script')", 'doc.createElement("SCRIPT")', 'doc.createElement( `script` )', "document.createElementNS('http://www.w3.org/2000/svg','script')",
+    'document.createElementNS(SVG, "script")', "document.createElementNS('http://www.w3.org/1999/xhtml','Script')", "h('script',{src:'x.js'})", 'h("svg:script",null)', "IS2.h( 'SCRIPT' )", 'h(`script`)'])
+    assert.match(line, script, line);
+  for (const line of ['document.createElement(tag)', 'document.createElement(name.trim())', "document.createElement('scr'+'ipt')", 'doc.createElement(`scr${x}`)', 'document.createElementNS(SVG,tag)',
+    "document.createElementNS(SVG, kind+'')", 'const make=document.createElement', "document['createElement']('script')", "document.createElement.call(document,'script')", 'const {createElementNS}=document'])
+    assert.match(line, computed, line);
+  for (const line of ["document.createElementNS('http://www.w3.org/2000/svg','circle')", "doc.createElement('button')", "h('p',null,'script')", "h('svg:path',{d})", "h('script-note')", "x.textContent='script'"]) {
+    assert.doesNotMatch(line, script, line); assert.doesNotMatch(line, computed, line);
+  }
+  for (const line of ["r.createContextualFragment('<b>')", 'new DOMParser()', 'el.setHTMLUnsafe(x)', "f.srcdoc='x'"]) assert.match(line, rule('HTML strings'), line);
 });
 
-test('screen-menus.js registers every menu as a placeholder: a lane screen registered first is kept; h() refuses a style string', () => {
+test('screen-menus.js registers every menu as a placeholder: a lane screen registered first is kept; h() refuses a style string and a script tag', () => {
   delete require.cache[require.resolve(R.newPath('core.js'))];
   const core = R.requireNew('core.js'), lane = () => 'lane';
   core.register('macro', lane);// a P2 lane file loads before screen-menus.js (index.html order)
@@ -332,11 +384,18 @@ test('screen-menus.js registers every menu as a placeholder: a lane screen regis
     if (id === 'macro') { assert.equal(core.screen(id), lane, 'the lane screen stays'); assert.equal(core.isPlaceholder(id), false); }
     else assert.equal(core.isPlaceholder(id), true, id + ' is a placeholder (a lane may replace it)');
   }
-  const doc = { createElement: () => ({ style: { setProperty() {} }, setAttribute() {}, addEventListener() {}, dataset: {}, appendChild() {} }), createTextNode: () => ({}) };
+  const mk = () => ({ style: { setProperty() {} }, setAttribute() {}, addEventListener() {}, dataset: {}, appendChild() {} });
+  const doc = { createElement: mk, createTextNode: () => ({}) };
   const saved = globalThis.document; globalThis.document = doc;
   try {
     assert.throws(() => core.h('p', { style: 'color:red' }), /STYLE_INVALID/);
     assert.doesNotThrow(() => core.h('p', { style: { color: 'red' } }));
+    // Script elements come from loader.js only: h() refuses the tag in any case and in the SVG namespace, before making anything.
+    const made = []; doc.createElement = (t) => { made.push(t); return mk(); }; doc.createElementNS = (ns, t) => { made.push(ns + ' ' + t); return mk(); };
+    for (const tag of ['script', 'SCRIPT', 'Script', 'svg:script', 'svg:SCRIPT', ' script ', null, 7]) assert.throws(() => core.h(tag, { src: 'x.js' }), /^Error: TAG_INVALID$/, String(tag));
+    assert.deepEqual(made, [], 'nothing was made for a refused tag');
+    assert.doesNotThrow(() => core.h('p', { title: 'script' })); assert.doesNotThrow(() => core.h('svg:path', { d: 'M0 0' }));
+    assert.deepEqual(made, ['p', 'http://www.w3.org/2000/svg path']);
   } finally { globalThis.document = saved; }
 });
 

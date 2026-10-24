@@ -4,7 +4,8 @@
    First paint (P2-1a, owner 2026-10-24): the shell draws without the P1 layer, which loader.js loads after the first paint; the
    first render sets the mark is2-shell-render and IS2.firstPaint resolves once that frame has been painted (two animation
    frames later and, where the browser reports it, after its first-contentful-paint entry; mark is2-first-paint). The device
-   chip says 연결 전 until IS2.ready. */
+   chip says 연결 전 until IS2.ready. If IS2.ready rejects (a listed file did not arrive or failed; the loader never retries),
+   the chip says 연결 실패 and a fixed notice with a reload button stays above every screen. */
 (function(){
 'use strict';
 const{h,icon,MENU,TABS,DETAILS,parse,href,menuOf,screen,detail}=window.IS2;
@@ -13,10 +14,18 @@ const TAB_ICON={search:['M6 18 L18 7 L30 18 M10 15 L10 30 L26 30 L26 15'],qgv:['
  portfolio:['M18 6 A12 12 0 1 0 30 18 L18 18 Z','M22 4 A12 12 0 0 1 32 14 L22 14 Z'],news:['M7 8 L25 8 L25 30 L7 30 Z','M11 13 L21 13 M11 18 L21 18 M11 23 L17 23','M25 12 L30 12 L30 28 A2 2 0 0 1 25 28']};
 const label=m=>m.no+'. '+m.ko;
 // Device chip from the price layer (codes only, never a price): signed in to Google or not; values are this device's. Before
-// the layer is loaded (loader.js) there is nothing to ask: 연결 전.
-function chipText(){const I=window.IS2;if(typeof I.loadState==='function'&&I.loadState()!=='READY')return'연결 전';let g=null;try{const P=window.IS2.prices;g=P&&typeof P.status==='function'?P.status().google:null;}catch(_){g=null;}
+// the layer is loaded (loader.js) there is nothing to ask: 연결 전; after a loader failure: 연결 실패.
+const loadState=()=>{const I=window.IS2;return typeof I.loadState==='function'?I.loadState():'READY';};
+function chipText(){const st=loadState();if(st==='FAILED')return'연결 실패';if(st!=='READY')return'연결 전';let g=null;try{const P=window.IS2.prices;g=P&&typeof P.status==='function'?P.status().google:null;}catch(_){g=null;}
  return(g&&g.connected?'구글 연결됨':g&&(g.pending||g.preparing)?'구글 연결 중':'로그인 안 함')+' · 이 기기 기준';}
 
+// After a loader failure: fixed text (no file name: the shell shows codes and fixed words only) and a button that only reloads
+// the page (no request of its own; the reload loads every file again).
+const FAILED_NOTE='일부 파일을 불러오지 못했습니다 · 새로고침해 주세요';
+function failNotice(){
+ return h('div',{class:'load-failed',role:'alert',dataset:{loadFailed:''}},h('span',null,FAILED_NOTE),
+  h('button',{class:'btn',type:'button',dataset:{reload:''},onclick:()=>location.reload()},'새로고침'));
+}
 function header(current){
  const logo=icon(LOGO,40);const dot=document.createElementNS('http://www.w3.org/2000/svg','circle');dot.setAttribute('cx','29');dot.setAttribute('cy','18');dot.setAttribute('r','3');dot.setAttribute('stroke','#D7322A');logo.appendChild(dot);
  return h('header',{class:'top'},
@@ -55,10 +64,13 @@ function render(){
  app.replaceChildren(h('div',{class:'page'},header(current),h('main',{id:'main',tabindex:'-1',dataset:{route:route.id}},body),
   h('footer',{class:'foot'},'검색 순서는 추천 순위가 아님 · 가격 기반 값은 내 기기에서만 계산 · 투자 권유나 자문이 아님')),tabbar(current),drawer());
  // Once the layer is loaded (at once if it is) the chip follows sign-in changes until the next render (the subscription ends
- // with this render's signal).
+ // with this render's signal). If loading failed, every render gets the 연결 실패 chip and the notice above main (IS2.ready
+ // stays rejected, so this runs before the frame is painted).
  const signal=live.signal,chip=app.querySelector('[data-device-chip]');
  Promise.resolve(window.IS2.ready).then(()=>{if(signal.aborted||!chip)return;chip.textContent=chipText();
-  try{const P=window.IS2.prices;if(P&&typeof P.subscribe==='function')P.subscribe(()=>{chip.textContent=chipText();},{signal});}catch(_){}},()=>{});
+  try{const P=window.IS2.prices;if(P&&typeof P.subscribe==='function')P.subscribe(()=>{chip.textContent=chipText();},{signal});}catch(_){}},
+ ()=>{if(signal.aborted)return;if(chip)chip.textContent=chipText();const pg=app.querySelector('.page');
+  if(pg&&!pg.querySelector('[data-load-failed]'))pg.insertBefore(failNotice(),pg.querySelector('main'));});
  document.title=(route.id==='search'?'':((MENU.find(m=>m.id===current)||{}).ko||'세부 화면')+' · ')+'투자시스템 지도';
 }
 window.addEventListener('hashchange',()=>{render();const m=document.getElementById('main');if(m)m.focus({preventScroll:true});window.scrollTo(0,0);});
