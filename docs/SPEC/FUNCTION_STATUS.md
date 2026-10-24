@@ -39,7 +39,7 @@
 | 2.1.1~2.1.3 목록·정렬·분류 | 구현 | 실 | `leaderboard-screen.js`, `table-sort.js`, `classification-screens.js`(#381 SIC 필터) | — |
 | 2.1.4 기간별 수익률 | 부분 | 기기 | `leaderboard-screen.js` 기간 칩 | 값은 기기 가격 필요. 공개 불가(가격 파생값) |
 | 2.1.5·2.1.6 산출 상태·공식/개인 | 구현 | 실·기기 | `qgv-scores.js`, `v-coverage.js` | 공식 V가 중앙 V로 바뀌면 "계산 장소·가격 출처" 표시 갱신(DC-02) |
-| 2.1.7 후보 선정 연결 | 구현 | 기기 | `target-v1-builder.js`, `target-v1-screen.js` | V가 기기 V라 "임시 V"(#391). 공식 V 판독(PR-D, 미병합): 초안 만들기·확정 클릭 때 `qgv-official.json`을 읽어 유효·검증·같은 calc_version·뉴욕 거래일 2일 이내면 공식 V, 아니면 임시 V(결정 D8 (b)). 첫 게시 전이라 실제 값은 아직 임시 V |
+| 2.1.7 후보 선정 연결 | 구현 | 기기 | `target-v1-builder.js`, `target-v1-screen.js` | V가 기기 V라 "임시 V"(#391). 공식 V 판독(PR-D, 미병합): 초안 만들기·확정 클릭 때 `qgv-official.json`을 읽어 유효·검증·같은 calc_version·기준일 뒤 마감된 뉴욕 거래일 2일 이내면 공식 V, 아니면 임시 V(결정 D8 (b)). 첫 게시 전이라 실제 값은 아직 임시 V |
 | 2.2.1~2.2.6 가중치·프리셋·영향·설정 | 구현 | 실·기기 | `device-profiles.js`(2단계 가중치 #300, 프리셋 v0.1, 변경 전후 비교) | 설정 저장은 이 브라우저만 |
 | 2.3.1 13F 보유 기록 | 부분 | 실 | `thirteenf-quarter.js`, `manager-styles-v0.js`, #381(2.3 흐름) | TARGET 중심. 운용사 범위 확대 |
 | 2.3.2 가중치 탐색 | 신규 | — | `docs/backtest/THIRTEENF_WEIGHT_RESEARCH_PREP_20261018.md` | 탐색 엔진. TRACKC-PORT 결정 대기 |

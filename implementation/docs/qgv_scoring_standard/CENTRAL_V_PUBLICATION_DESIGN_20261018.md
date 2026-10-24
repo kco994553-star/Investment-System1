@@ -487,6 +487,7 @@ sec-qgv2.json(같은 실행, sha256) ─┐
 > - **같게 맞춤:** 본문은 `arrayBuffer()` → `TextDecoder('utf-8',{fatal:true})`로 읽어 잘못된 UTF-8·BOM을 Python처럼 거부하고, 같은 키 두 번(중복 키)도 거부한다(`JSON.parse`는 마지막 값을 남기므로 작은 검사를 더했다). 본문 한도 2 MiB(`MAX_BYTES`).
 > - **재현하지 않음(바이트 수준):** 정수와 실수 표기 차이(`5`와 `5.0`)를 보지 않는다. 그래서 Python 정규 JSON 크기는 하한으로만 계산한다(정수 모양 실수를 정수로 셈: JS는 Python도 거부할 때만 `OFFICIAL_TOO_LARGE`). 두 규칙이 함께 틀린 파일에서 어느 코드가 먼저 나오는지도 다를 수 있다(JS는 정수 모양 객체 키를 먼저 나열한다). 이런 바이트는 배포 때 Pages 가드가 `require_qgv_official`(Python)로 거부하므로 사이트에 실리지 않는다.
 > - 웹 암호 API(`crypto.subtle`)가 없으면 `pooled_digest`를 확인할 수 없어 `OFFICIAL_DIGEST_UNAVAILABLE`(화면 사유는 `OFFICIAL_UNAVAILABLE`)로 닫는다. 어떤 실패든 화면은 기기 V "임시 V"다.
+> - **TARGET v1 어댑터(2026-10-24 검토 반영):** 게시본 행을 기기 경로와 같은 식별 대응(`QgvScores` codeIndex)으로 읽는다. 게시본 `rank_row`(D-CV8)와 다른 곳은 TARGET 발행사의 둘째 주식(GOOG: 자기 행), 총점 없는 TARGET 행과 다른 calc_version TARGET 행(그 종목은 기기처럼 총점 없음)이다. 신선도는 마감된 뉴욕 거래일로 센다(오늘은 뉴욕 16:00 뒤부터). 판독기가 없어 IEX 출처 문구를 못 보이면 공식 V 초안의 점수·후보를 숨긴다(GSQ-024).
 
 ### 12-5. 신선도 검사(제안)
 
