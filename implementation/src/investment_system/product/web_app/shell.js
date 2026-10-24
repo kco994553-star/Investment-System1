@@ -1,8 +1,9 @@
 /* New frontend shell: draft header (map logo, menu 0~n+1, device chip), phone bottom tabs + 전체 메뉴 drawer, footer line,
-   and the hash-route mount. Screens register themselves with IS2.register(id, render(route) -> Node). */
+   and the hash-route mount. Screens register themselves with IS2.register(id, render(route) -> Node); detail screens with
+   IS2.registerDetail(name, render(route) -> Node). */
 (function(){
 'use strict';
-const{h,icon,MENU,TABS,DETAILS,parse,href,menuOf,screen}=window.IS2;
+const{h,icon,MENU,TABS,DETAILS,parse,href,menuOf,screen,detail}=window.IS2;
 const LOGO=['M5 10 L15 6 L25 10 L35 6 L35 32 L25 36 L15 32 L5 36 Z','M15 6 L15 32 M25 10 L25 36'];
 const TAB_ICON={search:['M6 18 L18 7 L30 18 M10 15 L10 30 L26 30 L26 15'],qgv:['M6 30 L6 20 M14 30 L14 12 M22 30 L22 16','M26 6 A5 5 0 1 1 26.01 6'],
  portfolio:['M18 6 A12 12 0 1 0 30 18 L18 18 Z','M22 4 A12 12 0 0 1 32 14 L22 14 Z'],news:['M7 8 L25 8 L25 30 L7 30 Z','M11 13 L21 13 M11 18 L21 18 M11 23 L17 23','M25 12 L30 12 L30 28 A2 2 0 0 1 25 28']};
@@ -35,9 +36,13 @@ let lastFocus=null;
 function open(){const d=document.querySelector('[data-drawer]');lastFocus=document.activeElement;d.hidden=false;d.querySelector('a').focus();}
 function close(){const d=document.querySelector('[data-drawer]');if(d.hidden)return;d.hidden=true;if(lastFocus&&lastFocus.focus)lastFocus.focus();}
 
+/* One AbortController per render, handed to the screen as route.signal: the next render aborts it, so a screen's subscriptions,
+   timers and late async fills end with the page they belong to. */
+let live=null;
 function render(){
- const route=parse(location.hash),current=menuOf(route),app=document.getElementById('app');
- const make=screen(route.id);let body;
+ if(live)live.abort();live=new AbortController();
+ const route=parse(location.hash),current=menuOf(route),app=document.getElementById('app');route.signal=live.signal;
+ const make=(route.id==='detail'&&detail(route.params[0]))||screen(route.id);let body;
  try{body=make?make(route):h('p',{class:'pending'},'화면 준비 중');}catch(e){body=h('p',{class:'pending',role:'alert'},'화면을 그리지 못했습니다 · '+String(e&&e.message||e));}
  app.replaceChildren(h('div',{class:'page'},header(current),h('main',{id:'main',tabindex:'-1',dataset:{route:route.id}},body),
   h('footer',{class:'foot'},'검색 순서는 추천 순위가 아님 · 가격 기반 값은 내 기기에서만 계산 · 투자 권유나 자문이 아님')),tabbar(current),drawer());

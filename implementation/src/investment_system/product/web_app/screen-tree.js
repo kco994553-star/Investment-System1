@@ -1,0 +1,3 @@
+/* Feature 8 · 구조 트리 (spec v1.0 numbering): the P2-8 lane fills this file with IS2.register('tree', render). Until then the menu
+   shows its P0 sections from screen-menus.js, registered as a placeholder that a real screen replaces. Loaded before
+   screen-menus.js on purpose, so index.html never changes when a lane lands. */
