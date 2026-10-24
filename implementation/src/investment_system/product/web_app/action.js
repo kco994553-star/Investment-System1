@@ -1,11 +1,14 @@
 /* P1 action gate (IS2.action): every Sheet / Worker / OAuth request and every device-storage write runs inside a trusted user
-   click, and only to the destinations that click's kind allows (P1 implementation spec, Main decisions 2 and 4).
-   - run(event, kind, fn): fn(signal) runs in the same tick (GIS login must start inside the click) and the kind stays in flight
-     until fn settles or cancel(kind). The event must be a real gesture of this window read through the window's own Event
+   click, and only to the destinations that click's kind allows (P1 implementation spec, Main decisions 2 and 4; owner decisions
+   2026-10-24, P1_DATA_LAYER.md §11).
+   - run(event, kind, fn, {parent}): fn(signal) runs in the same tick (GIS login must start inside the click) and the kind stays in
+     flight until fn settles or cancel(kind). The event must be a real gesture of this window read through the window's own Event
      accessors (a forged object or a Proxy that only claims isTrusted makes them throw), a click or Enter / Space keydown (not a
      submit: form.requestSubmit() and a script's button.click() make trusted submits), still being dispatched, with transient user
-     activation where the browser reports it. A kept event replayed later is refused, except by a nested run while an action
-     started from that same event is still in flight (engines.target.syncScoringPrices -> prices.syncSymbols after awaits).
+     activation where the browser reports it. One event starts ONE top-level action: a second run with it is ACTION_ALREADY_STARTED
+     (still dispatching) or CLICK_REQUIRED (a kept event replayed later). A next step of that action (engines.target.syncScoringPrices
+     -> prices.syncSymbols after awaits) is a nested run that presents its parent's signal ({parent: signal}, the AbortSignal its fn
+     received): it passes only while that parent action of the same event is in flight, and it ends when the parent is cancelled.
    - guard(url, init, {sheets}): the destination check every private request makes (the price view in prices.js). Private
      destinations pass only while an action whose kind allows them is in flight, and Sheets only for the spreadsheets this device
      saved; otherwise blocked() grows and CLICK_REQUIRED (or DESTINATION_UNKNOWN) is thrown.
@@ -13,6 +16,10 @@
      window functions keep the real window as `this`, so dispatchEvent / addEventListener / setTimeout work). Every view replaces
      localStorage / sessionStorage / indexedDB with the gated versions below and refuses writes to window globals (DataRefresh's
      30 s PriceStore swap fails inside its own try/catch).
+   - IndexedDB through a view: a write transaction needs a storage-writing action (ACTION_REQUIRED), and the device quote records
+     (STOPPED: DeviceActual's 'market' quotes and 'market-import-history') are never written, not even inside a click
+     (MARKET_STORE_STOPPED), and read as absent (owner 2026-10-24, DC-18: device prices only in RAM and the user's own Sheet).
+     What a device stored before stays until the user removes it (stoppedRecords.clear on a WRITE click: "저장된 시세 삭제").
    The permission is page wide while an action is in flight (any code may write storage or reach that kind's destinations until
    it settles or is cancelled): P1_DATA_LAYER.md §3. Nothing here reads or writes storage by itself and nothing is sent anywhere. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else(root.IS2=root.IS2||{}).action=api.create({win:root});})(typeof globalThis==='object'?globalThis:this,function(){
@@ -24,9 +31,16 @@ const KINDS=Object.freeze({PUBLIC_REFRESH:Object.freeze([]),LOGIN:Object.freeze(
 // Kinds that may write device storage (each writes only its own documented keys): every user action except the public refresh.
 const WRITERS=Object.freeze(Object.keys(KINDS).filter(k=>k!=='PUBLIC_REFRESH'));
 const SHEETS='https://sheets.googleapis.com',OAUTH=Object.freeze(['https://oauth2.googleapis.com','https://accounts.google.com']);
+// Device quote records the new frontend neither writes nor reads (owner 2026-10-24, DC-18; plan §2.1): database -> object store ->
+// record keys. DeviceActual keeps its stored market quotes under 'market' and every import's quotes and FX under
+// 'market-import-history' (device-actual.js:9-10), next to the holdings ('actual') and the Google on/off record, which stay.
+const STOPPED=Object.freeze({'investment-device-actual-v1':Object.freeze({snapshots:Object.freeze(['market','market-import-history'])})});
+// A key no record has (DeviceActual keys its records by name): a read of a stopped record asks for it, so the real request
+// answers "no record" and the old module sees the quotes as never stored.
+const NO_RECORD='MARKET_STORE_STOPPED';
 function create({win}){
- // live: event -> number of its actions in flight (an entry exists only while at least one is).
- const flight=new Map(),controllers=new Map(),live=new WeakMap(),stores={known:new Set(),supported:null};let blockedCount=0;
+ // controllers: AbortController -> {kind, done, event} of each action in flight; started: events that started their top-level action.
+ const flight=new Map(),controllers=new Map(),started=new WeakSet(),stores={known:new Set(),supported:null};let blockedCount=0;
  const inFlight=k=>(flight.get(k)>0);
  const active=kind=>kind===undefined?[...flight.values()].some(n=>n>0):inFlight(kind);
  const writing=()=>WRITERS.some(inFlight);
@@ -45,15 +59,21 @@ function create({win}){
  function dispatching(e){if(!NATIVE.phase)return false;try{return read(NATIVE.phase,e)!==0;}catch(_){return false;}}
  // Transient user activation, where the browser reports it (no input, no activation: a script's submit, a replay).
  function activated(){let ua=null;try{ua=win.navigator?win.navigator.userActivation:null;}catch(_){ua=null;}return !ua||typeof ua.isActive!=='boolean'||ua.isActive===true;}
- function run(event,kind,fn){
+ // The parent a nested run presents: the signal of an action of the same event that is still in flight.
+ function parentOf(signal,event){for(const[c,x]of controllers)if(c.signal===signal&&x.event===event)return c;return null;}
+ function run(event,kind,fn,opts){
   if(!Object.hasOwn(KINDS,kind))throw Error('ACTION_KIND_UNKNOWN');
   if(typeof fn!=='function')throw Error('ACTION_INVALID');
-  const nested=live.has(event);
-  if(!gesture(event)||!nested&&(!dispatching(event)||!activated()))throw Error('CLICK_REQUIRED');
-  const c=new win.AbortController();let left=false;
-  // Leaves the gate once: when fn settles, or at cancel(kind), whichever comes first.
-  const done=()=>{if(left)return;left=true;flight.set(kind,flight.get(kind)-1);controllers.delete(c);const n=live.get(event)-1;if(n>0)live.set(event,n);else live.delete(event);};
-  flight.set(kind,flight.has(kind)?flight.get(kind)+1:1);controllers.set(c,{kind,done});live.set(event,live.has(event)?live.get(event)+1:1);
+  const given=opts!==null&&typeof opts==='object'&&opts.parent!==undefined&&opts.parent!==null?opts.parent:null;
+  if(!gesture(event))throw Error('CLICK_REQUIRED');
+  let parent=null;
+  if(given!==null){parent=parentOf(given,event);if(!parent||parent.signal.aborted)throw Error('CLICK_REQUIRED');}
+  else{if(!dispatching(event)||!activated())throw Error('CLICK_REQUIRED');if(started.has(event))throw Error('ACTION_ALREADY_STARTED');started.add(event);}
+  const c=new win.AbortController();let left=false,unlink=null;
+  // Leaves the gate once: when fn settles, at cancel(kind), or when its parent is cancelled, whichever comes first.
+  const done=()=>{if(left)return;left=true;flight.set(kind,flight.get(kind)-1);controllers.delete(c);if(unlink)unlink();};
+  flight.set(kind,flight.has(kind)?flight.get(kind)+1:1);controllers.set(c,{kind,done,event});
+  if(parent){const stop=()=>{c.abort();done();};parent.signal.addEventListener('abort',stop,{once:true});unlink=()=>parent.signal.removeEventListener('abort',stop);}
   let out;try{out=fn(c.signal);}catch(e){done();throw e;}
   if(out&&typeof out.then==='function')return Promise.resolve(out).finally(done);
   done();return out;
@@ -91,15 +111,33 @@ function create({win}){
   return Object.freeze({getItem(k){const s=realOf(get);return s?s.getItem(k):null;},key(i){const s=realOf(get);return s?s.key(i):null;},get length(){const s=realOf(get);return s?s.length:0;},
    setItem(k,v){return write(s=>s.setItem(k,v));},removeItem(k){return write(s=>s.removeItem(k));},clear(){return write(s=>s.clear());}});
  }
- /* IndexedDB: opening a database that does not exist creates it (device-actual.js:187 onupgradeneeded), so open() passes only for
-    a database this browser already lists (stores(): indexedDB.databases()) or inside a storage-writing action. readOnly views (the
-    score path) never create one, not even inside an action. Without databases() nothing opens outside an action. A refused open
-    is the normal "nothing stored yet" state (DEVICE_STORE_NOT_OPENED), not a blocked write. */
+ /* IndexedDB objects as the old modules see them through a view: methods and accessors keep the real object as `this` (a Proxy
+    that forwards to it, one per object). A write transaction needs a storage-writing action (ACTION_REQUIRED). In a STOPPED store a
+    read of a stopped record asks for NO_RECORD (absent: DeviceActual then has no stored quote and computes nothing from one) and
+    every write of one is MARKET_STORE_STOPPED, inside a click too; such a store takes record names only (the old module never
+    passes anything else), so a key range or a cursor that could reach them is refused the same way. */
+ const proxies=new WeakMap();
+ function forward(real,hooks){if(real===null||typeof real!=='object')return real;let p=proxies.get(real);if(p)return p;
+  p=new Proxy(real,{get(t,k){if(Object.hasOwn(hooks,k))return hooks[k](t);const v=Reflect.get(t,k);return typeof v==='function'?v.bind(t):v;},set(t,k,v){t[k]=v;return true;}});
+  proxies.set(real,p);return p;}
+ function openRequest(r,stopped){return forward(r,{result:t=>dbOf(t.result,stopped)});}
+ function dbOf(db,stopped){return forward(db,{transaction:t=>(names,mode,o)=>{if(mode!==undefined&&mode!=='readonly'&&!writing())deny('ACTION_REQUIRED');return txOf(o===undefined?t.transaction(names,mode):t.transaction(names,mode,o),stopped);}});}
+ function txOf(tx,stopped){return forward(tx,{db:t=>dbOf(t.db,stopped),objectStore:t=>name=>storeOf(t.objectStore(name),stopped,stopped&&Object.hasOwn(stopped,name)?stopped[name]:null)});}
+ function storeOf(st,stopped,keys){const hooks={transaction:t=>txOf(t.transaction,stopped)};
+  if(keys){const read=k=>{if(typeof k!=='string')deny('MARKET_STORE_STOPPED');return keys.includes(k)?NO_RECORD:k;},write=k=>{if(typeof k!=='string'||keys.includes(k)||k===NO_RECORD)deny('MARKET_STORE_STOPPED');return k;};
+   for(const m of['get','getKey','count','getAll','getAllKeys','openCursor','openKeyCursor'])hooks[m]=t=>(k,...a)=>t[m](read(k),...a);
+   hooks.put=t=>(v,k)=>t.put(v,write(k));hooks.add=t=>(v,k)=>t.add(v,write(k));hooks.delete=t=>k=>t.delete(write(k));
+   hooks.clear=()=>()=>deny('MARKET_STORE_STOPPED');hooks.index=()=>()=>deny('MARKET_STORE_STOPPED');}
+  return forward(st,hooks);}
+ /* Opening a database that does not exist creates it (device-actual.js:187 onupgradeneeded), so open() passes only for a database
+    this browser already lists (stores(): indexedDB.databases()) or inside a storage-writing action. readOnly views (the score path)
+    never create one, not even inside an action. Without databases() nothing opens outside an action. A refused open is the normal
+    "nothing stored yet" state (DEVICE_STORE_NOT_OPENED), not a blocked write. */
  function gatedIndexedDB(get,{readOnly=false}={}){
   return Object.freeze({
-   open(name,version){const idb=realOf(get);if(!idb)throw Error('DEVICE_STORE_NOT_OPENED');const n=String(name);
-    if(stores.known.has(n))return idb.open(name,version);
-    if(!readOnly&&writing()){const r=idb.open(name,version);stores.known.add(n);return r;}
+   open(name,version){const idb=realOf(get);if(!idb)throw Error('DEVICE_STORE_NOT_OPENED');const n=String(name),stopped=Object.hasOwn(STOPPED,n)?STOPPED[n]:null;
+    if(stores.known.has(n))return openRequest(idb.open(name,version),stopped);
+    if(!readOnly&&writing()){const r=idb.open(name,version);stores.known.add(n);return openRequest(r,stopped);}
     throw Error('DEVICE_STORE_NOT_OPENED');},
    deleteDatabase(name){if(!writing())deny('ACTION_REQUIRED');const idb=realOf(get);if(!idb)throw Error('DEVICE_STORE_NOT_OPENED');stores.known.delete(String(name));return idb.deleteDatabase(name);},
    databases(){const idb=realOf(get);return idb&&typeof idb.databases==='function'?idb.databases():Promise.reject(Error('DEVICE_STORE_NOT_OPENED'));},
@@ -111,6 +149,24 @@ function create({win}){
   if(!idb||typeof idb.databases!=='function')stores.supported=false;
   else{try{const list=await idb.databases();stores.known=new Set((Array.isArray(list)?list:[]).map(d=>d&&d.name).filter(n=>typeof n==='string'));stores.supported=true;}catch(_){stores.supported=false;}}
   return Object.freeze({supported:stores.supported,available:!!idb,names:Object.freeze([...stores.known].sort())});}
+ /* The stopped records, by key only (no value is ever read): count() is how many this device still holds; clear(signal) removes
+    them and needs the signal of a WRITE action in flight (store.marketQuotes, the settings button "저장된 시세 삭제"). A database
+    this browser does not list is never opened, so nothing is created; a browser that cannot list its databases answers null
+    (unknown) and removes nothing. Numbers only. */
+ function existing(name){return new Promise((resolve,reject)=>{let r;try{r=realOf(()=>win.indexedDB).open(name);}catch(_){reject(Error('DEVICE_STORE_NOT_OPENED'));return;}
+  r.onupgradeneeded=()=>{try{r.transaction.abort();}catch(_){}};// it was gone after all: the creation is aborted
+  r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(Error('DEVICE_STORE_NOT_OPENED'));});}
+ async function stoppedHeld(remove){const s=await refreshStores();if(!s.available||!s.supported)return null;let n=0;
+  for(const[name,map]of Object.entries(STOPPED)){if(!s.names.includes(name))continue;const db=await existing(name);
+   try{const names=Object.keys(map).filter(x=>db.objectStoreNames.contains(x));if(!names.length)continue;
+    n+=await new Promise((resolve,reject)=>{const tx=db.transaction(names,remove?'readwrite':'readonly');let held=0;
+     for(const x of names){const st=tx.objectStore(x);for(const k of map[x]){const r=st.getKey(k);r.onsuccess=()=>{if(r.result!==undefined)held++;};if(remove)st.delete(k);}}
+     tx.oncomplete=()=>resolve(held);tx.onabort=tx.onerror=()=>reject(Error('DEVICE_STORAGE_UNAVAILABLE'));});}
+   finally{db.close();}}
+  return n;}
+ const stoppedRecords=Object.freeze({
+  count(){return stoppedHeld(false).catch(()=>null);},
+  clear(signal){let ok=false;for(const[c,x]of controllers)if(c.signal===signal&&x.kind==='WRITE')ok=true;if(!ok)deny('ACTION_REQUIRED');return stoppedHeld(true);}});
  function view(overrides,{readOnlyStores=false}={}){
   if(!overrides||typeof overrides.fetch!=='function')throw Error('VIEW_FETCH_REQUIRED');
   const own=Object.defineProperties(Object.create(null),{localStorage:{value:gatedStorage(()=>win.localStorage)},sessionStorage:{value:gatedStorage(()=>win.sessionStorage)},
@@ -120,7 +176,7 @@ function create({win}){
    has(t,k){return(typeof k==='string'&&k in own)||Reflect.has(t,k);},
    set(){return false;},defineProperty(){return false;},deleteProperty(){return false;}});
  }
- return Object.freeze({KINDS,run,cancel,active,writing,blocked:()=>blockedCount,classify,guard,gatedStorage,gatedIndexedDB,stores:refreshStores,view});
+ return Object.freeze({KINDS,STOPPED,run,cancel,active,writing,blocked:()=>blockedCount,classify,guard,gatedStorage,gatedIndexedDB,stores:refreshStores,stoppedRecords,view});
 }
-return Object.freeze({create,KINDS});
+return Object.freeze({create,KINDS,STOPPED});
 });

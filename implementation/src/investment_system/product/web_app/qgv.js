@@ -18,6 +18,11 @@
 const V_SOURCES=Object.freeze({
  DEVICE_TEMPORARY:Object.freeze({id:'DEVICE_TEMPORARY',ko:'임시 V',note:'기기 시세로 계산 · 중앙 V 미게시'}),
  OFFICIAL_CENTRAL:Object.freeze({id:'OFFICIAL_CENTRAL',ko:'공식 V',note:'중앙 게시 · IEX 마지막 체결가 기준(공식 종가 아님)'})});
+// What a rank computed with each V source is called (owner 2026-10-24, Main pick: the old screens already say "공식 순위 아님").
+// A device page and a personal preview rank on the temporary V: never the official ranking. OFFICIAL_CENTRAL is draft wording.
+const RANK_LABELS=Object.freeze({
+ DEVICE_TEMPORARY:Object.freeze({ko:'임시 V 기준 순위 · 공식 순위 아님',en:'Ranked on the temporary V · not the official ranking'}),
+ OFFICIAL_CENTRAL:Object.freeze({ko:'공식 순위(초안 문구)',en:'Official ranking (draft wording)'})});
 // The strict qgv-official/1 reader (DC-02). Not built yet: set it here, and only here, when the central V is published.
 const OFFICIAL_READER=null;
 function vSource(pub){return OFFICIAL_READER&&OFFICIAL_READER.state(pub)==='OFFICIAL'?'OFFICIAL_CENTRAL':'DEVICE_TEMPORARY';}
@@ -53,7 +58,8 @@ const TEXT=Object.freeze({
  NO_OFFICIAL_YET:['중앙 V 게시본이 아직 없습니다(초안 문구)','No central V publication yet (draft wording)'],
  SUPPLY_FAILED:['중앙 V 가격 공급 실패(초안 문구)','Central V price supply failed (draft wording)'],
  VERIFY_FAILED:['중앙 V 검증 실패(초안 문구)','Central V verification failed (draft wording)'],
- PRICE_DEPENDENT_NOT_COMPUTABLE:['가격이 필요한 값이라 중앙 게시본에서 계산하지 않았습니다(초안 문구)','Price-dependent value not computed centrally (draft wording)']});
+ PRICE_DEPENDENT_NOT_COMPUTABLE:['가격이 필요한 값이라 중앙 게시본에서 계산하지 않았습니다(초안 문구)','Price-dependent value not computed centrally (draft wording)'],
+ JUDGEMENT_NOT_RECORDED:['기록 안 됨','Not recorded']});
 const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v),finite=v=>typeof v==='number'&&Number.isFinite(v),num=v=>finite(v)?v:null,str=v=>typeof v==='string'?v:null;
 function deepFreeze(v){if(v&&typeof v==='object'&&!Object.isFrozen(v)){Object.freeze(v);for(const x of Object.values(v))deepFreeze(x);}return v;}
 function create({win,data,prices,action}){
@@ -73,7 +79,7 @@ function create({win,data,prices,action}){
  function check(){if(READERS.some(n=>!win[n]))throw Error('READER_MISSING');}
  const stop=signal=>{if(signal&&signal.aborted)throw Error('ABORTED');};
  // A device page without a result (no usable sec-qgv2.json).
- function emptyPage(state,reason,pub){const pg=deepFreeze({v_source:V_SOURCES.DEVICE_TEMPORARY,engine_v_source:V_SOURCES.DEVICE_TEMPORARY,state,reason,as_of:null,calc_version:null,type_scope:null,profile_id:null,preset:null,gate:null,
+ function emptyPage(state,reason,pub){const pg=deepFreeze({v_source:V_SOURCES.DEVICE_TEMPORARY,engine_v_source:V_SOURCES.DEVICE_TEMPORARY,rank_label:RANK_LABELS.DEVICE_TEMPORARY.ko,state,reason,as_of:null,calc_version:null,type_scope:null,profile_id:null,preset:null,gate:null,
   generation:pub?pub.generation:0,basis_id:null,price_basis:priceBasis(null,null),identities:null,coverage:null,rows:[]});known.add(pg);return pg;}
  function absent(){const s=data.state(QGV2);
   if(s.state==='FAILED'&&s.why==='SCHEMA_NEWER')return['DATA_FORMAT_NEWER','SEC_QGV2_SCHEMA_NEWER'];
@@ -114,7 +120,7 @@ function create({win,data,prices,action}){
   const QS=win.QgvScores,c=result.computed,vs=V_SOURCES.DEVICE_TEMPORARY,weights=QS.provenance({kind:'QGV',profile:c.profile}).weights,targets=new Set(ids.map(x=>x.company_id));
   const of=object(c.official)&&Number.isInteger(c.official.ranked)?c.official.ranked:Object.values(c.rows).filter(r=>Number.isInteger(r.rank)).length;
   const cov=QS.vCoverage(result,inputs),b=object(result.price_basis)?result.price_basis:null,calc=str(inputs.calc_version);
-  return deepFreeze({v_source:vs,engine_v_source:V_SOURCES.DEVICE_TEMPORARY,state:'READY',reason:c.v2_state==='READY'?null:c.v2_reason?c.v2_reason:'V2_SCORES_NOT_AVAILABLE',
+  return deepFreeze({v_source:vs,engine_v_source:V_SOURCES.DEVICE_TEMPORARY,rank_label:RANK_LABELS[vs.id].ko,state:'READY',reason:c.v2_state==='READY'?null:c.v2_reason?c.v2_reason:'V2_SCORES_NOT_AVAILABLE',
    as_of:str(c.v2_as_of),calc_version:calc,type_scope:str(c.profile.type_scope),profile_id:c.profile.id,preset:c.profile.preset,gate:c.profile.gate,generation:pub.generation,
    basis_id:JSON.stringify([str(c.v2_as_of),calc,b?str(b.read_id)||str(b.acquired_at)||'READ':null,c.profile.id,pub.generation,epoch]),
    price_basis:priceBasis(b,cov),identities:ids.length?{state:'OK',reason:null,count:ids.length}:{state:'NOT_AVAILABLE',reason:'CATALOG_NOT_AVAILABLE',count:0},
@@ -150,10 +156,12 @@ function create({win,data,prices,action}){
   let refs={};try{refs=JSON.parse(h.result.reference_key);}catch(_){refs={};}
   const out=QS.compute({identities:h.result.identities,v2Inputs:h.inputs,quotes:h.result.quotes,referenceRows:refs,official:h.result.official,gate,weights,typeWeights}),vs=V_SOURCES.DEVICE_TEMPORARY;
   const x=out.personal,rs=Object.values(out.rows),of=rs.filter(r=>Number.isInteger(r.personal_rank)).length,targets=new Set(ids.map(i=>i.company_id));
-  return deepFreeze({weights:'PERSONAL',v_source:vs,state:x.state,reason:str(x.reason),label:[...x.label],profile_id:x.profile?x.profile.id:null,v_weight_zero:x.v_weight_zero===true,
+  return deepFreeze({weights:'PERSONAL',v_source:vs,rank_label:RANK_LABELS[vs.id].ko,state:x.state,reason:str(x.reason),label:[...x.label],profile_id:x.profile?x.profile.id:null,v_weight_zero:x.v_weight_zero===true,
    rows:x.state==='INVALID'?[]:rs.map(r=>rowRecord(r,{vs,weights:'PERSONAL',of,targets,personal:true}))});}
  function setProfile({preset=null,gate=null}={}){const V2=win.QgvV2;if(preset!==null&&!(V2&&Object.hasOwn(V2.PRESETS,preset)))throw Error('PRESET_UNKNOWN');if(gate!==null&&typeof gate!=='boolean')throw Error('GATE_INVALID');
   profile=Object.freeze({preset,gate});emit('PROFILE');return profile;}
+ // The rank wording of a V source id, a Page / preview, or a row (its source): screens show this next to any rank.
+ function rankLabel(x,en=false){const id=typeof x==='string'?x:x&&typeof x==='object'?(x.v_source&&x.v_source.id)||x.source:null;const l=Object.hasOwn(RANK_LABELS,id)?RANK_LABELS[id]:RANK_LABELS.DEVICE_TEMPORARY;return en?l.en:l.ko;}
  function reasonText(code,en=false){const QS=win.QgvScores;if(typeof code==='string'&&QS&&Object.hasOwn(QS.REASON,code))return QS.reasonText(code,en);if(typeof code==='string'&&Object.hasOwn(TEXT,code))return TEXT[code][en?1:0];return QS?QS.reasonText(code,en):String(code);}
  let consts=null;
  // Read-only copies for the 2.5 factor tree and weight screens.
@@ -166,7 +174,7 @@ function create({win,data,prices,action}){
  // engines.js only, with forEngines: the sec-qgv2.json value (Qgv2Inputs output) that result was computed from (a re-judgement can
  // replace data.get's value later), and the score view itself (PlaybookScreen.prepareScores reads the same shared result through it).
  const engineInputs=pg=>result_(pg).inputs;
- return Object.freeze({V_SOURCES,READERS,vSource:()=>vSource(data.publication()),page,isPage,row,rows,coverage,preview,setProfile,profile:()=>profile,reasonText,constants,subscribe,forEngines,engineInputs,scoreView});
+ return Object.freeze({V_SOURCES,RANK_LABELS,READERS,vSource:()=>vSource(data.publication()),page,isPage,row,rows,coverage,preview,setProfile,profile:()=>profile,reasonText,rankLabel,constants,subscribe,forEngines,engineInputs,scoreView});
 }
-return Object.freeze({create,V_SOURCES,READERS});
+return Object.freeze({create,V_SOURCES,RANK_LABELS,READERS});
 });

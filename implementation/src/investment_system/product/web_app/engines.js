@@ -6,7 +6,10 @@
      store's records are exact-key formats and carry none: a TARGET card judgement (thresholds.v) and the playbook occurrences
      (V-driven codes such as T1 V_DETERIORATED) stay source-less device-V records (P1_DATA_LAYER.md §8, §10).
    - Every write is a user action on the store's gated storage (WRITE; SYNC when the user's own Sheet is written too). The old
-     screens wrote some of these on open (R-B selection, playbook occurrences); here they need the user's click.
+     screens wrote some of these on open (R-B selection, playbook occurrences); here they need the user's click (owner 2026-10-24:
+     kept). A judgement says whether it was recorded (recorded / recorded_reason JUDGEMENT_NOT_RECORDED, shown as "기록 안 됨").
+   - The V history is not recorded (owner 2026-10-24; the central V history is the server's private store, D9): the recording run
+     that captured it (app.js paintReport) is not here, and nothing calls VirtualTradingVHistory.capture / captureV2.
    - Prices only through the one price view and its facade: no price request outside a SYNC click, nothing stored, and prices
      leave only in RAM results of the virtual engine and the set comparison (display only, [data-ram-price]).
    - Only glue the old screens kept unexported is written again, each with its old place named. */
@@ -115,9 +118,10 @@ function create({win,action,data,prices,store,qgv}){
  /* T-PRICE add (target-v1-screen.js add click, after the user confirmed confirm_text): the names, their sector ETFs and the benchmark
     appended to the user's Prices_D (PriceStore.syncMany kind TV1, Worker allowlist only, price view), the symbols kept on this
     device (an allowlist refusal is not kept), then the scoring series read back into RAM. Counts and codes only. */
- function syncScoringPrices(event){return action.run(event,'SYNC',async()=>{
+ // The tab sync is the next step of this click: a nested run that presents this action's signal (action.run {parent}).
+ function syncScoringPrices(event){return action.run(event,'SYNC',async signal=>{
   await data.ready();const st=readState(),names=scoringNames(st,await catalogNow());if(!names.pending.length)return out({state:'NOTHING_PENDING'});
-  const next=TB().addPriceSymbols(st,names.pending,CFG()),r=await prices.syncSymbols(event,next.price_symbols,'1d',{kind:'TV1'});let scored=null;
+  const next=TB().addPriceSymbols(st,names.pending,CFG()),r=await prices.syncSymbols(event,next.price_symbols,'1d',{kind:'TV1',parent:signal});let scored=null;
   if(r&&r.state==='READY'){save({...next,price_symbols:next.price_symbols.filter(x=>!(r.results&&r.results[x]&&r.results[x].code==='WORKER_ALLOWLIST'))});scored=await refreshScoring();}
   return out({state:r?r.state:null,sync:r,scored});});}
 
@@ -137,9 +141,12 @@ function create({win,action,data,prices,store,qgv}){
   return out({...P.factsFor(symbol,{catalog,screens,idByTicker,ram,date,computed,heldSymbols,storage,interests}),v_source:sourceOf(pg)});}
  /* openPanel's judgement step (playbook-screen.js openPanel), read only: the situation with this device's thesis event, hold and
     follow-up, the macro state, PlaybookEngine.evaluate, and the R1_FILING rule (a filing choice needs an EVIDENCE-grade invalidation
-    event). openPanel also recorded the candidate signals at this point; that is record(event, judged) now (owner decision item).
+    event). openPanel also recorded the candidate signals at this point; that is record(event, judged) now (owner 2026-10-24: only on
+    the user's click). recorded: whether record(event, this judgement) has written it (a fresh judgement is not recorded;
+    recorded_reason JUDGEMENT_NOT_RECORDED until then, the screen says "기록 안 됨"). record() merges into that day's occurrences
+    (PlaybookScreen.recordOccurrences keeps one per date, name and code), so recording a judgement again changes nothing.
     v_source: the facts' (or a given situation's) V source; null when the caller's situation names none. */
- const judged=new WeakSet();
+ const judged=new WeakSet(),recorded=new WeakSet();
  async function judge({symbol,situation=null,date=today()}={}){
   const E=need('PlaybookEngine'),PCFG=need('PlaybookConfigDefaults'),P=PB();await macroNow();
   const{v_source:vs=null,...base}=situation||await facts(symbol,{date}),stored=readPlaybook(),s={...base,symbol,date},ML=win.MacroLights,macro=ML&&typeof ML.current==='function'?ML.current():null;
@@ -149,13 +156,15 @@ function create({win,action,data,prices,store,qgv}){
   const judgement=E.evaluate(PCFG,s);
   if(ev&&ev.status==='OCCURRED'&&ev.grade!=='EVIDENCE'){const restrict=choices=>choices.map(ch=>ch.id==='R1_FILING'?{...ch,enabled:false,disabled_reasons:[...ch.disabled_reasons,'FILING_EVIDENCE_REQUIRED']}:ch);
    if(judgement.choices_by_code.R1)judgement.choices_by_code.R1=restrict(judgement.choices_by_code.R1);if(judgement.primary&&judgement.primary.code==='R1')judgement.choices=restrict(judgement.choices);}
-  const j=out({symbol,date,situation:s,judgement,code:judgement.primary&&judgement.primary.code?judgement.primary.code:'H1',v_source:typeof vs==='string'?vs:null});judged.add(j);return j;}
+  const j=copy({symbol,date,situation:s,judgement,code:judgement.primary&&judgement.primary.code?judgement.primary.code:'H1',v_source:typeof vs==='string'?vs:null});
+  Object.defineProperties(j,{recorded:{enumerable:true,get:()=>recorded.has(j)},recorded_reason:{enumerable:true,get:()=>recorded.has(j)?null:'JUDGEMENT_NOT_RECORDED'}});
+  deepFreeze(j);judged.add(j);return j;}
  // The occurrences openPanel wrote when it opened: the candidate signals, a structural-news E4, a 13F full-exit E4. Only from a
  // judge() result and only on the user's action. Returns that day's occurrences of the name (codes and reasons).
  function record(event,j){if(!judged.has(j))throw Error('JUDGEMENT_UNKNOWN');return action.run(event,'WRITE',()=>{const P=PB(),{symbol,date,situation:s,judgement}=j;
   P.recordOccurrences(storage,date,symbol,judgement.candidate_signals);if(s.structural_news)P.recordOccurrences(storage,date,symbol,[{code:'E4',reasons:['NEWS_STRUCTURAL_EVENT']}]);
   if(s.thirteenf_source_reason==='THIRTEENF_REPORTED_FULL_EXITS_3_PLUS')P.recordOccurrences(storage,date,symbol,[{code:'E4',reasons:[s.thirteenf_source_reason]}]);
-  return out(readPlaybook().occurrences.filter(r=>r.date===date&&r.symbol===symbol));});}
+  recorded.add(j);return out(readPlaybook().occurrences.filter(r=>r.date===date&&r.symbol===symbol));});}
  // E5: records whose follow-up day has come (PlaybookScreen.due); §16 portfolio limits of {symbol, sector, pct} rows.
  const due=(date=today())=>out(PB().due(readPlaybook(),date));
  const limits=(rows,cash)=>out(need('PlaybookEngine').portfolioLimits(need('PlaybookConfigDefaults'),rows,cash));

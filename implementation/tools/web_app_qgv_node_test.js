@@ -1,11 +1,13 @@
 'use strict';
 // New frontend P1 · action gate, public data and the QGV accessor (web_app/action.js, data.js, qgv.js).
 //  - action: only a trusted click / Enter-Space being dispatched runs fn (a submit, a synthetic event, a plain object or a forged
-//    event claiming isTrusted, and a kept event replayed after its dispatch are refused; a nested run of the same event while its
-//    action is in flight passes); cancel leaves the gate at once; private destinations only for the kind in flight, Sheets only
-//    for saved spreadsheets and a values GET for a read (a Request's own method counts); storage writes only inside a writing
-//    action; IndexedDB never created by a read; views keep the real window as `this` for its functions (DataRefresh.proxy rule)
-//    and refuse writes to window globals.
+//    event claiming isTrusted, and a kept event replayed after its dispatch are refused; one event starts one top-level action
+//    (a second is ACTION_ALREADY_STARTED); a nested run passes only with the signal of its parent action of the same event while
+//    that action is in flight, and ends with it); cancel leaves the gate at once; private destinations only for the kind in flight,
+//    Sheets only for saved spreadsheets and a values GET for a read (a Request's own method counts); storage writes only inside a
+//    writing action, IndexedDB write transactions too; IndexedDB never created by a read; the device quote records (STOPPED) read
+//    as absent and are never written, not even inside a click (MARKET_STORE_STOPPED); views keep the real window as `this` for
+//    its functions (DataRefresh.proxy rule) and refuse writes to window globals.
 //  - data: one strict request function (fixed file list, same origin, no credentials / redirect / referrer, status kept, a body
 //    over 2 MiB handed on empty so it is an invalid file), the old readers' validation through the DataRefresh core: the 100
 //    sec_qgv2 vectors keep SecQgv2.validate's verdict on the page path and in peek; a refresh that applies dispatches
@@ -95,14 +97,35 @@ test('action.run: only a trusted gesture of the window being dispatched runs fn,
   const later = win.trusted('click'); await new Promise((r) => setImmediate(r));
   assert.throws(() => A.run(later, 'WRITE', () => { ran++; }), /CLICK_REQUIRED/, 'the dispatch ended with its task');
   assert.equal(ran, 0);
-  // Nested: while an action started from the event is in flight, the same event may start the next step after awaits.
-  const e = win.trusted('click'); let nested = null;
-  const outer = A.run(e, 'SYNC', async () => { await new Promise((r) => setImmediate(r)); nested = await A.run(e, 'SYNC', async () => A.active('SYNC')); return 'outer'; });
-  assert.equal(await outer, 'outer'); assert.equal(nested, true, 'the nested run of the same event passed after its dispatch ended');
+  // One event, one top-level action: a second run with it is refused while it is still dispatched (even after the first settled).
+  const once = win.trusted('click'); assert.equal(A.run(once, 'WRITE', () => 1), 1);
+  for (const kind of ['WRITE', 'SYNC', 'LOGIN']) assert.throws(() => A.run(once, kind, () => { ran++; }), /ACTION_ALREADY_STARTED/, kind);
+  const twice = win.trusted('click'); let inner = null;
+  A.run(twice, 'SYNC', () => { try { A.run(twice, 'WRITE', () => { ran++; }); } catch (err) { inner = err.message; } });
+  assert.equal(inner, 'ACTION_ALREADY_STARTED', 'a second step without its parent signal, even inside the first one'); A.cancel('SYNC');
+  // Nested: the next step of an action of the same event presents that action's signal, after awaits too.
+  const e = win.trusted('click'); let nested = null, without = null;
+  const outer = A.run(e, 'SYNC', async (signal) => {
+    await new Promise((r) => setImmediate(r));
+    try { A.run(e, 'SYNC', () => 1); } catch (err) { without = err.message; }
+    nested = await A.run(e, 'WRITE', async () => [A.active('SYNC'), A.writing()], { parent: signal }); return 'outer'; });
+  assert.equal(await outer, 'outer'); assert.deepEqual(nested, [true, true], 'the nested run with its parent signal passed after the dispatch ended');
+  assert.equal(without, 'CLICK_REQUIRED', 'without the parent signal the kept event is a replay');
   assert.throws(() => A.run(e, 'SYNC', () => 1), /CLICK_REQUIRED/, 'once the outer action settled, the event is a replay');
+  let settled = null; await A.run(win.trusted('click'), 'SYNC', async (signal) => { settled = signal; });
+  assert.throws(() => A.run(e, 'SYNC', () => { ran++; }, { parent: settled }), /CLICK_REQUIRED/, 'a settled parent lends nothing');
   const other = win.trusted('click'); A.run(other, 'WRITE', () => 1);
-  const held = A.run(win.trusted('click'), 'SYNC', () => new Promise(() => {})); void held; win.ended(other);
-  assert.throws(() => A.run(other, 'SYNC', () => 1), /CLICK_REQUIRED/, 'another event in flight does not lend its permission'); A.cancel('SYNC');
+  let lent = null; const held = A.run(win.trusted('click'), 'SYNC', (signal) => { lent = signal; return new Promise(() => {}); }); void held; win.ended(other);
+  assert.throws(() => A.run(other, 'SYNC', () => 1), /CLICK_REQUIRED/, 'another event in flight does not lend its permission');
+  assert.throws(() => A.run(other, 'SYNC', () => { ran++; }, { parent: lent }), /CLICK_REQUIRED/, 'nor does its signal: the parent must be of the same event');
+  for (const bad of [{}, { aborted: false }, 'signal']) assert.throws(() => A.run(other, 'SYNC', () => { ran++; }, { parent: bad }), /CLICK_REQUIRED/);
+  A.cancel('SYNC');
+  // A nested step ends with its parent: cancelling the parent aborts it and it leaves the gate.
+  const p2 = win.trusted('click'); let child = null;
+  A.run(p2, 'SYNC', (signal) => { A.run(p2, 'WRITE', (s2) => { child = s2; return new Promise(() => {}); }, { parent: signal }); return new Promise(() => {}); });
+  assert.deepEqual([A.active('SYNC'), A.active('WRITE')], [true, true]); A.cancel('SYNC');
+  assert.deepEqual([A.active('SYNC'), A.active('WRITE'), child.aborted], [false, false, true], 'the nested step was cancelled with its parent');
+  assert.equal(ran, 0);
   // Transient activation, where the browser reports it.
   win.navigator = { userActivation: { isActive: false } };
   assert.throws(() => A.run(win.trusted('click'), 'WRITE', () => 1), /CLICK_REQUIRED/, 'no user activation');
@@ -156,7 +179,7 @@ test('action storage: writes only inside a writing action (ACTION_REQUIRED, stor
   const D = A.gatedIndexedDB(() => win.indexedDB), RO = A.gatedIndexedDB(() => win.indexedDB, { readOnly: true });
   assert.throws(() => D.open('investment-device-actual-v1', 1), /DEVICE_STORE_NOT_OPENED/, 'unknown until stores() lists it');
   assert.deepEqual(await A.stores(), { supported: true, available: true, names: ['investment-device-actual-v1'] });
-  assert.deepEqual(D.open('investment-device-actual-v1', 1), { n: 'investment-device-actual-v1', v: 1 });
+  const req = D.open('investment-device-actual-v1', 1); assert.deepEqual([req.n, req.v], ['investment-device-actual-v1', 1]);
   assert.throws(() => D.open('other', 1), /DEVICE_STORE_NOT_OPENED/);
   assert.throws(() => A.run(win.trusted('click'), 'UNIVERSE_READ', () => RO.open('other', 1)), /DEVICE_STORE_NOT_OPENED/, 'the score path never creates a database');
   A.run(win.trusted('click'), 'WRITE', () => D.open('other', 1));
@@ -165,6 +188,45 @@ test('action storage: writes only inside a writing action (ACTION_REQUIRED, stor
   win.indexedDB = { open: () => ({}) };// no databases(): only what this session already opened stays known; nothing new opens outside an action
   assert.deepEqual(await A.stores(), { supported: false, available: true, names: ['investment-device-actual-v1', 'other'] });
   assert.throws(() => D.open('third', 1), /DEVICE_STORE_NOT_OPENED/);
+});
+
+test('action IndexedDB: a write transaction needs a writing action; the device quote records read as absent and are never written, not even in a click', async () => {
+  // A recording stand-in of DeviceActual's database: one store 'snapshots' keyed by record name (device-actual.js:9-10).
+  const win = R.nodeWindow(), log = [], recs = new Map([['actual', { h: 1 }], ['market', { q: 'SENTINEL' }], ['market-import-history', { e: 1 }]]);
+  const st = { get: (k) => { log.push(['get', k]); return { result: recs.get(k) }; }, getKey: (k) => { log.push(['getKey', k]); return { result: recs.has(k) ? k : undefined }; },
+    count: (k) => ({ result: recs.has(k) ? 1 : 0 }), getAll: () => ({ result: [...recs.values()] }), getAllKeys: () => ({ result: [...recs.keys()] }), openCursor: () => ({}), openKeyCursor: () => ({}), index: () => ({}),
+    put: (v, k) => { log.push(['put', k]); recs.set(k, v); return {}; }, add: (v, k) => { log.push(['add', k]); recs.set(k, v); return {}; }, delete: (k) => { log.push(['delete', k]); recs.delete(k); return {}; }, clear: () => { recs.clear(); return {}; } };
+  const db = { objectStoreNames: { contains: (n) => n === 'snapshots' }, close() {}, transaction: (names, mode) => { log.push(['tx', mode]); const tx = { mode, objectStore: () => st }; st.transaction = tx; tx.db = db; return tx; } };
+  win.indexedDB = { open: () => ({ result: db }), databases: async () => [{ name: 'investment-device-actual-v1', version: 1 }], cmp: () => 0, deleteDatabase: () => ({}) };
+  const A = fresh('action.js').create({ win }), D = A.gatedIndexedDB(() => win.indexedDB); await A.stores();
+  assert.deepEqual(A.STOPPED, { 'investment-device-actual-v1': { snapshots: ['market', 'market-import-history'] } });
+  const tx = (mode) => D.open('investment-device-actual-v1').result.transaction('snapshots', mode);
+  // Reads: the holdings pass; a stopped record is asked for under the no-record key, so it reads as absent; a range or cursor
+  // that could reach one is refused.
+  const r = tx('readonly').objectStore('snapshots');
+  assert.deepEqual(r.get('actual').result, { h: 1 }); assert.equal(r.get('market').result, undefined); assert.equal(r.getKey('market-import-history').result, undefined); assert.equal(r.count('market').result, 0);
+  assert.deepEqual(log.filter(([op]) => op === 'get' || op === 'getKey').map(([, k]) => k), ['actual', 'MARKET_STORE_STOPPED', 'MARKET_STORE_STOPPED']);
+  const blocked0 = A.blocked();
+  for (const f of [() => r.getAll(), () => r.getAllKeys(), () => r.openCursor(), () => r.openKeyCursor(), () => r.count(), () => r.get(['market']), () => r.index('x')]) assert.throws(f, /MARKET_STORE_STOPPED/);
+  assert.equal(A.blocked() - blocked0, 7);
+  // The store's transaction and that transaction's database are the gated ones too (no way around the gate).
+  assert.throws(() => r.transaction.db.transaction('snapshots', 'readwrite'), /ACTION_REQUIRED/);
+  // Write transactions need a writing action.
+  for (const mode of ['readwrite', 'versionchange']) assert.throws(() => tx(mode), /ACTION_REQUIRED/, mode);
+  assert.throws(() => A.run(win.trusted('click'), 'PUBLIC_REFRESH', () => tx('readwrite')), /ACTION_REQUIRED/, 'the public refresh writes nothing');
+  // Inside a click: other records are written; the stopped ones never.
+  const inClick = A.run(win.trusted('click'), 'WRITE', () => {
+    const w = tx('readwrite').objectStore('snapshots'); w.put({ h: 2 }, 'actual');
+    return Object.fromEntries(Object.entries({ put: () => w.put({ q: 1 }, 'market'), add: () => w.add({}, 'market-import-history'), delete: () => w.delete('market'), clear: () => w.clear(),
+      range: () => w.delete({ lower: 'a' }), noRecordKey: () => w.put({}, 'MARKET_STORE_STOPPED'), inline: () => w.put({ id: 'market' }) }).map(([k, f]) => { try { f(); return [k, 'OK']; } catch (err) { return [k, err.message]; } }));
+  });
+  assert.deepEqual(inClick, { put: 'MARKET_STORE_STOPPED', add: 'MARKET_STORE_STOPPED', delete: 'MARKET_STORE_STOPPED', clear: 'MARKET_STORE_STOPPED', range: 'MARKET_STORE_STOPPED', noRecordKey: 'MARKET_STORE_STOPPED', inline: 'MARKET_STORE_STOPPED' });
+  assert.deepEqual(recs.get('actual'), { h: 2 }, 'the holdings record is written in a click');
+  assert.deepEqual([recs.get('market'), recs.has('market-import-history')], [{ q: 'SENTINEL' }, true], 'stored quotes untouched (never deleted automatically either)');
+  assert.deepEqual(log.filter(([op]) => ['put', 'add', 'delete'].includes(op)).map(([op, k]) => op + ' ' + k), ['put actual'], 'no write of a stopped record reached the database');
+  // Removing the stopped records is a step of a WRITE click only (store.marketQuotes.clear passes its own signal).
+  assert.throws(() => A.stoppedRecords.clear(undefined), /ACTION_REQUIRED/, 'removal needs the signal of a WRITE action');
+  assert.throws(() => A.run(win.trusted('click'), 'SYNC', (signal) => A.stoppedRecords.clear(signal)), /ACTION_REQUIRED/, 'not a SYNC action');
 });
 
 test('action.view: window functions keep the real window as `this`; storage gated; window globals never written; fetch required', () => {
@@ -367,6 +429,13 @@ test('V source: DEVICE_TEMPORARY with #391 words on every page and row; central 
   assert.doesNotMatch(src, /OFFICIAL_NOT_AVAILABLE/);
   assert.equal(qgv.reasonText('FINANCIAL_PROFILE_V_NOT_DEFINED'), mods.QgvScores.reasonText('FINANCIAL_PROFILE_V_NOT_DEFINED'));
   assert.equal(qgv.reasonText('QG_REFERENCE', true), 'No V: in the Q·G reference list, not the official ranking');
+  // Rank wording (owner 2026-10-24, Main pick): a device page and a personal preview rank on the temporary V, never officially.
+  const RANK = '임시 V 기준 순위 · 공식 순위 아님';
+  assert.equal(pg.rank_label, RANK); assert.equal(qgv.rankLabel(pg), RANK); assert.equal(qgv.rankLabel(pg.rows[0]), RANK); assert.equal(qgv.rankLabel('DEVICE_TEMPORARY'), RANK);
+  assert.equal(qgv.rankLabel(pg, true), 'Ranked on the temporary V · not the official ranking'); assert.equal(qgv.rankLabel('nowhere'), RANK, 'an unknown source is never called official');
+  assert.equal(qgv.preview(pg, CUSTOM.cases[0].input.weights).rank_label, RANK);
+  assert.match(qgv.rankLabel('OFFICIAL_CENTRAL'), /초안 문구\)$/, 'the central wording is a draft');
+  assert.equal(qgv.reasonText('JUDGEMENT_NOT_RECORDED'), '기록 안 됨');
 });
 
 test('V source switch: a device page is labelled DEVICE_TEMPORARY even if the switch turns while it is computed; an OFFICIAL route fails loudly (no central page yet)', async () => {

@@ -8,8 +8,14 @@
      onupgradeneeded, device-actual.js:189). A backup restore without holdings on a device without the database creates none.
      A browser that cannot list databases (no indexedDB.databases()) opens it only inside a storage-writing click (Main decision
      4), so a backup download there still carries the stored holdings.
-   - Backups: schemas /1–/4 as before; /5 (user objects: chart notes, macro estimates) needs validators that are not loaded in P1
-     and is refused with BACKUP_USER_OBJECTS_UNSUPPORTED. A backup never holds a price, a sheet id, a token or the Worker address.
+   - Backups: schemas /1–/5 through DeviceBackup unchanged. /5 adds the opt-in user objects (chart notes and scenarios, macro
+     cycle estimates) validated by their owners' own validators, ChartWorkbench and MacroCycleRing (reused byte-identical; loading
+     them has no side effect), which DeviceBackup looks up itself (device-backup.js:26-32): owner 2026-10-24, nothing written again.
+     A backup never holds a price, a sheet id, a token or the Worker address.
+   - Device quotes (owner 2026-10-24, DC-18): never stored by the new frontend (the gate stops them, action.js STOPPED). What a
+     device stored before stays until the user removes it: marketQuotes.count() (a number only) and marketQuotes.clear(event).
+   - V history (6.3): read only. Not recorded in the new frontend (owner 2026-10-24); the central V history is the server's
+     private store (D9). Nothing in the P1 layer calls VirtualTradingVHistory.capture / captureV2 / record / recordV2.
    - Sheet ids and the Worker address never come back to a screen: has() / set() only. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else{const I=root.IS2=root.IS2||{};I.store=api.create({win:root,action:I.action,data:I.data});}})(typeof globalThis==='object'?globalThis:this,function(){
 'use strict';
@@ -27,6 +33,8 @@ const KEYS=Object.freeze({
  UNIVERSE_SOURCE:'investment.web.v1.universe-source',// PrivateSubsetView's own Universe tab source
  WORKER_ORIGIN:'investment.web.v1.private-history-origin',// PrivateHistory / PriceStore / WorkerQuoteFallback
  PRICE_STORE_ENABLED:'investment.web.v1.price-store-enabled',// PriceStore opt-in flag (no price)
+ CHART_USER_OBJECTS:'investment.web.v1.chart-user-objects',// ChartWorkbench user notes / scenarios (backup /5)
+ MACRO_USER_ESTIMATES:'investment.web.v1.macro-cycle-user-estimate',// MacroCycleRing user estimates (backup /5)
  DEVICE_DB:'investment-device-actual-v1'});// DeviceActual IndexedDB
 const CATALOG='actual-catalog.json',ID=/^[A-Za-z0-9_-]{20,100}$/;
 const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
@@ -85,19 +93,21 @@ function create({win,action,data}){
  const stars=()=>Object.freeze([...need('PublicScreens').readStars(storage)]);
  const toggleStar=(event,cik)=>write(event,'INVESTOR_STARS',()=>Object.freeze([...need('PublicScreens').toggleStar(storage,cik)]));
 
- // ---- one price-free backup (DeviceBackup): always written as /4 (no user objects); /1–/4 restored; /5 refused
+ // ---- one price-free backup (DeviceBackup): /4, or /5 with the user's opt-in user objects (app.js exportDeviceBackup); /1–/5 restored
  function parseBackup(text){const B=need('DeviceBackup');let p=text;
   if(typeof text==='string'){if(new TextEncoder().encode(text).length>B.MAX_BYTES)throw Error('BACKUP_TOO_LARGE');try{p=JSON.parse(text);}catch(_){throw Error('BACKUP_INVALID');}}
-  if(!object(p))throw Error('BACKUP_INVALID');if(p.schema===B.USER_OBJECTS_SCHEMA)throw Error('BACKUP_USER_OBJECTS_UNSUPPORTED');if(!B.accepts(p))throw Error('BACKUP_INVALID');return p;}
- async function createBackup(){const B=need('DeviceBackup'),catalog=await data.static(CATALOG);return deepFreeze(await B.read(view,catalog));}
+  if(!object(p)||!B.accepts(p))throw Error('BACKUP_INVALID');return p;}
+ // userObjects: the "사용자 작성 객체 포함" choice (off = /4, byte for byte as before).
+ async function createBackup({userObjects=false}={}){const B=need('DeviceBackup'),catalog=await data.static(CATALOG);return deepFreeze(await B.read(view,catalog,{userObjects:userObjects===true}));}
  const backup=Object.freeze({
   create:createBackup,
-  download(event){return action.run(event,'WRITE',async()=>{const B=need('DeviceBackup'),payload=await createBackup();B.download(view,payload);return Object.freeze({schema:payload.schema});});},
-  // Merges into this device as DeviceBackup.restore does (all keys or none: it rolls back a failed write).
+  download(event,{userObjects=false}={}){return action.run(event,'WRITE',async()=>{const B=need('DeviceBackup'),payload=await createBackup({userObjects});B.download(view,payload);return Object.freeze({schema:payload.schema});});},
+  // Merges into this device as DeviceBackup.restore does (all keys or none: it rolls back a failed write); /5 user objects are
+  // merged in, nothing on this device removed.
   restore(event,text){return write(event,'BACKUP',async()=>{const B=need('DeviceBackup'),payload=parseBackup(text),catalog=await data.static(CATALOG);await B.restore(view,catalog,payload);return Object.freeze({schema:payload.schema});});},
   restored(){const B=need('DeviceBackup');return B.restoredNotice(storage);}});
 
- // ---- device V history (6.3): read only (recording on a click is an owner decision, D-21)
+ // ---- device V history (6.3): read only; not recorded here (owner 2026-10-24: the central V history is the server's, D9)
  function vHistory(){const VH=need('VirtualTradingVHistory');return deepFreeze(copy({v1:VH.readStore(storage),v2:VH.readV2(storage)}));}
 
  // ---- sheet ids and the Worker address: never returned, only whether one is set
@@ -109,7 +119,10 @@ function create({win,action,data}){
  const universeSource=Object.freeze({
   has(){const v=storage.getItem(KEYS.UNIVERSE_SOURCE);return typeof v==='string'&&ID.test(v);},
   set(event,value){return write(event,'UNIVERSE_SOURCE',()=>{const Q=need('GoogleSheetQuotes'),text=value===null||value===undefined?'':String(value);let id='';
-   if(text){try{id=Q.extractSpreadsheetId(text);}catch(_){throw Error('UNIVERSE_SOURCE_INVALID');}storage.setItem(KEYS.UNIVERSE_SOURCE,id);}else storage.removeItem(KEYS.UNIVERSE_SOURCE);return Object.freeze({set:!!id});});}});
+   if(text){try{id=Q.extractSpreadsheetId(text);}catch(_){throw Error('UNIVERSE_SOURCE_INVALID');}storage.setItem(KEYS.UNIVERSE_SOURCE,id);}else storage.removeItem(KEYS.UNIVERSE_SOURCE);return Object.freeze({set:!!id});});},
+  // "통합 시트와 같게" (owner 2026-10-24, Main pick: the Universe source keeps its own key; the user may copy the unified sheet into
+  // it on a click). The id is copied inside the store and never returned.
+  useSheet(event){return write(event,'UNIVERSE_SOURCE',()=>{const GS=need('GoogleSheetSetup');let id='';try{id=GS.source(view);}catch(_){id='';}if(!id)throw Error('SHEET_SOURCE_NOT_SET');storage.setItem(KEYS.UNIVERSE_SOURCE,id);return Object.freeze({set:true});});}});
  // The Worker address (PrivateHistory.mountSettings rule); price requests need it equal to the approved app-config origin.
  const approvedOrigin=()=>{const c=object(win.InvestmentAppConfig)?win.InvestmentAppConfig:{};return c.privateHistoryEnabled===true&&typeof c.privateHistoryWorkerOrigin==='string'?c.privateHistoryWorkerOrigin:null;};
  function storedOrigin(){const PH=need('PrivateHistory'),v=storage.getItem(KEYS.WORKER_ORIGIN);if(!v)return'';try{return PH.parseWorkerOrigin(v);}catch(_){return'';}}
@@ -119,8 +132,15 @@ function create({win,action,data}){
    if(text){try{o=PH.parseWorkerOrigin(text);}catch(_){throw Error('REQUEST_INVALID');}storage.setItem(KEYS.WORKER_ORIGIN,o);}else storage.removeItem(KEYS.WORKER_ORIGIN);
    return Object.freeze({set:!!o,approved:!!o&&o===approvedOrigin()});});}});
 
+ // ---- device quotes stored before the new frontend (owner 2026-10-24, DC-18): how many records remain (a number, never a value;
+ // null = this browser cannot tell without opening, and nothing is opened or created) and their removal on the user's click
+ // (the settings button "저장된 시세 삭제"; holdings and every other record stay).
+ const marketQuotes=Object.freeze({
+  count:()=>action.stoppedRecords.count(),
+  clear(event){return write(event,'MARKET_QUOTES',signal=>action.stoppedRecords.clear(signal));}});
+
  function subscribe(fn,{signal}={}){if(typeof fn!=='function')throw Error('SUBSCRIBER_INVALID');if(signal&&signal.aborted)return()=>{};subs.add(fn);const off=()=>{subs.delete(fn);};if(signal)signal.addEventListener('abort',off,{once:true});return off;}
- const api={KEYS,storage,prefs,savePrefs,weights,saveWeights,holdings,playbook,saveThesis,saveHold,saveRecord,stars,toggleStar,backup,vHistory,sheetSource,universeSource,workerOrigin,subscribe};
+ const api={KEYS,storage,prefs,savePrefs,weights,saveWeights,holdings,playbook,saveThesis,saveHold,saveRecord,stars,toggleStar,backup,vHistory,sheetSource,universeSource,workerOrigin,marketQuotes,subscribe};
  // DeviceProfiles' preset list, read when asked (the old module loads before this one; tests swap modules).
  Object.defineProperty(api,'PRODUCT_PRESETS',{enumerable:true,get:()=>need('DeviceProfiles').PRODUCT_PRESETS});
  return Object.freeze(api);
