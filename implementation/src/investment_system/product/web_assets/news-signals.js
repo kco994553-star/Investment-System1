@@ -164,7 +164,10 @@ function readFilters(storage=session()){const out={...FILTER_DEFAULT};
  return out;}
 function writeFilters(f,storage=session()){try{if(!storage)return false;storage.setItem(FILTER_KEY,JSON.stringify(f));return true;}catch(_){return false;}}
 // Reads the one interest list kept by the app (never copied or written here).
-function readInterests(){try{const v=JSON.parse(root.localStorage?.getItem(PERSONAL_KEY)||'null');return Array.isArray(v?.interests)?v.interests.filter(x=>typeof x==='string'):[];}catch(_){return [];}}
+// The watchlist is keyed by issuer (IA-7, decision 2026-10-23); rows here carry company ids, so the issuer keys are expanded to
+// every id of the issuer (TARGET alias, Universe codes) when DeviceWatchlist is on the page.
+function readInterestCount(){try{const v=JSON.parse(root.localStorage?.getItem(PERSONAL_KEY)||'null');return Array.isArray(v?.interests)?v.interests.filter(x=>typeof x==='string').length:0;}catch(_){return 0;}}
+function readInterests(){try{const v=JSON.parse(root.localStorage?.getItem(PERSONAL_KEY)||'null'),list=Array.isArray(v?.interests)?v.interests.filter(x=>typeof x==='string'):[];return root.DeviceWatchlist&&typeof root.DeviceWatchlist.allIds==='function'?root.DeviceWatchlist.allIds(list):list;}catch(_){return [];}}
 // Category key: '실적' merges news EARNINGS with SEC/DART RESULTS (same label); every other class keeps its own source.
 function rowCategory(row){if(row.channel==='NEWS'){const c=row.item.classification;return c==='EARNINGS'?'RESULTS':'NEWS:'+c;}const c=row.event.classification;return c==='RESULTS'?'RESULTS':(row.source==='DART'?'DART:':'SEC:')+c;}
 function rowOccurrence(row){return row.channel==='NEWS'?(row.orphan?'REPEAT':row.item.occurrence):row.event.occurrence;}
@@ -280,7 +283,7 @@ function screenHtml(parts={},{locale,company=null,interests=null,relations=false
  const sec=(n,ko,e,body,cls='',x='')=>'<section class="nw-sec'+(cls?' '+cls:'')+'" data-fn="'+n+'"'+(x?' data-fn-part="'+x.slice(1)+'"':'')+' aria-labelledby="'+id(n,x)+'">'+head(n,ko,e,'h3',x)+body+'</section>';
  const group=(n,ko,e,note,body)=>'<section class="nw-group" data-fn="'+n+'" aria-labelledby="'+id(n)+'"><div class="nw-group-top">'+(D?D.icon('news','nw-doodle'):'')+head(n,ko,e,'h2')+(note?'<span class="nw-hand">'+note+'</span>':'')+'</div>'+(D?D.underline('nw-line'):'')+body+'</section>';
  const who=company&&typeof company.ticker==='string'?escHtml(company.ticker):'';
- const count=Number.isInteger(interests)?interests:readInterests().length;
+ const count=Number.isInteger(interests)?interests:readInterestCount();
  // 5.1.1: decoration only when no relation data: the company in view (red ring) and dashed empty links (nothing invented).
  const sketch=relations?'':'<svg class="nw-net" viewBox="0 0 240 120" aria-hidden="true" focusable="false"><path class="nw-net-link" d="M120 60 L42 26 M120 60 L200 24 M120 60 L206 96 M120 60 L36 98"/><circle class="nw-net-empty" cx="42" cy="26" r="13"/><circle class="nw-net-empty" cx="200" cy="24" r="13"/><circle class="nw-net-empty" cx="206" cy="96" r="13"/><circle class="nw-net-empty" cx="36" cy="98" r="13"/><circle class="nw-net-me" cx="120" cy="60" r="22"/></svg>'+
   '<p class="small nw-caption">'+T('빨간 원 = 지금 보는 기업','Red ring = the company in view')+(who?' ('+who+')':' ('+T('선택 안 함','none selected')+')')+' · '+T('점선 = 관계 자료 미연결','dashed = relationship data not connected')+'</p>';

@@ -39,6 +39,7 @@ const QI = globalThis.Qgv2Inputs = require(path.join(WA, 'qgv2-inputs.js'));
 globalThis.MacroLights = require(path.join(WA, 'macro-lights.js'));
 const QS = require(path.join(WA, 'qgv-scores.js')), PS = require(path.join(WA, 'public-screens.js'));
 const SD = require(path.join(WA, 'sec-disclosures.js')), NS = require(path.join(WA, 'news-signals.js'));
+const WL = require(path.join(WA, 'watchlist.js'));WL.useNames(require(path.join(WA, 'entity-search.js')).nameIndex(JSON.parse(fs.readFileSync(path.join(WA, 'company-names-ko.json'), 'utf8'))));
 const F = require('./qgv_v2_fixture.js'), secFx = require('./sec_disclosures_fixture.js'), newsFx = require('./news_signals_fixture.js');
 const { EMPTY, routeEmptyPublicScreens } = require('./empty_public_screens.js');
 const BASE = process.env.PAGES_COCKPIT_URL, ORIGIN = new URL(BASE).origin;
@@ -158,7 +159,8 @@ function checkPopulation(label, { truth: T, controls: C, dom: D }, expect) {
   // The filters, applied again by the test (search over ticker + name, the device group, interests only).
   const q = (C.query || '').trim().toLocaleLowerCase(), g = C.group === GROUP.id ? GROUP : null;
   ok(C.group === '' || g, L('group filter is the test group'));
-  const keep = (x) => (!q || (x.ticker + ' ' + x.name).toLocaleLowerCase().includes(q)) && (!g || g.members.includes(x.id)) && (!C.interest || INTERESTS.includes(x.id));
+  // Group / interest membership is by issuer (IA-7, decision 2026-10-23): GOOGL and GOOG are one issuer.
+  const key = (id) => WL.issuerOf(id) || id, keep = (x) => (!q || (x.ticker + ' ' + x.name).toLocaleLowerCase().includes(q)) && (!g || g.members.map(key).includes(key(x.id))) && (!C.interest || INTERESTS.map(key).includes(key(x.id)));
   const filtered = T.identities.filter((x) => keep(x) && (!C.target || x.target)).map((x) => x.id), inF = new Set(filtered);
   // TARGET outside the Universe: only in their own list (after the same filters), never in the table.
   eq(D.rows.filter((r) => T.outside.includes(r.id)), [], L('no TARGET outside the Universe in the table'));

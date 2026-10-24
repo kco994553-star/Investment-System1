@@ -97,6 +97,9 @@ if (!base.pathname.endsWith("/")) base.pathname += "/";
     await page.setViewportSize({ width: 390, height: 844 });
     await check("companies to company and fail-closed QGV", async () => {
       await route("companies");
+      // The company list is every company (TARGET aliases + Universe504 codes, decision 2026-10-23), paged by 30.
+      assert.ok(await page.locator('#company-list a[href^="#company/NYSE%3A"], #company-list a[href^="#company/NASDAQ%3A"]').count() > 0);
+      await page.locator("#search").fill("nvda");
       await page.locator('a[href="#company/nvda"]').click();
       await page.getByRole("heading", { name: "NVIDIA · NVDA", exact: true }).waitFor(); // KR-NAMES title "<name> · <ticker>"
       const text = await page.locator("main").innerText();
@@ -119,11 +122,11 @@ if (!base.pathname.endsWith("/")) base.pathname += "/";
       await page.locator("#group-name").fill("반도체");
       await page.getByRole("button", { name: "그룹 만들기" }).click();
       await group();
-      await page.locator('[data-member="nvda"]').check();
+      await page.locator('[data-member="sec:0001045810"]').check();
       await page.reload();
       await group();
       assert.equal(
-        await page.locator('[data-member="nvda"]').isChecked(),
+        await page.locator('[data-member="sec:0001045810"]').isChecked(),
         true,
       );
       await route("companies");
@@ -277,7 +280,8 @@ if (!base.pathname.endsWith("/")) base.pathname += "/";
       const backup = JSON.parse(fs.readFileSync(await download.path(), "utf8"));
       assert.equal(backup.schema, "investment-device-backup/4");
       assert.deepEqual(backup.investor_stars, []);
-      assert.deepEqual(backup.preferences.interests, ["nvda"]);
+      // Watchlist keys are issuers (IA-7, owner decision 2026-10-23): NVIDIA = sec:+CIK10.
+      assert.deepEqual(backup.preferences.interests, ["sec:0001045810"]);
       assert.deepEqual(backup.preferences.groups.map((g) => g.name), ["AI"]);
       assert.ok(!JSON.stringify(backup).includes("market_data"));
       await page.locator("[data-delete]").click();

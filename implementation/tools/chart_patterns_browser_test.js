@@ -102,6 +102,8 @@ const ORIGIN = new URL(BASE).origin;
     phase = 'DEVICE';
     {
       const context = await browser.newContext({viewport: {width: 390, height: 900}, serviceWorkers: 'block'});
+      // Decision 2026-10-23 (TA G2): the chart range is ACTUAL ∪ watchlist ∪ TARGET v1 candidates; this device watches NVIDIA (issuer key).
+      await context.addInitScript(()=>{if(localStorage.getItem('investment.web.v1.personal')===null)localStorage.setItem('investment.web.v1.personal',JSON.stringify({version:1,interests:['sec:0001045810'],groups:[]}));});
       await context.route('**/*', route => (route.request().url().startsWith(ORIGIN) ? route.continue() : route.abort()));
       const {page, methods} = await open(context, '#settings');
       await page.locator('#device-backup-export').waitFor();

@@ -240,7 +240,7 @@ function mount(host,options={}){
   if(state.disposed||!host.isConnected)return;const code=readiness();load_.disabled=state.busy||code!=='READY';clear.disabled=state.busy;
   if(!state.busy){status.dataset.code=code;status.textContent=(code==='OFF'?x('OFF · 가격 호출 없음','OFF · No price requests'):code)+(state.message?' · '+state.message:'');}
   results.replaceChildren();const r=state.result;
-  const bench=el('p','S&P 500 · '+BENCHMARK.state+' · '+BENCHMARK.reason+' · '+x('Worker는 TARGET 19종목만 제공합니다.','The Worker serves only the 19 TARGET symbols.'),{'data-forward-benchmark':BENCHMARK.state});
+  const bench=el('p','S&P 500 · '+BENCHMARK.state+' · '+BENCHMARK.reason+' · '+x('S&P 500 비교는 이 v0 비교 화면에 아직 연결되지 않았습니다.','The S&P 500 comparison is not connected to this v0 comparison screen yet.'),{'data-forward-benchmark':BENCHMARK.state});
   if(!r){results.append(el('p',x('TARGET v0 수익률 · NOT_AVAILABLE · 가격을 불러오지 않았습니다.','TARGET v0 return · NOT_AVAILABLE · Prices not loaded.'),{'data-forward-portfolio':'NOT_AVAILABLE'}),bench);return;}
   results.append(el('p',r.state==='AVAILABLE'?x('TARGET v0 수익률 ','TARGET v0 return ')+r.start_date+' → '+r.end_date_max+' · '+pct(r.portfolio_return)+' · '+BASIS:r.reason==='NO_PRIMARY_RECORD'?x('TARGET v0 수익률 · NOT_AVAILABLE · 현재 구간에 주 평가 기록이 없습니다(준비 관측만 있음).','TARGET v0 return · NOT_AVAILABLE · The current segment has no primary record (preparatory only).'):x('TARGET v0 수익률 · NOT_AVAILABLE · ','TARGET v0 return · NOT_AVAILABLE · ')+r.reason+' · '+r.missing_count+'/'+Object.keys(r.instruments).length,{'data-forward-portfolio':r.state}),bench);
   for(const s of state.segmentResults||[]){const v=s.result;

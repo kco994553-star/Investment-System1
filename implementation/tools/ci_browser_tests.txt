@@ -88,4 +88,5 @@ search_continuity_browser_test.js
 prompt_selected_context_browser_test.js
 qgv_single_sort_browser_test.js
 technical_layout_browser_test.js
+chart_listing_keys_browser_test.js
 web_app_shell_browser_test.js  # new frontend P0 shell (docs/frontend_v2/FRONTEND_V2_PLAN.md); builds its own site

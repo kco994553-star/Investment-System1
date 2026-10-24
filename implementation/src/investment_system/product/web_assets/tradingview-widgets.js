@@ -7,7 +7,9 @@
  const STORAGE_KEY='investment.web.v1.tradingview-widgets';
  const FRAME_ROOT='https://www.tradingview-widget.com/embed-widget/';
  const FRAMES=Object.freeze({ticker:FRAME_ROOT+'ticker-tape/',mini:FRAME_ROOT+'mini-symbol-overview/',advanced:FRAME_ROOT+'advanced-chart/'});
- // TARGET 19 (same company ids as the private history Worker allowlist) mapped to TradingView EXCHANGE:NAME symbols.
+ // TARGET aliases mapped to TradingView EXCHANGE:NAME symbols; a Universe504 code (EXCHANGE:SYMBOL) is its own TradingView symbol.
+ // The ticker tape shows the caller's device range (owner decision 2026-10-23: ACTUAL holdings ∪ watchlist ∪ TARGET v1 candidates),
+ // not a fixed TARGET list; with an empty range no widget loads.
  const SYMBOLS=Object.freeze({asml:'NASDAQ:ASML',lrcx:'NASDAQ:LRCX',klac:'NASDAQ:KLAC',nvda:'NASDAQ:NVDA',amd:'NASDAQ:AMD',avgo:'NASDAQ:AVGO',qcom:'NASDAQ:QCOM',intc:'NASDAQ:INTC',msft:'NASDAQ:MSFT',googl:'NASDAQ:GOOGL',amzn:'NASDAQ:AMZN',
   rtx:'NYSE:RTX',stry:'NYSE:SYK',etn:'NYSE:ETN',hubb:'NYSE:HUBB',gev:'NYSE:GEV',rok:'NYSE:ROK',hanmi:'KRX:042700',tokyo_electron:'TSE:8035'});
  const TITLES=Object.freeze({'KRX:042700':['한미반도체','Hanmi Semi'],'TSE:8035':['도쿄일렉트론','Tokyo Electron']});
@@ -16,7 +18,8 @@
  const AVAILABILITY=Object.freeze({'TSE:8035':'UNVERIFIED','KRX:042700':'UNVERIFIED'});
  const TEXT=Object.freeze({
   note:['표시 전용 · 계산에 쓰지 않음','Display only · not used in calculations'],
-  ticker:['TARGET 19 시세 띠 · TradingView','TARGET 19 ticker tape · TradingView'],
+  ticker:['내 범위 시세 띠(보유·관심·TARGET v1 후보) · TradingView','My range ticker tape (holdings, watchlist, TARGET v1 candidates) · TradingView'],
+  empty:['범위가 비어 있습니다. 기업 화면에서 ☆를 눌러 관심 기업에 넣으면 여기에 표시됩니다.','The range is empty. Star a company (☆) to show it here.'],
   mini:['미니 차트 · TradingView','Mini chart · TradingView'],
   advanced:['전체 차트 · TradingView','Full chart · TradingView'],
   off:['위젯 끄기','Turn widgets off'],on:['위젯 켜기 · 종목명이 TradingView로 전달됩니다','Turn widgets on · symbols are sent to TradingView'],
@@ -29,18 +32,19 @@
   attribution:['차트·시세 제공: TradingView','Charts and quotes by TradingView']
  });
  function words(locale,key){return TEXT[key][locale==='en-US'?1:0];}
- function symbolFor(companyId){return typeof companyId==='string'&&Object.hasOwn(SYMBOLS,companyId)?SYMBOLS[companyId]:null;}
+ function symbolFor(companyId){if(typeof companyId!=='string')return null;if(Object.hasOwn(SYMBOLS,companyId))return SYMBOLS[companyId];return /^(NYSE|NASDAQ|BATS):[A-Z0-9][A-Z0-9.\-]{0,15}$/.test(companyId)?companyId:null;}
+ function tapeSymbols(ids){return[...new Set((Array.isArray(ids)?ids:[]).map(symbolFor).filter(Boolean))];}
  function availability(symbol){return Object.hasOwn(AVAILABILITY,symbol)?AVAILABILITY[symbol]:'AVAILABLE';}
  function enabled(storage){try{return storage.getItem(STORAGE_KEY)==='on';}catch(_){return false;}}
  function setEnabled(storage,on){try{storage.setItem(STORAGE_KEY,on?'on':'off');return true;}catch(_){return false;}}
  function tvLocale(locale){return locale==='en-US'?'en':'kr';}
- function tickerSymbols(locale){
-  return Object.values(SYMBOLS).filter(s=>availability(s)!=='NOT_DISPLAYED').map(s=>({proName:s,title:Object.hasOwn(TITLES,s)?TITLES[s][locale==='en-US'?1:0]:s.split(':')[1]}));
+ function tickerSymbols(locale,ids){
+  return tapeSymbols(ids).filter(s=>availability(s)!=='NOT_DISPLAYED').map(s=>({proName:s,title:Object.hasOwn(TITLES,s)?TITLES[s][locale==='en-US'?1:0]:s.split(':')[1]}));
  }
  // Widget configs carry symbols and presentation options only: no price, holding, sheet ID or token.
- function config(kind,symbol,locale){
+ function config(kind,symbol,locale,ids){
   const base={locale:tvLocale(locale),colorTheme:'light',isTransparent:false};
-  if(kind==='ticker')return {...base,symbols:tickerSymbols(locale),showSymbolLogo:false,displayMode:'adaptive'};
+  if(kind==='ticker')return {...base,symbols:tickerSymbols(locale,ids),showSymbolLogo:false,displayMode:'adaptive'};
   if(kind==='mini')return {...base,symbol,width:'100%',height:'100%',dateRange:'12M',autosize:true,noTimeScale:false,chartOnly:false};
   return {locale:tvLocale(locale),symbol,autosize:true,interval:'D',timezone:'Etc/UTC',theme:'light',style:'1',allow_symbol_change:false,hide_side_toolbar:true,save_image:false,calendar:false,withdateranges:true,details:false,hotlist:false,support_host:'https://www.tradingview.com'};
  }
@@ -59,15 +63,17 @@
   host.replaceChildren(card);
   if(!on){card.append(el(doc,'p',{class:'small','data-tv-disabled':''},words(locale,'disabled')));return card;}
   if(symbol&&availability(symbol)==='NOT_DISPLAYED'){card.append(fallback(doc,locale,'notDisplayed',symbol));return card;}
-  if(kind==='ticker'){const hidden=Object.values(SYMBOLS).filter(s=>availability(s)==='NOT_DISPLAYED');if(hidden.length)card.append(el(doc,'p',{class:'small','data-tv-excluded':hidden.join(' ')},hidden.join(', ')+': '+words(locale,'notDisplayed')));}
-  if((symbol&&availability(symbol)==='UNVERIFIED')||(kind==='ticker'&&Object.values(SYMBOLS).some(s=>availability(s)==='UNVERIFIED')))
-   card.append(el(doc,'p',{class:'small','data-tv-unverified':''},(kind==='ticker'?Object.values(SYMBOLS).filter(s=>availability(s)==='UNVERIFIED').join(', ')+': ':'')+words(locale,'unverified')));
+  const tape=kind==='ticker'?tapeSymbols(options.companyIds):[];
+  if(kind==='ticker'&&!tape.length){card.append(el(doc,'p',{class:'small','data-tv-empty':''},words(locale,'empty')));return card;}
+  if(kind==='ticker'){const hidden=tape.filter(s=>availability(s)==='NOT_DISPLAYED');if(hidden.length)card.append(el(doc,'p',{class:'small','data-tv-excluded':hidden.join(' ')},hidden.join(', ')+': '+words(locale,'notDisplayed')));}
+  if((symbol&&availability(symbol)==='UNVERIFIED')||(kind==='ticker'&&tape.some(s=>availability(s)==='UNVERIFIED')))
+   card.append(el(doc,'p',{class:'small','data-tv-unverified':''},(kind==='ticker'?tape.filter(s=>availability(s)==='UNVERIFIED').join(', ')+': ':'')+words(locale,'unverified')));
   const frame=el(doc,'div',{class:'tradingview-widget-container tv-frame tv-frame-'+kind,'data-tv-frame':kind});
   frame.append(el(doc,'div',{class:'tradingview-widget-container__widget'}));
   card.append(frame,el(doc,'p',{class:'small tv-attribution'},words(locale,'attribution')));
   const fail=()=>{if(frame.isConnected)frame.replaceWith(fallback(doc,locale,'blocked'));};
   if(win.navigator&&win.navigator.onLine===false){fail();return card;}
-  const iframe=el(doc,'iframe',{src:FRAMES[kind]+'?locale='+tvLocale(locale)+'#'+encodeURIComponent(JSON.stringify(config(kind,symbol,locale))),title:words(locale,kind),loading:'lazy',referrerpolicy:'no-referrer',sandbox:'allow-scripts allow-same-origin allow-popups',width:'100%',height:kind==='ticker'?'80':'360','data-tv-iframe':kind});
+  const iframe=el(doc,'iframe',{src:FRAMES[kind]+'?locale='+tvLocale(locale)+'#'+encodeURIComponent(JSON.stringify(config(kind,symbol,locale,options.companyIds))),title:words(locale,kind),loading:'lazy',referrerpolicy:'no-referrer',sandbox:'allow-scripts allow-same-origin allow-popups',width:'100%',height:kind==='ticker'?'80':'360','data-tv-iframe':kind});
   iframe.addEventListener('error',fail,{once:true});
   frame.replaceChildren(iframe);
   return card;

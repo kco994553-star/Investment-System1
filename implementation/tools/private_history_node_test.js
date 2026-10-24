@@ -12,12 +12,26 @@ function daily() {
     {timestamp:1894017600,open:43,high:45,low:42,close:44,adjusted_close:440,volume:110,session_status:'IN_PROGRESS'}]};
 }
 test('private history exports work without initiating requests', () => {
-  for(const name of ['mount','mountSettings','disposeAll','validateHistory','chartPaths','symbolFor','parseWorkerOrigin']) assert.equal(typeof api[name], 'function', name + ' available');
+  for(const name of ['mount','mountSettings','disposeAll','validateHistory','chartPaths','symbolFor','setScope','inScope','scopeList','providerSymbol','chartSymbol','parseWorkerOrigin']) assert.equal(typeof api[name], 'function', name + ' available');
 });
-test('history targets are limited to existing TARGET19 identities', () => {
+test('symbolFor stays the TARGET v0 alias table (set A, v0 comparison); it is not the chart range', () => {
   const mappings={asml:'ASML',lrcx:'LRCX',klac:'KLAC',nvda:'NVDA',amd:'AMD',avgo:'AVGO',qcom:'QCOM',intc:'INTC',msft:'MSFT',googl:'GOOGL',amzn:'AMZN',rtx:'RTX',stry:'SYK',etn:'ETN',hubb:'HUBB',gev:'GEV',rok:'ROK',hanmi:'042700.KS',tokyo_electron:'8035.T'};
-  for(const [id,symbol] of Object.entries(mappings)) assert.ok(api.symbolFor(id)===symbol,'approved identity resolves');
-  for(const id of ['aapl','NVDA','COMPANY:nvda','toString','__proto__','']) assert.ok(api.symbolFor(id)===null,'unapproved identity has no history');
+  for(const [id,symbol] of Object.entries(mappings)) assert.ok(api.symbolFor(id)===symbol,'v0 alias resolves');
+  for(const id of ['aapl','NVDA','COMPANY:nvda','toString','__proto__','']) assert.ok(api.symbolFor(id)===null,'unknown alias has no symbol');
+});
+// Owner decision 2026-10-23 (TA G2): the device chart range is ACTUAL holdings ∪ watchlist ∪ TARGET v1 candidates, given by the
+// app (setScope). Any company in it (TARGET alias or Universe code) on the Worker allowlist has a symbol; nothing else does.
+test('chart range = the scope the app gives, any company, Worker allowlist only', () => {
+  const W=require('../src/investment_system/product/web_assets/watchlist.js'),view={DeviceWatchlist:W,GoogleSheetQuotes:{HISTORY_SYMBOLS:['AAPL','NVDA','BRK-B','SYK','042700.KS']}};
+  api.setScope(null);
+  for(const id of ['nvda','asml','NASDAQ:AAPL']) assert.equal(api.chartSymbol(id,view),null,'no scope: nothing is in range (TARGET v0 is not a default)');
+  const ids=['NASDAQ:AAPL','stry','hanmi','NYSE:BRK.B','NASDAQ:MSFT'];api.setScope({has:id=>ids.includes(id),list:()=>ids.map(id=>({id,label:id}))});
+  assert.equal(api.chartSymbol('NASDAQ:AAPL',view),'AAPL');assert.equal(api.chartSymbol('stry',view),'SYK');assert.equal(api.chartSymbol('hanmi',view),'042700.KS');assert.equal(api.chartSymbol('NYSE:BRK.B',view),'BRK-B');
+  assert.equal(api.chartSymbol('NASDAQ:MSFT',view),null,'in range but not on the (test) allowlist');
+  assert.equal(api.chartSymbol('nvda',view),null,'a TARGET v0 company outside the range is not requested');
+  assert.deepEqual(api.scopeList().map(r=>r.id),ids);
+  api.setScope({has:()=>{throw new Error('x');},list:()=>{throw new Error('x');}});assert.equal(api.chartSymbol('NASDAQ:AAPL',view),null);assert.deepEqual(api.scopeList(),[]);
+  api.setScope(null);
 });
 test('worker settings accept only lowercase HTTPS workers.dev root origins', () => {
   const origin='https://synthetic-history.example-account.workers.dev';

@@ -1,4 +1,7 @@
-/* Private daily history is held only in memory and loaded by an explicit click. */
+/* Private daily history is held only in memory and loaded by an explicit click.
+   Range (owner decision 2026-10-23, TA G2): the device chart range is ACTUAL holdings ∪ the user's watchlist ∪ TARGET v1 candidates
+   (draft included), given by the app through setScope(). TARGET v0 (symbolFor) is only the alias table that set A and the v0
+   comparison screen read; it is not the chart range. A company outside the range or outside the Worker allowlist is never requested. */
 (function (root, factory) {
   const api = factory();
   if (typeof module === 'object' && module.exports) module.exports = api;
@@ -12,6 +15,19 @@
   const active = new Set();
   function fail(code) { throw new Error(code); }
   function symbolFor(companyId) { return Object.hasOwn(TARGETS, companyId) ? TARGETS[companyId] : null; }
+  // Device chart range (ACTUAL ∪ watchlist ∪ TARGET v1 candidates): {has(id), list() -> [{id,label}]}. Without one nothing is in range.
+  let scope = null;
+  function setScope(value) { scope = value && typeof value.has === 'function' ? value : null; }
+  function inScope(id) { try { return !!(scope && typeof id === 'string' && scope.has(id)); } catch (_) { return false; } }
+  function scopeList() { try { const list = scope && typeof scope.list === 'function' ? scope.list() : []; return Array.isArray(list) ? list.filter(r => r && typeof r.id === 'string') : []; } catch (_) { return []; } }
+  // Worker symbol of any company id (TARGET alias or Universe code) on the client allowlist (GoogleSheetQuotes.HISTORY_SYMBOLS).
+  function providerSymbol(id, view = globalThis) {
+    const W = view && view.DeviceWatchlist, symbol = (W && typeof W.providerSymbol === 'function' ? W.providerSymbol(id) : null) || symbolFor(id);
+    const list = view && view.GoogleSheetQuotes && view.GoogleSheetQuotes.HISTORY_SYMBOLS;
+    return symbol && (Array.isArray(list) ? list.includes(symbol) : Object.values(TARGETS).includes(symbol)) ? symbol : null;
+  }
+  function chartSymbol(id, view = globalThis) { return inScope(id) ? providerSymbol(id, view) : null; }
+  function listingFor(id, view = globalThis) { const W = view && view.DeviceWatchlist; return W && typeof W.listingOf === 'function' ? W.listingOf(id) : null; }
   function parseWorkerOrigin(value) {
     const label = '[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?';
     if (typeof value !== 'string' || !new RegExp('^https://' + label + '\\.' + label + '\\.workers\\.dev/?$').test(value)) fail('REQUEST_INVALID');
@@ -21,7 +37,7 @@
     const validText = (text, pattern) => typeof text === 'string' && pattern.test(text);
     const fallback = value && ['Tiingo EOD','KRX OPEN API'].includes(value.provider);
     if (!value || Array.isArray(value) || typeof value !== 'object' || value.schema !== 'private-history/1' || !['Yahoo Finance(비공식)','Tiingo EOD','KRX OPEN API'].includes(value.provider)
-      || value.symbol !== expected.symbol || value.range !== expected.range || !Object.values(TARGETS).includes(value.symbol) || !RANGES.includes(value.range)
+      || value.symbol !== expected.symbol || value.range !== expected.range || typeof value.symbol !== 'string' || !/^[A-Z0-9][A-Z0-9.\-]{0,15}$/.test(value.symbol) || !RANGES.includes(value.range)
       || value.interval !== '1d' || value.basis !== 'RAW_CLOSE' || value.delay_status !== 'UNKNOWN'
       || value.currency !== (value.symbol.endsWith('.KS') ? 'KRW' : value.symbol.endsWith('.T') ? 'JPY' : 'USD') || !validText(value.exchange,/^[A-Za-z0-9._ -]{1,64}$/)
       || !validText(value.timezone,/^[A-Za-z0-9_+\-/]{1,64}$/)
@@ -88,9 +104,12 @@
     });
     root.append(form,status);
     if(enabled) {
-      const links=node(state,'div',undefined,{class:'chips',role:'group','aria-label':words(state,'비공개 가격 이력 지원 종목','Symbols supported for private history')});
-      for(const [companyId,symbol] of Object.entries(TARGETS)) links.append(node(state,'a',symbol,{href:'#company/'+companyId,'data-history-company':companyId}));
+      // The device chart range (ACTUAL ∪ watchlist ∪ TARGET v1 candidates), not a fixed list.
+      const links=node(state,'div',undefined,{class:'chips',role:'group','aria-label':words(state,'기기 시세·차트 범위(보유·관심·TARGET v1 후보)','Device quote and chart range (holdings, watchlist, TARGET v1 candidates)')});
+      const rows=scopeList().filter(r=>providerSymbol(r.id,view));
+      for(const r of rows) links.append(node(state,'a',r.label||r.id,{href:'#company/'+encodeURIComponent(r.id),'data-history-company':r.id}));
       root.append(links);
+      if(!rows.length) root.append(node(state,'p',words(state,'범위가 비어 있습니다. 기업 화면에서 ☆를 눌러 관심 기업에 넣으면 차트 범위에 들어갑니다.','The range is empty. Star a company (☆) to add it to the chart range.'),{'data-history-scope-empty':''}));
     }
     host.replaceChildren(root);
   }
@@ -122,7 +141,7 @@
     state.results.replaceChildren();
     state.results.append(node(state,'p',data.provider+' · '+data.symbol+' · '+data.exchange+' · '+data.currency+' · '+data.timezone+' · '+data.interval+' · RAW_CLOSE · delay_status: UNKNOWN · read_at: '+data.read_at,{'data-history-meta':''}));
     state.indicators=state.view.ResearchIndicators.calculate(data.bars,{includeSma240:state.selected.has('SMA_240')});
-    const lastBar=data.bars.at(-1);emit(state,{indicators:state.indicators,symbol:data.symbol,currency:data.currency,close:lastBar.close,asOf:lastBar.session_date||new Date(lastBar.timestamp*1000).toISOString().slice(0,10),readAt:data.read_at,bars:data.bars,timezone:data.timezone,provider:data.provider});
+    const lastBar=data.bars.at(-1);emit(state,{indicators:state.indicators,symbol:data.symbol,listing:state.listing,currency:data.currency,close:lastBar.close,asOf:lastBar.session_date||new Date(lastBar.timestamp*1000).toISOString().slice(0,10),readAt:data.read_at,bars:data.bars,timezone:data.timezone,provider:data.provider});
     const buttons=node(state,'div',undefined,{class:'chart-controls',role:'group','aria-label':words(state,'연구용 이동평균','Research moving averages')});
     for(const id of ['SMA_5','SMA_20','SMA_60','SMA_120','SMA_240','EMA_20','AVG']){
       const button=node(state,'button',id.replace('_',''),{type:'button','data-chart-overlay':id,'aria-pressed':String(state.selected.has(id))});
@@ -184,7 +203,7 @@
   }
   async function mount(host,options={}) {
     const doc=host.ownerDocument,view=doc.defaultView,config=options.config||{};
-    const state={host,doc,view,locale:options.locale,symbol:symbolFor(options.companyId),enabled:config.privateHistoryEnabled===true,approvedOrigin:config.privateHistoryWorkerOrigin||'',revision:0,data:null,indicators:null,average:null,getAverage:options.getAverage,onData:options.onData,trades:null,tradeBusy:false,tradeMessage:'',tradeController:null,selected:new Set(['SMA_5','SMA_20','SMA_60','SMA_120','AVG']),busy:false,disposed:false,controller:null};
+    const state={host,doc,view,locale:options.locale,symbol:chartSymbol(options.companyId,view),listing:listingFor(options.companyId,view),enabled:config.privateHistoryEnabled===true,approvedOrigin:config.privateHistoryWorkerOrigin||'',revision:0,data:null,indicators:null,average:null,getAverage:options.getAverage,onData:options.onData,trades:null,tradeBusy:false,tradeMessage:'',tradeController:null,selected:new Set(['SMA_5','SMA_20','SMA_60','SMA_120','AVG']),busy:false,disposed:false,controller:null};
     active.add(state);
     const root=node(state,'section',undefined,{class:'card private-history','data-private-history':''});
     root.append(node(state,'h2',words(state,'가격 차트 · 비공개 일별 이력','Price chart · Private daily history')));
@@ -195,6 +214,7 @@
     const close=node(state,'button',words(state,'가격 지우기','Clear prices'),{type:'button','data-history-action':'close'});
     state.results=node(state,'div',undefined,{'data-history-results':''});
     root.append(state.status,state.range,state.fetch,state.tradeButton,close,state.results);host.replaceChildren(root);
+    if(!state.symbol&&options.companyId&&!options.quietRange)root.insertBefore(node(state,'p',outOfRangeText(state,options.companyId,view),{'data-history-out-of-range':''}),state.status);
     state.tradeButton.addEventListener('click',()=>{void loadTrades(state);});
     state.fetch.addEventListener('click',()=>{void load(state);});state.range.addEventListener('change',()=>{clear(state);update(state);});close.addEventListener('click',()=>{clear(state);update(state);});
     state.pagehide=()=>{dispose(state);};view.addEventListener('pagehide',state.pagehide);
@@ -214,21 +234,28 @@
     }
     return Object.freeze({clear(){clear(state);update(state);},dispose(){dispose(state);}});
   }
+  function outOfRangeText(state,id,view) {
+    return providerSymbol(id,view)
+      ? words(state,'선택한 기업 ('+id+')은 기기 시세·차트 범위(보유 · 관심 기업 · TARGET v1 후보) 밖이라 가격을 요청하지 않습니다. ☆로 관심 기업에 넣으면 범위에 들어갑니다.','The selected company ('+id+') is outside the device quote and chart range (holdings, watchlist, TARGET v1 candidates). No prices are requested. Star it (☆) to add it to the range.')
+      : words(state,'선택한 기업 ('+id+')은 비공개 가격 Worker 허용 목록에 없어 가격을 요청하지 않습니다.','The selected company ('+id+') is not on the private price Worker allowlist. No prices are requested.');
+  }
   function mountTechnical(host,options={}) {
     const state={doc:host.ownerDocument,view:host.ownerDocument.defaultView,locale:options.locale};
     const select=node(state,'select',undefined,{'data-technical-symbol':'','aria-label':words(state,'기술 차트 종목','Technical chart symbol')}),child=node(state,'div');
-    // Only the menu entry without a company chooses a default. A search/deep link keeps its identity even outside TARGET19.
-    const companyId=options.companyId||'asml';
-    if(!symbolFor(companyId))select.append(node(state,'option',companyId+' · '+words(state,'지원 범위 밖','Unsupported'),{value:companyId}));
-    for(const[id,symbol]of Object.entries(TARGETS))select.append(node(state,'option',symbol,{value:id}));
+    // Choices = the device chart range (ACTUAL ∪ watchlist ∪ TARGET v1 candidates). A search/deep link keeps its identity even
+    // outside the range (shown, never requested). Only the menu entry without a company picks the first company of the range.
+    const rows=scopeList(),companyId=options.companyId||(rows[0]&&rows[0].id)||'';
+    if(companyId&&!rows.some(r=>r.id===companyId))select.append(node(state,'option',companyId+' · '+words(state,'범위 밖','Outside range'),{value:companyId}));
+    for(const r of rows)select.append(node(state,'option',r.label||r.id,{value:r.id}));
     select.value=companyId;
     const unavailable=node(state,'p','',{'data-technical-unavailable':'',role:'status'});
     host.replaceChildren(select,unavailable,child);const show=()=>{
-      disposeAll();child.replaceChildren();unavailable.hidden=!!symbolFor(select.value);
-      unavailable.textContent=unavailable.hidden?'':words(state,'선택한 기업 ('+select.value+')은 현재 가격 이력 지원 19종목에 포함되지 않아 가격을 요청하지 않습니다.','The selected company ('+select.value+') is outside the 19 supported companies for price history. No prices are requested.');
-      void mount(child,{...options,companyId:select.value});
+      disposeAll();child.replaceChildren();const id=select.value;unavailable.hidden=!id||!!chartSymbol(id,state.view);
+      unavailable.textContent=unavailable.hidden?'':outOfRangeText(state,id,state.view);
+      if(!id){unavailable.hidden=false;unavailable.textContent=words(state,'기기 시세·차트 범위가 비어 있습니다. 기업 화면에서 ☆를 눌러 관심 기업에 넣으세요.','The device quote and chart range is empty. Star a company (☆) on its page.');unavailable.dataset.scope='EMPTY';return;}
+      void mount(child,{...options,companyId:id,quietRange:true});
     };select.addEventListener('change',show);show();
   }
   function disposeAll() { for(const state of [...active])dispose(state); }
-  return Object.freeze({mount,mountTechnical,mountSettings,disposeAll,validateHistory,chartPaths,symbolFor,parseWorkerOrigin});
+  return Object.freeze({mount,mountTechnical,mountSettings,disposeAll,validateHistory,chartPaths,symbolFor,setScope,inScope,scopeList,providerSymbol,chartSymbol,parseWorkerOrigin});
 });

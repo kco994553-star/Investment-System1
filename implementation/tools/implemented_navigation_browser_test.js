@@ -6,7 +6,9 @@ const BASE=process.env.PAGES_COCKPIT_URL;
 (async()=>{
  const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH});let checks=0;
  try{for(const width of [390,1280])for(const theme of ['light','dark']){
-  const ctx=await browser.newContext({viewport:{width,height:900},colorScheme:theme,serviceWorkers:'block'}),page=await ctx.newPage(),outside=[],errors=[];
+  // Decision 2026-10-23 (TA G2): the technical picker offers ACTUAL ∪ watchlist ∪ TARGET v1 candidates; this device's watchlist is
+  // an old TARGET-id record (nvda, msft), read through the issuer-key migration.
+  const ctx=await browser.newContext({viewport:{width,height:900},colorScheme:theme,serviceWorkers:'block'});await ctx.addInitScript(()=>{if(localStorage.getItem('investment.web.v1.personal')===null)localStorage.setItem('investment.web.v1.personal',JSON.stringify({version:1,interests:['nvda','msft'],groups:[]}));});const page=await ctx.newPage(),outside=[],errors=[];
   await displayOnlyOff(ctx);page.on('pageerror',e=>errors.push(e.message));
   await page.route('**/*',r=>{if(new URL(r.request().url()).origin===new URL(BASE).origin)return r.continue();outside.push(r.request().url());return r.abort();});
   const go=async hash=>{await page.goto(BASE+hash,{waitUntil:'domcontentloaded'});await page.waitForFunction(()=>!!document.querySelector('#content h1'));};

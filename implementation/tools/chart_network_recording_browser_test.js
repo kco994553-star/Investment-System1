@@ -60,6 +60,8 @@ async function recorder(context, page) {
     for (const width of [390, 1440]) {
       step = 'RECORD ' + width;
       const context = await browser.newContext({viewport: {width, height: 900}, serviceWorkers: 'allow'});
+      // Decision 2026-10-23 (TA G2): the chart range is ACTUAL ∪ watchlist ∪ TARGET v1 candidates; this device watches NVIDIA (issuer key).
+      await context.addInitScript(()=>{if(localStorage.getItem('investment.web.v1.personal')===null)localStorage.setItem('investment.web.v1.personal',JSON.stringify({version:1,interests:['sec:0001045810'],groups:[]}));});
       await context.addInitScript(installChartBarsDouble);
       const page = await context.newPage(), rec = await recorder(context, page);
       await page.goto(BASE + '#settings'); await page.locator('#device-backup-export').waitFor();
@@ -153,6 +155,8 @@ async function recorder(context, page) {
       // Control run: the existing TradingView widget, switched on, must be caught by the same recorder.
       const context = await browser.newContext({viewport: {width: 1280, height: 900}, serviceWorkers: 'allow'});
       await context.addInitScript(() => { try { localStorage.setItem('investment.web.v1.tradingview-widgets', 'on'); } catch (_) {} });
+      // The #technical picker opens on the first company of the device range (decision 2026-10-23); this device watches NVIDIA.
+      await context.addInitScript(() => { try { if (localStorage.getItem('investment.web.v1.personal') === null) localStorage.setItem('investment.web.v1.personal', JSON.stringify({version: 1, interests: ['sec:0001045810'], groups: []})); } catch (_) {} });
       // Recorded at creation, then answered locally so the control never sends real third-party traffic.
       await context.route(url => !String(url).startsWith(ORIGIN), route => route.fulfill({status: 200, contentType: 'text/html', body: '<!doctype html><title>stub</title>'}));
       const page = await context.newPage(), rec = await recorder(context, page);

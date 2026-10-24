@@ -5,8 +5,9 @@
    memberships (QgvScores.typeMemberships, the same rule as every other row) and the SEC cover facts of `sec-universe-shares.json`.
    V, the QGV total and the value-trap gate come only from the existing device path (QgvScores.collectQuotes -> QgvScores.compute):
    device prices stay in RAM and are never shown, stored or sent; without them V is NOT_AVAILABLE with the engine's reason code.
-   The daily-candle chart (PrivateHistory) is mounted only for a code in its price scope (a TARGET issuer by CIK); any other code
-   shows NOT_AVAILABLE (TA G2 undecided). Missing values are NOT_AVAILABLE with a reason, never 0, and no number is invented.
+   The daily-candle chart (PrivateHistory) is mounted only for a code in the device chart range (owner decision 2026-10-23, TA G2:
+   ACTUAL holdings ∪ watchlist ∪ TARGET v1 candidates; PrivateHistory.chartSymbol); any other code shows NOT_AVAILABLE with how to
+   add it (☆). The ★ button (ctx.starHtml, the app's issuer-keyed watchlist, IA-7) sits next to the title. Missing values are NOT_AVAILABLE with a reason, never 0, and no number is invented.
    No inline styles: bars are SVG rect widths, colours come from universe-company.css classes. Names (KR-NAMES, 2026-10-18) come
    from the reviewed company-names-ko.json: the title is "한국어명 · 티커" (English name, then the ticker, as fallbacks) and the
    page lists the English (SEC) name and the name source. Names are display only and never reach a score. */
@@ -128,8 +129,9 @@ function classificationCard(code,rs,inputs,ctx,now){const T=tr(ctx.locale),en=ct
  const fy=has&&rec.fiscal_year_end?esc(rec.fiscal_year_end):na('',ctx.locale);
  return '<h2>'+esc(T('분류·공시','Classification / filings'))+'</h2><dl class="kv"><dt>SIC</dt><dd data-uc-sic="'+esc(has&&rec.sic?rec.sic:'NA')+'">'+sic+'</dd><dt>'+esc(T('업종군','Industry group'))+'</dt><dd data-uc-group="'+esc(has&&rec.industry_group?rec.industry_group:'NA')+'">'+group+'</dd><dt>'+esc(T('재무 프로필','Financial profile'))+'</dt><dd data-uc-profile="'+esc(has&&rec.published_profile?rec.published_profile:'NA')+'">'+profile+'</dd><dt>'+esc(T('기업 유형','Company type'))+'</dt><dd>'+typeChips(code,rs,ctx)+'</dd><dt>'+esc(T('최근 회계연도 말','Latest fiscal year end'))+'</dt><dd>'+fy+'</dd>'
   +'<dt>'+esc(T('실적 공시 예상 시기','Filing windows'))+'</dt><dd data-uc-filing-windows="NA">'+na(T('공개 sec-filing-windows.json은 TARGET 19개만 담습니다(504 공시 시기 미수집)','The public sec-filing-windows.json covers the 19 TARGET companies only (504 filing windows not collected)'),ctx.locale)+'</dd></dl>'+qgFresh(inputs,rs,ctx.locale,now);}
-function chartCard(target,locale){const T=tr(locale),inScope=!!(target&&g.PrivateHistory&&g.PrivateHistory.symbolFor(target));
- return '<h2><span class="flow-number">2</span> '+esc(T('기술적 분석','Technical'))+'</h2>'+(inScope?'<div data-uc-chart-host></div>':'<p data-uc-chart="NA">'+na(T('일봉 차트의 가격 범위는 TARGET 19개입니다. 그 밖의 코드는 TA G2 결정 전이라 표시하지 않습니다.','The daily chart’s price scope is the 19 TARGET companies; other codes wait for the TA G2 decision.'),locale)+'</p>')
+function chartId(code,target){return target||code;}
+function chartCard(code,target,locale){const T=tr(locale),PH=g.PrivateHistory,id=chartId(code,target),inScope=!!(PH&&typeof PH.chartSymbol==='function'&&PH.chartSymbol(id));
+ return '<h2><span class="flow-number">2</span> '+esc(T('기술적 분석','Technical'))+'</h2>'+(inScope?'<div data-uc-chart-host></div>':'<p data-uc-chart="NA">'+na(T('이 기업은 기기 시세·차트 범위(보유 · 관심 기업 · TARGET v1 후보) 밖입니다. ☆로 관심 기업에 넣으면 일봉 차트를 쓸 수 있습니다.','This company is outside the device quote and chart range (holdings, watchlist, TARGET v1 candidates). Star it (☆) to use the daily chart.'),locale)+'</p>')
   +freshLine([T('가격은 이 기기에서만(공개 파일에 가격 없음)','Prices on this device only (public files carry none)')]);}
 /* Company names of a page (also used by the TARGET page header in app.js). rec: a CompanyNames record, null (no record for this
    id) or undefined (names file not loaded). Shows the English (SEC) name, the Korean name with its status and source, aliases
@@ -152,14 +154,14 @@ function html(code,ctx={}){
  const inputs=inputsOf(ctx.screens),rs=rowState(inputs,code),d=rs.rec?scored(code,c):null,target=targetIdOf(rs.rec),sh=sharesBlock(code,c);
  const logo=g.CompanyLogos&&g.CompanyLogos.html?g.CompanyLogos.html(code,40):'';
  const names=ctx.names&&typeof ctx.names.get==='function'?ctx.names.get(code):undefined,ES=g.EntitySearch,title=ES&&ES.companyTitle?ES.companyTitle(names||null,p.ticker,locale):p.ticker;
- const head='<a class="small" href="#companies">'+esc(T('← 기업 목록','← Companies'))+'</a><div class="eyebrow">UNIVERSE504</div><h1>'+logo+esc(title)+'</h1><p class="muted">'+esc(code)+'</p>'
+ const head='<a class="small" href="#companies">'+esc(T('← 기업 목록','← Companies'))+'</a><div class="eyebrow">UNIVERSE504</div><h1>'+logo+esc(title)+'</h1>'+(typeof ctx.starHtml==='string'?'<div class="row" data-uc-star>'+ctx.starHtml+'</div>':'')+'<p class="muted">'+esc(code)+'</p>'
   +'<p class="chips uc-chips"><span class="badge">Universe504</span><span class="badge" data-uc-name="'+esc(names?names.ko_status:names===null?'NO_RECORD':'NOT_LOADED')+'">'+esc(names?label(KO_STATUS,names.ko_status,locale==='en-US'):T('기업명 자료 없음','Names not loaded'))+'</span><span class="badge">'+esc(T('공개 파일에 가격 없음','No prices in public files'))+'</span>'+(rs.rec&&rs.rec.sic?'<span class="badge">SIC '+esc(rs.rec.sic)+'</span>':'')+'</p>'
   +namesHtml(names,locale)+(target?'<p class="small" data-uc-target="'+esc(target)+'"><a href="#company/'+encodeURIComponent(target)+'">'+esc(T('이 발행인은 TARGET 기업입니다 · TARGET 기업 페이지 →','This issuer is a TARGET company · open the TARGET page →'))+'</a></p>':'');
  // No file: say whether the read failed or the file is not published yet (DataRefresh read status, D5); the reason code stays.
  const read=rs.state==='NO_FILE'&&g.DataRefresh?g.DataRefresh.status('sec-qgv2.json'):null,readNote=read&&(read.state==='FAILED'||read.state==='NOT_PUBLISHED')?' · <span data-uc-read="'+esc(read.state)+'">'+esc(g.DataRefresh.readText('sec-qgv2.json'))+'</span>':'';
  const top=rs.state==='NO_FILE'||rs.state==='NOT_IN_FILE'?'<p class="small" data-uc-file="'+esc(rs.reason)+'">'+na(rs.reason==='SEC_QGV2_SCHEMA_NEWER'?T('자료 형식이 새 버전입니다. 새로고침하세요','The data format is newer. Reload the page'):rs.reason,locale)+readNote+'</p>':'';
  return '<div class="uc-page" data-universe-page="'+esc(code)+'" data-universe-state="'+esc(rs.state)+'" data-universe-reason="'+esc(rs.reason||'')+'" data-universe-v="PENDING">'+head+top
-  +'<div class="uc-cards"><section class="card uc-card uc-card-q" data-universe-card="qgv">'+qgvCard(code,rs,d,inputs,c,now)+'</section><section class="card uc-card uc-card-g" data-universe-card="technical">'+chartCard(target,locale)+'</section><section class="card uc-card uc-card-v" data-universe-card="macro">'+macroCard(locale)+'</section></div>'
+  +'<div class="uc-cards"><section class="card uc-card uc-card-q" data-universe-card="qgv">'+qgvCard(code,rs,d,inputs,c,now)+'</section><section class="card uc-card uc-card-g" data-universe-card="technical">'+chartCard(code,target,locale)+'</section><section class="card uc-card uc-card-v" data-universe-card="macro">'+macroCard(locale)+'</section></div>'
   +'<section class="card" data-universe-card="factors">'+factorsCard(rs,d,inputs,c,now)+'</section>'
   +(g.StatRadar?'<section class="card" data-universe-card="radar">'+g.StatRadar.html({code},{screens:ctx.screens,locale})+'</section>':'')
   +(g.StatRadar?'<section class="card" data-universe-card="financials"><h2>'+esc(T('재무 상세','Financial detail'))+'</h2><dl class="kv">'+g.StatRadar.marginDetail({code},{screens:ctx.screens,locale})+'</dl></section>':'')
@@ -186,7 +188,7 @@ async function paintScores(page,ctx){
 async function mount(host,ctx={}){
  const page=host&&host.querySelector?host.querySelector('[data-universe-page]'):null;if(!page)return;
  const locale=ctx.locale==='en-US'?'en-US':'ko-KR',inputs=inputsOf(ctx.screens),rs=rowState(inputs,page.dataset.universePage),target=targetIdOf(rs.rec);
- const chartHost=page.querySelector('[data-uc-chart-host]');if(chartHost&&target&&g.PrivateHistory)try{void g.PrivateHistory.mount(chartHost,{companyId:target,locale,config:ctx.config||{}});}catch(_){}
+ const chartHost=page.querySelector('[data-uc-chart-host]');if(chartHost&&g.PrivateHistory)try{void g.PrivateHistory.mount(chartHost,{companyId:chartId(page.dataset.universePage,target),locale,config:ctx.config||{}});}catch(_){}
  if(!await paintScores(page,ctx))return;
  if(g.StatRadar)await g.StatRadar.mount(page,{catalogPromise:ctx.catalogPromise});  // stat window: V from the shared page result (stat-radar.js)
 }
