@@ -9,6 +9,9 @@ Values are IEX last regular-session trades AS TRADED (split-unadjusted). `month_
 v2_factors.SHARE_BASIS_REASONS):
     month close = raw / F_k;  F_k null / missing / not positive -> that month is left out (never 1.0), public reason = the item's
     SHARE_BASIS_UNCONFIRMED / SPLIT_TIMING_UNCONFIRMED, else SHARE_BASIS_FACTOR_NOT_AVAILABLE.
+`raw_series` gives the same trades AS TRADED (no F_k) for the D6 (b) split check (owner decision CV-SPLIT (ii) 2026-10-24,
+qgv_official.split_check). The U8 store (stamp 20261023) holds, per month, only the codes whose FISCAL-YEAR-END month it is, so
+a code's latest store month is its latest FY-end month (0-15 months old), not last month.
 Nothing is printed, logged or written; errors are fixed codes raised `from None`. The token is passed in by the caller (the
 environment variable name is the caller's argument); it is never printed.
 """
@@ -214,6 +217,36 @@ def month_closes(code: str, history, months: dict, *, aliases=SYMBOL_ALIASES, cu
             continue
         closes[month] = row['price_e4'] / 10000 / factor
     return closes, left
+
+
+def raw_series(code: str, months: dict, since_month: str, until_day: str, *, aliases=SYMBOL_ALIASES) -> list[tuple[str, float]]:
+    """[(YYYY-MM-DD trade date, raw price)] of one Universe code's month-end trades AS TRADED (price_e4 / 10000, NO F_k
+    division), for the store months from `since_month` (YYYY-MM, inclusive) on whose trade date is not after `until_day`
+    (YYYY-MM-DD), sorted by date. Owner decision CV-SPLIT (ii) 2026-10-24, the D6 (b) split check
+    (qgv_official.split_check). The symbol / alias and ROUND rules are month_closes': a month whose store symbol differs from
+    the alias table's (or whose alias is None), or without a round-lot trade of that symbol, is left out, never 0. The basis
+    cut (MONTHEND_BASIS_CUTS) is a V4 share-basis rule and is not applied here: a pair across it can only add a hit (withhold
+    a value), never hide one. RAM only."""
+    out = []
+    for name in sorted(months) if isinstance(months, dict) else ():
+        m = months[name]
+        if not (isinstance(name, str) and _MONTH.fullmatch(name)) or name < since_month or not isinstance(m, dict):
+            continue
+        date, codes, symbols = m.get('date'), m.get('codes'), m.get('symbols')
+        if not (isinstance(date, str) and re.fullmatch(r'\d{8}', date)) or not isinstance(codes, dict) or not isinstance(symbols, dict):
+            continue
+        day = f'{date[:4]}-{date[4:6]}-{date[6:]}'
+        if day > until_day:
+            continue
+        sym = iex_symbol(code, date, aliases)
+        if sym is None or codes.get(code, sym) != sym:
+            continue
+        row = symbols.get(sym)
+        px = row.get('price_e4') if isinstance(row, dict) else None
+        if not isinstance(row, dict) or row.get('status') != 'ROUND' or type(px) is not int or px <= 0:
+            continue
+        out.append((day, px / 10000))
+    return sorted(out)
 
 
 def public_v4_reason(left) -> str | None:
