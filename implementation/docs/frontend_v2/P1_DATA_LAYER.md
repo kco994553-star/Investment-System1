@@ -5,7 +5,10 @@ P2 화면 레인이 쓰는 함수, 기록 모양, 사유 코드, 지켜야 할 �
 ## 1. 파일과 화면 등록
 
 - 위치는 `implementation/src/investment_system/product/web_app/`이고, 전역은 `IS2` 하나다.
-- `index.html` 순서: P0 기반(core·shell·parts) → 옛 모듈 59개(web_assets 바이트 그대로, 빌드 A안. 설계 57개 + 백업 /5 검증기인 `chart-workbench.js`·`macro-cycle-ring.js`) → `action` → `data` → `prices` → `store` → `qgv` → `engines` → 레인 파일 8개(`screen-qgv/technical/macro/news/portfolio/prompts/tree/lab.js`) → P0 화면 → `boot.js`. 모두 `defer`다. 레인은 index.html을 고치지 않고 자기 파일만 채운다.
+- 불러오는 순서(P2-1a, 1.1절)
+  - `index.html`(첫 화면만, 모두 `defer`): P0 기반(core·shell·parts) → `loader.js` → 레인 파일 8개(`screen-qgv/technical/macro/news/portfolio/prompts/tree/lab.js`) → P0 화면 → `boot.js`. web_app 파일만 둔다(옛 모듈이 있으면 빌드 실패).
+  - 첫 그림 뒤 `loader.js`의 `LOAD_ORDER`: 옛 모듈 59개(web_assets 바이트 그대로, 빌드 A안. 설계 57개 + 백업 /5 검증기인 `chart-workbench.js`·`macro-cycle-ring.js`) → `action` → `data` → `prices` → `store` → `qgv` → `engines`.
+  - 레인은 index.html도 `LOAD_ORDER`도 고치지 않고 자기 파일만 채운다.
 - 등록:
   - `IS2.register(id, render)`: 자리표시를 실제 화면이 대신한다. 실제 화면을 두 번 등록하면 `SCREEN_DUPLICATE`다.
   - `IS2.registerDetail(name, render)`: `#/detail/<name>`에 쓴다. 이름은 `IS2.DETAILS`에 있어야 한다(`DETAIL_UNKNOWN`).
@@ -15,6 +18,33 @@ P2 화면 레인이 쓰는 함수, 기록 모양, 사유 코드, 지켜야 할 �
   - 모든 `subscribe(fn, {signal: route.signal})`는 abort되면 저절로 풀린다. 늦게 온 값은 `signal.aborted`를 보고 버린다.
 - 오류는 값이 들어가지 않은 고정 코드로만 던진다. 셸이 `e.message`를 화면에 그대로 띄우기 때문이다.
 - 페이지를 열기만 해서는 아무것도 읽지 않는다. 공개 파일은 화면이 `IS2.data.ready()`나 `IS2.qgv.page()`를 부를 때 처음 읽는다.
+
+### 1.1 첫 화면과 불러오기(P2-1a, 소유자 결정 2026-10-24)
+
+- **셸이 먼저다.** `boot.js`가 셸과 첫 화면을 그리고(`IS2.start()`), `IS2.load()`를 부른다. 셸은 첫 렌더 때 표시 `is2-shell-render`를 남기고, 그 프레임이 그려지면 `IS2.firstPaint`를 푼다(애니메이션 프레임 2개 뒤, 브라우저가 알려 주면 first-contentful-paint 뒤. 표시 `is2-first-paint`).
+- **나머지는 첫 그림 뒤.** `loader.js`가 `IS2.firstPaint`와 한가한 틈(requestIdleCallback, 없으면 다음 틱)을 기다린 뒤 `LOAD_ORDER`의 파일을 한꺼번에 넣는다. 숨은 페이지는 그림이 없으므로 바로 넣는다. 첫 그림이 3초 안에 오지 않아도 넣는다.
+  - 같은 출처의 평범한 파일 이름만 `<script src>`로 넣는다. `async=false`라 내려받기는 동시에, 실행은 목록 순서대로다. 인라인 코드·eval은 없고 CSP는 그대로다.
+  - `LOAD_ORDER`가 하나뿐인 불러오기 목록이다. 빌드(`build_web_app.py` A안 규칙)와 시험 도우미(`web_app_reuse.js`)가 이 리터럴을 읽는다. 따옴표 이름만 쓴다(그 밖이면 빌드 실패).
+- **`IS2.ready`**: 모든 파일이 실행되고 층이 자리를 잡으면(`IS2.action`과 다섯 이름공간) 풀린다. 표시 `is2-ready`. 실패하면 목록 순서로 첫 실패 파일을 담아 `LOADER_FAILED <파일>`(`err.code`·`err.file`)로 거절된다. 파일이 오지 않음, 실행 중 오류, 이름공간을 놓지 않음이 실패다. 다시 시도하지 않는다(새로고침이 한다). 표시 `is2-load-failed`. `IS2.loadState()`는 `WAITING` → `LOADING` → `READY`/`FAILED`다.
+- **그전의 `IS2.data`·`qgv`·`prices`·`store`·`engines`는 대리 객체다.** 층과 같은 멤버를 갖는다(`loader.js` API, 노드 시험이 실제 층과 맞춰 본다).
+
+  | 멤버 종류 | 준비 전 | 실패 뒤 |
+  | --- | --- | --- |
+  | 약속을 돌려주는 함수(`qgv.page()`, `data.ready()`, `store.marketQuotes.count()` 등) | `IS2.ready`를 기다렸다가 층을 부른다 | `LOADER_FAILED <파일>`로 거절 |
+  | 행동(첫 인자가 사용자 이벤트) | `LAYER_NOT_READY`를 던진다. 관문은 전달 중인 이벤트가 필요해 클릭을 기다리게 할 수 없다. **화면은 `IS2.ready` 전에는 행동 버튼을 꺼 둔다.** | `LOADER_FAILED <파일>`을 던진다 |
+  | 동기 함수·값(`prices.status()`, `qgv.rankLabel()`, `data.FILES` 등) | `IS2.NOT_READY`(`{state:'NOT_READY', reason:'LAYER_NOT_READY'}`) | `IS2.LOAD_FAILED`(`reason:'LOADER_FAILED'`) |
+  | `subscribe(fn, {signal})` | 맡아 두었다가 준비되면 층에 붙인다(그전에 signal이 abort되면 버린다) | 아무것도 붙이지 않는다 |
+
+  - 층 파일이 실행되면 IS2의 대리 객체를 진짜로 바꾼다. 화면이 미리 잡아 둔 대리 객체도 준비 뒤에는 모든 호출을 층으로 넘긴다. 실패하면 대리 객체를 IS2에 다시 놓는다(반쯤 만든 층에 닿지 않게).
+  - 옛 모듈과 engines에만 넘기는 view·결과(`prices.priceView`·`storeFacade`, `store.storage`, `qgv.scoreView`·`forEngines`·`engineInputs`)는 대리 객체에 없다.
+- **화면 규칙**
+  - 화면 파일은 불러올 때 층을 건드리지 않는다(노드 시험). 층 값은 렌더 때 읽는다.
+  - 렌더는 기다리지 않는다. 자리를 먼저 그리고(`parts.pending`) 약속 함수의 값이 오면 채운다(1절). 동기 값이 `IS2.NOT_READY`면 연결 전으로 그린다.
+  - 행동 버튼은 `IS2.ready`가 풀린 뒤 켠다. 실패하면 꺼 둔 채 새로고침을 안내한다.
+  - 기기 칩은 `IS2.ready` 전까지 '연결 전'이다(셸).
+- **목표와 시험**(390×844, 150 ms RTT·1.6 Mbps·CPU ×4, 콜드 캐시): 첫 화면 2,000 ms 이하, 첫 전송 100 KB 이하. `tools/web_app_first_paint_browser_test.js`가 3번 재어 중앙값으로 확인한다(12절). 다른 화면 PR은 이 구조 위에서 만든다. 첫 화면 파일을 늘려 목표를 넘으면 이 시험이 막는다.
+  - 측정(2026-10-24, Pages처럼 gzip, 3번 중앙값): 첫 화면 848 ms(3번 883·848·813, FCP 중앙값 840), 첫 전송 24.4 KB(18건), `IS2.ready` 7,190 ms, 그때까지 888.1 KB(85건), 글꼴까지 모두 1,254.2 KB. 압축 없이: 948 ms, 48.2 KB, 13,493 ms, 2,430.4 KB. 결정 전 검토 측정은 첫 화면 4,119 ms, 전송 569 KB였다.
+  - 남은 비용: 첫 그림 뒤 층이 준비될 때까지 7초쯤 걸린다. 글꼴 3개(620 KB, 첫 그림 때 이미 내려받는 중)가 같은 대역폭을 쓴다. 줄일 방법(제안, 결정 필요): 손글씨 글꼴(375 KB)을 `font-display: optional`로 바꾸거나 첫 화면 글자만 담은 작은 부분집합을 먼저 쓰기, 화면이 쓰는 옛 모듈만 그 화면에서 불러오기(P2 레인별 목록).
 
 ## 2. 모든 화면이 지킬 규칙
 
@@ -249,6 +279,7 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
 
 | 어디 | 던지는 코드 | 값 안의 사유·상태 |
 | --- | --- | --- |
+| 불러오기(`loader.js`, 1.1절) | `LAYER_NOT_READY`(준비 전 행동), `LOADER_FAILED <파일>`(`IS2.ready` 거절, 실패 뒤 약속·행동), `LOADER_NAME_INVALID`(목록 이름) | `IS2.NOT_READY`(state `NOT_READY`, reason `LAYER_NOT_READY`), `IS2.LOAD_FAILED`(reason `LOADER_FAILED`); `loadState()` `WAITING`/`LOADING`/`READY`/`FAILED` |
 | 관문(모든 action) | `CLICK_REQUIRED`(버튼류의 keydown, 자동 반복 keydown 포함), `ACTION_ALREADY_STARTED`(한 이벤트의 두 번째 최상위 action), `ACTION_KIND_NOT_COVERED`(부모가 갈 수 없는 kind의 중첩 실행), `ACTION_REQUIRED`(클릭 밖 쓰기, IndexedDB 쓰기 트랜잭션 포함), `DESTINATION_UNKNOWN`, `DEVICE_STORE_NOT_OPENED`, `ACTION_KIND_UNKNOWN`, `MARKET_STORE_STOPPED`(저장된 시세 기록 쓰기·범위 질의·색인, 그 저장소 삭제·이름 바꾸기, 클릭 안에서도) | — |
 | `data` | `READER_MISSING`, `PUBLIC_FILE_UNKNOWN`, `PUBLIC_FILE_METHOD`, `PEEK_UNSUPPORTED`, `SEC_QGV2_UNAVAILABLE`/`SEC_QGV2_INVALID`(peek) | state `OK`/`NOT_PUBLISHED`/`FAILED`/`NOT_READ`, why `INVALID`/`NETWORK`/`HTTP`/`SCHEMA_NEWER`/`READER_MISSING`; refresh `APPLIED`/`UNCHANGED`/`FAILED`/`LOADING` |
 | `qgv.page` | `READER_MISSING`, `ABORTED`(signal), `NO_OFFICIAL_YET`(중앙 경로, 아직 없음) | Page state `READY`/`NO_DATA`/`DATA_FORMAT_NEWER`/`READ_FAILED`, reason `SEC_QGV2_NOT_PUBLISHED`/`SEC_QGV2_NOT_AVAILABLE`/`SEC_QGV2_SCHEMA_NEWER`/`SEC_QGV2_INVALID`/`SEC_QGV2_UNAVAILABLE`/`V2_SCORES_NOT_AVAILABLE`; identities `CATALOG_NOT_AVAILABLE` |
@@ -310,11 +341,11 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
 ## 12. 시험
 
 - 노드 시험(`node implementation/tools/<파일>`)
-  - `web_app_reuse_node_test.js`: 재사용 목록, 빌드, 소스 규칙.
+  - `web_app_reuse_node_test.js`: 불러오기 목록(index.html 첫 화면 + `LOAD_ORDER`, 빌드·도우미·로더가 같은 목록), 빌드 실패 규칙, 로더(가짜 window: 첫 그림 전에는 넣지 않음, `async=false` 순서, `IS2.ready`·`LOADER_FAILED`, 대리 객체 종류별 동작과 실패 뒤 복원, 대리 객체 API = 실제 층 API), 화면 파일이 불러올 때 층을 건드리지 않음, 소스 규칙.
   - `web_app_qgv_node_test.js`: action, data, qgv.
   - `web_app_prices_node_test.js`: prices, store.
   - `web_app_engines_node_test.js`.
-- 브라우저 시험: `web_app_data_layer_browser_test.js`. Playwright가 필요하다(`NODE_PATH`, `PLAYWRIGHT_BROWSERS_PATH`).
+- 브라우저 시험: `web_app_data_layer_browser_test.js`. Playwright가 필요하다(`NODE_PATH`, `PLAYWRIGHT_BROWSERS_PATH`). 페이지를 열거나 새로고침할 때마다 `IS2.ready`를 기다린다.
   - 빌드 출력: 재사용 파일이 바이트 그대로이고, 부르지 않는 옛 파일이 없다.
   - A: 행동 없이 읽으면 공개 파일만 읽고, 저장 0, blocked 0이다.
   - B: 흉내 낸 행동은 모두 거절되고 요청이 0건이다.
@@ -325,6 +356,7 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
   - C3: 옛 화면이 저장한 것처럼 넣은 유효한 `market` 기록을 옛 경로는 읽지만 새 층(quote, 점수 경로)은 읽지 않는다. view를 거친 쓰기는 클릭 안에서도 거절된다(실제 IndexedDB 객체). 요청이 내준 객체(`source`, `transaction`, 처리기의 `event.target`)를 거쳐도 쓰기는 거절되고 읽기는 없는 기록이다. 쓰기 action 밖의 버전 변경은 중단된다. count는 숫자, 진짜 클릭의 clear는 시세 기록만 지운다.
   - C4: 브라우저에서 /5 백업이 옛 검증기로 복원되고 다시 백업에 나온다. 잘못된 섹션은 `BACKUP_INVALID`이고 아무것도 쓰지 않는다.
   - D: 새로고침하면 RAM이 비워진다. 클릭으로 저장한 것(Universe 출처, 구글 켬 기록)만 남고, 켬 기록은 클릭 없이 읽힌다.
+- `web_app_first_paint_browser_test.js`(P2-1a): 개발 빌드를 Pages처럼(gzip) 띄우고 CDP로 390×844, 150 ms·1.6 Mbps·CPU ×4, 콜드 캐시에서 3번 잰다. 첫 화면(`is2-first-paint`와 FCP 중 늦은 것) ≤ 2,000 ms, 첫 전송(그때까지 끝난 요청의 encodedDataLength 합) ≤ 100 KB를 중앙값으로 확인하고 `FIRST_PAINT ms=… first_kb=… ready_ms=… total_kb=…`를 찍는다. 첫 그림 순간의 구조(검색창·메뉴·탭, 칩 '연결 전', 옛 모듈 없음, 대리 객체 `NOT_READY`, `LOAD_ORDER` 요청 없음)와, 제한 없이 대리 객체 계약(첫 파일을 붙잡아 둔 채 확인)·실패(404, 실행 중 오류 → `LOADER_FAILED`)도 본다. `FIRST_PAINT_ENCODING=identity`면 압축 없이 잰다.
 - `web_app_shell_browser_test.js`(P0)는 고치지 않고 통과한다.
 - 도우미: `web_app_reuse.js`(옛 모듈 경로 한 곳), `web_app_test_site.js`(빌드·서빙·fixture·`watch`·`storage`·`leaks`·`assertRamOnly`).
 - CI 목록 등록은 Main이 한다.

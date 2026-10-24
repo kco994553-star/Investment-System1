@@ -1,11 +1,22 @@
 'use strict';
-// New frontend P1 · reuse (plan A) and shell plumbing.
-//  - web_app/index.html is the only reuse list: P0 base, the 59 old engines/readers (old page's relative order, each once),
-//    the P1 layer (action → data → prices → store → qgv → engines), the eight lane placeholders, the P0 screens, boot.js last;
-//    every tag a deferred file, the CSP byte-identical to the old page.
+// New frontend P1 · reuse (plan A), the first-paint loader (P2-1a) and shell plumbing.
+//  - What the page loads (owner 2026-10-24, first paint): index.html only the first screen (P0 base, loader.js, the eight lane
+//    placeholders, the P0 screens, boot.js last; web_app files only, every tag a deferred file, the CSP byte-identical to the old
+//    page), then loader.js LOAD_ORDER after the first paint: the 59 old engines/readers (old page's relative order, each once)
+//    and the P1 layer (action → data → prices → store → qgv → engines). LOAD_ORDER is the one load list: the loader's runtime
+//    list, tools/web_app_reuse.js and tools/build_web_app.py read the same literal.
 //  - A name present in web_app wins and is never reused (screen-detail.js); every other script is an old web_assets file.
 //    tools/build_web_app.py applies the same rule, keeps the reused files byte-identical, removes every other old frontend
-//    file, and fails on a reference found in neither folder, a duplicate, an inline script or a non-local name.
+//    file, and fails on a reference found in neither folder, a duplicate, an inline script, a non-local name, an old module in
+//    index.html, a LOAD_ORDER that is not one literal of plain quoted names, or a loader index.html does not load.
+//  - Loader (fake window): nothing is inserted before the shell's first paint and an idle moment (at once in a hidden page);
+//    then every listed file as a same-origin <script src> with async=false, in order; IS2.ready resolves when all ran and the
+//    layer installed itself, else rejects with LOADER_FAILED <first failed file in list order> (missing, threw while it ran,
+//    or installed nothing), and the facades are put back. Facades before ready: 's'/'v' → IS2.NOT_READY, 'a' throws
+//    LAYER_NOT_READY, 'p' waits for ready, 'sub' attaches when ready (not after its signal aborted); after ready a kept facade
+//    forwards; after a failure they refuse. The facade API is the real layer's API (kinds checked against the functions).
+//  - The screen files touch no layer namespace while they load (they draw before the layer); the fonts never hold the first
+//    screen (font-display swap / optional, no preload).
 //  - Old modules that start themselves at load or are old screens are not loaded; load-time bindings come before their users.
 //    chart-workbench.js and macro-cycle-ring.js are loaded for their backup /5 validators (owner 2026-10-24: reuse, never rewrite)
 //    because loading them is side-effect free: run as a browser script against a recording global, each only defines its own
@@ -16,8 +27,8 @@
 //    stays); h() refuses a style string (the CSP would drop it).
 //  - Source rules for every web_app script (no console output, no HTML strings, no style attribute strings, NA never filled
 //    with 0, storage / network / Google session / engine rows / score and price views / V source words only in their P1 owner
-//    files, no old path that bypasses the price view, no order feature), checked to catch their examples, and the Pages
-//    guard's secret patterns.
+//    files, no old path that bypasses the price view, no order feature, no script element outside loader.js), checked to
+//    catch their examples, and the Pages guard's secret patterns.
 // Wording rules for the fixed code list are left to tools/spec_direction_guard.py and not repeated here.
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -45,6 +56,9 @@ const REUSED = [
 const P1 = ['action.js', 'data.js', 'prices.js', 'store.js', 'qgv.js', 'engines.js'];
 const LANES = ['qgv', 'technical', 'macro', 'news', 'portfolio', 'prompts', 'tree', 'lab'].map((id) => 'screen-' + id + '.js');
 const P0_SCREENS = ['screen-search.js', 'screen-menus.js', 'screen-detail.js', 'boot.js'];
+const LOADER = 'loader.js';
+// index.html: the first screen only.
+const FIRST = [...P0_BASE, LOADER, ...LANES, ...P0_SCREENS];
 // P0 names that also exist in web_assets: web_app wins, so they are never reused.
 const SHARED = ['index.html', 'screen-detail.js'];
 // Old files deliberately not loaded, with the reason.
@@ -79,9 +93,13 @@ const tags = (html) => [...String(html).replace(/<!--[\s\S]*?-->/g, '').matchAll
 const csp = (html) => (/<meta http-equiv="Content-Security-Policy" content="([^"]*)"/.exec(html) || [])[1];
 const py = (code, args = []) => execFileSync('python3', ['-c', code, ...args], { encoding: 'utf8' });
 
-test('index.html loads P0 base, reused old modules, the P1 layer, lane placeholders, P0 screens, boot.js last', () => {
+test('index.html loads the first screen only; loader.js LOAD_ORDER loads the reused old modules, then the P1 layer', () => {
   assert.equal(REUSED.length, 59);
-  assert.deepEqual(R.scripts(), [...P0_BASE, ...REUSED, ...P1, ...LANES, ...P0_SCREENS]);
+  assert.deepEqual(R.firstPaint(), FIRST);
+  assert.deepEqual(R.loadOrder(), [...REUSED, ...P1]);
+  delete require.cache[require.resolve(R.newPath(LOADER))];
+  assert.deepEqual([...R.requireNew(LOADER).LOAD_ORDER], R.loadOrder(), 'the loader runs the list the build and the helper read');
+  assert.deepEqual(R.scripts(), [...FIRST, ...REUSED, ...P1], 'the page load order: index.html, then LOAD_ORDER');
 });
 
 test('web_app wins on a shared name; every other script is an old web_assets file; the reuse list is the design list', () => {
@@ -103,9 +121,12 @@ test('load-time bindings come before their users and companions are present', ()
   const at = new Map(R.scripts().map((n, i) => [n, i]));
   for (const [dep, user] of EAGER) { assert.ok(at.has(dep) && at.has(user), dep + ' / ' + user); assert.ok(at.get(dep) < at.get(user), dep + ' before ' + user); }
   for (const [user, deps] of Object.entries(COMPANIONS)) for (const dep of deps) assert.ok(at.has(dep), user + ' needs ' + dep);
-  const lastOld = Math.max(...REUSED.map((n) => at.get(n)));
-  for (const name of [...P1, ...LANES, ...P0_SCREENS]) assert.ok(at.get(name) > lastOld, name + ' after every reused module');
+  const lastOld = Math.max(...REUSED.map((n) => at.get(n))), firstLoaded = Math.min(...R.loadOrder().map((n) => at.get(n)));
+  for (const name of P1) assert.ok(at.get(name) > lastOld, name + ' after every reused module');
+  for (const name of FIRST) assert.ok(at.get(name) < firstLoaded, name + ' is on the first screen, before every LOAD_ORDER file');
   assert.ok(at.get('core.js') < at.get('action.js') && at.get('parts.js') < at.get(LANES[0]), 'IS2 and parts exist before the layer and the screens');
+  for (const name of [...LANES, ...P0_SCREENS]) assert.ok(at.get(LOADER) < at.get(name), 'the loader facades exist before ' + name);
+  assert.equal(R.firstPaint().at(-1), 'boot.js', 'boot.js starts the page last');
 });
 
 test('old modules that start themselves or are old screens are not loaded', () => {
@@ -153,6 +174,7 @@ test('the V history is never recorded: no web_app script or reused module calls 
 test('every tag is a deferred file, every web_app script is loaded, the CSP is the old page CSP', () => {
   const html = R.newIndex();
   for (const t of tags(html)) { assert.match(t, /\bsrc="[^"]+"/, 'no inline script: ' + t); assert.match(t, /\bdefer\b/, 'defer keeps order: ' + t); assert.doesNotMatch(t, /\basync\b|type="module"/, t); }
+  for (const name of R.firstPaint()) assert.ok(isFile(R.newPath(name)), 'index.html loads web_app files only: ' + name);
   assert.deepEqual(files(R.NEW).filter((n) => n.endsWith('.js')).sort(), R.scripts().filter((n) => isFile(R.newPath(n))).sort());
   assert.ok(csp(html), 'CSP meta present');
   assert.equal(csp(html), csp(R.oldIndex()));
@@ -176,18 +198,48 @@ test('build rule (python) equals the helper and fails on missing, duplicate, inl
   const rule = (newDir, oldDir) => JSON.parse(py(`import json,sys\nsys.path.insert(0,sys.argv[1])\nimport build_web_app as b\nfrom pathlib import Path\n`
     + `try:\n    print(json.dumps({'ok': b.reused_old_files(*[Path(a) for a in sys.argv[2:]])}))\nexcept ValueError as e:\n    print(json.dumps({'error': str(e)}))`,
   [tools, ...(newDir ? [newDir, oldDir] : [])]));
+  const order = (newDir) => JSON.parse(py(`import json,sys\nsys.path.insert(0,sys.argv[1])\nimport build_web_app as b\nfrom pathlib import Path\n`
+    + `try:\n    print(json.dumps({'ok': b.load_order(*[Path(a) for a in sys.argv[2:]])}))\nexcept ValueError as e:\n    print(json.dumps({'error': str(e)}))`,
+  [tools, ...(newDir ? [newDir] : [])]));
   assert.deepEqual(rule(), { ok: REUSED });
+  assert.deepEqual(order(), { ok: R.loadOrder() }, 'python and the helper read the same LOAD_ORDER');
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'web-app-rule-')), W = path.join(dir, 'w'), O = path.join(dir, 'o');
+  const helper = (text) => { try { return { ok: R.loadOrderOf(text) }; } catch (e) { return { error: e.message }; } };
   try {
     fs.mkdirSync(W); fs.mkdirSync(O);
-    for (const [d, n] of [[W, 'a.js'], [W, 'app.css'], [O, 'a.js'], [O, 'b.js'], [O, 'old.css']]) fs.writeFileSync(path.join(d, n), '//\n');
-    const page = (body) => { fs.writeFileSync(path.join(W, 'index.html'), '<link rel="icon" href="data:,"><link rel="stylesheet" href="app.css">' + body); return rule(W, O); };
-    assert.deepEqual(page('<script defer src="a.js"></script><!-- <script src="gone.js"></script> --><script defer src="b.js"></script>'), { ok: ['b.js'] }, 'web_app wins on a.js');
-    assert.match(page('<script src="c.js"></script>').error, /neither/);
-    assert.match(page('<script src="b.js"></script><script src="b.js"></script>').error, /twice/);
-    assert.match(page('<script>void 0</script>').error, /inline/);
-    for (const bad of ['../b.js', 'https://x.example/b.js', 'sub/b.js', 'b.js?v=1']) assert.match(page(`<script src="${bad}"></script>`).error, /not a local file name/, bad);
-    assert.match(page('<link rel="stylesheet" href="old.css">').error, /links a file/);
+    for (const [d, n] of [[W, 'a.js'], [W, 'c.js'], [W, 'app.css'], [O, 'a.js'], [O, 'b.js'], [O, 'old.css']]) fs.writeFileSync(path.join(d, n), '//\n');
+    const BASE = '<link rel="icon" href="data:,"><link rel="stylesheet" href="app.css"><script defer src="a.js"></script><!-- <script src="gone.js"></script> --><script defer src="loader.js"></script>';
+    const page = (list, body = BASE) => {
+      if (list === null) fs.rmSync(path.join(W, 'loader.js'), { force: true }); else fs.writeFileSync(path.join(W, 'loader.js'), typeof list === 'string' ? list : `const X=1;\nconst LOAD_ORDER=Object.freeze([\n ${list.map((n) => `'${n}'`).join(',')},\n]);\n`);
+      fs.writeFileSync(path.join(W, 'index.html'), body); return rule(W, O);
+    };
+    assert.deepEqual(page(['b.js', 'c.js']), { ok: ['b.js'] }, 'web_app wins on a.js and c.js; b.js is reused from web_assets');
+    assert.match(page(['gone.js']).error, /neither/);
+    assert.match(page(['a.js']).error, /twice/, 'a name in index.html and LOAD_ORDER');
+    assert.match(page(['b.js', 'b.js']).error, /twice/);
+    assert.match(page(['b.js'], BASE + '<script defer src="b.js"></script>').error, /index\.html loads a script that is not in web_app: b\.js/, 'an old module before the first paint');
+    assert.match(page(['b.js'], BASE.replace('<script defer src="loader.js"></script>', '')).error, /does not load loader\.js/);
+    assert.deepEqual(page(null, BASE.replace('<script defer src="loader.js"></script>', '')), { ok: [] }, 'no loader: the first screen only');
+    assert.match(page(['b.js'], BASE + '<script>void 0</script>').error, /inline/);
+    assert.match(page(['b.js'], BASE + '<link rel="stylesheet" href="old.css">').error, /links a file/);
+    for (const bad of ['../b.js', 'https://x.example/b.js', 'sub/b.js', 'b.js?v=1']) assert.match(page([bad]).error, /not a local file name/, bad);
+    assert.match(page(['old.css']).error, /not a script/);
+    const LITERALS = {
+      plain: ["const LOAD_ORDER=Object.freeze(['b.js','c.js']);", { ok: ['b.js', 'c.js'] }],
+      trailing: ["const LOAD_ORDER=Object.freeze([\n 'b.js',\n 'c.js',\n]);", { ok: ['b.js', 'c.js'] }],
+      expression: ["const LOAD_ORDER=Object.freeze(['b.js',x]);", /plain quoted name|LOAD_ORDER_INVALID/],
+      doubleQuoted: ['const LOAD_ORDER=Object.freeze(["b.js"]);', /plain quoted name|LOAD_ORDER_INVALID/],
+      hole: ["const LOAD_ORDER=Object.freeze(['b.js',,'c.js']);", /plain quoted name|LOAD_ORDER_INVALID/],
+      comment: ["const LOAD_ORDER=Object.freeze(['b.js', // x\n 'c.js']);", /plain quoted name|LOAD_ORDER_INVALID/],
+      missing: ["const ORDER=Object.freeze(['b.js']);", /exactly one|LOAD_ORDER_MISSING/],
+      twice: ["const LOAD_ORDER=Object.freeze(['b.js']);\nconst LOAD_ORDER=Object.freeze(['c.js']);", /exactly one|LOAD_ORDER_MISSING/],
+    };
+    for (const [name, [text, want]] of Object.entries(LITERALS)) {
+      fs.writeFileSync(path.join(W, 'loader.js'), text);
+      const py1 = order(W), js1 = helper(text);
+      if (want instanceof RegExp) { assert.match(py1.error || '', want, 'python ' + name); assert.match(js1.error || '', want, 'helper ' + name); }
+      else { assert.deepEqual(py1, want, 'python ' + name); assert.deepEqual(js1, want, 'helper ' + name); }
+    }
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
@@ -241,6 +293,8 @@ const RULES = [
   // together with the stopped quote record; its quote import writes that record (DC-18). Holdings writes go through the store.
   ['old writers of the stopped device quote record', /\bDeviceActual\.(?:mount\w*|applyMarketImport)\(/, []],
   ['order features', /placeOrder|submitOrder|sendOrder|주문하기|매수 주문|매도 주문/, []],
+  // The loader inserts the listed scripts; nothing else in web_app adds a script element (GIS comes through the old modules).
+  ['script elements outside loader.js', /createElement\(\s*['"`]script['"`]/, [LOADER]],
 ];
 test('source rules for every web_app script (code, not comments)', () => {
   const scripts = files(R.NEW).filter((n) => n.endsWith('.js'));
@@ -293,4 +347,172 @@ test('web_app text files pass the Pages guard secret patterns', () => {
   const counts = JSON.parse(out);
   assert.ok(Object.keys(counts).length > 0);
   assert.deepEqual(Object.entries(counts).filter(([, n]) => n > 0), []);
+});
+
+// ---------------------------------------------------------------- loader (P2-1a)
+const freshLoader = () => { delete require.cache[require.resolve(R.newPath(LOADER))]; return R.requireNew(LOADER); };
+// The views and results the layer hands only to old modules and engines.js (source rules): no facade member.
+const INTERNAL = { prices: ['priceView', 'storeFacade'], store: ['storage'], qgv: ['scoreView', 'forEngines', 'engineInputs'] };
+// Arguments for the non-async members that return a promise (each is called once on the real layer).
+const SAMPLE = { 'data.static': ['entities.json'] };
+test('the loader facade API is the real layer API: every member, each kind matching the function', async () => {
+  const win = R.nodeWindow(); R.loadOld(win);
+  const fresh = (n) => { delete require.cache[require.resolve(R.newPath(n))]; return R.requireNew(n); };
+  const action = fresh('action.js').create({ win }), data = fresh('data.js').create({ win, action }), prices = fresh('prices.js').create({ win, action, data });
+  const store = fresh('store.js').create({ win, action, data }), qgv = fresh('qgv.js').create({ win, data, prices, action });
+  const engines = fresh('engines.js').create({ win, action, data, prices, store, qgv }), real = { data, prices, store, qgv, engines };
+  const L = freshLoader();
+  assert.deepEqual(Object.keys(L.API), Object.keys(L.NAMESPACES));
+  const firstParam = (fn) => { const src = String(fn); const m = /^(?:async\s+)?(?:function\b[^(]*|[A-Za-z_$][\w$]*\s*)?\(\s*([A-Za-z_$][\w$]*)/.exec(src) || /^(?:async\s+)?([A-Za-z_$][\w$]*)\s*=>/.exec(src); return m ? m[1] : null; };
+  const thenable = (v) => !!v && typeof v.then === 'function';
+  const checks = [];
+  const walk = (spec, obj, where, internal = []) => {
+    const keys = Object.keys(obj).filter((k) => !internal.includes(k));
+    assert.deepEqual(Object.keys(spec).sort(), keys.sort(), where + ': facade members = layer members (less the internal views)');
+    for (const [k, kind] of Object.entries(spec)) {
+      const v = obj[k], at = where + '.' + k;
+      if (kind && typeof kind === 'object') { assert.ok(v && typeof v === 'object', at + ' is a group'); walk(kind, v, at); continue; }
+      if (kind === 'v') { assert.notEqual(typeof v, 'function', at + ' is a value'); continue; }
+      assert.equal(typeof v, 'function', at + ' is a function');
+      const isAsync = v.constructor.name === 'AsyncFunction', p0 = firstParam(v);
+      if (k === 'subscribe') { assert.equal(kind, 'sub', at); continue; }
+      assert.equal(p0 === 'event', kind === 'a', at + ': an action takes the event first (' + p0 + ')');
+      if (isAsync) assert.equal(kind, 'p', at + ' is async');
+      if (kind === 'p' && !isAsync) checks.push([at, () => v.apply(obj, SAMPLE[at] || []), true]);
+      if (kind === 's') checks.push([at, () => v.apply(obj, []), false]);
+    }
+  };
+  for (const [ns, spec] of Object.entries(L.API)) walk(spec, real[ns], ns, INTERNAL[ns] || []);
+  for (const [ns, list] of Object.entries(INTERNAL)) for (const k of list) assert.ok(k in real[ns], ns + '.' + k + ' exists (internal)');
+  // A promise member gives a promise; a getter never does (called on the real layer; a throw is fine for a getter).
+  for (const [at, call, promise] of checks) {
+    let v; try { v = call(); } catch (e) { assert.ok(!promise, at + ' threw instead of giving a promise: ' + e.message); continue; }
+    if (thenable(v)) v.then(() => {}, () => {});
+    assert.equal(thenable(v), promise, at + (promise ? ' gives a promise' : ' is synchronous'));
+  }
+});
+
+// A fake page for the loader: script elements are recorded (src resolved like a browser's), the test runs them by firing 'load'
+// / 'error', animation frames and idle callbacks run on the next turn, marks are recorded.
+function fakePage({ hidden = false } = {}) {
+  const win = new EventTarget(), body = { scripts: [], appendChild(el) { this.scripts.push(el); return el; } }, marks = [];
+  const make = () => { const el = new EventTarget(); let src = ''; Object.defineProperty(el, 'src', { get: () => (src ? new URL(src, win.location.href).href : ''), set: (v) => { src = String(v); } }); el.async = true; return el; };
+  Object.assign(win, { IS2: {}, location: { href: 'https://site.test/app/', origin: 'https://site.test' }, document: { visibilityState: hidden ? 'hidden' : 'visible', body, createElement: (t) => { assert.equal(t, 'script'); return make(); } },
+    performance: { mark: (n) => marks.push(n) }, requestAnimationFrame: (f) => setImmediate(f), requestIdleCallback: (f) => setImmediate(f), setTimeout: (f, ms) => setTimeout(f, ms), marks, body });
+  return win;
+}
+const tick = () => new Promise((r) => setImmediate(r));
+async function settle(n = 6) { for (let i = 0; i < n; i++) await tick(); }
+// Runs the inserted scripts: install(name) may set namespaces on IS2; outcome(name) → 'load' | 'error' | 'throw'.
+function run(win, install = () => {}, outcome = () => 'load') {
+  for (const el of win.body.scripts) {
+    const name = new URL(el.src).pathname.split('/').pop(), o = outcome(name);
+    if (o === 'error') { el.dispatchEvent(new Event('error')); continue; }
+    install(name);// a file that throws may have installed its global before it threw
+    if (o === 'throw') { const e = new Event('error'); e.filename = el.src; win.dispatchEvent(e); }
+    el.dispatchEvent(new Event('load'));
+  }
+}
+// A stand-in layer: records the calls the facades forward.
+function standIn(calls) {
+  const subs = [];
+  return {
+    data: { FILES: ['x.json'], ready: async () => 'ready-value', get: (n) => 'got ' + n, refresh: (e) => { calls.push(['refresh', e]); return 'refreshed'; }, subscribe: (fn, o) => { subs.push(fn); return () => { subs.splice(subs.indexOf(fn), 1); }; } },
+    prices: { status: () => ({ google: { connected: false } }) }, store: { savePrefs: (e, v) => { calls.push(['savePrefs', e, v]); return { version: 1 }; }, marketQuotes: { count: async () => 0 } },
+    qgv: { page: async () => 'page' }, engines: { target: { state: () => 'state' } }, emit: () => subs.forEach((f) => f('x')), subs };
+}
+const installAll = (win, layer) => (name) => { const ns = Object.entries(freshLoader().NAMESPACES).find(([, f]) => f === name); if (name === 'action.js') win.IS2.action = { run() {} }; if (ns) win.IS2[ns[0]] = layer[ns[0]]; };
+
+test('loader: names are plain same-origin script names; install puts facades, ready, load and the markers on IS2', () => {
+  const L = freshLoader();
+  for (const bad of [['../x.js'], ['x.js?v=1'], ['https://x.example/x.js'], ['X.js'], ['x.css'], ['sub/x.js'], ['a.js', 'a.js'], [''], 'a.js'])
+    assert.throws(() => L.create(fakePage(), { list: bad }), /LOADER_NAME_INVALID/, JSON.stringify(bad));
+  for (const n of L.LOAD_ORDER) assert.match(n, /^[a-z0-9][a-z0-9-]*(?:\.[a-z0-9-]+)*\.js$/);
+  const win = fakePage(), I = L.create(win).install();
+  assert.equal(I, win.IS2);
+  for (const ns of Object.keys(L.NAMESPACES)) assert.ok(I[ns] && typeof I[ns] === 'object', ns + ' facade');
+  assert.equal(I.loadState(), 'WAITING'); assert.equal(typeof I.load, 'function'); assert.ok(I.ready instanceof Promise);
+  assert.deepEqual([I.NOT_READY, I.LOAD_FAILED], [{ state: 'NOT_READY', reason: 'LAYER_NOT_READY' }, { state: 'NOT_READY', reason: 'LOADER_FAILED' }]);
+  assert.ok(Object.isFrozen(I.NOT_READY) && Object.isFrozen(I.data) && Object.isFrozen(I.store.backup));
+  const kept = { data: { real: true } }; const w2 = fakePage(); w2.IS2 = { ...kept }; L.create(w2).install();
+  assert.equal(w2.IS2.data, kept.data, 'a namespace already there is not replaced');
+});
+
+test('loader: facades before ready, nothing inserted before the first paint, async=false in list order, ready, forwarding', async () => {
+  const L = freshLoader(), win = fakePage(), list = ['a.js', 'action.js', 'data.js', 'prices.js', 'store.js', 'qgv.js', 'engines.js'];
+  const loader = L.create(win, { list }), I = loader.install(), F = { ...I }, calls = [], layer = standIn(calls), ev = { type: 'click' };
+  // Before ready.
+  assert.equal(I.data.FILES, I.NOT_READY); assert.equal(I.prices.status(), I.NOT_READY); assert.equal(I.store.prefs(), I.NOT_READY); assert.equal(I.engines.target.state(), I.NOT_READY);
+  assert.throws(() => I.store.savePrefs(ev, {}), /^Error: LAYER_NOT_READY$/); assert.throws(() => I.data.refresh(ev), /LAYER_NOT_READY/);
+  const early = [I.data.ready(), I.qgv.page(), I.store.marketQuotes.count()], order = [];
+  early.forEach((p, i) => p.then((v) => order.push(i + ':' + v)));
+  let got = 0; I.data.subscribe(() => { got++; }); const ac = new AbortController(); I.data.subscribe(() => { got += 100; }, { signal: ac.signal }); ac.abort();
+  assert.throws(() => I.data.subscribe('x'), /SUBSCRIBER_INVALID/);
+  // Nothing before the shell's first paint.
+  let paint; win.IS2.firstPaint = new Promise((r) => { paint = r; });
+  assert.equal(I.load(), I.ready); assert.equal(I.load(), I.ready, 'load() once');
+  await settle(); assert.equal(win.body.scripts.length, 0, 'nothing inserted before the first paint'); assert.equal(I.loadState(), 'WAITING');
+  paint(); await settle();
+  assert.equal(I.loadState(), 'LOADING');
+  assert.deepEqual(win.body.scripts.map((s) => s.src), list.map((n) => 'https://site.test/app/' + n), 'every listed file, same origin, in order');
+  assert.ok(win.body.scripts.every((s) => s.async === false), 'async=false keeps the order');
+  assert.deepEqual(order, [], 'promise members still wait');
+  run(win, installAll(win, layer)); await I.ready; await settle();
+  assert.equal(I.loadState(), 'READY'); assert.deepEqual(win.marks, ['is2-ready']);
+  assert.deepEqual(order.sort(), ['0:ready-value', '1:page', '2:0'], 'promise members called before ready ran on the layer');
+  layer.emit(); assert.equal(got, 1, 'the subscription made before ready is attached; the aborted one is not');
+  // The layer replaced the facades on IS2; a facade a screen kept forwards.
+  assert.equal(I.data, layer.data);
+  assert.deepEqual([F.data.FILES, F.data.get('n'), F.prices.status().google.connected, F.engines.target.state()], [['x.json'], 'got n', false, 'state']);
+  assert.deepEqual(F.store.savePrefs(ev, { v: 1 }), { version: 1 }); assert.deepEqual(calls, [['savePrefs', ev, { v: 1 }]], 'an action forwards its event as is (same tick)');
+  assert.equal(await F.qgv.page(), 'page');
+  const off = F.data.subscribe(() => { got += 10; }); layer.emit(); off(); layer.emit(); assert.equal(got, 1 + 1 + 10 + 1, 'subscribe after ready is the layer\'s own');
+});
+
+test('loader: failures reject IS2.ready with LOADER_FAILED <first file in list order> and put the refusing facades back', async () => {
+  const L = freshLoader(), list = ['a.js', 'b.js', 'action.js', 'data.js', 'prices.js', 'store.js', 'qgv.js', 'engines.js'];
+  const cases = [
+    ['missing file', (n) => (n === 'b.js' || n === 'qgv.js' ? 'error' : 'load'), () => true, 'b.js'],
+    ['an old module threw while it ran', (n) => (n === 'b.js' ? 'throw' : 'load'), () => true, 'b.js'],
+    ['a layer file threw after installing', (n) => (n === 'prices.js' ? 'throw' : 'load'), () => true, 'prices.js'],
+    ['installed nothing', () => 'load', (n) => n !== 'store.js', 'store.js'],
+    ['no action gate', () => 'load', (n) => n !== 'action.js', 'action.js'],
+  ];
+  for (const [label, outcome, installs, file] of cases) {
+    const win = fakePage(), I = L.create(win, { list }).install(), F = { ...I }, layer = standIn([]);
+    win.IS2.firstPaint = Promise.resolve();
+    const early = I.qgv.page().then(() => 'OK', (e) => e.message);
+    I.load(); await settle();
+    const put = installAll(win, layer); run(win, (n) => { if (installs(n)) put(n); }, outcome);
+    const message = await I.ready.then(() => 'OK', (e) => e.message);
+    assert.equal(message, 'LOADER_FAILED ' + file, label);
+    assert.equal(await I.ready.catch((e) => e.file), file);
+    assert.equal(await early, 'LOADER_FAILED ' + file, label + ': a promise member called before rejects too');
+    assert.equal(I.loadState(), 'FAILED'); assert.deepEqual(win.marks, ['is2-load-failed']);
+    for (const ns of Object.keys(L.NAMESPACES)) assert.equal(win.IS2[ns], F[ns], label + ': the facade is back on IS2 (' + ns + ')');
+    assert.equal(I.data.FILES, I.LOAD_FAILED); assert.equal(I.prices.status(), I.LOAD_FAILED);
+    assert.throws(() => I.store.savePrefs({}, {}), new RegExp('^Error: LOADER_FAILED ' + file.replace('.', '\\.') + '$'));
+    assert.equal(await I.data.ready().then(() => 'OK', (e) => e.message), 'LOADER_FAILED ' + file);
+    let got = 0; I.data.subscribe(() => { got++; }); layer.emit(); assert.equal(got, 0, label + ': a subscription keeps nothing');
+  }
+});
+
+test('loader: a hidden page loads at once (it paints nothing); the screen files touch no layer namespace while they load', async () => {
+  const L = freshLoader(), win = fakePage({ hidden: true }), I = L.create(win, { list: ['a.js'] }).install();
+  win.IS2.firstPaint = new Promise(() => {});
+  I.load(); await settle();
+  assert.equal(win.body.scripts.length, 1, 'no wait for a paint that never comes');
+  delete require.cache[require.resolve(R.newPath('core.js'))];
+  const core = R.requireNew('core.js'), touched = [];
+  const parts = { head: () => null, section: () => null, card: () => null, pending: () => null, more: () => null };
+  const IS2 = new Proxy({ ...core, parts }, { get(t, k) { if (['data', 'qgv', 'prices', 'store', 'engines', 'action', 'ready'].includes(k)) touched.push(k); return t[k]; } });
+  for (const name of [...LANES, 'screen-search.js', 'screen-menus.js', 'screen-detail.js']) vm.runInNewContext(fs.readFileSync(R.newPath(name), 'utf8'), { window: { IS2 }, Object }, { filename: name });
+  assert.deepEqual(touched, [], 'screens read the layer at render time only (through the facades before IS2.ready)');
+});
+
+test('the first screen never waits for the fonts: every @font-face swaps (or is optional), nothing is preloaded', () => {
+  const css = fs.readFileSync(R.newPath('app.css'), 'utf8'), faces = [...css.matchAll(/@font-face\s*\{([^}]*)\}/g)].map((m) => m[1]);
+  assert.equal(faces.length, 3);
+  for (const f of faces) assert.match(f, /font-display:\s*(?:swap|optional)\s*;/, f.slice(0, 60));
+  assert.doesNotMatch(R.newIndex(), /rel="(?:preload|modulepreload|prefetch|preconnect)"/, 'no preload: the fonts and the layer come after the first paint');
 });

@@ -1,8 +1,9 @@
 'use strict';
 // New frontend P1 helper (not a test): the one place that knows where the old modules live and which of them the new
-// frontend reuses. Plan A (tools/build_web_app.py): web_app/index.html is the reuse list; a script it loads that has no file
-// of that name in web_app is an old web_assets file kept byte-identical by the build. When the old modules move into web_app
-// (P3), OLD below is the only line node tests need changed.
+// frontend reuses. Plan A (tools/build_web_app.py): a script the page loads that has no file of that name in web_app is an old
+// web_assets file kept byte-identical by the build. What the page loads (P2-1a): index.html's scripts (the first screen, web_app
+// files only), then web_app/loader.js LOAD_ORDER after the first paint (the one load list, read here the way the build reads
+// it). When the old modules move into web_app (P3), OLD below is the only line node tests need changed.
 const fs = require('node:fs');
 const path = require('node:path');
 
@@ -19,8 +20,19 @@ function scriptsOf(html) {
 }
 const newIndex = () => fs.readFileSync(path.join(NEW, 'index.html'), 'utf8');
 const oldIndex = () => fs.readFileSync(path.join(OLD, 'index.html'), 'utf8');
-// The new page's scripts, and the old page's scripts in first-load order (the old page loads two playbook files twice).
-const scripts = () => scriptsOf(newIndex());
+// loader.js LOAD_ORDER, parsed as build_web_app.load_order parses it: exactly one literal of plain quoted names.
+function loadOrderOf(text) {
+  const found = [...String(text).matchAll(/const LOAD_ORDER=Object\.freeze\(\[([\s\S]*?)\]\);/g)];
+  if (found.length !== 1) throw new Error('LOAD_ORDER_MISSING');
+  const items = found[0][1].split(',').map((x) => x.trim());
+  if (items.length && items[items.length - 1] === '') items.pop();
+  return items.map((x) => { const m = /^'([^'\\]*)'$/.exec(x); if (!m) throw new Error('LOAD_ORDER_INVALID ' + x.slice(0, 40)); return m[1]; });
+}
+const loadOrder = () => loadOrderOf(fs.readFileSync(path.join(NEW, 'loader.js'), 'utf8'));
+// The first screen's scripts (index.html), the page's whole load order (then LOAD_ORDER), and the old page's scripts in
+// first-load order (the old page loads two playbook files twice).
+const firstPaint = () => scriptsOf(newIndex());
+const scripts = () => [...firstPaint(), ...loadOrder()];
 const oldScripts = () => [...new Set(scriptsOf(oldIndex()))];
 // Same rule as build_web_app.reused_old_files: web_app wins on a shared name, otherwise the file must be in web_assets.
 function reused(list = scripts()) {
@@ -46,7 +58,7 @@ function globalName(name) {
 /* Node tests of the P1 layer: fresh copies of old modules (module state such as QgvScores' memo, DataRefresh's generation or
    Qgv2Inputs.lastReason starts empty), set as globals on `win` and on globalThis (old modules read siblings through globalThis,
    which in the browser is the same window). app-config.js is browser-only (window.InvestmentAppConfig) and runs against `win`.
-   Default list: every reused module, in index.html order. */
+   Default list: every reused module, in load order. */
 function loadOld(win, names = reused()) {
   for (const name of names) if (name !== 'app-config.js') delete require.cache[require.resolve(oldPath(name))];
   const out = {};
@@ -101,4 +113,4 @@ function nodeWindow({ files = {}, origin = 'https://site.test' } = {}) {
   return win;
 }
 
-module.exports = Object.freeze({ ROOT, OLD, NEW, scriptsOf, newIndex, oldIndex, scripts, oldScripts, reused, oldPath, requireOld, newPath, requireNew, globalName, loadOld, nodeWindow });
+module.exports = Object.freeze({ ROOT, OLD, NEW, scriptsOf, newIndex, oldIndex, loadOrderOf, loadOrder, firstPaint, scripts, oldScripts, reused, oldPath, requireOld, newPath, requireNew, globalName, loadOld, nodeWindow });
