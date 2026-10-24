@@ -145,8 +145,9 @@ def test_affected_workflows_have_no_publication_sinks(name):
     if name == 'sec-daily-public-inputs':
         # GSQ-024 (central V publication path, guard PR): the daily SEC workflow's existing sinks, exactly. ONE Pages artifact
         # upload as the last collect step and ONE deploy right after the freshness guard. The private raw-repo uploads (the
-        # shard's raw copy, the dated ledger release) happen inside the two tool steps that hold RAW_REPO_TOKEN, never as a
-        # workflow upload; no step summary, no cache, no push, and every checkout drops its credentials.
+        # shard's raw copy, the dated ledger release, and since PR-C the dated central QGV score history of owner decision D9)
+        # happen inside the three tool steps that hold RAW_REPO_TOKEN, never as a workflow upload; no step summary, no cache,
+        # no push, and every checkout drops its credentials. The V step itself never holds RAW_REPO_TOKEN.
         collect = source.split('\n  collect:\n', 1)[1].split('\n  verify:\n', 1)[0]
         verify, deploy = source.split('\n  verify:\n', 1)[1].split('\n  deploy:\n', 1)
         assert source.count('actions/upload') == 1 and source.count('actions/deploy-pages') == 1
@@ -162,8 +163,12 @@ def test_affected_workflows_have_no_publication_sinks(name):
                 assert step.endswith('python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"')
         raw = [step.split('\n', 1)[0] for step in steps if 'secrets.RAW_REPO_TOKEN' in step]
         assert raw == ['name: Collect Universe504 SEC shard (price-free shares and Q·G factor projections)',
-                       'name: Append forward validation ledger (price-free, append-only)']
-        assert source.count('secrets.RAW_REPO_TOKEN') == 2
+                       'name: Append forward validation ledger (price-free, append-only)',
+                       'name: Copy a new central QGV publication to the private dated history (scores only, no prices)']
+        assert source.count('secrets.RAW_REPO_TOKEN') == 3
+        history = next(step for step in steps if 'qgv_official_history.py' in step)
+        assert history.endswith('run: python implementation/tools/qgv_official_history.py --artifact-dir "$RUNNER_TEMP/public-cockpit"')
+        assert 'continue-on-error: true' in history and 'qgv_official_publish.py' not in history and 'secrets.QGV' not in history
         assert 'secrets.' not in verify and 'secrets.' not in deploy and 'actions/upload' not in verify + deploy
         assert deploy.index('pages_freshness_guard.py') < deploy.index('uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e')
         assert workflow_steps(deploy)[-1].startswith('name: Deploy checked Pages artifact\n')
