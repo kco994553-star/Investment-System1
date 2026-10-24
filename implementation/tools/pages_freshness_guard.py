@@ -77,6 +77,23 @@ later schema adds) must be in the artifact at the same position with identical c
 add records after them. A live record that is missing, changed or moved refuses the deploy, also when the last session
 date is unchanged. `as_of` and the last session date are still compared as markers (older or missing -> refused).
 
+qgv-official.json (central QGV publication, GSQ-024; design CENTRAL_V_PUBLICATION_DESIGN_20261018.md §12-5, owner decision
+D-CV16 (a)): one publication, compared as a whole by its basis, never row by row (its rows are restated at every publication).
+Both sides are read through the strict reader `qgv_official.parse` (no duplicate keys, no NaN, size, require_qgv_official).
+- same publication_id: the artifact bytes must equal the live bytes (EQUAL), else CHANGED, refused (the publisher keeps the live
+  bytes whenever the id is unchanged, and the manual path copies them byte for byte);
+- another publication_id: `times.price_basis_date` earlier than the live one -> OLDER, refused; later -> NEWER; the same basis
+  day: `times.inputs_as_of` (the sec-qgv2.json it was computed from) earlier -> OLDER, refused; later -> NEWER; equal ->
+  REPLACED (recomputed on the same IEX day and the same inputs, e.g. a new engine or month-end store): pass;
+- an artifact file that is present but fails the strict reader -> ARTIFACT_INVALID, refused (whatever the live state);
+- D-CV16 (a): a live publication that is served but invalid (LIVE_INVALID) or a valid live publication the artifact does not carry
+  (MISSING: the V step could not carry its last good copy) withholds the publication only: verdict WITHHELD, one
+  PAGES_FRESHNESS_PUBLICATION_WITHHELD line, and the rest of the deploy goes on (a V failure never stops the SEC, news or ledger
+  publication; the next daily run republishes). The broken live copy is never repaired or carried here;
+- live 404 -> NO_LIVE (first publication: an artifact with or without a publication passes);
+- qgv-official-status.json is never compared (an attempt record, not data);
+- an unreachable live read is refused like every other file (fail closed).
+
 Live copy: 404 -> NO_LIVE (first publication, nothing to roll back: pass). Served (200) but oversized, not JSON or
 rejected by the file's strict validator (the same one its daily previous-copy reader applies) ->
 PAGES_FRESHNESS_LIVE_INVALID and the deploy is refused: nothing can be compared, and this guard never passes blind.
@@ -107,10 +124,12 @@ import time
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import forward_validation_ledger as ledger_tool
 import preserve_public_sec_inputs as target_tool
+import qgv_official_publish as official_tool
 import sec_universe_shares as universe_tool
 from sec_universe_shares import _fetch_body  # the daily tools' live Pages reader (404 -> None, other failure -> OSError)
 
 fl = ledger_tool.fl
+qo = official_tool.qo
 MAX_DETAIL = 20
 ROW_KINDS = ('newer', 'equal', 'older', 'missing', 'lost_record')
 ROW_REGRESSIONS = ('OLDER', 'MISSING', 'LOST_RECORD', 'WITHDRAWAL_MISMATCH', 'PRESERVED_MISMATCH', 'CHANGED')
@@ -193,6 +212,12 @@ WITHDRAWAL_FILES = {
 }
 
 
+# qgv-official.json (GSQ-024): verdicts by kind (module doc). WITHHELD is not a refusal (D-CV16 (a)).
+OFFICIAL_VERDICTS = {'NONE': 'NO_LIVE', 'NEW': 'NO_LIVE', 'EQUAL': 'PASS', 'NEWER': 'PASS', 'REPLACED': 'PASS',
+                     'CHANGED': 'REFUSED', 'OLDER': 'REFUSED', 'ARTIFACT_INVALID': 'REFUSED', 'MISSING': 'WITHHELD',
+                     'LIVE_INVALID': 'WITHHELD'}
+
+
 class LiveUnreachable(Exception):
     def __init__(self, name):
         super().__init__(name)
@@ -234,6 +259,69 @@ def _live(name, source, limit, validate, nonce, open_response):
     except Exception:
         return 'LIVE_INVALID', None
     return ('VALID', payload) if type(payload) is dict else ('LIVE_INVALID', None)
+
+
+def _live_official(nonce, open_response):
+    """-> ('VALID', bytes, payload) | ('NO_LIVE', None, None) | ('LIVE_INVALID', None, None). Raises LiveUnreachable.
+    Same URL as the publisher's previous-copy source (tools/qgv_official_publish.py LIVE_URL), strict reader qgv_official.parse."""
+    try:
+        body = _fetch_body(f'{official_tool.LIVE_URL}?deploy-check={nonce}', qo.MAX_BYTES, open_response)
+    except OSError:
+        raise LiveUnreachable(qo.FILENAME) from None
+    if body is None:
+        return 'NO_LIVE', None, None
+    try:
+        return 'VALID', body, qo.parse(body)
+    except Exception:
+        return 'LIVE_INVALID', None, None
+
+
+def _artifact_official(folder):
+    """-> ('VALID', bytes, payload) | ('ABSENT', None, None) | ('INVALID', None, None)."""
+    path = folder / qo.FILENAME
+    if not path.exists() and not path.is_symlink():
+        return 'ABSENT', None, None
+    if path.is_symlink() or not path.is_file():
+        return 'INVALID', None, None
+    with path.open('rb') as handle:
+        body = handle.read(qo.MAX_BYTES + 1)
+    try:
+        return 'VALID', body, qo.parse(body)
+    except Exception:
+        return 'INVALID', None, None
+
+
+def _official_basis(payload):
+    return payload['times']['price_basis_date'] if payload is not None else None
+
+
+def compare_official(live, artifact):
+    """`live` = _live_official(...), `artifact` = _artifact_official(...) -> {kind, verdict, live, artifact_basis, live_basis}."""
+    live_state, live_body, theirs = live
+    art_state, art_body, mine = artifact
+    if art_state == 'INVALID':
+        kind = 'ARTIFACT_INVALID'
+    elif live_state == 'NO_LIVE':
+        kind = 'NEW' if art_state == 'VALID' else 'NONE'
+    elif live_state == 'LIVE_INVALID':
+        kind = 'LIVE_INVALID'
+    elif art_state == 'ABSENT':
+        kind = 'MISSING'
+    elif mine['publication_id'] == theirs['publication_id']:
+        kind = 'EQUAL' if art_body == live_body else 'CHANGED'
+    elif _official_basis(mine) != _official_basis(theirs):
+        kind = 'OLDER' if _official_basis(mine) < _official_basis(theirs) else 'NEWER'
+    else:
+        ours, live_inputs = _instant(mine['times']['inputs_as_of']), _instant(theirs['times']['inputs_as_of'])
+        if live_inputs is None:
+            kind = 'REPLACED' if ours is None else 'NEWER'
+        elif ours is None or ours < live_inputs:
+            kind = 'OLDER'
+        else:
+            kind = 'NEWER' if ours > live_inputs else 'REPLACED'
+    return {'kind': kind, 'verdict': OFFICIAL_VERDICTS[kind], 'live': live_state,
+            'artifact_basis': _official_basis(mine) if art_state == 'VALID' else None,
+            'live_basis': _official_basis(theirs) if live_state == 'VALID' else None}
 
 
 def _rows(payload, section):
@@ -421,7 +509,9 @@ def compare(artifact_dir, *, open_response=None, environ=None):
         raise ValueError('PAGES_FRESHNESS ARTIFACT_INVALID')
     nonce = _run_nonce(environ)
     reads = [(entry, _live(*entry[:4], nonce, open_response)) for entry in ROW_FILES + (LEDGER_FILE,)]
-    out = {'rows': [], 'ledger_markers': [], 'ledger_lists': [], 'live_invalid': [], 'artifact_invalid': []}
+    live_official = _live_official(nonce, open_response)
+    out = {'rows': [], 'ledger_markers': [], 'ledger_lists': [], 'live_invalid': [], 'artifact_invalid': [],
+           'official': compare_official(live_official, _artifact_official(artifact_dir))}
     for (name, _, limit, *rest), (state, live) in reads:
         if state == 'LIVE_INVALID':
             out['live_invalid'].append(name)
@@ -503,6 +593,13 @@ def run(artifact_dir, *, open_response=None, environ=None):
         _details(fl.FILENAME, section, [f'index={index} kind={kind} date={_text(_day(day))}'
                                         for index, kind, day in r['regressions']])
         verdicts.append(r['verdict'])
+    official = result.get('official')
+    if official is not None:
+        if official['verdict'] == 'WITHHELD':
+            print(f"PAGES_FRESHNESS_PUBLICATION_WITHHELD file={qo.FILENAME} kind={official['kind']} deploy=CONTINUES")
+        print(f"PAGES_FRESHNESS file={qo.FILENAME} section=publication verdict={official['verdict']} kind={official['kind']} "
+              f"artifact_basis={_text(_day(official['artifact_basis']))} live_basis={_text(_day(official['live_basis']))}")
+        verdicts.append(official['verdict'])
     rows_compared = sum(r['counts']['compared'] for r in result['rows'])
     rows_regressed = sum(len(r['regressions']) for r in result['rows'])
     records_compared = sum(r['counts']['live_records'] for r in result['ledger_lists'])

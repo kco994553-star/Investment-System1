@@ -4912,3 +4912,47 @@ manifest의 URL/hash/크기/상태, SEC share facts·par value·split/exchange r
 필요한 후속 근거는 원 handoff의 샘플 생성/캡처 receipt, original response URL/hash, 당시 생성 입력과 archived 전체 row ID의 binding 등이다. 외부에서 현재 시세를 조회해 과거 fixture 기원을 추정하지 않는다. 기존 `track_store.json`의 Q map 일부가 synthetic book과 같아도 전체 archived 행의 생성 출처가 자동 확정되는 것은 아니다.
 
 검증 범위는 문서·메타데이터·정적 사용 경로이며 공급자 호출·구현 테스트·빌드·배포를 새 실행하지 않았다. 실제 공개 경계 차단/합성 교체/실자료 삭제/개인 원본 보관의 완료 여부는 각각 후속 작업에서 검증해야 한다.
+
+## 10. GSQ-024 후속: 중앙 V 게시 경로의 가드 변경 (2026-10-24, append-only)
+
+- 작성: 2026-10-24 UTC, Claude Code Main 지시의 PR-B(`claude/central-v-guard`, PR-A `claude/central-v-core` 위). **병합 대기.** GSQ-024 표의 "가드·병합" 줄대로 이 가드 변경은 별도 PR이고 소유자 승인 뒤에만 병합한다.
+- 권한 근거: [GSQ-024](../pages_cockpit_owner/GOOGLE_SHEET_QUOTES_DECISION_REGISTER.md)(2026-10-23 소유자 결정: GSQ-001·006·007·023 중 "IEX HIST 서버 수집 + 파생 점수·순위 공개"만 해제, GSQ-010 원시 가격 공개 금지는 유지), 2026-10-24 소유자 결정 D1~D10([계획](../qgv_scoring_standard/CENTRAL_V_DC02_PLAN_20261024.md) 4절), [설계](../qgv_scoring_standard/CENTRAL_V_PUBLICATION_DESIGN_20261018.md) §4·§12.
+- 이 절은 끝에 덧붙인 것이다. §1~§9의 문장·표·집계는 바꾸지 않았다(시험 `tests/test_qgv_official_guards.py`가 이 절 앞 바이트의 SHA-256을 고정한다). 가격 조회·공급자 호출은 하지 않았다. 시험은 합성 값만 쓴다.
+
+### 10-1. 새 가격 경로는 하나다
+
+| 항목 | 내용 |
+| --- | --- |
+| 출처 | IEX HIST TOPS 1.6, 정규장 마지막 체결가(공식 종가 아님). URL은 정확한 세 형태만 허용한다: 색인 `https://iextrading.com/api/1.0/hist`, 공개 `iex` 버킷 파일의 JSON API(`https://www.googleapis.com/…/storage/v1/b/iex/o/<객체>`, `storage.googleapis.com` 같은 형태), XML API(`https://storage.googleapis.com/iex/<경로>`, 빈·`.`·`..` 경로 조각 금지). V4 월말가 비공개 저장소(U8, IEX 체결)는 원자료 저장소의 해당 릴리스 API 두 형태만 허용한다(`src/investment_system/public_price_boundary.py` `PRICE_SOURCE_URL_PATTERNS`). |
+| 허용 호출자 | 진입 스크립트가 `implementation/tools/qgv_official_publish.py`인 프로세스 하나다(`ACTIONS_PRICE_ROUTES`, `require_price_route`). 대화형 실행, `python -c`, pytest, 다른 도구는 막힌다. |
+| 연결 | 어댑터가 네트워크 전에 경계를 부른다. `providers/iex_hist.py`의 색인·메타데이터 읽기(`fetch_json`)와 기본 다운로드 명령(`curl_command`)은 `require_price_source`를 통과해야 한다(아니면 `SOURCE_URL_INVALID` / `SOURCE_ROUTE_NOT_ALLOWED`). 색인의 파일 링크도 같은 형태만 쓴다(`_link_ok`). `providers/iex_monthend.py`의 저장소 읽기는 같은 경로 안에서만 만들어지고(`ROUTE_NOT_ALLOWED`), 읽기 토큰은 저장소 릴리스 URL에만 붙는다(`TOKEN_HOST_INVALID`). 실패는 게시기의 고정 코드(`SUPPLY_FAILED IEX_…` / `MONTHEND_…`)가 되고 종료 코드는 0이다. |
+| 분리 | `AUDITED_ROUTES`(감사 경로 27+1)·`BLOCKED`·옛 가격 수집기 차단과 그 시험은 그대로다. SEC 허용 목록(`require_financial_url`)은 IEX URL을 모두 거부하고, `require_price_source`는 SEC URL을 모두 거부한다. |
+| 정적 시험 | IEX 호스트 문자열과 두 어댑터 import는 정해진 파일(어댑터 두 개, 게시 모듈, 경계 모듈, 게시기, 시험)에만 있다. 워크플로는 IEX 호스트를 직접 부르지 않는다. 게시기 전체 실행은 `sec-daily-public-inputs.yml`에서만, 다른 워크플로는 `--preserve-only`(가격 없음)만 허용한다. 새 Secret 두 개(`QGV_OFFICIAL_HMAC_KEY`, `RAW_REPO_READ_TOKEN`)는 그 게시 단계 `env`에만 둘 수 있고, 그 단계에는 `RAW_REPO_TOKEN`·업로드가 없고 `continue-on-error: true`여야 한다(워크플로 단계 자체는 PR-C). |
+
+### 10-2. 게시본에 가격 값이 없다
+
+- 허용 파일 두 개를 더했다: `qgv-official.json`, `qgv-official-status.json`(`tools/pages_artifact_guard.py` `ALLOWED_NAMES`). 둘 다 선택 파일이다. 첫 게시 전에는 없어도 통과한다(`APPROVED_SHA256`에 넣지 않음).
+- 파일별 엄격 검증기를 연결했다. `qgv-official.json` → `qgv_official.require_qgv_official`(실패 시 `qgv_official_boundary`): 정확한 키 집합, 어디서든 금지 키(`price`, `close`, `month_closes`, `quote`, `price_e4`, `ev`, `enterprise_value`, `market_cap`, `ebit_yield`, `fcf_yield`, `yield`, `implied_growth`, `expectation_gap`, `realized_growth`, `detail`, `reference_range`, `hmac`, `price_hmac` 등), V 축·종합·순위·커버리지 재계산 일치, 2 MiB 이하. `qgv-official-status.json` → `require_status`(실패 시 `qgv_official_status_boundary`): 시도 상태·고정 코드·게시본 id·기준일·출처 문구만.
+- **민감 키 예외는 경로 하나다.** `qgv-official.json` 안의 정확한 경로 `rows.<code>.rank`(최상위 `rows`, 게시본 행 키 형태의 코드, 키 철자 정확히 `rank`, 값은 1 이상 정수 또는 null)만 민감 키 검사에서 뺀다(`PUBLIC_SCORE_PATHS`). 민감 키 목록 자체는 바꾸지 않았다. 다른 파일의 `rank`, 다른 깊이·부모의 `rank`, `Rank` 같은 다른 철자, 중간에 배열이 낀 경로, 그리고 이 파일 어디의 `price`·`marketcap`·`cash`·`cost`·`amount` 등은 그대로 `sensitive_json_fields`다. 합성 523행 게시본(504 코드 + TARGET 19)에서 지금 가드에 걸리는 키는 이 경로의 `rank` 18건뿐이었다. 같은 바이트를 `sec-qgv2.json` 이름으로 넣으면 18건이 그대로 걸린다.
+- 가격은 V 단계 RAM에만 있다. 게시본·상태 파일·로그에는 가격·월말가·EV·시가총액·수익률·종목별 가격 시각·가격 해시가 없다. `publication_id`에 들어가는 가격 묶음 지문은 Secret 키의 HMAC이고 원값은 싣지 않는다. 표준 출력은 고정 코드·개수 한 줄이다.
+
+### 10-3. 복원 분석 요약(설계 §4-4)
+
+- 정확 복원 경로(EBIT·FCF 수익률, 내재 성장률·기대 차이, `detail`, DCF 참고 범위)는 싣지 않는다. 검증기가 어디서든 거부한다.
+- 가격 경계를 바로 주는 사유(`EV_NON_POSITIVE`, `ROOT_NOT_BRACKETED`, `ROOT_NOT_CONVERGED`, 가격 계산 중 `NUMERIC_OVERFLOW`)는 공개본에서 `PRICE_DEPENDENT_NOT_COMPUTABLE` 하나로 묶는다(D-CV2). 원 코드가 공개본에 있으면 검증기가 거부한다.
+- 남는 정보: V 요인 백분위와 순위는 단면 안 순서다. 다른 종목 가격을 알면 이웃 사이 **구간**이 나온다. 점 복원은 안 된다. 자기 과거 대비 백분위가 가장 강한 구간 정보다. 요인 하나만 숨기는 방어는 축 가중 평균 때문에 효과가 없다. 반올림도 방어로 기대하지 않는다(D-CV3).
+- 공개 이력은 최신 게시본 하나다(D-CV14). 날짜별 점수 이력은 비공개 원자료 저장소에만 둔다(D9, 점수만, 가격 없음). 종목별 가격 해시는 싣지 않는다.
+- 순위·백분위 공개는 가격 파생 정보다. GSQ-024가 "파생 점수·순위 공개"를 해제한 범위 안이다. 원시 가격·EV·수익률·배율 공개 금지는 그대로다.
+
+### 10-4. 배포 직전 신선도(`tools/pages_freshness_guard.py`)
+
+- 라이브 `qgv-official.json`을 게시기와 같은 URL로 읽고, 양쪽을 엄격 리더(`qgv_official.parse`)로 읽는다. 게시본 하나를 기준일로 비교한다(행별 비교 아님).
+- 같은 `publication_id`면 바이트가 같아야 한다(`EQUAL`, 아니면 `CHANGED` 거부). 다른 id면 `price_basis_date`가 이르면 `OLDER` 거부, 늦으면 `NEWER`. 기준일이 같으면 입력 시각(`inputs_as_of`)이 이르면 `OLDER` 거부, 늦으면 `NEWER`, 같으면 `REPLACED`(통과).
+- 아티팩트 게시본이 엄격 리더를 통과하지 못하면 `ARTIFACT_INVALID` 거부.
+- D-CV16 (a): 라이브 게시본이 깨졌거나(`LIVE_INVALID`) 아티팩트가 유효한 라이브 게시본을 싣지 않았으면(`MISSING`) 게시본만 빠진다(`WITHHELD`, `PAGES_FRESHNESS_PUBLICATION_WITHHELD` 한 줄). 나머지 배포는 계속한다. 깨진 라이브 사본을 고치거나 옮기지 않는다.
+- 라이브 404는 첫 게시(`NO_LIVE`, 통과). 라이브를 읽지 못하면 다른 파일과 같이 거부(fail closed). 상태 파일은 비교하지 않는다.
+
+### 10-5. 바꾸지 않은 것
+
+- 민감 키 목록, 비밀 패턴, 크기·항목 수 한도, 고정 해시, 다른 파일의 검증기와 신선도 규칙, `AUDITED_ROUTES`·`BLOCKED`, `sec-qgv2.json`의 가격·순위 없음 규칙(`sec_qgv2.py`, `qgv2-inputs.js`).
+- 워크플로 파일. V 단계·verify 검증·수동 배포 보존(`--preserve-only`)은 PR-C에서 한다.

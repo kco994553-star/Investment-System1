@@ -593,7 +593,8 @@ def _ranks_ok(rows):
 
 
 def require_qgv_official(payload) -> None:
-    """Strict public validator (also the verify job and the proposed Pages guard file validator). ValueError fixed codes."""
+    """Strict public validator (also the verify job and the Pages guard file validator, tools/pages_artifact_guard.py). ValueError
+    fixed codes."""
     try:
         _keys(payload, TOP_KEYS)
         _walk_forbidden(payload)

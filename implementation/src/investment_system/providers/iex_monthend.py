@@ -23,6 +23,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
+from .. import public_price_boundary as boundary
 from ..qgv.v2_factors import SHARE_BASIS_REASONS
 from .iex_hist import MONTHEND_BASIS_CUTS, SYMBOL_ALIASES, iex_symbol
 
@@ -51,7 +52,13 @@ class _NoRedirect(urllib.request.HTTPRedirectHandler):
 
 
 def github_call(token: str):
-    """(method, url, headers, auth) -> (status, headers, bytes). Bearer token only on api.github.com requests."""
+    """(method, url, headers, auth) -> (status, headers, bytes). The store holds IEX trades, so the reader exists only inside
+    the approved price route (public_price_boundary.require_price_route: ROUTE_NOT_ALLOWED otherwise), and the Bearer token
+    goes only to the store's release URLs (public_price_boundary IEX_MONTHEND_STORE: TOKEN_HOST_INVALID otherwise)."""
+    try:
+        boundary.require_price_route()
+    except boundary.PublicPriceBoundaryError:
+        _fail('ROUTE_NOT_ALLOWED')
     opener = urllib.request.build_opener(_NoRedirect)
 
     def call(method, url, *, headers=None, auth=True):
@@ -59,7 +66,7 @@ def github_call(token: str):
         req.add_header('Accept', (headers or {}).get('Accept', 'application/vnd.github+json'))
         req.add_header('X-GitHub-Api-Version', '2022-11-28')
         if auth:
-            if urllib.parse.urlsplit(url).hostname != 'api.github.com':
+            if boundary.price_source_kind(url) != 'IEX_MONTHEND_STORE':
                 _fail('TOKEN_HOST_INVALID')
             req.add_header('Authorization', 'Bearer ' + token)
         try:
