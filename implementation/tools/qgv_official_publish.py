@@ -4,7 +4,11 @@
 
 Order (design §3-1):
  1. the live publication (--previous PATH|URL) is strictly validated and copied byte for byte first (last good; a broken live copy
-    is not copied, D-CV16);
+    is not copied, D-CV16). It is read like every daily tool reads its live Pages copy (sec_universe_shares._fetch_body: no
+    cache, no redirect, exact URL with a run nonce; 404 -> no live publication) with retries. A live copy that cannot be read
+    (any other failure) is LIVE_UNREACHABLE: nothing is computed (the older-basis check could not run), the status is
+    NOT_RUN / LIVE_UNREACHABLE (never NO_OFFICIAL_YET: whether a publication exists is not known), and the artifact carries
+    no publication that day;
  2. the same run's final sec-qgv2.json (in --out) is read and strictly validated (require_qgv2);
  3. one IEX HIST TOPS day (latest <= the run's New York shard day) is streamed and parsed in RAM (providers/iex_hist.py);
  4. the private month-end store (V4) is read with the token named by --raw-token-env (providers/iex_monthend.py);
@@ -15,6 +19,7 @@ Order (design §3-1):
 
 Stdout: ONE line of fixed codes and counts. Never a price, yield, month-end value, per-code hash, URL with a token or key.
 Exit 0 for every supply/verify outcome (the workflow step stays green; the status file carries the result); 2 = usage error.
+The two Secrets are popped from the environment at start (no child process inherits them).
 A missing Secret (HMAC key or raw-repo read token) or a sec-qgv2.json older than calc_version 2026-10-23.1 is NOT_RUN: nothing is
 downloaded and the last good copy stays.
 
@@ -31,17 +36,19 @@ import os
 import subprocess
 import sys
 import tempfile
+import time
 import urllib.parse
-import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'src'))
+sys.path.insert(0, str(ROOT / 'tools'))
 
 from investment_system.providers import iex_hist, iex_monthend  # noqa: E402
 from investment_system.qgv import qgv_official as qo  # noqa: E402
 from investment_system.universe import sec_qgv2  # noqa: E402
 from investment_system.universe.sec_universe_shares import shard_day  # noqa: E402
+from sec_universe_shares import _fetch_body  # noqa: E402  - the daily tools' live Pages reader (404 -> None, else OSError)
 
 PAGES = 'https://kco994553-star.github.io/Investment-System1/'
 LIVE_URL = PAGES + qo.FILENAME
@@ -49,6 +56,19 @@ LIVE_STATUS_URL = PAGES + qo.STATUS_FILENAME
 JS_CHECK = ROOT / 'tools' / 'qgv_official_js_check.js'
 DEFAULT_RAW_TOKEN_ENV = 'RAW_REPO_READ_TOKEN'
 DEFAULT_HMAC_ENV = 'QGV_OFFICIAL_HMAC_KEY'
+LIVE_UNREACHABLE = qo.LIVE_UNREACHABLE
+LIVE_READ_ATTEMPTS = 3
+LIVE_READ_BACKOFF = (5, 15)          # seconds between attempts (each attempt has _fetch_body's own 20 s timeout)
+
+
+class LiveUnreachable(OSError):
+    """The live copy could not be read (not a 404): fixed code only."""
+
+
+def _run_nonce(environ=None) -> str:
+    environ = os.environ if environ is None else environ
+    run_id, attempt = environ.get('GITHUB_RUN_ID', ''), environ.get('GITHUB_RUN_ATTEMPT', '')
+    return f'{run_id}-{attempt}' if run_id.isdigit() and attempt.isdigit() else str(time.time_ns())
 
 
 def atomic_write(directory: Path, name: str, body: bytes) -> None:
@@ -64,29 +84,43 @@ def atomic_write(directory: Path, name: str, body: bytes) -> None:
         tmp.unlink(missing_ok=True)
 
 
-def load_previous(source: str | None) -> bytes | None:
-    """Live publication bytes (Pages URL or a local path); None when absent or unreadable (first publication)."""
+def load_previous(source: str | None, *, open_response=None, sleep=time.sleep, attempts=LIVE_READ_ATTEMPTS,
+                  nonce=None) -> bytes | None:
+    """Live publication bytes from a Pages URL (or a local path in tests); None only when there is none (Pages 404, no source,
+    no such local file). Any other failure is retried and then raises LiveUnreachable: a network fault, a 5xx, a redirect or a
+    source outside the Pages site never looks like "no publication"."""
     if not source:
         return None
-    if source.startswith('https://'):
-        if urllib.parse.urlsplit(source).hostname != 'kco994553-star.github.io':
-            return None
+    if not source.startswith('https://'):
+        path = Path(source)
+        return path.read_bytes()[:qo.MAX_BYTES + 1] if path.is_file() else None
+    if not source.startswith(PAGES) or urllib.parse.urlsplit(source).query:
+        raise LiveUnreachable('SOURCE_NOT_ALLOWED')
+    url = f'{source}?qgv-official-step={nonce or _run_nonce()}'
+    for attempt in range(attempts):
         try:
-            with urllib.request.urlopen(source, timeout=60) as r:
-                return r.read(qo.MAX_BYTES + 1)
-        except Exception:  # noqa: BLE001 - 404 before the first publication, or a network fault: no last good copy
-            return None
-    path = Path(source)
-    return path.read_bytes()[:qo.MAX_BYTES + 1] if path.is_file() else None
+            return _fetch_body(url, qo.MAX_BYTES, open_response)
+        except OSError:
+            if attempt + 1 < attempts:
+                sleep(LIVE_READ_BACKOFF[min(attempt, len(LIVE_READ_BACKOFF) - 1)])
+    raise LiveUnreachable(LIVE_UNREACHABLE)
 
 
-def preserve(out: Path, previous: str | None, previous_status: str | None) -> str:
+def preserve(out: Path, previous: str | None, previous_status: str | None, *, open_response=None, sleep=time.sleep) -> str:
     """Manual deploy path (cockpit-pages.yml preservation, no prices there): copy the live publication and status bytes as they
-    are, each only when it passes its strict validator. Nothing is recomputed."""
+    are, each only when it passes its strict validator. Nothing is recomputed. A live publication that cannot be read (not a
+    404) is LIVE_UNREACHABLE: neither file is copied then (a kept status would name a publication the artifact lacks)."""
     kept = []
     for name, source, check in ((qo.FILENAME, previous, qo.parse),
                                 (qo.STATUS_FILENAME, previous_status, lambda b: qo.require_status(json.loads(b)))):
-        body = load_previous(source)
+        try:
+            body = load_previous(source, open_response=open_response, sleep=sleep)
+        except LiveUnreachable:
+            (out / name).unlink(missing_ok=True)
+            if name == qo.FILENAME:
+                (out / qo.STATUS_FILENAME).unlink(missing_ok=True)
+                return LIVE_UNREACHABLE
+            continue
         try:
             if body is None:
                 raise ValueError('ABSENT')
@@ -135,13 +169,16 @@ def js_check(companies: dict, quotes: dict, results: dict, *, node='node', run=s
 
 def run(*, out: Path, parser: str, monthend_stamp: str, monthend_shards: int, previous: str | None, raw_token: str | None,
         hmac_key: bytes | None, now: dt.datetime, workdir: Path, node='node', fetch_day=iex_hist.fetch_day,
-        read_store=None, check=js_check, clock=None) -> dict:
+        read_store=None, check=js_check, clock=None, open_response=None, sleep=time.sleep) -> dict:
     """One attempt. Returns a summary of fixed codes and counts (printed by main)."""
     clock = clock or (lambda: dt.datetime.now(dt.timezone.utc))
     summary = {'attempt': None, 'reason': None, 'published': 'NONE', 'basis': '-', 'rows': 0, 'ranked': 0, 'supplied': '-'}
     # 1. last good copy first
-    live = None
-    body = load_previous(previous)
+    live, live_unknown = None, False
+    try:
+        body = load_previous(previous, open_response=open_response, sleep=sleep)
+    except LiveUnreachable:
+        body, live_unknown = None, True
     if body is not None:
         try:
             live = qo.parse(body)
@@ -159,9 +196,13 @@ def run(*, out: Path, parser: str, monthend_stamp: str, monthend_shards: int, pr
             raw = (out / sec_qgv2.FILENAME).read_bytes()
             payload = sec_qgv2.parse_json(raw)
             sec_qgv2.require_qgv2(payload)
+            inputs_sha, inputs_as_of = qo.sha256_bytes(raw), payload['as_of']
         except (OSError, ValueError):
-            raise qo.OfficialError('NOT_RUN', 'SEC_QGV2_NOT_AVAILABLE') from None
-        inputs_sha, inputs_as_of = qo.sha256_bytes(raw), payload['as_of']
+            payload = None
+        if live_unknown:          # the last good copy and the older-basis check depend on the live read: nothing is computed
+            raise qo.OfficialError('NOT_RUN', LIVE_UNREACHABLE)
+        if payload is None:
+            raise qo.OfficialError('NOT_RUN', 'SEC_QGV2_NOT_AVAILABLE')
         if not hmac_key or len(hmac_key) < 16:      # same rule as qo.build, checked before any download
             raise qo.OfficialError('NOT_RUN', 'HMAC_KEY_MISSING')
         if not parser or not Path(parser).is_file():
@@ -214,7 +255,7 @@ def run(*, out: Path, parser: str, monthend_stamp: str, monthend_shards: int, pr
         state, reason = 'VERIFY_FAILED', 'UNEXPECTED_' + type(e).__name__.upper()
     # 8. status (always)
     status = qo.status_payload(attempt_at=now, state=state, reason=reason, official=official, inputs_sha256=inputs_sha,
-                               inputs_as_of=inputs_as_of)
+                               inputs_as_of=inputs_as_of, live_unknown=live_unknown)
     qo.require_status(status)
     atomic_write(out, qo.STATUS_FILENAME, json.dumps(status, sort_keys=True, ensure_ascii=True, separators=(',', ':')).encode())
     summary['attempt'], summary['reason'] = status['attempt_state'], reason
@@ -236,6 +277,10 @@ def main(argv=None) -> int:
     ap.add_argument('--workdir', default=os.environ.get('RUNNER_TEMP') or tempfile.gettempdir())
     ap.add_argument('--now', help='ISO clock (tests only)')
     a = ap.parse_args(argv)
+    # The two Secrets are read once and removed from this process's environment before anything else runs, so no child
+    # (curl, gzip, the C parser, node) inherits them: only this Python process holds them, as arguments.
+    key = os.environ.pop(a.hmac_key_env, '')
+    raw_token = os.environ.pop(a.raw_token_env, '') or None
     out = Path(a.out)
     if out.is_symlink() or not out.is_dir():
         print('QGV_OFFICIAL usage=OUT_INVALID')
@@ -247,9 +292,8 @@ def main(argv=None) -> int:
         print('QGV_OFFICIAL usage=PARSER_AND_MONTHEND_STAMP_REQUIRED')
         return 2
     now = dt.datetime.fromisoformat(a.now.replace('Z', '+00:00')) if a.now else dt.datetime.now(dt.timezone.utc)
-    key = os.environ.get(a.hmac_key_env, '')
     s = run(out=out, parser=a.parser, monthend_stamp=a.monthend_stamp, monthend_shards=a.monthend_shards, previous=a.previous or None,
-            raw_token=os.environ.get(a.raw_token_env) or None, hmac_key=key.encode() if key else None, now=now,
+            raw_token=raw_token, hmac_key=key.encode() if key else None, now=now,
             workdir=Path(a.workdir) / 'qgv-official', node=a.node)
     print(f"QGV_OFFICIAL attempt={s['attempt']} reason={s['reason'] or '-'} published={s['published']} basis={s['basis']} "
           f"rows={s['rows']} ranked={s['ranked']} supplied={s['supplied']}")

@@ -98,10 +98,10 @@
 
 ## 3. 결정이 반영된 것(이번 브랜치)
 - `v_calc_version`은 없다. `calc_version`은 `sec-qgv2.json`의 값 하나다.
-- 가격 의존 사유 4개는 `PRICE_DEPENDENT_NOT_COMPUTABLE`로 묶는다(`src/qgv/qgv_official.py:46`). 원 코드가 공개본에 있으면 검증기가 거부한다.
+- 가격 의존 사유 4개는 `PRICE_DEPENDENT_NOT_COMPUTABLE`로 묶는다(`src/qgv/qgv_official.py` `PRICE_DEPENDENT`). 원 코드가 공개본에 있으면 검증기가 거부한다. **2026-10-24 검토: 이름만 바뀐다.** 원 코드는 정해진 요인 칸에만 나와(`EV_NON_POSITIVE`는 수익률·업종 대비 세 칸, 역DCF 사유는 기대 점검 칸) 칸이 원 코드를 되돌려 주고, V 축·순위도 같은 사실을 보인다. 가격 경계 누출은 V 공개 자체에 딸려 온다 — 소유자 재결정 필요(설계 §4-4 정정 메모, `public_price_boundary/AUDIT.md` §10-6(PR-B)).
 - **F_k 처리:**
   - 원가격 ÷ `share_basis_factor`(`src/providers/iex_monthend.py:157`)로 월말가를 맞춘다.
-  - F_k가 없거나 null이면 그 달을 뺀다. 공개 사유는 `share_basis_factor_reason`(형식 `[A-Z0-9_]+`)이고, 아니면 `SHARE_BASIS_FACTOR_NOT_AVAILABLE`이다. 1.0으로 보지 않는다.
+  - F_k가 없거나 null이면 그 달을 뺀다. 공개 사유는 그 항목의 `share_basis_factor_reason`이 `v2_factors.SHARE_BASIS_REASONS`(`SHARE_BASIS_UNCONFIRMED`, `SPLIT_TIMING_UNCONFIRMED`) 중 하나일 때만 그 값이고, 아니면 `SHARE_BASIS_FACTOR_NOT_AVAILABLE`이다(`iex_monthend._factor`; 2026-10-24 검토로 문구 정정 — 처음 판의 "형식 `[A-Z0-9_]+`면 게시"는 코드와 달랐다). 1.0으로 보지 않는다.
   - F_k는 원본 행에서 읽는다. `qgv2_inputs.normalize`는 그대로다.
 - PSKY: 2025-08-07 전 회계연도 월은 뺀다. V4가 NA가 되면 공개 사유는 `MERGER_PRE_BASIS_UNCONFIRMED`다(`src/providers/iex_hist.py:75`).
 - PSKY→SKYD 별칭은 2026-10-06부터다. CONFIRMED: IEX TOPS probe run 39944426209(`src/providers/iex_hist.py` `SYMBOL_ALIASES`). U8 `monthend_plan.py`(7bca307d)에도 같은 항목이 있다.
@@ -109,10 +109,12 @@
 
 ## 4. 열린 항목(소유자)
 - **분할(D-CV11) — 2026-10-24 결정 D6 (a): F_k 근거 재사용, 새 출처 없음.** IEX HIST에는 기업행사가 없다.
-  - 연결한 것(`src/qgv/qgv_official.py` `split_after_share_count`): 주식수 기간 끝(`diluted_shares.period_end`) 이후의 `ebit_per_share_history` 항목이 F_k `null` + `SPLIT_TIMING_UNCONFIRMED`면 `SPLIT_AFTER_SHARE_COUNT`(가격 없음, V NA, D-CV5 분모 밖). 그 사유는 그 회계연도 말월 월말 뒤~연간 서류 접수 사이의 분할 비율 사실 또는 표지 주식수 점프다. 즉 주식수가 연간 서류의 것일 때 기간 끝 뒤 분할의 근거다.
-  - 연결할 수 없는 것과 이유: 주식수를 실은 서류의 **접수 뒤~IEX 기준일** 구간. F_k·SPLIT 사슬은 수집 시점까지 접수된 companyfacts(정기 10-K·10-Q XBRL)로만 계산된다. 8-K로 알린 분할이나 마지막 10-Q 뒤 분할은 다음 정기 서류가 주식수를 고쳐 실을 때까지 사실이 없다. `sec-qgv2.json`에는 주식수 서류의 접수일이 없고, 실행은 그날 샤드 하나의 companyfacts만 갖고 있다. 그래서 그 구간의 분할은 다음 정기 서류 전까지 보이지 않는다.
+  - 연결한 것(`src/qgv/qgv_official.py` `split_after_share_count`): 주식수 기간 끝(`diluted_shares.period_end`) 이후의 `ebit_per_share_history` 항목이 F_k `null` + `SPLIT_TIMING_UNCONFIRMED`면 `SPLIT_AFTER_SHARE_COUNT`(가격 없음, V NA, D-CV5 분모 밖). 그 사유는 그 회계연도 말월 월말 뒤~연간 서류 접수 사이의 분할 비율 사실 또는 표지 주식수 점프다.
+  - **2026-10-24 검토 정정: 이 규칙은 현재가 분할 점검이 아니라 보수 규칙일 뿐이다.** 서류 접수 **전**에 일어난 분할은 그 서류가 주식수를 분할 뒤 기준으로 고쳐 싣는다(US GAAP ASC 260 소급 조정; #393 V-PRICE-BASIS의 WMT 예). 그 기준은 오늘 IEX 가격과 같으므로 이 규칙에 걸리는 행은 대개 바르게 값이 매겨질 행이다. 고쳐 싣지 않은 XBRL 주식수에 대비해 빼 둘 뿐이다.
+  - 연결할 수 없는 것과 이유(**알려진 한계, 소유자 수락 필요**): 주식수를 실은 서류의 **접수 뒤~IEX 기준일** 구간. 주식수와 가격이 실제로 어긋나는 구간은 여기뿐이다. 이 구간의 분할이 있으면 그 행은 `SUPPLIED`로 남고 공식 V와 순위가 분할 비율만큼 틀린다. 다음 10-Q·10-K가 주식수를 고쳐 실을 때까지다(예: NVDA 10:1 2024-06-10, 1분기 10-Q 2024-05-29 → 약 2.5개월; CTAS 4:1 2024-09, FY 2024-05 10-K 뒤). 시험 `test_known_limitation_a_split_after_the_count_filing_is_not_detected`가 이 한계를 고정한다. F_k·SPLIT 사슬은 수집 시점까지 접수된 companyfacts(정기 10-K·10-Q XBRL)로만 계산된다. 8-K로 알린 분할이나 마지막 10-Q 뒤 분할은 다음 정기 서류가 주식수를 고쳐 실을 때까지 사실이 없다. `sec-qgv2.json`에는 주식수 서류의 접수일이 없고, 실행은 그날 샤드 하나의 companyfacts만 갖고 있다. 그래서 그 구간의 분할은 다음 정기 서류 전까지 보이지 않는다.
   - 검증된 분할 창 표 `SPLITS`(`src/providers/iex_hist.py`)는 계속 비어 있다. 소유자가 나중에 다른 출처(U8 `VERIFIED_SPLIT_ROWS` 등)를 승인할 때의 연결 지점이다. 손으로 채우지 않는다.
-- **ADR(D-CV10) — 2026-10-24 결정 D7: 20-F 제출자도 NA(보수적).** `sec-qgv2.json`에는 서식 종류가 없다(`v_inputs_v2.taxonomy`만). 그래서 `taxonomy == ifrs-full` 규칙에 더해 Universe504의 알려진 20-F·40-F 제출자를 CIK 표 `qgv_official.FOREIGN_ANNUAL_FILERS`로 둔다(분류 체계와 무관하게 `ADR_RATIO_UNCONFIRMED`). 근거는 기존 공개 자료 `DCV_OPEN_ITEMS_20261019.md` D-CV10: 498 CIK의 최신 연간 서식 중 20-F 1(ASML), 40-F 0. ASML은 이미 `ifrs-full`이라 지금 산출 변화는 0이다. Universe에 새 20-F·40-F 제출자가 생기면 이 표에 넣어야 한다. 자동으로 잡으려면 같은 아티팩트의 `sec-universe-shares.json` 행 `form`을 두 번째 입력으로 읽어야 한다(입력 목록·`publication_id`가 바뀌므로 별도 결정).
+  - 이 구간을 잡으려면 새 장치가 필요하다(D-CV11 (b)·D6 (b)): 예) V 단계 RAM 안에서 오늘 IEX 원가격을 비공개 저장소의 최신 원 월말가와 비교해 분할 비율 대역에 들면 `SPLIT_AFTER_SHARE_COUNT`. 가격은 RAM에만 둔다. 승인 전에는 만들지 않는다. 첫 게시 전에 소유자가 (1) 이 한계를 수락하거나 (2) 이 장치를 승인해야 한다.
+- **ADR(D-CV10) — 2026-10-24 결정 D7: 20-F 제출자도 NA(보수적).** `sec-qgv2.json`에는 서식 종류가 없다(`v_inputs_v2.taxonomy`만). 그래서 `taxonomy == ifrs-full` 규칙에 더해 Universe504의 알려진 20-F·40-F 제출자를 CIK 표 `qgv_official.FOREIGN_ANNUAL_FILERS`로 둔다(분류 체계와 무관하게 `ADR_RATIO_UNCONFIRMED`). 근거는 기존 공개 자료 `DCV_OPEN_ITEMS_20261019.md` D-CV10: 498 CIK의 최신 연간 서식 중 20-F 1(ASML), 40-F 0. **2026-10-24 검토 정정:** 처음 판의 "ASML은 이미 `ifrs-full`이라 지금 산출 변화는 0"은 틀렸다. 공개 `sec-qgv2.json`(as_of 2026-10-24T00:50Z)에서 `NASDAQ:ASML`·`TARGET:asml`의 분류 체계는 `us-gaap`(통화 EUR)이고, Universe 행 중 `ifrs-full`은 없다(`us-gaap` 502, 없음 2). 그래서 ASML을 잡는 것은 `ifrs-full` 규칙이 아니라 CIK 표 `FOREIGN_ANNUAL_FILERS`뿐이다. 공개 `price_status`는 `SUPPLIED` → `ADR_RATIO_UNCONFIRMED`로 바뀐다. V는 원래도 NA다(EUR 공시 통화라 `CURRENCY_BASIS_UNCONFIRMED`, `DCV_OPEN_ITEMS_20261019.md`가 맞게 적은 대로). 따라서 V·순위 산출 변화는 0이고 바뀌는 것은 공개 상태 코드 하나다. Universe에 새 20-F·40-F 제출자가 생기면 이 표에 넣어야 한다. 자동으로 잡으려면 같은 아티팩트의 `sec-universe-shares.json` 행 `form`을 두 번째 입력으로 읽어야 한다(입력 목록·`publication_id`가 바뀌므로 별도 결정).
 - **크기.** 공개 `sec-qgv2.json`(2026-10-23 as_of)과 합성 가격으로 측정했다.
   - 504+19행, **1,109,234 B(1.06 MiB)**, gzip 114,962 B. 한도 2 MiB 안이다.
   - 설계 추정 0.6~0.7 MB보다 크다. 행당 약 2.1 KB이고, 요인 15개 `{score, reason, basis}`가 1.2 KB다.

@@ -89,7 +89,10 @@ Both sides are read through the strict reader `qgv_official.parse` (no duplicate
 - D-CV16 (a): a live publication that is served but invalid (LIVE_INVALID) or a valid live publication the artifact does not carry
   (MISSING: the V step could not carry its last good copy) withholds the publication only: verdict WITHHELD, one
   PAGES_FRESHNESS_PUBLICATION_WITHHELD line, and the rest of the deploy goes on (a V failure never stops the SEC, news or ledger
-  publication; the next daily run republishes). The broken live copy is never repaired or carried here;
+  publication; the next daily run republishes). The broken live copy is never repaired or carried here. MISSING also follows
+  a V step that could not read the live copy after its retries (status NOT_RUN / LIVE_UNREACHABLE, nothing computed): the
+  publication is then off the site until the next successful run (known residual, AUDIT.md section 10-6-3; carrying the
+  validated live bytes here would need a new upload in the deploy job, an owner decision);
 - live 404 -> NO_LIVE (first publication: an artifact with or without a publication passes);
 - qgv-official-status.json is never compared (an attempt record, not data);
 - an unreachable live read is refused like every other file (fail closed).

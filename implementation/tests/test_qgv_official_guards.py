@@ -132,8 +132,13 @@ def test_file_validators_are_wired(official):
     bad = copy.deepcopy(official)
     bad['rows'][_ranked_key(bad)]['total'] -= 1e-9                   # no sensitive key: only the strict validator sees it
     assert dict(_check(qo.FILENAME, bad)) == {'qgv_official_boundary': 1}
-    status = qo.status_payload(attempt_at=NOW, state='OK', reason=None, official=official, inputs_sha256='a' * 64, inputs_as_of='x')
+    status = qo.status_payload(attempt_at=NOW, state='OK', reason=None, official=official, inputs_sha256='a' * 64,
+                               inputs_as_of=official['inputs'][0]['as_of'])
     assert _check(qo.STATUS_FILENAME, status) == Counter()
+    unknown = qo.status_payload(attempt_at=NOW, state='NOT_RUN', reason='LIVE_UNREACHABLE', official=None, inputs_sha256=None,
+                                inputs_as_of=None, live_unknown=True)
+    assert unknown['attempt_state'] == 'NOT_RUN' and _check(qo.STATUS_FILENAME, unknown) == Counter()
+    assert dict(_check(qo.STATUS_FILENAME, dict(unknown, attempt_state='NO_OFFICIAL_YET'))) == {'qgv_official_status_boundary': 1}
     for state, reason in (('NOT_RUN', 'MONTHEND_TOKEN_MISSING'), ('NOT_RUN', 'HMAC_KEY_MISSING'), ('SUPPLY_FAILED', 'IEX_MD5_MISMATCH')):
         st = qo.status_payload(attempt_at=NOW, state=state, reason=reason, official=None, inputs_sha256=None, inputs_as_of=None)
         assert _check(qo.STATUS_FILENAME, st) == Counter()           # fixed codes never look like secrets
@@ -164,6 +169,44 @@ SENSITIVE_ELSEWHERE = [
     ('rows_as_list', lambda o: o.update(rows=[{'rank': 1}] + [None] * 0)),
     ('list_in_between', lambda o: o['rows'].update({'NYSE:ZZZ': [{'rank': 1}]})),
 ]
+
+
+CANARY = 4321.0987          # synthetic price that must never pass the Pages guard in any field
+
+
+def _smuggle(o, path, value):
+    """Set the field at `path` (keys; the string 'ROW' = the first row key) of a copy to `value`."""
+    bad = copy.deepcopy(o)
+    node = bad
+    keys = [sorted(bad['rows'])[0] if k == 'ROW' else k for k in path]
+    for k in keys[:-1]:
+        node = node[k]
+    node[keys[-1]] = value
+    return bad
+
+
+# Review 2026-10-24: the strict validator is the only content check of qgv-official.json (no pinned hash), so the guard must
+# refuse a price smuggled into any scalar field, not only in a key it already knows.
+@pytest.mark.parametrize('path, value', [
+    (('inputs', 0, 'as_of'), CANARY), (('inputs', 0, 'acquired_newest'), CANARY), (('times', 'inputs_as_of'), CANARY),
+    (('price_source', 'supply', 'eligible'), CANARY), (('price_source', 'supply', 'supplied'), 'x'),
+    (('price_source', 'month_end', 'months'), CANARY), (('price_source', 'month_end', 'stamp'), [CANARY, CANARY]),
+    (('price_source', 'month_end', 'basis'), 'ANYTHING'), (('price_source', 'currency'), 'EUR'), (('price_source', 'feed'), 'X'),
+    (('engine', 'status'), CANARY), (('weights', 'weights_version'), CANARY), (('config_versions', 'type_config'), CANARY),
+    (('population', 'registry_sha256'), CANARY), (('type_scope',), CANARY), (('rows', 'ROW', 'acquired_at'), str(CANARY)),
+    (('rows', 'ROW', 'selected_types'), [str(CANARY)]),
+])
+def test_a_value_smuggled_into_any_scalar_is_refused_by_the_guard(official, path, value):
+    assert dict(_check(qo.FILENAME, _smuggle(official, path, value))) == {'qgv_official_boundary': 1}
+
+
+def test_supply_counts_that_break_d4_are_refused_by_the_guard(official):
+    sup = official['price_source']['supply']
+    for change in ({'supplied': 1}, {'eligible': 0, 'supplied': 0}, {'supplied': sup['eligible'] + 1},
+                   {'eligible': sup['eligible'] + 1000, 'supplied': sup['eligible'] + 1000}):
+        bad = copy.deepcopy(official)
+        bad['price_source']['supply'].update(change)
+        assert dict(_check(qo.FILENAME, bad)) == {'qgv_official_boundary': 1}, change
 
 
 @pytest.mark.parametrize('name,mutate', SENSITIVE_ELSEWHERE, ids=[n for n, _ in SENSITIVE_ELSEWHERE])

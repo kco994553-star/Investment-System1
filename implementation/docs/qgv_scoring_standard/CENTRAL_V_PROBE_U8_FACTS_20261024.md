@@ -1,7 +1,7 @@
 # 중앙 V — IEX 실현 가능성 시험·U8 월말가 1회 수집 사실 기록 (2026-10-24)
 
-> **상태: 기록 문서(사실만).** 코드·워크플로·가드는 바꾸지 않는다. 가격 값·가격 비율·수익률·종목별 가격 시각은 없다.
-> 개수·크기·시간·실행 번호·상태 문자·코드 이름만 옮겼다.
+> **상태: 기록 문서(사실만).** 코드·워크플로·가드는 바꾸지 않는다. 가격 값·가격 비율·수익률·종목별 가격 시각은 없고,
+> 가격에서 나온 종목별 판정(분할 일관성 판정)도 없다. 개수·크기·시간·실행 번호·상태 문자와, 가격과 무관한 코드 이름(별칭 근거, 체결 없음)만 옮겼다.
 
 - 작성: 2026-10-24 UTC, PR-A(`claude/central-v-core`). 계획 [CENTRAL_V_DC02_PLAN_20261024](CENTRAL_V_DC02_PLAN_20261024.md) 1절 "프로브·백필 사실을 문서에 옮긴다"의 이행.
 - 근거: GitHub Actions 실행 기록(`gh run view <id> --json …`, `--log`)을 2026-10-24에 다시 읽었다. 세 브랜치는 **병합되지 않았다**: `claude/iex-hist-probe`(e3d9e7a2), `claude/iex-v4-backfill`(22dfcec0, 실행 커밋 311a3252).
@@ -42,9 +42,10 @@
 - 커버리지: 기호 요청 2,052 = ROUND 2,002 + 단주만 0 + 체결 없음 50. 달별 스트림 시간 합 151.5분(샤드 병렬), 달별 GB 합 386.6.
 - 체결 없음 50건의 코드 21개: `NASDAQ:ECHO`, `NASDAQ:EXE`, `NASDAQ:FISV`, `NASDAQ:GEHC`, `NASDAQ:GEN`, `NASDAQ:SNDK`, `NASDAQ:WTW`, `NYSE:BALL`, `NYSE:COR`, `NYSE:CPAY`, `NYSE:ELV`, `NYSE:FDXF`, `NYSE:GEV`, `NYSE:KVUE`, `NYSE:MRSH`, `NYSE:RVTY`, `NYSE:SOLV`, `NYSE:SW`, `NYSE:VLTO`, `NYSE:VMRK`, `NYSE:XYZ`. 게시기는 그 달을 `MONTH_END_PRICE_NOT_AVAILABLE`로 뺀다(`providers/iex_monthend.py` `month_closes`). 원인은 조사하지 않았다.
 - split-check 커버리지: 완료 62/62(계획 62, 샤드 62, 빠진 달 0, 남는 달 0).
-- split-check 분할 판정(U8 자체 표 `VERIFIED_SPLIT_ROWS` 50개 창, SEC 분할 비율 사실 + 표지 주식수 점프로 확인한 것): 시험 가능 25종목·25건 — `RAW_MISMATCH_FIXED_BY_F` 22, `RAW_CONSISTENT` 1(`NYSE:WSM`), `UNEXPECTED` 2(`NASDAQ:DXCM`, `NASDAQ:FTNT`), 나머지 25건 `NOT_TESTABLE`. 전체 판정 `MIXED`.
-  - 이 F는 U8 도구의 분할 날짜 곱이다. #393의 F_k(각 연도 자기 보고 기준)와 다르다. #393 문서(`QGV_V2_QG_METHOD.md` V-PRICE-BASIS)는 WSM의 `RAW_CONSISTENT`를 "분할 구간의 배수 변화이지 기준 오류가 아니다"로, FTNT는 F_k 5/1/1/1/1, DXCM FY2021은 `SHARE_BASIS_UNCONFIRMED`(F_k `null`, 그 달 제외)로 설명한다.
-  - 첫 게시 뒤 계획 5절 재대조에서 이 세 종목의 V4 산출 여부를 개수로만 확인한다(가격·비율은 남기지 않는다).
+- split-check 분할 판정(U8 자체 표 `VERIFIED_SPLIT_ROWS` 50개 창, SEC 분할 비율 사실 + 표지 주식수 점프로 확인한 것): 시험 가능 25건 — `RAW_MISMATCH_FIXED_BY_F` 22, `RAW_CONSISTENT` 1, `UNEXPECTED` 2, 나머지 25건 `NOT_TESTABLE`. 전체 판정 `MIXED`. **개수만 옮긴다.**
+  - 판정 하나하나는 분할 창 앞뒤 월말 IEX 가격의 점프(비공개 원자료의 가격 비율)로 정해진다(`tools/iex_hist/split_check.py`). 그래서 어느 종목이 어느 판정인지는 가격에서 나온 정보이고, 이 공개 문서에는 적지 않는다(2026-10-24 검토 반영: 처음 판에 있던 종목 이름 3개를 지웠다). 종목별 판정은 비공개 저장소의 실행 기록에만 둔다.
+  - 이 F는 U8 도구의 분할 날짜 곱이다. #393의 F_k(각 연도 자기 보고 기준, SEC 근거만)와 다르다. 분할 종목의 V4는 공개 SEC 근거인 F_k로만 설명한다: F_k가 양수인 해만 월말가를 쓰고, `SHARE_BASIS_UNCONFIRMED`·`SPLIT_TIMING_UNCONFIRMED`(F_k `null`)인 해는 그 달을 뺀다(`QGV_V2_QG_METHOD.md` V-PRICE-BASIS).
+  - 첫 게시 뒤 계획 5절 재대조에서 분할 창이 있는 종목의 V4 산출 여부를 개수로만 확인한다(가격·비율·종목별 가격 판정은 남기지 않는다).
 
 ## 3. 이 PR(PR-A)에서 바뀐 것과 위 사실의 관계
 

@@ -148,7 +148,7 @@ deploy 잡: 신선도 검사에 게시본 규칙 추가 → 배포
 | `weights` | `{default_preset:'balanced', gate:true, type_weights:true, profile_id:'qgv-v2/balanced/gate-on', weights_version}` | 예 | `weights_version` = `weights_id(official_weights())` |
 | `type_scope` | 엔진 `TYPE_SCOPE` | 예 | |
 | `config_versions` | `{type_config, dcf_parameters}` | 예 | |
-| `price_source` | `{provider:'IEX_HIST', feed:'TOPS 1.6', basis_kind:'IEX_LAST_REGULAR_SESSION_TRADE', adjustment_basis:'AS_TRADED', currency:'USD', basis_date, requested_basis_date, supplied, rejected:{사유:개수}, supply:{eligible, supplied, minimum_share:0.95, met:true}, month_end:{store:'iex-monthend/1', stamp, months, basis:'RAW_DIVIDED_BY_SHARE_BASIS_FACTOR'}}` | 예(값 없음) | `requested_basis_date` = 실행의 뉴욕 날짜, `basis_date` = 실제 IEX 파일 날짜(≤ 요청일, D3). `supply` = D-CV5/D4 95% |
+| `price_source` | `{provider:'IEX_HIST', feed:'TOPS 1.6', basis_kind:'IEX_LAST_REGULAR_SESSION_TRADE', adjustment_basis:'AS_TRADED', currency:'USD', basis_date, requested_basis_date, supplied, rejected:{사유:개수}, supply:{eligible, supplied, minimum_share:0.95, met:true}, month_end:{store:'iex-monthend/1', stamp, months, basis:'RAW_DIVIDED_BY_SHARE_BASIS_FACTOR'}}` | 예(값 없음) | `requested_basis_date` = 실행의 뉴욕 날짜, `basis_date` = 실제 IEX 파일 날짜(≤ 요청일, D3). `supply` = D-CV5/D4 95%. `eligible` = 가격 없이 V 축 가중치 50%에 닿을 수 있는 GENERAL 단면 Universe 행(USD, ADR·분할 규칙 밖; `V_GENERAL_COVERAGE_20261018.md` 2-2 (b)의 엔진 가격 무관 조건, `qgv_official.supply_eligible`; 2026-10-24 검토로 "V 입력 블록이 있는 행"에서 바로잡음 — 공개 `sec-qgv2.json`(as_of 2026-10-24T00:50Z, calc_version 2026-10-17.1)으로 측정: 옛 정의 430, 새 정의 358(모든 해에 F_k가 있다고 둘 때; 그 파일에는 F_k가 없어 실제로는 345). 합성 가격으로 돌린 엔진의 V 산출 행은 모두 새 정의 안에 있었다) |
 | `attribution` | `{text, terms_url, label_ko}` = IEX 출처 문구, 약관 링크, "IEX 마지막 체결가 기준(공식 종가 아님)" | 예 | 검증기가 정확히 같은 값을 요구한다. 화면은 그대로 보인다 |
 | `inputs` | `[{file:'sec-qgv2.json', sha256, as_of, calc_version, acquired_oldest, acquired_newest}]` | 예 | 같은 실행 아티팩트의 파일 바이트 해시 |
 | `times` | `{price_basis_date, price_collected_from, price_collected_to, inputs_as_of, generated_at, verified_at}` | 예 | `price_basis_date` = `price_source.basis_date`. 배포 시각은 없다(§8-3) |
@@ -209,6 +209,13 @@ deploy 잡: 신선도 검사에 게시본 규칙 추가 → 배포
 4. **반올림은 방어로 기대하지 않는다.** 단면이 약 400점이면 백분위 한 칸이 약 0.25다. 소수 1자리 반올림은 순서를 거의 그대로 남긴다. 정수 반올림도 이웃 4칸 정도만 합친다. 대신 개인 미리보기 정확성과 공개 자기 검증을 깬다(§9). 그래서 전체 정밀도 공개를 권장한다. 결정 D-CV3.
 5. 공개 이력은 최신 게시본 하나만 둔다. 과거 게시본 공개 누적은 하지 않는다. 결정 D-CV14.
 6. 남는 위험: 순위·백분위 자체가 가격 파생 정보다. 이것을 공개해도 되는지는 공급자 사용권 문제다. 형제 작업 결과로 판단한다. 이 문서는 허용을 가정하지 않는다.
+
+> **2026-10-24 검토 정정(PR-A, 결정은 바꾸지 않음 — 소유자 재결정 필요).** 위 2번(D-CV2 (b) 묶음)은 **가격 경계를 숨기지 못한다.** 위 표와 §13 D-CV2 행은 "묶으면 경계가 사라진다"는 전제로 (b)를 권장했고 소유자는 그 전제로 (b)를 골랐다. 그 전제가 틀렸다.
+> - 엔진 원 코드는 정해진 요인 칸에만 나온다. `EV_NON_POSITIVE`는 `v_earnings_yield`·`v_fcf_yield`·`v_vs_industry`에만(`qgv_v2._metrics` `fail('EV_NON_POSITIVE', ('ebit_yield', 'fcf_yield'))`), `ROOT_NOT_BRACKETED`·`ROOT_NOT_CONVERGED`·`NUMERIC_OVERFLOW`는 `v_expectation_check`에만(역DCF `dcf.py:103,114,115`) 나온다. 그래서 공개 칸 + `PRICE_DEPENDENT_NOT_COMPUTABLE`이 원 코드를 일대일로 되돌려 준다.
+> - 경계는 공개 입력만으로 계산된다: EV ≤ 0 ⇔ 가격 ≤ (현금 − 부채) ÷ 희석 주식수, 역DCF 근 없음 ⇔ 가격이 공개 FCF/주·공개 DCF 설정의 [DCF(하한 성장), DCF(상한 성장)] 밖. 합성 시험(검토 스크립트, 가격은 합성): 경계의 0.9배에서 세 칸이 묶음 사유, 1.1배에서 세 칸 모두 점수; DCF 구간 하단 0.98배·상단 1.02배에서 묶음 사유, 안쪽에서 점수.
+> - 사유가 없어도 같은 사실이 드러난다: 세 요인의 null 무늬, V 축 점수·상태·`weight_available`, `rank`와 `qg_reference_order` 중 어느 쪽인지(합성 예: 경계 이하 V 없음·`qg_reference_order` 3, 경계 위 V 100·`rank` 2). **즉 이 누출은 V를 공개하는 것 자체에 딸려 온다.** 사유 어휘를 바꾸는 방법으로는 막을 수 없다.
+> - 시험 `test_price_dependent_codes_sit_in_fixed_factor_slots_known_residual`이 이 칸 대응을 고정한다(어휘를 바꿔도 문서가 다시 틀려지지 않게).
+> - 소유자 선택지(첫 게시 전): (i) 남는 누출을 수락하고 V를 게시 / (ii) 해당 행의 V를 통째로 비공개(규칙 변경·승인 필요; V가 NA인 것 자체가 신호라 누출을 다 없애지 못한다 — NA 사유를 다른 NA와 같은 일반 코드로 묶어야 줄어든다) / (iii) 다른 규칙. 결정 전에는 (b) 묶음을 표시 어휘로만 유지한다. 감사 기록 `public_price_boundary/AUDIT.md` §10-6(PR-B).
 
 ## 5. 재계산·의존 규칙, `publication_id`와 `calc_version`
 
@@ -289,10 +296,11 @@ sec-qgv2.json(같은 실행, sha256) ─┐
 - 어떤 종목이 빠지면 다른 종목 백분위도 바뀐다. 그래서 거부 개수를 사유별로 `price.rejected`에 싣는다.
 - 전역 실패: 한 사유가 거의 모든 행에서 나오면(예: 공급자가 전부 센트 단위) 검증 실패로 보고 직전 정상본을 유지한다. 기준은 D-CV5와 같이 정한다.
 - PIT: 기준일 D 종가와 D 22시대 UTC에 받은 SEC 자료를 함께 쓴다. "지금" 점수이므로 허용한다. 그러나 백테스트 증거로는 쓰지 않는다(접수 시각 규칙은 D 영역).
-- **2026-10-24 메모(PR-A, 소유자 결정 D3·D6·D7, 위 표의 규칙은 그대로):**
+- **2026-10-24 메모(PR-A, 소유자 결정 D3·D6·D7):** 위 표는 2026-10-18 설계(종가 공급자 가정)다. IEX 단일 날짜 출처로 구현한 실제 동작은 아래와 같고, 표의 일부 규칙은 구현되지 않았다(2026-10-24 검토로 "표의 규칙은 그대로"라는 처음 문구를 고침):
   - 가격 기록은 IEX 마지막 정규장 체결(`price_source`, 공식 종가 아님)이다. 기준일 D = 실행의 뉴욕 날짜 이하 마지막 TOPS 파일 날짜(D3). 주말·휴장일은 파일이 없어 직전 거래일, 반일 장은 확장 시간 표시(0x40) 체결을 버려 조기 마감 전 마지막 체결이다. 요청일과 실제 기준일을 둘 다 싣는다.
   - ADR·보통주(D7): `ifrs-full` 행 + 알려진 20-F·40-F 제출자(CIK 표 `qgv_official.FOREIGN_ANNUAL_FILERS`, 지금 ASML 1곳, 근거 `DCV_OPEN_ITEMS_20261019.md` D-CV10)를 분류 체계와 무관하게 `ADR_RATIO_UNCONFIRMED`로 둔다. `sec-qgv2.json`에는 서식 종류가 없어 표로 둔다.
-  - 분할 기준(현재가, D6 (a)): 새 출처 없이 F_k 근거를 쓴다. 주식수 기간 끝 이후의 이력 항목이 `SPLIT_TIMING_UNCONFIRMED`면 `SPLIT_AFTER_SHARE_COUNT`. 주식수를 실은 서류의 접수 뒤~기준일 구간은 SEC 근거가 없어 다음 정기 서류까지 보이지 않는다(`providers/iex_hist.py` `SPLITS` 주석). 검증된 분할 표 `SPLITS`는 비어 있다.
+  - 분할 기준(현재가, D6 (a)) — **표의 규칙(기간 끝 뒤~기준일 분할이면 NA)은 구현되지 않았다.** 새 출처 없이 F_k 근거만 쓴다: 주식수 기간 끝 이후의 이력 항목이 `SPLIT_TIMING_UNCONFIRMED`면 `SPLIT_AFTER_SHARE_COUNT`. 그러나 그 근거는 주식수를 실은 서류 **접수 전** 분할이고, 그 서류는 주식수를 분할 뒤 기준으로 고쳐 싣는다(ASC 260). 그래서 이 규칙은 보수 규칙일 뿐이다. 주식수와 가격이 실제로 어긋나는 **접수 뒤~기준일** 구간은 근거가 없어 잡지 못한다: 그 구간에 분할이 있으면 행은 `SUPPLIED`로 남고 공식 V·순위가 분할 비율만큼 틀린다(다음 10-Q·10-K까지, 예: NVDA 2024 약 2.5개월). **알려진 한계 — 첫 게시 전에 소유자 수락 또는 새 장치(D6 (b)) 승인이 필요하다.** 시험 `test_known_limitation_a_split_after_the_count_filing_is_not_detected`. 검증된 분할 표 `SPLITS`는 비어 있다.
+  - 구현하지 않은 표의 사유 코드: `PRICE_UNIT_INVALID`(IEX TOPS 가격은 1/10,000 달러 정수 하나로만 오고 센트·천 단위 변종이 없다; 파서가 범위 밖 값을 거부한다 `PARSER_PRICE_INVALID`), `PRICE_BASIS_DATE_MISMATCH`(가격은 TOPS 파일 하루치 하나에서만 나와 날짜가 섞일 수 없다), `PRICE_ADJUSTMENT_BASIS_INVALID`(현재가는 체결 그대로 `AS_TRADED`, 월말가는 아래 F_k 규칙으로 대신한다). 셋 다 `iex_hist.STATUS_CODES`에 없고, 단일 날짜 IEX 출처에는 해당이 없다. 다른 출처를 붙이면 다시 정해야 한다.
   - 분할 기준(월말 종가): IEX 월말가는 분할 **미조정**이다. 그래서 위 "분할만 조정" 줄 대신 §15-1의 `원 종가 ÷ F_k`를 쓴다(F_k `null`이면 그 달 제외).
 
 ## 8. 프론트엔드 버전 관리(#321 재사용, 네 가지 시각)

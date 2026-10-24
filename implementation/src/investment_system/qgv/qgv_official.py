@@ -8,7 +8,9 @@ prices, month-end prices, EV, market caps, yields, implied growth, expectation g
 per-code price hashes. Owner decisions applied:
 - calc_version: the ONE `sec-qgv2.json` calc_version (no separate v_calc_version);
 - D-CV2: price-dependent reasons EV_NON_POSITIVE / ROOT_NOT_BRACKETED / ROOT_NOT_CONVERGED / NUMERIC_OVERFLOW are published
-  as PRICE_DEPENDENT_NOT_COMPUTABLE (scores and rules unchanged; the engine codes stay in RAM);
+  as PRICE_DEPENDENT_NOT_COMPUTABLE (scores and rules unchanged; the engine codes stay in RAM). This is a LABEL ONLY: each raw
+  code sits in fixed factor slots, so the slot gives it back, and the V axis / rank show the same fact without a reason
+  (KNOWN RESIDUAL, owner decision pending: design section 4-4 note, AUDIT.md section 10-6, PR-B);
 - D-CV5: a new publication needs >= 95% of the price-independent V-eligible Universe rows supplied on the same IEX day;
 - D-CV8/D-CV9: one official rank per CIK (the TARGET row of a Universe issuer stands for it, else its cross-section code);
   D11: only rows with a total AND a V score are ranked; a Q·G-only total gets `qg_reference_order` instead;
@@ -16,8 +18,10 @@ per-code price hashes. Owner decisions applied:
   reason = its fixed share_basis_factor_reason or SHARE_BASIS_FACTOR_NOT_AVAILABLE); NASDAQ:PSKY pre-merger months left out
   (MERGER_PRE_BASIS_UNCONFIRMED);
 - owner decisions 2026-10-24 (CENTRAL_V_DC02_PLAN_20261024.md section 4): D3 the IEX day is the latest TOPS day <= the run's New
-  York day (usually the previous trading day; requested_basis_date and basis_date both published); D4 SUPPLY_MIN 95%; D6 (a) the
-  current-price split check reads the F_k evidence of calc_version 2026-10-23.1 (`split_after_share_count`); D7 a foreign private
+  York day (usually the previous trading day; requested_basis_date and basis_date both published); D4 SUPPLY_MIN 95% of the
+  price-free V-reachable rows (`supply_eligible`); D6 (a) reuses the F_k evidence of calc_version 2026-10-23.1, which only gives a
+  CONSERVATIVE rule (`split_after_share_count`): it does NOT detect a split after the share count's own filing, the one window
+  where count and price disagree (KNOWN LIMITATION, owner acceptance pending; see that function); D7 a foreign private
   issuer (20-F / 40-F filer) is ADR_RATIO_UNCONFIRMED whatever its taxonomy (`adr_unconfirmed`); the publication needs a
   sec-qgv2.json of calc_version 2026-10-23.1 or later (the one bump that covers these rules, D-CV7 (b)).
 Verify without prices: `require_qgv_official` (exact key sets, forbidden keys anywhere, V axis = weighted factors, total = axes and
@@ -55,6 +59,7 @@ V4 = 'v_vs_own_history'
 V4_HISTORY_REASONS = ('HISTORY_TOO_SHORT', 'PRICE_HISTORY_NOT_AVAILABLE')
 TARGET_PREFIX = 'TARGET:'
 ATTEMPT_STATES = ('OK', 'SUPPLY_FAILED', 'VERIFY_FAILED', 'NOT_RUN', 'NO_OFFICIAL_YET')
+LIVE_UNREACHABLE = 'LIVE_UNREACHABLE'   # the step could not read the live publication (not a 404): NOT_RUN, existence unknown
 # D7 (owner decision 2026-10-24; D-CV10 conservative): a foreign private issuer's row gets no price (ADR_RATIO_UNCONFIRMED, V NA)
 # whether it reports ifrs-full or us-gaap, until its listed security / ADS ratio is confirmed. sec-qgv2.json carries no form type
 # (only v_inputs_v2.taxonomy), so next to the ifrs-full rule the known 20-F / 40-F filers of the fixed Universe504 are listed by
@@ -92,6 +97,10 @@ _CODE = re.compile(r'(?:[A-Z]{2,8}:[A-Z0-9][A-Z0-9.\-]{0,15}|TARGET:[a-z][a-z0-9
 _HEX = re.compile(r'[0-9a-f]{64}', re.ASCII)
 _DAY = re.compile(r'\d{4}-\d{2}-\d{2}', re.ASCII)
 _CLOCK = re.compile(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z', re.ASCII)
+_STAMP = re.compile(r'\d{8}', re.ASCII)
+_TYPE_ID = re.compile(r'[a-z][a-z0-9_]{0,63}', re.ASCII)
+MONTHEND_BASIS = 'RAW_DIVIDED_BY_SHARE_BASIS_FACTOR'
+MAX_MONTHS = 1200
 
 
 class OfficialError(RuntimeError):
@@ -145,16 +154,18 @@ def _raw_v(payload, key):
 
 def prepare(payload, now):
     """sec-qgv2.json payload (already require_qgv2-valid) -> context: converted inputs, identities, engine companies (no price)."""
+    from .type_config import load_official_type_config
     try:
         inputs = qi.from_published(payload, now)
     except ValueError:
         raise OfficialError('VERIFY_FAILED', 'SEC_QGV2_INVALID') from None
     targets = target_identities(inputs)
     identities = qi.page_identities(inputs, targets)
-    companies, _ = qi.engine_inputs(inputs, {}, identities=identities)
+    type_config = load_official_type_config().to_dict()
+    companies, _ = qi.engine_inputs(inputs, {}, identities=identities, type_config=type_config)
     blocked = qi.blocked_codes(inputs, identities)
     return {'payload': payload, 'inputs': inputs, 'identities': identities, 'companies': companies, 'blocked': blocked,
-            'keys': {k: listing_code(k) for k in sorted(inputs['records'])}}
+            'type_config': type_config, 'keys': {k: listing_code(k) for k in sorted(inputs['records'])}}
 
 
 def adr_unconfirmed(rec, v) -> bool:
@@ -163,14 +174,21 @@ def adr_unconfirmed(rec, v) -> bool:
 
 
 def split_after_share_count(code, v, basis_day) -> bool:
-    """D-CV11 / D6 (a): True when a split may have taken effect after the diluted-share period end, up to the basis day.
+    """D-CV11 / owner decision D6 (a) (no new source). CONSERVATIVE ONLY, NOT a current-price split check.
 
-    Evidence, no new source: (1) the F_k chain of calc_version 2026-10-23.1 (V-PRICE-BASIS): an ebit_per_share_history item at or
-    after the share-count period end (the count is that annual filing's) with share_basis_factor null and reason
-    SPLIT_TIMING_UNCONFIRMED = a split-ratio fact or a cover share-count jump dated between that fiscal-year-end month-end and the
-    annual filing, i.e. after the count's period end; (2) the verified split windows of iex_hist.SPLITS (empty: no verified source
-    is connected, see its comment). The window after the count's own filing up to the basis day has no SEC evidence in
-    sec-qgv2.json (iex_hist.SPLITS comment), so a split there is not seen until the next periodic filing restates the count."""
+    True when (1) the F_k chain of calc_version 2026-10-23.1 (V-PRICE-BASIS) marks the history item at or after the share-count
+    period end SPLIT_TIMING_UNCONFIRMED (a split-ratio fact or a cover share-count jump between that fiscal-year-end month-end and
+    the annual filing that reports the count), or (2) a verified window of iex_hist.SPLITS applies (empty: no verified source).
+    Case (1) is a split BEFORE the count's filing: that filing reports the count restated to the post-split basis (US GAAP
+    ASC 260 retroactive adjustment; #393 QGV_V2_QG_METHOD.md V-PRICE-BASIS, e.g. WMT 3:1 2024-02-26, 10-K 2024-03-15), which is
+    the basis of today's IEX price, so such a row would usually be priced correctly and is left out only as a precaution
+    (an unrestated XBRL count).
+
+    KNOWN LIMITATION (review 2026-10-24): a split AFTER the count's own filing, up to the basis day, is NOT detected. sec-qgv2.json
+    has no evidence of it (iex_hist.SPLITS comment), so the row stays SUPPLIED and its official V and rank are off by the split
+    ratio until the next 10-Q / 10-K restates the count (e.g. NVDA 10:1 2024-06-10 after the Q1 10-Q of 2024-05-29: about 2.5
+    months; CTAS 4:1 2024-09 after the FY May-2024 10-K). Detecting it needs a new guard or source (D-CV11 (b) / D6 (b)), which
+    needs owner approval; until then the owner must accept this residual before the first publication."""
     shares = v.get('diluted_shares') if isinstance(v, dict) else None
     period_end = shares.get('period_end') if isinstance(shares, dict) else None
     if not isinstance(period_end, str):
@@ -220,26 +238,72 @@ def engine_quotes(ctx, day, status, months) -> tuple[dict, dict]:
     return quotes, left
 
 
-def supply_check(ctx, status) -> dict:
-    """D-CV5 counts over the price-independent V-eligible Universe rows (cross-section, GENERAL, V inputs, USD, not ADR/split)."""
-    eligible = supplied = 0
-    for key, rec in ctx['inputs']['records'].items():
+def v_reachable_without_price(company, code, raw_history, type_config) -> bool:
+    """D-CV5 / owner decision D4 eligibility ("price-independent V-eligible", V_GENERAL_COVERAGE_20261018.md 2-2 (b)): every
+    condition of the engine's V metrics (qgv_v2._metrics, axis_score) that needs no price holds for the factors whose official
+    weights reach MIN_AXIS_WEIGHT of the V axis. Per factor:
+      v_earnings_yield / v_vs_industry  debt and cash finite and >= 0; EBIT finite (cyclical row: normalized EBIT available)
+      v_fcf_yield                       debt and cash finite and >= 0; FCF finite
+      v_vs_own_history                  not cyclical; EBIT finite; >= MIN_HISTORY history items that can get a month-end close
+                                        before any price is read (iex_monthend.priceable_months: F_k, basis cut)
+      v_expectation_check               FCF finite and FCF per share > 0; 3-year revenue growth finite
+    and for every factor: not FINANCIAL, V inputs present, currency USD (the IEX price currency), diluted shares > 0. The
+    price-dependent conditions (EV > 0, the reverse-DCF root, the month-end trades, the priced population size) count as
+    passable, so this is an upper bound: a row outside it never gets a V score, whatever its price."""
+    if not isinstance(company, dict) or company.get('profile') == 'FINANCIAL':
+        return False
+    v = company.get('v_inputs')
+    if not isinstance(v, dict) or v.get('currency') != iex_hist.CURRENCY or not qgv_v2.positive(v.get('diluted_shares')):
+        return False
+    basis = type_config['value_basis']
+    cyclical = company.get('cyclical_basis') is True or (
+        basis.get('cyclical_type') is not None
+        and basis['cyclical_type'] in qgv_v2.type_axis_weights(company.get('memberships'), type_config)[2])
+    debt, cash, ebit, fcf = v.get('total_debt'), v.get('cash'), v.get('ebit'), v.get('fcf')
+    balance = qgv_v2.finite(debt) and qgv_v2.finite(cash) and debt >= 0 and cash >= 0
+    earnings = qgv_v2.normalized_ebit(v, basis['normalized_years']) is not None if cyclical else qgv_v2.finite(ebit)
+    ok = {'v_earnings_yield': balance and earnings, 'v_fcf_yield': balance and qgv_v2.finite(fcf),
+          'v_vs_industry': balance and earnings,
+          'v_vs_own_history': not cyclical and qgv_v2.finite(ebit)
+          and len(set(iex_monthend.priceable_months(code, raw_history))) >= qgv_v2.MIN_HISTORY,
+          'v_expectation_check': qgv_v2.finite(fcf) and fcf / v['diluted_shares'] > 0 and qgv_v2.finite(v.get('revenue_cagr_3y'))}
+    weights = qgv_v2.WEIGHTS['V']
+    return sum(w for f, w in weights.items() if ok[f]) / sum(weights.values()) >= qgv_v2.MIN_AXIS_WEIGHT
+
+
+def supply_eligible(ctx, status) -> list[str]:
+    """The D-CV5 denominator: Universe rows in the cross-section, GENERAL, not ADR / split (D7, D6) and V-reachable without
+    a price (v_reachable_without_price)."""
+    out = []
+    for key, rec in sorted(ctx['inputs']['records'].items()):
         if key.startswith(TARGET_PREFIX) or rec.get('in_cross_section') is not True or rec.get('published_profile') != 'GENERAL':
             continue
-        v = rec.get('v_inputs')
-        if not isinstance(v, dict) or v.get('currency') != iex_hist.CURRENCY or status[key] in ('ADR_RATIO_UNCONFIRMED', 'SPLIT_AFTER_SHARE_COUNT'):
+        if status[key] in ('ADR_RATIO_UNCONFIRMED', 'SPLIT_AFTER_SHARE_COUNT'):
             continue
-        eligible += 1
-        supplied += status[key] == iex_hist.SUPPLIED
-    return {'eligible': eligible, 'supplied': supplied, 'minimum_share': SUPPLY_MIN,
-            'met': eligible > 0 and supplied >= math.ceil(SUPPLY_MIN * eligible - 1e-9)}
+        v = _raw_v(ctx['payload'], key)
+        if v_reachable_without_price(ctx['companies'].get(key), ctx['keys'][key], v.get('ebit_per_share_history') if v else None,
+                                     ctx['type_config']):
+            out.append(key)
+    return out
+
+
+def supply_needed(eligible: int) -> int:
+    """Rows that must be SUPPLIED out of `eligible` (D-CV5 / D4: ceil(95%), the float guard keeps an exact product exact)."""
+    return math.ceil(SUPPLY_MIN * eligible - 1e-9)
+
+
+def supply_check(ctx, status) -> dict:
+    """D-CV5 counts over the price-independent V-eligible Universe rows (supply_eligible)."""
+    eligible = supply_eligible(ctx, status)
+    supplied = sum(1 for k in eligible if status[k] == iex_hist.SUPPLIED)
+    return {'eligible': len(eligible), 'supplied': supplied, 'minimum_share': SUPPLY_MIN,
+            'met': len(eligible) > 0 and supplied >= supply_needed(len(eligible))}
 
 
 def score(ctx, quotes):
     priced = qi.priced_quotes(quotes, ctx['blocked'])
     from .dcf_parameters import load_default_dcf_parameters
-    from .type_config import load_official_type_config
-    return qgv_v2.score_universe(copy.deepcopy(ctx['companies']), priced, type_config=load_official_type_config().to_dict(),
+    return qgv_v2.score_universe(copy.deepcopy(ctx['companies']), priced, type_config=ctx['type_config'],
                                  parameters=load_default_dcf_parameters(), preset=PRESET, gate=GATE)
 
 
@@ -416,6 +480,26 @@ def attribution():
     return {'text': iex_hist.ATTRIBUTION, 'terms_url': iex_hist.TERMS_URL, 'label_ko': iex_hist.LABEL_KO}
 
 
+def weights_block() -> dict:
+    return {'default_preset': PRESET, 'gate': GATE, 'type_weights': True, 'profile_id': f'{qgv_v2.VERSION}/{PRESET}/gate-on',
+            'weights_version': qgv_v2.weights_id(qgv_v2.official_weights(PRESET))}
+
+
+def config_versions_block() -> dict:
+    from .dcf_parameters import CONFIG_VERSION as DCF_VERSION
+    from .type_config import load_official_type_config
+    return {'type_config': load_official_type_config().to_dict()['config_version'], 'dcf_parameters': DCF_VERSION}
+
+
+def population_version() -> str:
+    from ..universe.sec_universe_shares import load_config
+    return load_config()['config_version']
+
+
+def pooled_digest(rows) -> str:
+    return sha256_bytes('\n'.join(sorted(k for k, r in rows.items() if r['in_cross_section'])).encode())
+
+
 def require_rule_version(payload) -> None:
     """The publication rules (U7) ride on the one calc_version bump 2026-10-23.1 (D-CV7 (b), owner decision D1 (ii)): a
     sec-qgv2.json of an earlier calc_version (no F_k on its rows) is not published from (NOT_RUN, the last good copy stays)."""
@@ -425,9 +509,6 @@ def require_rule_version(payload) -> None:
 
 def build(payload, payload_sha256, *, now, day, months, monthend_stamp, hmac_key, generated_at):
     """The publication (state OFFICIAL, times.verified_at None until verified) or OfficialError. RAM only."""
-    from .dcf_parameters import CONFIG_VERSION as DCF_VERSION
-    from .type_config import load_official_type_config
-    from ..universe.sec_universe_shares import load_config
     if not isinstance(hmac_key, bytes) or len(hmac_key) < 16:
         raise OfficialError('NOT_RUN', 'HMAC_KEY_MISSING')
     require_rule_version(payload)
@@ -447,13 +528,11 @@ def build(payload, payload_sha256, *, now, day, months, monthend_stamp, hmac_key
             _bump(rejected, status[k])
     acquired = sorted(r['acquired_at'] for r in list(payload['records'].values()) + list(payload['target'].values())
                       if isinstance(r, dict) and isinstance(r.get('acquired_at'), str))
-    type_cfg = load_official_type_config().to_dict()
-    population = {'version': load_config()['config_version'], 'universe_code_count': payload['code_count'],
+    population = {'version': population_version(), 'universe_code_count': payload['code_count'],
                   'registry_sha256': payload['registry_sha256'], 'row_count': len(rows), 'pooled_count': len(pooled),
-                  'pooled_digest': sha256_bytes('\n'.join(pooled).encode())}
-    weights = {'default_preset': PRESET, 'gate': GATE, 'type_weights': True, 'profile_id': f'{qgv_v2.VERSION}/{PRESET}/gate-on',
-               'weights_version': qgv_v2.weights_id(qgv_v2.official_weights(PRESET))}
-    config_versions = {'type_config': type_cfg['config_version'], 'dcf_parameters': DCF_VERSION}
+                  'pooled_digest': pooled_digest(rows)}
+    weights = weights_block()
+    config_versions = config_versions_block()
     engine = engine_block()
     price_source = {'provider': iex_hist.PROVIDER, 'feed': ' '.join(iex_hist.FEED), 'basis_kind': iex_hist.BASIS_KIND,
                     'adjustment_basis': iex_hist.ADJUSTMENT_BASIS, 'currency': iex_hist.CURRENCY, 'basis_date': day.day,
@@ -461,7 +540,7 @@ def build(payload, payload_sha256, *, now, day, months, monthend_stamp, hmac_key
                     'supplied': sum(1 for k, s in status.items() if not k.startswith(TARGET_PREFIX) and s == iex_hist.SUPPLIED),
                     'rejected': rejected, 'supply': supply,
                     'month_end': {'store': iex_monthend.SCHEMA, 'stamp': monthend_stamp, 'months': len(months),
-                                  'basis': 'RAW_DIVIDED_BY_SHARE_BASIS_FACTOR'}}
+                                  'basis': MONTHEND_BASIS}}
     manifest = {'calc_version': payload.get('calc_version'), 'inputs_sha256': payload_sha256, 'provider': iex_hist.PROVIDER,
                 'feed': price_source['feed'], 'basis_date': day.day, 'adjustment_basis': iex_hist.ADJUSTMENT_BASIS,
                 'price_hmac': price_hmac(hmac_key, quotes, status), 'population': population, 'weights': weights,
@@ -524,7 +603,7 @@ def _row_ok(key, r):
     _need(_str_or_none(r['industry_group'], re.compile(r'[a-z][a-z0-9_]{0,63}')) and type(r['in_cross_section']) is bool)
     _need(r['state'] in ('LIVE', 'STALE', 'NOT_AVAILABLE', 'WITHDRAWN'))
     _need(type(r['source_reason_codes']) is list and all(_reason_ok(x) and x for x in r['source_reason_codes']))
-    _need(_str_or_none(r['acquired_at']) and _str_or_none(r['fiscal_year_end'], _DAY))
+    _need(_str_or_none(r['acquired_at'], _CLOCK) and _str_or_none(r['fiscal_year_end'], _DAY))
     _need(r['price_status'] in iex_hist.STATUS_CODES)
     _keys(r['factors'], qgv_v2.FACTORS)
     for f in r['factors'].values():
@@ -540,7 +619,8 @@ def _row_ok(key, r):
     for name in ('weights', 'type_weights'):
         w = r[name]
         _need(w is None or (type(w) is dict and set(w) == set(qgv_v2.PILLARS) and all(type(x) in (int, float) and math.isfinite(x) and x >= 0 for x in w.values())))
-    _need(_str_or_none(r['type_reason'], _REASON) and type(r['selected_types']) is list and all(type(x) is str for x in r['selected_types']))
+    _need(_str_or_none(r['type_reason'], _REASON) and type(r['selected_types']) is list
+          and all(type(x) is str and _TYPE_ID.fullmatch(x) for x in r['selected_types']))
     _need(_score_ok(r['q_industry_percentile']) and type(r['value_trap_gate']) is bool and r['v_excluded'] in (None, 'VALUE_TRAP_GATE'))
     _need(type(r['flags']) is list and all(type(x) is str and _REASON.fullmatch(x) for x in r['flags']))
     _need(_score_ok(r['total']) and _reason_ok(r['total_reason']) and (r['total'] is None) == (r['total_reason'] is not None))
@@ -592,51 +672,88 @@ def _ranks_ok(rows):
             _need(r['rank_row'] == k)
 
 
+def _int(v, low=0, high=None):
+    return type(v) is int and v >= low and (high is None or v <= high)
+
+
+def _supply_ok(ps, rows) -> None:
+    """D-CV5 / D4 counts: integers, eligible > 0, supplied <= eligible, met == (supplied >= ceil(95%)) and True, consistent with
+    the public rows (the eligible rows are GENERAL cross-section Universe rows outside ADR / split; their misses are not SUPPLIED)."""
+    sup = ps['supply']
+    _need(_int(sup['eligible'], 1) and _int(sup['supplied']) and sup['supplied'] <= sup['eligible'])
+    _need(sup['minimum_share'] == SUPPLY_MIN and sup['met'] is True and sup['supplied'] >= supply_needed(sup['eligible']))
+    pool = [r for k, r in rows.items() if not k.startswith(TARGET_PREFIX) and r['in_cross_section'] and r['profile'] == 'GENERAL'
+            and r['price_status'] not in ('ADR_RATIO_UNCONFIRMED', 'SPLIT_AFTER_SHARE_COUNT')]
+    _need(sup['eligible'] <= len(pool) and sup['supplied'] <= ps['supplied'])
+    _need(sup['supplied'] <= sum(1 for r in pool if r['price_status'] == iex_hist.SUPPLIED))
+    _need(sup['eligible'] - sup['supplied'] <= sum(1 for r in pool if r['price_status'] != iex_hist.SUPPLIED))
+
+
 def require_qgv_official(payload) -> None:
     """Strict public validator (also the verify job and the Pages guard file validator, tools/pages_artifact_guard.py). ValueError
-    fixed codes."""
+    fixed codes. Every scalar is typed: fixed constants are compared, dates and clocks are matched, counts are bounded integers
+    recomputed from the rows where they can be, so no field can carry a free number or string."""
     try:
         _keys(payload, TOP_KEYS)
         _walk_forbidden(payload)
         _need(payload['schema'] == SCHEMA and payload['kind'] == KIND and payload['state'] == 'OFFICIAL')
         _need(type(payload['publication_id']) is str and re.fullmatch(r'qgvpub-[0-9a-f]{64}', payload['publication_id']))
-        _need(_str_or_none(payload['calc_version']))
+        calc = payload['calc_version']
+        _need(type(calc) is str and re.fullmatch(vf.CALC_VERSION_PATTERN, calc) is not None and vf.carries_share_basis(calc))
         _keys(payload['engine'], ('version', 'status', 'python_sha256', 'js_sha256', 'publisher_sha256'))
-        _need(payload['engine']['version'] == qgv_v2.VERSION and all(_HEX.fullmatch(payload['engine'][k]) for k in ('python_sha256', 'js_sha256', 'publisher_sha256')))
-        _keys(payload['population'], ('version', 'universe_code_count', 'registry_sha256', 'row_count', 'pooled_count', 'pooled_digest'))
+        _need(payload['engine']['version'] == qgv_v2.VERSION and payload['engine']['status'] == qgv_v2.STATUS)
+        _need(all(type(payload['engine'][k]) is str and _HEX.fullmatch(payload['engine'][k]) for k in ('python_sha256', 'js_sha256', 'publisher_sha256')))
+        pop = payload['population']
+        _keys(pop, ('version', 'universe_code_count', 'registry_sha256', 'row_count', 'pooled_count', 'pooled_digest'))
+        _need(pop['version'] == population_version() and all(type(pop[k]) is str and _HEX.fullmatch(pop[k]) for k in ('registry_sha256', 'pooled_digest')))
+        _need(all(_int(pop[k], 0, 2048) for k in ('universe_code_count', 'row_count', 'pooled_count')))
         _keys(payload['weights'], ('default_preset', 'gate', 'type_weights', 'profile_id', 'weights_version'))
-        _need(payload['weights']['default_preset'] == PRESET and payload['weights']['gate'] is GATE)
+        _need(payload['weights'] == weights_block() and payload['weights']['gate'] is GATE and payload['weights']['type_weights'] is True)
+        _need(payload['type_scope'] == qgv_v2.TYPE_SCOPE)
         _keys(payload['config_versions'], ('type_config', 'dcf_parameters'))
+        _need(payload['config_versions'] == config_versions_block())
         ps = payload['price_source']
         _keys(ps, ('provider', 'feed', 'basis_kind', 'adjustment_basis', 'currency', 'basis_date', 'requested_basis_date', 'supplied',
                    'rejected', 'supply', 'month_end'))
         _need(ps['provider'] == iex_hist.PROVIDER and ps['basis_kind'] == iex_hist.BASIS_KIND and ps['adjustment_basis'] == iex_hist.ADJUSTMENT_BASIS)
+        _need(ps['feed'] == ' '.join(iex_hist.FEED) and ps['currency'] == iex_hist.CURRENCY)
+        _need(type(ps['basis_date']) is str and type(ps['requested_basis_date']) is str)
         _need(_DAY.fullmatch(ps['basis_date']) and _DAY.fullmatch(ps['requested_basis_date']) and ps['basis_date'] <= ps['requested_basis_date'])
-        _need(type(ps['rejected']) is dict and all(k in iex_hist.STATUS_CODES and k != iex_hist.SUPPLIED and type(n) is int and n > 0 for k, n in ps['rejected'].items()))
+        _need(_int(ps['supplied']))
+        _need(type(ps['rejected']) is dict and all(k in iex_hist.STATUS_CODES and k != iex_hist.SUPPLIED and _int(n, 1) for k, n in ps['rejected'].items()))
         _keys(ps['supply'], ('eligible', 'supplied', 'minimum_share', 'met'))
-        _need(ps['supply']['met'] is True and ps['supply']['minimum_share'] == SUPPLY_MIN)
-        _keys(ps['month_end'], ('store', 'stamp', 'months', 'basis'))
+        me = ps['month_end']
+        _keys(me, ('store', 'stamp', 'months', 'basis'))
+        _need(me['store'] == iex_monthend.SCHEMA and type(me['stamp']) is str and _STAMP.fullmatch(me['stamp']) is not None)
+        _need(_int(me['months'], 0, MAX_MONTHS) and me['basis'] == MONTHEND_BASIS)
         _need(payload['attribution'] == attribution())
         _need(type(payload['inputs']) is list and len(payload['inputs']) == 1)
-        _keys(payload['inputs'][0], ('file', 'sha256', 'as_of', 'calc_version', 'acquired_oldest', 'acquired_newest'))
-        _need(payload['inputs'][0]['file'] == qi.FILE and _HEX.fullmatch(payload['inputs'][0]['sha256']))
+        inp = payload['inputs'][0]
+        _keys(inp, ('file', 'sha256', 'as_of', 'calc_version', 'acquired_oldest', 'acquired_newest'))
+        _need(inp['file'] == qi.FILE and type(inp['sha256']) is str and _HEX.fullmatch(inp['sha256']) and inp['calc_version'] == calc)
+        _need(type(inp['as_of']) is str and _CLOCK.fullmatch(inp['as_of']) is not None)
+        _need(_str_or_none(inp['acquired_oldest'], _CLOCK) and _str_or_none(inp['acquired_newest'], _CLOCK)
+              and (inp['acquired_oldest'] is None) == (inp['acquired_newest'] is None))
+        _need(inp['acquired_oldest'] is None or inp['acquired_oldest'] <= inp['acquired_newest'])
         t = payload['times']
         _keys(t, ('price_basis_date', 'price_collected_from', 'price_collected_to', 'inputs_as_of', 'generated_at', 'verified_at'))
-        _need(t['price_basis_date'] == ps['basis_date'] and all(_CLOCK.fullmatch(t[k]) for k in ('price_collected_from', 'price_collected_to', 'generated_at')))
-        _need(t['verified_at'] is None or _CLOCK.fullmatch(t['verified_at']))
+        _need(t['price_basis_date'] == ps['basis_date'] and t['inputs_as_of'] == inp['as_of'])
+        _need(all(type(t[k]) is str and _CLOCK.fullmatch(t[k]) for k in ('price_collected_from', 'price_collected_to', 'generated_at')))
+        _need(t['verified_at'] is None or (type(t['verified_at']) is str and _CLOCK.fullmatch(t['verified_at'])))
         rows = payload['rows']
         _need(type(rows) is dict and 0 < len(rows) <= 2048)
         for k, r in rows.items():
             _row_ok(k, r)
         _ranks_ok(rows)
-        _need(payload['population']['row_count'] == len(rows))
-        _need(payload['population']['pooled_count'] == sum(1 for r in rows.values() if r['in_cross_section']))
-        _need(payload['population']['universe_code_count'] == sum(1 for k in rows if not k.startswith(TARGET_PREFIX)))
+        _need(pop['row_count'] == len(rows))
+        _need(pop['pooled_count'] == sum(1 for r in rows.values() if r['in_cross_section']) and pop['pooled_digest'] == pooled_digest(rows))
+        _need(pop['universe_code_count'] == sum(1 for k in rows if not k.startswith(TARGET_PREFIX)))
         rejected = {}
         for k in sorted(rows):
             if not k.startswith(TARGET_PREFIX) and rows[k]['price_status'] != iex_hist.SUPPLIED:
                 _bump(rejected, rows[k]['price_status'])
         _need(ps['rejected'] == rejected and ps['supplied'] == sum(1 for k, r in rows.items() if not k.startswith(TARGET_PREFIX) and r['price_status'] == iex_hist.SUPPLIED))
+        _supply_ok(ps, rows)
         _need(json.dumps(payload['coverage'], sort_keys=True) == json.dumps(coverage(rows), sort_keys=True))
         _need(len(_canonical(payload)) <= MAX_BYTES, 'OFFICIAL_TOO_LARGE')
     except ValueError as e:
@@ -672,13 +789,17 @@ STATUS_KEYS = ('schema', 'kind', 'last_attempt_at', 'attempt_state', 'reason_cod
                'official_price_basis_date', 'official_verified_at', 'latest_inputs', 'attribution')
 
 
-def status_payload(*, attempt_at, state, reason, official, inputs_sha256, inputs_as_of):
+def status_payload(*, attempt_at, state, reason, official, inputs_sha256, inputs_as_of, live_unknown=False):
     """Attempt record: no values, no code lists, no prices. `official` = the publication now in the artifact (or None).
-    A failed attempt without any official publication is NO_OFFICIAL_YET (its reason = the failure code)."""
+    A failed attempt without any official publication is NO_OFFICIAL_YET (its reason = the failure code), except when the live
+    publication could not be read (live_unknown: NOT_RUN / LIVE_UNREACHABLE): whether one exists is then not known, so the state
+    stays NOT_RUN and never claims NO_OFFICIAL_YET."""
     if state not in ATTEMPT_STATES or (state == 'OK') != (reason is None) or (state == 'OK' and official is None):
         raise ValueError('OFFICIAL_STATUS_INVALID')
+    if live_unknown and (state, reason, official) != ('NOT_RUN', LIVE_UNREACHABLE, None):
+        raise ValueError('OFFICIAL_STATUS_INVALID')
     return {'schema': STATUS_SCHEMA, 'kind': STATUS_KIND, 'last_attempt_at': iso(attempt_at),
-            'attempt_state': state if official is not None else 'NO_OFFICIAL_YET', 'reason_code': reason,
+            'attempt_state': state if official is not None or live_unknown else 'NO_OFFICIAL_YET', 'reason_code': reason,
             'official_publication_id': official['publication_id'] if official else None,
             'official_price_basis_date': official['times']['price_basis_date'] if official else None,
             'official_verified_at': official['times']['verified_at'] if official else None,
@@ -696,8 +817,9 @@ def require_status(payload) -> None:
         _need(not has or re.fullmatch(r'qgvpub-[0-9a-f]{64}', payload['official_publication_id']))
         _need(has == (payload['official_price_basis_date'] is not None) and _str_or_none(payload['official_price_basis_date'], _DAY))
         _need(_str_or_none(payload['official_verified_at'], _CLOCK) and (payload['attempt_state'] != 'NO_OFFICIAL_YET' or not has))
+        _need(payload['reason_code'] != LIVE_UNREACHABLE or (payload['attempt_state'] == 'NOT_RUN' and not has))
         _keys(payload['latest_inputs'], ('sha256', 'as_of'))
-        _need(_str_or_none(payload['latest_inputs']['sha256'], _HEX) and _str_or_none(payload['latest_inputs']['as_of']))
+        _need(_str_or_none(payload['latest_inputs']['sha256'], _HEX) and _str_or_none(payload['latest_inputs']['as_of'], _CLOCK))
         _need(payload['attribution'] == attribution())
     except ValueError:
         raise ValueError('OFFICIAL_STATUS_INVALID') from None
