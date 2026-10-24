@@ -1,3 +1,5 @@
+> **SUPERSEDED · 기록 보존용 (2026-10-24 정리).** 2026-09-27 Codex Track A 인수인계다. 현재 인수인계는 루트 `CURRENT_HANDOFF.md` 하나다. 현재 기준은 `START_HERE.md` → `docs/SPEC/DIRECTION_CHANGES.md` → `CURRENT_HANDOFF.md`다. 이 문서로 현재 상태·방향을 판단하지 않는다.
+
 Investment-System1 · CURRENT_HANDOFF
 
 Timestamp: 2026-09-27T20:50:49.316653+09:00

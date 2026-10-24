@@ -1,3 +1,5 @@
+> **PARTLY SUPERSEDED (2026-10-24 정리).** 아래 원문은 그대로 둔다. 디자인 방향("무채색 중심, 모던·미니멀")은 같은 날 [내용구조·디자인 지시](PRODUCT_IA_DIRECTIVE_20261018.md)의 손그림 칠판 시안과 2026-10-23 새 프론트엔드 결정으로 대체됐다(DC-07). 8개 메뉴 구성은 기능 계층 명세 v1.0의 1~9로 대체됐다(DC-08). 프리셋·2단계 가중치·13F 연구·레이더·내부 엔진명 금지 방향은 유효하다. 기준은 `START_HERE.md`.
+
 # 제품·프론트엔드 재설계 지시 (2026-10-18)
 
 아래는 사용자 지시 원문이다(수정 없음). 최신 화면·정보구조 기준이며, 이전 [Cockpit IA v1](frontend_ia_v1/COCKPIT_IA_v1.md)·[디자인 캔버스](cockpit_ia/DESIGN_CANVAS_SCREENS_v1.md)와 다르면 이 문서가 우선한다. 확정된 방향과 미정 수치·방법론의 구분은 [USER_DECISIONS_PENDING](USER_DECISIONS_PENDING.md) "결정됨 — 2026-10-18"에 기록한다. 진행 상태는 [CURRENT_HANDOFF](../../CURRENT_HANDOFF.md).
