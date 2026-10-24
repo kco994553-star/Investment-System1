@@ -1,0 +1,72 @@
+{
+  "schema": "direction-rules/1",
+  "note": "DIRECTION_CHANGES.md의 '금지 표현'을 기계 검사로 옮긴 것. 줄 단위 정규식. 같은 줄에 exempt 단어가 있으면 옛 방향이 바뀌었다고 설명하는 줄로 보고 통과시킨다. 규칙을 더하거나 뺄 때는 DIRECTION_CHANGES.md와 함께 고친다.",
+  "rules": [
+    {
+      "id": "DC-01a",
+      "title": "Universe504를 시가총액 상위 504로 단정 (2026-10-24 UNI-DEF=a: S&P 500 구성에서 출발한 고정 목록)",
+      "pattern": "(Universe ?504|유니버스 ?504)[^\\n]{0,30}(시가총액 상위|시총 상위|market[- ]cap top|largest 50[04])",
+      "flags": "i",
+      "exempt": [
+        "아니",
+        "아님",
+        "≠",
+        "not ",
+        "DC-01",
+        "UNI-DEF",
+        "C-18"
+      ]
+    },
+    {
+      "id": "DC-01b",
+      "title": "Universe504를 S&P 500 지수 자체(편입·편출 자동 추종)로 단정",
+      "pattern": "(Universe ?504|유니버스 ?504)[^\\n]{0,12}(=|는|은|is|:|\\()\\s*(the )?S&P ?500|S&P ?500[^\\n]{0,6}(=|\\()\\s*(Universe ?504|유니버스 ?504)|(Universe ?504|유니버스 ?504)[^\\n]{0,40}(지수 추종|index[- ]following)",
+      "flags": "i",
+      "exempt": [
+        "아니",
+        "아님",
+        "≠",
+        "not ",
+        "별개",
+        "출발",
+        "고정",
+        "fixed",
+        "snapshot",
+        "스냅샷",
+        "DC-01",
+        "UNI-DEF",
+        "결정 대기"
+      ]
+    },
+    {
+      "id": "DC-02",
+      "title": "V를 기기 전용·비공개로 단정 (2026-10-23 GSQ-024로 바뀜)",
+      "pattern": "(?<![A-Za-z])V(는|가)? ?기기 ?전용|(?<![A-Za-z])V(?![A-Za-z0-9_-])[^\\n]{0,30}\\b(is|stays|remains) device[- ]only|(?<![A-Za-z])V(?![A-Za-z0-9_-])[^\\n]{0,40}\\bnever (be )?published",
+      "flags": "",
+      "exempt": [
+        "GSQ-024",
+        "바뀐다",
+        "바뀌었다",
+        "바뀜",
+        "superseded",
+        "replaced",
+        "이전 규칙",
+        "DC-02"
+      ]
+    },
+    {
+      "id": "DC-06",
+      "title": "균형형을 Q34/G33/V33(균등)으로 단정",
+      "pattern": "균형형\\s*(=|:|\\()\\s*Q ?34|balanced\\s*(=|:)\\s*Q ?34",
+      "flags": "i",
+      "exempt": [
+        "아니",
+        "아님",
+        "≠",
+        "not ",
+        "DC-06",
+        "코드의"
+      ]
+    }
+  ]
+}
