@@ -11,8 +11,9 @@ function h(tag,attrs,...children){
   if(v===null||v===undefined||v===false)continue;
   if(k.startsWith('on')&&typeof v==='function')el.addEventListener(k.slice(2),v);
   else if(k==='dataset')Object.assign(el.dataset,v);
-  // CSSOM only (CSP has no 'unsafe-inline'): {style:{width:'40%'}} sets properties, never a style attribute string.
-  else if(k==='style'&&typeof v==='object')for(const[p,x]of Object.entries(v))el.style.setProperty(p,String(x));
+  // CSSOM only (CSP has no 'unsafe-inline'): {style:{width:'40%'}} sets properties, never a style attribute string (the CSP
+  // would drop it silently, so a string is refused here instead).
+  else if(k==='style'){if(typeof v!=='object')throw Error('STYLE_INVALID');for(const[p,x]of Object.entries(v))el.style.setProperty(p,String(x));}
   else el.setAttribute(k,v===true?'':String(v));
  }
  append(el,children);return el;
@@ -62,9 +63,21 @@ function href(id,...params){if(id==='search')return'#/';return'#/'+[id,...params
 // The menu entry a route belongs to (company results sit under 0. 기업 검색, details under none).
 function menuOf(route){return route.id==='company'?'search':MENU.some(m=>m.id===route.id)?route.id:null;}
 
-const screens=new Map();
-function register(id,render){if(typeof render!=='function')throw Error('SCREEN_INVALID');screens.set(id,render);}
-function screen(id){return screens.get(id)||null;}
+/* Screen registry. Lane files load before the P0 placeholder screens (index.html), so a placeholder never replaces a real
+   screen, a real screen replaces a placeholder, and a second real screen for one route is a lane conflict (SCREEN_DUPLICATE)
+   instead of a silent overwrite. Detail screens (#/detail/<id>) register by name the same way. */
+const screens=new Map(),details=new Map();
+function put(map,id,render,placeholder){
+ if(typeof render!=='function')throw Error('SCREEN_INVALID');
+ const had=map.get(id);
+ if(had&&!had.placeholder){if(placeholder)return;throw Error('SCREEN_DUPLICATE');}
+ map.set(id,{render,placeholder});
+}
+function register(id,render,opts){put(screens,id,render,!!(opts&&opts.placeholder===true));}
+function registerDetail(name,render){if(!DETAILS.some(d=>d.id===name))throw Error('DETAIL_UNKNOWN');put(details,name,render,false);}
+function screen(id){const s=screens.get(id);return s?s.render:null;}
+function detail(name){const s=details.get(name);return s?s.render:null;}
+function isPlaceholder(id){const s=screens.get(id);return !!(s&&s.placeholder);}
 
-return Object.freeze({h,append,icon,MENU,TABS,DETAILS,parse,href,menuOf,register,screen});
+return Object.freeze({h,append,icon,MENU,TABS,DETAILS,parse,href,menuOf,register,registerDetail,screen,detail,isPlaceholder});
 });
