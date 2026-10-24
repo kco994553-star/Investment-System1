@@ -14,7 +14,7 @@
 | 번호 | 무엇이 남나 | 선택지 | 결정 전 동작 |
 | --- | --- | --- | --- |
 | CV-LEAK | **사유 묶음(D-CV2 (b))은 가격 경계를 숨기지 못한다.** 원 사유는 정해진 요인 칸에만 나와 칸이 원 사유를 되돌려 준다. 예: 수익률 세 칸이 묶음 사유면 "가격 ≤ (현금 − 부채) ÷ 주식수", 기대 점검 칸이면 "가격이 공개 DCF 구간 밖". 사유가 없어도 V 축 점수 유무와 `rank`/`qg_reference_order`가 같은 사실을 보인다. 즉 V를 공개하는 것 자체에 딸린 누출이다(설계 §4-4 정정 메모, `public_price_boundary/AUDIT.md` §10-6-1) | (i) 수락하고 게시 / (ii) 해당 행 V 비공개(규칙 변경, 누출을 다 없애지는 못함) / (iii) 다른 규칙 | 묶음은 표시 어휘로만 유지, 게시 안 함(3단계 보류) |
-| CV-SPLIT | **주식수를 실은 서류의 접수 뒤~기준일에 일어난 주식분할은 잡지 못한다.** 그 행의 공식 V·순위가 분할 비율만큼 틀린 채 다음 10-Q·10-K까지 남는다(예: NVDA 2024 10:1, 약 2.5개월). 결정 D6 (a)(F_k 근거 재사용)로 연결한 규칙은 접수 **전** 분할만 보는 보수 규칙이다(설계 §7 메모, `U4_U5` §4) | (i) 수락하고 게시 / (ii) 새 장치 승인(D6 (b): V 단계 RAM에서 오늘 IEX 원가격을 비공개 최신 원 월말가와 비교해 분할 비율 대역이면 `SPLIT_AFTER_SHARE_COUNT`) | 게시 안 함(3단계 보류) |
+| CV-SPLIT | **주식수를 실은 서류의 접수 뒤~기준일에 일어난 주식분할은 잡지 못한다.** 그 행의 공식 V·순위가 분할 비율만큼 틀린 채 다음 10-Q·10-K까지 남는다(예: NVDA 2024 10:1, 약 2.5개월). 결정 D6 (a)(F_k 근거 재사용)로 연결한 규칙은 접수 **전** 분할만 보는 보수 규칙이다(설계 §7 메모, `U4_U5` §4) | (i) 수락하고 게시 / (ii) 새 장치 승인(D6 (b): V 단계 RAM에서 오늘 IEX 원가격을 비공개 최신 원 월말가와 비교해 분할 비율 대역이면 `SPLIT_AFTER_SHARE_COUNT`) | **결정 (ii) 2026-10-24, 구현 #400; 효과는 최근 월말가(전 종목) 보충 뒤 전면.** D6 (b): 주식수 기간 끝이 든 달의 원 월말가~오늘 IEX 원가격 중 간격 45일 이하인 이웃 쌍의 비율이 분할 대역이면 `SPLIT_AFTER_SHARE_COUNT`(V NA, 값은 바꾸지 않음). 지금 저장소는 종목마다 회계연도 말월만 있어 대부분의 행은 미점검(잔여)이다. 45일 안 약 −27% 이하·+36% 이상의 진짜 움직임도 걸린다(보수적). 설계 §7 2026-10-24 밤 메모 · 결정 전 동작이었던 것: 게시 안 함(3단계 보류) |
 | CV-CARRY(선택) | V 단계가 라이브 게시본을 3번 다 못 읽고 배포는 읽는 날, 그날 배포에서 게시본이 사이트에서 하루 빠진다(`NOT_RUN LIVE_UNREACHABLE` → 배포 `MISSING` → `WITHHELD`). 다음 성공 실행이 다시 낸다 | (i) 수락 / (ii) 배포 잡이 검증된 라이브 바이트를 다시 넣어 올리기(배포 잡 새 업로드 = 게시 경로 정적 시험 변경) | (i)처럼 동작 |
 
 ## 한눈에
@@ -84,11 +84,12 @@
 실행 화면 → **collect** 잡 → 단계 **Publish the central QGV from one IEX HIST day (…)** 를 펼친다. 가격·URL·키는 출력되지 않는다.
 
 ```
-QGV_OFFICIAL attempt=OK reason=- published=NEW basis=YYYY-MM-DD rows=523 ranked=<n> supplied=<n>/<m>
+QGV_OFFICIAL attempt=OK reason=- published=NEW basis=YYYY-MM-DD rows=523 ranked=<n> supplied=<n>/<m> split_checked=<n> split_flagged=<n> split_unchecked=<n> split_unchecked_no_period=<n> split_gap_skipped=<n>
 ```
 
 - `basis`는 실제 IEX 기준일이다. T+1이라 보통 실행일 기준 **전 거래일**이다(결정 D3). 요청 기준일은 게시본 `price_source.requested_basis_date`에 따로 있다.
 - `supplied=n/m`: m은 **가격 없이도 V 축 가중치 50%에 닿을 수 있는** GENERAL 단면 Universe 행 수(USD, ADR·분할 규칙 밖; `qgv_official.supply_eligible`), n은 그중 그날 IEX 가격을 얻은 행 수다. n < ceil(0.95 × m)이면 게시하지 않는다(결정 D4). V 입력 블록만 있고 가격이 있어도 V가 나올 수 없는 행은 m에 넣지 않는다(2026-10-24 검토로 바로잡음; 공개 10-24 파일로 측정하면 옛 정의 430, 지금 정의 358).
+- `split_…`(결정 CV-SPLIT (ii), #400, 2026-10-24 추가): 분할 보조 검사 D6 (b)의 개수다(Universe 행, 가격을 읽어 계산까지 간 실행에만 붙는다). `split_flagged`는 짧은 간격(45일 이하) 원가격 비율이 분할 대역에 들어 `SPLIT_AFTER_SHARE_COUNT`(V NA)가 된 행 수, `split_checked`는 그런 쌍을 하나 이상 본 행 수, `split_unchecked`는 볼 쌍이 없던 행 수(그중 `split_unchecked_no_period`는 주식수 기간 끝이 없는 행), `split_gap_skipped`는 45일을 넘어 건너뛴 쌍 수다. 지금 월말가 저장소는 회계연도 말월만 있어 `split_unchecked`가 대부분인 것이 정상이다(최근 월말가 보충 전). 종목·가격은 출력되지 않는다.
 - 같은 잡의 다음 단계 **Copy a new central QGV publication to the private dated history (…)**: `QGV_OFFICIAL_HISTORY RAW_UPLOADED tag=qgv-official-<기준일> …`(결정 D9, 비공개 저장소에 점수만).
 - **verify** 잡 → **Check the central QGV publication without prices (…)**: `QGV_OFFICIAL_CHECK publication=VALID status=VALID consistent=YES new=YES …`와 시험 통과. 이 단계가 실패하면 `QGV_OFFICIAL_VERIFY_FAILED` 주석이 붙지만 배포는 막지 않는다(게시본 자체가 틀리면 그 위 단계의 아티팩트 가드가 막는다).
 - **deploy** 잡 → 신선도 단계: `PAGES_FRESHNESS file=qgv-official.json section=publication verdict=NO_LIVE kind=NEW …`(첫 게시).
