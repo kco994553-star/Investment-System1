@@ -321,6 +321,9 @@ function finalize(state,{date,published=null,basis=null,cfg=CFG,pcfg=PCFG}={}){
   number_check:{calc_version:r.number.calc_version,passed:true,date:r.number.date,companies:r.number.companies},v_source:V_SOURCE.id,rows,cash_pct:sel.cash_pct}],rule_c:{start:date,version}};
 }
 function latestVersion(state){return state?.versions?.length?state.versions[state.versions.length-1]:null;}
+// The first finalized version: whether and when TARGET v1 was finalized (owner decision 2026-10-24, F1). A later re-save
+// (v1.1 after a draft regeneration) changes the list, not the finalize date, so it never takes a round's list away.
+function firstVersion(state){return state?.versions?.length?state.versions[0]:null;}
 
 /* ---------- rebalance calendar (PLAYBOOK 13-4) ---------- */
 // 셋째 주 = the Monday among days 15–21 of the month (T-REBAL, 2026-10-15). A holiday Monday stays the calendar day here; the rule
@@ -334,9 +337,9 @@ function rounds(cfg=CFG){return cfg.transition.rounds.map(r=>({round:r.round,mon
 /* ---------- schedule (2026-10-15 supplement): finalize target = 2nd week of 2026-11 ---------- */
 // Not finalized by the deadline → postponed. A round lists names only when TARGET v1 was finalized on or before that round day;
 // otherwise the round shows the risk-code checks only (BLOCK / RISK_RECHECK codes of the playbook config), no list, no amount.
-function scheduleState(state,date,cfg=CFG){const S=cfg.schedule,v=latestVersion(state);return{finalized:!!v,finalized_on:v?.date||null,window:[...S.finalize_window],deadline:S.deadline,postponed:!v&&validDay(date)&&date>S.deadline,late:!!v&&v.date>S.deadline};}
+function scheduleState(state,date,cfg=CFG){const S=cfg.schedule,v=firstVersion(state);return{finalized:!!v,finalized_on:v?.date||null,window:[...S.finalize_window],deadline:S.deadline,postponed:!v&&validDay(date)&&date>S.deadline,late:!!v&&v.date>S.deadline};}
 // A version saved after the deadline is a postponed TARGET v1: the deadline month's round stays risk-code checks only (B-3 F1).
-function roundMode(state,round,cfg=CFG){const v=latestVersion(state),S=cfg.schedule;
+function roundMode(state,round,cfg=CFG){const v=firstVersion(state),S=cfg.schedule;
  if(!v||!round||!validDay(round.date)||v.date>round.date)return S.unfinalized_round_mode;
  if(v.date>S.deadline&&round.date.slice(0,7)===S.deadline.slice(0,7))return S.unfinalized_round_mode;return 'LIST';}
 function riskCodes(cfg=CFG,pcfg=PCFG){return pcfg.codes.filter(c=>cfg.schedule.risk_levels.includes(c.level)).map(c=>({code:c.code,level:c.level,text:c.entry_text}));}
@@ -432,6 +435,6 @@ function scoringSeries(need,closes,cfg=CFG){
  return{sessions:Object.keys(sp).filter(validDay).sort(),stock:{...stock},sector:{...sector},sp500:{...sp},sector_symbol:need.sector_symbol};
 }
 return Object.freeze({SCHEMA,V_SOURCE,ANSWERS,COMPARE_KEYS,V_FACTORS,V_REQUIRED,vFactors,vIncomplete,publishedCheck,inputBasis,basisChanged,regenerateDraft,safetyRecheck,numberCheck,finalizeBlockers,scheduleState,roundMode,riskCodes,coverage,subgroupOf,groupOf,safety,universeRows,exclusions,spread,select,limits,templates,invalidated,buildDraft,candidates,
- emptyState,validateState,latestAnswers,currentSelection,answer,judgementRecord,finalize,latestVersion,rebalanceDay,rebalanceDays,lastRebalanceOnOrBefore,
+ emptyState,validateState,latestAnswers,currentSelection,answer,judgementRecord,finalize,latestVersion,firstVersion,rebalanceDay,rebalanceDays,lastRebalanceOnOrBefore,
  nextRebalanceOnOrAfter,rounds,transitionRows,ruleBDue,ruleBSegment,ruleIndex,compareSets,reviewRule,coreEligible,priceSymbolOf,sectorEtfOf,scoringNeeds,addPriceSymbols,scoringSeries});
 });

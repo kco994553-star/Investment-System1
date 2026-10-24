@@ -375,6 +375,15 @@ test('schedule: finalize target 2nd week of 2026-11; unfinalized or late → tha
  assert.equal(B.roundMode(lateSameDay,r1),'RISK_CODE_CHECK_ONLY');assert.equal(B.roundMode(lateSameDay,r2),'LIST');
  const onDeadline={...none,versions:[{version:'v1',date:'2026-11-15',rows:[],cash_pct:100}]};assert.equal(B.roundMode(onDeadline,r1),'LIST');
  const late={...none,versions:[{version:'v1',date:'2026-12-01',rows:[],cash_pct:100}]};assert.equal(B.roundMode(late,r1),'RISK_CODE_CHECK_ONLY');assert.equal(B.roundMode(late,r2),'LIST');assert.equal(B.scheduleState(late,'2026-12-02').late,true);
+ // F1 (owner decision 2026-10-24): the first finalize date decides. An on-time v1 re-saved as v1.1 after the deadline or
+ // after the round keeps the round's list, the schedule is not late, and finalized_on stays the first date.
+ const resaved=(d)=>({...none,versions:[{version:'v1',date:'2026-11-12',rows:[],cash_pct:100},{version:'v1.1',date:d,rows:[],cash_pct:100}]});
+ for(const d of ['2026-11-16','2026-11-20','2026-12-01']){assert.equal(B.roundMode(resaved(d),r1),'LIST',d);assert.equal(B.roundMode(resaved(d),r2),'LIST',d);
+  assert.equal(B.scheduleState(resaved(d),'2026-12-02').late,false,d);assert.equal(B.scheduleState(resaved(d),'2026-12-02').finalized_on,'2026-11-12',d);}
+ assert.equal(B.firstVersion(resaved('2026-11-20')).version,'v1');assert.equal(B.latestVersion(resaved('2026-11-20')).version,'v1.1');assert.equal(B.firstVersion(none),null);
+ // A late first finalize stays late even after a later re-save.
+ const lateResaved={...none,versions:[{version:'v1',date:'2026-11-16',rows:[],cash_pct:100},{version:'v1.1',date:'2026-11-20',rows:[],cash_pct:100}]};
+ assert.equal(B.roundMode(lateResaved,r1),'RISK_CODE_CHECK_ONLY');assert.equal(B.roundMode(lateResaved,r2),'LIST');assert.equal(B.scheduleState(lateResaved,'2026-11-21').late,true);
  assert.deepEqual(B.riskCodes().map(c=>c.code),['X1','X2','X3','R1','R2','R3','R4','R5']);assert.ok(B.riskCodes().every(c=>c.text&&!/매수|매도/.test(c.text)));
 });
 
