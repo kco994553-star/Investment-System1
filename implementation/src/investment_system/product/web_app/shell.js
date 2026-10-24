@@ -15,7 +15,8 @@ const TAB_ICON={search:['M6 18 L18 7 L30 18 M10 15 L10 30 L26 30 L26 15'],qgv:['
 const label=m=>m.no+'. '+m.ko;
 // Device chip from the price layer (codes only, never a price): signed in to Google or not; values are this device's. Before
 // the layer is loaded (loader.js) there is nothing to ask: 연결 전; after a loader failure: 연결 실패.
-const loadState=()=>{const I=window.IS2;return typeof I.loadState==='function'?I.loadState():'READY';};
+// No loadState at all means loader.js itself did not load or run (404, error): the layer is missing, so it is a failure too.
+const loadState=()=>{const I=window.IS2;return typeof I.loadState==='function'?I.loadState():'FAILED';};
 function chipText(){const st=loadState();if(st==='FAILED')return'연결 실패';if(st!=='READY')return'연결 전';let g=null;try{const P=window.IS2.prices;g=P&&typeof P.status==='function'?P.status().google:null;}catch(_){g=null;}
  return(g&&g.connected?'구글 연결됨':g&&(g.pending||g.preparing)?'구글 연결 중':'로그인 안 함')+' · 이 기기 기준';}
 
@@ -67,7 +68,7 @@ function render(){
  // with this render's signal). If loading failed, every render gets the 연결 실패 chip and the notice above main (IS2.ready
  // stays rejected, so this runs before the frame is painted).
  const signal=live.signal,chip=app.querySelector('[data-device-chip]');
- Promise.resolve(window.IS2.ready).then(()=>{if(signal.aborted||!chip)return;chip.textContent=chipText();
+ (window.IS2.ready||Promise.reject(Error('LOADER_FAILED loader.js'))).then(()=>{if(signal.aborted||!chip)return;chip.textContent=chipText();
   try{const P=window.IS2.prices;if(P&&typeof P.subscribe==='function')P.subscribe(()=>{chip.textContent=chipText();},{signal});}catch(_){}},
  ()=>{if(signal.aborted)return;if(chip)chip.textContent=chipText();const pg=app.querySelector('.page');
   if(pg&&!pg.querySelector('[data-load-failed]'))pg.insertBefore(failNotice(),pg.querySelector('main'));});

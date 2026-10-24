@@ -6,10 +6,11 @@
 const SVG='http://www.w3.org/2000/svg';
 /* h('div',{class:'x',onclick:fn,'aria-label':'..'},child,...) - children: Node, string, number, array, null/false (skipped).
    Never a script element, in either namespace (TAG_INVALID): scripts come from loader.js LOAD_ORDER only (P2-1a), so a screen
-   cannot add one the CSP ('self') would run outside that list. */
+   cannot add one the CSP ('self') would run outside that list. The SVG part takes a plain local name only: createElementNS also
+   accepts a qualified name ('x:script' makes an SVG <script>), so any further ':' is refused too. */
 const SCRIPT_TAG=/^\s*(?:svg:)?script\s*$/i;
 function h(tag,attrs,...children){
- if(typeof tag!=='string'||SCRIPT_TAG.test(tag))throw Error('TAG_INVALID');
+ if(typeof tag!=='string'||SCRIPT_TAG.test(tag)||/^svg:.*:/i.test(tag)||/^(?!svg:).*:/i.test(tag)||/^\s*svg:\s*$/i.test(tag))throw Error('TAG_INVALID');
  const svg=tag.startsWith('svg:'),el=svg?document.createElementNS(SVG,tag.slice(4)):document.createElement(tag);
  for(const[k,v]of Object.entries(attrs||{})){
   if(v===null||v===undefined||v===false)continue;

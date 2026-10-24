@@ -296,6 +296,24 @@ async function contractFailure(browser, srv, file, answer, provoked, followers =
   } finally { srv.override(file, null); await context.close(); }
 }
 
+// loader.js itself missing (404): there is no IS2.ready / loadState at all. The shell must still say 연결 실패 and show the
+// notice (not the ready chip), and boot.js must not throw for the missing load().
+async function loaderMissing(browser, srv) {
+  phase = 'loader.js missing';
+  srv.override('loader.js', { status: 404 });
+  const { context, page, seen } = await open(browser, srv);
+  try {
+    const want = { count: 1, role: 'alert', text: FAILED_NOTE, button: ['button', '새로고침'], all: FAILED_NOTE + '새로고침', inView: true, beforeMain: true, chip: '연결 실패' };
+    assert.deepEqual(await notice(page), want, 'loader.js 404: the shell shows the failure notice and 연결 실패');
+    assert.deepEqual(await page.evaluate(() => [typeof window.IS2.ready, typeof window.IS2.loadState, typeof window.IS2.load]), ['undefined', 'undefined', 'undefined'], 'loader.js 404: no loader API');
+    await page.evaluate(() => { location.hash = '#/qgv'; }); await page.locator('main[data-route="qgv"]').waitFor();
+    assert.deepEqual(await notice(page), want, 'loader.js 404: the notice stays on the next route');
+    const provoked = (e) => /status of 404/.test(e.text) && /\/loader\.js$/.test(e.url || '');
+    await quiet(page, seen, 'loader.js missing', [provoked]);
+    assert.ok(seen.errors.some(provoked), 'loader.js 404 was seen');
+  } finally { srv.override('loader.js', null); await context.close(); }
+}
+
 (async () => {
   const out = site.build(), srv = await serve(out);
   const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_EXECUTABLE_PATH || undefined });
@@ -318,6 +336,7 @@ async function contractFailure(browser, srv, file, answer, provoked, followers =
     // engines.js then refuses a layer without the QGV accessor / the store (LAYER_MISSING): it follows from the provoked failure.
     await contractFailure(browser, srv, 'qgv.js', { status: 404 }, (e) => /status of 404/.test(e.text) && /\/qgv\.js$/.test(e.url || ''), [(e) => e.text === 'Error: LAYER_MISSING'], true);
     await contractFailure(browser, srv, 'store.js', { status: 200, body: "throw Error('SYNTHETIC_LOAD_ERROR');" }, (e) => /SYNTHETIC_LOAD_ERROR/.test(e.text), [(e) => e.text === 'Error: LAYER_MISSING']);
+    await loaderMissing(browser, srv);
     console.log('web app first paint: throttling proven in every run, shell first without the layer, targets met on the median of ' + RUNS + ' throttled runs, loader facades / ready / failures / failure notice ok');
   } finally { await browser.close(); await srv.close(); fs.rmSync(out, { recursive: true, force: true }); }
 })().catch((e) => { console.error('FAILED at', phase); console.error(e); process.exitCode = 1; });

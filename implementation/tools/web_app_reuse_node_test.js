@@ -333,7 +333,9 @@ const RULES = [
   // a 'script' tag (any case, either namespace) given to createElement / createElementNS / h() only in loader.js; an element
   // made from a computed tag, or createElement(NS) held or called indirectly, only in core.js h(), which refuses 'script' and
   // 'svg:script' (TAG_INVALID); HTML parsing that could make one is refused with the HTML strings above.
-  ['script elements outside loader.js', /\bcreateElement(?:NS)?\s*\([^)]*['"`](?:svg:)?script['"`]|\bh\(\s*['"`](?:svg:)?script['"`]/i, [LOADER]],
+  // (Known limit of a regex rule: bracket access with a built name, document['create'+'Element'](...), is not matched; h() and
+  // the computed-tag rule are the runtime and static backstops.)
+  ['script elements outside loader.js', /\bcreateElement(?:NS)?\s*\([^)]*['"`](?:svg:)?(?:[^'"`:]*:)*script['"`]|\bh\(\s*['"`](?:svg:)?(?:[^'"`:]*:)*script['"`]/i, [LOADER]],
   ['elements from a computed tag outside core.js h()', /\bcreateElement\s*\(\s*(?!(['"])[A-Za-z0-9-]+\1\s*\))|\bcreateElementNS\s*\(\s*[^,()]*,\s*(?!(['"])[A-Za-z0-9-]+\2\s*\))|\bcreateElement(?:NS)?\b(?!\s*\()/, ['core.js']],
 ];
 test('source rules for every web_app script (code, not comments)', () => {
@@ -360,7 +362,7 @@ test('source rules catch what they name (V source words, style attribute strings
   // Script elements: only loader.js makes one; a computed tag only in core.js h() (which refuses 'script').
   const script = rule('script elements'), computed = rule('elements from a computed tag');
   for (const line of ["const s=document.createElement('script')", 'doc.createElement("SCRIPT")', 'doc.createElement( `script` )', "document.createElementNS('http://www.w3.org/2000/svg','script')",
-    'document.createElementNS(SVG, "script")', "document.createElementNS('http://www.w3.org/1999/xhtml','Script')", "h('script',{src:'x.js'})", 'h("svg:script",null)', "IS2.h( 'SCRIPT' )", 'h(`script`)'])
+    'document.createElementNS(SVG, "script")', "document.createElementNS('http://www.w3.org/1999/xhtml','Script')", "h('script',{src:'x.js'})", 'h("svg:script",null)', "IS2.h( 'SCRIPT' )", 'h(`script`)', "h('svg:x:script',{href:'p.js'})", "h('svg:xlink:script')", "document.createElementNS(SVG,'x:script')"])
     assert.match(line, script, line);
   for (const line of ['document.createElement(tag)', 'document.createElement(name.trim())', "document.createElement('scr'+'ipt')", 'doc.createElement(`scr${x}`)', 'document.createElementNS(SVG,tag)',
     "document.createElementNS(SVG, kind+'')", 'const make=document.createElement', "document['createElement']('script')", "document.createElement.call(document,'script')", 'const {createElementNS}=document'])
@@ -392,7 +394,7 @@ test('screen-menus.js registers every menu as a placeholder: a lane screen regis
     assert.doesNotThrow(() => core.h('p', { style: { color: 'red' } }));
     // Script elements come from loader.js only: h() refuses the tag in any case and in the SVG namespace, before making anything.
     const made = []; doc.createElement = (t) => { made.push(t); return mk(); }; doc.createElementNS = (ns, t) => { made.push(ns + ' ' + t); return mk(); };
-    for (const tag of ['script', 'SCRIPT', 'Script', 'svg:script', 'svg:SCRIPT', ' script ', null, 7]) assert.throws(() => core.h(tag, { src: 'x.js' }), /^Error: TAG_INVALID$/, String(tag));
+    for (const tag of ['script', 'SCRIPT', 'Script', 'svg:script', 'svg:SCRIPT', ' script ', null, 7, 'svg:x:script', 'svg:svg:script', 'svg:xlink:script', 'svg:x:SCRIPT', 'x:script', 'svg:', 'svg:x:path']) assert.throws(() => core.h(tag, { src: 'x.js' }), /^Error: TAG_INVALID$/, String(tag));
     assert.deepEqual(made, [], 'nothing was made for a refused tag');
     assert.doesNotThrow(() => core.h('p', { title: 'script' })); assert.doesNotThrow(() => core.h('svg:path', { d: 'M0 0' }));
     assert.deepEqual(made, ['p', 'http://www.w3.org/2000/svg path']);
