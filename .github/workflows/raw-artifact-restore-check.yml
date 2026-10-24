@@ -16,7 +16,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   restore-check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 60
     env:
       ARTIFACT_ID: '10927496280'

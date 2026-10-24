@@ -1,3 +1,5 @@
+> **SUPERSEDED · 기록 보존용 (2026-10-24 정리).** 2026-09-22 누락 산출물 기록이다. 현재 기준은 `START_HERE.md` → `docs/SPEC/DIRECTION_CHANGES.md` → `CURRENT_HANDOFF.md`다. 이 문서로 현재 상태·방향을 판단하지 않는다.
+
 Investment-System1 · Missing Artifact Register  
 기준: 2026-09-22  
 Recovery status: BLOCKED  

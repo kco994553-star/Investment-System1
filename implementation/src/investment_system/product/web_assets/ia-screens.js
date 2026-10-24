@@ -121,8 +121,8 @@
    node('','3.2 '+esc(T(l,'순환매 위치','Sector rotation')),'<span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> '+esc(T(l,'확률 근거 = 과거 국면 전환 빈도 · 미산출','Probability basis = past regime-transition frequency · not computed'))),
    node('','3.3 '+esc(T(l,'산업 사이클 (SIC 업종 그룹)','Industry cycles (SIC groups)')),'<span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> '+esc(T(l,'확률 근거 = 과거 국면 전환 빈도 · 미산출','Probability basis = past regime-transition frequency · not computed'))),
    node('','3.4 '+esc(T(l,'내가 고른 위치','My chosen position')),esc(T(l,'공식 값과 별도로 이 브라우저에 기록 · 내보내기/가져오기 가능 · 점수에 쓰지 않음','Recorded in this browser separately from official values · export/import available · never scored'))),
-   node('','3.5 '+esc(T(l,'연쇄 효과 지도','Causal-chain map')),'<span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> '+esc(T(l,'관계 자료원 결정 대기(REL-SOURCE)','Relationship source pending (REL-SOURCE)')))]);
-  return page('macro',l,{eyebrow:'3.6 · MACRO STRUCTURE',title:T(l,'매크로 시스템 내용구성','Macro structure'),lede:T(l,'입력 → 경고등 · 상태판 → 위치 · 순환매 · 산업 사이클 → 연쇄 효과.','Inputs → lights · board → position · rotation · industry cycles → causal chains.'),tree,examples:loading(l)});
+   node('','3.5 '+esc(T(l,'나비효과','Butterfly effect')),'<span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> '+esc(T(l,'관계 자료원 결정 대기(REL-SOURCE)','Relationship source pending (REL-SOURCE)')))]);
+  return page('macro',l,{eyebrow:'3.6 · MACRO STRUCTURE',title:T(l,'매크로 시스템 내용구성','Macro structure'),lede:T(l,'입력 → 경고등 · 상태판 → 위치 · 순환매 · 산업 사이클 → 나비효과.','Inputs → lights · board → position · rotation · industry cycles → butterfly effect.'),tree,examples:loading(l)});
  }
  function macroExamples(l,screens){
   const p=screens&&screens['macro-screen.json'],obs=Array.isArray(p?.data?.observations)?p.data.observations:[];
@@ -204,7 +204,7 @@
    [['SEC 공시 → QGV Q·G → (모델 포트폴리오 후보: 미구현) → 일일 보고 "확인할 것"','SEC filings → QGV Q·G → (model candidates: not built) → daily report “to check”'],
     ['시세(이 기기) → V · 기술적 분석 지표 → 같은 보고의 기술 항목','Prices (device) → V · technical indicators → the report’s technical items'],
     ['경제지표 → 매크로 경고등·상태판 → (위치·사이클: 미구현) → 레이더 "매크로 민감도"(결정 대기)','Economic data → macro lights and board → (position, cycles: not built) → radar “macro sensitivity” (pending)'],
-    ['8-K 공시 → 뉴스 목록 → (5줄 요약·관계망·연쇄 효과 지도: 미구현)','8-K filings → news list → (summary, network, causal-chain map: not built)'],
+    ['8-K 공시 → 뉴스 목록 → (5줄 요약·관계망·나비효과: 미구현)','8-K filings → news list → (summary, network, butterfly effect: not built)'],
     ['오늘의 Q·G → Lab 전진 검증 기록(추가만) → 나중에 결과와 맞춰 봄','Today’s Q·G → Lab forward-validation record (append-only) → later compared with outcomes']].map(x=>'<li>'+esc(T(l,...x))+'</li>').join('')+'</ul></section>'+
    '<section class="tree-examples card" data-tree-examples="system" aria-live="polite"><h2><span class="hl">'+esc(T(l,'예시 값','Example values'))+'</span></h2><p class="small">'+esc(T(l,'각 메뉴 아래 "예"는 공개 자료에서 읽은 값입니다. 없으면 NA와 이유를 씁니다.','Each “e.g.” under a menu is read from published data; otherwise NA and why.'))+'</p><div data-tree-example-body data-example-state="LOADED"></div></section></section>';
  }
@@ -301,7 +301,7 @@
     '<p>'+x('파일 내보내기 · 가져오기(합치기)로 옮깁니다. 계정 동기화는','Move them with file export / import (merge). Account sync is')+' '+chip('pending')+'</p>')],
    naLine('로그인 계정 간 동기화는 없습니다(저장 위치 결정 DRAW-STORE · IA-6).','There is no sync between signed-in devices (storage decision DRAW-STORE · IA-6).'));
   const chainBox=(ko,en)=>'<li><b>'+x(ko,en)+'</b><span data-na="NOT_AVAILABLE">—</span></li>';
-  const g45=group('4.5','macro-chain','3.5',x('연쇄 효과 지도','Causal-chain map'),
+  const g45=group('4.5','macro-chain','3.5',x('나비효과','Butterfly effect'),
    x('사건 → 원인 고리 → 영향받는 기업. 고리마다 근거 · 시차 · 확신도를 붙입니다. 방향 · 크기 · 확률은 만들지 않습니다.','Event → causal links → affected companies, each link with evidence, lag and confidence. No direction, size or probability is made.'),[
    row(['4.5.1'],x('사건 · 출발점','Event · starting point'),x('공시 · 뉴스 사건, 또는 매크로 동인 · 기술 · 밸류체인 단계 같은 개념.','A filing or news event, or a concept such as a macro driver, technology or value-chain stage.'),'pending',''),
    row(['4.5.2'],x('원인 고리','Causal links'),x('걸음마다 사실 · 추론 · 가설을 나눕니다. 한 걸음이라도 가설이면 경로 전체가 가설입니다.','Each step is fact, inference or hypothesis; one hypothesis step makes the whole path a hypothesis.'),'pending',''),
@@ -309,9 +309,9 @@
    row(['4.5.4'],x('근거 · 시차 · 확신도','Evidence · lag · confidence'),x('전제 · 시차 · 반대 경로 · 상쇄 요인 · 반증 조건 · 근거(발표 시각). 사람이 적거나 근거 문서에서 옮기며 자동으로 만들지 않습니다.','Premises, lag, counter-paths, offsets, falsifiers and evidence (release time), written by a person or taken from a source, never generated.'),'rule',
     '<p class="small">'+x('확신도 숫자는 검증 전에는 쓰지 않습니다.','No confidence number before validation.')+'</p>')],
    naLine('사건 → 고리 → 기업 지도는 화면이 없습니다(관계 자료원 결정 REL-SOURCE).','The event → link → company map has no screen yet (relationship source decision REL-SOURCE).')+
-   '<ol class="mc-chain" aria-label="'+x('연쇄 효과 지도 틀 · 빈 칸','Causal-chain map frame · empty')+'">'+chainBox('사건','Event')+chainBox('원인 고리','Causal links')+chainBox('영향받는 기업','Affected companies')+'</ol>');
+   '<ol class="mc-chain" aria-label="'+x('나비효과 틀 · 빈 칸','Butterfly-effect frame · empty')+'">'+chainBox('사건','Event')+chainBox('원인 고리','Causal links')+chainBox('영향받는 기업','Affected companies')+'</ol>');
   const g46='<section class="plab-group mc-group mc-tree" data-fn-group="4.6" data-ia-item="3.6" aria-labelledby="mc-46-title"><h2 class="plab-head" id="mc-46-title">'+stamp('4.6')+' <span class="hl">'+x('내용구성 트리','Content structure tree')+'</span></h2>'+
-   '<p class="plab-lede">'+x('입력 → 경고등 · 상태판 → 위치 · 순환매 · 산업 사이클 → 연쇄 효과를 한 장으로 봅니다. 예시 값은 공개 자료에서만 읽습니다.','Inputs → lights · board → position · rotation · industry cycles → chains on one page. Example values come from published data only.')+'</p>'+
+   '<p class="plab-lede">'+x('입력 → 경고등 · 상태판 → 위치 · 순환매 · 산업 사이클 → 나비효과를 한 장으로 봅니다. 예시 값은 공개 자료에서만 읽습니다.','Inputs → lights · board → position · rotation · industry cycles → butterfly effect on one page. Example values come from published data only.')+'</p>'+
    links([['#tree/macro','3.6 구조 트리 열기','Open the 3.6 structure tree']])+'</section>';
   return '<div class="mc-screen" data-ia-group="macro"><p class="plab-note" data-fn-note>'+x('도장 번호(4.x)는 기능 번호입니다. 위 메뉴 번호(3, 3.1~3.6)와 다릅니다.','Stamp numbers (4.x) are function numbers, not the menu numbers above (3, 3.1–3.6).')+'</p>'+
    '<p class="mc-legend">'+x('공식 국면 · 확률 = 승인된 모델이 게시할 때만 · 내 추정 = 보라색 점선, 이 기기에만 · 근거 세로선 = 탐색 전용','Official phase and probability = only when an approved model publishes · my estimate = dashed purple, this device only · evidence lines = exploration only')+'</p>'+

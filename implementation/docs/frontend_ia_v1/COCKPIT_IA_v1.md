@@ -1,3 +1,5 @@
+> **SUPERSEDED · 기록 보존용 (2026-10-24 정리).** 2026-10-09 정보구조다. 기능 구조는 `docs/SPEC/FUNCTION_HIERARCHY_v1.0.md`(2026-10-20)로 대체됐다(DC-08). 현재 기준은 `START_HERE.md` → `docs/SPEC/DIRECTION_CHANGES.md` → `CURRENT_HANDOFF.md`다. 이 문서로 현재 상태·방향을 판단하지 않는다.
+
 # Investment-System1 · Cockpit IA v1
 
 기준일: 2026-10-09 · 기준 canonical: `13e025b0e545fb3da14c15ce065a6a8e4a368eb0` (PR #73 승인 병합 이후) · 범위: 정보구조·화면 요구사항 문서만 · 사용자 PR 병합 승인 필요
