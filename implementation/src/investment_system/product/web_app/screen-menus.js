@@ -1,5 +1,6 @@
 /* Menus 1 ~ n+1 (draft boards QGV · Technical · Macro · News · Portfolio · Prompt · SystemTree · Lab and their phone boards).
-   P0 skeleton: each menu's numbered sections in the draft's order, every one 연결 전 until its P2 lane wires real data. */
+   P0 skeleton: each menu's numbered sections in the draft's order, every one 연결 전 until its P2 lane wires real data.
+   Registered as placeholders: a lane's own screen file (screen-<menu>.js, loaded earlier) keeps its real screen. */
 (function(){
 'use strict';
 const{h,register,parts:{head,section,pending}}=window.IS2;
@@ -40,5 +41,5 @@ const MENUS={
   ['lab-2','n+1.2 전진 검증','전진검증 원장 요약']]],
 };
 for(const[id,[no,title,lead,color,sections]]of Object.entries(MENUS))
- register(id,()=>h('div',{class:'screen',dataset:{menuScreen:id}},head(no,title,lead),...sections.map(([sid,stamp,what])=>section(sid,stamp,color,pending(what)))));
+ register(id,()=>h('div',{class:'screen',dataset:{menuScreen:id}},head(no,title,lead),...sections.map(([sid,stamp,what])=>section(sid,stamp,color,pending(what)))),{placeholder:true});
 })();
