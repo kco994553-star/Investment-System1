@@ -19,11 +19,23 @@
 //    prices and market caps). Exactly the expected requests leave; V is computed; no sentinel appears in the page record,
 //    the layer's status / read result / ranks, device storage, the console, any request URL or body, or the document text
 //    outside [data-ram-price] (assertRamOnly, the P2 display rule, itself checked to catch a leak). No CSP violation.
+//    The prepare click also saves Google on in the device database (the old sign-in click did; owner 2026-10-24).
 //  - C2 (kept events): a real click's event kept and replayed after its dispatch (from the test, from a timer of the same
-//    handler, for another kind than the click's own) is refused with no request; a nested run of the same event while its
-//    action is in flight passes.
-//  - D: a reload drops every RAM value (sign-in, Universe read, ranks, V) and sends nothing private; only the setting the
-//    user saved by a click stays.
+//    handler, for another kind than the click's own) is refused with no request; one click starts one top-level action (a
+//    second is ACTION_ALREADY_STARTED); a nested run passes only with its parent action's signal while that action is in flight.
+//    One key press is one action: Enter / Space on a focused button gives its trusted keydown and its own click, and only the
+//    click starts one (a held key's auto-repeat keydowns never do); a control without activation behaviour starts one from its
+//    keydown, once.
+//  - C3 (device quotes stopped, owner 2026-10-24, DC-18): a valid stored 'market' record that the old path reads (seeded raw, as
+//    the old screens stored it) is never read by quote() or the score path and never written through a view, not even inside a
+//    click (the real IndexedDB objects behind the gate), also not through what a gated request hands out (its source, its
+//    transaction, a handler's event target), and a version change outside an action is aborted; marketQuotes.count() gives a
+//    number, clear() on a real click removes the quote records only; no stored price leaves.
+//  - C4 (backup /5, owner 2026-10-24): in the browser DeviceBackup finds the reused ChartWorkbench / MacroCycleRing validators
+//    (globals of the two byte-identical modules): a /5 backup with a chart note restores on a real click and comes back in the
+//    opt-in backup; a bad section is refused by the old validator (BACKUP_INVALID), nothing written.
+//  - D: a reload drops every RAM value (sign-in, Universe read, ranks, V) and sends nothing private; only what the user saved
+//    by a click stays (the Universe source, the Google on record, read back without a click).
 // Synthetic data only: sentinel values are made-up decimals; the sheet id and the token are fixtures that exist in memory.
 const { chromium } = require('playwright');
 const assert = require('node:assert/strict');
@@ -44,6 +56,8 @@ const RANGE = "'Universe'!A1:C1025";// PrivateSubsetView.RANGE
 const APPEND_URL = SHEETS + '/v4/spreadsheets/' + SHEET_ID + '/values/' + encodeURIComponent("'Prices_D'!A1") + ':append?valueInputOption=RAW&insertDataOption=INSERT_ROWS';
 const VALUES_URL = SHEETS + '/v4/spreadsheets/' + SHEET_ID + '/values/' + encodeURIComponent(RANGE) + '?valueRenderOption=UNFORMATTED_VALUE&dateTimeRenderOption=SERIAL_NUMBER';
 const UNIVERSE_SOURCE_KEY = 'investment.web.v1.universe-source';
+// Stored device quotes seeded in C3 (made-up decimals, distinct from the Universe tab sentinels).
+const STORED_PRICE = '612.0761937', STORED_HIST = '401.0761953';
 // Live-only public files this test leaves unpublished: their 404 is intended (no console error is accepted for anything else).
 const UNPUBLISHED = ['sec-public-inputs.json', 'forward-validation-ledger.json'];
 const FRONTEND_SUFFIXES = ['.html', '.css', '.js', '.woff2', '.txt', '.png', '.svg'];
@@ -73,7 +87,7 @@ let phase = 'START';
 function checkBuild(out) {
   phase = 'build output';
   const reused = R.reused(), served = fs.readdirSync(out).filter((n) => isFile(path.join(out, n)));
-  assert.equal(reused.length, 57);
+  assert.equal(reused.length, 59);
   for (const name of reused) assert.equal(sha(path.join(out, name)), sha(R.oldPath(name)), name + ' byte-identical to web_assets');
   for (const name of fs.readdirSync(R.NEW).filter((n) => isFile(R.newPath(n)))) assert.equal(sha(path.join(out, name)), sha(R.newPath(name)), name + ' from web_app');
   const stray = fs.readdirSync(R.OLD).filter((n) => (FRONTEND_SUFFIXES.includes(path.extname(n)) || n === 'manifest.json') && !reused.includes(n) && !isFile(R.newPath(n)) && served.includes(n));
@@ -102,7 +116,11 @@ function record(context, page) {
 // Test-only buttons (not part of the site): each handler passes its event to one layer action and keeps the outcome
 // ({ok, value} or {ok:false, code}) for the test to read. 'keep' runs a WRITE action and keeps its event, which a timer of the
 // same handler then replays for a write and a Universe read; 'nest' runs a SYNC action whose second step, after a timer, is a
-// nested run of the same event. The bar is fixed at the top (CSSOM) so no screen element covers it.
+// nested run of the same event presenting the SYNC action's signal; 'orphan' tries that step without the signal; 'twice' starts
+// a second top-level action from the same click; 'importQuote' / 'putQuote' run the old quote writer and a raw put of the
+// stopped record through views inside a WRITE click; 'escape' tries the stopped record through the objects a gated request
+// hands out; 'clearQuotes' is the settings button "저장된 시세 삭제". The bar is fixed
+// at the top (CSSOM) so no screen element covers it.
 async function addButtons(page) {
   await page.evaluate((id) => {
     if (document.querySelector('[data-test-actions]')) return;
@@ -111,7 +129,21 @@ async function addButtons(page) {
     const prefs = { version: 1, interests: [], groups: [] };
     const acts = { source: (e) => I.store.universeSource.set(e, id), prepare: (e) => I.prices.prepare(e), login: (e) => I.prices.login(e), read: (e) => I.prices.readUniverse(e),
       keep: (e) => { window.__kept = e; window.__replay = new Promise((done) => setTimeout(async () => done({ write: await outcome(() => I.store.savePrefs(e, prefs)), read: await outcome(() => I.prices.readUniverse(e)) }), 50)); return I.action.run(e, 'WRITE', () => 'kept'); },
-      nest: (e) => { window.__nested = e; return I.action.run(e, 'SYNC', async () => { await new Promise((r) => setTimeout(r, 30)); return I.action.run(e, 'WRITE', () => 'nested'); }); } };
+      nest: (e) => { window.__nested = e; return I.action.run(e, 'SYNC', async (signal) => { await new Promise((r) => setTimeout(r, 30)); return I.action.run(e, 'WRITE', () => 'nested', { parent: signal }); }); },
+      orphan: (e) => I.action.run(e, 'SYNC', async () => { await new Promise((r) => setTimeout(r, 30)); return I.action.run(e, 'WRITE', () => 'orphan'); }),
+      twice: (e) => { const first = I.store.savePrefs(e, prefs); let second = null; try { I.store.savePrefs(e, prefs); second = 'OK'; } catch (err) { second = String(err && err.message); } return { first: first.version, second }; },
+      importQuote: (e) => I.action.run(e, 'WRITE', () => window.DeviceActual.applyMarketImport(I.prices.priceView, window.__import.catalog, window.__import.result, { method: 'paste' })),
+      putQuote: (e) => I.action.run(e, 'WRITE', () => new Promise((resolve, reject) => { const r = I.prices.priceView.indexedDB.open('investment-device-actual-v1');
+        r.onsuccess = () => { const db = r.result; try { db.transaction('snapshots', 'readwrite').objectStore('snapshots').put({ q: 1 }, 'market'); resolve('PUT'); } catch (err) { reject(err); } finally { db.close(); } }; r.onerror = () => reject(Error('OPEN_FAILED')); })),
+      escape: (e) => I.action.run(e, 'WRITE', () => new Promise((resolve, reject) => { const r = I.prices.priceView.indexedDB.open('investment-device-actual-v1');
+        r.onsuccess = (ev) => { const db = r.result, out = {}, attempt = (k, f) => { try { f(); out[k] = 'DONE'; } catch (err) { out[k] = String(err && err.message); } };
+          try { const q = db.transaction('snapshots', 'readwrite').objectStore('snapshots').get('google-sheet-settings');
+            attempt('source', () => q.source.put({ q: 1 }, 'market')); attempt('transaction', () => q.transaction.objectStore('snapshots').put({ q: 1 }, 'market'));
+            attempt('eventTarget', () => ev.target.result.transaction('snapshots', 'readwrite').objectStore('snapshots').delete('market'));
+            q.onsuccess = (e2) => { attempt('handlerTarget', () => e2.target.source.put({ q: 1 }, 'market-import-history')); };
+            q.transaction.oncomplete = () => { db.close(); resolve(out); }; q.transaction.onabort = () => { db.close(); reject(Error('ABORTED')); };
+          } catch (err) { db.close(); reject(err); } }; r.onerror = () => reject(Error('OPEN_FAILED')); })),
+      clearQuotes: (e) => I.store.marketQuotes.clear(e), restore5: (e) => I.store.backup.restore(e, window.__b5) };
     const bar = document.createElement('div'); bar.dataset.testActions = '';
     for (const [k, v] of [['position', 'fixed'], ['top', '0'], ['left', '0'], ['z-index', '2147483647']]) bar.style.setProperty(k, v);
     for (const [name, fn] of Object.entries(acts)) {
@@ -124,6 +156,14 @@ async function addButtons(page) {
     }
     document.body.appendChild(bar);
   }, SHEET_ID);
+}
+// The device database's records as stored (raw, test-only read): {key: value}; {} when the database does not exist.
+async function deviceRecords(page) {
+  return page.evaluate(async () => {
+    const names = (await indexedDB.databases()).map((d) => d.name); if (!names.includes('investment-device-actual-v1')) return {};
+    return new Promise((resolve, reject) => { const r = indexedDB.open('investment-device-actual-v1'); r.onsuccess = () => { const db = r.result, st = db.transaction('snapshots', 'readonly').objectStore('snapshots'), keys = st.getAllKeys(), vals = st.getAll();
+      vals.onsuccess = () => { const out = {}; keys.result.forEach((k, i) => { out[k] = vals.result[i]; }); db.close(); resolve(out); }; vals.onerror = () => reject(Error('READ')); }; r.onerror = () => reject(Error('OPEN')); });
+  });
 }
 async function click(page, name) { await page.locator('[data-test-action="' + name + '"]').click(); return page.evaluate((n) => window.__out[n], name); }
 
@@ -197,11 +237,14 @@ async function scores(page) {
       await I.data.list('news'); await I.data.list('sec'); await I.data.shares(); await I.data.static('entities.json');
       return { quote: await I.prices.quote({ code: 'NASDAQ:NVDA', ticker: 'NVDA' }), settings: await I.prices.deviceSettings(), holdings: keep(await I.store.holdings()),
         stored: (await I.engines.virtual.stored({ reportDate: '2026-10-20' })).state, forward: (await I.engines.virtual.forward()).state, draft: typeof (await I.engines.target.draft()), macro: (await I.engines.macro.current()) !== undefined,
+        quotesHeld: await I.store.marketQuotes.count(), rank: (await I.qgv.page()).rank_label,
         status: I.prices.status(), shares: I.data.state('sec-universe-shares.json').state, ledger: I.data.state('forward-validation-ledger.json').state };
     });
     assert.deepEqual(reads.quote, { state: 'NA', reason: 'NO_DEVICE_PRICE' });
     assert.deepEqual(reads.settings, { stored: false, enabled: false }, 'no device database: the saved Google setting is not read (nothing created)');
     assert.deepEqual(reads.holdings, { state: 'NOT_AVAILABLE', reason: 'DEVICE_STORE_NOT_OPENED' });
+    assert.equal(reads.quotesHeld, 0, 'no device database: no stored quote, and none opened or created to count');
+    assert.equal(reads.rank, '임시 V 기준 순위 · 공식 순위 아님', 'the rank wording comes from the accessor');
     assert.equal(reads.stored, 'NOT_AVAILABLE', 'stored run after the start day, without sign-in and Worker address');
     assert.equal(reads.forward, 'NOT_PUBLISHED');
     assert.equal(reads.draft, 'object');
@@ -243,6 +286,8 @@ async function scores(page) {
         'prices.syncUniverse': (e) => I.prices.syncUniverse(e), 'prices.history': (e) => I.prices.history(e, 'nvda'),
         'target.build': (e) => T.build(e), 'target.finalize': (e) => T.finalize(e), 'target.answer': (e) => T.answer(e, { symbol: 'NVDA', answer: 'AGREE' }),
         'target.selectRuleB': (e) => T.selectRuleB(e), 'target.compare': (e) => T.compare(e), 'target.syncScoringPrices': (e) => T.syncScoringPrices(e),
+        'store.marketQuotes.clear': (e) => I.store.marketQuotes.clear(e), 'store.universeSource.useSheet': (e) => I.store.universeSource.useSheet(e),
+        'store.backup.restore /5': (e) => I.store.backup.restore(e, JSON.stringify({ schema: 'investment-device-backup/5' })),
       };
       const events = { none: () => undefined, object: () => ({ type: 'click', isTrusted: true }), mouse: () => new MouseEvent('click'), enter: () => new KeyboardEvent('keydown', { key: 'Enter' }), submit: () => new Event('submit'),
         forgedProto: () => Object.create(Event.prototype, { isTrusted: { value: true }, type: { value: 'click' } }),
@@ -271,11 +316,12 @@ async function scores(page) {
         worker: await outcome(() => pv.fetch(worker + '/quote', {})), storeWrite: await outcome(() => I.store.storage.setItem('x', 'y')), viewWrite: await outcome(() => pv.localStorage.setItem('x', 'y')),
         sessionWrite: await outcome(() => pv.sessionStorage.setItem('x', 'y')), idb: await outcome(() => pv.indexedDB.open('investment-device-actual-v1', 1)),
       };
-      return { refused, count: Object.keys(calls).length * Object.keys(events).length, synthetic, submitted, views, blocked: I.action.blocked() };
+      return { refused, count: Object.keys(calls).length * Object.keys(events).length, synthetic, buttons: document.querySelectorAll('[data-test-action]').length, submitted, views, blocked: I.action.blocked() };
     }, { id: SHEET_ID, values: VALUES_URL, append: APPEND_URL });
     assert.ok(b.count >= 100);
     assert.deepEqual(b.refused, {}, 'every direct call / plain object / forged or synthetic event is refused with CLICK_REQUIRED');
-    assert.deepEqual(Object.values(b.synthetic), Array(12).fill('CLICK_REQUIRED'), 'synthetic clicks on the buttons are refused');
+    assert.equal(b.buttons, 13);
+    assert.deepEqual(Object.values(b.synthetic), Array(2 * b.buttons).fill('CLICK_REQUIRED'), 'synthetic clicks on the buttons are refused');
     assert.equal(b.submitted.length, 3, 'requestSubmit → submit; submitter.click() → click, then submit');
     assert.ok(b.submitted.filter(([trusted]) => trusted).length >= 1, 'the browser marked a script-made submit trusted');
     assert.deepEqual(b.submitted.map(([, a, c]) => [a, c]), Array(3).fill(['CLICK_REQUIRED', 'CLICK_REQUIRED']), 'and it is refused: a submit is not a gesture');
@@ -296,6 +342,7 @@ async function scores(page) {
     at = rec.log.length;
     assert.deepEqual(await click(page, 'prepare'), { ok: true, value: null });
     assert.deepEqual(all(since(at)), ['GET ' + GIS_STYLE, 'GET ' + GIS_CLIENT], 'prepare loads the GIS stylesheet, then the GIS script, nothing else');
+    assert.deepEqual(await deviceRecords(page), { 'google-sheet-settings': { schema: 'device-google-sheet-settings/1', enabled: true, spreadsheet_id: '', range: 'Quotes!A1:C22' } }, 'the prepare click saved Google on (the old sign-in click did)');
     phase = 'C login';
     at = rec.log.length;
     assert.deepEqual(await click(page, 'login'), { ok: true, value: null });
@@ -332,7 +379,8 @@ async function scores(page) {
     phase = 'C sentinels';
     const layer = await page.evaluate(() => { const P = window.IS2.prices; return { status: JSON.stringify(P.status()), ranks: JSON.stringify(P.universeRanks(), (k, v) => (v instanceof Map ? [...v] : v)), rank: JSON.stringify(P.rankFor({ ticker: 'NVDA' })) }; });
     const stC = await site.storage(page);
-    assert.deepEqual([stC.local, stC.session, stC.idb], [1, 0, 0], 'only the saved source; no price stored; no database created');
+    assert.deepEqual([stC.local, stC.session, stC.idb], [1, 0, 1], 'only the saved source and the Google on record of the prepare click; no price stored');
+    assert.deepEqual(Object.keys(await deviceRecords(page)), ['google-sheet-settings']);
     const requestText = rec.log.map((r) => r.url + '\n' + r.body);
     const where = {
       page: site.leaks([c.json, c.coverage], SENTINELS), layer: site.leaks([layer.status, layer.ranks, layer.rank, JSON.stringify(read.value)], SENTINELS),
@@ -362,10 +410,108 @@ async function scores(page) {
     assert.deepEqual(replayed.later, { read: 'CLICK_REQUIRED', write: 'CLICK_REQUIRED', login: 'CLICK_REQUIRED' }, 'replayed later without a gesture: refused');
     assert.deepEqual(await click(page, 'nest'), { ok: true, value: 'nested' }, 'a nested run of the same event while its action is in flight passes');
     assert.equal(await page.evaluate(async () => { try { await window.IS2.action.run(window.__nested, 'WRITE', () => 1); return 'OK'; } catch (err) { return err.message; } }), 'CLICK_REQUIRED', 'once its action settled, the event is a replay');
+    assert.deepEqual(await click(page, 'orphan'), { ok: false, code: 'CLICK_REQUIRED' }, 'the next step without its parent signal is a replay');
+    const twice = await click(page, 'twice');
+    assert.deepEqual([twice.ok, twice.value.second], [true, 'ACTION_ALREADY_STARTED'], 'one click starts one top-level action');
+    // One key press, one action: a button turns Enter / Space into its own trusted click, so only the click starts one; a held
+    // key's auto-repeat keydowns never start one; a control without activation behaviour starts one from its keydown, once.
+    await page.evaluate(() => { const A = window.IS2.action, log = window.__keys = [], bar = document.querySelector('[data-test-actions]');
+      const add = (el, name) => { for (const t of ['keydown', 'click']) el.addEventListener(t, (e) => { if (t === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return; try { A.run(e, 'WRITE', () => null); log.push(name + ' ' + t + ' started'); } catch (err) { log.push(name + ' ' + t + (e.repeat ? ' (repeat) ' : ' ') + err.message); } }); bar.appendChild(el); };
+      const b = document.createElement('button'); b.type = 'button'; b.dataset.testKey = 'button'; b.textContent = 'test key'; add(b, 'button');
+      const d = document.createElement('div'); d.tabIndex = 0; d.dataset.testKey = 'div'; d.textContent = 'test key div'; add(d, 'div'); });
+    const keys = async (sel, fn) => { await page.evaluate(() => { window.__keys.length = 0; }); await page.focus(sel); await fn(); return page.evaluate(() => [...window.__keys]); };
+    assert.deepEqual(await keys('[data-test-key="button"]', () => page.keyboard.press('Enter')), ['button keydown CLICK_REQUIRED', 'button click started'], 'Enter on a button: its click starts the action, its keydown does not');
+    assert.deepEqual(await keys('[data-test-key="button"]', () => page.keyboard.press(' ')), ['button keydown CLICK_REQUIRED', 'button click started'], 'Space on a button: the same');
+    const held = await keys('[data-test-key="button"]', async () => { await page.keyboard.down('Enter'); await page.keyboard.down('Enter'); await page.keyboard.down('Enter'); await page.keyboard.up('Enter'); });
+    assert.ok(held.length >= 4 && !held.some((x) => / keydown started/.test(x)) && held.includes('button keydown (repeat) CLICK_REQUIRED'), held.join(' | '));
+    assert.equal(held.filter((x) => x === 'button click started').length, held.filter((x) => / click /.test(x)).length, 'every click the browser fired is its own gesture: one action each');
+    assert.deepEqual(await keys('[data-test-key="div"]', () => page.keyboard.press('Enter')), ['div keydown started'], 'no activation behaviour: the keydown is the gesture');
+    assert.deepEqual(await keys('[data-test-key="div"]', async () => { await page.keyboard.down('Enter'); await page.keyboard.down('Enter'); await page.keyboard.up('Enter'); }), ['div keydown started', 'div keydown (repeat) CLICK_REQUIRED'], 'its auto-repeat is refused');
+    await page.evaluate(() => document.querySelectorAll('[data-test-key]').forEach((el) => el.remove()));
     assert.deepEqual(since(at), [], 'no request from any replay'); assert.equal(rec.counts.values, 1, 'no second Sheets read');
-    assert.equal(JSON.stringify((await site.storage(page)).localItems), storeC2, 'no write from any replay');
+    const afterC2 = (await site.storage(page)).localItems;
+    assert.deepEqual(Object.keys(afterC2).sort(), [...Object.keys(JSON.parse(storeC2)), 'investment.web.v1.personal'].sort(), 'no write from any replay (only the first save of "twice")');
+    assert.equal(JSON.stringify(Object.fromEntries(Object.entries(afterC2).filter(([k]) => k !== 'investment.web.v1.personal'))), storeC2);
     assert.equal(await page.evaluate(() => window.IS2.action.blocked()), blockedC2, 'refused at the gate before any request or write was tried');
     assert.deepEqual(seen.errors, [], 'no console error');
+
+    // ---------------------------------------------------------------- C3: device quotes stopped (DC-18)
+    phase = 'C3 stopped quotes';
+    at = rec.log.length;
+    const blockedC3 = await page.evaluate(() => window.IS2.action.blocked());
+    // What the old screens stored before: a valid market record (DeviceMarket's own maker) and an import history, written raw.
+    const seeded = await page.evaluate(async ({ price, hist }) => {
+      const I = window.IS2, catalog = await I.data.static('actual-catalog.json'), asml = catalog.instruments.find((x) => x.ticker === 'ASML'), lrcx = catalog.instruments.find((x) => x.ticker === 'LRCX'), at = new Date().toISOString();
+      const market = window.DeviceMarket.makeMarket(catalog, [{ security_reference: asml.security_reference, price, currency: asml.currency, as_of: at, available_at: at, source: 'MANUAL' }], [], null, Date.now());
+      const history = { schema: 'device-market-import-history/1', entries: [{ at, quotes: [{ price: hist }] }] };
+      await new Promise((resolve, reject) => { const r = indexedDB.open('investment-device-actual-v1'); r.onsuccess = () => { const db = r.result, tx = db.transaction('snapshots', 'readwrite'), st = tx.objectStore('snapshots');
+        st.put(market, 'market'); st.put(history, 'market-import-history'); tx.oncomplete = () => { db.close(); resolve(); }; tx.onerror = () => reject(Error('SEED')); }; r.onerror = () => reject(Error('SEED_OPEN')); });
+      window.__import = { catalog, result: { quotes: [{ security_reference: lrcx.security_reference, price: hist, currency: lrcx.currency, as_of: at, available_at: at, source: 'GOOGLEFINANCE', time_status: 'KNOWN' }], fx: [], successes: [{ name: lrcx.label }], failures: [], warnings: [] } };
+      // The old path on the raw window reads it (so the record is one the old screens would score with).
+      const old = await window.DeviceActual.ramQuote(window, catalog, 'ASML');
+      const QS = window.QgvScores, ids = [{ company_id: 'asml', ticker: 'ASML' }], inputs = I.data.get('sec-qgv2.json');
+      const oldQuotes = await QS.collectQuotes(window, { identities: ids, v2Inputs: inputs, catalog });
+      return { old: old ? String(old.price) : null, oldScored: Object.values(oldQuotes).some((q) => String(q.price) === price), market: JSON.stringify(market) };
+    }, { price: STORED_PRICE, hist: STORED_HIST });
+    assert.deepEqual([seeded.old, seeded.oldScored], [STORED_PRICE, true], 'a valid stored quote: the old path reads it and scores with it');
+    const c3 = await page.evaluate(async (price) => {
+      const I = window.IS2, catalog = await I.data.static('actual-catalog.json'), ids = [{ company_id: 'asml', ticker: 'ASML' }];
+      const layer = await window.QgvScores.collectQuotes(I.qgv.scoreView, { identities: ids, v2Inputs: I.data.get('sec-qgv2.json'), catalog });
+      return { quote: await I.prices.quote({ company_id: 'asml', ticker: 'ASML' }), scored: Object.values(layer).some((q) => String(q.price) === price), count: await I.store.marketQuotes.count(),
+        page: JSON.stringify(await I.qgv.page()), status: JSON.stringify(I.prices.status()) };
+    }, STORED_PRICE);
+    assert.deepEqual([c3.quote, c3.scored, c3.count], [{ state: 'NA', reason: 'NO_DEVICE_PRICE' }, false, 2], 'the layer reads no stored quote; count() is a number');
+    assert.deepEqual(await click(page, 'importQuote'), { ok: false, code: 'STORAGE' }, 'the old quote writer fails as a whole inside a WRITE click');
+    assert.deepEqual(await click(page, 'putQuote'), { ok: false, code: 'MARKET_STORE_STOPPED' }, 'a raw put of the record through a view is refused (real IndexedDB objects)');
+    assert.equal(await page.evaluate(() => window.IS2.action.blocked()) - blockedC3, 2, 'both refusals counted');
+    // Nothing a gated request hands out leads behind the gate (the real IndexedDB objects): its source, its transaction, the
+    // open request's result through event.target, a handler's event target; reads stay absent; a version change is aborted.
+    const blockedEsc = await page.evaluate(() => window.IS2.action.blocked());
+    assert.deepEqual(await click(page, 'escape'), { ok: true, value: { source: 'MARKET_STORE_STOPPED', transaction: 'MARKET_STORE_STOPPED', eventTarget: 'MARKET_STORE_STOPPED', handlerTarget: 'MARKET_STORE_STOPPED' } });
+    const esc = await page.evaluate(async () => { const I = window.IS2, D = I.prices.priceView.indexedDB, b0 = I.action.blocked();
+      const read = await new Promise((resolve, reject) => { const r = D.open('investment-device-actual-v1'); r.onsuccess = () => { const db = r.result, q = db.transaction('snapshots', 'readonly').objectStore('snapshots').get('google-sheet-settings');
+        q.onsuccess = (ev) => { const viaSource = q.source.get('market'), viaTarget = ev.target.transaction.objectStore('snapshots').getKey('market-import-history');
+          viaTarget.onsuccess = () => { db.close(); resolve({ viaSource: viaSource.result === undefined ? 'ABSENT' : 'READ', viaTarget: viaTarget.result === undefined ? 'ABSENT' : 'READ' }); }; }; }; r.onerror = () => reject(Error('OPEN')); });
+      const upgrade = await new Promise((resolve) => { const r = D.open('investment-device-actual-v1', 2); r.onsuccess = () => { r.result.close(); resolve('OPENED'); }; r.onerror = () => resolve(r.error ? r.error.name : 'ERROR'); });
+      const version = (await indexedDB.databases()).find((d) => d.name === 'investment-device-actual-v1').version;
+      return { read, upgrade, version, blocked: I.action.blocked() - b0 }; });
+    assert.deepEqual(esc, { read: { viaSource: 'ABSENT', viaTarget: 'ABSENT' }, upgrade: 'AbortError', version: 1, blocked: 1 }, 'reads stay absent; a version change outside an action is aborted');
+    assert.equal(await page.evaluate(() => window.IS2.action.blocked()) - blockedEsc, 5, 'four refused writes and the aborted version change counted');
+    const rawAfter = await deviceRecords(page);
+    assert.deepEqual(Object.keys(rawAfter).sort(), ['google-sheet-settings', 'market', 'market-import-history']);
+    assert.equal(JSON.stringify(rawAfter.market), seeded.market, 'the stored record is untouched, never deleted on its own');
+    assert.deepEqual(await click(page, 'clearQuotes'), { ok: true, value: 2 }, '"저장된 시세 삭제" removes the two quote records');
+    assert.deepEqual(Object.keys(await deviceRecords(page)), ['google-sheet-settings'], 'the Google setting stays');
+    assert.equal(await page.evaluate(() => window.IS2.store.marketQuotes.count()), 0);
+    assert.deepEqual(since(at), [], 'no request in C3');
+    assert.deepEqual(site.leaks([c3.page, c3.status, JSON.stringify(c3.quote), ...rec.consoleText, ...rec.log.map((r) => r.url + r.body)], [STORED_PRICE, STORED_HIST]), [], 'no stored price left the device');
+    assert.deepEqual(seen.errors, [], 'no console error');
+
+    // ---------------------------------------------------------------- C4: backup /5 through the old validators
+    phase = 'C4 backup /5';
+    at = rec.log.length;
+    const b5 = await page.evaluate(async () => {
+      const I = window.IS2, CW = window.ChartWorkbench, MC = window.MacroCycleRing, AT = '2026-10-13T00:00:00.000Z';
+      const note = { symbol: 'SYNTH', interval: 'D', price_basis: 'RAW_CLOSE', author: 'USER', text: '', created_at: AT, updated_at: AT, id: 'u-note001', schema: 'chart-annotation/1', kind: 'LINE', points: [{ time: '2025-01-06', price: 100 }, { time: '2025-02-03', price: 110 }] };
+      const empty = await I.store.backup.create({ userObjects: true }), plain = await I.store.backup.create();
+      const payload = JSON.parse(JSON.stringify(empty)); payload.user_objects = { chart: { schema: CW.USER_SCHEMA, items: [note] }, macro: null }; window.__b5 = JSON.stringify(payload);
+      let bad = null; try { await I.store.backup.restore(null, '{}'); } catch (err) { bad = err.message; }
+      return { validators: typeof CW.parseUserExport === 'function' && typeof MC.parseUserExport === 'function', empty: empty.schema, plain: plain.schema, noClick: bad,
+        badSection: JSON.stringify({ ...payload, user_objects: { chart: { schema: 'chart-user-objects/9', items: [] }, macro: null } }) };
+    });
+    assert.deepEqual([b5.validators, b5.empty, b5.plain, b5.noClick], [true, 'investment-device-backup/5', 'investment-device-backup/4', 'CLICK_REQUIRED']);
+    const before5 = (await site.storage(page)).localItems;
+    await page.evaluate((t) => { window.__b5good = window.__b5; window.__b5 = t; }, b5.badSection);
+    assert.deepEqual(await click(page, 'restore5'), { ok: false, code: 'BACKUP_INVALID' }, 'the old validator refuses a bad section in the browser');
+    assert.deepEqual((await site.storage(page)).localItems, before5, 'nothing written');
+    await page.evaluate(() => { window.__b5 = window.__b5good; });
+    assert.deepEqual(await click(page, 'restore5'), { ok: true, value: { schema: 'investment-device-backup/5' } });
+    const after5 = await page.evaluate(async () => (await window.IS2.store.backup.create({ userObjects: true })).user_objects.chart.items.map((o) => o.id));
+    assert.deepEqual(after5, ['u-note001'], 'the restored note comes back in the opt-in backup');
+    assert.deepEqual(since(at), [], 'no request in C4');
+    assert.deepEqual(seen.errors, [], 'no console error');
+    const savedBeforeReload = Object.keys((await site.storage(page)).localItems).sort();
+    assert.ok(savedBeforeReload.includes('investment.web.v1.chart-user-objects') && savedBeforeReload.includes(UNIVERSE_SOURCE_KEY));
 
     // ---------------------------------------------------------------- D: reload clears RAM
     phase = 'D reload';
@@ -383,12 +529,15 @@ async function scores(page) {
     assert.deepEqual(await click(page, 'read'), { ok: false, code: 'AUTH_REQUIRED' }, 'a read after the reload needs a new sign-in');
     assert.deepEqual(outside(since(at)), [], 'refused before any request');
     const stD = await site.storage(page);
-    assert.deepEqual([Object.keys(stD.localItems), stD.session, stD.idb], [[UNIVERSE_SOURCE_KEY], 0, 0], 'only the setting the user saved stays on the device');
+    assert.deepEqual([Object.keys(stD.localItems).sort(), stD.session, stD.idb], [savedBeforeReload, 0, 1], 'only what the user saved by a click stays on the device');
+    at = rec.log.length;
+    assert.deepEqual(await page.evaluate(async () => { const r = await window.IS2.prices.deviceSettings(); return { ...r, status: window.IS2.prices.status().google.enabled }; }), { stored: true, enabled: true, status: true }, 'a returning device reads the saved Google on without a click');
+    assert.deepEqual(since(at), [], 'reading it sent nothing');
     assert.deepEqual(site.leaks([after.json, stD.localItems, stD.sessionItems, await page.evaluate(() => document.documentElement.textContent), ...rec.consoleText, ...rec.log.map((r) => r.url + r.body)], SENTINELS), []);
     assert.deepEqual(rec.counts, { style: 1, client: 1, values: 1, unexpected: [] }, 'no further Google request');
     assert.deepEqual(seen.outside.filter((u) => ![GIS_STYLE, GIS_CLIENT, VALUES_URL].includes(u)), []);
     assert.deepEqual(seen.errors, [], 'no console error');
     await context.close();
-    console.log('web app data layer: build reuse, no-action reads (A), refused imitations (B), click-only prices with no leak (C), kept events refused (C2), RAM cleared on reload (D) ok');
+    console.log('web app data layer: build reuse, no-action reads (A), refused imitations (B), click-only prices with no leak (C), kept events refused and one action per click (C2), stored device quotes stopped (C3), backup /5 (C4), RAM cleared on reload (D) ok');
   } finally { await browser.close(); await s.close(); }
 })().catch((e) => { console.error('FAILED at', phase); console.error(e); process.exitCode = 1; });
