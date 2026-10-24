@@ -25,10 +25,12 @@ Price status per code (fixed codes, also published as the row's `price_status`):
   PRICE_SYMBOL_UNMAPPED        no IEX symbol for the row (a TARGET outside the US track, an invalid symbol)
   ADR_RATIO_UNCONFIRMED        foreign private issuer row (ifrs-full filer, or a known 20-F / 40-F filer whatever its
                                taxonomy: owner decision D7 2026-10-24): listed security / ADS ratio not confirmed (D-CV10)
-  SPLIT_AFTER_SHARE_COUNT      conservative split rule (D-CV11; D6 (a), qgv_official.split_after_share_count): F_k evidence of
-                               a split between the count's period end and its filing, or a verified SPLITS window below. A
-                               split AFTER the count's filing is NOT detected (known limitation: V and rank off by the split
-                               ratio until the next 10-Q / 10-K; owner acceptance pending)
+  SPLIT_AFTER_SHARE_COUNT      split rules (D-CV11): D6 (a) qgv_official.split_after_share_count, F_k evidence of a split
+                               between the count's period end and its filing, or a verified SPLITS window below; D6 (b)
+                               qgv_official.split_check (owner decision CV-SPLIT (ii) 2026-10-24), a raw month-end / today
+                               price step of at most 45 days since the count's period end inside a split band. A split AFTER
+                               the count's filing is covered by D6 (b) where the store has short steps since the count's
+                               period end; otherwise residual (V and rank off by the split ratio until the next 10-Q / 10-K)
   PRICE_IDENTITY_CONFLICT      TARGET row whose symbol is a withdrawn Universe code's (existing rule)
   IDENTITY_CONFLICT_WITHDRAWN  withdrawn row (no price is given)
 """
@@ -97,9 +99,13 @@ MONTHEND_BASIS_CUTS: dict[str, tuple[str, str, str]] = {
 # chain is evaluated at collection over companyfacts filed up to then (periodic 10-K / 10-Q XBRL only; a split announced in an
 # 8-K or effective after the latest 10-Q leaves no fact until the next periodic filing restates the count), sec-qgv2.json does
 # not carry the count's filing date, the run holds companyfacts of one shard only, and IEX HIST carries no corporate actions.
-# This table therefore stays EMPTY: it is the hook for a verified source the owner may approve later (D6 (b) U8 split_check
-# rows / (c)), never filled by hand here. Until then a split after the count's filing leaves the official V and rank off by the
-# split ratio until the next periodic filing (KNOWN LIMITATION, tests/test_qgv_official.py; owner acceptance pending).
+# This table therefore stays EMPTY: it is the hook for a verified source the owner may approve later, never filled by hand
+# here. A split after the count's filing is covered by D6 (b) (owner decision CV-SPLIT (ii) 2026-10-24,
+# qgv_official.split_check: a RAM-only comparison of the IEX raw month-end trades of the private store and today's raw price,
+# on steps of at most 45 days since the count's period end; a hit withholds the price, it never changes one) where the store
+# has short steps since the count's period end; otherwise residual: the official V and rank are off by the split ratio until
+# the next periodic filing (tests/test_qgv_official.py). The U8 store of stamp 20261023 holds only fiscal-year-end months, so
+# D6 (b) covers every code only after recent month-ends of every Universe code are in the store (a separate backfill).
 SPLITS: dict[str, tuple[tuple[str, str], ...]] = {}
 
 
