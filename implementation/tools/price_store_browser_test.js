@@ -2,9 +2,10 @@
 // Price store (Prices_D / Prices_M in the user's own sheet) on the built site. Every request is intercepted: same-origin
 // files come from the local build (public screens empty), Google Sheets and the private history Worker are stateful
 // SYNTHETIC mocks, anything else is aborted and counted. Checks: OFF until the user's click; the click creates only the two
-// price tabs with the fixed header; app open appends the core symbols' daily bars (first run 5y); a reload asks the Worker
-// for nothing already stored; a company screen reuses stored rows (Worker-allowlisted symbols only); the Universe504 button
-// requests only allowlisted symbols; the S17 runner reads the store and gets READY without new Worker requests; a different
+// price tabs with the fixed header; CLICK-ONLY (owner decision 2026-10-23): app open, sign-in, a company screen and the S17
+// report make NO Worker request and no append; the core button appends the core symbols' daily bars (first run 5y); the
+// company button stores one symbol's month-ends; the Universe504 button shows progress (n/total · rows · current symbol, no
+// close), stops on 중단 and resumes skipping the received symbols; the S17 runner reads the store and gets READY; a different
 // header is never written; no close reaches localStorage, sessionStorage or the console. Also measures the read/parse time
 // of a synthetic full-size store (504 × 60 month-ends + 40 × 1260 daily bars).
 const assert = require('node:assert/strict');
@@ -136,7 +137,7 @@ async function waitSync(page, kind) {
   const check = async (name, fn) => { try { await fn(); pass++; console.log('PASS ' + name); } catch (e) { fail++; console.log('FAIL ' + name + ' ' + (e.code === 'ERR_ASSERTION' ? 'CONTRACT' : 'EXECUTION') + ' ' + String(e.message).slice(0, 400)); } };
   try {
     const sheet = sheetState({ Quotes: [['code', 'price', 'tradetime']], Example_Prices_D: [['do', 'not', 'touch']] });
-    await check('OFF until the click; the click creates Prices_D / Prices_M; app open stores the core daily bars (5y)', async () => {
+    await check('OFF until the click; the click creates Prices_D / Prices_M; no request on open; the core button stores the core daily bars (5y)', async () => {
       const { context, page, traffic } = await open(browser, { sheet });
       try {
         await login(page);
@@ -145,6 +146,12 @@ async function waitSync(page, kind) {
         assert.equal(traffic.worker.length, 0, 'no Worker request while OFF');
         assert.equal(sheet.writes.length, 0);
         await page.locator('[data-price-store-action="enable"]').click();
+        await page.locator('[data-price-store][data-price-store-state="READY"]').waitFor();
+        await page.waitForTimeout(1500);
+        assert.equal(traffic.worker.length, 0, 'turning the store on (and the app-open load it triggers) requests nothing');
+        assert.ok(sheet.writes.every((w) => /^(ADD Prices_[DM]|APPEND Prices_[DM] 1)$/.test(w)), 'only the tabs and their header rows: ' + sheet.writes.join(','));
+        assert.ok((await page.locator('[data-price-store]').textContent()).includes('가격 요청은 버튼을 눌렀을 때만'));
+        await page.locator('[data-price-store-action="core"]:not([disabled])').click();
         await waitSync(page, 'CORE');
         assert.deepEqual(sheet.tabs.get('Prices_D')[0], HEAD);
         assert.deepEqual(sheet.tabs.get('Prices_M'), [HEAD]);
@@ -164,34 +171,55 @@ async function waitSync(page, kind) {
         assert.equal(traffic.console, 0); assert.deepEqual(traffic.unexpected, []); assert.equal(traffic.errors, 0);
       } finally { await context.close(); }
     });
-    await check('reload: nothing stored is fetched again; company screen and Universe504 use stored rows; runner READY with no Worker request', async () => {
+    await check('reload: open requests nothing; company button stores one symbol; Universe504 progress, stop and resume; runner READY with no Worker request', async () => {
       const { context, page, traffic } = await open(browser, { sheet, enabled: true });
       try {
-        const rows = sheet.tabs.get('Prices_D').length;
+        const rows = sheet.tabs.get('Prices_D').length, writes = sheet.writes.length;
         await login(page);
-        await waitSync(page, 'CORE');
-        assert.equal(traffic.worker.length, 0, 'every core symbol is current in the sheet');
-        assert.equal(sheet.tabs.get('Prices_D').length, rows, 'no row appended twice');
+        await page.locator('[data-price-store][data-price-store-state="READY"]').waitFor();
+        await page.waitForTimeout(1000);
+        assert.equal(traffic.worker.length, 0, 'app open and sign-in request nothing');
+        assert.equal(sheet.writes.length, writes, 'app open appends nothing');
         await page.evaluate(() => { location.hash = 'company/nvda'; });
         const company = page.locator('[data-price-store-company]');
         await waitFor(page, '[data-price-store-company="READY"]');
-        assert.ok(+(await company.getAttribute('data-month-ends')) >= 59);
+        assert.ok(+(await company.getAttribute('data-month-ends')) >= 59, 'NVDA month-ends come from the stored daily rows');
         await page.evaluate(() => { location.hash = 'company/NYSE:MMM'; });
         await waitFor(page, '[data-price-store-company="READY"]');
-        assert.deepEqual(traffic.worker.map(({ symbol, range }) => [symbol, range]), [['MMM', '5y']], 'newly approved MMM is fetched once');
-        assert.ok(+(await page.locator('[data-price-store-company]').getAttribute('data-month-ends')) >= 59);
+        assert.equal(await page.locator('[data-price-store-company]').getAttribute('data-month-ends'), '0', 'the open shows the stored state only');
+        await page.waitForTimeout(500);
+        assert.equal(traffic.worker.length, 0, 'opening a company screen requests nothing');
+        await page.locator('[data-price-store-company-fetch]').click();
+        await page.waitForFunction(() => +(document.querySelector('[data-price-store-company="READY"]')?.getAttribute('data-month-ends') || 0) >= 59);
+        assert.deepEqual(traffic.worker.map(({ symbol, range }) => [symbol, range]), [['MMM', '5y']], 'the button fetches MMM once');
         const stored = new Set([...sheet.tabs.get('Prices_D').slice(1), ...sheet.tabs.get('Prices_M').slice(1)].map(row => row[0]));
         const missing = UNIVERSE.filter(symbol => !stored.has(symbol));
         const beforeUniverse = traffic.worker.length;
         await page.evaluate(() => { location.hash = 'settings'; });
+        assert.equal(await page.locator('[data-price-store-action="universe"]').textContent(), 'Universe504 월말 종가 일괄 받기 (첫 실행 5년 · 이어받기)');
         await page.locator('[data-price-store-action="universe"]:not([disabled])').click();
-        await waitSync(page, 'UNIVERSE504');
+        // Progress: n/total · rows appended · current symbol (never a close); 중단 stops the run.
+        await page.waitForFunction(() => +(document.querySelector('[data-price-store-progress]')?.dataset.done || 0) >= 5);
+        const progress = await page.locator('[data-price-store-progress]').textContent();
+        assert.match(progress, /^Universe504 받는 중 · \d+\/\d+ · 덧붙인 행 \d+ · 현재 [A-Z0-9-]+$/, progress);
+        assert.ok(!progress.includes(CANARY));
+        await page.locator('[data-price-store-action="cancel"]').click();
+        await page.waitForFunction(() => PriceStore.status().busy === null);
+        await page.locator('[data-price-store-note]', { hasText: '중단됨' }).waitFor();
+        const stoppedAt = traffic.worker.length - beforeUniverse;
+        assert.ok(stoppedAt >= 5 && stoppedAt < missing.length, 'stopped part way: ' + stoppedAt + '/' + missing.length);
+        await page.waitForTimeout(300);
+        assert.equal(traffic.worker.length - beforeUniverse, stoppedAt, 'no request after 중단');
+        // Press again: resumes; the symbols received before the stop are skipped without a request.
+        await page.locator('[data-price-store-action="universe"]:not([disabled])').click();
+        await page.waitForFunction(() => { const x = PriceStore.status(); return x.busy === null && x.last_sync && x.last_sync.kind === 'UNIVERSE504' && !x.last_sync.failed.CANCELED; }, null, { timeout: 180000 });
         const line = await lastLine(page);
         const notAllowed = await page.evaluate(() => PriceStore.status().last_sync.not_allowed);
         assert.equal(notAllowed, 0, line);
         assert.ok(!line.includes('WORKER_ALLOWLIST'), line);
         const fetched = traffic.worker.slice(beforeUniverse);
-        assert.deepEqual(fetched.map(request => request.symbol).sort(), missing.sort(), 'each missing Universe symbol is fetched once; existing daily and monthly rows are reused');
+        assert.deepEqual([...new Set(fetched.map(request => request.symbol))].sort(), missing.sort(), 'each missing Universe symbol is fetched; existing daily and monthly rows are reused');
+        assert.ok(fetched.length - missing.length <= 1, 'at most the one symbol in flight at 중단 is requested again (' + (fetched.length - missing.length) + ')');
         assert.ok(fetched.every(request => request.range === '5y' && request.auth));
         const monthlySymbols = new Set(sheet.tabs.get('Prices_M').slice(1).map(row => row[0]));
         for (const symbol of ['AAPL', 'BRK-B', 'BF-B', 'MMM']) assert.ok(monthlySymbols.has(symbol), symbol);
@@ -203,6 +231,7 @@ async function waitSync(page, kind) {
         await waitFor(page, '[data-report-inputs][data-runner-state="READY"]', 60000);
         assert.equal(await page.locator('[data-report-section="3"] tbody tr').count(), 19);
         assert.equal(traffic.worker.length, afterUniverse, 'the runner read the store and needed no new Worker request');
+        assert.equal(await page.locator('[data-runner-fetch]').count(), 1, 'the report offers its fetch button');
         assert.equal(sheet.tabs.get('Prices_D').length, rows);
         assert.ok(await storageClean(page), 'a close reached device storage');
         assert.equal(traffic.console, 0); assert.deepEqual(traffic.unexpected, []); assert.equal(traffic.errors, 0);

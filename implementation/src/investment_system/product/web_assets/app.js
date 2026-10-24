@@ -579,15 +579,18 @@ function paintModel() {
 }
 function technical(id) {
   const s=D.technical,tabs=[["chart","차트"],["state","상태"],["execution","실행"],["record","기록"]];
-  return `<div data-ia-screen="technical">${heading("TECHNICAL",t("기술적 분석"),t("기존 기록의 연결 상태를 확인합니다."))}
-    <div class="chips data-badges"><span class="badge">${esc(t("실데이터 검증 전 · 일봉·수정주가 기준"))}</span></div>
-    <nav class="chips screen-tabs" aria-label="${esc(t("기술적 분석"))}">${tabs.map(([key,label])=>`<a href="#technical-${key}${id?'/'+encodeURIComponent(id):''}" data-screen-tab="${key}">${esc(t(label))}</a>`).join("")}</nav>
-    <div id="technical-chart"><div id="technical-price-chart" data-tech-status="chart"></div><div id="technical-workbench"></div><div id="technical-tv-chart"></div><div id="technical-indicators"></div></div>
-    <section class="card status-card" id="technical-state" data-tech-status="engine"><h2>${t("기술적 분석 엔진")}</h2>${state(s)}<p>${esc(t(s.data===null?s.reason || "운영 Snapshot이 연결되지 않았습니다.":"기존 종목 화면에서 제공된 기술적 분석 기록을 확인합니다."))}</p><p class="small">${esc(t("QGV 원점수와 기술적 상태는 나란히 볼 뿐 통합하지 않습니다."))}</p></section>
-    ${TechnicalCards.sectionsHtml(appSettings.display_locale)}
-    <section class="card" id="technical-execution" data-tech-status="execution"><h2>${t("실행 구간 (시스템 주문 아님)")}</h2><p><span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> ${esc(t("검증된 모델 입력이 없어 실행 구간을 만들지 않습니다."))}</p></section>
-    <section class="card" id="technical-record" data-tech-status="record"><h2>${t("기술적 기록")}</h2><p><span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> ${esc(t("과거 신호와 실제 결과 기록이 아직 없습니다."))}</p></section>
-    ${window.IaScreens?IaScreens.technicalHtml(appSettings.display_locale):""}</div>`;
+  // Menu 2 layout (design lane D6): TechnicalCards.screenHtml places these pieces (status cards under one h2 region, so h3);
+  // TechnicalCards.arrange (after mount) moves the indicator cards into the 3.1.4 stamp box of the workbench. The display-only
+  // TradingView card sits above the workbench so its lazy frame stays near the first screen.
+  return TechnicalCards.screenHtml({head:heading("TECHNICAL",t("기술적 분석"),t("기존 기록의 연결 상태를 확인합니다.")),
+    badges:`<div class="chips data-badges"><span class="badge">${esc(t("실데이터 검증 전 · 일봉·수정주가 기준"))}</span></div>`,
+    tabs:`<nav class="chips screen-tabs" aria-label="${esc(t("기술적 분석"))}">${tabs.map(([key,label])=>`<a href="#technical-${key}${id?'/'+encodeURIComponent(id):''}" data-screen-tab="${key}">${esc(t(label))}</a>`).join("")}</nav>`,
+    chart:`<div id="technical-chart"><div id="technical-price-chart" data-tech-status="chart"></div><div id="technical-tv-chart"></div><div id="technical-workbench"></div><div id="technical-indicators"></div></div>`,
+    engine:`<section class="card status-card" id="technical-state" data-tech-status="engine"><h3>${t("기술적 분석 엔진")}</h3>${state(s)}<p>${esc(t(s.data===null?s.reason || "운영 Snapshot이 연결되지 않았습니다.":"기존 종목 화면에서 제공된 기술적 분석 기록을 확인합니다."))}</p><p class="small">${esc(t("QGV 원점수와 기술적 상태는 나란히 볼 뿐 통합하지 않습니다."))}</p></section>`,
+    sections:TechnicalCards.sectionsHtml(appSettings.display_locale),
+    execution:`<section class="card" id="technical-execution" data-tech-status="execution"><h3>${t("실행 구간 (시스템 주문 아님)")}</h3><p><span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> ${esc(t("검증된 모델 입력이 없어 실행 구간을 만들지 않습니다."))}</p></section>`,
+    record:`<section class="card" id="technical-record" data-tech-status="record"><h3>${t("기술적 기록")}</h3><p><span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> ${esc(t("과거 신호와 실제 결과 기록이 아직 없습니다."))}</p></section>`,
+    ia:window.IaScreens?IaScreens.technicalHtml(appSettings.display_locale):""},{locale:appSettings.display_locale});
 }
 function macro() {
   // Menu 3 stamp layout (4.1–4.6) lives in IaScreens.macroHtml; the parts below are placed there unchanged.
@@ -803,10 +806,12 @@ async function paintReport(id){
     host.querySelector('[data-mailbox-post]').onclick=()=>void mailbox('post');
     host.querySelector('[data-mailbox-read]').onclick=()=>void mailbox('read');
     const rehearseButton=host.querySelector('[data-rehearsal-run]'),recordButton=host.querySelector('[data-recording-mode]');
-    if(rehearseButton)rehearseButton.onclick=()=>void go('REHEARSAL');
+    // Price requests only from these buttons (owner decision 2026-10-23): rehearsal, back to recording, '가격 받아 다시 계산'.
+    if(rehearseButton)rehearseButton.onclick=()=>void go('REHEARSAL',true);
+    const fetchButton=host.querySelector('[data-runner-fetch]');if(fetchButton)fetchButton.onclick=()=>{fetchButton.disabled=true;void go(run.mode,true);};
     for(const b of host.querySelectorAll('[data-bench-period]'))b.onclick=()=>{benchSelection={...benchSelection,period:b.dataset.benchPeriod};rebench('[data-bench-period="'+b.dataset.benchPeriod+'"]');};
     const basisSelect=host.querySelector('[data-bench-basis]');if(basisSelect)basisSelect.onchange=()=>{benchSelection={...benchSelection,basis:basisSelect.value};rebench('[data-bench-basis]');};
-    if(recordButton)recordButton.onclick=()=>{if(before){run.mode='RECORDING';void compose({state:'NOT_STARTED',reason_codes:['BEFORE_START_DATE']});}else void go('RECORDING');};
+    if(recordButton)recordButton.onclick=()=>{if(before){run.mode='RECORDING';void compose({state:'NOT_STARTED',reason_codes:['BEFORE_START_DATE']});}else void go('RECORDING',true);};
   };
   // Mock tabs: 비교 only with at least two sets (Set A + a user set B/C/D defined in the user's sheet).
   const setDefs=async()=>{try{return run.ledgerSheets?await run.ledgerSheets.definitions():null;}catch(_){return null;}};
@@ -874,14 +879,15 @@ async function paintReport(id){
   const before=reportDate<cfg.start_date;
   // One runner pass in the given mode. Both modes record the device V history (V only, independent of any ledger);
   // a rehearsal result carries mode REHEARSAL and must never reach a ledger/sheet writer.
-  const go=async(mode)=>{
-    if(!live())return;if(run.busy){run.pending=mode;run.mode=mode;void compose({state:'LOADING',reason_codes:['RUNNER_LOADING']},cfg,mode);return;}
-    run.busy=true;run.mode=mode;if(mode==='REHEARSAL')await compose({state:'LOADING',reason_codes:['RUNNER_LOADING']},cfg,mode);
+  // fetch: true only from a button (Worker requests allowed); the open / sign-in pass reads stored and RAM prices only.
+  const go=async(mode,fetch=false)=>{
+    if(!live())return;if(run.busy){run.pending={mode,fetch:fetch||!!(run.pending&&run.pending.fetch)};run.mode=mode;void compose({state:'LOADING',reason_codes:['RUNNER_LOADING']},cfg,mode);return;}
+    run.busy=true;run.mode=mode;if(mode==='REHEARSAL'||fetch)await compose({state:'LOADING',reason_codes:['RUNNER_LOADING']},cfg,mode);
     try{
       let catalog=null;try{catalog=await deviceCatalog();}catch(_){catalog=null;}
       const progress=(done,total)=>{const n=live()&&host.querySelector('[data-runner-progress]');if(n)n.textContent=done+'/'+total;};
       const sheetOptions=run.ledgerSheets?await run.ledgerSheets.runnerOptions():{};
-      const opts={config,catalog,reportDate,signal:run.controller.signal,onProgress:progress,...sheetOptions};
+      const opts={config,catalog,reportDate,signal:run.controller.signal,onProgress:progress,...sheetOptions,fetch};
       const out=!catalog?{result:{state:'NOT_AVAILABLE',reason_codes:['PUBLIC_CATALOG_UNAVAILABLE'],sources:{},ledgers:{}},config:cfg}
         :mode==='REHEARSAL'?await Signals.rehearse(window,{...opts,qgRows:qg}):{result:await Runner.run(window,opts),config:cfg};
       let result=out.result,capture=null;if(mode==='REHEARSAL')result={...result,snapshot_basis:qgvScores().default};
@@ -890,13 +896,14 @@ async function paintReport(id){
       if(mode!=='REHEARSAL'&&run.ledgerSheets)result=run.ledgerSheets.update(result);
       run.last=result;if(live()&&run.mode===mode)await compose(result,out.config,mode,capture);
     }catch(_){if(live()&&run.mode===mode)await compose({state:'NOT_AVAILABLE',reason_codes:['RUNNER_FAILED']},cfg,mode);}
-    finally{run.busy=false;if(run.pending&&live()){const next=run.pending;run.pending=null;void go(next);}}
+    finally{run.busy=false;if(run.pending&&live()){const next=run.pending;run.pending=null;void go(next.mode,next.fetch);}}
   };
   const start=()=>go('RECORDING');
   // Signing in to Google later (Settings) re-runs the runner for the open report: same session, no new scope or auth code.
   try{if(config.googleSheetsClientId){const session=GoogleSheetQuotes.sessionFor(window,config.googleSheetsClientId);
     run.unsubscribe=session.subscribe(()=>{if(!live()){if(reportRun===run)disposeReport();return;}if(session.state().connected&&run.last&&run.last.reason_codes.includes('AUTH_REQUIRED'))void go(run.mode);});}}catch(_){}
-  // Before the start date the report stays NOT_STARTED (no request) until the user runs a rehearsal.
+  // Before the start date the report stays NOT_STARTED (no request) until the user runs a rehearsal. After it, the open pass
+  // reads stored/RAM prices only (no request); the report's buttons request.
   await compose(before?{state:'NOT_STARTED',reason_codes:['BEFORE_START_DATE']}:{state:'LOADING',reason_codes:['RUNNER_LOADING']});
   if(before||!live())return;
   await start();
@@ -974,6 +981,7 @@ function renderRoute(options) {
   if(route==='brief') deviceCatalog().then(c=>{const n=$('#home-target-version');if(n?.isConnected)n.textContent=c.target_root_version||'NOT_AVAILABLE';}).catch(()=>{const n=$('#home-target-version');if(n?.isConnected)n.textContent='NOT_AVAILABLE';});
   if(route==='technical') {const cards=TechnicalCards.mount($('#technical-indicators'),{locale:appSettings.display_locale});
     const bench=window.ChartWorkbench&&$('#technical-workbench')?ChartWorkbench.mount($('#technical-workbench'),{locale:appSettings.display_locale}):null;
+    if(bench) TechnicalCards.arrange($('#content'));
     PrivateHistory.mountTechnical($('#technical-price-chart'),{companyId:id,locale:appSettings.display_locale,config:window.InvestmentAppConfig,getAverage:deviceAverageCost,onData:value=>{cards.update(value);if(bench)void bench.update(value);}});
     // Display-only TradingView chart: follows the symbol picker; nothing is read back from it.
     const tvSymbol=$('#technical-price-chart [data-technical-symbol]'),tvChart=()=>TradingViewWidgets.mountAdvanced($('#technical-tv-chart'),{companyId:tvSymbol?tvSymbol.value:id,locale:appSettings.display_locale});
@@ -986,7 +994,7 @@ function renderRoute(options) {
   if(route==='brief') TradingViewWidgets.mountTickerTape($('#tv-ticker-tape'),{locale:appSettings.display_locale});
   if(route==='company' && $('#tradingview-mini')) TradingViewWidgets.mountMini($('#tradingview-mini'),{companyId:id,locale:appSettings.display_locale});
   if(route==='company' && $('#private-history-chart')) void PrivateHistory.mount($('#private-history-chart'),{companyId:id,locale:appSettings.display_locale,config:window.InvestmentAppConfig,getAverage:deviceAverageCost,onData:value=>paintValue(route,id,value&&typeof value.close==='number'?{price:value.close,currency:value.currency,as_of:value.asOf,read_at:value.readAt||null,source:'PRIVATE_HISTORY_CLOSE'}:null)});
-  // Price store (user's Prices_M tab): the first open of a company stores its 5-year month-ends once (counts shown only).
+  // Price store (user's Prices_M tab): the open reads the stored month-ends only; its button stores them (counts shown only).
   if(route==='company' && window.PriceStore) {const symbol=PrivateHistory.symbolFor(id)||PriceStore.universeSymbol(id);if(symbol){const host=document.createElement('div');host.id='company-price-store';const anchor=$('#private-history-chart');if(anchor)anchor.after(host);else $('#content').append(host);PriceStore.mountCompany(host,{symbol,locale:appSettings.display_locale});}}
   if(route==='company'||route==='leaderboard'||route==='analysis') SecReported.mount($('#sec-reported-panel'),secReported,{companyId:route==='leaderboard'?undefined:id,locale:appSettings.display_locale});
   if(route==='report') void paintReport(id);
@@ -1312,8 +1320,9 @@ Promise.all([...(["data.json","entities.json","sec-m2-candidates.json"].map(path
   const safeData={schema_version:1,companies:[]};
   for(const name of publicSections) safeData[name]={state:"NOT_AVAILABLE",as_of:null,source:null,reason:"공개 가격 경계에 따라 제공되지 않습니다. (GSQ-010)",data:null};
   D=guardSections(safeData);publicEntities=catalog.entities.filter(e=>e.entity_type!=="COMPANY");rebuildSearchIndex();load();readLeaderView();render();paintGlobalSearch();
-  // App open: with the price store on and Google connected, append the core symbols' daily bars after the last stored date.
-  try{if(window.PriceStore) PriceStore.autoSync(window,{coreSymbols:priceStoreCore});}catch(_){}
+  // App open: with the price store on and Google connected, READ the stored Prices_D rows (no Worker request; owner decision
+  // 2026-10-23: prices are requested only by a button, e.g. Settings '핵심 종목 일봉 지금 갱신').
+  try{if(window.PriceStore) PriceStore.autoLoad(window);}catch(_){}
 }).catch(showUnavailable);
 // '자료 새로고침' (data-refresh.js; FRONTEND_DATA_CONTRACT D1, D2, D5, D6): DataRefresh reads one public publication set and hands
 // it over here at once. Device quotes, settings and private sessions stay. The open screen is repainted in place (no route

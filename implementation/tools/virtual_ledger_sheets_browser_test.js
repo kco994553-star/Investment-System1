@@ -137,6 +137,15 @@ async function clean(page) {
     return !values.includes(canary) && !values.includes(cost) && !/VirtualA|LEDGER_START|"closes"/.test(values);
   }, { canary: CANARY, cost: String(COST_CANARY) });
 }
+// Click-only rule (owner decision 2026-10-23): opening S17 reads the stored / RAM prices only (no Worker request); prices come
+// from the report's button '가격 받아 다시 계산'. Waits for the open pass (the button is shown), presses it and waits for the
+// result of that button run (a freshly painted card that is not LOADING).
+async function fetchPrices(page) {
+  const button = page.locator('[data-runner-fetch]'); await button.waitFor({ timeout: 30000 });
+  await page.evaluate(() => { document.querySelector('[data-report-inputs]').dataset.beforeFetch = '1'; });
+  await button.click();
+  await page.waitForFunction(() => { const n = document.querySelector('[data-report-inputs]'); return !!n && !n.dataset.beforeFetch && n.dataset.runnerState !== 'LOADING'; }, null, { timeout: 60000 });
+}
 const noWonAmount = (text) => (text.match(/\d[\d,]*\s*(?:원|만원|억)/g) || []).length === 0;
 const writes = (sheet) => sheet.log.filter((x) => x.startsWith('POST'));
 
@@ -213,6 +222,7 @@ const writes = (sheet) => sheet.log.filter((x) => x.startsWith('POST'));
         const { context, page, traffic } = await open(browser, { now: '2026-10-31T01:00:00Z', width, sheet });
         try {
           await go(page, 'report/mock');
+          await fetchPrices(page);
           await page.locator('[data-report-inputs][data-runner-state="READY"]').waitFor({ timeout: 30000 });
           await page.locator('[data-ledger-id="set_a"][data-ledger-missing="10"]').waitFor();
           assert.ok((await page.locator('[data-missing-sessions]').textContent()).includes('기록할 거래일: set_a 2026-10-19'));
@@ -231,6 +241,8 @@ const writes = (sheet) => sheet.log.filter((x) => x.startsWith('POST'));
           const count = writes(sheet).length;
           await page.reload(); await page.locator('[data-ledger-sheets][data-sheet-state="NOT_CONNECTED"]').waitFor();
           await prepare(page);
+          // After a reload the RAM prices are gone: the open pass waits (PRICE_NOT_FETCHED is never recorded); the button fetches.
+          await fetchPrices(page);
           await page.locator('[data-ledger-id="set_a"][data-ledger-check="OK"]').waitFor({ timeout: 40000 });
           assert.equal(await page.locator('[data-ledger-id="set_a"]').getAttribute('data-ledger-missing'), '0');
           // A changed cell in the private sheet (e.g. bars revised after recording): PRICE_REVISED, the recorded rows stay,
@@ -267,6 +279,7 @@ const writes = (sheet) => sheet.log.filter((x) => x.startsWith('POST'));
         let release;const dartGate = { promise: new Promise((r) => { release = r; }) };
         const { context, page, traffic } = await open(browser, { now: '2026-10-31T01:00:00Z', width, sheet, dartGate });
         try {
+          await go(page, 'report/mock'); await fetchPrices(page);
           const define = async (kind, weights, purpose, beforeSave = null) => {
             await go(page, 'report/mock-' + kind.toLowerCase()); await settled(page);
             const form = page.locator('[data-weight-form="' + kind + '"]');
@@ -354,7 +367,7 @@ const writes = (sheet) => sheet.log.filter((x) => x.startsWith('POST'));
           // The runner reads holdings through effectiveHoldings (stored ACTUAL or the RAM Holdings tab, #204); stub both.
           window.DeviceActual = { ...DeviceActual, readHoldings: async () => snapshot, effectiveHoldings: async () => ({ snapshot, source: 'ACTUAL', as_of: snapshot.effective_at }) };
         }, COST_CANARY);
-        await go(page, 'report/real'); await settled(page);
+        await go(page, 'report/real'); await fetchPrices(page); await settled(page);
         assert.equal(await page.locator('[data-shadow-ledger]').getAttribute('data-shadow-state'), 'NOT_STARTED');
         // Decision 2026-10-11: no user target → NA with the '내 목표 설정' guide; TARGET v0 is never substituted.
         assert.equal(await page.locator('[data-target-basis]').getAttribute('data-target-basis'), 'NOT_AVAILABLE');

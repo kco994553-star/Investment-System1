@@ -311,7 +311,7 @@ const CODE_LABELS=Object.freeze({
  SET_NOT_DEFINED:['세트 구성 없음(정의 전 또는 종료됨)','Set not defined (not yet defined or closed)'],SET_INVALID:['세트 구성 형식 오류','Set definition invalid'],
  NO_ACTUAL:['기기 실제 보유 없음','No ACTUAL holdings on this device'],ACTUAL_INVALID:['기기 실제 보유 형식 오류','ACTUAL holdings invalid'],
  INITIAL_COST_FX_MISSING:['출발 원가 환산 환율 없음','No FX rate for the initial cost'],LEDGER_NOT_AVAILABLE:['가상 장부 없음','Virtual ledger not available'],
- NOT_REQUESTED:['요청하지 않음','Not requested'],HISTORY_UNAVAILABLE:['일봉 없음','Daily history unavailable'],HISTORY_FORMAT_INVALID:['일봉 형식 오류','Daily history format invalid'],
+ NOT_REQUESTED:['요청하지 않음','Not requested'],PRICE_NOT_FETCHED:['저장된 가격 없음 · 가격 받기 버튼을 누르세요','No stored price · press the fetch button'],HISTORY_UNAVAILABLE:['일봉 없음','Daily history unavailable'],HISTORY_FORMAT_INVALID:['일봉 형식 오류','Daily history format invalid'],
  CURRENCY_MISMATCH:['통화 불일치','Currency mismatch'],OFF:['비공개 가격 Worker 꺼짐','Private price Worker off'],REQUEST_INVALID:['요청 형식 오류','Request invalid'],
  ORIGIN_UNAPPROVED:['가격 Worker 주소 미승인','Price Worker origin not approved'],ORIGIN_FORBIDDEN:['가격 Worker가 이 주소를 거부','Price Worker refused this origin'],
  AUTH_REQUIRED:['구글 로그인 필요','Google sign-in required'],AUTH_FORBIDDEN:['구글 계정 권한 없음','Google account not allowed'],AUTH_UNAVAILABLE:['로그인 확인 불가','Sign-in check unavailable'],

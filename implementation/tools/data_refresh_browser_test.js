@@ -363,8 +363,11 @@ function requestsCheck(label, reqs, what) {
       eq('HARNESS_PRICES', [s1.rows, s1.dom], [e1, e1], 'day 1 official ranking and QG list = engine with the same quotes');
       // The open Universe page of a priced code: its stat radar V comes from the same page result.
       const code = KEPT; ok('HARNESS_PRICES', Object.hasOwn(prices, code), code + ' has a synthetic price');
+      // Click-only rule (owner decision 2026-10-23): a screen open reads the stored price tab only — every read passes
+      // fetch:false and no Worker request is made; prices are requested only by a button (checked at the end of this phase).
       const opened = await p.evaluate(() => window.__storeCalls.splice(0));
-      ok('HARNESS_PRICES', opened.length > 0 && opened.every((x) => x !== false), 'a normal screen open reads the price tab with its default (sync allowed): ' + opened.length + ' reads');
+      ok('HARNESS_PRICES', opened.length > 0 && opened.every((x) => x === false), 'a normal screen open reads the price tab stored-only (fetch:false, zero automatic requests): ' + opened.length + ' reads');
+      eq('HARNESS_PRICES', s.requests.filter((u) => /workers\.dev/.test(u)), [], 'no Worker request from opening home, the leaderboard and the V panel');
       st.day = 2; await c.clock.setFixedTime(new Date(DAYS[2].now)); const mark3 = s.requests.length, reads0 = await p.evaluate(() => window.__sheetReads);
       await press(p, 'APPLIED'); await settled(DAYS[2].as_of);
       const s2 = await snap(), label = 'REAL_FETCH+HARNESS_PRICES';
@@ -405,6 +408,20 @@ function requestsCheck(label, reqs, what) {
       eq(label, await p.evaluate(() => [window.__sheetReads, DataRefresh.pricesGuarded()]), [reads0, true], 'no Google Sheets read on the in-place refresh either; the device price guard is still on (no screen change yet)');
       await go(p, 'leaderboard', '[data-leaderboard-table]'); eq(label, await p.evaluate(() => DataRefresh.pricesGuarded()), false, 'the guard ends with the next screen change');
       ok(label, !reqs.some((f) => /^prices?/i.test(f)), 'no price file read');
+      // The explicit button still requests: with the real price store on (synthetic sheet session that records history
+      // requests, no network), opening a Universe company page asks for nothing; its '이 종목 월말 종가 받기' button asks once.
+      const sym = KEPT.slice(KEPT.indexOf(':') + 1);
+      await p.evaluate(() => { window.__historyCalls = []; localStorage.setItem('investment.web.v1.price-store-enabled', '1'); localStorage.setItem('investment.web.v1.unified-sheet-source', 'syntheticRefreshSheetIdForClickOnlyCheck0001');
+        localStorage.setItem('investment.web.v1.private-history-origin', InvestmentAppConfig.privateHistoryWorkerOrigin);
+        const session = GoogleSheetQuotes.sessionFor(); session.sheetTitles = async () => ['Prices_D', 'Prices_M']; session.addTabs = async () => ({}); session.appendRows = async () => ({});
+        session.fetchHistory = async (origin, symbol, range) => { window.__historyCalls.push([symbol, range]); throw new Error('HISTORY_UNAVAILABLE'); }; });
+      await go(p, 'company/' + encodeURIComponent(KEPT), '[data-price-store-company="READY"]');
+      await p.waitForTimeout(300);
+      eq('HARNESS_PRICES', await p.evaluate(() => window.__historyCalls), [], 'opening the company page with the price store on makes no history request');
+      await p.locator('[data-price-store-company-fetch]').click();
+      await p.waitForFunction(() => window.__historyCalls.length > 0);
+      eq('HARNESS_PRICES', await p.evaluate(() => window.__historyCalls), [[sym, '5y']], 'the explicit button requests the 5-year month-ends once');
+      await p.locator('[data-price-store-company="HISTORY_UNAVAILABLE"]').waitFor();
       eq(label, s.errors, [], 'no page errors'); await c.close();
     }
 

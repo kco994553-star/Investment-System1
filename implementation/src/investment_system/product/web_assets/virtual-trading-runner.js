@@ -3,7 +3,9 @@
    Thin fetch layer: daily history through the existing private history Worker session (same Google session, no new
    scope), the public price-free forward ledger and classification, the device's ACTUAL holdings and device V scores.
    With the price store on (PriceStore, the user's own Prices_D tab) the stored daily closes are read first and only missing
-   ranges are fetched; otherwise the Worker path is unchanged.
+   ranges are fetched; otherwise the Worker path is unchanged. CLICK-ONLY (owner decision 2026-10-23): run() requests a
+   price only with fetch:true (the report's buttons); a screen open runs with the stored rows (Prices_D) and this window's
+   RAM cache only, and a symbol without either is PRICE_NOT_FETCHED (transient: never recorded as lasting).
    Prices, FX rates, ledgers and results live only in memory: nothing here stores, logs or sends them. A missing close
    or rate stays absent (the engine then reports EXEC_PRICE_MISSING / EXEC_FX_MISSING); nothing is filled. */
 (function(root,factory){const node=typeof module==='object'&&module.exports;const api=factory(node?()=>require('./virtual-trading.js'):()=>root.VirtualTrading);if(node)module.exports=api;else root.VirtualTradingRunner=api;})(typeof globalThis==='object'?globalThis:this,function(engine){
@@ -28,7 +30,7 @@ const STOP=new Set(['AUTH_REQUIRED','AUTH_FORBIDDEN','AUTH_UNAVAILABLE','ORIGIN_
 // Every reason code this module can put on a result or source row (labels: VirtualTrading.CODE_LABELS). A Worker error code
 // outside this list is passed through and shown verbatim.
 const CODES=Object.freeze(['TARGET_CATALOG_INVALID','SESSIONS_NOT_AVAILABLE','SET_B_NOT_DEFINED','SET_B_INVALID','SET_NOT_DEFINED','SET_INVALID','TARGET_NOT_AVAILABLE','WEIGHT_INVALID','NO_ACTUAL','ACTUAL_INVALID','INITIAL_COST_FX_MISSING',
- 'BEFORE_START_DATE','LEDGER_NOT_AVAILABLE','NOT_REQUESTED','HISTORY_UNAVAILABLE','HISTORY_FORMAT_INVALID','CURRENCY_MISMATCH','OFF','REQUEST_INVALID','ORIGIN_UNAPPROVED',
+ 'BEFORE_START_DATE','LEDGER_NOT_AVAILABLE','NOT_REQUESTED','PRICE_NOT_FETCHED','HISTORY_UNAVAILABLE','HISTORY_FORMAT_INVALID','CURRENCY_MISMATCH','OFF','REQUEST_INVALID','ORIGIN_UNAPPROVED',
  ...STOP,'RATE_LIMITED','LEDGER_UNREACHABLE','LEDGER_INVALID','LEDGER_NOT_PUBLISHED']);
 const DEFAULT_SPACING_MS=5200,RATE_RETRY_MS=15000,RATE_RETRIES=2;
 const own=(o,k)=>o!==null&&typeof o==='object'&&Object.prototype.hasOwnProperty.call(o,k);
@@ -259,13 +261,15 @@ function readiness(view,config,session){
 }
 function spacing(config){const v=config&&config.virtualTradingRequestSpacingMs;return Number.isInteger(v)&&v>=0&&v<=60000?v:DEFAULT_SPACING_MS;}
 const pause=(view,ms,signal)=>new Promise((resolve,reject)=>{if(ms<=0){resolve();return;}const t=view.setTimeout(resolve,ms);if(signal)signal.addEventListener('abort',()=>{view.clearTimeout(t);reject(new Error('CANCELED'));},{once:true});});
-async function fetchHistories(view,{session,origin,symbols,spacingMs=DEFAULT_SPACING_MS,signal=null,onProgress=null}){
+// fetch false (a screen open): this window's RAM cache only, no request; an uncached symbol is PRICE_NOT_FETCHED.
+async function fetchHistories(view,{session,origin,symbols,spacingMs=DEFAULT_SPACING_MS,signal=null,onProgress=null,fetch=true}){
  const revision=session.revision();if(cache.revision!==revision){cache.histories.clear();cache.revision=revision;}
  const out={};let stop=null,lastNetwork=false,done=0;
  const tick=()=>{done++;if(onProgress)try{onProgress(done,symbols.length);}catch(_){}};
  for(const symbol of symbols){
   if(signal&&signal.aborted)stop=stop||'CANCELED';
   if(cache.histories.has(symbol)){out[symbol]=cache.histories.get(symbol);tick();continue;}
+  if(fetch!==true){out[symbol]={error:'PRICE_NOT_FETCHED'};tick();continue;}
   if(stop){out[symbol]={error:stop};tick();continue;}
   let code=null;
   for(let attempt=0;;attempt++){
@@ -293,8 +297,9 @@ async function fetchHistories(view,{session,origin,symbols,spacingMs=DEFAULT_SPA
    device holdings and V store, Worker history (sequential, spaced), then the pure assembly. set_b and flags come from
    the user's sheet (VirtualLedgerSheets: stored Set B definition, VirtualFlags) when it is connected.
    rehearsal(histories, cfg) → cfg: a rehearsal run (VirtualTradingSignals.rehearse) skips the start-date gate and moves
-   only the engine start_date to its window; the caller never records its result. */
-async function run(view,{config={},catalog,reportDate,signal=null,onProgress=null,set_b=null,sets=null,user_target=null,flags=null,rehearsal=null}={}){
+   only the engine start_date to its window; the caller never records its result.
+   fetch (default false): Worker requests only when true, i.e. from the user's button; otherwise stored/RAM prices only. */
+async function run(view,{config={},catalog,reportDate,signal=null,onProgress=null,set_b=null,sets=null,user_target=null,flags=null,rehearsal=null,fetch=false}={}){
  const VT=engine(),cfg=VT.defaultConfig();
  const base={schema:SCHEMA,sources:{},sector:{},ledgers:{}};
  if(!(typeof reportDate==='string'&&day(reportDate))||(typeof rehearsal!=='function'&&reportDate<cfg.start_date))return{...base,state:'NOT_STARTED',reason_codes:['BEFORE_START_DATE']};
@@ -309,8 +314,8 @@ async function run(view,{config={},catalog,reportDate,signal=null,onProgress=nul
  // Price store (Prices_D in the user's sheet, when the user turned it on): stored daily closes first, only missing ranges
  // through the same Worker session. null (store off, not connected or unreadable) → the Worker path exactly as before.
  let histories=null;
- if(view.PriceStore&&typeof view.PriceStore.runnerHistories==='function'){try{histories=await view.PriceStore.runnerHistories(view,{session,origin:config.privateHistoryWorkerOrigin,symbols,spacingMs:spacing(config),signal,onProgress});}catch(_){histories=null;}}
- if(histories===null)histories=await fetchHistories(view,{session,origin:config.privateHistoryWorkerOrigin,symbols,spacingMs:spacing(config),signal,onProgress});
+ if(view.PriceStore&&typeof view.PriceStore.runnerHistories==='function'){try{histories=await view.PriceStore.runnerHistories(view,{session,origin:config.privateHistoryWorkerOrigin,symbols,spacingMs:spacing(config),signal,onProgress,fetch:fetch===true});}catch(_){histories=null;}}
+ if(histories===null)histories=await fetchHistories(view,{session,origin:config.privateHistoryWorkerOrigin,symbols,spacingMs:spacing(config),signal,onProgress,fetch:fetch===true});
  return assemble({config:typeof rehearsal==='function'?rehearsal(histories,cfg):cfg,catalog,forward_ledger:forward.state==='LOADED'?forward.ledger:null,classification,histories,holdings,set_b,sets,user_target,v_store:readVStore(view.localStorage),v_composition:readVComposition(view.localStorage),flags:flags||[]});
 }
 return Object.freeze({SCHEMA,CODES,IDS,TARGETS,ETF_MEMBERS,MEMBERS,USER_SETS,KINDS,SP500_SYMBOL,FX_SYMBOLS,DASHBOARD_ETFS,V_KEY,RANGE,catalogTargets,sectorFor,requiredSymbols,seriesFromHistory,coverage,evaluationRecords,snapshotsFromLedger,

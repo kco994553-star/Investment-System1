@@ -93,6 +93,15 @@ function mountClassificationFilters(host,identities,options={}){
  for(const select of host.querySelectorAll('[data-classification-filter]'))select.onchange=()=>{classificationView={...classificationView,[select.dataset.classificationFilter]:select.value};options.onChange?.();};
  if(active)host.ownerDocument.getElementById(active)?.focus({preventScroll:true});
 }
+/* V factor count (user decision 2026-10-23: 「가격이 일부만 있을 때 V가 '몇 개 요인으로 계산됐는지'(예: 3/5)를 리더보드와 TARGET 후보
+   표에 표시」): how many of the 5 V factors (QgvV2.WEIGHTS.V order, V1..V5) the row's V was computed from; a V that is null shows
+   0/5 (never filled). Display only: no score, rank or sort change. The same count as TargetV1Builder.vFactors. */
+const V_FACTORS=[['v_earnings_yield','V1','이익 수익률','earnings yield'],['v_fcf_yield','V2','FCF 수익률','FCF yield'],['v_vs_industry','V3','업종 대비','vs industry'],['v_vs_own_history','V4','자기 과거 대비','vs own history'],['v_expectation_check','V5','기대 점검','expectation check']];
+function vCount(p){const ok=!!p&&typeof p.v==='number'&&Number.isFinite(p.v),f=p&&p.factors&&typeof p.factors==='object'?p.factors:{};
+ const have=ok?V_FACTORS.filter(([k])=>typeof f[k]?.score==='number'&&Number.isFinite(f[k].score)).map(x=>x[0]):[];return{n:have.length,total:V_FACTORS.length,missing:V_FACTORS.filter(([k])=>!have.includes(k))};}
+function vCountNode(el,p,en){const c=vCount(p),miss=c.missing.map(([,id,ko,enl])=>id+' '+(en?enl:ko)).join(', ');
+ return el('span','V '+c.n+'/'+c.total,{class:'small v-count','data-leaderboard-v-count':String(c.n),'data-v-missing':c.missing.map(x=>x[0]).join(' '),
+  title:(en?'V calculated from '+c.n+' of '+c.total+' factors':'V 산출 요인 '+c.n+'/'+c.total)+(miss?(en?' · missing: ':' · 빠진 요인: ')+miss:'')});}
 /* Q·G·V bars of one score row (decoration: aria-hidden; the numbers and their words are in the QGV / detail cells). Widths are
    SVG attributes (CSP style-src 'self': no inline style). A missing axis is an empty dashed track, never a 0 bar; no axis at all draws nothing. */
 const SVG_NS='http://www.w3.org/2000/svg';
@@ -285,6 +294,7 @@ function mount(host,identities,{publicScreens={},locale,view='default',profiles=
   // QGV total: the v2 total, or — (NOT_AVAILABLE is never shown as 0).
   const total=sc&&typeof sc.primary.total==='number'&&Number.isFinite(sc.primary.total)?sc.primary.total:null,qgv=el('td',undefined,{'data-leaderboard-qgv-cell':'','data-sort-value':total===null||group==='qg'?'':String(total)});
   qgv.append(total===null?el('span','—',{'data-leaderboard-total':'NOT_AVAILABLE'}):el('b',show(total),{class:'num','data-leaderboard-total':show(total)}));
+  if(view!=='profile')qgv.append(doc.createTextNode(' '),vCountNode(el,sc?sc.primary:null,en));
   {const bars=sc&&doc.createElementNS?qgvBars(doc,sc.primary):null;if(bars)qgv.append(bars);}
   // A row without a device rank says so next to the — total (any width): partial axes are shown, but outside the QGV total order.
   let unranked=null;if(group==='partial'&&sc.rank===null){const p=sc.primary,axes=[['Q',p.q],['G',p.g],['V',p.v]].filter(([,v])=>typeof v==='number'&&Number.isFinite(v)).map(([a,v])=>a+' '+show(v)).join(' · ');
@@ -339,5 +349,5 @@ function mount(host,identities,{publicScreens={},locale,view='default',profiles=
  const stages=el('details',undefined,{'data-reeval-stages':''});stages.append(el('summary',en?'Re-evaluation signal stages':'재평가 신호 단계'));const list=el('ol');for(const[ko,enl]of STAGES)list.append(el('li',en?enl:ko));stages.append(list,el('p',en?'Price change, threshold and distance are shown once the signal is connected (NOT_AVAILABLE now).':'신호가 연결되면 가격 변화량·임계값·거리를 함께 보여 줍니다(현재 NOT_AVAILABLE).',{class:'small'}));sCand.append(stages);
  const actions=el('div',undefined,{class:'chips'});for(const label of [en?'Send selection to paper trading':'선택 종목 모의투자',en?'Send to backtest':'백테스트로 보내기']){const b=el('button',label,{type:'button',disabled:''});actions.append(b);}sCand.append(actions,el('p',en?'Paper trading and backtest are not connected yet.':'모의투자·백테스트는 아직 연결되지 않았습니다.',{class:'small'}));
  host.replaceChildren(card);return{shown:rows.length,explore:ex};}
-return Object.freeze({COLUMNS,UNCONNECTED,NARROW,M3_LABEL,EXPLORE,SORTS,SORT_IDS,DEFAULT_SORT,FN,PERIODS,fnHeadHtml,filterNoteHtml,sicOf,classificationOf,filterClassifications,classificationSummary,classificationFiltersHtml,mountClassificationFilters,sortLabel,sortOptions,oppositeSort,sortAvailable,sortRows,populationOf,rowsFor,modelChecks,mount});
+return Object.freeze({COLUMNS,UNCONNECTED,NARROW,M3_LABEL,EXPLORE,SORTS,SORT_IDS,DEFAULT_SORT,FN,PERIODS,fnHeadHtml,filterNoteHtml,sicOf,classificationOf,filterClassifications,classificationSummary,classificationFiltersHtml,mountClassificationFilters,sortLabel,sortOptions,oppositeSort,sortAvailable,sortRows,populationOf,rowsFor,modelChecks,vCount,mount});
 });

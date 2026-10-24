@@ -26,13 +26,15 @@ const PAYLOAD=`window.__tv1Payload=(calc,{asOf='2026-10-13T21:00:00Z',acquired='
  for(const[code,f]of Object.entries(patch))Object.assign(out.records[code],f);return out;};`;
 // Synthetic v2 accessor rows + public records → a draft through the shipped builder (runs in the page); the draft records the
 // input basis of the qgv2-calc/2026-10-17.1 payload.
-async function seed({date,n=45}){
+// vMiss: {symbol: V factor id} whose synthetic score is null (2026-10-23 V count: a V without V3 / V4 blocks finalize).
+async function seed({date,n=45,vMiss={}}){
  const B=window.TargetV1Builder,S=window.TargetV1Screen,SICS=['7372','3674','3559','3612','3812','3823','2834','5812','4911','1311','2080','6798'];
- const F={q_profitability:90,q_moat_proxy:80,q_earnings_quality:70,q_financial_safety:60,q_capital_allocation:50,g_revenue_growth:85,g_per_share_growth:40,g_growth_efficiency:30,g_consistency:20,g_recent_acceleration:10};
+ const F={q_profitability:90,q_moat_proxy:80,q_earnings_quality:70,q_financial_safety:60,q_capital_allocation:50,g_revenue_growth:85,g_per_share_growth:40,g_growth_efficiency:30,g_consistency:20,g_recent_acceleration:10,
+  v_earnings_yield:45,v_fcf_yield:44,v_vs_industry:43,v_vs_own_history:42,v_expectation_check:41};
  const M={roic:0.25,moat_return_mean_5y:0.2,fcf_to_net_income:1.1,net_debt_to_ebitda:1,interest_coverage:12,revenue_cagr_3y:0.12};
  const computed={v2_state:'READY',profile:{id:'qgv-v2/balanced/gate-on'},v2_as_of:date,rows:{}},inputs={records:{}},codes=[];
  for(let i=0;i<n;i++){const symbol=i===3?'NVDA':'SYN'+String(i).padStart(2,'0'),code='NASDAQ:'+symbol,ax=s=>({score:s,weight_available:1});codes.push(code);
-  computed.rows['c'+i]={ticker:symbol,code,v2:{total:90-i*0.5,q:70,g:65,v:55,axes:{Q:ax(70),G:ax(65),V:ax(55)},factors:Object.fromEntries(Object.entries(F).map(([k,v])=>[k,{score:v}])),factors_available:i%7===0?11:15,factors_total:15,q_industry_percentile:60,value_trap_gate:i===44,selected_types:['quality']}};
+  computed.rows['c'+i]={ticker:symbol,code,v2:{total:90-i*0.5,q:70,g:65,v:55,axes:{Q:ax(70),G:ax(65),V:ax(55)},factors:Object.fromEntries(Object.entries(F).map(([k,v])=>[k,{score:vMiss[symbol]===k?null:v}])),factors_available:i%7===0?11:15,factors_total:15,q_industry_percentile:60,value_trap_gate:i===44,selected_types:['quality']}};
   inputs.records[code]={cik:'C'+i,sic:i===3?'3674':SICS[i%SICS.length],industry_group:'grp'+(i%SICS.length),metrics:M,qg_axes:{Q:{score:70},G:{score:65}}};}
  const basis=await B.inputBasis(window.__tv1Payload('qgv2-calc/2026-10-17.1'));window.__seedData={computed,inputs,codes,basis};
  const draft=B.buildDraft({computed,inputs,universeCodes:codes,existing:['NVDA'],date,basis});
@@ -59,7 +61,7 @@ async function seed({date,n=45}){
     passed:TargetV1ConfigDefaults.number_check.result.passed,number:B.numberCheck(current.calc_version).reason};
   });
   assert.deepEqual(versionCheck,{basis:'qgv2-calc/2026-10-17.1',version:'qgv2-calc/2026-10-17.1',reasons:[],
-   invalid:['CALC_VERSION_MISSING'],mixed:['CALC_VERSION_MIXED'],passed:false,number:'NUMBER_CHECK_NOT_PASSED'});
+   invalid:['CALC_VERSION_MISSING'],mixed:['CALC_VERSION_MIXED'],passed:true,number:null});
   await page.goto(BASE+'#home');await page.goto(BASE+'#playbook');await page.locator('[data-tv1-candidates]').waitFor();
   assert.equal(await page.locator('[data-tv1-candidates] tbody tr').count(),30);assert.match(await page.locator('[data-tv1-candidate=NVDA]').textContent(),/반도체.*예$/);
   assert.equal(await page.locator('[data-tv1-card]').count(),15);assert.match(await page.locator('[data-tv1-limits]').textContent(),/16절 한도 통과/);
@@ -78,11 +80,11 @@ async function seed({date,n=45}){
   assert.equal(await page.locator('[data-tv1-rebalance] table').count(),0);assert.equal(await page.locator('[data-tv1-risk-codes] li').count(),8);assert.match(await page.locator('[data-tv1-risk-codes]').textContent(),/R1 · 확신 보유 종목의 무효화 조건 발생/);
   assert.deepEqual(await page.locator('[data-tv1-round-row] td:last-child').allTextContents(),['위험 코드 점검만','위험 코드 점검만','위험 코드 점검만']);
   assert.match(await page.locator('[data-tv1-transition] [data-tv1-schedule]').textContent(),/확정 목표 2026년 11월 둘째 주\(11-09 ~ 11-15\) · 미확정 · 조건을 못 맞추면 확정을 미루고 11월 회차는 위험 코드 점검만/);
-  phase=width+' number check';assert.equal(await page.locator('[data-tv1-finalize]').isDisabled(),false);assert.match(await page.locator('[data-tv1-number-check]').textContent(),/숫자 검증\(10-K 대조\) 통과 전/);
+  phase=width+' number check';assert.equal(await page.locator('[data-tv1-finalize]').isDisabled(),false);assert.match(await page.locator('[data-tv1-number-check]').textContent(),/^숫자 검증 통과 · 10개 기업 · calc_version qgv2-calc\/2026-10-17\.1 · 2026-10-23 · 앱 계산식 대조 통과\(시험 가격\) \/ 실기기 시세 경로 미검증 · /);
   // The published file is re-read at the click: absent on this build (404) → blocked with every reason listed.
   await page.locator('[data-tv1-finalize]').click();await page.waitForFunction(()=>document.querySelector('[data-tv1-finalize-check]'));
   assert.match(await page.locator('[data-tv1-status]').textContent(),/^확정 불가 · 최신 공개 sec-qgv2\.json을 읽지 못함$/);
-  assert.deepEqual(await page.locator('[data-tv1-blocker]').evaluateAll(n=>n.map(x=>x.dataset.tv1Blocker)),['SEC_QGV2_NOT_AVAILABLE','NUMBER_CHECK_NOT_PASSED']);
+  assert.deepEqual(await page.locator('[data-tv1-blocker]').evaluateAll(n=>n.map(x=>x.dataset.tv1Blocker)),['SEC_QGV2_NOT_AVAILABLE','NUMBER_CHECK_CALC_VERSION_MISMATCH']);
   const store=await page.evaluate(()=>{const v=PlaybookScreen.read(localStorage);return{records:v.records.filter(r=>r.primary_code==='TV1').map(r=>r.verdict),versions:v.target_v1.versions.length};});
   assert.equal(store.versions,0);assert.equal(store.records.length,16);assert.equal(store.records.filter(v=>v==='TV1_DISAGREE').length,1);assert.equal(store.records.filter(v=>v==='TV1_UNKNOWN').length,1);
   await page.goto(BASE+'#home');await page.goto(BASE+'#playbook');await page.locator('[data-tv1-confirm]').waitFor();assert.match(await page.locator('[data-playbook-scoring]').textContent(),/TARGET v1 반대/);
@@ -172,6 +174,32 @@ async function seed({date,n=45}){
   await page.locator('[data-tv1-card="SYN43"] [data-tv1-answer=AGREE]').click();await page.waitForFunction(()=>!document.querySelector('[data-tv1-finalize]').disabled);
   await page.locator('[data-tv1-finalize]').click();await page.waitForFunction(()=>/TARGET v1 저장 · calc_version qgv2-calc\/2026-10-17\.1/.test(document.querySelector('[data-tv1-status]').textContent));
   assert.ok((await page.evaluate(()=>TargetV1Screen.readState(PlaybookScreen,localStorage).versions.at(-1).rows.map(r=>r.symbol))).includes('SYN43'));
+  phase=width+' v factor gate';
+  // 2026-10-23: SYN00 (selected) has V without V4 → the draft is allowed and marked (candidate row, selection reason line, card);
+  // finalize is blocked with that reason only; 반대 on SYN00 → the replacement has V1..V5 → finalize saves.
+  await page.evaluate(seed,{date:'2026-10-14',vMiss:{SYN00:'v_vs_own_history'}});
+  await page.evaluate(async()=>{const B=TargetV1Builder,S=TargetV1Screen,catalog=await(await fetch('actual-catalog.json')).json();let st=S.readState(PlaybookScreen,localStorage);
+   for(const r of B.currentSelection(st).rows)st=B.answer(st,{symbol:r.symbol,answer:'AGREE',date:'2026-10-14'});S.writeState(PlaybookScreen,localStorage,st);
+   const cfg={...TargetV1ConfigDefaults,number_check:{...TargetV1ConfigDefaults.number_check,result:{calc_version:'qgv2-calc/2026-10-17.1',passed:true,date:'2026-10-14',companies:10}}};
+   await S.mount(document.querySelector('[data-target-v1-builder]'),{playbook:PlaybookScreen,config:cfg,catalog,storage:localStorage,date:'2026-10-14',publishedProvider:async()=>window.__tv1Payload('qgv2-calc/2026-10-17.1')});});
+  assert.equal(await page.locator('[data-tv1-candidates] thead th').nth(6).textContent(),'V 요인');
+  const vRow=page.locator('[data-tv1-candidate=SYN00]');assert.equal(await vRow.getAttribute('data-tv1-v-count'),'4');assert.equal(await vRow.getAttribute('data-tv1-v-incomplete'),'');
+  assert.equal(await vRow.locator('[data-tv1-v-cell]').textContent(),'4/5 V4 빠짐 · 확정 불가');assert.match(await vRow.textContent(),/예$|아니오$/);
+  assert.equal(await page.locator('[data-tv1-candidate=SYN01] [data-tv1-v-cell]').textContent(),'5/5');assert.equal(await page.locator('[data-tv1-candidates] [data-tv1-v-incomplete]').count(),1);
+  assert.match(await page.locator('[data-tv1-v-reason]').textContent(),/^V3\(업종 대비\)·V4\(자기 과거 대비\)가 빠진 V · SYN00 V 4\/5 · 초안은 그대로 쓸 수 있지만 .*확정할 수 없습니다\(2026-10-23 결정\)$/);
+  assert.match(await page.locator('[data-tv1-v-reason-selected]').textContent(),/SYN00 V 4\/5/);
+  assert.match(await page.locator('[data-tv1-card=SYN00] [data-tv1-v-marker]').textContent(),/^V4 빠짐 · 확정 불가$/);assert.match(await page.locator('[data-tv1-card=SYN00]').textContent(),/V 요인 4\/5 · 산출 요인/);
+  assert.equal(await page.locator('[data-tv1-card] [data-tv1-v-marker]').count(),1);assert.equal(await page.locator('[data-tv1-finalize]').isDisabled(),false);
+  await page.locator('[data-tv1-finalize]').click();await page.waitForFunction(()=>document.querySelector('[data-tv1-finalize-check]'));
+  assert.deepEqual(await page.locator('[data-tv1-blocker]').evaluateAll(n=>n.map(x=>x.dataset.tv1Blocker)),['V_FACTORS_V3_V4_MISSING']);
+  assert.equal(await page.locator('[data-tv1-status]').textContent(),'확정 불가 · V3(업종 대비)·V4(자기 과거 대비)가 빠진 V로 계산된 선정 종목이 있어 확정할 수 없음(초안은 가능 · 2026-10-23 결정)');
+  assert.equal(await page.locator('[data-tv1-v-recheck]').textContent(),'V3·V4 빠진 V · SYN00');assert.equal(await page.evaluate(()=>TargetV1Screen.readState(PlaybookScreen,localStorage).versions.length),0);
+  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'v marker horizontal overflow');
+  await page.locator('[data-tv1-card=SYN00] [data-tv1-reason]').fill('합성 · V4 없음');await page.locator('[data-tv1-card=SYN00] [data-tv1-answer=DISAGREE]').click();await page.waitForFunction(()=>!document.querySelector('[data-tv1-card=SYN00]'));
+  for(;;){const pending=await page.locator('[data-tv1-card]').evaluateAll(n=>n.filter(x=>x.querySelector('[data-tv1-card-state]').textContent==='응답 대기').map(x=>x.dataset.tv1Card));if(!pending.length)break;await card(pending[0]).locator('[data-tv1-answer=AGREE]').click();await page.waitForFunction(s=>document.querySelector('[data-tv1-card="'+s+'"] [data-tv1-card-state]').textContent!=='응답 대기',pending[0]);}
+  assert.equal(await page.locator('[data-tv1-v-reason-selected]').count(),0);assert.equal(await page.locator('[data-tv1-v-reason]').count(),1,'the draft table keeps the marker line');
+  await page.locator('[data-tv1-finalize]').click();await page.waitForFunction(()=>/TARGET v1 저장 · calc_version qgv2-calc\/2026-10-17\.1/.test(document.querySelector('[data-tv1-status]').textContent));
+  assert.ok(!(await page.evaluate(()=>TargetV1Screen.readState(PlaybookScreen,localStorage).versions.at(-1).rows.map(r=>r.symbol))).includes('SYN00'));
   phase=width+' shortfall';const few=await page.evaluate(seed,{date:'2026-10-14',n:12});assert.equal(few,12);
   await page.evaluate(async()=>{const catalog=await(await fetch('actual-catalog.json')).json();await TargetV1Screen.mount(document.querySelector('[data-target-v1-builder]'),{playbook:PlaybookScreen,catalog,storage:localStorage,date:'2026-10-14'});});
   assert.match(await page.locator('[data-tv1-shortfall]').textContent(),/^통과 종목 부족 3종목 · 조건 완화·제외 종목 복귀 없음 · 확정 불가 · 사유: /);assert.equal(await page.locator('[data-tv1-card]').count(),12);assert.equal(await page.locator('[data-tv1-finalize]').isDisabled(),true);
@@ -188,7 +216,7 @@ async function seed({date,n=45}){
   assert.equal(await page.evaluate(()=>localStorage.getItem(PlaybookScreen.KEY)),beforeRaw,'viewing raw data never changes TARGET records');
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'settings raw horizontal overflow');
   assert.deepEqual(errors,[]);assert.deepEqual(unexpected,[]);
-  console.log('PASS TARGET v1 builder empty NA, cards agree/disagree(replace)/unknown, records, number-check gate, finalize, rebalance week, compare, review rule, TV1 sheet prices, risk-only rounds, finalize re-check (calc_version, row freshness, safety), draft regeneration and shortfall '+width);
+  console.log('PASS TARGET v1 builder empty NA, cards agree/disagree(replace)/unknown, records, number-check gate, finalize, rebalance week, compare, review rule, TV1 sheet prices, risk-only rounds, finalize re-check (calc_version, row freshness, safety), draft regeneration, V factor gate (2026-10-23) and shortfall '+width);
   await context.close();}}
  catch(e){console.log('FAIL '+phase+' '+e.message);process.exitCode=1;}finally{await browser.close();}
 })();

@@ -124,8 +124,11 @@ test('sec-qgv2 adapter: published shape normalized (TTM first, FY fallback, TARG
   assert.equal((await SQ.load(strict)).records['TARGET:nvda'].in_cross_section, false);assert.equal(used, 'strict');
   const universe = new Map([['NASDAQ:NVDA', { price: 50, currency: 'USD' }], ['NYSE:NOPE', { price: 9, currency: 'USD' }]]);
   const win = { PrivateSubsetView: { prices: () => universe }, DeviceValuation: { deviceQuote: async (w, c, tk) => (tk === 'AMD' ? { price: 30, currency: 'USD' } : null) },
-    PriceStore: { monthEndCloses: async (sym) => (sym === 'NVDA' ? { '2024-12': 40, '2025-12': 45, bad: 3, '2023-12': 0 } : {}) } };
+    PriceStore: { monthEndCloses: async (sym, o) => { storeOptions.push(o); return sym === 'NVDA' ? { '2024-12': 40, '2025-12': 45, bad: 3, '2023-12': 0 } : {}; } } };
+  const storeOptions = [];
   const q = await QS.collectQuotes(win, { identities, v2Inputs: inputs, catalog: {} });
+  // Click-only rule (owner decision 2026-10-23): the screen-open quote collection reads the stored month-ends only.
+  assert.ok(storeOptions.length > 0 && storeOptions.every((o) => o && o.fetch === false), 'every month-end read passes fetch:false');
   assert.deepEqual(Object.keys(q).sort(), ['NASDAQ:NVDA', 'TARGET:amd', 'TARGET:nvda']);
   assert.deepEqual(q['TARGET:nvda'].month_closes, { '2024-12': 40, '2025-12': 45 });assert.equal(q['TARGET:nvda'].price, 50);
   assert.equal(q['TARGET:amd'].month_closes, undefined);
