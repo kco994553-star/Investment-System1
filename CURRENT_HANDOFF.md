@@ -1,6 +1,6 @@
 # 현재 인수인계 — 2026-10-24 (Claude Code Main)
 
-확인 시각: **2026-10-24 01:40 UTC / 10:40 KST**. 이 시각 이후의 PR·Actions·게시 상태는 `git log`와 열린 PR로 다시 확인한다. 구현 / 시험 / 병합 / 게시 / 실사이트 확인을 나눠 적는다.
+확인 시각: **2026-10-24 05:10 UTC / 14:10 KST**. 이 시각 이후의 PR·Actions·게시 상태는 `git log`와 열린 PR로 다시 확인한다. 구현 / 시험 / 병합 / 게시 / 실사이트 확인을 나눠 적는다.
 
 먼저 읽기: **[START_HERE.md](START_HERE.md) → [방향 전환 대장](docs/SPEC/DIRECTION_CHANGES.md)** → [WORKING_RULES.md](WORKING_RULES.md) → 이 파일 → [기능 명세 v1.0](docs/SPEC/FUNCTION_HIERARCHY_v1.0.md) → [기능 현황](docs/SPEC/FUNCTION_STATUS.md) → [사용자 결정](implementation/docs/USER_DECISIONS_PENDING.md) → [새 프론트엔드 계획](implementation/docs/frontend_v2/FRONTEND_V2_PLAN.md)(#385) → [자료 계약](implementation/docs/FRONTEND_DATA_CONTRACT.md).
 이전 기록: [10/23](implementation/docs/handoff/HANDOFF_HISTORY_20261023.md) · [10/21 Codex Main 원문](implementation/docs/handoff/HANDOFF_HISTORY_20261021.md) · [10/20](implementation/docs/handoff/HANDOFF_HISTORY_20261020.md) · [10/18~19](implementation/docs/handoff/HANDOFF_HISTORY_20261018_19.md).
@@ -16,16 +16,16 @@
 
 | PR | 담당 | 시작 (UTC / KST) | 내용 |
 | --- | --- | --- | --- |
-| #385 `claude/frontend-v2-p0` 새 프론트엔드 P0 | Claude Code Main | 2026-10-24 01:15 / 10:15 | 사용자 승인(동기화·병합). canonical 9159df0d 동기화본 2d7aec84(충돌 `ci_browser_tests.txt` 한 줄은 두 시험 모두 유지, 4.5 메뉴 이름 "나비효과"). 필수 체크 통과 뒤 병합 |
-| `claude/frontend-v2-p1`(#385 위) 새 프론트엔드 P1 자료·계산 층 | Claude Code Main | 2026-10-24 00:15 / 09:15 | 공개 파일 엄격 리더·QGV v2 점수 접근자(V 출처 OFFICIAL_CENTRAL/DEVICE_TEMPORARY)·가격(클릭할 때만)·기기 저장·엔진 연결. 옛 모듈 재사용 |
+| #397 `claude/frontend-v2-p1` 새 프론트엔드 P1 자료·계산 층 | Claude Code Main | 2026-10-24 00:15 / 09:15 | 공개 파일 엄격 리더·QGV v2 점수 접근자(임시 V)·가격(클릭할 때만)·기기 저장·엔진 연결, 옛 모듈 57개 재사용. 소유자 승인 대기. 병합 뒤 P2 메뉴별 PR |
 | #396 `ccr-263267c9-f5ng5h` 4.5 "나비효과"·DC-02 계획·인수인계 | Claude Code Main | 2026-10-24 00:00 / 09:00 | 옛 화면 문구 + 가드 해시 2개 재고정, [중앙 V 구현 계획](implementation/docs/qgv_scoring_standard/CENTRAL_V_DC02_PLAN_20261024.md), 이 파일. 소유자 승인 대기 |
 
 ## 1. 기준·게시
 
-- canonical: **claude/investment-system-top500-validation-alrugm**, HEAD **9159df0d** (#394 병합, 2026-10-24 01:09 UTC / 10:09 KST).
+- canonical: **claude/investment-system-top500-validation-alrugm**, HEAD **a359ae91** (#385 병합, 2026-10-24 01:55 UTC / 10:55 KST).
 - 10/24 병합(모두 최신 canonical 위 필수 6체크 성공 확인 뒤, 소유자 승인):
   - #395 CI 실행기 `ubuntu-24.04` 고정: HEAD 67f2ca85 → 병합 **d6eaaa8a** (00:09 UTC / 09:09 KST). `ubuntu-latest`가 26.04로 바뀌어 Playwright 1.58.2 설치가 실패했기 때문이다.
   - #394 명세 원문·방향 전환 대장·금지 표현 검사·START_HERE: HEAD b3d5a41c → 병합 **9159df0d** (01:09 UTC / 10:09 KST). 문서·검사만이라 화면 변화 없음.
+  - #385 새 프론트엔드 P0(셸·디자인 부품·글꼴·개발 빌드): 동기화본 2d7aec84(공용 CI 목록 충돌은 두 시험 모두 유지, 4.5 메뉴 "나비효과") → 병합 **a359ae91**. `web_app/`은 배포되지 않는다.
 - 10/23 병합: #384 #378 #382 #387 #389 #388 #386(마지막 81d7b58d). 자세한 내용은 [10/23 기록](implementation/docs/handoff/HANDOFF_HISTORY_20261023.md).
 - **실제 게시: d6eaaa8a.** 10/23분 정기 실행 [run 40045938631](https://github.com/kco994553-star/Investment-System1/actions/runs/40045938631)이 collect·verify·deploy 모두 성공했다(24.04, 시작 00:38 UTC, 배포 01:17 UTC / 10:17 KST).
 
@@ -56,7 +56,7 @@
 
 | PR | 상태 | 남은 것 |
 | --- | --- | --- |
-| #385 새 프론트엔드 P0 | 승인됨. 동기화 2d7aec84 CI 중 | 필수 체크 통과 → 병합 |
+| #397 새 프론트엔드 P1 자료·계산 층 | 소유자 승인 대기(CI 목록 등록 포함) | 사용자 결정 대기 5개(V 기록 시점, 플레이북 판정 기록, R-B 선정, IndexedDB 시세 저장, 로그인 두 번) — [P1_DATA_LAYER §11](implementation/docs/frontend_v2/P1_DATA_LAYER.md) |
 | #391 TARGET v1 "임시 V"·F1·F2 | 소유자 승인 대기. CI는 #395 전(병합 전에 기준 병합·재실행 필요) | F1 판정 기준: 지금은 마지막 저장본 날짜. 제때 확정 뒤 마감 다음 날 다시 저장하면 11월 목록이 사라진다. **첫 확정본 날짜로 바꾸기를 권장** |
 | #392 TARGET v0 결합 해소 | 소유자 승인 대기. CI는 #395 전 | 기기 저장 키를 발행사 키로 이전. PR 본문에만 있는 후속 결정 7개를 USER_DECISIONS_PENDING으로 옮겨야 함. #396과 가드 148·149행 붙은 줄 충돌(두 해시 유지로 해결) |
 | #393 F_k·calc_version 23.1 | 소유자 승인 대기 | 병합 시점 = 결정 D1(권장: 중앙 V 첫 게시와 같은 배포 창). 병합하면 숫자 재대조·전체 샤드 실행 필요 |
@@ -69,8 +69,8 @@
 
 ## 5. 다음 할 일
 
-1. #385 필수 체크 통과 → 병합. P1 PR의 base를 canonical로 바꾼다.
-2. 새 프론트엔드 P1 PR(자료·계산 층)을 내고 CI·승인 요청. 그다음 P2 메뉴별 PR(기능 1 → 2 → 6 → 5 → 3 → 4 → 7 → 8 → 9).
+1. #397(P1) CI 확인 → 승인 → 병합(FUNCTION_STATUS v2 줄은 병합 때 Main이 적음).
+2. P2 메뉴별 PR(기능 1 → 2 → 6 → 5 → 3 → 4 → 7 → 8 → 9). P2-1(홈)에서 휴대폰 첫 로드용 지연 로딩을 정한다.
 3. #396 승인 → 병합. 화면 반영은 다음 정기 실행 배포.
 4. 중앙 V 결정 D1~D10 받기 → PR-A(U1~U3를 #393 위로 정리) → PR-B(가드) → PR-C(워크플로).
 5. #391·#392 승인 시 기준 병합 → CI → 병합. 8-K·뉴스·로고 부분 실패 원인 조사.
