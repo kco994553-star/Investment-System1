@@ -66,6 +66,13 @@ jobs:
         env:
           RUN_MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.all_shards && 'all_shards' || 'daily' }}
         run: python implementation/tools/daily_run_context.py
+      # Node for the JS twin of the central QGV publication (D-CV12; owner decision D10, 2026-10-24): the same pin as the
+      # screen-check job below, early in the job. It never stops the job: if it fails, the runner's own node is used, and
+      # with no node at all the V step keeps the last good copy (JS_TWIN_UNAVAILABLE).
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        continue-on-error: true
+        with:
+          node-version: '22'
       - name: Offline public boundary regression (GSQ-010)
         working-directory: implementation
         run: |
@@ -117,6 +124,49 @@ jobs:
         run: |
           python implementation/tools/forward_validation_ledger.py --out "$RUNNER_TEMP/public-cockpit"
           python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
+      # Central QGV publication (GSQ-024; design CENTRAL_V_PUBLICATION_DESIGN_20261018.md §3; plan CENTRAL_V_DC02_PLAN_20261024.md
+      # PR-C). After the ledger (W-F1: a V failure never touches the day's ledger row or its private copy) and before the
+      # classification step. One IEX HIST TOPS day (the latest one on or before the run's New York day, owner decision D3) is
+      # streamed download | gzip | C parser and held in RAM only; the private V4 month-end store (U8 run of 2026-10-23, release
+      # tags iex-v4-monthend-20261023-shard0..5) is read with the read-only token; the whole Universe is scored with the
+      # unchanged engine and checked by the strict validator and the JS twin. The last good live publication is carried
+      # first and only a checked publication replaces qgv-official.json; qgv-official-status.json records every attempt. One
+      # fixed line: QGV_OFFICIAL attempt=... reason=... published=... basis=... rows=... ranked=... supplied=n/m (never a price,
+      # URL or key). A missing Secret is NOT_RUN and a supply or check failure keeps the last good copy, all with exit 0; the
+      # step also continues on error and has its own time limit, so the daily run never stops here. The publication's two
+      # Secrets live in this step's env only, and only the publisher holds them: cc and the guard run without them (env -u)
+      # and the publisher removes them from its environment before it starts curl, gzip, the parser or node. A live copy that
+      # cannot be read (not a 404) is NOT_RUN / LIVE_UNREACHABLE (nothing computed). If the step's own artifact guard refuses
+      # the V files, they are removed (QGV_OFFICIAL_GUARD_REFUSED) and the step fails without the final guard run, so a refused
+      # file never reaches the next required step's guard (which would stop the job; it checks the rest) and the history step
+      # is skipped. Otherwise the step ends, like every step that writes the artifact, with the artifact guard.
+      # No upload, cache, push or job summary in this step.
+      - name: Publish the central QGV from one IEX HIST day (prices in RAM only; scores, ranks, reasons and counts only)
+        id: central_v
+        continue-on-error: true
+        timeout-minutes: 15
+        env:
+          QGV_OFFICIAL_HMAC_KEY: ${{ secrets.QGV_OFFICIAL_HMAC_KEY }}
+          RAW_REPO_READ_TOKEN: ${{ secrets.RAW_REPO_READ_TOKEN }}
+          QGV_MONTHEND_STAMP: '20261023'
+        run: |
+          env -u QGV_OFFICIAL_HMAC_KEY -u RAW_REPO_READ_TOKEN cc -O2 -o "$RUNNER_TEMP/iex_last_trade" implementation/tools/iex_tops/iex_last_trade.c || echo 'QGV_OFFICIAL_PARSER_BUILD_FAILED'
+          timeout -k 30s 12m python implementation/tools/qgv_official_publish.py --out "$RUNNER_TEMP/public-cockpit" --parser "$RUNNER_TEMP/iex_last_trade" --monthend-stamp "$QGV_MONTHEND_STAMP" --monthend-shards 6 --raw-token-env RAW_REPO_READ_TOKEN --hmac-key-env QGV_OFFICIAL_HMAC_KEY || { echo "QGV_OFFICIAL_STEP_STOPPED exit=$?"; rm -f "$RUNNER_TEMP"/public-cockpit/.qgv-official*; }
+          env -u QGV_OFFICIAL_HMAC_KEY -u RAW_REPO_READ_TOKEN python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit" || { echo 'QGV_OFFICIAL_GUARD_REFUSED'; rm -f "$RUNNER_TEMP/public-cockpit/qgv-official.json" "$RUNNER_TEMP/public-cockpit/qgv-official-status.json"; refused=1; }
+          [ -z "${refused:-}" ] && env -u QGV_OFFICIAL_HMAC_KEY -u RAW_REPO_READ_TOKEN python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
+      # Private dated score history (owner decision D9, 2026-10-24): a NEW publication of this run is copied byte for byte
+      # (scores only, no prices) to the private raw repository's release qgv-official-<IEX basis day>; a kept, failed or absent
+      # publication is skipped, and so is everything when the V step (its artifact guard included) did not succeed. The raw-repo
+      # write token is held here (as in the shard and ledger steps), never in the V step, and this step never reads a price or
+      # the publication's two Secrets. Continues on error with its own time limit (a stalled release API ends this step only,
+      # never the collect job); one fixed line; exit 0.
+      - name: Copy a new central QGV publication to the private dated history (scores only, no prices)
+        if: steps.central_v.outcome == 'success'
+        continue-on-error: true
+        timeout-minutes: 5
+        env:
+          RAW_REPO_TOKEN: ${{ secrets.RAW_REPO_TOKEN }}
+        run: python implementation/tools/qgv_official_history.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
       # W-F1 (2026-10-15): required steps that do not feed the ledger run after it. Their failure still withholds the
       # Pages artifact (and so the screen check and deploy), but no longer the day's ledger row or its dated private copy.
       - name: Collect SEC SIC, 10-K Item 1 and basket-ETF N-PORT evidence for industry/theme v0
@@ -188,6 +238,22 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '22'
+      # Central QGV publication (GSQ-024; design §3-2): price-free checks of exactly the artifact deploy would publish. The
+      # strict reader and the status file, each only when present (nothing before the first publication), then the publisher,
+      # adapter and guard unit tests. The Pages guard above already refuses an invalid publication file; this step adds the
+      # status cross-check and the unit tests. It continues on error (a V check never stops the SEC, news or ledger deploy)
+      # and names a failure with one fixed annotation, QGV_OFFICIAL_VERIFY_FAILED. Its own time limit (8 minutes; the
+      # tests take about 70 s locally) ends this step only: a hang never uses up the verify job's limit, so never withholds
+      # the deploy.
+      - name: Check the central QGV publication without prices (strict reader, status, unit tests)
+        continue-on-error: true
+        timeout-minutes: 8
+        run: |
+          rc=0
+          python implementation/tools/qgv_official_check.py --artifact-dir "$RUNNER_TEMP/public-cockpit" || rc=1
+          (cd implementation && python -m pytest -q --tb=line -p no:cacheprovider tests/test_qgv_official.py tests/test_iex_hist.py tests/test_qgv_official_guards.py) || rc=1
+          [ "$rc" -eq 0 ] || echo '::error title=QGV_OFFICIAL_VERIFY_FAILED::QGV_OFFICIAL_VERIFY_FAILED (deploy not withheld)'
+          exit "$rc"
       - name: Verify device features and price-free pages locally
         env:
           NODE_PATH: ${{ runner.temp }}/pages-browser/node_modules
@@ -243,6 +309,11 @@ jobs:
       # kept unchanged and in order). Live copy served but invalid -> PAGES_FRESHNESS_LIVE_INVALID, refused: restoring a
       # healthy live copy is a separate, evidence-based procedure, never automatic. Live 404 -> first publication (pass);
       # live unreachable -> refused (fail closed). Fixed lines only: counts, dates and public row codes.
+      # Central QGV publication qgv-official.json (GSQ-024, design §12-5): the same publication_id must carry the same bytes
+      # (else CHANGED, refused); another publication with an earlier price_basis_date, or with the same basis day and an
+      # earlier inputs_as_of, is OLDER (refused); an artifact copy failing the strict reader is refused. A live publication
+      # that is invalid or missing from the artifact withholds the publication only (PAGES_FRESHNESS_PUBLICATION_WITHHELD,
+      # D-CV16 (a)) and the rest of the deploy goes on. qgv-official-status.json is never compared.
       - name: Refuse to deploy public data older than the live Pages copy
         run: |
           mkdir "$RUNNER_TEMP/deploy-check"

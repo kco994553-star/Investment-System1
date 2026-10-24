@@ -4980,3 +4980,25 @@ manifest의 URL/hash/크기/상태, SEC share facts·par value·split/exchange r
 - 처음 판의 게시기는 라이브 사본 읽기의 모든 실패(시간 초과·5xx 포함)를 404처럼 다뤄, 일시 장애 하나로 유효한 라이브 게시본을 아티팩트에서 지우고 상태 파일에 `NO_OFFICIAL_YET`를 썼다. 그날 배포 신선도가 라이브를 읽으면 `MISSING` → `WITHHELD`로 사이트에서 게시본이 빠졌다(수동 배포 보존 경로도 같음).
 - 지금: 게시기는 매일 도구들과 같은 읽기(`sec_universe_shares._fetch_body`: 캐시 없음, 리디렉션 거부, 정확한 URL + 실행 nonce, 404만 "없음")를 3번까지 시도한다. 그래도 못 읽으면 `NOT_RUN` / `LIVE_UNREACHABLE`: 계산하지 않고(이전 기준일 검사를 건너뛰지 않기 위해), 상태 파일은 `NO_OFFICIAL_YET`라고 쓰지 않는다(검증기가 그 조합을 거부). 보존 경로는 그때 두 파일 모두 싣지 않는다.
 - **남는 한계(소유자 결정 필요):** V 단계가 3번 다 못 읽고 배포 단계는 읽는 경우, 그날 배포는 여전히 `MISSING` → `WITHHELD`로 사이트에서 게시본을 하루 뺀다(다음 성공 실행이 다시 낸다). 이를 없애려면 배포 잡이 검증된 라이브 바이트를 아티팩트에 다시 넣어 올려야 한다. 그것은 배포 잡의 새 업로드(게시 경로 정적 시험의 허용 목록 변경)이자 verify가 보지 않은 바이트의 배포라서 이 PR에서 하지 않았다. 신선도 규칙(`MISSING` → `WITHHELD`)은 그대로다.
+
+## 11. GSQ-024 후속: 중앙 V 게시 워크플로 연결 (2026-10-24, append-only)
+
+- 작성: 2026-10-24 UTC, PR-C(`claude/central-v-workflow`, PR-B 위). **병합 대기, 소유자 승인 필요(워크플로 변경).** §1~§10은 바꾸지 않았다.
+- 근거: GSQ-024, 2026-10-24 소유자 결정 D2 (a)·D9·D10([계획](../qgv_scoring_standard/CENTRAL_V_DC02_PLAN_20261024.md) 4절), [설계](../qgv_scoring_standard/CENTRAL_V_PUBLICATION_DESIGN_20261018.md) §3·§6. 첫 게시 절차: [점검표](../qgv_scoring_standard/CENTRAL_V_GO_LIVE_CHECKLIST_20261024.md).
+
+### 11-1. 단계와 경계
+
+| 위치 | 단계 | 가진 것 | 경계 |
+| --- | --- | --- | --- |
+| collect, 실행 기록 단계 다음 | `actions/setup-node`(verify와 같은 고정 커밋, Node 22) | 없음 | `continue-on-error`. 실패해도 실행기 node를 쓰거나 V 단계가 `JS_TWIN_UNAVAILABLE`로 직전 정상본을 유지한다 |
+| collect, 원장 단계 다음·분류 단계 앞 | V 단계: C 파서를 `$RUNNER_TEMP`에 빌드 → `tools/qgv_official_publish.py`(§10-1의 유일한 가격 경로) → 아티팩트 가드 | `QGV_OFFICIAL_HMAC_KEY`, `RAW_REPO_READ_TOKEN`(읽기 전용, 이 단계 `env`에만) | `continue-on-error`, 단계 한도 15분·게시기 한도 12분. 가격은 RAM에만, 출력은 고정 코드 한 줄. `RAW_REPO_TOKEN`·업로드·캐시·push·요약 없음. 게시기가 멈추면 반쯤 쓴 파일을 지우고 가드가 돈다. Secret 두 개는 게시기 프로세스만 가진다: `cc`·가드는 `env -u`로 빼고 돌리고, 게시기는 시작하자마자 자기 환경에서 지워 curl·gzip·파서·node가 물려받지 않는다(2026-10-24 검토). 이 단계의 가드가 V 파일을 거부하면 두 파일을 지우고 마지막 가드 없이 단계를 실패로 끝낸다(`QGV_OFFICIAL_GUARD_REFUSED`; 나머지 파일은 다음 필수 단계의 가드가 본다): 거부된 파일이 그 가드에 닿아 collect를 멈추는 일이 없고, 이력 단계는 건너뛴다. 거부가 없으면 아티팩트를 쓰는 다른 단계처럼 가드로 끝난다 |
+| collect, V 단계 다음 | 비공개 점수 이력(D9): `tools/qgv_official_history.py` | `RAW_REPO_TOKEN`(샤드·원장 단계와 같은 쓰기 토큰) | V 단계(아티팩트 가드 포함)가 성공했을 때만 돈다(`if: steps.central_v.outcome == 'success'`). 이번 실행이 만든 새 게시본만, 공개본과 같은 바이트(점수·순위·사유·커버리지·기준 시각, 가격 없음)를 원자료 저장소 릴리스 `qgv-official-<IEX 기준일>`에 `<publication_id>.json` + `.sha256`으로 올린다. 가격·게시용 Secret을 읽지 않고 아티팩트에 쓰지 않는다. `continue-on-error`, 단계 한도 5분(릴리스 API가 멈춰도 이 단계만 끝남), 종료 코드 0 |
+| verify | 가격 없는 검사: `tools/qgv_official_check.py`(엄격 리더·상태 파일·둘의 일치) + 시험 3개 | 없음 | `continue-on-error`, 단계 한도 8분(시험은 로컬 약 70초; 멈춰도 verify 잡 한도를 다 쓰지 않음). 실패는 `QGV_OFFICIAL_VERIFY_FAILED` 주석. 틀린 게시본은 그 앞의 필수 가드 단계가 막는다 |
+| deploy(두 워크플로) | 기존 신선도 단계(§10-4 규칙), 주석에 게시본 규칙을 적음 | 없음 | 단계·명령 변화 없음 |
+| `cockpit-pages.yml` 수동 배포 보존 | `qgv_official_publish.py --preserve-only` | 없음 | 검증된 라이브 바이트만 복사, 다시 계산하지 않음. 가격 없음 |
+
+### 11-2. 바뀌지 않은 것
+
+- Pages 업로드 1개·배포 1개, `persist-credentials: false`, 캐시·push·`GITHUB_STEP_SUMMARY` 없음, verify·deploy의 Secret 없음(시험 `tests/test_public_price_boundary.py`).
+- 원장·샤드 단계의 Secret과 순서(W-F1/W-F2), collect 잡 한도(정기 40분·`all_shards` 120분).
+- `RAW_REPO_TOKEN`을 가진 단계는 샤드·원장·이력 세 개다. 셋 다 도구 안에서만 비공개 저장소에 쓴다. V 단계는 그 토큰을 갖지 않는다.
