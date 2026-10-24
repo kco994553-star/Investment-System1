@@ -1,3 +1,5 @@
+> **SUPERSEDED · 기록 보존용 (2026-10-24 정리).** 2026-09-23 진행 원장이다. 기능별 현황은 `docs/SPEC/FUNCTION_STATUS.md`. 현재 기준은 `START_HERE.md` → `docs/SPEC/DIRECTION_CHANGES.md` → `CURRENT_HANDOFF.md`다. 이 문서로 현재 상태·방향을 판단하지 않는다.
+
 Investment-System1 · Module Progress Ledger  
 기준: 2026-09-23 08:42 KST  
 권한: 아래 %는 새 추정이 아니다. 기존 Official/Latest 문서의 동결 문구와 Evidence Ledger를 분해한 값이다.  
