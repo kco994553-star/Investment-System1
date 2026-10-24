@@ -1,6 +1,6 @@
 # 현재 인수인계 — 2026-10-24 (Claude Code Main)
 
-확인 시각: **2026-10-24 23:00 UTC / 2026-10-25 08:00 KST**. 이 시각 이후의 PR·Actions·게시 상태는 `git log`와 열린 PR로 다시 확인한다. 구현 / 시험 / 병합 / 게시 / 실사이트 확인을 나눠 적는다.
+확인 시각: **2026-10-24 23:25 UTC / 2026-10-25 08:25 KST**. 이 시각 이후의 PR·Actions·게시 상태는 `git log`와 열린 PR로 다시 확인한다. 구현 / 시험 / 병합 / 게시 / 실사이트 확인을 나눠 적는다.
 
 먼저 읽기: **[START_HERE.md](START_HERE.md) → [방향 전환 대장](docs/SPEC/DIRECTION_CHANGES.md)** → [WORKING_RULES.md](WORKING_RULES.md) → 이 파일 → [기능 명세 v1.0](docs/SPEC/FUNCTION_HIERARCHY_v1.0.md) → [기능 현황](docs/SPEC/FUNCTION_STATUS.md) → [사용자 결정](implementation/docs/USER_DECISIONS_PENDING.md) → [새 프론트엔드 계획](implementation/docs/frontend_v2/FRONTEND_V2_PLAN.md)(#385) → [자료 계약](implementation/docs/FRONTEND_DATA_CONTRACT.md).
 이전 기록: [10/23](implementation/docs/handoff/HANDOFF_HISTORY_20261023.md) · [10/21 Codex Main 원문](implementation/docs/handoff/HANDOFF_HISTORY_20261021.md) · [10/20](implementation/docs/handoff/HANDOFF_HISTORY_20261020.md) · [10/18~19](implementation/docs/handoff/HANDOFF_HISTORY_20261018_19.md).
@@ -16,13 +16,12 @@
 
 | PR | 담당 | 시작 (UTC / KST) | 내용 |
 | --- | --- | --- | --- |
-| #399 `claude/frontend-v2-p2-1-first-paint` P2-1a 첫 화면 구조 | Claude Code Main | 2026-10-24 06:00 / 15:00 | 병합 승인(10-24 밤). #398 병합 뒤 기준을 canonical로 바꾸고 동기화(ebaa4118) → CI 녹색이면 병합 |
 | #393 → #400 → #403 → #404 → #405 중앙 V 사슬 | Claude Code Main | 2026-10-24 06:00 / 15:00 | 결정 완료(CV-LEAK (i)·CV-SPLIT (ii)·CV-CARRY (i)·CV-D-*). **10-24 밤 정기 실행 전 병합 금지.** 첫 게시 전 조건: Secret 2개, 하루치 측정(GSQ-024 검증 먼저), CV-SPLIT (ii) 반영 뒤 #400 재시험, 첫 게시 점검표 채우기 → 첫 게시 날짜 제안 |
 | `ccr-263267c9-f5ng5h` Main 문서(10-24 밤 결정·#392 후속 결정·인수인계) | Claude Code Main | 2026-10-24 22:50 / 10-25 07:50 | `USER_DECISIONS_PENDING`·이 파일 |
 
 ## 1. 기준·게시
 
-- canonical: **claude/investment-system-top500-validation-alrugm**, HEAD **8e1fce12** (#398 병합, 2026-10-24 22:39 UTC / 10-25 07:39 KST).
+- canonical: **claude/investment-system-top500-validation-alrugm**, HEAD **4c3d8142** (#399 병합, 2026-10-24 23:22 UTC / 10-25 08:22 KST).
 - 10/24 병합(모두 최신 canonical 위 필수 6체크 성공 확인 뒤, 소유자 승인):
   - #395 CI 실행기 `ubuntu-24.04` 고정: HEAD 67f2ca85 → 병합 **d6eaaa8a** (00:09 UTC / 09:09 KST). `ubuntu-latest`가 26.04로 바뀌어 Playwright 1.58.2 설치가 실패했기 때문이다.
   - #394 명세 원문·방향 전환 대장·금지 표현 검사·START_HERE: HEAD b3d5a41c → 병합 **9159df0d** (01:09 UTC / 10:09 KST). 문서·검사만이라 화면 변화 없음.
@@ -31,6 +30,7 @@
   - #397 새 프론트엔드 P1 자료·계산 층(옛 모듈 57개 재사용, 새 시험 5개 CI 등록) → 병합 **f3cee500** (06:26 UTC). 오늘 정기 실행 verify부터 P1 시험이 돈다. 실패하면 시험을 건너뛰지 않고 원인부터 보고한다(사용자 지시).
   - #391 TARGET v1 "임시 V"·F1(첫 확정본 날짜 기준, 사용자 결정)·F2 → 병합 **fa0d9fcd** (06:58 UTC).
   - #398 새 프론트엔드 P1 결정 반영·결정 기록·DC-18 → 병합 **8e1fce12** (22:39 UTC, 사용자 승인 10-24 밤, 최종 HEAD 13d47c3e 필수 6체크 녹색). 배포 안 되는 범위.
+  - #399 새 프론트엔드 P2-1a 첫 화면 구조(셸 먼저, 자료층은 첫 그림 뒤)·폰 성능 시험 → canonical 기준으로 바꾸고 동기화 ebaa4118(필수 6체크 녹색) → 병합 **4c3d8142** (23:22 UTC). 배포 안 되는 범위. 새 성능 시험 `web_app_first_paint_browser_test.js`가 10/24분 정기 실행 verify에서 처음 돈다(실패하면 원인부터 보고, 건너뛰기 금지).
   - #396·#391의 화면 변화(4.5 이름, TARGET v1 임시 V 표시)는 10/24분 정기 실행 배포 때 실사이트에 반영된다.
 - 10/23 병합: #384 #378 #382 #387 #389 #388 #386(마지막 81d7b58d). 자세한 내용은 [10/23 기록](implementation/docs/handoff/HANDOFF_HISTORY_20261023.md).
 - **실제 게시: d6eaaa8a.** 10/23분 정기 실행 [run 40045938631](https://github.com/kco994553-star/Investment-System1/actions/runs/40045938631)이 collect·verify·deploy 모두 성공했다(24.04, 시작 00:38 UTC, 배포 01:17 UTC / 10:17 KST).
@@ -62,7 +62,6 @@
 
 | PR | 상태 | 남은 것 |
 | --- | --- | --- |
-| #399 P2-1a 첫 화면 구조 | 병합 승인, 동기화 ebaa4118 CI 중 | 녹색이면 병합 |
 | #393 → #400 → #403 → #404 → #405 중앙 V 사슬 | 모두 녹색, 결정 완료, 첫 게시 조건 진행 중 | CV-SPLIT (ii)를 #400에 넣고 위로 병합(로컬 작업 중), Secret 2개, 하루치 측정, 점검표, 첫 게시 날짜 제안 |
 | #392 TARGET v0 결합 해소 | 10-23부터 승인 대기. **canonical과 충돌**(`pages_artifact_guard.py` 고정값만, 시험 병합으로 확인). 마지막 동기화 a359ae91 | 후속 결정 7개는 `TV0-*`로 옮김. 순서 권장은 사용자 보고 참고(중앙 V 첫 게시 뒤 동기화·CI·폰 확인) |
 | #361 Worker 분할 이벤트 | 배포 보류(Yahoo 권리 미해결) | 무료 대안 공급원 결정 |
@@ -74,7 +73,7 @@
 ## 5. 다음 할 일
 
 1. 10/24분 정기 실행 확인(01:30 UTC 무렵). P1 시험이 verify에서 처음 돈다. 실패하면 원인부터 보고(시험 건너뛰기 금지).
-2. #399 CI 녹색 → 병합. 이어서 화면 P2 메뉴별(기능 1 → 2 → 6 → 5 → 3 → 4 → 7 → 8 → 9), PR-D2(새 프론트엔드 `OFFICIAL_READER` 전환).
+2. 화면 P2 메뉴별(기능 1 → 2 → 6 → 5 → 3 → 4 → 7 → 8 → 9), PR-D2(새 프론트엔드 `OFFICIAL_READER` 전환).
 3. 중앙 V 첫 게시 조건(10-24 밤 결정): Secret 2개(사용자) → 하루치 측정(분리 실행, 게시 안 함) → CV-SPLIT (ii) 반영·재시험 → 점검표 → 첫 게시 날짜 제안(11-04 전, 연속 집계를 깨지 않는 날) → 그날 사슬 병합·`all_shards` 1회·§5 재기록 PR.
 4. 결정 대기: D5-UPDATE, MANUAL-QUOTE, `TV0-*` 7개, CV-SPLIT-DATA(전 종목 최근 월말가 보충, 제안 준비 중).
 5. #392 동기화(가드 고정값 충돌) → CI → 폰 확인 → 병합(순서는 사용자 결정). 8-K·뉴스·로고 부분 실패 원인 조사.
