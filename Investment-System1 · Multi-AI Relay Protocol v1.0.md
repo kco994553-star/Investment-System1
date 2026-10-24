@@ -1,3 +1,5 @@
+> **SUPERSEDED · 기록 보존용 (2026-10-24 정리).** 여러 AI 릴레이 방식은 2026-10-22 역할 결정(Claude Code Main 하나 + Codex 검증만, DC-09)으로 대체됐다. 현재 기준은 `START_HERE.md` → `docs/SPEC/DIRECTION_CHANGES.md` → `CURRENT_HANDOFF.md`다. 이 문서로 현재 상태·방향을 판단하지 않는다.
+
 Investment-System1 · Multi-AI Relay Protocol v1.0
 
 목적  

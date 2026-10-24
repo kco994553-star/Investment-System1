@@ -1,3 +1,5 @@
+# DC-01 (docs/SPEC/DIRECTION_CHANGES.md §2): this C-18 research contract (US market-cap Top 500, PIT) is NOT the operating
+# Universe504 list (universe/universe_codes_v1.json, a fixed 504-code list that started from the S&P 500 constituents).
 """Universe contracts. NEW IMPLEMENTATION.
 
 C-18 RESOLVED 2026-09-23 (explicit user decision, not inferred by this engine):
