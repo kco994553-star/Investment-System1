@@ -244,7 +244,7 @@ def without_price_free_v(payload, codes):
 
 
 def test_price_dependent_codes_sit_in_fixed_factor_slots_known_residual():
-    """KNOWN RESIDUAL (review 2026-10-24, owner decision pending; design section 4-4 note, AUDIT.md section 11). D-CV2 (b)
+    """KNOWN RESIDUAL (review 2026-10-24, owner decision pending; design section 4-4 note, AUDIT.md section 10-6, PR-B). D-CV2 (b)
     changes the label, not the information: each raw price-dependent code appears only in fixed factor slots, so the public
     slot + PRICE_DEPENDENT_NOT_COMPUTABLE gives the raw code back one to one, and with it a price bound computable from public
     inputs (EV <= 0: price <= (cash - debt) / shares; no reverse-DCF root: price outside the public DCF bracket). The V axis and

@@ -92,7 +92,7 @@
 
 ## 3. 결정이 반영된 것(이번 브랜치)
 - `v_calc_version`은 없다. `calc_version`은 `sec-qgv2.json`의 값 하나다.
-- 가격 의존 사유 4개는 `PRICE_DEPENDENT_NOT_COMPUTABLE`로 묶는다(`src/qgv/qgv_official.py` `PRICE_DEPENDENT`). 원 코드가 공개본에 있으면 검증기가 거부한다. **2026-10-24 검토: 이름만 바뀐다.** 원 코드는 정해진 요인 칸에만 나와(`EV_NON_POSITIVE`는 수익률·업종 대비 세 칸, 역DCF 사유는 기대 점검 칸) 칸이 원 코드를 되돌려 주고, V 축·순위도 같은 사실을 보인다. 가격 경계 누출은 V 공개 자체에 딸려 온다 — 소유자 재결정 필요(설계 §4-4 정정 메모, `public_price_boundary/AUDIT.md` §11).
+- 가격 의존 사유 4개는 `PRICE_DEPENDENT_NOT_COMPUTABLE`로 묶는다(`src/qgv/qgv_official.py` `PRICE_DEPENDENT`). 원 코드가 공개본에 있으면 검증기가 거부한다. **2026-10-24 검토: 이름만 바뀐다.** 원 코드는 정해진 요인 칸에만 나와(`EV_NON_POSITIVE`는 수익률·업종 대비 세 칸, 역DCF 사유는 기대 점검 칸) 칸이 원 코드를 되돌려 주고, V 축·순위도 같은 사실을 보인다. 가격 경계 누출은 V 공개 자체에 딸려 온다 — 소유자 재결정 필요(설계 §4-4 정정 메모, `public_price_boundary/AUDIT.md` §10-6(PR-B)).
 - **F_k 처리:**
   - 원가격 ÷ `share_basis_factor`(`src/providers/iex_monthend.py:157`)로 월말가를 맞춘다.
   - F_k가 없거나 null이면 그 달을 뺀다. 공개 사유는 그 항목의 `share_basis_factor_reason`이 `v2_factors.SHARE_BASIS_REASONS`(`SHARE_BASIS_UNCONFIRMED`, `SPLIT_TIMING_UNCONFIRMED`) 중 하나일 때만 그 값이고, 아니면 `SHARE_BASIS_FACTOR_NOT_AVAILABLE`이다(`iex_monthend._factor`; 2026-10-24 검토로 문구 정정 — 처음 판의 "형식 `[A-Z0-9_]+`면 게시"는 코드와 달랐다). 1.0으로 보지 않는다.

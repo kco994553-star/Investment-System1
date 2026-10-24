@@ -10,7 +10,7 @@ per-code price hashes. Owner decisions applied:
 - D-CV2: price-dependent reasons EV_NON_POSITIVE / ROOT_NOT_BRACKETED / ROOT_NOT_CONVERGED / NUMERIC_OVERFLOW are published
   as PRICE_DEPENDENT_NOT_COMPUTABLE (scores and rules unchanged; the engine codes stay in RAM). This is a LABEL ONLY: each raw
   code sits in fixed factor slots, so the slot gives it back, and the V axis / rank show the same fact without a reason
-  (KNOWN RESIDUAL, owner decision pending: design section 4-4 note, AUDIT.md section 11);
+  (KNOWN RESIDUAL, owner decision pending: design section 4-4 note, AUDIT.md section 10-6, PR-B);
 - D-CV5: a new publication needs >= 95% of the price-independent V-eligible Universe rows supplied on the same IEX day;
 - D-CV8/D-CV9: one official rank per CIK (the TARGET row of a Universe issuer stands for it, else its cross-section code);
   D11: only rows with a total AND a V score are ranked; a Q·G-only total gets `qg_reference_order` instead;
