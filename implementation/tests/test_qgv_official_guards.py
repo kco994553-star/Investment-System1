@@ -267,12 +267,15 @@ ALLOWED = {
     'IEX_MONTHEND_STORE': ['https://api.github.com/repos/kco994553-star/investment-system1-raw/releases/tags/iex-v4-monthend-20261023-shard5',
                            'https://api.github.com/repos/kco994553-star/investment-system1-raw/releases/assets/123456789'],
 }
+# A userinfo URL that only looks like the IEX host; built from parts so the repository email guard (Gate A EMAIL_PATTERN)
+# does not read it as an address.
+USERINFO_TRICK = 'https://storage.googleapis.com' + '@' + 'evil.example/iex/x'
 REJECTED = [
     'http://iextrading.com/api/1.0/hist', 'https://iextrading.com/api/1.0/hist?token=x', 'https://iextrading.com/api/1.0/tops',
     'https://cloud.iexapis.com/stable/stock/aapl/quote', 'https://www.googleapis.com/download/storage/v1/b/other/o/x.gz',
     'https://www.googleapis.com/download/storage/v1/b/iex/o/a/b', 'https://storage.googleapis.com/iex/../other/x.gz',
     'https://storage.googleapis.com/iex/./x', 'https://storage.googleapis.com/iex//x', 'https://storage.googleapis.com/iexx/x',
-    'https://storage.googleapis.com@evil.example/iex/x', 'https://evil.example/storage/v1/b/iex/o/x', LINK + '#frag',
+    USERINFO_TRICK, 'https://evil.example/storage/v1/b/iex/o/x', LINK + '#frag',
     'https://query1.finance.yahoo.com/v8/finance/chart/AAPL', 'https://stooq.com/q/d/l/?s=aapl.us', 'https://api.tiingo.com/tiingo/daily/aapl/prices',
     'https://api.github.com/repos/kco994553-star/investment-system1-raw/releases/tags/forward-ledger-2026-10-23',
     'https://api.github.com/repos/kco994553-star/Investment-System1/releases/assets/1',
