@@ -405,8 +405,7 @@ and candidate place are NOT_AVAILABLE (`PRICE_IDENTITY_CONFLICT`); a TARGET of a
   to the FY0 basis by the SPLIT chain (`share_factor`), times the FY0 → published-count factor the values use. It comes
   from **each entry's own as-reported basis**, never from a split date alone; the price-free check is
   F = (EBIT / as-reported diluted shares) / published value (real WSM, 2:1 split 2024-07: 19.0313 / 9.51565 = 2.0 for
-  FY Jan-2022, likewise FY2023 and FY2024; then 1.0 — so the U8 price check's RAW_CONSISTENT verdict for WSM is a multiple
-  change across the split window, not a basis error). The as-reported basis equals the as-traded basis at the month-end
+  FY Jan-2022, likewise FY2023 and FY2024; then 1.0). The as-reported basis equals the as-traded basis at the month-end
   unless a split took effect **after the month-end and before that filing** (the filing is then restated, the price is
   not; WMT 3:1 2024-02-26, FY ending 2024-01-31, 10-K 2024-03-15). Evidence of that → F `null` with
   `share_basis_factor_reason` `SPLIT_TIMING_UNCONFIRMED`, never 1.0 and never × the ratio: a split-ratio fact dated in
