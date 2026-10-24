@@ -13,7 +13,7 @@ permissions:
 jobs:
   replay_source:
     if: github.event_name == 'workflow_dispatch' && inputs.replay_20261020 && github.ref_name == 'claude/investment-system-top500-validation-alrugm'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     # Cross-run reads cover this repository's Actions data, not just the pinned ID.
     # Keep the token out of PR builds; this job executes no checked-out code.
@@ -124,7 +124,7 @@ jobs:
     needs: replay_source
     # A skipped opt-in source must not skip ordinary PR/manual builds. Failed/cancelled sources block replay.
     if: ${{ !cancelled() && (needs.replay_source.result == 'success' || (needs.replay_source.result == 'skipped' && !inputs.replay_20261020)) }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # 60 (was 30): the full Python suite plus the browser list now takes about 28 minutes on an empty PR build and
     # longer on a manual deploy, whose artifact carries the published data (504 Universe rows); the 2026-10-19 run
     # 39251288211 was cancelled at 30:00 while its tests were still passing.
@@ -207,7 +207,7 @@ jobs:
   deploy:
     if: github.event_name == 'workflow_dispatch' && github.ref_name == 'claude/investment-system-top500-validation-alrugm'
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       pages: write

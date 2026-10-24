@@ -1,3 +1,4 @@
+> 현재 기능 구조는 `docs/SPEC/FUNCTION_HIERARCHY_v1.0.md`(2026-10-20), 읽는 순서는 `START_HERE.md`(2026-10-24).
 > SUPERSEDED by implementation/docs/frontend_ia_v1/COCKPIT_IA_v1.md (2026-10-09). 기록 보존용.
 # Frontend Information Architecture · 2026-09-23
 

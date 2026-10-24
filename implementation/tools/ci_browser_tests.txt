@@ -88,3 +88,5 @@ search_continuity_browser_test.js
 prompt_selected_context_browser_test.js
 qgv_single_sort_browser_test.js
 technical_layout_browser_test.js
+web_app_shell_browser_test.js  # new frontend P0 shell (docs/frontend_v2/FRONTEND_V2_PLAN.md); builds its own site
+web_app_data_layer_browser_test.js  # new frontend P1 data layer: no-action reads, refused imitations, click-only prices, no leak

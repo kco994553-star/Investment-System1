@@ -45,9 +45,9 @@ from investment_system.macro.evidence_lines import FILENAME as MACRO_EVIDENCE_FI
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
-    "target-v1-builder.js": "01443195442809f1be5230172db0b6a4deb659f9e0a566f2f6f06fc5bf5f38f2",
+    "target-v1-builder.js": "f6b081a2080be068b2387e95a8892beafd19d71d30e673cd5e7c1b8d127811bd",
     "target-v1-config-defaults.js": "cdfa0ac5b620dca4f1828fb055a76c08268c533a65b2e0d34f962ce1499b12bd",
-    "target-v1-screen.js": "001010efed4ae7dc60b002547944773c5e11f1b77a757b9d331df073e3e7cfba",
+    "target-v1-screen.js": "52e97dba0b94c38d7305bd42a0460e7817034ee009c2953c0ea96969e02c1611",
     "playbook-engine.js": "b708a1772b4cd8e1af731cffdacbfab478d03c9c4e1e5fd663537babd64ee7d8",
     "playbook-config-defaults.js": "b0dd6aeed54a11082953b83aa30497c99dd454040e7e7adbc46cdd4c0a1221a6",
     "virtual-trading-compare.js": "700054fd105b979b505c09ec0dad862b0ce435c0179d2ddbe9f85b5b9c23c3f7",
@@ -141,11 +141,11 @@ APPROVED_SHA256 = {
     "sec-disclosures.js": "849cbfbf2b21badd52c06cf5887dcd259e08864552a76fde39f065f82c6a7194",
     "theme-boot.js": "4aaf08ecd900e1216a95159a277f8a7c51c32e41784f1ac9530ecf1dc77a6f2c",
     "theme.css": "4cd7dc3f0c69a9f99cf946aa61f76f3cefa12e4d529b3d22b8fb7721f63b932c",
-    "app-shell.js": "b8dd347e1872b973a857a8f66770bea7bf5cdb994b69c3a9d0b28deb9219b245",
+    "app-shell.js": "a14db1ca7b0db3039bf9b8daeb13d967ce6536a45e8db72b0a4f84a2a83bc1a2",
     "home-screen.js": "9979acbdf24277c3d612b4b1929d693ca9cdecd1f98a190feaa84989e5e36d4a",
     "home-quotes.js": "46487b40e170c3291b023bebcb0fd01da19bb3beb53bfad3006be6377cfe3a96",
     "doodles.js": "413afcb07c5ef5f4edcb0ab544ba61a7d19954db0951ccdf85742c04cf5bb57e",
-    "ia-screens.js": "454342c1ec54a7ab222c6ce6f74059de4ca7a3d9b11dcd2de3763e580a3dce84",
+    "ia-screens.js": "665835263b0f2d573e305d77744696cd4192e1b2a821c547553b7d8565601e0a",
     "universe-company.js": "f28e53e7269932790d45339a80761db451664f0a7b44b7d173b759050a946d82",
     "universe-company.css": "5b1b0236290f91c95b7f25d49bc93d032bf1718754c1cfae7789e92bb74b11b8",
     "stat-radar.js": "674900c9443a71d33d398fc91c0a92ea4be5a26d29ce56cc19b358b832922a2b",

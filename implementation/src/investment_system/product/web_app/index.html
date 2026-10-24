@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://accounts.google.com/gsi/client https://apis.google.com/js/api.js https://apis.google.com/_/scs/; style-src 'self' https://accounts.google.com/gsi/style; worker-src 'self'; manifest-src 'self'; connect-src 'self' https://sheets.googleapis.com https://oauth2.googleapis.com https://private-investment-history.kco994553.workers.dev; img-src 'self' data:; frame-src 'self' https://accounts.google.com https://docs.google.com https://www.tradingview-widget.com; object-src 'none'; base-uri 'none'; form-action 'none'" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="referrer" content="no-referrer" />
+    <title>투자시스템 지도</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="app.css" />
+  </head>
+  <body>
+    <noscript>이 화면은 JavaScript가 필요합니다.</noscript>
+    <div id="app"></div>
+    <!-- P0 base: DOM builder and router, shell, shared parts. -->
+    <script defer src="core.js"></script>
+    <script defer src="shell.js"></script>
+    <script defer src="parts.js"></script>
+    <!-- Old engines and readers reused byte-identical from web_assets (P1 plan A: the build keeps exactly these), old relative order. -->
+    <script defer src="locale.js"></script>
+    <script defer src="entity-search.js"></script>
+    <script defer src="price-time.js"></script>
+    <script defer src="device-market.js"></script>
+    <script defer src="device-actual.js"></script>
+    <script defer src="profile-defaults.js"></script>
+    <script defer src="type-config-defaults.js"></script>
+    <script defer src="device-profiles.js"></script>
+    <script defer src="engine-preview.js"></script>
+    <script defer src="dcf-parameters-defaults.js"></script>
+    <script defer src="device-valuation.js"></script>
+    <script defer src="playbook-config-defaults.js"></script>
+    <script defer src="playbook-engine.js"></script>
+    <script defer src="qgv-v2.js"></script>
+    <script defer src="scoring-default.js"></script>
+    <script defer src="qgv2-inputs.js"></script>
+    <script defer src="qgv-scores.js"></script>
+    <script defer src="private-subset.js"></script>
+    <script defer src="share-class-groups.js"></script>
+    <script defer src="sec-universe-shares.js"></script>
+    <script defer src="sec-qgv2.js"></script>
+    <script defer src="private-subset-view.js"></script>
+    <script defer src="target-v1-config-defaults.js"></script>
+    <script defer src="target-v1-builder.js"></script>
+    <script defer src="playbook-screen.js"></script>
+    <script defer src="target-v1-screen.js"></script>
+    <script defer src="device-backup.js"></script>
+    <script defer src="watchlist.js"></script>
+    <script defer src="app-config.js"></script>
+    <script defer src="google-sheet-core.js"></script>
+    <script defer src="google-sheet-quotes.js"></script>
+    <script defer src="technical-chart.js"></script>
+    <script defer src="google-sheet-setup.js"></script>
+    <script defer src="private-trades.js"></script>
+    <script defer src="holdings-capture.js"></script>
+    <script defer src="worker-quote-fallback.js"></script>
+    <script defer src="forward-validation.js"></script>
+    <script defer src="private-history.js"></script>
+    <script defer src="sec-reported.js"></script>
+    <script defer src="manager-styles-v0.js"></script>
+    <script defer src="thirteenf-quarter.js"></script>
+    <script defer src="macro-lights.js"></script>
+    <script defer src="macro-evidence.js"></script>
+    <script defer src="public-screens.js"></script>
+    <script defer src="sec-disclosures.js"></script>
+    <script defer src="news-signals.js"></script>
+    <script defer src="classification-screens.js"></script>
+    <script defer src="dart-disclosures.js"></script>
+    <script defer src="virtual-trading.js"></script>
+    <script defer src="virtual-trading-runner.js"></script>
+    <script defer src="virtual-trading-signals.js"></script>
+    <script defer src="virtual-trading-v-history.js"></script>
+    <script defer src="virtual-ledger-sheets.js"></script>
+    <script defer src="price-store.js"></script>
+    <script defer src="report-benchmarks.js"></script>
+    <script defer src="virtual-trading-compare.js"></script>
+    <script defer src="data-refresh.js"></script>
+    <!-- P1 data and calculation layer. -->
+    <script defer src="action.js"></script>
+    <script defer src="data.js"></script>
+    <script defer src="prices.js"></script>
+    <script defer src="store.js"></script>
+    <script defer src="qgv.js"></script>
+    <script defer src="engines.js"></script>
+    <!-- P2 lane screens (placeholders until each lane lands; they load before the P0 placeholder menus). -->
+    <script defer src="screen-qgv.js"></script>
+    <script defer src="screen-technical.js"></script>
+    <script defer src="screen-macro.js"></script>
+    <script defer src="screen-news.js"></script>
+    <script defer src="screen-portfolio.js"></script>
+    <script defer src="screen-prompts.js"></script>
+    <script defer src="screen-tree.js"></script>
+    <script defer src="screen-lab.js"></script>
+    <!-- P0 screens, then start. -->
+    <script defer src="screen-search.js"></script>
+    <script defer src="screen-menus.js"></script>
+    <script defer src="screen-detail.js"></script>
+    <script defer src="boot.js"></script>
+  </body>
+</html>

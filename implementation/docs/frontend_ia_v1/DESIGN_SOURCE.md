@@ -1,3 +1,5 @@
+> **SUPERSEDED · 기록 보존용 (2026-10-24 정리).** Cockpit IA v1 디자인 출처다. 디자인은 손그림 칠판 시안으로 대체됐다(DC-07). 현재 기준은 `START_HERE.md` → `docs/SPEC/DIRECTION_CHANGES.md` → `CURRENT_HANDOFF.md`다. 이 문서로 현재 상태·방향을 판단하지 않는다.
+
 # Cockpit IA v1 · Design Source
 
 기준일: 2026-10-09 · 요구사항 상태: `REQUIREMENT_IDENTIFIED_NOT_REAUDITED`

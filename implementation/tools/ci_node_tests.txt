@@ -65,3 +65,7 @@ pattern_signals_node_test.js
 chart_renderer_node_test.js
 qgv_classification_filters_node_test.js
 prompt_selected_context_test.js
+web_app_reuse_node_test.js  # new frontend P1: reuse list, build plan A, source rules
+web_app_qgv_node_test.js  # new frontend P1: action gate, strict public data, QGV v2 accessor
+web_app_prices_node_test.js  # new frontend P1: click-only prices, device store
+web_app_engines_node_test.js  # new frontend P1: TARGET v1 / playbook / virtual trading / macro wiring
