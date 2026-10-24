@@ -94,6 +94,11 @@ deploy 잡: 신선도 검사에 게시본 규칙 추가 → 배포
 
 ### 3-2. 기존 잡에 붙는 위치와 이유
 
+> **2026-10-24 구현(PR-C `claude/central-v-workflow`, PR-B 위, 병합 대기·소유자 승인 필요):** 아래 위치·규칙대로 연결했다. 아래 줄 번호(`:115` 등)는 2026-10-18 기준 이력이다. 본문과 다른 점:
+> - collect: 실행 기록 단계 다음에 `actions/setup-node`(verify와 같은 고정, D10, `continue-on-error`). 원장 단계 다음·분류 단계 앞에 V 단계(C 파서 빌드 → 게시기 → 아티팩트 가드, Secret 두 개는 이 단계 `env`에만, `continue-on-error`, 단계 15분·게시기 12분 한도). 그 다음에 비공개 점수 이력 단계(D9, `RAW_REPO_TOKEN`, V 단계가 가드까지 성공했을 때만, 새 게시본만, 태그 `qgv-official-<IEX 기준일>`, 자산 `<publication_id>.json`). §3-3 "이 단계에 `RAW_REPO_TOKEN`을 주지 않는다"는 V 단계에 그대로 지켜진다(이력은 별도 단계).
+> - verify: `tools/qgv_official_check.py`(엄격 리더·상태 파일 일치)와 시험 3개, `continue-on-error`(V 검사가 SEC·뉴스·원장 배포를 막지 않음. 틀린 게시본은 필수 아티팩트 가드가 막는다).
+> - 수동 배포: `cockpit-pages.yml` 보존 단계에 `--preserve-only` 한 줄. 첫 게시 절차는 [점검표](CENTRAL_V_GO_LIVE_CHECKLIST_20261024.md).
+
 - **원장 뒤(:115 다음), 분류 단계(:118) 앞**에 둔다.
   - W-F1 규칙(:116-117)과 같다. 원장에 쓰지 않는 단계는 원장 뒤에 둔다. V 실패가 원장을 막지 않는다.
   - 최종 `sec-qgv2.json`은 샤드 단계(:101)에서 정해진다. DART 투영(:105)은 그 파일을 바꾸지 않는다. 그래서 원장 뒤에서 읽어도 같은 입력이다.

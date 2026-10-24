@@ -176,6 +176,9 @@ WORKFLOW = ROOT.parent / '.github/workflows/sec-daily-public-inputs.yml'
 # Run label first (owner instruction 2026-10-17): one RUN_CONTEXT line, never a gate and never a ledger input.
 CONTEXT_TOOLS = ('daily_run_context',)
 LEDGER_INPUT_TOOLS = ('build_pages_cockpit', 'public_screens_pipeline', 'dart_daily', 'sec_universe_shares', 'project_dart_qgv2')
+# Central QGV publication (GSQ-024, PR-C): after the ledger, before the unrelated steps; both continue on error. Offline here: the
+# Secrets are not configured, so the publisher records NOT_RUN in its status file and the history step skips.
+CENTRAL_V_TOOLS = ('qgv_official_publish', 'qgv_official_history')
 UNRELATED_TOOLS = ('public_classification_pipeline', 'universe_domains_pipeline', 'company_logos_pipeline', 'sec_13f_managers',
                    'sec_disclosures', 'news_signals')
 # Counts-only report of the final artifact (owner instruction 2026-10-15): last before the upload, never a gate.
@@ -249,6 +252,19 @@ def _daily_run(work, site, day, *, deploy, universe_fails, fail_tools, raw):
     def unrelated(env):
         return 0  # offline: the placeholders from the build stay; only their failure matters here
 
+    def central_v(env):
+        # The step's literal settings come from the workflow; its two Secrets are not configured in the rehearsal (NOT_RUN).
+        environ = {k: v.strip("'") for k, v in env.items() if not v.startswith('${{')}
+        log['qgv_official'] = load_tool('qgv_official_publish').run(
+            out=out, parser='', monthend_stamp=environ['QGV_MONTHEND_STAMP'], monthend_shards=6, previous=None,
+            raw_token=None, hmac_key=None, now=clock(day, 22, 50), workdir=work / 'qgv-official-work')
+        return 0
+
+    def central_v_history(env):
+        environ = {'RAW_REPO_TOKEN': RAW_SETTING} if raw is not None and 'RAW_REPO_TOKEN' in env else {}
+        print(load_tool('qgv_official_history').run(out, environ=environ, call=raw))
+        return 0
+
     actions = {
         'daily_run_context': lambda env: load_tool('daily_run_context').run(
             environ={'GITHUB_EVENT_NAME': 'schedule', 'RUN_MODE': 'daily'}, now=lambda: clock(day, 22, 18)),
@@ -260,6 +276,8 @@ def _daily_run(work, site, day, *, deploy, universe_fails, fail_tools, raw):
         'sec_universe_shares': universe,
         'project_dart_qgv2': lambda env: project.project(out),
         'forward_validation_ledger': append,
+        'qgv_official_publish': central_v,
+        'qgv_official_history': central_v_history,
         **{tool: unrelated for tool in UNRELATED_TOOLS},
         'published_coverage': lambda env: load_tool('published_coverage').main(['--artifact-dir', str(out)]),
     }
@@ -336,6 +354,15 @@ def test_each_run_reads_the_previously_deployed_ledger_and_pre_start_runs_record
     assert ('status=NOT_STARTED records=0 appended=0 record=NONE session=NONE v2_records=0 v2_record=NONE'
             in runs['2026-10-17'][1]['printed'])
     assert site.files[fl.FILENAME] == (runs['2026-10-20'][0] / fl.FILENAME).read_bytes()
+    # Central QGV (PR-C): without its two Secrets the V step is NOT_RUN before any download, records the attempt in the
+    # guarded status file, ships no publication, and every later step, the upload and the deploy still run.
+    for day in DAYS:
+        out, log = runs[day]
+        summary = log['qgv_official']
+        assert (summary['attempt'], summary['reason'], summary['published']) == ('NO_OFFICIAL_YET', 'HMAC_KEY_MISSING', 'NONE')
+        assert not (out / 'qgv-official.json').exists() and (out / 'qgv-official-status.json').is_file()
+        assert 'QGV_OFFICIAL_HISTORY skipped=NO_PUBLICATION' in log['printed']
+    assert 'qgv-official-status.json' in site.files and 'qgv-official.json' not in site.files
 
 
 # ---- 2. rows appended: v2 default + v1 comparison, same session only, no backfill ----
@@ -533,7 +560,7 @@ def test_collect_job_runs_ledger_inputs_and_ledger_before_unrelated_required_ste
     # dart-financials) precede it.
     assert order[:ledger] == list(CONTEXT_TOOLS + LEDGER_INPUT_TOOLS)
     after = [t for s in steps[ledger + 1:] for t in s['tools']]
-    assert after == list(UNRELATED_TOOLS) + list(REPORT_TOOLS) and order[-1] == 'UPLOAD'
+    assert after == list(CENTRAL_V_TOOLS) + list(UNRELATED_TOOLS) + list(REPORT_TOOLS) and order[-1] == 'UPLOAD'
     by_tool = {s['tools'][0]: s for s in steps if s['tools']}
     assert by_tool['published_coverage']['continue'] and not by_tool['published_coverage']['env']
     # Semantics kept: the ledger step is unconditional and required; unrelated steps keep their own required/optional state.
@@ -545,7 +572,15 @@ def test_collect_job_runs_ledger_inputs_and_ledger_before_unrelated_required_ste
     assert by_tool['forward_validation_ledger']['env'] == {'RAW_REPO_TOKEN': '${{ secrets.RAW_REPO_TOKEN }}',
                                                            'FORWARD_LEDGER_PREVIOUS_SOURCE': 'RAW_FIRST'}
     holders = sorted(t for t, s in by_tool.items() if 'RAW_REPO_TOKEN' in s['env'])
-    assert holders == ['forward_validation_ledger', 'sec_universe_shares']
+    assert holders == ['forward_validation_ledger', 'qgv_official_history', 'sec_universe_shares']
+    # Central QGV (PR-C): both steps continue on error; the V step holds its two Secrets and the month-end stamp only, the
+    # history step the raw-repo write token only.
+    assert by_tool['qgv_official_publish']['continue'] and by_tool['qgv_official_history']['continue']
+    assert by_tool['qgv_official_publish']['env'] == {'QGV_OFFICIAL_HMAC_KEY': '${{ secrets.QGV_OFFICIAL_HMAC_KEY }}',
+                                                      'RAW_REPO_READ_TOKEN': '${{ secrets.RAW_REPO_READ_TOKEN }}',
+                                                      'QGV_MONTHEND_STAMP': "'20261023'"}
+    assert by_tool['qgv_official_history']['env'] == {'RAW_REPO_TOKEN': '${{ secrets.RAW_REPO_TOKEN }}'}
+    assert by_tool['qgv_official_publish']['guard'] and not by_tool['qgv_official_history']['guard']
     assert all('FORWARD_LEDGER_PREVIOUS_SOURCE' not in s['env'] for t, s in by_tool.items() if t != 'forward_validation_ledger')
     assert all(not s['env'] for t, s in by_tool.items() if t in ('project_dart_qgv2', 'build_pages_cockpit'))
     job = WORKFLOW.read_text().split('\n  collect:\n', 1)[1].split('\n  verify:\n', 1)[0]

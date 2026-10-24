@@ -4956,3 +4956,25 @@ manifest의 URL/hash/크기/상태, SEC share facts·par value·split/exchange r
 
 - 민감 키 목록, 비밀 패턴, 크기·항목 수 한도, 고정 해시, 다른 파일의 검증기와 신선도 규칙, `AUDITED_ROUTES`·`BLOCKED`, `sec-qgv2.json`의 가격·순위 없음 규칙(`sec_qgv2.py`, `qgv2-inputs.js`).
 - 워크플로 파일. V 단계·verify 검증·수동 배포 보존(`--preserve-only`)은 PR-C에서 한다.
+
+## 11. GSQ-024 후속: 중앙 V 게시 워크플로 연결 (2026-10-24, append-only)
+
+- 작성: 2026-10-24 UTC, PR-C(`claude/central-v-workflow`, PR-B 위). **병합 대기, 소유자 승인 필요(워크플로 변경).** §1~§10은 바꾸지 않았다.
+- 근거: GSQ-024, 2026-10-24 소유자 결정 D2 (a)·D9·D10([계획](../qgv_scoring_standard/CENTRAL_V_DC02_PLAN_20261024.md) 4절), [설계](../qgv_scoring_standard/CENTRAL_V_PUBLICATION_DESIGN_20261018.md) §3·§6. 첫 게시 절차: [점검표](../qgv_scoring_standard/CENTRAL_V_GO_LIVE_CHECKLIST_20261024.md).
+
+### 11-1. 단계와 경계
+
+| 위치 | 단계 | 가진 것 | 경계 |
+| --- | --- | --- | --- |
+| collect, 실행 기록 단계 다음 | `actions/setup-node`(verify와 같은 고정 커밋, Node 22) | 없음 | `continue-on-error`. 실패해도 실행기 node를 쓰거나 V 단계가 `JS_TWIN_UNAVAILABLE`로 직전 정상본을 유지한다 |
+| collect, 원장 단계 다음·분류 단계 앞 | V 단계: C 파서를 `$RUNNER_TEMP`에 빌드 → `tools/qgv_official_publish.py`(§10-1의 유일한 가격 경로) → 아티팩트 가드 | `QGV_OFFICIAL_HMAC_KEY`, `RAW_REPO_READ_TOKEN`(읽기 전용, 이 단계 `env`에만) | `continue-on-error`, 단계 한도 15분·게시기 한도 12분. 가격은 RAM에만, 출력은 고정 코드 한 줄. `RAW_REPO_TOKEN`·업로드·캐시·push·요약 없음. 게시기가 멈추면 반쯤 쓴 파일을 지우고 가드가 돈다 |
+| collect, V 단계 다음 | 비공개 점수 이력(D9): `tools/qgv_official_history.py` | `RAW_REPO_TOKEN`(샤드·원장 단계와 같은 쓰기 토큰) | V 단계(아티팩트 가드 포함)가 성공했을 때만 돈다(`if: steps.central_v.outcome == 'success'`). 이번 실행이 만든 새 게시본만, 공개본과 같은 바이트(점수·순위·사유·커버리지·기준 시각, 가격 없음)를 원자료 저장소 릴리스 `qgv-official-<IEX 기준일>`에 `<publication_id>.json` + `.sha256`으로 올린다. 가격·게시용 Secret을 읽지 않고 아티팩트에 쓰지 않는다. `continue-on-error`, 종료 코드 0 |
+| verify | 가격 없는 검사: `tools/qgv_official_check.py`(엄격 리더·상태 파일·둘의 일치) + 시험 3개 | 없음 | `continue-on-error`. 실패는 `QGV_OFFICIAL_VERIFY_FAILED` 주석. 틀린 게시본은 그 앞의 필수 가드 단계가 막는다 |
+| deploy(두 워크플로) | 기존 신선도 단계(§10-4 규칙), 주석에 게시본 규칙을 적음 | 없음 | 단계·명령 변화 없음 |
+| `cockpit-pages.yml` 수동 배포 보존 | `qgv_official_publish.py --preserve-only` | 없음 | 검증된 라이브 바이트만 복사, 다시 계산하지 않음. 가격 없음 |
+
+### 11-2. 바뀌지 않은 것
+
+- Pages 업로드 1개·배포 1개, `persist-credentials: false`, 캐시·push·`GITHUB_STEP_SUMMARY` 없음, verify·deploy의 Secret 없음(시험 `tests/test_public_price_boundary.py`).
+- 원장·샤드 단계의 Secret과 순서(W-F1/W-F2), collect 잡 한도(정기 40분·`all_shards` 120분).
+- `RAW_REPO_TOKEN`을 가진 단계는 샤드·원장·이력 세 개다. 셋 다 도구 안에서만 비공개 저장소에 쓴다. V 단계는 그 토큰을 갖지 않는다.

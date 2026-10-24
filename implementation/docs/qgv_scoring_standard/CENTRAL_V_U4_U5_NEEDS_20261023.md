@@ -17,6 +17,12 @@
 > - 신선도: 같은 기준일이면 `inputs_as_of`로 판정한다. 라이브 게시본이 유효한데 아티팩트에 없으면(`MISSING`) D-CV16 (a)와 같게 게시본만 빠지고 배포는 계속한다(거부하지 않음).
 > - PR-C에 남은 것: collect "Offline public boundary regression" 단계와 verify에 `tests/test_qgv_official_guards.py` 추가, deploy 단계 주석에 게시본 규칙 추가, D9 이력 업로드 단계가 `RAW_REPO_TOKEN`을 새로 가지면 `test_public_price_boundary.py`의 고정 목록 갱신.
 
+> **2026-10-24 갱신(PR-C `claude/central-v-workflow`, PR-B 위):** 1절(U4)을 구현했다. 1-1~1-6의 요구대로이고, 다른 점은 이렇다.
+> - V 단계: C 파서 빌드 실패는 고정 줄 `QGV_OFFICIAL_PARSER_BUILD_FAILED`로 남기고 게시기는 그대로 돈다(`NOT_RUN PARSER_MISSING`, 직전 정상본은 먼저 복사됨). 게시기는 `timeout 12m`, 단계는 15분 한도다. 멈추면 `QGV_OFFICIAL_STEP_STOPPED exit=<코드>`, 반쯤 쓴 파일 삭제, 가드 실행. 월말가 날짜는 단계 `env`의 `QGV_MONTHEND_STAMP: '20261023'`(1-4).
+> - 비공개 점수 이력(D9): V 단계 다음 별도 단계(`tools/qgv_official_history.py`, `RAW_REPO_TOKEN`). V 단계가 아티팩트 가드까지 성공했을 때만 돈다(`if: steps.central_v.outcome == 'success'`). 새 게시본 판정은 상태 파일이 OK이고 게시본을 가리키며 `verified_at`이 그 시도 시작 이후인 것이다. 같은 기준일 두 번째 게시본도 같은 태그에 나란히 남는다.
+> - verify(1-5): `tools/qgv_official_check.py` + `tests/test_qgv_official.py tests/test_iex_hist.py tests/test_qgv_official_guards.py`. 새 단계라 `continue-on-error`다. collect의 "Offline public boundary regression" 목록에는 더하지 않았다(필수 단계라 실패하면 그날 수집·원장까지 멈춘다).
+> - 정적·실행 시험: `tests/test_qgv_official_workflow.py`(단계 위치·`env`·한도, V 단계 셸을 로컬에서 그대로 실행: Secret 없음 → `NOT_RUN`, Secret 있고 출처 없음 → `SUPPLY_FAILED`, 멈춘 게시기 → 단계 종료 코드 0). 첫 게시 절차: [CENTRAL_V_GO_LIVE_CHECKLIST_20261024](CENTRAL_V_GO_LIVE_CHECKLIST_20261024.md).
+
 - 작성: 2026-10-23 11:34 UTC / 2026-10-23 20:34 KST.
 - 근거: 설계 [CENTRAL_V_PUBLICATION_DESIGN_20261018](CENTRAL_V_PUBLICATION_DESIGN_20261018.md) §3·§6·§12, GSQ-024.
 - 인용은 `파일:줄`이다. `src/`는 `implementation/src/investment_system/`, `tools/`는 `implementation/tools/`다.
