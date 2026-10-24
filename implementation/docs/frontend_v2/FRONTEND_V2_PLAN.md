@@ -42,6 +42,7 @@
   - `screen-*.js`: 메뉴별 화면. 레인마다 자기 파일만 고친다.
 - 글꼴(시안과 같음): Black Han Sans(제목·도장), Gowun Dodum(본문), Nanum Pen Script(손글씨). google/fonts 고정 커밋에서 받아 KS X 1001 부분집합 WOFF2로 자체 호스팅한다(`tools/font_subset_ksx1001.py`).
 - 개발 빌드: `tools/build_web_app.py --out <빈 디렉터리>`. 공개 자료 파일은 기존 빌드와 똑같이 만들고, 화면 파일만 새 것으로 바꾼다.
+  - 옛 모듈 재사용(P1 A안): `web_app/index.html`이 `<script src>`로 부르는데 web_app에 같은 이름이 없는 web_assets 파일은 지우지 않고 바이트 그대로 둔다. 같은 이름이 web_app에 있으면 web_app 것을 쓴다. 두 곳 모두에 없으면 빌드가 실패한다. 재사용 목록은 index.html 하나뿐이고, 시험은 `tools/web_app_reuse.js`로 옛 경로를 한 곳에서 읽는다.
 - 시험: `tools/web_app_*_test.js`. 스스로 개발 빌드를 만들고 띄운다. CI 목록(`ci_node_tests.txt`, `ci_browser_tests.txt`)에 등록해 지금부터 매 PR에서 돈다.
 
 ## 4. 메뉴와 경로 (시안 번호)
@@ -66,7 +67,7 @@
 | 단계 | 내용 | 병합 |
 | --- | --- | --- |
 | P0 기반 | 이 문서, 디자인 토큰·부품, 글꼴, 셸·라우터, 메뉴별 빈 화면(연결 전 표시), 개발 빌드, 셸 시험 | canonical에 병합(배포 안 됨) |
-| P1 자료·계산 | 공개 파일 리더(엄격 검증), QGV 계산·점수 접근자, 가격(시트·Worker)·기기 저장, TARGET·플레이북·가상매매 엔진. 기존 참조 벡터 통과 | 레인별 PR |
+| P1 자료·계산 | 공개 파일 리더(엄격 검증), QGV 계산·점수 접근자, 가격(시트·Worker)·기기 저장, TARGET·플레이북·가상매매 엔진. 기존 참조 벡터 통과. API 계약: [P1_DATA_LAYER.md](P1_DATA_LAYER.md) | 레인별 PR |
 | P2 화면 | 메뉴 0~n+1 + 세부 화면 + 모바일. 시안 배치 그대로, 실제 자료 연결 | 레인별 PR |
 | P3 전환 | 경계 시험 이식(가격 비공개, NA, 요청 원칙, CSP, 저장소 사용), 가드 고정값 교체, 옛 화면 삭제, 한 번에 배포·실사이트 확인 | 전환 PR 1개 |
 
