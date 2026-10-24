@@ -35,4 +35,54 @@ const requireOld = (name) => require(oldPath(name));
 const newPath = (name) => path.join(NEW, name);
 const requireNew = (name) => require(newPath(name));
 
-module.exports = Object.freeze({ ROOT, OLD, NEW, scriptsOf, newIndex, oldIndex, scripts, oldScripts, reused, oldPath, requireOld, newPath, requireNew });
+// Browser global of an old UMD module (root.X = api / factory, r.X = d), read from its own source.
+function globalName(name) {
+  const m = /\b(?:root|r|g|global)\.([A-Z][A-Za-z0-9]*)\s*=\s*(?:api|d|factory)\b/.exec(fs.readFileSync(oldPath(name), 'utf8'));
+  if (!m) throw new Error('NO_GLOBAL ' + name);
+  return m[1];
+}
+/* Node tests of the P1 layer: fresh copies of old modules (module state such as QgvScores' memo, DataRefresh's generation or
+   Qgv2Inputs.lastReason starts empty), set as globals on `win` and on globalThis (old modules read siblings through globalThis,
+   which in the browser is the same window). app-config.js is browser-only (window.InvestmentAppConfig) and runs against `win`.
+   Default list: every reused module, in index.html order. */
+function loadOld(win, names = reused()) {
+  for (const name of names) if (name !== 'app-config.js') delete require.cache[require.resolve(oldPath(name))];
+  const out = {};
+  for (const name of names) {
+    if (name === 'app-config.js') { require('node:vm').runInNewContext(fs.readFileSync(oldPath(name), 'utf8'), { window: win, Object }); out.InvestmentAppConfig = win.InvestmentAppConfig; continue; }
+    const api = require(oldPath(name)), g = globalName(name);
+    win[g] = api; globalThis[g] = api; out[g] = api;
+  }
+  return out;
+}
+/* A browser-like window for node tests. Its own functions refuse any other `this`, as a browser window does ("Illegal invocation"),
+   so a view that forgets to bind them fails here too. fetch answers from `files` ({name: {status, json} | {status, body} |
+   {status, bytes}} or a function(name, init)) and records every request; timers are recorded, never run; trusted(type, props)
+   makes an event that claims a real user gesture (win.Event instance with isTrusted true, e.g. props {key: 'Enter'}). */
+function nodeWindow({ files = {}, origin = 'https://site.test' } = {}) {
+  const events = new EventTarget(), doc = new EventTarget(), requests = [], timers = [];
+  require('node:events').setMaxListeners(0, events, doc);// one window can serve many layer instances in a test
+  Object.assign(doc, { visibilityState: 'visible', documentElement: { lang: 'ko' }, getElementById: () => null });
+  class TrustedEvent extends Event { get isTrusted() { return true; } }
+  const win = { requests, timers, document: doc, location: { href: origin + '/app/', origin }, Response, Headers, Event, CustomEvent, AbortController, URL, TextEncoder, TextDecoder,
+    trusted: (type, props = {}) => Object.defineProperties(new TrustedEvent(type), Object.fromEntries(Object.entries(props).map(([k, value]) => [k, { value }]))) };
+  const own = (name, fn) => { win[name] = function (...a) { if (this !== win) throw new TypeError('Illegal invocation: ' + name); return fn(...a); }; };
+  own('addEventListener', (...a) => events.addEventListener(...a));
+  own('removeEventListener', (...a) => events.removeEventListener(...a));
+  own('dispatchEvent', (e) => events.dispatchEvent(e));
+  own('setInterval', (fn, ms) => timers.push({ fn, ms }));
+  own('setTimeout', (fn, ms) => timers.push({ fn, ms }));
+  own('clearInterval', () => {});
+  own('clearTimeout', () => {});
+  own('fetch', async (input, init = {}) => {
+    const name = String(input), f = typeof files === 'function' ? files(name, init) : files[name];
+    requests.push({ name, init: { ...init } });
+    if (f instanceof Error) throw f;
+    if (!f) return new Response('', { status: 404 });
+    const status = f.status || 200, body = 'json' in f ? JSON.stringify(f.json) : 'bytes' in f ? f.bytes : f.body === undefined ? '' : f.body;
+    return new Response([204, 205, 304].includes(status) ? null : body, { status, headers: { 'content-type': 'application/json' } });
+  });
+  return win;
+}
+
+module.exports = Object.freeze({ ROOT, OLD, NEW, scriptsOf, newIndex, oldIndex, scripts, oldScripts, reused, oldPath, requireOld, newPath, requireNew, globalName, loadOld, nodeWindow });
