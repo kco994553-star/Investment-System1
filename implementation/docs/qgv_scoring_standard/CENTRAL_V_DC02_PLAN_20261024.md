@@ -16,8 +16,8 @@
 
 > **갱신 2026-10-24 09:55 UTC (PR-A·B·C 작성 뒤, Main).** 아래 표와 "확인된 문제"는 01:00 UTC 기록 그대로 둔다. 바뀐 것:
 > - 결정 D1~D10은 소유자가 2026-10-24에 정했다([사용자 결정](../USER_DECISIONS_PENDING.md) 맨 위 절). D5 (b)는 D2 (a)(읽기 전용 토큰)와 충돌해 `D5-UPDATE`로 남았다.
-> - U1·U3: PR-A(`claude/central-v-core`)에서 #393 위로 정리했다. 실패하던 시험 3개는 #393의 실제 F_k 판독기로 고쳤고, C 파서 한 벌·별칭 표 하나(`iex_hist.SYMBOL_ALIASES`)로 줄였다. 설계 §4를 코드 스키마로 고쳤다.
-> - U5: PR-B(`claude/central-v-guard`). U4: PR-C(`claude/central-v-workflow`). 첫 게시 하루 절차는 [첫 게시 점검표](CENTRAL_V_GO_LIVE_CHECKLIST_20261024.md).
+> - U1·U3: PR-A #400(`claude/central-v-core`)에서 #393 위로 정리했다. 실패하던 시험 3개는 #393의 실제 F_k 판독기로 고쳤고, C 파서 한 벌·별칭 표 하나(`iex_hist.SYMBOL_ALIASES`)로 줄였다. 설계 §4를 코드 스키마로 고쳤다.
+> - U5: PR-B #403(`claude/central-v-guard-r2`). U4: PR-C #404(`claude/central-v-workflow-r2`). (처음 연 #401·#402는 Gate A 이메일 검사가 옛 중간 커밋을 계속 잡아 같은 트리의 새 브랜치로 바꿨다.) 첫 게시 하루 절차는 [첫 게시 점검표](CENTRAL_V_GO_LIVE_CHECKLIST_20261024.md).
 > - U8 저장소 크기는 51,796 B(자산 6개)다. 실행 사실(시간·크기·커버리지, 가격 없음)은 [프로브·U8 사실](CENTRAL_V_PROBE_U8_FACTS_20261024.md)에 있다.
 > - 검토에서 첫 게시 전에 소유자가 정할 항목 3개가 나왔다: `CV-LEAK`(사유 묶음이 가격 경계를 다 숨기지 못함), `CV-SPLIT`(주식수 서류 접수 뒤 분할을 못 잡음), `CV-CARRY`(라이브 읽기 실패한 날 게시본 하루 빠짐). 점검표 0절과 사용자 결정 표에 있다.
 

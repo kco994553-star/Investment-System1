@@ -3,7 +3,7 @@
 > **상태: 절차 문서.** 첫 게시 하루에 소유자가 순서대로 따라 하는 점검표다. 값(토큰·키·가격)은 이 문서에 없고, 어디에도 적지 않는다.
 > 근거: [계획](CENTRAL_V_DC02_PLAN_20261024.md) 2절 "첫 게시"·4절 결정 D1~D10·5절 재대조, [설계](CENTRAL_V_PUBLICATION_DESIGN_20261018.md) §3·§6·§12, [U4·U5 요구](CENTRAL_V_U4_U5_NEEDS_20261023.md), [프로브·U8 사실](CENTRAL_V_PROBE_U8_FACTS_20261024.md), GSQ-024.
 
-- 작성: 2026-10-24 UTC, PR-C(`claude/central-v-workflow`, PR-B `claude/central-v-guard` 위).
+- 작성: 2026-10-24 UTC, PR-C(`claude/central-v-workflow`, PR-B `claude/central-v-guard` 위). 같은 날 Gate A 이메일 검사 때문에 두 브랜치를 같은 트리의 새 브랜치로 다시 올렸다: PR-B #403 `claude/central-v-guard-r2`, PR-C #404 `claude/central-v-workflow-r2`(옛 #401·#402는 닫음).
 - 목표일: **2026-11-04 전 첫 게시.** 넘길 것 같으면 그 전에 D1을 (iii)(TARGET v1 확정 11-15 뒤 #393 병합, TARGET v1은 "임시 V")로 바꾸자고 Main이 먼저 보고한다.
 - 휴대폰 브라우저만으로 할 수 있다. GitHub 화면에서 메뉴가 안 보이면 브라우저 메뉴의 "데스크톱 사이트"를 켠다.
 
@@ -64,9 +64,9 @@
 | 순서 | PR | 내용 | 승인 |
 | --- | --- | --- | --- |
 | 1 | #393 `claude/cv-fk-calc-version` | F_k(분할 기준 계수), calc_version `qgv2-calc/2026-10-23.1` | 계산 변경 |
-| 2 | PR-A `claude/central-v-core` | IEX 어댑터·C 파서·게시기·검증기(#393 위) | 계산 코드 |
-| 3 | PR-B `claude/central-v-guard` | 가드: 허용 파일·`rows.<code>.rank` 한 경로 예외·IEX 경로·신선도 규칙 | GSQ-024: 가드는 별도 승인 |
-| 4 | PR-C `claude/central-v-workflow` | 워크플로: collect V 단계·비공개 이력·verify 검사·수동 배포 보존 | 워크플로 변경 |
+| 2 | PR-A #400 `claude/central-v-core` | IEX 어댑터·C 파서·게시기·검증기(#393 위) | 계산 코드 |
+| 3 | PR-B #403 `claude/central-v-guard-r2` | 가드: 허용 파일·`rows.<code>.rank` 한 경로 예외·IEX 경로·신선도 규칙 | GSQ-024: 가드는 별도 승인 |
+| 4 | PR-C #404 `claude/central-v-workflow-r2` | 워크플로: collect V 단계·비공개 이력·verify 검사·수동 배포 보존 | 워크플로 변경 |
 
 - 각 PR은 최종 HEAD에서 필수 체크가 모두 녹색일 때만 병합한다. 앞 PR이 병합되면 다음 PR의 차이가 줄어든다(같은 사슬이라 텍스트 충돌은 없어야 한다. 생기면 Main이 병합 커밋으로 맞추고 체크를 다시 돌린다).
 - **시각:** 그날 정기 실행(00:37 UTC 무렵 시작 = 09:37 KST, 약 40분)이 끝난 뒤 병합하고, 마지막 병합 직후 3단계를 한다. 정기 실행이 먼저 새 코드로 돌면 행 대부분이 옛 calc_version이라 `CALC_VERSION_MISMATCH` NA가 많은 게시본이 나온다(틀린 값은 아니고 비어 있을 뿐이다). 그래도 같은 날 `all_shards` 실행이 같은 기준일·더 늦은 입력으로 바꾼다(신선도 `NEWER`/`REPLACED`).
