@@ -23,10 +23,14 @@
 //  - C2 (kept events): a real click's event kept and replayed after its dispatch (from the test, from a timer of the same
 //    handler, for another kind than the click's own) is refused with no request; one click starts one top-level action (a
 //    second is ACTION_ALREADY_STARTED); a nested run passes only with its parent action's signal while that action is in flight.
+//    One key press is one action: Enter / Space on a focused button gives its trusted keydown and its own click, and only the
+//    click starts one (a held key's auto-repeat keydowns never do); a control without activation behaviour starts one from its
+//    keydown, once.
 //  - C3 (device quotes stopped, owner 2026-10-24, DC-18): a valid stored 'market' record that the old path reads (seeded raw, as
 //    the old screens stored it) is never read by quote() or the score path and never written through a view, not even inside a
-//    click (the real IndexedDB objects behind the gate); marketQuotes.count() gives a number, clear() on a real click removes
-//    the quote records only; no stored price leaves.
+//    click (the real IndexedDB objects behind the gate), also not through what a gated request hands out (its source, its
+//    transaction, a handler's event target), and a version change outside an action is aborted; marketQuotes.count() gives a
+//    number, clear() on a real click removes the quote records only; no stored price leaves.
 //  - C4 (backup /5, owner 2026-10-24): in the browser DeviceBackup finds the reused ChartWorkbench / MacroCycleRing validators
 //    (globals of the two byte-identical modules): a /5 backup with a chart note restores on a real click and comes back in the
 //    opt-in backup; a bad section is refused by the old validator (BACKUP_INVALID), nothing written.
@@ -114,7 +118,8 @@ function record(context, page) {
 // same handler then replays for a write and a Universe read; 'nest' runs a SYNC action whose second step, after a timer, is a
 // nested run of the same event presenting the SYNC action's signal; 'orphan' tries that step without the signal; 'twice' starts
 // a second top-level action from the same click; 'importQuote' / 'putQuote' run the old quote writer and a raw put of the
-// stopped record through views inside a WRITE click; 'clearQuotes' is the settings button "저장된 시세 삭제". The bar is fixed
+// stopped record through views inside a WRITE click; 'escape' tries the stopped record through the objects a gated request
+// hands out; 'clearQuotes' is the settings button "저장된 시세 삭제". The bar is fixed
 // at the top (CSSOM) so no screen element covers it.
 async function addButtons(page) {
   await page.evaluate((id) => {
@@ -130,6 +135,14 @@ async function addButtons(page) {
       importQuote: (e) => I.action.run(e, 'WRITE', () => window.DeviceActual.applyMarketImport(I.prices.priceView, window.__import.catalog, window.__import.result, { method: 'paste' })),
       putQuote: (e) => I.action.run(e, 'WRITE', () => new Promise((resolve, reject) => { const r = I.prices.priceView.indexedDB.open('investment-device-actual-v1');
         r.onsuccess = () => { const db = r.result; try { db.transaction('snapshots', 'readwrite').objectStore('snapshots').put({ q: 1 }, 'market'); resolve('PUT'); } catch (err) { reject(err); } finally { db.close(); } }; r.onerror = () => reject(Error('OPEN_FAILED')); })),
+      escape: (e) => I.action.run(e, 'WRITE', () => new Promise((resolve, reject) => { const r = I.prices.priceView.indexedDB.open('investment-device-actual-v1');
+        r.onsuccess = (ev) => { const db = r.result, out = {}, attempt = (k, f) => { try { f(); out[k] = 'DONE'; } catch (err) { out[k] = String(err && err.message); } };
+          try { const q = db.transaction('snapshots', 'readwrite').objectStore('snapshots').get('google-sheet-settings');
+            attempt('source', () => q.source.put({ q: 1 }, 'market')); attempt('transaction', () => q.transaction.objectStore('snapshots').put({ q: 1 }, 'market'));
+            attempt('eventTarget', () => ev.target.result.transaction('snapshots', 'readwrite').objectStore('snapshots').delete('market'));
+            q.onsuccess = (e2) => { attempt('handlerTarget', () => e2.target.source.put({ q: 1 }, 'market-import-history')); };
+            q.transaction.oncomplete = () => { db.close(); resolve(out); }; q.transaction.onabort = () => { db.close(); reject(Error('ABORTED')); };
+          } catch (err) { db.close(); reject(err); } }; r.onerror = () => reject(Error('OPEN_FAILED')); })),
       clearQuotes: (e) => I.store.marketQuotes.clear(e), restore5: (e) => I.store.backup.restore(e, window.__b5) };
     const bar = document.createElement('div'); bar.dataset.testActions = '';
     for (const [k, v] of [['position', 'fixed'], ['top', '0'], ['left', '0'], ['z-index', '2147483647']]) bar.style.setProperty(k, v);
@@ -307,7 +320,7 @@ async function scores(page) {
     }, { id: SHEET_ID, values: VALUES_URL, append: APPEND_URL });
     assert.ok(b.count >= 100);
     assert.deepEqual(b.refused, {}, 'every direct call / plain object / forged or synthetic event is refused with CLICK_REQUIRED');
-    assert.equal(b.buttons, 12);
+    assert.equal(b.buttons, 13);
     assert.deepEqual(Object.values(b.synthetic), Array(2 * b.buttons).fill('CLICK_REQUIRED'), 'synthetic clicks on the buttons are refused');
     assert.equal(b.submitted.length, 3, 'requestSubmit → submit; submitter.click() → click, then submit');
     assert.ok(b.submitted.filter(([trusted]) => trusted).length >= 1, 'the browser marked a script-made submit trusted');
@@ -400,6 +413,21 @@ async function scores(page) {
     assert.deepEqual(await click(page, 'orphan'), { ok: false, code: 'CLICK_REQUIRED' }, 'the next step without its parent signal is a replay');
     const twice = await click(page, 'twice');
     assert.deepEqual([twice.ok, twice.value.second], [true, 'ACTION_ALREADY_STARTED'], 'one click starts one top-level action');
+    // One key press, one action: a button turns Enter / Space into its own trusted click, so only the click starts one; a held
+    // key's auto-repeat keydowns never start one; a control without activation behaviour starts one from its keydown, once.
+    await page.evaluate(() => { const A = window.IS2.action, log = window.__keys = [], bar = document.querySelector('[data-test-actions]');
+      const add = (el, name) => { for (const t of ['keydown', 'click']) el.addEventListener(t, (e) => { if (t === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return; try { A.run(e, 'WRITE', () => null); log.push(name + ' ' + t + ' started'); } catch (err) { log.push(name + ' ' + t + (e.repeat ? ' (repeat) ' : ' ') + err.message); } }); bar.appendChild(el); };
+      const b = document.createElement('button'); b.type = 'button'; b.dataset.testKey = 'button'; b.textContent = 'test key'; add(b, 'button');
+      const d = document.createElement('div'); d.tabIndex = 0; d.dataset.testKey = 'div'; d.textContent = 'test key div'; add(d, 'div'); });
+    const keys = async (sel, fn) => { await page.evaluate(() => { window.__keys.length = 0; }); await page.focus(sel); await fn(); return page.evaluate(() => [...window.__keys]); };
+    assert.deepEqual(await keys('[data-test-key="button"]', () => page.keyboard.press('Enter')), ['button keydown CLICK_REQUIRED', 'button click started'], 'Enter on a button: its click starts the action, its keydown does not');
+    assert.deepEqual(await keys('[data-test-key="button"]', () => page.keyboard.press(' ')), ['button keydown CLICK_REQUIRED', 'button click started'], 'Space on a button: the same');
+    const held = await keys('[data-test-key="button"]', async () => { await page.keyboard.down('Enter'); await page.keyboard.down('Enter'); await page.keyboard.down('Enter'); await page.keyboard.up('Enter'); });
+    assert.ok(held.length >= 4 && !held.some((x) => / keydown started/.test(x)) && held.includes('button keydown (repeat) CLICK_REQUIRED'), held.join(' | '));
+    assert.equal(held.filter((x) => x === 'button click started').length, held.filter((x) => / click /.test(x)).length, 'every click the browser fired is its own gesture: one action each');
+    assert.deepEqual(await keys('[data-test-key="div"]', () => page.keyboard.press('Enter')), ['div keydown started'], 'no activation behaviour: the keydown is the gesture');
+    assert.deepEqual(await keys('[data-test-key="div"]', async () => { await page.keyboard.down('Enter'); await page.keyboard.down('Enter'); await page.keyboard.up('Enter'); }), ['div keydown started', 'div keydown (repeat) CLICK_REQUIRED'], 'its auto-repeat is refused');
+    await page.evaluate(() => document.querySelectorAll('[data-test-key]').forEach((el) => el.remove()));
     assert.deepEqual(since(at), [], 'no request from any replay'); assert.equal(rec.counts.values, 1, 'no second Sheets read');
     const afterC2 = (await site.storage(page)).localItems;
     assert.deepEqual(Object.keys(afterC2).sort(), [...Object.keys(JSON.parse(storeC2)), 'investment.web.v1.personal'].sort(), 'no write from any replay (only the first save of "twice")');
@@ -436,6 +464,19 @@ async function scores(page) {
     assert.deepEqual(await click(page, 'importQuote'), { ok: false, code: 'STORAGE' }, 'the old quote writer fails as a whole inside a WRITE click');
     assert.deepEqual(await click(page, 'putQuote'), { ok: false, code: 'MARKET_STORE_STOPPED' }, 'a raw put of the record through a view is refused (real IndexedDB objects)');
     assert.equal(await page.evaluate(() => window.IS2.action.blocked()) - blockedC3, 2, 'both refusals counted');
+    // Nothing a gated request hands out leads behind the gate (the real IndexedDB objects): its source, its transaction, the
+    // open request's result through event.target, a handler's event target; reads stay absent; a version change is aborted.
+    const blockedEsc = await page.evaluate(() => window.IS2.action.blocked());
+    assert.deepEqual(await click(page, 'escape'), { ok: true, value: { source: 'MARKET_STORE_STOPPED', transaction: 'MARKET_STORE_STOPPED', eventTarget: 'MARKET_STORE_STOPPED', handlerTarget: 'MARKET_STORE_STOPPED' } });
+    const esc = await page.evaluate(async () => { const I = window.IS2, D = I.prices.priceView.indexedDB, b0 = I.action.blocked();
+      const read = await new Promise((resolve, reject) => { const r = D.open('investment-device-actual-v1'); r.onsuccess = () => { const db = r.result, q = db.transaction('snapshots', 'readonly').objectStore('snapshots').get('google-sheet-settings');
+        q.onsuccess = (ev) => { const viaSource = q.source.get('market'), viaTarget = ev.target.transaction.objectStore('snapshots').getKey('market-import-history');
+          viaTarget.onsuccess = () => { db.close(); resolve({ viaSource: viaSource.result === undefined ? 'ABSENT' : 'READ', viaTarget: viaTarget.result === undefined ? 'ABSENT' : 'READ' }); }; }; }; r.onerror = () => reject(Error('OPEN')); });
+      const upgrade = await new Promise((resolve) => { const r = D.open('investment-device-actual-v1', 2); r.onsuccess = () => { r.result.close(); resolve('OPENED'); }; r.onerror = () => resolve(r.error ? r.error.name : 'ERROR'); });
+      const version = (await indexedDB.databases()).find((d) => d.name === 'investment-device-actual-v1').version;
+      return { read, upgrade, version, blocked: I.action.blocked() - b0 }; });
+    assert.deepEqual(esc, { read: { viaSource: 'ABSENT', viaTarget: 'ABSENT' }, upgrade: 'AbortError', version: 1, blocked: 1 }, 'reads stay absent; a version change outside an action is aborted');
+    assert.equal(await page.evaluate(() => window.IS2.action.blocked()) - blockedEsc, 5, 'four refused writes and the aborted version change counted');
     const rawAfter = await deviceRecords(page);
     assert.deepEqual(Object.keys(rawAfter).sort(), ['google-sheet-settings', 'market', 'market-import-history']);
     assert.equal(JSON.stringify(rawAfter.market), seeded.market, 'the stored record is untouched, never deleted on its own');

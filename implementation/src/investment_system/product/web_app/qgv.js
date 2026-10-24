@@ -1,8 +1,9 @@
 /* P1 score accessor (IS2.qgv): the single QGV v2 page result every screen shares, with its V source (device V is labelled
    as the temporary V until a central V is published). P1 implementation spec, Main decisions 5, 6, 13; design §1.1 (3), §2.
    - Scores are QgvScores.pageResult (the old shared result: one collectQuotes and one compute over the whole sec-qgv2.json),
-     computed with the score view: fetch always fails (SCORE_PATH_NO_NETWORK), the Universe read and the price tabs come from the
-     click-only price layer (prices.universeView / storeFacade), stored device quotes only from an IndexedDB that already exists.
+     computed with the score view: fetch always fails (SCORE_PATH_NO_NETWORK); RAM prices only, from the click-only price layer
+     (the Universe tab read on a click, the price tabs, RAM Worker closes: prices.universeView / storeFacade); stored device
+     quotes are not read (DC-18: the gate answers them as absent).
      The page identities / profile / references are set here and nowhere else (app.js did it before).
    - Page and row records are a projection of that result: no price, quote, month close, EV, yield or reference range (engine
      `detail` / `reference_range`, collectQuotes quotes and meta) leaves this module, a missing value is null and always carries
@@ -59,7 +60,8 @@ const TEXT=Object.freeze({
  SUPPLY_FAILED:['중앙 V 가격 공급 실패(초안 문구)','Central V price supply failed (draft wording)'],
  VERIFY_FAILED:['중앙 V 검증 실패(초안 문구)','Central V verification failed (draft wording)'],
  PRICE_DEPENDENT_NOT_COMPUTABLE:['가격이 필요한 값이라 중앙 게시본에서 계산하지 않았습니다(초안 문구)','Price-dependent value not computed centrally (draft wording)'],
- JUDGEMENT_NOT_RECORDED:['기록 안 됨','Not recorded']});
+ JUDGEMENT_NOT_RECORDED:['기록 안 됨','Not recorded'],
+ NOTHING_TO_RECORD:['기록할 발생 신호 없음','No occurrence to record']});
 const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v),finite=v=>typeof v==='number'&&Number.isFinite(v),num=v=>finite(v)?v:null,str=v=>typeof v==='string'?v:null;
 function deepFreeze(v){if(v&&typeof v==='object'&&!Object.isFrozen(v)){Object.freeze(v);for(const x of Object.values(v))deepFreeze(x);}return v;}
 function create({win,data,prices,action}){

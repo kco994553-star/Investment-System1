@@ -237,6 +237,9 @@ const RULES = [
   ['engine rows / score view outside qgv.js and engines.js', /\b(?:forEngines|engineInputs)\(|\bscoreView\b/, ['qgv.js', 'engines.js']],
   ['the price view outside prices.js and engines.js', /\bpriceView\b/, ['prices.js', 'engines.js']],
   ['old paths that bypass the price view', /\bautoLoad\b|\blatestPublished\b|\bStatRadar\b|\bDataRefresh\.attach\b|\b(PrivateSubsetView|TargetV1Screen|PriceStore|VirtualLedgerSheets)\.mount\w*\(/, []],
+  // DeviceActual's own screen runs on the real window (host.ownerDocument.defaultView) and saves, imports and deletes the holdings
+  // together with the stopped quote record; its quote import writes that record (DC-18). Holdings writes go through the store.
+  ['old writers of the stopped device quote record', /\bDeviceActual\.(?:mount\w*|applyMarketImport)\(/, []],
   ['order features', /placeOrder|submitOrder|sendOrder|주문하기|매수 주문|매도 주문/, []],
 ];
 test('source rules for every web_app script (code, not comments)', () => {

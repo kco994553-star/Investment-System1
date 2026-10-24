@@ -7,7 +7,8 @@
      (V-driven codes such as T1 V_DETERIORATED) stay source-less device-V records (P1_DATA_LAYER.md §8, §10).
    - Every write is a user action on the store's gated storage (WRITE; SYNC when the user's own Sheet is written too). The old
      screens wrote some of these on open (R-B selection, playbook occurrences); here they need the user's click (owner 2026-10-24:
-     kept). A judgement says whether it was recorded (recorded / recorded_reason JUDGEMENT_NOT_RECORDED, shown as "기록 안 됨").
+     kept). A judgement says whether this device's playbook store holds what record() writes for it (recorded / recorded_reason
+     JUDGEMENT_NOT_RECORDED, shown as "기록 안 됨"; NOTHING_TO_RECORD when it has no occurrence to write).
    - The V history is not recorded (owner 2026-10-24; the central V history is the server's private store, D9): the recording run
      that captured it (app.js paintReport) is not here, and nothing calls VirtualTradingVHistory.capture / captureV2.
    - Prices only through the one price view and its facade: no price request outside a SYNC click, nothing stored, and prices
@@ -142,11 +143,21 @@ function create({win,action,data,prices,store,qgv}){
  /* openPanel's judgement step (playbook-screen.js openPanel), read only: the situation with this device's thesis event, hold and
     follow-up, the macro state, PlaybookEngine.evaluate, and the R1_FILING rule (a filing choice needs an EVIDENCE-grade invalidation
     event). openPanel also recorded the candidate signals at this point; that is record(event, judged) now (owner 2026-10-24: only on
-    the user's click). recorded: whether record(event, this judgement) has written it (a fresh judgement is not recorded;
-    recorded_reason JUDGEMENT_NOT_RECORDED until then, the screen says "기록 안 됨"). record() merges into that day's occurrences
-    (PlaybookScreen.recordOccurrences keeps one per date, name and code), so recording a judgement again changes nothing.
+    the user's click). recorded / recorded_reason are read from the playbook store each time they are read, so a judgement made
+    again, after a reload or on another screen says the same: true / null when every occurrence record() would write is already
+    stored for that day and name (same code, its reasons included); false / JUDGEMENT_NOT_RECORDED otherwise (the screen says
+    "기록 안 됨"); false / NOTHING_TO_RECORD when the judgement has no occurrence to write. record() merges into that day's
+    occurrences (PlaybookScreen.recordOccurrences keeps one per date, name and code), so recording a judgement again changes nothing.
     v_source: the facts' (or a given situation's) V source; null when the caller's situation names none. */
- const judged=new WeakSet(),recorded=new WeakSet();
+ const judged=new WeakSet();
+ // What record() writes for a judgement, in openPanel's three calls: the candidate signals, a structural-news E4, a 13F full-exit E4.
+ function occurrencesOf({situation:s,judgement}){const groups=[Array.isArray(judgement.candidate_signals)?judgement.candidate_signals:[]];
+  if(s.structural_news)groups.push([{code:'E4',reasons:['NEWS_STRUCTURAL_EVENT']}]);
+  if(s.thirteenf_source_reason==='THIRTEENF_REPORTED_FULL_EXITS_3_PLUS')groups.push([{code:'E4',reasons:[s.thirteenf_source_reason]}]);return groups;}
+ // null (recorded), NOTHING_TO_RECORD or JUDGEMENT_NOT_RECORDED, from the store as it is now (an unreadable store: not recorded).
+ function recordReason(j){const rows=occurrencesOf(j).flat();if(!rows.length)return 'NOTHING_TO_RECORD';let stored;try{stored=readPlaybook().occurrences;}catch(_){return 'JUDGEMENT_NOT_RECORDED';}
+  const held=r=>{const o=stored.find(x=>x.date===j.date&&x.symbol===j.symbol&&x.code===r.code);return !!o&&(r.reasons||[]).every(x=>o.reasons.includes(x));};
+  return rows.every(held)?null:'JUDGEMENT_NOT_RECORDED';}
  async function judge({symbol,situation=null,date=today()}={}){
   const E=need('PlaybookEngine'),PCFG=need('PlaybookConfigDefaults'),P=PB();await macroNow();
   const{v_source:vs=null,...base}=situation||await facts(symbol,{date}),stored=readPlaybook(),s={...base,symbol,date},ML=win.MacroLights,macro=ML&&typeof ML.current==='function'?ML.current():null;
@@ -157,14 +168,13 @@ function create({win,action,data,prices,store,qgv}){
   if(ev&&ev.status==='OCCURRED'&&ev.grade!=='EVIDENCE'){const restrict=choices=>choices.map(ch=>ch.id==='R1_FILING'?{...ch,enabled:false,disabled_reasons:[...ch.disabled_reasons,'FILING_EVIDENCE_REQUIRED']}:ch);
    if(judgement.choices_by_code.R1)judgement.choices_by_code.R1=restrict(judgement.choices_by_code.R1);if(judgement.primary&&judgement.primary.code==='R1')judgement.choices=restrict(judgement.choices);}
   const j=copy({symbol,date,situation:s,judgement,code:judgement.primary&&judgement.primary.code?judgement.primary.code:'H1',v_source:typeof vs==='string'?vs:null});
-  Object.defineProperties(j,{recorded:{enumerable:true,get:()=>recorded.has(j)},recorded_reason:{enumerable:true,get:()=>recorded.has(j)?null:'JUDGEMENT_NOT_RECORDED'}});
+  Object.defineProperties(j,{recorded:{enumerable:true,get:()=>recordReason(j)===null},recorded_reason:{enumerable:true,get:()=>recordReason(j)}});
   deepFreeze(j);judged.add(j);return j;}
  // The occurrences openPanel wrote when it opened: the candidate signals, a structural-news E4, a 13F full-exit E4. Only from a
  // judge() result and only on the user's action. Returns that day's occurrences of the name (codes and reasons).
- function record(event,j){if(!judged.has(j))throw Error('JUDGEMENT_UNKNOWN');return action.run(event,'WRITE',()=>{const P=PB(),{symbol,date,situation:s,judgement}=j;
-  P.recordOccurrences(storage,date,symbol,judgement.candidate_signals);if(s.structural_news)P.recordOccurrences(storage,date,symbol,[{code:'E4',reasons:['NEWS_STRUCTURAL_EVENT']}]);
-  if(s.thirteenf_source_reason==='THIRTEENF_REPORTED_FULL_EXITS_3_PLUS')P.recordOccurrences(storage,date,symbol,[{code:'E4',reasons:[s.thirteenf_source_reason]}]);
-  recorded.add(j);return out(readPlaybook().occurrences.filter(r=>r.date===date&&r.symbol===symbol));});}
+ function record(event,j){if(!judged.has(j))throw Error('JUDGEMENT_UNKNOWN');return action.run(event,'WRITE',()=>{const P=PB(),{symbol,date}=j;
+  for(const signals of occurrencesOf(j))P.recordOccurrences(storage,date,symbol,signals);
+  return out(readPlaybook().occurrences.filter(r=>r.date===date&&r.symbol===symbol));});}
  // E5: records whose follow-up day has come (PlaybookScreen.due); §16 portfolio limits of {symbol, sector, pct} rows.
  const due=(date=today())=>out(PB().due(readPlaybook(),date));
  const limits=(rows,cash)=>out(need('PlaybookEngine').portfolioLimits(need('PlaybookConfigDefaults'),rows,cash));

@@ -7,8 +7,10 @@
 //    PriceStore with the one price view.
 //  - Playbook: judge() reproduces openPanel's R1_FILING rule (playbook_screen_browser_test 'manual R1') and its macro
 //    reference-only display without writing, equals the old openPanel's judgement, and record(event) writes what openPanel wrote
-//    on open; a judgement says recorded:false / JUDGEMENT_NOT_RECORDED until record(event) wrote it, then recorded:true (owner
-//    2026-10-24: recorded only on the click); facts() reads the shared result through the score view after the news list.
+//    on open; a judgement says recorded:false / JUDGEMENT_NOT_RECORDED until its occurrences are in the store, then recorded:true
+//    (owner 2026-10-24: recorded only on the click), read from the store, so a judgement made again, after a reload too, says the
+//    same; NOTHING_TO_RECORD when there is no occurrence to write; facts() reads the shared result through the score view after
+//    the news list.
 //  - One event, one top-level action: syncScoringPrices' tab sync is a nested step presenting its SYNC action's signal.
 //  - Virtual: stored() is the runner's open pass on the price view with fetch:false (NOT_AVAILABLE before sign-in with zero
 //    requests; PRICE_NOT_FETCHED after it with zero private requests); compare / forward / rehearse; run() is NOT_IN_P1.
@@ -243,9 +245,25 @@ test('playbook judge: openPanel R1_FILING rule (manual R1) reproduced without wr
   const occ = await engines.playbook.record(e.click(), j);
   assert.deepEqual([j.recorded, j.recorded_reason], [true, null], 'the same judgement now reads recorded');
   const again = await engines.playbook.judge({ symbol: 'SYNTHETIC', date: '2026-10-13', situation: MANUAL });
-  assert.deepEqual([again.recorded, again.recorded_reason], [false, 'JUDGEMENT_NOT_RECORDED'], 'a new judgement starts unrecorded');
+  assert.deepEqual([again.recorded, again.recorded_reason], [true, null], 'judged again (a re-render, back on the panel): its occurrences are stored, so recorded');
+  assert.deepEqual([plain(again).recorded, plain(again).recorded_reason], [true, null]);
   const once = e.saved(); assert.deepEqual(plain(await engines.playbook.record(e.click(), again)), plain(occ)); assert.equal(e.saved(), once, 'recording it again changes nothing (one per date, name, code)');
   assert.equal(again.recorded, true);
+  // After a reload (a new layer on the same device storage) the stored occurrences still say recorded; another day does not.
+  const reloaded = fresh('engines.js').create({ win: e.win, action: e.action, data: e.data, prices: e.prices, store, qgv: e.qgv });
+  const r1 = await reloaded.playbook.judge({ symbol: 'SYNTHETIC', date: '2026-10-13', situation: MANUAL }), r2 = await reloaded.playbook.judge({ symbol: 'SYNTHETIC', date: '2026-10-14', situation: MANUAL });
+  assert.deepEqual([r1.recorded, r1.recorded_reason, r2.recorded, r2.recorded_reason], [true, null, false, 'JUDGEMENT_NOT_RECORDED'], 'read from the store, not from this page');
+  // A stored occurrence of the same code that lacks one of the reasons record() would add is not the judgement recorded.
+  const partial = P.read(e.win.localStorage); partial.occurrences = partial.occurrences.map((o) => ({ ...o, reasons: o.reasons.filter((x) => x !== 'NEWS_STRUCTURAL_EVENT') }));
+  await e.action.run(e.click(), 'WRITE', () => P.write(e.win.localStorage, partial));
+  assert.deepEqual([j.recorded, j.recorded_reason], [false, 'JUDGEMENT_NOT_RECORDED'], 'the same object follows the store');
+  await engines.playbook.record(e.click(), j); assert.deepEqual([j.recorded, again.recorded, r1.recorded], [true, true, true]);
+  // Nothing to record (no candidate signal, no structural news, no 13F exit): its own reason, never "recorded".
+  const quiet = await engines.playbook.judge({ symbol: 'SYNQUIET', date: '2026-10-13', situation: { ...MANUAL, structural_news: false } });
+  assert.deepEqual(quiet.judgement.candidate_signals, [], 'fixture: no candidate signal');
+  assert.deepEqual([quiet.recorded, quiet.recorded_reason], [false, 'NOTHING_TO_RECORD']); assert.equal(e.qgv.reasonText('NOTHING_TO_RECORD'), '기록할 발생 신호 없음');
+  const beforeQuiet = P.read(e.win.localStorage).occurrences; await engines.playbook.record(e.click(), quiet);
+  assert.deepEqual(P.read(e.win.localStorage).occurrences, beforeQuiet, 'recording it adds no occurrence'); assert.equal(quiet.recorded_reason, 'NOTHING_TO_RECORD');
   assert.deepEqual(P.read(e.win.localStorage).occurrences, P.read(copy).occurrences, 'record(event) writes exactly what openPanel wrote');
   assert.deepEqual(occ.map((o) => o.code), ['E4']);
   assert.deepEqual(engines.playbook.due('2026-10-13'), plain(P.due(P.read(e.win.localStorage), '2026-10-13')));

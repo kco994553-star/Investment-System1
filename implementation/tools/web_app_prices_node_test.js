@@ -105,7 +105,9 @@ function fakeIdb(seed = {}) {
         transaction(_names, mode) { modes.push(mode || 'readonly'); const tx = { objectStore: () => ({ get(k) { reads.push(k); const r = { result: store.get(k) }; queueMicrotask(() => r.onsuccess && r.onsuccess()); return r; },
           getKey(k) { reads.push(k); const r = { result: store.has(k) ? k : undefined }; queueMicrotask(() => r.onsuccess && r.onsuccess()); return r; }, put(v, k) { writes.push('put ' + k); store.set(k, v); return {}; }, delete(k) { writes.push('delete ' + k); store.delete(k); return {}; } }) };
         tx.abort = () => { tx.aborted = true; }; later(() => (tx.aborted ? tx.onabort && tx.onabort() : tx.oncomplete && tx.oncomplete())); return tx; } };
-      req.result = db; later(() => { if (created && req.onupgradeneeded) req.onupgradeneeded(); if (req.onsuccess) req.onsuccess(); }); return req;
+      // A creation can be aborted from onupgradeneeded (request.transaction.abort()): then the database is not created.
+      req.result = db; if (created) req.transaction = { abort() { req.aborted = true; } };
+      later(() => { if (created && req.onupgradeneeded) req.onupgradeneeded(); if (req.aborted) { dbs.delete(name); if (req.onerror) req.onerror(); return; } if (req.onsuccess) req.onsuccess(); }); return req;
     } };
 }
 // One page: a browser-like window, the 57 old modules (index.html order), fresh P1 modules.
@@ -516,7 +518,7 @@ test('device quotes stopped (DC-18): a stored record the old path reads is never
   // its databases answers null and opens nothing.
   assert.equal(await e.store.marketQuotes.count(), 2);
   const none = fakeIdb(), e0 = env({ idb: none }); assert.equal(await e0.store.marketQuotes.count(), 0); assert.deepEqual([none.opened, none.dbs.size], [[], 0]);
-  const blind = fakeIdb({ [DB]: { market } }); delete blind.databases; const e1 = env({ idb: blind }); assert.equal(await e1.store.marketQuotes.count(), null); assert.deepEqual(blind.opened, []);
+  const blind = fakeIdb({ [DB]: { actual: { synthetic: 'holdings placeholder' }, market } }); delete blind.databases; const e1 = env({ idb: blind }); assert.equal(await e1.store.marketQuotes.count(), null); assert.deepEqual(blind.opened, []);
   assert.equal(await env().store.marketQuotes.count(), null, 'no IndexedDB at all');
   // clear(event): only on a trusted click; removes the two quote records and nothing else.
   for (const ev of [undefined, new Event('click'), { type: 'click', isTrusted: true }, e.win.trusted('mouseover')]) assert.throws(() => e.store.marketQuotes.clear(ev), /CLICK_REQUIRED/);
@@ -528,6 +530,13 @@ test('device quotes stopped (DC-18): a stored record the old path reads is never
   assert.deepEqual(idb.writes, ['delete market', 'delete market-import-history']);
   assert.equal(await e.store.marketQuotes.count(), 0); assert.equal(await e.store.marketQuotes.clear(e.click()), 0);
   assert.equal(await e0.store.marketQuotes.clear(e0.click()), 0); assert.deepEqual([none.opened, none.dbs.size], [[], 0], 'clearing on a device without the database creates none');
+  // A browser that cannot list its databases: the settings button still works inside its click (the database opened by name),
+  // count() stays unknown, and on a device without the database the creation is aborted (none is created).
+  assert.throws(() => e1.store.marketQuotes.clear(undefined), /CLICK_REQUIRED/); assert.deepEqual(blind.opened, [], 'nothing opened without the click');
+  assert.equal(await e1.store.marketQuotes.clear(e1.click()), 1); assert.deepEqual([...blind.dbs.get(DB).keys()], ['actual'], 'the quote record went, the holdings stay');
+  assert.deepEqual(blind.writes, ['delete market', 'delete market-import-history']); assert.equal(await e1.store.marketQuotes.count(), null);
+  const gone = fakeIdb(); delete gone.databases; const e7 = env({ idb: gone });
+  assert.equal(await e7.store.marketQuotes.clear(e7.click()), 0); assert.deepEqual([gone.opened, gone.dbs.size, gone.writes], [[DB], 0, []], 'opened by name, its creation aborted: no database');
   assert.doesNotMatch(JSON.stringify([pg, await e.prices.quote({ ticker: 'ASML' }), e.prices.status()]), STORED, 'no stored price value came back');
 });
 

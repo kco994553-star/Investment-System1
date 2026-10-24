@@ -21,6 +21,7 @@ P2 화면 레인이 쓰는 함수, 기록 모양, 사유 코드, 지켜야 할 �
 - **클릭 규칙**
   - 비공개 요청(시트·Worker·OAuth)과 기기 저장 쓰기는 첫 인자로 받은 **진짜 사용자 이벤트**로만 실행한다.
     - 조건: window의 진짜 이벤트이고(`isTrusted`·`type`·`eventPhase`를 window의 원래 접근자로 읽는다), 형식이 click 또는 Enter/Space keydown이다.
+    - **버튼은 click 이벤트만 넘긴다.** keydown은 활성화 동작이 없는 요소(예: `tabindex`를 준 div)에서만 받는다. 버튼, 링크(href), summary, input은 같은 키 누름을 브라우저가 진짜 click으로 한 번 더 보낸다(폼 안 input의 Enter는 암묵 제출로 기본 버튼을 누른다). 그래서 그런 요소의 keydown과 키를 누르고 있을 때 오는 자동 반복 keydown(`repeat`)은 `CLICK_REQUIRED`다. 한 번 누르면 action 하나다.
     - 그 이벤트가 **지금 전달 중**이어야 하고(처리기 안), 브라우저가 알려 주면 사용자 활성화(`navigator.userActivation.isActive`)도 있어야 한다.
     - 클릭 처리기 안에서 기다리지 말고 바로 부른다. `login`은 같은 틱이어야 한다.
   - `CLICK_REQUIRED`가 되는 경우:
@@ -30,6 +31,7 @@ P2 화면 레인이 쓰는 함수, 기록 모양, 사유 코드, 지켜야 할 �
     - 저장해 둔 이벤트를 나중에 다시 쓰는 경우(타이머, 다른 처리기, 다른 kind).
   - **한 이벤트로는 최상위 action을 하나만 시작한다(소유자 결정 2026-10-24).** 같은 이벤트로 두 번째 action을 시작하면 `ACTION_ALREADY_STARTED`다(그 이벤트가 아직 전달 중일 때. 전달이 끝났으면 `CLICK_REQUIRED`). 한 클릭에 두 함수를 부르지 않는다.
   - 그 action 안의 다음 단계(중첩 실행)는 부모 action의 signal을 내민다: `run(event, kind, fn, {parent: signal})`. 같은 이벤트로 시작한 부모가 아직 진행 중일 때만 통과하고, 부모가 취소되면 함께 끝난다. signal 없이 부르면 위 규칙대로 거절된다. 예: `engines.target.syncScoringPrices` → `prices.syncSymbols(event, …, {parent: signal})`.
+    - 중첩 실행은 부모가 갈 수 있는 곳까지만 간다. 부모와 같은 kind이거나, 기기 저장을 쓰는 부모(`PUBLIC_REFRESH` 말고 모두) 아래의 `WRITE`만 된다. `PUBLIC_REFRESH` 아래에는 아무것도 중첩하지 않고, `WRITE` 클릭 아래의 `SYNC`도 안 된다. 어기면 `ACTION_KIND_NOT_COVERED`다.
 - **RAM 가격 표시**
   - 기기 가격과 가격 파생값(시총, EV, 수익률, 배수, 내재 성장, 월말 종가)은 RAM에만 둔다.
   - 화면에는 `[data-ram-price]` 요소의 글자로만 낸다. 속성, 입력 value, 제목, 저장소, 콘솔, URL에는 넣지 않는다.
@@ -69,12 +71,18 @@ P2 화면 레인이 쓰는 함수, 기록 모양, 사유 코드, 지켜야 할 �
 - **허용 범위는 페이지 전체다.** action이 진행 중인 동안에는 그 클릭과 무관한 코드도 그 kind의 목적지에 가고 저장소에 쓸 수 있다(사양이 정한 관문 방식). 그래서 다음을 지킨다.
   - 오래 걸릴 수 있는 단계에는 끝이 있다. GIS 준비는 30초 뒤 `PREPARE_TIMEOUT`, `cancel(kind)`는 곧바로 관문을 닫는다.
   - P2 레인은 `IS2.action.view()`로 view를 새로 만들지 않는다. view의 IndexedDB는 쓰기 action 중에 DB를 만들 수 있다.
+- **관문이 막는 범위.** 관문은 view만 받는 옛 모듈의 호출을 막는다. 진짜 window를 쥔 페이지 코드까지 가두는 장치는 아니다. 그래서 P2 화면 코드는 저장소(`localStorage`·`sessionStorage`·`indexedDB`)를 직접 쓰지 않는다. 소스 검사가 P1 층 밖에서 막는다.
 - IndexedDB는 이미 있는 DB(`stores()`)나 쓰기 클릭 안에서만 연다. 읽기는 DB를 만들지 않는다. 거절 코드 `DEVICE_STORE_NOT_OPENED`는 '아직 저장된 것 없음'이라는 뜻이다. `stores()` → `{supported, available, names}`.
   - 쓰기 트랜잭션(`readwrite`)도 쓰기 action 안에서만 연다. 밖에서는 `ACTION_REQUIRED`다(이미 있는 DB에도 클릭 없이 쓰지 않는다).
+  - 버전 변경(DB가 그사이 지워져 새로 만들어지는 경우 포함)도 쓰기다. 쓰기 action 밖이거나 읽기 전용 view(점수 경로)면 중단한다(blocked 수가 는다).
+  - view가 내준 IndexedDB 객체에서 닿는 객체는 모두 관문을 거친 객체다. 요청의 `source`·`transaction`·`result`, 커서, 색인, 처리기가 받는 이벤트의 `target`이 그렇다. 그래서 옛 모듈이 받은 객체를 거쳐 관문 뒤로 가지 못한다.
   - **기기 시세 기록은 멈췄다(소유자 결정 2026-10-24, DC-18).** `STOPPED`: DB `investment-device-actual-v1`의 `snapshots` 저장소 안 기록 `market`(저장된 시세)과 `market-import-history`(가져올 때마다의 시세·환율). 계획서가 'market 저장소'라고 부른 것은 별도 저장소가 아니라 이 두 기록이다(device-actual.js:9-10).
-    - 쓰기: 클릭 안에서도 `MARKET_STORE_STOPPED`(blocked 수가 는다). 옛 쓰기(`DeviceActual.applyMarketImport`)는 트랜잭션째 실패한다.
+    - 쓰기: 클릭 안에서도 `MARKET_STORE_STOPPED`(blocked 수가 는다). 그 기록을 다른 기록과 한 트랜잭션에 묶어 쓰는 옛 쓰기는 트랜잭션째 실패한다.
+      - `DeviceActual.applyMarketImport`(시세 가져오기).
+      - `DeviceActual.mount` 화면의 저장·JSON 가져오기·'기기 보유 삭제'. 보유(`actual`)와 시세 기록을 늘 함께 쓰거나 지운다. 게다가 mount는 진짜 window(`host.ownerDocument.defaultView`)에서 돌아 관문을 거치지 않는다. 그래서 새 앱은 이 둘을 다시 쓰지 않는다(소스 검사가 `DeviceActual.mount*`·`applyMarketImport` 호출을 막는다).
+      - 보유만 쓰는 길은 옛 `DeviceActual.restoreHoldings`다(`actual`만 쓴다, 백업 복원이 이미 쓴다). P2-6의 보유 저장은 이것으로 store에 붙인다. 손으로 넣던 시세·환율은 새 앱에 둘 곳이 없다(11절 아직 정할 것).
     - 읽기: 없는 기록으로 읽힌다(없는 키로 바꿔 묻는다). 그래서 `DeviceActual.ramQuote`·`ramView`, `DeviceValuation.deviceQuote`, `QgvScores.collectQuotes`가 저장된 시세를 쓰지 않는다. 기기 V는 RAM 가격(Universe 탭 읽기, 가격 탭)만 쓴다.
-    - 그 기록에 닿을 수 있는 범위 질의·커서·`clear()`는 거절한다(`MARKET_STORE_STOPPED`).
+    - 그 기록에 닿을 수 있는 범위 질의·커서·색인·`clear()`와, 그 저장소 지우기·이름 바꾸기는 거절한다(`MARKET_STORE_STOPPED`).
     - 이미 저장된 것은 저절로 지우지 않는다. 지우는 길은 `store.marketQuotes.clear(event)` 하나다(7절). `stoppedRecords.count()`/`clear(signal)`은 그 뒤의 구현이고, `clear`는 진행 중인 WRITE action의 signal만 받는다.
     - 옛 화면(아직 게시 중)은 P3 전환 때까지 계속 쓴다.
 
@@ -111,7 +119,7 @@ P2 화면 레인이 쓰는 함수, 기록 모양, 사유 코드, 지켜야 할 �
 - `page({preset, gate, signal})` → Page.
   - 같은 입력이면 모든 화면이 같은 객체를 받는다.
   - 계산은 `QgvScores.pageResult(scoreView, …)`가 한다. scoreView는 네트워크를 쓰지 않는다(`SCORE_PATH_NO_NETWORK`).
-  - 가격은 클릭으로 읽은 Universe 탭과 가격 탭, 이미 있는 기기 DB에서만 온다.
+  - 가격은 RAM에 있는 것만 쓴다: 클릭으로 읽은 Universe 탭, 가격 탭, RAM의 Worker 종가. 기기 DB에 저장된 시세는 읽지 않는다(DC-18, 3절 STOPPED).
 - 접근 함수
   - `rankLabel(x, en)`: 순위 옆에 붙이는 글. x는 Page, 미리보기, 행, V 출처 id다. 기기 Page와 미리보기는 늘 '임시 V 기준 순위 · 공식 순위 아님'이다(소유자 결정 2026-10-24, Main 결정. 옛 화면도 '공식 순위 아님'이라고 쓴다). 모르는 출처도 공식이라고 부르지 않는다. Page와 미리보기에는 같은 글이 `rank_label`로 들어 있다. 중앙 V 문구는 초안이다.
   - `rows(page, {scope:'ALL'|'UNIVERSE'|'TARGET'})`: QgvScores 순서 그대로 준다. 정렬, 모집단, 분류 필터, 레이더는 P2-2가 옛 함수(LeaderboardScreen, StatRadar `compute(spec,{result})`)로 붙인다.
@@ -192,7 +200,7 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
     - 거절: `BACKUP_INVALID`(잘못된 /5 섹션 포함), `BACKUP_TOO_LARGE`. 옛 모듈 코드 `BACKUP_USER_OBJECTS_UNAVAILABLE`/`_UNREADABLE`/`_WRITE_FAILED`, `BACKUP_RESTORE_FAILED`는 그대로 지나간다.
   - 출처: `sheetSource`, `universeSource`, `workerOrigin`의 `has()`, `set(event, url)`(`workerOrigin`만 `approved()`도 있다). ID와 주소는 돌려주지 않는다.
     - Universe 출처는 통합 시트와 따로 둔다(옛 PrivateSubsetView와 같음, 소유자 결정 2026-10-24 중 Main 결정). `universeSource.useSheet(event)` [WRITE]: '통합 시트와 같게'. 통합 시트 ID를 이 키에 복사한다(돌려주지 않음). 통합 시트가 없으면 `SHEET_SOURCE_NOT_SET`.
-  - 저장된 시세(DC-18): `marketQuotes.count()` → 남은 시세 기록 수(0~2, 숫자만. 키로만 세고 값은 읽지 않는다). DB가 없으면 0이고 열지도 만들지도 않는다. `indexedDB.databases()`가 없거나 IndexedDB가 없으면 null(알 수 없음). `marketQuotes.clear(event)` [WRITE]: 설정의 '저장된 시세 삭제' 버튼. 두 기록만 지우고 지운 수를 돌려준다. 보유와 구글 설정은 남는다.
+  - 저장된 시세(DC-18): `marketQuotes.count()` → 남은 시세 기록 수(0~2, 숫자만. 키로만 세고 값은 읽지 않는다). DB가 없으면 0이고 열지도 만들지도 않는다. `indexedDB.databases()`가 없거나 IndexedDB가 없으면 null(알 수 없음). `marketQuotes.clear(event)` [WRITE]: 설정의 '저장된 시세 삭제' 버튼. 두 기록만 지우고 지운 수를 돌려준다. 보유와 구글 설정은 남는다. `databases()`가 없는 브라우저에서도 클릭 안에서 DB를 이름으로 열어 지운다. DB가 없으면 만들지 않는다(만들기를 중단한다). IndexedDB가 아예 없으면 null이다.
   - `subscribe(fn(key), {signal})`.
 
 ## 8. 엔진: `IS2.engines` (옛 엔진 그대로, 기기 결과로 계산)
@@ -218,7 +226,10 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
 - **playbook**
   - `facts(symbol)`: `v_now`·`v_prev20`과 함께 `v_source`를 준다.
   - `judge({symbol, situation, date})`: 읽기 전용이다. `v_source`는 facts의 출처이고, 화면이 넘긴 상황에 출처가 없으면 null이다. 엔진에는 옛 상황 키만 넘긴다.
-    - `recorded`(불리언)와 `recorded_reason`: 새 판정은 `false`/`JUDGEMENT_NOT_RECORDED`다. 화면은 `qgv.reasonText('JUDGEMENT_NOT_RECORDED')`('기록 안 됨')을 보인다. 그 판정을 `record(event, j)`로 쓰면 같은 객체가 `true`/null로 읽힌다(소유자 결정 2026-10-24: 누를 때만 기록).
+    - `recorded`(불리언)와 `recorded_reason`(소유자 결정 2026-10-24: 누를 때만 기록). 읽을 때마다 이 기기의 플레이북 저장소에서 정한다. 그래서 다시 판정해도, 새로고침 뒤에도, 다른 화면에서도 같게 나온다.
+      - `true`/null: `record()`가 쓸 발생 기록(후보 신호, 구조 뉴스 E4, 13F 전량 매도 E4)이 그날·그 이름으로 모두 저장돼 있다(같은 코드, 사유 포함).
+      - `false`/`JUDGEMENT_NOT_RECORDED`: 아직 아니다. 화면은 `qgv.reasonText('JUDGEMENT_NOT_RECORDED')`('기록 안 됨')을 보인다.
+      - `false`/`NOTHING_TO_RECORD`: 쓸 발생 기록이 없다('기록할 발생 신호 없음'). '기록됨'으로 보이지 않는다.
   - `record(event, judged)` [WRITE]: 발생 기록을 쓴다. `judge()` 결과만 받는다(`JUDGEMENT_UNKNOWN`). 그날 같은 이름·코드의 기록에 합치므로 다시 눌러도 바뀌지 않는다.
   - `due(date)`, `limits(rows, cash)`.
 - **virtual**
@@ -238,7 +249,7 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
 
 | 어디 | 던지는 코드 | 값 안의 사유·상태 |
 | --- | --- | --- |
-| 관문(모든 action) | `CLICK_REQUIRED`, `ACTION_ALREADY_STARTED`(한 이벤트의 두 번째 최상위 action), `ACTION_REQUIRED`(클릭 밖 쓰기, IndexedDB 쓰기 트랜잭션 포함), `DESTINATION_UNKNOWN`, `DEVICE_STORE_NOT_OPENED`, `ACTION_KIND_UNKNOWN`, `MARKET_STORE_STOPPED`(저장된 시세 기록 쓰기·범위 질의, 클릭 안에서도) | — |
+| 관문(모든 action) | `CLICK_REQUIRED`(버튼류의 keydown, 자동 반복 keydown 포함), `ACTION_ALREADY_STARTED`(한 이벤트의 두 번째 최상위 action), `ACTION_KIND_NOT_COVERED`(부모가 갈 수 없는 kind의 중첩 실행), `ACTION_REQUIRED`(클릭 밖 쓰기, IndexedDB 쓰기 트랜잭션 포함), `DESTINATION_UNKNOWN`, `DEVICE_STORE_NOT_OPENED`, `ACTION_KIND_UNKNOWN`, `MARKET_STORE_STOPPED`(저장된 시세 기록 쓰기·범위 질의·색인, 그 저장소 삭제·이름 바꾸기, 클릭 안에서도) | — |
 | `data` | `READER_MISSING`, `PUBLIC_FILE_UNKNOWN`, `PUBLIC_FILE_METHOD`, `PEEK_UNSUPPORTED`, `SEC_QGV2_UNAVAILABLE`/`SEC_QGV2_INVALID`(peek) | state `OK`/`NOT_PUBLISHED`/`FAILED`/`NOT_READ`, why `INVALID`/`NETWORK`/`HTTP`/`SCHEMA_NEWER`/`READER_MISSING`; refresh `APPLIED`/`UNCHANGED`/`FAILED`/`LOADING` |
 | `qgv.page` | `READER_MISSING`, `ABORTED`(signal), `NO_OFFICIAL_YET`(중앙 경로, 아직 없음) | Page state `READY`/`NO_DATA`/`DATA_FORMAT_NEWER`/`READ_FAILED`, reason `SEC_QGV2_NOT_PUBLISHED`/`SEC_QGV2_NOT_AVAILABLE`/`SEC_QGV2_SCHEMA_NEWER`/`SEC_QGV2_INVALID`/`SEC_QGV2_UNAVAILABLE`/`V2_SCORES_NOT_AVAILABLE`; identities `CATALOG_NOT_AVAILABLE` |
 | `qgv` 그 밖 | `PAGE_UNKNOWN`, `PAGE_NOT_READY`(결과 없는 Page), `SCOPE_UNKNOWN`, `PRESET_UNKNOWN`, `GATE_INVALID` | preview state `READY`/`INVALID`, reason `WEIGHTS_INVALID` |
@@ -250,7 +261,7 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
 | `prices.quote` | — | NA `NO_DEVICE_PRICE`, `IDENTITY_CONFLICT_WITHDRAWN`, `PRICE_IDENTITY_CONFLICT` |
 | `store` | `PREFS_INVALID`, `PREFS_STORAGE_INVALID`, `WEIGHTS_INVALID`, `WEIGHTS_STORAGE_INVALID`, `SHEET_SOURCE_INVALID`, `SHEET_SOURCE_NOT_SET`(useSheet), `UNIVERSE_SOURCE_INVALID`, `REQUEST_INVALID`(Worker 주소), `BACKUP_INVALID`, `BACKUP_TOO_LARGE`(지나가는 옛 코드: `BACKUP_USER_OBJECTS_UNAVAILABLE`/`_UNREADABLE`/`_WRITE_FAILED`, `BACKUP_RESTORE_FAILED`) | marketQuotes.count null(알 수 없음); holdings `NOT_AVAILABLE` + `CATALOG_NOT_AVAILABLE`/`DEVICE_STORE_NOT_OPENED`/`DEVICE_STORAGE_UNAVAILABLE`; prefs·weights·playbook state `OK`/`EMPTY`/`INVALID` |
 | `engines.target` | `PAGE_UNKNOWN`, `QGV2_NOT_READY`, `CATALOG_NOT_AVAILABLE`, `TARGET_V1_STATE_INVALID`, `TARGET_V1_ANSWERS_RESET`(두 번째 누름 필요), `V_SOURCE_MISMATCH` | finalize outcome `FINALIZED`/`BLOCKED`/`DRAFT_REGENERATED`/`RELOAD_REQUIRED`(+ blockers 코드); selectRuleB `SELECTED`/`NOT_READY`/`NOT_DUE`/`QGV2_NOT_READY`; syncScoringPrices `NOTHING_PENDING` 또는 동기화 state |
-| `engines.playbook` | `PLAYBOOK_INVALID`, `JUDGEMENT_UNKNOWN` | 판정 코드(PlaybookEngine); recorded_reason `JUDGEMENT_NOT_RECORDED`('기록 안 됨') |
+| `engines.playbook` | `PLAYBOOK_INVALID`, `JUDGEMENT_UNKNOWN` | 판정 코드(PlaybookEngine); recorded_reason `JUDGEMENT_NOT_RECORDED`('기록 안 됨'), `NOTHING_TO_RECORD`('기록할 발생 신호 없음') |
 | `engines.virtual` | `NOT_IN_P1`(run), `PAGE_UNKNOWN`(rehearse) | stored state `NOT_STARTED`/`NOT_AVAILABLE`(+ `OFF`/`REQUEST_INVALID`/`ORIGIN_UNAPPROVED`/`AUTH_REQUIRED`/`PUBLIC_CATALOG_UNAVAILABLE`), 종목별 `PRICE_NOT_FETCHED`; compare `COMPARE_NEEDS_TWO_SETS`; forward `LOADED`/`NOT_PUBLISHED`/`NOT_AVAILABLE` |
 | 중앙 V(미리 등록, 초안 문구) | — | `NO_OFFICIAL_YET`, `SUPPLY_FAILED`, `VERIFY_FAILED`, `PRICE_DEPENDENT_NOT_COMPUTABLE` |
 
@@ -277,11 +288,11 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
 ### 결정됨 2026-10-24 (오후, 소유자. Main 결정은 그렇게 적었다)
 
 - V 기록: 기록하지 않는다(P1 그대로). 중앙 V 이력은 서버 비공개 저장(D9)이다. P1 층은 VHistory 기록 함수를 부르지 않는다(소스 검사).
-- 플레이북 판정 기록: 누를 때만 한다(`record(event)`). 기록하지 않은 판정은 `recorded:false`, `JUDGEMENT_NOT_RECORDED`('기록 안 됨')다.
+- 플레이북 판정 기록: 누를 때만 한다(`record(event)`). 기록하지 않은 판정은 `recorded:false`, `JUDGEMENT_NOT_RECORDED`('기록 안 됨')다. 기록 여부는 저장소에서 읽으므로 다시 판정하거나 새로고침해도 같다(8절).
 - R-B 선정: 누를 때만 한다(`selectRuleB(event)`, 그대로).
 - IndexedDB 'market' 시세 저장: 중단한다(계획 §2.1, DC-18). 새 앱은 쓰지도 읽지도 않는다(3절 STOPPED). 기존 저장분은 자동으로 지우지 않고 설정의 '저장된 시세 삭제'(`store.marketQuotes.clear(event)`)로만 지운다. 옛 화면은 P3 전환 때까지 계속 쓴다.
 - 로그인 준비 → 로그인 2단계: 지금은 유지한다. P2-1에서 폰 실측(iOS Safari·안드로이드 Chrome) 뒤 한 번으로 줄일 수 있으면 줄인다.
-- 한 이벤트로 시작하는 최상위 action: 1개(`ACTION_ALREADY_STARTED`). 중첩 실행은 부모 signal을 내민다(2절).
+- 한 이벤트로 시작하는 최상위 action: 1개(`ACTION_ALREADY_STARTED`). 중첩 실행은 부모 signal을 내밀고, 부모가 갈 수 있는 곳까지만 간다(`ACTION_KIND_NOT_COVERED`). 한 번의 키 누름도 action 하나다(버튼류는 click만, 자동 반복 keydown 거절, 2절).
 - 백업 /5: 옛 검증기(ChartWorkbench·MacroCycleRing)를 재사용한다. 두 파일을 재사용 목록에 넣었다(불러올 때 부작용 없음 확인). 다시 쓴 코드 없음.
 - 남은 항목(Main 결정, 기존 동작과 경계에 맞춤)
   - 임시 V 순위 문구: '임시 V 기준 순위 · 공식 순위 아님'. `qgv.rankLabel()`과 `rank_label`로 준다.
@@ -293,6 +304,8 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
 
 - 일일 보고서·보고서 모델, 가상매매 기록 실행, 세트 B/C/D는 P2-6에서 정한다(daily-report.js는 불러오지 않음).
 - 중앙 V 모드의 엔진 계약(10절 7)과 출처 없는 기록(10절 8).
+- P2-6 보유 쓰기(Main): 보유만 쓰는 store 함수(`WRITE`, 옛 `DeviceActual.restoreHoldings`로 `actual`만 커밋)를 붙인다. 옛 `DeviceActual.mount` 화면(저장·가져오기·삭제)은 시세 기록을 함께 쓰고 진짜 window에서 돌아 다시 쓰지 않는다(3절 STOPPED).
+- 손으로 넣는 시세·환율(소유자 또는 Main): 옛 기기 보유 화면은 그 값을 시세 기록(`market`)에 저장했다. DC-18 뒤에는 둘 곳이 없다. 선택지: RAM에만 두기(새로고침하면 사라짐), 사용자 시트에 쓰기, 기능 빼기. P2-6 전에 정한다(USER_DECISIONS_PENDING `MANUAL-QUOTE`).
 
 ## 12. 시험
 
@@ -308,8 +321,8 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
   - A에는 경로마다 새로 열기, 경로 바꾸기, `route.signal` 해제, 칩 구독 수 확인이 들어 있다.
   - B에는 위조 이벤트, `requestSubmit()`·`submitter.click()` submit이 들어 있다.
   - C: 실제 클릭이면 정해진 요청만 나가고 V가 계산되며, 표지 가격이 새지 않는다.
-  - C2: 저장해 둔 진짜 클릭 이벤트를 나중에(타이머, 다른 kind) 다시 쓰면 거절되고 요청이 없다. 부모 signal을 내민 중첩 실행만 통과하고, signal 없는 다음 단계는 `CLICK_REQUIRED`, 한 클릭의 두 번째 최상위 action은 `ACTION_ALREADY_STARTED`다.
-  - C3: 옛 화면이 저장한 것처럼 넣은 유효한 `market` 기록을 옛 경로는 읽지만 새 층(quote, 점수 경로)은 읽지 않는다. view를 거친 쓰기는 클릭 안에서도 거절된다(실제 IndexedDB 객체). count는 숫자, 진짜 클릭의 clear는 시세 기록만 지운다.
+  - C2: 저장해 둔 진짜 클릭 이벤트를 나중에(타이머, 다른 kind) 다시 쓰면 거절되고 요청이 없다. 부모 signal을 내민 중첩 실행만 통과하고, signal 없는 다음 단계는 `CLICK_REQUIRED`, 한 클릭의 두 번째 최상위 action은 `ACTION_ALREADY_STARTED`다. 버튼에서 Enter·Space를 누르면 click만 action을 시작하고(keydown은 거절), 키를 누르고 있어도 자동 반복 keydown은 시작하지 못한다. 활성화 동작이 없는 요소는 keydown으로 한 번 시작한다.
+  - C3: 옛 화면이 저장한 것처럼 넣은 유효한 `market` 기록을 옛 경로는 읽지만 새 층(quote, 점수 경로)은 읽지 않는다. view를 거친 쓰기는 클릭 안에서도 거절된다(실제 IndexedDB 객체). 요청이 내준 객체(`source`, `transaction`, 처리기의 `event.target`)를 거쳐도 쓰기는 거절되고 읽기는 없는 기록이다. 쓰기 action 밖의 버전 변경은 중단된다. count는 숫자, 진짜 클릭의 clear는 시세 기록만 지운다.
   - C4: 브라우저에서 /5 백업이 옛 검증기로 복원되고 다시 백업에 나온다. 잘못된 섹션은 `BACKUP_INVALID`이고 아무것도 쓰지 않는다.
   - D: 새로고침하면 RAM이 비워진다. 클릭으로 저장한 것(Universe 출처, 구글 켬 기록)만 남고, 켬 기록은 클릭 없이 읽힌다.
 - `web_app_shell_browser_test.js`(P0)는 고치지 않고 통과한다.
