@@ -25,8 +25,10 @@ Price status per code (fixed codes, also published as the row's `price_status`):
   PRICE_SYMBOL_UNMAPPED        no IEX symbol for the row (a TARGET outside the US track, an invalid symbol)
   ADR_RATIO_UNCONFIRMED        foreign private issuer row (ifrs-full filer, or a known 20-F / 40-F filer whatever its
                                taxonomy: owner decision D7 2026-10-24): listed security / ADS ratio not confirmed (D-CV10)
-  SPLIT_AFTER_SHARE_COUNT      evidence of a split after the diluted-share period end, up to the basis day (D-CV11; D6 (a):
-                               the F_k evidence of sec-qgv2.json, qgv_official.split_after_share_count, + SPLITS below)
+  SPLIT_AFTER_SHARE_COUNT      conservative split rule (D-CV11; D6 (a), qgv_official.split_after_share_count): F_k evidence of
+                               a split between the count's period end and its filing, or a verified SPLITS window below. A
+                               split AFTER the count's filing is NOT detected (known limitation: V and rank off by the split
+                               ratio until the next 10-Q / 10-K; owner acceptance pending)
   PRICE_IDENTITY_CONFLICT      TARGET row whose symbol is a withdrawn Universe code's (existing rule)
   IDENTITY_CONFLICT_WITHDRAWN  withdrawn row (no price is given)
 """
@@ -88,14 +90,16 @@ MONTHEND_BASIS_CUTS: dict[str, tuple[str, str, str]] = {
 }
 
 # D-CV11: verified split windows after the diluted-share count (code -> ((low, high], ...): split date inside (low, high]).
-# Owner decision D6 (a) 2026-10-24: no new split source; the current-price check reads the F_k evidence of sec-qgv2.json
-# (calc_version 2026-10-23.1, qgv_official.split_after_share_count). That evidence covers a split between the share count's
-# period end and the annual filing that reports the count. It cannot cover a split after the count's own filing: the F_k / SPLIT
+# Owner decision D6 (a) 2026-10-24: no new split source; qgv_official.split_after_share_count reads the F_k evidence of
+# sec-qgv2.json (calc_version 2026-10-23.1). That evidence only covers a split between the share count's period end and the
+# annual filing that reports the count, a count the filing already restates (so the rule is conservative only). It cannot
+# cover a split after the count's own filing, the one window where count and price disagree: the F_k / SPLIT
 # chain is evaluated at collection over companyfacts filed up to then (periodic 10-K / 10-Q XBRL only; a split announced in an
 # 8-K or effective after the latest 10-Q leaves no fact until the next periodic filing restates the count), sec-qgv2.json does
 # not carry the count's filing date, the run holds companyfacts of one shard only, and IEX HIST carries no corporate actions.
 # This table therefore stays EMPTY: it is the hook for a verified source the owner may approve later (D6 (b) U8 split_check
-# rows / (c)), never filled by hand here.
+# rows / (c)), never filled by hand here. Until then a split after the count's filing leaves the official V and rank off by the
+# split ratio until the next periodic filing (KNOWN LIMITATION, tests/test_qgv_official.py; owner acceptance pending).
 SPLITS: dict[str, tuple[tuple[str, str], ...]] = {}
 
 
