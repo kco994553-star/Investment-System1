@@ -11,11 +11,21 @@
 // failing the financial-safety re-check blocks; a changed input basis regenerates the draft (same-symbol answers kept, the new
 // name waits for its card). Every request is intercepted: public screens are the empty fixtures, the Worker is stubbed, anything else
 // is aborted and counted. No horizontal page scroll; no buy/sell verbs on the builder.
-const assert=require('node:assert/strict');
+// PR-D (owner decision D8 (b), GSQ-024): qgv-official.json is answered 404 (tools/empty_public_screens.js ABSENT) in every phase
+// above, so the device V ("임시 V") assertions hold on deploy builds too, and nothing reads it at mount. The official phase serves
+// the synthetic publication of tests/fixtures/qgv_official_vectors_v1.json with a sec-qgv2.json of the same calc_version: the
+// central-V button (no device prices) builds a 공식 V draft with the publication's IEX attribution, terms link and basis day;
+// finalize records OFFICIAL_CENTRAL with the publication id; a publication gone at finalize regenerates on device V.
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const {chromium}=require('playwright');
 const {routeEmptyPublicScreens}=require('./empty_public_screens');
 const BASE=process.env.PAGES_COCKPIT_URL||'http://127.0.0.1:8990/';
 const WORKER='https://private-investment-history.kco994553.workers.dev';
+const OFFICIAL=JSON.parse(fs.readFileSync(path.join(__dirname,'../tests/fixtures/qgv_official_vectors_v1.json'),'utf8')).base_text,PUB=JSON.parse(OFFICIAL);
+// The page's sec-qgv2.json value (Qgv2Inputs shape) for the publication's codes: cik / sic / metrics (financial safety passes).
+const OFFICIAL_INPUTS=(()=>{const SICS=['7372','3674','3559','3612','3812','3823','2834','5812','4911','1311','2080','6798'],M={roic:0.25,moat_return_mean_5y:0.2,fcf_to_net_income:1.1,net_debt_to_ebitda:1,interest_coverage:12,revenue_cagr_3y:0.12},records={};
+ Object.entries(PUB.rows).forEach(([code,r],i)=>{records[code]={cik:r.cik||('PUB'+i),sic:SICS[i%SICS.length],industry_group:r.industry_group,metrics:M,qg_axes:{Q:{score:r.axes.Q.score},G:{score:r.axes.G.score}}};});
+ return{as_of:'2026-10-13T21:00:00Z',records,codes:Object.keys(PUB.rows).filter(k=>!k.startsWith('TARGET:'))};})();
 
 // Synthetic published sec-qgv2.json (raw shape) for the same 45 synthetic names + fillers to 504 (page init script).
 const PAYLOAD=`window.__tv1Payload=(calc,{asOf='2026-10-13T21:00:00Z',acquired='2026-10-13T20:00:00Z',patch={}}={})=>{
@@ -51,6 +61,13 @@ async function seed({date,n=45,vMiss={}}){
   await page.goto(BASE+'#playbook');await page.locator('[data-tv1-builder]').waitFor();
   phase=width+' empty';assert.equal(await page.locator('[data-tv1-build]').isDisabled(),true);assert.match(await page.locator('[data-tv1-readiness]').textContent(),/^NA · QGV v2 총점에는 V가 필요/);
   assert.match(await page.locator('[data-tv1-coverage]').textContent(),/초안 · 커버리지 편향 가능 \(Q 0\/504, G 0\/504\)/);assert.equal(await page.locator('[data-tv1-card]').count(),0);
+  // PR-D: before a click nothing claims 임시 V or 공식 V; without device prices only the central-V button can build. Here the
+  // publication is absent (404) → no draft, one line with the reason.
+  assert.match(await page.locator('[data-tv1-v-plan]').textContent(),/^V 출처: 초안 만들 때 확인 · 유효한 중앙 게시본이 있으면 공식 V, 없으면 임시 V · 이 기기 가격이 없으면 공식 V로만/);
+  assert.ok(!/임시 V|공식 V/.test((await page.locator('[data-tv1-builder]').textContent()).replace(/V 출처: 초안 만들 때 확인[^\n]*?만들 수 있습니다/,'')),'no source claimed before a click');
+  await page.locator('[data-tv1-build-official]').click();await page.waitForFunction(()=>document.querySelector('[data-tv1-official-reason]'));
+  assert.equal(await page.locator('[data-tv1-official-reason]').textContent(),'공식 V 사용 안 함 · OFFICIAL_NOT_PUBLISHED · 중앙 V 게시본 없음(404)');
+  assert.equal(await page.locator('[data-tv1-status]').textContent(),'공식 V 초안 불가 · 임시 V 초안에는 이 기기의 가격이 필요합니다');assert.equal(await page.locator('[data-tv1-candidates]').count(),0);
   phase=width+' draft';const pool=await page.evaluate(seed,{date:'2026-10-14'});assert.ok(pool>=30);
   // The shipped browser builder must recognize the actual production version, with the default gate still false.
   const versionCheck=await page.evaluate(()=>{
@@ -204,6 +221,53 @@ async function seed({date,n=45,vMiss={}}){
   phase=width+' shortfall';const few=await page.evaluate(seed,{date:'2026-10-14',n:12});assert.equal(few,12);
   await page.evaluate(async()=>{const catalog=await(await fetch('actual-catalog.json')).json();await TargetV1Screen.mount(document.querySelector('[data-target-v1-builder]'),{playbook:PlaybookScreen,catalog,storage:localStorage,date:'2026-10-14'});});
   assert.match(await page.locator('[data-tv1-shortfall]').textContent(),/^통과 종목 부족 3종목 · 조건 완화·제외 종목 복귀 없음 · 확정 불가 · 사유: /);assert.equal(await page.locator('[data-tv1-card]').count(),12);assert.equal(await page.locator('[data-tv1-finalize]').isDisabled(),true);
+  phase=width+' official';let officialReads=0,officialStatus=200;
+  await page.route('**/qgv-official.json*',route=>{officialReads++;return officialStatus===200?route.fulfill({status:200,contentType:'application/json',body:OFFICIAL}):route.fulfill({status:officialStatus,contentType:'text/plain',body:'not found'});});
+  const officialMount=async(extra={})=>page.evaluate(async({inputs,extra})=>{const catalog=await(await fetch('actual-catalog.json')).json(),{codes,...sec}=inputs;
+   const cfg={...TargetV1ConfigDefaults,number_check:{...TargetV1ConfigDefaults.number_check,result:{calc_version:'qgv2-calc/2026-10-23.1',passed:true,date:'2026-10-14',companies:10}}};
+   const d=extra.device?window.__seedData:null;
+   await TargetV1Screen.mount(document.querySelector('[data-target-v1-builder]'),{playbook:PlaybookScreen,config:cfg,catalog,storage:localStorage,date:'2026-10-14',nyToday:'2026-10-14',
+    computed:d?d.computed:null,universeCodes:d?d.codes:codes,screens:{'sec-qgv2.json':d?{...d.inputs,as_of:sec.as_of}:sec},publishedProvider:async()=>window.__tv1Payload('qgv2-calc/2026-10-23.1')});},{inputs:OFFICIAL_INPUTS,extra});
+  await page.evaluate(()=>TargetV1Screen.writeState(PlaybookScreen,localStorage,TargetV1Builder.emptyState()));await officialMount();
+  assert.equal(officialReads,0,'never read at mount');assert.equal(await page.locator('[data-tv1-build]').isDisabled(),true);assert.equal(await page.locator('[data-tv1-build-official]').isDisabled(),false);
+  await page.locator('[data-tv1-build-official]').click();await page.locator('[data-tv1-candidates]').waitFor();assert.equal(officialReads,1);
+  const pubId=PUB.publication_id,shortId=pubId.slice(0,19),attr=await page.evaluate(()=>({...QgvOfficial.ATTRIBUTION}));
+  assert.equal(await page.locator('[data-tv1-candidates] thead th').nth(5).textContent(),'V(공식 V)');
+  assert.match(await page.locator('[data-tv1-candidates] > p.small').first().textContent(),new RegExp('V 출처: 공식 V \\(중앙 게시 · IEX 마지막 체결가 기준\\(공식 종가 아님\\)\\) · 가격 기준일 2026-10-13 · 게시본 '+shortId+' · 제외: '));
+  assert.match(await page.locator('[data-tv1-status]').textContent(),/^초안 만듦 · 통과 9 · 후보 9 · 입력 기준 qgv2-calc\/2026-10-23\.1 · 공식 V\(가격 기준일 2026-10-13\)$/);
+  assert.equal(await page.locator('[data-tv1-official-reason]').count(),0);
+  for(const where of ['[data-tv1-candidates]','[data-tv1-confirm]']){const a=page.locator(where+' [data-tv1-attribution]');
+   assert.equal(await a.locator('[data-tv1-attribution-label]').textContent(),attr.label_ko);assert.equal(await a.locator('[data-tv1-attribution-text]').textContent(),attr.text);assert.match(await a.textContent(),/ · 가격 기준일 2026-10-13 · /);
+   assert.equal(await a.locator('[data-tv1-terms]').getAttribute('href'),attr.terms_url);assert.equal(await a.locator('[data-tv1-terms]').getAttribute('rel'),'noopener noreferrer');}
+  assert.equal(attr.text,PUB.attribution.text);assert.equal(attr.terms_url,PUB.attribution.terms_url);assert.equal(attr.label_ko,PUB.attribution.label_ko);
+  assert.match(await page.locator('[data-tv1-v-source]').textContent(),new RegExp('^V 출처: 공식 V · 중앙 게시 · IEX 마지막 체결가 기준\\(공식 종가 아님\\) · 가격 기준일 2026-10-13 · 게시본 '+shortId+' · 확정 기록에 남습니다$'));
+  assert.match(await page.locator('[data-tv1-card=AMD]').textContent(),/ · 공식 V 100\.0\) /);assert.match(await page.locator('[data-tv1-shortfall]').textContent(),/^통과 종목 부족 6종목/);
+  assert.equal(await page.locator('[data-tv1-finalize]').isDisabled(),true);assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'attribution horizontal overflow');
+  if(process.env.TV1_SHOT_DIR)await page.locator('[data-target-v1-builder]').screenshot({path:process.env.TV1_SHOT_DIR+'/target-v1-official-'+width+'.png'});
+  let st=await page.evaluate(()=>TargetV1Screen.readState(PlaybookScreen,localStorage).draft);assert.equal(st.v_source,'OFFICIAL_CENTRAL');
+  assert.deepEqual(st.official,{publication_id:pubId,price_basis_date:'2026-10-13',calc_version:'qgv2-calc/2026-10-23.1',inputs_as_of:PUB.times.inputs_as_of});
+  assert.ok(!(await page.evaluate(()=>localStorage.getItem(PlaybookScreen.KEY))).match(/"(price|close|quote|market_cap|ev|attribution|rows)"/),'only ids and days of the publication are stored');
+  // A reload keeps the source labels and the attribution (the reader's constants, equal to the publication) with no read at mount.
+  await officialMount();assert.equal(officialReads,1);assert.equal(await page.locator('[data-tv1-candidates] [data-tv1-attribution-text]').textContent(),attr.text);
+  // Finalize on official V: a 15-name draft stamped with the publication record (the mini publication has 9 eligible names) and
+  // all cards answered; the click re-reads both files, the publication is still usable → version OFFICIAL_CENTRAL + publication.
+  const stamp=async()=>page.evaluate(async({official})=>{const B=TargetV1Builder,S=TargetV1Screen;let s=S.readState(PlaybookScreen,localStorage);
+   s={...s,draft:{...s.draft,basis:await B.inputBasis(window.__tv1Payload('qgv2-calc/2026-10-23.1')),v_source:'OFFICIAL_CENTRAL',official}};for(const r of B.currentSelection(s).rows)s=B.answer(s,{symbol:r.symbol,answer:'AGREE',date:'2026-10-14'});S.writeState(PlaybookScreen,localStorage,s);},{official:st.official});
+  await page.evaluate(seed,{date:'2026-10-14'});await stamp();await officialMount({device:true});
+  assert.match(await page.locator('[data-tv1-v-source]').textContent(),/^V 출처: 공식 V · /);await page.locator('[data-tv1-finalize]').click();
+  await page.waitForFunction(()=>/TARGET v1 저장 · calc_version qgv2-calc\/2026-10-23\.1/.test(document.querySelector('[data-tv1-status]').textContent));assert.equal(officialReads,2);
+  assert.match(await page.locator('[data-tv1-status]').textContent(),new RegExp(' · 원본 v0 유지 · 공식 V 게시본 '+shortId+' · 가격 기준일 2026-10-13$'));
+  const ver=await page.evaluate(()=>TargetV1Screen.readState(PlaybookScreen,localStorage).versions.at(-1));
+  assert.deepEqual([ver.version,ver.v_source,ver.publication_id,ver.price_basis_date,ver.official_inputs_as_of,ver.calc_version],['v1','OFFICIAL_CENTRAL',pubId,'2026-10-13',PUB.times.inputs_as_of,'qgv2-calc/2026-10-23.1']);
+  assert.match(await page.locator('[data-tv1-version]').textContent(),/^저장된 TARGET v1 · 2026-10-14 · V 출처 공식 V · 가격 기준일 2026-10-13$/);
+  // The publication gone at finalize (404) → V_SOURCE_CHANGED → the draft is regenerated on device V (same file, device scores ready).
+  await page.evaluate(seed,{date:'2026-10-14'});await stamp();officialStatus=404;await officialMount({device:true});await page.locator('[data-tv1-finalize]').click();
+  await page.waitForFunction(()=>/초안을 다시 만들었습니다/.test(document.querySelector('[data-tv1-status]').textContent));assert.equal(officialReads,3);
+  assert.equal(await page.locator('[data-tv1-status]').textContent(),'V 출처가 바뀌어(임시 V) 초안을 다시 만들었습니다 · 응답 유지 15 · 새로 확인할 종목 0 · 카드 확인 후 다시 확정하세요');
+  assert.equal(await page.locator('[data-tv1-official-reason]').textContent(),'공식 V 사용 안 함 · OFFICIAL_NOT_PUBLISHED · 중앙 V 게시본 없음(404)');
+  st=await page.evaluate(()=>TargetV1Screen.readState(PlaybookScreen,localStorage).draft);assert.deepEqual([st.v_source,st.official],[undefined,undefined]);
+  assert.equal(await page.locator('[data-tv1-candidates] thead th').nth(5).textContent(),'V(임시 V)');assert.equal(await page.locator('[data-tv1-attribution]').count(),0);
+  await page.unroute('**/qgv-official.json*');
   phase=width+' layout';const text=await page.locator('[data-target-v1-builder]').textContent();assert.ok(!/매수|매도|사세요|파세요|\bbuy\b|\bsell\b/i.test(text),'buy/sell wording');
   assert.equal(await page.locator('[data-tv1-raw]').count(),0,'TARGET raw inputs live in Settings only');
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'horizontal overflow');
@@ -217,7 +281,7 @@ async function seed({date,n=45,vMiss={}}){
   assert.equal(await page.evaluate(()=>localStorage.getItem(PlaybookScreen.KEY)),beforeRaw,'viewing raw data never changes TARGET records');
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'settings raw horizontal overflow');
   assert.deepEqual(errors,[]);assert.deepEqual(unexpected,[]);
-  console.log('PASS TARGET v1 builder empty NA, cards agree/disagree(replace)/unknown, records, number-check gate, finalize, rebalance week, compare, review rule, TV1 sheet prices, risk-only rounds, finalize re-check (calc_version, row freshness, safety), draft regeneration, V factor gate (2026-10-23) and shortfall '+width);
+  console.log('PASS TARGET v1 builder empty NA, cards agree/disagree(replace)/unknown, records, number-check gate, finalize, rebalance week, compare, review rule, TV1 sheet prices, risk-only rounds, finalize re-check (calc_version, row freshness, safety), draft regeneration, V factor gate (2026-10-23), shortfall and central V (PR-D) '+width);
   await context.close();}}
  catch(e){console.log('FAIL '+phase+' '+e.message);process.exitCode=1;}finally{await browser.close();}
 })();
