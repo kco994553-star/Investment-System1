@@ -170,8 +170,9 @@ def test_guard_refuses_that_manual_artifact_and_passes_the_newer_daily_one(tmp_p
             'missing': '0', 'lost_record': '0', 'new_record': '2', 'withdrawn': '0', 'withdrawal_mismatch': '0',
             'artifact_latest': '2026-10-13T22:30:00Z', 'live_latest': '2026-10-11T22:30:00Z'}
     assert f'PAGES_FRESHNESS file={fl.FILENAME} marker=as_of verdict=NEWER ' in out
-    assert out.endswith('PAGES_FRESHNESS_PASS checks=10 refused=0 no_live=2 live_invalid=0 rows_compared=3 rows_regressed=0 '
-                        'records_compared=0 records_regressed=0\n')   # 404 inputs, no session yet
+    # 404 inputs and qgv-official.json (GSQ-024 publication check, no publication yet), no session yet
+    assert out.endswith('PAGES_FRESHNESS_PASS checks=11 refused=0 no_live=3 live_invalid=0 rows_compared=3 rows_regressed=0 '
+                        'records_compared=0 records_regressed=0\n')
     site.deploy(newer)
     live_before = dict(site.files)
     code, out = guard(artifact, site, capsys)
@@ -183,7 +184,7 @@ def test_guard_refuses_that_manual_artifact_and_passes_the_newer_daily_one(tmp_p
                     'artifact=NONE live=2026-10-13T22:30:00Z\n') in out
     assert (f'PAGES_FRESHNESS file={fl.FILENAME} marker=as_of verdict=OLDER '
             'artifact=2026-10-11T22:30:00Z live=2026-10-13T22:30:00Z\n') in out
-    assert out.endswith('PAGES_FRESHNESS_REFUSED checks=10 refused=4 no_live=2 live_invalid=0 rows_compared=9 '
+    assert out.endswith('PAGES_FRESHNESS_REFUSED checks=11 refused=4 no_live=3 live_invalid=0 rows_compared=9 '
                         'rows_regressed=6 records_compared=0 records_regressed=0\n')
     # The same manual build made after the daily deploy carries the live data and is deployable (UI-only change).
     code, out = guard(manual_build(tmp_path / 'manual-2', site, MANUAL_LATE), site, capsys)
@@ -465,7 +466,7 @@ def test_regressed_codes_are_listed_up_to_a_fixed_number(tmp_path, capsys):
 def test_first_publication_and_live_rows_without_collection_records_pass(tmp_path, capsys):
     mine = {us.FILENAME: shares_payload({ROW_A: T17}), INPUTS.FILENAME: inputs_payload(tmp_path, {})}
     code, out = guard(write(tmp_path / 'first', mine), served({}), capsys)       # every live file 404
-    assert code == 0 and out.endswith('PAGES_FRESHNESS_PASS checks=10 refused=0 no_live=10 live_invalid=0 rows_compared=0 '
+    assert code == 0 and out.endswith('PAGES_FRESHNESS_PASS checks=11 refused=0 no_live=11 live_invalid=0 rows_compared=0 '
                                       'rows_regressed=0 records_compared=0 records_regressed=0\n')
     assert section_line(out, us.FILENAME, 'records')['new_record'] == '1'
     # A live file whose rows were never collected has nothing to lose, even against an artifact without that file.
@@ -583,7 +584,7 @@ def test_live_copy_served_but_invalid_refuses_the_deploy(tmp_path, capsys, body)
     code, out = guard(folder, served({us.FILENAME: body}), capsys)
     assert code == 1 and f'PAGES_FRESHNESS_LIVE_INVALID file={us.FILENAME} deploy=REFUSED\n' in out
     assert f'PAGES_FRESHNESS file={us.FILENAME} ' not in out                   # not compared
-    assert out.endswith('PAGES_FRESHNESS_REFUSED checks=9 refused=0 no_live=9 live_invalid=1 rows_compared=0 '
+    assert out.endswith('PAGES_FRESHNESS_REFUSED checks=10 refused=0 no_live=10 live_invalid=1 rows_compared=0 '
                         'rows_regressed=0 records_compared=0 records_regressed=0\n')
 
 
@@ -622,7 +623,9 @@ def test_live_reads_use_the_daily_reader_urls_with_a_per_run_query_and_print_no_
     shares_tool = load_tool('sec_universe_shares')
     ledger_tool = load_tool('forward_validation_ledger')
     inputs_tool = load_tool('preserve_public_sec_inputs')
-    sources = [shares_tool.SOURCE, shares_tool.QG_SOURCE, shares_tool.QGV2_SOURCE, inputs_tool.SOURCE, ledger_tool.SOURCE]
+    official_tool = load_tool('qgv_official_publish')
+    sources = [shares_tool.SOURCE, shares_tool.QG_SOURCE, shares_tool.QGV2_SOURCE, inputs_tool.SOURCE, ledger_tool.SOURCE,
+               official_tool.LIVE_URL]                                  # + qgv-official.json (GSQ-024); never its status file
     assert site.urls == [s + '?deploy-check=123-2' for s in sources]   # one read per file
     assert code == 0
 
