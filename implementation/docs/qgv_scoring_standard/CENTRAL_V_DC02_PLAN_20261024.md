@@ -14,7 +14,7 @@
 
 ## 1. 지금 있는 것 (사실, 2026-10-24 01:00 UTC 확인)
 
-> **갱신 2026-10-24 10:30 UTC (PR-A·B·C 작성 뒤, Main).** 아래 표와 "확인된 문제"는 01:00 UTC 기록 그대로 둔다. 바뀐 것:
+> **갱신 2026-10-24 09:55 UTC (PR-A·B·C 작성 뒤, Main).** 아래 표와 "확인된 문제"는 01:00 UTC 기록 그대로 둔다. 바뀐 것:
 > - 결정 D1~D10은 소유자가 2026-10-24에 정했다([사용자 결정](../USER_DECISIONS_PENDING.md) 맨 위 절). D5 (b)는 D2 (a)(읽기 전용 토큰)와 충돌해 `D5-UPDATE`로 남았다.
 > - U1·U3: PR-A(`claude/central-v-core`)에서 #393 위로 정리했다. 실패하던 시험 3개는 #393의 실제 F_k 판독기로 고쳤고, C 파서 한 벌·별칭 표 하나(`iex_hist.SYMBOL_ALIASES`)로 줄였다. 설계 §4를 코드 스키마로 고쳤다.
 > - U5: PR-B(`claude/central-v-guard`). U4: PR-C(`claude/central-v-workflow`). 첫 게시 하루 절차는 [첫 게시 점검표](CENTRAL_V_GO_LIVE_CHECKLIST_20261024.md).
