@@ -38,6 +38,7 @@
   - D10: collect 잡에 `actions/setup-node` 버전 고정 추가(권장안).
   - **첫 게시 목표는 11/04 전이다.** 넘기면 D1을 (iii)으로 바꾸자고 미리 보고한다.
 - **#391 F1: 첫 확정본 날짜 기준으로 바꾼 뒤 병합한다(승인).**
+- **병합 결과(같은 날):** #396 → d8fa097b(05:44 UTC), #397 → f3cee500(06:26 UTC), #391(F1 반영) → fa0d9fcd(06:58 UTC). 각각 최신 canonical 동기화본에서 필수 6체크 성공 확인 뒤 병합.
 - 이 결정들을 이 파일과 [DIRECTION_CHANGES](../../docs/SPEC/DIRECTION_CHANGES.md)(DC-18: IndexedDB 시세 저장 중단)에 기록한다.
 
 ## 결정됨 — 2026-10-24 KST (방향 정리 · Universe 정의)
