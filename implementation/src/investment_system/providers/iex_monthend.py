@@ -165,6 +165,21 @@ def _factor(item):
     return None, reason if reason in SHARE_BASIS_REASONS else FK_MISSING
 
 
+def priceable_months(code: str, history, *, cuts=MONTHEND_BASIS_CUTS) -> list[str]:
+    """The price-free part of month_closes: months (YYYY-MM) of the raw history items with a finite value, a valid
+    fiscal_year_end, not before the code's basis cut and with a positive F_k. Only these months can get a close; reads no price."""
+    out = []
+    cut = cuts.get(code)
+    for item in history if isinstance(history, list) else ():
+        fe = item.get('fiscal_year_end') if isinstance(item, dict) else None
+        value = item.get('value') if isinstance(item, dict) else None
+        if not (isinstance(fe, str) and _DAY.fullmatch(fe)) or (cut and fe < cut[0]) or _factor(item)[0] is None:
+            continue
+        if type(value) in (int, float) and type(value) is not bool and math.isfinite(value):
+            out.append(fe[:7])
+    return out
+
+
 def month_closes(code: str, history, months: dict, *, aliases=SYMBOL_ALIASES, cuts=MONTHEND_BASIS_CUTS):
     """({YYYY-MM: raw/F_k}, [(YYYY-MM, reason)] left out) for one Universe code's raw `ebit_per_share_history` items.
 

@@ -228,16 +228,109 @@ def test_price_dependent_reasons_are_grouped_and_rejected_raw():
         qo.require_qgv_official(bad)
 
 
-def test_supply_threshold_keeps_last_good():
+FIXTURE_GENERAL = ('NASDAQ:ABNB', 'NASDAQ:ADBE', 'NASDAQ:AKAM', 'NASDAQ:ALGN', 'NASDAQ:AMD', 'NASDAQ:LNT', 'NYSE:A', 'NYSE:ABBV',
+                   'NYSE:ABT', 'NYSE:ACN', 'NYSE:AES', 'NYSE:AFL', 'NYSE:ALB', 'NYSE:ALLE', 'NYSE:AOS', 'NYSE:APD', 'NYSE:ARE', 'NYSE:MMM')
+
+
+def without_price_free_v(payload, codes):
+    """GENERAL rows that keep a USD V-input block but cannot reach 50% of the V weight without a price: cash and FCF null (no
+    earnings/FCF yield, no industry factor, no expectation check; own history alone is 15%)."""
+    p = copy.deepcopy(payload)
+    for code in codes:
+        v = p['records'][code]['v_inputs_v2']
+        v['cash_and_equivalents'], v['fcf'] = None, None
+    sec_qgv2.require_qgv2(p)
+    return p
+
+
+def test_price_dependent_codes_sit_in_fixed_factor_slots_known_residual():
+    """KNOWN RESIDUAL (review 2026-10-24, owner decision pending; design section 4-4 note, AUDIT.md section 11). D-CV2 (b)
+    changes the label, not the information: each raw price-dependent code appears only in fixed factor slots, so the public
+    slot + PRICE_DEPENDENT_NOT_COMPUTABLE gives the raw code back one to one, and with it a price bound computable from public
+    inputs (EV <= 0: price <= (cash - debt) / shares; no reverse-DCF root: price outside the public DCF bracket). The V axis and
+    rank vs qg_reference_order show the same fact without any reason. Synthetic prices only."""
     payload = base_payload()
     ctx = qo.prepare(payload, NOW)
-    eligible = [k for k, r in ctx['inputs']['records'].items() if not k.startswith('TARGET:') and r['in_cross_section']
-                and r['published_profile'] == 'GENERAL' and r['v_inputs']]
+    code = next(c for c, r in sorted(payload['records'].items()) if r['state'] == 'LIVE' and r['profile'] == 'GENERAL'
+                and (r['v_inputs_v2'].get('cash_and_equivalents') or {}).get('value', 0) > ((r['v_inputs_v2'].get('total_debt') or {}).get('value') or 0) + 1)
+    v = ctx['companies'][code]['v_inputs']
+    bound = (v['cash'] - v['total_debt']) / v['diluted_shares']           # public inputs only
+    slots = {}
+    for scale in (1e-6, 0.5, 0.9, 1.1, 2.0, 1e3, 1e9):
+        official, internal = build(payload, synthetic_day(payload, price_of={code: scale * bound}))
+        for key, res in internal['results'].items():
+            for f in qgv_v2.WEIGHTS['V']:
+                raw = res['factors'][f]['reason']
+                if raw in qo.PRICE_DEPENDENT:
+                    slots.setdefault(raw, set()).add(f)
+                    assert official['rows'][key]['factors'][f]['reason'] == qo.PRICE_DEPENDENT_PUBLIC
+        row = official['rows'][code]
+        below = scale * bound <= bound
+        assert (row['factors']['v_earnings_yield']['reason'] == qo.PRICE_DEPENDENT_PUBLIC) == below
+    assert slots['EV_NON_POSITIVE'] == {'v_earnings_yield', 'v_fcf_yield', 'v_vs_industry'}
+    assert set(slots) - {'EV_NON_POSITIVE'} and all(s == {'v_expectation_check'} for k, s in slots.items() if k != 'EV_NON_POSITIVE')
+
+
+def test_supply_denominator_is_the_price_free_v_reachable_rows_d4():
+    """D-CV5 / D4: the 95% is over GENERAL cross-section rows that can reach a V score without a price (V_GENERAL_COVERAGE
+    2-2 (b)), not every row with a V-input block."""
+    payload = base_payload()
+    ctx = qo.prepare(payload, NOW)
+    status = qo.price_status(ctx, synthetic_day(payload))
+    assert qo.supply_eligible(ctx, status) == sorted(FIXTURE_GENERAL)          # every fixture GENERAL row qualifies
+    cut = without_price_free_v(payload, ('NYSE:ARE', 'NYSE:MMM'))
+    ctx2 = qo.prepare(cut, NOW)
+    assert all(isinstance(ctx2['companies'][k]['v_inputs'], dict) for k in ('NYSE:ARE', 'NYSE:MMM'))   # still has V inputs
+    eligible = qo.supply_eligible(ctx2, qo.price_status(ctx2, synthetic_day(cut)))
+    assert eligible == sorted(set(FIXTURE_GENERAL) - {'NYSE:ARE', 'NYSE:MMM'})
+    # missing prices of rows outside the denominator do not count; their V stays NA whatever the price
+    official, _ = build(cut, synthetic_day(cut, drop=['NYSE:ARE', 'NYSE:MMM']))
+    assert official['price_source']['supply'] == {'eligible': 16, 'supplied': 16, 'minimum_share': 0.95, 'met': True}
+    for price in (1e-6, 25.0, 1e6):
+        o, _ = build(cut, synthetic_day(cut, price_of={k: price for k in ('NYSE:ARE', 'NYSE:MMM')}))
+        assert all(o['rows'][k]['axes']['V']['score'] is None for k in ('NYSE:ARE', 'NYSE:MMM'))
+    # one V-reachable row without a price: 15/16 < ceil(0.95 x 16) = 16 -> SUPPLY_FAILED, the last good copy stays
     with pytest.raises(qo.OfficialError) as e:
-        build(payload, synthetic_day(payload, drop=eligible[:2]))
+        build(cut, synthetic_day(cut, drop=['NYSE:ABT']))
+    assert (e.value.state, e.value.code) == ('SUPPLY_FAILED', 'SUPPLY_BELOW_THRESHOLD')
+
+
+def test_supply_threshold_boundary_and_keeps_last_good():
+    payload = base_payload()
+    ctx = qo.prepare(payload, NOW)
+    status = qo.price_status(ctx, synthetic_day(payload))
+    eligible = qo.supply_eligible(ctx, status)
+    # exactly ceil(0.95 x N) supplied passes, one fewer fails (N = 18 here: all 18 needed)
+    assert qo.supply_needed(len(eligible)) == 18
+    assert qo.supply_check(ctx, status)['met'] is True
+    assert qo.supply_check(ctx, dict(status, **{eligible[0]: 'NO_IEX_TRADE'}))['met'] is False
+    for n, need in ((1, 1), (19, 19), (20, 19), (100, 95), (358, 341), (360, 342), (434, 413)):
+        assert qo.supply_needed(n) == need == math.ceil(0.95 * n - 1e-9)
+    with pytest.raises(qo.OfficialError) as e:
+        build(payload, synthetic_day(payload, drop=eligible[:1]))
     assert (e.value.state, e.value.code) == ('SUPPLY_FAILED', 'SUPPLY_BELOW_THRESHOLD')
     official, _ = build(payload, synthetic_day(payload, drop=['NASDAQ:AAPL']))    # a non-eligible miss is fine
     assert official['price_source']['rejected']['NO_IEX_TRADE'] == 1
+
+
+def test_price_free_eligibility_is_an_upper_bound_of_the_engine():
+    """No row outside supply_eligible gets a V score at any price (prices synthetic, month closes for every history month)."""
+    payload = without_price_free_v(base_payload(), ('NYSE:ARE',))
+    ctx = qo.prepare(payload, NOW)
+    day = synthetic_day(payload)
+    eligible = set(qo.supply_eligible(ctx, qo.price_status(ctx, day)))
+    general = {k for k, r in ctx['inputs']['records'].items() if not k.startswith(qo.TARGET_PREFIX) and r['in_cross_section']
+               and r['published_profile'] == 'GENERAL'}
+    seen = set()
+    for scale in (1e-4, 0.05, 1.0, 40.0, 1e4):
+        quotes = {k: {'price': scale * (20 + i), 'currency': 'USD',
+                      'month_closes': {h['period_end'][:7]: scale * (10 + i) for h in (ctx['companies'][k]['v_inputs'] or {}).get('ebit_per_share_history', [])}}
+                  for i, k in enumerate(sorted(general)) if ctx['companies'].get(k) and ctx['companies'][k].get('v_inputs')}
+        results = qo.score(ctx, quotes)
+        scored = {k for k in general if results.get(k) and results[k]['axes']['V']['score'] is not None}
+        assert scored <= eligible and 'NYSE:ARE' not in scored
+        seen |= scored
+    assert seen == eligible and len(eligible) == 17          # tight on the fixture: every eligible row is V-capable at some price
 
 
 def _count_from_annual_filing(payload, code):
@@ -249,9 +342,11 @@ def _count_from_annual_filing(payload, code):
     return p
 
 
-def test_current_price_split_check_reads_the_fk_evidence_d6a(monkeypatch):
-    """D6 (a): SPLIT_TIMING_UNCONFIRMED on the history item at/after the share count's period end = a possible split after the
-    count's period end -> SPLIT_AFTER_SHARE_COUNT (no price, V NA, not in the D-CV5 denominator). No new source, no table entry."""
+def test_conservative_split_rule_reads_the_fk_evidence_d6a(monkeypatch):
+    """D6 (a), conservative only: SPLIT_TIMING_UNCONFIRMED on the history item at/after the share count's period end = a split
+    between the count's period end and its annual filing (a count that filing usually restates) -> SPLIT_AFTER_SHARE_COUNT as a
+    precaution (no price, V NA, not in the D-CV5 denominator). No new source, no table entry. It is not a current-price split
+    check: see test_known_limitation_a_split_after_the_count_filing_is_not_detected."""
     code = 'NYSE:ABT'
     fy0 = base_payload()['records'][code]['v_inputs_v2']['ebit_per_share_history'][-1]['fiscal_year_end']
     annual = _count_from_annual_filing(base_payload(), code)
@@ -275,6 +370,30 @@ def test_current_price_split_check_reads_the_fk_evidence_d6a(monkeypatch):
     assert iex_hist.SPLITS == {}
     monkeypatch.setitem(iex_hist.SPLITS, code, (('2026-07-01', '2026-07-31'),))
     assert qo.price_status(qo.prepare(base_payload(), NOW), synthetic_day(base_payload()))[code] == 'SPLIT_AFTER_SHARE_COUNT'
+
+
+def test_known_limitation_a_split_after_the_count_filing_is_not_detected():
+    """KNOWN LIMITATION (review 2026-10-24; owner acceptance pending before the first publication). A split after the share
+    count's own filing (NVDA type: Q1 10-Q 2024-05-29, 10:1 split 2024-06-10) leaves no evidence in sec-qgv2.json (F_k = 1.0 on
+    every item, no SPLIT fact yet) and iex_hist.SPLITS is empty, so the row is SUPPLIED and scored: count x today's (post-split)
+    price is off by the split ratio until the next 10-Q / 10-K restates the count. Synthetic prices: the same row at price p and
+    p / 10 (what a 10:1 split does to the price while the count stays pre-split) gets two different V scores, and nothing in the
+    publication marks it. If this test starts failing because the row becomes SPLIT_AFTER_SHARE_COUNT, a detector was added:
+    update the docs (go-live checklist, design section 7) with it."""
+    code = 'NYSE:ABT'
+    payload = base_payload()                     # count period end 2026-06-30 (a 10-Q), F_k 1.0 everywhere
+    assert payload['records'][code]['v_inputs_v2']['diluted_shares']['period_end'] > \
+        payload['records'][code]['v_inputs_v2']['ebit_per_share_history'][-1]['fiscal_year_end']
+    assert iex_hist.SPLITS == {}
+    for basis_day in ('2026-07-15', '2026-10-13'):
+        assert not qo.split_after_share_count(code, payload['records'][code]['v_inputs_v2'], basis_day)
+    ctx = qo.prepare(payload, NOW)
+    assert qo.price_status(ctx, synthetic_day(payload))[code] == 'SUPPLIED'
+    before, _ = build(payload, synthetic_day(payload, price_of={code: 120.0}))
+    after, _ = build(payload, synthetic_day(payload, price_of={code: 12.0}))     # post-split price, pre-split count
+    for o in (before, after):
+        assert o['rows'][code]['price_status'] == 'SUPPLIED' and o['rows'][code]['axes']['V']['score'] is not None
+    assert before['rows'][code]['axes']['V']['score'] != after['rows'][code]['axes']['V']['score']
 
 
 def test_adr_rule_covers_known_20f_filers_whatever_the_taxonomy_d7(monkeypatch):
@@ -368,6 +487,57 @@ def test_validator_rejects(official, name, fn):
     _tamper(official, fn)
 
 
+def _first_row(o):
+    return o['rows'][sorted(o['rows'])[0]]
+
+
+# Every scalar is typed (review 2026-10-24): a price-like value smuggled into any field is refused, by the validator and so by
+# the Pages guard that runs it.
+@pytest.mark.parametrize('name,fn', [
+    ('inputs_as_of_value', lambda o: o['inputs'][0].update(as_of=CANARY)),
+    ('inputs_acquired_newest_value', lambda o: o['inputs'][0].update(acquired_newest=CANARY)),
+    ('inputs_acquired_oldest_text', lambda o: o['inputs'][0].update(acquired_oldest=str(CANARY))),
+    ('inputs_calc_version_other', lambda o: o['inputs'][0].update(calc_version='qgv2-calc/2026-10-23.2')),
+    ('times_inputs_as_of_value', lambda o: o['times'].update(inputs_as_of=CANARY)),
+    ('times_inputs_as_of_other_clock', lambda o: o['times'].update(inputs_as_of='2026-10-13T00:00:00Z')),
+    ('supply_eligible_value', lambda o: o['price_source']['supply'].update(eligible=CANARY)),
+    ('supply_supplied_text', lambda o: o['price_source']['supply'].update(supplied='x')),
+    ('supply_one_of_eligible_met', lambda o: o['price_source']['supply'].update(supplied=1, met=True)),
+    ('supply_eligible_zero', lambda o: o['price_source']['supply'].update(eligible=0, supplied=0)),
+    ('supply_supplied_over_eligible', lambda o: o['price_source']['supply'].update(supplied=o['price_source']['supply']['eligible'] + 1)),
+    ('supply_eligible_over_rows', lambda o: o['price_source']['supply'].update(eligible=400, supplied=400)),
+    ('supply_minimum_other', lambda o: o['price_source']['supply'].update(minimum_share=0.5)),
+    ('supply_bool_count', lambda o: o['price_source']['supply'].update(eligible=True)),
+    ('month_end_months_value', lambda o: o['price_source']['month_end'].update(months=CANARY)),
+    ('month_end_months_negative', lambda o: o['price_source']['month_end'].update(months=-5)),
+    ('month_end_months_bool', lambda o: o['price_source']['month_end'].update(months=True)),
+    ('month_end_stamp_list', lambda o: o['price_source']['month_end'].update(stamp=[CANARY, CANARY])),
+    ('month_end_stamp_short', lambda o: o['price_source']['month_end'].update(stamp='2026102')),
+    ('month_end_store_other', lambda o: o['price_source']['month_end'].update(store='iex-monthend/2')),
+    ('month_end_basis_other', lambda o: o['price_source']['month_end'].update(basis='ANYTHING')),
+    ('currency_other', lambda o: o['price_source'].update(currency='EUR')),
+    ('feed_other', lambda o: o['price_source'].update(feed='X')),
+    ('price_source_supplied_value', lambda o: o['price_source'].update(supplied=CANARY)),
+    ('engine_status_value', lambda o: o['engine'].update(status=CANARY)),
+    ('weights_version_value', lambda o: o['weights'].update(weights_version=CANARY)),
+    ('weights_profile_other', lambda o: o['weights'].update(profile_id='qgv-v2/balanced/gate-off')),
+    ('weights_type_weights_value', lambda o: o['weights'].update(type_weights=CANARY)),
+    ('config_type_config_value', lambda o: o['config_versions'].update(type_config=CANARY)),
+    ('config_dcf_other', lambda o: o['config_versions'].update(dcf_parameters='dcf_parameters/v1-default')),
+    ('type_scope_other', lambda o: o.update(type_scope=CANARY)),
+    ('population_registry_value', lambda o: o['population'].update(registry_sha256=CANARY)),
+    ('population_version_other', lambda o: o['population'].update(version=str(CANARY))),
+    ('population_pooled_digest_other', lambda o: o['population'].update(pooled_digest='0' * 64)),
+    ('calc_version_value', lambda o: (o.update(calc_version=str(CANARY)), o['inputs'][0].update(calc_version=str(CANARY)))),
+    ('calc_version_before_u7', lambda o: (o.update(calc_version='qgv2-calc/2026-10-17.1'), o['inputs'][0].update(calc_version='qgv2-calc/2026-10-17.1'))),
+    ('row_acquired_at_text', lambda o: _first_row(o).update(acquired_at=str(CANARY))),
+    ('row_selected_type_value', lambda o: _first_row(o).update(selected_types=[str(CANARY)])),
+])
+def test_validator_types_every_scalar(official, name, fn):
+    qo.require_qgv_official(official)
+    _tamper(official, fn)
+
+
 def test_parse_rejects_duplicate_keys_and_oversize(official):
     body = qo._canonical(official)
     assert qo.parse(body)['publication_id'] == official['publication_id']
@@ -437,9 +607,13 @@ def test_v4_public_reason_merger_cut_and_identity_stop():
 
 
 def test_status_file_shapes():
-    st = qo.status_payload(attempt_at=NOW, state='SUPPLY_FAILED', reason='IEX_MD5_MISMATCH', official=None, inputs_sha256='a' * 64, inputs_as_of='x')
+    st = qo.status_payload(attempt_at=NOW, state='SUPPLY_FAILED', reason='IEX_MD5_MISMATCH', official=None, inputs_sha256='a' * 64,
+                           inputs_as_of='2026-10-13T00:50:26.737954Z')
     qo.require_status(st)
     assert st['attempt_state'] == 'NO_OFFICIAL_YET' and st['reason_code'] == 'IEX_MD5_MISMATCH'
+    for bad in ('x', '4321.0987', 4321.0987):           # latest_inputs.as_of is a clock or null, never a free value
+        with pytest.raises(ValueError):
+            qo.require_status(dict(st, latest_inputs={'sha256': 'a' * 64, 'as_of': bad}))
     with pytest.raises(ValueError):
         qo.status_payload(attempt_at=NOW, state='OK', reason=None, official=None, inputs_sha256=None, inputs_as_of=None)
 
@@ -535,8 +709,10 @@ def test_tool_missing_secret_or_old_file_is_not_run_without_any_download(artifac
 
 
 def test_tool_holiday_run_keeps_requested_and_actual_basis_and_same_basis_may_replace(artifact, tmp_path):
-    """A run on a market holiday: requested = the run's New York day, basis = the last IEX day before it (D3). A later run on the
-    same IEX day (new inputs or prices) is not older and replaces the live copy; an older IEX day never does."""
+    """Requested and actual basis are both published (D3): synthetic IexDay with basis 2026-10-12 for the requested New York day
+    2026-10-13 (a day without its own file; US markets are open on 2026-10-12, so the real calendar case is the Thanksgiving
+    test below, through the real select_day). A later run on the same IEX day (new inputs or prices) is not older and replaces
+    the live copy; an older IEX day never does."""
     out, payload, parser = artifact
     holiday = synthetic_day(payload)
     holiday = iex_hist.IexDay('2026-10-12', '2026-10-13', holiday.quotes, holiday.status, NOW, NOW, {})
@@ -572,3 +748,204 @@ def test_tool_preserve_only_copies_valid_bytes_and_drops_broken_ones(artifact, t
     live.write_text('{"broken":1}')
     assert tool.preserve(dest, str(live), str(status)) == qo.STATUS_FILENAME
     assert not (dest / qo.FILENAME).exists()
+
+
+def test_main_pops_both_secrets_so_no_child_process_inherits_them(tmp_path, monkeypatch, capsys):
+    """Review 2026-10-24: only the publisher's Python process holds the HMAC key and the read token (as arguments); curl, gzip,
+    the C parser and node (subprocess without env=) see neither name. Real stream_day / js_check with fake child programs that
+    report their environment keys."""
+    import gzip
+    import hashlib
+    import os
+    import stat
+    import subprocess
+    import sys
+    names = ('QGV_OFFICIAL_HMAC_KEY', 'RAW_REPO_READ_TOKEN')
+    monkeypatch.setenv(names[0], 'test-only-hmac-key-0123456789abcdef')
+    monkeypatch.setenv(names[1], 'test-only-read-token')
+    dump = tmp_path / 'child-env-keys.txt'
+
+    def program(path, body):
+        path.write_text(f'#!{sys.executable}\nimport os, sys\nopen({str(dump)!r}, "a").write("\\n".join(os.environ) + "\\n")\n{body}\n')
+        path.chmod(path.stat().st_mode | stat.S_IXUSR)
+        return str(path)
+    parser = program(tmp_path / 'parser', 'sys.stdin.buffer.read()\nsys.stdout.write("AAA\\tNO_TRADE\\t0\\t0\\t0\\n")')
+    node = program(tmp_path / 'node', 'sys.stdin.read()\nsys.stdout.write("{}")')
+    gz = gzip.compress(b'')
+    seen = {}
+
+    def stub_run(**kw):
+        seen['args'] = (kw['raw_token'], kw['hmac_key'])
+        seen['parent'] = [n for n in names if n in os.environ]
+        rows = iex_hist.stream_day('https://storage.googleapis.com/iex/data/feeds/20261013/x.pcap.gz', ['AAA'], day='20261013',
+                                   size=len(gz), md5=hashlib.md5(gz).hexdigest(), parser=parser, workdir=tmp_path / 'w',
+                                   download=lambda link: [sys.executable, '-c', f'import sys; sys.stdout.buffer.write({gz!r})'])
+        assert rows == {'AAA': ('NO_TRADE', None)}
+        tool.js_check({}, {}, {}, node=node)
+        seen['shell'] = subprocess.run([sys.executable, '-c', 'import os; print(" ".join(os.environ))'], capture_output=True,
+                                       text=True).stdout.split()
+        return {'attempt': 'OK', 'reason': None, 'published': 'NONE', 'basis': '-', 'rows': 0, 'ranked': 0, 'supplied': '-'}
+    monkeypatch.setattr(tool, 'run', stub_run)
+    out = tmp_path / 'out'
+    out.mkdir()
+    assert tool.main(['--out', str(out), '--parser', parser, '--monthend-stamp', '20261023', '--previous', '']) == 0
+    assert seen['args'] == ('test-only-read-token', b'test-only-hmac-key-0123456789abcdef')
+    assert seen['parent'] == [] and not set(names) & set(seen['shell'])
+    keys = set(dump.read_text().split())
+    assert keys and not set(names) & keys                 # parser and node ran and saw neither name
+    assert 'test-only' not in capsys.readouterr().out
+
+
+# ---- live read: fail closed (review 2026-10-24) -----------------------------------------------------------------------
+class _Response:
+    def __init__(self, url, body, status=200):
+        self.url, self.body, self.status = url, body, status
+
+    def geturl(self):
+        return self.url
+
+    def read(self, n=-1):
+        return self.body if n < 0 else self.body[:n]
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *a):
+        return False
+
+
+def pages(script):
+    """open_response stub: `script` maps a file name to a list of outcomes, one per request: bytes (200), an int HTTP code,
+    'timeout', 'redirect'. Requests are recorded (url, headers)."""
+    import urllib.error
+    seen = []
+
+    def open_response(request, timeout=None):
+        url = request.full_url
+        seen.append((url, dict(request.header_items())))
+        name = url.split('?', 1)[0].rsplit('/', 1)[1]
+        outcome = script[name].pop(0) if len(script[name]) > 1 else script[name][0]
+        if outcome == 'timeout':
+            raise TimeoutError('timed out')
+        if outcome == 'redirect':
+            return _Response('https://example.invalid/x', b'{}')
+        if isinstance(outcome, int):
+            raise urllib.error.HTTPError(url, outcome, 'x', {}, None)
+        return _Response(url, outcome)
+    open_response.seen = seen
+    return open_response
+
+
+def test_load_previous_404_is_none_other_failures_retry_then_unreachable():
+    sleeps = []
+    o = pages({qo.FILENAME: [404]})
+    assert tool.load_previous(tool.LIVE_URL, open_response=o, sleep=sleeps.append, nonce='1-1') is None and sleeps == []
+    url, headers = o.seen[0]
+    assert url == tool.LIVE_URL + '?qgv-official-step=1-1' and headers.get('Cache-control') == 'no-cache'
+    for failure in (500, 503, 'timeout', 'redirect', 403):
+        sleeps = []
+        o = pages({qo.FILENAME: [failure]})
+        with pytest.raises(tool.LiveUnreachable):
+            tool.load_previous(tool.LIVE_URL, open_response=o, sleep=sleeps.append)
+        assert len(o.seen) == tool.LIVE_READ_ATTEMPTS == 3 and sleeps == [5, 15]
+    o = pages({qo.FILENAME: [502, 'timeout', b'live-bytes']})                       # recovers on the third attempt
+    assert tool.load_previous(tool.LIVE_URL, open_response=o, sleep=lambda s: None) == b'live-bytes'
+    for source in ('https://example.invalid/qgv-official.json', tool.LIVE_URL + '?x=1'):
+        with pytest.raises(tool.LiveUnreachable):
+            tool.load_previous(source, open_response=pages({qo.FILENAME: [b'x']}), sleep=lambda s: None)
+
+
+def test_tool_unreachable_live_copy_is_not_run_never_no_official_yet(artifact):
+    """A timeout or 5xx on the live read never deletes a live publication on the claim that none exists: nothing is computed
+    (the older-basis check needs the live copy), status NOT_RUN / LIVE_UNREACHABLE without a publication id."""
+    out, payload, parser = artifact
+
+    def no_fetch(*a, **k):
+        raise AssertionError('IEX download attempted')
+    for failure in ('timeout', 500, 503):
+        (out / qo.FILENAME).write_text('{}')
+        s = tool.run(out=out, parser=parser, monthend_stamp='20261023', monthend_shards=6, previous=tool.LIVE_URL, raw_token='t',
+                     hmac_key=KEY, now=NOW, workdir=out.parent / 'w', fetch_day=no_fetch, read_store=no_fetch, clock=lambda: NOW,
+                     open_response=pages({qo.FILENAME: [failure]}), sleep=lambda s: None)
+        assert (s['attempt'], s['reason'], s['published']) == ('NOT_RUN', 'LIVE_UNREACHABLE', 'NONE')
+        st = _status(out)
+        assert (st['attempt_state'], st['reason_code'], st['official_publication_id']) == ('NOT_RUN', 'LIVE_UNREACHABLE', None)
+        assert st['latest_inputs']['sha256'] == qo.sha256_bytes((out / 'sec-qgv2.json').read_bytes())
+        assert not (out / qo.FILENAME).exists()
+    with pytest.raises(ValueError):          # the status shape cannot say NO_OFFICIAL_YET with LIVE_UNREACHABLE
+        qo.require_status(dict(st, attempt_state='NO_OFFICIAL_YET'))
+
+
+def test_tool_live_404_is_a_first_publication_and_a_late_live_read_keeps_the_basis_check(artifact):
+    out, payload, parser = artifact
+    day = synthetic_day(payload)
+    s = tool.run(out=out, parser=parser, monthend_stamp='20261023', monthend_shards=6, previous=tool.LIVE_URL, raw_token='t',
+                 hmac_key=KEY, now=NOW, workdir=out.parent / 'w', fetch_day=lambda *a, **k: day, read_store=lambda s, n: {},
+                 clock=lambda: NOW, open_response=pages({qo.FILENAME: [404]}), sleep=lambda s: None)
+    assert (s['attempt'], s['published']) == ('OK', 'NEW')
+    live = (out / qo.FILENAME).read_bytes()
+    # live read fails twice, then answers: the live copy is carried and an older IEX day is still refused
+    older = iex_hist.IexDay('2026-10-12', '2026-10-13', day.quotes, day.status, NOW, NOW, {})
+    (out / qo.FILENAME).unlink()
+    s = tool.run(out=out, parser=parser, monthend_stamp='20261023', monthend_shards=6, previous=tool.LIVE_URL, raw_token='t',
+                 hmac_key=KEY, now=NOW, workdir=out.parent / 'w', fetch_day=lambda *a, **k: older, read_store=lambda s, n: {},
+                 clock=lambda: NOW, open_response=pages({qo.FILENAME: ['timeout', 500, live]}), sleep=lambda s: None)
+    assert (s['reason'], s['published']) == ('BASIS_OLDER_THAN_OFFICIAL', 'KEPT_LAST_GOOD')
+    assert (out / qo.FILENAME).read_bytes() == live
+
+
+def test_preserve_unreachable_live_copy_carries_neither_file(artifact, tmp_path):
+    out, payload, parser = artifact
+    assert _run(out, parser, day=synthetic_day(payload))['published'] == 'NEW'
+    live, status = (out / qo.FILENAME).read_bytes(), (out / qo.STATUS_FILENAME).read_bytes()
+    dest = tmp_path / 'manual'
+    dest.mkdir()
+    ok = pages({qo.FILENAME: [live], qo.STATUS_FILENAME: [status]})
+    assert tool.preserve(dest, tool.LIVE_URL, tool.LIVE_STATUS_URL, open_response=ok, sleep=lambda s: None) == \
+        qo.FILENAME + '+' + qo.STATUS_FILENAME
+    for failure in ('timeout', 500):
+        o = pages({qo.FILENAME: [failure], qo.STATUS_FILENAME: [status]})
+        assert tool.preserve(dest, tool.LIVE_URL, tool.LIVE_STATUS_URL, open_response=o, sleep=lambda s: None) == 'LIVE_UNREACHABLE'
+        assert not (dest / qo.FILENAME).exists() and not (dest / qo.STATUS_FILENAME).exists()
+    # no publication yet (404): a valid status is still carried
+    o = pages({qo.FILENAME: [404], qo.STATUS_FILENAME: [status]})
+    assert tool.preserve(dest, tool.LIVE_URL, tool.LIVE_STATUS_URL, open_response=o, sleep=lambda s: None) == qo.STATUS_FILENAME
+    # the status read alone failing keeps the publication (the status is never compared)
+    o = pages({qo.FILENAME: [live], qo.STATUS_FILENAME: [503]})
+    assert tool.preserve(dest, tool.LIVE_URL, tool.LIVE_STATUS_URL, open_response=o, sleep=lambda s: None) == qo.FILENAME
+
+
+def test_tool_thanksgiving_run_after_utc_midnight_uses_the_new_york_day_and_real_select_day(artifact):
+    """Review 2026-10-24: the daily run starts ~00:37 UTC, already the next UTC day. On 2026-11-27 00:37Z the New York day is
+    Thanksgiving 2026-11-26 (no TOPS file): tool.run must ask for 2026-11-26 (shard_day, not the UTC date) and the real
+    iex_hist.fetch_day / select_day must pick 2026-11-25; both dates are published."""
+    import base64
+    import functools
+    import hashlib
+    out, payload, parser = artifact
+    now = dt.datetime(2026, 11, 27, 0, 37, tzinfo=dt.timezone.utc)
+    link = 'https://www.googleapis.com/download/storage/v1/b/iex/o/data%2Ffeeds%2F{d}%2F{d}_IEXTP1_TOPS1.6.pcap.gz?generation=1&alt=media'
+    index = {d: [{'feed': 'TOPS', 'version': '1.6', 'protocol': 'IEXTP1', 'link': link.format(d=d), 'size': 1000}]
+             for d in ('20261123', '20261124', '20261125', '20261127')}            # 11-26 Thanksgiving: no file
+    md5 = base64.b64encode(hashlib.md5(b'synthetic').digest()).decode()
+    asked, streamed = [], []
+
+    def fetch(url):
+        return index if url == iex_hist.HIST_URL else {'size': '1000', 'md5Hash': md5}
+
+    def stream(link_, wanted, *, day, size, md5, parser, workdir):
+        streamed.append(day)
+        return {s: ('ROUND', (20 + i) * 10000) for i, s in enumerate(wanted)}
+
+    real = functools.partial(iex_hist.fetch_day, fetch=fetch, stream=stream, clock=lambda: now)
+
+    def fetch_day(keys, basis, *, parser, workdir):
+        asked.append(basis)
+        return real(keys, basis, parser=parser, workdir=workdir)
+    s = tool.run(out=out, parser=parser, monthend_stamp='20261023', monthend_shards=6, previous=None, raw_token='t', hmac_key=KEY,
+                 now=now, workdir=out.parent / 'w', fetch_day=fetch_day, read_store=lambda st, n: {}, clock=lambda: now)
+    assert asked == [dt.date(2026, 11, 26)] and streamed == ['20261125']
+    official = qo.parse((out / qo.FILENAME).read_bytes())
+    assert (s['attempt'], s['published'], s['basis']) == ('OK', 'NEW', '2026-11-25')
+    assert (official['price_source']['requested_basis_date'], official['price_source']['basis_date']) == ('2026-11-26', '2026-11-25')
+    assert official['times']['price_basis_date'] == '2026-11-25' and _status(out)['official_price_basis_date'] == '2026-11-25'
