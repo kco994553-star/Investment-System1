@@ -152,7 +152,10 @@ function create({win,data,prices,action}){
  // engines.js only (source rule): the computed result exactly as QgvScores made it, for the old engines (TARGET draft, playbook).
  // It is always the device result: engines record page.engine_v_source, never page.v_source.
  const forEngines=pg=>result_(pg).result.computed;
- return Object.freeze({V_SOURCES,READERS,vSource:()=>vSource(data.publication()),page,row,rows,coverage,preview,setProfile,profile:()=>profile,reasonText,constants,subscribe,forEngines});
+ // engines.js only, with forEngines: the sec-qgv2.json value (Qgv2Inputs output) that result was computed from (a re-judgement can
+ // replace data.get's value later), and the score view itself (PlaybookScreen.prepareScores reads the same shared result through it).
+ const engineInputs=pg=>result_(pg).inputs;
+ return Object.freeze({V_SOURCES,READERS,vSource:()=>vSource(data.publication()),page,row,rows,coverage,preview,setProfile,profile:()=>profile,reasonText,constants,subscribe,forEngines,engineInputs,scoreView});
 }
 return Object.freeze({create,V_SOURCES,READERS});
 });

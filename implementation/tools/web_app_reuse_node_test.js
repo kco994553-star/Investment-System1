@@ -10,8 +10,8 @@
 //  - Screen registry: a placeholder never replaces a real screen, two real screens for one route fail (SCREEN_DUPLICATE),
 //    detail screens register by name.
 //  - Source rules for every web_app script (no console output, no HTML strings, NA never filled with 0, storage / network /
-//    Google session / engine rows / V source label only in their P1 owner file, no old path that bypasses the price view,
-//    no order feature), and the Pages guard's secret patterns.
+//    Google session / engine rows / score and price views / V source label only in their P1 owner files, no old path that
+//    bypasses the price view, no order feature), and the Pages guard's secret patterns.
 // Wording rules for the fixed code list are left to tools/spec_direction_guard.py and not repeated here.
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -192,7 +192,8 @@ const RULES = [
   ['network outside data.js and prices.js', /\bfetch\(/, ['data.js', 'prices.js']],
   ['price fetch outside prices.js and engines.js', /\bfetch\s*:\s*true\b/, ['prices.js', 'engines.js']],
   ['Google session outside prices.js', /\bsessionFor\(/, ['prices.js']],
-  ['engine rows outside qgv.js and engines.js', /\bforEngines\(/, ['qgv.js', 'engines.js']],
+  ['engine rows / score view outside qgv.js and engines.js', /\b(?:forEngines|engineInputs)\(|\bscoreView\b/, ['qgv.js', 'engines.js']],
+  ['the price view outside prices.js and engines.js', /\bpriceView\b/, ['prices.js', 'engines.js']],
   ['old paths that bypass the price view', /\bautoLoad\b|\blatestPublished\b|\bStatRadar\b|\bDataRefresh\.attach\b|\b(PrivateSubsetView|TargetV1Screen|PriceStore|VirtualLedgerSheets)\.mount\w*\(/, []],
   ['order features', /placeOrder|submitOrder|sendOrder|주문하기|매수 주문|매도 주문/, []],
 ];

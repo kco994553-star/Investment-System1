@@ -1,6 +1,6 @@
 # 프론트 v2 P1 자료·계산 층: P2 레인용 API 계약
 
-P2 화면 레인이 쓰는 함수와 기록 모양을 정한다. 근거는 P1 구현 사양(Main 결정 2026-10-24)이다. 이 문서는 P1 단계마다 늘어난다. 지금은 3단계(`action`, `data`, `qgv`, `prices`, `store`)까지 적었고, `engines`는 4단계에서 채운다.
+P2 화면 레인이 쓰는 함수와 기록 모양을 정한다. 근거는 P1 구현 사양(Main 결정 2026-10-24)이다. P1 자료·계산 층 여섯 파일(`action`, `data`, `qgv`, `prices`, `store`, `engines`)을 모두 적었다.
 
 ## 1. 파일과 순서
 
@@ -37,6 +37,7 @@ P2 화면 레인이 쓰는 함수와 기록 모양을 정한다. 근거는 P1 �
 - `ready()`: 첫 호출에 `DataRefresh.load`로 세대 묶음을 읽고 publication을 돌려준다. 이후 호출은 같은 Promise다.
   - SecQgv2, Qgv2Inputs, PublicScreens, MacroLights, PlaybookEngine, PlaybookConfigDefaults, DataRefresh 가운데 하나라도 없으면 `READER_MISSING`으로 닫는다. 가벼운 경로로 조용히 빠지지 않게 하기 위해서다.
 - `get(name)`: 현재 세대의 검증된 값이고, 없으면 null이다. `sec-qgv2.json`은 Qgv2Inputs 출력이다.
+- `screens()`: 현재 세대의 검증된 묶음 전체다(옛 app.js의 `publicScreens`). 옛 엔진이 이 묶음 하나를 인자로 받는다(`MacroLights.setPublic`, `PlaybookScreen.prepareScores`·`factsFor`, `VirtualTradingCompare.typesFrom`). 화면은 `get(name)`을 쓴다.
 - `state(name)`: `{state:'OK'|'NOT_PUBLISHED'|'FAILED'|'NOT_READ', why, as_of, text}`. 읽기 실패와 미게시(404)는 같은 문장을 쓰지 않는다. why는 `INVALID`·`NETWORK`·`HTTP`·`SCHEMA_NEWER`·`READER_MISSING`이다.
 - `list('sec'|'news'|'dart')`, `shares()`, `financials()`: 세대마다 한 번 읽고 모든 화면이 공유한다.
 - `refresh(event)`: `PUBLIC_REFRESH` 클릭으로만 부른다. 결과는 `'APPLIED'|'UNCHANGED'|'FAILED'|'LOADING'`이다. 전부 아니면 전무이고, 실패하면 이전 값을 유지한다.
@@ -57,7 +58,7 @@ P2 화면 레인이 쓰는 함수와 기록 모양을 정한다. 근거는 P1 �
 - `rows(page, {scope:'ALL'|'UNIVERSE'|'TARGET'})`: QgvScores 순서 그대로 돌려준다. 정렬·모집단·분류 필터·레이더는 P2-2에서 옛 함수(LeaderboardScreen, StatRadar의 `compute(spec,{result})`)로 붙인다.
 - `row(page, idOrCode)`: Universe 안의 TARGET은 그 코드의 행이다.
 - `coverage(page)`: 수만 돌려준다. `preview(page, weights)`, `setProfile({preset, gate})`, `profile()`, `reasonText(code, en)`, `constants()`, `subscribe(fn, {signal})`, `vSource()`, `V_SOURCES`도 있다.
-- `forEngines(page)`: `engines.js` 전용이다(소스 검사로 막는다).
+- `forEngines(page)`, `engineInputs(page)`, `scoreView`: `engines.js` 전용이다(소스 검사로 막는다). 각각 QgvScores가 만든 기기 결과 원형, 그 결과를 계산한 sec-qgv2.json 값(재판정 뒤 `data.get`과 다를 수 있음), 점수 view다.
 
 **Page**
 ```
@@ -153,19 +154,67 @@ P2 화면 레인이 쓰는 함수와 기록 모양을 정한다. 근거는 P1 �
 - 출처와 주소: `sheetSource.has()/set(event, url)`, `universeSource.has()/set(event, url)`, `workerOrigin.has()/approved()/set(event, url)`. ID와 주소는 돌려주지 않는다. 코드: `SHEET_SOURCE_INVALID`, `UNIVERSE_SOURCE_INVALID`, `REQUEST_INVALID`.
 - `storage`(engines 내부용 gated localStorage), `subscribe(fn, {signal})`(쓰기 뒤 키 이름, 예: `'PERSONAL'`).
 
-## 7. V 출처 전환점(중앙 V가 게시될 때 바꿀 곳, 전부)
+## 7. 엔진: `IS2.engines`
+
+- 옛 엔진을 바이트 그대로 쓰고, 옛 화면이 넘기던 인자를 그대로 넘긴다. 옛 화면 안에만 있던 연결 코드만 다시 썼다(Universe 읽기와 같은 방식). 노드 시험이 spy로 같은 함수·같은 인자를 확인한다.
+- 점수는 공유 Page의 기기 결과(`qgv.forEngines`)다. 엔진이 저장하는 기록에는 `page.engine_v_source`를 남긴다. `page.v_source`가 아니다.
+- 쓰기는 모두 클릭 안에서만 한다(`WRITE`, 사용자 시트에도 쓰면 `SYNC`). 저장소는 `store.storage`(gated)다. 가격은 가격 view와 facade로만 오간다.
+- 반환값은 얼린 복사본이다. 가상매매 `stored`·`rehearse`의 결과만 옛 엔진 결과 그대로 돌려준다(`compare`가 다시 받는다). 가상매매 결과와 TARGET 세트 비교에는 가격과 가격 파생값이 있다. RAM 전용이고 `[data-ram-price]` 안에만 표시한다.
+
+**TARGET v1 (`engines.target`, 2.1.7)** — 상태는 플레이북 저장소 안(`TargetV1Screen.readState/writeState`)에 있다.
+- `state()`: 저장된 상태. 읽을 수 없으면 `TARGET_V1_STATE_INVALID`이고, 덮어쓰지 않는다.
+- `basis({page})`: 지금 다시 읽은 공개 파일(`data.peek`, SecQgv2를 통과한 원본 JSON)의 입력 기준(`TargetV1Builder.inputBasis`). Page 점수의 파일과 as_of가 같을 때만 값이고, 아니면 null이다.
+- `draft({date, basis, page})`: 쓰지 않고 초안만 만든다(`buildDraft`에 computed·inputs·universeCodes·existing·date·basis·cfg). Page에 결과가 없으면 `QGV2_NOT_READY`다.
+- `build(event, {date, page, reset})` [WRITE]: 초안을 저장하고 카드 응답을 비운다. 응답이 있으면 `reset:true`가 있어야 한다(아니면 `TARGET_V1_ANSWERS_RESET`, 옛 버튼의 두 번 누르기).
+- `blockers({date})`: 지금 다시 읽은 원본 파일로 `finalizeBlockers`를 돌린 결과(차단 코드, 확인 수).
+- `finalize(event, {date, page})` [WRITE]: 원본 파일을 다시 읽어 모두 재검사한다. 결과 `outcome`은 다음 넷 중 하나다.
+  - `FINALIZED`: 새 버전을 저장했다. 버전에 `v_source: page.engine_v_source.id`를 기록한다. #391이 병합되면 builder가 같은 값을 직접 쓰고, 값이 다르면 `V_SOURCE_MISMATCH`로 저장하지 않는다.
+  - `BLOCKED`: `blockers`(코드 목록)와 `check`. 아무것도 쓰지 않는다.
+  - `DRAFT_REGENERATED`: 입력 기준이 바뀌어 초안을 다시 만들었다(같은 종목의 응답만 유지, `carried`·`fresh`).
+  - `RELOAD_REQUIRED`: 입력 기준이 바뀌었는데 Page 점수가 그 파일의 것이 아니다. 새로 고친 뒤 다시 확정한다.
+- `answer(event, {symbol, answer, reason, date})` [WRITE]: 판정 기록 1건(`TV1-…`, 옛 형식 그대로)과 최신 응답. 결과는 `{symbol, answer, added, limits_ok}`. 코드는 builder 것이다(`DISAGREE_REASON_REQUIRED`, `TARGET_V1_NOT_SELECTED` 등).
+- `ruleBDue(date)`, `selectRuleB(event, {date, page})` [WRITE]: R-B(규칙 지수) 선정. 결과 `state`는 `SELECTED`·`NOT_READY`(통과 종목 부족이나 한도 위반, 부분 시작 없음)·`NOT_DUE`·`QGV2_NOT_READY`이고, `SELECTED`일 때만 쓴다. 옛 화면은 열 때 이것을 자동으로 했다.
+- `compare(event, {date})` [SYNC]: A·R-B·R-C·S&P 500 종가를 가격 탭에서 읽고, 빠진 끝부분은 Worker로 받아 덧붙인다(`PriceStore.dailyCloses` fetch:true, 가격 view). 결과는 `{compare, review}`이고 지수 값이 들어 있어 RAM 전용이다.
+- T-PRICE(판정 채점용 가격):
+  - `scoringPending()`: `{pending, tracked, confirm_text}`. `confirm_text`는 `TargetV1Screen.confirmText`이고 종목 기호만 들어 있다. 화면은 이 글로 사용자 확인을 받은 뒤 다음 함수를 부른다.
+  - `syncScoringPrices(event)` [SYNC]: `PriceStore.syncMany(priceView, 기호, '1d', {kind:'TV1', allowlistOnly:true})`. `READY`일 때만 기호를 기기에 남기고(허용 목록 밖은 빼고) 채점 시계열을 RAM에 읽는다. 결과는 `{state, sync, scored}`(수와 코드). 할 일이 없으면 `NOTHING_PENDING`이다.
+  - `refreshScoring()`: 추적 종목의 시계열을 facade로 읽어 플레이북 채점 RAM에 넣는다. 클릭으로 탭을 읽기 전에는 0이다.
+
+**플레이북 (`engines.playbook`, 상세 화면 playbook, 6.1.x)**
+- `facts(symbol, {date})`: 옛 조립 그대로다. 뉴스 목록을 공개 view로 먼저 읽고, `PlaybookScreen.prepareScores(scoreView, …)`, `heldSymbolsFor`, `DeviceActual.ramView`, `factsFor`를 부른다. 점수는 공유 Page 결과(Page 프로필)다. `actual_pct`는 기기 가격에서 나온 비중이라 표시 전용이다. 옛 화면 모듈 `CompanyScreen`은 불러오지 않으므로, `factsFor`의 v1 Q·G 대체값(sec-qg-factors.json)은 없고 Q·G는 v2 결과에서만 온다.
+- `judge({symbol, situation, date})`: openPanel의 판정 단계만 옮겼고, 쓰지 않는다. 기기 기록의 무효화 사건·보류·확인일, `MacroLights.current()`, `PlaybookEngine.evaluate`, R1_FILING 제한(사건 등급이 EVIDENCE가 아니면 막음)을 거친다. `situation`이 없으면 `facts()`를 쓴다. 결과는 `{symbol, date, situation, judgement, code}`다.
+- `record(event, judged)` [WRITE]: openPanel이 열 때 쓰던 발생 기록(후보 신호, 구조적 뉴스 E4, 13F 기관 3곳 이상 전량 이탈 E4)을 `judge()` 결과로만 쓴다(`JUDGEMENT_UNKNOWN`). 그날 그 종목의 발생 기록(코드·사유)을 돌려준다.
+- `due(date)`: E5 확인일이 된 기록. `limits(rows, cash)`: 16절 한도(`PlaybookEngine.portfolioLimits`).
+
+**가상매매 (`engines.virtual`, 6.1.5·6.2·6.3)**
+- `stored({reportDate, signal})`: 옛 보고서 화면이 열 때 하던 실행이다. `VirtualTradingRunner.run(priceView, {config, catalog, reportDate, signal, fetch:false})` 뒤 `PlaybookScreen.ingestRunner`를 부른다.
+  - 시작일 전: `NOT_STARTED`. 요청 0건.
+  - 개인 이력 꺼짐, 승인된 Worker 주소 없음, 구글 미로그인: `NOT_AVAILABLE`, 사유 `OFF`·`REQUEST_INVALID`·`ORIGIN_UNAPPROVED`·`AUTH_REQUIRED`. 요청 0건.
+  - 준비됨: 종목마다 이번 로그인의 RAM 이력이나 클릭으로 읽은 가격 탭(facade)을 쓰고, 없으면 `PRICE_NOT_FETCHED`다. 공개 파일(전진 검증 원장, 분류)만 읽고 비공개 요청은 0건이다.
+  - 세트 B/C/D는 사용자 장부 시트에서 오므로 P1에는 없다. P2-6에서 붙일 대응(옛 mount 안의 연결, virtual-ledger-sheets.js:696-699): 시트 읽기는 클릭으로 `VirtualLedgerSheets.load(session, id)`, 실행 옵션은 `{sets:{SET_A~D: active(meta,k)의 target_weights 또는 null}, user_target, flags}`, 결과 반영은 `apply(result, sheet)`, 비교 표의 `defs`는 `definitions(sheet, catalog)`다.
+- `compare(result, {config, basis, defs})`: 비교 표(`VirtualTradingCompare.build`). 세트가 A 하나뿐이면 `COMPARE_NEEDS_TWO_SETS`다. 이름표는 세트 kind이고 문구는 P2-6이 정한다.
+- `forward()`: 9.2 전진 검증. 공개 원장의 일별 Q·G 요약, 평가 구분, calc_version 구간(잇지 않음), 운영 증거다. 가격은 없다. 원장이 없으면 `NOT_PUBLISHED`다.
+- `rehearse({reportDate, page, signal})`: 리허설. Page의 Q·G 행으로 RAM에서만 돌리고 기록하지 않는다(fetch:false).
+- `run()`: 항상 `NOT_IN_P1`이다. 기록 실행(Worker 이력, V 기록, 장부 시트 쓰기, 일일 보고서 모델)은 보고서 모델(daily-report.js 미반입)과 V 기록 시점(D-21)을 P2-6에서 정한 뒤 붙인다.
+
+**매크로 (`engines.macro`, 4.1.4)**
+- `current()`: `MacroLights.current()`. 공개 자료 세대마다 한 번 `MacroLights.setPublic(data.screens())`를 부른다(옛 app.js의 시작·적용 시점). 재판정은 세대를 바꾸지 않는다. 기기 신호등(SPY Worker)은 P2-4의 클릭이다.
+
+## 8. V 출처 전환점(중앙 V가 게시될 때 바꿀 곳, 전부)
 
 1. `qgv.js`: `OFFICIAL_READER`(유일한 스위치)를 설정하고 `centralPage`를 구현한다. 중앙 V일 때는 Q·G도 게시본에서 읽고, sec-qgv2.json과 섞지 않는다.
 2. `data.js`: `FILES`에 게시 파일을 넣고 엄격 리더를 붙인다.
 3. Pages 가드 허용 목록에 넣는다(Main).
-4. `TargetV1Builder.finalize`가 `v_source`를 `DEVICE_TEMPORARY`로 직접 박는다(#391). 옵션을 추가해야 한다(Main이 #391에 요청).
-5. 엔진의 중앙 모드 계약: `forEngines`는 늘 기기 결과를 준다. 그래서 엔진 기록은 `engine_v_source`(지금은 DEVICE_TEMPORARY)를 남긴다. 중앙 행을 computed 모양으로 바꾸는 어댑터를 둘지는 그때 정한다.
+4. `TargetV1Builder.finalize`가 `v_source`를 `DEVICE_TEMPORARY`로 직접 박는다(#391). 옵션을 추가해야 한다(Main이 #391에 요청). #391 병합 전에는 `engines.js` finalize가 같은 값을 버전에 넣고, 병합 뒤에는 builder 값이 엔진 값과 같은지만 확인한다.
+5. 엔진의 중앙 모드 계약: `forEngines`는 늘 기기 결과를 준다. 그래서 엔진 기록(TARGET 버전의 `v_source`)은 `engine_v_source`(지금은 DEVICE_TEMPORARY)를 남긴다. 중앙 행을 computed 모양으로 바꾸는 어댑터를 둘지, 엔진은 DEVICE_TEMPORARY로 둘지는 그때 정한다. 바꿀 곳은 `qgv.js`의 `engine_v_source`와 `forEngines`, `engines.js` finalize다. TARGET 카드 판정 기록과 R-B 기록에는 출처 필드가 없다(옛 형식 그대로, 모두 기기 V).
 6. `OFFICIAL_CENTRAL` 문구는 초안이다. 전환할 때 사용자 확인을 받는다.
 
-## 8. 사용자 결정 대기 항목
+## 9. 사용자 결정 대기 항목
 
 - V 기록(D-21)을 클릭할 때만 남길지
 - 플레이북 판정 기록: 옛 앱은 판정할 때 기록했고, 새 앱은 `record(event)`를 누를 때만 기록한다
+- R-B(규칙 지수) 선정: 옛 화면은 열 때 자동으로 기록했고, 새 앱은 `selectRuleB(event)`를 누를 때만 기록한다
+- 가상매매 세트 B/C/D(사용자 장부 시트 읽기)와 기록 실행(`virtual.run`): P2-6 보고서 모델과 함께 정한다
 - IndexedDB 'market'에 시세를 계속 저장할지(계획 §2.1과 충돌)
 - 일일 보고서·보고서 모델(P2-6)
 - 로그인 두 번 누르기(준비 → 로그인)

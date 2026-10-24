@@ -88,6 +88,9 @@ function create({win,action}){
  function get(name){if(!FILE_SET.has(name))throw Error('PUBLIC_FILE_UNKNOWN');
   if(name===REPORTED)return cur.reported;if(name===EVIDENCE)return cur.evidence&&cur.evidence.payload?cur.evidence.payload:null;
   return Object.hasOwn(cur.screens,name)?cur.screens[name]:null;}
+ // The whole validated set of the current generation, as DataRefresh hands it to the app (app.js publicScreens): the old engines
+ // take it as one argument (MacroLights.setPublic, PlaybookScreen.prepareScores / factsFor, VirtualTradingCompare.typesFrom).
+ const screens=()=>cur.screens;
  const NOT_READ=Object.freeze({state:'NOT_READ',why:null,as_of:null,text:''});
  function textOf(name,f){if(Object.hasOwn(TEXT,f.why))return TEXT[f.why][0];const D=DR();return D?D.readText(name,f):'';}
  const statics=new Map();
@@ -132,7 +135,7 @@ function create({win,action}){
   subs.add(fn);const off=()=>{subs.delete(fn);};if(signal)signal.addEventListener('abort',off,{once:true});return off;}
  // The fixed 504-code Universe list (universe-codes.json, GoogleSheetSetup.codes), or null.
  const universe=()=>staticFile(CODES);
- return Object.freeze({FILES,CORE,LIST_FILES,STATIC,READERS,MAX_BYTES,EVENT,strictFetch,ready,get,state,publication,list,shares,financials,refresh,static:staticFile,peek,subscribe,universe});
+ return Object.freeze({FILES,CORE,LIST_FILES,STATIC,READERS,MAX_BYTES,EVENT,strictFetch,ready,get,screens,state,publication,list,shares,financials,refresh,static:staticFile,peek,subscribe,universe});
 }
 return Object.freeze({create,FILES,READERS,MAX_BYTES,EVENT});
 });
