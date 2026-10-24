@@ -57,15 +57,28 @@ function loadOld(win, names = reused()) {
 }
 /* A browser-like window for node tests. Its own functions refuse any other `this`, as a browser window does ("Illegal invocation"),
    so a view that forgets to bind them fails here too. fetch answers from `files` ({name: {status, json} | {status, body} |
-   {status, bytes}} or a function(name, init)) and records every request; timers are recorded, never run; trusted(type, props)
-   makes an event that claims a real user gesture (win.Event instance with isTrusted true, e.g. props {key: 'Enter'}). */
+   {status, bytes}} or a function(name, init)) and records every request; timers are recorded, never run.
+   Its Event follows the browser where the click gate reads it: isTrusted is an own accessor of each event and eventPhase a
+   prototype accessor, both refusing an object that is not a real event of this window (a forged prototype, a Proxy).
+   trusted(type, props) makes a real user gesture (isTrusted true, e.g. props {key: 'Enter'}) that is being dispatched until the
+   current task ends (setImmediate), as a handler's event is; ended(e) ends that dispatch now (a kept event replayed later). */
 function nodeWindow({ files = {}, origin = 'https://site.test' } = {}) {
   const events = new EventTarget(), doc = new EventTarget(), requests = [], timers = [];
   require('node:events').setMaxListeners(0, events, doc);// one window can serve many layer instances in a test
   Object.assign(doc, { visibilityState: 'visible', documentElement: { lang: 'ko' }, getElementById: () => null });
-  class TrustedEvent extends Event { get isTrusted() { return true; } }
-  const win = { requests, timers, document: doc, location: { href: origin + '/app/', origin }, Response, Headers, Event, CustomEvent, AbortController, URL, TextEncoder, TextDecoder,
-    trusted: (type, props = {}) => Object.defineProperties(new TrustedEvent(type), Object.fromEntries(Object.entries(props).map(([k, value]) => [k, { value }]))) };
+  const made = new WeakSet(), trustedSet = new WeakSet(), dispatching = new WeakSet();
+  const brand = (e) => { if (!made.has(e)) throw new TypeError('Illegal invocation'); };
+  function isTrusted() { brand(this); return trustedSet.has(this); }
+  class WinEvent extends Event {
+    constructor(type, init) { super(type, init); made.add(this); Object.defineProperty(this, 'isTrusted', { get: isTrusted, enumerable: true, configurable: false }); }
+    get eventPhase() { brand(this); return dispatching.has(this) ? 2 : super.eventPhase; }
+  }
+  const win = { requests, timers, document: doc, location: { href: origin + '/app/', origin }, Response, Request, Headers, Event: WinEvent, CustomEvent, AbortController, URL, TextEncoder, TextDecoder,
+    trusted: (type, props = {}) => {
+      const e = Object.defineProperties(new WinEvent(type), Object.fromEntries(Object.entries(props).map(([k, value]) => [k, { value }])));
+      trustedSet.add(e); dispatching.add(e); setImmediate(() => dispatching.delete(e)); return e;
+    },
+    ended: (e) => { dispatching.delete(e); return e; } };
   const own = (name, fn) => { win[name] = function (...a) { if (this !== win) throw new TypeError('Illegal invocation: ' + name); return fn(...a); }; };
   own('addEventListener', (...a) => events.addEventListener(...a));
   own('removeEventListener', (...a) => events.removeEventListener(...a));

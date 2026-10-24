@@ -3,8 +3,9 @@
    §1.1 (4), §3; critique #2, #4, #7b, #9.
    - ONE price view for every session and price call: GoogleSheetQuotes.sessionFor and PriceStore keep their state in WeakMaps
      keyed by the view, so a second view would be a second session and a second store. Its fetch sends a public name through
-     data.strictFetch and a private destination only while a click of the kind that allows it is in flight (action.guard);
-     its IndexedDB is read-only (a read never creates the device database, not even inside a click).
+     data.strictFetch and a private destination only while a click of the kind that allows it is in flight (action.guard), Sheets
+     only for the spreadsheets this device saved (the unified sheet, the Universe tab source); its IndexedDB is read-only (a
+     read never creates the device database, not even inside a click).
    - storeFacade is PriceStore as every other caller sees it: the price view forced into every call, closes answered only after
      a click read the user's price tabs in this sign-in (else {} / null: a read with fetch:false still loads the tabs from the
      Sheet, price-store.js ensureLoaded), never a Worker request. The old boot-time tab read is not used.
@@ -17,7 +18,9 @@
 // Old device keys this module reads (the store writes them): the Universe tab source (private-subset-view.js:3, its own setting)
 // and the Worker address (private-history.js:8). The device database name is device-actual.js:9.
 const UNIVERSE_SOURCE_KEY='investment.web.v1.universe-source',WORKER_ORIGIN_KEY='investment.web.v1.private-history-origin',DEVICE_DB='investment-device-actual-v1';
-const CATALOG='actual-catalog.json',HISTORY_RANGES=Object.freeze(['1mo','3mo','6mo','1y','2y','5y']);
+const CATALOG='actual-catalog.json',QGV2='sec-qgv2.json',HISTORY_RANGES=Object.freeze(['1mo','3mo','6mo','1y','2y','5y']);
+// The GIS stylesheet and script get this long inside the LOGIN click; a load that never settles must not keep the gate open.
+const PREPARE_MS=30000;
 // Codes a failed Universe read keeps; anything else is UNIVERSE_READ_FAILED (private-subset-view.js:81).
 const READ_CODES=Object.freeze(['SOURCE_TOO_LARGE','AUTH_REQUIRED','CANCELED','UNIVERSE_SOURCE_INVALID']);
 // PriceStore exports without a view or a request (constants and pure functions), passed through the facade unchanged.
@@ -69,7 +72,9 @@ function create({win,action,data}){
  },Object.fromEntries(PURE.map(k=>[k,{enumerable:true,get:()=>{const PS=win.PriceStore;return PS?PS[k]:undefined;}}]))));
 
  // ---- the price view: public names through strictFetch, private destinations only inside the click kind that allows them
- async function privateFetch(input,init){if(action.guard(input,init)==='PUBLIC')return data.strictFetch(input,init);return win.fetch(input,init);}
+ // The spreadsheets this device saved (GoogleSheetSetup.source: price tabs; the Universe tab source): no Sheets request reaches another.
+ function sheetIds(){const out=[];try{const id=need('GoogleSheetSetup').source(priceView);if(id)out.push(id);}catch(_){}try{const id=universeSource();if(id)out.push(id);}catch(_){}return out;}
+ async function privateFetch(input,init){if(action.guard(input,init,{sheets:sheetIds})==='PUBLIC')return data.strictFetch(input,init);return win.fetch(input,init);}
  const priceView=action.view({fetch:privateFetch,PrivateSubsetView:universeView,PriceStore:storeFacade},{readOnlyStores:true});
 
  // ---- the one Google session
@@ -98,7 +103,11 @@ function create({win,action,data}){
   subs.add(fn);const off=()=>{subs.delete(fn);};if(signal)signal.addEventListener('abort',off,{once:true});return off;}
 
  // ---- sign-in (decision 8): GIS script and token only inside a LOGIN click; the session refuses prepare until it is on.
- function prepare(event){return action.run(event,'LOGIN',()=>{const s=session();s.setEnabled(true);return s.prepare();});}
+ // The session's own prepare, ended by a time limit (PREPARE_TIMEOUT) or a cancel (CANCELED) so a stalled script load leaves the
+ // gate; the load itself may still finish later and the next login click uses it.
+ function prepare(event){return action.run(event,'LOGIN',signal=>{const s=session();s.setEnabled(true);const p=s.prepare();let timer=null,stop=null;
+  const limit=new Promise((_,reject)=>{timer=win.setTimeout(()=>reject(Error('PREPARE_TIMEOUT')),PREPARE_MS);stop=()=>reject(Error('CANCELED'));if(signal.aborted)stop();else signal.addEventListener('abort',stop,{once:true});});
+  return Promise.race([p,limit]).finally(()=>{win.clearTimeout(timer);signal.removeEventListener('abort',stop);});});}
  // GIS needs requestAccessToken synchronously inside the click (google-sheet-quotes.js:185).
  function login(event){return action.run(event,'LOGIN',()=>{session().login();});}
  function logout(event){return action.run(event,'LOGIN',()=>session().disconnect());}
@@ -175,8 +184,20 @@ function create({win,action,data}){
   const out=deepFreeze(PH.validateHistory(payload,{symbol,range}));histories.set(symbol+'|'+range,out);emit();return out;});}
  const held=(company,{range='1y'}={})=>{const s=targetSymbol(company);return s&&histories.get(s+'|'+range)||null;};
 
- // ---- one device price for display ([data-ram-price] only): QgvScores.collectQuotes' order for one company
+ // ---- one device price for display ([data-ram-price] only): QgvScores.collectQuotes' order and NA rules for one company
+ /* collectQuotes reads no price for a code stopped by an identity conflict (identity_withdrawn) or for a TARGET whose ticker is the
+    symbol of a Universe code withdrawn for a conflict (priceConflict, PRICE_IDENTITY_CONFLICT); the score path then has no V for
+    it, so neither is a price shown. The record is QgvScores' codeIndex choice: the identity's own TARGET row when it has data,
+    else the Universe code of its ticker; a code asked for directly is its own record. No published file: no rule to apply. */
+ function stopped(c,records){const code=str(c.code),ticker=str(c.ticker),id=str(c.company_id)||str(c.id);let rec=code&&Object.hasOwn(records,code)?code:null;
+  if(!rec&&id){const t='TARGET:'+id,r=Object.hasOwn(records,t)?records[t]:null;if(object(r)&&r.state!=='NOT_AVAILABLE')rec=t;}
+  if(!rec&&ticker)rec=Object.keys(records).find(k=>!k.startsWith('TARGET:')&&symbolOf(k)===key(ticker))||null;
+  if(!rec)return null;if(object(records[rec])&&records[rec].identity_withdrawn===true)return'IDENTITY_CONFLICT_WITHDRAWN';
+  if(rec.startsWith('TARGET:')&&ticker&&Object.entries(records).some(([k,r])=>!k.startsWith('TARGET:')&&object(r)&&r.universe_withdrawal===true&&symbolOf(k)===key(ticker)))return'PRICE_IDENTITY_CONFLICT';
+  return null;}
  async function quote(company){const c=object(company)?company:{},code=str(c.code),ticker=str(c.ticker);
+  let inputs=null;try{await data.ready();inputs=data.get(QGV2);}catch(_){inputs=null;}
+  const why=inputs&&object(inputs.records)?stopped(c,inputs.records):null;if(why)return Object.freeze({state:'NA',reason:why});
   const ram=(q,extra)=>Object.freeze({state:'OK',price:q.price,currency:q.currency,...extra});
   if(kept){const b=kept.basis,u={source:'UNIVERSE_SHEET',read_at:b.acquired_at,as_of:null,time_status:'UNCONFIRMED',freshness:'UNDETERMINED'};
    if(code&&kept.prices.has(code))return ram(kept.prices.get(code),u);

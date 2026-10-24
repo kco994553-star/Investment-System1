@@ -7,8 +7,10 @@
    - Page and row records are a projection of that result: no price, quote, month close, EV, yield or reference range (engine
      `detail` / `reference_range`, collectQuotes quotes and meta) leaves this module, a missing value is null and always carries
      its reason code, rows keep QgvScores' order and rank fields (sorting / filters / radar are P2-2, reusing the old functions).
-   - One V source switch for the whole page (V percentiles depend on which rows are priced): OFFICIAL_READER below. Engines
-     always compute with the device result (forEngines), so a page also says engine_v_source. */
+   - One V source switch for the whole page (V percentiles depend on which rows are priced): OFFICIAL_READER below routes page()
+     to the central or the device page. A device page (and a preview) is computed from device quotes, so it is always labelled
+     DEVICE_TEMPORARY, whatever the switch says by the time it is built. Engines always compute with the device result
+     (forEngines), so a page also says engine_v_source. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else{const I=root.IS2=root.IS2||{};I.qgv=api.create({win:root,data:I.data,prices:I.prices,action:I.action});}})(typeof globalThis==='object'?globalThis:this,function(){
 'use strict';
 // DEVICE_TEMPORARY is byte-identical to #391 TargetV1Builder.V_SOURCE. OFFICIAL_CENTRAL is draft wording (owner sign-off when the
@@ -47,6 +49,7 @@ const TEXT=Object.freeze({
  NOT_RANKED:['순위 없음','Not ranked'],
  WEIGHTS_INVALID:['개인 가중치가 올바르지 않습니다','Invalid personal weights'],
  DEVICE_STORE_NOT_OPENED:['이 기기 저장소가 아직 없습니다','No device store yet'],
+ CATALOG_NOT_AVAILABLE:['기업 목록 파일을 읽지 못해 TARGET 행이 없습니다','The company catalog could not be read: no TARGET rows'],
  NO_OFFICIAL_YET:['중앙 V 게시본이 아직 없습니다(초안 문구)','No central V publication yet (draft wording)'],
  SUPPLY_FAILED:['중앙 V 가격 공급 실패(초안 문구)','Central V price supply failed (draft wording)'],
  VERIFY_FAILED:['중앙 V 검증 실패(초안 문구)','Central V verification failed (draft wording)'],
@@ -69,8 +72,9 @@ function create({win,data,prices,action}){
   data.subscribe(()=>emit('DATA'));if(P&&typeof P.subscribe==='function')P.subscribe(()=>emit('PRICES'));}
  function check(){if(READERS.some(n=>!win[n]))throw Error('READER_MISSING');}
  const stop=signal=>{if(signal&&signal.aborted)throw Error('ABORTED');};
- function emptyPage(state,reason,pub){const vs=V_SOURCES[vSource(pub)],pg=deepFreeze({v_source:vs,engine_v_source:V_SOURCES.DEVICE_TEMPORARY,state,reason,as_of:null,calc_version:null,type_scope:null,profile_id:null,preset:null,gate:null,
-  generation:pub?pub.generation:0,basis_id:null,price_basis:priceBasis(null,null),coverage:null,rows:[]});known.add(pg);return pg;}
+ // A device page without a result (no usable sec-qgv2.json).
+ function emptyPage(state,reason,pub){const pg=deepFreeze({v_source:V_SOURCES.DEVICE_TEMPORARY,engine_v_source:V_SOURCES.DEVICE_TEMPORARY,state,reason,as_of:null,calc_version:null,type_scope:null,profile_id:null,preset:null,gate:null,
+  generation:pub?pub.generation:0,basis_id:null,price_basis:priceBasis(null,null),identities:null,coverage:null,rows:[]});known.add(pg);return pg;}
  function absent(){const s=data.state(QGV2);
   if(s.state==='FAILED'&&s.why==='SCHEMA_NEWER')return['DATA_FORMAT_NEWER','SEC_QGV2_SCHEMA_NEWER'];
   if(s.state==='FAILED')return['READ_FAILED',s.why==='INVALID'?'SEC_QGV2_INVALID':'SEC_QGV2_UNAVAILABLE'];
@@ -105,14 +109,16 @@ function create({win,data,prices,action}){
    flags:[...flags],value_trap_gate:p.value_trap_gate===true,v_excluded:str(p.v_excluded),types:{selected:Array.isArray(p.selected_types)?[...p.selected_types]:[],reason:str(p.type_reason)},
    row_state:src?str(src.state):null,acquired_at:src?str(src.acquired_at):null,fiscal_year_end:src?str(src.fiscal_year_end):null,profile:src?str(src.profile):null,
    source_reason_codes:src&&Array.isArray(src.reason_codes)?[...src.reason_codes]:[]};}
+ // A device result: computed from device quotes, so DEVICE_TEMPORARY (never the switch state read again after the awaits).
  function project(result,inputs,pub){
-  const QS=win.QgvScores,c=result.computed,vs=V_SOURCES[vSource(pub)],weights=QS.provenance({kind:'QGV',profile:c.profile}).weights,targets=new Set(ids.map(x=>x.company_id));
+  const QS=win.QgvScores,c=result.computed,vs=V_SOURCES.DEVICE_TEMPORARY,weights=QS.provenance({kind:'QGV',profile:c.profile}).weights,targets=new Set(ids.map(x=>x.company_id));
   const of=object(c.official)&&Number.isInteger(c.official.ranked)?c.official.ranked:Object.values(c.rows).filter(r=>Number.isInteger(r.rank)).length;
   const cov=QS.vCoverage(result,inputs),b=object(result.price_basis)?result.price_basis:null,calc=str(inputs.calc_version);
   return deepFreeze({v_source:vs,engine_v_source:V_SOURCES.DEVICE_TEMPORARY,state:'READY',reason:c.v2_state==='READY'?null:c.v2_reason?c.v2_reason:'V2_SCORES_NOT_AVAILABLE',
    as_of:str(c.v2_as_of),calc_version:calc,type_scope:str(c.profile.type_scope),profile_id:c.profile.id,preset:c.profile.preset,gate:c.profile.gate,generation:pub.generation,
    basis_id:JSON.stringify([str(c.v2_as_of),calc,b?str(b.read_id)||str(b.acquired_at)||'READ':null,c.profile.id,pub.generation,epoch]),
-   price_basis:priceBasis(b,cov),coverage:cov,rows:Object.values(c.rows).map(r=>rowRecord(r,{vs,weights,of,targets}))});}
+   price_basis:priceBasis(b,cov),identities:ids.length?{state:'OK',reason:null,count:ids.length}:{state:'NOT_AVAILABLE',reason:'CATALOG_NOT_AVAILABLE',count:0},
+   coverage:cov,rows:Object.values(c.rows).map(r=>rowRecord(r,{vs,weights,of,targets}))});}
  async function devicePage(pub,{preset,gate,signal}){
   const QS=win.QgvScores,inputs=data.get(QGV2);if(!inputs){const[state,reason]=absent();return emptyPage(state,reason,pub);}
   const catalog=await data.static(CATALOG),list=identitiesOf(catalog),key=JSON.stringify(list);stop(signal);
@@ -120,7 +126,7 @@ function create({win,data,prices,action}){
   fin=await data.financials().catch(()=>null);await action.stores();stop(signal);
   const result=await QS.pageResult(scoreView,{v2Inputs:inputs,catalog,identities:ids,preset,gate});stop(signal);
   if(!result){const[state,reason]=absent();return emptyPage(state,reason,pub);}
-  let pg=byResult.get(result);if(!pg){pg=project(result,inputs,data.publication());byResult.set(result,pg);held.set(pg,{result,inputs});known.add(pg);}
+  let pg=byResult.get(result);if(!pg){pg=project(result,inputs,pub);byResult.set(result,pg);held.set(pg,{result,inputs});known.add(pg);}
   return pg;}
  // Central V page (qgv-official/1, Q·G·V all from the publication, never mixed with sec-qgv2.json): not built while OFFICIAL_READER is null.
  function centralPage(){throw Error('NO_OFFICIAL_YET');}
@@ -128,6 +134,8 @@ function create({win,data,prices,action}){
  async function page({preset,gate,signal}={}){check();wire();await data.ready();stop(signal);const pub=data.publication();
   return vSource(pub)==='OFFICIAL_CENTRAL'?centralPage(pub):devicePage(pub,{preset,gate,signal});}
  function of_(pg){if(!known.has(pg))throw Error('PAGE_UNKNOWN');return pg;}
+ // A page this accessor made (engines refuse anything else with PAGE_UNKNOWN before reading its fields).
+ const isPage=pg=>known.has(pg);
  // A page without a result (NO_DATA, READ_FAILED, DATA_FORMAT_NEWER) has rows [] and nothing to preview or hand to engines.
  function result_(pg){of_(pg);const h=held.get(pg);if(!h)throw Error('PAGE_NOT_READY');return h;}
  function rows(pg,{scope='ALL'}={}){of_(pg);if(scope==='ALL')return pg.rows;if(scope!=='UNIVERSE'&&scope!=='TARGET')throw Error('SCOPE_UNKNOWN');
@@ -135,12 +143,15 @@ function create({win,data,prices,action}){
  // By id, else the row standing for that Universe code (QgvScores.rowOf / codeRow: a TARGET in the Universe is that code's row).
  function row(pg,id){of_(pg);return pg.rows.find(r=>r.id===id)||pg.rows.find(r=>r.code===id)||null;}
  const coverage=pg=>{of_(pg);return pg.coverage;};
- // Personal preview of the user's own weights over the same inputs and prices: never primary, never an official rank (QgvScores.compute weights).
- function preview(pg,weights,{typeWeights=true}={}){const h=result_(pg),QS=win.QgvScores,c=h.result.computed;let refs={};try{refs=JSON.parse(h.result.reference_key);}catch(_){refs={};}
-  const out=QS.compute({identities:h.result.identities,v2Inputs:h.inputs,quotes:h.result.quotes,preset:c.profile.preset,gate:c.profile.gate,referenceRows:refs,official:h.result.official,weights,typeWeights});
+ /* Personal preview of the user's own weights over the same inputs, prices and population: never primary, never an official rank.
+    The 2.2 personal call (device-profiles.js compare): QgvScores.compute({...base, gate, weights, typeWeights}) with no preset and the
+    weight profile's own gate (gate null = QgvV2.GATE_DEFAULT, on). Device quotes: DEVICE_TEMPORARY. */
+ function preview(pg,weights,{typeWeights=true,gate=null}={}){const h=result_(pg),QS=win.QgvScores;if(gate!==null&&typeof gate!=='boolean')throw Error('GATE_INVALID');
+  let refs={};try{refs=JSON.parse(h.result.reference_key);}catch(_){refs={};}
+  const out=QS.compute({identities:h.result.identities,v2Inputs:h.inputs,quotes:h.result.quotes,referenceRows:refs,official:h.result.official,gate,weights,typeWeights}),vs=V_SOURCES.DEVICE_TEMPORARY;
   const x=out.personal,rs=Object.values(out.rows),of=rs.filter(r=>Number.isInteger(r.personal_rank)).length,targets=new Set(ids.map(i=>i.company_id));
-  return deepFreeze({weights:'PERSONAL',state:x.state,reason:str(x.reason),label:[...x.label],profile_id:x.profile?x.profile.id:null,v_weight_zero:x.v_weight_zero===true,
-   rows:x.state==='INVALID'?[]:rs.map(r=>rowRecord(r,{vs:pg.v_source,weights:'PERSONAL',of,targets,personal:true}))});}
+  return deepFreeze({weights:'PERSONAL',v_source:vs,state:x.state,reason:str(x.reason),label:[...x.label],profile_id:x.profile?x.profile.id:null,v_weight_zero:x.v_weight_zero===true,
+   rows:x.state==='INVALID'?[]:rs.map(r=>rowRecord(r,{vs,weights:'PERSONAL',of,targets,personal:true}))});}
  function setProfile({preset=null,gate=null}={}){const V2=win.QgvV2;if(preset!==null&&!(V2&&Object.hasOwn(V2.PRESETS,preset)))throw Error('PRESET_UNKNOWN');if(gate!==null&&typeof gate!=='boolean')throw Error('GATE_INVALID');
   profile=Object.freeze({preset,gate});emit('PROFILE');return profile;}
  function reasonText(code,en=false){const QS=win.QgvScores;if(typeof code==='string'&&QS&&Object.hasOwn(QS.REASON,code))return QS.reasonText(code,en);if(typeof code==='string'&&Object.hasOwn(TEXT,code))return TEXT[code][en?1:0];return QS?QS.reasonText(code,en):String(code);}
@@ -155,7 +166,7 @@ function create({win,data,prices,action}){
  // engines.js only, with forEngines: the sec-qgv2.json value (Qgv2Inputs output) that result was computed from (a re-judgement can
  // replace data.get's value later), and the score view itself (PlaybookScreen.prepareScores reads the same shared result through it).
  const engineInputs=pg=>result_(pg).inputs;
- return Object.freeze({V_SOURCES,READERS,vSource:()=>vSource(data.publication()),page,row,rows,coverage,preview,setProfile,profile:()=>profile,reasonText,constants,subscribe,forEngines,engineInputs,scoreView});
+ return Object.freeze({V_SOURCES,READERS,vSource:()=>vSource(data.publication()),page,isPage,row,rows,coverage,preview,setProfile,profile:()=>profile,reasonText,constants,subscribe,forEngines,engineInputs,scoreView});
 }
 return Object.freeze({create,V_SOURCES,READERS});
 });

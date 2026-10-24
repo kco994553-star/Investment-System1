@@ -6,6 +6,8 @@
      public files through data.strictFetch only (no private destination at all).
    - IndexedDB (DeviceActual's database) is read only when it already exists; a read never creates it (DeviceActual opens with
      onupgradeneeded, device-actual.js:189). A backup restore without holdings on a device without the database creates none.
+     A browser that cannot list databases (no indexedDB.databases()) opens it only inside a storage-writing click (Main decision
+     4), so a backup download there still carries the stored holdings.
    - Backups: schemas /1–/4 as before; /5 (user objects: chart notes, macro estimates) needs validators that are not loaded in P1
      and is refused with BACKUP_USER_OBJECTS_UNSUPPORTED. A backup never holds a price, a sheet id, a token or the Worker address.
    - Sheet ids and the Worker address never come back to a screen: has() / set() only. */
@@ -34,14 +36,17 @@ function create({win,action,data}){
  if(!action||typeof action.view!=='function'||!data||typeof data.strictFetch!=='function')throw Error('LAYER_MISSING');
  const need=n=>{const m=win[n];if(!m)throw Error('READER_MISSING');return m;};
  const subs=new Set(),changed=what=>{for(const fn of[...subs]){try{fn(what);}catch(_){}}};
- const exists=async()=>(await action.stores()).names.includes(KEYS.DEVICE_DB);
+ // The device database exists; or the browser cannot say (no databases()) and a storage-writing click is in flight, where the gate
+ // lets the real open run (outside a click such a browser reads no stored holdings: DEVICE_STORE_NOT_OPENED).
+ const known=async()=>(await action.stores()).names.includes(KEYS.DEVICE_DB);
+ const exists=async()=>{const s=await action.stores();return s.names.includes(KEYS.DEVICE_DB)||s.supported===false&&s.available===true&&action.writing();};
  /* DeviceActual as the store's old callers see it (DeviceBackup.read / restore): stored holdings only from an existing database,
     and a restore that has no holdings to write does not create one. Everything else is the module unchanged. */
  let actualMemo=null;
  function actual(){const DA=win.DeviceActual;if(!DA)return DA;if(actualMemo&&actualMemo.of===DA)return actualMemo.api;
   const api=Object.freeze({...DA,
    async readHoldings(view,catalog){return await exists()?DA.readHoldings(view,catalog):null;},
-   async restoreHoldings(view,catalog,snapshot){if(snapshot===null&&!(await exists()))return null;return DA.restoreHoldings(view,catalog,snapshot);}});
+   async restoreHoldings(view,catalog,snapshot){if(snapshot===null&&!(await known()))return null;return DA.restoreHoldings(view,catalog,snapshot);}});
   actualMemo={of:DA,api};return api;}
  const view=action.view(Object.defineProperties({fetch:data.strictFetch},{DeviceActual:{enumerable:true,get:actual}}));
  // The gated localStorage every store call (and engines.js) hands to the old modules.

@@ -1,15 +1,20 @@
 'use strict';
 // New frontend P1 · action gate, public data and the QGV accessor (web_app/action.js, data.js, qgv.js).
-//  - action: only a trusted click / submit / Enter-Space runs fn (a synthetic event or a plain object claiming isTrusted is refused);
-//    private destinations only for the kind in flight; storage writes only inside a writing action; IndexedDB never created by a
-//    read; views keep the real window as `this` for its functions (DataRefresh.proxy rule) and refuse writes to window globals.
-//  - data: one strict request function (fixed file list, same origin, no credentials / redirect / referrer, 2 MiB, status kept),
-//    the old readers' validation through the DataRefresh core: the 100 sec_qgv2 vectors keep SecQgv2.validate's verdict on the
-//    page path and in peek; a refresh that applies dispatches 'public-data-updated' on the window and commits the new set; a
-//    re-judgement without network restates rows; READER_MISSING instead of a lighter path.
+//  - action: only a trusted click / Enter-Space being dispatched runs fn (a submit, a synthetic event, a plain object or a forged
+//    event claiming isTrusted, and a kept event replayed after its dispatch are refused; a nested run of the same event while its
+//    action is in flight passes); cancel leaves the gate at once; private destinations only for the kind in flight, Sheets only
+//    for saved spreadsheets and a values GET for a read (a Request's own method counts); storage writes only inside a writing
+//    action; IndexedDB never created by a read; views keep the real window as `this` for its functions (DataRefresh.proxy rule)
+//    and refuse writes to window globals.
+//  - data: one strict request function (fixed file list, same origin, no credentials / redirect / referrer, status kept, a body
+//    over 2 MiB handed on empty so it is an invalid file), the old readers' validation through the DataRefresh core: the 100
+//    sec_qgv2 vectors keep SecQgv2.validate's verdict on the page path and in peek; a refresh that applies dispatches
+//    'public-data-updated' on the window and commits the new set; a re-judgement without network restates rows (fixed clock,
+//    no wall time); a failed static read is read again by the next call; READER_MISSING instead of a lighter path.
 //  - qgv: the page rows are an exact projection of QgvScores.pageResult computed with the same score view (critique #10: no
 //    vector injected into the accessor); no price or price-derived field leaves; a null value always has its reason; V source
-//    always DEVICE_TEMPORARY with #391's words; v_factors = TargetV1Builder.vFactors; personal preview never official.
+//    always DEVICE_TEMPORARY with #391's words on a device page, even if the switch changes while it is computed; v_factors =
+//    TargetV1Builder.vFactors; personal preview never official and computed as the 2.2 personal call (its own gate, no preset).
 // Synthetic data only (tools/qgv_v2_fixture.js, tests/fixtures); sentinel prices are made up.
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -32,6 +37,13 @@ const SENTINEL = (i) => 17 + i + 0.0731946;
 const BASIS = { source: 'GOOGLEFINANCE_PRIVATE_UNIVERSE', read_id: 'job_sentinel', acquired_at: '2026-10-18T09:00:00.000Z', currency: 'USD', price_time: null };
 const PRICE_KEYS = new Set(['quotes', 'quote_meta', 'month_closes', 'detail', 'reference_range', 'price', 'prices', 'market_cap', 'marketcap', 'ev', 'enterprise_value', 'ebit_yield', 'fcf_yield', 'implied_growth', 'currency_price']);
 const fresh = (name) => { delete require.cache[require.resolve(R.newPath(name))]; return R.requireNew(name); };
+// A fixed clock for the old modules (Date.now and new Date()): freshness boundaries without wall time.
+function fixedClock(start) {
+  const Real = Date; let now = start;
+  class Fixed extends Real { constructor(...a) { super(...(a.length ? a : [now])); } static now() { return now; } }
+  globalThis.Date = Fixed;
+  return { set: (t) => { now = t; }, restore: () => { globalThis.Date = Real; } };
+}
 
 function universeView(payload = F.strictPayload()) {
   const prices = new Map(); let i = 0;
@@ -57,30 +69,57 @@ function keysDeep(v, out = new Set()) { if (v && typeof v === 'object') for (con
 const finiteOrNull = (v) => (typeof v === 'number' && Number.isFinite(v) ? v : null);
 
 // ---------------------------------------------------------------- action gate
-test('action.run: only a trusted gesture of the window runs fn, in the same tick; the kind stays in flight until fn settles', async () => {
+test('action.run: only a trusted gesture of the window being dispatched runs fn, in the same tick; the kind stays in flight until fn settles', async () => {
   const win = R.nodeWindow(), A = fresh('action.js').create({ win });
   let ran = 0;
-  for (const e of [undefined, null, { type: 'click', isTrusted: true }, new Event('click'), win.trusted('mouseover'), win.trusted('keydown', { key: 'a' })])
+  // A submit is not a gesture: the browser marks form.requestSubmit() and a script's submitter.click() submits as trusted.
+  const forgedProto = Object.create(win.Event.prototype, { isTrusted: { value: true }, type: { value: 'click' } });
+  const forgedProxy = new Proxy(new win.Event('click'), { get: (t, k) => (k === 'isTrusted' ? true : Reflect.get(t, k)) });
+  assert.ok(forgedProto instanceof win.Event && forgedProxy instanceof win.Event && forgedProxy.isTrusted === true, 'both forgeries pass instanceof and claim isTrusted');
+  for (const e of [undefined, null, { type: 'click', isTrusted: true }, new Event('click'), new win.Event('click'), forgedProto, forgedProxy, win.trusted('submit'), win.trusted('mouseover'), win.trusted('keydown', { key: 'a' })])
     assert.throws(() => A.run(e, 'WRITE', () => { ran++; }), /CLICK_REQUIRED/);
   assert.throws(() => A.run(win.trusted('click'), 'NOPE', () => {}), /ACTION_KIND_UNKNOWN/);
   assert.equal(ran, 0);
-  let inside = null; const out = A.run(win.trusted('click'), 'WRITE', (signal) => { inside = [A.active(), A.active('WRITE'), signal.aborted]; return 7; });
-  assert.deepEqual(inside, [true, true, false], 'fn ran synchronously inside the click');
+  let inside = null; const out = A.run(win.trusted('click'), 'WRITE', (signal) => { inside = [A.active(), A.active('WRITE'), A.writing(), signal.aborted]; return 7; });
+  assert.deepEqual(inside, [true, true, true, false], 'fn ran synchronously inside the click');
   assert.equal(out, 7); assert.equal(A.active(), false);
-  for (const e of [win.trusted('submit'), win.trusted('keydown', { key: 'Enter' }), win.trusted('keydown', { key: ' ' })]) assert.equal(A.run(e, 'LOGIN', () => 1), 1);
+  for (const e of [win.trusted('keydown', { key: 'Enter' }), win.trusted('keydown', { key: ' ' })]) assert.equal(A.run(e, 'LOGIN', () => 1), 1);
   let release; const p = A.run(win.trusted('click'), 'SYNC', () => new Promise((r) => { release = r; }));
   assert.equal(A.active('SYNC'), true);
-  A.cancel('SYNC'); release('done'); assert.equal(await p, 'done'); assert.equal(A.active(), false);
+  // cancel leaves the gate at once, even while fn has not settled (a stalled step cannot keep it open).
+  A.cancel('SYNC'); assert.equal(A.active('SYNC'), false, 'cancelled: out of the gate before fn settles'); release('done'); assert.equal(await p, 'done'); assert.equal(A.active(), false);
   assert.throws(() => A.run(win.trusted('click'), 'WRITE', () => { throw Error('X'); }), /X/); assert.equal(A.active(), false, 'a throwing fn leaves the gate');
+  // A kept event after its dispatch: refused, whatever kind it is replayed for.
+  const kept = win.trusted('click'); A.run(kept, 'WRITE', () => 1); win.ended(kept);
+  for (const kind of ['WRITE', 'UNIVERSE_READ', 'LOGIN']) assert.throws(() => A.run(kept, kind, () => { ran++; }), /CLICK_REQUIRED/, kind);
+  const later = win.trusted('click'); await new Promise((r) => setImmediate(r));
+  assert.throws(() => A.run(later, 'WRITE', () => { ran++; }), /CLICK_REQUIRED/, 'the dispatch ended with its task');
+  assert.equal(ran, 0);
+  // Nested: while an action started from the event is in flight, the same event may start the next step after awaits.
+  const e = win.trusted('click'); let nested = null;
+  const outer = A.run(e, 'SYNC', async () => { await new Promise((r) => setImmediate(r)); nested = await A.run(e, 'SYNC', async () => A.active('SYNC')); return 'outer'; });
+  assert.equal(await outer, 'outer'); assert.equal(nested, true, 'the nested run of the same event passed after its dispatch ended');
+  assert.throws(() => A.run(e, 'SYNC', () => 1), /CLICK_REQUIRED/, 'once the outer action settled, the event is a replay');
+  const other = win.trusted('click'); A.run(other, 'WRITE', () => 1);
+  const held = A.run(win.trusted('click'), 'SYNC', () => new Promise(() => {})); void held; win.ended(other);
+  assert.throws(() => A.run(other, 'SYNC', () => 1), /CLICK_REQUIRED/, 'another event in flight does not lend its permission'); A.cancel('SYNC');
+  // Transient activation, where the browser reports it.
+  win.navigator = { userActivation: { isActive: false } };
+  assert.throws(() => A.run(win.trusted('click'), 'WRITE', () => 1), /CLICK_REQUIRED/, 'no user activation');
+  win.navigator.userActivation.isActive = true; assert.equal(A.run(win.trusted('click'), 'WRITE', () => 2), 2);
 });
 
-test('action.guard: each kind reaches only its private destinations; the public refresh opens none; blocked() counts refusals', async () => {
+test('action.guard: each kind reaches only its private destinations; Sheets only the saved spreadsheets; the public refresh opens none; blocked() counts refusals', async () => {
   const win = R.nodeWindow(); R.loadOld(win, ['app-config.js']); const A = fresh('action.js').create({ win });
-  const W = win.InvestmentAppConfig.privateHistoryWorkerOrigin;
-  const dest = { values: ['https://sheets.googleapis.com/v4/spreadsheets/x/values/A1', {}], append: ['https://sheets.googleapis.com/v4/spreadsheets/x/values/A1:append', { method: 'POST' }],
+  const W = win.InvestmentAppConfig.privateHistoryWorkerOrigin, S = 'https://sheets.googleapis.com/v4/spreadsheets/';
+  const dest = { values: [S + 'x/values/A1', {}], append: [S + 'x/values/A1:append', { method: 'POST' }],
     oauth: ['https://oauth2.googleapis.com/token', {}], history: [W + '/history?symbol=SPY&range=1y', {}], worker: [W + '/quote', {}] };
   assert.equal(A.classify('sec-qgv2.json'), 'PUBLIC'); assert.equal(A.guard('sec-qgv2.json'), 'PUBLIC');
   assert.deepEqual(Object.fromEntries(Object.entries(dest).map(([k, d]) => [k, A.classify(...d)])), { values: 'SHEETS_READ', append: 'SHEETS_WRITE', oauth: 'OAUTH', history: 'WORKER_HISTORY', worker: 'WORKER' });
+  // A read is a values GET; the tab list and a create are not; a Request object keeps its own method.
+  assert.deepEqual([A.classify(S + 'x?fields=sheets'), A.classify(S.slice(0, -1) + '?fields=spreadsheetId', { method: 'POST' }), A.classify(S + 'x/values/A1', { method: 'put' })], ['SHEETS_WRITE', 'SHEETS_WRITE', 'SHEETS_WRITE']);
+  const post = new Request(S + 'x/values/A1:append', { method: 'POST', body: '{}' });
+  assert.equal(A.classify(post), 'SHEETS_WRITE'); assert.equal(A.classify(new Request(S + 'x/values/A1')), 'SHEETS_READ'); assert.equal(A.classify(new URL(S + 'x/values/A1')), 'SHEETS_READ');
   for (const d of Object.values(dest)) assert.throws(() => A.guard(...d), /CLICK_REQUIRED/);
   assert.equal(A.blocked(), 5);
   assert.throws(() => A.guard('https://example.invalid/x'), /DESTINATION_UNKNOWN/); assert.equal(A.blocked(), 6);
@@ -89,6 +128,16 @@ test('action.guard: each kind reaches only its private destinations; the public 
     const seen = A.run(win.trusted('click'), kind, () => Object.keys(dest).filter((k) => { try { A.guard(...dest[k]); return true; } catch (e) { assert.match(e.message, /CLICK_REQUIRED/); return false; } }));
     assert.deepEqual(seen, ok, kind);
   }
+  // Inside a read click: a POST as a Request object or a non-string target is refused, and only saved spreadsheets are reached.
+  const before = A.blocked(), ids = () => ['x'];
+  const inRead = A.run(win.trusted('click'), 'UNIVERSE_READ', () => Object.fromEntries(Object.entries({
+    request: () => A.guard(post, undefined, { sheets: ids }), url: () => A.guard(new URL(S + 'x/values/A1'), {}, { sheets: ids }), saved: () => A.guard(S + 'x/values/A1', {}, { sheets: ids }),
+    other: () => A.guard(S + 'someone_elses_sheet/values/A1', {}, { sheets: ids }), none: () => A.guard(S + 'x/values/A1', {}, { sheets: [] }) })
+    .map(([k, f]) => { try { return [k, f()]; } catch (e) { return [k, e.message]; } })));
+  assert.deepEqual(inRead, { request: 'DESTINATION_UNKNOWN', url: 'DESTINATION_UNKNOWN', saved: 'SHEETS_READ', other: 'DESTINATION_UNKNOWN', none: 'DESTINATION_UNKNOWN' });
+  assert.equal(A.blocked() - before, 4);
+  const create = A.run(win.trusted('click'), 'SYNC', () => { try { return A.guard(S.slice(0, -1) + '?fields=spreadsheetId', { method: 'POST' }, { sheets: ids }); } catch (e) { return e.message; } });
+  assert.equal(create, 'DESTINATION_UNKNOWN', 'no new spreadsheet through the price view');
   assert.equal(A.active(), false);
 });
 
@@ -106,7 +155,7 @@ test('action storage: writes only inside a writing action (ACTION_REQUIRED, stor
   A.run(win.trusted('click'), 'WRITE', () => S.setItem('k', 'w')); assert.equal(store.get('k'), 'w');
   const D = A.gatedIndexedDB(() => win.indexedDB), RO = A.gatedIndexedDB(() => win.indexedDB, { readOnly: true });
   assert.throws(() => D.open('investment-device-actual-v1', 1), /DEVICE_STORE_NOT_OPENED/, 'unknown until stores() lists it');
-  assert.deepEqual(await A.stores(), { supported: true, names: ['investment-device-actual-v1'] });
+  assert.deepEqual(await A.stores(), { supported: true, available: true, names: ['investment-device-actual-v1'] });
   assert.deepEqual(D.open('investment-device-actual-v1', 1), { n: 'investment-device-actual-v1', v: 1 });
   assert.throws(() => D.open('other', 1), /DEVICE_STORE_NOT_OPENED/);
   assert.throws(() => A.run(win.trusted('click'), 'UNIVERSE_READ', () => RO.open('other', 1)), /DEVICE_STORE_NOT_OPENED/, 'the score path never creates a database');
@@ -114,7 +163,7 @@ test('action storage: writes only inside a writing action (ACTION_REQUIRED, stor
   assert.deepEqual(opened, ['investment-device-actual-v1', 'other']);
   assert.throws(() => D.deleteDatabase('other'), /ACTION_REQUIRED/);
   win.indexedDB = { open: () => ({}) };// no databases(): only what this session already opened stays known; nothing new opens outside an action
-  assert.deepEqual(await A.stores(), { supported: false, names: ['investment-device-actual-v1', 'other'] });
+  assert.deepEqual(await A.stores(), { supported: false, available: true, names: ['investment-device-actual-v1', 'other'] });
   assert.throws(() => D.open('third', 1), /DEVICE_STORE_NOT_OPENED/);
 });
 
@@ -142,7 +191,7 @@ test('data: fixed file list = the readers own names; strict request options; not
   await assert.rejects(data.strictFetch('../sec-qgv2.json'), /PUBLIC_FILE_UNKNOWN/);
   await assert.rejects(data.strictFetch('data.json'), /PUBLIC_FILE_UNKNOWN/);
   await assert.rejects(data.strictFetch(QGV2, { method: 'POST' }), /PUBLIC_FILE_METHOD/);
-  await assert.rejects(data.strictFetch('entities.json'), /PUBLIC_FILE_TOO_LARGE/);
+  const big = await data.strictFetch('entities.json'); assert.equal(big.status, 200); assert.equal(await big.text(), '', 'over 2 MiB: an empty body with the real status (an invalid file, not a network failure)');
   assert.equal(await data.static('entities.json'), null); assert.equal(data.state('entities.json').state, 'FAILED'); assert.equal(data.state('entities.json').why, 'INVALID');
   const r404 = await data.strictFetch('macro-screen.json'); assert.equal(r404.status, 404, 'status kept (404 = not published)');
   const pub = await data.ready(); assert.equal(pub.generation, 1); assert.equal(data.ready(), data.ready());
@@ -213,20 +262,41 @@ test('data.refresh: trusted click only; APPLIED dispatches public-data-updated o
 });
 
 test('data re-judgement: no network, sec-qgv2 rows restated when their freshness boundary passes (timer, visibility, hashchange)', async () => {
-  const p = F.strictPayload(), now = Date.now(), at = (ms) => new Date(ms).toISOString().replace(/\.\d+Z$/, 'Z'), bound = now + 1500;
-  p.as_of = at(now); p.records['NYSE:MMM'].acquired_at = at(bound - p.stale_after_seconds * 1000);
-  const { win, data } = env({ files: { [QGV2]: { json: p } } });
-  await data.ready();
-  assert.equal(data.get(QGV2).records['NYSE:MMM'].state, 'LIVE');
-  const tick = win.timers.find((t) => t.ms === 60000); assert.ok(tick, 'a one-minute re-judgement timer');
-  while (Date.now() <= bound + 20) await new Promise((r) => setTimeout(r, 50));
-  const before = win.requests.length, seen = new Promise((r) => data.subscribe((d) => { if (d.reason === 'REJUDGE') r(d); }));
-  tick.fn();
-  const d = await seen;
-  assert.ok(d.changed.includes(QGV2)); assert.equal(win.requests.length, before, 're-judged from the text already read');
-  assert.equal(data.get(QGV2).records['NYSE:MMM'].state, 'STALE');
-  win.dispatchEvent(new Event('hashchange')); win.document.dispatchEvent(new Event('visibilitychange'));
-  assert.equal(win.requests.length, before);
+  // Fixed clock one hour after the fixture's collection (2026-10-13T22:30Z, 14-day window); MMM's window ends one minute later.
+  const p = F.strictPayload(), t0 = Date.parse(p.as_of) + 3600000, bound = t0 + 60000, at = (ms) => new Date(ms).toISOString().replace(/\.\d+Z$/, 'Z');
+  p.records['NYSE:MMM'].acquired_at = at(bound - p.stale_after_seconds * 1000);
+  const clock = fixedClock(t0);
+  try {
+    const { win, data } = env({ files: { [QGV2]: { json: p } } });
+    await data.ready();
+    assert.equal(data.get(QGV2).records['NYSE:MMM'].state, 'LIVE');
+    const tick = win.timers.find((t) => t.ms === 60000); assert.ok(tick, 'a one-minute re-judgement timer');
+    tick.fn(); await new Promise((r) => setImmediate(r));
+    assert.equal(data.get(QGV2).records['NYSE:MMM'].state, 'LIVE', 'before the boundary nothing changes');
+    clock.set(bound + 1000);
+    const before = win.requests.length, seen = new Promise((r) => data.subscribe((d) => { if (d.reason === 'REJUDGE') r(d); }));
+    tick.fn();
+    const d = await seen;
+    assert.ok(d.changed.includes(QGV2)); assert.equal(win.requests.length, before, 're-judged from the text already read');
+    assert.equal(data.get(QGV2).records['NYSE:MMM'].state, 'STALE');
+    win.dispatchEvent(new Event('hashchange')); win.document.dispatchEvent(new Event('visibilitychange'));
+    assert.equal(win.requests.length, before);
+  } finally { clock.restore(); }
+});
+
+test('data.static: a failed read is read again by the next call (state keeps the failure until then); the page says the catalog is missing', async () => {
+  let offline = true; const table = { [QGV2]: { json: F.strictPayload() }, 'actual-catalog.json': { json: CATALOG }, 'universe-codes.json': { json: CODES } };
+  const { win, data, qgv } = env({ files: (name) => (name === 'actual-catalog.json' && offline ? new TypeError('offline') : table[name]) });
+  const asked = () => win.requests.filter((r) => r.name === 'actual-catalog.json').length;
+  const a = await qgv.page();
+  assert.equal(a.state, 'READY'); assert.deepEqual(a.identities, { state: 'NOT_AVAILABLE', reason: 'CATALOG_NOT_AVAILABLE', count: 0 }, 'no TARGET rows, and the page says why');
+  assert.equal(qgv.rows(a, { scope: 'TARGET' }).length, 0); assert.notEqual(qgv.reasonText('CATALOG_NOT_AVAILABLE'), '계산 불가 (CATALOG_NOT_AVAILABLE)');
+  assert.deepEqual([data.state('actual-catalog.json').state, data.state('actual-catalog.json').why], ['FAILED', 'NETWORK']);
+  offline = false;
+  const b = await qgv.page();
+  assert.deepEqual(b.identities, { state: 'OK', reason: null, count: 19 }); assert.equal(qgv.rows(b, { scope: 'TARGET' }).length, 19, 'the next page read the catalog again');
+  assert.equal(data.state('actual-catalog.json').state, 'OK'); assert.equal(asked(), 2);
+  assert.equal(await data.static('actual-catalog.json'), await data.static('actual-catalog.json')); assert.equal(asked(), 2, 'a good read is kept for the page');
 });
 
 // ---------------------------------------------------------------- qgv
@@ -299,27 +369,52 @@ test('V source: DEVICE_TEMPORARY with #391 words on every page and row; central 
   assert.equal(qgv.reasonText('QG_REFERENCE', true), 'No V: in the Q·G reference list, not the official ranking');
 });
 
+test('V source switch: a device page is labelled DEVICE_TEMPORARY even if the switch turns while it is computed; an OFFICIAL route fails loudly (no central page yet)', async () => {
+  // A copy of qgv.js whose one switch reads a test reader (only that line differs).
+  const src = fs.readFileSync(R.newPath('qgv.js'), 'utf8'), line = 'const OFFICIAL_READER=null;';
+  assert.equal(src.split(line).length, 2);
+  const tmp = path.join(require('node:os').tmpdir(), 'web_app_qgv_switch_' + process.pid + '.js');
+  fs.writeFileSync(tmp, src.replace(line, 'const OFFICIAL_READER=globalThis.__webAppTestReader;'));
+  try {
+    let mode = 'DEVICE'; globalThis.__webAppTestReader = { state: () => mode };
+    delete require.cache[tmp]; const Copy = require(tmp), E = env();
+    const QS = E.win.QgvScores; E.win.QgvScores = Object.freeze({ ...QS, pageResult: (...a) => { mode = 'OFFICIAL'; return QS.pageResult(...a); } });
+    const q = Copy.create({ win: E.win, data: E.data, action: E.action, prices: null });
+    const pg = await q.page();
+    assert.equal(mode, 'OFFICIAL', 'the switch turned during the computation');
+    assert.equal(pg.v_source.id, 'DEVICE_TEMPORARY'); assert.equal(pg.engine_v_source.id, 'DEVICE_TEMPORARY');
+    assert.ok(pg.rows.length > 500 && pg.rows.every((r) => r.source === 'DEVICE_TEMPORARY'), 'device quotes: the temporary V label');
+    assert.equal(q.preview(pg, CUSTOM.cases[0].input.weights).v_source.id, 'DEVICE_TEMPORARY');
+    // Routed to the central page, which does not exist yet: a fixed code, never a device result labelled official.
+    await assert.rejects(q.page(), /NO_OFFICIAL_YET/);
+  } finally { delete globalThis.__webAppTestReader; delete require.cache[tmp]; fs.rmSync(tmp, { force: true }); }
+});
+
 test('qgv states without a usable file: NO_DATA (404), DATA_FORMAT_NEWER (newer schema), READ_FAILED (invalid); rows empty', async () => {
   const newer = F.strictPayload(); newer.schema_version = 99;
-  for (const [f, state, reason] of [[null, 'NO_DATA', 'SEC_QGV2_NOT_PUBLISHED'], [{ json: newer }, 'DATA_FORMAT_NEWER', 'SEC_QGV2_SCHEMA_NEWER'], [{ body: '[]' }, 'READ_FAILED', 'SEC_QGV2_INVALID']]) {
-    const { qgv } = env({ files: { [QGV2]: f } }), pg = await qgv.page();
+  const huge = { body: JSON.stringify({ pad: 'x'.repeat(3 * 1024 * 1024) }) };
+  for (const [f, state, reason] of [[null, 'NO_DATA', 'SEC_QGV2_NOT_PUBLISHED'], [{ json: newer }, 'DATA_FORMAT_NEWER', 'SEC_QGV2_SCHEMA_NEWER'], [{ body: '[]' }, 'READ_FAILED', 'SEC_QGV2_INVALID'], [huge, 'READ_FAILED', 'SEC_QGV2_INVALID']]) {
+    const { qgv, data } = env({ files: { [QGV2]: f } }), pg = await qgv.page();
+    if (f === huge) assert.deepEqual([data.state(QGV2).state, data.state(QGV2).why], ['FAILED', 'INVALID'], 'over 2 MiB: an invalid file, not a network failure');
     assert.equal(pg.state, state); assert.equal(pg.reason, reason); assert.deepEqual(pg.rows, []); assert.deepEqual(qgv.rows(pg, { scope: 'TARGET' }), []);
-    assert.equal(pg.v_source.id, 'DEVICE_TEMPORARY'); assert.throws(() => qgv.forEngines(pg), /PAGE_NOT_READY/);
+    assert.equal(pg.v_source.id, 'DEVICE_TEMPORARY'); assert.equal(pg.identities, null); assert.throws(() => qgv.forEngines(pg), /PAGE_NOT_READY/);
     assert.notEqual(qgv.reasonText(reason), '계산 불가 (' + reason + ')', reason + ' worded');
   }
 });
 
-test('qgv.preview: the custom vectors weight trees give PERSONAL rows (QgvScores.compute personal), never an official rank; page unchanged', async () => {
+test('qgv.preview: the custom vectors weight trees give PERSONAL rows (the 2.2 personal call: own gate, no preset), never an official rank; page unchanged', async () => {
   const U = universeView(), E = env({ prices: { universeView: U.view } }), { qgv, mods } = E, QS = mods.QgvScores, calls = spy(E);
-  const pg = await qgv.page(), before = JSON.stringify(pg), result = await calls[0].p, c0 = result.computed;
+  const pg = await qgv.page(), before = JSON.stringify(pg), result = await calls[0].p; let gateOff = 0;
   for (const c of CUSTOM.cases) {
-    const pv = qgv.preview(pg, c.input.weights, { typeWeights: c.input.type_weights });
-    assert.equal(pv.weights, 'PERSONAL'); assert.equal(pv.state, 'READY', c.id);
-    assert.ok(pv.rows.every((r) => r.rank.official === null && r.rank.weights === 'PERSONAL'), c.id + ' never official');
-    // The same old function over the same inputs, prices and population (only the weights added).
-    const direct = QS.compute({ identities: result.identities, v2Inputs: calls[0].opts.v2Inputs, quotes: structuredClone(result.quotes), preset: c0.profile.preset, gate: c0.profile.gate,
-      referenceRows: JSON.parse(result.reference_key), official: result.official, weights: c.input.weights, typeWeights: c.input.type_weights });
+    const pv = qgv.preview(pg, c.input.weights, { typeWeights: c.input.type_weights, gate: c.input.gate });
+    assert.equal(pv.weights, 'PERSONAL'); assert.equal(pv.state, 'READY', c.id); assert.equal(pv.v_source.id, 'DEVICE_TEMPORARY');
+    assert.ok(pv.rows.every((r) => r.rank.official === null && r.rank.weights === 'PERSONAL' && r.source === 'DEVICE_TEMPORARY'), c.id + ' never official');
+    // The old 2.2 personal call (device-profiles.js compare): base = the shared result's population, quotes and official ranks,
+    // then compute({...base, gate: the profile's gate, weights, typeWeights}) with no preset.
+    const base = { identities: result.identities, v2Inputs: calls[0].opts.v2Inputs, quotes: structuredClone(result.quotes), official: result.official, referenceRows: QS.pageReferences() };
+    const direct = QS.compute({ ...base, gate: c.input.gate, weights: c.input.weights, typeWeights: c.input.type_weights });
     assert.equal(pv.profile_id, direct.personal.profile.id, c.id); assert.deepEqual(pv.rows.map((r) => r.id), Object.keys(direct.rows));
+    if (c.input.gate === false) { assert.match(pv.profile_id, /gate-off/, c.id + ' a gate-off profile is previewed gate off'); gateOff++; }
     for (const r of pv.rows) {
       const d = direct.rows[r.id];
       assert.deepEqual(r.score, { total: finiteOrNull(d.personal.total), q: finiteOrNull(d.personal.q), g: finiteOrNull(d.personal.g), v: finiteOrNull(d.personal.v) }, c.id + ' ' + r.id);
@@ -329,6 +424,8 @@ test('qgv.preview: the custom vectors weight trees give PERSONAL rows (QgvScores
     assert.equal(pv.v_weight_zero, c.input.weights.axis.V === 0);
     const keys = keysDeep(pv); for (const k of PRICE_KEYS) assert.ok(!keys.has(k), 'no ' + k);
   }
+  assert.equal(gateOff, 1, 'the fixture has one gate-off profile');
+  assert.throws(() => qgv.preview(pg, CUSTOM.cases[0].input.weights, { gate: 'off' }), /GATE_INVALID/);
   for (const bad of CUSTOM.units.invalid) { const pv = qgv.preview(pg, bad.weights); assert.equal(pv.state, 'INVALID', bad.id); assert.equal(pv.reason, 'WEIGHTS_INVALID'); assert.deepEqual(pv.rows, []); }
   assert.equal(JSON.stringify(pg), before, 'the official page is untouched');
 });

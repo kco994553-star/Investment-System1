@@ -11,8 +11,9 @@ function h(tag,attrs,...children){
   if(v===null||v===undefined||v===false)continue;
   if(k.startsWith('on')&&typeof v==='function')el.addEventListener(k.slice(2),v);
   else if(k==='dataset')Object.assign(el.dataset,v);
-  // CSSOM only (CSP has no 'unsafe-inline'): {style:{width:'40%'}} sets properties, never a style attribute string.
-  else if(k==='style'&&typeof v==='object')for(const[p,x]of Object.entries(v))el.style.setProperty(p,String(x));
+  // CSSOM only (CSP has no 'unsafe-inline'): {style:{width:'40%'}} sets properties, never a style attribute string (the CSP
+  // would drop it silently, so a string is refused here instead).
+  else if(k==='style'){if(typeof v!=='object')throw Error('STYLE_INVALID');for(const[p,x]of Object.entries(v))el.style.setProperty(p,String(x));}
   else el.setAttribute(k,v===true?'':String(v));
  }
  append(el,children);return el;

@@ -161,6 +161,51 @@ test('no click: every private path is refused before any request; synthetic even
   assert.deepEqual(e.priv(), []);
 });
 
+test('inside a click: Sheets only the saved spreadsheets, a read only a values GET (a Request POST refused); a stalled GIS load leaves the LOGIN gate', async () => {
+  const e = env({ s: site({ tabs: { ...PRICE_TABS, Universe: M3_VALUES } }) }); await connect(e); await sources(e);
+  const V = (id, range) => SHEETS + '/v4/spreadsheets/' + id + '/values/' + encodeURIComponent(range), other = ['someone', 'elses', 'sheet', 'id', '0001'].join('_');
+  const pv = e.prices.priceView, try_ = async (f) => { try { const r = await f(); return 'OK ' + r.status; } catch (err) { return err.message; } };
+  const before = e.action.blocked();
+  const read = await e.action.run(e.click(), 'UNIVERSE_READ', async () => ({
+    saved: await try_(() => pv.fetch(V(ID, UNIVERSE_RANGE), {})), otherSheet: await try_(() => pv.fetch(V(other, 'A1'), {})),
+    appendAsRequest: await try_(() => pv.fetch(new Request(V(ID, "'Prices_D'!A1") + ':append', { method: 'POST', body: '{"values":[["NO_CLICK"]]}' }))),
+    appendPlain: await try_(() => pv.fetch(V(ID, "'Prices_D'!A1") + ':append', { method: 'POST', body: '{}' })), tabList: await try_(() => pv.fetch(SHEETS + '/v4/spreadsheets/' + ID + '?fields=sheets', {})) }));
+  assert.deepEqual(read, { saved: 'OK 200', otherSheet: 'DESTINATION_UNKNOWN', appendAsRequest: 'DESTINATION_UNKNOWN', appendPlain: 'CLICK_REQUIRED', tabList: 'CLICK_REQUIRED' });
+  assert.equal(e.action.blocked() - before, 4);
+  assert.deepEqual(e.priv().map((r) => (r.init.method || 'GET') + ' ' + decodeURIComponent(new URL(r.name).pathname)), ['GET /v4/spreadsheets/' + ID + '/values/' + UNIVERSE_RANGE], 'only the values GET of the saved sheet left');
+  const sync = await e.action.run(e.click(), 'SYNC', () => try_(() => pv.fetch(SHEETS + '/v4/spreadsheets?fields=spreadsheetId', { method: 'POST', body: '{}' })));
+  assert.equal(sync, 'DESTINATION_UNKNOWN', 'no spreadsheet the device did not save, not even a new one');
+  // A GIS load that never settles: the prepare click ends on its time limit (or a cancel) and leaves the gate.
+  const e2 = env(); e2.win.google = undefined;
+  const stall = { ...e2.mods.GoogleSheetQuotes, sessionFor: (view, id) => { const s = e2.mods.GoogleSheetQuotes.sessionFor(view, id); return Object.freeze({ ...s, prepare: () => new Promise(() => {}) }); } };
+  e2.win.GoogleSheetQuotes = Object.freeze(stall);
+  const p = e2.prices.prepare(e2.click()); assert.equal(e2.action.active('LOGIN'), true);
+  const timer = e2.win.timers.find((t) => t.ms === 30000); assert.ok(timer, 'a 30 s limit on the GIS load'); timer.fn();
+  await assert.rejects(p, /PREPARE_TIMEOUT/); assert.equal(e2.action.active(), false, 'the LOGIN gate is closed');
+  const q = e2.prices.prepare(e2.click()); e2.action.cancel('LOGIN'); assert.equal(e2.action.active(), false);
+  await assert.rejects(q, /CANCELED/);
+  assert.throws(() => e2.store.storage.setItem('x', 'y'), /ACTION_REQUIRED/, 'no write after the cancelled sign-in');
+});
+
+test('quote(): collectQuotes\' order and NA rules for one company (identity withdrawn, TARGET price identity conflict); RAM only', async () => {
+  const e = env({ s: site({ tabs: { Universe: M3_VALUES } }) }); await e.data.ready();
+  const real = e.data.get('sec-qgv2.json'), recs = { ...real.records };
+  assert.ok(recs['TARGET:amd'] && recs['TARGET:amd'].state !== 'NOT_AVAILABLE', 'the fixture has the AMD TARGET row');
+  recs['NASDAQ:ADBE'] = { ...recs['NASDAQ:ADBE'], identity_withdrawn: true }; recs['NASDAQ:AMD'] = { ...recs['NASDAQ:AMD'], universe_withdrawal: true };
+  const inputs = Object.freeze({ ...real, records: Object.freeze(recs) }), data = Object.freeze({ ...e.data, get: (n) => (n === 'sec-qgv2.json' ? inputs : e.data.get(n)) });
+  const prices = fresh('prices.js').create({ win: e.win, action: e.action, data });
+  await prices.prepare(e.click()); prices.login(e.click()); await sources(e); assert.equal((await prices.readUniverse(e.click())).state, 'READY');
+  const ask = { adbe: { code: 'NASDAQ:ADBE' }, amdCode: { code: 'NASDAQ:AMD' }, amdTarget: { company_id: 'amd', ticker: 'AMD' }, mmm: { code: 'NYSE:MMM' } };
+  const got = {}; for (const [k, c] of Object.entries(ask)) { const q = await prices.quote(c); got[k] = q.state === 'OK' ? 'OK' : q.reason; }
+  assert.deepEqual(got, { adbe: 'IDENTITY_CONFLICT_WITHDRAWN', amdCode: 'OK', amdTarget: 'PRICE_IDENTITY_CONFLICT', mmm: 'OK' });
+  // The same verdicts from the old function over the same read and records.
+  const out = await e.mods.QgvScores.collectQuotes({ PrivateSubsetView: prices.universeView }, { identities: [{ company_id: 'amd', ticker: 'AMD' }], v2Inputs: inputs });
+  assert.deepEqual([Object.hasOwn(out, 'NASDAQ:ADBE'), Object.hasOwn(out, 'NASDAQ:AMD'), Object.hasOwn(out, 'TARGET:amd'), Object.hasOwn(out, 'NYSE:MMM')], [false, true, false, true]);
+  // Unmodified records: the TARGET gets its ticker's price, as before.
+  assert.equal((await e.prices.quote({ company_id: 'amd', ticker: 'AMD' })).state, 'NA', 'the first layer has not read the tab');
+  for (const t of [prices.quote, e.prices.quote]) assert.equal(typeof t, 'function');
+});
+
 test('facade: {} / null until a click read the tabs in this sign-in, for this sheet; never enters PriceStore reads before; the price view is forced', async () => {
   const e = env({ s: site({ tabs: PRICE_TABS }) }), spy = spies(e), FA = e.prices.storeFacade;
   await connect(e); await sources(e); e.win.localStorage.setItem(e.store.KEYS.PRICE_STORE_ENABLED, '1');
@@ -411,4 +456,13 @@ test('IndexedDB: a read never creates the device database (not even inside a cli
   assert.deepEqual(await e2.prices.deviceSettings(), { stored: true, enabled: true }, 'saved Google on: the session is on (no request)');
   assert.deepEqual(e2.priv(), []); assert.ok(idb2.opened.length >= 2 && idb2.opened.every((n) => n === 'investment-device-actual-v1'));
   assert.deepEqual([...idb2.dbs.get('investment-device-actual-v1').keys()], ['google-sheet-settings'], 'nothing written');
+  // A browser without indexedDB.databases(): nothing opens outside a click; inside a storage-writing click the store reads the
+  // existing database (so a backup there still carries the stored holdings).
+  const idb3 = fakeIdb({ 'investment-device-actual-v1': { 'google-sheet-settings': settings } }); delete idb3.databases; const e3 = env({ idb: idb3 });
+  assert.deepEqual(plain(await e3.store.holdings()), { state: 'NOT_AVAILABLE', reason: 'DEVICE_STORE_NOT_OPENED', snapshot: null, source: null, as_of: null });
+  await e3.store.backup.create(); assert.deepEqual(idb3.opened, [], 'outside a click: not opened');
+  const inClick = await e3.action.run(e3.click(), 'WRITE', async () => plain(await e3.store.holdings()));
+  assert.deepEqual(inClick, { state: 'EMPTY', reason: null, snapshot: null, source: null, as_of: null }, 'inside a click: the stored database is read');
+  assert.ok(idb3.opened.length >= 1 && idb3.opened.every((n) => n === 'investment-device-actual-v1'));
+  assert.deepEqual([...idb3.dbs.get('investment-device-actual-v1').keys()], ['google-sheet-settings'], 'nothing written');
 });

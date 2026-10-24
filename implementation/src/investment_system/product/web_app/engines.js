@@ -1,7 +1,10 @@
 /* P1 engine wiring (IS2.engines): TARGET v1, playbook, virtual trading and macro lights on the old engines, unchanged and called
    with the arguments the old screens passed (P1 implementation spec, Main decision 9; design §1.1 (6); critique #5, #7a/c/d).
-   - Scores are the one QGV page's device result (qgv.forEngines, as QgvScores made it). A record the engines save carries
-     page.engine_v_source (the V they computed with: always the device V in P1), never page.v_source.
+   - Scores are the one QGV page's device result (qgv.forEngines, as QgvScores made it). Every V-bearing result says the V it was
+     computed with as v_source (page.engine_v_source.id: always DEVICE_TEMPORARY in P1, never page.v_source), and so do the TARGET
+     records whose format has room for it: the saved draft, each R-B row and a finalized version (from its draft). The playbook
+     store's records are exact-key formats and carry none: a TARGET card judgement (thresholds.v) and the playbook occurrences
+     (V-driven codes such as T1 V_DETERIORATED) stay source-less device-V records (P1_DATA_LAYER.md §8, §10).
    - Every write is a user action on the store's gated storage (WRITE; SYNC when the user's own Sheet is written too). The old
      screens wrote some of these on open (R-B selection, playbook occurrences); here they need the user's click.
    - Prices only through the one price view and its facade: no price request outside a SYNC click, nothing stored, and prices
@@ -27,7 +30,11 @@ function create({win,action,data,prices,store,qgv}){
  const catalogNow=async()=>{const c=await data.static(CATALOG);if(!c)throw Error('CATALOG_NOT_AVAILABLE');return c;};
  const codesNow=async()=>{const c=await data.universe();return Array.isArray(c)?c:[];};
  const idsOf=catalog=>{try{return need('DeviceWatchlist').identities(catalog);}catch(_){return[];}};
- const pageOf=async page=>page||qgv.page();
+ // The shared page, or one the caller got from qgv.page(); anything else is PAGE_UNKNOWN before a field of it is read.
+ const pageOf=async page=>{if(page===undefined||page===null)return qgv.page();if(typeof qgv.isPage!=='function'||!qgv.isPage(page))throw Error('PAGE_UNKNOWN');return page;};
+ const sourceOf=pg=>pg.engine_v_source.id;
+ // The V source a stored draft was built with (null: a draft from before sources were kept, or from the old screen).
+ const draftSource=st=>st&&st.draft&&typeof st.draft.v_source==='string'?st.draft.v_source:null;
  // The page's device result and the sec-qgv2.json value it was computed from; a page without one is the builder's QGV2_NOT_READY.
  async function scored(page){const pg=await pageOf(page);try{return{pg,computed:qgv.forEngines(pg),inputs:qgv.engineInputs(pg)};}catch(e){if(e&&e.message==='PAGE_NOT_READY')throw Error('QGV2_NOT_READY');throw e;}}
 
@@ -42,30 +49,33 @@ function create({win,action,data,prices,store,qgv}){
  async function published(){try{return await data.peek(QGV2);}catch(_){return null;}}
  async function basisOf(p){if(!p)return null;try{return await TB().inputBasis(p);}catch(_){return null;}}
  // The draft's input basis: only when the re-read file is the file the page's scores were computed from (same as_of).
- async function basis({page}={}){let inputs=null;try{inputs=qgv.engineInputs(await pageOf(page));}catch(_){inputs=null;}
+ async function basis({page}={}){const pg=await pageOf(page);let inputs=null;try{inputs=qgv.engineInputs(pg);}catch(_){inputs=null;}
   const p=await published();return p&&inputs&&inputs.as_of&&p.as_of===inputs.as_of?basisOf(p):null;}
- // The draft the rules give now (no write): TargetV1Builder.buildDraft with the page's result and the basis (basis() or null).
- async function draft({date=today(),basis:b=null,page}={}){const{args}=await builderArgs(page,date);return out(TB().buildDraft({...args,basis:b,cfg:CFG()}));}
+ // The draft the rules give now (no write): TargetV1Builder.buildDraft with the page's result and the basis (basis() or null),
+ // with the V source its pool's V came from.
+ async function draft({date=today(),basis:b=null,page}={}){const{pg,args}=await builderArgs(page,date);return out({...TB().buildDraft({...args,basis:b,cfg:CFG()}),v_source:sourceOf(pg)});}
  // "규칙으로 초안 만들기": the new draft replaces the old one and clears the card answers. The old button asked for a second tap
  // when answers existed; here the caller passes reset:true after asking.
  function build(event,{date=today(),page,reset=false}={}){return action.run(event,'WRITE',async()=>{
   const before=readState();if(before.draft&&before.answers.length&&reset!==true)throw Error('TARGET_V1_ANSWERS_RESET');
-  const pg=await pageOf(page),b=await basis({page:pg}),{args}=await builderArgs(pg,date),d=TB().buildDraft({...args,basis:b,cfg:CFG()});save({...readState(),draft:d,answers:[]});return out(d);});}
+  const pg=await pageOf(page),b=await basis({page:pg}),{args}=await builderArgs(pg,date),d={...TB().buildDraft({...args,basis:b,cfg:CFG()}),v_source:sourceOf(pg)};save({...readState(),draft:d,answers:[]});return out(d);});}
  // Every finalize blocker now, against the file re-read now (the old finalize click's check, shown before the user finalizes).
- async function blockers({date=today()}={}){const p=await published(),b=await basisOf(p);return out(TB().finalizeBlockers(readState(),{date,published:p,basis:b,cfg:CFG()}));}
+ async function blockers({date=today()}={}){const p=await published(),b=await basisOf(p),st=readState();return out({...TB().finalizeBlockers(st,{date,published:p,basis:b,cfg:CFG()}),v_source:draftSource(st)});}
  /* "TARGET v1 확정 저장" (target-v1-screen.js finalize click): re-read the published file now and re-check everything. A changed
     input basis on a usable file regenerates the draft (answers kept for the same names) when the page's scores are of that file,
-    else the page must be reloaded. A saved version records v_source = page.engine_v_source.id (#391 writes the same id itself). */
+    else the page must be reloaded. A saved version records the v_source its draft was built with (a draft without one: the page's
+    engine_v_source.id); #391's builder writes the device id itself, and a different id is V_SOURCE_MISMATCH (nothing saved). */
  function finalize(event,{date=today(),page}={}){return action.run(event,'WRITE',async()=>{
   const B=TB(),cfg=CFG(),pg=await pageOf(page),p=await published(),b=await basisOf(p),st=readState();let check=B.finalizeBlockers(st,{date,published:p,basis:b,cfg});
   if(check.basis_changed&&check.check&&!check.check.reasons.some(r=>NO_REGEN.includes(r))){
    let computed=null,inputs=null;try{computed=qgv.forEngines(pg);inputs=qgv.engineInputs(pg);}catch(_){computed=null;}
    if(computed&&computed.v2_state==='READY'&&inputs&&inputs.as_of&&p.as_of===inputs.as_of){const catalog=await catalogNow();
-    const r=B.regenerateDraft(st,{computed,inputs,universeCodes:await codesNow(),existing:TS().existingSymbols(catalog),date,basis:b,cfg});save(r.state);check=B.finalizeBlockers(r.state,{date,published:p,basis:b,cfg});
+    const r=B.regenerateDraft(st,{computed,inputs,universeCodes:await codesNow(),existing:TS().existingSymbols(catalog),date,basis:b,cfg}),next={...r.state,draft:{...r.state.draft,v_source:sourceOf(pg)}};
+    save(next);check=B.finalizeBlockers(next,{date,published:p,basis:b,cfg});
     return out({outcome:'DRAFT_REGENERATED',carried:r.carried,fresh:r.fresh,blockers:check.blockers,check:check.check});}
    return out({outcome:'RELOAD_REQUIRED',blockers:check.blockers,check:check.check});}
   let next;try{next=B.finalize(st,{date,published:p,basis:b,cfg});}catch(e){if(e&&Array.isArray(e.blockers))return out({outcome:'BLOCKED',blockers:e.blockers,check:e.check||null});throw e;}
-  const src=pg.engine_v_source.id,versions=[...next.versions],last=versions[versions.length-1];
+  const src=draftSource(st)||sourceOf(pg),versions=[...next.versions],last=versions[versions.length-1];
   if(last.v_source!==undefined&&last.v_source!==src)throw Error('V_SOURCE_MISMATCH');versions[versions.length-1]={...last,v_source:src};save({...next,versions});
   return out({outcome:'FINALIZED',version:versions[versions.length-1]});});}
  // A card answer (target-v1-screen.js card click): one judgement record in the playbook store, then the latest answer per name;
@@ -77,9 +87,9 @@ function create({win,action,data,prices,store,qgv}){
  const ruleBDue=(date=today())=>TB().ruleBDue(readState(),date,CFG());
  // R-B (규칙 지수) selection on a due day (target-v1-screen.js mount ran it on open; here on the user's click). No partial start.
  function selectRuleB(event,{date=today(),page}={}){return action.run(event,'WRITE',async()=>{
-  const B=TB(),cfg=CFG(),{args}=await builderArgs(page,date),st=readState();if(args.computed.v2_state!=='READY')return out({state:'QGV2_NOT_READY'});if(!B.ruleBDue(st,date,cfg))return out({state:'NOT_DUE'});
+  const B=TB(),cfg=CFG(),{pg,args}=await builderArgs(page,date),st=readState();if(args.computed.v2_state!=='READY')return out({state:'QGV2_NOT_READY'});if(!B.ruleBDue(st,date,cfg))return out({state:'NOT_DUE'});
   const eligible=B.universeRows({computed:args.computed,inputs:args.inputs,universeCodes:args.universeCodes,existing:args.existing,cfg}).filter(r=>!B.exclusions(r,cfg).length),seg=B.ruleBSegment(eligible,date,cfg);
-  if(!seg.ready)return out({state:'NOT_READY',eligible:eligible.length});const{ready:_,...row}=seg;save({...st,rule_b:[...st.rule_b,row]});return out({state:'SELECTED',date,names:row.rows.length});});}
+  if(!seg.ready)return out({state:'NOT_READY',eligible:eligible.length});const{ready:_,...rest}=seg,row={...rest,v_source:sourceOf(pg)};save({...st,rule_b:[...st.rule_b,row]});return out({state:'SELECTED',date,names:row.rows.length,v_source:row.v_source});});}
  /* Set comparison (target-v1-screen.js load-compare click): daily closes of A (v0), R-B, R-C and the S&P 500 benchmark from the
     user's price tabs, missing tails fetched through the Worker and appended first (PriceStore.dailyCloses fetch:true, price view),
     then compareSets and the fixed review rule. The index values are price-derived: RAM only. */
@@ -119,26 +129,27 @@ function create({win,action,data,prices,store,qgv}){
     page profile. ram (DeviceActual.ramView) and actual_pct are device RAM values (price-derived weights): display only. The old
     CompanyScreen is not loaded, so factsFor's v1 Q·G fallback (sec-qg-factors.json) is absent: Q·G come from the v2 result only. */
  async function facts(symbol,{date=today()}={}){
-  const P=PB(),catalog=await catalogNow();await qgv.page();await data.list('news').catch(()=>null);await action.stores();
+  const P=PB(),catalog=await catalogNow(),pg=await qgv.page();await data.list('news').catch(()=>null);await action.stores();
   const screens=data.screens(),idByTicker=new Map(idsOf(catalog).map(r=>[r.ticker,r.company_id])),prof=qgv.profile();
   const computed=await P.prepareScores(qgv.scoreView,{catalog,screens,idByTicker,scoreOptions:()=>({quotes:{},preset:prof.preset,gate:prof.gate,referenceRows:{}})});
   const heldSymbols=await P.heldSymbolsFor(priceView,catalog);let ram=null;try{ram=await need('DeviceActual').ramView(priceView,catalog);}catch(_){ram=null;}
   const prefs=store.prefs(),interests=prefs.value&&Array.isArray(prefs.value.interests)?[...prefs.value.interests]:[];
-  return out(P.factsFor(symbol,{catalog,screens,idByTicker,ram,date,computed,heldSymbols,storage,interests}));}
+  return out({...P.factsFor(symbol,{catalog,screens,idByTicker,ram,date,computed,heldSymbols,storage,interests}),v_source:sourceOf(pg)});}
  /* openPanel's judgement step (playbook-screen.js openPanel), read only: the situation with this device's thesis event, hold and
     follow-up, the macro state, PlaybookEngine.evaluate, and the R1_FILING rule (a filing choice needs an EVIDENCE-grade invalidation
-    event). openPanel also recorded the candidate signals at this point; that is record(event, judged) now (owner decision item). */
+    event). openPanel also recorded the candidate signals at this point; that is record(event, judged) now (owner decision item).
+    v_source: the facts' (or a given situation's) V source; null when the caller's situation names none. */
  const judged=new WeakSet();
  async function judge({symbol,situation=null,date=today()}={}){
   const E=need('PlaybookEngine'),PCFG=need('PlaybookConfigDefaults'),P=PB();await macroNow();
-  const base=situation||await facts(symbol,{date}),stored=readPlaybook(),s={...base,symbol,date},ML=win.MacroLights,macro=ML&&typeof ML.current==='function'?ML.current():null;
+  const{v_source:vs=null,...base}=situation||await facts(symbol,{date}),stored=readPlaybook(),s={...base,symbol,date},ML=win.MacroLights,macro=ML&&typeof ML.current==='function'?ML.current():null;
   if(macro){s.macro_state=macro.state;s.macro_available_count=macro.available_count;}
   const ev=stored.theses[symbol]&&stored.theses[symbol].event;
   s.invalidation_triggered=ev&&ev.status==='OCCURRED'?true:ev&&ev.status==='NONE'?false:null;s.user_hold=!!stored.holds[symbol];s.followup_due=P.due(stored,date).some(r=>r.symbol===symbol);
   const judgement=E.evaluate(PCFG,s);
   if(ev&&ev.status==='OCCURRED'&&ev.grade!=='EVIDENCE'){const restrict=choices=>choices.map(ch=>ch.id==='R1_FILING'?{...ch,enabled:false,disabled_reasons:[...ch.disabled_reasons,'FILING_EVIDENCE_REQUIRED']}:ch);
    if(judgement.choices_by_code.R1)judgement.choices_by_code.R1=restrict(judgement.choices_by_code.R1);if(judgement.primary&&judgement.primary.code==='R1')judgement.choices=restrict(judgement.choices);}
-  const j=out({symbol,date,situation:s,judgement,code:judgement.primary&&judgement.primary.code?judgement.primary.code:'H1'});judged.add(j);return j;}
+  const j=out({symbol,date,situation:s,judgement,code:judgement.primary&&judgement.primary.code?judgement.primary.code:'H1',v_source:typeof vs==='string'?vs:null});judged.add(j);return j;}
  // The occurrences openPanel wrote when it opened: the candidate signals, a structural-news E4, a 13F full-exit E4. Only from a
  // judge() result and only on the user's action. Returns that day's occurrences of the name (codes and reasons).
  function record(event,j){if(!judged.has(j))throw Error('JUDGEMENT_UNKNOWN');return action.run(event,'WRITE',()=>{const P=PB(),{symbol,date,situation:s,judgement}=j;
@@ -171,12 +182,17 @@ function create({win,action,data,prices,store,qgv}){
   if(!p){const s=data.state(LEDGER);return out({state:s.state==='NOT_PUBLISHED'?'NOT_PUBLISHED':'NOT_AVAILABLE',reason:s.why,rows:[],comparison:[],segments:[],evidence:null});}
   const primary=p.schema_version===2?FV.V2_VERSION:FV.VERSION,rows=p.versions[primary],line=r=>({date:r.date,version:r.version,state:r.state,summary:FV.qgSummary(r),evaluation:FV.rowEvaluation(r)});
   return out({state:'LOADED',reason:null,status:p.status,as_of:p.as_of,start_date:p.start_date,primary,rows:rows.map(line),comparison:p.schema_version===2?p.versions[FV.VERSION].map(line):[],segments:FV.segments(rows),evidence:FV.evidence(p)});}
- // Rehearsal (app.js go('REHEARSAL')): an in-memory engine run over the last sessions with the page's Q·G rows, never recorded;
- // stored and RAM prices only here (fetch:false). Holds prices: RAM.
+ /* Rehearsal (app.js go('REHEARSAL')): an in-memory engine run over the last sessions with the page's Q·G rows, never recorded;
+    stored and RAM prices only here (fetch:false). Holds prices: RAM. app.js always passed QgvScores.judgmentRows of its own compute
+    and that compute's basis as snapshot_basis; a page without a result (no usable sec-qgv2.json) does the same here: the old
+    compute over the catalog identities and this generation's files gives the TARGET rows with null Q·G (BLOCKED snapshots) and
+    the v2 basis. Any other page error is thrown (no silent run without Q·G rows). */
  async function rehearse({reportDate=seoulDay(),page,signal=null}={}){const catalog=await data.static(CATALOG);if(!catalog)return Object.freeze({result:noCatalog(),config:null});
-  const QS=need('QgvScores'),pg=await pageOf(page);let computed=null;try{computed=qgv.forEngines(pg);}catch(_){computed=null;}const qg={};try{Object.assign(qg,QS.judgmentRows(computed));}catch(_){}
+  const QS=need('QgvScores'),pg=await pageOf(page);let computed=null;try{computed=qgv.forEngines(pg);}catch(e){if(!e||e.message!=='PAGE_NOT_READY')throw e;}
+  if(!computed){const prof=qgv.profile();computed=QS.compute({identities:idsOf(catalog),publicScreens:data.screens(),preset:prof.preset,gate:prof.gate,referenceRows:{}});}
+  const qg={...QS.judgmentRows(computed)};
   await action.stores();const o=await need('VirtualTradingSignals').rehearse(priceView,{config:config(),catalog,reportDate,signal,fetch:false,qgRows:qg});
-  const result=computed?{...o.result,snapshot_basis:computed.default}:o.result,P=win.PlaybookScreen;if(P&&typeof P.ingestRunner==='function')P.ingestRunner(result,namesOf(catalog));return{result,config:o.config};}
+  const result={...o.result,snapshot_basis:computed.default},P=win.PlaybookScreen;if(P&&typeof P.ingestRunner==='function')P.ingestRunner(result,namesOf(catalog));return{result,config:o.config};}
  /* The recording run (app.js paintReport with fetch:true: Worker histories, V history capture, ledger sheet writes, then the daily
     report model) is not in P1: its report model (daily-report.js is not loaded) and the V history timing (D-21) are decided with
     P2-6. Exported so a screen sees the function; it always refuses. */

@@ -20,9 +20,14 @@ P2 화면 레인이 쓰는 함수, 기록 모양, 사유 코드, 지켜야 할 �
 
 - **클릭 규칙**
   - 비공개 요청(시트·Worker·OAuth)과 기기 저장 쓰기는 첫 인자로 받은 **진짜 사용자 이벤트**로만 실행한다.
-    - 조건: `event instanceof window.Event && event.isTrusted`이고, 형식이 click, submit, Enter/Space keydown 중 하나.
-    - 클릭 처리기 안에서 바로 부른다. `login`은 같은 틱이어야 한다.
-  - 이벤트가 없거나, 합성이거나(`dispatchEvent`, `el.click()`), `{isTrusted:true}` 같은 일반 객체면 `CLICK_REQUIRED`다.
+    - 조건: window의 진짜 이벤트이고(`isTrusted`·`type`·`eventPhase`를 window의 원래 접근자로 읽는다), 형식이 click 또는 Enter/Space keydown이다.
+    - 그 이벤트가 **지금 전달 중**이어야 하고(처리기 안), 브라우저가 알려 주면 사용자 활성화(`navigator.userActivation.isActive`)도 있어야 한다.
+    - 클릭 처리기 안에서 기다리지 말고 바로 부른다. `login`은 같은 틱이어야 한다.
+  - `CLICK_REQUIRED`가 되는 경우:
+    - 이벤트가 없음, 합성(`dispatchEvent`, `el.click()`), `{isTrusted:true}` 같은 일반 객체.
+    - 위조(`Object.create(Event.prototype, …)`, isTrusted를 속이는 Proxy).
+    - **submit 이벤트.** 브라우저는 `form.requestSubmit()`과 스크립트의 `submitter.click()`이 만든 submit도 trusted로 표시한다. 폼은 제출 버튼의 click 이벤트를 넘긴다.
+    - 저장해 둔 이벤트를 나중에 다시 쓰는 경우(타이머, 다른 처리기, 다른 kind). 단, 같은 이벤트로 시작한 action이 아직 진행 중이면 그 안의 다음 단계(중첩 실행)는 통과한다. 예: `engines.target.syncScoringPrices` → `prices.syncSymbols(event)`.
 - **RAM 가격 표시**
   - 기기 가격과 가격 파생값(시총, EV, 수익률, 배수, 내재 성장, 월말 종가)은 RAM에만 둔다.
   - 화면에는 `[data-ram-price]` 요소의 글자로만 낸다. 속성, 입력 value, 제목, 저장소, 콘솔, URL에는 넣지 않는다.
@@ -31,30 +36,38 @@ P2 화면 레인이 쓰는 함수, 기록 모양, 사유 코드, 지켜야 할 �
 - **NA 규칙**
   - 값이 없으면 null이고 사유 코드가 반드시 붙는다. 0이나 평균으로 채우지 않는다(`?? 0`, `|| 0` 금지).
   - 글은 `IS2.qgv.reasonText(code, en)`로 만든다.
-- **V 출처**: 화면 글자에는 `row.source_label`(지금은 '임시 V')만 쓴다. 출처 낱말은 `qgv.js`에만 있다(소스 검사).
+- **V 출처**
+  - 점수 행: 화면 글자에는 `row.source_label`(지금은 '임시 V')만 쓴다.
+  - 엔진 결과: V가 든 결과에는 `v_source`(출처 id)가 있다. 글자는 `IS2.qgv.V_SOURCES[x.v_source].ko`로 만든다. `v_source`가 null이면 출처 기록이 없는 기기 V다(옛 초안, 화면이 넘긴 상황).
+  - 출처 낱말('임시 V', '공식 V', `DEVICE_TEMPORARY`, `OFFICIAL_CENTRAL`, 안내 문구)은 `qgv.js`에만 있다. 소스 검사가 다른 파일의 코드에서 막는다.
 - **그 밖의 금지**
   - `console.*`, `innerHTML`, 주문·거래 기능과 문구.
-  - `[style]` 속성. P0 시험이 금지하므로 막대는 SVG 속성이나 클래스 단계로 그린다.
+  - `[style]` 속성과 style 문자열. CSP가 조용히 버리므로 `h(tag, {style:'…'})`는 `STYLE_INVALID`를 던진다. 막대는 SVG 속성이나 클래스 단계로 그린다.
   - Universe504는 universe-codes.json의 고정 504코드 목록이다. 다른 성격으로 설명하지 않는다.
 
 ## 3. 클릭 관문: `IS2.action`
 
-- `run(event, kind, fn)`: `fn(signal)`을 같은 틱에 부르고, fn이 끝날 때까지 그 kind를 진행 중으로 둔다. 화면은 직접 부르지 않고 아래 함수들에 event를 넘긴다.
+- `run(event, kind, fn)`: `fn(signal)`을 같은 틱에 부르고, fn이 끝나거나 `cancel(kind)`될 때까지 그 kind를 진행 중으로 둔다. 화면은 직접 부르지 않고 아래 함수들에 event를 넘긴다. 이벤트 조건은 2절 클릭 규칙이다.
 
   | kind | 갈 수 있는 비공개 목적지 | 기기 저장 쓰기 |
   | --- | --- | --- |
   | `PUBLIC_REFRESH` | 없음(공개 파일만) | 안 됨 |
   | `LOGIN` | GIS 스크립트·OAuth | 됨 |
-  | `UNIVERSE_READ` | 시트 values GET | 됨 |
+  | `UNIVERSE_READ` | 저장한 시트의 values GET | 됨 |
   | `HISTORY` | Worker `/history` | 됨 |
-  | `SYNC` | Worker, 시트 읽기·추가·갱신 | 됨 |
+  | `SYNC` | Worker, 저장한 시트의 읽기·추가·갱신·탭 목록 | 됨 |
   | `WRITE` | 없음 | 됨 |
 
+  - 시트는 이 기기가 저장한 시트(통합 시트, Universe 탭 출처)만 간다. 다른 시트와 새 시트 만들기는 `DESTINATION_UNKNOWN`이다.
+  - 비공개 요청은 문자열 URL만 받는다. Request 객체 등은 `DESTINATION_UNKNOWN`이다.
 - 클릭 밖의 쓰기와 요청은 이렇게 막힌다.
   - 비공개 요청: `CLICK_REQUIRED`. 알 수 없는 목적지는 `DESTINATION_UNKNOWN`이다.
   - 옛 모듈의 저장 쓰기: `ACTION_REQUIRED`. 저장소는 그대로 남는다.
   - 둘 다 `blocked()` 수가 늘어난다.
-- IndexedDB는 이미 있는 DB(`stores()`)나 쓰기 클릭 안에서만 연다. 읽기는 DB를 만들지 않는다. 거절 코드 `DEVICE_STORE_NOT_OPENED`는 '아직 저장된 것 없음'이라는 뜻이다.
+- **허용 범위는 페이지 전체다.** action이 진행 중인 동안에는 그 클릭과 무관한 코드도 그 kind의 목적지에 가고 저장소에 쓸 수 있다(사양이 정한 관문 방식). 그래서 다음을 지킨다.
+  - 오래 걸릴 수 있는 단계에는 끝이 있다. GIS 준비는 30초 뒤 `PREPARE_TIMEOUT`, `cancel(kind)`는 곧바로 관문을 닫는다.
+  - P2 레인은 `IS2.action.view()`로 view를 새로 만들지 않는다. view의 IndexedDB는 쓰기 action 중에 DB를 만들 수 있다.
+- IndexedDB는 이미 있는 DB(`stores()`)나 쓰기 클릭 안에서만 연다. 읽기는 DB를 만들지 않는다. 거절 코드 `DEVICE_STORE_NOT_OPENED`는 '아직 저장된 것 없음'이라는 뜻이다. `stores()` → `{supported, available, names}`.
 
 ## 4. 공개 자료: `IS2.data`
 
@@ -65,7 +78,8 @@ P2 화면 레인이 쓰는 함수, 기록 모양, 사유 코드, 지켜야 할 �
   - 같은 출처, `FILES`만, GET만, 2 MiB 상한.
   - credentials omit, redirect error, no-referrer.
   - HTTP 상태는 그대로 둔다.
-  - 오류: `PUBLIC_FILE_UNKNOWN`, `PUBLIC_FILE_METHOD`, `PUBLIC_FILE_TOO_LARGE`.
+  - 오류: `PUBLIC_FILE_UNKNOWN`, `PUBLIC_FILE_METHOD`.
+  - 2 MiB를 넘는 답은 원래 상태 코드에 빈 본문으로 넘긴다. 리더는 이를 내용이 잘못된 파일로 판정한다(`FAILED`/`INVALID`, 네트워크 오류가 아님).
 - `ready()`
   - 첫 호출에 `DataRefresh.load`를 부르고 publication을 돌려준다. 이후 호출은 같은 Promise를 받는다.
   - 읽기 모듈이 빠져 있으면 `READER_MISSING`이다. 가벼운 경로로 빠지지 않는다.
@@ -74,7 +88,7 @@ P2 화면 레인이 쓰는 함수, 기록 모양, 사유 코드, 지켜야 할 �
   - why: `INVALID`, `NETWORK`, `HTTP`, `SCHEMA_NEWER`, `READER_MISSING`.
   - 미게시(404)와 읽기 실패는 다른 문장을 쓴다.
 - `list('sec'|'news'|'dart')`, `shares()`, `financials()`: 세대마다 한 번 읽고 모든 화면이 함께 쓴다.
-- `static(name)`: 정적 파일을 페이지당 한 번 읽는다. 값 또는 null이고, 사유는 `state(name)`에 있다.
+- `static(name)`: 정적 파일을 페이지당 한 번 읽는다. 값 또는 null이고, 사유는 `state(name)`에 있다. 실패한 읽기는 남기지 않는다. 다음 호출이 다시 읽는다(옛 app.js와 같음).
 - `universe()`: 고정 504코드 목록이다.
 - `refresh(event)` [PUBLIC_REFRESH]
   - 결과: `'APPLIED'|'UNCHANGED'|'FAILED'|'LOADING'`.
@@ -92,7 +106,9 @@ P2 화면 레인이 쓰는 함수, 기록 모양, 사유 코드, 지켜야 할 �
 - 접근 함수
   - `rows(page, {scope:'ALL'|'UNIVERSE'|'TARGET'})`: QgvScores 순서 그대로 준다. 정렬, 모집단, 분류 필터, 레이더는 P2-2가 옛 함수(LeaderboardScreen, StatRadar `compute(spec,{result})`)로 붙인다.
   - `row(page, idOrCode)`, `coverage(page)`(수만).
-  - `preview(page, weights)`: 개인 가중치다. 결과는 늘 `weights:'PERSONAL'`이고 공식 순위가 없다.
+  - `preview(page, weights, {typeWeights, gate})`: 개인 가중치다. 결과는 늘 `weights:'PERSONAL'`, `v_source` 임시 V이고 공식 순위가 없다.
+    - 2.2 개인 계산과 같은 호출이다(device-profiles.js). preset 없이, 그 가중치 프로필의 `gate`를 넘긴다(null이면 기본값 켬). 저장된 프로필의 gate를 꼭 넘긴다.
+  - `isPage(page)`: 이 접근자가 만든 Page인지.
   - `setProfile({preset, gate})`(RAM만), `profile()`, `constants()`(2.5 트리용), `subscribe(fn(why), {signal})`. why는 DATA·PRICES·DEVICE·PROFILE이다.
   - `reasonText(code, en)`, `V_SOURCES`, `vSource()`.
 - `forEngines`, `engineInputs`, `scoreView`는 engines 전용이다(소스 검사로 막는다).
@@ -101,13 +117,15 @@ P2 화면 레인이 쓰는 함수, 기록 모양, 사유 코드, 지켜야 할 �
 Page { v_source{id,ko,note}, engine_v_source{…}, state: READY|NO_DATA|DATA_FORMAT_NEWER|READ_FAILED, reason,
   as_of, calc_version, type_scope, profile_id, preset, gate, generation, basis_id,
   price_basis{kind:'DEVICE_RAM', connected, source, read_id, read_at, time_status: CONFIRMED|UNCONFIRMED|PARTIAL|null, freshness, times[]},
-  coverage, rows[] }
+  identities{state: OK|NOT_AVAILABLE, reason: null|CATALOG_NOT_AVAILABLE, count} | null, coverage, rows[] }
 RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, reference_only, source, source_label,
   score{total,q,g,v}, na_reason{total,q,g,v,rank}, rank{official, personal, qg_reference_order, group, of, weights: OFFICIAL|PERSONAL},
   coverage{v_factors{n,total:5,missing,required_ok}, axes{Q,G,V}, factors{available,total}, states, v_inputs_missing},
   flags, value_trap_gate, v_excluded, types{selected,reason}, row_state, acquired_at, fiscal_year_end, profile, source_reason_codes }
 ```
 
+- 기기 Page는 기기 시세로 계산하므로 `v_source`와 모든 행이 늘 임시 V다. 계산 도중 스위치가 바뀌어도 같다.
+- `identities`: 기업 목록 파일을 못 읽으면 `NOT_AVAILABLE`/`CATALOG_NOT_AVAILABLE`이고 TARGET 행이 없다. 다음 `page()`가 다시 읽는다. 결과가 없는 Page는 null이다.
 - Page와 행에는 가격과 가격 파생값이 없다. 빠지는 것은 quotes, quote_meta, 월말 종가, EV, 수익률, `detail`, `reference_range`다.
 - `read_at`은 기기가 시트를 읽은 시각이고 가격 시각이 아니다.
 - `v_factors`는 `TargetV1Builder.vFactors` 값이다.
@@ -120,7 +138,7 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
   ```
 - `subscribe(fn, {signal})`: 로그인, Universe 읽기, 가격 탭이 바뀌면 알린다. 셸 기기 칩도 이것을 쓴다.
 - 로그인 [LOGIN]: 두 번 누른다.
-  - `prepare(event)`: 세션을 켜고 GIS를 준비한다.
+  - `prepare(event)`: 세션을 켜고 GIS를 준비한다. 30초 안에 끝나지 않으면 `PREPARE_TIMEOUT`, 취소되면 `CANCELED`다. 늦게 끝난 준비는 다음 로그인 클릭이 쓴다.
   - `login(event)`: 클릭 안에서 동기로 토큰을 요청한다.
   - `logout(event)`.
   - `deviceSettings()`: 기기 DB가 있을 때만 저장된 켬/끔을 읽는다.
@@ -136,7 +154,9 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
   - `syncSymbols(event, symbols, '1d'|'1mo', {kind})`: Worker 허용 목록만.
   - `syncUniverse(event)`.
 - `history(event, company, {range})` [HISTORY]와 `held(company, {range})`: 검증된 일별 이력이다. RAM에만 있고 가격을 포함한다.
-- `quote(company)` → `{state:'OK', price, currency, source, read_at, as_of, time_status, freshness}` 또는 `{state:'NA', reason:'NO_DEVICE_PRICE'}`. `[data-ram-price]` 표시 전용이다.
+- `quote(company)` → `{state:'OK', price, currency, source, read_at, as_of, time_status, freshness}` 또는 `{state:'NA', reason}`. `[data-ram-price]` 표시 전용이다.
+  - company: `{code}`(Universe 코드) 또는 `{company_id, ticker}`(TARGET).
+  - reason: `NO_DEVICE_PRICE`, 그리고 `QgvScores.collectQuotes`와 같은 규칙의 `IDENTITY_CONFLICT_WITHDRAWN`(식별 충돌로 멈춘 코드), `PRICE_IDENTITY_CONFLICT`(철회된 Universe 코드와 같은 티커의 TARGET). 점수 경로가 V를 내지 않는 기업에는 가격도 보이지 않는다.
 - `priceView`, `storeFacade`, `universeView`는 qgv·engines 전용이다.
   - 가격 view는 하나뿐이다. 세션과 PriceStore가 view를 키로 상태를 두기 때문이다.
   - facade는 클릭으로 탭을 읽기 전에는 `{}`나 null을 준다.
@@ -149,6 +169,7 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
   - 관심 기업(1.1.4): `prefs()` → `{state:'OK'|'EMPTY'|'INVALID', value}`. `savePrefs(event, next)`. 코드는 `PREFS_INVALID`, `PREFS_STORAGE_INVALID`다.
   - 가중치(2.2): `weights()`, `saveWeights(event, spec)`, `PRODUCT_PRESETS`.
   - 보유(6.1): `holdings()` → `{state:'OK'|'EMPTY'|'NOT_AVAILABLE', reason, snapshot, source, as_of}`. DB가 없으면 `DEVICE_STORE_NOT_OPENED`이고 DB를 만들지 않는다.
+    - `indexedDB.databases()`가 없는 브라우저는 저장소 쓰기 클릭 안에서만 DB를 연다(그래서 그 안의 백업 내려받기에는 보유가 들어간다). 클릭 밖에서는 `DEVICE_STORE_NOT_OPENED`다.
   - 플레이북: `playbook()`, `saveThesis/saveHold/saveRecord(event, …)`.
   - 투자자 별표: `stars()`, `toggleStar(event, cik)`.
   - V 기록: `vHistory()`(읽기 전용).
@@ -162,19 +183,25 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
 ## 8. 엔진: `IS2.engines` (옛 엔진 그대로, 기기 결과로 계산)
 
 - 공통
-  - 점수는 공유 Page의 기기 결과다. 저장하는 기록에는 `page.engine_v_source`를 남긴다.
-  - 쓰기는 모두 클릭 안에서만 한다. 결과는 얼린 복사본이다.
+  - 점수는 공유 Page의 기기 결과다. 결과는 얼린 복사본이다.
+  - `page` 인자는 `qgv.page()`가 준 Page만 받는다. 다른 것은 `PAGE_UNKNOWN`이다.
+  - V가 든 결과에는 `v_source`(계산에 쓴 출처 id, P1에서는 늘 `DEVICE_TEMPORARY`)가 있다: `target.draft/build/blockers/selectRuleB`, `playbook.facts/judge`.
+  - V 출처를 남기는 저장 기록: 초안(`draft.v_source`), R-B 행(`rule_b[].v_source`), 확정 버전(`versions[].v_source`, 초안의 출처). 옛 상태 검사(`validateState`)가 받아들이는 자리다.
+  - **출처 필드가 없는 저장 기록**(형식이 정확한 키만 받음, 모두 기기 V): TARGET 카드 판정 기록(`thresholds.v`), 플레이북 발생 기록(T1 V_DETERIORATED 같은 V 변화 신호 포함), 출처 이전의 옛 초안.
+  - 쓰기는 모두 클릭 안에서만 한다.
   - 가격이 든 결과(가상매매, 세트 비교)는 RAM 전용이다.
 - **target**(2.1.7)
   - 읽기: `state()`, `basis()`, `draft({date, basis})`, `blockers()`, `ruleBDue(date)`, `scoringPending()`, `refreshScoring()`.
   - 쓰기·요청
     - `build(event, {reset})` [WRITE]. 카드 응답이 있으면 `reset:true`가 필요하다.
-    - `finalize(event)` [WRITE]. outcome은 `FINALIZED`, `BLOCKED`, `DRAFT_REGENERATED`, `RELOAD_REQUIRED` 중 하나다. `FINALIZED`면 버전에 `v_source`를 기록한다.
+    - `finalize(event)` [WRITE]. outcome은 `FINALIZED`, `BLOCKED`, `DRAFT_REGENERATED`, `RELOAD_REQUIRED` 중 하나다.
+      - `FINALIZED`면 버전에 `v_source`를 기록한다. 값은 초안의 출처이고, 초안에 없으면 Page의 `engine_v_source.id`다.
+      - 빌더(#391)가 직접 박은 `v_source`가 그 값과 다르면 `V_SOURCE_MISMATCH`를 던지고 아무것도 저장하지 않는다.
     - `answer(event, …)`, `selectRuleB(event)` [WRITE].
     - `compare(event)`, `syncScoringPrices(event)` [SYNC].
 - **playbook**
-  - `facts(symbol)`.
-  - `judge({symbol, situation, date})`: 읽기 전용이다.
+  - `facts(symbol)`: `v_now`·`v_prev20`과 함께 `v_source`를 준다.
+  - `judge({symbol, situation, date})`: 읽기 전용이다. `v_source`는 facts의 출처이고, 화면이 넘긴 상황에 출처가 없으면 null이다. 엔진에는 옛 상황 키만 넘긴다.
   - `record(event, judged)` [WRITE]: 발생 기록을 쓴다. `judge()` 결과만 받는다(`JUDGEMENT_UNKNOWN`).
   - `due(date)`, `limits(rows, cash)`.
 - **virtual**
@@ -183,30 +210,50 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
     - 로그인과 승인된 Worker가 없으면: `NOT_AVAILABLE`.
     - 그 밖에 탭을 읽기 전이면 종목별로 `PRICE_NOT_FETCHED`.
   - `compare(result, {defs})`, `forward()`(9.2, 가격 없음), `rehearse()`(RAM만).
+    - `rehearse()`: 옛 app.js처럼 늘 Q·G 행과 `snapshot_basis`(v2)를 넘긴다. Page에 결과가 없으면(sec-qgv2.json 없음) 옛 compute로 TARGET 19행(Q·G null, BLOCKED 스냅숏)을 만든다. 그 밖의 Page 오류는 던진다.
   - `run()`은 늘 `NOT_IN_P1`이다. 기록 실행은 P2-6에서 붙인다.
   - 세트 B/C/D(장부 시트)도 P2-6이다. 대응: `VirtualLedgerSheets.load` / `active(meta,k)` / `apply` / `definitions`(virtual-ledger-sheets.js:696-699).
 - **macro**(4.1.4): `current()`. 세대마다 `MacroLights.setPublic`을 부른다.
 
-## 9. 사유 코드 요약
+## 9. 고정 코드
 
-- 행 NA
-  - V: coverage V 사유와 같다(`vCoverage` 규칙). 예: `NO_DEVICE_PRICE`, `SOURCE_NOT_AVAILABLE`, `FINANCIAL_PROFILE_V_NOT_DEFINED`, `CROSS_SECTION_TOO_SMALL`, `AXIS_WEIGHT_INSUFFICIENT`.
-  - total: `DATA_FORMAT_NEWER` → `CALC_VERSION_MISMATCH` → 엔진 total_reason 순서로 정한다.
-  - rank: `QG_REFERENCE`, `OUTSIDE_UNIVERSE`, `REFERENCE_ONLY`, `NOT_RANKED`, 또는 total 사유다.
-- Page: `SEC_QGV2_NOT_PUBLISHED`, `SEC_QGV2_NOT_AVAILABLE`, `SEC_QGV2_SCHEMA_NEWER`, `SEC_QGV2_INVALID`, `SEC_QGV2_UNAVAILABLE`, `V2_SCORES_NOT_AVAILABLE`, `READER_MISSING`.
-- 관문: `CLICK_REQUIRED`, `ACTION_REQUIRED`, `DESTINATION_UNKNOWN`, `DEVICE_STORE_NOT_OPENED`, `ACTION_KIND_UNKNOWN`.
-- 중앙 V(미리 등록, 초안 문구): `NO_OFFICIAL_YET`, `SUPPLY_FAILED`, `VERIFY_FAILED`, `PRICE_DEPENDENT_NOT_COMPUTABLE`.
+던지는 코드(오류)와 값 안의 사유(NA·상태)를 함께 적는다. 글은 `IS2.qgv.reasonText(code, en)`로 만든다. 옛 모듈이 던진 코드는 그대로 지나간다(예: `DATE_INVALID`, `DISAGREE_REASON_REQUIRED`, `BACKUP_RESTORE_FAILED`, `READ_FAILED`, `DRIVE_FILE_PERMISSION_REQUIRED`).
 
-## 10. V 출처 전환점(중앙 V가 게시될 때 바꿀 곳 전부)
+| 어디 | 던지는 코드 | 값 안의 사유·상태 |
+| --- | --- | --- |
+| 관문(모든 action) | `CLICK_REQUIRED`, `ACTION_REQUIRED`, `DESTINATION_UNKNOWN`, `DEVICE_STORE_NOT_OPENED`, `ACTION_KIND_UNKNOWN` | — |
+| `data` | `READER_MISSING`, `PUBLIC_FILE_UNKNOWN`, `PUBLIC_FILE_METHOD`, `PEEK_UNSUPPORTED`, `SEC_QGV2_UNAVAILABLE`/`SEC_QGV2_INVALID`(peek) | state `OK`/`NOT_PUBLISHED`/`FAILED`/`NOT_READ`, why `INVALID`/`NETWORK`/`HTTP`/`SCHEMA_NEWER`/`READER_MISSING`; refresh `APPLIED`/`UNCHANGED`/`FAILED`/`LOADING` |
+| `qgv.page` | `READER_MISSING`, `ABORTED`(signal), `NO_OFFICIAL_YET`(중앙 경로, 아직 없음) | Page state `READY`/`NO_DATA`/`DATA_FORMAT_NEWER`/`READ_FAILED`, reason `SEC_QGV2_NOT_PUBLISHED`/`SEC_QGV2_NOT_AVAILABLE`/`SEC_QGV2_SCHEMA_NEWER`/`SEC_QGV2_INVALID`/`SEC_QGV2_UNAVAILABLE`/`V2_SCORES_NOT_AVAILABLE`; identities `CATALOG_NOT_AVAILABLE` |
+| `qgv` 그 밖 | `PAGE_UNKNOWN`, `PAGE_NOT_READY`(결과 없는 Page), `SCOPE_UNKNOWN`, `PRESET_UNKNOWN`, `GATE_INVALID` | preview state `READY`/`INVALID`, reason `WEIGHTS_INVALID` |
+| 행 NA | — | V: coverage V 사유(`NO_DEVICE_PRICE`, `SOURCE_NOT_AVAILABLE`, `FINANCIAL_PROFILE_V_NOT_DEFINED`, `CROSS_SECTION_TOO_SMALL`, `AXIS_WEIGHT_INSUFFICIENT` 등); total: `DATA_FORMAT_NEWER` → `CALC_VERSION_MISMATCH` → 엔진 total_reason; rank: `QG_REFERENCE`, `OUTSIDE_UNIVERSE`, `REFERENCE_ONLY`, `NOT_RANKED` 또는 total 사유 |
+| `prices` 로그인 | `OFF`, `NOT_READY`, `PREPARE_TIMEOUT`, `CANCELED`, `AUTH_FAILED` | status google.error(`AUTH_REQUIRED`, `AUTH_POPUP_CLOSED` 등) |
+| `prices.readUniverse` | `UNIVERSE_SOURCE_NOT_SET`, `UNIVERSE_SOURCE_INVALID`, `AUTH_REQUIRED`, `SOURCE_TOO_LARGE`, `CANCELED`, `UNIVERSE_READ_FAILED` | inputs `READY`/`SEC_INPUTS_UNAVAILABLE`/`SEC_UNIVERSE_SHARES_INVALID`/`SEC_UNIVERSE_SHARES_SCHEMA_NEWER`/`SEC_INPUTS_NOT_CONNECTED` |
+| `prices.history` | `OFF`, `HISTORY_UNAVAILABLE`, `REQUEST_INVALID`, `ORIGIN_UNAPPROVED`, `AUTH_REQUIRED`, `CANCELED` | — |
+| `prices` 탭·동기화 | `SYMBOLS_INVALID`, `INTERVAL_INVALID` | 결과 state·reason_codes(옛 PriceStore 코드), 종목별 code(`WORKER_ALLOWLIST` 등) |
+| `prices.quote` | — | NA `NO_DEVICE_PRICE`, `IDENTITY_CONFLICT_WITHDRAWN`, `PRICE_IDENTITY_CONFLICT` |
+| `store` | `PREFS_INVALID`, `PREFS_STORAGE_INVALID`, `WEIGHTS_INVALID`, `WEIGHTS_STORAGE_INVALID`, `SHEET_SOURCE_INVALID`, `UNIVERSE_SOURCE_INVALID`, `REQUEST_INVALID`(Worker 주소), `BACKUP_INVALID`, `BACKUP_TOO_LARGE`, `BACKUP_USER_OBJECTS_UNSUPPORTED` | holdings `NOT_AVAILABLE` + `CATALOG_NOT_AVAILABLE`/`DEVICE_STORE_NOT_OPENED`/`DEVICE_STORAGE_UNAVAILABLE`; prefs·weights·playbook state `OK`/`EMPTY`/`INVALID` |
+| `engines.target` | `PAGE_UNKNOWN`, `QGV2_NOT_READY`, `CATALOG_NOT_AVAILABLE`, `TARGET_V1_STATE_INVALID`, `TARGET_V1_ANSWERS_RESET`(두 번째 누름 필요), `V_SOURCE_MISMATCH` | finalize outcome `FINALIZED`/`BLOCKED`/`DRAFT_REGENERATED`/`RELOAD_REQUIRED`(+ blockers 코드); selectRuleB `SELECTED`/`NOT_READY`/`NOT_DUE`/`QGV2_NOT_READY`; syncScoringPrices `NOTHING_PENDING` 또는 동기화 state |
+| `engines.playbook` | `PLAYBOOK_INVALID`, `JUDGEMENT_UNKNOWN` | 판정 코드(PlaybookEngine) |
+| `engines.virtual` | `NOT_IN_P1`(run), `PAGE_UNKNOWN`(rehearse) | stored state `NOT_STARTED`/`NOT_AVAILABLE`(+ `OFF`/`REQUEST_INVALID`/`ORIGIN_UNAPPROVED`/`AUTH_REQUIRED`/`PUBLIC_CATALOG_UNAVAILABLE`), 종목별 `PRICE_NOT_FETCHED`; compare `COMPARE_NEEDS_TWO_SETS`; forward `LOADED`/`NOT_PUBLISHED`/`NOT_AVAILABLE` |
+| 중앙 V(미리 등록, 초안 문구) | — | `NO_OFFICIAL_YET`, `SUPPLY_FAILED`, `VERIFY_FAILED`, `PRICE_DEPENDENT_NOT_COMPUTABLE` |
 
-화면은 바꾸지 않는다. 페이지 전체가 한 번에 바뀐다.
+## 10. V 출처 전환점(중앙 V가 게시될 때 바꿀 곳)
+
+화면은 바꾸지 않는다. 페이지 전체가 한 번에 바뀐다. 아래가 지금 아는 전부다. P1 층 밖(옛 모듈)도 적었다.
 
 1. `qgv.js`: `OFFICIAL_READER`(유일한 스위치)를 설정하고 `centralPage`를 구현한다. Q·G도 게시본에서 읽고 sec-qgv2.json과 섞지 않는다.
 2. `data.js`: `FILES`에 넣고 엄격 리더를 붙인다.
-3. Pages 가드 허용 목록에 넣는다(Main).
-4. `TargetV1Builder.finalize`는 #391에서 `v_source`를 직접 박는다. 옵션이 필요하다(Main이 #391에 요청). 그전까지는 engines가 기록하고, 병합 뒤에는 값이 일치하는지만 확인한다.
-5. 엔진 중앙 모드 계약: `forEngines`는 늘 기기 결과를 주므로 기록은 `engine_v_source`(DEVICE_TEMPORARY)를 남긴다. 어댑터를 둘지, 엔진은 기기 V로 고정할지 그때 정한다(`qgv.js` engine_v_source·forEngines, `engines.js` finalize). TARGET 카드 판정과 R-B 기록에는 출처 필드가 없다(옛 형식, 모두 기기 V).
-6. `OFFICIAL_CENTRAL` 문구는 초안이다. 전환할 때 사용자 확인을 받는다.
+3. **옛 DataRefresh 판독기 목록(옛 모듈 수정, Main 승인).** `data-refresh.js` readCore는 판독기 목록이 고정이다(:62-66). `vSource(pub)`가 보는 `DataRefresh.publication()`이 sec-qgv2.json과 중앙 게시본을 '전부 아니면 전무'로 함께 바꾸려면 readCore 또는 `public-screens.js` FILES가 게시본을 읽어야 한다(중앙 V 설계 재사용 표 :401).
+4. **옛 `qgv-scores.js` 게시본 모드(옛 모듈 수정).** 중앙 V 설계 §11(:404): 게시본 모드를 넣고, 기기 가격 경로는 개인 미리보기로만 쓴다.
+5. Pages 가드 허용 목록에 넣는다(Main).
+6. `TargetV1Builder.finalize`는 #391에서 `v_source`를 직접 박는다. 옵션이 필요하다(Main이 #391에 요청). 그전까지는 engines가 초안의 출처를 기록하고, 병합 뒤에는 빌더 값과 다르면 `V_SOURCE_MISMATCH`로 저장을 막는다.
+7. **엔진 중앙 모드 계약.** 지금 `held`(엔진용 결과)는 `devicePage`만 채운다. 중앙 Page에는 결과가 없어 `forEngines`가 `PAGE_NOT_READY`를 던진다. 그래서 둘 중 하나를 정해야 한다.
+   - `centralPage`가 `devicePage`도 돌려 `held`를 채운다. 엔진 기록은 `engine_v_source`(DEVICE_TEMPORARY)로 남는다.
+   - 또는 중앙 V 행을 computed 모양으로 바꾸는 어댑터를 두고 `engine_v_source`를 바꾼다.
+   - 이 계약에 기대는 곳: `engines.js`의 `scored`/`basis`/`builderArgs`(TARGET 초안, R-B), `finalize`의 재생성, `rehearse`(결과가 없으면 옛 compute로 대신함), `playbook.facts`(scoreView의 기기 결과).
+8. **출처 필드가 없는 저장 기록**(8절): TARGET 카드 판정, 플레이북 발생 기록, 옛 초안. 중앙 V 뒤에는 기기 V 기록과 구별되지 않는다. 기록 형식에 출처를 넣을지 정한다.
+9. **미리보기.** `qgv.preview`는 기기 시세로 다시 계산하므로 늘 임시 V로 표시한다(지금 고정). 중앙 모드에서 개인 미리보기를 어떻게 보일지 정한다.
+10. **문구.** `OFFICIAL_CENTRAL` 문구와 중앙 V 사유 4개(`NO_OFFICIAL_YET` 등)의 글은 초안이다. 지금 글에는 '(초안 문구)'가 붙어 있다. 전환할 때 사용자 확인을 받고 고친다.
 
 ## 11. 사용자 결정 대기
 
@@ -216,7 +263,12 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
 - IndexedDB 'market' 시세 저장을 계속할지 정한다. 계획 §2.1과 충돌한다.
 - 일일 보고서·보고서 모델, 가상매매 기록 실행, 세트 B/C/D는 P2-6에서 정한다(daily-report.js는 불러오지 않음).
 - 로그인 두 번 누르기(준비 → 로그인)를 유지할지 정한다.
-- 중앙 V 모드의 엔진 계약(10절 5).
+- 중앙 V 모드의 엔진 계약(10절 7)과 출처 없는 기록(10절 8).
+- **휴대폰 첫 화면 비용(Main 결정).** 결정 11의 순서대로 옛 모듈 57개가 셸보다 먼저 받아지고 실행된다. 검토 측정(390×844, gzip):
+  - 첫 화면까지: 제한 없음 113 → 156 ms, CPU ×4 237 → 490 ms, 150 ms RTT·1.6 Mbps·CPU ×4 1,558 → 4,119 ms.
+  - 전송 13 KB → 569 KB, 스크립트 7 → 78개.
+  - 선택지: boot.js를 먼저 두고 엔진과 P1 층을 첫 그림 뒤에 불러오기(`data.ready`·`qgv.page`가 기다림), 또는 화면이 처음 쓸 때 불러오기.
+- 한 이벤트로 시작하는 최상위 action 수: 지금은 그 이벤트가 전달되는 동안에는 여러 개를 시작할 수 있다. 하나로 줄일지 정한다.
 - 백업 /5: 지금은 고정 코드로 거절한다. 검증기를 재사용할지 정한다.
 - 남은 항목
   - 임시 V 기준 순위 문구
@@ -234,7 +286,10 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
   - 빌드 출력: 재사용 파일이 바이트 그대로이고, 부르지 않는 옛 파일이 없다.
   - A: 행동 없이 읽으면 공개 파일만 읽고, 저장 0, blocked 0이다.
   - B: 흉내 낸 행동은 모두 거절되고 요청이 0건이다.
+  - A에는 경로마다 새로 열기, 경로 바꾸기, `route.signal` 해제, 칩 구독 수 확인이 들어 있다.
+  - B에는 위조 이벤트, `requestSubmit()`·`submitter.click()` submit이 들어 있다.
   - C: 실제 클릭이면 정해진 요청만 나가고 V가 계산되며, 표지 가격이 새지 않는다.
+  - C2: 저장해 둔 진짜 클릭 이벤트를 나중에(타이머, 다른 kind) 다시 쓰면 거절되고 요청이 없다. 같은 이벤트의 중첩 실행은 통과한다.
   - D: 새로고침하면 RAM이 비워진다.
 - `web_app_shell_browser_test.js`(P0)는 고치지 않고 통과한다.
 - 도우미: `web_app_reuse.js`(옛 모듈 경로 한 곳), `web_app_test_site.js`(빌드·서빙·fixture·`watch`·`storage`·`leaks`·`assertRamOnly`).

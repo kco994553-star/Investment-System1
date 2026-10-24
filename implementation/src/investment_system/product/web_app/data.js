@@ -2,7 +2,8 @@
    one generation at a time. Opening a page reads nothing private (P1 implementation spec, Main decisions 2 and 13; design §1.1 (2), §4).
    - Every public request of every view goes through strictFetch: a fixed file list (FILES), same origin, credentials omitted,
      redirects refused, no referrer, at most 2 MiB (= Pages guard MAX_FILE_BYTES); the HTTP status is kept, so DataRefresh still
-     tells a failed read from an unpublished file (404). Readers that set none of these options (SecQgv2, SecUniverseShares,
+     tells a failed read from an unpublished file (404), and a larger answer reaches its reader as an empty body with that status
+     (an invalid file, INVALID: never mistaken for a network failure). Readers that set none of these options (SecQgv2, SecUniverseShares,
      EntitySearch) get them here without being edited.
    - Validation is the old readers' own (DataRefresh.load / refresh / rejudge / list / shares / financials, SecQgv2.validate,
      GoogleSheetSetup.codes, EntitySearch.loadNames, DeviceValuation.load, ForwardValidation.load); nothing is re-checked here.
@@ -33,12 +34,13 @@ function create({win,action}){
  if(!action||typeof action.view!=='function')throw Error('ACTION_MISSING');
  const DR=()=>win.DataRefresh,missing=()=>READERS.filter(n=>!win[n]);
  const seen=new Map();// file -> last HTTP status of a strict read (0 = no answer), for the static files' state
+ // The body, or null when it is over MAX_BYTES (the rest is not read).
  async function capped(r){
-  const len=Number(r.headers.get('content-length'));if(Number.isFinite(len)&&len>MAX_BYTES)throw Error('PUBLIC_FILE_TOO_LARGE');
+  const len=Number(r.headers.get('content-length'));if(Number.isFinite(len)&&len>MAX_BYTES){try{if(r.body)await r.body.cancel();}catch(_){}return null;}
   if(r.body&&typeof r.body.getReader==='function'){const reader=r.body.getReader(),parts=[];let size=0;
-   for(;;){const{done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>MAX_BYTES){try{await reader.cancel();}catch(_){}throw Error('PUBLIC_FILE_TOO_LARGE');}parts.push(value);}
+   for(;;){const{done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>MAX_BYTES){try{await reader.cancel();}catch(_){}return null;}parts.push(value);}
    const out=new Uint8Array(size);let at=0;for(const p of parts){out.set(p,at);at+=p.byteLength;}return out;}
-  const out=new Uint8Array(await r.arrayBuffer());if(out.byteLength>MAX_BYTES)throw Error('PUBLIC_FILE_TOO_LARGE');return out;
+  const out=new Uint8Array(await r.arrayBuffer());return out.byteLength>MAX_BYTES?null:out;
  }
  // The one public request function of every view (public, price and score views). Cache: the reader's no-cache, else no-store.
  async function strictFetch(input,init){
@@ -48,7 +50,8 @@ function create({win,action}){
   if(i.signal)opts.signal=i.signal;
   let r;try{r=await win.fetch(name,opts);}catch(e){seen.set(name,0);throw e;}
   seen.set(name,r.status);const body=await capped(r),none=r.status===204||r.status===205||r.status===304;
-  return new win.Response(none?null:body,{status:r.status,statusText:r.statusText,headers:{'Content-Type':r.headers.get('content-type')||'application/json'}});
+  // Over the cap: an empty body with the real status, which every reader judges an invalid file (JSON parse fails).
+  return new win.Response(none||body===null?null:body,{status:r.status,statusText:r.statusText,headers:{'Content-Type':r.headers.get('content-type')||'application/json'}});
  }
  // ---- the public view: core readers that keep their results for the read in progress ----
  let sink=null,judged=null;const apis=new Map();
@@ -121,9 +124,11 @@ function create({win,action}){
   // actual-catalog.json and entities.json: the old app checks only the answer and the JSON (app.js deviceCatalog, boot); their
   // users validate the content (DeviceWatchlist.identities, EntitySearch).
   if(!object(v))throw Error('INVALID');return deepFreeze(v);}
- // One read per page; resolves the value or null (state(name) says why).
+ // One read per page; resolves the value or null (state(name) says why). A read that failed is not kept: the next call reads
+ // again (app.js deviceCatalog dropped a failed promise the same way), and state(name) keeps the failure until then.
  function staticFile(name){if(!STATIC_SET.has(name))throw Error('PUBLIC_FILE_UNKNOWN');let e=statics.get(name);
-  if(!e){e={state:null};e.promise=readStatic(name).then(v=>{e.state=Object.freeze({state:'OK',why:null,as_of:object(v)&&typeof v.as_of==='string'?v.as_of:null,text:''});return v;},err=>{e.state=failure(name,err);return null;});statics.set(name,e);}
+  if(!e||e.failed){const last=e?e.state:null;e={state:last,failed:false};const mine=e;
+   mine.promise=readStatic(name).then(v=>{mine.state=Object.freeze({state:'OK',why:null,as_of:object(v)&&typeof v.as_of==='string'?v.as_of:null,text:''});return v;},err=>{mine.state=failure(name,err);mine.failed=true;return null;});statics.set(name,mine);}
   return e.promise;}
  // TARGET's re-check before a version is saved: a stand-alone strict read that leaves the generation alone and returns the RAW
  // JSON that passed SecQgv2.validate (shard_count, row calc_version and reason codes are needed: target-v1-builder.js publishedCheck).

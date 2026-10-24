@@ -8,10 +8,12 @@
 //    file, and fails on a reference found in neither folder, a duplicate, an inline script or a non-local name.
 //  - Old modules that start themselves at load or are old screens are not loaded; load-time bindings come before their users.
 //  - Screen registry: a placeholder never replaces a real screen, two real screens for one route fail (SCREEN_DUPLICATE),
-//    detail screens register by name.
-//  - Source rules for every web_app script (no console output, no HTML strings, NA never filled with 0, storage / network /
-//    Google session / engine rows / score and price views / V source label only in their P1 owner files, no old path that
-//    bypasses the price view, no order feature), and the Pages guard's secret patterns.
+//    detail screens register by name; screen-menus.js registers all eight menus as placeholders (a lane screen loaded first
+//    stays); h() refuses a style string (the CSP would drop it).
+//  - Source rules for every web_app script (no console output, no HTML strings, no style attribute strings, NA never filled
+//    with 0, storage / network / Google session / engine rows / score and price views / V source words only in their P1 owner
+//    files, no old path that bypasses the price view, no order feature), checked to catch their examples, and the Pages
+//    guard's secret patterns.
 // Wording rules for the fixed code list are left to tools/spec_direction_guard.py and not repeated here.
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -19,6 +21,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const crypto = require('node:crypto');
+const vm = require('node:vm');
 const { execFileSync } = require('node:child_process');
 const R = require('./web_app_reuse');
 
@@ -186,8 +189,9 @@ const RULES = [
   ['eval', /\beval\(|\bnew Function\b/, []],
   ['NA filled with 0', /(\?\?|\|\|)\s*0(?!\d)/, []],
   ['style property writes (CSSOM helper only)', /\.style\./, ['core.js']],
+  ['style attribute strings (the CSP drops them)', /\bstyle\s*:\s*['"`]|setAttribute\(\s*['"`]style\b|\[['"`]style['"`]\]\s*=/, []],
   ['device storage outside the P1 layer', /\b(localStorage|sessionStorage|indexedDB)\b/, P1],
-  ['V source label outside qgv.js', /임시 V|OFFICIAL_CENTRAL/, ['qgv.js']],
+  ['V source words outside qgv.js (screens use row.source_label / qgv.V_SOURCES)', /임시 V|공식 V|DEVICE_TEMPORARY|OFFICIAL_CENTRAL|중앙 V 미게시|기기 시세로 계산/, ['qgv.js']],
   ['hard-coded calc version', /qgv2-calc\//, []],
   ['network outside data.js and prices.js', /\bfetch\(/, ['data.js', 'prices.js']],
   ['price fetch outside prices.js and engines.js', /\bfetch\s*:\s*true\b/, ['prices.js', 'engines.js']],
@@ -209,6 +213,36 @@ test('source rules for every web_app script (code, not comments)', () => {
     }
   }
   assert.doesNotMatch(R.newIndex(), RULES.find((r) => r[0] === 'order features')[1]);
+});
+
+test('source rules catch what they name (V source words, style attribute strings)', () => {
+  const rule = (name) => RULES.find((r) => r[0].startsWith(name))[1];
+  for (const line of ["label.textContent='공식 V'", "row.source==='DEVICE_TEMPORARY'", "note.textContent='기기 시세로 계산 · 중앙 V 미게시'", "x.textContent='임시 V'", "if(id==='OFFICIAL_CENTRAL')"])
+    assert.match(line, rule('V source words'), line);
+  assert.doesNotMatch("chip.textContent=row.source_label", rule('V source words'));
+  for (const line of ["h('p',{style:'color:red'})", 'h("p",{style: "width:4px"})', "el.setAttribute('style','x')", "el['style']='x'"]) assert.match(line, rule('style attribute strings'), line);
+  assert.doesNotMatch("h('i',{style:{width:'40%'}})", rule('style attribute strings'));
+});
+
+test('screen-menus.js registers every menu as a placeholder: a lane screen registered first is kept; h() refuses a style string', () => {
+  delete require.cache[require.resolve(R.newPath('core.js'))];
+  const core = R.requireNew('core.js'), lane = () => 'lane';
+  core.register('macro', lane);// a P2 lane file loads before screen-menus.js (index.html order)
+  const parts = { head: () => null, section: () => null, pending: () => null };
+  vm.runInNewContext(fs.readFileSync(R.newPath('screen-menus.js'), 'utf8'), { window: { IS2: { ...core, parts } }, Object });
+  const ids = core.MENU.filter((m) => m.id !== 'search').map((m) => m.id);
+  assert.equal(ids.length, 8);
+  for (const id of ids) {
+    assert.equal(typeof core.screen(id), 'function', id);
+    if (id === 'macro') { assert.equal(core.screen(id), lane, 'the lane screen stays'); assert.equal(core.isPlaceholder(id), false); }
+    else assert.equal(core.isPlaceholder(id), true, id + ' is a placeholder (a lane may replace it)');
+  }
+  const doc = { createElement: () => ({ style: { setProperty() {} }, setAttribute() {}, addEventListener() {}, dataset: {}, appendChild() {} }), createTextNode: () => ({}) };
+  const saved = globalThis.document; globalThis.document = doc;
+  try {
+    assert.throws(() => core.h('p', { style: 'color:red' }), /STYLE_INVALID/);
+    assert.doesNotThrow(() => core.h('p', { style: { color: 'red' } }));
+  } finally { globalThis.document = saved; }
 });
 
 test('web_app text files pass the Pages guard secret patterns', () => {

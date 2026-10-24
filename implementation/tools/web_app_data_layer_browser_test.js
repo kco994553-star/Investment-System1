@@ -4,18 +4,24 @@
 // answers Google with stand-ins, then checks the built page in Chromium:
 //  - Build: every reused old file is byte-identical to web_assets, every web_app file is copied as is, no unreferenced old
 //    frontend file is served, and the page loads exactly index.html's scripts in order.
-//  - A (no user action): opening any route reads nothing; every route can call IS2.data.ready() / IS2.qgv.page() and gets
-//    the same page; requests stay same-origin and every data request is a name in IS2.data.FILES; read-only layer calls add
-//    no request either; zero Sheets / OAuth / Worker / Google requests, zero localStorage / sessionStorage / IndexedDB,
-//    action.blocked() 0; every row is the temporary device V (source and label from the accessor) with V null and a reason.
-//  - B (imitated actions): direct calls, plain objects claiming isTrusted and synthetic events (dispatchEvent, el.click())
-//    are refused with CLICK_REQUIRED; the price view refuses private destinations and old writers get ACTION_REQUIRED;
-//    zero requests, storage unchanged.
+//  - A (no user action): opening any route reads nothing (each route opened in a fresh load, and again on a route change
+//    before the test's own call); every route can call IS2.data.ready() / IS2.qgv.page() and gets the same page; each render's
+//    route.signal is aborted by the next one and the device chip's subscription ends with it; requests stay same-origin and
+//    every data request is a name in IS2.data.FILES; read-only layer calls add no request either; zero Sheets / OAuth /
+//    Worker / Google requests, zero localStorage / sessionStorage / IndexedDB, action.blocked() 0; every row is the temporary
+//    device V (source and label from the accessor) with V null and a reason.
+//  - B (imitated actions): direct calls, plain objects claiming isTrusted, forged events (a fake Event prototype, a Proxy
+//    answering isTrusted), synthetic events (dispatchEvent, el.click()) and script-made submits (form.requestSubmit(),
+//    submitter.click(): the browser marks those submits trusted) are refused with CLICK_REQUIRED; the price view refuses
+//    private destinations and old writers get ACTION_REQUIRED; zero requests, storage unchanged.
 //  - C (real clicks): Playwright clicks test-only buttons (trusted events) that save the Universe tab source, prepare and
 //    sign in to Google (routed GIS stand-in) and read the Universe tab (Sheets stand-in answering unique synthetic sentinel
 //    prices and market caps). Exactly the expected requests leave; V is computed; no sentinel appears in the page record,
 //    the layer's status / read result / ranks, device storage, the console, any request URL or body, or the document text
 //    outside [data-ram-price] (assertRamOnly, the P2 display rule, itself checked to catch a leak). No CSP violation.
+//  - C2 (kept events): a real click's event kept and replayed after its dispatch (from the test, from a timer of the same
+//    handler, for another kind than the click's own) is refused with no request; a nested run of the same event while its
+//    action is in flight passes.
 //  - D: a reload drops every RAM value (sign-in, Universe read, ranks, V) and sends nothing private; only the setting the
 //    user saved by a click stays.
 // Synthetic data only: sentinel values are made-up decimals; the sheet id and the token are fixtures that exist in memory.
@@ -94,13 +100,20 @@ function record(context, page) {
 }
 
 // Test-only buttons (not part of the site): each handler passes its event to one layer action and keeps the outcome
-// ({ok, value} or {ok:false, code}) for the test to read.
+// ({ok, value} or {ok:false, code}) for the test to read. 'keep' runs a WRITE action and keeps its event, which a timer of the
+// same handler then replays for a write and a Universe read; 'nest' runs a SYNC action whose second step, after a timer, is a
+// nested run of the same event. The bar is fixed at the top (CSSOM) so no screen element covers it.
 async function addButtons(page) {
   await page.evaluate((id) => {
     if (document.querySelector('[data-test-actions]')) return;
     const I = window.IS2, out = window.__out = {};
-    const acts = { source: (e) => I.store.universeSource.set(e, id), prepare: (e) => I.prices.prepare(e), login: (e) => I.prices.login(e), read: (e) => I.prices.readUniverse(e) };
+    const outcome = async (f) => { try { await f(); return 'OK'; } catch (err) { return String(err && err.message); } };
+    const prefs = { version: 1, interests: [], groups: [] };
+    const acts = { source: (e) => I.store.universeSource.set(e, id), prepare: (e) => I.prices.prepare(e), login: (e) => I.prices.login(e), read: (e) => I.prices.readUniverse(e),
+      keep: (e) => { window.__kept = e; window.__replay = new Promise((done) => setTimeout(async () => done({ write: await outcome(() => I.store.savePrefs(e, prefs)), read: await outcome(() => I.prices.readUniverse(e)) }), 50)); return I.action.run(e, 'WRITE', () => 'kept'); },
+      nest: (e) => { window.__nested = e; return I.action.run(e, 'SYNC', async () => { await new Promise((r) => setTimeout(r, 30)); return I.action.run(e, 'WRITE', () => 'nested'); }); } };
     const bar = document.createElement('div'); bar.dataset.testActions = '';
+    for (const [k, v] of [['position', 'fixed'], ['top', '0'], ['left', '0'], ['z-index', '2147483647']]) bar.style.setProperty(k, v);
     for (const [name, fn] of Object.entries(acts)) {
       const b = document.createElement('button'); b.type = 'button'; b.dataset.testAction = name; b.textContent = 'test ' + name;
       b.addEventListener('click', (e) => {
@@ -150,12 +163,34 @@ async function scores(page) {
     for (const n of await page.evaluate(() => window.IS2.data.FILES)) FILES.add(n);
     const routes = await page.evaluate(() => { const I = window.IS2; return [...I.MENU.map((m) => I.href(m.id)), I.href('company', 'NYSE:FIX'), ...I.DETAILS.map((d) => I.href('detail', d.id)), '#/nowhere/x']; });
     assert.equal(routes.length, 9 + 1 + 7 + 1);
+    const settle = () => page.evaluate(() => new Promise((r) => setTimeout(r, 100)));
+    for (const hash of routes) {
+      phase = 'A fresh ' + hash;
+      const at0 = rec.log.length;
+      await page.goto(s.base + hash); await page.reload(); await page.locator('main[data-route]').waitFor(); await settle();
+      assert.deepEqual(dataNames(since(at0)), [], hash + ': opening the route in a fresh load reads no data file');
+    }
     for (const hash of routes) {
       phase = 'A ' + hash;
-      await page.goto(s.base + hash); await page.locator('main[data-route]').waitFor();
+      const at0 = rec.log.length;
+      await page.goto(s.base + hash); await page.locator('main[data-route]').waitFor(); await settle();
+      assert.deepEqual(dataNames(since(at0)), [], hash + ': a route change reads nothing before a screen asks');
       const r = await page.evaluate(async () => { const I = window.IS2, pub = await I.data.ready(), pg = await I.qgv.page(); window.__first = window.__first || pg; return { generation: pub.generation, same: pg === window.__first, state: pg.state }; });
       assert.deepEqual(r, { generation: 1, same: true, state: 'READY' }, hash + ': every screen shares one page of one generation');
     }
+    phase = 'A route signals';
+    const sig = await page.evaluate(async () => {
+      const I = window.IS2, P = I.prices, seen = []; let live = 0;
+      I.prices = Object.freeze({ ...P, subscribe: (fn, o) => { live++; if (o && o.signal) o.signal.addEventListener('abort', () => { live--; }, { once: true }); return P.subscribe(fn, o); } });
+      I.register('lab', (route) => { seen.push(route.signal); return I.h('p', null, 'lab'); });
+      const go = (h) => new Promise((r) => { window.addEventListener('hashchange', () => setTimeout(r, 0), { once: true }); location.hash = h; });
+      try {
+        await go('#/lab'); const first = seen[seen.length - 1]; await go('#/qgv'); const firstAborted = first.aborted;
+        for (let i = 0; i < 10; i++) await go(i % 2 ? '#/lab' : '#/news');
+        return { firstAborted, live, lastAborted: seen[seen.length - 1].aborted, renders: seen.length };
+      } finally { I.prices = P; }
+    });
+    assert.deepEqual(sig, { firstAborted: true, live: 1, lastAborted: false, renders: 6 }, 'the next render aborts route.signal; the chip keeps one subscription');
     phase = 'A read-only calls';
     const reads = await page.evaluate(async () => {
       const I = window.IS2, keep = (x) => (x && typeof x === 'object' ? { state: x.state, reason: x.reason !== undefined ? x.reason : null } : x);
@@ -209,7 +244,9 @@ async function scores(page) {
         'target.build': (e) => T.build(e), 'target.finalize': (e) => T.finalize(e), 'target.answer': (e) => T.answer(e, { symbol: 'NVDA', answer: 'AGREE' }),
         'target.selectRuleB': (e) => T.selectRuleB(e), 'target.compare': (e) => T.compare(e), 'target.syncScoringPrices': (e) => T.syncScoringPrices(e),
       };
-      const events = { none: () => undefined, object: () => ({ type: 'click', isTrusted: true }), mouse: () => new MouseEvent('click'), enter: () => new KeyboardEvent('keydown', { key: 'Enter' }), submit: () => new Event('submit') };
+      const events = { none: () => undefined, object: () => ({ type: 'click', isTrusted: true }), mouse: () => new MouseEvent('click'), enter: () => new KeyboardEvent('keydown', { key: 'Enter' }), submit: () => new Event('submit'),
+        forgedProto: () => Object.create(Event.prototype, { isTrusted: { value: true }, type: { value: 'click' } }),
+        forgedProxy: () => new Proxy(new MouseEvent('click'), { get: (t, k) => (k === 'isTrusted' ? true : Reflect.get(t, k)) }) };
       const refused = {};
       for (const [name, f] of Object.entries(calls)) for (const [kind, ev] of Object.entries(events)) { const o = await outcome(() => f(ev())); if (o !== 'CLICK_REQUIRED') refused[name + ' / ' + kind] = o; }
       // Synthetic clicks on the test buttons (isTrusted false): dispatchEvent and HTMLElement.click().
@@ -219,6 +256,13 @@ async function scores(page) {
         el.dispatchEvent(new MouseEvent('click', { bubbles: true })); synthetic[n + ' dispatch'] = (await window.__out[n]).code;
         el.click(); synthetic[n + ' click()'] = (await window.__out[n]).code;
       }
+      // Script-made submits: form.requestSubmit() and a script's submitter.click() (the browser marks those submits trusted).
+      const form = document.createElement('form'), submitter = document.createElement('button'), submits = [];
+      submitter.type = 'submit'; form.appendChild(submitter); document.body.appendChild(form);
+      form.addEventListener('submit', (ev) => { ev.preventDefault(); submits.push([ev.isTrusted, outcome(() => I.store.savePrefs(ev, { version: 1, interests: [], groups: [] })), outcome(() => I.prices.prepare(ev))]); });
+      submitter.addEventListener('click', (ev) => { submits.push([ev.isTrusted, outcome(() => I.store.savePrefs(ev, { version: 1, interests: [], groups: [] })), outcome(() => I.prices.prepare(ev))]); });
+      form.requestSubmit(); submitter.click(); form.remove();
+      const submitted = []; for (const [trusted, a, b2] of submits) submitted.push([trusted, await a, await b2]);
       // The price view itself, outside a click: every private destination refused; old writers handed gated storage refused.
       const worker = W.privateHistoryWorkerOrigin, pv = I.prices.priceView;
       const views = {
@@ -227,11 +271,14 @@ async function scores(page) {
         worker: await outcome(() => pv.fetch(worker + '/quote', {})), storeWrite: await outcome(() => I.store.storage.setItem('x', 'y')), viewWrite: await outcome(() => pv.localStorage.setItem('x', 'y')),
         sessionWrite: await outcome(() => pv.sessionStorage.setItem('x', 'y')), idb: await outcome(() => pv.indexedDB.open('investment-device-actual-v1', 1)),
       };
-      return { refused, count: Object.keys(calls).length * Object.keys(events).length, synthetic, views, blocked: I.action.blocked() };
+      return { refused, count: Object.keys(calls).length * Object.keys(events).length, synthetic, submitted, views, blocked: I.action.blocked() };
     }, { id: SHEET_ID, values: VALUES_URL, append: APPEND_URL });
     assert.ok(b.count >= 100);
-    assert.deepEqual(b.refused, {}, 'every direct call / plain object / synthetic event is refused with CLICK_REQUIRED');
-    assert.deepEqual(Object.values(b.synthetic), Array(8).fill('CLICK_REQUIRED'), 'synthetic clicks on the buttons are refused');
+    assert.deepEqual(b.refused, {}, 'every direct call / plain object / forged or synthetic event is refused with CLICK_REQUIRED');
+    assert.deepEqual(Object.values(b.synthetic), Array(12).fill('CLICK_REQUIRED'), 'synthetic clicks on the buttons are refused');
+    assert.equal(b.submitted.length, 3, 'requestSubmit → submit; submitter.click() → click, then submit');
+    assert.ok(b.submitted.filter(([trusted]) => trusted).length >= 1, 'the browser marked a script-made submit trusted');
+    assert.deepEqual(b.submitted.map(([, a, c]) => [a, c]), Array(3).fill(['CLICK_REQUIRED', 'CLICK_REQUIRED']), 'and it is refused: a submit is not a gesture');
     assert.deepEqual(b.views, { values: 'CLICK_REQUIRED', append: 'CLICK_REQUIRED', oauth: 'CLICK_REQUIRED', history: 'CLICK_REQUIRED', worker: 'CLICK_REQUIRED',
       storeWrite: 'ACTION_REQUIRED', viewWrite: 'ACTION_REQUIRED', sessionWrite: 'ACTION_REQUIRED', idb: 'DEVICE_STORE_NOT_OPENED' });
     assert.equal(b.blocked - blockedB, 8, 'the five private requests and three storage writes were counted as blocked');
@@ -300,6 +347,26 @@ async function scores(page) {
     assert.equal(await page.evaluate(() => window.__csp), 0, 'no CSP violation (GIS stylesheet and script are allowed sources)');
     assert.deepEqual(seen.errors, [], 'no console error');
 
+    // ---------------------------------------------------------------- C2: kept events
+    phase = 'C2 kept events';
+    at = rec.log.length;
+    const blockedC2 = await page.evaluate(() => window.IS2.action.blocked()), storeC2 = JSON.stringify((await site.storage(page)).localItems);
+    assert.deepEqual(await click(page, 'keep'), { ok: true, value: 'kept' }, 'a real click runs its own action');
+    const replayed = await page.evaluate(async () => {
+      const I = window.IS2, e = window.__kept, outcome = async (f) => { try { await f(); return 'OK'; } catch (err) { return String(err && err.message); } };
+      return { timer: await window.__replay, later: { read: await outcome(() => I.prices.readUniverse(e)), write: await outcome(() => I.store.savePrefs(e, { version: 1, interests: [], groups: [] })), login: await outcome(() => I.prices.prepare(e)) },
+        trusted: e.isTrusted, phase: e.eventPhase };
+    });
+    assert.deepEqual([replayed.trusted, replayed.phase], [true, 0], 'the kept event is still trusted, but its dispatch is over');
+    assert.deepEqual(replayed.timer, { write: 'CLICK_REQUIRED', read: 'CLICK_REQUIRED' }, 'replayed from a timer of the same handler, for a write and for another kind: refused');
+    assert.deepEqual(replayed.later, { read: 'CLICK_REQUIRED', write: 'CLICK_REQUIRED', login: 'CLICK_REQUIRED' }, 'replayed later without a gesture: refused');
+    assert.deepEqual(await click(page, 'nest'), { ok: true, value: 'nested' }, 'a nested run of the same event while its action is in flight passes');
+    assert.equal(await page.evaluate(async () => { try { await window.IS2.action.run(window.__nested, 'WRITE', () => 1); return 'OK'; } catch (err) { return err.message; } }), 'CLICK_REQUIRED', 'once its action settled, the event is a replay');
+    assert.deepEqual(since(at), [], 'no request from any replay'); assert.equal(rec.counts.values, 1, 'no second Sheets read');
+    assert.equal(JSON.stringify((await site.storage(page)).localItems), storeC2, 'no write from any replay');
+    assert.equal(await page.evaluate(() => window.IS2.action.blocked()), blockedC2, 'refused at the gate before any request or write was tried');
+    assert.deepEqual(seen.errors, [], 'no console error');
+
     // ---------------------------------------------------------------- D: reload clears RAM
     phase = 'D reload';
     at = rec.log.length;
@@ -322,6 +389,6 @@ async function scores(page) {
     assert.deepEqual(seen.outside.filter((u) => ![GIS_STYLE, GIS_CLIENT, VALUES_URL].includes(u)), []);
     assert.deepEqual(seen.errors, [], 'no console error');
     await context.close();
-    console.log('web app data layer: build reuse, no-action reads (A), refused imitations (B), click-only prices with no leak (C), RAM cleared on reload (D) ok');
+    console.log('web app data layer: build reuse, no-action reads (A), refused imitations (B), click-only prices with no leak (C), kept events refused (C2), RAM cleared on reload (D) ok');
   } finally { await browser.close(); await s.close(); }
 })().catch((e) => { console.error('FAILED at', phase); console.error(e); process.exitCode = 1; });
