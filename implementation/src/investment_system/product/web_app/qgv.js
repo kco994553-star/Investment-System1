@@ -2,7 +2,7 @@
    as the temporary V until a central V is published). P1 implementation spec, Main decisions 5, 6, 13; design §1.1 (3), §2.
    - Scores are QgvScores.pageResult (the old shared result: one collectQuotes and one compute over the whole sec-qgv2.json),
      computed with the score view: fetch always fails (SCORE_PATH_NO_NETWORK), the Universe read and the price tabs come from the
-     click-only price layer (prices.js; until it lands, none), stored device quotes only from an IndexedDB that already exists.
+     click-only price layer (prices.universeView / storeFacade), stored device quotes only from an IndexedDB that already exists.
      The page identities / profile / references are set here and nowhere else (app.js did it before).
    - Page and row records are a projection of that result: no price, quote, month close, EV, yield or reference range (engine
      `detail` / `reference_range`, collectQuotes quotes and meta) leaves this module, a missing value is null and always carries
@@ -22,7 +22,7 @@ function vSource(pub){return OFFICIAL_READER&&OFFICIAL_READER.state(pub)==='OFFI
 const QGV2='sec-qgv2.json',CATALOG='actual-catalog.json';
 // Without these the score would change silently (PlaybookEngine: cyclical V basis; SecQgv2: light sec-qgv2 path): READER_MISSING.
 const READERS=Object.freeze(['QgvScores','QgvV2','Qgv2Inputs','SecQgv2','ScoringDefault','PlaybookEngine','PlaybookConfigDefaults','DeviceWatchlist','TargetV1Builder']);
-// Until prices.js provides the click-only Universe read and price tabs: no device prices from either (V stays NA with its reason).
+// Without a price layer (a node test that passes none): no device prices from either (V stays NA with its reason).
 const NO_UNIVERSE=Object.freeze({prices:()=>null,priceBasis:()=>null,readStatus:()=>null});
 const NO_STORE=Object.freeze({status:()=>null,coverage:()=>null,subscribe:()=>()=>{},monthEndCloses:()=>Promise.resolve({}),dailyCloses:()=>Promise.resolve({}),runnerHistories:()=>Promise.resolve(null)});
 // Codes the old reason table (QgvScores.REASON) does not word: P1 states, rank reasons, and the central V codes pre-registered

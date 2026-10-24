@@ -1,6 +1,6 @@
 # 프론트 v2 P1 자료·계산 층: P2 레인용 API 계약
 
-P2 화면 레인이 쓰는 함수와 기록 모양을 정한다. 근거는 P1 구현 사양(Main 결정 2026-10-24)이다. 이 문서는 P1 단계마다 늘어난다. 지금은 2단계(`action`, `data`, `qgv`)까지 적었고, `prices`·`store`·`engines`는 3·4단계에서 채운다.
+P2 화면 레인이 쓰는 함수와 기록 모양을 정한다. 근거는 P1 구현 사양(Main 결정 2026-10-24)이다. 이 문서는 P1 단계마다 늘어난다. 지금은 3단계(`action`, `data`, `qgv`, `prices`, `store`)까지 적었고, `engines`는 4단계에서 채운다.
 
 ## 1. 파일과 순서
 
@@ -52,7 +52,7 @@ P2 화면 레인이 쓰는 함수와 기록 모양을 정한다. 근거는 P1 �
 - `page({preset, gate, signal})`는 Page를 돌려준다. 같은 입력이면 모든 화면이 같은 객체를 받는다.
   - 계산은 `QgvScores.pageResult(scoreView, …)`가 한다.
   - scoreView의 fetch는 늘 `SCORE_PATH_NO_NETWORK`로 실패한다.
-  - Universe 읽기와 가격 탭은 prices 층에서 온다. 가격 층이 들어오기 전에는 둘 다 없다.
+  - Universe 읽기는 `prices.universeView`, 가격 탭은 `prices.storeFacade`에서 온다. 둘 다 클릭으로 읽기 전에는 없다.
   - 저장 시세는 이미 있는 IndexedDB에서만 읽는다.
 - `rows(page, {scope:'ALL'|'UNIVERSE'|'TARGET'})`: QgvScores 순서 그대로 돌려준다. 정렬·모집단·분류 필터·레이더는 P2-2에서 옛 함수(LeaderboardScreen, StatRadar의 `compute(spec,{result})`)로 붙인다.
 - `row(page, idOrCode)`: Universe 안의 TARGET은 그 코드의 행이다.
@@ -86,7 +86,74 @@ P2 화면 레인이 쓰는 함수와 기록 모양을 정한다. 근거는 P1 �
 - 중앙 V 사유 코드는 미리 등록해 두었다(초안 문구): `NO_OFFICIAL_YET`, `SUPPLY_FAILED`, `VERIFY_FAILED`, `PRICE_DEPENDENT_NOT_COMPUTABLE`.
 - RAM 가격 표시: 기기 가격을 화면에 낼 때는 `[data-ram-price]` 요소의 글자로만 낸다. 속성·값·제목에는 넣지 않는다. 시험 도우미는 `tools/web_app_test_site.js`의 `assertRamOnly`다.
 
-## 5. V 출처 전환점(중앙 V가 게시될 때 바꿀 곳, 전부)
+## 5. 가격: `IS2.prices`
+
+- 시트·Worker·OAuth 요청은 그 kind의 클릭 안에서만 나간다. 가격은 RAM에만 둔다. 화면에 가격을 낼 수 있는 값은 `quote()`와 `history()`뿐이고, `[data-ram-price]` 요소의 글자로만 낸다.
+- 가격 view는 하나다(`priceView`, qgv·engines 내부용). `GoogleSheetQuotes.sessionFor`와 PriceStore가 view를 키로 상태를 두기 때문이다. 공개 이름은 `data.strictFetch`로, 비공개 목적지는 `action.guard`를 거쳐 나간다. IndexedDB는 읽기 전용이라 클릭 안에서도 DB를 만들지 않는다.
+- `status()`: 코드와 수만 있다. 가격·시트 ID·Worker 주소는 없다.
+  ```
+  { google{enabled, ready, connected, pending, preparing, error}, sheet{set}, universe_source{set},
+    store (PriceStore.status + tabs_loaded{daily, monthly}), universe{state, read_at, failure}, worker{state}, history{held} }
+  ```
+- `subscribe(fn, {signal})`: 로그인 상태, Universe 읽기, 가격 탭이 바뀌면 알린다. 셸의 기기 칩도 이것으로 글자를 바꾼다.
+- 로그인(`LOGIN`):
+  - `prepare(event)`: 세션을 켜고(`setEnabled(true)`) GIS 스크립트를 준비한다.
+  - `login(event)`: 클릭 안에서 동기로 토큰을 요청한다.
+  - `logout(event)`: `session.disconnect`.
+  - `deviceSettings()`: 기기 DB가 이미 있을 때만 `DeviceActual.sheetSettings`를 읽는다. 저장된 '켬'이면 세션을 켠다(요청 없음). 저장된 '끔'은 사용자가 클릭으로 켠 세션을 끄지 않는다. P1은 sheetSettings를 쓰지 않는다.
+- `readUniverse(event)`(`UNIVERSE_READ`): `PrivateSubsetView.mount` 클릭 처리와 같은 호출을 같은 순서로 부른다. 공개 주식수는 `SecUniverseShares.loadInputs(priceView, {now: 읽은 시각})`로 다시 판정한다.
+  - 결과: `{state, read_id, read_at, inputs, config_status, selection{state, status, selected_n, verified_count, missing_count}, ranks{state, status, verified_count, row_count, reason_codes}}`. 가격과 시가총액은 없다.
+  - 코드: `UNIVERSE_SOURCE_NOT_SET`, `UNIVERSE_SOURCE_INVALID`, `AUTH_REQUIRED`, `SOURCE_TOO_LARGE`, `CANCELED`, `UNIVERSE_READ_FAILED`.
+  - 실패해도 마지막 성공 읽기는 남고, `readStatus().failure`에 `{code, at}`이 기록된다. 로그아웃하거나 구글을 끄면 지워진다. 토큰 만료(`AUTH_REQUIRED`)로는 지워지지 않는다(옛 규칙).
+  - 출처는 PrivateSubsetView 자신의 키(`universe-source`)다. 통합 시트(`sheetSource`)와 별개인 옛 동작을 그대로 둔다.
+- `universeView`: `{prices(), priceBasis(), readStatus(), ranks()}`. PrivateSubsetView와 같은 계약이고 qgv·engines 내부용이다(`prices()`에는 가격이 있다).
+- `universeRanks()`, `rankFor({company_id, ticker})`: 개인 M3 순위(2.1.1). 순위·품질·그룹·사유만 있다.
+- 가격 탭(`SYNC`): 옛 PriceStore를 가격 view로 부른다. 결과는 수와 코드뿐이고, 실패한 쓰기에 붙던 Worker 응답은 뺀다.
+  - `useTabs(event)`: `PriceStore.enable`. Prices_D·Prices_M을 만들고 이 기기에서 켠다.
+  - `loadTabs(event)`: 두 탭을 RAM으로 읽는다.
+  - `syncSymbols(event, symbols, '1d'|'1mo', {kind})`: `PriceStore.syncMany`, Worker 허용 목록만.
+  - `syncUniverse(event)`: `PriceStore.syncUniverse`.
+- `storeFacade`(qgv·engines 내부용): PriceStore 자리에 넣는 객체다. 모든 호출에 가격 view와 `fetch:false`를 넣는다. 이번 로그인과 이 시트에서 클릭으로 탭을 읽기 전에는 `monthEndCloses`·`dailyCloses`가 `{}`, `runnerHistories`가 null이다. sync·enable은 없다.
+- `history(event, company, {range})`(`HISTORY`): TARGET 회사 id나 그 Worker 심볼을 받는다. 검증된 일별 이력(가격 포함)을 RAM에 두고 돌려준다. `held(company, {range})`로 다시 꺼낸다. 로그아웃하면 지운다. 코드: `OFF`, `HISTORY_UNAVAILABLE`, `REQUEST_INVALID`, `ORIGIN_UNAPPROVED`, `AUTH_REQUIRED`, `CANCELED`, Worker 코드.
+- `quote(company)`: `{state:'OK', price, currency, source, read_at, as_of, time_status, freshness}` 또는 `{state:'NA', reason:'NO_DEVICE_PRICE'}`. 보관된 Universe 읽기를 먼저 보고, 다음으로 이미 있는 기기 DB의 저장 시세를 본다. 표시 전용이다.
+
+## 6. 기기 저장: `IS2.store`
+
+- 모든 읽기·쓰기는 그 자료를 가진 옛 모듈을 거친다. 쓰기는 `WRITE` 클릭 안에서만 하고 값을 동기로 돌려준다(백업만 비동기).
+  - 클릭이 아니면 `CLICK_REQUIRED`다.
+  - gated storage를 받은 옛 모듈이 클릭 밖에서 쓰면 `ACTION_REQUIRED`이고, 저장소는 그대로다.
+- `KEYS`(옛 키 그대로, 노드 시험이 옛 상수와 대조한다):
+
+  | 이름 | 키 | 주인 |
+  | --- | --- | --- |
+  | PERSONAL | investment.web.v1.personal | 관심 기업·그룹 |
+  | SETTINGS | investment.web.v1.settings | AppLanguage |
+  | PROFILES / PROFILES_V2 | investment.web.v1.profile-drafts(-v2) | DeviceProfiles |
+  | PLAYBOOK | investment.web.v1.playbook | PlaybookScreen(TARGET v1 상태 포함) |
+  | INVESTOR_STARS | investment.web.v1.investor-stars | PublicScreens·DeviceBackup |
+  | BACKUP_RESTORED | investment.web.v1.backup-restored | DeviceBackup 복원 표시 |
+  | V_HISTORY / V_HISTORY_V2 | investment.web.v1/v2.virtual-trading-v-scores | VirtualTradingVHistory |
+  | SHEET_SOURCE | investment.web.v1.unified-sheet-source | GoogleSheetSetup |
+  | UNIVERSE_SOURCE | investment.web.v1.universe-source | PrivateSubsetView |
+  | WORKER_ORIGIN | investment.web.v1.private-history-origin | PrivateHistory·PriceStore |
+  | PRICE_STORE_ENABLED | investment.web.v1.price-store-enabled | PriceStore |
+  | DEVICE_DB | investment-device-actual-v1 | DeviceActual(IndexedDB) |
+
+- 관심 기업(1.1.4): `prefs()`는 `{state:'OK'|'EMPTY'|'INVALID', value}`이고, 검증은 `DeviceBackup.preferences`다. `savePrefs(event, next)`는 읽을 수 없는 저장 값을 덮어쓰지 않는다(`PREFS_STORAGE_INVALID`, app.js 규칙). 잘못된 값은 `PREFS_INVALID`다.
+- 가중치(2.2): `weights()`, `saveWeights(event, {id, name, weights, type_weights, gate})`, `PRODUCT_PRESETS`. 열린 프로필을 저장하면 다음 버전이 된다. 코드: `WEIGHTS_INVALID`, `WEIGHTS_STORAGE_INVALID`.
+- 보유(6.1): `holdings()`는 `{state:'OK'|'EMPTY'|'NOT_AVAILABLE', reason, snapshot, source, as_of}`. DB가 없으면 `DEVICE_STORE_NOT_OPENED`이고, 읽기가 DB를 만들지 않는다.
+- 플레이북: `playbook()`, `saveThesis(event, symbol, thesis, invalidation, ev)`, `saveHold(event, symbol, row)`, `saveRecord(event, row)`.
+- 투자자 별표(2.3.1): `stars()`, `toggleStar(event, cik)`.
+- 백업:
+  - `backup.create()`: 늘 /4다(user objects 없음).
+  - `backup.download(event)`.
+  - `backup.restore(event, text)`: /1~/4를 받는다. /5는 `BACKUP_USER_OBJECTS_UNSUPPORTED`로 거절한다. 그 밖의 코드는 `BACKUP_INVALID`, `BACKUP_TOO_LARGE`, `BACKUP_RESTORE_FAILED`다. 보유가 없는 백업을 DB 없는 기기에 복원해도 DB를 만들지 않는다.
+  - `backup.restored()`: 복원 표시(시각과 schema).
+- V 기록(6.3): `vHistory()`는 `{v1, v2}`이고 읽기 전용이다.
+- 출처와 주소: `sheetSource.has()/set(event, url)`, `universeSource.has()/set(event, url)`, `workerOrigin.has()/approved()/set(event, url)`. ID와 주소는 돌려주지 않는다. 코드: `SHEET_SOURCE_INVALID`, `UNIVERSE_SOURCE_INVALID`, `REQUEST_INVALID`.
+- `storage`(engines 내부용 gated localStorage), `subscribe(fn, {signal})`(쓰기 뒤 키 이름, 예: `'PERSONAL'`).
+
+## 7. V 출처 전환점(중앙 V가 게시될 때 바꿀 곳, 전부)
 
 1. `qgv.js`: `OFFICIAL_READER`(유일한 스위치)를 설정하고 `centralPage`를 구현한다. 중앙 V일 때는 Q·G도 게시본에서 읽고, sec-qgv2.json과 섞지 않는다.
 2. `data.js`: `FILES`에 게시 파일을 넣고 엄격 리더를 붙인다.
@@ -95,7 +162,7 @@ P2 화면 레인이 쓰는 함수와 기록 모양을 정한다. 근거는 P1 �
 5. 엔진의 중앙 모드 계약: `forEngines`는 늘 기기 결과를 준다. 그래서 엔진 기록은 `engine_v_source`(지금은 DEVICE_TEMPORARY)를 남긴다. 중앙 행을 computed 모양으로 바꾸는 어댑터를 둘지는 그때 정한다.
 6. `OFFICIAL_CENTRAL` 문구는 초안이다. 전환할 때 사용자 확인을 받는다.
 
-## 6. 사용자 결정 대기 항목
+## 8. 사용자 결정 대기 항목
 
 - V 기록(D-21)을 클릭할 때만 남길지
 - 플레이북 판정 기록: 옛 앱은 판정할 때 기록했고, 새 앱은 `record(event)`를 누를 때만 기록한다
@@ -105,3 +172,5 @@ P2 화면 레인이 쓰는 함수와 기록 모양을 정한다. 근거는 P1 �
 - 중앙 V 모드의 엔진 계약
 - 백업 /5(user_objects)는 고정 코드로 거절한다
 - 임시 V 기준 순위 문구
+- Universe 출처를 통합 시트와 따로 둘지(지금은 옛 동작대로 따로 둔다)
+- 구글 켬/끔을 기기에 저장할지(P1은 sheetSettings를 쓰지 않는다. 준비 버튼이 그 페이지에서 켠다)
