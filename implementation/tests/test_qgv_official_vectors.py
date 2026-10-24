@@ -45,7 +45,8 @@ def test_fixture_is_synthetic_and_pins_the_valid_and_divergent_ids(vectors):
         'base_valid', 'cik_all_zero_valid', 'fiscal_year_end_calendar_free_valid', 'acquired_at_calendar_free_valid', 'clock_fraction_valid',
         'acquired_text_order_valid', 'acquired_both_null_valid', 'raw_price_code_in_flags_valid', 'raw_price_code_in_basis_valid',
         'raw_price_code_in_type_reason_valid', 'verified_at_null', 'verified_at_other_clock_valid', 'cross_section_flip_recounted_valid',
-        'target_rank_row_valid_as_published', 'tie_dot_symbols_valid', 'stop_reason_skips_recompute_valid',
+        'target_rank_row_valid_as_published', 'target_for_two_share_classes_valid', 'target_live_unplaced_valid',
+        'target_calc_mismatch_valid', 'tie_dot_symbols_valid', 'stop_reason_skips_recompute_valid',
         'calc_mismatch_skips_recompute_valid', 'calc_version_later_day_valid', 'calc_version_same_day_n2_valid',
         'calc_version_leap_day_valid', 'size_cap_at_canonical_length_valid']
     assert [(c['id'], c['js_stricter']) for c in vectors['cases'] if 'js_stricter' in c] == [('verified_at_null', 'OFFICIAL_INVALID')]

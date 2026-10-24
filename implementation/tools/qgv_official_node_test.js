@@ -160,6 +160,33 @@ async function test(name, f) { try { await f(); pass++; console.log('PASS ' + na
     assert.equal(Q.nyToday(Date.parse('2026-10-14T04:30:00Z')), '2026-10-14');
   });
 
+  await test('use rule (spec M4): only COMPLETED sessions count; today\'s from 16:00 New York (nyMinutes), unknown time counts it', async () => {
+    const pub = await Q.validate(base()), calc = pub.calc_version;   // basis Tue 2026-10-13
+    const use = (today, minutes) => Q.usable(pub, { secCalcVersion: calc, nyToday: today, nyMinutes: minutes });
+    assert.equal(Q.CLOSE_MINUTES, 16 * 60);
+    // Fri 2026-10-16: during the session only Wed and Thu are completed (2, fresh); from the close Fri is the 3rd (stale).
+    assert.deepEqual(use('2026-10-16', 9 * 60 + 35), { ok: true, reason: null, sessions: 2 });
+    assert.deepEqual(use('2026-10-16', 15 * 60 + 59), { ok: true, reason: null, sessions: 2 });
+    assert.deepEqual(use('2026-10-16', 16 * 60), { ok: false, reason: 'OFFICIAL_STALE', sessions: 3 });
+    assert.deepEqual(use('2026-10-16', 16 * 60 + 30), { ok: false, reason: 'OFFICIAL_STALE', sessions: 3 });
+    assert.deepEqual(use('2026-10-15', 20 * 60), { ok: true, reason: null, sessions: 2 });               // Thu after the close
+    assert.deepEqual(use('2026-10-17', 10 * 60), { ok: false, reason: 'OFFICIAL_STALE', sessions: 3 });  // Saturday: Fri completed
+    assert.deepEqual(use('2026-10-13', 0), { ok: true, reason: null, sessions: 0 });
+    // A time that is not a minute of the day is unknown → today counts (fail closed), as without nyMinutes.
+    for (const bad of [null, undefined, -1, 1440, 575.5, '575', NaN]) assert.deepEqual(use('2026-10-16', bad), { ok: false, reason: 'OFFICIAL_STALE', sessions: 3 }, String(bad));
+    assert.equal(use('2026-10-12', 600).reason, 'OFFICIAL_STALE', 'a basis day in the future stays stale');
+    assert.equal(Q.sessionsAfter('2026-10-13', '2026-10-16', false), 2); assert.equal(Q.sessionsAfter('2026-10-13', '2026-10-16'), 3);
+    assert.equal(Q.sessionsAfter('2026-11-25', '2026-11-30', false), 1);  // Thanksgiving 11-26, Fri 11-27 completed, Mon not yet
+    assert.equal(Q.sessionsAfter('2026-10-16', '2026-10-17', false), 0);  // Saturday after a Friday basis
+    // nyNow: one clock read, the New York day and minute (EDT / EST).
+    assert.deepEqual({ ...Q.nyNow(Date.parse('2026-10-16T13:35:00Z')) }, { date: '2026-10-16', minutes: 9 * 60 + 35 });
+    assert.deepEqual({ ...Q.nyNow(Date.parse('2026-11-27T00:37:00Z')) }, { date: '2026-11-26', minutes: 19 * 60 + 37 });
+    assert.ok(Object.isFrozen(Q.nyNow()));
+    const fresh = await Q.resolve(fetcher(() => response(200)), { secCalcVersion: calc, nyToday: '2026-10-16', nyMinutes: 9 * 60 + 35 });
+    assert.deepEqual([fresh.ok, fresh.reason, fresh.sessions, Q.state(fresh.payload)], [true, null, 2, 'OFFICIAL']);
+    assert.deepEqual(await Q.resolve(fetcher(() => response(200)), { secCalcVersion: calc, nyToday: '2026-10-16', nyMinutes: 16 * 60 + 30 }), { ok: false, reason: 'OFFICIAL_STALE', sessions: 3, payload: null });
+  });
+
   await test('resolve: one call for the TARGET v1 click, never throws, payload only when usable', async () => {
     const opts = { secCalcVersion: 'qgv2-calc/2026-10-23.1', nyToday: '2026-10-14' };
     const ok = await Q.resolve(fetcher(() => response(200)), opts);

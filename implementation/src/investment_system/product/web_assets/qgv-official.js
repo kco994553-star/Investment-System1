@@ -31,7 +31,8 @@ const V_SOURCES=deep({DEVICE_TEMPORARY:{id:'DEVICE_TEMPORARY',ko:'임시 V',note
 // Why the official V was not used (one short line on the screen) and the codes thrown (Python's three + two JS environment codes).
 const REASONS=deep(['OFFICIAL_NOT_PUBLISHED','OFFICIAL_UNAVAILABLE','OFFICIAL_INVALID','OFFICIAL_CALC_VERSION_DIFFERS','OFFICIAL_STALE']);
 const ERRORS=deep(['OFFICIAL_INVALID','OFFICIAL_FORBIDDEN_KEY','OFFICIAL_TOO_LARGE','OFFICIAL_UNAVAILABLE','OFFICIAL_DIGEST_UNAVAILABLE']);
-const FRESH_SESSIONS=2;   // D-CV6 recommended threshold: New York sessions after the price basis day
+const FRESH_SESSIONS=2;   // D-CV6 recommended threshold: completed New York sessions after the price basis day
+const CLOSE_MINUTES=16*60;   // a session counts as completed from 16:00 New York (ForwardValidation's cut; no early-close table here)
 const RX={reason:/^[A-Z][A-Z0-9_]{0,63}$/,code:/^(?:[A-Z]{2,8}:[A-Z0-9][A-Z0-9.\-]{0,15}|TARGET:[a-z][a-z0-9_]{0,63})$/,hex:/^[0-9a-f]{64}$/,day:/^\d{4}-\d{2}-\d{2}$/,
  clock:/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z$/,stamp:/^\d{8}$/,id:/^[a-z][a-z0-9_]{0,63}$/,cik:/^\d{10}$/,pub:/^qgvpub-[0-9a-f]{64}$/,calc:/^qgv2-calc\/(\d{4})-(\d{2})-(\d{2})\.(\d{1,4})$/};
 const VALID=new WeakSet();
@@ -211,27 +212,31 @@ async function load(source,{signal,maxBytes=MAX_BYTES}={}){
 function state(payload){return VALID.has(payload)?'OFFICIAL':null;}
 function reasonOf(error){const m=error&&error.message;return m==='OFFICIAL_UNAVAILABLE'||m==='OFFICIAL_DIGEST_UNAVAILABLE'?'OFFICIAL_UNAVAILABLE':'OFFICIAL_INVALID';}
 function nextDay(d){const x=new Date(d+'T00:00:00Z');x.setUTCDate(x.getUTCDate()+1);return x.toISOString().slice(0,10);}
-/* New York sessions after the basis day up to the device's New York day, today counted as if complete (never younger than the
-   true count), with the existing NYSE calendar (ForwardValidation.sessionDay). null = not countable: a basis day in the future,
-   a bad day, no calendar or past its end. Stops counting above FRESH_SESSIONS. */
-function sessionsAfter(basis,today){
+/* Completed New York sessions after the basis day (spec M4) with the existing NYSE calendar (ForwardValidation.sessionDay): every
+   session day before the device's New York day `today`, and today's own session when it has closed (closed; default true: a
+   caller that does not know the New York time counts today, never younger than the true count). null = not countable: a basis
+   day in the future, a bad day, no calendar or past its end. Stops counting above FRESH_SESSIONS. */
+function sessionsAfter(basis,today,closed=true){
  if(!isDay(basis)||!isDay(today)||basis>today)return null;const cal=calendar();if(!cal||typeof cal.sessionDay!=='function')return null;
- let n=0;try{for(let d=nextDay(basis);d<=today;d=nextDay(d))if(cal.sessionDay(d)&&++n>FRESH_SESSIONS)break;}catch(_){return null;}return n;}
-function nyToday(ms=Date.now()){const cal=calendar();try{return cal&&typeof cal.eastern==='function'?cal.eastern(ms).date:null;}catch(_){return null;}}
-/* usable(payload,{secCalcVersion,nyToday}) (pure) -> {ok,reason,sessions}: the central V may feed the TARGET v1 draft only when the
-   payload passed validate(), verified_at is set, calc_version equals the re-read sec-qgv2.json calc_version and the price basis
-   day is at most FRESH_SESSIONS New York sessions old. reason: OFFICIAL_INVALID | OFFICIAL_CALC_VERSION_DIFFERS | OFFICIAL_STALE. */
-function usable(payload,{secCalcVersion=null,nyToday:today=null}={}){
+ let n=0;try{for(let d=nextDay(basis);d<today||closed!==false&&d===today;d=nextDay(d))if(cal.sessionDay(d)&&++n>FRESH_SESSIONS)break;}catch(_){return null;}return n;}
+function nyNow(ms=Date.now()){const cal=calendar();try{const e=cal&&typeof cal.eastern==='function'?cal.eastern(ms):null;return e&&isDay(e.date)&&int(e.minutes,0,1439)?Object.freeze({date:e.date,minutes:e.minutes}):null;}catch(_){return null;}}
+function nyToday(ms=Date.now()){const e=nyNow(ms);return e?e.date:null;}
+/* usable(payload,{secCalcVersion,nyToday,nyMinutes}) (pure) -> {ok,reason,sessions}: the central V may feed the TARGET v1 draft only
+   when the payload passed validate(), verified_at is set, calc_version equals the re-read sec-qgv2.json calc_version and at most
+   FRESH_SESSIONS completed New York sessions follow the price basis day. nyMinutes: minutes after New York midnight of the same
+   clock as nyToday (nyNow()); today's session is completed from CLOSE_MINUTES, or when nyMinutes is unknown (fail closed).
+   reason: OFFICIAL_INVALID | OFFICIAL_CALC_VERSION_DIFFERS | OFFICIAL_STALE. */
+function usable(payload,{secCalcVersion=null,nyToday:today=null,nyMinutes=null}={}){
  if(!VALID.has(payload)||!str(payload.times.verified_at,RX.clock))return{ok:false,reason:'OFFICIAL_INVALID',sessions:null};
  if(typeof secCalcVersion!=='string'||payload.calc_version!==secCalcVersion)return{ok:false,reason:'OFFICIAL_CALC_VERSION_DIFFERS',sessions:null};
- const sessions=sessionsAfter(payload.times.price_basis_date,today);
+ const sessions=sessionsAfter(payload.times.price_basis_date,today,!int(nyMinutes,0,CLOSE_MINUTES-1));
  return sessions===null||sessions>FRESH_SESSIONS?{ok:false,reason:'OFFICIAL_STALE',sessions}:{ok:true,reason:null,sessions};}
 // resolve(view | fetchFn, {secCalcVersion,nyToday,signal}) -> {ok,reason,sessions,payload}; never throws, payload only when ok.
 async function resolve(source,opts={}){
  let got;try{got=await load(source,opts);}catch(e){return{ok:false,reason:reasonOf(e),sessions:null,payload:null};}
  if(got.state==='NOT_PUBLISHED')return{ok:false,reason:'OFFICIAL_NOT_PUBLISHED',sessions:null,payload:null};
  const u=usable(got.payload,opts);return{ok:u.ok,reason:u.reason,sessions:u.sessions,payload:u.ok?got.payload:null};}
-return Object.freeze({SCHEMA,KIND,FILENAME,MAX_BYTES,TARGET_PREFIX,FRESH_SESSIONS,TOP_KEYS,ROW_KEYS,FACTOR_KEYS,AXIS_KEYS,FORBIDDEN_KEYS,PRICE_DEPENDENT,PRICE_DEPENDENT_PUBLIC,STATUS_CODES,
+return Object.freeze({SCHEMA,KIND,FILENAME,MAX_BYTES,TARGET_PREFIX,FRESH_SESSIONS,CLOSE_MINUTES,TOP_KEYS,ROW_KEYS,FACTOR_KEYS,AXIS_KEYS,FORBIDDEN_KEYS,PRICE_DEPENDENT,PRICE_DEPENDENT_PUBLIC,STATUS_CODES,
  SUPPLY_MIN,V_TARGET_SHARE,MAX_MONTHS,POPULATION_VERSION,INPUTS_FILE,SHARE_BASIS_SINCE,ATTRIBUTION,PRICE_SOURCE,MONTH_END,TARGET_TICKERS,V_SOURCES,REASONS,ERRORS,
- load,parse,validate,usable,resolve,state,reasonOf,nyToday,sessionsAfter,symbol,coverage,pooledDigest,canonicalLength,duplicateKeys});
+ load,parse,validate,usable,resolve,state,reasonOf,nyNow,nyToday,sessionsAfter,symbol,coverage,pooledDigest,canonicalLength,duplicateKeys});
 });

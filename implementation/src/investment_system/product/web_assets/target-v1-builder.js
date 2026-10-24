@@ -210,10 +210,14 @@ function validateState(input){
  for(const a of v.answers)if(!object(a)||!SYMBOL.test(a.symbol)||!ANSWERS.includes(a.answer)||!validDay(a.date)||!text(a.reason,200)||(a.answer==='DISAGREE'&&!a.reason.trim()))fail('TARGET_V1_STATE_INVALID');
  if(v.draft&&(!validDay(v.draft.created)||!Array.isArray(v.draft.pool)||v.draft.pool.some(r=>!object(r)||!SYMBOL.test(r.symbol)||!finite(r.total))))fail('TARGET_V1_STATE_INVALID');
  if(v.draft&&v.draft.basis!==undefined&&v.draft.basis!==null&&(!object(v.draft.basis)||!(v.draft.basis.shards===undefined||text(v.draft.basis.shards,12000))||!(v.draft.basis.type_scope===undefined||v.draft.basis.type_scope===null||text(v.draft.basis.type_scope,100))||!(v.draft.basis.withdrawn===undefined||text(v.draft.basis.withdrawn,12000))))fail('TARGET_V1_STATE_INVALID');
- // PR-D: a recorded V source is a known id; the publication record is ids and days only (bounded by the patterns).
- if(v.draft&&(!(v.draft.v_source===undefined||knownSource(v.draft.v_source))||!(v.draft.official===undefined||officialShape(v.draft.official))))fail('TARGET_V1_STATE_INVALID');
+ // PR-D: a recorded V source is a known id; the publication record is ids and days only (bounded by the patterns) and only on an
+ // OFFICIAL_CENTRAL draft / version (a version keeps all three publication fields or none). An OFFICIAL_CENTRAL id without them stays
+ // readable: web_app's engines record the draft's id on a version (web_app_engines_node_test.js); such a draft never shows 공식 V
+ // values on this screen and is V_SOURCE_CHANGED at finalize.
+ if(v.draft&&(!(v.draft.v_source===undefined||knownSource(v.draft.v_source))||!(v.draft.official===undefined||officialShape(v.draft.official)&&v.draft.v_source===V_SOURCES.OFFICIAL_CENTRAL.id)))fail('TARGET_V1_STATE_INVALID');
  for(const x of v.versions)if(!object(x)||!validDay(x.date)||!Array.isArray(x.rows)||x.rows.some(r=>!SYMBOL.test(r?.symbol)||!finite(r.pct)))fail('TARGET_V1_STATE_INVALID');
- for(const x of v.versions)if(!(x.v_source===undefined||knownSource(x.v_source))||!(x.publication_id===undefined||typeof x.publication_id==='string'&&PUBLICATION_ID.test(x.publication_id))||!(x.price_basis_date===undefined||validDay(x.price_basis_date))||!(x.official_inputs_as_of===undefined||typeof x.official_inputs_as_of==='string'&&CLOCK.test(x.official_inputs_as_of)))fail('TARGET_V1_STATE_INVALID');
+ for(const x of v.versions){const n=['publication_id','price_basis_date','official_inputs_as_of'].filter(k=>x[k]!==undefined).length;
+  if(!(x.v_source===undefined||knownSource(x.v_source))||!(n===0||n===3&&x.v_source===V_SOURCES.OFFICIAL_CENTRAL.id)||!(x.publication_id===undefined||typeof x.publication_id==='string'&&PUBLICATION_ID.test(x.publication_id))||!(x.price_basis_date===undefined||validDay(x.price_basis_date))||!(x.official_inputs_as_of===undefined||typeof x.official_inputs_as_of==='string'&&CLOCK.test(x.official_inputs_as_of)))fail('TARGET_V1_STATE_INVALID');}
  for(const s of v.rule_b)if(!object(s)||!validDay(s.date)||!Array.isArray(s.rows)||s.rows.some(r=>!SYMBOL.test(r?.symbol)||!finite(r.pct)))fail('TARGET_V1_STATE_INVALID');
  if(v.rule_c&&(!validDay(v.rule_c.start)||!text(v.rule_c.version,20)))fail('TARGET_V1_STATE_INVALID');
  return v;
@@ -323,16 +327,20 @@ function reader(){try{const R=officialReader();return R&&typeof R.state==='funct
 // What the draft / version keeps of a publication QgvOfficial.validate() accepted: ids and days only, never a row, score or price.
 function officialRecord(pub){const R=reader();if(!R||!object(pub)||R.state(pub)!=='OFFICIAL')return null;const t=pub.times,o={publication_id:pub.publication_id,price_basis_date:t.price_basis_date,calc_version:pub.calc_version,inputs_as_of:t.inputs_as_of};return officialShape(o)?o:null;}
 /* 6.1.2 adapter (PR-D M6): the published rows in the shape universeRows reads from the QgvScores accessor, one row per Universe code.
-   A code the publication ranks through a TARGET row (rank_row 'TARGET:<id>', D-CV8) reads that row, as the device path reads the
-   TARGET record for it; every other code reads its own row. Published values only: nothing is rescored or re-ranked here (the
-   builder's own rank, issuer dedupe and selection run unchanged), no price is touched, a null score stays null (NA, never 0).
-   factors_available counts the finite published factor scores. null when pub is not an accepted publication. */
+   Each code reads the row the device path reads for it (QgvScores codeIndex / universeIdentities): the TARGET row 'TARGET:<id>' of
+   the TARGET whose ticker is the code's symbol when that row is there and not NOT_AVAILABLE (whatever its total or calc version),
+   else the code's own row. So a second share class (GOOG beside TARGET:googl) keeps its own row and an unplaced TARGET row still
+   stands for its code, as on the device; the publication's rank_row (D-CV8, one row per CIK) is not used. Published values only:
+   nothing is rescored or re-ranked here (the builder's own rank, issuer dedupe and selection run unchanged), no price is touched, a
+   null score stays null (NA, never 0). factors_available counts the finite published factor scores. null when pub is not an
+   accepted publication. */
 const ADAPTED=new WeakMap();
 function officialComputed(pub){
  if(!officialRecord(pub))return null;if(ADAPTED.has(pub))return ADAPTED.get(pub);
- const rows={};let ready=false;
- for(const[code,own]of Object.entries(pub.rows)){if(code.startsWith('TARGET:'))continue;
-  const via=typeof own.rank_row==='string'&&own.rank_row.startsWith('TARGET:')&&object(pub.rows[own.rank_row])?own.rank_row:code,r=pub.rows[via],ax=r.axes,f=r.factors;if(finite(r.total))ready=true;
+ const R=reader(),rows={},targets=new Map();let ready=false;
+ for(const[k,t]of Object.entries(pub.rows))if(k.startsWith('TARGET:')&&t.state!=='NOT_AVAILABLE'&&!targets.has(key(R.symbol(k))))targets.set(key(R.symbol(k)),k);
+ for(const code of Object.keys(pub.rows)){if(code.startsWith('TARGET:'))continue;
+  const via=targets.get(key(R.symbol(code)))||code,r=pub.rows[via],ax=r.axes,f=r.factors;if(finite(r.total))ready=true;
   rows[code]=Object.freeze({ticker:code.slice(code.indexOf(':')+1),code:via,v2:Object.freeze({total:r.total,q:ax.Q.score,g:ax.G.score,v:ax.V.score,axes:ax,factors:f,
    factors_available:Object.values(f).filter(x=>finite(x.score)).length,factors_total:Object.keys(f).length,q_industry_percentile:r.q_industry_percentile,value_trap_gate:r.value_trap_gate,selected_types:r.selected_types})});}
  const out=Object.freeze({v2_state:ready?'READY':'NOT_AVAILABLE',v2_as_of:pub.times.inputs_as_of,profile:Object.freeze({id:pub.weights.profile_id}),priced_codes:pub.price_source.supplied,rows:Object.freeze(rows)});

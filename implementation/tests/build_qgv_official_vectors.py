@@ -216,6 +216,39 @@ def tie_rows(o):
     assert ranked(o).index('NYSE:Q.R.S') + 1 == ranked(o).index('NYSE:Q.R-T')
 
 
+def target_for_two_classes(o):
+    """D-CV8 with a second share class: TARGET:googl (data, the GOOGL/GOOG CIK) stands for both codes in the publication (rank_row);
+    GOOG keeps its own, higher scores (a copy of the best row), GOOGL its own. The TARGET v1 adapter maps like the device path."""
+    cik = o['rows']['NASDAQ:GOOGL']['cik']
+    o['rows']['TARGET:googl'] = copy.deepcopy(o['rows']['TARGET:amd']) | {'cik': cik}
+    o['rows']['NASDAQ:GOOG'] = copy.deepcopy(scored_row(o)) | {'cik': cik, 'in_cross_section': False}
+    derive(o)
+    assert o['rows']['NASDAQ:GOOG']['rank_row'] == o['rows']['NASDAQ:GOOGL']['rank_row'] == 'TARGET:googl'
+    assert o['rows']['NASDAQ:GOOG']['total'] > o['rows']['TARGET:googl']['total'] > o['rows']['NASDAQ:GOOGL']['total']
+
+
+def target_live_unplaced(o):
+    """TARGET:amd LIVE but with no total (axes below the weight rule): the issuer gets no rank, no rank_row on NASDAQ:AMD."""
+    t = o['rows']['TARGET:amd']
+    for a in ('Q', 'G', 'V'):
+        t['axes'][a] = {'score': None, 'state': 'NOT_AVAILABLE', 'weight_available': 0.0, 'factors_available': 0, 'reason': 'AXIS_WEIGHT_INSUFFICIENT'}
+    for f in t['factors']:
+        t['factors'][f] = {'score': None, 'reason': 'SEC_FACTOR_NOT_AVAILABLE', 'basis': None}
+    t.update(total=None, total_reason='AXIS_WEIGHT_INSUFFICIENT', value_trap_gate=False, v_excluded=None, q_industry_percentile=None)
+    derive(o)
+    assert t['state'] == 'LIVE' and t['rank_row'] is None and o['rows']['NASDAQ:AMD']['rank_row'] is None
+
+
+def target_calc_mismatch(o):
+    """TARGET:amd of another calc_version (7-day shard rotation): an NA row, not the CIK representative; NASDAQ:AMD ranks itself."""
+    t = o['rows']['TARGET:amd']
+    t.update(factors=qo._na_factors('CALC_VERSION_MISMATCH'), axes=qo._na_axes('CALC_VERSION_MISMATCH'), weights=None, type_weights=None,
+             type_reason=None, selected_types=[], q_industry_percentile=None, value_trap_gate=False, v_excluded=None,
+             flags=['CALC_VERSION_MISMATCH'], total=None, total_reason='CALC_VERSION_MISMATCH')
+    derive(o)
+    assert t['state'] == 'LIVE' and o['rows']['NASDAQ:AMD']['rank_row'] == 'NASDAQ:AMD'
+
+
 def calc(o, value):
     o['calc_version'] = value
     o['inputs'][0]['calc_version'] = value
@@ -332,6 +365,10 @@ CASES = [
     ('rank_row_unknown_key', lambda o: o['rows']['NASDAQ:GOOG'].update(rank_row='NYSE:ZZZZ'), INVALID, {}),
     ('rank_on_a_qg_only_row', lambda o: o['rows'][next(k for k, r in sorted(o['rows'].items()) if r['qg_reference_order'] == 1)].update(rank=len(ranked(o)) + 1, qg_reference_order=None), INVALID, {}),
     ('target_rank_row_valid_as_published', lambda o: None, True, {}),
+    # TARGET rows the TARGET v1 adapter must map like the device path (target_v1_builder_node_test.js), all valid publications
+    ('target_for_two_share_classes_valid', target_for_two_classes, True, {}),
+    ('target_live_unplaced_valid', target_live_unplaced, True, {}),
+    ('target_calc_mismatch_valid', target_calc_mismatch, True, {}),
     ('tie_dot_symbols_valid', tie_rows, True, {}),
     ('tie_dot_symbols_swapped', lambda o: (tie_rows(o), swap(o, 'NYSE:AB.C', 'NYSE:AB-D')), INVALID, {}),
     ('tie_every_dot_replaced_swapped', lambda o: (tie_rows(o), swap(o, 'NYSE:Q.R.S', 'NYSE:Q.R-T')), INVALID, {}),

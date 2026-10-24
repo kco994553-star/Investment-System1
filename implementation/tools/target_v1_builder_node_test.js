@@ -577,13 +577,21 @@ const OFFICIAL_CALC='qgv2-calc/2026-10-23.1',OTHER_ID='qgvpub-'+'a'.repeat(64);
 const enc=s=>new TextEncoder().encode(s);
 const officialPub=(text=FIX.base_text)=>QO.parse(enc(text));
 // The page's sec-qgv2.json value (Qgv2Inputs shape) for the publication's codes: sic / metrics / cik, the parts the publication lacks.
-function officialInputs(pub,patch={}){const records={};let i=0;for(const[code,r]of Object.entries(pub.rows))records[code]={cik:r.cik||('PUB'+i),sic:SICS[(i++)%SICS.length],industry_group:r.industry_group,metrics:{...METRICS,...(patch[code]||{})},qg_axes:{Q:{score:r.axes.Q.score},G:{score:r.axes.G.score}}};return{records};}
+function officialInputs(pub,patch={}){const records={};let i=0;for(const[code,r]of Object.entries(pub.rows))records[code]={cik:r.cik||('PUB'+i),state:r.state,sic:SICS[(i++)%SICS.length],industry_group:r.industry_group,metrics:{...METRICS,...(patch[code]||{})},qg_axes:{Q:{score:r.axes.Q.score},G:{score:r.axes.G.score}}};return{records};}
 const universeOf=pub=>Object.keys(pub.rows).filter(k=>!k.startsWith('TARGET:'));
-// A device-path computed (QgvScores accessor shape: rows by company id, extra accessor fields) holding the same published scores.
-function deviceTwin(pub){const rows={};let i=0;for(const[code,own]of Object.entries(pub.rows)){if(code.startsWith('TARGET:'))continue;const via=typeof own.rank_row==='string'&&own.rank_row.startsWith('TARGET:')?own.rank_row:code,r=pub.rows[via];
-  rows['company'+(i++)]={company_id:'company'+i,ticker:code.split(':')[1],code:via,rank:r.rank,qg_reference:null,primary:null,v2:{version:'v2',flags:[],total:r.total,q:r.axes.Q.score,g:r.axes.G.score,v:r.axes.V.score,axes:structuredClone(r.axes),factors:structuredClone(r.factors),
+/* A device-path computed (QgvScores accessor shape: rows by company id, extra accessor fields) holding the same published scores.
+   The record each row reads comes from the REAL device identity mapping (QgvScores.universeIdentities + compute, i.e. codeIndex:
+   the TARGET record when it is there and not NOT_AVAILABLE, else the Universe code by ticker), never from the adapter's rule. TARGET
+   identities: the device catalog (VirtualTradingRunner.TARGETS, exchange suffix dropped). */
+const QS=require(W+'qgv-scores.js'),PAGE_TARGETS=Object.entries(require(W+'virtual-trading-runner.js').TARGETS).map(([company_id,t])=>({company_id,ticker:t.split('.')[0]}));
+function deviceTwin(pub,inputs=officialInputs(pub)){const U=QS.universeIdentities(inputs,PAGE_TARGETS),dev=QS.compute({identities:U.identities,v2Inputs:inputs,quotes:{},official:U}),rows={};
+ for(const[cid,d]of Object.entries(dev.rows)){if(!d.code)continue;const r=pub.rows[d.code];
+  rows[cid]={company_id:cid,ticker:d.ticker,code:d.code,rank:r.rank,qg_reference:null,primary:null,v2:{version:'v2',flags:[],total:r.total,q:r.axes.Q.score,g:r.axes.G.score,v:r.axes.V.score,axes:structuredClone(r.axes),factors:structuredClone(r.factors),
    factors_available:Object.values(r.factors).filter(f=>Number.isFinite(f.score)).length,factors_total:15,q_industry_percentile:r.q_industry_percentile,value_trap_gate:r.value_trap_gate,selected_types:[...r.selected_types]}};}
  return{v2_state:'READY',v2_as_of:pub.times.inputs_as_of,profile:{id:pub.weights.profile_id},priced_codes:pub.price_source.supplied,rows};}
+// A vector case of the fixture (JSON ops on the base, Python verdict valid) through the real QgvOfficial.validate.
+function applyOps(p,ops){p=structuredClone(p);for(const op of ops){const path=[...op.path],last=path.pop();let t=p;for(const k of path)t=t[k];if(op.delete)delete t[last];else t[last]=structuredClone(op.value);}return p;}
+const casePub=id=>{const c=FIX.cases.find(x=>x.id===id);assert.ok(c&&c.valid===true,id);return QO.validate(applyOps(JSON.parse(FIX.base_text),c.ops));};
 const DRAFT_KEYS=['basis','config_version','coverage','created','eligible_count','excluded','excluded_counts','pool','profile_id','universe_rows','v2_as_of'];
 const VERSION_KEYS=['calc_version','cash_pct','config_version','date','draft_created','input_shards','number_check','rows','sec_qgv2_as_of','type_scope','v_source','version'];
 function walkKeys(v,out=new Set()){if(v&&typeof v==='object'){for(const[k,x]of Object.entries(v)){out.add(k.toLowerCase());walkKeys(x,out);}}return out;}
@@ -597,12 +605,12 @@ test('PR-D V sources: V_SOURCE unchanged (web_app pin), V_SOURCES = web_app/qgv.
  assert.deepEqual(JSON.parse(JSON.stringify(B.V_SOURCES)),JSON.parse(JSON.stringify(QO.V_SOURCES)));assert.ok(Object.isFrozen(B.V_SOURCES.OFFICIAL_CENTRAL));
 });
 
-test('PR-D adapter: officialComputed maps published rows only (TARGET rank_row, NA kept null, no price key); not for an unchecked payload',async()=>{
+test('PR-D adapter: officialComputed maps published rows only (the TARGET row as on the device, NA kept null, no price key); not for an unchecked payload',async()=>{
  const pub=await officialPub(),c=B.officialComputed(pub);
  assert.equal(B.officialComputed(pub),c,'memoized per publication');assert.ok(Object.isFrozen(c)&&Object.isFrozen(c.rows)&&Object.isFrozen(c.rows['NASDAQ:AMD'].v2));
  assert.deepEqual([c.v2_state,c.v2_as_of,c.profile.id,c.priced_codes],['READY',pub.times.inputs_as_of,'qgv-v2/balanced/gate-on',pub.price_source.supplied]);
  assert.deepEqual(Object.keys(c.rows).sort(),universeOf(pub).sort(),'one row per Universe code; TARGET rows outside the Universe are not rows');
- // D-CV8: NASDAQ:AMD is ranked through TARGET:amd → reads that row (as the device path reads the TARGET record); GOOG keeps its own row.
+ // NASDAQ:AMD reads TARGET:amd (LIVE, the device path reads that TARGET record); GOOG keeps its own row (TARGET:googl is NOT_AVAILABLE).
  const amd=c.rows['NASDAQ:AMD'];assert.deepEqual([amd.ticker,amd.code,amd.v2.total,amd.v2.v],['AMD','TARGET:amd',pub.rows['TARGET:amd'].total,pub.rows['TARGET:amd'].axes.V.score]);
  assert.deepEqual([c.rows['NASDAQ:GOOG'].code,c.rows['NASDAQ:GOOG'].v2.total],['NASDAQ:GOOG',pub.rows['NASDAQ:GOOG'].total]);
  // NA stays null with its reason: NO_IEX_TRADE rows have V null (never 0); a price-dependent factor keeps its public label.
@@ -636,6 +644,47 @@ test('PR-D draft: the official pool equals the device pool for the same scores (
  B.validateState({...B.emptyState(),draft:{...device,v_source:'DEVICE_TEMPORARY'}});   // web_app records its device source on the draft
 });
 const u0=()=>wide(40);
+
+test('PR-D adapter: every Universe code reads the record the device path reads (second share class, unplaced TARGET, TARGET of another calc_version)',async()=>{
+ assert.deepEqual(Object.fromEntries(PAGE_TARGETS.map(t=>[t.company_id,t.ticker])),{...QO.TARGET_TICKERS},'the reader\'s TARGET tickers are the device catalog');
+ const expect={
+  // D-CV8 ranks the GOOG/GOOGL issuer through TARGET:googl for both codes (rank_row); the device reads TARGET:googl for GOOGL only
+  // and GOOG's own row, and the builder's issuer dedupe keeps the higher total → GOOG with its own scores, not in the old 19.
+  target_for_two_share_classes_valid:(pub,c,rows)=>{assert.deepEqual([pub.rows['NASDAQ:GOOG'].rank_row,pub.rows['NASDAQ:GOOGL'].rank_row],['TARGET:googl','TARGET:googl']);
+   assert.deepEqual([c.rows['NASDAQ:GOOG'].code,c.rows['NASDAQ:GOOGL'].code],['NASDAQ:GOOG','TARGET:googl']);
+   const issuer=rows.filter(r=>r.cik===pub.rows['TARGET:googl'].cik);assert.deepEqual(issuer.map(r=>[r.symbol,r.code,r.total,r.in19]),[['GOOG','NASDAQ:GOOG',pub.rows['NASDAQ:GOOG'].total,false]]);},
+  // TARGET:amd LIVE without a total: the publication gives the issuer no rank (rank_row null); the device reads that row → no total,
+  // excluded; never NASDAQ:AMD's own row behind it.
+  target_live_unplaced_valid:(pub,c,rows)=>{assert.deepEqual([pub.rows['NASDAQ:AMD'].rank,pub.rows['NASDAQ:AMD'].rank_row],[null,null]);assert.ok(Number.isFinite(pub.rows['NASDAQ:AMD'].total));
+   assert.deepEqual([c.rows['NASDAQ:AMD'].code,c.rows['NASDAQ:AMD'].v2.total],['TARGET:amd',null]);assert.ok(B.exclusions(rows.find(r=>r.symbol==='AMD')).includes('TOTAL_NOT_AVAILABLE'));},
+  // TARGET:amd of another calc_version (shard rotation): the publication ranks NASDAQ:AMD itself; the device still reads the TARGET
+  // record (state LIVE) and has no total for it → excluded the same way (TOTAL_NOT_AVAILABLE).
+  target_calc_mismatch_valid:(pub,c,rows)=>{assert.equal(pub.rows['NASDAQ:AMD'].rank_row,'NASDAQ:AMD');assert.equal(pub.rows['TARGET:amd'].total_reason,'CALC_VERSION_MISMATCH');
+   assert.deepEqual([c.rows['NASDAQ:AMD'].code,c.rows['NASDAQ:AMD'].v2.total],['TARGET:amd',null]);assert.ok(B.exclusions(rows.find(r=>r.symbol==='AMD')).includes('TOTAL_NOT_AVAILABLE'));}};
+ for(const[id,check]of Object.entries(expect)){const pub=await casePub(id),inputs=officialInputs(pub),universeCodes=universeOf(pub),args={inputs,universeCodes,existing:['AMD','GOOGL'],date:'2026-10-14',basis:null};
+  const c=B.officialComputed(pub),twin=deviceTwin(pub,inputs),byTicker=new Map(Object.values(twin.rows).map(r=>[r.ticker,r.code]));
+  for(const code of universeCodes)assert.equal(c.rows[code].code,byTicker.get(code.split(':')[1]),id+' '+code);
+  check(pub,c,B.universeRows({...args,computed:c}));
+  const{v_source,official:rec,...rest}=B.buildDraft({...args,computed:c,official:pub});assert.equal(v_source,'OFFICIAL_CENTRAL');assert.deepEqual(rest,B.buildDraft({...args,computed:twin}),id+': same draft as the device path on the same scores');
+  assert.ok(!rest.pool.some(r=>r.symbol==='GOOGL'||(id!=='target_for_two_share_classes_valid'&&r.symbol==='AMD')),id);}
+});
+
+test('PR-D state: the publication record rides only with OFFICIAL_CENTRAL (draft and version); a version keeps all three publication fields',async()=>{
+ const pub=await officialPub(),rec=B.officialRecord(pub),pool=[{symbol:'AMD',total:60}],row={date:'2026-10-14',rows:[{symbol:'AMD',pct:5}]};
+ const pubFields={publication_id:rec.publication_id,price_basis_date:rec.price_basis_date,official_inputs_as_of:rec.inputs_as_of};
+ const state=(draft,versions=[])=>({...B.emptyState(),draft:{created:'2026-10-14',pool,...draft},versions});
+ B.validateState(state({v_source:'OFFICIAL_CENTRAL',official:rec},[{...row,v_source:'OFFICIAL_CENTRAL',...pubFields}]));
+ for(const[name,bad]of Object.entries({
+  device_draft_with_record:state({v_source:'DEVICE_TEMPORARY',official:rec}),untagged_draft_with_record:state({official:rec}),
+  device_version_with_publication:state({},[{...row,v_source:'DEVICE_TEMPORARY',...pubFields}]),untagged_version_with_publication:state({},[{...row,...pubFields}]),
+  official_version_without_basis_day:state({},[{...row,v_source:'OFFICIAL_CENTRAL',publication_id:rec.publication_id,official_inputs_as_of:rec.inputs_as_of}]),
+  device_version_with_basis_day_only:state({},[{...row,v_source:'DEVICE_TEMPORARY',price_basis_date:'2026-10-13'}])}))
+  assert.throws(()=>B.validateState(bad),/TARGET_V1_STATE_INVALID/,name);
+ // Still readable (web_app's engines record the draft's id on a version, web_app_engines_node_test.js): an OFFICIAL_CENTRAL id without
+ // the record. The screen shows no 공식 V value for such a draft and finalize calls it V_SOURCE_CHANGED.
+ B.validateState(state({v_source:'OFFICIAL_CENTRAL'},[{...row,v_source:'OFFICIAL_CENTRAL'}]));
+ const bare={...state({v_source:'OFFICIAL_CENTRAL'}),answers:[]};assert.ok(B.finalizeBlockers(bare,{date:'2026-10-15',published:null,official:pub}).blockers.includes('V_SOURCE_CHANGED'));
+});
 
 test('PR-D use rule at the click: not published / unavailable / invalid / calc differs / stale → no publication, the device draft as before',async()=>{
  const sec=OFFICIAL_CALC,ok=await QO.resolve(served(200),{secCalcVersion:sec,nyToday:'2026-10-14'});assert.equal(ok.ok,true);assert.equal(B.officialRecord(ok.payload).publication_id,JSON.parse(FIX.base_text).publication_id);

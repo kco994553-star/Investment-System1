@@ -51,10 +51,10 @@ from investment_system.qgv.qgv_official import (FILENAME as QGV_OFFICIAL_FILENAM
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
-    "qgv-official.js": "48e4e1a1ec48ebb7b5242c514fed1c58b1b81b56f49c2030abb29a6bb377c1ad",
-    "target-v1-builder.js": "868c007ff71ca43ab423462401b0e257c6e70cd39bb699199799aa02e5908b55",
+    "qgv-official.js": "5d904f478171372cdbf547865f23cb2792cf33ff2020b118a0f8b332de599b17",
+    "target-v1-builder.js": "eb60c6bb346bb2e98ed3b745a534e9f1467487147e908139a198a929e6903d59",
     "target-v1-config-defaults.js": "cdfa0ac5b620dca4f1828fb055a76c08268c533a65b2e0d34f962ce1499b12bd",
-    "target-v1-screen.js": "ee761d4ff0b7ba4b4b8ebd49f3338dc153fcd124f54e2787da3b82640da5d848",
+    "target-v1-screen.js": "cf6810e3f4abd19c780ad7a25cc7807f7321bb294b1f1415944e63c0575dfdbc",
     "playbook-engine.js": "b708a1772b4cd8e1af731cffdacbfab478d03c9c4e1e5fd663537babd64ee7d8",
     "playbook-config-defaults.js": "b0dd6aeed54a11082953b83aa30497c99dd454040e7e7adbc46cdd4c0a1221a6",
     "virtual-trading-compare.js": "700054fd105b979b505c09ec0dad862b0ce435c0179d2ddbe9f85b5b9c23c3f7",

@@ -12,7 +12,7 @@
    amounts. No order function and no buy/sell wording.
    PR-D (owner decision D8 (b), GSQ-024; spec 2.1.7, 6.1.2~6.1.4): the Build and Finalize clicks also read the central V publication
    qgv-official.json through QgvOfficial (next to the sec-qgv2.json re-read; never at mount). It is used only when it is valid,
-   verified, of the re-read file's calc_version and at most 2 New York sessions old; otherwise the device path ("임시 V") with one
+   verified, of the re-read file's calc_version and at most 2 completed New York sessions old; otherwise the device path ("임시 V") with one
    line saying why. Labels follow the draft's V source; official V is shown with the publication's IEX attribution and basis day. */
 (function(root,factory){const node=typeof module==='object'&&module.exports;
  const api=factory(root,node?require('./target-v1-builder.js'):root.TargetV1Builder,node?require('./target-v1-config-defaults.js'):root.TargetV1ConfigDefaults,node?require('./playbook-config-defaults.js'):root.PlaybookConfigDefaults,
@@ -46,16 +46,21 @@ const today=()=>new Date().toISOString().slice(0,10),key=t=>String(t||'').replac
 function reader(){try{const R=officialReader();return R&&typeof R.resolve==='function'?R:null;}catch(_){return null;}}
 // Why the central V was not used (QgvOfficial.REASONS, M4), one short line.
 const OFFICIAL_REASON={OFFICIAL_NOT_PUBLISHED:'중앙 V 게시본 없음(404)',OFFICIAL_UNAVAILABLE:'중앙 V 게시본을 읽지 못함',OFFICIAL_INVALID:'중앙 V 게시본 검증 실패',
- OFFICIAL_CALC_VERSION_DIFFERS:'게시본 calc_version이 최신 sec-qgv2.json과 다름',OFFICIAL_STALE:'게시본 가격 기준일이 뉴욕 거래일 2일보다 오래됨(또는 미래 날짜)'};
+ OFFICIAL_CALC_VERSION_DIFFERS:'게시본 calc_version이 최신 sec-qgv2.json과 다름',OFFICIAL_STALE:'게시본 가격 기준일 뒤 마감된 뉴욕 거래일이 2일을 넘음(또는 미래 날짜)'};
 function reasonLine(code,fallback){return '공식 V 사용 안 함 · '+code+' · '+(OFFICIAL_REASON[code]||code)+(fallback?' → 임시 V':'');}
 const sourceOf=d=>B.V_SOURCES?.[d?.v_source]||B.V_SOURCE;
 /* GSQ-024: official V is shown with the IEX attribution sentence, its terms link and the basis wording, from the publication read at
-   the click; after a reload (no publication in memory) from the reader's constants, which every accepted publication equals. */
-function attributionHtml(draft,pub){
- if(draft?.v_source!=='OFFICIAL_CENTRAL')return '';const id=draft.official?.publication_id,a=pub&&pub.publication_id===id?pub.attribution:reader()?.ATTRIBUTION;if(!a)return '';
- return '<p class="small" data-tv1-attribution><span data-tv1-attribution-label>'+esc(a.label_ko)+'</span> · 가격 기준일 '+esc(draft.official?.price_basis_date||'NA')+' · <span data-tv1-attribution-text>'+esc(a.text)+'</span>'
+   the click; after a reload (no publication in memory) from the reader's constants, which every accepted publication equals. An
+   OFFICIAL_CENTRAL draft with neither (QgvOfficial missing on the page) or without its publication record shows no V value and no
+   source label at all (officialHidden, fail closed) until it is made again. */
+function attributionOf(draft,pub){if(draft?.v_source!=='OFFICIAL_CENTRAL'||!draft.official)return null;return(pub&&pub.publication_id===draft.official.publication_id?pub.attribution:reader()?.ATTRIBUTION)||null;}
+const officialHidden=(draft,pub)=>draft?.v_source==='OFFICIAL_CENTRAL'&&!attributionOf(draft,pub);
+function attributionHtml(draft,pub){const a=attributionOf(draft,pub);if(!a)return '';
+ return '<p class="small" data-tv1-attribution><span data-tv1-attribution-label>'+esc(a.label_ko)+'</span> · 가격 기준일 '+esc(draft.official.price_basis_date)+' · <span data-tv1-attribution-text>'+esc(a.text)+'</span>'
   +(/^https:\/\//.test(a.terms_url)?' <a data-tv1-terms href="'+esc(a.terms_url)+'" target="_blank" rel="noopener noreferrer">이용 약관</a>':'')+'</p>';}
-function officialText(draft){const o=draft?.official;return o?' · 가격 기준일 '+o.price_basis_date+' · 게시본 '+String(o.publication_id).slice(0,19):'';}
+// The publication id and basis day ride only with an OFFICIAL_CENTRAL draft (never on a 임시 V line).
+function officialText(draft){const o=draft?.v_source==='OFFICIAL_CENTRAL'?draft.official:null;return o?' · 가격 기준일 '+o.price_basis_date+' · 게시본 '+String(o.publication_id).slice(0,19):'';}
+const OFFICIAL_HIDDEN='<section class="card" data-tv1-official-hidden><h2>TARGET v1 초안</h2><p>중앙 V 게시본으로 만든 초안 · IEX 출처 문구를 함께 보일 수 없어 점수와 후보를 표시하지 않습니다 · 페이지를 새로 고치거나 초안을 다시 만드세요</p></section>';
 function typeNames(types){const list=g.TypeConfigDefaults?.types||[];return types.length?types.map(id=>list.find(t=>t.id===id)?.name||id).join('·'):'미분류';}
 function subgroupName(id){if(!id)return '확인 불가';const row=PCFG.sector_checks.find(s=>s.id===id);if(row)return row.name;const combined=PCFG.portfolio_limits.combined_groups.find(x=>x.id===id);if(combined)return combined.ko;if(id==='technology_hardware')return '기술 하드웨어';if(id==='general_industrial')return '일반 산업';return id.startsWith('industry:')?'업종군 '+id.slice(9):id;}
 function money(v){const R=g.DailyReport;if(!finite(v))return 'NA';if(R?.money){let hidden=true;try{hidden=R.hiddenSetting(g.localStorage);}catch(_){hidden=true;}return R.money(v,{hidden});}return '●●●만원';}
@@ -139,9 +144,11 @@ async function mount(host,context={}){
  if(!host)return;const P=context.playbook||g.PlaybookScreen,cfg=context.config||DEFAULT_CFG,storage=context.storage||g.localStorage,date=context.date||today(),catalog=context.catalog||await context.catalogPromise,screens=context.screens||{};
  const inputs=screens?.['sec-qgv2.json']||null,computed=context.computed||null,ready=computed?.v2_state==='READY',universeCodes=context.universeCodes||[],closesFor=context.closesProvider||defaultCloses;
  const loadPublished=context.publishedProvider||latestPublished;let lastCheck=null;
- // PR-D: the central V at the click (QgvOfficial.resolve: one no-store read, never throws). officialSource / nyToday: test seams.
+ // PR-D: the central V at the click (QgvOfficial.resolve: one no-store read, never throws). officialSource / nyToday (+ nyMinutes):
+ // test seams; otherwise the device's New York day and time from one clock read (completed sessions, M4).
  const R=reader(),officialSource=context.officialSource||g;let lastOfficial=null,officialNote='';
- const officialNow=async published=>{try{return await R.resolve(officialSource,{secCalcVersion:published&&typeof published.calc_version==='string'?published.calc_version:null,nyToday:context.nyToday||R.nyToday()});}
+ const officialNow=async published=>{try{const now=context.nyToday?{date:context.nyToday,minutes:context.nyMinutes}:R.nyNow();
+   return await R.resolve(officialSource,{secCalcVersion:published&&typeof published.calc_version==='string'?published.calc_version:null,nyToday:now?now.date:null,nyMinutes:now?now.minutes:null});}
   catch(_){return{ok:false,reason:'OFFICIAL_UNAVAILABLE',sessions:null,payload:null};}};
  // Input basis of the published file, only when it is the file the page's scores were computed from (same as_of).
  const basisFor=async published=>{if(!published)return null;try{return await B.inputBasis(published);}catch(_){return null;}};
@@ -157,14 +164,14 @@ async function mount(host,context={}){
   for(const n of names.tracked){const s=B.scoringSeries(n,closes,cfg);if(s)series[n.symbol]=s;}P.addScoringSeries(series);
   const table=host.ownerDocument?.querySelector('[data-playbook-scoring]');if(table&&P.scoringSeries){let records=[];try{records=P.read(storage).records;}catch(_){records=[];}table.outerHTML=P.scoringHtml(records,P.scoringSeries());}
   return Object.keys(series).length;};
- const draw=()=>{if(!host.isConnected)return;const sel=state.draft?B.currentSelection(state,cfg):null;
-  host.innerHTML='<section class="card" data-tv1-builder><h2>TARGET v1 빌더 · 규칙 기반 선정</h2><p class="small">QGV v2 기준 · '+esc(cfg.config_version)+' · v0 · UNCALIBRATED · 이 기기에서 계산(가격은 RAM에만) · 공개·전송 없음</p><p data-tv1-coverage>'+esc(cover.label||'커버리지 조건 충족 (Q '+cover.q+'/'+cover.size+', G '+cover.g+'/'+cover.size+')')+'</p><p data-tv1-readiness>'+(ready?'QGV v2 계산됨 · 기기 가격 '+esc(computed.priced_codes??'NA')+'종목':'NA · QGV v2 총점에는 V가 필요하고 V에는 이 기기의 가격이 필요합니다(유니버스 시트 읽기·가격 저장소). 초안 만들기 비활성')+'</p>'
+ const draw=()=>{if(!host.isConnected)return;const sel=state.draft?B.currentSelection(state,cfg):null,hidden=officialHidden(state.draft,lastOfficial);
+  host.innerHTML='<section class="card" data-tv1-builder><h2>TARGET v1 빌더 · 규칙 기반 선정</h2><p class="small">QGV v2 기준 · '+esc(cfg.config_version)+' · v0 · UNCALIBRATED · 이 기기에서 계산(가격은 RAM에만) · 공개·전송 없음</p><p data-tv1-coverage>'+esc(cover.label||'커버리지 조건 충족 (Q '+cover.q+'/'+cover.size+', G '+cover.g+'/'+cover.size+')')+'</p><p data-tv1-readiness>'+(ready?'QGV v2 계산됨 · 기기 가격 '+esc(computed.priced_codes??'NA')+'종목':'NA · QGV v2 총점에는 V가 필요하고 V에는 이 기기의 가격이 필요합니다(유니버스 시트 읽기·가격 저장소). '+(R?'기기 가격으로 만드는 초안은 비활성 · 중앙 V 게시본으로는 아래 버튼으로 만들 수 있음':'초안 만들기 비활성'))+'</p>'
    // M3: before a click nothing claims 임시 V or 공식 V. Without device prices only the central V can make a draft (its own button).
    +(R?'<p class="small" data-tv1-v-plan>V 출처: 초안 만들 때 확인 · 유효한 중앙 게시본이 있으면 공식 V, 없으면 임시 V'+(ready?'':' · 이 기기 가격이 없으면 공식 V로만 만들 수 있습니다')+'</p>':'')
    +'<button type="button" data-tv1-build '+(ready?'':'disabled')+'>'+(armed==='auto'?'다시 만들면 카드 응답이 초기화됩니다 · 한 번 더 누르세요':state.draft?'규칙으로 초안 다시 만들기':'규칙으로 초안 만들기')+'</button>'
    +(R&&!ready?'<button type="button" data-tv1-build-official>'+(armed==='official'?'다시 만들면 카드 응답이 초기화됩니다 · 한 번 더 누르세요':'중앙 V 게시본으로 초안 '+(state.draft?'다시 ':'')+'만들기')+'</button>':'')
    +(officialNote?'<p class="small" data-tv1-official-reason>'+esc(officialNote)+'</p>':'')+'<p role="status" data-tv1-status>'+esc(message)+'</p></section>'
-   +(state.draft?candidateTable(state.draft,cfg,lastOfficial)+selectionHtml(sel,cfg)+'<section data-tv1-cards><h2>카드 응답 · '+(sel.rows.length-sel.pending.length)+'/'+sel.rows.length+'</h2><p class="small">반대는 한 줄 이유가 필요하고 그 종목은 빠지며 다음 순위가 자동으로 들어옵니다(한도 재검사). 모름은 유지하고 미확인으로 기록합니다. 모든 응답은 판정 기록으로 저장되어 나중에 채점됩니다.</p>'+sel.rows.map(r=>cardHtml(r,sel.answers[key(r.symbol)],cfg,sourceOf(state.draft))).join('')+'</section><section class="card" data-tv1-confirm><h2>TARGET v1 확정</h2><p>응답 '+(sel.rows.length-sel.pending.length)+'/'+sel.rows.length+' · '+esc(limitsText(sel.limits))+'</p>'+numberCheckHtml(cfg)+'<p data-tv1-v-source>V 출처: '+esc(sourceOf(state.draft).ko+' · '+sourceOf(state.draft).note+officialText(state.draft))+' · 확정 기록에 남습니다</p>'+attributionHtml(state.draft,lastOfficial)+scheduleHtml(state,cfg,date)+'<p class="small">확정 버튼을 누르는 순간 최신 공개 sec-qgv2.json을 다시 읽어 calc_version·값이 있는 행의 SEC 수집 시각 '+cfg.finalize_check.freshness_max_days+'일 이내(파일 as_of 아님)·초안 입력 기준·선정 종목 재무 안전·Q·G 산출 '+Math.round(cfg.coverage.ready_min_ratio*100)+'% 이상을 검사합니다(초안 때 결과는 쓰지 않음).'+(R?' 중앙 V 게시본도 다시 읽어 초안의 V 출처와 같은지 확인합니다(다르면 초안 재생성).':'')+'</p><button type="button" data-tv1-finalize '+(sel.complete&&!sel.shortfall?'':'disabled')+'>TARGET v1 확정 저장</button>'+checkHtml(lastCheck,cfg)+''+(state.versions.length?'<p data-tv1-version>저장된 TARGET '+esc(B.latestVersion(state).version+' · '+B.latestVersion(state).date+' · V 출처 '+(B.V_SOURCES?.[B.latestVersion(state).v_source]||B.V_SOURCE).ko+(B.latestVersion(state).price_basis_date?' · 가격 기준일 '+B.latestVersion(state).price_basis_date:''))+'</p>':'')+'</section>':'')
+   +(hidden?OFFICIAL_HIDDEN:'')+(state.draft&&!hidden?candidateTable(state.draft,cfg,lastOfficial)+selectionHtml(sel,cfg)+'<section data-tv1-cards><h2>카드 응답 · '+(sel.rows.length-sel.pending.length)+'/'+sel.rows.length+'</h2><p class="small">반대는 한 줄 이유가 필요하고 그 종목은 빠지며 다음 순위가 자동으로 들어옵니다(한도 재검사). 모름은 유지하고 미확인으로 기록합니다. 모든 응답은 판정 기록으로 저장되어 나중에 채점됩니다.</p>'+sel.rows.map(r=>cardHtml(r,sel.answers[key(r.symbol)],cfg,sourceOf(state.draft))).join('')+'</section><section class="card" data-tv1-confirm><h2>TARGET v1 확정</h2><p>응답 '+(sel.rows.length-sel.pending.length)+'/'+sel.rows.length+' · '+esc(limitsText(sel.limits))+'</p>'+numberCheckHtml(cfg)+'<p data-tv1-v-source>V 출처: '+esc(sourceOf(state.draft).ko+' · '+sourceOf(state.draft).note+officialText(state.draft))+' · 확정 기록에 남습니다</p>'+attributionHtml(state.draft,lastOfficial)+scheduleHtml(state,cfg,date)+'<p class="small">확정 버튼을 누르는 순간 최신 공개 sec-qgv2.json을 다시 읽어 calc_version·값이 있는 행의 SEC 수집 시각 '+cfg.finalize_check.freshness_max_days+'일 이내(파일 as_of 아님)·초안 입력 기준·선정 종목 재무 안전·Q·G 산출 '+Math.round(cfg.coverage.ready_min_ratio*100)+'% 이상을 검사합니다(초안 때 결과는 쓰지 않음).'+(R?' 중앙 V 게시본도 다시 읽어 초안의 V 출처와 같은지 확인합니다(다르면 초안 재생성).':'')+'</p><button type="button" data-tv1-finalize '+(sel.complete&&!sel.shortfall?'':'disabled')+'>TARGET v1 확정 저장</button>'+checkHtml(lastCheck,cfg)+''+(state.versions.length?'<p data-tv1-version>저장된 TARGET '+esc(B.latestVersion(state).version+' · '+B.latestVersion(state).date+' · V 출처 '+(B.V_SOURCES?.[B.latestVersion(state).v_source]||B.V_SOURCE).ko+(B.latestVersion(state).price_basis_date?' · 가격 기준일 '+B.latestVersion(state).price_basis_date:''))+'</p>':'')+'</section>':'')
    +rebalanceHtml(state,catalog,context.ram,cfg,date,round)+transitionHtml(state,cfg,date,cmp,review)+setsHtml(state,cfg,date)+pricesHtml(scoringNames(P,storage,catalog,inputs,state,cfg),storeOf(),cfg,priceNote);
   bind(sel);};
  const say=t=>{message=t;const n=host.querySelector('[data-tv1-status]');if(n)n.textContent=t;};

@@ -2165,6 +2165,2574 @@
   },
   {
    "code": null,
+   "id": "target_for_two_share_classes_valid",
+   "ops": [
+    {
+     "path": [
+      "coverage",
+      "population",
+      "general"
+     ],
+     "value": 19
+    },
+    {
+     "path": [
+      "coverage",
+      "population",
+      "financial"
+     ],
+     "value": 8
+    },
+    {
+     "path": [
+      "coverage",
+      "v",
+      "full"
+     ],
+     "value": 16
+    },
+    {
+     "path": [
+      "coverage",
+      "v",
+      "general"
+     ],
+     "value": 16
+    },
+    {
+     "path": [
+      "coverage",
+      "qgv",
+      "full"
+     ],
+     "value": 16
+    },
+    {
+     "path": [
+      "coverage",
+      "qgv",
+      "general"
+     ],
+     "value": 16
+    },
+    {
+     "path": [
+      "coverage",
+      "qg_only_total",
+      "full"
+     ],
+     "value": 11
+    },
+    {
+     "path": [
+      "coverage",
+      "qg_only_total",
+      "financial"
+     ],
+     "value": 8
+    },
+    {
+     "path": [
+      "coverage",
+      "ranked"
+     ],
+     "value": 16
+    },
+    {
+     "path": [
+      "coverage",
+      "qg_reference"
+     ],
+     "value": 10
+    },
+    {
+     "path": [
+      "coverage",
+      "target",
+      "n"
+     ],
+     "value": 18
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:ABNB",
+      "rank"
+     ],
+     "value": 16
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:ADBE",
+      "rank"
+     ],
+     "value": 10
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:AKAM",
+      "rank"
+     ],
+     "value": 14
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:AMZN",
+      "qg_reference_order"
+     ],
+     "value": 9
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "axes",
+      "G",
+      "score"
+     ],
+     "value": 87.5735294117647
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "axes",
+      "Q",
+      "factors_available"
+     ],
+     "value": 5
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "axes",
+      "Q",
+      "score"
+     ],
+     "value": 87.29166666666669
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "axes",
+      "Q",
+      "state"
+     ],
+     "value": "READY"
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "axes",
+      "Q",
+      "weight_available"
+     ],
+     "value": 1.0
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "axes",
+      "V",
+      "factors_available"
+     ],
+     "value": 4
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "axes",
+      "V",
+      "reason"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "axes",
+      "V",
+      "score"
+     ],
+     "value": 58.708938120702825
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "axes",
+      "V",
+      "state"
+     ],
+     "value": "PARTIAL"
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "axes",
+      "V",
+      "weight_available"
+     ],
+     "value": 0.85
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "factors",
+      "g_consistency",
+      "score"
+     ],
+     "value": 36.76470588235294
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "factors",
+      "g_growth_efficiency",
+      "score"
+     ],
+     "value": 100.0
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "factors",
+      "g_per_share_growth",
+      "score"
+     ],
+     "value": 100.0
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "factors",
+      "g_recent_acceleration",
+      "score"
+     ],
+     "value": 100.0
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "factors",
+      "g_revenue_growth",
+      "score"
+     ],
+     "value": 88.23529411764706
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "factors",
+      "q_capital_allocation",
+      "score"
+     ],
+     "value": 95.83333333333334
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "factors",
+      "q_earnings_quality",
+      "reason"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "factors",
+      "q_earnings_quality",
+      "score"
+     ],
+     "value": 91.66666666666667
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "factors",
+      "q_financial_safety",
+      "score"
+     ],
+     "value": 79.16666666666667
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "factors",
+      "q_moat_proxy",
+      "score"
+     ],
+     "value": 100.0
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "factors",
+      "q_profitability",
+      "score"
+     ],
+     "value": 75.0
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "factors",
+      "v_earnings_yield",
+      "basis"
+     ],
+     "value": "UNIVERSE"
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "factors",
+      "v_earnings_yield",
+      "reason"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "factors",
+      "v_earnings_yield",
+      "score"
+     ],
+     "value": 42.857142857142854
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "factors",
+      "v_expectation_check",
+      "basis"
+     ],
+     "value": "UNIVERSE"
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "factors",
+      "v_expectation_check",
+      "reason"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "factors",
+      "v_expectation_check",
+      "score"
+     ],
+     "value": 63.63636363636363
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "factors",
+      "v_fcf_yield",
+      "basis"
+     ],
+     "value": "UNIVERSE"
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "factors",
+      "v_fcf_yield",
+      "reason"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "factors",
+      "v_fcf_yield",
+      "score"
+     ],
+     "value": 78.57142857142857
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "factors",
+      "v_vs_industry",
+      "basis"
+     ],
+     "value": "INDUSTRY"
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "factors",
+      "v_vs_industry",
+      "reason"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "factors",
+      "v_vs_industry",
+      "score"
+     ],
+     "value": 50.0
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "factors",
+      "v_vs_own_history",
+      "reason"
+     ],
+     "value": "NORMALIZED_HISTORY_NOT_AVAILABLE"
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "flags"
+     ],
+     "value": []
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "industry_group"
+     ],
+     "value": "manufacturing_industrial_tech"
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "profile"
+     ],
+     "value": "GENERAL"
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "q_industry_percentile"
+     ],
+     "value": 100.0
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "rank_row"
+     ],
+     "value": "TARGET:googl"
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOG",
+      "total"
+     ],
+     "value": 77.95238095238095
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOGL",
+      "qg_reference_order"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:GOOGL",
+      "rank_row"
+     ],
+     "value": "TARGET:googl"
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:LNT",
+      "rank"
+     ],
+     "value": 8
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:A",
+      "rank"
+     ],
+     "value": 11
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:ABBV",
+      "rank"
+     ],
+     "value": 9
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:ABT",
+      "rank"
+     ],
+     "value": 13
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:ACN",
+      "rank"
+     ],
+     "value": 7
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:AEE",
+      "qg_reference_order"
+     ],
+     "value": 7
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:AES",
+      "rank"
+     ],
+     "value": 4
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:ALB",
+      "rank"
+     ],
+     "value": 12
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:ALL",
+      "qg_reference_order"
+     ],
+     "value": 6
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:ALLE",
+      "rank"
+     ],
+     "value": 6
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:AMCR",
+      "qg_reference_order"
+     ],
+     "value": 8
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:AOS",
+      "rank"
+     ],
+     "value": 15
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:APD",
+      "rank"
+     ],
+     "value": 5
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:ARE",
+      "qg_reference_order"
+     ],
+     "value": 5
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:MMM",
+      "qg_reference_order"
+     ],
+     "value": 10
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "acquired_at"
+     ],
+     "value": "2026-10-13T22:30:00Z"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "axes",
+      "G",
+      "factors_available"
+     ],
+     "value": 5
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "axes",
+      "G",
+      "reason"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "axes",
+      "G",
+      "score"
+     ],
+     "value": 75.0
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "axes",
+      "G",
+      "state"
+     ],
+     "value": "READY"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "axes",
+      "G",
+      "weight_available"
+     ],
+     "value": 1.0
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "axes",
+      "Q",
+      "factors_available"
+     ],
+     "value": 5
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "axes",
+      "Q",
+      "reason"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "axes",
+      "Q",
+      "score"
+     ],
+     "value": 67.5
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "axes",
+      "Q",
+      "state"
+     ],
+     "value": "READY"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "axes",
+      "Q",
+      "weight_available"
+     ],
+     "value": 1.0
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "axes",
+      "V",
+      "factors_available"
+     ],
+     "value": 4
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "axes",
+      "V",
+      "reason"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "axes",
+      "V",
+      "score"
+     ],
+     "value": 100.0
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "axes",
+      "V",
+      "state"
+     ],
+     "value": "PARTIAL"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "axes",
+      "V",
+      "weight_available"
+     ],
+     "value": 0.85
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "cik"
+     ],
+     "value": "0000001019"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "factors",
+      "g_consistency",
+      "reason"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "factors",
+      "g_consistency",
+      "score"
+     ],
+     "value": 33.333333333333336
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "factors",
+      "g_growth_efficiency",
+      "reason"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "factors",
+      "g_growth_efficiency",
+      "score"
+     ],
+     "value": 83.33333333333333
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "factors",
+      "g_per_share_growth",
+      "reason"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "factors",
+      "g_per_share_growth",
+      "score"
+     ],
+     "value": 100.0
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "factors",
+      "g_recent_acceleration",
+      "reason"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "factors",
+      "g_recent_acceleration",
+      "score"
+     ],
+     "value": 22.22222222222222
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "factors",
+      "g_revenue_growth",
+      "reason"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "factors",
+      "g_revenue_growth",
+      "score"
+     ],
+     "value": 100.0
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "factors",
+      "q_capital_allocation",
+      "reason"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "factors",
+      "q_capital_allocation",
+      "score"
+     ],
+     "value": 51.92307692307692
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "factors",
+      "q_earnings_quality",
+      "reason"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "factors",
+      "q_earnings_quality",
+      "score"
+     ],
+     "value": 92.3076923076923
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "factors",
+      "q_financial_safety",
+      "reason"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "factors",
+      "q_financial_safety",
+      "score"
+     ],
+     "value": 50.0
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "factors",
+      "q_moat_proxy",
+      "reason"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "factors",
+      "q_moat_proxy",
+      "score"
+     ],
+     "value": 76.92307692307692
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "factors",
+      "q_profitability",
+      "reason"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "factors",
+      "q_profitability",
+      "score"
+     ],
+     "value": 63.46153846153846
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "factors",
+      "v_earnings_yield",
+      "basis"
+     ],
+     "value": "UNIVERSE"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "factors",
+      "v_earnings_yield",
+      "reason"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "factors",
+      "v_earnings_yield",
+      "score"
+     ],
+     "value": 100.0
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "factors",
+      "v_expectation_check",
+      "basis"
+     ],
+     "value": "UNIVERSE"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "factors",
+      "v_expectation_check",
+      "reason"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "factors",
+      "v_expectation_check",
+      "score"
+     ],
+     "value": 100.0
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "factors",
+      "v_fcf_yield",
+      "basis"
+     ],
+     "value": "UNIVERSE"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "factors",
+      "v_fcf_yield",
+      "reason"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "factors",
+      "v_fcf_yield",
+      "score"
+     ],
+     "value": 100.0
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "factors",
+      "v_vs_industry",
+      "basis"
+     ],
+     "value": "INDUSTRY"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "factors",
+      "v_vs_industry",
+      "reason"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "factors",
+      "v_vs_industry",
+      "score"
+     ],
+     "value": 100.0
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "factors",
+      "v_vs_own_history",
+      "reason"
+     ],
+     "value": "NORMALIZED_HISTORY_NOT_AVAILABLE"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "fiscal_year_end"
+     ],
+     "value": "2025-12-31"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "flags"
+     ],
+     "value": []
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "industry_group"
+     ],
+     "value": "manufacturing_industrial_tech"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "profile"
+     ],
+     "value": "GENERAL"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "q_industry_percentile"
+     ],
+     "value": 76.92307692307692
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "rank"
+     ],
+     "value": 3
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "rank_row"
+     ],
+     "value": "TARGET:googl"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "selected_types"
+     ],
+     "value": [
+      "growth"
+     ]
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "source_reason_codes"
+     ],
+     "value": []
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "state"
+     ],
+     "value": "LIVE"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "total"
+     ],
+     "value": 77.75
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "total_reason"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "type_reason"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "type_weights",
+      "G"
+     ],
+     "value": 50.0
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "type_weights",
+      "Q"
+     ],
+     "value": 30.0
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "type_weights",
+      "V"
+     ],
+     "value": 20.0
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "weights",
+      "G"
+     ],
+     "value": 50.0
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "weights",
+      "Q"
+     ],
+     "value": 30.0
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:googl",
+      "weights",
+      "V"
+     ],
+     "value": 20.0
+    }
+   ],
+   "valid": true
+  },
+  {
+   "code": null,
+   "id": "target_live_unplaced_valid",
+   "ops": [
+    {
+     "path": [
+      "coverage",
+      "ranked"
+     ],
+     "value": 14
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:ABNB",
+      "rank"
+     ],
+     "value": 14
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:ADBE",
+      "rank"
+     ],
+     "value": 8
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:AKAM",
+      "rank"
+     ],
+     "value": 12
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:AMD",
+      "rank_row"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:LNT",
+      "rank"
+     ],
+     "value": 6
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:A",
+      "rank"
+     ],
+     "value": 9
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:ABBV",
+      "rank"
+     ],
+     "value": 7
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:ABT",
+      "rank"
+     ],
+     "value": 11
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:ACN",
+      "rank"
+     ],
+     "value": 5
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:AES",
+      "rank"
+     ],
+     "value": 2
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:ALB",
+      "rank"
+     ],
+     "value": 10
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:ALLE",
+      "rank"
+     ],
+     "value": 4
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:AOS",
+      "rank"
+     ],
+     "value": 13
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:APD",
+      "rank"
+     ],
+     "value": 3
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "axes",
+      "G",
+      "score"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "axes",
+      "G",
+      "state"
+     ],
+     "value": "NOT_AVAILABLE"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "axes",
+      "G",
+      "weight_available"
+     ],
+     "value": 0.0
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "axes",
+      "G",
+      "factors_available"
+     ],
+     "value": 0
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "axes",
+      "G",
+      "reason"
+     ],
+     "value": "AXIS_WEIGHT_INSUFFICIENT"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "axes",
+      "Q",
+      "score"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "axes",
+      "Q",
+      "state"
+     ],
+     "value": "NOT_AVAILABLE"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "axes",
+      "Q",
+      "weight_available"
+     ],
+     "value": 0.0
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "axes",
+      "Q",
+      "factors_available"
+     ],
+     "value": 0
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "axes",
+      "Q",
+      "reason"
+     ],
+     "value": "AXIS_WEIGHT_INSUFFICIENT"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "axes",
+      "V",
+      "score"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "axes",
+      "V",
+      "state"
+     ],
+     "value": "NOT_AVAILABLE"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "axes",
+      "V",
+      "weight_available"
+     ],
+     "value": 0.0
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "axes",
+      "V",
+      "factors_available"
+     ],
+     "value": 0
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "axes",
+      "V",
+      "reason"
+     ],
+     "value": "AXIS_WEIGHT_INSUFFICIENT"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "g_consistency",
+      "score"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "g_consistency",
+      "reason"
+     ],
+     "value": "SEC_FACTOR_NOT_AVAILABLE"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "g_growth_efficiency",
+      "score"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "g_growth_efficiency",
+      "reason"
+     ],
+     "value": "SEC_FACTOR_NOT_AVAILABLE"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "g_per_share_growth",
+      "score"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "g_per_share_growth",
+      "reason"
+     ],
+     "value": "SEC_FACTOR_NOT_AVAILABLE"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "g_recent_acceleration",
+      "score"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "g_recent_acceleration",
+      "reason"
+     ],
+     "value": "SEC_FACTOR_NOT_AVAILABLE"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "g_revenue_growth",
+      "score"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "g_revenue_growth",
+      "reason"
+     ],
+     "value": "SEC_FACTOR_NOT_AVAILABLE"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "q_capital_allocation",
+      "score"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "q_capital_allocation",
+      "reason"
+     ],
+     "value": "SEC_FACTOR_NOT_AVAILABLE"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "q_earnings_quality",
+      "score"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "q_earnings_quality",
+      "reason"
+     ],
+     "value": "SEC_FACTOR_NOT_AVAILABLE"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "q_financial_safety",
+      "score"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "q_financial_safety",
+      "reason"
+     ],
+     "value": "SEC_FACTOR_NOT_AVAILABLE"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "q_moat_proxy",
+      "score"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "q_moat_proxy",
+      "reason"
+     ],
+     "value": "SEC_FACTOR_NOT_AVAILABLE"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "q_profitability",
+      "score"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "q_profitability",
+      "reason"
+     ],
+     "value": "SEC_FACTOR_NOT_AVAILABLE"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "v_earnings_yield",
+      "score"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "v_earnings_yield",
+      "reason"
+     ],
+     "value": "SEC_FACTOR_NOT_AVAILABLE"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "v_earnings_yield",
+      "basis"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "v_expectation_check",
+      "score"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "v_expectation_check",
+      "reason"
+     ],
+     "value": "SEC_FACTOR_NOT_AVAILABLE"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "v_expectation_check",
+      "basis"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "v_fcf_yield",
+      "score"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "v_fcf_yield",
+      "reason"
+     ],
+     "value": "SEC_FACTOR_NOT_AVAILABLE"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "v_fcf_yield",
+      "basis"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "v_vs_industry",
+      "score"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "v_vs_industry",
+      "reason"
+     ],
+     "value": "SEC_FACTOR_NOT_AVAILABLE"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "v_vs_industry",
+      "basis"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "v_vs_own_history",
+      "reason"
+     ],
+     "value": "SEC_FACTOR_NOT_AVAILABLE"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "q_industry_percentile"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "rank"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "rank_row"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "total"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "total_reason"
+     ],
+     "value": "AXIS_WEIGHT_INSUFFICIENT"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "code": null,
+   "id": "target_calc_mismatch_valid",
+   "ops": [
+    {
+     "path": [
+      "rows",
+      "NASDAQ:AMD",
+      "rank"
+     ],
+     "value": 7
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:AMD",
+      "rank_row"
+     ],
+     "value": "NASDAQ:AMD"
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:LNT",
+      "rank"
+     ],
+     "value": 6
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:ACN",
+      "rank"
+     ],
+     "value": 5
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:AES",
+      "rank"
+     ],
+     "value": 2
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:ALLE",
+      "rank"
+     ],
+     "value": 4
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:APD",
+      "rank"
+     ],
+     "value": 3
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "axes",
+      "Q",
+      "score"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "axes",
+      "Q",
+      "state"
+     ],
+     "value": "NOT_AVAILABLE"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "axes",
+      "Q",
+      "weight_available"
+     ],
+     "value": 0
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "axes",
+      "Q",
+      "factors_available"
+     ],
+     "value": 0
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "axes",
+      "Q",
+      "reason"
+     ],
+     "value": "CALC_VERSION_MISMATCH"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "axes",
+      "G",
+      "score"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "axes",
+      "G",
+      "state"
+     ],
+     "value": "NOT_AVAILABLE"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "axes",
+      "G",
+      "weight_available"
+     ],
+     "value": 0
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "axes",
+      "G",
+      "factors_available"
+     ],
+     "value": 0
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "axes",
+      "G",
+      "reason"
+     ],
+     "value": "CALC_VERSION_MISMATCH"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "axes",
+      "V",
+      "score"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "axes",
+      "V",
+      "state"
+     ],
+     "value": "NOT_AVAILABLE"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "axes",
+      "V",
+      "weight_available"
+     ],
+     "value": 0
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "axes",
+      "V",
+      "factors_available"
+     ],
+     "value": 0
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "axes",
+      "V",
+      "reason"
+     ],
+     "value": "CALC_VERSION_MISMATCH"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "q_profitability",
+      "score"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "q_profitability",
+      "reason"
+     ],
+     "value": "CALC_VERSION_MISMATCH"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "q_moat_proxy",
+      "score"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "q_moat_proxy",
+      "reason"
+     ],
+     "value": "CALC_VERSION_MISMATCH"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "q_earnings_quality",
+      "score"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "q_earnings_quality",
+      "reason"
+     ],
+     "value": "CALC_VERSION_MISMATCH"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "q_financial_safety",
+      "score"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "q_financial_safety",
+      "reason"
+     ],
+     "value": "CALC_VERSION_MISMATCH"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "q_capital_allocation",
+      "score"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "q_capital_allocation",
+      "reason"
+     ],
+     "value": "CALC_VERSION_MISMATCH"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "g_revenue_growth",
+      "score"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "g_revenue_growth",
+      "reason"
+     ],
+     "value": "CALC_VERSION_MISMATCH"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "g_per_share_growth",
+      "score"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "g_per_share_growth",
+      "reason"
+     ],
+     "value": "CALC_VERSION_MISMATCH"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "g_growth_efficiency",
+      "score"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "g_growth_efficiency",
+      "reason"
+     ],
+     "value": "CALC_VERSION_MISMATCH"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "g_consistency",
+      "score"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "g_consistency",
+      "reason"
+     ],
+     "value": "CALC_VERSION_MISMATCH"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "g_recent_acceleration",
+      "score"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "g_recent_acceleration",
+      "reason"
+     ],
+     "value": "CALC_VERSION_MISMATCH"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "v_earnings_yield",
+      "score"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "v_earnings_yield",
+      "reason"
+     ],
+     "value": "CALC_VERSION_MISMATCH"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "v_earnings_yield",
+      "basis"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "v_fcf_yield",
+      "score"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "v_fcf_yield",
+      "reason"
+     ],
+     "value": "CALC_VERSION_MISMATCH"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "v_fcf_yield",
+      "basis"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "v_vs_industry",
+      "score"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "v_vs_industry",
+      "reason"
+     ],
+     "value": "CALC_VERSION_MISMATCH"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "v_vs_industry",
+      "basis"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "v_vs_own_history",
+      "reason"
+     ],
+     "value": "CALC_VERSION_MISMATCH"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "v_expectation_check",
+      "score"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "v_expectation_check",
+      "reason"
+     ],
+     "value": "CALC_VERSION_MISMATCH"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "factors",
+      "v_expectation_check",
+      "basis"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "flags"
+     ],
+     "value": [
+      "CALC_VERSION_MISMATCH"
+     ]
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "q_industry_percentile"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "rank"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "rank_row"
+     ],
+     "value": "NASDAQ:AMD"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "selected_types"
+     ],
+     "value": []
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "total"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "total_reason"
+     ],
+     "value": "CALC_VERSION_MISMATCH"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "type_weights"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "weights"
+     ],
+     "value": null
+    }
+   ],
+   "valid": true
+  },
+  {
+   "code": null,
    "id": "tie_dot_symbols_valid",
    "ops": [
     {
