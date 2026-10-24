@@ -1,12 +1,16 @@
 'use strict';
 // New frontend P1 · reuse (plan A) and shell plumbing.
-//  - web_app/index.html is the only reuse list: P0 base, the 57 old engines/readers (old page's relative order, each once),
+//  - web_app/index.html is the only reuse list: P0 base, the 59 old engines/readers (old page's relative order, each once),
 //    the P1 layer (action → data → prices → store → qgv → engines), the eight lane placeholders, the P0 screens, boot.js last;
 //    every tag a deferred file, the CSP byte-identical to the old page.
 //  - A name present in web_app wins and is never reused (screen-detail.js); every other script is an old web_assets file.
 //    tools/build_web_app.py applies the same rule, keeps the reused files byte-identical, removes every other old frontend
 //    file, and fails on a reference found in neither folder, a duplicate, an inline script or a non-local name.
 //  - Old modules that start themselves at load or are old screens are not loaded; load-time bindings come before their users.
+//    chart-workbench.js and macro-cycle-ring.js are loaded for their backup /5 validators (owner 2026-10-24: reuse, never rewrite)
+//    because loading them is side-effect free: run as a browser script against a recording global, each only defines its own
+//    global (no DOM, request, storage, timer or listener).
+//  - The V history is never recorded (owner 2026-10-24, D9): no web_app script and no reused module calls its capture / record.
 //  - Screen registry: a placeholder never replaces a real screen, two real screens for one route fail (SCREEN_DUPLICATE),
 //    detail screens register by name; screen-menus.js registers all eight menus as placeholders (a lane screen loaded first
 //    stays); h() refuses a style string (the CSP would drop it).
@@ -26,15 +30,15 @@ const { execFileSync } = require('node:child_process');
 const R = require('./web_app_reuse');
 
 const P0_BASE = ['core.js', 'shell.js', 'parts.js'];
-// Design 1.3 (57 files), in the old page's order.
+// Design 1.3 (57 files) plus the two backup /5 validator modules (owner 2026-10-24), in the old page's order.
 const REUSED = [
   'locale.js', 'entity-search.js', 'price-time.js', 'device-market.js', 'device-actual.js', 'profile-defaults.js', 'type-config-defaults.js',
   'device-profiles.js', 'engine-preview.js', 'dcf-parameters-defaults.js', 'device-valuation.js', 'playbook-config-defaults.js', 'playbook-engine.js',
   'qgv-v2.js', 'scoring-default.js', 'qgv2-inputs.js', 'qgv-scores.js', 'private-subset.js', 'share-class-groups.js', 'sec-universe-shares.js',
   'sec-qgv2.js', 'private-subset-view.js', 'target-v1-config-defaults.js', 'target-v1-builder.js', 'playbook-screen.js', 'target-v1-screen.js',
-  'device-backup.js', 'watchlist.js', 'app-config.js', 'google-sheet-core.js', 'google-sheet-quotes.js', 'technical-chart.js', 'google-sheet-setup.js',
+  'device-backup.js', 'watchlist.js', 'app-config.js', 'google-sheet-core.js', 'google-sheet-quotes.js', 'technical-chart.js', 'chart-workbench.js', 'google-sheet-setup.js',
   'private-trades.js', 'holdings-capture.js', 'worker-quote-fallback.js', 'forward-validation.js', 'private-history.js', 'sec-reported.js',
-  'manager-styles-v0.js', 'thirteenf-quarter.js', 'macro-lights.js', 'macro-evidence.js', 'public-screens.js', 'sec-disclosures.js', 'news-signals.js',
+  'manager-styles-v0.js', 'thirteenf-quarter.js', 'macro-lights.js', 'macro-cycle-ring.js', 'macro-evidence.js', 'public-screens.js', 'sec-disclosures.js', 'news-signals.js',
   'classification-screens.js', 'dart-disclosures.js', 'virtual-trading.js', 'virtual-trading-runner.js', 'virtual-trading-signals.js',
   'virtual-trading-v-history.js', 'virtual-ledger-sheets.js', 'price-store.js', 'report-benchmarks.js', 'virtual-trading-compare.js', 'data-refresh.js',
 ];
@@ -51,7 +55,7 @@ const NOT_LOADED = {
   'app.js': 'old app boot (autoLoad, attach)', 'home-screen.js': 'old screen', 'company-screen.js': 'old screen', 'universe-company.js': 'old screen',
   'stat-radar.js': 'old screen; reads the real window (P2-2)', 'leaderboard-screen.js': 'old screen (P2-2)', 'v-coverage.js': 'old screen',
   'portfolio-screen.js': 'old screen', 'ops-status.js': 'old screen', 'screen-detail.js': 'old screen (web_app has its own)',
-  'macro-cycle-ring.js': 'P2-4', 'chart-workbench.js': 'P2-3', 'pwa.js': 'P3 decision', 'theme-boot.js': 'old theme',
+  'pwa.js': 'P3 decision', 'theme-boot.js': 'old theme',
 };
 // Bindings an old module takes when its factory runs (the rest are read at call time).
 const EAGER = [
@@ -76,7 +80,7 @@ const csp = (html) => (/<meta http-equiv="Content-Security-Policy" content="([^"
 const py = (code, args = []) => execFileSync('python3', ['-c', code, ...args], { encoding: 'utf8' });
 
 test('index.html loads P0 base, reused old modules, the P1 layer, lane placeholders, P0 screens, boot.js last', () => {
-  assert.equal(REUSED.length, 57);
+  assert.equal(REUSED.length, 59);
   assert.deepEqual(R.scripts(), [...P0_BASE, ...REUSED, ...P1, ...LANES, ...P0_SCREENS]);
 });
 
@@ -110,6 +114,40 @@ test('old modules that start themselves or are old screens are not loaded', () =
     assert.ok(isFile(R.oldPath(name)), name + ' still exists in web_assets (keep this list meaningful)');
     assert.ok(!loaded.has(name), name + ': ' + why);
   }
+});
+
+/* Runs an old module as a browser classic script (no `module`) against a global that records every name it reads or writes. A
+   side-effect free module reads only `module` / `window` to pick its export path and writes only its own global. */
+function loadRecorded(name) {
+  const base = { Object, Array, Map, Set, WeakMap, WeakSet, JSON, Math, Number, String, Boolean, Symbol, Error, TypeError, RangeError, RegExp, Date, Promise, Intl, Reflect, Proxy, parseInt, parseFloat, isFinite, isNaN, Infinity, NaN, undefined };
+  const own = {}, seen = new Set();
+  const g = new Proxy(own, {
+    get(t, k) { if (k === 'globalThis' || k === 'window') { seen.add('get ' + k); return g; } if (typeof k === 'string' && !(k in base)) seen.add('get ' + k); return k in t ? t[k] : base[k]; },
+    set(t, k, v) { seen.add('set ' + String(k)); t[k] = v; return true; },
+    has(t, k) { if (typeof k === 'string' && !(k in base) && k !== 'globalThis' && k !== 'window') seen.add('has ' + k); return k in t || k in base || k === 'globalThis' || k === 'window'; },
+  });
+  vm.runInContext(fs.readFileSync(R.oldPath(name), 'utf8'), vm.createContext(g), { filename: name });
+  return { seen: [...seen].filter((x) => x !== 'get globalThis' && x !== 'get window' && x !== 'get module'), own: Object.keys(own) };
+}
+test('the backup /5 validator modules load without side effects and expose what DeviceBackup looks up', () => {
+  for (const [name, global] of [['chart-workbench.js', 'ChartWorkbench'], ['macro-cycle-ring.js', 'MacroCycleRing']]) {
+    const r = loadRecorded(name);
+    assert.deepEqual(r, { seen: ['set ' + global], own: [global] }, name + ': no DOM, request, storage, timer or listener at load');
+  }
+  // The recorder itself catches a module that touches the page at load.
+  assert.deepEqual(loadRecorded('table-sort.js').seen.filter((x) => /document|addEventListener/.test(x)).length > 0, true, 'table-sort.js starts itself and is caught');
+  const CW = R.requireOld('chart-workbench.js'); require(R.oldPath('macro-cycle-ring.js')); const MC = globalThis.MacroCycleRing;
+  for (const [m, keys] of [[CW, ['parseUserExport', 'createDeviceUserStore', 'mergeUserItems', 'USER_SCHEMA', 'USER_KEY']], [MC, ['parseUserExport', 'readUserStore', 'importUserHistory', 'USER_SCHEMA', 'USER_KEY']]])
+    for (const k of keys) assert.ok(m[k] !== undefined, k);
+});
+
+test('the V history is never recorded: no web_app script or reused module calls its capture / record', () => {
+  const RECORD = /\b(?:VHistory|VirtualTradingVHistory)\s*(?:\?\.|\.)\s*(?:capture|captureV2|record|recordV2)\b/;
+  assert.match('const c=await VHistory.capture(window,result)', RECORD); assert.match('VirtualTradingVHistory.recordV2(s)', RECORD); assert.match('VHistory?.captureV2(w)', RECORD);
+  assert.doesNotMatch('VirtualTradingVHistory.readV2(storage)', RECORD);
+  for (const name of files(R.NEW).filter((n) => n.endsWith('.js'))) assert.doesNotMatch(code(fs.readFileSync(R.newPath(name), 'utf8')).join('\n'), RECORD, name);
+  for (const name of R.reused()) assert.doesNotMatch(code(fs.readFileSync(R.oldPath(name), 'utf8')).join('\n'), RECORD, name);
+  assert.match(fs.readFileSync(R.oldPath('app.js'), 'utf8'), RECORD, 'the old app (not loaded) is where it was recorded');
 });
 
 test('every tag is a deferred file, every web_app script is loaded, the CSP is the old page CSP', () => {
@@ -199,6 +237,9 @@ const RULES = [
   ['engine rows / score view outside qgv.js and engines.js', /\b(?:forEngines|engineInputs)\(|\bscoreView\b/, ['qgv.js', 'engines.js']],
   ['the price view outside prices.js and engines.js', /\bpriceView\b/, ['prices.js', 'engines.js']],
   ['old paths that bypass the price view', /\bautoLoad\b|\blatestPublished\b|\bStatRadar\b|\bDataRefresh\.attach\b|\b(PrivateSubsetView|TargetV1Screen|PriceStore|VirtualLedgerSheets)\.mount\w*\(/, []],
+  // DeviceActual's own screen runs on the real window (host.ownerDocument.defaultView) and saves, imports and deletes the holdings
+  // together with the stopped quote record; its quote import writes that record (DC-18). Holdings writes go through the store.
+  ['old writers of the stopped device quote record', /\bDeviceActual\.(?:mount\w*|applyMarketImport)\(/, []],
   ['order features', /placeOrder|submitOrder|sendOrder|주문하기|매수 주문|매도 주문/, []],
 ];
 test('source rules for every web_app script (code, not comments)', () => {

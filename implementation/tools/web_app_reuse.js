@@ -35,9 +35,11 @@ const requireOld = (name) => require(oldPath(name));
 const newPath = (name) => path.join(NEW, name);
 const requireNew = (name) => require(newPath(name));
 
-// Browser global of an old UMD module (root.X = api / factory, r.X = d), read from its own source.
+// Browser global of an old UMD module (root.X = api / factory, r.X = d), read from its own source. A global-only module
+// (macro-cycle-ring.js: root.X = Object.freeze({...}) on window, else globalThis; no module.exports) sets it when required.
 function globalName(name) {
-  const m = /\b(?:root|r|g|global)\.([A-Z][A-Za-z0-9]*)\s*=\s*(?:api|d|factory)\b/.exec(fs.readFileSync(oldPath(name), 'utf8'));
+  const text = fs.readFileSync(oldPath(name), 'utf8');
+  const m = /\b(?:root|r|g|global)\.([A-Z][A-Za-z0-9]*)\s*=\s*(?:api|d|factory)\b/.exec(text) || /\broot\.([A-Z][A-Za-z0-9]*)\s*=\s*Object\.freeze\(/.exec(text);
   if (!m) throw new Error('NO_GLOBAL ' + name);
   return m[1];
 }
@@ -50,7 +52,8 @@ function loadOld(win, names = reused()) {
   const out = {};
   for (const name of names) {
     if (name === 'app-config.js') { require('node:vm').runInNewContext(fs.readFileSync(oldPath(name), 'utf8'), { window: win, Object }); out.InvestmentAppConfig = win.InvestmentAppConfig; continue; }
-    const api = require(oldPath(name)), g = globalName(name);
+    const exported = require(oldPath(name)), g = globalName(name), api = exported && Object.keys(exported).length ? exported : globalThis[g];
+    if (!api) throw new Error('NO_EXPORT ' + name);
     win[g] = api; globalThis[g] = api; out[g] = api;
   }
   return out;
