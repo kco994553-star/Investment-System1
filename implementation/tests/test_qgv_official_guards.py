@@ -434,34 +434,64 @@ def _steps(job):
     return ('\n' + job.split('\n    steps:\n', 1)[1]).split('\n      - ')[1:] if '\n    steps:\n' in job else []
 
 
+# Workflows that may run the full publisher, each under the same holder rules below:
+# - sec-daily-public-inputs.yml: the production V step (PR-C);
+# - central-v-rehearsal.yml: the GSQ-024 "검증 먼저" rehearsal (owner instruction 2026-10-24 item 3b; doc
+#   CENTRAL_V_REHEARSAL_20261025.md), push-only on its own branch, no upload, no raw-repo write token. Its V step is the
+#   production step byte for byte (tests/test_central_v_rehearsal_workflow.py pins that and the rest of the file).
+PUBLISHER_WORKFLOWS = ('sec-daily-public-inputs.yml', 'central-v-rehearsal.yml')
+# The rehearsal's presence job alone may also name the two Secrets outside the V step, and only as the yes/no comparison
+# GitHub evaluates (`${{ secrets.NAME != '' }}`: the value never reaches the runner), exactly once each, in a step that runs no
+# publisher. Every other occurrence is counted as usual.
+PRESENCE_ONLY = ('central-v-rehearsal.yml',)
+PUBLICATION_SECRETS = ('QGV_OFFICIAL_HMAC_KEY', 'RAW_REPO_READ_TOKEN')
+
+
+def _presence_expr(secret):
+    return "${{ secrets.%s != '' }}" % secret
+
+
 def test_workflows_reach_the_price_source_only_through_the_publication_step():
-    """Holds now (no V step yet) and binds PR-C: the full publisher run only in the daily SEC workflow, inside one step that
-    holds the two new Secrets in its own env, continues on error and has neither RAW_REPO_TOKEN nor an upload; anywhere else
-    only `--preserve-only` (validated byte copy, no prices)."""
+    """Holds now (no V step yet) and binds PR-C: the full publisher run only in the daily SEC workflow (and the rehearsal copy
+    of its V step, PUBLISHER_WORKFLOWS), inside one step that holds the two new Secrets in its own env, continues on error and
+    has neither RAW_REPO_TOKEN nor an upload; anywhere else only `--preserve-only` (validated byte copy, no prices)."""
     for path in sorted((REPO / '.github/workflows').glob('*.y*ml')):
         text = path.read_text()
         assert not IEX_HOSTS.search(text), path.name
         for line in text.splitlines():
-            if 'qgv_official_publish.py' in line and path.name != 'sec-daily-public-inputs.yml':
+            if 'qgv_official_publish.py' in line and path.name not in PUBLISHER_WORKFLOWS:
                 assert '--preserve-only' in line, (path.name, line)
-        for secret in ('QGV_OFFICIAL_HMAC_KEY', 'RAW_REPO_READ_TOKEN'):
-            if path.name != 'sec-daily-public-inputs.yml':
+        for secret in PUBLICATION_SECRETS:
+            if path.name not in PUBLISHER_WORKFLOWS:
                 assert secret not in text, (path.name, secret)
-        if path.name != 'sec-daily-public-inputs.yml':
+        if path.name not in PUBLISHER_WORKFLOWS:
             continue
+        counted = text
+        if path.name in PRESENCE_ONLY:
+            for secret in PUBLICATION_SECRETS:
+                assert text.count(_presence_expr(secret)) == 1, (path.name, secret)
+                counted = counted.replace(_presence_expr(secret), '')
         jobs = re.split(r'\n  (?=[a-z_-]+:\n)', text.split('\njobs:\n', 1)[1])
         holders = []
         for job in jobs:
             for step in _steps(job):
-                if 'secrets.QGV_OFFICIAL_HMAC_KEY' in step or 'secrets.RAW_REPO_READ_TOKEN' in step or \
-                        ('qgv_official_publish.py' in step and '--preserve-only' not in step):
+                seen = step
+                if path.name in PRESENCE_ONLY:
+                    for secret in PUBLICATION_SECRETS:
+                        seen = seen.replace(_presence_expr(secret), '')
+                    if seen != step:
+                        assert 'qgv_official_publish.py' not in step and 'uses:' not in step, path.name
+                if 'secrets.QGV_OFFICIAL_HMAC_KEY' in seen or 'secrets.RAW_REPO_READ_TOKEN' in seen or \
+                        ('qgv_official_publish.py' in seen and '--preserve-only' not in seen):
                     holders.append(step)
         assert len(holders) <= 1
+        if path.name in PRESENCE_ONLY:
+            assert len(holders) == 1, path.name
         for step in holders:
             assert 'qgv_official_publish.py' in step and 'continue-on-error: true' in step
             assert 'RAW_REPO_TOKEN:' not in step and 'secrets.RAW_REPO_TOKEN' not in step and 'uses:' not in step
             assert 'GITHUB_STEP_SUMMARY' not in step and 'actions/upload' not in step
-        assert text.count('secrets.QGV_OFFICIAL_HMAC_KEY') <= 1 and text.count('secrets.RAW_REPO_READ_TOKEN') <= 1
+        assert counted.count('secrets.QGV_OFFICIAL_HMAC_KEY') <= 1 and counted.count('secrets.RAW_REPO_READ_TOKEN') <= 1
 
 
 # ---- pages_freshness_guard: the qgv-official rule ----------------------------------------------------------------------

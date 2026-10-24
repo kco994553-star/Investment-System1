@@ -1,0 +1,242 @@
+name: Central V rehearsal (measure only, no publication)
+# GSQ-024 "검증 먼저" (owner instruction 2026-10-24, item 3b): before the production workflow changes, measure on Actions, with one
+# recent trading day, the processing time, disk and missing prices of the central QGV step, apart from the daily collect and
+# ledger, and publish nothing. Doc: implementation/docs/qgv_scoring_standard/CENTRAL_V_REHEARSAL_20261025.md.
+#
+# It runs ONLY when the branch claude/central-v-rehearsal is pushed (no schedule, no pull request, no dispatch): pushing that
+# branch is what starts it, and it never runs on the default branch. It reproduces the daily collect job in all_shards mode up to
+# the V step, runs the production V step byte for byte (sec-daily-public-inputs.yml, same command, env and Secret scoping), then the
+# production steps after it, and ends with one verdict per failure criterion. What it never does: write to the private raw
+# repository (the raw-repo write token is not referenced anywhere, so the shard tool prints RAW_UPLOAD_NOT_CONFIGURED and keeps no
+# raw bytes), append the ledger, copy the private dated history (D9), upload a Pages or workflow artifact, deploy, use a cache,
+# push, or write a job summary. Everything it builds stays in $RUNNER_TEMP and is discarded with the runner.
+# Left out on purpose (no extra Secret): the macro v0 / macro evidence flags of the SEC inputs step and the two OpenDART steps;
+# none of them feeds sec-qgv2.json or the V step. Their time is covered by the job-time allowance of the verdict tool.
+on:
+  push:
+    branches:
+      - claude/central-v-rehearsal
+permissions:
+  contents: read
+# Its own group: never shared with the daily workflow (a shared group could cancel a pending daily run). One rehearsal at a time.
+concurrency:
+  group: central-v-rehearsal
+  cancel-in-progress: false
+jobs:
+  # Names and yes/no only. The three values never reach this runner: each env entry is the boolean of a comparison done by
+  # GitHub (secrets.X != ''), not the Secret. The start window keeps the rehearsal's SEC and IEX traffic away from the daily run
+  # (scheduled 22:17 UTC, started 22:26~00:40 UTC in October, collect about 15 minutes; a manual fallback may follow it): a start
+  # from 19:30 to 03:00 UTC is refused before anything is collected. A missing Secret or a refused window ends the run here.
+  presence:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      ready: ${{ steps.presence.outputs.ready }}
+    steps:
+      - name: Print presence booleans for the three Secrets and check the start window (names and yes/no only)
+        id: presence
+        env:
+          QGV_OFFICIAL_HMAC_KEY_SET: ${{ secrets.QGV_OFFICIAL_HMAC_KEY != '' }}
+          RAW_REPO_READ_TOKEN_SET: ${{ secrets.RAW_REPO_READ_TOKEN != '' }}
+          SEC_USER_AGENT_SET: ${{ secrets.SEC_USER_AGENT != '' }}
+        run: |
+          ready=true
+          for name in QGV_OFFICIAL_HMAC_KEY RAW_REPO_READ_TOKEN SEC_USER_AGENT; do
+            flag="${name}_SET"
+            if [ "${!flag}" = 'true' ]; then present=yes; else present=no; ready=false; fi
+            echo "SECRET_PRESENT name=$name present=$present"
+          done
+          hm=$(date -u +%H:%M)
+          minute=$(( 10#${hm%:*} * 60 + 10#${hm#*:} ))
+          if [ "$minute" -ge 180 ] && [ "$minute" -lt 1170 ]; then window=OK; else window=REFUSED; ready=false; fi
+          echo "REHEARSAL_WINDOW start_utc=$hm allowed_utc=03:00-19:30 verdict=$window"
+          echo "ready=$ready" >> "$GITHUB_OUTPUT"
+          if [ "$ready" != 'true' ]; then
+            echo 'REHEARSAL_VERDICT overall=FAIL reason=NOT_READY collected=NONE downloaded=NONE'
+            exit 1
+          fi
+  rehearsal:
+    needs: presence
+    if: needs.presence.outputs.ready == 'true'
+    runs-on: ubuntu-24.04
+    # The production all_shards collect job has 120 minutes. 140 here so that an overrun is measured and judged (criterion
+    # job_time) instead of the job being stopped before its verdict. Expected: about 32~42 minutes (doc section 4).
+    timeout-minutes: 140
+    steps:
+      # Timings: every stage step records "<stage> <start> <end> <exit code> <required|optional>" with date +%s into
+      # $RUNNER_TEMP/rehearsal-metrics (outside the artifact directory, which its guard scans) and keeps its own exit code, so
+      # a failing required step still stops the job as in production. The verdict step reads these files at the end.
+      - name: Record the rehearsal start time
+        run: |
+          mkdir -p "$RUNNER_TEMP/rehearsal-metrics"
+          echo "job_start=$(date +%s)" >> "$RUNNER_TEMP/rehearsal-metrics/values.txt"
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - name: Record run context (event, mode, start time, observation day, shard)
+        continue-on-error: true
+        env:
+          RUN_MODE: all_shards
+        run: |
+          s=$(date +%s); rc=0
+          python implementation/tools/daily_run_context.py || rc=$?
+          echo "run_context $s $(date +%s) $rc optional" >> "$RUNNER_TEMP/rehearsal-metrics/stages.txt"
+          exit "$rc"
+      # The same Node pin as the daily collect job (JS twin of the publication, D-CV12 / D10); it never stops the job.
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        continue-on-error: true
+        with:
+          node-version: '22'
+      - name: Offline public boundary regression (GSQ-010)
+        working-directory: implementation
+        run: |
+          s=$(date +%s); rc=0
+          { python -m pip install pytest==9.1.1 jsonschema==4.26.0 && python -m pytest -q --tb=no tests/test_app_nav_ia.py tests/test_public_price_boundary.py tests/test_pages_cockpit_build.py tests/test_pages_artifact_guard.py tests/test_device_actual_build.py tests/test_private_history_build.py tests/test_sec_m1_provider.py tests/test_sec_m2_qg.py tests/test_sec_m2_candidates.py tests/test_worker_deployment_diagnostics.py tests/test_public_sec_inputs.py tests/test_sec_reported_consumer.py tests/test_public_engine_screens.py tests/test_public_screens_pipeline.py tests/test_device_profile_defaults.py tests/test_sec_13f_managers.py tests/test_sec_universe_shares.py tests/test_sec_universe_qg.py tests/test_macro_growth_inflation_v0.py tests/test_forward_validation_ledger.py tests/test_sic_theme_v0.py; } || rc=$?
+          echo "offline_regression $s $(date +%s) $rc required" >> "$RUNNER_TEMP/rehearsal-metrics/stages.txt"
+          exit "$rc"
+      - name: Build and inspect local price-free cockpit
+        run: |
+          s=$(date +%s); rc=0
+          { python implementation/tools/build_pages_cockpit.py --out "$RUNNER_TEMP/public-cockpit" && python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"; } || rc=$?
+          echo "cockpit_build $s $(date +%s) $rc required" >> "$RUNNER_TEMP/rehearsal-metrics/stages.txt"
+          exit "$rc"
+      # Production command without --macro-v0 --macro-evidence (those need BEA_USERID / CENSUS_API_KEY and feed neither
+      # sec-qgv2.json nor the V step). It stages the TARGET rows of sec-qgv2.json, as in production.
+      - name: Collect public SEC shares and filing metadata through Codex2 client
+        env:
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+        run: |
+          s=$(date +%s); rc=0
+          { python implementation/tools/public_screens_pipeline.py --live --out "$RUNNER_TEMP/public-cockpit" && python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"; } || rc=$?
+          echo "sec_public_inputs $s $(date +%s) $rc required" >> "$RUNNER_TEMP/rehearsal-metrics/stages.txt"
+          exit "$rc"
+      # The all_shards dispatch's command (--all-shards): every Universe504 shard in one serial paced run, so sec-qgv2.json is
+      # written by the current code (calc_version qgv2-calc/2026-10-23.1, which the publisher requires). The shard tool reads the
+      # raw-repo write token only to upload raw SEC bytes; it is not given here, so the tool prints RAW_UPLOAD_NOT_CONFIGURED per
+      # shard and keeps no raw bytes (the collection itself is unchanged). It reads the live Pages copies only (no write).
+      - name: Collect Universe504 SEC shard (price-free shares and Q·G factor projections)
+        env:
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+        run: |
+          s=$(date +%s); rc=0
+          { python implementation/tools/sec_universe_shares.py --live --out "$RUNNER_TEMP/public-cockpit" --all-shards && python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"; } || rc=$?
+          echo "universe_all_shards $s $(date +%s) $rc required" >> "$RUNNER_TEMP/rehearsal-metrics/stages.txt"
+          exit "$rc"
+      # Disk and memory around the V step: df -B1 and du -sb before, and a background sampler (filesystem bytes used and
+      # MemAvailable every 2 s, numbers only) started here, before the V step, so it never holds the step's two Secrets.
+      - name: Measure before the V step (time, disk, memory; numbers only)
+        continue-on-error: true
+        timeout-minutes: 2
+        run: |
+          m="$RUNNER_TEMP/rehearsal-metrics"
+          df -B1 --output=used,avail "$RUNNER_TEMP" | tail -n 1 | awk '{print "df_before_used=" $1; print "df_before_avail=" $2}' >> "$m/values.txt" || true
+          echo "du_out_before=$(du -sb "$RUNNER_TEMP/public-cockpit" | cut -f1)" >> "$m/values.txt" || true
+          nohup python implementation/tools/central_v_rehearsal_report.py sample --path "$RUNNER_TEMP" --out "$m/samples.txt" --interval 2 > /dev/null 2>&1 < /dev/null &
+          echo "$!" > "$m/sampler.pid"
+          echo "v_start=$(date +%s)" >> "$m/values.txt"
+      # Byte for byte the production V step of sec-daily-public-inputs.yml (tests/test_central_v_rehearsal_workflow.py compares
+      # the two): the two Secrets in this step's env only, cc and the guard without them (env -u), the publisher pops them before
+      # its children, output into $RUNNER_TEMP/public-cockpit, its own time limits, continue-on-error.
+      - name: Publish the central QGV from one IEX HIST day (prices in RAM only; scores, ranks, reasons and counts only)
+        id: central_v
+        continue-on-error: true
+        timeout-minutes: 15
+        env:
+          QGV_OFFICIAL_HMAC_KEY: ${{ secrets.QGV_OFFICIAL_HMAC_KEY }}
+          RAW_REPO_READ_TOKEN: ${{ secrets.RAW_REPO_READ_TOKEN }}
+          QGV_MONTHEND_STAMP: '20261023'
+        run: |
+          env -u QGV_OFFICIAL_HMAC_KEY -u RAW_REPO_READ_TOKEN cc -O2 -o "$RUNNER_TEMP/iex_last_trade" implementation/tools/iex_tops/iex_last_trade.c || echo 'QGV_OFFICIAL_PARSER_BUILD_FAILED'
+          timeout -k 30s 12m python implementation/tools/qgv_official_publish.py --out "$RUNNER_TEMP/public-cockpit" --parser "$RUNNER_TEMP/iex_last_trade" --monthend-stamp "$QGV_MONTHEND_STAMP" --monthend-shards 6 --raw-token-env RAW_REPO_READ_TOKEN --hmac-key-env QGV_OFFICIAL_HMAC_KEY || { echo "QGV_OFFICIAL_STEP_STOPPED exit=$?"; rm -f "$RUNNER_TEMP"/public-cockpit/.qgv-official*; }
+          env -u QGV_OFFICIAL_HMAC_KEY -u RAW_REPO_READ_TOKEN python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit" || { echo 'QGV_OFFICIAL_GUARD_REFUSED'; rm -f "$RUNNER_TEMP/public-cockpit/qgv-official.json" "$RUNNER_TEMP/public-cockpit/qgv-official-status.json"; refused=1; }
+          [ -z "${refused:-}" ] && env -u QGV_OFFICIAL_HMAC_KEY -u RAW_REPO_READ_TOKEN python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
+      # Runs whatever the V step's outcome (not on cancel): end time, the step outcome, the sampler stopped, df and du after.
+      - name: Measure after the V step (time, disk, memory; numbers only)
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        timeout-minutes: 2
+        env:
+          V_STEP_OUTCOME: ${{ steps.central_v.outcome }}
+        run: |
+          m="$RUNNER_TEMP/rehearsal-metrics"
+          v_end=$(date +%s)
+          echo "v_end=$v_end" >> "$m/values.txt"
+          echo "v_outcome=${V_STEP_OUTCOME:-none}" >> "$m/values.txt"
+          v_start=$(sed -n 's/^v_start=//p' "$m/values.txt" | tail -n 1)
+          if [ "${V_STEP_OUTCOME:-}" = 'success' ]; then v_rc=0; else v_rc=1; fi
+          echo "v_step ${v_start:-NONE} $v_end $v_rc optional" >> "$m/stages.txt"
+          if [ -s "$m/sampler.pid" ]; then kill "$(cat "$m/sampler.pid")" 2>/dev/null || true; fi
+          df -B1 --output=used,avail "$RUNNER_TEMP" | tail -n 1 | awk '{print "df_after_used=" $1; print "df_after_avail=" $2}' >> "$m/values.txt" || true
+          echo "du_out_after=$(du -sb "$RUNNER_TEMP/public-cockpit" | cut -f1)" >> "$m/values.txt" || true
+          if [ -d "$RUNNER_TEMP/qgv-official" ]; then echo "du_workdir_after=$(du -sb "$RUNNER_TEMP/qgv-official" | cut -f1)" >> "$m/values.txt" || true; fi
+      # The artifact guard and the verify job's price-free check (strict reader, status cross-check) on the V step's output
+      # directory, without any Secret. Exit codes are recorded for the verdict; this step itself never stops the job.
+      - name: Check the V files without prices (artifact guard and strict check, no Secret)
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        timeout-minutes: 5
+        run: |
+          m="$RUNNER_TEMP/rehearsal-metrics"
+          s=$(date +%s); grc=0; crc=0
+          python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit" || grc=$?
+          python implementation/tools/qgv_official_check.py --artifact-dir "$RUNNER_TEMP/public-cockpit" || crc=$?
+          echo "guard_rc=$grc" >> "$m/values.txt"
+          echo "check_rc=$crc" >> "$m/values.txt"
+          echo "v_files_check $s $(date +%s) $(( grc || crc )) optional" >> "$m/stages.txt"
+      # The production steps after the V step (minus the D9 history step), so the job time covers the whole all_shards job.
+      - name: Collect SEC SIC, 10-K Item 1 and basket-ETF N-PORT evidence for industry/theme v0
+        env:
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+        run: |
+          s=$(date +%s); rc=0
+          { python implementation/tools/public_classification_pipeline.py --live --out "$RUNNER_TEMP/public-cockpit" && python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"; } || rc=$?
+          echo "sic_theme $s $(date +%s) $rc required" >> "$RUNNER_TEMP/rehearsal-metrics/stages.txt"
+          exit "$rc"
+      - name: Collect company web domains for build-time logos (SEC website, then Wikidata P856; domains only)
+        env:
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+        run: |
+          s=$(date +%s); rc=0
+          { python implementation/tools/universe_domains_pipeline.py --live --out "$RUNNER_TEMP/public-cockpit" && python implementation/tools/company_logos_pipeline.py --live --out "$RUNNER_TEMP/public-cockpit" && python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"; } || rc=$?
+          echo "domains_logos $s $(date +%s) $rc required" >> "$RUNNER_TEMP/rehearsal-metrics/stages.txt"
+          exit "$rc"
+      - name: Verify 13F manager CIKs and project reported quantity changes
+        env:
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+        run: |
+          s=$(date +%s); rc=0
+          { python implementation/tools/sec_13f_managers.py --out "$RUNNER_TEMP/public-cockpit" && python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"; } || rc=$?
+          echo "thirteen_f $s $(date +%s) $rc required" >> "$RUNNER_TEMP/rehearsal-metrics/stages.txt"
+          exit "$rc"
+      - name: Collect SEC 8-K current reports for TARGET (title, link, time and item metadata only)
+        continue-on-error: true
+        env:
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+        run: |
+          s=$(date +%s); rc=0
+          { python implementation/tools/sec_disclosures.py --live --out "$RUNNER_TEMP/public-cockpit" && python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"; } || rc=$?
+          echo "sec_8k $s $(date +%s) $rc optional" >> "$RUNNER_TEMP/rehearsal-metrics/stages.txt"
+          exit "$rc"
+      - name: Collect news signals for TARGET (GDELT DOC 2.0 and company IR feeds; title, link and time only, never a score input)
+        continue-on-error: true
+        run: |
+          s=$(date +%s); rc=0
+          { python implementation/tools/news_signals.py --live --out "$RUNNER_TEMP/public-cockpit" && python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"; } || rc=$?
+          echo "news $s $(date +%s) $rc optional" >> "$RUNNER_TEMP/rehearsal-metrics/stages.txt"
+          exit "$rc"
+      - name: Report published Q·G coverage of the final artifact (counts only)
+        continue-on-error: true
+        run: |
+          s=$(date +%s); rc=0
+          python implementation/tools/published_coverage.py --artifact-dir "$RUNNER_TEMP/public-cockpit" || rc=$?
+          echo "published_coverage $s $(date +%s) $rc optional" >> "$RUNNER_TEMP/rehearsal-metrics/stages.txt"
+          exit "$rc"
+      # One line per stage, the inputs, disk, the V attempt and price-status counts, one PASS/FAIL line per criterion and the
+      # overall verdict (doc section 3). Fixed codes and counts only: no price, no code list, no URL, no Secret. Exit 1 on FAIL.
+      - name: Rehearsal verdict (fixed codes and counts only)
+        if: ${{ !cancelled() }}
+        timeout-minutes: 5
+        run: python implementation/tools/central_v_rehearsal_report.py report --metrics-dir "$RUNNER_TEMP/rehearsal-metrics" --artifact-dir "$RUNNER_TEMP/public-cockpit"
