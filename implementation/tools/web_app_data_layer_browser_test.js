@@ -3,7 +3,8 @@
 // Builds the development site itself (tools/web_app_test_site.js), serves the live-only public files as synthetic fixtures and
 // answers Google with stand-ins, then checks the built page in Chromium:
 //  - Build: every reused old file is byte-identical to web_assets, every web_app file is copied as is, no unreferenced old
-//    frontend file is served, and the page loads exactly index.html's scripts in order.
+//    frontend file is served, and the page loads exactly index.html's scripts, then loader.js LOAD_ORDER, in order (P2-1a: the
+//    layer loads after the first paint, so every open and reload here awaits IS2.ready before it uses the layer).
 //  - A (no user action): opening any route reads nothing (each route opened in a fresh load, and again on a route change
 //    before the test's own call); every route can call IS2.data.ready() / IS2.qgv.page() and gets the same page; each render's
 //    route.signal is aborted by the next one and the device chip's subscription ends with it; requests stay same-origin and
@@ -197,9 +198,11 @@ async function scores(page) {
 
     // ---------------------------------------------------------------- A: no user action
     phase = 'A open';
-    await page.goto(s.base + '#/'); await page.locator('main[data-route]').waitFor();
+    // The layer loads after the first paint (loader.js): every open below awaits IS2.ready before it uses the layer.
+    const loaded = async () => assert.equal(await page.evaluate(() => window.IS2.ready.then(() => window.IS2.loadState())), 'READY', 'the layer loaded');
+    await page.goto(s.base + '#/'); await page.locator('main[data-route]').waitFor(); await loaded();
     assert.deepEqual(dataNames(rec.log), [], 'opening the page reads no data file (screens call IS2.data.ready())');
-    assert.deepEqual(await page.evaluate(() => [...document.scripts].map((x) => x.getAttribute('src'))), R.scripts(), 'the page loads index.html\'s scripts in order');
+    assert.deepEqual(await page.evaluate(() => [...document.scripts].map((x) => x.getAttribute('src'))), R.scripts(), 'the page loads index.html\'s scripts, then LOAD_ORDER, in order');
     for (const n of await page.evaluate(() => window.IS2.data.FILES)) FILES.add(n);
     const routes = await page.evaluate(() => { const I = window.IS2; return [...I.MENU.map((m) => I.href(m.id)), I.href('company', 'NYSE:FIX'), ...I.DETAILS.map((d) => I.href('detail', d.id)), '#/nowhere/x']; });
     assert.equal(routes.length, 9 + 1 + 7 + 1);
@@ -207,13 +210,13 @@ async function scores(page) {
     for (const hash of routes) {
       phase = 'A fresh ' + hash;
       const at0 = rec.log.length;
-      await page.goto(s.base + hash); await page.reload(); await page.locator('main[data-route]').waitFor(); await settle();
+      await page.goto(s.base + hash); await page.reload(); await page.locator('main[data-route]').waitFor(); await loaded(); await settle();
       assert.deepEqual(dataNames(since(at0)), [], hash + ': opening the route in a fresh load reads no data file');
     }
     for (const hash of routes) {
       phase = 'A ' + hash;
       const at0 = rec.log.length;
-      await page.goto(s.base + hash); await page.locator('main[data-route]').waitFor(); await settle();
+      await page.goto(s.base + hash); await page.locator('main[data-route]').waitFor(); await loaded(); await settle();
       assert.deepEqual(dataNames(since(at0)), [], hash + ': a route change reads nothing before a screen asks');
       const r = await page.evaluate(async () => { const I = window.IS2, pub = await I.data.ready(), pg = await I.qgv.page(); window.__first = window.__first || pg; return { generation: pub.generation, same: pg === window.__first, state: pg.state }; });
       assert.deepEqual(r, { generation: 1, same: true, state: 'READY' }, hash + ': every screen shares one page of one generation');
@@ -516,7 +519,7 @@ async function scores(page) {
     // ---------------------------------------------------------------- D: reload clears RAM
     phase = 'D reload';
     at = rec.log.length;
-    await page.reload(); await page.locator('main[data-route]').waitFor();
+    await page.reload(); await page.locator('main[data-route]').waitFor(); await loaded();
     assert.deepEqual(outside(since(at)), [], 'nothing private after a reload');
     assert.deepEqual(dataNames(since(at)), [], 'and no data file before a screen asks');
     const d = await page.evaluate(() => { const P = window.IS2.prices, st = P.status(); return { google: st.google.connected, enabled: st.google.enabled, universe: st.universe.state, ranks: P.universeRanks(), gis: typeof window.google }; });
