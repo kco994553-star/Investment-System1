@@ -4,8 +4,11 @@ The store is the U8 one-off backfill output (tools/iex_hist/monthend_backfill.py
 tags `iex-v4-monthend-YYYYMMDD-shard{0..N-1}`, each `<tag>.json.gz` + `<tag>.json.gz.sha256`, schema `iex-monthend/1`:
     {schema, months: {YYYY-MM: {date, md5, size, codes: {code: SYM}, symbols: {SYM: {status, price_e4, ts_ns, n}}}}, ...}
 Values are IEX last regular-session trades AS TRADED (split-unadjusted). `month_closes` puts each on the latest share basis of
-`ebit_per_share_history` by dividing by that history item's `share_basis_factor` F_k (calc_version lane cv-fk):
-    month close = raw / F_k;  F_k missing / null / not positive -> that month is left out (never 1.0).
+`ebit_per_share_history` by dividing by that history item's `share_basis_factor` F_k (rule V-PRICE-BASIS, calc_version
+2026-10-23.1, read and validated by universe/sec_qgv2.require_qgv2: a positive factor, or null + share_basis_factor_reason in
+v2_factors.SHARE_BASIS_REASONS):
+    month close = raw / F_k;  F_k null / missing / not positive -> that month is left out (never 1.0), public reason = the item's
+    SHARE_BASIS_UNCONFIRMED / SPLIT_TIMING_UNCONFIRMED, else SHARE_BASIS_FACTOR_NOT_AVAILABLE.
 Nothing is printed, logged or written; errors are fixed codes raised `from None`. The token is passed in by the caller (the
 environment variable name is the caller's argument); it is never printed.
 """
@@ -20,6 +23,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
+from ..qgv.v2_factors import SHARE_BASIS_REASONS
 from .iex_hist import MONTHEND_BASIS_CUTS, SYMBOL_ALIASES, iex_symbol
 
 SCHEMA = 'iex-monthend/1'
@@ -29,7 +33,6 @@ API = 'https://api.github.com'
 FK_MISSING = 'SHARE_BASIS_FACTOR_NOT_AVAILABLE'
 MONTH_PRICE_MISSING = 'MONTH_END_PRICE_NOT_AVAILABLE'
 SYMBOL_MISMATCH = 'MONTH_END_SYMBOL_MISMATCH'
-_REASON = re.compile(r'[A-Z0-9_]+', re.ASCII)
 _MONTH = re.compile(r'\d{4}-\d{2}', re.ASCII)
 _DAY = re.compile(r'\d{4}-\d{2}-\d{2}', re.ASCII)
 
@@ -146,12 +149,13 @@ def read_store(stamp: str, shards: int, call, repo=RAW_REPO) -> dict:
 
 
 def _factor(item):
-    """(F_k, None) or (None, public reason) of one ebit_per_share_history item."""
+    """(F_k, None) or (None, public reason) of one ebit_per_share_history item: the item's own V-PRICE-BASIS reason
+    (v2_factors.SHARE_BASIS_REASONS) when it has one, else SHARE_BASIS_FACTOR_NOT_AVAILABLE."""
     f = item.get('share_basis_factor') if isinstance(item, dict) else None
-    if type(f) in (int, float) and math.isfinite(f) and f > 0:
+    if type(f) in (int, float) and type(f) is not bool and math.isfinite(f) and f > 0:
         return float(f), None
     reason = item.get('share_basis_factor_reason') if isinstance(item, dict) else None
-    return None, reason if isinstance(reason, str) and _REASON.fullmatch(reason) else FK_MISSING
+    return None, reason if reason in SHARE_BASIS_REASONS else FK_MISSING
 
 
 def month_closes(code: str, history, months: dict, *, aliases=SYMBOL_ALIASES, cuts=MONTHEND_BASIS_CUTS):

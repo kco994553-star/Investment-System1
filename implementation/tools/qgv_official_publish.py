@@ -15,6 +15,8 @@ Order (design §3-1):
 
 Stdout: ONE line of fixed codes and counts. Never a price, yield, month-end value, per-code hash, URL with a token or key.
 Exit 0 for every supply/verify outcome (the workflow step stays green; the status file carries the result); 2 = usage error.
+A missing Secret (HMAC key or raw-repo read token) or a sec-qgv2.json older than calc_version 2026-10-23.1 is NOT_RUN: nothing is
+downloaded and the last good copy stays.
 
     python implementation/tools/qgv_official_publish.py --out DIR --parser BIN --monthend-stamp YYYYMMDD \
         [--monthend-shards 6] [--previous PATH|URL] [--raw-token-env RAW_REPO_READ_TOKEN] [--hmac-key-env QGV_OFFICIAL_HMAC_KEY]
@@ -160,12 +162,13 @@ def run(*, out: Path, parser: str, monthend_stamp: str, monthend_shards: int, pr
         except (OSError, ValueError):
             raise qo.OfficialError('NOT_RUN', 'SEC_QGV2_NOT_AVAILABLE') from None
         inputs_sha, inputs_as_of = qo.sha256_bytes(raw), payload['as_of']
-        if not hmac_key:
+        if not hmac_key or len(hmac_key) < 16:      # same rule as qo.build, checked before any download
             raise qo.OfficialError('NOT_RUN', 'HMAC_KEY_MISSING')
         if not parser or not Path(parser).is_file():
             raise qo.OfficialError('NOT_RUN', 'PARSER_MISSING')
         if not raw_token:
-            raise qo.OfficialError('SUPPLY_FAILED', 'MONTHEND_TOKEN_MISSING')
+            raise qo.OfficialError('NOT_RUN', 'MONTHEND_TOKEN_MISSING')   # a missing Secret is NOT_RUN (no download)
+        qo.require_rule_version(payload)
         ctx_keys = qo.prepare(payload, now)['keys']
         # 3. one IEX day (RAM)
         try:

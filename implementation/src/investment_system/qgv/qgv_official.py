@@ -14,7 +14,12 @@ per-code price hashes. Owner decisions applied:
   D11: only rows with a total AND a V score are ranked; a Q·G-only total gets `qg_reference_order` instead;
 - V4 month-end prices: raw / share_basis_factor (F_k from the raw sec-qgv2 history item; missing -> month left out, public
   reason = its fixed share_basis_factor_reason or SHARE_BASIS_FACTOR_NOT_AVAILABLE); NASDAQ:PSKY pre-merger months left out
-  (MERGER_PRE_BASIS_UNCONFIRMED).
+  (MERGER_PRE_BASIS_UNCONFIRMED);
+- owner decisions 2026-10-24 (CENTRAL_V_DC02_PLAN_20261024.md section 4): D3 the IEX day is the latest TOPS day <= the run's New
+  York day (usually the previous trading day; requested_basis_date and basis_date both published); D4 SUPPLY_MIN 95%; D6 (a) the
+  current-price split check reads the F_k evidence of calc_version 2026-10-23.1 (`split_after_share_count`); D7 a foreign private
+  issuer (20-F / 40-F filer) is ADR_RATIO_UNCONFIRMED whatever its taxonomy (`adr_unconfirmed`); the publication needs a
+  sec-qgv2.json of calc_version 2026-10-23.1 or later (the one bump that covers these rules, D-CV7 (b)).
 Verify without prices: `require_qgv_official` (exact key sets, forbidden keys anywhere, V axis = weighted factors, total = axes and
 weights, ranks = total order, coverage = row counts, size <= 2 MiB).
 """
@@ -31,6 +36,7 @@ from pathlib import Path
 
 from . import qgv2_inputs as qi
 from . import qgv_v2
+from . import v2_factors as vf
 from ..providers import iex_hist, iex_monthend
 
 SCHEMA = 'qgv-official/1'
@@ -42,13 +48,22 @@ STATUS_KIND = 'QGV_OFFICIAL_STATUS'
 MAX_BYTES = 2 * 1024 * 1024
 PRESET = qgv_v2.DEFAULT_PRESET
 GATE = True
-SUPPLY_MIN = 0.95                  # D-CV5 recommendation (owner confirmation requested with U4)
+SUPPLY_MIN = 0.95                  # D-CV5; owner decision D4 2026-10-24
 PRICE_DEPENDENT = frozenset({'EV_NON_POSITIVE', 'ROOT_NOT_BRACKETED', 'ROOT_NOT_CONVERGED', 'NUMERIC_OVERFLOW'})
 PRICE_DEPENDENT_PUBLIC = 'PRICE_DEPENDENT_NOT_COMPUTABLE'
 V4 = 'v_vs_own_history'
 V4_HISTORY_REASONS = ('HISTORY_TOO_SHORT', 'PRICE_HISTORY_NOT_AVAILABLE')
 TARGET_PREFIX = 'TARGET:'
 ATTEMPT_STATES = ('OK', 'SUPPLY_FAILED', 'VERIFY_FAILED', 'NOT_RUN', 'NO_OFFICIAL_YET')
+# D7 (owner decision 2026-10-24; D-CV10 conservative): a foreign private issuer's row gets no price (ADR_RATIO_UNCONFIRMED, V NA)
+# whether it reports ifrs-full or us-gaap, until its listed security / ADS ratio is confirmed. sec-qgv2.json carries no form type
+# (only v_inputs_v2.taxonomy), so next to the ifrs-full rule the known 20-F / 40-F filers of the fixed Universe504 are listed by
+# CIK from existing public data only (never inferred). Source: docs/qgv_scoring_standard/DCV_OPEN_ITEMS_20261019.md D-CV10
+# (SEC submissions, latest annual form of the 498 Universe CIKs: 10-K 482, 10-K/A 14, 10-KT 1, 20-F 1 = ASML, 40-F 0) and its
+# section 5-8 (20-F FY2025, accession 0001628280-26-011378). A new 20-F / 40-F filer in the Universe must be added here.
+FOREIGN_ANNUAL_FILERS: dict[str, tuple[str, str, str]] = {
+    '0000937966': ('NASDAQ:ASML', '20-F', 'DCV_OPEN_ITEMS_20261019.md D-CV10 + 5-8: 20-F FY2025 accession 0001628280-26-011378'),
+}
 V_TARGET_SHARE = 0.9
 # Device ticker of each TARGET company (web_assets/watchlist.js IDS; US ones = markets.us US_LISTINGS).
 TARGET_TICKERS = {'asml': 'ASML', 'lrcx': 'LRCX', 'klac': 'KLAC', 'tokyo_electron': '8035', 'hanmi': '042700', 'nvda': 'NVDA',
@@ -142,12 +157,36 @@ def prepare(payload, now):
             'keys': {k: listing_code(k) for k in sorted(inputs['records'])}}
 
 
+def adr_unconfirmed(rec, v) -> bool:
+    """D7: an ifrs-full row or a known 20-F / 40-F filer (FOREIGN_ANNUAL_FILERS, by CIK; a TARGET row shares its issuer's CIK)."""
+    return bool(v and v.get('taxonomy') == 'ifrs-full') or rec.get('cik') in FOREIGN_ANNUAL_FILERS
+
+
+def split_after_share_count(code, v, basis_day) -> bool:
+    """D-CV11 / D6 (a): True when a split may have taken effect after the diluted-share period end, up to the basis day.
+
+    Evidence, no new source: (1) the F_k chain of calc_version 2026-10-23.1 (V-PRICE-BASIS): an ebit_per_share_history item at or
+    after the share-count period end (the count is that annual filing's) with share_basis_factor null and reason
+    SPLIT_TIMING_UNCONFIRMED = a split-ratio fact or a cover share-count jump dated between that fiscal-year-end month-end and the
+    annual filing, i.e. after the count's period end; (2) the verified split windows of iex_hist.SPLITS (empty: no verified source
+    is connected, see its comment). The window after the count's own filing up to the basis day has no SEC evidence in
+    sec-qgv2.json (iex_hist.SPLITS comment), so a split there is not seen until the next periodic filing restates the count."""
+    shares = v.get('diluted_shares') if isinstance(v, dict) else None
+    period_end = shares.get('period_end') if isinstance(shares, dict) else None
+    if not isinstance(period_end, str):
+        return False
+    for h in v.get('ebit_per_share_history') or []:
+        if isinstance(h, dict) and h.get('share_basis_factor', 0) is None and \
+                h.get('share_basis_factor_reason') == vf.SPLIT_TIMING_UNCONFIRMED and str(h.get('fiscal_year_end')) >= period_end:
+            return True
+    return iex_hist.split_after(code, period_end, basis_day)
+
+
 def price_status(ctx, day) -> dict:
-    """{key: price status} (iex_hist module doc): identity rules, then ADR / split rules, then the IEX day's status."""
+    """{key: price status} (iex_hist module doc): identity rules, then ADR (D7) / split (D6 (a)) rules, then the IEX day's."""
     out = {}
     for key, rec in ctx['inputs']['records'].items():
         v = _raw_v(ctx['payload'], key)
-        shares = v.get('diluted_shares') if v else None
         code = ctx['keys'][key]
         if rec.get('identity_withdrawn') is True:
             out[key] = 'IDENTITY_CONFLICT_WITHDRAWN'
@@ -155,9 +194,9 @@ def price_status(ctx, day) -> dict:
             out[key] = 'PRICE_IDENTITY_CONFLICT'
         elif code is None:
             out[key] = 'PRICE_SYMBOL_UNMAPPED'
-        elif v and v.get('taxonomy') == 'ifrs-full':
+        elif adr_unconfirmed(rec, v):
             out[key] = 'ADR_RATIO_UNCONFIRMED'
-        elif isinstance(shares, dict) and iex_hist.split_after(code, shares.get('period_end'), day.day):
+        elif split_after_share_count(code, v, day.day):
             out[key] = 'SPLIT_AFTER_SHARE_COUNT'
         else:
             out[key] = day.status.get(key, 'PRICE_SYMBOL_UNMAPPED')
@@ -377,6 +416,13 @@ def attribution():
     return {'text': iex_hist.ATTRIBUTION, 'terms_url': iex_hist.TERMS_URL, 'label_ko': iex_hist.LABEL_KO}
 
 
+def require_rule_version(payload) -> None:
+    """The publication rules (U7) ride on the one calc_version bump 2026-10-23.1 (D-CV7 (b), owner decision D1 (ii)): a
+    sec-qgv2.json of an earlier calc_version (no F_k on its rows) is not published from (NOT_RUN, the last good copy stays)."""
+    if not vf.carries_share_basis(payload.get('calc_version') if isinstance(payload, dict) else None):
+        raise OfficialError('NOT_RUN', 'SEC_QGV2_CALC_VERSION_BEFORE_U7')
+
+
 def build(payload, payload_sha256, *, now, day, months, monthend_stamp, hmac_key, generated_at):
     """The publication (state OFFICIAL, times.verified_at None until verified) or OfficialError. RAM only."""
     from .dcf_parameters import CONFIG_VERSION as DCF_VERSION
@@ -384,6 +430,7 @@ def build(payload, payload_sha256, *, now, day, months, monthend_stamp, hmac_key
     from ..universe.sec_universe_shares import load_config
     if not isinstance(hmac_key, bytes) or len(hmac_key) < 16:
         raise OfficialError('NOT_RUN', 'HMAC_KEY_MISSING')
+    require_rule_version(payload)
     ctx = prepare(payload, now)
     status = price_status(ctx, day)
     supply = supply_check(ctx, status)
@@ -528,9 +575,10 @@ def _ranks_ok(rows):
     for name in ('rank', 'qg_reference_order'):
         got = sorted((r[name], k) for k, r in rows.items() if r[name] is not None)
         _need([n for n, _ in got] == list(range(1, len(got) + 1)))
-        ordered = [rows[k] for _, k in got]
-        for a, b in zip(ordered, ordered[1:]):
+        for (_, ka), (_, kb) in zip(got, got[1:]):
+            a, b = rows[ka], rows[kb]
             _need(_finite(a['total']) and _finite(b['total']) and a['total'] >= b['total'])
+            _need(a['total'] > b['total'] or (_symbol(ka), ka) < (_symbol(kb), kb))   # ties: ticker, then key (assign_ranks)
         for _, k in got:
             r = rows[k]
             _need(_finite(r['total']) and _finite(r['axes']['V']['score']) == (name == 'rank'))

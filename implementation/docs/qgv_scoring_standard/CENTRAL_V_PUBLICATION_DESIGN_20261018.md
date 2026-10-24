@@ -121,51 +121,62 @@ deploy 잡: 신선도 검사에 게시본 규칙 추가 → 배포
 
 ## 4. 게시본 스키마 — `qgv-official.json` (`qgv-official/1`)
 
+> **2026-10-24 갱신(PR-A, `claude/central-v-core`):** 아래 4-1~4-3 표를 코드 스키마(`src/qgv/qgv_official.py` `TOP_KEYS`·`ROW_KEYS`·`STATUS_KEYS`, 검증기 `require_qgv_official`·`require_status`)에 맞췄다. 결정은 바꾸지 않았다. 2026-10-18 표와 다른 점(이력):
+> - 최상위 `price` → **`price_source`**. 키 `price`는 Pages 가드의 민감 키이고 검증기 `FORBIDDEN_KEYS`에도 있다. 내용도 IEX 기준으로 바뀌었다: `basis_kind` `SESSION_CLOSE` → `IEX_LAST_REGULAR_SESSION_TRADE`(공식 종가 아님, GSQ-024), `requested_basis_date`·`supply`·`month_end` 추가(D3·D4·V4 월말가).
+> - 최상위 **`attribution`** 추가(GSQ-024 출처 문구 의무, 상태 파일에도 같은 값).
+> - `v_calc_version` 행 삭제: D-CV7 (b)(2026-10-23 소유자 지시, §15-2). 그 전 표는 취소선으로 남겼었다.
+> - `engine`에 `publisher_sha256`(게시기·어댑터·입력 변환 원본 해시) 추가. `population`·`weights` 필드 이름을 코드와 맞춤(`universe_code_count`·`row_count`, `type_weights`).
+> - 행에 **`rank_row`** 추가(한 CIK 한 순위의 대표 행 키, D-CV8·D-CV9). `price_status` 어휘를 IEX 어댑터 코드로 고정.
+> - 상태 파일에 `schema`·`kind`·`attribution` 추가.
+> - `publication_id` 매니페스트(§5-3)의 실제 항목: `calc_version`, `inputs_sha256`, `provider`, `feed`, `basis_date`, `adjustment_basis`, `price_hmac`(가격 묶음 HMAC, 비공개), `population`, `weights`, `type_scope`, `config_versions`, `engine`, `month_end`. 시각 없음, `v_calc_version` 없음.
+
 ### 4-1. 최상위 필드
 
 | 필드 | 뜻 | 공개 | 비고 |
 | --- | --- | --- | --- |
 | `schema`, `kind` | `qgv-official/1`, `QGV_OFFICIAL` | 예 | |
-| `publication_id` | 이 게시본의 내용 식별자 | 예 | §5. 시각이 아니라 입력 내용에서 나온다 |
+| `publication_id` | `qgvpub-` + 매니페스트 sha256 | 예 | §5. 시각이 아니라 입력 내용에서 나온다 |
 | `state` | `OFFICIAL` | 예 | 실패 상태는 상태 파일에 둔다(§6) |
-| `calc_version` | 입력 행 규칙 버전 = `sec-qgv2.json` `calc_version`(지금 `qgv2-calc/2026-10-17.1`, `v2_factors.py:38`) | 예 | 의미를 바꾸지 않는다 |
-| ~~`v_calc_version`~~ | ~~V 게시 규칙 버전(엔진 V 규칙 + 어댑터 일관성 규칙 + DCF·유형 설정)~~ | — | **두지 않는다.** 2026-10-23 소유자 지시로 v_calc_version 없이 calc_version 하나로 통합(D-CV7 메모, §15-2) |
-| `engine` | `{version:'qgv-v2', status:'PROVISIONAL', python_sha256, js_sha256}` | 예 | `qgv_v2.py:19-20`. 엔진 원본 해시 |
-| `population` | `{version, universe_config_version, registry_sha256, code_count, pooled_count, pooled_digest}` | 예 | `sec-universe-shares/v0`(설정 JSON), `registry_sha256`은 `sec-qgv2.json`에서 |
-| `weights` | `{default_preset:'balanced', gate:true, profile_id:'qgv-v2/balanced/gate-on', weights_version}` | 예 | `weights_version` = `weights_id(official_weights())`(`qgv_v2.py:182-202`) 재사용 |
-| `type_scope` | `qgv2-type-scope/2026-10-17.1` | 예 | `qgv_v2.py:283` |
-| `config_versions` | `{type_config, dcf_parameters}` | 예 | `dcf_parameters/v1.1-default`(`qgv/dcf_parameters.py:22`), type_config/1 |
-| `price` | `{provider, basis_date, basis_kind:'SESSION_CLOSE', adjustment_basis, supplied, rejected:{사유:개수}}` | 예(값 없음) | 공급자 이름·기준일·조정 기준만 |
+| `calc_version` | 입력 `sec-qgv2.json`의 `calc_version` 그대로(`qgv2-calc/2026-10-23.1` 이상, 그 전 파일이면 게시하지 않음 `NOT_RUN SEC_QGV2_CALC_VERSION_BEFORE_U7`) | 예 | U7 게시 규칙도 이 번호가 덮는다(D-CV7 (b), §15-2). `v_calc_version`은 없다 |
+| `engine` | `{version:'qgv-v2', status:'PROVISIONAL', python_sha256, js_sha256, publisher_sha256}` | 예 | 엔진·게시기 원본 해시 |
+| `population` | `{version, universe_code_count, registry_sha256, row_count, pooled_count, pooled_digest}` | 예 | `version` = `sec-universe-shares` 설정 버전, `registry_sha256`은 `sec-qgv2.json`에서 |
+| `weights` | `{default_preset:'balanced', gate:true, type_weights:true, profile_id:'qgv-v2/balanced/gate-on', weights_version}` | 예 | `weights_version` = `weights_id(official_weights())` |
+| `type_scope` | 엔진 `TYPE_SCOPE` | 예 | |
+| `config_versions` | `{type_config, dcf_parameters}` | 예 | |
+| `price_source` | `{provider:'IEX_HIST', feed:'TOPS 1.6', basis_kind:'IEX_LAST_REGULAR_SESSION_TRADE', adjustment_basis:'AS_TRADED', currency:'USD', basis_date, requested_basis_date, supplied, rejected:{사유:개수}, supply:{eligible, supplied, minimum_share:0.95, met:true}, month_end:{store:'iex-monthend/1', stamp, months, basis:'RAW_DIVIDED_BY_SHARE_BASIS_FACTOR'}}` | 예(값 없음) | `requested_basis_date` = 실행의 뉴욕 날짜, `basis_date` = 실제 IEX 파일 날짜(≤ 요청일, D3). `supply` = D-CV5/D4 95% |
+| `attribution` | `{text, terms_url, label_ko}` = IEX 출처 문구, 약관 링크, "IEX 마지막 체결가 기준(공식 종가 아님)" | 예 | 검증기가 정확히 같은 값을 요구한다. 화면은 그대로 보인다 |
 | `inputs` | `[{file:'sec-qgv2.json', sha256, as_of, calc_version, acquired_oldest, acquired_newest}]` | 예 | 같은 실행 아티팩트의 파일 바이트 해시 |
-| `times` | `{price_basis_date, price_collected_from, price_collected_to, inputs_as_of, generated_at, verified_at}` | 예 | 배포 시각은 없다(§8-3) |
-| `coverage` | V 커버리지 집계(`vCoverage` 정의, §8-4) | 예 | 개수만 |
+| `times` | `{price_basis_date, price_collected_from, price_collected_to, inputs_as_of, generated_at, verified_at}` | 예 | `price_basis_date` = `price_source.basis_date`. 배포 시각은 없다(§8-3) |
+| `coverage` | `{basis:'UNIVERSE_CODES', population, v, qgv, qg_only_total, ranked, qg_reference, price_status, not_computed, reasons, factor_reasons, target}` | 예 | 개수만. 검증기가 행에서 다시 세어 같아야 한다 |
 | `rows` | Universe 504 코드 + `TARGET:<id>` | 예 | 아래 |
 
 ### 4-2. 행 필드
 
 | 필드 | 공개 | 출처 |
 | --- | --- | --- |
-| `cik`, `profile`, `industry_group`, `in_cross_section`, `state`, `source_reason_codes`, `acquired_at`, `fiscal_year_end` | 예 | 같은 실행 `sec-qgv2.json` 행 그대로(`qgv2-inputs.js:40-50` 정규화 규칙) |
-| `factors.<15개>.{score, reason, basis}` | 예 | `score_universe` 결과 `factors`(:652-664). Q·G 10개는 공개 파일 값, V 5개는 이번 계산 |
-| `axes.{Q,G,V}.{score, state, weight_available, factors_available, reason}` | 예 | 결과 `axes`(:666) |
-| `weights`, `type_weights`, `type_reason`, `selected_types` | 예 | 결과(:704). 가격 무관 |
-| `q_industry_percentile`, `value_trap_gate`, `v_excluded`, `flags` | 예 | 결과(:703-705) |
-| `total`, `total_reason` | 예 | 공식 기본 프로필(균형·관문 켬) |
-| `price_status` | 예 | `SUPPLIED` 또는 어댑터 사유 코드(§7). 값 없음 |
-| `rank` | 예 | 공식 QGV 순위. D11 규칙: 종합과 V가 모두 있는 행만(#318). 한 CIK 한 순위(결정 D-CV9) |
-| `qg_reference_order` | 예 | Q·G만 있는 종합의 별도 순서(#318). 공식 순위 아님 |
-| `detail.ebit_yield`·`fcf_yield`·`implied_growth`·`expectation_gap`·`realized_growth`·`industry_peers` | **아니오** | 결과 `detail`(:706-708). 가격 또는 가격 역산 가능 |
-| `reference_range` | **아니오** | 가격은 안 쓰지만 주당 가치 금액이다. 공개 범위(점수·순위·사유·커버리지·시각) 밖 |
-| 가격·EV·시가총액·수익률·자기 과거 수익률·종목별 가격 시각·가격 해시 | **절대 아니오** | |
+| `cik`, `profile`, `industry_group`, `in_cross_section`, `state`, `source_reason_codes`, `acquired_at`, `fiscal_year_end` | 예 | 같은 실행 `sec-qgv2.json` 행(Python 쌍둥이 `qgv2_inputs` 정규화) |
+| `factors.<15개>.{score, reason, basis}` | 예 | `score_universe` 결과. Q·G 10개는 공개 파일 값, V 5개는 이번 계산. 가격 의존 사유 4개는 `PRICE_DEPENDENT_NOT_COMPUTABLE`(D-CV2) |
+| `axes.{Q,G,V}.{score, state, weight_available, factors_available, reason}` | 예 | 결과 `axes`. 검증기: V 축 = 공개 V 요인의 가중 평균 |
+| `weights`, `type_weights`, `type_reason`, `selected_types` | 예 | 결과. 가격 무관 |
+| `q_industry_percentile`, `value_trap_gate`, `v_excluded`, `flags` | 예 | 결과 |
+| `total`, `total_reason` | 예 | 공식 기본 프로필(균형·관문 켬). 검증기: 종합 = 축 × 비중(관문) |
+| `price_status` | 예 | `SUPPLIED`, `ODD_LOT_ONLY`, `NO_IEX_TRADE`, `PRICE_SYMBOL_UNMAPPED`, `ADR_RATIO_UNCONFIRMED`(D7), `SPLIT_AFTER_SHARE_COUNT`(D6 (a)), `PRICE_IDENTITY_CONFLICT`, `IDENTITY_CONFLICT_WITHDRAWN`(`providers/iex_hist.py` `STATUS_CODES`). 값 없음 |
+| `rank` | 예 | 공식 QGV 순위. D11: 종합과 V가 모두 있는 행만. 한 CIK 한 순위(D-CV8·D-CV9). 동점은 기호, 그다음 키 순 |
+| `qg_reference_order` | 예 | Q·G만 있는 종합의 별도 순서. 공식 순위 아님 |
+| `rank_row` | 예 | 그 CIK의 순위(또는 Q·G 참고 순서)를 가진 대표 행 키. 순위가 없으면 `null` |
+| `detail.*`(수익률·내재 성장률·기대 차이·실현 성장·업종 동료) | **아니오** | 가격 또는 가격 역산 가능. 검증기 `FORBIDDEN_KEYS`가 어디서든 거부 |
+| `reference_range` | **아니오** | 주당 가치 금액. 공개 범위 밖 |
+| 가격·월말가·EV·시가총액·수익률·자기 과거 수익률·종목별 가격 시각·가격 해시·HMAC | **절대 아니오** | 같은 `FORBIDDEN_KEYS` |
 
-- 가격 의존 사유 코드의 공개 형태는 결정 D-CV2를 따른다(§4-4).
-- 크기 추정: 약 520행 × 1~1.3KB ≈ 0.6~0.7MB. `sec-qgv2.json` 한도 2MB(`sec_qgv2.py:40`)와 같은 상한을 쓴다.
+- 가격 의존 사유 코드의 공개 형태는 결정 D-CV2를 따른다(§4-4). 원 코드가 공개본에 있으면 검증기가 거부한다.
+- 크기 추정(2026-10-18): 약 520행 × 1~1.3KB ≈ 0.6~0.7MB. **2026-10-23 실측:** 504+19행 1,109,234 B(1.06 MiB), gzip 114,962 B(`CENTRAL_V_U4_U5_NEEDS_20261023.md` §4). 상한은 `sec-qgv2.json`과 같은 2 MiB다.
 - 게시본은 **자기 완결**이다. Q·G 점수도 이 게시본 안의 값을 쓴다. 그래서 같은 날 새 `sec-qgv2.json`이 나와도 공식 순위가 섞이지 않는다.
 
 ### 4-3. 상태 파일 — `qgv-official-status.json`
 
 - 마지막 정상 게시본 바이트를 바꾸지 않고 실패를 알리려고 따로 둔다.
-- 필드: `last_attempt_at`, `attempt_state`(`OK` / `SUPPLY_FAILED` / `VERIFY_FAILED` / `NOT_RUN` / `NO_OFFICIAL_YET`), `reason_code`, `official_publication_id`, `official_price_basis_date`, `official_verified_at`, `latest_inputs:{sha256, as_of}`.
+- 필드(`STATUS_KEYS`): `schema`(`qgv-official-status/1`), `kind`(`QGV_OFFICIAL_STATUS`), `last_attempt_at`, `attempt_state`(`OK` / `SUPPLY_FAILED` / `VERIFY_FAILED` / `NOT_RUN` / `NO_OFFICIAL_YET`), `reason_code`, `official_publication_id`, `official_price_basis_date`, `official_verified_at`, `latest_inputs:{sha256, as_of}`, `attribution`.
+- 게시본이 하나도 없으면 실패 시도도 `NO_OFFICIAL_YET`이고 `reason_code`에 실패 코드를 둔다. Secret이 없으면(`HMAC_KEY_MISSING`, `MONTHEND_TOKEN_MISSING`) 내려받기 전에 `NOT_RUN`이다.
 - 값·종목 목록·가격 없음.
 
 ### 4-4. 복원 분석 — 공개 점수 + 공개 SEC 입력 + 이력으로 가격을 되살릴 수 있나
@@ -273,6 +284,11 @@ sec-qgv2.json(같은 실행, sha256) ─┐
 - 어떤 종목이 빠지면 다른 종목 백분위도 바뀐다. 그래서 거부 개수를 사유별로 `price.rejected`에 싣는다.
 - 전역 실패: 한 사유가 거의 모든 행에서 나오면(예: 공급자가 전부 센트 단위) 검증 실패로 보고 직전 정상본을 유지한다. 기준은 D-CV5와 같이 정한다.
 - PIT: 기준일 D 종가와 D 22시대 UTC에 받은 SEC 자료를 함께 쓴다. "지금" 점수이므로 허용한다. 그러나 백테스트 증거로는 쓰지 않는다(접수 시각 규칙은 D 영역).
+- **2026-10-24 메모(PR-A, 소유자 결정 D3·D6·D7, 위 표의 규칙은 그대로):**
+  - 가격 기록은 IEX 마지막 정규장 체결(`price_source`, 공식 종가 아님)이다. 기준일 D = 실행의 뉴욕 날짜 이하 마지막 TOPS 파일 날짜(D3). 주말·휴장일은 파일이 없어 직전 거래일, 반일 장은 확장 시간 표시(0x40) 체결을 버려 조기 마감 전 마지막 체결이다. 요청일과 실제 기준일을 둘 다 싣는다.
+  - ADR·보통주(D7): `ifrs-full` 행 + 알려진 20-F·40-F 제출자(CIK 표 `qgv_official.FOREIGN_ANNUAL_FILERS`, 지금 ASML 1곳, 근거 `DCV_OPEN_ITEMS_20261019.md` D-CV10)를 분류 체계와 무관하게 `ADR_RATIO_UNCONFIRMED`로 둔다. `sec-qgv2.json`에는 서식 종류가 없어 표로 둔다.
+  - 분할 기준(현재가, D6 (a)): 새 출처 없이 F_k 근거를 쓴다. 주식수 기간 끝 이후의 이력 항목이 `SPLIT_TIMING_UNCONFIRMED`면 `SPLIT_AFTER_SHARE_COUNT`. 주식수를 실은 서류의 접수 뒤~기준일 구간은 SEC 근거가 없어 다음 정기 서류까지 보이지 않는다(`providers/iex_hist.py` `SPLITS` 주석). 검증된 분할 표 `SPLITS`는 비어 있다.
+  - 분할 기준(월말 종가): IEX 월말가는 분할 **미조정**이다. 그래서 위 "분할만 조정" 줄 대신 §15-1의 `원 종가 ÷ F_k`를 쓴다(F_k `null`이면 그 달 제외).
 
 ## 8. 프론트엔드 버전 관리(#321 재사용, 네 가지 시각)
 

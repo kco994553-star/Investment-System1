@@ -10,6 +10,7 @@ import gzip
 import hashlib
 import json
 import pickle
+import re
 import shutil
 import struct
 import subprocess
@@ -18,6 +19,8 @@ import pytest
 
 from investment_system.providers import iex_hist as ih
 from investment_system.providers import iex_monthend as im
+from investment_system.qgv import v2_factors as vf
+from investment_system.universe.sec_universe_shares import shard_day
 
 ROOT = __import__('pathlib').Path(__file__).resolve().parents[1]
 CANARY_E4 = 4242_4242   # $4242.4242: a made-up price that must never show up in any text output
@@ -182,17 +185,100 @@ MONTHS = {'2023-12': {'date': '20231229', 'codes': {'NYSE:AAA': 'AAA'}, 'symbols
 
 
 def test_month_closes_raw_divided_by_share_basis_factor_and_left_out_reasons():
-    hist = [{'fiscal_year_end': '2023-12-31', 'value': 1.0, 'share_basis_factor': 4.0, 'share_basis_factor_reason': None},
-            {'fiscal_year_end': '2024-12-31', 'value': 1.0, 'share_basis_factor': None, 'share_basis_factor_reason': 'SPLIT_RATIO_UNVERIFIED'},
-            {'fiscal_year_end': '2025-12-31', 'value': 1.0, 'share_basis_factor': 1}]
+    # items in the production shape (#393 V-PRICE-BASIS, sec_qgv2._share_basis_entry): a factor, or null + its reason
+    hist = [{'fiscal_year_end': '2023-12-31', 'value': 1.0, 'share_basis_factor': 4.0},
+            {'fiscal_year_end': '2024-12-31', 'value': 1.0, 'share_basis_factor': None, 'share_basis_factor_reason': vf.SPLIT_TIMING_UNCONFIRMED},
+            {'fiscal_year_end': '2025-12-31', 'value': 1.0, 'share_basis_factor': 1.0}]
     closes, left = im.month_closes('NYSE:AAA', hist, MONTHS)
     assert closes == {'2023-12': 50.0 / 4.0, '2025-12': 30.0}
-    assert left == [('2024-12', 'SPLIT_RATIO_UNVERIFIED')]
-    # missing field / non-code reason -> the fixed reason; never 1.0
+    assert left == [('2024-12', vf.SPLIT_TIMING_UNCONFIRMED)]
+    hist[1]['share_basis_factor_reason'] = vf.SHARE_BASIS_UNCONFIRMED
+    assert im.month_closes('NYSE:AAA', hist, MONTHS)[1] == [('2024-12', vf.SHARE_BASIS_UNCONFIRMED)]
+    # no factor (a pre-2026-10-23.1 row), a zero / bool factor, or a reason outside SHARE_BASIS_REASONS -> the fixed reason;
+    # never 1.0
     closes, left = im.month_closes('NYSE:AAA', [{'fiscal_year_end': '2023-12-31', 'value': 1.0},
-                                                {'fiscal_year_end': '2025-12-31', 'value': 1.0, 'share_basis_factor': 0, 'share_basis_factor_reason': 'bad text'}], MONTHS)
-    assert closes == {} and left == [('2023-12', im.FK_MISSING), ('2025-12', im.FK_MISSING)]
+                                                {'fiscal_year_end': '2024-12-31', 'value': 1.0, 'share_basis_factor': True},
+                                                {'fiscal_year_end': '2025-12-31', 'value': 1.0, 'share_basis_factor': 0, 'share_basis_factor_reason': 'SPLIT_RATIO_UNVERIFIED'}], MONTHS)
+    assert closes == {} and left == [('2023-12', im.FK_MISSING), ('2024-12', im.FK_MISSING), ('2025-12', im.FK_MISSING)]
     assert im.public_v4_reason(left) == im.FK_MISSING
+
+
+def test_one_parser_copy_and_one_symbol_alias_table():
+    """Plan PR-A: ONE C parser (tools/iex_tops/iex_last_trade.c) and ONE dated alias table (providers/iex_hist.SYMBOL_ALIASES).
+    The U8 / probe branches carried a byte-identical copy under tools/iex_hist/ and their own table; they must reuse these."""
+    skip = {'.git', 'node_modules', '__pycache__', '.pytest_cache'}
+    files = [f for f in ROOT.rglob('*') if f.is_file() and not skip & set(f.relative_to(ROOT).parts)]
+    assert sorted(f.relative_to(ROOT).as_posix() for f in files if f.suffix == '.c') == ['tools/iex_tops/iex_last_trade.c']
+    defines = sorted(f.relative_to(ROOT).as_posix() for f in files if f.suffix == '.py' and f.name != 'test_iex_hist.py'
+                     and re.search(r'^\s*SYMBOL_ALIASES\s*[:=]', f.read_text(encoding='utf-8', errors='replace'), re.M))
+    assert defines == ['src/investment_system/providers/iex_hist.py']
+    assert im.SYMBOL_ALIASES is ih.SYMBOL_ALIASES and im.MONTHEND_BASIS_CUTS is ih.MONTHEND_BASIS_CUTS
+
+
+# ---- basis day: weekends, market holidays, T+1, half days (owner decision D3) ----------------------------------------------
+TRADING_DAYS = ('20261120', '20261123', '20261124', '20261125', '20261127', '20261130')   # 11-26 Thanksgiving: no file
+
+
+def _hist_index(days=TRADING_DAYS):
+    link = 'https://www.googleapis.com/download/storage/v1/b/iex/o/data%2Ffeeds%2F{d}%2Ftops.pcap.gz?generation=1&alt=media'
+    return {d: [{'feed': 'TOPS', 'version': '1.6', 'link': link.format(d=d), 'size': '100'}] for d in days}
+
+
+@pytest.mark.parametrize('start,requested,basis', [
+    # Thanksgiving (no session, no file): a run started after 00:00 UTC on 11-27 belongs to NY day 11-26 -> Wednesday 11-25
+    ('2026-11-27T00:37:00+00:00', '2026-11-26', '20261125'),
+    # Saturday scheduled run (22:17 UTC): no Saturday file -> Friday
+    ('2026-11-21T22:17:00+00:00', '2026-11-21', '20261120'),
+    # Monday ~00:37 UTC start = NY Sunday -> Friday
+    ('2026-11-23T00:37:00+00:00', '2026-11-22', '20261120'),
+    # the day after the half day (11-27, 13:00 close): its file is a normal TOPS day
+    ('2026-11-28T22:17:00+00:00', '2026-11-28', '20261127'),
+])
+def test_basis_is_the_latest_tops_day_on_or_before_the_runs_new_york_day(start, requested, basis):
+    day = shard_day(dt.datetime.fromisoformat(start))
+    assert day.isoformat() == requested
+    assert ih.select_day(_hist_index(), day)[0] == basis
+
+
+def test_t_plus_one_file_not_yet_generated_uses_the_previous_trading_day():
+    # Tuesday 11-24 00:37 UTC = NY Monday 11-23; Monday's file is generated 04:24-10:22 UTC on 11-24, so it is not in the index yet
+    index = _hist_index(TRADING_DAYS[:1])
+    day = shard_day(dt.datetime(2026, 11, 24, 0, 37, tzinfo=dt.timezone.utc))
+    assert day == dt.date(2026, 11, 23) and ih.select_day(index, day)[0] == '20261120'
+    # never a later file than the run's day, even if the index already lists one
+    assert ih.select_day(_hist_index(), dt.date(2026, 11, 24))[0] == '20261124'
+
+
+def test_holiday_run_publishes_requested_and_actual_basis_dates(tmp_path):
+    md5 = base64.b64encode(hashlib.md5(b'x').digest()).decode()
+
+    def fetch(url):
+        return _hist_index() if url == ih.HIST_URL else {'size': '100', 'md5Hash': md5}
+
+    def stream(link, symbols, **kw):
+        assert kw['day'] == '20261125' and '20261125' in link
+        return {s: ('ROUND', 1234500) for s in symbols}
+    requested = shard_day(dt.datetime(2026, 11, 27, 0, 37, tzinfo=dt.timezone.utc))
+    day = ih.fetch_day({'NYSE:AAA': 'NYSE:AAA'}, requested, parser='p', workdir=tmp_path, fetch=fetch, stream=stream)
+    assert (day.basis_date, day.day) == ('2026-11-26', '2026-11-25')      # published as requested_basis_date / basis_date
+    assert day.status == {'NYSE:AAA': 'SUPPLIED'} and '123.45' not in repr(day)
+
+
+def test_half_day_last_eligible_trade_is_before_the_early_close(parser, tmp_path):
+    """2026-11-27 closes at 13:00 New York. Trades after the close are extended-hours flagged (0x40): never the price."""
+    day = '20261127'
+    t0, t1 = ih.session_ns(day)
+    m = 60 * 10**9
+    close = t0 + 210 * m                                   # 13:00 New York
+    frames = [frame([trade('AAA', close - m, 1000000)]),                     # 12:59 regular: the price
+              frame([trade('AAA', close + 30 * m, CANARY_E4, flags=0x40)]),   # 13:30 extended hours: ignored
+              frame([trade('BBB', close + 30 * m, 555555, flags=0x40)]),      # only after the close -> no trade
+              frame([trade('CCC', close - 2 * m, 777700, flags=0x20)])]       # odd lot only
+    body = gzip.compress(pcap(frames), mtime=0)
+    path = tmp_path / 'half.pcap.gz'
+    path.write_bytes(body)
+    rows = _stream(path, body, parser, tmp_path, ['AAA', 'BBB', 'CCC'], day=day)
+    assert rows == {'AAA': ('ROUND', 1000000), 'BBB': ('NO_TRADE', None), 'CCC': ('ODD_ONLY', 777700)}
 
 
 def test_month_closes_psky_merger_cut_and_symbol_check():

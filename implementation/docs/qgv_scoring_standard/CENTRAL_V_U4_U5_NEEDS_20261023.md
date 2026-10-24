@@ -3,6 +3,14 @@
 > **상태: 기록 문서.** 이 브랜치(`claude/cv-core-publisher`)는 워크플로·가드를 바꾸지 않는다.
 > U1~U3 코드만 있다. 아래는 U4·U5가 그대로 옮겨 쓸 요구 사항이다. 가격 값은 없다.
 
+> **2026-10-24 갱신(PR-A `claude/central-v-core` = #393 + canonical + 이 브랜치):** 소유자 결정(계획 [CENTRAL_V_DC02_PLAN_20261024](CENTRAL_V_DC02_PLAN_20261024.md) 4절, 2026-10-24)이 반영됐다. 아래 본문의 해당 줄도 고쳤다.
+> - D2 (a): Secret 두 개 모두 새로 둔다 — `RAW_REPO_READ_TOKEN`(fine-grained, `investment-system1-raw` Contents: read 하나), `QGV_OFFICIAL_HMAC_KEY`. 값은 어디에도 적지 않는다.
+> - Secret이 없으면 **`NOT_RUN`**(내려받기 전, 종료 코드 0, 직전 정상본 유지): `HMAC_KEY_MISSING`(16바이트 미만 포함), `MONTHEND_TOKEN_MISSING`(전에는 `SUPPLY_FAILED`였다).
+> - 입력 `sec-qgv2.json`의 `calc_version`이 `2026-10-23.1`보다 이르면 `NOT_RUN SEC_QGV2_CALC_VERSION_BEFORE_U7`(U7 규칙은 그 한 번의 올림이 덮는다, D-CV7 (b)·D1 (ii)).
+> - D3 수용(전 거래일 기준, 요청일·실제 기준일 둘 다 게시), D4 95% 확정, D6 (a) 현재가 분할 검사 = F_k 근거(§4), D7 ADR = 20-F 제출자까지(§4).
+> - C 파서 한 벌(`tools/iex_tops/iex_last_trade.c`), 별칭 표 하나(`providers/iex_hist.SYMBOL_ALIASES`). 프로브·U8 실행 사실: [CENTRAL_V_PROBE_U8_FACTS_20261024](CENTRAL_V_PROBE_U8_FACTS_20261024.md).
+> - 아래 `파일:줄` 인용은 cef0748e 기준이다. 줄이 밀렸으면 같은 함수 이름을 본다.
+
 - 작성: 2026-10-23 11:34 UTC / 2026-10-23 20:34 KST.
 - 근거: 설계 [CENTRAL_V_PUBLICATION_DESIGN_20261018](CENTRAL_V_PUBLICATION_DESIGN_20261018.md) §3·§6·§12, GSQ-024.
 - 인용은 `파일:줄`이다. `src/`는 `implementation/src/investment_system/`, `tools/`는 `implementation/tools/`다.
@@ -22,19 +30,19 @@
 ### 1-2. Secret(새로 필요) — **소유자 결정**
 | 이름(기본값) | 용도 | 도구 인자 | 결정 |
 | --- | --- | --- | --- |
-| `QGV_OFFICIAL_HMAC_KEY` | 가격 묶음 HMAC → `publication_id`에만 쓴다(`src/qgv/qgv_official.py:359`). 공개하지 않는다 | `--hmac-key-env` | **새 Secret 승인 필요**(C). 16바이트 이상. 없으면 `NOT_RUN HMAC_KEY_MISSING` |
-| `RAW_REPO_READ_TOKEN` | V4 월말가 비공개 저장소 읽기(`src/providers/iex_monthend.py:50`, `:142`) | `--raw-token-env` | **(B) 선택지 둘** 아래 |
+| `QGV_OFFICIAL_HMAC_KEY` | 가격 묶음 HMAC → `publication_id`에만 쓴다(`src/qgv/qgv_official.py` `price_hmac`). 공개하지 않는다 | `--hmac-key-env` | **승인됨(D2, 2026-10-24).** 16바이트 이상. 없으면 `NOT_RUN HMAC_KEY_MISSING` |
+| `RAW_REPO_READ_TOKEN` | V4 월말가 비공개 저장소 읽기(`src/providers/iex_monthend.py` `github_call`, `read_store`) | `--raw-token-env` | **(a)로 결정(D2, 2026-10-24).** 없으면 `NOT_RUN MONTHEND_TOKEN_MISSING` |
 
-**(B) RAW_REPO_TOKEN 충돌.** 설계 §3-3은 "이 단계에 `RAW_REPO_TOKEN`을 주지 않는다"였다. V4 월말가를 읽으려면 비공개 저장소 읽기 권한이 필요하다.
+**(B) RAW_REPO_TOKEN 충돌.** (2026-10-24 소유자 결정 D2: (a).) 설계 §3-3은 "이 단계에 `RAW_REPO_TOKEN`을 주지 않는다"였다. V4 월말가를 읽으려면 비공개 저장소 읽기 권한이 필요하다.
 - **(a) 권장:** 비공개 원자료 저장소 `kco994553-star/investment-system1-raw` **읽기 전용** fine-grained 토큰을 새 Secret `RAW_REPO_READ_TOKEN`으로 둔다. 게시 단계 `env`에만 준다. Contents: read 하나만 준다.
 - **(b)** 기존 `RAW_REPO_TOKEN`을 이 단계에만 준다. 쓰기 권한까지 같이 간다.
 - 쓰지 않는 방식: 가격 임시 파일을 만드는 "별도 단계". 설계 §3-3 위반이다.
 - 코드는 토큰 **이름**을 인자로 받는다(`--raw-token-env`). 어느 쪽이든 코드 변경은 없다.
 - 토큰은 `api.github.com` 요청에만 붙는다. 자산 다운로드 리디렉트에는 붙이지 않는다(`src/providers/iex_monthend.py:59-61`, `:96`). 시험: `tests/test_iex_hist.py` `_release_call`.
-- 토큰이 없으면 `SUPPLY_FAILED MONTHEND_TOKEN_MISSING`이고 직전 정상본을 유지한다.
+- 토큰이 없으면 `NOT_RUN MONTHEND_TOKEN_MISSING`이고(2026-10-24 전에는 `SUPPLY_FAILED`) 직전 정상본을 유지한다. 내려받기 전에 멈춘다.
 
-### 1-3. 기준일·공급 기준 — **소유자 확인 필요**(D)
-- **기준일:** IEX 색인에 있는 마지막 TOPS 1.6 날짜 중 `shard_day(시작 시각)` 이하(`src/providers/iex_hist.py:155`). T+1이라 22:17 UTC 실행에서는 보통 **전 거래일**이다. 게시본에는 `price_source.requested_basis_date`(shard_day)와 `basis_date`(실제 IEX 날짜)를 따로 싣는다.
+### 1-3. 기준일·공급 기준 — **소유자 결정 D3·D4(2026-10-24): 수용**
+- **기준일:** IEX 색인에 있는 마지막 TOPS 1.6 날짜 중 `shard_day(시작 시각)` 이하(`src/providers/iex_hist.py` `select_day`). T+1이라 22:17 UTC 실행에서는 보통 **전 거래일**이다. 게시본에는 `price_source.requested_basis_date`(shard_day)와 `basis_date`(실제 IEX 날짜)를 따로 싣는다. 휴장일·주말·T+1·반일 장 시험: `tests/test_iex_hist.py` basis day 절, `tests/test_qgv_official.py` `test_tool_holiday_run_…`.
 - **공급 실패 기준(D-CV5):** 95%(`src/qgv/qgv_official.py:45`, `:184`).
   - 분모는 가격과 무관하게 V 자격이 있는 Universe 행이다. 조건: 단면 안, GENERAL, V 입력 있음, USD, ADR·분할 NA 아님.
   - 미달이면 `SUPPLY_FAILED SUPPLY_BELOW_THRESHOLD`이고 직전 정상본을 유지한다.
@@ -88,11 +96,11 @@
 - WBD: 2026-10-06부터 기호 None이다(같은 probe에서 IEX 상태·체결 없음). `NO_IEX_TRADE`로 두고 V는 NA다. 채우지 않는다.
 
 ## 4. 열린 항목(소유자)
-- **분할(D-CV11).** IEX HIST에는 기업행사가 없다.
-  - 현재가 분할 검사 표 `SPLITS`(`src/providers/iex_hist.py:82`)는 비어 있다. 검증된 분할 출처를 연결할지 결정이 필요하다.
-  - 후보: U8 `split_check.py`의 `VERIFIED_SPLIT_ROWS`, 또는 cv-fk의 F_k 근거.
-  - 연결 전에는 주식수 기간 끝 뒤 분할이 있는 종목도 EV를 그대로 계산한다(V-SHARES-SCALE만 적용).
-- **ADR(D-CV10).** `taxonomy == ifrs-full` 행은 `ADR_RATIO_UNCONFIRMED`(NA)다. US-GAAP로 20-F를 내는 발행인은 이 규칙으로 걸러지지 않는다.
+- **분할(D-CV11) — 2026-10-24 결정 D6 (a): F_k 근거 재사용, 새 출처 없음.** IEX HIST에는 기업행사가 없다.
+  - 연결한 것(`src/qgv/qgv_official.py` `split_after_share_count`): 주식수 기간 끝(`diluted_shares.period_end`) 이후의 `ebit_per_share_history` 항목이 F_k `null` + `SPLIT_TIMING_UNCONFIRMED`면 `SPLIT_AFTER_SHARE_COUNT`(가격 없음, V NA, D-CV5 분모 밖). 그 사유는 그 회계연도 말월 월말 뒤~연간 서류 접수 사이의 분할 비율 사실 또는 표지 주식수 점프다. 즉 주식수가 연간 서류의 것일 때 기간 끝 뒤 분할의 근거다.
+  - 연결할 수 없는 것과 이유: 주식수를 실은 서류의 **접수 뒤~IEX 기준일** 구간. F_k·SPLIT 사슬은 수집 시점까지 접수된 companyfacts(정기 10-K·10-Q XBRL)로만 계산된다. 8-K로 알린 분할이나 마지막 10-Q 뒤 분할은 다음 정기 서류가 주식수를 고쳐 실을 때까지 사실이 없다. `sec-qgv2.json`에는 주식수 서류의 접수일이 없고, 실행은 그날 샤드 하나의 companyfacts만 갖고 있다. 그래서 그 구간의 분할은 다음 정기 서류 전까지 보이지 않는다.
+  - 검증된 분할 창 표 `SPLITS`(`src/providers/iex_hist.py`)는 계속 비어 있다. 소유자가 나중에 다른 출처(U8 `VERIFIED_SPLIT_ROWS` 등)를 승인할 때의 연결 지점이다. 손으로 채우지 않는다.
+- **ADR(D-CV10) — 2026-10-24 결정 D7: 20-F 제출자도 NA(보수적).** `sec-qgv2.json`에는 서식 종류가 없다(`v_inputs_v2.taxonomy`만). 그래서 `taxonomy == ifrs-full` 규칙에 더해 Universe504의 알려진 20-F·40-F 제출자를 CIK 표 `qgv_official.FOREIGN_ANNUAL_FILERS`로 둔다(분류 체계와 무관하게 `ADR_RATIO_UNCONFIRMED`). 근거는 기존 공개 자료 `DCV_OPEN_ITEMS_20261019.md` D-CV10: 498 CIK의 최신 연간 서식 중 20-F 1(ASML), 40-F 0. ASML은 이미 `ifrs-full`이라 지금 산출 변화는 0이다. Universe에 새 20-F·40-F 제출자가 생기면 이 표에 넣어야 한다. 자동으로 잡으려면 같은 아티팩트의 `sec-universe-shares.json` 행 `form`을 두 번째 입력으로 읽어야 한다(입력 목록·`publication_id`가 바뀌므로 별도 결정).
 - **크기.** 공개 `sec-qgv2.json`(2026-10-23 as_of)과 합성 가격으로 측정했다.
   - 504+19행, **1,109,234 B(1.06 MiB)**, gzip 114,962 B. 한도 2 MiB 안이다.
   - 설계 추정 0.6~0.7 MB보다 크다. 행당 약 2.1 KB이고, 요인 15개 `{score, reason, basis}`가 1.2 KB다.

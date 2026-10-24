@@ -4,6 +4,14 @@ Source: IEX HIST TOPS 1.6 (T+1 pcap files listed by https://iextrading.com/api/1
 **last regular-session trade** of its IEX symbol on one trading day (Last Sale Eligible: no extended-hours flag, no odd-lot flag,
 timestamp inside 09:30-16:00 New York). It is not an official close and covers trades on IEX only.
 
+Basis day (owner decision D3 2026-10-24): the latest TOPS 1.6 file in the index dated <= the run's New York day (shard_day). The
+files are T+1 (generated 04:24-10:22 UTC), so the daily run (~00:37 UTC) normally gets the previous trading day; a weekend or
+market holiday has no file, so the last trading day before it is used. A half day (13:00 close) needs no calendar here: the
+parser drops every trade with the TOPS sale-condition flag 0x40 (extended hours = outside the regular market session, TOPS 1.6
+spec), so the price is the last eligible trade before the early close (spec rule; not yet observed on a real half day, the first
+is 2026-11-27).
+Both dates are published (price_source.requested_basis_date = the run's day, basis_date = the IEX file's day).
+
 Flow of one day (`fetch_day`): hist index -> the latest TOPS 1.6 day <= the basis date -> GCS object metadata (size, md5) ->
 download | md5 + size pump | gzip -dc | iex_last_trade (C, tools/iex_tops/iex_last_trade.c) -> {code: price} held in this
 process only. Nothing is written but the public ticker list the parser reads; no price, yield or per-code price hash is printed,
@@ -15,8 +23,10 @@ Price status per code (fixed codes, also published as the row's `price_status`):
   NO_IEX_TRADE                 no regular-session trade on IEX that day, or the alias table says the code is not traded on
                                IEX from a date (symbol None); never filled from another day, symbol or source
   PRICE_SYMBOL_UNMAPPED        no IEX symbol for the row (a TARGET outside the US track, an invalid symbol)
-  ADR_RATIO_UNCONFIRMED        foreign private issuer row (IFRS filer): listed security / ADS ratio not confirmed (D-CV10)
-  SPLIT_AFTER_SHARE_COUNT      a verified split after the diluted-share period end, up to the basis day (D-CV11)
+  ADR_RATIO_UNCONFIRMED        foreign private issuer row (ifrs-full filer, or a known 20-F / 40-F filer whatever its
+                               taxonomy: owner decision D7 2026-10-24): listed security / ADS ratio not confirmed (D-CV10)
+  SPLIT_AFTER_SHARE_COUNT      evidence of a split after the diluted-share period end, up to the basis day (D-CV11; D6 (a):
+                               the F_k evidence of sec-qgv2.json, qgv_official.split_after_share_count, + SPLITS below)
   PRICE_IDENTITY_CONFLICT      TARGET row whose symbol is a withdrawn Universe code's (existing rule)
   IDENTITY_CONFLICT_WITHDRAWN  withdrawn row (no price is given)
 """
@@ -77,8 +87,15 @@ MONTHEND_BASIS_CUTS: dict[str, tuple[str, str, str]] = {
     'NASDAQ:PSKY': ('2025-08-07', 'MERGER_PRE_BASIS_UNCONFIRMED', 'merger close 2025-08-07; pre-merger share basis unconfirmed'),
 }
 
-# D-CV11: verified splits after the diluted-share count (code -> ((low, high], ...): split date inside (low, high]). IEX HIST carries
-# no corporate actions, so this table is the only split input of the current price; empty until a verified source feeds it.
+# D-CV11: verified split windows after the diluted-share count (code -> ((low, high], ...): split date inside (low, high]).
+# Owner decision D6 (a) 2026-10-24: no new split source; the current-price check reads the F_k evidence of sec-qgv2.json
+# (calc_version 2026-10-23.1, qgv_official.split_after_share_count). That evidence covers a split between the share count's
+# period end and the annual filing that reports the count. It cannot cover a split after the count's own filing: the F_k / SPLIT
+# chain is evaluated at collection over companyfacts filed up to then (periodic 10-K / 10-Q XBRL only; a split announced in an
+# 8-K or effective after the latest 10-Q leaves no fact until the next periodic filing restates the count), sec-qgv2.json does
+# not carry the count's filing date, the run holds companyfacts of one shard only, and IEX HIST carries no corporate actions.
+# This table therefore stays EMPTY: it is the hook for a verified source the owner may approve later (D6 (b) U8 split_check
+# rows / (c)), never filled by hand here.
 SPLITS: dict[str, tuple[tuple[str, str], ...]] = {}
 
 
