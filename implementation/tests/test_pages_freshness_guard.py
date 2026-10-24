@@ -424,6 +424,7 @@ def test_rows_turned_na_with_reasons_under_a_new_calc_version_and_a_newer_collec
     old_version = 'qgv2-calc/2026-10-15.1'
     with monkeypatch.context() as patch:   # the live copy was computed under the previous rules
         patch.setattr(vf, 'CALC_VERSION', old_version)
+        patch.setattr(vf, 'SHARE_BASIS_HISTORY_KEYS', ())   # rules before V-PRICE-BASIS (2026-10-23.1): two-key entries
         live = qgv2_payload({ROW_A: T16, ROW_B: T16, ROW_C: T16}, target={TARGET_A: T16, TARGET_B: T16})
     assert live['calc_version'] == old_version and all(r['calc_version'] == old_version for r in live['target'].values()
                                                        if r['acquired_at'])
