@@ -4932,14 +4932,14 @@ manifest의 URL/hash/크기/상태, SEC share facts·par value·split/exchange r
 ### 10-2. 게시본에 가격 값이 없다
 
 - 허용 파일 두 개를 더했다: `qgv-official.json`, `qgv-official-status.json`(`tools/pages_artifact_guard.py` `ALLOWED_NAMES`). 둘 다 선택 파일이다. 첫 게시 전에는 없어도 통과한다(`APPROVED_SHA256`에 넣지 않음).
-- 파일별 엄격 검증기를 연결했다. `qgv-official.json` → `qgv_official.require_qgv_official`(실패 시 `qgv_official_boundary`): 정확한 키 집합, 어디서든 금지 키(`price`, `close`, `month_closes`, `quote`, `price_e4`, `ev`, `enterprise_value`, `market_cap`, `ebit_yield`, `fcf_yield`, `yield`, `implied_growth`, `expectation_gap`, `realized_growth`, `detail`, `reference_range`, `hmac`, `price_hmac` 등), V 축·종합·순위·커버리지 재계산 일치, 2 MiB 이하. `qgv-official-status.json` → `require_status`(실패 시 `qgv_official_status_boundary`): 시도 상태·고정 코드·게시본 id·기준일·출처 문구만.
+- 파일별 엄격 검증기를 연결했다. `qgv-official.json` → `qgv_official.require_qgv_official`(실패 시 `qgv_official_boundary`; 2026-10-24부터 모든 스칼라 값의 형식까지, §10-6-2): 정확한 키 집합, 어디서든 금지 키(`price`, `close`, `month_closes`, `quote`, `price_e4`, `ev`, `enterprise_value`, `market_cap`, `ebit_yield`, `fcf_yield`, `yield`, `implied_growth`, `expectation_gap`, `realized_growth`, `detail`, `reference_range`, `hmac`, `price_hmac` 등), V 축·종합·순위·커버리지 재계산 일치, 2 MiB 이하. `qgv-official-status.json` → `require_status`(실패 시 `qgv_official_status_boundary`): 시도 상태·고정 코드·게시본 id·기준일·출처 문구만.
 - **민감 키 예외는 경로 하나다.** `qgv-official.json` 안의 정확한 경로 `rows.<code>.rank`(최상위 `rows`, 게시본 행 키 형태의 코드, 키 철자 정확히 `rank`, 값은 1 이상 정수 또는 null)만 민감 키 검사에서 뺀다(`PUBLIC_SCORE_PATHS`). 민감 키 목록 자체는 바꾸지 않았다. 다른 파일의 `rank`, 다른 깊이·부모의 `rank`, `Rank` 같은 다른 철자, 중간에 배열이 낀 경로, 그리고 이 파일 어디의 `price`·`marketcap`·`cash`·`cost`·`amount` 등은 그대로 `sensitive_json_fields`다. 합성 523행 게시본(504 코드 + TARGET 19)에서 지금 가드에 걸리는 키는 이 경로의 `rank` 18건뿐이었다. 같은 바이트를 `sec-qgv2.json` 이름으로 넣으면 18건이 그대로 걸린다.
 - 가격은 V 단계 RAM에만 있다. 게시본·상태 파일·로그에는 가격·월말가·EV·시가총액·수익률·종목별 가격 시각·가격 해시가 없다. `publication_id`에 들어가는 가격 묶음 지문은 Secret 키의 HMAC이고 원값은 싣지 않는다. 표준 출력은 고정 코드·개수 한 줄이다.
 
 ### 10-3. 복원 분석 요약(설계 §4-4)
 
 - 정확 복원 경로(EBIT·FCF 수익률, 내재 성장률·기대 차이, `detail`, DCF 참고 범위)는 싣지 않는다. 검증기가 어디서든 거부한다.
-- 가격 경계를 바로 주는 사유(`EV_NON_POSITIVE`, `ROOT_NOT_BRACKETED`, `ROOT_NOT_CONVERGED`, 가격 계산 중 `NUMERIC_OVERFLOW`)는 공개본에서 `PRICE_DEPENDENT_NOT_COMPUTABLE` 하나로 묶는다(D-CV2). 원 코드가 공개본에 있으면 검증기가 거부한다.
+- 가격 경계를 바로 주는 사유(`EV_NON_POSITIVE`, `ROOT_NOT_BRACKETED`, `ROOT_NOT_CONVERGED`, 가격 계산 중 `NUMERIC_OVERFLOW`)는 공개본에서 `PRICE_DEPENDENT_NOT_COMPUTABLE` 하나로 묶는다(D-CV2). 원 코드가 공개본에 있으면 검증기가 거부한다. **이 묶음은 경계를 없애지 못한다(2026-10-24 검토 정정, §10-6-1).** 처음 판의 이 줄은 묶음이 경계를 지운다고 읽혔다.
 - 남는 정보: V 요인 백분위와 순위는 단면 안 순서다. 다른 종목 가격을 알면 이웃 사이 **구간**이 나온다. 점 복원은 안 된다. 자기 과거 대비 백분위가 가장 강한 구간 정보다. 요인 하나만 숨기는 방어는 축 가중 평균 때문에 효과가 없다. 반올림도 방어로 기대하지 않는다(D-CV3).
 - 공개 이력은 최신 게시본 하나다(D-CV14). 날짜별 점수 이력은 비공개 원자료 저장소에만 둔다(D9, 점수만, 가격 없음). 종목별 가격 해시는 싣지 않는다.
 - 순위·백분위 공개는 가격 파생 정보다. GSQ-024가 "파생 점수·순위 공개"를 해제한 범위 안이다. 원시 가격·EV·수익률·배율 공개 금지는 그대로다.
@@ -4956,3 +4956,27 @@ manifest의 URL/hash/크기/상태, SEC share facts·par value·split/exchange r
 
 - 민감 키 목록, 비밀 패턴, 크기·항목 수 한도, 고정 해시, 다른 파일의 검증기와 신선도 규칙, `AUDITED_ROUTES`·`BLOCKED`, `sec-qgv2.json`의 가격·순위 없음 규칙(`sec_qgv2.py`, `qgv2-inputs.js`).
 - 워크플로 파일. V 단계·verify 검증·수동 배포 보존(`--preserve-only`)은 PR-C에서 한다.
+
+### 10-6. 2026-10-24 검토 정정(PR-B 안, §10의 일부라 함께 고친다)
+
+검토(가격은 모두 합성)에서 확인된 것을 적는다. §1~§9는 그대로다.
+
+#### 10-6-1. D-CV2 묶음은 가격 경계를 숨기지 못한다 — 소유자 재결정 필요
+
+- 엔진 원 코드는 정해진 요인 칸에만 나온다. `EV_NON_POSITIVE`는 `v_earnings_yield`·`v_fcf_yield`·`v_vs_industry`에만(`qgv_v2._metrics`), `ROOT_NOT_BRACKETED`·`ROOT_NOT_CONVERGED`·`NUMERIC_OVERFLOW`는 `v_expectation_check`에만(역DCF) 나온다. 그래서 "어느 칸이 `PRICE_DEPENDENT_NOT_COMPUTABLE`인가"가 원 코드를 일대일로 되돌려 준다.
+- 경계는 공개 `sec-qgv2.json` 입력만으로 계산된다: EV ≤ 0 ⇔ 가격 ≤ (현금 − 부채) ÷ 희석 주식수, 역DCF 근 없음 ⇔ 가격이 공개 FCF/주·공개 DCF 설정의 [DCF(하한 성장), DCF(상한 성장)] 밖. 합성 시험: 경계 0.9배에서 세 칸 묶음 사유, 1.1배에서 세 칸 점수; DCF 구간 바로 밖에서 묶음 사유, 바로 안에서 점수.
+- 사유 없이도 같은 사실이 드러난다: 세 요인의 null 무늬, V 축 점수·상태·`weight_available`, 순위가 `rank`인지 `qg_reference_order`인지(합성: 경계 이하 V 없음·`qg_reference_order` 3, 경계 위 V 100·`rank` 2). **누출은 V를 공개하는 것 자체에 딸려 온다.**
+- 그러므로 §10-3의 "묶음" 줄과 설계 §4-4·§13 D-CV2 행의 전제("묶으면 경계가 사라진다")는 틀렸다. 소유자는 그 전제로 D-CV2 (b)를 골랐다. 첫 게시 전에 소유자가 (i) 남는 누출을 수락하거나 (ii) 해당 행의 V 비공개 같은 규칙 변경을 승인해야 한다((ii)도 V가 NA라는 사실 자체가 신호라 누출을 다 없애지는 못한다). 결정 전에는 묶음을 표시 어휘로만 유지한다. 시험 `tests/test_qgv_official.py::test_price_dependent_codes_sit_in_fixed_factor_slots_known_residual`이 칸 대응을 고정한다. 설계 §4-4 정정 메모와 같은 내용이다.
+
+#### 10-6-2. 엄격 검증기가 모든 스칼라 값을 검사한다
+
+- 처음 판의 검증기는 열 개 남짓한 필드의 키 집합만 보고 값은 보지 않았다. 그 필드에 어떤 숫자·목록·문자열을 넣어도 검증기와 Pages 가드를 모두 통과했다(합성 가격 4321.0987을 `inputs[0].as_of`, `times.inputs_as_of`, `price_source.supply.eligible`, `month_end.months`·`stamp`, `engine.status`, `weights.weights_version`, `config_versions.type_config`, `population.registry_sha256`, 행 `acquired_at`에 넣은 시험). 지금 생산 경로가 그 필드에 가격을 쓰지는 않지만, 이 파일에는 고정 해시가 없어 검증기가 유일한 내용 검사다.
+- 지금 규칙: 날짜·시각은 형식(`_DAY`·`_CLOCK`), `inputs_as_of` = `inputs[0].as_of`, 월말가 `store` = `iex-monthend/1`·`stamp` 8자리·`months` 0~1200 정수·`basis` 고정값, `supply`는 정수·`eligible` > 0·`supplied` ≤ `eligible`·`supplied` ≥ ceil(95%)·행의 상태 개수와 모순 없음, `feed` `TOPS 1.6`·`currency` `USD`, `engine.status`·`weights`·`config_versions`·`type_scope`·`population.version`은 코드의 상수와 같아야 함, `pooled_digest`는 행에서 다시 계산, `calc_version`은 2026-10-23.1 이상 형식, 행 `selected_types`는 유형 id 형식. 상태 파일 `latest_inputs.as_of`도 시각 형식만. 시험: `test_validator_types_every_scalar`(PR-A), `test_a_value_smuggled_into_any_scalar_is_refused_by_the_guard`·`test_supply_counts_that_break_d4_are_refused_by_the_guard`(이 PR).
+- 함께 고친 공급 기준(D4): 95%의 분모는 가격 없이 V 축 50%에 닿을 수 있는 행이다(설계 §4-1 `price_source` 줄). 처음 판은 V 입력 블록이 있는 모든 행을 세어 기준이 느슨했다.
+- 결과: 엔진·가중치·설정 버전이 바뀐 코드가 병합되면, 그 전 코드가 만든 라이브 게시본은 새 검증기에서 무효가 된다(다음 성공 실행이 새 게시본을 낼 때까지 게시본이 빠진다: 게시기는 그 사본을 싣지 않고, 배포 신선도는 `LIVE_INVALID` → `WITHHELD`). 규칙이 바뀐 옛 게시본을 공식으로 계속 보이지 않는 쪽을 골랐다.
+
+#### 10-6-3. 라이브 게시본 읽기 실패는 "게시본 없음"이 아니다
+
+- 처음 판의 게시기는 라이브 사본 읽기의 모든 실패(시간 초과·5xx 포함)를 404처럼 다뤄, 일시 장애 하나로 유효한 라이브 게시본을 아티팩트에서 지우고 상태 파일에 `NO_OFFICIAL_YET`를 썼다. 그날 배포 신선도가 라이브를 읽으면 `MISSING` → `WITHHELD`로 사이트에서 게시본이 빠졌다(수동 배포 보존 경로도 같음).
+- 지금: 게시기는 매일 도구들과 같은 읽기(`sec_universe_shares._fetch_body`: 캐시 없음, 리디렉션 거부, 정확한 URL + 실행 nonce, 404만 "없음")를 3번까지 시도한다. 그래도 못 읽으면 `NOT_RUN` / `LIVE_UNREACHABLE`: 계산하지 않고(이전 기준일 검사를 건너뛰지 않기 위해), 상태 파일은 `NO_OFFICIAL_YET`라고 쓰지 않는다(검증기가 그 조합을 거부). 보존 경로는 그때 두 파일 모두 싣지 않는다.
+- **남는 한계(소유자 결정 필요):** V 단계가 3번 다 못 읽고 배포 단계는 읽는 경우, 그날 배포는 여전히 `MISSING` → `WITHHELD`로 사이트에서 게시본을 하루 뺀다(다음 성공 실행이 다시 낸다). 이를 없애려면 배포 잡이 검증된 라이브 바이트를 아티팩트에 다시 넣어 올려야 한다. 그것은 배포 잡의 새 업로드(게시 경로 정적 시험의 허용 목록 변경)이자 verify가 보지 않은 바이트의 배포라서 이 PR에서 하지 않았다. 신선도 규칙(`MISSING` → `WITHHELD`)은 그대로다.
