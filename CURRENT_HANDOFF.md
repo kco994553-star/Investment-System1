@@ -1,6 +1,6 @@
 # 현재 인수인계 — 2026-10-25
 
-기준 **2026-10-25 09:40:20 UTC / 18:40:20 KST**, canonical **`c43b223f18eff68f8b56ccf8c1ae1c1fdc3083a8`** (#406). `origin/main`은 없으며 실제 기본 브랜치는 **`claude/investment-system-top500-validation-alrugm`**이다. fetch·git log·gh·공개 파일·플러그인 로그를 대조했다. 이후 실행은 다시 확인한다.
+기준 **2026-10-25 09:40:20 UTC / 18:40:20 KST**, canonical **`c43b223f18eff68f8b56ccf8c1ae1c1fdc3083a8`** (#406). `origin/main`은 없으며 실제 기본 브랜치는 **`claude/investment-system-top500-validation-alrugm`**이다. fetch·git log·gh·공개 파일·플러그인 로그를 대조했다. 이후 실행은 다시 확인한다. **10/25 추가 지시: 프론트엔드는 일단 제외한다. 기존 승인은 유지하되 #408 통합·화면·기기 키/그림 관련 구현은 현재 실행에서 보류한다.**
 
 읽기: [START_HERE](START_HERE.md) → [방향 전환 대장](docs/SPEC/DIRECTION_CHANGES.md) → [WORKING_RULES](WORKING_RULES.md) → [기능 현황](docs/SPEC/FUNCTION_STATUS.md) → [결정 원문](implementation/docs/USER_DECISIONS_PENDING.md). 최신 이행 순서는 **10/25 오너 Main 지시(아래)**가 과거 대기·순서 표현에 우선한다.
 
@@ -14,7 +14,7 @@ Main이 공용 파일·코드·병합·배포를 조정한다. Codex는 검증·
 | **2 정본 문서 / 공통** | 최종 #413 지정 검사·CI 성공 후 기승인 병합 → 중복 #412 닫기 | #412 고유 내용 회수·조회 한계 보정·#413 최종 검사 | 최종 수정 HEAD 검증·CI 조건 이행 중. 이력·브랜치 삭제 승인 없음 |
 | **3 중앙 V / 2·6** | 두 오류 원인 확인 → #400 최소 수정·사슬 전파 → 비게시 재리허설 | 로그·합성 재현·수정안 리뷰 | 원인 구조 재현; 실제 run 최초 유발 원인은 미확정. 수정·새 리허설 미실행 |
 
-#392 준비와 화면 확장은 장기 대기열에 유지하며 동시에 새 흐름을 더 열지 않는다.
+#392의 기기 키/그림 관련 구현과 화면 확장은 장기 대기열에 보존하고 지금 실행하지 않는다. 기존 검증·리뷰 결과는 보존하며 동시에 새 흐름을 더 열지 않는다.
 
 ## 1. 승인 이행·오너 결정 (마감순)
 
@@ -45,14 +45,14 @@ Main이 공용 파일·코드·병합·배포를 조정한다. Codex는 검증·
 
 ## 3. 열린 PR·CI·승인
 
-전체 15개(#413 포함). 아래 14개는 **각 HEAD에 성공 6개**, red/running 0개다. deploy·replay_source skipped는 성공으로 세지 않았다. #413의 자기 HEAD·최종 CI는 [PR 메타데이터](https://github.com/kco994553-star/Investment-System1/pull/413)로 확인한다(문서 수정 전 `7739e31d` 6개 성공).
+전체 15개(#413 포함). 아래 14개는 **각 HEAD에 성공 6개**, red/running 0개다. deploy·replay_source skipped는 성공으로 세지 않았다. #413의 자기 HEAD·최종 CI는 [PR 메타데이터](https://github.com/kco994553-star/Investment-System1/pull/413)로 확인한다.
 
 | PR | 제목 요지 | HEAD | CI | 오너 승인·조건 |
 | --- | --- | --- | --- | --- |
 | [#412](https://github.com/kco994553-star/Investment-System1/pull/412) | 07:50 문서 초안 | `2ef64b68` | green | 고유 내용 회수, #413 병합 뒤 닫기 승인 |
 | [#411](https://github.com/kco994553-star/Investment-System1/pull/411) | TARGET 확정 차단 점검 | `3f260f6b` | green | #405 뒤 동기화·검증, 사슬과 함께 |
 | [#410](https://github.com/kco994553-star/Investment-System1/pull/410) | WBD 상장 종료 NA | `afbec90e` | green | 병합 조건 (i)~(vi) 포함 기승인 |
-| [#408](https://github.com/kco994553-star/Investment-System1/pull/408) | P2-1 홈·검색 | `9c0c3249` | green | 기승인 통합, 새 web_app 미배포 |
+| [#408](https://github.com/kco994553-star/Investment-System1/pull/408) | P2-1 홈·검색 | `9c0c3249` | green | 기승인이나 프론트엔드 일시 제외로 통합 보류, 새 web_app 미배포 |
 | [#405](https://github.com/kco994553-star/Investment-System1/pull/405) | 중앙 V PR-D 판독기 | `eca9ab79` | green | 게시 창 조건; base #404 |
 | [#404](https://github.com/kco994553-star/Investment-System1/pull/404) | 중앙 V PR-C 워크플로 | `8005575c` | green | 수정 사슬·리허설·게시 창 조건; base #403 |
 | [#403](https://github.com/kco994553-star/Investment-System1/pull/403) | 중앙 V PR-B 가드 | `993a4682` | green | 같음; base #400 |
@@ -94,7 +94,7 @@ Main이 공용 파일·코드·병합·배포를 조정한다. Codex는 검증·
 2. **#413 정본**: 지정 검사·최종 CI 성공→Main 기승인 병합→#412 중복 종료. [#412 고유 원문 회수](implementation/docs/handoff/HANDOFF_PR412_20261025.md)·[10/24 이력](implementation/docs/handoff/HANDOFF_HISTORY_20261024.md)은 보존. 긴급 흐름을 기다리게 하지 않는다.
 3. **중앙 V 재검증**: [오류별 검증 리뷰](implementation/docs/qgv_scoring_standard/CENTRAL_V_REHEARSAL_REVIEW_20261025.md)→Main #400 최소 수정→#409·#410 포함 사슬 전파→수정된 새 후보 SHA로 비게시 리허설. 구 SHA Re-run으로 수정 검증을 대신하지 않는다.
 
-장기 대기열(현재 흐름을 닫으며 순차 진행): **#392** 최신 canonical 동기화·충돌 해결·기기 키 이전·백업·기존 그림 보존·멱등성 검증→중앙 V와 다른 창의 병합안(최종 승인 별도, TV0 후속 7개 제외). **프론트엔드** #408 기승인 통합 뒤 기능 **2 QGV→6 포트폴리오→5 뉴스→3 기술→4 매크로→7 프롬프트→8 트리→9 Lab**. 기존 엔진·승인 명세 재사용, 미완성 백엔드는 NA·사유. 중앙 V/정기 7/7 때문에 모든 화면 구현·미리보기를 멈추지 않는다. **P3 실사이트 전환·배포 별도 승인**.
+장기 대기열(현재 흐름을 닫으며 순차 진행): **#392** 최신 canonical 동기화·충돌 해결·기기 키 이전·백업·기존 그림 보존·멱등성 검증→중앙 V와 다른 창의 병합안(최종 승인 별도, TV0 후속 7개 제외). **프론트엔드 현재 제외·보류**(기존 승인 취소 아님). 재개할 때 #408 기승인 통합 뒤 기능 **2 QGV→6 포트폴리오→5 뉴스→3 기술→4 매크로→7 프롬프트→8 트리→9 Lab**. 기존 엔진·승인 명세 재사용, 미완성 백엔드는 NA·사유. 중앙 V/정기 7/7 때문에 모든 화면 구현·미리보기를 멈추지 않는다. **P3 실사이트 전환·배포 별도 승인**.
 
 중앙 V 게시 창 계획: **#393→수정 #400→#403→#404→전환용 별도 all_shards·새 calc_version 숫자 재대조→#405→#411**. #411은 #405 뒤 동기화해 `freshFor`·`official`·숨김 상태·TARGET 핸들러 충돌 검증. 11-04 전 날짜는 재리허설·점검표 후 제안하고 오너 승인 뒤 실행한다. 긴급 ALLSHARDS-1026과 목적·run을 분리한다.
 
