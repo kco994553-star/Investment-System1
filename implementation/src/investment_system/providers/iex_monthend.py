@@ -17,6 +17,7 @@ environment variable name is the caller's argument); it is never printed.
 """
 from __future__ import annotations
 
+import datetime as _dt
 import gzip
 import hashlib
 import json
@@ -217,7 +218,8 @@ def raw_series(code: str, months: dict, since_month: str, until_day: str, *, ali
     division), for the store months from `since_month` (YYYY-MM, inclusive) on whose trade date is not after `until_day`
     (YYYY-MM-DD), sorted by date. Owner decision CV-SPLIT (ii) 2026-10-24, the D6 (b) split check
     (qgv_official.split_check). The symbol / alias and ROUND rules are month_closes': a month whose store symbol differs from
-    the alias table's (or whose alias is None), or without a round-lot trade of that symbol, is left out, never 0. The basis
+    the alias table's (or whose alias is None), or without a round-lot trade of that symbol, is left out, never 0; so is a
+    month whose 8-digit date is no calendar date (e.g. 20260631; split_check parses every point's date). The basis
     cut (MONTHEND_BASIS_CUTS) is a V4 share-basis rule and is not applied here: a pair across it can only add a hit (withhold
     a value), never hide one. RAM only."""
     out = []
@@ -229,6 +231,10 @@ def raw_series(code: str, months: dict, since_month: str, until_day: str, *, ali
         if not (isinstance(date, str) and re.fullmatch(r'\d{8}', date)) or not isinstance(codes, dict) or not isinstance(symbols, dict):
             continue
         day = f'{date[:4]}-{date[4:6]}-{date[6:]}'
+        try:
+            _dt.date.fromisoformat(day)
+        except ValueError:
+            continue
         if day > until_day:
             continue
         sym = iex_symbol(code, date, aliases)
