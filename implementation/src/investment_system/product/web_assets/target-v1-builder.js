@@ -240,19 +240,55 @@ function axisScore(r,a){const ax=object(r?.axes)?r.axes:object(r?.qg_axes)?r.qg_
    anything else is CALC_VERSION_MIXED; (b) every valued row's acquired_at within finalize_check.freshness_max_days of the finalize
    date (the file as_of never counts: a regenerated file is not fresher data) → ROW_DATA_STALE; (c) Q and G scored rows each ≥
    universe_size × coverage.ready_min_ratio (NA rows stay in the denominator). TARGET:<id> rows are not counted. */
+// A row WITH a value (Q or G score, or LIVE / STALE): the rows the calc_version and freshness checks judge.
+const valuedRow=r=>axisScore(r,'Q')!==null||axisScore(r,'G')!==null||['LIVE','STALE'].includes(r?.state);
 function publishedCheck(payload,{date,cfg=CFG}={}){
  const F=cfg.finalize_check,size=cfg.coverage.universe_size,min=cfg.coverage.ready_min_ratio,base={calc_version:null,as_of:null,q:0,g:0,size,rows:0,na_rows:0,mixed_rows:0,stale_rows:0,oldest_acquired:null};
  if(!object(payload)||!object(payload.records))return{...base,ok:false,reasons:['SEC_QGV2_NOT_AVAILABLE']};
  const calc=typeof payload.calc_version==='string'&&CALC_VERSION.test(payload.calc_version)?payload.calc_version:null,reasons=[];
- const end=validDay(date)?Date.parse(date+'T23:59:59Z'):NaN,limit=end-F.freshness_max_days*86400000;let q=0,g=0,rows=0,na=0,mixed=0,stale=0,oldest=null;
+ // (b) freshness: the same rows and the same cutoff the screen's 확정 차단 점검 shows (freshnessRows), so the two never disagree.
+ const fresh=freshnessRows(payload,{finalizeDate:date,cfg}),stale=fresh.today,oldest=fresh.oldest_acquired;let q=0,g=0,rows=0,na=0,mixed=0;
  for(const[code,r]of Object.entries(payload.records)){if(code.startsWith('TARGET:'))continue;rows++;const rv=object(r)&&typeof r.calc_version==='string'?r.calc_version:null;
-  const qs=axisScore(r,'Q'),gs=axisScore(r,'G'),valued=qs!==null||gs!==null||['LIVE','STALE'].includes(r?.state);if(qs!==null)q++;if(gs!==null)g++;
-  if(valued){if(rv===null||rv!==calc)mixed++;const t=typeof r.acquired_at==='string'?Date.parse(r.acquired_at):NaN;if(!Number.isFinite(t)||!(t>=limit))stale++;if(Number.isFinite(t)&&(oldest===null||t<Date.parse(oldest)))oldest=r.acquired_at;}
+  if(axisScore(r,'Q')!==null)q++;if(axisScore(r,'G')!==null)g++;
+  if(valuedRow(r)){if(rv===null||rv!==calc)mixed++;}
   else{const reason=Array.isArray(r?.reason_codes)&&r.reason_codes.length>0;if(reason&&(rv===null||rv===calc))na++;else mixed++;}}
  if(F.calc_version_required&&calc===null)reasons.push('CALC_VERSION_MISSING');else if(mixed>0)reasons.push('CALC_VERSION_MIXED');
- if(!Number.isFinite(end))reasons.push('DATE_INVALID');else if(stale>0)reasons.push('ROW_DATA_STALE');
+ if(!fresh.date_ok)reasons.push('DATE_INVALID');else if(stale>0)reasons.push('ROW_DATA_STALE');
  if(q/size<min)reasons.push('Q_COVERAGE_LOW');if(g/size<min)reasons.push('G_COVERAGE_LOW');
  return{ok:reasons.length===0,reasons,calc_version:calc,as_of:typeof payload.as_of==='string'?payload.as_of:null,q,g,size,rows,na_rows:na,mixed_rows:mixed,stale_rows:stale,oldest_acquired:oldest};
+}
+/* 확정 차단 점검 (2026-10-25 investigation, display only; the rule is unchanged): every valued US row of a published sec-qgv2.json
+   payload judged against the finalize cutoff — finalize date 23:59:59Z minus finalize_check.freshness_max_days — and against the
+   next day's cutoff (no new collection assumed). publishedCheck counts its stale rows from `today` here, so the screen line and
+   finalize use one row set (valued rows only: a normal NA row never appears) and one cutoff. Per row: acquired_at, age in whole
+   UTC calendar days (finalize date − acquisition UTC date), last_ok_day (the last finalize date this row still passes — derived
+   from the same rule, = acquisition UTC date + 6 for any time before 23:59:59Z), blocks_today / blocks_tomorrow, shard, kind.
+   kind (needs basis = inputBasis(payload) for the per-shard newest acquisition and shardOf = rowShards(payload); otherwise UNKNOWN):
+    KEPT     — older than its own shard's newest acquisition by more than KEPT_GAP_MS: the shard was collected again and this row
+               was kept (unresolved code under the 2026-10-17 (a) PRESERVE rule, or a kept failure). It needs an identity action
+               (alias, reasoned NA or a CIK pin); an all_shards run does not refresh it.
+    ROTATION — at its shard's newest collection: the whole shard ages together and the next scheduled run of that shard (or an
+               all_shards run) refreshes it.
+    UNKNOWN  — no valid acquired_at, no CIK / shard, or no basis.
+   KEPT_GAP_MS (12 h) only separates collection runs (one shard run takes minutes, the same shard is collected again days later);
+   it is a display classification, never part of the finalize rule, so it is kept in code (no config field). Counts and times only. */
+const DAY_MS=86400000,KEPT_GAP_MS=12*3600000;
+function shardTimes(basis){const out={};if(!object(basis)||typeof basis.shards!=='string')return out;for(const part of basis.shards.split('|')){const i=part.indexOf('=');if(i<1)continue;const k=Number(part.slice(0,i)),t=Date.parse(part.slice(i+1));if(Number.isInteger(k)&&Number.isFinite(t))out[k]=t;}return out;}
+function freshnessRows(payload,{finalizeDate,basis=null,shardOf=null,cfg=CFG}={}){
+ const days=cfg.finalize_check.freshness_max_days,date_ok=validDay(finalizeDate),end=date_ok?Date.parse(finalizeDate+'T23:59:59Z'):NaN,limit=end-days*DAY_MS,next=limit+DAY_MS;
+ const out={finalize_date:date_ok?finalizeDate:null,date_ok,cutoff:Number.isFinite(limit)?new Date(limit).toISOString():null,next_cutoff:Number.isFinite(next)?new Date(next).toISOString():null,
+  rows:[],today:0,tomorrow:0,kept:0,oldest_acquired:null};
+ if(!object(payload)||!object(payload.records))return out;
+ const newest=shardTimes(basis),shards=object(shardOf)?shardOf:{},dayIndex=date_ok?Math.floor(Date.parse(finalizeDate+'T00:00:00Z')/DAY_MS):NaN;let oldestT=null;
+ for(const[code,r]of Object.entries(payload.records)){if(code.startsWith('TARGET:')||!valuedRow(r))continue;
+  const t=typeof r.acquired_at==='string'?Date.parse(r.acquired_at):NaN,ok=Number.isFinite(t),shard=Number.isInteger(shards[code])?shards[code]:null,top=shard!==null&&Number.isFinite(newest[shard])?newest[shard]:null;
+  const blocks_today=!ok||!(t>=limit),blocks_tomorrow=!ok||!(t>=next);
+  const kind=!ok||top===null?'UNKNOWN':top-t>KEPT_GAP_MS?'KEPT':'ROTATION';
+  if(ok&&(oldestT===null||t<oldestT)){oldestT=t;out.oldest_acquired=r.acquired_at;}
+  out.rows.push({code,acquired_at:ok?r.acquired_at:null,age_days:ok&&date_ok?dayIndex-Math.floor(t/DAY_MS):null,
+   last_ok_day:ok?new Date(Math.floor((t-(DAY_MS-1000)+days*DAY_MS)/DAY_MS)*DAY_MS).toISOString().slice(0,10):null,blocks_today,blocks_tomorrow,shard,kind});
+  if(blocks_today)out.today++;if(blocks_tomorrow)out.tomorrow++;if(kind==='KEPT')out.kept++;}
+ return out;
 }
 /* Input basis of a published payload: calc_version, file as_of and the newest acquired_at per shard (shard = sha256(cik) mod
    shard_count, the daily partition rule of tools/published_coverage.py). Async (Web Crypto digest); counts and times only.
@@ -267,11 +303,19 @@ function withdrawnList(payload){const out=[];for(const[code,r]of Object.entries(
  for(const[id,r]of Object.entries(object(payload.target)?payload.target:{}))if(isWithdrawal(r))out.push('TARGET:'+id);return [...new Set(out)].sort().join('|');}
 function deviceTypeScope(){try{const v=qgvV2()?.TYPE_SCOPE;return typeof v==='string'?v:null;}catch(_){return null;}}
 async function sha256Hex(text){const d=await globalThis.crypto.subtle.digest('SHA-256',new TextEncoder().encode(text));return [...new Uint8Array(d)].map(b=>b.toString(16).padStart(2,'0')).join('');}
-async function inputBasis(payload,{digest=sha256Hex,typeScope=deviceTypeScope()}={}){
+const shardCount=payload=>Number.isInteger(payload.shard_count)&&payload.shard_count>=1&&payload.shard_count<=366?payload.shard_count:null;
+// Shard of every US row with a CIK ({code: shard}; {} without a valid shard_count) — the partition inputBasis and freshnessRows use.
+async function rowShards(payload,{digest=sha256Hex}={}){
+ if(!object(payload)||!object(payload.records))return null;const count=shardCount(payload),out={};if(!count)return out;
+ for(const[code,r]of Object.entries(payload.records)){if(code.startsWith('TARGET:')||!object(r)||typeof r.cik!=='string'||!r.cik)continue;out[code]=Number(BigInt('0x'+await digest(r.cik))%BigInt(count));}
+ return out;
+}
+// shardOf: a rowShards(payload) result already computed by the caller (the digests are not repeated); the result is the same.
+async function inputBasis(payload,{digest=sha256Hex,typeScope=deviceTypeScope(),shardOf=null}={}){
  if(!object(payload)||!object(payload.records))return null;
- const count=Number.isInteger(payload.shard_count)&&payload.shard_count>=1&&payload.shard_count<=366?payload.shard_count:null,newest={};
+ const count=shardCount(payload),newest={},shards=count?(object(shardOf)?shardOf:await rowShards(payload,{digest})):{};
  if(count)for(const[code,r]of Object.entries(payload.records)){if(code.startsWith('TARGET:')||!object(r)||typeof r.cik!=='string'||!r.cik||typeof r.acquired_at!=='string')continue;const t=Date.parse(r.acquired_at);if(!Number.isFinite(t))continue;
-  const shard=Number(BigInt('0x'+await digest(r.cik))%BigInt(count));if(!newest[shard]||t>Date.parse(newest[shard]))newest[shard]=r.acquired_at;}
+  const shard=shards[code];if(!Number.isInteger(shard))continue;if(!newest[shard]||t>Date.parse(newest[shard]))newest[shard]=r.acquired_at;}
  return{calc_version:typeof payload.calc_version==='string'&&CALC_VERSION.test(payload.calc_version)?payload.calc_version:null,as_of:typeof payload.as_of==='string'?payload.as_of:null,shard_count:count,
   shards:Object.keys(newest).map(Number).sort((a,b)=>a-b).map(k=>k+'='+newest[k]).join('|'),type_scope:typeof typeScope==='string'?typeScope:null,withdrawn:withdrawnList(payload)};
 }
@@ -434,7 +478,7 @@ function scoringSeries(need,closes,cfg=CFG){
  const ok=x=>object(x)&&Object.keys(x).length>0;if(!ok(sp)||!ok(stock)||!ok(sector))return null;
  return{sessions:Object.keys(sp).filter(validDay).sort(),stock:{...stock},sector:{...sector},sp500:{...sp},sector_symbol:need.sector_symbol};
 }
-return Object.freeze({SCHEMA,V_SOURCE,ANSWERS,COMPARE_KEYS,V_FACTORS,V_REQUIRED,vFactors,vIncomplete,publishedCheck,inputBasis,basisChanged,regenerateDraft,safetyRecheck,numberCheck,finalizeBlockers,scheduleState,roundMode,riskCodes,coverage,subgroupOf,groupOf,safety,universeRows,exclusions,spread,select,limits,templates,invalidated,buildDraft,candidates,
+return Object.freeze({SCHEMA,V_SOURCE,ANSWERS,COMPARE_KEYS,V_FACTORS,V_REQUIRED,vFactors,vIncomplete,publishedCheck,freshnessRows,KEPT_GAP_MS,rowShards,inputBasis,basisChanged,regenerateDraft,safetyRecheck,numberCheck,finalizeBlockers,scheduleState,roundMode,riskCodes,coverage,subgroupOf,groupOf,safety,universeRows,exclusions,spread,select,limits,templates,invalidated,buildDraft,candidates,
  emptyState,validateState,latestAnswers,currentSelection,answer,judgementRecord,finalize,latestVersion,firstVersion,rebalanceDay,rebalanceDays,lastRebalanceOnOrBefore,
  nextRebalanceOnOrAfter,rounds,transitionRows,ruleBDue,ruleBSegment,ruleIndex,compareSets,reviewRule,coreEligible,priceSymbolOf,sectorEtfOf,scoringNeeds,addPriceSymbols,scoringSeries});
 });

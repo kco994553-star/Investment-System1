@@ -45,9 +45,9 @@ from investment_system.macro.evidence_lines import FILENAME as MACRO_EVIDENCE_FI
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
-    "target-v1-builder.js": "f6b081a2080be068b2387e95a8892beafd19d71d30e673cd5e7c1b8d127811bd",
+    "target-v1-builder.js": "32b2a2d3ecea0550c74a948e950900954c5fc12e68672a46472bbd2ec3b9e9f9",
     "target-v1-config-defaults.js": "cdfa0ac5b620dca4f1828fb055a76c08268c533a65b2e0d34f962ce1499b12bd",
-    "target-v1-screen.js": "52e97dba0b94c38d7305bd42a0460e7817034ee009c2953c0ea96969e02c1611",
+    "target-v1-screen.js": "fdc5ffc910897784614fb5a5c7b0d5ecd5bf151ab2c62724905794768d769339",
     "playbook-engine.js": "b708a1772b4cd8e1af731cffdacbfab478d03c9c4e1e5fd663537babd64ee7d8",
     "playbook-config-defaults.js": "b0dd6aeed54a11082953b83aa30497c99dd454040e7e7adbc46cdd4c0a1221a6",
     "virtual-trading-compare.js": "700054fd105b979b505c09ec0dad862b0ce435c0179d2ddbe9f85b5b9c23c3f7",
