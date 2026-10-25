@@ -619,26 +619,109 @@ def test_d6b_counts_reach_the_one_line_result_only(artifact):
 
 def test_iex_attempts_reach_the_one_line_result_only(artifact):
     """2026-10-25 (rehearsal run 40156760950): the number of full IEX stream attempts (1, or 2 after a whole-pipeline retry)
-    is a count in the one stdout line; never in qgv-official.json or the status file. No attempt count before any stream."""
+    is a count in the one stdout line, followed, when the first attempt failed, by its fixed code (iex_first) and for a first
+    DOWNLOAD_FAILED curl's exit code (iex_curl_rc); never in qgv-official.json or the status file. Nothing before any stream."""
     out, payload, parser = artifact
 
     def failing(keys, basis, parser=None, workdir=None):
-        err = iex_hist.IexHistError('DOWNLOAD_FAILED')
-        err.attempts = 2
+        err = iex_hist.IexHistError('SIZE_MISMATCH')
+        err.attempts, err.first_code, err.first_curl_rc = 2, 'DOWNLOAD_FAILED', 18
         raise err
     s = tool.run(out=out, parser=parser, monthend_stamp='20261023', monthend_shards=6, previous=None, raw_token='t', hmac_key=KEY,
                  now=NOW, workdir=out.parent / 'w', fetch_day=failing, read_store=lambda st, n: {}, clock=lambda: NOW)
-    assert tool.summary_line(s) == ('QGV_OFFICIAL attempt=NO_OFFICIAL_YET reason=IEX_DOWNLOAD_FAILED published=NONE basis=- rows=0 '
-                                    'ranked=0 supplied=- iex_attempts=2')
-    assert 'attempts' not in (out / qo.STATUS_FILENAME).read_text()
+    assert tool.summary_line(s) == ('QGV_OFFICIAL attempt=NO_OFFICIAL_YET reason=IEX_SIZE_MISMATCH published=NONE basis=- rows=0 '
+                                    'ranked=0 supplied=- iex_attempts=2 iex_first=DOWNLOAD_FAILED iex_curl_rc=18')
+    status = (out / qo.STATUS_FILENAME).read_text()
+    assert not {'attempts', 'first', 'curl', 'DOWNLOAD_FAILED'} & set(re.findall(r'[A-Za-z_]+', status))
     day = synthetic_day(payload)
-    day.attempts = 2
+    day.attempts, day.first_code = 2, 'GZIP_FAILED'
     ok = _run(out, parser, day=day)
-    assert ok['published'] == 'NEW' and ' iex_attempts=2 ' in tool.summary_line(ok)
+    assert ok['published'] == 'NEW' and ' iex_attempts=2 iex_first=GZIP_FAILED split_checked=' in tool.summary_line(ok)
     for name in (qo.FILENAME, qo.STATUS_FILENAME):
-        assert 'attempts' not in (out / name).read_text()
-    assert 'iex_attempts' not in tool.summary_line(_run(out, parser, fail='SOURCE_UNAVAILABLE'))   # before any stream
-    assert 'iex_attempts' not in tool.summary_line(_run(out, parser, key=None))
+        text = (out / name).read_text()
+        assert 'attempts' not in text and 'GZIP_FAILED' not in text and 'curl' not in text
+    one = synthetic_day(payload)
+    assert ' iex_attempts=1 split_checked=' in tool.summary_line(_run(out, parser, day=one))   # clean first attempt: no iex_first
+    assert 'iex_' not in tool.summary_line(_run(out, parser, fail='SOURCE_UNAVAILABLE'))      # before any stream
+    assert 'iex_' not in tool.summary_line(_run(out, parser, key=None))
+    # only an upper-case fixed code and a small integer ever reach the line
+    base = dict(s, iex_attempts=1)
+    for first, rc in (('https://x.example/a', 18), ('4242.42', 18), ('DOWNLOAD_FAILED', '18'), ('DOWNLOAD_FAILED', 10**6)):
+        line = tool.summary_line(dict(base, iex_first=first, iex_curl_rc=rc))
+        assert 'x.example' not in line and '4242' not in line and 'iex_curl_rc' not in line
+    md5_line = tool.summary_line(dict(base, iex_first='MD5_MISMATCH', iex_curl_rc=None))
+    assert md5_line.endswith(' iex_attempts=1 iex_first=MD5_MISMATCH')
+
+
+def test_main_gives_the_iex_stream_the_step_deadline(artifact, monkeypatch):
+    """The V step runs the publisher under `timeout -k 30s 12m`: main hands the production IEX reader the deadline 12 minutes
+    after this process started (iex_hist time budget: curl --max-time per attempt, a second attempt only when it fits)."""
+    import functools
+    import time
+    out, payload, parser = artifact
+    seen = {}
+
+    def stub_run(**kw):
+        seen.update(kw)
+        return {'attempt': 'OK', 'reason': None, 'published': 'NONE', 'basis': '-', 'rows': 0, 'ranked': 0, 'supplied': '-'}
+    monkeypatch.setattr(tool, 'run', stub_run)
+    assert tool.main(['--out', str(out), '--parser', parser, '--monthend-stamp', '20261023', '--previous', '']) == 0
+    fetch = seen['fetch_day']
+    assert isinstance(fetch, functools.partial) and fetch.func is iex_hist.fetch_day
+    assert fetch.keywords == {'deadline': tool.STARTED + tool.STEP_LIMIT_S} and tool.STEP_LIMIT_S == 12 * 60
+    assert seen['deadline'] == tool.STARTED + tool.STEP_LIMIT_S          # the same deadline for the waits after the stream
+    assert tool.STARTED <= time.monotonic()
+
+
+def test_post_stream_waits_end_before_the_step_deadline(artifact, monkeypatch):
+    """Review 2026-10-25: after the stream, each month-end store request and the JS twin wait at most the time left before the
+    deadline less FINAL_RESERVE_S (at least 1 s, never above their own caps), so a hang there ends as
+    MONTHEND_STORE_UNAVAILABLE / JS_TWIN_UNAVAILABLE with a status file instead of the step's TERM. No deadline: their caps."""
+    import subprocess
+    out, payload, parser = artifact
+    assert tool.wait_s(300, None) == 300 and tool.wait_s(300, 1000.0, lambda: 100.0) == 300
+    assert tool.wait_s(300, 1000.0, lambda: 900.0) == 1000 - tool.FINAL_RESERVE_S - 900
+    assert tool.wait_s(600, 1000.0, lambda: 999.0) == 1
+    clock, waits = [0.0], []
+
+    def github_call(token):
+        def call(method, url, *, headers=None, auth=True, timeout=None):
+            waits.append(timeout)
+            clock[0] += timeout                    # the request hangs until its socket timeout
+            raise iex_monthend.MonthEndError('STORE_UNAVAILABLE')
+        return call
+    monkeypatch.setattr(iex_monthend, 'github_call', github_call)
+    day = synthetic_day(payload)
+
+    def go(**kw):
+        return tool.run(out=out, parser=parser, monthend_stamp='20261023', monthend_shards=6, previous=None, raw_token='t',
+                        hmac_key=KEY, now=NOW, workdir=out.parent / 'w', fetch_day=lambda *a, **k: day, clock=lambda: NOW, **kw)
+    clock[0] = 600.0                               # the stream ended 600 s after the start; deadline at 720 s
+    s = go(deadline=720.0, monotonic=lambda: clock[0])
+    assert waits == [720 - tool.FINAL_RESERVE_S - 600]
+    assert (s['attempt'], s['reason']) == ('NO_OFFICIAL_YET', 'MONTHEND_STORE_UNAVAILABLE')
+    assert _status(out)['reason_code'] == 'MONTHEND_STORE_UNAVAILABLE' and clock[0] < 720
+    waits.clear()
+    go()                                           # no deadline: the store's own cap
+    assert waits == [iex_monthend.REQUEST_TIMEOUT_S]
+    seen = []
+
+    def check(companies, quotes, results, *, node, timeout):
+        seen.append(timeout)
+        raise qo.OfficialError('VERIFY_FAILED', 'JS_TWIN_UNAVAILABLE')
+    s = go(read_store=lambda st, n: {}, check=check, deadline=720.0, monotonic=lambda: 650.0)
+    assert seen == [720 - tool.FINAL_RESERVE_S - 650] and (s['attempt'], s['reason']) == ('NO_OFFICIAL_YET', 'JS_TWIN_UNAVAILABLE')
+    assert _status(out)['reason_code'] == 'JS_TWIN_UNAVAILABLE'
+    # js_check gives node that timeout; over it, JS_TWIN_UNAVAILABLE
+    got = []
+
+    def run(cmd, **kw):
+        got.append(kw['timeout'])
+        raise subprocess.TimeoutExpired(cmd, kw['timeout'])
+    with pytest.raises(qo.OfficialError) as e:
+        tool.js_check({}, {}, {}, run=run, timeout=7)
+    assert got == [7] and e.value.code == 'JS_TWIN_UNAVAILABLE'
+    assert tool.js_check.__kwdefaults__['timeout'] == tool.JS_CHECK_TIMEOUT_S == 600
 
 
 def test_adr_rule_covers_known_20f_filers_whatever_the_taxonomy_d7(monkeypatch):

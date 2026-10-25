@@ -43,7 +43,7 @@
 - 글꼴(시안과 같음): Black Han Sans(제목·도장), Gowun Dodum(본문), Nanum Pen Script(손글씨). google/fonts 고정 커밋에서 받아 KS X 1001 부분집합 WOFF2로 자체 호스팅한다(`tools/font_subset_ksx1001.py`).
 - 개발 빌드: `tools/build_web_app.py --out <빈 디렉터리>`. 공개 자료 파일은 기존 빌드와 똑같이 만들고, 화면 파일만 새 것으로 바꾼다.
   - 옛 모듈 재사용(P1 A안): 페이지가 부르는데 web_app에 같은 이름이 없는 web_assets 파일은 지우지 않고 바이트 그대로 둔다. 같은 이름이 web_app에 있으면 web_app 것을 쓴다. 두 곳 모두에 없으면 빌드가 실패한다. 시험은 `tools/web_app_reuse.js`로 옛 경로를 한 곳에서 읽는다.
-  - 첫 화면(P2-1a, 소유자 결정 2026-10-24): `index.html`은 첫 화면 파일(web_app 것)만 부른다. 옛 모듈과 P1 층은 첫 그림 뒤 `loader.js`가 `LOAD_ORDER` 목록대로 넣는다. 이 목록이 하나뿐인 불러오기·재사용 목록이다. 계약과 측정: [P1_DATA_LAYER.md](P1_DATA_LAYER.md) 1.1절.
+  - 첫 화면(P2-1a, 소유자 결정 2026-10-24): `index.html`은 첫 화면 파일(web_app 것)만 부른다. 옛 모듈, P1 층, 화면 논리 파일(P1_DATA_LAYER.md 1.1절)은 첫 그림 뒤 `loader.js`가 `LOAD_ORDER` 목록대로 넣는다. 이 목록이 하나뿐인 불러오기·재사용 목록이다. 계약과 측정: [P1_DATA_LAYER.md](P1_DATA_LAYER.md) 1.1절.
 - 시험: `tools/web_app_*_test.js`. 스스로 개발 빌드를 만들고 띄운다. CI 목록(`ci_node_tests.txt`, `ci_browser_tests.txt`)에 등록해 지금부터 매 PR에서 돈다.
 
 ## 4. 메뉴와 경로 (시안 번호)

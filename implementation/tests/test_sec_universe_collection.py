@@ -49,6 +49,82 @@ def test_cboe_alias_keeps_the_single_cik_rule():
     assert not r.issuers and r.conflicting_codes==frozenset({'BATS:CBOE'}) and r.unresolved_code_count==504
 
 
+# NASDAQ:PSKY -> NYSE SKYD (same issuer CIK 0002041610, listing moved 2026-10-06): one exact pair, pinned to that CIK.
+PSKY_CIK=2041610
+SKYD=('SK'+'YD','NY'+'SE')
+
+
+def test_skyd_alias_binds_psky_only_for_the_named_cik():
+    r=universe_registry(body([[PSKY_CIK,'Synthetic',*SKYD]]))
+    assert [(x.cik,x.codes) for x in r.issuers]==[('0002041610',('NASDAQ:PSKY',))]
+    assert r.unresolved_code_count==503 and not r.conflicting_codes
+
+
+@pytest.mark.parametrize('rows',[[[7,'Synthetic',*SKYD]],[[7,'x',*SKYD],[8,'x',*SKYD]]])
+def test_skyd_alias_from_another_cik_alone_is_unresolved_not_a_conflict(rows):
+    r=universe_registry(body(rows))
+    assert not r.issuers and r.unresolved_code_count==504 and not r.conflicting_codes
+
+
+@pytest.mark.parametrize('rows',[[[PSKY_CIK,'x',*SKYD],[7,'x',*SKYD]],[[7,'x',*SKYD],[PSKY_CIK,'x',*SKYD]]])
+def test_skyd_alias_claimed_by_the_named_and_another_cik_is_a_conflict(rows):
+    # Same as the CBOE pair claimed by two CIKs: an identity conflict (withdrawal), never a preserved earlier row.
+    r=universe_registry(body(rows))
+    assert not r.issuers and r.unresolved_code_count==504 and r.conflicting_codes==frozenset({'NASDAQ:PSKY'})
+
+
+@pytest.mark.parametrize('row',[[PSKY_CIK,'x',SKYD[0],'Nasdaq'],[PSKY_CIK,'x',SKYD[0]+'-WT',SKYD[1]],[PSKY_CIK,'x',SKYD[0].lower(),SKYD[1]],
+                                [PSKY_CIK,'x',SKYD[0],'CBOE'],[PSKY_CIK,'x','PSKY',SKYD[1]],[PSKY_CIK,'x',SKYD[0],'Nyse']])
+def test_skyd_alias_is_one_exact_pair(row):
+    assert not universe_registry(body([row])).issuers
+
+
+def test_skyd_alias_keeps_the_single_cik_rule_with_the_code_own_ticker():
+    same=universe_registry(body([[PSKY_CIK,'x','PSKY','Nasdaq'],[PSKY_CIK,'x',*SKYD]]))
+    assert [(x.cik,x.codes) for x in same.issuers]==[('0002041610',('NASDAQ:PSKY',))]
+    other=universe_registry(body([[7,'x','PSKY','Nasdaq'],[PSKY_CIK,'x',*SKYD]]))
+    assert not other.issuers and other.conflicting_codes==frozenset({'NASDAQ:PSKY'})
+
+
+def _archived_sec_rows():
+    from pathlib import Path
+    path=Path(__file__).parents[1]/'experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/sec_tickers_exchange_original.json'
+    return json.loads(path.read_text())['data']
+
+
+def _legacy_binding_map(rows):
+    """The registry rule before the SKYD alias (exact Nasdaq/NYSE code pair, else the CBOE pair only), independent of the module."""
+    from pathlib import Path
+    codes=json.loads((Path(__file__).parents[1]/'src/investment_system/universe/universe_codes_v1.json').read_text())
+    lookup={(c.split(':')[0],c.split(':')[1].replace('.','-')):c for c in codes}
+    bound={c:set() for c in codes}
+    for cik,_,ticker,exchange in rows:
+        venue={'Nasdaq':'NASDAQ','NYSE':'NYSE'}.get(exchange)
+        code=lookup.get((venue,ticker)) if venue is not None else {('CBOE','CBOE'):'BATS:CBOE'}.get((exchange,ticker))
+        if code is not None:bound[code].add(str(cik).zfill(10))
+    return {c:next(iter(v)) for c,v in bound.items() if len(v)==1}
+
+
+def _binding_map(rows):
+    return {c:x.cik for x in universe_registry(body(rows)).issuers for c in x.codes}
+
+
+def test_full_binding_map_on_archived_sec_file_changes_only_psky():
+    rows=_archived_sec_rows()
+    assert sum(1 for r in rows if r[2]==SKYD[0])==0 and any(r[0]==PSKY_CIK and r[2]=='PSKY' for r in rows)
+    before=_legacy_binding_map(rows)
+    assert len(before)==504 and before['BATS:CBOE']==_binding_map(rows)['BATS:CBOE']
+    assert _binding_map(rows)==before   # archived file (PSKY still on Nasdaq): every code binds exactly as before
+    moved=[[c,n,*SKYD] if (c==PSKY_CIK and t=='PSKY') else [c,n,t,e] for c,n,t,e in rows]
+    old,new=_legacy_binding_map(moved),_binding_map(moved)
+    assert 'NASDAQ:PSKY' not in old and new.pop('NASDAQ:PSKY')=='0002041610' and new==old and len(old)==503
+    stranger=[r for r in rows if not (r[0]==PSKY_CIK and r[2]=='PSKY')]+[[7,'Synthetic',*SKYD]]
+    assert _binding_map(stranger)==_legacy_binding_map(stranger) and 'NASDAQ:PSKY' not in _binding_map(stranger)
+    both=moved+[[7,'Synthetic',*SKYD]]
+    r=universe_registry(body(both))
+    assert r.conflicting_codes==frozenset({'NASDAQ:PSKY'}) and _binding_map(both)==old
+
+
 def test_universe_client_accepts_unpadded_string_cik_only_for_the_same_issuer():
     r=registry();seen=[]
     def transport(url,**kwargs):

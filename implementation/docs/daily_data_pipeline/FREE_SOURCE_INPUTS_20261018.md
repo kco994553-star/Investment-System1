@@ -184,6 +184,11 @@
 | 비표준 시장 | BATS:CBOE | CBOE 별칭 1쌍만 적용 |
 | ETF 기준선 | SPY(Universe 밖) | NYSE Arca, ETF=Y. companyfacts V 입력 없음. 기준선 전용 |
 
+- **2026-10-25 추가 (PSKY → SKYD 별칭, #297과 같은 종류, 소유자 승인 대기):** 등록부 별칭 표(`sec_universe_collection.py` `VENUE_CODE_ALIASES`)에 정확한 한 쌍 `(NYSE, SKYD) → NASDAQ:PSKY`를 더했다. 이 쌍은 CIK 0002041610이 혼자 올렸을 때만 묶인다(`ALIAS_ISSUER_CIKS`). 일반 (거래소, 기호) 조회가 코드를 못 찾을 때만 Nasdaq/NYSE에서도 별칭 표를 본다. 보관된 SEC 파일 전체로 묶음 표를 비교하면 이 코드 말고는 하나도 바뀌지 않는다(`test_sec_universe_collection.py`). 공개 코드는 NASDAQ:PSKY 그대로다.
+  - 다른 CIK가 있을 때: 다른 CIK만 SKYD를 올리면 묶지 않고 미해결로 둔다(이전 행 보존). CIK 0002041610과 다른 CIK가 함께 올리면 한 기호를 여러 CIK가 주장한 식별 충돌이다. CBOE 쌍과 같이 철회한다(UNI-WITHDRAWN (a)). 다른 CIK가 Nasdaq PSKY를 다시 쓰고 CIK 0002041610이 SKYD를 올리면 NASDAQ:PSKY도 충돌로 철회된다. 별칭 전에는 그 새 발행사가 NASDAQ:PSKY에 조용히 묶였다.
+  - 근거: 같은 발행사(CIK 0002041610, Skydance Corp, 전 Paramount Skydance)가 2026-10-05 Form 25로 Nasdaq 상장을 끝내고 2026-10-06부터 NYSE에서 SKYD로 거래된다. 8-A12B(2026-10-05): https://www.sec.gov/Archives/edgar/data/2041610/000110465926113569/tm2626659d5_8a12b.htm · Form 25(2026-10-05): https://www.sec.gov/Archives/edgar/data/2041610/000110465926113696/tm2626659d6_25.htm. 같은 내용이 #390 문서 82–89행에 있다(`UNIVERSE_INDEX_FOLLOWING_20261023.md`, canonical에 없음. 닫힌 PR #390의 보존 브랜치 `claude/universe-membership-audit`, 커밋 12785304). 이 문서 4절 표에도 10-18에 SEC가 PSKY(Nasdaq)·SKYD(NYSE)를 둘 다 실었다고 적혀 있다. 2026-10-23 실행(run 39879258841)부터 SEC 거래소 기호표에서 Nasdaq PSKY 줄이 빠져 `unresolved_codes=2`(PSKY·WBD)가 됐다. 그 뒤로 10-17 행이 PRESERVE로 계속 남았다. IEX 체결 기록도 같은 날짜를 보여 준다. PSKY 체결은 10-05가 마지막이고 SKYD 체결은 10-06부터다(IEX TOPS 조사 실행 39944426209). 같은 날짜의 IEX 기호 별칭은 열린 PR #400의 `iex_hist.py`(`NASDAQ:PSKY` → `SKYD`, 2026-10-06부터)에 있다.
+  - 효과: sec-qg와 sec-qgv2 행은 다음 샤드 4 실행이나 all_shards 실행에서 새로 수집된다. sec-universe-shares 행은 다시 확인되지 않는다. M3 어댑터는 코드 자신의 기호(PSKY)와 시장(NASDAQ)이 submissions에 있어야 확인하기 때문이다. 그래서 10-17 행이 그대로 남고, 10-31에 STALE이 된다. TARGET v1 확정 검사는 이 파일을 읽지 않는다. calc_version, 504 목록, 원장 구간, 모집단은 바뀌지 않는다. WBD는 이 별칭과 관계없다.
+
 ## 6. 무료 출처가 해결하지 못하는 것
 
 1. **공개 가능한 일봉 OHLCV 이력(C).** 무료 등급은 모두 개인·내부용이거나 미확인이다.
@@ -199,7 +204,7 @@
 
 - **FX-ASML:** ECB 환산 도입 / NA 유지. 도입 시 환산 방향·기준 시각·역DCF 처리.
 - **ID-CHECK:** Nasdaq Trader를 비공개 점검 신호로만 쓸지. 공개 산출물 근거로는 서면 동의 전 사용 안 함.
-- **PSKY·WBD 코드:** 승인 목록 갱신 여부(이 문서는 바꾸지 않음).
+- **PSKY·WBD 코드:** 승인 목록 갱신 여부(이 문서는 바꾸지 않음). → PSKY는 5절 2026-10-25 별칭(목록 불변, UNI-FOLLOW=a).
 - **CHART-ADJ:** 무료로 배당 조정이 안 되므로 차트를 “분할만 조정”으로 표시할지, 유료 계약을 기다릴지.
 
 ## 8. 출처와 확인일
