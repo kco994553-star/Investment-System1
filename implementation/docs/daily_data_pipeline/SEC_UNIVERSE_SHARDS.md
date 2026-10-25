@@ -1,6 +1,6 @@
 # Universe504 — 명시적 SEC 범위·일 단위 분할 수집
 
-US17 기존 collect는 그대로 제한한다. `providers/sec_universe_collection.py`의 별도 UniverseSecClient는 승인된 코드 자산504개와 **공급된 공식 SEC company_tickers_exchange.json의 cik/ticker/exchange**를 결합한 registry만 허용한다. 공식 원기관 파일 URL은 https://www.sec.gov/files/company_tickers_exchange.json 이며 원문 취득·출처 확인은 caller가 한다. SHA는 공급 bytes 결합이며 원기관 인증 증명이 아니다. SEC 이름은 출력하지 않는다. Nasdaq/NYSE를 명시 매핑하고 BRK.B/BRK-B처럼 점→하이픈의 주식 종류 표기 alias만 허용한다. 다른 거래소/불일치/CIK 충돌은 미확인으로 남긴다. alias는 주식수·가격 basis 변환이 아니다.
+US17 기존 collect는 그대로 제한한다. `providers/sec_universe_collection.py`의 별도 UniverseSecClient는 승인된 코드 자산504개와 **공급된 공식 SEC company_tickers_exchange.json의 cik/ticker/exchange**를 결합한 registry만 허용한다. 공식 원기관 파일 URL은 https://www.sec.gov/files/company_tickers_exchange.json 이며 원문 취득·출처 확인은 caller가 한다. SHA는 공급 bytes 결합이며 원기관 인증 증명이 아니다. SEC 이름은 출력하지 않는다. Nasdaq/NYSE를 명시 매핑하고 BRK.B/BRK-B처럼 점→하이픈의 주식 종류 표기 alias만 허용한다. 다른 거래소/불일치/CIK 충돌은 미확인으로 남긴다. alias는 주식수·가격 basis 변환이 아니다. (2026-10-25 보충: 이 밖의 별칭은 `VENUE_CODE_ALIASES`의 정확한 쌍만 허용한다. #297의 `(CBOE, CBOE) → BATS:CBOE`와, CIK 0002041610에만 묶이는 `(NYSE, SKYD) → NASDAQ:PSKY`(`ALIAS_ISSUER_CIKS`, 소유자 승인 대기)다. 근거는 `FREE_SOURCE_INPUTS_20261018.md` 5절.)
 
 같은 CIK의 GOOG/GOOGL 등은 한 번만 companyfacts+submissions를 취득한다. listing504개와 회사500개를 동일 분모로 취급하지 않는다. 모든 회사의 종류별 주식 basis가 확인됐다는 뜻도 아니다. #134 SEC M3 cover 확인·#110 SHARE_CLASS_BASIS 표시만/자동보정 금지를 그대로 적용한다.
 
