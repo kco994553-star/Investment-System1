@@ -18,6 +18,9 @@ Order (design §3-1):
  8. qgv-official-status.json records the attempt; 9. prices are dropped with the process.
 
 Stdout: ONE line of fixed codes and counts. Never a price, yield, month-end value, per-code hash, URL with a token or key.
+After a build the line ends with the D6 (b) split-check counts (qgv_official.price_status_counts; owner decision CV-SPLIT (ii)
+2026-10-24): split_checked / split_flagged / split_unchecked (of which split_unchecked_no_period) rows, split_gap_skipped pairs,
+split_lead_unchecked rows (of split_checked: the stretch from the count's period-end month to the first store point not compared).
 Exit 0 for every supply/verify outcome (the workflow step stays green; the status file carries the result); 2 = usage error.
 The two Secrets are popped from the environment at start (no child process inherits them).
 A missing Secret (HMAC key or raw-repo read token) or a sec-qgv2.json older than calc_version 2026-10-23.1 is NOT_RUN: nothing is
@@ -172,7 +175,8 @@ def run(*, out: Path, parser: str, monthend_stamp: str, monthend_shards: int, pr
         read_store=None, check=js_check, clock=None, open_response=None, sleep=time.sleep) -> dict:
     """One attempt. Returns a summary of fixed codes and counts (printed by main)."""
     clock = clock or (lambda: dt.datetime.now(dt.timezone.utc))
-    summary = {'attempt': None, 'reason': None, 'published': 'NONE', 'basis': '-', 'rows': 0, 'ranked': 0, 'supplied': '-'}
+    summary = {'attempt': None, 'reason': None, 'published': 'NONE', 'basis': '-', 'rows': 0, 'ranked': 0, 'supplied': '-',
+               'split': None}
     # 1. last good copy first
     live, live_unknown = None, False
     try:
@@ -228,7 +232,8 @@ def run(*, out: Path, parser: str, monthend_stamp: str, monthend_shards: int, pr
                                  hmac_key=hmac_key, generated_at=clock())
         del day, months
         summary.update(basis=new['times']['price_basis_date'], rows=len(new['rows']), ranked=new['coverage']['ranked'],
-                       supplied=f"{new['price_source']['supply']['supplied']}/{new['price_source']['supply']['eligible']}")
+                       supplied=f"{new['price_source']['supply']['supplied']}/{new['price_source']['supply']['eligible']}",
+                       split={k: internal['split'][k] for k in qo.SPLIT_COUNT_KEYS})
         if live is not None and live['publication_id'] == new['publication_id']:
             summary['published'] = 'KEPT_SAME_ID'
         else:
@@ -260,6 +265,15 @@ def run(*, out: Path, parser: str, monthend_stamp: str, monthend_shards: int, pr
     atomic_write(out, qo.STATUS_FILENAME, json.dumps(status, sort_keys=True, ensure_ascii=True, separators=(',', ':')).encode())
     summary['attempt'], summary['reason'] = status['attempt_state'], reason
     return summary
+
+
+def summary_line(s) -> str:
+    """The one stdout line: fixed codes and counts only (the split counts only after a build)."""
+    line = (f"QGV_OFFICIAL attempt={s['attempt']} reason={s['reason'] or '-'} published={s['published']} basis={s['basis']} "
+            f"rows={s['rows']} ranked={s['ranked']} supplied={s['supplied']}")
+    if s.get('split'):
+        line += ''.join(f" split_{k}={int(s['split'][k])}" for k in qo.SPLIT_COUNT_KEYS)
+    return line
 
 
 def main(argv=None) -> int:
@@ -295,8 +309,7 @@ def main(argv=None) -> int:
     s = run(out=out, parser=a.parser, monthend_stamp=a.monthend_stamp, monthend_shards=a.monthend_shards, previous=a.previous or None,
             raw_token=raw_token, hmac_key=key.encode() if key else None, now=now,
             workdir=Path(a.workdir) / 'qgv-official', node=a.node)
-    print(f"QGV_OFFICIAL attempt={s['attempt']} reason={s['reason'] or '-'} published={s['published']} basis={s['basis']} "
-          f"rows={s['rows']} ranked={s['ranked']} supplied={s['supplied']}")
+    print(summary_line(s))
     return 0
 
 

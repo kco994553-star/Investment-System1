@@ -20,8 +20,10 @@ per-code price hashes. Owner decisions applied:
 - owner decisions 2026-10-24 (CENTRAL_V_DC02_PLAN_20261024.md section 4): D3 the IEX day is the latest TOPS day <= the run's New
   York day (usually the previous trading day; requested_basis_date and basis_date both published); D4 SUPPLY_MIN 95% of the
   price-free V-reachable rows (`supply_eligible`); D6 (a) reuses the F_k evidence of calc_version 2026-10-23.1, which only gives a
-  CONSERVATIVE rule (`split_after_share_count`): it does NOT detect a split after the share count's own filing, the one window
-  where count and price disagree (KNOWN LIMITATION, owner acceptance pending; see that function); D7 a foreign private
+  CONSERVATIVE rule (`split_after_share_count`): it does not see a split after the share count's own filing, the one window
+  where count and price disagree; that window is covered by D6 (b) (owner decision CV-SPLIT (ii) 2026-10-24, `split_check`: a
+  RAM-only comparison of IEX raw month-end trades and today's raw price on short steps since the count's period end) where
+  the store has short steps since the count's period end; otherwise residual (see those functions); D7 a foreign private
   issuer (20-F / 40-F filer) is ADR_RATIO_UNCONFIRMED whatever its taxonomy (`adr_unconfirmed`); the publication needs a
   sec-qgv2.json of calc_version 2026-10-23.1 or later (the one bump that covers these rules, D-CV7 (b)).
 Verify without prices: `require_qgv_official` (exact key sets, forbidden keys anywhere, V axis = weighted factors, total = axes and
@@ -70,6 +72,14 @@ FOREIGN_ANNUAL_FILERS: dict[str, tuple[str, str, str]] = {
     '0000937966': ('NASDAQ:ASML', '20-F', 'DCV_OPEN_ITEMS_20261019.md D-CV10 + 5-8: 20-F FY2025 accession 0001628280-26-011378'),
 }
 V_TARGET_SHARE = 0.9
+# D6 (b) (owner decision CV-SPLIT (ii) 2026-10-24, `split_check`): a pair of raw (as-traded) prices at most SPLIT_MAX_GAP_DAYS
+# calendar days apart whose ratio r = later / earlier is inside the band of a split factor n (forward n:1 |ln r + ln n| <= tol,
+# reverse 1:n |ln r - ln n| <= tol). Together the bands cover r in [0.016, 0.733] and [1.364, 62.5].
+SPLIT_MAX_GAP_DAYS = 45
+SPLIT_FACTORS = (2, 3, 4, 5, 6, 8, 10, 15, 20, 25, 30, 40, 50)
+SPLIT_BANDS = tuple((float(n), math.log(1.25)) for n in SPLIT_FACTORS) + ((1.5, math.log(1.10)),)
+SPLIT_OUTCOMES = ('NO_PERIOD', 'UNCHECKED', 'CHECKED', 'FLAGGED')
+SPLIT_COUNT_KEYS = ('checked', 'flagged', 'unchecked', 'unchecked_no_period', 'gap_skipped', 'lead_unchecked')
 # Device ticker of each TARGET company (web_assets/watchlist.js IDS; US ones = markets.us US_LISTINGS).
 TARGET_TICKERS = {'asml': 'ASML', 'lrcx': 'LRCX', 'klac': 'KLAC', 'tokyo_electron': '8035', 'hanmi': '042700', 'nvda': 'NVDA',
                   'amd': 'AMD', 'avgo': 'AVGO', 'qcom': 'QCOM', 'intc': 'INTC', 'msft': 'MSFT', 'googl': 'GOOGL', 'amzn': 'AMZN',
@@ -185,11 +195,11 @@ def split_after_share_count(code, v, basis_day) -> bool:
     the basis of today's IEX price, so such a row would usually be priced correctly and is left out only as a precaution
     (an unrestated XBRL count).
 
-    KNOWN LIMITATION (review 2026-10-24): a split AFTER the count's own filing, up to the basis day, is NOT detected. sec-qgv2.json
-    has no evidence of it (iex_hist.SPLITS comment), so the row stays SUPPLIED and its official V and rank are off by the split
-    ratio until the next 10-Q / 10-K restates the count (e.g. NVDA 10:1 2024-06-10 after the Q1 10-Q of 2024-05-29: about 2.5
-    months; CTAS 4:1 2024-09 after the FY May-2024 10-K). Detecting it needs a new guard or source (D-CV11 (b) / D6 (b)), which
-    needs owner approval; until then the owner must accept this residual before the first publication."""
+    A split AFTER the count's own filing, up to the basis day, leaves no evidence in sec-qgv2.json (iex_hist.SPLITS comment), so
+    this rule does not see it; without another check the row's official V and rank would be off by the split ratio until the
+    next 10-Q / 10-K restates the count (e.g. NVDA 10:1 2024-06-10 after the Q1 10-Q of 2024-05-29: about 2.5 months; CTAS 4:1
+    2024-09 after the FY May-2024 10-K). Covered by D6 (b) (`split_check`, owner decision CV-SPLIT (ii) 2026-10-24) where the
+    store has short steps since the count's period end; otherwise residual."""
     shares = v.get('diluted_shares') if isinstance(v, dict) else None
     period_end = shares.get('period_end') if isinstance(shares, dict) else None
     if not isinstance(period_end, str):
@@ -201,9 +211,80 @@ def split_after_share_count(code, v, basis_day) -> bool:
     return iex_hist.split_after(code, period_end, basis_day)
 
 
-def price_status(ctx, day) -> dict:
-    """{key: price status} (iex_hist module doc): identity rules, then ADR (D7) / split (D6 (a)) rules, then the IEX day's."""
+def split_ratio_hit(r) -> bool:
+    """D6 (b): True when the raw price ratio r = later / earlier is inside the split band of a factor of SPLIT_BANDS (forward n:1
+    |ln r + ln n| <= tol(n), reverse 1:n |ln r - ln n| <= tol(n)); tol = ln 1.25, and ln 1.10 for 3:2. A non-finite or
+    non-positive r is no hit."""
+    if type(r) not in (int, float) or not math.isfinite(r) or r <= 0:
+        return False
+    lr = math.log(r)
+    return any(abs(lr + math.log(n)) <= tol or abs(lr - math.log(n)) <= tol for n, tol in SPLIT_BANDS)
+
+
+def split_check(code, v, months, today_price, basis_day) -> tuple[str, int, bool]:
+    """D6 (b), owner decision CV-SPLIT (ii) 2026-10-24: supplementary split check of a SUPPLIED row on IEX raw (as-traded)
+    prices, RAM only. It never changes a value, it only withholds one. Returns (outcome, pairs skipped for their gap, lead
+    unchecked):
+      NO_PERIOD  the share count has no period end (v_inputs_v2.diluted_shares.period_end, the field D6 (a) uses): not run;
+      UNCHECKED  no consecutive pair of the series is at most SPLIT_MAX_GAP_DAYS apart;
+      CHECKED    pairs checked, none inside a split band;
+      FLAGGED    a checked pair is inside a split band (split_ratio_hit) -> the row is SPLIT_AFTER_SHARE_COUNT (V NA).
+    Series: the code's raw month-end trades (iex_monthend.raw_series: month_closes' symbol / alias and ROUND rules, no F_k) of
+    the store months from the period end's own month on (its month-end trade is the first point: the window start's month-end,
+    the month's last trading day even when the period end is a weekend month-end), then today's raw IEX price on the basis day.
+    A pair more than SPLIT_MAX_GAP_DAYS apart is skipped: a long gap would confuse large genuine moves with splits.
+    Lead unchecked (2026-10-25 review): True when the period end's own month has no point in the series (no store month-end
+    trade of that month, or the symbol / ROUND rule left it out), so the stretch from the window start to the first point was
+    never compared; it is no pair, so gap_skipped does not count it. CHECKED is therefore not split-free since the filing: a
+    missing period-end month or a pair more than SPLIT_MAX_GAP_DAYS apart leaves that stretch unchecked. Example under the
+    fiscal-year-end-only store: a September fiscal year-end whose count comes from the June 10-Q has the 09-30 point, not
+    06-30, so only 09-30 -> basis day is compared and a split between the 10-Q filing and 09-30 is not seen.
+    The U8 store (stamp 20261023) holds, per month, only the codes whose fiscal-year-end month it is, so a code's latest store
+    month is its latest FY-end month (0-15 months old): until recent month-ends of every Universe code are in the store (a
+    separate, owner-approved backfill) most rows have no short step and stay UNCHECKED (residual: a split after the count's
+    filing is then still not detected).
+    Known edges (tests/test_qgv_official.py): a genuine move inside the bands within 45 days (about -27% or more down, +36% or
+    more up) is flagged (conservative false positive); a 3:2 split together with a move of more than 10% is missed; a ratio
+    beyond the 50:1 bands (r < 0.016 or r > 62.5) is missed; a split between the period end and the count's filing (which
+    restates the count) is flagged as a precaution, like D6 (a)."""
+    shares = v.get('diluted_shares') if isinstance(v, dict) else None
+    period_end = shares.get('period_end') if isinstance(shares, dict) else None
+    if not (isinstance(period_end, str) and _DAY.fullmatch(period_end)):
+        return 'NO_PERIOD', 0, False
+    series = iex_monthend.raw_series(code, months, period_end[:7], basis_day)
+    lead_unchecked = not series or series[0][0][:7] != period_end[:7]
+    if type(today_price) in (int, float) and math.isfinite(today_price) and today_price > 0:
+        series.append((basis_day, float(today_price)))
+    checked = skipped = 0
+    hit = False
+    for (day_a, a), (day_b, b) in zip(series, series[1:]):
+        if (_dt.date.fromisoformat(day_b) - _dt.date.fromisoformat(day_a)).days > SPLIT_MAX_GAP_DAYS:
+            skipped += 1
+            continue
+        checked += 1
+        hit = hit or split_ratio_hit(b / a)
+    return ('FLAGGED' if hit else 'CHECKED' if checked else 'UNCHECKED'), skipped, lead_unchecked
+
+
+def _split_count(counts, outcome, skipped, lead_unchecked) -> None:
+    counts['gap_skipped'] += skipped
+    if outcome in ('CHECKED', 'FLAGGED'):
+        counts['checked'] += 1
+        counts['flagged'] += outcome == 'FLAGGED'
+        counts['lead_unchecked'] += bool(lead_unchecked)
+    else:
+        counts['unchecked'] += 1
+        counts['unchecked_no_period'] += outcome == 'NO_PERIOD'
+
+
+def price_status_counts(ctx, day, months) -> tuple[dict, dict]:
+    """({key: price status}, D6 (b) counts) (iex_hist module doc): identity rules, then ADR (D7) / split (D6 (a)) rules, then the
+    IEX day's; a SUPPLIED row then goes through the D6 (b) split check (split_check) on the store months (None = no store: every
+    row unchecked). Counts over the Universe codes checked (like price_source.supplied): checked / flagged / unchecked (of which
+    unchecked_no_period) rows, gap_skipped pairs and lead_unchecked rows (checked rows whose stretch from the window start to the
+    first point was not compared, split_check). Counts only, never a code, price, ratio or date; nothing is published."""
     out = {}
+    counts = dict.fromkeys(SPLIT_COUNT_KEYS, 0)
     for key, rec in ctx['inputs']['records'].items():
         v = _raw_v(ctx['payload'], key)
         code = ctx['keys'][key]
@@ -218,8 +299,20 @@ def price_status(ctx, day) -> dict:
         elif split_after_share_count(code, v, day.day):
             out[key] = 'SPLIT_AFTER_SHARE_COUNT'
         else:
-            out[key] = day.status.get(key, 'PRICE_SYMBOL_UNMAPPED')
-    return out
+            status = day.status.get(key, 'PRICE_SYMBOL_UNMAPPED')
+            if status == iex_hist.SUPPLIED and key in day.quotes:
+                outcome, skipped, lead_unchecked = split_check(code, v, months or {}, day.quotes[key].get('price'), day.day)
+                if outcome == 'FLAGGED':
+                    status = 'SPLIT_AFTER_SHARE_COUNT'
+                if not key.startswith(TARGET_PREFIX):
+                    _split_count(counts, outcome, skipped, lead_unchecked)
+            out[key] = status
+    return out, counts
+
+
+def price_status(ctx, day, months=None) -> dict:
+    """{key: price status} of price_status_counts."""
+    return price_status_counts(ctx, day, months)[0]
 
 
 def engine_quotes(ctx, day, status, months) -> tuple[dict, dict]:
@@ -273,8 +366,8 @@ def v_reachable_without_price(company, code, raw_history, type_config) -> bool:
 
 
 def supply_eligible(ctx, status) -> list[str]:
-    """The D-CV5 denominator: Universe rows in the cross-section, GENERAL, not ADR / split (D7, D6) and V-reachable without
-    a price (v_reachable_without_price)."""
+    """The D-CV5 denominator: Universe rows in the cross-section, GENERAL, not ADR / split (D7, D6 (a) and (b)) and V-reachable
+    without a price (v_reachable_without_price)."""
     out = []
     for key, rec in sorted(ctx['inputs']['records'].items()):
         if key.startswith(TARGET_PREFIX) or rec.get('in_cross_section') is not True or rec.get('published_profile') != 'GENERAL':
@@ -509,12 +602,13 @@ def require_rule_version(payload) -> None:
 
 
 def build(payload, payload_sha256, *, now, day, months, monthend_stamp, hmac_key, generated_at):
-    """The publication (state OFFICIAL, times.verified_at None until verified) or OfficialError. RAM only."""
+    """(publication (state OFFICIAL, times.verified_at None until verified), internal RAM state with the D6 (b) counts) or
+    OfficialError. RAM only."""
     if not isinstance(hmac_key, bytes) or len(hmac_key) < 16:
         raise OfficialError('NOT_RUN', 'HMAC_KEY_MISSING')
     require_rule_version(payload)
     ctx = prepare(payload, now)
-    status = price_status(ctx, day)
+    status, split = price_status_counts(ctx, day, months)
     supply = supply_check(ctx, status)
     if not supply['met']:
         raise OfficialError('SUPPLY_FAILED', 'SUPPLY_BELOW_THRESHOLD')
@@ -557,7 +651,7 @@ def build(payload, payload_sha256, *, now, day, months, monthend_stamp, hmac_key
         'times': {'price_basis_date': day.day, 'price_collected_from': iso(day.collected_from), 'price_collected_to': iso(day.collected_to),
                   'inputs_as_of': payload['as_of'], 'generated_at': iso(generated_at), 'verified_at': None},
         'coverage': coverage(rows), 'rows': rows}
-    return official, {'ctx': ctx, 'quotes': quotes, 'results': results}
+    return official, {'ctx': ctx, 'quotes': quotes, 'results': results, 'split': split}
 
 
 def encode(official) -> bytes:
