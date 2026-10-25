@@ -12,7 +12,13 @@
    - The Universe read (the source of device V prices) is the old click pipeline of PrivateSubsetView.mount without a screen,
      same calls in the same order (private-subset-view.js:67-75), including SecUniverseShares.loadInputs(view, {now: read time});
      only its unexported glue (US prices of the read, the kept state, the sign-out rule) is written again here.
-   - Prices leave this module only through quote() and history(), for display inside [data-ram-price] elements (P2 rule). */
+   - Prices leave this module only through quote() and history(), for display inside [data-ram-price] elements (P2 rule).
+   - Device prices are RAM only: the device database's stored quotes ('market', 'market-import-history') are stopped at the
+     gate (action.js STOPPED, owner 2026-10-24, DC-18), so neither quote() nor the score path ever reads one.
+   - Google on/off (owner 2026-10-24, Main pick: the old behaviour): the saved 'on' is read only from a device database that
+     already exists (deviceSettings) and written only inside the LOGIN click that turns Google on (prepare), as the old sign-in
+     click did (google-sheet-setup.js:45). The GIS script still loads only inside a click, so every page load needs the
+     prepare tap; the saved setting restores the on state, not a sign-in. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else{const I=root.IS2=root.IS2||{};I.prices=api.create({win:root,action:I.action,data:I.data});}})(typeof globalThis==='object'?globalThis:this,function(){
 'use strict';
 // Old device keys this module reads (the store writes them): the Universe tab source (private-subset-view.js:3, its own setting)
@@ -76,6 +82,9 @@ function create({win,action,data}){
  function sheetIds(){const out=[];try{const id=need('GoogleSheetSetup').source(priceView);if(id)out.push(id);}catch(_){}try{const id=universeSource();if(id)out.push(id);}catch(_){}return out;}
  async function privateFetch(input,init){if(action.guard(input,init,{sheets:sheetIds})==='PUBLIC')return data.strictFetch(input,init);return win.fetch(input,init);}
  const priceView=action.view({fetch:privateFetch,PrivateSubsetView:universeView,PriceStore:storeFacade},{readOnlyStores:true});
+ // The view that saves the Google on/off record: it may create the device database inside a storage-writing click (LOGIN is
+ // one); public names only, no private destination.
+ const settingsView=action.view({fetch:data.strictFetch});
 
  // ---- the one Google session
  let sess=null;
@@ -105,11 +114,17 @@ function create({win,action,data}){
  // ---- sign-in (decision 8): GIS script and token only inside a LOGIN click; the session refuses prepare until it is on.
  // The session's own prepare, ended by a time limit (PREPARE_TIMEOUT) or a cancel (CANCELED) so a stalled script load leaves the
  // gate; the load itself may still finish later and the next login click uses it.
- function prepare(event){return action.run(event,'LOGIN',signal=>{const s=session();s.setEnabled(true);const p=s.prepare();let timer=null,stop=null;
+ // The old sign-in click also saved Google on for this device (DeviceActual.sheetSettings, google-sheet-setup.js:45); done inside the
+ // same LOGIN click and awaited with the preparation, so the write never outlives the click. A failed save does not stop the
+ // sign-in (the old click went on too); deviceSettings() then reads nothing stored.
+ async function saveEnabled(){try{const DA=need('DeviceActual'),st=await DA.sheetSettings(settingsView);if(st.enabled!==true)await DA.sheetSettings(settingsView,{...st,enabled:true});return true;}catch(_){return false;}}
+ function prepare(event){return action.run(event,'LOGIN',signal=>{const s=session();s.setEnabled(true);const p=s.prepare(),saved=saveEnabled();let timer=null,stop=null;
   const limit=new Promise((_,reject)=>{timer=win.setTimeout(()=>reject(Error('PREPARE_TIMEOUT')),PREPARE_MS);stop=()=>reject(Error('CANCELED'));if(signal.aborted)stop();else signal.addEventListener('abort',stop,{once:true});});
-  return Promise.race([p,limit]).finally(()=>{win.clearTimeout(timer);signal.removeEventListener('abort',stop);});});}
+  const both=Promise.allSettled([p,saved]).then(([r])=>r.status==='fulfilled'?r.value:Promise.reject(r.reason));
+  return Promise.race([both,limit]).finally(()=>{win.clearTimeout(timer);signal.removeEventListener('abort',stop);});});}
  // GIS needs requestAccessToken synchronously inside the click (google-sheet-quotes.js:185).
  function login(event){return action.run(event,'LOGIN',()=>{session().login();});}
+ // The old disconnect: the memory token goes; the saved Google on/off is left as it is (the old disconnect did not change it).
  function logout(event){return action.run(event,'LOGIN',()=>session().disconnect());}
  /* This device's saved Google on/off (DeviceActual.sheetSettings), read only when the device database already exists. A saved
     'on' turns the session on (a flag, no request); a saved 'off' never turns off a session the user switched on by a click. */
@@ -156,8 +171,9 @@ function create({win,action,data}){
  function rankFor(target){return need('PrivateSubsetView').rankFor(ranks,target);}
 
  // ---- price tab clicks (SYNC): every Sheet / Worker step is the old PriceStore's, with the price view
- function tabsOp(event,run){return action.run(event,'SYNC',async signal=>{const PS=need('PriceStore'),before=keyNow();const out=await run(PS,signal);
-  let s=null;try{s=PS.status(opts());}catch(_){s=null;}if(s&&s.state==='READY'&&keyNow()===before)tabsKey=before;emit();return out===undefined?counts():out;});}
+ // parent: the signal of the caller's own action of the same event, when this click step is nested in it (action.run).
+ function tabsOp(event,run,parent=null){return action.run(event,'SYNC',async signal=>{const PS=need('PriceStore'),before=keyNow();const out=await run(PS,signal);
+  let s=null;try{s=PS.status(opts());}catch(_){s=null;}if(s&&s.state==='READY'&&keyNow()===before)tabsKey=before;emit();return out===undefined?counts():out;},{parent});}
  // Store state after the click (codes and counts; tabs_loaded says whether the facade now answers).
  const counts=()=>deepFreeze(storeStatus());
  function summary(r){if(!object(r))return null;const out={};for(const k of SUMMARY)if(Object.hasOwn(r,k)&&r[k]!==undefined)out[k]=JSON.parse(JSON.stringify(r[k]));
@@ -167,8 +183,8 @@ function create({win,action,data}){
  const useTabs=event=>tabsOp(event,async PS=>{await PS.enable(priceView);});
  // Reads the stored rows of both tabs into RAM (the closes stay inside PriceStore; screens read them through the facade).
  const loadTabs=event=>tabsOp(event,async PS=>{await PS.monthEndCloses('SPY',{view:priceView});});
- function syncSymbols(event,symbols,interval='1d',{kind='CORE'}={}){if(!Array.isArray(symbols))throw Error('SYMBOLS_INVALID');if(interval!=='1d'&&interval!=='1mo')throw Error('INTERVAL_INVALID');
-  return tabsOp(event,async(PS,signal)=>summary(await PS.syncMany(priceView,[...symbols],interval,{kind:String(kind),signal,allowlistOnly:true})));}
+ function syncSymbols(event,symbols,interval='1d',{kind='CORE',parent=null}={}){if(!Array.isArray(symbols))throw Error('SYMBOLS_INVALID');if(interval!=='1d'&&interval!=='1mo')throw Error('INTERVAL_INVALID');
+  return tabsOp(event,async(PS,signal)=>summary(await PS.syncMany(priceView,[...symbols],interval,{kind:String(kind),signal,allowlistOnly:true})),parent);}
  const syncUniverse=event=>tabsOp(event,async(PS,signal)=>summary(await PS.syncUniverse(priceView,{signal})));
 
  // ---- Worker daily history of one TARGET (HISTORY click), RAM only (private-history.js load, without the chart)
@@ -202,7 +218,8 @@ function create({win,action,data}){
   if(kept){const b=kept.basis,u={source:'UNIVERSE_SHEET',read_at:b.acquired_at,as_of:null,time_status:'UNCONFIRMED',freshness:'UNDETERMINED'};
    if(code&&kept.prices.has(code))return ram(kept.prices.get(code),u);
    if(ticker)for(const[k,q]of kept.prices)if(symbolOf(k)===key(ticker))return ram(q,u);}
-  // A stored device quote, only from a device database that already exists (a read never creates one).
+  // DeviceValuation.deviceQuote, as collectQuotes asks it, only from a device database that already exists (a read never creates
+  // one). Its stored quotes are stopped at the gate (they read as absent); what it can still give is a RAM Worker close.
   const DV=win.DeviceValuation;
   if(ticker&&DV&&typeof DV.deviceQuote==='function'&&(await action.stores()).names.includes(DEVICE_DB)){const catalog=await data.static(CATALOG);let q=null;try{q=catalog?await DV.deviceQuote(priceView,catalog,ticker):null;}catch(_){q=null;}
    if(q)return ram(q,{source:str(q.source)||'DEVICE_QUOTE',read_at:str(q.read_at),as_of:str(q.as_of),time_status:str(q.price_time_status)||'UNCONFIRMED',freshness:str(q.freshness)||'UNDETERMINED'});}

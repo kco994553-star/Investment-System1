@@ -39,7 +39,7 @@
 | 2.1.1~2.1.3 목록·정렬·분류 | 구현 | 실 | `leaderboard-screen.js`, `table-sort.js`, `classification-screens.js`(#381 SIC 필터) | — |
 | 2.1.4 기간별 수익률 | 부분 | 기기 | `leaderboard-screen.js` 기간 칩 | 값은 기기 가격 필요. 공개 불가(가격 파생값) |
 | 2.1.5·2.1.6 산출 상태·공식/개인 | 구현 | 실·기기 | `qgv-scores.js`, `v-coverage.js` | 공식 V가 중앙 V로 바뀌면 "계산 장소·가격 출처" 표시 갱신(DC-02) |
-| 2.1.7 후보 선정 연결 | 구현 | 기기 | `target-v1-builder.js`, `target-v1-screen.js` | V가 기기 V라 "임시 V"(#391) |
+| 2.1.7 후보 선정 연결 | 구현 | 기기 | `target-v1-builder.js`, `target-v1-screen.js` | V가 기기 V라 "임시 V"(#391 병합 10-24, F1 첫 확정본 날짜 기준) |
 | 2.2.1~2.2.6 가중치·프리셋·영향·설정 | 구현 | 실·기기 | `device-profiles.js`(2단계 가중치 #300, 프리셋 v0.1, 변경 전후 비교) | 설정 저장은 이 브라우저만 |
 | 2.3.1 13F 보유 기록 | 부분 | 실 | `thirteenf-quarter.js`, `manager-styles-v0.js`, #381(2.3 흐름) | TARGET 중심. 운용사 범위 확대 |
 | 2.3.2 가중치 탐색 | 신규 | — | `docs/backtest/THIRTEENF_WEIGHT_RESEARCH_PREP_20261018.md` | 탐색 엔진. TRACKC-PORT 결정 대기 |
@@ -80,6 +80,22 @@
 | 9.1 백테스트 | 신규 · 결정 | — | `screen-detail.js`(준비 목록), `docs/backtest/*` | BT-1~17·MD-1~12 결정, 과거 자료 확보 |
 | 9.2 전진검증 | 구현 | 실 | `forward-validation.js`, `tools/forward_validation_ledger.py` | 연속 성공 2/7(10/23). 배포 실패 뒤 복구 운영 증거는 아직 없음 |
 | 공통: 계정 동기화 | 신규 · 결정 | — | DRAW-STORE, IA-6 | 지금은 이 브라우저 + 내보내기·가져오기 |
+
+## 1-2. 새 프론트엔드(v2) 진행
+
+위 표의 "구현"은 옛 프론트엔드 기준이다. 새 프론트엔드(DC-07)는 자료·계산 층(P1)을 먼저 두고 화면을 레인별(P2-n)로 붙인다. 아래는 P1이 맡은 번호다(PR #397 본문, 2026-10-24 병합 승인: 최종 HEAD 필수 체크 녹색이면 병합). 계약 문서: [P1_DATA_LAYER](../../implementation/docs/frontend_v2/P1_DATA_LAYER.md).
+
+| 번호 | v2 상태 |
+| --- | --- |
+| 1.1.1 · 1.1.2 · 1.1.4 | v2: P1 자료층(#397: `data.static`·`qgv.row`·`store.prefs`), 화면 P2-1 |
+| 2.1.1~2.1.7 · 2.2 · 2.3.1 · 2.4.2~2.4.4 · 2.5 | v2: P1 자료층(#397: `qgv`(임시 V)·`store.weights`·`data`), 화면 P2-2. 정렬·필터·레이더는 옛 함수를 P2-2에서 재사용. 순위 문구 "임시 V 기준 순위 · 공식 순위 아님"(P1D) |
+| 3.1 · 3.3 | v2: P1 자료층(#397: `prices.history`, 클릭 때만), 화면 P2-3. 3.3 사용자 그림은 백업 /5로 복원(P1D, 옛 검증기 재사용) |
+| 4.1.4 | v2: P1 자료층(#397: `engines.macro`), 화면 P2-4 |
+| 5.2.1 | v2: P1 자료층(#397: `data.list`), 화면 P2-5 |
+| 6.1.x · 6.2 · 6.3 | v2: P1 자료층(#397: `store.holdings`·`engines.target`·`playbook`·`virtual`; 기록 실행은 P2-6), 화면 P2-6. 플레이북 판정·R-B 선정은 누를 때만 기록(P1D). 6.3 V 기록은 새 앱에서 남기지 않음(중앙 V 이력은 서버 비공개 저장, D9) |
+| 9.2 | v2: P1 자료층(#397: `data`·`engines.virtual.forward`), 화면 P2-9 |
+| 공통: 기기 시세 저장 | v2: 저장하지 않음(DC-18, P1D). 기존 저장분은 설정의 '저장된 시세 삭제'로만 지움(버튼 P2) |
+| 공통: 휴대폰 첫 화면 | v2: P2-1 첫 작업. 셸 먼저, 엔진·P1 층은 첫 그림 뒤. 목표 390×844·150 ms RTT·1.6 Mbps·CPU ×4에서 첫 화면 2,000 ms 이하·첫 전송 100 KB 이하, 시험으로 고정 |
 
 ## 2. 요약 (2026-10-24)
 
