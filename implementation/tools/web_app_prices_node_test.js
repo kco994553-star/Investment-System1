@@ -9,7 +9,14 @@
 //  - The Universe read equals PrivateSubsetView.mount's click run with a fake session on the M3 rows (same kept prices,
 //    basis, status and rank index); sign-out clears it, an expired sign-in keeps it, a failed read keeps it and records why.
 //  - Store: old keys unchanged; reads free; writes only in a click (CLICK_REQUIRED before, ACTION_REQUIRED for an old writer
-//    handed the gated storage, storage unchanged); backups /1–/4 round trip, /5 refused; IndexedDB never created by a read.
+//    handed the gated storage, storage unchanged); backups /1–/5 round trip (/5 user objects through the old validators);
+//    IndexedDB never created by a read.
+//  - Device quotes stopped (owner 2026-10-24, DC-18): a valid stored 'market' record that the old path reads is never read by
+//    quote() or the score path, never written by an old writer even inside a click, never deleted automatically;
+//    marketQuotes.count() gives a number without opening a missing database, clear() works only on a trusted click and keeps
+//    every other record; no price value comes back.
+//  - Google on/off (owner 2026-10-24, Main pick): saved only inside the prepare click (the old sign-in click), read only from an
+//    existing database, left as it is by a sign-out.
 // Synthetic data only: the sheet, Worker and share counts are in-memory fixtures; sentinel prices are made-up decimals.
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -86,18 +93,21 @@ function gis() {
   return { calls, accounts: { oauth2: { initTokenClient(cfg) { calls.init++; return { requestAccessToken() { cfg.callback({ access_token: TOKEN, expires_in: 3600, token_type: 'Bearer', scope: SCOPE }); } }; }, revoke(_t, done) { calls.revoke++; if (done) done({}); } } } };
 }
 /* A minimal IndexedDB: databases(), and open() of DeviceActual's one store ('snapshots'); records every open (a created
-   database is one more name). */
+   database is one more name), every record key read and every write; an aborted transaction ends with onabort (no rollback:
+   the tests only abort before a write). */
 function fakeIdb(seed = {}) {
-  const dbs = new Map(Object.entries(seed).map(([n, recs]) => [n, new Map(Object.entries(recs))])), opened = [];
+  const dbs = new Map(Object.entries(seed).map(([n, recs]) => [n, new Map(Object.entries(recs))])), opened = [], reads = [], writes = [], modes = [];
   const later = (fn) => setTimeout(fn, 0);
-  return { opened, dbs, databases: async () => [...dbs.keys()].map((name) => ({ name, version: 1 })), cmp: () => 0, deleteDatabase: () => ({}),
+  return { opened, reads, writes, modes, dbs, databases: async () => [...dbs.keys()].map((name) => ({ name, version: 1 })), cmp: () => 0, deleteDatabase: () => ({}),
     open(name) {
       opened.push(name); const created = !dbs.has(name); if (created) dbs.set(name, new Map()); const store = dbs.get(name), req = {};
       const db = { objectStoreNames: { contains: (n) => n === 'snapshots' }, createObjectStore() {}, close() {},
-        transaction() { const tx = { objectStore: () => ({ get(k) { const r = { result: store.get(k) }; queueMicrotask(() => r.onsuccess && r.onsuccess()); return r; },
-          getKey(k) { const r = { result: store.has(k) ? k : undefined }; queueMicrotask(() => r.onsuccess && r.onsuccess()); return r; }, put(v, k) { store.set(k, v); return {}; }, delete(k) { store.delete(k); return {}; } }) };
-        later(() => tx.oncomplete && tx.oncomplete()); return tx; } };
-      req.result = db; later(() => { if (created && req.onupgradeneeded) req.onupgradeneeded(); if (req.onsuccess) req.onsuccess(); }); return req;
+        transaction(_names, mode) { modes.push(mode || 'readonly'); const tx = { objectStore: () => ({ get(k) { reads.push(k); const r = { result: store.get(k) }; queueMicrotask(() => r.onsuccess && r.onsuccess()); return r; },
+          getKey(k) { reads.push(k); const r = { result: store.has(k) ? k : undefined }; queueMicrotask(() => r.onsuccess && r.onsuccess()); return r; }, put(v, k) { writes.push('put ' + k); store.set(k, v); return {}; }, delete(k) { writes.push('delete ' + k); store.delete(k); return {}; } }) };
+        tx.abort = () => { tx.aborted = true; }; later(() => (tx.aborted ? tx.onabort && tx.onabort() : tx.oncomplete && tx.oncomplete())); return tx; } };
+      // A creation can be aborted from onupgradeneeded (request.transaction.abort()): then the database is not created.
+      req.result = db; if (created) req.transaction = { abort() { req.aborted = true; } };
+      later(() => { if (created && req.onupgradeneeded) req.onupgradeneeded(); if (req.aborted) { dbs.delete(name); if (req.onerror) req.onerror(); return; } if (req.onsuccess) req.onsuccess(); }); return req;
     } };
 }
 // One page: a browser-like window, the 57 old modules (index.html order), fresh P1 modules.
@@ -345,7 +355,7 @@ test('kept read: sign-out clears it (and held histories); an expired sign-in kee
   assert.equal(r3.inputs, 'SEC_INPUTS_NOT_CONNECTED'); assert.deepEqual([...e3.prices.universeRanks().reason_codes], ['SEC_INPUTS_NOT_CONNECTED']); assert.ok(e3.prices.universeView.prices().size > 0);
 });
 
-test('quote: the kept Universe read first, then a stored device quote only from an existing device database; NA with a reason otherwise', async () => {
+test('quote: the kept Universe read only (a stored device quote is never read, DC-18); NA with a reason otherwise', async () => {
   const idb = fakeIdb(), e = env({ s: site({ tabs: { Universe: M3_VALUES } }), idb });
   assert.deepEqual(await e.prices.quote({ code: 'NASDAQ:ADBE', ticker: 'ADBE' }), { state: 'NA', reason: 'NO_DEVICE_PRICE' });
   assert.deepEqual(idb.opened, [], 'no device database, so none opened (and none created)');
@@ -353,7 +363,9 @@ test('quote: the kept Universe read first, then a stored device quote only from 
   const q = await e.prices.quote({ code: 'NASDAQ:ADBE' });
   assert.deepEqual(q, { state: 'OK', price: px(10), currency: 'USD', source: 'UNIVERSE_SHEET', read_at: e.prices.universeView.priceBasis().acquired_at, as_of: null, time_status: 'UNCONFIRMED', freshness: 'UNDETERMINED' });
   assert.equal((await e.prices.quote({ ticker: 'BRK.B' })).price, px(1), 'by ticker (class share dots)');
-  assert.deepEqual(await e.prices.quote({ ticker: 'NVDA' }), { state: 'NA', reason: 'NO_DEVICE_PRICE' }); assert.deepEqual(idb.opened, []);
+  assert.deepEqual(await e.prices.quote({ ticker: 'NVDA' }), { state: 'NA', reason: 'NO_DEVICE_PRICE' });
+  assert.deepEqual([...idb.dbs.get(e.store.KEYS.DEVICE_DB).keys()], ['google-sheet-settings'], 'the only record: Google on, saved by the prepare click');
+  assert.ok(!idb.reads.some((k) => k === 'market' || k === 'market-import-history'), 'no stored quote was read');
 });
 
 // ---------------------------------------------------------------- store
@@ -364,7 +376,8 @@ test('store writes: without a trusted click nothing runs (CLICK_REQUIRED); an ol
   const WRITES = { savePrefs: (ev) => e.store.savePrefs(ev, { version: 1, interests: ['amd'], groups: [] }), saveWeights: (ev) => e.store.saveWeights(ev, { name: '내 가중치', weights: w }),
     saveThesis: (ev) => e.store.saveThesis(ev, 'NVDA', 't', 'i'), saveHold: (ev) => e.store.saveHold(ev, 'NVDA', { reason: 'r', release_condition: 'c', release_date: '2026-12-31' }),
     saveRecord: (ev) => e.store.saveRecord(ev, { id: 'x' }), toggleStar: (ev) => e.store.toggleStar(ev, '0000000001'), restore: (ev) => e.store.backup.restore(ev, '{}'), download: (ev) => e.store.backup.download(ev),
-    sheetSource: (ev) => e.store.sheetSource.set(ev, ID), universeSource: (ev) => e.store.universeSource.set(ev, ID), workerOrigin: (ev) => e.store.workerOrigin.set(ev, WORKER) };
+    sheetSource: (ev) => e.store.sheetSource.set(ev, ID), universeSource: (ev) => e.store.universeSource.set(ev, ID), workerOrigin: (ev) => e.store.workerOrigin.set(ev, WORKER),
+    useSheet: (ev) => e.store.universeSource.useSheet(ev), marketQuotes: (ev) => e.store.marketQuotes.clear(ev) };
   for (const [name, call] of Object.entries(WRITES)) for (const ev of [undefined, new Event('click'), { type: 'click', isTrusted: true }]) assert.throws(() => call(ev), /CLICK_REQUIRED/, name);
   const S = e.store.storage, M = e.mods;
   for (const [name, call] of Object.entries({ playbook: () => M.PlaybookScreen.saveThesis(S, 'NVDA', 't', 'i'), stars: () => M.PublicScreens.toggleStar(S, '0000000001'), weights: () => M.DeviceProfiles.writeV2(S, M.DeviceProfiles.emptyV2()),
@@ -400,6 +413,10 @@ test('store reads and settings: prefs (unreadable value never overwritten), weig
   assert.throws(() => e.store.sheetSource.set(e.click(), 'not a sheet'), /SHEET_SOURCE_INVALID/); assert.equal(L.getItem(K.SHEET_SOURCE), ID);
   assert.deepEqual(await e.store.universeSource.set(e.click(), ID), { set: true }); assert.equal(e.store.universeSource.has(), true);
   assert.deepEqual(await e.store.universeSource.set(e.click(), ''), { set: false }); assert.equal(L.getItem(K.UNIVERSE_SOURCE), null);
+  // "통합 시트와 같게" (Main pick: the Universe source keeps its own key): the unified sheet copied on a click, never returned.
+  assert.deepEqual(e.store.universeSource.useSheet(e.click()), { set: true }); assert.equal(L.getItem(K.UNIVERSE_SOURCE), ID); assert.equal(L.getItem(K.SHEET_SOURCE), ID);
+  const e9 = env(); assert.throws(() => e9.store.universeSource.useSheet(e9.click()), /SHEET_SOURCE_NOT_SET/); assert.equal(e9.win.localStorage.getItem(K.UNIVERSE_SOURCE), null);
+  await e.store.universeSource.set(e.click(), '');
   assert.throws(() => e.store.workerOrigin.set(e.click(), 'http://x.example'), /REQUEST_INVALID/);
   assert.deepEqual(await e.store.workerOrigin.set(e.click(), WORKER + '/'), { set: true, approved: true }); assert.equal(e.store.workerOrigin.approved(), true); assert.equal(L.getItem(K.WORKER_ORIGIN), WORKER);
   assert.deepEqual(await e.store.workerOrigin.set(e.click(), 'https://other-worker.someone.workers.dev'), { set: true, approved: false });
@@ -414,17 +431,18 @@ test('KEYS equal the old modules\' constants (existing devices keep their data)'
   assert.equal(K.UNIVERSE_SOURCE, lit('private-subset-view.js', /const KEY='([^']+)'/)); assert.equal(e.prices.UNIVERSE_SOURCE_KEY, K.UNIVERSE_SOURCE);
   assert.equal(K.WORKER_ORIGIN, lit('private-history.js', /STORAGE_KEY = '([^']+)'/)); assert.equal(K.WORKER_ORIGIN, lit('price-store.js', /HISTORY_KEY='([^']+)'/)); assert.equal(e.prices.WORKER_ORIGIN_KEY, K.WORKER_ORIGIN);
   assert.equal(K.PRICE_STORE_ENABLED, M.PriceStore.FLAG_KEY); assert.equal(K.DEVICE_DB, lit('device-actual.js', /DB_NAME = '([^']+)'/));
+  assert.equal(K.CHART_USER_OBJECTS, M.ChartWorkbench.USER_KEY); assert.equal(K.MACRO_USER_ESTIMATES, M.MacroCycleRing.USER_KEY);
   assert.deepEqual(fresh('store.js').KEYS, K); assert.ok(Object.isFrozen(K));
 });
 
-test('backup: /4 round trip through the old module (no price, sheet id or Worker address); /1–/3 accepted; /5 refused; no device database created', async () => {
+test('backup: /4 round trip through the old module (no price, sheet id or Worker address); /1–/3 accepted; /5 user objects round trip through the old validators; no device database created by a restore', async () => {
   const idb = fakeIdb(), e = env({ s: site({ tabs: { Universe: M3_VALUES } }), idb }), K = e.store.KEYS;
   await e.store.savePrefs(e.click(), { version: 1, interests: ['nvda', 'amd'], groups: [{ id: 'g1', name: '반도체', members: ['nvda'] }] });
   await e.store.toggleStar(e.click(), '0000000002'); await e.store.saveThesis(e.click(), 'NVDA', '논지', '무효화'); await connect(e); await sources(e); await e.prices.readUniverse(e.click());
   const payload = await e.store.backup.create(), text = JSON.stringify(payload);
   assert.equal(payload.schema, 'investment-device-backup/4'); assert.equal(payload.portfolio, null); assert.deepEqual(payload.investor_stars, ['0000000002']);
   assert.doesNotMatch(text, PX); assert.ok(!text.includes(ID) && !text.includes(WORKER) && !text.includes(TOKEN), 'no sheet id, Worker address or token');
-  const e2 = env({ idb: fakeIdb() });
+  const idb2 = fakeIdb(), e2 = env({ idb: idb2 });
   assert.deepEqual(await e2.store.backup.restore(e2.click(), text), { schema: payload.schema });
   assert.deepEqual(plain(await e2.store.backup.create()), plain(payload), 'restored device gives the same backup');
   for (const k of [K.PERSONAL, K.INVESTOR_STARS, K.PLAYBOOK]) assert.equal(e2.win.localStorage.getItem(k), e.win.localStorage.getItem(k), k);
@@ -433,13 +451,111 @@ test('backup: /4 round trip through the old module (no price, sheet id or Worker
     const old = { ...payload, schema }; delete old.playbook; if (schema !== 'investment-device-backup/3') delete old.investor_stars; if (schema === 'investment-device-backup/1') delete old.profiles;
     const e3 = env(); assert.deepEqual(await e3.store.backup.restore(e3.click(), JSON.stringify(old)), { schema }); assert.equal(e3.store.prefs().value.interests.length, 2, schema);
   }
+  // /5 (owner 2026-10-24): the opt-in user objects, validated by ChartWorkbench / MacroCycleRing themselves (DeviceBackup looks them
+  // up); synthetic anchors only (device_backup_node_test fixtures).
+  const CW = e.mods.ChartWorkbench, MC = e.mods.MacroCycleRing, AT = '2026-10-20T00:00:00.000Z', ANCHOR = { symbol: 'SYNTH', interval: 'D', price_basis: 'RAW_CLOSE', author: 'USER', text: '', created_at: AT, updated_at: AT };
+  const NOTE = { ...ANCHOR, id: 'u-note001', schema: 'chart-annotation/1', kind: 'LINE', points: [{ time: '2025-01-06', price: 100 }, { time: '2025-02-03', price: 110 }] }, MINE = { ...NOTE, id: 'u-mine001', points: [{ time: '2025-03-03', price: 120 }, { time: '2025-03-10', price: 121 }] };
+  const ENTRY = (i) => ({ seq: i, saved_at: '2026-10-01T00:0' + i + ':00Z', from: { phase: '회복', part: '초입' }, to: { phase: '확장', part: '후반' }, note: 'synthetic ' + i, system: { state: 'NOT_COMPUTED', text: '미산출', reason: 'NO_MODEL_OUTPUT', layer: null, model_id: null, as_of: null } });
+  e.win.localStorage.setItem(K.CHART_USER_OBJECTS, JSON.stringify({ schema: CW.USER_SCHEMA, items: [NOTE] })); e.win.localStorage.setItem(K.MACRO_USER_ESTIMATES, JSON.stringify({ schema: MC.USER_SCHEMA, rings: { economy: [ENTRY(1), ENTRY(2)] } }));
+  assert.deepEqual(plain(await e.store.backup.create()), plain(payload), 'without the opt-in the backup stays /4, as before');
+  const p5 = await e.store.backup.create({ userObjects: true }), t5 = JSON.stringify(p5);
+  assert.equal(p5.schema, 'investment-device-backup/5'); assert.deepEqual([p5.user_objects.chart.items.map((o) => o.id), p5.user_objects.macro.rings.economy.length], [['u-note001'], 2]);
+  assert.doesNotMatch(t5, PX); assert.ok(!t5.includes(ID) && !t5.includes(WORKER) && !t5.includes(TOKEN));
+  const e6 = env({ idb: fakeIdb() }); e6.win.localStorage.setItem(K.CHART_USER_OBJECTS, JSON.stringify({ schema: CW.USER_SCHEMA, items: [MINE] }));
+  assert.deepEqual(await e6.store.backup.restore(e6.click(), t5), { schema: p5.schema }); assert.deepEqual(await e6.store.backup.restore(e6.click(), t5), { schema: p5.schema });
+  assert.deepEqual(JSON.parse(e6.win.localStorage.getItem(K.CHART_USER_OBJECTS)).items.map((o) => o.id), ['u-mine001', 'u-note001'], 'merged, nothing removed, no duplicate');
+  assert.equal(JSON.parse(e6.win.localStorage.getItem(K.MACRO_USER_ESTIMATES)).rings.economy.length, 2);
+  assert.deepEqual(plain(await e6.store.backup.create({ userObjects: true })).user_objects.chart.items.map((o) => o.id), ['u-mine001', 'u-note001']);
+  assert.equal(e6.store.backup.restored().schema, 'investment-device-backup/5');
+  assert.throws(() => e6.store.backup.restore(undefined, t5), /CLICK_REQUIRED/);
   const e5 = env(), before = JSON.stringify([...e5.win.localStorage.map]);
-  await assert.rejects(e5.store.backup.restore(e5.click(), JSON.stringify({ ...payload, schema: 'investment-device-backup/5', user_objects: { chart: null, macro: null } })), /BACKUP_USER_OBJECTS_UNSUPPORTED/);
+  await assert.rejects(e5.store.backup.restore(e5.click(), JSON.stringify({ ...p5, user_objects: { chart: { schema: 'chart-user-objects/9', items: [] }, macro: null } })), /BACKUP_INVALID/, 'the old validator refuses a bad section');
+  await assert.rejects(e5.store.backup.restore(e5.click(), JSON.stringify({ ...p5, user_objects: { chart: null, macro: { schema: MC.USER_SCHEMA, rings: { economy: [{ ...ENTRY(1), price: 1 }] } } } })), /BACKUP_INVALID/, 'no price in a macro estimate');
   await assert.rejects(e5.store.backup.restore(e5.click(), '{not json'), /BACKUP_INVALID/);
   await assert.rejects(e5.store.backup.restore(e5.click(), JSON.stringify({ ...payload, extra: 1 })), /BACKUP_/);
   await assert.rejects(e5.store.backup.restore(e5.click(), 'x'.repeat(e5.mods.DeviceBackup.MAX_BYTES + 1)), /BACKUP_TOO_LARGE/);
   assert.equal(JSON.stringify([...e5.win.localStorage.map]), before, 'a refused backup changes nothing');
-  assert.deepEqual(idb.opened, [], 'a device without the database: the backup read none and the restore created none');
+  assert.deepEqual(idb2.opened, [], 'a device without the database: the restore (no holdings) created none');
+  assert.deepEqual([[...idb.dbs.get(K.DEVICE_DB).keys()], idb.writes], [['google-sheet-settings'], ['put google-sheet-settings']], 'the first device: only the Google on record of its prepare click; the backup wrote nothing');
+});
+
+test('device quotes stopped (DC-18): a stored record the old path reads is never read by quote() or the score path, never written even in a click, never deleted on its own; count() / clear(event)', async () => {
+  const STORED = /\.0761937/, AT = '2026-10-13T20:00:00.000Z', DB = 'investment-device-actual-v1', asml = CATALOG.instruments.find((i) => i.ticker === 'ASML'), lrcx = CATALOG.instruments.find((i) => i.ticker === 'LRCX');
+  const SETTINGS = { schema: 'device-google-sheet-settings/1', enabled: false, spreadsheet_id: '', range: 'Quotes!A1:C22' };
+  const idb = fakeIdb(), e = env({ s: site(), idb, qgv: true }), M = e.mods, DA = M.DeviceActual, QS = M.QgvScores;
+  const market = M.DeviceMarket.makeMarket(CATALOG, [{ security_reference: asml.security_reference, price: '612.0761937', currency: asml.currency, as_of: AT, available_at: AT, source: 'MANUAL' }], [], null, Date.parse(AT));
+  const history = { schema: 'device-market-import-history/1', entries: [{ at: AT, quotes: [{ price: '401.0761937' }] }] };
+  const seed = () => new Map([['actual', { synthetic: 'holdings placeholder' }], ['market', market], ['market-import-history', history], ['google-sheet-settings', SETTINGS]]);
+  idb.dbs.set(DB, seed());// what the old screens stored on this device before
+  // The old path reads that record: DeviceActual.ramQuote on the raw database gives its price, and collectQuotes would score with it.
+  const raw = { indexedDB: idb, DeviceMarket: M.DeviceMarket, PriceTime: M.PriceTime, DeviceActual: DA, DeviceValuation: M.DeviceValuation };
+  assert.match(String((await DA.ramQuote(raw, CATALOG, 'ASML')).price), STORED, 'a valid stored quote');
+  await e.data.ready(); const inputs = e.data.get('sec-qgv2.json'), ids = [{ company_id: 'asml', ticker: 'ASML' }];
+  const oldQuotes = await QS.collectQuotes(raw, { identities: ids, v2Inputs: inputs, catalog: CATALOG });
+  assert.ok(Object.values(oldQuotes).some((q) => STORED.test(String(q.price))), 'the old score path takes it');
+  idb.reads.length = 0; idb.opened.length = 0;
+  // The new frontend never does: quote(), the score path (same old function, the score view), the page.
+  assert.deepEqual(await e.prices.quote({ company_id: 'asml', ticker: 'ASML' }), { state: 'NA', reason: 'NO_DEVICE_PRICE' });
+  assert.deepEqual(await QS.collectQuotes(e.qgv.scoreView, { identities: ids, v2Inputs: inputs, catalog: CATALOG }), {});
+  const pg = await e.qgv.page(), row = e.qgv.row(pg, 'asml');
+  if (row) assert.equal(row.score.v, null);
+  assert.equal(pg.price_basis.connected, false, 'no device price on the page');
+  assert.ok(idb.opened.length > 0, 'the existing database was opened (holdings, settings)');
+  assert.ok(!idb.reads.some((k) => k === 'market' || k === 'market-import-history'), 'no read of a stored quote record');
+  assert.ok(idb.reads.includes('MARKET_STORE_STOPPED'), 'asked under the no-record key instead');
+  // An old writer: the same import lands on the raw database, never through a view, not even inside a WRITE click.
+  const result = { quotes: [{ security_reference: lrcx.security_reference, price: '401.0761937', currency: lrcx.currency, as_of: AT, available_at: AT, source: 'GOOGLEFINANCE', time_status: 'KNOWN' }], fx: [], successes: [{ name: lrcx.label }], failures: [], warnings: [] };
+  const idbRaw = fakeIdb({ [DB]: {} });
+  await DA.applyMarketImport({ indexedDB: idbRaw, DeviceMarket: M.DeviceMarket, GoogleSheetCore: M.GoogleSheetCore }, CATALOG, result, { method: 'paste', now: Date.parse(AT) });
+  assert.deepEqual(idbRaw.writes.sort(), ['put market', 'put market-import-history'], 'the import itself is valid (the raw database takes it)');
+  const blocked = e.action.blocked();
+  await assert.rejects(e.action.run(e.click(), 'WRITE', () => DA.applyMarketImport(e.prices.priceView, CATALOG, result, { method: 'paste', now: Date.parse(AT) })), /STORAGE/);
+  await assert.rejects(DA.applyMarketImport(e.prices.priceView, CATALOG, result, { method: 'paste', now: Date.parse(AT) }), /STORAGE/, 'outside a click the write transaction itself is refused');
+  assert.equal(e.action.blocked() - blocked, 2, 'MARKET_STORE_STOPPED in the click, ACTION_REQUIRED outside');
+  assert.deepEqual(idb.writes, [], 'nothing reached the database');
+  assert.deepEqual([...idb.dbs.get(DB)], [...seed()], 'the stored records are untouched: never deleted automatically');
+  // count(): a number, no value; a device without the database is not opened (nothing created); a browser that cannot list
+  // its databases answers null and opens nothing.
+  assert.equal(await e.store.marketQuotes.count(), 2);
+  const none = fakeIdb(), e0 = env({ idb: none }); assert.equal(await e0.store.marketQuotes.count(), 0); assert.deepEqual([none.opened, none.dbs.size], [[], 0]);
+  const blind = fakeIdb({ [DB]: { actual: { synthetic: 'holdings placeholder' }, market } }); delete blind.databases; const e1 = env({ idb: blind }); assert.equal(await e1.store.marketQuotes.count(), null); assert.deepEqual(blind.opened, []);
+  assert.equal(await env().store.marketQuotes.count(), null, 'no IndexedDB at all');
+  // clear(event): only on a trusted click; removes the two quote records and nothing else.
+  for (const ev of [undefined, new Event('click'), { type: 'click', isTrusted: true }, e.win.trusted('mouseover')]) assert.throws(() => e.store.marketQuotes.clear(ev), /CLICK_REQUIRED/);
+  assert.throws(() => e.action.stoppedRecords.clear(new AbortController().signal), /ACTION_REQUIRED/);
+  assert.equal(idb.dbs.get(DB).size, 4, 'still there after every refusal');
+  let notes = []; e.store.subscribe((what) => notes.push(what));
+  assert.equal(await e.store.marketQuotes.clear(e.click()), 2); assert.deepEqual(notes, ['MARKET_QUOTES']);
+  assert.deepEqual([...idb.dbs.get(DB).keys()], ['actual', 'google-sheet-settings'], 'holdings and the Google setting stay');
+  assert.deepEqual(idb.writes, ['delete market', 'delete market-import-history']);
+  assert.equal(await e.store.marketQuotes.count(), 0); assert.equal(await e.store.marketQuotes.clear(e.click()), 0);
+  assert.equal(await e0.store.marketQuotes.clear(e0.click()), 0); assert.deepEqual([none.opened, none.dbs.size], [[], 0], 'clearing on a device without the database creates none');
+  // A browser that cannot list its databases: the settings button still works inside its click (the database opened by name),
+  // count() stays unknown, and on a device without the database the creation is aborted (none is created).
+  assert.throws(() => e1.store.marketQuotes.clear(undefined), /CLICK_REQUIRED/); assert.deepEqual(blind.opened, [], 'nothing opened without the click');
+  assert.equal(await e1.store.marketQuotes.clear(e1.click()), 1); assert.deepEqual([...blind.dbs.get(DB).keys()], ['actual'], 'the quote record went, the holdings stay');
+  assert.deepEqual(blind.writes, ['delete market', 'delete market-import-history']); assert.equal(await e1.store.marketQuotes.count(), null);
+  const gone = fakeIdb(); delete gone.databases; const e7 = env({ idb: gone });
+  assert.equal(await e7.store.marketQuotes.clear(e7.click()), 0); assert.deepEqual([gone.opened, gone.dbs.size, gone.writes], [[DB], 0, []], 'opened by name, its creation aborted: no database');
+  assert.doesNotMatch(JSON.stringify([pg, await e.prices.quote({ ticker: 'ASML' }), e.prices.status()]), STORED, 'no stored price value came back');
+});
+
+test('Google on/off: saved only inside the prepare click (the old sign-in click), read only from an existing database, left as it is by a sign-out', async () => {
+  const idb = fakeIdb(), e = env({ idb }), DB = e.store.KEYS.DEVICE_DB;
+  assert.deepEqual(await e.prices.deviceSettings(), { stored: false, enabled: false }); assert.deepEqual(idb.opened, [], 'no database: nothing opened or created');
+  assert.throws(() => e.prices.prepare(undefined), /CLICK_REQUIRED/); assert.equal(idb.dbs.size, 0);
+  await e.prices.prepare(e.click());
+  assert.deepEqual(idb.dbs.get(DB).get('google-sheet-settings'), { schema: 'device-google-sheet-settings/1', enabled: true, spreadsheet_id: '', range: 'Quotes!A1:C22' }, 'the prepare click saved Google on');
+  assert.deepEqual(idb.writes, ['put google-sheet-settings']);
+  e.prices.login(e.click()); assert.equal(e.prices.status().google.connected, true); await e.prices.logout(e.click());
+  assert.deepEqual([idb.writes, idb.dbs.get(DB).get('google-sheet-settings').enabled], [['put google-sheet-settings'], true], 'sign-in and sign-out write nothing (the old disconnect kept it)');
+  // A returning device: the saved on is read without a click (a flag, no request, no write); prepare there writes nothing new.
+  const e2 = env({ idb }); assert.equal(e2.prices.status().google.enabled, false);
+  assert.deepEqual(await e2.prices.deviceSettings(), { stored: true, enabled: true }); assert.deepEqual(e2.priv(), []);
+  await e2.prices.prepare(e2.click()); assert.deepEqual(idb.writes, ['put google-sheet-settings']);
+  assert.equal(e2.prices.status().google.ready, true);
+  // No device storage at all: the sign-in still goes on (the old click did too).
+  const e3 = env(); await e3.prices.prepare(e3.click()); e3.prices.login(e3.click()); assert.equal(e3.prices.status().google.connected, true);
 });
 
 test('IndexedDB: a read never creates the device database (not even inside a click); an existing one is read', async () => {
