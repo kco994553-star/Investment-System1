@@ -2,7 +2,8 @@
 // New frontend P1 · reuse (plan A), the first-paint loader (P2-1a) and shell plumbing.
 //  - What the page loads (owner 2026-10-24, first paint): index.html only the first screen (P0 base, loader.js, the eight lane
 //    placeholders, the P0 screens, boot.js last; web_app files only, every tag a deferred file, the CSP byte-identical to the old
-//    page), then loader.js LOAD_ORDER after the first paint: the 59 old engines/readers (old page's relative order, each once)
+//    page), then loader.js LOAD_ORDER after the first paint: the 60 old engines/readers (old page's relative order, each once;
+//    home-quotes.js for the home's investor story, P2-1, Main)
 //    and the P1 layer (action → data → prices → store → qgv → engines). LOAD_ORDER is the one load list: the loader's runtime
 //    list, tools/web_app_reuse.js and tools/build_web_app.py read the same literal.
 //  - A name present in web_app wins and is never reused (screen-detail.js); every other script is an old web_assets file.
@@ -45,7 +46,8 @@ const { execFileSync } = require('node:child_process');
 const R = require('./web_app_reuse');
 
 const P0_BASE = ['core.js', 'shell.js', 'parts.js'];
-// Design 1.3 (57 files) plus the two backup /5 validator modules (owner 2026-10-24), in the old page's order.
+// Design 1.3 (57 files) plus the two backup /5 validator modules (owner 2026-10-24) and the home's checked investor stories
+// (home-quotes.js, P2-1, Main), in the old page's order.
 const REUSED = [
   'locale.js', 'entity-search.js', 'price-time.js', 'device-market.js', 'device-actual.js', 'profile-defaults.js', 'type-config-defaults.js',
   'device-profiles.js', 'engine-preview.js', 'dcf-parameters-defaults.js', 'device-valuation.js', 'playbook-config-defaults.js', 'playbook-engine.js',
@@ -55,7 +57,7 @@ const REUSED = [
   'private-trades.js', 'holdings-capture.js', 'worker-quote-fallback.js', 'forward-validation.js', 'private-history.js', 'sec-reported.js',
   'manager-styles-v0.js', 'thirteenf-quarter.js', 'macro-lights.js', 'macro-cycle-ring.js', 'macro-evidence.js', 'public-screens.js', 'sec-disclosures.js', 'news-signals.js',
   'classification-screens.js', 'dart-disclosures.js', 'virtual-trading.js', 'virtual-trading-runner.js', 'virtual-trading-signals.js',
-  'virtual-trading-v-history.js', 'virtual-ledger-sheets.js', 'price-store.js', 'report-benchmarks.js', 'virtual-trading-compare.js', 'data-refresh.js',
+  'virtual-trading-v-history.js', 'virtual-ledger-sheets.js', 'price-store.js', 'report-benchmarks.js', 'virtual-trading-compare.js', 'home-quotes.js', 'data-refresh.js',
 ];
 const P1 = ['action.js', 'data.js', 'prices.js', 'store.js', 'qgv.js', 'engines.js'];
 const LANES = ['qgv', 'technical', 'macro', 'news', 'portfolio', 'prompts', 'tree', 'lab'].map((id) => 'screen-' + id + '.js');
@@ -98,7 +100,7 @@ const csp = (html) => (/<meta http-equiv="Content-Security-Policy" content="([^"
 const py = (code, args = [], input = '') => execFileSync('python3', ['-c', code, ...args], { encoding: 'utf8', input });
 
 test('index.html loads the first screen only; loader.js LOAD_ORDER loads the reused old modules, then the P1 layer', () => {
-  assert.equal(REUSED.length, 59);
+  assert.equal(REUSED.length, 60);
   assert.deepEqual(R.firstPaint(), FIRST);
   assert.deepEqual(R.loadOrder(), [...REUSED, ...P1]);
   delete require.cache[require.resolve(R.newPath(LOADER))];
@@ -154,8 +156,8 @@ function loadRecorded(name) {
   vm.runInContext(fs.readFileSync(R.oldPath(name), 'utf8'), vm.createContext(g), { filename: name });
   return { seen: [...seen].filter((x) => x !== 'get globalThis' && x !== 'get window' && x !== 'get module'), own: Object.keys(own) };
 }
-test('the backup /5 validator modules load without side effects and expose what DeviceBackup looks up', () => {
-  for (const [name, global] of [['chart-workbench.js', 'ChartWorkbench'], ['macro-cycle-ring.js', 'MacroCycleRing']]) {
+test('the backup /5 validator modules and home-quotes.js load without side effects and expose what their users look up', () => {
+  for (const [name, global] of [['chart-workbench.js', 'ChartWorkbench'], ['macro-cycle-ring.js', 'MacroCycleRing'], ['home-quotes.js', 'HomeQuotes']]) {
     const r = loadRecorded(name);
     assert.deepEqual(r, { seen: ['set ' + global], own: [global] }, name + ': no DOM, request, storage, timer or listener at load');
   }
@@ -281,6 +283,22 @@ test('LOAD_ORDER names: the build and the helper refuse exactly what the loader 
 
 test('P1 layer files are UMD modules exporting create()', () => {
   for (const name of P1) assert.equal(typeof R.requireNew(name).create, 'function', name);
+});
+
+test('selection (P2-1, feature 1.1.2): RAM only, one value kept across routes; subscribers end with their signal', () => {
+  delete require.cache[require.resolve(R.newPath('core.js'))];
+  const { selection } = R.requireNew('core.js'), seen = [], ac = new AbortController();
+  assert.equal(selection.get(), null);
+  selection.subscribe((v) => seen.push(v && v.id), { signal: ac.signal });
+  selection.set('nvda'); selection.set('nvda'); selection.set('NYSE:FIX');
+  assert.deepEqual(selection.get(), { id: 'NYSE:FIX' }); assert.ok(Object.isFrozen(selection.get()));
+  ac.abort(); selection.set('amd');
+  assert.deepEqual(seen, ['nvda', 'NYSE:FIX'], 'a repeat is not a change; an aborted signal ends the subscription');
+  assert.equal(selection.subscribe(() => seen.push('late'), { signal: ac.signal })(), undefined); selection.set('msft');
+  assert.deepEqual(seen, ['nvda', 'NYSE:FIX']);
+  selection.set(''); assert.equal(selection.get(), null, 'an empty id clears it');
+  assert.throws(() => selection.subscribe('x'), /SUBSCRIBER_INVALID/);
+  assert.doesNotMatch(fs.readFileSync(R.newPath('core.js'), 'utf8'), /localStorage|sessionStorage|indexedDB|fetch\(/, 'nothing stored or sent');
 });
 
 test('screen registry: placeholders, SCREEN_DUPLICATE, detail screens', () => {

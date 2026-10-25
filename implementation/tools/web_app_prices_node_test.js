@@ -10,7 +10,8 @@
 //    basis, status and rank index); sign-out clears it, an expired sign-in keeps it, a failed read keeps it and records why.
 //  - Store: old keys unchanged; reads free; writes only in a click (CLICK_REQUIRED before, ACTION_REQUIRED for an old writer
 //    handed the gated storage, storage unchanged); backups /1–/5 round trip (/5 user objects through the old validators);
-//    IndexedDB never created by a read.
+//    IndexedDB never created by a read. Recent searches (P2-1): the old home's key and shape (entity keys only, at most 6,
+//    newest first, invalid entries dropped on read, the query text never stored); pushRecent / clearRecent only in a click.
 //  - Device quotes stopped (owner 2026-10-24, DC-18): a valid stored 'market' record that the old path reads is never read by
 //    quote() or the score path, never written by an old writer even inside a click, never deleted automatically;
 //    marketQuotes.count() gives a number without opening a missing database, clear() works only on a trusted click and keeps
@@ -377,7 +378,8 @@ test('store writes: without a trusted click nothing runs (CLICK_REQUIRED); an ol
     saveThesis: (ev) => e.store.saveThesis(ev, 'NVDA', 't', 'i'), saveHold: (ev) => e.store.saveHold(ev, 'NVDA', { reason: 'r', release_condition: 'c', release_date: '2026-12-31' }),
     saveRecord: (ev) => e.store.saveRecord(ev, { id: 'x' }), toggleStar: (ev) => e.store.toggleStar(ev, '0000000001'), restore: (ev) => e.store.backup.restore(ev, '{}'), download: (ev) => e.store.backup.download(ev),
     sheetSource: (ev) => e.store.sheetSource.set(ev, ID), universeSource: (ev) => e.store.universeSource.set(ev, ID), workerOrigin: (ev) => e.store.workerOrigin.set(ev, WORKER),
-    useSheet: (ev) => e.store.universeSource.useSheet(ev), marketQuotes: (ev) => e.store.marketQuotes.clear(ev) };
+    useSheet: (ev) => e.store.universeSource.useSheet(ev), marketQuotes: (ev) => e.store.marketQuotes.clear(ev),
+    pushRecent: (ev) => e.store.pushRecent(ev, 'COMPANY:nvda'), clearRecent: (ev) => e.store.clearRecent(ev) };
   for (const [name, call] of Object.entries(WRITES)) for (const ev of [undefined, new Event('click'), { type: 'click', isTrusted: true }]) assert.throws(() => call(ev), /CLICK_REQUIRED/, name);
   const S = e.store.storage, M = e.mods;
   for (const [name, call] of Object.entries({ playbook: () => M.PlaybookScreen.saveThesis(S, 'NVDA', 't', 'i'), stars: () => M.PublicScreens.toggleStar(S, '0000000001'), weights: () => M.DeviceProfiles.writeV2(S, M.DeviceProfiles.emptyV2()),
@@ -422,6 +424,32 @@ test('store reads and settings: prefs (unreadable value never overwritten), weig
   assert.deepEqual(await e.store.workerOrigin.set(e.click(), 'https://other-worker.someone.workers.dev'), { set: true, approved: false });
 });
 
+test('recent searches: the old home key and shape; read freely (invalid entries dropped), written only in a click; COMPANY keys only', () => {
+  const e = env(), K = e.store.KEYS, L = e.win.localStorage;
+  const old = fs.readFileSync(R.oldPath('home-screen.js'), 'utf8');
+  assert.match(old, /RECENT_MAX=6/); assert.match(old, /KEY_SHAPE=\/\^\(COMPANY\|INDUSTRY\|INVESTOR\|MACRO\):\[A-Za-z0-9_\.:\\-\]\{1,64\}\$\//, 'the old key shape the store reads');
+  assert.deepEqual([...e.store.recent()], []); assert.ok(Object.isFrozen(e.store.recent()));
+  // What the old home stored is read the old way: valid keys, once each, the first 6.
+  L.setItem(K.RECENT, JSON.stringify(['COMPANY:nvda', 'INDUSTRY:semis', 'COMPANY:nvda', 'nvda', 7, 'COMPANY:<b>', 'MACRO:cpi', 'COMPANY:NYSE:FIX', 'COMPANY:amd', 'COMPANY:msft', 'COMPANY:intc']));
+  assert.deepEqual([...e.store.recent()], ['COMPANY:nvda', 'INDUSTRY:semis', 'MACRO:cpi', 'COMPANY:NYSE:FIX', 'COMPANY:amd', 'COMPANY:msft']);
+  L.setItem(K.RECENT, '{broken'); assert.deepEqual([...e.store.recent()], []);
+  L.setItem(K.RECENT, JSON.stringify({ x: 1 })); assert.deepEqual([...e.store.recent()], []);
+  L.removeItem(K.RECENT);
+  for (const ev of [undefined, new Event('click'), { type: 'click', isTrusted: true }]) { assert.throws(() => e.store.pushRecent(ev, 'COMPANY:nvda'), /CLICK_REQUIRED/); assert.throws(() => e.store.clearRecent(ev), /CLICK_REQUIRED/); }
+  assert.equal(L.getItem(K.RECENT), null, 'nothing written without a click');
+  // In a click: newest first, a repeat moves to the front, at most 6; only COMPANY:<id> keys are written (never query text).
+  let notes = []; e.store.subscribe((what) => notes.push(what));
+  for (const id of ['nvda', 'amd', 'msft', 'NYSE:FIX', 'intc', 'qcom', 'avgo', 'amd']) e.store.pushRecent(e.click(), 'COMPANY:' + id);
+  assert.deepEqual(JSON.parse(L.getItem(K.RECENT)), ['COMPANY:amd', 'COMPANY:avgo', 'COMPANY:qcom', 'COMPANY:intc', 'COMPANY:NYSE:FIX', 'COMPANY:msft']);
+  assert.deepEqual([...e.store.recent()], JSON.parse(L.getItem(K.RECENT)));
+  assert.equal(notes.length, 8); assert.ok(notes.every((n) => n === 'RECENT'));
+  for (const bad of ['INDUSTRY:semis', 'nvda', 'COMPANY:', 'COMPANY:a b', 'COMPANY:' + 'x'.repeat(65), null]) assert.throws(() => e.store.pushRecent(e.click(), bad), /RECENT_KEY_INVALID/, String(bad));
+  assert.equal(JSON.parse(L.getItem(K.RECENT)).length, 6, 'a refused key changes nothing');
+  // One click, one action: a second store write from the same click is refused.
+  const ev = e.click(); e.store.pushRecent(ev, 'COMPANY:nvda'); assert.throws(() => e.store.clearRecent(ev), /ACTION_ALREADY_STARTED/);
+  assert.deepEqual([...e.store.clearRecent(e.click())], []); assert.equal(L.getItem(K.RECENT), null); assert.deepEqual([...e.store.recent()], []);
+});
+
 test('KEYS equal the old modules\' constants (existing devices keep their data)', () => {
   const e = env(), K = e.store.KEYS, M = e.mods, lit = (file, re) => { const m = re.exec(fs.readFileSync(R.oldPath(file), 'utf8')); assert.ok(m, file); return m[1]; };
   assert.equal(K.PERSONAL, lit('device-backup.js', /PERSONAL_KEY='([^']+)'/)); assert.equal(K.PERSONAL, lit('app.js', /const KEY = "([^"]+)"/));
@@ -432,6 +460,7 @@ test('KEYS equal the old modules\' constants (existing devices keep their data)'
   assert.equal(K.WORKER_ORIGIN, lit('private-history.js', /STORAGE_KEY = '([^']+)'/)); assert.equal(K.WORKER_ORIGIN, lit('price-store.js', /HISTORY_KEY='([^']+)'/)); assert.equal(e.prices.WORKER_ORIGIN_KEY, K.WORKER_ORIGIN);
   assert.equal(K.PRICE_STORE_ENABLED, M.PriceStore.FLAG_KEY); assert.equal(K.DEVICE_DB, lit('device-actual.js', /DB_NAME = '([^']+)'/));
   assert.equal(K.CHART_USER_OBJECTS, M.ChartWorkbench.USER_KEY); assert.equal(K.MACRO_USER_ESTIMATES, M.MacroCycleRing.USER_KEY);
+  assert.equal(K.RECENT, lit('home-screen.js', /RECENT_KEY='([^']+)'/));
   assert.deepEqual(fresh('store.js').KEYS, K); assert.ok(Object.isFrozen(K));
 });
 

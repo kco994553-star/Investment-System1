@@ -96,7 +96,47 @@ svg.ico{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stro
 .search-box{width:min(760px,100%);min-height:72px;display:flex;align-items:center;gap:14px;padding:0 22px}
 .search-box input{flex:1;min-width:0;border:0;outline:none;font-size:24px;background:transparent}
 .result-head{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
-.result-name{font-size:36px}
+.result-name{font-size:36px;overflow-wrap:anywhere}
+.hero-underline{width:min(560px,80%);height:26px;margin-top:-14px;fill:none;stroke:var(--red);stroke-width:6;stroke-linecap:round}
+.search-wrap{width:min(760px,100%);display:flex;flex-direction:column;align-items:center;gap:10px}
+.search-anchor{position:relative;width:100%}
+.search-box{width:100%}
+.search-list{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:5;margin:0;padding:6px;list-style:none;max-height:min(60vh,520px);overflow:auto;text-align:left;box-shadow:6px 6px 0 var(--blue)}
+.search-list[hidden]{display:none}
+.search-opt{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:8px;cursor:pointer;overflow-wrap:anywhere}
+.search-opt[aria-selected="true"]{background:linear-gradient(transparent 58%,var(--marker) 58%);outline:2px solid var(--line)}
+.opt-name{font-family:var(--font-display);font-weight:400;font-size:19px}
+.opt-sub{font-size:14px;color:var(--muted)}
+.search-msg{padding:10px 12px;color:var(--muted)}
+.search-note-line:empty{display:none}
+.chip-rows{display:flex;flex-direction:column;align-items:center;gap:10px;width:min(960px,100%)}
+.chip-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center}
+.chip-label{font-size:22px}
+.chip-more{display:contents}
+.chip-more[hidden]{display:none}
+.linkish{border:0;background:none;padding:6px 4px;min-height:32px;font-size:15px;text-decoration:underline;cursor:pointer}
+.linkish:disabled{opacity:.5;cursor:not-allowed}
+.home-quote{padding:22px;display:flex;flex-direction:column;gap:8px;max-width:960px;width:100%;margin:0 auto}
+.home-quote p{margin:0}
+.quote-kind{font-size:20px;color:var(--muted)}
+.quote-ko{margin:0;font-family:var(--font-display);font-size:28px;line-height:1.3}
+.quote-ko p{margin:0}
+.quote-en{font-style:italic;color:var(--muted)}
+.quote-who,.quote-src{font-size:15px;overflow-wrap:anywhere}
+.result-facts{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;font-size:20px;color:var(--muted)}
+.result-facts p{margin:0}
+.not-found{font-family:var(--font-display);font-size:24px;color:var(--ink)}
+.star-wrap{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap}
+.card-body{display:flex;flex-direction:column;gap:8px;font-size:16px}
+.card-body p{margin:0}
+.qbars{display:flex;flex-direction:column;gap:8px}
+.qrow{display:grid;grid-template-columns:28px minmax(0,1fr) 48px;gap:8px;align-items:center;font-size:17px}
+.qbar{display:block;width:100%;height:14px}
+.qbar-track{fill:var(--paper);stroke:var(--line);stroke-width:2;vector-effect:non-scaling-stroke}
+.qbar.na .qbar-track{stroke-dasharray:4 3}
+.qbar.q .qbar-fill{fill:var(--q)}.qbar.g .qbar-fill{fill:var(--g)}.qbar.v .qbar-fill{fill:var(--v)}
+.qval{text-align:right;font-variant-numeric:tabular-nums}
+.news-lines{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px;overflow-wrap:anywhere}
 
 /* ---------- phone (draft: 390 px boards, bottom tabs) ---------- */
 @media (max-width:720px){
@@ -110,6 +150,10 @@ svg.ico{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stro
  .hero-aside{position:static;transform:none;width:auto;text-align:center}
  .search-box{min-height:60px;padding:0 14px}
  .search-box input{font-size:18px}
+ .result-name{font-size:28px}
+ .result-facts{font-size:16px}
+ .quote-ko{font-size:22px}
+ .chip-label{font-size:19px}
  .tabbar{display:grid;position:fixed;left:0;right:0;bottom:0;height:var(--tabbar);border-top:3px solid var(--line);background:var(--paper);grid-template-columns:repeat(5,minmax(0,1fr));z-index:10}
  .tabbar a,.tabbar button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:13px;text-decoration:none;border:0;background:none;min-height:44px;cursor:pointer}
  .tabbar [aria-current="page"]{font-family:var(--font-display);color:var(--red)}

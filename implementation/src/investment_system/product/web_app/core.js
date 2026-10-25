@@ -84,5 +84,14 @@ function screen(id){const s=screens.get(id);return s?s.render:null;}
 function detail(name){const s=details.get(name);return s?s.render:null;}
 function isPlaceholder(id){const s=screens.get(id);return !!(s&&s.placeholder);}
 
-return Object.freeze({h,append,icon,MENU,TABS,DETAILS,parse,href,menuOf,register,registerDetail,screen,detail,isPlaceholder});
+/* The selected company (feature 1.1.2 "화면을 이동해도 선택 기업을 유지"): RAM only, set by the company page once its id resolves
+   (a TARGET company_id or a Universe code), kept across menus until the page is reloaded. Nothing is stored or sent. */
+let chosen=null;const watchers=new Set();
+const selection=Object.freeze({
+ get:()=>chosen===null?null:Object.freeze({id:chosen}),
+ set(id){const next=typeof id==='string'&&id?id:null;if(next===chosen)return;chosen=next;const v=selection.get();for(const fn of[...watchers]){try{fn(v);}catch(_){}}},
+ subscribe(fn,{signal}={}){if(typeof fn!=='function')throw Error('SUBSCRIBER_INVALID');if(signal&&signal.aborted)return()=>{};watchers.add(fn);
+  const off=()=>{watchers.delete(fn);};if(signal)signal.addEventListener('abort',off,{once:true});return off;}});
+
+return Object.freeze({h,append,icon,MENU,TABS,DETAILS,parse,href,menuOf,register,registerDetail,screen,detail,isPlaceholder,selection});
 });
