@@ -184,6 +184,10 @@
 | 비표준 시장 | BATS:CBOE | CBOE 별칭 1쌍만 적용 |
 | ETF 기준선 | SPY(Universe 밖) | NYSE Arca, ETF=Y. companyfacts V 입력 없음. 기준선 전용 |
 
+- **2026-10-25 추가 (PSKY → SKYD 별칭, #297과 같은 종류, 소유자 승인 대기):** 등록부 별칭 표(`sec_universe_collection.py` `VENUE_CODE_ALIASES`)에 정확한 한 쌍 `(NYSE, SKYD) → NASDAQ:PSKY`를 더했다. 이 쌍은 CIK 0002041610이 혼자 올렸을 때만 묶인다(`ALIAS_ISSUER_CIKS`). 다른 CIK가 올리면 묶지 않고 미해결로 둔다(충돌 아님). 일반 (거래소, 기호) 조회가 코드를 못 찾을 때만 Nasdaq/NYSE에서도 별칭 표를 본다. 보관된 SEC 파일 전체로 묶음 표를 비교하면 이 코드 말고는 하나도 바뀌지 않는다(`test_sec_universe_collection.py`). 공개 코드는 NASDAQ:PSKY 그대로다.
+  - 근거: 같은 발행사(CIK 0002041610)가 2026-10-05 Form 25로 Nasdaq 상장을 끝내고 2026-10-06부터 NYSE에서 SKYD로 거래된다(#390 문서 `UNIVERSE_INDEX_FOLLOWING_20261023.md` 82–89행). 이 문서 4절 표에도 10-18에 SEC가 PSKY(Nasdaq)·SKYD(NYSE)를 둘 다 실었다고 적혀 있다. 2026-10-23 실행(run 39879258841)부터 SEC 거래소 기호표에서 Nasdaq PSKY 줄이 빠져 `unresolved_codes=2`(PSKY·WBD)가 됐다. 그 뒤로 10-17 행이 PRESERVE로 계속 남았다. IEX 체결 기록도 같은 날짜를 보여 준다. PSKY 체결은 10-05가 마지막이고 SKYD 체결은 10-06부터다(IEX TOPS 조사 실행 39944426209). 월말가 브랜치에는 같은 날짜의 기호 별칭이 있다(`claude/iex-v4-backfill`, 커밋 7bca307d, canonical에는 아직 없음).
+  - 효과: sec-qg와 sec-qgv2 행은 다음 샤드 4 실행이나 all_shards 실행에서 새로 수집된다. sec-universe-shares 행은 다시 확인되지 않는다. M3 어댑터는 코드 자신의 기호(PSKY)와 시장(NASDAQ)이 submissions에 있어야 확인하기 때문이다. 그래서 10-17 행이 그대로 남고, 10-31에 STALE이 된다. TARGET v1 확정 검사는 이 파일을 읽지 않는다. calc_version, 504 목록, 원장 구간, 모집단은 바뀌지 않는다. WBD는 이 별칭과 관계없다.
+
 ## 6. 무료 출처가 해결하지 못하는 것
 
 1. **공개 가능한 일봉 OHLCV 이력(C).** 무료 등급은 모두 개인·내부용이거나 미확인이다.
