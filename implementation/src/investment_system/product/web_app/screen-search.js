@@ -1,20 +1,24 @@
-/* 0. 기업 검색 · 검색 결과: first-paint skeleton only; screen-search-live.js fills it after IS2.ready (P1_DATA_LAYER.md §1.1). */
+/* Menu 0 first-paint skeleton; screen-search-live.js fills it (P1_DATA_LAYER.md §1.1). */
 (function(){
 'use strict';
-const I=window.IS2,{h,icon,href,register,parts:{card,pending,more}}=I;
-const later=(route,kind,refs)=>{if(I.ready)I.ready.then(()=>{const L=I.searchLive;if(L&&!route.signal.aborted)L[kind](route,refs);},()=>{});};
+const I=window.IS2,{h,icon,href,register,parts:{card,pending,more}}=I,na=(t,c)=>h('p',{class:'na',dataset:{na:c}},t);
+const later=(route,k,x,fail)=>{const a=()=>route.signal.aborted;(I.ready||Promise.reject()).then(()=>{const L=I.searchLive;if(L&&!a())L[k](route,x);},()=>{if(fail&&!a())fail();});};
 function box(label){
  const input=h('input',{id:'q',type:'search',autocomplete:'off',spellcheck:'false',placeholder:'티커 · 회사명 · 한글명',role:'combobox','aria-expanded':'false',
   'aria-controls':'q-list','aria-autocomplete':'list',dataset:{searchInput:''}});
  const list=h('ul',{id:'q-list',class:'sk search-list',role:'listbox','aria-label':'찾은 기업',hidden:true,dataset:{searchList:''}});
- const status=h('p',{class:'sr-only',role:'status',dataset:{searchStatus:''}}),pre=new AbortController(),b={input,list,status,pre,submit:null};
- input.addEventListener('input',()=>{const q=!!input.value.trim();list.replaceChildren(...(q?[h('li',{class:'search-msg',role:'presentation',dataset:{searchState:'loading'}},'불러오는 중')]:[]));
-  list.hidden=!q;input.setAttribute('aria-expanded',String(q));status.textContent=q?'검색 목록 불러오는 중':'';},{signal:pre.signal});
+ const status=h('p',{class:'sr-only',role:'status',dataset:{searchStatus:''}}),pre=new AbortController(),o={signal:pre.signal},b={input,list,status,pre,submit:null};
+ const show=q=>{list.hidden=!q;input.setAttribute('aria-expanded',String(q));};
+ const load=()=>{const q=!!input.value.trim();list.replaceChildren(...(q?[h('li',{class:'search-msg',role:'presentation',dataset:{searchState:'loading'}},'불러오는 중')]:[]));
+  show(q);status.textContent=q?'검색 목록 불러오는 중':'';};
+ input.addEventListener('input',load,o);input.addEventListener('focus',load,o);
+ input.addEventListener('keydown',e=>{if(e.key==='Escape'&&!list.hidden&&!e.isComposing){e.preventDefault();show(false);}},o);
  const go=e=>{e.preventDefault();if(b.submit)return b.submit(e);const q=input.value.trim();if(q)location.hash=href('company',q);};
  const form=h('form',{class:'sk search-box',role:'search',dataset:{searchForm:''},onsubmit:e=>e.preventDefault()},
   icon(['M13 4 A9 9 0 1 1 12.99 4','M20 20 L27 27'],30),input,h('button',{class:'btn solid',type:'submit',onclick:go},'검색'));
- b.anchor=h('div',{class:'search-anchor'},form,list);b.note=h('div',{class:'search-note-line'});
- b.node=h('div',{class:'search-wrap'},label,b.anchor,status,b.note);
+ const A=b.anchor=h('div',{class:'search-anchor'},form,list);b.note=h('div',{class:'search-note-line'});
+ A.addEventListener('focusout',()=>setTimeout(()=>{if(!A.contains(document.activeElement))show(false);}),o);
+ b.node=h('div',{class:'search-wrap'},label,A,status,b.note);
  return b;}
 function search(route){
  const b=box(h('label',{for:'q',class:'hand hero-label'},'티커 · 회사명 · 한글명으로 검색'));
@@ -32,9 +36,9 @@ function result(route){
  const given=route.params[0],b=box(h('label',{for:'q',class:'sr-only'},'다른 기업 검색')),body=x=>h('div',{class:'card-body'},x);
  const name=h('h1',{class:'result-name',dataset:{resultCode:given}},given),facts=h('div',{class:'result-facts',dataset:{resultFacts:''}},pending('회사명 · 거래소 · SIC · 유형'));
  const star=h('span',{class:'star-wrap'},h('button',{type:'button',class:'chip star','aria-pressed':'false',disabled:true,dataset:{favorite:''}},h('span',{'aria-hidden':'true'},'☆ '),'즐겨찾기'));
- const bodies={qgv:body(pending('Q · G · V 막대, 종합 점수 · 순위')),technical:body(h('p',{class:'na',dataset:{na:'PRICE_ON_CLICK'}},'가격 이력은 기술적 분석 화면에서 [불러오기]를 눌러야 계산합니다')),
+ const bodies={qgv:body(pending('Q · G · V 막대, 종합 점수 · 순위')),technical:body(na('가격 이력은 기술적 분석 화면에서 [불러오기]를 눌러야 계산합니다','PRICE_ON_CLICK')),
   macro:body(pending('경고등 판정 · 공개 자료 기준')),news:body(pending('공시 · 뉴스 다섯 줄')),portfolio:body(pending('이 기기 보유 기록'))};
- later(route,'company',{box:b,given,name,facts,star,bodies});
+ later(route,'company',{box:b,given,name,facts,star,bodies},()=>facts.replaceChildren(na('기업 목록을 불러오지 못했습니다','INDEX_FAILED')));
  return h('div',{class:'screen'},b.node,h('section',{class:'result-head'},h('span',{class:'stamp'},'검색 결과'),name,facts,star),
   h('div',{class:'grid-3'},
    card('1. QGV',{shadow:'q',id:'qgv',link:href('qgv')},bodies.qgv,more('리더보드 · 가중치 · 스탯창')),

@@ -3,7 +3,9 @@
 // Builds the development site (tools/web_app_test_site.js), serves the live-only score inputs and a filing list as synthetic
 // fixtures, and checks the built page in Chromium:
 //  - Home: hero, the search box in the first paint; before IS2.ready typing works and the list says 불러오는 중 (a layer file is
-//    held back); then the company index: "nv" and a Korean name from the reviewed names file give ARIA combobox / listbox options
+//    held back), Escape keeps the text, leaving the box hides the list; the hand-over on the same render (typed text becomes
+//    options on the same input, focus kept, one repaint per keystroke) and a route left before IS2.ready is not filled; then the
+//    company index: "nv" and a Korean name from the reviewed names file give ARIA combobox / listbox options
 //    (at most 8, no price, cap, score or rank); the input element is never rebuilt, keys are ignored while composing and the list
 //    follows an open composition.
 //  - Selection: ArrowDown + Enter (implicit submission clicks the default button) and a pointer click navigate to the company page
@@ -25,6 +27,9 @@
 //  - Boundaries: every request same-origin, data requests only names in IS2.data.FILES; nothing written to localStorage /
 //    sessionStorage / IndexedDB without a real click; no console error (but the intended 404 of an unpublished live-only file), no
 //    CSP violation, no [style], no horizontal overflow at 390.
+//  - Hover only highlights: the 검색 click submits the typed text, not the hovered option.
+//  - Two more contexts: a device store seeded by the test (portfolio card held yes / no) and screen-search-live.js answering 404
+//    (LOADER_FAILED: the company header's fixed sentence, ★ off, the shell notice, every facade refuses, no uncaught error).
 // Synthetic data only (fixtures); no price is requested or shown.
 const { chromium } = require('playwright');
 const assert = require('node:assert/strict');
@@ -82,25 +87,53 @@ function macroScreen() {
       tag('before ready');
       let release; const gate = new Promise((r) => { release = r; });
       await page.route('**/engines.js', async (route) => { await gate; await route.continue(); });
-      await page.goto(s.base + '#/'); await page.locator('main[data-route=search]').waitFor();
+      // domcontentloaded: when loader.js inserts LOAD_ORDER before the window load event, the held file holds 'load' as well.
+      await page.goto(s.base + '#/', { waitUntil: 'domcontentloaded' }); await page.locator('main[data-route=search]').waitFor();
       assert.match(await page.locator('.hero-title').textContent(), /어떤 기업을 볼까요\?/);
       assert.equal(await page.locator('.hero-underline').count(), 1, 'the red hand underline');
       const marked = await page.evaluate(() => { const i = document.querySelector('[data-search-input]'); i.__mark = 1; return [i.id, i.getAttribute('role'), i.getAttribute('aria-controls'), i.getAttribute('aria-expanded')]; });
       assert.deepEqual(marked, ['q', 'combobox', 'q-list', 'false']);
       assert.ok(['WAITING', 'LOADING'].includes(await page.evaluate(() => window.IS2.loadState())), 'the layer is not there yet');
-      await page.locator('[data-search-input]').fill('nv');
+      const input = page.locator('[data-search-input]'), list = page.locator('#q-list');
+      await input.fill('nv');
       assert.equal(await page.locator('#q-list [data-search-state=loading]').textContent(), '불러오는 중', 'typing works before the layer; the list says 불러오는 중');
-      assert.equal(await page.locator('[data-search-input]').getAttribute('aria-expanded'), 'true');
+      assert.equal(await input.getAttribute('aria-expanded'), 'true');
       assert.equal(await page.locator('[data-quote] [data-pending]').count(), 1, 'the story waits for the layer');
       await common();
+      // The box before the layer behaves as after it: leaving it hides the list, focusing it again reopens it, Escape closes the list
+      // and keeps the text (no native clear of type=search).
+      await page.locator('.hero-title').click(); await list.waitFor({ state: 'hidden' });
+      assert.equal(await input.getAttribute('aria-expanded'), 'false', 'leaving the box hides the list');
+      await input.focus(); await page.locator('#q-list [data-search-state=loading]').waitFor();
+      await input.press('Escape');
+      assert.deepEqual([await input.inputValue(), await list.isHidden(), await input.getAttribute('aria-expanded')], ['nv', true, 'false'], 'Escape closes the list and keeps the text');
+      await input.press('d');
+      // A route left before IS2.ready is never filled: keep its list to look at after the layer arrives.
+      await page.evaluate(() => { window.__oldList = document.querySelector('#q-list'); });
+      await go('#/qgv', 'main[data-route=qgv]');
       // The ★ toggle is off before IS2.ready.
-      await page.evaluate(() => { location.hash = '#/company/nvda'; }); await page.locator('[data-result-code="nvda"]').waitFor();
+      await go('#/company/nvda', '[data-result-code="nvda"]');
       assert.equal(await page.locator('[data-favorite]').isDisabled(), true, '★ is off before IS2.ready');
       assert.equal(await page.locator('[data-card]').count(), 5);
       await common();
+      // Hand-over on the same render: text typed before IS2.ready becomes options on the same input element when the logic file
+      // arrives, the focus stays, and the skeleton's listener is gone (one more keystroke repaints the list once).
+      await go('#/', 'main[data-route=search] [data-search-input]');
+      await page.evaluate(() => { document.querySelector('[data-search-input]').__mark = 2; });
+      await input.fill('nvd'); await page.locator('#q-list [data-search-state=loading]').waitFor();
       release();
       assert.equal(await ready(), 'READY');
-      await page.locator('[data-favorite]:not([disabled])').waitFor();
+      await options().first().waitFor();
+      const handed = await page.evaluate(() => { const i = document.querySelector('[data-search-input]'), l = document.querySelector('#q-list');
+        return { mark: i.__mark, focus: document.activeElement === i, value: i.value, expanded: i.getAttribute('aria-expanded'), loading: !!l.querySelector('[data-search-state=loading]'),
+          first: l.querySelector('[role=option]').dataset.entityKey, old: [window.__oldList.isConnected, window.__oldList.textContent], selection: window.IS2.selection.get() }; });
+      assert.deepEqual(handed, { mark: 2, focus: true, value: 'nvd', expanded: 'true', loading: false, first: 'COMPANY:nvda', old: [false, '불러오는 중'], selection: null },
+        'same input, focus kept, options for the typed text; the routes left before IS2.ready were not filled');
+      await page.evaluate(() => { window.__records = 0; new MutationObserver((m) => { window.__records += m.length; }).observe(document.querySelector('#q-list'), { childList: true }); });
+      await input.press('a');
+      await page.waitForFunction(() => window.__records > 0);
+      assert.equal(await page.evaluate(() => window.__records), 1, 'one input handler: one repaint per keystroke');
+      assert.deepEqual(await options().evaluateAll((n) => n.map((o) => o.dataset.entityKey)).then((k) => k.slice(0, 1)), ['COMPANY:nvda']);
       assert.deepEqual([(await store()).local, (await store()).session, (await store()).idb], [0, 0, 0], 'nothing stored by opening');
 
       // ---------------------------------------------------------------- search (after ready)
@@ -160,7 +193,11 @@ function macroScreen() {
       // The single exact match (a ticker in another case), and a query without one (P0: #/company/<query>, then not found).
       for (const [text, hash] of [['NVDA', '#/company/nvda'], ['nv', '#/company/nv']]) {
         await go('#/', 'main[data-route=search] [data-search-input]');
-        await typed(text); await page.locator('[data-search-form] button[type=submit]').click();
+        await typed(text);
+        if (text === 'nv') { // hover only highlights: the 검색 click still submits the typed text
+          await options().last().hover(); assert.equal(await options().last().getAttribute('aria-selected'), 'true', 'hover highlights');
+        }
+        await page.locator('[data-search-form] button[type=submit]').click();
         await page.waitForFunction((x) => location.hash === x, hash);
         await page.locator(text === 'nv' ? '[data-not-found]' : '[data-result-code="nvda"] ~ [data-result-facts] .facts-line').waitFor();
         assert.equal((await store()).local, 0, text + ': a submit without a chosen option saves nothing');
@@ -339,6 +376,51 @@ function macroScreen() {
       const st = await store(); assert.deepEqual([st.session, st.idb], [0, 0], 'no sessionStorage / IndexedDB');
       await context.close();
     }
-    console.log('web app home: search, recent, favorites, company cards, story and boundaries ok at 1440 and 390');
+    // ---------------------------------------------------------------- portfolio card with a device store: held yes / no
+    phase = 'holdings';
+    {
+      const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
+      await context.clock.setFixedTime(new Date(NOW));
+      const page = await context.newPage(), seen = site.watch(page, s.origin, { allow404: UNPUBLISHED });
+      await page.goto(s.base + '#/'); await page.evaluate(() => window.IS2.ready);
+      // Seeded by the test straight into the device database (DeviceActual's schema): nvda quantity 10, amd recorded with quantity 0,
+      // qcom absent. Synthetic rows, no price.
+      await page.evaluate(async () => {
+        const c = await window.IS2.data.static('actual-catalog.json'), ref = (t) => c.instruments.find((i) => i.ticker === t).security_reference;
+        const snap = window.DeviceActual.makeSnapshot(c, [{ security_reference: ref('NVDA'), quantity: '10', average_cost: '100', currency: 'USD' }, { security_reference: ref('AMD'), quantity: '0', average_cost: '0', currency: 'USD' }]);
+        await new Promise((resolve, reject) => { const r = indexedDB.open('investment-device-actual-v1', 1); r.onerror = () => reject(r.error);
+          r.onupgradeneeded = () => r.result.createObjectStore('snapshots');
+          r.onsuccess = () => { const tx = r.result.transaction('snapshots', 'readwrite'); tx.objectStore('snapshots').put(snap, 'actual'); tx.oncomplete = () => { r.result.close(); resolve(); }; tx.onerror = () => reject(tx.error); }; });
+      });
+      const held = [];
+      for (const id of ['nvda', 'amd', 'qcom']) {
+        await page.evaluate((h) => { location.hash = h; }, '#/company/' + id); await page.locator('[data-result-code="' + id + '"] ~ [data-result-facts] .facts-line').waitFor();
+        const p = page.locator('[data-card=portfolio] [data-held]'); await p.waitFor();
+        held.push([id, await p.getAttribute('data-held'), await p.textContent()]);
+      }
+      assert.deepEqual(held, [['nvda', 'true', '이 기기 보유 기록 있음'], ['amd', 'false', '이 기기 보유 기록 없음'], ['qcom', 'false', '이 기기 보유 기록 없음']],
+        'the TARGET instrument by ticker, canonical security_reference and quantity > 0');
+      assert.deepEqual(seen.errors, [], 'holdings: no console error but the intended 404s');
+      await context.close();
+    }
+
+    // ---------------------------------------------------------------- the logic file fails: LOADER_FAILED for every menu
+    phase = 'loader failed';
+    {
+      const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
+      const page = await context.newPage(), errors = [];
+      page.on('pageerror', (e) => errors.push(String(e)));
+      await page.route('**/screen-search-live.js', (route) => route.fulfill({ status: 404, contentType: 'text/plain', body: 'gone' }));
+      await page.goto(s.base + '#/company/nvda', { waitUntil: 'domcontentloaded' });
+      await page.locator('[data-result-facts] [data-na=INDEX_FAILED]').waitFor();
+      const failed = await page.evaluate(() => ({ state: window.IS2.loadState(), facts: document.querySelector('[data-result-facts]').textContent, code: document.querySelector('[data-result-code]').dataset.resultCode,
+        star: document.querySelector('[data-favorite]').disabled, alert: (document.querySelector('[role=alert]') || {}).textContent || '', prefs: window.IS2.store.prefs().reason }));
+      assert.equal(failed.state, 'FAILED'); assert.equal(failed.facts, '기업 목록을 불러오지 못했습니다', 'the fixed sentence, as before the split');
+      assert.equal(failed.code, 'nvda'); assert.equal(failed.star, true, '★ stays off'); assert.match(failed.alert, /일부 파일을 불러오지 못했습니다/, 'the shell notice');
+      assert.equal(failed.prefs, 'LOADER_FAILED', 'a missing screen logic file fails the layer for every menu (P1_DATA_LAYER.md 1.1)');
+      assert.deepEqual(errors, [], 'no uncaught error or unhandled rejection');
+      await context.close();
+    }
+    console.log('web app home: search, recent, favorites, company cards, story and boundaries ok at 1440 and 390; held yes / no; LOADER_FAILED');
   } finally { await browser.close(); await s.close(); }
 })().catch((e) => { console.error('FAILED at', phase); console.error(e); process.exitCode = 1; });

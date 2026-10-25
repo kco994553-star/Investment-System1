@@ -10,9 +10,9 @@
    - ARIA combobox / listbox (the old SearchUI pattern): arrows move, Enter submits the form (implicit submission clicks the
      default button) and the selection runs in that click, Escape closes. IME safe: no key handling while composing; the list
      repaints on every input event (an open composition included). Until the index is there the list says 불러오는 중.
-   - A chosen option (pointer click, or Enter with an option active) is saved as a recent search with that click
-     (store.pushRecent, one action per event; a refused or failed save still navigates). A submit without an active option goes to
-     the single exact match, else to #/company/<query> as P0 did; it saves nothing.
+   - A chosen option (pointer click, or Enter with an option the arrow keys made active; hover only highlights) is saved as a
+     recent search with that click (store.pushRecent, one action per event; a refused or failed save still navigates). A submit
+     without such an option goes to the single exact match, else to #/company/<query> as P0 did; it saves nothing.
    - Home: recent chips (titles from the index, unknown keys skipped, 최근 지우기), favorites (store prefs interests) or, without
      any, the developer default (the TARGET 19, labelled as such, never written), one verified investor story (home-quotes.js).
    - Company page: after the index the title, ticker, exchange code, membership, SIC group and investment type (public files,
@@ -72,16 +72,18 @@ const loaded=x=>!!x&&typeof x==='object'&&x.state!=='NOT_READY';
 /* ---------------------------------------------------------------- search box (combobox on the skeleton's input) */
 // b = the skeleton's {input, list, status, note, anchor, pre, submit}: its 불러오는 중 listener stops (pre) and this one takes over.
 function attach(route,b){
- const signal=route.signal,{input,list,status,note,anchor}=b,S={hits:[],active:-1,composing:false,idx:null};
+ const signal=route.signal,{input,list,status,note,anchor}=b,S={hits:[],active:-1,key:false,composing:false,idx:null};
  b.pre.abort();
  const say=t=>{if(status.textContent!==t)status.textContent=t;};
  function setActive(i,scroll=true){const opts=[...list.querySelectorAll('[role=option]')];S.active=opts.length?Math.max(-1,Math.min(opts.length-1,i)):-1;
   opts.forEach((o,k)=>o.setAttribute('aria-selected',String(k===S.active)));
   if(S.active>=0){input.setAttribute('aria-activedescendant',opts[S.active].id);if(scroll)opts[S.active].scrollIntoView({block:'nearest'});}else input.removeAttribute('aria-activedescendant');}
  function show(open){list.hidden=!open;input.setAttribute('aria-expanded',String(open));if(!open){S.hits=[];setActive(-1);}}
+ // Hover only highlights (S.key false): the 검색 click / Enter takes an option only when the arrow keys chose it, so a pointer
+ // that crossed or rests on the list (also after the phone focus scroll moves it under a still pointer) never redirects a submit.
  function option(hit,i){const e=hit.entity,ix=S.idx,sub=[ix.english(e),ix.code(e),ix.member(e)].filter(Boolean);
   return h('li',{id:'q-opt-'+i,class:'search-opt',role:'option','aria-selected':'false',dataset:{entityKey:hit.canonical_entity_id,entityId:e.canonical_id},
-   onmousedown:ev=>ev.preventDefault(),onmousemove:()=>{if(S.active!==i)setActive(i,false);},onclick:ev=>go(ev,e)},
+   onmousedown:ev=>ev.preventDefault(),onmousemove:()=>{S.key=false;if(S.active!==i)setActive(i,false);},onclick:ev=>go(ev,e)},
    h('b',{class:'opt-name'},ix.title(e)),h('span',{class:'opt-sub'},sub.join(' · ')));}
  function paint(){
   const q=input.value.trim();if(!q){list.replaceChildren();show(false);say('');return;}
@@ -94,7 +96,7 @@ function attach(route,b){
  function go(ev,e){if(ev)ev.preventDefault();try{I.store.pushRecent(ev,'COMPANY:'+e.canonical_id);}catch(_){}location.hash=href('company',e.canonical_id);}
  // The form's default button (the skeleton's click handler calls this): a click, or Enter in the input (implicit submission).
  b.submit=ev=>{const q=input.value.trim();
-  if(S.active>=0&&S.hits[S.active]){go(ev,S.hits[S.active].entity);return;}
+  if(S.key&&S.active>=0&&S.hits[S.active]){go(ev,S.hits[S.active].entity);return;}
   const one=S.idx&&q?S.idx.exact(q):null;
   if(one){location.hash=href('company',one.canonical_id);return;}
   if(q)location.hash=href('company',q);};
@@ -104,7 +106,7 @@ function attach(route,b){
  input.addEventListener('keydown',e=>{
   if(e.isComposing||S.composing||e.keyCode===229)return;
   const n=S.hits.length,open=!list.hidden;
-  if((e.key==='ArrowDown'||e.key==='ArrowUp')&&n&&open){e.preventDefault();setActive(S.active<0?(e.key==='ArrowDown'?0:n-1):(S.active+(e.key==='ArrowDown'?1:n-1))%n);}
+  if((e.key==='ArrowDown'||e.key==='ArrowUp')&&n&&open){e.preventDefault();S.key=true;setActive(S.active<0?(e.key==='ArrowDown'?0:n-1):(S.active+(e.key==='ArrowDown'?1:n-1))%n);}
   else if(e.key==='Escape'&&(open||input.value)){e.preventDefault();if(open)show(false);else{input.value='';paint();}}});
  input.addEventListener('focus',()=>{if(input.value.trim())paint();
   if(window.matchMedia&&window.matchMedia('(max-width:720px)').matches){const top=input.getBoundingClientRect().top+window.scrollY-12;setTimeout(()=>{if(!signal.aborted&&document.activeElement===input)window.scrollTo({top:Math.max(0,top),behavior:'auto'});},60);}});
