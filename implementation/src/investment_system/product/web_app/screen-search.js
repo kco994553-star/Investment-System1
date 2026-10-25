@@ -5,8 +5,8 @@
      (company-names-ko.json, also the code → company_id links). A missing file leaves its part out and a status line says which.
      Companies only; order = match quality, then name (never a recommendation); 8 options at most; no price, cap, score or rank.
    - ARIA combobox / listbox (the old SearchUI pattern): arrows move, Enter submits the form (implicit submission clicks the
-     default button) and the selection runs in that click, Escape closes. IME safe: no key handling while composing, and the
-     input element is never rebuilt when the list changes.
+     default button) and the selection runs in that click, Escape closes. IME safe: no key handling while composing; the list
+     repaints on every input event (an open composition included), and the input element is never rebuilt when the list changes.
    - A chosen option (pointer click, or Enter with an option active) is saved as a recent search with that click
      (store.pushRecent, one action per event; a refused or failed save still navigates). A submit without an active option goes to
      the single exact match, else to #/company/<query> as P0 did; it saves nothing.
@@ -79,13 +79,13 @@ function searchBox(route,{label}){
  const status=h('p',{class:'sr-only',role:'status',dataset:{searchStatus:''}});
  const note=h('div',{class:'search-note-line'});
  const say=t=>{if(status.textContent!==t)status.textContent=t;};
- function setActive(i){const opts=[...list.querySelectorAll('[role=option]')];S.active=opts.length?Math.max(-1,Math.min(opts.length-1,i)):-1;
+ function setActive(i,scroll=true){const opts=[...list.querySelectorAll('[role=option]')];S.active=opts.length?Math.max(-1,Math.min(opts.length-1,i)):-1;
   opts.forEach((o,k)=>o.setAttribute('aria-selected',String(k===S.active)));
-  if(S.active>=0){input.setAttribute('aria-activedescendant',opts[S.active].id);opts[S.active].scrollIntoView({block:'nearest'});}else input.removeAttribute('aria-activedescendant');}
+  if(S.active>=0){input.setAttribute('aria-activedescendant',opts[S.active].id);if(scroll)opts[S.active].scrollIntoView({block:'nearest'});}else input.removeAttribute('aria-activedescendant');}
  function show(open){list.hidden=!open;input.setAttribute('aria-expanded',String(open));if(!open){S.hits=[];setActive(-1);}}
  function option(hit,i){const e=hit.entity,ix=S.idx,sub=[ix.english(e),ix.code(e),ix.member(e)].filter(Boolean);
   return h('li',{id:'q-opt-'+i,class:'search-opt',role:'option','aria-selected':'false',dataset:{entityKey:hit.canonical_entity_id,entityId:e.canonical_id},
-   onmousedown:ev=>ev.preventDefault(),onmousemove:()=>{if(S.active!==i)setActive(i);},onclick:ev=>go(ev,e)},
+   onmousedown:ev=>ev.preventDefault(),onmousemove:()=>{if(S.active!==i)setActive(i,false);},onclick:ev=>go(ev,e)},
    h('b',{class:'opt-name'},ix.title(e)),h('span',{class:'opt-sub'},sub.join(' · ')));}
  function paint(){
   const q=input.value.trim();if(!q){list.replaceChildren();show(false);say('');return;}
@@ -104,16 +104,17 @@ function searchBox(route,{label}){
   if(q)location.hash=href('company',q);}
  input.addEventListener('compositionstart',()=>{S.composing=true;});
  input.addEventListener('compositionend',()=>{S.composing=false;paint();});
- input.addEventListener('input',()=>{if(!S.composing)paint();});
+ input.addEventListener('input',paint);
  input.addEventListener('keydown',e=>{
   if(e.isComposing||S.composing||e.keyCode===229)return;
   const n=S.hits.length,open=!list.hidden;
   if((e.key==='ArrowDown'||e.key==='ArrowUp')&&n&&open){e.preventDefault();setActive(S.active<0?(e.key==='ArrowDown'?0:n-1):(S.active+(e.key==='ArrowDown'?1:n-1))%n);}
   else if(e.key==='Escape'&&(open||input.value)){e.preventDefault();if(open)show(false);else{input.value='';paint();}}});
- input.addEventListener('focus',()=>{if(input.value.trim())paint();});
+ input.addEventListener('focus',()=>{if(input.value.trim())paint();
+  if(window.matchMedia&&window.matchMedia('(max-width:720px)').matches){const top=input.getBoundingClientRect().top+window.scrollY-12;setTimeout(()=>{if(!signal.aborted&&document.activeElement===input)window.scrollTo({top:Math.max(0,top),behavior:'auto'});},60);}});
  const form=h('form',{class:'sk search-box',role:'search',dataset:{searchForm:''},onsubmit:e=>e.preventDefault()},
   icon(SEARCH,30),input,h('button',{class:'btn solid',type:'submit',onclick:submit},'검색'));
- companyIndex().then(settled(signal,idx=>{S.idx=idx;note.replaceChildren(missingLine(idx)||'');if(!S.composing)paint();}),()=>{});
+ companyIndex().then(settled(signal,idx=>{S.idx=idx;note.replaceChildren(missingLine(idx)||'');paint();}),()=>{});
  const anchor=h('div',{class:'search-anchor'},form,list);
  // The list is hidden when the focus leaves the box; the highlighted option stays chosen (a browser that does not focus a clicked
  // button blurs the input before the 검색 click). Escape and an emptied box clear it.
@@ -126,15 +127,15 @@ function chipLink(idx,id,star){const e=idx.resolve(id);return e?h('a',{class:'ch
 function chips(route,host){
  const signal=route.signal;
  companyIndex().then(settled(signal,idx=>draw(idx)),()=>{});
- function draw(idx){
+ function draw(idx,cleared){
   const S=I.store,recent=S.recent(),prefs=S.prefs(),rows=[];
   const keys=Array.isArray(recent)?recent.filter(k=>k.startsWith('COMPANY:')).map(k=>k.slice(8)):[];
   const recentChips=keys.map(id=>chipLink(idx,id,false)).filter(Boolean);
   if(recentChips.length){
-   const clear=h('button',{type:'button',class:'linkish',dataset:{recentClear:''},onclick:e=>{try{S.clearRecent(e);}catch(_){}draw(idx);}},'최근 지우기');
+   const clear=h('button',{type:'button',class:'linkish',dataset:{recentClear:''},onclick:e=>{let done=false;try{S.clearRecent(e);done=true;}catch(_){}draw(idx,done);}},'최근 지우기');
    rows.push(h('div',{class:'chip-row',dataset:{recent:''}},h('span',{class:'hand chip-label'},'최근 →'),...recentChips,clear));}
   if(!loaded(prefs)){rows.push(pending('즐겨찾기 기업'));}
-  else if(prefs.state==='INVALID'){rows.push(h('p',{class:'reason',dataset:{favorites:'INVALID'}},'이 기기의 관심 기업 기록을 읽을 수 없어 즐겨찾기를 보이지 않습니다 · 설정에서 백업으로 확인하세요'));}
+  else if(prefs.state==='INVALID'){rows.push(h('p',{class:'reason',dataset:{favorites:'INVALID'}},'이 기기의 관심 기업 기록을 읽을 수 없어 즐겨찾기를 표시하지 않습니다 · 설정의 백업에서 기록을 확인하세요'));}
   else{
    const mine=prefs.value.interests.map(id=>chipLink(idx,id,true)).filter(Boolean);
    if(mine.length)rows.push(h('div',{class:'chip-row',dataset:{favorites:'MINE'}},h('span',{class:'hand chip-label'},'★ 즐겨찾기'),...mine));
@@ -147,8 +148,11 @@ function chips(route,host){
      tog.addEventListener('click',()=>{const open=box.hidden;box.hidden=!open;tog.setAttribute('aria-expanded',String(open));tog.textContent=open?'접기':'+'+extra.length+' 더 보기';});
      row.append(box,tog);}
     if(all.length)rows.push(row);}}
+  if(cleared)rows.unshift(h('p',{class:'reason',role:'status',dataset:{recentCleared:''}},'최근 검색을 지웠습니다'));
   host.replaceChildren(...rows);
-  if(!rows.length)host.append(h('p',{class:'reason'},'검색해서 고른 기업은 이 기기에만 최근 검색으로 남습니다'));}
+  if(!rows.length)host.append(h('p',{class:'reason'},'검색해서 고른 기업은 이 기기에만 최근 검색으로 남습니다'));
+  // The pressed 최근 지우기 is gone with its row: the focus stays in this block instead of falling back to the page.
+  if(cleared)host.focus({preventScroll:true});}
  return host;
 }
 // One investor story (feature 1.1.3): the module's checked text; Korean is our translation / summary and says so.
@@ -157,7 +161,7 @@ function quote(route){
  ready().then(settled(route.signal,()=>{const Q=window.HomeQuotes;if(!Q)return;const q=Q.pick(quoteId);quoteId=q.id;const story=q.type==='STORY';
   host.dataset.quoteType=q.type;host.dataset.quoteId=q.id;
   host.replaceChildren(
-   h('p',{class:'hand quote-kind'},story?'일화 요약 · 직접 인용 아님':'직접 인용',' · ',story?'우리말 요약(자체 작성)':'우리말 번역(자체 번역)'),
+   h('p',{class:'hand quote-kind'},story?'일화 요약 · 직접 인용 아님':'직접 인용',' · ',story?'우리말 정리(자체 작성)':'우리말 번역(자체 번역)'),
    h('blockquote',{class:'quote-ko',lang:'ko'},h('p',null,q.ko)),
    h('p',{class:'quote-en',lang:'en'},'원문 발췌: ',q.headline_en),
    h('p',{class:'quote-who'},'— ',q.speaker.ko),
@@ -170,7 +174,7 @@ function search(route){
    h('h1',{class:'hero-title'},'어떤 기업을 ',h('span',{class:'hl'},'볼까요?')),
    h('svg:svg',{class:'hero-underline',viewBox:'0 0 560 26',preserveAspectRatio:'none','aria-hidden':'true'},h('svg:path',{d:'M8 16 C 120 6, 260 22, 380 12 S 520 8, 552 14'})),
    searchBox(route,{label:h('label',{for:'q',class:'hand hero-label'},'티커 · 회사명 · 한글명으로 검색')}),
-   chips(route,h('div',{class:'chip-rows',dataset:{homeChips:''}},pending('최근 · ★ 즐겨찾기 기업'))),
+   chips(route,h('div',{class:'chip-rows',tabindex:'-1',dataset:{homeChips:''}},pending('최근 · ★ 즐겨찾기 기업'))),
    h('p',{class:'hand hero-aside'},'검색하면 ↓ QGV + 기술적 분석 + 매크로를 한 장에 보여 줌')),
   quote(route));
 }
@@ -217,7 +221,7 @@ function newsCard(body,e,cid,signal){
   if(!rows.length){body.replaceChildren(na('공개 파일에 이 기업 소식이 없습니다','EMPTY'));return;}
   const text=r=>{try{if(r.source==='SEC'&&r.event)return r.event.form+' · '+SD.classLabel(r.event.classification,false,r.event.items);if(r.event&&r.event.title)return r.event.title;return r.item?r.item.title:'';}catch(_){return r.event?r.event.form||'':'';}};
   body.replaceChildren(h('ul',{class:'news-lines',dataset:{news:''}},...rows.map(r=>h('li',{dataset:{newsItem:r.channel}},
-   h('b',null,'[',r.channel==='DISCLOSURE'?'공시 · '+r.source:'뉴스','] '),text(r),' · ',String(r.time||'').slice(0,10)))));}),
+   h('b',null,'[',r.channel==='DISCLOSURE'?'공시 · '+r.source:'뉴스','] '),text(r),' · ',h('span',{class:'nobr'},String(r.time||'').slice(0,10))))));}),
  ()=>{if(!signal.aborted)body.replaceChildren(na('공개 소식 파일을 읽지 못했습니다','LIST_FAILED'));});
 }
 function portfolioCard(body,e,idx,signal){
@@ -230,12 +234,14 @@ function portfolioCard(body,e,idx,signal){
   body.replaceChildren(h('p',{dataset:{held:String(held)}},held?'이 기기 보유 기록 있음':'이 기기 보유 기록 없음'),weight);}),
  ()=>{if(!signal.aborted)body.replaceChildren(na('이 기기 보유 기록을 읽지 못했습니다','HOLDINGS_FAILED'),weight);});
 }
+// The ★ toggle's name stays 즐겨찾기 (aria-pressed carries the state); the glyph and 해제 are visible only.
+const starText=on=>[h('span',{'aria-hidden':'true'},on?'★ ':'☆ '),'즐겨찾기',on?h('span',{'aria-hidden':'true'},' 해제'):''];
 // ★ (feature 1.1.4): adds / removes the id in prefs interests on a click; unstarring also leaves the groups (the validator needs it).
 function starButton(cid,signal){
- const btn=h('button',{type:'button',class:'chip star','aria-pressed':'false',disabled:true,dataset:{favorite:cid}},'☆ 즐겨찾기'),why=h('span',{class:'reason',dataset:{favoriteWhy:''}});
+ const btn=h('button',{type:'button',class:'chip star','aria-pressed':'false',disabled:true,dataset:{favorite:cid}},...starText(false)),why=h('span',{class:'reason',dataset:{favoriteWhy:''}});
  const paint=()=>{const p=I.store.prefs();if(!loaded(p)){btn.disabled=true;return;}
   if(p.state==='INVALID'){btn.disabled=true;why.textContent='이 기기의 관심 기업 기록을 읽을 수 없어 바꿀 수 없습니다';return;}
-  const on=p.value.interests.includes(cid);btn.disabled=false;btn.setAttribute('aria-pressed',String(on));btn.textContent=on?'★ 즐겨찾기 해제':'☆ 즐겨찾기';};
+  const on=p.value.interests.includes(cid);btn.disabled=false;btn.setAttribute('aria-pressed',String(on));btn.replaceChildren(...starText(on));};
  btn.addEventListener('click',e=>{const p=I.store.prefs();if(!loaded(p)||p.state==='INVALID')return;const v=p.value,on=v.interests.includes(cid);
   const next={version:1,interests:on?v.interests.filter(x=>x!==cid):[...v.interests,cid],groups:v.groups.map(g=>({id:g.id,name:g.name,members:on?g.members.filter(x=>x!==cid):[...g.members]}))};
   try{I.store.savePrefs(e,next);why.textContent='';}catch(err){why.textContent=String(err&&err.message)==='PREFS_STORAGE_INVALID'?'이 기기의 관심 기업 기록을 읽을 수 없어 바꿀 수 없습니다':'저장하지 못했습니다';}
@@ -247,7 +253,7 @@ function result(route){
  const given=route.params[0],signal=route.signal;
  const name=h('h1',{class:'result-name',dataset:{resultCode:given}},given),facts=h('div',{class:'result-facts',dataset:{resultFacts:''}},pending('회사명 · 거래소 · SIC · 유형'));
  // The ★ is drawn at once and stays off until the layer is ready and the id resolved (then starButton takes its place).
- const star=h('span',{class:'star-wrap'},h('button',{type:'button',class:'chip star','aria-pressed':'false',disabled:true,dataset:{favorite:''}},'☆ 즐겨찾기'));
+ const star=h('span',{class:'star-wrap'},h('button',{type:'button',class:'chip star','aria-pressed':'false',disabled:true,dataset:{favorite:''}},...starText(false)));
  const head=h('section',{class:'result-head'},h('span',{class:'stamp'},'검색 결과'),name,facts,star);
  const bodies={qgv:h('div',{class:'card-body'},pending('Q · G · V 막대, 종합 점수 · 순위')),technical:h('div',{class:'card-body'},na('가격 이력은 기술적 분석 화면에서 [불러오기]를 눌러야 계산합니다','PRICE_ON_CLICK')),
   macro:h('div',{class:'card-body'},pending('경고등 판정 · 공개 자료 기준')),news:h('div',{class:'card-body'},pending('공시 · 뉴스 다섯 줄')),portfolio:h('div',{class:'card-body'},pending('이 기기 보유 기록'))};
@@ -268,9 +274,9 @@ function result(route){
    for(const k of['qgv','macro','news','portfolio'])bodies[k].replaceChildren(na('기업을 찾지 못해 값이 없습니다','NOT_FOUND'));
    return;}
   const cid=e.canonical_id;I.selection.set(cid);
-  name.textContent=idx.title(e);
-  const bits=[e.ticker,idx.code(e),idx.member(e)].filter(Boolean),extra=h('span',{class:'facts-more'});
-  facts.replaceChildren(h('p',{class:'facts-line'},bits.join(' · '),extra));star.replaceWith(starButton(cid,signal));
+  const title=idx.title(e);name.textContent=title;
+  const bits=[e.ticker&&!title.includes(e.ticker)?e.ticker:null,idx.code(e),idx.member(e)].filter(Boolean),extra=h('span',{class:'facts-more'});
+  facts.replaceChildren(h('p',{class:'facts-line'},...bits.flatMap((b,i)=>[i?' · ':'',h('span',{class:'nobr'},b)]),extra));star.replaceWith(starButton(cid,signal));
   I.data.ready().then(settled(signal,()=>{const add=classOf(cid);if(add.length)extra.append(...add.map(t=>' · '+t));}),()=>{});
   qgvCard(bodies.qgv,cid,signal);macroCard(bodies.macro,signal);newsCard(bodies.news,e,cid,signal);portfolioCard(bodies.portfolio,e,idx,signal);}),
  ()=>{if(!signal.aborted)facts.replaceChildren(na('기업 목록을 불러오지 못했습니다','INDEX_FAILED'));});

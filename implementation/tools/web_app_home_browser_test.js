@@ -4,20 +4,24 @@
 // fixtures, and checks the built page in Chromium:
 //  - Home: hero, the search box in the first paint; before IS2.ready typing works and the list says 불러오는 중 (a layer file is
 //    held back); then the company index: "nv" and a Korean name from the reviewed names file give ARIA combobox / listbox options
-//    (at most 8, no price, cap, score or rank); the input element is never rebuilt and keys are ignored while composing.
+//    (at most 8, no price, cap, score or rank); the input element is never rebuilt, keys are ignored while composing and the list
+//    follows an open composition.
 //  - Selection: ArrowDown + Enter (implicit submission clicks the default button) and a pointer click navigate to the company page
 //    and save the recent search with that real click; a synthetic el.click() / dispatchEvent navigates but saves nothing (the store
-//    refuses it); a submit without an active option goes to #/company/<query> and saves nothing. Back home the recent chip shows the
-//    company title; 최근 지우기 (a real click) clears it.
+//    refuses it); a submit without an active option goes to the single exact match (NVDA -> nvda), else to #/company/<query> (nv,
+//    then the not-found sentence), and saves nothing. Back home the recent chip shows the company title; 최근 지우기 (a real click)
+//    clears it and the focus stays in the chip block.
 //  - Favorites: empty prefs show the developer default (TARGET 19, labelled 개발자 기본값 · 추천 아님, 8 chips then +N 더 보기); the
-//    ★ toggle on the company page writes prefs only with a real click (disabled before IS2.ready); home then shows the favorite and
-//    no default; unstarring brings the default back.
+//    ★ toggle (accessible name 즐겨찾기, state in aria-pressed) on the company page writes prefs only with a real click (disabled
+//    before IS2.ready); home then shows the favorite and no default; unstarring also takes the id out of a group that holds it;
+//    with no favorite left the default comes back.
 //  - Company page: h1[data-result-code] as given; title, ticker, Universe code and membership; QGV card numbers are exactly the
-//    layer's row (Q · G · V · total · rank) or NA with the reasonText, V label = row.source_label; macro, news (fixture filings),
-//    portfolio (device store not opened) from the layer; no digit in a pending block and none of the draft's example numbers; the
+//    layer's row (Q · G · V · total · rank) or NA with the reasonText, V label = row.source_label; macro equal to
+//    IS2.engines.macro.current() (a synthetic lights file at 1440: label and counts; the built file at 390: NO_LIGHTS), news lines
+//    exactly the fixture's newest filings for the company, portfolio (device store not opened) from the layer; tap targets 44 px; no digit in a pending block and none of the draft's example numbers; the
 //    technical card asks for nothing. Unknown id: the fixed sentence, no values. IS2.selection keeps the company on #/qgv.
-//  - Investor story: the module's checked text, labelled translation / summary, the English excerpt, person and a source link
-//    (target _blank, rel noopener noreferrer).
+//  - Investor story: the module's checked text, labelled translation / summary (a STORY and a DIRECT item are both shown, by a
+//    stubbed Math.random), the English excerpt, person and a source link (target _blank, rel noopener noreferrer).
 //  - Boundaries: every request same-origin, data requests only names in IS2.data.FILES; nothing written to localStorage /
 //    sessionStorage / IndexedDB without a real click; no console error (but the intended 404 of an unpublished live-only file), no
 //    CSP violation, no [style], no horizontal overflow at 390.
@@ -29,6 +33,7 @@ const R = require('./web_app_reuse');
 const site = require('./web_app_test_site');
 const F = require('./qgv_v2_fixture.js');
 const SEC = require('./sec_disclosures_fixture.js');
+const { EMPTY } = require('./empty_public_screens.js');
 
 // The sec-qgv2.json fixture rows were collected 2026-10-13 (14-day window): a fixed clock keeps them LIVE.
 const NOW = '2026-10-14T03:00:00.000Z';
@@ -37,6 +42,17 @@ const RECENT_KEY = 'investment.web.v1.recent-search', PERSONAL_KEY = 'investment
 // Draft example values and words (the draft's numbers are examples and must never show).
 const DRAFT = /예시|EXA\b|상승 깃발|회복 후반|상승 초입|보유 비중 6%|모델 적합 비중 8%|23 \/ 498|QGV 72\b/;
 let phase = 'START';
+// A synthetic macro-screen.json with three public lights (employment and curve lit, inflation not): 경고, 2 of 3 (the
+// macro_lights_browser_test fixture). Not market data.
+function macroScreen() {
+  const A = 'a'.repeat(64), B = 'b'.repeat(64), AT = '2026-01-01T00:00:00+00:00', p = structuredClone(EMPTY['macro-screen.json']);
+  p.state = 'LIVE'; p.sources = [{ agency: 'BLS', sha256: A, acquired_at: AT }, { agency: 'TREASURY', sha256: B, acquired_at: AT }];
+  const L = p.data.macro_lights_v1.lights;
+  Object.assign(L.employment, { state: 'LIVE', lit: true, reason: 'LIT', as_of: '2025-12', inputs: [{ sha256: A, acquired_at: AT }], values: { period: '2025-12', avg3: 4.6, low12: 4.0, low12_count: 12, gap: 0.6 } });
+  Object.assign(L.inflation, { state: 'LIVE', lit: false, reason: 'NOT_LIT', as_of: '2025-12', inputs: [{ sha256: A, acquired_at: AT }], values: { period: '2025-12', base_period: '2024-12', yoy: 0.03 } });
+  Object.assign(L.curve, { state: 'LIVE', lit: true, reason: 'LIT', as_of: '2025-12-31', inputs: [{ sha256: B, acquired_at: AT }], values: { date: '2025-12-31', ten_year: 4.2, three_month: 4.5, spread: -0.3, run_days: 25 } });
+  return p;
+}
 
 (async () => {
   const s = await site.start({ fixtures: { 'sec-qgv2.json': { json: F.strictPayload() }, 'sec-disclosures.json': { json: SEC.payload(Date.parse(NOW)) } } });
@@ -45,6 +61,7 @@ let phase = 'START';
   try {
     for (const [width, height] of [[1440, 1000], [390, 844]]) {
       const phone = width < 720, context = await browser.newContext({ viewport: { width, height } });
+      s.fixture('macro-screen.json', phone ? null : { json: macroScreen() });
       await context.clock.setFixedTime(new Date(NOW));
       await context.addInitScript(() => { window.__csp = 0; document.addEventListener('securitypolicyviolation', () => { window.__csp++; }); });
       const page = await context.newPage(), seen = site.watch(page, s.origin, { allow404: UNPUBLISHED });
@@ -110,6 +127,10 @@ let phase = 'START';
         i.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, isComposing: true })); const during = i.getAttribute('aria-activedescendant');
         i.dispatchEvent(new CompositionEvent('compositionend')); return { mark: i.__mark, during }; });
       assert.deepEqual(ime, { mark: 1, during: null }, 'the input is never rebuilt; ArrowDown while composing does nothing');
+      const composing = await page.evaluate(() => { const i = document.querySelector('[data-search-input]'), l = document.querySelector('#q-list'); i.dispatchEvent(new CompositionEvent('compositionstart'));
+        i.value = 'nvd'; i.dispatchEvent(new InputEvent('input', { bubbles: true, isComposing: true, inputType: 'insertCompositionText', data: 'nvd' }));
+        const r = { open: !l.hidden, first: (l.querySelector('[role=option]') || {}).dataset?.entityKey || null, mark: i.__mark }; i.dispatchEvent(new CompositionEvent('compositionend')); return r; });
+      assert.deepEqual(composing, { open: true, first: 'COMPANY:nvda', mark: 1 }, 'the list follows an open composition (Android keyboards, Korean syllables)');
       // A Universe-only company: its code and membership.
       await typed('NYSE:FIX');
       assert.match(await options().first().textContent(), /NYSE:FIX/); assert.match(await options().first().textContent(), /Universe504/);
@@ -136,6 +157,14 @@ let phase = 'START';
       await page.locator('[data-result-code="NYSE:FIX"]').waitFor();
       assert.equal(await page.evaluate(() => location.hash), '#/company/NYSE%3AFIX');
       assert.equal((await store()).local, 0, 'a submit without a chosen option saves nothing');
+      // The single exact match (a ticker in another case), and a query without one (P0: #/company/<query>, then not found).
+      for (const [text, hash] of [['NVDA', '#/company/nvda'], ['nv', '#/company/nv']]) {
+        await go('#/', 'main[data-route=search] [data-search-input]');
+        await typed(text); await page.locator('[data-search-form] button[type=submit]').click();
+        await page.waitForFunction((x) => location.hash === x, hash);
+        await page.locator(text === 'nv' ? '[data-not-found]' : '[data-result-code="nvda"] ~ [data-result-facts] .facts-line').waitFor();
+        assert.equal((await store()).local, 0, text + ': a submit without a chosen option saves nothing');
+      }
 
       // ---------------------------------------------------------------- real selection: keyboard, then pointer
       tag('real selection');
@@ -171,29 +200,44 @@ let phase = 'START';
       assert.equal(await page.locator('[data-favorite]').getAttribute('aria-pressed'), 'false');
       await page.evaluate(() => document.querySelector('[data-favorite]').click());
       assert.equal((await store()).localItems[PERSONAL_KEY], undefined, 'a synthetic click on ★ writes nothing');
+      const starName = () => page.getByRole('button', { name: '즐겨찾기', exact: true });
+      assert.equal(await starName().count(), 1, 'the ★ toggle is named 즐겨찾기');
       await page.locator('[data-favorite]').click();
       assert.equal(await page.locator('[data-favorite]').getAttribute('aria-pressed'), 'true');
+      assert.equal(await starName().getAttribute('aria-pressed'), 'true', 'the same name when pressed; aria-pressed carries the state');
       assert.deepEqual(JSON.parse((await store()).localItems[PERSONAL_KEY]), { version: 1, interests: ['amd'], groups: [] }, 'a real click on ★ writes prefs');
       await go('#/', 'main[data-route=search] [data-favorites=MINE]');
       assert.deepEqual(await page.locator('[data-favorites=MINE] [data-chip]').evaluateAll((n) => n.map((a) => a.textContent)), ['★ AMD · AMD']);
       assert.equal(await page.locator('[data-favorites=DEFAULT]').count(), 0, 'the first favorite replaces the developer default');
       await common();
-      // Unstar (a group holding the id keeps the validator happy: the id leaves the group too).
-      await page.evaluate(() => 0);
+      // Unstar with a group that holds the id (as the old watchlist screen saves them): the id leaves the group too, so the
+      // validator takes it.
+      await page.evaluate((k) => localStorage.setItem(k, JSON.stringify({ version: 1, interests: ['amd', 'nvda'], groups: [{ id: 'g1', name: '반도체', members: ['amd', 'nvda'] }] })), PERSONAL_KEY);
       await go('#/company/amd', '[data-favorite][aria-pressed=true]:not([disabled])');
       await page.locator('[data-favorite]').click();
-      assert.deepEqual(JSON.parse((await store()).localItems[PERSONAL_KEY]), { version: 1, interests: [], groups: [] });
+      assert.deepEqual(JSON.parse((await store()).localItems[PERSONAL_KEY]), { version: 1, interests: ['nvda'], groups: [{ id: 'g1', name: '반도체', members: ['nvda'] }] });
+      assert.equal(await page.locator('[data-favorite]').getAttribute('aria-pressed'), 'false');
+      assert.equal(await page.locator('[data-favorite-why]').textContent(), '', 'saved without a reason line');
+      await go('#/', 'main[data-route=search] [data-favorites=MINE]');
+      assert.deepEqual(await page.locator('[data-favorites=MINE] [data-chip]').evaluateAll((n) => n.map((a) => a.textContent)), ['★ NVIDIA · NVDA']);
+      await go('#/company/nvda', '[data-favorite][aria-pressed=true]:not([disabled])');
+      await page.locator('[data-favorite]').click();
+      assert.deepEqual(JSON.parse((await store()).localItems[PERSONAL_KEY]), { version: 1, interests: [], groups: [{ id: 'g1', name: '반도체', members: [] }] });
       await go('#/', 'main[data-route=search] [data-favorites=DEFAULT]');
       // 최근 지우기: a real click clears the recent searches.
       await page.locator('[data-recent-clear]').click();
       assert.equal((await store()).localItems[RECENT_KEY], undefined, '최근 지우기 cleared the list');
       assert.equal(await page.locator('[data-recent]').count(), 0);
+      assert.equal(await page.locator('[data-recent-cleared]').textContent(), '최근 검색을 지웠습니다');
+      assert.equal(await page.evaluate(() => document.activeElement && 'homeChips' in document.activeElement.dataset), true, 'the focus stays in the chip block');
+      const small = async (sel) => page.evaluate((x) => [...document.querySelectorAll(x)].filter((e) => e.getClientRects().length).map((e) => [e.textContent, e.getBoundingClientRect().height]).filter(([, h]) => h < 44 - 0.5), sel);
+      assert.deepEqual(await small('main .chip-row .chip, main .linkish, main [data-quote-link]'), [], 'home tap targets are 44 px tall');
 
       // ---------------------------------------------------------------- company page values
       tag('company');
       await go('#/company/nvda', '[data-card=qgv] [data-qgv]');
       const facts = await page.locator('[data-result-facts] .facts-line').textContent();
-      assert.match(facts, /^NVDA · NASDAQ:NVDA · TARGET · Universe504 둘 다/);
+      assert.match(facts, /^NASDAQ:NVDA · TARGET · Universe504 둘 다/, 'the ticker once: in the title');
       assert.equal(await page.locator('.result-name').textContent(), 'NVIDIA · NVDA');
       assert.equal(await page.locator('.result-name').getAttribute('data-result-code'), 'nvda');
       await page.waitForFunction(() => document.querySelectorAll('[data-card] [data-pending]').length === 0);
@@ -215,11 +259,22 @@ let phase = 'START';
       assert.equal(qgv.fills.length, 2, 'two filled bars (Q, G); V is a dashed empty track');
       assert.equal(await page.locator('[data-card=technical]').innerText().then((t) => /가격 이력은 기술적 분석 화면에서 \[불러오기\]를 눌러야 계산합니다/.test(t)), true);
       const news = await page.locator('[data-card=news] [data-news-item]').allTextContents();
-      assert.ok(news.length >= 1 && news.length <= 5, 'the fixture filings for nvda');
-      for (const n of news) assert.match(n, /^\[공시 · SEC\] 8-K(\/A)? · .+ · \d{4}-\d{2}-\d{2}$/);
+      const fixtureNews = SEC.payload(Date.parse(NOW)).events.filter((e) => e.company_id === 'nvda').sort((a, b) => (a.accepted_at < b.accepted_at ? 1 : a.accepted_at > b.accepted_at ? -1 : 0)).slice(0, 5);
+      const wantNews = await page.evaluate((evs) => evs.map((e) => '[공시 · SEC] ' + e.form + ' · ' + window.SecDisclosures.classLabel(e.classification, false, e.items) + ' · ' + e.accepted_at.slice(0, 10)), fixtureNews);
+      assert.ok(wantNews.length >= 1);
+      assert.deepEqual(news, wantNews, 'the fixture\'s newest filings for nvda, newest first, kind · form · class · date');
       assert.match(await page.locator('[data-card=portfolio]').innerText(), /이 기기 저장소가 아직 없습니다/);
       assert.match(await page.locator('[data-card=portfolio]').innerText(), /비중은 포트폴리오 화면에서/);
-      assert.ok((await page.locator('[data-card=macro] .card-body').innerText()).length > 0);
+      const mac = await page.evaluate(async () => { const I = window.IS2, c = await I.engines.macro.current(), st = I.data.state('macro-screen.json'), b = document.querySelector('[data-card=macro] .card-body');
+        return { c, asOf: st.as_of, state: st.state, text: b.innerText, na: [...b.querySelectorAll('[data-na]')].map((x) => x.dataset.na) }; });
+      assert.ok(!mac.na.includes('MACRO_FAILED'), 'the macro card read the layer');
+      if (phone) { assert.ok(mac.c && mac.c.state === null, 'the built file has no public lights'); assert.deepEqual(mac.na, ['NO_LIGHTS']); }
+      else {
+        assert.deepEqual(mac.c && [mac.c.state, mac.c.lit_count, mac.c.available_count], ['WARNING', 2, 3], 'the synthetic lights file');
+        assert.ok(mac.text.includes('경고등 판정: 경고 · 켜진 경고등 2 / 확인 3'), mac.text); assert.deepEqual(mac.na, []);
+      }
+      if (mac.asOf) assert.ok(mac.text.includes('공개 자료 기준 ' + String(mac.asOf).slice(0, 10)), 'the public file date');
+      assert.deepEqual(await small('[data-favorite], [data-card] a.more'), [], 'company page tap targets are 44 px tall');
       assert.deepEqual(await page.locator('[data-card]').evaluateAll((n) => n.map((x) => x.dataset.card)), ['qgv', 'technical', 'macro', 'news', 'portfolio']);
       assert.deepEqual(await page.locator('[data-card]').evaluateAll((n) => n.map((x) => (x.matches('a') ? x.getAttribute('href') : x.querySelector('a.more').getAttribute('href')))),
         ['#/qgv', '#/technical', '#/macro', '#/news', '#/portfolio'], 'each card leads to its menu');
@@ -228,7 +283,7 @@ let phase = 'START';
       await go('#/company/NYSE:FIX', '[data-card=news] [data-na]');
       assert.equal(await page.locator('[data-card=news] [data-na]').textContent(), '공개 파일에 이 기업 소식이 없습니다');
       assert.match(await page.locator('[data-card=portfolio]').innerText(), /TARGET 밖 기업이라/);
-      assert.match(await page.locator('[data-result-facts] .facts-line').textContent(), /^FIX · NYSE:FIX · Universe504/);
+      assert.match(await page.locator('[data-result-facts] .facts-line').textContent(), /^NYSE:FIX · Universe504/);
       // Selection kept across menus (RAM).
       await go('#/qgv', 'main[data-route=qgv]');
       assert.deepEqual(await page.evaluate(() => window.IS2.selection.get()), { id: 'NYSE:FIX' }, 'the selected company stays on #/qgv');
@@ -244,12 +299,24 @@ let phase = 'START';
       // ---------------------------------------------------------------- investor story
       tag('quote');
       await go('#/', '[data-quote][data-quote-id]');
+      const kinds = [];
+      for (const type of ['STORY', 'DIRECT']) {
+      // HomeQuotes.pick(previous, Math.random): a stubbed Math.random picks an item of this type from the pool without the shown one.
+      const prev = await page.locator('[data-quote]').getAttribute('data-quote-id');
+      await go('#/qgv', 'main[data-route=qgv]');
+      await page.evaluate(({ type, prev }) => { const pool = window.HomeQuotes.QUOTES.filter((x) => x.id !== prev), i = pool.findIndex((x) => x.type === type); window.__random = Math.random; Math.random = () => (i + 0.5) / pool.length; }, { type, prev });
+      await go('#/', '[data-quote][data-quote-id]');
+      await page.evaluate(() => { Math.random = window.__random; });
       const q = await page.evaluate(() => { const el = document.querySelector('[data-quote]'), Q = window.HomeQuotes.byId(el.dataset.quoteId), a = el.querySelector('[data-quote-link]');
         return { type: el.dataset.quoteType, want: Q.type, ko: el.querySelector('.quote-ko').textContent, wantKo: Q.ko, en: el.querySelector('.quote-en').textContent, wantEn: Q.headline_en, who: el.querySelector('.quote-who').textContent,
           speaker: Q.speaker.ko, kind: el.querySelector('.quote-kind').textContent, src: el.querySelector('.quote-src').textContent, source: Q.source, href: a.getAttribute('href'), url: Q.url, rel: a.getAttribute('rel'), target: a.getAttribute('target') }; });
       assert.equal(q.type, q.want); assert.equal(q.ko, q.wantKo); assert.ok(q.en.endsWith(q.wantEn)); assert.ok(q.who.includes(q.speaker)); assert.ok(q.src.includes(q.source));
       assert.deepEqual([q.href, q.rel, q.target], [q.url, 'noopener noreferrer', '_blank']);
-      assert.match(q.kind, q.type === 'STORY' ? /일화 요약 · 직접 인용 아님 · 우리말 요약/ : /직접 인용 · 우리말 번역/);
+      assert.equal(q.type, type);
+      assert.equal(q.kind, q.type === 'STORY' ? '일화 요약 · 직접 인용 아님 · 우리말 정리(자체 작성)' : '직접 인용 · 우리말 번역(자체 번역)');
+      kinds.push(q.type);
+      }
+      assert.deepEqual(kinds, ['STORY', 'DIRECT'], 'both labels shown');
 
       // ---------------------------------------------------------------- phone and boundaries
       tag('boundaries');
