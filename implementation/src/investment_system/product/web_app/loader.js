@@ -24,7 +24,7 @@
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else api.install(root);})(typeof globalThis==='object'?globalThis:this,function(){
 'use strict';
 // The old modules in the old page's relative order (backup /5 validators chart-workbench.js and macro-cycle-ring.js included),
-// then the P1 layer action → data → prices → store → qgv → engines.
+// then the P1 layer action → data → prices → store → qgv → engines, then screen logic files (web_app; P1_DATA_LAYER.md §1.1).
 const LOAD_ORDER=Object.freeze([
  'locale.js','entity-search.js','price-time.js','device-market.js','device-actual.js','profile-defaults.js','type-config-defaults.js',
  'device-profiles.js','engine-preview.js','dcf-parameters-defaults.js','device-valuation.js','playbook-config-defaults.js','playbook-engine.js',
@@ -37,6 +37,7 @@ const LOAD_ORDER=Object.freeze([
  'virtual-trading-signals.js','virtual-trading-v-history.js','virtual-ledger-sheets.js','price-store.js','report-benchmarks.js',
  'virtual-trading-compare.js','home-quotes.js','data-refresh.js',
  'action.js','data.js','prices.js','store.js','qgv.js','engines.js',
+ 'screen-search-live.js',
 ]);
 // A plain lowercase script name. tools/build_web_app.py holds this exact line (the build fails when the two differ).
 const NAME=/^[a-z0-9][a-z0-9-]*(?:\.[a-z0-9-]+)*\.js$/;

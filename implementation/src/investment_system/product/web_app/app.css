@@ -23,7 +23,6 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-bo
 a{color:var(--ink)}a:hover{color:var(--red)}
 button,input,select{font:inherit;color:inherit}
 :focus-visible{outline:3px solid var(--blue);outline-offset:2px}
-/* main and the home chip block take focus only from code (after a route change, after 최근 지우기): no frame */
 #main:focus,.chip-rows:focus{outline:none}
 h1,h2,h3,h4{font-family:var(--font-display);font-weight:400;margin:0;line-height:1.15}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
@@ -96,7 +95,6 @@ svg.ico{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stro
 .hero-title{font-size:76px;line-height:1.05;letter-spacing:-1px}
 .hero-label{font-size:26px;color:var(--muted)}
 .hero-aside{position:absolute;right:40px;top:40px;width:220px;font-size:22px;transform:rotate(4deg);margin:0;text-align:left;word-break:keep-all}
-/* below this width the 76 px title reaches the aside: it joins the column */
 @media (max-width:1240px){.hero-aside{position:static;transform:none;width:auto;text-align:center}}
 .search-box{width:min(760px,100%);min-height:72px;display:flex;align-items:center;gap:14px;padding:0 22px}
 .search-box input{flex:1;min-width:0;border:0;outline:none;font-size:24px;background:transparent}
@@ -118,7 +116,6 @@ svg.ico{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stro
 .chip-rows{display:flex;flex-direction:column;align-items:center;gap:10px;width:min(960px,100%)}
 .chip-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center}
 .chip-label{font-size:22px}
-/* tap targets of this screen: 44 px like the tab bar */
 .chip-row .chip,button.chip.star,.card a.more{min-height:44px}
 .card a.more{display:inline-flex;align-items:center}
 .quote-src a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
@@ -159,7 +156,6 @@ svg.ico{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stro
  .grid-3,.grid-2{grid-template-columns:minmax(0,1fr)}
  .hero-title{font-size:44px}
  .hero-aside{display:none}
- /* the open list stays above the fixed tab bar (the input moves to the top on focus) */
  .search-list{max-height:min(52dvh,calc(100dvh - var(--tabbar) - 120px))}
  .search-opt{scroll-margin-bottom:calc(var(--tabbar) + 8px)}
  .search-box{min-height:60px;padding:0 14px}

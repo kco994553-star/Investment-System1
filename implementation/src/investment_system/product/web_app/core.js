@@ -84,8 +84,7 @@ function screen(id){const s=screens.get(id);return s?s.render:null;}
 function detail(name){const s=details.get(name);return s?s.render:null;}
 function isPlaceholder(id){const s=screens.get(id);return !!(s&&s.placeholder);}
 
-/* The selected company (feature 1.1.2 "화면을 이동해도 선택 기업을 유지"): RAM only, set by the company page once its id resolves
-   (a TARGET company_id or a Universe code), kept across menus until the page is reloaded. Nothing is stored or sent. */
+// The selected company (feature 1.1.2, P1_DATA_LAYER.md §1): RAM only, nothing stored or sent.
 let chosen=null;const watchers=new Set();
 const selection=Object.freeze({
  get:()=>chosen===null?null:Object.freeze({id:chosen}),

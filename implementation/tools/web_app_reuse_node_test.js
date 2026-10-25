@@ -4,8 +4,10 @@
 //    placeholders, the P0 screens, boot.js last; web_app files only, every tag a deferred file, the CSP byte-identical to the old
 //    page), then loader.js LOAD_ORDER after the first paint: the 60 old engines/readers (old page's relative order, each once;
 //    home-quotes.js for the home's investor story, P2-1, Main)
-//    and the P1 layer (action → data → prices → store → qgv → engines). LOAD_ORDER is the one load list: the loader's runtime
-//    list, tools/web_app_reuse.js and tools/build_web_app.py read the same literal.
+//    and the P1 layer (action → data → prices → store → qgv → engines), then the screens' after-first-paint halves (web_app
+//    files, P2-1: screen-search-live.js; a screen's first-paint file holds only its skeleton and stays small, screen-search.js
+//    ≤ 5 KB). LOAD_ORDER is the one load list: the loader's runtime list, tools/web_app_reuse.js and tools/build_web_app.py
+//    read the same literal.
 //  - A name present in web_app wins and is never reused (screen-detail.js); every other script is an old web_assets file.
 //    tools/build_web_app.py applies the same rule, keeps the reused files byte-identical, removes every other old frontend
 //    file, and fails on a reference found in neither folder, a duplicate, an inline script, a non-local name, an old module in
@@ -60,6 +62,9 @@ const REUSED = [
   'virtual-trading-v-history.js', 'virtual-ledger-sheets.js', 'price-store.js', 'report-benchmarks.js', 'virtual-trading-compare.js', 'home-quotes.js', 'data-refresh.js',
 ];
 const P1 = ['action.js', 'data.js', 'prices.js', 'store.js', 'qgv.js', 'engines.js'];
+// The screens' after-first-paint halves (web_app files, loaded after the layer; P1_DATA_LAYER.md §1.1 screen-file rule).
+const LIVE = ['screen-search-live.js'];
+const SKELETON_MAX_BYTES = { 'screen-search.js': 5 * 1024 };
 const LANES = ['qgv', 'technical', 'macro', 'news', 'portfolio', 'prompts', 'tree', 'lab'].map((id) => 'screen-' + id + '.js');
 const P0_SCREENS = ['screen-search.js', 'screen-menus.js', 'screen-detail.js', 'boot.js'];
 const LOADER = 'loader.js';
@@ -102,10 +107,16 @@ const py = (code, args = [], input = '') => execFileSync('python3', ['-c', code,
 test('index.html loads the first screen only; loader.js LOAD_ORDER loads the reused old modules, then the P1 layer', () => {
   assert.equal(REUSED.length, 60);
   assert.deepEqual(R.firstPaint(), FIRST);
-  assert.deepEqual(R.loadOrder(), [...REUSED, ...P1]);
+  assert.deepEqual(R.loadOrder(), [...REUSED, ...P1, ...LIVE]);
   delete require.cache[require.resolve(R.newPath(LOADER))];
   assert.deepEqual([...R.requireNew(LOADER).LOAD_ORDER], R.loadOrder(), 'the loader runs the list the build and the helper read');
-  assert.deepEqual(R.scripts(), [...FIRST, ...REUSED, ...P1], 'the page load order: index.html, then LOAD_ORDER');
+  assert.deepEqual(R.scripts(), [...FIRST, ...REUSED, ...P1, ...LIVE], 'the page load order: index.html, then LOAD_ORDER');
+});
+
+test('a screen\'s first-paint file holds only its skeleton; its logic is a web_app LOAD_ORDER file after the layer', () => {
+  for (const name of LIVE) { assert.ok(isFile(R.newPath(name)), name + ' is a web_app file'); assert.ok(!isFile(R.oldPath(name)), name + ' shadows no old file'); }
+  assert.deepEqual(R.reused().filter((n) => LIVE.includes(n)), [], 'the build takes them from web_app');
+  for (const [name, max] of Object.entries(SKELETON_MAX_BYTES)) assert.ok(fs.statSync(R.newPath(name)).size <= max, name + ' stays a skeleton (≤ ' + max + ' bytes): ' + fs.statSync(R.newPath(name)).size);
 });
 
 test('web_app wins on a shared name; every other script is an old web_assets file; the reuse list is the design list', () => {
@@ -129,6 +140,7 @@ test('load-time bindings come before their users and companions are present', ()
   for (const [user, deps] of Object.entries(COMPANIONS)) for (const dep of deps) assert.ok(at.has(dep), user + ' needs ' + dep);
   const lastOld = Math.max(...REUSED.map((n) => at.get(n))), firstLoaded = Math.min(...R.loadOrder().map((n) => at.get(n)));
   for (const name of P1) assert.ok(at.get(name) > lastOld, name + ' after every reused module');
+  for (const name of LIVE) assert.ok(at.get(name) > Math.max(...P1.map((n) => at.get(n))), name + ' after the P1 layer');
   for (const name of FIRST) assert.ok(at.get(name) < firstLoaded, name + ' is on the first screen, before every LOAD_ORDER file');
   assert.ok(at.get('core.js') < at.get('action.js') && at.get('parts.js') < at.get(LANES[0]), 'IS2 and parts exist before the layer and the screens');
   for (const name of [...LANES, ...P0_SCREENS]) assert.ok(at.get(LOADER) < at.get(name), 'the loader facades exist before ' + name);
@@ -585,8 +597,9 @@ test('loader: a hidden page loads at once (it paints nothing); the screen files 
   const core = R.requireNew('core.js'), touched = [];
   const parts = { head: () => null, section: () => null, card: () => null, pending: () => null, more: () => null };
   const IS2 = new Proxy({ ...core, parts }, { get(t, k) { if (['data', 'qgv', 'prices', 'store', 'engines', 'action', 'ready'].includes(k)) touched.push(k); return t[k]; } });
-  for (const name of [...LANES, 'screen-search.js', 'screen-menus.js', 'screen-detail.js']) vm.runInNewContext(fs.readFileSync(R.newPath(name), 'utf8'), { window: { IS2 }, Object }, { filename: name });
+  for (const name of [...LANES, 'screen-search.js', 'screen-menus.js', 'screen-detail.js', ...LIVE]) vm.runInNewContext(fs.readFileSync(R.newPath(name), 'utf8'), { window: { IS2 }, Object }, { filename: name });
   assert.deepEqual(touched, [], 'screens read the layer at render time only (through the facades before IS2.ready)');
+  assert.deepEqual(Object.keys(IS2.searchLive), ['home', 'company'], 'screen-search-live.js only hands its two fillers to the skeleton');
 });
 
 test('the first screen never waits for the fonts: every @font-face swaps (or is optional), nothing is preloaded', () => {
