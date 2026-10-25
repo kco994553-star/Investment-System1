@@ -176,7 +176,7 @@ def run(*, out: Path, parser: str, monthend_stamp: str, monthend_shards: int, pr
     """One attempt. Returns a summary of fixed codes and counts (printed by main)."""
     clock = clock or (lambda: dt.datetime.now(dt.timezone.utc))
     summary = {'attempt': None, 'reason': None, 'published': 'NONE', 'basis': '-', 'rows': 0, 'ranked': 0, 'supplied': '-',
-               'split': None}
+               'split': None, 'iex_attempts': None}
     # 1. last good copy first
     live, live_unknown = None, False
     try:
@@ -219,7 +219,9 @@ def run(*, out: Path, parser: str, monthend_stamp: str, monthend_shards: int, pr
         try:
             day = fetch_day(ctx_keys, shard_day(now), parser=parser, workdir=workdir)
         except iex_hist.IexHistError as e:
+            summary['iex_attempts'] = e.attempts          # full IEX stream attempts (count only; None before any stream)
             raise qo.OfficialError('SUPPLY_FAILED', 'IEX_' + str(e)) from None
+        summary['iex_attempts'] = getattr(day, 'attempts', None)
         if live is not None and day.day < live['times']['price_basis_date']:
             raise qo.OfficialError('SUPPLY_FAILED', 'BASIS_OLDER_THAN_OFFICIAL')
         # 4. month-end store (RAM)
@@ -268,9 +270,12 @@ def run(*, out: Path, parser: str, monthend_stamp: str, monthend_shards: int, pr
 
 
 def summary_line(s) -> str:
-    """The one stdout line: fixed codes and counts only (the split counts only after a build)."""
+    """The one stdout line: fixed codes and counts only (`iex_attempts` only after an IEX stream ran, 1 or 2; the split counts
+    only after a build)."""
     line = (f"QGV_OFFICIAL attempt={s['attempt']} reason={s['reason'] or '-'} published={s['published']} basis={s['basis']} "
             f"rows={s['rows']} ranked={s['ranked']} supplied={s['supplied']}")
+    if s.get('iex_attempts'):
+        line += f" iex_attempts={int(s['iex_attempts'])}"
     if s.get('split'):
         line += ''.join(f" split_{k}={int(s['split'][k])}" for k in qo.SPLIT_COUNT_KEYS)
     return line

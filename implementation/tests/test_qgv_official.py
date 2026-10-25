@@ -606,7 +606,7 @@ def test_d6b_counts_reach_the_one_line_result_only(artifact):
     assert (s['attempt'], s['published']) == ('OK', 'NEW') and (s['split']['checked'], s['split']['flagged']) == (1, 1)
     line = tool.summary_line(s)
     assert re.fullmatch(r'QGV_OFFICIAL attempt=OK reason=- published=NEW basis=2026-10-13 rows=\d+ ranked=\d+ supplied=\d+/\d+ '
-                        r'split_checked=1 split_flagged=1 split_unchecked=\d+ split_unchecked_no_period=\d+ split_gap_skipped=0 '
+                        r'iex_attempts=1 split_checked=1 split_flagged=1 split_unchecked=\d+ split_unchecked_no_period=\d+ split_gap_skipped=0 '
                         r'split_lead_unchecked=0', line)
     assert 'ABT' not in line and '12.0' not in line
     for name in (qo.FILENAME, qo.STATUS_FILENAME):
@@ -615,6 +615,30 @@ def test_d6b_counts_reach_the_one_line_result_only(artifact):
     # an attempt that never built (no prices read) prints no split counts
     failed = _run(out, parser, fail='MD5_MISMATCH')
     assert failed['split'] is None and 'split_' not in tool.summary_line(failed)
+
+
+def test_iex_attempts_reach_the_one_line_result_only(artifact):
+    """2026-10-25 (rehearsal run 40156760950): the number of full IEX stream attempts (1, or 2 after a whole-pipeline retry)
+    is a count in the one stdout line; never in qgv-official.json or the status file. No attempt count before any stream."""
+    out, payload, parser = artifact
+
+    def failing(keys, basis, parser=None, workdir=None):
+        err = iex_hist.IexHistError('DOWNLOAD_FAILED')
+        err.attempts = 2
+        raise err
+    s = tool.run(out=out, parser=parser, monthend_stamp='20261023', monthend_shards=6, previous=None, raw_token='t', hmac_key=KEY,
+                 now=NOW, workdir=out.parent / 'w', fetch_day=failing, read_store=lambda st, n: {}, clock=lambda: NOW)
+    assert tool.summary_line(s) == ('QGV_OFFICIAL attempt=NO_OFFICIAL_YET reason=IEX_DOWNLOAD_FAILED published=NONE basis=- rows=0 '
+                                    'ranked=0 supplied=- iex_attempts=2')
+    assert 'attempts' not in (out / qo.STATUS_FILENAME).read_text()
+    day = synthetic_day(payload)
+    day.attempts = 2
+    ok = _run(out, parser, day=day)
+    assert ok['published'] == 'NEW' and ' iex_attempts=2 ' in tool.summary_line(ok)
+    for name in (qo.FILENAME, qo.STATUS_FILENAME):
+        assert 'attempts' not in (out / name).read_text()
+    assert 'iex_attempts' not in tool.summary_line(_run(out, parser, fail='SOURCE_UNAVAILABLE'))   # before any stream
+    assert 'iex_attempts' not in tool.summary_line(_run(out, parser, key=None))
 
 
 def test_adr_rule_covers_known_20f_filers_whatever_the_taxonomy_d7(monkeypatch):
