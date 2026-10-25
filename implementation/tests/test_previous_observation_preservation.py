@@ -568,15 +568,17 @@ OUTSIDE_SPEC = len(us.universe_codes()) - len(AS.SPEC)   # Universe codes the sy
 
 class Moved(Sec):
     """The issuer `moved` now lists `MOVED_TICKER` on NYSE in SEC's ticker file (held by `holder`, default the same
-    CIK) and in its own submissions; its former ticker is gone from both, as for PSKY after 2026-10-06."""
+    CIK, plus any CIKs in `also`) and in its own submissions; its former ticker is gone from both, as for PSKY after
+    2026-10-06."""
 
-    def __init__(self, *, moved, holder=None, **kwargs):
+    def __init__(self, *, moved, holder=None, also=(), **kwargs):
         super().__init__(hidden={moved}, **kwargs)
-        self.moved, self.holder = moved, holder or moved
+        self.moved, self.holder, self.also = moved, holder or moved, tuple(also)
 
     def ticker_body(self):
         body = json.loads(super().ticker_body())
-        body['data'].append([int(self.holder), 'Synthetic', MOVED_TICKER, 'NYSE'])
+        for cik in (self.holder, *self.also):
+            body['data'].append([int(cik), 'Synthetic', MOVED_TICKER, 'NYSE'])
         return json.dumps(body).encode()
 
     def transport(self, url, *, headers, timeout, max_body_bytes):
@@ -624,7 +626,7 @@ def test_h_listing_move_alias_recollects_qg_rows_and_keeps_the_unconfirmed_share
 
 
 def test_h_listing_move_alias_claimed_by_another_cik_binds_nothing(tmp_path, capsys, baseline, monkeypatch):
-    """(h) The moved pair is listed by another CIK: the alias binds nothing, the code is unresolved (not a conflict),
+    """(h) The moved pair is listed by another CIK alone: the alias binds nothing, the code is unresolved (not a conflict),
     nobody else's bytes are collected for it and the verified day-0 rows of the pinned issuer stay in all three files."""
     day0, _ = baseline
     n, m = moved_issuer()
@@ -642,3 +644,26 @@ def test_h_listing_move_alias_claimed_by_another_cik_binds_nothing(tmp_path, cap
     assert counts['preserved_previous_shares'] == counts['preserved_previous_qg'] == counts['preserved_previous_qgv2'] == '1'
     code, out = guard_against(later, day0, capsys)
     assert code == 0 and ' rows_regressed=0 ' in out
+
+
+def test_h_listing_move_alias_claimed_by_the_pinned_and_another_cik_is_withdrawn(tmp_path, capsys, baseline, monkeypatch):
+    """(h) The moved pair is listed by the pinned CIK and by another CIK: one ticker claimed by several CIKs is an
+    identity conflict (UNI-WITHDRAWN (a), as for the CBOE pair), so the pinned issuer's day-0 rows are withdrawn, never
+    preserved, and nobody's bytes are collected for the code."""
+    day0, _ = baseline
+    n, m = moved_issuer()
+    code_m = AS.CODE[m]
+    pin_alias(monkeypatch, code_m, m)
+    stranger = fresh_cik(shard_today(n))
+    capsys.readouterr()
+    sec = Moved(moved=m, also=[stranger])
+    later = run(tmp_path, 'both', sec, n, previous=day0)
+    counts = collection_counts(capsys.readouterr().out)
+    assert counts['unresolved_codes'] == str(OUTSIDE_SPEC + 1) and counts['preserved_unconfirmed'] == '0'
+    assert not [u for u, _, _ in sec.calls if stranger in u or m in u]
+    for name in UNIVERSE:
+        row = rows(later, name)[code_m]
+        assert row['reason_codes'] == [us.WITHDRAWN_REASON] and row['acquired_at'] is None and row['cik'] is None
+        assert (row['withdrawn_acquired_at'], row['withdrawn_cik']) == (rows(day0, name)[code_m]['acquired_at'], m)
+    code, out = guard_against(later, day0, capsys)
+    assert code == 0 and all(section_line(out, name, 'records')['withdrawn'] == '1' for name in UNIVERSE)

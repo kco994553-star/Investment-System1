@@ -19,13 +19,14 @@ COVER_INSTANCE_URL='https://www.sec.gov/Archives/edgar/data/{cik}/{accession}/{d
 # Exact (SEC exchange, SEC ticker) -> approved Universe code pairs, consulted only when the pair names no Universe code
 # directly (an exchange outside the Nasdaq/NYSE venue map, or a Nasdaq/NYSE ticker that is not the code's own symbol).
 # Cboe Global Markets lists its own stock on Cboe BZX (code venue BATS); SEC's ticker file names that exchange 'CBOE'.
-# Paramount Skydance (CIK 0002041610, code NASDAQ:PSKY) moved its listing to NYSE as SKYD on 2026-10-06 (Form 25 on
-# 2026-10-05, same issuer; owner approval like #297). The public code stays NASDAQ:PSKY.
+# Skydance Corp (formerly Paramount Skydance; CIK 0002041610, code NASDAQ:PSKY) moved its listing to NYSE as SKYD on
+# 2026-10-06 (Form 25 on 2026-10-05, same issuer; owner approval like #297). The public code stays NASDAQ:PSKY.
 # One pair per code, never a venue-wide mapping; a code missing from the approved roster binds nothing.
 VENUE_CODE_ALIASES={('CBOE','CBOE'):'BATS:CBOE',('NYSE','SKYD'):'NASDAQ:PSKY'}
-# Alias pairs that bind only for one named issuer. Any other CIK listing that pair binds nothing through the alias
-# (its code stays unresolved, never a conflict and never another issuer's row); a pair listed by the named CIK and by
-# any other CIK binds nothing either.
+# Alias pairs that bind only for one named issuer. Another CIK listing that pair without the named CIK binds nothing
+# through the alias (the code stays unresolved, not a conflict, and never takes another issuer's row). When the named
+# CIK and any other CIK both list the pair, every claimant counts toward the code, so it is an identity conflict like
+# the CBOE pair claimed by two CIKs (owner rule 2026-10-17: a ticker claimed by several CIKs never keeps an earlier row).
 ALIAS_ISSUER_CIKS={('NYSE','SKYD'):'0002041610'}
 
 
@@ -65,8 +66,9 @@ def universe_registry(body):
     VENUE_CODE_ALIASES pairs (SEC 'CBOE'/'CBOE' -> code BATS:CBOE); any other
     ticker SEC lists on that exchange stays outside the roster. A Nasdaq/NYSE
     pair that names no code directly may bind through the same table (SEC
-    'NYSE'/'SKYD' -> code NASDAQ:PSKY), and a pair in ALIAS_ISSUER_CIKS binds
-    only when exactly its named CIK lists it. Conflicting CIKs
+    'NYSE'/'SKYD' -> code NASDAQ:PSKY). A pair in ALIAS_ISSUER_CIKS counts
+    only when its named CIK lists it: alone it binds, together with any other
+    CIK it is a conflict, and without the named CIK it binds nothing. Conflicting CIKs
     and unrecognized exchange/ticker pairs remain unresolved (the single-CIK rule
     applies to aliased codes as well). Names are ignored; the caller verifies
     official source origin.
@@ -99,7 +101,7 @@ def universe_registry(body):
             if code is not None and code in bindings:bindings[code].add(str(cik).zfill(10))
         for pair,ciks in pinned.items():
             code=VENUE_CODE_ALIASES.get(pair)
-            if ciks=={ALIAS_ISSUER_CIKS[pair]} and code in bindings:bindings[code].add(ALIAS_ISSUER_CIKS[pair])
+            if ALIAS_ISSUER_CIKS[pair] in ciks and code in bindings:bindings[code].update(ciks)
         grouped={}
         for code,ciks in bindings.items():
             if len(ciks)==1:grouped.setdefault(next(iter(ciks)),[]).append(code)

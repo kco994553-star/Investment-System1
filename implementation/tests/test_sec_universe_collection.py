@@ -60,10 +60,17 @@ def test_skyd_alias_binds_psky_only_for_the_named_cik():
     assert r.unresolved_code_count==503 and not r.conflicting_codes
 
 
-@pytest.mark.parametrize('rows',[[[7,'Synthetic',*SKYD]],[[PSKY_CIK,'x',*SKYD],[7,'x',*SKYD]],[[7,'x',*SKYD],[PSKY_CIK,'x',*SKYD]]])
-def test_skyd_alias_from_another_cik_is_unresolved_not_a_conflict(rows):
+@pytest.mark.parametrize('rows',[[[7,'Synthetic',*SKYD]],[[7,'x',*SKYD],[8,'x',*SKYD]]])
+def test_skyd_alias_from_another_cik_alone_is_unresolved_not_a_conflict(rows):
     r=universe_registry(body(rows))
     assert not r.issuers and r.unresolved_code_count==504 and not r.conflicting_codes
+
+
+@pytest.mark.parametrize('rows',[[[PSKY_CIK,'x',*SKYD],[7,'x',*SKYD]],[[7,'x',*SKYD],[PSKY_CIK,'x',*SKYD]]])
+def test_skyd_alias_claimed_by_the_named_and_another_cik_is_a_conflict(rows):
+    # Same as the CBOE pair claimed by two CIKs: an identity conflict (withdrawal), never a preserved earlier row.
+    r=universe_registry(body(rows))
+    assert not r.issuers and r.unresolved_code_count==504 and r.conflicting_codes==frozenset({'NASDAQ:PSKY'})
 
 
 @pytest.mark.parametrize('row',[[PSKY_CIK,'x',SKYD[0],'Nasdaq'],[PSKY_CIK,'x',SKYD[0]+'-WT',SKYD[1]],[PSKY_CIK,'x',SKYD[0].lower(),SKYD[1]],
@@ -113,6 +120,9 @@ def test_full_binding_map_on_archived_sec_file_changes_only_psky():
     assert 'NASDAQ:PSKY' not in old and new.pop('NASDAQ:PSKY')=='0002041610' and new==old and len(old)==503
     stranger=[r for r in rows if not (r[0]==PSKY_CIK and r[2]=='PSKY')]+[[7,'Synthetic',*SKYD]]
     assert _binding_map(stranger)==_legacy_binding_map(stranger) and 'NASDAQ:PSKY' not in _binding_map(stranger)
+    both=moved+[[7,'Synthetic',*SKYD]]
+    r=universe_registry(body(both))
+    assert r.conflicting_codes==frozenset({'NASDAQ:PSKY'}) and _binding_map(both)==old
 
 
 def test_universe_client_accepts_unpadded_string_cik_only_for_the_same_issuer():
