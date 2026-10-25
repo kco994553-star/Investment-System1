@@ -20,10 +20,11 @@ logged, raised or stored (GSQ-010). Errors carry a fixed code only and are raise
 Stream failures (2026-10-25, rehearsal run 40156760950: IEX_GZIP_FAILED after 105 s on a 13,079,032,608-byte file that decompresses
 cleanly elsewhere): curl no longer retries by itself (a curl retry after a mid-transfer failure restarts the file from byte 0 into
 the same pipe and corrupts the gzip stream), a stalled transfer is cut by curl's connect / low-speed limits, a failure is named
-after the first broken stage (`failed_stage`: SIZE_MISMATCH for a cut the download did not report, PARSER_FAILED /
-DOWNLOAD_FAILED / GZIP_FAILED, then SIZE_MISMATCH / MD5_MISMATCH), and `fetch_day` runs the whole pipeline once more from scratch
-on a transfer-shaped failure (`stream_attempts`) when the second attempt is predicted to fit the publisher's deadline; every
-attempt's curl is capped by --max-time at the stream time left, so a slow attempt still ends with a status file.
+after the first broken stage (`failed_stage`: SIZE_MISMATCH for a cut the download did not report, MD5_MISMATCH for full-size
+bytes that are not the GCS object, then PARSER_FAILED / DOWNLOAD_FAILED / GZIP_FAILED), and `fetch_day` runs the whole pipeline
+once more from scratch on a transfer-shaped failure (`stream_attempts`) when the second attempt is predicted to fit the
+publisher's deadline; every attempt's curl is capped by --max-time at the stream time left, so a slow attempt still ends with a
+status file.
 
 Price status per code (fixed codes, also published as the row's `price_status`):
   SUPPLIED                     a regular-session round-lot last trade on the day
@@ -91,12 +92,14 @@ RETRY_WAIT_S = 15
 # 1): a slow attempt ends as DOWNLOAD_FAILED (curl exit 28) and the status file is still written. A second attempt starts only
 # when its predicted time (`attempt_s`) + RETRY_WAIT_S fits the stream time left. The predicted rate is the first attempt's own
 # (bytes counted / seconds to its last byte, so a stall at its end is not counted), never above PLAN_RATE_BPS, the runner's
-# measured pipeline rate (probe run 39935426233: 11.84 GB in 3.2 min, ~62 MB/s); PLAN_RATE_BPS itself when the first attempt
-# moved under RATE_SAMPLE_MIN_BYTES (a failed connect, an early cut). The 2026-10-23 TOPS 1.6 file (13,079,032,608 bytes) is
+# measured pipeline rate (probe run 39935426233: 11.84 GB in 3.2 min, ~62 MB/s); PLAN_RATE_BPS itself only when the first
+# attempt moved under RATE_SAMPLE_MIN_BYTES within RATE_SAMPLE_MIN_S (a failed connect, a near-instant cut): a slow attempt cut
+# after RATE_SAMPLE_MIN_S is measured however few bytes it moved. The 2026-10-23 TOPS 1.6 file (13,079,032,608 bytes) is
 # ~3.6 min at that rate, two attempts ~7.5 min with the wait, inside the ~9.8 min of stream time a ~10 s start leaves.
 POST_STREAM_RESERVE_S = 120
 PLAN_RATE_BPS = 60_000_000
 RATE_SAMPLE_MIN_BYTES = 1 << 28
+RATE_SAMPLE_MIN_S = 20
 REAP_TIMEOUT_S = 10      # bounded wait for a killed child on the STREAM_FAILED path
 _SIGPIPE = -int(getattr(signal, 'SIGPIPE', 13))   # Popen returncode of a child ended by SIGPIPE (default handler restored)
 MAX_PRICE_E4 = 10**11   # $10M per share: anything above is a parser/format fault, never a price
@@ -299,13 +302,19 @@ def curl_command(link: str, max_time=None) -> list[str]:
             '--speed-time', str(CURL_SPEED_TIME_S), *cap, '-o', '-', link]
 
 
-def failed_stage(codes, broken: bool, size_ok: bool = True):
-    """The first broken stage of download | md5 + size pump | gzip -dc | parser, or None when all three exited 0 and the pipe
-    held. codes = (download, gzip, parser) return codes; broken = our write into gzip hit a broken pipe (we then kill the
-    download ourselves, so its exit code says nothing); size_ok = the bytes counted equal the GCS size.
+def failed_stage(codes, broken: bool, size_ok: bool = True, md5_ok: bool = True):
+    """The first broken stage of download | md5 + size pump | gzip -dc | parser, or None when all three exited 0, the pipe
+    held and the bytes are the GCS object. codes = (download, gzip, parser) return codes; broken = our write into gzip hit a
+    broken pipe (we then kill the download ourselves, so its exit code says nothing); size_ok = the bytes counted equal the GCS
+    size; md5_ok = their md5 equals the GCS md5 (read with size_ok only: the full count covers every byte, even when the last
+    write broke, as the pump counts and hashes a chunk before writing it).
       SIZE_MISMATCH    the download exited 0 by itself but the byte count is not the GCS size: a cut the download did not
                        report, proven by the count, so the gzip / parser failure on the cut input that follows is not theirs.
-                       Not when the pipe broke (we stopped reading, the count is ours)
+                       Not when the pipe broke (we stopped reading, the count is ours). Also when gzip ended by SIGPIPE and the
+                       parser failed: corrupt bytes reach the parser before gzip's CRC check (iex_last_trade exits 4 on a bad
+                       pcap-ng block), so a parser that stopped early on short input is not proven at fault
+      MD5_MISMATCH     the full size was counted but its md5 is not the GCS md5 and the download did not fail by itself: the
+                       bytes are proven not to be the object, so the gzip / parser failure on them is not theirs
       PARSER_FAILED    the parser exited non-zero and no stage upstream of it failed on its own: a parser crash breaks the pipe
                        upstream (gzip ends by SIGPIPE, our write breaks, we kill the download), which is not a gzip or download
                        fault. A parser that exits non-zero because its input was cut (a download that failed at connect gives
@@ -318,6 +327,8 @@ def failed_stage(codes, broken: bool, size_ok: bool = True):
     gzip_error = gzip_rc not in (0, _SIGPIPE)
     if not (size_ok or broken or download_error):
         return 'SIZE_MISMATCH'
+    if size_ok and not md5_ok and not download_error:
+        return 'MD5_MISMATCH'
     if parser_rc != 0 and not (download_error or gzip_error):
         return 'PARSER_FAILED'
     if download_error:
@@ -396,13 +407,9 @@ def stream_day(link: str, symbols, *, day: str, size: int, md5: str, parser: str
                 except OSError:
                     pass
         symfile.unlink(missing_ok=True)
-    stage = failed_stage(codes, broken, size_ok=got == size)
+    stage = failed_stage(codes, broken, size_ok=got == size, md5_ok=digest.hexdigest() == md5)
     if stage:
         _stream_fail(stage, got, flow_s, codes[0] if stage == 'DOWNLOAD_FAILED' else None)
-    if got != size:
-        _stream_fail('SIZE_MISMATCH', got, flow_s)
-    if digest.hexdigest() != md5:
-        _stream_fail('MD5_MISMATCH', got, flow_s)
     try:
         text = out[0].decode('ascii')
     except (IndexError, UnicodeDecodeError):
@@ -446,9 +453,11 @@ def resolve_symbols(keys: dict, day: str, aliases=SYMBOL_ALIASES) -> dict:
 
 def attempt_s(size: int, got=None, flow_s=None) -> float:
     """Predicted seconds of one full attempt (time budget above): size / rate, the rate being a failed attempt's own (bytes
-    counted / seconds to its last byte) when it moved at least RATE_SAMPLE_MIN_BYTES, never above PLAN_RATE_BPS."""
+    counted / seconds to its last byte) when it moved at least RATE_SAMPLE_MIN_BYTES or flowed at least RATE_SAMPLE_MIN_S,
+    never above PLAN_RATE_BPS."""
     rate = PLAN_RATE_BPS
-    if isinstance(got, int) and got >= RATE_SAMPLE_MIN_BYTES and flow_s and flow_s > 0:
+    sampled = isinstance(got, int) and got > 0 and flow_s and flow_s > 0
+    if sampled and (got >= RATE_SAMPLE_MIN_BYTES or flow_s >= RATE_SAMPLE_MIN_S):
         rate = min(rate, got / flow_s)
     return size / rate
 

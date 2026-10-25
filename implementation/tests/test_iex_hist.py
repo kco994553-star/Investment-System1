@@ -338,6 +338,29 @@ def test_read_store_merges_shards_and_checks_sha256():
         im.read_store('20261023', 3, call)
 
 
+def test_store_request_takes_the_callers_timeout(monkeypatch):
+    """The publisher bounds each month-end store request by the time left before its deadline (qgv_official_publish.wait_s):
+    `timeout` reaches the request, REQUEST_TIMEOUT_S without one. A socket timeout is the fixed STORE_UNAVAILABLE. The
+    publisher is the entry script, as in the V step."""
+    import sys
+    import types
+    seen = []
+
+    class Opener:
+        def open(self, req, timeout=None):
+            seen.append(timeout)
+            raise TimeoutError('synthetic')
+    monkeypatch.setattr(im.urllib.request, 'build_opener', lambda *handlers: Opener())
+    main = types.ModuleType('__main__')
+    main.__file__ = str(ROOT / 'tools/qgv_official_publish.py')
+    monkeypatch.setitem(sys.modules, '__main__', main)
+    call = im.github_call('synthetic-token')
+    for kw in ({'timeout': 7}, {}):
+        with pytest.raises(im.MonthEndError, match='^STORE_UNAVAILABLE$'):
+            call('GET', 'https://objects.example/1', auth=False, **kw)
+    assert seen == [7, im.REQUEST_TIMEOUT_S] and im.REQUEST_TIMEOUT_S == 300
+
+
 # ---- stream failures: first broken stage, whole-pipeline retry, curl limits (rehearsal run 40156760950, 2026-10-25) ---------
 def test_curl_command_has_no_retry_and_fails_fast_on_a_stall():
     """A curl --retry after a mid-transfer failure restarts the file from byte 0 into the same stdout pipe (the gzip stream is
@@ -377,12 +400,26 @@ def test_failed_stage_names_the_first_broken_stage(codes, broken, stage):
     ((0, 0, 3), False, 'SIZE_MISMATCH'),            # cut at a gzip member end: only the parser fails
     ((0, 0, 0), False, 'SIZE_MISMATCH'),
     ((18, 1, 0), False, 'DOWNLOAD_FAILED'),         # curl said so itself: its own code first
+    ((0, -13, 4), False, 'SIZE_MISMATCH'),          # the parser quit early (gzip SIGPIPE) on short input: corrupt bytes reach
+                                                    # it before gzip's CRC check (exit 4 on a bad block): not proven its fault
     ((-9, 1, 3), True, 'GZIP_FAILED'),              # we stopped reading: the short count is ours
     ((-9, -13, 1), True, 'PARSER_FAILED'),
 ])
 def test_failed_stage_short_count_with_a_clean_download_exit_is_size_mismatch(codes, broken, stage):
     assert ih.failed_stage(codes, broken, size_ok=False) == stage
-    assert ih.failed_stage((0, 1, 0), False, size_ok=True) == 'GZIP_FAILED'      # full-size input: gzip's own fault
+    assert ih.failed_stage((0, 1, 0), False, size_ok=True) == 'GZIP_FAILED'      # the object's own bytes: gzip's own fault
+
+
+@pytest.mark.parametrize('codes,broken,stage', [
+    ((0, 1, 0), False, 'MD5_MISMATCH'),             # full size, but not the object's bytes: gzip fails on them
+    ((0, -13, 4), False, 'MD5_MISMATCH'),           # ... or the parser stops early on them
+    ((-9, 1, 3), True, 'MD5_MISMATCH'),             # the last write broke after the full count: every byte was hashed
+    ((0, 0, 0), False, 'MD5_MISMATCH'),
+    ((18, 1, 0), False, 'DOWNLOAD_FAILED'),         # curl said so itself: its own code first
+])
+def test_failed_stage_full_size_with_another_md5_is_md5_mismatch(codes, broken, stage):
+    assert ih.failed_stage(codes, broken, size_ok=True, md5_ok=False) == stage
+    assert ih.failed_stage((0, -13, 4), False, size_ok=True, md5_ok=True) == 'PARSER_FAILED'   # the object's own bytes
 
 
 def _program(path, body):
@@ -415,6 +452,22 @@ def test_stream_cut_download_that_exits_0_is_size_mismatch(parser, tmp_path):
         _stream(path, body, parser, tmp_path, ['AAA'], download=lambda link: _writer(tmp_path, 'dl', path, len(body) // 2, 0))
     assert (e.value.got, e.value.curl_rc) == (len(body) // 2, None) and e.value.flow_s >= 0
     assert 'SIZE_MISMATCH' in ih.RETRY_CODES
+
+
+def test_stream_full_size_bytes_that_are_not_the_object_are_md5_mismatch(parser, tmp_path):
+    """Full size and exit 0, one byte flipped in the middle: gzip fails on the bytes, but the md5 over every counted byte
+    proves they are not the GCS object, so MD5_MISMATCH (retried), not GZIP_FAILED. When those bytes are the object itself
+    (its own md5), gzip's failure is gzip's: GZIP_FAILED."""
+    path, body = synthetic_day(tmp_path)
+    bad = bytearray(body)
+    bad[len(body) // 2] ^= 0xFF
+    flipped = tmp_path / 'flipped.gz'
+    flipped.write_bytes(bytes(bad))
+    with pytest.raises(ih.IexHistError, match='^MD5_MISMATCH$') as e:
+        _stream(path, body, parser, tmp_path, ['AAA'], download=lambda link: ['cat', str(flipped)])
+    assert (e.value.got, e.value.curl_rc) == (len(body), None) and 'MD5_MISMATCH' in ih.RETRY_CODES
+    with pytest.raises(ih.IexHistError, match='^GZIP_FAILED$'):
+        _stream(flipped, bytes(bad), parser, tmp_path, ['AAA'])
 
 
 def test_stream_gives_the_download_its_max_time_and_closes_every_pipe(parser, tmp_path):
@@ -614,6 +667,21 @@ def test_transfer_shaped_failures_are_retried_once(tmp_path, first):
     assert e.value.__cause__ is None and e.value.__context__ is None
 
 
+@pytest.mark.parametrize('script,first', [
+    ([('DOWNLOAD_FAILED', 0, {'curl_rc': 18}), ('GZIP_FAILED', 0, {})], ('DOWNLOAD_FAILED', 18)),
+    ([('DOWNLOAD_FAILED', 0, {'curl_rc': 18}), ('DOWNLOAD_FAILED', 0, {'curl_rc': 28})], ('DOWNLOAD_FAILED', 18)),
+    ([('GZIP_FAILED', 0, {}), ('DOWNLOAD_FAILED', 0, {'curl_rc': 28})], ('GZIP_FAILED', None)),
+])
+def test_two_failed_attempts_keep_the_first_attempts_code_and_curl_exit(tmp_path, script, first):
+    """Both attempts fail: the raised code is the second attempt's, iex_first / iex_curl_rc stay the FIRST attempt's (a trail
+    overwritten by the last failure would name the second)."""
+    stream, calls = _scripted(script)
+    with pytest.raises(ih.IexHistError) as e:
+        _fetch_day_with(stream, tmp_path, sleep=lambda s: None, monotonic=lambda: 0.0)
+    assert (str(e.value), e.value.attempts, len(calls)) == (script[1][0], 2, 2)
+    assert (e.value.first_code, e.value.first_curl_rc) == first
+
+
 @pytest.mark.parametrize('code', ['PARSER_FAILED', 'PARSER_OUTPUT_INVALID', 'PARSER_SYMBOLS_MISMATCH', 'SYMBOLS_INVALID'])
 def test_parser_and_input_failures_are_not_retried(tmp_path, code):
     stream, calls = _scripted([code, None])
@@ -637,6 +705,21 @@ def test_slow_then_stalled_first_attempt_is_not_retried(tmp_path):
         _fetch_day_with(stream, tmp_path, size=SIZE_1023, sleep=waits.append, monotonic=lambda: clock[0], deadline=12 * 60.0)
     assert [c[2] for c in calls] == [12 * 60 - ih.POST_STREAM_RESERVE_S - 10] and waits == []
     assert (e.value.attempts, e.value.first_code, e.value.first_curl_rc) == (1, 'DOWNLOAD_FAILED', 28)
+
+
+def test_a_slow_early_cut_is_measured_and_not_retried(tmp_path):
+    """Review 2026-10-25 (fake-clock sweep): start 5 s in, the first attempt runs at 5 MB/s and is cut after 130 MB at 31 s
+    (26 s of flow, under RATE_SAMPLE_MIN_BYTES). Its own rate is measured anyway (it flowed RATE_SAMPLE_MIN_S): a full second
+    attempt at 5 MB/s (~2600 s) cannot fit, so none is started. A near-instant cut still falls back to the plan rate."""
+    clock, waits = [5.0], []
+    stream, calls = _scripted([('DOWNLOAD_FAILED', 26.0, {'got': 130_000_000, 'flow_s': 26.0, 'curl_rc': 18}), None], clock)
+    with pytest.raises(ih.IexHistError, match='^DOWNLOAD_FAILED$') as e:
+        _fetch_day_with(stream, tmp_path, size=SIZE_1023, sleep=waits.append, monotonic=lambda: clock[0], deadline=12 * 60.0)
+    assert (len(calls), waits, e.value.attempts, e.value.first_curl_rc) == (1, [], 1, 18)
+    clock, waits = [5.0], []
+    stream, calls = _scripted([('DOWNLOAD_FAILED', 3.0, {'got': 15_000_000, 'flow_s': 3.0, 'curl_rc': 18}), None], clock)
+    day = _fetch_day_with(stream, tmp_path, size=SIZE_1023, sleep=waits.append, monotonic=lambda: clock[0], deadline=12 * 60.0)
+    assert (len(calls), waits, day.attempts) == (2, [ih.RETRY_WAIT_S], 2)
 
 
 def test_a_fast_early_cut_is_retried_and_the_second_attempt_has_its_max_time(tmp_path):
@@ -671,7 +754,9 @@ def test_retry_budget_math():
     plan = size / ih.PLAN_RATE_BPS
     assert ih.attempt_s(size) == plan and 210 < plan < 220                              # the runner's measured rate
     assert ih.attempt_s(size, got=0, flow_s=0.4) == plan                                 # a failed connect: no sample
-    assert ih.attempt_s(size, got=ih.RATE_SAMPLE_MIN_BYTES - 1, flow_s=60.0) == plan     # too few bytes to measure
+    assert ih.attempt_s(size, got=ih.RATE_SAMPLE_MIN_BYTES - 1, flow_s=ih.RATE_SAMPLE_MIN_S - 1) == plan   # under both floors
+    assert ih.attempt_s(size, got=130_000_000, flow_s=26.0) == pytest.approx(size / 5e6)    # few bytes, long enough: measured
+    assert ih.attempt_s(size, got=ih.RATE_SAMPLE_MIN_BYTES, flow_s=4.0) == plan             # many bytes fast: the plan cap
     assert ih.attempt_s(size, got=5_400_000_000, flow_s=180.0) == pytest.approx(size / 30e6)   # its own slower rate
     assert ih.attempt_s(size, got=10_000_000_000, flow_s=50.0) == plan                  # never faster than the plan rate
     # 12 minutes after a ~10 s start: two plan-rate attempts + the wait + the post-stream reserve fit; the review's slow first

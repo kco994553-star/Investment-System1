@@ -25,7 +25,10 @@ When an IEX stream ran, iex_attempts=1|2 follows supplied=, then (only when the 
 and, for a first DOWNLOAD_FAILED, iex_curl_rc=<curl exit code> (2026-10-25; never in a public file).
 Time budget: the workflow runs this process under `timeout -k 30s 12m`; the IEX stream gets the deadline STEP_LIMIT_S after this
 process started (iex_hist.fetch_day `deadline`: curl --max-time per attempt, a second attempt only when it is predicted to fit),
-so a slow transfer ends as a SUPPLY_FAILED status file instead of the step's kill.
+so a slow transfer ends as a SUPPLY_FAILED status file instead of the step's kill. After the stream, each month-end store
+request and the JS twin wait at most the time left before that deadline less FINAL_RESERVE_S (`wait_s`), so a hang there ends
+as MONTHEND_STORE_UNAVAILABLE / JS_TWIN_UNAVAILABLE with a status file. Not bounded: a store response that keeps trickling
+(the timeout is per socket read), and the CPU work between the waits (build, validator, encode), which FINAL_RESERVE_S covers.
 Exit 0 for every supply/verify outcome (the workflow step stays green; the status file carries the result); 2 = usage error.
 The two Secrets are popped from the environment at start (no child process inherits them).
 A missing Secret (HMAC key or raw-repo read token) or a sec-qgv2.json older than calc_version 2026-10-23.1 is NOT_RUN: nothing is
@@ -73,6 +76,21 @@ LIVE_READ_BACKOFF = (5, 15)          # seconds between attempts (each attempt ha
 # The V step's `timeout -k 30s 12m` around this process (sec-daily-public-inputs.yml): TERM after 12 minutes, with nothing
 # written after it. main() hands the IEX stream the deadline STARTED + STEP_LIMIT_S (iex_hist time budget).
 STEP_LIMIT_S = 12 * 60
+# After the stream (review 2026-10-25): every month-end store request and the JS twin get at most the time left before that
+# deadline less FINAL_RESERVE_S (the build between them, the encode and both files), at least 1 s, never above their own caps.
+FINAL_RESERVE_S = 30
+JS_CHECK_TIMEOUT_S = 600
+
+
+def wait_s(cap: int, deadline, monotonic=time.monotonic) -> int:
+    """Seconds one post-stream wait may take: `cap`, or the time left before `deadline` less FINAL_RESERVE_S when that is
+    shorter (at least 1). No deadline (tests, tools): `cap`."""
+    return cap if deadline is None else max(1, min(cap, int(deadline - FINAL_RESERVE_S - monotonic())))
+
+
+def _timed_store(call, deadline, monotonic=time.monotonic):
+    """A month-end store `call` whose every request waits at most wait_s(REQUEST_TIMEOUT_S)."""
+    return lambda method, url, **kw: call(method, url, timeout=wait_s(iex_monthend.REQUEST_TIMEOUT_S, deadline, monotonic), **kw)
 
 
 class LiveUnreachable(OSError):
@@ -161,11 +179,12 @@ def _diff(a, b) -> bool:
     return a != b
 
 
-def js_check(companies: dict, quotes: dict, results: dict, *, node='node', run=subprocess.run) -> None:
-    """D-CV12: the JS engine on the same RAM input must give the same public projection. Prices go through the pipe only."""
+def js_check(companies: dict, quotes: dict, results: dict, *, node='node', run=subprocess.run, timeout=JS_CHECK_TIMEOUT_S) -> None:
+    """D-CV12: the JS engine on the same RAM input must give the same public projection. Prices go through the pipe only.
+    `timeout` (seconds): over it, JS_TWIN_UNAVAILABLE."""
     spec = json.dumps({'companies': companies, 'quotes': quotes, 'preset': qo.PRESET, 'gate': qo.GATE}, allow_nan=False)
     try:
-        p = run([node, str(JS_CHECK)], input=spec, capture_output=True, text=True, timeout=600)
+        p = run([node, str(JS_CHECK)], input=spec, capture_output=True, text=True, timeout=timeout)
     except (OSError, subprocess.SubprocessError):
         raise qo.OfficialError('VERIFY_FAILED', 'JS_TWIN_UNAVAILABLE') from None
     finally:
@@ -183,8 +202,10 @@ def js_check(companies: dict, quotes: dict, results: dict, *, node='node', run=s
 
 def run(*, out: Path, parser: str, monthend_stamp: str, monthend_shards: int, previous: str | None, raw_token: str | None,
         hmac_key: bytes | None, now: dt.datetime, workdir: Path, node='node', fetch_day=iex_hist.fetch_day,
-        read_store=None, check=js_check, clock=None, open_response=None, sleep=time.sleep) -> dict:
-    """One attempt. Returns a summary of fixed codes and counts (printed by main)."""
+        read_store=None, check=js_check, clock=None, open_response=None, sleep=time.sleep, deadline=None,
+        monotonic=time.monotonic) -> dict:
+    """One attempt. Returns a summary of fixed codes and counts (printed by main). `deadline` (a time.monotonic() value, main:
+    the step limit; the IEX stream gets it through fetch_day) bounds the month-end store requests and the JS twin (`wait_s`)."""
     clock = clock or (lambda: dt.datetime.now(dt.timezone.utc))
     summary = {'attempt': None, 'reason': None, 'published': 'NONE', 'basis': '-', 'rows': 0, 'ranked': 0, 'supplied': '-',
                'split': None, 'iex_attempts': None, 'iex_first': None, 'iex_curl_rc': None}
@@ -237,9 +258,10 @@ def run(*, out: Path, parser: str, monthend_stamp: str, monthend_shards: int, pr
                        iex_curl_rc=getattr(day, 'first_curl_rc', None))
         if live is not None and day.day < live['times']['price_basis_date']:
             raise qo.OfficialError('SUPPLY_FAILED', 'BASIS_OLDER_THAN_OFFICIAL')
-        # 4. month-end store (RAM)
+        # 4. month-end store (RAM), every request inside the deadline
         try:
-            months = (read_store or (lambda s, n: iex_monthend.read_store(s, n, iex_monthend.github_call(raw_token))))(monthend_stamp, monthend_shards)
+            months = (read_store or (lambda s, n: iex_monthend.read_store(
+                s, n, _timed_store(iex_monthend.github_call(raw_token), deadline, monotonic))))(monthend_stamp, monthend_shards)
         except iex_monthend.MonthEndError as e:
             raise qo.OfficialError('SUPPLY_FAILED', 'MONTHEND_' + str(e)) from None
         # 5. score
@@ -258,7 +280,7 @@ def run(*, out: Path, parser: str, monthend_stamp: str, monthend_shards: int, pr
             except ValueError as e:
                 raise qo.OfficialError('VERIFY_FAILED', str(e)) from None
             check(internal['ctx']['companies'], qo.qi.priced_quotes(internal['quotes'], internal['ctx']['blocked']),
-                  internal['results'], node=node)
+                  internal['results'], node=node, timeout=wait_s(JS_CHECK_TIMEOUT_S, deadline, monotonic))
             new['times']['verified_at'] = qo.iso(clock())
             try:
                 encoded = qo.encode(new)
@@ -330,10 +352,11 @@ def main(argv=None) -> int:
         print('QGV_OFFICIAL usage=PARSER_AND_MONTHEND_STAMP_REQUIRED')
         return 2
     now = dt.datetime.fromisoformat(a.now.replace('Z', '+00:00')) if a.now else dt.datetime.now(dt.timezone.utc)
+    deadline = STARTED + STEP_LIMIT_S
     s = run(out=out, parser=a.parser, monthend_stamp=a.monthend_stamp, monthend_shards=a.monthend_shards, previous=a.previous or None,
             raw_token=raw_token, hmac_key=key.encode() if key else None, now=now,
             workdir=Path(a.workdir) / 'qgv-official', node=a.node,
-            fetch_day=functools.partial(iex_hist.fetch_day, deadline=STARTED + STEP_LIMIT_S))
+            fetch_day=functools.partial(iex_hist.fetch_day, deadline=deadline), deadline=deadline)
     print(summary_line(s))
     return 0
 

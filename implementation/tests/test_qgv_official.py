@@ -669,7 +669,59 @@ def test_main_gives_the_iex_stream_the_step_deadline(artifact, monkeypatch):
     fetch = seen['fetch_day']
     assert isinstance(fetch, functools.partial) and fetch.func is iex_hist.fetch_day
     assert fetch.keywords == {'deadline': tool.STARTED + tool.STEP_LIMIT_S} and tool.STEP_LIMIT_S == 12 * 60
+    assert seen['deadline'] == tool.STARTED + tool.STEP_LIMIT_S          # the same deadline for the waits after the stream
     assert tool.STARTED <= time.monotonic()
+
+
+def test_post_stream_waits_end_before_the_step_deadline(artifact, monkeypatch):
+    """Review 2026-10-25: after the stream, each month-end store request and the JS twin wait at most the time left before the
+    deadline less FINAL_RESERVE_S (at least 1 s, never above their own caps), so a hang there ends as
+    MONTHEND_STORE_UNAVAILABLE / JS_TWIN_UNAVAILABLE with a status file instead of the step's TERM. No deadline: their caps."""
+    import subprocess
+    out, payload, parser = artifact
+    assert tool.wait_s(300, None) == 300 and tool.wait_s(300, 1000.0, lambda: 100.0) == 300
+    assert tool.wait_s(300, 1000.0, lambda: 900.0) == 1000 - tool.FINAL_RESERVE_S - 900
+    assert tool.wait_s(600, 1000.0, lambda: 999.0) == 1
+    clock, waits = [0.0], []
+
+    def github_call(token):
+        def call(method, url, *, headers=None, auth=True, timeout=None):
+            waits.append(timeout)
+            clock[0] += timeout                    # the request hangs until its socket timeout
+            raise iex_monthend.MonthEndError('STORE_UNAVAILABLE')
+        return call
+    monkeypatch.setattr(iex_monthend, 'github_call', github_call)
+    day = synthetic_day(payload)
+
+    def go(**kw):
+        return tool.run(out=out, parser=parser, monthend_stamp='20261023', monthend_shards=6, previous=None, raw_token='t',
+                        hmac_key=KEY, now=NOW, workdir=out.parent / 'w', fetch_day=lambda *a, **k: day, clock=lambda: NOW, **kw)
+    clock[0] = 600.0                               # the stream ended 600 s after the start; deadline at 720 s
+    s = go(deadline=720.0, monotonic=lambda: clock[0])
+    assert waits == [720 - tool.FINAL_RESERVE_S - 600]
+    assert (s['attempt'], s['reason']) == ('NO_OFFICIAL_YET', 'MONTHEND_STORE_UNAVAILABLE')
+    assert _status(out)['reason_code'] == 'MONTHEND_STORE_UNAVAILABLE' and clock[0] < 720
+    waits.clear()
+    go()                                           # no deadline: the store's own cap
+    assert waits == [iex_monthend.REQUEST_TIMEOUT_S]
+    seen = []
+
+    def check(companies, quotes, results, *, node, timeout):
+        seen.append(timeout)
+        raise qo.OfficialError('VERIFY_FAILED', 'JS_TWIN_UNAVAILABLE')
+    s = go(read_store=lambda st, n: {}, check=check, deadline=720.0, monotonic=lambda: 650.0)
+    assert seen == [720 - tool.FINAL_RESERVE_S - 650] and (s['attempt'], s['reason']) == ('NO_OFFICIAL_YET', 'JS_TWIN_UNAVAILABLE')
+    assert _status(out)['reason_code'] == 'JS_TWIN_UNAVAILABLE'
+    # js_check gives node that timeout; over it, JS_TWIN_UNAVAILABLE
+    got = []
+
+    def run(cmd, **kw):
+        got.append(kw['timeout'])
+        raise subprocess.TimeoutExpired(cmd, kw['timeout'])
+    with pytest.raises(qo.OfficialError) as e:
+        tool.js_check({}, {}, {}, run=run, timeout=7)
+    assert got == [7] and e.value.code == 'JS_TWIN_UNAVAILABLE'
+    assert tool.js_check.__kwdefaults__['timeout'] == tool.JS_CHECK_TIMEOUT_S == 600
 
 
 def test_adr_rule_covers_known_20f_filers_whatever_the_taxonomy_d7(monkeypatch):
