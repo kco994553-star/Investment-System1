@@ -55,6 +55,9 @@ def coverage_line(payload):
     g = {i for i, r in enumerate(rows) if r['axes']['G']['score'] is not None}
     state = lambda value: sum(1 for r in rows if r['state'] == value)
     count = payload['shard_count']
+    # Every row with a collection record, valued or not: a listing-ended NA row (LISTING_ENDED_CODES, NASDAQ:WBD) keeps its
+    # last acquired_at, so it stays in stale_7d_rows / acquired_oldest / shard_acquired (a known value, see
+    # docs/daily_data_pipeline/SEC_COLLECTION_DIAGNOSTICS.md).
     collected = [r for r in rows if r['cik'] is not None and r['acquired_at'] is not None]
     shards = {int(sha256(r['cik'].encode()).hexdigest(), 16) % count for r in collected}
     days = sorted(d for d in (_day(r['acquired_at']) for r in collected) if d is not None)
