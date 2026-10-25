@@ -35,6 +35,7 @@ SCHEMA = 'iex-monthend/1'
 TAG_PREFIX = 'iex-v4-monthend-'
 RAW_REPO = 'kco994553-star/investment-system1-raw'
 API = 'https://api.github.com'
+REQUEST_TIMEOUT_S = 300      # one request's socket timeout; the publisher passes less near its deadline (`call(timeout=...)`)
 FK_MISSING = 'SHARE_BASIS_FACTOR_NOT_AVAILABLE'
 MONTH_PRICE_MISSING = 'MONTH_END_PRICE_NOT_AVAILABLE'
 SYMBOL_MISMATCH = 'MONTH_END_SYMBOL_MISMATCH'
@@ -65,7 +66,7 @@ def github_call(token: str):
         _fail('ROUTE_NOT_ALLOWED')
     opener = urllib.request.build_opener(_NoRedirect)
 
-    def call(method, url, *, headers=None, auth=True):
+    def call(method, url, *, headers=None, auth=True, timeout=REQUEST_TIMEOUT_S):
         req = urllib.request.Request(url, method=method)
         req.add_header('Accept', (headers or {}).get('Accept', 'application/vnd.github+json'))
         req.add_header('X-GitHub-Api-Version', '2022-11-28')
@@ -74,7 +75,7 @@ def github_call(token: str):
                 _fail('TOKEN_HOST_INVALID')
             req.add_header('Authorization', 'Bearer ' + token)
         try:
-            with opener.open(req, timeout=300) as r:
+            with opener.open(req, timeout=timeout) as r:
                 return r.status, dict(r.headers), r.read()
         except urllib.error.HTTPError as e:
             return e.code, dict(e.headers or {}), b''
