@@ -1,6 +1,6 @@
 # 현재 인수인계 — 2026-10-24 (Claude Code Main)
 
-확인 시각: **2026-10-24 23:25 UTC / 2026-10-25 08:25 KST**. 이 시각 이후의 PR·Actions·게시 상태는 `git log`와 열린 PR로 다시 확인한다. 구현 / 시험 / 병합 / 게시 / 실사이트 확인을 나눠 적는다.
+확인 시각: **2026-10-25 01:35 UTC / 10:35 KST**. 이 시각 이후의 PR·Actions·게시 상태는 `git log`와 열린 PR로 다시 확인한다. 구현 / 시험 / 병합 / 게시 / 실사이트 확인을 나눠 적는다.
 
 먼저 읽기: **[START_HERE.md](START_HERE.md) → [방향 전환 대장](docs/SPEC/DIRECTION_CHANGES.md)** → [WORKING_RULES.md](WORKING_RULES.md) → 이 파일 → [기능 명세 v1.0](docs/SPEC/FUNCTION_HIERARCHY_v1.0.md) → [기능 현황](docs/SPEC/FUNCTION_STATUS.md) → [사용자 결정](implementation/docs/USER_DECISIONS_PENDING.md) → [새 프론트엔드 계획](implementation/docs/frontend_v2/FRONTEND_V2_PLAN.md)(#385) → [자료 계약](implementation/docs/FRONTEND_DATA_CONTRACT.md).
 이전 기록: [10/23](implementation/docs/handoff/HANDOFF_HISTORY_20261023.md) · [10/21 Codex Main 원문](implementation/docs/handoff/HANDOFF_HISTORY_20261021.md) · [10/20](implementation/docs/handoff/HANDOFF_HISTORY_20261020.md) · [10/18~19](implementation/docs/handoff/HANDOFF_HISTORY_20261018_19.md).
@@ -18,6 +18,8 @@
 | --- | --- | --- | --- |
 | #393 → #400 → #403 → #404 → #405 중앙 V 사슬 | Claude Code Main | 2026-10-24 06:00 / 15:00 | 결정 완료(CV-LEAK (i)·CV-SPLIT (ii)·CV-CARRY (i)·CV-D-*). **10-24 밤 정기 실행 전 병합 금지.** 첫 게시 전 조건: Secret 2개, 하루치 측정(GSQ-024 검증 먼저), CV-SPLIT (ii) 반영 뒤 #400 재시험, 첫 게시 점검표 채우기 → 첫 게시 날짜 제안 |
 | `ccr-263267c9-f5ng5h` Main 문서(10-24 밤 결정·#392 후속 결정·인수인계) | Claude Code Main | 2026-10-24 22:50 / 10-25 07:50 | `USER_DECISIONS_PENDING`·이 파일 |
+| `claude/frontend-v2-p2-1-home` 프론트 P2-1(기능 1: 1.1.1 검색·1.1.2 기업 통합 진입·1.1.3 명언·1.1.4 즐겨찾기·최근 검색) | Claude Code Main | 2026-10-25 01:20 / 10:20 | 시안 0번 보드(PC·모바일). 구현·리뷰 중, PR 전. 병합은 화면마다 승인 |
+| #407 verify 제한 40 → 60분 | Claude Code Main | 2026-10-25 01:30 / 10:30 | 워크플로 변경, 승인 대기 |
 
 ## 1. 기준·게시
 
@@ -33,7 +35,7 @@
   - #399 새 프론트엔드 P2-1a 첫 화면 구조(셸 먼저, 자료층은 첫 그림 뒤)·폰 성능 시험 → canonical 기준으로 바꾸고 동기화 ebaa4118(필수 6체크 녹색) → 병합 **4c3d8142** (23:22 UTC). 배포 안 되는 범위. 새 성능 시험 `web_app_first_paint_browser_test.js`가 10/24분 정기 실행 verify에서 처음 돈다(실패하면 원인부터 보고, 건너뛰기 금지).
   - #396·#391의 화면 변화(4.5 이름, TARGET v1 임시 V 표시)는 10/24분 정기 실행 배포 때 실사이트에 반영된다.
 - 10/23 병합: #384 #378 #382 #387 #389 #388 #386(마지막 81d7b58d). 자세한 내용은 [10/23 기록](implementation/docs/handoff/HANDOFF_HISTORY_20261023.md).
-- **실제 게시: d6eaaa8a.** 10/23분 정기 실행 [run 40045938631](https://github.com/kco994553-star/Investment-System1/actions/runs/40045938631)이 collect·verify·deploy 모두 성공했다(24.04, 시작 00:38 UTC, 배포 01:17 UTC / 10:17 KST).
+- **실제 게시: 4c3d8142.** 10/24분 정기 실행 [run 40146210895](https://github.com/kco994553-star/Investment-System1/actions/runs/40146210895)이 collect·verify·deploy 모두 성공했다(시작 00:19 UTC, 배포 01:06 UTC / 10:06 KST). #396 4.5 "나비효과"·#391 TARGET v1 "임시 V" 표시가 실사이트에 반영됐다(화면 확인은 따로). `web_app/`은 배포되지 않는다.
 
 ## 2. 정기 실행·연속 성공
 
@@ -43,8 +45,10 @@
 | 10/21 | 39701051682 | 성공 | (셈 시작 전) |
 | 10/22 | 39879258841 | **성공 · 연속 1회째** | 사용자 결정(10/22)으로 이 실행부터 센다. 원장 각 4건 |
 | 10/23 | 40045938631 | **성공 · 연속 2회째** | #395 병합 뒤 첫 실행(24.04). 원장 v1/v2 각 5건(`appended=1`, session 2026-10-23), RAW 재사용(`source=RAW raw=FOUND recovered_records=0`), 비공개 업로드 `forward-ledger-2026-10-23`. 샤드 5(65종목) 수집 65/65 |
+| 10/24 | 40146210895 | **성공 · 연속 3회째** | canonical 4c3d8142. 시작 00:19 UTC, 배포 01:06 UTC / 10:06 KST. 토요일이라 원장 추가 없음(`ledger=NOT_SESSION_DAY`, `appended=0`, 각 5건 그대로). 샤드 6(57종목) 57/57. verify에서 P1 시험(#397)·첫 화면 성능 시험(#399)이 처음 돌고 통과(`FIRST_PAINT ms=832 first_kb=25.4`). **verify 33.7분(제한 40분)** — 10/22분 27.2분·10/23분 23.1분보다 길다(기존 시험이 고르게 30~50% 느림, 새 시험은 약 1분) |
 
-- 연속 성공: **2/7** (10/23, 이 표의 10-22 결정 기준). 사용자는 10-24 밤 3/7로 적었다(10/21 run 39701051682를 넣은 셈으로 보임) — 기준 확인 대기. 예약 22:17 UTC 실행이 나흘 연속 2시간 20분 안팎 늦게 시작했다(00:36·00:40·00:37·00:38 UTC). 확인은 01:30 UTC 무렵을 기본으로 한다.
+- 연속 성공: **3/7** (10/24분, 이 표의 10-22 결정 기준). 사용자 셈은 한 회 더 많다(10/21 run 39701051682를 넣은 셈으로 보임, 10-24 밤 3/7 → 지금 4/7) — 기준 확인 대기. 실행 시작 시각은 00:36·00:40·00:37·00:38·00:19 UTC였다. 확인은 01:30 UTC 무렵을 기본으로 한다.
+- verify 제한시간: 33.7분/40분이라 실행기가 느린 날 제한에 걸려 deploy가 보류될 수 있다. 40 → 60분 제안 **#407**을 열었다(워크플로 변경, 승인 뒤 병합).
 - 10/23 게시 커버리지: Q 486 / G 494 / 양쪽 478, 분모 504, calc_version `qgv2-calc/2026-10-17.1`, 샤드 7/7, 7일 경과 행 0, as_of 2026-10-24 00:50 UTC.
 - 부분 실패(배포는 막지 않음, 10/22와 같음): 8-K `ASML_6K_EARNINGS_UNCONFIRMED`(17개 중 1개), 뉴스 GDELT HTTP 429·IR 피드 실패로 PARTIAL_FAILED(항목 45), 로고 Wikidata 원천 불가로 이니셜 506. 원인 조사는 별도 작업.
 
@@ -62,7 +66,8 @@
 
 | PR | 상태 | 남은 것 |
 | --- | --- | --- |
-| #393 → #400 → #403 → #404 → #405 중앙 V 사슬 | 모두 녹색, 결정 완료, 첫 게시 조건 진행 중 | CV-SPLIT (ii)를 #400에 넣고 위로 병합(로컬 작업 중), Secret 2개, 하루치 측정, 점검표, 첫 게시 날짜 제안 |
+| #393 → #400 → #403 → #404 → #405 중앙 V 사슬 | CV-SPLIT (ii)를 #400에 넣고 위로 병합해 올림(core 3589fd44 · guard 993a4682 · workflow 8005575c · reader eca9ab79, 로컬 전체 pytest 3942·노드·가드 137 통과), CI 확인 중. Secret 2개 등록 확인(이름만, run 40144973237) | 하루치 측정 리허설(03:00 UTC 뒤), 월말가 보충 결정, 점검표, 첫 게시 날짜 |
+| #407 verify 제한 40 → 60분 | 승인 대기 | 다음 정기 실행 전 병합 권장 |
 | #392 TARGET v0 결합 해소 | 10-23부터 승인 대기. **canonical과 충돌**(`pages_artifact_guard.py` 고정값만, 시험 병합으로 확인). 마지막 동기화 a359ae91 | 후속 결정 7개는 `TV0-*`로 옮김. 순서 권장은 사용자 보고 참고(중앙 V 첫 게시 뒤 동기화·CI·폰 확인) |
 | #361 Worker 분할 이벤트 | 배포 보류(Yahoo 권리 미해결) | 무료 대안 공급원 결정 |
 | #305·#281(draft, 참고) · #267(보류) | 그대로 | — |
@@ -72,7 +77,7 @@
 
 ## 5. 다음 할 일
 
-1. 10/24분 정기 실행 확인(01:30 UTC 무렵). P1 시험이 verify에서 처음 돈다. 실패하면 원인부터 보고(시험 건너뛰기 금지).
+1. 다음 정기 실행 확인(10/25분, 10-26 01:30 UTC 무렵). verify 제한 40 → 60분 #407 승인·병합은 그 실행 전이 좋다.
 2. 화면 P2 메뉴별(기능 1 → 2 → 6 → 5 → 3 → 4 → 7 → 8 → 9), PR-D2(새 프론트엔드 `OFFICIAL_READER` 전환).
 3. 중앙 V 첫 게시 조건(10-24 밤 결정): Secret 2개(사용자) → 하루치 측정(분리 실행, 게시 안 함) → CV-SPLIT (ii) 반영·재시험 → 점검표 → 첫 게시 날짜 제안(11-04 전, 연속 집계를 깨지 않는 날) → 그날 사슬 병합·`all_shards` 1회·§5 재기록 PR.
 4. 결정 대기: D5-UPDATE, MANUAL-QUOTE, `TV0-*` 7개, CV-SPLIT-DATA(전 종목 최근 월말가 보충, 제안 준비 중).
