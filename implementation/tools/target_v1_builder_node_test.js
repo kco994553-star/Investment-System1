@@ -236,8 +236,6 @@ test('finalize: cards, shortfall, limits, LATEST file (calc_version, row freshne
  const s=memory(),pb=P.empty();pb.target_v1=done;P.write(s,pb);assert.equal(P.read(s).target_v1.versions[0].number_check.calc_version,'qgv2-calc/2026-10-15.1');
 });
 
-// User decision 2026-10-23: 「가격이 일부만 있을 때 V가 '몇 개 요인으로 계산됐는지'(예: 3/5)를 … 표시하고, V3·V4가 빠진 V로 TARGET v1
-// 후보를 확정하지 않는다(초안은 가능, 표시 필수).」 Synthetic factor scores only (no price): a missing factor is a null score.
 // 확정 차단 점검 (2026-10-25, display only): freshnessRows is the one source of the finalize freshness rows and cutoff.
 const shard7=c=>Number(BigInt('0x'+require('node:crypto').createHash('sha256').update(c).digest('hex'))%7n);
 const one=(f,code)=>f.rows.find(r=>r.code===code);
@@ -269,18 +267,19 @@ test('freshnessRows: valued rows only — a normal NA row (even with an old acqu
  assert.equal(f.rows.length,502);assert.ok(!codes.includes('NYSE:P10')&&!codes.includes('NYSE:P11'),'NA rows excluded');assert.ok(!codes.some(c=>c.startsWith('TARGET:')));
  // LIVE without scores is still a valued row; a valued row without acquired_at blocks both days and cannot be classified.
  assert.deepEqual([one(f,'NYSE:P12').blocks_today,one(f,'NYSE:P12').age_days],[true,44]);
- assert.deepEqual(one(f,'NYSE:P13'),{code:'NYSE:P13',acquired_at:null,age_days:null,last_ok_day:null,blocks_today:true,blocks_tomorrow:true,shard:null,kind:'UNKNOWN'});
+ assert.deepEqual(one(f,'NYSE:P13'),{code:'NYSE:P13',acquired_at:null,age_days:null,last_ok_day:null,blocks_today:true,blocks_tomorrow:true,shard:null,kind:'UNKNOWN',next_turn_day:null});
  const c=B.publishedCheck(pub,{date:'2026-10-15'});assert.deepEqual([f.today,c.stale_rows,c.na_rows,f.oldest_acquired,c.oldest_acquired],[2,2,2,'2026-09-01T00:00:00Z','2026-09-01T00:00:00Z']);
 });
 test('freshnessRows: KEPT (older than its own shard newest) vs ROTATION (whole shard old), from the inputBasis shard times',async()=>{
  const pub=published({patch:{'NYSE:P0':r=>{r.acquired_at='2026-10-05T03:00:00Z';}}}),shardOf=await B.rowShards(pub),basis=await B.inputBasis(pub,{shardOf});
  assert.equal(shardOf['NYSE:P0'],shard7('P0'));assert.equal(Object.keys(shardOf).length,504);assert.deepEqual(basis,await B.inputBasis(pub),'same basis with or without the precomputed shards');
  const f=B.freshnessRows(pub,{finalizeDate:'2026-10-15',basis,shardOf});
- assert.deepEqual([f.today,f.tomorrow,f.kept],[1,1,1]);assert.deepEqual(one(f,'NYSE:P0'),{code:'NYSE:P0',acquired_at:'2026-10-05T03:00:00Z',age_days:10,last_ok_day:'2026-10-11',blocks_today:true,blocks_tomorrow:true,shard:shard7('P0'),kind:'KEPT'});
+ assert.deepEqual([f.today,f.tomorrow,f.kept],[1,1,1]);assert.deepEqual(one(f,'NYSE:P0'),{code:'NYSE:P0',acquired_at:'2026-10-05T03:00:00Z',age_days:10,last_ok_day:'2026-10-11',blocks_today:true,blocks_tomorrow:true,shard:shard7('P0'),kind:'KEPT',next_turn_day:one(f,'NYSE:P0').next_turn_day});
  assert.ok(f.rows.filter(r=>r.code!=='NYSE:P0').every(r=>r.kind==='ROTATION'&&!r.blocks_today));
  // A kept row counts before it blocks (line '보존 행'); the counts never depend on the classification.
  assert.deepEqual([B.freshnessRows(pub,{finalizeDate:'2026-10-11',basis,shardOf}).today,B.freshnessRows(pub,{finalizeDate:'2026-10-11',basis,shardOf}).kept],[0,1]);
- const bare=B.freshnessRows(pub,{finalizeDate:'2026-10-15'});assert.deepEqual([bare.today,bare.kept],[1,0]);assert.ok(bare.rows.every(r=>r.kind==='UNKNOWN'&&r.shard===null));
+ // Without the basis every row is UNKNOWN: `unknown` counts them, so the screen shows the kept count as not known (never 0).
+ const bare=B.freshnessRows(pub,{finalizeDate:'2026-10-15'});assert.deepEqual([bare.today,bare.kept,bare.unknown],[1,0,504]);assert.equal(f.unknown,0);assert.ok(bare.rows.every(r=>r.kind==='UNKNOWN'&&r.shard===null));
  // Whole shard old (collected 2026-10-06 in one run, minutes apart) → ROTATION, not KEPT; the other shards stay current.
  const s=shard7('P0'),old=published({patch:Object.fromEntries(Array.from({length:504},(_,i)=>['NYSE:P'+i,r=>{if(shard7(r.cik)===s)r.acquired_at='2026-10-06T22:'+String(37+i%5).padStart(2,'0')+':00Z';}]))});
  const so=await B.rowShards(old),fo=B.freshnessRows(old,{finalizeDate:'2026-10-14',basis:await B.inputBasis(old,{shardOf:so}),shardOf:so}),inShard=fo.rows.filter(r=>r.shard===s);
@@ -292,9 +291,17 @@ test('freshnessRows: KEPT (older than its own shard newest) vs ROTATION (whole s
  // A normal NA row with an old acquired_at (a reasoned NA keeps its last acquisition) is neither counted nor kept.
  const na=published({patch:{'NYSE:P3':r=>{NA_ROW(r);r.acquired_at='2026-09-01T00:00:00Z';}}}),sn=await B.rowShards(na),fn=B.freshnessRows(na,{finalizeDate:'2026-10-15',basis:await B.inputBasis(na,{shardOf:sn}),shardOf:sn});
  assert.deepEqual([fn.today,fn.kept,one(fn,'NYSE:P3')],[0,0,undefined]);
- assert.deepEqual(await B.rowShards({records:{'NYSE:A':{cik:'1'}}}),{},'no shard_count → no shards');assert.equal(await B.rowShards(null),null);
+ assert.deepEqual(await B.rowShards({records:{'NYSE:A':{cik:'1'}}}),{},'no shard_count → no shards');
+ // next_turn_day: the first day ≥ the finalize date whose scheduled run collects the shard (day ordinal mod shard_count, as
+ // universe/sec_universe_shares.py shard_index_for; Python date(2026, 10, 25).toordinal() % 7 = 0, 2026-10-15 → 4).
+ assert.equal(pub.shard_count,7);
+ for(const[d,s,turn]of [['2026-10-25',0,'2026-10-25'],['2026-10-25',1,'2026-10-26'],['2026-10-25',6,'2026-10-31'],['2026-10-15',4,'2026-10-15'],['2026-10-15',3,'2026-10-21'],['2026-10-15',5,'2026-10-16']]){
+  const code=Object.keys(shardOf).find(c=>shardOf[c]===s);assert.equal(one(B.freshnessRows(pub,{finalizeDate:d,basis,shardOf}),code).next_turn_day,turn,d+' shard '+s);}
+ assert.equal(B.freshnessRows(pub,{finalizeDate:'2026-10-25',basis,shardOf}).shard_count,7);assert.equal(one(B.freshnessRows({...pub,shard_count:undefined},{finalizeDate:'2026-10-25',basis,shardOf}),'NYSE:P0').next_turn_day,null,'no shard_count → no turn');assert.equal(await B.rowShards(null),null);
 });
 
+// User decision 2026-10-23: 「가격이 일부만 있을 때 V가 '몇 개 요인으로 계산됐는지'(예: 3/5)를 … 표시하고, V3·V4가 빠진 V로 TARGET v1
+// 후보를 확정하지 않는다(초안은 가능, 표시 필수).」 Synthetic factor scores only (no price): a missing factor is a null score.
 test('V factor count n/5 on draft rows; V without V3 or V4 stays in the draft but blocks finalize (2026-10-23)',async()=>{
  const V5={v_earnings_yield:{score:45},v_fcf_yield:{score:44},v_vs_industry:{score:43},v_vs_own_history:{score:42},v_expectation_check:{score:41}};
  assert.deepEqual(B.V_FACTORS,['v_earnings_yield','v_fcf_yield','v_vs_industry','v_vs_own_history','v_expectation_check']);assert.deepEqual(B.V_REQUIRED,['v_vs_industry','v_vs_own_history']);

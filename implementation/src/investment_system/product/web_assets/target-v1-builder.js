@@ -16,7 +16,8 @@
    row (no value, NA reason) never blocks, a valued row of another calculation is CALC_VERSION_MIXED; the draft records its input
    basis (calc_version, as_of, per-shard newest acquired_at) and a changed basis at finalize regenerates the draft (answers kept
    for the same symbols only); the selected names' financial safety is re-checked against the latest file. Every number comes from TargetV1ConfigDefaults (qgv/target_v1_builder_v0.json,
-   v0 · UNCALIBRATED) or PlaybookConfigDefaults. Missing is null / NA, never 0. No order function; no buy or sell wording. */
+   v0 · UNCALIBRATED) or PlaybookConfigDefaults, with one display-only exception: KEPT_GAP_MS of the 확정 차단 점검 classification
+   (2026-10-25), never part of a finalize rule. Missing is null / NA, never 0. No order function; no buy or sell wording. */
 (function(root,factory){const node=typeof module==='object'&&module.exports;
  const api=factory(node?require('./playbook-engine.js'):root.PlaybookEngine,node?require('./playbook-config-defaults.js'):root.PlaybookConfigDefaults,
   node?require('./target-v1-config-defaults.js'):root.TargetV1ConfigDefaults,node?()=>require('./virtual-trading.js'):()=>root.VirtualTrading,node?()=>require('./qgv-v2.js'):()=>root.QgvV2);
@@ -262,23 +263,31 @@ function publishedCheck(payload,{date,cfg=CFG}={}){
    next day's cutoff (no new collection assumed). publishedCheck counts its stale rows from `today` here, so the screen line and
    finalize use one row set (valued rows only: a normal NA row never appears) and one cutoff. Per row: acquired_at, age in whole
    UTC calendar days (finalize date − acquisition UTC date), last_ok_day (the last finalize date this row still passes — derived
-   from the same rule, = acquisition UTC date + 6 for any time before 23:59:59Z), blocks_today / blocks_tomorrow, shard, kind.
+   from the same rule, = acquisition UTC date + 6 for any time before 23:59:59Z), blocks_today / blocks_tomorrow, shard, kind and
+   next_turn_day (the first day ≥ the finalize date whose scheduled run collects this shard: day ordinal mod shard_count, the
+   rotation rule of universe/sec_universe_shares.py shard_index_for; null without a shard or shard_count).
    kind (needs basis = inputBasis(payload) for the per-shard newest acquisition and shardOf = rowShards(payload); otherwise UNKNOWN):
     KEPT     — older than its own shard's newest acquisition by more than KEPT_GAP_MS: the shard was collected again and this row
-               was kept (unresolved code under the 2026-10-17 (a) PRESERVE rule, or a kept failure). It needs an identity action
-               (alias, reasoned NA or a CIK pin); an all_shards run does not refresh it.
-    ROTATION — at its shard's newest collection: the whole shard ages together and the next scheduled run of that shard (or an
-               all_shards run) refreshes it.
-    UNKNOWN  — no valid acquired_at, no CIK / shard, or no basis.
+               was not refreshed, so the 2026-10-17 (a) PRESERVE rule kept the previous row. The file does not say why: an unresolved
+               symbol (needs an identity action; an all_shards run does not fix it) or a transient collection / builder failure or a
+               validator rejection (the next collection or an all_shards run can refresh it).
+    ROTATION — at its shard's newest collection: the whole shard ages together; that shard's next turn (or an all_shards run)
+               refreshes it. A whole shard kept after a failed run also shows here.
+    UNKNOWN  — no valid acquired_at, no CIK / shard, or no basis (then `unknown` > 0 and the kept count is not known).
    KEPT_GAP_MS (12 h) only separates collection runs (one shard run takes minutes, the same shard is collected again days later);
-   it is a display classification, never part of the finalize rule, so it is kept in code (no config field). Counts and times only. */
-const DAY_MS=86400000,KEPT_GAP_MS=12*3600000;
+   an all_shards run and a scheduled run of the same shard less than 12 h apart show a kept row as ROTATION. It is a display
+   classification, never part of the finalize rule, so it is kept in code (no config field; named in the header). Counts and
+   times only. */
+// ORDINAL_1970: Python date(1970, 1, 1).toordinal(), so a UTC day index maps to the collector's day ordinal.
+const DAY_MS=86400000,KEPT_GAP_MS=12*3600000,ORDINAL_1970=719163;
 function shardTimes(basis){const out={};if(!object(basis)||typeof basis.shards!=='string')return out;for(const part of basis.shards.split('|')){const i=part.indexOf('=');if(i<1)continue;const k=Number(part.slice(0,i)),t=Date.parse(part.slice(i+1));if(Number.isInteger(k)&&Number.isFinite(t))out[k]=t;}return out;}
 function freshnessRows(payload,{finalizeDate,basis=null,shardOf=null,cfg=CFG}={}){
  const days=cfg.finalize_check.freshness_max_days,date_ok=validDay(finalizeDate),end=date_ok?Date.parse(finalizeDate+'T23:59:59Z'):NaN,limit=end-days*DAY_MS,next=limit+DAY_MS;
  const out={finalize_date:date_ok?finalizeDate:null,date_ok,cutoff:Number.isFinite(limit)?new Date(limit).toISOString():null,next_cutoff:Number.isFinite(next)?new Date(next).toISOString():null,
-  rows:[],today:0,tomorrow:0,kept:0,oldest_acquired:null};
+  shard_count:null,rows:[],today:0,tomorrow:0,kept:0,unknown:0,oldest_acquired:null};
  if(!object(payload)||!object(payload.records))return out;
+ const count=shardCount(payload),ordinal=date_ok?Math.floor(Date.parse(finalizeDate+'T00:00:00Z')/DAY_MS)+ORDINAL_1970:NaN;out.shard_count=count;
+ const nextTurn=s=>s===null||!count||!Number.isFinite(ordinal)?null:new Date((ordinal-ORDINAL_1970+(((s-ordinal)%count)+count)%count)*DAY_MS).toISOString().slice(0,10);
  const newest=shardTimes(basis),shards=object(shardOf)?shardOf:{},dayIndex=date_ok?Math.floor(Date.parse(finalizeDate+'T00:00:00Z')/DAY_MS):NaN;let oldestT=null;
  for(const[code,r]of Object.entries(payload.records)){if(code.startsWith('TARGET:')||!valuedRow(r))continue;
   const t=typeof r.acquired_at==='string'?Date.parse(r.acquired_at):NaN,ok=Number.isFinite(t),shard=Number.isInteger(shards[code])?shards[code]:null,top=shard!==null&&Number.isFinite(newest[shard])?newest[shard]:null;
@@ -286,8 +295,8 @@ function freshnessRows(payload,{finalizeDate,basis=null,shardOf=null,cfg=CFG}={}
   const kind=!ok||top===null?'UNKNOWN':top-t>KEPT_GAP_MS?'KEPT':'ROTATION';
   if(ok&&(oldestT===null||t<oldestT)){oldestT=t;out.oldest_acquired=r.acquired_at;}
   out.rows.push({code,acquired_at:ok?r.acquired_at:null,age_days:ok&&date_ok?dayIndex-Math.floor(t/DAY_MS):null,
-   last_ok_day:ok?new Date(Math.floor((t-(DAY_MS-1000)+days*DAY_MS)/DAY_MS)*DAY_MS).toISOString().slice(0,10):null,blocks_today,blocks_tomorrow,shard,kind});
-  if(blocks_today)out.today++;if(blocks_tomorrow)out.tomorrow++;if(kind==='KEPT')out.kept++;}
+   last_ok_day:ok?new Date(Math.floor((t-(DAY_MS-1000)+days*DAY_MS)/DAY_MS)*DAY_MS).toISOString().slice(0,10):null,blocks_today,blocks_tomorrow,shard,kind,next_turn_day:nextTurn(shard)});
+  if(blocks_today)out.today++;if(blocks_tomorrow)out.tomorrow++;if(kind==='KEPT')out.kept++;if(kind==='UNKNOWN')out.unknown++;}
  return out;
 }
 /* Input basis of a published payload: calc_version, file as_of and the newest acquired_at per shard (shard = sha256(cik) mod
