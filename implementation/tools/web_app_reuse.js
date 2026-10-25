@@ -1,8 +1,9 @@
 'use strict';
 // New frontend P1 helper (not a test): the one place that knows where the old modules live and which of them the new
-// frontend reuses. Plan A (tools/build_web_app.py): web_app/index.html is the reuse list; a script it loads that has no file
-// of that name in web_app is an old web_assets file kept byte-identical by the build. When the old modules move into web_app
-// (P3), OLD below is the only line node tests need changed.
+// frontend reuses. Plan A (tools/build_web_app.py): a script the page loads that has no file of that name in web_app is an old
+// web_assets file kept byte-identical by the build. What the page loads (P2-1a): index.html's scripts (the first screen, web_app
+// files only), then web_app/loader.js LOAD_ORDER after the first paint (the one load list, read here the way the build reads
+// it). When the old modules move into web_app (P3), OLD below is the only line node tests need changed.
 const fs = require('node:fs');
 const path = require('node:path');
 
@@ -19,8 +20,29 @@ function scriptsOf(html) {
 }
 const newIndex = () => fs.readFileSync(path.join(NEW, 'index.html'), 'utf8');
 const oldIndex = () => fs.readFileSync(path.join(OLD, 'index.html'), 'utf8');
-// The new page's scripts, and the old page's scripts in first-load order (the old page loads two playbook files twice).
-const scripts = () => scriptsOf(newIndex());
+// loader.js LOAD_ORDER, parsed as build_web_app.parse_load_order parses it: exactly one literal of plain quoted names, each a
+// name the loader takes at runtime (its own NAME, read from loader.js; the build holds the same line), none twice.
+const LOAD_NAME = require(path.join(NEW, 'loader.js')).NAME;
+function loadOrderOf(text) {
+  const found = [...String(text).matchAll(/const LOAD_ORDER=Object\.freeze\(\[([\s\S]*?)\]\);/g)];
+  if (found.length !== 1) throw new Error('LOAD_ORDER_MISSING');
+  const items = found[0][1].split(',').map((x) => x.trim());
+  if (items.length && items[items.length - 1] === '') items.pop();
+  const names = [];
+  for (const x of items) {
+    const m = /^'([^'\\]*)'$/.exec(x);
+    if (!m) throw new Error('LOAD_ORDER_INVALID ' + x.slice(0, 40));
+    if (!LOAD_NAME.test(m[1])) throw new Error('LOADER_NAME_INVALID ' + JSON.stringify(m[1]));
+    if (names.includes(m[1])) throw new Error('LOADER_NAME_INVALID twice ' + m[1]);
+    names.push(m[1]);
+  }
+  return names;
+}
+const loadOrder = () => loadOrderOf(fs.readFileSync(path.join(NEW, 'loader.js'), 'utf8'));
+// The first screen's scripts (index.html), the page's whole load order (then LOAD_ORDER), and the old page's scripts in
+// first-load order (the old page loads two playbook files twice).
+const firstPaint = () => scriptsOf(newIndex());
+const scripts = () => [...firstPaint(), ...loadOrder()];
 const oldScripts = () => [...new Set(scriptsOf(oldIndex()))];
 // Same rule as build_web_app.reused_old_files: web_app wins on a shared name, otherwise the file must be in web_assets.
 function reused(list = scripts()) {
@@ -35,22 +57,25 @@ const requireOld = (name) => require(oldPath(name));
 const newPath = (name) => path.join(NEW, name);
 const requireNew = (name) => require(newPath(name));
 
-// Browser global of an old UMD module (root.X = api / factory, r.X = d), read from its own source.
+// Browser global of an old UMD module (root.X = api / factory, r.X = d), read from its own source. A global-only module
+// (macro-cycle-ring.js: root.X = Object.freeze({...}) on window, else globalThis; no module.exports) sets it when required.
 function globalName(name) {
-  const m = /\b(?:root|r|g|global)\.([A-Z][A-Za-z0-9]*)\s*=\s*(?:api|d|factory)\b/.exec(fs.readFileSync(oldPath(name), 'utf8'));
+  const text = fs.readFileSync(oldPath(name), 'utf8');
+  const m = /\b(?:root|r|g|global)\.([A-Z][A-Za-z0-9]*)\s*=\s*(?:api|d|factory)\b/.exec(text) || /\broot\.([A-Z][A-Za-z0-9]*)\s*=\s*Object\.freeze\(/.exec(text);
   if (!m) throw new Error('NO_GLOBAL ' + name);
   return m[1];
 }
 /* Node tests of the P1 layer: fresh copies of old modules (module state such as QgvScores' memo, DataRefresh's generation or
    Qgv2Inputs.lastReason starts empty), set as globals on `win` and on globalThis (old modules read siblings through globalThis,
    which in the browser is the same window). app-config.js is browser-only (window.InvestmentAppConfig) and runs against `win`.
-   Default list: every reused module, in index.html order. */
+   Default list: every reused module, in load order. */
 function loadOld(win, names = reused()) {
   for (const name of names) if (name !== 'app-config.js') delete require.cache[require.resolve(oldPath(name))];
   const out = {};
   for (const name of names) {
     if (name === 'app-config.js') { require('node:vm').runInNewContext(fs.readFileSync(oldPath(name), 'utf8'), { window: win, Object }); out.InvestmentAppConfig = win.InvestmentAppConfig; continue; }
-    const api = require(oldPath(name)), g = globalName(name);
+    const exported = require(oldPath(name)), g = globalName(name), api = exported && Object.keys(exported).length ? exported : globalThis[g];
+    if (!api) throw new Error('NO_EXPORT ' + name);
     win[g] = api; globalThis[g] = api; out[g] = api;
   }
   return out;
@@ -98,4 +123,4 @@ function nodeWindow({ files = {}, origin = 'https://site.test' } = {}) {
   return win;
 }
 
-module.exports = Object.freeze({ ROOT, OLD, NEW, scriptsOf, newIndex, oldIndex, scripts, oldScripts, reused, oldPath, requireOld, newPath, requireNew, globalName, loadOld, nodeWindow });
+module.exports = Object.freeze({ ROOT, OLD, NEW, scriptsOf, newIndex, oldIndex, LOAD_NAME, loadOrderOf, loadOrder, firstPaint, scripts, oldScripts, reused, oldPath, requireOld, newPath, requireNew, globalName, loadOld, nodeWindow });
