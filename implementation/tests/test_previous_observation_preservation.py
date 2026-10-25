@@ -294,7 +294,7 @@ def rows(folder, name):
 
 COLLECTION = re.compile(r'SEC_UNIVERSE_COLLECTION shard=(?:\d+|all)/7 issuers=\d+ collected=\d+ failed=\d+ unresolved_codes=\d+ '
                         r'preserved_previous_shares=\d+ preserved_previous_qg=\d+ preserved_previous_qgv2=\d+ '
-                        r'preserved_unconfirmed=\d+ identity_not_preserved=\d+')
+                        r'preserved_unconfirmed=\d+ identity_not_preserved=\d+ listing_ended=\d+')
 
 
 def collection_counts(out):

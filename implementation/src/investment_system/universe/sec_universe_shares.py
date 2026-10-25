@@ -337,9 +337,55 @@ def verified_observation(row):
             and bool(hashes.get('companyfacts')) and bool(hashes.get('submissions')))
 
 
+# ---- listing ended (STALE_REPORT 2026-10-25 option B-a; owner approval in its PR) ----
+# A small reviewed table of Universe codes whose listing has ended for good (acquired for cash and delisted), each with
+# the issuer's CIK, the effective date and the SEC evidence. Absence from SEC's ticker file never puts a code here (that
+# is the transient gap PRESERVE rides out, and a ticker change like NASDAQ:PSKY -> NYSE:SKYD also looks like it): only an
+# explicit, evidenced, owner-approved entry does. The code stays in the fixed Universe504 list (UNI-DEF (a), UNI-FOLLOW
+# (a): the denominator 504 is unchanged). `previous_decision` checks this table BEFORE the PRESERVE rule: in each of the
+# three Universe files a listed code whose kept row is a verified observation of THE LISTED CIK is published as a
+# reasoned NA row (`ended_row`): NOT_AVAILABLE, no values, scores or calc_version, the existing reason CIK_UNRESOLVED (no
+# new reason code, no schema change; a dedicated LISTING_ENDED reason is a later schema change), and the last
+# observation's cik, acquired_at and source hashes kept (the freshness guard sees an EQUAL record, never LOST_RECORD).
+# On this row acquired_at means "last real observation of a listing that has ended". A kept row of another CIK (or no
+# verified observation) is not touched by the entry: the ordinary rules apply.
+LISTING_ENDED = 'LISTING_ENDED'
+LISTING_ENDED_REASON = 'CIK_UNRESOLVED'
+LISTING_ENDED_CODES = {
+    'NASDAQ:WBD': {
+        'cik': '0001437107',
+        'effective': '2026-10-06',
+        'reason': 'ACQUIRED_FOR_CASH_DELISTED',
+        'evidence': (
+            'SEC 8-K filed 2026-10-06, items 2.01 and 3.01, accession 0001193125-26-415055',
+            'SEC Form 25 filed 2026-10-06, accession 0001193125-26-415091',
+            'SEC Form 25-NSE (Nasdaq) filed 2026-10-06, accession 0001354457-26-000951',
+            'SEC Form 15-12G filed 2026-10-16, accession 0001193125-26-423513',
+            'PR #390 doc UNIVERSE_INDEX_FOLLOWING_20261023.md section 2-2 (WBD filing sequence)',
+        ),
+    },
+}
+
+
+def listing_ended(code, old):
+    """True when `code` is in LISTING_ENDED_CODES and the kept row is a verified observation of that entry's CIK."""
+    entry = LISTING_ENDED_CODES.get(code)
+    return entry is not None and verified_observation(old) and old['cik'] == entry['cik']
+
+
+def ended_row(old, empty):
+    """The reasoned NA row of a listing-ended code in one file: that file's `empty_record` with the existing reason
+    CIK_UNRESOLVED, plus the kept row's cik, acquired_at and source hashes (nothing else of it: no value, score,
+    calc_version or identity binding). The same row comes back unchanged from itself on every later run."""
+    return dict(empty(cik=old['cik'], reasons=(LISTING_ENDED_REASON,)), acquired_at=old['acquired_at'],
+                source_sha256=dict(old['source_sha256']))
+
+
 def previous_decision(old, new, *, code, unresolved=(), conflicts=(), new_observation):
     """How one Universe code's kept row meets this run's row; None leaves the file's merge rule (`replaces`).
 
+    - LISTING_ENDED (checked first, before PRESERVE): the code's listing has ended (LISTING_ENDED_CODES) and the kept
+      row is a verified observation of the entry's CIK. Whatever this run brings, the file publishes `ended_row`.
     - PRESERVE: this run has no new observation of the code (its symbol is unresolved in today's SEC registry, or its
       row records no verified collection: identity unconfirmed, builder failure, rejected by the validator, a transient
       failure after the bytes arrived) while the kept row is a verified observation of the SAME issuer (same CIK, no
@@ -352,6 +398,8 @@ def previous_decision(old, new, *, code, unresolved=(), conflicts=(), new_observ
       kept collection record becomes a withdrawal row naming it (`withdrawal`, owner decision UNI-WITHDRAWN (a)), else the
       code is CIK_UNRESOLVED / this run's NA row without acquired_at (a detection time is not a collection time).
     A new observation (successful collection, also a policy NA or an invalid input) never meets PRESERVE."""
+    if listing_ended(code, old):
+        return LISTING_ENDED
     if new is None:
         if code in conflicts:
             return IDENTITY_CONFLICT
@@ -457,11 +505,14 @@ def require_withdrawal(r, cut, empty):
 
 
 def note(stats, decision, code, old):
-    """Codes of this merge kept by PRESERVE / of another identity not carried (a kept collection record replaced)."""
+    """Codes of this merge kept by PRESERVE / of another identity not carried (a kept collection record replaced) /
+    published as a listing-ended NA row."""
     if stats is None:
         return
     if decision == PRESERVE:
         stats.setdefault('preserved', set()).add(code)
+    elif decision == LISTING_ENDED:
+        stats.setdefault('listing_ended', set()).add(code)
     elif decision == IDENTITY_CONFLICT and verified_observation(old):
         stats.setdefault('identity_not_preserved', set()).add(code)
 
@@ -504,6 +555,8 @@ def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unreso
         note(stats, decision, code, old)
         if decision == PRESERVE:
             pass
+        elif decision == LISTING_ENDED:
+            old = ended_row(old, empty_record)
         elif decision == IDENTITY_CONFLICT and (new is None or not observed(new)):
             # Identity conflict without this run's collection: the kept observation is withdrawn (UNI-WITHDRAWN); without
             # one, unresolved (no row this run) or this run's NA row, never an invented time.

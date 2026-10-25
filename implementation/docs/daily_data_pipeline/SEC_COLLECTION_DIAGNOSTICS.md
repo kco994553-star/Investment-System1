@@ -84,6 +84,28 @@ optional start/fy/fp/frame의 JSON null은 필드 미제공으로 투영한다. 
 - **UNI-TARGET(조건부 독립)**: TARGET 고정 CIK 재무 관측은 유지한다. 철회 코드가 TARGET에 점수를 빌려주지 않는다. TARGET의 기기 가격은 티커 심볼로 읽으므로(Universe 시트 행, `DeviceValuation.deviceQuote`, PriceStore), 그 심볼이 철회된 Universe 코드의 심볼이면 가격·V·종합 점수·후보를 막고 "가격 식별 충돌로 가격·V·종합 점수 사용 중지"를 보인다. 다른 심볼의 TARGET은 그대로다.
 - 검증: `tests/test_universe_withdrawal_e2e.py`.
 
+## Universe 상장 종료 항목 (2026-10-25 조사 B-a 안, PR-2 · 소유자 승인 뒤 병합)
+
+대상: `sec-universe-shares.json`, `sec-universe-qg.json`, `sec-qgv2.json`의 `records`. 표: `universe/sec_universe_shares.py`의 `LISTING_ENDED_CODES`.
+
+- **왜 따로 두나**: 10-17 결정 (a)의 보존(PRESERVE)은 기호가 SEC 거래소 기호표에서 잠깐 빠져도 같은 CIK의 확인된 이전 행을 그대로 다시 게시한다. 영구히 상장이 끝난 코드도 이 규칙에 걸려, 10-17 값과 acquired_at이 기한 없이 남는다(14일 뒤 STALE이 되어도 값이 있는 행이라 단면에 남고 TARGET v1 확정을 막는다).
+- **항목이 되는 조건**: 기호표에서 빠졌다는 사실만으로는 넣지 않는다(일시적 누락, PSKY→SKYD 같은 기호 변경과 구별되지 않는다). SEC 공시로 상장 종료가 확인되고 소유자가 승인한 항목만 넣는다. 항목 칸: 코드, CIK, 발효일, 사유, 근거.
+- **현재 항목(1개)**
+
+| 코드 | CIK | 발효일 | 사유 | 근거 |
+| --- | --- | --- | --- | --- |
+| `NASDAQ:WBD` | 0001437107 | 2026-10-06 | 현금 인수 후 상장 폐지(`ACQUIRED_FOR_CASH_DELISTED`). 인수자는 Skydance(구 PSKY) | 8-K(2026-10-06, Item 2.01 완료·3.01 상장 폐지, 접수번호 `0001193125-26-415055`) · Form 25(2026-10-06, `0001193125-26-415091`) · Nasdaq 25-NSE(2026-10-06, `0001354457-26-000951`) · 15-12G(2026-10-16, `0001193125-26-423513`) · PR #390 문서 `UNIVERSE_INDEX_FOLLOWING_20261023.md` §2-2 |
+
+- **판정 순서**: `previous_decision`이 PRESERVE보다 먼저 표를 본다. 표에 있는 코드이고 그 파일의 이전 행이 **표의 CIK**에 대한 확인된 관측(CIK, 자기 acquired_at, SEC 원자료 해시 두 개)이면, 이번 실행이 무엇을 가져오든 상장 종료 NA 행을 게시한다. 이전 행이 다른 CIK이거나 확인된 관측이 아니면 표는 그 행을 건드리지 않고 기존 규칙을 따른다. 다른 미해석 코드(예: PSKY)는 그대로 PRESERVE다.
+- **상장 종료 NA 행**: 그 파일의 빈 행에 기존 사유 `CIK_UNRESOLVED` 하나. 값·점수·지표·식별 결합(shares의 listing_id)·`calc_version`은 지운다(0으로 채우지 않는다). 마지막 관측의 `cik`, `acquired_at`, 원자료 해시(shares는 cover 해시 포함)는 남긴다. 다음 실행에서도 같은 행이 그대로 나온다. 철회 행(`detected_at`)이 아니다.
+- **acquired_at을 남기는 이유(확인함)**: 배포 직전 신선도 검사는 라이브 행에 acquired_at이 있는데 산출물 행에 없으면 `LOST_RECORD`로 배포를 거부한다. 같은 acquired_at이면 값과 무관하게 `EQUAL`로 통과한다. 그래서 이 행의 acquired_at은 "끝난 상장의 마지막 실제 관측"을 뜻한다.
+- **바꾸지 않은 것**: 사유 코드 목록, 스키마 버전(2), 세 검증기(Python·JS), 신선도 검사, `calc_version`(`qgv2-calc/2026-10-17.1`), Universe504 목록(UNI-DEF (a)·UNI-FOLLOW (a), 분모 504).
+- **화면 표기**: 사유가 `CIK_UNRESOLVED`라 화면에는 'CIK 미해결'로 나온다. CIK는 알고 있으므로 정확한 표기는 아니다. 전용 사유 `LISTING_ENDED`는 사유 목록·스키마를 바꾸는 일이라 11/9 뒤 별도 PR로 미룬다.
+- **효과(공개 파일 2026-10-25T00:26Z 재계산)**: 단면 499→498(GENERAL 431→430), Q 점수 행 486→485, G 494→493, telecommunications 그룹 9→8 CIK(`MIN_PEERS` 8 경계). Q는 15행이 바뀐다(FOX·FOXA −8.78, CHTR −7.20, CMCSA −6.04, VZ −5.70). G는 최대 −0.16, TARGET 17종목은 Q 그대로·G 최대 0.08. TARGET v1 확정 검사(`publishedCheck`)는 이 행을 정상 NA로 센다(값이 있는 행만 신선도 검사). 전진 검증 원장은 이 행을 쓰지 않는다(모집단 n·해시만 바뀌고 구간은 그대로).
+- **실행 로그**: `SEC_UNIVERSE_COLLECTION … listing_ended=<n>`(이번 실행에서 상장 종료 NA로 게시한 코드 수). 표 결합은 바꾸지 않으므로 WBD는 계속 `unresolved_codes`에 들어간다. 상장 종료 행은 이전 acquired_at을 그대로 가지므로 `preserved_previous_<file>`에도 계속 1로 잡힌다. 매일 점검의 기준선은 승인된 항목 수(지금 1)다. `preserved_unconfirmed`에서는 빠진다.
+- **`PUBLISHED_COVERAGE` 줄**: `stale_7d_rows`·`acquired_oldest`·`shard_acquired`는 값 유무와 무관하게 cik와 acquired_at이 있는 행을 모두 센다(`tools/published_coverage.py`). 그래서 WBD 상장 종료 행 때문에 `stale_7d_rows`는 1 이상, `acquired_oldest`는 2026-10-17, 샤드 5 최솟값은 2026-10-17로 계속 남는다. 알려진 값이다. 값이 있는 행만 세도록 바꾸는 일은 사전 점검 PR(PR-3)에서 다룬다.
+- 검증: `tests/test_universe_listing_ended.py`(세 파일 NA, 검증기·신선도 검사 통과, acquired_at을 지우면 LOST_RECORD, 단면·Q·G 정확히 1 감소, 다른 코드 상태 불변, PRESERVE 유지, 원장·`publishedCheck` 정상 NA), `tools/target_v1_builder_node_test.js`.
+
 ## 실제 조사 상태
 
 Actions run38036368523(head78180443)의 고정 로그에서 normalize 실패3개(index4 AVGO,8 HUBB,12 MSFT)·BUILD_OK를 확인했다. ASML은 실패하지 않았다. 기존20-F는 이미 허용했고, 누락 개념만으로는 기존 코드가 실패하지 않았다. 따라서 IFRS 누락을 이번 세 회사의 확정 원인으로 보고하지 않는다.
