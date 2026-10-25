@@ -25,7 +25,7 @@
   2. `python implementation/tools/qgv_official_publish.py --out "$RUNNER_TEMP/public-cockpit" --parser "$RUNNER_TEMP/iex_last_trade" --monthend-stamp <U8 날짜> --monthend-shards 6`.
   3. 다음 단계의 `pages_artifact_guard.py`가 그대로 돈다.
 - node는 이미 collect 잡에 있어야 한다. JS 대조(D-CV12)에 쓴다(`tools/qgv_official_js_check.js`). 없으면 `VERIFY_FAILED JS_TWIN_UNAVAILABLE`이고 직전 정상본을 유지한다.
-- 표준 출력은 한 줄뿐이다: `QGV_OFFICIAL attempt=… reason=… published=… basis=… rows=… ranked=… supplied=n/m`. 가격을 읽어 계산까지 간 실행이면 끝에 분할 보조 검사(D6 (b), §4) 개수가 붙는다: `split_checked=… split_flagged=… split_unchecked=… split_unchecked_no_period=… split_gap_skipped=… split_lead_unchecked=…`(2026-10-24 밤, #400; `split_lead_unchecked` 2026-10-25). 가격·URL·키·종목은 없다.
+- 표준 출력은 한 줄뿐이다: `QGV_OFFICIAL attempt=… reason=… published=… basis=… rows=… ranked=… supplied=n/m`. 가격을 읽어 계산까지 간 실행이면 끝에 분할 보조 검사(D6 (b), §4) 개수가 붙는다: `split_checked=… split_flagged=… split_unchecked=… split_unchecked_no_period=… split_gap_skipped=… split_lead_unchecked=…`(2026-10-24 밤, #400; `split_lead_unchecked` 2026-10-25). IEX 스트림이 돈 실행이면 `supplied=n/m` 바로 뒤에 `iex_attempts=1|2`(전체 파이프라인 시도 수, 2026-10-25, 설계 §7 메모)가 붙는다. 가격·URL·키·종목은 없다.
 
 ### 1-2. Secret(새로 필요) — **소유자 결정**
 | 이름(기본값) | 용도 | 도구 인자 | 결정 |

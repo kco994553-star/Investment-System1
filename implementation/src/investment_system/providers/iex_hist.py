@@ -17,6 +17,12 @@ download | md5 + size pump | gzip -dc | iex_last_trade (C, tools/iex_tops/iex_la
 process only. Nothing is written but the public ticker list the parser reads; no price, yield or per-code price hash is printed,
 logged, raised or stored (GSQ-010). Errors carry a fixed code only and are raised `from None`.
 
+Stream failures (2026-10-25, rehearsal run 40156760950: IEX_GZIP_FAILED after 105 s on a 13,079,032,608-byte file that decompresses
+cleanly elsewhere): curl no longer retries by itself (a curl retry after a mid-transfer failure restarts the file from byte 0 into
+the same pipe and corrupts the gzip stream), a stalled transfer is cut by curl's connect / low-speed limits, a failure is named
+after the first broken stage (`failed_stage`: PARSER_FAILED / DOWNLOAD_FAILED / GZIP_FAILED, then SIZE_MISMATCH / MD5_MISMATCH),
+and `fetch_day` runs the whole pipeline once more from scratch on a transfer-shaped failure (`stream_attempts`).
+
 Price status per code (fixed codes, also published as the row's `price_status`):
   SUPPLIED                     a regular-session round-lot last trade on the day
   ODD_LOT_ONLY                 only odd-lot regular-session trades that day (not Last Sale Eligible: not used)
@@ -41,8 +47,10 @@ import datetime as dt
 import hashlib
 import json
 import re
+import signal
 import subprocess
 import threading
+import time
 import urllib.parse
 import urllib.request
 from pathlib import Path
@@ -62,6 +70,25 @@ NY = ZoneInfo('America/New_York')
 SESSION = (dt.time(9, 30), dt.time(16, 0))
 PARSER_STATUSES = ('ROUND', 'ODD_ONLY', 'NO_TRADE')
 CHUNK = 1 << 22
+# curl limits (2026-10-25): no curl --retry (a retry rewrites the file from byte 0 into stdout); a connect that takes over 30 s,
+# or a transfer slower than 1 MiB/s for 60 s (a stall), fails fast as DOWNLOAD_FAILED instead of eating the V step's 12 minutes.
+CURL_CONNECT_TIMEOUT_S = 30
+CURL_SPEED_LIMIT_BPS = 1 << 20
+CURL_SPEED_TIME_S = 60
+# Whole-pipeline retry (fetch_day / stream_attempts): fresh processes, fresh md5 and size count, after a short wait.
+# Retried: DOWNLOAD_FAILED, GZIP_FAILED, SIZE_MISMATCH, STREAM_FAILED (transfer-shaped), and MD5_MISMATCH (only reached with the
+# full size: bytes corrupted in transit; a second full copy either matches the GCS md5 or fails the same way). Never retried:
+# PARSER_FAILED and the parser-output checks (the same bytes give the same result), and every metadata / index code.
+RETRY_CODES = frozenset({'DOWNLOAD_FAILED', 'GZIP_FAILED', 'SIZE_MISMATCH', 'MD5_MISMATCH', 'STREAM_FAILED'})
+MAX_ATTEMPTS = 2
+RETRY_WAIT_S = 15
+# Time budget: the V step runs under `timeout -k 30s 12m`. The 2026-10-23 TOPS 1.6 file is 13,079,032,608 bytes; the runner's
+# measured pipeline rate is ~62 MB/s (probe run 39935426233: 11.84 GB in 3.2 min), so one full attempt is ~3.5 min and two are
+# ~7 min + the 15 s wait, leaving ~4.5 min for the hist index / metadata, the month-end store read, build, validator and JS twin.
+# A second attempt starts only when the first one ended within RETRY_START_LIMIT_S of the first start: after a slower first
+# attempt a full second one would not finish inside the step, and the step's timeout would end the run without a status file.
+RETRY_START_LIMIT_S = 240
+_SIGPIPE = -int(getattr(signal, 'SIGPIPE', 13))   # Popen returncode of a child ended by SIGPIPE (default handler restored)
 MAX_PRICE_E4 = 10**11   # $10M per share: anything above is a parser/format fault, never a price
 
 SUPPLIED = 'SUPPLIED'
@@ -110,7 +137,9 @@ SPLITS: dict[str, tuple[tuple[str, str], ...]] = {}
 
 
 class IexHistError(RuntimeError):
-    """Fixed code only: never a price, URL, token or response body."""
+    """Fixed code only: never a price, URL, token or response body. `attempts` (int or None): how many full stream attempts
+    ran before a stream failure (`fetch_day`), counts only."""
+    attempts = None
 
 
 def _fail(code):
@@ -246,7 +275,31 @@ def parse_rows(text: str, symbols) -> dict:
 
 
 def curl_command(link: str) -> list[str]:
-    return ['curl', '-sS', '--fail', '--retry', '3', '--retry-delay', '10', '-o', '-', link]
+    return ['curl', '-sS', '--fail', '--connect-timeout', str(CURL_CONNECT_TIMEOUT_S), '--speed-limit', str(CURL_SPEED_LIMIT_BPS),
+            '--speed-time', str(CURL_SPEED_TIME_S), '-o', '-', link]
+
+
+def failed_stage(codes, broken: bool):
+    """The first broken stage of download | md5 + size pump | gzip -dc | parser, or None when all three exited 0 and the pipe
+    held. codes = (download, gzip, parser) return codes; broken = our write into gzip hit a broken pipe (we then kill the
+    download ourselves, so its exit code says nothing).
+      PARSER_FAILED    the parser exited non-zero and no stage upstream of it failed on its own: a parser crash breaks the pipe
+                       upstream (gzip ends by SIGPIPE, our write breaks, we kill the download), which is not a gzip or download
+                       fault. A parser that exits non-zero because its input was cut (a download that failed at connect gives
+                       gzip no bytes, and the parser no pcap header) is NOT this code: the upstream stage is named instead.
+      DOWNLOAD_FAILED  the download exited non-zero by itself (not our kill after a broken pipe)
+      GZIP_FAILED      gzip exited with its own error (bad data) or the pipe broke without a parser failure
+    """
+    download_rc, gzip_rc, parser_rc = codes
+    download_error = download_rc != 0 and not broken
+    gzip_error = gzip_rc not in (0, _SIGPIPE)
+    if parser_rc != 0 and not (download_error or gzip_error):
+        return 'PARSER_FAILED'
+    if download_error:
+        return 'DOWNLOAD_FAILED'
+    if gzip_error or broken or gzip_rc != 0:
+        return 'GZIP_FAILED'
+    return None
 
 
 def stream_day(link: str, symbols, *, day: str, size: int, md5: str, parser: str, workdir: Path,
@@ -299,16 +352,13 @@ def stream_day(link: str, symbols, *, day: str, size: int, md5: str, parser: str
         _fail('STREAM_FAILED')
     finally:
         symfile.unlink(missing_ok=True)
-    if broken or codes[1] != 0:
-        _fail('GZIP_FAILED')
-    if codes[0] != 0:
-        _fail('DOWNLOAD_FAILED')
+    stage = failed_stage(codes, broken)
+    if stage:
+        _fail(stage)
     if got != size:
         _fail('SIZE_MISMATCH')
     if digest.hexdigest() != md5:
         _fail('MD5_MISMATCH')
-    if codes[2] != 0:
-        _fail('PARSER_FAILED')
     try:
         text = out[0].decode('ascii')
     except (IndexError, UnicodeDecodeError):
@@ -320,11 +370,12 @@ def stream_day(link: str, symbols, *, day: str, size: int, md5: str, parser: str
 class IexDay:
     """One IEX day in RAM: `quotes` {key: {price, currency}} for SUPPLIED keys only, `status` {key: code}. Its repr and str
     carry counts only (never a price)."""
-    __slots__ = ('day', 'basis_date', 'quotes', 'status', 'collected_from', 'collected_to', 'symbol_of')
+    __slots__ = ('day', 'basis_date', 'quotes', 'status', 'collected_from', 'collected_to', 'symbol_of', 'attempts')
 
-    def __init__(self, day, basis_date, quotes, status, collected_from, collected_to, symbol_of):
+    def __init__(self, day, basis_date, quotes, status, collected_from, collected_to, symbol_of, attempts=1):
         self.day, self.basis_date, self.quotes, self.status = day, basis_date, quotes, status
         self.collected_from, self.collected_to, self.symbol_of = collected_from, collected_to, symbol_of
+        self.attempts = attempts          # full stream attempts (1 or 2; 0 when no symbol needed a download)
 
     def counts(self) -> dict:
         out = {}
@@ -346,11 +397,31 @@ def resolve_symbols(keys: dict, day: str, aliases=SYMBOL_ALIASES) -> dict:
     return {k: (iex_symbol(code, day, aliases) if isinstance(code, str) and ':' in code else None) for k, code in keys.items()}
 
 
+def stream_attempts(stream, link: str, symbols, *, sleep=time.sleep, monotonic=time.monotonic, **kw) -> tuple[dict, int]:
+    """(rows, attempts): `stream` once, and once more from scratch (fresh processes, md5 and size count) after RETRY_WAIT_S on a
+    RETRY_CODES failure, if the first attempt ended within RETRY_START_LIMIT_S (time budget above). Any other failure, or the
+    second one, is raised as its fixed code with `attempts` set."""
+    start = monotonic()
+    attempt = 0
+    while True:
+        attempt += 1
+        code = None
+        try:
+            return stream(link, symbols, **kw), attempt
+        except IexHistError as e:
+            code = str(e)
+        if attempt >= MAX_ATTEMPTS or code not in RETRY_CODES or monotonic() - start > RETRY_START_LIMIT_S:
+            err = IexHistError(code)
+            err.attempts = attempt
+            raise err from None
+        sleep(RETRY_WAIT_S)
+
+
 def fetch_day(keys: dict, basis_date: dt.date, *, parser: str, workdir: Path, fetch=fetch_json, stream=stream_day,
-              clock=None, aliases=SYMBOL_ALIASES) -> IexDay:
+              clock=None, aliases=SYMBOL_ALIASES, sleep=time.sleep, monotonic=time.monotonic) -> IexDay:
     """Prices of {key: Universe code} for the latest IEX day <= basis_date. Status per key as in the module doc for the
     parser- and alias-derived codes (SUPPLIED / ODD_LOT_ONLY / NO_IEX_TRADE / PRICE_SYMBOL_UNMAPPED); row-level rules (ADR, split,
-    identity) are applied by the caller."""
+    identity) are applied by the caller. The stream runs at most MAX_ATTEMPTS times (`stream_attempts`)."""
     clock = clock or (lambda: dt.datetime.now(dt.timezone.utc))
     index = fetch(HIST_URL)
     day, entry = select_day(index, basis_date)
@@ -358,7 +429,8 @@ def fetch_day(keys: dict, basis_date: dt.date, *, parser: str, workdir: Path, fe
     symbol_of = resolve_symbols(keys, day, aliases)
     wanted = sorted({s for s in symbol_of.values() if valid_symbol(s)})
     started = clock()
-    rows = stream(entry['link'], wanted, day=day, size=size, md5=md5, parser=parser, workdir=workdir) if wanted else {}
+    rows, attempts = stream_attempts(stream, entry['link'], wanted, sleep=sleep, monotonic=monotonic, day=day, size=size, md5=md5,
+                                     parser=parser, workdir=workdir) if wanted else ({}, 0)
     ended = clock()
     quotes, status = {}, {}
     for key, sym in symbol_of.items():
@@ -373,4 +445,4 @@ def fetch_day(keys: dict, basis_date: dt.date, *, parser: str, workdir: Path, fe
         if st == 'ROUND':
             quotes[key] = {'price': px / 10000, 'currency': CURRENCY}
     del rows
-    return IexDay(_iso(day), basis_date.isoformat(), quotes, status, started, ended, symbol_of)
+    return IexDay(_iso(day), basis_date.isoformat(), quotes, status, started, ended, symbol_of, attempts)

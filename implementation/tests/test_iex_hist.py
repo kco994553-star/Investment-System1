@@ -336,3 +336,175 @@ def test_read_store_merges_shards_and_checks_sha256():
     call, _ = _release_call(bodies)
     with pytest.raises(im.MonthEndError, match='RELEASE_NOT_FOUND'):
         im.read_store('20261023', 3, call)
+
+
+# ---- stream failures: first broken stage, whole-pipeline retry, curl limits (rehearsal run 40156760950, 2026-10-25) ---------
+def test_curl_command_has_no_retry_and_fails_fast_on_a_stall():
+    """A curl --retry after a mid-transfer failure restarts the file from byte 0 into the same stdout pipe (the gzip stream is
+    then corrupt): no curl retry. A slow connect or a stalled transfer fails fast instead of eating the step's 12 minutes."""
+    cmd = ih.curl_command('https://www.googleapis.com/x')
+    assert not any(a.startswith('--retry') for a in cmd)
+    assert cmd[cmd.index('--connect-timeout') + 1] == '30'
+    assert (cmd[cmd.index('--speed-limit') + 1], cmd[cmd.index('--speed-time') + 1]) == ('1048576', '60')
+    assert {'-sS', '--fail'} <= set(cmd) and cmd[-3:] == ['-o', '-', 'https://www.googleapis.com/x']
+
+
+@pytest.mark.parametrize('codes,broken,stage', [
+    ((0, 0, 0), False, None),
+    ((0, 0, 3), False, 'PARSER_FAILED'),            # parser fault with clean input
+    ((-9, -13, 1), True, 'PARSER_FAILED'),          # parser crash -> gzip SIGPIPE -> our write breaks -> we kill curl
+    ((0, -13, 1), False, 'PARSER_FAILED'),
+    ((18, 1, 0), False, 'DOWNLOAD_FAILED'),         # curl partial transfer: gzip sees a cut stream, the parser a cut pcap
+    ((7, 1, 3), False, 'DOWNLOAD_FAILED'),          # curl connect failure: no bytes, the parser exits 3 (no header)
+    ((28, 0, 0), False, 'DOWNLOAD_FAILED'),
+    ((0, 1, 0), False, 'GZIP_FAILED'),              # bad gzip data, full download
+    ((-9, 1, 3), True, 'GZIP_FAILED'),              # bad gzip quits early -> broken pipe -> we kill curl
+    ((-9, 0, 0), True, 'GZIP_FAILED'),
+])
+def test_failed_stage_names_the_first_broken_stage(codes, broken, stage):
+    assert ih.failed_stage(codes, broken) == stage
+
+
+def _program(path, body):
+    import stat
+    import sys
+    path.write_text(f'#!{sys.executable}\nimport os, sys\n{body}\n')
+    path.chmod(path.stat().st_mode | stat.S_IXUSR)
+    return str(path)
+
+
+def _writer(tmp_path, name, data_path, upto, code):
+    """A fake download: writes the first `upto` bytes of a file to stdout, then exits with `code` (curl 18 = partial file)."""
+    return [_program(tmp_path / name, f'data = open({str(data_path)!r}, "rb").read()[:{upto}]\n'
+                                      f'sys.stdout.buffer.write(data); sys.stdout.flush(); sys.exit({code})')]
+
+
+def test_stream_curl_failure_mid_stream_is_download_failed_not_gzip(parser, tmp_path):
+    path, body = synthetic_day(tmp_path)
+    for upto, code in ((len(body) // 2, 18), (0, 7)):        # cut mid-stream; connect failure (no byte: the parser exits 3)
+        with pytest.raises(ih.IexHistError, match='^DOWNLOAD_FAILED$'):
+            _stream(path, body, parser, tmp_path, ['AAA'], download=lambda link: _writer(tmp_path, 'dl', path, upto, code))
+
+
+def test_stream_parser_crash_is_parser_failed(tmp_path):
+    big = gzip.compress(bytes(range(256)) * 16384, mtime=0, compresslevel=0)   # ~4 MB of synthetic bytes: the pipe breaks
+    path = tmp_path / 'big.gz'
+    path.write_bytes(big)
+    crash = _program(tmp_path / 'crash', 'sys.exit(1)')
+    with pytest.raises(ih.IexHistError, match='^PARSER_FAILED$'):
+        _stream(path, big, crash, tmp_path, ['AAA'])
+    small, sbody = synthetic_day(tmp_path)                 # clean input, the parser reads it all and then fails
+    late = _program(tmp_path / 'late', 'sys.stdin.buffer.read()\nsys.exit(4)')
+    with pytest.raises(ih.IexHistError, match='^PARSER_FAILED$'):
+        _stream(small, sbody, late, tmp_path, ['AAA'])
+
+
+def test_stream_truly_bad_gzip_with_a_good_download_is_gzip_failed(parser, tmp_path):
+    path = tmp_path / 'notgz.bin'
+    bad = b'not a gzip stream ' * 4096
+    path.write_bytes(bad)
+    with pytest.raises(ih.IexHistError, match='^GZIP_FAILED$'):
+        _stream(path, bad, parser, tmp_path, ['AAA'])
+
+
+def test_stream_popen_failure_is_stream_failed(tmp_path):
+    def popen(*a, **k):
+        raise OSError('synthetic')
+    with pytest.raises(ih.IexHistError, match='^STREAM_FAILED$'):
+        ih.stream_day('https://www.googleapis.com/x', ['AAA'], day=DAY, size=1, md5='0' * 32, parser='p', workdir=tmp_path / 'w',
+                      popen=popen)
+
+
+def _fetch_for(body):
+    md5 = base64.b64encode(hashlib.md5(body).digest()).decode()
+
+    def fetch(url):
+        if url == ih.HIST_URL:
+            return {DAY: [{'feed': 'TOPS', 'version': '1.6', 'size': str(len(body)),
+                           'link': 'https://www.googleapis.com/download/storage/v1/b/iex/o/t?alt=media'}]}
+        return {'size': str(len(body)), 'md5Hash': md5}
+    return fetch
+
+
+def test_fetch_day_retries_a_download_failure_once_with_fresh_processes(parser, tmp_path):
+    """First attempt: curl cuts the transfer (exit 18) -> DOWNLOAD_FAILED; the whole pipeline runs again from scratch (fresh md5 and
+    size count) after the wait and succeeds: 2 attempts, the same rows as one clean attempt."""
+    path, body = synthetic_day(tmp_path)
+    calls, waits = [], []
+
+    def stream(link, symbols, **kw):
+        calls.append(1)
+        cut = len(calls) == 1
+        return ih.stream_day(link, symbols, download=lambda _: (_writer(tmp_path, 'dl', path, len(body) // 3, 18) if cut
+                                                                 else ['cat', str(path)]), **kw)
+    keys = {'NYSE:AAA': 'NYSE:AAA', 'NYSE:BBB': 'NYSE:BBB'}
+    day = ih.fetch_day(keys, dt.date(2026, 10, 22), parser=parser, workdir=tmp_path / 'w', fetch=_fetch_for(body), stream=stream,
+                       sleep=waits.append, monotonic=lambda: 0.0)
+    assert (len(calls), waits, day.attempts) == (2, [ih.RETRY_WAIT_S], 2)
+    assert day.status == {'NYSE:AAA': 'SUPPLIED', 'NYSE:BBB': 'ODD_LOT_ONLY'}
+    assert 'attempts' not in repr(day) and '4242' not in repr(day)
+    one = ih.fetch_day(keys, dt.date(2026, 10, 22), parser=parser, workdir=tmp_path / 'w', fetch=_fetch_for(body),
+                       stream=lambda link, symbols, **kw: ih.stream_day(link, symbols, download=lambda _: ['cat', str(path)], **kw),
+                       sleep=waits.append)
+    assert one.attempts == 1 and one.quotes == day.quotes
+
+
+def _scripted(codes):
+    calls = []
+
+    def stream(link, symbols, **kw):
+        calls.append(kw['md5'])
+        code = codes[len(calls) - 1]
+        if code:
+            raise ih.IexHistError(code)
+        return {s: ('NO_TRADE', None) for s in symbols}
+    return stream, calls
+
+
+def _fetch_day_with(stream, tmp_path, **kw):
+    return ih.fetch_day({'NYSE:AAA': 'NYSE:AAA'}, dt.date(2026, 10, 22), parser='p', workdir=tmp_path, fetch=_fetch_for(b'x'),
+                        stream=stream, **kw)
+
+
+@pytest.mark.parametrize('first', ['DOWNLOAD_FAILED', 'GZIP_FAILED', 'SIZE_MISMATCH', 'MD5_MISMATCH', 'STREAM_FAILED'])
+def test_transfer_shaped_failures_are_retried_once(tmp_path, first):
+    stream, calls = _scripted([first, None])
+    waits = []
+    day = _fetch_day_with(stream, tmp_path, sleep=waits.append, monotonic=lambda: 0.0)
+    assert (len(calls), waits, day.attempts, day.status) == (2, [15], 2, {'NYSE:AAA': 'NO_IEX_TRADE'})
+    stream, calls = _scripted([first, first, None])
+    with pytest.raises(ih.IexHistError, match=f'^{first}$') as e:            # two attempts at most
+        _fetch_day_with(stream, tmp_path, sleep=waits.append, monotonic=lambda: 0.0)
+    assert (len(calls), e.value.attempts) == (2, 2)
+    assert e.value.__cause__ is None and e.value.__context__ is None
+
+
+@pytest.mark.parametrize('code', ['PARSER_FAILED', 'PARSER_OUTPUT_INVALID', 'PARSER_SYMBOLS_MISMATCH', 'SYMBOLS_INVALID'])
+def test_parser_and_input_failures_are_not_retried(tmp_path, code):
+    stream, calls = _scripted([code, None])
+    waits = []
+    with pytest.raises(ih.IexHistError, match=f'^{code}$') as e:
+        _fetch_day_with(stream, tmp_path, sleep=waits.append, monotonic=lambda: 0.0)
+    assert (len(calls), waits, e.value.attempts) == (1, [], 1)
+
+
+def test_no_second_attempt_after_a_slow_first_one(tmp_path):
+    """Time budget (`timeout -k 30s 12m`): a first attempt that ended after RETRY_START_LIMIT_S is not followed by a second full
+    one (it would not finish inside the step); its own code is reported."""
+    stream, calls = _scripted(['DOWNLOAD_FAILED', None])
+    ticks = iter([0.0, ih.RETRY_START_LIMIT_S + 1.0])
+    waits = []
+    with pytest.raises(ih.IexHistError, match='^DOWNLOAD_FAILED$') as e:
+        _fetch_day_with(stream, tmp_path, sleep=waits.append, monotonic=lambda: next(ticks))
+    assert (len(calls), waits, e.value.attempts) == (1, [], 1)
+    # the budget arithmetic in the module comment: two full attempts at the measured rate fit with room for the rest of the step
+    size, rate = 13_079_032_608, 11.84e9 / (3.2 * 60)
+    two = 2 * size / rate + ih.RETRY_WAIT_S
+    assert size / rate < ih.RETRY_START_LIMIT_S and two < 8 * 60 < 12 * 60
+    assert ih.RETRY_START_LIMIT_S + ih.RETRY_WAIT_S + size / rate < 9 * 60
+
+
+def test_no_stream_no_attempt(tmp_path):
+    day = ih.fetch_day({'TARGET:x': None}, dt.date(2026, 10, 22), parser='p', workdir=tmp_path, fetch=_fetch_for(b'x'),
+                       stream=lambda *a, **k: pytest.fail('no symbol needs a download'))
+    assert day.attempts == 0 and day.status == {'TARGET:x': 'PRICE_SYMBOL_UNMAPPED'}
