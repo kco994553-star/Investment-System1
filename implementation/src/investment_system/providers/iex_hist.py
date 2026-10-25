@@ -20,8 +20,10 @@ logged, raised or stored (GSQ-010). Errors carry a fixed code only and are raise
 Stream failures (2026-10-25, rehearsal run 40156760950: IEX_GZIP_FAILED after 105 s on a 13,079,032,608-byte file that decompresses
 cleanly elsewhere): curl no longer retries by itself (a curl retry after a mid-transfer failure restarts the file from byte 0 into
 the same pipe and corrupts the gzip stream), a stalled transfer is cut by curl's connect / low-speed limits, a failure is named
-after the first broken stage (`failed_stage`: PARSER_FAILED / DOWNLOAD_FAILED / GZIP_FAILED, then SIZE_MISMATCH / MD5_MISMATCH),
-and `fetch_day` runs the whole pipeline once more from scratch on a transfer-shaped failure (`stream_attempts`).
+after the first broken stage (`failed_stage`: SIZE_MISMATCH for a cut the download did not report, PARSER_FAILED /
+DOWNLOAD_FAILED / GZIP_FAILED, then SIZE_MISMATCH / MD5_MISMATCH), and `fetch_day` runs the whole pipeline once more from scratch
+on a transfer-shaped failure (`stream_attempts`) when the second attempt is predicted to fit the publisher's deadline; every
+attempt's curl is capped by --max-time at the stream time left, so a slow attempt still ends with a status file.
 
 Price status per code (fixed codes, also published as the row's `price_status`):
   SUPPLIED                     a regular-session round-lot last trade on the day
@@ -82,12 +84,20 @@ CURL_SPEED_TIME_S = 60
 RETRY_CODES = frozenset({'DOWNLOAD_FAILED', 'GZIP_FAILED', 'SIZE_MISMATCH', 'MD5_MISMATCH', 'STREAM_FAILED'})
 MAX_ATTEMPTS = 2
 RETRY_WAIT_S = 15
-# Time budget: the V step runs under `timeout -k 30s 12m`. The 2026-10-23 TOPS 1.6 file is 13,079,032,608 bytes; the runner's
-# measured pipeline rate is ~62 MB/s (probe run 39935426233: 11.84 GB in 3.2 min), so one full attempt is ~3.5 min and two are
-# ~7 min + the 15 s wait, leaving ~4.5 min for the hist index / metadata, the month-end store read, build, validator and JS twin.
-# A second attempt starts only when the first one ended within RETRY_START_LIMIT_S of the first start: after a slower first
-# attempt a full second one would not finish inside the step, and the step's timeout would end the run without a status file.
-RETRY_START_LIMIT_S = 240
+# Time budget (2026-10-25 review): the V step runs the publisher under `timeout -k 30s 12m`, and the publisher hands fetch_day a
+# `deadline` (a time.monotonic() value) 12 minutes after its own start, so the live read, hist index and GCS metadata reads
+# before the stream count. The stream must end POST_STREAM_RESERVE_S before the deadline (the month-end store read, build,
+# validator, JS twin and the status file). Every attempt's curl gets --max-time = the stream time left (whole seconds, at least
+# 1): a slow attempt ends as DOWNLOAD_FAILED (curl exit 28) and the status file is still written. A second attempt starts only
+# when its predicted time (`attempt_s`) + RETRY_WAIT_S fits the stream time left. The predicted rate is the first attempt's own
+# (bytes counted / seconds to its last byte, so a stall at its end is not counted), never above PLAN_RATE_BPS, the runner's
+# measured pipeline rate (probe run 39935426233: 11.84 GB in 3.2 min, ~62 MB/s); PLAN_RATE_BPS itself when the first attempt
+# moved under RATE_SAMPLE_MIN_BYTES (a failed connect, an early cut). The 2026-10-23 TOPS 1.6 file (13,079,032,608 bytes) is
+# ~3.6 min at that rate, two attempts ~7.5 min with the wait, inside the ~9.8 min of stream time a ~10 s start leaves.
+POST_STREAM_RESERVE_S = 120
+PLAN_RATE_BPS = 60_000_000
+RATE_SAMPLE_MIN_BYTES = 1 << 28
+REAP_TIMEOUT_S = 10      # bounded wait for a killed child on the STREAM_FAILED path
 _SIGPIPE = -int(getattr(signal, 'SIGPIPE', 13))   # Popen returncode of a child ended by SIGPIPE (default handler restored)
 MAX_PRICE_E4 = 10**11   # $10M per share: anything above is a parser/format fault, never a price
 
@@ -137,13 +147,21 @@ SPLITS: dict[str, tuple[tuple[str, str], ...]] = {}
 
 
 class IexHistError(RuntimeError):
-    """Fixed code only: never a price, URL, token or response body. `attempts` (int or None): how many full stream attempts
-    ran before a stream failure (`fetch_day`), counts only."""
-    attempts = None
+    """Fixed code only: never a price, URL, token or response body. Besides the code, counts only (None when not known):
+    `attempts` (full stream attempts before a stream failure, `fetch_day`), `first_code` / `first_curl_rc` (the first attempt's
+    fixed code and, when it was DOWNLOAD_FAILED, curl's exit code), and from one `stream_day` attempt `got` (bytes counted),
+    `flow_s` (seconds from its start to its last byte) and `curl_rc` (curl's own exit code, DOWNLOAD_FAILED only)."""
+    attempts = first_code = first_curl_rc = got = flow_s = curl_rc = None
 
 
 def _fail(code):
     raise IexHistError(code) from None
+
+
+def _stream_fail(code, got, flow_s, curl_rc=None):
+    err = IexHistError(code)
+    err.got, err.flow_s, err.curl_rc = got, flow_s, curl_rc
+    raise err from None
 
 
 # ---- symbols ---------------------------------------------------------------------------------------------------------
@@ -274,15 +292,20 @@ def parse_rows(text: str, symbols) -> dict:
     return rows
 
 
-def curl_command(link: str) -> list[str]:
+def curl_command(link: str, max_time=None) -> list[str]:
+    """`max_time` (whole seconds, at least 1): curl --max-time, the attempt's stream time left (`stream_attempts`)."""
+    cap = ['--max-time', str(max(1, int(max_time)))] if max_time is not None else []
     return ['curl', '-sS', '--fail', '--connect-timeout', str(CURL_CONNECT_TIMEOUT_S), '--speed-limit', str(CURL_SPEED_LIMIT_BPS),
-            '--speed-time', str(CURL_SPEED_TIME_S), '-o', '-', link]
+            '--speed-time', str(CURL_SPEED_TIME_S), *cap, '-o', '-', link]
 
 
-def failed_stage(codes, broken: bool):
+def failed_stage(codes, broken: bool, size_ok: bool = True):
     """The first broken stage of download | md5 + size pump | gzip -dc | parser, or None when all three exited 0 and the pipe
     held. codes = (download, gzip, parser) return codes; broken = our write into gzip hit a broken pipe (we then kill the
-    download ourselves, so its exit code says nothing).
+    download ourselves, so its exit code says nothing); size_ok = the bytes counted equal the GCS size.
+      SIZE_MISMATCH    the download exited 0 by itself but the byte count is not the GCS size: a cut the download did not
+                       report, proven by the count, so the gzip / parser failure on the cut input that follows is not theirs.
+                       Not when the pipe broke (we stopped reading, the count is ours)
       PARSER_FAILED    the parser exited non-zero and no stage upstream of it failed on its own: a parser crash breaks the pipe
                        upstream (gzip ends by SIGPIPE, our write breaks, we kill the download), which is not a gzip or download
                        fault. A parser that exits non-zero because its input was cut (a download that failed at connect gives
@@ -293,6 +316,8 @@ def failed_stage(codes, broken: bool):
     download_rc, gzip_rc, parser_rc = codes
     download_error = download_rc != 0 and not broken
     gzip_error = gzip_rc not in (0, _SIGPIPE)
+    if not (size_ok or broken or download_error):
+        return 'SIZE_MISMATCH'
     if parser_rc != 0 and not (download_error or gzip_error):
         return 'PARSER_FAILED'
     if download_error:
@@ -302,9 +327,12 @@ def failed_stage(codes, broken: bool):
     return None
 
 
-def stream_day(link: str, symbols, *, day: str, size: int, md5: str, parser: str, workdir: Path,
+def stream_day(link: str, symbols, *, day: str, size: int, md5: str, parser: str, workdir: Path, max_time=None,
                download=curl_command, popen=subprocess.Popen) -> dict:
-    """download | md5 + size pump | gzip -dc | parser. Returns {SYM: (status, price_e4)}; IexHistError on any check failure."""
+    """download | md5 + size pump | gzip -dc | parser. Returns {SYM: (status, price_e4)}; IexHistError on any check failure,
+    with the attempt's byte count and flow time on it (`stream_attempts`). `max_time` (whole seconds) goes to the download
+    (curl --max-time). Every pipe end this process holds is closed on success and on failure; a failed start kills and reaps
+    the children it started (bounded wait)."""
     symbols = sorted(set(symbols))
     if not symbols or not all(valid_symbol(s) for s in symbols):
         _fail('SYMBOLS_INVALID')
@@ -313,8 +341,11 @@ def stream_day(link: str, symbols, *, day: str, size: int, md5: str, parser: str
     symfile.write_text('\n'.join(symbols) + '\n', encoding='ascii')   # public tickers only
     t0, t1 = session_ns(day)
     procs = []
+    got, flow_s = 0, 0.0
     try:
-        p1 = popen(download(link), stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+        start = time.monotonic()
+        p1 = popen(download(link) if max_time is None else download(link, max_time=max_time), stdout=subprocess.PIPE,
+                   stderr=subprocess.DEVNULL)
         procs.append(p1)
         p2 = popen(['gzip', '-dc'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
         procs.append(p2)
@@ -324,7 +355,7 @@ def stream_day(link: str, symbols, *, day: str, size: int, md5: str, parser: str
         out: list[bytes] = []
         reader = threading.Thread(target=lambda: out.append(p3.stdout.read()), daemon=True)
         reader.start()
-        digest, got, broken = hashlib.md5(), 0, False
+        digest, broken = hashlib.md5(), False
         try:
             while True:
                 chunk = p1.stdout.read(CHUNK)
@@ -332,6 +363,7 @@ def stream_day(link: str, symbols, *, day: str, size: int, md5: str, parser: str
                     break
                 digest.update(chunk)
                 got += len(chunk)
+                flow_s = time.monotonic() - start
                 p2.stdin.write(chunk)
         except BrokenPipeError:
             broken = True
@@ -349,16 +381,28 @@ def stream_day(link: str, symbols, *, day: str, size: int, md5: str, parser: str
     except Exception:  # noqa: BLE001 - fixed code only
         for p in procs:
             p.kill()
-        _fail('STREAM_FAILED')
+        for p in procs:
+            try:
+                p.wait(timeout=REAP_TIMEOUT_S)
+            except subprocess.TimeoutExpired:
+                pass
+        _stream_fail('STREAM_FAILED', got, flow_s)
     finally:
+        for p in procs:
+            for pipe in (p.stdin, p.stdout):
+                try:
+                    if pipe is not None:
+                        pipe.close()
+                except OSError:
+                    pass
         symfile.unlink(missing_ok=True)
-    stage = failed_stage(codes, broken)
+    stage = failed_stage(codes, broken, size_ok=got == size)
     if stage:
-        _fail(stage)
+        _stream_fail(stage, got, flow_s, codes[0] if stage == 'DOWNLOAD_FAILED' else None)
     if got != size:
-        _fail('SIZE_MISMATCH')
+        _stream_fail('SIZE_MISMATCH', got, flow_s)
     if digest.hexdigest() != md5:
-        _fail('MD5_MISMATCH')
+        _stream_fail('MD5_MISMATCH', got, flow_s)
     try:
         text = out[0].decode('ascii')
     except (IndexError, UnicodeDecodeError):
@@ -370,12 +414,15 @@ def stream_day(link: str, symbols, *, day: str, size: int, md5: str, parser: str
 class IexDay:
     """One IEX day in RAM: `quotes` {key: {price, currency}} for SUPPLIED keys only, `status` {key: code}. Its repr and str
     carry counts only (never a price)."""
-    __slots__ = ('day', 'basis_date', 'quotes', 'status', 'collected_from', 'collected_to', 'symbol_of', 'attempts')
+    __slots__ = ('day', 'basis_date', 'quotes', 'status', 'collected_from', 'collected_to', 'symbol_of', 'attempts', 'first_code',
+                 'first_curl_rc')
 
-    def __init__(self, day, basis_date, quotes, status, collected_from, collected_to, symbol_of, attempts=1):
+    def __init__(self, day, basis_date, quotes, status, collected_from, collected_to, symbol_of, attempts=1, first_code=None,
+                 first_curl_rc=None):
         self.day, self.basis_date, self.quotes, self.status = day, basis_date, quotes, status
         self.collected_from, self.collected_to, self.symbol_of = collected_from, collected_to, symbol_of
         self.attempts = attempts          # full stream attempts (1 or 2; 0 when no symbol needed a download)
+        self.first_code, self.first_curl_rc = first_code, first_curl_rc   # a failed first attempt (`stream_attempts`) or None
 
     def counts(self) -> dict:
         out = {}
@@ -397,31 +444,48 @@ def resolve_symbols(keys: dict, day: str, aliases=SYMBOL_ALIASES) -> dict:
     return {k: (iex_symbol(code, day, aliases) if isinstance(code, str) and ':' in code else None) for k, code in keys.items()}
 
 
-def stream_attempts(stream, link: str, symbols, *, sleep=time.sleep, monotonic=time.monotonic, **kw) -> tuple[dict, int]:
-    """(rows, attempts): `stream` once, and once more from scratch (fresh processes, md5 and size count) after RETRY_WAIT_S on a
-    RETRY_CODES failure, if the first attempt ended within RETRY_START_LIMIT_S (time budget above). Any other failure, or the
-    second one, is raised as its fixed code with `attempts` set."""
-    start = monotonic()
-    attempt = 0
+def attempt_s(size: int, got=None, flow_s=None) -> float:
+    """Predicted seconds of one full attempt (time budget above): size / rate, the rate being a failed attempt's own (bytes
+    counted / seconds to its last byte) when it moved at least RATE_SAMPLE_MIN_BYTES, never above PLAN_RATE_BPS."""
+    rate = PLAN_RATE_BPS
+    if isinstance(got, int) and got >= RATE_SAMPLE_MIN_BYTES and flow_s and flow_s > 0:
+        rate = min(rate, got / flow_s)
+    return size / rate
+
+
+def stream_attempts(stream, link: str, symbols, *, deadline=None, sleep=time.sleep, monotonic=time.monotonic,
+                    **kw) -> tuple[dict, dict]:
+    """(rows, trail): `stream` once, and once more from scratch (fresh processes, md5 and size count) after RETRY_WAIT_S on a
+    RETRY_CODES failure. trail = {attempts: 1|2, first_code, first_curl_rc} (the first attempt's fixed code and curl exit code
+    when it failed, else None). With a `deadline` (time budget above) every attempt gets max_time = the stream time left, and
+    the second one starts only when RETRY_WAIT_S + its predicted time (`attempt_s` from the first attempt's byte count and flow
+    time) fits the stream time left. Any other failure, or the second one, is raised as its fixed code with the trail on it."""
+    trail = {'attempts': 0, 'first_code': None, 'first_curl_rc': None}
     while True:
-        attempt += 1
-        code = None
+        trail['attempts'] += 1
+        if deadline is not None:
+            kw['max_time'] = max(1, int(deadline - POST_STREAM_RESERVE_S - monotonic()))
         try:
-            return stream(link, symbols, **kw), attempt
+            return stream(link, symbols, **kw), trail
         except IexHistError as e:
-            code = str(e)
-        if attempt >= MAX_ATTEMPTS or code not in RETRY_CODES or monotonic() - start > RETRY_START_LIMIT_S:
+            code, got, flow_s, curl_rc = str(e), e.got, e.flow_s, e.curl_rc
+        if trail['attempts'] == 1:
+            trail['first_code'], trail['first_curl_rc'] = code, curl_rc
+        fits = deadline is None or \
+            RETRY_WAIT_S + attempt_s(kw['size'], got, flow_s) <= deadline - POST_STREAM_RESERVE_S - monotonic()
+        if trail['attempts'] >= MAX_ATTEMPTS or code not in RETRY_CODES or not fits:
             err = IexHistError(code)
-            err.attempts = attempt
+            err.attempts, err.first_code, err.first_curl_rc = trail['attempts'], trail['first_code'], trail['first_curl_rc']
             raise err from None
         sleep(RETRY_WAIT_S)
 
 
 def fetch_day(keys: dict, basis_date: dt.date, *, parser: str, workdir: Path, fetch=fetch_json, stream=stream_day,
-              clock=None, aliases=SYMBOL_ALIASES, sleep=time.sleep, monotonic=time.monotonic) -> IexDay:
+              clock=None, aliases=SYMBOL_ALIASES, sleep=time.sleep, monotonic=time.monotonic, deadline=None) -> IexDay:
     """Prices of {key: Universe code} for the latest IEX day <= basis_date. Status per key as in the module doc for the
     parser- and alias-derived codes (SUPPLIED / ODD_LOT_ONLY / NO_IEX_TRADE / PRICE_SYMBOL_UNMAPPED); row-level rules (ADR, split,
-    identity) are applied by the caller. The stream runs at most MAX_ATTEMPTS times (`stream_attempts`)."""
+    identity) are applied by the caller. The stream runs at most MAX_ATTEMPTS times (`stream_attempts`) inside `deadline` (a
+    time.monotonic() value: the publisher's step limit; None = no time budget, tests and tools only)."""
     clock = clock or (lambda: dt.datetime.now(dt.timezone.utc))
     index = fetch(HIST_URL)
     day, entry = select_day(index, basis_date)
@@ -429,8 +493,8 @@ def fetch_day(keys: dict, basis_date: dt.date, *, parser: str, workdir: Path, fe
     symbol_of = resolve_symbols(keys, day, aliases)
     wanted = sorted({s for s in symbol_of.values() if valid_symbol(s)})
     started = clock()
-    rows, attempts = stream_attempts(stream, entry['link'], wanted, sleep=sleep, monotonic=monotonic, day=day, size=size, md5=md5,
-                                     parser=parser, workdir=workdir) if wanted else ({}, 0)
+    rows, trail = stream_attempts(stream, entry['link'], wanted, deadline=deadline, sleep=sleep, monotonic=monotonic, day=day,
+                                  size=size, md5=md5, parser=parser, workdir=workdir) if wanted else ({}, {'attempts': 0})
     ended = clock()
     quotes, status = {}, {}
     for key, sym in symbol_of.items():
@@ -445,4 +509,4 @@ def fetch_day(keys: dict, basis_date: dt.date, *, parser: str, workdir: Path, fe
         if st == 'ROUND':
             quotes[key] = {'price': px / 10000, 'currency': CURRENCY}
     del rows
-    return IexDay(_iso(day), basis_date.isoformat(), quotes, status, started, ended, symbol_of, attempts)
+    return IexDay(_iso(day), basis_date.isoformat(), quotes, status, started, ended, symbol_of, **trail)

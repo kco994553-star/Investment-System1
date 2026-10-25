@@ -21,6 +21,11 @@ Stdout: ONE line of fixed codes and counts. Never a price, yield, month-end valu
 After a build the line ends with the D6 (b) split-check counts (qgv_official.price_status_counts; owner decision CV-SPLIT (ii)
 2026-10-24): split_checked / split_flagged / split_unchecked (of which split_unchecked_no_period) rows, split_gap_skipped pairs,
 split_lead_unchecked rows (of split_checked: the stretch from the count's period-end month to the first store point not compared).
+When an IEX stream ran, iex_attempts=1|2 follows supplied=, then (only when the first attempt failed) iex_first=<its fixed code>
+and, for a first DOWNLOAD_FAILED, iex_curl_rc=<curl exit code> (2026-10-25; never in a public file).
+Time budget: the workflow runs this process under `timeout -k 30s 12m`; the IEX stream gets the deadline STEP_LIMIT_S after this
+process started (iex_hist.fetch_day `deadline`: curl --max-time per attempt, a second attempt only when it is predicted to fit),
+so a slow transfer ends as a SUPPLY_FAILED status file instead of the step's kill.
 Exit 0 for every supply/verify outcome (the workflow step stays green; the status file carries the result); 2 = usage error.
 The two Secrets are popped from the environment at start (no child process inherits them).
 A missing Secret (HMAC key or raw-repo read token) or a sec-qgv2.json older than calc_version 2026-10-23.1 is NOT_RUN: nothing is
@@ -34,8 +39,10 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import functools
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -43,6 +50,7 @@ import time
 import urllib.parse
 from pathlib import Path
 
+STARTED = time.monotonic()           # this process's start (before the project imports): the step limit counts from here
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'src'))
 sys.path.insert(0, str(ROOT / 'tools'))
@@ -62,6 +70,9 @@ DEFAULT_HMAC_ENV = 'QGV_OFFICIAL_HMAC_KEY'
 LIVE_UNREACHABLE = qo.LIVE_UNREACHABLE
 LIVE_READ_ATTEMPTS = 3
 LIVE_READ_BACKOFF = (5, 15)          # seconds between attempts (each attempt has _fetch_body's own 20 s timeout)
+# The V step's `timeout -k 30s 12m` around this process (sec-daily-public-inputs.yml): TERM after 12 minutes, with nothing
+# written after it. main() hands the IEX stream the deadline STARTED + STEP_LIMIT_S (iex_hist time budget).
+STEP_LIMIT_S = 12 * 60
 
 
 class LiveUnreachable(OSError):
@@ -176,7 +187,7 @@ def run(*, out: Path, parser: str, monthend_stamp: str, monthend_shards: int, pr
     """One attempt. Returns a summary of fixed codes and counts (printed by main)."""
     clock = clock or (lambda: dt.datetime.now(dt.timezone.utc))
     summary = {'attempt': None, 'reason': None, 'published': 'NONE', 'basis': '-', 'rows': 0, 'ranked': 0, 'supplied': '-',
-               'split': None, 'iex_attempts': None}
+               'split': None, 'iex_attempts': None, 'iex_first': None, 'iex_curl_rc': None}
     # 1. last good copy first
     live, live_unknown = None, False
     try:
@@ -219,9 +230,11 @@ def run(*, out: Path, parser: str, monthend_stamp: str, monthend_shards: int, pr
         try:
             day = fetch_day(ctx_keys, shard_day(now), parser=parser, workdir=workdir)
         except iex_hist.IexHistError as e:
-            summary['iex_attempts'] = e.attempts          # full IEX stream attempts (count only; None before any stream)
+            # full IEX stream attempts and the first attempt's fixed code / curl exit code (None before any stream)
+            summary.update(iex_attempts=e.attempts, iex_first=e.first_code, iex_curl_rc=e.first_curl_rc)
             raise qo.OfficialError('SUPPLY_FAILED', 'IEX_' + str(e)) from None
-        summary['iex_attempts'] = getattr(day, 'attempts', None)
+        summary.update(iex_attempts=getattr(day, 'attempts', None), iex_first=getattr(day, 'first_code', None),
+                       iex_curl_rc=getattr(day, 'first_curl_rc', None))
         if live is not None and day.day < live['times']['price_basis_date']:
             raise qo.OfficialError('SUPPLY_FAILED', 'BASIS_OLDER_THAN_OFFICIAL')
         # 4. month-end store (RAM)
@@ -270,12 +283,18 @@ def run(*, out: Path, parser: str, monthend_stamp: str, monthend_shards: int, pr
 
 
 def summary_line(s) -> str:
-    """The one stdout line: fixed codes and counts only (`iex_attempts` only after an IEX stream ran, 1 or 2; the split counts
-    only after a build)."""
+    """The one stdout line: fixed codes and counts only (`iex_attempts` only after an IEX stream ran, 1 or 2; `iex_first` only
+    when its first attempt failed, an upper-case fixed code, and `iex_curl_rc` a small integer; the split counts only after a
+    build)."""
     line = (f"QGV_OFFICIAL attempt={s['attempt']} reason={s['reason'] or '-'} published={s['published']} basis={s['basis']} "
             f"rows={s['rows']} ranked={s['ranked']} supplied={s['supplied']}")
     if s.get('iex_attempts'):
         line += f" iex_attempts={int(s['iex_attempts'])}"
+        first, rc = s.get('iex_first'), s.get('iex_curl_rc')
+        if isinstance(first, str) and re.fullmatch(r'[A-Z][A-Z0-9_]{0,39}', first):
+            line += f" iex_first={first}"
+            if type(rc) is int and -64 < rc < 256:
+                line += f" iex_curl_rc={rc}"
     if s.get('split'):
         line += ''.join(f" split_{k}={int(s['split'][k])}" for k in qo.SPLIT_COUNT_KEYS)
     return line
@@ -313,7 +332,8 @@ def main(argv=None) -> int:
     now = dt.datetime.fromisoformat(a.now.replace('Z', '+00:00')) if a.now else dt.datetime.now(dt.timezone.utc)
     s = run(out=out, parser=a.parser, monthend_stamp=a.monthend_stamp, monthend_shards=a.monthend_shards, previous=a.previous or None,
             raw_token=raw_token, hmac_key=key.encode() if key else None, now=now,
-            workdir=Path(a.workdir) / 'qgv-official', node=a.node)
+            workdir=Path(a.workdir) / 'qgv-official', node=a.node,
+            fetch_day=functools.partial(iex_hist.fetch_day, deadline=STARTED + STEP_LIMIT_S))
     print(summary_line(s))
     return 0
 
