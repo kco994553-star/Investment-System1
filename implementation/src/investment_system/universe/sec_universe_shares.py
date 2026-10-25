@@ -347,6 +347,9 @@ def verified_observation(row):
 # reasoned NA row (`ended_row`): NOT_AVAILABLE, no values, scores or calc_version, the existing reason CIK_UNRESOLVED (no
 # new reason code, no schema change; a dedicated LISTING_ENDED reason is a later schema change), and the last
 # observation's cik, acquired_at and source hashes kept (the freshness guard sees an EQUAL record, never LOST_RECORD).
+# The entry is checked first of all rules, so for a listed code it also takes precedence over an identity conflict
+# (UNI-WITHDRAWN (a): no withdrawal row) and over any new row this run brings; removing the entry is the only way back
+# (safe: the ended row is itself a verified observation, so it then falls under PRESERVE and compares EQUAL).
 # On this row acquired_at means "last real observation of a listing that has ended". A kept row of another CIK (or no
 # verified observation) is not touched by the entry: the ordinary rules apply.
 LISTING_ENDED = 'LISTING_ENDED'
@@ -361,7 +364,10 @@ LISTING_ENDED_CODES = {
             'SEC Form 25 filed 2026-10-06, accession 0001193125-26-415091',
             'SEC Form 25-NSE (Nasdaq) filed 2026-10-06, accession 0001354457-26-000951',
             'SEC Form 15-12G filed 2026-10-16, accession 0001193125-26-423513',
-            'PR #390 doc UNIVERSE_INDEX_FOLLOWING_20261023.md section 2-2 (WBD filing sequence)',
+            'SEC Archive 8-K: https://www.sec.gov/Archives/edgar/data/1437107/000119312526415055/d200872d8k.htm',
+            'SEC Archive 15-12G: https://www.sec.gov/Archives/edgar/data/1437107/000119312526423513/d188095d1512g.htm',
+            'reference only, not merged: closed PR #390, branch claude/universe-membership-audit at commit '
+            '12785304201578cd753bc64e1d6d8e586fdc5f3b, doc UNIVERSE_INDEX_FOLLOWING_20261023.md section 2-2 (WBD filing sequence)',
         ),
     },
 }
@@ -384,8 +390,9 @@ def ended_row(old, empty):
 def previous_decision(old, new, *, code, unresolved=(), conflicts=(), new_observation):
     """How one Universe code's kept row meets this run's row; None leaves the file's merge rule (`replaces`).
 
-    - LISTING_ENDED (checked first, before PRESERVE): the code's listing has ended (LISTING_ENDED_CODES) and the kept
-      row is a verified observation of the entry's CIK. Whatever this run brings, the file publishes `ended_row`.
+    - LISTING_ENDED (checked first, before PRESERVE and before IDENTITY_CONFLICT): the code's listing has ended
+      (LISTING_ENDED_CODES) and the kept row is a verified observation of the entry's CIK. Whatever this run brings
+      (no row, a conflict, a new row of any CIK), the file publishes `ended_row`.
     - PRESERVE: this run has no new observation of the code (its symbol is unresolved in today's SEC registry, or its
       row records no verified collection: identity unconfirmed, builder failure, rejected by the validator, a transient
       failure after the bytes arrived) while the kept row is a verified observation of the SAME issuer (same CIK, no

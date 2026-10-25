@@ -94,16 +94,27 @@ optional start/fy/fp/frame의 JSON null은 필드 미제공으로 투영한다. 
 
 | 코드 | CIK | 발효일 | 사유 | 근거 |
 | --- | --- | --- | --- | --- |
-| `NASDAQ:WBD` | 0001437107 | 2026-10-06 | 현금 인수 후 상장 폐지(`ACQUIRED_FOR_CASH_DELISTED`). 인수자는 Skydance(구 PSKY) | 8-K(2026-10-06, Item 2.01 완료·3.01 상장 폐지, 접수번호 `0001193125-26-415055`) · Form 25(2026-10-06, `0001193125-26-415091`) · Nasdaq 25-NSE(2026-10-06, `0001354457-26-000951`) · 15-12G(2026-10-16, `0001193125-26-423513`) · PR #390 문서 `UNIVERSE_INDEX_FOLLOWING_20261023.md` §2-2 |
+| `NASDAQ:WBD` | 0001437107 | 2026-10-06 | 현금 인수 후 상장 폐지(`ACQUIRED_FOR_CASH_DELISTED`). 인수자는 Skydance(구 PSKY) | 8-K(2026-10-06, Item 2.01 완료·3.01 상장 폐지, 접수번호 `0001193125-26-415055`) · Form 25(2026-10-06, `0001193125-26-415091`) · Nasdaq 25-NSE(2026-10-06, `0001354457-26-000951`) · 15-12G(2026-10-16, `0001193125-26-423513`) · SEC 원문: [8-K](https://www.sec.gov/Archives/edgar/data/1437107/000119312526415055/d200872d8k.htm), [15-12G](https://www.sec.gov/Archives/edgar/data/1437107/000119312526423513/d188095d1512g.htm) · 참고(병합 안 됨): 닫힌 PR #390, 브랜치 `claude/universe-membership-audit` 커밋 `12785304`의 `UNIVERSE_INDEX_FOLLOWING_20261023.md` §2-2 |
 
 - **판정 순서**: `previous_decision`이 PRESERVE보다 먼저 표를 본다. 표에 있는 코드이고 그 파일의 이전 행이 **표의 CIK**에 대한 확인된 관측(CIK, 자기 acquired_at, SEC 원자료 해시 두 개)이면, 이번 실행이 무엇을 가져오든 상장 종료 NA 행을 게시한다. 이전 행이 다른 CIK이거나 확인된 관측이 아니면 표는 그 행을 건드리지 않고 기존 규칙을 따른다. 다른 미해석 코드(예: PSKY)는 그대로 PRESERVE다.
+  - 표는 모든 규칙보다 먼저다. 그래서 표에 있는 코드에는 식별 충돌 철회(UNI-WITHDRAWN (a))와 이번 실행의 새 행(다른 CIK의 행 포함)도 적용되지 않는다. NASDAQ:WBD 기호를 나중에 다른 CIK가 쓰거나 여러 CIK가 주장해도, 철회 행이나 새 발행사 행 대신 CIK 0001437107의 상장 종료 NA 행이 남는다. 두 행 모두 값이 없으므로 점수 효과는 같다.
+  - 되돌리는 방법은 표에서 항목을 빼는 것뿐이다. 빼도 안전하다. 상장 종료 행 자체가 확인된 관측이라 그 뒤에는 PRESERVE가 그 행을 그대로 두고, 신선도 검사도 EQUAL로 통과한다.
 - **상장 종료 NA 행**: 그 파일의 빈 행에 기존 사유 `CIK_UNRESOLVED` 하나. 값·점수·지표·식별 결합(shares의 listing_id)·`calc_version`은 지운다(0으로 채우지 않는다). 마지막 관측의 `cik`, `acquired_at`, 원자료 해시(shares는 cover 해시 포함)는 남긴다. 다음 실행에서도 같은 행이 그대로 나온다. 철회 행(`detected_at`)이 아니다.
 - **acquired_at을 남기는 이유(확인함)**: 배포 직전 신선도 검사는 라이브 행에 acquired_at이 있는데 산출물 행에 없으면 `LOST_RECORD`로 배포를 거부한다. 같은 acquired_at이면 값과 무관하게 `EQUAL`로 통과한다. 그래서 이 행의 acquired_at은 "끝난 상장의 마지막 실제 관측"을 뜻한다.
 - **바꾸지 않은 것**: 사유 코드 목록, 스키마 버전(2), 세 검증기(Python·JS), 신선도 검사, `calc_version`(`qgv2-calc/2026-10-17.1`), Universe504 목록(UNI-DEF (a)·UNI-FOLLOW (a), 분모 504).
-- **화면 표기**: 사유가 `CIK_UNRESOLVED`라 화면에는 'CIK 미해결'로 나온다. CIK는 알고 있으므로 정확한 표기는 아니다. 전용 사유 `LISTING_ENDED`는 사유 목록·스키마를 바꾸는 일이라 11/9 뒤 별도 PR로 미룬다.
+- **화면 표기**: 사유가 `CIK_UNRESOLVED`라 정확한 표기가 아니다(CIK는 알고 있다). 화면별 문구는 다음과 같다.
+  - 목록(`qgv-scores.js`, `v-coverage.js`): 'CIK 미해결'.
+  - Universe 기업 화면(`universe-company.js`): QGV 칸에 'CIK 미확인: 이 코드의 SEC 등록번호를 찾지 못했습니다'와 함께 '수집 2026-10-17 03:15 UTC · 수집 후 N일'이 나온다. 같은 화면의 SEC 주식수 칸에는 상태 `NOT_AVAILABLE · CIK_UNRESOLVED`, 'CIK 0001437107', '수집 2026-10-17 03:15 UTC'가 나온다. 즉 알려진 CIK 옆에 '등록번호를 찾지 못했다'는 문구가 함께 보인다.
+  - 대안: 화면 전용 설명을 따로 승인받아 넣을 수 있다(web_assets 변경과 APPROVED_SHA256 재고정이 필요하다).
+  - 전용 사유 `LISTING_ENDED`는 사유 목록·스키마를 바꾸는 일이라 11/9 뒤 별도 PR로 미룬다.
+- **정책 관계**: 점수 효과는 UNI-FOLLOW (a)를 고를 때 소유자가 받지 않은 '10/6 WBD 제외'와 같다. 근거가 다르다. 지수 편출이 아니라 공시로 확인된 상장 종료이고, 그래서 자료를 다시 모을 수 없다. 지수 구성은 이 표의 근거가 아니므로 같은 날 S&P 500에서 빠진 CTVA(계속 상장)를 비롯한 다른 지수 변경은 건드리지 않는다. 표는 지수를 따라가지 않는다.
 - **효과(공개 파일 2026-10-25T00:26Z 재계산)**: 단면 499→498(GENERAL 431→430), Q 점수 행 486→485, G 494→493, telecommunications 그룹 9→8 CIK(`MIN_PEERS` 8 경계). Q는 15행이 바뀐다(FOX·FOXA −8.78, CHTR −7.20, CMCSA −6.04, VZ −5.70). G는 최대 −0.16, TARGET 17종목은 Q 그대로·G 최대 0.08. TARGET v1 확정 검사(`publishedCheck`)는 이 행을 정상 NA로 센다(값이 있는 행만 신선도 검사). 전진 검증 원장은 이 행을 쓰지 않는다(모집단 n·해시만 바뀌고 구간은 그대로).
-- **실행 로그**: `SEC_UNIVERSE_COLLECTION … listing_ended=<n>`(이번 실행에서 상장 종료 NA로 게시한 코드 수). 표 결합은 바꾸지 않으므로 WBD는 계속 `unresolved_codes`에 들어간다. 상장 종료 행은 이전 acquired_at을 그대로 가지므로 `preserved_previous_<file>`에도 계속 1로 잡힌다. 매일 점검의 기준선은 승인된 항목 수(지금 1)다. `preserved_unconfirmed`에서는 빠진다.
-- **`PUBLISHED_COVERAGE` 줄**: `stale_7d_rows`·`acquired_oldest`·`shard_acquired`는 값 유무와 무관하게 cik와 acquired_at이 있는 행을 모두 센다(`tools/published_coverage.py`). 그래서 WBD 상장 종료 행 때문에 `stale_7d_rows`는 1 이상, `acquired_oldest`는 2026-10-17, 샤드 5 최솟값은 2026-10-17로 계속 남는다. 알려진 값이다. 값이 있는 행만 세도록 바꾸는 일은 사전 점검 PR(PR-3)에서 다룬다.
+- **실행 로그**: `SEC_UNIVERSE_COLLECTION … listing_ended=<n>`(이번 실행에서 상장 종료 NA로 게시한 코드 수). 조사 B-a 안이 요구한 범위 밖의 추가다. 줄 끝에 붙였고 앞 토큰은 그대로지만, 이 줄을 완전 일치로 읽는 저장소 밖 점검이 있으면 고쳐야 한다(저장소 안에서는 시험만 이 줄을 읽는다). 표 결합은 바꾸지 않으므로 WBD는 계속 `unresolved_codes`에 들어간다. 상장 종료 행은 이전 acquired_at을 그대로 가지므로 `preserved_previous_<file>`에도 계속 1로 잡힌다. 매일 점검의 기준선은 승인된 항목 수(지금 1)다. `preserved_unconfirmed`에서는 빠진다.
+- **`PUBLISHED_COVERAGE` 줄**: `stale_7d_rows`·`acquired_oldest`·`shard_acquired`는 값 유무와 무관하게 cik와 acquired_at이 있는 행을 모두 센다(`tools/published_coverage.py`). 그래서 WBD 상장 종료 행 때문에 `stale_7d_rows`는 1 이상, `acquired_oldest`는 2026-10-17, 샤드 5 최솟값은 2026-10-17로 계속 남는다. 알려진 값이다. 값이 있는 행만 세도록 바꾸는 일은 사전 점검 PR(PR-3)에서 다룬다. 중앙 V(PR-A)가 들어오면 `qgv-official.json`의 `inputs[0].acquired_oldest`도 NA 행을 포함한 모든 행의 acquired_at으로 정하므로 2026-10-17에 머문다(정보용, 차단 아님). PR-3의 '값이 있는 행만' 변경이 이 칸도 다뤄야 한다.
+- **TARGET v1 초안 기준(inputBasis)**: 기준은 calc_version, type_scope, 철회 행, 샤드별 최신 acquired_at으로 정한다. 상장 종료 행은 이 중 어느 것도 바꾸지 않는다. 보통은 같은 날 정기 실행이 샤드를 갱신해 기준이 바뀌지만, 두 경우는 다르다.
+  - staged TARGET이 있는 `--preserve-only` 배포: `sec-qgv2.json`만 다시 merge되고 shares·qg는 바이트 그대로 복사된다. 그래서 다음 정기 실행 전까지 WBD는 `sec-qgv2.json`에서만 NA로 바뀐다.
+  - 수집이 돌지 않은 날(`COLLECTION_NOT_RUN`): 시작 복원 merge가 이미 WBD를 NA로 바꿨는데 샤드 시각은 그대로다.
+  - 두 경우 모두 점수는 바뀌는데(FOX·FOXA Q 최대 −8.78) 열려 있는 초안의 기준은 그대로다. 병합 뒤 첫 배포 다음에 열린 TARGET v1 초안을 다시 만들기를 권한다. 상장 종료 코드를 기준에 넣는 일은 web_assets 변경(재고정 필요)이라 나중에 한다.
 - 검증: `tests/test_universe_listing_ended.py`(세 파일 NA, 검증기·신선도 검사 통과, acquired_at을 지우면 LOST_RECORD, 단면·Q·G 정확히 1 감소, 다른 코드 상태 불변, PRESERVE 유지, 원장·`publishedCheck` 정상 NA), `tools/target_v1_builder_node_test.js`.
 
 ## 실제 조사 상태

@@ -42,7 +42,9 @@ def test_the_table_holds_exactly_the_reviewed_wbd_entry_with_its_evidence():
     assert len(us.universe_codes()) == 504
     evidence = ' | '.join(entry['evidence'])
     for ref in ('0001193125-26-415055', '0001193125-26-415091', '0001354457-26-000951', '0001193125-26-423513',
-                'items 2.01 and 3.01', 'Form 25 ', '25-NSE', '15-12G', 'UNIVERSE_INDEX_FOLLOWING_20261023.md'):
+                'items 2.01 and 3.01', 'Form 25 ', '25-NSE', '15-12G', 'UNIVERSE_INDEX_FOLLOWING_20261023.md',
+                '/edgar/data/1437107/000119312526415055/', '/edgar/data/1437107/000119312526423513/',
+                'not merged: closed PR #390, branch claude/universe-membership-audit at commit '):
         assert ref in evidence, ref
 
 
@@ -83,6 +85,16 @@ def test_preserve_still_applies_to_every_other_unresolved_code_and_to_a_kept_row
     assert not us.listing_ended(WBD, dict(verified(), source_sha256={'companyfacts': None, 'submissions': None}))
     assert us.previous_decision(us.empty_record(), None, code=WBD, unresolved={WBD}, new_observation=observed) is None
     assert not us.listing_ended('NASDAQ:PSKY', psky)
+
+
+def test_removing_the_entry_is_safe_the_ended_row_then_falls_under_preserve(monkeypatch):
+    """The only way back is removing the entry: the ended row is itself a verified observation, so PRESERVE keeps it as is."""
+    observed = lambda r: r['acquired_at'] is not None
+    row = us.ended_row(dict(verified(), shares=1, listing_id='x'), us.empty_record)
+    assert row['state'] == 'NOT_AVAILABLE' and row['reason_codes'] == ['CIK_UNRESOLVED'] and us.verified_observation(row)
+    assert us.previous_decision(row, None, code=WBD, unresolved={WBD}, new_observation=observed) == us.LISTING_ENDED
+    monkeypatch.setattr(us, 'LISTING_ENDED_CODES', {})
+    assert us.previous_decision(row, None, code=WBD, unresolved={WBD}, new_observation=observed) == us.PRESERVE
 
 
 # ------------------------------------------------ end to end (daily tool) ------------------------------------------------
