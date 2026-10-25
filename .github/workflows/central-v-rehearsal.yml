@@ -11,7 +11,8 @@ name: Central V rehearsal (measure only, no publication)
 # raw bytes), append the ledger, copy the private dated history (D9), upload a Pages or workflow artifact, deploy, use a cache,
 # push, or write a job summary. Everything it builds stays in $RUNNER_TEMP and is discarded with the runner.
 # Left out on purpose (no extra Secret): the macro v0 / macro evidence flags of the SEC inputs step and the two OpenDART steps;
-# none of them feeds sec-qgv2.json or the V step. Their time is covered by the job-time allowance of the verdict tool.
+# none of them feeds sec-qgv2.json or the V step. Their time (the OpenDART steps, and the macro part of the SEC inputs step:
+# at most 59 s, the whole step with macro on 2026-10-24) is added by the job-time allowance of the verdict tool.
 on:
   push:
     branches:
@@ -23,10 +24,12 @@ concurrency:
   group: central-v-rehearsal
   cancel-in-progress: false
 jobs:
-  # Names and yes/no only. The three values never reach this runner: each env entry is the boolean of a comparison done by
-  # GitHub (secrets.X != ''), not the Secret. The start window keeps the rehearsal's SEC and IEX traffic away from the daily run
-  # (scheduled 22:17 UTC, started 22:26~00:40 UTC in October, collect about 15 minutes; a manual fallback may follow it): a start
-  # from 19:30 to 03:00 UTC is refused before anything is collected. A missing Secret or a refused window ends the run here.
+  # Names and yes/no only. No Secret value enters this step's environment or script: the runner evaluates each comparison
+  # (secrets.X != ''; the job message carries the referenced Secrets, masked, as for any Secret use) and only 'true' / 'false'
+  # is placed in env. The start window keeps the rehearsal's SEC and IEX traffic away from the daily run (scheduled 22:17 UTC,
+  # started 22:26~00:40 UTC in October, collect about 15 minutes; a manual fallback may follow it): a start from 19:30 to
+  # 03:00 UTC is refused before anything is collected. A missing Secret or a refused window ends the run here. The rehearsal
+  # job checks the window again as its first step, because a re-run of that job alone reuses this job's earlier output.
   presence:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
@@ -63,6 +66,20 @@ jobs:
     # job_time) instead of the job being stopped before its verdict. Expected: about 32~42 minutes (doc section 4).
     timeout-minutes: 140
     steps:
+      # "Re-run failed jobs" / "Re-run this job" starts this job without the presence job (its earlier output ready=true is
+      # reused), so the start window is checked again here, first, before checkout and before anything is collected or
+      # downloaded. A refusal ends the job; the later steps that run after a failure need this step's success.
+      - name: Check the start window again (a re-run of this job alone skips the presence job)
+        id: window
+        run: |
+          hm=$(date -u +%H:%M)
+          minute=$(( 10#${hm%:*} * 60 + 10#${hm#*:} ))
+          if [ "$minute" -ge 180 ] && [ "$minute" -lt 1170 ]; then window=OK; else window=REFUSED; fi
+          echo "REHEARSAL_WINDOW job=rehearsal start_utc=$hm allowed_utc=03:00-19:30 verdict=$window"
+          if [ "$window" != 'OK' ]; then
+            echo 'REHEARSAL_VERDICT overall=FAIL reason=NOT_READY collected=NONE downloaded=NONE'
+            exit 1
+          fi
       # Timings: every stage step records "<stage> <start> <end> <exit code> <required|optional>" with date +%s into
       # $RUNNER_TEMP/rehearsal-metrics (outside the artifact directory, which its guard scans) and keeps its own exit code, so
       # a failing required step still stops the job as in production. The verdict step reads these files at the end.
@@ -153,9 +170,9 @@ jobs:
           timeout -k 30s 12m python implementation/tools/qgv_official_publish.py --out "$RUNNER_TEMP/public-cockpit" --parser "$RUNNER_TEMP/iex_last_trade" --monthend-stamp "$QGV_MONTHEND_STAMP" --monthend-shards 6 --raw-token-env RAW_REPO_READ_TOKEN --hmac-key-env QGV_OFFICIAL_HMAC_KEY || { echo "QGV_OFFICIAL_STEP_STOPPED exit=$?"; rm -f "$RUNNER_TEMP"/public-cockpit/.qgv-official*; }
           env -u QGV_OFFICIAL_HMAC_KEY -u RAW_REPO_READ_TOKEN python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit" || { echo 'QGV_OFFICIAL_GUARD_REFUSED'; rm -f "$RUNNER_TEMP/public-cockpit/qgv-official.json" "$RUNNER_TEMP/public-cockpit/qgv-official-status.json"; refused=1; }
           [ -z "${refused:-}" ] && env -u QGV_OFFICIAL_HMAC_KEY -u RAW_REPO_READ_TOKEN python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
-      # Runs whatever the V step's outcome (not on cancel): end time, the step outcome, the sampler stopped, df and du after.
+      # Runs whatever the V step's outcome (not on cancel, not after a refused window): end time, the step outcome, the sampler stopped, df and du after.
       - name: Measure after the V step (time, disk, memory; numbers only)
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.window.outcome == 'success' }}
         continue-on-error: true
         timeout-minutes: 2
         env:
@@ -175,7 +192,7 @@ jobs:
       # The artifact guard and the verify job's price-free check (strict reader, status cross-check) on the V step's output
       # directory, without any Secret. Exit codes are recorded for the verdict; this step itself never stops the job.
       - name: Check the V files without prices (artifact guard and strict check, no Secret)
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.window.outcome == 'success' }}
         continue-on-error: true
         timeout-minutes: 5
         run: |
@@ -237,6 +254,6 @@ jobs:
       # One line per stage, the inputs, disk, the V attempt and price-status counts, one PASS/FAIL line per criterion and the
       # overall verdict (doc section 3). Fixed codes and counts only: no price, no code list, no URL, no Secret. Exit 1 on FAIL.
       - name: Rehearsal verdict (fixed codes and counts only)
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.window.outcome == 'success' }}
         timeout-minutes: 5
         run: python implementation/tools/central_v_rehearsal_report.py report --metrics-dir "$RUNNER_TEMP/rehearsal-metrics" --artifact-dir "$RUNNER_TEMP/public-cockpit"

@@ -12,36 +12,38 @@
 
 | 순서 | 잡 / 단계 | 내용 |
 | --- | --- | --- |
-| 1 | `presence` | Secret 3개의 **이름과 있음/없음만** 찍는다: `SECRET_PRESENT name=QGV_OFFICIAL_HMAC_KEY present=yes` 등(`RAW_REPO_READ_TOKEN`, `SEC_USER_AGENT`). 값은 실행기에 오지도 않는다(GitHub가 `secrets.X != ''` 비교 결과 true/false만 넘긴다). 시작 시각도 본다(`REHEARSAL_WINDOW`, 3절). 하나라도 없거나 시각이 밖이면 여기서 끝(아무것도 수집·내려받기 안 함) |
-| 2 | `rehearsal` 앞부분 | 운영 collect 잡을 `all_shards` 방식으로 V 단계 직전까지 재현: 실행 맥락 줄, Node 고정, 오프라인 경계 회귀 시험, 가격 없는 cockpit 빌드, SEC 공개 입력(TARGET 행을 `sec-qgv2.json`에 준비), **Universe504 7개 샤드 전체 수집(`--all-shards`)**. 그래서 `sec-qgv2.json`이 지금 코드(calc_version `qgv2-calc/2026-10-23.1`)로 다시 쓰인다(게시기는 그 전 버전을 거부) |
-| 3 | V 단계 앞 측정 | `df -B1`·`du -sb`로 디스크, 2초마다 디스크 사용량·남은 메모리를 적는 표본기(숫자만)를 V 단계 **전에** 띄운다(그래서 표본기는 Secret을 갖지 않는다) |
-| 4 | **V 단계** | 운영 V 단계와 **바이트 단위로 같은** 단계(같은 명령·같은 env·Secret 2개는 이 단계 env에만·`cc`와 가드는 `env -u`로 Secret 없이·게시기는 시작하자마자 Secret을 env에서 지움). 결과는 `$RUNNER_TEMP/public-cockpit`에만 남는다. 로그에 `QGV_OFFICIAL attempt=… reason=… published=… basis=… rows=… ranked=… supplied=n/m` 한 줄 |
-| 5 | V 단계 뒤 측정 | 끝난 시각, 단계 결과, 표본기 정지, `df -B1`·`du -sb` |
-| 6 | 검사 | 같은 폴더에 아티팩트 가드(`pages_artifact_guard.py`)와 verify 잡의 가격 없는 검사(`qgv_official_check.py`)를 Secret 없이 다시 돌린다 |
-| 7 | 뒷부분 | 운영 collect 잡의 V 뒤 단계(SIC·10-K·N-PORT, 도메인·로고, 13F, 8-K, 뉴스, 커버리지 줄). 잡 전체 시간을 재기 위해서다 |
-| 8 | 판정 | `Rehearsal verdict (fixed codes and counts only)` 단계가 단계별 한 줄과 기준별 PASS/FAIL, 전체 판정을 찍는다(5절) |
+| 1 | `presence` | Secret 3개의 **이름과 있음/없음만** 찍는다: `SECRET_PRESENT name=QGV_OFFICIAL_HMAC_KEY present=yes` 등(`RAW_REPO_READ_TOKEN`, `SEC_USER_AGENT`). 값은 어느 단계의 env·스크립트에도 들어가지 않는다(실행기가 `secrets.X != ''` 비교를 계산하고 true/false만 env에 넣는다; 비교를 위해 작업 메시지에 Secret이 가려진 채 실려 오는 것은 다른 Secret 사용과 같다). 시작 시각도 본다(`REHEARSAL_WINDOW`, 3절). 하나라도 없거나 시각이 밖이면 여기서 끝(아무것도 수집·내려받기 안 함) |
+| 2 | `rehearsal` 첫 단계 | 시작 시각을 **다시** 본다(`REHEARSAL_WINDOW job=rehearsal …`). 이 잡만 다시 돌리면(Re-run failed jobs·이 잡만) `presence`의 앞선 결과를 재사용하므로 여기서 한 번 더 막는다. 밖이면 체크아웃·수집·내려받기 없이 끝(`REHEARSAL_VERDICT overall=FAIL reason=NOT_READY`) |
+| 3 | `rehearsal` 앞부분 | 운영 collect 잡을 `all_shards` 방식으로 V 단계 직전까지 재현: 실행 맥락 줄, Node 고정, 오프라인 경계 회귀 시험, 가격 없는 cockpit 빌드, SEC 공개 입력(TARGET 행을 `sec-qgv2.json`에 준비), **Universe504 7개 샤드 전체 수집(`--all-shards`)**. 그래서 `sec-qgv2.json`이 지금 코드(calc_version `qgv2-calc/2026-10-23.1`)로 다시 쓰인다(게시기는 그 전 버전을 거부) |
+| 4 | V 단계 앞 측정 | `df -B1`·`du -sb`로 디스크, 2초마다 디스크 사용량·남은 메모리를 적는 표본기(숫자만)를 V 단계 **전에** 띄운다(그래서 표본기는 Secret을 갖지 않는다) |
+| 5 | **V 단계** | 운영 V 단계와 **바이트 단위로 같은** 단계(같은 명령·같은 env·Secret 2개는 이 단계 env에만·`cc`와 가드는 `env -u`로 Secret 없이·게시기는 시작하자마자 Secret을 env에서 지움). 결과는 `$RUNNER_TEMP/public-cockpit`에만 남는다. 로그에 `QGV_OFFICIAL attempt=… reason=… published=… basis=… rows=… ranked=… supplied=n/m` 한 줄 |
+| 6 | V 단계 뒤 측정 | 끝난 시각, 단계 결과, 표본기 정지, `df -B1`·`du -sb` |
+| 7 | 검사 | 같은 폴더에 아티팩트 가드(`pages_artifact_guard.py`)와 verify 잡의 가격 없는 검사(`qgv_official_check.py`)를 Secret 없이 다시 돌린다 |
+| 8 | 뒷부분 | 운영 collect 잡의 V 뒤 단계(SIC·10-K·N-PORT, 도메인·로고, 13F, 8-K, 뉴스, 커버리지 줄). 잡 전체 시간을 재기 위해서다 |
+| 9 | 판정 | `Rehearsal verdict (fixed codes and counts only)` 단계가 단계별 한 줄과 기준별 PASS/FAIL, 전체 판정을 찍는다(5절) |
 
-모든 단계는 시작·끝 시각(`date +%s`)과 종료 코드를 `$RUNNER_TEMP/rehearsal-metrics`(아티팩트 폴더 밖)에 적는다. 필수 단계가 실패하면 운영처럼 잡이 멈추지만, 측정·검사·판정 단계는 실패 뒤에도 돈다(취소 때는 안 돈다).
+모든 단계는 시작·끝 시각(`date +%s`)과 종료 코드를 `$RUNNER_TEMP/rehearsal-metrics`(아티팩트 폴더 밖)에 적는다. 필수 단계가 실패하면 운영처럼 잡이 멈추지만, 측정·검사·판정 단계는 실패 뒤에도 돈다(취소 때와 첫 단계의 시각 거부 때는 안 돈다).
 
 ## 2. 절대 하지 않는 것
 
 - **비공개 원자료 저장소에 쓰지 않는다.** 원자료 쓰기 토큰은 파일 어디에도 없다. 샤드 도구는 그 토큰이 없으면 원 SEC 바이트를 올리지도 저장하지도 않고 샤드마다 `RAW_UPLOAD_NOT_CONFIGURED shard=<i>`를 찍는다. 수집 자체는 같다. 원자료 저장소는 V 단계의 읽기 전용 토큰으로 **월말가 저장소를 읽기만** 한다.
 - 원장(forward validation ledger) 추가, 비공개 점수 이력(D9) 복사, Pages 아티팩트·워크플로 아티팩트 업로드, 배포, 캐시, push, 작업 요약(job summary) — 모두 없다. 만든 파일은 실행기와 함께 사라진다.
 - 라이브 사이트에서는 **읽기만** 한다(이전 공개본을 이어 붙이는 운영과 같은 GET). 게시는 없다.
-- 일부러 뺀 것(Secret을 더 쓰지 않으려고): SEC 공개 입력 단계의 `--macro-v0 --macro-evidence`(BEA·Census 키), OpenDART 두 단계(DART 키). 모두 `sec-qgv2.json`과 V 단계에 들어가지 않는다. 시간은 판정의 여유분(10분)으로 더한다.
+- 일부러 뺀 것(Secret을 더 쓰지 않으려고): SEC 공개 입력 단계의 `--macro-v0 --macro-evidence`(BEA·Census 키), OpenDART 두 단계(DART 키). 모두 `sec-qgv2.json`과 V 단계에 들어가지 않는다. 시간은 판정의 여유분(11분, 3절 `job_time`)으로 더한다. 매크로 부분은 따로 재지 못해 매크로를 포함한 그 단계 전체 시간(59초)을 상한으로 넣었다.
 - 출력: 고정 코드와 개수·바이트·초만. 가격·비율·수익률·종목별 값이나 날짜·종목 목록·URL·Secret 값은 찍지 않는다.
 - 정기 실행과 섞이지 않게: 동시 실행 그룹이 따로다(`central-v-rehearsal`, 운영 그룹과 공유하면 대기 중인 정기 실행을 취소할 수 있어서 피함). 시작 시각 03:00~19:30 UTC만 허용한다(10월 정기 실행은 22:26~00:40 UTC 시작, collect 약 15분, 그 뒤 수동 대체 실행 가능성까지 피함).
 
 ## 3. 실패 기준과 판정
 
-판정 줄 형식: `REHEARSAL_CRITERION name=<기준> value=<측정값> limit=<한도> verdict=PASS|FAIL [reason=…]`. 값이 없으면(그 단계가 못 돌았으면) `verdict=FAIL reason=NOT_MEASURED`다. 전체는 `REHEARSAL_VERDICT overall=PASS|FAIL passed=k/11 failed=…`이고, FAIL이면 판정 단계(와 잡)가 빨간색이다.
+판정 줄 형식: `REHEARSAL_CRITERION name=<기준> value=<측정값> limit=<한도> verdict=PASS|FAIL [reason=…]`. 값이 없으면(그 단계가 못 돌았으면) `verdict=FAIL reason=NOT_MEASURED`다. 전체는 `REHEARSAL_VERDICT overall=PASS|FAIL passed=k/12 failed=…`이고, FAIL이면 판정 단계(와 잡)가 빨간색이다.
 
 | 기준 | 한도 | 근거 |
 | --- | --- | --- |
 | `v_step_time` | V 단계 전체 ≤ 12분(720초) | 게시기 자체 한도 `timeout -k 30s 12m`(단계 한도 15분). 단계 전체가 12분을 넘으면 여유가 없다 |
-| `job_time` | 잡 측정 시간 + 10분 ≤ 120분 | `all_shards` 실행의 collect 잡 한도 120분. 10분 = 빠진 운영 단계 여유(OpenDART 4분 47초·DART 투영 3초·원장 8초, 2026-10-24 정기 실행 40045938631; D9 이력은 단계 한도 5분) |
+| `job_time` | 잡 측정 시간 + 11분 ≤ 120분 | `all_shards` 실행의 collect 잡 한도 120분. 11분 = 빠진 운영 일의 여유(OpenDART 4분 47초·DART 투영 3초·원장 8초·SEC 공개 입력 단계의 매크로 부분 최대 59초(매크로를 포함한 단계 전체, 00:41:07~00:42:06Z), 2026-10-24 정기 실행 40045938631; D9 이력은 단계 한도 5분) = 658초를 올림. 2026-10-25 검토 전에는 10분이라 매크로 부분이 빠져 있었다 |
 | `required_steps` | 필수 단계 모두 종료 코드 0 | 운영에서 필수 단계 실패는 그날 Pages 아티팩트를 막는다 |
-| `inputs_calc_version` | `sec-qgv2.json` calc_version이 `qgv2-calc/2026-10-23.1` 이상 | 게시기가 그 전 버전을 `NOT_RUN`으로 거부 |
+| `inputs_calc_version` | `sec-qgv2.json` calc_version이 `qgv2-calc/2026-10-23.1` 이상 | **게시기 관문과 같은 최상위 검사.** 게시기가 그 전 버전을 `NOT_RUN`으로 거부. 병합은 샤드가 실패해도 최상위 calc_version을 지금 값으로 찍으므로, 이 줄만으로는 행이 다시 쓰였는지 보이지 않는다(→ 다음 줄) |
+| `inputs_current_rows` | `sec-qgv2.json` 행 중 다른 calc_version 행(`records_other_calc`) = 0 | 2026-10-25 검토로 더함. 전 샤드 수집은 샤드가 실패해도 종료 코드 0(`ALL_SHARDS_PARTIAL … previous_kept`)이고, 라이브 사본에서 이어 온 옛 calc_version 행은 `CALC_VERSION_MISMATCH`로 V·순위와 D4 공급의 분자·분모에서 함께 빠진다. 그래서 `supply`가 통과해도 첫 게시에서 조용히 빠진다. 개별 회사 수집 실패로 이어 온 행도 같다. 실패하면 `universe_all_shards` 단계의 `SEC_UNIVERSE_ALL_SHARDS shards_failed=…`·`SEC_UNIVERSE_SHARD_REPORT` 줄로 원인을 본다 |
 | `stream_disk_peak` | V 단계 중 디스크 사용 증가 최대 ≤ 10 GB(10,000,000,000 B) | GSQ-024 프로브 한도. 스트리밍(내려받기 → gzip → C 파서)이라 거의 0이어야 한다(프로브 0.0~0.1 MB) |
 | `universe_last_trade` | Universe 행 중 IEX 정규장 마지막 체결이 **없는** 행 ≤ 5% → 504행이면 **≥ 479/504** | 프로브 한도(결측 5%). 없음 = `NO_IEX_TRADE`·`ODD_LOT_ONLY`·`PRICE_SYMBOL_UNMAPPED`. ADR·분할·식별 규칙으로 가격을 쓰지 않은 행(`rule_excluded`)은 체결 여부가 기록되지 않아 없음으로 세지 않고 따로 센다. 프로브 실측 502/504 |
 | `supply` | 공급 ≥ ceil(95% × 적격) | 결정 D4(`supplied=n/m`, 게시기의 `supply.met`과 같은 계산) |
@@ -60,36 +62,36 @@
 | 7개 샤드 전체 | 약 21~27분 | 2026-10-17 `all_shards` 실행 38996553263: 21분 00초. 2026-10-24 샤드 1개 3분 52초 × 7 |
 | V 단계 | 약 4~8분 | 프로브: 11.8~14.1 GB 내려받기·해석 3.2~5.6분. 여기에 C 파서 빌드, 월말가 저장소 읽기, 점수 계산, JS 쌍둥이, 가드 2회 |
 | 검사·뒷부분·판정 | 약 3분 | 2026-10-24 정기 실행 V 뒤 단계 합 약 2분 36초 |
-| **합계** | **약 32~42분** (판정 기준으로는 +10분 = 42~52분, 한도 120분) | 잡 한도는 140분(넘는 경우도 판정까지 가도록) |
+| **합계** | **약 32~42분** (판정 기준으로는 +11분 = 43~53분, 한도 120분) | 잡 한도는 140분(넘는 경우도 판정까지 가도록) |
 
-첫 게시 날의 운영 `all_shards` collect는 여기에 OpenDART·원장·이력이 더해져 약 37~47분으로 본다.
+첫 게시 날의 운영 `all_shards` collect는 여기에 OpenDART·원장·이력·매크로가 더해져 약 38~48분으로 본다.
 
 ## 5. 시작 전 조건과 결과 읽는 법
 
 **시작 전(소유자 / Main):**
-1. Secret 3개 등록 확인: `QGV_OFFICIAL_HMAC_KEY`(16바이트 이상), `RAW_REPO_READ_TOKEN`(원자료 저장소 하나, Contents 읽기만), `SEC_USER_AGENT`(기존). 점검표 1절. HMAC 키 길이는 `presence`가 볼 수 없다(값을 받지 않으므로). 짧으면 V 단계에서 `NOT_RUN HMAC_KEY_MISSING`으로 나온다.
+1. Secret 3개 등록 확인: `QGV_OFFICIAL_HMAC_KEY`(16바이트 이상), `RAW_REPO_READ_TOKEN`(원자료 저장소 하나, Contents 읽기만), `SEC_USER_AGENT`(기존). 점검표 1절. HMAC 키 길이는 `presence`가 볼 수 없다(값을 단계 env·스크립트에 넣지 않으므로). 짧으면 V 단계에서 `NOT_RUN HMAC_KEY_MISSING`으로 나온다.
 2. 측정할 코드가 최종인지: CV-SPLIT (ii) 등 사슬에 바뀐 것이 있으면 Main이 최신 `claude/central-v-reader`를 이 브랜치에 병합한 뒤 push한다.
 3. Actions에 진행 중이거나 대기 중인 `SEC daily public reported inputs` 실행이 없는지 본다. 시각은 03:00~19:30 UTC(한국 시각 12:00~다음 날 04:30). 전 거래일 IEX 파일은 다음 날 10:22 UTC까지 만들어지므로, 가장 최근 거래일을 재려면 11:00~19:30 UTC(20:00~04:30 KST)가 좋다. 그 전에 시작하면 하루 더 앞선 거래일 파일을 쓴다(그래도 "최근 거래일 하루치").
-4. 소유자 승인 뒤 Main이 브랜치를 push한다. 다시 돌리려면 실행 화면의 **Re-run jobs**나 새 커밋 push.
+4. 소유자 승인 뒤 Main이 브랜치를 push한다. 다시 돌리려면 실행 화면의 **Re-run all jobs**(두 잡 모두: `presence`가 Secret과 시각을 다시 본다)나 새 커밋 push. **Re-run failed jobs**·한 잡만 다시 돌리기는 쓰지 않는다. 쓰더라도 `rehearsal` 잡이 첫 단계에서 시각을 다시 보고 19:30~03:00 UTC면 아무것도 수집·내려받지 않고 끝난다.
 
 **결과(휴대폰):** 저장소 → **Actions** → 왼쪽 **Central V rehearsal (measure only, no publication)** → 해당 실행.
-- `presence` 잡: `SECRET_PRESENT …` 3줄, `REHEARSAL_WINDOW … verdict=OK`.
+- `presence` 잡: `SECRET_PRESENT …` 3줄, `REHEARSAL_WINDOW … verdict=OK`. `rehearsal` 잡 첫 단계: `REHEARSAL_WINDOW job=rehearsal … verdict=OK`.
 - `rehearsal` 잡 → 맨 아래 단계 **Rehearsal verdict (fixed codes and counts only)**:
 
 ```
 REHEARSAL_SCOPE publication=NONE raw_repo_write=NONE ledger=NONE history=NONE pages_upload=NONE artifact_upload=NONE cache=NONE job_summary=NONE
 REHEARSAL_STAGE stage=<단계> seconds=<초> rc=<종료 코드> kind=required|optional   (단계마다 한 줄, V 단계는 outcome=…)
-REHEARSAL_JOB seconds=<초> allowance_excluded_steps=600 limit=7200
+REHEARSAL_JOB seconds=<초> allowance_excluded_steps=660 limit=7200
 REHEARSAL_INPUTS file=sec-qgv2.json state=VALID calc_version=qgv2-calc/2026-10-23.1 records=504 records_current_calc=<n> records_no_data=<n> records_other_calc=<n> target=<n> same_bytes_as_attempt=YES
 REHEARSAL_DISK fs_used_before=<B> fs_used_after=<B> fs_used_peak=<B> stream_peak_bytes=<B> … samples=<n> … mem_available_min=<B>
 REHEARSAL_V attempt=OK reason=- published=NEW basis=<IEX 기준일> requested_basis=<요청 기준일> rows=<n> ranked=<n> supplied=<n>/<m> supply_met=YES
 REHEARSAL_PRICE universe_rows=504 … supplied=<n> last_trade_missing=<n> rule_excluded=<n> NO_IEX_TRADE=<n> … consistent=YES
-REHEARSAL_CRITERION name=… verdict=PASS   (11줄)
-REHEARSAL_VERDICT overall=PASS passed=11/11 failed=-
+REHEARSAL_CRITERION name=… verdict=PASS   (12줄)
+REHEARSAL_VERDICT overall=PASS passed=12/12 failed=-
 ```
 
 - Main에 보낼 것: 실행 번호(run ID)와 위 `REHEARSAL_…` 줄 전부, V 단계의 `QGV_OFFICIAL …` 한 줄. 모두 개수·코드뿐이라 그대로 옮겨도 된다. Main이 첫 게시 점검표(`CENTRAL_V_GO_LIVE_CHECKLIST`)의 측정 칸을 채운다.
-- `records_other_calc`가 0이 아니면 그만큼 수집에 실패한 행이 옛 calc_version으로 남아 V·순위에서 빠졌다는 뜻이다(`CALC_VERSION_MISMATCH`).
+- `records_other_calc`가 0이 아니면 그만큼 수집에 실패한 행이 옛 calc_version으로 남아 V·순위에서 빠졌다는 뜻이다(`CALC_VERSION_MISMATCH`). 기준 `inputs_current_rows`가 이것을 FAIL로 판정한다(2026-10-25부터).
 
 ## 6. 한계
 

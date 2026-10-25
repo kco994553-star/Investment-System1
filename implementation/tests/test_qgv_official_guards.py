@@ -441,8 +441,8 @@ def _steps(job):
 #   production step byte for byte (tests/test_central_v_rehearsal_workflow.py pins that and the rest of the file).
 PUBLISHER_WORKFLOWS = ('sec-daily-public-inputs.yml', 'central-v-rehearsal.yml')
 # The rehearsal's presence job alone may also name the two Secrets outside the V step, and only as the yes/no comparison
-# GitHub evaluates (`${{ secrets.NAME != '' }}`: the value never reaches the runner), exactly once each, in a step that runs no
-# publisher. Every other occurrence is counted as usual.
+# `${{ secrets.NAME != '' }}` (the runner evaluates it; the value never enters any step's environment or script, only true /
+# false is placed in env), exactly once each, in a step that runs no publisher. Every other occurrence is counted as usual.
 PRESENCE_ONLY = ('central-v-rehearsal.yml',)
 PUBLICATION_SECRETS = ('QGV_OFFICIAL_HMAC_KEY', 'RAW_REPO_READ_TOKEN')
 

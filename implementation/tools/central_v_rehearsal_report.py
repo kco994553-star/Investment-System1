@@ -14,7 +14,9 @@ No network, no Secret, no price. Two subcommands:
       carries no price; its strict reader runs first, tools/qgv_official_check.inspect) and prints fixed lines:
         REHEARSAL_STAGE      one per stage, in the order they ran (seconds, exit code or the V step outcome)
         REHEARSAL_JOB        whole-job seconds so far, the allowance for the production steps the rehearsal leaves out
-        REHEARSAL_INPUTS     sec-qgv2.json calc_version and row counts (current calc_version / no data / other)
+        REHEARSAL_INPUTS     sec-qgv2.json calc_version and row counts (current calc_version / no data / other: a row of
+                             another calc_version was kept from the live copy, i.e. not rewritten by this run, and is
+                             outside V and the ranks as CALC_VERSION_MISMATCH)
         REHEARSAL_DISK       filesystem bytes used before / after / peak during the V step, artifact and work dir bytes, RAM low
         REHEARSAL_V          attempt, reason, NEW / KEPT / NONE, basis days, rows, ranked, supplied/eligible
         REHEARSAL_PRICE      Universe rows by price status (counts only)
@@ -57,9 +59,11 @@ def _modules():
 # Failure criteria (doc section 3). Sources of the limits:
 V_STEP_LIMIT_SECONDS = 12 * 60             # the publisher's own limit inside the V step (timeout -k 30s 12m)
 JOB_LIMIT_SECONDS = 120 * 60               # collect job limit of an all_shards dispatch (sec-daily-public-inputs.yml)
-# Production steps the rehearsal leaves out: OpenDART 4 min 47 s + DART projection 3 s + ledger 8 s (daily run 40045938631,
-# 2026-10-24) and the D9 history step (at most its own 5 minute limit): 10 minutes added to the measured job time.
-EXCLUDED_STEPS_ALLOWANCE_SECONDS = 10 * 60
+# Production work the rehearsal leaves out (daily run 40045938631, 2026-10-24): OpenDART 4 min 47 s + DART projection 3 s +
+# ledger 8 s, the D9 history step (at most its own 5 minute limit) and the macro part of the SEC inputs step (--macro-v0
+# --macro-evidence; at most 59 s, the whole step with macro, 00:41:07-00:42:06Z): 287 + 3 + 8 + 300 + 60 = 658 s, rounded up to
+# 11 minutes added to the measured job time.
+EXCLUDED_STEPS_ALLOWANCE_SECONDS = 11 * 60
 STREAM_DISK_LIMIT_BYTES = 10 * 10 ** 9     # GSQ-024 probe limit (CENTRAL_V_PROBE_U8_FACTS_20261024.md section 1: 10 GB)
 LAST_TRADE_MIN_SHARE = 0.95                # probe limit: at most 5% of the Universe rows without a regular-session last trade
 # Price statuses of a Universe row (the publication's price_source.rejected keys plus SUPPLIED). A row without a regular-session
@@ -307,9 +311,16 @@ def build_report(metrics: Path, artifact: Path, now: int) -> tuple[list[str], bo
     crit.append(_criterion('required_steps', None if not required else not failed,
                            f'{len(required) - len(failed)}/{len(required)}', 'all',
                            'FAILED_' + '_'.join(failed).upper()[:60] if failed else None))
+    # The publisher's own gate (top-level calc_version only): merge stamps the current CALC_VERSION on every file it writes,
+    # also when shards failed, so this alone cannot show that the rows were rewritten. inputs_current_rows does: a partial
+    # all-shards run exits 0 (ALL_SHARDS_PARTIAL previous_kept) and its kept rows of the live copy's older calc_version drop
+    # out of V, of the ranks and of both sides of the D4 supply ratio, so supply can still pass.
     crit.append(_criterion('inputs_calc_version', None if inputs['state'] != 'VALID' else inputs['carries_share_basis'] is True,
                            _n(inputs['calc_version']), 'qgv2-calc/2026-10-23.1+',
                            None if inputs['state'] == 'VALID' else 'SEC_QGV2_' + inputs['state']))
+    crit.append(_criterion('inputs_current_rows', None if inputs['state'] != 'VALID' else inputs['other'] == 0,
+                           f"other_calc={inputs['other']}", 'other_calc=0',
+                           'ROWS_OF_ANOTHER_CALC_VERSION' if inputs['state'] == 'VALID' else None))
     crit.append(_criterion('stream_disk_peak', None if stream_peak is None or not samples else stream_peak <= STREAM_DISK_LIMIT_BYTES,
                            f'{_n(stream_peak)}B', f'{STREAM_DISK_LIMIT_BYTES}B'))
     if prices:

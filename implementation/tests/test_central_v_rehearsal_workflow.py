@@ -44,6 +44,8 @@ AFTER_STEP = 'Measure after the V step (time, disk, memory; numbers only)'
 CHECK_STEP = 'Check the V files without prices (artifact guard and strict check, no Secret)'
 VERDICT_STEP = 'Rehearsal verdict (fixed codes and counts only)'
 START_STEP = 'Record the rehearsal start time'
+WINDOW_STEP = 'Check the start window again (a re-run of this job alone skips the presence job)'
+AFTER_FAILURE = "        if: ${{ !cancelled() && steps.window.outcome == 'success' }}\n"
 SEC_STEPS = ('Collect public SEC shares and filing metadata through Codex2 client',
              'Collect Universe504 SEC shard (price-free shares and Q·G factor projections)',
              'Collect SEC SIC, 10-K Item 1 and basket-ETF N-PORT evidence for industry/theme v0',
@@ -150,7 +152,7 @@ def test_secrets_only_in_the_presence_step_the_v_step_and_the_sec_collection_ste
     text, jobs, steps = wf
     code = _code(text)
     assert set(re.findall(r'secrets\.([A-Z_]+)', code)) == {'QGV_OFFICIAL_HMAC_KEY', 'RAW_REPO_READ_TOKEN', 'SEC_USER_AGENT'}
-    # presence: three yes/no comparisons evaluated by GitHub; no value reaches the runner, no checkout, one step
+    # presence: three yes/no comparisons (the runner evaluates them; no value enters a step's env or script), no checkout, one step
     presence = steps_of(jobs['presence'])
     assert len(presence) == 1 and _name(presence[0]) == PRESENCE_STEP and 'uses:' not in jobs['presence']
     assert env_of(presence[0]) == {f'{n}_SET': "${{ secrets.%s != '' }}" % n
@@ -190,7 +192,7 @@ def test_step_order_follows_the_collect_job_and_leaves_out_only_the_writing_and_
     daily = steps_of(jobs_of(DAILY.read_text())['collect'])
     prod_names = [_name(s) or s.split('\n', 1)[0] for s in daily]
     names = [_name(s) or s.split('\n', 1)[0] for s in steps]
-    expected = [START_STEP] + [n for n in prod_names if n not in LEFT_OUT]
+    expected = [WINDOW_STEP, START_STEP] + [n for n in prod_names if n not in LEFT_OUT]
     expected.insert(expected.index(V_STEP), BEFORE_STEP)
     expected.insert(expected.index(V_STEP) + 1, AFTER_STEP)
     expected.insert(expected.index(AFTER_STEP) + 1, CHECK_STEP)
@@ -241,10 +243,10 @@ def test_stage_steps_run_the_production_commands_record_their_time_and_keep_thei
 def test_measurement_and_verdict_steps_hold_nothing_and_run_after_a_failure_but_not_on_cancel(wf):
     _, _, steps = wf
     for name in (AFTER_STEP, CHECK_STEP, VERDICT_STEP):
-        assert '        if: ${{ !cancelled() }}\n' in named(steps, name)
+        assert AFTER_FAILURE in named(steps, name)
     for name in (BEFORE_STEP, AFTER_STEP, CHECK_STEP):
         assert 'continue-on-error: true' in named(steps, name)
-    for name in (START_STEP, BEFORE_STEP, AFTER_STEP, CHECK_STEP, VERDICT_STEP):
+    for name in (WINDOW_STEP, START_STEP, BEFORE_STEP, AFTER_STEP, CHECK_STEP, VERDICT_STEP):
         step = named(steps, name)
         assert 'secrets.' not in step and 'uses:' not in step and '--out "$RUNNER_TEMP/public-cockpit"' not in step
     before = run_lines(named(steps, BEFORE_STEP))
@@ -320,6 +322,50 @@ def test_the_start_window_keeps_away_from_the_daily_run(tmp_path, hm, ok):
     run, output = _presence(tmp_path, hm=hm)
     assert (run.returncode == 0) is ok and output == f'ready={str(ok).lower()}\n'
     assert f'REHEARSAL_WINDOW start_utc={hm} allowed_utc=03:00-19:30 verdict={"OK" if ok else "REFUSED"}' in run.stdout
+
+
+# ---- the rehearsal job's own start-window check (2026-10-25 review: a re-run of that job alone skips the presence job) -----
+def test_the_rehearsal_job_checks_the_start_window_first_and_nothing_runs_after_a_refusal(wf):
+    text, jobs, steps = wf
+    # GitHub's "Re-run failed jobs" / "Re-run this job" reuses the presence job's earlier output (ready=true), so the window
+    # check of the presence job alone does not hold: the rehearsal job repeats it as its very first step, before checkout
+    window = steps[0]
+    assert _name(window) == WINDOW_STEP and '\n        id: window\n' in window
+    assert 'secrets.' not in window and 'uses:' not in window and 'env:' not in window and 'if:' not in window
+    assert steps.index(window) < steps.index(next(s for s in steps if s.startswith(PINS[0])))
+    presence = run_lines(steps_of(jobs['presence'])[0])
+    script = run_lines(window)
+    for line in ('hm=$(date -u +%H:%M)', 'minute=$(( 10#${hm%:*} * 60 + 10#${hm#*:} ))'):
+        assert line in presence and line in script
+    assert '[ "$minute" -ge 180 ] && [ "$minute" -lt 1170 ]' in script[2] and '[ "$minute" -ge 180 ] && [ "$minute" -lt 1170 ]' in \
+        next(l for l in presence if '1170' in l)
+    # every later step that would run after a failure needs the window step's success, so a refused re-run collects,
+    # downloads and measures nothing (a failed step skips the plain ones)
+    conditional = [s for s in steps[1:] if re.search(r'^\s*if: ', s, re.M)]
+    assert [_name(s) for s in conditional] == [AFTER_STEP, CHECK_STEP, VERDICT_STEP]
+    for step in conditional:
+        assert AFTER_FAILURE.strip() in step and step.count('if: ') == 1, _name(step)
+    assert _code(text).count("steps.window.outcome == 'success'") == 3
+
+
+def _window(tmp_path, hm):
+    step = steps_of(jobs_of(REHEARSAL.read_text())['rehearsal'])[0]
+    bin_dir = tmp_path / 'bin'
+    bin_dir.mkdir(exist_ok=True)
+    (bin_dir / 'date').write_text('#!/bin/sh\necho "$FAKE_HM"\n')
+    (bin_dir / 'date').chmod(0o755)
+    return subprocess.run(['bash', '--noprofile', '--norc', '-eo', 'pipefail', '-c', '\n'.join(run_lines(step)) + '\n'],
+                          env={'PATH': f'{bin_dir}:/usr/bin:/bin', 'FAKE_HM': hm}, capture_output=True, text=True, timeout=60)
+
+
+@pytest.mark.parametrize('hm,ok', [('02:59', False), ('03:00', True), ('12:00', True), ('19:29', True), ('19:30', False),
+                                   ('22:17', False), ('23:00', False), ('00:40', False)])
+def test_a_rerun_of_the_rehearsal_job_alone_inside_the_daily_window_is_refused(tmp_path, hm, ok):
+    run = _window(tmp_path, hm)
+    assert (run.returncode == 0) is ok and run.stderr == ''
+    lines = run.stdout.splitlines()
+    assert lines[0] == f'REHEARSAL_WINDOW job=rehearsal start_utc={hm} allowed_utc=03:00-19:30 verdict={"OK" if ok else "REFUSED"}'
+    assert lines[1:] == ([] if ok else ['REHEARSAL_VERDICT overall=FAIL reason=NOT_READY collected=NONE downloaded=NONE'])
 
 
 # ---- the measurement, check and verdict steps, run locally ---------------------------------------------------------------
@@ -422,9 +468,9 @@ def test_a_good_attempt_passes_every_criterion_and_prints_counts_only(tmp_path):
     stages = [l.split()[1] for l in lines if l.startswith('REHEARSAL_STAGE ')]
     assert stages == ['stage=cockpit_build', 'stage=v_step', 'stage=v_files_check', 'stage=published_coverage']
     assert _criteria(verdict.stdout) == {name: 'PASS' for name in (
-        'v_step_time', 'job_time', 'required_steps', 'inputs_calc_version', 'stream_disk_peak', 'universe_last_trade', 'supply',
-        'validator', 'js_twin', 'guard', 'attempt_ok')}
-    assert lines[-1] == 'REHEARSAL_VERDICT overall=PASS passed=11/11 failed=-'
+        'v_step_time', 'job_time', 'required_steps', 'inputs_calc_version', 'inputs_current_rows', 'stream_disk_peak',
+        'universe_last_trade', 'supply', 'validator', 'js_twin', 'guard', 'attempt_ok')}
+    assert lines[-1] == 'REHEARSAL_VERDICT overall=PASS passed=12/12 failed=-'
     v = next(l for l in lines if l.startswith('REHEARSAL_V '))
     assert v.startswith('REHEARSAL_V attempt=OK reason=- published=NEW basis=2026-10-13 requested_basis=2026-10-13 rows=')
     price = next(l for l in lines if l.startswith('REHEARSAL_PRICE '))
@@ -445,6 +491,7 @@ def test_a_supply_failure_is_reported_as_fail_with_its_reason(tmp_path):
     crit = _criteria(verdict.stdout)
     assert crit['attempt_ok'] == crit['validator'] == crit['js_twin'] == crit['universe_last_trade'] == crit['supply'] == 'FAIL'
     assert crit['v_step_time'] == crit['stream_disk_peak'] == crit['guard'] == crit['inputs_calc_version'] == 'PASS'
+    assert crit['inputs_current_rows'] == 'PASS'
     assert 'REHEARSAL_CRITERION name=attempt_ok value=NO_OFFICIAL_YET limit=OK verdict=FAIL reason=IEX_DOWNLOAD_FAILED' in verdict.stdout
     assert 'REHEARSAL_CRITERION name=validator value=ABSENT/VALID limit=VALID/VALID verdict=FAIL reason=NOT_MEASURED' in verdict.stdout
     assert 'REHEARSAL_PRICE state=NO_PUBLICATION' in verdict.stdout
@@ -489,10 +536,11 @@ def test_nothing_recorded_is_not_measured_and_fails(tmp_path, capsys):
     assert report_tool.main(['report', '--metrics-dir', str(m), '--artifact-dir', str(art), '--now', '1000']) == 1
     out = capsys.readouterr().out
     crit = _criteria(out)
-    assert set(crit.values()) == {'FAIL'} and len(crit) == 11
-    assert out.count('reason=NOT_MEASURED') == 11
-    assert out.splitlines()[-1] == ('REHEARSAL_VERDICT overall=FAIL passed=0/11 failed=v_step_time,job_time,required_steps,'
-                                    'inputs_calc_version,stream_disk_peak,universe_last_trade,supply,validator,js_twin,guard,attempt_ok')
+    assert set(crit.values()) == {'FAIL'} and len(crit) == 12
+    assert out.count('reason=NOT_MEASURED') == 12
+    assert out.splitlines()[-1] == ('REHEARSAL_VERDICT overall=FAIL passed=0/12 failed=v_step_time,job_time,required_steps,'
+                                    'inputs_calc_version,inputs_current_rows,stream_disk_peak,universe_last_trade,supply,validator,'
+                                    'js_twin,guard,attempt_ok')
     assert report_tool.main(['report', '--metrics-dir', str(m), '--artifact-dir', str(tmp_path / 'missing')]) == 2
 
 
@@ -501,16 +549,54 @@ def test_limits_time_disk_and_job_allowance(tmp_path, capsys):
     stages = ['offline_regression 1 50 0 required', 'universe_all_shards 60 99 0 required', 'news 900 950 1 optional']
     samples = [f'{100 + i} {5 * 10 ** 9 + (10 ** 10 + 1 if i == 3 else 0)} {2 ** 30}' for i in range(5)]
     m, art = _metrics(tmp_path, values, stages, samples)
-    report_tool.main(['report', '--metrics-dir', str(m), '--artifact-dir', str(art), '--now', str(7200 - 600)])
+    report_tool.main(['report', '--metrics-dir', str(m), '--artifact-dir', str(art), '--now', str(7200 - 660)])
     out = capsys.readouterr().out
     assert 'REHEARSAL_CRITERION name=v_step_time value=721s limit=720s verdict=FAIL' in out
-    assert 'REHEARSAL_CRITERION name=job_time value=7200s limit=7200s verdict=PASS' in out          # 6600 s + 600 s allowance
+    assert 'REHEARSAL_CRITERION name=job_time value=7200s limit=7200s verdict=PASS' in out          # 6540 s + 660 s allowance
     assert f'REHEARSAL_CRITERION name=stream_disk_peak value={10 ** 10 + 1}B limit={10 ** 10}B verdict=FAIL' in out
     assert 'REHEARSAL_CRITERION name=required_steps value=2/2 limit=all verdict=PASS' in out        # an optional step may fail
     assert 'REHEARSAL_STAGE stage=news seconds=50 rc=1 kind=optional' in out
     assert f'mem_available_min={2 ** 30}' in out and 'samples=5' in out
-    report_tool.main(['report', '--metrics-dir', str(m), '--artifact-dir', str(art), '--now', str(7200 - 599)])
+    report_tool.main(['report', '--metrics-dir', str(m), '--artifact-dir', str(art), '--now', str(7200 - 659)])
     assert 'REHEARSAL_CRITERION name=job_time value=7201s limit=7200s verdict=FAIL' in capsys.readouterr().out
+
+
+def _with_old_rows(n):
+    """base_payload with n Universe rows kept at the live copy's older calc_version (2026-10-17.1, no share_basis_factor), re-scored
+    the way merge publishes it: the top-level calc_version is still the current one."""
+    p = base_payload()
+    old = 'qgv2-calc/2026-10-17.1'
+    for code in [c for c, r in p['records'].items() if r.get('calc_version')][:n]:
+        r = p['records'][code]
+        r['calc_version'] = old
+        for h in (r.get('v_inputs_v2') or {}).get('ebit_per_share_history') or []:
+            h.pop('share_basis_factor', None)
+            h.pop('share_basis_factor_reason', None)
+    cfg = sec_qgv2.load_config()
+    q = sec_qgv2.publish(p['records'], p['target'], as_of=dt.datetime.fromisoformat(p['as_of'].replace('Z', '+00:00')), cfg=cfg,
+                         stale_after=dt.timedelta(days=cfg['stale_after_days']), shard_index=p['last_shard_index'],
+                         registry_sha256=p['registry_sha256'])
+    sec_qgv2.require_qgv2(q)
+    return q
+
+
+def test_rows_left_at_another_calc_version_fail_inputs_current_rows_although_the_top_level_passes(tmp_path, capsys):
+    """2026-10-25 review: merge stamps the current CALC_VERSION on the file even when shards failed (ALL_SHARDS_PARTIAL ...
+    previous_kept, exit 0), so inputs_calc_version (the publisher's gate) passes; the kept rows are outside V, the ranks and both
+    sides of the D4 supply ratio. inputs_current_rows judges them."""
+    for n, verdict in ((0, 'PASS'), (2, 'FAIL')):
+        (tmp_path / str(n)).mkdir()
+        m, art = _metrics(tmp_path / str(n), {})
+        payload = _with_old_rows(n)
+        assert payload['calc_version'] == 'qgv2-calc/2026-10-23.1'
+        (art / sec_qgv2.FILENAME).write_bytes(sec_qgv2.encode(payload))
+        report_tool.main(['report', '--metrics-dir', str(m), '--artifact-dir', str(art), '--now', '1000'])
+        out = capsys.readouterr().out
+        assert 'REHEARSAL_CRITERION name=inputs_calc_version value=qgv2-calc/2026-10-23.1 limit=qgv2-calc/2026-10-23.1+ verdict=PASS' in out
+        assert f' records_other_calc={n} ' in out
+        line = next(l for l in out.splitlines() if 'name=inputs_current_rows ' in l)
+        assert line == (f'REHEARSAL_CRITERION name=inputs_current_rows value=other_calc={n} limit=other_calc=0 verdict={verdict}'
+                        + (' reason=ROWS_OF_ANOTHER_CALC_VERSION' if verdict == 'FAIL' else ''))
 
 
 def test_the_last_trade_threshold_and_the_status_sets():
@@ -518,7 +604,9 @@ def test_the_last_trade_threshold_and_the_status_sets():
     assert set(report_tool.MISSING_TRADE) | set(report_tool.RULE_EXCLUDED) | {report_tool.SUPPLIED} == set(iex_hist.STATUS_CODES)
     assert not set(report_tool.MISSING_TRADE) & set(report_tool.RULE_EXCLUDED)
     assert report_tool.STREAM_DISK_LIMIT_BYTES == 10 ** 10 and report_tool.V_STEP_LIMIT_SECONDS == 720
-    assert report_tool.JOB_LIMIT_SECONDS == 7200 and report_tool.EXCLUDED_STEPS_ALLOWANCE_SECONDS == 600
+    # the allowance covers every left-out production part, the macro part of the SEC inputs step included (2026-10-25 review):
+    # OpenDART 287 s + DART projection 3 s + ledger 8 s + D9 history limit 300 s + macro at most 60 s (the whole step: 59 s)
+    assert report_tool.JOB_LIMIT_SECONDS == 7200 and report_tool.EXCLUDED_STEPS_ALLOWANCE_SECONDS == 660 >= 287 + 3 + 8 + 300 + 60
     # the limits are the ones the workflows and the probe record
     daily = DAILY.read_text()
     assert 'timeout -k 30s 12m python implementation/tools/qgv_official_publish.py' in daily
@@ -546,6 +634,7 @@ def test_the_doc_states_what_runs_what_never_happens_the_criteria_and_how_it_sta
     doc = DOC.read_text()
     for phrase in ('central-v-rehearsal.yml', BRANCH, 'push', 'RAW_UPLOAD_NOT_CONFIGURED', 'REHEARSAL_VERDICT', 'REHEARSAL_CRITERION',
                    'v_step_time', 'job_time', 'stream_disk_peak', 'universe_last_trade', 'supply', 'validator', 'js_twin', 'guard',
-                   'attempt_ok', 'required_steps', 'inputs_calc_version', '479/504', '03:00', '19:30', 'SECRET_PRESENT'):
+                   'attempt_ok', 'required_steps', 'inputs_calc_version', 'inputs_current_rows', '479/504', '03:00', '19:30',
+                   'SECRET_PRESENT', 'Re-run all jobs', 'REHEARSAL_WINDOW job=rehearsal', 'allowance_excluded_steps=660', '12/12'):
         assert phrase in doc, phrase
     assert not re.search(r'[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}', doc)
