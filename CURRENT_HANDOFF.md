@@ -1,6 +1,6 @@
 # 현재 인수인계 — 2026-10-24 (Claude Code Main)
 
-확인 시각: **2026-10-25 01:35 UTC / 10:35 KST**. 이 시각 이후의 PR·Actions·게시 상태는 `git log`와 열린 PR로 다시 확인한다. 구현 / 시험 / 병합 / 게시 / 실사이트 확인을 나눠 적는다.
+확인 시각: **2026-10-25 06:45 UTC / 15:45 KST**. 이 시각 이후의 PR·Actions·게시 상태는 `git log`와 열린 PR로 다시 확인한다. 구현 / 시험 / 병합 / 게시 / 실사이트 확인을 나눠 적는다.
 
 먼저 읽기: **[START_HERE.md](START_HERE.md) → [방향 전환 대장](docs/SPEC/DIRECTION_CHANGES.md)** → [WORKING_RULES.md](WORKING_RULES.md) → 이 파일 → [기능 명세 v1.0](docs/SPEC/FUNCTION_HIERARCHY_v1.0.md) → [기능 현황](docs/SPEC/FUNCTION_STATUS.md) → [사용자 결정](implementation/docs/USER_DECISIONS_PENDING.md) → [새 프론트엔드 계획](implementation/docs/frontend_v2/FRONTEND_V2_PLAN.md)(#385) → [자료 계약](implementation/docs/FRONTEND_DATA_CONTRACT.md).
 이전 기록: [10/23](implementation/docs/handoff/HANDOFF_HISTORY_20261023.md) · [10/21 Codex Main 원문](implementation/docs/handoff/HANDOFF_HISTORY_20261021.md) · [10/20](implementation/docs/handoff/HANDOFF_HISTORY_20261020.md) · [10/18~19](implementation/docs/handoff/HANDOFF_HISTORY_20261018_19.md).
@@ -18,8 +18,11 @@
 | --- | --- | --- | --- |
 | #393 → #400 → #403 → #404 → #405 중앙 V 사슬 | Claude Code Main | 2026-10-24 06:00 / 15:00 | 결정 완료(CV-LEAK (i)·CV-SPLIT (ii)·CV-CARRY (i)·CV-D-*). **10-24 밤 정기 실행 전 병합 금지.** 첫 게시 전 조건: Secret 2개, 하루치 측정(GSQ-024 검증 먼저), CV-SPLIT (ii) 반영 뒤 #400 재시험, 첫 게시 점검표 채우기 → 첫 게시 날짜 제안 |
 | `ccr-263267c9-f5ng5h` Main 문서(10-24 밤 결정·#392 후속 결정·인수인계) | Claude Code Main | 2026-10-24 22:50 / 10-25 07:50 | `USER_DECISIONS_PENDING`·이 파일 |
-| `claude/frontend-v2-p2-1-home` 프론트 P2-1(기능 1: 1.1.1 검색·1.1.2 기업 통합 진입·1.1.3 명언·1.1.4 즐겨찾기·최근 검색) | Claude Code Main | 2026-10-25 01:20 / 10:20 | 시안 0번 보드(PC·모바일). 구현·리뷰 중, PR 전. 병합은 화면마다 승인 |
-| #407 verify 제한 40 → 60분 | Claude Code Main | 2026-10-25 01:30 / 10:30 | 워크플로 변경, 승인 대기 |
+| #408 프론트 P2-1 홈·기업검색(기능 1.1.1~1.1.4) | Claude Code Main | 2026-10-25 01:20 / 10:20 | 시안 0번 보드. 첫 그림 파일은 뼈대만(`screen-search.js` ≤ 5 KB), 논리는 `screen-search-live.js`(LOAD_ORDER). 6체크 녹색, 승인 대기 |
+| #407 verify 제한 40 → 60분 | Claude Code Main | 2026-10-25 01:30 / 10:30 | 워크플로 변경, 6체크 녹색, 승인 대기(다음 정기 실행 전 권장) |
+| #409 PSKY 별칭 · #410 WBD 상장 종료 NA · #411 TARGET v1 확정 차단 점검 | Claude Code Main | 2026-10-25 02:20 / 11:20 | PSKY·WBD 보존 행(10-17)이 TARGET v1 확정·원장 10-26 세션·중앙 V 입력 기준을 막음. 결정 UNI-PSKY-ALIAS·UNI-ENDED·ALLSHARDS-1026·TV1-PRECHECK·T-FRESH. **마감: 10-26 22:00Z까지 #409·#410 병합 + all_shards 1회** |
+| 중앙 V 리허설 V 단계 IEX 다운로드 수정(#400에 넣고 사슬 위로) | Claude Code Main | 2026-10-25 06:30 / 15:30 | 리허설 run 40156760950: IEX_GZIP_FAILED. 파일은 정상(13.08 GB → 56.3 GB). curl `--retry -o -` 재시작으로 자료 섞임 가능 + 실패 사유 순서 문제 → 고친 뒤 리허설 재실행 |
+| 시안 추가 보드 18쌍(손그림 칠판 아티팩트) | Claude Code Main | 2026-10-25 03:30 / 12:30 | 사용자 요청: 시안에 없는 기능을 같은 양식으로 그려 시안에 추가. 기존 보드는 고치지 않음 |
 
 ## 1. 기준·게시
 
@@ -47,6 +50,8 @@
 | 10/23 | 40045938631 | **성공 · 연속 2회째** | #395 병합 뒤 첫 실행(24.04). 원장 v1/v2 각 5건(`appended=1`, session 2026-10-23), RAW 재사용(`source=RAW raw=FOUND recovered_records=0`), 비공개 업로드 `forward-ledger-2026-10-23`. 샤드 5(65종목) 수집 65/65 |
 | 10/24 | 40146210895 | **성공 · 연속 3회째** | canonical 4c3d8142. 시작 00:19 UTC, 배포 01:06 UTC / 10:06 KST. 토요일이라 원장 추가 없음(`ledger=NOT_SESSION_DAY`, `appended=0`, 각 5건 그대로). 샤드 6(57종목) 57/57. verify에서 P1 시험(#397)·첫 화면 성능 시험(#399)이 처음 돌고 통과(`FIRST_PAINT ms=832 first_kb=25.4`). **verify 33.7분(제한 40분)** — 10/22분 27.2분·10/23분 23.1분보다 길다(기존 시험이 고르게 30~50% 느림, 새 시험은 약 1분) |
 
+- 10-25 중앙 V 리허설(run 40156760950, 게시 없음, 03:03–03:32 UTC): SEC 전체 수집 22분(7/7), 작업 40.5분(한도 120분), 디스크 스트림 최대 120 KB, V 단계 105초 → 12기준 중 6 PASS. FAIL: 입력 행 버전 섞임(PSKY·WBD 보존 행 2개가 옛 calc_version, `ROWS_OF_ANOTHER_CALC_VERSION`), V 단계 `IEX_GZIP_FAILED`(나머지 4기준 미측정). IEX 10/23 TOPS 파일은 정상(Main 확인).
+- 매일 6일 이상 점검(10/25 as_of 00:26Z): 6일 이상 87행 = 보존 2(PSKY·WBD 7.88일) + 회전 대기 85(샤드 0, 6.08일, 10/25분 실행에서 갱신 예정). 확정 기준 오늘 차단 87, 내일 151. 도구: Main 작업용 `stale_daily.py`(저장소 밖).
 - 연속 성공: **3/7** (10/24분, 이 표의 10-22 결정 기준). 사용자 셈은 한 회 더 많다(10/21 run 39701051682를 넣은 셈으로 보임, 10-24 밤 3/7 → 지금 4/7) — 기준 확인 대기. 실행 시작 시각은 00:36·00:40·00:37·00:38·00:19 UTC였다. 확인은 01:30 UTC 무렵을 기본으로 한다.
 - verify 제한시간: 33.7분/40분이라 실행기가 느린 날 제한에 걸려 deploy가 보류될 수 있다. 40 → 60분 제안 **#407**을 열었다(워크플로 변경, 승인 뒤 병합).
 - 10/23 게시 커버리지: Q 486 / G 494 / 양쪽 478, 분모 504, calc_version `qgv2-calc/2026-10-17.1`, 샤드 7/7, 7일 경과 행 0, as_of 2026-10-24 00:50 UTC.
@@ -62,12 +67,15 @@
 | V 출처 | 중앙 V 미게시 → "임시 V"(#391 병합). 중앙 V가 11-04 전에 게시되면 #405(옛 화면 작은 판독기, D8 (b))로 공식 V. 결정: CV-D-FRESH 2일·CV-D-BUTTON 둔다·CV-D-ROWS 기기 경로 대응·CV-D-CHURN 다시 만들기 |
 | 실제 사용자 카드 응답 | 미시작 |
 
-## 4. 열린 PR (10-24 23:00 UTC)
+## 4. 열린 PR (10-25 06:45 UTC)
 
 | PR | 상태 | 남은 것 |
 | --- | --- | --- |
-| #393 → #400 → #403 → #404 → #405 중앙 V 사슬 | CV-SPLIT (ii)를 #400에 넣고 위로 병합해 올림(core 3589fd44 · guard 993a4682 · workflow 8005575c · reader eca9ab79, 로컬 전체 pytest 3942·노드·가드 137 통과), CI 확인 중. Secret 2개 등록 확인(이름만, run 40144973237) | 하루치 측정 리허설(03:00 UTC 뒤), 월말가 보충 결정, 점검표, 첫 게시 날짜 |
-| #407 verify 제한 40 → 60분 | 승인 대기 | 다음 정기 실행 전 병합 권장 |
+| #393 → #400 → #403 → #404 → #405 중앙 V 사슬 | 동기화본(core 3589fd44 · guard 993a4682 · workflow 8005575c · reader eca9ab79) 6체크 모두 녹색(#404 build는 60분 제한 취소 뒤 1회 재실행으로 30분 성공, 실행기 속도 차이). Secret 2개 등록 확인(이름만, run 40144973237) | IEX 다운로드 수정(진행 중) → 리허설 재실행 → 점검표 → 첫 게시 날짜. #409·#410이 먼저 병합돼야 함(아래) |
+| #407 verify 제한 40 → 60분 | 6체크 녹색, 승인 대기 | 다음 정기 실행 전 병합 권장 |
+| #408 프론트 P2-1 홈·기업검색 | 6체크 녹색, 승인 대기 | 소유자 항목 P21-DEFAULTS |
+| #409 PSKY 별칭 · #410 WBD 상장 종료 NA | CI 진행 | 승인(UNI-PSKY-ALIAS·UNI-ENDED) → 10-26 22:00Z까지 병합 + all_shards 1회(ALLSHARDS-1026). #410은 `USER_DECISIONS_PENDING.md`에 `UNI-ENDED` 줄을 넣어 이 PR(#406)과 같은 파일을 고친다 — 병합 때 한 줄로 합친다 |
+| #411 TARGET v1 확정 차단 점검 | CI 진행 | 승인(TV1-PRECHECK). #405와 같은 곳을 고쳐 #405 뒤 canonical을 병합해 충돌을 푼다 |
 | #392 TARGET v0 결합 해소 | 10-23부터 승인 대기. **canonical과 충돌**(`pages_artifact_guard.py` 고정값만, 시험 병합으로 확인). 마지막 동기화 a359ae91 | 후속 결정 7개는 `TV0-*`로 옮김. 순서 권장은 사용자 보고 참고(중앙 V 첫 게시 뒤 동기화·CI·폰 확인) |
 | #361 Worker 분할 이벤트 | 배포 보류(Yahoo 권리 미해결) | 무료 대안 공급원 결정 |
 | #305·#281(draft, 참고) · #267(보류) | 그대로 | — |
