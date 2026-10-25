@@ -19,7 +19,8 @@ Order (design §3-1):
 
 Stdout: ONE line of fixed codes and counts. Never a price, yield, month-end value, per-code hash, URL with a token or key.
 After a build the line ends with the D6 (b) split-check counts (qgv_official.price_status_counts; owner decision CV-SPLIT (ii)
-2026-10-24): split_checked / split_flagged / split_unchecked (of which split_unchecked_no_period) rows, split_gap_skipped pairs.
+2026-10-24): split_checked / split_flagged / split_unchecked (of which split_unchecked_no_period) rows, split_gap_skipped pairs,
+split_lead_unchecked rows (of split_checked: the stretch from the count's period-end month to the first store point not compared).
 Exit 0 for every supply/verify outcome (the workflow step stays green; the status file carries the result); 2 = usage error.
 The two Secrets are popped from the environment at start (no child process inherits them).
 A missing Secret (HMAC key or raw-repo read token) or a sec-qgv2.json older than calc_version 2026-10-23.1 is NOT_RUN: nothing is

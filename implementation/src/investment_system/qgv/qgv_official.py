@@ -79,7 +79,7 @@ SPLIT_MAX_GAP_DAYS = 45
 SPLIT_FACTORS = (2, 3, 4, 5, 6, 8, 10, 15, 20, 25, 30, 40, 50)
 SPLIT_BANDS = tuple((float(n), math.log(1.25)) for n in SPLIT_FACTORS) + ((1.5, math.log(1.10)),)
 SPLIT_OUTCOMES = ('NO_PERIOD', 'UNCHECKED', 'CHECKED', 'FLAGGED')
-SPLIT_COUNT_KEYS = ('checked', 'flagged', 'unchecked', 'unchecked_no_period', 'gap_skipped')
+SPLIT_COUNT_KEYS = ('checked', 'flagged', 'unchecked', 'unchecked_no_period', 'gap_skipped', 'lead_unchecked')
 # Device ticker of each TARGET company (web_assets/watchlist.js IDS; US ones = markets.us US_LISTINGS).
 TARGET_TICKERS = {'asml': 'ASML', 'lrcx': 'LRCX', 'klac': 'KLAC', 'tokyo_electron': '8035', 'hanmi': '042700', 'nvda': 'NVDA',
                   'amd': 'AMD', 'avgo': 'AVGO', 'qcom': 'QCOM', 'intc': 'INTC', 'msft': 'MSFT', 'googl': 'GOOGL', 'amzn': 'AMZN',
@@ -220,9 +220,10 @@ def split_ratio_hit(r) -> bool:
     return any(abs(lr + math.log(n)) <= tol or abs(lr - math.log(n)) <= tol for n, tol in SPLIT_BANDS)
 
 
-def split_check(code, v, months, today_price, basis_day) -> tuple[str, int]:
+def split_check(code, v, months, today_price, basis_day) -> tuple[str, int, bool]:
     """D6 (b), owner decision CV-SPLIT (ii) 2026-10-24: supplementary split check of a SUPPLIED row on IEX raw (as-traded)
-    prices, RAM only. It never changes a value, it only withholds one. Returns (outcome, pairs skipped for their gap):
+    prices, RAM only. It never changes a value, it only withholds one. Returns (outcome, pairs skipped for their gap, lead
+    unchecked):
       NO_PERIOD  the share count has no period end (v_inputs_v2.diluted_shares.period_end, the field D6 (a) uses): not run;
       UNCHECKED  no consecutive pair of the series is at most SPLIT_MAX_GAP_DAYS apart;
       CHECKED    pairs checked, none inside a split band;
@@ -231,6 +232,12 @@ def split_check(code, v, months, today_price, basis_day) -> tuple[str, int]:
     the store months from the period end's own month on (its month-end trade is the first point: the window start's month-end,
     the month's last trading day even when the period end is a weekend month-end), then today's raw IEX price on the basis day.
     A pair more than SPLIT_MAX_GAP_DAYS apart is skipped: a long gap would confuse large genuine moves with splits.
+    Lead unchecked (2026-10-25 review): True when the period end's own month has no point in the series (no store month-end
+    trade of that month, or the symbol / ROUND rule left it out), so the stretch from the window start to the first point was
+    never compared; it is no pair, so gap_skipped does not count it. CHECKED is therefore not split-free since the filing: a
+    missing period-end month or a pair more than SPLIT_MAX_GAP_DAYS apart leaves that stretch unchecked. Example under the
+    fiscal-year-end-only store: a September fiscal year-end whose count comes from the June 10-Q has the 09-30 point, not
+    06-30, so only 09-30 -> basis day is compared and a split between the 10-Q filing and 09-30 is not seen.
     The U8 store (stamp 20261023) holds, per month, only the codes whose fiscal-year-end month it is, so a code's latest store
     month is its latest FY-end month (0-15 months old): until recent month-ends of every Universe code are in the store (a
     separate, owner-approved backfill) most rows have no short step and stay UNCHECKED (residual: a split after the count's
@@ -242,8 +249,9 @@ def split_check(code, v, months, today_price, basis_day) -> tuple[str, int]:
     shares = v.get('diluted_shares') if isinstance(v, dict) else None
     period_end = shares.get('period_end') if isinstance(shares, dict) else None
     if not (isinstance(period_end, str) and _DAY.fullmatch(period_end)):
-        return 'NO_PERIOD', 0
+        return 'NO_PERIOD', 0, False
     series = iex_monthend.raw_series(code, months, period_end[:7], basis_day)
+    lead_unchecked = not series or series[0][0][:7] != period_end[:7]
     if type(today_price) in (int, float) and math.isfinite(today_price) and today_price > 0:
         series.append((basis_day, float(today_price)))
     checked = skipped = 0
@@ -254,14 +262,15 @@ def split_check(code, v, months, today_price, basis_day) -> tuple[str, int]:
             continue
         checked += 1
         hit = hit or split_ratio_hit(b / a)
-    return ('FLAGGED' if hit else 'CHECKED' if checked else 'UNCHECKED'), skipped
+    return ('FLAGGED' if hit else 'CHECKED' if checked else 'UNCHECKED'), skipped, lead_unchecked
 
 
-def _split_count(counts, outcome, skipped) -> None:
+def _split_count(counts, outcome, skipped, lead_unchecked) -> None:
     counts['gap_skipped'] += skipped
     if outcome in ('CHECKED', 'FLAGGED'):
         counts['checked'] += 1
         counts['flagged'] += outcome == 'FLAGGED'
+        counts['lead_unchecked'] += bool(lead_unchecked)
     else:
         counts['unchecked'] += 1
         counts['unchecked_no_period'] += outcome == 'NO_PERIOD'
@@ -271,7 +280,8 @@ def price_status_counts(ctx, day, months) -> tuple[dict, dict]:
     """({key: price status}, D6 (b) counts) (iex_hist module doc): identity rules, then ADR (D7) / split (D6 (a)) rules, then the
     IEX day's; a SUPPLIED row then goes through the D6 (b) split check (split_check) on the store months (None = no store: every
     row unchecked). Counts over the Universe codes checked (like price_source.supplied): checked / flagged / unchecked (of which
-    unchecked_no_period) rows and gap_skipped pairs. Counts only, never a code, price, ratio or date; nothing is published."""
+    unchecked_no_period) rows, gap_skipped pairs and lead_unchecked rows (checked rows whose stretch from the window start to the
+    first point was not compared, split_check). Counts only, never a code, price, ratio or date; nothing is published."""
     out = {}
     counts = dict.fromkeys(SPLIT_COUNT_KEYS, 0)
     for key, rec in ctx['inputs']['records'].items():
@@ -290,11 +300,11 @@ def price_status_counts(ctx, day, months) -> tuple[dict, dict]:
         else:
             status = day.status.get(key, 'PRICE_SYMBOL_UNMAPPED')
             if status == iex_hist.SUPPLIED and key in day.quotes:
-                outcome, skipped = split_check(code, v, months or {}, day.quotes[key].get('price'), day.day)
+                outcome, skipped, lead_unchecked = split_check(code, v, months or {}, day.quotes[key].get('price'), day.day)
                 if outcome == 'FLAGGED':
                     status = 'SPLIT_AFTER_SHARE_COUNT'
                 if not key.startswith(TARGET_PREFIX):
-                    _split_count(counts, outcome, skipped)
+                    _split_count(counts, outcome, skipped, lead_unchecked)
             out[key] = status
     return out, counts
 

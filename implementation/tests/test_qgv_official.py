@@ -438,45 +438,87 @@ def test_d6b_split_bands_are_the_split_factor_list():
 
 def test_d6b_split_check_on_month_steps_and_the_basis_day():
     """Period end 2026-06-30, store month-ends 06-30 .. 09-30, today = basis day 2026-10-13 (all synthetic prices)."""
-    assert split_check((100, 103, 99, 101), 102) == ('CHECKED', 0)
-    assert split_check((100, 102, 51.5, 52), 53) == ('FLAGGED', 0)            # 2:1 forward inside a month step
-    assert split_check((100, 102, 101, 104), 52) == ('FLAGGED', 0)            # 2:1 between the last month-end and today
-    assert split_check((100, 101, 10.2, 10.4), 10.3) == ('FLAGGED', 0)        # 10:1
-    assert split_check((5, 5.1, 20.6, 20.4), 20.5) == ('FLAGGED', 0)          # reverse 1:4
-    assert split_check((90, 90, 90 / 1.5 * 1.08, 65), 65) == ('FLAGGED', 0)   # 3:2 with a +8% move (within 10%)
-    assert split_check((90, 90, 90 / 1.5 * 0.92, 55), 55) == ('FLAGGED', 0)   # 3:2 with a -8% move
-    assert split_check((90, 90, 90 / 1.5 * 1.15, 69.5), 70) == ('CHECKED', 0)  # 3:2 with a +15% move: MISSED (documented)
-    assert split_check((100, 100, 55, 56), 57) == ('FLAGGED', 0)              # genuine -45% month: FLAGGED (documented, conservative)
-    assert split_check((100, 100, 130, 131), 132) == ('CHECKED', 0)           # genuine +30% month: not flagged
-    assert split_check((100, 100, 80, 80), 80) == ('CHECKED', 0)              # genuine -20% month: not flagged
+    assert split_check((100, 103, 99, 101), 102) == ('CHECKED', 0, False)
+    assert split_check((100, 102, 51.5, 52), 53) == ('FLAGGED', 0, False)            # 2:1 forward inside a month step
+    assert split_check((100, 102, 101, 104), 52) == ('FLAGGED', 0, False)            # 2:1 between the last month-end and today
+    assert split_check((100, 101, 10.2, 10.4), 10.3) == ('FLAGGED', 0, False)        # 10:1
+    assert split_check((5, 5.1, 20.6, 20.4), 20.5) == ('FLAGGED', 0, False)          # reverse 1:4
+    assert split_check((90, 90, 90 / 1.5 * 1.08, 65), 65) == ('FLAGGED', 0, False)   # 3:2 with a +8% move (within 10%)
+    assert split_check((90, 90, 90 / 1.5 * 0.92, 55), 55) == ('FLAGGED', 0, False)   # 3:2 with a -8% move
+    assert split_check((90, 90, 90 / 1.5 * 1.15, 69.5), 70) == ('CHECKED', 0, False)  # 3:2 with a +15% move: MISSED (documented)
+    assert split_check((100, 100, 55, 56), 57) == ('FLAGGED', 0, False)              # genuine -45% month: FLAGGED (documented, conservative)
+    assert split_check((100, 100, 130, 131), 132) == ('CHECKED', 0, False)           # genuine +30% month: not flagged
+    assert split_check((100, 100, 80, 80), 80) == ('CHECKED', 0, False)              # genuine -20% month: not flagged
 
 
 def test_d6b_long_gaps_are_skipped_and_never_flag():
     # 06-30 -> 08-29 is 60 days (skipped, whatever the ratio); 08-29 -> 10-13 is 45 days (checked)
-    assert split_check((100, 50), 51, dates=('20260630', '20260829')) == ('CHECKED', 1)
+    assert split_check((100, 50), 51, dates=('20260630', '20260829')) == ('CHECKED', 1, False)
     # 06-30 -> 08-28 is 59 days, 08-28 -> 10-13 is 46 days: nothing checked -> unchecked, never NA because of this rule
-    assert split_check((100, 10), 1, dates=('20260630', '20260828')) == ('UNCHECKED', 2)
+    assert split_check((100, 10), 1, dates=('20260630', '20260828')) == ('UNCHECKED', 2, False)
     # the U8 store of stamp 20261023 holds fiscal-year-end months only: a count of the FY 2025 10-K, its FY-end month, today
-    assert split_check((100,), 10, v={'diluted_shares': {'period_end': '2025-12-31'}}, dates=('20251231',)) == ('UNCHECKED', 1)
-    assert split_check((), 10) == ('UNCHECKED', 0)                             # today's price alone
+    assert split_check((100,), 10, v={'diluted_shares': {'period_end': '2025-12-31'}}, dates=('20251231',)) == ('UNCHECKED', 1, False)
+    assert split_check((), 10) == ('UNCHECKED', 0, True)                             # today's price alone
+
+
+def test_d6b_a_checked_row_without_the_period_end_month_counts_its_lead_stretch_unchecked():
+    """CHECKED is not split-free since the filing (2026-10-25 review). A September fiscal year-end whose count comes from the
+    June 10-Q (period end 2026-06-30, filed early August), under the fiscal-year-end-only store: the store has the code's
+    2025-09 and 2026-09 month-ends, not 2026-06. A 10:1 split on 2026-08-20 (after the 10-Q filing) sits between the window
+    start and the first point (2026-09-30, already post-split); only 09-30 -> basis day is compared. The row is CHECKED and
+    stays SUPPLIED (residual), and the third value says the stretch from the window start to the first point was never
+    compared (split_lead_unchecked). Synthetic prices."""
+    fy_sep = (('20250930', 900.0), ('20260930', 10.0))
+    assert qo.split_check(SPLIT_CODE, SPLIT_V, store(SPLIT_CODE, fy_sep), 10.2, '2026-10-23') == ('CHECKED', 0, True)
+    # with the period end's own month-end in the store the lead is covered (06-30 -> 09-30 is a 92-day pair: skipped, counted)
+    with_june = (('20260630', 100.0), ('20260930', 10.0))
+    assert qo.split_check(SPLIT_CODE, SPLIT_V, store(SPLIT_CODE, with_june), 10.2, '2026-10-23') == ('CHECKED', 1, False)
+    # a NO_TRADE period-end month is no point either
+    no_trade = (('20260630', 0, 'NO_TRADE'), ('20260731', 100.0), ('20260831', 101.0))
+    assert qo.split_check(SPLIT_CODE, SPLIT_V, store(SPLIT_CODE, no_trade), 102.0, '2026-09-15') == ('CHECKED', 0, True)
+    # counted over the Universe codes checked, as a subset of split_checked; the row itself is unchanged (SUPPLIED)
+    payload = base_payload()
+    months = dict(synthetic_months(payload), **store(SPLIT_CODE, fy_sep))
+    day = synthetic_day(payload, price_of={SPLIT_CODE: 10.2})
+    status, split = qo.price_status_counts(qo.prepare(payload, NOW), day, months)
+    assert status[SPLIT_CODE] == 'SUPPLIED'
+    assert (split['checked'], split['flagged'], split['lead_unchecked'], split['gap_skipped']) == (1, 0, 1, 0)
+    assert qo.SPLIT_COUNT_KEYS[-1] == 'lead_unchecked'
+
+
+def test_d6b_an_impossible_store_date_is_left_out_never_fatal():
+    """An 8-digit store date that is no calendar date (2026-06-31) is a malformed month: raw_series leaves it out like any
+    other malformed month, and the split check (run for every SUPPLIED row on every store month) does not raise."""
+    months = store(SPLIT_CODE, [('20260631', 100.0), ('20260731', 50.0)])
+    assert iex_monthend.raw_series(SPLIT_CODE, months, '2026-06', '2026-08-10') == [('2026-07-31', 50.0)]
+    assert qo.split_check(SPLIT_CODE, SPLIT_V, months, 50.0, '2026-08-10') == ('CHECKED', 0, True)
+    for bad in ('20260230', '20261301', '20260000'):
+        months = store(SPLIT_CODE, [(bad, 100.0), ('20260930', 99.0)])
+        assert iex_monthend.raw_series(SPLIT_CODE, months, '2026-01', '2026-10-13') == [('2026-09-30', 99.0)]
+    # the whole build goes through (it used to end as VERIFY_FAILED UNEXPECTED_VALUEERROR)
+    payload = base_payload()
+    months = dict(synthetic_months(payload), **store(SPLIT_CODE, [('20260631', 100.0), ('20260930', 99.0)]))
+    official, internal = build(payload, synthetic_day(payload, price_of={SPLIT_CODE: 98.0}), months)
+    qo.require_qgv_official(official)
+    assert official['rows'][SPLIT_CODE]['price_status'] == 'SUPPLIED' and internal['split']['lead_unchecked'] == 1
 
 
 def test_d6b_no_period_end_is_not_checked():
     for v in ({'diluted_shares': {'period_end': None}}, {'diluted_shares': {'period_end': '2026-06'}}, {'diluted_shares': None}, {},
               None):
-        assert split_check((100, 101, 10.2, 10.4), 10.3, v=v) == ('NO_PERIOD', 0)
+        assert split_check((100, 101, 10.2, 10.4), 10.3, v=v) == ('NO_PERIOD', 0, False)
 
 
 def test_d6b_window_starts_at_the_period_ends_month_and_ends_at_the_basis_day():
     dates, basis = ('20260430', '20260529', '20260630', '20260731'), '2026-08-14'
     # a 10:1 step before the period end's month is outside the window
-    assert split_check((100, 10, 10.1, 10.2), 10.3, dates=dates, basis=basis) == ('CHECKED', 0)
+    assert split_check((100, 10, 10.1, 10.2), 10.3, dates=dates, basis=basis) == ('CHECKED', 0, False)
     # the period end's own month-end trade is the first point, also for a weekend month-end (2026-05-31: trade 05-29)
     weekend = {'diluted_shares': {'period_end': '2026-05-31'}}
-    assert split_check((100, 100, 50, 50.5), 51, dates=dates, basis=basis, v=weekend) == ('FLAGGED', 0)
-    assert split_check((100, 100, 50, 50.5), 51, dates=dates, basis=basis) == ('CHECKED', 0)
+    assert split_check((100, 100, 50, 50.5), 51, dates=dates, basis=basis, v=weekend) == ('FLAGGED', 0, False)
+    assert split_check((100, 100, 50, 50.5), 51, dates=dates, basis=basis) == ('CHECKED', 0, False)
     # a store month after the basis day is never read
-    assert split_check((100, 101, 102, 10), 103, dates=('20260731', '20260831', '20260930', '20261030')) == ('CHECKED', 0)
+    assert split_check((100, 101, 102, 10), 103, dates=('20260731', '20260831', '20260930', '20261030')) == ('CHECKED', 0, True)
 
 
 def test_d6b_symbols_follow_month_closes_alias_and_round_rules():
@@ -486,12 +528,12 @@ def test_d6b_symbols_follow_month_closes_alias_and_round_rules():
 
     def run(points, today):
         return qo.split_check(psky, v, store(psky, points), today, '2026-11-13')
-    assert run(zip(dates, (20, 20.5, 21, 21.2)), 21.5) == ('CHECKED', 0)      # PSKY months, then the SKYD month: one series
+    assert run(zip(dates, (20, 20.5, 21, 21.2)), 21.5) == ('CHECKED', 0, True)      # PSKY months, then the SKYD month: one series
     assert store(psky, zip(dates, (20, 20.5, 21, 21.2)))['2026-10']['codes'][psky] == 'SKYD'
-    assert run(zip(dates, (20, 20.5, 21, 2.1)), 2.15) == ('FLAGGED', 0)       # a 10:1 step into the SKYD month
+    assert run(zip(dates, (20, 20.5, 21, 2.1)), 2.15) == ('FLAGGED', 0, True)       # a 10:1 step into the SKYD month
     # the store lists PSKY after the alias date: that month is left out (month_closes MONTH_END_SYMBOL_MISMATCH), not compared
     points = list(zip(dates[:3], (20, 20.5, 21))) + [(dates[3], 2.1, 'ROUND', 'PSKY')]
-    assert run(points, 21.5) == ('CHECKED', 0)
+    assert run(points, 21.5) == ('CHECKED', 0, True)
     months = store(psky, points)
     series = iex_monthend.raw_series(psky, months, '2026-06', '2026-11-13')
     hist = [{'fiscal_year_end': f'{d[:4]}-{d[4:6]}-{d[6:]}', 'value': 1.0, 'share_basis_factor': 1.0} for d in dates]
@@ -507,15 +549,15 @@ def test_d6b_na_is_never_zero():
     points = [('20260630', 100.0), ('20260731', 0, 'NO_TRADE'), ('20260831', 50.0, 'ODD_ONLY'), ('20260930', 99.0)]
     months = store(SPLIT_CODE, points)
     assert iex_monthend.raw_series(SPLIT_CODE, months, '2026-06', '2026-10-13') == [('2026-06-30', 100.0), ('2026-09-30', 99.0)]
-    assert qo.split_check(SPLIT_CODE, SPLIT_V, months, 98.0, '2026-10-13') == ('CHECKED', 1)
+    assert qo.split_check(SPLIT_CODE, SPLIT_V, months, 98.0, '2026-10-13') == ('CHECKED', 1, False)
     # a malformed store price (zero, float, bool) is left out too; a missing / non-positive / non-finite price today is no point
     bad = store(SPLIT_CODE, zip(MONTH_ENDS, (100, 101, 102, 103)))
     for month, px in (('2026-07', 0), ('2026-08', 50.5), ('2026-09', True)):
         bad[month]['symbols']['ABT']['price_e4'] = px
     assert iex_monthend.raw_series(SPLIT_CODE, bad, '2026-06', '2026-10-13') == [('2026-06-30', 100.0)]
     for today in (None, 0, -1.0, float('nan'), float('inf')):
-        assert qo.split_check(SPLIT_CODE, SPLIT_V, store(SPLIT_CODE, [('20260930', 100.0)]), today, '2026-10-13') == ('UNCHECKED', 0)
-        assert split_check((100, 101, 102, 103), today) == ('CHECKED', 0)
+        assert qo.split_check(SPLIT_CODE, SPLIT_V, store(SPLIT_CODE, [('20260930', 100.0)]), today, '2026-10-13') == ('UNCHECKED', 0, True)
+        assert split_check((100, 101, 102, 103), today) == ('CHECKED', 0, False)
 
 
 def _supplied_universe(payload, day):
@@ -542,7 +584,7 @@ def test_d6b_end_to_end_withholds_the_row_and_counts_only():
     supplied = _supplied_universe(payload, day)
     no_period = sum(1 for k in supplied if not ((payload['records'][k].get('v_inputs_v2') or {}).get('diluted_shares') or {}).get('period_end'))
     assert internal['split'] == {'checked': 1, 'flagged': 1, 'unchecked': len(supplied) - 1, 'unchecked_no_period': no_period,
-                                 'gap_skipped': 0}
+                                 'gap_skipped': 0, 'lead_unchecked': 0}
     assert no_period > 0 and repr(12.0) not in json.dumps(internal['split'])
     tool.js_check(internal['ctx']['companies'], qo.qi.priced_quotes(internal['quotes'], internal['ctx']['blocked']),
                   internal['results'])
@@ -564,10 +606,12 @@ def test_d6b_counts_reach_the_one_line_result_only(artifact):
     assert (s['attempt'], s['published']) == ('OK', 'NEW') and (s['split']['checked'], s['split']['flagged']) == (1, 1)
     line = tool.summary_line(s)
     assert re.fullmatch(r'QGV_OFFICIAL attempt=OK reason=- published=NEW basis=2026-10-13 rows=\d+ ranked=\d+ supplied=\d+/\d+ '
-                        r'split_checked=1 split_flagged=1 split_unchecked=\d+ split_unchecked_no_period=\d+ split_gap_skipped=0', line)
+                        r'split_checked=1 split_flagged=1 split_unchecked=\d+ split_unchecked_no_period=\d+ split_gap_skipped=0 '
+                        r'split_lead_unchecked=0', line)
     assert 'ABT' not in line and '12.0' not in line
     for name in (qo.FILENAME, qo.STATUS_FILENAME):
-        assert not {'split_checked', 'split_flagged', 'gap_skipped', 'unchecked'} & set(re.findall(r'[a-z_]+', (out / name).read_text()))
+        assert not {'split_checked', 'split_flagged', 'gap_skipped', 'unchecked', 'lead_unchecked'} & set(
+            re.findall(r'[a-z_]+', (out / name).read_text()))
     # an attempt that never built (no prices read) prints no split counts
     failed = _run(out, parser, fail='MD5_MISMATCH')
     assert failed['split'] is None and 'split_' not in tool.summary_line(failed)
