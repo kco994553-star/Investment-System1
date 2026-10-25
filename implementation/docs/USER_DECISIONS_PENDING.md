@@ -17,7 +17,7 @@
   - **CV-D-CHURN 다시 만들기(같은 종목 응답 유지).** 게시본 id가 바뀌면 확정 전에 초안을 다시 만든다.
 - **중앙 V 사슬(#393·#400·#403·#404·#405)은 그날(10-24) 밤 정기 실행 전에 병합하지 않는다.** 첫 게시 전 조건:
   - a. Secret 2개(`QGV_OFFICIAL_HMAC_KEY`, `RAW_REPO_READ_TOKEN`) 등록 — Main이 폰 브라우저 단계별 절차를 보낸다(토큰 권한 범위·만료일 권장 포함). **값은 어디에도 기록하지 않는다.** 등록되면 이름만으로 존재를 확인한다.
-    → **사용자 등록 완료(2026-10-25 00:0x UTC 무렵 알림).** 이름 확인 실행 [run 40144973237](https://github.com/kco994553-star/Investment-System1/actions/runs/40144973237)(분리 브랜치 `claude/secret-presence-check`, 병합하지 않음): 두 이름 모두 있음, HMAC 키 16바이트 이상, 읽기 토큰으로 비공개 월말가 저장소 릴리스 읽기 HTTP 200. 값·길이는 출력하지 않았다. 토큰 만료일은 사용자 답 대기(값이 아닌 날짜만 기록).
+    → **사용자 등록 완료(2026-10-25 00:0x UTC 무렵 알림).** 이름 확인 실행 [run 40144973237](https://github.com/kco994553-star/Investment-System1/actions/runs/40144973237)(분리 브랜치 `claude/secret-presence-check`, 병합하지 않음): 두 이름 모두 있음, HMAC 키 16바이트 이상, 읽기 토큰으로 비공개 월말가 저장소 릴리스 읽기 HTTP 200. 값·길이는 출력하지 않았다. **토큰 만료: 없음(사용자 선택, 2026-10-25).** 권한은 `investment-system1-raw` 한 저장소 Contents 읽기 전용뿐이다. 노출이 의심되면 GitHub Settings → Developer settings → Fine-grained tokens에서 폐기하고 새로 만들어 같은 이름으로 바꿔 넣는다.
   - b. GSQ-024 "검증 먼저": 운영 워크플로를 바꾸기 전에 최근 거래일 하루치로 처리 시간·디스크·누락을 측정한다(정기 collect와 분리, 게시 안 함). 결과와 실패 기준 판정을 보고한다(이미 했으면 run ID와 수치).
   - c. CV-SPLIT (ii) 반영 뒤 #400 재시험.
   - d. 첫 게시 점검표(`CENTRAL_V_GO_LIVE_CHECKLIST_20261024.md`)를 a~c 결과로 채워 보고한다.
