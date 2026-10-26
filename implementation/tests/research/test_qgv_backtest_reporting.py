@@ -141,3 +141,34 @@ class ReportingTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+def test_report_preserves_reconciled_linked_contributions_and_flags_missing():
+    sample=run('W0-N15-Q')
+    sample['attribution']={'status':'COMPLETE','groups':{
+        'A':{'profit_loss':20,'contribution':.20},
+        'B':{'profit_loss':-10,'contribution':-.10}},
+        'sector_contributions':{'industry':.10},'total_return':.10}
+    spec=json.loads(SPEC.read_text())
+    summary=r.build_report(spec,{'period_id':'TARGET_QGV_V2','runs':[sample]})['runs'][0]
+    assert summary['attribution']['total_return']==.10
+    assert summary['profit_concentration']['top_1_positive_profit_share']==1
+    assert abs(summary['profit_concentration']['top_1_absolute_profit_share']-2/3)<1e-12
+    sample['attribution']={'status':'ATTRIBUTION_INCOMPLETE','total_return':None}
+    summary=r.build_report(spec,{'period_id':'TARGET_QGV_V2','runs':[sample]})['runs'][0]
+    assert summary['profit_concentration']['status']=='ATTRIBUTION_INCOMPLETE'
+
+
+def test_contribution_concentration_is_finite_and_handles_extreme_magnitudes():
+    spec=json.loads(SPEC.read_text());sample=run('W0-N15-Q')
+    sample['attribution']={'status':'COMPLETE','groups':{
+        'A':{'profit_loss':1e308},'B':{'profit_loss':1e308}}}
+    result=r.build_report(spec,{'period_id':'TARGET_QGV_V2','runs':[sample]})
+    share=result['runs'][0]['profit_concentration']
+    assert share['top_1_absolute_profit_share']==.5
+    assert share['top_3_absolute_profit_share']==1
+    json.dumps(result,allow_nan=False)
+    sample['attribution']['groups']['A']['profit_loss']=float('nan')
+    result=r.build_report(spec,{'period_id':'TARGET_QGV_V2','runs':[sample]})
+    assert result['runs'][0]['attribution']['status']=='ATTRIBUTION_INCOMPLETE'
+    json.dumps(result,allow_nan=False)

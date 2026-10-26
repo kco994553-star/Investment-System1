@@ -95,6 +95,38 @@ def manifest_for(tmp_path, data=None):
             rights_receipt='SYNTHETIC_RIGHTS', start='2015-11-01', end='2016-02-20') for name in names})
 
 
+def weekend_bundle():
+    """Extend the invented table with a Friday-to-Monday exchange closure."""
+    data = bundle()
+    data['sessions'] = [s for s in data['sessions'] if s['day'] != '2016-02-20']
+    data['prices'] = [r for r in data['prices'] if r['date'] != '2016-02-20']
+    data['benchmark'] = [r for r in data['benchmark'] if r['date'] != '2016-02-20']
+    for day in ('2016-02-22', '2016-02-23'):
+        data['sessions'].append(dict(day=day, open_at=f'{day}T09:30:00-05:00', close_at=f'{day}T16:00:00-05:00'))
+        data['benchmark'].append(dict(date=day, total_return_index=102, open_total_return_index=102, currency='USD'))
+        for source in [r for r in data['prices'] if r['date'] == '2016-02-19']:
+            row = copy.deepcopy(source)
+            row.update(date=day, open=source['close'])
+            row['basis_alignment'].update(signal_day=day, verified_through=day)
+            data['prices'].append(row)
+    data['coverage_end'] = '2016-02-23'
+    for row in data['rates']:
+        row['annual_yield'] = 0.0365
+    data['rates'].extend([dict(public_date=day, annual_yield=0.0365) for day in ('2016-02-22', '2016-02-23')])
+    return data
+
+
+def weekend_spec():
+    result = spec()
+    result['period']['data_feasibility_ladder'][0]['end'] = '2016-02-23'
+    return result
+
+
+def replay_one(data, research_spec=None):
+    return api().replay_bundle(research_spec or spec(), data, 'TARGET_QGV_V2', cells=[
+        dict(strategy_id='W0-N15-Q', panel='COMMON', cost_bps=10)])['runs'][0]
+
+
 def test_no_manifest_never_runs_any_of_thirty_strategies():
     result = api().run_stage(frozen_spec(), 'primary', 'TARGET_QGV_V2')
     assert result['status'] == 'BLOCKED_ON_DATA'
@@ -203,13 +235,128 @@ def test_suspended_quote_with_open_does_not_fill_until_unsuspended_session():
     assert min(fill['session'] for fill in result['runs'][0]['fills']) == '2016-02-17'
 
 
-def test_non_session_corporate_effective_date_is_explicitly_blocked():
-    data = bundle()
-    data['events'] = [dict(type='CASH_MERGER', event_id='synthetic-holiday', effective_date='2016-02-14',
-                          security_id='SYN00', settlement_date='2016-02-16', cash_per_share=20)]
-    result = api().replay_bundle(spec(), data, 'TARGET_QGV_V2', cells=[dict(strategy_id='W0-N15-Q', panel='COMMON', cost_bps=10)])
-    assert result['status'] == 'BLOCKED_ON_IMPLEMENTATION'
-    assert 'NON_SESSION_CORPORATE_ACTION' in result['blockers']
+def test_sunday_cash_merger_is_settled_before_monday_open():
+    data = weekend_bundle()
+    data['events'] = [dict(type='CASH_MERGER', event_id='synthetic-sunday-merger', effective_date='2016-02-21',
+                          security_id='SYN00', settlement_date='2016-02-22', cash_per_share=12)]
+    data['prices'] = [r for r in data['prices'] if r['security_id'] != 'SYN00' or r['date'] < '2016-02-22']
+    run = replay_one(data, weekend_spec())
+    assert run['status'] == 'COMPLETE'
+    assert 'SYN00' not in run['exposure'][-1]['holdings']
+    assert run['attribution']['status'] == 'COMPLETE'
+    monday = next(row for row in run['daily_attribution'] if row['session'] == '2016-02-22')
+    assert monday['event_cash_by_security']['SYN00'] > 0
+
+
+def test_weekend_dividend_cash_earns_interest_only_after_actual_payment():
+    from decimal import Decimal
+    sunday = weekend_bundle()
+    sunday['events'] = [dict(type='DIVIDEND', event_id='dividend', effective_date='2016-02-19',
+                            security_id='SYN00', pay_date='2016-02-21', cash_per_share=1),
+                        dict(type='SPLIT', event_id='neutral-boundary', effective_date='2016-02-21',
+                            security_id='SYN01', ratio=1)]
+    monday = copy.deepcopy(sunday)
+    monday['events'][0]['pay_date'] = '2016-02-22'
+    a, b = replay_one(sunday, weekend_spec()), replay_one(monday, weekend_spec())
+    na = next(row for row in a['nav'] if row['session'] == '2016-02-22')
+    nb = next(row for row in b['nav'] if row['session'] == '2016-02-22')
+    quantity = sum(Decimal(fill['quantity']) for fill in a['fills'] if fill['security_id'] == 'SYN00')
+    assert abs(Decimal(na['nav']) - Decimal(nb['nav']) - quantity * Decimal('.0001')) < Decimal('1e-20')
+
+
+def test_spinoff_received_stock_is_grouped_with_parent_and_reconciles_daily_nav():
+    data = weekend_bundle()
+    data['events'] = [dict(type='SPINOFF', event_id='spin', effective_date='2016-02-21', security_id='SYN00',
+                          settlement_date='2016-02-21', cash_per_share=0, new_security_id='CHILD', stock_ratio=0.25)]
+    for day in ('2016-02-22', '2016-02-23'):
+        data['prices'].append(dict(security_id='CHILD', date=day, open=4, close=4, volume=10,
+                                   currency='USD', price_basis='RAW', shares_basis='RAW'))
+        parent = next(r for r in data['prices'] if r['security_id'] == 'SYN00' and r['date'] == day)
+        parent['open'] -= 1
+        parent['close'] -= 1
+    run = replay_one(data, weekend_spec())
+    monday = next(row for row in run['daily_attribution'] if row['session'] == '2016-02-22')
+    assert monday['status'] == 'COMPLETE'
+    linked = next(group for group in monday['groups'].values() if set(group['members']) == {'SYN00', 'CHILD'})
+    assert abs(linked['profit_loss']) < 1e-12
+    assert monday['security_components']['CHILD']['profit_loss'] > 0
+    assert abs(monday['reconciliation_residual']) < 1e-12
+    assert abs(run['attribution']['total_return'] - run['metrics']['cumulative_return']['value']) < 1e-12
+
+
+def test_unknown_received_stock_mark_never_invents_attribution():
+    data = weekend_bundle()
+    data['events'] = [dict(type='SPINOFF', event_id='spin', effective_date='2016-02-21', security_id='SYN00',
+                          settlement_date='2016-02-21', cash_per_share=0, new_security_id='UNPRICED', stock_ratio=0.25)]
+    run = replay_one(data, weekend_spec())
+    assert run['status'] == 'INCOMPLETE_NAV'
+    assert run['attribution']['status'] == 'ATTRIBUTION_INCOMPLETE'
+    assert run['attribution']['total_return'] is None
+
+
+def test_weekend_published_rate_waits_until_next_session_then_affects_next_interval():
+    original = weekend_bundle()
+    changed = copy.deepcopy(original)
+    for row in changed['rates']:
+        if row['public_date'] == '2016-02-20':
+            row['annual_yield'] = 0.99
+    a, b = replay_one(original, weekend_spec()), replay_one(changed, weekend_spec())
+    monday_a = next(row['nav'] for row in a['nav'] if row['session'] == '2016-02-22')
+    monday_b = next(row['nav'] for row in b['nav'] if row['session'] == '2016-02-22')
+    assert monday_a == monday_b
+    assert float(b['nav'][-1]['nav']) > float(a['nav'][-1]['nav'])
+
+
+@pytest.mark.parametrize('security', ['SYN00', 'UNHELD'])
+def test_neutral_weekend_event_does_not_compound_cash_interest_early(security):
+    ordinary = weekend_bundle()
+    neutral = copy.deepcopy(ordinary)
+    neutral['events'] = [dict(type='SPLIT', event_id='no-economic-change', effective_date='2016-02-21',
+                              security_id=security, ratio=1)]
+    a, b = replay_one(ordinary, weekend_spec()), replay_one(neutral, weekend_spec())
+    from decimal import Decimal
+    assert all(abs(Decimal(x['nav']) - Decimal(y['nav'])) < Decimal('1e-20') for x, y in zip(a['nav'], b['nav']))
+
+
+def test_stock_merger_into_an_existing_position_has_one_linked_economic_gain():
+    data = weekend_bundle()
+    data['events'] = [dict(type='STOCK_MERGER', event_id='merge', effective_date='2016-02-21', security_id='SYN00',
+                          settlement_date='2016-02-22', cash_per_share=2, new_security_id='SYN10', stock_ratio=0.5)]
+    data['prices'] = [r for r in data['prices'] if r['security_id'] != 'SYN00' or r['date'] < '2016-02-22']
+    run = replay_one(data, weekend_spec())
+    monday = next(row for row in run['daily_attribution'] if row['session'] == '2016-02-22')
+    linked = next(group for group in monday['groups'].values() if set(group['members']) == {'SYN00', 'SYN10'})
+    quantity = sum(float(fill['quantity']) for fill in run['fills'] if fill['security_id'] == 'SYN00')
+    assert abs(linked['profit_loss'] - quantity * 1.8) < 1e-9
+    assert abs(monday['reconciliation_residual']) < 1e-12
+
+
+def test_regular_signal_closes_linked_attribution_window_at_observed_marks():
+    data = weekend_bundle()
+    data['events'] = [dict(type='SPINOFF', event_id='spin', effective_date='2016-02-21', security_id='SYN00',
+                          settlement_date='2016-02-21', cash_per_share=0, new_security_id='CHILD', stock_ratio=0.25)]
+    for day in ('2016-02-22', '2016-02-23'):
+        data['prices'].append(dict(security_id='CHILD', date=day, open=4, close=4, volume=10,
+                                   currency='USD', price_basis='RAW', shares_basis='RAW'))
+    for day in ('2016-05-13', '2016-05-16', '2016-05-17'):
+        data['sessions'].append(dict(day=day, open_at=f'{day}T09:30:00-04:00', close_at=f'{day}T16:00:00-04:00'))
+        data['benchmark'].append(dict(date=day, total_return_index=102, open_total_return_index=102, currency='USD'))
+        data['rates'].append(dict(public_date=day, annual_yield=0.0365))
+        for source in [row for row in data['prices'] if row['date'] == '2016-02-23']:
+            row = copy.deepcopy(source)
+            row.update(date=day)
+            if 'basis_alignment' in row:
+                row['basis_alignment'].update(signal_day=day, verified_through=day)
+            data['prices'].append(row)
+    data['coverage_end'] = '2016-05-17'
+    research_spec = weekend_spec()
+    research_spec['period']['data_feasibility_ladder'][0]['end'] = '2016-05-17'
+    run = replay_one(data, research_spec)
+    before = next(row for row in run['daily_attribution'] if row['session'] == '2016-05-13')
+    after = next(row for row in run['daily_attribution'] if row['session'] == '2016-05-16')
+    assert any(set(group['members']) == {'SYN00', 'CHILD'} for group in before['groups'].values())
+    assert after['groups']['CHILD']['members'] == ['CHILD']
+    assert abs(after['reconciliation_residual']) < 1e-12
 
 
 def test_first_open_has_no_interest_from_pre_entry_signal_weekend():
@@ -287,11 +434,12 @@ def test_report_stage_writes_private_tables_and_svg_with_explicit_unrun_periods(
     result = api().run_stage(spec(), 'report', 'TARGET_QGV_V2', manifest, output)
     assert result['status'] == 'REPORT_PARTIAL'
     assert result['completed_cells'] == 340
-    assert result['private_artifacts_written'] == 6
+    assert result['private_artifacts_written'] == 7
     assert '<svg' in (output / 'nav-drawdown.svg').read_text()
     report = json.loads((output / 'report.json').read_text())
     assert len(report['strategy_period_status']) == 90
     assert (output / 'comparisons.csv').read_text().startswith('period_id,strategy_id,panel,cost_bps')
+    assert (output / 'contributions.csv').read_text().startswith('period_id,strategy_id,panel,cost_bps')
 
 
 def test_local_stage_never_accepts_a_shorter_frozen_period(tmp_path):

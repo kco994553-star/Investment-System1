@@ -359,3 +359,39 @@ def test_interest_that_would_exhaust_more_than_all_cash_is_rejected_atomically()
         ledger.accrue_cash_interest(S, T, D('-365'))
     assert ledger.cash == 100
     assert ledger.reserved_cash == 0
+
+
+@pytest.mark.parametrize('rate,expected_interest', [(D('.365'), D('.2')), (D('-.365'), D('-.2'))])
+def test_explicit_interest_base_keeps_calendar_split_intervals_simple(rate, expected_interest):
+    first = date(2020, 2, 21)
+    middle = date(2020, 2, 22)
+    last = date(2020, 2, 23)
+    whole = Ledger(100)
+    assert whole.accrue_cash_interest(first, last, rate, interest_base=D('100')) == expected_interest
+    split = Ledger(100)
+    first_amount = split.accrue_cash_interest(first, middle, rate, interest_base=D('100'))
+    second_amount = split.accrue_cash_interest(middle, last, rate, interest_base=D('100'))
+    assert first_amount + second_amount == expected_interest
+    assert split.cash == whole.cash
+    # Both principal and rate belong to the replay identity.
+    with pytest.raises(LedgerError):
+        split.accrue_cash_interest(middle, last, rate, interest_base=D('99'))
+
+
+@pytest.mark.parametrize('principal', [D('NaN'), D('Infinity'), D('-1')])
+def test_explicit_interest_base_must_be_finite_nonnegative(principal):
+    ledger = Ledger(100)
+    with pytest.raises(LedgerError):
+        ledger.accrue_cash_interest(U, V, D('.365'), interest_base=principal)
+    assert ledger.cash == 100
+
+
+def test_explicit_base_negative_interest_preserves_reserved_cash_proportion():
+    ledger = Ledger(100, cost_bps=0)
+    ledger.rebalance(S, ['A'], 1, {'A': D('10')})
+    ledger.execute_open(T, {'A': D('20')})
+    ledger.apply_event(Dividend('reserved-base', U, 'A', D('2'), U), U)
+    ledger.accrue_cash_interest(U, V, D('-.365'), interest_base=D('10'))
+    assert ledger.cash == ledger.reserved_cash == D('9.99')
+    ledger.accrue_cash_interest(V, date(2020, 2, 21), D('-.365'), interest_base=D('10'))
+    assert ledger.cash == ledger.reserved_cash == D('9.98')

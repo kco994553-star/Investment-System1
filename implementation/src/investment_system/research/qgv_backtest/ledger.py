@@ -165,7 +165,7 @@ class Ledger:
         self._settlements: dict[str, tuple[Settlement, Decimal]] = {}
         self._executions: dict[date, tuple[object, tuple[Fill, ...]]] = {}
         self._decisions: dict[date, tuple[object, dict[str, Decimal]]] = {}
-        self._interest: dict[tuple[date, date], tuple[Decimal, int, Decimal]] = {}
+        self._interest: dict[tuple[date, date], tuple[Decimal, int, Decimal | None, Decimal]] = {}
         self._last_session: date | None = None
         self._signal_date: date | None = None
 
@@ -403,7 +403,8 @@ class Ledger:
 
     @_precision
     def accrue_cash_interest(self, start_date: date, end_date: date,
-                             annual_yield: Decimal | None, *, stale_sessions: int = 0) -> Decimal:
+                             annual_yield: Decimal | None, *, stale_sessions: int = 0,
+                             interest_base: Decimal | None = None) -> Decimal:
         """Accrue verified decimal annual yield over actual calendar days/365.
 
         Call before end-date events/trades. The caller verifies publication and
@@ -411,7 +412,11 @@ class Ledger:
         A missing rate or more than five stale exchange sessions blocks accrual;
         zero is permitted only when explicitly supplied by the calling research
         mode. Negative interest reduces reserved and spendable cash in the same
-        proportion. Identical intervals are idempotent; overlaps are rejected.
+        proportion. The optional principal excludes previously accrued interest
+        when the caller splits one simple-interest interval at calendar events;
+        default principal is current cash. The caller derives an explicit base
+        from actual cash flows. Identical intervals are idempotent; overlaps are
+        rejected, and a replay cannot change its supplied principal.
         """
         _date(start_date)
         _date(end_date)
@@ -425,16 +430,18 @@ class Ledger:
             raise LedgerError('INVALID_CASH_RATE') from exc
         if not rate.is_finite():
             raise LedgerError('INVALID_CASH_RATE')
+        supplied_base = None if interest_base is None else _decimal(interest_base, 'INTEREST_BASE')
         key = (start_date, end_date)
         if key in self._interest:
-            old_rate, old_age, amount = self._interest[key]
-            if (rate, stale_sessions) != (old_rate, old_age):
+            old_rate, old_age, old_base, amount = self._interest[key]
+            if (rate, stale_sessions, supplied_base) != (old_rate, old_age, old_base):
                 raise LedgerError('CONFLICTING_INTEREST_RETRY')
             return amount
         self._check_session(start_date)
         if end_date <= start_date:
             raise LedgerError('INVALID_ACCRUAL_INTERVAL')
-        amount = self.cash * rate * Decimal((end_date - start_date).days) / Decimal(365)
+        principal = self.cash if supplied_base is None else supplied_base
+        amount = principal * rate * Decimal((end_date - start_date).days) / Decimal(365)
         new_cash = _sum_exact((self.cash, amount))
         if new_cash < 0:
             raise LedgerError('INTEREST_EXCEEDS_TOTAL_CASH')
@@ -445,7 +452,7 @@ class Ledger:
                 new_reserved = _product_exact(self.reserved_cash, new_cash) / self.cash
             self.reserved_cash = new_reserved
         self.cash = new_cash
-        self._interest[key] = (rate, stale_sessions, amount)
+        self._interest[key] = (rate, stale_sessions, supplied_base, amount)
         self._last_session = end_date
         return amount
 

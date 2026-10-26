@@ -15,7 +15,7 @@ import os
 from bisect import bisect_right
 from dataclasses import asdict, is_dataclass
 from datetime import date, datetime, timezone
-from decimal import Decimal, InvalidOperation
+from decimal import Decimal, InvalidOperation, localcontext
 from pathlib import Path
 
 from .config import audit_inputs, execution_cells, period_for, validate_spec
@@ -251,6 +251,181 @@ def _references(bundle, cal, start, end, initial, cost_bps, rate_curve):
     return dict(benchmark=net_points, raw=raw_points, risk_free=risk_free, blockers=sorted(set(blockers)))
 
 
+class _Attribution:
+    """Additive economic P&L; share consideration stays linked until next signal.
+
+    No stock transfer price is inferred. Parent and received stock form one
+    economic group while their internal value transfer cannot be separated.
+    A regular signal closes that attribution window at observed closing marks.
+    """
+
+    def __init__(self, initial, events):
+        self.initial = initial
+        self.events = {event.event_id: event for event in events}
+        self.links = {}
+        self.previous_values = {}
+        self.previous_claims = {}
+        self.previous_nav = initial
+        self.incomplete = False
+        self.daily = []
+        self.pnl = {}
+        self.groups = {}
+        self.sectors = {}
+        self.types = {}
+        self.cash_income = Decimal(0)
+        self.costs = Decimal(0)
+
+    def root(self, security):
+        while security in self.links:
+            security = self.links[security]
+        return security
+
+    def link(self, parent, child):
+        source, destination = self.root(parent), self.root(child)
+        if source != destination:
+            self.links[destination] = source
+
+    def observe(self, day, ledger, snapshot, closes, fills, event_cash, interest, rows, scores, *, enabled, verified_nav=True):
+        from .metrics import return_contributions
+        values = None if snapshot.nav is None or not verified_nav else {
+            sid: quantity * _number(closes[sid], positive=True) for sid, quantity in ledger.holdings.items()}
+        claims = {}
+        for event_id, value in ledger.receivables.items():
+            sid = self.events[event_id].security_id
+            claims[sid] = claims.get(sid, Decimal(0)) + value
+        if not enabled:
+            self.previous_values, self.previous_claims, self.previous_nav = values, claims, snapshot.nav if verified_nav else None
+            return
+        if values is None or self.previous_values is None or self.previous_nav is None:
+            self.incomplete = True
+            self.daily.append(dict(session=str(day), status='ATTRIBUTION_INCOMPLETE',
+                                   reason='INCOMPLETE_NAV_OR_PRIOR_MARK', total_return=None))
+            self.previous_values, self.previous_claims, self.previous_nav = values, claims, snapshot.nav if verified_nav else None
+            return
+        buys, sells, fee = {}, {}, Decimal(0)
+        for fill in fills:
+            target = buys if fill.quantity > 0 else sells
+            target[fill.security_id] = target.get(fill.security_id, Decimal(0)) + fill.gross
+            fee += fill.fee
+        securities = set(values) | set(self.previous_values) | set(claims) | set(self.previous_claims) | set(buys) | set(sells) | set(event_cash)
+        components, pnl = {}, {}
+        with localcontext() as context:
+            context.prec = 70
+            for sid in sorted(securities):
+                amounts = dict(prior_market_value=self.previous_values.get(sid, Decimal(0)),
+                               end_market_value=values.get(sid, Decimal(0)),
+                               prior_receivables=self.previous_claims.get(sid, Decimal(0)),
+                               end_receivables=claims.get(sid, Decimal(0)), buys=buys.get(sid, Decimal(0)),
+                               sells=sells.get(sid, Decimal(0)), event_cash=event_cash.get(sid, Decimal(0)))
+                profit = (amounts['end_market_value'] - amounts['prior_market_value'] + amounts['end_receivables']
+                          - amounts['prior_receivables'] + amounts['sells'] - amounts['buys'] + amounts['event_cash'])
+                amounts['profit_loss'] = profit
+                components[sid] = {name: float(value) for name, value in amounts.items()}
+                pnl[sid] = profit
+            members = {}
+            for sid in securities | set(self.links) | set(self.links.values()):
+                members.setdefault(self.root(sid), set()).add(sid)
+            grouped, descriptions = {}, {}
+            for root, group_members in sorted(members.items()):
+                group_id = ('CORPORATE_ACTION:' + '+'.join(sorted(group_members))) if len(group_members) > 1 else root
+                profit = sum((pnl.get(sid, Decimal(0)) for sid in group_members), Decimal(0))
+                known_sectors = {rows[sid].get('industry_group') for sid in group_members if sid in rows and rows[sid].get('industry_group')}
+                sector = next(iter(known_sectors)) if len(known_sectors) == 1 else ('MIXED_CORPORATE_ACTION_GROUP' if known_sectors else 'UNCLASSIFIED')
+                types = scores.get(root, {}).get('selected_types', [])
+                type_group = '+'.join(sorted(types)) if types else 'UNCLASSIFIED'
+                flags = []
+                if any(sid not in rows for sid in group_members):
+                    flags.append('RECEIVED_STOCK_INHERITS_ECONOMIC_GROUP_CLASSIFICATION')
+                if sector == 'UNCLASSIFIED' or type_group == 'UNCLASSIFIED':
+                    flags.append('UNCLASSIFIED_ASOF_METADATA')
+                grouped[group_id] = profit
+                descriptions[group_id] = dict(members=sorted(group_members), profit_loss=float(profit),
+                    contribution=float(profit / self.previous_nav) if self.previous_nav else None,
+                    sector=sector, type_group=type_group, flags=flags)
+                self.pnl[group_id] = self.pnl.get(group_id, Decimal(0)) + profit
+                self.groups[group_id] = descriptions[group_id]
+                self.sectors[sector] = self.sectors.get(sector, Decimal(0)) + profit
+                self.types[type_group] = self.types.get(type_group, Decimal(0)) + profit
+            change = snapshot.nav - self.previous_nav
+            residual = change - (sum(grouped.values(), Decimal(0)) + interest - fee)
+        if abs(residual) > Decimal('1e-15') * max(Decimal(1), abs(snapshot.nav)):
+            self.incomplete = True
+            status = 'ATTRIBUTION_INCOMPLETE'
+        else:
+            status = 'COMPLETE'
+        contributions = return_contributions({key: float(value) for key, value in grouped.items()},
+                                             float(self.previous_nav), cash_income=float(interest), costs=float(fee)) if self.previous_nav else dict(
+                                                 security_contributions={key: None for key in grouped}, cash_contribution=None,
+                                                 cost_contribution=None, total_return=None, reason='ZERO_START_NAV')
+        self.daily.append(dict(session=str(day), status=status,
+            method='CORPORATE_ACTION_LINKED_SECURITY_GROUPS_UNTIL_REGULAR_SIGNAL',
+            security_components=components, groups=descriptions,
+            event_cash_by_security={key: float(value) for key, value in event_cash.items()},
+            cash_income=float(interest), costs=float(fee), nav_change=float(change),
+            reconciliation_residual=float(residual), **contributions))
+        self.cash_income += interest
+        self.costs += fee
+        self.previous_values, self.previous_claims, self.previous_nav = values, claims, snapshot.nav
+
+    def finish(self):
+        from .metrics import return_contributions
+        if self.incomplete:
+            return dict(status='ATTRIBUTION_INCOMPLETE', total_return=None, reason='INCOMPLETE_DAILY_NAV_OR_RECONCILIATION',
+                        method='CORPORATE_ACTION_LINKED_SECURITY_GROUPS_UNTIL_REGULAR_SIGNAL')
+        contribution = return_contributions({key: float(value) for key, value in self.pnl.items()},
+                                             float(self.initial), cash_income=float(self.cash_income), costs=float(self.costs))
+        residual = (self.previous_nav - self.initial) - (sum(self.pnl.values(), Decimal(0)) + self.cash_income - self.costs)
+        groups = {key: dict(self.groups[key], profit_loss=float(value), contribution=float(value / self.initial))
+                  for key, value in self.pnl.items()}
+        return dict(status='COMPLETE', method='CORPORATE_ACTION_LINKED_SECURITY_GROUPS_UNTIL_REGULAR_SIGNAL',
+                    groups=groups, sector_contributions={key: float(value / self.initial) for key, value in self.sectors.items()},
+                    type_group_contributions={key: float(value / self.initial) for key, value in self.types.items()},
+                    cash_income=float(self.cash_income), costs=float(self.costs), reconciliation_residual=float(residual), **contribution)
+
+
+def _advance_dates(ledger, events, previous, day, start, rate, stale, payments, attribution):
+    """Apply effective dates and cash dates even when the exchange is closed."""
+    from .ledger import Dividend, LedgerError, Settlement
+    boundaries = {day}
+    for event in events:
+        for boundary in (event.effective_date, getattr(event, 'pay_date', None), getattr(event, 'settlement_date', None)):
+            if boundary is not None and (previous is None or previous < boundary) and boundary <= day:
+                if previous is not None or boundary == day:
+                    boundaries.add(boundary)
+    cursor, interest, cash, failed = previous, Decimal(0), {}, False
+    for boundary in sorted(boundaries):
+        if cursor is not None and boundary > max(cursor, start):
+            try:
+                with localcontext() as context:
+                    context.prec = 100
+                    principal = ledger.cash - interest
+                    interest += ledger.accrue_cash_interest(max(cursor, start), boundary, rate,
+                                                            stale_sessions=stale, interest_base=principal)
+            except LedgerError:
+                failed = True
+        for event in sorted((event for event in events if event.effective_date == boundary),
+                            key=lambda event: (0 if event.__class__.__name__ == 'Split' else 1 if isinstance(event, Dividend) else 2, event.event_id)):
+            quantity = ledger.holdings.get(event.security_id, Decimal(0))
+            if isinstance(event, Dividend):
+                payments[event.event_id] = (event.pay_date, event.security_id, quantity * event.cash_per_share)
+            elif isinstance(event, Settlement):
+                complete = event.settlement_date is not None and event.cash_per_share is not None
+                if event.kind in ('STOCK_MERGER', 'SPINOFF'):
+                    complete = complete and event.new_security_id is not None and event.stock_ratio is not None
+                    if quantity and complete:
+                        attribution.link(event.security_id, event.new_security_id)
+                if complete:
+                    payments[event.event_id] = (event.settlement_date, event.security_id, quantity * event.cash_per_share)
+            ledger.apply_event(event, boundary)
+        ledger.settle_events(boundary)
+        for event_id, (pay_date, security, amount) in tuple(payments.items()):
+            if pay_date <= boundary:
+                cash[security] = cash.get(security, Decimal(0)) + amount
+                del payments[event_id]
+        cursor = boundary
+    return interest, cash, failed
+
+
 def _replay(spec, bundle, period_id, cells, *, smoke=False):
     from . import calendar_adapter as ca, pit_adapter as pit, scoring_adapter as scoring
     from .ledger import Ledger, LedgerError
@@ -285,11 +460,6 @@ def _replay(spec, bundle, period_id, cells, *, smoke=False):
     except NotImplementedError:
         result.update(status='BLOCKED_ON_IMPLEMENTATION', blockers=['UNSUPPORTED_EVENT_TYPE'])
         return result
-    session_days = {s.day for s in cal.sessions}
-    earliest_signal = min(rows[0].signal_day for rows in schedules.values())
-    if any(earliest_signal <= e.effective_date <= end and e.effective_date not in session_days for e in events):
-        result.update(status='BLOCKED_ON_IMPLEMENTATION', blockers=['NON_SESSION_CORPORATE_ACTION'])
-        return result
     rate_curve = _rate_curve(bundle, cal)
     score_cache = {}
     for rows in schedules.values():
@@ -311,27 +481,25 @@ def _replay(spec, bundle, period_id, cells, *, smoke=False):
         days = [s.day for s in cal.sessions if baseline <= s.day <= end]
         regular = {r.signal_day: r for r in schedule}
         ledger = Ledger(initial, cost_bps=cell['cost_bps'])
+        attribution = _Attribution(initial, events)
+        payments = {}
         run = dict(cell=cell, status='COMPLETE', blockers=[], decisions=[], nav=[], fills=[],
                    metrics=None, monthly=[], benchmark=[], risk_free=[], coverage=[], exposure=[])
         current_rows, current_scores = {}, {}
         ready_day = None
         failed_nav = False
-        previous = baseline
+        previous = None
         for day in days:
-            if day > start:
-                rate, stale = rate_curve[previous]
-                try:
-                    ledger.accrue_cash_interest(previous, day, rate, stale_sessions=stale)
-                except LedgerError:
-                    failed_nav = True
-                    run['blockers'].append('CASH_RATE_UNVERIFIED')
-            for event in events:
-                if event.effective_date == day:
-                    ledger.apply_event(event, day)
-            ledger.settle_events(day)
+            rate, stale = rate_curve[previous] if previous is not None else (None, 0)
+            interest, event_cash, interest_failed = _advance_dates(ledger, events, previous, day, start,
+                                                                   rate, stale, payments, attribution)
+            if interest_failed:
+                failed_nav = True
+                run['blockers'].append('CASH_RATE_UNVERIFIED')
             prices = price_days.get(day, {})
             opens = {sid: row.get('open') for sid, row in prices.items()}
             closes = {sid: row.get('close') for sid, row in prices.items()}
+            filled_before = len(ledger.fills)
             if ready_day is not None and day >= ready_day and not failed_nav:
                 ledger.execute_open(day, opens, suspended=[sid for sid, row in prices.items() if row.get('suspended') is True])
             snapshot = ledger.nav(day, closes)
@@ -339,10 +507,15 @@ def _replay(spec, bundle, period_id, cells, *, smoke=False):
             if failed_nav:
                 encoded.update(nav=None, status='INCOMPLETE_NAV', reasons=['CASH_RATE_UNVERIFIED'])
             run['nav'].append(encoded)
+            if failed_nav:
+                attribution.incomplete = True
+            attribution.observe(day, ledger, snapshot, closes, ledger.fills[filled_before:], event_cash, interest,
+                                current_rows, current_scores, enabled=day >= start, verified_nav=not failed_nav)
             if day in regular and not failed_nav:
                 rows_asof, scores = score_cache[day]
                 rebalance = regular[day]
                 variant = strategy['variant']
+                attribution.links.clear()  # Observed signal-close marks start separate future holding bases.
                 current_rows, current_scores = rows_asof, scores['scores'][variant]
                 eligible = scores['panels'][cell['panel']][variant]
                 selected = scoring.select_top(scores['scores'][variant], rows_asof, strategy['n'], eligible_ids=eligible)
@@ -388,6 +561,11 @@ def _replay(spec, bundle, period_id, cells, *, smoke=False):
                 run['exposure'].append(dict(session=str(day), status='COMPLETE', metrics=exposure,
                                              holdings=_jsonable(ledger.holdings)))
             previous = day
+        run['daily_attribution'] = attribution.daily
+        run['attribution'] = attribution.finish()
+        if run['attribution']['status'] != 'COMPLETE' and run['status'] == 'COMPLETE':
+            run['status'] = 'INCOMPLETE_ATTRIBUTION'
+            run['blockers'].append('ATTRIBUTION_INCOMPLETE')
         run['fills'] = _jsonable(ledger.fills)
         run['unfilled'] = _jsonable(ledger.unfilled)
         run['cancellations'] = _jsonable(ledger.cancellations)
@@ -500,6 +678,7 @@ def _report_artifacts(spec, detailed):
     detailed['blockers'] = sorted(set(detailed['blockers'] + report.get('blockers', [])))
     rows = []
     metric_rows = []
+    contribution_rows = []
     for run in detailed['runs']:
         cell = run['cell']
         keys = dict(period_id=cell.get('period_id'), strategy_id=cell['strategy_id'], panel=cell['panel'],
@@ -508,11 +687,15 @@ def _report_artifacts(spec, detailed):
         for name, metric in (run.get('metrics') or {}).items():
             if isinstance(metric, dict) and 'value' in metric:
                 metric_rows.append(dict(keys, metric=name, value=metric['value'], reason=metric.get('reason')))
+        for group_id, group in run.get('attribution', {}).get('groups', {}).items():
+            contribution_rows.append(dict(keys, group_id=group_id, members='|'.join(group['members']),
+                profit_loss=group['profit_loss'], contribution=group['contribution'], sector=group['sector'], type_group=group['type_group']))
     fields = ['period_id', 'strategy_id', 'panel', 'cost_bps', 'execution_delay']
     return {'report.json': (json.dumps(report, indent=2, ensure_ascii=False, allow_nan=False) + '\n').encode(),
             'report.md': render_markdown(report).encode(), 'nav-drawdown.svg': render_svg(detailed).encode(),
             'daily-nav.csv': _csv_payload(rows, fields + ['session', 'nav', 'status', 'cash', 'receivables']),
-            'comparisons.csv': _csv_payload(metric_rows, fields + ['metric', 'value', 'reason'])}
+            'comparisons.csv': _csv_payload(metric_rows, fields + ['metric', 'value', 'reason']),
+            'contributions.csv': _csv_payload(contribution_rows, fields + ['group_id', 'members', 'profit_loss', 'contribution', 'sector', 'type_group'])}
 
 
 def run_stage(spec, stage, period_id, manifest=None, output=None):

@@ -164,6 +164,29 @@ def _run_summary(spec, run):
     summary['coverage'] = run.get('coverage', [])
     summary['exposure'] = run.get('exposure', [])
     summary['unfilled_count'] = len(run.get('unfilled', []))
+    attribution = run.get('attribution') or {'status':'ATTRIBUTION_INCOMPLETE','reason':'MISSING_ATTRIBUTION'}
+    summary['attribution'] = attribution
+    summary['profit_concentration'] = {'status':'ATTRIBUTION_INCOMPLETE'}
+    if attribution.get('status') == 'COMPLETE':
+        groups = attribution.get('groups', {})
+        try:
+            profits = [(key, float(value['profit_loss'])) for key,value in groups.items()]
+            if not all(math.isfinite(value) for _,value in profits):raise ValueError('NONFINITE_PNL')
+        except (ValueError,TypeError,KeyError,OverflowError):
+            summary['attribution']={'status':'ATTRIBUTION_INCOMPLETE','reason':'INVALID_GROUP_PROFIT_LOSS','total_return':None}
+            summary['unfilled_count']=len(run.get('unfilled',[]))
+            return summary
+        positive = sorted(((key,value) for key,value in profits if value>0), key=lambda x:(-x[1],x[0]))
+        absolute = sorted(((key,abs(value)) for key,value in profits), key=lambda x:(-x[1],x[0]))
+        scale = max((value for _,value in absolute), default=0)
+        positive_total = sum(value/scale for _,value in positive) if scale else 0
+        absolute_total = sum(value/scale for _,value in absolute) if scale else 0
+        summary['profit_concentration'] = {'status':'COMPLETE',
+            'definition':'POSITIVE_AND_ABSOLUTE_PNL_SHARES_NOT_RATIO_TO_NEAR_ZERO_NET_RETURN',
+            'top_contributors':positive[:5], 'largest_absolute_contributors':absolute[:5]}
+        for count in (1,3,5):
+            summary['profit_concentration'][f'top_{count}_positive_profit_share'] = sum(value/scale for _,value in positive[:count])/positive_total if positive_total else None
+            summary['profit_concentration'][f'top_{count}_absolute_profit_share'] = sum(value/scale for _,value in absolute[:count])/absolute_total if absolute_total else None
     return summary
 
 
