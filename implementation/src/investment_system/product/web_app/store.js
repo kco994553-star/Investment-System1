@@ -16,7 +16,10 @@
      device stored before stays until the user removes it: marketQuotes.count() (a number only) and marketQuotes.clear(event).
    - V history (6.3): read only. Not recorded in the new frontend (owner 2026-10-24); the central V history is the server's
      private store (D9). Nothing in the P1 layer calls VirtualTradingVHistory.capture / captureV2 / record / recordV2.
-   - Sheet ids and the Worker address never come back to a screen: has() / set() only. */
+   - Sheet ids and the Worker address never come back to a screen: has() / set() only.
+   - Recent searches (1.1.4, P2-1, Main): the old home's device list (home-screen.js RECENT_KEY): entity keys only, newest first,
+     at most 6, never the query text. Read as the old readRecent read it (invalid entries dropped); the new screen writes
+     COMPANY:<id> keys only, on the selection click. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else{const I=root.IS2=root.IS2||{};I.store=api.create({win:root,action:I.action,data:I.data});}})(typeof globalThis==='object'?globalThis:this,function(){
 'use strict';
 // The old device keys, unchanged so existing devices keep their data (the node test checks each against the old constant).
@@ -35,8 +38,11 @@ const KEYS=Object.freeze({
  PRICE_STORE_ENABLED:'investment.web.v1.price-store-enabled',// PriceStore opt-in flag (no price)
  CHART_USER_OBJECTS:'investment.web.v1.chart-user-objects',// ChartWorkbench user notes / scenarios (backup /5)
  MACRO_USER_ESTIMATES:'investment.web.v1.macro-cycle-user-estimate',// MacroCycleRing user estimates (backup /5)
+ RECENT:'investment.web.v1.recent-search',// home-screen.js RECENT_KEY: recent search entity keys (no query text)
  DEVICE_DB:'investment-device-actual-v1'});// DeviceActual IndexedDB
 const CATALOG='actual-catalog.json',ID=/^[A-Za-z0-9_-]{20,100}$/;
+// home-screen.js RECENT_MAX / KEY_SHAPE (read), and the one key shape the new screen writes.
+const RECENT_MAX=6,RECENT_SHAPE=/^(COMPANY|INDUSTRY|INVESTOR|MACRO):[A-Za-z0-9_.:\-]{1,64}$/,RECENT_WRITE=/^COMPANY:[A-Za-z0-9_.:\-]{1,64}$/;
 const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 function deepFreeze(v){if(v&&typeof v==='object'&&!Object.isFrozen(v)){Object.freeze(v);for(const x of Object.values(v))deepFreeze(x);}return v;}
 const copy=v=>v===undefined?undefined:JSON.parse(JSON.stringify(v));
@@ -68,6 +74,15 @@ function create({win,action,data}){
  // An unreadable stored value is never overwritten (app.js save(): the original is kept, the user exports instead).
  function savePrefs(event,next){return write(event,'PERSONAL',()=>{const B=need('DeviceBackup');if(readPrefs().state==='INVALID')throw Error('PREFS_STORAGE_INVALID');
   let v;try{v=B.preferences(next);}catch(_){throw Error('PREFS_INVALID');}storage.setItem(KEYS.PERSONAL,JSON.stringify(v));return deepFreeze(copy(v));});}
+
+ // ---- recent searches (1.1.4): home-screen.js readRecent / pushRecent / clearRecent on the gated storage
+ function readRecent(){let v;try{v=JSON.parse(storage.getItem(KEYS.RECENT)||'[]');}catch(_){return[];}
+  return Array.isArray(v)?[...new Set(v.filter(x=>typeof x==='string'&&RECENT_SHAPE.test(x)))].slice(0,RECENT_MAX):[];}
+ const recent=()=>Object.freeze(readRecent());
+ // The chosen company first, an earlier copy of it removed, at most RECENT_MAX. Returns the stored list.
+ function pushRecent(event,key){return write(event,'RECENT',()=>{if(typeof key!=='string'||!RECENT_WRITE.test(key))throw Error('RECENT_KEY_INVALID');
+  const list=[key,...readRecent().filter(x=>x!==key)].slice(0,RECENT_MAX);storage.setItem(KEYS.RECENT,JSON.stringify(list));return Object.freeze(list);});}
+ const clearRecent=event=>write(event,'RECENT',()=>{storage.removeItem(KEYS.RECENT);return Object.freeze([]);});
 
  // ---- personal QGV v2 weight trees (2.2): DeviceProfiles v2 storage
  function weights(){const DP=need('DeviceProfiles');try{return deepFreeze({state:'OK',value:DP.readV2(storage)});}catch(_){return deepFreeze({state:'INVALID',value:null});}}
@@ -140,7 +155,7 @@ function create({win,action,data}){
   clear(event){return write(event,'MARKET_QUOTES',signal=>action.stoppedRecords.clear(signal));}});
 
  function subscribe(fn,{signal}={}){if(typeof fn!=='function')throw Error('SUBSCRIBER_INVALID');if(signal&&signal.aborted)return()=>{};subs.add(fn);const off=()=>{subs.delete(fn);};if(signal)signal.addEventListener('abort',off,{once:true});return off;}
- const api={KEYS,storage,prefs,savePrefs,weights,saveWeights,holdings,playbook,saveThesis,saveHold,saveRecord,stars,toggleStar,backup,vHistory,sheetSource,universeSource,workerOrigin,marketQuotes,subscribe};
+ const api={KEYS,storage,prefs,savePrefs,recent,pushRecent,clearRecent,weights,saveWeights,holdings,playbook,saveThesis,saveHold,saveRecord,stars,toggleStar,backup,vHistory,sheetSource,universeSource,workerOrigin,marketQuotes,subscribe};
  // DeviceProfiles' preset list, read when asked (the old module loads before this one; tests swap modules).
  Object.defineProperty(api,'PRODUCT_PRESETS',{enumerable:true,get:()=>need('DeviceProfiles').PRODUCT_PRESETS});
  return Object.freeze(api);
