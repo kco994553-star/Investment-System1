@@ -283,7 +283,7 @@ function leaderboard(route,refs){
   if(v.list==='QG_REFERENCE'&&!ok(r.score.v))vCell=h('span',{class:'reason'},'— 근거: ',text(r.na_reason.v));
   if(v.list==='CHECK_DATA'&&!ok(r.score.total))qgvCell=h('span',{class:'reason'},'어느 축도 산출 안 됨 → 근거: ',text(r.na_reason.total));
   if(v.list==='PARTIAL_AXES'&&!ok(r.score.total))qgvCell=h('span',{class:'reason'},'종합 없음 · 순위 없음 · ',text(r.na_reason.total));
-  const vf=r.coverage.v_factors,miss=(vf.missing||[]).map(f=>{const L=window.DeviceProfiles&&window.DeviceProfiles.FACTOR_LABELS;return L&&L[f]?L[f][0]:f;});
+  const vf=r.coverage.v_factors,miss=(vf.missing||[]).map(f=>{const L=window.DeviceProfiles&&window.DeviceProfiles.FACTOR_LABELS;return L&&L[f]?L[f][0]:'이름 없는 요인';});
   return h('tr',{dataset:{row:r.id}},h('td',{class:'rk',dataset:{cell:'rank'}},rankCell(r,v)),company,
    h('td',{class:'pc-col',dataset:{cell:'sic'}},sic||naBox('분류 자료 없음','SIC_NOT_AVAILABLE')),h('td',{class:'pc-col',dataset:{cell:'type'}},ty),
    h('td',{class:'num qgv '+on('qgv'),dataset:{cell:'qgv'}},qgvCell),h('td',{class:'num '+pc('q'),dataset:{cell:'q'}},score(r,'q')),h('td',{class:'num '+pc('g'),dataset:{cell:'g'}},score(r,'g')),
@@ -323,7 +323,7 @@ function leaderboard(route,refs){
   const sics=digits=>[...new Set(ids.map(c=>sicOf(c,cls)).filter(Boolean).map(s=>s.slice(0,digits)))].sort();
   const lines=[];
   const select=(key,label,options,disabled=false)=>{const chosen=V.f[key],opts=[['','전체'],...options];
-   if(chosen&&!opts.some(o=>o[0]===chosen)){opts.push([chosen,chosen+' (새 게시본에 없음)',true]);lines.push(h('p',{class:'reason',dataset:{kept:key}},key==='industry'?'선택한 업종군이 새 게시본에 없음 · 선택은 그대로 남김':'선택한 분류가 새 게시본에 없음 · 선택은 그대로 남김'));}
+   if(chosen&&!opts.some(o=>o[0]===chosen)){opts.push([chosen,(key==='sic2'||key==='sic4'?chosen+' · ':'선택한 값 · ')+'새 게시본에 없음',true]);lines.push(h('p',{class:'reason',dataset:{kept:key}},key==='industry'?'선택한 업종군이 새 게시본에 없음 · 선택은 그대로 남김':'선택한 분류가 새 게시본에 없음 · 선택은 그대로 남김'));}
    const id='lb-f-'+key;
    return h('div',{class:'sk fcard',dataset:{filter:key}},h('label',{for:id},label),h('select',{id,disabled,dataset:{k:'f-'+key},onchange:e=>{V.f={...V.f,[key]:e.target.value};V.shown=STEP;draw();}},
     ...opts.map(([val,name,gone])=>h('option',{value:val,selected:val===chosen,disabled:!!gone},name))),
@@ -406,7 +406,7 @@ function leaderboard(route,refs){
   if(!M)return[h('div',{class:'sk model'},head,h('div',{class:'sk empty dashed',dataset:{empty:'NO_MODEL'}},h('p',null,'QGV 순위가 없어(이 기기에서 V 미산출) 선정하지 않습니다'),mirror('model'))),links];
   const n=V.n,set_=M.sets['N'+n],chosen=new Set(set_.selected.map(e=>e.id)),capped=new Map(set_.group_capped.map(c=>[c.id,c]));
   const top=v.pg.rows.filter(r=>Number.isInteger(r.rank.official)).sort((a,b)=>a.rank.official-b.rank.official),topN=top.slice(0,n);
-  const status=set_.status==='SHORTFALL'?'부족 '+pct2(set_.shortfall_pct)+'% · 채우지 않음':MODEL_STATUS[set_.status]||set_.status;
+  const status=set_.status==='SHORTFALL'?'부족 '+pct2(set_.shortfall_pct)+'% · 채우지 않음':MODEL_STATUS[set_.status]||'구성 상태 미확인';
   const name=id=>{const r=v.pg.rows.find(x=>x.id===id);return r?title(r):id;};
   const phone=window.matchMedia&&window.matchMedia('(max-width:720px)').matches;
   const memberships=top.slice(0,20).map(r=>h('li',{dataset:{member:r.id}},h('span',null,String(r.rank.official),' ',title(r)),
