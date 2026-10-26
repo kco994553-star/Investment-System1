@@ -7,10 +7,10 @@ P2 화면 레인이 쓰는 함수, 기록 모양, 사유 코드, 지켜야 할 �
 - 위치는 `implementation/src/investment_system/product/web_app/`이고, 전역은 `IS2` 하나다.
 - 불러오는 순서(P2-1a, 1.1절)
   - `index.html`(첫 화면만, 모두 `defer`): P0 기반(core·shell·parts) → `loader.js` → 레인 파일 8개(`screen-qgv/technical/macro/news/portfolio/prompts/tree/lab.js`) → P0 화면 → `boot.js`. web_app 파일만 둔다(옛 모듈이 있으면 빌드 실패).
-  - 첫 그림 뒤 `loader.js`의 `LOAD_ORDER`: 옛 모듈 60개(web_assets 바이트 그대로, 빌드 A안. 설계 57개 + 백업 /5 검증기인 `chart-workbench.js`·`macro-cycle-ring.js` + 홈 명언·이야기 `home-quotes.js`) → `action` → `data` → `prices` → `store` → `qgv` → `engines` → 화면 논리 파일(web_app 파일, 지금은 `screen-search-live.js` 1개).
+  - 첫 그림 뒤 `loader.js`의 `LOAD_ORDER`: 옛 모듈 60개(web_assets 바이트 그대로, 빌드 A안. 설계 57개 + 백업 /5 검증기인 `chart-workbench.js`·`macro-cycle-ring.js` + 홈 명언·이야기 `home-quotes.js`) → `action` → `data` → `prices` → `store` → `qgv` → `engines` → 화면 논리 파일(web_app 파일, 지금은 `screen-search-live.js`(P2-1)·`screen-qgv-live.js`(P2-2a) 2개).
     - `home-quotes.js`(P2-1, Main 승인): 옛 페이지 순서 그대로 `virtual-trading-compare.js`와 `data-refresh.js` 사이에 둔다(옛 상대 순서 시험). 불러올 때 부작용이 없다(자기 전역 `HomeQuotes`만 둠, 노드 시험).
     - 화면 논리 파일(P2-1, Main 결정 2026-10-25): 첫 그림 예산은 메뉴 9개가 함께 쓰므로, 화면의 첫 그림 파일(index.html의 `screen-*.js`)은 뼈대만 두고 `IS2.ready` 뒤에만 도는 논리는 `engines.js` 뒤의 web_app 파일로 옮긴다(1.1절 화면 규칙). web_app에 있는 이름이라 빌드는 web_app에서 가져온다(A안 재사용 아님, 옛 파일과 같은 이름 금지). 이름·중복·순서 규칙은 다른 `LOAD_ORDER` 이름과 같다.
-      - 화면 논리 파일도 `LOAD_ORDER`의 파일이다. 그래서 그 파일이 오지 않거나(404) 불러올 때 오류를 내면 `IS2.ready`가 `LOADER_FAILED <파일>`로 거절되고, **메뉴 9개 모두** 층을 쓰지 못한다(대리 객체가 거절, 행동 버튼 꺼짐, 셸의 실패 안내). 한 레인의 파일이 모든 메뉴의 층을 막을 수 있다는 이 대가는 P2-1 PR 본문에서 Main 확인을 요청했다. 그러므로 논리 파일은 불러올 때 `IS2.<이름>`에 채우는 함수만 두고, 던질 수 있는 최상위 작업을 하지 않는다(노드 시험 `web_app_reuse_node_test.js`가 불러올 때 층을 건드리지 않고 그 이름만 두는지 본다).
+      - 화면 논리 파일도 `LOAD_ORDER`의 파일이다. 그래서 그 파일이 오지 않거나(404) 불러올 때 오류를 내면 `IS2.ready`가 `LOADER_FAILED <파일>`로 거절되고, **메뉴 9개 모두** 층을 쓰지 못한다(대리 객체가 거절, 행동 버튼 꺼짐, 셸의 실패 안내). 한 레인의 파일이 모든 메뉴의 층을 막을 수 있다는 이 대가는 P2-1 PR 본문에서 Main 확인을 요청했다. P2-2a의 `screen-qgv-live.js`도 같다(404나 불러올 때 오류면 `LOADER_FAILED screen-qgv-live.js`로 메뉴 9개 모두, Main 승인 2026-10-25). 그러므로 논리 파일은 불러올 때 `IS2.<이름>`에 채우는 함수만 두고, 던질 수 있는 최상위 작업을 하지 않는다(노드 시험 `web_app_reuse_node_test.js`가 불러올 때 층을 건드리지 않고 그 이름만 두는지 본다).
   - 레인은 index.html도 `LOAD_ORDER`도 고치지 않고 자기 파일만 채운다(바꿀 때는 Main 승인. 자기 화면 논리 파일을 `LOAD_ORDER` 끝에 더하는 것도 Main 승인).
 - 등록:
   - `IS2.register(id, render)`: 자리표시를 실제 화면이 대신한다. 실제 화면을 두 번 등록하면 `SCREEN_DUPLICATE`다.
@@ -49,11 +49,11 @@ P2 화면 레인이 쓰는 함수, 기록 모양, 사유 코드, 지켜야 할 �
 - **화면 규칙**
   - 화면 파일은 불러올 때 층을 건드리지 않는다(노드 시험). 층 값은 렌더 때 읽는다. 화면 논리 파일도 불러올 때는 `IS2`에 자기 함수만 놓는다.
   - **화면의 첫 그림 파일은 뼈대만 둔다**(P2-1, Main 결정 2026-10-25). 첫 그림 파일에는 동기로 그리는 자리(제목, 입력 요소, 머리, 카드 틀과 `parts.pending`)와, 층 없이 되는 최소 동작(예: 검색 상자에 입력하면 '불러오는 중')만 둔다. 색인 만들기·목록 논리·칩·카드 채우기·저장 버튼처럼 `IS2.ready` 뒤에만 도는 논리는 `LOAD_ORDER`의 화면 논리 파일에 둔다.
-    - 넘겨주기: 논리 파일은 불러올 때 `IS2`에 채우는 함수만 놓는다(메뉴 0: `IS2.searchLive = {home, company}`). 뼈대는 렌더 때 자리 참조를 만들고, `IS2.ready`가 풀린 뒤 그 경로의 `route.signal`이 살아 있으면 그 함수를 부른다. 함수는 동적 자리만 그 자리에서 바꾼다. 입력 요소는 다시 만들지 않는다(IME·초점 유지). `route.signal` 처리는 렌더와 같다.
+    - 넘겨주기: 논리 파일은 불러올 때 `IS2`에 채우는 함수만 놓는다(메뉴 0: `IS2.searchLive = {home, company}`, 메뉴 1(P2-2a): `IS2.qgvLive = {leaderboard, helpers}`, helpers는 노드 대조 시험용 순수 함수). 뼈대는 렌더 때 자리 참조를 만들고, `IS2.ready`가 풀린 뒤 그 경로의 `route.signal`이 살아 있으면 그 함수를 부른다. 함수는 동적 자리만 그 자리에서 바꾼다. 입력 요소는 다시 만들지 않는다(IME·초점 유지). `route.signal` 처리는 렌더와 같다.
     - 준비 전에도 입력은 된다. 메뉴 0 검색 상자는 준비 전 입력·초점에 '불러오는 중'을 보이고, Escape는 목록만 닫고 글자를 남기며(type=search의 기본 지우기 막음), 초점이 상자를 떠나면 목록을 숨긴다(분리 전과 같은 동작). 준비 전 제출은 P0처럼 `#/company/<검색어>`로 간다. 준비 뒤 논리 파일이 자기 처리기로 바꾸고(뼈대 처리기는 AbortController로 한꺼번에 뗀다) 이미 입력된 글자로 목록을 다시 그린다. 준비 전에 떠난 경로는 채우지 않는다.
     - 불러오기 실패(`LOADER_FAILED`) 뒤: 기업 화면 머리는 분리 전처럼 고정 문구 '기업 목록을 불러오지 못했습니다'(`data-na=INDEX_FAILED`)로 바꾼다. 홈의 칩·이야기, 카드 4개, 준비 전 목록의 '불러오는 중'은 분리 전처럼 그대로 두고, 실패 신호는 셸의 '연결 실패' 칩과 새로고침 안내다. 채우는 함수 안의 오류는 삼키지 않는다(콘솔에 남아 시험이 잡는다).
     - 목록 위의 마우스는 옵션을 강조만 한다. 검색 버튼·Enter는 방향키로 고른 옵션만 따른다(휴대폰 초점 스크롤로 목록이 멈춘 포인터 아래로 오거나 포인터가 목록을 지나가도 제출 대상이 바뀌지 않음).
-    - 크기: `screen-search.js` ≤ 5 KB(노드 시험 `web_app_reuse_node_test.js`). 다른 레인도 같은 방식으로 첫 그림 파일을 작게 둔다.
+    - 크기: `screen-search.js`·`screen-qgv.js` ≤ 5 KB(노드 시험 `web_app_reuse_node_test.js`의 `SKELETON_MAX_BYTES`). 다른 레인도 같은 방식으로 첫 그림 파일을 작게 둔다.
   - 렌더는 기다리지 않는다. 자리를 먼저 그리고(`parts.pending`) 약속 함수의 값이 오면 채운다(1절). 동기 값이 `IS2.NOT_READY`면 연결 전으로 그린다.
   - 행동 버튼은 `IS2.ready`가 풀린 뒤 켠다. 실패하면 꺼 둔다(새로고침 안내는 셸이 한다).
   - 기기 칩은 `IS2.ready` 전까지 '연결 전', 실패하면 '연결 실패'다(셸).
@@ -83,7 +83,7 @@ P2 화면 레인이 쓰는 함수, 기록 모양, 사유 코드, 지켜야 할 �
 - **RAM 가격 표시**
   - 기기 가격과 가격 파생값(시총, EV, 수익률, 배수, 내재 성장, 월말 종가)은 RAM에만 둔다.
   - 화면에는 `[data-ram-price]` 요소의 글자로만 낸다. 속성, 입력 value, 제목, 저장소, 콘솔, URL에는 넣지 않는다.
-  - 값을 내주는 곳은 `prices.quote()`, `prices.history()/held()`, 가상매매·세트 비교 결과뿐이다.
+  - 값을 내주는 곳은 `prices.quote()`, `prices.history()/held()`, `prices.periodReturns()`(기간 수익률, P2-2a), `prices.rankFor()`(M3 순위, 시총 순서라 가격 파생으로 취급, P2-2a), 가상매매·세트 비교 결과뿐이다.
   - 시험 도우미: `tools/web_app_test_site.js`의 `assertRamOnly(page, sentinels)`.
 - **NA 규칙**
   - 값이 없으면 null이고 사유 코드가 반드시 붙는다. 0이나 평균으로 채우지 않는다(`?? 0`, `|| 0` 금지).
@@ -170,13 +170,16 @@ P2 화면 레인이 쓰는 함수, 기록 모양, 사유 코드, 지켜야 할 �
   - 가격은 RAM에 있는 것만 쓴다: 클릭으로 읽은 Universe 탭, 가격 탭, RAM의 Worker 종가. 기기 DB에 저장된 시세는 읽지 않는다(DC-18, 3절 STOPPED).
 - 접근 함수
   - `rankLabel(x, en)`: 순위 옆에 붙이는 글. x는 Page, 미리보기, 행, V 출처 id다. 기기 Page와 미리보기는 늘 '임시 V 기준 순위 · 공식 순위 아님'이다(소유자 결정 2026-10-24, Main 결정. 옛 화면도 '공식 순위 아님'이라고 쓴다). 모르는 출처도 공식이라고 부르지 않는다. Page와 미리보기에는 같은 글이 `rank_label`로 들어 있다. 중앙 V 문구는 초안이다.
-  - `rows(page, {scope:'ALL'|'UNIVERSE'|'TARGET'})`: QgvScores 순서 그대로 준다. 정렬, 모집단, 분류 필터, 레이더는 P2-2가 옛 함수(LeaderboardScreen, StatRadar `compute(spec,{result})`)로 붙인다.
+  - `rows(page, {scope:'ALL'|'UNIVERSE'|'TARGET'})`: QgvScores 순서 그대로 준다. 정렬, 모집단, 분류 필터는 P2-2a가 `screen-qgv-live.js`의 작은 순수 이식(옛 `leaderboard-screen.js`의 `sortRows`·`sicOf`·`populationOf`·`classificationOf` 업종 부분·`filterClassifications`, 각 줄에 원래 함수와 줄 번호)으로 붙였다(Main 결정 2026-10-25). `LeaderboardScreen`(67 KB)과 `StatRadar`는 불러오지 않는다. 같은 결과는 노드 대조 시험(`web_app_qgv_screen_node_test.js`)과 고정 벡터가 묶고, P3가 옛 파일을 지우면 사본은 하나만 남는다. 레이더는 P2-2c에서 정한다.
+  - `model(page)`(P2-2a, Main 결정 2026-10-25): 그 Page가 쥔 결과로 `QgvScores.officialModel`을 부른 N10·N15·N20 후보의 가격 없는 투영이다(공식 기본 프로필·관문 켬, D12). `{v_source, official_profile, primary:'N15', ns, as_of, checked, ranked, provisional, excluded, unknown:{subgroup}, sets:{N10|N15|N20:{n, complete, status, weight_pct, shortfall_pct, causes, skipped, group_capped:[{id,ticker,rank,group}], selected:[{id,ticker,rank,total,group}], issuer_check:{status, applied, issuers_n}}}}`. 순위·묶음 id·수·비중만 있고 지표 값·시세·가격은 없다. 공식 순위가 없으면 null, 결과 없는 Page는 `PAGE_NOT_READY`. Page마다 한 번 만들고 얼린다.
   - `row(page, idOrCode)`, `coverage(page)`(수만).
   - `preview(page, weights, {typeWeights, gate})`: 개인 가중치다. 결과는 늘 `weights:'PERSONAL'`, `v_source` 임시 V이고 공식 순위가 없다.
     - 2.2 개인 계산과 같은 호출이다(device-profiles.js). preset 없이, 그 가중치 프로필의 `gate`를 넘긴다(null이면 기본값 켬). 저장된 프로필의 gate를 꼭 넘긴다.
   - `isPage(page)`: 이 접근자가 만든 Page인지.
   - `setProfile({preset, gate})`(RAM만), `profile()`, `constants()`(2.5 트리용), `subscribe(fn(why), {signal})`. why는 DATA·PRICES·DEVICE·PROFILE이다.
   - `reasonText(code, en)`, `V_SOURCES`, `vSource()`.
+    - P2-2a가 더한 글(qgv.js `TEXT`, Main 결정 2026-10-25, 보드 문구가 있으면 그대로): 가격 버튼·M3 코드 `UNIVERSE_SOURCE_NOT_SET`·`UNIVERSE_SOURCE_INVALID`·`AUTH_REQUIRED`·`CANCELED`·`PREPARE_TIMEOUT`·`SOURCE_TOO_LARGE`·`UNIVERSE_READ_FAILED`·`SHEET_NOT_CONNECTED`(PriceStore 자기 코드)·`PRICE_TABS_OFF`·`UNIVERSE_NOT_READ`·`NOT_IN_UNIVERSE`·`NO_VERIFIED_ROWS`, 수익률 코드 `PRICE_TABS_NOT_LOADED`·`RETURN_SESSIONS_NOT_AVAILABLE`·`RETURN_HISTORY_TOO_SHORT`·`RETURN_BASE_CLOSE_MISSING`·`RETURN_LAST_CLOSE_MISSING`·`PERIOD_PENDING`·`PRICE_BASIS_CONTINUITY_UNCONFIRMED`(TA-G1 코드). `RETURN_*`는 V 이력 규칙의 `HISTORY_TOO_SHORT`와 구별하려고 따로 둔다. 어느 글에도 V 출처 낱말은 없다.
+    - 화면은 표에 없는 코드(M3 `reason_codes`의 `GOOGLE_MCAP_MISSING` 등, 클릭 오류 `CLICK_REQUIRED` 등)를 글로 찍지 않는다. 그 자리의 고정 한국어 문구를 쓰고 코드는 `data-reason`·`data-na`에만 둔다.
 - `forEngines`, `engineInputs`, `scoreView`는 engines 전용이다(소스 검사로 막는다).
 
 ```
@@ -215,7 +218,7 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
   - 결과: `{state, read_id, read_at, inputs, config_status, selection{…수}, ranks{…수}}`.
   - 코드: `UNIVERSE_SOURCE_NOT_SET`, `UNIVERSE_SOURCE_INVALID`, `AUTH_REQUIRED`, `SOURCE_TOO_LARGE`, `CANCELED`, `UNIVERSE_READ_FAILED`.
   - 로그아웃하면 지워지고, 토큰 만료로는 남는다.
-- `universeRanks()`, `rankFor({company_id, ticker})`: 개인 M3 순위(2.1.1). 순위와 사유만 있고 시총은 없다.
+- `universeRanks()`, `rankFor({company_id, ticker})`: 개인 M3 순위(2.1.1). 순위와 사유만 있고 시총은 없다. M3 순위는 기기 시총의 순서라 가격 파생값으로 다룬다(P2-2a, Main 결정): `[data-ram-price]` 글자로만, 속성·정렬 값·저장소에는 넣지 않는다.
 - 가격 탭 [SYNC]: 결과는 수와 코드뿐이다.
   - `useTabs(event)`, `loadTabs(event)`.
   - `syncSymbols(event, symbols, '1d'|'1mo', {kind, parent})`: Worker 허용 목록만. 다른 action의 다음 단계로 부를 때 `parent`에 그 action의 signal을 넘긴다.
@@ -225,7 +228,14 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
   - company: `{code}`(Universe 코드) 또는 `{company_id, ticker}`(TARGET).
   - 기기 DB에 저장된 시세는 읽지 않는다(3절 STOPPED).
   - reason: `NO_DEVICE_PRICE`, 그리고 `QgvScores.collectQuotes`와 같은 규칙의 `IDENTITY_CONFLICT_WITHDRAWN`(식별 충돌로 멈춘 코드), `PRICE_IDENTITY_CONFLICT`(철회된 Universe 코드와 같은 티커의 TARGET). 점수 경로가 V를 내지 않는 기업에는 가격도 보이지 않는다.
-- `priceView`, `storeFacade`, `universeView`는 qgv·engines 전용이다.
+- `periodReturns(period, companies)`(P2-2a, Main 결정 2026-10-25): `async` 함수다(대리 객체 'p'). companies는 `[{id, ticker, code}]`(code는 Universe 코드나 null). 결과는 얼린 `{state:'READY'|'NOT_LOADED', as_of, period, rows:{[id]: {state:'OK', value, end} | {state:'NA', reason}}}`.
+  - 기간은 1D·5D·20D만이다. 그 밖(60D·120D·YTD·1Y·SINCE_START)은 `PERIOD_PENDING`, 배열이 아니면 `COMPANIES_INVALID`로 거절한다.
+  - 식별 정지 규칙을 층 안에서 맨 먼저 적용한다(`quote()`와 같은 `stopped()`): `IDENTITY_CONFLICT_WITHDRAWN`·`PRICE_IDENTITY_CONFLICT` 행은 탭을 읽기 전이든 뒤든 값이 없다.
+  - 클릭(`loadTabs`)으로 가격 탭을 읽기 전에는 `NOT_LOADED`, 다른 행은 `PRICE_TABS_NOT_LOADED`이고 요청하지 않는다.
+  - 정의는 보고서 정의를 다시 쓴다: `ReportBenchmarks.periodWindow`(RAM 일별 탭의 S&P 500(SPY) 세션 N개, 기준은 기간 앞 세션 종가)와 `priceIndex(closes, {}, window, 'USD')`. value는 비율(0.012 = 1.2%). SPY가 없으면 `RETURN_SESSIONS_NOT_AVAILABLE`, 세션이 모자라면 `RETURN_HISTORY_TOO_SHORT`, 기준·마지막 종가가 없으면 `RETURN_BASE_CLOSE_MISSING`·`RETURN_LAST_CLOSE_MISSING`, 그 종목 종가가 없으면 `NO_DEVICE_PRICE`.
+  - 종목 기호: Universe 코드가 있으면 `PriceStore.universeSymbol(code)`('NYSE:BRK.B' → 'BRK-B'), 없으면 티커의 '.'을 '-'로 바꾸고 대문자(`key()` 규칙).
+  - 분할·배당 조정 없는 종가다(TA-G1 결정 대기). 화면은 값마다 '분할 미확인'을 보인다. 요청·저장·로그 없음, RAM만.
+- `priceView`, `storeFacade`, `universeView`는 qgv·engines 전용이다(P2-2a부터 소스 규칙이 `storeFacade`도 막는다: prices.js·qgv.js·engines.js 밖 금지).
   - 가격 view는 하나뿐이다. 세션과 PriceStore가 view를 키로 상태를 두기 때문이다.
   - facade는 클릭으로 탭을 읽기 전에는 `{}`나 null을 준다.
 
@@ -354,6 +364,14 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
   - 구글 켬/끔: 옛 동작대로. 기기 DB가 이미 있을 때만 읽고, 로그인 준비 클릭 안에서만 쓴다(옛 로그인 클릭이 켬을 썼다). 로그아웃은 바꾸지 않는다(옛 연결 해제와 같음). 클릭 없이는 아무것도 쓰지 않는다. GIS 스크립트는 클릭 안에서만 받으므로 다시 온 사용자도 페이지마다 준비 탭은 필요하다.
 - 휴대폰 첫 화면 비용: 미루지 않고 P2-1의 첫 작업으로 한다. boot.js·셸을 먼저 그리고 엔진·P1 층은 첫 그림 뒤에 불러온다. 목표(390×844, 150 ms RTT·1.6 Mbps·CPU ×4): 첫 화면 2,000 ms 이하, 첫 전송 100 KB 이하. 측정을 시험으로 고정한다. 다른 화면 PR은 그 구조 위에서 만든다. 검토 측정(결정 전): 첫 화면 1,558 → 4,119 ms, 전송 13 KB → 569 KB, 스크립트 7 → 78개(이번 두 검증기로 80개).
 
+### Main 결정 2026-10-25 (P2-2a 메뉴 1 QGV · 1.1 리더보드, 소유자 확인 항목은 PR 본문)
+
+- `screen-qgv-live.js`를 `LOAD_ORDER`의 화면 논리 파일로 더한다(`screen-search-live.js` 뒤). 404·불러올 때 오류는 메뉴 9개 모두의 `LOADER_FAILED`다.
+- `leaderboard-screen.js`(67 KB)는 불러오지 않고 작은 순수 부분만 이식한다(위 5절 `rows`). 이 결정은 P1의 'P2-2가 옛 함수로 붙인다' 계약을 바꾼다(소유자 확인 13).
+- `qgv.model(page)`, `prices.periodReturns()`, 새 사유 글(5절, 6절). 수익률 기간은 보고서 정의(`ReportBenchmarks`) 재사용, 60D·120D·YTD·1Y는 결정 대기(IA-12).
+- M3 순위는 가격 파생값으로 다룬다(`[data-ram-price]` 글자만).
+- 화면은 기본 프로필의 공유 Page만 쓰고 `setProfile`·`page({preset|gate})`를 부르지 않는다(공유 메모 보호). 개인 결과는 `preview`로만 본다.
+
 ### 아직 정할 것
 
 - 일일 보고서·보고서 모델, 가상매매 기록 실행, 세트 B/C/D는 P2-6에서 정한다(daily-report.js는 불러오지 않음).
@@ -386,6 +404,15 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
   - `web_app_data_layer_browser_test.js` A: 경로를 열 때 읽는 파일을 화면별로 본다. 자리표시 메뉴는 0개, 홈은 색인 정적 파일 3개(`actual-catalog.json`·`company-names-ko.json`·`universe-codes.json`)만, 기업 화면은 `FILES` 안의 이름만. 재사용 수 60.
   - `web_app_shell_browser_test.js`(**Main 결정 2026-10-25, 승인**: P2-1 명세는 이 시험을 그대로 두라고 했지만, 같은 명세가 기업 화면에 `IS2.data.ready()`를 요구해 그대로는 통과할 수 없다): 다른 확인은 그대로 두고, `IS2.data.ready()`가 읽는 핵심 파일 중 오프라인 빌드에 없는 실사이트 전용 공개 파일 정확히 2개(`sec-qgv2.json`·`sec-public-inputs.json`)의 404만 콘솔 오류에서 뺀다. 시험은 먼저 두 파일이 오프라인 빌드에 없음을 확인하고(있으면 실패), 그 밖의 404·오류는 그대로 실패다. 기업 화면이 `IS2.data.ready()`를 부르면 브라우저가 그 404를 콘솔에 남기기 때문이다.
   - 기업 검색 색인(**Main 결정 2026-10-25, 승인**): 명세 초안의 `IS2.data.shares()` 대신 정적 `universe-codes.json`(`IS2.data.universe()`)과 이름표의 `codes()`(코드 → company_id)로 만든다. 더 가볍고, 홈이 검색만 하려고 핵심 파일 묶음을 읽지 않는다(시험 A: 홈은 정적 파일 3개만).
-  - `web_app_reuse_node_test.js`: 재사용 60개, `LOAD_ORDER` = 옛 60 + P1 6 + 화면 논리 1(`screen-search-live.js`, web_app 파일, P1 뒤), `screen-search.js` ≤ 5 KB, 논리 파일도 불러올 때 층을 건드리지 않고 `IS2.searchLive`만 둠, `home-quotes.js` 부작용 없음, `IS2.selection`. `web_app_prices_node_test.js`: 최근 검색(옛 키·모양, 클릭에서만 쓰기, 한 클릭 한 action).
+  - `web_app_reuse_node_test.js`: 재사용 60개, `LOAD_ORDER` = 옛 60 + P1 6 + 화면 논리 2(`screen-search-live.js`·`screen-qgv-live.js`, web_app 파일, P1 뒤; P2-2a), `screen-search.js` ≤ 5 KB, 논리 파일도 불러올 때 층을 건드리지 않고 `IS2.searchLive`만 둠, `home-quotes.js` 부작용 없음, `IS2.selection`. `web_app_prices_node_test.js`: 최근 검색(옛 키·모양, 클릭에서만 쓰기, 한 클릭 한 action).
 - 도우미: `web_app_reuse.js`(옛 모듈 경로 한 곳), `web_app_test_site.js`(빌드·서빙·fixture·`watch`·`storage`·`leaks`·`assertRamOnly`).
-- CI 목록 등록은 Main이 한다.
+- P2-2a(메뉴 1 QGV · 1.1 리더보드)가 더하고 바꾼 시험:
+  - 새 `web_app_qgv_browser_test.js`(1440·390): 준비 전 뼈대(구역 1-1~1-4, 블록 7개, 버튼 모두 꺼짐, 숫자 없는 대기 글, 자료 요청 없음, 떠났다 돌아온 렌더의 블록이 그 자리에서 채워짐), 층과 같은 값(순위·QGV·Q·G·V·SIC·유형·자료 기준일, V 머리 = `pg.v_source.ko`, 순위 머리 = `rankLabel(pg)`, nvda·amd = 기업 카드, `page()` 같은 객체), 범위·목록 칩(수는 층 행의 `listOf`), Universe 밖 상자·범위, 종합 순위 빈 상태와 QG 참고 버튼, 정렬(모든 선택지가 층 행 위의 이식 규칙과 같고 순위 글자 불변, NA 맨 뒤, QGV 층 구분, 머리 단추 = 선택, `aria-sort`, 한 방향 정렬은 방향 단추 꺼짐, 기본 정렬 복귀, 시총은 Universe 읽기 전 꺼짐), 모집단 상자, 필터(줄만 숨김, 분류 자료 없음, nvda는 TARGET 분류, 유형 선택지 = type_config 이름, 모두 풀기, 휴대폰 패널), 수익률(읽기 전 문구, 결정 대기 칩, 불러오기 단추의 이유 PRICE_TABS_OFF·AUTH_REQUIRED·SHEET_NOT_CONNECTED), 합성 클릭(요청·저장 없음, 코드 글자 없음), 실제 클릭 ①→②→③(③은 Enter 한 번 = 읽기 한 번, M3는 `[data-ram-price]` 글자만, `assertRamOnly`, `leaks()` 없음, 클릭이 쓴 키만 저장), 2.1.6 배지(`provenanceAttrs`)와 저장한 가중치의 미리보기, 2.1.7(`qgv.model`), 다시 온 사용자의 가격 탭으로 수익률(`ReportBenchmarks.priceIndex`와 같음, '분할 미확인', 수익률 순 정렬은 순위 불변), 새로고침 뒤 NA, 실패(404·잘못된 파일·논리 파일 404·계산 중 떠남), 경계(같은 출처, FILES만, 열 때 CORE + 카탈로그 + 이름표만, 클릭 없는 저장 0, blocked 0, 콘솔 오류 0, CSP 0, `[style]` 0, 390 넘침 없음, 누름 대상 44 px, 선택 기업 불변, 보드 예시 값·보이는 사유 코드 없음).
+    - 보드의 '바깥 TARGET인데 Q·G 종합만 있는 행' 사례는 브라우저 fixture로 만들 수 없다: 엄격한 sec-qgv2.json 검증기가 504코드를 모두 요구하고 SEC 밖 TARGET(CIK 없음)에는 자료를 주지 않으므로, 자료가 있는 TARGET은 늘 Universe 코드의 행이다. 그래서 노드 시험(`web_app_qgv_screen_node_test.js`)이 `QgvScores.compute`의 공식 분할로 그 행을 만들어 `exploreGroup` QG_REFERENCE·참고 순서 없음·`listOf` null을 확인한다.
+  - 새 `web_app_qgv_screen_node_test.js`: `screen-qgv-live.js`를 vm에서 불러 이식 함수가 옛 `LeaderboardScreen.sortRows`(qgv·q·g·v·asof·cap 양방향, cap은 READY M3 색인 대역)·`DeviceWatchlist.filter`(ticker·favorites)·`sicOf`·`populationOf`·`classificationOf` 업종·`filterClassifications`와 같은지(리더 출력에 STALE·WITHDRAWN·계산 버전 불일치·단면 밖·SIC '0000'·업종군 null 편집, 각 가지 도달 먼저 확인), `name`은 자기 규칙(보이는 제목, `localeCompare 'ko'`, 동점 티커), 방향 단추는 한 방향 정렬에 null. 결과는 `tools/fixtures/web_app_qgv_screen_expected.json`(옛 함수로 `--write`)과도 비교한다. P3가 옛 파일을 지우면 실시간 비교만 뺀다.
+  - `web_app_qgv_node_test.js`: `model(page)`(순위 없으면 null, 가격으로 순위가 생기면 `officialModel` 투영과 같음, 가격 같은 키 없음, `PAGE_NOT_READY`, 얼림), 새 사유 글(한국어·영어, V 출처 낱말 없음).
+  - `web_app_prices_node_test.js`: `periodReturns`(async, 탭 전 NOT_LOADED·요청 없음, PERIOD_PENDING, ReportBenchmarks와 같은 값, 종목 기호 규칙, 식별 정지가 먼저, SPY 없음·짧은 달력, 얼림, 저장 쓰기 없음, PriceStore 꺼짐이면 탭 없음).
+  - `web_app_reuse_node_test.js`: `LIVE`에 `screen-qgv-live.js`, `SKELETON_MAX_BYTES`에 `screen-qgv.js` 5 KB, 불러올 때 `IS2.qgvLive` = `['leaderboard','helpers']`만, 소스 규칙 'the price view / store facade outside the layer'(`priceView`·`storeFacade`, 허용 prices.js·qgv.js·engines.js; 지금까지 `storeFacade`를 막는 규칙이 없었다).
+  - `web_app_data_layer_browser_test.js` A: `#/qgv`를 열 때 읽는 파일은 `IS2.data.CORE` + `actual-catalog.json` + `company-names-ko.json`만.
+  - 측정(P2-2a, 2026-10-26, 같은 조건 3번 중앙값): 첫 화면 929 ms·첫 전송 30.4 KB·`IS2.ready` 7,598 ms·그때까지 930.5 KB(P2-1 기록 976 ms·27.7 KB·7,432 ms·906.8 KB, 다른 날 다른 실행). 첫 그림 파일 증가는 `screen-qgv.js` 뼈대(326 B → 3,952 B, gzip 245 B → 1,993 B)와 `app.css` 리더보드 규칙(12,479 B → 16,331 B, gzip 3,542 B → 4,449 B), 합쳐 gzip +2.7 KB. 논리 `screen-qgv-live.js`는 첫 그림 뒤에 온다.
+- CI 목록 등록은 Main이 한다(P2-2a는 Main을 대신해 `web_app_qgv_browser_test.js`·`web_app_qgv_screen_node_test.js`를 등록했다).
