@@ -7,7 +7,8 @@
 //    layer loads after the first paint, so every open and reload here awaits IS2.ready before it uses the layer).
 //  - A (no user action): opening a route reads only what its screen asks for (each route opened in a fresh load, and again on
 //    a route change before the test's own call): the placeholder menus nothing, 0. 기업 검색 home only the three static files of
-//    its company index (P2-1), the company page public files in IS2.data.FILES; every route can call IS2.data.ready() / IS2.qgv.page() and gets the same page; each render's
+//    its company index (P2-1), the company page public files in IS2.data.FILES, 1. QGV (P2-2a) only IS2.data.CORE + actual-catalog.json +
+//    company-names-ko.json (its leaderboard: IS2.qgv.page() and the reviewed names); every route can call IS2.data.ready() / IS2.qgv.page() and gets the same page; each render's
 //    route.signal is aborted by the next one and the device chip's subscription ends with it; requests stay same-origin and
 //    every data request is a name in IS2.data.FILES; read-only layer calls add no request either; zero Sheets / OAuth /
 //    Worker / Google requests, zero localStorage / sessionStorage / IndexedDB, action.blocked() 0; every row is the temporary
@@ -211,7 +212,9 @@ async function scores(page) {
     assert.equal(routes.length, 9 + 1 + 7 + 1);
     const settle = () => page.evaluate(() => new Promise((r) => setTimeout(r, 100)));
     // The files a route's screen may read when it opens (P2-1: 0. 기업 검색 and its company page); every other route reads nothing.
-    const opens = (hash, names) => (hash === '#/' || hash === '#/nowhere/x' ? names.filter((n) => !HOME_READS.includes(n)) : hash.startsWith('#/company/') ? names.filter((n) => !FILES.has(n)) : names);
+    const QGV_READS = [...(await page.evaluate(() => window.IS2.data.CORE)), 'actual-catalog.json', 'company-names-ko.json'];
+    const opens = (hash, names) => (hash === '#/' || hash === '#/nowhere/x' ? names.filter((n) => !HOME_READS.includes(n)) : hash.startsWith('#/company/') ? names.filter((n) => !FILES.has(n))
+      : hash === '#/qgv' ? names.filter((n) => !QGV_READS.includes(n)) : names);
     for (const hash of routes) {
       phase = 'A fresh ' + hash;
       const at0 = rec.log.length;

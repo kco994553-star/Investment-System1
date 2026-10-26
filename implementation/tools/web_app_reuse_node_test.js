@@ -5,8 +5,8 @@
 //    page), then loader.js LOAD_ORDER after the first paint: the 60 old engines/readers (old page's relative order, each once;
 //    home-quotes.js for the home's investor story, P2-1, Main)
 //    and the P1 layer (action → data → prices → store → qgv → engines), then the screens' after-first-paint halves (web_app
-//    files, P2-1: screen-search-live.js; a screen's first-paint file holds only its skeleton and stays small, screen-search.js
-//    ≤ 5 KB). LOAD_ORDER is the one load list: the loader's runtime list, tools/web_app_reuse.js and tools/build_web_app.py
+//    files, P2-1: screen-search-live.js; P2-2a: screen-qgv-live.js; a screen's first-paint file holds only its skeleton and stays
+//    small, screen-search.js and screen-qgv.js ≤ 5 KB). LOAD_ORDER is the one load list: the loader's runtime list, tools/web_app_reuse.js and tools/build_web_app.py
 //    read the same literal.
 //  - A name present in web_app wins and is never reused (screen-detail.js); every other script is an old web_assets file.
 //    tools/build_web_app.py applies the same rule, keeps the reused files byte-identical, removes every other old frontend
@@ -63,8 +63,8 @@ const REUSED = [
 ];
 const P1 = ['action.js', 'data.js', 'prices.js', 'store.js', 'qgv.js', 'engines.js'];
 // The screens' after-first-paint halves (web_app files, loaded after the layer; P1_DATA_LAYER.md §1.1 screen-file rule).
-const LIVE = ['screen-search-live.js'];
-const SKELETON_MAX_BYTES = { 'screen-search.js': 5 * 1024 };
+const LIVE = ['screen-search-live.js', 'screen-qgv-live.js'];
+const SKELETON_MAX_BYTES = { 'screen-search.js': 5 * 1024, 'screen-qgv.js': 5 * 1024 };
 const LANES = ['qgv', 'technical', 'macro', 'news', 'portfolio', 'prompts', 'tree', 'lab'].map((id) => 'screen-' + id + '.js');
 const P0_SCREENS = ['screen-search.js', 'screen-menus.js', 'screen-detail.js', 'boot.js'];
 const LOADER = 'loader.js';
@@ -353,7 +353,8 @@ const RULES = [
   ['price fetch outside prices.js and engines.js', /\bfetch\s*:\s*true\b/, ['prices.js', 'engines.js']],
   ['Google session outside prices.js', /\bsessionFor\(/, ['prices.js']],
   ['engine rows / score view outside qgv.js and engines.js', /\b(?:forEngines|engineInputs)\(|\bscoreView\b/, ['qgv.js', 'engines.js']],
-  ['the price view outside prices.js and engines.js', /\bpriceView\b/, ['prices.js', 'engines.js']],
+  // P2-2a: storeFacade (PriceStore as the old modules see it) was covered by no rule; screens never touch it either.
+  ['the price view / store facade outside the layer', /\bpriceView\b|\bstoreFacade\b/, ['prices.js', 'qgv.js', 'engines.js']],
   ['old paths that bypass the price view', /\bautoLoad\b|\blatestPublished\b|\bStatRadar\b|\bDataRefresh\.attach\b|\b(PrivateSubsetView|TargetV1Screen|PriceStore|VirtualLedgerSheets)\.mount\w*\(/, []],
   // DeviceActual's own screen runs on the real window (host.ownerDocument.defaultView) and saves, imports and deletes the holdings
   // together with the stopped quote record; its quote import writes that record (DC-18). Holdings writes go through the store.
@@ -600,6 +601,7 @@ test('loader: a hidden page loads at once (it paints nothing); the screen files 
   for (const name of [...LANES, 'screen-search.js', 'screen-menus.js', 'screen-detail.js', ...LIVE]) vm.runInNewContext(fs.readFileSync(R.newPath(name), 'utf8'), { window: { IS2 }, Object }, { filename: name });
   assert.deepEqual(touched, [], 'screens read the layer at render time only (through the facades before IS2.ready)');
   assert.deepEqual(Object.keys(IS2.searchLive), ['home', 'company'], 'screen-search-live.js only hands its two fillers to the skeleton');
+  assert.deepEqual(Object.keys(IS2.qgvLive), ['leaderboard', 'helpers'], 'screen-qgv-live.js only hands its filler and its pure helpers');
 });
 
 test('the first screen never waits for the fonts: every @font-face swaps (or is optional), nothing is preloaded', () => {
