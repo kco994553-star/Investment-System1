@@ -1,5 +1,5 @@
 {
-  "spec_id": "qgv-backtest-standard/2026-10-26.2",
+  "spec_id": "qgv-backtest-standard/2026-10-26.3",
   "status": "RESEARCH_SPEC_NOT_PERFORMANCE_VALIDATED",
   "source": {
     "repository": "kco994553-star/Investment-System1",
@@ -10,23 +10,63 @@
     "score_version": "qgv-v2"
   },
   "period": {
-    "first_fill": "2016-02-16",
+    "first_fill": "2000-02-22",
     "last_mark": "2025-12-31",
-    "warmup": "FACTOR_SPECIFIC_AT_LEAST_FIVE_YEARS_WHEN_REQUIRED",
+    "warmup": "TARGET_PRE_2000_AS_FILED_PIT_DATA_BACK_TO_1995_WHEN_REQUIRED; NEVER_INFER_AVAILABILITY",
     "development_years": [
-      2016,
-      2019
+      2000,
+      2011
     ],
     "temporal_review_years": [
-      2020,
-      2022
+      2012,
+      2019
     ],
     "final_candidate_years": [
-      2023,
+      2020,
       2025
     ],
     "holdout_status": "UNCONFIRMED_DO_NOT_ACCESS",
-    "no_silent_period_shortening": true
+    "no_silent_period_shortening": true,
+    "regime_windows": [
+      {
+        "start": "2000-02-22",
+        "end": "2002-12-31",
+        "label": "DOT_COM_BUST"
+      },
+      {
+        "start": "2003-01-01",
+        "end": "2007-12-31",
+        "label": "PRE_GFC"
+      },
+      {
+        "start": "2008-01-01",
+        "end": "2009-12-31",
+        "label": "GLOBAL_FINANCIAL_CRISIS"
+      },
+      {
+        "start": "2010-01-01",
+        "end": "2019-12-31",
+        "label": "POST_GFC_EXPANSION"
+      },
+      {
+        "start": "2020-01-01",
+        "end": "2021-12-31",
+        "label": "COVID"
+      },
+      {
+        "start": "2022-01-01",
+        "end": "2025-12-31",
+        "label": "INFLATION_TIGHTENING_AND_AFTER"
+      }
+    ],
+    "long_horizon_optional": {
+      "target_start": "1990-01-01",
+      "target_end": "1999-12-31",
+      "status": "DATA_GATED_SEPARATE_DIAGNOSTIC_NOT_MAIN",
+      "price_total_return_asof_required": true,
+      "constitituent_history_required": true,
+      "as_filed_fundamentals_required": true
+    }
   },
   "universe": {
     "basis": "HISTORICAL_SP500_MEMBERSHIP",
