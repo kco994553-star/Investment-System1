@@ -179,6 +179,16 @@ test('production calc_version: valid mixed rows and another number-check version
  assert.equal(B.numberCheck(calc,passed(calc)).ok,true);
 });
 
+test('finalize: a listing-ended NA row (CIK_UNRESOLVED, last acquired_at kept, no calc_version) is a normal NA, never stale (2026-10-25 B-a)',()=>{
+ // sec_universe_shares.LISTING_ENDED_CODES (NASDAQ:WBD): the row keeps its last acquired_at (freshness guard: EQUAL, never
+ // LOST_RECORD) but has no value, so publishedCheck counts it as a normal NA; the same old row while still valued blocks.
+ const u=wide(40),old='2026-10-01T03:15:35Z',ended=r=>{NA_ROW(r);r.reason_codes=['CIK_UNRESOLVED'];r.acquired_at=old;};
+ const chk=B.publishedCheck(published({u,patch:{'NYSE:P500':ended}}),{date:'2026-10-15'});
+ assert.deepEqual([chk.ok,chk.reasons,chk.na_rows,chk.stale_rows,chk.mixed_rows,chk.q,chk.g,chk.oldest_acquired],[true,[],1,0,0,503,503,ACQ]);
+ const kept=B.publishedCheck(published({u,patch:{'NYSE:P500':r=>{r.acquired_at=old;}}}),{date:'2026-10-15'});
+ assert.deepEqual([kept.ok,kept.reasons,kept.na_rows,kept.stale_rows,kept.oldest_acquired],[false,['ROW_DATA_STALE'],0,1,old]);
+});
+
 test('finalize: cards, shortfall, limits, LATEST file (calc_version, row freshness 7 days, Q·G 90%), draft basis, safety re-check, number check',async()=>{
  assert.equal(Object.hasOwn(CFG,'number_check_passed'),false);assert.deepEqual(CFG.number_check.result,{calc_version:'qgv2-calc/2026-10-17.1',passed:true,date:'2026-10-23',companies:10});assert.equal(CFG.number_check.companies_required,10);
  assert.equal(CFG.status,'v0');assert.equal(CFG.calibration,'UNCALIBRATED');assert.equal(CFG.finalize_check.freshness_max_days,7);assert.equal(CFG.finalize_check.freshness_basis,'ROW_ACQUIRED_AT');

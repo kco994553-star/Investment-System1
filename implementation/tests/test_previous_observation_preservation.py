@@ -294,7 +294,7 @@ def rows(folder, name):
 
 COLLECTION = re.compile(r'SEC_UNIVERSE_COLLECTION shard=(?:\d+|all)/7 issuers=\d+ collected=\d+ failed=\d+ unresolved_codes=\d+ '
                         r'preserved_previous_shares=\d+ preserved_previous_qg=\d+ preserved_previous_qgv2=\d+ '
-                        r'preserved_unconfirmed=\d+ identity_not_preserved=\d+')
+                        r'preserved_unconfirmed=\d+ identity_not_preserved=\d+ listing_ended=\d+')
 
 
 def collection_counts(out):
@@ -560,3 +560,111 @@ def test_g_a_preserved_row_of_an_older_calc_version_stays_outside_the_ranking(tm
     assert 'CALC_VERSION_MIXED' in fl.observation_basis(screen, day(1).date())['evaluation']['reasons']
     code, out = guard_against(day1, day0, capsys)
     assert code == 0 and ' rows_regressed=0 ' in out
+
+
+# ---- (h) a listing move bound by a CIK-pinned alias (NASDAQ:PSKY -> NYSE SKYD, sec_universe_collection.ALIAS_ISSUER_CIKS) ----
+MOVED_TICKER = 'QQ' + 'ZZ'   # a ticker no Universe code uses, on the other venue (synthetic stand-in for SKYD)
+OUTSIDE_SPEC = len(us.universe_codes()) - len(AS.SPEC)   # Universe codes the synthetic ticker file never lists
+
+
+class Moved(Sec):
+    """The issuer `moved` now lists `MOVED_TICKER` on NYSE in SEC's ticker file (held by `holder`, default the same
+    CIK, plus any CIKs in `also`) and in its own submissions; its former ticker is gone from both, as for PSKY after
+    2026-10-06."""
+
+    def __init__(self, *, moved, holder=None, also=(), **kwargs):
+        super().__init__(hidden={moved}, **kwargs)
+        self.moved, self.holder, self.also = moved, holder or moved, tuple(also)
+
+    def ticker_body(self):
+        body = json.loads(super().ticker_body())
+        for cik in (self.holder, *self.also):
+            body['data'].append([int(cik), 'Synthetic', MOVED_TICKER, 'NYSE'])
+        return json.dumps(body).encode()
+
+    def transport(self, url, *, headers, timeout, max_body_bytes):
+        response = super().transport(url, headers=headers, timeout=timeout, max_body_bytes=max_body_bytes)
+        if url.endswith('company_tickers_exchange.json') or 'companyfacts' in url or url.split('CIK')[-1].split('.')[0] != self.moved:
+            return response
+        subs = json.loads(response.body)
+        return SecResponse(200, json.dumps(dict(subs, tickers=[MOVED_TICKER], exchanges=['NYSE'])).encode(), final_url=url)
+
+
+def moved_issuer():
+    n = next(k for k in range(1, 8) if any(AS.CODE[c].startswith('NASDAQ:') for c in members(k)))
+    return n, next(c for c in members(n) if AS.CODE[c].startswith('NASDAQ:'))
+
+
+def pin_alias(monkeypatch, code, cik):
+    from investment_system.providers import sec_universe_collection as suc
+    monkeypatch.setattr(suc, 'VENUE_CODE_ALIASES', {**suc.VENUE_CODE_ALIASES, ('NYSE', MOVED_TICKER): code})
+    monkeypatch.setattr(suc, 'ALIAS_ISSUER_CIKS', {**suc.ALIAS_ISSUER_CIKS, ('NYSE', MOVED_TICKER): cik})
+
+
+def test_h_listing_move_alias_recollects_qg_rows_and_keeps_the_unconfirmed_shares_row(tmp_path, capsys, baseline, monkeypatch):
+    """(h) The moved issuer binds again through its CIK-pinned alias: the code is no longer unresolved, so sec-qg and
+    sec-qgv2 (issuer-level CIK bytes, no ticker check) are new observations of the same CIK with a new acquired_at and
+    the current calc_version. The shares path (M3 adapter: the code's own ticker on the code's venue in the
+    submissions) is not confirmed, so the verified shares row of day 0 stays unchanged (PRESERVE) and ages by its own
+    acquired_at. The public code is unchanged; the guard passes."""
+    day0, _ = baseline
+    n, m = moved_issuer()
+    code_m = AS.CODE[m]
+    pin_alias(monkeypatch, code_m, m)
+    capsys.readouterr()
+    later = run(tmp_path, 'moved', Moved(moved=m), n, previous=day0)
+    counts = collection_counts(capsys.readouterr().out)
+    assert counts['unresolved_codes'] == str(OUTSIDE_SPEC) and counts['failed'] == '0' and counts['identity_not_preserved'] == '0'
+    for name in (uqg.FILENAME, qgv2.FILENAME):
+        row = rows(later, name)[code_m]
+        assert row['cik'] == m and row['acquired_at'] > rows(day0, name)[code_m]['acquired_at']
+    assert rows(later, qgv2.FILENAME)[code_m]['calc_version'] == vf.CALC_VERSION
+    assert rows(later, us.FILENAME)[code_m] == rows(day0, us.FILENAME)[code_m]
+    assert counts['preserved_previous_shares'] == '1' and counts['preserved_unconfirmed'] == '1'
+    assert counts['preserved_previous_qg'] == counts['preserved_previous_qgv2'] == '0'
+    code, out = guard_against(later, day0, capsys)
+    assert code == 0 and ' rows_regressed=0 ' in out
+
+
+def test_h_listing_move_alias_claimed_by_another_cik_binds_nothing(tmp_path, capsys, baseline, monkeypatch):
+    """(h) The moved pair is listed by another CIK alone: the alias binds nothing, the code is unresolved (not a conflict),
+    nobody else's bytes are collected for it and the verified day-0 rows of the pinned issuer stay in all three files."""
+    day0, _ = baseline
+    n, m = moved_issuer()
+    code_m = AS.CODE[m]
+    pin_alias(monkeypatch, code_m, m)
+    stranger = fresh_cik(shard_today(n))
+    capsys.readouterr()
+    sec = Moved(moved=m, holder=stranger)
+    later = run(tmp_path, 'stranger', sec, n, previous=day0)
+    counts = collection_counts(capsys.readouterr().out)
+    assert counts['unresolved_codes'] == str(OUTSIDE_SPEC + 1) and counts['identity_not_preserved'] == '0'
+    assert not [u for u, _, _ in sec.calls if stranger in u or m in u]
+    for name in UNIVERSE:
+        assert rows(later, name)[code_m] == rows(day0, name)[code_m]
+    assert counts['preserved_previous_shares'] == counts['preserved_previous_qg'] == counts['preserved_previous_qgv2'] == '1'
+    code, out = guard_against(later, day0, capsys)
+    assert code == 0 and ' rows_regressed=0 ' in out
+
+
+def test_h_listing_move_alias_claimed_by_the_pinned_and_another_cik_is_withdrawn(tmp_path, capsys, baseline, monkeypatch):
+    """(h) The moved pair is listed by the pinned CIK and by another CIK: one ticker claimed by several CIKs is an
+    identity conflict (UNI-WITHDRAWN (a), as for the CBOE pair), so the pinned issuer's day-0 rows are withdrawn, never
+    preserved, and nobody's bytes are collected for the code."""
+    day0, _ = baseline
+    n, m = moved_issuer()
+    code_m = AS.CODE[m]
+    pin_alias(monkeypatch, code_m, m)
+    stranger = fresh_cik(shard_today(n))
+    capsys.readouterr()
+    sec = Moved(moved=m, also=[stranger])
+    later = run(tmp_path, 'both', sec, n, previous=day0)
+    counts = collection_counts(capsys.readouterr().out)
+    assert counts['unresolved_codes'] == str(OUTSIDE_SPEC + 1) and counts['preserved_unconfirmed'] == '0'
+    assert not [u for u, _, _ in sec.calls if stranger in u or m in u]
+    for name in UNIVERSE:
+        row = rows(later, name)[code_m]
+        assert row['reason_codes'] == [us.WITHDRAWN_REASON] and row['acquired_at'] is None and row['cik'] is None
+        assert (row['withdrawn_acquired_at'], row['withdrawn_cik']) == (rows(day0, name)[code_m]['acquired_at'], m)
+    code, out = guard_against(later, day0, capsys)
+    assert code == 0 and all(section_line(out, name, 'records')['withdrawn'] == '1' for name in UNIVERSE)

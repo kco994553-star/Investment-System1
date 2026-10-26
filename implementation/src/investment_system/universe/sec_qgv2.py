@@ -18,6 +18,8 @@ validators (Python here, JS web_assets/sec-qgv2.js) recompute and compare them.
 
 Universe identity conflicts without this run's collection withdraw a kept row with a collection record (owner decision
 UNI-WITHDRAWN (a): `sec_universe_shares.withdrawal`, UNIVERSE_WITHDRAWAL_KEYS), like the TARGET withdrawal below.
+A code of the reviewed listing-ended table (`sec_universe_shares.LISTING_ENDED_CODES`, checked before PRESERVE) is a
+reasoned NA row: CIK_UNRESOLVED, no values/scores/calc_version, the last observation's cik, acquired_at and hashes kept.
 
 Never: prices, price-derived values, market caps, ranks or 0-filled missing values.
 """
@@ -32,8 +34,8 @@ import re
 from ..qgv import v2_factors as vf
 from ..qgv import v2_scoring as vs
 from . import sec_universe_shares as _us
-from .sec_universe_shares import (IDENTITY_CONFLICT, PRESERVE, _clock, _hash, _iso, load_config, note, previous_decision, replaces,
-                                   universe_codes)
+from .sec_universe_shares import (IDENTITY_CONFLICT, LISTING_ENDED, PRESERVE, _clock, _hash, _iso, ended_row, load_config, note,
+                                   previous_decision, replaces, universe_codes)
 
 FILENAME = 'sec-qgv2.json'
 KIND = 'SEC_QGV2'
@@ -301,6 +303,10 @@ def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unreso
         note(stats, decision, code, old)
         if decision == PRESERVE:
             chosen = old
+        elif decision == LISTING_ENDED:
+            # Listing ended (sec_universe_shares.LISTING_ENDED_CODES): NA with CIK_UNRESOLVED, no metrics, scores or
+            # calc_version; the last observation's cik, acquired_at and hashes stay. Outside the cross-section.
+            chosen = ended_row(old, empty_record)
         elif decision == IDENTITY_CONFLICT and (new is None or not observed(new)):
             # Identity conflict without this run's collection: this file's kept observation is withdrawn (UNI-WITHDRAWN);
             # without one, unresolved (no row this run) or this run's NA row, never an invented time.
@@ -311,7 +317,8 @@ def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unreso
             chosen = new
         else:
             chosen = _pick(old, new, as_of, stale_after, cut, sic_cfg)
-        if new is None and code in unresolved and not _has_data(chosen) and decision != PRESERVE and not is_withdrawal(chosen):
+        if (new is None and code in unresolved and not _has_data(chosen) and decision not in (PRESERVE, LISTING_ENDED)
+                and not is_withdrawal(chosen)):
             chosen = empty_record(reasons=('CIK_UNRESOLVED',))
         records[code] = restate(chosen, as_of, stale_after)
     kept_target = (previous or {}).get('target') or {}

@@ -45,6 +45,9 @@ and QGV v2 separately; counts only).
 # acquired_at (nothing invented). Each summary line counts withdrawn rows. Owner rule 2026-10-17 (later): a row of a successful
 # collection replaces the kept row also when it is NOT_AVAILABLE or INVALID_INPUT (daily and --all-shards alike).
 # `SEC_UNIVERSE_COLLECTION` counts new collections, failures and published rows of an earlier run.
+# Listing ended (STALE_REPORT 2026-10-25 option B-a): a code of the reviewed LISTING_ENDED_CODES table whose kept row is a
+# verified observation of the listed CIK is published in all three files as a reasoned NA row (CIK_UNRESOLVED, no values,
+# last cik/acquired_at/hashes kept), checked before PRESERVE; the collection line counts it as listing_ended.
 import argparse
 from datetime import datetime, timezone
 import hashlib
@@ -553,13 +556,16 @@ def collection_line(scope, *, issuers, collected, failed, unresolved, attempted,
     preserved_previous_<file>: codes attempted by this run (its shards plus today's unresolved codes) whose published
     row is an earlier run's collection record. preserved_unconfirmed / identity_not_preserved: distinct codes the
     merges kept across a collection/identification failure, and codes whose earlier record of another identity was not
-    carried (any of the three files)."""
+    carried (any of the three files). listing_ended: distinct codes published as a listing-ended NA row
+    (LISTING_ENDED_CODES); such a row keeps its last acquired_at, so it is still counted in preserved_previous_<file>
+    (approved entries are the baseline of the daily check: 1 for NASDAQ:WBD)."""
     codes = set(attempted) | set(unresolved)
     union = lambda key: len(set().union(*(s.get(key, set()) for s in stats.values())))
     return (f"SEC_UNIVERSE_COLLECTION {scope} issuers={issuers} collected={collected} failed={failed} "
             f"unresolved_codes={len(unresolved)} "
             + ' '.join(f'preserved_previous_{name}={_count(preserved_previous(p, u, codes))}' for name, p, u in files)
-            + f" preserved_unconfirmed={union('preserved')} identity_not_preserved={union('identity_not_preserved')}")
+            + f" preserved_unconfirmed={union('preserved')} identity_not_preserved={union('identity_not_preserved')}"
+            + f" listing_ended={union('listing_ended')}")
 
 
 def withdrawal_line(scope, stats):
