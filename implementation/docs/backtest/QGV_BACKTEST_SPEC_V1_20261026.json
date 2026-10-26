@@ -1,5 +1,5 @@
 {
-  "spec_id": "qgv-backtest-standard/2026-10-26.3",
+  "spec_id": "qgv-backtest-standard/2026-10-26.4",
   "status": "RESEARCH_SPEC_NOT_PERFORMANCE_VALIDATED",
   "source": {
     "repository": "kco994553-star/Investment-System1",
@@ -10,15 +10,15 @@
     "score_version": "qgv-v2"
   },
   "period": {
-    "first_fill": "2000-02-22",
+    "first_fill": "1980-02-19",
     "last_mark": "2025-12-31",
-    "warmup": "TARGET_PRE_2000_AS_FILED_PIT_DATA_BACK_TO_1995_WHEN_REQUIRED; NEVER_INFER_AVAILABILITY",
+    "warmup": "TARGET_AS_FILED_PIT_DATA_BACK_TO_1975_IF_AVAILABLE; NEVER_INFER_AVAILABILITY_OR_SUBSTITUTE_PROXIES",
     "development_years": [
-      2000,
-      2011
+      1980,
+      2009
     ],
     "temporal_review_years": [
-      2012,
+      2010,
       2019
     ],
     "final_candidate_years": [
@@ -28,6 +28,16 @@
     "holdout_status": "UNCONFIRMED_DO_NOT_ACCESS",
     "no_silent_period_shortening": true,
     "regime_windows": [
+      {
+        "start": "1980-02-19",
+        "end": "1989-12-31",
+        "label": "1980S_INFLATION_AND_CRASH_1987"
+      },
+      {
+        "start": "1990-01-01",
+        "end": "1999-12-31",
+        "label": "1990S_EXPANSION_AND_TECH_BUBBLE"
+      },
       {
         "start": "2000-02-22",
         "end": "2002-12-31",
@@ -60,13 +70,29 @@
       }
     ],
     "long_horizon_optional": {
-      "target_start": "1990-01-01",
-      "target_end": "1999-12-31",
-      "status": "DATA_GATED_SEPARATE_DIAGNOSTIC_NOT_MAIN",
-      "price_total_return_asof_required": true,
-      "constitituent_history_required": true,
-      "as_filed_fundamentals_required": true
-    }
+      "target_start": "1926-01-01",
+      "target_end": "1979-12-31",
+      "status": "SEPARATE_HISTORICAL_FACTOR_PROXY_RESEARCH_ONLY_NOT_QGV_V2",
+      "same_15_factors_unless_full_pit_proven": true
+    },
+    "data_feasibility_ladder": [
+      {
+        "start": "1980-02-19",
+        "end": "2025-12-31",
+        "label": "TARGET_QGV_V2",
+        "requires": "ALL_15_FACTOR_PIT_NO_LOOKAHEAD"
+      },
+      {
+        "start": "2000-02-22",
+        "end": "2025-12-31",
+        "label": "SECONDARY_DIAGNOSTIC_NOT_TARGET"
+      },
+      {
+        "start": "2016-02-16",
+        "end": "2025-12-31",
+        "label": "DATA_LIMITED_DIAGNOSTIC_NOT_TARGET"
+      }
+    ]
   },
   "universe": {
     "basis": "HISTORICAL_SP500_MEMBERSHIP",
