@@ -78,7 +78,7 @@
 | 7.1 프롬프트 라이브러리 | 구현 | — | `research-bridge.js`(★·내 사본 = 이 브라우저) | 새 영역 목록 PROMPT-DOMAIN |
 | 8.1 전체 구조 트리 | 구현 | 실 | `ia-screens.js`(system) | 8.1.3 구현 상태 표시를 이 문서와 맞추기 |
 | 9.1 백테스트 | 신규 · 결정 | — | `screen-detail.js`(준비 목록), `docs/backtest/*` | BT-1~17·MD-1~12 결정, 과거 자료 확보 |
-| 9.2 전진검증 | 구현 | 실 | `forward-validation.js`, `tools/forward_validation_ledger.py` | 연속 성공 2/7(10/23). 배포 실패 뒤 복구 운영 증거는 아직 없음 |
+| 9.2 전진검증 | 구현 | 실 | `forward-validation.js`, `tools/forward_validation_ledger.py` | 연속 성공 3/7(10/24분, run 40146210895; 10/25 Actions 확인). 배포 실패 뒤 복구 운영 증거는 아직 없음 |
 | 공통: 계정 동기화 | 신규 · 결정 | — | DRAW-STORE, IA-6 | 지금은 이 브라우저 + 내보내기·가져오기 |
 
 ## 1-2. 새 프론트엔드(v2) 진행
@@ -87,8 +87,8 @@
 
 | 번호 | v2 상태 |
 | --- | --- |
-| 1.1.1 · 1.1.2 · 1.1.3 · 1.1.4 | v2: P1 자료층(#397: `data.static`·`qgv.row`·`store.prefs`). 화면 P2-1 PR(병합 대기, 가지 `claude/frontend-v2-p2-1-home`): 기업 검색(정적 공개 파일 3개로 만든 색인, 콤보 상자), 최근 검색(옛 키 그대로, 고른 클릭에서만 저장, `store.recent`·`pushRecent`·`clearRecent`), 즐겨찾기 ★·개발자 기본값(TARGET 19, 기본값이라고 표시), 명언·이야기(`home-quotes.js` 재사용), 기업 통합 진입(카드 5개, 선택 기업 RAM 유지 `IS2.selection`) |
-| 2.1.1~2.1.7 · 2.2 · 2.3.1 · 2.4.2~2.4.4 · 2.5 | v2: P1 자료층(#397: `qgv`(임시 V)·`store.weights`·`data`), 화면 P2-2. 정렬·필터·레이더는 옛 함수를 P2-2에서 재사용. 순위 문구 "임시 V 기준 순위 · 공식 순위 아님"(P1D) |
+| 1.1.1 · 1.1.2 · 1.1.3 · 1.1.4 | v2: P1 자료층(#397: `data.static`·`qgv.row`·`store.prefs`). 화면 P2-1 #408 병합(2026-10-25 `a7a2f32d`, 배포 안 됨 — P3 전환 때 배포): 기업 검색(정적 공개 파일 3개로 만든 색인, 콤보 상자), 최근 검색(옛 키 그대로, 고른 클릭에서만 저장, `store.recent`·`pushRecent`·`clearRecent`), 즐겨찾기 ★·개발자 기본값(TARGET 19, 기본값이라고 표시), 명언·이야기(`home-quotes.js` 재사용), 기업 통합 진입(카드 5개, 선택 기업 RAM 유지 `IS2.selection`) |
+| 2.1.1~2.1.7 · 2.2 · 2.3.1 · 2.4.2~2.4.4 · 2.5 | v2: P1 자료층(#397: `qgv`(임시 V)·`store.weights`·`data`), 화면 P2-2(2.1 리더보드 P2-2a 명세 작성 중, 가지 push 전). 정렬·필터·레이더는 옛 함수를 P2-2에서 재사용. 순위 문구 "임시 V 기준 순위 · 공식 순위 아님"(P1D) |
 | 3.1 · 3.3 | v2: P1 자료층(#397: `prices.history`, 클릭 때만), 화면 P2-3. 3.3 사용자 그림은 백업 /5로 복원(P1D, 옛 검증기 재사용) |
 | 4.1.4 | v2: P1 자료층(#397: `engines.macro`), 화면 P2-4 |
 | 5.2.1 | v2: P1 자료층(#397: `data.list`), 화면 P2-5 |
