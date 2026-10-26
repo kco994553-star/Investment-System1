@@ -1,5 +1,5 @@
 {
-  "spec_id": "qgv-backtest-standard/2026-10-26.4",
+  "spec_id": "qgv-backtest-standard/2026-10-26.5",
   "status": "RESEARCH_SPEC_NOT_PERFORMANCE_VALIDATED",
   "source": {
     "repository": "kco994553-star/Investment-System1",
@@ -39,7 +39,7 @@
         "label": "1990S_EXPANSION_AND_TECH_BUBBLE"
       },
       {
-        "start": "2000-02-22",
+        "start": "2000-01-01",
         "end": "2002-12-31",
         "label": "DOT_COM_BUST"
       },
@@ -180,14 +180,15 @@
     "double_count_with_adjusted_total_return": false
   },
   "benchmark": {
-    "primary": "SPY_DIVIDEND_REINVESTED_TOTAL_RETURN",
-    "initial_entry_cost": "SAME_ONE_WAY_ASSUMPTION",
+    "primary": "SP500_DIVIDEND_REINVESTED_TOTAL_RETURN_IF_LICENSED",
+    "initial_entry_cost": "SHOW_RAW_INDEX_AND_SAME_ONE_WAY_HYPOTHETICAL_ENTRY_COST_SEPARATELY",
     "same_period_and_currency": true,
     "secondary": [
       "ELIGIBLE_UNIVERSE_EQUAL_WEIGHT",
       "COMMON_CANDIDATES_EQUAL_WEIGHT"
     ],
-    "sp500_index_total_return": "OPTIONAL_IF_LICENSED_NOT_SILENT_SUBSTITUTE"
+    "sp500_index_total_return": "OPTIONAL_IF_LICENSED_NOT_SILENT_SUBSTITUTE",
+    "diagnostic": "SPY_DIVIDEND_REINVESTED_TOTAL_RETURN"
   },
   "panels": {
     "COMMON": "ASOF_ALL_THREE_AXES_AVAILABLE_FOR_ALL_FOUR_VARIANTS_BEFORE_GATE",
@@ -573,7 +574,13 @@
     "noninferiority_cagr_margin_pp": -1,
     "max_observed_mdd_loss_worsening_pp": 3,
     "max_observed_sharpe_deterioration": 0.1,
-    "threshold_provenance": "RESEARCH_ASSUMPTIONS_NOT_BOOK_RULES"
+    "threshold_provenance": "RESEARCH_ASSUMPTIONS_NOT_BOOK_RULES",
+    "sortino": {
+      "period": "FULL_CALENDAR_MONTHS",
+      "target": "SAME_MONTH_PUBLIC_3M_TBILL_RETURN",
+      "downside_denominator": "ALL_VALID_FULL_MONTHS",
+      "zero_downside": "NA"
+    }
   },
   "safety": {
     "live_scoring_changes": false,
@@ -587,5 +594,31 @@
   "documents": {
     "standard": "QGV_BACKTEST_STANDARD_V1_20261026.md",
     "prompt": "CODEX_QGV_BACKTEST_PROMPT_20261026.md"
+  },
+  "diagnostics": {
+    "type_controls": [
+      {
+        "id": "D0-N15-Q",
+        "axis": {
+          "Q": 34,
+          "G": 33,
+          "V": 33
+        },
+        "inner": "OFFICIAL",
+        "type_weights": false
+      },
+      {
+        "id": "D2-N15-Q",
+        "axis": {
+          "Q": 34,
+          "G": 33,
+          "V": 33
+        },
+        "inner": "EQUAL_20",
+        "type_weights": false
+      }
+    ],
+    "outside_structural_count": true,
+    "inference": "DESCRIPTIVE_NOT_PRIMARY"
   }
 }
