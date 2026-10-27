@@ -1,0 +1,187 @@
+{
+  "spec_id": "qgv-decile/2026-10-27.1",
+  "status": "DESIGN_ONLY_REAL_MARKET_RESULTS_UNAVAILABLE",
+  "base_research_contract": "qgv-backtest-standard/2026-10-26.5",
+  "code_source_pr": 417,
+  "supersedes_existing_fixed_n_contract": false,
+  "source": {
+    "scoring": "QGV_V2_W0",
+    "weights": "OFFICIAL_BALANCED_TYPE_WEIGHTED",
+    "input_mode": "HISTORICAL_POINT_IN_TIME",
+    "tie_breaker": [
+      "SCORE_DESC",
+      "CIK_ASC",
+      "VERIFIED_PERMANENT_SECURITY_ID_ASC"
+    ],
+    "value_trap_gate": true
+  },
+  "universe": {
+    "basis": "HISTORICAL_SP500_MEMBERSHIP",
+    "scored_population": "ISSUER_LEVEL_ONE_CIK",
+    "screen": "PREDECLARED_TRADABLE_ELIGIBLE_ONLY",
+    "minimum_asof_eligible_issuers": 100,
+    "allow_current_universe504_as_historical": false,
+    "exclude_missing_scores_from_bottom_decile": true,
+    "security_mapping": "SAME_AS_BASE_PR417"
+  },
+  "panels": [
+    {
+      "id": "PANEL_FULL_QGV",
+      "role": "PRIMARY",
+      "eligibility": "Q_G_V_EACH_AXIS_COMPUTABLE_USING_OFFICIAL_COVERAGE_RULES",
+      "financial_v_na_policy": "EXCLUDE_AND_REPORT"
+    },
+    {
+      "id": "PANEL_OPERATIONAL_ELIGIBLE",
+      "role": "DIAGNOSTIC",
+      "eligibility": "OFFICIAL_COMPOSITE_SCORE_COMPUTABLE_ASOF",
+      "report_partial_qg_only": true
+    }
+  ],
+  "deciles": {
+    "decile_count": 10,
+    "ranking": "HIGHER_SCORE_BETTER",
+    "best": "D1",
+    "worst": "D10",
+    "formula": "1 + floor(10*(rank_1based-1)/eligible_count)",
+    "zero_based_count_difference_at_most_one": true,
+    "recompute_every_rebalance": true,
+    "ties": "SCORE_DESC_CIK_ASC_PERMANENT_ID_ASC_RECORD_BOUNDARY_TIE",
+    "n_not_fixed": true
+  },
+  "strategies": [
+    {
+      "id": "DEC-W0-Q",
+      "weight_variant": "W0",
+      "rebalance": "QUARTERLY",
+      "long_only_deciles": [
+        "D1",
+        "D2",
+        "D3",
+        "D4",
+        "D5",
+        "D6",
+        "D7",
+        "D8",
+        "D9",
+        "D10"
+      ],
+      "primary_hypothesis": "D1_VS_D10_AND_ELIGIBLE_EQUAL_WEIGHT",
+      "cells": 10
+    },
+    {
+      "id": "DEC-W0-Y",
+      "weight_variant": "W0",
+      "rebalance": "ANNUAL_FEBRUARY",
+      "long_only_deciles": [
+        "D1",
+        "D2",
+        "D3",
+        "D4",
+        "D5",
+        "D6",
+        "D7",
+        "D8",
+        "D9",
+        "D10"
+      ],
+      "role": "CADENCE_SENSITIVITY",
+      "cells": 10
+    }
+  ],
+  "structural_long_only_portfolios": 20,
+  "existing_fixed_n_strategy_count_unchanged": 30,
+  "parameters": {
+    "period_full": [
+      "1980-02-19",
+      "2025-12-31"
+    ],
+    "period_diagnostic": [
+      [
+        "2000-02-22",
+        "2025-12-31"
+      ],
+      [
+        "2016-02-16",
+        "2025-12-31"
+      ]
+    ],
+    "strategy_capital_usd_each": 100000,
+    "within_decile_equal_weight": true,
+    "rebalance_schedule": "INHERIT_BASE_SPEC_QUARTERLY_FEB_MAY_AUG_NOV_AND_ANNUAL_FEBRUARY",
+    "signal": "PREVIOUS_COMPLETE_SESSION",
+    "fill": "NEXT_ELIGIBLE_SESSION_OPEN",
+    "all_in_cost_bps_each_side": 10,
+    "cost_sensitivity_bps": [
+      0,
+      10,
+      20,
+      25,
+      30
+    ],
+    "cash_taxes_corporate_actions": "INHERIT_BASE_PR417",
+    "delisted_security": "INHERIT_BASE_PR417"
+  },
+  "benchmarks": {
+    "primary": "LICENSED_SP500_DIVIDEND_REINVESTED_TOTAL_RETURN",
+    "secondary": [
+      "PANEL_ELIGIBLE_EQUAL_WEIGHT",
+      "HISTORICAL_UNIVERSE_EQUAL_WEIGHT_IF_AUTHORIZED"
+    ],
+    "spy_since_inception_only": true,
+    "baseline_matching": "SAME_ASOF_AND_VALID_PERFORMANCE_WINDOW"
+  },
+  "tests": {
+    "hypotheses": [
+      "H1_D1_OUTPERFORMS_D10_AFTER_COSTS",
+      "H1_D1_OUTPERFORMS_ELIGIBLE_UNIVERSE_AFTER_COSTS",
+      "H2_DECILE_SCORE_TO_RETURN_MONOTONICITY"
+    ],
+    "rank_correlations": "SPEARMAN_EVALUATE_BY_REBALANCE_AND_OVER_PERIOD",
+    "bootstrap": "PAIRED_MONTHLY_BLOCK_SENSITIVITY",
+    "multiplicity": "PRE_REGISTER_PAIRWISE_AND_TREND_TESTS",
+    "no_automatic_trading": true,
+    "top_minus_bottom": "DESCRIPTIVE_LONG_ONLY_RETURN_DIFFERENCE_NOT_INVESTABLE_LS_CAGR"
+  },
+  "reporting": {
+    "table_ids": [
+      "TABLE-A",
+      "TABLE-B",
+      "TABLE-C",
+      "TABLE-D",
+      "TABLE-E",
+      "TABLE-F"
+    ],
+    "metrics": [
+      "arithmetic_mean_annual_return",
+      "geometric_annual_return_cagr",
+      "median_annual_return",
+      "volatility",
+      "downside_deviation",
+      "max_drawdown",
+      "sharpe",
+      "sortino",
+      "beta",
+      "positive_months",
+      "negative_months",
+      "rolling_1_3_5_10y_min_median_max",
+      "transaction_cost",
+      "annual_turnover",
+      "cash_weight",
+      "eligible_count_by_rebalance",
+      "coverage_by_axis",
+      "decile_gradient_spearman",
+      "time_window_and_data_status"
+    ],
+    "missing_values": "NA_WITH_REASON_NEVER_ZERO_FILL"
+  },
+  "limitations": {
+    "existing_live_code_modified": false,
+    "historical_pit_data_status": "BLOCKED_ON_DATA",
+    "oos_status": "OOS_NOT_ESTABLISHED",
+    "no_fake_numbers": true,
+    "no_paid_data_purchase": true,
+    "real_outputs_private_only": true,
+    "main_review_before_merge": true
+  }
+}
