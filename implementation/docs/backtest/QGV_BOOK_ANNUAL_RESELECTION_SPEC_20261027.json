@@ -1,0 +1,110 @@
+{
+  "spec_id": "qgv-book-annual-reselection/2026-10-27.1",
+  "status": "USER_DIRECTED_RESEARCH_DESIGN_PENDING_IMPLEMENTATION_NOT_LIVE",
+  "provenance": {
+    "book": "What Works on Wall Street Fourth Edition",
+    "annual_reselection_evidence": "https://www.aaii.com/stock-investor-pro/screens?sid=60",
+    "book_month_offsets_reference": "https://www.quant-investing.com/strategies/oshaughnessy-trending-value-investment-strategy",
+    "book_exact_trading_day": "UNCONFIRMED",
+    "old_research_contract": "qgv-backtest-standard/2026-10-26.5",
+    "decile_spec": "qgv-decile/2026-10-27.4",
+    "book_factor_spec": "qgv-book-top-deciles/2026-10-27.2"
+  },
+  "operational_QGV_changed": false,
+  "book_research_primary": "ANNUAL_FULL_RESELECTION",
+  "quarterly_reselection_sensitivity": "FEB_MAY_AUG_NOV_THIRD_MONDAY_HOLIDAY_SHIFT",
+  "single_annual_month": "FEBRUARY_AS_PREEXISTING_RESEARCH_CONTROL_NOT_BOOK_EXACT",
+  "single_annual_signal": "PREVIOUS_COMPLETE_SESSION_AND_PREVIOUS_PUBLIC_FILINGS_ONLY",
+  "single_annual_fill": "NEXT_VERIFIED_ELIGIBLE_OPEN",
+  "trading": "LONG_ONLY_EQUAL_WEIGHT_SELL_EXITS_BUY_ENTRIES_REWEIGHT_CONTINUING_NOT_REWEIGHT_ONLY",
+  "book_monthly_formation_robustness": {
+    "months": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "each_cohort_rescore_frequency_months": 12,
+    "monthly_full_universe_reselection": false,
+    "formation_day": "FIRST_ELIGIBLE_SESSION_RESEARCH_ASSUMPTION",
+    "cash_and_corporate_actions": "INHERIT_PR417_RESEARCH_ENGINE",
+    "source_method_aggregation": "BOOK_EXACT_UNCONFIRMED",
+    "additional_strategies_counted_as_independent": false
+  },
+  "BT01_book_annual_v1": {
+    "new_primary_four_W_N15_yearly": [
+      {
+        "id": "W0-N15-Y",
+        "variant": "W0",
+        "n": 15,
+        "frequency": "ANNUAL_FEBRUARY",
+        "registration": "EXISTING_2026_10_26_5"
+      },
+      {
+        "id": "W1-N15-Y",
+        "variant": "W1",
+        "n": 15,
+        "frequency": "ANNUAL_FEBRUARY",
+        "registration": "NEW_RESEARCH_PROPOSAL_NOT_OLD_30"
+      },
+      {
+        "id": "W2-N15-Y",
+        "variant": "W2",
+        "n": 15,
+        "frequency": "ANNUAL_FEBRUARY",
+        "registration": "NEW_RESEARCH_PROPOSAL_NOT_OLD_30"
+      },
+      {
+        "id": "W3-N15-Y",
+        "variant": "W3",
+        "n": 15,
+        "frequency": "ANNUAL_FEBRUARY",
+        "registration": "EXISTING_2026_10_26_5"
+      }
+    ],
+    "retained_quarterly_control": [
+      "W0-N15-Q",
+      "W1-N15-Q",
+      "W2-N15-Q",
+      "W3-N15-Q"
+    ],
+    "old_30_immutable_in_pr417": true,
+    "additional_unique_strategy_settings": 2,
+    "total_unique_if_all_approved": 32,
+    "versioning": "SEPARATE_RESEARCH_SPEC_MANIFEST_NO_SILENT_OVERWRITE"
+  },
+  "BT02_BT03": {
+    "BT02_decile_primary_ids": [
+      "DEC-ALL-W0-Y",
+      "DEC-SPX-W0-Y"
+    ],
+    "BT02_decile_quarterly_sensitivity_ids": [
+      "DEC-ALL-W0-Q",
+      "DEC-SPX-W0-Q"
+    ],
+    "QGV_decile_cohorts_unchanged": 40,
+    "BT03_factor_annual_primary": true,
+    "BT03_factor_quarterly_sensitivity": true,
+    "book_factor_candidate_cohorts_unchanged": 60,
+    "universe_groups": [
+      "U-BOOK200",
+      "U-SPX-HIST"
+    ],
+    "scoring": "HISTORICAL_PIT_QGV_AND_FACTORS_RECOMPUTED_SEPARATELY_FOR_EACH_UNIVERSE"
+  },
+  "guardrails": {
+    "paid_source_without_approval": false,
+    "data_availability": "BLOCKED_ON_DATA",
+    "book_exactness": "NEEDS_BOOK_TEXT_COMPARISON",
+    "oos": "OOS_NOT_ESTABLISHED",
+    "no_merge_without_permission": true
+  }
+}
