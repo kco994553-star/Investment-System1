@@ -70,3 +70,4 @@ web_app_qgv_node_test.js  # new frontend P1: action gate, strict public data, QG
 web_app_prices_node_test.js  # new frontend P1: click-only prices, device store
 web_app_engines_node_test.js  # new frontend P1: TARGET v1 / playbook / virtual trading / macro wiring
 web_app_qgv_screen_node_test.js  # new frontend P2-2a: leaderboard ports equal the old leaderboard-screen.js functions (and frozen vectors)
+web_app_search_part_node_test.js  # new frontend DC-23: the shared company search (Universe504 only, ticker + English name, listing-ended)

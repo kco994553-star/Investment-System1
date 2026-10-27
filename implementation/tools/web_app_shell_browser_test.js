@@ -49,6 +49,8 @@ let phase = 'START';
       assert.equal(await page.locator('main').getAttribute('data-route'), 'search');
       assert.match(await page.locator('.hero-title').textContent(), /어떤 기업을 볼까요\?/);
       await common();
+      // The shared search (DC-23) submits after IS2.ready (before it a submit does nothing): wait for the layer, then the exact code.
+      await page.evaluate(() => window.IS2.ready);
       await page.locator('[data-search-input]').fill('NYSE:FIX'); await page.locator('[data-search-form] button[type=submit]').click();
       await page.locator('[data-result-code="NYSE:FIX"]').waitFor();
       assert.equal(await page.evaluate(() => location.hash), '#/company/NYSE%3AFIX');
