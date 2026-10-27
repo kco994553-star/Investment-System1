@@ -1,5 +1,5 @@
 {
-  "spec_id": "qgv-decile/2026-10-27.1",
+  "spec_id": "qgv-decile/2026-10-27.2",
   "status": "DESIGN_ONLY_REAL_MARKET_RESULTS_UNAVAILABLE",
   "base_research_contract": "qgv-backtest-standard/2026-10-26.5",
   "code_source_pr": 417,
@@ -13,16 +13,61 @@
       "CIK_ASC",
       "VERIFIED_PERMANENT_SECURITY_ID_ASC"
     ],
-    "value_trap_gate": true
+    "value_trap_gate": true,
+    "research_score_namespace": "RESEARCH_QGV_V2_ALL_US_NOT_OPERATIONAL_UNIVERSE504",
+    "scoring_cross_section": "U-BOOK200_ASOF_ALL_ELIGIBLE_ISSUERS"
   },
   "universe": {
-    "basis": "HISTORICAL_SP500_MEMBERSHIP",
+    "basis": "U-BOOK200_HISTORICAL_US_LISTED_COMMON_STOCKS_CPI_ADJUSTED_CAP_FLOOR",
     "scored_population": "ISSUER_LEVEL_ONE_CIK",
     "screen": "PREDECLARED_TRADABLE_ELIGIBLE_ONLY",
     "minimum_asof_eligible_issuers": 100,
     "allow_current_universe504_as_historical": false,
     "exclude_missing_scores_from_bottom_decile": true,
-    "security_mapping": "SAME_AS_BASE_PR417"
+    "security_mapping": "SAME_AS_BASE_PR417",
+    "book_universe_reference": "qgv-universe/all-stocks-200m-real-2009/2026-10-27.1",
+    "tradable_security_types": "US_OPERATING_COMPANY_COMMON_STOCK_WITH_VERIFIED_LISTING",
+    "filtered_security_types": [
+      "ETF",
+      "CLOSED_END_FUND",
+      "PREFERRED_STOCK",
+      "RIGHTS",
+      "OTC",
+      "DUPLICATE_SHARE_CLASS"
+    ],
+    "adr_reit_policy": "REPORT_AND_SEPARATE_DIAGNOSTIC_AAII_REPLICATION_NOT_ASSUME_BOOK_RULE",
+    "cap_filter": {
+      "reference_dollar_year": 2009,
+      "usd_floor_at_reference": 200000000,
+      "cpi_series": "CPI_U_US_CITY_AVERAGE_ALL_ITEMS_ANNUAL_2009_REFERENCE_VINTAGE",
+      "formula": "200000000*(CPI_ASOF(t)/CPI_2009_ANNUAL)",
+      "asof_shares_and_price_required": true,
+      "upper_limit": null,
+      "nominal_usd_200m_comparison": "SEPARATE_DIAGNOSTIC",
+      "approx_usd_205m_2009_comparison": "SEPARATE_SOURCE_RECONCILIATION",
+      "issuer_security_id": "VERIFIED_PERMANENT_ID"
+    },
+    "no_current_universe504_operational_change": true,
+    "research_scoring_population": "ASOF_SAME_U_BOOK200_FULL_PIT_CROSS_SECTION_RECOMPUTED_QGV_PERCENTILES",
+    "official_current_operational_scores_reuse": false,
+    "controls": [
+      {
+        "id": "U-SPX-HIST",
+        "name": "HISTORICAL_SP500_MEMBERSHIP_SCORING_AND_TRADING"
+      },
+      {
+        "id": "U-BOOK200-SPX-CANDIDATE",
+        "name": "BOOK200_FULL_SCORING_SPX_CANDIDATE_ONLY"
+      },
+      {
+        "id": "U-NOMINAL200",
+        "name": "HISTORICAL_US_COMMON_STOCK_NOMINAL_200M_DIAGNOSTIC"
+      },
+      {
+        "id": "U-LARGE-MEAN",
+        "name": "BOOK200_ABOVE_ISSUER_MEAN_MARKET_CAP_DIAGNOSTIC"
+      }
+    ]
   },
   "panels": [
     {
@@ -150,7 +195,17 @@
       "TABLE-C",
       "TABLE-D",
       "TABLE-E",
-      "TABLE-F"
+      "TABLE-F",
+      "TABLE-G",
+      "TABLE-H",
+      "TABLE-I",
+      "TABLE-J",
+      "TABLE-K",
+      "TABLE-L",
+      "TABLE-M",
+      "TABLE-N",
+      "TABLE-O",
+      "TABLE-P"
     ],
     "metrics": [
       "arithmetic_mean_annual_return",
@@ -173,7 +228,20 @@
       "decile_gradient_spearman",
       "time_window_and_data_status"
     ],
-    "missing_values": "NA_WITH_REASON_NEVER_ZERO_FILL"
+    "missing_values": "NA_WITH_REASON_NEVER_ZERO_FILL",
+    "book_universe_table": "U-BOOK200_VS_U-SPX-HIST_SAME_PERIOD_COMPARISON",
+    "extra_dimensions": [
+      "CPI_CAP_FLOOR_BY_VINTAGE",
+      "SIZE_DECILES",
+      "VALUE_FACTOR_DECILES_PER_PBR_PSR_EBIT_EV",
+      "Q_G_V_SEPARATE_DECILES",
+      "BASE_RATES",
+      "ROLLING_1_3_5_7_10_YEAR",
+      "UPSIDE_DOWNSIDE_RISK",
+      "DRAWDOWN_ANALYSIS",
+      "LIQUIDITY_TURNOVER_COSTS",
+      "UNIVERSE_AND_SCORING_POOL_ISOLATION"
+    ]
   },
   "limitations": {
     "existing_live_code_modified": false,
