@@ -1,5 +1,5 @@
 {
-  "spec_id": "qgv-decile/2026-10-27.2",
+  "spec_id": "qgv-decile/2026-10-27.3",
   "status": "DESIGN_ONLY_REAL_MARKET_RESULTS_UNAVAILABLE",
   "base_research_contract": "qgv-backtest-standard/2026-10-26.5",
   "code_source_pr": 417,
@@ -14,11 +14,11 @@
       "VERIFIED_PERMANENT_SECURITY_ID_ASC"
     ],
     "value_trap_gate": true,
-    "research_score_namespace": "RESEARCH_QGV_V2_ALL_US_NOT_OPERATIONAL_UNIVERSE504",
-    "scoring_cross_section": "U-BOOK200_ASOF_ALL_ELIGIBLE_ISSUERS"
+    "research_score_namespace": "RESEARCH_QGV_V2_ALL_STOCKS_AND_HIST_SPX_NO_LIVE_QGV_MUTATION",
+    "scoring_cross_section": "EACH_UNIVERSE_ASOF_GROUP_INDEPENDENT"
   },
   "universe": {
-    "basis": "U-BOOK200_HISTORICAL_US_LISTED_COMMON_STOCKS_CPI_ADJUSTED_CAP_FLOOR",
+    "basis": "DUAL_CO_PRIMARY_ALL_US_REAL_2009_DOLLAR_200M_AND_HISTORICAL_SP500",
     "scored_population": "ISSUER_LEVEL_ONE_CIK",
     "screen": "PREDECLARED_TRADABLE_ELIGIBLE_ONLY",
     "minimum_asof_eligible_issuers": 100,
@@ -67,7 +67,30 @@
         "id": "U-LARGE-MEAN",
         "name": "BOOK200_ABOVE_ISSUER_MEAN_MARKET_CAP_DIAGNOSTIC"
       }
-    ]
+    ],
+    "groups": [
+      {
+        "id": "U-BOOK200",
+        "name": "US_LISTED_COMMON_STOCKS_MIN_CPI_ADJUSTED_2009_USD_200M",
+        "issuer_filter": "ASOF_MARKET_CAP_GTE_REAL200M_2009_BASE",
+        "cap_upper": null,
+        "rank_pool": "PIT_ALL_STOCKS_ASOF",
+        "label": "전체시장(All Stocks)"
+      },
+      {
+        "id": "U-SPX-HIST",
+        "name": "HISTORICAL_SP500_MEMBERSHIP_ASOF",
+        "issuer_filter": "PIT_SP500_MEMBERSHIP",
+        "cap_upper": null,
+        "rank_pool": "PIT_HISTORICAL_SP500_ASOF",
+        "label": "S&P500 당시 구성원"
+      }
+    ],
+    "group_role": "EQUAL_STATUS_PRIMARY_SEPARATE_SCORES_SEPARATE_DECILES",
+    "book_large_stocks_not_equal_to_sp500": true,
+    "optional_book_large_stocks_group": "U-LARGE-MEAN_ABOVE_ASOF_MEAN_CAP_BOOK200_DIAGNOSTIC",
+    "scoring_pool_policy": "RECOMPUTE_FULL_PIT_RAW_QGV_PERCENTILES_AND_TYPE_GATE_IN_EACH_UNIVERSE_SEPARATELY",
+    "primary_groups_count": 2
   },
   "panels": [
     {
@@ -96,7 +119,8 @@
   },
   "strategies": [
     {
-      "id": "DEC-W0-Q",
+      "id": "DEC-ALL-W0-Q",
+      "universe_group": "U-BOOK200",
       "weight_variant": "W0",
       "rebalance": "QUARTERLY",
       "long_only_deciles": [
@@ -111,11 +135,52 @@
         "D9",
         "D10"
       ],
-      "primary_hypothesis": "D1_VS_D10_AND_ELIGIBLE_EQUAL_WEIGHT",
+      "role": "CO_PRIMARY",
       "cells": 10
     },
     {
-      "id": "DEC-W0-Y",
+      "id": "DEC-ALL-W0-Y",
+      "universe_group": "U-BOOK200",
+      "weight_variant": "W0",
+      "rebalance": "ANNUAL_FEBRUARY",
+      "long_only_deciles": [
+        "D1",
+        "D2",
+        "D3",
+        "D4",
+        "D5",
+        "D6",
+        "D7",
+        "D8",
+        "D9",
+        "D10"
+      ],
+      "role": "CADENCE_SENSITIVITY",
+      "cells": 10
+    },
+    {
+      "id": "DEC-SPX-W0-Q",
+      "universe_group": "U-SPX-HIST",
+      "weight_variant": "W0",
+      "rebalance": "QUARTERLY",
+      "long_only_deciles": [
+        "D1",
+        "D2",
+        "D3",
+        "D4",
+        "D5",
+        "D6",
+        "D7",
+        "D8",
+        "D9",
+        "D10"
+      ],
+      "role": "CO_PRIMARY",
+      "cells": 10
+    },
+    {
+      "id": "DEC-SPX-W0-Y",
+      "universe_group": "U-SPX-HIST",
       "weight_variant": "W0",
       "rebalance": "ANNUAL_FEBRUARY",
       "long_only_deciles": [
@@ -134,7 +199,7 @@
       "cells": 10
     }
   ],
-  "structural_long_only_portfolios": 20,
+  "structural_long_only_portfolios": 40,
   "existing_fixed_n_strategy_count_unchanged": 30,
   "parameters": {
     "period_full": [
@@ -205,7 +270,13 @@
       "TABLE-M",
       "TABLE-N",
       "TABLE-O",
-      "TABLE-P"
+      "TABLE-P",
+      "TABLE-Q",
+      "TABLE-R",
+      "TABLE-S",
+      "TABLE-T",
+      "TABLE-U",
+      "TABLE-V"
     ],
     "metrics": [
       "arithmetic_mean_annual_return",
@@ -240,7 +311,12 @@
       "UPSIDE_DOWNSIDE_RISK",
       "DRAWDOWN_ANALYSIS",
       "LIQUIDITY_TURNOVER_COSTS",
-      "UNIVERSE_AND_SCORING_POOL_ISOLATION"
+      "UNIVERSE_AND_SCORING_POOL_ISOLATION",
+      "FACTOR_TOP10_VS_QGV_TOP10_BOTH_UNIVERSES",
+      "FACTOR_QGV_TOP10_OVERLAP",
+      "BOOK_FACTOR_RANKING_DIRECTIONS",
+      "BOOK_COMP_FORMULA_VERIFICATION",
+      "PIT_SUPPLY_AND_SAMPLE_SELECTION_BIAS"
     ]
   },
   "limitations": {
@@ -251,5 +327,22 @@
     "no_paid_data_purchase": true,
     "real_outputs_private_only": true,
     "main_review_before_merge": true
+  },
+  "book_topic_factor_comparison": {
+    "registry_file": "QGV_BOOK_FACTOR_TOPDECILE_SPEC_20261027.json",
+    "universe_groups": [
+      "U-BOOK200",
+      "U-SPX-HIST"
+    ],
+    "comparison_baseline": "SAME_ASOF_AND_ELIGIBLE_POOL_QGV_W0_BEST10_EACH_GROUP",
+    "rank_directions": "LOWEST_PE_PBR_PSR_AND_PCF_IS_BEST10;HIGHEST_YIELDS_ROE_EPS_MOMENTUM_IS_BEST10;SIZE_BOTH_EXTREMES_NEUTRAL",
+    "frequency": [
+      "QUARTERLY",
+      "ANNUAL_FEBRUARY"
+    ],
+    "joint_comparison": "FACTOR_QGV_INTERSECTION_PRIMARY_FACTOR_NATIVE_DIAGNOSTIC",
+    "causality_warning": "CHOOSE_FAVORED_DECILE_BEFORE_RESULTS_REPORT_ALL_OTHER_DECILES_AS_SENSITIVITY",
+    "books_table_of_contents": "https://www.kriso.ee/what-works-wall-street-fourth-edition-db-9780071625760.html",
+    "book_large_stocks_equals_sp500": false
   }
 }
