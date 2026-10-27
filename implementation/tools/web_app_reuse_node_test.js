@@ -625,5 +625,12 @@ test('the first screen never waits for the fonts: every @font-face swaps (or is 
   assert.equal(sha(R.newPath('jua-OFL.txt')), sha(R.oldPath('jua-OFL.txt')), 'its OFL text');
   for (const gone of ['black-han-sans-ksx1001.woff2', 'gowun-dodum-ksx1001.woff2', 'is-pen-script-ksx1001.woff2']) assert.ok(!fs.existsSync(R.newPath(gone)), gone + ' removed');
   assert.doesNotMatch(css, /box-shadow:\s*\d+px \d+px 0 /, 'no offset (3D) shadows: the reference video style');
+  // DC-26 (owner 2026-10-27 「색은 최소화하되 더 사용」): colour tokens are named by meaning, no menu colour, and every hex is
+  // one of the six hue families (Q·G·V, up / problem red, down blue, marker yellow, device-only purple) or ink / grays.
+  assert.doesNotMatch(css, /var\(--(?:red|blue|green|orange|green-text|orange-text)\)|\.shadow-|\.stamp\.(?:blue|green|orange)/, 'no menu colours');
+  const PALETTE = new Set(['#161616', '#5C5C5C', '#FFFFFF', '#FFF', '#808080', '#F4F4F4', '#2457C5', '#EAF0FF', '#1F7A45', '#E7F5EC', '#D9780A', '#A05600',
+    '#FFF1DC', '#B4231C', '#1D4FA8', '#FCEAE9', '#7A4CC2', '#F2ECFB', '#FFE45C']);
+  assert.deepEqual([...new Set((css.match(/#[0-9A-Fa-f]{3,6}\b/g) || []).map((x) => x.toUpperCase()))].filter((x) => !PALETTE.has(x)), [], 'only the palette');
+  for (const t of ['--q:', '--g:', '--v:', '--up:', '--down:', '--problem:', '--mine:', '--marker:']) assert.ok(css.includes(t), t);
   assert.doesNotMatch(R.newIndex(), /rel="(?:preload|modulepreload|prefetch|preconnect)"/, 'no preload: the fonts and the layer come after the first paint');
 });

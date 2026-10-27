@@ -242,6 +242,9 @@ const testClick = async (page, name) => { await page.locator('[data-test-action=
         const heads = await page.evaluate(async () => { const Q = window.IS2.qgv, pg = await Q.page(), th = [...document.querySelectorAll('[data-lb-table] thead th')];
           return { vsub: th.find((x) => x.querySelector('[data-col=v]')).querySelector('.sub').textContent, rsub: th[0].querySelector('.sub').textContent, vko: pg.v_source.ko, label: Q.rankLabel(pg) }; });
         assert.equal(heads.vsub, heads.vko, 'V header sub-label = pg.v_source.ko'); assert.equal(heads.rsub, heads.label, 'rank sub-label = rankLabel(pg)');
+        // DC-26 colour: the Q·G·V headers and cells carry their axis class (tint); the source chip of a temporary score has the mine mark.
+        assert.deepEqual(await page.evaluate(() => ['q', 'g', 'v'].map((x) => [document.querySelectorAll('[data-lb-table] thead th.ax-' + x).length, document.querySelectorAll('[data-lb-table] td.ax-' + x).length > 0])), [[1, true], [1, true], [1, true]]);
+        assert.equal(await page.locator('.chip.vsrc.mine').count(), 1, 'the source chip carries the mine mark');
         // A READY page with a reason shows reasonText(pg.reason) above the table (rows still draw); without one, no such line.
         const why = await page.evaluate(async () => { const Q = window.IS2.qgv, pg = await Q.page(), e = document.querySelector('[data-page-reason]');
           return { reason: pg.reason, want: pg.reason ? Q.reasonText(pg.reason) : null, text: e ? e.textContent : null, na: e ? e.dataset.na : null }; });

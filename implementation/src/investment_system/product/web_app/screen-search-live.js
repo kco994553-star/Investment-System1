@@ -76,14 +76,14 @@ const loaded=x=>!!x&&typeof x==='object'&&x.state!=='NOT_READY';
 const attach=(route,b)=>I.searchPart.attach(route,b,{onPick:(ev,e,{chosen})=>{if(chosen)try{I.store.pushRecent(ev,'COMPANY:'+e.id);}catch(_){}location.hash=href('company',e.id);}});
 
 /* ---------------------------------------------------------------- home */
-function chipLink(idx,id,star){const e=idx.resolve(id);return e?h('a',{class:'chip',href:href('company',e.canonical_id),dataset:{chip:e.canonical_id}},star?'★ ':'',idx.title(e)):null;}
+function chipLink(idx,id,star,mine){const e=idx.resolve(id);return e?h('a',{class:mine?'chip mine':'chip',href:href('company',e.canonical_id),dataset:{chip:e.canonical_id}},star?'★ ':'',idx.title(e)):null;}
 function chips(route,host){
  const signal=route.signal;
  companyIndex().then(settled(signal,idx=>draw(idx)),()=>{});
  function draw(idx,cleared){
   const S=I.store,recent=S.recent(),prefs=S.prefs(),rows=[];
   const keys=Array.isArray(recent)?recent.filter(k=>k.startsWith('COMPANY:')).map(k=>k.slice(8)):[];
-  const recentChips=keys.map(id=>chipLink(idx,id,false)).filter(Boolean);
+  const recentChips=keys.map(id=>chipLink(idx,id,false,true)).filter(Boolean);
   if(recentChips.length){
    const clear=h('button',{type:'button',class:'linkish',dataset:{recentClear:''},onclick:e=>{let done=false;try{S.clearRecent(e);done=true;}catch(_){}draw(idx,done);}},'최근 지우기');
    rows.push(h('div',{class:'chip-row',dataset:{recent:''}},h('span',{class:'hand chip-label'},'최근 →'),...recentChips,clear));}
@@ -91,7 +91,7 @@ function chips(route,host){
   else{
    const invalid=prefs.state==='INVALID';
    if(invalid)rows.push(h('p',{class:'reason',dataset:{favorites:'INVALID'}},'이 기기의 관심 기업 기록을 읽을 수 없어 즐겨찾기를 표시하지 않습니다 · 설정의 백업에서 기록을 확인하세요'));
-   const mine=invalid?[]:prefs.value.interests.map(id=>chipLink(idx,id,true)).filter(Boolean);
+   const mine=invalid?[]:prefs.value.interests.map(id=>chipLink(idx,id,true,true)).filter(Boolean);
    if(mine.length)rows.push(h('div',{class:'chip-row',dataset:{favorites:'MINE'}},h('span',{class:'hand chip-label'},'★ 즐겨찾기'),...mine));
    else{
     // No personal input: the developer default (feature 1.1.4), shown as such and never written.

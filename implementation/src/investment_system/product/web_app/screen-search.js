@@ -10,7 +10,7 @@ function search(route){
  later(route,'home',{box:b,chips,quote});
  return h('div',{class:'screen'},
   h('section',{class:'hero'},
-   h('h1',{class:'hero-title'},'어떤 기업을 ',h('span',{class:'hl'},'볼까요?')),
+   h('h1',{class:'hero-title'},'어떤 기업을 ',h('span',{class:'here'},'볼까요?')),
    h('svg:svg',{class:'hero-underline',viewBox:'0 0 560 26',preserveAspectRatio:'none','aria-hidden':'true'},h('svg:path',{d:'M8 16 C 120 6, 260 22, 380 12 S 520 8, 552 14'})),
    b.node,chips,h('p',{class:'hand hero-aside'},'검색하면 ↓ QGV + 기술적 분석 + 매크로를 한 장에 보여 줌')),
   quote);
@@ -24,9 +24,9 @@ function result(route){
  later(route,'company',{box:b,given,name,facts,star,bodies},()=>facts.replaceChildren(na('기업 목록을 불러오지 못했습니다','INDEX_FAILED')));
  return h('div',{class:'screen'},b.node,h('section',{class:'result-head'},h('span',{class:'stamp'},'검색 결과'),name,facts,star),
   h('div',{class:'grid-3'},
-   card('1. QGV',{shadow:'q',id:'qgv',link:href('qgv')},bodies.qgv,more('리더보드 · 가중치 · 스탯창')),
-   card('2. 기술적 분석',{shadow:'g',id:'technical',link:href('technical')},bodies.technical,more('시나리오 · 패턴 · 내 노트')),
-   card('3. 매크로',{shadow:'v',id:'macro',link:href('macro')},bodies.macro,more('근거 · 조건 · 확률'))),
+   card('1. QGV',{id:'qgv',link:href('qgv')},bodies.qgv,more('리더보드 · 가중치 · 스탯창')),
+   card('2. 기술적 분석',{id:'technical',link:href('technical')},bodies.technical,more('시나리오 · 패턴 · 내 노트')),
+   card('3. 매크로',{id:'macro',link:href('macro')},bodies.macro,more('근거 · 조건 · 확률'))),
   h('div',{class:'grid-2'},
    card(h('span',{class:'hl'},'4. 이 기업 소식'),{id:'news'},bodies.news,more('뉴스에서 전체 보기',href('news'))),
    card('5. 내 포트폴리오에서',{id:'portfolio'},bodies.portfolio,more('포트폴리오에서 보기',href('portfolio')))));
