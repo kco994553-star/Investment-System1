@@ -1,5 +1,5 @@
 {
-  "spec_id": "qgv-decile/2026-10-27.3",
+  "spec_id": "qgv-decile/2026-10-27.4",
   "status": "DESIGN_ONLY_REAL_MARKET_RESULTS_UNAVAILABLE",
   "base_research_contract": "qgv-backtest-standard/2026-10-26.5",
   "code_source_pr": 417,
@@ -135,7 +135,7 @@
         "D9",
         "D10"
       ],
-      "role": "CO_PRIMARY",
+      "role": "QUARTERLY_CADENCE_SENSITIVITY",
       "cells": 10
     },
     {
@@ -155,7 +155,7 @@
         "D9",
         "D10"
       ],
-      "role": "CADENCE_SENSITIVITY",
+      "role": "PRIMARY_ANNUAL_RESELECTION",
       "cells": 10
     },
     {
@@ -175,7 +175,7 @@
         "D9",
         "D10"
       ],
-      "role": "CO_PRIMARY",
+      "role": "QUARTERLY_CADENCE_SENSITIVITY",
       "cells": 10
     },
     {
@@ -195,7 +195,7 @@
         "D9",
         "D10"
       ],
-      "role": "CADENCE_SENSITIVITY",
+      "role": "PRIMARY_ANNUAL_RESELECTION",
       "cells": 10
     }
   ],
@@ -218,7 +218,7 @@
     ],
     "strategy_capital_usd_each": 100000,
     "within_decile_equal_weight": true,
-    "rebalance_schedule": "INHERIT_BASE_SPEC_QUARTERLY_FEB_MAY_AUG_NOV_AND_ANNUAL_FEBRUARY",
+    "rebalance_schedule": "PRIMARY_ANNUAL_FEBRUARY_EXISTING_THIRD_MONDAY; QUARTERLY_SENSITIVITY; TWELVE_STAGGERED_ANNUAL_COHORTS_BOOK_STYLE_ROBUSTNESS",
     "signal": "PREVIOUS_COMPLETE_SESSION",
     "fill": "NEXT_ELIGIBLE_SESSION_OPEN",
     "all_in_cost_bps_each_side": 10,
@@ -316,7 +316,10 @@
       "FACTOR_QGV_TOP10_OVERLAP",
       "BOOK_FACTOR_RANKING_DIRECTIONS",
       "BOOK_COMP_FORMULA_VERIFICATION",
-      "PIT_SUPPLY_AND_SAMPLE_SELECTION_BIAS"
+      "PIT_SUPPLY_AND_SAMPLE_SELECTION_BIAS",
+      "ANNUAL_RESELECTION_VS_QUARTERLY_RESELECTION",
+      "TWELVE_STAGGERED_ANNUAL_COHORTS_FORMED_MONTHLY_HELD_YEARLY",
+      "RESELECTION_TURNOVER_MEMBERSHIP_CHANGES_VS_CONTINUING_WEIGHT_REBALANCE"
     ]
   },
   "limitations": {
@@ -337,12 +340,48 @@
     "comparison_baseline": "SAME_ASOF_AND_ELIGIBLE_POOL_QGV_W0_BEST10_EACH_GROUP",
     "rank_directions": "LOWEST_PE_PBR_PSR_AND_PCF_IS_BEST10;HIGHEST_YIELDS_ROE_EPS_MOMENTUM_IS_BEST10;SIZE_BOTH_EXTREMES_NEUTRAL",
     "frequency": [
-      "QUARTERLY",
-      "ANNUAL_FEBRUARY"
+      "ANNUAL_FEBRUARY_PRIMARY",
+      "QUARTERLY_FEB_MAY_AUG_NOV_SENSITIVITY"
     ],
     "joint_comparison": "FACTOR_QGV_INTERSECTION_PRIMARY_FACTOR_NATIVE_DIAGNOSTIC",
     "causality_warning": "CHOOSE_FAVORED_DECILE_BEFORE_RESULTS_REPORT_ALL_OTHER_DECILES_AS_SENSITIVITY",
     "books_table_of_contents": "https://www.kriso.ee/what-works-wall-street-fourth-edition-db-9780071625760.html",
-    "book_large_stocks_equals_sp500": false
+    "book_large_stocks_equals_sp500": false,
+    "book_style_annual_12_offsets": "SEPARATE_STAGGERED_FORMATION_ROBUSTNESS_TEST_WITH_SOURCE_VERIFICATION"
+  },
+  "primary_selection_cadence": {
+    "decision_date": "2026-10-27",
+    "status": "USER_DIRECTED_RESEARCH_SPEC_NOT_OPERATIONAL",
+    "label_ko": "책 기반 연간 종목 재선정",
+    "book_reference": "AAII annual reselection and equal-weight; 12 staggered annual formations supported by secondary descriptions; book-exact day and averaging NEED_SOURCE_VERIFICATION",
+    "meaning": "RE_RANK_FULL_ASOF_UNIVERSE_SELECT_NEW_COHORT_SELL_EXITS_BUY_ENTRIES_REWEIGHT_CONTINUING",
+    "primary": "ANNUAL_FEBRUARY",
+    "annual_single_offset_rule": "INHERIT_EXISTING_BASE_THIRD_MONDAY_FEBRUARY_HOLIDAY_NEXT_VERIFIED_SESSION_NOT_BOOK_EXACT_DATE",
+    "quarterly_role": "FREQUENCY_SENSITIVITY_NOT_PRIMARY_BOOK_COMPARISON",
+    "annual_12_offsets": {
+      "status": "PRE_REGISTERED_ADDITIONAL_ROBUSTNESS_REQUIRES_IMPLEMENTATION",
+      "formation_months": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "formation_day_rule": "FIRST_VERIFIED_EXCHANGE_SESSION_OF_MONTH_RESEARCH_ASSUMPTION_NOT_BOOK_PAGE_CONFIRMED",
+      "each_cohort_reselection_every_months": 12,
+      "each_cohort_holding_period_months": 12,
+      "sell_rule": "ON_NEXT_ANNUAL_RESELECTION_ONLY_UNLESS_DELISTING_OR_CORPORATE_ACTION",
+      "cost_cash_and_corporate_actions": "INHERIT_BASE_FOR_ALL_12_COHORTS",
+      "aggregate": "REPORT_EACH_COHORT_NAV_AND_CAGR_THEN_PREDECLARED_MONTHLY_COHORT_MEAN_AND_RANGE; BOOK_EXACT_AGGREGATION_NOT_YET_VERIFIED",
+      "combine_not_as_new_strategy_count": true,
+      "separate_annual_cohort_variation_from_monthly_turnover": true
+    }
   }
 }
