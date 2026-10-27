@@ -360,7 +360,7 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
 - 백업 /5: 옛 검증기(ChartWorkbench·MacroCycleRing)를 재사용한다. 두 파일을 재사용 목록에 넣었다(불러올 때 부작용 없음 확인). 다시 쓴 코드 없음.
 - 남은 항목(Main 결정, 기존 동작과 경계에 맞춤)
   - 임시 V 순위 문구: '임시 V 기준 순위 · 공식 순위 아님'. `qgv.rankLabel()`과 `rank_label`로 준다.
-  - Universe 출처: 통합 시트와 따로 둔다(옛 동작). P2 설정은 '통합 시트와 같게'를 클릭(`universeSource.useSheet(event)`)으로 줄 수 있다.
+  - Universe 출처: 통합 시트와 따로 둔다(옛 동작). P2 설정은 '통합 시트와 같게'를 클릭(`universeSource.useSheet(event)`)으로 줄 수 있다. 이 출처는 기기 가격을 읽는 사용자 가격 시트다. Universe504 목록 자체는 공개 파일(`universe-codes.json`)이다(2026-10-27 경계, 아래).
   - 구글 켬/끔: 옛 동작대로. 기기 DB가 이미 있을 때만 읽고, 로그인 준비 클릭 안에서만 쓴다(옛 로그인 클릭이 켬을 썼다). 로그아웃은 바꾸지 않는다(옛 연결 해제와 같음). 클릭 없이는 아무것도 쓰지 않는다. GIS 스크립트는 클릭 안에서만 받으므로 다시 온 사용자도 페이지마다 준비 탭은 필요하다.
 - 휴대폰 첫 화면 비용: 미루지 않고 P2-1의 첫 작업으로 한다. boot.js·셸을 먼저 그리고 엔진·P1 층은 첫 그림 뒤에 불러온다. 목표(390×844, 150 ms RTT·1.6 Mbps·CPU ×4): 첫 화면 2,000 ms 이하, 첫 전송 100 KB 이하. 측정을 시험으로 고정한다. 다른 화면 PR은 그 구조 위에서 만든다. 검토 측정(결정 전): 첫 화면 1,558 → 4,119 ms, 전송 13 KB → 569 KB, 스크립트 7 → 78개(이번 두 검증기로 80개).
 
@@ -371,6 +371,16 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
 - `qgv.model(page)`, `prices.periodReturns()`, 새 사유 글(5절, 6절). 수익률 기간은 보고서 정의(`ReportBenchmarks`) 재사용, 60D·120D·YTD·1Y는 결정 대기(IA-12).
 - M3 순위는 가격 파생값으로 다룬다(`[data-ram-price]` 글자만).
 - 화면은 기본 프로필의 공유 Page만 쓰고 `setProfile`·`page({preset|gate})`를 부르지 않는다(공유 메모 보호). 개인 결과는 `preview`로만 본다.
+
+### 결정됨 2026-10-27 (소유자: 공개/개인 경계 · 기업 검색 · 바뀌는 화면, DC-22 · DC-23)
+
+- **공개 데이터**(처음 쓰는 기기·로그인 안 한 상태에서도 같게): Universe504 목록, 기업 검색, QGV v2 점수·순위, 기본 프리셋, 중앙 V 점수·순위(게시 후), TARGET, 갱신 시각·calc_version. 모두 공개 파일(4절 `IS2.data`)에서 읽는다. 기기 저장(7절 `IS2.store`)이나 로그인이 있어야만 보이는 공개 자료 화면은 고친다(DC-22).
+- **개인 데이터**(로그인에 따라 다름): 포트폴리오, 사용자 QGV 가중치. 저장은 당분간 (a) 그 기기에만(7절). 기기 간 동기화 (b)는 별도 결정 전까지 만들지 않는다. 그 밖에 개인으로 둘 후보는 USER_DECISIONS_PENDING `PRIVATE-LIST`(목록만 제안).
+- **공개도 저장도 하지 않음**: 원시 가격, 보유 원본, 기기 가격으로 계산한 임시 V. 6절 그대로(GSQ-024, 클릭할 때만 요청, RAM에만).
+- **기업 검색(DC-23)**: 공용 부품 하나. 검색창 하나에서 티커·영문 회사명으로 찾고 입력하는 대로 후보를 보인다. 범위는 공개 파일에서 받아 메모리에 올린 Universe504 목록뿐이다(입력마다 네트워크 요청 없음). 결과 없음과 상장 종료(WBD 등) 표시를 둔다. 키보드와 모바일 화면 키보드로 쓴다. 기업을 고르는 모든 화면이 같은 부품을 쓴다. 다음 P2 PR에서 P2-1 `screen-search-live.js`를 떼어 만든다. 이에 따라 Universe 밖 TARGET과 한글명은 검색 대상이 아니다.
+- **바뀌는 화면(DC-23)**: 기준 기업·갱신 시각·자료 버전에 따라 내용이 바뀌는 화면은 갱신 시각과 calc_version을 화면에 표시하고, 상태(기준 기업 선택 전·후, 갱신 중, 데이터 없음/STALE, 실패)를 시안 보드로 그린다.
+- **P2-2a 반영(#415)**: 리더보드의 모든 화면 상태(READY·NO_DATA·READ_FAILED·DATA_FORMAT_NEWER)에 기준 칩을 둔다. 내용은 점수 갱신(`page.as_of`, UTC 날짜·시각) · 마지막 확인(`data.publication().checked_at`) · 계산 버전(`page.calc_version`)이고, 파일이 `stale_after_seconds`를 넘으면 'STALE · 점수 파일 기한 지남'을 붙인다. '공개 자료 다시 읽기' 버튼은 `data.refresh(event)`(PUBLIC_REFRESH, 공개 파일만, 클릭 1번 = action 1개)를 부르고 결과를 보인다: 갱신 중 · 새 게시본 없음 · 새 게시본 적용 · 갱신 실패(이전 값 유지). 2.1.7 모델 후보에도 갱신 시각·계산 버전을 적는다. 가격 시트 코드의 글은 '가격 시트'로 고쳤다(`UNIVERSE_SOURCE_NOT_SET` = '가격 시트 없음 · Universe 목록은 공개 파일', `UNIVERSE_NOT_READ`·`NOT_IN_UNIVERSE`·`UNIVERSE_READ_FAILED`·`UNIVERSE_SOURCE_INVALID`도 같은 뜻으로).
+- **남은 불일치**: 기업 페이지 QGV 카드에 갱신 시각·calc_version이 없고, 홈의 TARGET 기본 목록이 관심 기업 저장 자료를 읽지 못하면 같이 숨는다 → 다음 P2 PR. TARGET v1 확정본은 기기 저장(플레이북)에만 있다 → 결정 대기 `TARGET-PUBLIC`. QGV 종합·순위는 V가 필요해 중앙 V 게시 전에는 처음 쓰는 기기에 없다(QG 참고 목록만). 저장 문제가 아니며 10절 전환점에서 풀린다.
 
 ### 아직 정할 것
 

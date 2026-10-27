@@ -16,7 +16,7 @@ function render(route){
  const bodies={},blocks=LB.map(([stamp,fn,hand,what])=>{const body=bodies[fn]=h('div',{class:'lb-body'},pending(what));
   return h('div',{class:'lb',dataset:{lb:fn}},h('div',{class:'lb-head'},h('h3',{class:'stamp sub blue',tabindex:'-1'},stamp),h('span',{class:'meta'},'기능 ',fn),h('span',{class:'hand'},hand)),body);});
  const buttons=['구글 로그인 준비','로그인','가격 불러오기 · 이 기기에서만'].map((t,i)=>off(h('span',{class:'m-only'},['①','②','③'][i]+' '),t));
- const chips=h('div',{class:'scroll lb-chips',dataset:{qgvChips:''}},h('span',{class:'chip wait'},'점수 기준 · 연결 전'));
+ const chips=h('div',{class:'scroll lb-chips',dataset:{qgvChips:''}},h('span',{class:'chip wait'},'점수 갱신 · 연결 전'));
  const conn=h('span',{class:'chip wait',dataset:{qgvConn:''}},'연결 전');
  const status=h('div',{class:'band-lines',role:'status',dataset:{qgvStatus:''}});
  const nav=h('nav',{class:'scroll lb-nav','aria-label':'QGV 하위 화면'},h('span',{class:'chip on','aria-current':'page'},'1.1 리더보드'),

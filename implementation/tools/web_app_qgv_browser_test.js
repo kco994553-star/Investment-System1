@@ -24,6 +24,8 @@
 //    2.1.7 candidates from IS2.qgv.model; a saved weights profile previews without touching the official page. A returning
 //    user's price tabs (flag pre-set): the returns click gives ReportBenchmarks.priceIndex values with the 분할 미확인 note,
 //    returns order the view without changing ranks; after a reload V and returns are NA again.
+//  - The 기준 chip (DC-22) in every page state: score refresh time (UTC) · last check · calc_version, also in 2.1.7; 공개 자료 다시
+//    읽기 = public files only: UNCHANGED, an invalid file FAILED with the previous values kept, a 404 page recovering (APPLIED).
 //  - Failures: sec-qgv2.json 404 / invalid, screen-qgv-live.js 404 (LOADER_FAILED), leaving while computing.
 //  - Boundaries in every state: same-origin (only the stand-ins leave in the click contexts), FILES only, opening reads CORE +
 //    actual-catalog.json + company-names-ko.json, storage 0 without clicks, blocked() 0, no console error, CSP 0, [style] 0, no
@@ -416,6 +418,23 @@ const testClick = async (page, name) => { await page.locator('[data-test-action=
         tag('boundaries (no click)');
         await boundaries(ctx);
         assert.equal(await page.evaluate(() => window.IS2.action.blocked()), 0);
+        // The 기준 chip (DC-22): the score file's refresh time in UTC, this tab's last check, the calc_version (also in 2.1.7); the
+        // re-read button reads public files only (UNCHANGED on the same files; an invalid file = FAILED, the previous values stay).
+        tag('basis chip and public re-read');
+        const basis = await page.evaluate(async () => { const pg = await window.IS2.qgv.page(), F = new Intl.DateTimeFormat('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' });
+          return { chip: document.querySelector('[data-basis]').textContent, model: document.querySelector('[data-model-basis]').textContent, calc: pg.calc_version, at: F.format(Date.parse(pg.as_of)) + ' UTC' }; });
+        assert.ok(basis.calc && /^2026\. 10\. 1\d\. \d\d:\d\d UTC$/.test(basis.at), 'the page has a calc_version and an as_of');
+        assert.equal(basis.chip.replace(/마지막 확인 \d\d:\d\d/, '마지막 확인 T'), '점수 갱신 ' + basis.at + ' · 마지막 확인 T · 계산 버전 ' + basis.calc, 'the 기준 chip: pg.as_of in UTC, the last check, pg.calc_version');
+        assert.equal(basis.model, '점수 갱신 ' + basis.at + ' · 계산 버전 ' + basis.calc, '2.1.7 names the refresh time and the calc_version');
+        await page.locator('button[data-k=reread]').click(); await page.locator('[data-basis-state=UNCHANGED]').waitFor();
+        s.fixture('sec-qgv2.json', { body: '[]', type: 'application/json' });
+        await page.locator('button[data-k=reread]').click(); await page.locator('[data-basis-state=FAILED]').waitFor();
+        s.fixture('sec-qgv2.json', { json: QGV2 });
+        assert.match(await page.locator('[data-basis-state=FAILED]').innerText(), /갱신 실패 · 이전 값 유지/);
+        assert.equal((await page.evaluate(() => window.__qt.check())).bad.length, 0, 'after a failed re-read the table still equals the layer rows');
+        assert.ok((await page.locator('[data-basis]').textContent()).includes(basis.at), 'the previous refresh time stays');
+        await common(page); await boundaries(ctx);
+        assert.equal(await page.evaluate(() => window.IS2.action.blocked()), 0);
         await ctx.context.close();
       }
 
@@ -599,6 +618,14 @@ const testClick = async (page, name) => { await page.locator('[data-test-action=
       assert.equal(cards.length, 7); for (const c of cards) { assert.equal(c.state, state); assert.equal(c.na, reason); assert.equal(c.text, title + want); assert.doesNotMatch(c.text, /\d/); }
       assert.equal(await page.locator('[data-lb-table]').count(), 0, 'no table');
       assert.doesNotMatch(await page.locator('main').innerText(), CODE_TEXT);
+      assert.match(await page.locator('[data-basis]').textContent(), /^점수 갱신 없음 · 마지막 확인 \d\d:\d\d · 계산 버전 없음$/, 'the 기준 chip in a state card page');
+      if (label === '404') {
+        // The file appears: a re-read applies the new publication and the table draws (no reload).
+        s.fixture('sec-qgv2.json', { json: QGV2 });
+        await page.locator('button[data-k=reread]').click(); await page.locator('[data-lb-table] tbody tr').first().waitFor({ timeout: 20000 });
+        assert.equal(await page.locator('[data-basis-state=APPLIED]').count(), 1, 'the re-read says 새 게시본 적용');
+        assert.match(await page.locator('[data-basis]').textContent(), /^점수 갱신 2026\. 10\. 1\d\. \d\d:\d\d UTC · /);
+      }
       assert.deepEqual(seen.errors, []);
       await context.close();
     }

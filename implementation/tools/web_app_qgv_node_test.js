@@ -627,8 +627,8 @@ test('qgv.reasonText: the P2-2a codes have their Korean text (never the generic 
   const codes = ['UNIVERSE_SOURCE_NOT_SET', 'UNIVERSE_SOURCE_INVALID', 'AUTH_REQUIRED', 'CANCELED', 'PREPARE_TIMEOUT', 'SOURCE_TOO_LARGE', 'UNIVERSE_READ_FAILED', 'SHEET_NOT_CONNECTED',
     'PRICE_TABS_OFF', 'UNIVERSE_NOT_READ', 'NOT_IN_UNIVERSE', 'NO_VERIFIED_ROWS', 'PRICE_TABS_NOT_LOADED', 'RETURN_SESSIONS_NOT_AVAILABLE', 'RETURN_HISTORY_TOO_SHORT',
     'RETURN_BASE_CLOSE_MISSING', 'RETURN_LAST_CLOSE_MISSING', 'PERIOD_PENDING', 'PRICE_BASIS_CONTINUITY_UNCONFIRMED'];
-  const words = { UNIVERSE_SOURCE_NOT_SET: 'Universe 출처 없음', AUTH_REQUIRED: '로그인 필요', CANCELED: '취소됨', SHEET_NOT_CONNECTED: '가격 시트가 연결되지 않았습니다',
-    PRICE_TABS_OFF: '가격 탭 사용이 꺼져 있습니다', PRICE_TABS_NOT_LOADED: '가격 불러오기 전', PRICE_BASIS_CONTINUITY_UNCONFIRMED: '분할 등 가격 연속성 미확인', NOT_IN_UNIVERSE: '내 기기 Universe에 없음' };
+  const words = { UNIVERSE_SOURCE_NOT_SET: '가격 시트 없음 · Universe 목록은 공개 파일', AUTH_REQUIRED: '로그인 필요', CANCELED: '취소됨', SHEET_NOT_CONNECTED: '가격 시트가 연결되지 않았습니다',
+    PRICE_TABS_OFF: '가격 탭 사용이 꺼져 있습니다', PRICE_TABS_NOT_LOADED: '가격 불러오기 전', PRICE_BASIS_CONTINUITY_UNCONFIRMED: '분할 등 가격 연속성 미확인', NOT_IN_UNIVERSE: '이 기기 가격 시트에 없음' };
   for (const c of codes) {
     const ko = qgv.reasonText(c), en = qgv.reasonText(c, true);
     assert.ok(ko && !ko.includes(c) && !/계산 불가/.test(ko), c + ' has Korean text: ' + ko);

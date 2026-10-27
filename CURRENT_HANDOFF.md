@@ -18,10 +18,10 @@ Main이 공용 파일·코드·병합·배포를 조정한다. Codex는 검증·
 
 | PR·작업 | 담당 | 시작 (UTC) |
 | --- | --- | --- |
-| 중앙 V 사슬 IEX 수정·canonical 동기화·재리허설 | Claude Code Main | 10/25 07:01 |
-| 시안 추가 보드 수정·아티팩트 게시 | Claude Code Main | 10/25 11:05 (재개) |
-| P2-2a 리더보드 명세·구현 | Claude Code Main | 10/25 11:10 |
-| 이 문서 PR(`claude/handoff-after-allshards-20261025`) | Claude Code Main | 10/25 11:05 |
+| 중앙 V 사슬 canonical 병합(첫 게시 날짜 승인 대기, 리허설 run 40307781072 PASS) | Claude Code Main | 10/25 07:01 |
+| P2-2a 리더보드 #415 + 10/27 오너 지시(DC-22 기준 칩·문구, DC-23) | Claude Code Main | 10/25 11:10 · 10/27 10:19 |
+| 시안 바뀌는 화면 상태 보드·검색 부품 보드 → 아티팩트 게시 | Claude Code Main | 10/27 10:19 |
+| 다음 P2 PR: 공용 기업 검색 부품(DC-23)·남은 경계 수정 | Claude Code Main | 10/27 (예정) |
 
 ## 1. 승인 이행·오너 결정 (마감순)
 

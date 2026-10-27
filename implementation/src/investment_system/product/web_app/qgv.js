@@ -64,18 +64,19 @@ const TEXT=Object.freeze({
  JUDGEMENT_NOT_RECORDED:['기록 안 됨','Not recorded'],
  NOTHING_TO_RECORD:['기록할 발생 신호 없음','No occurrence to record'],
  // P2-2a (Main 2026-10-25): the price buttons' codes (prices.readUniverse / prepare / login, PriceStore) and the M3 rank reasons
- // (PrivateSubsetView.rankFor / rankIndex), worded once here so a screen never prints a code.
- UNIVERSE_SOURCE_NOT_SET:['Universe 출처 없음','No Universe source'],
- UNIVERSE_SOURCE_INVALID:['Universe 출처 형식이 올바르지 않습니다','The Universe source is not valid'],
+ // (PrivateSubsetView.rankFor / rankIndex), worded once here so a screen never prints a code. The sheet they name is the user's
+ // price sheet; the Universe504 list itself is a public file (DC-22, owner 2026-10-27), so the words say 가격 시트.
+ UNIVERSE_SOURCE_NOT_SET:['가격 시트 없음 · Universe 목록은 공개 파일','No price sheet · the Universe list is a public file'],
+ UNIVERSE_SOURCE_INVALID:['가격 시트 주소 형식이 올바르지 않습니다','The price sheet address is not valid'],
  AUTH_REQUIRED:['로그인 필요','Sign-in required'],
  CANCELED:['취소됨','Canceled'],
  PREPARE_TIMEOUT:['로그인 준비 시간 초과','Sign-in preparation timed out'],
  SOURCE_TOO_LARGE:['시트가 너무 커서 읽지 않았습니다','The sheet is too large to read'],
- UNIVERSE_READ_FAILED:['Universe 읽기 실패','Universe read failed'],
+ UNIVERSE_READ_FAILED:['가격 시트 읽기 실패','Price sheet read failed'],
  SHEET_NOT_CONNECTED:['가격 시트가 연결되지 않았습니다','No price sheet is connected'],
  PRICE_TABS_OFF:['가격 탭 사용이 꺼져 있습니다','Price tabs are off on this device'],
- UNIVERSE_NOT_READ:['Universe 읽기 전','Universe not read yet'],
- NOT_IN_UNIVERSE:['내 기기 Universe에 없음','Not in this device\'s Universe read'],
+ UNIVERSE_NOT_READ:['가격 시트 읽기 전','Price sheet not read yet'],
+ NOT_IN_UNIVERSE:['이 기기 가격 시트에 없음','Not in this device\'s price sheet read'],
  NO_VERIFIED_ROWS:['확인된 시총 순위 행 없음','No verified market-cap rank rows'],
  // Period returns (prices.periodReturns, P2-2a): RAM only, after the price-tab click. RETURN_* are their own codes because
  // QgvScores.REASON.HISTORY_TOO_SHORT already names a V history rule. PRICE_BASIS_CONTINUITY_UNCONFIRMED is the TA-G1 code.
