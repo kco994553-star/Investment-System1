@@ -33,18 +33,18 @@
 
 | 연구 묶음 | 내용 | 구조 셀 |
 |---|---|---:|
-| DEC-ALL-Q-W0 | U-BOOK200 · QGV W0 · D1~D10 · 분기 | 10 |
-| DEC-ALL-Y-W0 | U-BOOK200 · QGV W0 · D1~D10 · 연간 | 10 |
-| DEC-SPX-Q-W0 | U-SPX-HIST · QGV W0 · D1~D10 · 분기 | 10 |
-| DEC-SPX-Y-W0 | U-SPX-HIST · QGV W0 · D1~D10 · 연간 | 10 |
+| DEC-ALL-W0-Q | U-BOOK200 · QGV W0 · D1~D10 · 분기 | 10 |
+| DEC-ALL-W0-Y | U-BOOK200 · QGV W0 · D1~D10 · 연간 | 10 |
+| DEC-SPX-W0-Q | U-SPX-HIST · QGV W0 · D1~D10 · 분기 | 10 |
+| DEC-SPX-W0-Y | U-SPX-HIST · QGV W0 · D1~D10 · 연간 | 10 |
 | **합계** | **신규 분위 40개 롱온리 전략 셀** | **40** |
 | 기존 N 전략 | W0~W3 × N10·15·20·25·50 등 | 별도 **30** |
 
-- 위 **40개는 2개 모집단×2개 매매주기×10분위 롱온리 포트폴리오 셀** 수다. PANEL_FULL_QGV/OPERATIONAL_ELIGIBLE·비용·기간·시가 지연·벤치마크는 추가 실행 차원이지 20개와 동일하지 않다. 실행 수 및 다중 비교 시도 횟수 별도 기록.
+- 위 **40개는 2개 모집단×2개 매매주기×10분위 롱온리 포트폴리오 셀** 수다. PANEL_FULL_QGV/OPERATIONAL_ELIGIBLE·비용·기간·시가 지연·벤치마크는 추가 실행 차원이지 구조적 40개 셀과 동일하지 않다. 실행 수 및 다중 비교 시도 횟수 별도 기록.
 - **주가설 H1:** D1의 비용 차감 후 수익률/위험이 D10 및 동일 적격 모집단 전체 동일가중보다 개선되는가.
 - **주가설 H2:** D1→D10으로 점수가 낮아질수록 미래 성과에 단조(또는 일관된) 기울기가 존재하는가. 예: 분위 순위와 이후 수익률의 Spearman 상관 및 국면별 안정성.
 - 중간 분위의 성과도 모두 제시해 D1/D10만 비교한 후 우연한 양극단을 과대 해석하지 않는다.
-- W1~W3 같은 추가 가중치 분위 비교, Q/G/V 개별 축 분위 연구, 규모별 분위 검증은 **추가 연구 후보**이며 지금 20개에 몰래 포함하지 않는다. 별도 실험 ID 및 사용자 승인/자료 검증 이후 확장한다.
+- W1~W3 같은 추가 가중치 분위 비교, Q/G/V 개별 축 분위 연구, 규모별 분위 검증은 **추가 연구 후보**이며 지금 40개 분위 셀에 몰래 포함하지 않는다. 별도 실험 ID 및 사용자 승인/자료 검증 이후 확장한다.
 
 ## 4. 책의 연구 표에 착안한 출력 양식
 
@@ -86,6 +86,6 @@
 - 책의 4판 목차 확인 가능한 주제: **시총, PER, EBITDA/EV, P/CF, P/S, P/B, 배당수익률, 자사주 매입수익률, 주주수익률, 회계비율/건전성·이익의 질, 가치 복합지표, 1년 EPS 성장률, 이익률, ROE, 1년 상대강도, 다중팩터, 업종·성장/가치 전략**.
 - 출처: [4판 목차](https://www.kriso.ee/what-works-wall-street-fourth-edition-db-9780071625760.html), [AAII 오쇼너시 단일/복합 팩터 검토](https://www.aaii.com/journal/article/what-works-key-new-findings-on-stock-selection), [AAII 2014 복합 가치 재구성](https://www.aaii.com/journal/article/finding-value-and-financial-strength-based-on-what-works-on-wall-street).
 - 계산 계약과 검증 방법: [팩터 상위 10% 명세](QGV_BOOK_FACTOR_TOPDECILE_20261027.md), [팩터 상세 등록부](QGV_BOOK_FACTOR_TOPDECILE_SPEC_20261027.json). 개별 요인 이름이 책에 존재한다는 사실과 동일 산식을 구현할 데이터가 있다는 사실은 구분한다.
-- 비교 성과표: [TABLE-A~T](QGV_DECILE_REPORT_TABLES_20261027.md). 단일 팩터 연구는 QGV 기본점수를 바꾸거나 30개 기존 고정 N 백테스트의 주검정·실험수를 수정하지 않는다. 다중 비교·선택 편향 및 빈 요인 대비 효과를 항상 보고한다.
+- 비교 성과표: [TABLE-A~V](QGV_DECILE_REPORT_TABLES_20261027.md). 단일 팩터 연구는 QGV 기본점수를 바꾸거나 30개 기존 고정 N 백테스트의 주검정·실험수를 수정하지 않는다. 다중 비교·선택 편향 및 빈 요인 대비 효과를 항상 보고한다.
 
 **데이터가 없는 현 시점**: 연구 문서·계약만 있고 자격 있는 과거 미국 전체 구성원·상폐·기업행동·승인된 PIT 재무·가격 입력 및 라이선스는 미확인이다. 실데이터 성과는 `BLOCKED_ON_DATA`, 독립 OOS 증거는 `OOS_NOT_ESTABLISHED`. 성과를 생성했다고 주장하지 않는다.
