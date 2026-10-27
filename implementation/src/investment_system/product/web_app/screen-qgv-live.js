@@ -18,7 +18,7 @@
      tools/web_app_qgv_screen_node_test.js pins them equal to the old functions and to frozen vectors. */
 (function(){
 'use strict';
-const I=window.IS2,{h,href}=I;
+const I=window.IS2,{h,href}=I,mascot=m=>I.parts.mascot(m);
 const QGV2='sec-qgv2.json',CLS='company-classification.json',NAMES='company-names-ko.json',STEP=50;
 const ok=v=>typeof v==='number'&&Number.isFinite(v);
 const loaded=x=>!!x&&typeof x==='object'&&x.state!=='NOT_READY';
@@ -209,8 +209,9 @@ function leaderboard(route,refs){
  function stateCards(pg){
   const t={NO_DATA:'화면 상태 · 미게시',READ_FAILED:'화면 상태 · 읽기 실패',DATA_FORMAT_NEWER:'화면 상태 · 새 형식'}[pg.state]||'화면 상태 · 미게시';
   refs.chips.replaceChildren(...basis(pg),h('span',{class:'chip vsrc'},'V 출처: ',pg.v_source.ko),h('span',{class:'chip'},Q.rankLabel(pg)),h('span',{class:'chip'},'가격: 불러오기 전'));
-  for(const b of Object.values(B))b.replaceChildren(h('div',{class:'sk state-card',dataset:{na:pg.reason||pg.state,pageState:pg.state}},h('b',null,t),h('span',null,text(pg.reason)),
-   pg.state==='DATA_FORMAT_NEWER'?h('button',{type:'button',class:'btn',dataset:{k:'reload'},onclick:()=>location.reload()},'새로고침'):null));}
+  // The character once, on the first block (2.1.1); the other six cards repeat the words only.
+  Object.values(B).forEach((b,i)=>b.replaceChildren(h('div',{class:'sk state-card',dataset:{na:pg.reason||pg.state,pageState:pg.state}},i?null:mascot(pg.state==='NO_DATA'?'plain':'alarm'),h('b',null,t),h('span',null,text(pg.reason)),
+   pg.state==='DATA_FORMAT_NEWER'?h('button',{type:'button',class:'btn',dataset:{k:'reload'},onclick:()=>location.reload()},'새로고침'):null)));}
 
  /* ---- 2.1.1 평가 대상과 목록: Universe504 only (DC-24: no TARGET v0 scope, box or column), counts, the one table */
  function block1(v){
@@ -293,7 +294,7 @@ function leaderboard(route,refs){
  // The 2.1.5 empty state of 종합 순위 (no device rank yet) and 2.1.7: the band's ③ button mirrored, never an action of its own.
  function mirror(where){const st=P.status(),usable=loaded(st)&&st.google&&st.google.connected&&st.universe_source.set;
   return h('button',{type:'button',class:'btn',disabled:!usable,dataset:{k:'mirror-'+where},onclick:()=>{bRead.scrollIntoView({block:'center'});bRead.focus({preventScroll:true});}},'가격 불러오기 · 이 기기에서만');}
- function noRanking(){return h('div',{class:'sk empty',dataset:{empty:'NO_RANKING'}},h('p',null,'가격 연결 전: QGV 순위 없음'),
+ function noRanking(){return h('div',{class:'sk empty',dataset:{empty:'NO_RANKING'}},mascot('plain'),h('p',null,'가격 연결 전: QGV 순위 없음'),
   h('button',{type:'button',class:'btn',dataset:{k:'qg-list'},onclick:set(()=>{V.list='QG_REFERENCE';V.shown=STEP;})},'QG 참고 목록 보기'),mirror('list'));}
 
  /* ---- 2.1.2 순위와 정렬 */

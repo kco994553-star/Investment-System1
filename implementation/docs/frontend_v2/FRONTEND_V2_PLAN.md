@@ -4,7 +4,7 @@
 
 ## 0. 사용자 결정 (2026-10-23)
 
-- 시안: 손그림 칠판 아티팩트(https://claude.ai/artifact/44Gm4mhXzXUDTm7svbAvGs, PC 9장 + 모바일 9장)를 화면의 기준으로 삼는다.
+- 시안: 손그림 칠판 아티팩트(https://claude.ai/artifact/44Gm4mhXzXUDTm7svbAvGs, PC 9장 + 모바일 9장)를 화면의 기준으로 삼는다. 2026-10-27부터 시각 양식은 영상 기준(DC-25, [VISUAL_STYLE.md](VISUAL_STYLE.md))이고, 같은 아티팩트의 보드 전체가 그 양식으로 바뀌었다(버전 52). 배치·기능은 그대로다.
 - **"기존 프론트엔드를 지우고 시안대로 바꾼다."**
 - 범위: **브라우저 쪽 코드 전부 새로 작성**한다. 화면, 화면이 쓰는 계산·연결 모듈이 모두 해당한다.
 - 시안에 자리가 없는 기존 기능은 **세부 화면으로 옮긴다**. 대상은 재무 상세, SEC 표지 정보, 플레이북 기록, 설정·구글 시트 연결, 가상매매, TARGET 빌더 등이다. 첫 화면은 시안처럼 짧게 둔다. 자세한 내용은 시안의 "→ 근거·자세히" 링크, "전체 메뉴", "n. 구조 트리" 아래에 둔다.
@@ -40,7 +40,7 @@
   - `app.css`: 시안 디자인 토큰·부품(`.sk` 손그림 테두리, `.stamp` 도장, `.chip`, `.hand`, `.hl` 형광펜, `.bar`, `.tbl`, `.node`·`.branch`, 탭바).
   - `core.js`: DOM 도우미(텍스트 노드만), 메뉴 표, 해시 라우터, 화면 등록. `shell.js`: 머리말·메뉴·모바일 탭·전체 메뉴. `parts.js`: 화면 공통 부품.
   - `screen-*.js`: 메뉴별 화면. 레인마다 자기 파일만 고친다.
-- 글꼴(시안과 같음): Black Han Sans(제목·도장), Gowun Dodum(본문), Nanum Pen Script(손글씨). google/fonts 고정 커밋에서 받아 KS X 1001 부분집합 WOFF2로 자체 호스팅한다(`tools/font_subset_ksx1001.py`).
+- 글꼴: ~~Black Han Sans(제목·도장), Gowun Dodum(본문), Nanum Pen Script(손글씨)~~ → **2026-10-27 DC-25로 바뀜**: 제목 Jua(이미 검토·고정된 KS X 1001 부분집합 `jua-regular-ksx1001.woff2`, 옛 화면과 같은 파일), 본문은 기기의 한국어 고딕(내려받지 않음). 손글씨 글꼴은 쓰지 않는다. 시각 규칙은 [VISUAL_STYLE.md](VISUAL_STYLE.md) 하나(`tools/font_subset_ksx1001.py --set v2`로 재현).
 - 개발 빌드: `tools/build_web_app.py --out <빈 디렉터리>`. 공개 자료 파일은 기존 빌드와 똑같이 만들고, 화면 파일만 새 것으로 바꾼다.
   - 옛 모듈 재사용(P1 A안): 페이지가 부르는데 web_app에 같은 이름이 없는 web_assets 파일은 지우지 않고 바이트 그대로 둔다. 같은 이름이 web_app에 있으면 web_app 것을 쓴다. 두 곳 모두에 없으면 빌드가 실패한다. 시험은 `tools/web_app_reuse.js`로 옛 경로를 한 곳에서 읽는다.
   - 첫 화면(P2-1a, 소유자 결정 2026-10-24): `index.html`은 첫 화면 파일(web_app 것)만 부른다. 옛 모듈, P1 층, 화면 논리 파일(P1_DATA_LAYER.md 1.1절)은 첫 그림 뒤 `loader.js`가 `LOAD_ORDER` 목록대로 넣는다. 이 목록이 하나뿐인 불러오기·재사용 목록이다. 계약과 측정: [P1_DATA_LAYER.md](P1_DATA_LAYER.md) 1.1절.

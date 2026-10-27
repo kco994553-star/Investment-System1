@@ -36,6 +36,19 @@ function searchBox(id,label){
  A.addEventListener('focusout',()=>setTimeout(()=>{if(!A.contains(document.activeElement))show(false);}),o);
  b.node=h('div',{class:'search-wrap'},label,A,status,b.note);
  return b;}
-window.IS2.parts=Object.freeze({head,section,card,pending,more,searchBox});
+/* The one line-art character for empty, loading and error states (DC-25, VISUAL_STYLE.md: the reference video explains a
+   situation with the same drawn character). mood 'plain' (calm: nothing yet) or 'alarm' (reading, failed). Decorative only:
+   aria-hidden, no text, strokes from app.css (.mascot), never a style attribute. */
+function mascot(mood='plain'){
+ const P=(d,c)=>h('svg:path',{d,class:c||null}),alarm=mood==='alarm';
+ return h('svg:svg',{class:'mascot',viewBox:'0 0 100 120',width:'96',height:'115','aria-hidden':'true',focusable:'false',dataset:{mascot:alarm?'alarm':'plain'}},
+  alarm?P('M8 12 L14 18 M92 12 L86 18 M50 2 L50 6','spark'):null,
+  P('M50 14 L50 22'),h('svg:circle',{cx:'50',cy:'11',r:'4'}),
+  h('svg:rect',{x:'18',y:'22',width:'64',height:'48',rx:'16'}),h('svg:rect',{x:'10',y:'38',width:'8',height:'16',rx:'4'}),h('svg:rect',{x:'82',y:'38',width:'8',height:'16',rx:'4'}),
+  ...(alarm?[h('svg:circle',{cx:'36',cy:'40',r:'6'}),h('svg:circle',{cx:'64',cy:'40',r:'6'}),h('svg:circle',{cx:'36',cy:'40',r:'2',class:'eye'}),h('svg:circle',{cx:'64',cy:'40',r:'2',class:'eye'}),
+   h('svg:ellipse',{cx:'50',cy:'57',rx:'5',ry:'4'})]
+   :[h('svg:ellipse',{cx:'36',cy:'40',rx:'4',ry:'5',class:'eye'}),h('svg:ellipse',{cx:'64',cy:'40',rx:'4',ry:'5',class:'eye'}),P('M40 54 Q50 62 60 54','open')]),
+  h('svg:rect',{x:'30',y:'74',width:'40',height:'34',rx:'8'}),h('svg:rect',{x:'40',y:'84',width:'20',height:'10',rx:'2'}),P('M30 84 Q18 90 20 100 M70 84 Q82 90 80 100','open'));}
+window.IS2.parts=Object.freeze({head,section,card,pending,more,searchBox,mascot});
 window.IS2.register=register;
 })();

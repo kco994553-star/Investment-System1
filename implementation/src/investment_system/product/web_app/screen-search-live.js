@@ -202,7 +202,7 @@ function company(route,{box,given,name,facts,star,bodies}){
   const e=idx.find(given);
   if(!e){
    name.textContent=given;star.remove();
-   facts.replaceChildren(h('p',{class:'not-found',role:'status',dataset:{notFound:''}},'이 이름의 기업을 찾지 못했습니다'),missingLine(idx)||'');
+   facts.replaceChildren(I.parts.mascot('plain'),h('p',{class:'not-found',role:'status',dataset:{notFound:''}},'이 이름의 기업을 찾지 못했습니다'),missingLine(idx)||'');
    for(const k of['qgv','macro','news','portfolio'])bodies[k].replaceChildren(na('기업을 찾지 못해 값이 없습니다','NOT_FOUND'));
    return;}
   const cid=e.canonical_id;I.selection.set(cid);

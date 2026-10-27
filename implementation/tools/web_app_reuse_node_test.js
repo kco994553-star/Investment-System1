@@ -70,8 +70,9 @@ const P0_SCREENS = ['screen-search.js', 'screen-menus.js', 'screen-detail.js', '
 const LOADER = 'loader.js';
 // index.html: the first screen only.
 const FIRST = [...P0_BASE, LOADER, ...LANES, ...P0_SCREENS];
-// P0 names that also exist in web_assets: web_app wins, so they are never reused.
-const SHARED = ['index.html', 'screen-detail.js'];
+// Names that also exist in web_assets: web_app wins, so they are never reused. The Jua subset and its licence (DC-25) keep the
+// reviewed name and bytes of the old files (the font test below checks the bytes), so the guard pin carries over at the switch.
+const SHARED = ['index.html', 'screen-detail.js', 'jua-regular-ksx1001.woff2', 'jua-OFL.txt'];
 // Old files deliberately not loaded, with the reason.
 const NOT_LOADED = {
   'daily-report.js': 'wires document listeners at load; the report model is decided in P2-6',
@@ -614,7 +615,15 @@ test('one company search part (DC-23): the combobox lives in parts.js searchBox 
 
 test('the first screen never waits for the fonts: every @font-face swaps (or is optional), nothing is preloaded', () => {
   const css = fs.readFileSync(R.newPath('app.css'), 'utf8'), faces = [...css.matchAll(/@font-face\s*\{([^}]*)\}/g)].map((m) => m[1]);
-  assert.equal(faces.length, 3);
+  // DC-25 (owner 2026-10-27): one self-hosted face, Jua (titles), the reviewed subset byte for byte; body text is the device's
+  // Korean gothic, so nothing else downloads. The chalkboard draft's three faces are gone.
+  assert.equal(faces.length, 1);
+  assert.match(faces[0], /font-family:"IS Jua";src:url\("jua-regular-ksx1001\.woff2"\)/);
   for (const f of faces) assert.match(f, /font-display:\s*(?:swap|optional)\s*;/, f.slice(0, 60));
+  const sha = (p) => crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
+  assert.equal(sha(R.newPath('jua-regular-ksx1001.woff2')), sha(R.oldPath('jua-regular-ksx1001.woff2')), 'the same reviewed Jua subset');
+  assert.equal(sha(R.newPath('jua-OFL.txt')), sha(R.oldPath('jua-OFL.txt')), 'its OFL text');
+  for (const gone of ['black-han-sans-ksx1001.woff2', 'gowun-dodum-ksx1001.woff2', 'is-pen-script-ksx1001.woff2']) assert.ok(!fs.existsSync(R.newPath(gone)), gone + ' removed');
+  assert.doesNotMatch(css, /box-shadow:\s*\d+px \d+px 0 /, 'no offset (3D) shadows: the reference video style');
   assert.doesNotMatch(R.newIndex(), /rel="(?:preload|modulepreload|prefetch|preconnect)"/, 'no preload: the fonts and the layer come after the first paint');
 });

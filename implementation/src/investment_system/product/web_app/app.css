@@ -1,20 +1,20 @@
-/* New frontend (docs/frontend_v2/FRONTEND_V2_PLAN.md): the hand-drawn chalkboard draft's tokens and parts, one stylesheet.
-   Self-hosted OFL subsets only (no external font host); the unicode-range is the one of tools/font_subset_ksx1001.py. */
-@font-face{font-family:"IS Black Han Sans";src:url("black-han-sans-ksx1001.woff2") format("woff2");font-display:swap;
- unicode-range: U+0020-007E, U+00A0-00FF, U+2010-2027, U+2030-203A, U+20A9, U+3000-3011, U+301C, U+3131-318E, U+AC00-D7A3, U+FF01-FF5E;}
-@font-face{font-family:"IS Gowun Dodum";src:url("gowun-dodum-ksx1001.woff2") format("woff2");font-display:swap;
- unicode-range: U+0020-007E, U+00A0-00FF, U+2010-2027, U+2030-203A, U+20A9, U+3000-3011, U+301C, U+3131-318E, U+AC00-D7A3, U+FF01-FF5E;}
-@font-face{font-family:"IS Pen Script";src:url("is-pen-script-ksx1001.woff2") format("woff2");font-display:swap;
+/* New frontend (docs/frontend_v2/FRONTEND_V2_PLAN.md), one stylesheet. Visual style: the owner's reference video (DC-25,
+   implementation/docs/frontend_v2/VISUAL_STYLE.md): white page, black line art, clean gothic text with bold keywords, Jua titles,
+   circled section marks, one yellow focus glow, colour allowed (Q·G·V, menus) but no offset shadows or 3D.
+   Self-hosted OFL subset only (no external font host): Jua, the reviewed KS X 1001 subset jua-regular-ksx1001.woff2 (the same
+   name and bytes as in web_assets/; the unicode-range is the one of tools/font_subset_ksx1001.py). Body text uses the device's
+   Korean gothic (Android Noto Sans KR, iPhone Apple SD Gothic Neo, Windows Malgun Gothic): nothing to download. */
+@font-face{font-family:"IS Jua";src:url("jua-regular-ksx1001.woff2") format("woff2");font-display:swap;
  unicode-range: U+0020-007E, U+00A0-00FF, U+2010-2027, U+2030-203A, U+20A9, U+3000-3011, U+301C, U+3131-318E, U+AC00-D7A3, U+FF01-FF5E;}
 
 :root{
- --ink:#161616;--muted:#4a4a4a;--paper:#ffffff;--line:#161616;
+ --ink:#161616;--muted:#5f5f5f;--paper:#ffffff;--line:#161616;
  --red:#D7322A;--blue:#2457C5;--green:#1F8A4C;--green-text:#1F7A45;--orange:#E98A12;--orange-text:#A85A00;--marker:#FFE45C;
  --q:var(--blue);--g:var(--green);--v:var(--orange);--up:#B4231C;--down:#1D4FA8;--dash:#8a8a8a;--dim:#5c5c5c;
- --font-display:"IS Black Han Sans","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
- --font-body:"IS Gowun Dodum","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",system-ui,sans-serif;
- --font-hand:"IS Pen Script","IS Gowun Dodum",cursive;
- --sketch:255px 14px 225px 14px/14px 225px 14px 255px;
+ --font-display:"IS Jua","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+ --font-body:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+ --font-hand:var(--font-body);
+ --sketch:16px;--glow:0 0 0 6px rgba(255,228,92,.6),0 0 18px 8px rgba(255,228,92,.45);
  --gutter:64px;--tabbar:72px;
 }
 *{box-sizing:border-box}
@@ -29,13 +29,16 @@ h1,h2,h3,h4{font-family:var(--font-display);font-weight:400;margin:0;line-height
 
 /* ---------- draft parts ---------- */
 .hl{background:linear-gradient(transparent 58%,var(--marker) 58%)}
-.sk{border:2.5px solid var(--line);border-radius:var(--sketch);background:var(--paper)}
-.sk.shadow-q{box-shadow:6px 6px 0 var(--blue)}.sk.shadow-g{box-shadow:6px 6px 0 var(--green)}
-.sk.shadow-v{box-shadow:6px 6px 0 var(--orange)}.sk.shadow-red{box-shadow:6px 6px 0 var(--red)}
-.stamp{display:inline-flex;align-items:center;gap:8px;border:3px solid var(--line);padding:6px 14px;font-family:var(--font-display);font-size:22px;background:var(--paper);box-shadow:6px 6px 0 var(--red)}
-.stamp.blue{box-shadow:6px 6px 0 var(--blue)}.stamp.green{box-shadow:6px 6px 0 var(--green)}.stamp.orange{box-shadow:6px 6px 0 var(--orange)}
-.hand{font-family:var(--font-hand)}
-.note{font-family:var(--font-hand);color:var(--red);font-size:22px}
+.sk{border:2px solid var(--line);border-radius:var(--sketch);background:var(--paper)}
+.mascot{flex:none;fill:var(--paper);stroke:var(--ink);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}.mascot .eye{fill:var(--ink)}.mascot .open,.mascot .spark{fill:none}
+.state-card,.empty.sk{align-items:center;text-align:center}
+.sk.shadow-q{border-top:4px solid var(--blue)}.sk.shadow-g{border-top:4px solid var(--green)}
+.sk.shadow-v{border-top:4px solid var(--orange)}.sk.shadow-red{border-top:4px solid var(--red)}
+.stamp{display:inline-flex;align-items:center;gap:10px;border:0;padding:0;font-family:var(--font-display);font-size:24px;background:none}
+.stamp::before{content:"";flex:none;width:12px;height:12px;border:2.5px solid var(--line);border-radius:50%}
+.stamp.blue::before{border-color:var(--blue)}.stamp.green::before{border-color:var(--green)}.stamp.orange::before{border-color:var(--orange)}
+.hand{font-family:var(--font-body);color:var(--muted)}
+.note{font-family:var(--font-body);color:var(--red);font-size:15px}
 .chip{display:inline-flex;align-items:center;gap:6px;border:2px solid var(--line);border-radius:999px;padding:6px 14px;min-height:32px;font-size:15px;background:var(--paper);text-decoration:none}
 button.chip{cursor:pointer}
 button.chip:disabled{opacity:.5;cursor:not-allowed}
@@ -56,7 +59,7 @@ button.chip:disabled{opacity:.5;cursor:not-allowed}
 .btn:disabled{opacity:.5;cursor:not-allowed}
 .na{color:var(--muted)}
 .reason{font-size:14px;color:var(--muted)}
-.more{font-family:var(--font-hand);font-size:21px;text-decoration:none}
+.more{font-family:var(--font-body);font-size:16px;font-weight:700;text-decoration:none}
 .q-text{color:var(--blue)}.g-text{color:var(--green-text)}.v-text{color:var(--orange-text)}
 
 svg.ico{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;flex:none}
@@ -70,7 +73,7 @@ svg.ico{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stro
 .menu a{padding:10px 12px;text-decoration:none;border-radius:8px}
 .menu a[aria-current="page"]{font-family:var(--font-display);background:linear-gradient(transparent 58%,var(--marker) 58%)}
 .device-chip{white-space:nowrap}
-.foot{font-family:var(--font-hand);font-size:22px;color:var(--muted);text-align:center}
+.foot{font-family:var(--font-body);font-size:15px;color:var(--muted);text-align:center}
 .screen{display:flex;flex-direction:column;gap:28px}
 .screen-head{display:flex;flex-direction:column;gap:6px}
 .screen-head h1{font-size:56px}
@@ -94,7 +97,7 @@ svg.ico{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stro
 .hero{display:flex;flex-direction:column;align-items:center;gap:18px;padding:24px 0 8px;position:relative;text-align:center}
 .hero-title{font-size:76px;line-height:1.05;letter-spacing:-1px}
 .hero-label{font-size:26px;color:var(--muted)}
-.hero-aside{position:absolute;right:40px;top:40px;width:220px;font-size:22px;transform:rotate(4deg);margin:0;text-align:left;word-break:keep-all}
+.hero-aside{position:absolute;right:40px;top:40px;width:220px;font-size:15px;margin:0;text-align:left;word-break:keep-all}
 @media (max-width:1240px){.hero-aside{position:static;transform:none;width:auto;text-align:center}}
 .search-box{width:min(760px,100%);min-height:72px;display:flex;align-items:center;gap:14px;padding:0 22px}
 .search-box input{flex:1;min-width:0;border:0;outline:none;font-size:24px;background:transparent}
@@ -104,7 +107,7 @@ svg.ico{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stro
 .search-wrap{width:min(760px,100%);display:flex;flex-direction:column;align-items:center;gap:10px}
 .search-anchor{position:relative;width:100%}
 .search-box{width:100%}
-.search-list{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:5;margin:0;padding:6px;list-style:none;max-height:min(60vh,520px);overflow:auto;text-align:left;box-shadow:6px 6px 0 var(--blue)}
+.search-list{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:5;margin:0;padding:6px;list-style:none;max-height:min(60vh,520px);overflow:auto;text-align:left;box-shadow:0 8px 24px rgba(0,0,0,.08)}
 .search-list[hidden]{display:none}
 .search-opt{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:8px;cursor:pointer;overflow-wrap:anywhere;scroll-margin-bottom:8px}
 .search-opt[aria-selected="true"]{outline:2px solid var(--line)}
@@ -157,7 +160,7 @@ svg.ico{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stro
 .lb{display:flex;flex-direction:column;gap:12px;min-width:0}
 .lb+.lb{margin-top:20px}
 .lb-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.lb-head .hand,.lb .hand{font-size:21px;margin:0}
+.lb-head .hand,.lb .hand{font-size:15px;margin:0}
 .meta{font-size:14px}
 .stamp.sub{font-size:18px;padding:4px 12px}
 .lb-body{display:flex;flex-direction:column;gap:12px;min-width:0}
@@ -182,7 +185,7 @@ svg.ico{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stro
 .badges,.cards,.model-boxes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
 .cards,.model-boxes{grid-template-columns:repeat(2,minmax(0,1fr))}
 .cards>div{padding:12px 16px;display:flex;flex-direction:column;gap:4px}
-.card-now{box-shadow:6px 6px 0 var(--blue)}
+.card-now{box-shadow:var(--glow)}
 .boxed{border:2px solid var(--line);padding:2px 8px;align-self:flex-start}
 .mbox.blue{border-left:4px solid var(--blue);padding-left:10px}
 .dim{color:var(--dim)}
@@ -223,7 +226,7 @@ svg.ico{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stro
  .conn{flex-direction:column;align-items:stretch}
  .conn .btn{width:100%;min-height:48px}
  .conn>[aria-hidden]{display:none}
- .stamp.sub{box-shadow:4px 4px 0 var(--blue)}
+ .stamp.sub{font-size:20px}
  .pop,.badges,.cards{grid-template-columns:repeat(2,minmax(0,1fr))}
  .model-boxes{grid-template-columns:minmax(0,1fr)}
  .lb-filters{grid-template-columns:repeat(2,minmax(0,1fr))}

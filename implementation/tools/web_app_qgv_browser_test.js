@@ -284,6 +284,7 @@ const testClick = async (page, name) => { await page.locator('[data-test-action=
         // 종합 순위 without prices: the empty state; its button switches to the QG list.
         await page.locator('button[data-list=RANKED]').click(); await page.locator('[data-empty=NO_RANKING]').waitFor();
         assert.match(await page.locator('[data-empty=NO_RANKING]').innerText(), /가격 연결 전: QGV 순위 없음/);
+        assert.equal(await page.locator('[data-empty=NO_RANKING] svg.mascot[data-mascot=plain][aria-hidden=true]').count(), 1, 'the state character');
         assert.equal(await page.locator('[data-empty=NO_RANKING] button:has-text("가격 불러오기")').isDisabled(), true, 'the mirrored price button is off');
         await common(page);
         await page.locator('[data-k=qg-list]').click(); await page.locator('[data-lb-table][data-list=QG_REFERENCE]').waitFor();
@@ -606,6 +607,8 @@ const testClick = async (page, name) => { await page.locator('[data-test-action=
       const cards = await page.evaluate(() => [...document.querySelectorAll('[data-page-state]')].map((c) => ({ state: c.dataset.pageState, na: c.dataset.na, text: c.textContent })));
       const want = await page.evaluate((r) => window.IS2.qgv.reasonText(r), reason);
       assert.equal(cards.length, 7); for (const c of cards) { assert.equal(c.state, state); assert.equal(c.na, reason); assert.equal(c.text, title + want); assert.doesNotMatch(c.text, /\d/); }
+      // The one state character (DC-25): once, on the first card, decorative (no text, hidden from screen readers).
+      assert.deepEqual(await page.evaluate(() => [...document.querySelectorAll('[data-page-state] svg.mascot')].map((m) => [m.dataset.mascot, m.getAttribute('aria-hidden'), m.closest('[data-page-state]') === document.querySelector('[data-page-state]')])), [[label === '404' ? 'plain' : 'alarm', 'true', true]]);
       assert.equal(await page.locator('[data-lb-table]').count(), 0, 'no table');
       assert.doesNotMatch(await page.locator('main').innerText(), CODE_TEXT);
       assert.match(await page.locator('[data-basis]').textContent(), /^점수 갱신 없음 · 마지막 확인 \d\d:\d\d · 계산 버전 없음$/, 'the 기준 chip in a state card page');
