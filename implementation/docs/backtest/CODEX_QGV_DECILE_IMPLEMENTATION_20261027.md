@@ -13,6 +13,7 @@
 5. [책 주제별 F01~F21 목록](QGV_BOOK_FACTOR_TOPDECILE_20261027.md) 및 [JSON](QGV_BOOK_FACTOR_TOPDECILE_SPEC_20261027.json)
 6. [22종 성과 표준 TABLE-A~V](QGV_DECILE_REPORT_TABLES_20261027.md)
 7. [신규 사용자 결정: 책 방식 연간 **종목 재선정**](QGV_ANNUAL_RESELECTION_POLICY_20261027.md)
+8. [BookAnnual-v1 기계 판독 계약, BT-01 W1/W2 N15-Y 새 등록](QGV_BOOK_ANNUAL_RESELECTION_SPEC_20261027.json)
 
 **작업권한을 먼저 확인**한다. Codex의 기존 검증·리뷰 역할과 #417 WIP의 파일 소유자 제약을 지킨다. 담당이 승인하기 전 공용 파일·기본 브랜치·기존 연구 PR의 코드를 직접 수정하거나 강제 push·병합·배포하지 않는다. 가능하면 안전한 별도 구현 패치와 합성 테스트를 만든 후 Main/owner에게 작업 통합을 요청한다. 실제 비공개 입력 라이선스·추가 지출·보호 Holdout 열람은 사용자가 별도 승인한 범위에서만.
 
