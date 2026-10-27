@@ -176,7 +176,7 @@ test('sortRows equals LeaderboardScreen.sortRows for the ids it orders; ticker /
   const copy = rows.map((r) => r.rank.official); H.sortRows(rows, 'v-asc'); assert.deepEqual(rows.map((r) => r.rank.official), copy);
 });
 
-test('listOf / portfolioRanks / returnOrder: D12 lists (outside rows in none, a QG_REFERENCE group without an order in none); rank order 1..n; returns high first, NA last', async () => {
+test('listOf / returnOrder: D12 lists (outside rows in none, a QG_REFERENCE group without an order in none); no portfolio rank (DC-24); returns high first, NA last', async () => {
   const env = await setup(), { H, rows } = env;
   const lists = rows.map(H.listOf), count = (l) => lists.filter((x) => x === l).length;
   assert.equal(count('RANKED'), rows.filter((r) => Number.isInteger(r.rank.official)).length);
@@ -186,8 +186,7 @@ test('listOf / portfolioRanks / returnOrder: D12 lists (outside rows in none, a 
   assert.equal(H.listOf(fake), null, 'a QG_REFERENCE group without an order has no list');
   assert.equal(H.listOf({ ...fake, scope: 'OUTSIDE_UNIVERSE', rank: { ...fake.rank, official: 3 } }), null, 'outside: no list even with a rank');
   frozenCheck(env, 'lists', lists);
-  const pr = H.portfolioRanks(rows), want = rows.filter((r) => r.target && r.code !== null && Number.isInteger(r.rank.official)).sort((a, b) => a.rank.official - b.rank.official).map((r) => r.id);
-  assert.deepEqual([...pr.keys()], want); assert.deepEqual([...pr.values()], want.map((_, i) => i + 1)); assert.ok(pr.size >= 1);
+  assert.equal(H.portfolioRanks, undefined, 'no TARGET v0 portfolio rank on a QGV screen (DC-24)');
   const val = (r) => (r.score.q === null ? null : r.score.q / 100 - 0.5), ro = H.returnOrder(rows, val), vs = ro.map(val);
   assert.deepEqual(vs.filter((x, i) => i && x !== null && (vs[i - 1] === null || x > vs[i - 1])), [], 'high first, NA last');
   assert.ok(vs.indexOf(null) > 0 && vs.slice(vs.indexOf(null)).every((x) => x === null));

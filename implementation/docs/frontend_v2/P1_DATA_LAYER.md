@@ -374,13 +374,14 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
 
 ### 결정됨 2026-10-27 (소유자: 공개/개인 경계 · 기업 검색 · 바뀌는 화면, DC-22 · DC-23)
 
-- **공개 데이터**(처음 쓰는 기기·로그인 안 한 상태에서도 같게): Universe504 목록, 기업 검색, QGV v2 점수·순위, 기본 프리셋, 중앙 V 점수·순위(게시 후), TARGET, 갱신 시각·calc_version. 모두 공개 파일(4절 `IS2.data`)에서 읽는다. 기기 저장(7절 `IS2.store`)이나 로그인이 있어야만 보이는 공개 자료 화면은 고친다(DC-22).
+- **공개 데이터**(처음 쓰는 기기·로그인 안 한 상태에서도 같게): Universe504 목록, 기업 검색, QGV v2 점수·순위, 기본 프리셋, 중앙 V 점수·순위(게시 후), TARGET(**확정된 TARGET v1만**. TARGET v0(카탈로그 19)은 QGV와 전혀 무관해 공개 TARGET이 아니다 — DC-24), 갱신 시각·calc_version. 모두 공개 파일(4절 `IS2.data`)에서 읽는다. 기기 저장(7절 `IS2.store`)이나 로그인이 있어야만 보이는 공개 자료 화면은 고친다(DC-22).
 - **개인 데이터**(로그인에 따라 다름): 포트폴리오, 사용자 QGV 가중치. 저장은 당분간 (a) 그 기기에만(7절). 기기 간 동기화 (b)는 별도 결정 전까지 만들지 않는다. 그 밖에 개인으로 둘 후보는 USER_DECISIONS_PENDING `PRIVATE-LIST`(목록만 제안).
 - **공개도 저장도 하지 않음**: 원시 가격, 보유 원본, 기기 가격으로 계산한 임시 V. 6절 그대로(GSQ-024, 클릭할 때만 요청, RAM에만).
 - **기업 검색(DC-23)**: 공용 부품 하나. 검색창 하나에서 티커·영문 회사명으로 찾고 입력하는 대로 후보를 보인다. 범위는 공개 파일에서 받아 메모리에 올린 Universe504 목록뿐이다(입력마다 네트워크 요청 없음). 결과 없음과 상장 종료(WBD 등) 표시를 둔다. 키보드와 모바일 화면 키보드로 쓴다. 기업을 고르는 모든 화면이 같은 부품을 쓴다. 다음 P2 PR에서 P2-1 `screen-search-live.js`를 떼어 만든다. 이에 따라 Universe 밖 TARGET과 한글명은 검색 대상이 아니다.
 - **바뀌는 화면(DC-23)**: 기준 기업·갱신 시각·자료 버전에 따라 내용이 바뀌는 화면은 갱신 시각과 calc_version을 화면에 표시하고, 상태(기준 기업 선택 전·후, 갱신 중, 데이터 없음/STALE, 실패)를 시안 보드로 그린다.
 - **P2-2a 반영(#415)**: 리더보드의 모든 화면 상태(READY·NO_DATA·READ_FAILED·DATA_FORMAT_NEWER)에 기준 칩을 둔다. 내용은 점수 갱신(`page.as_of`, UTC 날짜·시각) · 마지막 확인(`data.publication().checked_at`) · 계산 버전(`page.calc_version`)이고, 파일이 `stale_after_seconds`를 넘으면 'STALE · 점수 파일 기한 지남'을 붙인다. '공개 자료 다시 읽기' 버튼은 `data.refresh(event)`(PUBLIC_REFRESH, 공개 파일만, 클릭 1번 = action 1개)를 부르고 결과를 보인다: 갱신 중 · 새 게시본 없음 · 새 게시본 적용 · 갱신 실패(이전 값 유지). 2.1.7 모델 후보에도 갱신 시각·계산 버전을 적는다. 가격 시트 코드의 글은 '가격 시트'로 고쳤다(`UNIVERSE_SOURCE_NOT_SET` = '가격 시트 없음 · Universe 목록은 공개 파일', `UNIVERSE_NOT_READ`·`NOT_IN_UNIVERSE`·`UNIVERSE_READ_FAILED`·`UNIVERSE_SOURCE_INVALID`도 같은 뜻으로).
-- **남은 불일치**: 기업 페이지 QGV 카드에 갱신 시각·calc_version이 없고, 홈의 TARGET 기본 목록이 관심 기업 저장 자료를 읽지 못하면 같이 숨는다 → 다음 P2 PR. TARGET v1 확정본은 기기 저장(플레이북)에만 있다 → 결정 대기 `TARGET-PUBLIC`. QGV 종합·순위는 V가 필요해 중앙 V 게시 전에는 처음 쓰는 기기에 없다(QG 참고 목록만). 저장 문제가 아니며 10절 전환점에서 풀린다.
+- **TARGET v0 제외(DC-24, 사용자 2026-10-27)**: QGV 화면에 v0을 쓰지 않는다. #415 리더보드는 Universe504 행만 그린다(v0 범위 칩·'Universe 밖 TARGET' 상자·TARGET 표지·'TARGET만' 필터·포트폴리오 내 순위 열을 뺐다. D12와 부딪혀 `D12-V0` 확인). 층(5절 `qgv.page`)은 옛 엔진 계약 때문에 카탈로그 행(`target`, `OUTSIDE_UNIVERSE`, `reference_only`)을 아직 들고 있다. 화면은 `rows(page,{scope:'UNIVERSE'})`만 쓴다.
+- **남은 불일치**: 기업 페이지 QGV 카드에 갱신 시각·calc_version이 없고, 홈의 TARGET 기본 목록이 관심 기업 저장 자료를 읽지 못하면 같이 숨는다 → 다음 P2 PR. TARGET v1 확정본을 공개 파일로 게시하는 길이 아직 없다(DC-24: 확정되면 게시, 파일·검증기 PR은 별도 승인). QGV 종합·순위는 V가 필요해 중앙 V 게시 전에는 처음 쓰는 기기에 없다(QG 참고 목록만). 저장 문제가 아니며 10절 전환점에서 풀린다.
 
 ### 아직 정할 것
 

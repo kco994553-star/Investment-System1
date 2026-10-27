@@ -10,8 +10,8 @@
 //  - Values from the layer: rank / QGV / Q / G / V / SIC / 유형 / 자료 기준일 cells equal the layer row (ko-KR 1 decimal, or NA +
 //    reasonText; 참고 n; — + reason), the V header = pg.v_source.ko, the rank sub-label = rankLabel(pg); nvda / amd equal their
 //    company cards; IS2.qgv.page() is the same object before and after #/qgv opened. Counts come from the layer.
-//  - 2.1.1 / 2.1.5: scope and list chips (counts = listOf over layer rows), outside rows only in the outside box / scope / TARGET
-//    전체 with their rank reason, list chips off in the outside scope, the 종합 순위 empty state before prices and its QG button.
+//  - 2.1.1 / 2.1.5: Universe504 only (DC-24: no TARGET v0 scope, outside box, pill, filter or portfolio column; the layer's
+//    catalog rows never drawn), list chips (counts = listOf over layer rows), the 종합 순위 empty state before prices and its QG button.
 //  - 2.1.2 (default state, and on 종합 순위 after the click path): every option orders as the ported rule over the layer rows,
 //    rank texts never change, NA last, QGV tiers never interleaved, header button = select, aria-sort, one-way toggle off, reset,
 //    cap options off before a Universe read; population boxes from the layer / model.
@@ -261,8 +261,11 @@ const testClick = async (page, name) => { await page.locator('[data-test-action=
         const lists = await page.evaluate(async () => {
           const I = window.IS2, Q = I.qgv, pg = await Q.page(), qt = window.__qt, chips = (sel) => [...document.querySelectorAll(sel)].map((b) => ({ t: b.textContent, on: b.getAttribute('aria-pressed'), off: b.disabled }));
           const uni = Q.rows(pg, { scope: 'UNIVERSE' }), want = { ALL: uni.length }; for (const r of uni) { const l = qt.listOf(r); if (l) want[l] = (want[l] || 0) + 1; }
-          return { lists: chips('button[data-list]'), scopes: chips('button[data-scope]'), want, target: Q.rows(pg, { scope: 'TARGET' }).length, outside: pg.rows.filter((r) => r.scope === 'OUTSIDE_UNIVERSE' || r.reference_only).map((r) => r.id),
-            drawnIds: qt.drawn().map((d) => d.id), caption: document.querySelector('[data-lb-table] caption').textContent, count: document.querySelector('[data-lb-count]').textContent };
+          return { lists: chips('button[data-list]'), scopes: chips('button[data-scope]'), want, uni: uni.map((r) => r.id), outside: pg.rows.filter((r) => r.scope === 'OUTSIDE_UNIVERSE' || r.reference_only).map((r) => r.id),
+            drawnIds: qt.drawn().map((d) => d.id), caption: document.querySelector('[data-lb-table] caption').textContent, count: document.querySelector('[data-lb-count]').textContent,
+            v0: { scope: document.querySelectorAll('[data-scope]:not([data-scope=UNIVERSE])').length, box: document.querySelectorAll('[data-outside-box], [data-outside]').length,
+              pill: [...document.querySelectorAll('[data-lb-table] .pill')].filter((x) => x.textContent === 'TARGET').length, filter: document.querySelectorAll('[data-k=target]').length,
+              col: document.querySelectorAll('[data-cell=portfolio]').length, text: /TARGET(?! v1)/.test(document.querySelector('[data-lb="2.1.1"]').textContent + document.querySelector('[data-lb="2.1.3"]').textContent) } };
         });
         assert.ok(lists.drawnIds.length > 1, 'list 전체 with rows on open (never the 종합 순위 empty state)');
         assert.match(lists.caption, /^전체 · /);
@@ -271,26 +274,13 @@ const testClick = async (page, name) => { await page.locator('[data-test-action=
         const ids = ['ALL', 'RANKED', 'QG_REFERENCE', 'PARTIAL_AXES', 'CHECK_DATA'];
         assert.deepEqual(lists.lists.map((c) => chipN(c.t)), ids.map((k) => lists.want[k] || 0), 'list chip counts = listOf over the layer rows (Universe count = rows(UNIVERSE).length)');
         assert.equal(lists.want.RANKED || 0, 0, 'no device price: no ranked row');
-        assert.ok(lists.scopes[1].t.startsWith('TARGET ' + lists.target + ' · '), 'TARGET chip counts the layer TARGET rows');
-        assert.ok(lists.outside.length >= 1 && lists.outside.every((id) => !lists.drawnIds.includes(id)), 'outside rows are not in the Universe table');
-        const box = await page.evaluate(async () => { const Q = window.IS2.qgv, pg = await Q.page();
-          return [...document.querySelectorAll('[data-outside]')].map((li) => { const r = pg.rows.find((x) => x.id === li.dataset.outside); return { id: r.id, text: li.querySelector('[data-reason]').textContent, want: '→ 근거: ' + Q.reasonText(r.na_reason.rank), code: r.na_reason.rank }; }); });
-        assert.deepEqual(box.map((b) => b.id).sort(), [...lists.outside].sort());
-        for (const b of box) { assert.equal(b.text, b.want, b.id + ' outside box reason from the layer'); assert.ok(['OUTSIDE_UNIVERSE', 'REFERENCE_ONLY'].includes(b.code)); }
-        // Outside scope: list chips off, the outside rows (rank — + reason).
-        await page.locator('button[data-scope=OUTSIDE]').click(); await page.locator('[data-lb-table][data-scope=OUTSIDE]').waitFor();
-        const out = await page.evaluate(async () => { const Q = window.IS2.qgv, pg = await Q.page();
-          return { rows: window.__qt.drawn().map((d) => ({ id: d.id, rank: d.c.rank, want: '—' + Q.reasonText(pg.rows.find((r) => r.id === d.id).na_reason.rank) })), off: [...document.querySelectorAll('button[data-list]')].map((b) => b.disabled), lock: !!document.querySelector('[data-list-lock=OUTSIDE]') }; });
-        assert.deepEqual(out.rows.map((r) => r.id).sort(), [...lists.outside].sort(), 'the outside scope shows the outside rows');
-        for (const r of out.rows) assert.equal(r.rank, r.want, r.id + ' rank reason');
-        assert.deepEqual(out.off, [false, true, true, true, true], 'only 전체 in the outside scope'); assert.ok(out.lock);
-        await common(page);
-        // TARGET scope: TARGET rows, the outside rows among them under 전체, the portfolio column.
-        await page.locator('button[data-scope=TARGET]').click(); await page.locator('[data-lb-table][data-scope=TARGET]').waitFor();
-        const tgt = await page.evaluate(() => ({ ids: window.__qt.drawn().map((d) => d.id), port: document.querySelectorAll('[data-cell=portfolio]').length }));
-        assert.equal(tgt.ids.length, lists.target); assert.ok(lists.outside.every((id) => tgt.ids.includes(id)), 'outside rows under TARGET 전체'); assert.equal(tgt.port, lists.target, '포트폴리오 내 순위 column');
-        assert.deepEqual((await page.evaluate(() => window.__qt.check())).bad, []);
-        await page.locator('button[data-scope=UNIVERSE]').click(); await page.locator('[data-lb-table][data-scope=UNIVERSE]').waitFor();
+        // DC-24 (owner 2026-10-27): TARGET v0 has nothing to do with QGV. The layer still carries the catalog rows; the screen draws
+        // Universe504 rows only, with no TARGET v0 scope, box, pill, filter or column.
+        assert.deepEqual(lists.scopes, [], 'no scope buttons (Universe504 only)');
+        assert.deepEqual(lists.v0, { scope: 0, box: 0, pill: 0, filter: 0, col: 0, text: false }, 'no TARGET v0 part on the leaderboard');
+        assert.ok(lists.outside.length >= 1 && lists.outside.every((id) => !lists.drawnIds.includes(id)), 'the layer\'s outside catalog rows are never drawn');
+        assert.ok(lists.drawnIds.every((id) => lists.uni.includes(id)), 'every drawn row is a Universe504 row');
+        assert.match(lists.count, /^평가: Universe504 중 점수 행 \d+$/, 'the count names Universe504 only');
         // 종합 순위 without prices: the empty state; its button switches to the QG list.
         await page.locator('button[data-list=RANKED]').click(); await page.locator('[data-empty=NO_RANKING]').waitFor();
         assert.match(await page.locator('[data-empty=NO_RANKING]').innerText(), /가격 연결 전: QGV 순위 없음/);

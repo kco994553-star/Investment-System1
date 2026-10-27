@@ -7,7 +7,8 @@
      rankLabel / reasonText / preview / model; IS2.data.get of sec-qgv2.json and company-classification.json (CORE), the reviewed
      names (company-names-ko.json); IS2.prices status / rankFor / periodReturns; IS2.store prefs / weights. Opening reads CORE +
      actual-catalog.json + company-names-ko.json only.
-   - ONE table (2.1.1) that every control of 2.1.1–2.1.6 changes: scope, list, sort, filters, period, return order, preview.
+   - ONE table (2.1.1) of the Universe504 rows that every control of 2.1.2–2.1.6 changes: list, sort, filters, period, return
+     order, preview. No TARGET v0 scope, box, pill, filter or column (owner 2026-10-27, DC-24: TARGET v0 has nothing to do with QGV).
      Sorting and filters only order / hide rows: rank numbers are the layer's. NA is never 0; a missing value shows NA and its
      reason (<details>). The view state lives in RAM in this module (kept across routes of one page load, gone on reload).
    - Prices only after a click on this screen's buttons; price-derived values (M3 ranks, period returns) only as text inside
@@ -68,16 +69,13 @@ function populationOf(ps){const inputs=ps&&ps[QGV2];if(!inputs||!inputs.records|
 // The 2.1.5 list of a row (D12: rows outside the Universe and reference rows have no list place; exploreGroup alone ignores it).
 function listOf(r){if(r.scope==='OUTSIDE_UNIVERSE'||r.reference_only)return null;if(Number.isInteger(r.rank.official))return'RANKED';if(r.rank.qg_reference_order!==null)return'QG_REFERENCE';
  if(r.rank.group==='PARTIAL_AXES')return'PARTIAL_AXES';if(r.rank.group==='CHECK_DATA')return'CHECK_DATA';return null;}
-// 포트폴리오 내 순위 (D12, leaderboard-screen.js:76): TARGET rows in the Universe with an official rank, by rank, 1..n.
-function portfolioRanks(rows){const out=new Map();rows.filter(r=>r.target&&r.code!==null&&Number.isInteger(r.rank.official)).sort((a,b)=>a.rank.official-b.rank.official).forEach((r,i)=>out.set(r.id,i+1));return out;}
 // Return order (2.1.4): by the period's value, high first, NA last, ties by ticker. value(row) = a number or null.
 function returnOrder(rows,value){return rows.map(r=>({r,v:value(r)})).sort((a,b)=>(a.v===null)-(b.v===null)||(a.v!==null&&b.v!==null?b.v-a.v:0)||String(a.r.ticker).localeCompare(String(b.r.ticker))).map(x=>x.r);}
-const helpers=Object.freeze({SORTS,sortSpec,oppositeSort,sortRows,sicOf,industryOf,filterClassified,populationOf,listOf,portfolioRanks,returnOrder});
+const helpers=Object.freeze({SORTS,sortSpec,oppositeSort,sortRows,sicOf,industryOf,filterClassified,populationOf,listOf,returnOrder});
 
 /* ---------------------------------------------------------------- view state (RAM, this page load only) */
-const V={scope:'UNIVERSE',list:'ALL',sort:'qgv',f:{industry:'',sic2:'',sic4:'',type:'',state:''},fav:false,target:false,period:'1D',ret:false,
+const V={list:'ALL',sort:'qgv',f:{industry:'',sic2:'',sic4:'',type:'',state:''},fav:false,period:'1D',ret:false,
  preview:false,profile:null,gate:true,shown:STEP,panel:false,n:15};
-const SCOPES=[['UNIVERSE','Universe504 전체 · 고정 504코드'],['TARGET',null],['OUTSIDE','Universe 밖 TARGET']];
 const LISTS=[['ALL','전체'],['RANKED','QGV 종합 순위'],['QG_REFERENCE',null],['PARTIAL_AXES','일부 축만 가능'],['CHECK_DATA','자료 확인 필요']];
 const PERIODS=['1D','5D','20D'],WAIT_PERIODS=['60D','120D','YTD','1Y'];
 const STATES=['SOURCE_MISSING','STALE','PRICE_NEEDED','PARTIAL','NOT_APPLICABLE','IDENTITY_STOPPED','CALC_VERSION'];
@@ -175,29 +173,29 @@ function leaderboard(route,refs){
   let p;try{p=P.periodReturns(V.period,pg.rows.map(r=>({id:r.id,ticker:r.ticker,code:r.code})));}catch(e){p=Promise.reject(e);}
   Promise.resolve(p).then(r=>{if(signal.aborted||my!==ctx.retGen)return;ctx.ret=r;later();},()=>{if(signal.aborted||my!==ctx.retGen)return;ctx.ret=null;later();});}
 
- /* ---- the view: scope → list → filters → order → first rows */
+ /* ---- the view: Universe504 → list → filters → order → first rows */
  function previewOf(pg){
   const list=profiles(),p=list.find(x=>x.id===V.profile)||list[0];if(!V.preview||!p||pg.state!=='READY')return null;
   const key=p.id+'|'+p.version+'|'+V.gate;if(ctx.preview&&ctx.preview.key===key&&ctx.preview.pg===pg)return ctx.preview;
   let out;try{out=Q.preview(pg,p.weights,{typeWeights:p.type_weights!==false,gate:V.gate});}catch(e){out={state:'INVALID',reason:errCode(e),rows:[]};}
   ctx.preview={key,pg,p,out};return ctx.preview;}
  function view(){
-  const pg=ctx.pg,pv=previewOf(pg),base=pv?pv.out.rows:null,cls=ps(),sc=V.scope;
-  const scoped=base?base.filter(r=>(sc==='UNIVERSE'?r.scope==='UNIVERSE':sc==='TARGET'?r.target:r.scope==='OUTSIDE_UNIVERSE'||r.reference_only))
-   :sc==='OUTSIDE'?pg.rows.filter(r=>r.scope==='OUTSIDE_UNIVERSE'||r.reference_only):Q.rows(pg,{scope:sc});
-  const list=sc==='OUTSIDE'||pv?'ALL':V.list,listed=list==='ALL'?scoped:scoped.filter(r=>listOf(r)===list);
-  const fav=interests(),f=V.f,any=!!(f.industry||f.sic2||f.sic4||f.type||f.state||V.fav||V.target);
+  // Universe504 rows only (owner 2026-10-27, DC-24): the layer's TARGET v0 catalog rows (in the Universe or outside it) are not
+  // a QGV population, scope or filter here; TARGET v0 has nothing to do with QGV.
+  const pg=ctx.pg,pv=previewOf(pg),base=pv?pv.out.rows:null,cls=ps();
+  const scoped=base?base.filter(r=>r.scope==='UNIVERSE'):Q.rows(pg,{scope:'UNIVERSE'});
+  const list=pv?'ALL':V.list,listed=list==='ALL'?scoped:scoped.filter(r=>listOf(r)===list);
+  const fav=interests(),f=V.f,any=!!(f.industry||f.sic2||f.sic4||f.type||f.state||V.fav);
   const byId=new Map(filterClassified(listed.map(r=>({company_id:r.id,row:r})),cls,f).map(x=>[x.company_id,x.row]));
   const filtered=listed.filter(r=>byId.has(r.id)&&(!f.type||(f.type==='UNCLASSIFIED'?!r.types.selected.length&&r.types.reason==='NO_RECOGNIZED_TYPE':f.type==='NOT_AVAILABLE'?!r.types.selected.length&&r.types.reason!=='NO_RECOGNIZED_TYPE':r.types.selected.includes(f.type)))
-   &&(!f.state||r.coverage.states.includes(f.state))&&(!V.fav||fav.ids.includes(r.id))&&(!V.target||r.target));
+   &&(!f.state||r.coverage.states.includes(f.state))&&(!V.fav||fav.ids.includes(r.id)));
   const ur=ranks(),m3=new Map(),cap=r=>{if(!ur)return null;if(!m3.has(r.id))m3.set(r.id,P.rankFor({company_id:r.id,ticker:r.ticker}));const e=m3.get(r.id);return e&&Number.isInteger(e.rank)?e.rank:null;};
   if(sortSpec(V.sort)[1]==='cap'&&!ur||V.sort==='favorites'&&!fav.ids.length||!SORTS.some(s=>s[0]===V.sort))V.sort='qgv';
   const ret=ctx.ret&&ctx.ret.state==='READY'?ctx.ret:null,byRet=V.ret&&!!ret;
   const rv=r=>{const x=ret&&Object.hasOwn(ret.rows,r.id)?ret.rows[r.id]:null;return x&&x.state==='OK'?x.value:null;};
   const ordered=byRet?returnOrder(filtered,rv):sortRows(filtered,V.sort,{cap,title,interests:fav.ids,rank:pv?r=>r.rank.personal:r=>r.rank.official});
-  const official=sc==='OUTSIDE'?pg.rows.filter(r=>r.scope==='OUTSIDE_UNIVERSE'||r.reference_only):Q.rows(pg,{scope:sc});
-  return{byRet,pg,pv,scoped,official,list,listed,filtered,ordered,drawn:ordered.slice(0,V.shown),any,fav,ur,m3,cap,ret,cls,of:pg.rows.length?pg.rows[0].rank.of:null,
-   portfolio:sc==='TARGET'||V.target?portfolioRanks(pg.rows):null};}
+  const official=Q.rows(pg,{scope:'UNIVERSE'});
+  return{byRet,pg,pv,scoped,official,list,listed,filtered,ordered,drawn:ordered.slice(0,V.shown),any,fav,ur,m3,cap,ret,cls,of:pg.rows.length?pg.rows[0].rank.of:null};}
 
  /* ---- draw everything (each control has data-k so the focus comes back after a repaint) */
  function draw(){
@@ -214,25 +212,14 @@ function leaderboard(route,refs){
   for(const b of Object.values(B))b.replaceChildren(h('div',{class:'sk state-card',dataset:{na:pg.reason||pg.state,pageState:pg.state}},h('b',null,t),h('span',null,text(pg.reason)),
    pg.state==='DATA_FORMAT_NEWER'?h('button',{type:'button',class:'btn',dataset:{k:'reload'},onclick:()=>location.reload()},'새로고침'):null));}
 
- /* ---- 2.1.1 평가 대상과 목록: scope, counts, the one table, the outside box */
+ /* ---- 2.1.1 평가 대상과 목록: Universe504 only (DC-24: no TARGET v0 scope, box or column), counts, the one table */
  function block1(v){
-  const pg=v.pg,target=Q.rows(pg,{scope:'TARGET'}),inside=target.filter(r=>r.code!==null).length,outsideN=target.filter(r=>r.scope==='OUTSIDE_UNIVERSE').length,E=populationOf(v.cls);
-  const scopes=group('보기 범위',...SCOPES.map(([id,label])=>chip(label||'TARGET '+target.length+' · 별도 목록 · 공식 모집단 아님',V.scope===id,{dataset:{k:'scope-'+id,scope:id},onclick:set(()=>{V.scope=id;V.shown=STEP;})})),
-   wait('TARGET 목록 유지 · 결정 대기 (TV0-S06)'));
-  const count=h('p',{class:'count',dataset:{lbCount:''}},'평가: Universe504 중 점수 행 ',E===null?naBox(text('SEC_QGV2_NOT_AVAILABLE'),'SEC_QGV2_NOT_AVAILABLE'):h('b',null,String(E)),
-   ' · TARGET ',h('b',null,String(target.length)),' = Universe 안 ',h('b',null,String(inside)),' + 밖 ',h('b',null,String(outsideN)));
-  const ident=pg.identities&&pg.identities.state!=='OK'?h('p',{class:'reason',dataset:{na:pg.identities.reason}},text(pg.identities.reason)):null;
+  const pg=v.pg,E=populationOf(v.cls);
+  const scope=group('보기 범위',h('span',{class:'chip on',dataset:{scope:'UNIVERSE'}},'Universe504 전체 · 고정 504코드'));
+  const count=h('p',{class:'count',dataset:{lbCount:''}},'평가: Universe504 중 점수 행 ',E===null?naBox(text('SEC_QGV2_NOT_AVAILABLE'),'SEC_QGV2_NOT_AVAILABLE'):h('b',null,String(E)));
   // A READY page with a reason (V2_SCORES_NOT_AVAILABLE …): the reason above the table, the rows still draw.
   const why=pg.reason?h('p',{class:'reason',dataset:{na:pg.reason,pageReason:''}},say(pg.reason,'QGV 점수를 모두 계산하지 못했습니다')):null;
-  return[scopes,count,ident,why,h('div',{class:'lb-grid'},table(v),outsideBox(v)),hand('TARGET 칩을 켜면 \'포트폴리오 내 순위\' 열이 따로 생김 · 원래 순위 열은 그대로')];}
- function outsideBox(v){
-  const rows=v.pg.rows.filter(r=>r.scope==='OUTSIDE_UNIVERSE'||r.reference_only),phone=window.matchMedia&&window.matchMedia('(max-width:720px)').matches;
-  const label=QS()?QS().OUTSIDE_UNIVERSE_LABEL[0]:'Universe 밖 TARGET · 공식 순위 대상 아님';
-  const body=rows.length?h('ul',{class:'outside-list'},...rows.map(r=>h('li',{dataset:{outside:r.id}},h('span',{class:'rk'},'—'),
-   h('span',{class:'who'},h('a',{href:href('company',r.id)},title(r)),h('span',{class:'reason',dataset:{reason:r.na_reason.rank||''}},'→ 근거: ',text(r.na_reason.rank))),
-   h('span',{class:'num'},ok(r.score.total)?fmt(r.score.total):naBox(text(r.na_reason.total),r.na_reason.total)))))
-   :h('p',{class:'reason'},v.pg.identities&&v.pg.identities.state!=='OK'?text(v.pg.identities.reason):'이 보기에 해당하는 기업이 없습니다');
-  return h('aside',{class:'sk outside',dataset:{outsideBox:''}},h('details',{open:!phone},h('summary',null,phone?'Universe 밖 TARGET '+rows.length+' · 공식 순위 대상 아님 ▾':label),body));}
+  return[scope,count,why,h('div',{class:'lb-grid'},table(v))];}
  const LIST_NAME=id=>id==='QG_REFERENCE'?(QS()?QS().QG_REFERENCE_LABEL[0]:'QG 참고 목록'):(LISTS.find(l=>l[0]===id)||LISTS[0])[1];
  function rankHead(v){if(!v.pv)return Q.rankLabel(v.pg);const S=QS(),o=v.pv.out;return Q.rankLabel(o)+' · '+(o.v_weight_zero?S.PERSONAL_V0_LABEL[0]:S.PERSONAL_LABEL[0]);}
  function table(v){
@@ -242,25 +229,24 @@ function leaderboard(route,refs){
   const headBtn=(col,label,onclick,disabled=false)=>h('button',{type:'button',class:'th-btn',disabled,dataset:{k:'th-'+col,col},onclick},label,h('span',{class:'arrow '+(col==='q'||col==='g'||col==='v'?col+'-text':'')},arrow(col)));
   const pick=(desc,asc)=>set(()=>{V.ret=false;V.sort=V.sort===desc?asc:desc;});
   const th=(col,content,sub,pc)=>h('th',{scope:'col',class:(pc?'pc-col ':'')+(col&&col===active?'on':''),'aria-sort':col?ariaSort(col):null},content,sub?h('small',{class:'sub'},sub):null);
-  const vf=v.list==='RANKED',port=v.portfolio,cols=[
+  const vf=v.list==='RANKED',cols=[
    th(null,'순위',rankHead(v)),th('name',headBtn('name','기업',set(()=>{V.ret=false;V.sort='name';}))),th(null,'SIC',null,true),th(null,'유형',null,true),
    th('qgv',headBtn('qgv','QGV',pick('qgv','qgv-asc'))),th('q',headBtn('q','Q',pick('q-desc','q-asc')),null,true),th('g',headBtn('g','G',pick('g-desc','g-asc')),null,true),
    th('v',headBtn('v','V',pick('v-desc','v-asc')),pg.v_source.ko,true),th('cap',headBtn('cap','M3',pick('cap-desc','cap-asc'),!v.ur),null,true),
    th('ret',headBtn('ret','수익률 '+V.period,set(()=>{V.ret=!v.byRet;}),!v.ret),text('PRICE_BASIS_CONTINUITY_UNCONFIRMED')),
    th('asof',headBtn('asof','자료 기준일',pick('asof-desc','asof-asc')),'수집 시각 · 공개 점수 파일',true),
-   port?th(null,QS().PORTFOLIO_RANK_LABEL[0],null,true):null,vf?th(null,'V 요인',null,true):null].filter(Boolean);
+   vf?th(null,'V 요인',null,true):null].filter(Boolean);
   const dirText=v.byRet?'내림차순':oppositeSort(V.sort)===null?'한 방향':dir===-1?'내림차순':'오름차순';
   const sortText=v.byRet?'수익률 '+V.period+' 높은 순 · QGV 순위와 별개':sortSpec(V.sort)[3];
   const caption=h('caption',{tabindex:'-1'},LIST_NAME(v.list),' · ',rankHead(v),' · 정렬: ',sortText,' · ',dirText,' · 표시 ',String(v.drawn.length),'개');
   let body;
   if(v.pv&&v.pv.out.state==='INVALID')body=[emptyRow(cols.length,h('p',{class:'na',dataset:{na:v.pv.out.reason||''}},say(v.pv.out.reason,'내 설정으로 계산하지 못했습니다')))];
-  else if(V.scope==='TARGET'&&pg.identities&&pg.identities.state!=='OK')body=[emptyRow(cols.length,h('p',{class:'na',dataset:{na:pg.identities.reason}},text(pg.identities.reason)))];
-  else if(v.list==='RANKED'&&!v.listed.length&&V.scope!=='OUTSIDE')body=[emptyRow(cols.length,noRanking())];
+  else if(v.list==='RANKED'&&!v.listed.length)body=[emptyRow(cols.length,noRanking())];
   else if(!v.drawn.length)body=[emptyRow(cols.length,v.any?h('div',{class:'empty',dataset:{empty:'FILTER'}},h('p',null,'일치하는 기업이 없습니다'),
    h('button',{type:'button',class:'btn',dataset:{k:'clear-filters'},onclick:set(clearFilters)},'필터 모두 풀기')):h('p',{class:'empty',dataset:{empty:'VIEW'}},'이 보기에 해당하는 기업이 없습니다'))];
   else body=v.drawn.map(r=>row(r,v,active));
   const rest=v.ordered.length-v.drawn.length;
-  return h('div',{class:'lb-main'},h('div',{class:'tbl-wrap'},h('table',{class:'tbl lb-tbl',dataset:{lbTable:'',list:v.list,scope:V.scope,sort:v.byRet?'ret':V.sort}},caption,h('thead',null,h('tr',null,...cols)),h('tbody',null,...body))),
+  return h('div',{class:'lb-main'},h('div',{class:'tbl-wrap'},h('table',{class:'tbl lb-tbl',dataset:{lbTable:'',list:v.list,scope:'UNIVERSE',sort:v.byRet?'ret':V.sort}},caption,h('thead',null,h('tr',null,...cols)),h('tbody',null,...body))),
    rest>0?h('button',{type:'button',class:'btn',dataset:{k:'more'},onclick:set(()=>{V.shown+=STEP;})},'더 보기 · 50개 (남은 ',String(rest),'개)'):null,
    h('p',{class:'reason'},'\'참고 n\'은 순위 아님'),
    v.ur?h('p',{class:'reason',dataset:{m3Coverage:''}},'M3 · 내 기기 기준 · v0 · ',v.ur.status==='COMPLETE'?'전체':'부분',' · 확인 ',Number.isInteger(v.ur.verified_count)?String(v.ur.verified_count):'NA'):null);}
@@ -290,7 +276,6 @@ function leaderboard(route,refs){
   const sub=[['Q','q'],['G','g'],['V','v']].map(([a,k])=>h(k===active?'b':'span',{class:k===active?k+'-text':''},a,' ',ok(r.score[k])?fmt(r.score[k]):'NA'));
   const why=['total','q','g','v','rank'].filter(k=>r.na_reason[k]).map(k=>h('li',null,{total:'QGV',q:'Q',g:'G',v:'V',rank:'순위'}[k],' · ',text(r.na_reason[k])));
   const company=h('td',{class:on('name')},h('a',{href:href('company',r.id),class:'co'},title(r)),title(r).includes(r.ticker)?null:h('span',{class:'reason'},' ',r.ticker),
-   r.target?[' ',h('span',{class:'pill'},'TARGET')]:null,
    h('span',{class:'m-only sub-line'},sic||'SIC NA',' · ',typeof ty==='string'?ty:'유형 NA'),
    h('span',{class:'m-only sub-line'},...sub.flatMap((x,i)=>[i?' · ':'',x]),' · ',m3(r,v)),
    why.length?h('details',{class:'m-only why'},h('summary',null,'사유 ▸'),h('ul',null,...why)):null);
@@ -304,7 +289,6 @@ function leaderboard(route,refs){
    h('td',{class:'num qgv '+on('qgv'),dataset:{cell:'qgv'}},qgvCell),h('td',{class:'num '+pc('q'),dataset:{cell:'q'}},score(r,'q')),h('td',{class:'num '+pc('g'),dataset:{cell:'g'}},score(r,'g')),
    h('td',{class:'num '+pc('v'),dataset:{cell:'v'}},vCell),h('td',{class:pc('cap'),dataset:{cell:'m3'}},m3(r,v)),h('td',{class:on('ret'),dataset:{cell:'ret'}},ret(r,v)),
    h('td',{class:pc('asof'),dataset:{cell:'asof'}},day(r.acquired_at)||naBox('자료 기준일 없음','ACQUIRED_AT_NOT_AVAILABLE')),
-   v.portfolio?h('td',{class:'pc-col',dataset:{cell:'portfolio'}},v.portfolio.has(r.id)?String(v.portfolio.get(r.id)):'—'):null,
    v.list==='RANKED'?h('td',{class:'pc-col',dataset:{cell:'vfactors'}},String(vf.n),'/',String(vf.total),miss.length?h('details',{class:'na'},h('summary',null,'빠진 요인'),h('span',{class:'reason'},miss.join(' · '))):null):null);}
  // The 2.1.5 empty state of 종합 순위 (no device rank yet) and 2.1.7: the band's ③ button mirrored, never an action of its own.
  function mirror(where){const st=P.status(),usable=loaded(st)&&st.google&&st.google.connected&&st.universe_source.set;
@@ -332,7 +316,7 @@ function leaderboard(route,refs){
    h('div',{class:'hand rules'},h('p',null,'· NA는 오름·내림 모두 맨 뒤'),h('p',null,'· 동점: QGV는 티커 순(순위 순서), 시총은 기업 ID 순'),h('p',null,'· 정렬은 줄 순서만 바꿈 · 순위 번호는 그대로')),toTable('sort')];}
 
  /* ---- 2.1.3 분류와 필터 */
- function clearFilters(){V.f={industry:'',sic2:'',sic4:'',type:'',state:''};V.fav=false;V.target=false;}
+ function clearFilters(){V.f={industry:'',sic2:'',sic4:'',type:'',state:''};V.fav=false;}
  function block3(v){
   const cls=v.cls,cfg=get(cls[CLS],'data','industry_config','groups'),groups=Array.isArray(cfg)?cfg:null,ids=v.pg.rows.map(r=>({company_id:r.id}));
   const sics=digits=>[...new Set(ids.map(c=>sicOf(c,cls)).filter(Boolean).map(s=>s.slice(0,digits)))].sort();
@@ -355,8 +339,7 @@ function leaderboard(route,refs){
   return[h('div',{class:'filter-head'},h('button',{type:'button',class:'chip m-only','aria-expanded':String(panelOpen),'aria-controls':'lb-filters',dataset:{k:'panel'},onclick:set(()=>{V.panel=!V.panel;})},'필터 ▾'),
     wait('산업 단위 · 결정 대기 (IA-5)')),
    h('div',{id:'lb-filters',class:'lb-filters'+(panelOpen?' open':'')},...cards),...lines,
-   h('div',{class:'checks'},check('fav','관심만',V.fav,favOff,e=>{V.fav=e.target.checked;draw();}),favOff?h('span',{class:'reason',dataset:{favorites:fav.state}},favWhy):null,
-    check('target','TARGET만',V.target,false,e=>{V.target=e.target.checked;draw();})),
+   h('div',{class:'checks'},check('fav','관심만',V.fav,favOff,e=>{V.fav=e.target.checked;draw();}),favOff?h('span',{class:'reason',dataset:{favorites:fav.state}},favWhy):null),
    h('p',{class:'sk status-line',role:'status',dataset:{filterCount:''}},'표시 ',String(v.drawn.length),'개 · 순위 기준 ',Number.isInteger(v.of)?String(v.of):'NA','개 중'),
    hand('필터는 줄만 숨김 · 순위·점수·후보 그대로'),hand('분류 자료 없음은 0이나 다른 분류로 채우지 않음'),
    v.any?h('button',{type:'button',class:'btn',dataset:{k:'clear-filters-2'},onclick:set(clearFilters)},'필터 모두 풀기'):null,toTable('filters')];}
@@ -384,10 +367,9 @@ function leaderboard(route,refs){
  /* ---- 2.1.5 산출 상태별 목록 */
  function block5(v){
   const counts={ALL:v.official.length};for(const r of v.official){const l=listOf(r);if(l)counts[l]=(Object.hasOwn(counts,l)?counts[l]:0)+1;}
-  const locked=V.scope==='OUTSIDE'||!!v.pv;
+  const locked=!!v.pv;
   return[group('산출 상태별 목록',...LISTS.map(([id])=>chip(LIST_NAME(id)+' '+String(Object.hasOwn(counts,id)?counts[id]:0),v.list===id,
     {disabled:locked&&id!=='ALL',dataset:{k:'list-'+id,list:id},onclick:set(()=>{V.list=id;V.shown=STEP;})}))),
-   V.scope==='OUTSIDE'?h('p',{class:'reason',dataset:{listLock:'OUTSIDE'}},'Universe 밖 TARGET은 순위·목록 대상 아님 · 전체만 표시'):null,
    v.pv?h('p',{class:'reason',dataset:{listLock:'PREVIEW'}},'산출 상태별 목록은 공식 가중치 결과 기준'):null,
    hand('후보 자격 없는 결과는 순위에 섞지 않음 · 0점 아님 · 순위 번호 없음'),toTable('lists')];}
 

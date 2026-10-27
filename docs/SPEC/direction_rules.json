@@ -90,6 +90,24 @@
         "고침",
         "어긋"
       ]
+    },
+    {
+      "id": "DC-24",
+      "title": "공개 TARGET을 카탈로그 19(TARGET v0)로 단정하거나 TARGET v0을 QGV 결과로 단정 (2026-10-27: TARGET v0은 QGV와 전혀 무관, 공개 TARGET = 확정된 v1만)",
+      "pattern": "(공개|public) ?TARGET ?(=|은|는|:|\\bis\\b)\\s*[^\\n]{0,20}(v0|19|카탈로그|catalog)|TARGET ?(v0|19)[^\\n]{0,12}(=|은|는|\\bis\\b)\\s*(the )?QGV",
+      "flags": "i",
+      "exempt": [
+        "무관",
+        "아님",
+        "아니",
+        "없이",
+        "DC-04",
+        "DC-24",
+        "unrelated",
+        "not ",
+        "제외",
+        "빼"
+      ]
     }
   ]
 }
