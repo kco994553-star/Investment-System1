@@ -1,5 +1,5 @@
 {
-  "spec_id": "qgv-book-top-deciles/2026-10-27.1",
+  "spec_id": "qgv-book-top-deciles/2026-10-27.2",
   "status": "RESEARCH_DESIGN_NOT_REAL_RESULTS",
   "universe_groups": [
     {
@@ -21,8 +21,8 @@
     "status": "OPTIONAL_DIAGNOSTIC_NOT_SP500"
   },
   "rebalances": [
-    "QUARTERLY_FEB_MAY_AUG_NOV_THIRD_MONDAY",
-    "ANNUAL_FEBRUARY_THIRD_MONDAY"
+    "ANNUAL_FEBRUARY_PRIMARY_INHERITED_THIRD_MONDAY_HOLIDAY_SHIFT",
+    "QUARTERLY_FEB_MAY_AUG_NOV_THIRD_MONDAY_SENSITIVITY"
   ],
   "benchmark": {
     "baseline": "QGV_V2_W0_BEST_10_PERCENT_WITHIN_EACH_UNIVERSE",
@@ -351,5 +351,16 @@
     "change_operational_scores": false,
     "source_output_private_only": true,
     "automatic_deployment": false
+  },
+  "reselection_protocol": {
+    "primary": "ANNUAL",
+    "meaning": "RE_RANK_ALL_CURRENTLY_ELIGIBLE_UNIVERSE_AT_EACH_ANNUAL_EVALUATION_SELL_DROPPED_BUY_NEW_REWEIGHT_RETAINED",
+    "annual_month": 2,
+    "day": "THIRD_MONDAY_NEXT_VERIFIED_SESSION_IF_HOLIDAY",
+    "book_exact_date_claim": false,
+    "twelve_monthly_start_offsets": "SECONDARY_BOOK_STYLE_ROBUSTNESS_EACH_COHORT_ANNUAL_NOT_MONTHLY_RESELECTION",
+    "cohort_aggregation": "PREDECLARE_AND_RECONCILE_BOOK_SOURCE_BEFORE_CLAIM_EXACT",
+    "quarterly": "SECONDARY_CADENCE_SENSITIVITY",
+    "not_cadence_only_reweight": "RESELECTION_INCLUDES_MEMBERSHIP_CHANGES"
   }
 }
