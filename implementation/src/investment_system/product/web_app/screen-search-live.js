@@ -11,8 +11,9 @@
      and the reviewed names table (company-names-ko.json, also the code → company_id links). A missing file leaves its part out.
    - Home: recent chips (titles from the index, unknown keys skipped, 최근 지우기), favorites (store prefs interests) or, without
      any, the developer default (P21-DEFAULTS: the catalog's 19 companies, labelled as such, never written; also shown when the
-     stored favorites cannot be read, so device storage never hides it; whether to keep it: HOME-DEFAULT-V0 — it is not a QGV or
-     public TARGET list, DC-24), one verified investor story (home-quotes.js).
+     stored favorites cannot be read, so device storage never hides it; HOME-DEFAULT-V0 (c), owner 2026-10-28: it stays until a
+     confirmed TARGET v1 is published as a public file, then that list replaces it; it is not a QGV or public TARGET list,
+     DC-24), one verified investor story (home-quotes.js).
    - Company page: after the index the title, ticker, exchange code, membership (Universe504 or not, DC-24), SIC group and investment type (public files,
      only when present); the ★ toggle (store prefs, a click); the five cards from the layer (QGV page row with the score file's
      refresh time and calc_version, DC-22; macro lights, public
