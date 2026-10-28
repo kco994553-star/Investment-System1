@@ -213,9 +213,13 @@ const FAKE_STORE = (b) => { const real = window.PriceStore; window.PriceStore = 
     const treeCode = Object.keys(p.records).filter((c) => !c.startsWith('TARGET:')).sort().find((c) => points.some((x) => x.code === c) && p.records[c].state === 'LIVE' && Number.isFinite(p.records[c].axes.Q.score) && Number.isFinite(p.records[c].axes.G.score));
     const cases = [['UNIVERSE', { code: uni && uni.code }], ['FINANCIAL', { code: fin && fin.code }], ['TARGET', { targetId }]].filter(([k, s]) => { const ok = s.code || s.targetId; if (!ok) console.log('CASE_ABSENT ' + k + ' mode=' + mode); return ok; });
     console.log('STAT_RADAR mode=' + mode + ' as_of=' + p.as_of + ' cross_section=' + points.length + ' cases=' + cases.map(([k, s]) => k + ':' + (s.code || s.targetId)).join(',') + ' tree=' + treeCode);
-    const today = new Date(Date.now() - 864e5).toISOString().slice(0, 10);
+    // The synthetic payload is dated (fixture as_of); the page restates every row against its own clock (sec-qgv2.js toInputs),
+    // so a run 15+ days later saw only STALE rows and no tree example. Pin the page clock to the fixture day (as the other fixture
+    // tests do) and date the device price fixtures from the same clock. A served (REAL) file keeps the real clock.
+    const NOW = live ? Date.now() : Date.parse(p.as_of) + 12 * 3600e3, pin = async (ctx) => { if (!live) await ctx.clock.setFixedTime(new Date(NOW)); };
+    const today = new Date(NOW - 864e5).toISOString().slice(0, 10);
     for (const width of [390, 1280]) {
-      const context = await browser.newContext({ viewport: { width, height: 900 }, serviceWorkers: 'block' }), page = await context.newPage(); page.setDefaultTimeout(30000);
+      const context = await browser.newContext({ viewport: { width, height: 900 }, serviceWorkers: 'block' }); await pin(context); const page = await context.newPage(); page.setDefaultTimeout(30000);
       const errors = []; page.on('pageerror', (e) => errors.push(String(e)));
       await page.route('**/*', (r) => (new URL(r.request().url()).origin === ORIGIN ? r.fallback() : r.abort()));
       if (!live) await page.route('**/sec-qgv2.json*', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(p) }));
@@ -387,7 +391,7 @@ const FAKE_STORE = (b) => { const real = window.PriceStore; window.PriceStore = 
           same(c.raw, vals[uni.code].drawdown_defense, 'raw shown with few members'); assert.equal(c.score, 'NA'); assert.equal(c.reason, 'PEERS_TOO_FEW'); assert.match(c.text, /원값/); assert.match(c.text, /미산출/);
           assert.equal(await e2.locator('.sr-mark[data-sr-series="company"][data-sr-axis="drawdown_defense"]').count(), 0, 'no vertex without a score'); pass += 2; }
         // Stale window: every series ends 20 calendar days ago.
-        { const old = new Date(Date.now() - 20 * 864e5).toISOString().slice(0, 10), stale = { SPY: walk(7, 320, old) }; for (const [i, x] of chosen.entries()) stale[symbolOf(x.code)] = walk(1000 + i * 37, 320, old);
+        { const old = new Date(NOW - 20 * 864e5).toISOString().slice(0, 10), stale = { SPY: walk(7, 320, old) }; for (const [i, x] of chosen.entries()) stale[symbolOf(x.code)] = walk(1000 + i * 37, 320, old);
           const e3 = await snapshot(page, stale, uni.code, {}); assert.equal(await e3.getAttribute('data-sr-stale'), 'STALE'); assert.equal(await e3.locator('svg.sr-stale .sr-stale-label').count(), 1);
           assert.match(await e3.locator('[data-sr-freshness]').textContent(), /STALE/); assert.ok(Number(await e3.locator('[data-sr-freshness]').getAttribute('data-sr-days')) >= 20);
           await shot(e3, 'radar-universe-' + width + '-light-synthetic-stale'); pass += 2; }
@@ -423,7 +427,7 @@ const FAKE_STORE = (b) => { const real = window.PriceStore; window.PriceStore = 
         const leaked = await page.evaluate((v) => [JSON.stringify(localStorage), JSON.stringify(sessionStorage)].some((s) => s.includes(String(v))), Object.values(bars[symbolOf(uni.code)])[10]);
         assert.equal(leaked, false, 'no synthetic close in storage'); pass++;
         if (SHOTS) {
-          const dctx = await browser.newContext({ viewport: { width, height: 900 }, serviceWorkers: 'block', colorScheme: 'dark' }), dp = await dctx.newPage(); dp.setDefaultTimeout(30000);
+          const dctx = await browser.newContext({ viewport: { width, height: 900 }, serviceWorkers: 'block', colorScheme: 'dark' }); await pin(dctx); const dp = await dctx.newPage(); dp.setDefaultTimeout(30000);
           await dp.route('**/*', (r) => (new URL(r.request().url()).origin === ORIGIN ? r.fallback() : r.abort()));
           if (!live) await dp.route('**/sec-qgv2.json*', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(p) }));
           await dp.goto(BASE + '#company/' + encodeURIComponent(uni.code)); await shot(await radar(dp), 'radar-universe-' + width + '-dark-nodevice');
