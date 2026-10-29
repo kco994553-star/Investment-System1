@@ -2,9 +2,10 @@
 
 > **상태: 계획 문서(Main 담당 범위).** 코드·스케줄·공식 모집단·공개 범위·배포는 바꾸지 않는다. 병합·정기 실행·가격 계약·공식 모집단 변경·공개 필드 확대는 모두 오너 승인 뒤다.
 > 근거: 오너 지시(2026-10-29, 첨부 3건 — Main 통합·운영 명세 v1.0, 공통 경계·계약 v1.0, Codex E0/E1-A 명세 v1.0). 첨부 원문은 저장소에 넣지 않았다. 이 문서는 그 지시를 지금 정본과 대조한 결과다.
-> Codex 문서(`E0_AUDIT.md`, `E1A_CONTRACT.md`)는 같은 폴더에 Codex가 쓴다. Main은 이 파일만 쓴다(파일 충돌 없음).
+> Codex 문서(#422: `E0_AUDIT`·`E1A_CONTRACT`·`SOURCE_RIGHTS`·`E1B_E2_PLAN`·`HANDOFF`)는 같은 폴더에 있다. Main은 이 파일과 [MAIN_E1B_E2_DESIGN_20261029](MAIN_E1B_E2_DESIGN_20261029.md)만 쓴다(파일 충돌 없음).
+> **갱신 2026-10-29 오후:** Codex가 #422(E0/E1-A, HEAD `a30b54bb`)를 냈다. Main 인수 결과·E1-B/E2/백테스트 설계·공급원 재확인은 [MAIN_E1B_E2_DESIGN_20261029](MAIN_E1B_E2_DESIGN_20261029.md)에 있고, 아래 5절 표의 SEC·Nasdaq 줄은 그 문서 3절이 대체한다.
 
-## 0. 기준 (읽은 시각 2026-10-29 11:30 UTC)
+## 0. 기준 (처음 읽은 시각 2026-10-29 11:05 UTC 무렵, 오후 갱신)
 
 - canonical(기본 브랜치) `claude/investment-system-top500-validation-alrugm` = `282382a7`(#420 병합). 같은 날 중앙 V 사슬(#393 → #400 → #403 → #404 → #405)을 병합하므로 HEAD는 곧 바뀐다. Codex·Main 모두 시작 때 다시 조회한다.
 - 확장 관련 열린 PR과 담당:
@@ -17,7 +18,7 @@
 | #392·#361·#411 | TARGET v0 결합 해소·Worker 분할·TARGET 확정 점검 | Open | Main | 셋 다 `pages_artifact_guard.py`를 고친다 → 가드는 직렬 병합 |
 | 중앙 V 사슬 | F_k·calc_version 23.1·중앙 V 게시 | 10-29 병합 진행 | Main | calc_version이 바뀌어 #417의 고정값과 어긋난다 |
 
-- Codex 확장 작업 브랜치·Draft PR: **아직 없음**(원격 가지 목록에 `expanded`/`catalog` 이름 없음, 11:30 UTC).
+- Codex 확장 작업 브랜치·Draft PR: 처음 조회(11:05 UTC 무렵) 때는 없었다. **#422**(`codex/expanded-universe-e0-e1a-20261029`)는 11:21 UTC에 생성됐고 Main은 오너 2차 지시(14:2x UTC) 때 확인했다. 그 사이 문서(#423·#425)의 "Codex PR 없음" 표기는 다시 조회하지 않은 오기다. 신규 파일 10개, 기존 파일 변경 0.
 
 ## 1. 역할과 파일 경계 (Codex에 전달할 안내)
 
@@ -25,7 +26,7 @@ DC-27(이번 줄)로 Codex의 E0/E1-A 구현은 **이번 지시 한정 예외**�
 
 | 담당 | 쓸 수 있는 곳 | 쓰지 않는 곳 |
 | --- | --- | --- |
-| Codex(E0/E1-A) | 새 파일만: `implementation/src/investment_system/universe/expanded_catalog*.py`(이름은 아래 재사용 검토 뒤 확정), `implementation/tests/test_expanded_catalog*.py`, `implementation/tests/fixtures/expanded_universe/`(합성만), `implementation/docs/expanded_universe/E0_AUDIT.md`·`E1A_CONTRACT.md` | 기존 파일 전부(특히 `contracts/*.py`, `universe/*.py` 기존 모듈, `universe_codes_v1.json`), `.github/workflows/`, `implementation/tools/pages_artifact_guard.py`·`public_price_boundary.py`·`ci_*_tests.txt`, `product/web_app`·`web_assets`, `CURRENT_HANDOFF`·`DIRECTION_CHANGES`·`FUNCTION_STATUS`·`USER_DECISIONS_PENDING`, 중앙 V·원장 파일 |
+| Codex(E0/E1-A) | 새 파일만: `implementation/src/investment_system/universe/expanded_catalog*.py`(이름은 아래 재사용 검토 뒤 확정), `implementation/tests/test_expanded_catalog*.py`, `implementation/tests/fixtures/expanded_universe/`(합성만), `implementation/docs/expanded_universe/` 아래 Codex 문서 5개(#422) | 기존 파일 전부(특히 `contracts/*.py`, `universe/*.py` 기존 모듈, `universe_codes_v1.json`), `.github/workflows/`, `implementation/tools/pages_artifact_guard.py`·`public_price_boundary.py`·`ci_*_tests.txt`, `product/web_app`·`web_assets`, `CURRENT_HANDOFF`·`DIRECTION_CHANGES`·`FUNCTION_STATUS`·`USER_DECISIONS_PENDING`, 중앙 V·원장 파일 |
 | Main | 기존 모듈 어댑트가 필요하면 그 변경, 수집기·스케줄·가드·CI·공용 문서, Codex PR 인수 검증 | E1-A 카탈로그 코어를 따로 구현하지 않는다 |
 | 연구(#417·#418) | 연구 엔진·연구 문서 | 웹 계산 엔진 금지 |
 
