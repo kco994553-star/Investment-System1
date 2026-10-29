@@ -12,14 +12,14 @@ Main이 공용 파일·코드·병합·배포를 조정한다. Codex는 검증·
 | --- | --- | --- |
 | **1 중앙 V / 2·6** | 첫 게시 완료. 다음: TARGET 숫자 재기록 #424 병합(승인 뒤), 정기 실행에서 매일 `attempt=OK` 확인 | **게시됨**(아래 4·6절). TARGET 확정은 #424 전까지 calc_version 불일치로 막힘 |
 | **2 프론트엔드 / 1·2** | 화면 PR 4개 병합 완료(배포 안 됨, P3 전환 때). 다음 P2: 새 프론트엔드의 공식 V 판독기(`qgv.js` OFFICIAL_READER) → 2.2 → 2.4·2.3.1·2.5 → 6 → … | 병합됨, 다음 PR 준비 전 |
-| **3 확장 모집단 / 공통** | #423 계획·DC-27(병합 승인 대기). Codex E0/E1-A Draft PR이 오면 인수 검증 | Codex PR 아직 없음(13:48 UTC) |
+| **3 확장 모집단 / 공통** | #423 계획·DC-27·E1-B/E2 설계(병합 승인 대기). Codex #422(E0/E1-A) 인수 검토 | #422 인수 검토 완료 — 병합 준비, 오너 승인 대기([설계 문서 1절](implementation/docs/expanded_universe/MAIN_E1B_E2_DESIGN_20261029.md)) |
 
 ### 작업 중
 
 | PR·작업 | 담당 | 시작 (UTC) |
 | --- | --- | --- |
 | #424 TARGET v1 숫자 검증 재기록(23.1): 승인 대기, 열린 항목 = EME·CMG 새 10-Q 칸 원문 대조 | Claude Code Main | 10/29 13:20 |
-| #423 확장 모집단 Main 통합 계획·DC-27·10/29 결정 기록: 승인 대기, Codex E0/E1-A Draft PR 수신 대기 | Claude Code Main | 10/29 11:30 |
+| #423 확장 모집단 Main 통합 계획·DC-27·10/29 결정 기록 + #422 인수 결과·E1-B/E2/백테스트 경계 설계: 승인 대기 | Claude Code Main | 10/29 11:30 · 14:30 |
 | 이 문서 PR(10/29 인수인계·기능 현황·첫 게시 점검표 기록) | Claude Code Main | 10/29 13:40 |
 
 ## 1. 승인 이행·오너 결정
@@ -59,7 +59,8 @@ Main이 공용 파일·코드·병합·배포를 조정한다. Codex는 검증·
 | PR | 제목 요지 | 상태 | 오너 승인·조건 |
 | --- | --- | --- | --- |
 | [#424](https://github.com/kco994553-star/Investment-System1/pull/424) | TARGET 숫자 검증 재기록(23.1) | CI 진행 | **병합 승인 필요.** 열린 항목: EME·CMG 새 10-Q 칸 원문 대조(SEC 연락처 필요) |
-| [#423](https://github.com/kco994553-star/Investment-System1/pull/423) | 확장 모집단 계획·DC-27·10/29 결정 | CI 진행 | 문서 병합 승인 필요 |
+| [#423](https://github.com/kco994553-star/Investment-System1/pull/423) | 확장 모집단 계획·DC-27·10/29 결정·#422 인수 결과·E1-B/E2 설계 | CI 확인 | 문서 병합 승인 필요 |
+| [#422](https://github.com/kco994553-star/Investment-System1/pull/422) | Codex 확장 카탈로그 E0/E1-A(신규 10개, Draft) | `a30b54bb` CI 6 녹색(11:21 base 기준). Main이 canonical+#422로 전체 4,115·저장소 가드 PASS 확인 | **병합 승인 필요.** 병합 직전 canonical 동기화 뒤 CI 재확인 |
 | [#418](https://github.com/kco994553-star/Investment-System1/pull/418) · [#417](https://github.com/kco994553-star/Investment-System1/pull/417) · [#416](https://github.com/kco994553-star/Investment-System1/pull/416) | 백테스트 연구·기준(연구 담당) | Draft·Open | #417은 calc_version 17.1·점수 원본 SHA를 고정해 둠 → #393 뒤 다시 고정 필요(`EXP-417-REPIN`) |
 | [#392](https://github.com/kco994553-star/Investment-System1/pull/392) | TARGET v0 결합 해소 | DIRTY | 통합 검증·최종 승인 별도 |
 | [#361](https://github.com/kco994553-star/Investment-System1/pull/361) | Worker 분할 이벤트 | DIRTY | 공급원 권리로 보류 |
@@ -95,7 +96,7 @@ Main이 공용 파일·코드·병합·배포를 조정한다. Codex는 검증·
    - #411 화면 배포
    - 원장 10/29 세션 PRIMARY
 2. **#424 병합**(승인 뒤): TARGET 확정 창 11-09~11-15 전에. 열린 항목(EME·CMG 원문 대조)을 먼저 끝낼지는 오너 결정.
-3. **확장 모집단**: Codex Draft PR이 오면 [#423 계획](implementation/docs/expanded_universe/MAIN_INTEGRATION_PLAN_20261029.md) 3절대로 인수 검증한다. dry-run·일정·가격·공개 범위는 `EXP-*` 결정 뒤.
+3. **확장 모집단**: #422 병합(승인 뒤) → 승인 없이 가능한 합성 단계 E1-B.1~.3·E2-a → Codex 후속(PIT-F1 등). dry-run·일정·가격·공개 범위는 `EXP-*` 결정 뒤. (정정: 이 문서 첫 판의 "Codex PR 없음(13:48)"은 다시 조회하지 않은 오기였다 — #422는 11:21에 열렸다.)
 4. **프론트엔드 P2**: 새 앱 공식 V 판독기 → 2.2 → … P3 실사이트 전환·배포는 별도 승인.
 
 ## 6. 정기 실행·수동 실행·중앙 V 실측
