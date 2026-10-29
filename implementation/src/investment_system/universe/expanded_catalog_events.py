@@ -48,6 +48,10 @@ def _materialize(events, cutoff, policy):
         point = e.security_id, e.effective_at
         require(point not in points, 'EVENT_ORDER_AMBIGUOUS')
         points.add(point)
+    for e in ready:
+        if e.event_type == 'MERGED':
+            require((e.successor_security_id, e.effective_at) not in points,
+                    'MERGER_TARGET_TIME_AMBIGUOUS')
     active, history, used_ids = {}, [], set()
     for e in ready:
         old = active.get(e.security_id)
@@ -89,11 +93,17 @@ def apply_listing_events(previous_snapshot, events, cutoff):
     require(cutoff >= previous.as_of, 'CUTOFF_REGRESSION')
     require(type(events) in (tuple, list))
     ledger = {e.event_id: e for e in previous.events}
-    for event in events:
-        event = _validated_event(event, previous.policy)
+    # Within a new batch accept the earliest observed copy deterministically.
+    # Once accepted, retain its original collection provenance on recollection.
+    incoming = sorted((_validated_event(e, previous.policy) for e in events),
+                      key=lambda e: (e.event_id, e.collected_at))
+    for event in incoming:
         if event.event_id in ledger:
-            require(ledger[event.event_id] == event, 'EVENT_ID_CONFLICT')
-        ledger[event.event_id] = event
+            old = ledger[event.event_id]
+            require(replace(old, collected_at=old.available_at) ==
+                    replace(event, collected_at=event.available_at), 'EVENT_ID_CONFLICT')
+        else:
+            ledger[event.event_id] = event
     canonical = tuple(ledger[key] for key in sorted(ledger))
     records = _materialize(canonical, cutoff, previous.policy)
     result = replace(previous, as_of=cutoff, events=canonical, records=records)

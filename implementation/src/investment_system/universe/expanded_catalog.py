@@ -33,15 +33,13 @@ def require(condition, code='SCHEMA_INVALID'):
 
 
 def clock(value):
-    if type(value) is str and _CLOCK.fullmatch(value):
-        try:
-            value = datetime.fromisoformat(value.replace('Z', '+00:00'))
-        except ValueError:
-            raise CatalogError('INVALID_TIMESTAMP') from None
-    require(type(value) is datetime and value.utcoffset() is not None, 'INVALID_TIMESTAMP')
     try:
+        if type(value) is str and _CLOCK.fullmatch(value):
+            value = datetime.fromisoformat(value.replace('Z', '+00:00'))
+        require(type(value) is datetime and value.utcoffset() is not None, 'INVALID_TIMESTAMP')
         return value.astimezone(timezone.utc)
-    except (ValueError, OverflowError):
+    except Exception:
+        # tzinfo implementations can raise arbitrary exceptions carrying input.
         raise CatalogError('INVALID_TIMESTAMP') from None
 
 
@@ -117,6 +115,8 @@ def normalize_security_record(raw, policy):
         require(type(raw) is dict and set(raw) == RAW_KEYS)
         cik = raw['cik']
         require(type(cik) in (str, int), 'IDENTITY_AMBIGUOUS')
+        if type(cik) is int:
+            require(0 < cik < 10 ** 10, 'IDENTITY_AMBIGUOUS')
         cik = str(cik)
         require(re.fullmatch(r'[0-9]{1,10}', cik) is not None and int(cik) > 0, 'IDENTITY_AMBIGUOUS')
         cik = cik.zfill(10)

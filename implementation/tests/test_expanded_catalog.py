@@ -371,3 +371,92 @@ def test_refresh_invalid_controls_fail_with_fixed_code(changes):
     with pytest.raises(m.CatalogError) as error:
         mod.dry_run_refresh(s, [], **args)
     assert 'SENSITIVE_SENTINEL' not in str(error.value)
+
+
+def test_supplied_synthetic_fixture_runs_without_network_or_filesystem_writes(monkeypatch):
+    import builtins
+    import json
+    from pathlib import Path
+    import socket
+    fixture = json.loads((Path(__file__).parent / 'fixtures/expanded_universe/catalog_cases.json').read_text())
+    assert fixture['fixture_kind'] == 'SYNTHETIC_ONLY' and fixture['real_data_executed'] is False
+    m, mod = core(), snapshots()
+
+    def forbidden(*args, **kwargs):
+        raise AssertionError('UNEXPECTED_IO')
+
+    monkeypatch.setattr(socket, 'socket', forbidden)
+    monkeypatch.setattr(builtins, 'open', forbidden)
+    monkeypatch.setattr(Path, 'write_text', forbidden)
+    for index, (kind, expected) in enumerate(fixture['types']):
+        r = record(security_type=kind)
+        assert r.eligibility == expected
+        result = mod.dry_run_refresh(empty(), [event(event_id='synthetic:' + str(index), rec=r)], at(1), at(2))
+        assert result.receipt.status == 'SYNTHETIC_PASS'
+        assert m.validate_catalog(result.snapshot).ok
+    for reason in fixture['source_failures']:
+        assert mod.dry_run_refresh(empty(), [], at(1), at(2), source_status=reason).receipt.status == 'FAILED'
+
+
+def test_unobserved_success_time_is_not_fabricated_from_asof_or_availability():
+    old = apply(empty(), [event()], 1)
+    result = snapshots().dry_run_refresh(old, [], at(2), at(3), source_status='HTTP_429')
+    assert result.receipt.last_success_at is None
+
+
+def test_c04_recollection_keeps_original_timestamp_and_hash():
+    first = event()
+    recollected = replace(first, collected_at=at(3))
+    old = apply(empty(), [first], 1)
+    retried = apply(old, [recollected], 1)
+    assert retried is old
+    assert snapshots().snapshot_hash(old) == snapshots().snapshot_hash(retried)
+    assert apply(empty(), [recollected, first], 1) == apply(empty(), [first, recollected], 1) == old
+
+
+@pytest.mark.parametrize('predecessor', ['synthetic:aaa', 'synthetic:zzz'])
+@pytest.mark.parametrize('target_action', ['LISTED', 'DELISTED'])
+def test_same_instant_merger_dependencies_fail_closed_independently_of_ids(predecessor, target_action):
+    m = core()
+    first = event(rec=record(security_id=predecessor, ticker='OLD'))
+    target = record(issuer_id='cik:0000000002', cik='2', security_id='synthetic:middle', ticker='DEST',
+                    valid_from=at(2) if target_action == 'LISTED' else at(1))
+    base_events = [first] if target_action == 'LISTED' else [first, event('target', rec=target)]
+    old = apply(empty(), base_events, 1)
+    merge = event('merge', 'MERGED', 2, security_id=predecessor, successor_security_id=target.security_id)
+    target_event = (event('target', day=2, rec=target) if target_action == 'LISTED' else
+                    event('target-end', 'DELISTED', 2, security_id=target.security_id, issuer_id=target.issuer_id))
+    with pytest.raises(m.CatalogError, match='MERGER_TARGET_TIME_AMBIGUOUS'):
+        apply(old, [merge, target_event], 2)
+
+
+def test_success_receipt_cannot_predate_any_collection_including_retrospective_snapshot():
+    m, mod = core(), snapshots()
+    old = empty()
+    s = apply(old, [event(collected=at(8))], 1)
+    with pytest.raises(m.CatalogError, match='INVALID_TIME_ORDER'):
+        mod.render_private_receipt(s, events_module().diff_snapshots(old, s), 'SYNTHETIC_PASS',
+                                   previous=old, attempted_at=at(2))
+    assert mod.render_private_receipt(s, events_module().diff_snapshots(old, s), 'SYNTHETIC_PASS',
+                                      previous=old, attempted_at=at(8)).last_success_at == at(8)
+
+
+def test_extremely_large_cik_returns_fixed_rejection():
+    m = core()
+    result = m.normalize_security_record(raw(cik=10 ** 5000), m.CatalogPolicy())
+    assert result.reason_codes == ('IDENTITY_AMBIGUOUS',)
+
+
+def test_timezone_exception_never_leaks_through_model_or_refresh():
+    from datetime import tzinfo
+    m, mod = core(), snapshots()
+
+    class BrokenTZ(tzinfo):
+        def utcoffset(self, value):
+            raise ValueError('SENSITIVE_SENTINEL')
+
+    broken = datetime(2020, 1, 1, tzinfo=BrokenTZ())
+    assert m.normalize_security_record(raw(valid_from=broken), m.CatalogPolicy()).reason_codes == ('INVALID_TIMESTAMP',)
+    with pytest.raises(m.CatalogError, match='INVALID_TIMESTAMP') as error:
+        mod.dry_run_refresh(empty(), [], at(1), broken)
+    assert 'SENSITIVE_SENTINEL' not in str(error.value)

@@ -17,7 +17,7 @@ _CATALOG_ERRORS = frozenset((
     'EXCHANGE_UNSUPPORTED', 'POLICY_MISMATCH', 'DUPLICATE_EVENT', 'SNAPSHOT_PROVENANCE_MISMATCH',
     'EVENT_ID_CONFLICT', 'EVENT_ORDER_AMBIGUOUS', 'SECURITY_ID_REUSED', 'SECURITY_NOT_ACTIVE',
     'EVENT_PAYLOAD_MISMATCH', 'EVENT_NO_CHANGE', 'MERGER_TARGET_UNRESOLVED',
-    'TICKER_INTERVAL_OVERLAP', 'CUTOFF_REGRESSION',
+    'TICKER_INTERVAL_OVERLAP', 'CUTOFF_REGRESSION', 'MERGER_TARGET_TIME_AMBIGUOUS',
 ))
 
 
@@ -102,6 +102,8 @@ def render_private_receipt(snapshot, diff, status, *, previous, attempted_at,
     require_catalog(snapshot)
     attempted_at = clock(attempted_at)
     require(attempted_at >= snapshot.as_of, 'INVALID_TIME_ORDER')
+    if status == 'SYNTHETIC_PASS':
+        require(all(e.collected_at <= attempted_at for e in snapshot.events), 'INVALID_TIME_ORDER')
     require(type(reason_codes) is tuple and all(type(c) is str and c in
             (_SOURCE_ERRORS | _CATALOG_ERRORS) for c in reason_codes))
     require((status == 'FAILED') == bool(reason_codes))
