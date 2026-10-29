@@ -121,51 +121,62 @@ deploy 잡: 신선도 검사에 게시본 규칙 추가 → 배포
 
 ## 4. 게시본 스키마 — `qgv-official.json` (`qgv-official/1`)
 
+> **2026-10-24 갱신(PR-A, `claude/central-v-core`):** 아래 4-1~4-3 표를 코드 스키마(`src/qgv/qgv_official.py` `TOP_KEYS`·`ROW_KEYS`·`STATUS_KEYS`, 검증기 `require_qgv_official`·`require_status`)에 맞췄다. 결정은 바꾸지 않았다. 2026-10-18 표와 다른 점(이력):
+> - 최상위 `price` → **`price_source`**. 키 `price`는 Pages 가드의 민감 키이고 검증기 `FORBIDDEN_KEYS`에도 있다. 내용도 IEX 기준으로 바뀌었다: `basis_kind` `SESSION_CLOSE` → `IEX_LAST_REGULAR_SESSION_TRADE`(공식 종가 아님, GSQ-024), `requested_basis_date`·`supply`·`month_end` 추가(D3·D4·V4 월말가).
+> - 최상위 **`attribution`** 추가(GSQ-024 출처 문구 의무, 상태 파일에도 같은 값).
+> - `v_calc_version` 행 삭제: D-CV7 (b)(2026-10-23 소유자 지시, §15-2). 그 전 표는 취소선으로 남겼었다.
+> - `engine`에 `publisher_sha256`(게시기·어댑터·입력 변환 원본 해시) 추가. `population`·`weights` 필드 이름을 코드와 맞춤(`universe_code_count`·`row_count`, `type_weights`).
+> - 행에 **`rank_row`** 추가(한 CIK 한 순위의 대표 행 키, D-CV8·D-CV9). `price_status` 어휘를 IEX 어댑터 코드로 고정.
+> - 상태 파일에 `schema`·`kind`·`attribution` 추가.
+> - `publication_id` 매니페스트(§5-3)의 실제 항목: `calc_version`, `inputs_sha256`, `provider`, `feed`, `basis_date`, `adjustment_basis`, `price_hmac`(가격 묶음 HMAC, 비공개), `population`, `weights`, `type_scope`, `config_versions`, `engine`, `month_end`. 시각 없음, `v_calc_version` 없음.
+
 ### 4-1. 최상위 필드
 
 | 필드 | 뜻 | 공개 | 비고 |
 | --- | --- | --- | --- |
 | `schema`, `kind` | `qgv-official/1`, `QGV_OFFICIAL` | 예 | |
-| `publication_id` | 이 게시본의 내용 식별자 | 예 | §5. 시각이 아니라 입력 내용에서 나온다 |
+| `publication_id` | `qgvpub-` + 매니페스트 sha256 | 예 | §5. 시각이 아니라 입력 내용에서 나온다 |
 | `state` | `OFFICIAL` | 예 | 실패 상태는 상태 파일에 둔다(§6) |
-| `calc_version` | 입력 행 규칙 버전 = `sec-qgv2.json` `calc_version`(지금 `qgv2-calc/2026-10-17.1`, `v2_factors.py:38`) | 예 | 의미를 바꾸지 않는다 |
-| ~~`v_calc_version`~~ | ~~V 게시 규칙 버전(엔진 V 규칙 + 어댑터 일관성 규칙 + DCF·유형 설정)~~ | — | **두지 않는다.** 2026-10-23 소유자 지시로 v_calc_version 없이 calc_version 하나로 통합(D-CV7 메모, §15-2) |
-| `engine` | `{version:'qgv-v2', status:'PROVISIONAL', python_sha256, js_sha256}` | 예 | `qgv_v2.py:19-20`. 엔진 원본 해시 |
-| `population` | `{version, universe_config_version, registry_sha256, code_count, pooled_count, pooled_digest}` | 예 | `sec-universe-shares/v0`(설정 JSON), `registry_sha256`은 `sec-qgv2.json`에서 |
-| `weights` | `{default_preset:'balanced', gate:true, profile_id:'qgv-v2/balanced/gate-on', weights_version}` | 예 | `weights_version` = `weights_id(official_weights())`(`qgv_v2.py:182-202`) 재사용 |
-| `type_scope` | `qgv2-type-scope/2026-10-17.1` | 예 | `qgv_v2.py:283` |
-| `config_versions` | `{type_config, dcf_parameters}` | 예 | `dcf_parameters/v1.1-default`(`qgv/dcf_parameters.py:22`), type_config/1 |
-| `price` | `{provider, basis_date, basis_kind:'SESSION_CLOSE', adjustment_basis, supplied, rejected:{사유:개수}}` | 예(값 없음) | 공급자 이름·기준일·조정 기준만 |
+| `calc_version` | 입력 `sec-qgv2.json`의 `calc_version` 그대로(`qgv2-calc/2026-10-23.1` 이상, 그 전 파일이면 게시하지 않음 `NOT_RUN SEC_QGV2_CALC_VERSION_BEFORE_U7`) | 예 | U7 게시 규칙도 이 번호가 덮는다(D-CV7 (b), §15-2). `v_calc_version`은 없다 |
+| `engine` | `{version:'qgv-v2', status:'PROVISIONAL', python_sha256, js_sha256, publisher_sha256}` | 예 | 엔진·게시기 원본 해시 |
+| `population` | `{version, universe_code_count, registry_sha256, row_count, pooled_count, pooled_digest}` | 예 | `version` = `sec-universe-shares` 설정 버전, `registry_sha256`은 `sec-qgv2.json`에서 |
+| `weights` | `{default_preset:'balanced', gate:true, type_weights:true, profile_id:'qgv-v2/balanced/gate-on', weights_version}` | 예 | `weights_version` = `weights_id(official_weights())` |
+| `type_scope` | 엔진 `TYPE_SCOPE` | 예 | |
+| `config_versions` | `{type_config, dcf_parameters}` | 예 | |
+| `price_source` | `{provider:'IEX_HIST', feed:'TOPS 1.6', basis_kind:'IEX_LAST_REGULAR_SESSION_TRADE', adjustment_basis:'AS_TRADED', currency:'USD', basis_date, requested_basis_date, supplied, rejected:{사유:개수}, supply:{eligible, supplied, minimum_share:0.95, met:true}, month_end:{store:'iex-monthend/1', stamp, months, basis:'RAW_DIVIDED_BY_SHARE_BASIS_FACTOR'}}` | 예(값 없음) | `requested_basis_date` = 실행의 뉴욕 날짜, `basis_date` = 실제 IEX 파일 날짜(≤ 요청일, D3). `supply` = D-CV5/D4 95%. `eligible` = 가격 없이 V 축 가중치 50%에 닿을 수 있는 GENERAL 단면 Universe 행(USD, ADR·분할 규칙 밖; `V_GENERAL_COVERAGE_20261018.md` 2-2 (b)의 엔진 가격 무관 조건, `qgv_official.supply_eligible`; 2026-10-24 검토로 "V 입력 블록이 있는 행"에서 바로잡음 — 공개 `sec-qgv2.json`(as_of 2026-10-24T00:50Z, calc_version 2026-10-17.1)으로 측정: 옛 정의 430, 새 정의 358(모든 해에 F_k가 있다고 둘 때; 그 파일에는 F_k가 없어 실제로는 345). 합성 가격으로 돌린 엔진의 V 산출 행은 모두 새 정의 안에 있었다) |
+| `attribution` | `{text, terms_url, label_ko}` = IEX 출처 문구, 약관 링크, "IEX 마지막 체결가 기준(공식 종가 아님)" | 예 | 검증기가 정확히 같은 값을 요구한다. 화면은 그대로 보인다 |
 | `inputs` | `[{file:'sec-qgv2.json', sha256, as_of, calc_version, acquired_oldest, acquired_newest}]` | 예 | 같은 실행 아티팩트의 파일 바이트 해시 |
-| `times` | `{price_basis_date, price_collected_from, price_collected_to, inputs_as_of, generated_at, verified_at}` | 예 | 배포 시각은 없다(§8-3) |
-| `coverage` | V 커버리지 집계(`vCoverage` 정의, §8-4) | 예 | 개수만 |
+| `times` | `{price_basis_date, price_collected_from, price_collected_to, inputs_as_of, generated_at, verified_at}` | 예 | `price_basis_date` = `price_source.basis_date`. 배포 시각은 없다(§8-3) |
+| `coverage` | `{basis:'UNIVERSE_CODES', population, v, qgv, qg_only_total, ranked, qg_reference, price_status, not_computed, reasons, factor_reasons, target}` | 예 | 개수만. 검증기가 행에서 다시 세어 같아야 한다 |
 | `rows` | Universe 504 코드 + `TARGET:<id>` | 예 | 아래 |
 
 ### 4-2. 행 필드
 
 | 필드 | 공개 | 출처 |
 | --- | --- | --- |
-| `cik`, `profile`, `industry_group`, `in_cross_section`, `state`, `source_reason_codes`, `acquired_at`, `fiscal_year_end` | 예 | 같은 실행 `sec-qgv2.json` 행 그대로(`qgv2-inputs.js:40-50` 정규화 규칙) |
-| `factors.<15개>.{score, reason, basis}` | 예 | `score_universe` 결과 `factors`(:652-664). Q·G 10개는 공개 파일 값, V 5개는 이번 계산 |
-| `axes.{Q,G,V}.{score, state, weight_available, factors_available, reason}` | 예 | 결과 `axes`(:666) |
-| `weights`, `type_weights`, `type_reason`, `selected_types` | 예 | 결과(:704). 가격 무관 |
-| `q_industry_percentile`, `value_trap_gate`, `v_excluded`, `flags` | 예 | 결과(:703-705) |
-| `total`, `total_reason` | 예 | 공식 기본 프로필(균형·관문 켬) |
-| `price_status` | 예 | `SUPPLIED` 또는 어댑터 사유 코드(§7). 값 없음 |
-| `rank` | 예 | 공식 QGV 순위. D11 규칙: 종합과 V가 모두 있는 행만(#318). 한 CIK 한 순위(결정 D-CV9) |
-| `qg_reference_order` | 예 | Q·G만 있는 종합의 별도 순서(#318). 공식 순위 아님 |
-| `detail.ebit_yield`·`fcf_yield`·`implied_growth`·`expectation_gap`·`realized_growth`·`industry_peers` | **아니오** | 결과 `detail`(:706-708). 가격 또는 가격 역산 가능 |
-| `reference_range` | **아니오** | 가격은 안 쓰지만 주당 가치 금액이다. 공개 범위(점수·순위·사유·커버리지·시각) 밖 |
-| 가격·EV·시가총액·수익률·자기 과거 수익률·종목별 가격 시각·가격 해시 | **절대 아니오** | |
+| `cik`, `profile`, `industry_group`, `in_cross_section`, `state`, `source_reason_codes`, `acquired_at`, `fiscal_year_end` | 예 | 같은 실행 `sec-qgv2.json` 행(Python 쌍둥이 `qgv2_inputs` 정규화) |
+| `factors.<15개>.{score, reason, basis}` | 예 | `score_universe` 결과. Q·G 10개는 공개 파일 값, V 5개는 이번 계산. 가격 의존 사유 4개는 `PRICE_DEPENDENT_NOT_COMPUTABLE`(D-CV2) |
+| `axes.{Q,G,V}.{score, state, weight_available, factors_available, reason}` | 예 | 결과 `axes`. 검증기: V 축 = 공개 V 요인의 가중 평균 |
+| `weights`, `type_weights`, `type_reason`, `selected_types` | 예 | 결과. 가격 무관 |
+| `q_industry_percentile`, `value_trap_gate`, `v_excluded`, `flags` | 예 | 결과 |
+| `total`, `total_reason` | 예 | 공식 기본 프로필(균형·관문 켬). 검증기: 종합 = 축 × 비중(관문) |
+| `price_status` | 예 | `SUPPLIED`, `ODD_LOT_ONLY`, `NO_IEX_TRADE`, `PRICE_SYMBOL_UNMAPPED`, `ADR_RATIO_UNCONFIRMED`(D7), `SPLIT_AFTER_SHARE_COUNT`(D6 (a)·D6 (b), §7; D6 (b) 적중은 가격에서 나온 공개 1비트다), `PRICE_IDENTITY_CONFLICT`, `IDENTITY_CONFLICT_WITHDRAWN`(`providers/iex_hist.py` `STATUS_CODES`). 값 없음 |
+| `rank` | 예 | 공식 QGV 순위. D11: 종합과 V가 모두 있는 행만. 한 CIK 한 순위(D-CV8·D-CV9). 동점은 기호, 그다음 키 순 |
+| `qg_reference_order` | 예 | Q·G만 있는 종합의 별도 순서. 공식 순위 아님 |
+| `rank_row` | 예 | 그 CIK의 순위(또는 Q·G 참고 순서)를 가진 대표 행 키. 순위가 없으면 `null` |
+| `detail.*`(수익률·내재 성장률·기대 차이·실현 성장·업종 동료) | **아니오** | 가격 또는 가격 역산 가능. 검증기 `FORBIDDEN_KEYS`가 어디서든 거부 |
+| `reference_range` | **아니오** | 주당 가치 금액. 공개 범위 밖 |
+| 가격·월말가·EV·시가총액·수익률·자기 과거 수익률·종목별 가격 시각·가격 해시·HMAC | **절대 아니오** | 같은 `FORBIDDEN_KEYS` |
 
-- 가격 의존 사유 코드의 공개 형태는 결정 D-CV2를 따른다(§4-4).
-- 크기 추정: 약 520행 × 1~1.3KB ≈ 0.6~0.7MB. `sec-qgv2.json` 한도 2MB(`sec_qgv2.py:40`)와 같은 상한을 쓴다.
+- 가격 의존 사유 코드의 공개 형태는 결정 D-CV2를 따른다(§4-4). 원 코드가 공개본에 있으면 검증기가 거부한다.
+- 크기 추정(2026-10-18): 약 520행 × 1~1.3KB ≈ 0.6~0.7MB. **2026-10-23 실측:** 504+19행 1,109,234 B(1.06 MiB), gzip 114,962 B(`CENTRAL_V_U4_U5_NEEDS_20261023.md` §4). 상한은 `sec-qgv2.json`과 같은 2 MiB다.
 - 게시본은 **자기 완결**이다. Q·G 점수도 이 게시본 안의 값을 쓴다. 그래서 같은 날 새 `sec-qgv2.json`이 나와도 공식 순위가 섞이지 않는다.
 
 ### 4-3. 상태 파일 — `qgv-official-status.json`
 
 - 마지막 정상 게시본 바이트를 바꾸지 않고 실패를 알리려고 따로 둔다.
-- 필드: `last_attempt_at`, `attempt_state`(`OK` / `SUPPLY_FAILED` / `VERIFY_FAILED` / `NOT_RUN` / `NO_OFFICIAL_YET`), `reason_code`, `official_publication_id`, `official_price_basis_date`, `official_verified_at`, `latest_inputs:{sha256, as_of}`.
+- 필드(`STATUS_KEYS`): `schema`(`qgv-official-status/1`), `kind`(`QGV_OFFICIAL_STATUS`), `last_attempt_at`, `attempt_state`(`OK` / `SUPPLY_FAILED` / `VERIFY_FAILED` / `NOT_RUN` / `NO_OFFICIAL_YET`), `reason_code`, `official_publication_id`, `official_price_basis_date`, `official_verified_at`, `latest_inputs:{sha256, as_of}`, `attribution`.
+- 게시본이 하나도 없으면 실패 시도도 `NO_OFFICIAL_YET`이고 `reason_code`에 실패 코드를 둔다. Secret이 없으면(`HMAC_KEY_MISSING`, `MONTHEND_TOKEN_MISSING`) 내려받기 전에 `NOT_RUN`이다.
 - 값·종목 목록·가격 없음.
 
 ### 4-4. 복원 분석 — 공개 점수 + 공개 SEC 입력 + 이력으로 가격을 되살릴 수 있나
@@ -193,6 +204,13 @@ deploy 잡: 신선도 검사에 게시본 규칙 추가 → 배포
 4. **반올림은 방어로 기대하지 않는다.** 단면이 약 400점이면 백분위 한 칸이 약 0.25다. 소수 1자리 반올림은 순서를 거의 그대로 남긴다. 정수 반올림도 이웃 4칸 정도만 합친다. 대신 개인 미리보기 정확성과 공개 자기 검증을 깬다(§9). 그래서 전체 정밀도 공개를 권장한다. 결정 D-CV3.
 5. 공개 이력은 최신 게시본 하나만 둔다. 과거 게시본 공개 누적은 하지 않는다. 결정 D-CV14.
 6. 남는 위험: 순위·백분위 자체가 가격 파생 정보다. 이것을 공개해도 되는지는 공급자 사용권 문제다. 형제 작업 결과로 판단한다. 이 문서는 허용을 가정하지 않는다.
+
+> **2026-10-24 검토 정정(PR-A, 결정은 바꾸지 않음 — 소유자 재결정 필요).** 위 2번(D-CV2 (b) 묶음)은 **가격 경계를 숨기지 못한다.** 위 표와 §13 D-CV2 행은 "묶으면 경계가 사라진다"는 전제로 (b)를 권장했고 소유자는 그 전제로 (b)를 골랐다. 그 전제가 틀렸다.
+> - 엔진 원 코드는 정해진 요인 칸에만 나온다. `EV_NON_POSITIVE`는 `v_earnings_yield`·`v_fcf_yield`·`v_vs_industry`에만(`qgv_v2._metrics` `fail('EV_NON_POSITIVE', ('ebit_yield', 'fcf_yield'))`), `ROOT_NOT_BRACKETED`·`ROOT_NOT_CONVERGED`·`NUMERIC_OVERFLOW`는 `v_expectation_check`에만(역DCF `dcf.py:103,114,115`) 나온다. 그래서 공개 칸 + `PRICE_DEPENDENT_NOT_COMPUTABLE`이 원 코드를 일대일로 되돌려 준다.
+> - 경계는 공개 입력만으로 계산된다: EV ≤ 0 ⇔ 가격 ≤ (현금 − 부채) ÷ 희석 주식수, 역DCF 근 없음 ⇔ 가격이 공개 FCF/주·공개 DCF 설정의 [DCF(하한 성장), DCF(상한 성장)] 밖. 합성 시험(검토 스크립트, 가격은 합성): 경계의 0.9배에서 세 칸이 묶음 사유, 1.1배에서 세 칸 모두 점수; DCF 구간 하단 0.98배·상단 1.02배에서 묶음 사유, 안쪽에서 점수.
+> - 사유가 없어도 같은 사실이 드러난다: 세 요인의 null 무늬, V 축 점수·상태·`weight_available`, `rank`와 `qg_reference_order` 중 어느 쪽인지(합성 예: 경계 이하 V 없음·`qg_reference_order` 3, 경계 위 V 100·`rank` 2). **즉 이 누출은 V를 공개하는 것 자체에 딸려 온다.** 사유 어휘를 바꾸는 방법으로는 막을 수 없다.
+> - 시험 `test_price_dependent_codes_sit_in_fixed_factor_slots_known_residual`이 이 칸 대응을 고정한다(어휘를 바꿔도 문서가 다시 틀려지지 않게).
+> - 소유자 선택지(첫 게시 전): (i) 남는 누출을 수락하고 V를 게시 / (ii) 해당 행의 V를 통째로 비공개(규칙 변경·승인 필요; V가 NA인 것 자체가 신호라 누출을 다 없애지 못한다 — NA 사유를 다른 NA와 같은 일반 코드로 묶어야 줄어든다) / (iii) 다른 규칙. 결정 전에는 (b) 묶음을 표시 어휘로만 유지한다. 감사 기록 `public_price_boundary/AUDIT.md` §10-6(PR-B).
 
 ## 5. 재계산·의존 규칙, `publication_id`와 `calc_version`
 
@@ -273,6 +291,30 @@ sec-qgv2.json(같은 실행, sha256) ─┐
 - 어떤 종목이 빠지면 다른 종목 백분위도 바뀐다. 그래서 거부 개수를 사유별로 `price.rejected`에 싣는다.
 - 전역 실패: 한 사유가 거의 모든 행에서 나오면(예: 공급자가 전부 센트 단위) 검증 실패로 보고 직전 정상본을 유지한다. 기준은 D-CV5와 같이 정한다.
 - PIT: 기준일 D 종가와 D 22시대 UTC에 받은 SEC 자료를 함께 쓴다. "지금" 점수이므로 허용한다. 그러나 백테스트 증거로는 쓰지 않는다(접수 시각 규칙은 D 영역).
+- **2026-10-24 메모(PR-A, 소유자 결정 D3·D6·D7):** 위 표는 2026-10-18 설계(종가 공급자 가정)다. IEX 단일 날짜 출처로 구현한 실제 동작은 아래와 같고, 표의 일부 규칙은 구현되지 않았다(2026-10-24 검토로 "표의 규칙은 그대로"라는 처음 문구를 고침):
+  - 가격 기록은 IEX 마지막 정규장 체결(`price_source`, 공식 종가 아님)이다. 기준일 D = 실행의 뉴욕 날짜 이하 마지막 TOPS 파일 날짜(D3). 주말·휴장일은 파일이 없어 직전 거래일, 반일 장은 확장 시간 표시(0x40) 체결을 버려 조기 마감 전 마지막 체결이다. 요청일과 실제 기준일을 둘 다 싣는다.
+  - ADR·보통주(D7): `ifrs-full` 행 + 알려진 20-F·40-F 제출자(CIK 표 `qgv_official.FOREIGN_ANNUAL_FILERS`, 지금 ASML 1곳, 근거 `DCV_OPEN_ITEMS_20261019.md` D-CV10)를 분류 체계와 무관하게 `ADR_RATIO_UNCONFIRMED`로 둔다. `sec-qgv2.json`에는 서식 종류가 없어 표로 둔다.
+  - 분할 기준(현재가, D6 (a)) — **표의 규칙(기간 끝 뒤~기준일 분할이면 NA)은 D6 (a)만으로는 구현되지 않는다(아래 D6 (b)가 일부를 맡는다).** 새 출처 없이 F_k 근거만 쓴다: 주식수 기간 끝 이후의 이력 항목이 `SPLIT_TIMING_UNCONFIRMED`면 `SPLIT_AFTER_SHARE_COUNT`. 그러나 그 근거는 주식수를 실은 서류 **접수 전** 분할이고, 그 서류는 주식수를 분할 뒤 기준으로 고쳐 싣는다(ASC 260). 그래서 이 규칙은 보수 규칙일 뿐이다. D6 (a)만으로는 주식수와 가격이 실제로 어긋나는 **접수 뒤~기준일** 구간을 근거가 없어 잡지 못한다: 그 구간에 분할이 있으면 행은 `SUPPLIED`로 남고 공식 V·순위가 분할 비율만큼 틀린다(다음 10-Q·10-K까지, 예: NVDA 2024 약 2.5개월). 이 구간은 아래 D6 (b)(2026-10-24 밤 소유자 결정 CV-SPLIT (ii))가 맡는다 — 저장소에 주식수 기간 끝 뒤 짧은 간격이 있는 종목만이고, 나머지는 잔여다. 검증된 분할 표 `SPLITS`는 비어 있다.
+  - **2026-10-24 밤 메모(PR-A #400 `claude/central-v-core`, 소유자 결정 CV-SPLIT (ii) "보조 검사 추가: #400에 넣고 시험한다") — 분할 보조 검사 D6 (b).** `SUPPLIED` 행(식별·ADR·D6 (a) 규칙 뒤, 엔진 가격 전)에서 RAM 안에서만 IEX 원가격(체결 그대로, F_k로 나누지 않음)을 비교한다(`qgv_official.split_check`, `iex_monthend.raw_series`). 값을 바꾸지 않고, 걸리면 내지 않을 뿐이다.
+    - 창: 주식수 기간 끝(`v_inputs_v2.diluted_shares.period_end`, D6 (a)와 같은 칸)이 든 달의 월말 체결부터 기준일까지(기간 끝이 주말 월말이면 그 달 마지막 거래일 체결이 첫 점이다; 문자 그대로 "기간 끝 이후 체결"로 읽으면 그 달이 빠져 기간 끝 다음 달의 분할을 놓치므로 이렇게 정했다). 기간 끝이 없으면 검사하지 않는다(미점검).
+    - 계열: 비공개 월말가 저장소의 그 종목 원 월말 체결(기호·별칭·ROUND 규칙은 `month_closes`와 같다. 체결이 없거나 기호가 다른 달은 빼고 0으로 두지 않는다. 기준일 뒤 달은 읽지 않는다) + 기준일의 오늘 IEX 원가격(`day.quotes`).
+    - 판정: 이웃한 두 점의 달력 간격이 **45일 이하**인 쌍만 본다. r = 뒤/앞이 분할 배수 n의 대역 안이면 걸린다: 정분할 |ln r + ln n| ≤ ln 1.25, 역분할 |ln r − ln n| ≤ ln 1.25, n ∈ {2, 3, 4, 5, 6, 8, 10, 15, 20, 25, 30, 40, 50}; 3:2(n = 1.5)는 허용폭 ln 1.10. 걸리면 `SPLIT_AFTER_SHARE_COUNT`(기존 상태 코드라 JS 판독기·벡터·가드는 그대로, V NA, D4 분모 밖). 45일을 넘는 쌍은 건너뛴다. 본 쌍이 하나도 없으면 미점검이고, 이 규칙 때문에 NA가 되지는 않는다.
+    - **점검 ≠ 접수 뒤 분할 없음(2026-10-25 검토).** 기간 끝이 든 달의 월말 점이 없거나(저장소에 그 달이 없음, 체결 없음, 기호 불일치) 45일을 넘는 간격이 있으면 그 구간은 비교하지 않은 채로 남는다. 그 행이 다른 짧은 쌍을 봐서 `split_checked`에 들어가도 그렇다. 기간 끝 달 점이 없는 점검 행은 `split_lead_unchecked`로 센다(긴 간격 쌍은 `split_gap_skipped`). 지금 저장소(회계연도 말월만)에서 `split_checked`에 들어올 행의 다수가 이 모양이다: 9월 결산 종목의 주식수가 6월 10-Q에서 오면 저장소에는 09-30 점만 있어 09-30 → 기준일만 보고, 10-Q 접수 → 09-30 사이(접수 뒤 분할이 있을 자리)는 보지 않는다. 시험 `test_d6b_a_checked_row_without_the_period_end_month_counts_its_lead_stretch_unchecked`.
+    - 대역 전체는 r ∈ [0.016, 0.733] 또는 [1.364, 62.5]다. 그래서 45일 안의 진짜 큰 움직임(약 −27% 이하, +36% 이상)도 걸린다(보수적 오탐, 예: 한 달 −45%; 그 행은 다음 서류의 주식수 기간 끝이 그 달을 지날 때까지 V NA). 3:2 분할에 10%를 넘는 움직임이 겹치면 놓친다(예: +15%). 1:50·50:1 대역 밖 비율도 놓친다. 기간 끝~서류 접수 사이 분할(주식수가 이미 고쳐 실림)도 D6 (a)처럼 예방으로 걸린다.
+    - 결과는 게시기 한 줄에 개수만 남긴다: `split_checked`·`split_flagged`·`split_unchecked`(그중 `split_unchecked_no_period`)·`split_lead_unchecked`(`split_checked` 중) 행 수와 `split_gap_skipped` 쌍 수(Universe 코드 기준, 가격을 읽은 실행에서만). 게시본에는 새 필드가 없다(행 `price_status`가 이미 말한다). 로그와 파일에는 종목·가격·비율·날짜를 남기지 않는다(공개되는 것은 아래 행 상태 하나). JS 쌍둥이 대조는 바뀌지 않는다(상태는 Python이 정하고, 걸린 행은 두 쪽 모두 가격이 없다).
+    - **공개되는 가격 유래 1비트(2026-10-25 검토).** D6 (b) 적중은 그 행의 공개 `price_status` `SPLIT_AFTER_SHARE_COUNT`로 나간다. D6 (a)는 공개 `sec-qgv2.json`과 빈 `SPLITS`만으로 누구나 다시 계산할 수 있으므로, D6 (a) 근거 없이 이 상태인 행은 D6 (b) 적중임이 드러난다. 그것은 종목별로 "45일 안의 IEX 원가격 비율이 분할 대역에 들었다"(분할, 또는 약 −26.7% 이하·+36.4% 이상의 진짜 움직임)는 가격에서 나온 사실이다. 가격·비율 값 자체는 나가지 않는다. 이 비트는 V 공개에 딸린 누출(CV-LEAK, 첫 게시 점검표 0절, `public_price_boundary/AUDIT.md` §10-6-4)과 같은 결정 범위에 둔다.
+    - **저장소 한계(사실):** 지금 U8 저장소(stamp 20261023, `iex-monthend/1`, 2021-06~2026-09의 62개월, 달마다 기호 1~310개)는 달마다 **그 달이 회계연도 말월인 종목만** 갖는다. 그래서 한 종목의 "최신 원 월말가"는 지난달이 아니라 최신 회계연도 말월(0~15개월 전)이다. 긴 간격 한 번의 비교는 큰 진짜 움직임과 분할을 헷갈리므로 짧은 간격만 본다. 지금 저장소로는 대부분의 행에 주식수 기간 끝 뒤 짧은 간격이 없어 미점검이고, 그 행의 접수 뒤 분할은 여전히 잡지 못한다(잔여). 전 종목에 효과가 나려면 Universe 전 종목의 최근 월말가를 저장소에 보충해야 한다(별도 작업, 소유자 승인 필요; 이번 변경에 없음).
+    - 시험: `tests/test_qgv_official.py` `test_d6b_*`(2:1·10:1·역 1:4·3:2 ±10% 걸림, 3:2 +15% 놓침, −45% 걸림, +30% 안 걸림, 60일 건너뜀, 기간 끝 없음, 창 앞 달 무시, PSKY→SKYD 별칭, NA는 0이 아님, D6 (a) 그대로, 끝에서 끝까지 게시·JS 대조·한 줄; 2026-10-25: 기간 끝 달 점 없는 점검 행 `split_lead_unchecked`, 달력에 없는 저장소 날짜는 그 달만 빼고 계속), 잔여 `test_residual_without_short_store_steps_a_split_after_the_count_filing_is_not_detected`.
+  - 구현하지 않은 표의 사유 코드: `PRICE_UNIT_INVALID`(IEX TOPS 가격은 1/10,000 달러 정수 하나로만 오고 센트·천 단위 변종이 없다; 파서가 범위 밖 값을 거부한다 `PARSER_PRICE_INVALID`), `PRICE_BASIS_DATE_MISMATCH`(가격은 TOPS 파일 하루치 하나에서만 나와 날짜가 섞일 수 없다), `PRICE_ADJUSTMENT_BASIS_INVALID`(현재가는 체결 그대로 `AS_TRADED`, 월말가는 아래 F_k 규칙으로 대신한다). 셋 다 `iex_hist.STATUS_CODES`에 없고, 단일 날짜 IEX 출처에는 해당이 없다. 다른 출처를 붙이면 다시 정해야 한다.
+  - 분할 기준(월말 종가): IEX 월말가는 분할 **미조정**이다. 그래서 위 "분할만 조정" 줄 대신 §15-1의 `원 종가 ÷ F_k`를 쓴다(F_k `null`이면 그 달 제외).
+- **2026-10-25 메모(PR-A #400 `claude/central-v-core`) — IEX 내려받기 실패의 원인 표시와 재시도.** 리허설 실행 40156760950(2026-10-25 03:03 UTC)의 V 단계가 105초 만에 `QGV_OFFICIAL` `reason=IEX_GZIP_FAILED`로 끝났다. 2026-10-23 TOPS 1.6 파일(13,079,032,608바이트)은 다른 곳에서 `gzip -dc`로 끝까지 풀렸으므로(56,259,954,532바이트, 550초, 오류 없음) 파일은 정상이고 실행기 쪽 스트림이 일찍 끊긴 것이다. 코드에서 찾은 원인 두 가지와 고친 점(`providers/iex_hist.py`):
+  - **curl 자체 재시도 삭제.** 이전 `curl --retry 3 --retry-delay 10 -o -`는 전송 도중 실패하면 파일을 0바이트부터 다시 받아 같은 파이프에 이어 쓴다. gzip 스트림이 그 자리에서 깨진다. 이제 curl은 재시도하지 않고(`--fail -sS -o -` 유지), 연결 30초(`--connect-timeout 30`), 60초 동안 초당 1 MiB 미만이면 중단(`--speed-limit 1048576 --speed-time 60`)으로 멈춘 전송을 빨리 끝낸다.
+  - **실패를 처음 깨진 단계 이름으로.** 이전에는 gzip·끊긴 파이프를 내려받기·파서 종료 코드보다 먼저 봐서, curl 실패나 파서 비정상 종료도 `GZIP_FAILED`로 나왔다. 이제 `failed_stage`가 정한다: 파서가 0이 아닌 코드로 끝났고 그 위 단계가 스스로 실패하지 않았으면 `PARSER_FAILED`(파서가 죽으면 gzip이 SIGPIPE로 끝나고 우리 쓰기가 끊겨 우리가 curl을 끝낸다 — 이는 gzip·내려받기 잘못이 아니다), 아니면 curl이 스스로(우리가 끝낸 것이 아니라) 0이 아닌 코드로 끝났으면 `DOWNLOAD_FAILED`, 아니면 gzip 자체 오류나 끊긴 파이프면 `GZIP_FAILED`, 그 다음 `SIZE_MISMATCH`·`MD5_MISMATCH`는 그대로. 요청 문구("파서가 0이 아니면 먼저 `PARSER_FAILED`")와 다른 점 하나: 연결 단계에서 실패한 curl은 0바이트를 주고, 그러면 파서도 pcap 머리가 없어 3으로 끝난다. 이 경우를 `PARSER_FAILED`(재시도 없음)로 부르면 원인과 다르므로, 위 단계가 스스로 실패했으면 그 단계를 부른다. 같은 날 검토 반영: curl이 0으로 끝났는데 센 바이트가 GCS 크기와 다르면(파이프가 끊겨 우리가 읽기를 멈춘 경우는 빼고) 그 뒤 gzip·파서 실패보다 먼저 `SIZE_MISMATCH`다(curl이 알리지 않은 잘림을 바이트 수가 증명한다; 재시도 대상). 전체 크기 입력의 gzip 오류나 끊긴 파이프는 그대로 `GZIP_FAILED`. 두 번째 검토 반영: 전체 크기를 셌는데 md5가 GCS md5와 다르면(curl이 스스로 실패하지 않은 경우) gzip·파서 실패보다 먼저 `MD5_MISMATCH`다(펌프는 덩어리를 쓰기 전에 세고 해시하므로, 마지막 쓰기가 끊겨도 전체 크기면 모든 바이트가 해시에 들어 있다: 바이트가 GCS 객체가 아님이 증명된다; 재시도 대상). 그래서 `GZIP_FAILED`·`PARSER_FAILED`는 GCS 객체 그대로인 바이트이거나 우리가 읽기를 멈춘 짧은 입력에서만 나온다. 바이트 수가 짧고 curl이 0인데 gzip이 SIGPIPE로, 파서가 0이 아닌 코드로 끝난 경우는 `SIZE_MISMATCH`로 둔다(검토 제안은 `PARSER_FAILED`였다): 깨진 바이트는 gzip의 CRC 검사 전에 파서에 닿고 파서는 잘못된 pcap-ng 블록에서 4로 일찍 끝나므로, 짧은 입력에서 일찍 멈춘 파서의 잘못은 증명되지 않는다. 파서가 정말 고장이면 두 번째 시도가 `PARSER_FAILED`로 끝나 최종 `reason`이 그 코드다. 시작 도중 실패(`STREAM_FAILED`)는 이미 시작한 자식 프로세스를 끝내고 제한 시간(10초) 안에 거두며, 성공·실패 모두 이 프로세스가 쥔 파이프 끝을 모두 닫는다. 코드는 고정 코드뿐이다(URL·stderr 문구 없음).
+  - **파이프라인 전체 재시도 1회(`stream_attempts`, 최대 2회).** `DOWNLOAD_FAILED`·`GZIP_FAILED`·`SIZE_MISMATCH`·`STREAM_FAILED`, 그리고 `MD5_MISMATCH`(크기 검사 뒤라 언제나 전체 크기다: 전송 중 바이트가 바뀐 것으로 보고, 두 번째 전체 사본은 GCS md5와 맞거나 같은 코드로 실패한다)는 15초 뒤 새 프로세스·새 md5·새 크기 집계로 한 번 더 돈다. `PARSER_FAILED`와 파서 출력 검사(같은 바이트면 같은 결과), 색인·메타데이터 코드는 재시도하지 않는다.
+  - **시간 예산(같은 날 검토 반영: 마감 시각과 `--max-time`).** V 단계는 게시기 프로세스를 `timeout -k 30s 12m` 안에서 돌린다. 처음의 "첫 시도가 시작 뒤 240초 안에 끝났을 때만 재시도" 규칙은 스트림 전 시간(실시간 사본 읽기, 색인·GCS 메타데이터: 요청마다 120초 제한)과 첫 시도의 실제 속도를 보지 않았고 두 번째 시도에 시간 상한이 없었다(예: 30 MB/s로 180초 동안 5.4 GB 뒤 멈춤 → 240초에 curl 속도 한도 → 재시도 허용 → 13.08 GB 전체를 30 MB/s로 436초 → 12분을 넘어 상태 파일 없이 종료). 이제 게시기가 자기 시작 시각(`STARTED`) + 12분(`STEP_LIMIT_S`)을 마감 시각으로 `fetch_day(deadline=…)`에 넘긴다. 스트림은 마감 120초 전(`POST_STREAM_RESERVE_S`: 월말가 저장소 읽기, 계산, 검증기, JS 쌍둥이, 상태 파일)까지만 쓸 수 있고, 시도마다 curl에 `--max-time`(남은 스트림 시간, 정수 초, 최소 1)을 준다. 느린 시도는 curl 28로 `DOWNLOAD_FAILED`가 되고 상태 파일은 그대로 쓰인다. 두 번째 시도는 예상 시간(대기 15초 + 파일 크기 ÷ 속도)이 남은 스트림 시간 안에 들 때만 시작한다. 속도는 첫 시도 자신의 값(센 바이트 ÷ 마지막 바이트까지의 초: 끝의 멈춤은 빼고)이고, 실행기 측정 속도(`PLAN_RATE_BPS` 60 MB/s; 탐침 39935426233: 11.84 GB를 3.2분)보다 높게 보지 않으며, 첫 시도가 256 MiB 미만을 옮겼으면(연결 실패, 이른 끊김) 그 측정 속도를 쓴다. 13.08 GB 한 번은 측정 속도로 약 3.6분, 두 번은 대기를 더해 약 7.5분이고, 약 10초 시작 뒤 남는 스트림 시간은 약 9.8분이다. 위 예는 첫 시도가 250초에 끝나 남은 약 350초 < 약 451초라 재시도하지 않는다. 두 번째 검토 반영: 256 MiB 미만을 옮긴 첫 시도라도 20초(`RATE_SAMPLE_MIN_S`) 이상 흘렀으면 그 자신의 속도를 쓴다(예: 5초에 시작해 5 MB/s로 130 MB를 옮기고 31초에 끊김 → 예상 약 2,600초 → 재시도 없음). 측정 속도(60 MB/s)는 연결 실패나 곧바로 끊긴 시도에만 쓴다. 스트림 뒤의 기다림도 같은 마감에 묶었다(`tools/qgv_official_publish.py` `wait_s`): 월말가 저장소 요청 하나하나(`iex_monthend` `call(timeout=…)`, 기본 300초)와 JS 쌍둥이(기본 600초)는 마감에서 30초(`FINAL_RESERVE_S`: 그 사이 계산, 인코딩, 두 파일)를 남긴 시각까지의 남은 시간(최소 1초)만 기다리고, 넘으면 `MONTHEND_STORE_UNAVAILABLE`·`JS_TWIN_UNAVAILABLE`로 상태 파일을 쓴다. 남는 위험: 소켓 제한 시간은 읽기 한 번마다이므로 조금씩 계속 들어오는 저장소 응답은 묶이지 않고, 기다림 사이의 CPU 작업(계산·검증기·인코딩)은 30초 여유로만 덮는다. "상태 파일은 그대로 쓰인다"는 IEX 스트림과 멈춘 요청·JS 쌍둥이에 대한 말이지 모든 경우의 보장은 아니다.
+  - **한 줄 결과.** IEX 스트림이 돈 실행에서만 게시기 한 줄 `supplied=…` 뒤에 `iex_attempts=1|2`가 붙는다(색인 실패처럼 스트림 전이면 없다). 같은 날 검토 반영: 첫 시도가 실패했으면(재시도로 회복했어도) 그 고정 코드 `iex_first=…`가 뒤따르고, 그 코드가 `DOWNLOAD_FAILED`이면 curl 종료 코드 정수 `iex_curl_rc=…`(예: 18 전송 도중 끊김, 28 시간 초과·속도 한도, 7 연결 실패)도 붙는다. 한 줄에만 나오고 공개 파일에는 없다. 공개 JSON(`qgv-official.json`, 상태 파일) 스키마는 바뀌지 않는다.
+  - **열린 문제(이 PR에서 고치지 않음).** (1) PR-C(#404) `.github/workflows/sec-daily-public-inputs.yml` V 단계 주석("One fixed line: QGV_OFFICIAL attempt=... reason=... published=... basis=... rows=... ranked=... supplied=n/m", PR-D·리허설 가지에도 같은 글)은 옛 한 줄을 적는다: `split_*` 개수와 `iex_attempts=1|2`, `iex_first=<고정 코드>`, `iex_curl_rc=<정수>`(모두 고정 코드와 작은 정수)가 없다. 워크플로는 이 PR에서 고치지 않고, 워크플로를 고칠 수 있는 다음 PR에서 맞춘다. (2) PR-C 운영 체크리스트(`CENTRAL_V_GO_LIVE_CHECKLIST_20261024.md`)의 OK 예시 줄에 `iex_attempts=1`이 없고, `iex_first`(첫 시도 실패; `reason=-`이면 회복)·`iex_curl_rc`(curl 종료 코드: 18 끊김, 28 시간·속도 한도, 7 연결) 설명 줄이 없다 — PR-C로 올려 합칠 때 문서만 고친다. (3) PR-B(#403)로 올려 합칠 때 `curl_command`가 충돌한다: `def curl_command(link, max_time=None)`의 첫 문장으로 `_require_source(link, _FILE_KINDS)`를 `cap`보다 먼저 두고(가드는 그대로), 합친 curl 시험은 PR-B의 승인 링크와 경로 스텁을 쓰며, `test_qgv_official_guards`에 `curl_command(url, max_time=5)`도 거절되는지 한 줄 더한다.
+  - 시험: `tests/test_iex_hist.py` `test_curl_command_has_no_retry_and_fails_fast_on_a_stall`, `test_failed_stage_names_the_first_broken_stage`, `test_stream_curl_failure_mid_stream_is_download_failed_not_gzip`(도중 끊김 18, 연결 실패 7), `test_stream_parser_crash_is_parser_failed`(파이프가 끊기는 큰 합성 입력·입력을 다 읽은 뒤 실패), `test_stream_truly_bad_gzip_with_a_good_download_is_gzip_failed`, `test_fetch_day_retries_a_download_failure_once_with_fresh_processes`(첫 시도 `DOWNLOAD_FAILED`·curl 18, 두 번째는 본문 전체를 0바이트부터 세고 해시, 두 시도 모두 `max_time`), `test_transfer_shaped_failures_are_retried_once`, `test_parser_and_input_failures_are_not_retried`; 검토 반영 `test_failed_stage_short_count_with_a_clean_download_exit_is_size_mismatch`, `test_stream_cut_download_that_exits_0_is_size_mismatch`, `test_stream_gives_the_download_its_max_time_and_closes_every_pipe`, `test_stream_start_failure_kills_reaps_and_closes_the_started_children`, `test_slow_then_stalled_first_attempt_is_not_retried`, `test_a_fast_early_cut_is_retried_and_the_second_attempt_has_its_max_time`, `test_retry_budget_math`; `tests/test_qgv_official.py` `test_iex_attempts_reach_the_one_line_result_only`, `test_main_gives_the_iex_stream_the_step_deadline`; 두 번째 검토 반영 `tests/test_iex_hist.py` `test_failed_stage_full_size_with_another_md5_is_md5_mismatch`, `test_stream_full_size_bytes_that_are_not_the_object_are_md5_mismatch`(가운데 1바이트 뒤집음), `test_two_failed_attempts_keep_the_first_attempts_code_and_curl_exit`, `test_a_slow_early_cut_is_measured_and_not_retried`, `test_store_request_takes_the_callers_timeout`; `tests/test_qgv_official.py` `test_post_stream_waits_end_before_the_step_deadline`. 모두 합성 바이트이고 네트워크를 쓰지 않는다.
 
 ## 8. 프론트엔드 버전 관리(#321 재사용, 네 가지 시각)
 
