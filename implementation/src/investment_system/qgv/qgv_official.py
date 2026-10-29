@@ -109,6 +109,7 @@ _DAY = re.compile(r'\d{4}-\d{2}-\d{2}', re.ASCII)
 _CLOCK = re.compile(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z', re.ASCII)
 _STAMP = re.compile(r'\d{8}', re.ASCII)
 _TYPE_ID = re.compile(r'[a-z][a-z0-9_]{0,63}', re.ASCII)
+_CIK = re.compile(r'\d{10}', re.ASCII)      # ASCII digits only (the JS twin's /^\d{10}$/); a Unicode digit is no CIK
 MONTHEND_BASIS = 'RAW_DIVIDED_BY_SHARE_BASIS_FACTOR'
 MAX_MONTHS = 1200
 
@@ -693,7 +694,7 @@ def _str_or_none(v, rx=None):
 def _row_ok(key, r):
     _keys(r, ROW_KEYS)
     _need(_CODE.fullmatch(key) is not None)
-    _need(_str_or_none(r['cik'], re.compile(r'\d{10}')) and r['profile'] in (None, 'GENERAL', 'FINANCIAL'))
+    _need(_str_or_none(r['cik'], _CIK) and r['profile'] in (None, 'GENERAL', 'FINANCIAL'))
     _need(_str_or_none(r['industry_group'], re.compile(r'[a-z][a-z0-9_]{0,63}')) and type(r['in_cross_section']) is bool)
     _need(r['state'] in ('LIVE', 'STALE', 'NOT_AVAILABLE', 'WITHDRAWN'))
     _need(type(r['source_reason_codes']) is list and all(_reason_ok(x) and x for x in r['source_reason_codes']))

@@ -51,9 +51,10 @@ from investment_system.qgv.qgv_official import (FILENAME as QGV_OFFICIAL_FILENAM
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
-    "target-v1-builder.js": "f6b081a2080be068b2387e95a8892beafd19d71d30e673cd5e7c1b8d127811bd",
+    "qgv-official.js": "5d904f478171372cdbf547865f23cb2792cf33ff2020b118a0f8b332de599b17",
+    "target-v1-builder.js": "eb60c6bb346bb2e98ed3b745a534e9f1467487147e908139a198a929e6903d59",
     "target-v1-config-defaults.js": "cdfa0ac5b620dca4f1828fb055a76c08268c533a65b2e0d34f962ce1499b12bd",
-    "target-v1-screen.js": "52e97dba0b94c38d7305bd42a0460e7817034ee009c2953c0ea96969e02c1611",
+    "target-v1-screen.js": "cf6810e3f4abd19c780ad7a25cc7807f7321bb294b1f1415944e63c0575dfdbc",
     "playbook-engine.js": "b708a1772b4cd8e1af731cffdacbfab478d03c9c4e1e5fd663537babd64ee7d8",
     "playbook-config-defaults.js": "b0dd6aeed54a11082953b83aa30497c99dd454040e7e7adbc46cdd4c0a1221a6",
     "virtual-trading-compare.js": "700054fd105b979b505c09ec0dad862b0ce435c0179d2ddbe9f85b5b9c23c3f7",
@@ -125,7 +126,7 @@ APPROVED_SHA256 = {
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "59c8bab257051b7b5b4982ba4bedfa998a2e14c63852caef643aee6072f249b2",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "23a53e1b8bc828899a681dfe13420dbdaeba5d4e7bb117858ec262640d2066fb",
+    "index.html": "275b0916c42a5dac8917c8e1cc5660009a8681c4383f7d14f6a016cd6673107b",
     "locale.js": "f3537029f859a0958c9d2440b7fcc021fef96b2845ff3320ad8b8ae045f09dc2",
     "private-history.css": "d4ce930e901e2b67b2eb6d57c8795f77be3b9f1650efa85dad6e524419c42028",
     "private-history.js": "289a8a2c1053a0d280504cd785d188316b5ac9fd99eaa5590a3aa57c82e3958c",

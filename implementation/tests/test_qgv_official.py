@@ -866,6 +866,26 @@ def test_validator_types_every_scalar(official, name, fn):
     _tamper(official, fn)
 
 
+@pytest.mark.parametrize('cik,ok', [
+    ('0000000000', True),                                          # all-zero: format only, as before
+    ('٠' * 9 + '١', False),                              # Arabic-Indic digits: str.isdigit, but no CIK
+    ('０' * 9 + '１', False),                              # fullwidth digits
+    ('०' * 10, False),                                        # Devanagari digits
+    ('000000000١', False),                                    # one non-ASCII digit
+])
+def test_row_cik_is_ten_ascii_digits(official, cik, ok):
+    """The CIK pattern is compiled with re.ASCII (PR-D read, 2026-10-24): without it Python's \\d took any Unicode decimal digit,
+    which the JS twin (web_assets/qgv-official.js, /^\\d{10}$/) never accepts. Tested on a row without a rank (no CIK rule)."""
+    bad = copy.deepcopy(official)
+    key = next(k for k, r in sorted(bad['rows'].items()) if r['cik'] is None and r['rank_row'] is None)
+    bad['rows'][key]['cik'] = cik
+    if ok:
+        qo.require_qgv_official(bad)
+    else:
+        with pytest.raises(ValueError, match='OFFICIAL_INVALID'):
+            qo.require_qgv_official(bad)
+
+
 def test_parse_rejects_duplicate_keys_and_oversize(official):
     body = qo._canonical(official)
     assert qo.parse(body)['publication_id'] == official['publication_id']
