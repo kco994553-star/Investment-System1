@@ -246,6 +246,70 @@ test('finalize: cards, shortfall, limits, LATEST file (calc_version, row freshne
  const s=memory(),pb=P.empty();pb.target_v1=done;P.write(s,pb);assert.equal(P.read(s).target_v1.versions[0].number_check.calc_version,'qgv2-calc/2026-10-15.1');
 });
 
+// 확정 차단 점검 (2026-10-25, display only): freshnessRows is the one source of the finalize freshness rows and cutoff.
+const shard7=c=>Number(BigInt('0x'+require('node:crypto').createHash('sha256').update(c).digest('hex'))%7n);
+const one=(f,code)=>f.rows.find(r=>r.code===code);
+test('freshnessRows: cutoff = finalize date 23:59:59Z − 7 days; passes through acquisition UTC date + 6, blocks from + 7',()=>{
+ assert.equal(CFG.finalize_check.freshness_max_days,7);
+ const pub=published({acquired:'2026-10-17T03:13:16.553527Z'}),d23=B.freshnessRows(pub,{finalizeDate:'2026-10-23'}),d24=B.freshnessRows(pub,{finalizeDate:'2026-10-24'});
+ assert.deepEqual([d23.cutoff,d23.next_cutoff,d24.cutoff],['2026-10-16T23:59:59.000Z','2026-10-17T23:59:59.000Z','2026-10-17T23:59:59.000Z']);
+ assert.deepEqual([d23.rows.length,d23.today,d23.tomorrow,d24.today,d24.tomorrow],[504,0,504,504,504]);
+ const r23=one(d23,'NYSE:P0'),r24=one(d24,'NYSE:P0');
+ assert.deepEqual([r23.age_days,r23.last_ok_day,r23.blocks_today,r23.blocks_tomorrow],[6,'2026-10-23',false,true]);
+ assert.deepEqual([r24.age_days,r24.last_ok_day,r24.blocks_today,r24.blocks_tomorrow],[7,'2026-10-23',true,true]);
+ // Same rule as publishedCheck, never a second definition.
+ for(const d of ['2026-10-22','2026-10-23','2026-10-24','2026-10-25']){const f=B.freshnessRows(pub,{finalizeDate:d}),c=B.publishedCheck(pub,{date:d});
+  assert.equal(c.stale_rows,f.today,d);assert.equal(c.oldest_acquired,f.oldest_acquired,d);assert.equal(c.reasons.includes('ROW_DATA_STALE'),f.today>0,d);}
+ // last_ok_day comes from the rule itself: the first second of the day and the second before 23:59:59Z are + 6; 23:59:59Z is + 7.
+ for(const[at,last,pass24]of [['2026-10-17T00:00:00Z','2026-10-23',false],['2026-10-17T23:59:58.999Z','2026-10-23',false],['2026-10-17T23:59:59Z','2026-10-24',true]]){
+  const p=published({patch:{'NYSE:P1':r=>{r.acquired_at=at;}}}),f=B.freshnessRows(p,{finalizeDate:'2026-10-24'}),r=one(f,'NYSE:P1');
+  assert.deepEqual([r.last_ok_day,r.blocks_today],[last,!pass24],at);assert.equal(B.publishedCheck(p,{date:'2026-10-24'}).stale_rows,f.today,at);}
+ // An invalid finalize date blocks every valued row (publishedCheck reports DATE_INVALID), as before.
+ const bad=B.freshnessRows(pub,{finalizeDate:'20261024'});assert.deepEqual([bad.date_ok,bad.cutoff,bad.today,one(bad,'NYSE:P0').age_days],[false,null,504,null]);
+ assert.deepEqual(B.publishedCheck(pub,{date:'20261024'}).reasons,['DATE_INVALID']);
+ assert.deepEqual(B.freshnessRows(null,{finalizeDate:'2026-10-23'}).rows,[]);
+});
+test('freshnessRows: valued rows only — a normal NA row (even with an old acquired_at) and TARGET rows never appear',()=>{
+ const pub=published({patch:{'NYSE:P10':r=>{NA_ROW(r);r.acquired_at='2026-09-01T00:00:00Z';},'NYSE:P11':NA_ROW,
+  'NYSE:P12':r=>{r.axes={Q:{score:null},G:{score:null}};r.acquired_at='2026-09-01T00:00:00Z';},'NYSE:P13':r=>{r.acquired_at=null;}}});
+ pub.target.x.acquired_at='2026-09-01T00:00:00Z';
+ const f=B.freshnessRows(pub,{finalizeDate:'2026-10-15'}),codes=f.rows.map(r=>r.code);
+ assert.equal(f.rows.length,502);assert.ok(!codes.includes('NYSE:P10')&&!codes.includes('NYSE:P11'),'NA rows excluded');assert.ok(!codes.some(c=>c.startsWith('TARGET:')));
+ // LIVE without scores is still a valued row; a valued row without acquired_at blocks both days and cannot be classified.
+ assert.deepEqual([one(f,'NYSE:P12').blocks_today,one(f,'NYSE:P12').age_days],[true,44]);
+ assert.deepEqual(one(f,'NYSE:P13'),{code:'NYSE:P13',acquired_at:null,age_days:null,last_ok_day:null,blocks_today:true,blocks_tomorrow:true,shard:null,kind:'UNKNOWN',next_turn_day:null});
+ const c=B.publishedCheck(pub,{date:'2026-10-15'});assert.deepEqual([f.today,c.stale_rows,c.na_rows,f.oldest_acquired,c.oldest_acquired],[2,2,2,'2026-09-01T00:00:00Z','2026-09-01T00:00:00Z']);
+});
+test('freshnessRows: KEPT (older than its own shard newest) vs ROTATION (whole shard old), from the inputBasis shard times',async()=>{
+ const pub=published({patch:{'NYSE:P0':r=>{r.acquired_at='2026-10-05T03:00:00Z';}}}),shardOf=await B.rowShards(pub),basis=await B.inputBasis(pub,{shardOf});
+ assert.equal(shardOf['NYSE:P0'],shard7('P0'));assert.equal(Object.keys(shardOf).length,504);assert.deepEqual(basis,await B.inputBasis(pub),'same basis with or without the precomputed shards');
+ const f=B.freshnessRows(pub,{finalizeDate:'2026-10-15',basis,shardOf});
+ assert.deepEqual([f.today,f.tomorrow,f.kept],[1,1,1]);assert.deepEqual(one(f,'NYSE:P0'),{code:'NYSE:P0',acquired_at:'2026-10-05T03:00:00Z',age_days:10,last_ok_day:'2026-10-11',blocks_today:true,blocks_tomorrow:true,shard:shard7('P0'),kind:'KEPT',next_turn_day:one(f,'NYSE:P0').next_turn_day});
+ assert.ok(f.rows.filter(r=>r.code!=='NYSE:P0').every(r=>r.kind==='ROTATION'&&!r.blocks_today));
+ // A kept row counts before it blocks (line '보존 행'); the counts never depend on the classification.
+ assert.deepEqual([B.freshnessRows(pub,{finalizeDate:'2026-10-11',basis,shardOf}).today,B.freshnessRows(pub,{finalizeDate:'2026-10-11',basis,shardOf}).kept],[0,1]);
+ // Without the basis every row is UNKNOWN: `unknown` counts them, so the screen shows the kept count as not known (never 0).
+ const bare=B.freshnessRows(pub,{finalizeDate:'2026-10-15'});assert.deepEqual([bare.today,bare.kept,bare.unknown],[1,0,504]);assert.equal(f.unknown,0);assert.ok(bare.rows.every(r=>r.kind==='UNKNOWN'&&r.shard===null));
+ // Whole shard old (collected 2026-10-06 in one run, minutes apart) → ROTATION, not KEPT; the other shards stay current.
+ const s=shard7('P0'),old=published({patch:Object.fromEntries(Array.from({length:504},(_,i)=>['NYSE:P'+i,r=>{if(shard7(r.cik)===s)r.acquired_at='2026-10-06T22:'+String(37+i%5).padStart(2,'0')+':00Z';}]))});
+ const so=await B.rowShards(old),fo=B.freshnessRows(old,{finalizeDate:'2026-10-14',basis:await B.inputBasis(old,{shardOf:so}),shardOf:so}),inShard=fo.rows.filter(r=>r.shard===s);
+ assert.ok(inShard.length>0);assert.deepEqual([fo.today,fo.kept],[inShard.length,0]);assert.ok(inShard.every(r=>r.kind==='ROTATION'&&r.blocks_today&&r.last_ok_day==='2026-10-12'));
+ // Runs farther apart than KEPT_GAP_MS (12 h) are different collections: a row 13 h older than its shard newest is KEPT, 11 h is not.
+ assert.equal(B.KEPT_GAP_MS,12*3600000);
+ for(const[at,kind]of [['2026-10-13T07:00:00Z','KEPT'],['2026-10-13T09:00:00Z','ROTATION']]){const p=published({patch:{'NYSE:P2':r=>{r.acquired_at=at;}}}),sp=await B.rowShards(p);
+  assert.equal(one(B.freshnessRows(p,{finalizeDate:'2026-10-15',basis:await B.inputBasis(p,{shardOf:sp}),shardOf:sp}),'NYSE:P2').kind,kind,at);}
+ // A normal NA row with an old acquired_at (a reasoned NA keeps its last acquisition) is neither counted nor kept.
+ const na=published({patch:{'NYSE:P3':r=>{NA_ROW(r);r.acquired_at='2026-09-01T00:00:00Z';}}}),sn=await B.rowShards(na),fn=B.freshnessRows(na,{finalizeDate:'2026-10-15',basis:await B.inputBasis(na,{shardOf:sn}),shardOf:sn});
+ assert.deepEqual([fn.today,fn.kept,one(fn,'NYSE:P3')],[0,0,undefined]);
+ assert.deepEqual(await B.rowShards({records:{'NYSE:A':{cik:'1'}}}),{},'no shard_count → no shards');
+ // next_turn_day: the first day ≥ the finalize date whose scheduled run collects the shard (day ordinal mod shard_count, as
+ // universe/sec_universe_shares.py shard_index_for; Python date(2026, 10, 25).toordinal() % 7 = 0, 2026-10-15 → 4).
+ assert.equal(pub.shard_count,7);
+ for(const[d,s,turn]of [['2026-10-25',0,'2026-10-25'],['2026-10-25',1,'2026-10-26'],['2026-10-25',6,'2026-10-31'],['2026-10-15',4,'2026-10-15'],['2026-10-15',3,'2026-10-21'],['2026-10-15',5,'2026-10-16']]){
+  const code=Object.keys(shardOf).find(c=>shardOf[c]===s);assert.equal(one(B.freshnessRows(pub,{finalizeDate:d,basis,shardOf}),code).next_turn_day,turn,d+' shard '+s);}
+ assert.equal(B.freshnessRows(pub,{finalizeDate:'2026-10-25',basis,shardOf}).shard_count,7);assert.equal(one(B.freshnessRows({...pub,shard_count:undefined},{finalizeDate:'2026-10-25',basis,shardOf}),'NYSE:P0').next_turn_day,null,'no shard_count → no turn');assert.equal(await B.rowShards(null),null);
+});
+
 // User decision 2026-10-23: 「가격이 일부만 있을 때 V가 '몇 개 요인으로 계산됐는지'(예: 3/5)를 … 표시하고, V3·V4가 빠진 V로 TARGET v1
 // 후보를 확정하지 않는다(초안은 가능, 표시 필수).」 Synthetic factor scores only (no price): a missing factor is a null score.
 test('V factor count n/5 on draft rows; V without V3 or V4 stays in the draft but blocks finalize (2026-10-23)',async()=>{
