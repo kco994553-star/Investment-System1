@@ -53,7 +53,7 @@ from investment_system.qgv.qgv_official import (FILENAME as QGV_OFFICIAL_FILENAM
 APPROVED_SHA256 = {
     "qgv-official.js": "5d904f478171372cdbf547865f23cb2792cf33ff2020b118a0f8b332de599b17",
     "target-v1-builder.js": "eb60c6bb346bb2e98ed3b745a534e9f1467487147e908139a198a929e6903d59",
-    "target-v1-config-defaults.js": "cdfa0ac5b620dca4f1828fb055a76c08268c533a65b2e0d34f962ce1499b12bd",
+    "target-v1-config-defaults.js": "192422a1b4ae1d24c909d85d232e6e20e0fcedd89fd8fa8cb8974824563265cd",
     "target-v1-screen.js": "cf6810e3f4abd19c780ad7a25cc7807f7321bb294b1f1415944e63c0575dfdbc",
     "playbook-engine.js": "b708a1772b4cd8e1af731cffdacbfab478d03c9c4e1e5fd663537babd64ee7d8",
     "playbook-config-defaults.js": "b0dd6aeed54a11082953b83aa30497c99dd454040e7e7adbc46cdd4c0a1221a6",

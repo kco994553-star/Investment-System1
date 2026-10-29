@@ -75,16 +75,17 @@ async function seed({date,n=45,vMiss={}}){
   assert.equal(await page.locator('[data-tv1-official-reason]').textContent(),'공식 V 사용 안 함 · OFFICIAL_NOT_PUBLISHED · 중앙 V 게시본 없음(404)');
   assert.equal(await page.locator('[data-tv1-status]').textContent(),'공식 V 초안 불가 · 임시 V 초안에는 이 기기의 가격이 필요합니다');assert.equal(await page.locator('[data-tv1-candidates]').count(),0);
   phase=width+' draft';const pool=await page.evaluate(seed,{date:'2026-10-14'});assert.ok(pool>=30);
-  // The shipped browser builder must recognize the actual production version, with the default gate still false.
+  // The shipped browser builder must recognize the actual production version. The shipped number check is recorded for
+  // qgv2-calc/2026-10-23.1 (2026-10-29), so this 17.1 fixture is a mismatch and the recorded version passes.
   const versionCheck=await page.evaluate(()=>{
    const B=TargetV1Builder,pub=window.__tv1Payload('qgv2-calc/2026-10-17.1'),check=p=>B.publishedCheck(p,{date:'2026-10-14'});
    const current=check(pub);pub.records['NYSE:P200'].calc_version='qgv2-calc/2026-10-17.2';
    return{basis:window.__seedData.basis.calc_version,version:current.calc_version,reasons:current.reasons,
     invalid:check(window.__tv1Payload('other/2026-10-17.1')).reasons,mixed:check(pub).reasons,
-    passed:TargetV1ConfigDefaults.number_check.result.passed,number:B.numberCheck(current.calc_version).reason};
+    passed:TargetV1ConfigDefaults.number_check.result.passed,number:B.numberCheck(current.calc_version).reason,shipped:B.numberCheck('qgv2-calc/2026-10-23.1').reason};
   });
   assert.deepEqual(versionCheck,{basis:'qgv2-calc/2026-10-17.1',version:'qgv2-calc/2026-10-17.1',reasons:[],
-   invalid:['CALC_VERSION_MISSING'],mixed:['CALC_VERSION_MIXED'],passed:true,number:null});
+   invalid:['CALC_VERSION_MISSING'],mixed:['CALC_VERSION_MIXED'],passed:true,number:'NUMBER_CHECK_CALC_VERSION_MISMATCH',shipped:null});
   await page.goto(BASE+'#home');await page.goto(BASE+'#playbook');await page.locator('[data-tv1-candidates]').waitFor();
   assert.equal(await page.locator('[data-tv1-candidates] tbody tr').count(),30);assert.match(await page.locator('[data-tv1-candidate=NVDA]').textContent(),/반도체.*예$/);
   assert.equal(await page.locator('[data-tv1-card]').count(),15);assert.match(await page.locator('[data-tv1-limits]').textContent(),/16절 한도 통과/);
@@ -103,7 +104,7 @@ async function seed({date,n=45,vMiss={}}){
   assert.equal(await page.locator('[data-tv1-rebalance] table').count(),0);assert.equal(await page.locator('[data-tv1-risk-codes] li').count(),8);assert.match(await page.locator('[data-tv1-risk-codes]').textContent(),/R1 · 확신 보유 종목의 무효화 조건 발생/);
   assert.deepEqual(await page.locator('[data-tv1-round-row] td:last-child').allTextContents(),['위험 코드 점검만','위험 코드 점검만','위험 코드 점검만']);
   assert.match(await page.locator('[data-tv1-transition] [data-tv1-schedule]').textContent(),/확정 목표 2026년 11월 둘째 주\(11-09 ~ 11-15\) · 미확정 · 조건을 못 맞추면 확정을 미루고 11월 회차는 위험 코드 점검만/);
-  phase=width+' number check';assert.equal(await page.locator('[data-tv1-finalize]').isDisabled(),false);assert.match(await page.locator('[data-tv1-number-check]').textContent(),/^숫자 검증 통과 · 10개 기업 · calc_version qgv2-calc\/2026-10-17\.1 · 2026-10-23 · 앱 계산식 대조 통과\(시험 가격\) \/ 실기기 시세 경로 미검증 · /);
+  phase=width+' number check';assert.equal(await page.locator('[data-tv1-finalize]').isDisabled(),false);assert.match(await page.locator('[data-tv1-number-check]').textContent(),/^숫자 검증 통과 · 10개 기업 · calc_version qgv2-calc\/2026-10-23\.1 · 2026-10-29 · 앱 계산식 대조 통과\(시험 가격\) \/ 실기기 시세 경로 미검증 · /);
   // The published file is re-read at the click: absent on this build (404) → blocked with every reason listed.
   await page.locator('[data-tv1-finalize]').click();await page.waitForFunction(()=>document.querySelector('[data-tv1-finalize-check]'));
   assert.match(await page.locator('[data-tv1-status]').textContent(),/^확정 불가 · 최신 공개 sec-qgv2\.json을 읽지 못함$/);
