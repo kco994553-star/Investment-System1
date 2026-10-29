@@ -35,7 +35,13 @@ import re
 #                count of the SAME filing, and the per-share histories are NA when their FY0 basis count is (V-SHARES-SCALE,
 #                owner decision 2026-10-17 on the MCD/WAT unit errors, same version; never rescaled, never another concept);
 #                Q·G metrics, factors and axes are unchanged from 2026-10-15.1.
-CALC_VERSION = 'qgv2-calc/2026-10-17.1'
+# 2026-10-23.1 = v_inputs_v2 only: every ebit_per_share_history entry carries `share_basis_factor` (+ its NA reason), the
+#                price-free factor from the as-traded share basis at the month-end of that fiscal-year-end month to the basis of
+#                the published per-share values (rule V-PRICE-BASIS, owner decision GSQ-024 plan A 2026-10-23); values, Q·G
+#                metrics, factors and axes are unchanged from 2026-10-17.1. Owner instruction 2026-10-23: this is the ONE bump of
+#                the round and it also covers the central V publication rules U7 (qgv-official/1, CENTRAL_V_PUBLICATION_DESIGN
+#                section 5-3 / D-CV7: no separate v_calc_version).
+CALC_VERSION = 'qgv2-calc/2026-10-23.1'
 CALC_VERSION_PATTERN = r'qgv2-calc/[0-9]{4}-[0-9]{2}-[0-9]{2}\.[0-9]{1,4}'
 ANNUAL_FORMS = frozenset({'10-K', '10-K/A', '10-KT', '10-KT/A', '20-F', '20-F/A', '40-F', '40-F/A'})
 QUARTER_FORMS = frozenset({'10-Q', '10-Q/A'})
@@ -247,6 +253,32 @@ SHARE_JUMP_LIMIT = 3.0
 SHARES_SCALE_BAND = (0.1, 10.0)
 SHARES_SCALE_UNCONFIRMED = 'SHARES_SCALE_UNCONFIRMED'
 COVER_SHARES_CONCEPT = ('dei', 'EntityCommonStockSharesOutstanding')
+# Price basis of the per-share histories (rule V-PRICE-BASIS, owner decision GSQ-024 plan A 2026-10-23, calc_version
+# 2026-10-23.1). Each ebit_per_share_history entry carries `share_basis_factor` F: multiply a share count of the as-traded
+# basis at the month-end of the entry's fiscal-year-end month by F to put it on the basis of the published per-share values
+# (= the basis of v_inputs_v2.diluted_shares); divide a raw (split-UNadjusted) month-end price of that month by F. Same
+# convention as _Company.share_factor. F is price-free: the as-reported annual filing of that fiscal year (the earliest annual
+# filing reporting its diluted-share span) carries the share basis at its filing date, and the SPLIT chain restates it to the
+# published basis. It is the as-traded basis at the month-end unless a split took effect after that month-end and before the
+# filing (the filing is then restated, the month-end price is not): evidence of that -> F null with SPLIT_TIMING_UNCONFIRMED,
+# never 1.0 and never multiplied by the ratio. Evidence = a split-ratio fact dated in the window (instant date, or a duration
+# overlapping it), or a dei cover share count dated in the window that differs from the last cover count dated on or before
+# the month-end by more than SHARE_BASIS_COVER_BAND (or matches a reported split ratio). A chain that cannot be established
+# (share_factor None) -> null with SHARE_BASIS_UNCONFIRMED. Device prices (split-adjusted) never use F.
+# Shape (size budget of the 2 MiB file): `share_basis_factor` on every entry, `share_basis_factor_reason` only when it is null;
+# only ebit_per_share_history (the history V4 v_vs_own_history pairs with month-end prices). The factor belongs to the fiscal
+# year, so an fcf_per_share_history entry of the same fiscal_year_end has the same basis.
+SHARE_BASIS_FACTOR_SINCE = (date(2026, 10, 23), 1)   # first calc_version whose rows carry the keys
+SHARE_BASIS_KEYS = ('share_basis_factor', 'share_basis_factor_reason')
+SHARE_BASIS_HISTORY_KEYS = ('ebit_per_share_history',)
+SHARE_BASIS_UNCONFIRMED = 'SHARE_BASIS_UNCONFIRMED'
+SPLIT_TIMING_UNCONFIRMED = 'SPLIT_TIMING_UNCONFIRMED'
+SHARE_BASIS_REASONS = (SHARE_BASIS_UNCONFIRMED, SPLIT_TIMING_UNCONFIRMED)
+# Cover count drift over one filing window without a split (UNCALIBRATED; calibration in QGV_V2_QG_METHOD.md V-PRICE-BASIS).
+SHARE_BASIS_COVER_BAND = (1.0 / 1.2, 1.2)
+SPLIT_DATE_SPAN_DAYS = 31
+# Published factor range (both validators): a split chain never reaches 1e6x.
+SHARE_BASIS_FACTOR_LIMIT = 1e6
 # Price-free descriptors published only in the SEC file `sec-qgv2.json` (never ranked, never in the DART reference block,
 # whose key set is METRIC_KEYS exactly), with the profiles allowed to carry each (validators: universe/sec_qgv2.py, sec-qgv2.js).
 # ebit_estimated_years: number of fiscal years FY0..FY-5 whose EBIT is the substitute pretax + interest (rule EBIT); present
@@ -362,7 +394,7 @@ class _Facts:
         """[(filed, ratio)] of the us-gaap stock-split ratio facts filed <= cutoff (any taxonomy of the row)."""
         facts = payload.get('facts') if isinstance(payload.get('facts'), dict) else {}
         group = facts.get('us-gaap') if isinstance(facts.get('us-gaap'), dict) else {}
-        self.split_ratios = []
+        self.split_ratios, self.split_ratio_dates = [], []
         for concept in SPLIT_RATIO_CONCEPTS:
             node = group.get(concept)
             units = node.get('units') if isinstance(node, dict) and isinstance(node.get('units'), dict) else {}
@@ -371,21 +403,35 @@ class _Facts:
                     filed, value = _day(row.get('filed')) if isinstance(row, dict) else None, row.get('val') if isinstance(row, dict) else None
                     if filed is not None and filed <= self.cutoff and _finite(value) and value > 0 and abs(value - 1.0) > SHARE_REVISION_TOLERANCE:
                         self.split_ratios.append((filed, float(value)))
+                        # (first, last) date the fact is tagged with, for V-PRICE-BASIS only: an instant or a duration of
+                        # at most SPLIT_DATE_SPAN_DAYS (NVDA tags the split month) is its span; a longer duration (a YTD or
+                        # fiscal-year context: TSCO tags 2023-12-31..2024-12-28) only its end date.
+                        end = _day(row.get('end'))
+                        if end is not None:
+                            start = _day(row.get('start'))
+                            short = start is not None and 0 <= (end - start).days <= SPLIT_DATE_SPAN_DAYS
+                            self.split_ratio_dates.append((start if short else end, end))
 
     def _cover_counts(self, payload):
         """{accession: {values}} of the dei cover share counts (COVER_SHARES_CONCEPT, unit 'shares', > 0, filed <= cutoff), any
-        taxonomy of the row. Read only by the V-SHARES-SCALE check (_shares_scale)."""
+        taxonomy of the row. Read only by the V-SHARES-SCALE check (_shares_scale); `cover_dates` ({as-of date: {values}})
+        only by V-PRICE-BASIS (_Company.share_basis_factor)."""
         facts = payload.get('facts') if isinstance(payload.get('facts'), dict) else {}
         group = facts.get(COVER_SHARES_CONCEPT[0]) if isinstance(facts.get(COVER_SHARES_CONCEPT[0]), dict) else {}
         node = group.get(COVER_SHARES_CONCEPT[1])
         rows = node.get('units', {}).get('shares') if isinstance(node, dict) and isinstance(node.get('units'), dict) else None
-        self.cover_counts = {}
+        self.cover_counts, self.cover_dates = {}, {}
         for row in rows if isinstance(rows, list) else ():
-            if not isinstance(row, dict) or not isinstance(row.get('accn'), str):
+            if not isinstance(row, dict):
                 continue
             filed, value = _day(row.get('filed')), row.get('val')
-            if filed is not None and filed <= self.cutoff and _finite(value) and value > 0:
+            if filed is None or filed > self.cutoff or not _finite(value) or value <= 0:
+                continue
+            if isinstance(row.get('accn'), str):
                 self.cover_counts.setdefault(row['accn'], set()).add(float(value))
+            as_of = _day(row.get('end'))
+            if as_of is not None:  # {as-of date: {values}} for V-PRICE-BASIS (several values: classes, ambiguous)
+                self.cover_dates.setdefault(as_of, set()).add(float(value))
 
     def cover_count(self, filing):
         """The one cover share count reported in `filing` (accession, filed); None when it reports none or several distinct
@@ -982,6 +1028,51 @@ class _Company:
     def per_share(self, value, k):
         return _div(value, self.shares(k))
 
+    # ---- price basis of the per-share histories (rule V-PRICE-BASIS, calc_version 2026-10-23.1) ----
+    def as_reported_filing(self, start, end):
+        """The earliest-filed annual filing reporting a diluted share count for the span (start, end), any allowed concept:
+        the as-reported 10-K of that fiscal year, whose share basis is the one at its filing date."""
+        hits = [filing for filing, values in self.f.share_filings.items() if any(s == start and e == end for _, s, e in values)]
+        return min(hits, key=lambda filing: (filing[1], str(filing[0]))) if hits else None
+
+    def share_basis_factor(self, start, end, latest):
+        """(factor, reason) of rule V-PRICE-BASIS for the fiscal year (start, end) of a per-share history entry whose value is
+        on the FY0 basis divided by `latest`: multiply a share count of the as-traded basis at the month-end of `end`'s month
+        by `factor` (divide a raw month-end price by it). (None, SHARE_BASIS_UNCONFIRMED) when the as-reported filing cannot be
+        restated to the FY0 basis (share_factor None); (None, SPLIT_TIMING_UNCONFIRMED) when a split may have taken effect
+        between that month-end and the filing. SEC payloads only."""
+        filing = self.as_reported_filing(start, end)
+        factor = self.share_factor(filing) if filing is not None else None
+        if factor is None or not _finite(latest) or latest <= 0:
+            return None, SHARE_BASIS_UNCONFIRMED
+        month_end = (end.replace(day=28) + timedelta(days=4)).replace(day=1) - timedelta(days=1)
+        if self._split_window(month_end, filing[1]):
+            return None, SPLIT_TIMING_UNCONFIRMED
+        return factor * latest, None
+
+    def _split_window(self, month_end, filed):
+        """True when the facts show a possible split in (month_end, filed]: a split-ratio fact tagged with a date in it, or the
+        cover share count dated in it (latest such) off each of the last two covers dated on or before month_end by more than
+        SHARE_BASIS_COVER_BAND, or matching a reported split ratio (within SHARE_REVISION_TOLERANCE). A date with several cover
+        values (share classes) is not a reference; no reference on either side -> the cover test is silent."""
+        if filed <= month_end:
+            return False
+        if any(first <= filed and last > month_end for first, last in self.f.split_ratio_dates):
+            return True
+        single = sorted((day, next(iter(values))) for day, values in self.f.cover_dates.items() if len(values) == 1)
+        before = [value for day, value in single if day <= month_end][-2:]
+        inside = [value for day, value in single if month_end < day <= filed]
+        if not before or not inside:
+            return False
+        candidates = {c for _, r in self.f.split_ratios for c in (r, 1.0 / r)}
+
+        def jump(ratio):
+            return (not SHARE_BASIS_COVER_BAND[0] <= ratio <= SHARE_BASIS_COVER_BAND[1]
+                    or any(abs(ratio / c - 1.0) <= SHARE_REVISION_TOLERANCE for c in candidates))
+        # Against the last two references, so one mis-scaled cover before the month-end (NTAP 2024-02-23: 20,637,666 for
+        # 206 million) is not read as a split; a real split leaves both references on the old basis.
+        return all(jump(inside[-1] / value) for value in before)
+
     # ---- TTM ----
     def ttm(self, item):
         """(ttm_value, period_end, ttm_year_ago_value): FY0 + YTD - YTD(prior year), all from ONE concept;
@@ -1149,6 +1240,17 @@ V_KEYS = LEGACY_V_KEYS + ('revenue', 'operating_margin_history')
 # EV balance-sheet inputs that must be on or after the FY0 balance sheet (V-STALE-BS, calc_version 2026-10-17.1).
 STALE_BALANCE_SHEET_V_KEYS = ('total_debt', 'cash_and_equivalents')
 
+def carries_share_basis(calc_version):
+    """True when a row of `calc_version` carries share_basis_factor (and, when it is null, share_basis_factor_reason) in every
+    ebit_per_share_history entry (V-PRICE-BASIS: 2026-10-23.1 and later); rows of an earlier version or without one (legacy)
+    carry exactly fiscal_year_end, value."""
+    if type(calc_version) is not str or re.fullmatch(CALC_VERSION_PATTERN, calc_version) is None:
+        return False
+    day, n = calc_version.split('/', 1)[1].rsplit('.', 1)
+    day = _day(day)
+    return day is not None and (day, int(n)) >= SHARE_BASIS_FACTOR_SINCE
+
+
 def empty_v_inputs():
     return {'currency': None, 'taxonomy': None, 'fiscal_year_end': None,
             'ebit': None, 'fcf': None, 'total_debt': None, 'cash_and_equivalents': None, 'diluted_shares': None,
@@ -1276,7 +1378,13 @@ def _v_inputs(c, m, taxonomy, currency, diagnostics=None):
             hit = c.f.annual('diluted_shares', c.end(k))
             per_share = _div(c.per_share(value_of(k), k), latest)
             if per_share is not None and hit is not None:
-                history.append({'fiscal_year_end': hit[2].isoformat(), 'value': _round(per_share)})
+                entry = {'fiscal_year_end': hit[2].isoformat(), 'value': _round(per_share)}
+                if c.sec and key in SHARE_BASIS_HISTORY_KEYS:  # V-PRICE-BASIS (2026-10-23.1); SEC rows only (not DART)
+                    factor, reason = c.share_basis_factor(hit[1], hit[2], latest)
+                    entry['share_basis_factor'] = _round(factor)
+                    if reason is not None:
+                        entry['share_basis_factor_reason'] = reason
+                history.append(entry)
         ends = [h['fiscal_year_end'] for h in history]
         v[key] = history if len(set(ends)) == len(ends) else []
     v['revenue'] = _flow(c, fy('revenue'), ttm('revenue'))

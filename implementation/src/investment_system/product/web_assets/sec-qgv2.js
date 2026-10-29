@@ -38,6 +38,11 @@
  const V_KEYS=LEGACY_V_KEYS.concat(['revenue','operating_margin_history']);
  const FLOW_KEYS=['fy_value','fy_end','ttm_value','ttm_end'],FLOW_V=['ebit','fcf','revenue'],INSTANT_V=['total_debt','cash_and_equivalents','diluted_shares'],GROWTH_V=['revenue_cagr_3y','eps_cagr_3y','fcf_per_share_cagr_3y','revenue_ttm_growth'];
  const LIMIT=1e12,HISTORY_YEARS=5;
+ /* V-PRICE-BASIS (v2_factors, calc_version 2026-10-23.1): rows of that version or later carry in every ebit_per_share_history
+    entry share_basis_factor (positive, <= 1e6), or null plus share_basis_factor_reason (a known code); earlier and legacy rows
+    and the other histories exactly {fiscal_year_end,value}. Python: universe/sec_qgv2._v_inputs. */
+ const SHARE_BASIS_SINCE=['2026-10-23',1],SHARE_BASIS_HISTORY=['ebit_per_share_history'],SHARE_BASIS_REASONS=['SHARE_BASIS_UNCONFIRMED','SPLIT_TIMING_UNCONFIRMED'],SHARE_BASIS_LIMIT=1e6;
+ function carriesShareBasis(cv){if(typeof cv!=='string'||!CALC_VERSION_RE.test(cv))return false;const d=cv.slice(10,20),n=Number(cv.slice(21));return day(d)&&(d>SHARE_BASIS_SINCE[0]||d===SHARE_BASIS_SINCE[0]&&n>=SHARE_BASIS_SINCE[1]);}
  /* schema_version (Python sec_universe_shares.SCHEMA_VERSIONS): 1 and 2 are read; withdrawal rows only in 2. A version above 2 is a newer
     data format than this page knows: ERR_NEWER (the page asks for a reload), never shown as data. */
  const SCHEMA_VERSIONS=[1,2],ERR_NEWER='SEC_QGV2_SCHEMA_NEWER';
@@ -55,14 +60,17 @@
  function emptyRecord(reason='NOT_COLLECTED'){return{cik:null,acquired_at:null,source_sha256:{companyfacts:null,submissions:null},state:'NOT_AVAILABLE',reason_codes:[reason],sic:null,industry_group:null,profile:null,fiscal_year_end:null,currency:null,metrics:{},factors:Object.fromEntries(FACTOR_IDS.map(k=>[k,null])),axes:{Q:emptyAxis('ROW_NOT_AVAILABLE'),G:emptyAxis('ROW_NOT_AVAILABLE')},v_inputs_v2:emptyV(),calc_version:null};}
  const fiscalYearsOk=v=>Array.isArray(v)&&v.length>=1&&v.length<=HISTORY_YEARS+1&&v.every(y=>Number.isInteger(y)&&y>=1900&&y<=2100)&&v.every((y,i)=>i===0||v[i-1]<y);
  const metricOk=(k,v)=>k==='ebit_estimated_fiscal_years'?fiscalYearsOk(v):k==='moat_return_years'?Number.isInteger(v)&&v>=3&&v<=HISTORY_YEARS:k==='ebit_estimated_years'?Number.isInteger(v)&&v>=1&&v<=HISTORY_YEARS+1:num(v)&&Math.abs(v)<=LIMIT&&(k!=='revenue_growth_std_5y'||v>=0)&&(k!=='operating_margin_std_5y_pp'||v>=0)&&(k!=='revenue_volatility_5y_rank_pct'||v>=0&&v<=100);
- function vInputs(v,cutDay,hasData){
+ function vInputs(v,cutDay,hasData,calcVersion){
   need(keys(v,V_KEYS)||keys(v,LEGACY_V_KEYS));if(!hasData){const empty=emptyV();need(canon(v)===canon(Object.fromEntries(Object.keys(v).map(k=>[k,empty[k]]))));return;}
   need(typeof v.currency==='string'&&/^[A-Z]{3}$/.test(v.currency)&&['us-gaap','ifrs-full'].includes(v.taxonomy)&&date(v.fiscal_year_end)<=cutDay);
   for(const k of FLOW_V){const f=v[k];if(f===null||f===undefined)continue;need(keys(f,FLOW_KEYS));
    for(const [vk,ek] of [['fy_value','fy_end'],['ttm_value','ttm_end']]){need((f[vk]===null)===(f[ek]===null));if(f[vk]!==null)need(num(f[vk])&&date(f[ek])<=cutDay);}
    need(f.fy_value!==null||f.ttm_value!==null);if(f.fy_end!==null&&f.ttm_end!==null)need(f.ttm_end>=f.fy_end);}
   for(const k of INSTANT_V){const i=v[k];if(i===null)continue;need(keys(i,['value','period_end'])&&num(i.value)&&date(i.period_end)<=cutDay);if(k==='diluted_shares')need(i.value>0);}
-  for(const k of ['ebit_per_share_history','fcf_per_share_history','operating_margin_history']){const h=v[k]||[];need(Array.isArray(h)&&h.length<=HISTORY_YEARS);const ends=[];for(const e of h){need(keys(e,['fiscal_year_end','value'])&&num(e.value));ends.push(date(e.fiscal_year_end));need(ends[ends.length-1]<=cutDay);}for(let i=1;i<ends.length;i++)need(ends[i-1]<ends[i]);}
+  const shareBasis=carriesShareBasis(calcVersion);
+  for(const k of ['ebit_per_share_history','fcf_per_share_history','operating_margin_history']){const h=v[k]||[];need(Array.isArray(h)&&h.length<=HISTORY_YEARS);const withBasis=shareBasis&&SHARE_BASIS_HISTORY.includes(k),ends=[];for(const e of h){
+   if(withBasis){need(plain(e)&&Object.hasOwn(e,'share_basis_factor'));const f=e.share_basis_factor;need(f===null?keys(e,['fiscal_year_end','value','share_basis_factor','share_basis_factor_reason'])&&SHARE_BASIS_REASONS.includes(e.share_basis_factor_reason):keys(e,['fiscal_year_end','value','share_basis_factor'])&&num(f)&&f>0&&f<=SHARE_BASIS_LIMIT);}else need(keys(e,['fiscal_year_end','value']));
+   need(num(e.value));ends.push(date(e.fiscal_year_end));need(ends[ends.length-1]<=cutDay);}for(let i=1;i<ends.length;i++)need(ends[i-1]<ends[i]);}
   for(const k of GROWTH_V)need(v[k]===null||num(v[k])&&Math.abs(v[k])<=LIMIT);
  }
  /* One row (mirrors Python _row); scores are compared separately against the recomputation. */
@@ -89,7 +97,7 @@
    need(r.profile===null&&r.currency===null&&Object.keys(m).length===0&&r.state==='NOT_AVAILABLE'&&reasons.length&&!reasons.includes('STALE_INPUT'));
    if(targetId!==undefined&&TARGET_CIKS[targetId]===null)need(canon(reasons)==='["NON_SEC_ISSUER"]'&&r.cik===null&&r.acquired_at===null);else need(!reasons.includes('NON_SEC_ISSUER'));
   }
-  vInputs(r.v_inputs_v2,cutDay,hasData);
+  vInputs(r.v_inputs_v2,cutDay,hasData,r.calc_version);
   need(keys(r.factors,FACTOR_IDS)&&keys(r.axes,['Q','G'])&&Object.values(r.axes).every(a=>keys(a,AXIS_KEYS)));
   return r.state;
  }
