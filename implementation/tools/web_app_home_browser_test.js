@@ -5,18 +5,20 @@
 //  - Home: hero, the search box in the first paint; before IS2.ready typing works and the list says 불러오는 중 (a layer file is
 //    held back), Escape keeps the text, leaving the box hides the list; the hand-over on the same render (typed text becomes
 //    options on the same input, focus kept, one repaint per keystroke) and a route left before IS2.ready is not filled; then the
-//    company index: "nv" and a Korean name from the reviewed names file give ARIA combobox / listbox options
-//    (at most 8, no price, cap, score or rank); the input element is never rebuilt, keys are ignored while composing and the list
-//    follows an open composition.
+//    shared company search (search-part-live.js, DC-23): "nv" and an English name give ARIA combobox / listbox options (at most
+//    8, Universe504 only, no price, cap, score or rank); Korean text gives the fixed hint, a TARGET-only company is not found,
+//    WBD says 상장 종료; the input has the phone search keyboard attributes; the input element is never rebuilt, keys are ignored
+//    while composing and the list follows an open composition.
 //  - Selection: ArrowDown + Enter (implicit submission clicks the default button) and a pointer click navigate to the company page
 //    and save the recent search with that real click; a synthetic el.click() / dispatchEvent navigates but saves nothing (the store
-//    refuses it); a submit without an active option goes to the single exact match (NVDA -> nvda), else to #/company/<query> (nv,
-//    then the not-found sentence), and saves nothing. Back home the recent chip shows the company title; 최근 지우기 (a real click)
+//    refuses it); a submit without an active option goes to the single exact match (NVDA -> nvda), else stays with the no-match
+//    line in the list (nv: options, no navigation), and saves nothing; an unknown id typed in the address shows the not-found
+//    sentence. Back home the recent chip shows the company title; 최근 지우기 (a real click)
 //    clears it and the focus stays in the chip block.
 //  - Favorites: empty prefs show the developer default (TARGET 19, labelled 개발자 기본값 · 추천 아님, 8 chips then +N 더 보기); the
 //    ★ toggle (accessible name 즐겨찾기, state in aria-pressed) on the company page writes prefs only with a real click (disabled
 //    before IS2.ready); home then shows the favorite and no default; unstarring also takes the id out of a group that holds it;
-//    with no favorite left the default comes back.
+//    with no favorite left the default comes back; unreadable stored favorites still show the default (DC-22).
 //  - Company page: h1[data-result-code] as given; title, ticker, Universe code and membership; QGV card numbers are exactly the
 //    layer's row (Q · G · V · total · rank) or NA with the reasonText, V label = row.source_label; macro equal to
 //    IS2.engines.macro.current() (a synthetic lights file at 1440: label and counts; the built file at 390: NO_LIGHTS), news lines
@@ -151,11 +153,21 @@ function macroScreen() {
       // EntitySearch order: an exact or prefix match before a substring match.
       const order = await page.evaluate(async () => { await window.IS2.ready; const ES = window.EntitySearch; return [...document.querySelectorAll('#q-list [role=option]')].map((o) => o.dataset.entityKey); });
       assert.equal(order[0], 'COMPANY:nvda', 'the ticker-prefix match comes first');
-      // Korean name (reviewed names table) and IME safety: the same input element, no key handling while composing.
-      await typed('퀄컴');
+      // English name (reviewed names table); Korean text gets the hint (DC-23: ticker + English name only); IME safety: the same
+      // input element, no key handling while composing.
+      await typed('qualcomm');
       assert.deepEqual(await options().evaluateAll((n) => n.map((o) => o.dataset.entityKey)), ['COMPANY:qcom']);
-      assert.match(await options().first().textContent(), /^퀄컴 · QCOM/);
-      assert.match(await options().first().textContent(), /NASDAQ:QCOM/); assert.match(await options().first().textContent(), /TARGET · Universe504 둘 다/);
+      assert.match(await options().first().textContent(), /^QCOM · QUALCOMM INC\/DE/);
+      assert.match(await options().first().textContent(), /NASDAQ:QCOM · Universe504/);
+      await typed('퀄컴');
+      assert.equal(await page.locator('#q-list [data-search-state=hangul]').textContent(), '티커나 영문 회사명으로 찾아 주세요');
+      assert.equal(await options().count(), 0, 'no Korean-name search');
+      await typed('hanmi'); assert.equal(await page.locator('#q-list [data-search-state=empty]').count(), 1, 'a TARGET company outside Universe504 is not found');
+      await typed('wbd');
+      assert.match(await options().first().textContent(), /^WBD · Warner Bros\. Discovery, Inc\./);
+      assert.equal(await options().first().locator('[data-listing-ended]').textContent(), ' · 상장 종료 2026-10-06 · 점수 없음', 'a listing-ended code says so');
+      assert.deepEqual(await page.locator('[data-search-input]').evaluate((i) => ['inputmode', 'enterkeyhint', 'autocorrect', 'autocapitalize', 'placeholder'].map((a) => i.getAttribute(a))),
+        ['search', 'search', 'off', 'characters', '티커 · 영문 회사명'], 'the phone keyboard shows a search key');
       const ime = await page.evaluate(() => { const i = document.querySelector('[data-search-input]'); i.dispatchEvent(new CompositionEvent('compositionstart'));
         i.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, isComposing: true })); const during = i.getAttribute('aria-activedescendant');
         i.dispatchEvent(new CompositionEvent('compositionend')); return { mark: i.__mark, during }; });
@@ -167,7 +179,7 @@ function macroScreen() {
       // A Universe-only company: its code and membership.
       await typed('NYSE:FIX');
       assert.match(await options().first().textContent(), /NYSE:FIX/); assert.match(await options().first().textContent(), /Universe504/);
-      await typed('zzzzqqq'); assert.equal(await page.locator('#q-list [data-search-state=empty]').textContent(), '일치하는 기업이 없습니다');
+      await typed('zzzzqqq'); assert.equal(await page.locator('#q-list [data-search-state=empty]').textContent(), '일치하는 기업이 없습니다 · Universe504 안에서만 찾습니다');
       await page.keyboard.press('Escape'); assert.equal(await page.locator('#q-list').isHidden(), true, 'Escape closes the list');
       assert.equal((await store()).local, 0, 'typing stores nothing');
       await common();
@@ -190,8 +202,8 @@ function macroScreen() {
       await page.locator('[data-result-code="NYSE:FIX"]').waitFor();
       assert.equal(await page.evaluate(() => location.hash), '#/company/NYSE%3AFIX');
       assert.equal((await store()).local, 0, 'a submit without a chosen option saves nothing');
-      // The single exact match (a ticker in another case), and a query without one (P0: #/company/<query>, then not found).
-      for (const [text, hash] of [['NVDA', '#/company/nvda'], ['nv', '#/company/nv']]) {
+      // The single exact match (a ticker in another case), and a query without one (DC-23: it stays, the list shows the options).
+      for (const [text, hash] of [['NVDA', '#/company/nvda'], ['nv', '#/']]) {
         await go('#/', 'main[data-route=search] [data-search-input]');
         await typed(text);
         if (text === 'nv') { // hover only highlights: the 검색 click still submits the typed text
@@ -199,9 +211,15 @@ function macroScreen() {
         }
         await page.locator('[data-search-form] button[type=submit]').click();
         await page.waitForFunction((x) => location.hash === x, hash);
-        await page.locator(text === 'nv' ? '[data-not-found]' : '[data-result-code="nvda"] ~ [data-result-facts] .facts-line').waitFor();
+        if (text === 'nv') { await options().first().waitFor(); assert.equal(await page.locator('[data-search-input]').inputValue(), 'nv', 'no match: the text and the options stay'); }
+        else await page.locator('[data-result-code="nvda"] ~ [data-result-facts] .facts-line').waitFor();
         assert.equal((await store()).local, 0, text + ': a submit without a chosen option saves nothing');
       }
+      await go('#/company/nv', '[data-not-found]');
+      assert.equal(await page.locator('[data-not-found]').textContent(), '이 이름의 기업을 찾지 못했습니다', 'an unknown id in the address');
+      assert.equal(await page.locator('[data-result-facts] svg.mascot[data-mascot=plain][aria-hidden=true]').count(), 1, 'the state character (DC-25)');
+      await go('#/company/NASDAQ%3AWBD', '[data-listing-ended]');
+      assert.equal(await page.locator('[data-result-facts] [data-listing-ended]').textContent(), '상장 종료 2026-10-06 · 점수 없음', 'the company page of a listing-ended code');
 
       // ---------------------------------------------------------------- real selection: keyboard, then pointer
       tag('real selection');
@@ -212,7 +230,7 @@ function macroScreen() {
       await page.locator('[data-result-code="nvda"]').waitFor();
       assert.deepEqual(JSON.parse((await store()).localItems[RECENT_KEY]), ['COMPANY:nvda'], 'ArrowDown + Enter (the default button\'s click) saves the recent search');
       await go('#/', 'main[data-route=search] [data-search-input]');
-      await typed('퀄컴'); await options().first().click();
+      await typed('qualcomm'); await options().first().click();
       await page.locator('[data-result-code="qcom"]').waitFor();
       assert.deepEqual(JSON.parse((await store()).localItems[RECENT_KEY]), ['COMPANY:qcom', 'COMPANY:nvda'], 'a pointer click saves it first');
       assert.deepEqual(Object.keys((await store()).localItems), [RECENT_KEY], 'only the recent key, no query text');
@@ -269,12 +287,19 @@ function macroScreen() {
       assert.equal(await page.evaluate(() => document.activeElement && 'homeChips' in document.activeElement.dataset), true, 'the focus stays in the chip block');
       const small = async (sel) => page.evaluate((x) => [...document.querySelectorAll(x)].filter((e) => e.getClientRects().length).map((e) => [e.textContent, e.getBoundingClientRect().height]).filter(([, h]) => h < 44 - 0.5), sel);
       assert.deepEqual(await small('main .chip-row .chip, main .linkish, main [data-quote-link]'), [], 'home tap targets are 44 px tall');
+      // DC-22: unreadable stored favorites hide the favorites, never the public default list (the stored text stays as it was).
+      const kept = (await store()).localItems[PERSONAL_KEY], broken = '{"version":1,"interests":"broken"}';
+      await page.evaluate(([k, v]) => localStorage.setItem(k, v), [PERSONAL_KEY, broken]);
+      await go('#/qgv', 'main[data-route=qgv]'); await go('#/', 'main[data-route=search] [data-favorites=INVALID]');
+      assert.ok(await page.locator('[data-favorites=DEFAULT] > [data-chip]').count() > 0, 'the developer default (public TARGET list) still shows');
+      assert.equal((await store()).localItems[PERSONAL_KEY], broken, 'nothing rewritten');
+      await page.evaluate(([k, v]) => localStorage.setItem(k, v), [PERSONAL_KEY, kept]);
 
       // ---------------------------------------------------------------- company page values
       tag('company');
       await go('#/company/nvda', '[data-card=qgv] [data-qgv]');
       const facts = await page.locator('[data-result-facts] .facts-line').textContent();
-      assert.match(facts, /^NASDAQ:NVDA · TARGET · Universe504 둘 다/, 'the ticker once: in the title');
+      assert.match(facts, /^NASDAQ:NVDA · Universe504(?! 밖)/, 'the ticker once: in the title; membership names Universe504 only (no TARGET v0, DC-24)');
       assert.equal(await page.locator('.result-name').textContent(), 'NVIDIA · NVDA');
       assert.equal(await page.locator('.result-name').getAttribute('data-result-code'), 'nvda');
       await page.waitForFunction(() => document.querySelectorAll('[data-card] [data-pending]').length === 0);
@@ -284,7 +309,12 @@ function macroScreen() {
           why: { v: r.score.v === null ? Q.reasonText(r.na_reason.v) : null, rank: r.rank.official === null ? Q.reasonText(r.na_reason.rank) : null } };
       });
       const qgv = await page.evaluate(() => { const c = document.querySelector('[data-card=qgv]'), val = (a) => c.querySelector('[data-axis=' + a + '] .qval').textContent;
-        return { q: val('Q'), g: val('G'), v: val('V'), text: c.querySelector('.card-body').innerText, fills: [...c.querySelectorAll('.qbar-fill')].map((x) => Number(x.getAttribute('width'))) }; });
+        const basis = c.querySelector('[data-qgv-basis]'), body = c.querySelector('.card-body').cloneNode(true); body.querySelector('[data-qgv-basis]').remove();
+        return { q: val('Q'), g: val('G'), v: val('V'), text: body.textContent, basis: basis.textContent, fills: [...c.querySelectorAll('.qbar-fill')].map((x) => Number(x.getAttribute('width'))) }; });
+      // DC-22: the score file's refresh time (its as_of, UTC) and calc_version under the card.
+      const stamp = await page.evaluate(async () => { const pg = await window.IS2.qgv.page(), F = new Intl.DateTimeFormat('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' });
+        return '점수 갱신 ' + F.format(Date.parse(pg.as_of)) + ' UTC · 계산 버전 ' + pg.calc_version; });
+      assert.equal(qgv.basis, stamp, 'the QGV card names the score refresh time and the calc_version');
       assert.equal(qgv.q, want.q ?? 'NA'); assert.equal(qgv.g, want.g ?? 'NA'); assert.equal(qgv.v, want.v ?? 'NA');
       assert.ok(want.q && want.g, 'the fixture scores Q and G for nvda');
       assert.equal(want.v, null, 'no device price: V is NA'); assert.ok(qgv.text.includes('V NA · ' + want.why.v), 'V shows its reason');

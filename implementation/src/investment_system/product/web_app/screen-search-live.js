@@ -3,27 +3,27 @@
    IS2.ready resolved, hands its regions to IS2.searchLive.home(route, refs) / company(route, refs) from this file (loader.js
    LOAD_ORDER, after engines.js). This file only fills those regions in place: the input element is never rebuilt, route.signal
    ends every late value, and nothing touches the layer while the file loads (it only puts IS2.searchLive).
-   - Company index (EntitySearch, reused), built from the three static public files only: the TARGET catalog
-     (DeviceWatchlist.identities), the fixed Universe504 code list (universe-codes.json) and the reviewed names table
-     (company-names-ko.json, also the code → company_id links). A missing file leaves its part out and a status line says which.
-     Companies only; order = match quality, then name (never a recommendation); 8 options at most; no price, cap, score or rank.
-   - ARIA combobox / listbox (the old SearchUI pattern): arrows move, Enter submits the form (implicit submission clicks the
-     default button) and the selection runs in that click, Escape closes. IME safe: no key handling while composing; the list
-     repaints on every input event (an open composition included). Until the index is there the list says 불러오는 중.
-   - A chosen option (pointer click, or Enter with an option the arrow keys made active; hover only highlights) is saved as a
-     recent search with that click (store.pushRecent, one action per event; a refused or failed save still navigates). A submit
-     without such an option goes to the single exact match, else to #/company/<query> as P0 did; it saves nothing.
+   - The search box is the shared company search (search-part-live.js, DC-23: Universe504 only, ticker + English name, in
+     memory). A chosen option is saved as a recent search with that click (store.pushRecent, one action per event; a refused or
+     failed save still navigates); a submit's single exact match opens its page and saves nothing; no match stays on the page.
+   - Company index (EntitySearch, reused) for the chips and the company page (never for the search box), built from the three
+     static public files: the TARGET catalog (DeviceWatchlist.identities), the fixed Universe504 code list (universe-codes.json)
+     and the reviewed names table (company-names-ko.json, also the code → company_id links). A missing file leaves its part out.
    - Home: recent chips (titles from the index, unknown keys skipped, 최근 지우기), favorites (store prefs interests) or, without
-     any, the developer default (the TARGET 19, labelled as such, never written), one verified investor story (home-quotes.js).
-   - Company page: after the index the title, ticker, exchange code, membership, SIC group and investment type (public files,
-     only when present); the ★ toggle (store prefs, a click); the five cards from the layer (QGV page row, macro lights, public
+     any, the developer default (P21-DEFAULTS: the catalog's 19 companies, labelled as such, never written; also shown when the
+     stored favorites cannot be read, so device storage never hides it; HOME-DEFAULT-V0 (c), owner 2026-10-28: it stays until a
+     confirmed TARGET v1 is published as a public file, then that list replaces it; it is not a QGV or public TARGET list,
+     DC-24), one verified investor story (home-quotes.js).
+   - Company page: after the index the title, ticker, exchange code, membership (Universe504 or not, DC-24), SIC group and investment type (public files,
+     only when present); the ★ toggle (store prefs, a click); the five cards from the layer (QGV page row with the score file's
+     refresh time and calc_version, DC-22; macro lights, public
      filing / news lists, device holdings yes / no) or NA with the reason. No price and no price-derived value; the technical card
      asks for nothing (prices only on the technical screen's click). The resolved id becomes IS2.selection (RAM). Unknown id: a
      fixed sentence, no guess, no values. */
 (function(){
 'use strict';
 const I=window.IS2,{h,href,parts:{pending}}=I;
-const MAX=8,CATALOG='actual-catalog.json',NAMES='company-names-ko.json',MACRO='macro-screen.json',DEFAULT_SHOWN=8;
+const CATALOG='actual-catalog.json',NAMES='company-names-ko.json',MACRO='macro-screen.json',DEFAULT_SHOWN=8;
 const LISTS=[['sec','sec-disclosures.json'],['news','news-signals.json'],['dart','dart-disclosures.json']];
 const MACRO_STATE={NORMAL:'정상',WARNING:'경고',CRISIS:'위기'};// MacroLights STATE_LABEL (not exported)
 // The investment types the company page names (company-screen.js TYPES), mixed by type_config/1.
@@ -54,7 +54,8 @@ async function build(){
  const coll=new Intl.Collator('ko-KR',{sensitivity:'base',numeric:true});
  const title=e=>e.names?ES.companyTitle(e.names,e.ticker,'ko-KR'):e.scope==='TARGET'?e.canonical_label+' · '+e.ticker:e.ticker;
  const code=e=>e.scope==='UNIVERSE504'?e.canonical_id:codeOf.get(e.canonical_id)||(e.names&&e.names.exchange)||null;
- const member=e=>e.scope==='UNIVERSE504'?'Universe504':codeOf.has(e.canonical_id)?'TARGET · Universe504 둘 다':'TARGET';
+ // Membership names Universe504 only: TARGET v0 (the catalog) has nothing to do with QGV and is not shown as a membership (DC-24).
+ const member=e=>e.scope==='UNIVERSE504'||codeOf.has(e.canonical_id)?'Universe504':'Universe504 밖';
  // The English (SEC) name under a Korean title; the title itself is the English name or the ticker otherwise.
  const english=e=>e.names&&e.names.ko_name&&e.names.en_name?e.names.en_name:null;
  // EntitySearch's match order, then the shown name (the old SearchUI rule): navigation only.
@@ -69,70 +70,29 @@ const missingLine=idx=>idx.missing.length?h('p',{class:'reason',dataset:{indexMi
 // The store's sync getters answer IS2.NOT_READY before the layer is there.
 const loaded=x=>!!x&&typeof x==='object'&&x.state!=='NOT_READY';
 
-/* ---------------------------------------------------------------- search box (combobox on the skeleton's input) */
-// b = the skeleton's {input, list, status, note, anchor, pre, submit}: its 불러오는 중 listener stops (pre) and this one takes over.
-function attach(route,b){
- const signal=route.signal,{input,list,status,note,anchor}=b,S={hits:[],active:-1,key:false,composing:false,idx:null};
- b.pre.abort();
- const say=t=>{if(status.textContent!==t)status.textContent=t;};
- function setActive(i,scroll=true){const opts=[...list.querySelectorAll('[role=option]')];S.active=opts.length?Math.max(-1,Math.min(opts.length-1,i)):-1;
-  opts.forEach((o,k)=>o.setAttribute('aria-selected',String(k===S.active)));
-  if(S.active>=0){input.setAttribute('aria-activedescendant',opts[S.active].id);if(scroll)opts[S.active].scrollIntoView({block:'nearest'});}else input.removeAttribute('aria-activedescendant');}
- function show(open){list.hidden=!open;input.setAttribute('aria-expanded',String(open));if(!open){S.hits=[];setActive(-1);}}
- // Hover only highlights (S.key false): the 검색 click / Enter takes an option only when the arrow keys chose it, so a pointer
- // that crossed or rests on the list (also after the phone focus scroll moves it under a still pointer) never redirects a submit.
- function option(hit,i){const e=hit.entity,ix=S.idx,sub=[ix.english(e),ix.code(e),ix.member(e)].filter(Boolean);
-  return h('li',{id:'q-opt-'+i,class:'search-opt',role:'option','aria-selected':'false',dataset:{entityKey:hit.canonical_entity_id,entityId:e.canonical_id},
-   onmousedown:ev=>ev.preventDefault(),onmousemove:()=>{S.key=false;if(S.active!==i)setActive(i,false);},onclick:ev=>go(ev,e)},
-   h('b',{class:'opt-name'},ix.title(e)),h('span',{class:'opt-sub'},sub.join(' · ')));}
- function paint(){
-  const q=input.value.trim();if(!q){list.replaceChildren();show(false);say('');return;}
-  if(!S.idx){S.hits=[];list.replaceChildren(h('li',{class:'search-msg',role:'presentation',dataset:{searchState:'loading'}},'불러오는 중'));show(true);setActive(-1);say('검색 목록 불러오는 중');return;}
-  const keep=S.active>=0&&S.hits[S.active]?S.hits[S.active].canonical_entity_id:null;
-  S.hits=S.idx.search(q).slice(0,MAX);
-  list.replaceChildren(...(S.hits.length?S.hits.map(option):[h('li',{class:'search-msg',role:'presentation',dataset:{searchState:'empty'}},'일치하는 기업이 없습니다')]));
-  show(true);setActive(keep?S.hits.findIndex(x=>x.canonical_entity_id===keep):-1);say(S.hits.length?'찾은 기업 '+S.hits.length+'곳':'일치하는 기업이 없습니다');}
- // Saved with this click (a trusted click only; the store refuses others), then navigation in any case.
- function go(ev,e){if(ev)ev.preventDefault();try{I.store.pushRecent(ev,'COMPANY:'+e.canonical_id);}catch(_){}location.hash=href('company',e.canonical_id);}
- // The form's default button (the skeleton's click handler calls this): a click, or Enter in the input (implicit submission).
- b.submit=ev=>{const q=input.value.trim();
-  if(S.key&&S.active>=0&&S.hits[S.active]){go(ev,S.hits[S.active].entity);return;}
-  const one=S.idx&&q?S.idx.exact(q):null;
-  if(one){location.hash=href('company',one.canonical_id);return;}
-  if(q)location.hash=href('company',q);};
- input.addEventListener('compositionstart',()=>{S.composing=true;});
- input.addEventListener('compositionend',()=>{S.composing=false;paint();});
- input.addEventListener('input',paint);
- input.addEventListener('keydown',e=>{
-  if(e.isComposing||S.composing||e.keyCode===229)return;
-  const n=S.hits.length,open=!list.hidden;
-  if((e.key==='ArrowDown'||e.key==='ArrowUp')&&n&&open){e.preventDefault();S.key=true;setActive(S.active<0?(e.key==='ArrowDown'?0:n-1):(S.active+(e.key==='ArrowDown'?1:n-1))%n);}
-  else if(e.key==='Escape'&&(open||input.value)){e.preventDefault();if(open)show(false);else{input.value='';paint();}}});
- input.addEventListener('focus',()=>{if(input.value.trim())paint();
-  if(window.matchMedia&&window.matchMedia('(max-width:720px)').matches){const top=input.getBoundingClientRect().top+window.scrollY-12;setTimeout(()=>{if(!signal.aborted&&document.activeElement===input)window.scrollTo({top:Math.max(0,top),behavior:'auto'});},60);}});
- // The list is hidden when the focus leaves the box; the highlighted option stays chosen (a browser that does not focus a clicked
- // button blurs the input before the 검색 click). Escape and an emptied box clear it.
- anchor.addEventListener('focusout',()=>{setTimeout(()=>{if(!signal.aborted&&!anchor.contains(document.activeElement)){list.hidden=true;input.setAttribute('aria-expanded','false');}},0);});
- paint();// text typed before now: 불러오는 중 until the index, then the options
- companyIndex().then(settled(signal,idx=>{S.idx=idx;note.replaceChildren(missingLine(idx)||'');paint();}),()=>{});
-}
+/* ---------------------------------------------------------------- search box: the shared part (search-part-live.js, DC-23) */
+// A chosen option (pointer click, or Enter on an option the arrow keys made active) is saved as a recent search with that click
+// (store.pushRecent, one action per event; a refused or failed save still navigates); a submit's single exact match opens its
+// page and saves nothing; a submit without a match stays (the part says so in the list).
+const attach=(route,b)=>I.searchPart.attach(route,b,{onPick:(ev,e,{chosen})=>{if(chosen)try{I.store.pushRecent(ev,'COMPANY:'+e.id);}catch(_){}location.hash=href('company',e.id);}});
 
 /* ---------------------------------------------------------------- home */
-function chipLink(idx,id,star){const e=idx.resolve(id);return e?h('a',{class:'chip',href:href('company',e.canonical_id),dataset:{chip:e.canonical_id}},star?'★ ':'',idx.title(e)):null;}
+function chipLink(idx,id,star,mine){const e=idx.resolve(id);return e?h('a',{class:mine?'chip mine':'chip',href:href('company',e.canonical_id),dataset:{chip:e.canonical_id}},star?'★ ':'',idx.title(e)):null;}
 function chips(route,host){
  const signal=route.signal;
  companyIndex().then(settled(signal,idx=>draw(idx)),()=>{});
  function draw(idx,cleared){
   const S=I.store,recent=S.recent(),prefs=S.prefs(),rows=[];
   const keys=Array.isArray(recent)?recent.filter(k=>k.startsWith('COMPANY:')).map(k=>k.slice(8)):[];
-  const recentChips=keys.map(id=>chipLink(idx,id,false)).filter(Boolean);
+  const recentChips=keys.map(id=>chipLink(idx,id,false,true)).filter(Boolean);
   if(recentChips.length){
    const clear=h('button',{type:'button',class:'linkish',dataset:{recentClear:''},onclick:e=>{let done=false;try{S.clearRecent(e);done=true;}catch(_){}draw(idx,done);}},'최근 지우기');
    rows.push(h('div',{class:'chip-row',dataset:{recent:''}},h('span',{class:'hand chip-label'},'최근 →'),...recentChips,clear));}
   if(!loaded(prefs)){rows.push(pending('즐겨찾기 기업'));}
-  else if(prefs.state==='INVALID'){rows.push(h('p',{class:'reason',dataset:{favorites:'INVALID'}},'이 기기의 관심 기업 기록을 읽을 수 없어 즐겨찾기를 표시하지 않습니다 · 설정의 백업에서 기록을 확인하세요'));}
   else{
-   const mine=prefs.value.interests.map(id=>chipLink(idx,id,true)).filter(Boolean);
+   const invalid=prefs.state==='INVALID';
+   if(invalid)rows.push(h('p',{class:'reason',dataset:{favorites:'INVALID'}},'이 기기의 관심 기업 기록을 읽을 수 없어 즐겨찾기를 표시하지 않습니다 · 설정의 백업에서 기록을 확인하세요'));
+   const mine=invalid?[]:prefs.value.interests.map(id=>chipLink(idx,id,true,true)).filter(Boolean);
    if(mine.length)rows.push(h('div',{class:'chip-row',dataset:{favorites:'MINE'}},h('span',{class:'hand chip-label'},'★ 즐겨찾기'),...mine));
    else{
     // No personal input: the developer default (feature 1.1.4), shown as such and never written.
@@ -172,17 +132,21 @@ function bar(axis,v,why){
  row.append(svg,ok(v)?h('span',{class:'qval'},fmt(v)):h('span',{class:'qval na'},'NA'));
  return why&&!ok(v)?[row,h('p',{class:'reason qwhy',dataset:{why:axis}},axis,' NA · ',why)]:[row];
 }
+// The score file's refresh time (its as_of, date and time in UTC) and calc_version under the QGV card (DC-22), in every state.
+let SF=null;
+const stamp=t=>{const d=Date.parse(t);return Number.isFinite(d)?(SF||(SF=new Intl.DateTimeFormat('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'UTC'}))).format(d)+' UTC':null;};
+const basisLine=pg=>h('p',{class:'reason',dataset:{qgvBasis:''}},'점수 갱신 ',stamp(pg.as_of)||'없음',' · 계산 버전 ',pg.calc_version||'없음');
 function qgvCard(body,cid,signal){
  const Q=I.qgv;
  Q.page({signal}).then(settled(signal,pg=>{
-  if(pg.state!=='READY'){body.replaceChildren(na(Q.reasonText(pg.reason),pg.reason));return;}
-  const row=Q.row(pg,cid);if(!row){body.replaceChildren(na('이 기업의 QGV 행이 공개 점수 입력에 없습니다','NO_ROW'));return;}
+  if(pg.state!=='READY'){body.replaceChildren(na(Q.reasonText(pg.reason),pg.reason),basisLine(pg));return;}
+  const row=Q.row(pg,cid);if(!row){body.replaceChildren(na('이 기업의 QGV 행이 공개 점수 입력에 없습니다','NO_ROW'),basisLine(pg));return;}
   const s=row.score,r=row.na_reason;
   const rank=Number.isInteger(row.rank.official)?h('span',null,'순위 ',String(row.rank.official),' / ',String(row.rank.of),' · ',Q.rankLabel(pg)):h('span',{class:'na'},'순위 NA · ',Q.reasonText(r.rank));
   body.replaceChildren(h('div',{class:'qbars',dataset:{qgv:row.id}},...bar('Q',s.q,r.q&&Q.reasonText(r.q)),...bar('G',s.g,r.g&&Q.reasonText(r.g)),...bar('V',s.v,r.v&&Q.reasonText(r.v))),
    h('p',{class:'reason'},'V 출처: ',row.source_label),
    h('p',{dataset:{total:''}},ok(s.total)?['QGV 종합 ',h('b',null,fmt(s.total)),ok(s.v)?'':h('span',{class:'reason'},' · V 미포함')]:h('span',{class:'na'},'QGV 종합 NA · ',Q.reasonText(r.total))),
-   h('p',{dataset:{rank:''}},rank));}),
+   h('p',{dataset:{rank:''}},rank),basisLine(pg));}),
  e=>{if(!signal.aborted&&String(e&&e.message)!=='ABORTED')body.replaceChildren(na('QGV 점수를 계산하지 못했습니다','PAGE_FAILED'));});
 }
 function macroCard(body,signal){
@@ -239,13 +203,15 @@ function company(route,{box,given,name,facts,star,bodies}){
   const e=idx.find(given);
   if(!e){
    name.textContent=given;star.remove();
-   facts.replaceChildren(h('p',{class:'not-found',role:'status',dataset:{notFound:''}},'이 이름의 기업을 찾지 못했습니다'),missingLine(idx)||'');
+   facts.replaceChildren(I.parts.mascot('plain'),h('p',{class:'not-found',role:'status',dataset:{notFound:''}},'이 이름의 기업을 찾지 못했습니다'),missingLine(idx)||'');
    for(const k of['qgv','macro','news','portfolio'])bodies[k].replaceChildren(na('기업을 찾지 못해 값이 없습니다','NOT_FOUND'));
    return;}
   const cid=e.canonical_id;I.selection.set(cid);
   const title=idx.title(e);name.textContent=title;
   const bits=[e.ticker&&!title.includes(e.ticker)?e.ticker:null,idx.code(e),idx.member(e)].filter(Boolean),extra=h('span',{class:'facts-more'});
-  facts.replaceChildren(h('p',{class:'facts-line'},...bits.flatMap((b,i)=>[i?' · ':'',h('span',{class:'nobr'},b)]),extra));star.replaceWith(starButton(cid));
+  const ended=I.searchPart.LISTING_ENDED[idx.code(e)];// display only (search-part-live.js table; LISTING-ENDED-CODE pending)
+  facts.replaceChildren(h('p',{class:'facts-line'},...bits.flatMap((b,i)=>[i?' · ':'',h('span',{class:'nobr'},b)]),extra),
+   ended?h('p',{class:'reason',dataset:{listingEnded:ended.effective}},'상장 종료 ',ended.effective,' · 점수 없음'):'');star.replaceWith(starButton(cid));
   I.data.ready().then(settled(signal,()=>{const add=classOf(cid);if(add.length)extra.append(...add.map(t=>' · '+t));}),()=>{});
   qgvCard(bodies.qgv,cid,signal);macroCard(bodies.macro,signal);newsCard(bodies.news,e,cid,signal);portfolioCard(bodies.portfolio,e,idx,signal);}),
  ()=>{if(!signal.aborted)facts.replaceChildren(na('기업 목록을 불러오지 못했습니다','INDEX_FAILED'));});
