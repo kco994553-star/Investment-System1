@@ -63,7 +63,7 @@ const REUSED = [
 ];
 const P1 = ['action.js', 'data.js', 'prices.js', 'store.js', 'qgv.js', 'engines.js'];
 // The screens' after-first-paint halves (web_app files, loaded after the layer; P1_DATA_LAYER.md §1.1 screen-file rule).
-const LIVE = ['screen-search-live.js', 'screen-qgv-live.js'];
+const LIVE = ['search-part-live.js', 'screen-search-live.js', 'screen-qgv-live.js'];
 const SKELETON_MAX_BYTES = { 'screen-search.js': 5 * 1024, 'screen-qgv.js': 5 * 1024 };
 const LANES = ['qgv', 'technical', 'macro', 'news', 'portfolio', 'prompts', 'tree', 'lab'].map((id) => 'screen-' + id + '.js');
 const P0_SCREENS = ['screen-search.js', 'screen-menus.js', 'screen-detail.js', 'boot.js'];
@@ -602,6 +602,14 @@ test('loader: a hidden page loads at once (it paints nothing); the screen files 
   assert.deepEqual(touched, [], 'screens read the layer at render time only (through the facades before IS2.ready)');
   assert.deepEqual(Object.keys(IS2.searchLive), ['home', 'company'], 'screen-search-live.js only hands its two fillers to the skeleton');
   assert.deepEqual(Object.keys(IS2.qgvLive), ['leaderboard', 'helpers'], 'screen-qgv-live.js only hands its filler and its pure helpers');
+  assert.deepEqual(Object.keys(IS2.searchPart), ['index', 'attach', 'LISTING_ENDED'], 'search-part-live.js only hands the shared search');
+});
+
+test('one company search part (DC-23): the combobox lives in parts.js searchBox and search-part-live.js only', () => {
+  const owners = files(R.NEW).filter((n) => n.endsWith('.js') && /role:'combobox'|'aria-activedescendant'/.test(fs.readFileSync(R.newPath(n), 'utf8'))).sort();
+  assert.deepEqual(owners, ['parts.js', 'search-part-live.js'], 'no screen builds its own company picker');
+  const box = fs.readFileSync(R.newPath('parts.js'), 'utf8');
+  for (const a of ["inputmode:'search'", "enterkeyhint:'search'", "autocorrect:'off'", "placeholder:'티커 · 영문 회사명'"]) assert.ok(box.includes(a), 'searchBox has ' + a);
 });
 
 test('the first screen never waits for the fonts: every @font-face swaps (or is optional), nothing is preloaded', () => {
