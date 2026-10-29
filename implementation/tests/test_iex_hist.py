@@ -362,19 +362,27 @@ def test_store_request_takes_the_callers_timeout(monkeypatch):
 
 
 # ---- stream failures: first broken stage, whole-pipeline retry, curl limits (rehearsal run 40156760950, 2026-10-25) ---------
-def test_curl_command_has_no_retry_and_fails_fast_on_a_stall():
+def test_curl_command_has_no_retry_and_fails_fast_on_a_stall(monkeypatch):
     """A curl --retry after a mid-transfer failure restarts the file from byte 0 into the same stdout pipe (the gzip stream is
-    then corrupt): no curl retry. A slow connect or a stalled transfer fails fast instead of eating the step's 12 minutes."""
-    cmd = ih.curl_command('https://www.googleapis.com/x')
+    then corrupt): no curl retry. A slow connect or a stalled transfer fails fast instead of eating the step's 12 minutes.
+    curl_command asks public_price_boundary first, so the command is built for an approved `iex` bucket link inside the approved
+    route (the publisher as entry script); no request is sent."""
+    import sys
+    import types
+    link = 'https://storage.googleapis.com/iex/data/feeds/20261016/20261016_IEXTP1_TOPS1.6.pcap.gz'
+    main = types.ModuleType('__main__')
+    main.__file__ = str(ROOT / 'tools/qgv_official_publish.py')
+    monkeypatch.setitem(sys.modules, '__main__', main)
+    cmd = ih.curl_command(link)
     assert not any(a.startswith('--retry') for a in cmd)
     assert cmd[cmd.index('--connect-timeout') + 1] == '30'
     assert (cmd[cmd.index('--speed-limit') + 1], cmd[cmd.index('--speed-time') + 1]) == ('1048576', '60')
-    assert {'-sS', '--fail'} <= set(cmd) and cmd[-3:] == ['-o', '-', 'https://www.googleapis.com/x']
+    assert {'-sS', '--fail'} <= set(cmd) and cmd[-3:] == ['-o', '-', link]
     # the attempt's stream time left (stream_attempts): whole seconds, at least 1, before `-o - link`
     assert '--max-time' not in cmd
-    timed = ih.curl_command('https://www.googleapis.com/x', max_time=437.9)
+    timed = ih.curl_command(link, max_time=437.9)
     assert timed[timed.index('--max-time') + 1] == '437' and timed[-3:] == cmd[-3:] and timed[:len(cmd) - 3] == cmd[:-3]
-    low = ih.curl_command('https://www.googleapis.com/x', max_time=0)
+    low = ih.curl_command(link, max_time=0)
     assert low[low.index('--max-time') + 1] == '1'
 
 
@@ -546,7 +554,7 @@ def test_stream_popen_failure_is_stream_failed(tmp_path):
         raise OSError('synthetic')
     with pytest.raises(ih.IexHistError, match='^STREAM_FAILED$'):
         ih.stream_day('https://www.googleapis.com/x', ['AAA'], day=DAY, size=1, md5='0' * 32, parser='p', workdir=tmp_path / 'w',
-                      popen=popen)
+                      download=lambda _: ['true'], popen=popen)   # a synthetic download: curl_command would refuse the link first
 
 
 def _fetch_for(body, size=None):

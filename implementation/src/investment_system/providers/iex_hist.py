@@ -16,6 +16,9 @@ Flow of one day (`fetch_day`): hist index -> the latest TOPS 1.6 day <= the basi
 download | md5 + size pump | gzip -dc | iex_last_trade (C, tools/iex_tops/iex_last_trade.c) -> {code: price} held in this
 process only. Nothing is written but the public ticker list the parser reads; no price, yield or per-code price hash is printed,
 logged, raised or stored (GSQ-010). Errors carry a fixed code only and are raised `from None`.
+Every request URL is one of public_price_boundary.PRICE_SOURCE_URL_PATTERNS (the IEX hist index, a file of the public `iex`
+bucket) and is only sent inside the approved route tools/qgv_official_publish.py (public_price_boundary.require_price_source):
+SOURCE_URL_INVALID / SOURCE_ROUTE_NOT_ALLOWED otherwise, before any network access.
 
 Stream failures (2026-10-25, rehearsal run 40156760950: IEX_GZIP_FAILED after 105 s on a 13,079,032,608-byte file that decompresses
 cleanly elsewhere): curl no longer retries by itself (a curl retry after a mid-transfer failure restarts the file from byte 0 into
@@ -58,6 +61,8 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 from zoneinfo import ZoneInfo
+
+from .. import public_price_boundary as boundary
 
 PROVIDER = 'IEX_HIST'
 FEED = ('TOPS', '1.6')
@@ -200,11 +205,24 @@ def _get_json(url: str, timeout=120):
         return json.load(r)
 
 
-def fetch_json(url: str):
-    """GET JSON from an allowed source host only (iextrading.com index, Google Cloud Storage object metadata)."""
-    host = urllib.parse.urlsplit(url).hostname
-    if not url.startswith('https://') or host not in ('iextrading.com', 'www.googleapis.com', 'storage.googleapis.com'):
+_FILE_KINDS = ('IEX_HIST_OBJECT', 'IEX_HIST_BUCKET')
+
+
+def _require_source(url, kinds) -> None:
+    """The exact approved URL shape (public_price_boundary) and the approved route, before any request."""
+    kind = boundary.price_source_kind(url)
+    if kind not in kinds:
         _fail('SOURCE_URL_INVALID')
+    try:
+        boundary.require_price_source(kind, url)
+    except boundary.PublicPriceBoundaryError:
+        _fail('SOURCE_ROUTE_NOT_ALLOWED')
+
+
+def fetch_json(url: str):
+    """GET JSON from the approved price source only (the IEX hist index or an `iex` bucket object's metadata), inside the
+    approved route only (public_price_boundary.require_price_source)."""
+    _require_source(url, ('IEX_HIST_INDEX',) + _FILE_KINDS)
     try:
         return _get_json(url)
     except Exception:  # noqa: BLE001 - fixed code, the message may carry a URL
@@ -226,8 +244,8 @@ def tops_files(index) -> dict:
 
 
 def _link_ok(link) -> bool:
-    return isinstance(link, str) and urllib.parse.urlsplit(link).scheme == 'https' and \
-        urllib.parse.urlsplit(link).hostname in ('www.googleapis.com', 'storage.googleapis.com')
+    """A file link of the public `iex` bucket in an approved URL shape (public_price_boundary.PRICE_SOURCE_URL_PATTERNS)."""
+    return boundary.price_source_kind(link) in _FILE_KINDS
 
 
 def select_day(index, basis_date: dt.date):
@@ -296,7 +314,9 @@ def parse_rows(text: str, symbols) -> dict:
 
 
 def curl_command(link: str, max_time=None) -> list[str]:
-    """`max_time` (whole seconds, at least 1): curl --max-time, the attempt's stream time left (`stream_attempts`)."""
+    """The default `download` of one TOPS file: an approved `iex` bucket link, inside the approved route only. `max_time`
+    (whole seconds, at least 1): curl --max-time, the attempt's stream time left (`stream_attempts`)."""
+    _require_source(link, _FILE_KINDS)
     cap = ['--max-time', str(max(1, int(max_time)))] if max_time is not None else []
     return ['curl', '-sS', '--fail', '--connect-timeout', str(CURL_CONNECT_TIMEOUT_S), '--speed-limit', str(CURL_SPEED_LIMIT_BPS),
             '--speed-time', str(CURL_SPEED_TIME_S), *cap, '-o', '-', link]

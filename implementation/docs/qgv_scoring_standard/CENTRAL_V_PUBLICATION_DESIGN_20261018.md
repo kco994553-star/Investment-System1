@@ -458,6 +458,12 @@ sec-qgv2.json(같은 실행, sha256) ─┐
 
 > **유효 조건:** 가격 공급자와 그 사용권(수집·계산·파생 순위 공개)이 확인된 뒤. 지금은 아무 가드도 바꾸지 않는다. GSQ 결정 등록부(`pages_cockpit_owner/GOOGLE_SHEET_QUOTES_DECISION_REGISTER.md`)에 새 항목을 append-only로 기록하고 승인받은 뒤 별도 PR로 한다.
 
+> **2026-10-24 구현(PR-B `claude/central-v-guard`, PR-A 위, 병합 대기·소유자 승인 필요):** GSQ-024(2026-10-23)가 유효 조건을 채웠다. 아래 12-3·12-5를 이렇게 구현했다. 아래 제안 문장은 이력으로 그대로 둔다. 감사 기록은 `public_price_boundary/AUDIT.md` §10.
+> - 12-3-1: `public_price_boundary.py`에 `PRICE_SOURCE_URL_PATTERNS`(IEX 색인, `iex` 버킷 JSON API·XML API, V4 월말가 저장소의 릴리스 API 두 형태), `price_source_kind`, `require_price_source(kind, url)`, `ACTIONS_PRICE_ROUTES = ('implementation/tools/qgv_official_publish.py',)`. 호출자 검사(`require_price_route`)는 프로세스 진입 스크립트(`__main__.__file__`)로 한다. 어댑터가 요청 전에 부른다(`iex_hist.fetch_json`·`curl_command`·`_link_ok`, `iex_monthend.github_call`, 토큰은 저장소 릴리스 URL에만).
+> - 12-3-3·12-3-4: `ALLOWED_NAMES` + 파일별 검증기(`require_qgv_official`·`require_status`). 민감 키 예외 `PUBLIC_SCORE_PATHS`는 `qgv-official.json`의 `rows.<code>.rank` **한 경로**(값 1 이상 정수 또는 null)다. 위 제안의 "순위·점수 경로 등"보다 좁다: 점수 키는 원래 민감 키가 아니어서 예외가 필요 없다(합성 523행 게시본 실측: 걸리는 키는 이 경로의 `rank` 18건뿐).
+> - 12-3-5: `test_public_price_boundary.py`의 게시 경로 정적 시험에 `sec-daily-public-inputs.yml`을 더했다(지금 업로드 1·배포 1·`RAW_REPO_TOKEN` 단계 2개를 고정). V 단계 규칙(Secret 두 개는 게시 단계 `env`에만, `continue-on-error: true`, `RAW_REPO_TOKEN`·업로드 없음, 다른 워크플로는 `--preserve-only`만)은 `tests/test_qgv_official_guards.py`가 지금부터 강제한다(PR-C가 따를 것).
+> - 12-5: 같은 `publication_id` → 바이트 동일(`CHANGED` 거부). 다른 id → 기준일(이르면 `OLDER` 거부), 기준일이 같으면 `inputs_as_of`로 판정한다(위 "입력 해시가 바뀌었는지 확인"을 입력 시각 비교로 구체화: 이르면 거부, 같으면 `REPLACED` 통과). 아티팩트 게시본이 엄격 리더에 실패하면 거부. D-CV16 (a): 라이브 손상(`LIVE_INVALID`)과 아티팩트 누락(`MISSING`)은 게시본만 빠지고(`WITHHELD`) 배포는 계속한다. 상태 파일은 비교하지 않는다.
+
 ### 12-1. 지금 경계(사실)
 
 - Actions 도구의 네트워크 출처는 SEC URL 허용 목록뿐이다(`src/public_price_boundary.py:42-61`, `:77-80`). 가격 엔드포인트는 막힌다(`test_public_price_boundary.py:93-98`, `:189-201`, `:246-249`).

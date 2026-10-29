@@ -784,9 +784,9 @@ def _supply_ok(ps, rows) -> None:
 
 
 def require_qgv_official(payload) -> None:
-    """Strict public validator (also the verify job and the Pages guard file validator). ValueError fixed codes. Every scalar is
-    typed: fixed constants are compared, dates and clocks are matched, counts are bounded integers recomputed from the rows
-    where they can be, so no field can carry a free number or string."""
+    """Strict public validator (also the verify job and the Pages guard file validator, tools/pages_artifact_guard.py). ValueError
+    fixed codes. Every scalar is typed: fixed constants are compared, dates and clocks are matched, counts are bounded integers
+    recomputed from the rows where they can be, so no field can carry a free number or string."""
     try:
         _keys(payload, TOP_KEYS)
         _walk_forbidden(payload)

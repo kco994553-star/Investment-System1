@@ -11,6 +11,12 @@
 > - C 파서 한 벌(`tools/iex_tops/iex_last_trade.c`), 별칭 표 하나(`providers/iex_hist.SYMBOL_ALIASES`). 프로브·U8 실행 사실: [CENTRAL_V_PROBE_U8_FACTS_20261024](CENTRAL_V_PROBE_U8_FACTS_20261024.md).
 > - 아래 `파일:줄` 인용은 cef0748e 기준이다. 줄이 밀렸으면 같은 함수 이름을 본다.
 
+> **2026-10-24 갱신(PR-B `claude/central-v-guard`, PR-A 위):** 2절(U5)과 1-5절의 deploy 신선도를 구현했다. 설계 §12 머리의 구현 메모와 `public_price_boundary/AUDIT.md` §10에 자세히 적었다. 본문과 다른 점:
+> - 허용 출처는 정확한 URL 형태로 고정했다(색인, `iex` 버킷의 JSON API·XML API). V4 월말가 저장소 읽기도 같은 경로 규칙을 따른다(저장소 릴리스 API 두 형태, 토큰은 그 URL에만).
+> - 호출자 검사는 실행 시점에도 한다: 진입 스크립트가 `tools/qgv_official_publish.py`가 아니면 요청 전에 `SOURCE_ROUTE_NOT_ALLOWED`(게시기 결과는 `SUPPLY_FAILED IEX_SOURCE_ROUTE_NOT_ALLOWED`, 종료 코드 0). 정적 시험이 IEX 호스트·어댑터를 쓰는 파일을 고정한다. U8 도구(PR-E)가 어댑터를 import하면 그 시험의 허용 목록을 소유자 승인과 함께 넓혀야 한다.
+> - 신선도: 같은 기준일이면 `inputs_as_of`로 판정한다. 라이브 게시본이 유효한데 아티팩트에 없으면(`MISSING`) D-CV16 (a)와 같게 게시본만 빠지고 배포는 계속한다(거부하지 않음).
+> - PR-C에 남은 것: collect "Offline public boundary regression" 단계와 verify에 `tests/test_qgv_official_guards.py` 추가, deploy 단계 주석에 게시본 규칙 추가, D9 이력 업로드 단계가 `RAW_REPO_TOKEN`을 새로 가지면 `test_public_price_boundary.py`의 고정 목록 갱신.
+
 - 작성: 2026-10-23 11:34 UTC / 2026-10-23 20:34 KST.
 - 근거: 설계 [CENTRAL_V_PUBLICATION_DESIGN_20261018](CENTRAL_V_PUBLICATION_DESIGN_20261018.md) §3·§6·§12, GSQ-024.
 - 인용은 `파일:줄`이다. `src/`는 `implementation/src/investment_system/`, `tools/`는 `implementation/tools/`다.

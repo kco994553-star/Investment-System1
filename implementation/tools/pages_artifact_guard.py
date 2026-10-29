@@ -4,6 +4,10 @@ Byte/canonical hashes protect reviewed assets. The independent public bundle
 contract rejects legacy ranks, membership order, prices and arbitrary nested
 values even if a legacy or modified payload hash is repinned. Private device
 quotation code is an asset, never permission to publish device data.
+
+GSQ-024 (owner decision 2026-10-23, guard PR approved separately): the central QGV publication `qgv-official.json` and its
+attempt record `qgv-official-status.json` are allowed names with their own strict validators, and the ONE sensitive-key
+exception is the official rank at the exact path rows.<code>.rank of `qgv-official.json` (PUBLIC_SCORE_PATHS below).
 """
 from __future__ import annotations
 
@@ -42,6 +46,8 @@ from investment_system.universe.company_names_ko import FILENAME as COMPANY_NAME
 from investment_system.universe.universe_domains import FILENAME as UNIVERSE_DOMAINS_FILENAME, require_universe_domains
 from investment_system.product.company_logos import FILENAME as COMPANY_LOGOS_FILENAME, require_company_logos
 from investment_system.macro.evidence_lines import FILENAME as MACRO_EVIDENCE_FILENAME, require_macro_evidence
+from investment_system.qgv.qgv_official import (FILENAME as QGV_OFFICIAL_FILENAME, STATUS_FILENAME as QGV_OFFICIAL_STATUS_FILENAME,
+                                                require_qgv_official, require_status as require_qgv_official_status)
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
@@ -180,7 +186,8 @@ APPROVED_SHA256 = {
 # including the fonts' OFL licence texts, still goes through all text checks.
 FONT_FILES = frozenset({"jua-regular-ksx1001.woff2", "gaegu-regular-ksx1001.woff2"})
 FONT_MAX_BYTES = 256 * 1024  # pinned subsets are 187,292 and 83,968 bytes; tighter than MAX_FILE_BYTES on purpose
-ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, COMPANY_NAMES_FILENAME, UNIVERSE_DOMAINS_FILENAME, COMPANY_LOGOS_FILENAME, QGV2_FILENAME, DISCLOSURES_FILENAME, NEWS_SIGNALS_FILENAME, MACRO_EVIDENCE_FILENAME} | set(SCREEN_FILENAMES) | set(DART_FILENAMES)
+# The two central QGV files (GSQ-024) are optional: absent before the first publication, never in APPROVED_SHA256.
+ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, COMPANY_NAMES_FILENAME, UNIVERSE_DOMAINS_FILENAME, COMPANY_LOGOS_FILENAME, QGV2_FILENAME, DISCLOSURES_FILENAME, NEWS_SIGNALS_FILENAME, MACRO_EVIDENCE_FILENAME, QGV_OFFICIAL_FILENAME, QGV_OFFICIAL_STATUS_FILENAME} | set(SCREEN_FILENAMES) | set(DART_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024
 # 8 MiB (was 4 MiB, owner approval 2026-10-23): the price-free build alone reached about 4.0 MiB as a tar, so screen
 # PRs hit the old ceiling. This limit only applies to the tar mode below (raw artifact.tar checks and tests); the deploy
@@ -204,6 +211,30 @@ SENSITIVE_KEYS = frozenset({
     "totalcost", "cost", "price", "valueamount", "cashbalance",
     "spreadsheetid", "spreadsheeturl", "accesstoken", "refreshtoken", "clientsecret",
 })
+# GSQ-024 (owner decision 2026-10-23; design CENTRAL_V_PUBLICATION_DESIGN_20261018.md §12-3-4): the ONLY sensitive-key
+# exception, by exact path, never by renaming a key. In qgv-official.json, and only there, the official rank sits at
+# rows.<code>.rank: `rows` at the top level, <code> a public Universe code or TARGET:<id> (the publication's own row-key pattern),
+# the key spelled exactly `rank`, its value an integer >= 1 or null. SENSITIVE_KEYS itself is unchanged: `rank` anywhere else
+# (another file, another depth or parent, `Rank` or any other spelling, a list in between) and every price, market cap, cash,
+# cost or amount key anywhere in this file still count as sensitive_json_fields. require_qgv_official additionally checks that
+# each rank follows the total order, one per CIK, and that no price-derived key exists anywhere.
+_OFFICIAL_CODE = re.compile(r'(?:[A-Z]{2,8}:[A-Z0-9][A-Z0-9.\-]{0,15}|TARGET:[a-z][a-z0-9_]{0,63})', re.ASCII)
+PUBLIC_SCORE_PATHS = {QGV_OFFICIAL_FILENAME: (("rows", _OFFICIAL_CODE, "rank"),)}
+
+
+def _public_score_path(name: str | None, path: tuple, key: str, child: object) -> bool:
+    for pattern in PUBLIC_SCORE_PATHS.get(name, ()):
+        *parents, leaf = pattern
+        if key != leaf or len(path) != len(parents):
+            continue
+        if not all(isinstance(part, str) and (part == want if isinstance(want, str) else want.fullmatch(part) is not None)
+                   for part, want in zip(path, parents)):
+            continue
+        if child is None or (type(child) is int and child >= 1):
+            return True
+    return False
+
+
 SECRET_PATTERNS = (
     re.compile(r"(?i)(?<![a-z0-9._%+\-])[a-z0-9._%+\-]+@[a-z0-9][a-z0-9.\-]*\.[a-z]{2,}"),
     re.compile(r"(?<![A-Za-z0-9_])ya29\.[A-Za-z0-9._~-]+"),
@@ -244,7 +275,8 @@ def _populated(value: object) -> bool:
     return value is not None and value != "" and value != [] and value != {}
 
 
-def _inspect_json(value: object, violations: Counter, depth: int = 0) -> None:
+def _inspect_json(value: object, violations: Counter, depth: int = 0, *, name: str | None = None, path: tuple = ()) -> None:
+    """`name` = the artifact file name (only for PUBLIC_SCORE_PATHS); `path` = the keys down to `value` (a list adds an index)."""
     if depth > MAX_JSON_DEPTH:
         raise ValueError("JSON nesting limit")
     if isinstance(value, float) and not math.isfinite(value):
@@ -252,15 +284,15 @@ def _inspect_json(value: object, violations: Counter, depth: int = 0) -> None:
     if isinstance(value, dict):
         for key, child in value.items():
             normalized = re.sub(r"[^a-z0-9]", "", key.casefold())
-            if normalized in SENSITIVE_KEYS and _populated(child):
+            if normalized in SENSITIVE_KEYS and _populated(child) and not _public_score_path(name, path, key, child):
                 violations["sensitive_json_fields"] += 1
             if key in {"schema", "schema_version"} and isinstance(child, str):
                 if re.search(r"device[-_]actual[-_](?:holdings|export)(?:/|$)", child, re.I):
                     violations["private_device_schema"] += 1
-            _inspect_json(child, violations, depth + 1)
+            _inspect_json(child, violations, depth + 1, name=name, path=path + (key,))
     elif isinstance(value, list):
-        for child in value:
-            _inspect_json(child, violations, depth + 1)
+        for index, child in enumerate(value):
+            _inspect_json(child, violations, depth + 1, name=name, path=path + (index,))
     elif isinstance(value, str):
         # JSON escapes must not hide a contact address from the raw-text scan.
         if SECRET_PATTERNS[0].search(value):
@@ -314,7 +346,7 @@ def _check_payload(name: str, payload: bytes, violations: Counter) -> None:
             del violations["secret_patterns"]
         if name.endswith(".json"):
             value = json.loads(text, object_pairs_hook=_unique_pairs, parse_constant=_reject_constant)
-            _inspect_json(value, violations)
+            _inspect_json(value, violations, name=name)
             if name == "sec-m2-candidates.json":
                 try:
                     require_public_candidates(value)
@@ -378,6 +410,12 @@ def _check_payload(name: str, payload: bytes, violations: Counter) -> None:
         elif name == FORWARD_LEDGER_FILENAME:
             try: require_forward_ledger(value)
             except ValueError: violations['forward_ledger_boundary'] += 1
+        elif name == QGV_OFFICIAL_FILENAME:
+            try: require_qgv_official(value)
+            except ValueError: violations['qgv_official_boundary'] += 1
+        elif name == QGV_OFFICIAL_STATUS_FILENAME:
+            try: require_qgv_official_status(value)
+            except ValueError: violations['qgv_official_status_boundary'] += 1
         elif hashlib.sha256(payload).hexdigest() != APPROVED_SHA256[name]:
             violations["unapproved_content"] += 1
     except (ValueError, UnicodeError, RecursionError, OverflowError):
