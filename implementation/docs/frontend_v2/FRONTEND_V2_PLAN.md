@@ -51,7 +51,7 @@
 | 메뉴 | 경로 | 시안 보드 |
 | --- | --- | --- |
 | 0. 기업 검색 · 검색 결과 | `#/` · `#/company/<코드>` | Main · MMain |
-| 1. QGV | `#/qgv` (1.1 리더보드 · 1.2 가중치 · 1.3 13F · 1.4 트리) | QGV · MQGV |
+| 1. QGV | `#/qgv` (1.1 리더보드 · 1.2 가중치 · 1.3 13F · 1.4 트리) | QGV · MQGV (소유자 초안) + add/QGVLeaderboard · add/m/MQGVLeaderboard (Main 추가 보드, 검토 중 · 1.1 리더보드 배치) |
 | 2. 기술적 분석 | `#/technical` | Technical · MTechnical |
 | 3. 매크로 | `#/macro` | Macro · MMacro |
 | 4. 뉴스 | `#/news` | News · MNews |

@@ -32,6 +32,12 @@ def test_rules_catch_old_directions_and_pass_explanations():
         'V는 기기 전용이며 공개하지 않는다.',
         'V is device-only and is never published.',
         '균형형 = Q34/G33/V33',
+        'QGV 점수는 로그인해야 보인다.',
+        'Universe504 목록은 시트 연결이 필요하다.',
+        'TARGET 목록은 기기에 저장된 값이 있어야 보인다.',
+        '공개 TARGET은 카탈로그 19개(v0)로 한다.',
+        'TARGET 19 = QGV가 고른 포트폴리오',
+        'Public TARGET is the catalog 19.',
     ]
     good = [
         'Universe504는 S&P 500 구성에서 출발한 고정 목록이다(UNI-DEF).',
@@ -40,6 +46,13 @@ def test_rules_catch_old_directions_and_pass_explanations():
         'Saved on this device only.',
         'diagnostics (V-SHARES-SCALE reason codes); never published.',
         '`balanced = Q34/G33/V33`은 균형형의 확정 정의가 아니다.',
+        'QGV 점수는 로그인 없이도 처음 쓰는 기기에서 같게 보인다(DC-22).',
+        'Universe504 목록은 공개 파일이고, 가격 불러오기에는 로그인과 가격 시트 연결이 필요하다.',
+        '사용자 QGV 가중치는 기기에 저장한 값이 있어야 미리보기를 한다.',
+        'TARGET v0은 QGV와 전혀 무관하다(DC-24).',
+        '공개 TARGET은 확정된 TARGET v1만이다.',
+        'TARGET v0(19)은 사용자가 QGV 없이 고른 것',
+        '공개 TARGET 카탈로그 형식 오류',
     ]
     for line in bad:
         assert g.scan_text(line, rules), line

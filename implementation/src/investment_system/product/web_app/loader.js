@@ -37,7 +37,7 @@ const LOAD_ORDER=Object.freeze([
  'virtual-trading-signals.js','virtual-trading-v-history.js','virtual-ledger-sheets.js','price-store.js','report-benchmarks.js',
  'virtual-trading-compare.js','home-quotes.js','data-refresh.js',
  'action.js','data.js','prices.js','store.js','qgv.js','engines.js',
- 'screen-search-live.js',
+ 'screen-search-live.js','screen-qgv-live.js',
 ]);
 // A plain lowercase script name. tools/build_web_app.py holds this exact line (the build fails when the two differ).
 const NAME=/^[a-z0-9][a-z0-9-]*(?:\.[a-z0-9-]+)*\.js$/;
@@ -51,11 +51,11 @@ const API=Object.freeze({
   publication:'s',list:'p',shares:'p',financials:'p',refresh:'a',static:'p',peek:'p',subscribe:'sub',universe:'p'},
  prices:{UNIVERSE_SOURCE_KEY:'v',WORKER_ORIGIN_KEY:'v',status:'s',subscribe:'sub',deviceSettings:'p',prepare:'a',login:'a',logout:'a',readUniverse:'a',
   universeView:{prices:'s',priceBasis:'s',readStatus:'s',ranks:'s'},universeRanks:'s',rankFor:'s',useTabs:'a',loadTabs:'a',syncSymbols:'a',
-  syncUniverse:'a',history:'a',held:'s',quote:'p'},
+  syncUniverse:'a',history:'a',held:'s',quote:'p',periodReturns:'p'},
  store:{KEYS:'v',prefs:'s',savePrefs:'a',recent:'s',pushRecent:'a',clearRecent:'a',weights:'s',saveWeights:'a',holdings:'p',playbook:'s',saveThesis:'a',saveHold:'a',saveRecord:'a',
   stars:'s',toggleStar:'a',backup:{create:'p',download:'a',restore:'a',restored:'s'},vHistory:'s',sheetSource:{has:'s',set:'a'},
   universeSource:{has:'s',set:'a',useSheet:'a'},workerOrigin:{has:'s',approved:'s',set:'a'},marketQuotes:{count:'p',clear:'a'},subscribe:'sub',PRODUCT_PRESETS:'v'},
- qgv:{V_SOURCES:'v',RANK_LABELS:'v',READERS:'v',vSource:'s',page:'p',isPage:'s',row:'s',rows:'s',coverage:'s',preview:'s',setProfile:'s',profile:'s',
+ qgv:{V_SOURCES:'v',RANK_LABELS:'v',READERS:'v',vSource:'s',page:'p',isPage:'s',row:'s',rows:'s',coverage:'s',preview:'s',model:'s',setProfile:'s',profile:'s',
   reasonText:'s',rankLabel:'s',constants:'s',subscribe:'sub'},
  engines:{target:{state:'s',basis:'p',draft:'p',build:'a',blockers:'p',finalize:'a',answer:'a',ruleBDue:'s',selectRuleB:'a',compare:'a',scoringPending:'p',
   refreshScoring:'p',syncScoringPrices:'a'},playbook:{facts:'p',judge:'p',record:'a',due:'s',limits:'s'},
