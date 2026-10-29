@@ -10,6 +10,12 @@
    finalized a rebalance round shows the risk-code checks only. 2026-10-15 evening: freshness by row acquisition time (7 days);
    the draft records the input basis of the published file and a changed basis at finalize regenerates the draft. Nothing here publishes, logs or sends prices, holdings or
    amounts. No order function and no buy/sell wording.
+   2026-10-25 확정 차단 점검 (display only): above the 확정 button one line always shows the rows that block finalize today / tomorrow
+   and the kept rows (TargetV1Builder.freshnessRows — the same rows and cutoff publishedCheck uses). Nothing is read when the screen
+   mounts: the line shows the file a click re-read (its own 점검 button, 초안 만들기 or 확정 — one read of the published file per
+   click, the same read the 확정 button does). A table of codes, acquisition times, ages and the last finalize date appears only
+   when a row blocks today or a kept row exists (kept rows one by one, the rotation-waiting shards as one line). Rows of another
+   calc_version are shown as a count beside it (they block through CALC_VERSION_MIXED, not freshness). No price and no score.
    PR-D (owner decision D8 (b), GSQ-024; spec 2.1.7, 6.1.2~6.1.4): the Build and Finalize clicks also read the central V publication
    qgv-official.json through QgvOfficial (next to the sec-qgv2.json re-read; never at mount). It is used only when it is valid,
    verified, of the re-read file's calc_version and at most 2 completed New York sessions old; otherwise the device path ("임시 V") with one
@@ -128,8 +134,48 @@ function syncText(r){if(!r||r.state!=='READY')return '추가 불가 · '+(r?.sta
 // Symbols the user added for TV1 scoring (app open keeps them current with the other core symbols). Symbols only.
 function priceSymbols(P=g.PlaybookScreen,storage=g.localStorage){try{return readState(P,storage).price_symbols.slice();}catch(_){return [];}}
 function numberCheckHtml(cfg){const r=cfg.number_check.result||{};return r.passed===true?'<p data-tv1-number-check>숫자 검증 통과 · '+esc((r.companies??0)+'개 기업 · calc_version '+(r.calc_version||'NA')+' · '+(r.date||'NA'))+(cfg.number_check.result_label_ko?' · '+esc(cfg.number_check.result_label_ko):'')+' · 확정 순간 파일의 calc_version과 같아야 합니다</p>':'<p data-tv1-number-check>'+esc(cfg.number_check.message)+'</p>';}
-function checkHtml(c,cfg){if(!c)return '';return '<div data-tv1-finalize-check><p>'+(c.blockers.length?'확정 불가 · 사유 '+c.blockers.length+'개':'확정 검사 통과')+'</p><ul class="small">'+c.blockers.map(b=>'<li data-tv1-blocker="'+esc(b)+'">'+esc(b+' · '+(BLOCKERS[b]||b))+'</li>').join('')+'</ul>'+(c.check?'<p class="small" data-tv1-published>최신 공개 파일 · calc_version '+esc(c.check.calc_version||'없음')+' · as_of '+esc(c.check.as_of||'NA')+' · Q '+c.check.q+'/'+c.check.size+' · G '+c.check.g+'/'+c.check.size+' · 정상 NA 행 '+(c.check.na_rows??0)+' · 계산 버전 다른 행 '+(c.check.mixed_rows??0)+' · 7일 넘은 행 '+(c.check.stale_rows??0)+' · 가장 오래된 수집 '+esc(c.check.oldest_acquired||'NA')+'</p>':'')
-  +(c.blockers.includes('ROW_DATA_STALE')?'<p data-tv1-stale-action>'+esc(cfg.finalize_check.stale_action_ko)+'</p>':'')+(c.safety_failed?.length?'<p class="small" data-tv1-safety-recheck>재무 안전 재검사 불통과 · '+esc(c.safety_failed.join(' · '))+'</p>':'')+(c.v_incomplete?.length?'<p class="small" data-tv1-v-recheck>V3·V4 빠진 V · '+esc(c.v_incomplete.join(' · '))+'</p>':'')+'</div>';}
+// fresh: the 확정 차단 점검 of the SAME read as c (the finalize click's file), so the action texts match the listed blockers.
+function checkHtml(c,cfg,fresh){if(!c)return '';return '<div data-tv1-finalize-check><p>'+(c.blockers.length?'확정 불가 · 사유 '+c.blockers.length+'개':'확정 검사 통과')+'</p><ul class="small">'+c.blockers.map(b=>'<li data-tv1-blocker="'+esc(b)+'">'+esc(b+' · '+(BLOCKERS[b]||b))+'</li>').join('')+'</ul>'+(c.check?'<p class="small" data-tv1-published>최신 공개 파일 · calc_version '+esc(c.check.calc_version||'없음')+' · as_of '+esc(c.check.as_of||'NA')+' · Q '+c.check.q+'/'+c.check.size+' · G '+c.check.g+'/'+c.check.size+' · 정상 NA 행 '+(c.check.na_rows??0)+' · 계산 버전 다른 행 '+(c.check.mixed_rows??0)+' · 7일 넘은 행 '+(c.check.stale_rows??0)+' · 가장 오래된 수집 '+esc(c.check.oldest_acquired||'NA')+'</p>':'')
+  +(c.blockers.includes('ROW_DATA_STALE')?staleActions(fresh,cfg):'')+(c.safety_failed?.length?'<p class="small" data-tv1-safety-recheck>재무 안전 재검사 불통과 · '+esc(c.safety_failed.join(' · '))+'</p>':'')+(c.v_incomplete?.length?'<p class="small" data-tv1-v-recheck>V3·V4 빠진 V · '+esc(c.v_incomplete.join(' · '))+'</p>':'')+'</div>';}
+/* ---------- 확정 차단 점검 (TargetV1Builder.freshnessRows; display only) ---------- */
+// KEPT: older than its own shard's newest collection; the file does not say why (unresolved symbol → identity action, all_shards does
+// not fix it; transient failure → the next collection or all_shards can). ROTATION: the whole shard is old → that shard's next turn
+// or an all_shards run. UNKNOWN: no acquisition time or shard.
+const FRESH_KIND={KEPT:'보존 행 (KEPT)',ROTATION:'회전 대기 (ROTATION)',UNKNOWN:'분류 불가 (UNKNOWN)'};
+const rotationShards=fresh=>[...new Map((fresh?.rows||[]).filter(r=>r.blocks_today&&r.kind==='ROTATION'&&r.shard!==null).map(r=>[r.shard,r.next_turn_day])).entries()].sort((a,b)=>a[0]-b[0]);
+function freshAction(kind,cfg,fresh){
+ if(kind==='KEPT')return FRESH_KIND.KEPT+' · 자기 샤드의 최신 수집 때 이 행만 새로 수집되지 않아 이전 행이 보존됨(2026-10-17 보존 규칙 · 파일에는 원인이 없음)'
+  +' · 기호 미해결(실행 로그 unresolved_codes)이면 식별 조치 필요(별칭, 사유 있는 NA 또는 CIK 고정 — 코드별 소유자 결정 · 사유 있는 NA는 이전 관측이 없을 때의 규칙이며 피어 그룹과 Q·G 산출 수에 영향)이고 전체 샤드(all_shards) 실행으로는 풀리지 않음'
+  +' · 일시 조회 실패·빌더 실패·검증 거부로 보존된 행이면 다음 수집 또는 전체 샤드 수동 실행(workflow_dispatch all_shards=true)으로 풀릴 수 있음'
+  +' · calc_version이 바뀐 뒤에는 새로 수집될 때까지 계산 버전 혼합(CALC_VERSION_MIXED)으로도 확정을 막음';
+ if(kind==='ROTATION'){const date=fresh?.finalize_date,turns=rotationShards(fresh).map(([s,d])=>'샤드 '+s+' 다음 차례 '+(d||'NA')+(d&&d===date?'(오늘 · 오늘 정기 실행이 끝나면 해소)':d?'(그때까지 정기 실행으로는 안 풀림)':''));
+  return FRESH_KIND.ROTATION+' · 샤드 전체가 오래됨 · 하루 1개 샤드 회전(날짜 순번 mod '+(fresh?.shard_count??'NA')+')이라 그 샤드의 다음 차례 정기 실행 뒤 해소'+(turns.length?' · '+turns.join(' · '):'')
+   +' · 정기 실행이 빠졌거나 다음 차례 전에 확정하려면 '+cfg.finalize_check.stale_action_ko;}
+ return FRESH_KIND.UNKNOWN+' · 수집 시각 또는 샤드를 확인할 수 없음 · 최신 공개 파일을 다시 읽은 뒤 확인하세요';}
+const utcMinute=v=>typeof v==='string'?v.slice(0,16).replace('T',' '):'NA',span=(a,b)=>a===b?String(a):a+' ~ '+b;
+// Kinds of the rows that block today (KEPT first), for the per-class action texts.
+function blockingKinds(fresh){const kinds=new Set((fresh?.rows||[]).filter(r=>r.blocks_today).map(r=>r.kind));return ['KEPT','ROTATION','UNKNOWN'].filter(k=>kinds.has(k));}
+// Under a ROW_DATA_STALE blocker: the per-class texts of the click's own read; the config hint when that read has no class.
+function staleActions(fresh,cfg){const kinds=blockingKinds(fresh);return kinds.length?kinds.map(k=>'<p data-tv1-stale-action="'+k+'">'+esc(freshAction(k,cfg,fresh))+'</p>').join(''):'<p data-tv1-stale-action="">'+esc(cfg.finalize_check.stale_action_ko)+'</p>';}
+const PRECHECK_RUN='<button type="button" data-tv1-precheck-run>최신 공개 파일로 점검</button>';
+function precheckHtml(fresh,cfg,date){
+ const head='<p data-tv1-precheck-line>확정 차단 점검: ';
+ if(!fresh||fresh.state==='UNREAD')return '<div data-tv1-precheck>'+head+'아직 읽지 않음 · 점검 버튼(또는 초안 만들기·확정 버튼)을 누르면 최신 공개 sec-qgv2.json을 한 번 읽어 점검</p>'+PRECHECK_RUN+'</div>';
+ if(fresh.state==='LOADING')return '<div data-tv1-precheck>'+head+'최신 공개 파일 읽는 중</p></div>';
+ if(fresh.state!=='READY')return '<div data-tv1-precheck>'+head+'확인 불가 · 최신 공개 sec-qgv2.json을 읽지 못함</p>'+PRECHECK_RUN+'</div>';
+ const rows=fresh.rows||[],kept=rows.filter(r=>r.kind==='KEPT').sort((a,b)=>(a.acquired_at<b.acquired_at?-1:a.acquired_at>b.acquired_at?1:0)||(a.code<b.code?-1:1));
+ const rotation=rows.filter(r=>r.blocks_today&&r.kind==='ROTATION'),unknown=rows.filter(r=>r.blocks_today&&r.kind==='UNKNOWN');
+ const one=r=>'<tr data-tv1-precheck-row="'+esc(r.code)+'" data-tv1-precheck-kind="'+r.kind+'"><td>'+esc(r.code)+'</td><td>'+esc(utcMinute(r.acquired_at))+'</td><td>'+esc(r.age_days??'NA')+'</td><td>'+esc(r.last_ok_day||'NA')+'</td><td>'+esc(FRESH_KIND[r.kind])+'</td></tr>';
+ // One grouped line per class (all rotation-waiting shards together): shards, row count and the ranges of time, age and last day.
+ const range=(list,k,f=v=>v)=>{const v=list.map(r=>r[k]).filter(x=>x!==null&&x!==undefined).sort((a,b)=>typeof a==='number'?a-b:a<b?-1:a>b?1:0);return v.length?span(f(v[0]),f(v[v.length-1])):'NA';};
+ const group=(kind,list)=>{if(!list.length)return '';const shards=[...new Set(list.map(r=>r.shard).filter(x=>x!==null))].sort((a,b)=>a-b);
+  return '<tr data-tv1-precheck-group="'+kind+'" data-tv1-precheck-kind="'+kind+'"><td>'+esc((kind==='ROTATION'?'샤드 '+shards.join('·'):'분류 불가')+' · '+list.length+'행')+'</td><td>'+esc(range(list,'acquired_at',utcMinute))+'</td><td>'+esc(range(list,'age_days'))+'</td><td>'+esc(range(list,'last_ok_day'))+'</td><td>'+esc(FRESH_KIND[kind])+'</td></tr>';};
+ const table=fresh.today>0||fresh.kept>0?'<div class="table-wrap"><table data-tv1-precheck-table><thead><tr><th>코드</th><th>수집 시각(UTC)</th><th>나이(일)</th><th>마지막 확정 가능일(수집 UTC 날짜+6)</th><th>분류</th></tr></thead><tbody>'
+  +kept.map(one).join('')+group('ROTATION',rotation)+group('UNKNOWN',unknown)+'</tbody></table></div>'
+  +['KEPT','ROTATION','UNKNOWN'].filter(k=>k==='KEPT'?kept.length:k==='ROTATION'?rotation.length:unknown.length).map(k=>'<p class="small" data-tv1-precheck-action="'+k+'">'+esc(freshAction(k,cfg,fresh))+'</p>').join(''):'';
+ // The kept count is not known when a row could not be classified (no basis or shard): never shown as 0.
+ return '<div data-tv1-precheck>'+head+'오늘 차단 '+fresh.today+' · 내일 차단 '+fresh.tomorrow+' · 보존 행 '+(fresh.unknown>0?'확인 불가':fresh.kept)+'</p><p class="small" data-tv1-precheck-basis>'+esc('오늘 '+(fresh.finalize_date||date)+' · 읽은 공개 파일 as_of '+(fresh.as_of||'NA')+' · 값이 있는 행의 SEC 수집 시각이 확정일 23:59:59Z − '+cfg.finalize_check.freshness_max_days+'일('+(fresh.cutoff||'NA')+') 이후여야 통과 · 내일은 그 사이 수집이 없다고 가정 · 확정 버튼과 같은 계산 · 정상 NA 행 제외 · 이 점검은 수집 시각만 봄(calc_version·Q·G 커버리지·숫자 검증·재무 안전·초안 입력 기준은 확정 버튼에서 검사)')+'</p>'
+  +(fresh.mixed>0?'<p class="small" data-tv1-precheck-mixed>'+esc('계산 버전(calc_version) 다른 행 '+fresh.mixed+' · 수집 시각과 별도로 계산 버전 혼합(CALC_VERSION_MIXED)으로 확정을 막음 · 새 calc_version으로 다시 수집될 때까지 남음')+'</p>':'')+PRECHECK_RUN+table+'</div>';}
 // The published price-free sec-qgv2.json, re-read now (no cache); null when it cannot be read (→ SEC_QGV2_NOT_AVAILABLE).
 async function latestPublished(){try{const r=await g.fetch('sec-qgv2.json',{cache:'no-store',credentials:'omit',referrerPolicy:'no-referrer',redirect:'error',headers:{Accept:'application/json'}});if(!r.ok)return null;const t=await r.text();if(t.length>8*1024*1024)return null;return JSON.parse(t);}catch(_){return null;}}
 function rawHtml(state,sel,cfg){const d=state.draft;return '<details class="card" data-tv1-raw><summary>원자료 보기</summary>'+(d?'<p class="small">Universe 행 '+d.universe_rows+' · 통과 '+d.eligible_count+' · 제외 '+esc(Object.entries(d.excluded_counts).map(([k,v])=>(EXCLUDE[k]||k)+' '+v).join(' · ')||'없음')+' · 프로필 '+esc(d.profile_id||'NA')+' · 유형 범위 '+esc(d.basis?.type_scope||'NA')+' · v2 기준일 '+esc(d.v2_as_of||'NA')+'</p><div class="table-wrap"><table><thead><tr><th>제외 종목</th><th>총점</th><th>사유</th><th>재무 안전</th></tr></thead><tbody>'+d.excluded.map(r=>'<tr><td>'+esc(r.symbol)+'</td><td>'+n1(r.total)+'</td><td>'+esc(r.reasons.map(x=>EXCLUDE[x]||x).join(' · '))+'</td><td>'+esc(SAFETY[r.safety]||r.safety)+'</td></tr>').join('')+'</tbody></table></div><p class="small">선정 과정 건너뜀 · '+esc(sel?.skipped.map(s=>s.symbol+' '+s.reason).join(' · ')||'없음')+'</p><div class="table-wrap"><table><thead><tr><th>종목</th><th>무효화 지표</th><th>조건</th><th>현재</th><th>규칙</th></tr></thead><tbody>'+(sel?.rows||[]).flatMap(r=>r.invalidations.map(c=>'<tr><td>'+esc(r.symbol)+'</td><td>'+esc(c.metric)+'</td><td>'+esc(c.op+' '+c.threshold)+'</td><td>'+esc(c.current)+'</td><td>'+esc(c.rule)+'</td></tr>')).join('')+'</tbody></table></div>':'<p>초안 없음</p>')+'<p class="small">규칙 · '+esc(Object.entries(cfg.templates.rules).map(([k,v])=>k+': '+v).join(' / '))+' · '+esc(cfg.config_version)+' · v0 · UNCALIBRATED</p></details>';}
@@ -143,15 +189,21 @@ function rawDataHtml({playbook=g.PlaybookScreen,storage=g.localStorage,config=DE
 async function mount(host,context={}){
  if(!host)return;const P=context.playbook||g.PlaybookScreen,cfg=context.config||DEFAULT_CFG,storage=context.storage||g.localStorage,date=context.date||today(),catalog=context.catalog||await context.catalogPromise,screens=context.screens||{};
  const inputs=screens?.['sec-qgv2.json']||null,computed=context.computed||null,ready=computed?.v2_state==='READY',universeCodes=context.universeCodes||[],closesFor=context.closesProvider||defaultCloses;
- const loadPublished=context.publishedProvider||latestPublished;let lastCheck=null;
+ const loadPublished=context.publishedProvider||latestPublished;let lastCheck=null,lastFresh=null;
  // PR-D: the central V at the click (QgvOfficial.resolve: one no-store read, never throws). officialSource / nyToday (+ nyMinutes):
  // test seams; otherwise the device's New York day and time from one clock read (completed sessions, M4).
  const R=reader(),officialSource=context.officialSource||g;let lastOfficial=null,officialNote='';
  const officialNow=async published=>{try{const now=context.nyToday?{date:context.nyToday,minutes:context.nyMinutes}:R.nyNow();
    return await R.resolve(officialSource,{secCalcVersion:published&&typeof published.calc_version==='string'?published.calc_version:null,nyToday:now?now.date:null,nyMinutes:now?now.minutes:null});}
   catch(_){return{ok:false,reason:'OFFICIAL_UNAVAILABLE',sessions:null,payload:null};}};
- // Input basis of the published file, only when it is the file the page's scores were computed from (same as_of).
- const basisFor=async published=>{if(!published)return null;try{return await B.inputBasis(published);}catch(_){return null;}};
+ // Input basis and 확정 차단 점검 of one published file (one shard digest pass for both). The draft takes the basis only when the
+ // file is the one the page's scores were computed from (same as_of); finalize always takes it. Nothing is read at mount: `fresh`
+ // is the newest click's read (점검, 초안 만들기 or 확정); `lastFresh` is the finalize click's own read, shown with its blockers.
+ let fresh={state:'UNREAD'},freshSeq=0;
+ const freshFor=async published=>{if(!published||typeof published!=='object'||!published.records||typeof published.records!=='object')return{basis:null,fresh:{state:'NA'}};
+  let shardOf=null,basis=null;try{shardOf=await B.rowShards(published);basis=await B.inputBasis(published,{shardOf});}catch(_){shardOf=null;basis=null;}
+  let mixed=null;try{mixed=B.publishedCheck(published,{date,cfg}).mixed_rows;}catch(_){mixed=null;}
+  return{basis,fresh:{state:'READY',as_of:typeof published.as_of==='string'?published.as_of:null,mixed,...B.freshnessRows(published,{finalizeDate:date,basis,shardOf,cfg})}};};
  const readCloses=context.scoringClosesProvider||sheetCloses,syncPrices=context.priceSync||sheetSync,ask=context.confirm||(t=>g.confirm(t)),storeOf=context.priceStoreStatus||storeState;
  let state;try{state=readState(P,storage);}catch(_){host.innerHTML='<section class="card" data-tv1-builder><h2>TARGET v1 빌더</h2><p>확인 불가 · 기기 기록을 읽을 수 없습니다.</p></section>';return;}
  let message='',armed=false/* false | 'auto' | 'official' */,round=null,cmp=null,review=null,priceNote='';const cover=B.coverage(inputs,cfg);
@@ -171,9 +223,13 @@ async function mount(host,context={}){
    +'<button type="button" data-tv1-build '+(ready?'':'disabled')+'>'+(armed==='auto'?'다시 만들면 카드 응답이 초기화됩니다 · 한 번 더 누르세요':state.draft?'규칙으로 초안 다시 만들기':'규칙으로 초안 만들기')+'</button>'
    +(R&&!ready?'<button type="button" data-tv1-build-official>'+(armed==='official'?'다시 만들면 카드 응답이 초기화됩니다 · 한 번 더 누르세요':'중앙 V 게시본으로 초안 '+(state.draft?'다시 ':'')+'만들기')+'</button>':'')
    +(officialNote?'<p class="small" data-tv1-official-reason>'+esc(officialNote)+'</p>':'')+'<p role="status" data-tv1-status>'+esc(message)+'</p></section>'
-   +(hidden?OFFICIAL_HIDDEN:'')+(state.draft&&!hidden?candidateTable(state.draft,cfg,lastOfficial)+selectionHtml(sel,cfg)+'<section data-tv1-cards><h2>카드 응답 · '+(sel.rows.length-sel.pending.length)+'/'+sel.rows.length+'</h2><p class="small">반대는 한 줄 이유가 필요하고 그 종목은 빠지며 다음 순위가 자동으로 들어옵니다(한도 재검사). 모름은 유지하고 미확인으로 기록합니다. 모든 응답은 판정 기록으로 저장되어 나중에 채점됩니다.</p>'+sel.rows.map(r=>cardHtml(r,sel.answers[key(r.symbol)],cfg,sourceOf(state.draft))).join('')+'</section><section class="card" data-tv1-confirm><h2>TARGET v1 확정</h2><p>응답 '+(sel.rows.length-sel.pending.length)+'/'+sel.rows.length+' · '+esc(limitsText(sel.limits))+'</p>'+numberCheckHtml(cfg)+'<p data-tv1-v-source>V 출처: '+esc(sourceOf(state.draft).ko+' · '+sourceOf(state.draft).note+officialText(state.draft))+' · 확정 기록에 남습니다</p>'+attributionHtml(state.draft,lastOfficial)+scheduleHtml(state,cfg,date)+'<p class="small">확정 버튼을 누르는 순간 최신 공개 sec-qgv2.json을 다시 읽어 calc_version·값이 있는 행의 SEC 수집 시각 '+cfg.finalize_check.freshness_max_days+'일 이내(파일 as_of 아님)·초안 입력 기준·선정 종목 재무 안전·Q·G 산출 '+Math.round(cfg.coverage.ready_min_ratio*100)+'% 이상을 검사합니다(초안 때 결과는 쓰지 않음).'+(R?' 중앙 V 게시본도 다시 읽어 초안의 V 출처와 같은지 확인합니다(다르면 초안 재생성).':'')+'</p><button type="button" data-tv1-finalize '+(sel.complete&&!sel.shortfall?'':'disabled')+'>TARGET v1 확정 저장</button>'+checkHtml(lastCheck,cfg)+''+(state.versions.length?'<p data-tv1-version>저장된 TARGET '+esc(B.latestVersion(state).version+' · '+B.latestVersion(state).date+' · V 출처 '+(B.V_SOURCES?.[B.latestVersion(state).v_source]||B.V_SOURCE).ko+(B.latestVersion(state).price_basis_date?' · 가격 기준일 '+B.latestVersion(state).price_basis_date:''))+'</p>':'')+'</section>':'')
+   +(hidden?OFFICIAL_HIDDEN:'')+(state.draft&&!hidden?candidateTable(state.draft,cfg,lastOfficial)+selectionHtml(sel,cfg)+'<section data-tv1-cards><h2>카드 응답 · '+(sel.rows.length-sel.pending.length)+'/'+sel.rows.length+'</h2><p class="small">반대는 한 줄 이유가 필요하고 그 종목은 빠지며 다음 순위가 자동으로 들어옵니다(한도 재검사). 모름은 유지하고 미확인으로 기록합니다. 모든 응답은 판정 기록으로 저장되어 나중에 채점됩니다.</p>'+sel.rows.map(r=>cardHtml(r,sel.answers[key(r.symbol)],cfg,sourceOf(state.draft))).join('')+'</section><section class="card" data-tv1-confirm><h2>TARGET v1 확정</h2><p>응답 '+(sel.rows.length-sel.pending.length)+'/'+sel.rows.length+' · '+esc(limitsText(sel.limits))+'</p>'+numberCheckHtml(cfg)+'<p data-tv1-v-source>V 출처: '+esc(sourceOf(state.draft).ko+' · '+sourceOf(state.draft).note+officialText(state.draft))+' · 확정 기록에 남습니다</p>'+attributionHtml(state.draft,lastOfficial)+scheduleHtml(state,cfg,date)+'<p class="small">확정 버튼을 누르는 순간 최신 공개 sec-qgv2.json을 다시 읽어 calc_version·값이 있는 행의 SEC 수집 시각 '+cfg.finalize_check.freshness_max_days+'일 이내(파일 as_of 아님)·초안 입력 기준·선정 종목 재무 안전·Q·G 산출 '+Math.round(cfg.coverage.ready_min_ratio*100)+'% 이상을 검사합니다(초안 때 결과는 쓰지 않음).'+(R?' 중앙 V 게시본도 다시 읽어 초안의 V 출처와 같은지 확인합니다(다르면 초안 재생성).':'')+'</p>'+precheckHtml(fresh,cfg,date)+'<button type="button" data-tv1-finalize '+(sel.complete&&!sel.shortfall?'':'disabled')+'>TARGET v1 확정 저장</button>'+checkHtml(lastCheck,cfg,lastFresh)+''+(state.versions.length?'<p data-tv1-version>저장된 TARGET '+esc(B.latestVersion(state).version+' · '+B.latestVersion(state).date+' · V 출처 '+(B.V_SOURCES?.[B.latestVersion(state).v_source]||B.V_SOURCE).ko+(B.latestVersion(state).price_basis_date?' · 가격 기준일 '+B.latestVersion(state).price_basis_date:''))+'</p>':'')+'</section>':'')
    +rebalanceHtml(state,catalog,context.ram,cfg,date,round)+transitionHtml(state,cfg,date,cmp,review)+setsHtml(state,cfg,date)+pricesHtml(scoringNames(P,storage,catalog,inputs,state,cfg),storeOf(),cfg,priceNote);
   bind(sel);};
+ // 확정 차단 점검 button: one read of the published file on the user's click; only the check block is repainted (card inputs kept).
+ const paintPrecheck=()=>{const node=host.querySelector('[data-tv1-precheck]');if(node){node.outerHTML=precheckHtml(fresh,cfg,date);bindPrecheck();}};
+ const bindPrecheck=()=>{const b=host.querySelector('[data-tv1-precheck-run]');if(b)b.onclick=async()=>{const seq=++freshSeq;fresh={state:'LOADING'};paintPrecheck();let read;
+  try{read=await freshFor(await loadPublished());}catch(_){read={fresh:{state:'NA'}};}if(!host.isConnected)return;if(seq===freshSeq){fresh=read.fresh;paintPrecheck();}};};
  const say=t=>{message=t;const n=host.querySelector('[data-tv1-status]');if(n)n.textContent=t;};
  const run=fn=>{try{fn();}catch(e){say(ERRORS[e.message]===null?cfg.number_check.message:ERRORS[e.message]||e.message);}};
  const bind=sel=>{
@@ -181,8 +237,9 @@ async function mount(host,context={}){
   // PR-D M3/M4: the central V is read at this click next to sec-qgv2.json; usable → the draft from its rows (official), else the
   // device scores as before (mode 'auto'), or no draft (mode 'official': the button shown without device prices).
   const buildWith=async mode=>{if(state.draft&&state.answers.length&&armed!==mode){armed=mode;draw();return;}armed=false;
-   const published=await loadPublished();if(!host.isConnected)return;const off=R?await officialNow(published):null;if(!host.isConnected)return;
-   const basis=published&&inputs?.as_of&&published.as_of===inputs.as_of?await basisFor(published):null;if(!host.isConnected)return;
+   const seq=++freshSeq,published=await loadPublished();if(!host.isConnected)return;const read=await freshFor(published);if(!host.isConnected)return;if(seq===freshSeq)fresh=read.fresh;
+   const off=R?await officialNow(published):null;if(!host.isConnected)return;
+   const basis=published&&inputs?.as_of&&published.as_of===inputs.as_of?read.basis:null;
    const pub=off?.ok?off.payload:null;if(pub)lastOfficial=pub;officialNote=off&&!pub?reasonLine(off.reason,mode==='auto'):'';
    if(mode==='official'&&!pub){message='공식 V 초안 불가 · 임시 V 초안에는 이 기기의 가격이 필요합니다';draw();return;}
    run(()=>{const draft=pub?B.buildDraft({computed:B.officialComputed(pub),inputs,universeCodes,existing:existingSymbols(catalog),date,basis,official:pub,cfg}):B.buildDraft({computed,inputs,universeCodes,existing:existingSymbols(catalog),date,basis,cfg});save({...state,draft,answers:[]});message='초안 만듦 · 통과 '+draft.eligible_count+' · 후보 '+B.candidates(draft,cfg).length+(basis?' · 입력 기준 '+(basis.calc_version||'calc_version 없음'):' · 입력 기준 기록 불가(확정 때 재생성)')+(pub?' · 공식 V(가격 기준일 '+pub.times.price_basis_date+')':'');draw();});
@@ -196,10 +253,11 @@ async function mount(host,context={}){
    const after=B.currentSelection(state,cfg),added=after.rows.filter(r=>!sel.rows.some(x=>x.symbol===r.symbol)).map(r=>r.symbol);
    message=kind==='DISAGREE'?'반대 · '+symbol+' 제외 → '+(added.length?added.join(' · ')+' 추가':'교체 후보 없음 · 현금')+' · '+limitsText(after.limits):cfg.cards.answers.find(a=>a.id===kind).ko+' · '+symbol+' 기록됨';draw();});
   // Finalize: re-read the published file now and re-check everything (never the draft-time state).
-  const fin=host.querySelector('[data-tv1-finalize]');if(fin)fin.onclick=async()=>{fin.disabled=true;say('최신 공개 파일 다시 읽는 중');const published=await loadPublished();if(!host.isConnected)return;
+  const fin=host.querySelector('[data-tv1-finalize]');if(fin)fin.onclick=async()=>{fin.disabled=true;say('최신 공개 파일 다시 읽는 중');const seq=++freshSeq,published=await loadPublished();if(!host.isConnected)return;
+   const read=await freshFor(published);if(!host.isConnected)return;const basis=read.basis;if(seq===freshSeq)fresh=read.fresh;lastFresh=read.fresh;
    // PR-D M3: the central V re-read at this click too; the source usable now is checked against the draft's (V_SOURCE_CHANGED).
    const off=R?await officialNow(published):null;if(!host.isConnected)return;const official=off?.ok?off.payload:null;if(official)lastOfficial=official;officialNote=off&&!official?reasonLine(off.reason,false):'';
-   const basis=await basisFor(published);if(!host.isConnected)return;lastCheck=B.finalizeBlockers(state,{date,published,basis,official,cfg});
+   lastCheck=B.finalizeBlockers(state,{date,published,basis,official,cfg});
    // Changed input basis on a valid file → regenerate the draft (same-symbol answers kept); needs the page's scores of that file.
    const fileOk=!!lastCheck.check&&!lastCheck.check.reasons.some(r=>['SEC_QGV2_NOT_AVAILABLE','CALC_VERSION_MISSING','CALC_VERSION_MIXED'].includes(r));
    if(lastCheck.basis_changed&&fileOk){
@@ -211,6 +269,7 @@ async function mount(host,context={}){
     draw();return;}
    try{const next=B.finalize(state,{date,published,basis,official,cfg});save(next);const v=B.latestVersion(next);message='TARGET '+v.version+' 저장 · calc_version '+v.calc_version+' · R-C(규칙 지수) '+date+' 시작 · 원본 v0 유지'+(v.publication_id?' · 공식 V 게시본 '+v.publication_id.slice(0,19)+' · 가격 기준일 '+v.price_basis_date:'');}
    catch(e){message=ERRORS[e.message]===null?cfg.number_check.message:e.message==='NUMBER_CHECK_CALC_VERSION_MISMATCH'?cfg.number_check.mismatch_message:ERRORS[e.message]||('확정 불가 · '+(BLOCKERS[e.message]||e.message));}draw();};
+  bindPrecheck();
   for(const b of host.querySelectorAll('[data-tv1-round]'))b.onclick=()=>{round=Number(b.dataset.tv1Round);draw();};
   const load=host.querySelector('[data-tv1-load-compare]');if(load)load.onclick=async()=>{try{say('가격 불러오는 중 · 이 기기 RAM');const v0=v0Weights(catalog),bSyms=state.rule_b.flatMap(s=>s.rows.map(r=>r.symbol)),cSyms=(state.versions.find(v=>v.version===state.rule_c?.version)?.rows||[]).map(r=>r.symbol);
    const from=state.rule_c?.start||date,closes=await closesFor([...new Set([cfg.virtual_sets.benchmark.symbol,...Object.keys(v0),...bSyms,...cSyms])],from);if(!host.isConnected)return;

@@ -9,7 +9,11 @@
 // blocker listed) and succeeds only for the same calc_version; a name shortfall (< 15) is shown and blocks finalize.
 // 2026-10-15 evening: a valued row acquired > 7 days ago blocks (all-shards run hint) whatever the file as_of; a selected name
 // failing the financial-safety re-check blocks; a changed input basis regenerates the draft (same-symbol answers kept, the new
-// name waits for its card). Every request is intercepted: public screens are the empty fixtures, the Worker is stubbed, anything else
+// name waits for its card). 2026-10-25 확정 차단 점검 (display only): one line above the 확정 button (today / tomorrow / kept rows)
+// from the same published file the button reads (nothing at mount: its 점검 button or a 확정 click reads the file, reads are counted),
+// the table only when a row blocks today or a kept row exists (KEPT row by row, all ROTATION shards as one line with each shard's
+// next turn), per-class action texts, the calc_version-mixed count beside it; the line agrees with the finalize check.
+// Every request is intercepted: public screens are the empty fixtures, the Worker is stubbed, anything else
 // is aborted and counted. No horizontal page scroll; no buy/sell verbs on the builder.
 // PR-D (owner decision D8 (b), GSQ-024): qgv-official.json is answered 404 (tools/empty_public_screens.js ABSENT) in every phase
 // above, so the device V ("임시 V") assertions hold on deploy builds too, and nothing reads it at mount. The official phase serves
@@ -103,10 +107,12 @@ async function seed({date,n=45,vMiss={}}){
   assert.equal(await page.locator('[data-tv1-rebalance] table').count(),0);assert.equal(await page.locator('[data-tv1-risk-codes] li').count(),8);assert.match(await page.locator('[data-tv1-risk-codes]').textContent(),/R1 · 확신 보유 종목의 무효화 조건 발생/);
   assert.deepEqual(await page.locator('[data-tv1-round-row] td:last-child').allTextContents(),['위험 코드 점검만','위험 코드 점검만','위험 코드 점검만']);
   assert.match(await page.locator('[data-tv1-transition] [data-tv1-schedule]').textContent(),/확정 목표 2026년 11월 둘째 주\(11-09 ~ 11-15\) · 미확정 · 조건을 못 맞추면 확정을 미루고 11월 회차는 위험 코드 점검만/);
-  phase=width+' number check';assert.equal(await page.locator('[data-tv1-finalize]').isDisabled(),false);assert.match(await page.locator('[data-tv1-number-check]').textContent(),/^숫자 검증 통과 · 10개 기업 · calc_version qgv2-calc\/2026-10-17\.1 · 2026-10-23 · 앱 계산식 대조 통과\(시험 가격\) \/ 실기기 시세 경로 미검증 · /);
+  phase=width+' number check';assert.equal(await page.locator('[data-tv1-finalize]').isDisabled(),false);
+  assert.equal(await page.locator('[data-tv1-precheck-line]').textContent(),'확정 차단 점검: 아직 읽지 않음 · 점검 버튼(또는 초안 만들기·확정 버튼)을 누르면 최신 공개 sec-qgv2.json을 한 번 읽어 점검','nothing is read at mount');assert.equal(await page.locator('[data-tv1-precheck-table]').count(),0);assert.match(await page.locator('[data-tv1-number-check]').textContent(),/^숫자 검증 통과 · 10개 기업 · calc_version qgv2-calc\/2026-10-17\.1 · 2026-10-23 · 앱 계산식 대조 통과\(시험 가격\) \/ 실기기 시세 경로 미검증 · /);
   // The published file is re-read at the click: absent on this build (404) → blocked with every reason listed.
   await page.locator('[data-tv1-finalize]').click();await page.waitForFunction(()=>document.querySelector('[data-tv1-finalize-check]'));
   assert.match(await page.locator('[data-tv1-status]').textContent(),/^확정 불가 · 최신 공개 sec-qgv2\.json을 읽지 못함$/);
+  assert.equal(await page.locator('[data-tv1-precheck-line]').textContent(),'확정 차단 점검: 확인 불가 · 최신 공개 sec-qgv2.json을 읽지 못함');
   assert.deepEqual(await page.locator('[data-tv1-blocker]').evaluateAll(n=>n.map(x=>x.dataset.tv1Blocker)),['SEC_QGV2_NOT_AVAILABLE','NUMBER_CHECK_CALC_VERSION_MISMATCH']);
   const store=await page.evaluate(()=>{const v=PlaybookScreen.read(localStorage);return{records:v.records.filter(r=>r.primary_code==='TV1').map(r=>r.verdict),versions:v.target_v1.versions.length};});
   assert.equal(store.versions,0);assert.equal(store.records.length,16);assert.equal(store.records.filter(v=>v==='TV1_DISAGREE').length,1);assert.equal(store.records.filter(v=>v==='TV1_UNKNOWN').length,1);
@@ -117,20 +123,35 @@ async function seed({date,n=45,vMiss={}}){
    await TargetV1Screen.mount(document.querySelector('[data-target-v1-builder]'),{playbook:PlaybookScreen,config:cfg,catalog,storage:localStorage,date:'2026-10-14',ram:{state:'AVAILABLE',total:100000000,rows},
     publishedProvider:async()=>{window.__pub.reads++;return window.__tv1Payload(window.__pub.calc,{patch:window.__pub.patch});}});},null);
   assert.match(await page.locator('[data-tv1-number-check]').textContent(),/^숫자 검증 통과 · 10개 기업 · calc_version qgv2-calc\/2026-10-17\.1 · 2026-10-14/);
+  // 확정 차단 점검 before any click: nothing read at mount (no request); the line says so and sits above the 확정 button.
+  assert.equal(await page.evaluate(()=>window.__pub.reads),0,'no read at mount');assert.match(await page.locator('[data-tv1-precheck-line]').textContent(),/^확정 차단 점검: 아직 읽지 않음/);assert.equal(await page.locator('[data-tv1-precheck-table]').count(),0);
+  assert.equal(await page.evaluate(()=>{const n=document.querySelector('[data-tv1-precheck]');return!!(n.compareDocumentPosition(document.querySelector('[data-tv1-finalize]'))&Node.DOCUMENT_POSITION_FOLLOWING);}),true,'the line is above the 확정 button');
   await page.locator('[data-tv1-finalize]').click();await page.waitForFunction(()=>document.querySelector('[data-tv1-finalize-check]'));
+  // The click's file replaced the line: all rows fresh → line only, no table.
+  assert.equal(await page.evaluate(()=>window.__pub.reads),1);assert.equal(await page.locator('[data-tv1-precheck-line]').textContent(),'확정 차단 점검: 오늘 차단 0 · 내일 차단 0 · 보존 행 0');assert.equal(await page.locator('[data-tv1-precheck-table]').count(),0);
   assert.deepEqual(await page.locator('[data-tv1-blocker]').evaluateAll(n=>n.map(x=>x.dataset.tv1Blocker)),['CALC_VERSION_MISSING','DRAFT_BASIS_CHANGED','NUMBER_CHECK_CALC_VERSION_MISMATCH']);assert.match(await page.locator('[data-tv1-status]').textContent(),/calc_version 없음\(이전 형식 파일\)/);
   // Another calc_version on a valid file → the draft must be regenerated; without this page's scores of that file → reload hint.
   await page.evaluate(()=>{window.__pub.calc='qgv2-calc/2026-10-17.2';});await page.locator('[data-tv1-finalize]').click();await page.waitForFunction(()=>window.__pub.reads===2&&/페이지를 새로 고친 뒤 다시 확정하세요/.test(document.querySelector('[data-tv1-status]').textContent));
   assert.deepEqual(await page.locator('[data-tv1-blocker]').evaluateAll(n=>n.map(x=>x.dataset.tv1Blocker)),['DRAFT_BASIS_CHANGED','NUMBER_CHECK_CALC_VERSION_MISMATCH']);assert.equal(await page.evaluate(()=>TargetV1Screen.readState(PlaybookScreen,localStorage).versions.length),0);
-  // One valued row acquired 8+ days ago blocks (row acquisition, not the file as_of) with the all-shards run hint.
+  // One valued row acquired 8+ days ago blocks (row acquisition, not the file as_of). Its shard was collected later (2026-10-13), so it
+  // is a kept row: the identity-action text, not the all-shards hint; the line counts the same row the finalize check counts.
   await page.evaluate(()=>{window.__pub.calc='qgv2-calc/2026-10-17.1';window.__pub.patch={'NYSE:P200':{acquired_at:'2026-10-05T00:00:00Z'}};});await page.locator('[data-tv1-finalize]').click();
   await page.waitForFunction(()=>window.__pub.reads===3&&document.querySelector('[data-tv1-blocker]')?.dataset.tv1Blocker==='ROW_DATA_STALE');
-  assert.deepEqual(await page.locator('[data-tv1-blocker]').evaluateAll(n=>n.map(x=>x.dataset.tv1Blocker)),['ROW_DATA_STALE']);assert.match(await page.locator('[data-tv1-stale-action]').textContent(),/workflow_dispatch all_shards=true/);
+  assert.deepEqual(await page.locator('[data-tv1-blocker]').evaluateAll(n=>n.map(x=>x.dataset.tv1Blocker)),['ROW_DATA_STALE']);assert.deepEqual(await page.locator('[data-tv1-stale-action]').evaluateAll(n=>n.map(x=>x.dataset.tv1StaleAction)),['KEPT']);
+  const keptText=await page.locator('[data-tv1-stale-action]').textContent();
+  assert.match(keptText,/^보존 행 \(KEPT\) · 자기 샤드의 최신 수집 때 이 행만 새로 수집되지 않아 이전 행이 보존됨/);
+  assert.match(keptText,/기호 미해결\(실행 로그 unresolved_codes\)이면 식별 조치 필요\(별칭, 사유 있는 NA 또는 CIK 고정 — 코드별 소유자 결정 .*\)이고 전체 샤드\(all_shards\) 실행으로는 풀리지 않음/);
+  assert.match(keptText,/일시 조회 실패·빌더 실패·검증 거부로 보존된 행이면 다음 수집 또는 전체 샤드 수동 실행\(workflow_dispatch all_shards=true\)으로 풀릴 수 있음/);
+  assert.match(keptText,/calc_version이 바뀐 뒤에는 새로 수집될 때까지 계산 버전 혼합\(CALC_VERSION_MIXED\)으로도 확정을 막음$/);
   assert.match(await page.locator('[data-tv1-published]').textContent(),/7일 넘은 행 1 · 가장 오래된 수집 2026-10-05T00:00:00Z/);
+  assert.equal(await page.locator('[data-tv1-precheck-line]').textContent(),'확정 차단 점검: 오늘 차단 1 · 내일 차단 1 · 보존 행 1');
+  assert.deepEqual(await page.locator('[data-tv1-precheck-table] tbody tr').evaluateAll(n=>n.map(x=>[x.dataset.tv1PrecheckKind,...[...x.querySelectorAll('td')].map(t=>t.textContent)])),[['KEPT','NYSE:P200','2026-10-05 00:00','9','2026-10-11','보존 행 (KEPT)']]);
+  assert.deepEqual(await page.locator('[data-tv1-precheck-action]').evaluateAll(n=>n.map(x=>x.dataset.tv1PrecheckAction)),['KEPT']);
   // A selected name whose latest metrics fail financial safety blocks.
   const victimCode=await page.evaluate(()=>'NASDAQ:'+TargetV1Builder.currentSelection(TargetV1Screen.readState(PlaybookScreen,localStorage)).rows[0].symbol);
   await page.evaluate(c=>{window.__pub.patch={[c]:{metrics:{net_debt_to_ebitda:5,interest_coverage:12}}};},victimCode);await page.locator('[data-tv1-finalize]').click();
   await page.waitForFunction(()=>window.__pub.reads===4&&document.querySelector('[data-tv1-blocker]')?.dataset.tv1Blocker==='FINANCIAL_SAFETY_RECHECK_FAILED');
+  assert.equal(await page.locator('[data-tv1-precheck-line]').textContent(),'확정 차단 점검: 오늘 차단 0 · 내일 차단 0 · 보존 행 0','the click file replaced the line');assert.equal(await page.locator('[data-tv1-stale-action]').count(),0);
   assert.equal(await page.locator('[data-tv1-safety-recheck]').textContent(),'재무 안전 재검사 불통과 · '+victimCode.slice(7));
   // A normal NA row (no value, NA reason, no calc_version) does not block.
   await page.evaluate(()=>{window.__pub.patch={'NYSE:P300':{state:'NOT_AVAILABLE',reason_codes:['NOT_COLLECTED'],acquired_at:null,axes:{Q:{score:null},G:{score:null}},metrics:{},calc_version:undefined}};});await page.locator('[data-tv1-finalize]').click();
@@ -224,6 +245,43 @@ async function seed({date,n=45,vMiss={}}){
   assert.equal(await page.locator('[data-tv1-v-reason-selected]').count(),0);assert.equal(await page.locator('[data-tv1-v-reason]').count(),1,'the draft table keeps the marker line');
   await page.locator('[data-tv1-finalize]').click();await page.waitForFunction(()=>/TARGET v1 저장 · calc_version qgv2-calc\/2026-10-17\.1/.test(document.querySelector('[data-tv1-status]').textContent));
   assert.ok(!(await page.evaluate(()=>TargetV1Screen.readState(PlaybookScreen,localStorage).versions.at(-1).rows.map(r=>r.symbol))).includes('SYN00'));
+  phase=width+' precheck';
+  // 확정 차단 점검 states on the same draft (finalize date varies; payload rows collected 2026-10-13T20:00Z unless patched):
+  // nothing read until the 점검 button; tomorrow only → line only; whole shards old → one ROTATION line (every shard, each shard's
+  // next turn in the action); kept but not blocking → the table with the kept row; kept + rotation → both, and finalize agrees.
+  const precheck=async(date,patch={})=>{await page.evaluate(async([date,patch])=>{const catalog=await(await fetch('actual-catalog.json')).json();window.__pre={reads:0};
+    await TargetV1Screen.mount(document.querySelector('[data-target-v1-builder]'),{playbook:PlaybookScreen,catalog,storage:localStorage,date,publishedProvider:async()=>{window.__pre.reads++;return window.__tv1Payload('qgv2-calc/2026-10-17.1',{patch});}});},[date,patch]);
+   assert.equal(await page.evaluate(()=>window.__pre.reads),0,'no read at mount');await page.locator('[data-tv1-precheck-run]').click();
+   await page.waitForFunction(()=>/오늘 차단/.test(document.querySelector('[data-tv1-precheck-line]').textContent));
+   return page.evaluate(()=>({reads:window.__pre.reads,line:document.querySelector('[data-tv1-precheck-line]').textContent,head:[...document.querySelectorAll('[data-tv1-precheck-table] th')].map(x=>x.textContent),
+    rows:[...document.querySelectorAll('[data-tv1-precheck-table] tbody tr')].map(x=>[x.dataset.tv1PrecheckKind,x.dataset.tv1PrecheckRow||'group '+x.dataset.tv1PrecheckGroup,...[...x.querySelectorAll('td')].map(t=>t.textContent)]),
+    actions:[...document.querySelectorAll('[data-tv1-precheck-action]')].map(x=>[x.dataset.tv1PrecheckAction,x.textContent]),mixed:document.querySelector('[data-tv1-precheck-mixed]')?.textContent??null}));};
+  const shards=await page.evaluate(async()=>{const s=new Set();for(let i=0;i<504;i++){const d=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('C'+i));s.add(Number(BigInt('0x'+[...new Uint8Array(d)].map(b=>b.toString(16).padStart(2,'0')).join(''))%7n));}return [...s].sort((a,b)=>a-b);});
+  assert.deepEqual(shards,[0,1,2,3,4,5,6]);
+  let pre=await precheck('2026-10-19');assert.deepEqual([pre.reads,pre.line,pre.rows.length,pre.actions.length],[1,'확정 차단 점검: 오늘 차단 0 · 내일 차단 504 · 보존 행 0',0,0]);
+  pre=await precheck('2026-10-20');assert.equal(pre.line,'확정 차단 점검: 오늘 차단 504 · 내일 차단 504 · 보존 행 0');
+  assert.deepEqual(pre.head,['코드','수집 시각(UTC)','나이(일)','마지막 확정 가능일(수집 UTC 날짜+6)','분류'],'no price and no score column');
+  assert.deepEqual(pre.rows,[['ROTATION','group ROTATION','샤드 0·1·2·3·4·5·6 · 504행','2026-10-13 20:00','7','2026-10-19','회전 대기 (ROTATION)']],'every rotation-waiting shard on one line');
+  assert.deepEqual(pre.actions.map(a=>a[0]),['ROTATION']);assert.equal(pre.mixed,null);
+  // Python date(2026, 10, 20).toordinal() % 7 = 2: shard 2's turn is today, shard 3's tomorrow, shard 1's six days later.
+  assert.match(pre.actions[0][1],/^회전 대기 \(ROTATION\) · 샤드 전체가 오래됨 · 하루 1개 샤드 회전\(날짜 순번 mod 7\)이라 그 샤드의 다음 차례 정기 실행 뒤 해소 · 샤드 0 다음 차례 2026-10-25\(그때까지 정기 실행으로는 안 풀림\) · 샤드 1 다음 차례 2026-10-26/);
+  assert.match(pre.actions[0][1],/ · 샤드 2 다음 차례 2026-10-20\(오늘 · 오늘 정기 실행이 끝나면 해소\) · 샤드 3 다음 차례 2026-10-21\(그때까지 정기 실행으로는 안 풀림\) · /);
+  assert.match(pre.actions[0][1],/ · 정기 실행이 빠졌거나 다음 차례 전에 확정하려면 504 전체 샤드 수동 실행\(workflow_dispatch all_shards=true\)/);
+  // Kept but not blocking (2026-10-12 vs its shard's 2026-10-13T20:00Z, 44 h): the table still lists it with only the KEPT text;
+  // a valued row of another calc_version is counted beside the line (it blocks through CALC_VERSION_MIXED, not freshness).
+  const otherCalc=['qgv2-calc','2026-10-23.1'].join('/');
+  pre=await precheck('2026-10-15',{'NYSE:P200':{acquired_at:'2026-10-12T00:00:00Z'},'NYSE:P201':{calc_version:otherCalc}});
+  assert.equal(pre.line,'확정 차단 점검: 오늘 차단 0 · 내일 차단 0 · 보존 행 1');assert.deepEqual(pre.rows,[['KEPT','NYSE:P200','NYSE:P200','2026-10-12 00:00','3','2026-10-18','보존 행 (KEPT)']]);
+  assert.deepEqual(pre.actions.map(a=>a[0]),['KEPT']);assert.match(pre.mixed,/^계산 버전\(calc_version\) 다른 행 1 · 수집 시각과 별도로 계산 버전 혼합\(CALC_VERSION_MIXED\)으로 확정을 막음/);
+  pre=await precheck('2026-10-20',{'NYSE:P200':{acquired_at:'2026-10-05T00:00:00Z'},'NYSE:P300':{state:'NOT_AVAILABLE',reason_codes:['NOT_COLLECTED'],acquired_at:'2026-09-01T00:00:00Z',axes:{Q:{score:null},G:{score:null}},metrics:{},calc_version:undefined}});
+  assert.equal(pre.line,'확정 차단 점검: 오늘 차단 503 · 내일 차단 503 · 보존 행 1','the NA row is not counted');assert.deepEqual(pre.rows[0],['KEPT','NYSE:P200','NYSE:P200','2026-10-05 00:00','15','2026-10-11','보존 행 (KEPT)']);
+  assert.deepEqual(pre.rows.slice(1),[['ROTATION','group ROTATION','샤드 0·1·2·3·4·5·6 · 502행','2026-10-13 20:00','7','2026-10-19','회전 대기 (ROTATION)']]);assert.ok(!pre.rows.some(r=>r[1]==='NYSE:P300'));assert.deepEqual(pre.actions.map(a=>a[0]),['KEPT','ROTATION']);
+  await page.locator('[data-tv1-finalize]').click();await page.waitForFunction(()=>window.__pre.reads===2&&document.querySelector('[data-tv1-finalize-check]'));
+  assert.ok((await page.locator('[data-tv1-blocker]').evaluateAll(n=>n.map(x=>x.dataset.tv1Blocker))).includes('ROW_DATA_STALE'));
+  assert.match(await page.locator('[data-tv1-published]').textContent(),/7일 넘은 행 503 · /);assert.equal(await page.locator('[data-tv1-precheck-line]').textContent(),'확정 차단 점검: 오늘 차단 503 · 내일 차단 503 · 보존 행 1');
+  assert.deepEqual(await page.locator('[data-tv1-stale-action]').evaluateAll(n=>n.map(x=>x.dataset.tv1StaleAction)),['KEPT','ROTATION']);
+  assert.ok(!/\$|가격|점수/.test(await page.locator('[data-tv1-precheck-table]').textContent()),'codes, times and days only');
+  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'precheck table horizontal overflow');
   phase=width+' shortfall';const few=await page.evaluate(seed,{date:'2026-10-14',n:12});assert.equal(few,12);
   await page.evaluate(async()=>{const catalog=await(await fetch('actual-catalog.json')).json();await TargetV1Screen.mount(document.querySelector('[data-target-v1-builder]'),{playbook:PlaybookScreen,catalog,storage:localStorage,date:'2026-10-14'});});
   assert.match(await page.locator('[data-tv1-shortfall]').textContent(),/^통과 종목 부족 3종목 · 조건 완화·제외 종목 복귀 없음 · 확정 불가 · 사유: /);assert.equal(await page.locator('[data-tv1-card]').count(),12);assert.equal(await page.locator('[data-tv1-finalize]').isDisabled(),true);
@@ -322,7 +380,7 @@ async function seed({date,n=45,vMiss={}}){
   assert.equal(await page.evaluate(()=>localStorage.getItem(PlaybookScreen.KEY)),beforeRaw,'viewing raw data never changes TARGET records');
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'settings raw horizontal overflow');
   assert.deepEqual(errors,[]);assert.deepEqual(unexpected,[]);
-  console.log('PASS TARGET v1 builder empty NA, cards agree/disagree(replace)/unknown, records, number-check gate, finalize, rebalance week, compare, review rule, TV1 sheet prices, risk-only rounds, finalize re-check (calc_version, row freshness, safety), draft regeneration, V factor gate (2026-10-23), shortfall and central V (PR-D) '+width);
+  console.log('PASS TARGET v1 builder empty NA, cards agree/disagree(replace)/unknown, records, number-check gate, finalize, rebalance week, compare, review rule, TV1 sheet prices, risk-only rounds, finalize re-check (calc_version, row freshness, safety), 확정 차단 점검 (line, KEPT / ROTATION table), draft regeneration, V factor gate (2026-10-23), shortfall and central V (PR-D) '+width);
   await context.close();}}
  catch(e){console.log('FAIL '+phase+' '+e.message);process.exitCode=1;}finally{await browser.close();}
 })();
