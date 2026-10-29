@@ -7,7 +7,8 @@
 //    layer loads after the first paint, so every open and reload here awaits IS2.ready before it uses the layer).
 //  - A (no user action): opening a route reads only what its screen asks for (each route opened in a fresh load, and again on
 //    a route change before the test's own call): the placeholder menus nothing, 0. 기업 검색 home only the three static files of
-//    its company index (P2-1), the company page public files in IS2.data.FILES; every route can call IS2.data.ready() / IS2.qgv.page() and gets the same page; each render's
+//    its company index (P2-1), the company page public files in IS2.data.FILES, 1. QGV (P2-2a) only IS2.data.CORE + actual-catalog.json +
+//    company-names-ko.json (its leaderboard: IS2.qgv.page() and the reviewed names); every route can call IS2.data.ready() / IS2.qgv.page() and gets the same page; each render's
 //    route.signal is aborted by the next one and the device chip's subscription ends with it; requests stay same-origin and
 //    every data request is a name in IS2.data.FILES; read-only layer calls add no request either; zero Sheets / OAuth /
 //    Worker / Google requests, zero localStorage / sessionStorage / IndexedDB, action.blocked() 0; every row is the temporary
@@ -210,18 +211,24 @@ async function scores(page) {
     const routes = await page.evaluate(() => { const I = window.IS2; return [...I.MENU.map((m) => I.href(m.id)), I.href('company', 'NYSE:FIX'), ...I.DETAILS.map((d) => I.href('detail', d.id)), '#/nowhere/x']; });
     assert.equal(routes.length, 9 + 1 + 7 + 1);
     const settle = () => page.evaluate(() => new Promise((r) => setTimeout(r, 100)));
+    // A phase ends only once the route's own reads are done, so a read a screen started cannot land in the next route's phase:
+    // 1. QGV computes its page after IS2.ready (CORE, then actual-catalog.json) and draws its table after that (P2-2a); the company
+    // page reads CORE through the layer after IS2.ready. Then the network has to be idle.
+    const drawn = async (hash) => { if (hash === '#/qgv') await page.locator('[data-lb-table]').waitFor(); await page.waitForLoadState('networkidle'); };
     // The files a route's screen may read when it opens (P2-1: 0. 기업 검색 and its company page); every other route reads nothing.
-    const opens = (hash, names) => (hash === '#/' || hash === '#/nowhere/x' ? names.filter((n) => !HOME_READS.includes(n)) : hash.startsWith('#/company/') ? names.filter((n) => !FILES.has(n)) : names);
+    const QGV_READS = [...(await page.evaluate(() => window.IS2.data.CORE)), 'actual-catalog.json', 'company-names-ko.json'];
+    const opens = (hash, names) => (hash === '#/' || hash === '#/nowhere/x' ? names.filter((n) => !HOME_READS.includes(n)) : hash.startsWith('#/company/') ? names.filter((n) => !FILES.has(n))
+      : hash === '#/qgv' ? names.filter((n) => !QGV_READS.includes(n)) : names);
     for (const hash of routes) {
       phase = 'A fresh ' + hash;
       const at0 = rec.log.length;
-      await page.goto(s.base + hash); await page.reload(); await page.locator('main[data-route]').waitFor(); await loaded(); await settle();
+      await page.goto(s.base + hash); await page.reload(); await page.locator('main[data-route]').waitFor(); await loaded(); await drawn(hash); await settle();
       assert.deepEqual(opens(hash, dataNames(since(at0))), [], hash + ': opening the route in a fresh load reads no data file its screen did not ask for');
     }
     for (const hash of routes) {
       phase = 'A ' + hash;
       const at0 = rec.log.length;
-      await page.goto(s.base + hash); await page.locator('main[data-route]').waitFor(); await loaded(); await settle();
+      await page.goto(s.base + hash); await page.locator('main[data-route]').waitFor(); await loaded(); await drawn(hash); await settle();
       assert.deepEqual(opens(hash, dataNames(since(at0))), [], hash + ': a route change reads nothing before a screen asks');
       const r = await page.evaluate(async () => { const I = window.IS2, pub = await I.data.ready(), pg = await I.qgv.page(); window.__first = window.__first || pg; return { generation: pub.generation, same: pg === window.__first, state: pg.state }; });
       assert.deepEqual(r, { generation: 1, same: true, state: 'READY' }, hash + ': every screen shares one page of one generation');
