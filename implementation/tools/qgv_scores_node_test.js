@@ -217,7 +217,7 @@ test('calc_version: a row of another calculation-rule version is NA (CALC_VERSIO
 
 test('normal-NA rows (source data missing) keep an explicit reason, stay in the 504 denominator, never CALC_VERSION_MISMATCH', () => {
   const S = require(path.join(W, 'sec-qgv2.js')), strict = F.strictPayload();
-  assert.equal(strict.calc_version, 'qgv2-calc/2026-10-17.1');
+  assert.equal(strict.calc_version, 'qgv2-calc/2026-10-23.1');
   const inputs = SQ.fromInputs(S.toInputs(S.validate(strict), { now: '2026-10-14T00:00:00Z' }));
   const codes = Object.keys(inputs.records).filter((k) => !k.startsWith('TARGET:'));
   assert.equal(codes.length, 504, 'every Universe code stays in the denominator');

@@ -1,90 +1,128 @@
-# 현재 인수인계 — 2026-10-24 (Claude Code Main)
+# 현재 인수인계 — 2026-10-25
 
-확인 시각: **2026-10-24 15:20 UTC / 2026-10-25 00:20 KST**. 이 시각 이후의 PR·Actions·게시 상태는 `git log`와 열린 PR로 다시 확인한다. 구현 / 시험 / 병합 / 게시 / 실사이트 확인을 나눠 적는다.
+기준 **2026-10-25 12:25 UTC / 21:25 KST**, canonical **`ef5ff9c7`** (#413). `origin/main`은 없으며 실제 기본 브랜치는 **`claude/investment-system-top500-validation-alrugm`**이다. git log·PR 메타데이터·Actions job 로그·공개 파일을 대조했다. 이후 실행은 다시 확인한다. **10/25 프론트엔드 일시 제외(DC-20)는 같은 날 사용자 지시로 풀렸다(DC-21, 프론트엔드 재개).**
 
-먼저 읽기: **[START_HERE.md](START_HERE.md) → [방향 전환 대장](docs/SPEC/DIRECTION_CHANGES.md)** → [WORKING_RULES.md](WORKING_RULES.md) → 이 파일 → [기능 명세 v1.0](docs/SPEC/FUNCTION_HIERARCHY_v1.0.md) → [기능 현황](docs/SPEC/FUNCTION_STATUS.md) → [사용자 결정](implementation/docs/USER_DECISIONS_PENDING.md) → [새 프론트엔드 계획](implementation/docs/frontend_v2/FRONTEND_V2_PLAN.md)(#385) → [자료 계약](implementation/docs/FRONTEND_DATA_CONTRACT.md).
-이전 기록: [10/23](implementation/docs/handoff/HANDOFF_HISTORY_20261023.md) · [10/21 Codex Main 원문](implementation/docs/handoff/HANDOFF_HISTORY_20261021.md) · [10/20](implementation/docs/handoff/HANDOFF_HISTORY_20261020.md) · [10/18~19](implementation/docs/handoff/HANDOFF_HISTORY_20261018_19.md).
+읽기: [START_HERE](START_HERE.md) → [방향 전환 대장](docs/SPEC/DIRECTION_CHANGES.md) → [WORKING_RULES](WORKING_RULES.md) → [기능 현황](docs/SPEC/FUNCTION_STATUS.md) → [결정 원문](implementation/docs/USER_DECISIONS_PENDING.md). 최신 이행 순서는 10/25 오너 지시(DC-19·DC-21)가 과거 대기·순서 표현에 우선한다.
 
-## 0. 역할
+## 0. 역할·지금 관리할 흐름 (최대 3개)
 
-- **병합·공용 파일·이 파일 갱신은 Claude Code Main 하나가 맡는다**(2026-10-22). 공용 파일은 가드 고정값(`pages_artifact_guard.py`), CI 목록(`ci_*_tests.txt`), `app.js` 통합, 이 파일, `USER_DECISIONS_PENDING.md`다.
-- **2026-10-24 사용자 결정: 이 Main 세션이 새 프론트엔드 P1도 맡는다.** P1·P2 PR은 `web_app/`·그 시험·`docs/frontend_v2/`만 고친다. 공용 파일 변경은 Main 몫으로 따로 적는다. P3 전환(경계 시험 이식·가드 고정값 교체·옛 화면 삭제·배포)은 사용자 승인으로 한다.
-- **Codex는 검증·리뷰만 한다.** push·병합하지 않는다.
-- 어떤 PR을 작업하려면 아래 "작업 중" 표에 **PR 번호·담당·시작 시각**을 먼저 적고, 끝나면 지운다. 표에 다른 담당이 있는 PR은 건드리지 않는다.
+Main이 공용 파일·코드·병합·배포를 조정한다. Codex는 검증·리뷰와 허용된 문서만 작성·push한다(DC-09, DC-19). 문서 예외를 코드·병합·배포 권한으로 확대하지 않는다. 긴급 흐름(#410 → ALLSHARDS-1026)은 끝났다.
+
+| 흐름 / 기능번호 | Main 이행 | 현재 상태 |
+| --- | --- | --- |
+| **1 중앙 V / 2·6** | #400 IEX 스트림 수정(검토 반영) → #409·#410 포함 canonical을 #393 → #400 → #403 → #404 → #405 → 리허설 가지로 → 수정된 새 SHA로 비게시 재리허설 | 로컬 수정·검토·사슬 병합 진행 중(push 전). 재리허설은 오늘 03:00~19:30 UTC 창, 다른 수집·배포와 겹치지 않게 |
+| **2 프론트엔드 / 1·2** | 시안 추가 보드 18쌍 검토 반영 → 시안 아티팩트에 추가. P2-2a(2.1 리더보드) 명세 → 구현 → 검토 → PR(병합은 승인 뒤) | 보드 수정 재개, P2-2a 명세 작성 중(가지 `claude/frontend-v2-p2-2-qgv`, push 전) |
+| **3 정본 문서 / 공통** | 이 PR: #413 뒤 사실(#410·#408·#413 병합, ALLSHARDS-1026 결과, 원장 판정, DC-21) | 병합은 오너 승인 뒤 |
 
 ### 작업 중
 
-| PR | 담당 | 시작 (UTC / KST) | 내용 |
-| --- | --- | --- | --- |
-| #398 `claude/frontend-v2-p1-decisions` P1 결정 반영·결정 기록 | Claude Code Main | 2026-10-24 06:00 / 15:00 | DC-18 기기 시세 저장 중단, 한 클릭 한 동작, 백업 /5(옛 검증기 재사용), 판정 '기록 안 됨', 10/24 결정 기록. 필수 체크 녹색 뒤 병합 승인 요청 |
-| #399 `claude/frontend-v2-p2-1-first-paint`(#398 위) P2-1a 첫 화면 구조 | Claude Code Main | 2026-10-24 06:00 / 15:00 | 셸 먼저, P1 층은 첫 그림 뒤 불러오기 + 성능 시험(느린 폰 조건 첫 화면 ≤2,000 ms·첫 전송 ≤100 KB). 측정 중앙값 848 ms / 24.4 KB(CI 837 ms). 녹색, #398 병합 뒤 기준 바꿔 동기화·병합 |
-| #400 → #403 → #404(#393 위 사슬) 중앙 V PR-A·B·C | Claude Code Main | 2026-10-24 06:00 / 15:00 | U1~U3 정리(#400), 가드 U5(#403), 워크플로 U4·첫 게시 점검표(#404). 처음 연 #401·#402는 Gate A 이메일 검사가 옛 중간 커밋의 시험 URL을 계속 잡아 같은 트리의 새 브랜치(`-r2`)로 바꾸고 닫음. Secret 2개 등록 전에는 V 단계가 NOT_RUN이고 정기 실행은 성공해야 한다. 첫 게시 전 소유자 확인 CV-LEAK·CV-SPLIT(·CV-CARRY). 첫 게시 목표 11-04 전 |
-| #405 `claude/central-v-reader`(#404 위) 중앙 V PR-D 옛 화면 작은 판독기 | Claude Code Main | 2026-10-24 10:30 / 19:30 | D8 (b): TARGET v1이 유효한 중앙 게시본이면 공식 V, 아니면 임시 V. 새 `qgv-official.js`(서버 검증기의 JS 쌍둥이), 클릭 때만 읽기. 새 프론트엔드 전환은 PR-D2(#398 뒤) |
-
-## 1. 기준·게시
-
-- canonical: **claude/investment-system-top500-validation-alrugm**, HEAD **fa0d9fcd** (#391 병합, 2026-10-24 06:58 UTC / 15:58 KST).
-- 10/24 병합(모두 최신 canonical 위 필수 6체크 성공 확인 뒤, 소유자 승인):
-  - #395 CI 실행기 `ubuntu-24.04` 고정: HEAD 67f2ca85 → 병합 **d6eaaa8a** (00:09 UTC / 09:09 KST). `ubuntu-latest`가 26.04로 바뀌어 Playwright 1.58.2 설치가 실패했기 때문이다.
-  - #394 명세 원문·방향 전환 대장·금지 표현 검사·START_HERE: HEAD b3d5a41c → 병합 **9159df0d** (01:09 UTC / 10:09 KST). 문서·검사만이라 화면 변화 없음.
-  - #385 새 프론트엔드 P0(셸·디자인 부품·글꼴·개발 빌드): 동기화본 2d7aec84(공용 CI 목록 충돌은 두 시험 모두 유지, 4.5 메뉴 "나비효과") → 병합 **a359ae91**. `web_app/`은 배포되지 않는다.
-  - #396 옛 화면 4.5 "나비효과"(가드 해시 2개 재고정)·DC-02 계획·인수인계 → 병합 **d8fa097b** (05:44 UTC).
-  - #397 새 프론트엔드 P1 자료·계산 층(옛 모듈 57개 재사용, 새 시험 5개 CI 등록) → 병합 **f3cee500** (06:26 UTC). 오늘 정기 실행 verify부터 P1 시험이 돈다. 실패하면 시험을 건너뛰지 않고 원인부터 보고한다(사용자 지시).
-  - #391 TARGET v1 "임시 V"·F1(첫 확정본 날짜 기준, 사용자 결정)·F2 → 병합 **fa0d9fcd** (06:58 UTC).
-  - #396·#391의 화면 변화(4.5 이름, TARGET v1 임시 V 표시)는 10/24분 정기 실행 배포 때 실사이트에 반영된다.
-- 10/23 병합: #384 #378 #382 #387 #389 #388 #386(마지막 81d7b58d). 자세한 내용은 [10/23 기록](implementation/docs/handoff/HANDOFF_HISTORY_20261023.md).
-- **실제 게시: d6eaaa8a.** 10/23분 정기 실행 [run 40045938631](https://github.com/kco994553-star/Investment-System1/actions/runs/40045938631)이 collect·verify·deploy 모두 성공했다(24.04, 시작 00:38 UTC, 배포 01:17 UTC / 10:17 KST).
-
-## 2. 정기 실행·연속 성공
-
-| 관측일 | run | 결과 | 비고 |
-| --- | --- | --- | --- |
-| 10/20 | 39522288311 | collect 성공 · **verify 실패** · deploy 건너뜀 | 연속 끊김. 수정 #370, 10/20 자료는 #371 복구 게시 |
-| 10/21 | 39701051682 | 성공 | (셈 시작 전) |
-| 10/22 | 39879258841 | **성공 · 연속 1회째** | 사용자 결정(10/22)으로 이 실행부터 센다. 원장 각 4건 |
-| 10/23 | 40045938631 | **성공 · 연속 2회째** | #395 병합 뒤 첫 실행(24.04). 원장 v1/v2 각 5건(`appended=1`, session 2026-10-23), RAW 재사용(`source=RAW raw=FOUND recovered_records=0`), 비공개 업로드 `forward-ledger-2026-10-23`. 샤드 5(65종목) 수집 65/65 |
-
-- 연속 성공: **2/7** (10/23). 예약 22:17 UTC 실행이 나흘 연속 2시간 20분 안팎 늦게 시작했다(00:36·00:40·00:37·00:38 UTC). 확인은 01:30 UTC 무렵을 기본으로 한다.
-- 10/23 게시 커버리지: Q 486 / G 494 / 양쪽 478, 분모 504, calc_version `qgv2-calc/2026-10-17.1`, 샤드 7/7, 7일 경과 행 0, as_of 2026-10-24 00:50 UTC.
-- 부분 실패(배포는 막지 않음, 10/22와 같음): 8-K `ASML_6K_EARNINGS_UNCONFIRMED`(17개 중 1개), 뉴스 GDELT HTTP 429·IR 피드 실패로 PARTIAL_FAILED(항목 45), 로고 Wikidata 원천 불가로 이니셜 506. 원인 조사는 별도 작업.
-
-## 3. TARGET v1 확정 조건 (확정 창 2026-11-09~11-15)
-
-| 조건 | 상태 |
-| --- | --- |
-| 구현 #248·#263 | 병합·게시 |
-| Q·G 각 454/504 이상 | 486 / 494 충족(10/23 게시본) |
-| 10종목 숫자 대조(같은 calc_version) | **통과 기록**(10-23 #386, 앱 계산식 + 시험 가격, DC-16), `qgv2-calc/2026-10-17.1`. #393이 calc_version을 올리면 재대조 필요 → [계획 5절](implementation/docs/qgv_scoring_standard/CENTRAL_V_DC02_PLAN_20261024.md) |
-| V 출처 | 중앙 V 미게시 → "임시 V"(#391 병합, 다음 배포에 반영). 중앙 V가 11-04 전에 게시되면 옛 화면 작은 판독기(D8 (b), PR-D)로 중앙 V |
-| 실제 사용자 카드 응답 | 미시작 |
-
-## 4. 열린 PR (10-24 15:20 UTC)
-
-| PR | 상태 | 남은 것 |
+| PR·작업 | 담당 | 시작 (UTC) |
 | --- | --- | --- |
-| #398 P1 결정 반영·결정 기록(DC-18) | 소유자 승인 대기 | 새 결정 대기 MANUAL-QUOTE(손으로 넣는 시세 위치, P2-6 전), 중앙 V CV-LEAK·CV-SPLIT·CV-CARRY |
-| #399 P2-1a 첫 화면 구조(#398 위) | 녹색, 소유자 승인 대기 | #398 병합 뒤 기준을 canonical로 바꾸고 동기화·CI·병합 |
-| #400·#403·#404 중앙 V PR-A·B·C(#393 위 사슬) | 모두 녹색, 소유자 승인 대기 | Secret 2개 등록, CV-LEAK·CV-SPLIT 결정, #393과 같은 날 병합(첫 게시 점검표) |
-| #405 중앙 V PR-D(#404 위) | CI 중, 소유자 승인 대기 | 소유자 확인 CV-D-FRESH·CV-D-BUTTON·CV-D-ROWS·CV-D-CHURN(문구·V3/V4는 첫 게시 뒤 확인). 확정이 실제로 되려면 계획 5절 재기록 PR과 all_shards 1회가 먼저 |
-| #392 TARGET v0 결합 해소 | 소유자 승인 대기. CI는 #395 전 | 기기 저장 키를 발행사 키로 이전. 후속 결정 7개를 USER_DECISIONS_PENDING으로 옮겨야 함. 가드 148·149행 붙은 줄 충돌(두 해시 유지로 해결) |
-| #393 F_k·calc_version 23.1 | D1 (ii): 중앙 V 첫 게시와 같은 배포 창에 병합. 10-24 canonical 동기화, #397 시험의 벡터 수 고정(100 → 115) 수정, WSM 가격 판정 문구 삭제(c99c7471) | 병합 뒤 전체 샤드 실행·숫자 재대조(계획 5절, #391 병합됐으므로 재기록 PR 가능) |
-| #361 Worker 분할 이벤트 | 배포 보류(Yahoo 권리 미해결) | 무료 대안 공급원 결정 |
-| #305·#281(draft, 참고) · #267(보류) | 그대로 | — |
+| 중앙 V 사슬 canonical 병합(첫 게시 날짜 승인 대기, 리허설 run 40307781072 PASS) | Claude Code Main | 10/25 07:01 |
+| 프론트 v2 PR 사슬 #415 → #419 → #420: CI 녹색, 병합 승인 대기(앞 PR 병합 뒤 다음 PR 기준을 canonical로). 결정 반영: D12-V0 (a)·HOME-DEFAULT-V0 (c)·DC-26 확인(10/28). 시안 버전 53 | Claude Code Main | 10/25 11:10 · 10/28 |
 
-- 중앙 V 원본 브랜치 `claude/cv-core-publisher`는 #400으로 흡수됐다. `claude/iex-v4-backfill`(U8 1회 실행 완료)·`claude/iex-hist-probe`(PASS)는 기록 보존.
-- `claude/fe2-*` 4개는 P0 커밋만 있는 빈 레인이다.
+## 1. 승인 이행·오너 결정 (마감순)
 
-## 5. 다음 할 일
+| 번호 | 마감 UTC / KST | 실제 상태·남은 조건 |
+| --- | --- | --- |
+| **#409 UNI-PSKY-ALIAS** | 10-26 22:00 / 10-27 07:00 | **완료.** 병합 `c65f187a`, ALLSHARDS-1026으로 게시(PSKY 새 acquired_at 10-25 11:19 UTC) |
+| **#410 UNI-ENDED** | 같음 | **완료.** 병합 `0de4148f`, 게시(WBD `NOT_AVAILABLE`·`CIK_UNRESOLVED`·값 없음, `listing_ended=1`) |
+| **ALLSHARDS-1026 1회** | 같음 | **완료.** [run 40186520528](https://github.com/kco994553-star/Investment-System1/actions/runs/40186520528) 10:52:03→12:03:16, collect·verify·deploy 성공(아래 4·6절) |
+| #413 채택·#412 중복 종료 | — | **완료.** #413 병합 `ef5ff9c7`, #412 닫음(브랜치·이력 보존) |
+| 중앙 V 첫 게시 창 | **11-04 전 목표** | 수정 후보 재리허설·점검표 뒤 날짜 제안. **게시 창 실행은 오너 승인 뒤.** 이 창의 all_shards는 ALLSHARDS-1026과 별도 |
+| #408 처리(DC-20 시점) | — | DC-20은 10:03 UTC #413 커밋 97c40352로 기록됐다(본문 최종 확인 10:43 UTC). #408은 10:52 UTC 병합 — Main은 DC-20을 병합 뒤에 확인했다. 배포 안 됨. DC-21로 프론트엔드가 재개돼 그대로 둔다(되돌리기는 오너 지시가 있을 때만) |
+| #392 TARGET v0 결합 해소 | 미정; 중앙 V와 다른 창 | 준비·검증 뒤 병합안 보고. 최종 병합 승인 별도, TV0 후속 7건 자동 승인 아님 |
+| CV-MONTHEND-RECENT · D5-UPDATE · LISTING-ENDED-CODE | 시각 미정 | 첫 게시 비차단. 전용 상장 종료 사유 코드는 별도 PR·결정(11/9 확정 창 뒤 권장) |
+| T-FRESH · MANUAL-QUOTE · TV0-* 및 나머지 장기 결정 | [결정 원문](implementation/docs/USER_DECISIONS_PENDING.md#남아-있는-결정만)의 선행 조건 | 현행 계산·T-FRESH 유지. MANUAL-QUOTE는 P2-6 전 |
 
-1. 10/24분 정기 실행 확인(연속 3/7 여부, 01:30 UTC 무렵). P1 시험이 verify에서 처음 돈다.
-2. #398 녹색 → 병합 승인 → 병합. 이어서 P2-1a PR → 화면 P2 메뉴별(기능 1 → 2 → 6 → 5 → 3 → 4 → 7 → 8 → 9).
-3. 중앙 V: 사용자 Secret 2개 등록(폰 절차 전달함) + CV-LEAK·CV-SPLIT 결정 → #400·#403·#404 승인 → #393과 같은 날 병합 → 전체 샤드 실행 → 첫 게시(목표 11-04 전, 넘기면 D1 (iii) 제안) → 숫자 재대조 → 옛 화면 판독기(PR-D).
-4. 결정 대기: D5-UPDATE(월말가 월 1회 별도 실행 대안), MANUAL-QUOTE.
-5. #392 승인 시 기준 병합 → CI → 병합. 8-K·뉴스·로고 부분 실패 원인 조사.
+## 2. 10/25 KST 병합 (mergedAt)
 
-## 6. 유지할 경계
+| PR | 내용 | UTC / KST | merge SHA |
+| --- | --- | --- | --- |
+| [#398](https://github.com/kco994553-star/Investment-System1/pull/398) | P1 결정·DC-18 | 10-24 22:39:55 / 10-25 07:39:55 | `8e1fce12` |
+| [#399](https://github.com/kco994553-star/Investment-System1/pull/399) | P2-1a 첫 화면 | 10-24 23:22:48 / 10-25 08:22:48 | `4c3d8142` |
+| [#407](https://github.com/kco994553-star/Investment-System1/pull/407) | verify 제한 60분 | 10-25 07:33:54 / 16:33:54 | `f61b0373` |
+| [#409](https://github.com/kco994553-star/Investment-System1/pull/409) | PSKY 별칭 | 10-25 08:18:52 / 17:18:52 | `c65f187a` |
+| [#406](https://github.com/kco994553-star/Investment-System1/pull/406) | 결정 기록 | 10-25 08:23:12 / 17:23:12 | `c43b223f` |
+| [#410](https://github.com/kco994553-star/Investment-System1/pull/410) | WBD 상장 종료 NA | 10-25 10:51:48 / 19:51:48 | `0de4148f` |
+| [#408](https://github.com/kco994553-star/Investment-System1/pull/408) | P2-1 홈·검색(배포 안 됨) | 10-25 10:52:29 / 19:52:29 | `a7a2f32d` |
+| [#413](https://github.com/kco994553-star/Investment-System1/pull/413) | 문서 정본(Codex) | 10-25 10:58:48 / 19:58:48 | `ef5ff9c7` |
 
-- 원시 가격·EV·수익률·배율·내재 성장률·보유·거래·시트 ID·토큰·환율 값을 저장소·Pages·Actions 로그에 넣지 않는다. 공식 V 점수·순위는 2026-10-23 결정(GSQ-024)으로 IEX HIST 기반 서버 계산 후 공개한다(아직 구현 안 됨). NA를 0으로 채우지 않는다.
-- force push·ruleset·AUTONOMY_MODE(READ_ONLY) 변경 금지. 가드 비활성화·검사 생략·보호 대상 축소 금지. 권한 검사가 거부하면 우회하지 않고 보고한다.
-- Frozen 자료·전진검증 원장 보존. Holdout 사용 권한 확대 없음.
-- 다른 작업자의 worktree·scratchpad·원자료를 지우지 않는다.
+#410은 CI 녹색(09:16 UTC) 뒤 Main 세션 사용량 한도로 약 1시간 35분 늦게 병합했다. #406·#408·#413은 바로 앞 병합을 포함하지 않은 HEAD로 병합했다. #406·#408은 바로 앞 병합과 바뀐 파일이 겹치지 않는다. #413은 #408과 `FUNCTION_STATUS.md`를 함께 바꿨으나 다른 행이라 충돌이 없다.
+
+## 3. 열린 PR·CI·승인
+
+| PR | 제목 요지 | HEAD | CI | 오너 승인·조건 |
+| --- | --- | --- | --- | --- |
+| [#411](https://github.com/kco994553-star/Investment-System1/pull/411) | TARGET 확정 차단 점검 | `3f260f6b` | green(옛 기준) | #405 뒤 동기화·검증, 사슬과 함께 |
+| [#405](https://github.com/kco994553-star/Investment-System1/pull/405) | 중앙 V PR-D 판독기 | `eca9ab79` | green(옛 기준) | 게시 창 조건; base #404 |
+| [#404](https://github.com/kco994553-star/Investment-System1/pull/404) | 중앙 V PR-C 워크플로 | `8005575c` | green(옛 기준) | 수정 사슬·리허설·게시 창 조건; base #403 |
+| [#403](https://github.com/kco994553-star/Investment-System1/pull/403) | 중앙 V PR-B 가드 | `993a4682` | green(옛 기준) | 같음; base #400 |
+| [#400](https://github.com/kco994553-star/Investment-System1/pull/400) | 중앙 V PR-A 계산 코어 | `3589fd44` | green(옛 기준) | IEX 수정 반영본 push 전; base #393 |
+| [#393](https://github.com/kco994553-star/Investment-System1/pull/393) | F_k·calc_version 23.1 | `59c97730` | green(옛 기준) | canonical 동기화 진행 중; 중앙 V 첫 게시와 같은 창 |
+| [#392](https://github.com/kco994553-star/Investment-System1/pull/392) | TARGET v0 결합 해소 | `f8307b7c` | green(10/24 기준) | DIRTY, 통합 검증·최종 병합 승인 별도 |
+| [#361](https://github.com/kco994553-star/Investment-System1/pull/361) | Worker 분할 이벤트 | `910d5661` | green(10/20 기준) | DIRTY, 공급원 권리로 배포 보류 |
+| [#305](https://github.com/kco994553-star/Investment-System1/pull/305) | [WIP] Atlas | `bbb7bb55` | green(10/18 기준) | draft·참고, DIRTY |
+| [#281](https://github.com/kco994553-star/Investment-System1/pull/281) | [WIP] 프론트엔드 시안 | `3b22cae1` | green(10/17 기준) | draft·참고 |
+| [#267](https://github.com/kco994553-star/Investment-System1/pull/267) | 투자 스튜디오 | `ad469e5c` | green(10/15 기준) | 보류 |
+
+조회 범위(#413 기록 유지): repo ruleset 24499602 HG-02 canonical hard guard — PR 필수, 리뷰 승인 수 0, 필수 check `repository-guard`, bypass actors 없음. legacy branch protection API만 403. GitHub 리뷰 0과 오너 승인(대화·결정 기록)은 별개다.
+
+## 4. 실제 상태·게시 검증
+
+| 대상 / 기능번호 | 구현 | 실제 시험·검증 | 통합 | 배포 | LIVE |
+| --- | --- | --- | --- | --- | --- |
+| #407 / 9.2 | 완료 | PR CI green | 완료 | ALLSHARDS-1026 verify 잡 33.9분(제한 60) | 정기 실행 적용은 10/25분 실행에서 확인 |
+| #409·#410 / 2·9.2 | 완료 | CI green, 합본 로컬 전체 시험 3,756 통과 | 완료 | **완료**(run 40186520528, 12:03 UTC) | 공개 파일 확인(아래). 화면 직접 확인은 미확인 |
+| #398·#399·#408 / 1 | 완료 | 각 PR CI green | 완료 | 해당 없음(`web_app/`은 P3 전환 때) | 해당 없음 |
+| 중앙 V / 2·6 | 수정 진행 | CI green(옛 기준), 리허설 1회 FAIL | 미완료 | 미배포 | 미확인 |
+
+공개 파일 **12:20 UTC** 확인([QGV](https://kco994553-star.github.io/Investment-System1/sec-qgv2.json), as_of 2026-10-25 11:26:42 UTC):
+
+| 항목 | ALLSHARDS-1026 뒤 실측 |
+| --- | --- |
+| Universe·커버리지 | 504, Q 485, G 493, 양쪽 477, LIVE 501·STALE 0·NOT_AVAILABLE 3, 샤드 7/7, 단면 498, calc_version `qgv2-calc/2026-10-17.1` |
+| PSKY | LIVE, acquired_at **2026-10-25 11:19:47 UTC**, CIK 0002041610, 업종군 telecommunications(SIC 4833) 유지 |
+| WBD | **NOT_AVAILABLE**, 사유 `CIK_UNRESOLVED`, 값·calc_version 없음, CIK 0001437107·acquired_at 10-17 03:15 UTC 유지. 로그 `listing_ended=1` |
+| 7일 초과 | **값 있는 행 0.** 로그 `stale_7d_rows=1`은 WBD NA 행(값 없음, 원장 계산에서 빠짐) |
+| 원장 판정 | `forward_ledger.observation_basis`를 이 파일에 적용: 세션 **10/26·10/27·10/28 PRIMARY**(사유 없음, 취득일 10-25). 이 파일만으로는 10/30(7일 이내 마지막 세션)까지 PRIMARY, 11/02는 `ROW_DATA_STALE` — 정기 실행의 샤드 갱신이 이어져야 한다. 실제 기록은 각 세션 자기 파일로 정기 실행 뒤 판정되므로 그때 다시 확인 |
+| 수집 로그 | issuers 500/500, failed 0, `unresolved_codes=1`(WBD), `preserved_previous_shares=2`(WBD·PSKY shares 행), `identity_not_preserved=0`. 오늘은 일요일이라 원장 추가 없음(`appended=0`) |
+
+PSKY의 `sec-universe-shares.json` 행은 #409 설계대로 보존(M3 주식수 경로는 별칭을 쓰지 않음)되어 10-31 03:13 UTC에 STALE이 된다. TARGET 확정·원장·중앙 V 순위는 이 파일을 읽지 않는다.
+
+## 5. 다음 우선순위·대기열
+
+1. **중앙 V 재리허설**: 사슬 동기화·교차 검토 → 사슬·리허설 가지 push → 비게시 재리허설(오늘 19:30 UTC 전) → 결과(run ID, 처리 시간·디스크·누락, 12기준 판정) → 첫 게시 날짜 제안. 구 SHA 재실행으로 수정 검증을 대신하지 않는다.
+2. **프론트엔드**: 시안 추가 보드 게시 → P2-2a(2.1 리더보드) PR. 다음 순서 2.2 → 2.4·2.3.1·2.5 → 6 → 5 → 3 → 4 → 7 → 8 → 9. P3 실사이트 전환·배포는 별도 승인.
+3. **10/25분 정기 실행 확인**(10/26 00:19 UTC 무렵): 연속 4/7 여부, verify 60분 제한 첫 정기 적용, 보존 행 6일 이상 점검.
+
+장기 대기열: **#392** 최신 canonical 동기화·충돌 해결·기기 키 이전·백업·기존 그림 보존·멱등성 검증 → 중앙 V와 다른 창의 병합안(최종 승인 별도, TV0 후속 7개 제외).
+
+중앙 V 게시 창 계획: **#393 → 수정 #400 → #403 → #404 → 전환용 별도 all_shards·새 calc_version 숫자 재대조 → #405 → #411**. #411은 #405 뒤 동기화해 `freshFor`·`official`·숨김 상태·TARGET 핸들러 충돌을 검증한다.
+
+## 6. 정기 실행·수동 실행·중앙 V 실측
+
+| 대상 / 관측분 | run 번호 / ID | UTC 시작→종료 | 결과 |
+| --- | --- | --- | --- |
+| SEC 10/22분 | [#21 / 39879258841](https://github.com/kco994553-star/Investment-System1/actions/runs/39879258841) | 10-23 00:37:54→01:20:47 | 성공, 1/7 |
+| SEC 10/23분 | [#22 / 40045938631](https://github.com/kco994553-star/Investment-System1/actions/runs/40045938631) | 10-24 00:38:05→01:17:10 | 성공, 2/7 |
+| SEC 10/24분 | [#23 / 40146210895](https://github.com/kco994553-star/Investment-System1/actions/runs/40146210895) | 10-25 00:19:00→01:06:12 | 성공 3/7, `4c3d8142` |
+| **ALLSHARDS-1026** | [#24 / 40186520528](https://github.com/kco994553-star/Investment-System1/actions/runs/40186520528) | 10-25 10:52:03→12:03:16 | **성공**(workflow_dispatch, `0de4148f`). collect 36.6분, verify 33.9분, deploy 12:03:13. 수동 실행이라 연속 집계에 넣지 않음 |
+| 중앙 V 비게시 리허설 | [#1 / 40156760950](https://github.com/kco994553-star/Investment-System1/actions/runs/40156760950) | 10-25 03:03:01→03:32:46 | 최종 FAIL, 6/12 PASS. IEX_GZIP_FAILED·ROWS_OF_ANOTHER_CALC_VERSION(other_calc=2)·NOT_MEASURED 4 |
+
+부분 실패(배포는 막지 않음, 이전과 같음): 8-K `ASML_6K_EARNINGS_UNCONFIRMED`(17개 중 1개), 뉴스 GDELT HTTP 429·IR 피드 실패(PARTIAL_FAILED), 로고 Wikidata 원천 불가(이니셜 506).
+
+## 7. 알려진 위험·관리자 노트
+
+| 위험 | 영향·확인 |
+| --- | --- |
+| WBD 사유 코드 미분리 | `CIK_UNRESOLVED` 표기('CIK 미해결'·'CIK 미확인'). 전용 `LISTING_ENDED`는 별도 결정·PR |
+| telecom MIN_PEERS=8 경계 | **ALLSHARDS-1026 뒤 실측: telecom 업종군 발행사 8곳**(값 있는 코드 9, FOX·FOXA 한 발행사). 하나 더 빠지면 Q가 GENERAL `UNIVERSE_FALLBACK`(v2_scoring.py). 매일 8 미만이면 즉시 보고 |
+| 중앙 V 두 오류 | gzip 실패와 입력 버전 혼합은 별개. 수정·새 SHA·최종 판정으로 확인, 가드 약화 금지 |
+| 신선도·원장 | 7샤드 회전과 T-FRESH 7일의 여유 0: 정기 실행이 하루 빠지면 원장·확정이 막힌다. 6일 이상 보존 행은 매일 보고. `sec-qgv2.json` 값 있는 보존 행 0. **`sec-universe-shares.json`의 PSKY 행(LIVE, 10-17 03:13 UTC 취득, 이미 6일 초과)이 보고 대상**이며 10-31 03:13 UTC에 STALE(#409 설계: M3 주식수 경로는 별칭을 쓰지 않음) |
+
+관리자 노트: 기능 구현 %·프론트엔드 %는 미산정(#413). 문서·리뷰만으로 제품 진행률을 올리지 않는다.
+
+## 8. 경계
+
+Universe504 고정(DC-01), 공식 V는 IEX HIST 서버 계산·공개 방향(DC-02), 아직 canonical 미통합. 원시 가격·EV·배율·수익률·보유·Secret 값·키·토큰 값은 문서·로그·공개 산출물에 넣지 않는다(Secret은 이름 `QGV_OFFICIAL_HMAC_KEY`·`RAW_REPO_READ_TOKEN`만). NA를 0으로 채우지 않는다. 가격 요청은 버튼을 누를 때만. Frozen·원장·SUPERSEDED·#412 이력 보존. 계산·가중치·T-FRESH·공개 경계·보호규칙·AUTONOMY_MODE 임의 변경 없음.

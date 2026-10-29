@@ -4,7 +4,9 @@
 //  - the draft's menu 0 ~ n+1, each menu's numbered sections in the draft's order, the detail screens, unknown routes -> 0;
 //  - the header menu marks the current menu; phone: header menu hidden, bottom tabs (홈 · QGV · 포트폴리오 · 뉴스 · 전체) and the
 //    전체 메뉴 drawer (menus + detail screens, Escape closes and returns focus);
-//  - no request leaves the page's origin, no console error (CSP violations included), no style attribute in the DOM,
+//  - no request leaves the page's origin, no console error (CSP violations included; the one exception is the intended 404 of a
+//    live-only public file this offline build does not contain, read by a screen that shows public data: P2-1 company page),
+//    no style attribute in the DOM,
 //    nothing written to localStorage / sessionStorage / IndexedDB, no horizontal overflow, the three self-hosted fonts load;
 //  - a 연결 전 block shows no digits (the draft's numbers are examples only).
 const { chromium } = require('playwright'), assert = require('node:assert/strict'), fs = require('node:fs'), os = require('node:os'), path = require('node:path'), http = require('node:http'), { execFileSync } = require('node:child_process');
@@ -19,6 +21,10 @@ const MENUS = { qgv: ['1-1', '1-2', '1-3', '1-4'], technical: ['2-1', '2-2', '2-
   portfolio: ['5-1', '5-2', '5-3', '5-4'], prompts: ['6-1', '6-2'], tree: ['n-1'], lab: ['lab-1', 'lab-2'] };
 const DETAILS = ['settings', 'data-status', 'financials', 'sec-cover', 'playbook', 'virtual-trading', 'target-v1'];
 const HEADER = ['qgv', 'technical', 'macro', 'news', 'portfolio', 'prompts', 'tree', 'lab'];
+// Published by the data workflow only (absent from the offline build; checked below): their 404 is the NOT_PUBLISHED state.
+// Exactly the two core files IS2.data.ready() reads that this build lacks (the company page calls it); nothing else is excused.
+const LIVE_ONLY = ['sec-qgv2.json', 'sec-public-inputs.json'];
+for (const f of LIVE_ONLY) if (fs.existsSync(path.join(OUT, f))) throw new Error(f + ' is in the offline build: not live-only');
 let phase = 'START';
 (async () => {
   await new Promise((r) => server.listen(0, '127.0.0.1', r));
@@ -29,7 +35,8 @@ let phase = 'START';
       const phone = width < 720, context = await browser.newContext({ viewport: { width, height } }), page = await context.newPage();
       const outside = [], errors = [];
       page.on('request', (r) => { if (new URL(r.url()).origin !== ORIGIN) outside.push(r.url()); });
-      page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
+      page.on('console', (m) => { if (m.type() !== 'error') return; const at = m.location() && m.location().url ? new URL(m.location().url, ORIGIN) : null;
+        if (at && at.origin === ORIGIN && /status of 404/.test(m.text()) && LIVE_ONLY.includes(decodeURIComponent(at.pathname.slice(1)))) return; errors.push(m.text()); });
       page.on('pageerror', (e) => errors.push(String(e)));
       const visit = async (hash) => { phase = width + ' ' + hash; await page.goto(BASE + hash); await page.locator('main[data-route]').waitFor(); };
       const common = async () => {
@@ -42,6 +49,8 @@ let phase = 'START';
       assert.equal(await page.locator('main').getAttribute('data-route'), 'search');
       assert.match(await page.locator('.hero-title').textContent(), /어떤 기업을 볼까요\?/);
       await common();
+      // The shared search (DC-23) submits after IS2.ready (before it a submit does nothing): wait for the layer, then the exact code.
+      await page.evaluate(() => window.IS2.ready);
       await page.locator('[data-search-input]').fill('NYSE:FIX'); await page.locator('[data-search-form] button[type=submit]').click();
       await page.locator('[data-result-code="NYSE:FIX"]').waitFor();
       assert.equal(await page.evaluate(() => location.hash), '#/company/NYSE%3AFIX');
@@ -73,7 +82,8 @@ let phase = 'START';
         await page.locator('[data-detail=settings]').waitFor(); assert.equal(await page.locator('[data-drawer]').isHidden(), true);
       }
       phase = width + ' fonts';
-      assert.deepEqual(await page.evaluate(async () => { await document.fonts.ready; return ['IS Black Han Sans', 'IS Gowun Dodum', 'IS Pen Script'].map((f) => document.fonts.check('16px "' + f + '"', '가')); }), [true, true, true]);
+      // DC-25: Jua is the one self-hosted face (titles); body text is the device's Korean gothic.
+      assert.deepEqual(await page.evaluate(async () => { await document.fonts.ready; return ['IS Jua'].map((f) => document.fonts.check('16px "' + f + '"', '가')); }), [true]);
       phase = width + ' boundaries';
       assert.deepEqual(outside, [], 'no request leaves the origin');
       assert.deepEqual(errors, [], 'no console error');

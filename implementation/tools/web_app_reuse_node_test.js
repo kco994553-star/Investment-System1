@@ -2,9 +2,12 @@
 // New frontend P1 · reuse (plan A), the first-paint loader (P2-1a) and shell plumbing.
 //  - What the page loads (owner 2026-10-24, first paint): index.html only the first screen (P0 base, loader.js, the eight lane
 //    placeholders, the P0 screens, boot.js last; web_app files only, every tag a deferred file, the CSP byte-identical to the old
-//    page), then loader.js LOAD_ORDER after the first paint: the 59 old engines/readers (old page's relative order, each once)
-//    and the P1 layer (action → data → prices → store → qgv → engines). LOAD_ORDER is the one load list: the loader's runtime
-//    list, tools/web_app_reuse.js and tools/build_web_app.py read the same literal.
+//    page), then loader.js LOAD_ORDER after the first paint: the 60 old engines/readers (old page's relative order, each once;
+//    home-quotes.js for the home's investor story, P2-1, Main)
+//    and the P1 layer (action → data → prices → store → qgv → engines), then the screens' after-first-paint halves (web_app
+//    files, P2-1: screen-search-live.js; P2-2a: screen-qgv-live.js; a screen's first-paint file holds only its skeleton and stays
+//    small, screen-search.js and screen-qgv.js ≤ 5 KB). LOAD_ORDER is the one load list: the loader's runtime list, tools/web_app_reuse.js and tools/build_web_app.py
+//    read the same literal.
 //  - A name present in web_app wins and is never reused (screen-detail.js); every other script is an old web_assets file.
 //    tools/build_web_app.py applies the same rule, keeps the reused files byte-identical, removes every other old frontend
 //    file, and fails on a reference found in neither folder, a duplicate, an inline script, a non-local name, an old module in
@@ -45,7 +48,8 @@ const { execFileSync } = require('node:child_process');
 const R = require('./web_app_reuse');
 
 const P0_BASE = ['core.js', 'shell.js', 'parts.js'];
-// Design 1.3 (57 files) plus the two backup /5 validator modules (owner 2026-10-24), in the old page's order.
+// Design 1.3 (57 files) plus the two backup /5 validator modules (owner 2026-10-24) and the home's checked investor stories
+// (home-quotes.js, P2-1, Main), in the old page's order.
 const REUSED = [
   'locale.js', 'entity-search.js', 'price-time.js', 'device-market.js', 'device-actual.js', 'profile-defaults.js', 'type-config-defaults.js',
   'device-profiles.js', 'engine-preview.js', 'dcf-parameters-defaults.js', 'device-valuation.js', 'playbook-config-defaults.js', 'playbook-engine.js',
@@ -55,16 +59,20 @@ const REUSED = [
   'private-trades.js', 'holdings-capture.js', 'worker-quote-fallback.js', 'forward-validation.js', 'private-history.js', 'sec-reported.js',
   'manager-styles-v0.js', 'thirteenf-quarter.js', 'macro-lights.js', 'macro-cycle-ring.js', 'macro-evidence.js', 'public-screens.js', 'sec-disclosures.js', 'news-signals.js',
   'classification-screens.js', 'dart-disclosures.js', 'virtual-trading.js', 'virtual-trading-runner.js', 'virtual-trading-signals.js',
-  'virtual-trading-v-history.js', 'virtual-ledger-sheets.js', 'price-store.js', 'report-benchmarks.js', 'virtual-trading-compare.js', 'data-refresh.js',
+  'virtual-trading-v-history.js', 'virtual-ledger-sheets.js', 'price-store.js', 'report-benchmarks.js', 'virtual-trading-compare.js', 'home-quotes.js', 'data-refresh.js',
 ];
 const P1 = ['action.js', 'data.js', 'prices.js', 'store.js', 'qgv.js', 'engines.js'];
+// The screens' after-first-paint halves (web_app files, loaded after the layer; P1_DATA_LAYER.md §1.1 screen-file rule).
+const LIVE = ['search-part-live.js', 'screen-search-live.js', 'screen-qgv-live.js'];
+const SKELETON_MAX_BYTES = { 'screen-search.js': 5 * 1024, 'screen-qgv.js': 5 * 1024 };
 const LANES = ['qgv', 'technical', 'macro', 'news', 'portfolio', 'prompts', 'tree', 'lab'].map((id) => 'screen-' + id + '.js');
 const P0_SCREENS = ['screen-search.js', 'screen-menus.js', 'screen-detail.js', 'boot.js'];
 const LOADER = 'loader.js';
 // index.html: the first screen only.
 const FIRST = [...P0_BASE, LOADER, ...LANES, ...P0_SCREENS];
-// P0 names that also exist in web_assets: web_app wins, so they are never reused.
-const SHARED = ['index.html', 'screen-detail.js'];
+// Names that also exist in web_assets: web_app wins, so they are never reused. The Jua subset and its licence (DC-25) keep the
+// reviewed name and bytes of the old files (the font test below checks the bytes), so the guard pin carries over at the switch.
+const SHARED = ['index.html', 'screen-detail.js', 'jua-regular-ksx1001.woff2', 'jua-OFL.txt'];
 // Old files deliberately not loaded, with the reason.
 const NOT_LOADED = {
   'daily-report.js': 'wires document listeners at load; the report model is decided in P2-6',
@@ -98,12 +106,18 @@ const csp = (html) => (/<meta http-equiv="Content-Security-Policy" content="([^"
 const py = (code, args = [], input = '') => execFileSync('python3', ['-c', code, ...args], { encoding: 'utf8', input });
 
 test('index.html loads the first screen only; loader.js LOAD_ORDER loads the reused old modules, then the P1 layer', () => {
-  assert.equal(REUSED.length, 59);
+  assert.equal(REUSED.length, 60);
   assert.deepEqual(R.firstPaint(), FIRST);
-  assert.deepEqual(R.loadOrder(), [...REUSED, ...P1]);
+  assert.deepEqual(R.loadOrder(), [...REUSED, ...P1, ...LIVE]);
   delete require.cache[require.resolve(R.newPath(LOADER))];
   assert.deepEqual([...R.requireNew(LOADER).LOAD_ORDER], R.loadOrder(), 'the loader runs the list the build and the helper read');
-  assert.deepEqual(R.scripts(), [...FIRST, ...REUSED, ...P1], 'the page load order: index.html, then LOAD_ORDER');
+  assert.deepEqual(R.scripts(), [...FIRST, ...REUSED, ...P1, ...LIVE], 'the page load order: index.html, then LOAD_ORDER');
+});
+
+test('a screen\'s first-paint file holds only its skeleton; its logic is a web_app LOAD_ORDER file after the layer', () => {
+  for (const name of LIVE) { assert.ok(isFile(R.newPath(name)), name + ' is a web_app file'); assert.ok(!isFile(R.oldPath(name)), name + ' shadows no old file'); }
+  assert.deepEqual(R.reused().filter((n) => LIVE.includes(n)), [], 'the build takes them from web_app');
+  for (const [name, max] of Object.entries(SKELETON_MAX_BYTES)) assert.ok(fs.statSync(R.newPath(name)).size <= max, name + ' stays a skeleton (≤ ' + max + ' bytes): ' + fs.statSync(R.newPath(name)).size);
 });
 
 test('web_app wins on a shared name; every other script is an old web_assets file; the reuse list is the design list', () => {
@@ -127,6 +141,7 @@ test('load-time bindings come before their users and companions are present', ()
   for (const [user, deps] of Object.entries(COMPANIONS)) for (const dep of deps) assert.ok(at.has(dep), user + ' needs ' + dep);
   const lastOld = Math.max(...REUSED.map((n) => at.get(n))), firstLoaded = Math.min(...R.loadOrder().map((n) => at.get(n)));
   for (const name of P1) assert.ok(at.get(name) > lastOld, name + ' after every reused module');
+  for (const name of LIVE) assert.ok(at.get(name) > Math.max(...P1.map((n) => at.get(n))), name + ' after the P1 layer');
   for (const name of FIRST) assert.ok(at.get(name) < firstLoaded, name + ' is on the first screen, before every LOAD_ORDER file');
   assert.ok(at.get('core.js') < at.get('action.js') && at.get('parts.js') < at.get(LANES[0]), 'IS2 and parts exist before the layer and the screens');
   for (const name of [...LANES, ...P0_SCREENS]) assert.ok(at.get(LOADER) < at.get(name), 'the loader facades exist before ' + name);
@@ -154,8 +169,8 @@ function loadRecorded(name) {
   vm.runInContext(fs.readFileSync(R.oldPath(name), 'utf8'), vm.createContext(g), { filename: name });
   return { seen: [...seen].filter((x) => x !== 'get globalThis' && x !== 'get window' && x !== 'get module'), own: Object.keys(own) };
 }
-test('the backup /5 validator modules load without side effects and expose what DeviceBackup looks up', () => {
-  for (const [name, global] of [['chart-workbench.js', 'ChartWorkbench'], ['macro-cycle-ring.js', 'MacroCycleRing']]) {
+test('the backup /5 validator modules and home-quotes.js load without side effects and expose what their users look up', () => {
+  for (const [name, global] of [['chart-workbench.js', 'ChartWorkbench'], ['macro-cycle-ring.js', 'MacroCycleRing'], ['home-quotes.js', 'HomeQuotes']]) {
     const r = loadRecorded(name);
     assert.deepEqual(r, { seen: ['set ' + global], own: [global] }, name + ': no DOM, request, storage, timer or listener at load');
   }
@@ -283,6 +298,22 @@ test('P1 layer files are UMD modules exporting create()', () => {
   for (const name of P1) assert.equal(typeof R.requireNew(name).create, 'function', name);
 });
 
+test('selection (P2-1, feature 1.1.2): RAM only, one value kept across routes; subscribers end with their signal', () => {
+  delete require.cache[require.resolve(R.newPath('core.js'))];
+  const { selection } = R.requireNew('core.js'), seen = [], ac = new AbortController();
+  assert.equal(selection.get(), null);
+  selection.subscribe((v) => seen.push(v && v.id), { signal: ac.signal });
+  selection.set('nvda'); selection.set('nvda'); selection.set('NYSE:FIX');
+  assert.deepEqual(selection.get(), { id: 'NYSE:FIX' }); assert.ok(Object.isFrozen(selection.get()));
+  ac.abort(); selection.set('amd');
+  assert.deepEqual(seen, ['nvda', 'NYSE:FIX'], 'a repeat is not a change; an aborted signal ends the subscription');
+  assert.equal(selection.subscribe(() => seen.push('late'), { signal: ac.signal })(), undefined); selection.set('msft');
+  assert.deepEqual(seen, ['nvda', 'NYSE:FIX']);
+  selection.set(''); assert.equal(selection.get(), null, 'an empty id clears it');
+  assert.throws(() => selection.subscribe('x'), /SUBSCRIBER_INVALID/);
+  assert.doesNotMatch(fs.readFileSync(R.newPath('core.js'), 'utf8'), /localStorage|sessionStorage|indexedDB|fetch\(/, 'nothing stored or sent');
+});
+
 test('screen registry: placeholders, SCREEN_DUPLICATE, detail screens', () => {
   delete require.cache[require.resolve(R.newPath('core.js'))];
   const core = R.requireNew('core.js'), a = () => 'a', b = () => 'b', p = () => 'p';
@@ -323,7 +354,8 @@ const RULES = [
   ['price fetch outside prices.js and engines.js', /\bfetch\s*:\s*true\b/, ['prices.js', 'engines.js']],
   ['Google session outside prices.js', /\bsessionFor\(/, ['prices.js']],
   ['engine rows / score view outside qgv.js and engines.js', /\b(?:forEngines|engineInputs)\(|\bscoreView\b/, ['qgv.js', 'engines.js']],
-  ['the price view outside prices.js and engines.js', /\bpriceView\b/, ['prices.js', 'engines.js']],
+  // P2-2a: storeFacade (PriceStore as the old modules see it) was covered by no rule; screens never touch it either.
+  ['the price view / store facade outside the layer', /\bpriceView\b|\bstoreFacade\b/, ['prices.js', 'qgv.js', 'engines.js']],
   ['old paths that bypass the price view', /\bautoLoad\b|\blatestPublished\b|\bStatRadar\b|\bDataRefresh\.attach\b|\b(PrivateSubsetView|TargetV1Screen|PriceStore|VirtualLedgerSheets)\.mount\w*\(/, []],
   // DeviceActual's own screen runs on the real window (host.ownerDocument.defaultView) and saves, imports and deletes the holdings
   // together with the stopped quote record; its quote import writes that record (DC-18). Holdings writes go through the store.
@@ -567,13 +599,38 @@ test('loader: a hidden page loads at once (it paints nothing); the screen files 
   const core = R.requireNew('core.js'), touched = [];
   const parts = { head: () => null, section: () => null, card: () => null, pending: () => null, more: () => null };
   const IS2 = new Proxy({ ...core, parts }, { get(t, k) { if (['data', 'qgv', 'prices', 'store', 'engines', 'action', 'ready'].includes(k)) touched.push(k); return t[k]; } });
-  for (const name of [...LANES, 'screen-search.js', 'screen-menus.js', 'screen-detail.js']) vm.runInNewContext(fs.readFileSync(R.newPath(name), 'utf8'), { window: { IS2 }, Object }, { filename: name });
+  for (const name of [...LANES, 'screen-search.js', 'screen-menus.js', 'screen-detail.js', ...LIVE]) vm.runInNewContext(fs.readFileSync(R.newPath(name), 'utf8'), { window: { IS2 }, Object }, { filename: name });
   assert.deepEqual(touched, [], 'screens read the layer at render time only (through the facades before IS2.ready)');
+  assert.deepEqual(Object.keys(IS2.searchLive), ['home', 'company'], 'screen-search-live.js only hands its two fillers to the skeleton');
+  assert.deepEqual(Object.keys(IS2.qgvLive), ['leaderboard', 'helpers'], 'screen-qgv-live.js only hands its filler and its pure helpers');
+  assert.deepEqual(Object.keys(IS2.searchPart), ['index', 'attach', 'LISTING_ENDED'], 'search-part-live.js only hands the shared search');
+});
+
+test('one company search part (DC-23): the combobox lives in parts.js searchBox and search-part-live.js only', () => {
+  const owners = files(R.NEW).filter((n) => n.endsWith('.js') && /role:'combobox'|'aria-activedescendant'/.test(fs.readFileSync(R.newPath(n), 'utf8'))).sort();
+  assert.deepEqual(owners, ['parts.js', 'search-part-live.js'], 'no screen builds its own company picker');
+  const box = fs.readFileSync(R.newPath('parts.js'), 'utf8');
+  for (const a of ["inputmode:'search'", "enterkeyhint:'search'", "autocorrect:'off'", "placeholder:'티커 · 영문 회사명'"]) assert.ok(box.includes(a), 'searchBox has ' + a);
 });
 
 test('the first screen never waits for the fonts: every @font-face swaps (or is optional), nothing is preloaded', () => {
   const css = fs.readFileSync(R.newPath('app.css'), 'utf8'), faces = [...css.matchAll(/@font-face\s*\{([^}]*)\}/g)].map((m) => m[1]);
-  assert.equal(faces.length, 3);
+  // DC-25 (owner 2026-10-27): one self-hosted face, Jua (titles), the reviewed subset byte for byte; body text is the device's
+  // Korean gothic, so nothing else downloads. The chalkboard draft's three faces are gone.
+  assert.equal(faces.length, 1);
+  assert.match(faces[0], /font-family:"IS Jua";src:url\("jua-regular-ksx1001\.woff2"\)/);
   for (const f of faces) assert.match(f, /font-display:\s*(?:swap|optional)\s*;/, f.slice(0, 60));
+  const sha = (p) => crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
+  assert.equal(sha(R.newPath('jua-regular-ksx1001.woff2')), sha(R.oldPath('jua-regular-ksx1001.woff2')), 'the same reviewed Jua subset');
+  assert.equal(sha(R.newPath('jua-OFL.txt')), sha(R.oldPath('jua-OFL.txt')), 'its OFL text');
+  for (const gone of ['black-han-sans-ksx1001.woff2', 'gowun-dodum-ksx1001.woff2', 'is-pen-script-ksx1001.woff2']) assert.ok(!fs.existsSync(R.newPath(gone)), gone + ' removed');
+  assert.doesNotMatch(css, /box-shadow:\s*\d+px \d+px 0 /, 'no offset (3D) shadows: the reference video style');
+  // DC-26 (owner 2026-10-27 「색은 최소화하되 더 사용」): colour tokens are named by meaning, no menu colour, and every hex is
+  // one of the six hue families (Q·G·V, up / problem red, down blue, marker yellow, device-only purple) or ink / grays.
+  assert.doesNotMatch(css, /var\(--(?:red|blue|green|orange|green-text|orange-text)\)|\.shadow-|\.stamp\.(?:blue|green|orange)/, 'no menu colours');
+  const PALETTE = new Set(['#161616', '#5C5C5C', '#FFFFFF', '#FFF', '#808080', '#F4F4F4', '#2457C5', '#EAF0FF', '#1F7A45', '#E7F5EC', '#D9780A', '#A05600',
+    '#FFF1DC', '#B4231C', '#1D4FA8', '#FCEAE9', '#7A4CC2', '#F2ECFB', '#FFE45C']);
+  assert.deepEqual([...new Set((css.match(/#[0-9A-Fa-f]{3,6}\b/g) || []).map((x) => x.toUpperCase()))].filter((x) => !PALETTE.has(x)), [], 'only the palette');
+  for (const t of ['--q:', '--g:', '--v:', '--up:', '--down:', '--problem:', '--mine:', '--marker:']) assert.ok(css.includes(t), t);
   assert.doesNotMatch(R.newIndex(), /rel="(?:preload|modulepreload|prefetch|preconnect)"/, 'no preload: the fonts and the layer come after the first paint');
 });

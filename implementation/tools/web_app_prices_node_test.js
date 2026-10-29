@@ -10,13 +10,18 @@
 //    basis, status and rank index); sign-out clears it, an expired sign-in keeps it, a failed read keeps it and records why.
 //  - Store: old keys unchanged; reads free; writes only in a click (CLICK_REQUIRED before, ACTION_REQUIRED for an old writer
 //    handed the gated storage, storage unchanged); backups /1–/5 round trip (/5 user objects through the old validators);
-//    IndexedDB never created by a read.
+//    IndexedDB never created by a read. Recent searches (P2-1): the old home's key and shape (entity keys only, at most 6,
+//    newest first, invalid entries dropped on read, the query text never stored); pushRecent / clearRecent only in a click.
 //  - Device quotes stopped (owner 2026-10-24, DC-18): a valid stored 'market' record that the old path reads is never read by
 //    quote() or the score path, never written by an old writer even inside a click, never deleted automatically;
 //    marketQuotes.count() gives a number without opening a missing database, clear() works only on a trusted click and keeps
 //    every other record; no price value comes back.
 //  - Google on/off (owner 2026-10-24, Main pick): saved only inside the prepare click (the old sign-in click), read only from an
 //    existing database, left as it is by a sign-out.
+//  - Period returns (P2-2a): periodReturns is async; NOT_LOADED and no request before the price-tab click; 60D/120D/YTD/1Y/
+//    SINCE_START PERIOD_PENDING; values equal ReportBenchmarks.periodWindow + priceIndex (USD) over the loaded closes; a
+//    Universe code reads PriceStore.universeSymbol, a ticker '.' -> '-'; identity stops come first (before and after the tabs);
+//    no SPY -> RETURN_SESSIONS_NOT_AVAILABLE, a short calendar -> RETURN_HISTORY_TOO_SHORT; frozen, no storage write.
 // Synthetic data only: the sheet, Worker and share counts are in-memory fixtures; sentinel prices are made-up decimals.
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -377,7 +382,8 @@ test('store writes: without a trusted click nothing runs (CLICK_REQUIRED); an ol
     saveThesis: (ev) => e.store.saveThesis(ev, 'NVDA', 't', 'i'), saveHold: (ev) => e.store.saveHold(ev, 'NVDA', { reason: 'r', release_condition: 'c', release_date: '2026-12-31' }),
     saveRecord: (ev) => e.store.saveRecord(ev, { id: 'x' }), toggleStar: (ev) => e.store.toggleStar(ev, '0000000001'), restore: (ev) => e.store.backup.restore(ev, '{}'), download: (ev) => e.store.backup.download(ev),
     sheetSource: (ev) => e.store.sheetSource.set(ev, ID), universeSource: (ev) => e.store.universeSource.set(ev, ID), workerOrigin: (ev) => e.store.workerOrigin.set(ev, WORKER),
-    useSheet: (ev) => e.store.universeSource.useSheet(ev), marketQuotes: (ev) => e.store.marketQuotes.clear(ev) };
+    useSheet: (ev) => e.store.universeSource.useSheet(ev), marketQuotes: (ev) => e.store.marketQuotes.clear(ev),
+    pushRecent: (ev) => e.store.pushRecent(ev, 'COMPANY:nvda'), clearRecent: (ev) => e.store.clearRecent(ev) };
   for (const [name, call] of Object.entries(WRITES)) for (const ev of [undefined, new Event('click'), { type: 'click', isTrusted: true }]) assert.throws(() => call(ev), /CLICK_REQUIRED/, name);
   const S = e.store.storage, M = e.mods;
   for (const [name, call] of Object.entries({ playbook: () => M.PlaybookScreen.saveThesis(S, 'NVDA', 't', 'i'), stars: () => M.PublicScreens.toggleStar(S, '0000000001'), weights: () => M.DeviceProfiles.writeV2(S, M.DeviceProfiles.emptyV2()),
@@ -422,6 +428,32 @@ test('store reads and settings: prefs (unreadable value never overwritten), weig
   assert.deepEqual(await e.store.workerOrigin.set(e.click(), 'https://other-worker.someone.workers.dev'), { set: true, approved: false });
 });
 
+test('recent searches: the old home key and shape; read freely (invalid entries dropped), written only in a click; COMPANY keys only', () => {
+  const e = env(), K = e.store.KEYS, L = e.win.localStorage;
+  const old = fs.readFileSync(R.oldPath('home-screen.js'), 'utf8');
+  assert.match(old, /RECENT_MAX=6/); assert.match(old, /KEY_SHAPE=\/\^\(COMPANY\|INDUSTRY\|INVESTOR\|MACRO\):\[A-Za-z0-9_\.:\\-\]\{1,64\}\$\//, 'the old key shape the store reads');
+  assert.deepEqual([...e.store.recent()], []); assert.ok(Object.isFrozen(e.store.recent()));
+  // What the old home stored is read the old way: valid keys, once each, the first 6.
+  L.setItem(K.RECENT, JSON.stringify(['COMPANY:nvda', 'INDUSTRY:semis', 'COMPANY:nvda', 'nvda', 7, 'COMPANY:<b>', 'MACRO:cpi', 'COMPANY:NYSE:FIX', 'COMPANY:amd', 'COMPANY:msft', 'COMPANY:intc']));
+  assert.deepEqual([...e.store.recent()], ['COMPANY:nvda', 'INDUSTRY:semis', 'MACRO:cpi', 'COMPANY:NYSE:FIX', 'COMPANY:amd', 'COMPANY:msft']);
+  L.setItem(K.RECENT, '{broken'); assert.deepEqual([...e.store.recent()], []);
+  L.setItem(K.RECENT, JSON.stringify({ x: 1 })); assert.deepEqual([...e.store.recent()], []);
+  L.removeItem(K.RECENT);
+  for (const ev of [undefined, new Event('click'), { type: 'click', isTrusted: true }]) { assert.throws(() => e.store.pushRecent(ev, 'COMPANY:nvda'), /CLICK_REQUIRED/); assert.throws(() => e.store.clearRecent(ev), /CLICK_REQUIRED/); }
+  assert.equal(L.getItem(K.RECENT), null, 'nothing written without a click');
+  // In a click: newest first, a repeat moves to the front, at most 6; only COMPANY:<id> keys are written (never query text).
+  let notes = []; e.store.subscribe((what) => notes.push(what));
+  for (const id of ['nvda', 'amd', 'msft', 'NYSE:FIX', 'intc', 'qcom', 'avgo', 'amd']) e.store.pushRecent(e.click(), 'COMPANY:' + id);
+  assert.deepEqual(JSON.parse(L.getItem(K.RECENT)), ['COMPANY:amd', 'COMPANY:avgo', 'COMPANY:qcom', 'COMPANY:intc', 'COMPANY:NYSE:FIX', 'COMPANY:msft']);
+  assert.deepEqual([...e.store.recent()], JSON.parse(L.getItem(K.RECENT)));
+  assert.equal(notes.length, 8); assert.ok(notes.every((n) => n === 'RECENT'));
+  for (const bad of ['INDUSTRY:semis', 'nvda', 'COMPANY:', 'COMPANY:a b', 'COMPANY:' + 'x'.repeat(65), null]) assert.throws(() => e.store.pushRecent(e.click(), bad), /RECENT_KEY_INVALID/, String(bad));
+  assert.equal(JSON.parse(L.getItem(K.RECENT)).length, 6, 'a refused key changes nothing');
+  // One click, one action: a second store write from the same click is refused.
+  const ev = e.click(); e.store.pushRecent(ev, 'COMPANY:nvda'); assert.throws(() => e.store.clearRecent(ev), /ACTION_ALREADY_STARTED/);
+  assert.deepEqual([...e.store.clearRecent(e.click())], []); assert.equal(L.getItem(K.RECENT), null); assert.deepEqual([...e.store.recent()], []);
+});
+
 test('KEYS equal the old modules\' constants (existing devices keep their data)', () => {
   const e = env(), K = e.store.KEYS, M = e.mods, lit = (file, re) => { const m = re.exec(fs.readFileSync(R.oldPath(file), 'utf8')); assert.ok(m, file); return m[1]; };
   assert.equal(K.PERSONAL, lit('device-backup.js', /PERSONAL_KEY='([^']+)'/)); assert.equal(K.PERSONAL, lit('app.js', /const KEY = "([^"]+)"/));
@@ -432,6 +464,7 @@ test('KEYS equal the old modules\' constants (existing devices keep their data)'
   assert.equal(K.WORKER_ORIGIN, lit('private-history.js', /STORAGE_KEY = '([^']+)'/)); assert.equal(K.WORKER_ORIGIN, lit('price-store.js', /HISTORY_KEY='([^']+)'/)); assert.equal(e.prices.WORKER_ORIGIN_KEY, K.WORKER_ORIGIN);
   assert.equal(K.PRICE_STORE_ENABLED, M.PriceStore.FLAG_KEY); assert.equal(K.DEVICE_DB, lit('device-actual.js', /DB_NAME = '([^']+)'/));
   assert.equal(K.CHART_USER_OBJECTS, M.ChartWorkbench.USER_KEY); assert.equal(K.MACRO_USER_ESTIMATES, M.MacroCycleRing.USER_KEY);
+  assert.equal(K.RECENT, lit('home-screen.js', /RECENT_KEY='([^']+)'/));
   assert.deepEqual(fresh('store.js').KEYS, K); assert.ok(Object.isFrozen(K));
 });
 
@@ -581,4 +614,63 @@ test('IndexedDB: a read never creates the device database (not even inside a cli
   assert.deepEqual(inClick, { state: 'EMPTY', reason: null, snapshot: null, source: null, as_of: null }, 'inside a click: the stored database is read');
   assert.ok(idb3.opened.length >= 1 && idb3.opened.every((n) => n === 'investment-device-actual-v1'));
   assert.deepEqual([...idb3.dbs.get('investment-device-actual-v1').keys()], ['google-sheet-settings'], 'nothing written');
+});
+
+// ---------------------------------------------------------------- P2-2a: period returns (RAM only, after the price-tab click)
+test('periodReturns: async; NOT_LOADED and no request before the tabs; PERIOD_PENDING; values = ReportBenchmarks over the loaded closes; symbol rule; identity stops first; frozen; no storage write', async () => {
+  const SESSIONS = weekdays('2026-09-15', '2026-10-01');// 13 sessions: 1D and 5D have a window, 20D is too short
+  assert.equal(SESSIONS.length, 13);
+  const SYMS = ['SPY', 'NVDA', 'BRK-B', 'XY-Z', 'AMD', 'ADBE'];
+  const tab = (syms) => ({ Prices_D: [HEAD, ...syms.flatMap((s) => SESSIONS.map((d) => [s, d, String(close(s, d)), 'YAHOO', '2026-10-02T00:00:00Z']))], Prices_M: [HEAD] });
+  const COMPANIES = [{ id: 'nvda', ticker: 'NVDA', code: 'NASDAQ:NVDA' }, { id: 'NYSE:BRK.B', ticker: 'BRK.B', code: 'NYSE:BRK.B' }, { id: 'NYSE:MMM', ticker: 'MMM', code: 'NYSE:MMM' },
+    { id: 'NASDAQ:ADBE', ticker: 'ADBE', code: 'NASDAQ:ADBE' }, { id: 'amd', ticker: 'AMD', code: null }, { id: 'xyz', ticker: 'XY.Z', code: null }];
+  const make = async (syms) => {
+    const e = env({ s: site({ tabs: tab(syms) }) }); await e.data.ready();
+    // ADBE withdrawn for an identity conflict; the AMD Universe code withdrawn, so the amd TARGET is a price identity conflict.
+    const real = e.data.get('sec-qgv2.json'), recs = { ...real.records };
+    recs['NASDAQ:ADBE'] = { ...recs['NASDAQ:ADBE'], identity_withdrawn: true }; recs['NASDAQ:AMD'] = { ...recs['NASDAQ:AMD'], universe_withdrawal: true };
+    const inputs = Object.freeze({ ...real, records: Object.freeze(recs) }), data = Object.freeze({ ...e.data, get: (n) => (n === 'sec-qgv2.json' ? inputs : e.data.get(n)) });
+    return { e, p: fresh('prices.js').create({ win: e.win, action: e.action, data }) };
+  };
+  const { e, p } = await make(SYMS);
+  assert.equal(p.periodReturns.constructor.name, 'AsyncFunction', 'an async function (the loader facade member is a promise)');
+  for (const bad of ['60D', '120D', 'YTD', '1Y', 'SINCE_START', '1d', null]) await assert.rejects(p.periodReturns(bad, COMPANIES), /PERIOD_PENDING/, String(bad));
+  await assert.rejects(p.periodReturns('1D', null), /COMPANIES_INVALID/); await assert.rejects(p.periodReturns('1D', [{ ticker: 'X' }]), /COMPANIES_INVALID/);
+  const stops = { 'NASDAQ:ADBE': 'IDENTITY_CONFLICT_WITHDRAWN', amd: 'PRICE_IDENTITY_CONFLICT' };
+  const before = await p.periodReturns('1D', COMPANIES);
+  assert.equal(before.state, 'NOT_LOADED'); assert.equal(before.as_of, null);
+  for (const c of COMPANIES) assert.deepEqual(before.rows[c.id], { state: 'NA', reason: stops[c.id] || 'PRICE_TABS_NOT_LOADED' }, c.id + ' before the tabs');
+  assert.deepEqual(e.priv(), [], 'no request before the click');
+  // Signed in with a sheet but the PriceStore flag off: loadTabs reads nothing, periodReturns stays NOT_LOADED.
+  await p.prepare(e.click()); p.login(e.click()); await sources(e);
+  const offLoad = await p.loadTabs(e.click());
+  assert.equal(offLoad.tabs_loaded.daily, false, 'store OFF: no tabs'); assert.equal((await p.periodReturns('5D', COMPANIES)).state, 'NOT_LOADED');
+  const local0 = JSON.stringify([...e.win.localStorage.map]);
+  e.win.localStorage.setItem(e.store.KEYS.PRICE_STORE_ENABLED, '1');
+  const local1 = JSON.stringify([...e.win.localStorage.map]);
+  assert.equal((await p.loadTabs(e.click())).tabs_loaded.daily, true);
+  const n = e.priv().length, RB = e.mods.ReportBenchmarks, cal = [...SESSIONS];
+  for (const period of ['1D', '5D', '20D']) {
+    const r = await p.periodReturns(period, COMPANIES), w = RB.periodWindow(cal, cal.at(-1), period);
+    assert.equal(r.state, 'READY'); assert.equal(r.as_of, cal.at(-1)); assert.equal(r.period, period);
+    assert.ok(Object.isFrozen(r) && Object.isFrozen(r.rows) && Object.isFrozen(r.rows.nvda), 'frozen');
+    for (const c of COMPANIES) {
+      const got = r.rows[c.id];
+      if (stops[c.id]) { assert.deepEqual(got, { state: 'NA', reason: stops[c.id] }, c.id + ' stopped after the tabs too: no value'); continue; }
+      if (c.id === 'NYSE:MMM') { assert.deepEqual(got, { state: 'NA', reason: 'NO_DEVICE_PRICE' }); continue; }
+      if (period === '20D') { assert.equal(w.reason, 'HISTORY_TOO_SHORT'); assert.deepEqual(got, { state: 'NA', reason: 'RETURN_HISTORY_TOO_SHORT' }, c.id); continue; }
+      const sym = { nvda: 'NVDA', 'NYSE:BRK.B': 'BRK-B', xyz: 'XY-Z' }[c.id], closes = Object.fromEntries(SESSIONS.map((d) => [d, close(sym, d)]));
+      const want = RB.priceIndex(closes, {}, w, 'USD');
+      assert.equal(want.state, 'OK'); assert.deepEqual(got, { state: 'OK', value: want.return, end: w.sessions.at(-1) }, c.id + ' ' + period + ' = ReportBenchmarks.priceIndex');
+    }
+  }
+  assert.equal(e.priv().length, n, 'returns read RAM only (no request after the click)');
+  assert.equal(JSON.stringify([...e.win.localStorage.map]), local1, 'no storage write by periodReturns'); assert.notEqual(local0, local1);
+  // No SPY in the loaded tab: no session calendar.
+  const x = await make(['NVDA']);
+  await x.p.prepare(x.e.click()); x.p.login(x.e.click()); await sources(x.e); x.e.win.localStorage.setItem(x.e.store.KEYS.PRICE_STORE_ENABLED, '1');
+  assert.equal((await x.p.loadTabs(x.e.click())).tabs_loaded.daily, true);
+  const ns = await x.p.periodReturns('1D', COMPANIES);
+  assert.equal(ns.state, 'READY'); assert.equal(ns.as_of, null);
+  assert.deepEqual(ns.rows.nvda, { state: 'NA', reason: 'RETURN_SESSIONS_NOT_AVAILABLE' }); assert.deepEqual(ns.rows.amd, { state: 'NA', reason: 'PRICE_IDENTITY_CONFLICT' });
 });

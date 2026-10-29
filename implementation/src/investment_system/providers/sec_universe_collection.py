@@ -16,10 +16,18 @@ from .sec_submissions import URL as SUBMISSIONS_URL
 _REGISTRY_TOKEN=object()
 TICKER_EXCHANGE_URL='https://www.sec.gov/files/company_tickers_exchange.json'
 COVER_INSTANCE_URL='https://www.sec.gov/Archives/edgar/data/{cik}/{accession}/{document}'
-# Exact (SEC exchange, SEC ticker) -> approved Universe code pairs for exchanges outside the Nasdaq/NYSE venue map.
+# Exact (SEC exchange, SEC ticker) -> approved Universe code pairs, consulted only when the pair names no Universe code
+# directly (an exchange outside the Nasdaq/NYSE venue map, or a Nasdaq/NYSE ticker that is not the code's own symbol).
 # Cboe Global Markets lists its own stock on Cboe BZX (code venue BATS); SEC's ticker file names that exchange 'CBOE'.
+# Skydance Corp (formerly Paramount Skydance; CIK 0002041610, code NASDAQ:PSKY) moved its listing to NYSE as SKYD on
+# 2026-10-06 (Form 25 on 2026-10-05, same issuer; owner approval like #297). The public code stays NASDAQ:PSKY.
 # One pair per code, never a venue-wide mapping; a code missing from the approved roster binds nothing.
-VENUE_CODE_ALIASES={('CBOE','CBOE'):'BATS:CBOE'}
+VENUE_CODE_ALIASES={('CBOE','CBOE'):'BATS:CBOE',('NYSE','SKYD'):'NASDAQ:PSKY'}
+# Alias pairs that bind only for one named issuer. Another CIK listing that pair without the named CIK binds nothing
+# through the alias (the code stays unresolved, not a conflict, and never takes another issuer's row). When the named
+# CIK and any other CIK both list the pair, every claimant counts toward the code, so it is an identity conflict like
+# the CBOE pair claimed by two CIKs (owner rule 2026-10-17: a ticker claimed by several CIKs never keeps an earlier row).
+ALIAS_ISSUER_CIKS={('NYSE','SKYD'):'0002041610'}
 
 
 def fetch_ticker_exchange(client):
@@ -56,7 +64,11 @@ def universe_registry(body):
     NYSE BRK.B/SEC BRK-B is an explicit punctuation alias, never a share-basis
     conversion. SEC exchange 'CBOE' is bound only through the explicit
     VENUE_CODE_ALIASES pairs (SEC 'CBOE'/'CBOE' -> code BATS:CBOE); any other
-    ticker SEC lists on that exchange stays outside the roster. Conflicting CIKs
+    ticker SEC lists on that exchange stays outside the roster. A Nasdaq/NYSE
+    pair that names no code directly may bind through the same table (SEC
+    'NYSE'/'SKYD' -> code NASDAQ:PSKY). A pair in ALIAS_ISSUER_CIKS counts
+    only when its named CIK lists it: alone it binds, together with any other
+    CIK it is a conflict, and without the named CIK it binds nothing. Conflicting CIKs
     and unrecognized exchange/ticker pairs remain unresolved (the single-CIK rule
     applies to aliased codes as well). Names are ignored; the caller verifies
     official source origin.
@@ -76,13 +88,20 @@ def universe_registry(body):
         codes=json.loads((Path(__file__).parents[1]/'universe/universe_codes_v1.json').read_text())
         lookup={(c.split(':')[0],c.split(':')[1].replace('.','-')):c for c in codes}
         bindings={c:set() for c in codes}
+        pinned={}
         for row in rows:
             if type(row) is not list or len(row)!=4:continue
             d=dict(zip(fields,row));cik=d['cik'];ticker=d['ticker'];exchange=d['exchange']
             if type(cik) is not int or not 0<cik<10**10 or type(ticker) is not str or type(exchange) is not str:continue
             venue={'Nasdaq':'NASDAQ','NYSE':'NYSE'}.get(exchange)
-            code=lookup.get((venue,ticker)) if venue is not None else VENUE_CODE_ALIASES.get((exchange,ticker))
+            code=lookup.get((venue,ticker)) if venue is not None else None
+            if code is None and (exchange,ticker) in ALIAS_ISSUER_CIKS:
+                pinned.setdefault((exchange,ticker),set()).add(str(cik).zfill(10));continue
+            if code is None:code=VENUE_CODE_ALIASES.get((exchange,ticker))
             if code is not None and code in bindings:bindings[code].add(str(cik).zfill(10))
+        for pair,ciks in pinned.items():
+            code=VENUE_CODE_ALIASES.get(pair)
+            if ALIAS_ISSUER_CIKS[pair] in ciks and code in bindings:bindings[code].update(ciks)
         grouped={}
         for code,ciks in bindings.items():
             if len(ciks)==1:grouped.setdefault(next(iter(ciks)),[]).append(code)

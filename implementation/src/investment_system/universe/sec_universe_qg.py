@@ -18,6 +18,9 @@ shared v0 stale window (sec-universe-shares/v0, DEFAULT_V0_UNCALIBRATED) are STA
 An identity conflict without this run's collection withdraws a kept row with a collection record (owner decision
 UNI-WITHDRAWN (a), `sec_universe_shares.withdrawal`: IDENTITY_CONFLICT_WITHDRAWN, detected_at, withdrawn_acquired_at,
 withdrawn_cik naming this file's row, no scores).
+A code of the reviewed listing-ended table (`sec_universe_shares.LISTING_ENDED_CODES`) whose kept row is a verified
+observation of the listed CIK is published as a reasoned NA row (CIK_UNRESOLVED, no scores, the last observation's cik,
+acquired_at and hashes kept), checked before PRESERVE.
 """
 from datetime import timedelta, timezone
 import hashlib
@@ -25,9 +28,9 @@ import json
 import math
 import re
 
-from .sec_universe_shares import (IDENTITY_CONFLICT, PRESERVE, SCHEMA_VERSION, WITHDRAWAL_KEYS, WITHDRAWN_REASON, _clock, _hash, _iso, is_withdrawal,
-                                   load_config, note, note_withdrawal, previous_decision, replaces, require_withdrawal, schema_version_of,
-                                   universe_codes, withdrawal, withdrawal_stays)
+from .sec_universe_shares import (IDENTITY_CONFLICT, LISTING_ENDED, PRESERVE, SCHEMA_VERSION, WITHDRAWAL_KEYS, WITHDRAWN_REASON, _clock, _hash,
+                                   _iso, ended_row, is_withdrawal, load_config, note, note_withdrawal, previous_decision, replaces,
+                                   require_withdrawal, schema_version_of, universe_codes, withdrawal, withdrawal_stays)
 
 FILENAME = 'sec-universe-qg.json'
 KIND = 'SEC_UNIVERSE_QG'
@@ -153,6 +156,8 @@ def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unreso
         note(stats, decision, code, old)
         if decision == PRESERVE:
             pass
+        elif decision == LISTING_ENDED:   # listing-ended NA row (sec_universe_shares.LISTING_ENDED_CODES)
+            old = ended_row(old, empty_record)
         elif decision == IDENTITY_CONFLICT and (new is None or not observed(new)):
             # Identity conflict without this run's collection: this file's kept observation is withdrawn (UNI-WITHDRAWN);
             # without one, unresolved (no row this run) or this run's NA row, never an invented time.

@@ -39,7 +39,7 @@
 | 2.1.1~2.1.3 목록·정렬·분류 | 구현 | 실 | `leaderboard-screen.js`, `table-sort.js`, `classification-screens.js`(#381 SIC 필터) | — |
 | 2.1.4 기간별 수익률 | 부분 | 기기 | `leaderboard-screen.js` 기간 칩 | 값은 기기 가격 필요. 공개 불가(가격 파생값) |
 | 2.1.5·2.1.6 산출 상태·공식/개인 | 구현 | 실·기기 | `qgv-scores.js`, `v-coverage.js` | 공식 V가 중앙 V로 바뀌면 "계산 장소·가격 출처" 표시 갱신(DC-02) |
-| 2.1.7 후보 선정 연결 | 구현 | 기기 | `target-v1-builder.js`, `target-v1-screen.js` | V가 기기 V라 "임시 V"(#391 병합 10-24, F1 첫 확정본 날짜 기준) |
+| 2.1.7 후보 선정 연결 | 구현 | 기기 | `target-v1-builder.js`, `target-v1-screen.js` | V가 기기 V라 "임시 V"(#391 병합 10-24, F1 첫 확정본 날짜 기준). 공식 V 판독(PR-D, 미병합): 초안 만들기·확정 클릭 때 `qgv-official.json`을 읽어 유효·검증·같은 calc_version·기준일 뒤 마감된 뉴욕 거래일 2일 이내면 공식 V, 아니면 임시 V(결정 D8 (b)). 첫 게시 전이라 실제 값은 아직 임시 V |
 | 2.2.1~2.2.6 가중치·프리셋·영향·설정 | 구현 | 실·기기 | `device-profiles.js`(2단계 가중치 #300, 프리셋 v0.1, 변경 전후 비교) | 설정 저장은 이 브라우저만 |
 | 2.3.1 13F 보유 기록 | 부분 | 실 | `thirteenf-quarter.js`, `manager-styles-v0.js`, #381(2.3 흐름) | TARGET 중심. 운용사 범위 확대 |
 | 2.3.2 가중치 탐색 | 신규 | — | `docs/backtest/THIRTEENF_WEIGHT_RESEARCH_PREP_20261018.md` | 탐색 엔진. TRACKC-PORT 결정 대기 |
@@ -71,14 +71,14 @@
 | 5.2.7 수집 상태 | 구현 | 실 | `ops-status.js`, `news-signals.js` | GDELT 429 원인 |
 | 5.3 뉴스 구조 트리 | 구현 | 실 | `ia-screens.js` | — |
 | 6.1.1·6.1.5 종류 구분·개인/모의 관리 | 구현 | 기기 | `portfolio-screen.js`, `device-actual.js`, `virtual-trading.js` | — |
-| 6.1.2~6.1.4 모델 후보·비중·버전 | 부분 | 기기 | `target-v1-builder.js` | TARGET v1 확정(2026-11 둘째 주 목표). 숫자 대조는 통과 기록(DC-16), 남은 것은 실제 사용자 카드 응답. #393 병합 시 새 calc_version으로 재대조 |
+| 6.1.2~6.1.4 모델 후보·비중·버전 | 부분 | 기기 | `target-v1-builder.js` | TARGET v1 확정(2026-11 둘째 주 목표). 숫자 대조는 통과 기록(DC-16), 남은 것은 실제 사용자 카드 응답. #393 병합 시 새 calc_version으로 재대조. 공식 V 판독(PR-D, 미병합): 초안·버전에 V 출처와 게시본 id·가격 기준일을 남기고, 출처가 바뀌면 `V_SOURCE_CHANGED`로 초안 재생성. 공식 V로 확정하려면 재대조 재기록(계획 5절)과 `all_shards` 1회 실행이 먼저 |
 | 6.2 실제 포트폴리오 보고 | 구현(일일) · 신규(주간) | 기기 | `daily-report.js` | 주간 형식 WEEKLY-REPORT 결정 대기 |
 | 6.3 모의 포트폴리오 보고 | 구현(일일) · 신규(주간) | 기기 | `daily-report.js`, `virtual-trading-compare.js` | 같음 |
 | 6.4 포트폴리오 구조 트리 | 구현 | — | `ia-screens.js` | — |
 | 7.1 프롬프트 라이브러리 | 구현 | — | `research-bridge.js`(★·내 사본 = 이 브라우저) | 새 영역 목록 PROMPT-DOMAIN |
 | 8.1 전체 구조 트리 | 구현 | 실 | `ia-screens.js`(system) | 8.1.3 구현 상태 표시를 이 문서와 맞추기 |
 | 9.1 백테스트 | 신규 · 결정 | — | `screen-detail.js`(준비 목록), `docs/backtest/*` | BT-1~17·MD-1~12 결정, 과거 자료 확보 |
-| 9.2 전진검증 | 구현 | 실 | `forward-validation.js`, `tools/forward_validation_ledger.py` | 연속 성공 2/7(10/23). 배포 실패 뒤 복구 운영 증거는 아직 없음 |
+| 9.2 전진검증 | 구현 | 실 | `forward-validation.js`, `tools/forward_validation_ledger.py` | 연속 성공 3/7(10/24분, run 40146210895; 10/25 Actions 확인). 배포 실패 뒤 복구 운영 증거는 아직 없음 |
 | 공통: 계정 동기화 | 신규 · 결정 | — | DRAW-STORE, IA-6 | 지금은 이 브라우저 + 내보내기·가져오기 |
 
 ## 1-2. 새 프론트엔드(v2) 진행
@@ -87,8 +87,8 @@
 
 | 번호 | v2 상태 |
 | --- | --- |
-| 1.1.1 · 1.1.2 · 1.1.4 | v2: P1 자료층(#397: `data.static`·`qgv.row`·`store.prefs`), 화면 P2-1 |
-| 2.1.1~2.1.7 · 2.2 · 2.3.1 · 2.4.2~2.4.4 · 2.5 | v2: P1 자료층(#397: `qgv`(임시 V)·`store.weights`·`data`), 화면 P2-2. 정렬·필터·레이더는 옛 함수를 P2-2에서 재사용. 순위 문구 "임시 V 기준 순위 · 공식 순위 아님"(P1D) |
+| 1.1.1 · 1.1.2 · 1.1.3 · 1.1.4 | v2: P1 자료층(#397: `data.static`·`qgv.row`·`store.prefs`). 화면 P2-1 #408 병합(2026-10-25 `a7a2f32d`, 배포 안 됨 — P3 전환 때 배포): 기업 검색(정적 공개 파일 3개로 만든 색인, 콤보 상자), 최근 검색(옛 키 그대로, 고른 클릭에서만 저장, `store.recent`·`pushRecent`·`clearRecent`), 즐겨찾기 ★·개발자 기본값(TARGET 19, 기본값이라고 표시), 명언·이야기(`home-quotes.js` 재사용), 기업 통합 진입(카드 5개, 선택 기업 RAM 유지 `IS2.selection`) |
+| 2.1.1~2.1.7 · 2.2 · 2.3.1 · 2.4.2~2.4.4 · 2.5 | v2: P1 자료층(#397: `qgv`(임시 V)·`store.weights`·`data`), 화면 P2-2. 정렬·필터·레이더는 옛 함수를 P2-2에서 재사용. 순위 문구 "임시 V 기준 순위 · 공식 순위 아님"(P1D). 2.1.1~2.1.7 화면 P2-2a PR(병합 대기, 가지 `claude/frontend-v2-p2-2-qgv`): 리더보드 한 표(Universe504만 — TARGET v0 범위·필터·열 없음, DC-24; 정렬·분류 필터·산출 상태 목록·공식/개인 미리보기·N10/N15/N20), 수익률 1D/5D/20D는 클릭 뒤 RAM, 60D·120D·YTD·1Y 결정 대기(IA-12). 정렬·필터는 옛 함수를 불러오지 않고 작은 이식 + 노드 대조 |
 | 3.1 · 3.3 | v2: P1 자료층(#397: `prices.history`, 클릭 때만), 화면 P2-3. 3.3 사용자 그림은 백업 /5로 복원(P1D, 옛 검증기 재사용) |
 | 4.1.4 | v2: P1 자료층(#397: `engines.macro`), 화면 P2-4 |
 | 5.2.1 | v2: P1 자료층(#397: `data.list`), 화면 P2-5 |

@@ -265,8 +265,11 @@ SEC-only descriptors in `metrics` (never ranked; `v2_factors.EXTRA_METRIC_PROFIL
 (GENERAL and FINANCIAL, ≥ 0), rule APPQ. Both validators accept them only for those profiles and range-check them.
 
 **Calculation-rule version `calc_version` (owner supplement 2026-10-15).** `v2_factors.CALC_VERSION` (now
-`qgv2-calc/2026-10-17.1` = `2026-10-15.1` (F1–F3 + rules SW, MAA, RSG, NODEBT, EBIT, SPLIT, APPQ) + V-STALE-BS,
-V-STALE-SHARES and V-SHARES-SCALE on `v_inputs_v2` only, Q·G unchanged; format `qgv2-calc/<date>.<n>`) is bumped whenever a factor rule in section 1–3 or a published
+`qgv2-calc/2026-10-23.1` = `2026-10-17.1` + V-PRICE-BASIS on `v_inputs_v2` only; `2026-10-17.1` = `2026-10-15.1` (F1–F3 +
+rules SW, MAA, RSG, NODEBT, EBIT, SPLIT, APPQ) + V-STALE-BS,
+V-STALE-SHARES and V-SHARES-SCALE on `v_inputs_v2` only, Q·G unchanged; format `qgv2-calc/<date>.<n>`. Owner instruction
+2026-10-23: `2026-10-23.1` is the single bump of the central-V round and also covers the central V publication rules U7
+(`qgv-official/1`, CENTRAL_V_PUBLICATION_DESIGN_20261018.md D-CV7: no separate `v_calc_version`)) is bumped whenever a factor rule in section 1–3 or a published
 `v_inputs_v2` rule changes. The file declares it at the top level (`calc_version`) and every row with data
 carries the version it was computed with (`calc_version`; `null` for rows without data and for legacy rows). **Versions are
 never mixed in one percentile:** the publisher (`v2_scoring.score_rows` / `volatility_rank_rows` with `calc_version`), both
@@ -391,6 +394,48 @@ and candidate place are NOT_AVAILABLE (`PRICE_IDENTITY_CONFLICT`); a TARGET of a
   with its class-A-only EPS; ABNB and CVNA have no such pair). Q·G metrics,
   factors and axes are identical. Test: `test_v_inputs_diluted_shares_scale_unconfirmed_is_na_never_rescaled`.
 - `ebit_per_share_history`, `fcf_per_share_history`: up to 5 fiscal years `{fiscal_year_end, value}`, oldest first. These feed the own-history multiple percentile. `[]` when their FY0-basis count fails V-SHARES-SCALE.
+  **V-PRICE-BASIS (calc_version `2026-10-23.1`, owner decision GSQ-024 plan A 2026-10-23):** every `ebit_per_share_history`
+  entry of a row of this version carries `share_basis_factor` F. The values are on the basis of the published count
+  (`diluted_shares`, rule SPLIT); IEX HIST month-end prices are split-UNadjusted. F turns the as-traded share basis at the
+  month-end of the entry's fiscal-year-end month (the month `qgv_v2.month_close` reads, `period_end[:7]`) into the published
+  basis: shares × F, **price_published_basis = raw_month_end_price / F**. Worked example (synthetic): 10-for-1 split after
+  FY-2, FY-2 raw close 1,000 → F = 10 → 100, comparable with FY-2 EBIT/share, which is 1/10 of its as-reported value.
+  Reverse split 1-for-4 → F = 0.25. Derivation (price-free, `_Company.share_basis_factor`): the as-reported filing of that
+  fiscal year (earliest annual filing reporting its diluted-share span; its basis is the one at its filing date) restated
+  to the FY0 basis by the SPLIT chain (`share_factor`), times the FY0 → published-count factor the values use. It comes
+  from **each entry's own as-reported basis**, never from a split date alone; the price-free check is
+  F = (EBIT / as-reported diluted shares) / published value (real WSM, 2:1 split 2024-07: 19.0313 / 9.51565 = 2.0 for
+  FY Jan-2022, likewise FY2023 and FY2024; then 1.0). The as-reported basis equals the as-traded basis at the month-end
+  unless a split took effect **after the month-end and before that filing** (the filing is then restated, the price is
+  not; WMT 3:1 2024-02-26, FY ending 2024-01-31, 10-K 2024-03-15). Evidence of that → F `null` with
+  `share_basis_factor_reason` `SPLIT_TIMING_UNCONFIRMED`, never 1.0 and never × the ratio: a split-ratio fact dated in
+  (month-end, filing] (instant date, or a duration of ≤ 31 days overlapping it; a longer YTD/FY context counts only by its
+  end), or the latest single-valued dei cover count dated in that window off **both** of the last two cover counts dated
+  on or before the month-end by more than `SHARE_BASIS_COVER_BAND` (1/1.2–1.2, UNCALIBRATED) or matching a reported split
+  ratio within 5%. The as-reported filing not linkable to the FY0 basis (an unconfirmed restatement: `share_factor` None)
+  → `null` with `SHARE_BASIS_UNCONFIRMED` (DXCM FY2021: the 2022 restatement is 4.28–4.31×, the 4:1 split plus the ASU
+  2020-06 dilution change, so no 3%-match to the ratio fact). Shape (size budget): `share_basis_factor` on every entry
+  (6 significant digits, 0 < F ≤ 1e6), `share_basis_factor_reason` only when it is null; `fcf_per_share_history` (same
+  fiscal-year basis: read the factor of the same `fiscal_year_end`) and `operating_margin_history` keep `{fiscal_year_end,
+  value}`; rows of an earlier calc_version and legacy rows keep exactly the two keys (both validators; mixed files of the
+  transition validate). Not on DART reference rows. Consumers: only the central V adapter (cv-core) applies F when it
+  builds `month_closes` from IEX raw prices; the device path (Yahoo and other split-ADJUSTED prices, `qgv-v2.js` /
+  `qgv_v2.py` engines, `qgv2-inputs.js`) never applies it and the engines are unchanged.
+  Real companyfacts 2026-10-22 (local only, no prices): NVDA 10/10/10/1/1 (4:1 2021-07 before FY Jan-2022, 10:1 2024-06),
+  AMZN 20/1/1/1/1, WMT 3/3/NA/1/1, CMG 50/50/50/1/1, AVGO 10/10/10/1/1, LRCX 10/10/10/1/1, DECK 6/6/6/1/1, CTAS 4/4/4/1/1
+  (split 2024-09 after the FY May-2024 10-K), ORLY 15/15/15/15/1, WSM 2/2/2/1/1, FTNT 5/1/1/1/1, DXCM NA/1/1/1/1. Sample of
+  150 published issuers (596 entries): 6 NA, all `SPLIT_TIMING_UNCONFIRMED` and conservative — mergers that moved the cover
+  count across the window (IP 1.51×, O 1.46×, COHR 1.23×) and splits in the last quarter **before** the fiscal-year end
+  (ANET 4:1 2021-11 and 2024-12, TSCO 5:1 2024-12), whose timing the facts cannot place on the month-end's side. Normal
+  cover drift over a window: 0.843–1.19 (534 windows). One mis-scaled cover (NTAP 2024-02-23: 20,637,666) is ignored by the
+  two-reference rule. Old and new code give identical values, Q·G metrics and other `v_inputs_v2` fields on all 158 issuers.
+  Limitation: a split after the month-end and before the filing with neither a dated ratio fact nor a single-valued cover
+  count in the window is not detectable (F would follow the restated filing). Size: about +55 KB on the published file
+  (2,134 entries), synthetic 504-row file 1.78 → 1.84 MB (limit 2 MiB). Tests:
+  `test_share_basis_factor_restates_the_as_traded_basis_of_each_fiscal_year_to_the_published_one`,
+  `test_share_basis_factor_comes_from_each_entrys_own_reported_basis_wsm_type`,
+  `test_share_basis_factor_is_na_when_the_restatement_is_unconfirmed_or_the_split_timing_unknown`,
+  `test_share_basis_factor_rows_validate_and_older_rows_keep_two_keys`, vectors `share_basis_*` (`sec_qgv2_node_test.js`).
 - `revenue_cagr_3y`, `eps_cagr_3y`, `fcf_per_share_cagr_3y`, `revenue_ttm_growth`: realized growth for the expectation check.
 - Also: `currency`, `taxonomy`, `fiscal_year_end`.
 
