@@ -12,7 +12,9 @@
    - The Universe read (the source of device V prices) is the old click pipeline of PrivateSubsetView.mount without a screen,
      same calls in the same order (private-subset-view.js:67-75), including SecUniverseShares.loadInputs(view, {now: read time});
      only its unexported glue (US prices of the read, the kept state, the sign-out rule) is written again here.
-   - Prices leave this module only through quote() and history(), for display inside [data-ram-price] elements (P2 rule).
+   - Prices and price-derived values leave this module only through quote() and history() / held() (prices), periodReturns()
+     (period returns over the click-loaded price tabs, P2-2a) and rankFor() (M3 ranks: an order by device market cap, so treated
+     as price-derived), for display as text inside [data-ram-price] elements only (P2 rule).
    - Device prices are RAM only: the device database's stored quotes ('market', 'market-import-history') are stopped at the
      gate (action.js STOPPED, owner 2026-10-24, DC-18), so neither quote() nor the score path ever reads one.
    - Google on/off (owner 2026-10-24, Main pick: the old behaviour): the saved 'on' is read only from a device database that
@@ -225,8 +227,36 @@ function create({win,action,data}){
    if(q)return ram(q,{source:str(q.source)||'DEVICE_QUOTE',read_at:str(q.read_at),as_of:str(q.as_of),time_status:str(q.price_time_status)||'UNCONFIRMED',freshness:str(q.freshness)||'UNDETERMINED'});}
   return Object.freeze({state:'NA',reason:'NO_DEVICE_PRICE'});}
 
+ /* ---- period returns (feature 2.1.4, P2-2a, Main 2026-10-25): RAM only, over the price tabs a click loaded (loadTabs), never a
+    request, never stored or logged. The report definition is reused (ReportBenchmarks.periodWindow on the S&P 500 (SPY) session
+    calendar of the loaded daily tab, base = the close of the session before the period; priceIndex in USD); unadjusted closes
+    (TA-G1: no split check here, the screen says so). The identity stop rule of quote() comes first, before anything else: a stopped
+    identity never gets a return. Symbol: a Universe code reads PriceStore.universeSymbol(code) ('NYSE:BRK.B' -> 'BRK-B'), any
+    other row its ticker with '.' -> '-' upper-cased (key()). companies = [{id, ticker, code}]. */
+ const RETURN_PERIODS=Object.freeze(['1D','5D','20D']);
+ const WINDOW_CODES=Object.freeze({HISTORY_TOO_SHORT:'RETURN_HISTORY_TOO_SHORT',SESSIONS_NOT_AVAILABLE:'RETURN_SESSIONS_NOT_AVAILABLE',BASE_CLOSE_MISSING:'RETURN_BASE_CLOSE_MISSING',LAST_CLOSE_MISSING:'RETURN_LAST_CLOSE_MISSING'});
+ async function periodReturns(period,companies){
+  if(!RETURN_PERIODS.includes(period))throw Error('PERIOD_PENDING');
+  if(!Array.isArray(companies)||!companies.every(c=>object(c)&&typeof c.id==='string'&&c.id))throw Error('COMPANIES_INVALID');
+  let records={};try{await data.ready();const inputs=data.get(QGV2);records=inputs&&object(inputs.records)?inputs.records:{};}catch(_){records={};}
+  const rows={},open=[];
+  for(const c of companies){const why=stopped({code:c.code,ticker:c.ticker,company_id:c.id},records);if(why)rows[c.id]={state:'NA',reason:why};else open.push(c);}
+  const na=(list,reason)=>{for(const c of list)rows[c.id]={state:'NA',reason};};
+  if(!tabsReady('1d')){na(open,'PRICE_TABS_NOT_LOADED');return deepFreeze({state:'NOT_LOADED',as_of:null,period,rows});}
+  const RB=need('ReportBenchmarks'),spy=await storeFacade.dailyCloses('SPY'),calendar=Object.keys(object(spy)?spy:{}).sort();
+  if(!calendar.length){na(open,'RETURN_SESSIONS_NOT_AVAILABLE');return deepFreeze({state:'READY',as_of:null,period,rows});}
+  const asOf=calendar[calendar.length-1],w=RB.periodWindow(calendar,asOf,period);
+  for(const c of open){
+   const code=str(c.code),sym=code?storeFacade.universeSymbol(code):c.ticker?key(c.ticker):null;
+   const closes=sym?await storeFacade.dailyCloses(sym):{};
+   if(!object(closes)||!Object.keys(closes).length){rows[c.id]={state:'NA',reason:'NO_DEVICE_PRICE'};continue;}
+   if(w.state!=='OK'){rows[c.id]={state:'NA',reason:WINDOW_CODES[w.reason]||'RETURN_HISTORY_TOO_SHORT'};continue;}
+   const r=RB.priceIndex(closes,{},w,'USD');
+   rows[c.id]=r.state==='OK'&&typeof r.return==='number'&&Number.isFinite(r.return)?{state:'OK',value:r.return,end:w.sessions[w.sessions.length-1]}:{state:'NA',reason:WINDOW_CODES[r.reason]||'RETURN_LAST_CLOSE_MISSING'};}
+  return deepFreeze({state:'READY',as_of:asOf,period,rows});}
+
  return Object.freeze({UNIVERSE_SOURCE_KEY,WORKER_ORIGIN_KEY,status,subscribe,deviceSettings,prepare,login,logout,readUniverse,universeView,universeRanks:()=>ranks,rankFor,
-  useTabs,loadTabs,syncSymbols,syncUniverse,history,held,quote,priceView,storeFacade});
+  useTabs,loadTabs,syncSymbols,syncUniverse,history,held,quote,periodReturns,priceView,storeFacade});
 }
 return Object.freeze({create});
 });
