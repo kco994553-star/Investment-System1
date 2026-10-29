@@ -49,6 +49,8 @@ let phase = 'START';
       assert.equal(await page.locator('main').getAttribute('data-route'), 'search');
       assert.match(await page.locator('.hero-title').textContent(), /어떤 기업을 볼까요\?/);
       await common();
+      // The shared search (DC-23) submits after IS2.ready (before it a submit does nothing): wait for the layer, then the exact code.
+      await page.evaluate(() => window.IS2.ready);
       await page.locator('[data-search-input]').fill('NYSE:FIX'); await page.locator('[data-search-form] button[type=submit]').click();
       await page.locator('[data-result-code="NYSE:FIX"]').waitFor();
       assert.equal(await page.evaluate(() => location.hash), '#/company/NYSE%3AFIX');
@@ -80,7 +82,8 @@ let phase = 'START';
         await page.locator('[data-detail=settings]').waitFor(); assert.equal(await page.locator('[data-drawer]').isHidden(), true);
       }
       phase = width + ' fonts';
-      assert.deepEqual(await page.evaluate(async () => { await document.fonts.ready; return ['IS Black Han Sans', 'IS Gowun Dodum', 'IS Pen Script'].map((f) => document.fonts.check('16px "' + f + '"', '가')); }), [true, true, true]);
+      // DC-25: Jua is the one self-hosted face (titles); body text is the device's Korean gothic.
+      assert.deepEqual(await page.evaluate(async () => { await document.fonts.ready; return ['IS Jua'].map((f) => document.fonts.check('16px "' + f + '"', '가')); }), [true]);
       phase = width + ' boundaries';
       assert.deepEqual(outside, [], 'no request leaves the origin');
       assert.deepEqual(errors, [], 'no console error');

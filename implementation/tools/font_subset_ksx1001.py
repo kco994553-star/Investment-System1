@@ -44,37 +44,12 @@ LICENCES = {
     "jua-OFL.txt": ("ofl/jua/OFL.txt", "44a7c6e4c5572392ae122d3b1d8c6ba6fd640a7797e675384585d947f2773e3c"),
     "gaegu-OFL.txt": ("ofl/gaegu/OFL.txt", "53a9ce47085d9fef613c7ecb3730dc80d25962510bbea231b89564f58240f251"),
 }
-# New frontend (docs/frontend_v2/FRONTEND_V2_PLAN.md, owner decision 2026-10-23): the three typefaces of the hand-drawn
-# chalkboard draft. Not deployed until the one-time switch, when these move into FONTS and the guard pins.
-# Download the extra sources the same way (ofl/blackhansans, ofl/gowundodum, ofl/nanumpenscript; save each OFL.txt under the
-# V2_LICENCES name) and run with --set v2.
+# New frontend (DC-25, owner 2026-10-27: the reference video's style; was the chalkboard draft's three typefaces): titles in
+# Jua, the same reviewed subset under the same names as above (web_app/jua-regular-ksx1001.woff2 and web_app/jua-OFL.txt are
+# the web_assets/ files byte for byte); body text in the device's Korean gothic (nothing to subset). --set v2 reproduces it.
 # output name -> (upstream path, upstream source sha256, reviewed output sha256, family name written into the subset or None)
-# Nanum Pen Script carries Reserved Font Names ("Nanum", ...): a subset is a Modified Version under OFL 1.1, so it is renamed.
-V2_FONTS = {
-    "black-han-sans-ksx1001.woff2": (
-        "ofl/blackhansans/BlackHanSans-Regular.ttf",
-        "31960809284026681774a8e52dc19ebcad26cf69b0ad9d560f288296fbb52739",
-        "02c5deaea5875b4d6eeb897533c717f51b91f833646ae548ac7ea4dab5102cd8",
-        None,
-    ),
-    "gowun-dodum-ksx1001.woff2": (
-        "ofl/gowundodum/GowunDodum-Regular.ttf",
-        "a6e457933227483a11758fd0947bc74422a106d46f0bf057fdaa5af94a30067d",
-        "67e2fb2ca3ef59df515bdac034112c0161a26f1fa1fc9b52caa0c2442ad92316",
-        None,
-    ),
-    "is-pen-script-ksx1001.woff2": (
-        "ofl/nanumpenscript/NanumPenScript-Regular.ttf",
-        "6f0d1ab29c7894010dc88831fb7a0a51edb79136e450344183de5b1a8b52bd43",
-        "80e706fef8eb2f9ecf8224bc0b0ceb978e40efee2fe2dc8f0880d369bbd6e682",
-        "IS Pen Script",
-    ),
-}
-V2_LICENCES = {
-    "blackhansans-OFL.txt": ("ofl/blackhansans/OFL.txt", "c324192c8b3a988bae45a9a7e4ac1258b684739003bda114e0523423440457c9"),
-    "gowundodum-OFL.txt": ("ofl/gowundodum/OFL.txt", "a7c73f9521cd646bbdfb6684c99a62311bbd7bce11898dc11ef0b3c69eda1aca"),
-    "pen-script-OFL.txt": ("ofl/nanumpenscript/OFL.txt", "eeacf16032901d0ed0456876ec77b8f0fda6b3fecec7d972f8543eb602e6c30f"),
-}
+V2_FONTS = {"jua-regular-ksx1001.woff2": FONTS["jua-regular-ksx1001.woff2"] + (None,)}
+V2_LICENCES = {"jua-OFL.txt": LICENCES["jua-OFL.txt"]}
 # The same ranges are the @font-face unicode-range in theme.css (checked by a test).
 UNICODE_RANGE = ("U+0020-007E, U+00A0-00FF, U+2010-2027, U+2030-203A, U+20A9, U+3000-3011, U+301C, "
                  "U+3131-318E, U+AC00-D7A3, U+FF01-FF5E")
@@ -140,7 +115,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--src", required=True, help="directory holding the downloaded upstream files")
     parser.add_argument("--out", required=True, help="directory for the WOFF2 subsets")
-    parser.add_argument("--set", choices=("current", "v2"), default="current", help="v2 = the new frontend's draft typefaces")
+    parser.add_argument("--set", choices=("current", "v2"), default="current", help="v2 = the new frontend's title typeface (Jua, DC-25)")
     args = parser.parse_args(argv)
     fonts = FONTS if args.set == "current" else {k: (u, s, o) for k, (u, s, o, _f) in V2_FONTS.items()}
     families = {} if args.set == "current" else {k: f for k, (_u, _s, _o, f) in V2_FONTS.items()}
