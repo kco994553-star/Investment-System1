@@ -11,11 +11,11 @@ const LB=[['1.1.1 평가 대상과 목록','2.1.1','무엇을 줄 세웠는지 �
  ['1.1.5 산출 상태별 목록','2.1.5','순위에 섞지 않고 목록을 나눠 보여 줌','종합 순위 · 참고 목록 · 일부 축 · 확인 필요'],
  ['1.1.6 공식 결과와 개인 결과','2.1.6','누가 계산했고 어떤 V로 계산했는지 배지로','공식 가중치 결과 · 내 설정 미리보기'],
  ['1.1.7 후보 선정 연결','2.1.7','짧게만 · 자세한 그림은 5.1 모델 후보','모델 후보 · 선정 · 제외 근거']];
-const off=(...c)=>h('button',{type:'button',class:'btn',disabled:true},...c);
+const off=(mine,...c)=>h('button',{type:'button',class:mine?'btn mine':'btn',disabled:true},...c);
 function render(route){
  const bodies={},blocks=LB.map(([stamp,fn,hand,what])=>{const body=bodies[fn]=h('div',{class:'lb-body'},pending(what));
-  return h('div',{class:'lb',dataset:{lb:fn}},h('div',{class:'lb-head'},h('h3',{class:'stamp sub blue',tabindex:'-1'},stamp),h('span',{class:'meta'},'기능 ',fn),h('span',{class:'hand'},hand)),body);});
- const buttons=['구글 로그인 준비','로그인','가격 불러오기 · 이 기기에서만'].map((t,i)=>off(h('span',{class:'m-only'},['①','②','③'][i]+' '),t));
+  return h('div',{class:'lb',dataset:{lb:fn}},h('div',{class:'lb-head'},h('h3',{class:'stamp sub',tabindex:'-1'},stamp),h('span',{class:'meta'},'기능 ',fn),h('span',{class:'hand'},hand)),body);});
+ const buttons=['구글 로그인 준비','로그인','가격 불러오기 · 이 기기에서만'].map((t,i)=>off(i===2,h('span',{class:'m-only'},['①','②','③'][i]+' '),t));
  const chips=h('div',{class:'scroll lb-chips',dataset:{qgvChips:''}},h('span',{class:'chip wait'},'점수 갱신 · 연결 전'));
  const conn=h('span',{class:'chip wait',dataset:{qgvConn:''}},'연결 전');
  const status=h('div',{class:'band-lines',role:'status',dataset:{qgvStatus:''}});
@@ -27,10 +27,10 @@ function render(route){
    h('span',{class:'hand'},'준비되기 전에는 세 버튼 모두 꺼짐 · 누를 때만 가격을 부름')),status,nav);
  later(route,'leaderboard',{band,chips,conn,buttons,status,nav,bodies},()=>{for(const b of Object.values(bodies))b.replaceChildren(h('p',{class:'na',dataset:{na:'LOADER_FAILED'}},'층을 불러오지 못해 리더보드를 그리지 못했습니다'));});
  return h('div',{class:'screen lb-screen'},head('1','QGV','기업의 질(Q) · 성장(G) · 가치(V)를 한 장으로'),band,
-  section('1-1','1.1 리더보드','blue',...blocks),
-  section('1-2','1.2 가중치','blue',pending('다음 단계에서 연결')),
-  section('1-3','1.3 13F (연구 단계)','blue',pending('다음 단계에서 연결')),
-  section('1-4','1.4 구조 트리','blue',pending('다음 단계에서 연결')));
+  section('1-1','1.1 리더보드',null,...blocks),
+  section('1-2','1.2 가중치',null,pending('다음 단계에서 연결')),
+  section('1-3','1.3 13F (연구 단계)',null,pending('다음 단계에서 연결')),
+  section('1-4','1.4 구조 트리',null,pending('다음 단계에서 연결')));
 }
 register('qgv',render);
 })();

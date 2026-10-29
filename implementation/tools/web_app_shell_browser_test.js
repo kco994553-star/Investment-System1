@@ -82,7 +82,8 @@ let phase = 'START';
         await page.locator('[data-detail=settings]').waitFor(); assert.equal(await page.locator('[data-drawer]').isHidden(), true);
       }
       phase = width + ' fonts';
-      assert.deepEqual(await page.evaluate(async () => { await document.fonts.ready; return ['IS Black Han Sans', 'IS Gowun Dodum', 'IS Pen Script'].map((f) => document.fonts.check('16px "' + f + '"', '가')); }), [true, true, true]);
+      // DC-25: Jua is the one self-hosted face (titles); body text is the device's Korean gothic.
+      assert.deepEqual(await page.evaluate(async () => { await document.fonts.ready; return ['IS Jua'].map((f) => document.fonts.check('16px "' + f + '"', '가')); }), [true]);
       phase = width + ' boundaries';
       assert.deepEqual(outside, [], 'no request leaves the origin');
       assert.deepEqual(errors, [], 'no console error');

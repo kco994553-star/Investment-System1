@@ -242,6 +242,9 @@ const testClick = async (page, name) => { await page.locator('[data-test-action=
         const heads = await page.evaluate(async () => { const Q = window.IS2.qgv, pg = await Q.page(), th = [...document.querySelectorAll('[data-lb-table] thead th')];
           return { vsub: th.find((x) => x.querySelector('[data-col=v]')).querySelector('.sub').textContent, rsub: th[0].querySelector('.sub').textContent, vko: pg.v_source.ko, label: Q.rankLabel(pg) }; });
         assert.equal(heads.vsub, heads.vko, 'V header sub-label = pg.v_source.ko'); assert.equal(heads.rsub, heads.label, 'rank sub-label = rankLabel(pg)');
+        // DC-26 colour: the Q·G·V headers and cells carry their axis class (tint); the source chip of a temporary score has the mine mark.
+        assert.deepEqual(await page.evaluate(() => ['q', 'g', 'v'].map((x) => [document.querySelectorAll('[data-lb-table] thead th.ax-' + x).length, document.querySelectorAll('[data-lb-table] td.ax-' + x).length > 0])), [[1, true], [1, true], [1, true]]);
+        assert.equal(await page.locator('.chip.vsrc.mine').count(), 1, 'the source chip carries the mine mark');
         // A READY page with a reason shows reasonText(pg.reason) above the table (rows still draw); without one, no such line.
         const why = await page.evaluate(async () => { const Q = window.IS2.qgv, pg = await Q.page(), e = document.querySelector('[data-page-reason]');
           return { reason: pg.reason, want: pg.reason ? Q.reasonText(pg.reason) : null, text: e ? e.textContent : null, na: e ? e.dataset.na : null }; });
@@ -284,6 +287,7 @@ const testClick = async (page, name) => { await page.locator('[data-test-action=
         // 종합 순위 without prices: the empty state; its button switches to the QG list.
         await page.locator('button[data-list=RANKED]').click(); await page.locator('[data-empty=NO_RANKING]').waitFor();
         assert.match(await page.locator('[data-empty=NO_RANKING]').innerText(), /가격 연결 전: QGV 순위 없음/);
+        assert.equal(await page.locator('[data-empty=NO_RANKING] svg.mascot[data-mascot=plain][aria-hidden=true]').count(), 1, 'the state character');
         assert.equal(await page.locator('[data-empty=NO_RANKING] button:has-text("가격 불러오기")').isDisabled(), true, 'the mirrored price button is off');
         await common(page);
         await page.locator('[data-k=qg-list]').click(); await page.locator('[data-lb-table][data-list=QG_REFERENCE]').waitFor();
@@ -606,6 +610,8 @@ const testClick = async (page, name) => { await page.locator('[data-test-action=
       const cards = await page.evaluate(() => [...document.querySelectorAll('[data-page-state]')].map((c) => ({ state: c.dataset.pageState, na: c.dataset.na, text: c.textContent })));
       const want = await page.evaluate((r) => window.IS2.qgv.reasonText(r), reason);
       assert.equal(cards.length, 7); for (const c of cards) { assert.equal(c.state, state); assert.equal(c.na, reason); assert.equal(c.text, title + want); assert.doesNotMatch(c.text, /\d/); }
+      // The one state character (DC-25): once, on the first card, decorative (no text, hidden from screen readers).
+      assert.deepEqual(await page.evaluate(() => [...document.querySelectorAll('[data-page-state] svg.mascot')].map((m) => [m.dataset.mascot, m.getAttribute('aria-hidden'), m.closest('[data-page-state]') === document.querySelector('[data-page-state]')])), [[label === '404' ? 'plain' : 'alarm', 'true', true]]);
       assert.equal(await page.locator('[data-lb-table]').count(), 0, 'no table');
       assert.doesNotMatch(await page.locator('main').innerText(), CODE_TEXT);
       assert.match(await page.locator('[data-basis]').textContent(), /^점수 갱신 없음 · 마지막 확인 \d\d:\d\d · 계산 버전 없음$/, 'the 기준 chip in a state card page');

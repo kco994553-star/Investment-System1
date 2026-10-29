@@ -18,7 +18,7 @@
      tools/web_app_qgv_screen_node_test.js pins them equal to the old functions and to frozen vectors. */
 (function(){
 'use strict';
-const I=window.IS2,{h,href}=I;
+const I=window.IS2,{h,href}=I,mascot=m=>I.parts.mascot(m);
 const QGV2='sec-qgv2.json',CLS='company-classification.json',NAMES='company-names-ko.json',STEP=50;
 const ok=v=>typeof v==='number'&&Number.isFinite(v);
 const loaded=x=>!!x&&typeof x==='object'&&x.state!=='NOT_READY';
@@ -101,6 +101,9 @@ const chip=(label,on,attrs={})=>h('button',{type:'button',class:'chip','aria-pre
 const wait=t=>h('span',{class:'chip wait'},t);
 const hand=(...t)=>h('p',{class:'hand'},...t);
 const red=(code,words,...more)=>h('p',{class:'hand err',dataset:{reason:code}},words,...more);
+// DC-26 colour hooks: the Q·G·V columns take their axis tint; the source chip takes the mine mark while the shown score is the
+// one this device's engines compute (page.engine_v_source; a published central V makes them differ).
+const AX=['q','g','v'],vsrcClass=pg=>'chip vsrc'+(pg.v_source===pg.engine_v_source?' mine':'');
 const settingsLink=()=>h('a',{class:'lk',href:href('detail','settings')},'→ 세부: 설정·시트 연결');
 const group=(label,...kids)=>h('div',{class:'scroll',role:'group','aria-label':label},...kids);
 
@@ -146,7 +149,7 @@ function leaderboard(route,refs){
   refs.status.replaceChildren(...lines);}
  function paintChips(pg){
   const b=pg.price_basis,price=b&&b.connected?['가격: 이 기기 RAM · 읽은 시각 ',clock(b.read_at)||'NA',b.time_status!=='CONFIRMED'?' · 가격 기준 시각 미확인':'']:['가격: 불러오기 전'];
-  refs.chips.replaceChildren(...basis(pg),h('span',{class:'chip vsrc'},'V 출처: ',pg.v_source.ko),h('span',{class:'chip'},Q.rankLabel(pg)),h('span',{class:'chip',dataset:{priceChip:''}},...price));}
+  refs.chips.replaceChildren(...basis(pg),h('span',{class:vsrcClass(pg)},'V 출처: ',pg.v_source.ko),h('span',{class:'chip'},Q.rankLabel(pg)),h('span',{class:'chip',dataset:{priceChip:''}},...price));}
  /* ---- the 기준 chips in every page state (DC-22, owner 2026-10-27): the score file's refresh time (its as_of, UTC), this tab's last
     check of the public files, the calc_version, a file past its stale_after_seconds, the last re-read's outcome, and the re-read
     button (public files only: IS2.data.refresh, kind PUBLIC_REFRESH, one action per click; the private gate never opens). */
@@ -208,9 +211,10 @@ function leaderboard(route,refs){
  const set=(fn)=>()=>{fn();draw();};
  function stateCards(pg){
   const t={NO_DATA:'화면 상태 · 미게시',READ_FAILED:'화면 상태 · 읽기 실패',DATA_FORMAT_NEWER:'화면 상태 · 새 형식'}[pg.state]||'화면 상태 · 미게시';
-  refs.chips.replaceChildren(...basis(pg),h('span',{class:'chip vsrc'},'V 출처: ',pg.v_source.ko),h('span',{class:'chip'},Q.rankLabel(pg)),h('span',{class:'chip'},'가격: 불러오기 전'));
-  for(const b of Object.values(B))b.replaceChildren(h('div',{class:'sk state-card',dataset:{na:pg.reason||pg.state,pageState:pg.state}},h('b',null,t),h('span',null,text(pg.reason)),
-   pg.state==='DATA_FORMAT_NEWER'?h('button',{type:'button',class:'btn',dataset:{k:'reload'},onclick:()=>location.reload()},'새로고침'):null));}
+  refs.chips.replaceChildren(...basis(pg),h('span',{class:vsrcClass(pg)},'V 출처: ',pg.v_source.ko),h('span',{class:'chip'},Q.rankLabel(pg)),h('span',{class:'chip'},'가격: 불러오기 전'));
+  // The character once, on the first block (2.1.1); the other six cards repeat the words only.
+  Object.values(B).forEach((b,i)=>b.replaceChildren(h('div',{class:'sk state-card',dataset:{na:pg.reason||pg.state,pageState:pg.state}},i?null:mascot(pg.state==='NO_DATA'?'plain':'alarm'),h('b',null,t),h('span',null,text(pg.reason)),
+   pg.state==='DATA_FORMAT_NEWER'?h('button',{type:'button',class:'btn',dataset:{k:'reload'},onclick:()=>location.reload()},'새로고침'):null)));}
 
  /* ---- 2.1.1 평가 대상과 목록: Universe504 only (DC-24: no TARGET v0 scope, box or column), counts, the one table */
  function block1(v){
@@ -228,7 +232,7 @@ function leaderboard(route,refs){
   const arrow=col=>(col===active?(ariaSort(col)==='descending'?' ↓':' ↑'):'');
   const headBtn=(col,label,onclick,disabled=false)=>h('button',{type:'button',class:'th-btn',disabled,dataset:{k:'th-'+col,col},onclick},label,h('span',{class:'arrow '+(col==='q'||col==='g'||col==='v'?col+'-text':'')},arrow(col)));
   const pick=(desc,asc)=>set(()=>{V.ret=false;V.sort=V.sort===desc?asc:desc;});
-  const th=(col,content,sub,pc)=>h('th',{scope:'col',class:(pc?'pc-col ':'')+(col&&col===active?'on':''),'aria-sort':col?ariaSort(col):null},content,sub?h('small',{class:'sub'},sub):null);
+  const th=(col,content,sub,pc)=>h('th',{scope:'col',class:(pc?'pc-col ':'')+(col&&col===active?'on':'')+(AX.includes(col)?' ax-'+col:''),'aria-sort':col?ariaSort(col):null},content,sub?h('small',{class:'sub'},sub):null);
   const vf=v.list==='RANKED',cols=[
    th(null,'순위',rankHead(v)),th('name',headBtn('name','기업',set(()=>{V.ret=false;V.sort='name';}))),th(null,'SIC',null,true),th(null,'유형',null,true),
    th('qgv',headBtn('qgv','QGV',pick('qgv','qgv-asc'))),th('q',headBtn('q','Q',pick('q-desc','q-asc')),null,true),th('g',headBtn('g','G',pick('g-desc','g-asc')),null,true),
@@ -286,14 +290,14 @@ function leaderboard(route,refs){
   const vf=r.coverage.v_factors,miss=(vf.missing||[]).map(f=>{const L=window.DeviceProfiles&&window.DeviceProfiles.FACTOR_LABELS;return L&&L[f]?L[f][0]:'이름 없는 요인';});
   return h('tr',{dataset:{row:r.id}},h('td',{class:'rk',dataset:{cell:'rank'}},rankCell(r,v)),company,
    h('td',{class:'pc-col',dataset:{cell:'sic'}},sic||naBox('분류 자료 없음','SIC_NOT_AVAILABLE')),h('td',{class:'pc-col',dataset:{cell:'type'}},ty),
-   h('td',{class:'num qgv '+on('qgv'),dataset:{cell:'qgv'}},qgvCell),h('td',{class:'num '+pc('q'),dataset:{cell:'q'}},score(r,'q')),h('td',{class:'num '+pc('g'),dataset:{cell:'g'}},score(r,'g')),
-   h('td',{class:'num '+pc('v'),dataset:{cell:'v'}},vCell),h('td',{class:pc('cap'),dataset:{cell:'m3'}},m3(r,v)),h('td',{class:on('ret'),dataset:{cell:'ret'}},ret(r,v)),
+   h('td',{class:'num qgv '+on('qgv'),dataset:{cell:'qgv'}},qgvCell),h('td',{class:'num ax-q '+pc('q'),dataset:{cell:'q'}},score(r,'q')),h('td',{class:'num ax-g '+pc('g'),dataset:{cell:'g'}},score(r,'g')),
+   h('td',{class:'num ax-v '+pc('v'),dataset:{cell:'v'}},vCell),h('td',{class:pc('cap'),dataset:{cell:'m3'}},m3(r,v)),h('td',{class:on('ret'),dataset:{cell:'ret'}},ret(r,v)),
    h('td',{class:pc('asof'),dataset:{cell:'asof'}},day(r.acquired_at)||naBox('자료 기준일 없음','ACQUIRED_AT_NOT_AVAILABLE')),
    v.list==='RANKED'?h('td',{class:'pc-col',dataset:{cell:'vfactors'}},String(vf.n),'/',String(vf.total),miss.length?h('details',{class:'na'},h('summary',null,'빠진 요인'),h('span',{class:'reason'},miss.join(' · '))):null):null);}
  // The 2.1.5 empty state of 종합 순위 (no device rank yet) and 2.1.7: the band's ③ button mirrored, never an action of its own.
  function mirror(where){const st=P.status(),usable=loaded(st)&&st.google&&st.google.connected&&st.universe_source.set;
-  return h('button',{type:'button',class:'btn',disabled:!usable,dataset:{k:'mirror-'+where},onclick:()=>{bRead.scrollIntoView({block:'center'});bRead.focus({preventScroll:true});}},'가격 불러오기 · 이 기기에서만');}
- function noRanking(){return h('div',{class:'sk empty',dataset:{empty:'NO_RANKING'}},h('p',null,'가격 연결 전: QGV 순위 없음'),
+  return h('button',{type:'button',class:'btn mine',disabled:!usable,dataset:{k:'mirror-'+where},onclick:()=>{bRead.scrollIntoView({block:'center'});bRead.focus({preventScroll:true});}},'가격 불러오기 · 이 기기에서만');}
+ function noRanking(){return h('div',{class:'sk empty',dataset:{empty:'NO_RANKING'}},mascot('plain'),h('p',null,'가격 연결 전: QGV 순위 없음'),
   h('button',{type:'button',class:'btn',dataset:{k:'qg-list'},onclick:set(()=>{V.list='QG_REFERENCE';V.shown=STEP;})},'QG 참고 목록 보기'),mirror('list'));}
 
  /* ---- 2.1.2 순위와 정렬 */
@@ -350,7 +354,7 @@ function leaderboard(route,refs){
   const usable=loaded(st)&&g&&g.connected&&st.sheet.set&&s&&states.includes(s.state);
   let why=null;
   if(!usable){if(!s||s.state==='OFF')why=['PRICE_TABS_OFF',true];else if(!(g&&g.connected)||s.state==='AUTH_REQUIRED')why=['AUTH_REQUIRED',false];else why=['SHEET_NOT_CONNECTED',true];}
-  const load=h('button',{type:'button',class:'btn',disabled:!usable,dataset:{k:'load-tabs'},onclick:e=>act(e,ev=>P.loadTabs(ev),ctx.tabs)},'수익률용 가격 불러오기 · 이 기기에서만');
+  const load=h('button',{type:'button',class:'btn mine',disabled:!usable,dataset:{k:'load-tabs'},onclick:e=>act(e,ev=>P.loadTabs(ev),ctx.tabs)},'수익률용 가격 불러오기 · 이 기기에서만');
   const lines=[];
   if(s&&s.state==='ERROR')lines.push(red((s.reason_codes||[])[0]||'ERROR',say((s.reason_codes||[])[0],'가격 탭을 읽지 못했습니다')));
   if(ctx.tabs.err)lines.push(red(ctx.tabs.err,say(ctx.tabs.err,'실행하지 못했습니다')));
@@ -398,7 +402,7 @@ function leaderboard(route,refs){
  /* ---- 2.1.7 후보 선정 연결 (the official default profile; filters and personal settings change nothing) */
  function block7(v){
   const S=QS(),M=ctx.model,links=h('div',{class:'links'},h('a',{class:'lk',href:href('portfolio')},'→ 5.1 모델 후보 자세히'),h('a',{class:'lk',href:href('detail','target-v1')},'→ 세부: TARGET v1 빌더'),
-   h('p',{class:'hand err'},'매매 지시 아님 · 후보 목록일 뿐'));
+   h('p',{class:'hand'},'매매 지시 아님 · 후보 목록일 뿐'));
   const head=h('b',{class:'model-title'},'모델 후보 N10 · N15 · N20 (N15 주검정) · 공식 기본 프로필 기준');
   const basisLine=h('p',{class:'reason',dataset:{modelBasis:''}},...basisOf(v.pg));
   if(!M)return[h('div',{class:'sk model'},head,h('div',{class:'sk empty dashed',dataset:{empty:'NO_MODEL'}},h('p',null,'QGV 순위가 없어(이 기기에서 V 미산출) 선정하지 않습니다'),mirror('model')),basisLine),links];

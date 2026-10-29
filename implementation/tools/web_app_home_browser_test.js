@@ -217,6 +217,7 @@ function macroScreen() {
       }
       await go('#/company/nv', '[data-not-found]');
       assert.equal(await page.locator('[data-not-found]').textContent(), '이 이름의 기업을 찾지 못했습니다', 'an unknown id in the address');
+      assert.equal(await page.locator('[data-result-facts] svg.mascot[data-mascot=plain][aria-hidden=true]').count(), 1, 'the state character (DC-25)');
       await go('#/company/NASDAQ%3AWBD', '[data-listing-ended]');
       assert.equal(await page.locator('[data-result-facts] [data-listing-ended]').textContent(), '상장 종료 2026-10-06 · 점수 없음', 'the company page of a listing-ended code');
 
