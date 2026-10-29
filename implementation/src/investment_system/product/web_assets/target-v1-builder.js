@@ -16,11 +16,16 @@
    row (no value, NA reason) never blocks, a valued row of another calculation is CALC_VERSION_MIXED; the draft records its input
    basis (calc_version, as_of, per-shard newest acquired_at) and a changed basis at finalize regenerates the draft (answers kept
    for the same symbols only); the selected names' financial safety is re-checked against the latest file. Every number comes from TargetV1ConfigDefaults (qgv/target_v1_builder_v0.json,
-   v0 · UNCALIBRATED) or PlaybookConfigDefaults. Missing is null / NA, never 0. No order function; no buy or sell wording. */
+   v0 · UNCALIBRATED) or PlaybookConfigDefaults. Missing is null / NA, never 0. No order function; no buy or sell wording.
+   PR-D (owner decision D8 (b), GSQ-024; spec 2.1.7, 6.1.2~6.1.4): when the caller hands over a central V publication that
+   QgvOfficial (qgv-official.js) accepted, officialComputed() maps its published rows into the same accessor shape and the
+   pipeline above runs unchanged on them (V_SOURCES.OFFICIAL_CENTRAL); the draft and the version keep the publication id and
+   days only. Without one (or without QgvOfficial on the page, e.g. web_app) everything is the device path, as before. */
 (function(root,factory){const node=typeof module==='object'&&module.exports;
  const api=factory(node?require('./playbook-engine.js'):root.PlaybookEngine,node?require('./playbook-config-defaults.js'):root.PlaybookConfigDefaults,
-  node?require('./target-v1-config-defaults.js'):root.TargetV1ConfigDefaults,node?()=>require('./virtual-trading.js'):()=>root.VirtualTrading,node?()=>require('./qgv-v2.js'):()=>root.QgvV2);
- if(node)module.exports=api;else root.TargetV1Builder=api;})(typeof globalThis==='object'?globalThis:this,function(E,PCFG,CFG,virtualTrading,qgvV2){
+  node?require('./target-v1-config-defaults.js'):root.TargetV1ConfigDefaults,node?()=>require('./virtual-trading.js'):()=>root.VirtualTrading,node?()=>require('./qgv-v2.js'):()=>root.QgvV2,
+  node?()=>require('./qgv-official.js'):()=>root.QgvOfficial);
+ if(node)module.exports=api;else root.TargetV1Builder=api;})(typeof globalThis==='object'?globalThis:this,function(E,PCFG,CFG,virtualTrading,qgvV2,officialReader){
 'use strict';
 const SCHEMA='target-v1-builder/1',DAY=/^\d{4}-\d{2}-\d{2}$/,SYMBOL=/^[A-Za-z0-9][A-Za-z0-9.\-=]{0,31}$/,UNIVERSE=/^(?:NYSE|NASDAQ|BATS):([A-Z0-9][A-Z0-9.\-]{0,15})$/;
 const ANSWERS=['AGREE','DISAGREE','UNKNOWN'];
@@ -173,14 +178,19 @@ function poolRow(r,cfg=CFG,pcfg=PCFG){const t=templates(r,cfg,pcfg);return{symbo
  q:round(r.q),g:round(r.g),v:round(r.v),total:round(r.total,4),q_pct:round(r.q_pct),rank:r.rank,industry_rank:r.industry_rank,industry_size:r.industry_size,factors_n:r.factors_n,factors_total:r.factors_total,
  v_n:r.v_n,v_total:r.v_total,v_missing:[...r.v_missing],in19:r.in19,safety:r.safety.state,reasons:t.reasons,invalidations:t.invalidations};}
 // basis: inputBasis() of the published file the draft was built from (null when it could not be read → regenerated at finalize).
-function buildDraft({computed,inputs,universeCodes,existing,date,basis=null,cfg=CFG,pcfg=PCFG}){
- if(!validDay(date))fail('DATE_INVALID');if(computed?.v2_state!=='READY')fail('QGV2_NOT_READY');
+// official (PR-D): a publication QgvOfficial accepted and the caller found usable; computed must then be officialComputed() of it
+// (official scores never mixed with device ones). Only then the draft gets v_source + official; a device draft gains no key.
+function buildDraft({computed,inputs,universeCodes,existing,date,basis=null,official=null,cfg=CFG,pcfg=PCFG}){
+ if(!validDay(date))fail('DATE_INVALID');const pub=official===null||official===undefined?null:officialRecord(official);
+ if(pub===null&&official!==null&&official!==undefined)fail('OFFICIAL_INVALID');if(pub&&computed!==officialComputed(official))fail('V_SOURCE_MIXED');
+ if(computed?.v2_state!=='READY')fail('QGV2_NOT_READY');
  const all=universeRows({computed,inputs,universeCodes,existing,cfg,pcfg}),eligible=[],excluded={},excludedRows=[];
  for(const r of all){const why=exclusions(r,cfg);if(why.length){for(const w of why)excluded[w]=(excluded[w]||0)+1;excludedRows.push({symbol:r.symbol,total:round(r.total,4),reasons:why,safety:r.safety.state});}else eligible.push(r);}
  const pool=eligible.sort(byTotal).slice(0,cfg.candidates.pool_size).map(r=>poolRow(r,cfg,pcfg));
  excludedRows.sort((a,b)=>(b.total??-1)-(a.total??-1)||(a.symbol<b.symbol?-1:1));
  return{created:date,basis:object(basis)?{...basis}:null,config_version:cfg.config_version,profile_id:computed.profile?.id||null,v2_as_of:computed.v2_as_of||null,coverage:coverage(inputs,cfg),
-  universe_rows:all.length,eligible_count:eligible.length,excluded_counts:excluded,excluded:excludedRows.slice(0,cfg.candidates.excluded_shown),pool};
+  universe_rows:all.length,eligible_count:eligible.length,excluded_counts:excluded,excluded:excludedRows.slice(0,cfg.candidates.excluded_shown),pool,
+  ...(pub?{v_source:V_SOURCES.OFFICIAL_CENTRAL.id,official:pub}:{})};
 }
 // Step 3: the 30-candidate table rows.
 function candidates(draft,cfg=CFG){return spread(draft?.pool||[],cfg.sector_spread.max_per_subgroup,cfg.candidates.count);}
@@ -200,7 +210,14 @@ function validateState(input){
  for(const a of v.answers)if(!object(a)||!SYMBOL.test(a.symbol)||!ANSWERS.includes(a.answer)||!validDay(a.date)||!text(a.reason,200)||(a.answer==='DISAGREE'&&!a.reason.trim()))fail('TARGET_V1_STATE_INVALID');
  if(v.draft&&(!validDay(v.draft.created)||!Array.isArray(v.draft.pool)||v.draft.pool.some(r=>!object(r)||!SYMBOL.test(r.symbol)||!finite(r.total))))fail('TARGET_V1_STATE_INVALID');
  if(v.draft&&v.draft.basis!==undefined&&v.draft.basis!==null&&(!object(v.draft.basis)||!(v.draft.basis.shards===undefined||text(v.draft.basis.shards,12000))||!(v.draft.basis.type_scope===undefined||v.draft.basis.type_scope===null||text(v.draft.basis.type_scope,100))||!(v.draft.basis.withdrawn===undefined||text(v.draft.basis.withdrawn,12000))))fail('TARGET_V1_STATE_INVALID');
+ // PR-D: a recorded V source is a known id; the publication record is ids and days only (bounded by the patterns) and only on an
+ // OFFICIAL_CENTRAL draft / version (a version keeps all three publication fields or none). An OFFICIAL_CENTRAL id without them stays
+ // readable: web_app's engines record the draft's id on a version (web_app_engines_node_test.js); such a draft never shows 공식 V
+ // values on this screen and is V_SOURCE_CHANGED at finalize.
+ if(v.draft&&(!(v.draft.v_source===undefined||knownSource(v.draft.v_source))||!(v.draft.official===undefined||officialShape(v.draft.official)&&v.draft.v_source===V_SOURCES.OFFICIAL_CENTRAL.id)))fail('TARGET_V1_STATE_INVALID');
  for(const x of v.versions)if(!object(x)||!validDay(x.date)||!Array.isArray(x.rows)||x.rows.some(r=>!SYMBOL.test(r?.symbol)||!finite(r.pct)))fail('TARGET_V1_STATE_INVALID');
+ for(const x of v.versions){const n=['publication_id','price_basis_date','official_inputs_as_of'].filter(k=>x[k]!==undefined).length;
+  if(!(x.v_source===undefined||knownSource(x.v_source))||!(n===0||n===3&&x.v_source===V_SOURCES.OFFICIAL_CENTRAL.id)||!(x.publication_id===undefined||typeof x.publication_id==='string'&&PUBLICATION_ID.test(x.publication_id))||!(x.price_basis_date===undefined||validDay(x.price_basis_date))||!(x.official_inputs_as_of===undefined||typeof x.official_inputs_as_of==='string'&&CLOCK.test(x.official_inputs_as_of)))fail('TARGET_V1_STATE_INVALID');}
  for(const s of v.rule_b)if(!object(s)||!validDay(s.date)||!Array.isArray(s.rows)||s.rows.some(r=>!SYMBOL.test(r?.symbol)||!finite(r.pct)))fail('TARGET_V1_STATE_INVALID');
  if(v.rule_c&&(!validDay(v.rule_c.start)||!text(v.rule_c.version,20)))fail('TARGET_V1_STATE_INVALID');
  return v;
@@ -280,8 +297,8 @@ async function inputBasis(payload,{digest=sha256Hex,typeScope=deviceTypeScope()}
 function basisChanged(draftBasis,latest){if(!object(draftBasis)||!object(latest))return true;return draftBasis.calc_version!==latest.calc_version||draftBasis.type_scope!==latest.type_scope||draftBasis.withdrawn!==latest.withdrawn||draftBasis.shard_count!==latest.shard_count||draftBasis.shards!==latest.shards;}
 /* A new draft from the current scores and the latest basis. Card answers carry over only for symbols in the new candidate pool;
    names newly selected need a fresh card answer (pending). */
-function regenerateDraft(state,{computed,inputs,universeCodes,existing,date,basis,cfg=CFG,pcfg=PCFG}){
- const draft=buildDraft({computed,inputs,universeCodes,existing,date,basis,cfg,pcfg}),names=new Set(draft.pool.map(r=>key(r.symbol)));
+function regenerateDraft(state,{computed,inputs,universeCodes,existing,date,basis,official=null,cfg=CFG,pcfg=PCFG}){
+ const draft=buildDraft({computed,inputs,universeCodes,existing,date,basis,official,cfg,pcfg}),names=new Set(draft.pool.map(r=>key(r.symbol)));
  const answers=(state?.answers||[]).filter(a=>names.has(key(a.symbol))),next={...state,draft,answers},sel=currentSelection(next,cfg,pcfg),kept=new Set(answers.map(a=>key(a.symbol)));
  return{state:next,carried:sel.rows.filter(r=>kept.has(key(r.symbol))).map(r=>r.symbol),fresh:sel.pending,dropped:(state?.answers||[]).filter(a=>!names.has(key(a.symbol))).map(a=>a.symbol)};
 }
@@ -298,27 +315,62 @@ function numberCheck(calcVersion,cfg=CFG){
 // draft basis → financial safety re-check → number check). basis: inputBasis(published), computed by the caller at the same moment.
 // v_incomplete: the selected names whose V lacks V3 (v_vs_industry) or V4 (v_vs_own_history), or whose draft row predates the count.
 // V source of this builder (2026-10-23 decision): central V (qgv-official) when it is published and read, else the device-path V
-// labelled 임시 V. This build has no central V reader yet, so every draft and version uses the device path.
+// labelled 임시 V. V_SOURCE stays the device constant (web_app pins it); V_SOURCES adds the central one (PR-D, D8 (b)), same text as
+// web_app/qgv.js V_SOURCES (OFFICIAL_CENTRAL is draft wording until the owner signs it off).
 const V_SOURCE=Object.freeze({id:'DEVICE_TEMPORARY',ko:'임시 V',note:'기기 시세로 계산 · 중앙 V 미게시'});
-function finalizeBlockers(state,{date,published,basis=null,cfg=CFG,pcfg=PCFG}={}){
+const V_SOURCES=Object.freeze({DEVICE_TEMPORARY:V_SOURCE,OFFICIAL_CENTRAL:Object.freeze({id:'OFFICIAL_CENTRAL',ko:'공식 V',note:'중앙 게시 · IEX 마지막 체결가 기준(공식 종가 아님)'})});
+const PUBLICATION_ID=/^qgvpub-[0-9a-f]{64}$/,CLOCK=/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z$/,OFFICIAL_KEYS='calc_version,inputs_as_of,price_basis_date,publication_id';
+const knownSource=v=>typeof v==='string'&&Object.hasOwn(V_SOURCES,v);
+function officialShape(o){return object(o)&&Object.keys(o).sort().join(',')===OFFICIAL_KEYS&&typeof o.publication_id==='string'&&PUBLICATION_ID.test(o.publication_id)&&validDay(o.price_basis_date)&&typeof o.calc_version==='string'&&CALC_VERSION.test(o.calc_version)&&typeof o.inputs_as_of==='string'&&CLOCK.test(o.inputs_as_of);}
+// The page's QgvOfficial (lazy: absent on web_app or when its script did not load → never official, the device path stays).
+function reader(){try{const R=officialReader();return R&&typeof R.state==='function'?R:null;}catch(_){return null;}}
+// What the draft / version keeps of a publication QgvOfficial.validate() accepted: ids and days only, never a row, score or price.
+function officialRecord(pub){const R=reader();if(!R||!object(pub)||R.state(pub)!=='OFFICIAL')return null;const t=pub.times,o={publication_id:pub.publication_id,price_basis_date:t.price_basis_date,calc_version:pub.calc_version,inputs_as_of:t.inputs_as_of};return officialShape(o)?o:null;}
+/* 6.1.2 adapter (PR-D M6): the published rows in the shape universeRows reads from the QgvScores accessor, one row per Universe code.
+   Each code reads the row the device path reads for it (QgvScores codeIndex / universeIdentities): the TARGET row 'TARGET:<id>' of
+   the TARGET whose ticker is the code's symbol when that row is there and not NOT_AVAILABLE (whatever its total or calc version),
+   else the code's own row. So a second share class (GOOG beside TARGET:googl) keeps its own row and an unplaced TARGET row still
+   stands for its code, as on the device; the publication's rank_row (D-CV8, one row per CIK) is not used. Published values only:
+   nothing is rescored or re-ranked here (the builder's own rank, issuer dedupe and selection run unchanged), no price is touched, a
+   null score stays null (NA, never 0). factors_available counts the finite published factor scores. null when pub is not an
+   accepted publication. */
+const ADAPTED=new WeakMap();
+function officialComputed(pub){
+ if(!officialRecord(pub))return null;if(ADAPTED.has(pub))return ADAPTED.get(pub);
+ const R=reader(),rows={},targets=new Map();let ready=false;
+ for(const[k,t]of Object.entries(pub.rows))if(k.startsWith('TARGET:')&&t.state!=='NOT_AVAILABLE'&&!targets.has(key(R.symbol(k))))targets.set(key(R.symbol(k)),k);
+ for(const code of Object.keys(pub.rows)){if(code.startsWith('TARGET:'))continue;
+  const via=targets.get(key(R.symbol(code)))||code,r=pub.rows[via],ax=r.axes,f=r.factors;if(finite(r.total))ready=true;
+  rows[code]=Object.freeze({ticker:code.slice(code.indexOf(':')+1),code:via,v2:Object.freeze({total:r.total,q:ax.Q.score,g:ax.G.score,v:ax.V.score,axes:ax,factors:f,
+   factors_available:Object.values(f).filter(x=>finite(x.score)).length,factors_total:Object.keys(f).length,q_industry_percentile:r.q_industry_percentile,value_trap_gate:r.value_trap_gate,selected_types:r.selected_types})});}
+ const out=Object.freeze({v2_state:ready?'READY':'NOT_AVAILABLE',v2_as_of:pub.times.inputs_as_of,profile:Object.freeze({id:pub.weights.profile_id}),priced_codes:pub.price_source.supplied,rows:Object.freeze(rows)});
+ ADAPTED.set(pub,out);return out;}
+// official (PR-D M5): the publication the caller re-read and found usable at this moment, or null. The source usable now is
+// OFFICIAL_CENTRAL when it is an accepted publication of the re-read file's calc_version, else the device V; a draft built from
+// the other source, or from another publication, is V_SOURCE_CHANGED and counts as a changed basis (the regenerate path).
+function finalizeBlockers(state,{date,published,basis=null,official=null,cfg=CFG,pcfg=PCFG}={}){
  if(!validDay(date))return{blockers:['DATE_INVALID'],check:null,number:null,sel:null};if(!state?.draft)return{blockers:['TARGET_V1_DRAFT_REQUIRED'],check:null,number:null,sel:null};
  const sel=currentSelection(state,cfg,pcfg),out=[];if(!sel.complete)out.push('TARGET_V1_CARDS_PENDING');if(sel.shortfall>0)out.push('TARGET_V1_SHORTFALL');if(sel.limits.ok!==true)out.push('TARGET_LIMITS_BLOCKED');
  const v_incomplete=sel.rows.filter(vIncomplete).map(r=>r.symbol);if(v_incomplete.length)out.push('V_FACTORS_V3_V4_MISSING');
  const check=publishedCheck(published,{date,cfg});out.push(...check.reasons);
  const basis_changed=object(published)&&object(published.records)?basisChanged(state.draft.basis,basis):false;if(basis_changed)out.push('DRAFT_BASIS_CHANGED');
+ const rec=officialRecord(official),now=rec&&rec.calc_version===check.calc_version?rec:null,drafted=state.draft.v_source||V_SOURCE.id;
+ const v_source_changed=drafted!==(now?V_SOURCES.OFFICIAL_CENTRAL.id:V_SOURCE.id)||!!now&&now.publication_id!==(object(state.draft.official)?state.draft.official.publication_id:null);if(v_source_changed)out.push('V_SOURCE_CHANGED');
  const safety_failed=object(published)&&object(published.records)?safetyRecheck(sel.rows,published,cfg):[];if(safety_failed.length)out.push('FINANCIAL_SAFETY_RECHECK_FAILED');
  const number=numberCheck(check.calc_version,cfg);if(!number.ok)out.push(number.reason);
- return{blockers:out,check,number,sel,basis_changed,safety_failed,v_incomplete};
+ return{blockers:out,check,number,sel,basis_changed:basis_changed||v_source_changed,v_source_changed,official:now,safety_failed,v_incomplete};
 }
 /* Step 7: TARGET v1 as a new device TARGET version once nothing blocks (finalizeBlockers, run here against `published`, the
    sec-qgv2.json payload the caller re-read at this moment). The version keeps the calc_version, the file as_of and the number
-   check it was confirmed with. R-C starts on that date (no backfill). The thrown error carries every blocker. */
-function finalize(state,{date,published=null,basis=null,cfg=CFG,pcfg=PCFG}={}){
- const r=finalizeBlockers(state,{date,published,basis,cfg,pcfg});if(r.blockers.length){const e=Error(r.blockers[0]);e.blockers=r.blockers;e.check=r.check;e.number=r.number;throw e;}
- const sel=r.sel,n=state.versions.length+1,version=n===1?'v1':'v1.'+(n-1),answers=latestAnswers(state);
+   check it was confirmed with, and the V source of its draft (official: also the publication id, its price basis day and inputs
+   as_of; PR-D M5). R-C starts on that date (no backfill). The thrown error carries every blocker. */
+function finalize(state,{date,published=null,basis=null,official=null,cfg=CFG,pcfg=PCFG}={}){
+ const r=finalizeBlockers(state,{date,published,basis,official,cfg,pcfg});if(r.blockers.length){const e=Error(r.blockers[0]);e.blockers=r.blockers;e.check=r.check;e.number=r.number;throw e;}
+ const sel=r.sel,n=state.versions.length+1,version=n===1?'v1':'v1.'+(n-1),answers=latestAnswers(state),src=state.draft.v_source||V_SOURCE.id,o=src===V_SOURCES.OFFICIAL_CENTRAL.id?r.official:null;
  const rows=sel.rows.map(x=>({symbol:x.symbol,grade:x.grade,pct:x.pct,subgroup:x.subgroup,confirmed:answers.get(key(x.symbol))?.answer==='AGREE'}));
  return{...state,versions:[...state.versions,{version,date,draft_created:state.draft.created,config_version:cfg.config_version,calc_version:r.check.calc_version,type_scope:basis.type_scope??null,sec_qgv2_as_of:r.check.as_of,input_shards:basis.shards,
-  number_check:{calc_version:r.number.calc_version,passed:true,date:r.number.date,companies:r.number.companies},v_source:V_SOURCE.id,rows,cash_pct:sel.cash_pct}],rule_c:{start:date,version}};
+  number_check:{calc_version:r.number.calc_version,passed:true,date:r.number.date,companies:r.number.companies},v_source:src,
+  ...(o?{publication_id:o.publication_id,price_basis_date:o.price_basis_date,official_inputs_as_of:o.inputs_as_of}:{}),rows,cash_pct:sel.cash_pct}],rule_c:{start:date,version}};
 }
 function latestVersion(state){return state?.versions?.length?state.versions[state.versions.length-1]:null;}
 // The first finalized version: whether and when TARGET v1 was finalized (owner decision 2026-10-24, F1). A later re-save
@@ -434,7 +486,7 @@ function scoringSeries(need,closes,cfg=CFG){
  const ok=x=>object(x)&&Object.keys(x).length>0;if(!ok(sp)||!ok(stock)||!ok(sector))return null;
  return{sessions:Object.keys(sp).filter(validDay).sort(),stock:{...stock},sector:{...sector},sp500:{...sp},sector_symbol:need.sector_symbol};
 }
-return Object.freeze({SCHEMA,V_SOURCE,ANSWERS,COMPARE_KEYS,V_FACTORS,V_REQUIRED,vFactors,vIncomplete,publishedCheck,inputBasis,basisChanged,regenerateDraft,safetyRecheck,numberCheck,finalizeBlockers,scheduleState,roundMode,riskCodes,coverage,subgroupOf,groupOf,safety,universeRows,exclusions,spread,select,limits,templates,invalidated,buildDraft,candidates,
+return Object.freeze({SCHEMA,V_SOURCE,V_SOURCES,officialRecord,officialComputed,ANSWERS,COMPARE_KEYS,V_FACTORS,V_REQUIRED,vFactors,vIncomplete,publishedCheck,inputBasis,basisChanged,regenerateDraft,safetyRecheck,numberCheck,finalizeBlockers,scheduleState,roundMode,riskCodes,coverage,subgroupOf,groupOf,safety,universeRows,exclusions,spread,select,limits,templates,invalidated,buildDraft,candidates,
  emptyState,validateState,latestAnswers,currentSelection,answer,judgementRecord,finalize,latestVersion,firstVersion,rebalanceDay,rebalanceDays,lastRebalanceOnOrBefore,
  nextRebalanceOnOrAfter,rounds,transitionRows,ruleBDue,ruleBSegment,ruleIndex,compareSets,reviewRule,coreEligible,priceSymbolOf,sectorEtfOf,scoringNeeds,addPriceSymbols,scoringSeries});
 });

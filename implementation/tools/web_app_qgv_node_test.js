@@ -11,8 +11,8 @@
 //    (a request's source / transaction, a cursor, a handler's event target) leads behind the gate; views keep the real window as `this` for
 //    its functions (DataRefresh.proxy rule) and refuse writes to window globals.
 //  - data: one strict request function (fixed file list, same origin, no credentials / redirect / referrer, status kept, a body
-//    over 2 MiB handed on empty so it is an invalid file), the old readers' validation through the DataRefresh core: the 100
-//    sec_qgv2 vectors keep SecQgv2.validate's verdict on the page path and in peek; a refresh that applies dispatches
+//    over 2 MiB handed on empty so it is an invalid file), the old readers' validation through the DataRefresh core: every
+//    sec_qgv2 vector keeps SecQgv2.validate's verdict on the page path and in peek; a refresh that applies dispatches
 //    'public-data-updated' on the window and commits the new set; a re-judgement without network restates rows (fixed clock,
 //    no wall time); a failed static read is read again by the next call; READER_MISSING instead of a lighter path.
 //  - qgv: the page rows are an exact projection of QgvScores.pageResult computed with the same score view (critique #10: no
@@ -349,8 +349,8 @@ test('data: fixed file list = the readers own names; strict request options; not
   }
 });
 
-test('sec_qgv2 vectors: the page path (DataRefresh → Qgv2Inputs → SecQgv2) and peek keep SecQgv2.validate verdicts (100 cases)', async () => {
-  assert.equal(VECTORS.synthetic, true); assert.equal(VECTORS.cases.length, 100);
+test('sec_qgv2 vectors: the page path (DataRefresh → Qgv2Inputs → SecQgv2) and peek keep SecQgv2.validate verdicts (every case)', async () => {
+  assert.equal(VECTORS.synthetic, true); assert.ok(VECTORS.cases.length >= 100);
   const base = F.strictPayload(), SQ = R.requireOld('sec-qgv2.js');
   const apply = (p, ops) => { for (const { path: keys, value } of ops) { let t = p; for (const k of keys.slice(0, -1)) t = t[k]; const last = keys[keys.length - 1]; if (JSON.stringify(value) === JSON.stringify(VECTORS.delete_marker)) delete t[last]; else t[last] = structuredClone(value); } return p; };
   const win = R.nodeWindow({ files: (name) => (name === QGV2 ? { body: current } : null) }); let current = '';
@@ -369,7 +369,7 @@ test('sec_qgv2 vectors: the page path (DataRefresh → Qgv2Inputs → SecQgv2) a
     let peeked = true; try { const raw = await data.peek(QGV2); assert.deepEqual(raw, p, c.id + ' peek returns the raw validated JSON'); assert.ok(Object.isFrozen(raw.records)); } catch (e) { peeked = false; assert.match(e.message, /^SEC_QGV2_(INVALID|SCHEMA_NEWER)$/, c.id); }
     assert.equal(peeked, c.valid, c.id + ' peek');
   }
-  assert.ok(valid >= 1 && valid < 100);
+  assert.ok(valid >= 1 && valid < VECTORS.cases.length);
   await assert.rejects(fresh('data.js').create({ win, action }).peek('macro-screen.json'), /PEEK_UNSUPPORTED/);
 });
 

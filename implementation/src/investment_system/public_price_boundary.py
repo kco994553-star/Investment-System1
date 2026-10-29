@@ -112,6 +112,61 @@ AUDITED_ROUTES = (
 )
 
 
+# GSQ-024 (owner decision 2026-10-23: "IEX HIST server collection + derived score/rank publication" only; GSQ-010 raw price
+# publication ban kept; guard PR approved separately). The ONE Actions price source and its ONE route (design
+# docs/qgv_scoring_standard/CENTRAL_V_PUBLICATION_DESIGN_20261018.md §12-3-1, docs/public_price_boundary/AUDIT.md §10). Kept apart
+# from AUDITED_ROUTES (the 27+1 audited public-output routes above stay withheld and their audit table test is unchanged) and from
+# the SEC allowlists (require_financial_url rejects every URL below; require_price_source rejects every SEC URL).
+ACTIONS_PRICE_ROUTES = ('implementation/tools/qgv_official_publish.py',)
+_SEGMENT = r'[A-Za-z0-9%_~-][A-Za-z0-9%._~-]*'      # no empty, '.' or '..' path segment
+_QUERY = r'(?:\?[A-Za-z0-9%._~=&-]*)?'
+PRICE_SOURCE_URL_PATTERNS = {
+    # the IEX HIST index ({YYYYMMDD: [{feed, version, protocol, link, size}]})
+    'IEX_HIST_INDEX': r'https://iextrading\.com/api/1\.0/hist',
+    # a file of the public `iex` bucket through the Google Cloud Storage JSON API: download link or object metadata
+    'IEX_HIST_OBJECT': r'https://(?:www|storage)\.googleapis\.com/(?:download/)?storage/v1/b/iex/o/' + _SEGMENT + _QUERY,
+    # the same bucket through the XML API host
+    'IEX_HIST_BUCKET': r'https://storage\.googleapis\.com/iex/(?:' + _SEGMENT + r'/)*' + _SEGMENT + _QUERY,
+    # the private V4 month-end store (U8 output, IEX trades): release metadata and asset API of the raw repository only. The read
+    # token goes to these URLs only; the asset redirect is followed without it (providers/iex_monthend.py).
+    'IEX_MONTHEND_STORE': (r'https://api\.github\.com/repos/kco994553-star/investment-system1-raw/releases/'
+                           r'(?:tags/iex-v4-monthend-[0-9]{8}-shard[0-9]{1,2}|assets/[0-9]{1,20})'),
+}
+
+
+def price_source_kind(url):
+    """The PRICE_SOURCE_URL_PATTERNS kind an exact URL matches, or None (pattern only, no route check)."""
+    import re
+    if type(url) is not str:
+        return None
+    return next((kind for kind, pattern in PRICE_SOURCE_URL_PATTERNS.items() if re.fullmatch(pattern, url)), None)
+
+
+def require_price_route():
+    """The running process must be the approved route: its entry script (`__main__.__file__`, absolute since Python 3.9) is one
+    of ACTIONS_PRICE_ROUTES inside this repository. An interactive session, `python -c`, pytest or any other tool is refused."""
+    import sys
+    from pathlib import Path
+    main = sys.modules.get('__main__')
+    entry = getattr(main, '__file__', None)
+    if not isinstance(entry, str):
+        block_public_route()
+    root = Path(__file__).resolve().parents[3]
+    try:
+        relative = Path(entry).resolve().relative_to(root).as_posix()
+    except (OSError, ValueError):
+        block_public_route()
+    if relative not in ACTIONS_PRICE_ROUTES:
+        block_public_route()
+
+
+def require_price_source(source_kind, url):
+    """Before any request to a price source: the exact URL shape of `source_kind`, inside the approved route only."""
+    if source_kind not in PRICE_SOURCE_URL_PATTERNS or price_source_kind(url) != source_kind:
+        block_public_route()
+    require_price_route()
+
+
 def require_public_catalog(name, value):
     from .product.entity_catalog import entity_catalog
     from .product.device_actual_catalog import public_actual_catalog

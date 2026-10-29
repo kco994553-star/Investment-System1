@@ -545,6 +545,7 @@ def test_g_a_preserved_row_of_an_older_calc_version_stays_outside_the_ranking(tm
     d = outside(1)[0]
     with monkeypatch.context() as patch:
         patch.setattr(vf, 'CALC_VERSION', old_version)
+        patch.setattr(vf, 'SHARE_BASIS_HISTORY_KEYS', ())   # rules before V-PRICE-BASIS (2026-10-23.1): two-key entries
         day0 = run(tmp_path, 'day0', Sec(), 0, all_shards=True)
     day1 = run(tmp_path, 'day1', Sec(hidden={d}), 1, previous=day0)
     screen = qgv2.require_qgv2(json.loads((day1 / qgv2.FILENAME).read_bytes()))

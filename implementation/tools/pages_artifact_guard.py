@@ -4,6 +4,10 @@ Byte/canonical hashes protect reviewed assets. The independent public bundle
 contract rejects legacy ranks, membership order, prices and arbitrary nested
 values even if a legacy or modified payload hash is repinned. Private device
 quotation code is an asset, never permission to publish device data.
+
+GSQ-024 (owner decision 2026-10-23, guard PR approved separately): the central QGV publication `qgv-official.json` and its
+attempt record `qgv-official-status.json` are allowed names with their own strict validators, and the ONE sensitive-key
+exception is the official rank at the exact path rows.<code>.rank of `qgv-official.json` (PUBLIC_SCORE_PATHS below).
 """
 from __future__ import annotations
 
@@ -42,12 +46,15 @@ from investment_system.universe.company_names_ko import FILENAME as COMPANY_NAME
 from investment_system.universe.universe_domains import FILENAME as UNIVERSE_DOMAINS_FILENAME, require_universe_domains
 from investment_system.product.company_logos import FILENAME as COMPANY_LOGOS_FILENAME, require_company_logos
 from investment_system.macro.evidence_lines import FILENAME as MACRO_EVIDENCE_FILENAME, require_macro_evidence
+from investment_system.qgv.qgv_official import (FILENAME as QGV_OFFICIAL_FILENAME, STATUS_FILENAME as QGV_OFFICIAL_STATUS_FILENAME,
+                                                require_qgv_official, require_status as require_qgv_official_status)
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
-    "target-v1-builder.js": "f6b081a2080be068b2387e95a8892beafd19d71d30e673cd5e7c1b8d127811bd",
+    "qgv-official.js": "5d904f478171372cdbf547865f23cb2792cf33ff2020b118a0f8b332de599b17",
+    "target-v1-builder.js": "eb60c6bb346bb2e98ed3b745a534e9f1467487147e908139a198a929e6903d59",
     "target-v1-config-defaults.js": "cdfa0ac5b620dca4f1828fb055a76c08268c533a65b2e0d34f962ce1499b12bd",
-    "target-v1-screen.js": "52e97dba0b94c38d7305bd42a0460e7817034ee009c2953c0ea96969e02c1611",
+    "target-v1-screen.js": "cf6810e3f4abd19c780ad7a25cc7807f7321bb294b1f1415944e63c0575dfdbc",
     "playbook-engine.js": "b708a1772b4cd8e1af731cffdacbfab478d03c9c4e1e5fd663537babd64ee7d8",
     "playbook-config-defaults.js": "b0dd6aeed54a11082953b83aa30497c99dd454040e7e7adbc46cdd4c0a1221a6",
     "virtual-trading-compare.js": "700054fd105b979b505c09ec0dad862b0ce435c0179d2ddbe9f85b5b9c23c3f7",
@@ -69,7 +76,7 @@ APPROVED_SHA256 = {
     "virtual-trading-v-history.js": "944124763c2682dff373f9ec86e8b938ee2400f3084b5e3d62d8b44c8bd8099f",
     "virtual-trading-signals.js": "b8d73d216d9697bea31f15f0061831f81a144b518b5aa5cc54ba4620dafbe6ef",
     "sec-universe-qg.js": "92664e67228854456739880f2314b77da73155227995065e63d9711207fa3a2c",
-    "sec-qgv2.js": "419b49c42921b2792a18ff051e3864620cfacec3918b3b98e74adf90d61cb48d",
+    "sec-qgv2.js": "60523663f70dd37905bcc3271a6bfc2d24a2da09ecfb9c8dc4980328d2d41106",
     "device-valuation.js": "06669cda863cd4dfa87108f54e03b75c9321989967da7ed54b03c921143cfedf",
     "dcf-parameters-defaults.js": "3f9498ef6177b9dcd3c4fa80077c8480750be93668f57bd5ed5ed3b5509a8473",
     "classification-screens.js": "23ed7302742bf769068ef128dc48075fe6c88d6610585356e6b4e88d14db0a8f",
@@ -119,14 +126,14 @@ APPROVED_SHA256 = {
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "59c8bab257051b7b5b4982ba4bedfa998a2e14c63852caef643aee6072f249b2",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "23a53e1b8bc828899a681dfe13420dbdaeba5d4e7bb117858ec262640d2066fb",
+    "index.html": "275b0916c42a5dac8917c8e1cc5660009a8681c4383f7d14f6a016cd6673107b",
     "locale.js": "f3537029f859a0958c9d2440b7fcc021fef96b2845ff3320ad8b8ae045f09dc2",
     "private-history.css": "d4ce930e901e2b67b2eb6d57c8795f77be3b9f1650efa85dad6e524419c42028",
     "private-history.js": "289a8a2c1053a0d280504cd785d188316b5ac9fd99eaa5590a3aa57c82e3958c",
     "research.html": "eb5f673078ded25737b85b532c6d8c88f457d14bf1c433299e7e70be022aa57c",
     "style.css": "f60bb384fb8f6c490cfb4b19675ced7c85c9819472f444cdd59951ed20ef1619",
     "sec-disclosures.js": "849cbfbf2b21badd52c06cf5887dcd259e08864552a76fde39f065f82c6a7194",
-    "sec-qgv2.js": "419b49c42921b2792a18ff051e3864620cfacec3918b3b98e74adf90d61cb48d",
+    "sec-qgv2.js": "60523663f70dd37905bcc3271a6bfc2d24a2da09ecfb9c8dc4980328d2d41106",
     "price-store.js": "4596b34faea8ab7c3f142fe15df04f6ca9ef9c8e4ed6227eef0f511aef78971a",
     "qgv2-inputs.js": "f53cc206b1655f7a8602f8f0aab12d8199cd58a4818561eff02a9c18294c251f",
     "scoring-default.js": "02eae2182de717bf0620e9616fe2aabd78c7ec8484c60d65f4231262df868beb",
@@ -180,7 +187,8 @@ APPROVED_SHA256 = {
 # including the fonts' OFL licence texts, still goes through all text checks.
 FONT_FILES = frozenset({"jua-regular-ksx1001.woff2", "gaegu-regular-ksx1001.woff2"})
 FONT_MAX_BYTES = 256 * 1024  # pinned subsets are 187,292 and 83,968 bytes; tighter than MAX_FILE_BYTES on purpose
-ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, COMPANY_NAMES_FILENAME, UNIVERSE_DOMAINS_FILENAME, COMPANY_LOGOS_FILENAME, QGV2_FILENAME, DISCLOSURES_FILENAME, NEWS_SIGNALS_FILENAME, MACRO_EVIDENCE_FILENAME} | set(SCREEN_FILENAMES) | set(DART_FILENAMES)
+# The two central QGV files (GSQ-024) are optional: absent before the first publication, never in APPROVED_SHA256.
+ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, COMPANY_NAMES_FILENAME, UNIVERSE_DOMAINS_FILENAME, COMPANY_LOGOS_FILENAME, QGV2_FILENAME, DISCLOSURES_FILENAME, NEWS_SIGNALS_FILENAME, MACRO_EVIDENCE_FILENAME, QGV_OFFICIAL_FILENAME, QGV_OFFICIAL_STATUS_FILENAME} | set(SCREEN_FILENAMES) | set(DART_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024
 # 8 MiB (was 4 MiB, owner approval 2026-10-23): the price-free build alone reached about 4.0 MiB as a tar, so screen
 # PRs hit the old ceiling. This limit only applies to the tar mode below (raw artifact.tar checks and tests); the deploy
@@ -204,6 +212,30 @@ SENSITIVE_KEYS = frozenset({
     "totalcost", "cost", "price", "valueamount", "cashbalance",
     "spreadsheetid", "spreadsheeturl", "accesstoken", "refreshtoken", "clientsecret",
 })
+# GSQ-024 (owner decision 2026-10-23; design CENTRAL_V_PUBLICATION_DESIGN_20261018.md §12-3-4): the ONLY sensitive-key
+# exception, by exact path, never by renaming a key. In qgv-official.json, and only there, the official rank sits at
+# rows.<code>.rank: `rows` at the top level, <code> a public Universe code or TARGET:<id> (the publication's own row-key pattern),
+# the key spelled exactly `rank`, its value an integer >= 1 or null. SENSITIVE_KEYS itself is unchanged: `rank` anywhere else
+# (another file, another depth or parent, `Rank` or any other spelling, a list in between) and every price, market cap, cash,
+# cost or amount key anywhere in this file still count as sensitive_json_fields. require_qgv_official additionally checks that
+# each rank follows the total order, one per CIK, and that no price-derived key exists anywhere.
+_OFFICIAL_CODE = re.compile(r'(?:[A-Z]{2,8}:[A-Z0-9][A-Z0-9.\-]{0,15}|TARGET:[a-z][a-z0-9_]{0,63})', re.ASCII)
+PUBLIC_SCORE_PATHS = {QGV_OFFICIAL_FILENAME: (("rows", _OFFICIAL_CODE, "rank"),)}
+
+
+def _public_score_path(name: str | None, path: tuple, key: str, child: object) -> bool:
+    for pattern in PUBLIC_SCORE_PATHS.get(name, ()):
+        *parents, leaf = pattern
+        if key != leaf or len(path) != len(parents):
+            continue
+        if not all(isinstance(part, str) and (part == want if isinstance(want, str) else want.fullmatch(part) is not None)
+                   for part, want in zip(path, parents)):
+            continue
+        if child is None or (type(child) is int and child >= 1):
+            return True
+    return False
+
+
 SECRET_PATTERNS = (
     re.compile(r"(?i)(?<![a-z0-9._%+\-])[a-z0-9._%+\-]+@[a-z0-9][a-z0-9.\-]*\.[a-z]{2,}"),
     re.compile(r"(?<![A-Za-z0-9_])ya29\.[A-Za-z0-9._~-]+"),
@@ -244,7 +276,8 @@ def _populated(value: object) -> bool:
     return value is not None and value != "" and value != [] and value != {}
 
 
-def _inspect_json(value: object, violations: Counter, depth: int = 0) -> None:
+def _inspect_json(value: object, violations: Counter, depth: int = 0, *, name: str | None = None, path: tuple = ()) -> None:
+    """`name` = the artifact file name (only for PUBLIC_SCORE_PATHS); `path` = the keys down to `value` (a list adds an index)."""
     if depth > MAX_JSON_DEPTH:
         raise ValueError("JSON nesting limit")
     if isinstance(value, float) and not math.isfinite(value):
@@ -252,15 +285,15 @@ def _inspect_json(value: object, violations: Counter, depth: int = 0) -> None:
     if isinstance(value, dict):
         for key, child in value.items():
             normalized = re.sub(r"[^a-z0-9]", "", key.casefold())
-            if normalized in SENSITIVE_KEYS and _populated(child):
+            if normalized in SENSITIVE_KEYS and _populated(child) and not _public_score_path(name, path, key, child):
                 violations["sensitive_json_fields"] += 1
             if key in {"schema", "schema_version"} and isinstance(child, str):
                 if re.search(r"device[-_]actual[-_](?:holdings|export)(?:/|$)", child, re.I):
                     violations["private_device_schema"] += 1
-            _inspect_json(child, violations, depth + 1)
+            _inspect_json(child, violations, depth + 1, name=name, path=path + (key,))
     elif isinstance(value, list):
-        for child in value:
-            _inspect_json(child, violations, depth + 1)
+        for index, child in enumerate(value):
+            _inspect_json(child, violations, depth + 1, name=name, path=path + (index,))
     elif isinstance(value, str):
         # JSON escapes must not hide a contact address from the raw-text scan.
         if SECRET_PATTERNS[0].search(value):
@@ -314,7 +347,7 @@ def _check_payload(name: str, payload: bytes, violations: Counter) -> None:
             del violations["secret_patterns"]
         if name.endswith(".json"):
             value = json.loads(text, object_pairs_hook=_unique_pairs, parse_constant=_reject_constant)
-            _inspect_json(value, violations)
+            _inspect_json(value, violations, name=name)
             if name == "sec-m2-candidates.json":
                 try:
                     require_public_candidates(value)
@@ -378,6 +411,12 @@ def _check_payload(name: str, payload: bytes, violations: Counter) -> None:
         elif name == FORWARD_LEDGER_FILENAME:
             try: require_forward_ledger(value)
             except ValueError: violations['forward_ledger_boundary'] += 1
+        elif name == QGV_OFFICIAL_FILENAME:
+            try: require_qgv_official(value)
+            except ValueError: violations['qgv_official_boundary'] += 1
+        elif name == QGV_OFFICIAL_STATUS_FILENAME:
+            try: require_qgv_official_status(value)
+            except ValueError: violations['qgv_official_status_boundary'] += 1
         elif hashlib.sha256(payload).hexdigest() != APPROVED_SHA256[name]:
             violations["unapproved_content"] += 1
     except (ValueError, UnicodeError, RecursionError, OverflowError):
