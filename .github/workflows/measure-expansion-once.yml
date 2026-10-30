@@ -1,0 +1,32 @@
+# ONE-TIME MEASUREMENT (owner 2026-10-30 supplementary instruction 3). Runs only on pushes to this branch; never merged;
+# the branch is deleted after the run. Public SEC data only; no prices; counts and public facts printed to the log.
+name: measure-expansion-once
+on:
+  push:
+    branches: [claude/iex-expansion-measure-once]
+permissions:
+  contents: read
+jobs:
+  sec:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - name: Download SEC bulk files (declared User-Agent)
+        env:
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+        run: |
+          set -e
+          mkdir -p "$RUNNER_TEMP/sec"
+          for f in files/company_tickers_exchange.json files/company_tickers_mf.json Archives/edgar/daily-index/bulkdata/submissions.zip Archives/edgar/daily-index/xbrl/companyfacts.zip; do
+            s=$(date +%s); curl -sS --fail -A "$SEC_USER_AGENT" -o "$RUNNER_TEMP/sec/$(basename $f)" "https://www.sec.gov/$f"; e=$(date +%s)
+            echo "SECSUM download $(basename $f) bytes=$(stat -c %s "$RUNNER_TEMP/sec/$(basename $f)") seconds=$((e-s))"
+            sleep 1
+          done
+      - name: Measure (public SEC facts and Q/G availability; no prices)
+        run: python implementation/tools/measure_once/sec_expansion_measure.py "$RUNNER_TEMP/sec/company_tickers_exchange.json" "$RUNNER_TEMP/sec/company_tickers_mf.json" "$RUNNER_TEMP/sec/submissions.zip" "$RUNNER_TEMP/sec/companyfacts.zip"
