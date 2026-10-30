@@ -144,3 +144,23 @@ QGV_OFFICIAL attempt=OK reason=- published=NEW basis=YYYY-MM-DD rows=523 ranked=
 - 첫 반일 장 2026-11-27: 그날 기준 실행의 `supplied`·`ranked` 개수를 평소와 비교한다(가격은 보지 않는다).
 - 멈추려면: Secret 두 개 중 하나를 지우면 다음 실행부터 `NOT_RUN`이고 마지막 정상본이 계속 실린다(그 사본도 매일 V 단계의 가드를 다시 거친다. 가드가 거부하면 `QGV_OFFICIAL_GUARD_REFUSED`로 그 단계 안에서 빠지고 잡은 계속된다). 공개 파일 자체를 내리는 것은 별도 PR이 필요하다(자동으로 지우지 않는다).
 - 규칙(엔진·가중치·설정 버전)을 바꾸는 PR이 병합되면, 그 전 코드로 만든 라이브 게시본은 새 검증기에서 무효라 다음 성공 실행까지 사이트에서 빠진다(`AUDIT.md` §10-6-2). 그런 PR은 정기 실행 직전보다 직후에 병합하는 편이 빠지는 시간이 짧다.
+
+## 8. 첫 게시 기록 (2026-10-29, Main)
+
+오너 승인(2026-10-29 「오늘(10/29) 중앙 V 첫 게시를 진행한다」)으로 한 날의 기록이다. 가격·키·토큰 값은 적지 않는다.
+
+| 순서 | 할 일 | 실제 결과 (UTC) | 끝난 표시 |
+| --- | --- | --- | --- |
+| 0 | CV-LEAK·CV-SPLIT·CV-CARRY 결정 | 결정 완료(10-24: CV-LEAK (i), CV-SPLIT (ii), CV-CARRY (i)) | ✅ |
+| 0 | 시작 조건 | 10/28분 정기 실행 #28(run 40802503489, 01:47→02:28) 성공, 연속 7/7(#21~#23·#25~#28). Secret 이름 2개 확인(리허설 존재 확인 잡 `present=yes`, 오너 등록 확인). 값은 보지 않음 | ✅ |
+| 1 | Secret 2개 | `RAW_REPO_READ_TOKEN`·`QGV_OFFICIAL_HMAC_KEY` 이름 존재. V 단계가 `NOT_RUN`이 아니고 `attempt=OK` | ✅ |
+| 2 | 같은 날 병합 | 정기 실행 뒤, 최신 canonical(화면 PR #421·#415·#419·#420 병합 뒤)과 동기화 → 전체 시험 1회(파이썬 4,025·브라우저 817 등 통과) → 독립 검토 1회(막는 문제 없음) → 다섯 PR 각 HEAD 필수 6체크 녹색 → #393 `a1f1b704`(11:58) · #400 `34487a9d`(12:08) · #403 `7dd182f6`(12:12) · #404 `f16dadd2`(12:12) · #405 `d149c91d`(12:13). 병합 뒤 canonical 트리 = 시험한 사슬 맨 위 트리 | ✅ |
+| 3 | `all_shards` 1회 | [run 40871484448](https://github.com/kco994553-star/Investment-System1/actions/runs/40871484448) `d149c91d`, 12:13→13:31. collect 39분(샤드 28.7분 + V 단계 6분), verify 35분, deploy 1분 | ✅ |
+| 4 | 한 줄 결과 | `QGV_OFFICIAL attempt=OK reason=- published=NEW basis=2026-10-28 rows=523 ranked=356 supplied=357/357 iex_attempts=1 split_checked=1 split_flagged=0 split_unchecked=500 split_unchecked_no_period=17 split_gap_skipped=23 split_lead_unchecked=0`. 공급률 100%(기준 95%). V 단계 가드 PASS(2회). 비공개 이력 `QGV_OFFICIAL_HISTORY RAW_UPLOADED tag=qgv-official-2026-10-28`. verify `QGV_OFFICIAL_CHECK publication=VALID status=VALID consistent=YES new=YES attempt=OK`, 시험 311개 통과. deploy 신선도 `qgv-official.json verdict=NO_LIVE kind=NEW`, 전체 `PAGES_FRESHNESS_PASS refused=0` | ✅ |
+| 5 | 실사이트 확인 | 13:33 `qgv-official.json` 200(1,110,701 B, sha256 앞 16자 `1ffb90e4596a107f` = 비공개 이력 자산과 같음), `schema qgv-official/1`, calc_version 23.1, 기준일 2026-10-28(요청 10-29), IEX 표시 문구 있음, 행 523·순위 356·V 점수 373, 가격·EV·시가총액·수익률 칸 0. `qgv-official-status.json` `attempt_state OK`, 게시본 id 일치. **처음 쓰는 기기(새 브라우저, 로그인 없음, 390·1280)**: 플레이북 TARGET v1 빌더 초안 만들기 → "공식 V · 중앙 게시 · IEX 마지막 체결가 기준(공식 종가 아님) · 가격 기준일 2026-10-28 · 게시본 qgvpub-fa5a7ab5e4ea", 통과 159·후보 30, 외부 요청 0·오류 0 | ✅ |
+| 6 | #393 숫자 재대조 | 재기록 PR #424(0-2-9절): 40칸 일치 34·정책 NA 6·오류 0, FCF 수익률 앱 계산식 7/7·NA 3/3, F_k가 값 불변(같은 원자료 433행). 열린 항목 1: EME·CMG 새 10-Q 칸 원문 대조. **병합은 승인 뒤** — 그 전까지 TARGET 확정은 `NUMBER_CHECK_CALC_VERSION_MISMATCH` | PR 열림 |
+
+- 원장: 같은 실행의 원장 단계 `FORWARD_LEDGER status=ACTIVE records=8 appended=0`(일회성 실행은 기록 안 함), deploy 신선도 v1·v2 8/8 보존. 새 23.1 파일에 `observation_basis`를 적용하면 10/29~11/05 세션 모두 PRIMARY(사유 없음, 새 구간 `qgv2-calc/2026-10-23.1` 하나). 위험 없음.
+- 멈춤 조건 4개(VALID·MATCH 아님, 공급률 95% 미만, 원시 가격·보유 흔적, 원장 PRIMARY 위험) 모두 해당 없음.
+- #411(확정 차단 점검)은 사슬 위로 동기화·충돌 해결 뒤 병합(`3f3ccd2f`, 13:39). 화면 반영은 다음 정기 배포.
+- 독립 검토의 비차단 메모: ① 디스크가 일부만 찬 드문 경우 V 단계 임시 파일이 남을 수 있음(가드 거부 분기의 `rm -f`에 `.qgv-official*` 추가 제안) ② `/proc` 환경 변수 노출은 같은 사용자 신뢰 프로세스만(강화 후보) ③ verify 시간 여유: 이번 35분/60분.
