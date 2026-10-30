@@ -18,6 +18,10 @@
 //    every other record; no price value comes back.
 //  - Google on/off (owner 2026-10-24, Main pick): saved only inside the prepare click (the old sign-in click), read only from an
 //    existing database, left as it is by a sign-out.
+//  - Period returns (P2-2a): periodReturns is async; NOT_LOADED and no request before the price-tab click; 60D/120D/YTD/1Y/
+//    SINCE_START PERIOD_PENDING; values equal ReportBenchmarks.periodWindow + priceIndex (USD) over the loaded closes; a
+//    Universe code reads PriceStore.universeSymbol, a ticker '.' -> '-'; identity stops come first (before and after the tabs);
+//    no SPY -> RETURN_SESSIONS_NOT_AVAILABLE, a short calendar -> RETURN_HISTORY_TOO_SHORT; frozen, no storage write.
 // Synthetic data only: the sheet, Worker and share counts are in-memory fixtures; sentinel prices are made-up decimals.
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -610,4 +614,63 @@ test('IndexedDB: a read never creates the device database (not even inside a cli
   assert.deepEqual(inClick, { state: 'EMPTY', reason: null, snapshot: null, source: null, as_of: null }, 'inside a click: the stored database is read');
   assert.ok(idb3.opened.length >= 1 && idb3.opened.every((n) => n === 'investment-device-actual-v1'));
   assert.deepEqual([...idb3.dbs.get('investment-device-actual-v1').keys()], ['google-sheet-settings'], 'nothing written');
+});
+
+// ---------------------------------------------------------------- P2-2a: period returns (RAM only, after the price-tab click)
+test('periodReturns: async; NOT_LOADED and no request before the tabs; PERIOD_PENDING; values = ReportBenchmarks over the loaded closes; symbol rule; identity stops first; frozen; no storage write', async () => {
+  const SESSIONS = weekdays('2026-09-15', '2026-10-01');// 13 sessions: 1D and 5D have a window, 20D is too short
+  assert.equal(SESSIONS.length, 13);
+  const SYMS = ['SPY', 'NVDA', 'BRK-B', 'XY-Z', 'AMD', 'ADBE'];
+  const tab = (syms) => ({ Prices_D: [HEAD, ...syms.flatMap((s) => SESSIONS.map((d) => [s, d, String(close(s, d)), 'YAHOO', '2026-10-02T00:00:00Z']))], Prices_M: [HEAD] });
+  const COMPANIES = [{ id: 'nvda', ticker: 'NVDA', code: 'NASDAQ:NVDA' }, { id: 'NYSE:BRK.B', ticker: 'BRK.B', code: 'NYSE:BRK.B' }, { id: 'NYSE:MMM', ticker: 'MMM', code: 'NYSE:MMM' },
+    { id: 'NASDAQ:ADBE', ticker: 'ADBE', code: 'NASDAQ:ADBE' }, { id: 'amd', ticker: 'AMD', code: null }, { id: 'xyz', ticker: 'XY.Z', code: null }];
+  const make = async (syms) => {
+    const e = env({ s: site({ tabs: tab(syms) }) }); await e.data.ready();
+    // ADBE withdrawn for an identity conflict; the AMD Universe code withdrawn, so the amd TARGET is a price identity conflict.
+    const real = e.data.get('sec-qgv2.json'), recs = { ...real.records };
+    recs['NASDAQ:ADBE'] = { ...recs['NASDAQ:ADBE'], identity_withdrawn: true }; recs['NASDAQ:AMD'] = { ...recs['NASDAQ:AMD'], universe_withdrawal: true };
+    const inputs = Object.freeze({ ...real, records: Object.freeze(recs) }), data = Object.freeze({ ...e.data, get: (n) => (n === 'sec-qgv2.json' ? inputs : e.data.get(n)) });
+    return { e, p: fresh('prices.js').create({ win: e.win, action: e.action, data }) };
+  };
+  const { e, p } = await make(SYMS);
+  assert.equal(p.periodReturns.constructor.name, 'AsyncFunction', 'an async function (the loader facade member is a promise)');
+  for (const bad of ['60D', '120D', 'YTD', '1Y', 'SINCE_START', '1d', null]) await assert.rejects(p.periodReturns(bad, COMPANIES), /PERIOD_PENDING/, String(bad));
+  await assert.rejects(p.periodReturns('1D', null), /COMPANIES_INVALID/); await assert.rejects(p.periodReturns('1D', [{ ticker: 'X' }]), /COMPANIES_INVALID/);
+  const stops = { 'NASDAQ:ADBE': 'IDENTITY_CONFLICT_WITHDRAWN', amd: 'PRICE_IDENTITY_CONFLICT' };
+  const before = await p.periodReturns('1D', COMPANIES);
+  assert.equal(before.state, 'NOT_LOADED'); assert.equal(before.as_of, null);
+  for (const c of COMPANIES) assert.deepEqual(before.rows[c.id], { state: 'NA', reason: stops[c.id] || 'PRICE_TABS_NOT_LOADED' }, c.id + ' before the tabs');
+  assert.deepEqual(e.priv(), [], 'no request before the click');
+  // Signed in with a sheet but the PriceStore flag off: loadTabs reads nothing, periodReturns stays NOT_LOADED.
+  await p.prepare(e.click()); p.login(e.click()); await sources(e);
+  const offLoad = await p.loadTabs(e.click());
+  assert.equal(offLoad.tabs_loaded.daily, false, 'store OFF: no tabs'); assert.equal((await p.periodReturns('5D', COMPANIES)).state, 'NOT_LOADED');
+  const local0 = JSON.stringify([...e.win.localStorage.map]);
+  e.win.localStorage.setItem(e.store.KEYS.PRICE_STORE_ENABLED, '1');
+  const local1 = JSON.stringify([...e.win.localStorage.map]);
+  assert.equal((await p.loadTabs(e.click())).tabs_loaded.daily, true);
+  const n = e.priv().length, RB = e.mods.ReportBenchmarks, cal = [...SESSIONS];
+  for (const period of ['1D', '5D', '20D']) {
+    const r = await p.periodReturns(period, COMPANIES), w = RB.periodWindow(cal, cal.at(-1), period);
+    assert.equal(r.state, 'READY'); assert.equal(r.as_of, cal.at(-1)); assert.equal(r.period, period);
+    assert.ok(Object.isFrozen(r) && Object.isFrozen(r.rows) && Object.isFrozen(r.rows.nvda), 'frozen');
+    for (const c of COMPANIES) {
+      const got = r.rows[c.id];
+      if (stops[c.id]) { assert.deepEqual(got, { state: 'NA', reason: stops[c.id] }, c.id + ' stopped after the tabs too: no value'); continue; }
+      if (c.id === 'NYSE:MMM') { assert.deepEqual(got, { state: 'NA', reason: 'NO_DEVICE_PRICE' }); continue; }
+      if (period === '20D') { assert.equal(w.reason, 'HISTORY_TOO_SHORT'); assert.deepEqual(got, { state: 'NA', reason: 'RETURN_HISTORY_TOO_SHORT' }, c.id); continue; }
+      const sym = { nvda: 'NVDA', 'NYSE:BRK.B': 'BRK-B', xyz: 'XY-Z' }[c.id], closes = Object.fromEntries(SESSIONS.map((d) => [d, close(sym, d)]));
+      const want = RB.priceIndex(closes, {}, w, 'USD');
+      assert.equal(want.state, 'OK'); assert.deepEqual(got, { state: 'OK', value: want.return, end: w.sessions.at(-1) }, c.id + ' ' + period + ' = ReportBenchmarks.priceIndex');
+    }
+  }
+  assert.equal(e.priv().length, n, 'returns read RAM only (no request after the click)');
+  assert.equal(JSON.stringify([...e.win.localStorage.map]), local1, 'no storage write by periodReturns'); assert.notEqual(local0, local1);
+  // No SPY in the loaded tab: no session calendar.
+  const x = await make(['NVDA']);
+  await x.p.prepare(x.e.click()); x.p.login(x.e.click()); await sources(x.e); x.e.win.localStorage.setItem(x.e.store.KEYS.PRICE_STORE_ENABLED, '1');
+  assert.equal((await x.p.loadTabs(x.e.click())).tabs_loaded.daily, true);
+  const ns = await x.p.periodReturns('1D', COMPANIES);
+  assert.equal(ns.state, 'READY'); assert.equal(ns.as_of, null);
+  assert.deepEqual(ns.rows.nvda, { state: 'NA', reason: 'RETURN_SESSIONS_NOT_AVAILABLE' }); assert.deepEqual(ns.rows.amd, { state: 'NA', reason: 'PRICE_IDENTITY_CONFLICT' });
 });

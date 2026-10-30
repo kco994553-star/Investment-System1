@@ -129,13 +129,50 @@ def test_original_27_plus_ishares_routes_are_accounted_for():
     assert set(AUDITED_ROUTES) == set(routes) | {'implementation/tools/fetch_ishares_reference.py'}
 
 
-@pytest.mark.parametrize('name', ['c21-real-data', 'cockpit-pages', 'web-mvp-validation', 'web-research-guard', 'web-state-presentation'])
+def workflow_steps(job):
+    """The steps of one job's text (plain text; CI has no YAML parser), each starting after its '- ', comment lines dropped."""
+    steps = ('\n' + job.split('\n    steps:\n', 1)[1]).split('\n      - ')[1:]
+    return ['\n'.join(line for line in step.splitlines() if not line.lstrip().startswith('#')).rstrip() for step in steps]
+
+
+@pytest.mark.parametrize('name', ['c21-real-data', 'cockpit-pages', 'web-mvp-validation', 'web-research-guard', 'web-state-presentation',
+                                  'sec-daily-public-inputs'])
 def test_affected_workflows_have_no_publication_sinks(name):
     source = (ROOT.parent / '.github/workflows' / (name + '.yml')).read_text()
     for forbidden in ['actions/cache', 'git push', 'git commit', 'always()']:
         assert forbidden not in source
     assert 'test_public_price_boundary.py' in source
-    if name != 'cockpit-pages':
+    if name == 'sec-daily-public-inputs':
+        # GSQ-024 (central V publication path, guard PR): the daily SEC workflow's existing sinks, exactly. ONE Pages artifact
+        # upload as the last collect step and ONE deploy right after the freshness guard. The private raw-repo uploads (the
+        # shard's raw copy, the dated ledger release, and since PR-C the dated central QGV score history of owner decision D9)
+        # happen inside the three tool steps that hold RAW_REPO_TOKEN, never as a workflow upload; no step summary, no cache,
+        # no push, and every checkout drops its credentials. The V step itself never holds RAW_REPO_TOKEN.
+        collect = source.split('\n  collect:\n', 1)[1].split('\n  verify:\n', 1)[0]
+        verify, deploy = source.split('\n  verify:\n', 1)[1].split('\n  deploy:\n', 1)
+        assert source.count('actions/upload') == 1 and source.count('actions/deploy-pages') == 1
+        assert 'GITHUB_STEP_SUMMARY' not in source and 'actions/download-artifact' not in collect
+        assert source.count('actions/checkout@') == source.count('persist-credentials: false') == 4
+        steps = workflow_steps(collect)
+        upload = steps[-1]
+        assert upload.startswith('name: Upload checked public SEC Pages artifact\n')
+        assert 'uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3' in upload
+        assert upload.endswith('with:\n          path: ${{ runner.temp }}/public-cockpit')
+        for step in steps:   # every step that writes the artifact directory runs the artifact guard on it
+            if '--out "$RUNNER_TEMP/public-cockpit"' in step:
+                assert step.endswith('python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"')
+        raw = [step.split('\n', 1)[0] for step in steps if 'secrets.RAW_REPO_TOKEN' in step]
+        assert raw == ['name: Collect Universe504 SEC shard (price-free shares and Q·G factor projections)',
+                       'name: Append forward validation ledger (price-free, append-only)',
+                       'name: Copy a new central QGV publication to the private dated history (scores only, no prices)']
+        assert source.count('secrets.RAW_REPO_TOKEN') == 3
+        history = next(step for step in steps if 'qgv_official_history.py' in step)
+        assert history.endswith('run: python implementation/tools/qgv_official_history.py --artifact-dir "$RUNNER_TEMP/public-cockpit"')
+        assert 'continue-on-error: true' in history and 'qgv_official_publish.py' not in history and 'secrets.QGV' not in history
+        assert 'secrets.' not in verify and 'secrets.' not in deploy and 'actions/upload' not in verify + deploy
+        assert deploy.index('pages_freshness_guard.py') < deploy.index('uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e')
+        assert workflow_steps(deploy)[-1].startswith('name: Deploy checked Pages artifact\n')
+    elif name != 'cockpit-pages':
         assert 'actions/upload' not in source and 'actions/deploy-pages' not in source
     else:
         # 10/21 owner-approved recovery adds one same-run handoff of already

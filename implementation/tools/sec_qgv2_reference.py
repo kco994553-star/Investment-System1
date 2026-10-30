@@ -159,6 +159,29 @@ def _diff_ops(old, new, path=()):
 OLD_CALC_VERSION = 'qgv2-calc/2026-10-14.1'
 
 
+def legacy_histories(row):
+    """In place, returns `row`: its ebit/fcf_per_share_history entries without the V-PRICE-BASIS keys, as a row computed
+    under a calc_version before 2026-10-23.1 (or a legacy row) carries them."""
+    from investment_system.qgv import v2_factors as vf
+    v = row.get('v_inputs_v2') if isinstance(row, dict) else None
+    for key in vf.SHARE_BASIS_HISTORY_KEYS if isinstance(v, dict) else ():
+        v[key] = [{k: x for k, x in entry.items() if k not in vf.SHARE_BASIS_KEYS} for entry in v.get(key) or []]
+    return row
+
+
+def legacy_history_ops(payload):
+    """Ops turning every per-share history of `payload` into the two-key entries of a legacy / pre-2026-10-23.1 row."""
+    from investment_system.qgv import v2_factors as vf
+    ops = []
+    for section in ('records', 'target'):
+        for key, row in sorted(payload[section].items()):
+            v = row.get('v_inputs_v2') or {}
+            for name in vf.SHARE_BASIS_HISTORY_KEYS:
+                if v.get(name):
+                    ops.append(([section, key, 'v_inputs_v2', name], legacy_histories({'v_inputs_v2': {name: v[name]}})['v_inputs_v2'][name]))
+    return ops
+
+
 def mixed_version_ops():
     """Ops from the base file to a valid file where two Universe rows and one TARGET row are of another calc_version (one
     legacy, one older): the publisher keeps them out of the ranking population (CALC_VERSION_MISMATCH) and re-ranks the rest."""
@@ -171,6 +194,8 @@ def mixed_version_ops():
     after['records'][c[2]]['calc_version'] = None
     after['records'][c[5]]['calc_version'] = OLD_CALC_VERSION
     after['target']['amd']['calc_version'] = None
+    for row in (after['records'][c[2]], after['records'][c[5]], after['target']['amd']):
+        legacy_histories(row)   # rows of those versions carry two-key history entries
     cfg = load_config()
     repub = q.publish(after['records'], after['target'], as_of=AS_OF, cfg=cfg, stale_after=timedelta(seconds=after['stale_after_seconds']),
                       shard_index=after['last_shard_index'], registry_sha256=after['registry_sha256'])
@@ -184,6 +209,7 @@ def cases():
     mixed = mixed_version_ops()
     legacy = [(['calc_version'], DELETE)] + [(['records', code, 'calc_version'], DELETE) for code in universe_codes()]
     legacy += [(['target', cid, 'calc_version'], DELETE) for cid in target_ids()]
+    legacy += legacy_history_ops(expand(sparse(base())))
     stale_scores = [op for op in mixed if op[0][:2] != ['records', c[5]] or op[0][2] not in ('factors', 'axes')]
     R, T = ['records'], ['target']
     first, second, fin, empty = c[0], c[1], c[21], universe_codes()[30]
@@ -191,8 +217,26 @@ def cases():
     withdrawn = dict(q.withdrawn_target('nvda', '2026-10-13T22:10:00Z'), withdrawn_acquired_at='2026-10-12T22:30:00Z')
     uw = dict(q.empty_record(reasons=(q.WITHDRAWN_REASON,)), detected_at='2026-10-13T22:10:00Z',
               withdrawn_acquired_at='2026-10-12T22:30:00Z', withdrawn_cik='0000000999')
+    # V-PRICE-BASIS (calc_version 2026-10-23.1): share_basis_factor on every ebit_per_share_history entry of a current row.
+    H, legacy_rows = R + [first, 'v_inputs_v2', 'ebit_per_share_history', 0], [op for op in legacy if op[0][-1] == 'calc_version']
     return [
         ('base_valid', []),
+        ('share_basis_factor_null_with_reason_valid', [(H + ['share_basis_factor'], None), (H + ['share_basis_factor_reason'], 'SPLIT_TIMING_UNCONFIRMED')]),
+        # WSM type (U8 split check 2026-10-23): 2:1 split after FY-2 -> 2, 2, 2, 1, 1 (each entry's own as-reported basis).
+        ('share_basis_factor_wsm_type_valid', [(H[:-1] + [i, 'share_basis_factor'], f) for i, f in enumerate((2.0, 2.0, 2.0, 1.0, 1.0))]),
+        ('share_basis_factor_missing', [(H + ['share_basis_factor'], DELETE)]),
+        ('share_basis_factor_zero', [(H + ['share_basis_factor'], 0.0)]),
+        ('share_basis_factor_negative', [(H + ['share_basis_factor'], -10.0)]),
+        ('share_basis_factor_too_large', [(H + ['share_basis_factor'], 1e7)]),
+        ('share_basis_factor_string', [(H + ['share_basis_factor'], '10')]),
+        ('share_basis_factor_bool', [(H + ['share_basis_factor'], True)]),
+        ('share_basis_factor_null_without_reason', [(H + ['share_basis_factor'], None)]),
+        ('share_basis_factor_with_reason', [(H + ['share_basis_factor_reason'], 'SPLIT_TIMING_UNCONFIRMED')]),
+        ('share_basis_reason_unknown', [(H + ['share_basis_factor'], None), (H + ['share_basis_factor_reason'], 'ASSUMED_ONE')]),
+        ('share_basis_reason_null', [(H + ['share_basis_factor'], None), (H + ['share_basis_factor_reason'], None)]),
+        ('share_basis_extra_key', [(H + ['share_basis_price'], 1.0)]),
+        ('share_basis_on_fcf_history', [(R + [first, 'v_inputs_v2', 'fcf_per_share_history', 0, 'share_basis_factor'], 1.0)]),
+        ('share_basis_on_legacy_rows', legacy_rows),
         ('null_shard_and_registry_valid', [(['last_shard_index'], None), (['registry_sha256'], None)]),
         ('top_price_key', [(['price'], 1)]),
         ('row_price_key', [(R + [first, 'price'], 1)]),

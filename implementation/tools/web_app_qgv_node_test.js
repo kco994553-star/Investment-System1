@@ -11,14 +11,16 @@
 //    (a request's source / transaction, a cursor, a handler's event target) leads behind the gate; views keep the real window as `this` for
 //    its functions (DataRefresh.proxy rule) and refuse writes to window globals.
 //  - data: one strict request function (fixed file list, same origin, no credentials / redirect / referrer, status kept, a body
-//    over 2 MiB handed on empty so it is an invalid file), the old readers' validation through the DataRefresh core: the 100
-//    sec_qgv2 vectors keep SecQgv2.validate's verdict on the page path and in peek; a refresh that applies dispatches
+//    over 2 MiB handed on empty so it is an invalid file), the old readers' validation through the DataRefresh core: every
+//    sec_qgv2 vector keeps SecQgv2.validate's verdict on the page path and in peek; a refresh that applies dispatches
 //    'public-data-updated' on the window and commits the new set; a re-judgement without network restates rows (fixed clock,
 //    no wall time); a failed static read is read again by the next call; READER_MISSING instead of a lighter path.
 //  - qgv: the page rows are an exact projection of QgvScores.pageResult computed with the same score view (critique #10: no
 //    vector injected into the accessor); no price or price-derived field leaves; a null value always has its reason; V source
 //    always DEVICE_TEMPORARY with #391's words on a device page, even if the switch changes while it is computed; v_factors =
 //    TargetV1Builder.vFactors; personal preview never official and computed as the 2.2 personal call (its own gate, no preset).
+//  - P2-2a: model(page) is the price-free projection of QgvScores.officialModel over the held result (null without ranks,
+//    PAGE_NOT_READY without a result, frozen, no price-like key); the new band / return reason codes are worded, without V words.
 // Synthetic data only (tools/qgv_v2_fixture.js, tests/fixtures); sentinel prices are made up.
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -347,8 +349,8 @@ test('data: fixed file list = the readers own names; strict request options; not
   }
 });
 
-test('sec_qgv2 vectors: the page path (DataRefresh → Qgv2Inputs → SecQgv2) and peek keep SecQgv2.validate verdicts (100 cases)', async () => {
-  assert.equal(VECTORS.synthetic, true); assert.equal(VECTORS.cases.length, 100);
+test('sec_qgv2 vectors: the page path (DataRefresh → Qgv2Inputs → SecQgv2) and peek keep SecQgv2.validate verdicts (every case)', async () => {
+  assert.equal(VECTORS.synthetic, true); assert.ok(VECTORS.cases.length >= 100);
   const base = F.strictPayload(), SQ = R.requireOld('sec-qgv2.js');
   const apply = (p, ops) => { for (const { path: keys, value } of ops) { let t = p; for (const k of keys.slice(0, -1)) t = t[k]; const last = keys[keys.length - 1]; if (JSON.stringify(value) === JSON.stringify(VECTORS.delete_marker)) delete t[last]; else t[last] = structuredClone(value); } return p; };
   const win = R.nodeWindow({ files: (name) => (name === QGV2 ? { body: current } : null) }); let current = '';
@@ -367,7 +369,7 @@ test('sec_qgv2 vectors: the page path (DataRefresh → Qgv2Inputs → SecQgv2) a
     let peeked = true; try { const raw = await data.peek(QGV2); assert.deepEqual(raw, p, c.id + ' peek returns the raw validated JSON'); assert.ok(Object.isFrozen(raw.records)); } catch (e) { peeked = false; assert.match(e.message, /^SEC_QGV2_(INVALID|SCHEMA_NEWER)$/, c.id); }
     assert.equal(peeked, c.valid, c.id + ' peek');
   }
-  assert.ok(valid >= 1 && valid < 100);
+  assert.ok(valid >= 1 && valid < VECTORS.cases.length);
   await assert.rejects(fresh('data.js').create({ win, action }).peek('macro-screen.json'), /PEEK_UNSUPPORTED/);
 });
 
@@ -588,4 +590,52 @@ test('qgv profile, constants and subscriptions: RAM only; a profile change reach
   ac.abort(); qgv.setProfile({}); assert.equal(notes.length, 2, 'unsubscribed on abort');
   const sig = new AbortController(); sig.abort(); await assert.rejects(qgv.page({ signal: sig.signal }), /ABORTED/);
   assert.equal(win.requests.filter((r) => !data.FILES.includes(r.name)).length, 0);
+});
+
+// ---------------------------------------------------------------- P2-2a: model candidates and the new reason texts
+test('qgv.model: null without ranks; with device prices the price-free projection of QgvScores.officialModel over the held result; frozen; PAGE_NOT_READY without a result', async () => {
+  const none = env(), pg0 = await none.qgv.page();
+  assert.equal(pg0.rows.filter((r) => Number.isInteger(r.rank.official)).length, 0, 'no device price: no official rank');
+  assert.equal(none.qgv.model(pg0), null, 'no ranking: no model');
+  const U = universeView(), E = env({ prices: { universeView: U.view } }), calls = spy(E), { qgv, mods } = E;
+  const pg = await qgv.page(), result = await calls[0].p, opts = calls[0].opts, QS = mods.QgvScores;
+  const M = QS.officialModel({ identities: result.identities, v2Inputs: opts.v2Inputs, quotes: result.quotes, official: result.official, computed: result.computed });
+  assert.ok(M && M.ranked > 0 && M.sets.N15.selected.length >= 1, 'the fixture gives a ranking and an N15 set');
+  const m = qgv.model(pg);
+  const set = (x) => ({ n: x.n, complete: x.complete, status: x.status, weight_pct: x.weight_pct, shortfall_pct: x.shortfall_pct, causes: JSON.parse(JSON.stringify(x.causes)),
+    skipped: { ...x.skipped }, group_capped: x.group_capped.map((c) => ({ id: c.company_id, ticker: c.ticker, rank: c.rank, group: c.group })),
+    selected: x.selected.map((e) => ({ id: e.company_id, ticker: e.ticker, rank: e.rank, total: e.total, group: e.group })),
+    issuer_check: { status: x.issuer_check.status, applied: x.issuer_check.applied, issuers_n: x.issuer_check.issuers.length } });
+  const want = { v_source: pg.v_source, official_profile: { ...M.official_profile }, primary: 'N15', ns: [10, 15, 20], as_of: M.as_of, checked: M.checked, ranked: M.ranked,
+    provisional: [...M.provisional], excluded: { ...M.excluded }, unknown: { subgroup: M.unknown.subgroup }, sets: Object.fromEntries(Object.entries(M.sets).map(([k, x]) => [k, set(x)])) };
+  assert.deepEqual(JSON.parse(JSON.stringify(m)), JSON.parse(JSON.stringify(want)), 'the projection of officialModel (provisional, unknown, skipped, group_capped included)');
+  assert.deepEqual(m.provisional, ['SUBGROUP_UNKNOWN_NOT_CAPPED']);
+  assert.equal(m.ranked, pg.rows[0].rank.of, 'the model ranks the page\'s official rank population');
+  // No price-like key anywhere (deep scan) and no sentinel price.
+  const bad = [...keysDeep(m)].filter((k) => /price|quote|close/i.test(k) || k.split('_').includes('cap') || PRICE_KEYS.has(k));
+  assert.deepEqual(bad, [], 'no price, quote, close or cap key');
+  for (const sv of U.sentinels) assert.ok(!JSON.stringify(m).includes(sv), 'no sentinel price');
+  assert.ok(Object.isFrozen(m) && Object.isFrozen(m.sets.N15) && Object.isFrozen(m.sets.N15.selected[0]), 'frozen');
+  assert.equal(qgv.model(pg), m, 'one projection per page');
+  const empty = env({ files: { [QGV2]: null } }), pgE = await empty.qgv.page();
+  assert.equal(pgE.state, 'NO_DATA'); assert.throws(() => empty.qgv.model(pgE), /PAGE_NOT_READY/);
+  assert.throws(() => qgv.model({ rows: [] }), /PAGE_UNKNOWN/);
+});
+
+test('qgv.reasonText: the P2-2a codes have their Korean text (never the generic coded text) and no V-source word', async () => {
+  const { qgv } = env();
+  const codes = ['UNIVERSE_SOURCE_NOT_SET', 'UNIVERSE_SOURCE_INVALID', 'AUTH_REQUIRED', 'CANCELED', 'PREPARE_TIMEOUT', 'SOURCE_TOO_LARGE', 'UNIVERSE_READ_FAILED', 'SHEET_NOT_CONNECTED',
+    'PRICE_TABS_OFF', 'UNIVERSE_NOT_READ', 'NOT_IN_UNIVERSE', 'NO_VERIFIED_ROWS', 'PRICE_TABS_NOT_LOADED', 'RETURN_SESSIONS_NOT_AVAILABLE', 'RETURN_HISTORY_TOO_SHORT',
+    'RETURN_BASE_CLOSE_MISSING', 'RETURN_LAST_CLOSE_MISSING', 'PERIOD_PENDING', 'PRICE_BASIS_CONTINUITY_UNCONFIRMED'];
+  const words = { UNIVERSE_SOURCE_NOT_SET: '가격 시트 없음 · Universe 목록은 공개 파일', AUTH_REQUIRED: '로그인 필요', CANCELED: '취소됨', SHEET_NOT_CONNECTED: '가격 시트가 연결되지 않았습니다',
+    PRICE_TABS_OFF: '가격 탭 사용이 꺼져 있습니다', PRICE_TABS_NOT_LOADED: '가격 불러오기 전', PRICE_BASIS_CONTINUITY_UNCONFIRMED: '분할 등 가격 연속성 미확인', NOT_IN_UNIVERSE: '이 기기 가격 시트에 없음' };
+  for (const c of codes) {
+    const ko = qgv.reasonText(c), en = qgv.reasonText(c, true);
+    assert.ok(ko && !ko.includes(c) && !/계산 불가/.test(ko), c + ' has Korean text: ' + ko);
+    assert.ok(en && !en.includes(c), c + ' has English text');
+    assert.doesNotMatch(ko + en, /임시 V|공식 V|중앙 V|기기 시세로 계산|DEVICE_TEMPORARY|OFFICIAL_CENTRAL/, c + ' names no V source');
+    if (words[c]) assert.equal(ko, words[c]);
+  }
+  assert.equal(qgv.reasonText('HISTORY_TOO_SHORT'), qgv.reasonText('HISTORY_TOO_SHORT'), 'the V history code keeps its own text');
+  assert.notEqual(qgv.reasonText('RETURN_HISTORY_TOO_SHORT'), qgv.reasonText('HISTORY_TOO_SHORT'), 'return codes are their own');
 });

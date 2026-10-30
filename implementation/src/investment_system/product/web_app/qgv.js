@@ -7,7 +7,8 @@
      The page identities / profile / references are set here and nowhere else (app.js did it before).
    - Page and row records are a projection of that result: no price, quote, month close, EV, yield or reference range (engine
      `detail` / `reference_range`, collectQuotes quotes and meta) leaves this module, a missing value is null and always carries
-     its reason code, rows keep QgvScores' order and rank fields (sorting / filters / radar are P2-2, reusing the old functions).
+     its reason code, rows keep QgvScores' order and rank fields (sorting and filters: small ports in screen-qgv-live.js, P2-2a;
+     radar: P2-2c). model() is the price-free projection of the N10 / N15 / N20 candidates (QgvScores.officialModel).
    - One V source switch for the whole page (V percentiles depend on which rows are priced): OFFICIAL_READER below routes page()
      to the central or the device page. A device page (and a preview) is computed from device quotes, so it is always labelled
      DEVICE_TEMPORARY, whatever the switch says by the time it is built. Engines always compute with the device result
@@ -61,7 +62,31 @@ const TEXT=Object.freeze({
  VERIFY_FAILED:['중앙 V 검증 실패(초안 문구)','Central V verification failed (draft wording)'],
  PRICE_DEPENDENT_NOT_COMPUTABLE:['가격이 필요한 값이라 중앙 게시본에서 계산하지 않았습니다(초안 문구)','Price-dependent value not computed centrally (draft wording)'],
  JUDGEMENT_NOT_RECORDED:['기록 안 됨','Not recorded'],
- NOTHING_TO_RECORD:['기록할 발생 신호 없음','No occurrence to record']});
+ NOTHING_TO_RECORD:['기록할 발생 신호 없음','No occurrence to record'],
+ // P2-2a (Main 2026-10-25): the price buttons' codes (prices.readUniverse / prepare / login, PriceStore) and the M3 rank reasons
+ // (PrivateSubsetView.rankFor / rankIndex), worded once here so a screen never prints a code. The sheet they name is the user's
+ // price sheet; the Universe504 list itself is a public file (DC-22, owner 2026-10-27), so the words say 가격 시트.
+ UNIVERSE_SOURCE_NOT_SET:['가격 시트 없음 · Universe 목록은 공개 파일','No price sheet · the Universe list is a public file'],
+ UNIVERSE_SOURCE_INVALID:['가격 시트 주소 형식이 올바르지 않습니다','The price sheet address is not valid'],
+ AUTH_REQUIRED:['로그인 필요','Sign-in required'],
+ CANCELED:['취소됨','Canceled'],
+ PREPARE_TIMEOUT:['로그인 준비 시간 초과','Sign-in preparation timed out'],
+ SOURCE_TOO_LARGE:['시트가 너무 커서 읽지 않았습니다','The sheet is too large to read'],
+ UNIVERSE_READ_FAILED:['가격 시트 읽기 실패','Price sheet read failed'],
+ SHEET_NOT_CONNECTED:['가격 시트가 연결되지 않았습니다','No price sheet is connected'],
+ PRICE_TABS_OFF:['가격 탭 사용이 꺼져 있습니다','Price tabs are off on this device'],
+ UNIVERSE_NOT_READ:['가격 시트 읽기 전','Price sheet not read yet'],
+ NOT_IN_UNIVERSE:['이 기기 가격 시트에 없음','Not in this device\'s price sheet read'],
+ NO_VERIFIED_ROWS:['확인된 시총 순위 행 없음','No verified market-cap rank rows'],
+ // Period returns (prices.periodReturns, P2-2a): RAM only, after the price-tab click. RETURN_* are their own codes because
+ // QgvScores.REASON.HISTORY_TOO_SHORT already names a V history rule. PRICE_BASIS_CONTINUITY_UNCONFIRMED is the TA-G1 code.
+ PRICE_TABS_NOT_LOADED:['가격 불러오기 전','Prices not loaded yet'],
+ RETURN_SESSIONS_NOT_AVAILABLE:['기간 이력 없음: S&P 500 세션 없음','No period history: no S&P 500 sessions'],
+ RETURN_HISTORY_TOO_SHORT:['기간 이력 없음','No period history'],
+ RETURN_BASE_CLOSE_MISSING:['기준일 종가 없음','Base close missing'],
+ RETURN_LAST_CLOSE_MISSING:['마지막 세션 종가 없음','Last session close missing'],
+ PERIOD_PENDING:['기간 정의 결정 대기 (IA-12)','Period definition pending (IA-12)'],
+ PRICE_BASIS_CONTINUITY_UNCONFIRMED:['분할 등 가격 연속성 미확인','Price continuity (splits) unconfirmed']});
 const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v),finite=v=>typeof v==='number'&&Number.isFinite(v),num=v=>finite(v)?v:null,str=v=>typeof v==='string'?v:null;
 function deepFreeze(v){if(v&&typeof v==='object'&&!Object.isFrozen(v)){Object.freeze(v);for(const x of Object.values(v))deepFreeze(x);}return v;}
 function create({win,data,prices,action}){
@@ -160,6 +185,24 @@ function create({win,data,prices,action}){
   const x=out.personal,rs=Object.values(out.rows),of=rs.filter(r=>Number.isInteger(r.personal_rank)).length,targets=new Set(ids.map(i=>i.company_id));
   return deepFreeze({weights:'PERSONAL',v_source:vs,rank_label:RANK_LABELS[vs.id].ko,state:x.state,reason:str(x.reason),label:[...x.label],profile_id:x.profile?x.profile.id:null,v_weight_zero:x.v_weight_zero===true,
    rows:x.state==='INVALID'?[]:rs.map(r=>rowRecord(r,{vs,weights:'PERSONAL',of,targets,personal:true}))});}
+ /* The model candidates N10 / N15 / N20 (feature 2.1.7, P2-2a, Main 2026-10-25): QgvScores.officialModel over the page's held
+    result (official default profile, gate on, whatever profile the page shows; D12), projected to what is price-free: ranks,
+    group ids, tickers, totals, counts and percentages of an equal-weight set. No metric value, quote or price. null when there is
+    no official ranking (no row has a device rank yet). PAGE_NOT_READY for a page without a result. */
+ const models=new WeakMap();
+ function model(pg){const h=result_(pg);if(models.has(pg))return models.get(pg);const QS=win.QgvScores;
+  const M=QS.officialModel({identities:h.result.identities,v2Inputs:h.inputs,quotes:h.result.quotes,official:h.result.official,computed:h.result.computed});
+  let out=null;
+  if(M&&Number.isInteger(M.ranked)&&M.ranked>0){
+   const int=v=>Number.isInteger(v)?v:null,group=v=>typeof v==='string'?v:null,sets={};
+   for(const[k,x]of Object.entries(M.sets))sets[k]={n:x.n,complete:x.complete===true,status:str(x.status),weight_pct:num(x.weight_pct),shortfall_pct:num(x.shortfall_pct),
+    causes:(Array.isArray(x.causes)?x.causes:[]).map(c=>JSON.parse(JSON.stringify(c))),skipped:{SUBGROUP_MAX_4:int(x.skipped.SUBGROUP_MAX_4),SECTOR_GROUP_MAX_40:int(x.skipped.SECTOR_GROUP_MAX_40)},
+    group_capped:x.group_capped.map(c=>({id:c.company_id,ticker:c.ticker,rank:int(c.rank),group:group(c.group)})),
+    selected:x.selected.map(e=>({id:e.company_id,ticker:e.ticker,rank:int(e.rank),total:num(e.total),group:group(e.group)})),
+    issuer_check:{status:str(x.issuer_check.status),applied:x.issuer_check.applied===true,issuers_n:Array.isArray(x.issuer_check.issuers)?x.issuer_check.issuers.length:0}};
+   out=deepFreeze({v_source:pg.v_source,official_profile:{...M.official_profile},primary:str(M.primary),ns:[...M.ns],as_of:str(M.as_of),checked:int(M.checked),ranked:int(M.ranked),
+    provisional:[...M.provisional],excluded:{...M.excluded},unknown:{subgroup:int(M.unknown.subgroup)},sets});}
+  models.set(pg,out);return out;}
  function setProfile({preset=null,gate=null}={}){const V2=win.QgvV2;if(preset!==null&&!(V2&&Object.hasOwn(V2.PRESETS,preset)))throw Error('PRESET_UNKNOWN');if(gate!==null&&typeof gate!=='boolean')throw Error('GATE_INVALID');
   profile=Object.freeze({preset,gate});emit('PROFILE');return profile;}
  // The rank wording of a V source id, a Page / preview, or a row (its source): screens show this next to any rank.
@@ -176,7 +219,7 @@ function create({win,data,prices,action}){
  // engines.js only, with forEngines: the sec-qgv2.json value (Qgv2Inputs output) that result was computed from (a re-judgement can
  // replace data.get's value later), and the score view itself (PlaybookScreen.prepareScores reads the same shared result through it).
  const engineInputs=pg=>result_(pg).inputs;
- return Object.freeze({V_SOURCES,RANK_LABELS,READERS,vSource:()=>vSource(data.publication()),page,isPage,row,rows,coverage,preview,setProfile,profile:()=>profile,reasonText,rankLabel,constants,subscribe,forEngines,engineInputs,scoreView});
+ return Object.freeze({V_SOURCES,RANK_LABELS,READERS,vSource:()=>vSource(data.publication()),page,isPage,row,rows,coverage,preview,model,setProfile,profile:()=>profile,reasonText,rankLabel,constants,subscribe,forEngines,engineInputs,scoreView});
 }
 return Object.freeze({create,V_SOURCES,RANK_LABELS,READERS});
 });
