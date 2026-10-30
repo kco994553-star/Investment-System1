@@ -31,6 +31,7 @@ AS = T.AS
 UNIVERSE = T.UNIVERSE
 SHARD = load_tool('sec_universe_shares')
 COVERAGE = load_tool('published_coverage')
+REF = load_tool('sec_qgv2_reference')
 WEB = W.WEB
 NODE = shutil.which('node') is not None
 REASON = us.WITHDRAWN_REASON
@@ -663,8 +664,18 @@ def test_old_screens_block_new_files_as_a_whole_and_show_no_value(history, tmp_p
         if result.returncode != 0:
             pytest.skip('old screen sources not in this checkout')
         (old / name).write_bytes(result.stdout)
-    seen = screens(tmp_path, old, {'a-old-v1': as_version_1(history['day1'], tmp_path / 'v1'), 'b-new-v2': history['day1']})
+    # V-PRICE-BASIS (calc_version 2026-10-23.1) rows carry share_basis_factor, which the old sec-qgv2.js rejects: the old
+    # screen reads a version-1 file only with the history entries of the earlier rules (the data before this change), and
+    # rejects a version-1 file of the new rules as a whole (so sec-qgv2.json and sec-qgv2.js must be deployed together).
+    v1 = as_version_1(history['day1'], tmp_path / 'v1')
+    v1_new_rules = as_version_1(history['day1'], tmp_path / 'v1-new-rules')
+    data = json.loads((v1 / 'sec-qgv2.json').read_text())
+    for row in [*data['records'].values(), *data['target'].values()]:
+        REF.legacy_histories(row)
+    (v1 / 'sec-qgv2.json').write_text(json.dumps(data))
+    seen = screens(tmp_path, old, {'a-old-v1': v1, 'b-new-v2': history['day1'], 'c-old-v1-new-rules': v1_new_rules})
     assert seen['a-old-v1'] == {'shares': 'OK', 'qg': 'OK', 'qgv2': 'OK', 'qgv2_inputs': 'LOADED', 'reason': 'OLD'}
+    assert seen['c-old-v1-new-rules']['qgv2'] == 'SEC_QGV2_INVALID' and seen['c-old-v1-new-rules']['qgv2_inputs'] == 'NULL'
     assert seen['b-new-v2'] == {'shares': 'SEC_UNIVERSE_SHARES_INVALID', 'qg': 'SEC_UNIVERSE_QG_INVALID', 'qgv2': 'SEC_QGV2_INVALID',
                                 'qgv2_inputs': 'NULL', 'reason': 'OLD'}
 
