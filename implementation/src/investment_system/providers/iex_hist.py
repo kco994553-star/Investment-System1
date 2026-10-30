@@ -153,6 +153,21 @@ MONTHEND_BASIS_CUTS: dict[str, tuple[str, str, str]] = {
 # D6 (b) covers every code only after recent month-ends of every Universe code are in the store (a separate backfill).
 SPLITS: dict[str, tuple[tuple[str, str], ...]] = {}
 
+# Reviewed share-count events after the diluted-share count that are NOT splits (a large share issuance together with an
+# acquisition): code -> ((effective date YYYY-MM-DD, evidence), ...). When an event's date is after the count's period end
+# and on or before the basis day, the row's count, debt, cash, EBIT and FCF all describe the issuer before the event while
+# today's price is after it, so the price is withheld (status SPLIT_AFTER_SHARE_COUNT, the existing "count no longer matches
+# the price basis" status: V NA, no new public code). It ends by itself when a count whose period end is on or after the
+# event arrives (the first periodic filing whose balance sheet includes the event). Each entry needs SEC evidence and the
+# owner's approval in its PR; never added from price moves.
+SHARE_COUNT_EVENTS: dict[str, tuple[tuple[str, str], ...]] = {
+    # Skydance Corp (formerly Paramount Skydance; CIK 0002041610). SEC 8-K filed 2026-10-06 (accession 0001104659-26-113913,
+    # items 2.01 and 3.02): acquisition of Warner Bros. Discovery completed (cash merger) and 3,917,657,246 Class B shares
+    # issued in a PIPE on 2026-10-06; Class B listing moved from Nasdaq PSKY to NYSE SKYD the same day (SYMBOL_ALIASES).
+    'NASDAQ:PSKY': (('2026-10-06', 'SEC 8-K 0001104659-26-113913 (2026-10-06): WBD acquisition closed, 3,917,657,246 '
+                                   'Class B shares issued (PIPE); counts and statements before this date are pre-event'),),
+}
+
 
 class IexHistError(RuntimeError):
     """Fixed code only: never a price, URL, token or response body. Besides the code, counts only (None when not known):
@@ -197,6 +212,15 @@ def split_after(code: str, period_end, basis_day: str, splits=SPLITS) -> bool:
         return False
     basis = _iso(basis_day)
     return any(high > period_end and low < basis for low, high in splits.get(code, ()))
+
+
+def share_count_event_after(code: str, period_end, basis_day: str, events=SHARE_COUNT_EVENTS) -> bool:
+    """True when a reviewed share-count event of the code (SHARE_COUNT_EVENTS) is dated after the share-count period end and
+    on or before the basis day."""
+    if not isinstance(period_end, str):
+        return False
+    basis = _iso(basis_day)
+    return any(period_end < day <= basis for day, _ in events.get(code, ()))
 
 
 # ---- hist index and file metadata ------------------------------------------------------------------------------------
