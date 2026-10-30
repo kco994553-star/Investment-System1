@@ -25,8 +25,10 @@ jobs:
           mkdir -p "$RUNNER_TEMP/sec"
           for f in files/company_tickers_exchange.json files/company_tickers_mf.json Archives/edgar/daily-index/bulkdata/submissions.zip Archives/edgar/daily-index/xbrl/companyfacts.zip; do
             s=$(date +%s); curl -sS --fail -A "$SEC_USER_AGENT" -o "$RUNNER_TEMP/sec/$(basename $f)" "https://www.sec.gov/$f"; e=$(date +%s)
-            echo "SECSUM download $(basename $f) bytes=$(stat -c %s "$RUNNER_TEMP/sec/$(basename $f)") seconds=$((e-s))"
+            echo "SECSUM download $(basename $f) bytes=$(stat -c %s "$RUNNER_TEMP/sec/$(basename $f)") seconds=$((e-s))" | tee -a "$RUNNER_TEMP/dl_times.txt"
             sleep 1
           done
       - name: Measure (public SEC facts and Q/G availability; no prices)
+        env:
+          DL_TIMES: ${{ runner.temp }}/dl_times.txt
         run: python implementation/tools/measure_once/sec_expansion_measure.py "$RUNNER_TEMP/sec/company_tickers_exchange.json" "$RUNNER_TEMP/sec/company_tickers_mf.json" "$RUNNER_TEMP/sec/submissions.zip" "$RUNNER_TEMP/sec/companyfacts.zip"

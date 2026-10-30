@@ -3,7 +3,7 @@ Reads SEC bulk files (public; downloaded by the workflow with the declared User-
 ticker in SEC's company_tickers_exchange.json, public SEC facts only (no prices): SIC, latest annual form, taxonomy,
 cover share count and date, and whether the repository's Q and G axes can be scored in an expanded cross-section.
 Output lines: 'SECROW\t...' (one per ticker) and 'SECSUM ...' summaries."""
-import io, json, sys, time, zipfile, collections, datetime as dt
+import io, json, sys, time, zipfile, collections, datetime as dt, gzip, base64, os
 sys.path.insert(0, 'implementation/src')
 from investment_system.universe import sec_qgv2
 from investment_system.qgv import v2_scoring
@@ -56,13 +56,20 @@ for cik, trs in sorted(by_cik.items()):
         print('SECSUM progress', n, 'elapsed_s', round(time.time() - t_parse, 1), flush=True)
 parse_s = time.time() - t_parse
 scores, summary = v2_scoring.score_rows(universe, calc_version=None)
+out_rows = []
 for key, m in meta.items():
     sc = scores.get(('universe', key)) or {}
     axes = sc.get('axes') or {}
     q = axes.get('Q', {}).get('score'); g = axes.get('G', {}).get('score')
     for t in m['tickers']:
-        print('SECROW', t['ticker'], t['exchange'], key[2:], m['sic'], m['entity'], m['annual'], m['taxonomy'], m['profile'],
+        out_rows.append('\t'.join(str(x) for x in (t['ticker'], t['exchange'], key[2:], m['sic'], m['entity'], m['annual'], m['taxonomy'], m['profile'],
               m['state'], m['reason'] or '-', m['shares'], m['shares_date'], int(q is not None), int(g is not None), m['fye'],
-              int(t['ticker'] in mf_tickers), sep='\t')
+              int(t['ticker'] in mf_tickers))))
+blob = base64.b64encode(gzip.compress('\n'.join(out_rows).encode())).decode()
+for i in range(0, len(blob), 50000):
+    print('SECPACK', i // 50000, blob[i:i + 50000])
+print('SECSUM rows', len(out_rows), 'packed_chars', len(blob))
+if os.path.exists(os.environ.get('DL_TIMES', '/nonexistent')):
+    print('SECSUM downloads', open(os.environ['DL_TIMES']).read().replace('\n', ' | '))
 print('SECSUM issuers', len(meta), 'parse_s', round(parse_s, 1), 'per_issuer_ms', round(1000 * parse_s / max(1, len(meta)), 1),
       'cross_section', json.dumps(summary), 'total_s', round(time.time() - T0, 1), flush=True)
