@@ -1,5 +1,6 @@
 # 확장 모집단 — #422 인수 결과 · E1-B / E2 / 백테스트 경계 설계 (Main, 2026-10-29)
 
+> **2026-10-30 갱신:** 오너가 확장 정의를 정했다(DC-28): 네 기준(거래소·시총 약 $200m·거래대금 약 $1m·주가 약 $2~5), ADR 포함. Main은 시총 하한을 명목으로 읽었다(오너 확인 대기, `EXP-CPI-POLICY`). 확인되면 §4.1~4.2·4.8의 CPI 부분은 #418 과거 모집단 참고로만 남는다. 숫자 제안·공급처 약관·역산 시험은 [EXPANDED_DEFINITION_20261030](EXPANDED_DEFINITION_20261030.md).
 > **상태:** 인수 검토 기록 + 설계 문서다. 코드·워크플로·일정·공급원 계약·공식 모집단·공개 범위는 바꾸지 않았다. 실수집·서버 저장·병합·배포는 각각 오너 승인 뒤다.
 > **근거:** 오너 지시(2026-10-29 2차)와 [MAIN_INTEGRATION_PLAN_20261029](MAIN_INTEGRATION_PLAN_20261029.md). Codex 문서(#422)는 `E0_AUDIT`·`E1A_CONTRACT`·`SOURCE_RIGHTS`·`E1B_E2_PLAN`·`HANDOFF`이다.
 > **방법:** 다관점 검토를 했다. 관점은 식별 / 시점 / 실패·결정성 / 통합 넷이고, 검토자마다 독립 반례 시험을 따로 썼다. 지적마다 재현과 현실 경로 반박 검증을 2회씩 했다. 설계 4건(E1-B·공급원·E2·백테스트)과 완결성 비평 1회가 이어졌다. Main은 전체 시험과 저장소 가드를 직접 돌렸다. 검토용 스크립트·시험은 세션 스크래치에만 두고 저장소에 넣지 않았다.
@@ -382,6 +383,7 @@ F=수집, S=비공개 서버 보관, D=파생 점수, A=공개 집계, C=공개 
 
 
 ### 4.0 상태와 경계
+- **2026-10-30:** 확장 정의가 네 기준으로 바뀌었다(DC-28, [EXPANDED_DEFINITION_20261030](EXPANDED_DEFINITION_20261030.md) §1). Main은 시총 하한을 명목으로 읽었다(오너 확인 대기). 확인되면 아래 R200(물가조정)은 #418 과거 모집단용 참고로만 남는다. 분모 D0~D4와 확장 QGV 재산정(§4.5~4.6)은 네 기준에 맞춰 구현할 때 다시 쓴다.
 - 상태는 `DESIGN_ONLY`다. E2는 `BLOCKED_ON_LICENSE`(가격)와 `BLOCKED_ON_DATA`(종류별 주식수·분할·CPI 발표 증거)에 걸려 있다. #422 `E1B_E2_PLAN.md:5`와 같다.
 - 이번에 한 것은 코드 읽기와 합성 규모 측정 1건이다. 측정 스크립트는 세션 스크래치(저장소 밖)에 두었다. 저장소는 바꾸지 않았다. 가격·CPI·SEC 수집도 하지 않았다.
 - 바꾸지 않는 것: Universe504(`universe_codes_v1.json`), `sec-qgv2.json`, `qgv-official.json`, `share_class_groups/v0`, `sic_industry_groups/v0`, 공식 가중치.
@@ -727,8 +729,8 @@ F=수집, S=비공개 서버 보관, D=파생 점수, A=공개 집계, C=공개 
 | EXP-QUARANTINE | 문제 사건을 격리하고 진행할지, 전체 거절할지 | dry-run은 전체 보류하고 측정만. 운영 방식은 측정 뒤 결정 |
 | EXP-OPENFIGI | OpenFIGI 키 가입(오너 계정)과 Secret 등록 | 측정 M3(종류 키 확보율) 뒤 결정 |
 | EXP-DRYRUN · EXP-SCHED | 별도 수동 워크플로 측정 실행 · 정기 일정 | E1-B.1~.5 뒤 측정 1회. 일정은 측정 뒤 |
-| EXP-PRICE | 확장 시총용 가격 | 보류. 후보: IEX HIST(서면 확인), Sharadar 개인(백테스트 요약 공개 조건) |
-| EXP-CPI-POLICY | CPI 계열 CUUR0000SA0(NSA), 기준 2009 연평균(M13, BLS 값을 증거와 함께 등록), 발표 시각 증거, 결측 월(2025-10) 처리 | 승인 권장 |
+| EXP-PRICE | 확장 시총·거래대금·V용 가격. 2026-10-30: "점수만 공개" 조건으로만 검토, 명시 허용 공급처 없음 | Sharadar에 서면 문의 먼저(오너 계정). [EXPANDED_DEFINITION_20261030](EXPANDED_DEFINITION_20261030.md) §2 |
+| EXP-CPI-POLICY | 2026-10-30: "현재 판정의 시총 하한이 명목인가" 한 줄 확인으로 축소. CPI 계열 정책은 #418 과거 모집단 자료가 생길 때 | 명목(Main 해석) |
 | EXP-SHELL | SPAC·셸 회사 처리 | 확장 QGV 모집단에서 제외(`SHELL_POLICY_PENDING`) |
 | LAB-PUBLISH · LAB-GUARD-KEYS | `lab-results/1` 채택. 가드가 `cost_basis`(정규화하면 `costbasis`)·`performance`를 금지 키로 막으므로 이 파일의 그 경로만 예외 | 예외 허용 권장(값은 열거형만) |
 | EXP-417-REPIN | #417을 canonical 위로 옮기면 33개 실패(`SCORING_SOURCE_CHANGED`) | #417 담당이 새 SHA·`qgv2-calc/2026-10-23.1`로 다시 고정 |
