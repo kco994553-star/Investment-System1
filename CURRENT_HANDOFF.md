@@ -69,7 +69,7 @@ Main이 공용 파일·코드·병합·배포를 조정한다. Codex는 검증·
 
 | PR | 제목 요지 | 상태 | 오너 승인·조건 |
 | --- | --- | --- | --- |
-| [#428](https://github.com/kco994553-star/Investment-System1/pull/428) | PSKY 주식수 사건 뒤 공식 V 보류 | **CI 6 녹색** | **병합 승인 필요**(엔진 규칙 변경). 정기 실행 직후 병합 권장(7절) |
+| [#428](https://github.com/kco994553-star/Investment-System1/pull/428) | PSKY 주식수 사건 뒤 공식 V 보류 | **CI 6 녹색** | **병합 승인 필요**(엔진 규칙 변경, 버전 상수 변경 없음 → 라이브 게시본 유효). 10/31 01:55 UTC 무렵 정기 실행 전 병합 권장 |
 | [#429](https://github.com/kco994553-star/Investment-System1/pull/429) | GSQ-025·DC-29 결정 기록(IEX 중앙 V 정밀값 공개 허용) | CI 5/6 녹색, build 진행 | 문서 병합 승인 필요 |
 | [#430](https://github.com/kco994553-star/Investment-System1/pull/430) | #417 연구 명세 재고정(`96037d1c`·23.1), base = #417 가지 | CI 5/6 녹색, build 진행 | #417 담당 확인 |
 | 이 문서 PR | IEX 확장 측정·설계·결정, DC-30, 결정 기록 | CI 확인 | 문서 병합 승인 필요. #429(DC-29)를 먼저 병합하면 대장 번호가 이어진다 |
