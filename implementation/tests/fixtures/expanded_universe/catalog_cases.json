@@ -1,0 +1,14 @@
+{
+  "fixture_kind": "SYNTHETIC_ONLY",
+  "real_data_executed": false,
+  "types": [
+    ["COMMON", "INCLUDED"],
+    ["COMMON_CLASS", "INCLUDED"],
+    ["ETF", "EXCLUDED"],
+    ["CLOSED_END_FUND", "EXCLUDED"],
+    ["PREFERRED", "EXCLUDED"],
+    ["ADR", "PENDING"],
+    ["REIT", "PENDING"]
+  ],
+  "source_failures": ["HTTP_429", "SOURCE_INTERRUPTED", "SOURCE_CORRUPT"]
+}

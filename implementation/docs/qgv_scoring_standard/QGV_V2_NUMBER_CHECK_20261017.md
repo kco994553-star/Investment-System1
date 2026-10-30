@@ -277,6 +277,34 @@
 - **후속(확정 조건 아님):** 실기기 시세 경로 확인. 504종목 가격을 기기로 받는 흐름이 완성된 뒤, 사용자 기기에서 FCF 수익률 표시 여부를 0-2-3 표와 맞춰 본다.
 - **calc_version이 바뀌면** 이 통과는 효력이 없다. 새 버전으로 40칸과 이 대조를 다시 한다(`NUMBER_CHECK_CALC_VERSION_MISMATCH`).
 
+### 0-2-9. calc_version `qgv2-calc/2026-10-23.1`(#393) 첫 게시본 재대조 (2026-10-29)
+
+#393(F_k·calc_version 올림)과 중앙 V 사슬을 10-29에 병합하고 `all_shards`를 1회 돌렸다([run 40871484448](https://github.com/kco994553-star/Investment-System1/actions/runs/40871484448), 12:13→13:31 UTC). 그 게시본으로 계획 5절(CENTRAL_V_DC02_PLAN 5절) 1~4단계를 했다. 가격은 쓰지 않았고, 시험 가격은 메모리에서만 썼다. 대조 스크립트는 세션 스크래치에만 있다.
+
+- **비교한 두 파일(github.io):**
+  - 마지막 17.1 게시본: sha256 `12598f9a29e5f05c…`, `as_of` 2026-10-29T01:59:41Z(정기 실행 #28).
+  - 첫 23.1 게시본: sha256 `4ee3a6e9a6ea1956…`, `as_of` 2026-10-29T12:46:36Z, `last_shard_index` 6.
+  - 공통: 레코드 504, 값 있는 행 501이 모두 자기 파일 calc_version, 값 있는 행의 `CALC_VERSION_MIXED` 0, Q 485 / G 493, 단면 498.
+- **F_k:** 23.1 파일에서 422행이 `ebit_per_share_history`에 `share_basis_factor`를 싣는다. null 항목 31개는 모두 사유가 붙어 있다.
+- **504행 비교(companyfacts sha256이 같은 행 433개):**
+  - `v_inputs_v2`(F_k 키 제외): **433/433 같음.** F_k가 값을 바꾸지 않는다는 것을 실제 자료로 확인했다.
+  - `metrics`: 376행이 같다. 나머지 57행은 `revenue_volatility_5y_rank_pct` 하나만 다르다. 이 값은 단면 안 백분위이고, companyfacts가 새로 바뀐 71개사(3분기 10-Q 접수 기간) 때문에 비교 모집단이 움직였다.
+  - `factors`·`axes`: 대부분 달라졌다. 같은 이유(모집단 변화)다.
+- **10종목 40칸:**
+  - FIX·RL·RSG·MNST·EXPE: 같은 원자료. `metrics`·`v_inputs_v2`가 같다.
+  - INCY·DECK·MA: 같은 원자료. `v_inputs_v2`가 같고, `metrics`는 위 모집단 백분위 하나만 다르다.
+  - EME·CMG: 새 companyfacts(3분기 10-Q, TTM 기간 끝 2026-06-30 → 2026-09-30). 40칸 지표(ROIC·매출 CAGR 3y·순부채/EBITDA·FY FCF)는 같다. 바뀐 것은 TTM 매출·EBIT·FCF, 현금, 희석주식수, `revenue_ttm_growth`·`revenue_acceleration`이다.
+  - → **40칸 판정은 2절과 같다: 일치 34 / 정책상 NA 6 / 오류 0.**
+- **미검증으로 남긴 것:** EME·CMG의 새 10-Q TTM·현금·주식수 칸을 원 제출물과 다시 맞추지 못했다. 이 세션에서 SEC가 연락처 없는 요청을 거절했고(HTTP 403), 소유자 연락처는 쓰지 않는다. 후속으로 남긴다. 이 칸은 40칸에 들지 않는다. CMG FCF 수익률의 분자·분모 입력만 바뀌었다.
+- **FCF 수익률(0-2-8과 같은 방식, 23.1 파일):**
+  - 앱 경로: 23.1 엄격 리더 `sec-qgv2.js` `toInputs` → `qgv2-inputs.js` `fromInputs` → `qgv-v2.js` `scoreUniverse`의 `detail.fcf_yield`. 독립 구현과 비교했다.
+  - 시험 가격 세 벌(한 벌은 모두 같은 값)로 돌렸다. 앞 벌에서 EV ≤ 0이 나오지 않게 값을 골랐다.
+  - FIX·RL·MA·RSG·MNST·CMG·EXPE **7/7 일치**(상대 차이 0). EME·INCY·DECK는 **3/3 둘 다 NA**(부채 NA).
+  - 가격·수익률 숫자는 남기지 않는다.
+- **판정(2026-10-29):** `number_check.result = {calc_version: "qgv2-calc/2026-10-23.1", passed: true, date: "2026-10-29", companies: 10}`.
+  - `result_basis`(`APP_FORMULA_TEST_PRICE`), 표시 문구, `device_quote_path: UNVERIFIED_FOLLOW_UP`는 그대로 둔다.
+  - 남은 후속: EME·CMG 새 10-Q 칸의 원문 대조, 실기기 시세 경로.
+
 ## 2. 판정표
 
 P = production, H = 10-K 원값 손계산(B). ROIC·CAGR은 %, 순부채/EBITDA는 배, FCF는 FY 기준 USD 백만입니다.
