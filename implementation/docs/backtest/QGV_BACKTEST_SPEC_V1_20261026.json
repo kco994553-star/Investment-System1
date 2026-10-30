@@ -4,8 +4,8 @@
   "source": {
     "repository": "kco994553-star/Investment-System1",
     "default_branch": "claude/investment-system-top500-validation-alrugm",
-    "scoring_source_sha": "bb57398c9c22a2dfa2443c5f3a23db3848cbe5ce",
-    "calc_version": "qgv2-calc/2026-10-17.1",
+    "scoring_source_sha": "96037d1cd53fc5e7ffce89d241311b5fb12a66d1",
+    "calc_version": "qgv2-calc/2026-10-23.1",
     "type_scope": "qgv2-type-scope/2026-10-17.1",
     "score_version": "qgv-v2"
   },
