@@ -12,10 +12,10 @@
     "message": "숫자 검증(10-K 대조) 통과 전에는 TARGET v1을 확정 저장할 수 없습니다. 카드 응답은 기록됩니다.",
     "mismatch_message": "숫자 검증은 다른 calc_version 파일로 했습니다. 지금 공개 파일의 calc_version으로 10개 기업 숫자 검증을 다시 통과해야 확정할 수 있습니다.",
     "companies_required": 10,
-    "result": {"calc_version": "qgv2-calc/2026-10-17.1", "passed": true, "date": "2026-10-23", "companies": 10},
+    "result": {"calc_version": "qgv2-calc/2026-10-23.1", "passed": true, "date": "2026-10-29", "companies": 10},
     "result_basis": "APP_FORMULA_TEST_PRICE", "result_label_ko": "앱 계산식 대조 통과(시험 가격) / 실기기 시세 경로 미검증",
     "result_decided": "2026-10-23 사용자 결정 「FCF 수익률 대조 방식 변경」: 사용자 기기 수동 대조 대신 게시 sec-qgv2.json(같은 calc_version)과 앱의 실제 기기 계산 코드에 시험용 가격(저장·게시 금지)을 넣어 독립 구현과 10종목 대조(허용 오차 5%). 실기기 시세 경로 확인은 확정 조건이 아닌 후속 확인",
-    "device_quote_path": "UNVERIFIED_FOLLOW_UP", "evidence_doc": "docs/qgv_scoring_standard/QGV_V2_NUMBER_CHECK_20261017.md 0-2-8절",
+    "device_quote_path": "UNVERIFIED_FOLLOW_UP", "evidence_doc": "docs/qgv_scoring_standard/QGV_V2_NUMBER_CHECK_20261017.md 0-2-8절(방식)·0-2-9절(23.1 재대조)",
     "rule": "result.passed가 true이고 result.companies가 companies_required 이상이며 result.calc_version이 확정 순간 다시 읽은 sec-qgv2.json의 calc_version과 같을 때만 확정"
   },
   "finalize_check": {

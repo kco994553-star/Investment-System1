@@ -162,6 +162,7 @@ jobs:
           python implementation/tools/sec_disclosures.py --preserve-only --out "$RUNNER_TEMP/public-cockpit"
           python implementation/tools/news_signals.py --preserve-only --out "$RUNNER_TEMP/public-cockpit"
           python implementation/tools/macro_evidence.py --preserve-only --out "$RUNNER_TEMP/public-cockpit"
+          python implementation/tools/qgv_official_publish.py --preserve-only --out "$RUNNER_TEMP/public-cockpit"
           python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
       - name: Download this run's public recovery source
         if: github.event_name == 'workflow_dispatch' && inputs.replay_20261020
@@ -237,6 +238,11 @@ jobs:
       # kept unchanged and in order). Live copy served but invalid -> PAGES_FRESHNESS_LIVE_INVALID, refused: restoring a
       # healthy live copy is a separate, evidence-based procedure, never automatic. Live 404 -> first publication (pass);
       # live unreachable -> refused (fail closed). Fixed lines only: counts, dates and public row codes.
+      # Central QGV publication qgv-official.json (GSQ-024, design §12-5): the same publication_id must carry the same bytes
+      # (else CHANGED, refused); another publication with an earlier price_basis_date, or with the same basis day and an
+      # earlier inputs_as_of, is OLDER (refused); an artifact copy failing the strict reader is refused. A live publication
+      # that is invalid or missing from the artifact withholds the publication only (PAGES_FRESHNESS_PUBLICATION_WITHHELD,
+      # D-CV16 (a)) and the rest of the deploy goes on. qgv-official-status.json is never compared.
       - name: Refuse to deploy public data older than the live Pages copy
         run: |
           mkdir "$RUNNER_TEMP/deploy-check"
