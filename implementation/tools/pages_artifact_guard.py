@@ -268,9 +268,9 @@ SECRET_PATTERNS = (
 # The patterns below are matched against casefolded text (any letter case counts); call the helpers, not the patterns.
 KIS_HOST = re.compile(r"koreainvestment\.com")
 KIS_TR_ID = re.compile(r"(?:hhdfs|hhkst|fhkst|fhksw|fhpst|fhkup)\d{8}|(?:tttc|vttc|ttts|vtts|jttt|vttt|ctrp|vtrp)\d{4}[a-z]")
-KIS_SECRET_NAME = re.compile(r"kis_app_(?:key|secret)")
+KIS_SECRET_NAME = re.compile(r"kis_app_?(?:key|secret)")  # the two KIS Secret names, with or without the second underscore
 KIS_MARKERS = (KIS_HOST, KIS_TR_ID, KIS_SECRET_NAME)
-_KIS_HINTS = ("koreainvestment", "kis_app_", "hhdfs", "hhkst", "fhkst", "fhksw", "fhpst", "fhkup",
+_KIS_HINTS = ("koreainvestment", "kis_app", "hhdfs", "hhkst", "fhkst", "fhksw", "fhpst", "fhkup",
               "tttc", "vttc", "ttts", "vtts", "jttt", "vttt", "ctrp", "vtrp")  # literal prefilter, same coverage
 PRIVATE_SCHEMA_PREFIXES = ("kis-", "private-")
 # (the two schema patterns run on the original text with IGNORECASE, so the legacy exception sees the real spelling)

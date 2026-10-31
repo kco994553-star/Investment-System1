@@ -8,6 +8,9 @@ is checked before it is committed; a plain walk if git is unavailable), `.gz` me
 - no public workflow references secrets.KIS_*, the KIS Secret names, a KIS host or TR id, the collector module, or runs
   anything from the private_area package;
 - the public web app and web_assets sources request no private Worker path (/kis/, /lab/, /private/).
+- the two KIS Secret names (any spelling, GUARD.KIS_SECRET_NAME) appear in no public code, config, workflow or data file:
+  the KIS keys live only in the private repository investment-system1-kis-private (owner 2026-10-31); only Markdown
+  documentation may name them.
 The KIS marker and private-path patterns are the Pages guard's own (tools/pages_artifact_guard.py), so the two cannot drift.
 Canaries below are assembled at run time so this file carries no marker itself.
 """
@@ -170,6 +173,13 @@ def web_private_path_files(pairs) -> list:
             and GUARD.private_code_paths(_text(content))]
 
 
+def kis_secret_name_files(pairs) -> list:
+    """Non-Markdown files naming a KIS Secret (the guard's own pattern, any letter case)."""
+    return [name for name, content in pairs
+            if not name.lower().endswith(".md") and b"kis_app" in _data(content).lower()
+            and GUARD.KIS_SECRET_NAME.search(_text(content).casefold())]
+
+
 # ---- repository ----------------------------------------------------------------------------------------------------------
 def test_file_list_covers_the_repository(files):
     names = {name for name, _ in files}
@@ -191,6 +201,18 @@ def test_kis_hosts_and_tr_ids_appear_only_in_the_allow_list(files):
         assert (REPO / name).is_file(), name
         assert GUARD.kis_marker_count((REPO / name).read_text(encoding="utf-8"), HOST_AND_TR), name
     assert all(reason.strip() for reason in {**KIS_MARKER_FILES, **FUTURE_MARKER_FILES}.values())
+
+
+def test_kis_secret_names_only_in_markdown_docs(files):
+    # Owner 2026-10-31: the KIS keys live only in investment-system1-kis-private; no public code may read or name them.
+    assert kis_secret_name_files(files) == []
+
+
+def test_kis_secret_name_check_catches_every_spelling():
+    for name in ("KIS_APP" + "_KEY", "KIS_APP" + "_SECRET", "KIS_APP" + "KEY", "kis_app" + "secret"):
+        for path in ("implementation/tools/x.py", ".github/workflows/x.yml", "implementation/x.json", "x.sh"):
+            assert kis_secret_name_files([(path, "env = os.environ['" + name + "']")]) == [path], (path, name)
+    assert kis_secret_name_files([("implementation/docs/x.md", "KIS_APP" + "_KEY")]) == []
 
 
 def test_public_workflows_never_reach_kis(files):
