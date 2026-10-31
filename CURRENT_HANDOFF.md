@@ -25,6 +25,9 @@
 | 공통 기반 PR(기업 목록 공통 접근·Lab 판독기·비공개 기능 상태·`parts.privatePanel`, `claude/web-app-common-base`, base = canonical) | Claude Code Main | 10/31 08:10 |
 | 묶음 1 PR(매크로·프롬프트·트리, `claude/web-app-bundle-1`, base = canonical, 표와 어긋난 곳 수정 뒤 PR) | Claude Code Main | 10/31 08:10 |
 | #436 보강(차트 이력·Lab 결과 저장·조회 계약) | Claude Code Main | 10/31 08:10 |
+| #436 1단계 가드 PR(KIS·비공개 경계 가드·research-request/1·보안 검토 수정, `claude/private-area-guards`, #436 위) | Claude Code Main | 10/31 09:40 |
+| S06 대표 증권 PR(발행사 한 자리·정렬 기준, `claude/s06-issuer-seat`) | Claude Code Main | 10/31 09:10 |
+| Worker redirect 수정 PR(`redirect: 'error'` → `'manual'` + 3xx 거부, `claude/worker-redirect-fix`, 배포는 승인 뒤) | Claude Code Main | 10/31 11:16 |
 
 ## 1. 10/31 오너 결정과 처리
 
