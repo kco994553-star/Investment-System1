@@ -330,7 +330,7 @@ const CODE_LABELS=Object.freeze({
  // V history store
  DATE_INVALID:['날짜 형식 오류','Date invalid'],DATE_BEFORE_LAST_RECORDED:['마지막 기록일보다 이른 날짜(소급 안 함)','Before the last recorded date (no backfill)'],
  UNCHANGED:['새 값 없음(이미 기록)','Nothing new (already recorded)'],NO_VALUES:['기록할 V 없음','No V values to record'],DEVICE_STORAGE_UNAVAILABLE:['기기 저장소 사용 불가','Device storage unavailable'],
- V_STORE_INVALID:['기기 V 기록 형식 오류(그대로 둠)','Device V store invalid (left untouched)'],SESSION_NOT_AVAILABLE:['완료 거래일 없음','No completed session'],
+ V_STORE_INVALID:['옛 V 기록 형식 오류(읽지 않음 · 그대로 둠)','Old V store invalid (not read · left untouched)'],SESSION_NOT_AVAILABLE:['완료 거래일 없음','No completed session'],
  VALUATION_INPUTS_UNAVAILABLE:['공개 가치평가 입력 없음','Public valuation inputs unavailable'],
  // ledger sheets (D-10)
  PRICE_REVISED:['기록 이후 과거 일봉 등이 바뀌어 재생 결과가 기록과 다름(기록 유지, 기록된 상태에서 이어서 기록)','Replay differs from the recorded rows, e.g. revised daily bars (records kept, recording continues from the recorded state)'],

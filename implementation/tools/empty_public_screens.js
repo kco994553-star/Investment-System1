@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const EMPTY = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures/empty_public_screens.json'), 'utf8'));
 // Live-only sidecars that offline builds do not publish at all: answer 404 like a PR build would. The central V publication and
-// its status file (PR-D) too, so a deploy build carrying a live publication keeps the device-V ("임시 V") assertions deterministic.
+// its status file (PR-D) too, so a deploy build carrying a live publication keeps the no-publication assertions deterministic (tests that need one serve qgv_official_fixture.js).
 const ABSENT = ['sec-public-inputs.json', 'sec-valuation-inputs.json', 'sec-universe-shares.json', 'sec-universe-qg.json', 'sec-qgv2.json', 'company-classification.json', 'qgv-official.json', 'qgv-official-status.json'];
 async function routeEmptyPublicScreens(context) {
   for (const [name, body] of Object.entries(EMPTY)) {

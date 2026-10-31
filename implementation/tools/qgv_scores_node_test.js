@@ -535,7 +535,7 @@ test('D11 rank split: official rank needs V, QG reference list, gate row ranked,
   assert.equal(R.gev.rank, null);assert.equal(R.gev.qg_reference, null);assert.equal(QS.exploreGroup(R.gev), 'CHECK_DATA');
   assert.deepEqual([R.amd.rank, R.nvda.rank].sort(), [1, 2]);
   assert.equal(QS.reasonText(R.googl.qg_reference.reason, false), '현재 금융업 가치평가 모델 미지원');assert.equal(QS.QG_REFERENCE_LABEL[0], 'QG 참고 목록 (V 미포함)');
-  assert.equal(QS.NO_OFFICIAL_RANK[0], '가격 연결 전: 공식 QGV 순위 없음 · QG 참고 목록 보기');
+  assert.equal(QS.NO_OFFICIAL_RANK[0], '공식 V 없음: 공식 QGV 순위 없음 · QG 참고 목록 보기');
   // Before any price: nobody is ranked; every total is in the QG list.
   const bare = QS.compute({ identities: ids, v2Inputs: inputs, quotes: {} });
   assert.ok(Object.values(bare.rows).every((r) => r.rank === null));assert.ok(Object.values(bare.rows).filter((r) => Number.isFinite(r.primary.total)).every((r) => r.qg_reference));
@@ -704,4 +704,61 @@ test('officialPage: only a QgvOfficial-validated publication; without one the pr
   }
   assert.equal(QS.officialPage({}, { publication: null, v2Inputs: null }), null);
   assert.equal(QS.officialPage({}, { publication: null, v2Inputs: inputs, identities }), QS.officialPage({}, { publication: null, v2Inputs: inputs, identities }), 'memoized');
+});
+
+// DC-31 old-app central basis line (centralBasis / centralText / centralHtml), the page publication getter and the S06 preset view.
+async function withNow(iso, fn) { const real = Date.now; Date.now = () => (iso === null ? NaN : Date.parse(iso)); try { return await fn(); } finally { Date.now = real; } }
+test('centralBasis: fresh / STALE past 2 completed New York sessions / not countable, 계산 버전 다름, IEX attribution and terms link; never a price', async () => {
+  const { pub } = await vectorPage(), inputs = { calc_version: pub.calc_version };
+  const fresh = await withNow('2026-10-14T21:00:00Z', () => QS.centralBasis(pub, { v2Inputs: inputs }));
+  assert.equal(fresh.sessions, 1); assert.equal(fresh.stale, false); assert.equal(fresh.calc_differs, false); assert.equal(fresh.publication_id, pub.publication_id);
+  const ft = QS.centralText(fresh, false);
+  assert.match(ft, /^공식 V · 중앙 게시 · IEX 마지막 체결가 기준\(공식 종가 아님\) · 가격 기준일 2026-10-13 · 게시 2026-10-13 22:40 UTC$/);
+  const fh = QS.centralHtml(fresh, false);
+  assert.match(fh, /data-central-state="OK"/); assert.ok(fh.includes('data-central-basis="' + pub.publication_id + '"'));
+  assert.ok(fh.includes(pub.attribution.text) && fh.includes('href="' + pub.attribution.terms_url + '"') && fh.includes('rel="noopener noreferrer"'), 'IEX attribution text and terms link');
+  const stale = await withNow('2026-10-16T21:00:00Z', () => QS.centralBasis(pub, { v2Inputs: inputs }));
+  assert.equal(stale.stale, true); assert.ok(stale.sessions > 2); assert.match(QS.centralText(stale, false), / · STALE$/); assert.match(QS.centralHtml(stale, false), /data-central-state="STALE"/);
+  assert.match(QS.centralText(stale, true), /Official V · published centrally · IEX last trade \(not an official close\).* · STALE$/);
+  const unknown = await withNow(null, () => QS.centralBasis(pub, { v2Inputs: null }));
+  assert.equal(unknown.sessions, null); assert.equal(unknown.stale, null); assert.equal(unknown.calc_differs, null); assert.match(QS.centralText(unknown, false), / · STALE 판정 불가$/);
+  const other = await withNow('2026-10-14T21:00:00Z', () => QS.centralBasis(pub, { v2Inputs: { calc_version: 'qgv2-calc/other' } }));
+  assert.equal(other.calc_differs, true); assert.match(QS.centralText(other, false), / · 계산 버전 다름$/);
+  assert.doesNotMatch(JSON.stringify([fresh, stale, other]), /"price"|last_price|close"/, 'no price in the basis');
+  // Without a validated publication: the reason in words, state NA, no attribution, never a device V.
+  for (const [publication, reason, want] of [[null, null, 'OFFICIAL_NOT_PUBLISHED'], [null, 'OFFICIAL_UNAVAILABLE', 'OFFICIAL_UNAVAILABLE'], [null, 'OFFICIAL_LOADING', 'OFFICIAL_LOADING'], [structuredClone(pub), null, 'OFFICIAL_INVALID']]) {
+    const b = QS.centralBasis(publication, { reason }), h = QS.centralHtml(b, false);
+    assert.equal(b.reason, want); assert.equal(b.publication_id, null); assert.equal(QS.centralText(b, false), QS.reasonText(want, false));
+    assert.match(h, /data-central-state="NA"/); assert.ok(h.includes('data-na="' + want + '"')); assert.doesNotMatch(h, /data-attribution|기기 V/);
+  }
+  assert.equal(QS.reasonText('OFFICIAL_LOADING', false), '공식 V 확인 중: 중앙 V 게시본을 읽는 중입니다');
+});
+test('page publication: a pending read is OFFICIAL_LOADING (never "not published"); a failed re-read keeps the held payload and says so; ready resolves', async () => {
+  const { pub, ids } = await vectorPage();
+  let read = { publication: null, reason: null, promise: new Promise((res) => setTimeout(res, 5)) };
+  QS.setPagePublication(() => read);
+  try {
+    assert.equal(QS.pagePublication().reason, 'OFFICIAL_LOADING');
+    const pending = QS.officialPage({}, { v2Inputs: null, identities: ids });
+    assert.equal(pending, null, 'no inputs and no publication: nothing to show');
+    const withInputs = QS.officialPage({}, { v2Inputs: screens[SQ.FILE], identities });
+    assert.equal(withInputs.v_reason, 'OFFICIAL_LOADING'); assert.equal(withInputs.source, 'NONE');
+    assert.ok(Object.values(withInputs.computed.rows).every((r) => r.primary.v === null && r.rank === null));
+    await QS.pagePublicationReady();
+    read = { publication: null, reason: 'OFFICIAL_NOT_PUBLISHED', promise: Promise.resolve() };
+    assert.equal(QS.officialPage({}, { v2Inputs: screens[SQ.FILE], identities }).v_reason, 'OFFICIAL_NOT_PUBLISHED');
+    read = { publication: pub, reason: null, last_attempt_reason: 'OFFICIAL_UNAVAILABLE', promise: Promise.resolve() };
+    const P = QS.officialPage({}, { v2Inputs: null, identities: ids });
+    assert.equal(P.source, 'PUBLICATION'); assert.equal(P.inputs_match, false, 'publication-only rows when no sec-qgv2.json joins');
+    assert.ok(Object.values(P.computed.rows).some((r) => Number.isFinite(r.primary.v)), 'the held official V is still shown');
+    const b = await withNow('2026-10-14T21:00:00Z', () => QS.centralBasis(QS.pagePublication().publication, {}));
+    assert.equal(b.last_attempt_reason, 'OFFICIAL_UNAVAILABLE'); assert.match(QS.centralText(b, false), / · 다시 읽기 실패\(OFFICIAL_UNAVAILABLE\) · 마지막 게시본 표시$/);
+    // S06 preset view: the official default is the page result itself; another preset is the personal recompute labelled by its profile.
+    assert.equal(QS.presetView(P, {}), P.computed);
+    QS.setPageProfile(() => ({ preset: 'growth', gate: true }));
+    const G = QS.presetView(P, {});
+    assert.equal(G.preset_view, true); assert.equal(G.profile.id, 'qgv-v2/growth/gate-on'); assert.equal(QS.presetView(P, {}), G, 'memoized');
+    assert.ok(Object.values(G.rows).every((r) => r.primary.profile.id === 'qgv-v2/growth/gate-on'));
+  } finally { QS.setPagePublication(null); QS.setPageProfile(() => ({ preset: null, gate: null })); }
+  assert.equal(QS.pagePublication().reason, null, 'no registered read: no reason'); await QS.pagePublicationReady();
 });

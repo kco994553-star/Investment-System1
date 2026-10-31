@@ -399,7 +399,9 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
 - 두 키(`investment.web.v1.virtual-trading-v-scores`, `investment.web.v2.virtual-trading-v-scores`)는 `action.js` `STOPPED.localStorage`에 넣었다. 뷰로 읽으면 없음이고, 키로 쓰거나 지우면 클릭 안에서도 `V_HISTORY_STOPPED`다. 러너의 V 저장소는 비어 있어 V 기울기 신호가 나지 않는다.
 - 이미 저장된 값은 사용자가 지울 때까지 남는다. `store.vHistoryKeys.count()`(개수만)와 `clear(event)`(WRITE 클릭, DC-18 선례)가 그 수동 설정 동작이다. 자동 삭제는 하지 않는다(소유자 확인 기본값).
 
-**남은 것**: PR-1b(옛 화면, 방향 규칙 DC-31a–d, 문서), 11/16 PR(TARGET V 출처, `V_SOURCES`에서 `DEVICE_TEMPORARY` 정리, 기기 경로 삭제).
+**PR-1b(옛 화면)**: 리더보드·기업 상세 QGV 카드·레이더 V축(kind SCORE, central)·"V 산출 현황 · 중앙 게시"(게시본 coverage)·Universe 페이지·S13 비교·플레이북 사실(`v_now` 공식, `v_prev20` NA)이 `QgvScores.officialPage`(앱이 연 뒤 한 번 읽은 게시본, `setPagePublication`)를 읽는다. 기준 줄·IEX 출처 문구·약관 링크는 `QgvScores.centralHtml`. S06 프리셋은 게시된 요인 점수로 다시 계산한 개인 프리셋 보기. V 이력 기록·읽기, 가치(DCF) 패널, 기기 시세 배지를 지움. TARGET v1 빌더만 기기 결과를 받음(포트폴리오·기업 화면은 기기 V를 계산하지 않음). 읽기 대기 중에는 `OFFICIAL_LOADING`('확인 중', 게시본 없음으로 표시하지 않음)이고 플레이북은 그 읽기를 기다림. 다시 읽기가 실패해도 마지막 검증 게시본을 그대로 쓰고 기준 줄에 '다시 읽기 실패(사유) · 마지막 게시본 표시'를 붙임(`last_attempt_reason`, data-cx-read-failure). 홈 QGV 카드·S13 비교·레이더·TARGET 작성기 후보 표에도 기준 줄과 IEX 출처를 붙임. 방향 규칙 DC-31a~d.
+
+**남은 것**: 11/16 PR(TARGET V 출처, `V_SOURCES`에서 `DEVICE_TEMPORARY` 정리, 기기 경로 삭제).
 
 ## 11. 사용자 결정
 

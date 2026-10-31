@@ -187,7 +187,8 @@ test('the V history is never recorded: no web_app script or reused module calls 
   assert.doesNotMatch('VirtualTradingVHistory.readV2(storage)', RECORD);
   for (const name of files(R.NEW).filter((n) => n.endsWith('.js'))) assert.doesNotMatch(code(fs.readFileSync(R.newPath(name), 'utf8')).join('\n'), RECORD, name);
   for (const name of R.reused()) assert.doesNotMatch(code(fs.readFileSync(R.oldPath(name), 'utf8')).join('\n'), RECORD, name);
-  assert.match(fs.readFileSync(R.oldPath('app.js'), 'utf8'), RECORD, 'the old app (not loaded) is where it was recorded');
+  // DC-31 (PR-1b): the old app no longer records it either.
+  assert.doesNotMatch(code(fs.readFileSync(R.oldPath('app.js'), 'utf8')).join('\n'), RECORD, 'the old app records no V history any more');
 });
 
 test('every tag is a deferred file, every web_app script is loaded, the CSP is the old page CSP', () => {

@@ -6,7 +6,8 @@
 // Everything below is recomputed here independently of the page code:
 //  - Q and G equal the published axis scores; group values are the mean published score of the members (same 0–100 scale);
 //  - the auxiliary margin-stability row: raw value, average-rank percentile of −std and the group means of member percentiles;
-//  - V is 미산출 with the engine reason without quotes; FINANCIAL shows exactly '현재 금융업 가치평가 모델 미지원' (a model scope, not
+//  - V is the central V of qgv-official.json only (DC-31): 미산출 with the OFFICIAL_* reason without a publication (never a device V),
+//    and with the synthetic publication (qgv_official_fixture.js) the radar V equals QgvScores.officialPage with the basis line; FINANCIAL shows exactly '현재 금융업 가치평가 모델 미지원' (a model scope, not
 //    a data failure) and no general V formula; the V detail lists each value input (raw, period, source) or its reason;
 //    price axes are 미산출 (NO_DEVICE_PRICE) without price data, ADJUSTMENT_BASIS_UNCONFIRMED on raw closes;
 //    a 미산출 axis has no vertex and the polygon is not filled;
@@ -17,7 +18,7 @@
 //  - identical industry and SIC member sets are drawn once ("업종 = SIC"); the area is never computed; official QGV rows are
 //    unchanged; competitors are 미산출 (REL_SOURCE_PENDING); no inline styles; no horizontal overflow; nothing written to storage.
 const { chromium } = require('playwright'), assert = require('node:assert/strict'), fs = require('node:fs'), path = require('node:path');
-const F = require('./qgv_v2_fixture.js'), SQ = require('../src/investment_system/product/web_assets/sec-qgv2.js');
+const F = require('./qgv_v2_fixture.js'), O = require('./qgv_official_fixture.js'), SQ = require('../src/investment_system/product/web_assets/sec-qgv2.js');
 const BASE = process.env.PAGES_COCKPIT_URL, ORIGIN = new URL(BASE).origin, SHOTS = process.env.STAT_RADAR_SHOTS || '';
 const close = (a, b) => Math.abs(a - b) <= 1e-9 * Math.max(1, Math.abs(a), Math.abs(b));
 const WITHDRAWN = 'IDENTITY_CONFLICT_WITHDRAWN', MIN_PEERS = 8, MIN_GROUP = 5;
@@ -159,14 +160,15 @@ async function checkCommon(page, el, label) {
 }
 async function checkNoDevice(el, label, financial) {
   const state = await el.getAttribute('data-sr-device'); assert.ok(['OFF', 'NOT_AVAILABLE', 'AUTH_REQUIRED', 'SHEET_NOT_CONNECTED'].includes(state), label + ' device state ' + state);
-  assert.equal(await el.getAttribute('data-sr-quotes'), 'NONE', label + ' no device quotes');
+  assert.equal(await el.getAttribute('data-sr-central'), 'NONE', label + ' no central publication');assert.equal(await el.getAttribute('data-sr-quotes'), null, label + ' no device quote state (DC-31)');
+  assert.equal(await el.locator('[data-sr-central] [data-central-basis]').getAttribute('data-central-state'), 'NA', label + ' basis line NA');assert.equal(await el.locator('[data-sr-central] [data-attribution]').count(), 0);
   for (const axis of Object.keys(PRICE)) for (const s of ['company', 'industry', 'sic']) { const c = await cellOf(el, axis, s); if (!c) continue;
     assert.equal(c.raw, 'NA', label + ' ' + axis + ' ' + s); assert.equal(c.score, 'NA'); assert.equal(c.reason, 'NO_DEVICE_PRICE', label + ' ' + axis + ' ' + s + ' reason'); }
   for (const s of ['company', 'industry', 'sic']) { const c = await cellOf(el, 'v', s); if (!c) continue; assert.equal(c.score, 'NA', label + ' V ' + s);
     if (financial) { assert.equal(c.reason, 'FINANCIAL_PROFILE_V_NOT_DEFINED', label + ' V ' + s + ' financial'); assert.match(c.text, /현재 금융업 가치평가 모델 미지원/); assert.doesNotMatch(c.text, /미산출/, 'model scope is not a data failure');
       assert.equal(await el.locator('tr[data-sr-axis="v"] td[data-sr-series="' + s + '"] .badge.NOT_AVAILABLE').count(), 0); }
     else if (s === 'company') { assert.ok(c.reason && c.reason !== 'FINANCIAL_PROFILE_V_NOT_DEFINED'); assert.match(c.text, /미산출/); }
-    else assert.equal(c.reason, 'NO_DEVICE_PRICE', label + ' V ' + s); }
+    else assert.match(c.reason, /^OFFICIAL_(NOT_PUBLISHED|UNAVAILABLE)$/, label + ' V ' + s + ' (no publication, never a device V)'); }
   for (const axis of ['v', ...Object.keys(PRICE)]) assert.equal(await el.locator('.sr-mark[data-sr-axis="' + axis + '"]').count(), 0, label + ' no vertex for 미산출 ' + axis);
   assert.equal(await el.locator('[data-sr-freshness]').getAttribute('data-sr-freshness'), 'UNKNOWN'); assert.match(await el.locator('[data-sr-freshness]').textContent(), /가격 기준 시각: 미확인/);
 }
@@ -223,6 +225,7 @@ const FAKE_STORE = (b) => { const real = window.PriceStore; window.PriceStore = 
       const errors = []; page.on('pageerror', (e) => errors.push(String(e)));
       await page.route('**/*', (r) => (new URL(r.request().url()).origin === ORIGIN ? r.fallback() : r.abort()));
       if (!live) await page.route('**/sec-qgv2.json*', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(p) }));
+      await page.route('**/qgv-official.json*', (r) => r.fulfill({ status: 404, contentType: 'text/plain', body: 'not found' }));  // phase 1: no publication
       // 1) Q/G published, margin row, groups, no device prices, competitors on every mount point.
       for (const [kind, spec] of cases) {
         phase = width + ' ' + kind; await page.goto(BASE + '#company/' + encodeURIComponent(spec.code || spec.targetId));
@@ -313,19 +316,23 @@ const FAKE_STORE = (b) => { const real = window.PriceStore; window.PriceStore = 
         assert.equal(await storage(), st0, phase + ' nothing written to browser storage'); pass += 3;
         await shot(el, 'radar-universe-' + width + '-light-compare');
       }
-      // 2b) One V path: with synthetic Universe-tab quotes (made-up prices, never real), the radar's V equals the shared
-      //     QgvScores.pageResult V for the same quotes, and its peers are the rows of that same result.
+      // 2b) One V path (DC-31): with the synthetic central publication (SYNTHETIC mode; a REAL build serves its own or none), the
+      //     radar's V equals the shared QgvScores.officialPage V and the basis line names the publication with the IEX attribution.
       if (uni) {
-        phase = width + ' V-PATH'; const general = points.filter((x) => x.r.profile === 'GENERAL').slice(0, 80), quotes = {}; if (!general.includes(uni)) general.push(uni);
-        general.forEach((x, i) => { quotes[x.code] = { price: 20 + ((i * 13) % 70), currency: 'USD' }; });
-        await page.goto(BASE + '#company/' + encodeURIComponent(uni.code)); await radar(page);
-        await page.evaluate((q) => { const real = window.PrivateSubsetView; window.PrivateSubsetView = { ...real, prices: () => new Map(Object.entries(q)), priceBasis: () => ({ source: 'SYNTHETIC_TEST', read_id: 'synthetic-v-path', acquired_at: null, currency: 'USD', price_time: null }) }; }, quotes);
-        await page.goto(BASE + '#home'); await page.goto(BASE + '#company/' + encodeURIComponent(uni.code)); const el = await radar(page);
+        phase = width + ' V-PATH'; await page.unroute('**/qgv-official.json*');
+        if (!live) await page.route('**/qgv-official.json*', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: O.PUB_TEXT }));
+        await page.goto(BASE + '#company/' + encodeURIComponent(uni.code)); await page.reload(); await page.waitForFunction(() => window.QgvScores && QgvScores.pagePublication().reason !== 'OFFICIAL_LOADING');
+        const el = await radar(page);
         await page.waitForFunction(() => { const c = document.querySelector('[data-stat-radar] tr[data-sr-axis="v"] td[data-sr-series="company"]'); return c && c.dataset.srReason !== 'PENDING'; });
-        const shared = await page.evaluate(async (code) => { const inputs = await Qgv2Inputs.load(window), r = await QgvScores.pageResult(window, { v2Inputs: inputs, catalog: null, identities: [{ company_id: code, ticker: code.slice(code.indexOf(':') + 1) }] });
-          const d = r.computed.rows[code].primary; return { v: Number.isFinite(d.v) ? d.v : null, reason: d.coverage && d.coverage.axes && d.coverage.axes.V ? d.coverage.axes.V.reason : null }; }, uni.code);
-        const c = await cellOf(el, 'v', 'company'); same(c.score, shared.v, phase + ' radar V = pageResult V'); if (shared.v === null) assert.equal(c.reason, shared.reason || 'NO_DEVICE_PRICE');
-        assert.equal(await el.getAttribute('data-sr-quotes'), 'PRESENT'); pass += 2; if (width === 390) console.log('V_PATH ' + uni.code + ' v=' + (shared.v === null ? 'NA:' + shared.reason : shared.v.toFixed(3)));
+        const shared = await page.evaluate((code) => { const inputs = publicScreens[Qgv2Inputs.FILE], r = QgvScores.officialPage(window, { v2Inputs: inputs, identities: [{ company_id: code, ticker: code.slice(code.indexOf(':') + 1) }] }), row = QgvScores.codeRow(r.computed, code);
+          const d = row ? row.primary : null; return { source: r.source, v: d && Number.isFinite(d.v) ? d.v : null, reason: d && d.coverage && d.coverage.axes && d.coverage.axes.V ? d.coverage.axes.V.reason : r.v_reason }; }, uni.code);
+        const c = await cellOf(el, 'v', 'company'); same(c.score, shared.v, phase + ' radar V = officialPage V'); if (shared.v === null) assert.equal(c.reason, shared.reason);
+        if (!live) { assert.equal(shared.source, 'PUBLICATION'); assert.equal(await el.getAttribute('data-sr-central'), 'PUBLICATION');
+          assert.equal(await el.locator('[data-sr-central] [data-central-basis]').getAttribute('data-central-basis'), O.PUB.publication_id);
+          assert.match(await el.locator('[data-sr-central] [data-central-basis]').textContent(), /^공식 V · 중앙 게시 · IEX 마지막 체결가 기준\(공식 종가 아님\) · 가격 기준일 2026-10-13 · 게시 2026-10-13 22:40 UTC/);
+          assert.equal(await el.locator('[data-sr-central] [data-attribution] a').getAttribute('href'), O.PUB.attribution.terms_url); }
+        pass += 2; if (width === 390) console.log('V_PATH ' + uni.code + ' v=' + (shared.v === null ? 'NA:' + shared.reason : shared.v.toFixed(3)));
+        await page.unroute('**/qgv-official.json*'); await page.route('**/qgv-official.json*', (r) => r.fulfill({ status: 404, contentType: 'text/plain', body: 'not found' }));
         await page.evaluate(() => { window.location.reload(); }); await page.waitForLoadState('load');
       }
       // 3) Price data, synthetic bars only (made-up random walks; never real prices, never committed as data).

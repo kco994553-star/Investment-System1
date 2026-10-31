@@ -55,7 +55,7 @@ const col=(page,sel,i)=>page.locator(sel+' tbody tr').evaluateAll((rows,i)=>rows
   await context.route('**/*',r=>new URL(r.request().url()).origin===new URL(BASE).origin?r.fallback():r.abort());
   const page=await context.newPage();let errors=[];const expected404=[];
   page.on('pageerror',e=>errors.push('pageerror '+String(e)));
-  page.on('console',m=>{if(m.type()!=='error')return;const url=(m.location()&&m.location().url)||'';if(/Failed to load resource/.test(m.text())&&/\/(sec-public-inputs|sec-valuation-inputs|sec-universe-shares|company-classification|forward-validation-ledger|sec-qgv2)\.json/.test(url)){expected404.push(url);return;}errors.push(m.text()+' '+url);});
+  page.on('console',m=>{if(m.type()!=='error')return;const url=(m.location()&&m.location().url)||'';if(/Failed to load resource/.test(m.text())&&/\/(sec-public-inputs|sec-valuation-inputs|sec-universe-shares|company-classification|forward-validation-ledger|sec-qgv2|qgv-official)\.json/.test(url)){expected404.push(url);return;}errors.push(m.text()+' '+url);});
   try{for(const [screen,route,selector] of ROUTES){phase=dataset+'_'+width+'_'+screen;const before=errors.length;
     await page.goto(BASE+'#'+route);await page.locator(selector).first().waitFor();await page.waitForTimeout(250);
     if(screen==='S17'&&dataset==='LIVE'){const r=await injectReport(page);assert.equal(r,'OK','S17 synthetic report');await page.locator('[data-report-section="3"] table').waitFor();await page.waitForTimeout(100);}
