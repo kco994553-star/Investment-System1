@@ -31,14 +31,15 @@ let checks = 0, snapshots = 0, phase = 'START';
 function eq(a, b, why) { assert.deepEqual(a, b, phase + ': ' + why); checks++; }
 function ok(a, why) { assert.ok(a, phase + ': ' + why); checks++; }
 async function settle(page) {
-  await page.waitForFunction(() => leaderPage?.inputs === publicScreens['sec-qgv2.json'] && document.querySelectorAll('[data-leaderboard-row]').length === officialPopulation().rows.length);
+  // DC-31: S06 is the shared QgvScores.officialPage of the loaded inputs (memoised: the same object once S06 painted from them).
+  await page.waitForFunction(() => QgvScores.pagePublication().reason !== 'OFFICIAL_LOADING' && leaderPage && leaderPage === QgvScores.officialPage(window, { v2Inputs: publicScreens['sec-qgv2.json'], identities: identityCompanies }) && document.querySelectorAll('[data-leaderboard-row]').length === officialPopulation().rows.length);
   await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
 }
 async function snapshot(page, sort, reference = null) {
   await settle(page);
   const s = await page.evaluate(() => {
     const S = leaderScores(), F = leaderFiltered(), table = document.querySelector('[data-leaderboard-table]');
-    const model = QgvScores.officialModel({ identities: F.pop.official.identities, v2Inputs: publicScreens[Qgv2Inputs.FILE], quotes: leaderQuotes, official: F.pop.official, computed: S });
+    const model = QgvScores.officialModel({ identities: F.pop.official.identities, v2Inputs: publicScreens[Qgv2Inputs.FILE], quotes: {}, official: F.pop.official, computed: S });
     const rows = [...table.querySelectorAll('[data-leaderboard-row]')];
     return {
       selected: document.querySelector('#leader-sort').value, view: leaderboardView.sort,

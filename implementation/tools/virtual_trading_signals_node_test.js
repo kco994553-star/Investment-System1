@@ -158,7 +158,7 @@ test('S17 model: rehearsal is labelled on screen and in the export, recording mo
   const rec = DR.buildModel({ kind: 'MOCK', tab: 'SET_A', reportDate: '2026-10-15', ledger: null, config: cfg, signals: S.reportSignals(null, 'SET_A', cfg, {}) });
   const recScreen = DR.screenHtml(rec, { hidden: true }), recText = DR.renderTemplate(rec, { hidden: true, guide: false });
   assert.ok(recScreen.includes('data-report-mode="RECORDING">기록 모드<') && recScreen.includes('data-rehearsal-run>리허설 실행<'));
-  assert.ok(recScreen.includes('V 기록 0/20일 · 아직 기록 없음'));
+  assert.ok(recScreen.includes('V 기울기 NA · 중앙 V 이력 미게시 · 기기에 V 이력을 쌓지 않음(DC-31)'), 'DC-31: no device V history line');
   assert.ok(!recText.includes('리허설'), 'recording export unchanged');
   assert.ok(DR.screenHtml(rec, { hidden: true, locale: 'en-US' }).includes('>Recording mode<'));
   assert.ok(DR.screenHtml(m, { hidden: true, locale: 'en-US' }).includes('>Rehearsal · not recorded<'));

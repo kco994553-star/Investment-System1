@@ -204,12 +204,12 @@ function compareRows(official,mine){const side=(row,p,rank,qg)=>{if(!p)return nu
  const key=s=>!s?[2,0]:s.rank!==null?[0,s.rank]:s.qg&&s.qg.order!==null?[1,s.qg.order]:[2,0];
  rows.sort((a,b)=>{const x=key(a.mine),y=key(b.mine);return x[0]-y[0]||x[1]-y[1]||String(a.ticker).localeCompare(String(b.ticker));});return rows;}
 let v2CtxPromise=null;
-// Public inputs and identities for the S13 compare (the same public files and device quotes as S06), loaded once per page.
+// Public inputs and identities for the S13 compare (the same public files as S06), loaded once per page. No price (DC-31).
 function defaultV2Context(view){
  if(!v2CtxPromise)v2CtxPromise=(async()=>{const inputs=view.Qgv2Inputs?await view.Qgv2Inputs.load(view):null;let catalog=null;try{const r=await view.fetch('actual-catalog.json',{cache:'no-store'});if(r.ok)catalog=await r.json();}catch(_){catalog=null;}
   let identities=[];try{identities=catalog&&view.DeviceWatchlist?view.DeviceWatchlist.identities(catalog):[];}catch(_){identities=[];}return{inputs,identities,catalog};})().catch(e=>{v2CtxPromise=null;throw e;});
- return v2CtxPromise.then(async c=>{let quotes={};try{quotes=c.inputs&&view.QgvScores?await view.QgvScores.collectQuotes(view,{identities:c.identities,v2Inputs:c.inputs,catalog:c.catalog}):{};}catch(_){quotes={};}return{...c,quotes};});}
-function mountV2(box,el,view,en,{v2Context=defaultV2Context,sessionQuotes=null}={}){
+ return v2CtxPromise;}
+function mountV2(box,el,view,en,{v2Context=defaultV2Context}={}){
  const api=view.QgvV2,QS=view.QgvScores;if(!api||!QS||typeof api.validateWeights!=='function'){box.append(el('p',en?'QGV v2 engine not loaded.':'QGV v2 엔진을 불러오지 못했습니다.',{class:'small'}));return;}
  const T=(ko,e)=>en?e:ko,pct=v=>finiteNum(v)?(Math.round(v*10)/10).toFixed(1)+'%':'—',num=v=>finiteNum(v)?(Math.round(v*10)/10).toFixed(1):'—';
  let doc2=emptyV2(),writable=true;try{doc2=readV2(view.localStorage);}catch(_){writable=false;}
@@ -285,26 +285,28 @@ function mountV2(box,el,view,en,{v2Context=defaultV2Context,sessionQuotes=null}=
   function sumText(v){return v===null?T('합계 — (잘못된 값)','Sum — (invalid value)'):T('합계 ','Sum ')+num(v)+(Math.abs(v-100)<1e-9?'':T(' · 계산 때 100으로 정규화',' · normalized to 100 when calculating'));}
   function compare(){if(treeProblem(st.tree,en))return;const token=++st.token;results.replaceChildren(el('p',T('계산 중…','Calculating…'),{class:'small'}));
    Promise.resolve(v2Context(view)).then(async ctx=>{if(token!==st.token)return;
-    /* D12 + 'V 일치' (owner 2026-10-19): '공식' here is the ONE official evaluation every other screen shows: the shared
-       QgvScores.pageResult (the same Universe read, quotes, identities and Universe rank population as S06, the company pages, the
-       radar, the V panel and the candidates) on the official default profile (balanced, gate on), whatever the S06 preset; '내 설정'
-       is the personal result over that same population and quotes. The TARGET rows are listed, as before. Without the shared
-       result: the former own computation (this page session's quotes under the freshly collected ones). */
-    let R=null;try{R=ctx.inputs&&typeof QS.pageResult==='function'?await QS.pageResult(view,{v2Inputs:ctx.inputs,catalog:ctx.catalog||null,identities:ctx.identities}):null;}catch(_){R=null;}if(token!==st.token)return;
+    /* D12 + 'V 일치' (owner 2026-10-19) + DC-31: '공식' here is the ONE official evaluation every other screen shows: the shared
+       QgvScores.officialPage (the central publication's Q·G·V, totals and ranks over the same identities and Universe rank
+       population as S06, the company pages, the radar, the V panel and the candidates); '내 설정' is the personal result recomputed
+       from the published factor scores over that same population (QgvScores.compute({publication, weights}); without a
+       publication the price-free Q·G compute with every V NA, never a device V). The TARGET rows are listed, as before. */
+    let R=null;try{R=ctx.inputs&&typeof QS.officialPage==='function'?QS.officialPage(view,{v2Inputs:ctx.inputs,identities:ctx.identities}):null;}catch(_){R=null;}if(token!==st.token)return;
     let off,mine,shown=null,basis=null;
-    if(R&&R.computed&&R.official){const p=R.computed.profile,base={identities:R.identities,v2Inputs:ctx.inputs,quotes:R.quotes,official:R.official,referenceRows:typeof QS.pageReferences==='function'?QS.pageReferences():{}};
-     off=p&&p.preset===api.DEFAULT_PRESET&&p.gate===true?R.computed:QS.compute(base);mine=QS.compute({...base,gate:st.gate,weights:st.tree,typeWeights:st.typeWeights});shown=new Set(ctx.identities.map(c=>c.company_id));basis=R.price_basis||null;}
-    else{let session={};try{session=typeof sessionQuotes==='function'?sessionQuotes()||{}:{};}catch(_){session={};}const base={identities:ctx.identities,v2Inputs:ctx.inputs,quotes:{...session,...(ctx.quotes||{})}};
+    if(R&&R.computed&&R.official){const pub=R.source==='PUBLICATION'&&typeof QS.pagePublication==='function'?QS.pagePublication().publication:null,base={identities:R.identities,v2Inputs:ctx.inputs,quotes:{},official:R.official,referenceRows:typeof QS.pageReferences==='function'?QS.pageReferences():{},...(pub?{publication:pub}:{vMissing:R.v_reason})};
+     off=R.computed;mine=QS.compute({...base,gate:st.gate,weights:st.tree,typeWeights:st.typeWeights});shown=new Set(ctx.identities.map(c=>c.company_id));basis=typeof QS.publicationBasis==='function'?QS.publicationBasis():null;}
+    else{const base={identities:ctx.identities,v2Inputs:ctx.inputs,quotes:{},vMissing:(typeof QS.pagePublication==='function'&&QS.pagePublication().reason)||'OFFICIAL_NOT_PUBLISHED'};
      off=QS.compute(base);mine=QS.compute({...base,gate:st.gate,weights:st.tree,typeWeights:st.typeWeights});}
     const only=x=>shown?{...x,rows:Object.fromEntries(Object.entries(x.rows||{}).filter(([k])=>shown.has(k)))}:x;
-    st.result={off:only(off),mine:only(mine),rows:compareRows(only(off),only(mine)),basis};renderResult();})
+    st.result={off:only(off),mine:only(mine),rows:compareRows(only(off),only(mine)),basis,inputs:ctx.inputs||null};renderResult();})
     .catch(()=>{if(token===st.token)results.replaceChildren(el('p',T('비교 자료를 불러오지 못했습니다 · NOT_AVAILABLE','Compare inputs could not be loaded · NOT_AVAILABLE'),{class:'small','data-qgv2w-result-state':'NOT_AVAILABLE'}));});}
   function renderResult(){results.replaceChildren();const r=st.result;if(!r)return;if(typeof QS.readMarks==='function')for(const[k,v]of Object.entries(QS.readMarks(r.basis||null,view)))results.setAttribute(k,v);const P=r.mine.personal,rows=r.rows;
    // V axis weight 0: a personal Q·G-only result, labelled '개인 설정 결과 (V 비중 0)' (QgvScores personal.label); never the official ranking.
    const plabel=P&&Array.isArray(P.label)?P.label:(QS.PERSONAL_LABEL||['개인 설정 미리보기 · 공식 점수 아님','Personal setting preview · not an official score']);
    results.append(el('p',plabel[en?1:0]+' · '+(P&&P.profile?P.profile.id:'—'),{class:'badge partial','data-qgv2w-result-label':P&&P.v_weight_zero?'V_WEIGHT_ZERO':''}));
    if(!P||P.state!=='READY'||!rows.length){results.append(el('p',T('내 설정 결과 없음 · ','No personal result · ')+(P?P.state+(P.reason?' · '+P.reason:''):'NOT_AVAILABLE'),{class:'small','data-qgv2w-result-state':P?P.state:'NOT_AVAILABLE'}));return;}
-   results.append(el('p',T('공식 = 기본(균형 34/33/33 · 관문 켬) · 내 설정 = 위 비중','Official = default (balanced 34/33/33 · gate on) · Mine = the weights above')+' · '+T('같은 공개 입력·같은 기기 가격 ','same public inputs and device prices ')+r.off.priced_codes+T('개','')+(r.off.priced_codes?'':T(' · 가격이 없으면 V는 —입니다(리더보드 › 내 기기 기준에서 Universe를 읽으면 계산)',' · without prices V is — (read the Universe under Leaderboard › My device)')),{class:'small','data-qgv2w-result-state':'READY'}));
+   results.append(el('p',T('공식 = 중앙 게시(균형 34/33/33 · 관문 켬) · 내 설정 = 그 게시본의 요인 점수를 위 비중으로 다시 계산','Official = central publication (balanced 34/33/33 · gate on) · Mine = recomputed from its factor scores with the weights above'),{class:'small','data-qgv2w-result-state':'READY'}));
+   // DC-31: the central V basis (basis day, publication time, STALE, calc version) and the IEX attribution with its terms link.
+   if(typeof QS.centralHtml==='function'&&typeof QS.pagePublication==='function'){const PP=QS.pagePublication(),cb=el('div',undefined,{'data-qgv2w-central':''});cb.innerHTML=QS.centralHtml(QS.centralBasis(PP.publication,{reason:PP.reason,v2Inputs:r.inputs||null}),en);results.append(cb);}
    const cand=st.product!=='custom'?candidateFor(st.product,api):null;if(cand)results.append(el('p',cand.name+' v'+cand.version+' · '+CANDIDATE_LABEL[en?1:0]+(modified()?T(' · 수정됨',' · modified'):''),{class:'small','data-qgv2w-result-preset':cand.id}));
    results.append(stagesSummaryBox(r.mine));
    if(!st.company||!rows.some(x=>x.company_id===st.company))st.company=rows[0].company_id;
@@ -365,7 +367,7 @@ function mountV2(box,el,view,en,{v2Context=defaultV2Context,sessionQuotes=null}=
  const axisShareText=(sh,p)=>sh.axis[p]===null?'—':(st.tree.axis[p]===0?T('0 = 제외 · ','0 = left out · '):'')+T('전체 ','total ')+pct(sh.axis[p]);
  const innerShareText=(sh,p,k)=>st.tree.inner[p][k]===0?T('0 = 제외(결측 아님)','0 = left out (not missing)'):T('축 내 ','in axis ')+pct(sh.inner[p][k])+T(' · 전체 ',' · total ')+pct(sh.total[p][k]);
  render();}
-function mount(host,{locale,mode='strategy',qgFactors=()=>null,engine=globalThis.EnginePreview,v2Context,sessionQuotes}={}){
+function mount(host,{locale,mode='strategy',qgFactors=()=>null,engine=globalThis.EnginePreview,v2Context}={}){
  if(!host)return;const doc=host.ownerDocument,view=doc.defaultView,en=locale==='en-US',el=(tag,text,attrs={})=>{const n=doc.createElement(tag);if(text!==undefined)n.textContent=text;for(const[k,v]of Object.entries(attrs))n.setAttribute(k,v);return n;};const section=el('section',undefined,{class:'card','data-profile-editor':mode});section.append(el('h2',mode==='types'?(en?'Custom company types':'기업 유형 커스텀'):(en?'Strategy profiles':'전략 프로필')),el('p','PREVIEW · '+(en?'Device configuration · Official values are preserved':'기기 설정 · 공식값 유지'),{class:'badge'}));
  const status=el('p','NOT_AVAILABLE · '+(mode==='types'?'TYPE_CONFIG_PENDING_MERGE':'PREVIEW_NOT_RUN'),{role:'status','data-profile-status':''});section.append(status);
  if(mode==='types'){mountTypes(section,status,el,view,en);host.replaceChildren(section);return;}
@@ -380,7 +382,7 @@ function mount(host,{locale,mode='strategy',qgFactors=()=>null,engine=globalThis
  name.oninput=()=>{previewed=false;save.disabled=true;};
  preview.onclick=()=>{try{weights(draft);need(name.value.trim().length>0);previewed=true;save.disabled=!writable;const result=previewRanks(qgFactors(),draft,engine);status.textContent='PREVIEW · Q/G/V '+(en?'each sum 100':'각 합 100')+' · '+(result.state==='PREVIEW'?(en?'Q/G preview recalculated':'Q/G 미리보기 재계산'):(en?'Calculated results':'계산 결과')+' NOT_AVAILABLE · '+result.reason);renderPreview(result);}catch(_){previewed=false;save.disabled=true;status.textContent='PROFILE_INVALID · '+(en?'Each axis must total 100; enter a name.':'각 축 비중 합이 100이어야 하며 이름이 필요합니다.');}};
  save.onclick=()=>{if(!previewed||!writable)return;try{const id=selectedId||'device-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,10),p={id,name:name.value.trim(),weights:weights(draft)},next={...state,strategies:[...state.strategies.filter(x=>x.id!==id),p]};state=write(view.localStorage,next);selectedId=id;status.textContent='PREVIEW · '+(en?'Saved on this device':'이 기기에 저장했습니다.');renderSaved();}catch(_){status.textContent='PROFILE_SAVE_FAILED';}};
- const v2box=el('div',undefined,{class:'card','data-qgv2-weights-editor':''});try{mountV2(v2box,el,view,en,{...(v2Context?{v2Context}:{}),sessionQuotes});}catch(_){v2box.append(el('p','NOT_AVAILABLE',{class:'small'}));}
+ const v2box=el('div',undefined,{class:'card','data-qgv2-weights-editor':''});try{mountV2(v2box,el,view,en,{...(v2Context?{v2Context}:{})});}catch(_){v2box.append(el('p','NOT_AVAILABLE',{class:'small'}));}
  section.append(activeV2View(el,en,view),v2box,officialView(el,en,view),el('h3',en?'v1 preview · legacy leaf-weight drafts (not the official v2 score)':'v1 미리보기 · 기존 개별 가중치 초안 (공식 v2 점수 아님)',{'data-profile-v1-heading':''}),label,name,copy,editor,preview,results,save,el('h3',en?'Saved profiles · v1 preview':'저장한 프로필 · v1 미리보기'),saved);renderSaved();host.replaceChildren(section);
 }
 return Object.freeze({KEY,SCHEMA,V2_KEY,V2_SCHEMA,PRODUCT_PRESETS,CANDIDATE_LABEL,STAGE_REASON,candidateFor,stageSummary,FACTOR_LABELS,DECISION_URL,emptyV2,validateV2,readV2,writeV2,saveV2,weightShares,fitTo100,treeProblem,compareRows,TARGET_IDS,empty,copyOfficial,copyOfficialTypes,typeConfig,weights,validate,read,write,previewRanks,typePreview,targetTypePreview,configDiff,mount});

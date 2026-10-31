@@ -38,6 +38,22 @@ def test_rules_catch_old_directions_and_pass_explanations():
         '공개 TARGET은 카탈로그 19개(v0)로 한다.',
         'TARGET 19 = QGV가 고른 포트폴리오',
         'Public TARGET is the catalog 19.',
+        # DC-31 (2026-10-31, device V abolished)
+        '중앙 V가 늦으면 기기 V로 채운다.',
+        '공식 V가 없으면 임시 V로 표시한다.',
+        '게시 전에는 임시 V를 보여 준다.',
+        'If the publication is stale, fall back to the device V.',
+        'Use the device V as a fallback when the central file is missing.',
+        '지금 화면의 V는 기기 V다.',
+        'V is computed on this device from its prices.',
+        'V는 이 기기의 가격으로 계산한다.',
+        '기기에 V 이력을 저장해 20거래일 기울기를 만든다.',
+        'Device V history is stored in localStorage.',
+        '중앙 V가 STALE이면 기기 V를 보여 준다.',
+        '공식 V가 없을 때는 기기에서 계산한 V를 쓴다.',
+        'When the central V is missing, show the device V.',
+        'If the publication is stale, the screen uses the device V.',
+        'V 점수는 이 기기에서 계산한다.',
     ]
     good = [
         'Universe504는 S&P 500 구성에서 출발한 고정 목록이다(UNI-DEF).',
@@ -53,6 +69,14 @@ def test_rules_catch_old_directions_and_pass_explanations():
         '공개 TARGET은 확정된 TARGET v1만이다.',
         'TARGET v0(19)은 사용자가 QGV 없이 고른 것',
         '공개 TARGET 카탈로그 형식 오류',
+        # DC-31: sentences that describe the abolition pass
+        '기기 V는 폐지했다(DC-31): 공식 V가 없으면 사유와 NA, 기기 값으로 채우지 않는다.',
+        'Device V was abolished (DC-31); no fallback: stale central V is shown with STALE.',
+        'TARGET v1 빌더는 11/16까지 PR-D 규칙(공식 V 우선, 없으면 임시 V)을 유지한다.',
+        '중앙 V 게시가 늦으면 마지막 중앙 V와 갱신 시각을 보이고 STALE로 표시한다.',
+        'V 이력이 필요하면 중앙에서 날짜별로 게시한다(DC-31).',
+        'The radar V axis reads the central publication (qgv-official.json).',
+        '기기 계산 V는 모두 중앙 V로 대체(GSQ-025)',
     ]
     for line in bad:
         assert g.scan_text(line, rules), line

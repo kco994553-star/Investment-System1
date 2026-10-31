@@ -3,8 +3,8 @@
    Q/G axis scores with their coverage and peer basis/count, each factor percentile with the Q1…Q5 / G1…G5 labels of
    CompanyScreen.V2_LABEL, reason codes and NA reasons), the SIC / industry group / financial profile of that row, the device type
    memberships (QgvScores.typeMemberships, the same rule as every other row) and the SEC cover facts of `sec-universe-shares.json`.
-   V, the QGV total and the value-trap gate come only from the existing device path (QgvScores.collectQuotes -> QgvScores.compute):
-   device prices stay in RAM and are never shown, stored or sent; without them V is NOT_AVAILABLE with the engine's reason code.
+   V, the QGV total and the value-trap gate come only from the central publication qgv-official.json (DC-31: QgvScores.officialPage,
+   the shared official result; no device price); without it V is NOT_AVAILABLE with its reason code, never a device V.
    The daily-candle chart (PrivateHistory) is mounted only for a code in its price scope (a TARGET issuer by CIK); any other code
    shows NOT_AVAILABLE (TA G2 undecided). Missing values are NOT_AVAILABLE with a reason, never 0, and no number is invented.
    No inline styles: bars are SVG rect widths, colours come from universe-company.css classes. Names (KR-NAMES, 2026-10-18) come
@@ -53,8 +53,12 @@ function rowState(inputs,code){
 }
 /* Device computation through the one score accessor (same engine, same population as S04/S06) with the official page profile
    (QgvScores.pageProfile: the S06 preset/gate). Rank is not used here. */
-function scored(code,ctx){const QS=g.QgvScores,p=codeParts(code);if(!QS||!p)return null;
- try{const P=typeof QS.pageProfile==='function'?QS.pageProfile():{preset:null,gate:null},S=QS.compute({identities:[{company_id:code,ticker:p.ticker}],publicScreens:ctx.screens||{},quotes:object(ctx.quotes)?ctx.quotes:{},preset:P.preset,gate:P.gate});const row=S&&S.rows?S.rows[code]:null;return row&&row.code===code?row.primary:null;}catch(_){return null;}}
+/* The shared official result of this code (QgvScores.officialPage, the same as S06, the V panel and the radar; D12: a code of a
+   TARGET company reads that TARGET row, QgvScores.codeRow). {row, d, source} or null. */
+function official(code,ctx){const QS=g.QgvScores,p=codeParts(code),inputs=inputsOf(ctx.screens);if(!QS||!p||!inputs||typeof QS.officialPage!=='function')return null;
+ try{const r=QS.officialPage(g,{v2Inputs:inputs,identities:[{company_id:code,ticker:p.ticker}]}),C=r?QS.presetView(r,{v2Inputs:inputs}):null,row=C?QS.codeRow(C,code):null;
+  return r?{row,source:r.source,d:row?{...row.primary,profile:row.primary.profile||C.profile||null,official_rank:Number.isInteger(row.rank)?row.rank:null,merged_target:row.company_id!==code?row.company_id:null}:null}:null;}catch(_){return null;}}
+function scored(code,ctx){const o=official(code,ctx);return o?o.d:null;}
 function bar(axis,value){if(!finite(value))return '<span class="uc-bar-na" aria-hidden="true"></span>';const w=Math.max(0,Math.min(100,value));
  return '<svg class="uc-bar" viewBox="0 0 100 8" preserveAspectRatio="none" aria-hidden="true" focusable="false"><rect class="uc-track" x="0" y="0" width="100" height="8"></rect><rect class="uc-fill uc-fill-'+axis.toLowerCase()+'" x="0" y="0" width="'+w.toFixed(2)+'" height="8"></rect></svg>';}
 function freshLine(parts){return '<p class="small uc-fresh" data-uc-fresh>'+parts.filter(Boolean).map(esc).join(' · ')+'</p>';}
@@ -77,31 +81,33 @@ function factorRows(axis,rs,d,locale){const T=tr(locale),en=locale==='en-US',QS=
   const c=cov?cov.factors.find(y=>y.id===f):null;let why='';
   if(v===null){if(axis!=='V'&&rs.state!=='LIVE'&&rs.state!=='STALE')why=axisWhy(axisState(rs,null),null,rs,locale);else why=c&&QS?QS.reasonText(c.reason,en):T('계산 불가','Not calculated');}
   const kind=v!==null?'SCORED':c&&c.category?c.category:'NOT_AVAILABLE';
-  return '<tr data-uc-factor="'+f+'" data-uc-value="'+(v===null?'NA':String(v))+'" data-uc-factor-state="'+esc(kind)+'"><th scope="row"><b>'+esc(x.n)+'</b> '+esc(x.name)+'</th><td class="num">'+esc(x.weight)+'</td><td class="uc-pct">'+bar(axis,v)+'<span class="num" data-uc-pct>'+(v===null?'—':esc(num(v,locale)))+'</span></td><td class="small">'+(v===null?'<span class="badge '+(kind==='NOT_APPLICABLE'?'NOT_AVAILABLE':'partial')+'">'+esc(QS&&kind!=='NOT_AVAILABLE'?QS.stateText(kind,en):kind)+'</span> '+esc(why):esc(axis==='V'?T('이 기기 계산','device'):T('공개 백분위','published')))+'</td></tr>';}).join('');}
-function vInfo(d,rec,locale,priced){const T=tr(locale),en=locale==='en-US',QS=g.QgvScores,cov=d&&d.coverage&&d.coverage.axes?d.coverage.axes.V:null;
- const status=cov?cov.status:'NOT_AVAILABLE',reason=finite(d&&d.v)?null:cov&&cov.reason?cov.reason:priced?'V_INPUTS_NOT_AVAILABLE':'NO_DEVICE_PRICE';
- return{status,reason,text:reason?(QS?QS.reasonText(reason,en):reason):'',fresh:freshLine([T('출처 이 기기 시세(메모리 전용, 공개 안 함)','Source this device’s quotes (RAM only, never published)'),T('시세 ','quote ')+(priced?T('있음','present'):T('없음','none')),T('시세 시각은 이 화면에 보관하지 않음','quote time is not kept on this screen'),T('SEC 입력은 sec-qgv2.json 수집 시각 기준','SEC inputs as of the sec-qgv2.json acquisition')])};}
+  return '<tr data-uc-factor="'+f+'" data-uc-value="'+(v===null?'NA':String(v))+'" data-uc-factor-state="'+esc(kind)+'"><th scope="row"><b>'+esc(x.n)+'</b> '+esc(x.name)+'</th><td class="num">'+esc(x.weight)+'</td><td class="uc-pct">'+bar(axis,v)+'<span class="num" data-uc-pct>'+(v===null?'—':esc(num(v,locale)))+'</span></td><td class="small">'+(v===null?'<span class="badge '+(kind==='NOT_APPLICABLE'?'NOT_AVAILABLE':'partial')+'">'+esc(QS&&kind!=='NOT_AVAILABLE'?QS.stateText(kind,en):kind)+'</span> '+esc(why):esc(axis==='V'?T('공식 V(중앙 게시)','official V (central)'):T('공개 백분위','published')))+'</td></tr>';}).join('');}
+function vInfo(d,rec,locale,central,screens){const T=tr(locale),en=locale==='en-US',QS=g.QgvScores,cov=d&&d.coverage&&d.coverage.axes?d.coverage.axes.V:null,P=QS&&QS.pagePublication?QS.pagePublication():{publication:null,reason:null};
+ const status=cov?cov.status:'NOT_AVAILABLE',reason=finite(d&&d.v)?null:cov&&cov.reason?cov.reason:central?'V_INPUTS_NOT_AVAILABLE':P.reason||'OFFICIAL_NOT_PUBLISHED';
+ // DC-31: the central V basis line and the IEX attribution with its terms link (QgvScores.centralHtml).
+ const basis=QS&&QS.centralHtml?'<div data-uc-central>'+QS.centralHtml(QS.centralBasis(P.publication,{reason:P.reason,v2Inputs:inputsOf(screens)}),en)+'</div>':'';
+ return{status,reason,text:reason?(QS?QS.reasonText(reason,en):reason):'',fresh:basis+freshLine([T('SEC 입력은 sec-qgv2.json 수집 시각 기준','SEC inputs as of the sec-qgv2.json acquisition')])};}
 function gate(d,locale){const T=tr(locale),V2=g.QgvV2,lim=V2?V2.GATE_PERCENTILE:30;if(!d)return{state:'NOT_EVALUATED',text:T('관문 판정 불가: 점수 계산 없음','Gate not evaluated: no score')};
  const flags=d.flags||[],p=finite(d.q_industry_percentile)?d.q_industry_percentile:null,base=T('가치 함정 관문 켬(기본) · Q 업종 내 백분위 ','Value-trap gate on (default) · Q industry percentile ')+(p===null?'—':num(p,locale))+T(' · 기준 ≤ ',' · limit ≤ ')+lim;
  if(flags.includes('VALUE_TRAP_CAUTION'))return{state:'CAUTION',text:base+T(' → 가치 함정 주의: V를 총점에서 뺍니다',' → value-trap caution: V is left out of the total')};
  if(flags.includes('GATE_NOT_EVALUATED')||p===null)return{state:'NOT_EVALUATED',text:base+T(' → 관문 판정 불가(Q 업종 백분위 없음)',' → not evaluated (no Q industry percentile)')};
  return{state:'PASS',text:base+T(' → 통과',' → passed')};}
-function qgvCard(code,rs,d,inputs,ctx,now){const T=tr(ctx.locale),en=ctx.locale==='en-US',rec=rs.rec,priced=!!(rec&&object(ctx.quotes)&&Object.hasOwn(ctx.quotes,code)),v=vInfo(d,rec,ctx.locale,priced);
+function qgvCard(code,rs,d,inputs,ctx,now){const T=tr(ctx.locale),en=ctx.locale==='en-US',rec=rs.rec,o=official(code,ctx),central=!!o&&o.source==='PUBLICATION',v=vInfo(d,rec,ctx.locale,central,ctx.screens);
  const pubAxis=a=>rec&&rec.qg_axes&&rec.qg_axes[a]?rec.qg_axes[a]:null;
- const line=a=>{let score=null,state,why;if(a==='V'){score=d&&finite(d.v)?d.v:null;state=score!==null?'SCORED':v.status==='NOT_APPLICABLE'?'NOT_APPLICABLE':'DEVICE_NA';why=v.text;}else{const pub=pubAxis(a);state=axisState(rs,pub);score=state==='SCORED'?pub.score:null;why=axisWhy(state,pub,rs,ctx.locale);}
-  const QP=g.QgvScores&&typeof g.QgvScores.provenance==='function'?g.QgvScores:null,ap=QP?QP.provenanceAttrHtml(QP.provenance(a==='V'?{kind:'V',profile:d&&d.profile,priced:score!==null}:{kind:'QG'})):'';
+ const line=a=>{let score=null,state,why;if(a==='V'){score=d&&finite(d.v)?d.v:null;state=score!==null?'SCORED':v.status==='NOT_APPLICABLE'?'NOT_APPLICABLE':'OFFICIAL_NA';why=v.text;}else{const pub=pubAxis(a);state=axisState(rs,pub);score=state==='SCORED'?pub.score:null;why=axisWhy(state,pub,rs,ctx.locale);}
+  const QP=g.QgvScores&&typeof g.QgvScores.provenance==='function'?g.QgvScores:null,ap=QP?QP.provenanceAttrHtml(QP.provenance(a==='V'?{kind:'V',profile:d&&d.profile,central}:{kind:'QG'})):'';
   return '<div class="uc-axis-row" data-uc-axis="'+a+'" data-uc-axis-state="'+state+'" data-uc-score="'+(score===null?'NA':String(score))+'"'+ap+'><b class="uc-axis uc-axis-'+a.toLowerCase()+'">'+esc(label(AXIS_NAME,a,en))+'</b>'+bar(a,score)+'<span class="num">'+(score===null?'—':esc(num(score,ctx.locale)))+'</span>'+(why?'<span class="small uc-axis-why">'+esc(why)+'</span>':'')+'</div>';};
  // D11: a total from Q·G only (V not applicable / not computed) is labelled as the QG 참고 목록 (V 미포함), never an official QGV rank.
  const QS=g.QgvScores,qg=d&&QS&&QS.qgReference?QS.qgReference(d):null,qgTag=qg?' <span class="badge partial" data-uc-qg-reference="'+esc(qg.reason)+'">'+esc(QS.QG_REFERENCE_LABEL[en?1:0]+T(' · 공식 QGV 순위 대상 아님 · ',' · not in the official QGV ranking · ')+QS.reasonText(qg.reason,en))+'</span>':'';
  // D12: a code of a TARGET company is the same security as that TARGET row: its result (and rank) is the TARGET row's.
  const same=d&&typeof d.merged_target==='string'?'<p class="small" data-uc-same-security="'+esc(d.merged_target)+'">'+esc(T('같은 종목: TARGET 기업 행으로 한 번만 평가 · ','Same security: evaluated once as the TARGET company row · '))+'<a href="#company/'+encodeURIComponent(d.merged_target)+'">'+esc(d.merged_target.toUpperCase())+' →</a></p>':'';
  // Provenance (QgvScores.provenance): the rank is called 공식 only on the official default profile; otherwise 개인 프리셋 순위 (D11).
- const pv=d&&finite(d.total)&&QS&&typeof QS.provenance==='function'?QS.provenance({profile:d.profile,priced:finite(d.v)}):null,pvText=pv?QS.provenanceText(pv,en):T('이 기기 계산','computed on this device');
+ const pv=d&&finite(d.total)&&QS&&typeof QS.provenance==='function'?QS.provenance({profile:d.profile,central}):null,pvText=pv?QS.provenanceText(pv,en):T('종합 점수 없음','no total');
  const total=d&&finite(d.total)?'<span class="num" data-uc-total="'+String(d.total)+'">'+esc(num(d.total,ctx.locale))+'</span> <span class="small" data-uc-provenance'+(pv?QS.provenanceAttrHtml(pv):'')+'>'+esc((d&&Number.isInteger(d.official_rank)?pvText+' · '+(QS&&typeof QS.rankLabel==='function'?QS.rankLabel(d.profile,en):T('Universe 공식 QGV 순위','Official Universe QGV rank'))+' '+d.official_rank+T(' · 반영 축 ',' · axes counted '):pvText+T(' · 순위 아님 · 반영 축 ',' · not a rank · axes counted '))+(d.coverage&&d.coverage.axes?AXES.filter(a=>d.coverage.axes[a].use==='INCLUDED').join('·')||'—':'—'))+'</span>'+qgTag:'<span data-uc-total="NA">'+na(d&&d.total_reason?(g.QgvScores?g.QgvScores.reasonText(d.total_reason,en):d.total_reason):'',ctx.locale)+'</span>';
  return '<h2><span class="flow-number">1</span> QGV v2 <span class="badge partial">PROVISIONAL</span></h2><div class="uc-bars">'+AXES.map(line).join('')+'</div><p data-uc-total-line>'+esc(T('QGV v2 종합 ','QGV v2 total '))+total+'</p>'+same+qgFresh(inputs,rs,ctx.locale,now)+v.fresh;}
-function factorsCard(rs,d,inputs,ctx,now){const T=tr(ctx.locale),en=ctx.locale==='en-US',rec=rs.rec,gt=gate(d,ctx.locale),v=vInfo(d,rec,ctx.locale,false);
+function factorsCard(rs,d,inputs,ctx,now){const T=tr(ctx.locale),en=ctx.locale==='en-US',rec=rs.rec,gt=gate(d,ctx.locale),v=vInfo(d,rec,ctx.locale,false,ctx.screens);
  const head='<thead><tr><th scope="col">'+esc(T('요인','Factor'))+'</th><th scope="col">'+esc(T('비중','Weight'))+'</th><th scope="col">'+esc(T('백분위','Percentile'))+'</th><th scope="col">'+esc(T('상태·사유','State / reason'))+'</th></tr></thead>';
- const axisBlock=a=>{const pub=a!=='V'&&rec&&rec.qg_axes?rec.qg_axes[a]:null;return '<h3 class="uc-axis-head"><span class="uc-axis uc-axis-'+a.toLowerCase()+'">'+esc(label(AXIS_NAME,a,en))+'</span></h3>'+(a==='V'?'<p class="small" data-uc-axis-meta="V">'+esc(T('V는 이 기기 시세로만 계산합니다(공개 파일에는 가격·V 없음).','V is computed only from this device’s quotes (public files carry no price or V).'))+'</p>':axisMeta(a,pub,ctx.locale))+'<div class="table-wrap"><table class="uc-table" data-uc-factor-table="'+a+'">'+head+'<tbody>'+factorRows(a,rs,d,ctx.locale)+'</tbody></table></div>';};
+ const axisBlock=a=>{const pub=a!=='V'&&rec&&rec.qg_axes?rec.qg_axes[a]:null;return '<h3 class="uc-axis-head"><span class="uc-axis uc-axis-'+a.toLowerCase()+'">'+esc(label(AXIS_NAME,a,en))+'</span></h3>'+(a==='V'?'<p class="small" data-uc-axis-meta="V">'+esc(T('V는 중앙 게시본 qgv-official.json의 공식 V입니다(IEX 마지막 체결가 기준 · 원시 가격은 공개하지 않음 · 이 기기는 V를 계산하지 않음).','V is the official V of the central publication qgv-official.json (IEX last trade basis · raw prices not published · this device computes no V).'))+'</p>':axisMeta(a,pub,ctx.locale))+'<div class="table-wrap"><table class="uc-table" data-uc-factor-table="'+a+'">'+head+'<tbody>'+factorRows(a,rs,d,ctx.locale)+'</tbody></table></div>';};
  const reasons=rec?[...(rec.na_reasons||[]),...(rs.state==='STALE'?['STALE_INPUT']:[])]:[rs.reason];
  const rules='<p class="small" data-uc-rules>'+esc(T('규칙: 축 안 비례 재정규화 · 축 최소 50%(원래 가중치) · 결측은 0으로 채우지 않음 · 비교군 최소 8곳 · 비교군: Q는 업종군(금융은 금융 프로필), G는 504 전체','Rules: proportional renormalization within an axis · axis needs 50% of its original weight · missing is never 0 · at least 8 peers · peers: Q by industry group (financials by the financial profile), G across the 504'))+'</p>';
  return '<h2>'+esc(T('QGV 구성 · 요인별 백분위','QGV structure · factor percentiles'))+'</h2>'+AXES.map(axisBlock).join('')+rules
@@ -145,7 +151,7 @@ function namesHtml(rec,locale){const T=tr(locale),en=locale==='en-US';
  if(rec.share_class_note)rows.push([T('주식 종류','Share class'),'<span data-name-class="'+esc(rec.class_label)+'">'+esc(rec.share_class_note)+'</span>']);
  return '<dl class="kv uc-names" data-company-names="'+esc(rec.ko_status)+'">'+rows.map(([k,v])=>'<dt>'+esc(k)+'</dt><dd>'+v+'</dd>').join('')+'</dl><p class="small">'+esc(T('이름은 표시·검색에만 씁니다. QGV 계산·순위·기업 식별·기록은 바뀌지 않습니다.','Names are for display and search only; QGV calculation, ranking, identity and records do not change.'))+'</p>';}
 function macroCard(locale){const T=tr(locale);return '<h2><span class="flow-number">3</span> '+esc(T('매크로','Macro'))+'</h2><p data-uc-macro="NA">'+na(T('기업별 매크로 노출이 아직 없습니다.','No per-company macro exposure yet.'),locale)+'</p>';}
-/* Page HTML (synchronous: public files are already loaded by the app). ctx: {locale, screens, shares, quotes, now}. */
+/* Page HTML (synchronous: public files are already loaded by the app). ctx: {locale, screens, shares, now}. */
 function html(code,ctx={}){
  const locale=ctx.locale==='en-US'?'en-US':'ko-KR',T=tr(locale),p=codeParts(code),now=finite(ctx.now)?ctx.now:Date.now(),c={...ctx,locale};
  if(!p)return '<p class="empty" data-universe-page="INVALID">NOT_AVAILABLE · INVALID_CODE</p>';
@@ -164,25 +170,18 @@ function html(code,ctx={}){
   +(g.StatRadar?'<section class="card" data-universe-card="radar">'+g.StatRadar.html({code},{screens:ctx.screens,locale})+'</section>':'')
   +(g.StatRadar?'<section class="card" data-universe-card="financials"><h2>'+esc(T('재무 상세','Financial detail'))+'</h2><dl class="kv">'+g.StatRadar.marginDetail({code},{screens:ctx.screens,locale})+'</dl></section>':'')
   +'<section class="card" data-universe-card="classification">'+classificationCard(code,rs,inputs,c,now)+'</section>'
-  +'<section class="card" data-universe-company="'+esc(sh.state)+'"><h2>'+esc(T('SEC 표지 정보','SEC cover facts'))+'</h2>'+sh.html+'<p class="small">'+esc(T('가격·시가총액·순위: 공개 화면에서는 NOT_AVAILABLE (GSQ-010). V와 종합 점수는 이 기기 시세로만 계산합니다.','Price, market cap and rank: NOT_AVAILABLE on public screens (GSQ-010). V and the total are computed only from this device’s quotes.'))+'</p></section></div>';
+  +'<section class="card" data-universe-company="'+esc(sh.state)+'"><h2>'+esc(T('SEC 표지 정보','SEC cover facts'))+'</h2>'+sh.html+'<p class="small">'+esc(T('가격·시가총액·순위: 공개 화면에서는 NOT_AVAILABLE (GSQ-010). V와 종합 점수는 중앙 게시본의 공식 값입니다.','Price, market cap and rank: NOT_AVAILABLE on public screens (GSQ-010). V and the total are the official values of the central publication.'))+'</p></section></div>';
 }
-/* After html(): V and the total from the SHARED page result (QgvScores.pageResult: the same quote set and the same engine call as S06,
-   the V coverage panel and the stat radar, so this page never shows a different V for the same inputs; RAM only), then repaint the
-   QGV and factor cards; mount the daily chart only for a code in its price scope. ctx adds {catalogPromise, config}. Stale mounts
-   (re-render) stop silently. */
-const collected=new WeakMap();
-async function sharedScores(page,ctx,code,inputs,rs){const QS=g.QgvScores,p=codeParts(code);if(!inputs||!rs.rec||!p||!QS||typeof QS.pageResult!=='function')return null;
- let catalog=null;try{catalog=await ctx.catalogPromise;}catch(_){catalog=null;}
- try{const r=await QS.pageResult(g,{v2Inputs:inputs,catalog,identities:[{company_id:code,ticker:p.ticker}]}),C=r&&r.computed?r.computed:null;
-  // D12: one row per security: a code of a TARGET company reads that TARGET row of the same result (QgvScores.codeRow).
-  const row=C&&typeof QS.codeRow==='function'?QS.codeRow(C,code):C&&C.rows&&C.rows[code]&&C.rows[code].code===code?C.rows[code]:null;return r?{quotes:r.quotes,d:row?row.primary:null,row,basis:r.price_basis||null}:null;}catch(_){return null;}}
+/* After html(): V and the total again from the SHARED official result (QgvScores.officialPage: the same publication as S06, the V
+   coverage panel and the stat radar, so this page never shows a different V), then repaint the QGV and factor cards; mount the
+   daily chart only for a code in its price scope. ctx adds {catalogPromise, config}. Stale mounts (re-render) stop silently. */
 async function paintScores(page,ctx){
- const code=page.dataset.universePage,locale=ctx.locale==='en-US'?'en-US':'ko-KR',inputs=inputsOf(ctx.screens),rs=rowState(inputs,code),shared=await sharedScores(page,ctx,code,inputs,rs);
+ const code=page.dataset.universePage,locale=ctx.locale==='en-US'?'en-US':'ko-KR',inputs=inputsOf(ctx.screens),rs=rowState(inputs,code),c={...ctx,locale},o=rs.rec?official(code,c):null;
  if(!page.isConnected)return false;
- const quotes=shared?shared.quotes:object(ctx.quotes)?{...ctx.quotes}:{},c={...ctx,locale,quotes},now=finite(ctx.now)?ctx.now:Date.now(),row=shared?shared.row:null,d=shared?(shared.d&&row?{...shared.d,official_rank:Number.isInteger(row.rank)?row.rank:null,merged_target:row.company_id!==code?row.company_id:null}:shared.d):rs.rec?scored(code,c):null;
+ const now=finite(ctx.now)?ctx.now:Date.now(),row=o?o.row:null,d=o?o.d:null;
  const q=page.querySelector('[data-universe-card="qgv"]'),f=page.querySelector('[data-universe-card="factors"]');
- if(q){q.innerHTML=qgvCard(code,rs,d,inputs,c,now);const QS=g.QgvScores;if(QS&&typeof QS.marks==='function')for(const[k,v]of Object.entries(QS.marks(row,shared?shared.basis:null,g)))q.setAttribute(k,v);}if(f)f.innerHTML=factorsCard(rs,d,inputs,c,now);
- page.dataset.universeV=Object.hasOwn(quotes,code)?'DEVICE_PRICED':'NO_DEVICE_PRICE';collected.set(page,quotes);return true;}
+ if(q){q.innerHTML=qgvCard(code,rs,d,inputs,c,now);const QS=g.QgvScores;if(QS&&typeof QS.marks==='function')for(const[k,v]of Object.entries(QS.marks(row,QS.publicationBasis(),g)))q.setAttribute(k,v);}if(f)f.innerHTML=factorsCard(rs,d,inputs,c,now);
+ page.dataset.universeV=o&&o.source==='PUBLICATION'?'CENTRAL':'NO_OFFICIAL_V';return true;}
 async function mount(host,ctx={}){
  const page=host&&host.querySelector?host.querySelector('[data-universe-page]'):null;if(!page)return;
  const locale=ctx.locale==='en-US'?'en-US':'ko-KR',inputs=inputsOf(ctx.screens),rs=rowState(inputs,page.dataset.universePage),target=targetIdOf(rs.rec);
@@ -190,15 +189,14 @@ async function mount(host,ctx={}){
  if(!await paintScores(page,ctx))return;
  if(g.StatRadar)await g.StatRadar.mount(page,{catalogPromise:ctx.catalogPromise});  // stat window: V from the shared page result (stat-radar.js)
 }
-/* In-place repaint after the app's public data changed (data-refresh.js '자료 새로고침' / freshness re-judging): the same page
-   HTML built from the new files and the quotes this page already holds in RAM, then V and the total again from the shared page
-   result on the new files (the kept Universe read; no Sheets or Worker request). The mounted daily chart card is moved over
-   unchanged, so a loaded private chart is not reset. */
+/* In-place repaint after the app's public data changed (data-refresh.js '자료 새로고침' / the central V read): the same page HTML
+   built from the new files, then V and the total again from the shared official result (no Sheets or Worker request). The mounted
+   daily chart card is moved over unchanged, so a loaded private chart is not reset. */
 function repaint(host,ctx={}){
  const page=host&&host.querySelector?host.querySelector('[data-universe-page]'):null;if(!page)return false;const code=page.dataset.universePage;
- const quotes={...(object(ctx.quotes)?ctx.quotes:{}),...(collected.get(page)||{})},box=page.ownerDocument.createElement('div');box.innerHTML=html(code,{...ctx,quotes});
+ const box=page.ownerDocument.createElement('div');box.innerHTML=html(code,{...ctx});
  const next=box.querySelector('[data-universe-page]');if(!next)return false;const chart=page.querySelector('[data-universe-card="technical"]'),slot=next.querySelector('[data-universe-card="technical"]');if(chart&&slot)slot.replaceWith(chart);
- next.dataset.universeV='PENDING';collected.set(next,quotes);page.replaceWith(next);
+ next.dataset.universeV='PENDING';page.replaceWith(next);
  void paintScores(next,ctx).then(ok=>{if(ok&&g.StatRadar)return g.StatRadar.mount(next,{catalogPromise:ctx.catalogPromise});}).catch(()=>{});  // the stat window on the new set: V from the shared page result
  return true;
 }

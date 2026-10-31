@@ -4,7 +4,7 @@
 // Synthetic only: sec-qgv2.json (the Q·G side's strictly valid synthetic base vector) and v1 factors by route interception, device prices from a stubbed Universe
 // tab read (RAM). Public screens are the empty-state set, so the test does not depend on what the build publishes.
 let phase = 'START';
-const { chromium } = require('playwright'), assert = require('node:assert/strict'), { routeEmptyPublicScreens } = require('./empty_public_screens.js'), F = require('./qgv_v2_fixture.js');
+const { chromium } = require('playwright'), assert = require('node:assert/strict'), { routeEmptyPublicScreens } = require('./empty_public_screens.js'), F = require('./qgv_v2_fixture.js'), O = require('./qgv_official_fixture.js');
 const FACTORS = ['competitive_advantage', 'eps_fcf_per_share_growth', 'excess_growth_vs_industry', 'fcf_quality', 'financial_health', 'growth_durability', 'growth_efficiency', 'management_quality', 'margin_quality', 'market_position', 'next_3_5y_growth', 'revenue_growth', 'roic_wacc'];
 const IDS = ['asml', 'lrcx', 'klac', 'tokyo_electron', 'hanmi', 'nvda', 'amd', 'avgo', 'qcom', 'intc', 'msft', 'googl', 'amzn', 'rtx', 'stry', 'etn', 'hubb', 'gev', 'rok'];
 function v1() {
@@ -34,7 +34,7 @@ async function withdrawnS06(page) {
   const msft = page.locator('[data-leaderboard-row="msft"]');if (await msft.count()) assert.equal(await msft.locator('[data-qgv2-flag]').filter({ hasText: '가격 식별 충돌' }).count(), 1);
   const ranks = (await page.locator('[data-leaderboard-rank]').evaluateAll((n) => n.map((x) => Number(x.dataset.leaderboardRank)))).sort((a, b) => a - b);
   const all = await page.evaluate(() => Object.values(leaderScores().rows).filter((r) => r.rank !== null).map((r) => r.company_id));  // S06 result (D11)
-  assert.ok(!all.includes('amd') && !all.includes('msft') && all.length >= 1);assert.ok(ranks.every((r) => r >= 1 && r <= all.length));
+  assert.ok(!all.includes('amd') && !all.includes('msft'));assert.ok(ranks.every((r) => r >= 1 && r <= all.length));
 }
 /* S06 structured sort (owner directive 2026-10-18 §4.4): the sort selector (#leader-sort, also the phone control) orders rows by
    structured values from qgvScores(), NA last in both directions; direction and reset buttons; the rank number is always the
@@ -47,7 +47,9 @@ async function sortFlow(page, width) {
   const shownRanks = async () => Object.fromEntries(await page.locator(T + ' tbody tr').evaluateAll((rows) => rows.map((r) => [r.dataset.leaderboardRow, r.cells[0].textContent])));
   const check = async (id, key, dir) => {
     await page.locator('[data-leaderboard-sort="' + id + '"]').waitFor();
-    const ids = await rowIds(page), vals = ids.map((x) => official[x][key]), firstNa = vals.findIndex((v) => v === null);
+    // DC-31: a total without a published place (no official rank, no QG order: e.g. a TARGET the publication does not place) is not
+    // ordered by the QGV sort; it is treated like NA here.
+    const ids = await rowIds(page), vals = ids.map((x) => (key === 'total' && official[x].rank === null && official[x].qg === null ? null : official[x][key])), firstNa = vals.findIndex((v) => v === null);
     if (firstNa >= 0) assert.ok(vals.slice(firstNa).every((v) => v === null), id + ' NA last ' + JSON.stringify(vals));
     // D11: the QGV sort lists the official ranking first, then the QG 참고 목록 (V 미포함) in its own order; each segment is monotonic.
     const tier = (x) => (key === 'total' && official[x].rank === null && official[x].qg !== null ? 1 : 0), known = ids.slice(0, firstNa < 0 ? ids.length : firstNa);
@@ -180,15 +182,15 @@ async function flow(page, width) {
   const cols = width < 750 ? 3 : 6;assert.equal(await page.locator(T + ' thead th').count(), cols);assert.equal(await page.locator(T + ' thead th[scope="col"]').count(), cols);
   assert.deepEqual(await page.locator(T + ' thead th').evaluateAll((ths) => ths.map((th) => th.dataset.leaderboardCol)), (width < 750 ? ['rank', 'company', 'qgv'] : ['rank', 'company', 'sic', 'qgv', 'qgv_detail', 'earnings']));
   assert.match(await page.locator('[data-leaderboard-unconnected]').textContent(), /일간 · 컨센서스 · 목표 · QGV 시나리오 · 재평가 · VMR/);
-  const nvdaRow = page.locator('[data-leaderboard-row="nvda"]');
+  const amdRow = page.locator('[data-leaderboard-row="amd"]');
   if (width < 750) {
     assert.equal(await page.locator(T + ' th[data-leaderboard-col="qgv_detail"]').isVisible(), false, 'phone hides the detail column');
-    const toggle = nvdaRow.locator('.lb-toggle');assert.ok(await toggle.isVisible());assert.equal(await toggle.getAttribute('aria-expanded'), 'false');
+    const toggle = amdRow.locator('.lb-toggle');assert.ok(await toggle.isVisible());assert.equal(await toggle.getAttribute('aria-expanded'), 'false');
     await toggle.click();assert.equal(await toggle.getAttribute('aria-expanded'), 'true');
-    const detail = nvdaRow.locator('[data-leaderboard-detail]');assert.ok(await detail.isVisible());assert.match(await detail.textContent(), /^QGV \d+\.\d · Q .*실적 /);
+    const detail = amdRow.locator('[data-leaderboard-detail]');assert.ok(await detail.isVisible());assert.match(await detail.textContent(), /^QGV \d+\.\d · Q .*실적 /);
     const box = await toggle.boundingBox();assert.ok(box.height >= 44 && box.width >= 44, 'detail button target size');
   } else {
-    assert.ok(await page.locator(T + ' th[data-leaderboard-col="qgv_detail"]').isVisible());assert.equal(await nvdaRow.locator('.lb-toggle').isVisible(), false);
+    assert.ok(await page.locator(T + ' th[data-leaderboard-col="qgv_detail"]').isVisible());assert.equal(await amdRow.locator('.lb-toggle').isVisible(), false);
   }
   // Default sort 'QGV v2 순': ranked rows first in rank order, NOT_AVAILABLE (—) last; never 0.
   phase = 'FLOW_RANK';assert.equal(await page.locator('#leader-sort').inputValue(), 'qgv');
@@ -203,54 +205,54 @@ async function flow(page, width) {
   assert.equal(await page.locator('[data-leaderboard-row="' + second + '"] [data-leaderboard-rank]').getAttribute('data-leaderboard-rank'), '2');
   // Filter + sort + scroll, then S04 and back.
   phase = 'FLOW_STATE';await page.locator('#leader-query').fill('a');await page.locator('#leader-sort').selectOption('name');
-  const N = await universeRows(page), ids = await rowIds(page);assert.ok(ids.includes('nvda') && ids.length < N);
+  const N = await universeRows(page), ids = await rowIds(page);assert.ok(ids.includes('amd') && ids.length < N);
   const summary = await page.locator('[data-leaderboard-summary]').textContent();assert.match(summary, new RegExp('정렬: 기업명 순 · 필터: 검색 “a” · 보기: 기본 · 프로필: 가치\\(관문 켬\\) · 관문 끔 · ' + N + '개 중 \\d+개 표시'));
-  const nvdaRank = await page.locator('[data-leaderboard-row="nvda"] [data-leaderboard-rank]').getAttribute('data-leaderboard-rank'), nvdaTotal = await page.locator('[data-leaderboard-row="nvda"] [data-leaderboard-total]').getAttribute('data-leaderboard-total');
+  const amdRank = await page.locator('[data-leaderboard-row="amd"] [data-leaderboard-rank]').getAttribute('data-leaderboard-rank'), amdTotal = await page.locator('[data-leaderboard-row="amd"] [data-leaderboard-total]').getAttribute('data-leaderboard-total');
   const asOf = await page.locator('[data-leaderboard-screen] [data-score-as-of="v2"]').textContent();assert.match(asOf, /^점수 기준 20\d\d-/);
-  await page.evaluate(() => { const r = document.querySelector('[data-leaderboard-row="nvda"]').getBoundingClientRect();window.scrollTo(0, Math.max(1, r.top + scrollY - innerHeight / 2)); });
+  await page.evaluate(() => { const r = document.querySelector('[data-leaderboard-row="amd"]').getBoundingClientRect();window.scrollTo(0, Math.max(1, r.top + scrollY - innerHeight / 2)); });
   await page.waitForTimeout(300);assert.ok(await page.evaluate(() => scrollY) > 0);
   // Where the NVDA row sat in the viewport when it was clicked (capture phase, before the route changes). The browser may
   // adjust scrollY by a few pixels after the return (scroll anchoring while late content settles), so the row position is compared.
-  await page.evaluate(() => document.addEventListener('click', () => { if (location.hash.startsWith('#leaderboard')) window.__leaveTop = document.querySelector('[data-leaderboard-row="nvda"]').getBoundingClientRect().top; }, true));
+  await page.evaluate(() => document.addEventListener('click', () => { if (location.hash.startsWith('#leaderboard')) window.__leaveTop = document.querySelector('[data-leaderboard-row="amd"]').getBoundingClientRect().top; }, true));
   const restored = async (how) => {
     const top = await page.evaluate(() => window.__leaveTop);await page.locator(T).waitFor();
-    await page.waitForFunction((v) => scrollY > 0 && Math.abs(document.querySelector('[data-leaderboard-row="nvda"]').getBoundingClientRect().top - v) <= 2, top, { timeout: 5000 })
-      .catch(async () => { throw Error(how + ' scroll ' + JSON.stringify(await page.evaluate(() => [scrollY, document.querySelector('[data-leaderboard-row="nvda"]').getBoundingClientRect().top])) + ' want row top ' + top); });
+    await page.waitForFunction((v) => scrollY > 0 && Math.abs(document.querySelector('[data-leaderboard-row="amd"]').getBoundingClientRect().top - v) <= 2, top, { timeout: 5000 })
+      .catch(async () => { throw Error(how + ' scroll ' + JSON.stringify(await page.evaluate(() => [scrollY, document.querySelector('[data-leaderboard-row="amd"]').getBoundingClientRect().top])) + ' want row top ' + top); });
     assert.equal(await page.locator('#leader-sort').inputValue(), 'name', how + ' sort');assert.equal(await page.locator('#leader-query').inputValue(), 'a', how + ' query');
     assert.deepEqual(await rowIds(page), ids, how + ' rows');assert.equal(await page.locator('[data-leaderboard-summary]').textContent(), summary, how + ' summary');
     assert.ok(await h1Focused(page), how + ' focus h1');
   };
   const toCompany = async () => {
-    await page.locator('[data-leaderboard-row="nvda"] a').first().click();await page.locator('[data-company-card="qgv"]').waitFor();await page.waitForFunction(() => location.hash === '#company/nvda');
+    await page.locator('[data-leaderboard-row="amd"] a').first().click();await page.locator('[data-company-card="qgv"]').waitFor();await page.waitForFunction(() => location.hash === '#company/amd');
   };
   phase = 'FLOW_S04';await toCompany();assert.ok(await h1Focused(page), 'S04 focus h1');
   assert.equal(await page.evaluate(() => scrollY), 0);
   const back = page.locator('[data-origin-link="leaderboard"]');assert.equal((await back.textContent()).trim(), '← 리더보드');assert.equal(await back.getAttribute('href'), '#leaderboard');
   // Same rank and total as S06 (same population, preset and gate).
   await page.locator('[data-company-card="qgv"] [data-qgv="total"] .num').waitFor();
-  assert.equal(await page.locator('[data-company-card="qgv"] [data-qgv="rank"] .num').textContent(), nvdaRank);assert.equal(await page.locator('[data-company-card="qgv"] [data-qgv="total"] .num').textContent(), nvdaTotal);
+  assert.equal(await page.locator('[data-company-card="qgv"] [data-qgv="rank"] .num').textContent(), amdRank);assert.equal(await page.locator('[data-company-card="qgv"] [data-qgv="total"] .num').textContent(), amdTotal);
   assert.equal(await page.locator('[data-company-badges] [data-score-as-of="v2"]').textContent(), asOf, 'S04 shows the v2 score time');
   assert.match(await page.locator('[data-company-badges] [data-v1-preview-as-of]').textContent(), /^v1 미리보기 입력 /);
-  // Price badge = the value card's device quote state (no static 'NOT_AVAILABLE' while the card shows a quote).
-  await page.waitForFunction(() => document.querySelector('[data-badge="price"]')?.dataset.priceState !== 'PENDING');
-  const priceState = await page.locator('[data-badge="price"]').getAttribute('data-price-state'), cardQuote = await page.locator('#company-value [data-value-quote-source]').count();
-  assert.equal(priceState, cardQuote ? 'AVAILABLE' : 'NOT_AVAILABLE');
-  assert.equal(await page.locator('[data-company-card="technical"] a[href="#technical/nvda"]').count(), 1);
-  assert.equal(await page.locator('[data-analysis-link="factors"]').getAttribute('href'), '#analysis/nvda/factors');assert.equal(await page.locator('[data-analysis-link="value"]').getAttribute('href'), '#analysis/nvda/value');
+  // DC-31: the device value card (2.4.4), its price badge and the S05 '가치·시나리오' tab are removed with device V.
+  assert.equal(await page.locator('#company-value, [data-company-value], [data-badge="price"]').count(), 0, 'no device value card or price badge');
+  assert.equal(await page.locator('[data-company-card="technical"] a[href="#technical/amd"]').count(), 1);
+  assert.equal(await page.locator('[data-analysis-link="factors"]').getAttribute('href'), '#analysis/amd/factors');assert.equal(await page.locator('[data-analysis-link="value"]').count(), 0, 'no value tab link');
   phase = 'FLOW_BACKLINK';await back.click();await restored('back link');
   phase = 'FLOW_HISTORY';await toCompany();await page.goBack();await restored('browser back');
   // S04 -> S05 deep links open the matching tab; a tab change replaces the hash, so back returns to S04.
   phase = 'FLOW_TABS';await toCompany();await page.locator('[data-analysis-link="factors"]').click();
   await page.locator('[data-analysis-tab="factors"][aria-selected="true"]').waitFor();assert.ok(await page.locator('[data-analysis-panel="factors"]').isVisible());assert.equal(await page.locator('[data-analysis-panel="summary"]').isVisible(), false);
   assert.ok(await h1Focused(page), 'S05 focus h1');
+  assert.equal(await page.locator('[data-analysis-tab="value"]').count(), 0, 'no 가치·시나리오 tab (DC-31)');
+  const tabKeys = await page.locator('[data-analysis-tab]').evaluateAll((t) => t.map((x) => x.dataset.analysisTab)), next = tabKeys[tabKeys.indexOf('factors') + 1];
   await page.locator('[data-analysis-tab="factors"]').focus();await page.keyboard.press('ArrowRight');
-  assert.equal(await page.locator('[data-analysis-tab="value"]').getAttribute('aria-selected'), 'true');assert.equal(await page.evaluate(() => location.hash), '#analysis/nvda/value');
-  await page.goBack();await page.locator('[data-company-card="qgv"]').waitFor();assert.equal(await page.evaluate(() => location.hash), '#company/nvda');
-  await page.locator('[data-analysis-link="value"]').click();await page.locator('[data-analysis-tab="value"][aria-selected="true"]').waitFor();assert.ok(await page.locator('[data-analysis-panel="value"] [data-company-value]').isVisible());
-  assert.equal(await page.locator('[data-analysis-panel="events"] a[href="#technical/nvda"]').count(), 1);
+  assert.equal(await page.locator('[data-analysis-tab="' + next + '"]').getAttribute('aria-selected'), 'true');assert.equal(await page.evaluate(() => location.hash), '#analysis/amd/' + next);
+  await page.goBack();await page.locator('[data-company-card="qgv"]').waitFor();assert.equal(await page.evaluate(() => location.hash), '#company/amd');
+  await page.locator('[data-analysis-link="factors"]').click();await page.locator('[data-analysis-tab="factors"][aria-selected="true"]').waitFor();
+  assert.equal(await page.locator('[data-analysis-panel="events"] a[href="#technical/amd"]').count(), 1);
   // S04 -> S08 keeps the company (was ASML).
-  phase = 'FLOW_TECH';await page.goBack();await page.locator('[data-company-card="technical"] a[href="#technical/nvda"]').click();
-  await page.locator('[data-technical-symbol]').waitFor();assert.equal(await page.locator('[data-technical-symbol]').inputValue(), 'nvda');
+  phase = 'FLOW_TECH';await page.goBack();await page.locator('[data-company-card="technical"] a[href="#technical/amd"]').click();
+  await page.locator('[data-technical-symbol]').waitFor();assert.equal(await page.locator('[data-technical-symbol]').inputValue(), 'amd');
   phase = 'FLOW_DONE';
 }
 /* FE-MISSING-2: S06 exploration filter + S04/S05 calculation status on the missing-data fixture (F.missingPayload: TARGET amd Q 2/5
@@ -267,12 +269,12 @@ async function missingFlow(page) {
   await page.locator('[data-qgv2-preset="value"]').click();await page.locator('[data-qgv2-preset="value"][aria-pressed="true"]').waitFor();
   // In 'all' the ranked rows come first in rank order and no unranked row is mixed into them.
   const order = await page.locator('[data-leaderboard-table] tbody tr').evaluateAll((rows) => rows.map((r) => r.cells[0].textContent));
-  const firstNa = order.indexOf('—');assert.ok(firstNa > 0 && order.slice(firstNa).every((x) => x === '—'), JSON.stringify(order));
+  const firstNa = order.indexOf('—');assert.ok(firstNa >= 0 && order.slice(firstNa).every((x) => x === '—'), JSON.stringify(order));
   await page.locator(E + ' [data-leaderboard-explore-option="partial"]').click();await page.locator(E + '[data-leaderboard-explore="partial"]').waitFor();
   assert.equal(await page.locator(E + ' [data-leaderboard-explore-option="partial"]').getAttribute('aria-pressed'), 'true');
   const ids = await rowIds(page);assert.ok(ids.includes('googl') && ids.includes('amzn') && !ids.includes('nvda') && !ids.includes('gev'), JSON.stringify(ids));
   assert.equal(await page.locator('[data-leaderboard-rank]').count(), 0, 'no rank in the partial view');
-  for (const id of ids) { const label = page.locator('[data-leaderboard-row="' + id + '"] [data-leaderboard-unranked="PARTIAL_AXES"]');assert.ok(await label.isVisible(), id);assert.match(await label.textContent(), /QGV 종합 순위 밖 · Q \d+\.\d · G \d+\.\d/); }
+  for (const id of ids) { const label = page.locator('[data-leaderboard-row="' + id + '"] [data-leaderboard-unranked="PARTIAL_AXES"]');assert.ok(await label.isVisible(), id);assert.match(await label.textContent(), /QGV 종합 순위 밖 · (Q \d+\.\d · )?G \d+\.\d/); }
   assert.match(await page.locator('[data-leaderboard-explore-note="partial"]').textContent(), /QGV 종합 순서에 넣지 않으며 순위가 없습니다/);
   const summary = await page.locator('[data-leaderboard-summary]').textContent();assert.match(summary, /필터: 일부 축만 가능 · 보기: 기본/);assert.match(summary, new RegExp((await universeRows(page)) + '개 중 ' + ids.length + '개 표시'));
   assert.equal(await page.locator('[data-leaderboard-table] [data-leaderboard-total="0.0"]').count(), 0);await noWideScroll(page, 'S06 partial');
@@ -330,6 +332,7 @@ async function missingFlow(page) {
       await context.route('**/sec-qg-factors.json*', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(v1()) }));
       await context.route('**/sec-qgv2.json*', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(F.strictPayload()) }));
       await context.route('**/scoring-default.js*', async (r) => { const res = await r.fetch(), body = (await res.text()).replace(/scoring_default:'v[12]'/, "scoring_default:'" + mode + "'"); await r.fulfill({ response: res, body }); });
+      await O.routeOfficial(context);  // DC-31: the central V publication (synthetic); no Universe read, no price
       const page = await context.newPage();let errors = 0;page.on('pageerror', () => errors++);
       // Every request the flow makes; the app must not reach any other origin (external requests are also aborted below).
       const external = [];page.on('request', (r) => { if (!/^(data|blob):/.test(r.url()) && new URL(r.url()).origin !== ORIGIN) external.push(r.url()); });
@@ -338,34 +341,28 @@ async function missingFlow(page) {
         phase = 'SETUP';await page.goto(BASE + '#settings');await page.locator('[data-universe-source]').waitFor();
         await page.locator('[data-universe-source]').fill('u'.repeat(24));await page.locator('[data-universe-settings] button[type="submit"]').click();
         const keysBefore = await page.evaluate(() => Object.keys(localStorage).sort());
-        await page.evaluate(async (values) => {
-          await DeviceActual.sheetSettings(window, { schema: 'device-google-sheet-settings/1', enabled: true, spreadsheet_id: '', range: 'Quotes!A1:C22' });
-          const session = { state: () => ({ enabled: true, connected: true }), revision: () => 1, setEnabled() {}, subscribe: () => () => {}, async fetchValues() { return { values }; } };
-          window.GoogleSheetQuotes = { ...GoogleSheetQuotes, sessionFor: () => session };location.hash = 'leaderboard';
-        }, F.strictUniverseValues());
+        await page.evaluate(() => { location.hash = 'leaderboard'; });
         phase = 'S06';await page.locator('[data-leaderboard-table]').waitFor();
         assert.equal(await page.locator('[data-scoring-default]').first().getAttribute('data-scoring-default'), 'v2');
         // TYPE-SCOPE (owner decision 2026-10-17 item 4): the basis badge names the type-application scope id the scores use.
         assert.match(await page.locator('[data-scoring-default]').first().textContent(), /유형 범위 qgv2-type-scope\/\d{4}-\d{2}-\d{2}\.\d+$/);
         assert.equal(await page.locator('[data-qgv2-preset]').count(), 4);
         assert.equal(await page.locator('[data-qgv2-preset="balanced"]').getAttribute('aria-pressed'), 'true');
-        await page.locator('details:has(#private-subset-root) > summary').click();
-        await page.locator('[data-private-subset] [data-subset-action="read"]:enabled').click();
-        await page.locator('[data-qgv2-state="READY"]').filter({ hasText: /가격 [1-9]\d/ }).waitFor();
-        const nvda = page.locator('[data-leaderboard-row="nvda"]'), msft = page.locator('[data-leaderboard-row="msft"]'), gev = page.locator('[data-leaderboard-row="gev"]');
+        await page.locator('[data-qgv2-state="READY"]').filter({ hasText: /중앙 V$/ }).waitFor();
+        const nvda = page.locator('[data-leaderboard-row="nvda"]'), msft = page.locator('[data-leaderboard-row="NYSE:MMM"]'), gev = page.locator('[data-leaderboard-row="gev"]');
         {
           const text = await nvda.locator('[data-leaderboard-qgv2]').textContent();
           assert.match(text, /^QGV \d+\.\d · Q \d+\.\d · G \d+\.\d · V \d+\.\d · 산출 요인 1[0-5]\/15$/);
           assert.match(await msft.locator('[data-leaderboard-qgv2]').textContent(), / V — · 산출 요인 1\d\/15$/);
           assert.equal(await gev.locator('[data-leaderboard-qgv2]').getAttribute('data-leaderboard-qgv2'), 'NOT_AVAILABLE');
-          // D11 (owner rule: Q·G-only totals are not mixed into the QGV ranking): only the TARGET rows with V (nvda, amd) have an
-          // official rank; msft (no device price) and the financial rows (googl, amzn) are in the QG 참고 목록 with their reason.
+          // D11 (owner rule: Q·G-only totals are not mixed into the QGV ranking) + DC-31: only rows with a published place have an
+          // official rank (TARGET: amd); NYSE:MMM (no IEX trade) and the financial rows (googl, amzn) are in the QG 참고 목록 with their reason.
           // (Was '>= 3 ranks' under the old mixing, which also ranked msft/googl/amzn by their Q·G-only totals.)
           // D12: the official ranking is the Universe one; among the TARGET identities exactly nvda and amd are ranked, and the
           // ranked rows on screen are exactly the ranked rows of leaderScores() (all Universe rows are shown here).
-          assert.deepEqual(await page.evaluate(() => identityCompanies.filter((c) => Number.isInteger(leaderScores().rows[c.company_id]?.rank)).map((c) => c.company_id).sort()), ['amd', 'nvda']);
+          assert.deepEqual(await page.evaluate(() => identityCompanies.filter((c) => Number.isInteger(leaderScores().rows[c.company_id]?.rank)).map((c) => c.company_id).sort()), ['amd']);
           assert.equal(await page.locator('[data-leaderboard-rank]').count(), await page.evaluate(() => Object.values(leaderScores().rows).filter((r) => Number.isInteger(r.rank)).length));
-          assert.equal(await msft.locator('[data-leaderboard-unranked="QG_REFERENCE"]').getAttribute('data-qg-reason'), 'NO_DEVICE_PRICE');
+          assert.equal(await msft.locator('[data-leaderboard-unranked="QG_REFERENCE"]').getAttribute('data-qg-reason'), 'NO_IEX_TRADE');
           assert.equal(await page.locator('[data-leaderboard-row="googl"] [data-leaderboard-unranked="QG_REFERENCE"]').getAttribute('data-qg-reason'), 'FINANCIAL_PROFILE_V_NOT_DEFINED');
           // No v1 anywhere on S06: no [자세히] v1 reference, no v1 Q·G, no v2-for-comparison line, no '임시 기본'.
           assert.equal(await page.locator('[data-leaderboard-v1-reference]').count(), 0);assert.equal(await page.locator('[data-leaderboard-v2-compare]').count(), 0);
@@ -420,10 +417,10 @@ async function missingFlow(page) {
           assert.equal(earnings.basis,'NORMALIZED');
           assert.match(await panel.locator('[data-v2-factor="v_vs_own_history"]').textContent(), /NORMALIZED_HISTORY_NOT_AVAILABLE/);
           assert.match(await page.locator('[data-overall="v2"]').textContent(), /\d+\.\d/);
-          // A device-quote refresh repaints only the score sections: the open tab and the other panels stay as they are.
+          // A late score input (e.g. the central V read landing) repaints only the score sections: the open tab and the other panels stay.
           const kept = await page.evaluate(() => {
-            const value=document.querySelector('[data-analysis-panel="value"]');value.dataset.keep='1';repaintScores(()=>analysis('nvda'));
-            return {value:value.isConnected&&document.querySelector('[data-analysis-panel="value"]')===value,
+            const value=document.querySelector('[data-analysis-panel="events"]');value.dataset.keep='1';repaintScores(()=>analysis('nvda'));
+            return {value:value.isConnected&&document.querySelector('[data-analysis-panel="events"]')===value,
               tab:document.querySelector('[data-analysis-tab="factors"]').getAttribute('aria-selected'),hidden:document.querySelector('[data-analysis-panel="factors"]').hidden};
           });
           assert.deepEqual(kept, {value:true,tab:'true',hidden:false});
@@ -457,19 +454,15 @@ async function missingFlow(page) {
       try {
         phase = 'W_SETUP';await page.goto(BASE + '#settings');await page.locator('[data-universe-source]').waitFor();
         await page.locator('[data-universe-source]').fill('u'.repeat(24));await page.locator('[data-universe-settings] button[type="submit"]').click();
-        await page.evaluate(async (values) => {
-          await DeviceActual.sheetSettings(window, { schema: 'device-google-sheet-settings/1', enabled: true, spreadsheet_id: '', range: 'Quotes!A1:C22' });
-          const session = { state: () => ({ enabled: true, connected: true }), revision: () => 1, setEnabled() {}, subscribe: () => () => {}, async fetchValues() { return { values }; } };
-          window.GoogleSheetQuotes = { ...GoogleSheetQuotes, sessionFor: () => session };location.hash = 'leaderboard';
-        }, [...F.strictUniverseValues(), ['NASDAQ:MSFT', 7000, 33], ['NASDAQ:AMD', 7100, 34]]);
-        await page.locator('[data-leaderboard-table]').waitFor();await page.locator('details:has(#private-subset-root) > summary').click();
-        await page.locator('[data-private-subset] [data-subset-action="read"]:enabled').click();await page.locator('[data-qgv2-state="READY"]').filter({ hasText: /가격 [1-9]\d/ }).waitFor();
+        // DC-31: no central publication here (404): every V NA with its OFFICIAL_* reason; the stopped rows still get no score.
+        await page.evaluate(() => { location.hash = 'leaderboard'; });await page.locator('[data-leaderboard-table]').waitFor();
+        await page.waitForFunction(() => !['OFFICIAL_LOADING', null].includes(QgvScores.pagePublication().reason));
         phase = 'W_S06';await withdrawnS06(page);
         // Scores, ranks and the candidate ranking (playbook TARGET writer) all leave the stopped rows out.
         const state = await page.evaluate(() => { const S = qgvScores(), c = PlaybookScreen.candidateRanking(S, publicScreens, ['NASDAQ:AMD', 'NASDAQ:MSFT', 'NASDAQ:NVDA']), by = Object.fromEntries(c.map((r) => [r.code, r]));
-          return { amd: [S.rows.amd.primary.total, S.rows.amd.primary.q, S.rows.amd.rank], msft: [S.rows.msft.primary.total, S.rows.msft.primary.v, S.rows.msft.rank, typeof S.rows.msft.primary.q], nvdaRank: S.rows.nvda.rank,
+          return { amd: [S.rows.amd.primary.total, S.rows.amd.primary.q, S.rows.amd.rank], msft: [S.rows.msft.primary.total, S.rows.msft.primary.v, S.rows.msft.rank, typeof S.rows.msft.primary.q], nvdaRank: S.rows.nvda.rank, nvdaTotal: S.rows.nvda.primary.total,
             cand: ['NASDAQ:AMD', 'NASDAQ:MSFT'].map((k) => [by[k]?.total ?? null, by[k]?.rank ?? null]) }; });
-        assert.deepEqual(state.amd, [null, null, null]);assert.deepEqual(state.msft, [null, null, null, 'number']);assert.ok(Number.isInteger(state.nvdaRank));
+        assert.deepEqual(state.amd, [null, null, null]);assert.deepEqual(state.msft, [null, null, null, 'number']);assert.ok(Number.isFinite(state.nvdaTotal) && state.nvdaRank === null, 'nvda keeps its Q·G total (not stopped); no rank without a central V');
         assert.deepEqual(state.cand, [[null, null], [null, null]]);
         // Filter/sort/scroll round trip with the stopped rows on screen.
         phase = 'W_STATE';await page.locator('#leader-sort').selectOption('ticker');await page.locator('#leader-query').fill('a');
@@ -512,13 +505,9 @@ async function missingFlow(page) {
       try {
         phase = 'M_SETUP';await page.goto(BASE + '#settings');await page.locator('[data-universe-source]').waitFor();
         await page.locator('[data-universe-source]').fill('u'.repeat(24));await page.locator('[data-universe-settings] button[type="submit"]').click();
-        await page.evaluate(async (values) => {
-          await DeviceActual.sheetSettings(window, { schema: 'device-google-sheet-settings/1', enabled: true, spreadsheet_id: '', range: 'Quotes!A1:C22' });
-          const session = { state: () => ({ enabled: true, connected: true }), revision: () => 1, setEnabled() {}, subscribe: () => () => {}, async fetchValues() { return { values }; } };
-          window.GoogleSheetQuotes = { ...GoogleSheetQuotes, sessionFor: () => session };location.hash = 'leaderboard';
-        }, F.strictUniverseValues());
-        await page.locator('[data-leaderboard-table]').waitFor();await page.locator('details:has(#private-subset-root) > summary').click();
-        await page.locator('[data-private-subset] [data-subset-action="read"]:enabled').click();await page.locator('[data-qgv2-state="READY"]').filter({ hasText: /가격 [1-9]\d/ }).waitFor();
+        // DC-31: no central publication here (404): every V NA, Q·G-only totals in the QG list; the missing-data states are unchanged.
+        await page.evaluate(() => { location.hash = 'leaderboard'; });await page.locator('[data-leaderboard-table]').waitFor();
+        await page.waitForFunction(() => !['OFFICIAL_LOADING', null].includes(QgvScores.pagePublication().reason));
         await missingFlow(page);
         assert.deepEqual(external, [], 'no request to another origin');assert.equal(errors, 0);pass++;console.log('PASS QGV v2 missing-data flow ' + width);
       } catch (e) { fail++;console.log('FAIL QGV v2 missing-data flow ' + width + ' ' + phase + ' ' + (e.code === 'ERR_ASSERTION' ? 'CONTRACT ' + e.message.split('\n').slice(0, 6).join(' | ') + ' @' + (e.stack.match(/browser_test.js:(\d+)/) || [])[1] : 'EXECUTION ' + String(e.message).split('\n')[0])); } finally { await context.close(); }

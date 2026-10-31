@@ -145,7 +145,7 @@
 | 0 최근 검색 | localStorage `investment.web.v1.recent-search`(`home-screen.js:21-25`) | 연결 완료 · 기기 저장 | 사용자 조작 | — | 없으면 비움(지어내지 않음) | 공개 자료 | app_nav_ia_browser_test |
 | 0 관심 기업 뉴스 | sec-disclosures.json · news-signals.json · dart(`home-screen.js:162-172`, 페이지당 한 번) | 연결 완료 · 공개+기기 저장(★) | 일일 실행 · R | 파일 as_of | 관심 기업 없으면 영역 없음 | 점수 | news_signals_browser_test |
 | 기업 화면(TARGET) · 점수 기준 배지 | `QgvScores.compute → v2_as_of` = sec-qgv2.json as_of(`qgv-scores.js:207`, `company-screen.js:46-48`) | 연결 완료 · 공개 | 일일 실행 · R | as_of 원문 그대로 | 파일 없음 → "점수 기준 NOT_AVAILABLE" | — | **update_propagation**(값 일치) |
-| 기업 화면(TARGET) · QGV·Q·G·V | 공개 Q·G(sec-qgv2.json target) + 기기 V(`company-screen.js:81-92`) | Q·G 연결 완료 · 공개 / V 부분 연결 · 기기 계산 | Q·G 일일 실행(TARGET 매일) · V 기기 가격 갱신 | calc_version, 단면 = Universe504 LIVE/STALE 발행사당 한 점 | NA는 0이 아니라 "—"와 사유(`company-screen.js:85`) | 이름·개인 프로필로 바뀌지 않음 | update_propagation, qgv_v2_screens |
+| 기업 화면(TARGET) · QGV·Q·G·V | 공개 Q·G(sec-qgv2.json target) + 중앙 V(`qgv-official.json`, `QgvScores.officialPage`; 기기 V는 2026-10-31 폐지, DC-31) | Q·G 연결 완료 · 공개 / V 부분 연결 · 기기 계산 | Q·G 일일 실행(TARGET 매일) · V 기기 가격 갱신 | calc_version, 단면 = Universe504 LIVE/STALE 발행사당 한 점 | NA는 0이 아니라 "—"와 사유(`company-screen.js:85`) | 이름·개인 프로필로 바뀌지 않음 | update_propagation, qgv_v2_screens |
 | 기업 화면(TARGET) · 산출 상태·수집 시각 | 행 acquired_at·fiscal_year_end·상태(`company-screen.js:131-137`) | 연결 완료 · 공개 | TARGET 매일 | 수집 시각 UTC, FY | STALE → "반영 · 오래된 자료(마지막 유효 값)" + STALE 배지 | — | update_propagation(수집 시각 일치) |
 | 기업 화면(TARGET) · 리더보드 순위 | 기기 표시 순서(`company-screen.js:173`) | 연결 완료 · 기기 계산 | 데이터·프리셋 | 19개 식별자 기준 | 총점 없으면 "—"와 제외 사유(:134) | "공식 순위 아님" 표기 유지 | update_propagation |
 | 기업 화면(TARGET) · v1 미리보기 배지 | sec-qg-factors.json as_of(`company-screen.js:46-49`) | 부분 연결 · 공개 | 일일 실행 | v1 as_of | 오래되면 "STALE" 배지(결함 D4) | v2 점수와 섞지 않음 | web_state_presentation |
@@ -164,7 +164,7 @@
 
 | 요소 | 출처 → 소비 | 상태·저장 | 계기·재취득 | 시각·버전·모집단 | 없음·STALE·실패 | 바뀌면 안 되는 것 | 시험 |
 |---|---|---|---|---|---|---|---|
-| 1.1 순서·순위 | `QgvScores.compute`(`qgv-scores.js:169-207`) → `leaderboard-screen.js:140` | 연결 완료 · 기기 계산(공개 Q·G + 기기 V) | 데이터 변경·기기 가격·프리셋 칩 · R | 19개 식별자 전체 기준 순위, 동점은 티커 | 총점 없으면 순위 "—", 맨 뒤(:133-140) | 이름(표시만, :120-121), 저장한 개인 프로필, 테마·봉 색 | **update_propagation**(순서·순위·총점 일치), qgv_v2_screens |
+| 1.1 순서·순위 | `QgvScores.compute`(`qgv-scores.js:169-207`) → `leaderboard-screen.js:140` | 연결 완료 · 중앙 게시(공개 Q·G + 중앙 V, DC-31) | 데이터 변경·기기 가격·프리셋 칩 · R | 19개 식별자 전체 기준 순위, 동점은 티커 | 총점 없으면 순위 "—", 맨 뒤(:133-140) | 이름(표시만, :120-121), 저장한 개인 프로필, 테마·봉 색 | **update_propagation**(순서·순위·총점 일치), qgv_v2_screens |
 | 1.1·기업 화면 · V 산출 현황(기기) | **미병합 · 진행 중**: 브랜치 `claude/fe-v-coverage`(아직 원격에 없음). 공용 `QgvScores.pageResult` / `vCoverage`를 레이더와 이 패널이 같이 써서 어느 화면에서나 V가 같다 | 진행 중 · 기기 계산 | 기기 가격 갱신("Universe 읽기") · 공개 파일 재취득 R | 불러온 파일에서 바로 셈: GENERAL n과 ceil(n×0.9)는 **관찰 지표**이지 TARGET 조건이 아니다. 전체 / 금융업 미지원 / 프로필 미상 수를 따로 보인다 | 가격 없음 → V 미산출 사유 | 공식 Q·G, 순위 규칙 | 브랜치 병합 시 그 시험 |
 | 1.1 점수 기준 배지 | v2_as_of(`leaderboard-screen.js:77-79`) | 연결 완료 · 공개 | 일일 실행 · R | as_of 원문 | 파일 없음 → NOT_AVAILABLE | — | update_propagation |
 | 1.1 가중치 프로필 칩(균형·우량·성장·가치)·가치 함정 관문 | 코드 프리셋(`leaderboard-screen.js:83-87`) | 연결 완료 · RAM(`app.js:657`) | 사용자 조작. 새로고침하면 기본(균형)으로 돌아감 | 배지에 프로필 이름 표시 | — | 저장되지 않음. 공식 기본값을 바꾸지 않음 | qgv_v2_screens |
@@ -368,7 +368,7 @@
 - 수준 (c) 전체: 탭 안 새로고침, 새로고침 없는 캐시 무효화, 자동 갱신, 시간 경과에 따른 STALE 재판정(D1, D2, D5, D6).
 - 실제 GitHub Pages CDN 캐시 시간(배포 직후 몇 분).
 - 13F 날짜 세 가지가 화면에서 서로 구분되는지(파일 검증은 있음, 화면 문구 시험 없음).
-- 기기 V·가격 축의 기기 가격 갱신 경로(합성 시세 시험은 qgv_v2_screens에 있음, 날짜 전환 시험은 없음).
+- 가격 축의 기기 가격 갱신 경로(날짜 전환 시험은 없음). 기기 V는 2026-10-31 폐지(DC-31).
 - DART·분류·로고 파일의 날짜 전환.
 - calc_version이 바뀌는 날의 화면(CALC_VERSION_MISMATCH 표시는 다른 시험이 다룸, 두 날 전환은 없음).
 

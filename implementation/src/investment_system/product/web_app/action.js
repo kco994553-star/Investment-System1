@@ -27,6 +27,9 @@
      Sheet). Every IndexedDB object reachable from one the view handed out (a request's source / transaction / result, a cursor,
      an index, an event's target in a handler) is the gated one too. What a device stored before stays until the user removes it
      (stoppedRecords.clear on a WRITE click: "저장된 시세 삭제").
+   - localStorage through a view: the device V history keys (STOPPED.localStorage, owner 2026-10-31, DC-31: no device V history)
+     read as absent (getItem null) and are never set or removed by key, not even inside a click (V_HISTORY_STOPPED; a whole-storage
+     clear(), which no module calls, stays a storage-writing action); key() / length still count them (names only, no value). Their removal is the user's settings click (stoppedKeys.clear with a WRITE signal).
    The permission is page wide while an action is in flight (any code may write storage or reach that kind's destinations until
    it settles or is cancelled): P1_DATA_LAYER.md §3. The gate holds for the old modules, which only see a view; it is not a sandbox
    for page code, which has the real window. Nothing here reads or writes storage by itself and nothing is sent anywhere. */
@@ -42,7 +45,10 @@ const SHEETS='https://sheets.googleapis.com',OAUTH=Object.freeze(['https://oauth
 // Device quote records the new frontend neither writes nor reads (owner 2026-10-24, DC-18; plan §2.1): database -> object store ->
 // record keys. DeviceActual keeps its stored market quotes under 'market' and every import's quotes and FX under
 // 'market-import-history' (device-actual.js:9-10), next to the holdings ('actual') and the Google on/off record, which stay.
-const STOPPED=Object.freeze({'investment-device-actual-v1':Object.freeze({snapshots:Object.freeze(['market','market-import-history'])})});
+// localStorage: the device V history keys of VirtualTradingVHistory (virtual-trading-v-history.js KEY / V2_KEY), stopped (DC-31).
+const STOPPED=Object.freeze({indexedDB:Object.freeze({'investment-device-actual-v1':Object.freeze({snapshots:Object.freeze(['market','market-import-history'])})}),
+ localStorage:Object.freeze(['investment.web.v1.virtual-trading-v-scores','investment.web.v2.virtual-trading-v-scores'])});
+const STOPPED_KEYS=STOPPED.localStorage;
 // A key no record has (DeviceActual keys its records by name): a read of a stopped record asks for it, so the real request
 // answers "no record" and the old module sees the quotes as never stored.
 const NO_RECORD='MARKET_STORE_STOPPED';
@@ -131,8 +137,9 @@ function create({win}){
  // Reads pass; setItem / removeItem / clear only inside a storage-writing action, else ACTION_REQUIRED (the storage is unchanged).
  function gatedStorage(get){
   const write=op=>{if(!writing())deny('ACTION_REQUIRED');const s=realOf(get);if(!s)throw Error('DEVICE_STORE_NOT_OPENED');return op(s);};
-  return Object.freeze({getItem(k){const s=realOf(get);return s?s.getItem(k):null;},key(i){const s=realOf(get);return s?s.key(i):null;},get length(){const s=realOf(get);return s?s.length:0;},
-   setItem(k,v){return write(s=>s.setItem(k,v));},removeItem(k){return write(s=>s.removeItem(k));},clear(){return write(s=>s.clear());}});
+  const stopped=k=>STOPPED_KEYS.includes(String(k));
+  return Object.freeze({getItem(k){if(stopped(k))return null;const s=realOf(get);return s?s.getItem(k):null;},key(i){const s=realOf(get);return s?s.key(i):null;},get length(){const s=realOf(get);return s?s.length:0;},
+   setItem(k,v){if(stopped(k))deny('V_HISTORY_STOPPED');return write(s=>s.setItem(k,v));},removeItem(k){if(stopped(k))deny('V_HISTORY_STOPPED');return write(s=>s.removeItem(k));},clear(){return write(s=>s.clear());}});
  }
  /* IndexedDB objects as the old modules see them through a view: a membrane. Each is a Proxy that forwards to the real object
     (one per object; its methods keep the real object as `this`), and every IndexedDB object it hands out is the gated one too:
@@ -188,7 +195,7 @@ function create({win}){
     (DEVICE_STORE_NOT_OPENED), not a blocked write. */
  function gatedIndexedDB(get,{readOnly=false}={}){
   return Object.freeze({
-   open(name,version){const idb=realOf(get);if(!idb)throw Error('DEVICE_STORE_NOT_OPENED');const n=String(name),stopped=Object.hasOwn(STOPPED,n)?STOPPED[n]:null;let r;
+   open(name,version){const idb=realOf(get);if(!idb)throw Error('DEVICE_STORE_NOT_OPENED');const n=String(name),stopped=Object.hasOwn(STOPPED.indexedDB,n)?STOPPED.indexedDB[n]:null;let r;
     if(stores.known.has(n))r=idb.open(name,version);else if(!readOnly&&writing()){r=idb.open(name,version);stores.known.add(n);}else throw Error('DEVICE_STORE_NOT_OPENED');
     // A version change (a database created after all, or upgraded) is a write: aborted outside a storage-writing action and on a
     // readOnly view (counted in blocked()). This listener runs before any handler the module sets.
@@ -213,7 +220,7 @@ function create({win}){
   r.onupgradeneeded=()=>{try{r.transaction.abort();}catch(_){}};// it was gone after all: the creation is aborted
   r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(Error('DEVICE_STORE_NOT_OPENED'));});}
  async function stoppedHeld(remove){const s=await refreshStores();if(!s.available||(!s.supported&&!remove))return null;let n=0;
-  for(const[name,map]of Object.entries(STOPPED)){if(s.supported&&!s.names.includes(name))continue;let db;
+  for(const[name,map]of Object.entries(STOPPED.indexedDB)){if(s.supported&&!s.names.includes(name))continue;let db;
    try{db=await existing(name);}catch(e){if(s.supported)throw e;continue;}// not listed and not there: nothing to remove
    try{const names=Object.keys(map).filter(x=>db.objectStoreNames.contains(x));if(!names.length)continue;
     n+=await new Promise((resolve,reject)=>{const tx=db.transaction(names,remove?'readwrite':'readonly');let held=0;
@@ -224,6 +231,12 @@ function create({win}){
  const stoppedRecords=Object.freeze({
   count(){return stoppedHeld(false).catch(()=>null);},
   clear(signal){let ok=false;for(const[c,x]of controllers)if(c.signal===signal&&x.kind==='WRITE')ok=true;if(!ok)deny('ACTION_REQUIRED');return stoppedHeld(true);}});
+ /* The stopped localStorage keys (DC-31), by key only (no value is ever read): count() how many this device still holds (null: no
+    storage); clear(signal) removes them with the signal of a WRITE action in flight (store.vHistoryKeys, a settings click). */
+ const writeSignal=signal=>{for(const[c,x]of controllers)if(c.signal===signal&&x.kind==='WRITE')return true;return false;};
+ const stoppedKeys=Object.freeze({
+  count(){const s=realOf(()=>win.localStorage);if(!s)return null;try{return STOPPED_KEYS.filter(k=>s.getItem(k)!==null).length;}catch(_){return null;}},
+  clear(signal){if(!writeSignal(signal))deny('ACTION_REQUIRED');const s=realOf(()=>win.localStorage);if(!s)throw Error('DEVICE_STORE_NOT_OPENED');let n=0;for(const k of STOPPED_KEYS)if(s.getItem(k)!==null){s.removeItem(k);n++;}return n;}});
  function view(overrides,{readOnlyStores=false}={}){
   if(!overrides||typeof overrides.fetch!=='function')throw Error('VIEW_FETCH_REQUIRED');
   const own=Object.defineProperties(Object.create(null),{localStorage:{value:gatedStorage(()=>win.localStorage)},sessionStorage:{value:gatedStorage(()=>win.sessionStorage)},
@@ -233,7 +246,7 @@ function create({win}){
    has(t,k){return(typeof k==='string'&&k in own)||Reflect.has(t,k);},
    set(){return false;},defineProperty(){return false;},deleteProperty(){return false;}});
  }
- return Object.freeze({KINDS,STOPPED,run,cancel,active,writing,blocked:()=>blockedCount,classify,guard,gatedStorage,gatedIndexedDB,stores:refreshStores,stoppedRecords,view});
+ return Object.freeze({KINDS,STOPPED,run,cancel,active,writing,blocked:()=>blockedCount,classify,guard,gatedStorage,gatedIndexedDB,stores:refreshStores,stoppedRecords,stoppedKeys,view});
 }
 return Object.freeze({create,KINDS,STOPPED});
 });

@@ -8,10 +8,12 @@
    - Each file is a same-origin <script src> with a plain file name (NAME below; the build and tools/web_app_reuse.js refuse
      the same names and a name listed twice, so a build that passes never meets LOADER_NAME_INVALID here), async=false so all
      of them download in parallel and run in list order. No inline code, no eval; the CSP is unchanged ('self').
-   - IS2.ready resolves when every file ran and the layer installed itself (IS2.action and the five namespaces). It rejects with
+   - IS2.ready resolves when every file ran and the layer installed itself (IS2.action and the eight namespaces). It rejects with
      Error('LOADER_FAILED <file>') for the first file in list order that did not arrive, threw while it ran, or did not install
      its namespace; it never retries (a reload does).
-   - Until then IS2.data / qgv / prices / store / engines are facades with the layer's own members (API below):
+   - Until then IS2.data / qgv / prices / store / engines and the common base's IS2.companies / privateArea / lab (2026-10-31:
+     the one company list, the private area's state and the Lab reader; COMMON_BASE_20261031.md) are facades with the layer's
+     own members (API below):
        'p'   returns a promise: waits for IS2.ready, then calls the layer;
        'a'   an action (its first argument is the user's event): throws LAYER_NOT_READY, because the gate needs the event still
              being dispatched and a click cannot wait (screens keep action buttons off until IS2.ready);
@@ -24,12 +26,13 @@
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else api.install(root);})(typeof globalThis==='object'?globalThis:this,function(){
 'use strict';
 // The old modules in the old page's relative order (backup /5 validators chart-workbench.js and macro-cycle-ring.js included),
-// then the P1 layer action → data → prices → store → qgv → engines, then screen logic files (web_app; P1_DATA_LAYER.md §1.1).
+// then the P1 layer action → data → prices → store → qgv → engines, then the common base companies → private → lab
+// (2026-10-31), then screen logic files (web_app; P1_DATA_LAYER.md §1.1).
 const LOAD_ORDER=Object.freeze([
  'locale.js','entity-search.js','price-time.js','device-market.js','device-actual.js','profile-defaults.js','type-config-defaults.js',
  'device-profiles.js','engine-preview.js','dcf-parameters-defaults.js','device-valuation.js','playbook-config-defaults.js','playbook-engine.js',
  'qgv-v2.js','scoring-default.js','qgv2-inputs.js','qgv-scores.js','private-subset.js','share-class-groups.js','sec-universe-shares.js',
- 'sec-qgv2.js','private-subset-view.js','target-v1-config-defaults.js','target-v1-builder.js','playbook-screen.js','target-v1-screen.js',
+ 'sec-qgv2.js','qgv-official.js','private-subset-view.js','target-v1-config-defaults.js','target-v1-builder.js','playbook-screen.js','target-v1-screen.js',
  'device-backup.js','watchlist.js','app-config.js','google-sheet-core.js','google-sheet-quotes.js','technical-chart.js','chart-workbench.js',
  'google-sheet-setup.js','private-trades.js','holdings-capture.js','worker-quote-fallback.js','forward-validation.js','private-history.js',
  'sec-reported.js','manager-styles-v0.js','thirteenf-quarter.js','macro-lights.js','macro-cycle-ring.js','macro-evidence.js','public-screens.js',
@@ -37,29 +40,37 @@ const LOAD_ORDER=Object.freeze([
  'virtual-trading-signals.js','virtual-trading-v-history.js','virtual-ledger-sheets.js','price-store.js','report-benchmarks.js',
  'virtual-trading-compare.js','home-quotes.js','data-refresh.js',
  'action.js','data.js','prices.js','store.js','qgv.js','engines.js',
- 'search-part-live.js','screen-search-live.js','screen-qgv-live.js',
+ 'companies.js','private.js','lab.js',
+ 'search-part-live.js','screen-search-live.js','screen-qgv-live.js','screen-macro-live.js','screen-prompts-live.js','screen-tree-live.js',
+ 'screen-technical-live.js','screen-news-live.js','screen-lab-live.js',
 ]);
 // A plain lowercase script name. tools/build_web_app.py holds this exact line (the build fails when the two differ).
 const NAME=/^[a-z0-9][a-z0-9-]*(?:\.[a-z0-9-]+)*\.js$/;
 // The namespace each layer file installs on IS2 (action.js installs IS2.action, which has no facade: screens do not call it).
-const NAMESPACES=Object.freeze({data:'data.js',prices:'prices.js',store:'store.js',qgv:'qgv.js',engines:'engines.js'});
+const NAMESPACES=Object.freeze({data:'data.js',prices:'prices.js',store:'store.js',qgv:'qgv.js',engines:'engines.js',companies:'companies.js',privateArea:'private.js',lab:'lab.js'});
 // The layer's members a screen may use (the node test checks this against the real layer: async or promise → 'p', first
 // parameter `event` → 'a', subscribe → 'sub', the rest 's', non-functions 'v'). The views and results the layer hands only to
 // old modules and engines.js (source rules) have no facade member.
 const API=Object.freeze({
  data:{FILES:'v',CORE:'v',LIST_FILES:'v',STATIC:'v',READERS:'v',MAX_BYTES:'v',EVENT:'v',strictFetch:'p',ready:'p',get:'s',screens:'s',state:'s',
-  publication:'s',list:'p',shares:'p',financials:'p',refresh:'a',static:'p',peek:'p',subscribe:'sub',universe:'p'},
+  publication:'s',list:'p',shares:'p',financials:'p',refresh:'a',static:'p',peek:'p',subscribe:'sub',universe:'p',official:'p'},
  prices:{UNIVERSE_SOURCE_KEY:'v',WORKER_ORIGIN_KEY:'v',status:'s',subscribe:'sub',deviceSettings:'p',prepare:'a',login:'a',logout:'a',readUniverse:'a',
   universeView:{prices:'s',priceBasis:'s',readStatus:'s',ranks:'s'},universeRanks:'s',rankFor:'s',useTabs:'a',loadTabs:'a',syncSymbols:'a',
   syncUniverse:'a',history:'a',held:'s',quote:'p',periodReturns:'p'},
  store:{KEYS:'v',prefs:'s',savePrefs:'a',recent:'s',pushRecent:'a',clearRecent:'a',weights:'s',saveWeights:'a',holdings:'p',playbook:'s',saveThesis:'a',saveHold:'a',saveRecord:'a',
-  stars:'s',toggleStar:'a',backup:{create:'p',download:'a',restore:'a',restored:'s'},vHistory:'s',sheetSource:{has:'s',set:'a'},
+  stars:'s',toggleStar:'a',macroEstimates:{read:'s',add:'a',remove:'a'},promptFavorites:{read:'s',toggle:'a'},promptCopies:{read:'s',save:'a',remove:'a'},chartNotes:{read:'s',add:'a',remove:'a'},
+  backup:{create:'p',download:'a',restore:'a',restored:'s'},vHistoryKeys:{count:'s',clear:'a'},sheetSource:{has:'s',set:'a'},
   universeSource:{has:'s',set:'a',useSheet:'a'},workerOrigin:{has:'s',approved:'s',set:'a'},marketQuotes:{count:'p',clear:'a'},subscribe:'sub',PRODUCT_PRESETS:'v'},
  qgv:{V_SOURCES:'v',RANK_LABELS:'v',READERS:'v',vSource:'s',page:'p',isPage:'s',row:'s',rows:'s',coverage:'s',preview:'s',model:'s',setProfile:'s',profile:'s',
   reasonText:'s',rankLabel:'s',constants:'s',subscribe:'sub'},
  engines:{target:{state:'s',basis:'p',draft:'p',build:'a',blockers:'p',finalize:'a',answer:'a',ruleBDue:'s',selectRuleB:'a',compare:'a',scoringPending:'p',
   refreshScoring:'p',syncScoringPrices:'a'},playbook:{facts:'p',judge:'p',record:'a',due:'s',limits:'s'},
-  virtual:{stored:'p',compare:'s',forward:'p',rehearse:'p',run:'s'},macro:{current:'p'}}});
+  virtual:{stored:'p',compare:'s',forward:'p',rehearse:'p',run:'s'},macro:{current:'p'}},
+ // Common base (2026-10-31): list / get / find / exact read the list ready() built (NOT_READY before IS2.ready, [] / null until
+ // ready() settled); validate / status / nullText are pure.
+ companies:{ready:'p',list:'s',get:'s',find:'s',exact:'s',korean:'s',scope:'s'},
+ privateArea:{STATES:'v',PANEL_STATES:'v',state:'s',text:'s',panelText:'s',panelState:'s'},
+ lab:{SCHEMA:'v',METRICS:'v',TEXT:'v',validate:'s',status:'s',nullText:'s',source:'p'}});
 const NOT_READY=Object.freeze({state:'NOT_READY',reason:'LAYER_NOT_READY'}),LOAD_FAILED=Object.freeze({state:'NOT_READY',reason:'LOADER_FAILED'});
 const MARK_READY='is2-ready',MARK_FAILED='is2-load-failed',PAINT_WAIT_MS=3000,IDLE_WAIT_MS=200;
 

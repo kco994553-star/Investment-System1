@@ -312,7 +312,7 @@ async function personalOrder(page, locale) {
       const page = await context.newPage();
       page.on("pageerror", () => { traffic.page_errors++; });
       // The optional SEC sidecar is absent from a build without collection; any other failure stays an error.
-      page.on("response", response => { if (response.status() >= 400 && !(response.status() === 404 && ["sec-public-inputs.json", "sec-qgv2.json"].some(name => response.url() === new URL(name, base).href))) traffic.failed_responses++; });
+      page.on("response", response => { if (response.status() >= 400 && !(response.status() === 404 && ["sec-public-inputs.json", "sec-qgv2.json", "qgv-official.json"].some(name => response.url() === new URL(name, base).href))) traffic.failed_responses++; });
       await page.clock.setFixedTime(new Date(NOW));
       try {
         operation = "open the existing research route";

@@ -121,7 +121,7 @@
 
 **V 기록(생산자).** 러너가 결과를 낼 때마다(기록 모드·리허설 모두) 그 결과의 최신 완료 SPY 세션(러너의 날짜 규칙)을 날짜로 삼는다. 그 세션 종가(기기 RAM)와 공개 가격 없는 가치 입력(`sec-valuation-inputs.json`)으로 회사별 V를 계산해 저장한다.
 - 대상: TARGET·세트 B·C·D·보유 회사.
-- V 정의: 기기 V 요소(`DeviceValuation.view`)를 공식 v1 V 가중치 사본의 PREVIEW V 축(`EnginePreview.strategy`)으로 묶은 값이다. 소수 둘째 자리로 반올림한다.
+- V 정의(2026-10-31 폐지, DC-31: 기기 V 이력을 읽지도 쓰지도 않아 D-21 V 기울기는 NA, 중앙 V 이력이 게시되면 그것을 쓴다): 옛 정의는 기기 V 요소(`DeviceValuation.view`)를 공식 v1 V 가중치 사본의 PREVIEW V 축(`EnginePreview.strategy`)으로 묶은 값이다. 소수 둘째 자리로 반올림한다.
 - **핵심 요소(사용자 결정 2026-10-11):** 빠진 요소를 0으로 넣어 V를 낮추는 계산은 금지한다. 명세에 '핵심 요소' 정의가 없으므로 공식 v1 V 가중치에서 가중치가 0보다 큰 요소 7개 모두를 핵심으로 본다: `fundamental_value`(25)·`reverse_dcf`(20)·`peer_relative_value`(15)·`historical_valuation`(15)·`margin_of_safety`(10)·`sector_context`(10)·`theme_premium_discount`(5). 하나라도 없으면 그날 V는 NA이며 숫자로 저장하지 않는다(사유 `V_CORE_FACTOR_MISSING`, S17 'V 기록 없음' 줄). 현재 기기 입력에는 peer·과거 밸류에이션·업종·테마 요소가 없어 V는 계속 NA이고 V 기울기 신호도 쓰이지 않는다(미결 사항).
 - **요소 구성 키:** 저장하는 V마다 그날 있던 요소 ID를 정렬해 `+`로 이은 키를 함께 둔다. V 기울기(20세션 비교)는 키가 같은 두 날만 비교한다. 다르거나 모르면 NA(`V_COMPOSITION_CHANGED`).
 - 저장 형식 `virtual-trading-v-scores/2`: `{schema, scores:{날짜:{회사:V}}, composition:{날짜:{회사:키}}}`. 예전 `/1` 값은 그대로 읽되 구성은 '알 수 없음'이라 기울기를 만들지 않는다. 첫 `/2` 쓰기 때 형식만 올리고 예전 값은 그대로 둔다. 그래서 새 형식으로 20거래일이 쌓일 때까지 기울기는 NA이고, 'V 기록 N/20일'도 구성 키가 있는 날부터 센다.

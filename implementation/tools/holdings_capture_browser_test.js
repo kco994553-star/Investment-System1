@@ -124,9 +124,10 @@ function verify(value, label) { if (!value) { const error = new Error(label); er
       verify(await page.evaluate(() => WorkerQuoteFallback.status(window, '8035').session_date.length === 10), 'session date');
 
       phase = 'A_VALUE_CARD';
-      await page.goto(BASE + '#company/tokyo_electron');
-      const card = page.locator('[data-value-quote-source="WORKER_CLOSE"]'); await card.waitFor();
-      verify((await card.textContent()).includes('Worker 종가 · 일봉 · 정보용'), 'value card label');
+      // DC-31: the device value card (2.4.4) that showed this Worker close is removed with the device V; the close stays a holdings
+      // quote (above) and never reaches a score.
+      await page.goto(BASE + '#company/tokyo_electron'); await page.locator('[data-company-card="qgv"]').waitFor();
+      verify(await page.locator('[data-company-card="value"], [data-value-quote-source], #company-value').count() === 0, 'no device value card');
 
       phase = 'B_GUIDE_COPY';
       await page.goto(BASE + '#actual'); const guide = page.locator('[data-broker-guide]'); await guide.waitFor();

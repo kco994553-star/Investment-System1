@@ -7,8 +7,8 @@
    Every drawn value is 0–100 and the outer edge is always the better evaluation.
    1 Q 질          the published Q axis score of sec-qgv2.json (qg_axes.Q.score, as published, no re-ranking)
    2 G 성장        the published G axis score (same)
-   3 V 가치        the V axis score of the existing device path (QgvScores.collectQuotes -> QgvScores.compute); 미산출 without
-                   quotes, with the engine's own reason (NO_DEVICE_PRICE, DEBT_CASH_NOT_AVAILABLE, EV_NON_POSITIVE, …); for the FINANCIAL
+   3 V 가치        the central V of qgv-official.json (DC-31: QgvScores.officialPage, as published, no engine call, no price); 미산출
+                   with the publication's own reason (NO_IEX_TRADE, OFFICIAL_NOT_PUBLISHED, EV_NON_POSITIVE, …); for the FINANCIAL
                    profile exactly '현재 금융업 가치평가 모델 미지원' (FINANCIAL_PROFILE_V_NOT_DEFINED) — a model scope, not a data failure;
                    no other metric ever stands in for V. The V detail lists the individual value inputs (vDetailHtml)
    4 가격 안정성   raw: 1-year volatility = sample std of VALID daily simple returns × √252 (%) — the VirtualTradingCompare
@@ -43,8 +43,8 @@
    here — into this browser's memory (RAM) only; nothing is written to localStorage/IndexedDB, logs or files, and nothing is
    published. On that basis every price axis is ADJUSTMENT_BASIS_UNCONFIRMED today. The Worker's bars also carry
    adjusted_close (Yahoo chart adjclose; Tiingo adjClose on fallback) but the Worker does not state its basis and those bars stay
-   inside the chart view's RAM, so no adjusted series is connected yet. V comes from the shared page result (QgvScores.pageResult; quotes from the Universe tab of the user's
-   private Google Sheet, quotes stored in this browser and Worker closes, computed in RAM).
+   inside the chart view's RAM, so no adjusted series is connected yet. V comes from the shared official page result (QgvScores.officialPage: the central
+   publication qgv-official.json, a public file; never a device V).
 
    Normalization: the QGV average-rank percentile 100 · (less + (equal − 1) / 2) / (n − 1) (qgv/v2_scoring.py percentile) over
    the published cross-section (Qgv2Inputs in_cross_section: one point per issuer CIK, the file's calc_version) with the subject
@@ -79,13 +79,13 @@ const FIN_V_FALLBACK=Object.freeze(['현재 금융업 가치평가 모델 미지
    companies. The 이익률 안정성 auxiliary display is approved. */
 const ADOPT_MIN=454,UNIVERSE_SIZE=504;
 const DECISION=Object.freeze({state:'CANDIDATE',set:['핵심 축 Q·G·V + 후보 축(커버리지 확인 전) 가격 안정성·낙폭 방어력·상대 강도','Core axes Q·G·V + candidate axes (coverage unconfirmed): price stability · drawdown defence · relative strength'],ref:['채택 기준: 504곳 중 '+ADOPT_MIN+'곳 이상 검증 값·점수 · 이익률 안정성 보조 표시 승인','Adoption: verified value and score for ≥ '+ADOPT_MIN+' of 504 · margin-stability auxiliary display approved']});
-/* kind: SCORE (published 0–100 axis score), DEVICE_SCORE (device V score), PRICE (price axis, relative score), PUBLIC
+/* kind: SCORE (published 0–100 axis score; central: the V of the central publication), PRICE (price axis, relative score), PUBLIC
    (published metric, percentile). dir (percentile axes): +1 a larger raw value is better, −1 a smaller raw value is better.
    unit: score (0–100), pct (fraction shown in %), pp (fraction shown in %p), stdpp (already in %p). */
 const AXES=Object.freeze([
  {id:'q',kind:'SCORE',axis:'Q',unit:'score',name:['Q 질','Q quality'],lines:[['Q 질'],['Q quality']],outer:['바깥 = 공개 Q 점수가 높음','Outer = higher published Q score']},
  {id:'g',kind:'SCORE',axis:'G',unit:'score',name:['G 성장','G growth'],lines:[['G 성장'],['G growth']],outer:['바깥 = 공개 G 점수가 높음','Outer = higher published G score']},
- {id:'v',kind:'DEVICE_SCORE',axis:'V',unit:'score',name:['V 가치','V value'],lines:[['V 가치'],['V value']],outer:['바깥 = V 점수가 높음(기존 V 경로)','Outer = higher V score (existing V path)']},
+ {id:'v',kind:'SCORE',central:true,axis:'V',unit:'score',name:['V 가치','V value'],lines:[['V 가치'],['V value']],outer:['바깥 = 공식 V 점수가 높음(중앙 게시)','Outer = higher official V score (central publication)']},
  {id:'price_stability',kind:'PRICE',dir:-1,unit:'pct',name:['가격 안정성','Price stability'],lines:[['가격 안정성','후보'],['Price stability','candidate']],outer:['바깥 = 1년 변동성이 작음','Outer = lower 1-year volatility'],how:['원값 1년 변동성 = 유효 일간 수익률 표본표준편차 × √252','raw: 1-year volatility = sample std of valid daily returns × √252']},
  {id:'drawdown_defense',kind:'PRICE',dir:1,unit:'pct',name:['낙폭 방어력','Drawdown defence'],lines:[['낙폭 방어력','후보'],['Drawdown defence','candidate']],outer:['바깥 = 1년 최대 낙폭이 얕음','Outer = shallower 1-year max drawdown'],how:['원값 1년 최대 낙폭 = 종가 ÷ 그때까지 최고 종가 − 1의 최솟값','raw: 1-year max drawdown = min of close ÷ running peak − 1']},
  {id:'relative_strength',kind:'PRICE',dir:1,unit:'pp',name:['상대 강도(시장(SPY) 대비 6개월)','Relative strength (vs SPY, 6 months)'],lines:[['상대 강도 · 후보','SPY 대비 6개월'],['Relative (cand.)','vs SPY 6m']],outer:['바깥 = 시장(SPY) 대비 6개월 초과 수익이 큼','Outer = larger 6-month excess return vs the market (SPY)'],how:['원값 (C_t ÷ C_t−126 − 1) − (SPY_t ÷ SPY_t−126 − 1) · RSI가 아님','raw: (C_t ÷ C_t−126 − 1) − (SPY_t ÷ SPY_t−126 − 1) · not RSI']}]);
@@ -233,17 +233,17 @@ function priceTable(dev,end){
  const spy=dev.series.get(SPY),w=spy&&end?priceWindow(spy.closes,end):null,values=new Map(),ok=!!(w&&!w.short);
  if(ok)for(const[s,ser]of dev.series)if(s!==SPY)values.set(s,priceAxesOn(ser,spy,w.sessions));
  memo={dev,end,sessions:ok?w.sessions:null,window:ok?windowInfo(w.sessions,series(spy).basis,w.behind):null,short:!!(w&&w.short),values};return memo;}
-/* V comes only from the shared page result (QgvScores.pageResult: ONE collectQuotes + ONE compute over every Universe code,
-   shared with the V coverage panel and the other screens), so the same input gives the same V everywhere. The radar reads the
-   subject's row and the peers' rows of that one computed result; it never computes V or collects quotes itself. total: the
+/* V comes only from the shared official page result (QgvScores.officialPage: the central publication over every Universe code,
+   shared with the V coverage panel and the other screens), so the same publication gives the same V everywhere. The radar reads
+   the subject's row and the peers' rows of that one result; it never computes V or reads a price for it. total: the
    QGV total of the same row, shown only with the label 'Q·G만 반영(V 미포함)' when V is missing. */
 // D12: the row standing for an id (QgvScores.rowOf): a Universe code merged into its TARGET row reads that one row.
 function vOne(S,id,full=false){const QS=g.QgvScores,row=S&&S.rows?(QS&&typeof QS.rowOf==='function'?QS.rowOf(S,id):S.rows[id]):null,d=row?row.primary:null,cov=d&&d.coverage&&d.coverage.axes?d.coverage.axes.V:null;
- const x=!S?na('PENDING'):d&&finite(d.v)?{value:d.v,score:d.v,reason:null}:na(cov&&cov.reason||'NO_DEVICE_PRICE');
+ const x=!S?na('PENDING'):d&&finite(d.v)?{value:d.v,score:d.v,reason:null}:na(cov&&cov.reason||S.v_missing||'OFFICIAL_NOT_PUBLISHED');
  if(full){x.v_detail={detail:d&&object(d.detail)?d.detail:null,factors:cov&&Array.isArray(cov.factors)?cov.factors.map(f=>({id:f.id,reason:f.reason})):[]};x.total=d&&finite(d.total)?d.total:null;}return x;}
 function vScores(result,subject,points){
  const S=object(result)&&object(result.computed)?result.computed:null,map=new Map();for(const p of points)map.set(p.code,vOne(S,p.code));
- return{map,subject:vOne(S,subject.identity.company_id,true),priced:!!(object(result)&&object(result.quotes)&&Object.keys(result.quotes).length)};}
+ return{map,subject:vOne(S,subject.identity.company_id,true),central:!!S&&S.source==='PUBLICATION',reason:object(result)&&result.v_reason?result.v_reason:'OFFICIAL_NOT_PUBLISHED'};}
 
 /* ---------- model ---------- */
 function mean(xs){let s=0;for(const x of xs)s+=x;return s/xs.length;}
@@ -251,7 +251,7 @@ function build(inputs,spec,dev,result,{aux=false,now=Date.now()}={}){
  const subject=subjectOf(inputs,spec),points=inputs?crossSection(inputs):[],noFile={state:'NOT_AVAILABLE',reason:'SEC_QGV2_NOT_AVAILABLE',members:[]};
  const gi=inputs?industryGroup(subject,points):noFile,gs=inputs?sicGroup(subject,points):noFile,same=sameMembers(gi,gs);
  const others=points.filter(p=>p.cik!==subject.cik),withdrawn=subject.rec&&subject.rec.identity_withdrawn===true,financial=scoredRow(subject.rec)&&subject.rec.profile==='FINANCIAL';
- const V=vScores(result,subject,points),priced=V.priced;
+ const V=vScores(result,subject,points),central=V.central;
  const universeCodes=inputs?Object.keys(inputs.records).filter(k=>!k.startsWith('TARGET:')):[];
  // Price window: the latest session common to SPY and the subject, else the latest SPY session.
  const spy=dev.series.get(SPY),own=subject.symbol?dev.series.get(subject.symbol):null,sc=spy?spy.closes:null;
@@ -262,8 +262,8 @@ function build(inputs,spec,dev,result,{aux=false,now=Date.now()}={}){
  const basisReason=spy&&!CONFIRMED_BASES.includes(series(spy).basis)?'ADJUSTMENT_BASIS_UNCONFIRMED':null;
  const axisModel=a=>{
   let valueOf,mine;const excluded=[];
-  if(a.kind==='SCORE'){valueOf=p=>scoreValue(a.axis,p.rec);mine=inputs?scoreValue(a.axis,subject.rec):na('SEC_QGV2_NOT_AVAILABLE');}
-  else if(a.kind==='DEVICE_SCORE'){valueOf=p=>V.map.get(p.code)||na('NO_DEVICE_PRICE');mine=inputs?V.subject:na('SEC_QGV2_NOT_AVAILABLE');}
+  if(a.central){valueOf=p=>V.map.get(p.code)||na(V.reason);mine=inputs?V.subject:na('SEC_QGV2_NOT_AVAILABLE');}
+  else if(a.kind==='SCORE'){valueOf=p=>scoreValue(a.axis,p.rec);mine=inputs?scoreValue(a.axis,subject.rec):na('SEC_QGV2_NOT_AVAILABLE');}
   else if(a.kind==='PUBLIC'){valueOf=p=>marginValue(p.rec);mine=inputs?marginValue(subject.rec):na('SEC_QGV2_NOT_AVAILABLE');}
   else{valueOf=p=>{if(priceReason)return na(priceReason);const x=pt.values.get(universeSymbol(p.code));if(!x)return na('NO_DEVICE_PRICE');const y=x[a.id];
     if(finite(y.value))return{value:y.value,score:null,reason:null};excluded.push({code:p.code,reason:y.reason});return na(y.reason);};
@@ -278,9 +278,9 @@ function build(inputs,spec,dev,result,{aux=false,now=Date.now()}={}){
   else for(const[c,v]of vals)scores.set(c,v);
   mine.n=n;
   const group=gr=>{if(gr.state!=='OK')return{...na(gr.reason),n:null,codes:[]};
-   if(a.kind==='DEVICE_SCORE'&&financial)return{...na('FINANCIAL_PROFILE_V_NOT_DEFINED'),n:null,codes:[]};
+   if(a.central&&financial)return{...na('FINANCIAL_PROFILE_V_NOT_DEFINED'),n:null,codes:[]};
    if(a.kind==='PRICE'&&(priceReason||basisReason))return{...na(priceReason||basisReason),n:0,codes:[]};
-   if(a.kind==='DEVICE_SCORE'&&!priced)return{...na('NO_DEVICE_PRICE'),n:0,codes:[]};
+   if(a.central&&!central)return{...na(V.reason),n:0,codes:[]};
    const mem=gr.members.filter(p=>scores.has(p.code)),codes=mem.map(p=>p.code);
    if(mem.length<MIN_GROUP){const raw=gr.members.filter(p=>vals.has(p.code)).length;return{...na(ranked&&n<MIN_PEERS&&raw>=MIN_GROUP?'PEERS_TOO_FEW':'GROUP_TOO_SMALL'),n:mem.length,codes};}
    const v=mean(mem.map(p=>scores.get(p.code)));return{value:v,score:v,reason:null,n:mem.length,codes};};
@@ -289,7 +289,7 @@ function build(inputs,spec,dev,result,{aux=false,now=Date.now()}={}){
   const coverage=universeCodes.filter(k=>scoredCiks.has(inputs.records[k].cik)).length;
   return{...a,population:n,population_codes:[...vals.keys()],excluded,coverage,company:mine,industry:group(gi),sic:same?{...na('SAME_AS_INDUSTRY'),n:null,codes:[]}:group(gs),competitor:{...na('REL_SOURCE_PENDING'),n:null,codes:[]}};};
  const auxAxis=axisModel(AUX),axes=AXES.map(axisModel),win=pt&&!priceReason?pt.window:null;
- return{subject,inputs,groups:{industry:gi,sic:gs,same},axes:aux?[...axes,auxAxis]:axes,aux:auxAxis,auxOn:!!aux,device:dev,priced,window:win,fresh:freshness(win,now),
+ return{subject,inputs,groups:{industry:gi,sic:gs,same},axes:aux?[...axes,auxAxis]:axes,aux:auxAxis,auxOn:!!aux,device:dev,central,window:win,fresh:freshness(win,now),
   basis:spy?series(spy).basis:null,storage:spy?series(spy).storage:null,source:spy?series(spy).source:null,universe:universeCodes.length,points:points.length,cx:cxMarks(result,subject)};}
 
 /* ---------- formatting ---------- */
@@ -300,9 +300,9 @@ const GROUP_NAME=(key,en)=>{const L=g.UniverseCompany&&g.UniverseCompany.GROUP_L
 function groupTitle(kind,gr,T,en,same){
  if(kind==='industry'){if(gr.state!=='OK')return T('업종 평균','Industry average');const base=gr.basis==='FINANCIAL_PROFILE'?T('업종 평균 · 금융 프로필','Industry average · financial profile'):gr.basis==='INDUSTRY_GROUP'?T('업종 평균 · ','Industry average · ')+GROUP_NAME(gr.key,en):T('업종 평균 · 일반 전체(업종군 8곳 미만)','Industry average · all general (group below 8)');return same?T('업종 = SIC · ','Industry = SIC · ')+base:base;}
  if(gr.state!=='OK')return T('SIC 평균','SIC average');return gr.basis==='SIC4'?'SIC '+gr.key+T(' 평균',' average'):'SIC '+gr.key+'xx'+T(' 평균(4자리 8곳 미만)',' average (4-digit below 8)');}
-const isScore=a=>a.kind==='SCORE'||a.kind==='DEVICE_SCORE';
+const isScore=a=>a.kind==='SCORE';
 const scoreLabel=(a,T)=>a.kind==='PRICE'?T('기기 보유 데이터 내 상대점수','relative score within the price data you hold'):a.kind==='PUBLIC'?T('공개 단면 백분위','published cross-section percentile'):T('점수','score');
-const sourceBadge=(a,T)=>a.kind==='SCORE'?T('핵심 축 · 공개 점수','core · published score'):a.kind==='DEVICE_SCORE'?T('핵심 축 · 기존 V 경로','core · existing V path'):a.kind==='PRICE'?T('후보 축(커버리지 확인 전)','candidate (coverage unconfirmed)'):T('보조 지표 · 공개','auxiliary · published');
+const sourceBadge=(a,T)=>a.central?T('핵심 축 · 공식 V(중앙 게시)','core · official V (central)'):a.kind==='SCORE'?T('핵심 축 · 공개 점수','core · published score'):a.kind==='PRICE'?T('후보 축(커버리지 확인 전)','candidate (coverage unconfirmed)'):T('보조 지표 · 공개','auxiliary · published');
 const BASIS_TEXT={RAW:['미수정 종가(조정 기준 미확인)','raw closes (adjustment basis unconfirmed)'],SPLIT_ADJUSTED:['분할 수정 종가','split-adjusted closes'],TOTAL_RETURN:['분할·배당 수정 종가(총수익)','split + dividend adjusted closes (total return)'],ADJUSTED_UNCONFIRMED:['수정 종가(기준 미확인)','adjusted closes (basis unconfirmed)']};
 /* Where the price inputs live, said exactly (never "only on this device" for the private sheet). */
 function storageText(model,T){return model.storage==='USER_PRIVATE_GOOGLE_SHEET'?T('내 비공개 구글 시트 Prices_D 탭 → 이 브라우저 메모리','your private Google Sheet, Prices_D tab → this browser’s memory'):model.storage?T('메모리 자료(','in-memory data (')+(model.source||model.storage)+')':T('가격 자료 없음','no price data');}
@@ -310,8 +310,9 @@ const clock=x=>typeof x==='string'&&/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(x)?x.s
 /* Unit, period, as_of, basis and storage of one axis for the detail table. */
 function axisMeta(a,model,T,en){
  const r=model.subject.rec,pubAsOf=model.inputs?clock(model.inputs.as_of):'—',w=model.window,fy=r&&r.fiscal_year_end?r.fiscal_year_end:'—';
+ if(a.central){const QS=g.QgvScores,P=QS&&QS.pagePublication?QS.pagePublication().publication:null;
+ return{unit:T('점(0–100)','points (0–100)'),period:T('가격 기준일 ','price basis day ')+(P?P.times.price_basis_date:'—')+T(' · SEC 입력 FY ',' · SEC inputs FY ')+fy,asof:T('게시 ','published ')+(P?clock(P.times.generated_at):'—'),basis:T('공식 V · 중앙 게시 · IEX 마지막 체결가 기준(공식 종가 아님)','official V · central · IEX last trade (not an official close)'),storage:T('공개 파일 qgv-official.json','public file qgv-official.json')};}
  if(a.kind==='SCORE')return{unit:T('점(0–100)','points (0–100)'),period:'FY '+fy,asof:pubAsOf,basis:T('공개 sec-qgv2.json','published sec-qgv2.json'),storage:T('공개 파일','public file')};
- if(a.kind==='DEVICE_SCORE')return{unit:T('점(0–100)','points (0–100)'),period:T('현재 시세 · SEC 입력 FY ','current quote · SEC inputs FY ')+fy,asof:T('가격 기준 시각: 미확인 · 공개 ','price as-of: unknown · published ')+pubAsOf,basis:T('기존 V 경로','existing V path'),storage:T('시세: 내 비공개 구글 시트(Universe 탭)·이 브라우저 저장 시세·Worker 종가 → 메모리 계산','quotes: your private Google Sheet (Universe tab) · quotes stored in this browser · Worker closes → computed in memory')};
  if(a.kind==='PUBLIC')return{unit:'%p',period:T('5개 회계연도 FY0~FY-4 · FY ','5 fiscal years FY0–FY-4 · FY ')+fy,asof:pubAsOf,basis:T('공개 sec-qgv2.json','published sec-qgv2.json'),storage:T('공개 파일','public file')};
  const per=w?(a.id==='relative_strength'?w.rs_start+' ~ '+w.end+T(' (126거래일)',' (126 sessions)'):w.start+' ~ '+w.end+T(' (252거래일)',' (252 sessions)')):'—';
  return{unit:a.unit==='pp'?'%p':'%',period:per,asof:w?w.end+T(' (마지막 공통 거래일)',' (latest common session)'):'—',basis:model.basis?BASIS_TEXT[model.basis][en?1:0]:'—',storage:storageText(model,T)};}
@@ -354,7 +355,7 @@ function swatch(series){
 function legend(model,locale,show){
  const T=tr(locale),en=locale==='en-US',gi=model.groups.industry,gs=model.groups.sic,same=model.groups.same,drawn=shownList(model,show);
  const cnt=(gr,pred)=>{const xs=model.axes.filter(pred).map(a=>a[gr].n).filter(Number.isInteger);return xs.length?Math.max(...xs):0;};
- const nText=gr=>T(' · 공개 n=',' · public n=')+cnt(gr,a=>a.kind==='SCORE'||a.kind==='PUBLIC')+T(' · 기기 n=',' · device n=')+cnt(gr,a=>a.kind==='PRICE'||a.kind==='DEVICE_SCORE');
+ const nText=gr=>T(' · 공개 n=',' · public n=')+cnt(gr,a=>a.kind==='SCORE'||a.kind==='PUBLIC')+T(' · 기기 n=',' · device n=')+cnt(gr,a=>a.kind==='PRICE');
  const hidden=T(' · 숨김',' · hidden'),item=(series,label,extra,state)=>{const on=series!=='competitor'&&drawn.includes(series);return '<li data-sr-legend="'+series+'" data-sr-legend-state="'+state+'" data-sr-legend-shown="'+on+'">'+swatch(series)+'<span><b>'+esc(label)+'</b>'+(extra||(!on&&series!=='competitor')?' <span class="small">'+esc((extra||'')+(!on&&series!=='competitor'?hidden:''))+'</span>':'')+'</span></li>';};
  return '<ul class="sr-legend" aria-label="'+esc(T('범례','Legend'))+'">'
   +item('company',T('기업 ','Company ')+model.subject.label,T('실선 · 원','solid · circle'),model.subject.rec?'OK':'NOT_AVAILABLE')
@@ -418,15 +419,15 @@ function membersHtml(model,locale){
    +groups.map(([name,x])=>'<p class="small" data-sr-group-list="'+esc(name)+'">'+esc(name+' ('+x.codes.length+T('곳): ',' cos): ')+list(x.codes))+'</p>').join('')
    +(a.excluded.length?'<p class="small" data-sr-excluded>'+esc(T('가격 자료는 있으나 제외: ','price data held but excluded: ')+a.excluded.map(e=>tickerOf(e.code)+' ('+e.reason+')').join(' · '))+'</p>':'')+'</details>';}).join('')+'</div>';}
 /* V detail: the individual value inputs, each with its raw value, period and source, or 미산출 and the reason. EBIT / FCF yield
-   come from the existing V computation (device quote, RAM); the reference inputs are the published v_inputs_v2 fields. A
+   need a price and are NA here (DC-31: the central publication carries no yield); the reference inputs are the published v_inputs_v2 fields. A
    FINANCIAL subject shows only the model-scope text (no general-company formula is applied). */
 function vDetailHtml(model,locale){
  const T=tr(locale),en=locale==='en-US',v=model.axes.find(a=>a.id==='v')||null,x=v?v.company:null,r=model.subject.rec;if(!x)return '';
  if(x.reason==='FINANCIAL_PROFILE_V_NOT_DEFINED')return '<div class="sr-v-detail" data-sr-v-detail="FINANCIAL"><h3 class="small">'+esc(T('V 상세','V detail'))+'</h3><p><span class="badge sr-model-scope" data-sr-model-scope>'+esc(finText(en))+'</span></p></div>';
  const vi=r&&object(r.v_inputs)?r.v_inputs:null,per=r&&object(r.periods)?r.periods:{},cur=vi&&typeof vi.currency==='string'?vi.currency:null,asOf=model.inputs?clock(model.inputs.as_of):'—';
- const det=x.v_detail&&x.v_detail.detail,fr=id=>{const f=x.v_detail&&x.v_detail.factors.find(y=>y.id===id);return f&&f.reason||x.reason||'NO_DEVICE_PRICE';};
+ const det=x.v_detail&&x.v_detail.detail,fr=id=>{const f=x.v_detail&&x.v_detail.factors.find(y=>y.id===id);return f&&f.reason||x.reason||'PRICE_DEPENDENT_NOT_COMPUTABLE';};
  const money=v=>cur?new Intl.NumberFormat(en?'en-US':'ko-KR',{style:'currency',currency:cur,notation:'compact',maximumFractionDigits:2}).format(v):fmtNum(v,locale,0);
- const pubSrc=T('공개 sec-qgv2.json v_inputs_v2 · as_of ','published sec-qgv2.json v_inputs_v2 · as_of ')+asOf,devSrc=T('기존 V 경로(공개 입력 + 이 브라우저 메모리의 시세)','existing V path (published inputs + quote in this browser’s memory)');
+ const pubSrc=T('공개 sec-qgv2.json v_inputs_v2 · as_of ','published sec-qgv2.json v_inputs_v2 · as_of ')+asOf,devSrc=T('중앙 게시 V(qgv-official.json · 가격 미공개)','central V (qgv-official.json · prices not published)');
  const noInputs=!scoredRow(r)?rowReason(r):'V_INPUTS_NOT_AVAILABLE';
  const rows=[
   ['ebit_yield',T('EBIT 수익률 (EBIT ÷ EV)','EBIT yield (EBIT ÷ EV)'),det&&finite(det.ebit_yield)?det.ebit_yield:null,v=>fmtNum(v*100,locale,2)+'%',(per.ebit||'—')+T(' · 현재 시세',' · current quote'),devSrc,fr('v_earnings_yield')],
@@ -444,22 +445,25 @@ function vDetailHtml(model,locale){
 function freshLine(model,locale){
  const T=tr(locale),f=model.fresh;if(!f)return '<p class="small sr-fresh" data-sr-freshness="UNKNOWN">'+esc(T('가격 기준 시각: 미확인','Price as-of: unknown'))+'</p>';
  return '<p class="small sr-fresh" data-sr-freshness="'+(f.stale?'STALE':'CURRENT')+'" data-sr-days="'+f.days+'">'+(f.stale?'<span class="badge partial">STALE</span> ':'')+esc(T('가격 기준 시각(마지막 공통 종가일) ','price as-of (latest common close) ')+f.end+' · '+f.days+T('일 전',' days ago')+' · '+T('최신 SPY 거래일보다 ','behind the latest SPY session by ')+f.behind+T('거래일 뒤',' sessions')+(f.stale?T(' · '+STALE_SESSIONS+'거래일 또는 '+STALE_DAYS+'일 초과라 STALE',' · beyond '+STALE_SESSIONS+' sessions or '+STALE_DAYS+' days: STALE'):''))+'</p>';}
-/* Provenance of the radar's QGV axes (QgvScores.provenance; labels only): Q·G are read as published (sec-qgv2.json, central), V is
-   computed on this device from its prices with the official inner weights (the S06 preset/gate do not change the V axis). */
-function provenanceLine(model,locale){const QS=g.QgvScores,en=locale==='en-US',T=tr(locale);if(!QS||typeof QS.provenance!=='function')return '';const qg=QS.provenance({kind:'QG'}),v=QS.provenance({kind:'V',priced:!!model.priced});
+/* Provenance of the radar's QGV axes (QgvScores.provenance; labels only): Q·G are read as published (sec-qgv2.json), V is read as
+   published in the central publication (qgv-official.json, official inner weights; the S06 preset/gate do not change the V axis). */
+// DC-31: the central V basis of the V axis (basis day, publication time, STALE, calc version) and the IEX attribution with its terms link.
+function centralLine(model,locale){const QS=g.QgvScores;if(!QS||typeof QS.centralHtml!=='function'||typeof QS.pagePublication!=='function')return '';const P=QS.pagePublication();
+ return '<div data-sr-central>'+QS.centralHtml(QS.centralBasis(P.publication,{reason:P.reason,v2Inputs:model.inputs||null}),locale==='en-US')+'</div>';}
+function provenanceLine(model,locale){const QS=g.QgvScores,en=locale==='en-US',T=tr(locale);if(!QS||typeof QS.provenance!=='function')return '';const qg=QS.provenance({kind:'QG'}),v=QS.provenance({kind:'V',central:!!model.central});
  const span=(x,axes)=>'<span data-sr-provenance="'+axes+'" data-qgv-weights="'+esc(x.weights)+'" data-qgv-prices="'+esc(x.prices)+'" data-qgv-source="'+esc(x.source)+'">'+esc(axes.replace('QG','Q·G')+': '+QS.provenanceText(x,en))+'</span>';
  return '<p class="small sr-fresh" data-sr-provenance-line>'+esc(T('계산 근거 · ','Basis · '))+span(qg,'QG')+' · '+span(v,'V')+'</p>';}
 function body(model,locale,show=showOf(null)){
  const T=tr(locale),en=locale==='en-US',d=model.device,dev=d.state==='READY'?T('읽음 · 가격 있는 종목 ','read · symbols with prices ')+d.priced+(d.series.has(SPY)?' · SPY':T(' · SPY 없음',' · no SPY')):d.state==='PENDING'?reasonText('PENDING',en):d.state+' · '+reasonText(d.state==='NOT_AVAILABLE'?'NO_DEVICE_PRICE':d.state,en);
  return '<div class="sr-layout"><figure class="sr-figure">'+svg(model,locale,show)+'<figcaption class="sr-notes small">'+(model.axes.some(a=>a.id==='v'&&a.company.reason==='FINANCIAL_PROFILE_V_NOT_DEFINED')?'<span class="badge sr-model-scope" data-sr-model-scope>V · '+esc(finText(en))+'</span> ':'')+esc(T('모든 축에서 바깥이 더 좋은 평가입니다. 설명용이며 공식 QGV 점수·비중·순위를 바꾸지 않습니다. 면적은 계산하지 않습니다. 미산출 축에는 점을 찍지 않습니다(0이나 평균으로 채우지 않음).','Outer is the better evaluation on every axis. Explanatory only: official QGV scores, weights and ranks are unchanged. The area is not computed. 미산출 axes get no point (never 0 or an average).'))+'</figcaption></figure>'
   +'<div class="sr-side">'+compareBox(model,locale,show)+legend(model,locale,show)+auxBox(model,locale)+'</div></div>'+freshLine(model,locale)+table(model,locale)+vDetailHtml(model,locale)+membersHtml(model,locale)
-  +provenanceLine(model,locale)+'<p class="small sr-fresh" data-sr-fresh>'+esc([T('Q·G·이익률 출처 sec-qgv2.json','Q·G·margin: sec-qgv2.json'),'as_of '+(model.inputs?clock(model.inputs.as_of):'—'),T('단면 ','cross-section ')+model.points+T('곳(발행사당 한 점)',' issuers (one point each)'),T('가격 후보 축 점수 = 기기 보유 데이터 내 상대점수(504 전체·시장 전체 백분위 아님, 모집단 8곳 이상) · 비교군 평균은 5곳 이상','candidate price-axis score = relative score within the price data you hold (not a 504- or market-wide percentile; population ≥ 8) · group averages need ≥ 5')].join(' · '))+'</p>'
-  +'<p class="small sr-fresh" data-sr-device-line>'+esc([T('가격 입력: ','Price input: ')+(model.storage?storageText(model,T):T('내 비공개 구글 시트 Prices_D 탭(가격 탭 사용 시) → 이 브라우저 메모리','the Prices_D tab of your private Google Sheet (when price tabs are on) → this browser’s memory'))+T(' · Worker 요청 없음 · 공개 안 함',' · no Worker request · never published'),T('기준 ','basis ')+(model.basis?BASIS_TEXT[model.basis][en?1:0]:'—'),T('상태 ','state ')+dev,T('V: 기존 V 경로(시세 '+(model.priced?'있음':'없음')+')','V: existing V path (quotes '+(model.priced?'present':'none')+')')].join(' · '))+'</p>';}
+  +provenanceLine(model,locale)+centralLine(model,locale)+'<p class="small sr-fresh" data-sr-fresh>'+esc([T('Q·G·이익률 출처 sec-qgv2.json','Q·G·margin: sec-qgv2.json'),'as_of '+(model.inputs?clock(model.inputs.as_of):'—'),T('단면 ','cross-section ')+model.points+T('곳(발행사당 한 점)',' issuers (one point each)'),T('가격 후보 축 점수 = 기기 보유 데이터 내 상대점수(504 전체·시장 전체 백분위 아님, 모집단 8곳 이상) · 비교군 평균은 5곳 이상','candidate price-axis score = relative score within the price data you hold (not a 504- or market-wide percentile; population ≥ 8) · group averages need ≥ 5')].join(' · '))+'</p>'
+  +'<p class="small sr-fresh" data-sr-device-line>'+esc([T('가격 입력: ','Price input: ')+(model.storage?storageText(model,T):T('내 비공개 구글 시트 Prices_D 탭(가격 탭 사용 시) → 이 브라우저 메모리','the Prices_D tab of your private Google Sheet (when price tabs are on) → this browser’s memory'))+T(' · Worker 요청 없음 · 공개 안 함',' · no Worker request · never published'),T('기준 ','basis ')+(model.basis?BASIS_TEXT[model.basis][en?1:0]:'—'),T('상태 ','state ')+dev,T('V: 중앙 게시 V(qgv-official.json'+(model.central?'':' 없음')+')','V: central V (qgv-official.json'+(model.central?'':' absent')+')')].join(' · '))+'</p>';}
 // data-cx-* marks (QgvScores.marks): the subject's row of the shared result and the Universe read it was priced from; all
 // keys always present (a pending radar names no read), so a repaint never leaves marks of an older result behind.
 function cxMarks(result,subject){const QS=g.QgvScores;if(!QS||typeof QS.marks!=='function')return{};const S=object(result)&&object(result.computed)?result.computed:null;
- return QS.marks(S&&typeof QS.rowOf==='function'?QS.rowOf(S,subject.identity.company_id):null,S?result.price_basis:null,g);}
-function stateOf(model,show=showOf(null)){return{...(model.cx||{}),'data-sr-subject':model.subject.label,'data-sr-show':shownList(model,show).join(','),'data-sr-device':model.device.state,'data-sr-quotes':model.priced?'PRESENT':'NONE','data-sr-groups':model.groups.same?'SAME':'DISTINCT','data-sr-aux':model.auxOn?'ON':'OFF','data-sr-window-end':model.window?model.window.end:'NA',
+ return QS.marks(S&&typeof QS.rowOf==='function'?QS.rowOf(S,subject.identity.company_id):null,S&&typeof QS.publicationBasis==='function'?QS.publicationBasis():null,g);}
+function stateOf(model,show=showOf(null)){return{...(model.cx||{}),'data-sr-subject':model.subject.label,'data-sr-show':shownList(model,show).join(','),'data-sr-device':model.device.state,'data-sr-central':model.central?'PUBLICATION':'NONE','data-sr-groups':model.groups.same?'SAME':'DISTINCT','data-sr-aux':model.auxOn?'ON':'OFF','data-sr-window-end':model.window?model.window.end:'NA',
  'data-sr-stale':model.fresh?(model.fresh.stale?'STALE':'CURRENT'):'NA','data-sr-basis':model.basis||'NA',
  'data-sr-industry-basis':model.groups.industry.basis||'NA','data-sr-industry-key':model.groups.industry.key||'','data-sr-sic-basis':model.groups.sic.basis||'NA','data-sr-sic-key':model.groups.sic.key||''};}
 const stateAttrs=(model,show)=>Object.entries(stateOf(model,show)).map(([k,v])=>' '+k+'="'+esc(v)+'"').join('');
@@ -472,9 +476,8 @@ const decisionBadge=T=>DECISION.state==='DECIDED'?T('결정됨','DECIDED'):DECIS
    read (if any; ctx.device: a price-data snapshot to render instead, RAM only). spec: {code} or {targetId}. */
 function html(spec,ctx={}){
  const locale=ctx.locale==='en-US'?'en-US':'ko-KR',T=tr(locale),inputs=inputsOf(ctx.screens),key=keyOf(spec),prev=live.get(key),aux=!!(prev&&prev.aux),show=showOf(prev&&prev.show),dev=object(ctx.device)?ctx.device:null;
- // The held result is shown again only while it is current (same inputs, same Universe read, same official preset/gate);
- // otherwise V is 확인하는 중 until mount() reads the shared page result (never a V of an older read shown as current).
- const QS=g.QgvScores,current=r=>!!r&&(!QS||typeof QS.isCurrent!=='function'||QS.isCurrent(g,r)),result=prev&&prev.inputs===inputs&&current(prev.result)?prev.result:null;live.set(key,{spec,inputs,locale,result,aux,show,dev});const model=build(inputs,spec,dev||device,result,{aux});
+ // V: the shared official page result, read synchronously (memoised in QgvScores by publication and inputs): always current.
+ const result=officialResult(inputs,spec);live.set(key,{spec,inputs,locale,result,aux,show,dev});const model=build(inputs,spec,dev||device,result,{aux});
  return '<div class="stat-radar" data-stat-radar="'+esc(key)+'" data-sr-decision="'+DECISION.state+'"'+stateAttrs(model,show)+'><h2 class="sr-title"><span class="hl">'+esc(T('스탯창','Stat window'))+'</span> <span class="badge partial">'+esc(decisionBadge(T))+'</span></h2>'
   +'<p class="small" data-sr-axis-set>'+esc(T('축: ','Axes: ')+DECISION.set[locale==='en-US'?1:0]+' · '+DECISION.ref[locale==='en-US'?1:0]+T(' · 설명용 · 추천 아님',' · explanatory · not a recommendation'))+'</p><div data-sr-body>'+body(model,locale,show)+'</div></div>';}
 function paint(el){const entry=live.get(el.dataset.statRadar);if(!entry)return;const model=build(entry.inputs,entry.spec,entry.dev||device,entry.result,{aux:entry.aux}),b=el.querySelector('[data-sr-body]');
@@ -484,10 +487,9 @@ async function refreshDevice(){
  if(inflight)return inflight;
  inflight=(async()=>{try{device=await readDevice(symbolsFor());}catch(_){device={state:'ERROR',series:new Map(),priced:0};}finally{inflight=null;}})();
  return inflight;}
-/* The shared page result for V (QgvScores.pageResult; memoised there per inputs, Universe read, catalog and identities). */
-async function resultFor(entry,opts){const QS=g.QgvScores;if(!entry.inputs||!QS||typeof QS.pageResult!=='function')return null;
- let catalog=null;try{catalog=await opts.catalogPromise;}catch(_){catalog=null;}
- try{return await QS.pageResult(g,{v2Inputs:entry.inputs,catalog:catalog||null,identities:[subjectOf(entry.inputs,entry.spec).identity]});}catch(_){return null;}}
+/* The shared official page result for V (QgvScores.officialPage; memoised there per publication, inputs and identities). */
+function officialResult(inputs,spec){const QS=g.QgvScores;if(!inputs||!QS||typeof QS.officialPage!=='function')return null;
+ try{return QS.officialPage(g,{v2Inputs:inputs,identities:[subjectOf(inputs,spec).identity]});}catch(_){return null;}}
 function radarsIn(root){if(!root)return[];const list=[];if(root.matches&&root.matches('[data-stat-radar]'))list.push(root);if(root.querySelectorAll)list.push(...root.querySelectorAll('[data-stat-radar]'));return list;}
 let again=false,wired=false;
 function subscribeOnce(){const PS=g.PriceStore;if(subscribed||!PS||typeof PS.subscribe!=='function')return;subscribed=true;
@@ -501,11 +503,11 @@ function wireOnce(doc){if(wired||!doc||typeof doc.addEventListener!=='function')
   const show=showOf(entry.show);show[s]=b.getAttribute('aria-pressed')!=='true';if(s==='industry'&&el.dataset.srGroups==='SAME')show.sic=show.industry;entry.show=show;paint(el);const nb=el.querySelector('[data-sr-series-toggle="'+s+'"]');if(nb)nb.focus();});
  doc.addEventListener('change',e=>{const sel=e.target&&e.target.matches&&e.target.matches('select[data-sr-compare-select]')?e.target:null;if(!sel)return;const el=sel.closest('[data-stat-radar]'),entry=el?live.get(el.dataset.statRadar):null,v=sel.value;
   if(!entry||!['all','industry','sic','none'].includes(v))return;const same=el.dataset.srGroups==='SAME';entry.show={company:true,industry:v==='all'||v==='industry',sic:v==='all'||v==='sic'||(same&&v==='industry')};paint(el);const ns=el.querySelector('select[data-sr-compare-select]');if(ns)ns.focus();});}
-/* After html(): read the shared page result (V) and the price data (price axes) and repaint every radar under root.
-   opts: {catalogPromise} (the device catalog the page result reads quotes with). */
+/* After html(): re-read the shared official page result (V) and the price data (price axes) and repaint every radar under root.
+   opts: {catalogPromise} (kept for callers; the V path reads no catalog and no price). */
 async function mount(root,opts={}){
  const els=radarsIn(root);if(!els.length)return;subscribeOnce();wireOnce(els[0].ownerDocument);
- for(const el of els){const entry=live.get(el.dataset.statRadar);if(entry)entry.result=await resultFor(entry,opts||{});}
+ for(const el of els){const entry=live.get(el.dataset.statRadar);if(entry)entry.result=officialResult(entry.inputs,entry.spec);}
  await refreshDevice();for(const el of els)if(el.isConnected)paint(el);}
 /* Model for tests and other screens (no DOM). */
 function compute(spec,{screens,result=null,aux=false,now}={},dev=device){return build(inputsOf(screens),spec,dev,result,{aux,now:finite(now)?now:Date.now()});}
