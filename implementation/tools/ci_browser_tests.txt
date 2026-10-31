@@ -93,6 +93,7 @@ web_app_data_layer_browser_test.js  # new frontend P1 data layer: no-action read
 web_app_first_paint_browser_test.js  # new frontend P2-1a: shell first, layer after first paint; phone targets 390x844, 150 ms, 1.6 Mbps, CPU x4 (median of 3)
 web_app_home_browser_test.js  # new frontend P2-1 menu 0 home · company search: combobox, recent on a real click, favorites / developer default, company cards, boundaries
 web_app_qgv_browser_test.js  # new frontend P2-2a menu 1 QGV leaderboard: layer values, sort/filter never re-rank, click-only prices and returns, boundaries
+web_app_private_panel_browser_test.js  # common base: one private panel shape for every screen (public + private two layers), shared states/words, no request/storage
 web_app_macro_browser_test.js  # new frontend menu 3 매크로: lights, evidence, ring concept with 준비 중 models, RAM-only user position, states, boundaries
 web_app_prompts_browser_test.js  # new frontend feature 7 프롬프트 라이브러리: filters, fill and copy checks, RAM copies, selected company, states, boundaries
 web_app_tree_browser_test.js  # new frontend feature 8 구조 트리: spec hierarchy, registry statuses, WAI-ARIA tree keyboard, states, reads nothing
