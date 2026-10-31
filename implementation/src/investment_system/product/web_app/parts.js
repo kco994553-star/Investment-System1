@@ -60,6 +60,7 @@ function mascot(mood='plain'){
    a status line (role=status) with IS2.privateArea.panelText, the drawn character on ERROR / EMPTY, and on READY the
    screen's own render(body) content. It starts in privateArea.panelState() (NOT_READY today), sends nothing and stores
    nothing; the public part never waits for it. Before the layer is there (first paint) it says 비공개 기능 준비 중. */
+const PANEL=Object.freeze(['NOT_READY','LOGIN_REQUIRED','LOADING','ERROR','EMPTY','READY']);
 function privatePanel({id,title,area}={}){
  if(typeof id!=='string'||!/^[a-z0-9-]{1,40}$/.test(id))throw Error('PANEL_ID_INVALID');
  const P=()=>window.IS2.privateArea,status=h('p',{class:'pending',role:'status',dataset:{privateStatus:''}}),art=h('div',{class:'private-art'}),body=h('div',{class:'private-body'});
@@ -67,12 +68,15 @@ function privatePanel({id,title,area}={}){
   h('h3',{class:'card-title'},h('span',{class:'chip',dataset:{privateLabel:''}},'비공개'),' ',title||''),status,art,body);
  let cur=null;
  function set(s,{code,render}={}){
-  const A=P(),txt=A?A.panelText(s,{area,code}):'비공개 기능 준비 중';
+  if(!PANEL.includes(s))throw Error('PRIVATE_PANEL_STATE_UNKNOWN');
+  // Before IS2.ready (or after a loader failure) privateArea is the loader facade, whose getters return the NOT_READY /
+  // LOAD_FAILED object, not words: the panel then shows the not-ready words, never the object.
+  const A=P(),t=A&&typeof A.panelText==='function'?A.panelText(s,{area,code}):null,txt=typeof t==='string'?t:s==='READY'?'':'비공개 기능 준비 중';
   cur=s;node.dataset.privateState=s;status.textContent=txt;status.hidden=s==='READY';
   art.replaceChildren(...(s==='ERROR'?[mascot('alarm')]:s==='EMPTY'?[mascot('plain')]:[]));
   body.replaceChildren();if(s==='READY'&&typeof render==='function')render(body);
   return cur;}
- set(P()?P().panelState():'NOT_READY');
+ const first=P()&&typeof P().panelState==='function'?P().panelState():null;set(PANEL.includes(first)?first:'NOT_READY');
  return Object.freeze({node,set,state:()=>cur});}
 window.IS2.parts=Object.freeze({head,section,card,pending,notReady,more,searchBox,mascot,privatePanel});
 window.IS2.register=register;
