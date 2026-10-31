@@ -146,7 +146,7 @@ function create({win,data,prices,action}){
   const axisReason=a=>{const x=axes&&axes[a];if(x&&x.reason)return x.reason;const f=x&&Array.isArray(x.factors)?x.factors.find(y=>y.score===null&&y.reason):null;return f?f.reason:fallback;};
   const totalReason=p.total_reason==='DATA_FORMAT_NEWER'?'DATA_FORMAT_NEWER':flags.includes('CALC_VERSION_MISMATCH')?'CALC_VERSION_MISMATCH':fallback;
   const rank=personal?r.personal_rank:r.rank,qgr=personal?r.personal_qg_reference:r.qg_reference,placed=Number.isInteger(rank)?rank:null,qgOrder=object(qgr)&&Number.isInteger(qgr.order)?qgr.order:null;
-  const rankReason=placed!==null?null:p.reference_only===true?'REFERENCE_ONLY':r.outside_universe===true?'OUTSIDE_UNIVERSE':qgOrder!==null?'QG_REFERENCE':score.total===null?totalReason:!personal&&r.rank_row?'ISSUER_RANKED_ONCE':'NOT_RANKED';
+  const rankReason=placed!==null?null:p.reference_only===true?'REFERENCE_ONLY':r.outside_universe===true?'OUTSIDE_UNIVERSE':qgOrder!==null?'QG_REFERENCE':score.total===null?totalReason:(personal?r.personal_rank_row:r.rank_row)?'ISSUER_RANKED_ONCE':'NOT_RANKED';
   const vf=TB.vFactors(p),src=cov&&object(cov.source)?cov.source:null;
   return{id:r.company_id,ticker:r.ticker,code:str(r.universe_code),record:str(r.code),scope:r.outside_universe===true?'OUTSIDE_UNIVERSE':'UNIVERSE',target:targets.has(r.company_id),reference_only:p.reference_only===true,
    source:vs.id,source_label:vs.ko,score,
@@ -155,7 +155,7 @@ function create({win,data,prices,action}){
    coverage:{v_factors:{n:vf.n,total:vf.total,missing:[...vf.missing],required_ok:vf.required_ok},axes:{Q:axisOf(axes&&axes.Q),G:axisOf(axes&&axes.G),V:axisOf(axes&&axes.V)},
     factors:{available:num(p.factors_available),total:num(p.factors_total)},states:cov&&Array.isArray(cov.states)?[...cov.states]:[],v_inputs_missing:cov&&Array.isArray(cov.v_inputs_missing)?[...cov.v_inputs_missing]:[]},
    flags:[...flags],value_trap_gate:p.value_trap_gate===true,v_excluded:str(p.v_excluded),types:{selected:Array.isArray(p.selected_types)?[...p.selected_types]:[],reason:str(p.type_reason)},
-   price_status:pub&&r.code&&Object.hasOwn(pub.rows,r.code)?pub.rows[r.code].price_status:null,rank_row:personal?null:str(r.rank_row),
+   price_status:pub&&r.code&&Object.hasOwn(pub.rows,r.code)?pub.rows[r.code].price_status:null,rank_row:str(personal?r.personal_rank_row:r.rank_row),
    row_state:src?str(src.state):null,acquired_at:src?str(src.acquired_at):null,fiscal_year_end:src?str(src.fiscal_year_end):null,profile:src?str(src.profile):null,
    source_reason_codes:src&&Array.isArray(src.reason_codes)?[...src.reason_codes]:[]};}
  // The central result as a page: V source OFFICIAL_CENTRAL whether or not a publication was read (without one every V is NA).
@@ -176,7 +176,7 @@ function create({win,data,prices,action}){
   fin=await data.financials().catch(()=>null);stop(signal);
   const P=off.state==='OFFICIAL'?off.payload:null,result=QS.officialPage(win,{publication:P,v2Inputs:inputs,identities:ids,reason:off.reason});
   if(!result){const[state,reason]=absent();return emptyPage(state,reason,pub,off);}
-  const h={result,inputs,base:P&&result.inputs_match===false?null:inputs,pub:P,catalog,device:null};
+  const h={result,inputs,base:P&&result.inputs_match===false?null:inputs,pub:P,catalog};
   let pg=project(result,inputs,pub,off,h);const prev=byResult.get(result);if(prev&&prev.basis_id===pg.basis_id)return prev;
   byResult.set(result,pg);held.set(pg,h);known.add(pg);return pg;}
  // Every page is the central one (official profile); preset / gate are not page arguments any more (a personal setting is preview()).
@@ -232,12 +232,12 @@ function create({win,data,prices,action}){
   FACTORS:V2.FACTORS,MIN_AXIS_WEIGHT:V2.MIN_AXIS_WEIGHT,SUBMETRICS:win.SecQgv2.SUBMETRICS,V_FACTORS:TB.V_FACTORS,V_REQUIRED:TB.V_REQUIRED})));}return consts;}
  function subscribe(fn,{signal}={}){if(typeof fn!=='function')throw Error('SUBSCRIBER_INVALID');if(signal&&signal.aborted)return()=>{};subs.add(fn);const off=()=>{subs.delete(fn);};if(signal)signal.addEventListener('abort',off,{once:true});return off;}
  /* engines.js only (source rule). forEngines: the TARGET v1 builder's hidden device result until the 11/16 PR (DC-31: the builder
-    keeps its V source), computed on first ask (never for a screen): QgvScores.pageResult on the score view, RAM prices of a click
-    only, the page profile; engines record page.engine_v_source for it. Resolves the computed result; PAGE_NOT_READY without one. */
+    keeps its V source), computed when engines ask (never for a screen): QgvScores.pageResult on the score view, RAM prices of a
+    click only, the current profile; engines record page.engine_v_source for it. Asked again on every call: pageResult memoizes by
+    the Universe read, the device inputs and preset / gate, so a later read or setProfile reaches the builder although the central
+    page (keyed by the publication) stays the same object. Resolves the computed result; PAGE_NOT_READY without one. */
  function forEngines(pg){const h=result_(pg);if(!h.inputs)return Promise.reject(Error('PAGE_NOT_READY'));
-  if(!h.device){h.device=(async()=>{await action.stores();const r=await win.QgvScores.pageResult(scoreView,{v2Inputs:h.inputs,catalog:h.catalog,identities:ids,preset:profile.preset,gate:profile.gate});if(!r)throw Error('PAGE_NOT_READY');return r.computed;})();
-   h.device.catch(()=>{h.device=null;});}
-  return h.device;}
+  return(async()=>{await action.stores();const r=await win.QgvScores.pageResult(scoreView,{v2Inputs:h.inputs,catalog:h.catalog,identities:ids,preset:profile.preset,gate:profile.gate});if(!r)throw Error('PAGE_NOT_READY');return r.computed;})();}
  // The central result exactly as QgvScores made it (playbook facts, the rehearsal's Q·G rows: price-free).
  const centralComputed=pg=>result_(pg).result.computed;
  // The sec-qgv2.json value (Qgv2Inputs output) the page read (a re-judgement can replace data.get's value later; null without one).

@@ -21,8 +21,10 @@
 //    PRICE_TABS_OFF / AUTH_REQUIRED / SHEET_NOT_CONNECTED reason; synthetic clicks request and write nothing and print no code.
 //  - Central V (DC-31): without qgv-official.json every V is NA with OFFICIAL_NOT_PUBLISHED and 종합 순위 is empty (no price button
 //    mirrored); in the click context the synthetic publication (+ a failed-attempt status file) gives the ranks and V, the basis
-//    chip (IEX wording, basis day, publication time), the attempt chip and the IEX attribution link; the Universe read changes no
-//    rank or V (M3 only).
+//    chip (IEX wording, basis day, publication time with date and UTC), the attempt chip and the IEX attribution link; fresh on the
+//    fixed clock (0 sessions after the basis day), STALE on a clock 3 completed New York sessions later with the publication still
+//    shown, and the company page's QGV card with the same STALE mark, publication time, attempt and IEX attribution link; the
+//    Universe read changes no rank or V (M3 only).
 //  - Clicks (GIS / Sheets stand-ins with sentinel decimals): ① → ② → ③ (③ by Enter: one action) leave the layer's ranks as published; M3 in
 //    [data-ram-price] text only; assertRamOnly; leaks() empty; only the click-written keys stored; the 2.1.6 badges and the
 //    2.1.7 candidates from IS2.qgv.model; a saved weights profile previews without touching the official page. A returning
@@ -167,9 +169,9 @@ const testClick = async (page, name) => { await page.locator('[data-test-action=
   try {
     for (const [width, height] of [[1440, 1000], [390, 844]]) {
       const phone = width < 720;
-      const open = async ({ tabs = false, flag = false } = {}) => {
+      const open = async ({ tabs = false, flag = false, at = NOW } = {}) => {
         const context = await browser.newContext({ viewport: { width, height } });
-        await context.clock.setFixedTime(new Date(NOW));
+        await context.clock.setFixedTime(new Date(at));
         await context.addInitScript(HELPERS);
         // A returning user's browser: the PriceStore flag (useTabs wrote it on an earlier visit) is there before the page loads.
         if (flag) await context.addInitScript(() => { try { if (localStorage.getItem('investment.web.v1.price-store-enabled') === null) localStorage.setItem('investment.web.v1.price-store-enabled', '1'); } catch (_) {} });
@@ -442,6 +444,31 @@ const testClick = async (page, name) => { await page.locator('[data-test-action=
         await ctx.context.close();
       }
 
+      // ================================================================ central STALE: 3 completed New York sessions after the basis day
+      {
+        tag('central stale');
+        s.fixture('qgv-official.json', { body: PUB_TEXT, type: 'application/json' }); s.fixture('qgv-official-status.json', { json: STATUS });
+        // 2026-10-17T03:00Z = 10-16 23:00 New York: 10-14, 10-15 and 10-16 completed after the basis day 10-13 (FRESH_SESSIONS 2).
+        const ctx = await open({ at: '2026-10-17T03:00:00.000Z' }), { page } = ctx;
+        await page.goto(s.base + '#/qgv'); await ready(page); await tableReady(page);
+        const st = await page.evaluate(async () => { const pg = await window.IS2.qgv.page(), q = (x) => document.querySelector(x);
+          return { sessions: pg.price_basis.sessions, stale: pg.price_basis.stale, chip: (q('[data-central-state=STALE]') || {}).textContent || null, unknown: !!q('[data-central-state=STALE_UNKNOWN]'),
+            ranks: pg.rows.filter((r) => Number.isInteger(r.rank.official)).length, v: pg.rows.filter((r) => r.score.v !== null).length }; });
+        assert.deepEqual([st.sessions, st.stale, st.unknown], [3, true, false], 'more than 2 completed New York sessions: STALE');
+        assert.equal(st.chip, 'STALE · 기준일 뒤 끝난 뉴욕 정규장 2회 초과 · 마지막 게시본 그대로');
+        assert.equal(st.ranks, PUB.coverage.ranked, 'a late publication is shown as it is (never replaced by a device V)'); assert.ok(st.v > 1);
+        // The company page's QGV card shows the same official V: STALE, the publication time, the failed attempt, the IEX attribution.
+        await page.goto(s.base + '#/company/nvda'); await page.locator('[data-card=qgv] [data-qgv]').waitFor({ timeout: 20000 });
+        const card = await page.evaluate(() => { const c = document.querySelector('[data-card=qgv]'), q = (x) => c.querySelector(x), a = q('[data-attribution] a');
+          return { src: q('[data-v-source]').textContent, pub: (q('[data-central-published]') || {}).textContent || null, attempt: (q('[data-central-attempt]') || {}).textContent || null,
+            attr: (q('[data-attribution]') || {}).textContent || null, link: a ? [a.getAttribute('href'), a.getAttribute('target'), a.getAttribute('rel')] : null }; });
+        assert.equal(card.src, 'V 출처: 공식 V · 공식 V · IEX 마지막 체결가 기준(공식 종가 아님) · 가격 기준일 2026-10-13 · STALE');
+        assert.match(card.pub, /^게시 \d{4}\. \d\d\. \d\d\. \d\d:\d\d UTC$/);
+        assert.equal(card.attempt, '마지막 게시 시도 2026. 10. 14. 01:50 UTC · 마지막 게시 시도 실패: IEX 가격 공급이 95% 기준에 못 미쳤습니다 · 이전 게시본 유지');
+        assert.equal(card.attr, PUB.attribution.text + ' IEX 약관'); assert.deepEqual(card.link, [PUB.attribution.terms_url, '_blank', 'noopener noreferrer'], 'IEX HIST terms clause 01 on the company card');
+        await ctx.context.close();
+      }
+
       // ================================================================ clicks: sign-in and the Universe read on the band
       {
         tag('clicks');
@@ -465,10 +492,11 @@ const testClick = async (page, name) => { await page.locator('[data-test-action=
           return { ranks: pg.rows.filter((r) => Number.isInteger(r.rank.official)).map((r) => r.id + ':' + r.rank.official), v: pg.rows.filter((r) => r.score.v !== null).length, chip: q('[data-central-basis]').textContent,
             attempt: (q('[data-central-attempt]') || {}).textContent || null, attr: q('[data-attribution]').textContent, href: a.getAttribute('href'), target: a.getAttribute('target'), rel: a.getAttribute('rel'), stale: !!q('[data-central-state=STALE]'), basis: pg.price_basis }; });
         assert.equal(central.ranks.length, PUB.coverage.ranked, 'the published ranks'); assert.ok(central.v > 1, 'the published V');
-        assert.match(central.chip, /^공식 V · IEX 마지막 체결가 기준\(공식 종가 아님\) · 가격 기준일 2026-10-13 · 게시 \d\d:\d\d$/);
-        assert.match(central.attempt, /^마지막 게시 시도 \d\d:\d\d · 마지막 게시 시도 실패: IEX 가격 공급이 95% 기준에 못 미쳤습니다/);
+        assert.match(central.chip, /^공식 V · IEX 마지막 체결가 기준\(공식 종가 아님\) · 가격 기준일 2026-10-13 · 게시 \d{4}\. \d\d\. \d\d\. \d\d:\d\d UTC$/);
+        assert.match(central.attempt, /^마지막 게시 시도 2026\. 10\. 14\. 01:50 UTC · 마지막 게시 시도 실패: IEX 가격 공급이 95% 기준에 못 미쳤습니다/);
         assert.equal(central.attr, PUB.attribution.text + ' IEX 약관'); assert.deepEqual([central.href, central.target, central.rel], [PUB.attribution.terms_url, '_blank', 'noopener noreferrer']);
-        assert.equal(central.stale, central.basis.stale === true, 'STALE chip ⇔ more than 2 completed New York sessions');
+        // The context clock is fixed (NOW = 10-13 23:00 New York, the basis day itself): 0 completed sessions after it, not STALE.
+        assert.deepEqual([central.basis.sessions, central.basis.stale, central.stale], [0, false, false], 'fresh: no STALE chip');
         await b(2).focus(); await page.keyboard.press('Enter');
         await page.waitForFunction(() => document.querySelector('[data-lb-table] tbody tr[data-row] [data-ram-price]'), null, { timeout: 20000 });
         await settle(page);

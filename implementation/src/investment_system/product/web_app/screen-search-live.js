@@ -135,8 +135,14 @@ function bar(axis,v,why){
 // The score file's refresh time (its as_of, date and time in UTC) and calc_version under the QGV card (DC-22), in every state.
 let SF=null;
 const stamp=t=>{const d=Date.parse(t);return Number.isFinite(d)?(SF||(SF=new Intl.DateTimeFormat('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'UTC'}))).format(d)+' UTC':null;};
-// The central V basis (DC-31): the IEX wording, the price basis day, STALE past the session threshold.
-const centralLine=pg=>{const b=pg.price_basis||{};return[b.label||'',' · 가격 기준일 ',b.price_basis_date||'NA',b.stale===true?' · STALE':'',b.calc_differs===true?' · 계산 버전 다름':''].join('');};
+// The central V basis (DC-31): the IEX wording, the price basis day, STALE past the session threshold (or not countable).
+const centralLine=pg=>{const b=pg.price_basis||{};return[b.label||'',' · 가격 기준일 ',b.price_basis_date||'NA',b.stale===true?' · STALE':b.publication_id&&b.stale===null?' · STALE 판정 불가':'',b.calc_differs===true?' · 계산 버전 다름':''].join('');};
+/* Under the V source line: the publication time, the last failed publication attempt, and the IEX attribution with its terms
+   link wherever the official (IEX-derived) V is shown (IEX HIST terms clause 01, DC-29); the same fields as the leaderboard chips. */
+const centralMore=(pg,Q)=>{const b=pg.price_basis||{},a=b.attempt;
+ return[b.publication_id?h('p',{class:'reason',dataset:{centralPublished:b.publication_id}},'게시 ',stamp(b.generated_at)||'NA'):null,
+  a&&a.state!=='OK'?h('p',{class:'reason',dataset:{centralAttempt:a.state}},'마지막 게시 시도 ',stamp(a.at)||'NA',' · ',Q.reasonText(a.state==='UNKNOWN'?a.reason:a.state)):null,
+  b.attribution?h('p',{class:'reason',dataset:{attribution:''}},b.attribution.text,' ',h('a',{href:b.attribution.terms_url,target:'_blank',rel:'noopener noreferrer'},'IEX 약관')):null].filter(Boolean);};
 const basisLine=pg=>h('p',{class:'reason',dataset:{qgvBasis:''}},'점수 갱신 ',stamp(pg.as_of)||'없음',' · 계산 버전 ',pg.calc_version||'없음');
 function qgvCard(body,cid,signal){
  const Q=I.qgv;
@@ -146,7 +152,7 @@ function qgvCard(body,cid,signal){
   const s=row.score,r=row.na_reason;
   const rank=Number.isInteger(row.rank.official)?h('span',null,'순위 ',String(row.rank.official),' / ',String(row.rank.of),' · ',Q.rankLabel(pg)):h('span',{class:'na'},'순위 NA · ',Q.reasonText(r.rank));
   body.replaceChildren(h('div',{class:'qbars',dataset:{qgv:row.id}},...bar('Q',s.q,r.q&&Q.reasonText(r.q)),...bar('G',s.g,r.g&&Q.reasonText(r.g)),...bar('V',s.v,r.v&&Q.reasonText(r.v))),
-   h('p',{class:'reason',dataset:{vSource:row.source}},'V 출처: ',row.source_label,' · ',centralLine(pg)),
+   h('p',{class:'reason',dataset:{vSource:row.source}},'V 출처: ',row.source_label,' · ',centralLine(pg)),...centralMore(pg,Q),
    h('p',{dataset:{total:''}},ok(s.total)?['QGV 종합 ',h('b',null,fmt(s.total)),ok(s.v)?'':h('span',{class:'reason'},' · V 미포함')]:h('span',{class:'na'},'QGV 종합 NA · ',Q.reasonText(r.total))),
    h('p',{dataset:{rank:''}},rank),basisLine(pg));}),
  e=>{if(!signal.aborted&&String(e&&e.message)!=='ABORTED')body.replaceChildren(na('QGV 점수를 계산하지 못했습니다','PAGE_FAILED'));});

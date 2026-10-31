@@ -502,10 +502,46 @@ test('qgv.page: an exact projection of QgvScores.officialPage over the validated
   assert.throws(() => qgv.rows(pg, { scope: 'X' }), /SCOPE_UNKNOWN/); assert.throws(() => qgv.rows({ rows: [] }), /PAGE_UNKNOWN/);
   // TARGET v1 only (until 11/16): the hidden device result, computed when engines ask, on the score view (no request, RAM prices).
   const device = await qgv.forEngines(pg); assert.equal(calls.length, 1); const { view, opts } = calls[0];
-  assert.equal(device, (await calls[0].p).computed); assert.equal(await qgv.forEngines(pg), device, 'computed once');
+  assert.equal(device, (await calls[0].p).computed); assert.equal(await qgv.forEngines(pg), device, 'the same read and profile: pageResult\'s memo, the same result');
   await assert.rejects(view.fetch(QGV2), /SCORE_PATH_NO_NETWORK/); assert.equal(view.PrivateSubsetView, U.view); assert.equal(opts.v2Inputs, data.get(QGV2)); assert.equal(qgv.engineInputs(pg), data.get(QGV2));
   for (const sv of U.sentinels) assert.ok(!JSON.stringify(pg).includes(sv), 'sentinel price leaked');
   assert.deepEqual(win.requests.filter((r) => !data.FILES.includes(r.name)), [], 'only public files were requested');
+});
+
+test('forEngines: a Universe read or a profile change after the first ask reaches the TARGET device result although the central page stays the same object', async () => {
+  const U = universeView(), live = { prices: () => null, priceBasis: () => null, readStatus: () => null }, E = env({ prices: { universeView: live } }), { qgv, mods } = E, calls = spy(E);
+  const pg = await qgv.page(), hasV = (c) => Object.values(c.rows).some((r) => Number.isFinite(r.primary.v));
+  const before = await qgv.forEngines(pg); assert.equal(hasV(before), false, 'before the read: no device price, no device V');
+  live.prices = U.view.prices; live.priceBasis = U.view.priceBasis;
+  assert.equal(await qgv.page(), pg, 'the central page does not depend on the Universe read');
+  const after = await qgv.forEngines(pg); assert.notEqual(after, before); assert.equal(hasV(after), true, 'after the read: the device V of that read');
+  assert.equal(await qgv.forEngines(pg), after, 'the same read: the same result');
+  const other = Object.keys(mods.QgvV2.PRESETS).find((k) => k !== mods.QgvV2.DEFAULT_PRESET);
+  qgv.setProfile({ preset: other, gate: false }); assert.equal(await qgv.page(), pg);
+  const prof = await qgv.forEngines(pg); assert.notEqual(prof, after); assert.equal(prof.profile.preset, other); assert.equal(prof.profile.gate, false);
+  assert.deepEqual(calls.map((c) => [c.opts.preset, c.opts.gate]).slice(-1), [[other, false]], 'the current profile is passed');
+  for (const sv of U.sentinels) assert.ok(!JSON.stringify(pg).includes(sv), 'no device price on the page');
+});
+
+test('central basis on a fixed clock: fresh at 2 completed New York sessions, STALE at 3, not countable before the basis day; calc_differs; OFFICIAL_INPUTS_DIFFER', async () => {
+  // The basis day 2026-10-13 (Tue). 21:00Z = 17:00 New York (after the 16:00 cut).
+  const clock = fixedClock(Date.parse('2026-10-15T21:00:00Z'));
+  try {
+    const { qgv } = env(), seen = [];
+    for (const [at, sessions, stale] of [['2026-10-15T21:00:00Z', 2, false], ['2026-10-16T21:00:00Z', 3, true], ['2026-10-16T19:00:00Z', 2, false], ['2026-10-12T15:00:00Z', null, null]]) {
+      clock.set(Date.parse(at)); const pg = await qgv.page(), b = pg.price_basis;
+      assert.deepEqual([b.sessions, b.stale], [sessions, stale], at); assert.equal(b.publication_id, PUB.publication_id); assert.equal(b.calc_differs, false); seen.push(pg);
+      assert.equal(pg.rows.filter((r) => Number.isInteger(r.rank.official)).length, PUB.coverage.ranked, at + ': the last publication stays shown, STALE or not');
+    }
+    assert.notEqual(seen[0], seen[1], 'a page whose STALE state changed is a new page (basis_id)');
+  } finally { clock.restore(); }
+  // The same file under a later calculation-rule version (file and rows), as a newer sec-qgv2.json beside an older publication.
+  const later = JSON.parse(JSON.stringify(matched()).replaceAll(PUB.calc_version, 'qgv2-calc/2026-10-23.2'));
+  const other = env({ files: { [QGV2]: { json: later } } }), po = await other.qgv.page(); assert.equal(other.data.get(QGV2).calc_version, 'qgv2-calc/2026-10-23.2');
+  assert.equal(po.price_basis.calc_differs, true, 'the loaded sec-qgv2.json declares another calc_version'); assert.equal(po.price_basis.calc_version, PUB.calc_version);
+  const older = env({ files: { [QGV2]: { json: { ...F.strictPayload(), as_of: '2026-10-12T22:30:00Z' } } } }), pd = await older.qgv.page();
+  assert.equal(pd.state, 'READY'); assert.equal(pd.reason, 'OFFICIAL_INPUTS_DIFFER'); assert.equal(pd.price_basis.inputs_match, false); assert.equal(older.qgv.model(pd), null, 'no candidate selection');
+  assert.equal(pd.rows.filter((r) => Number.isInteger(r.rank.official)).length, PUB.coverage.ranked, 'the publication values only');
 });
 
 test('V source: OFFICIAL_CENTRAL on every page and row; V_SOURCES unchanged until 11/16; final wording; engines record DEVICE_TEMPORARY for TARGET only', async () => {

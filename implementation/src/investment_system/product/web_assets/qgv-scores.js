@@ -263,6 +263,12 @@ function pubPersonal(pub,tree,typesOn,gateOn){const V2=qgvV2(),T=typeDefaults(),
   if(data/100<V2.MIN_AXIS_WEIGHT||!included.length)reason='AXIS_WEIGHT_INSUFFICIENT';else{let acc=0,used=0;for(const p of included){acc+=w[p]*ax[p].score;used+=w[p];}total=acc/used;}
   out[k]={...pubRow(r),axes:ax,weights:w,q_industry_percentile:q,v_excluded:trap?'VALUE_TRAP_GATE':null,value_trap_gate:trap,total,total_reason:reason,flags};}
  return out;}
+/* D11 one place per CIK, the qgv_official.assign_ranks rule: the representative key of each CIK = a TARGET row of a Universe CIK
+   that is LIVE / STALE and not CALC_VERSION_MISMATCH (the last in key order), else the first cross-section Universe code. */
+function pubReps(pub){const rows=pub.rows,T='TARGET:',keys=Object.keys(rows).sort(),uc=new Set(keys.filter(k=>!k.startsWith(T)&&rows[k].cik).map(k=>rows[k].cik)),rep={};
+ for(const k of keys){const r=rows[k];if(k.startsWith(T)&&uc.has(r.cik)&&(r.state==='LIVE'||r.state==='STALE')&&r.total_reason!=='CALC_VERSION_MISMATCH')rep[r.cik]=k;}
+ for(const k of keys){const r=rows[k];if(!k.startsWith(T)&&r.in_cross_section===true&&r.cik&&!Object.hasOwn(rep,r.cik))rep[r.cik]=k;}
+ return rep;}
 // The publication's rows as the record view codeIndex / universeIdentities / coverageFor read when the loaded sec-qgv2.json is not
 // the file the publication was computed from (another as_of): publication-only rows, flagged inputs_match false.
 function pubRecords(pub){const records={};for(const[k,r]of Object.entries(pub.rows))records[k]={cik:r.cik,state:r.state,published_profile:r.profile,industry_group:r.industry_group,in_cross_section:r.in_cross_section,
@@ -283,8 +289,10 @@ function inputsMatch(inputs,pub){return!!inputs&&object(inputs.records)&&inputs.
    it the result is unchanged: every identity with a total is ranked (callers that score their own identities). */
 /* publication (optional, DC-31): a qgv-official.json payload (officialPage passes only one QgvOfficial validated). The official
    result is then the publication's (official default profile; preset and quotes are not used; no engine call), ranks are its
-   own (D11, one place per CIK: only the row whose code is the CIK's rank_row is placed; the other codes of that CIK carry
-   rank_row), and weights give the personal recompute (pubPersonal; gate = the personal gate). v2Inputs enriches coverage only
+   own (D11, one place per CIK: only the row whose code is the CIK's rank_row is placed, or, when that TARGET identity is not on
+   the page, the row of the CIK's first cross-section Universe code; the other codes of that CIK carry rank_row), and weights give
+   the personal recompute (pubPersonal; gate = the personal gate), placed with the same one-place-per-CIK rule (pubReps; the other
+   codes carry personal_rank_row). v2Inputs enriches coverage only
    when it is the file the publication was computed from (inputsMatch), else publication-only records (inputs_match false).
    vMissing (optional, no publication): the reason every missing V factor carries instead of the device price wording
    (OFFICIAL_NOT_PUBLISHED / OFFICIAL_INVALID / OFFICIAL_UNAVAILABLE): Q·G rows go to the QG reference list, never a device V. */
@@ -318,8 +326,12 @@ function compute({identities=[],publicScreens={},v2Inputs,quotes={},preset,gate=
   const row={company_id:c.company_id,ticker:c.ticker,code,v2,primary:v2,reference:null,rank:null,qg_reference:null};if(U){row.universe_code=typeof U[c.company_id]==='string'?U[c.company_id]:null;row.outside_universe=row.universe_code===null;}rows[c.company_id]=row;}
  // D11: official rank = rows with a total AND a V score; Q·G-only totals get qg_reference {order, reason} in their own order.
  const byTotal=k=>(a,b)=>b[k].total-a[k].total||(a.ticker<b.ticker?-1:1),scored=Object.values(rows).filter(r=>finite(r.primary.total)&&r.primary.reference_only!==true&&inRank(r));
- if(pub)for(const r of scored){const p=Object.hasOwn(pub.rows,r.code)?pub.rows[r.code]:null;if(!p||p.rank_row===null)continue;if(p.rank_row!==r.code){r.rank_row=p.rank_row;continue;}
-  if(Number.isInteger(p.rank))r.rank=p.rank;else if(Number.isInteger(p.qg_reference_order))r.qg_reference={order:p.qg_reference_order,...(qgReference(r.primary)||{reason:'V_INPUTS_NOT_AVAILABLE'})};}
+ // Publication: the page row that holds a CIK's place = the row of the key named (rank_row / representative), else, when that TARGET
+ // identity is not on the page, the row of the CIK's first cross-section Universe code (so no published place goes unshown).
+ const pubOf=r=>pub&&r.code&&Object.hasOwn(pub.rows,r.code)?pub.rows[r.code]:null,inPage=Object.values(rows).filter(inRank),byCode=new Map();for(const r of inPage)if(r.code&&!byCode.has(r.code))byCode.set(r.code,r);
+ const seat=(cik,key)=>{if(!cik)return null;const r=byCode.get(key);if(r)return r;let best=null;for(const x of inPage){const p=pubOf(x);if(p&&p.cik===cik&&p.in_cross_section===true&&!x.code.startsWith('TARGET:')&&(!best||x.code<best.code))best=x;}return best;};
+ if(pub)for(const r of scored){const p=pubOf(r);if(!p||p.rank_row===null)continue;const s=seat(p.cik,p.rank_row),t=pub.rows[p.rank_row];if(s!==r){r.rank_row=s?s.code:p.rank_row;continue;}
+  if(Number.isInteger(t.rank))r.rank=t.rank;else if(Number.isInteger(t.qg_reference_order))r.qg_reference={order:t.qg_reference_order,...(qgReference(r.primary)||{reason:'V_INPUTS_NOT_AVAILABLE'})};}
  else{ranked=scored.filter(r=>!qgReference(r.primary)).sort(byTotal('primary'));ranked.forEach((r,i)=>{r.rank=i+1;});
   scored.filter(r=>qgReference(r.primary)).sort(byTotal('primary')).forEach((r,i)=>{r.qg_reference={order:i+1,...qgReference(r.primary)};});}
  // PERSONAL_PREVIEW: same identities, inputs, quotes, stops and tie rule; a separate memo, rows[cid].personal, never primary.
@@ -332,8 +344,11 @@ function compute({identities=[],publicScreens={},v2Inputs,quotes={},preset,gate=
    if(pub)personal.weight_stages={state:'NOT_AVAILABLE',reason:'WEIGHT_STAGES_NOT_REBUILT'};
    const extra={weights:tree,typeWeights:typesOn};for(const c of identities){const row=rows[c.company_id];row.personal=display(pu,c,row.code,extra);row.personal_rank=null;row.personal_qg_reference=null;}
    // Same D11 split for the personal result (V weight > 0); with V weight 0 every personal total is ranked under PERSONAL_V0_LABEL.
-   const mine=Object.values(rows).filter(r=>finite(r.personal.total)&&r.personal.reference_only!==true&&inRank(r)),qgOnly=r=>!personal.v_weight_zero&&qgReference(r.personal);
+   // Publication: one place per CIK as the official ranks (pubReps), the other codes of the CIK carry personal_rank_row.
+   const rep=pub?pubReps(pub):null,seatOf=r=>{const p=pubOf(r);return p&&p.cik&&Object.hasOwn(rep,p.cik)?seat(p.cik,rep[p.cik]):null;};
+   const mine=Object.values(rows).filter(r=>finite(r.personal.total)&&r.personal.reference_only!==true&&inRank(r)&&(!pub||seatOf(r)===r)),qgOnly=r=>!personal.v_weight_zero&&qgReference(r.personal);
    mine.filter(r=>!qgOnly(r)).sort(byTotal('personal')).forEach((r,i)=>{r.personal_rank=i+1;});mine.filter(qgOnly).sort(byTotal('personal')).forEach((r,i)=>{r.personal_qg_reference={order:i+1,...qgReference(r.personal)};});
+   if(pub)for(const r of inPage){const s=seatOf(r);if(s&&s!==r&&(s.personal_rank!==null||s.personal_qg_reference!==null))r.personal_rank_row=s.code;}
    if(pu&&Object.values(pu).some(r=>finite(r.total)))personal.state='READY';else if(!personal.reason)personal.reason='V2_SCORES_NOT_AVAILABLE';}}
  const quoted=object(quotes)?Object.keys(quotes).length:0;
  // D12 counts of the official result (rank population = Universe rows with an official rank; the QG 참고 목록 apart).

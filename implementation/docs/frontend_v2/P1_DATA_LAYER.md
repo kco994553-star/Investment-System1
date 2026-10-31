@@ -351,6 +351,7 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
 - `compute({publication, ...})`
   - 게시된 행을 엔진 모양 행으로 바꾼다. 엔진을 부르지 않고 가격도 쓰지 않는다. Q·G·V·종합 점수·플래그는 게시본 값 그대로다.
   - 순위도 게시본 것이다(D11). 한 CIK에 공식 순위 한 자리다(D-CV8/9). 그 CIK의 `rank_row` 코드 행에만 순위가 붙는다. 같은 CIK의 다른 코드 행은 `rank_row`를 들고, 순위 사유는 `ISSUER_RANKED_ONCE`다.
+  - `rank_row`가 가리키는 TARGET 행이 페이지에 없으면(기업 목록을 못 읽음) 그 CIK의 첫 횡단면 Universe 코드 행에 게시 순위를 붙인다. 게시된 자리가 빠지지 않는다.
 - 점수 파일과 게시본이 다를 때
   - 불러온 `sec-qgv2.json`이 게시본의 입력(같은 `as_of`)일 때만 그 파일로 커버리지와 모델 지표를 보탠다.
   - 다른 파일이면 게시본만으로 행을 만든다. Page 사유는 `OFFICIAL_INPUTS_DIFFER`이고 모델 후보는 고르지 않는다.
@@ -366,6 +367,7 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
   - 축 가중치는 `compositeWeights(tree.axis, 게시 유형 가중치, 유형 설정 기본값)`이다. 유형 가중치를 끄면 축 가중치를 정규화한다.
   - 가치 함정 관문은 게시된 Q 산업 백분위로 판정한다. Q를 다시 계산하면 엔진 규칙(`cross`, 산업 8곳 이상)으로 백분위도 다시 낸다.
   - 종합은 `qgv-v2.js` scoreUniverse 식 그대로다. 같은 합성 입력에서 기기 엔진과 정확히 같다는 시험이 있다(`qgv_scores_node_test.js`).
+  - 개인 순위와 개인 QG 참고 순서도 한 CIK에 한 자리다. 대표 코드는 Python `assign_ranks`와 같은 규칙이다(Universe CIK의 LIVE/STALE TARGET 행, 없으면 그 CIK의 첫 횡단면 Universe 코드). 같은 CIK의 다른 코드 행은 `rank_row`(개인)를 들고 사유는 `ISSUER_RANKED_ONCE`다. 공식 가중치로 미리보면 모든 행의 개인 순위·QG 순서가 게시본과 같다(시험).
   - 가중치 단계 표는 NA다(`WEIGHT_STAGES_NOT_REBUILT`). `qgv-v2.js`는 고치지 않는다.
 - 기기 경로 `collectQuotes` / `pageResult`는 그대로 둔다. 옛 앱과 TARGET이 아직 쓴다(PR-1b와 11/16에 걷어낸다).
 - `qgv-scores.js`는 해시 고정 파일이다. `pages_artifact_guard.py` `APPROVED_SHA256`에서 이 파일 하나만 다시 고정했다.
@@ -373,12 +375,13 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
 **Page 기준(`price_basis`)과 화면 문구**
 - `price_basis` = `{kind:'CENTRAL_IEX', label, reason, price_basis_date, generated_at, verified_at, publication_id, calc_version, sessions, stale, calc_differs, inputs_match, attempt, attribution}`.
   - `sessions`: 가격 기준일 뒤 끝난 뉴욕 정규장 수다(`QgvOfficial.sessionsAfter`, 16:00 뉴욕 마감).
-  - **STALE**: `FRESH_SESSIONS`=2를 넘으면 `stale`이다(D-CV6, 소유자 확인 기본값).
+  - **STALE**: `FRESH_SESSIONS`=2를 넘으면 `stale`이다(D-CV6, 소유자 확인 기본값). 셀 수 없으면(기준일이 기기 시계보다 뒤, 달력 범위 밖) `stale`은 null이고 화면은 "STALE 판정 불가"를 보인다(새것으로 보이지 않게).
   - `calc_differs`: 불러온 `sec-qgv2.json`의 계산 버전이 다르면 "계산 버전 다름" 표시를 한다. 값은 게시본 그대로다.
   - `attempt`: 상태 파일의 마지막 게시 시도다.
 - 1.1 리더보드와 검색 카드(`screen-qgv-live.js`, `screen-search-live.js`)가 보이는 것
-  - "공식 V · IEX 마지막 체결가 기준(공식 종가 아님)", 가격 기준일, 게시 시각.
-  - STALE 칩, 계산 버전 다름 칩, 마지막 실패한 게시 시도.
+  - "공식 V · IEX 마지막 체결가 기준(공식 종가 아님)", 가격 기준일, 게시 시각(날짜와 UTC).
+  - STALE 칩(또는 STALE 판정 불가), 계산 버전 다름 칩, 마지막 실패한 게시 시도(날짜와 UTC).
+  - 검색(기업) 카드도 같은 게시 시각·마지막 실패 시도·IEX 출처 문장과 약관 링크를 V 출처 줄 아래에 보인다.
   - IEX 출처 문장과 약관 링크(IEX HIST 약관 01조, DC-29). 문장과 링크는 게시본에서 읽는다.
 - 순위 이름: 공식 순위는 "공식 순위 · 중앙 게시 V"다. 개인 미리보기는 "내 설정 순위 · 공식 V로 다시 계산 · 공식 순위 아님"이다. 출처를 모르면 "공식 순위 아님"이다.
 - 가격 버튼
@@ -389,7 +392,7 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
 - 플레이북 사실과 리허설은 Page의 중앙 결과(`qgv.centralComputed`)를 읽는다. `v_source`는 `OFFICIAL_CENTRAL`이다.
   - 기기 V 이력이 없으므로 `v_prev20`은 NA다(`V_HISTORY_NOT_PUBLISHED`). V 변화 규칙은 그 값이 없다고 보고한다. 엔진은 고치지 않았다.
   - `prepareScores`는 뉴스 RAM을 채우는 데만 부른다. `sec-qgv2.json` 없이 부르므로 기기 V를 계산하지 않는다.
-- TARGET v1(초안, R-B, 확정)은 11/16까지 숨은 기기 결과를 읽는다. `await qgv.forEngines(pg)`로, 빌더가 처음 물을 때만 계산하고 화면에는 쓰지 않는다. 기록은 `engine_v_source`(`DEVICE_TEMPORARY`)다.
+- TARGET v1(초안, R-B, 확정)은 11/16까지 숨은 기기 결과를 읽는다. `await qgv.forEngines(pg)`로, 빌더가 물을 때마다 `QgvScores.pageResult`를 부르고(그 기억이 Universe 읽기·기기 입력·preset/gate별로 같은 결과를 돌려준다) 화면에는 쓰지 않는다. 중앙 Page는 게시본으로 기억하므로 같은 객체로 남지만, 뒤의 Universe 읽기나 `setProfile`은 빌더 결과에 반영된다. 기록은 `engine_v_source`(`DEVICE_TEMPORARY`)다.
 
 **기기 V 이력**
 - `store.vHistory`를 지웠다.

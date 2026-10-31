@@ -150,13 +150,16 @@ function leaderboard(route,refs){
  function paintChips(pg){refs.chips.replaceChildren(...basis(pg),h('span',{class:vsrcClass(pg)},'V 출처: ',pg.v_source.ko),h('span',{class:'chip'},Q.rankLabel(pg)),...central(pg));}
  /* ---- the central V basis (DC-31): "공식 V · IEX 마지막 체결가 기준(공식 종가 아님)", the price basis day, the publication time, STALE
     past FRESH_SESSIONS completed New York sessions, a different calc_version, the last failed publication attempt, why there is
-    no official V, and the IEX attribution with its terms link (IEX HIST terms clause 01, DC-29). The last publication stays shown. */
+    no official V, and the IEX attribution with its terms link (IEX HIST terms clause 01, DC-29). The last publication stays shown.
+    Times carry their date and zone (stamp: a STALE publication is days old); sessions that cannot be counted (basis day ahead of
+    this device's clock, calendar past its end) say so instead of passing for fresh. */
  function central(pg){const b=pg.price_basis||{},a=b.attempt;
-  return[h('span',{class:'chip',dataset:{centralBasis:b.publication_id||''}},b.label||pg.v_source.ko,' · 가격 기준일 ',b.price_basis_date||'NA',' · 게시 ',clock(b.generated_at)||'NA'),
+  return[h('span',{class:'chip',dataset:{centralBasis:b.publication_id||''}},b.label||pg.v_source.ko,' · 가격 기준일 ',b.price_basis_date||'NA',' · 게시 ',stamp(b.generated_at)||'NA'),
    b.reason?h('span',{class:'chip err',dataset:{na:b.reason}},text(b.reason)):null,
    b.stale===true?h('span',{class:'chip err',dataset:{centralState:'STALE'}},'STALE · 기준일 뒤 끝난 뉴욕 정규장 2회 초과 · 마지막 게시본 그대로'):null,
+   b.publication_id&&b.stale===null?h('span',{class:'chip err',dataset:{centralState:'STALE_UNKNOWN'}},'STALE 판정 불가 · 기준일 뒤 정규장 수를 셀 수 없음 · 마지막 게시본 그대로'):null,
    b.calc_differs===true?h('span',{class:'chip err',dataset:{centralState:'CALC_DIFFERS'}},'계산 버전 다름 · 게시본 값 그대로'):null,
-   a&&a.state!=='OK'?h('span',{class:'chip err',dataset:{centralAttempt:a.state}},'마지막 게시 시도 ',clock(a.at)||'NA',' · ',say(a.reason,text(a.state))):null,
+   a&&a.state!=='OK'?h('span',{class:'chip err',dataset:{centralAttempt:a.state}},'마지막 게시 시도 ',stamp(a.at)||'NA',' · ',say(a.reason,text(a.state))):null,
    b.attribution?h('span',{class:'chip',dataset:{attribution:''}},b.attribution.text,' ',h('a',{class:'lk',href:b.attribution.terms_url,target:'_blank',rel:'noopener noreferrer'},'IEX 약관')):null].filter(Boolean);}
  /* ---- the 기준 chips in every page state (DC-22, owner 2026-10-27): the score file's refresh time (its as_of, UTC), this tab's last
     check of the public files, the calc_version, a file past its stale_after_seconds, the last re-read's outcome, and the re-read
@@ -392,7 +395,7 @@ function leaderboard(route,refs){
   const weightWord=x.weights==='OFFICIAL'?'공식 가중치':x.setting.includes('WEIGHTS')?'개인 가중치':'개인 프리셋',where=x.source==='DEVICE_COMPUTED'?'기기 계산 · 게시 요인 점수로':'중앙 게시';
   const turn=on=>set(()=>{if(on===V.preview)return;V.preview=on;ctx.preview=null;if(on){const q=list.find(y=>y.id===V.profile)||list[0];V.profile=q.id;V.gate=q.gate===false?false:true;}});
   const badge=(k,label,word)=>h('div',{class:'sk badge',dataset:{badge:k}},h('b',null,label),h('span',{class:'hl'},word));
-  const b=pg.price_basis,time=['가격 기준일 ',b.price_basis_date||'NA',' · 게시 ',clock(b.generated_at)||'NA',b.stale===true?' · STALE':''];
+  const b=pg.price_basis,time=['가격 기준일 ',b.price_basis_date||'NA',' · 게시 ',stamp(b.generated_at)||'NA',b.stale===true?' · STALE':b.publication_id&&b.stale===null?' · STALE 판정 불가':''];
   return[group('결과 보기',chip('공식 가중치 결과',!V.preview,{dataset:{k:'mode-official'},onclick:turn(false)}),chip('내 설정 결과(미리보기)',V.preview,{disabled:!canPreview,dataset:{k:'mode-preview'},onclick:turn(true)})),
    canPreview?null:h('p',{class:'reason',dataset:{previewOff:''}},'저장된 내 설정이 없습니다 · 1.2 가중치 화면에서 만듭니다(다음 단계)'),
    V.preview&&list.length>1?h('div',{class:'sort-row'},h('label',{for:'lb-profile'},'내 설정'),h('select',{id:'lb-profile',dataset:{k:'profile'},onchange:e=>{const q=list.find(y=>y.id===e.target.value);if(q){V.profile=q.id;V.gate=q.gate===false?false:true;ctx.preview=null;}draw();}},

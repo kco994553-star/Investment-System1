@@ -601,6 +601,13 @@ async function publicationOf(inputs = screens[SQ.FILE]) {
   return { ids, quotes: q, dev, pub: { publication_id: 'qgvpub-' + '0'.repeat(64), calc_version: inputs.calc_version, inputs: [{ as_of: inputs.as_of }], rows } };
 }
 
+// D11 one place per CIK, the qgv_official.assign_ranks rule written out here on its own: the representative key of each CIK.
+function repKeys(pub) {
+  const keys = Object.keys(pub.rows).sort(), T = 'TARGET:', uc = new Set(keys.filter((k) => !k.startsWith(T) && pub.rows[k].cik).map((k) => pub.rows[k].cik)), rep = {};
+  for (const k of keys) { const r = pub.rows[k]; if (k.startsWith(T) && uc.has(r.cik) && ['LIVE', 'STALE'].includes(r.state) && r.total_reason !== 'CALC_VERSION_MISMATCH') rep[r.cik] = k; }
+  for (const k of keys) { const r = pub.rows[k]; if (!k.startsWith(T) && r.in_cross_section && r.cik && !Object.hasOwn(rep, r.cik)) rep[r.cik] = k; }
+  return new Set(Object.values(rep));
+}
 test('official mode: compute({publication}) gives the published Q·G·V and totals with no engine call and no price; missing IEX price says its price_status', async () => {
   const { ids, dev, pub } = await publicationOf(), inputs = screens[SQ.FILE], V2 = globalThis.QgvV2;
   const real = V2.scoreUniverse; let engineCalls = 0;
@@ -630,20 +637,58 @@ test('official mode: the personal recompute from published factor scores equals 
   const inputs = SHUFFLED, { ids, quotes: q, pub } = await publicationOf(inputs), V2 = globalThis.QgvV2, inner = V2.officialWeights().inner;
   const trees = [V2.officialWeights('growth'), { axis: { Q: 50, G: 30, V: 20 }, inner: { ...inner, Q: { q_profitability: 50, q_moat_proxy: 10, q_earnings_quality: 10, q_financial_safety: 20, q_capital_allocation: 10 } } },
     { axis: { Q: 20, G: 20, V: 60 }, inner: { ...inner, V: { v_earnings_yield: 50, v_fcf_yield: 10, v_vs_industry: 10, v_vs_own_history: 0, v_expectation_check: 30 } } }, { axis: { Q: 50, G: 50, V: 0 }, inner }];
-  let recomputedPct = 0, traps = 0;
+  let recomputedPct = 0, traps = 0, deduped = 0;const reps = repKeys(pub);
   for (const tree of trees) for (const typeWeights of [true, false]) for (const gate of [true, false]) {
     const d = QS.compute({ identities: ids, v2Inputs: inputs, quotes: q, weights: tree, typeWeights, gate }), o = QS.compute({ identities: ids, v2Inputs: inputs, publication: pub, weights: tree, typeWeights, gate });
+    // The device engine places every identity; the publication places one row per CIK: the device order restricted to the representatives.
+    const place = (k) => { const m = new Map(); Object.values(d.rows).filter((r) => reps.has(r.code) && (k === 'rank' ? r.personal_rank !== null : r.personal_qg_reference)).sort((x, y) => (k === 'rank' ? x.personal_rank - y.personal_rank : x.personal_qg_reference.order - y.personal_qg_reference.order)).forEach((r, i) => m.set(r.company_id, i + 1)); return m; };
+    const wantRank = place('rank'), wantQg = place('qg');
     assert.equal(o.personal.state, d.personal.state); assert.equal(o.personal.profile.id, d.personal.profile.id); assert.deepEqual(o.personal.weight_stages, { state: 'NOT_AVAILABLE', reason: 'WEIGHT_STAGES_NOT_REBUILT' });
     for (const c of ids) {
       const a = d.rows[c.company_id], b = o.rows[c.company_id];
       for (const k of ['q', 'g', 'v', 'total', 'q_industry_percentile', 'value_trap_gate']) assert.equal(b.personal[k], a.personal[k], JSON.stringify(tree.axis) + typeWeights + gate + ' ' + c.company_id + ' ' + k);
-      assert.deepEqual(b.personal.flags, a.personal.flags); assert.equal(b.personal_rank, a.personal_rank);
-      assert.equal(b.personal_qg_reference ? b.personal_qg_reference.order : null, a.personal_qg_reference ? a.personal_qg_reference.order : null);
+      assert.deepEqual(b.personal.flags, a.personal.flags); assert.equal(b.personal_rank, wantRank.get(c.company_id) ?? null, c.company_id + ' personal rank: one place per CIK');
+      assert.equal(b.personal_qg_reference ? b.personal_qg_reference.order : null, wantQg.get(c.company_id) ?? null, c.company_id + ' personal QG order: one place per CIK');
+      if (!reps.has(b.code) && (a.personal_rank !== null || a.personal_qg_reference)) deduped++;
       if (b.personal.q_industry_percentile !== b.primary.q_industry_percentile) recomputedPct++; if (a.personal.value_trap_gate) traps++;
       assert.equal(b.primary.total, o.rows[c.company_id].primary.total);
     }
   }
   assert.ok(recomputedPct > 0, 'personal Q inner weights recompute the gate percentile'); assert.ok(traps > 0, 'the gate fires in the fixture');
+  assert.ok(deduped > 0, 'the fixture has a second row of an issuer that the device would place');
+});
+
+// The synthetic qgv-official vectors (dual-class GOOG/GOOGL, TARGET:amd ranked for NASDAQ:AMD), page identities as the app makes them.
+async function vectorPage({ targets = true } = {}) {
+  const QO = require(path.join(W, 'qgv-official.js')), OV = JSON.parse(fs.readFileSync(path.join(__dirname, '../tests/fixtures/qgv_official_vectors_v1.json'), 'utf8')), pub = JSON.parse(OV.base_text);
+  await QO.validate(pub); assert.equal(QO.state(pub), 'OFFICIAL');
+  const ids = targets ? Object.keys(QO.TARGET_TICKERS).map((id) => ({ company_id: id, ticker: QO.TARGET_TICKERS[id] })) : [];
+  const r = QS.officialPage({}, { publication: pub, v2Inputs: null, identities: ids });
+  return { pub, r, ids };
+}
+test('official mode: with the official weights the personal preview gives every row the published place (one per CIK: dual class, TARGET of a Universe issuer)', async () => {
+  const { pub, r } = await vectorPage(), V2 = globalThis.QgvV2, c = r.computed;
+  assert.equal(r.source, 'PUBLICATION'); assert.equal(r.inputs_match, false);
+  const o = QS.compute({ identities: r.identities, v2Inputs: null, publication: pub, official: r.official, weights: V2.officialWeights(), typeWeights: true, gate: true });
+  let placed = 0, others = 0;
+  for (const [cid, row] of Object.entries(o.rows)) {
+    const off = c.rows[cid];
+    assert.equal(row.rank, off.rank, cid); assert.equal(row.personal_rank, off.rank, cid + ' personal rank = published rank');
+    assert.equal(row.personal_qg_reference ? row.personal_qg_reference.order : null, off.qg_reference ? off.qg_reference.order : null, cid + ' personal QG order = published order');
+    assert.equal(row.personal_rank_row ?? null, off.rank_row ?? null, cid + ' the other codes of the issuer point to its place');
+    if (Number.isInteger(row.rank) || row.qg_reference) placed++; if (off.rank_row) others++;
+  }
+  const pubPlaced = Object.values(pub.rows).filter((x) => x.rank !== null || x.qg_reference_order !== null).length;
+  assert.equal(placed, pubPlaced, 'every published place is shown once'); assert.ok(others >= 1, 'GOOG points to its issuer place (NASDAQ:AMD is the TARGET amd row on the page)');
+  assert.equal(QS.rowOf(o, 'NASDAQ:GOOG').personal_rank_row, 'NASDAQ:GOOGL');
+});
+test('official mode: a published place on a TARGET key not on the page (catalog unreadable) is shown on the row of that issuer\'s Universe code', async () => {
+  const { pub, r } = await vectorPage({ targets: false }), c = r.computed;
+  assert.ok(!Object.values(c.rows).some((x) => x.code === 'TARGET:amd'), 'no TARGET row on the page');
+  const amd = QS.rowOf(c, 'NASDAQ:AMD');
+  assert.equal(amd.rank, pub.rows['TARGET:amd'].rank, 'the issuer place on its Universe code row'); assert.equal(amd.rank_row, undefined);
+  const ranks = Object.values(c.rows).map((x) => x.rank).filter(Number.isInteger).sort((a, b) => a - b);
+  assert.deepEqual(ranks, Array.from({ length: pub.coverage.ranked }, (_, i) => i + 1), 'no gap: every published rank shown once');
 });
 
 test('officialPage: only a QgvOfficial-validated publication; without one the price-free Q·G rows, every V NA with the OFFICIAL_* reason, Q·G totals in the QG reference list', async () => {
