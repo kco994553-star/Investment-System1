@@ -107,13 +107,16 @@ def progress(previous, rows):
 
 
 class KIS:
-    def __init__(self, root, store, keys):
+    def __init__(self, root, store, keys, max_calls=60):
         self.root, self.store, self.keys = root, store, keys
         self.headers = None
         self.calls = 0
         self.stopped = False
         self.request_label = ""
         self.pause_seconds = 1.1
+        if type(max_calls) is not int or not 1 <= max_calls <= 240:
+            raise ValueError("INVALID_LOCAL_REQUEST_BUDGET")
+        self.max_calls = max_calls
 
     def authenticate(self):
         code, body, _, elapsed = transport(BASE + "/oauth2/tokenP", {"Content-Type": "application/json"},
@@ -145,7 +148,7 @@ class KIS:
                 raise ValueError("CACHE_CHECKSUM")
             meta = json.loads(receipt_path.read_bytes())
             return body, meta
-        if self.stopped or self.calls >= 60:
+        if self.stopped or self.calls >= self.max_calls:
             return None, {"status": "PROVIDER_STOPPED_OR_LOCAL_REQUEST_BUDGET"}
         time.sleep(self.pause_seconds)
         self.calls += 1
