@@ -1,0 +1,366 @@
+{
+  "spec_id": "qgv-book-top-deciles/2026-10-27.2",
+  "status": "RESEARCH_DESIGN_NOT_REAL_RESULTS",
+  "universe_groups": [
+    {
+      "id": "U-BOOK200",
+      "name": "US_ALL_STOCKS_REAL_2009_USD_200M_MIN_NO_CAP_MAX",
+      "score_pool": "RECOMPUTE_QGV_PIT_IN_BOOK200",
+      "candidate_pool": "PIT_US_COMMON_STOCK"
+    },
+    {
+      "id": "U-SPX-HIST",
+      "name": "HISTORICAL_SP500_CONSTITUENTS_NO_ADDED_CAP_FILTER",
+      "score_pool": "RECOMPUTE_QGV_PIT_IN_SPX_HIST",
+      "candidate_pool": "PIT_SP500_COMMON_STOCK"
+    }
+  ],
+  "additional_reference_universe": {
+    "id": "U-LARGE-MEAN",
+    "book_definition": "ABOVE_MEAN_MARKET_CAP_OF_U-BOOK200_ASOF",
+    "status": "OPTIONAL_DIAGNOSTIC_NOT_SP500"
+  },
+  "rebalances": [
+    "ANNUAL_FEBRUARY_PRIMARY_INHERITED_THIRD_MONDAY_HOLIDAY_SHIFT",
+    "QUARTERLY_FEB_MAY_AUG_NOV_THIRD_MONDAY_SENSITIVITY"
+  ],
+  "benchmark": {
+    "baseline": "QGV_V2_W0_BEST_10_PERCENT_WITHIN_EACH_UNIVERSE",
+    "secondary": "ELIGIBLE_UNIVERSE_EQUAL_WEIGHT_AND_LICENSED_SP500_TOTAL_RETURN",
+    "factor_pool": "MATCHED_FACTOR_QGV_INTERSECTION_PRIMARY_PLUS_FULL_FACTOR_POPULATION_DIAGNOSTIC",
+    "book_exactness": "DATA_GATED_MATCH_RECIPE_BEFORE_LABEL_BOOK_REPLICATION"
+  },
+  "factors": [
+    {
+      "id": "F01",
+      "key": "MARKET_CAP_LARGEST",
+      "book_chapter": "5",
+      "metric": "MARKET_CAP_USD",
+      "direction": "HIGH",
+      "opposite_direction_control": "CAP_LOWEST_SMALL_DIAGNOSTIC",
+      "definition": "ASOF_USD_PRICE_TIMES_ISSUED_SHARES",
+      "rank_label": "HIGHEST_RAW_10_PERCENT",
+      "status": "PRE_REGISTERED_STANDALONE",
+      "factor_definition_version": "RESEARCH_ASSUMPTIONS_V0.1_REVIEW_BOOK_TEXT"
+    },
+    {
+      "id": "F02",
+      "key": "MARKET_CAP_SMALLEST",
+      "book_chapter": "5",
+      "metric": "MARKET_CAP_USD",
+      "direction": "LOW",
+      "opposite_direction_control": "CAP_LARGEST_LARGE_DIAGNOSTIC",
+      "definition": "ASOF_USD_PRICE_TIMES_ISSUED_SHARES",
+      "rank_label": "LOWEST_RAW_10_PERCENT",
+      "status": "PRE_REGISTERED_STANDALONE",
+      "factor_definition_version": "RESEARCH_ASSUMPTIONS_V0.1_REVIEW_BOOK_TEXT"
+    },
+    {
+      "id": "F03",
+      "key": "PE_CHEAP",
+      "book_chapter": "6",
+      "metric": "PRICE_TO_EARNINGS",
+      "direction": "LOW",
+      "opposite_direction_control": "HIGH_PE_DIAGNOSTIC",
+      "definition": "ASOF_ADJUSTED_PRICE_DIV_POSITIVE_TRAILING_EPS",
+      "rank_label": "LOWEST_RAW_10_PERCENT",
+      "status": "PRE_REGISTERED_STANDALONE",
+      "factor_definition_version": "RESEARCH_ASSUMPTIONS_V0.1_REVIEW_BOOK_TEXT"
+    },
+    {
+      "id": "F04",
+      "key": "EBITDA_TO_EV_HIGH",
+      "book_chapter": "7",
+      "metric": "EBITDA_DIV_EV",
+      "direction": "HIGH",
+      "opposite_direction_control": "LOW_EBITDA_EV_DIAGNOSTIC",
+      "definition": "POSITIVE_EV_AND_ASOF_EBITDA",
+      "rank_label": "HIGHEST_RAW_10_PERCENT",
+      "status": "PRE_REGISTERED_STANDALONE",
+      "factor_definition_version": "RESEARCH_ASSUMPTIONS_V0.1_REVIEW_BOOK_TEXT"
+    },
+    {
+      "id": "F05",
+      "key": "PRICE_TO_CASHFLOW_CHEAP",
+      "book_chapter": "8",
+      "metric": "PRICE_DIV_OPERATING_CASHFLOW_PER_SHARE",
+      "direction": "LOW",
+      "opposite_direction_control": "HIGH_PCF_DIAGNOSTIC",
+      "definition": "POSITIVE_OP_CASH_FLOW_PER_SHARE",
+      "rank_label": "LOWEST_RAW_10_PERCENT",
+      "status": "PRE_REGISTERED_STANDALONE",
+      "factor_definition_version": "RESEARCH_ASSUMPTIONS_V0.1_REVIEW_BOOK_TEXT"
+    },
+    {
+      "id": "F06",
+      "key": "PSR_CHEAP",
+      "book_chapter": "9",
+      "metric": "PRICE_TO_SALES",
+      "direction": "LOW",
+      "opposite_direction_control": "HIGH_PSR_DIAGNOSTIC",
+      "definition": "POSITIVE_TRAILING_SALES_PER_SHARE",
+      "rank_label": "LOWEST_RAW_10_PERCENT",
+      "status": "PRE_REGISTERED_STANDALONE",
+      "factor_definition_version": "RESEARCH_ASSUMPTIONS_V0.1_REVIEW_BOOK_TEXT"
+    },
+    {
+      "id": "F07",
+      "key": "PBR_CHEAP",
+      "book_chapter": "10",
+      "metric": "PRICE_TO_BOOK",
+      "direction": "LOW",
+      "opposite_direction_control": "HIGH_PBR_DIAGNOSTIC",
+      "definition": "POSITIVE_BOOK_VALUE_PER_SHARE",
+      "rank_label": "LOWEST_RAW_10_PERCENT",
+      "status": "PRE_REGISTERED_STANDALONE",
+      "factor_definition_version": "RESEARCH_ASSUMPTIONS_V0.1_REVIEW_BOOK_TEXT"
+    },
+    {
+      "id": "F08",
+      "key": "DIVIDEND_YIELD_HIGH",
+      "book_chapter": "11",
+      "metric": "DIVIDENDS_PAID_DIV_MARKET_CAP",
+      "direction": "HIGH",
+      "opposite_direction_control": "LOW_DIVIDEND_YIELD_DIAGNOSTIC",
+      "definition": "ASOF_TRAILING_CASH_DIVIDENDS",
+      "rank_label": "HIGHEST_RAW_10_PERCENT",
+      "status": "PRE_REGISTERED_STANDALONE",
+      "factor_definition_version": "RESEARCH_ASSUMPTIONS_V0.1_REVIEW_BOOK_TEXT"
+    },
+    {
+      "id": "F09",
+      "key": "BUYBACK_YIELD_HIGH",
+      "book_chapter": "12",
+      "metric": "NET_BUYBACK_YIELD",
+      "direction": "HIGH",
+      "opposite_direction_control": "LOW_BUYBACK_YIELD_DIAGNOSTIC",
+      "definition": "ASOF_NET_SHARES_REDUCED_ADJUST_CORPORATE_ACTIONS",
+      "rank_label": "HIGHEST_RAW_10_PERCENT",
+      "status": "PRE_REGISTERED_STANDALONE",
+      "factor_definition_version": "RESEARCH_ASSUMPTIONS_V0.1_REVIEW_BOOK_TEXT"
+    },
+    {
+      "id": "F10",
+      "key": "SHAREHOLDER_YIELD_HIGH",
+      "book_chapter": "13",
+      "metric": "DIVIDEND_PLUS_NET_BUYBACK_YIELD",
+      "direction": "HIGH",
+      "opposite_direction_control": "LOW_SHAREHOLDER_YIELD_DIAGNOSTIC",
+      "definition": "VALID_DIV_AND_NET_BUYBACK_NO_DOUBLE_COUNT",
+      "rank_label": "HIGHEST_RAW_10_PERCENT",
+      "status": "PRE_REGISTERED_STANDALONE",
+      "factor_definition_version": "RESEARCH_ASSUMPTIONS_V0.1_REVIEW_BOOK_TEXT"
+    },
+    {
+      "id": "F11",
+      "key": "EPS_GROWTH_1Y_HIGH",
+      "book_chapter": "17",
+      "metric": "ONE_YEAR_EPS_GROWTH",
+      "direction": "HIGH",
+      "opposite_direction_control": "LOW_EPS_GROWTH_DIAGNOSTIC",
+      "definition": "ASOF_ANNUAL_EPS_PRIOR_YEAR_BASELINE_GUARD",
+      "rank_label": "HIGHEST_RAW_10_PERCENT",
+      "status": "PRE_REGISTERED_STANDALONE",
+      "factor_definition_version": "RESEARCH_ASSUMPTIONS_V0.1_REVIEW_BOOK_TEXT"
+    },
+    {
+      "id": "F12",
+      "key": "PROFIT_MARGIN_HIGH",
+      "book_chapter": "18",
+      "metric": "PROFIT_MARGIN",
+      "direction": "HIGH",
+      "opposite_direction_control": "LOW_MARGIN_DIAGNOSTIC",
+      "definition": "ASOF_TRAILING_NET_INCOME_DIV_REVENUE_POSITIVE",
+      "rank_label": "HIGHEST_RAW_10_PERCENT",
+      "status": "PRE_REGISTERED_STANDALONE",
+      "factor_definition_version": "RESEARCH_ASSUMPTIONS_V0.1_REVIEW_BOOK_TEXT"
+    },
+    {
+      "id": "F13",
+      "key": "ROE_HIGH",
+      "book_chapter": "19",
+      "metric": "RETURN_ON_EQUITY",
+      "direction": "HIGH",
+      "opposite_direction_control": "LOW_ROE_DIAGNOSTIC",
+      "definition": "ASOF_NET_INCOME_DIV_AVERAGE_POSITIVE_EQUITY",
+      "rank_label": "HIGHEST_RAW_10_PERCENT",
+      "status": "PRE_REGISTERED_STANDALONE",
+      "factor_definition_version": "RESEARCH_ASSUMPTIONS_V0.1_REVIEW_BOOK_TEXT"
+    },
+    {
+      "id": "F14",
+      "key": "REL_PRICE_STRENGTH_1Y_HIGH",
+      "book_chapter": "20",
+      "metric": "TRAILING_1Y_TOTAL_RETURN",
+      "direction": "HIGH",
+      "opposite_direction_control": "LOW_REL_STRENGTH_DIAGNOSTIC",
+      "definition": "ASOF_PRIOR_252_COMPLETE_SESSION_TOTAL_RETURN",
+      "rank_label": "HIGHEST_RAW_10_PERCENT",
+      "status": "PRE_REGISTERED_STANDALONE",
+      "factor_definition_version": "RESEARCH_ASSUMPTIONS_V0.1_REVIEW_BOOK_TEXT"
+    },
+    {
+      "id": "F15",
+      "key": "VALUE_COMPOSITE_FIVE_CHEAP",
+      "book_chapter": "15",
+      "metric": "AAII_PROXY_5_FACTOR_VALUE_COMPOSITE",
+      "direction": "LOW",
+      "opposite_direction_control": "WORST_COMPOSITE_DIAGNOSTIC",
+      "definition": "P_E_P_S_PRICE_FCF_EV_EBITDA_SHAREHOLDER_YIELD_MIN_3_OF_5",
+      "rank_label": "LOWEST_RAW_10_PERCENT",
+      "status": "AAII_PROXY_REQUIRES_RECIPE_VALIDATION",
+      "factor_definition_version": "RESEARCH_ASSUMPTIONS_V0.1_REVIEW_BOOK_TEXT"
+    },
+    {
+      "id": "F16",
+      "key": "FINANCIAL_STRENGTH_COMPOSITE",
+      "book_chapter": "14",
+      "metric": "FINANCIAL_STRENGTH_COMPOSITE",
+      "direction": "HIGH",
+      "opposite_direction_control": "LOW_STRENGTH_DIAGNOSTIC",
+      "definition": "BOOK_EXACT_RUBRIC_NOT_YET_MAPPED",
+      "rank_label": "HIGHEST_RAW_10_PERCENT",
+      "status": "BOOK_EXACT_FORMULA_BLOCKED",
+      "factor_definition_version": "RESEARCH_ASSUMPTIONS_V0.1_REVIEW_BOOK_TEXT"
+    },
+    {
+      "id": "F17",
+      "key": "EARNINGS_QUALITY_COMPOSITE",
+      "book_chapter": "14",
+      "metric": "EARNINGS_QUALITY_COMPOSITE",
+      "direction": "HIGH",
+      "opposite_direction_control": "LOW_QUALITY_DIAGNOSTIC",
+      "definition": "BOOK_EXACT_RUBRIC_NOT_YET_MAPPED",
+      "rank_label": "HIGHEST_RAW_10_PERCENT",
+      "status": "BOOK_EXACT_FORMULA_BLOCKED",
+      "factor_definition_version": "RESEARCH_ASSUMPTIONS_V0.1_REVIEW_BOOK_TEXT"
+    },
+    {
+      "id": "F18",
+      "key": "VALUE_PLUS_MOMENTUM_COMPOSITE",
+      "book_chapter": "21",
+      "metric": "VALUE_AND_REL_STRENGTH_COMPOSITE",
+      "direction": "HIGH",
+      "opposite_direction_control": "LOW_MULTIFACTOR_DIAGNOSTIC",
+      "definition": "BOOK_EXACT_COMBINATION_NOT_YET_MAPPED",
+      "rank_label": "HIGHEST_RAW_10_PERCENT",
+      "status": "BOOK_EXACT_FORMULA_BLOCKED",
+      "factor_definition_version": "RESEARCH_ASSUMPTIONS_V0.1_REVIEW_BOOK_TEXT"
+    },
+    {
+      "id": "F19",
+      "key": "IDEAL_GROWTH_COMPOSITE",
+      "book_chapter": "25",
+      "metric": "GROWTH_COMPOSITE",
+      "direction": "HIGH",
+      "opposite_direction_control": "LOW_GROWTH_DIAGNOSTIC",
+      "definition": "BOOK_EXACT_COMBINATION_NOT_YET_MAPPED",
+      "rank_label": "HIGHEST_RAW_10_PERCENT",
+      "status": "BOOK_EXACT_FORMULA_BLOCKED",
+      "factor_definition_version": "RESEARCH_ASSUMPTIONS_V0.1_REVIEW_BOOK_TEXT"
+    },
+    {
+      "id": "F20",
+      "key": "IDEAL_VALUE_COMPOSITE",
+      "book_chapter": "26",
+      "metric": "VALUE_STRATEGY_COMPOSITE",
+      "direction": "HIGH",
+      "opposite_direction_control": "LOW_VALUE_DIAGNOSTIC",
+      "definition": "BOOK_EXACT_COMBINATION_NOT_YET_MAPPED",
+      "rank_label": "HIGHEST_RAW_10_PERCENT",
+      "status": "BOOK_EXACT_FORMULA_BLOCKED",
+      "factor_definition_version": "RESEARCH_ASSUMPTIONS_V0.1_REVIEW_BOOK_TEXT"
+    },
+    {
+      "id": "F21",
+      "key": "GROWTH_VALUE_UNION",
+      "book_chapter": "27",
+      "metric": "GROWTH_VALUE_COMPOSITE",
+      "direction": "HIGH",
+      "opposite_direction_control": "LOW_COMPOSITE_DIAGNOSTIC",
+      "definition": "BOOK_EXACT_COMBINATION_NOT_YET_MAPPED",
+      "rank_label": "HIGHEST_RAW_10_PERCENT",
+      "status": "BOOK_EXACT_FORMULA_BLOCKED",
+      "factor_definition_version": "RESEARCH_ASSUMPTIONS_V0.1_REVIEW_BOOK_TEXT"
+    }
+  ],
+  "simple_or_proxy_factor_ids": [
+    "F01",
+    "F02",
+    "F03",
+    "F04",
+    "F05",
+    "F06",
+    "F07",
+    "F08",
+    "F09",
+    "F10",
+    "F11",
+    "F12",
+    "F13",
+    "F14",
+    "F15"
+  ],
+  "formula_blocked_factor_ids": [
+    "F16",
+    "F17",
+    "F18",
+    "F19",
+    "F20",
+    "F21"
+  ],
+  "registered_top_factor_cohorts_if_data_verified": 60,
+  "universe_groups_count": 2,
+  "quarters_years": "INHERIT_DECILE_AND_FIXED_N_BASE",
+  "relative_performance_metrics": [
+    "FACTOR_TOP10_CAGR",
+    "QGV_TOP10_CAGR",
+    "DELTA_PAIRED_CAGR_PP",
+    "MAX_DRAWDOWN",
+    "SHARPE",
+    "BASE_RATE_OUTPERFORMANCE_1Y_3Y_5Y_10Y",
+    "ROLLING_BAD_PERIODS",
+    "FACTOR_QGV_TOP10_OVERLAP",
+    "TOP10_TURNOVER",
+    "PIT_COVERAGE",
+    "SECTOR_SIZE_EXPOSURE",
+    "SPEARMAN_FACTOR_VS_FUTURE_RETURN"
+  ],
+  "pretrade_constraints": {
+    "valid_positive_eps_for_pe": true,
+    "valid_positive_book_for_pb": true,
+    "valid_positive_cashflow_for_pcf": true,
+    "valid_positive_revenue_for_ps": true,
+    "market_cap_denom_issued_shares_price_asof": true,
+    "asof_total_return_calendar": true,
+    "no_missing_as_bad_decile": true,
+    "minimum_eligible_issuers_each_date": 100
+  },
+  "common_population_rule": "SAME_ASOF_UNIVERSE_THEN_INTERSECT_VALID_QGV_AND_FACTOR_THEN_TOP10_EACH_FOR_PAIRED_COMPARISON",
+  "native_factor_rule": "SEPARATE_FACTORS_WITH_OWN_ELIGIBLE_POPULATION_DIAGNOSTIC_ONLY",
+  "comparison_adjustments": [
+    "SECTOR_BALANCED_DIAGNOSTIC",
+    "SIZE_BALANCED_DIAGNOSTIC",
+    "POST_REGISTRATION_MULLTIPLICITY_CONTROL",
+    "AVOID_SELECTION_ON_BEST_HISTORY"
+  ],
+  "safety": {
+    "real_data_status": "BLOCKED_ON_DATA",
+    "run_a_real_performance_backtest": false,
+    "history_not_the_book_1926_2009": true,
+    "change_operational_scores": false,
+    "source_output_private_only": true,
+    "automatic_deployment": false
+  },
+  "reselection_protocol": {
+    "primary": "ANNUAL",
+    "meaning": "RE_RANK_ALL_CURRENTLY_ELIGIBLE_UNIVERSE_AT_EACH_ANNUAL_EVALUATION_SELL_DROPPED_BUY_NEW_REWEIGHT_RETAINED",
+    "annual_month": 2,
+    "day": "THIRD_MONDAY_NEXT_VERIFIED_SESSION_IF_HOLIDAY",
+    "book_exact_date_claim": false,
+    "twelve_monthly_start_offsets": "SECONDARY_BOOK_STYLE_ROBUSTNESS_EACH_COHORT_ANNUAL_NOT_MONTHLY_RESELECTION",
+    "cohort_aggregation": "PREDECLARE_AND_RECONCILE_BOOK_SOURCE_BEFORE_CLAIM_EXACT",
+    "quarterly": "SECONDARY_CADENCE_SENSITIVITY",
+    "not_cadence_only_reweight": "RESELECTION_INCLUDES_MEMBERSHIP_CHANGES"
+  }
+}
