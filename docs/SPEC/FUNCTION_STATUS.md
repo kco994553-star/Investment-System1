@@ -84,7 +84,7 @@
 | 7.1 프롬프트 라이브러리 | 구현 | — | `research-bridge.js`(★·내 사본 = 이 브라우저) | 새 영역 목록 PROMPT-DOMAIN |
 | 8.1 전체 구조 트리 | 구현 | 실 | `ia-screens.js`(system) | 8.1.3 구현 상태 표시를 이 문서와 맞추기 |
 | 9.1 백테스트 | 신규 · 결정 | — | `screen-detail.js`(준비 목록), `docs/backtest/*` | BT-1~17·MD-1~12 결정, 과거 자료 확보 |
-| 9.2 전진검증 | 구현 | 실 | `forward-validation.js`, `tools/forward_validation_ledger.py` | 연속 성공 3/7(10/24분, run 40146210895; 10/25 Actions 확인). 배포 실패 뒤 복구 운영 증거는 아직 없음 |
+| 9.2 전진검증 | 구현 | 실 | `forward-validation.js`, `tools/forward_validation_ledger.py` | 연속 성공 3/7(10/24분, run 40146210895; 10/25 Actions 확인). 배포 실패 뒤 복구 운영 증거는 아직 없음. **10-31 v3 방침(DC-38)**: v1·v2는 v3 시작과 함께 기록 멈춤·보존, 바구니 단위 IEX 수익률·재구성 구간 — [설계](../../implementation/docs/forward_validation/FORWARD_VALIDATION_V3_DESIGN_20261031.md), 구현 대기 |
 | 공통: 계정 동기화 | 신규 · 결정 | — | DRAW-STORE, IA-6 | 지금은 이 브라우저 + 내보내기·가져오기 |
 
 ## 1-2. 새 프론트엔드(v2) 진행
