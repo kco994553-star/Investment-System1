@@ -87,7 +87,7 @@
   - Main은 Lab 연결 단계에서 그 PR을 확인한다.
   - PR이 없으면 기다리지 않는다. fixture로 구현을 계속하고, 실제 결과 경로·공개 파일은 만들지 않는다.
   - 제안에 문제가 없으면 이 문서(또는 계약 문서)에 확정 내용을 적는다. 문제가 있으면 수정안을 "Codex 회신 필요"로 남긴다.
-- 2026-10-31 확인: 그 Draft PR은 아직 없다(열린 Codex PR은 #432 BT-DATA-PILOT v0.6, #416·#417·#418·#430).
+- 2026-10-31: 그 Draft PR은 [#437](https://github.com/kco994553-star/Investment-System1/pull/437)이다(#432 위). Main 검토와 확정·"Codex 회신 필요"는 [계약 문서 6절](lab/LAB_BACKTEST_V1_CONTRACT.md).
 
 ## 4. 검증 기준
 
