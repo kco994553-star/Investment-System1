@@ -1,0 +1,20 @@
+{
+  "id": "LAB-PILOT-ABT-LEDGER-2016-v1",
+  "status": "REGISTERED_FOR_PRIVATE_REPLAY",
+  "registration_basis": "Existing ledger diagnostic was already executed; this is retrospective registration of that unchanged experiment for first Lab export, not fresh OOS preregistration.",
+  "sample": "ABT: existing fixed ten-company pilot member selected for documented single common security, split history and dividend evidence; no performance-based selection",
+  "period": {"start": "2016-02-12", "end": "2017-02-21"},
+  "selection": "No QGV ranking or stock selection; one occupied slot of fifteen, other slots cash",
+  "execution": "Existing ANNUAL_FEBRUARY calendar; prior completed close fixes quantity; next session raw SIP open fills; exit at second annual execution",
+  "fee_bps": 10,
+  "slippage_bps": 0,
+  "benchmark": "Nominal non-interest-bearing USD cash; explicit diagnostic baseline, not SPY or risk-free market series",
+  "dividends": "Issuer declared amounts, record and payable dates; ex dates DERIVED under historical FINRA rule, exceptional exchange dates not independently excluded",
+  "tried_conditions": ["One unchanged 10bps-per-side ledger replay; fixed-fill gross path only for cost reconciliation, not a second strategy"],
+  "metrics": "Existing qgv_backtest.performance_metrics: actual-days/365.25 CAGR, daily sample stdev times sqrt(252), daily negative MDD; Sharpe null without measured RF",
+  "curve": "First month labels the actual initial signal-date NAV=100; later months use last available session, final month ends on actual exit date. Full daily path in private evidence.",
+  "run_type": "PILOT",
+  "data_status": "REAL",
+  "validation_status": "NOT_VALIDATED",
+  "publication": "PRIVATE_CANDIDATE_ONLY_MAIN_CONTRACT_AND_PATH_CONFIRMATION_PENDING"
+}
