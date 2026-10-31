@@ -134,11 +134,15 @@ class KIS:
         return {"status": "AUTHENTICATED" if token else "AUTHENTICATION_FAILED" if code else "NETWORK_REQUEST_FAILED",
                 "http_status": code, "elapsed_seconds": round(elapsed, 3), "requests": 1}
 
-    def page(self, symbol, exchange, bymd, modp, continuation=""):
+    def page(self, symbol, exchange, bymd, modp, continuation="", *, attempt=0):
         params = dict(AUTH="", EXCD=exchange, SYMB=symbol, GUBN="0", BYMD=bymd, MODP=modp)
         aid = "kis:" + ":".join((symbol, exchange, bymd, modp, continuation or "first"))
         if self.request_label:
             aid += ":" + self.request_label
+        if not isinstance(attempt,int) or not 0<=attempt<=2:
+            raise ValueError("RETRY_ATTEMPT_LIMIT")
+        if attempt:
+            aid += ":retry"+str(attempt)
         url = BASE + ENDPOINT + "?" + urlencode(params)
         receipt_path = self.root / "requests" / (aid.replace(":", "_") + ".json")
         if self.store.has(aid):

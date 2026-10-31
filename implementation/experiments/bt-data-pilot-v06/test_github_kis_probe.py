@@ -67,3 +67,21 @@ class KISTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+class KISRetryArchiveTest(unittest.TestCase):
+    def test_explicit_retry_preserves_rejected_original_and_reuses_success(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);(root/'requests').mkdir()
+            client=KIS(root,RawDatasetStore(root/'store'),('synthetic-key','synthetic-secret'))
+            client.headers={'authorization':'Bearer synthetic-token'}
+            rejected=b'{"rt_cd":"1","msg_cd":"OPSQ1002","msg1":"SESSION FULL"}'
+            with patch('github_kis_probe.time.sleep'),patch('github_kis_probe.transport',return_value=(200,rejected,'',.1)):
+                first,_=client.page('TEST','NAS','20241001','0')
+            with patch('github_kis_probe.time.sleep'),patch('github_kis_probe.transport',return_value=(200,payload(),'',.1)):
+                second,_=client.page('TEST','NAS','20241001','0',attempt=1)
+            self.assertNotEqual(first,second)
+            self.assertEqual(len(client.store.list_ids()),2)
+            with patch('github_kis_probe.transport',side_effect=AssertionError('duplicate network')):
+                self.assertEqual(client.page('TEST','NAS','20241001','0')[0],rejected)
+                self.assertEqual(client.page('TEST','NAS','20241001','0',attempt=1)[0],second)
+            self.assertEqual(client.calls,2)
