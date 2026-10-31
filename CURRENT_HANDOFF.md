@@ -19,9 +19,8 @@
 
 | PR·작업 | 담당 | 시작 (UTC) |
 | --- | --- | --- |
-| PR-1a 기기 V 폐지·새 앱 공식 V 판독기(`claude/device-v-abolition-1a`, push 전) | Claude Code Main | 10/31 02:05 |
+| PR-1b 옛 화면 기기 V 제거·DCF 패널 제거·direction guard 규칙(`claude/device-v-abolition-1b`, push 전) | Claude Code Main | 10/31 03:17 |
 | 이 문서 PR(DC-32 병렬 진행 체계·담당표·오늘 인수인계·기능 현황) | Claude Code Main | 10/31 02:26 |
-| #433 가격 표시 결정 기록(GSQ-026) | Claude Code Main | 10/31 02:28 |
 
 ## 1. 10/31 오너 결정과 처리
 
@@ -30,14 +29,15 @@
 | #428 병합(정기 실행 전) | 00:18 병합(`61709bb7`). 10/30분 정기 #31부터 PSKY 공식 V 보류 |
 | PSKY 주식수 파일 STALE | 주식수 경로 별칭 PR 없음. 지금 만들면 인수 전 주식수로 시총이 "새로 수집됨"이 되어 만들지 않음(오너에게 즉시 보고). 10/31 03:13 UTC부터 PSKY M3 시가총액 순위만 사유 있는 NA(`STALE_INPUT`). 3분기 10-Q 뒤 별칭 + 주식수 사건 규칙 PR 제안(`PSKY-SHARES-ALIAS`) |
 | #429 → #431 병합 | #429 01:10(`b10b841a`), #431 02:24(`32cc3ffd`). #430은 #417 담당 확인 뒤 |
-| 비공개 구역·유료 공급처 | 불필요. 계획 문서 7절·결정 기록 반영(#431), GSQ-025 보충(이 PR) |
+| 비공개 구역·유료 공급처 | 불필요로 기록(#431, GSQ-025 보충은 이 PR). **같은 날 뒤 결정으로 비공개 구역은 "1인 비공개 구역 신설(KIS 한정)"로 바뀜**(#436). 유료 공급처 V·유료 공급처 비교는 계속 하지 않음 |
 | 확장 결정 | `IEX-EXP-ADV` 기준 제외, `IEX-EXP-BUILD` PR 3개, `IEX-EXP-FORMAT` 정밀값·승격 뒤 공개(#431) |
-| 기기 V 폐지 | DC-31(#431). 구현 PR-1a 진행 |
+| 기기 V 폐지 | DC-31(#431). PR-1a [#435](https://github.com/kco994553-star/Investment-System1/pull/435)(새 앱 공식 V 판독기, 승인 대기), PR-1b(옛 화면) 진행 |
 | 병렬 진행 체계 | DC-32·WORKING_RULES·START_HERE 담당표(이 PR) |
 | #426 | 필요한 원칙만 #431로 옮기고 닫음 |
 | 측정용 가지 | 오너가 지움(세션 삭제 권한 없음) |
 | 사용량 | 독립 검토는 계산·워크플로 변경에만 1개, 전체 시험은 push 전 1회, 보고는 하루 1회 |
 | 가격 표시 | #433 GSQ-026·DC-33 결정 기록(승인 대기) |
+| KIS·1인 비공개 구역 | 인증 검증 1회([41165951277](https://github.com/kco994553-star/Investment-System1/actions/runs/41165951277))·IEX 대비 비교 1회([41169962364](https://github.com/kco994553-star/Investment-System1/actions/runs/41169962364)) 완료. 같은 날 "KIS 보류" 지시는 뒤 지시로 **취소**, **1인 비공개 구역 신설(KIS 한정)** 설계 문서 PR [#436](https://github.com/kco994553-star/Investment-System1/pull/436)(DC-34·GSQ-027 제안, 결정 대기 `PRIV-*` 7개, 구현은 승인 뒤). 결정 기록·방향 전환 줄·"비공개 구역 불필요" 기록 수정은 #436에 있다 |
 
 ## 2. 병합 (mergedAt UTC)
 
@@ -59,6 +59,8 @@
 | PR | 요지 | 상태 | 오너 승인·조건 |
 | --- | --- | --- | --- |
 | 이 문서 PR | DC-32 병렬 진행 체계, START_HERE 담당표, 오늘 인수인계·기능 현황, GSQ-025 보충 | CI 확인 | 문서 병합 승인 필요 |
+| [#436](https://github.com/kco994553-star/Investment-System1/pull/436) | 설계: 1인 비공개 구역(KIS 한정), DC-34·GSQ-027 제안, 오너 폰 설정 절차, KIS 문의 초안 | CI 확인 | **설계 승인 필요**(`PRIV-*` 7개). 구현은 승인 뒤 |
+| [#435](https://github.com/kco994553-star/Investment-System1/pull/435) | PR-1a 기기 V 폐지: 새 앱 `qgv.js` 공식 V 판독기, `qgv-scores.js` 게시본 모드(DC-31). 라이브 화면 동작은 같음 | CI 확인 | **병합 승인 필요** |
 | [#433](https://github.com/kco994553-star/Investment-System1/pull/433) | GSQ-026·DC-33 가격 표시 결정 기록(공개 IEX 마지막 체결가, 클릭 전용 폐지 범위) | CI 확인 | **결정 승인 필요**. 구현은 승인 뒤 |
 | [#432](https://github.com/kco994553-star/Investment-System1/pull/432) | Codex 연구 `[WIP]` BT-DATA-PILOT v0.6(Alpaca OHLCV·IEX 빈 응답) | Draft | DC-32 연구 가지. 병합 전 Main 확인(담당 파일·CI·자료 권리) + 오너 승인 |
 | [#430](https://github.com/kco994553-star/Investment-System1/pull/430) | #417 연구 명세 재고정(`96037d1c`·23.1), base = #417 가지 | CI 6 녹색 | #417 담당 확인 뒤 병합 |
@@ -112,7 +114,7 @@
 | PSKY | ① 공식 V는 #428로 보류(새 10-K 주식수가 나오면 저절로 풀림) ② 주식수 파일 행 STALE(M3 순위만 NA) ③ Q·G는 인수 전 재무(FYE 2024-12-31) 기준 |
 | 규칙 변경 PR과 라이브 게시본 | 엔진·가중치·설정 버전을 바꾸는 PR은 라이브 게시본을 무효로 만들 수 있다(점검표 7절). 버전 상수를 바꾸지 않는 PR(#428)은 해당 없음 |
 | 기기 V 폐지 중 | PR-1a는 새 앱만 바꾼다(라이브 사이트 동작 같음). 라이브 화면은 PR-1b 병합 뒤 바뀐다 |
-| 측정용 가지 | `claude/iex-expansion-measure-once`: 세션 삭제 권한 없음(403). 오너가 지운다. 그 가지의 워크플로는 그 가지에 push할 때만 돈다 |
+| 측정용 가지 | `claude/iex-expansion-measure-once`·`claude/kis-verify-once`: 세션 삭제 권한 없음(403). 오너가 지운다. 두 가지의 워크플로는 그 가지에 push할 때만 돈다. KIS 가지에 push하면 KIS 토큰이 발급되어 오너에게 카카오톡 알림이 간다 |
 | telecom MIN_PEERS=8 경계 | 하나 빠지면 Q가 GENERAL `UNIVERSE_FALLBACK`. 매일 8 미만이면 즉시 보고 |
 | verify 시간 | 35~37/60분 |
 
