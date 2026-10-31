@@ -142,7 +142,7 @@
 - `kco994553-star.github.io`는 오너의 모든 Pages가 함께 쓰는 출처다. 다른 Pages 사이트를 같은 계정에 두지 않는 것이 안전하다(XSS가 생기면 메모리 토큰을 읽을 수 있다).
 - 비공개 저장소에 쓰기 권한이 있는 쪽은 워크플로나 워크플로가 읽는 파일을 바꿔 KIS Secrets를 읽을 수 있다. **GitHub Free 비공개 저장소는 DC-35("Main 작성·오너 승인")를 강제하지 못하므로, 쓰기 자격 증명 하나하나가 KIS 키 접근과 같다**(보안 검토 A3, 10/31). 줄이는 방법(3절): Claude 앱은 워크플로 설치 뒤 뺀다, Secrets를 읽는 코드는 워크플로 YAML 안이나 조상 확인을 거친 공개 SHA에만, Codex는 읽기 + 이슈만, `push` 실행 조건 금지.
 - **공개 저장소에 워크플로를 push할 수 있는 쪽은 Worker를 다시 배포해 `PRIVATE_REPO_READ_TOKEN`을 읽을 수 있다**(보안 검토 A1, 10/31). `CLOUDFLARE_API_TOKEN`·`CLOUDFLARE_ACCOUNT_ID`가 공개 저장소의 저장소 Secrets라서, 아무 가지에 `on: push` 워크플로를 올리면 배포 워크플로의 `if:`(기본 가지만)를 거치지 않고 `wrangler deploy`를 할 수 있고, Worker 비밀값은 배포 뒤에도 남는다. 막는 방법: 두 Secrets를 GitHub 환경 `private-worker`(배포 가지 = 기본 가지 `claude/investment-system-top500-validation-alrugm` 하나, 필수 검토자 = 오너)로 옮기고 저장소 단위 사본을 지운다(폰 설정 7단계), 배포 잡에 `environment: private-worker`(Worker PR), Cloudflare 토큰을 이 계정의 Workers Scripts 편집·계정 설정 읽기만으로 다시 만든다. 환경 Secrets는 그 규칙을 통과한 뒤에만 잡에 넘어간다(공개 저장소는 무료로 쓸 수 있다).
-- 감지(보안 검토 B2, 10/31): 공개 저장소의 모든 가지 push에 경계 정적 시험을 돌리는 워크플로(`private-boundary-push.yml`)를 제안한다(오너 승인 대기, 승인 뒤 별도 PR). 노출 **뒤** 알리는 것이지 막는 것은 아니다. 봇이 push한 실행의 실패는 오너에게 알림이 안 갈 수 있어 Main이 매일 점검에서 실패한 실행을 확인한다.
+- 감지(보안 검토 B2, 10/31): 공개 저장소의 모든 가지 push에 경계 정적 시험을 돌리는 워크플로(`private-boundary-push.yml`, 10/31 오너 승인 ①)가 돈다. 노출 **뒤** 알리는 것이지 막는 것은 아니다. 봇이 push한 실행의 실패는 오너에게 알림이 안 갈 수 있어 Main이 매일 점검에서 실패한 실행을 확인한다.
 
 ## 5. 무료 한도·약관·재배포
 

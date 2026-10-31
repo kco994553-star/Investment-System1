@@ -485,7 +485,7 @@ Actions 사용량: 매일 약 15분 × 22거래일 ≈ 330분. 처음 채우기 
   - `daily` 요청은 첫 채우기(backfill) 뒤에는 **최신 한 쪽(BYMD = 최근 미국 거래일)만** 받는다(종목 × 계열 회). 첫 채우기가 끝났다는 상태는 비공개 저장소 `shared/research/<요청 ID>/state.json`에 둔다. 요청 워크플로가 채우기를 다 마친 뒤 쓰고, `plan(request, backfill_done=...)`을 부르기 전에 읽는다(검사 모듈은 파일을 읽지 않는다). `once` 요청은 채우기가 끝나면 다시 돌지 않는다(`REQUEST_ALREADY_DONE`).
   - 요청 워크플로(요청 수집 PR)는 월 호출·분 예산을 `status/private-area.json`에 두고, 매일 수집 **뒤에** 돌며, 실행마다 요청 하나만 처리하고, 매일 수집 몫(월 약 330분)에 닿기 전에 `BUDGET_EXHAUSTED`로 멈춘다. 결제 수단이 없어 2,000분을 넘으면 매일 수집까지 막히기 때문이다.
 - **Codex에 주는 것(보안 검토 A9, 10/31):** KIS 서면 회신(12절 ⑥) 전까지 원 KIS 계열(가격·거래량 행)은 비공개 저장소 Actions 안에만 둔다. Codex에는 가격이 아닌 **파생 통계**(개수·기간·일치율·백테스트 요약 수치)만 준다. KIS 파생 lab 파일은 `kis-` 스키마를 달아 가드가 잡게 한다.
-- **규칙(보안 검토 B2, 10/31): KIS 파생 파일은 공개 저장소의 어느 가지에도 올리지 않는다(Codex·Claude 모두).** 공개 저장소의 모든 가지 push에 경계 정적 시험을 돌리는 워크플로(`private-boundary-push.yml`)를 제안한다(**오너 승인 대기 — 워크플로 변경은 승인 뒤, 승인되면 별도 PR**). 그것도 노출 **뒤에** 알리는 감지일 뿐 막지 못한다. Main은 매일 점검에서 이 워크플로의 실패한 실행을 확인한다(봇이 push한 실행은 오너에게 알림이 안 갈 수 있다).
+- **규칙(보안 검토 B2, 10/31): KIS 파생 파일은 공개 저장소의 어느 가지에도 올리지 않는다(Codex·Claude 모두).** 공개 저장소의 모든 가지 push에 경계 정적 시험을 돌리는 워크플로(`private-boundary-push.yml`, 10/31 오너 승인 ①)가 돈다. 그것도 노출 **뒤에** 알리는 감지일 뿐 막지 못한다. Main은 매일 점검에서 이 워크플로의 실패한 실행을 확인한다(봇이 push한 실행은 오너에게 알림이 안 갈 수 있다).
 - 워크플로는 Main만 만든다(DC-35). Codex는 요청서만 낸다.
 - 이관 순서:
   1. 요청 수집이 동작한다.
@@ -506,7 +506,7 @@ Actions 사용량: 매일 약 15분 × 22거래일 ≈ 330분. 처음 채우기 
 | 공개 저장소 정적 시험 | — | `test_private_boundary_static.py` |
 | KIS 경로 허용 목록(수집기와 공통) | `src/investment_system/private_area/kis_routes.py` | `test_research_request.py` |
 | `research-request/1` 검사·`plan()` | `src/investment_system/private_area/research_request.py` | `test_research_request.py` |
-| 모든 가지 push에 경계 시험(보안 검토 B2) — **오너 승인 대기, 이 PR에 없음** | `.github/workflows/private-boundary-push.yml`(승인 뒤 별도 PR) | `test_private_boundary_static.py`가 파일이 생기면 모양을 고정(없으면 건너뜀) |
+| 모든 가지 push에 경계 시험(보안 검토 B2, 10/31 오너 승인 ①) | `.github/workflows/private-boundary-push.yml` | `test_private_boundary_static.py`가 모양을 고정 |
 
 - Pages 가드: 하나라도 있으면 빌드 실패.
   - `kis_markers`: KIS 호스트(`koreainvestment.com` 아래 모든 주소), TR 번호(시세 계열 `HHDFS`·`HHKST`·`FHKST`·`FHKSW`·`FHPST`·`FHKUP` + 숫자 8자리, 주문·잔고 계열 `TTTC`·`VTTC`·`TTTS`·`VTTS`·`TTTT`·`VTTT`·`JTTT`·`TTTO`·`VTTO`·`CTRP`·`VTRP`·`CTSC`·`CTOS` + 숫자 4자리 + 영문 1자), KIS Secret 이름 2개. 대소문자 무관. 모든 텍스트 파일 원문과, JSON은 풀린 키·문자열까지 본다.
@@ -523,7 +523,7 @@ Actions 사용량: 매일 약 15분 × 22거래일 ≈ 330분. 처음 채우기 
 - `research-request/1`: 칸은 schema·request_id(`rr-YYYYMMDD-소문자 단어`, 64자 이하)·symbols(미국 티커 1~600개)·period(2000-01-01 이후, 10년 이하, once는 끝이 오늘 이하, daily는 오늘+366일 이하)·items(`daily_raw`·`daily_adjusted_crosscheck`·`volume`·`dollar_volume` 중 일부)·frequency(`once`·`daily`)·purpose(한 줄 120자 이하, 주소·이메일·키 같은 토큰·8자리 이상 숫자 금지). 파일 16 KiB 이하, 모르는 키 거부, order·trading·balance·account·주문·매매·잔고·계좌는 요청 어디에서나 거부. 오류는 고정 코드만 낸다.
 - `plan(request)`: 토큰 발급 → 종목마다 해외 기간별시세(원주가 `MODP=0`, 대조를 요청했을 때만 `MODP=1`) → 토큰 폐기. 호출 서술만 돌려주며 호스트·네트워크가 없다. 서술마다 `kis_routes.require_route`를 거치고, 경로 단어 거부가 허용 목록보다 먼저다.
   - 보안 검토 A8(10/31): 결과 목록에 `estimated_calls`가 붙고, 서술마다 `fetch`(`BACKFILL` / `NEWEST_PAGE`)와 `pages`가 붙는다. 첫 실행이 6,000회를 넘는 요청은 검사 단계에서 `REQUEST_TOO_COSTLY`. `plan(request, backfill_done=True)`는 `daily` 요청에 최신 한 쪽만 준다(상태 위치는 20절).
-- 모든 가지 push 감지(보안 검토 B2, 10/31): `.github/workflows/private-boundary-push.yml`이 모든 가지 push에서 `test_private_boundary_static.py`만 돌린다(`contents: read`, Secret 없음, 기존 워크플로와 같은 `pytest==9.1.1`). **노출 뒤 감지이지 막는 장치가 아니다**(push된 가지는 그 순간 공개다). 새 워크플로라 오너 승인이 먼저다. push 하는 순간 그 가지에서 돌기 시작하므로, 승인 전에는 어느 가지에도 올리지 않고 이 PR에서 뺐다. 승인되면 별도 PR로 올린다.
+- 모든 가지 push 감지(보안 검토 B2, 10/31): `.github/workflows/private-boundary-push.yml`이 모든 가지 push에서 `test_private_boundary_static.py`만 돌린다(`contents: read`, Secret 없음, 기존 워크플로와 같은 `pytest==9.1.1`). **노출 뒤 감지이지 막는 장치가 아니다**(push된 가지는 그 순간 공개다). 새 워크플로라 오너 승인이 먼저였다. 10/31 저녁 오너가 승인(①)해 이 PR에 넣었다.
 - 뒤 PR에 남는 일:
   - 화면 PR(13절 4번)의 `private-kis.js`가 `/kis/us-daily`를 부르면 이 가드에 막힌다. 그때 파일 하나·주소 하나로 좁힌 예외를 오너 승인과 함께 더한다.
   - **`NOT_READY` 실행 중 요청 시험(브라우저, 화면 PR 또는 공통 기반 PR, 보안 검토 B7):** 모든 공개 화면을 비공개 상태 `NOT_READY`로 띄워 모든 요청을 가로채고, Worker 호스트로는 `GET /history` 말고 아무것도 가지 않는지, `/kis`·`/lab`·`/private`로 시작하는 경로가 없는지, KIS 호스트로 가는 요청이 없는지 확인한다(18.3절 약속). 글자 검사(이 PR)는 쪼개거나 이스케이프한 문자열을 놓칠 수 있어 첫 그물로만 둔다.
