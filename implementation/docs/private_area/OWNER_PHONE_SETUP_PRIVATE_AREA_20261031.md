@@ -12,7 +12,7 @@
 | 결제 수단 등록이 필요한가 | **Cloudflare Zero Trust 가입 때만 필요하다.** 무료 요금제를 고르면 청구되지 않는다(Cloudflare 안내: "this step is still needed but you will not be charged"). GitHub와 KIS는 결제 수단이 필요 없다. GitHub에는 결제 수단을 넣지 않는다. 그래야 한도를 넘어도 청구 대신 실행이 멈춘다 |
 | 비용 | 0원(설계 10절) |
 | 걸리는 시간 | 1~6단계 합쳐 약 30~40분 |
-| 순서 | 1 → 2 → 3은 언제든. 4~6은 Main이 `kis-auth` Worker를 배포한 뒤(구현 3번째 PR) |
+| 순서 | 1·2·4는 지금 해도 된다. 3은 가지·로그 삭제만 지금, 공개 저장소 KIS Secrets 삭제는 Codex KIS 자료를 비공개 구역으로 옮긴 뒤(10/31 오너 방침). 5·6은 Main이 `kis-auth` Worker를 배포한 뒤(구현 3번째 PR) |
 
 ## 1. 새 비공개 저장소 만들기 (GitHub, 약 3분)
 
@@ -33,7 +33,8 @@
 
 ## 3. 공개 저장소의 KIS 흔적 지우기 (GitHub, 약 5분)
 
-1. `Investment-System1` → **Settings** → **Secrets and variables** → **Actions** → `KIS_APP_KEY` 줄의 휴지통(삭제) → 확인. `KIS_APP_SECRET`도 같은 방법으로 지운다.
+1. **(이관 뒤)** `Investment-System1` → **Settings** → **Secrets and variables** → **Actions** → `KIS_APP_KEY` 줄의 휴지통(삭제) → 확인. `KIS_APP_SECRET`도 같은 방법으로 지운다.
+   - 지금 지우지 않는다. Codex 연구 KIS 자료를 비공개 구역으로 옮긴 뒤 Main이 "Secrets 지워도 됨"이라고 알린다(그때 Codex KIS 워크플로와 원자료 저장소의 KIS release도 지운다).
 2. 가지 삭제: `Investment-System1` → **Branches** → `claude/kis-verify-once` 휴지통.
    - 세션은 가지를 지울 권한이 없다(403).
    - 같은 화면에서 `claude/iex-expansion-measure-once`도 지운다.
