@@ -184,7 +184,7 @@ def stable_run(output,archive,resume,plan_path):
     body=store.get_bytes('stable-calendar');assert digest(body)==plan['calendar']['sha256']
     calendar=[r[''][:10]for r in csv.DictReader(body.decode().splitlines())]
     routes={r['company']:r for r in plan['routes']}
-    expected={c:{d for d in calendar if max('2010-01-01',r['start'])<=d<=min('2015-12-31',r['end'])}for c,r in routes.items()}
+    expected={c:{d for d in calendar if max(plan.get('target_start','2010-01-01'),r['start'])<=d<=min('2015-12-31',r['end'])}for c,r in routes.items()}
     acquired={c:set(series.get(r['alias'],{}))for c,r in routes.items()}
     tasks=year_tasks(expected,acquired)
     # ABT's exact gap first, then rotate companies each year; a rejection is not a global completion.

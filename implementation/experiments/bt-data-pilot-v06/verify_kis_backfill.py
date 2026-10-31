@@ -47,12 +47,12 @@ def verify(root,baseline,old,output):
         previous=set(baseline_rows.get(alias,{}));new=dates-previous
         excluded=sorted(dates-market)
         for d in excluded:rejections.append({'company':c,'date':d,'reason':'REFERENCE_CALENDAR_CLOSED','volume_zero':rows[d]['raw']['volume']==0,'ohlc_flat':len({rows[d]['raw'][f]for f in ('open','high','low','close')})==1})
-        expected={d for d in calendar if max('2010-01-01',route['start'])<=d<=min('2015-12-31',route['end'])}
+        expected={d for d in calendar if max(plan.get('target_start','2010-01-01'),route['start'])<=d<=min('2015-12-31',route['end'])}
         requests=[x for x in state['requests']if x['company']==c]
         tasks=[x for x in state['tasks']if x['company']==c]
         clean={d:rows[d]for d in sorted(sessions)}
         (out/(c+'-calendar-filtered-private.json')).write_bytes(encoded(clean))
-        companies.append({'company':c,'alias':alias,'requested_start':'2010-01-01','expected_sessions':len(expected),
+        companies.append({'company':c,'alias':alias,'requested_start':plan.get('target_start','2010-01-01'),'expected_sessions':len(expected),
             'raw_rows_in_identity_window':len(dates),'calendar_rows':len(sessions),'new_raw_rows':len(new),'new_calendar_rows':len(new&market),
             'off_calendar_rows':len(excluded),'continuous_blocks':intervals(sessions,calendar),'missing_target_blocks':intervals(expected-sessions,calendar),
             'target_acquired':len(sessions&expected),'request_states':dict(Counter(x['state']for x in requests)),
