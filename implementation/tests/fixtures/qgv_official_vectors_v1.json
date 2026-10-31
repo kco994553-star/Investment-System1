@@ -7988,6 +7988,922 @@
   },
   {
    "code": null,
+   "id": "last_trade_session_close_only_valid",
+   "ops": [
+    {
+     "path": [
+      "times",
+      "price_session_close_at"
+     ],
+     "value": "2026-10-13T20:00:00Z"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "code": null,
+   "id": "last_trade_every_v_row_valid",
+   "ops": [
+    {
+     "path": [
+      "rows",
+      "NASDAQ:ABNB",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T19:59:59Z"
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:ADBE",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T19:30:00Z"
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:AKAM",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T13:30:00Z"
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:AMD",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T19:45:00Z"
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:LNT",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T19:45:00Z"
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:A",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T19:45:00Z"
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:ABBV",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T19:45:00Z"
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:ABT",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T19:45:00Z"
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:ACN",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T19:45:00Z"
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:AES",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T19:45:00Z"
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:AFL",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T19:45:00Z"
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:ALB",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T19:45:00Z"
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:ALLE",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T19:45:00Z"
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:AOS",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T19:45:00Z"
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:APD",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T19:45:00Z"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T19:45:00Z"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:msft",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T19:45:00Z"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:nvda",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T19:45:00Z"
+    },
+    {
+     "path": [
+      "times",
+      "price_session_close_at"
+     ],
+     "value": "2026-10-13T20:00:00Z"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "code": null,
+   "id": "last_trade_one_v_row_valid",
+   "ops": [
+    {
+     "path": [
+      "rows",
+      "NASDAQ:ABNB",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T19:59:59Z"
+    },
+    {
+     "path": [
+      "times",
+      "price_session_close_at"
+     ],
+     "value": "2026-10-13T20:00:00Z"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "code": null,
+   "id": "last_trade_early_close_valid",
+   "ops": [
+    {
+     "path": [
+      "rows",
+      "NASDAQ:ABNB",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T16:59:59Z"
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:ADBE",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T16:30:00Z"
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:AKAM",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T13:30:00Z"
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:AMD",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T13:30:00Z"
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:LNT",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T13:30:00Z"
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:A",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T13:30:00Z"
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:ABBV",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T13:30:00Z"
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:ABT",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T13:30:00Z"
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:ACN",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T13:30:00Z"
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:AES",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T13:30:00Z"
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:AFL",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T13:30:00Z"
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:ALB",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T13:30:00Z"
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:ALLE",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T13:30:00Z"
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:AOS",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T13:30:00Z"
+    },
+    {
+     "path": [
+      "rows",
+      "NYSE:APD",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T13:30:00Z"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:amd",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T13:30:00Z"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:msft",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T13:30:00Z"
+    },
+    {
+     "path": [
+      "rows",
+      "TARGET:nvda",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T13:30:00Z"
+    },
+    {
+     "path": [
+      "times",
+      "price_session_close_at"
+     ],
+     "value": "2026-10-13T17:00:00Z"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "code": null,
+   "id": "last_trade_winter_early_close_valid",
+   "ops": [
+    {
+     "path": [
+      "price_source",
+      "basis_date"
+     ],
+     "value": "2026-11-27"
+    },
+    {
+     "path": [
+      "price_source",
+      "requested_basis_date"
+     ],
+     "value": "2026-11-27"
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:ABNB",
+      "v_last_trade_at"
+     ],
+     "value": "2026-11-27T17:59:59Z"
+    },
+    {
+     "path": [
+      "times",
+      "price_basis_date"
+     ],
+     "value": "2026-11-27"
+    },
+    {
+     "path": [
+      "times",
+      "price_session_close_at"
+     ],
+     "value": "2026-11-27T18:00:00Z"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "code": null,
+   "id": "last_trade_winter_regular_close_valid",
+   "ops": [
+    {
+     "path": [
+      "price_source",
+      "basis_date"
+     ],
+     "value": "2026-11-27"
+    },
+    {
+     "path": [
+      "price_source",
+      "requested_basis_date"
+     ],
+     "value": "2026-11-27"
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:ABNB",
+      "v_last_trade_at"
+     ],
+     "value": "2026-11-27T14:30:00Z"
+    },
+    {
+     "path": [
+      "times",
+      "price_basis_date"
+     ],
+     "value": "2026-11-27"
+    },
+    {
+     "path": [
+      "times",
+      "price_session_close_at"
+     ],
+     "value": "2026-11-27T21:00:00Z"
+    }
+   ],
+   "valid": true
+  },
+  {
+   "code": "OFFICIAL_INVALID",
+   "id": "last_trade_without_session_close",
+   "ops": [
+    {
+     "path": [
+      "rows",
+      "NASDAQ:ABNB",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T19:00:00Z"
+    }
+   ],
+   "valid": false
+  },
+  {
+   "code": "OFFICIAL_INVALID",
+   "id": "last_trade_on_a_supplied_row_without_v",
+   "ops": [
+    {
+     "path": [
+      "rows",
+      "NASDAQ:AAPL",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T19:00:00Z"
+    },
+    {
+     "path": [
+      "times",
+      "price_session_close_at"
+     ],
+     "value": "2026-10-13T20:00:00Z"
+    }
+   ],
+   "valid": false
+  },
+  {
+   "code": "OFFICIAL_INVALID",
+   "id": "last_trade_on_a_no_trade_row",
+   "ops": [
+    {
+     "path": [
+      "rows",
+      "NYSE:ARE",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T19:00:00Z"
+    },
+    {
+     "path": [
+      "times",
+      "price_session_close_at"
+     ],
+     "value": "2026-10-13T20:00:00Z"
+    }
+   ],
+   "valid": false
+  },
+  {
+   "code": "OFFICIAL_INVALID",
+   "id": "last_trade_null",
+   "ops": [
+    {
+     "path": [
+      "rows",
+      "NASDAQ:ABNB",
+      "v_last_trade_at"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "times",
+      "price_session_close_at"
+     ],
+     "value": "2026-10-13T20:00:00Z"
+    }
+   ],
+   "valid": false
+  },
+  {
+   "code": "OFFICIAL_INVALID",
+   "id": "last_trade_number",
+   "ops": [
+    {
+     "path": [
+      "rows",
+      "NASDAQ:ABNB",
+      "v_last_trade_at"
+     ],
+     "value": 7.25
+    },
+    {
+     "path": [
+      "times",
+      "price_session_close_at"
+     ],
+     "value": "2026-10-13T20:00:00Z"
+    }
+   ],
+   "valid": false
+  },
+  {
+   "code": "OFFICIAL_INVALID",
+   "id": "last_trade_fraction",
+   "ops": [
+    {
+     "path": [
+      "rows",
+      "NASDAQ:ABNB",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T19:00:00.5Z"
+    },
+    {
+     "path": [
+      "times",
+      "price_session_close_at"
+     ],
+     "value": "2026-10-13T20:00:00Z"
+    }
+   ],
+   "valid": false
+  },
+  {
+   "code": "OFFICIAL_INVALID",
+   "id": "last_trade_offset",
+   "ops": [
+    {
+     "path": [
+      "rows",
+      "NASDAQ:ABNB",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T15:00:00-04:00"
+    },
+    {
+     "path": [
+      "times",
+      "price_session_close_at"
+     ],
+     "value": "2026-10-13T20:00:00Z"
+    }
+   ],
+   "valid": false
+  },
+  {
+   "code": "OFFICIAL_INVALID",
+   "id": "last_trade_before_open",
+   "ops": [
+    {
+     "path": [
+      "rows",
+      "NASDAQ:ABNB",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T13:29:59Z"
+    },
+    {
+     "path": [
+      "times",
+      "price_session_close_at"
+     ],
+     "value": "2026-10-13T20:00:00Z"
+    }
+   ],
+   "valid": false
+  },
+  {
+   "code": "OFFICIAL_INVALID",
+   "id": "last_trade_at_close",
+   "ops": [
+    {
+     "path": [
+      "rows",
+      "NASDAQ:ABNB",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T20:00:00Z"
+    },
+    {
+     "path": [
+      "times",
+      "price_session_close_at"
+     ],
+     "value": "2026-10-13T20:00:00Z"
+    }
+   ],
+   "valid": false
+  },
+  {
+   "code": "OFFICIAL_INVALID",
+   "id": "last_trade_after_close",
+   "ops": [
+    {
+     "path": [
+      "rows",
+      "NASDAQ:ABNB",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T20:30:00Z"
+    },
+    {
+     "path": [
+      "times",
+      "price_session_close_at"
+     ],
+     "value": "2026-10-13T20:00:00Z"
+    }
+   ],
+   "valid": false
+  },
+  {
+   "code": "OFFICIAL_INVALID",
+   "id": "last_trade_after_early_close",
+   "ops": [
+    {
+     "path": [
+      "rows",
+      "NASDAQ:ABNB",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T17:30:00Z"
+    },
+    {
+     "path": [
+      "times",
+      "price_session_close_at"
+     ],
+     "value": "2026-10-13T17:00:00Z"
+    }
+   ],
+   "valid": false
+  },
+  {
+   "code": "OFFICIAL_INVALID",
+   "id": "last_trade_other_day",
+   "ops": [
+    {
+     "path": [
+      "rows",
+      "NASDAQ:ABNB",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-12T19:00:00Z"
+    },
+    {
+     "path": [
+      "times",
+      "price_session_close_at"
+     ],
+     "value": "2026-10-13T20:00:00Z"
+    }
+   ],
+   "valid": false
+  },
+  {
+   "code": "OFFICIAL_INVALID",
+   "id": "last_trade_hour_24",
+   "ops": [
+    {
+     "path": [
+      "rows",
+      "NASDAQ:ABNB",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T24:00:00Z"
+    },
+    {
+     "path": [
+      "times",
+      "price_session_close_at"
+     ],
+     "value": "2026-10-13T20:00:00Z"
+    }
+   ],
+   "valid": false
+  },
+  {
+   "code": "OFFICIAL_INVALID",
+   "id": "last_trade_second_60",
+   "ops": [
+    {
+     "path": [
+      "rows",
+      "NASDAQ:ABNB",
+      "v_last_trade_at"
+     ],
+     "value": "2026-10-13T19:59:60Z"
+    },
+    {
+     "path": [
+      "times",
+      "price_session_close_at"
+     ],
+     "value": "2026-10-13T20:00:00Z"
+    }
+   ],
+   "valid": false
+  },
+  {
+   "code": "OFFICIAL_INVALID",
+   "id": "last_trade_other_spelling",
+   "ops": [
+    {
+     "path": [
+      "rows",
+      "NYSE:AFL",
+      "v_last_trade"
+     ],
+     "value": "2026-10-13T19:00:00Z"
+    },
+    {
+     "path": [
+      "times",
+      "price_session_close_at"
+     ],
+     "value": "2026-10-13T20:00:00Z"
+    }
+   ],
+   "valid": false
+  },
+  {
+   "code": "OFFICIAL_INVALID",
+   "id": "session_close_null",
+   "ops": [
+    {
+     "path": [
+      "times",
+      "price_session_close_at"
+     ],
+     "value": null
+    }
+   ],
+   "valid": false
+  },
+  {
+   "code": "OFFICIAL_INVALID",
+   "id": "session_close_number",
+   "ops": [
+    {
+     "path": [
+      "times",
+      "price_session_close_at"
+     ],
+     "value": 7.25
+    }
+   ],
+   "valid": false
+  },
+  {
+   "code": "OFFICIAL_INVALID",
+   "id": "session_close_15h",
+   "ops": [
+    {
+     "path": [
+      "times",
+      "price_session_close_at"
+     ],
+     "value": "2026-10-13T19:00:00Z"
+    }
+   ],
+   "valid": false
+  },
+  {
+   "code": "OFFICIAL_INVALID",
+   "id": "session_close_with_seconds",
+   "ops": [
+    {
+     "path": [
+      "times",
+      "price_session_close_at"
+     ],
+     "value": "2026-10-13T20:00:01Z"
+    }
+   ],
+   "valid": false
+  },
+  {
+   "code": "OFFICIAL_INVALID",
+   "id": "session_close_fraction",
+   "ops": [
+    {
+     "path": [
+      "times",
+      "price_session_close_at"
+     ],
+     "value": "2026-10-13T20:00:00.0Z"
+    }
+   ],
+   "valid": false
+  },
+  {
+   "code": "OFFICIAL_INVALID",
+   "id": "session_close_standard_time_on_a_daylight_day",
+   "ops": [
+    {
+     "path": [
+      "times",
+      "price_session_close_at"
+     ],
+     "value": "2026-10-13T21:00:00Z"
+    }
+   ],
+   "valid": false
+  },
+  {
+   "code": "OFFICIAL_INVALID",
+   "id": "session_close_other_day",
+   "ops": [
+    {
+     "path": [
+      "times",
+      "price_session_close_at"
+     ],
+     "value": "2026-10-12T20:00:00Z"
+    }
+   ],
+   "valid": false
+  },
+  {
+   "code": "OFFICIAL_INVALID",
+   "id": "session_close_winter_daylight_spelling",
+   "ops": [
+    {
+     "path": [
+      "price_source",
+      "basis_date"
+     ],
+     "value": "2026-11-27"
+    },
+    {
+     "path": [
+      "price_source",
+      "requested_basis_date"
+     ],
+     "value": "2026-11-27"
+    },
+    {
+     "path": [
+      "rows",
+      "NASDAQ:ABNB",
+      "v_last_trade_at"
+     ],
+     "value": "2026-11-27T16:00:00Z"
+    },
+    {
+     "path": [
+      "times",
+      "price_basis_date"
+     ],
+     "value": "2026-11-27"
+    },
+    {
+     "path": [
+      "times",
+      "price_session_close_at"
+     ],
+     "value": "2026-11-27T17:00:00Z"
+    }
+   ],
+   "valid": false
+  },
+  {
+   "code": "OFFICIAL_INVALID",
+   "id": "times_unknown_key",
+   "ops": [
+    {
+     "path": [
+      "times",
+      "price_session_open_at"
+     ],
+     "value": "2026-10-13T13:30:00Z"
+    }
+   ],
+   "valid": false
+  },
+  {
+   "code": null,
    "id": "size_cap_at_canonical_length_valid",
    "max_bytes": 77888,
    "ops": [],
@@ -8087,6 +9003,7 @@
   ],
   "inputs_file": "sec-qgv2.json",
   "kind": "QGV_OFFICIAL",
+  "last_trade_note_minutes": 30,
   "max_bytes": 2097152,
   "max_months": 1200,
   "min_axis_weight": 0.5,
@@ -8140,7 +9057,15 @@
    "qg_reference_order",
    "rank_row"
   ],
+  "row_optional_keys": [
+   "v_last_trade_at"
+  ],
   "schema": "qgv-official/1",
+  "session_close_minutes": [
+   780,
+   960
+  ],
+  "session_open_minutes": 570,
   "share_basis_since": [
    "2026-10-23",
    1
@@ -8184,6 +9109,17 @@
    "stry": "SYK",
    "tokyo_electron": "8035"
   },
+  "times_keys": [
+   "price_basis_date",
+   "price_collected_from",
+   "price_collected_to",
+   "inputs_as_of",
+   "generated_at",
+   "verified_at"
+  ],
+  "times_optional_keys": [
+   "price_session_close_at"
+  ],
   "top_keys": [
    "schema",
    "kind",

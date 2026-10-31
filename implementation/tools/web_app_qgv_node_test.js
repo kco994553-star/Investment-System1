@@ -508,6 +508,33 @@ test('qgv.page: an exact projection of QgvScores.officialPage over the validated
   assert.deepEqual(win.requests.filter((r) => !data.FILES.includes(r.name)), [], 'only public files were requested');
 });
 
+// Owner decision 2026-10-31 (docs/qgv_official/LAST_TRADE_TIME_20261031.md): the synthetic vector case last_trade_every_v_row_valid.
+test('qgv.page: v_last_trade = QgvOfficial.lastTrade of the row\'s own publication row (text only >= 30 min before close); null without V or times; values unchanged', async () => {
+  const c = OV.cases.find((x) => x.id === 'last_trade_every_v_row_valid'), pub = JSON.parse(OV.base_text);
+  for (const op of c.ops) { let t = pub; for (const k of op.path.slice(0, -1)) t = t[k]; t[op.path[op.path.length - 1]] = structuredClone(op.value); }
+  const E = env({ files: { 'qgv-official.json': { body: JSON.stringify(pub) } } }), { qgv, mods } = E, QO = mods.QgvOfficial, pg = await qgv.page();
+  const plain = await env().qgv.page();
+  assert.equal(pg.price_basis.publication_id, PUB.publication_id, 'the same publication id (the times are not in the manifest of this synthetic copy)');
+  let noted = 0, quiet = 0;
+  const off = await E.data.official();
+  for (const r of pg.rows) {
+    const before = plain.rows.find((x) => x.id === r.id);
+    assert.deepEqual([r.score, r.rank.official, r.rank.qg_reference_order, r.na_reason], [before.score, before.rank.official, before.rank.qg_reference_order, before.na_reason], r.id + ' values unchanged');
+    assert.equal(before.v_last_trade, null, r.id + ' a publication without times: null');
+    const info = r.score.v !== null && r.record && Object.hasOwn(pub.rows, r.record) ? QO.lastTrade(off.payload, r.record) : null;
+    if (!info) { assert.equal(r.v_last_trade, null, r.id); continue; }
+    assert.deepEqual({ ...r.v_last_trade }, { at: info.at, ny_time: info.ny_time, minutes_before_close: info.minutes_before_close, note: info.note, text: info.note ? '마지막 체결 ' + info.ny_time + ' (뉴욕)' : null }, r.id);
+    if (info.note) noted++; else quiet++;
+    assert.ok(Object.isFrozen(r.v_last_trade));
+  }
+  assert.ok(noted >= 2 && quiet >= 2, noted + ' / ' + quiet);
+  assert.deepEqual(pg.rows.filter((r) => r.score.v === null).map((r) => r.v_last_trade), pg.rows.filter((r) => r.score.v === null).map(() => null), 'no V: null');
+  // the personal preview carries the same time on rows whose recomputed V is shown
+  const pv = qgv.preview(pg, mods.QgvV2.officialWeights(mods.QgvV2.DEFAULT_PRESET));
+  for (const r of pv.rows) { const o = pg.rows.find((x) => x.id === r.id); assert.deepEqual(r.v_last_trade, r.score.v === null ? null : o.v_last_trade, r.id + ' preview'); }
+  const keys = keysDeep(pg); for (const k of PRICE_KEYS) assert.ok(!keys.has(k), 'no ' + k);
+});
+
 test('forEngines: a Universe read or a profile change after the first ask reaches the TARGET device result although the central page stays the same object', async () => {
   const U = universeView(), live = { prices: () => null, priceBasis: () => null, readStatus: () => null }, E = env({ prices: { universeView: live } }), { qgv, mods } = E, calls = spy(E);
   const pg = await qgv.page(), hasV = (c) => Object.values(c.rows).some((r) => Number.isFinite(r.primary.v));

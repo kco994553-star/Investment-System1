@@ -83,14 +83,14 @@ function qgvBarsHtml(d){if(!d||![d.q,d.g,d.v].some(v=>typeof v==='number'&&Numbe
   return '<span class="qb" data-axis="'+a+'" data-state="'+(ok?'OK':'NA')+'"><svg viewBox="0 0 100 10" preserveAspectRatio="none" focusable="false"><rect class="qb-track" x="0.5" y="1" width="99" height="8" rx="2"/>'+(ok?'<rect class="qb-fill" x="0.5" y="1" width="'+w.toFixed(2)+'" height="8" rx="2"/>':'')+'</svg></span>';};
  return '<span class="qgv-bars qgv-bars-l" aria-hidden="true" data-qgv-bars>'+bar('Q',d.q)+bar('G',d.g)+bar('V',d.v)+'</span>';}
 function v2Body(d,locale){
- const T=tr(locale),cell=(v,attr)=>'<dd data-qgv="'+attr+'">'+(typeof v==='number'?'<span class="num">'+esc(num(v,locale))+'</span>':na('',locale))+'</dd>';
+ const T=tr(locale),cell=(v,attr,note='')=>'<dd data-qgv="'+attr+'">'+(typeof v==='number'?'<span class="num">'+esc(num(v,locale))+'</span>':na('',locale))+(note?' '+note:'')+'</dd>';
  const reference=d?.reference_only?'<p class="badge partial" data-qgv2-reference>'+esc(T('참고 순위 · 미국 504종목과 같은 계산, 정식 순위 아님','Reference ranking · same calculation as US504, not an official rank'))+'</p>':'';
  const QS=g.QgvScores,why=QS&&QS.naText?QS.naText(d,locale==='en-US'):'SEC_QGV2_NOT_AVAILABLE';
  // v2 NOT_AVAILABLE: the reason in words (factors n/total, axis below 50%). Never a v1 fallback. A row whose V was computed
  // (Q and G below 50%) still shows that V, as S06, the Universe page and the radar do ('V 일치', owner 2026-10-19).
  if(!d||d.state==='NOT_AVAILABLE'&&d.q===null&&d.g===null&&!Number.isFinite(d.v))return reference+'<dl class="kv"><dt>QGV v2</dt><dd data-qgv="total">'+na('',locale)+'</dd><dt>Q</dt><dd data-qgv="Q">'+na('',locale)+'</dd><dt>G</dt><dd data-qgv="G">'+na('',locale)+'</dd><dt>V</dt><dd data-qgv="V">'+na('',locale)+'</dd></dl><p class="small" data-qgv2-na>'+esc(why)+'</p>';
  const rr=d.reference_range,range=rr&&rr.state!=='NOT_AVAILABLE'?esc(num(rr.low,locale,2)+' ~ '+num(rr.high,locale,2)):na(rr?rr.reason:'',locale);
- return reference+'<dl class="kv"><dt>QGV v2</dt>'+cell(d.total,'total')+'<dt>Q</dt>'+cell(d.q,'Q')+'<dt>G</dt>'+cell(d.g,'G')+'<dt>V</dt>'+cell(d.v,'V')+'</dl>'
+ return reference+'<dl class="kv"><dt>QGV v2</dt>'+cell(d.total,'total')+'<dt>Q</dt>'+cell(d.q,'Q')+'<dt>G</dt>'+cell(d.g,'G')+'<dt>V</dt>'+cell(d.v,'V',QS&&QS.lastTradeHtml?QS.lastTradeHtml(d,locale==='en-US'):'')+'</dl>'
   +(d.total===null?'<p class="small" data-qgv2-na>'+esc(why)+'</p>':'')
   +'<p class="small" data-qgv2-summary>'+esc(T('산출 요인 ','Factors available ')+d.factors_available+'/'+d.factors_total+(d.profile?' · '+d.profile.id:''))+flagsHtml(d,locale)+'</p>'
   +(d.v_excluded?'<p class="small" data-qgv2-gate>'+esc(T('가치 함정 주의: Q가 업종 내 하위 30%라 V를 총점에서 뺐습니다.','Value-trap caution: Q is in the bottom 30% of its industry, so V is left out of the total.'))+'</p>':'')

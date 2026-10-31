@@ -46,7 +46,7 @@ function v2Display(r){
  if(!r)return{version:'v2',q:null,g:null,v:null,total:null,partial:true,factors_available:0,factors_total:qgvV2().FACTORS.length,flags:['V2_INPUTS_NOT_AVAILABLE'],state:'NOT_AVAILABLE',total_reason:'V2_INPUTS_NOT_AVAILABLE'};
  const ax=a=>r.axes[a].score;
  return{version:'v2',q:ax('Q'),g:ax('G'),v:ax('V'),total:r.total,total_reason:r.total===null?(r.total_reason||'AXIS_WEIGHT_INSUFFICIENT'):null,partial:['Q','G','V'].some(a=>r.axes[a].state!=='READY'),factors_available:r.factors_available,factors_total:r.factors_total,flags:[...r.flags],state:r.total===null?'NOT_AVAILABLE':'READY',
-  axes:r.axes,factors:r.factors,weights:r.weights,profile:r.profile,q_industry_percentile:r.q_industry_percentile,v_excluded:r.v_excluded,detail:r.detail,reference_range:r.reference_range,selected_types:r.selected_types,type_reason:r.type_reason,value_trap_gate:r.value_trap_gate===true,...(r.weight_stages?{weight_stages:r.weight_stages}:{})};
+  axes:r.axes,factors:r.factors,weights:r.weights,profile:r.profile,q_industry_percentile:r.q_industry_percentile,v_excluded:r.v_excluded,detail:r.detail,reference_range:r.reference_range,selected_types:r.selected_types,type_reason:r.type_reason,value_trap_gate:r.value_trap_gate===true,...(r.weight_stages?{weight_stages:r.weight_stages}:{}),...(r.v_last_trade?{v_last_trade:r.v_last_trade}:{})};
 }
 /* TYPE-SCOPE: the memberships of one v2 record — the same approved rule for every row (QgvV2.pricefreeMemberships on the row's
    own published metrics); a row of another calc_version is not scored, so it has none (null, never 0). */
@@ -239,11 +239,14 @@ const DEVICE_PRICE_REASONS=Object.freeze(['NO_DEVICE_PRICE','PRICE_HISTORY_NOT_A
 function centralReason(code,status){if(!DEVICE_PRICE_REASONS.includes(code))return code;return PRICE_STATUS_REASONS.includes(status)?status:code==='NO_DEVICE_PRICE'?'NO_IEX_TRADE':'OFFICIAL_MONTH_END_NOT_AVAILABLE';}
 // V factors whose missing reason is replaced by fn(reason) (a copy; the published or memoized object is never changed).
 function vReasons(factors,fn){const out={};for(const[k,f]of Object.entries(factors||{}))out[k]=k.startsWith('v_')&&f.score===null?{...f,reason:fn(f.reason)}:{...f};return out;}
-function pubRow(r){const V2=qgvV2(),factors=vReasons(r.factors,c=>centralReason(c,r.price_status)),axes={};for(const a of V2.PILLARS)axes[a]={...r.axes[a]};let n=0;for(const k of V2.FACTORS)if(factors[k]&&factors[k].score!==null)n++;
+/* The row's last-trade time (owner decision 2026-10-31): QgvOfficial.lastTrade of the validated publication (null for a payload it did
+   not validate, a row without v_last_trade_at, or no reader). Display only: it rides on the row as v_last_trade, no score reads it. */
+function lastTradeOf(pub,key){try{const QO=qgvOfficial();return QO&&typeof QO.lastTrade==='function'?QO.lastTrade(pub,key):null;}catch(_){return null;}}
+function pubRow(r,lt=null){const V2=qgvV2(),factors=vReasons(r.factors,c=>centralReason(c,r.price_status)),axes={};for(const a of V2.PILLARS)axes[a]={...r.axes[a]};let n=0;for(const k of V2.FACTORS)if(factors[k]&&factors[k].score!==null)n++;
  return{version:V2.VERSION,status:V2.STATUS,profile:null,axes,factors,factors_available:n,factors_total:V2.FACTORS.length,q_industry_percentile:r.q_industry_percentile,type_weights:r.type_weights,type_reason:r.type_reason,
-  selected_types:[...r.selected_types],weights:r.weights?{...r.weights}:null,v_excluded:r.v_excluded,value_trap_gate:r.value_trap_gate,total:r.total,total_reason:r.total_reason,flags:[...r.flags],detail:null,reference_range:null};}
+  selected_types:[...r.selected_types],weights:r.weights?{...r.weights}:null,v_excluded:r.v_excluded,value_trap_gate:r.value_trap_gate,total:r.total,total_reason:r.total_reason,flags:[...r.flags],detail:null,reference_range:null,...(lt?{v_last_trade:lt}:{})};}
 const scoredKeys=pub=>Object.keys(pub.rows).filter(k=>pub.rows[k].total_reason!=='CALC_VERSION_MISMATCH').sort();
-function pubUniverse(pub){const out={};for(const k of scoredKeys(pub))out[k]=pubRow(pub.rows[k]);return out;}
+function pubUniverse(pub){const out={};for(const k of scoredKeys(pub))out[k]=pubRow(pub.rows[k],lastTradeOf(pub,k));return out;}
 /* The engine's industry percentile of the Q axis (qgv-v2.js cross(..., industry=true): same pooled rows, one issuer once, the
    industry peers when 8 or more, else the whole cross-section), used for the gate only when personal Q inner weights recompute Q. */
 function qIndustry(ids,rows,axes){const V2=qgvV2(),val=k=>axes[k].Q.score,grp=k=>rows[k].industry_group===undefined?null:rows[k].industry_group,pool=ids.filter(k=>rows[k].in_cross_section!==false&&val(k)!==null),out={};
@@ -263,7 +266,7 @@ function pubPersonal(pub,tree,typesOn,gateOn){const V2=qgvV2(),T=typeDefaults(),
   if(trap)flags.push('VALUE_TRAP_CAUTION');if(gateOn&&q===null)flags.push('GATE_NOT_EVALUATED');if(ax.V.score===null)flags.push('V_NOT_AVAILABLE');
   let data=0;for(const p of V2.PILLARS)if(ax[p].score!==null)data+=w[p];const included=V2.PILLARS.filter(p=>ax[p].score!==null&&!(p==='V'&&trap));let total=null,reason=null;
   if(data/100<V2.MIN_AXIS_WEIGHT||!included.length)reason='AXIS_WEIGHT_INSUFFICIENT';else{let acc=0,used=0;for(const p of included){acc+=w[p]*ax[p].score;used+=w[p];}total=acc/used;}
-  out[k]={...pubRow(r),axes:ax,weights:w,q_industry_percentile:q,v_excluded:trap?'VALUE_TRAP_GATE':null,value_trap_gate:trap,total,total_reason:reason,flags};}
+  out[k]={...pubRow(r,lastTradeOf(pub,k)),axes:ax,weights:w,q_industry_percentile:q,v_excluded:trap?'VALUE_TRAP_GATE':null,value_trap_gate:trap,total,total_reason:reason,flags};}
  return out;}
 /* D11 one place per CIK, the qgv_official.assign_ranks rule: the representative key of each CIK = a TARGET row of a Universe CIK
    that is LIVE / STALE and not CALC_VERSION_MISMATCH (the last in key order), else the first cross-section Universe code. */
@@ -706,10 +709,15 @@ const num=(v,d=1)=>finite(v)?(Math.round(v*10**d)/10**d).toFixed(d):'—';
 /* `row` (optional display row): EBIT_ESTIMATED names the substituted fiscal years, e.g. '추정(대체 계산): FY2023·FY2024'. */
 function flagText(flags,en,row){const years=row&&Array.isArray(row.ebit_estimated_fiscal_years)?row.ebit_estimated_fiscal_years.filter(y=>Number.isInteger(y)):[];
  return(flags||[]).filter(f=>Object.hasOwn(FLAG,f)).map(f=>FLAG[f][en?1:0]+(f==='EBIT_ESTIMATED'&&years.length?': '+years.map(y=>'FY'+y).join(en?', ':'·'):''));}
-// One-line text of a display row: 'QGV 61.2 · Q 60.1 · G 55.0 · V 48.2 · 산출 요인 14/15'.
+/* Last-trade note next to a shown V (owner decision 2026-10-31): QgvOfficial.lastTradeText of the row's v_last_trade ('마지막 체결
+   15:10 (뉴욕)'), only when the row shows a V and the trade was at least 30 minutes before the publication's session close; else
+   null and nothing is shown (no time on the row, an old publication, a later trade). lastTradeHtml: the same as one small span. */
+function lastTradeText(d,en){if(!object(d)||!finite(d.v)||!object(d.v_last_trade))return null;try{const QO=qgvOfficial();return QO&&typeof QO.lastTradeText==='function'?QO.lastTradeText(d.v_last_trade,en):null;}catch(_){return null;}}
+function lastTradeHtml(d,en){const t=lastTradeText(d,en);return t?'<span class="small" data-v-last-trade="'+attr(d.v_last_trade.ny_time)+'">'+attr(t)+'</span>':'';}
+// One-line text of a display row: 'QGV 61.2 · Q 60.1 · G 55.0 · V 48.2 · 산출 요인 14/15' (· 마지막 체결 15:10 (뉴욕) after V when noted).
 function summaryText(d,en){
- if(!d)return '—';const n=(en?'calculated factors ':'산출 요인 ')+d.factors_available+'/'+d.factors_total;
- return (d.reference_only?(en?'Reference ranking · ':'참고 순위 · '):'')+'QGV '+num(d.total)+' · Q '+num(d.q)+' · G '+num(d.g)+' · V '+num(d.v)+' · '+n;
+ if(!d)return '—';const n=(en?'calculated factors ':'산출 요인 ')+d.factors_available+'/'+d.factors_total,lt=lastTradeText(d,en);
+ return (d.reference_only?(en?'Reference ranking · ':'참고 순위 · '):'')+'QGV '+num(d.total)+' · Q '+num(d.q)+' · G '+num(d.g)+' · V '+num(d.v)+(lt?' · '+lt:'')+' · '+n;
 }
 /* Why v2 is NOT_AVAILABLE for a row: 'QGV v2 산출 불가 · 산출 요인 6/15 · Q 축 비중 50% 미만'. Never a v1 fallback. */
 const SOURCE_REASON={NOT_COLLECTED:['아직 수집 안 됨','not collected yet'],CIK_UNRESOLVED:['CIK 미해결','CIK unresolved'],NO_ANNUAL_SEC_FINANCIALS:['연간 SEC 재무 없음','no annual SEC financials'],INVALID_INPUT:['원자료 형식 오류','invalid source data'],NON_SEC_ISSUER:['SEC 공시 대상 아님','not an SEC filer'],IDENTITY_CONFLICT_WITHDRAWN:['식별 충돌로 사용 중지','withdrawn: identity conflict']};
@@ -737,5 +745,5 @@ function label(version,en){return(LABEL[version]||LABEL.v2)[en?1:0];}
 // (+ ' · 유형 범위 qgv2-type-scope/…' = the type-application scope id the scores use).
 function basisText(S,en){const b=S&&S.basis?S.basis:basis('v2',false);return label('v2',en)+' · '+(en?b.label_en:b.label)+(b.since?(en?' · since ':' · ')+b.since+(en?'':'부터'):'')+(b.type_scope?(en?' · type scope ':' · 유형 범위 ')+b.type_scope:'');}
 function presets(){return qgvV2().PRESETS;}
-return Object.freeze({RANK_LABEL,provenance,provenanceText,provenanceAttrs,provenanceAttrHtml,rankLabel,OUTSIDE_UNIVERSE_LABEL,PORTFOLIO_RANK_LABEL,POPULATION_LABEL,universeIdentities,rowOf,codeRow,setPageReferences,modelPortfolios,officialModel,MODEL_NS,MODEL_PRIMARY,MODEL_RULES,MODEL_LABEL,MODES,LABEL,PERSONAL_LABEL,PERSONAL_V0_LABEL,QG_REFERENCE_LABEL,NO_OFFICIAL_RANK,qgReference,FLAG,DATA_STATE,AXIS_STATUS,REASON,coverageFor,exploreGroup,reasonText,stateText,axisStatusText,vInputText,scoringDefault,compute,typeMemberships,judgmentRows,collectQuotes,pageResult,officialPage,setPagePublication,pagePublication,pagePublicationReady,publicationBasis,presetView,centralBasis,centralText,centralHtml,CENTRAL_LABEL,PRICE_STATUS_REASONS,setPageIdentities,setPageProfile,pageProfile,isCurrent,vCoverage,V_TARGET_SHARE,summaryText,naText,flagText,label,basis,basisText,presets,symbolOf,LIMITS_16,TIERS_RC,limits16,sectorName,pageReferences,marks,readMarks,markAttrs});
+return Object.freeze({RANK_LABEL,provenance,provenanceText,provenanceAttrs,provenanceAttrHtml,rankLabel,OUTSIDE_UNIVERSE_LABEL,PORTFOLIO_RANK_LABEL,POPULATION_LABEL,universeIdentities,rowOf,codeRow,setPageReferences,modelPortfolios,officialModel,MODEL_NS,MODEL_PRIMARY,MODEL_RULES,MODEL_LABEL,MODES,LABEL,PERSONAL_LABEL,PERSONAL_V0_LABEL,QG_REFERENCE_LABEL,NO_OFFICIAL_RANK,qgReference,FLAG,DATA_STATE,AXIS_STATUS,REASON,coverageFor,exploreGroup,reasonText,stateText,axisStatusText,vInputText,scoringDefault,compute,typeMemberships,judgmentRows,collectQuotes,pageResult,officialPage,setPagePublication,pagePublication,pagePublicationReady,publicationBasis,presetView,centralBasis,centralText,centralHtml,CENTRAL_LABEL,lastTradeText,lastTradeHtml,PRICE_STATUS_REASONS,setPageIdentities,setPageProfile,pageProfile,isCurrent,vCoverage,V_TARGET_SHARE,summaryText,naText,flagText,label,basis,basisText,presets,symbolOf,LIMITS_16,TIERS_RC,limits16,sectorName,pageReferences,marks,readMarks,markAttrs});
 });

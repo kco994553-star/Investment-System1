@@ -7,7 +7,10 @@
    Stricter than Python: times.verified_at must be set. Not mirrored, by design (the Pages guard runs the Python validator on every
    deploy, so such bytes never ship): int vs float spelling (5 vs 5.0), hence Python's exact canonical size (whole floats are
    counted as ints here: a lower bound), and which code wins when two rules fail in an order JS cannot see (integer-like object
-   keys come first, an integer literal beyond the float range is already Infinity). */
+   keys come first, an integer literal beyond the float range is already Infinity).
+   Last-trade time (owner decision 2026-10-31, docs/qgv_official/LAST_TRADE_TIME_20261031.md): the two optional keys
+   times.price_session_close_at and rows.<code>.v_last_trade_at are accepted (exactly these; a file without them stays valid) and
+   lastTrade / lastTradeText give the screens the one rule for showing 마지막 체결 HH:MM (뉴욕) next to V. A time, never a price. */
 (function(root,factory){const node=typeof module==='object'&&module.exports;
  const api=factory(node?()=>require('./qgv-v2.js'):()=>root.QgvV2,node?()=>require('./type-config-defaults.js'):()=>root.TypeConfigDefaults,node?()=>require('./dcf-parameters-defaults.js'):()=>root.DcfParametersDefaults,node?()=>require('./forward-validation.js'):()=>root.ForwardValidation);
  if(node)module.exports=api;else root.QgvOfficial=api;})(typeof globalThis==='object'?globalThis:this,function(qgvV2,typeDefaults,dcfDefaults,calendar){
@@ -17,6 +20,11 @@ const SCHEMA='qgv-official/1',KIND='QGV_OFFICIAL',FILENAME='qgv-official.json',M
 const TOP_KEYS=deep(['schema','kind','publication_id','state','calc_version','engine','population','weights','type_scope','config_versions','price_source','attribution','inputs','times','coverage','rows']);
 const ROW_KEYS=deep(['cik','profile','industry_group','in_cross_section','state','source_reason_codes','acquired_at','fiscal_year_end','factors','axes','weights','type_weights','type_reason','selected_types','q_industry_percentile','value_trap_gate','v_excluded','flags','total','total_reason','price_status','rank','qg_reference_order','rank_row']);
 const FACTOR_KEYS=deep(['score','reason','basis']),AXIS_KEYS=deep(['score','state','weight_available','factors_available','reason']);
+const TIMES_KEYS=deep(['price_basis_date','price_collected_from','price_collected_to','inputs_as_of','generated_at','verified_at']);
+// The optional last-trade keys (Python TIMES_OPTIONAL_KEYS / ROW_OPTIONAL_KEYS) and their session rule: open 09:30 New York, close
+// 16:00 or 13:00 (early close) New York as the publication states it; a screen notes the time when it is >= 30 minutes before close.
+const TIMES_OPTIONAL_KEYS=deep(['price_session_close_at']),ROW_OPTIONAL_KEYS=deep(['v_last_trade_at']);
+const SESSION_OPEN_MINUTES=9*60+30,SESSION_CLOSE_MINUTES=deep([13*60,16*60]),LAST_TRADE_NOTE_MINUTES=30;
 const FORBIDDEN_KEYS=deep(['close','closes','detail','ebit_yield','enterprise_value','ev','expectation_gap','fcf_yield','hmac','implied_growth','market_cap','marketcap','mcap','month_closes','price','price_e4','price_hmac','prices','quote','quotes','realized_growth','reference_range','yield']),FORBIDDEN=new Set(FORBIDDEN_KEYS);
 // D-CV2: raw price-dependent engine codes are published as one label; as a reason they are refused (flags/basis may carry them).
 const PRICE_DEPENDENT=deep(['EV_NON_POSITIVE','NUMERIC_OVERFLOW','ROOT_NOT_BRACKETED','ROOT_NOT_CONVERGED']),PRICE_DEPENDENT_PUBLIC='PRICE_DEPENDENT_NOT_COMPUTABLE',STOPS=['PRICE_IDENTITY_CONFLICT','CALC_VERSION_MISMATCH'];
@@ -34,7 +42,7 @@ const ERRORS=deep(['OFFICIAL_INVALID','OFFICIAL_FORBIDDEN_KEY','OFFICIAL_TOO_LAR
 const FRESH_SESSIONS=2;   // D-CV6 recommended threshold: completed New York sessions after the price basis day
 const CLOSE_MINUTES=16*60;   // a session counts as completed from 16:00 New York (ForwardValidation's cut; no early-close table here)
 const RX={reason:/^[A-Z][A-Z0-9_]{0,63}$/,code:/^(?:[A-Z]{2,8}:[A-Z0-9][A-Z0-9.\-]{0,15}|TARGET:[a-z][a-z0-9_]{0,63})$/,hex:/^[0-9a-f]{64}$/,day:/^\d{4}-\d{2}-\d{2}$/,
- clock:/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z$/,stamp:/^\d{8}$/,id:/^[a-z][a-z0-9_]{0,63}$/,cik:/^\d{10}$/,pub:/^qgvpub-[0-9a-f]{64}$/,calc:/^qgv2-calc\/(\d{4})-(\d{2})-(\d{2})\.(\d{1,4})$/};
+ clock:/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z$/,second:/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})Z$/,stamp:/^\d{8}$/,id:/^[a-z][a-z0-9_]{0,63}$/,cik:/^\d{10}$/,pub:/^qgvpub-[0-9a-f]{64}$/,calc:/^qgv2-calc\/(\d{4})-(\d{2})-(\d{2})\.(\d{1,4})$/};
 const VALID=new WeakSet();
 function fail(code){throw Error(code);}
 function need(v,code='OFFICIAL_INVALID'){if(!v)fail(code);}
@@ -42,16 +50,30 @@ const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v),num=v=>typeof v
 const str=(v,rx)=>typeof v==='string'&&rx.test(v),strOrNull=(v,rx)=>v===null||str(v,rx),scoreOk=v=>v===null||num(v)&&v>=0&&v<=100;
 const reasonOk=v=>v===null||str(v,RX.reason)&&!PRICE_DEPENDENT.includes(v);
 function keys(v,ks){need(object(v)&&Object.keys(v).length===ks.length&&ks.every(k=>Object.hasOwn(v,k)));}
+// Exactly ks plus any of the optional keys opt present (Python _keys(d, keys, optional)).
+function keysOpt(v,ks,opt){need(object(v));keys(v,[...ks,...opt.filter(k=>Object.hasOwn(v,k))]);}
 function deps(){const v2=qgvV2(),t=typeDefaults(),d=dcfDefaults();if(!v2||!t||!d)fail('OFFICIAL_UNAVAILABLE');return{v2,t,d};}
 function dayOk(y,m,d){return y>=1&&m>=1&&m<=12&&d>=1&&d<=[31,y%4===0&&y%100!==0||y%400===0?29:28,31,30,31,30,31,31,30,31,30,31][m-1];}
 function isDay(v){return str(v,RX.day)&&dayOk(+v.slice(0,4),+v.slice(5,7),+v.slice(8,10));}
+// Python _second: 'YYYY-MM-DDTHH:MM:SSZ' of a real calendar instant -> epoch ms, else null (Date.parse alone takes 02-30 and 24:00).
+function second(v){const m=typeof v==='string'?RX.second.exec(v):null;if(!m)return null;const[y,mo,d,h,mi,s]=m.slice(1).map(Number);return dayOk(y,mo,d)&&h<=23&&mi<=59&&s<=59?Date.parse(v):null;}
+// New York date and minutes of an instant: ForwardValidation.eastern, the clock nyNow() uses (bound lazily); none -> OFFICIAL_UNAVAILABLE.
+function newYork(ms){const cal=calendar();let e=null;try{e=cal&&typeof cal.eastern==='function'?cal.eastern(ms):null;}catch(_){e=null;}if(!e||!isDay(e.date)||!int(e.minutes,0,1439))fail('OFFICIAL_UNAVAILABLE');return e;}
+// Python session_close: times.price_session_close_at -> epoch ms, or null when absent; on the basis day in New York, exactly 16:00:00 or 13:00:00.
+function sessionClose(tm,basis){if(!Object.hasOwn(tm,'price_session_close_at'))return null;const v=tm.price_session_close_at,c=second(v);need(c!==null&&v.slice(0,10)===basis);
+ const e=newYork(c);need(e.date===basis&&SESSION_CLOSE_MINUTES.includes(e.minutes)&&v.slice(17,19)==='00');return c;}
+// Python _last_trades_ok: v_last_trade_at only next to a session close, only on a row with a V (finite V axis, SUPPLIED), at or after
+// 09:30 New York on the basis day and strictly before the close.
+function lastTradesOk(rows,close,basis){for(const r of Object.values(rows)){if(!Object.hasOwn(r,'v_last_trade_at'))continue;
+ need(close!==null&&num(r.axes.V.score)&&r.price_status===SUPPLIED);const v=r.v_last_trade_at,at=second(v);need(at!==null&&v.slice(0,10)===basis);
+ const e=newYork(at);need(e.date===basis&&e.minutes>=SESSION_OPEN_MINUTES&&at<close);}}
 // v2_factors.carries_share_basis: a real calendar day and (day, n) >= (2026-10-23, 1).
 function calcOk(c){const m=typeof c==='string'?RX.calc.exec(c):null;if(!m||!dayOk(+m[1],+m[2],+m[3]))return false;const day=m[1]+'-'+m[2]+'-'+m[3];return day>SHARE_BASIS_SINCE[0]||day===SHARE_BASIS_SINCE[0]&&+m[4]>=SHARE_BASIS_SINCE[1];}
 // qgv_official._symbol (tie order of ranks): a TARGET row's device ticker, else the code's ticker with every '.' as '-'.
 function symbol(key){if(key.startsWith(TARGET_PREFIX)){const id=key.slice(TARGET_PREFIX.length);return Object.hasOwn(TARGET_TICKERS,id)?TARGET_TICKERS[id]:key;}return key.slice(key.indexOf(':')+1).replaceAll('.','-').toUpperCase();}
 function walk(v,depth){need(depth<=MAX_DEPTH);if(Array.isArray(v)){for(const x of v)walk(x,depth+1);}else if(object(v)){for(const k of Object.keys(v)){need(!FORBIDDEN.has(k.toLowerCase()),'OFFICIAL_FORBIDDEN_KEY');walk(v[k],depth+1);}}else if(typeof v==='number')need(Number.isFinite(v));}
 function rowOk(key,r,v2){
- keys(r,ROW_KEYS);need(str(key,RX.code));
+ keysOpt(r,ROW_KEYS,ROW_OPTIONAL_KEYS);need(str(key,RX.code));
  need(strOrNull(r.cik,RX.cik)&&[null,'GENERAL','FINANCIAL'].includes(r.profile));
  need(strOrNull(r.industry_group,RX.id)&&typeof r.in_cross_section==='boolean');
  need(['LIVE','STALE','NOT_AVAILABLE','WITHDRAWN'].includes(r.state));
@@ -140,11 +162,13 @@ function check(p,{v2,t,d}){
  need(inp.file===INPUTS_FILE&&str(inp.sha256,RX.hex)&&inp.calc_version===calc&&str(inp.as_of,RX.clock));
  need(strOrNull(inp.acquired_oldest,RX.clock)&&strOrNull(inp.acquired_newest,RX.clock)&&(inp.acquired_oldest===null)===(inp.acquired_newest===null));
  need(inp.acquired_oldest===null||inp.acquired_oldest<=inp.acquired_newest);   // text order, like Python
- const tm=p.times;keys(tm,['price_basis_date','price_collected_from','price_collected_to','inputs_as_of','generated_at','verified_at']);
+ const tm=p.times;keysOpt(tm,TIMES_KEYS,TIMES_OPTIONAL_KEYS);
  need(tm.price_basis_date===ps.basis_date&&tm.inputs_as_of===inp.as_of&&['price_collected_from','price_collected_to','generated_at'].every(k=>str(tm[k],RX.clock)));
  need(str(tm.verified_at,RX.clock));   // stricter than Python (null allowed there): only a verified publication is used
+ const close=sessionClose(tm,ps.basis_date);
  const rows=p.rows;need(object(rows));const ks=Object.keys(rows);need(ks.length>0&&ks.length<=MAX_ROWS);
  for(const k of ks)rowOk(k,rows[k],v2);
+ lastTradesOk(rows,close,ps.basis_date);
  ranksOk(rows);
  need(pop.row_count===ks.length&&pop.pooled_count===ks.filter(k=>rows[k].in_cross_section).length);
  need(pop.universe_code_count===ks.filter(k=>!k.startsWith(TARGET_PREFIX)).length);
@@ -186,7 +210,7 @@ function duplicateKeys(text){
    OFFICIAL_DIGEST_UNAVAILABLE (no Web Crypto). */
 async function validate(payload,{maxBytes=MAX_BYTES}={}){
  const env=deps();let rows;
- try{rows=check(payload,env);}catch(e){fail(e&&e.message==='OFFICIAL_FORBIDDEN_KEY'?e.message:'OFFICIAL_INVALID');}
+ try{rows=check(payload,env);}catch(e){fail(e&&(e.message==='OFFICIAL_FORBIDDEN_KEY'||e.message==='OFFICIAL_UNAVAILABLE')?e.message:'OFFICIAL_INVALID');}
  need(await pooledDigest(rows)===payload.population.pooled_digest);
  need(canonicalLength(payload)<=maxBytes,'OFFICIAL_TOO_LARGE');
  deep(payload);VALID.add(payload);return payload;}
@@ -210,6 +234,18 @@ async function load(source,{signal,maxBytes=MAX_BYTES}={}){
  try{bytes=await response.arrayBuffer();}catch(_){fail('OFFICIAL_UNAVAILABLE');}
  return{state:'OFFICIAL',payload:await parse(bytes,{maxBytes})};}
 function state(payload){return VALID.has(payload)?'OFFICIAL':null;}
+/* lastTrade(payload, key) (display, pure; owner decision 2026-10-31) -> null or frozen {at, ny_time, minutes_before_close, note}:
+   the row's v_last_trade_at of a payload validate() accepted (null: payload not validated, no such row, or no time on it). ny_time
+   = 'HH:MM' New York; minutes_before_close = whole minutes to times.price_session_close_at; note = the trade was at least
+   LAST_TRADE_NOTE_MINUTES before that close (the publication's own close, so an early close counts from 13:00). The ONE rule for
+   showing the time next to V: screens show lastTradeText(info) and nothing when it is null. Never a price; the V is unchanged. */
+function lastTrade(payload,key){
+ if(!VALID.has(payload)||typeof key!=='string'||!Object.hasOwn(payload.rows,key)||!Object.hasOwn(payload.rows[key],'v_last_trade_at'))return null;
+ const at=second(payload.rows[key].v_last_trade_at),close=second(payload.times.price_session_close_at);let e;try{e=newYork(at);}catch(_){return null;}
+ const gap=close-at,two=n=>String(n).padStart(2,'0');
+ return Object.freeze({at:payload.rows[key].v_last_trade_at,ny_time:two(Math.floor(e.minutes/60))+':'+two(e.minutes%60),minutes_before_close:Math.floor(gap/60000),note:gap>=LAST_TRADE_NOTE_MINUTES*60000});}
+// '마지막 체결 HH:MM (뉴욕)' (en: 'last trade HH:MM (New York)') when lastTrade says note, else null (nothing is shown).
+function lastTradeText(info,en=false){return object(info)&&info.note===true&&typeof info.ny_time==='string'&&/^\d{2}:\d{2}$/.test(info.ny_time)?(en?'last trade '+info.ny_time+' (New York)':'마지막 체결 '+info.ny_time+' (뉴욕)'):null;}
 function reasonOf(error){const m=error&&error.message;return m==='OFFICIAL_UNAVAILABLE'||m==='OFFICIAL_DIGEST_UNAVAILABLE'?'OFFICIAL_UNAVAILABLE':'OFFICIAL_INVALID';}
 function nextDay(d){const x=new Date(d+'T00:00:00Z');x.setUTCDate(x.getUTCDate()+1);return x.toISOString().slice(0,10);}
 /* Completed New York sessions after the basis day (spec M4) with the existing NYSE calendar (ForwardValidation.sessionDay): every
@@ -236,7 +272,8 @@ async function resolve(source,opts={}){
  let got;try{got=await load(source,opts);}catch(e){return{ok:false,reason:reasonOf(e),sessions:null,payload:null};}
  if(got.state==='NOT_PUBLISHED')return{ok:false,reason:'OFFICIAL_NOT_PUBLISHED',sessions:null,payload:null};
  const u=usable(got.payload,opts);return{ok:u.ok,reason:u.reason,sessions:u.sessions,payload:u.ok?got.payload:null};}
-return Object.freeze({SCHEMA,KIND,FILENAME,MAX_BYTES,TARGET_PREFIX,FRESH_SESSIONS,CLOSE_MINUTES,TOP_KEYS,ROW_KEYS,FACTOR_KEYS,AXIS_KEYS,FORBIDDEN_KEYS,PRICE_DEPENDENT,PRICE_DEPENDENT_PUBLIC,STATUS_CODES,
+return Object.freeze({SCHEMA,KIND,FILENAME,MAX_BYTES,TARGET_PREFIX,FRESH_SESSIONS,CLOSE_MINUTES,TOP_KEYS,ROW_KEYS,FACTOR_KEYS,AXIS_KEYS,TIMES_KEYS,TIMES_OPTIONAL_KEYS,ROW_OPTIONAL_KEYS,
+ SESSION_OPEN_MINUTES,SESSION_CLOSE_MINUTES,LAST_TRADE_NOTE_MINUTES,FORBIDDEN_KEYS,PRICE_DEPENDENT,PRICE_DEPENDENT_PUBLIC,STATUS_CODES,
  SUPPLY_MIN,V_TARGET_SHARE,MAX_MONTHS,POPULATION_VERSION,INPUTS_FILE,SHARE_BASIS_SINCE,ATTRIBUTION,PRICE_SOURCE,MONTH_END,TARGET_TICKERS,V_SOURCES,REASONS,ERRORS,
- load,parse,validate,usable,resolve,state,reasonOf,nyNow,nyToday,sessionsAfter,symbol,coverage,pooledDigest,canonicalLength,duplicateKeys});
+ load,parse,validate,usable,resolve,state,reasonOf,nyNow,nyToday,sessionsAfter,lastTrade,lastTradeText,symbol,coverage,pooledDigest,canonicalLength,duplicateKeys});
 });

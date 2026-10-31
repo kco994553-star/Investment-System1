@@ -8,8 +8,9 @@
      its basis day, publication time and STALE past FRESH_SESSIONS completed New York sessions (price_basis below).
      The page identities / profile / references are set here and nowhere else (app.js did it before).
    - Page and row records are a projection of that result: no price, quote, month close, EV, yield or reference range leaves this
-     module, a missing value is null and always carries its reason code, rows keep QgvScores' order and rank fields (sorting and
-     filters: small ports in screen-qgv-live.js, P2-2a; radar: P2-2c). model() is the price-free projection of the N10 / N15 / N20
+     module, a missing value is null and always carries its reason code (v_last_trade is display metadata, not a value: owner
+     decision 2026-10-31, the IEX last-trade time behind a shown V, QgvOfficial.lastTrade; null = nothing to show), rows keep
+     QgvScores' order and rank fields (sorting and filters: small ports in screen-qgv-live.js, P2-2a; radar: P2-2c). model() is the price-free projection of the N10 / N15 / N20
      candidates (QgvScores.officialModel) on the official result.
    - preview() recomputes the user's weights from the published factor scores (QgvScores.compute({publication, weights})): never
      primary, never an official rank; weight stages are NA (WEIGHT_STAGES_NOT_REBUILT).
@@ -134,6 +135,12 @@ function create({win,data,prices,action}){
   const own=inputs&&typeof inputs.calc_version==='string'?inputs.calc_version:null;
   return{kind:'CENTRAL_IEX',label:'공식 V · '+pub.attribution.label_ko,reason,price_basis_date:pub.times.price_basis_date,generated_at:pub.times.generated_at,verified_at:pub.times.verified_at,publication_id:pub.publication_id,
    calc_version:pub.calc_version,sessions,stale:sessions===null?null:sessions>QO.FRESH_SESSIONS,calc_differs:own===null?null:own!==pub.calc_version,inputs_match:match,attempt,attribution:{text:pub.attribution.text,terms_url:pub.attribution.terms_url}};}
+ /* Owner decision 2026-10-31 (docs/qgv_official/LAST_TRADE_TIME_20261031.md): the IEX last-trade time behind a row's shown V, from
+    the validated publication's own row (QgvOfficial.lastTrade): {at, ny_time, minutes_before_close, note, text}; text = '마지막 체결
+    HH:MM (뉴욕)' only when note (>= 30 minutes before the publication's session close), else null. null: no V, no publication, or
+    no time on the row (an old publication). Screens show text next to V and nothing else; no score reads it. */
+ function lastTradeOf(pub,code,v){const QO=win.QgvOfficial;if(!pub||typeof code!=='string'||!finite(v)||!QO||typeof QO.lastTrade!=='function')return null;
+  const x=QO.lastTrade(pub,code);return x?{at:x.at,ny_time:x.ny_time,minutes_before_close:x.minutes_before_close,note:x.note,text:QO.lastTradeText(x)}:null;}
  function axisOf(x){if(!object(x))return null;return{status:x.status,score:num(x.score),weight_available:num(x.weight_available),factors_available:x.factors_available,factors_total:x.factors_total,reason:str(x.reason),use:str(x.use),
   factors:(Array.isArray(x.factors)?x.factors:[]).map(f=>({id:f.id,weight:f.weight,score:num(f.score),reason:str(f.reason),category:f.category,basis:str(f.basis)})),
   published:object(x.published)?{...x.published,reason_codes:Array.isArray(x.published.reason_codes)?[...x.published.reason_codes]:[]}:null};}
@@ -155,7 +162,7 @@ function create({win,data,prices,action}){
    coverage:{v_factors:{n:vf.n,total:vf.total,missing:[...vf.missing],required_ok:vf.required_ok},axes:{Q:axisOf(axes&&axes.Q),G:axisOf(axes&&axes.G),V:axisOf(axes&&axes.V)},
     factors:{available:num(p.factors_available),total:num(p.factors_total)},states:cov&&Array.isArray(cov.states)?[...cov.states]:[],v_inputs_missing:cov&&Array.isArray(cov.v_inputs_missing)?[...cov.v_inputs_missing]:[]},
    flags:[...flags],value_trap_gate:p.value_trap_gate===true,v_excluded:str(p.v_excluded),types:{selected:Array.isArray(p.selected_types)?[...p.selected_types]:[],reason:str(p.type_reason)},
-   price_status:pub&&r.code&&Object.hasOwn(pub.rows,r.code)?pub.rows[r.code].price_status:null,rank_row:str(personal?r.personal_rank_row:r.rank_row),
+   price_status:pub&&r.code&&Object.hasOwn(pub.rows,r.code)?pub.rows[r.code].price_status:null,v_last_trade:lastTradeOf(pub,r.code,score.v),rank_row:str(personal?r.personal_rank_row:r.rank_row),
    row_state:src?str(src.state):null,acquired_at:src?str(src.acquired_at):null,fiscal_year_end:src?str(src.fiscal_year_end):null,profile:src?str(src.profile):null,
    source_reason_codes:src&&Array.isArray(src.reason_codes)?[...src.reason_codes]:[]};}
  // The central result as a page: V source OFFICIAL_CENTRAL whether or not a publication was read (without one every V is NA).

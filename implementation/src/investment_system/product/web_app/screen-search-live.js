@@ -151,7 +151,9 @@ function qgvCard(body,cid,signal){
   const row=Q.row(pg,cid);if(!row){body.replaceChildren(na('이 기업의 QGV 행이 공개 점수 입력에 없습니다','NO_ROW'),basisLine(pg));return;}
   const s=row.score,r=row.na_reason;
   const rank=Number.isInteger(row.rank.official)?h('span',null,'순위 ',String(row.rank.official),' / ',String(row.rank.of),' · ',Q.rankLabel(pg)):h('span',{class:'na'},'순위 NA · ',Q.reasonText(r.rank));
-  body.replaceChildren(h('div',{class:'qbars',dataset:{qgv:row.id}},...bar('Q',s.q,r.q&&Q.reasonText(r.q)),...bar('G',s.g,r.g&&Q.reasonText(r.g)),...bar('V',s.v,r.v&&Q.reasonText(r.v))),
+  // Owner decision 2026-10-31: under the V bar, the IEX last-trade time when the layer says so (row.v_last_trade.text).
+  const lt=ok(s.v)&&row.v_last_trade&&typeof row.v_last_trade.text==='string'?h('p',{class:'reason qwhy',dataset:{vLastTrade:row.v_last_trade.ny_time}},'V · ',row.v_last_trade.text):null;
+  body.replaceChildren(h('div',{class:'qbars',dataset:{qgv:row.id}},...bar('Q',s.q,r.q&&Q.reasonText(r.q)),...bar('G',s.g,r.g&&Q.reasonText(r.g)),...bar('V',s.v,r.v&&Q.reasonText(r.v)),lt),
    h('p',{class:'reason',dataset:{vSource:row.source}},'V 출처: ',row.source_label,' · ',centralLine(pg)),...centralMore(pg,Q),
    h('p',{dataset:{total:''}},ok(s.total)?['QGV 종합 ',h('b',null,fmt(s.total)),ok(s.v)?'':h('span',{class:'reason'},' · V 미포함')]:h('span',{class:'na'},'QGV 종합 NA · ',Q.reasonText(r.total))),
    h('p',{dataset:{rank:''}},rank),basisLine(pg));}),

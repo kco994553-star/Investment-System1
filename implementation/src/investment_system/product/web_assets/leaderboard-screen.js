@@ -299,7 +299,7 @@ function mount(host,identities,{publicScreens={},locale,view='default',profiles=
   if(view!=='profile')qgv.append(doc.createTextNode(' '),vCountNode(el,sc?sc.primary:null,en));
   {const bars=sc&&doc.createElementNS?qgvBars(doc,sc.primary):null;if(bars)qgv.append(bars);}
   // A row without an official rank says so next to the — total (any width): partial axes are shown, but outside the QGV total order.
-  let unranked=null;if(group==='partial'&&sc.rank===null){const p=sc.primary,axes=[['Q',p.q],['G',p.g],['V',p.v]].filter(([,v])=>typeof v==='number'&&Number.isFinite(v)).map(([a,v])=>a+' '+show(v)).join(' · ');
+  let unranked=null;if(group==='partial'&&sc.rank===null){const p=sc.primary,lt=qgvScores().lastTradeText?qgvScores().lastTradeText(p,en):null,axes=[['Q',p.q],['G',p.g],['V',p.v]].filter(([,v])=>typeof v==='number'&&Number.isFinite(v)).map(([a,v])=>a+' '+show(v)+(a==='V'&&lt?' · '+lt:'')).join(' · ');
    unranked=el('span',(p.reference_only?(en?'Reference ranking':'참고 순위'):(en?'Not in the QGV total order':'QGV 종합 순위 밖'))+(axes?' · '+axes:''),{class:'badge partial','data-leaderboard-unranked':'PARTIAL_AXES'});}
   else if(group==='qg'){const ref=sc.qg_reference||qgvScores().qgReference(sc.primary)||{};
    unranked=el('span',qgvScores().QG_REFERENCE_LABEL[en?1:0]+(ref.order?' · '+(en?'#':'')+ref.order+(en?'':'번'):'')+' · '+(en?'not an official rank':'공식 순위 아님')+(ref.reason?' · '+qgvScores().reasonText(ref.reason,en):''),{class:'badge partial','data-leaderboard-unranked':'QG_REFERENCE','data-qg-order':ref.order?String(ref.order):'','data-qg-reason':ref.reason||''});}

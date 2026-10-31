@@ -691,6 +691,50 @@ test('official mode: a published place on a TARGET key not on the page (catalog 
   assert.deepEqual(ranks, Array.from({ length: pub.coverage.ranked }, (_, i) => i + 1), 'no gap: every published rank shown once');
 });
 
+// Owner decision 2026-10-31 (docs/qgv_official/LAST_TRADE_TIME_20261031.md): the synthetic vector case last_trade_every_v_row_valid
+// gives the V rows, in key order, 15:59:59 (no note), 15:30:00 (exactly 30 minutes: note), 09:30:00 (note), then 15:45:00 (no note).
+test('last-trade time: rows carry the publication\'s v_last_trade; summaryText / lastTradeText / lastTradeHtml and the company V cell name it only >= 30 min before close; values unchanged; absent = nothing', async () => {
+  const QO = require(path.join(W, 'qgv-official.js')), OV = JSON.parse(fs.readFileSync(path.join(__dirname, '../tests/fixtures/qgv_official_vectors_v1.json'), 'utf8'));
+  const c = OV.cases.find((x) => x.id === 'last_trade_every_v_row_valid'), pub = JSON.parse(OV.base_text);
+  for (const op of c.ops) { let t = pub; for (const k of op.path.slice(0, -1)) t = t[k]; t[op.path[op.path.length - 1]] = structuredClone(op.value); }
+  await QO.validate(pub);
+  const ids = Object.keys(QO.TARGET_TICKERS).map((id) => ({ company_id: id, ticker: QO.TARGET_TICKERS[id] }));
+  const r = QS.officialPage({}, { publication: pub, v2Inputs: null, identities: ids }), plain = (await vectorPage()).r;
+  const vKeys = Object.keys(pub.rows).sort().filter((k) => pub.rows[k].axes.V.score !== null && pub.rows[k].price_status === 'SUPPLIED');
+  let noted = 0, quiet = 0;
+  for (const [cid, row] of Object.entries(r.computed.rows)) {
+    const p = row.primary, before = plain.computed.rows[cid].primary, info = row.code && Object.hasOwn(pub.rows, row.code) ? QO.lastTrade(pub, row.code) : null;
+    assert.deepEqual([p.v, p.total, row.rank, row.qg_reference && row.qg_reference.order], [before.v, before.total, plain.computed.rows[cid].rank, plain.computed.rows[cid].qg_reference && plain.computed.rows[cid].qg_reference.order], cid + ' values unchanged');
+    assert.equal(before.v_last_trade, undefined, cid + ' the publication without times gives nothing');
+    assert.equal(QS.lastTradeText(before), null); assert.equal(QS.lastTradeHtml(before), ''); assert.doesNotMatch(QS.summaryText(before), /마지막 체결/);
+    assert.deepEqual(p.v_last_trade || null, info, cid + ' = QgvOfficial.lastTrade of its own publication row');
+    const text = QS.lastTradeText(p);
+    if (info && info.note) {
+      noted++; assert.equal(text, '마지막 체결 ' + info.ny_time + ' (뉴욕)'); assert.equal(QS.lastTradeText(p, true), 'last trade ' + info.ny_time + ' (New York)');
+      assert.ok(QS.summaryText(p).includes(' · V ' + (Math.round(p.v * 10) / 10).toFixed(1) + ' · ' + text + ' · 산출 요인 '), cid);
+      assert.equal(QS.lastTradeHtml(p), '<span class="small" data-v-last-trade="' + info.ny_time + '">' + text + '</span>');
+      const html = CS.qgvBody({}, cid, 'ko-KR', { row });
+      assert.match(html, new RegExp('<dd data-qgv="V"><span class="num">[^<]+</span> <span class="small" data-v-last-trade="' + info.ny_time + '">' + text.replace(/[()]/g, '\\$&') + '</span></dd>'), cid + ' company V cell');
+    } else {
+      if (info) quiet++;
+      assert.equal(text, null, cid); assert.doesNotMatch(QS.summaryText(p), /마지막 체결/, cid); assert.doesNotMatch(CS.qgvBody({}, cid, 'ko-KR', { row }), /data-v-last-trade/, cid);
+    }
+    if (p.v === null) assert.equal(p.v_last_trade, undefined, cid + ' no V, no time');
+  }
+  assert.ok(noted >= 2 && quiet >= 2, noted + ' noted / ' + quiet + ' quiet rows');
+  assert.ok(vKeys.length >= 4);
+  // the personal recompute keeps the note on the row it belongs to (same price, same time); a V the recompute cannot give has none
+  const o = QS.compute({ identities: r.identities, v2Inputs: null, publication: pub, official: r.official, weights: globalThis.QgvV2.officialWeights('balanced'), typeWeights: true, gate: true });
+  for (const [cid, row] of Object.entries(o.rows)) assert.deepEqual(row.personal.v_last_trade || null, Number.isFinite(row.personal.v) ? r.computed.rows[cid].primary.v_last_trade || null : row.personal.v_last_trade || null, cid);
+  // a publication QgvOfficial did not validate never gives a time (compute is handed the raw object)
+  const raw = JSON.parse(JSON.stringify(pub)), unvalidated = QS.compute({ identities: r.identities, v2Inputs: null, publication: raw, official: r.official });
+  assert.ok(Object.values(unvalidated.rows).every((x) => x.primary.v_last_trade === undefined));
+  // a recomputed V that is NA has no note even if the row had a time
+  assert.equal(QS.lastTradeText({ v: null, v_last_trade: { ny_time: '10:00', note: true } }), null);
+  assert.equal(QS.lastTradeText({ v: 50, v_last_trade: { ny_time: '10:00', note: true } }), '마지막 체결 10:00 (뉴욕)');
+  assert.equal(QS.lastTradeText({ v: 50, v_last_trade: { ny_time: '15:45', note: false } }), null);
+});
+
 test('officialPage: only a QgvOfficial-validated publication; without one the price-free Q·G rows, every V NA with the OFFICIAL_* reason, Q·G totals in the QG reference list', async () => {
   const inputs = screens[SQ.FILE], { pub } = await publicationOf();
   for (const [publication, reason, want] of [[null, undefined, 'OFFICIAL_NOT_PUBLISHED'], [null, 'OFFICIAL_UNAVAILABLE', 'OFFICIAL_UNAVAILABLE'], [pub, undefined, 'OFFICIAL_INVALID']]) {
