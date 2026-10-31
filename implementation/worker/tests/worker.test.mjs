@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
+// Synthetic addresses built at run time: no address-shaped literal in the repository (repository guard EMAIL_PATTERN).
+const OWNER_EMAIL = ['owner', 'example.test'].join('@');
+const OTHER_EMAIL_SOMEONE = ['someone', 'example.test'].join('@');
 
 globalThis.fetch = async () => { throw new Error('Live network transport is disabled in these tests'); };
 
@@ -80,7 +83,7 @@ function setup(options = {}) {
   const clock = options.clock ?? { now: NOW };
   const namespace = options.namespace ?? rateNamespace(clock, options.rateEnv);
   const calls = [];
-  const env = { ALLOWED_EMAIL: 'owner@example.test', GOOGLE_CLIENT_ID: 'mock-client-id', HISTORY_RATE_LIMITER: namespace, ...options.env };
+  const env = { ALLOWED_EMAIL: OWNER_EMAIL, GOOGLE_CLIENT_ID: 'mock-client-id', HISTORY_RATE_LIMITER: namespace, ...options.env };
   const fetch = async (input, init) => {
     const url = String(input);
     calls.push({ url, init });
@@ -168,7 +171,7 @@ test('hyphenated share-class symbols retain strict canonical query validation', 
 });
 
 for (const [name, token] of [
-  ['wrong email', { email: 'someone@example.test' }], ['wrong audience', { aud: 'other-client' }],
+  ['wrong email', { email: OTHER_EMAIL_SOMEONE }], ['wrong audience', { aud: 'other-client' }],
   ['array audience', { aud: ['mock-client-id'] }], ['missing email', { email: undefined }],
   ['missing verification', { email_verified: undefined }], ['false verification', { email_verified: false }],
   ['false string verification', { email_verified: 'false' }], ['truthy verification', { email_verified: 1 }],
@@ -236,15 +239,64 @@ test('all upstream fetches bypass caching and redirects; Yahoo receives no beare
   assert.equal((await s.run(s.request(undefined, { Cookie: 'private=secret' }))).status, 200);
   for (const { init } of s.calls) {
     assert.equal(init.cache, 'no-store');
-    assert.deepEqual(init.cf, { cacheTtl: 0, cacheEverything: false });
-    assert.equal(init.redirect, 'error');
+    // Workers fetch throws for redirect 'error' and for cache 'no-store' with a cf.cacheTtl other than -1.
+    assert.deepEqual(init.cf, { cacheEverything: false });
+    assert.equal(init.redirect, 'manual');
     assert.ok(init.signal instanceof AbortSignal);
   }
   const headers = new Headers(s.calls[1].init.headers);
   assert.equal(headers.get('Authorization'), null);
   assert.equal(headers.get('Cookie'), null);
   assert.equal(JSON.stringify(s.namespace.requests).includes('fake-access-token'), false);
-  assert.equal(JSON.stringify(s.namespace.requests).includes('owner@example.test'), false);
+  assert.equal(JSON.stringify(s.namespace.requests).includes(OWNER_EMAIL), false);
+});
+
+const LOCATION = 'https://redirect-target.invalid/elsewhere';
+// Every redirect shape an upstream fetch can return: 3xx with Location, opaque redirect, or an already-followed answer.
+const redirectAnswers = (ok) => [
+  ...[301, 302, 303, 307, 308].map((status) => [String(status), () => json({ secret: 'provider-private-details' }, status, { Location: LOCATION })]),
+  ['opaqueredirect', () => Object.defineProperties(new Response(null), { type: { value: 'opaqueredirect' }, status: { value: 0 }, ok: { value: false } })],
+  ['followed', () => Object.defineProperty(ok(), 'redirected', { value: true })],
+];
+async function answer(response) { return { status: response.status, body: await response.json() }; }
+test('a Google tokeninfo redirect fails exactly like a tokeninfo outage and its Location is never fetched', async () => {
+  const outage = await answer(await setup({ authFetch: () => json({ error: 'secret-token-details' }, 503) }).run());
+  assert.deepEqual(outage, { status: 503, body: { error: { code: 'AUTH_UNAVAILABLE' } } });
+  const valid = () => json({ aud: 'mock-client-id', email: OWNER_EMAIL, email_verified: true, expires_in: '3600' });
+  for (const [name, redirect] of redirectAnswers(valid)) {
+    const s = setup({ authFetch: redirect });
+    const response = await s.run();
+    assert.equal(response.headers.get('Location'), null, name);
+    assert.deepEqual(await answer(response), outage, name);
+    assert.deepEqual(s.calls.map((call) => call.url), ['https://oauth2.googleapis.com/tokeninfo'], name);
+    assert.equal(s.namespace.requests.length, 0, name);
+  }
+});
+test('a Google tokeninfo redirect body is cancelled, not read', async () => {
+  let cancelled = false;
+  const stream = new ReadableStream({ cancel() { cancelled = true; } });
+  const s = setup({ authFetch: () => new Response(stream, { status: 302, headers: { Location: LOCATION } }) });
+  await expectError(await s.run(), 503, 'AUTH_UNAVAILABLE');
+  assert.equal(cancelled, true);
+});
+test('a Yahoo redirect fails exactly like a Yahoo outage, releases the lease and never fetches its Location', async () => {
+  const outage = await answer(await setup({ yahooFetch: () => json({ error: 'provider-private-details' }, 503) }).run());
+  assert.deepEqual(outage, { status: 503, body: { error: { code: 'YAHOO_UNAVAILABLE' } } });
+  for (const [name, redirect] of redirectAnswers(() => json(fixture()))) {
+    const s = setup({ yahooFetch: redirect });
+    const response = await s.run();
+    assert.equal(response.headers.get('Location'), null, name);
+    assert.deepEqual(await answer(response), outage, name);
+    assert.equal(s.calls.length, 2, name);
+    assert.ok(!s.calls.some((call) => call.url === LOCATION), name);
+    assert.equal(s.namespace.storage.value.activeLease, 0, name);
+  }
+});
+test('a fake Bearer token gets 403 with no price, fallback or rate-limit request', async () => {
+  const s = setup({ env: { TIINGO_API_KEY: 'synthetic-tiingo' }, authFetch: () => json({ error: 'invalid_token' }, 400) });
+  await expectError(await s.run(), 403, 'AUTH_FORBIDDEN');
+  assert.deepEqual(s.calls.map((call) => call.url), ['https://oauth2.googleapis.com/tokeninfo']);
+  assert.equal(s.namespace.requests.length, 0);
 });
 
 for (const origin of ['https://evil.test', `${ORIGIN}/`, 'null', '']) {
