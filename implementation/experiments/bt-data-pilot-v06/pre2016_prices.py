@@ -1,7 +1,8 @@
 """Bounded pre-2016 KIS backfill using explicit BYMD, never a new pricing engine.
 
 Actual aliases are kept separate. Requests are not evidence of listing dates.
-One authentication; stop on provider rejection, no session/token retry.
+Legacy modes stop on rejection. Stable mode reuses one token, bounds request
+retries, and isolates company failures without refreshing authentication.
 """
 import argparse
 from datetime import date, timedelta
@@ -242,6 +243,13 @@ def stable_run(output,archive,resume,plan_path):
             group[d]=row
         return rows
     if client and report['auth']['status']=='AUTHENTICATED':
+        for control in plan.get('identity_controls',[]):
+            c=control['company'];r=routes[c]
+            (b,m),state=request(c,r['alias'],r['exchange'],control['bymd'],'IDENTITY_OVERLAP_CONTROL')
+            if state=='FETCHED':
+                try:add_rows(c,r['alias'],b,m,control['bymd'])
+                except (ValueError,KeyError,TypeError):failures[c]=2
+            save()
         for task in tasks:
             c=task['company'];r=routes[c];alias=r['alias'];year=task['year']
             if failures.get(c,0)>=2:task.update(state='BLOCKED',reason='COMPANY_RETRY_LIMIT');continue
@@ -268,7 +276,7 @@ def stable_run(output,archive,resume,plan_path):
                 save()
             save(upload=True)
         # Intermediate anchors only after every company has had a queue opportunity.
-        for bymd in ('20091231','20051230','20001229','19951229'):
+        for bymd in plan.get('history_probe_dates',('20091231','20051230','20001229','19951229')):
             for c,r in routes.items():
                 if r['start']>'2000-01-01' or failures.get(c,0)>=2:continue
                 if client.stopped or client.calls>=210 or time.monotonic()-started>1500:break

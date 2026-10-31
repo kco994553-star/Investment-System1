@@ -32,5 +32,5 @@ jobs:
           mkdir -p "$RUNNER_TEMP/prior-kis"
           gh release download bt-data-pilot-v06-kis-41167986542-1 --repo kco994553-star/investment-system1-raw --pattern 'private-inputs.zip*' --dir "$RUNNER_TEMP/prior-kis"
           mkdir -p "$RUNNER_TEMP/pre2016-resume"
-          gh release download bt-data-pilot-v06-pre2016-41172414612-1 --repo kco994553-star/investment-system1-raw --pattern 'final.zip*' --dir "$RUNNER_TEMP/pre2016-resume"
-          python implementation/experiments/bt-data-pilot-v06/pre2016_prices.py --phase stable --plan implementation/experiments/bt-data-pilot-v06/KIS_BACKFILL_PLAN_20261031.json --resume-zip "$RUNNER_TEMP/pre2016-resume/final.zip" --private-dir "$RUNNER_TEMP/pre2016" --prior-zip "$RUNNER_TEMP/prior-kis/private-inputs.zip"
+          gh release download bt-data-pilot-v06-kis-stable-41178564108-1 --repo kco994553-star/investment-system1-raw --pattern 'final.zip*' --dir "$RUNNER_TEMP/pre2016-resume"
+          python implementation/experiments/bt-data-pilot-v06/pre2016_prices.py --phase stable --plan implementation/experiments/bt-data-pilot-v06/KIS_ALIAS_CONTROL_PLAN_20261031.json --resume-zip "$RUNNER_TEMP/pre2016-resume/final.zip" --private-dir "$RUNNER_TEMP/pre2016" --prior-zip "$RUNNER_TEMP/prior-kis/private-inputs.zip"

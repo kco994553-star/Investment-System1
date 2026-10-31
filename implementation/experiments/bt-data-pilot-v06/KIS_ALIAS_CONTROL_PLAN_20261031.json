@@ -1,0 +1,91 @@
+{
+  "version": "BT-DATA-PILOT v0.6",
+  "calendar": {
+    "url": "https://raw.githubusercontent.com/gerrymanoim/exchange_calendars/bbda29fed902374bdb75acab008f421fbd567823/tests/resources/xnys.csv",
+    "sha256": "5f91ec537dd8672130d41f2796a194f5b2c1733dfe79191af8593d80600fb3cc"
+  },
+  "routes": [
+    {
+      "company": "ABT",
+      "alias": "ABT",
+      "exchange": "NYS",
+      "fallback_exchange": null,
+      "start": "1900-01-01",
+      "end": "2015-12-31",
+      "identity_status": "ORIGINAL_FILING_TICKER_AND_CLASS_QUERY_ONLY_NOT_FULL_SECURITY_MASTER",
+      "evidence": [
+        {
+          "url": "https://www.sec.gov/Archives/edgar/data/1800/000104746910001018/a2196380z10-k.htm",
+          "filed": "2010-02-19",
+          "accession": "0001047469-10-001018"
+        }
+      ]
+    },
+    {
+      "company": "BKTI",
+      "alias": "BKTI",
+      "exchange": "AMS",
+      "fallback_exchange": null,
+      "start": "1900-01-01",
+      "end": "2015-12-31",
+      "identity_status": "CURRENT_ALIAS_HISTORY_PROBE_NOT_JOINED",
+      "evidence": [
+        {
+          "url": "https://www.sec.gov/Archives/edgar/data/2186/000111650210000192/rwc_10k.htm",
+          "filed": "2010-03-04",
+          "accession": "0001116502-10-000192"
+        },
+        {
+          "url": "https://www.sec.gov/Archives/edgar/data/2186/000165495418006262/rwc_8k.htm",
+          "role": "TICKER_CHANGE_DOCUMENT"
+        }
+      ]
+    },
+    {
+      "company": "CECO",
+      "alias": "CECO",
+      "exchange": "AMS",
+      "fallback_exchange": null,
+      "start": "1900-01-01",
+      "end": "2015-12-31",
+      "identity_status": "CURRENT_ALIAS_HISTORY_PROBE_NOT_JOINED",
+      "evidence": [
+        {
+          "url": "https://www.sec.gov/Archives/edgar/data/3197/000119312510069639/d10k.htm",
+          "filed": "2010-03-29",
+          "accession": "0001193125-10-069639"
+        },
+        {
+          "url": "https://www.sec.gov/Archives/edgar/data/3197/000095017022022311/ceco-20221107.htm",
+          "role": "TICKER_CHANGE_DOCUMENT"
+        }
+      ]
+    }
+  ],
+  "historical_universe": false,
+  "adjustment": "RAW",
+  "security_identity_not_inferred_from_cik_only": true,
+  "identity_controls": [
+    {
+      "company": "BKTI",
+      "bymd": "20160401"
+    },
+    {
+      "company": "CECO",
+      "bymd": "20160401"
+    },
+    {
+      "company": "ABT",
+      "bymd": "20081231"
+    },
+    {
+      "company": "ABT",
+      "bymd": "20071231"
+    },
+    {
+      "company": "ABT",
+      "bymd": "20061229"
+    }
+  ],
+  "history_probe_dates": []
+}
