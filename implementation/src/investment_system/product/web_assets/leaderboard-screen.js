@@ -116,10 +116,14 @@ function qgvBars(doc,p){if(![p.q,p.g,p.v].some(v=>typeof v==='number'&&Number.is
    total with V and an official device rank; 'qg' = the QG 참고 목록 (V 미포함): a total from Q·G only (V not applicable or not
    computed; D11 owner rule, never mixed into the official order, its own order by the same total, no rank); 'partial' = some
    axis score but no total, so no rank and never in the ranked order; 'check' = no axis score (data to check). Ranks stay the
-   ones over all identities; the filter only hides rows. */
+   ones over all identities; the filter only hides rows. D11 one place per issuer (owner rule 2026-10-31 '점수는 대표 증권 하나'):
+   a row is in the ranked / QG list only with a place of its own (rank / QG order), so the counts equal the publication's; a row
+   without one — another share class of an issuer placed on its representative code (rank_row), or a Q·G total without an order —
+   is in no list (null: shown under 'all' only, counted in no other chip; the web_app listOf rule). */
 const EXPLORE=[['all','전체','All'],['ranked','공식 QGV 순위','Official QGV ranking'],['qg','QG 참고 목록 (V 미포함)','Q·G reference list (V not included)'],['partial','일부 축만 가능','Some axes only'],['check','자료 확인 필요','Check data']];
 const EXPLORE_OF={RANKED:'ranked',QG_REFERENCE:'qg',PARTIAL_AXES:'partial',CHECK_DATA:'check'},EXPLORE_IDS=EXPLORE.map(e=>e[0]);
-function exploreOf(r){const QS=qgvScores();return EXPLORE_OF[QS&&QS.exploreGroup?QS.exploreGroup(r.score):'CHECK_DATA']||'check';}
+function exploreOf(r){const QS=qgvScores(),s=r.score,g=QS&&QS.exploreGroup?QS.exploreGroup(s):'CHECK_DATA';
+ if(s&&!Number.isInteger(s.rank)&&!s.qg_reference&&(g==='QG_REFERENCE'||s.rank_row))return null;return EXPLORE_OF[g]||'check';}
 /* S06 structured sort (owner directive 2026-10-18 §4.4). [id, key, direction (1 asc, -1 desc), [ko, en]]. Keys are numbers or
    strings from the score rows, never display text. NA is last in both directions; ties: QGV by ticker (= the official rank
    order), market cap by company_id (M3 rule), others by ticker. Sorting only orders rows: the rank shown is always the official
@@ -244,7 +248,7 @@ function mount(host,identities,{publicScreens={},locale,view='default',profiles=
   box.append(el('span',en?'NA is last in both directions; the rank number stays the '+rankWord+'.':'NA는 양방향 모두 맨 뒤 · 순위 번호는 '+rankWord+' 그대로',{class:'small'}));box.append(el('span',en?'Choose the sort key in the 2.1.3 row (Sort).':'정렬 기준은 2.1.3 줄의 "정렬" 상자에서 고릅니다.',{class:'small','data-fn-hint':'2.1.2'}));sSort.append(box);}
  // Exploration filter: only with v2 scores (not in the v1 profile preview). Counts are over the rows the other filters left.
  const ex=S&&EXPLORE_IDS.includes(explore)?explore:'all',rows=ex==='all'?all:all.filter(r=>exploreOf(r)===ex);
- if(S){const counts={all:all.length,ranked:0,qg:0,partial:0,check:0};for(const r of all)counts[exploreOf(r)]++;
+ if(S){const counts={all:all.length,ranked:0,qg:0,partial:0,check:0};for(const r of all){const g=exploreOf(r);if(g)counts[g]++;}
   const group=el('div',undefined,{class:'chips explore-filter',role:'group','aria-label':en?'Explore by QGV availability':'QGV 산출 여부로 보기','data-leaderboard-explore':ex});
   for(const[id,ko,enl]of EXPLORE){const b=el('button',(id==='ranked'&&personal?(en?'Personal preset rank':'개인 프리셋 순위'):(en?enl:ko))+' '+counts[id],{type:'button','data-leaderboard-explore-option':id,'aria-pressed':String(ex===id)});b.onclick=()=>onView({explore:id});group.append(b);}
   sState.append(group);
@@ -294,7 +298,7 @@ function mount(host,identities,{publicScreens={},locale,view='default',profiles=
   else detail.push(doc.createTextNode('—'));
   const earningsText=r.earnings_status==='CONFIRMED'?(en?'Confirmed':'확인'):(r.next_window?r.next_window+(en?' (est.)':' (예상)'):'—');
   // QGV total: the v2 total, or — (NOT_AVAILABLE is never shown as 0).
-  const total=sc&&typeof sc.primary.total==='number'&&Number.isFinite(sc.primary.total)?sc.primary.total:null,qgv=el('td',undefined,{'data-leaderboard-qgv-cell':'','data-sort-value':total===null||group==='qg'?'':String(total)});
+  const total=sc&&typeof sc.primary.total==='number'&&Number.isFinite(sc.primary.total)?sc.primary.total:null,qgv=el('td',undefined,{'data-leaderboard-qgv-cell':'','data-sort-value':total===null||group==='qg'||!group?'':String(total)});
   qgv.append(total===null?el('span','—',{'data-leaderboard-total':'NOT_AVAILABLE'}):el('b',show(total),{class:'num','data-leaderboard-total':show(total)}));
   if(view!=='profile')qgv.append(doc.createTextNode(' '),vCountNode(el,sc?sc.primary:null,en));
   {const bars=sc&&doc.createElementNS?qgvBars(doc,sc.primary):null;if(bars)qgv.append(bars);}
@@ -351,5 +355,5 @@ function mount(host,identities,{publicScreens={},locale,view='default',profiles=
  const stages=el('details',undefined,{'data-reeval-stages':''});stages.append(el('summary',en?'Re-evaluation signal stages':'재평가 신호 단계'));const list=el('ol');for(const[ko,enl]of STAGES)list.append(el('li',en?enl:ko));stages.append(list,el('p',en?'Price change, threshold and distance are shown once the signal is connected (NOT_AVAILABLE now).':'신호가 연결되면 가격 변화량·임계값·거리를 함께 보여 줍니다(현재 NOT_AVAILABLE).',{class:'small'}));sCand.append(stages);
  const actions=el('div',undefined,{class:'chips'});for(const label of [en?'Send selection to paper trading':'선택 종목 모의투자',en?'Send to backtest':'백테스트로 보내기']){const b=el('button',label,{type:'button',disabled:''});actions.append(b);}sCand.append(actions,el('p',en?'Paper trading and backtest are not connected yet.':'모의투자·백테스트는 아직 연결되지 않았습니다.',{class:'small'}));
  host.replaceChildren(card);return{shown:rows.length,explore:ex};}
-return Object.freeze({COLUMNS,UNCONNECTED,NARROW,M3_LABEL,EXPLORE,SORTS,SORT_IDS,DEFAULT_SORT,FN,PERIODS,fnHeadHtml,filterNoteHtml,sicOf,classificationOf,filterClassifications,classificationSummary,classificationFiltersHtml,mountClassificationFilters,sortLabel,sortOptions,oppositeSort,sortAvailable,sortRows,populationOf,rowsFor,modelChecks,vCount,mount});
+return Object.freeze({COLUMNS,UNCONNECTED,NARROW,M3_LABEL,EXPLORE,exploreOf,SORTS,SORT_IDS,DEFAULT_SORT,FN,PERIODS,fnHeadHtml,filterNoteHtml,sicOf,classificationOf,filterClassifications,classificationSummary,classificationFiltersHtml,mountClassificationFilters,sortLabel,sortOptions,oppositeSort,sortAvailable,sortRows,populationOf,rowsFor,modelChecks,vCount,mount});
 });

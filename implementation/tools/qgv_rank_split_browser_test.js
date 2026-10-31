@@ -6,7 +6,8 @@
 // the strictly valid synthetic sec-qgv2.json of qgv_v2_fixture.js): only rows with a published V are ranked, in the published
 // order; the value-trap-gate row (NASDAQ:ABNB: V published, left out by the gate) stays ranked with its flag; the financial rows and
 // the row without an IEX trade (NYSE:MMM) are in the QG list with their reasons; S06 equals the shared QgvScores.officialPage
-// row by row and the V coverage panel shows the publication's counts (ranked, QG list); S06 and S04 show the central basis line
+// row by row, the S06 ranked / QG chips and the V coverage panel show the publication's counts (one place per issuer: the second
+// share class GOOG points to GOOGL's place and is in no list); S06 and S04 show the central basis line
 // and the IEX attribution; search and the company detail still open those companies; a personal profile with V weight 0 is
 // labelled '개인 설정 결과 (V 비중 0)' and the official ranking does not move.
 let phase = 'START';
@@ -82,9 +83,14 @@ const officialSnapshot = (page) => page.evaluate(() => JSON.stringify(Object.ent
         const order = await rowIds(page), tier = (id) => (R[id] && Number.isInteger(R[id].rank) ? 0 : R[id] && R[id].qg ? 1 : 2);
         for (let i = 1; i < order.length; i++) assert.ok(tier(order[i]) >= tier(order[i - 1]), 'order ' + JSON.stringify(order.map(tier)));
         const counts = await page.locator(E + ' button').evaluateAll((b) => Object.fromEntries(b.map((x) => [x.dataset.leaderboardExploreOption, Number(x.textContent.match(/(\d+)$/)[1])])));
-        assert.equal(counts.ranked, Object.values(R).filter((r) => r.universe && Number.isInteger(r.rank)).length);assert.equal(counts.qg, Object.values(R).filter((r) => r.universe && r.group === 'QG_REFERENCE').length);
-        // D11 one place per issuer: a second code of an issuer (rank_row) has a Q·G total but no place of its own in the list order.
-        for (const r of Object.values(R).filter((x) => x.universe && x.group === 'QG_REFERENCE' && !x.qg)) assert.ok(r.rank_row, 'a QG-group row without an order points to its issuer place');
+        assert.equal(counts.ranked, Object.values(R).filter((r) => r.universe && Number.isInteger(r.rank)).length);assert.equal(counts.qg, Object.values(R).filter((r) => r.universe && r.qg).length);
+        // D11 one place per issuer on ONE representative security (owner rule 2026-10-31): the S06 chips equal the publication's counts.
+        assert.deepEqual([counts.ranked, counts.qg], [C.ranked, C.qg_reference], 'S06 ranked / QG chips == the publication counts');
+        // The second share class of an issuer (GOOG, rank_row) has a Q·G total but no place of its own: it points to the issuer place
+        // on its representative code (GOOGL, the googl row) and is in no list.
+        const second = Object.entries(R).filter(([, x]) => x.universe && x.group === 'QG_REFERENCE' && !x.qg);
+        assert.deepEqual(second.map(([k, x]) => [k, x.rank_row]), [['NASDAQ:GOOG', 'NASDAQ:GOOGL']], 'GOOG points to GOOGL\'s place');
+        assert.equal(R.googl.qg && R.googl.qg.order, O.QG_ORDER['NASDAQ:GOOGL'], 'GOOGL (the googl row) holds the issuer\'s published QG place');
         assert.equal(await page.locator('[data-leaderboard-counts]').getAttribute('data-qg-reference'), String(counts.qg));
         // The counts line and the footnote (D3, PR #320: data-ranked of [data-leaderboard-rank-scope], when present) name the same
         // official ranked count as the D11 split; the rank population stays the S06 identities.
@@ -104,7 +110,7 @@ const officialSnapshot = (page) => page.evaluate(() => JSON.stringify(Object.ent
         assert.deepEqual((await rowIds(page)).sort(), Object.keys(R).filter((k) => Number.isInteger(R[k].rank)).sort());
         await page.locator(E + ' [data-leaderboard-explore-option="qg"]').click();await page.locator(E + '[data-leaderboard-explore="qg"]').waitFor();
         const qgShown = await rowIds(page), ordered = Object.keys(R).filter((k) => R[k].qg).sort((a, b) => R[a].qg.order - R[b].qg.order);
-        assert.deepEqual(qgShown.filter((k) => R[k].qg), ordered, 'the QG list in its published order');assert.ok(qgShown.every((k) => R[k].qg || R[k].rank_row), 'other rows only as the second code of an issuer');assert.equal(await page.locator('[data-leaderboard-rank]').count(), 0);
+        assert.deepEqual(qgShown, ordered, 'the QG list = the rows with a published QG order, in that order (no second share class)');assert.equal(await page.locator('[data-leaderboard-rank]').count(), 0);
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'no page-wide scroll');
         // Detail: a QG-list company opens and says which list it is in (no official rank).
         phase = 'DETAIL';await page.locator('[data-leaderboard-row="googl"] a[href="#company/googl"]').click();await page.locator('[data-qgv-coverage]').waitFor();
