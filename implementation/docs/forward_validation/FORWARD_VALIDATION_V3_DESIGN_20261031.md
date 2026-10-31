@@ -89,7 +89,7 @@
 | `T10`·`T20`·`T30` | 상위 10·20·30종목 | 공식 순위 1~N |
 | `AXQ-TOP`·`AXQ-BOT`, `AXG-*`, `AXV-*` | Q·G·V 축별 상위·하위 10% | 축 점수가 있는 행에서 축 점수 상위·하위 10%(ceil(n/10)). V는 **가치 함정 관문 적용 전** 독립 V 축 점수를 쓰고 관문 상태는 따로 기록(#443) |
 | `SN-TOP` | 업종 중립 상위 10% | m=ceil(n/10)개를 업종 묶음 크기에 비례해 최대잔여법으로 배정(floor(m·n_s/n), 남은 칸은 소수부 큰 순·업종 ID 동점)하고 묶음마다 종합 상위 k_s(#443). 라벨 "업종 비중 근사 중립", 실제−목표 비중 표시 |
-| `SZL-TOP`·`SZM-TOP` | 대형·중형별 상위 10% | 그날 모집단을 발행사 시가총액 중앙값으로 대형·중형으로 나누고 각각 종합 상위 10% |
+| `SZMEGA-TOP`·`SZLARGE-TOP` | **초대형·대형별 상위 10%**(10/31 저녁 오너, `FV3-SIZE` 대체) | 그날 모집단을 **누적 시가총액 비율(CRSP·Morningstar식)**로 초대형(전체 시장 누적 70% 이내)·대형(그 밖의 상위 500)으로 나누고 각각 종합 상위 10%. 한 구간이 30개 미만이면 그 달 그 바구니를 만들지 않는다. 13절 |
 | `PA-TOP`·`PB-TOP`·`PD-TOP` | 프리셋(공격·균형·수비)별 상위 10% | 저장소 사용자 후보 프리셋 `user-preset/aggressive@0.1`(Q·G·V 30/50/20)·`balanced@0.1`(40/30/30)·`defensive@0.1`(55/15/30), 유형 가중·관문 ON, 같은 엔진 호출로 다시 계산한 종합 상위 10%. "후보 미검증" 표시. 보관본 구간은 `DERIVED_FROM_ARCHIVE`(#443). 공식 기본 34/33/33과 섞지 않음 |
 | `BM-EW` | 비교: Universe504 동일가중 | 그날 모집단 전체(가격 있는 행) |
 | `BM-SPY` | 비교: SPY | IEX의 SPY 마지막 체결가(가격 수익률) |
@@ -152,7 +152,7 @@
   - **PIT:** 그 배당이 실린 공시의 `filed`가 기간 끝 이후라도 실제 지급은 이미 있었으므로, 재구성에서는 공시 시점이 아니라 지급 기간 기준으로 넣는다(사후 정보 사용). 그래서 판단용이 아니라 참고용이다.
   - **SPY:** SPY의 분배금은 SEC 회사 XBRL에 없다. SPY는 가격 수익률로 두고 "SPY 근사 총수익 없음"을 적는다. 비교는 Universe504 동일가중의 근사 총수익과 한다.
   - 표시: 보조 선 "근사 총수익(SEC 배당, 참고)". 주 가설 판단에는 쓰지 않는다.
-  - 결정 `FV3-TR`: 이 보조선을 만들지(권장: 만듦, 판단 제외).
+  - 결정 `FV3-TR`: **만든다**(10/31 저녁 오너). 주 가설 판단에는 쓰지 않는다.
 
 ### 5.3 과거 IEX 수집 일정 — 스트리밍, 정기 실행과 겹치지 않게 (10/31 오너)
 
@@ -236,11 +236,14 @@
 | FV3-JUDGE | 36개월, 12개월 미만은 연율화 숨김 |
 | FV3-PUBLIC | 공개 원장에 바구니 단위 수익률(종목별 가격·진입가는 비공개) |
 | 주 가설 | D01 − D10 > 0 하나(4.0절) |
-| 배당 | 가격 수익률로 통일 + 표시. 근사 총수익은 보조 제안(`FV3-TR`, 5.2절) |
+| 배당 | 가격 수익률로 통일 + 표시. 근사 총수익 보조선은 **만든다**(`FV3-TR`, 10/31 저녁, 판단 제외, 5.2절) |
 | 엔진 | 재구성 계산 엔진은 Main, 규칙 문서는 GPT Work(#443), 결과 감사는 Codex(12절) |
+| FV3-PIT-TICKER | **공시 기호 구간표**(10/31 저녁): `dei:TradingSymbol` + 인스턴스 파일 이름 + 그날 IEX 호가 확인. 2016~2019 채움 비율은 측정 1회(12절) |
+| FV3-SIZE | **누적 시총 비율(CRSP식)**, 상위 500 안에서 초대형 vs 대형, 30개 미만이면 만들지 않음. 중형·소형은 확장 모집단이 들어올 때 새 버전으로(13절). 완충 규칙은 `FV3-SIZE-BUFFER`(결정 대기) |
+| FV3-ALIGN-443 | **Main이 대조해 확정**(10/31 저녁): 규칙의 기준은 이 문서 4·11절. #443과 다른 줄은 이 문서가 정본이고, #443은 책 사진이 올 때만 GPT Work가 고친다 |
 | 책 전략 | 활성 3개(TV25·VC2 상위 10%·SHY 상위 10%), 나머지 5개 비활성(8절) |
 
-남은 결정: `FV3-TR`(근사 총수익 보조선), `FV3-ALIGN-443`(11절 표대로 #442·#443 함께 확정), `FV3-SIZE`(대형·중형 나누는 기준, 11절), `FV3-PIT-TICKER`(과거 종목 기호 ↔ CIK 연결 방식과 측정 1회, 12절).
+남은 결정: `FV3-SIZE-BUFFER`(초대형·대형 경계의 완충 규칙, 13.3절 제안).
 
 ## 11. #443(GPT Work 규칙표)과의 대조 — 다른 곳과 맞추는 방향 (10/31)
 
@@ -259,7 +262,7 @@
 | 고정 N 부족 | 없음 | 보류(REBALANCE_DEFERRED) | **#443 채택** → #442 고침 |
 | 최소 표본 | 없음 | 10분위 n≥100, 5분위 n≥50, 10% n≥100 | **#443 채택** → #442 고침 |
 | 업종 중립 | 업종마다 상위 10%(최소 1) | 업종 크기 비례 최대잔여법 배정 | **#443 채택** → #442 고침 |
-| 대형·중형 | 그날 모집단 시총 중앙값으로 둘로 | 명목 고정 문턱(대형 ≥ $10bn, 중형 $2~10bn), n<100이면 비활성 | `FV3-SIZE`: **중앙값 권장**(PIT 상위 500에서 중형 $2~10bn이 100개 미만인 해가 많을 수 있음) → 오너 결정 |
+| 크기 구분 | (10/31) 그날 모집단 시총 중앙값으로 둘로 | 명목 고정 문턱(대형 ≥ $10bn, 중형 $2~10bn), n<100이면 비활성 | **10/31 저녁 오너: 누적 시총 비율(CRSP식), 상위 500 안에서 초대형 vs 대형, 30개 미만이면 만들지 않음**(13절). #443의 명목 문턱·중앙값 모두 쓰지 않는다 |
 | 프리셋 | "리더보드 프리셋 보기"(모호) | user-preset@0.1 30/50/20·40/30/30·55/15/30, 유형 가중·관문 ON, 보관본은 DERIVED_FROM_ARCHIVE | **#443 채택** → #442 고침 |
 | 축별 V | 축 점수 있는 행 | 관문 전 독립 V 축, 관문 상태 따로 | **#443 채택** → #442 고침 |
 | 총점 적격 | 공식 순위(V 포함, D11) | 세 축 유효 + total 유효, QG만 total 제외 | 같음 |
@@ -271,7 +274,7 @@
 | 주 가설 | 없음 | 없음 | **D01 − D10 > 0 하나**(오너) → 둘 다 |
 | 상위−하위 표시 | D10−D01 | D1−D10 퍼센트포인트 | **D01−D10 퍼센트포인트** |
 
-맞추는 순서: #442는 이 PR에서 고쳤다. #443은 작성자(GPT Work)에게 바꿀 곳을 PR 댓글로 남겼다(Main은 다른 흐름의 문서를 직접 고치지 않음, DC-35). GPT Work가 고치면 두 PR을 함께 승인 요청한다(`FV3-ALIGN-443`).
+맞추는 방법(10/31 저녁 오너 `FV3-ALIGN-443`): **Main이 대조해 맞춘다.** 위 표의 "맞추는 방향"이 v3 규칙의 정본이고, #443 문서는 고치지 않는다(GPT Work는 책 사진이 올 때만 #443의 "확인 대기" 항목을 고친다). 엔진 PR은 이 문서 4·11·13절을 따른다. 표의 "대형·중형" 줄은 13절(누적 시총 비율, 초대형 vs 대형)로 바뀌었다.
 
 ## 12. 엔진 하나 · 분담 · 상장폐지 시험 (10/31 오너)
 
@@ -306,3 +309,50 @@
   - 재조정일 PIT 상위 500 선택에서 상장폐지 종목이 빠지지 않는지는 엔진 PR의 합성 시험과 첫 재구성 실행의 실자료 점검으로 다시 확인한다.
   - 측정 시간(이 컨테이너, 4코어): 2016-12-30 파일 0.56 GB 압축 21.0초, 2018-03-29 파일 1.63 GB 압축 63.4초. gzip CPU 14.0초·44.7초, 파서 CPU 2.0초·7.3초.
 
+## 13. 크기 구분 — 누적 시가총액 비율(CRSP·Morningstar식) (10/31 저녁 오너, `FV3-SIZE` 대체)
+
+오너 원문(10/31 저녁): 「FV3-SIZE 승인을 취소하고 다음으로 바꾼다. 1. 크기 구분은 시총 중앙값이 아니라 누적 시총 비율(CRSP·Morningstar식)로 한다. CRSP 공개 방법론 원문에서 구간 비율(초대형·대형·중형·소형)을 확인해 인용하라. 2. 시점별 상위 500 모집단 안에서는 "초대형 vs 대형" 두 구간으로 나누고, 바구니 이름도 그렇게 바꾼다. 각 구간의 종목 수가 너무 적으면(예: 30개 미만) 그 바구니는 만들지 않는다. 3. 중형·소형 바구니는 확장 모집단이 v3에 들어갈 때 같은 방식으로 추가한다(새 버전으로). 4. 경계 근처 종목이 매번 오가지 않게, 지수 회사처럼 완충 구간을 두는 규칙을 제안하라.」
+
+### 13.1 CRSP 방법론 원문 (10/31 확인)
+
+- **지금의 문서:** CRSP 지수는 2026년 2월 Morningstar가 인수해 2026년 7월 "Morningstar Market Indexes"로 이름이 바뀌었다. 규칙은 2018년 판부터 같다.
+  - 원문(지금 판 p.6): "In February 2026, the acquisition of CRSP brought the CRSP Market Indexes—benchmarks for over $3 trillion in AUM—into the Morningstar Indexes family. In July 2026, the CRSP indexes were rebranded the Morningstar Market Indexes."
+  - 출처: *Morningstar Market Indexes Methodology Guide, July 2026*(시행 2026-07-17) — https://indexes.morningstar.com/docs/rulebook/morningstar-us-total-market-FS00009VTK (PDF https://indexes.morningstar.com/api/docs/6ad9e17b74bdb8580f905c36). 옛 crsp.org 지수 주소는 이 페이지로 넘어간다.
+- **기준(p.15):** "Breakpoint targets are then set at 70%, 85%, and 98% of the cumulative market cap of the index-eligible universe."
+  - 점수(p.15): "each company is then assigned a cumulative market capitalization score, which is equal to the cumulative capitalization of all higher capitalization companies plus half of the capitalization of the company that is being ranked, expressed as a percentage of the market capitalization of all eligible companies."
+  - 시총(p.15): "the company's total market capitalization calculated using TSO" — 유동주식이 아니라 총 발행주식, 회사 단위.
+- **구간과 완충 띠(pp.17–18, 원문 그대로):**
+
+| 구간 | 범위 | 완충 띠 |
+| --- | --- | --- |
+| Mega Cap(초대형) | "0% < X ≤ 70%" | "64% < X ≤ 76%; breakpoint : X = 70%" |
+| Large Cap(대형, 초대형 포함) | "0% < X ≤ 85%" | "81% < X ≤ 89%; breakpoint: X = 85%" |
+| Mid Cap(중형) | "70% < X ≤ 85%" | 64–76%, 81–89% |
+| Small Cap(소형) | "85% < X ≤ 98%" | 81–89%, "96% < X ≤ 99.5%; breakpoint: X = 98%" |
+| Micro Cap(초소형) | "98%< X ≤ 100%" | 96–99.5% |
+
+- **이동(packeting, p.16):** "CRSP defines a packet as 50% of the index's total holdings of a company. Movement occurs when a company passes completely through to the other side of a shared band between indexes into the core of the adjacent index." / "Once a company crosses the threshold into the adjacent core, one packet (50%) is moved. If a company remains in the adjacent core at the next ranking, then the second packet (remaining 50%) is moved into the adjacent index." / "No movement is exercised if the company ranks within the band." / 새 편입 종목은 "based strictly on the breakpoints … (bands are ignored)".
+- **주기(p.42):** 순위는 3·6·9·12월 첫 금요일 장 마감 뒤, 변경은 5거래일에 나눠(하루 20%).
+- **CRSP 자체 문서(2022, 지금도 열림):** "Mega 0 - 70% / Mid 70 - 85% / Small 85 - 98%" — https://www.crsp.org/wp-content/uploads/2023/08/Market-Indexes-Key-Concepts.pdf p.4.
+- **2016~2026 같은 규칙:** CRSP *Methodology Guide, January 2018* p.10 "Breakpoint targets are then set at 70 percent, 85 percent, and 98 percent …", p.12 "Band range: 64% < Xi,t ≤ 76%"(제3자 사본: https://retirementincomejournal.com/wp-content/uploads/2019/02/Equity-Indexes-Methodology-Guide_0.pdf).
+- 참고: Morningstar Style Box는 대형 = 상위 70%, 중형 = 다음 20%, 소형 = 나머지(구간 이름·비율이 CRSP와 다르다). 이 설계는 CRSP 비율을 쓴다.
+
+### 13.2 v3 규칙 (오너 결정 반영)
+
+- **모집단 안 두 구간:** 시점별 PIT 상위 500 안에서 **초대형**(CRSP 점수 ≤ 70%)과 **대형**(나머지)으로 나눈다. 바구니 `SZMEGA-TOP`(초대형 종합 상위 10%)·`SZLARGE-TOP`(대형 종합 상위 10%).
+- **점수 계산:** PIT 상위 500을 고르려면 그날 거래되는 미국 보통주 발행사 전체의 시총을 이미 순위 매긴다. 그 **전체 합을 분모**로 CRSP 점수(큰 회사 누적 + 자기 시총의 절반) / 전체를 계산한다. 회사 단위 총 발행주식 × 그날 가격(종류주 합산). 상위 500의 시총만 있는 경우의 대안(500 안 누적 70/85 ≈ 82.35%)은 쓰지 않는다(상위 500이 전체의 85%라는 가정이 해마다 어긋난다. CRSP Large Cap 구성 수는 2021~23년 537~583개, 2026-09 420개).
+- **최소 수:** 한 구간이 30개 미만이면 그 달 그 바구니를 만들지 않는다(이유 코드). 이 크기 바구니에는 오너의 30개 규칙을 쓴다(일반 10% 바구니의 n ≥ 100 규칙보다 이 규칙이 우선). 확인된 CRSP Mega Cap 구성 수는 165~293개(2016-02 293, 2018-08 260, 2023-07 226, 2026-09 165; Vanguard MGC 보고서·CRSP Market Update)라 상위 500 안에서 두 구간 모두 30개를 크게 넘는다(2019·2020·2022·2024·2025 수치는 못 찾음, 앞뒤 수치로 보면 30에 가깝지 않다).
+- **중형·소형:** 확장 모집단이 v3에 들어갈 때 같은 방식(85%·98% 기준, 81–89%·96–99.5% 띠)으로 `SZMID-TOP`·`SZSMALL-TOP`을 **새 규칙 버전으로** 더한다. 지금은 만들지 않는다.
+
+### 13.3 완충 규칙 제안 (`FV3-SIZE-BUFFER`, 결정 대기)
+
+CRSP 띠와 packeting을 동일가중·월 1회 재조정에 맞게 바꾼다(반 주식을 들 수 없으므로 "반씩" 대신 "두 번 확인").
+
+1. **띠:** CRSP와 같은 64%~76%(전체 시장 누적 시총 점수).
+2. **띠 안:** 지난달 구간을 그대로 둔다(CRSP처럼 기한 없음).
+3. **이동:** 대형 → 초대형은 점수가 **64% 이하인 달이 2번 연달아**일 때, 초대형 → 대형은 **76% 초과인 달이 2번 연달아**일 때만 옮긴다. 두 번째 확인 전에 띠로 돌아오면 다시 센다.
+4. **새 편입·첫 달:** 상위 500에 새로 들어온 회사와 시작 달의 모든 회사는 띠 없이 70%로 나눈다(CRSP "bands are ignored"). 상위 500에서 빠지면 구간에서도 빠진다.
+5. **결과:** 초대형 구간의 시총 비중은 정확히 70%가 아니라 대략 64~76% 사이를 오간다(CRSP도 같다).
+6. 민감도(보조): 3번 연달아 확인, 또는 CRSP처럼 분기 순위일(3·6·9·12월 첫 금요일)에만 이동 판단. 주 결과는 1~4번으로 고정한다.
+
+권장: 위 1~4번 승인. 엔진 PR에서 구간 배정·이동을 합성 시험으로 고정하고, 첫 재구성 실행에서 달마다 구간 수·이동 수를 보고한다.
