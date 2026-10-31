@@ -34,4 +34,6 @@ jobs:
           RAW_REPO_TOKEN: ${{ secrets.RAW_REPO_TOKEN }}
         run: |
           umask 077
-          python implementation/experiments/bt-data-pilot-v06/github_kis_probe.py --private-dir "$RUNNER_TEMP/bt-data-pilot-v06-kis"
+          # Second bounded KIS attempt matches official common headers after EGW00316.
+          # Alpaca inputs from run 41167550137 are reused offline, not downloaded again.
+          python implementation/experiments/bt-data-pilot-v06/github_kis_probe.py --kis-only --private-dir "$RUNNER_TEMP/bt-data-pilot-v06-kis"

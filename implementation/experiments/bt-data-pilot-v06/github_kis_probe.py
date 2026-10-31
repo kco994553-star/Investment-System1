@@ -123,7 +123,9 @@ class KIS:
         # Auth response is NEVER stored; tokens only live in process memory.
         if token:
             self.headers = {"authorization": "Bearer " + token, "appkey": self.keys[0],
-                            "appsecret": self.keys[1], "tr_id": "HHDFS76240000", "custtype": "P"}
+                            "appsecret": self.keys[1], "tr_id": "HHDFS76240000", "custtype": "P",
+                            "Content-Type": "application/json", "Accept": "text/plain", "charset": "UTF-8",
+                            "User-Agent": "Investment-System1 BT-DATA-PILOT personal research"}
         return {"status": "AUTHENTICATED" if token else "AUTHENTICATION_FAILED" if code else "NETWORK_REQUEST_FAILED",
                 "http_status": code, "elapsed_seconds": round(elapsed, 3), "requests": 1}
 
@@ -238,7 +240,7 @@ def alpaca_window(root, store, symbol, days, cohort):
         return {"provider": "ALPACA", "symbol": symbol, "cohort": cohort, "status": "RESPONSE_QUALITY_FAILED"}
 
 
-def run(output):
+def run(output, kis_only=False):
     names = [x for pair in KEY_PAIRS for x in pair] + ["APCA_API_KEY_ID", "APCA_API_SECRET_KEY", "RAW_REPO_TOKEN"]
     configured = {name: bool(os.environ.get(name)) for name in names}
     report = {"version": "BT-DATA-PILOT v0.6", "configured": configured, "results": [],
@@ -273,7 +275,9 @@ def run(output):
                     report["results"].append(client.window(1045810, "NVDA", "NAS", EVENT_DAYS, modp, "NVDA_SPLIT_2024"))
         report["kis_market_requests"] = client.calls
     # Alpaca is independent of KIS secret/authentication/data failures.
-    if configured["APCA_API_KEY_ID"] and configured["APCA_API_SECRET_KEY"]:
+    if kis_only:
+        report["alpaca_status"] = "REUSE_PREVIOUS_PRIVATE_ARCHIVE_NO_NEW_REQUESTS"
+    elif configured["APCA_API_KEY_ID"] and configured["APCA_API_SECRET_KEY"]:
         for _, symbol, _, historical in FIXED:
             for days, ticker, cohort in ((RECENT, symbol, "FIXED10_RECENT"), (PRIMARY_DAYS, historical, "FIXED10_2016")):
                 # Existing verified ABT 2016 SIP archive will be reused offline.
@@ -305,9 +309,10 @@ def run(output):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--private-dir", type=Path, required=True)
+    parser.add_argument("--kis-only", action="store_true", help="Reuse already acquired Alpaca prices offline")
     args = parser.parse_args()
     try:
-        result = run(args.private_dir)
+        result = run(args.private_dir, args.kis_only)
         print(json.dumps(result, sort_keys=True))  # aggregate only, no price/body/token/hash
         if result["status"] != "PRIVATE_ARCHIVE_ROUNDTRIP_VERIFIED":
             raise SystemExit(2)
