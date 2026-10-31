@@ -40,8 +40,11 @@ const key=t=>String(t||'').replaceAll('.','-').toUpperCase(),symbolOf=code=>key(
    independent and unchanged. */
 function conflictedSymbols(inputs){const out=new Set();if(inputs&&object(inputs.records))for(const[code,r]of Object.entries(inputs.records))if(!code.startsWith('TARGET:')&&r&&r.universe_withdrawal===true)out.add(symbolOf(code));return out;}
 function priceConflict(inputs,c,code,symbols){return !!code&&code.startsWith('TARGET:')&&symbols.has(key(c.ticker))&&inputs.records[code]?.identity_withdrawn!==true;}
-function codeIndex(inputs){const codes=new Map();if(inputs)for(const code of Object.keys(inputs.records))if(!code.startsWith('TARGET:')&&!codes.has(symbolOf(code)))codes.set(symbolOf(code),code);
- return c=>{const t='TARGET:'+c.company_id,r=inputs&&Object.hasOwn(inputs.records,t)?inputs.records[t]:null;if(r&&r.state!=='NOT_AVAILABLE')return t;return codes.get(key(c.ticker))||null;};}
+/* skipTarget (optional, publication path only — compute({publication})): a TARGET key that must not stand for its identity there
+   (CALC_VERSION_MISMATCH: assign_ranks makes the Universe code the representative), so that identity reads its Universe code by
+   ticker (the TARGET row only when there is none). Without it (device path, typeMemberships, the Python code_index twin) unchanged. */
+function codeIndex(inputs,skipTarget){const codes=new Map();if(inputs)for(const code of Object.keys(inputs.records))if(!code.startsWith('TARGET:')&&!codes.has(symbolOf(code)))codes.set(symbolOf(code),code);
+ return c=>{const t='TARGET:'+c.company_id,r=inputs&&Object.hasOwn(inputs.records,t)?inputs.records[t]:null,live=!!r&&r.state!=='NOT_AVAILABLE';if(live&&!(skipTarget&&skipTarget(t)))return t;return codes.get(key(c.ticker))||(live?t:null);};}
 function v2Display(r){
  if(!r)return{version:'v2',q:null,g:null,v:null,total:null,partial:true,factors_available:0,factors_total:qgvV2().FACTORS.length,flags:['V2_INPUTS_NOT_AVAILABLE'],state:'NOT_AVAILABLE',total_reason:'V2_INPUTS_NOT_AVAILABLE'};
  const ax=a=>r.axes[a].score;
@@ -265,12 +268,21 @@ function pubPersonal(pub,tree,typesOn,gateOn){const V2=qgvV2(),T=typeDefaults(),
   if(data/100<V2.MIN_AXIS_WEIGHT||!included.length)reason='AXIS_WEIGHT_INSUFFICIENT';else{let acc=0,used=0;for(const p of included){acc+=w[p]*ax[p].score;used+=w[p];}total=acc/used;}
   out[k]={...pubRow(r),axes:ax,weights:w,q_industry_percentile:q,v_excluded:trap?'VALUE_TRAP_GATE':null,value_trap_gate:trap,total,total_reason:reason,flags};}
  return out;}
-/* D11 one place per CIK, the qgv_official.assign_ranks rule: the representative key of each CIK = a TARGET row of a Universe CIK
-   that is LIVE / STALE and not CALC_VERSION_MISMATCH (the last in key order), else the first cross-section Universe code. */
-function pubReps(pub){const rows=pub.rows,T='TARGET:',keys=Object.keys(rows).sort(),uc=new Set(keys.filter(k=>!k.startsWith(T)&&rows[k].cik).map(k=>rows[k].cik)),rep={};
- for(const k of keys){const r=rows[k];if(k.startsWith(T)&&uc.has(r.cik)&&(r.state==='LIVE'||r.state==='STALE')&&r.total_reason!=='CALC_VERSION_MISMATCH')rep[r.cik]=k;}
- for(const k of keys){const r=rows[k];if(!k.startsWith(T)&&r.in_cross_section===true&&r.cik&&!Object.hasOwn(rep,r.cik))rep[r.cik]=k;}
+/* D11 one place per CIK (owner rule '시총은 발행사 단위, 점수는 대표 증권 하나'), the qgv_official.assign_ranks rule: the
+   representative key of each CIK = a TARGET row of a Universe CIK that is LIVE / STALE and not CALC_VERSION_MISMATCH (the last in
+   key order), else the first cross-section Universe code in key order. view: {key: {cik, state, in_cross_section, mismatch}} — the
+   publication's rows (pubView) or, without one, the loaded sec-qgv2.json records (recordView; same fields, same rule). */
+function repsOf(view){const T='TARGET:',keys=Object.keys(view).sort(),uc=new Set(keys.filter(k=>!k.startsWith(T)&&view[k].cik).map(k=>view[k].cik)),rep={};
+ for(const k of keys){const r=view[k];if(k.startsWith(T)&&uc.has(r.cik)&&(r.state==='LIVE'||r.state==='STALE')&&!r.mismatch)rep[r.cik]=k;}
+ for(const k of keys){const r=view[k];if(!k.startsWith(T)&&r.in_cross_section===true&&r.cik&&!Object.hasOwn(rep,r.cik))rep[r.cik]=k;}
  return rep;}
+function pubView(pub){const v={};for(const[k,r]of Object.entries(pub.rows))v[k]={cik:r.cik||null,state:r.state,in_cross_section:r.in_cross_section,mismatch:r.total_reason==='CALC_VERSION_MISMATCH'};return v;}
+function recordView(inputs){const v={};if(inputs&&object(inputs.records))for(const[k,r]of Object.entries(inputs.records))if(object(r))v[k]={cik:typeof r.cik==='string'&&r.cik?r.cik:null,state:r.state,in_cross_section:r.in_cross_section,mismatch:r.calc_version_mismatch===true};return v;}
+/* Tie order of every rank and QG order (qgv_official.assign_ranks order(): total descending, then the key's symbol, then the key):
+   symbol = a TARGET key's device ticker (QgvOfficial.symbol), else the code's ticker with '.' as '-' (symbolOf); compared by code
+   unit like Python str (not localeCompare). */
+function tieSymbol(k){if(typeof k!=='string')return '';if(k.startsWith('TARGET:')){try{const QO=qgvOfficial();if(QO&&typeof QO.symbol==='function')return QO.symbol(k);}catch(_){}}return symbolOf(k);}
+const byCodeUnit=(a,b)=>a<b?-1:a>b?1:0;
 // The publication's rows as the record view codeIndex / universeIdentities / coverageFor read when the loaded sec-qgv2.json is not
 // the file the publication was computed from (another as_of): publication-only rows, flagged inputs_match false.
 function pubRecords(pub){const records={};for(const[k,r]of Object.entries(pub.rows))records[k]={cik:r.cik,state:r.state,published_profile:r.profile,industry_group:r.industry_group,in_cross_section:r.in_cross_section,
@@ -291,18 +303,21 @@ function inputsMatch(inputs,pub){return!!inputs&&object(inputs.records)&&inputs.
    it the result is unchanged: every identity with a total is ranked (callers that score their own identities). */
 /* publication (optional, DC-31): a qgv-official.json payload (officialPage passes only one QgvOfficial validated). The official
    result is then the publication's (official default profile; preset and quotes are not used; no engine call), ranks are its
-   own (D11, one place per CIK: only the row whose code is the CIK's rank_row is placed, or, when that TARGET identity is not on
-   the page, the row of the CIK's first cross-section Universe code; the other codes of that CIK carry rank_row), and weights give
-   the personal recompute (pubPersonal; gate = the personal gate), placed with the same one-place-per-CIK rule (pubReps; the other
-   codes carry personal_rank_row). v2Inputs enriches coverage only
+   own (D11, one place per CIK: only the seat of the published place's key is placed — that key's row, or for a TARGET key the
+   Universe code row that identity maps to by the D12 dedupe; see the seat rule in the body — and every other code of that CIK
+   carries rank_row = the seat's code), and weights give the personal recompute (pubPersonal; gate = the personal gate), placed on
+   the same seats (repsOf; the other codes carry personal_rank_row); ties as assign_ranks (total, symbol, key). v2Inputs enriches coverage only
    when it is the file the publication was computed from (inputsMatch), else publication-only records (inputs_match false).
    vMissing (optional, no publication): the reason every missing V factor carries instead of the device price wording
-   (OFFICIAL_NOT_PUBLISHED / OFFICIAL_INVALID / OFFICIAL_UNAVAILABLE): Q·G rows go to the QG reference list, never a device V. */
+   (OFFICIAL_NOT_PUBLISHED / OFFICIAL_INVALID / OFFICIAL_UNAVAILABLE): Q·G rows go to the QG reference list, never a device V; with
+   the official split, the codes of a CIK with two or more rows on the page get one place on the representative's seat (the same
+   rule over the loaded file's records), the others rank_row. */
 function compute({identities=[],publicScreens={},v2Inputs,quotes={},preset,gate=null,referenceRows={},weights=null,typeWeights=true,official=null,publication=null,vMissing=null}={}){
  const V2=qgvV2(),intended='v2',pub=object(publication)&&object(publication.rows)?publication:null;let inputs=v2Inputs===undefined?(publicScreens&&qgv2Inputs()?publicScreens[qgv2Inputs().FILE]||null:null):v2Inputs;
  const match=pub?inputsMatch(inputs,pub)&&inputs.publication_only!==true:null;if(pub&&!match&&!(inputs&&inputs.publication_only===true))inputs=pubRecords(pub);if(pub)quotes={};
  const chosen=!pub&&preset&&Object.hasOwn(V2.PRESETS,preset)?preset:V2.DEFAULT_PRESET,gateOn=pub||gate===null||gate===undefined?V2.GATE_DEFAULT:Boolean(gate),personalGate=gate===null||gate===undefined?V2.GATE_DEFAULT:Boolean(gate);
- const codeFor=codeIndex(inputs);
+ // Publication path: a TARGET identity whose TARGET key is CALC_VERSION_MISMATCH reads its Universe code (the published representative).
+ const codeFor=codeIndex(inputs,pub?k=>Object.hasOwn(pub.rows,k)&&pub.rows[k].total_reason==='CALC_VERSION_MISMATCH':undefined);
  const cyclicalBasis={};if(!pub)try{const engine=globalThis.PlaybookEngine,cfg=globalThis.PlaybookConfigDefaults;if(engine?.classifyTypesV0&&cfg&&inputs?.records){const symbols={};for(const c of identities){const code=codeFor(c);if(code)symbols[code]=c.ticker;}for(const[code,r]of Object.entries(inputs.records)){const symbol=symbols[code]||symbolOf(code),group=engine.sectorFor?.(cfg,symbol,null,r.sic);cyclicalBasis[code]=engine.classifyTypesV0(cfg,{sic:r.sic,sector_subgroup:group?.sector??null,revenue_volatility_5y_rank_pct:finite(r.metrics?.revenue_volatility_5y_rank_pct)?r.metrics.revenue_volatility_5y_rank_pct/100:null}).cyclical?.member===true;}}}catch(_){}
  // A file this page cannot read: SCHEMA_NEWER (a newer data format; reload) is told apart from a missing file (Qgv2Inputs.lastReason).
  const newer=!inputs&&(()=>{try{return qgv2Inputs().lastReason?.()==='SCHEMA_NEWER';}catch(_){return false;}})();
@@ -327,15 +342,49 @@ function compute({identities=[],publicScreens={},v2Inputs,quotes={},preset,gate=
  for(const c of identities){const code=codeFor(c),v2=display(universe,c,code,{});
   const row={company_id:c.company_id,ticker:c.ticker,code,v2,primary:v2,reference:null,rank:null,qg_reference:null};if(U){row.universe_code=typeof U[c.company_id]==='string'?U[c.company_id]:null;row.outside_universe=row.universe_code===null;}rows[c.company_id]=row;}
  // D11: official rank = rows with a total AND a V score; Q·G-only totals get qg_reference {order, reason} in their own order.
- const byTotal=k=>(a,b)=>b[k].total-a[k].total||(a.ticker<b.ticker?-1:1),scored=Object.values(rows).filter(r=>finite(r.primary.total)&&r.primary.reference_only!==true&&inRank(r));
- // Publication: the page row that holds a CIK's place = the row of the key named (rank_row / representative), else, when that TARGET
- // identity is not on the page, the row of the CIK's first cross-section Universe code (so no published place goes unshown).
- const pubOf=r=>pub&&r.code&&Object.hasOwn(pub.rows,r.code)?pub.rows[r.code]:null,inPage=Object.values(rows).filter(inRank),byCode=new Map();for(const r of inPage)if(r.code&&!byCode.has(r.code))byCode.set(r.code,r);
- const seat=(cik,key)=>{if(!cik)return null;const r=byCode.get(key);if(r)return r;let best=null;for(const x of inPage){const p=pubOf(x);if(p&&p.cik===cik&&p.in_cross_section===true&&!x.code.startsWith('TARGET:')&&(!best||x.code<best.code))best=x;}return best;};
- if(pub)for(const r of scored){const p=pubOf(r);if(!p||p.rank_row===null)continue;const s=seat(p.cik,p.rank_row),t=pub.rows[p.rank_row];if(s!==r){r.rank_row=s?s.code:p.rank_row;continue;}
-  if(Number.isInteger(t.rank))r.rank=t.rank;else if(Number.isInteger(t.qg_reference_order))r.qg_reference={order:t.qg_reference_order,...(qgReference(r.primary)||{reason:'V_INPUTS_NOT_AVAILABLE'})};}
- else{ranked=scored.filter(r=>!qgReference(r.primary)).sort(byTotal('primary'));ranked.forEach((r,i)=>{r.rank=i+1;});
-  scored.filter(r=>qgReference(r.primary)).sort(byTotal('primary')).forEach((r,i)=>{r.qg_reference={order:i+1,...qgReference(r.primary)};});}
+ const scored=Object.values(rows).filter(r=>finite(r.primary.total)&&r.primary.reference_only!==true&&inRank(r)),scoredSet=new Set(scored);
+ /* D11 one place per issuer (CIK), on ONE representative security (repsOf, the assign_ranks rule). The page row that holds the place
+    of representative key K (its seat): the row reading K; for a TARGET key, else the row of that TARGET identity, else the row that
+    stands for the Universe code the TARGET identity maps to by the D12 dedupe (universeIdentities: the first code in key order whose
+    symbol is the TARGET ticker); for a Universe code, the row standing for it (its own row, or the TARGET identity merged into it).
+    Neither on the page: the row standing for the CIK's first cross-section Universe code in key order (the assign_ranks rule
+    without a TARGET row); else no seat. A seat always reads a record of that CIK. Only the seat carries the place (rank / qg_reference
+    / personal place); every other code of the CIK carries rank_row (personal_rank_row) = the seat's code and no place of its own. */
+ const pubOf=r=>pub&&r.code&&Object.hasOwn(pub.rows,r.code)?pub.rows[r.code]:null,inPage=Object.values(rows).filter(inRank);
+ const view=pub?pubView(pub):recordView(inputs),cikOf=r=>r&&r.code&&Object.hasOwn(view,r.code)?view[r.code].cik:null;
+ const codes=inputs&&object(inputs.records)?Object.keys(inputs.records).filter(k=>!k.startsWith('TARGET:')).sort():[],standing=new Map(),byId=new Map();
+ for(const r of inPage){if(r.code&&!standing.has(r.code))standing.set(r.code,r);byId.set(r.company_id,r);}for(const r of inPage)if(typeof r.universe_code==='string'&&!standing.has(r.universe_code))standing.set(r.universe_code,r);
+ const seat=(cik,K)=>{if(!cik||typeof K!=='string')return null;const T='TARGET:',of=r=>r&&cikOf(r)===cik?r:null;let s=of(standing.get(K));if(s)return s;
+  if(K.startsWith(T)){s=of(byId.get(K.slice(T.length)));if(s)return s;const t=tieSymbol(K),c=codes.find(x=>symbolOf(x)===t);s=c?of(standing.get(c)):null;if(s)return s;}
+  const first=codes.find(x=>Object.hasOwn(view,x)&&view[x].cik===cik&&view[x].in_cross_section===true);return first?of(standing.get(first)):null;};
+ // Ties (assign_ranks order()): total descending, then symbol, then key; the key of a seat is the representative key it holds.
+ const tieKey=new Map(),keyOf=r=>tieKey.get(r)||r.code||r.company_id,byTotal=k=>(a,b)=>b[k].total-a[k].total||byCodeUnit(tieSymbol(keyOf(a)),tieSymbol(keyOf(b)))||byCodeUnit(keyOf(a),keyOf(b));
+ /* Seats of the representative keys. Publication: every CIK with a representative. Without one, on the official page (official
+    split and vMissing: Q·G totals in the QG reference list, no V) the same rule for every CIK with two or more rows on the page
+    (e.g. GOOG / GOOGL, FOXA / FOX), from the loaded file's records; a single row of a CIK keeps its own place. Device results
+    (quotes, pageResult) and callers without the official split are unchanged. */
+ const one=!pub&&!!U&&!!vMissing&&codes.length>0,seats=new Map();
+ if(pub||one){const rep=repsOf(view),n=new Map();if(one)for(const r of inPage){const c=cikOf(r);if(c)n.set(c,(n.get(c)||0)+1);}
+  for(const[c,k]of Object.entries(rep)){if(one&&!(n.get(c)>1))continue;const s=seat(c,k);if(s){seats.set(c,s);tieKey.set(s,k);}}
+  if(one)for(const[c,m]of n)if(m>1&&!seats.has(c))seats.set(c,null);}// a shared CIK without a representative on the page: no place
+ const seatOf=r=>{const c=cikOf(r);return c&&seats.has(c)?seats.get(c):undefined;},own=r=>{const s=seatOf(r);return pub?s===r:s===undefined||s===r;};
+ // The other codes of a placed issuer point to its seat (rank_row: official; personal_rank_row: personal).
+ const pointTo=(list,placed,field)=>{for(const r of list){const s=seatOf(r);if(s&&s!==r&&placed(s))r[field]=s.code;}};
+ if(pub){const held=new Map();
+  /* The publication's own places (one per CIK, D-CV8/9), every one shown once: on the seat of its key when it shows the same kind of
+     total (D11: a ranked row has a V score, a QG reference row has none) — always so when the seat reads that key. A seat that reads
+     another record (the key's row is not on the page, e.g. no TARGET identity) and has no total or the other kind gives the place
+     to the first row of the same CIK and the same kind (key order of the record it reads); with none, the place stays on that seat
+     if it has a total (the old fallback), else on the first row of the CIK with a total. The other codes point to the holder;
+     the personal result uses the same holder. */
+  const fits=(x,rk)=>!!x&&scoredSet.has(x)&&finite(x.primary.v)===rk,ofCik=cik=>inPage.filter(x=>cikOf(x)===cik&&scoredSet.has(x)).sort((a,b)=>byCodeUnit(a.code,b.code));
+  for(const[K,t]of Object.entries(pub.rows)){const rk=Number.isInteger(t.rank);if(!rk&&!Number.isInteger(t.qg_reference_order))continue;const s=seat(t.cik,K),all=fits(s,rk)?[]:ofCik(t.cik);
+   const h=fits(s,rk)?s:all.find(x=>fits(x,rk))||(s&&scoredSet.has(s)?s:all[0]||null);if(!h)continue;held.set(t.cik,h);seats.set(t.cik,h);tieKey.set(h,K);
+   if(rk)h.rank=t.rank;else h.qg_reference={order:t.qg_reference_order,...(qgReference(h.primary)||{reason:'V_INPUTS_NOT_AVAILABLE'})};}
+  for(const r of scored){const p=pubOf(r);if(!p||p.rank_row===null)continue;const s=held.get(p.cik);if(s===r)continue;r.rank_row=s?s.code:p.rank_row;}}
+ else{const pool=scored.filter(own);ranked=pool.filter(r=>!qgReference(r.primary)).sort(byTotal('primary'));ranked.forEach((r,i)=>{r.rank=i+1;});
+  pool.filter(r=>qgReference(r.primary)).sort(byTotal('primary')).forEach((r,i)=>{r.qg_reference={order:i+1,...qgReference(r.primary)};});
+  if(one)pointTo(scored,s=>Number.isInteger(s.rank)||!!s.qg_reference,'rank_row');}
  // PERSONAL_PREVIEW: same identities, inputs, quotes, stops and tie rule; a separate memo, rows[cid].personal, never primary.
  let personal=null;if(weights!==null&&weights!==undefined){let tree=null;try{tree=V2.validateWeights(weights);}catch(_){tree=null;}const typesOn=typeWeights!==false;
   const pg_=pub?personalGate:gateOn;personal={state:'NOT_AVAILABLE',reason:null,label:PERSONAL_LABEL,profile:tree?{id:V2.VERSION+'/custom/'+V2.weightsId(tree,typesOn)+'/gate-'+(pg_?'on':'off'),namespace:V2.PERSONAL_NAMESPACE,gate:pg_,type_weights:typesOn,weights:tree}:null};
@@ -346,11 +395,11 @@ function compute({identities=[],publicScreens={},v2Inputs,quotes={},preset,gate=
    if(pub)personal.weight_stages={state:'NOT_AVAILABLE',reason:'WEIGHT_STAGES_NOT_REBUILT'};
    const extra={weights:tree,typeWeights:typesOn};for(const c of identities){const row=rows[c.company_id];row.personal=display(pu,c,row.code,extra);row.personal_rank=null;row.personal_qg_reference=null;}
    // Same D11 split for the personal result (V weight > 0); with V weight 0 every personal total is ranked under PERSONAL_V0_LABEL.
-   // Publication: one place per CIK as the official ranks (pubReps), the other codes of the CIK carry personal_rank_row.
-   const rep=pub?pubReps(pub):null,seatOf=r=>{const p=pubOf(r);return p&&p.cik&&Object.hasOwn(rep,p.cik)?seat(p.cik,rep[p.cik]):null;};
-   const mine=Object.values(rows).filter(r=>finite(r.personal.total)&&r.personal.reference_only!==true&&inRank(r)&&(!pub||seatOf(r)===r)),qgOnly=r=>!personal.v_weight_zero&&qgReference(r.personal);
+   // One place per CIK on the same seats as the official result (publication: every CIK; official page without one: shared CIKs);
+   // the other codes of the CIK carry personal_rank_row.
+   const mine=Object.values(rows).filter(r=>finite(r.personal.total)&&r.personal.reference_only!==true&&inRank(r)&&own(r)),qgOnly=r=>!personal.v_weight_zero&&qgReference(r.personal);
    mine.filter(r=>!qgOnly(r)).sort(byTotal('personal')).forEach((r,i)=>{r.personal_rank=i+1;});mine.filter(qgOnly).sort(byTotal('personal')).forEach((r,i)=>{r.personal_qg_reference={order:i+1,...qgReference(r.personal)};});
-   if(pub)for(const r of inPage){const s=seatOf(r);if(s&&s!==r&&(s.personal_rank!==null||s.personal_qg_reference!==null))r.personal_rank_row=s.code;}
+   if(pub||one)pointTo(inPage,s=>s.personal_rank!==null||s.personal_qg_reference!==null,'personal_rank_row');
    if(pu&&Object.values(pu).some(r=>finite(r.total)))personal.state='READY';else if(!personal.reason)personal.reason='V2_SCORES_NOT_AVAILABLE';}}
  const quoted=object(quotes)?Object.keys(quotes).length:0;
  // D12 counts of the official result (rank population = Universe rows with an official rank; the QG 참고 목록 apart).
