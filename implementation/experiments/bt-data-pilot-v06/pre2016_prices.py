@@ -15,12 +15,15 @@ from pilot import private_dir, RawDatasetStore, encoded, digest
 from github_alpaca_probe import release, RAW_REPO
 
 
-def run(output, archive):
+def run(output, archive, resume=None, phase='all'):
     if os.environ.get('GITHUB_ACTIONS') != 'true': raise ValueError('RUNNER_REQUIRED')
     code, _, data = release.http('GET',f'{release.API}/repos/{RAW_REPO}')
     if code != 200 or json.loads(data).get('private') is not True: raise ValueError('PRIVATE_DESTINATION_REQUIRED')
     root=private_dir(output); (root/'requests').mkdir(exist_ok=True)
     old=root.parent/'prior-kis';safe_extract(archive,old)
+    if resume:
+        safe_extract(resume,root)
+        (root/'previous-aggregate.json').write_bytes((root/'aggregate.json').read_bytes())
     oldstore=RawDatasetStore(old/'store');store=RawDatasetStore(root/'store')
     aliases=[(s,h,'NAS' if h=='CECE' else ex)for _,s,ex,h in FIXED]
     series={h:{} for _,h,_ in aliases}; reused=[]
@@ -35,9 +38,20 @@ def run(output, archive):
     (root/'reused-sources.json').write_bytes(encoded(reused))
     cursors={h:(date.fromisoformat(min(series[h]))-timedelta(days=1)).strftime('%Y%m%d')
              if series[h] else '20151231' for _,h,_ in aliases}
+    # Restore actual old responses, but do not let disconnected era-probe islands
+    # advance the contiguous backfill cursor.
+    if resume:
+        for p in (root/'requests').glob('*.json'):
+            m=json.loads(p.read_bytes());q=m['request'];r=m.get('receipt',{})
+            if q.get('SYMB') not in series or not r.get('sha256'):continue
+            body=store.get_bytes(r['artifact_id']);assert digest(body)==r['sha256']
+            if json.loads(body).get('rt_cd')!='0':continue
+            for row in kis_normalize(body,q['SYMB'],'0',q['BYMD']):
+                series[q['SYMB']][row['session_date']]=row
     report={'version':'BT-DATA-PILOT v0.6','targets':['2010-01-01','2000-01-01','1990-01-01'],
             'requests':[],'auth':None,'formal_backtests':0,'local_request_cap':240,
-            'historical_security_identity_verified':False,'joined_to_sip':False}
+            'historical_security_identity_verified':False,'joined_to_sip':False,'phase':phase,
+            'resume_archive_sha256':release.file_sha(resume) if resume else None}
     keys,status=choose_keys(os.environ)
     client=KIS(root,store,keys,max_calls=240) if keys else None
     if client:
@@ -56,9 +70,11 @@ def run(output, archive):
 
     def page(alias,ex,bymd,purpose):
         if client.stopped or client.calls>=client.max_calls:return None
+        calls_before=client.calls
         body,m=client.page(alias,ex,bymd,'0','')
         result={'alias':alias,'exchange':ex,'bymd':bymd,'purpose':purpose,'http_status':m.get('http_status'),
-                'retrieved_at':m.get('retrieved_at'),'response_tr_cont':m.get('response_tr_cont')}
+                'retrieved_at':m.get('retrieved_at'),'response_tr_cont':m.get('response_tr_cont'),
+                'cache_hit':client.calls==calls_before}
         report['requests'].append(result)
         if not body:
             result['status']=m.get('status','NETWORK_REQUEST_FAILED');client.stopped=True;return None
@@ -80,10 +96,10 @@ def run(output, archive):
 
     if client and report['auth']['status']=='AUTHENTICATED':
         # Probe the old 100-row edge first, then three explicit older anchors.
-        for d in ('20151105','20100401','20000403','19900402'):
+        for d in (('20151105','20100401','20000403','19900402') if phase=='all' else ()):
             if page('ABT','NYS',d,'ABT_BOUNDARY_AND_ERA_PROBE') is None:break
         save('anchor-checkpoint')
-        if not client.stopped:
+        if not client.stopped and phase=='all':
             for company,alias,ex in aliases:
                 if alias!='ABT':
                     page(alias,ex,'20100401','FIXED10_2010_PROBE')
@@ -91,7 +107,9 @@ def run(output, archive):
                     page(alias,ex,'20000403','FIXED10_2000_PROBE')
                 if client.stopped:break
         # 2010 first for each fixed alias. Earlier anchor islands do not count as a contiguous backfill.
-        for target, cohort in [('2010-01-01',aliases),('2000-01-01',[aliases[0]]),('1990-01-01',[aliases[0]])]:
+        targets=[('2010-01-01',aliases)]
+        if phase=='all':targets += [('2000-01-01',[aliases[0]]),('1990-01-01',[aliases[0]])]
+        for target, cohort in targets:
             for company,alias,ex in cohort:
                 if not client or client.stopped or client.calls>=client.max_calls:break
                 cursor=cursors[alias];visited=set()
@@ -115,7 +133,8 @@ def run(output, archive):
 
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--private-dir',type=Path,required=True);p.add_argument('--prior-zip',type=Path,required=True)
+    p.add_argument('--resume-zip',type=Path);p.add_argument('--phase',choices=('all','2010'),default='all')
     a=p.parse_args()
-    try:print(json.dumps(run(a.private_dir,a.prior_zip)))
+    try:print(json.dumps(run(a.private_dir,a.prior_zip,a.resume_zip,a.phase)))
     except (ValueError,KeyError,TypeError,OSError,release.ReleaseError):
         print('{"status":"STOPPED_CHECK_PRIVATE_CHECKPOINT"}');raise SystemExit(2) from None
