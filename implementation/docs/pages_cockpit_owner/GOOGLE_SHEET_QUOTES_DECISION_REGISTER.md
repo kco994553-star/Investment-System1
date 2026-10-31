@@ -534,3 +534,48 @@ GSQ-009의 KRX 대체 출처 후보와 나머지 경계는 유지한다. 과거 
 | TARGET v1 | 11월 둘째 주 확정 목표. 그 전에 중앙 V가 게시되면 중앙 V로, 아니면 임시 경로 V로 하고 "임시 V" 표시를 남긴다. 조건이 안 되면 미룬다(11월 매매 없음). |
 | 문서 | 저장소 문서의 "V는 기기 전용·비공개" 규칙은 이 결정으로 "공개 V(점수·순위), 원시 가격 비공개 유지"로 바뀐다. |
 | 가드·병합 | 가드(`pages_artifact_guard` 등) 변경은 별도 PR로 하고 소유자 승인 후 병합한다. 이 기록 PR도 소유자 승인 후 병합한다. |
+
+## GSQ-025 — 26E IEX 기반 중앙 V 정밀값 공개 허용 · 기기 계산 V 전면 대체 · 유료 공급처 V 비공개 구역 한정 (2026-10-30 UTC)
+
+권한 근거는 2026-10-30 소유자 결정 원문이다. 앞선 기록의 bytes를 보존하고 끝에 추가한다. GSQ-024를 대체하지 않고 아래 범위만 고친다.
+
+> 1. V (앞 지시 2번 "공개 V 5구간 전환"을 아래로 바꾼다)
+> - "V를 공개해도"는 "공급처가 허락해도"라는 뜻이다. 중앙 V 방식을 계속 유지한다.
+> - 기기 계산 V는 모두 중앙 V로 대체한다.
+> - 5구간 전환은 보류한다. 먼저 IEX HIST Terms of Use 원문을 확인하고, 가격과 가격으로 만든 파생 점수를 공개 사이트에 게시하는 것에 대한 조항을 인용하라.
+>   - 금지 조항이 없으면: GSQ-024를 "IEX 기반 중앙 V는 정밀값 공개 허용"으로 바꾸는 결정 기록 PR을 올리고, 5구간 전환은 하지 않는다.
+>   - 금지나 제한이 있으면: 5구간으로 전환한다. 공개 총점과 순위는 구간 중앙값으로 계산한다.
+>   - 불명확하면: IEX에 보낼 영문 문의 초안을 한 문단으로 쓰고, 답이 올 때까지는 5구간으로 전환한다.
+> - 유료 공급처 자료로 만든 V는 이와 별개다. 비공개 구역(로그인)에서만 보이게 한다.
+
+**IEX HIST Terms of Use 원문 확인(2026-10-30, https://www.iex.io/legal/hist-data-terms, 조항 01~10 전부 읽음).** 가격이나 그 파생 점수를 공개 사이트에 게시하는 것을 금지하거나 개인 용도로 제한하는 조항은 없다. 관련 조항 원문:
+
+- 01: "If you distribute, sell, lease, furnish, or otherwise permit or provide access to Investors' Exchange LLC ("IEX") historical data, you must cite IEX as the source with the following text and link: "Data provided for free by IEX. By accessing or using IEX Historical Data, you agree to the IEX Historical Data Terms of Use.""
+- 02: "You will not engage in the operation of any illegal business use or permit anyone else to use IEX historical data, or any part thereof, for any illegal purpose or violation of any IEX or SEC rule or regulation."
+- 03: "As between IEX and you, IEX has the exclusive proprietary rights in and to the IEX historical data. … shall, as between IEX and you, be and remain the sole and exclusive property of IEX."
+- 08: "IEX reserves all rights to the securities information contained in the IEX historical data. You understand and acknowledge that such securities information does not reflect trading activity on markets other than IEX, and is intended to provide you with a reference point only, rather than as a basis for making trading decisions. IEX does not guarantee such information nor shall be liable for any loss due either to its negligence or to any cause, absent its fraud or willful misconduct."
+- 10: "By viewing or using this data or information in any manner, you understand and acknowledge that such information does not reflect trading activity on markets other than IEX, as applicable, and is intended to provide you with a reference point only, rather than as a basis for making trading decisions."
+- 04~07·09는 책임 제한·보증 부인·면책이며 공개를 금지하지 않는다. 다만 07(b)에 따라 공개로 생기는 제3자 청구는 운영자가 IEX를 면책한다.
+
+**함께 확인한 IEX 문서(2026-10-30, 독립 검토 1회):**
+- IEX Market Data Policies(2026-09) §15: "IEX does not require an IEX Data Subscriber Agreement from any Person who receives, uses, or distributes IEX Historical Data in accordance with the IEX Historical Data Terms of Use."
+- IEX Data Subscriber Agreement(2026-09) 정의: "IEX Market Data … does not include IEX Historical Data." 그래서 정책의 파생 자료·지수 조항(§11·§12)과 비표시 이용 요금(§13)은 HIST에 적용되지 않는다.
+- IEX 웹사이트 이용약관(https://www.iex.io/legal/terms, 2016-09-06): "The Content is for Customer's personal use"; "Customer shall not modify, sell, display, distribute, publish, transmit, broadcast or otherwise disseminate the Website o[r the Content] … without IEX's prior written consent." 같은 약관은 "These Terms of Use are to be observed in addition to the terms of any agreement Customer may have with IEX … which agreement(s), in the event of any conflicting terms, will govern."라고 정한다. 이 약관은 HIST(2017 시작)보다 먼저 만들어졌다.
+
+판단:
+- 01은 배포·제공을 전제하고, 출처 표기를 조건으로 둔다. 파생 점수는 따로 언급하지 않는다.
+- 03·08은 권리가 IEX에 남는다는 조항이고, 공개를 막지 않는다.
+- 시장자료 정책 §15는 HIST 약관에 따른 배포에 구독 계약이 필요 없다고 적는다.
+- 웹사이트 약관의 "개인용"·"서면 동의 없는 게시 금지" 문구는 같은 약관의 우선 조항에 따라 HIST에는 HIST 약관이 우선한다고 해석한다. IEX의 서면 확인은 받지 않았다(GSQ-024와 같은 소유자 판단).
+- 따라서 오너 지시의 첫 경우("금지 조항이 없으면")에 해당한다.
+- 남는 조건은 01의 출처 표기이고, 공개 JSON과 화면에 이미 있다(GSQ-024 출처 표시). 08·10은 이용자가 확인할 사항이라, 화면 안내는 권장이다.
+
+| 항목 | 결정 |
+| --- | --- |
+| IEX 기반 중앙 V | **정밀값 공개 허용.** V 세부 요인 백분위·V 축 점수·총점·순위를 지금처럼 정밀값으로 공개한다. 5구간 전환은 하지 않는다. 확정 범위는 Universe504 중앙 V다. IEX 가격으로 계산할 확장 모집단에도 같은 약관 근거가 적용된다고 Main은 읽는다. 다만 10/30 오전 DC-28의 확장 공개 원칙(V 세부·정확한 시총 숨김)과 겹치므로, 확장 모집단의 공개 형식은 오너 확인 뒤 정한다 |
+| 계속 비공개 | GSQ-010·GSQ-024 그대로: 원시 가격·EV·시가총액·수익률·배율·내재 성장률·자기 과거 수익률·종목별 가격 해시는 저장소·Pages·Actions 로그·아티팩트에 넣지 않는다. 단, 저장소 역산 시험(`expanded_universe/EXPANDED_DEFINITION_20261030.md` §3)대로 정밀 V 세부 백분위로는 다른 회사 값을 아는 사람이 가격을 약 0.1% 오차로 역산할 수 있다. 이것은 HIST 01의 출처 표기 조건 아래 허용되는 IEX 가격의 노출이므로 약관 위반은 아니다. 여기서 "비공개"는 원값을 저장·게시하지 않는다는 뜻이고, 역산 불가를 보장하지 않는다 |
+| 출처·안내 | 01의 지정 문구(약관 링크 포함)와 "IEX 마지막 체결가 기준(공식 종가 아님)"을 화면·공개 JSON에 유지한다. 08·10 취지(IEX 단독 체결, 참고용)를 화면 안내에 두기를 권장한다 |
+| 기기 계산 V | **모두 중앙 V로 대체한다.** GSQ-024의 "게시 후 대조 도구" 역할도 끝낸다. 공식 V가 없는 행은 기기 값으로 채우지 않고 사유와 함께 NA로 둔다 |
+| 유료 공급처 V | GSQ-025와 별개. 유료 공급처 자료로 만든 V는 **비공개 구역(로그인)에서만** 보인다. 공개 사이트·공개 JSON에는 싣지 않는다. 앞 지시 2번(공개 V 5구간 전환)과, 10/30 오후 권고안 승인에 들어 있던 "유료 공급처 V 5구간 공개"(`EXP-V-BUCKET`)는 이 결정으로 대체된다. 결정 대기표는 확장 문서 PR에서 함께 고친다 |
+| 남는 확인 | 약관·정책 페이지가 바뀌면 다시 확인한다. HIST 약관에는 금지 조항이 없다. 웹사이트 약관과의 관계는 해석으로 정리했고, IEX 서면 확인은 받지 않았다(소유자 판단, GSQ-024). 서면 확인을 원하면 보낼 영문 문의 초안은 소유자 보고에 둔다 |
+| 병합 | 이 기록 PR은 소유자 승인 후 병합한다 |
