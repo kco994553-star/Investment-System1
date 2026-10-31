@@ -74,3 +74,4 @@ web_app_qgv_screen_node_test.js  # new frontend P2-2a: leaderboard ports equal t
 web_app_search_part_node_test.js  # new frontend DC-23: the shared company search (Universe504 only, ticker + English name, listing-ended)
 web_app_common_base_node_test.js  # new frontend common base: IS2.companies (one company list), IS2.lab (lab-backtest-v1 validator, status texts), IS2.privateArea
 web_app_prompts_node_test.js  # new frontend feature 7: prompt pack equals the Frozen catalog, check() = old plvCheck, filter() = old list()
+web_app_lab_node_test.js  # new frontend feature 9 Lab: panel plan from IS2.lab.validate only, metrics with nullText, curve geometry, ledger table / evidence = old forward-validation reader

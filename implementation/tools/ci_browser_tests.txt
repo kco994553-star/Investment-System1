@@ -97,3 +97,4 @@ web_app_private_panel_browser_test.js  # common base: one private panel shape fo
 web_app_macro_browser_test.js  # new frontend menu 3 매크로: lights, evidence, ring concept with 준비 중 models, split first paint, click-only device quote, stored user position, two private panels, states, boundaries
 web_app_prompts_browser_test.js  # new frontend feature 7 프롬프트 라이브러리: split first paint, filters, fill and copy checks, ★ and copies kept in this browser, selected company, states, boundaries
 web_app_tree_browser_test.js  # new frontend feature 8 구조 트리: spec hierarchy, registry statuses, WAI-ARIA tree keyboard, states, reads nothing
+web_app_lab_browser_test.js  # new frontend feature 9 Lab: 9.1 public words + checklist, private panel states with lab-backtest-v1 fixtures (normal/empty/404/schema/missing/null/SYNTHETIC/MIXED/PIT/login, curve refusals), 9.2 price-free ledger, partial failure, split first paint, boundaries
