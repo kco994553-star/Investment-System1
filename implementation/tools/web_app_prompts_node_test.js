@@ -1,15 +1,17 @@
 'use strict';
-// New frontend · feature 7 프롬프트 라이브러리 (web_app/screen-prompts.js): the pure parts, against the old prompt library.
+// New frontend · feature 7 프롬프트 라이브러리 (web_app/screen-prompts-live.js, the part after the first paint; screen-prompts.js is its
+// skeleton): the pure parts, against the old prompt library.
 //  - pack(): equal to the Frozen catalog PLV1_CONTENT_V1.0 as the old research page embedded it (prompt_library/ui.py
 //    catalog_payload; bodies verbatim; the field guide in Korean, one entry per variable); library() accepts it (70 prompts, 6
 //    Starter, 10 Bundle) and refuses a broken copy as a whole (PROMPT_PACK_INVALID).
 //  - check() = ui.py plvCheck (the old page's browser checker, run here from ui.JS) on every prompt: empty, filled, optional blank,
 //    braces, bad / future dates, prior_cutoff, mode, positive integer, unknown and whitespace values; reasonKey covers every reason.
 //  - filter() = the old list() rule (domain / role / scope / Starter / Bundle order / keyword over id, code, title, purpose,
-//    keywords, aliases, tags), plus this screen's RAM-copy filter.
+//    keywords, aliases, tags), plus the old page's two views (research-bridge.js pl-view): copies (saved or being edited) and
+//    ★ favorites.
 //  - findPrivate (e-mail, phone, secret words, sheet links and long ids, amounts, account-like numbers, holding words; dates and
 //    plain analysis text pass), resolveCompany / importState / fillCompany (research-bridge.js and app.js rules), todayKST.
-// `node web_app_prompts_node_test.js --print` prints pack() for screen-prompts.js from the Python catalog (regeneration).
+// `node web_app_prompts_node_test.js --print` prints pack() for screen-prompts-live.js from the Python catalog (regeneration).
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const vm = require('node:vm');
@@ -19,7 +21,7 @@ const R = require('./web_app_reuse');
 
 const PY_ENV = { ...process.env, PYTHONPATH: path.join(R.ROOT, 'implementation/src') };
 const py = (code) => execFileSync('python3', ['-c', code], { env: PY_ENV, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
-// The projection screen-prompts.js embeds: catalog_payload with the Korean field guide once per variable.
+// The projection screen-prompts-live.js embeds: catalog_payload with the Korean field guide once per variable.
 const PROJECT = `
 import json
 from investment_system.prompt_library.ui import catalog_payload, JS
@@ -44,7 +46,7 @@ if (process.argv.includes('--print')) {
   process.exit(0);
 }
 
-const M = require(R.newPath('screen-prompts.js'));
+const M = require(R.newPath('screen-prompts-live.js'));
 const LIB = M.library();
 const NOW = '2026-10-14T03:00:00Z';
 // The old page's browser checker, run from the generated page script (ui.py JS) as the page ran it.
@@ -57,7 +59,7 @@ const plain = (x) => JSON.parse(JSON.stringify(x));
 const pick = (r) => ({ text: r.text, missing: [...r.missing], invalid: [...r.invalid], unknown: [...r.unknown], ready: r.ready });
 
 test('pack() is the Frozen catalog as the old page embedded it; library() accepts it', () => {
-  assert.deepStrictEqual(plain(M.pack()), PY.pack, 'screen-prompts.js pack() = catalog_payload (regenerate with --print)');
+  assert.deepStrictEqual(plain(M.pack()), PY.pack, 'screen-prompts-live.js pack() = catalog_payload (regenerate with --print)');
   assert.equal(LIB.ok, true);
   assert.equal(LIB.prompts.length, 70);
   assert.equal(LIB.meta.content_version, 'PLV1_CONTENT_V1.0');
@@ -148,6 +150,12 @@ test('filter() = the old list() rule', () => {
   assert.deepEqual(ids(M.filter(LIB, { domain: 'MACRO', role: 'BLIND-SPOT', scope: 'MARKET' })), all.filter((p) => p.domain === 'MACRO' && p.role === 'BLIND-SPOT' && p.scopes.includes('MARKET')).map((p) => p.prompt_id));
   assert.deepEqual(ids(M.filter(LIB, { mine: true, drafts: {} })), []);
   assert.deepEqual(ids(M.filter(LIB, { mine: true, drafts: { 'plv1.fund.030': 'x' } })), ['plv1.fund.030']);
+  // ★ view (research-bridge.js 즐겨찾기만): catalog order kept, unknown ids never listed, combined with the other filters.
+  assert.deepEqual(ids(M.filter(LIB, { fav: true, favs: [] })), []);
+  assert.deepEqual(ids(M.filter(LIB, { fav: true })), [], 'no favorites list: nothing');
+  assert.deepEqual(ids(M.filter(LIB, { fav: true, favs: ['plv1.macro.001', 'plv1.fund.030', 'plv1.none.999'] })), all.filter((p) => ['plv1.fund.030', 'plv1.macro.001'].includes(p.prompt_id)).map((p) => p.prompt_id));
+  assert.deepEqual(ids(M.filter(LIB, { fav: true, favs: ['plv1.macro.001', 'plv1.fund.030'], domain: 'MACRO' })), ['plv1.macro.001']);
+  assert.deepEqual(ids(M.filter(LIB, { fav: false, favs: ['plv1.fund.030'] })), all.map((p) => p.prompt_id), 'fav off: every prompt');
 });
 
 test('findPrivate: private-looking text asks for a look; dates, names and analysis text pass', () => {

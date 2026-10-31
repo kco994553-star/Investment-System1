@@ -1,6 +1,9 @@
 'use strict';
-// New frontend · feature 7 프롬프트 라이브러리 (#/prompts, web_app/screen-prompts.js; boards v52 Prompt · MPrompt · add/PromptUse) in
-// Chromium at 1440 and 390, on the development site (tools/web_app_test_site.js) with a synthetic company-names-ko.json.
+// New frontend · feature 7 프롬프트 라이브러리 (#/prompts, web_app/screen-prompts.js skeleton + screen-prompts-live.js; boards v52
+// Prompt · MPrompt · add/PromptUse) in Chromium at 1440 and 390, on the development site (tools/web_app_test_site.js) with a
+// synthetic company-names-ko.json.
+//  - First paint (split): with screen-prompts-live.js held back the skeleton shows the head and sections 6-1 · 6-2, each with a
+//    role=status 불러오는 중 line and no card; after the release the library.
 //  - Open: sections 6-1 · 6-2 (the shell's menu order), the PLV1 version line, 표시 70 / 전체 70, the first 12 cards (6 on a phone)
 //    in catalog order with the Frozen titles, the three idle blocks; nothing read but page files (no selection: no data file).
 //  - 7.1.1: domain / role chips by Space and Enter (aria-pressed), scope, Starter, Bundle in its own order, keyword, 내 사본 있는
@@ -11,27 +14,36 @@
 //    puts exactly that text on the clipboard with a status line (cleared when the text changes); a future date, braces and a cleared required field show the old
 //    error words and turn copy off; private-looking text (an e-mail) opens 복사 전에 확인 (tick by Space, copy by Enter; Escape
 //    cancels and returns the focus); a refused clipboard selects the text in a read-only box.
-//  - 7.1.4: favorites and saving are off (준비 중); a RAM copy starts from the official text, differs after typing, fills and copies
-//    the edited text, flags added private lines, rejects an undeclared variable, shows 내 사본 있음 in the list, and 기본값으로
-//    되돌리기 asks first (cancel, then delete).
+//  - 7.1.4 (kept in this browser, the old prompt page's keys through IS2.store): ★ by a real click only (a synthetic click stores
+//    nothing), aria-pressed, the ★ pill and the ★ 즐겨찾기만 filter (= filter() with the stored list); a copy starts from the
+//    official text, differs after typing, fills and copies the edited text, flags added private lines, rejects an undeclared
+//    variable, shows 내 사본 있음 in the list, and 기본값으로 되돌리기 asks first (cancel, then delete); 저장 · 이 브라우저 by a real
+//    click only; the ★ and the saved copy survive a reload (the saved copy is the value shown: this browser's value, else the
+//    official text); deleting the saved copy and turning ★ off write the store; only those two keys are ever in localStorage.
 //  - 7.1.5: #/prompts/<id>/qgv opens that prompt with a link back to 1. QGV; an unknown id says so and keeps the list; the input_mode
 //    radios work by keyboard; the system-input field links its menu; the 6.2 table and the sample link.
 //  - Selected company: IS2.selection NYSE:SYN → exactly one read of company-names-ko.json; 선택 기업 가져오기 (Enter) fills the empty
 //    company fields with the public English name and ticker; NAME_UNAVAILABLE / UNRESOLVED / NOT_APPLICABLE; no further reads.
+//  - 6.2 personalization order: this browser's saved value → the developer default (two steps, no 로그인 / 계정 words in 6.2 or
+//    7.1.4: personal data stays on this device, DC-22).
 //  - Keyboard: a Tab walk through main reaches every enabled control (one stop per radio group) and each shows a focus outline.
 //  - States in their own pages: loading (company-names-ko.json held: 확인 중, button off, then 가져오기 가능), partial failure (the
 //    names file unpublished: FAILED while the library and copy work), loader failure (engines.js 404: the shell notice, the library
-//    works, the import says FAILED), a broken prompt pack (served screen-prompts.js with one bad domain: the error card with the
-//    alarm character, both sections, no card, no page error).
+//    works, the import says FAILED, ★ and 저장 off with their reason), the logic file missing (screen-prompts-live.js 404: the
+//    screen's error card with the alarm character, both sections, no card), a broken prompt pack (served screen-prompts-live.js
+//    with one bad domain: the error card with the alarm character, both sections, no card, no page error).
 //  - Always: no request leaves the origin, no CSP violation, no console error but the provoked 404s, no [style], no horizontal
-//    overflow at 390, nothing in localStorage / sessionStorage / IndexedDB, no draft example words.
+//    overflow at 390, nothing in localStorage / sessionStorage / IndexedDB but the two prompt keys a real click wrote, no draft
+//    example words.
 // Synthetic names only; no price is requested or shown.
 const { chromium } = require('playwright');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const R = require('./web_app_reuse');
 const site = require('./web_app_test_site');
-const M = require(R.newPath('screen-prompts.js'));
+const M = require(R.newPath('screen-prompts-live.js'));
+// The old prompt page's two keys (research-bridge.js PL_FAV_KEY / PL_COPY_KEY; IS2.store.KEYS.PROMPT_FAVORITES / PROMPT_COPIES).
+const FAV_KEY = 'investment.web.v1.prompt-favorites', COPY_KEY = 'investment.web.v1.prompt-personal-copies';
 
 const LIB = M.library();
 const NOW = '2026-10-14T03:00:00.000Z', TODAY = '2026-10-14';
@@ -62,16 +74,18 @@ let phase = 'START';
       for (const t of await page.locator('[data-pending]').allTextContents()) assert.doesNotMatch(t, /\d/, phase + ': pending block has no number');
       assert.doesNotMatch(await page.locator('main').innerText(), DRAFT, phase + ': no draft example value');
     };
-    const boundaries = async () => {
+    const boundaries = async (stored = []) => {
       assert.deepEqual(seen.outside, [], phase + ': no request leaves the origin');
       assert.deepEqual(seen.errors, [], phase + ': no console error');
       assert.equal(await page.evaluate(() => window.__csp), 0, phase + ': no CSP violation');
       const st = await site.storage(page);
-      assert.deepEqual([st.local, st.session, st.idb], [0, 0, 0], phase + ': nothing stored');
+      assert.deepEqual([Object.keys(st.localItems).sort(), st.session, st.idb], [[...stored].sort(), 0, 0], phase + ': nothing stored but the keys a click wrote');
     };
     return { context, page, seen, go, common, boundaries };
   }
   const settle = (page) => page.waitForTimeout(150);
+  const filledIn = (page) => page.locator('[data-prompt-screen]:not([data-screen-state=loading])').waitFor();
+  const stored = (page, key) => page.evaluate((k) => JSON.parse(localStorage.getItem(k)), key);
   const text = (page, sel) => page.locator(sel).first().innerText();
   const clipboard = (page) => page.evaluate(() => navigator.clipboard.readText());
   const active = (page) => page.evaluate(() => { const a = document.activeElement; return a ? { id: a.id, data: { ...a.dataset }, tag: a.tagName } : null; });
@@ -109,10 +123,21 @@ let phase = 'START';
       const { context, page, go, common, boundaries } = await open(width, height);
 
       // ---------------------------------------------------------------- open
-      tag('open');
+      tag('first paint');
       const at0 = s.requests.length;
-      await page.goto(s.base + '#/prompts'); await page.locator('[data-prompt-screen]').waitFor();
+      let release; const gate = new Promise((r) => { release = r; });
+      await page.route('**/screen-prompts-live.js', async (route) => { await gate; await route.continue(); });
+      await page.goto(s.base + '#/prompts', { waitUntil: 'domcontentloaded' }); await page.locator('[data-prompt-screen]').waitFor();
+      assert.equal(await page.locator('[data-prompt-screen]').getAttribute('data-screen-state'), 'loading');
+      assert.deepEqual(await page.locator('[data-section]').evaluateAll((n) => n.map((x) => x.dataset.section)), ['6-1', '6-2'], 'the skeleton draws both sections');
+      assert.deepEqual(await page.locator('[data-prompt-slot] [data-state=loading][role=status]').allTextContents(), ['불러오는 중', '불러오는 중'], 'a loading line in each section');
+      assert.equal(await page.locator('[data-prompt-card]').count(), 0, 'no card before the logic file');
+      release();// the route stays: with the gate open it lets every later load through at once
+      tag('open');
       assert.equal(await page.evaluate(() => window.IS2.ready.then(() => window.IS2.loadState())), 'READY');
+      await filledIn(page);
+      assert.equal(await page.locator('[data-prompt-screen]').getAttribute('data-screen-state'), 'ready');
+      assert.equal(await page.locator('[data-prompt-slot] [data-state=loading]').count(), 0);
       await settle(page);
       assert.deepEqual(reads(at0), [], 'opening #/prompts reads no data file');
       assert.deepEqual(await page.locator('[data-section]').evaluateAll((n) => n.map((x) => x.dataset.section)), ['6-1', '6-2']);
@@ -125,7 +150,7 @@ let phase = 'START';
       assert.deepEqual(await page.locator('[data-prompt-card] .card-title').allTextContents(), first.map((p) => p.title), 'Frozen titles');
       assert.equal(await page.locator('[data-prompt-idle]').count(), 3, 'fill / copy / mine wait for a prompt');
       assert.deepEqual(await page.locator('[data-prompt-absent-domain]').allTextContents(), ['뉴스', '포트폴리오', '연구']);
-      assert.equal(await page.locator('[data-prompt-fav-only]').isDisabled(), true);
+      assert.deepEqual([await page.locator('[data-prompt-fav-only]').isDisabled(), await page.locator('[data-prompt-fav-only]').getAttribute('aria-pressed')], [false, 'false'], '★ 즐겨찾기만 is a filter now');
       assert.match(await text(page, '[data-prompt-more]'), new RegExp('남은 ' + (70 - per) + '개'));
       await common();
 
@@ -134,7 +159,7 @@ let phase = 'START';
       const cards = () => page.locator('[data-prompt-card]').evaluateAll((n) => n.map((x) => x.dataset.promptCard));
       const expectList = async (f, why) => {
         const want = M.filter(LIB, f);
-        assert.equal(await text(page, '[data-prompt-count]'), '표시 ' + want.length + ' / 전체 70' + (f.mine ? ' · 내 사본 있는 것만' : ''), why);
+        assert.equal(await text(page, '[data-prompt-count]'), '표시 ' + want.length + ' / 전체 70' + (f.fav ? ' · ★ 즐겨찾기만' : '') + (f.mine ? ' · 내 사본 있는 것만' : ''), why);
         assert.deepEqual(await cards(), ids(want.slice(0, per)), why);
       };
       await page.locator('[data-prompt-domain="MACRO"]').focus(); await page.keyboard.press('Space');
@@ -261,16 +286,32 @@ let phase = 'START';
       await page.evaluate(() => { delete navigator.clipboard.writeText; });
 
       // ---------------------------------------------------------------- 7.1.4 내 사본 (RAM only)
+      tag('favorite');
+      const fav = page.locator('[data-prompt-favorite="plv1.fund.030"]');
+      assert.deepEqual([await fav.isDisabled(), await fav.getAttribute('aria-pressed'), await fav.textContent()], [false, 'false', '☆ 즐겨찾기']);
+      assert.match(await text(page, '[data-prompt-store-note]'), /이 브라우저에만 저장됩니다[\s\S]*기기 백업 파일에는 아직 들어가지 않음[\s\S]*새로고침하면 사라집니다/);
+      // A synthetic click (script) is no user action: the gate refuses, nothing is stored.
+      await page.evaluate(() => document.querySelector('[data-prompt-favorite]').click());
+      assert.equal(await text(page, '[data-prompt-favorite-status]'), '저장하지 않음 · 버튼을 직접 눌러야 저장합니다.');
+      assert.equal(await fav.getAttribute('aria-pressed'), 'false'); assert.equal(await stored(page, FAV_KEY), null, 'nothing stored without a real click');
+      await fav.focus(); await page.keyboard.press('Enter');
+      assert.deepEqual([await fav.getAttribute('aria-pressed'), await fav.textContent()], ['true', '★ 즐겨찾기'], 'a real click turns ★ on');
+      assert.deepEqual(await stored(page, FAV_KEY), ['plv1.fund.030'], 'kept in this browser under the old key');
+      assert.equal(await text(page, '[data-prompt-favorite-status]'), '이 브라우저의 즐겨찾기에 넣었습니다.');
+      assert.deepEqual(await page.locator('[data-prompt-card="plv1.fund.030"] .pill').allTextContents().then((t) => t.filter((x) => x === '★ 즐겨찾기')), ['★ 즐겨찾기'], 'the ★ pill in the list');
+      await page.locator('[data-prompt-kw]').fill('');
+      await page.locator('[data-prompt-fav-only]').click();
+      await expectList({ fav: true, favs: ['plv1.fund.030'] }, '★ 즐겨찾기만');
+      assert.match(await text(page, '[data-prompt-count]'), / · ★ 즐겨찾기만$/);
+      await page.locator('[data-prompt-fav-only]').click();
+      await page.locator('[data-prompt-kw]').fill('plv1.fund.030');
       tag('draft');
-      assert.equal(await page.locator('[data-prompt-favorite]').isDisabled(), true);
-      assert.match(await text(page, '[data-prompt-favorite]'), /준비 중/);
-      assert.match(await text(page, '[data-prompt-store-note]'), /준비 중[\s\S]*새로고침하면 사라집니다/);
       await page.locator('[data-prompt-draft-make]').click();
       const area = page.locator('[data-prompt-draft]');
       assert.equal(await area.inputValue(), fund.body);
       assert.equal((await active(page)).data.promptDraft, '', 'the focus moves to the copy text');
-      assert.match(await text(page, '[data-prompt-draft-meta]'), /^공식 원문과 같음/);
-      assert.equal(await page.locator('[data-prompt-draft-save]').isDisabled(), true);
+      assert.match(await text(page, '[data-prompt-draft-meta]'), /^공식 원문과 같음 · 저장 안 됨/);
+      assert.equal(await page.locator('[data-prompt-draft-save]').isDisabled(), false, '저장 · 이 브라우저 is on');
       await page.keyboard.press('Control+End'); await page.keyboard.type('\n마지막에 반대 근거 세 가지를 적어라.');
       assert.match(await text(page, '[data-prompt-draft-meta]'), /^공식 원문과 다름 · 저장 안 됨/);
       await page.locator('[data-prompt-draft-copy]').click();
@@ -302,6 +343,7 @@ let phase = 'START';
       assert.equal(await page.locator('[data-prompt-draft]').count(), 0);
       assert.equal((await active(page)).data.promptDraftMake, '', 'the focus goes to 공식 원문으로 만들기');
       assert.equal(await text(page, '[data-prompt-draft-status]'), '내 사본을 지웠습니다.');
+      assert.equal(await stored(page, COPY_KEY), null, 'an unsaved copy was never stored');
 
       // ---------------------------------------------------------------- 7.1.5 deep link
       tag('deep link');
@@ -355,8 +397,10 @@ let phase = 'START';
       tag('6.2');
       assert.equal(await page.locator('[data-prompt-links] tbody tr').count(), 6);
       assert.deepEqual(await page.locator('[data-prompt-links] tbody .chip:not(.wait)').allTextContents(), ['연결됨']);
-      assert.equal(await page.locator('[data-prompt-block="personal"] .grid-3 > .card').count(), 3);
-      assert.match(await text(page, '[data-prompt-personal-now]'), /계정 동기화는 구현되지 않았습니다/);
+      assert.deepEqual(await page.locator('[data-prompt-block="personal"] .grid-2 > .card .card-title').allTextContents(), ['① 이 기기(브라우저)에 저장된 값', '② 저장된 값이 없으면 개발자 기본값'],
+        'this browser\'s saved value, then the developer default');
+      assert.match(await text(page, '[data-prompt-personal-now]'), /이 브라우저에 저장한 내 사본이 있으면 그것을, 없으면 개발자 기본값/);
+      for (const sel of ['[data-prompt-block="personal"]', '[data-prompt-block="mine"]', '[data-prompt-band]']) assert.doesNotMatch(await text(page, sel), /로그인|계정/, sel + ': no login / account words for personal data');
       await page.locator('[data-prompt-sample]').click();
       await page.locator('[data-prompt-fill="' + LIB.starters[0] + '"]').waitFor();
       assert.equal(await page.evaluate(() => location.hash), '#/prompts/' + LIB.starters[0] + '/qgv');
@@ -369,9 +413,41 @@ let phase = 'START';
           assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), phase + ': no horizontal overflow');
         }
       }
+      // ---------------------------------------------------------------- kept in this browser: a saved copy and ★ survive a reload
+      tag('kept in this browser');
+      await page.evaluate(() => window.IS2.selection.set(null));
+      await go('#/prompts/plv1.fund.030', '[data-prompt-fill="plv1.fund.030"]');
+      await page.locator('[data-prompt-draft-make]').click();
+      await page.locator('[data-prompt-draft]').focus(); await page.keyboard.press('Control+End'); await page.keyboard.type('\n저장할 내 문장.');
+      const mineBody = fund.body + '\n저장할 내 문장.';
+      await page.evaluate(() => document.querySelector('[data-prompt-draft-save]').click());
+      assert.equal(await text(page, '[data-prompt-draft-status]'), '버튼을 직접 눌러야 저장합니다.'); assert.equal(await stored(page, COPY_KEY), null, 'a synthetic click saves nothing');
+      await page.locator('[data-prompt-draft-save]').focus(); await page.keyboard.press('Enter');
+      const saved = await stored(page, COPY_KEY);
+      assert.deepEqual(Object.keys(saved), ['plv1.fund.030']); assert.equal(saved['plv1.fund.030'].body, mineBody); assert.equal(saved['plv1.fund.030'].content_version, 'PLV1_CONTENT_V1.0');
+      assert.equal(await text(page, '[data-prompt-draft-status]'), '이 브라우저에 내 사본을 저장했습니다.');
+      assert.match(await text(page, '[data-prompt-draft-meta]'), /^공식 원문과 다름 · 이 브라우저에 저장됨 · 기준 원문 PLV1_CONTENT_V1\.0 · 저장 /);
+      const atR = s.requests.length;
+      await page.reload(); await filledIn(page); await page.locator('[data-prompt-fill="plv1.fund.030"]').waitFor();
+      assert.equal(await page.locator('[data-prompt-draft]').inputValue(), mineBody, 'the saved copy is the value shown after a reload');
+      assert.match(await text(page, '[data-prompt-draft-meta]'), /이 브라우저에 저장됨/);
+      assert.equal(await page.locator('[data-prompt-favorite="plv1.fund.030"]').getAttribute('aria-pressed'), 'true', '★ survives a reload');
+      await page.locator('[data-prompt-kw]').fill('plv1.fund.030');
+      assert.equal(await page.locator('[data-prompt-card="plv1.fund.030"] .pill.mine').count(), 1, '내 사본 있음 after a reload');
+      await page.locator('[data-prompt-mine-only]').click();
+      await expectList({ kw: 'plv1.fund.030', mine: true, drafts: { 'plv1.fund.030': 1 } }, 'the saved copy counts as a copy');
+      await page.locator('[data-prompt-mine-only]').click();
+      assert.deepEqual(reads(atR), [], 'a reload of #/prompts reads no data file');
+      await common();
+      await page.locator('[data-prompt-draft-reset]').click(); await page.locator('[data-prompt-draft-reset-confirm]').click();
+      assert.deepEqual(await stored(page, COPY_KEY), {}, 'the confirm click deletes this browser\'s copy');
+      assert.equal(await page.locator('[data-prompt-draft-make]').count(), 1);
+      await page.locator('[data-prompt-favorite="plv1.fund.030"]').click();
+      assert.deepEqual(await stored(page, FAV_KEY), [], 'a second click turns ★ off');
+      assert.equal(await page.locator('[data-prompt-favorite="plv1.fund.030"]').getAttribute('aria-pressed'), 'false');
       phase = width + ' boundaries';
       assert.deepEqual(reads(at0), [NAMES], 'the whole run read one data file');
-      await boundaries();
+      await boundaries([FAV_KEY, COPY_KEY]);
       await context.close();
     }
 
@@ -423,15 +499,38 @@ let phase = 'START';
       assert.equal(await page.locator('[data-prompt-card]').count() > 0, true, 'the library does not need the layer');
       await page.locator('#pv-company').fill('Synthetic Co'); await page.locator('#pv-ticker').fill('SYN'); await page.locator('#pv-as_of').fill('2026-10-01');
       await page.locator('[data-check-state="READY"]').waitFor();
+      assert.equal(await page.locator('[data-prompt-favorite]').isDisabled(), true, '★ off without the store');
+      assert.match(await text(page, '[data-prompt-store-state="NOT_READY"]'), /저장 경로를 불러오지 못해 ★와 저장이 꺼져 있습니다/);
+      await page.locator('[data-prompt-draft-make]').click();
+      assert.equal(await page.locator('[data-prompt-draft-save]').isDisabled(), true, '저장 off without the store');
+      await common();
+      await boundaries();
+      await context.close();
+    }
+    {
+      phase = 'logic file missing';
+      const { context, page, common, boundaries } = await open(390, 844, ['screen-prompts-live.js']);
+      await page.route('**/screen-prompts-live.js', (route) => route.fulfill({ status: 404, body: '' }));
+      const at = s.requests.length;
+      await page.goto(s.base + '#/prompts/plv1.fund.030'); await page.locator('[data-prompt-error="LOADER_FAILED"]').waitFor();
+      assert.equal(await page.evaluate(() => window.IS2.ready.then(() => 'READY', (e) => e.message)), 'LOADER_FAILED screen-prompts-live.js');
+      assert.equal(await page.locator('[data-prompt-screen]').getAttribute('data-screen-state'), 'error');
+      assert.equal(await page.locator('[data-prompt-error="LOADER_FAILED"]').getAttribute('role'), 'alert');
+      assert.equal(await page.locator('[data-prompt-error] [data-mascot="alarm"]').count(), 1);
+      assert.deepEqual(await page.locator('[data-section]').evaluateAll((n) => n.map((x) => x.dataset.section)), ['6-1', '6-2']);
+      assert.deepEqual([await page.locator('[data-prompt-card]').count(), await page.locator('[data-state=loading]').count()], [0, 0]);
+      await page.locator('[data-load-failed]').waitFor();
+      await settle(page);
+      assert.deepEqual(reads(at), [], 'no data read');
       await common();
       await boundaries();
       await context.close();
     }
     {
       phase = 'broken pack';
-      const good = fs.readFileSync(R.newPath('screen-prompts.js'), 'utf8'), bad = good.replace('"domain":"DISCOVERY"', '"domain":"NOPE"');
+      const good = fs.readFileSync(R.newPath('screen-prompts-live.js'), 'utf8'), bad = good.replace('"domain":"DISCOVERY"', '"domain":"NOPE"');
       assert.notEqual(bad, good);
-      s.fixture('screen-prompts.js', { body: bad, type: 'text/javascript' });
+      s.fixture('screen-prompts-live.js', { body: bad, type: 'text/javascript' });
       const { context, page, common, boundaries } = await open(1440, 1000);
       const at = s.requests.length;
       await page.goto(s.base + '#/prompts/plv1.fund.030'); await page.locator('[data-prompt-error="PROMPT_PACK_INVALID"]').waitFor();
@@ -445,9 +544,9 @@ let phase = 'START';
       assert.deepEqual(reads(at), [], 'no data read');
       await common();
       await boundaries();
-      s.fixture('screen-prompts.js', null);
+      s.fixture('screen-prompts-live.js', null);
       await context.close();
     }
-    console.log('web app prompts: list, filters, fill, copy, confirm, RAM copies, deep links, selected company, keyboard, states and boundaries ok at 1440 and 390');
+    console.log('web app prompts: split first paint, list, filters, fill, copy, confirm, ★ and copies kept in this browser, deep links, selected company, personalization order, keyboard, states and boundaries ok at 1440 and 390');
   } finally { await browser.close(); await s.close(); }
 })().catch((e) => { console.error('FAILED at', phase); console.error(e); process.exitCode = 1; });

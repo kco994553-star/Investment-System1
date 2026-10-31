@@ -1,29 +1,38 @@
 'use strict';
-// New frontend · 3. 매크로 (feature 4.1–4.6, route #/macro, screen-macro.js; boards Macro · MMacro · add/MacroPhase · add/MacroMore)
-// in a real browser at 1440 and 390. Builds the development site (tools/web_app_test_site.js) and serves synthetic public files
-// (tools/web_app_macro_fixture.js), then checks in Chromium:
-//  - Loading: with a layer file held back every data block says 불러오는 중 and the not-computed sections (3.2 순환매, 3.5 나비효과,
-//    the 4.1.5 judgement state) are already there; nothing is read before the layer asks.
+// New frontend · 3. 매크로 (feature 4.1–4.6, route #/macro, screen-macro.js skeleton + screen-macro-live.js; boards Macro · MMacro ·
+// add/MacroPhase · add/MacroMore) in a real browser at 1440 and 390. Builds the development site (tools/web_app_test_site.js) and
+// serves synthetic public files (tools/web_app_macro_fixture.js), then checks in Chromium:
+//  - Loading (split first paint): with a layer file held back the skeleton's six section slots say 불러오는 중 and nothing else is
+//    drawn yet (no block, no 준비 중 section, no private panel); nothing is read before the layer asks; after the release the
+//    blocks, the static 준비 중 sections and the two private panels are drawn.
 //  - Reads: a fresh open of #/macro reads exactly the page-open core set (IS2.data.CORE without dart-financials.json, the
 //    MACRO_READS of web_app_data_layer_browser_test.js); leaving and coming back reads nothing new.
 //  - Content: the concept ring (8 cells from MacroCycleRing.MODELS, 공식 판정 미산출 · NO_MODEL_OUTPUT, no arc / point /
 //    probability), cell browsing by pointer and keys (arrows, Home, End, ◀ ▶ with wrap-around words), the cycle switch that
 //    also moves the evidence tab; the evidence lines from MacroEvidence (per-cycle family counts, newest events 5 on a phone /
 //    10 on a PC and the rest under 더 보기, the 13-row catalog with E14 held); the old MacroLights card equal to
-//    IS2.engines.macro.current() and without a price button; the 8×6 board with its NA reasons; 3.2 / 3.5 / the official regime
-//    as 준비 중 with what is missing and no percent; 3.3 industry groups from sec-qgv2.json named by the classification config;
-//    3.4 user records in RAM only (first / same / changed comparison, delete, industry ring, kept across routes, gone after a
-//    reload, nothing in localStorage / sessionStorage / IndexedDB); 3.6 tree nodes, the jump to 3.1, the public facts and the
-//    raw values (Labor 4.6 %, FX excluded).
+//    IS2.engines.macro.current() and without the old renderer's price button; the 4.1 device quote (SPY · HYG · IEF): before a
+//    click 누르기 전 and no number; a real click without a Google price-sheet sign-in gives the layer's reason words for each
+//    symbol (AUTH_REQUIRED), no number, no request, nothing stored, the lights unchanged; the 8×6 board with its NA reasons;
+//    3.2 / 3.5 / the official regime as 준비 중 with what is missing and no percent; 4.1 and 4.2 private panels
+//    (macro-market-credit, macro-sector-rs) in NOT_READY (비공개 기능 준비 중), nothing sent or stored; 3.3 industry groups from
+//    sec-qgv2.json named by the classification config; 3.4 user records kept on this device (MacroCycleRing's key and schema
+//    through IS2.store.macroEstimates): written only by a real click (a synthetic click stores nothing), first / same / changed
+//    comparison, delete, industry ring, kept across routes and after a reload, only that key in localStorage; 3.6 tree nodes,
+//    the jump to 3.1, the public facts and the raw values (Labor 4.6 %, FX excluded).
+//  - Device quote after a sign-in (Google stand-ins, synthetic sheet with sentinel decimals): one real click reads the user's
+//    price sheet once through the action gate and shows SPY · HYG · IEF as this device's quote, text inside [data-ram-price]
+//    only (assertRamOnly), no sentinel in storage, requests or the console, only the stand-ins leave the origin, the public
+//    lights unchanged; a reload shows 누르기 전 again.
 //  - Partial failure: macro-screen.json HTTP 500 (lights and raw values say 읽기 실패, the evidence and ring stay), macro-evidence.json
 //    404 (근거 파일이 아직 게시되지 않았습니다, the lights stay), sec-qgv2.json invalid (3.3 says 읽기 실패, 3.4 offers two rings).
 //  - Empty: the offline build's NOT_AVAILABLE files: 매크로 확인 불가, 아직 수집 전, no events, no group values, no public observation.
-//  - Error: data.js answering 404 (LOADER_FAILED): every data block shows the failure with the alarm mascot, the static sections
-//    stay, no uncaught error.
+//  - Error: data.js answering 404 (LOADER_FAILED), and screen-macro-live.js answering 404: every section slot shows the failure
+//    with the alarm mascot, the shell notice, nothing read, no uncaught error.
 //  - Boundaries everywhere: same-origin requests only, no console error but the intended ones, no CSP violation, no [style], no
 //    horizontal overflow at 390 (details open too), every control reachable by Tab with a visible focus ring, named buttons,
 //    no draft example value (the boards' numbers are examples only).
-// Synthetic data only; no price is requested or shown.
+// Synthetic data only; no real price is requested or shown (the sentinel decimals are made up).
 const { chromium } = require('playwright');
 const assert = require('node:assert/strict');
 const site = require('./web_app_test_site');
@@ -35,6 +44,20 @@ const UNPUBLISHED = ['sec-public-inputs.json', 'sec-qgv2.json', 'macro-evidence.
 // The boards' example numbers and words (never shown on a public screen).
 const DRAFT = /\(예상\)|강세 중반|스타벅스|브라질|커피|(?<![\d.])(?:35|50|15|40)%|3674|4512|5812|\+0\.35%p|21\.5만|20번 중|7번 \/ 20번|예시기업|반도체 \(16곳\)/;
 const FULL = { 'macro-screen.json': { json: M.macroScreen() }, 'macro-evidence.json': { json: M.evidence() }, 'sec-qgv2.json': { json: M.qgv() }, 'company-classification.json': { json: M.classification() } };
+// The one device key 3.4 writes (MacroCycleRing USER_KEY, IS2.store.KEYS.MACRO_USER_ESTIMATES).
+const MACRO_KEY = 'investment.web.v1.macro-cycle-user-estimate';
+const PANELS = [['macro-market-credit', '시장·신용 근거 계열 (KIS 일봉)', '3-1'], ['macro-sector-rs', '섹터 ETF 상대강도 (KIS, 탐색 전용)', '3-2']];
+// Google stand-ins for the device quote after a sign-in (as web_app_qgv_browser_test.js): the GIS script, the user's Universe tab
+// with three ETF rows priced with sentinel decimals (made-up values, never real prices).
+const SHEET_ID = ['synthetic', 'macro', 'quote', 'universe', 'sheet'].join('_');
+const TOKEN = ['memory', 'only', 'synthetic', 'macro', 'session'].join('-'), SCOPE = 'https://www.googleapis.com/auth/drive.file email';
+const GIS_STYLE = 'https://accounts.google.com/gsi/style', GIS_CLIENT = 'https://accounts.google.com/gsi/client', SHEETS = 'https://sheets.googleapis.com';
+const RANGE = "'Universe'!A1:C1025";
+const VALUES_URL = SHEETS + '/v4/spreadsheets/' + SHEET_ID + '/values/' + encodeURIComponent(RANGE) + '?valueRenderOption=UNFORMATTED_VALUE&dateTimeRenderOption=SERIAL_NUMBER';
+const GIS_STUB = 'window.google={accounts:{oauth2:{initTokenClient:function(cfg){return{requestAccessToken:function(){cfg.callback({'
+  + 'access_token:' + JSON.stringify(TOKEN) + ',expires_in:3600,token_type:"Bearer",scope:' + JSON.stringify(SCOPE) + '});}};},revoke:function(t,done){if(done)done({});}}}};';
+const QUOTES = { SPY: '583.0731946', HYG: '79.0731947', IEF: '93.0731948' }, SENTINELS = Object.values(QUOTES);
+const UNIVERSE_VALUES = [['code', 'marketcap', 'price'], ['NYSE:SPY', 1000001, Number(QUOTES.SPY)], ['NYSE:HYG', 1000002, Number(QUOTES.HYG)], ['NASDAQ:IEF', 1000003, Number(QUOTES.IEF)]];
 let phase = 'START', pass = 0;
 
 (async () => {
@@ -51,14 +74,14 @@ let phase = 'START', pass = 0;
   const reads = (from) => s.requests.slice(from).map((r) => r.name).filter((n) => n.endsWith('.json')).sort();
   const text = (page, sel) => page.locator(sel).first().evaluate((e) => (e instanceof HTMLElement ? e.innerText : e.textContent));// SVG text has no innerText
   const count = (page, sel) => page.locator(sel).count();
-  const drawn = (page) => page.locator('[data-block="4.6"] [data-node], [data-block="4.6"] [data-state=error]').first().waitFor();
+  const drawn = (page) => page.locator('[data-block="4.6"] [data-node], [data-block="4.6"] [data-state=error], [data-macro-slot] [data-state=error]').first().waitFor();
   let CORE = null;
   async function open(page, hash = '#/macro', opts = {}) {
     const at = s.requests.length;
     await page.goto(s.base + hash, opts); await page.locator('main[data-route=macro]').waitFor();
     return at;
   }
-  async function boundaries(page, seen, label, { errors = [] } = {}) {
+  async function boundaries(page, seen, label, { errors = [], stored = [] } = {}) {
     assert.equal(await count(page, '[style]'), 0, label + ': no style attribute');
     assert.equal(await page.evaluate(() => window.__csp), 0, label + ': no CSP violation');
     assert.deepEqual(seen.outside, [], label + ': no request leaves the origin');
@@ -67,7 +90,13 @@ let phase = 'START', pass = 0;
     const draft = (await page.locator('main').innerText()).match(DRAFT);
     assert.equal(draft && draft[0], null, label + ': no draft example value');
     const st = await site.storage(page);
-    assert.deepEqual([st.local, st.session, st.idb], [0, 0, 0], label + ': nothing stored on the device');
+    assert.deepEqual([Object.keys(st.localItems).sort(), st.session, st.idb], [[...stored].sort(), 0, 0], label + ': nothing stored on the device but the keys a click wrote');
+  }
+  // The two private panels (table 1-3): NOT_READY, the shared words, in their own sections; nothing else in a panel.
+  async function panels(page, label) {
+    const got = await page.locator('[data-private-panel]').evaluateAll((n) => n.map((x) => [x.dataset.privatePanel, x.dataset.privateState, x.querySelector('[data-private-status]').textContent,
+      x.querySelector('.card-title').textContent, x.closest('[data-section]').dataset.section, x.querySelectorAll('[data-mascot]').length, x.querySelector('.private-body').textContent]));
+    assert.deepEqual(got, PANELS.map(([id, title, sec]) => [id, 'NOT_READY', '비공개 기능 준비 중', '비공개 ' + title, sec, 0, '']), label + ': two private panels, NOT_READY');
   }
   // Every focusable control of main is reached by Tab (roving tablists: the selected tab), with a visible focus ring.
   async function keyboard(page, label) {
@@ -106,13 +135,18 @@ let phase = 'START', pass = 0;
       let release; const gate = new Promise((r) => { release = r; });
       await page.route('**/engines.js', async (route) => { await gate; await route.continue(); });
       const at = await open(page, '#/macro', { waitUntil: 'domcontentloaded' });
-      assert.equal(await count(page, '[data-block] [data-state=loading]'), 6, phase + ': six data blocks say 불러오는 중');
-      assert.match(await text(page, '[data-block="4.1.1"] [data-state=loading]'), /^불러오는 중/);
-      assert.equal(await count(page, '[data-prep]'), 2, phase + ': 3.2 and 3.5 are drawn at once as 준비 중');
-      assert.equal(await count(page, '[data-judge]'), 2, phase + ': the judgement state is drawn at once');
+      assert.deepEqual(await page.locator('[data-section]').evaluateAll((n) => n.map((x) => x.dataset.section)), ['3-1', '3-2', '3-3', '3-4', '3-5', '3-6'], phase + ': the skeleton draws the six sections');
+      assert.equal(await count(page, '[data-macro-slot] [data-state=loading][role=status]'), 6, phase + ': six section slots say 불러오는 중');
+      assert.match(await text(page, '[data-macro-slot="3-1"] [data-state=loading]'), /^불러오는 중/);
+      assert.equal(await page.locator('main h1').innerText(), '3. 매크로');
+      assert.deepEqual([await count(page, '[data-block]'), await count(page, '[data-prep]'), await count(page, '[data-judge]'), await count(page, '[data-private-panel]')], [0, 0, 0, 0], phase + ': nothing but the skeleton before the layer');
       assert.deepEqual(reads(at), [], phase + ': nothing is read before the layer');
       release();
       await drawn(page); await page.locator('[data-ring]').waitFor();
+      assert.equal(await count(page, '[data-macro-slot] [data-state=loading]'), 0, phase + ': the slots are filled');
+      assert.equal(await count(page, '[data-prep]'), 2, phase + ': 3.2 and 3.5 as 준비 중');
+      assert.equal(await count(page, '[data-judge]'), 2, phase + ': the judgement state');
+      await panels(page, phase);
       if (!CORE) CORE = await page.evaluate(() => window.IS2.data.CORE);
       const MACRO_READS = CORE.filter((n) => n !== 'dart-financials.json').sort();
       await page.evaluate(() => new Promise((r) => setTimeout(r, 150)));
@@ -175,8 +209,25 @@ let phase = 'START', pass = 0;
       assert.equal(await page.locator('[data-macro-lights-count]').getAttribute('data-macro-lights-count'), String(engine[1]));
       assert.deepEqual(await page.locator('[data-macro-light]').evaluateAll((n) => n.map((x) => [x.dataset.macroLight, x.dataset.macroLightState])),
         [['employment', 'ON'], ['inflation', 'OFF'], ['curve', 'ON'], ['market', 'NO_DATA'], ['credit', 'NO_DATA']]);
-      assert.equal(await count(page, '[data-macro-lights-load]'), 0, phase + ': no price button, no price request');
-      assert.match(await text(page, '[data-device-lights]'), /가격을 부르지 않음/);
+      assert.equal(await count(page, '[data-macro-lights-load]'), 0, phase + ': no old price button (it would bypass the gate)');
+      assert.match(await text(page, '[data-device-lights]'), /위 판정은 공개 경고등 기준 그대로 · 아래 버튼을 누를 때만 이 기기 시세를 보여 줌/);
+      // ---- 4.1 device quote: 누르기 전, then a real click without a price-sheet sign-in: the layer's words, no number, no request
+      tag('device quote');
+      const quoteRows = () => page.locator('[data-device-quote-symbol]').evaluateAll((n) => n.map((x) => [x.dataset.deviceQuoteSymbol, x.dataset.quoteState, (x.querySelector('[data-na]') || {}).dataset ? x.querySelector('[data-na]').dataset.na : null]));
+      assert.deepEqual(await quoteRows(), [['SPY', 'BEFORE', null], ['HYG', 'BEFORE', null], ['IEF', 'BEFORE', null]], phase + ': before a click');
+      assert.equal(await count(page, '[data-ram-price]'), 0, phase + ': no price before a click');
+      const lightsBefore = await page.locator('[data-macro-light]').evaluateAll((n) => n.map((x) => [x.dataset.macroLight, x.dataset.macroLightState, x.textContent]));
+      const atQ = s.requests.length, outQ = seen.outside.length;
+      await page.locator('[data-device-quote-load]').focus(); await page.keyboard.press('Enter');
+      await page.locator('[data-device-quote-symbol=SPY][data-quote-state=NA]').waitFor();
+      const auth = '시트 연결 필요 · 구글 가격 시트';
+      assert.deepEqual(await quoteRows(), ['SPY', 'HYG', 'IEF'].map((t) => [t, 'NA', 'AUTH_REQUIRED']), phase + ': not signed in → the reason for each symbol');
+      assert.equal(await text(page, '[data-device-quote-status]'), auth, phase + ': the sheet-connection words (not the private login), never a code alone');
+      assert.match(await text(page, '[data-device-quote-symbol=HYG]'), new RegExp('^HYG · — · ' + auth));
+      assert.doesNotMatch(await text(page, '[data-device-quote]'), /\d+\.\d+ USD/, phase + ': no number');
+      assert.equal(await count(page, '[data-ram-price]'), 0);
+      assert.deepEqual(await page.locator('[data-macro-light]').evaluateAll((n) => n.map((x) => [x.dataset.macroLight, x.dataset.macroLightState, x.textContent])), lightsBefore, phase + ': the public lights unchanged');
+      assert.deepEqual([s.requests.slice(atQ).map((r) => r.name), seen.outside.slice(outQ)], [[], []], phase + ': the click requested nothing');
       await page.locator('[data-board] > summary').click();
       assert.equal(await count(page, '[data-board] td'), 48);
       assert.deepEqual([...new Set(await page.locator('[data-board] tr[data-axis=FX] td').evaluateAll((n) => n.map((x) => x.dataset.na)))], ['PUBLIC_FX_EXCLUDED']);
@@ -202,18 +253,25 @@ let phase = 'START', pass = 0;
       assert.equal(await page.evaluate(() => document.activeElement.matches('[data-group]')), true, phase + ': the focus stays on the select');
       assert.match(await text(page, '[data-industry-card]'), /미산출 · 산업 사이클 모델 없음/);
       assert.equal(await count(page, '[data-industry-card] dd[data-na=NOT_IMPLEMENTED]'), 3);
-      // ---- 3.4 my position (RAM only)
+      // ---- 3.4 my position (kept on this device: IS2.store.macroEstimates, written only by a real click)
       tag('mine');
       assert.deepEqual(await page.locator('[data-mine-ring] option').evaluateAll((n) => n.map((o) => o.value)), ['economy', 'market', 'industry:' + G[0].id]);
       assert.equal(await count(page, '[data-mine-empty]'), 1);
+      assert.match(await text(page, '[data-mine-scope]'), /이 기기에만 저장 · 기기 백업 \/5/);
       await page.locator('[data-mine-from]').selectOption('1'); await page.locator('[data-mine-to]').selectOption('2');
       await page.locator('[data-mine-note]').focus(); await page.keyboard.type('제조 주문 회복');
       assert.equal(await text(page, '[data-note-count]'), '8 / 200');
+      // A synthetic click (script) is no user action: the gate refuses the write, nothing is stored.
+      await page.evaluate(() => document.querySelector('[data-mine-record]').click());
+      assert.equal(await text(page, '[data-mine-status]'), '기록하지 않음 · 버튼을 직접 눌러야 저장합니다');
+      assert.equal(await count(page, '[data-mine-entry]'), 0); assert.equal(await page.evaluate((k) => localStorage.getItem(k), MACRO_KEY), null, phase + ': nothing stored without a real click');
       await page.locator('[data-mine-record]').focus(); await page.keyboard.press('Enter');
       assert.equal(await count(page, '[data-mine-entry]'), 1);
       const first = await text(page, '[data-mine-entry]');
       assert.match(first, /경기 · 회복 후반 ~ 확장 초입/); assert.match(first, /근거: 제조 주문 회복 · 그때 시스템 표시: 미산출 · 이전 내 기록과: 첫 기록/);
-      assert.match(await text(page, '[data-mine-status]'), /이 화면에 기록했습니다 · 경기 회복 후반 ~ 확장 초입 · 기기에는 저장하지 않음/);
+      assert.equal(await text(page, '[data-mine-status]'), '이 기기에 저장했습니다 · 경기 회복 후반 ~ 확장 초입');
+      const kept = await page.evaluate((k) => JSON.parse(localStorage.getItem(k)), MACRO_KEY);
+      assert.equal(kept.schema, 'macro-cycle-user-estimate/2'); assert.deepEqual(kept.rings.economy.map((x) => [x.seq, x.from, x.to, x.note, x.system.text]), [[1, { phase: '회복', part: '후반' }, { phase: '확장', part: '초입' }, '제조 주문 회복', '미산출']], phase + ': MacroCycleRing\'s key and schema');
       assert.equal(await page.evaluate(() => document.activeElement.matches('[data-mine-record]')), true);
       assert.equal(await page.locator('[data-user-arc]').getAttribute('data-user-arc'), '회복 후반 ~ 확장 초입', phase + ': the ring draws the latest user estimate');
       assert.match(await page.locator('svg[data-ring]').getAttribute('aria-label'), /내 추정 회복 후반 ~ 확장 초입 \(공식 판정 아님\)/);
@@ -228,8 +286,9 @@ let phase = 'START', pass = 0;
       await page.locator('[data-mine-ring]').selectOption('industry:' + G[0].id);
       assert.deepEqual(await page.locator('[data-mine-from] option').allTextContents(), ['회복', '확장', '둔화', '수축'].flatMap((p) => [p + ' 초입', p + ' 후반']));
       await page.locator('[data-mine-record]').focus(); await page.keyboard.press('Enter');
-      assert.match(await text(page, '[data-mine-entry]'), new RegExp('업종 그룹 · ' + G[0].name + ' · 회복 초입'));
+      assert.match(await text(page, '[data-mine-entry^="industry:"]'), new RegExp('업종 그룹 · ' + G[0].name + ' · 회복 초입'));
       assert.equal(await count(page, '[data-mine-entry]'), 3);
+      assert.deepEqual(Object.keys(await page.evaluate((k) => JSON.parse(localStorage.getItem(k)).rings, MACRO_KEY)).sort(), ['economy', 'industry:' + G[0].id].sort());
       // ---- 3.6 tree
       tag('tree');
       assert.equal(await count(page, '[data-node]'), 5);
@@ -248,20 +307,27 @@ let phase = 'START', pass = 0;
       tag('keyboard');
       await keyboard(page, phase);
       await page.evaluate(() => document.querySelectorAll('main details').forEach((d) => { d.open = true; }));
-      await boundaries(page, seen, phase + ' (details open)');
-      // ---- route change keeps the RAM records and reads nothing; a reload drops them
+      await boundaries(page, seen, phase + ' (details open)', { stored: [MACRO_KEY] });
+      // ---- route change and reload keep the device records; a route change reads nothing
       tag('route change');
       const at2 = s.requests.length;
       await page.evaluate(() => { location.hash = '#/tree'; }); await page.locator('main[data-route=tree]').waitFor();
       await page.evaluate(() => { location.hash = '#/macro'; }); await drawn(page);
-      assert.equal(await count(page, '[data-mine-entry]'), 3, phase + ': RAM records are kept across routes of one page load');
+      assert.equal(await count(page, '[data-mine-entry]'), 3, phase + ': device records are kept across routes');
       assert.equal(await text(page, '[data-center]'), '확장 초입', phase + ': the viewed cell is kept');
       await page.evaluate(() => new Promise((r) => setTimeout(r, 150)));
       assert.deepEqual(reads(at2), [], phase + ': a route change reads nothing new');
-      const at3 = s.requests.length; await page.reload(); await drawn(page);
-      assert.equal(await count(page, '[data-mine-empty]'), 1, phase + ': a reload drops the RAM records');
+      const at3 = s.requests.length; await page.reload(); await drawn(page); await page.locator('[data-mine-entry]').first().waitFor();
+      assert.equal(await count(page, '[data-mine-entry]'), 3, phase + ': the records survive a reload (this device)');
+      assert.equal(await count(page, '[data-mine-empty]'), 0);
+      assert.equal(await page.locator('[data-user-arc]').getAttribute('data-user-arc'), '회복 후반 ~ 확장 초입', phase + ': the ring draws the latest stored economy estimate after a reload');
+      assert.deepEqual(await quoteRows(), [['SPY', 'BEFORE', null], ['HYG', 'BEFORE', null], ['IEF', 'BEFORE', null]], phase + ': no quote after a reload');
       assert.deepEqual(reads(at3), MACRO_READS, phase + ': a reload reads the same set once');
-      await boundaries(page, seen, phase + ' (after reload)');
+      await panels(page, phase + ' (after reload)');
+      await boundaries(page, seen, phase + ' (after reload)', { stored: [MACRO_KEY] });
+      await page.locator('[data-mine-delete]').first().focus(); await page.keyboard.press('Enter');
+      assert.equal(await count(page, '[data-mine-entry]'), 2, phase + ': a delete click removes one stored record');
+      assert.equal(Object.values(await page.evaluate((k) => JSON.parse(localStorage.getItem(k)).rings, MACRO_KEY)).flat().length, 2);
       await ctx.close(); pass++;
     }
     // ================================================================ partial failure (one file each time; the others stay)
@@ -336,16 +402,88 @@ let phase = 'START', pass = 0;
       const { ctx, page, seen } = await context(390, { allow404: [...UNPUBLISHED, 'data.js'] });
       await page.route('**/data.js', (r) => r.fulfill({ status: 404, contentType: 'text/plain', body: 'not found' }));
       const at = await open(page); await drawn(page);
-      assert.equal(await count(page, '[data-block] [data-state=error][data-na=LOADER_FAILED]'), 6, phase + ': every data block shows the failure');
-      assert.equal(await count(page, '[data-block] [data-mascot=alarm]'), 6);
-      assert.match(await text(page, '[data-block="4.1.1"] [data-state=error]'), /층을 불러오지 못해 매크로 자료를 그리지 못했습니다/);
-      assert.equal(await count(page, '[data-prep]'), 2, phase + ': the static 준비 중 sections stay');
+      assert.equal(await count(page, '[data-macro-slot] [data-state=error][data-na=LOADER_FAILED]'), 6, phase + ': every section slot shows the failure');
+      assert.equal(await count(page, '[data-macro-slot] [data-mascot=alarm]'), 6);
+      assert.match(await text(page, '[data-macro-slot="3-1"] [data-state=error]'), /층을 불러오지 못해 매크로 자료를 그리지 못했습니다/);
+      assert.equal(await page.locator('[data-macro-band] [data-file-state]').getAttribute('data-file-state'), 'LOADER_FAILED');
+      assert.deepEqual([await count(page, '[data-state=loading]'), await count(page, '[data-block]'), await count(page, '[data-private-panel]')], [0, 0, 0], phase + ': no loading line left, no block');
+      await page.locator('[data-load-failed]').waitFor();
       assert.equal(await count(page, '[data-load-failed]'), 1, phase + ': the shell notice');
       assert.deepEqual(reads(at), [], phase + ': nothing is read');
       await boundaries(page, seen, phase);
       await ctx.close(); pass++;
     }
-    console.log('web_app_macro_browser_test: PASS (' + pass + ' contexts: full 1440, full 390, partial failure, empty, error)');
+    {
+      phase = 'error 1440 (screen-macro-live.js 404)';
+      set(FULL);
+      const { ctx, page, seen } = await context(1440, { allow404: [...UNPUBLISHED, 'screen-macro-live.js'] });
+      await page.route('**/screen-macro-live.js', (r) => r.fulfill({ status: 404, contentType: 'text/plain', body: 'not found' }));
+      await open(page); await drawn(page);
+      assert.equal(await page.evaluate(() => window.IS2.ready.then(() => 'READY', (e) => e.message)), 'LOADER_FAILED screen-macro-live.js');
+      assert.equal(await count(page, '[data-macro-slot] [data-state=error][data-na=LOADER_FAILED]'), 6, phase + ': the screen\'s error state');
+      assert.equal(await count(page, '[data-macro-slot] [data-mascot=alarm]'), 6);
+      await page.locator('[data-load-failed]').waitFor();
+      await boundaries(page, seen, phase);
+      await ctx.close(); pass++;
+    }
+    // ================================================================ device quote after a sign-in (Google stand-ins), phone
+    {
+      phase = 'device quote 390';
+      set(FULL);
+      const { ctx, page, seen } = await context(390, { allow404: [...UNPUBLISHED, 'sec-universe-shares.json'] });
+      const log = [], unexpected = [];
+      await ctx.route('**/*', async (route) => {
+        const req = route.request(), url = new URL(req.url());
+        log.push(req.method() + ' ' + req.url() + ' ' + (req.postData() || ''));
+        if (url.origin === s.origin) { await route.continue(); return; }
+        if (req.url() === GIS_STYLE) { await route.fulfill({ status: 200, contentType: 'text/css', body: '.g_id_signin{font-family:sans-serif}' }); return; }
+        if (req.url() === GIS_CLIENT) { await route.fulfill({ status: 200, contentType: 'application/javascript', body: GIS_STUB }); return; }
+        if (req.headers().authorization === 'Bearer ' + TOKEN && req.method() === 'GET' && req.url() === VALUES_URL) { await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ range: RANGE, majorDimension: 'ROWS', values: UNIVERSE_VALUES }) }); return; }
+        unexpected.push(req.method() + ' ' + url.origin + url.pathname); await route.abort();
+      });
+      await open(page); await drawn(page); await page.locator('[data-device-quote-load]').waitFor();
+      const lights = await page.locator('[data-macro-light]').evaluateAll((n) => n.map((x) => [x.dataset.macroLight, x.dataset.macroLightState, x.textContent]));
+      // Test-only buttons (not the site; no style): each passes its real click event to one layer action.
+      await page.evaluate((id) => {
+        const I = window.IS2, out = window.__out = {}, bar = document.createElement('div'); bar.dataset.testActions = '';
+        const acts = { source: (e) => I.store.universeSource.set(e, id), prepare: (e) => I.prices.prepare(e), login: (e) => I.prices.login(e) };
+        for (const [name, fn] of Object.entries(acts)) { const b = document.createElement('button'); b.type = 'button'; b.dataset.testAction = name; b.textContent = 'test ' + name;
+          b.addEventListener('click', (e) => { let p; try { p = Promise.resolve(fn(e)); } catch (err) { p = Promise.reject(err); } out[name] = p.then(() => 'OK', (err) => String(err && err.message)); }); bar.appendChild(b); }
+        document.body.prepend(bar);
+      }, SHEET_ID);
+      const testClick = async (name) => { await page.locator('[data-test-action="' + name + '"]').click(); return page.evaluate((n) => window.__out[n], name); };
+      // Signed in without a price sheet: the layer's words for a missing sheet.
+      assert.equal(await testClick('prepare'), 'OK'); assert.equal(await testClick('login'), 'OK');
+      assert.equal(await page.evaluate(() => window.IS2.prices.status().google.connected), true, 'signed in (stand-in)');
+      await page.locator('[data-device-quote-load]').click();
+      await page.locator('[data-device-quote-symbol=SPY] [data-na=UNIVERSE_SOURCE_NOT_SET]').waitFor();
+      assert.equal(await text(page, '[data-device-quote-status]'), await page.evaluate(() => window.IS2.qgv.reasonText('UNIVERSE_SOURCE_NOT_SET')));
+      assert.equal(await count(page, '[data-ram-price]'), 0);
+      // With the sheet: one real click reads it once (the gate's UNIVERSE_READ) and shows the three quotes as this device's quote.
+      assert.equal(await testClick('source'), 'OK');
+      const reads0 = log.filter((l) => l.includes(VALUES_URL)).length;
+      await page.locator('[data-device-quote-load]').focus(); await page.keyboard.press('Enter');
+      await page.locator('[data-device-quote-symbol=IEF][data-quote-state=OK]').waitFor({ timeout: 20000 });
+      assert.equal(log.filter((l) => l.includes(VALUES_URL)).length - reads0, 1, phase + ': exactly one sheet read for the click');
+      const shown = await page.locator('[data-device-quote-symbol]').evaluateAll((n) => n.map((x) => [x.dataset.deviceQuoteSymbol, x.dataset.quoteState, x.querySelector('[data-ram-price]').textContent]));
+      assert.deepEqual(shown, Object.entries(QUOTES).map(([t, v]) => [t, 'OK', v + ' USD']), phase + ': the sheet values, as text inside [data-ram-price]');
+      assert.match(await text(page, '[data-device-quote-symbol=SPY]'), /이 기기 시세 · 공개 값 아님 · 가격 시트 읽기 · 읽은 시각 \d\d:\d\d UTC/);
+      assert.equal(await text(page, '[data-device-quote-status]'), '이 기기 시세를 이 화면에만 보였습니다 · 저장·전송 안 함 · 새로고침하면 사라짐');
+      await site.assertRamOnly(page, SENTINELS, phase);
+      assert.deepEqual(await page.locator('[data-macro-light]').evaluateAll((n) => n.map((x) => [x.dataset.macroLight, x.dataset.macroLightState, x.textContent])), lights, phase + ': the public lights unchanged');
+      const st = await site.storage(page);
+      assert.deepEqual(Object.keys(st.localItems).sort(), ['investment.web.v1.universe-source'], phase + ': only the test click\'s sheet setting');
+      assert.equal(st.session, 0);
+      assert.deepEqual(site.leaks([...Object.values(st.localItems), ...log, ...seen.errors], SENTINELS), [], phase + ': no sentinel in storage, requests or the console');
+      assert.deepEqual(unexpected, [], phase + ': no unexpected outside request');
+      assert.deepEqual([...new Set(seen.outside.map((u) => { const x = new URL(u); return x.origin + x.pathname; }))].filter((u) => ![GIS_CLIENT, GIS_STYLE, SHEETS + '/v4/spreadsheets/' + SHEET_ID].some((o) => u.startsWith(o))), [], phase + ': only the stand-ins leave the origin');
+      assert.deepEqual(seen.errors, [], phase + ': no console error');
+      await page.reload(); await drawn(page); await page.locator('[data-device-quote-load]').waitFor();
+      assert.deepEqual(await page.locator('[data-device-quote-symbol]').evaluateAll((n) => n.map((x) => x.dataset.quoteState)), ['BEFORE', 'BEFORE', 'BEFORE'], phase + ': a reload drops the quotes');
+      assert.equal(await count(page, '[data-ram-price]'), 0);
+      await ctx.close(); pass++;
+    }
+    console.log('web_app_macro_browser_test: PASS (' + pass + ' contexts: full 1440, full 390, partial failure, empty, error, live-file error, device quote)');
   } catch (e) {
     console.error('web_app_macro_browser_test: FAIL at ' + phase);
     throw e;
