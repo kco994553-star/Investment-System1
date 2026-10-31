@@ -6,8 +6,9 @@
 //    home-quotes.js for the home's investor story, P2-1, Main)
 //    and the P1 layer (action → data → prices → store → qgv → engines), then the common base (companies → private → lab,
 //    2026-10-31: IS2.companies / privateArea / lab, with facades like the layer's), then the screens' after-first-paint halves (web_app
-//    files, P2-1: screen-search-live.js; P2-2a: screen-qgv-live.js; a screen's first-paint file holds only its skeleton and stays
-//    small, screen-search.js and screen-qgv.js ≤ 5 KB). LOAD_ORDER is the one load list: the loader's runtime list, tools/web_app_reuse.js and tools/build_web_app.py
+//    files, P2-1: screen-search-live.js; P2-2a: screen-qgv-live.js; bundle 1 (2026-10-31): screen-macro-live.js, screen-prompts-live.js,
+//    screen-tree-live.js; a screen's first-paint file holds only its skeleton and stays small, screen-search.js, screen-qgv.js,
+//    screen-macro.js, screen-prompts.js and screen-tree.js ≤ 5 KB). LOAD_ORDER is the one load list: the loader's runtime list, tools/web_app_reuse.js and tools/build_web_app.py
 //    read the same literal.
 //  - A name present in web_app wins and is never reused (screen-detail.js); every other script is an old web_assets file.
 //    tools/build_web_app.py applies the same rule, keeps the reused files byte-identical, removes every other old frontend
@@ -66,8 +67,8 @@ const P1 = ['action.js', 'data.js', 'prices.js', 'store.js', 'qgv.js', 'engines.
 // The common base (2026-10-31, docs/frontend_v2/COMMON_BASE_20261031.md): the one company list, the private area, the Lab reader.
 const COMMON = ['companies.js', 'private.js', 'lab.js'];
 // The screens' after-first-paint halves (web_app files, loaded after the layer; P1_DATA_LAYER.md §1.1 screen-file rule).
-const LIVE = ['search-part-live.js', 'screen-search-live.js', 'screen-qgv-live.js'];
-const SKELETON_MAX_BYTES = { 'screen-search.js': 5 * 1024, 'screen-qgv.js': 5 * 1024 };
+const LIVE = ['search-part-live.js', 'screen-search-live.js', 'screen-qgv-live.js', 'screen-macro-live.js', 'screen-prompts-live.js', 'screen-tree-live.js'];
+const SKELETON_MAX_BYTES = { 'screen-search.js': 5 * 1024, 'screen-qgv.js': 5 * 1024, 'screen-macro.js': 5 * 1024, 'screen-prompts.js': 5 * 1024, 'screen-tree.js': 5 * 1024 };
 const LANES = ['qgv', 'technical', 'macro', 'news', 'portfolio', 'prompts', 'tree', 'lab'].map((id) => 'screen-' + id + '.js');
 const P0_SCREENS = ['screen-search.js', 'screen-menus.js', 'screen-detail.js', 'boot.js'];
 const LOADER = 'loader.js';
@@ -611,6 +612,8 @@ test('loader: a hidden page loads at once (it paints nothing); the screen files 
   assert.deepEqual(Object.keys(IS2.searchLive), ['home', 'company'], 'screen-search-live.js only hands its two fillers to the skeleton');
   assert.deepEqual(Object.keys(IS2.qgvLive), ['leaderboard', 'helpers'], 'screen-qgv-live.js only hands its filler and its pure helpers');
   assert.deepEqual(Object.keys(IS2.searchPart), ['index', 'attach', 'LISTING_ENDED'], 'search-part-live.js only hands the shared search');
+  for (const [ns, file] of [['macroLive', 'screen-macro-live.js'], ['promptsLive', 'screen-prompts-live.js'], ['treeLive', 'screen-tree-live.js']])
+    assert.deepEqual(Object.keys(IS2[ns]), ['screen'], file + ' only hands its filler to the skeleton');
 });
 
 test('one company search part (DC-23): the combobox lives in parts.js searchBox and search-part-live.js only', () => {

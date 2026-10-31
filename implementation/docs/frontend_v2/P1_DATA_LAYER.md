@@ -12,6 +12,7 @@ P2 화면 레인이 쓰는 함수, 기록 모양, 사유 코드, 지켜야 할 �
     - 화면 논리 파일(P2-1, Main 결정 2026-10-25): 첫 그림 예산은 메뉴 9개가 함께 쓰므로, 화면의 첫 그림 파일(index.html의 `screen-*.js`)은 뼈대만 두고 `IS2.ready` 뒤에만 도는 논리는 `engines.js` 뒤의 web_app 파일로 옮긴다(1.1절 화면 규칙). web_app에 있는 이름이라 빌드는 web_app에서 가져온다(A안 재사용 아님, 옛 파일과 같은 이름 금지). 이름·중복·순서 규칙은 다른 `LOAD_ORDER` 이름과 같다.
       - 화면 논리 파일도 `LOAD_ORDER`의 파일이다. 그래서 그 파일이 오지 않거나(404) 불러올 때 오류를 내면 `IS2.ready`가 `LOADER_FAILED <파일>`로 거절되고, **메뉴 9개 모두** 층을 쓰지 못한다(대리 객체가 거절, 행동 버튼 꺼짐, 셸의 실패 안내). 한 레인의 파일이 모든 메뉴의 층을 막을 수 있다는 이 대가는 P2-1 PR 본문에서 Main 확인을 요청했다. P2-2a의 `screen-qgv-live.js`도 같다(404나 불러올 때 오류면 `LOADER_FAILED screen-qgv-live.js`로 메뉴 9개 모두, Main 승인 2026-10-25). 그러므로 논리 파일은 불러올 때 `IS2.<이름>`에 채우는 함수만 두고, 던질 수 있는 최상위 작업을 하지 않는다(노드 시험 `web_app_reuse_node_test.js`가 불러올 때 층을 건드리지 않고 그 이름만 두는지 본다).
   - 레인은 index.html도 `LOAD_ORDER`도 고치지 않고 자기 파일만 채운다(바꿀 때는 Main 승인. 자기 화면 논리 파일을 `LOAD_ORDER` 끝에 더하는 것도 Main 승인).
+  - 묶음 1(2026-10-31, Main): 매크로·프롬프트·트리는 첫 그림에 작은 뼈대(`screen-macro.js`·`screen-prompts.js`·`screen-tree.js`, 각 5 KB 이하)만 싣고, 무거운 논리는 `LOAD_ORDER` 끝의 `screen-macro-live.js`·`screen-prompts-live.js`·`screen-tree-live.js`가 맡는다(첫 전송 96.0 → 36.1 KB). 매크로는 층이 필요해 로더 실패면 오류 상태를 보인다. 프롬프트·트리는 층이 필요 없어 자기 `-live` 파일이 돌았으면 그대로 그리고, 자기 파일이 실패했을 때만 오류 상태다.
 - 등록:
   - `IS2.register(id, render)`: 자리표시를 실제 화면이 대신한다. 실제 화면을 두 번 등록하면 `SCREEN_DUPLICATE`다.
   - `IS2.registerDetail(name, render)`: `#/detail/<name>`에 쓴다. 이름은 `IS2.DETAILS`에 있어야 한다(`DETAIL_UNKNOWN`).
@@ -241,6 +242,8 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
   - facade는 클릭으로 탭을 읽기 전에는 `{}`나 null을 준다.
 
 ## 7. 기기 저장: `IS2.store` (옛 키·스키마 그대로)
+
+- 묶음 1(2026-10-31) 추가: `macroEstimates`(4.4 내 국면 판단, 옛 키 `investment.web.v1.macro-cycle-user-estimate`·스키마 `macro-cycle-user-estimate/2`를 MacroCycleRing의 읽기·쓰기·검증으로, 백업 /5에 들어감), `promptFavorites`·`promptCopies`(7.1 ★·내 사본, 옛 프롬프트 페이지 `research-bridge.js`의 키와 규칙 그대로. 기기 백업 /4·/5에는 아직 없음). 쓰기는 모두 클릭 안에서만.
 
 - 읽기는 자유롭다. 쓰기는 `WRITE` 클릭 안에서만 한다.
 - `KEYS`: personal, settings, profile-drafts(-v2), playbook, investor-stars, backup-restored, virtual-trading-v-scores(v1·v2), unified-sheet-source, universe-source, private-history-origin, price-store-enabled, chart-user-objects, macro-cycle-user-estimate(백업 /5), recent-search(P2-1), 그리고 IndexedDB `investment-device-actual-v1`.

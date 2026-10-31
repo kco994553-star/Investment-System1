@@ -235,6 +235,9 @@ async function scores(page) {
     const settle = () => page.evaluate(() => new Promise((r) => setTimeout(r, 100)));
     // The files a route's screen may read when it opens (P2-1: 0. 기업 검색 and its company page); every other route reads nothing.
     const QGV_READS = [...(await page.evaluate(() => window.IS2.data.CORE)), 'actual-catalog.json', 'company-names-ko.json', 'qgv-official.json', 'qgv-official-status.json'];
+    // 3. 매크로 (feature 4, screen-macro.js): the screen only asks IS2.data.ready(), DataRefresh.load's page-open read of the core
+    // files, which leaves dart-financials.json to its lazy reader; a route change reads nothing new (the layer keeps the generation).
+    const MACRO_READS = (await page.evaluate(() => window.IS2.data.CORE)).filter((n) => n !== 'dart-financials.json');
     // The company page's own list reads (P2-1), asked again on every open of the page.
     const COMPANY_LISTS = ['sec-disclosures.json', 'news-signals.json'];
     // A phase ends only once the route's own reads are answered, so a read a screen started cannot land in the next route's phase
@@ -244,7 +247,7 @@ async function scores(page) {
     // lists; a route change only the company page's lists (the layer keeps the rest in memory). Only answers to requests of the
     // current document and route count (numbered after the last navigation), and none of its data requests may still be open.
     // Which files are read, and that nothing else is, stays the job of the checks below.
-    const expected = (hash, fresh) => (hash === '#/qgv' ? (fresh ? QGV_READS : []) : hash === '#/' || hash === '#/nowhere/x' ? (fresh ? HOME_READS : [])
+    const expected = (hash, fresh) => (hash === '#/qgv' ? (fresh ? QGV_READS : []) : hash === '#/macro' ? (fresh ? MACRO_READS : []) : hash === '#/' || hash === '#/nowhere/x' ? (fresh ? HOME_READS : [])
       : hash.startsWith('#/company/') ? [...(fresh ? [...HOME_READS, ...QGV_READS] : []), ...COMPANY_LISTS] : []);
     const isData = (u) => new URL(u).origin === s.origin && !!nameOf(u) && !pageFiles.has(nameOf(u));
     const answers = async (what, names, from) => {
@@ -260,7 +263,7 @@ async function scores(page) {
       await answers((fresh ? 'fresh ' : 'change ') + hash, expected(hash, fresh), from);
     };
     const opens = (hash, names) => (hash === '#/' || hash === '#/nowhere/x' ? names.filter((n) => !HOME_READS.includes(n)) : hash.startsWith('#/company/') ? names.filter((n) => !FILES.has(n))
-      : hash === '#/qgv' ? names.filter((n) => !QGV_READS.includes(n)) : names);
+      : hash === '#/qgv' ? names.filter((n) => !QGV_READS.includes(n)) : hash === '#/macro' ? names.filter((n) => !MACRO_READS.includes(n)) : names);
     for (const hash of routes) {
       phase = 'A fresh ' + hash;
       const at0 = rec.log.length, an0 = answered.length;
