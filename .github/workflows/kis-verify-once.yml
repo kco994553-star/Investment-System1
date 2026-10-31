@@ -1,0 +1,29 @@
+# ONE-TIME READ-ONLY KIS VERIFICATION (owner 2026-10-31). Runs only on pushes to this branch; never merged.
+# Injects the repository secrets KIS_APP_KEY / KIS_APP_SECRET into one step only. The script calls the token
+# issue/revoke endpoints and quotation endpoints only (no order/account endpoints) and prints codes, row counts,
+# dates and timings — never keys, tokens, prices or response bodies.
+name: kis-verify-once
+on:
+  push:
+    branches: [claude/kis-verify-once]
+permissions:
+  contents: read
+concurrency:
+  group: kis-verify-once
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - name: Read-only KIS verification (codes and counts only)
+        env:
+          KIS_APP_KEY: ${{ secrets.KIS_APP_KEY }}
+          KIS_APP_SECRET: ${{ secrets.KIS_APP_SECRET }}
+        run: python -I implementation/tools/measure_once/kis_readonly_verify.py
