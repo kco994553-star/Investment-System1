@@ -63,8 +63,17 @@ def replay(root):
                     "quality_rejected_pages": rejected}
 
 
-def verify(root, previous, reviewed_src):
+def verify(root, previous, reviewed_src, additional=None):
     series, result = replay(root)
+    if additional:
+        extra_series, extra_result = replay(additional)
+        for key, values in extra_series.items():
+            if key in series:
+                assert series[key] == values
+            series[key] = values
+        for key in ("actual_raw_hashes_verified", "normalized_rows_replayed", "numeric_cells_verified"):
+            result[key] += extra_result[key]
+        result["quality_rejected_pages"] += extra_result["quality_rejected_pages"]
     # Reuse previous successful ABT 2016 and NVDA 2024 SIP requests, no new download.
     old = RawDatasetStore(previous / "store")
     for symbol, days in (("ABT", PRIMARY_DAYS), ("NVDA", ["2024-06-07", "2024-06-10", "2024-06-11", "2024-06-12"])):
@@ -131,5 +140,6 @@ if __name__ == "__main__":
     parser.add_argument("--restored", type=Path, required=True)
     parser.add_argument("--previous-restored", type=Path, required=True)
     parser.add_argument("--reviewed-src", type=Path, required=True)
+    parser.add_argument("--additional-restored", type=Path)
     args = parser.parse_args()
-    print(json.dumps(verify(args.restored, args.previous_restored, args.reviewed_src), sort_keys=True))
+    print(json.dumps(verify(args.restored, args.previous_restored, args.reviewed_src, args.additional_restored), sort_keys=True))

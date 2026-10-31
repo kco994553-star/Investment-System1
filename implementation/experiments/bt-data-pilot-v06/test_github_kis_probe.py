@@ -45,6 +45,8 @@ class KISTest(unittest.TestCase):
             with patch("github_kis_probe.transport", return_value=(200, b'{"access_token":"synthetic-token"}', "", 0.1)):
                 report = client.authenticate()
             self.assertEqual(report["status"], "AUTHENTICATED")
+            self.assertEqual(client.headers["Content-Type"], "application/json")
+            self.assertEqual(client.headers["Accept"], "text/plain")
             self.assertNotIn("synthetic", json.dumps(report))
             self.assertEqual(client.store.list_ids(), [])
 

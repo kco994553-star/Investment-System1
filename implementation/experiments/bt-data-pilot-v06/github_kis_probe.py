@@ -112,6 +112,8 @@ class KIS:
         self.headers = None
         self.calls = 0
         self.stopped = False
+        self.request_label = ""
+        self.pause_seconds = 1.1
 
     def authenticate(self):
         code, body, _, elapsed = transport(BASE + "/oauth2/tokenP", {"Content-Type": "application/json"},
@@ -132,6 +134,8 @@ class KIS:
     def page(self, symbol, exchange, bymd, modp, continuation=""):
         params = dict(AUTH="", EXCD=exchange, SYMB=symbol, GUBN="0", BYMD=bymd, MODP=modp)
         aid = "kis:" + ":".join((symbol, exchange, bymd, modp, continuation or "first"))
+        if self.request_label:
+            aid += ":" + self.request_label
         url = BASE + ENDPOINT + "?" + urlencode(params)
         receipt_path = self.root / "requests" / (aid.replace(":", "_") + ".json")
         if self.store.has(aid):
@@ -143,7 +147,7 @@ class KIS:
             return body, meta
         if self.stopped or self.calls >= 60:
             return None, {"status": "PROVIDER_STOPPED_OR_LOCAL_REQUEST_BUDGET"}
-        time.sleep(1.1)  # conservative <1 request/second, independent of sample recursion depth
+        time.sleep(self.pause_seconds)
         self.calls += 1
         code, body, cont, elapsed = transport(url, {**self.headers, "tr_cont": continuation})
         meta = {"request": params, "request_tr_cont": continuation, "response_tr_cont": cont,
@@ -181,7 +185,7 @@ class KIS:
                     msg = str(data.get("msg_cd", ""))
                     result["provider_code"] = msg if re.fullmatch(r"[A-Z0-9_-]{0,30}", msg) else "WITHHELD"
                     result["status"] = "API_REJECTED"
-                    if msg == "EGW00201":
+                    if msg == "EGW00201" or (msg == "OPSQ1002" and self.request_label):
                         self.stopped = True
                     break
                 rows = kis_normalize(body, symbol, modp, bymd)
@@ -240,7 +244,7 @@ def alpaca_window(root, store, symbol, days, cohort):
         return {"provider": "ALPACA", "symbol": symbol, "cohort": cohort, "status": "RESPONSE_QUALITY_FAILED"}
 
 
-def run(output, kis_only=False):
+def run(output, kis_only=False, resume_zip=None):
     names = [x for pair in KEY_PAIRS for x in pair] + ["APCA_API_KEY_ID", "APCA_API_SECRET_KEY", "RAW_REPO_TOKEN"]
     configured = {name: bool(os.environ.get(name)) for name in names}
     report = {"version": "BT-DATA-PILOT v0.6", "configured": configured, "results": [],
@@ -251,15 +255,44 @@ def run(output, kis_only=False):
     if status != 200 or json.loads(body).get("private") is not True:
         return {**report, "status": "PRIVATE_STORAGE_PREFLIGHT_FAILED"}
     root = private_dir(output)
+    prior = None
+    if resume_zip:
+        expected = Path(str(resume_zip) + ".sha256").read_text().split()[0]
+        if release.file_sha(resume_zip) != expected:
+            raise ValueError("RESUME_ARCHIVE_SHA")
+        with zipfile.ZipFile(resume_zip) as zipped:
+            if any(Path(n).is_absolute() or ".." in Path(n).parts for n in zipped.namelist()):
+                raise ValueError("RESUME_PATH")
+            zipped.extractall(root)
+        prior = json.loads((root / "aggregate.json").read_bytes())
+        (root / "aggregate.json").rename(root / "prior-aggregate.json")
+        report["resumed_private_archive"] = "bt-data-pilot-v06-kis-41167695581-1"
     for child in ("requests", "normalized"):
         (root / child).mkdir(exist_ok=True, mode=0o700)
     store = RawDatasetStore(root / "store")
+    for aid in store.list_ids():
+        if digest(store.get_bytes(aid)) != store.get_manifest(aid)["sha256"]:
+            raise ValueError("RESUME_BLOB_SHA")
     keys, state = choose_keys(os.environ)
     report["kis_auth"] = {"status": state, "requests": 0}
     if keys:
         client = KIS(root, store, keys)
         report["kis_auth"] = client.authenticate()
-        if client.headers:
+        if client.headers and prior:
+            client.request_label = "cooldown_retry"
+            client.pause_seconds = 10
+            # Retry only actually failed requests once, not successful or empty responses.
+            failed = [r for r in prior["results"] if r["status"] == "API_REJECTED"]
+            for old in failed[:14]:
+                days = RECENT if old["cohort"] == "FIXED10_RECENT" else PRIMARY_DAYS
+                report["results"].append(client.window(old["cik"], old["symbol"], old["exchange"], days,
+                    "0" if old["adjustment"] == "raw" else "1", old["cohort"]))
+                if client.stopped:
+                    break
+            if not client.stopped:
+                report["results"].append(client.window(1800, "ABT", "NYS", ["2026-06-01", "2026-06-02"],
+                    "0", "EXPLICIT_BYMD_PROGRESS"))
+        elif client.headers:
             first = client.window(1800, "ABT", "NYS", RECENT, "0", "FIXED10_RECENT", pages=3)
             report["results"].append(first)
             if first["complete_ohlcv"]:
@@ -310,9 +343,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--private-dir", type=Path, required=True)
     parser.add_argument("--kis-only", action="store_true", help="Reuse already acquired Alpaca prices offline")
+    parser.add_argument("--resume-zip", type=Path, help="Verified previous private archive; retry only failed KIS requests")
     args = parser.parse_args()
     try:
-        result = run(args.private_dir, args.kis_only)
+        result = run(args.private_dir, args.kis_only, args.resume_zip)
         print(json.dumps(result, sort_keys=True))  # aggregate only, no price/body/token/hash
         if result["status"] != "PRIVATE_ARCHIVE_ROUNDTRIP_VERIFIED":
             raise SystemExit(2)

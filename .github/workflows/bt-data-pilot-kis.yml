@@ -32,8 +32,11 @@ jobs:
           APCA_API_KEY_ID: ${{ secrets.APCA_API_KEY_ID }}
           APCA_API_SECRET_KEY: ${{ secrets.APCA_API_SECRET_KEY }}
           RAW_REPO_TOKEN: ${{ secrets.RAW_REPO_TOKEN }}
+          GH_TOKEN: ${{ secrets.RAW_REPO_TOKEN }}
         run: |
           umask 077
-          # Second bounded KIS attempt matches official common headers after EGW00316.
-          # Alpaca inputs from run 41167550137 are reused offline, not downloaded again.
-          python implementation/experiments/bt-data-pilot-v06/github_kis_probe.py --kis-only --private-dir "$RUNNER_TEMP/bt-data-pilot-v06-kis"
+          # Resume preserved data; retry failed KIS requests once with 10-second spacing.
+          # Existing successful/empty KIS responses and all Alpaca data are reused.
+          mkdir -p "$RUNNER_TEMP/kis-resume"
+          gh release download bt-data-pilot-v06-kis-41167695581-1 --repo kco994553-star/investment-system1-raw --pattern 'private-inputs.zip*' --dir "$RUNNER_TEMP/kis-resume"
+          python implementation/experiments/bt-data-pilot-v06/github_kis_probe.py --kis-only --resume-zip "$RUNNER_TEMP/kis-resume/private-inputs.zip" --private-dir "$RUNNER_TEMP/bt-data-pilot-v06-kis"
