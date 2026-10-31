@@ -108,7 +108,7 @@ def main():
     today = datetime.now(timezone(timedelta(hours=9))).strftime('%Y%m%d')
     start = (datetime.now(timezone.utc) - timedelta(days=200)).strftime('%Y%m%d')
     # domestic current price (3 symbols)
-    for code in ('005930', '000660', '042700'):
+    for code in ('005930', '000660', '042700', '069500'):
         st, j, ms = call('GET', '/uapi/domestic-stock/v1/quotations/inquire-price', tr_id='FHKST01010100',
                          params={'FID_COND_MRKT_DIV_CODE': 'J', 'FID_INPUT_ISCD': code})
         out('DOM_PRICE', code, 'http=%s' % st, codes(j), 'value_field=%s' % has(j, 'output', 'stck_prpr'), 'ms=%s' % ms)
@@ -146,7 +146,7 @@ def main():
     out('DOM_MULTI', 'n=3', 'http=%s' % st, codes(j), 'rows=%s' % rows(j, 'output'), 'ms=%s' % ms)
     time.sleep(0.2)
     # overseas current price (3 symbols, 3 exchanges)
-    for excd, sym in (('NAS', 'AAPL'), ('NAS', 'NVDA'), ('NYS', 'IBM'), ('AMS', 'SPY')):
+    for excd, sym in (('NAS', 'AAPL'), ('NAS', 'NVDA'), ('NYS', 'IBM'), ('AMS', 'SPY'), ('TSE', '8035')):
         st, j, ms = call('GET', '/uapi/overseas-price/v1/quotations/price', tr_id='HHDFS00000300',
                          params={'AUTH': '', 'EXCD': excd, 'SYMB': sym})
         out('OVS_PRICE', excd, sym, 'http=%s' % st, codes(j), 'value_field=%s' % has(j, 'output', 'last'), 'ms=%s' % ms)
