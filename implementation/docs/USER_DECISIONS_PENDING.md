@@ -9,11 +9,26 @@
 - 「비공개 구역 1단계 범위를 바꾼다. 1. 1단계 범위 - KIS 통합 일봉(시가·고가·저가·종가·거래량) - 수정주가(분할 반영) 여부 - 확장 모집단 거래대금 기준. 대상: Universe504 + 확장 모집단. 기술적 분석(3장)의 실가격 전환이 1단계의 주목적이다. … 3. 화면: 로그인하면 기술적 분석 차트가 KIS 실가격으로 바뀌고, 출처와 기준 시각을 표시한다. 로그인하지 않으면 지금 공개 화면 그대로 둔다. 4. V는 중앙 V(IEX)를 그대로 쓴다. KIS로 V를 바꾸지 않는다. 확장 모집단 소형주의 IEX 체결 지연 영향만 측정해 보고하라. 5. 2단계(한국 종목)는 1단계 뒤에 다시 정한다.」(두 번째 메시지가 첫 메시지 2번을 바꾼다)
 
 처리:
-- `PRIV-DESIGN`·`PRIV-REPO`(새 비공개 저장소)·`PRIV-STORE`((a) 새 비공개 저장소 `data` 가지)·`PRIV-PAYMENT`(허용)·`PRIV-LOAD`(한 번 더 누름)·`PRIV-ADV`(비공개 보기에서만)·`PRIV-LOGS`(지난 공개 KIS 검증 3회 삭제, 오너) → **승인**. 아래 표에서 지웠다.
+- `PRIV-DESIGN`·`PRIV-REPO`(새 비공개 저장소)·`PRIV-STORE`((a) 새 비공개 저장소 `data` 가지)·`PRIV-PAYMENT`(허용 → 10/31 밤 3차에 **불필요**로 바뀜)·`PRIV-LOAD`(한 번 더 누름)·`PRIV-ADV`(비공개 보기에서만)·`PRIV-LOGS`(지난 공개 KIS 검증 3회 삭제, 오너) → **승인**. 아래 표에서 지웠다.
 - 1단계 범위 → 설계 17절(DC-34 갱신). 질문 답(수정주가·과거 기간·분봉·3.2.5·TA-G1·#361), 차트 이력 계약, Lab 결과 비공개 저장·조회, 로그인 빈도·브라우저 표도 17절.
 - Codex KIS 워크플로 두 개: 오너가 "Disable workflow"로 끈다. 공개 로그 10회는 값 없음(삭제할 실행 없음). KIS 원자료 release는 새 비공개 저장소로 옮긴 뒤 지운다. #437에 중단·금지·DC-35를 남겼다.
 - `TA-361`: 10/31 오너 승인으로 #361을 닫았다(결정 기록은 10/31 밤 2차 블록, #440).
-- 10/31 오너: Cloudflare Zero Trust 보류(결제 수단 없음) → [Zero Trust 없이 본인 전용 접근](private_area/PRIVATE_AREA_NO_ZT_ACCESS_20261031.md) 조사·설계·검증. 새 결정 대기 `PRIV-AUTH-GOOGLE`·`PRIV-REPO-NAME`·`PRIV-CODEX-WF-OFF`. 배포·KIS 호출·운영 설정 변경은 승인 뒤.
+- 10/31 오너: Cloudflare Zero Trust 보류(결제 수단 없음) → [Zero Trust 없이 본인 전용 접근](private_area/PRIVATE_AREA_NO_ZT_ACCESS_20261031.md). `PRIV-AUTH-GOOGLE`·`PRIV-REPO-NAME`·`PRIV-CODEX-WF-OFF` 승인, `PRIV-PAYMENT` 불필요(10/31 밤 3차 블록).
+
+## 결정됨 — 2026-10-31 밤 3차 (Zero Trust 없이 본인 전용 접근, DC-37)
+
+원문(사용자, 2026-10-31): 「결정: PRIV-AUTH-GOOGLE(Google 토큰 + Worker 확인으로 시작, 패스키는 나중), PRIV-REPO-NAME(investment-system1-kis-private로 변경, 내가 한다), PRIV-CODEX-WF-OFF(내가 끈다) 모두 승인한다. Zero Trust·Access 설계는 대체됐다고 정식 반영하고, PRIV-PAYMENT는 "불필요"로 기록하라. 1. 공개 저장소의 KIS Secrets를 지금 지우려 한다. … 공개 저장소의 어떤 워크플로나 가지가 이 Secrets를 쓰는지 확인해 답하라. 없으면 지워도 된다고 답하라. 2. Worker가 비공개 저장소를 읽는 토큰은 해당 저장소 하나, 읽기 전용, 최소 권한으로 만든다. 폰 생성 절차를 적고, 만료일 전에 화면과 상태 파일에 경고가 뜨게 하라. 만료되면 비공개 칸은 "오류(토큰 만료)"로 보이게 한다. 3. Notion 관리자 페이지의 Access 설명과 9. Lab의 "로그인 시 계정 설정"(DC-22 위반)을 고쳐라. 4. 독립 보안 검토 1회는 이 설계와 #436 가드 PR을 묶어서 한 번에 한다. 보고는 다음 PR을 올릴 때 1회만 보낸다. 비공개 저장소 이름을 investment-system1-kis-private로 바꿨다. 설계 문서, 폰 설정 문서, 워크플로·Worker 설정의 저장소 이름을 모두 새 이름으로 고쳐라. 옛 주소 자동 연결에 기대지 마라.」
+
+| 항목 | 결정 | 처리 |
+| --- | --- | --- |
+| PRIV-AUTH-GOOGLE | Google 로그인 토큰 + 기존 Worker가 서버에서 확인으로 시작. 패스키는 나중 | [Zero Trust 없이 본인 전용 접근](private_area/PRIVATE_AREA_NO_ZT_ACCESS_20261031.md) 승인. 설계 5절·11절 4~6단계·17.5절은 대체됨 |
+| PRIV-REPO-NAME | 비공개 저장소 이름 `investment-system1-kis-private`(오너가 바꿈) | 문서·폰 절차를 새 이름으로 고침. 워크플로·Worker 설정은 아직 없고, 만들 때 새 이름만 쓴다 |
+| PRIV-CODEX-WF-OFF | Codex KIS 워크플로 2개를 오너가 끈다(삭제 아님) | — |
+| PRIV-PAYMENT | **불필요**(Zero Trust를 쓰지 않음) | 폰 절차에서 결제 수단 단계 없음 |
+| 공개 저장소 KIS Secrets | 쓰는 곳은 Codex 연구 가지 2곳의 워크플로 2개뿐. canonical·다른 가지 없음. Codex 자료 이관에는 필요 없음 → **지워도 됨** | 오너가 지운다. 지운 뒤 두 워크플로는 돌면 KIS 단계에서 실패한다 |
+| Worker 읽기 토큰 | 저장소 하나·Contents 읽기 전용 fine-grained 토큰, 만료 14일 전부터 화면·상태 파일 경고, 만료되면 비공개 칸 "오류(토큰 만료)" | 설계 4.4절·폰 설정 4~6단계 |
+| Notion | 관리자 페이지 Access 설명, 9. Lab "로그인 시 계정 설정"(DC-22 위반) 고침 | 10/31 고침 |
+| 독립 보안 검토 | 이 설계와 #436 가드 PR을 묶어 1회 | 진행 |
 
 ## 결정됨 — 2026-10-31 저녁 (1인 비공개 구역 신설(KIS 한정) · KIS 보류 취소, DC-34 · 설계 PR, 구현은 승인 뒤)
 
@@ -297,9 +312,6 @@
 | PSKY-SHARES-ALIAS | `sec-universe-shares.json` PSKY 행(10/31 03:13 UTC STALE)을 SKYD 별칭으로 주식수 경로에서 다시 수집할지 | (a) 3분기 10-Q(표지 SKYD·인수 뒤 주식수)가 나온 뒤 별칭 + 주식수 사건 규칙을 함께 넣는 PR / (b) 지금 별칭 PR | (a). 지금 별칭을 넣으면 인수 전 주식수(2025-11, 약 10.7억 주)로 시총이 '새로 수집됨'이 된다(#428과 같은 문제). 그동안 영향은 PSKY M3 시가총액 순위의 사유 있는 NA(`STALE_INPUT`)뿐 | 행 STALE, M3 순위 NA |
 | PRICE-DISPLAY | "가격은 클릭할 때만"(DC-18 관련) 폐지: 중앙 파이프라인의 IEX 마지막 체결가(T+1)를 공개 파일로 게시 | 결정 기록 PR(GSQ-026·대장 새 줄)로 제안 → 오너 승인 뒤 구현 | 제안 PR 참조 | 클릭 전용 유지 |
 | EXP-OFFICIAL | 확장 모집단의 공식 승격 | 승격 / 연구 유지 | 연구 유지(운영 권리·성능·감사·P3 승인 전 승격 안 함) | Universe504만 공식 |
-| PRIV-AUTH-GOOGLE | 비공개 구역 인증(Zero Trust 보류 뒤) | A Google 로그인 토큰 + 기존 Worker가 `tokeninfo`로 서버 확인 / B 패스키 / 그 밖 | A로 시작, 필요하면 2단계에 B. [제안 문서](private_area/PRIVATE_AREA_NO_ZT_ACCESS_20261031.md) | 비공개 기능 준비 중 |
-| PRIV-REPO-NAME | 비공개 저장소 이름 맨 앞 하이픈(`-investment-system1-kis-private`) | 그대로 / `investment-system1-kis-private`로 변경 | 변경(명령줄에서 옵션으로 오인될 수 있음, 옛 주소는 넘겨 줌) | 그대로 |
-| PRIV-CODEX-WF-OFF | 이관 전까지 Codex KIS 워크플로 2개(`bt-data-pilot-kis.yml`·`bt-data-pilot-pre2016.yml`) | Actions 화면에서 끔 / 그대로 | 끔(삭제 아님) | 그대로(파일을 바꾸는 push 때만 돎) |
 | EXP-417-REPIN | #417 연구 명세의 점수 원본 고정값(`scoring_source_sha` bb57398c·calc_version 17.1) | 다시 고정 / 17.1 고정 유지(canonical과 못 맞춤) | 다시 고정. 10/30 Main이 PR #430(base = #417 가지)으로 `96037d1c`·`qgv2-calc/2026-10-23.1`에 다시 고정했다(tests/research 141 통과, 전에는 33 실패). #417 담당 확인 뒤 병합 | #417 Draft 유지 |
 | LAB-PUBLISH | 9.1 Lab 결과 게시 계약 `lab-results/1`(전략·기간 단위 집계만, 회사별·가격·NAV 곡선 금지, 결과 없으면 `BLOCKED_ON_DATA`) | 채택(가드 규칙 추가 PR) / 수정 | 채택 권장. 실데이터 권리가 없어 당분간 게시할 숫자는 없음 | 9.1은 `BLOCKED_ON_DATA` 표시만 |
 | PRIVATE-LIST | 포트폴리오·사용자 QGV 가중치 밖의 개인 데이터 후보(DC-22, 목록만 제안) | 후보: 관심(★)·그룹, 최근 검색, 13F 별표, 차트 노트·표시 설정, 내 국면 판단(4.4), 플레이북·판단 기록·TARGET v1 초안, 가상매매 세트 B/C/D, 보고서 AI 답·금액 숨김, 프롬프트 즐겨찾기·사본, 뉴스 필터, 시트 연결 설정, 백업 파일, 표시 설정(언어·테마 등) | 모두 개인(그 기기에만)으로 두기를 권장: 지금도 이 브라우저 저장·사용자 시트에만 있고 공개 파일에 없다 | 지금처럼 기기·사용자 시트에만 |

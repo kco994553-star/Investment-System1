@@ -5,7 +5,7 @@
 
 ## 0. 요약
 
-> **10/31 오너: Cloudflare Zero Trust는 결제 수단이 없어 보류.** 접근 방식은 [Zero Trust 없이 본인 전용 접근](PRIVATE_AREA_NO_ZT_ACCESS_20261031.md)(Google 로그인 토큰을 기존 Worker가 서버에서 확인, 권장)으로 바꾸는 제안이 있다. 5절·11절 4~6단계·17.5절은 그 문서가 승인되면 대체된다. 비공개 저장소 실제 이름은 `-investment-system1-kis-private`.
+> **10/31 오너 승인(`PRIV-AUTH-GOOGLE`): Cloudflare Zero Trust·Access 설계는 대체됐다.** 접근은 [Zero Trust 없이 본인 전용 접근](PRIVATE_AREA_NO_ZT_ACCESS_20261031.md)(Google 로그인 토큰을 기존 Worker가 서버에서 확인, 패스키는 나중)이다. 5절·11절 4~6단계·17.5절은 대체됨. `PRIV-PAYMENT`는 불필요. 비공개 저장소 이름은 `investment-system1-kis-private`.
 
 - **무엇:** 오너 한 사람만 보는 비공개 칸. 1단계(10/31 바뀜, 17절)는 KIS 통합 일봉(시가·고가·저가·종가·거래량·거래대금)과 수정주가(분할 반영) 여부, 확장 모집단 거래대금 기준이다. 대상은 Universe504 + 확장 모집단이고, 주목적은 기술적 분석의 실가격 전환이다. V는 중앙 V(IEX) 그대로다. 2단계(한국 종목)는 1단계 뒤에 정한다.
 - **어디서 모으나:** 새 비공개 저장소의 Actions. 기존 비공개 원자료 저장소는 재사용할 수는 있지만 권장하지 않는다(3.1).
@@ -62,7 +62,7 @@
 | 한 토큰 한 용도 | 중앙 V D2 (a) 결정은 읽는 쪽마다 새 단일 용도 토큰을 쓰기로 했다. Worker가 `RAW_REPO_READ_TOKEN`을 같이 쓰면 그 원칙과 어긋나고, 따로 폐기할 수 없다 |
 | 원자료 저장소는 지금 Actions가 없다 | 문서상 README만 있는 Release 저장소다. 워크플로를 새로 넣어야 하는 것은 새 저장소와 같다 |
 
-새 저장소(예: `investment-system1-kis`, Private)는 자기 Actions가 자기 `GITHUB_TOKEN`으로 자기에게만 쓰므로 쓰기 토큰이 필요 없다. 공개 저장소의 어떤 토큰도 이 저장소를 읽지 못한다.
+새 저장소(`investment-system1-kis-private`, Private)는 자기 Actions가 자기 `GITHUB_TOKEN`으로 자기에게만 쓰므로 쓰기 토큰이 필요 없다. 공개 저장소의 어떤 토큰도 이 저장소를 읽지 못한다.
 
 ### 3.2 수집기
 
@@ -95,7 +95,7 @@
 
 ## 5. 접근 — Cloudflare Access + Worker
 
-> 보류(10/31, 결제 수단 없음). 대체 제안: [PRIVATE_AREA_NO_ZT_ACCESS_20261031](PRIVATE_AREA_NO_ZT_ACCESS_20261031.md) 4절.
+> **대체됨(10/31 오너 승인 `PRIV-AUTH-GOOGLE`).** 이 절의 Access·`kis-auth` Worker·Access JWT 검증은 쓰지 않는다. 현재 설계: [PRIVATE_AREA_NO_ZT_ACCESS_20261031](PRIVATE_AREA_NO_ZT_ACCESS_20261031.md) 4절.
 
 ### 5.1 왜 로그인 전용 Worker를 따로 두나
 
@@ -222,6 +222,8 @@ CORS 주의: 출처 `https://kco994553-star.github.io`는 이 계정의 모든 P
 
 ## 11. 오너 폰 설정 절차
 
+> 10/31: 4~6단계(Zero Trust·Access)는 대체됐다. 폰 설정 문서의 새 4~6단계(Worker 읽기 토큰·만료일)를 따른다. 결제 수단은 필요 없다.
+
 [OWNER_PHONE_SETUP_PRIVATE_AREA_20261031](OWNER_PHONE_SETUP_PRIVATE_AREA_20261031.md). 승인 뒤, 구현 PR과 맞춰 진행한다.
 - 도메인: 필요 없음.
 - 결제 수단: Cloudflare Zero Trust 가입 때만 필요(청구 없음). GitHub·KIS는 필요 없음.
@@ -252,6 +254,8 @@ CORS 주의: 출처 `https://kco994553-star.github.io`는 이 계정의 모든 P
    - 통합 기준 표본 비교(8절), KIS 문의 회신 반영, 거래대금 기준 비공개 보기 켜기.
 
 ## 14. 결정 요청
+
+> 10/31: `PRIV-PAYMENT`는 불필요(Zero Trust를 쓰지 않음). 인증은 `PRIV-AUTH-GOOGLE` 승인(Google 토큰 + Worker 확인).
 
 | ID | 질문 | 권장 |
 | --- | --- | --- |
@@ -353,7 +357,7 @@ Actions 사용량: 매일 약 15분 × 22거래일 ≈ 330분. 처음 채우기 
 
 ### 17.5 아이폰 로그인 빈도와 브라우저별 표
 
-> Access 기준 표다. Zero Trust 보류(10/31)로, Google 토큰 방식의 빈도는 [대체 제안](PRIVATE_AREA_NO_ZT_ACCESS_20261031.md) 4.2절.
+> **대체됨(10/31).** 아래는 Access 기준 옛 표다. 현재 빈도는 [Google 토큰 방식](PRIVATE_AREA_NO_ZT_ACCESS_20261031.md) 4.2절.
 
 토큰은 페이지 메모리에만 둔다. 그래서 새로고침하면 토큰은 사라진다. 이메일 코드는 다시 받지 않을 수 있다. Access 세션 쿠키는 로그인 Worker·팀 도메인에 맨 위 이동으로 저장된 1자 쿠키라 남아 있기 때문이다. 이 경우 "비공개 다시 연결"을 한 번 누르면 코드 없이 1~2초 만에 돌아온다.
 

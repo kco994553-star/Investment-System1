@@ -1,17 +1,17 @@
 # 1인 비공개 구역 — Cloudflare Zero Trust 없이 본인 전용 접근 (조사·설계·검증, 2026-10-31)
 
-상태: **조사·설계·검증만.** 배포, KIS 호출, 운영 설정 변경(Cloudflare·GitHub Secrets·워크플로)은 오너 승인 뒤에 한다. 공개 저장소의 KIS Secrets는 지우지 않는다(오너 10/31).
+상태: **설계 승인(10/31 `PRIV-AUTH-GOOGLE`: Google 토큰 + Worker 확인으로 시작, 패스키는 나중).** 배포, KIS 호출, 운영 설정 변경(Cloudflare·GitHub Secrets·워크플로)은 구현 PR마다 오너 승인 뒤에 한다. 공개 저장소의 KIS Secrets는 쓰는 곳이 Codex 연구 가지의 워크플로 2개뿐이라 지워도 된다(10/31 확인, 오너가 지움).
 
 원문(사용자, 2026-10-31): 「투자시스템의 GitHub 비공개 저장소 생성, KIS_APP_KEY 및 KIS_APP_SECRET 등록, 기존 브랜치·로그 정리를 완료했다. Cloudflare Zero Trust는 결제 수단이 없어 보류한다. 대신 기존 Cloudflare Workers 무료 환경에서 개인 전용 접근 제어를 구현하는 방향으로 진행한다. … 특히 인증 우회, 토큰 노출, 비밀값의 클라이언트 전달, 공개 API를 통한 비인가 데이터 접근을 중점 검증하라. 현재 단계에서는 조사·설계·검증까지만 진행하고, 실제 배포와 KIS 호출 및 운영 설정 변경은 오너의 승인을 받은 뒤 수행하라.」
 
-이 문서는 [설계](PRIVATE_AREA_KIS_DESIGN_20261031.md) 5절(Cloudflare Access)·11절 4~6단계·17.5절(로그인 빈도)을 **대체하는 제안**이다. 나머지(수집·저장·차트 계약·가드·원칙)는 그대로다.
+이 문서는 [설계](PRIVATE_AREA_KIS_DESIGN_20261031.md) 5절(Cloudflare Access)·11절 4~6단계·17.5절(로그인 빈도)을 **대체한다(10/31 승인).** 나머지(수집·저장·차트 계약·가드·원칙)는 그대로다. `PRIV-PAYMENT`(Zero Trust 결제 수단)는 불필요하다.
 
 ## 1. 지금 구조 (조사)
 
 | 구성 | 사실 |
 | --- | --- |
 | 공개 저장소 `Investment-System1` | canonical 워크플로에 `secrets.KIS_`를 쓰는 곳이 없다. KIS를 부르는 워크플로는 Codex 연구 가지 2곳(`research/bt-data-pilot-alpaca-probe-20261031`, `research/lab-contract-private-pilot-20261031`)의 `bt-data-pilot-kis.yml`·`bt-data-pilot-pre2016.yml`뿐이다. 둘 다 **그 연구 가지에 워크플로 파일 자체를 바꾸는 push**가 있을 때만 돈다. 10/31 07:17 UTC 이후 실행 없음(총 10회, 로그에 값 없음은 앞서 확인). 공개 저장소의 KIS Secrets는 오너 지시로 남아 있다 |
-| 새 비공개 저장소 | 실제 이름은 **`-investment-system1-kis-private`**(맨 앞에 하이픈). 지금 내용은 `README.md` 하나(첫 커밋). 워크플로·자료 없음. Secrets(`KIS_APP_KEY`·`KIS_APP_SECRET`)는 오너가 등록했다고 했고, 세션은 값은 물론 목록도 읽지 않았다 |
+| 새 비공개 저장소 | **`investment-system1-kis-private`**(10/31 오너가 앞 하이픈을 빼고 이름을 바꿈. 문서·설정은 새 이름만 쓰고 옛 주소 자동 연결에 기대지 않는다). 지금 내용은 `README.md` 하나. 워크플로·자료 없음. Secrets(`KIS_APP_KEY`·`KIS_APP_SECRET`)는 오너가 등록했다고 했고, 세션은 값은 물론 목록도 읽지 않았다 |
 | 기존 Worker `private-investment-history` | `implementation/worker/src/index.js`. 경로는 `/history` 하나. **이미 본인 전용 인증이 있다:** 브라우저가 보낸 Google OAuth 접근 토큰을 Worker가 Google `tokeninfo`로 서버에서 확인하고, `aud`(앱의 OAuth 클라이언트 ID)·`email`(Worker 비밀값 `ALLOWED_EMAIL`)·`email_verified`·만료를 본다. 그 밖에 출처(`Origin`) 확인, 요청 한도(Durable Object, 분당 12회), `Cache-Control: private, no-store`, 로그 끔(`observability enabled=false`). Worker 비밀값: `ALLOWED_EMAIL`·`GOOGLE_CLIENT_ID`·`TIINGO_API_KEY`·`KRX_API_KEY`(KIS 없음). 배포는 공개 저장소의 수동 `private-history-deploy.yml`(기본 가지에서만). 코드를 읽어 확인한 점: 인증이 위쪽(Yahoo 등) 요청보다 먼저 돌고, 실패하면 닫힌다(403/503). 사전 요청(OPTIONS)은 자료 없이 CORS 헤더만 준다. Worker 시험 169개 통과(10/31 전체 시험) |
 | 앱 | 공개 Pages(`kco994553-star.github.io`). CSP `connect-src`에 이 Worker 주소와 Google이 이미 있다. 옛 화면의 Google 로그인은 GIS 토큰 방식(`google-sheet-quotes.js`, 시트용) |
 
@@ -77,6 +77,26 @@
 - 로그인 빈도: 접근 토큰은 1시간이다. 새로고침하면 메모리 토큰이 사라진다. 그때 "비공개 다시 연결"을 한 번 누르면 된다. Google에 로그인된 브라우저라면 비밀번호 없이 창이 열렸다 닫힌다. 시크릿 모드는 창을 닫으면 Google 로그인부터 다시 한다. 아이폰 Safari·안드로이드 Chrome·삼성 인터넷 모두 같은 방식이다(제3자 쿠키를 쓰지 않음). 실제 기기 확인은 배포 뒤 점검표로 한다.
 - 원안(Access)의 "7일에 한 번 코드"보다 자주 누르게 된다. 줄이려면 2단계에서 B(패스키)를 더한다.
 
+### 4.4 Worker 읽기 토큰 — 저장소 하나·읽기 전용·최소 권한, 만료 경고 (10/31 오너)
+
+- 토큰: GitHub **fine-grained** 토큰. Repository access는 `investment-system1-kis-private` 하나, Repository permissions는 **Contents: Read-only**만(Metadata 읽기는 자동). Account 권한 없음. 만료 90일 권장(최대 1년). 폰 절차는 [폰 설정 4~6단계](OWNER_PHONE_SETUP_PRIVATE_AREA_20261031.md).
+- 보관: Cloudflare Worker 비밀값 `PRIVATE_REPO_READ_TOKEN`(이름에 `KIS_`를 쓰지 않음). 만료 날짜는 비밀이 아니므로 Worker 텍스트 변수 `PRIVATE_REPO_READ_TOKEN_EXPIRES_ON`과 비공개 저장소 Actions 변수 `WORKER_READ_TOKEN_EXPIRES_ON`에 적는다.
+- **만료일을 어디서 아나:** GitHub 응답 헤더 `GitHub-Authentication-Token-Expiration`은 fine-grained 토큰에서 실제 만료가 아니라 현재 시각을 돌려준다는 보고가 있어(google/go-github#3708) 쓰지 않는다. 오너가 적은 날짜를 기준으로 미리 경고하고, 실제 거부(GitHub 401)로 만료를 확정한다.
+- 상태와 화면:
+
+| 상태 | 조건 | 화면(비공개 칸) | 상태 파일 |
+| --- | --- | --- | --- |
+| `OK` | 만료 15일 이상 남음 | 평소대로 | `state: OK` |
+| `EXPIRING` | 만료 14일 이내 | 자료는 그대로 보이고, 칸 위에 "비공개 읽기 토큰이 n일 뒤(YYYY-MM-DD) 만료됩니다 · 폰 설정 4~6단계로 바꿔 주세요" | `state: EXPIRING`, 실행 로그에 경고 한 줄(날짜만) |
+| `EXPIRED` | 날짜가 지났거나 GitHub가 401을 줌 | **오류 상태 "오류(토큰 만료)"**(`privatePanel` ERROR, 코드 `TOKEN_EXPIRED`) | `state: EXPIRED` |
+| `REJECTED` | 날짜 전인데 GitHub가 401/403 | 오류 상태 "오류(토큰 거부)"(코드 `TOKEN_REJECTED`, 잘못 붙여 넣음·취소된 토큰) | — |
+| `UNSET` | 비밀값 또는 날짜가 없음 | 오류 상태 "오류(설정 없음)"(코드 `TOKEN_UNSET`) | `state: UNSET` |
+
+  - Worker는 `/kis/status`(인증 필요)로 `{state, expires_on, days_left}`만 준다. 토큰 값·일부는 어디에도 넣지 않는다. GitHub가 응답하지 않으면 만료로 보지 않고 "오류(자료 서버 응답 없음)"로 구분한다.
+  - 상태 파일: 비공개 저장소의 매일 수집 실행이 `status/private-area.json`에 `worker_read_token`(만료일·남은 날·상태)과 수집 결과(개수·코드)를 쓴다. 공개 저장소·Pages에는 상태 파일을 두지 않는다.
+  - 화면 문구는 공통 기반 `privateArea.panelText`의 오류 코드 문구로 둔다(Worker·화면 PR에서 `TOKEN_EXPIRED` → "오류(토큰 만료)" 등을 더한다).
+- 나중 대안(기록): GitHub App 설치 토큰은 1시간짜리를 매번 만들고 앱 개인키는 만료되지 않아 교체가 없다. 대신 Worker가 앱 개인키를 갖고 서명해야 한다.
+
 ### 4.3 중점 검증 (설계 기준, 구현 시험으로 고정)
 
 | 위험 | 막는 방법 | 시험(구현 PR) |
@@ -109,12 +129,12 @@
 
 | 위치 | 지금 내용 | 처리 |
 | --- | --- | --- |
-| #436 설계 5절·11절 4~6단계·17.5절 | Cloudflare Access 일회용 코드, `kis-auth` Worker, 7일 세션 | 이 문서로 대체 제안. 승인되면 해당 절에 "대체됨"을 적는다 |
-| PRIV 결정 | `PRIV-PAYMENT`(Zero Trust 결제 수단 등록 허용) 승인됨 | 보류로 실효. 새 결정 `PRIV-AUTH-GOOGLE` 필요 |
-| 폰 설정 절차 | 저장소 이름 `investment-system1-kis`, 4~6단계 Zero Trust | 실제 이름(`-investment-system1-kis-private`)으로 고침. 4~6단계는 보류, 대신 Worker 비밀값 1개(읽기 토큰) 추가 단계 |
+| #436 설계 5절·11절 4~6단계·17.5절 | Cloudflare Access 일회용 코드, `kis-auth` Worker, 7일 세션 | **대체됨(10/31 승인)**. 해당 절에 "대체됨"을 적었다 |
+| PRIV 결정 | `PRIV-PAYMENT`(Zero Trust 결제 수단 등록 허용) 승인됨 | **불필요**로 기록(10/31). `PRIV-AUTH-GOOGLE` 승인 |
+| 폰 설정 절차 | 옛 저장소 이름(하이픈 없는 짧은 이름)·4~6단계 Zero Trust | 새 이름 `investment-system1-kis-private`로 고침. 4~6단계를 Worker 읽기 토큰·만료일 단계로 바꿈 |
 | FUNCTION_STATUS 1-3절(#440) | 비공개 층 = #436 설계, "로그인 필요" 두 종류(시트 / 비공개 Access) | 둘 다 Google 로그인이 된다. 문구 구분("시트 연결 필요" / "비공개 로그인 필요")은 그대로 쓸 수 있다. 토큰은 범위가 달라 따로 받는다 |
-| Notion 관리자 페이지 | "Cloudflare Access 이메일 일회용 코드 + Worker가 Access JWT 직접 검증" | 승인되면 고친다(지금은 바꾸지 않음) |
-| Notion 9. Lab 공통 규칙 | "개인화: 로그인 시 계정 설정, 비로그인 시 기기 설정" | DC-22·2층 표(개인 자료는 기기에만)와 어긋난다. 승인되면 고친다 |
+| Notion 관리자 페이지 | "Cloudflare Access 이메일 일회용 코드 + Worker가 Access JWT 직접 검증" | 고침(10/31, Google 토큰 + Worker 확인) |
+| Notion 9. Lab 공통 규칙 | "개인화: 로그인 시 계정 설정, 비로그인 시 기기 설정" | DC-22·2층 표(개인 자료는 기기에만)와 어긋나서 고침(10/31) |
 | 기능계층 v1.0 | 화면·기능 번호 | 충돌 없음(비공개 칸은 기능을 더하지 않는다) |
 | 가드(#436 첫 구현 PR) | KIS 표지·`/kis/` 경로 공개 금지 | 그대로 맞는다 |
 
@@ -126,10 +146,12 @@
 4. 화면 PR: "비공개 연결" 버튼, privatePanel 상태 연결, 시험.
 5. 이관(설계 20절) 뒤 공개 저장소 KIS Secrets 삭제.
 
-## 8. 결정 요청
+## 8. 결정 (10/31 오너 승인)
 
-| ID | 질문 | 선택지 | 권장 |
-| --- | --- | --- | --- |
-| PRIV-AUTH-GOOGLE | 비공개 구역 인증 방식 | A Google 토큰 + Worker 검증 / B 패스키 / 그 밖 | A로 시작, 필요하면 2단계에 B 추가 |
-| PRIV-REPO-NAME | 저장소 이름 맨 앞 하이픈 | 그대로 / `investment-system1-kis-private`로 이름 변경 | 이름 변경(명령줄에서 옵션으로 오인될 수 있음). 바꾸면 GitHub가 옛 주소를 넘겨 준다 |
-| PRIV-CODEX-WF-OFF | 이관 전까지 Codex KIS 워크플로 2개 | Actions 화면에서 끔 / 그대로 | 끔(삭제 아님. 파일을 바꿔야만 돌지만 실수 방지) |
+| ID | 결정 |
+| --- | --- |
+| PRIV-AUTH-GOOGLE | A(Google 토큰 + Worker 확인)로 시작. 패스키는 나중 |
+| PRIV-REPO-NAME | `investment-system1-kis-private`로 변경(오너가 함). 문서·워크플로·Worker 설정은 새 이름만 쓴다 |
+| PRIV-CODEX-WF-OFF | Codex KIS 워크플로 2개를 오너가 끈다(삭제 아님) |
+| PRIV-PAYMENT | 불필요(Zero Trust를 쓰지 않음) |
+| 공개 저장소 KIS Secrets | 쓰는 곳은 Codex 연구 가지 워크플로 2개뿐 → 지워도 됨(오너가 지움) |
