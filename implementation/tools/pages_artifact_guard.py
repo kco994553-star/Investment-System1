@@ -256,7 +256,10 @@ SECRET_PATTERNS = (
 # only, nothing above is relaxed: "공개 저장소, Pages, 공개 Actions 로그·결과물에는 KIS 자료를 절대 넣지 않는다."
 # - kis_markers: any KIS host, KIS TR id or KIS Secret name, in the raw text of every text file and in every decoded JSON key
 #   and string (a JSON escape cannot hide it). TR ids: the quotation families (5 letters + 8 digits, e.g. the overseas period
-#   quote of design §3.2) and the order / balance families (4 letters + 4 digits + 1 letter), any letter case.
+#   quote of design §3.2) and the order / balance families KIS_ORDER_TR_FAMILIES (4 letters + 4 digits + 1 letter), any letter
+#   case. An order / balance id counts only when no letter or digit touches it on either side (security review B3, 10/31):
+#   real ids are delimited (quotes, `=`, spaces), while long base64 such as company-logos.json could otherwise contain one by
+#   chance and fail a daily deploy.
 # - private_area_schema: a schema name with the `kis-` or `private-` prefix. JSON: the value of any schema / schema_version key
 #   at any depth. Other text (code): a versioned schema name `kis-…/N` / `private-…/N` or a `schema: '…'` assignment. The one
 #   exception is the existing device price-history Worker answer `private-history/1` (/history path, device RAM only, older
@@ -264,14 +267,21 @@ SECRET_PATTERNS = (
 # - private_area_paths: the private Worker paths /kis/*, /lab/*, /private/*. Code: `/kis/`, `/lab/`, `/private/`, or `/kis` /
 #   `/private` right before a quote, `?` or `#` (`'/lab'` alone stays: it is the app's own hash route). JSON strings: a URL or
 #   path whose FIRST path segment is one of them (a third-party link with a deeper `/lab/` segment, e.g. a news article, is
-#   not a private Worker path).
+#   not a private Worker path). An absolute URL (`scheme://host/...` or `//host/...`) counts only when its host is a Worker
+#   host (`*.workers.dev`) or the Pages origin PAGES_ORIGIN_HOST; a relative path always counts (security review B3, 10/31:
+#   a news link such as `https://<publisher>/lab/<story>` in news-signals.json is not a private Worker path).
 # The patterns below are matched against casefolded text (any letter case counts); call the helpers, not the patterns.
 KIS_HOST = re.compile(r"koreainvestment\.com")
-KIS_TR_ID = re.compile(r"(?:hhdfs|hhkst|fhkst|fhksw|fhpst|fhkup)\d{8}|(?:tttc|vttc|ttts|vtts|jttt|vttt|ctrp|vtrp)\d{4}[a-z]")
+KIS_QUOTE_TR_FAMILIES = ("hhdfs", "hhkst", "fhkst", "fhksw", "fhpst", "fhkup")
+# A literal copy of investment_system.private_area.kis_routes.ORDER_TR_FAMILIES (public workflows never import that package);
+# tests/test_research_request.py asserts the two tuples are equal, so the guard and the route gate cannot drift apart.
+KIS_ORDER_TR_FAMILIES = ("TTTC", "VTTC", "TTTS", "VTTS", "TTTT", "VTTT", "JTTT", "TTTO", "VTTO", "CTRP", "VTRP", "CTSC", "CTOS")
+_ORDER_TR_FOLDED = tuple(family.casefold() for family in KIS_ORDER_TR_FAMILIES)
+KIS_TR_ID = re.compile(r"(?:" + "|".join(KIS_QUOTE_TR_FAMILIES) + r")\d{8}"
+                       r"|(?<![a-z0-9])(?:" + "|".join(_ORDER_TR_FOLDED) + r")\d{4}[a-z](?![a-z0-9])")
 KIS_SECRET_NAME = re.compile(r"kis_app_?(?:key|secret)")  # the two KIS Secret names, with or without the second underscore
 KIS_MARKERS = (KIS_HOST, KIS_TR_ID, KIS_SECRET_NAME)
-_KIS_HINTS = ("koreainvestment", "kis_app", "hhdfs", "hhkst", "fhkst", "fhksw", "fhpst", "fhkup",
-              "tttc", "vttc", "ttts", "vtts", "jttt", "vttt", "ctrp", "vtrp")  # literal prefilter, same coverage
+_KIS_HINTS = ("koreainvestment", "kis_app") + KIS_QUOTE_TR_FAMILIES + _ORDER_TR_FOLDED  # literal prefilter, same coverage
 PRIVATE_SCHEMA_PREFIXES = ("kis-", "private-")
 # (the two schema patterns run on the original text with IGNORECASE, so the legacy exception sees the real spelling)
 PRIVATE_SCHEMA_NAME = re.compile(r"(?i)(?<![a-z0-9_-])(?:kis|private)-[a-z0-9][a-z0-9_.-]*/\d+")
@@ -280,7 +290,13 @@ LEGACY_PRIVATE_SCHEMA = "private-history/1"
 LEGACY_PRIVATE_SCHEMA_FILES = frozenset({"chart-bars.js", "chart-workbench.js", "price-store.js", "private-history.js",
                                          "virtual-trading-runner.js", "worker-quote-fallback.js"})
 PRIVATE_PATH_CODE = re.compile(r"/(?:kis|lab|private)/|/(?:kis|private)(?=[\"'`?#])")
-PRIVATE_PATH_VALUE = re.compile(r"(?:^|[\s\"'(<\[,;=])(?:(?:[a-z][a-z0-9+.-]*:)?//[^/?#\s\"'<>]*)?/(?:kis|lab|private)(?![a-z0-9_.-])")
+# group 1 = the `scheme://authority` / `//authority` part of an absolute URL (absent for a relative path), group 2 = authority.
+PRIVATE_PATH_VALUE = re.compile(r"(?:^|[\s\"'(<\[,;=])((?:[a-z][a-z0-9+.-]*:)?//([a-z0-9._~%@:\[\]-]*))?"
+                                r"/(?:kis|lab|private)(?![a-z0-9_.-])")
+PAGES_ORIGIN_HOST = "kco994553-star.github.io"
+# If the private Worker ever gets a custom domain, add that host here in the same PR (a custom-domain /kis/ URL in a JSON
+# string would otherwise pass this one check; code files are still caught by PRIVATE_PATH_CODE).
+PRIVATE_URL_HOST = re.compile(r"(?:[a-z0-9-]+\.)*workers\.dev|" + re.escape(PAGES_ORIGIN_HOST))
 _PATH_HINTS = ("/kis", "/lab", "/private")
 
 
@@ -313,10 +329,19 @@ def private_code_paths(text: str, folded: str | None = None) -> int:
     return len(PRIVATE_PATH_CODE.findall(folded))
 
 
+def _private_url_host(authority: str) -> bool:
+    host = authority.rsplit("@", 1)[-1]                        # drop user info
+    host = re.sub(r":[0-9]*$", "", host).rstrip(".")           # drop the port and a trailing root dot
+    return PRIVATE_URL_HOST.fullmatch(host) is not None
+
+
 def private_value_path(value: str) -> bool:
-    """A JSON string that is, or contains, a URL / path whose first path segment is /kis, /lab or /private."""
+    """A JSON string that is, or contains, a relative path whose first segment is /kis, /lab or /private, or an absolute URL
+    with such a first segment on a Worker host (*.workers.dev) or the Pages origin (see the notes above)."""
     folded = value.casefold()
-    return any(hint in folded for hint in _PATH_HINTS) and PRIVATE_PATH_VALUE.search(folded) is not None
+    if not any(hint in folded for hint in _PATH_HINTS):
+        return False
+    return any(match.group(1) is None or _private_url_host(match.group(2)) for match in PRIVATE_PATH_VALUE.finditer(folded))
 
 
 def _private_area_text(name: str, text: str, violations: Counter) -> bool:

@@ -20,8 +20,12 @@ import re
 from types import MappingProxyType
 
 FORBIDDEN_ROUTE_WORDS = ("order", "trading", "balance", "account")
-# KIS order / balance / account TR families (domestic and overseas orders and balances, and their paper-trading twins).
-FORBIDDEN_TR_FAMILIES = re.compile(r"(?i)(?:TTTC|VTTC|TTTS|VTTS|JTTT|VTTT|CTRP|VTRP|CTSC|CTOS)[0-9]{4}[A-Z]")
+# KIS order / balance / account TR families: domestic and overseas (US: TTTT) stock orders, domestic futures / options orders
+# (TTTO), balances and account inquiries, and their paper-trading twins (V...). The one source of the families: the route gate
+# below and the Pages guard's KIS_TR_ID (tools/pages_artifact_guard.py keeps a literal copy, KIS_ORDER_TR_FAMILIES, because
+# public workflows never import this package; tests/test_research_request.py asserts the two are equal).
+ORDER_TR_FAMILIES = ("TTTC", "VTTC", "TTTS", "VTTS", "TTTT", "VTTT", "JTTT", "TTTO", "VTTO", "CTRP", "VTRP", "CTSC", "CTOS")
+FORBIDDEN_TR_FAMILIES = re.compile(r"(?i)(?:" + "|".join(ORDER_TR_FAMILIES) + r")[0-9]{4}[A-Z]")
 _PATH = re.compile(r"/[a-z0-9]+(?:[/-][A-Za-z0-9]+)*")
 
 ROUTES = MappingProxyType({

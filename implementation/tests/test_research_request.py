@@ -6,6 +6,7 @@ run time so this file carries no marker (tests/test_private_boundary_static.py s
 import ast
 import copy
 import datetime as dt
+import importlib.util
 import json
 from pathlib import Path
 import subprocess
@@ -62,11 +63,14 @@ def test_limits_are_inclusive():
     symbols = ["S" + "".join(chr(65 + (i // 26 ** k) % 26) for k in range(3)) for i in range(rr.MAX_SYMBOLS)]
     assert len(set(symbols)) == rr.MAX_SYMBOLS
     start = dt.date(2015, 10, 31)
-    value = with_(symbols=symbols, period={"start": start.isoformat(),
-                                           "end": (start + dt.timedelta(days=rr.MAX_PERIOD_DAYS)).isoformat()},
-                  purpose="ab" + " ab" * 39 + "c")
+    longest = {"start": start.isoformat(), "end": (start + dt.timedelta(days=rr.MAX_PERIOD_DAYS)).isoformat()}
+    # Security review A8 (10/31): MAX_SYMBOLS and MAX_PERIOD_DAYS together would cost about 16,000 calls, over the cost cap;
+    # each limit is still inclusive on its own (600 symbols over one page, the longest period for 3 symbols).
+    value = with_(symbols=symbols, period={"start": "2025-06-02", "end": "2025-10-17"}, purpose="ab" + " ab" * 39 + "c")
     assert len(value["purpose"]) == rr.PURPOSE_MAX_CHARS
     validate_request(value, today=TODAY)
+    validate_request(with_(period=longest), today=TODAY)
+    refused(with_(symbols=symbols, period=longest), "REQUEST_TOO_COSTLY")
     validate_request(with_(period={"start": rr.MIN_START.isoformat(), "end": "2009-12-31"}), today=TODAY)
     validate_request(with_(period={"start": "2026-10-31", "end": "2026-10-31"}, request_id="rr-20261031-same-day"), today=TODAY)
     ahead = (TODAY + dt.timedelta(days=rr.DAILY_MAX_AHEAD_DAYS)).isoformat()
@@ -274,6 +278,71 @@ def test_plan_needs_a_validated_request():
                            items=("daily_raw",), frequency="once", purpose="monthly rebalance")
 
 
+# ---- cost (security review A8, 10/31) ----------------------------------------------------------------------------------------
+def symbols_n(n):
+    return ["S" + "".join(chr(65 + (i // 26 ** k) % 26) for k in range(3)) for i in range(n)]
+
+
+def test_weekdays_bound_trading_days():
+    assert rr.weekdays(dt.date(2026, 10, 26), dt.date(2026, 11, 1)) == 5          # Mon..Sun
+    assert rr.weekdays(dt.date(2026, 10, 31), dt.date(2026, 11, 1)) == 0          # a weekend
+    assert rr.weekdays(dt.date(2025, 1, 1), dt.date(2025, 12, 31)) == 261         # NYSE had 250 trading days in 2025
+    assert rr.weekdays(dt.date(2026, 11, 2), dt.date(2026, 11, 1)) == 0
+    for start in (dt.date(2024, 2, 26) + dt.timedelta(days=k) for k in range(9)):
+        for length in range(0, 30):
+            end = start + dt.timedelta(days=length)
+            brute = sum(1 for k in range(length + 1) if (start + dt.timedelta(days=k)).weekday() < 5)
+            assert rr.weekdays(start, end) == brute
+
+
+@pytest.mark.parametrize("items,series", [(["daily_raw", "volume"], 1),
+                                          (["daily_raw", "daily_adjusted_crosscheck", "dollar_volume"], 2)])
+def test_plan_reports_estimated_calls(items, series):
+    request = validate_request(with_(items=items), today=TODAY)          # 3 symbols, 2016-01-04..2025-12-31
+    pages = -(-rr.weekdays(dt.date(2016, 1, 4), dt.date(2025, 12, 31)) // 100)
+    assert pages == 27
+    calls = plan(request)
+    assert calls.estimated_calls == 3 * series * pages
+    assert all(c["pages"] == pages and c["fetch"] == "BACKFILL" for c in calls[1:-1])
+    assert "pages" not in calls[0] and "pages" not in calls[-1]
+
+
+def test_cost_cap_is_inclusive_and_refuses_above_it():
+    start = dt.date(2023, 1, 2)                                            # a Monday; 100 full weeks = 500 weekdays
+    at_cap = {"start": start.isoformat(), "end": (start + dt.timedelta(days=699)).isoformat()}
+    above = {"start": start.isoformat(), "end": (start + dt.timedelta(days=700)).isoformat()}
+    both = ["daily_raw", "daily_adjusted_crosscheck"]
+    request = validate_request(with_(symbols=symbols_n(600), period=at_cap, items=both), today=TODAY)
+    assert plan(request).estimated_calls == 600 * 2 * 5 == rr.MAX_ESTIMATED_CALLS
+    refused(with_(symbols=symbols_n(600), period=above, items=both), "REQUEST_TOO_COSTLY")
+    validate_request(with_(symbols=symbols_n(600), period=above, items=["daily_raw"]), today=TODAY)   # 600 x 1 x 6
+    with pytest.raises(ResearchRequestError) as caught:
+        parse_request(json.dumps(with_(symbols=symbols_n(600), period=above, items=both)).encode(), today=TODAY)
+    assert caught.value.code == "REQUEST_TOO_COSTLY"
+    with pytest.raises(ResearchRequestError) as caught:            # building the dataclass directly is refused too
+        rr.ResearchRequest(request_id="rr-20261031-x", symbols=tuple(symbols_n(600)), start=start,
+                           end=start + dt.timedelta(days=700), items=tuple(both), frequency="once", purpose="cost check")
+    assert caught.value.code == "REQUEST_TOO_COSTLY"
+
+
+def test_daily_request_after_its_backfill_fetches_only_the_newest_page():
+    daily = validate_request(with_(frequency="daily", items=["daily_raw", "daily_adjusted_crosscheck"],
+                                   period={"start": "2018-01-02", "end": "2027-06-30"}), today=TODAY)
+    first = plan(daily)
+    assert first.estimated_calls == 3 * 2 * first[1]["pages"] and first[1]["pages"] > 1
+    later = plan(daily, backfill_done=True)
+    assert [c["route"] for c in later] == [c["route"] for c in first]
+    assert all(c["pages"] == 1 and c["fetch"] == "NEWEST_PAGE" for c in later[1:-1])
+    assert later.estimated_calls == 3 * 2
+    assert all(require_route(c) == c["route"] for c in later)
+    once = validate_request(base(), today=TODAY)
+    for state, code in ((True, "REQUEST_ALREADY_DONE"), (1, "PLAN_BACKFILL_STATE_INVALID"),
+                        ("yes", "PLAN_BACKFILL_STATE_INVALID")):
+        with pytest.raises(ResearchRequestError) as caught:
+            plan(once if state is True else daily, backfill_done=state)
+        assert caught.value.code == code
+
+
 # ---- the route allow list ------------------------------------------------------------------------------------------------
 def test_allow_list_is_token_issue_revoke_and_one_quotation_route():
     assert set(kis_routes.ROUTES) == {"TOKEN_ISSUE", "TOKEN_REVOKE", "OVERSEAS_DAILY_PRICE"}
@@ -320,7 +389,8 @@ def test_word_refusal_holds_even_if_the_allow_list_is_edited(monkeypatch, path):
 
 
 @pytest.mark.parametrize("tr_id", ["TTTC" + "0802U", "VTTC" + "0802U", "JTTT" + "1002U", "TTTS" + "3012R", "CTRP" + "6504R",
-                                   "VTRP" + "6504R", "tttc" + "0801u"])
+                                   "VTRP" + "6504R", "tttc" + "0801u", "TTTT" + "1002U", "TTTT" + "1006U", "TTTO" + "1101U",
+                                   "VTTO" + "1101U", "CTSC" + "9115R", "CTOS" + "4001R"])
 def test_order_and_balance_tr_ids_are_refused(tr_id):
     with pytest.raises(KisRouteError) as caught:
         require_route(quote_descriptor(tr_id=tr_id))
@@ -356,6 +426,18 @@ def test_parameter_words_are_checked_too():
         with pytest.raises(KisRouteError) as caught:
             require_route(quote_descriptor(params=params))
         assert caught.value.code == "ROUTE_FORBIDDEN_WORD"
+
+
+def test_order_tr_families_have_one_source():
+    # Security review B4 (10/31): the Pages guard keeps a literal copy (public workflows never import this package).
+    guard_path = PACKAGE.parents[2] / "tools" / "pages_artifact_guard.py"
+    spec = importlib.util.spec_from_file_location("guard_for_families", guard_path)
+    guard = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(guard)
+    assert guard.KIS_ORDER_TR_FAMILIES == kis_routes.ORDER_TR_FAMILIES
+    assert len(set(kis_routes.ORDER_TR_FAMILIES)) == len(kis_routes.ORDER_TR_FAMILIES)
+    for family in kis_routes.ORDER_TR_FAMILIES:
+        assert kis_routes.FORBIDDEN_TR_FAMILIES.fullmatch(family + "1234A") and guard.kis_marker_count(family + "1234A") == 1
 
 
 # ---- purity ----------------------------------------------------------------------------------------------------------------

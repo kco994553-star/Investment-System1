@@ -3,6 +3,7 @@ import contextlib
 from collections import Counter
 from copy import deepcopy
 import importlib.util
+import base64
 import io
 import json
 import os
@@ -790,10 +791,17 @@ class PagesArtifactGuardTests(unittest.TestCase):
 
     def test_private_worker_paths_fail_in_json_values_even_when_escaped(self):
         original = (self.baseline / "data.json").read_text(encoding="utf-8")
+        # Security review B3 (10/31): an absolute URL counts only on a Worker host or the Pages origin; relative paths always.
+        # ("see https://x.invalid/LAB/y" moved from failing to passing with that rule; the same text on the Worker host and on
+        # the Pages origin still fails.)
         failing = ("/k" + "is/us-daily", "https://x.workers.dev/k" + "is/us-daily", "//x.workers.dev/lab" + "/backtest",
-                   "/priv" + "ate", "see https://x.invalid/LAB" + "/y", "/k" + "is?x=1")
+                   "/priv" + "ate", "see https://x.workers.dev/LAB" + "/y", "/k" + "is?x=1",
+                   "see https://kco994553-star.github.io/LAB" + "/y", "HTTPS://A.B.Workers.Dev:443/priv" + "ate/x",
+                   "https://example.invalid/news, /k" + "is/us-daily")
         passing = ("https://news.invalid/en-us/research/lab/x", "https://ex.invalid/private-equity/x", "public/private",
-                   "lab results")
+                   "lab results", "see https://x.invalid/LAB" + "/y", "https://www.example.com/lab" + "/2026/10/chip-story",
+                   "https://ir.example.invalid/k" + "is/annual-report", "//cdn.example.invalid/priv" + "ate/x",
+                   "https://workers.dev.example.invalid/k" + "is/x", "https://x.workers.dev" + "@" + "news.invalid/lab" + "/x")  # user info split: no address-shaped literal (EMAIL_PATTERN)
         for value in failing + passing:
             for escaped in (False, True):
                 with self.subTest(value=value, escaped=escaped):
@@ -805,6 +813,52 @@ class PagesArtifactGuardTests(unittest.TestCase):
                     count = self.check("data.json", text.encode())["private_area_paths"]
                     self.assertEqual(count, 1 if value in failing else 0)
 
+    def test_news_link_with_a_lab_first_segment_passes_and_the_worker_kis_url_fails(self):
+        # Security review B3 (10/31): the live news-signals.json can hold any publisher link; only the Worker host counts.
+        guard = self.guard()
+        news = "https://www.example.com/lab" + "/2026/10/chip-story"
+        worker = "https://private-investment-history.example-account.workers.dev/k" + "is/us-daily"
+        self.assertFalse(guard.private_value_path(news))
+        self.assertTrue(guard.private_value_path(worker))
+        original = (self.baseline / "data.json").read_text(encoding="utf-8")
+        for link, expected in ((news, 0), (worker, 1)):
+            with self.subTest(link=link):
+                data = json.loads(original)
+                data["nested"] = {"articles": [{"url": link, "title": "x"}]}
+                self.assertEqual(self.check("data.json", json.dumps(data).encode())["private_area_paths"], expected)
+
+    def test_order_tr_ids_need_a_delimiter_so_random_base64_scores_zero(self):
+        guard = self.guard()
+        # 2 MB of deterministic random base64 (the company-logos.json shape) carries no KIS marker.
+        blob = base64.b64encode(random_bytes(1_500_000, seed=20261031)).decode("ascii")
+        self.assertGreaterEqual(len(blob), 2_000_000)
+        self.assertEqual(guard.kis_marker_count(blob), 0)
+        order = "TTTC" + "0802U"
+        for text in (order, "tr_id=" + order, "'" + order + "'", '"' + order.lower() + '"', "x " + order + "\n",
+                     "+" + order + "/"):
+            with self.subTest(text=text):
+                self.assertEqual(guard.kis_marker_count(text), 1)
+        for text in ("x" + order, order + "9", "A" + order + "b"):     # touched by a letter or digit: not an id
+            with self.subTest(text=text):
+                self.assertEqual(guard.kis_marker_count(text), 0)
+        self.assertEqual(guard.kis_marker_count("HHDFS" + "76240000const"), 1)   # quotation ids keep the old match
+
+    def test_order_tr_families_match_the_route_gate_and_catch_every_family(self):
+        guard = self.guard()
+        from investment_system.private_area import kis_routes
+        self.assertEqual(guard.KIS_ORDER_TR_FAMILIES, kis_routes.ORDER_TR_FAMILIES)
+        # Security review B4 (10/31): US orders, futures / options orders and the account inquiries the guard missed.
+        for tr_id in ("TTTT" + "1002U", "TTTT" + "1006U", "TTTO" + "1101U", "CTSC" + "9115R", "CTOS" + "4001R",
+                      "VTTO" + "1101U"):
+            with self.subTest(tr_id=tr_id):
+                self.assertEqual(guard.kis_marker_count("tr_id: " + tr_id), 1)
+                self.assertGreater(self.check("app.js", (self.baseline / "app.js").read_bytes()
+                                              + ("\n'" + tr_id + "'\n").encode())["kis_markers"], 0)
+        for family in kis_routes.ORDER_TR_FAMILIES:
+            with self.subTest(family=family):
+                self.assertEqual(guard.kis_marker_count(family + "0001A"), 1)
+                self.assertIsNotNone(kis_routes.FORBIDDEN_TR_FAMILIES.search(family + "0001A"))
+
     def test_private_area_markers_fail_the_tar_mode_with_the_same_receipt(self):
         (self.site / "app.js").write_bytes((self.baseline / "app.js").read_bytes()
                                            + ("\n" + self.KIS_CANARIES[2] + self.PRIVATE_SCHEMA_CANARIES[0]
@@ -813,6 +867,11 @@ class PagesArtifactGuardTests(unittest.TestCase):
         for category in ("kis_markers", "private_area_schema", "private_area_paths"):
             self.assertGreater(receipt["violations"].get(category, 0), 0)
         self.assertEqual(self.tar_receipt(self.make_tar()), receipt)
+
+
+def random_bytes(size, seed):
+    import random
+    return random.Random(seed).randbytes(size)
 
 
 if __name__ == "__main__":
