@@ -6,7 +6,7 @@
 
 ## 0. 역할·지금 관리할 흐름
 
-역할은 **DC-32(10/31)**: 병합·공용 파일·워크플로·`docs/SPEC`·인수인계·결정 문서는 Main만. 화면 세션(Frontend)은 [START_HERE 4절](START_HERE.md#4-파일-담당표-2026-10-31-dc-32) 담당 화면 파일만 바꾸고 Draft PR까지만. Codex는 연구 가지와 문서만. Frontend·Codex PR은 Main이 canonical 동기화·CI 녹색·담당 파일만 바뀜을 확인하고 오너 승인 뒤 병합한다.
+역할은 **DC-35(10/31 밤 개정, 흐름 셋)**: 코드·공용 파일·워크플로·`docs/SPEC`·병합·인수인계·결정 기록·DC 번호 부여는 Main(Claude Code)만. **Codex**는 백테스트 연구(French 요인 대리 검증)와 재구성 결과 감사, 연구 가지와 문서만. **GPT Work**는 문서 조사·정리와 Notion 정리, `docs/` 가지의 Draft PR만(예: #443). 다른 흐름의 PR이 DC 번호·결정 기록을 직접 바꾸면 Main이 번호를 다시 매겨 반영한다. Codex·GPT Work PR은 Main이 canonical 동기화·CI 녹색·담당 파일만 바뀜을 확인하고 오너 승인 뒤 병합한다. 담당표: [START_HERE 4절](START_HERE.md).
 
 | 흐름 / 기능번호 | Main 이행 | 현재 상태 |
 | --- | --- | --- |
@@ -19,7 +19,7 @@
 
 | PR·작업 | 담당 | 시작 (UTC) |
 | --- | --- | --- |
-| 이 문서 PR(DC-35 개발 체계 Main + Codex·#434 대체·lab-backtest-v1 계약 기록) | Claude Code Main | 10/31 08:05 |
+| 이 문서 PR(DC-35 개발 체계 — 밤 개정으로 흐름 셋 Main·Codex·GPT Work·#434 대체·lab-backtest-v1 계약 기록) | Claude Code Main | 10/31 08:05 |
 | 표 PR(공개 + 비공개 2층 구조 표·DC-36, `claude/public-private-two-layer-table`, 이 문서 PR 위) | Claude Code Main | 10/31 08:50 |
 | 전진검증 v3 설계 PR(DC-38, `claude/forward-validation-v3-design`, 표 PR 위) | Claude Code Main | 10/31 10:20 |
 | 공통 기반 PR(기업 목록 공통 접근·Lab 판독기·비공개 기능 상태·`parts.privatePanel`, `claude/web-app-common-base`, base = canonical) | Claude Code Main | 10/31 08:10 |
@@ -63,7 +63,7 @@
 
 | PR | 요지 | 상태 | 오너 승인·조건 |
 | --- | --- | --- | --- |
-| 이 문서 PR | DC-35 개발 체계(Main + Codex)·결정 문서·lab-backtest-v1 계약, START_HERE 담당표, 오늘 인수인계·기능 현황, GSQ-025 보충(#434 커밋 포함) | CI 확인 | 문서 병합 승인 필요 |
+| 이 문서 PR | DC-35 개발 체계(밤 개정: Main·Codex·GPT Work 셋)·결정 문서·lab-backtest-v1 계약, START_HERE 담당표, 오늘 인수인계·기능 현황, GSQ-025 보충(#434 커밋 포함) | CI 확인 | 문서 병합 승인 필요 |
 | [#434](https://github.com/kco994553-star/Investment-System1/pull/434) | DC-32 병렬 진행 체계(시행 전 대체) | 대체 종료 | 이 PR이 대체(이력 보존) |
 | [#436](https://github.com/kco994553-star/Investment-System1/pull/436) | 설계: 1인 비공개 구역(KIS 한정), DC-34·GSQ-027 제안, 오너 폰 설정 절차, KIS 문의 초안 | CI 확인 | **설계 승인 필요**(`PRIV-*` 7개). 구현은 승인 뒤 |
 | [#439](https://github.com/kco994553-star/Investment-System1/pull/439) | 기기 V 폐지 1b: 옛 화면은 중앙 V만, 기기 V·V 이력·가치 패널 제거, direction guard DC-31a~d | CI 녹색 | **병합**(`5e16d3e6`, 10/31 오너 승인) |
