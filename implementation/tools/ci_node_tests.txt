@@ -76,3 +76,4 @@ web_app_common_base_node_test.js  # new frontend common base: IS2.companies (one
 web_app_prompts_node_test.js  # new frontend feature 7: prompt pack equals the Frozen catalog, check() = old plvCheck, filter() = old list()
 web_app_technical_node_test.js  # new frontend feature 3: pattern-rules/1 copy = pattern-config-defaults.js, SMA port = ResearchIndicators, chart geometry, note / scenario builders, store.chartNotes (ChartWorkbench key, schema, validator; click-only writes)
 web_app_news_node_test.js  # new frontend feature 5: list / filter / new-repeat / collection-state ports equal the old news-signals.js, sec-disclosures.js, dart-disclosures.js functions
+web_app_lab_node_test.js  # new frontend feature 9 Lab: panel plan from IS2.lab.validate only, metrics with nullText, curve geometry, ledger table / evidence = old forward-validation reader

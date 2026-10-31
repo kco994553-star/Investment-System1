@@ -99,3 +99,4 @@ web_app_prompts_browser_test.js  # new frontend feature 7 프롬프트 라이브
 web_app_tree_browser_test.js  # new frontend feature 8 구조 트리: spec hierarchy, registry statuses, WAI-ARIA tree keyboard, states, reads nothing
 web_app_technical_browser_test.js  # new frontend menu 2 기술적 분석: split first paint, company pick through IS2.companies, verdicts on hold, two private panels NOT_READY, click-only device bars (RAM, [data-ram-price]), notes and scenarios kept on this device, states, boundaries
 web_app_news_browser_test.js  # new frontend feature 5 뉴스·공시·관계망: public lists and filters, collection state, 관계 자료 미연결 centre, ★ on this device, one private panel, tree facts, states, boundaries
+web_app_lab_browser_test.js  # new frontend feature 9 Lab: 9.1 public words + checklist, private panel states with lab-backtest-v1 fixtures (normal/empty/404/schema/missing/null/SYNTHETIC/MIXED/PIT/login, curve refusals), 9.2 price-free ledger, partial failure, split first paint, boundaries
