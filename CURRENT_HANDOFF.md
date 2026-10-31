@@ -19,7 +19,6 @@
 
 | PR·작업 | 담당 | 시작 (UTC) |
 | --- | --- | --- |
-| PR-1b 옛 화면 기기 V 제거·DCF 패널 제거·direction guard 규칙(`claude/device-v-abolition-1b`, push 전) | Claude Code Main | 10/31 03:17 |
 | 이 문서 PR(DC-35 개발 체계 Main + Codex·#434 대체·lab-backtest-v1 계약 기록) | Claude Code Main | 10/31 08:05 |
 | 공통 기반 PR(기업 목록 공통 접근·Lab 판독기·비공개 기능 상태, `claude/web-app-common-base`, base = #435 가지) | Claude Code Main | 10/31 08:10 |
 | 묶음 1 PR(매크로·프롬프트·트리, `claude/web-app-bundle-1`, base = #435 가지) | Claude Code Main | 10/31 08:10 |
@@ -34,7 +33,7 @@
 | #429 → #431 병합 | #429 01:10(`b10b841a`), #431 02:24(`32cc3ffd`). #430은 #417 담당 확인 뒤 |
 | 비공개 구역·유료 공급처 | 불필요로 기록(#431, GSQ-025 보충은 이 PR). **같은 날 뒤 결정으로 비공개 구역은 "1인 비공개 구역 신설(KIS 한정)"로 바뀜**(#436). 유료 공급처 V·유료 공급처 비교는 계속 하지 않음 |
 | 확장 결정 | `IEX-EXP-ADV` 기준 제외, `IEX-EXP-BUILD` PR 3개, `IEX-EXP-FORMAT` 정밀값·승격 뒤 공개(#431) |
-| 기기 V 폐지 | DC-31(#431). PR-1a [#435](https://github.com/kco994553-star/Investment-System1/pull/435)(새 앱 공식 V 판독기, 승인 대기), PR-1b(옛 화면) 진행 |
+| 기기 V 폐지 | DC-31(#431). PR-1a [#435](https://github.com/kco994553-star/Investment-System1/pull/435) **병합**(`44cd0b43`, 새 앱 공식 V 판독기). PR-1b [#439](https://github.com/kco994553-star/Investment-System1/pull/439)(옛 화면, 전체 시험 통과, 승인 대기). TARGET 경로는 11/16 PR |
 | 병렬 진행 체계 | DC-32·WORKING_RULES·START_HERE 담당표(이 PR) |
 | #426 | 필요한 원칙만 #431로 옮기고 닫음 |
 | 측정용 가지 | 오너가 지움(세션 삭제 권한 없음) |
@@ -46,6 +45,7 @@
 
 | PR | 내용 | UTC | merge SHA |
 | --- | --- | --- | --- |
+| [#435](https://github.com/kco994553-star/Investment-System1/pull/435) | 기기 V 폐지 1a: 새 앱 공식 V 판독기(`qgv.js` OFFICIAL_READER)·`qgv-scores.js` 게시본 모드, 자료층 브라우저 시험의 명시적 대기(DC-31, 새 앱 미배포) | 10-31 07:56:53 | `44cd0b43` |
 | [#431](https://github.com/kco994553-star/Investment-System1/pull/431) | IEX 확장 측정·설계·결정, DC-30·DC-31, 10/30·10/31 결정 기록, #426 이관 | 10-31 02:24:04 | `32cc3ffd` |
 | [#429](https://github.com/kco994553-star/Investment-System1/pull/429) | GSQ-025·DC-29 결정 기록 | 10-31 01:10:59 | `b10b841a` |
 | [#428](https://github.com/kco994553-star/Investment-System1/pull/428) | PSKY 주식수 사건 뒤 공식 V 보류 | 10-31 00:18:42 | `61709bb7` |
@@ -64,7 +64,7 @@
 | 이 문서 PR | DC-35 개발 체계(Main + Codex)·결정 문서·lab-backtest-v1 계약, START_HERE 담당표, 오늘 인수인계·기능 현황, GSQ-025 보충(#434 커밋 포함) | CI 확인 | 문서 병합 승인 필요 |
 | [#434](https://github.com/kco994553-star/Investment-System1/pull/434) | DC-32 병렬 진행 체계(시행 전 대체) | 대체 종료 | 이 PR이 대체(이력 보존) |
 | [#436](https://github.com/kco994553-star/Investment-System1/pull/436) | 설계: 1인 비공개 구역(KIS 한정), DC-34·GSQ-027 제안, 오너 폰 설정 절차, KIS 문의 초안 | CI 확인 | **설계 승인 필요**(`PRIV-*` 7개). 구현은 승인 뒤 |
-| [#435](https://github.com/kco994553-star/Investment-System1/pull/435) | PR-1a 기기 V 폐지: 새 앱 `qgv.js` 공식 V 판독기, `qgv-scores.js` 게시본 모드(DC-31). 라이브 화면 동작은 같음 | CI 확인 | **병합 승인 필요** |
+| [#439](https://github.com/kco994553-star/Investment-System1/pull/439) | 기기 V 폐지 1b: 옛 화면은 중앙 V만, 기기 V·V 이력·가치 패널 제거, direction guard DC-31a~d | CI 확인(#435 병합 뒤 canonical 위) | **병합 승인 필요** |
 | [#433](https://github.com/kco994553-star/Investment-System1/pull/433) | GSQ-026·DC-33 가격 표시 결정 기록(공개 IEX 마지막 체결가, 클릭 전용 폐지 범위) | CI 확인 | **결정 승인 필요**. 구현은 승인 뒤 |
 | [#432](https://github.com/kco994553-star/Investment-System1/pull/432) | Codex 연구 `[WIP]` BT-DATA-PILOT v0.6(Alpaca OHLCV·IEX 빈 응답) | Draft | DC-32 연구 가지. 병합 전 Main 확인(담당 파일·CI·자료 권리) + 오너 승인 |
 | [#430](https://github.com/kco994553-star/Investment-System1/pull/430) | #417 연구 명세 재고정(`96037d1c`·23.1), base = #417 가지 | CI 6 녹색 | #417 담당 확인 뒤 병합 |
