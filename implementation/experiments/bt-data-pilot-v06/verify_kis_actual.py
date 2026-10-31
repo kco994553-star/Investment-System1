@@ -12,7 +12,7 @@ def replay(root):
     store = RawDatasetStore(root / "store")
     for aid in store.list_ids():
         assert digest(store.get_bytes(aid)) == store.get_manifest(aid)["sha256"]
-    numeric, series, normalized, rejected = 0, {}, 0, []
+    numeric, series, normalized, rejected, identity_checks = 0, {}, 0, [], 0
     for receipt_file in sorted((root / "requests").glob("*.json")):
         receipt = json.loads(receipt_file.read_bytes())
         manifest = receipt.get("receipt")
@@ -25,6 +25,10 @@ def replay(root):
             if source.get("rt_cd") != "0":
                 continue
             params = receipt["request"]
+            metadata = source.get("output1", {})
+            if source.get("output2"):
+                assert metadata.get("rsym") == "D" + params["EXCD"] + params["SYMB"]
+                identity_checks += 1  # query-code match only, NOT permanent security identity
             try:
                 rows = kis_normalize(body, params["SYMB"], params["MODP"], params["BYMD"])
             except ValueError:
@@ -60,6 +64,7 @@ def replay(root):
             series[series_key] = values
     return series, {"actual_raw_hashes_verified": len(store.list_ids()),
                     "normalized_rows_replayed": normalized, "numeric_cells_verified": numeric,
+                    "kis_query_symbol_checks": identity_checks,
                     "quality_rejected_pages": rejected}
 
 
@@ -71,7 +76,7 @@ def verify(root, previous, reviewed_src, additional=None):
             if key in series:
                 assert series[key] == values
             series[key] = values
-        for key in ("actual_raw_hashes_verified", "normalized_rows_replayed", "numeric_cells_verified"):
+        for key in ("actual_raw_hashes_verified", "normalized_rows_replayed", "numeric_cells_verified", "kis_query_symbol_checks"):
             result[key] += extra_result[key]
         result["quality_rejected_pages"] += extra_result["quality_rejected_pages"]
     # Reuse previous successful ABT 2016 and NVDA 2024 SIP requests, no new download.
