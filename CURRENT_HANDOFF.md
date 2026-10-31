@@ -20,7 +20,7 @@
 | PR·작업 | 담당 | 시작 (UTC) |
 | --- | --- | --- |
 | 이 문서 PR(DC-35 개발 체계 Main + Codex·#434 대체·lab-backtest-v1 계약 기록) | Claude Code Main | 10/31 08:05 |
-| 표 PR(공개 + 비공개 2층 구조 표·DC-36, `claude/public-private-two-layer-table`, 이 문서 PR 위) | Claude Code Main | 10/31 13:30 |
+| 표 PR(공개 + 비공개 2층 구조 표·DC-36, `claude/public-private-two-layer-table`, 이 문서 PR 위) | Claude Code Main | 10/31 08:50 |
 | 공통 기반 PR(기업 목록 공통 접근·Lab 판독기·비공개 기능 상태·`parts.privatePanel`, `claude/web-app-common-base`, base = canonical) | Claude Code Main | 10/31 08:10 |
 | 묶음 1 PR(매크로·프롬프트·트리, `claude/web-app-bundle-1`, base = canonical, 표와 어긋난 곳 수정 뒤 PR) | Claude Code Main | 10/31 08:10 |
 | #436 보강(차트 이력·Lab 결과 저장·조회 계약) | Claude Code Main | 10/31 08:10 |
