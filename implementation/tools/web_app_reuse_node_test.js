@@ -67,8 +67,8 @@ const P1 = ['action.js', 'data.js', 'prices.js', 'store.js', 'qgv.js', 'engines.
 // The common base (2026-10-31, docs/frontend_v2/COMMON_BASE_20261031.md): the one company list, the private area, the Lab reader.
 const COMMON = ['companies.js', 'private.js', 'lab.js'];
 // The screens' after-first-paint halves (web_app files, loaded after the layer; P1_DATA_LAYER.md §1.1 screen-file rule).
-const LIVE = ['search-part-live.js', 'screen-search-live.js', 'screen-qgv-live.js', 'screen-macro-live.js', 'screen-prompts-live.js', 'screen-tree-live.js', 'screen-technical-live.js'];
-const SKELETON_MAX_BYTES = { 'screen-search.js': 5 * 1024, 'screen-qgv.js': 5 * 1024, 'screen-macro.js': 5 * 1024, 'screen-prompts.js': 5 * 1024, 'screen-tree.js': 5 * 1024, 'screen-technical.js': 5 * 1024 };
+const LIVE = ['search-part-live.js', 'screen-search-live.js', 'screen-qgv-live.js', 'screen-macro-live.js', 'screen-prompts-live.js', 'screen-tree-live.js', 'screen-technical-live.js', 'screen-news-live.js'];
+const SKELETON_MAX_BYTES = { 'screen-search.js': 5 * 1024, 'screen-qgv.js': 5 * 1024, 'screen-macro.js': 5 * 1024, 'screen-prompts.js': 5 * 1024, 'screen-tree.js': 5 * 1024, 'screen-technical.js': 5 * 1024, 'screen-news.js': 5 * 1024 };
 const LANES = ['qgv', 'technical', 'macro', 'news', 'portfolio', 'prompts', 'tree', 'lab'].map((id) => 'screen-' + id + '.js');
 const P0_SCREENS = ['screen-search.js', 'screen-menus.js', 'screen-detail.js', 'boot.js'];
 const LOADER = 'loader.js';
@@ -611,7 +611,7 @@ test('loader: a hidden page loads at once (it paints nothing); the screen files 
   assert.deepEqual(Object.keys(IS2.searchLive), ['home', 'company'], 'screen-search-live.js only hands its two fillers to the skeleton');
   assert.deepEqual(Object.keys(IS2.qgvLive), ['leaderboard', 'helpers'], 'screen-qgv-live.js only hands its filler and its pure helpers');
   assert.deepEqual(Object.keys(IS2.searchPart), ['index', 'attach', 'LISTING_ENDED'], 'search-part-live.js only hands the shared search');
-  for (const [ns, file] of [['macroLive', 'screen-macro-live.js'], ['promptsLive', 'screen-prompts-live.js'], ['treeLive', 'screen-tree-live.js']])
+  for (const [ns, file] of [['macroLive', 'screen-macro-live.js'], ['promptsLive', 'screen-prompts-live.js'], ['treeLive', 'screen-tree-live.js'], ['newsLive', 'screen-news-live.js']])
     assert.deepEqual(Object.keys(IS2[ns]), ['screen'], file + ' only hands its filler to the skeleton');
   assert.deepEqual(Object.keys(IS2.technicalLive), ['screen', 'helpers'], 'screen-technical-live.js only hands its filler and its pure helpers');
 });
