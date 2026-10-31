@@ -194,6 +194,23 @@ async function scores(page) {
     await context.addInitScript(() => { window.__csp = 0; window.__gis = { init: 0, tokens: 0, revoke: 0 }; document.addEventListener('securitypolicyviolation', () => { window.__csp++; }); });
     const page = await context.newPage(), seen = site.watch(page, s.origin, { allow404: UNPUBLISHED }), rec = record(context, page);
     await rec.install(s.origin);
+    // Diagnostics for a wait that times out (owner 2026-10-31): the requests still open (request without requestfinished /
+    // requestfailed), the failed ones, page errors and console errors, printed before the error is thrown again.
+    const open = new Map(), failed = [], pageErrors = [], consoleErrors = [], t0 = Date.now();
+    page.on('request', (r) => open.set(r, Date.now()));
+    page.on('requestfinished', (r) => open.delete(r));
+    page.on('requestfailed', (r) => { open.delete(r); failed.push({ at: Date.now() - t0, line: r.method() + ' ' + r.url() + ' ' + r.resourceType() + ' ' + ((r.failure() || {}).errorText || '') }); });
+    page.on('pageerror', (e) => pageErrors.push(String(e && e.stack || e)));
+    page.on('console', (m) => { if (m.type() === 'error') consoleErrors.push(m.text() + ' @' + JSON.stringify(m.location())); });
+    const diagnose = (what) => {
+      const now = Date.now();
+      console.log('DIAG ' + what + ' at=' + phase + ' t=' + (now - t0) + 'ms open=' + open.size + ' failed=' + failed.length + ' pageerror=' + pageErrors.length + ' console_error=' + consoleErrors.length);
+      for (const [r, at] of open) console.log('DIAG open ' + r.method() + ' ' + r.url() + ' ' + r.resourceType() + ' age=' + (now - at) + 'ms');
+      for (const f of failed.slice(-20)) console.log('DIAG failed t=' + f.at + 'ms ' + f.line);
+      for (const e of pageErrors.slice(-10)) console.log('DIAG pageerror ' + e);
+      for (const e of consoleErrors.slice(-20)) console.log('DIAG console ' + e);
+    };
+    const diagnosed = async (what, wait) => { try { await wait(); } catch (err) { diagnose(what); throw err; } };
     const FILES = new Set(), pageFiles = new Set([...R.scripts(), ...fs.readdirSync(R.NEW)]);
     const since = (at) => rec.log.slice(at);
     const outside = (list) => list.filter((r) => new URL(r.url).origin !== s.origin).map((r) => r.method + ' ' + r.url);
@@ -214,7 +231,10 @@ async function scores(page) {
     // A phase ends only once the route's own reads are done, so a read a screen started cannot land in the next route's phase:
     // 1. QGV computes its page after IS2.ready (CORE, then actual-catalog.json) and draws its table after that (P2-2a); the company
     // page reads CORE through the layer after IS2.ready. Then the network has to be idle.
-    const drawn = async (hash) => { if (hash === '#/qgv') await page.locator('[data-lb-table]').waitFor(); await page.waitForLoadState('networkidle'); };
+    const drawn = async (hash) => {
+      if (hash === '#/qgv') await diagnosed('table wait', () => page.locator('[data-lb-table]').waitFor());
+      await diagnosed('networkidle wait', () => page.waitForLoadState('networkidle'));
+    };
     // The files a route's screen may read when it opens (P2-1: 0. 기업 검색 and its company page); every other route reads nothing.
     const QGV_READS = [...(await page.evaluate(() => window.IS2.data.CORE)), 'actual-catalog.json', 'company-names-ko.json', 'qgv-official.json', 'qgv-official-status.json'];
     const opens = (hash, names) => (hash === '#/' || hash === '#/nowhere/x' ? names.filter((n) => !HOME_READS.includes(n)) : hash.startsWith('#/company/') ? names.filter((n) => !FILES.has(n))
