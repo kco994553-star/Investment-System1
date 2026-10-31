@@ -6,13 +6,15 @@
 - #434는 이 PR로 대체 종료한다. #434의 커밋은 이 가지에 그대로 들어 있다(이력 보존).
 - Lab 결과 계약 원문은 [lab/LAB_BACKTEST_V1_CONTRACT.md](lab/LAB_BACKTEST_V1_CONTRACT.md). Codex는 이 두 문서를 읽는다.
 
-## 1. 개발 체계 (DC-35 — DC-32를 대체, DC-32는 시행 전에 대체됨)
+## 1. 개발 체계 (DC-35 — DC-32를 대체, DC-32는 시행 전에 대체됨. 10/31 밤 개정: 흐름 셋)
 
 | 흐름 | 맡는 것 | 하지 않는 것 |
 | --- | --- | --- |
-| **Main**(Claude Code Main) | 앱 전체(새 앱 `web_app/`·옛 화면 `web_assets/`), 공통 인프라, 최종 통합, 병합(오너 승인 범위에서), 결정 문서·인수인계·`docs/SPEC` | Codex 소유 연구 코드·결과 원본을 고치거나 숫자를 다시 계산하지 않는다 |
-| **Codex** | 백테스트 연구와 결과 원본 생산(10/24 "Main 하나" 원칙의 **백테스트 한정 예외**): `research/*` 가지(#417 `research/qgv_backtest`, #432 BT-DATA-PILOT 등), lab-backtest-v1 결과 원본 | 앱 파일·공통 파일·공개 가드·워크플로·데이터 계약을 바꾸지 않는다. 병합하지 않는다 |
+| **Main**(Claude Code Main) | 코드 전체(새 앱 `web_app/`·옛 화면 `web_assets/`·공용 엔진), 공용 파일, 워크플로, 최종 통합, 병합(오너 승인 범위에서), 결정 기록(DIRECTION_CHANGES·USER_DECISIONS_PENDING)·인수인계·`docs/SPEC`, **DC 번호 부여** | Codex 소유 연구 코드·결과 원본을 고치거나 숫자를 다시 계산하지 않는다 |
+| **Codex** | 백테스트 연구(French 요인 대리 검증 등)와 **재구성 결과 감사**(전진검증 v3 재구성 구간, #442): `research/*` 가지(#417 `research/qgv_backtest`, #432 BT-DATA-PILOT 등)와 연구 문서, lab-backtest-v1 결과 원본(10/24 "Main 하나" 원칙의 **백테스트 한정 예외**) | 앱 파일·공통 파일·공개 가드·워크플로·데이터 계약을 바꾸지 않는다. 병합·DC 번호 부여를 하지 않는다 |
+| **GPT Work** | 문서 조사·정리와 Notion 정리. `docs/` 가지의 **Draft PR만** 연다(예: #426, #443 전진검증 v3 규칙표) | 코드·워크플로·병합·DC 번호 부여를 하지 않는다 |
 
+- 다른 흐름(Codex·GPT Work)의 PR이 DC 번호나 결정 기록(DIRECTION_CHANGES·USER_DECISIONS_PENDING·FUNCTION_STATUS)을 직접 바꾸면, Main이 번호를 다시 매겨 자기 PR에 반영한다. 그 PR의 해당 변경은 병합하지 않는다.
 - 독립 화면은 Main이 하위 에이전트로 병렬 구현할 수 있다. 외부 개발 책임자(별도 화면 세션 등)는 늘리지 않는다.
 - 공통 파일은 Main만 고친다. 하위 에이전트도 Main의 지시 범위 안에서만 고친다.
   - 대상: `app.css`·`loader.js`·`parts.js`·`data.js`·`qgv.js`·`store.js`·`core.js`(라우터)·공통 시험 목록(`ci_*_tests.txt`)·공개 가드·워크플로.
@@ -26,9 +28,10 @@
 | --- | --- |
 | **Main** | `implementation/src/investment_system/product/web_app/` 전부(화면 파일 `screen-*.js` 포함. #434의 "Frontend 담당 화면 파일"은 Main으로 돌아옴), 옛 화면 `web_assets/`, 공용 엔진, 가드·CI 목록, 워크플로, `docs/SPEC`, CURRENT_HANDOFF, USER_DECISIONS_PENDING, 결정 문서, 데이터 계약 문서 |
 | **Codex** | 백테스트 연구 가지(`research/*`)의 연구 코드, 결과 원본, 연구 문서. 결과 원본 경로는 Codex가 제안하고 Main이 확인한다(3.3) |
+| **GPT Work** | `docs/` 가지의 조사·정리 문서(Draft PR). Notion 정리. 결정 기록·DC 번호는 Main이 옮긴다 |
 
-- Codex PR 병합 조건: canonical과 동기화, 필수 CI 6개 녹색, 담당 파일만 바뀜(Main이 파일 목록으로 확인), 오너 승인.
-- 작업을 시작하는 쪽은 CURRENT_HANDOFF의 "작업 중" 표에 PR 번호·담당·시작 시각을 먼저 적고, 끝나면 지운다(Codex는 PR 본문에 적고 Main이 표에 옮긴다).
+- Codex·GPT Work PR 병합 조건: canonical과 동기화, 필수 CI 6개 녹색, 담당 파일만 바뀜(Main이 파일 목록으로 확인), 오너 승인. 병합은 Main이 한다.
+- 작업을 시작하는 쪽은 CURRENT_HANDOFF의 "작업 중" 표에 PR 번호·담당·시작 시각을 먼저 적고, 끝나면 지운다(Codex·GPT Work는 PR 본문에 적고 Main이 표에 옮긴다).
 
 ### 1.2 #434에서 옮긴 상태 기록 (10/31 기준, 유효한 것만)
 
