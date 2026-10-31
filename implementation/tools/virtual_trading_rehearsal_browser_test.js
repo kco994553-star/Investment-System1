@@ -1,11 +1,13 @@
 'use strict';
 const {displayOnlyOff}=require('./display_only_off.js');
-// S17 rehearsal (리허설 · 기록 없음), D-5 basis labels and the device V history on the built site, at 390 and 1440.
+// S17 rehearsal (리허설 · 기록 없음) and D-5 basis labels on the built site, at 390 and 1440. DC-31 (device V abolished): no V
+// history is kept on the device (no capture, the old V store is neither read nor written); the D-21 V slope is NA until a central
+// V history is published.
 // Every request is intercepted: same-origin files come from the local build (public screens empty, synthetic price-free
 // valuation inputs and forward ledger), the private history Worker is a synthetic 2y mock, anything else is aborted and
 // counted. Checks: before 2026-10-19 the report stays NOT_STARTED with no Worker request until '리허설 실행'; the rehearsal
 // shows judgements + D-5 basis per company (sector ETF, S&P 500 fallback when XLI is rejected, basis N/A below 273
-// closes) with a distinct badge; only V numbers reach storage (no price, ledger or sheet write); back to 기록 모드.
+// closes) with a distinct badge; nothing reaches storage (no V, price, ledger or sheet write); back to 기록 모드.
 const assert = require('node:assert/strict');
 const { chromium } = require('playwright');
 const { routeEmptyPublicScreens } = require('./empty_public_screens');
@@ -151,7 +153,7 @@ const noWonAmount = (text) => (text.match(/\d[\d,]*\s*(?:원|만원|억)/g) || [
   const check = async (name, fn) => { try { await fn(); pass++; console.log('PASS ' + name); } catch (e) { fail++; console.log('FAIL ' + name + ' ' + (e.code === 'ERR_ASSERTION' ? 'CONTRACT' : 'EXECUTION') + ' ' + String(e.message).slice(0, 300)); } };
   try {
     for (const width of [390, 1440]) {
-      await check('rehearsal before 2026-10-19: NOT_STARTED until clicked, labelled, D-5 basis, V only stored (' + width + ')', async () => {
+      await check('rehearsal before 2026-10-19: NOT_STARTED until clicked, labelled, D-5 basis, nothing stored (' + width + ')', async () => {
         const { context, page, traffic } = await open(browser, { now: '2026-10-15T03:00:00Z', last: '2026-10-14', width });
         try {
           await signIn(page);
@@ -160,7 +162,7 @@ const noWonAmount = (text) => (text.match(/\d[\d,]*\s*(?:원|만원|억)/g) || [
           assert.equal((await page.locator('[data-report-mode]').textContent()).trim(), '기록 모드');
           assert.ok((await page.locator('[data-report-not-started]').textContent()).includes('2026-10-19 전'));
           assert.equal((await page.locator('[data-rehearsal-run]').textContent()).trim(), '리허설 실행');
-          assert.ok((await page.locator('[data-v-progress]').textContent()).includes('V 기록 0/20일'));
+          assert.equal(await page.locator('[data-v-progress]').getAttribute('data-v-state'), 'central-history-not-published');assert.match(await page.locator('[data-v-progress]').textContent(), /기기에 V 이력을 쌓지 않음\(DC-31\)/);
           await page.waitForTimeout(300);
           assert.equal(traffic.worker.length, 0, 'no Worker request before the rehearsal is asked for');
           await page.locator('[data-rehearsal-run]').click();
@@ -180,9 +182,8 @@ const noWonAmount = (text) => (text.match(/\d[\d,]*\s*(?:원|만원|억)/g) || [
           assert.equal(await page.locator('[data-basis="asml"]').getAttribute('data-basis-benchmark'), 'SP500');
           assert.ok((await page.locator('[data-basis="asml"]').textContent()).includes('S&P 500 (XLI 없음 → 대체)'));
           assert.equal(await page.locator('[data-source-symbol="XLI"][data-source-code="REQUEST_INVALID"]').count(), 1);
-          // Decision 2026-10-13 §13-1: an eligible anchor plus >=50% computed weight can record partial V; prices stay in RAM.
-          assert.equal(await page.locator('[data-v-capture="RECORDED"]').count(), 1);
-          assert.ok((await page.locator('[data-v-capture]').textContent()).includes('오늘 V 기록: 2026-10-14 · 1개 기업'));
+          // DC-31: no device V capture (the former §13-1 partial V record is retired with device V).
+          assert.equal(await page.locator('[data-v-capture]').count(), 0, 'no V capture line');
           assert.ok(noWonAmount(await page.locator('#daily-report').textContent()), 'won amount visible while hidden');
           await page.locator('[data-export-template]').click();
           await page.waitForFunction(() => /복사|표시/.test(document.querySelector('[data-report-status]')?.textContent || ''));
@@ -191,7 +192,7 @@ const noWonAmount = (text) => (text.match(/\d[\d,]*\s*(?:원|만원|억)/g) || [
           assert.ok(text.includes('업종 기준(D-5): '));
           const store = await storageOnlyV(page);
           assert.ok(store.clean, 'price, ledger or judgement reached storage');
-          assert.ok(store.vOk && store.raw, 'approved partial V is stored without prices or ledger');
+          assert.equal(store.raw, null, 'no V history written to the device (DC-31)');
           assert.ok(traffic.worker.every((w) => w.auth && w.range === '2y'));
           assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'horizontal scroll ' + await page.evaluate(() => [...document.querySelectorAll('body *')].filter((n) => n.getBoundingClientRect().right > innerWidth + 1).slice(0, 6).map((n) => n.tagName + '.' + n.className + ':' + (n.textContent || '').slice(0, 40)).join(' | ')));
           await page.locator('[data-recording-mode]').click();
@@ -226,7 +227,7 @@ const noWonAmount = (text) => (text.match(/\d[\d,]*\s*(?:원|만원|억)/g) || [
         await page.locator('[data-report-mode="RECORDING"]').waitFor();
         await page.locator('[data-report-inputs][data-runner-state="READY"]').waitFor({ timeout: 30000 });
         const store = await storageOnlyV(page);
-        assert.ok(store.clean && store.vOk);
+        assert.ok(store.clean && store.raw === null, 'nothing stored, no V history');
         assert.equal(traffic.writes, 0);
         assert.equal(traffic.console, 0);
         assert.deepEqual(traffic.unexpected, []);

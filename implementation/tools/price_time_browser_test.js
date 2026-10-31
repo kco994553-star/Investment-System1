@@ -3,9 +3,10 @@
 // SYNTHETIC FIXTURE PRICES ONLY (made-up numbers, never real prices); Google Sheets and the Worker are stubbed in RAM.
 // (a) "Universe 읽기" (S06): GOOGLEFINANCE_CURRENT has no trade time -> exactly '가격 기준 시각 미확인', read time shown apart,
 //     freshness '신선도 판정 불가'.
-// (b) Quote import -> #N/A -> Worker daily close: the trade date is the price date; read time apart; CURRENT by the DeviceMarket rule.
-// (c) An old trade date read just now (Worker close and a GOOGLEFINANCE KNOWN trade time) -> STALE, never current.
-// (d) GOOGLEFINANCE without a trade time on the company badge -> '가격 기준 시각 미확인', never the read time as the price time.
+// (b) Quote import -> #N/A -> Worker daily close still runs (the holdings/charts paths keep it). DC-31 (device V abolished): the
+//     company page no longer shows the device price badge or the device value card that showed these quote times (removed with
+//     the value panel; public IEX prices come with the separate price-display decision GSQ-026). The PriceTime rules themselves
+//     (trade date = price date, old date STALE, no trade time = 미확인) stay covered by price_time_node_test.js.
 // Also: no request leaves the page origin, no page error, the Universe canary price never reaches storage.
 let phase = 'START';
 const { chromium } = require('playwright'), assert = require('node:assert/strict');
@@ -34,15 +35,6 @@ async function stubSession(page, values, histories) {
       async fetchHistory(origin, symbol) { window.__workerCalls.push(symbol);if (!histories[symbol]) throw new Error('REQUEST_INVALID');return histories[symbol]; } };
     window.GoogleSheetQuotes = { ...GoogleSheetQuotes, sessionFor: () => session };
   }, { values, histories });
-}
-async function badge(page) {
-  await page.waitForFunction(() => document.querySelector('[data-badge="price"]')?.dataset.priceState && document.querySelector('[data-badge="price"]').dataset.priceState !== 'PENDING');
-  const b = page.locator('[data-badge="price"]');
-  return { state: await b.getAttribute('data-price-state'), status: await b.getAttribute('data-price-time-status'), fresh: await b.getAttribute('data-price-freshness'), cls: await b.getAttribute('class'), text: await b.textContent() };
-}
-async function valueTime(page) {
-  const t = page.locator('#company-value [data-value-quote-time] .price-time');await t.waitFor();
-  return { status: await t.getAttribute('data-price-time-status'), fresh: await t.getAttribute('data-price-freshness'), own: await t.locator('[data-price-own-time]').textContent(), read: await t.locator('[data-price-read-at]').textContent() };
 }
 (async () => {
   const browser = await chromium.launch({ headless: true, executablePath: process.env.CHROMIUM_EXECUTABLE_PATH });let pass = 0, fail = 0;
@@ -84,7 +76,7 @@ async function valueTime(page) {
         assert.equal(state.errors, 0);assert.deepEqual(state.external, []);
       } finally { await context.close(); }
     });
-    await check('(b)(c)(d) quote import: Worker trade date, old date STALE, GOOGLEFINANCE without time 미확인', async () => {
+    await check('(b) quote import still reads the Worker close; no device price badge or value card on the company page (DC-31)', async () => {
       const { context, page, state } = await open(390);
       try {
         phase = 'B_SETUP';await page.goto(BASE + '#settings');await page.locator('[data-sheet-paste]').waitFor({ state: 'attached' });
@@ -97,29 +89,9 @@ async function valueTime(page) {
         await page.locator('[data-sheet-action="paste"]').click();
         await page.waitForFunction(() => /Worker/.test(document.querySelector('[data-sheet-summary]')?.textContent || ''));
         assert.deepEqual((await page.evaluate(() => window.__workerCalls)).sort(), ['AMD', 'NVDA']);
-        const nvdaDay = dayOf(history('NVDA', 1, 1).bars[1].timestamp), amdDay = dayOf(history('AMD', 30, 1).bars[1].timestamp);
-
-        phase = 'B_WORKER_RECENT';await page.evaluate(() => { location.hash = 'company/nvda'; });
-        let b = await badge(page), v = await valueTime(page);
-        assert.equal(b.state, 'AVAILABLE');assert.equal(b.status, 'DATE_ONLY');assert.equal(b.fresh, 'CURRENT');assert.match(b.cls, /\bLIVE\b/);
-        assert.ok(b.text.startsWith('시세 Worker 종가 · 일봉 · 정보용 · 가격 기준일 ' + nvdaDay + ' (거래일) · 읽은 시각 '), b.text);
-        assert.equal(v.status, 'DATE_ONLY');assert.equal(v.own, '가격 기준일 ' + nvdaDay + ' (거래일)');readFresh(v.read, 'worker recent');
-
-        phase = 'C_WORKER_OLD';await page.evaluate(() => { location.hash = 'company/amd'; });
-        await page.waitForFunction(() => location.hash === '#company/amd');b = await badge(page);v = await valueTime(page);
-        assert.equal(b.status, 'DATE_ONLY');assert.equal(b.fresh, 'STALE');assert.match(b.cls, /\bSTALE\b/);assert.ok(b.text.includes('가격 기준일 ' + amdDay + ' (거래일)'), b.text);
-        assert.ok(b.text.endsWith('STALE · 오래된 가격'), 'old date read just now is stale: ' + b.text);readFresh(v.read, 'worker old');assert.equal(v.fresh, 'STALE');
-
-        phase = 'C_KNOWN_OLD';await page.evaluate(() => { location.hash = 'company/asml'; });
-        await page.waitForFunction(() => location.hash === '#company/asml');b = await badge(page);v = await valueTime(page);
-        assert.equal(b.status, 'CONFIRMED');assert.equal(b.fresh, 'STALE');
-        assert.ok(v.own.startsWith('가격 기준 시각 ' + old.slice(0, 10) + ' 16:00 UTC · '), v.own);readFresh(v.read, 'known old');
-
-        phase = 'D_UNKNOWN';await page.evaluate(() => { location.hash = 'company/lrcx'; });
-        await page.waitForFunction(() => location.hash === '#company/lrcx');b = await badge(page);v = await valueTime(page);
-        assert.equal(b.status, 'UNCONFIRMED');assert.equal(b.fresh, 'UNDETERMINED');assert.ok(!/\b(LIVE|STALE)\b/.test(b.cls), b.cls);
-        assert.equal(v.own, '가격 기준 시각 미확인');readFresh(v.read, 'unknown');
-        assert.ok(b.text.includes('가격 기준 시각 미확인 · 읽은 시각 ') && b.text.endsWith('신선도 판정 불가'), b.text);
+        phase = 'B_COMPANY';for (const id of ['nvda', 'amd', 'asml', 'lrcx']) {
+          await page.evaluate((x) => { location.hash = 'company/' + x; }, id);await page.waitForFunction((x) => location.hash === '#company/' + x, id);await page.locator('[data-company-card="qgv"]').waitFor();
+          assert.equal(await page.locator('[data-badge="price"], #company-value, [data-value-quote-time]').count(), 0, id + ': no device price badge or value card (DC-31)'); }
         assert.equal(state.errors, 0);assert.deepEqual(state.external, []);
       } finally { await context.close(); }
     });

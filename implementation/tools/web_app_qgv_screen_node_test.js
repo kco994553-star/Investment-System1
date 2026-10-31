@@ -7,7 +7,7 @@
 //    industry_group null; each branch shown to be reached first) and a company-classification fixture with a TARGET inside the
 //    Universe (nvda, classified from its TARGET classification, row.id 'nvda') and one outside (tokyo_electron).
 //  - sortRows = LeaderboardScreen.sortRows for qgv / q / g / v / asof / cap (both directions; cap with a READY M3 index stub) over
-//    the page rows of a priced fixture (ranked, QG reference and no-total rows); ticker / favorites = DeviceWatchlist.filter;
+//    the page rows of the central V publication fixture (DC-31) (ranked, QG reference and no-total rows); ticker / favorites = DeviceWatchlist.filter;
 //    name = its own stated rule (shown title, localeCompare 'ko', ties by ticker); the toggle is null for the one-way keys.
 //  - sicOf, populationOf, the industry part of classificationOf and the industry / SIC filters of filterClassifications, all with
 //    company_id = row.id.
@@ -41,7 +41,9 @@ function ports() {
 }
 // A priced page (the Universe read stand-in of web_app_qgv_node_test.js) and the reader output it was computed from.
 async function page() {
-  const win = R.nodeWindow({ files: (n) => ({ [QGV2]: { json: F.strictPayload() }, 'actual-catalog.json': { json: CATALOG } })[n] });
+  // The central V publication (DC-31; synthetic base_text, its input as_of = the fixture's): the page's ranks and V come from it.
+  const pub = JSON.parse(fs.readFileSync(path.join(R.ROOT, 'implementation/tests/fixtures/qgv_official_vectors_v1.json'), 'utf8')).base_text;
+  const win = R.nodeWindow({ files: (n) => ({ [QGV2]: { json: F.strictPayload() }, 'actual-catalog.json': { json: CATALOG }, 'qgv-official.json': { body: pub } })[n] });
   const mods = R.loadOld(win), action = fresh('action.js').create({ win }), data = fresh('data.js').create({ win, action });
   const prices = new Map(); let i = 0;
   for (const [code, r] of Object.entries(F.strictPayload().records)) if (r.state === 'LIVE' && code !== 'NASDAQ:MSFT') prices.set(code, { price: 17 + i++ + 0.0731946, currency: 'USD' });

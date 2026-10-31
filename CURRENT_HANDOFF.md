@@ -80,8 +80,8 @@
 | 대상 / 기능번호 | 상태 |
 | --- | --- |
 | 중앙 V / 2·6 | 매일 게시. 10/30분 정기 #31: 성공, `attempt_state OK`, 가격 기준일 2026-10-29, 새 게시본(02:31 배포). 행 523·순위 356·V 358. **PSKY V 보류 확인**(`price_status` `SPLIT_AFTER_SHARE_COUNT`, #428). 가격 상태: SUPPLIED 501·ADR 1·체결 없음 1·주식수 사건 1 |
-| 화면의 V | 리더보드·상세·레이더 V축은 아직 옛 화면 기기 계산값이다. DC-31로 폐지 결정, PR-1a·1b가 공식 V로 바꾼다. 공식 V를 읽는 화면은 옛 TARGET 빌더뿐(11/16까지 그대로) |
-| 새 앱(`web_app/`) | 병합됨, 배포 안 됨(P3 전환 때). PR-1a가 `qgv.js` 공식 판독기를 채운다 |
+| 화면의 V | 기기 V 폐지(DC-31, #435·#439 병합): 새 앱과 옛 화면( 리더보드·상세·레이더·V 산출 현황·Universe 페이지·S13 비교·플레이북)은 중앙 V(`qgv-official.json`)만 보인다. 늦으면 마지막 중앙 V + 게시 시각 + STALE. TARGET v1 빌더만 11/16 PR까지 옛 V 출처 유지. 가치(DCF) 패널 제거. S06 GOOG 표시 차이는 후속 PR |
+| 새 앱(`web_app/`) | 병합됨, 배포 안 됨(P3 전환 때). `qgv.js` 공식 판독기 채움(#435 병합) |
 | `sec-universe-shares.json` PSKY 행 | 10/31 03:13 UTC STALE → PSKY M3 시가총액 순위만 사유 있는 NA. `sec-qgv2.json`·`sec-universe-qg.json` PSKY 행은 LIVE |
 | IEX 확장 | 측정·설계·결정 완료(#431). 구현 없음 |
 

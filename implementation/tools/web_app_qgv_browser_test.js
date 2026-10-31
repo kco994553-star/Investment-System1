@@ -19,7 +19,13 @@
 //    options = type_config names; 필터 모두 풀기; the phone panel (aria-expanded).
 //  - 2.1.4: before load every return cell says PRICE_TABS_NOT_LOADED's text; wait chips off; the load button off with the
 //    PRICE_TABS_OFF / AUTH_REQUIRED / SHEET_NOT_CONNECTED reason; synthetic clicks request and write nothing and print no code.
-//  - Clicks (GIS / Sheets stand-ins with sentinel decimals): ① → ② → ③ (③ by Enter: one action) give the layer's ranks; M3 in
+//  - Central V (DC-31): without qgv-official.json every V is NA with OFFICIAL_NOT_PUBLISHED and 종합 순위 is empty (no price button
+//    mirrored); in the click context the synthetic publication (+ a failed-attempt status file) gives the ranks and V, the basis
+//    chip (IEX wording, basis day, publication time with date and UTC), the attempt chip and the IEX attribution link; fresh on the
+//    fixed clock (0 sessions after the basis day), STALE on a clock 3 completed New York sessions later with the publication still
+//    shown, and the company page's QGV card with the same STALE mark, publication time, attempt and IEX attribution link; the
+//    Universe read changes no rank or V (M3 only).
+//  - Clicks (GIS / Sheets stand-ins with sentinel decimals): ① → ② → ③ (③ by Enter: one action) leave the layer's ranks as published; M3 in
 //    [data-ram-price] text only; assertRamOnly; leaks() empty; only the click-written keys stored; the 2.1.6 badges and the
 //    2.1.7 candidates from IS2.qgv.model; a saved weights profile previews without touching the official page. A returning
 //    user's price tabs (flag pre-set): the returns click gives ReportBenchmarks.priceIndex values with the 분할 미확인 note,
@@ -27,7 +33,7 @@
 //  - The 기준 chip (DC-22) in every page state: score refresh time (UTC) · last check · calc_version, also in 2.1.7; 공개 자료 다시
 //    읽기 = public files only: UNCHANGED, an invalid file FAILED with the previous values kept, a 404 page recovering (APPLIED).
 //  - Failures: sec-qgv2.json 404 / invalid, screen-qgv-live.js 404 (LOADER_FAILED), leaving while computing.
-//  - Boundaries in every state: same-origin (only the stand-ins leave in the click contexts), FILES only, opening reads CORE +
+//  - Boundaries in every state: same-origin (only the stand-ins leave in the click contexts), FILES only, opening reads CORE + the 2 central V files +
 //    actual-catalog.json + company-names-ko.json, storage 0 without clicks, blocked() 0, no console error, CSP 0, [style] 0, no
 //    overflow at 390, 44 px tap targets, IS2.selection unchanged, no board example value, no visible reason code.
 // Synthetic data only: sentinel values are made-up decimals; the sheet id and the token are in-memory fixtures.
@@ -44,7 +50,11 @@ const RB = R.requireOld('report-benchmarks.js');
 const NOW = '2026-10-14T03:00:00.000Z';
 const CLASS = JSON.parse(fs.readFileSync(path.join(R.ROOT, 'implementation/tests/fixtures/company_classification_v0_payloads.json'), 'utf8')).live;
 const CUSTOM = JSON.parse(fs.readFileSync(path.join(R.ROOT, 'implementation/tests/fixtures/qgv_v2_custom_vectors_v1.json'), 'utf8'));
-const UNPUBLISHED = ['sec-public-inputs.json'];
+const UNPUBLISHED = ['sec-public-inputs.json', 'qgv-official.json', 'qgv-official-status.json'];
+// The synthetic central V publication (its input as_of = the fixture's) and a status file of a later failed attempt.
+const PUB_TEXT = JSON.parse(fs.readFileSync(path.join(R.ROOT, 'implementation/tests/fixtures/qgv_official_vectors_v1.json'), 'utf8')).base_text, PUB = JSON.parse(PUB_TEXT);
+const STATUS = { schema: 'qgv-official-status/1', kind: 'QGV_OFFICIAL_STATUS', last_attempt_at: '2026-10-14T01:50:00Z', attempt_state: 'SUPPLY_FAILED', reason_code: 'IEX_SUPPLY_BELOW_MINIMUM',
+  official_publication_id: PUB.publication_id, official_price_basis_date: PUB.times.price_basis_date, official_verified_at: PUB.times.verified_at, latest_inputs: { sha256: 'b'.repeat(64), as_of: '2026-10-14T01:30:00Z' }, attribution: PUB.attribution };
 const SHEET_ID = ['synthetic', 'qgv', 'board', 'universe', 'sheet'].join('_');
 const TOKEN = ['memory', 'only', 'synthetic', 'qgv', 'session'].join('-'), SCOPE = 'https://www.googleapis.com/auth/drive.file email';
 const GIS_STYLE = 'https://accounts.google.com/gsi/style', GIS_CLIENT = 'https://accounts.google.com/gsi/client', SHEETS = 'https://sheets.googleapis.com';
@@ -159,9 +169,9 @@ const testClick = async (page, name) => { await page.locator('[data-test-action=
   try {
     for (const [width, height] of [[1440, 1000], [390, 844]]) {
       const phone = width < 720;
-      const open = async ({ tabs = false, flag = false } = {}) => {
+      const open = async ({ tabs = false, flag = false, at = NOW } = {}) => {
         const context = await browser.newContext({ viewport: { width, height } });
-        await context.clock.setFixedTime(new Date(NOW));
+        await context.clock.setFixedTime(new Date(at));
         await context.addInitScript(HELPERS);
         // A returning user's browser: the PriceStore flag (useTabs wrote it on an earlier visit) is there before the page loads.
         if (flag) await context.addInitScript(() => { try { if (localStorage.getItem('investment.web.v1.price-store-enabled') === null) localStorage.setItem('investment.web.v1.price-store-enabled', '1'); } catch (_) {} });
@@ -232,7 +242,7 @@ const testClick = async (page, name) => { await page.locator('[data-test-action=
         assert.equal(before, 'READY');
         const at0 = seen.requests.length;
         await page.evaluate(() => { location.hash = '#/qgv'; }); await tableReady(page); await settle(page);
-        const QGV_READS = [...(await page.evaluate(() => window.IS2.data.CORE)), 'actual-catalog.json', 'company-names-ko.json'];
+        const QGV_READS = [...(await page.evaluate(() => window.IS2.data.CORE)), 'actual-catalog.json', 'company-names-ko.json', 'qgv-official.json', 'qgv-official-status.json'];
         assert.deepEqual(dataNames(seen.requests.slice(at0)).filter((n) => !QGV_READS.includes(n)), [], 'a route change to #/qgv reads only CORE + catalog + names');
         assert.equal(await page.evaluate(async () => (await window.IS2.qgv.page()) === window.__pg), true, 'IS2.qgv.page() is the same object before and after #/qgv opened');
         // Values from the layer.
@@ -242,9 +252,9 @@ const testClick = async (page, name) => { await page.locator('[data-test-action=
         const heads = await page.evaluate(async () => { const Q = window.IS2.qgv, pg = await Q.page(), th = [...document.querySelectorAll('[data-lb-table] thead th')];
           return { vsub: th.find((x) => x.querySelector('[data-col=v]')).querySelector('.sub').textContent, rsub: th[0].querySelector('.sub').textContent, vko: pg.v_source.ko, label: Q.rankLabel(pg) }; });
         assert.equal(heads.vsub, heads.vko, 'V header sub-label = pg.v_source.ko'); assert.equal(heads.rsub, heads.label, 'rank sub-label = rankLabel(pg)');
-        // DC-26 colour: the Q·G·V headers and cells carry their axis class (tint); the source chip of a temporary score has the mine mark.
+        // DC-26 colour: the Q·G·V headers and cells carry their axis class (tint); the central V source chip has no mine mark.
         assert.deepEqual(await page.evaluate(() => ['q', 'g', 'v'].map((x) => [document.querySelectorAll('[data-lb-table] thead th.ax-' + x).length, document.querySelectorAll('[data-lb-table] td.ax-' + x).length > 0])), [[1, true], [1, true], [1, true]]);
-        assert.equal(await page.locator('.chip.vsrc.mine').count(), 1, 'the source chip carries the mine mark');
+        assert.equal(await page.locator('.chip.vsrc').count(), 1); assert.equal(await page.locator('.chip.vsrc.mine').count(), 0, 'the central V is not this device\'s computation');
         // A READY page with a reason shows reasonText(pg.reason) above the table (rows still draw); without one, no such line.
         const why = await page.evaluate(async () => { const Q = window.IS2.qgv, pg = await Q.page(), e = document.querySelector('[data-page-reason]');
           return { reason: pg.reason, want: pg.reason ? Q.reasonText(pg.reason) : null, text: e ? e.textContent : null, na: e ? e.dataset.na : null }; });
@@ -284,11 +294,12 @@ const testClick = async (page, name) => { await page.locator('[data-test-action=
         assert.ok(lists.outside.length >= 1 && lists.outside.every((id) => !lists.drawnIds.includes(id)), 'the layer\'s outside catalog rows are never drawn');
         assert.ok(lists.drawnIds.every((id) => lists.uni.includes(id)), 'every drawn row is a Universe504 row');
         assert.match(lists.count, /^평가: Universe504 중 점수 행 \d+$/, 'the count names Universe504 only');
-        // 종합 순위 without prices: the empty state; its button switches to the QG list.
+        // 종합 순위 without a central V publication: the empty state with its reason; its button switches to the QG list.
         await page.locator('button[data-list=RANKED]').click(); await page.locator('[data-empty=NO_RANKING]').waitFor();
-        assert.match(await page.locator('[data-empty=NO_RANKING]').innerText(), /가격 연결 전: QGV 순위 없음/);
+        assert.match(await page.locator('[data-empty=NO_RANKING]').innerText(), /QGV 순위 없음\s+공식 V 없음: 중앙 V 게시본이 아직 없습니다/);
         assert.equal(await page.locator('[data-empty=NO_RANKING] svg.mascot[data-mascot=plain][aria-hidden=true]').count(), 1, 'the state character');
-        assert.equal(await page.locator('[data-empty=NO_RANKING] button:has-text("가격 불러오기")').isDisabled(), true, 'the mirrored price button is off');
+        assert.equal(await page.locator('[data-empty=NO_RANKING] button:has-text("가격 불러오기")').count(), 0, 'no price button: a device price never gives a rank (DC-31)');
+        assert.equal(await page.locator('[data-qgv-chips] [data-na=OFFICIAL_NOT_PUBLISHED]').count(), 1, 'the basis chips say why there is no official V');
         await common(page);
         await page.locator('[data-k=qg-list]').click(); await page.locator('[data-lb-table][data-list=QG_REFERENCE]').waitFor();
         const qg = await page.evaluate(() => window.__qt.drawn().map((d) => d.c.rank));
@@ -385,11 +396,12 @@ const testClick = async (page, name) => { await page.locator('[data-test-action=
         assert.ok(r0.cells.length > 1 && r0.cells.every((t) => t === '— 가격 불러오기 전'), 'every return cell: the PRICE_TABS_NOT_LOADED text');
         assert.deepEqual(r0.wait, ['60D', '120D', 'YTD', '1Y']); assert.equal(r0.load, true); assert.equal(r0.why.reason, 'PRICE_TABS_OFF');
         const badges = await page.evaluate(async () => { const I = window.IS2, S = window.QgvScores, pg = await I.qgv.page(), el = document.querySelector('[data-badges]');
-          const want = S.provenanceAttrs(S.provenance({ kind: 'QGV', profile: { preset: pg.preset, gate: pg.gate, id: pg.profile_id }, priced: false }));
-          return { got: Object.fromEntries(Object.keys(want).map((k) => [k, el.getAttribute(k)])), want, text: [...el.querySelectorAll('[data-badge] .hl')].map((x) => x.textContent), vko: pg.v_source.ko,
+          const want = S.provenanceAttrs(S.provenance({ kind: 'QGV', profile: { preset: pg.preset, gate: pg.gate, id: pg.profile_id }, central: true }));
+          return { got: Object.fromEntries(Object.keys(want).map((k) => [k, el.getAttribute(k)])), want, text: [...el.querySelectorAll('[data-badge] .hl')].map((x) => x.textContent), vko: pg.v_source.ko, label: pg.price_basis.label,
             preview: document.querySelector('[data-k=mode-preview]').disabled, why: !!document.querySelector('[data-preview-off]') }; });
         assert.deepEqual(badges.got, badges.want, 'official badges: provenanceAttrs of the page profile, no prices');
-        assert.deepEqual(badges.text, ['공식 가중치', '가격 없음', '기기 계산', badges.vko]);
+        assert.equal(badges.got['data-qgv-source'], 'CENTRAL'); assert.deepEqual(badges.text, ['공식 가중치', badges.label, '중앙 게시', badges.vko]);
+        assert.equal(badges.label, '공식 V · IEX 마지막 체결가 기준(공식 종가 아님)');
         assert.equal(badges.preview, true, 'no saved profile: the preview chip is off'); assert.ok(badges.why);
         assert.equal(await page.locator('[data-empty=NO_MODEL]').count(), 1, '2.1.7 without prices: the empty state');
         assert.deepEqual(await page.locator('[data-lb="2.1.7"] a.lk').evaluateAll((n) => n.map((a) => a.getAttribute('href'))), ['#/portfolio', '#/detail/target-v1']);
@@ -432,9 +444,35 @@ const testClick = async (page, name) => { await page.locator('[data-test-action=
         await ctx.context.close();
       }
 
+      // ================================================================ central STALE: 3 completed New York sessions after the basis day
+      {
+        tag('central stale');
+        s.fixture('qgv-official.json', { body: PUB_TEXT, type: 'application/json' }); s.fixture('qgv-official-status.json', { json: STATUS });
+        // 2026-10-17T03:00Z = 10-16 23:00 New York: 10-14, 10-15 and 10-16 completed after the basis day 10-13 (FRESH_SESSIONS 2).
+        const ctx = await open({ at: '2026-10-17T03:00:00.000Z' }), { page } = ctx;
+        await page.goto(s.base + '#/qgv'); await ready(page); await tableReady(page);
+        const st = await page.evaluate(async () => { const pg = await window.IS2.qgv.page(), q = (x) => document.querySelector(x);
+          return { sessions: pg.price_basis.sessions, stale: pg.price_basis.stale, chip: (q('[data-central-state=STALE]') || {}).textContent || null, unknown: !!q('[data-central-state=STALE_UNKNOWN]'),
+            ranks: pg.rows.filter((r) => Number.isInteger(r.rank.official)).length, v: pg.rows.filter((r) => r.score.v !== null).length }; });
+        assert.deepEqual([st.sessions, st.stale, st.unknown], [3, true, false], 'more than 2 completed New York sessions: STALE');
+        assert.equal(st.chip, 'STALE · 기준일 뒤 끝난 뉴욕 정규장 2회 초과 · 마지막 게시본 그대로');
+        assert.equal(st.ranks, PUB.coverage.ranked, 'a late publication is shown as it is (never replaced by a device V)'); assert.ok(st.v > 1);
+        // The company page's QGV card shows the same official V: STALE, the publication time, the failed attempt, the IEX attribution.
+        await page.goto(s.base + '#/company/nvda'); await page.locator('[data-card=qgv] [data-qgv]').waitFor({ timeout: 20000 });
+        const card = await page.evaluate(() => { const c = document.querySelector('[data-card=qgv]'), q = (x) => c.querySelector(x), a = q('[data-attribution] a');
+          return { src: q('[data-v-source]').textContent, pub: (q('[data-central-published]') || {}).textContent || null, attempt: (q('[data-central-attempt]') || {}).textContent || null,
+            attr: (q('[data-attribution]') || {}).textContent || null, link: a ? [a.getAttribute('href'), a.getAttribute('target'), a.getAttribute('rel')] : null }; });
+        assert.equal(card.src, 'V 출처: 공식 V · 공식 V · IEX 마지막 체결가 기준(공식 종가 아님) · 가격 기준일 2026-10-13 · STALE');
+        assert.match(card.pub, /^게시 \d{4}\. \d\d\. \d\d\. \d\d:\d\d UTC$/);
+        assert.equal(card.attempt, '마지막 게시 시도 2026. 10. 14. 01:50 UTC · 마지막 게시 시도 실패: IEX 가격 공급이 95% 기준에 못 미쳤습니다 · 이전 게시본 유지');
+        assert.equal(card.attr, PUB.attribution.text + ' IEX 약관'); assert.deepEqual(card.link, [PUB.attribution.terms_url, '_blank', 'noopener noreferrer'], 'IEX HIST terms clause 01 on the company card');
+        await ctx.context.close();
+      }
+
       // ================================================================ clicks: sign-in and the Universe read on the band
       {
         tag('clicks');
+        s.fixture('qgv-official.json', { body: PUB_TEXT, type: 'application/json' }); s.fixture('qgv-official-status.json', { json: STATUS });
         const ctx = await open(), { page, seen, rec } = ctx;
         s.fixture('sec-universe-shares.json', { json: SHARES_FILE });
         await page.goto(s.base + '#/qgv'); await ready(page); await tableReady(page);
@@ -449,21 +487,31 @@ const testClick = async (page, name) => { await page.locator('[data-test-action=
         assert.equal(await page.locator('[data-lb="2.1.4"] .load-row [data-reason]').getAttribute('data-reason'), 'PRICE_TABS_OFF', 'signed in, store flag off: PRICE_TABS_OFF');
         assert.equal(await page.locator('[data-lb="2.1.4"] .load-row a.lk').getAttribute('href'), '#/detail/settings');
         // ③ by Enter on the focused button: exactly one read.
+        // The central basis chips (DC-31): IEX wording, basis day, publication time, the failed attempt, the attribution link.
+        const central = await page.evaluate(async () => { const pg = await window.IS2.qgv.page(), q = (x) => document.querySelector(x), a = q('[data-attribution] a');
+          return { ranks: pg.rows.filter((r) => Number.isInteger(r.rank.official)).map((r) => r.id + ':' + r.rank.official), v: pg.rows.filter((r) => r.score.v !== null).length, chip: q('[data-central-basis]').textContent,
+            attempt: (q('[data-central-attempt]') || {}).textContent || null, attr: q('[data-attribution]').textContent, href: a.getAttribute('href'), target: a.getAttribute('target'), rel: a.getAttribute('rel'), stale: !!q('[data-central-state=STALE]'), basis: pg.price_basis }; });
+        assert.equal(central.ranks.length, PUB.coverage.ranked, 'the published ranks'); assert.ok(central.v > 1, 'the published V');
+        assert.match(central.chip, /^공식 V · IEX 마지막 체결가 기준\(공식 종가 아님\) · 가격 기준일 2026-10-13 · 게시 \d{4}\. \d\d\. \d\d\. \d\d:\d\d UTC$/);
+        assert.match(central.attempt, /^마지막 게시 시도 2026\. 10\. 14\. 01:50 UTC · 마지막 게시 시도 실패: IEX 가격 공급이 95% 기준에 못 미쳤습니다/);
+        assert.equal(central.attr, PUB.attribution.text + ' IEX 약관'); assert.deepEqual([central.href, central.target, central.rel], [PUB.attribution.terms_url, '_blank', 'noopener noreferrer']);
+        // The context clock is fixed (NOW = 10-13 23:00 New York, the basis day itself): 0 completed sessions after it, not STALE.
+        assert.deepEqual([central.basis.sessions, central.basis.stale, central.stale], [0, false, false], 'fresh: no STALE chip');
         await b(2).focus(); await page.keyboard.press('Enter');
         await page.waitForFunction(() => document.querySelector('[data-lb-table] tbody tr[data-row] [data-ram-price]'), null, { timeout: 20000 });
         await settle(page);
         assert.equal(rec.counts.values, 1, 'Enter on the focused ③ started exactly one Universe read');
-        const after = await page.evaluate(async () => { const I = window.IS2, pg = await I.qgv.page(); return { of: pg.rows[0].rank.of, ranked: pg.rows.filter((r) => Number.isInteger(r.rank.official)).length, connected: pg.price_basis.connected, line: document.querySelector('[data-qgv-band] [data-qgv-status]').textContent }; });
-        assert.ok(after.of > 1 && after.ranked > 1 && after.connected, 'V and ranks from the read'); assert.match(after.line, /읽은 뒤: 읽은 시각 \d\d:\d\d · RAM에만 · 새로고침하면 사라짐/);
+        const after = await page.evaluate(async () => { const I = window.IS2, pg = await I.qgv.page(); return { of: pg.rows[0].rank.of, ranks: pg.rows.filter((r) => Number.isInteger(r.rank.official)).map((r) => r.id + ':' + r.rank.official), v: pg.rows.filter((r) => r.score.v !== null).length, kind: pg.price_basis.kind, line: document.querySelector('[data-qgv-band] [data-qgv-status]').textContent }; });
+        assert.deepEqual([after.ranks, after.v, after.kind], [central.ranks, central.v, 'CENTRAL_IEX'], 'the Universe read changes no rank and no V (M3 only)'); assert.ok(after.of > 1); assert.match(after.line, /읽은 뒤: 읽은 시각 \d\d:\d\d · RAM에만 · 새로고침하면 사라짐/);
         const v1 = await page.evaluate(() => window.__qt.check()); assert.ok(v1.n > 1); assert.deepEqual(v1.bad, [], 'after the read every drawn cell equals the layer row');
         const m3 = await page.evaluate(() => ({ attr: [...document.querySelectorAll('[data-lb-table] *')].some((e) => [...e.attributes].some((a) => /#\d/.test(a.value))), cells: [...document.querySelectorAll('[data-cell=m3]')].map((td) => ({ ram: !!td.querySelector('[data-ram-price]'), text: td.textContent })) }));
         assert.ok(m3.cells.some((c) => c.ram), 'M3 ranks drawn'); for (const c of m3.cells) if (/#\d/.test(c.text)) assert.ok(c.ram, 'an M3 rank only inside [data-ram-price]'); assert.equal(m3.attr, false, 'no M3 rank in an attribute');
         assert.equal(await page.locator('[data-m3-coverage]').count(), 1);
         await site.assertRamOnly(page, SENTINELS, phase);
         const badges = await page.evaluate(async () => { const I = window.IS2, S = window.QgvScores, pg = await I.qgv.page(), el = document.querySelector('[data-badges]');
-          const want = S.provenanceAttrs(S.provenance({ kind: 'QGV', profile: { preset: pg.preset, gate: pg.gate, id: pg.profile_id }, priced: true }));
-          return { got: Object.fromEntries(Object.keys(want).map((k) => [k, el.getAttribute(k)])), want, price: el.querySelector('[data-badge=prices] .hl').textContent }; });
-        assert.deepEqual(badges.got, badges.want); assert.equal(badges.price, '이 기기 가격');
+          const want = S.provenanceAttrs(S.provenance({ kind: 'QGV', profile: { preset: pg.preset, gate: pg.gate, id: pg.profile_id }, central: true }));
+          return { got: Object.fromEntries(Object.keys(want).map((k) => [k, el.getAttribute(k)])), want, price: el.querySelector('[data-badge=prices] .hl').textContent, label: pg.price_basis.label }; });
+        assert.deepEqual(badges.got, badges.want); assert.equal(badges.price, badges.label, 'still the central V after the read');
         // 2.1.2 again on 종합 순위.
         await page.locator('button[data-list=RANKED]').click(); await page.locator('[data-lb-table][data-list=RANKED]').waitFor();
         const ranked = await page.evaluate(() => window.__qt.drawn().map((d) => d.c.rank)); assert.ok(ranked.length > 1 && ranked.every((t) => /^\d+$/.test(t)), '종합 순위 rows ranked');
@@ -519,7 +567,7 @@ const testClick = async (page, name) => { await page.locator('[data-test-action=
         await page.waitForFunction(() => { const b = document.querySelector('[data-k=mode-preview]'); return b && !b.disabled; });
         await page.locator('[data-k=mode-preview]').click(); await page.locator('[data-list-lock=PREVIEW]').waitFor();
         const pv = await page.evaluate(async () => { const I = window.IS2, S = window.QgvScores, pg = await I.qgv.page(), p = I.store.weights().value.profiles[0], prev = I.qgv.preview(pg, p.weights, { typeWeights: p.type_weights !== false, gate: p.gate === false ? false : true });
-          const el = document.querySelector('[data-badges]'), want = S.provenanceAttrs(S.provenance({ kind: 'QGV', profile: { weights: p.weights, gate: p.gate === false ? false : true, id: prev.profile_id }, priced: true }));
+          const el = document.querySelector('[data-badges]'), want = S.provenanceAttrs(S.provenance({ kind: 'QGV', profile: { weights: p.weights, gate: p.gate === false ? false : true, id: prev.profile_id } }));
           const check = await window.__qt.check({ preview: prev });
           return { same: pg === window.__pg2, profile: I.qgv.profile(), got: Object.fromEntries(Object.keys(want).map((k) => [k, el.getAttribute(k)])), want, weight: el.querySelector('[data-badge=weights] .hl').textContent,
             head: document.querySelector('[data-lb-table] thead th .sub').textContent, wantHead: I.qgv.rankLabel(prev) + ' · ' + (prev.v_weight_zero ? S.PERSONAL_V0_LABEL[0] : S.PERSONAL_LABEL[0]), check,
@@ -538,11 +586,11 @@ const testClick = async (page, name) => { await page.locator('[data-test-action=
         assert.deepEqual(st.idbNames, ['investment-device-actual-v1'], 'the prepare click saved Google on (the old sign-in click did)');
         await boundaries(ctx, { stored: [KEYS.UNIVERSE_SOURCE, KEYS.PROFILES_V2], outside: [GIS_CLIENT, GIS_STYLE, SHEETS + '/v4/spreadsheets/' + SHEET_ID] });
         assert.equal(await page.evaluate(() => window.IS2.action.blocked()), 0);
-        // After a reload the RAM values are gone: V and ranks NA again.
+        // After a reload the RAM values are gone (M3 NA again); the central V stays as published.
         await page.reload(); await ready(page); await tableReady(page);
         const gone = await page.evaluate(async () => { const pg = await window.IS2.qgv.page(); return { v: pg.rows.filter((r) => r.score.v !== null).length, m3: document.querySelectorAll('[data-ram-price]').length }; });
-        assert.deepEqual(gone, { v: 0, m3: 0 }, 'after a reload V and M3 are NA again');
-        s.fixture('sec-universe-shares.json', null);
+        assert.deepEqual(gone, { v: central.v, m3: 0 }, 'after a reload M3 is NA again, the central V unchanged');
+        s.fixture('sec-universe-shares.json', null); s.fixture('qgv-official.json', null); s.fixture('qgv-official-status.json', null);
         await ctx.context.close();
       }
 

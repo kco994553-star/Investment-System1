@@ -3,7 +3,9 @@
 // the decided axis weights and the label 'v0.1 후보 · 검증 전 · 공식 기본값 아님', selecting one fills the two-level editor (official
 // inner weights, type adjustment and gate on), the three weight stages (기본 / 유형 반영 / 실제 적용) shown for the profile and the
 // chosen company equal the engine's own output, a candidate saves as a versioned personal profile, and the official ranking never
-// moves. Synthetic only: the strict sec-qgv2.json vector (one TARGET made weak in Q) by route interception and device prices from a stubbed Universe tab read.
+// moves. Synthetic only: the strict sec-qgv2.json vector (one TARGET made weak in Q) by route interception. DC-31 (device V abolished):
+// no Universe read and no price; no central publication is served (404), so every V is NA with its OFFICIAL_* reason and the
+// stages are the engine's price-free ones (V axis not computed, never a device V).
 let phase = 'START';
 const { chromium } = require('playwright'), assert = require('node:assert/strict'), { routeEmptyPublicScreens } = require('./empty_public_screens.js'), F = require('./qgv_v2_fixture.js');
 const BASE = process.env.PAGES_COCKPIT_URL, ORIGIN = new URL(BASE).origin, SHOTS = process.env.PAGES_COCKPIT_EVIDENCE_DIR, E = '[data-qgv2-weights-editor]';
@@ -19,14 +21,14 @@ function gatedPayload() {
   SQ.validate(p);return p;
 }
 const officialSnapshot = (page) => page.evaluate(() => JSON.stringify(Object.fromEntries(Object.entries(qgvScores().rows).map(([k, r]) => [k, [r.rank, r.primary.total, r.primary.q, r.primary.g, r.primary.v, r.primary.flags]]))));
-// The engine's personal result for a candidate, from the same public inputs, identities and device quotes the S13 editor uses
-// (this page session's quotes, app.js qgv2Quotes, under the freshly collected ones).
+// The engine's personal result for a candidate, from the same public inputs, identities and official page the S13 editor uses
+// (QgvScores.officialPage; without a publication the price-free compute with every V NA, DC-31).
 const engineResult = (page, id) => page.evaluate(async (pid) => {
-  const inputs = await Qgv2Inputs.load(window), catalog = await (await fetch('actual-catalog.json', { cache: 'no-store' })).json(), identities = DeviceWatchlist.identities(catalog);
-  const quotes = { ...qgv2Quotes, ...(await QgvScores.collectQuotes(window, { identities, v2Inputs: inputs, catalog })) }, d = QgvV2.userPreset(pid);
-  const mine = QgvScores.compute({ identities, v2Inputs: inputs, quotes, gate: d.gate, weights: d.weights, typeWeights: d.type_weights });
-  const official = QgvScores.compute({ identities, v2Inputs: inputs, quotes });
-  return { summary: DeviceProfiles.stageSummary(mine), rows: Object.fromEntries(Object.entries(mine.rows).map(([k, r]) => [k, { ticker: r.ticker, stages: r.personal.weight_stages || null, total: r.personal.total }])),
+  const inputs = await Qgv2Inputs.load(window), catalog = await (await fetch('actual-catalog.json', { cache: 'no-store' })).json(), identities = DeviceWatchlist.identities(catalog), d = QgvV2.userPreset(pid);
+  const R = QgvScores.officialPage(window, { v2Inputs: inputs, identities }), shown = new Set(identities.map((c) => c.company_id)), only = (x) => ({ ...x, rows: Object.fromEntries(Object.entries(x.rows).filter(([k]) => shown.has(k))) });
+  const base = { identities: R.identities, v2Inputs: inputs, quotes: {}, official: R.official, referenceRows: QgvScores.pageReferences(), vMissing: R.v_reason };
+  const mine = only(QgvScores.compute({ ...base, gate: d.gate, weights: d.weights, typeWeights: d.type_weights })), official = only(R.computed);
+  return { source: R.source, summary: DeviceProfiles.stageSummary(mine), rows: Object.fromEntries(Object.entries(mine.rows).map(([k, r]) => [k, { ticker: r.ticker, stages: r.personal.weight_stages || null, total: r.personal.total }])),
     official: Object.fromEntries(Object.entries(official.rows).map(([k, r]) => [k, [r.rank, r.primary.total]])), weights: QgvV2.WEIGHTS };
 }, id);
 const cellValues = (loc) => loc.evaluateAll((rows) => rows.map((r) => [r.dataset.qgv2wStageRow || r.dataset.qgv2wStagesSummaryRow, ...[...r.querySelectorAll('td[data-value]')].map((c) => [c.dataset.stage || '', c.dataset.value])]));
@@ -71,7 +73,7 @@ async function candidateFlow(page, width) {
   await page.locator(E + ' [data-qgv2w-result-state="READY"]').waitFor();
   assert.equal(await page.locator(E + ' [data-qgv2w-result-preset]').textContent(), '공격형 v0.1 · v0.1 후보 · 검증 전 · 공식 기본값 아님');
   assert.match(await page.locator(E + ' [data-qgv2w-result-label]').textContent(), /^개인 설정 미리보기 · 공식 점수 아님 · qgv-v2\/custom\/[0-9a-f]{16}\/gate-on$/);
-  const eng = await engineResult(page, 'user-preset/aggressive@0.1');
+  const eng = await engineResult(page, 'user-preset/aggressive@0.1');assert.equal(eng.source, 'NONE', 'no publication served');
   phase = 'SUMMARY_STAGES';const sm = eng.summary;assert.ok(sm.rows > 0);
   assert.deepEqual(await page.locator(E + ' [data-qgv2w-stages-summary-table] thead th').allTextContents(), ['축', '(a) 기본', '(b) 유형 반영 · 평균', '(c) 실제 적용 · 평균']);
   assert.deepEqual(await cellValues(page.locator(E + ' [data-qgv2w-stages-summary-row]')),
@@ -81,9 +83,11 @@ async function candidateFlow(page, width) {
   // Company stages: a gated company (V dropped), a type-adjusted one and one with a missing factor, each equal to the engine.
   const rows = Object.entries(eng.rows).filter(([, r]) => r.stages && r.stages.applied.state === 'READY' && !r.stages.display_stop);
   const pick = (fn) => { const hit = rows.find(([, r]) => fn(r.stages));return hit ? hit[0] : null; };
+  // Without a central V (DC-31) the gate cannot drop a V that is not there: a gated company appears only with a published V.
   const gated = pick((s) => s.applied.axis_status.V.status === 'VALUE_TRAP_GATE'), typed = pick((s) => s.type_adjusted.changes.length > 0), missing = pick((s) => s.applied.changes.some((c) => c.reason === 'MISSING'));
-  assert.ok(gated && typed && missing, 'fixture has gated, typed and missing companies ' + [gated, typed, missing]);
-  for (const cid of [...new Set([gated, typed, missing])]) {
+  assert.ok(typed && missing, 'fixture has typed and missing companies ' + [typed, missing]);assert.equal(gated, null, 'no V, so no value-trap drop of V');
+  assert.ok(rows.every(([, r]) => r.stages.applied.axis.V === 0), 'V carries no applied weight without the central V');
+  for (const cid of [...new Set([typed, missing])]) {
     phase = 'COMPANY_STAGES_' + cid;await page.locator(E + ' [data-qgv2w-company]').selectOption(cid);const box = page.locator(E + ' [data-qgv2w-stages-company="' + cid + '"]');await box.waitFor();
     const s = eng.rows[cid].stages;assert.equal(await box.locator('[data-qgv2w-stages-state]').getAttribute('data-qgv2w-stages-state'), 'READY');
     assert.deepEqual(await box.locator('thead th').allTextContents(), ['항목', '(a) 기본', '(b) 유형 반영', '(c) 실제 적용']);
@@ -99,7 +103,8 @@ async function candidateFlow(page, width) {
     const unchanged = Object.keys(s.applied.factor_status).find((f) => s.applied.factor_status[f].status === 'USED' && !s.applied.changes.some((c) => c.key === f));
     if (unchanged) assert.equal(await box.locator('[data-qgv2w-stage-reason-for="factor.' + unchanged + '"]').count(), 0, 'no reason line without a change');
   }
-  phase = 'LAYOUT';await page.locator(E + ' [data-qgv2w-company]').selectOption(gated);await page.locator(E + ' [data-qgv2w-stages-company="' + gated + '"]').waitFor();
+  phase = 'LAYOUT';await page.locator(E + ' [data-qgv2w-company]').selectOption(missing);await page.locator(E + ' [data-qgv2w-stages-company="' + missing + '"]').waitFor();
+  assert.equal(await page.locator(E + ' [data-qgv2w-central] [data-central-basis]').getAttribute('data-central-state'), 'NA', 'S13 basis line without a publication');
   assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'no horizontal page scroll at ' + width);
   for (const t of ['[data-qgv2w-stages-summary-table]', '[data-qgv2w-stages-table]']) assert.equal(await page.locator(E + ' ' + t).evaluate((n) => n.parentElement.classList.contains('table-scroll')), true, t);
   if (SHOTS) { await page.locator(E + ' [data-product-preset-status]').screenshot({ path: SHOTS + '/s13-preset-card-' + width + '.png' });
@@ -122,15 +127,8 @@ async function candidateFlow(page, width) {
       const external = [];page.on('request', (r) => { if (!/^(data|blob):/.test(r.url()) && new URL(r.url()).origin !== ORIGIN) external.push(r.url()); });
       await page.route('**/*', (r) => (new URL(r.request().url()).origin === ORIGIN ? r.fallback() : r.abort()));
       try {
-        phase = 'SETUP';await page.goto(BASE + '#settings');await page.locator('[data-universe-source]').waitFor();
-        await page.locator('[data-universe-source]').fill('u'.repeat(24));await page.locator('[data-universe-settings] button[type="submit"]').click();
-        await page.evaluate(async (values) => {
-          await DeviceActual.sheetSettings(window, { schema: 'device-google-sheet-settings/1', enabled: true, spreadsheet_id: '', range: 'Quotes!A1:C22' });
-          const session = { state: () => ({ enabled: true, connected: true }), revision: () => 1, setEnabled() {}, subscribe: () => () => {}, async fetchValues() { return { values }; } };
-          window.GoogleSheetQuotes = { ...GoogleSheetQuotes, sessionFor: () => session };location.hash = 'leaderboard';
-        }, F.strictUniverseValues());
-        await page.locator('[data-leaderboard-table]').waitFor();await page.locator('details:has(#private-subset-root) > summary').click();
-        await page.locator('[data-private-subset] [data-subset-action="read"]:enabled').click();await page.locator('[data-qgv2-state="READY"]').filter({ hasText: /가격 [1-9]\d/ }).waitFor();
+        phase = 'SETUP';await page.goto(BASE + '#leaderboard');await page.locator('[data-leaderboard-table]').waitFor();
+        await page.waitForFunction(() => QgvScores.pagePublication().reason !== 'OFFICIAL_LOADING');
         await candidateFlow(page, width);
         assert.deepEqual(external, [], 'no request to another origin');assert.equal(errors, 0);pass++;console.log('PASS preset candidates ' + width);
       } catch (e) { fail++;console.log('FAIL preset candidates ' + width + ' ' + phase + ' ' + (e.code === 'ERR_ASSERTION' ? 'CONTRACT ' + e.message.split('\n').slice(0, 6).join(' | ') + ' @' + (e.stack.match(/browser_test.js:(\d+)/) || [])[1] : 'EXECUTION ' + String(e.message).split('\n')[0])); } finally { await context.close(); }

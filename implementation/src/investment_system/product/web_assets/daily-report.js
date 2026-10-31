@@ -90,7 +90,9 @@ function hitText(w,t,locale='ko-KR'){
 function seriesState(x,locale='ko-KR'){return x.state==='OK'?(x.gaps?'결측 '+x.gaps+'세션(보간 없음)':'정상'):benchCode(x.reason,locale);}
 /* Recording vs rehearsal (리허설 · 기록 없음): a rehearsal runs the rules on today's data in RAM and is never recorded. */
 const MODE_LABEL={REHEARSAL:{ko:'리허설 · 기록 없음',en:'Rehearsal · not recorded'},RECORDING:{ko:'기록 모드',en:'Recording mode'}};
-const BASIS_KO={ABNORMAL:'이상 하락',NORMAL:'정상'},vSlopeText=v=>v==='READY'?'V 기울기 사용':VT.codeLabel(v)||v;
+// DC-31: no V history is kept on the device and the central one is not published yet, so the D-21 V slope is NA (an unavailable
+// basis keeps its own label).
+const V_SLOPE_NA='V 기울기 NA · 중앙 V 이력 미게시',BASIS_KO={ABNORMAL:'이상 하락',NORMAL:'정상'},vSlopeText=v=>v==='BASIS_NOT_AVAILABLE'?VT.codeLabel(v)||v:V_SLOPE_NA;
 // D-5 basis label for one company: benchmark actually used (S&P 500 fallback named), state or NA reason, V slope use.
 function basisText(b){
  if(!b)return NA;const bench=b.benchmark==='SP500'?'S&P 500':b.benchmark;
@@ -490,12 +492,11 @@ function screenHtml(m,{hidden=true,answer=null,check=null,locale='ko-KR'}={}){
   +'<div class="grid two"><div><b>가상 매수</b><p>'+esc(m.buy_total===null?NA:money(m.buy_total,H))+'</p><p class="small">'+esc('가상 매수 한도 '+money(m.buy_limit,H)+(m.buy_total!==null&&num(m.buy_limit)?' 중 '+Math.round(m.buy_total/m.buy_limit*100)+'%':''))+'</p></div>'
   +'<div><b>가상 매도</b><p>'+esc(m.sell_total===null?NA:money(m.sell_total,H))+'</p><p class="small">'+esc('가상 매도 한도 '+money(m.sell_limit,H)+(m.sell_total!==null&&num(m.sell_limit)?' 중 '+Math.round(m.sell_total/m.sell_limit*100)+'%':''))+'</p></div></div>'
   +(m.started?'':'<p class="badge NOT_AVAILABLE" data-report-not-started>'+esc(notStarted(m))+'</p>')+'</section>';
- const before=!!(m.report_date&&m.start_date&&m.report_date<m.start_date),sig=m.signals||{},cap=sig.capture||null,vp=vProgressText(sig.v_progress);
+ const before=!!(m.report_date&&m.start_date&&m.report_date<m.start_date),sig=m.signals||{},vp=vProgressText(sig.v_progress);
  h+='<section class="card mode-card '+m.mode+'" data-report-mode-card data-mode="'+m.mode+'"><h2>'+esc(modeName)+'</h2>'
   +(rehearsal?'<p data-rehearsal-note>'+esc(rehearsalLine(m))+'</p><div class="sheet-actions"><button type="button" data-recording-mode>'+esc(en?'Back to recording mode':'기록 모드로 돌아가기')+'</button></div>'
    :'<p class="small">'+esc(before?'가상매매 시작일 전입니다. 리허설은 오늘 데이터로 규칙만 돌려 보고, 어떤 장부·시트에도 기록하지 않습니다.':'시작일 이후 규칙 결과입니다. 리허설로 최근 거래일을 기록 없이 다시 볼 수 있습니다.')+'</p><div class="sheet-actions"><button type="button" data-rehearsal-run>'+esc(en?'Run rehearsal':'리허설 실행')+'</button></div>')
-  +(vp?'<p class="small" data-v-progress data-v-state="'+esc(sig.v_progress.state)+'">'+esc(vp+' · V 기울기(D-21)는 첫 기록 뒤 20거래일부터 · 이 기기에만 V 점수 저장(가격 없음)')+'</p>':'')
-  +(cap?'<p class="small" data-v-capture="'+esc(cap.state)+'">'+esc(cap.state==='RECORDED'?'오늘 V 기록: '+cap.date+' · '+cap.added.length+'개 기업':'오늘 V 기록 없음 · '+(cap.reason?VT.codeText(cap.reason):NA))+'</p>':'')+(cap&&cap.v2?'<p class="small" data-v2-capture="'+esc(cap.v2.state)+'">'+esc(cap.v2.state==='RECORDED'?'오늘 v2 V 기록: '+cap.v2.date+' · '+cap.v2.added.length+'개 기업':'v2 V 기록 없음 · 오늘 완료된 미국 거래일과 같은 공시 입력·V 요인을 확인합니다.')+'</p>':'')+'</section>';
+  +(vp?'<p class="small" data-v-progress data-v-state="central-history-not-published">'+esc(V_SLOPE_NA+' · 기기에 V 이력을 쌓지 않음(DC-31) · 중앙 V 이력이 날짜별로 게시되면 D-21 V 기울기를 씀')+'</p>':'')+'</section>';
  h+=inputsCard(m.runner);
  const blocked=unavailableCard(m);if(!m.started&&!(m.holdings||[]).length)h+=blocked;
  h+='<section class="card" data-report-ai-summary><h2>오늘의 요약 <span class="badge">AI 해석</span></h2>'+(answer?'<pre class="ai-answer" data-ai-answer>'+esc(answer.answer)+'</pre><p class="small">'+esc((answer.model?answer.model+' · ':'')+'보관 '+(answer.saved_at||'')+' · '+(answer.source==='MAILBOX'?'우체통':'붙여넣기'))+'</p>':'<p data-rule-summary>'+esc('【규칙】 '+ruleSummary(m))+'</p>')
