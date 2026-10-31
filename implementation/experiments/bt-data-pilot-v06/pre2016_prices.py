@@ -189,7 +189,7 @@ def stable_run(output,archive,resume,plan_path):
     tasks=year_tasks(expected,acquired)
     # ABT's exact gap first, then rotate companies each year; a rejection is not a global completion.
     tasks.sort(key=lambda t:(0 if t['company']=='ABT'else 1,-t['year'],list(routes).index(t['company'])))
-    report={'version':'BT-DATA-PILOT v0.6','run_id':run_id,'token_issuances':0,'token_refreshes':0,'workers':1,
+    report={'version':'BT-DATA-PILOT v0.6','run_id':run_id,'token_issuances':0,'token_refreshes':0,'workers':1,'checkpoint_sequence':0,
         'requests':[],'tasks':tasks,'conflicts':conflicts,'quality_rejections':quality_rejections,'formal_backtests':0,'plan':plan,'old_snapshot_preserved':True,
         'started_at':datetime.now(timezone.utc).isoformat(),'all_key_users_observable':False,'max_new_calls':210}
     keys,status=choose_keys(os.environ);client=KIS(root,store,keys,max_calls=210)if keys else None
@@ -200,6 +200,7 @@ def stable_run(output,archive,resume,plan_path):
     tag='bt-data-pilot-v06-kis-stable-'+run_id
     failures={};started=time.monotonic();calls_checkpoint=0
     def save(upload=False):
+        if upload:report['checkpoint_sequence']+=1
         report['market_requests']=client.calls if client else 0
         report['elapsed_seconds']=round(time.monotonic()-started,3)
         report['coverage']=[]
@@ -211,7 +212,7 @@ def stable_run(output,archive,resume,plan_path):
                 'expected_sessions':len(expected[company]),'missing_sessions':len(missing),'missing_dates':missing,
                 'identity_status':r['identity_status'],'formal_eligible':False})
         (root/'stable-normalized.json').write_bytes(encoded(series));(root/'stable-state.json').write_bytes(encoded(report))
-        if upload:checkpoint(root,tag,'stable-'+str(report['market_requests']))
+        if upload:checkpoint(root,tag,'stable-'+str(report['checkpoint_sequence']).zfill(4)+'-calls-'+str(report['market_requests']))
     def request(company,alias,exchange,cursor,purpose):
         nonlocal calls_checkpoint
         key=(alias,exchange,cursor)

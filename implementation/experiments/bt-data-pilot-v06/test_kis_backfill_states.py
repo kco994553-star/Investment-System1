@@ -36,6 +36,7 @@ def test_rejected_company_does_not_complete_or_block_other_company(tmp_path,monk
     plan={'calendar':{'url':'https://example.invalid/calendar','sha256':hashlib.sha256(cal).hexdigest()},
           'routes':[{'company':c,'alias':c,'exchange':'NYS','start':'1900-01-01','end':'2010-12-31','identity_status':'SYNTHETIC'}for c in ['A','B']],
           'history_probe_dates':[]}
+    plan['routes'].append({**plan['routes'][1],'company':'C'})
     path=tmp_path/'plan.json';path.write_bytes(encoded(plan))
     def acquire(store,aid,url,kind):store.put(aid,cal,url,kind,'text/csv','test',200)
     def transport(url,headers,payload=None):
@@ -44,11 +45,15 @@ def test_rejected_company_does_not_complete_or_block_other_company(tmp_path,monk
         return 200,b'{"rt_cd":"0","output2":[{"xymd":"20100104","open":"10","high":"10","low":"10","clos":"10","tvol":"1"}]}','',.1
     monkeypatch.setenv('GITHUB_ACTIONS','true');monkeypatch.setenv('GITHUB_RUN_ID','synthetic');monkeypatch.setenv('KIS_APP_KEY','synthetic-key');monkeypatch.setenv('KIS_APP_SECRET','synthetic-secret')
     monkeypatch.delenv('KIS_APPKEY',raising=False);monkeypatch.delenv('KIS_APPSECRET',raising=False)
-    with patch('pilot.acquire',acquire),patch.object(p.release,'http',return_value=(200,{},b'{"private":true}')),patch.object(p,'checkpoint'),patch.object(k,'transport',transport),patch('time.sleep'):
+    saved=set()
+    def immutable_checkpoint(root,tag,name):
+        if name in saved:raise ValueError('CHECKPOINT_NAME_REUSED_WITH_NEW_STATE')
+        saved.add(name)
+    with patch('pilot.acquire',acquire),patch.object(p.release,'http',return_value=(200,{},b'{"private":true}')),patch.object(p,'checkpoint',immutable_checkpoint),patch.object(k,'transport',transport),patch('time.sleep'):
         result=p.stable_run(tmp_path/'output',archive('old'),archive('resume'),path)
     state=json.loads((tmp_path/'output/stable-state.json').read_text())
     assert result['market_requests']==3
     assert state['token_issuances']==1 and state['token_refreshes']==0
-    assert [(t['company'],t['state'])for t in state['tasks']]==[('A','RETRYABLE_ERROR'),('B','VALIDATED')]
+    assert [(t['company'],t['state'])for t in state['tasks']]==[('A','RETRYABLE_ERROR'),('B','VALIDATED'),('C','VALIDATED')]
     assert state['coverage'][0]['missing_sessions']==1
     assert state['coverage'][1]['missing_sessions']==0
