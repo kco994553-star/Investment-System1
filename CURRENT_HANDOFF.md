@@ -19,11 +19,16 @@
 
 | PR·작업 | 담당 | 시작 (UTC) |
 | --- | --- | --- |
-| 이 문서 PR(DC-35 개발 체계 — 밤 개정으로 흐름 셋 Main·Codex·GPT Work·#434 대체·lab-backtest-v1 계약 기록) | Claude Code Main | 10/31 08:05 |
-| 표 PR(공개 + 비공개 2층 구조 표·DC-36, `claude/public-private-two-layer-table`, 이 문서 PR 위) | Claude Code Main | 10/31 08:50 |
-| 공통 기반 PR(기업 목록 공통 접근·Lab 판독기·비공개 기능 상태·`parts.privatePanel`, `claude/web-app-common-base`, base = canonical) | Claude Code Main | 10/31 08:10 |
-| 묶음 1 PR(매크로·프롬프트·트리, `claude/web-app-bundle-1`, base = canonical, 표와 어긋난 곳 수정 뒤 PR) | Claude Code Main | 10/31 08:10 |
+| [#438](https://github.com/kco994553-star/Investment-System1/pull/438) 이 문서 PR(DC-35 개발 체계 — 밤 개정으로 흐름 셋 Main·Codex·GPT Work·#434 대체·lab-backtest-v1 계약 기록) | Claude Code Main | 10/31 08:05 |
+| [#440](https://github.com/kco994553-star/Investment-System1/pull/440) 표 PR(공개 + 비공개 2층 구조 표·DC-36, `claude/public-private-two-layer-table`, 이 문서 PR 위) | Claude Code Main | 10/31 08:50 |
+| [#442](https://github.com/kco994553-star/Investment-System1/pull/442) 전진검증 v3 설계 PR(DC-38, `claude/forward-validation-v3-design`, 표 PR 위) | Claude Code Main | 10/31 10:20 |
+| [#441](https://github.com/kco994553-star/Investment-System1/pull/441) 공통 기반 PR(기업 목록 공통 접근·Lab 판독기·비공개 기능 상태·`parts.privatePanel`, `claude/web-app-common-base`, base = canonical) | Claude Code Main | 10/31 08:10 |
+| [#445](https://github.com/kco994553-star/Investment-System1/pull/445) 묶음 1 PR(매크로·프롬프트·트리, `claude/web-app-bundle-1-v2`, #441 위. #444는 저장소 가드 EMAIL_PATTERN 때문에 커밋 하나로 다시 올리고 닫음) | Claude Code Main | 10/31 08:10 |
 | #436 보강(차트 이력·Lab 결과 저장·조회 계약) | Claude Code Main | 10/31 08:10 |
+| [#447](https://github.com/kco994553-star/Investment-System1/pull/447) #436 1단계 가드 PR(KIS·비공개 경계 가드·research-request/1·보안 검토 수정, `claude/private-area-guards`, #436 위) | Claude Code Main | 10/31 09:40 |
+| [#446](https://github.com/kco994553-star/Investment-System1/pull/446) S06 대표 증권 PR(발행사 한 자리·정렬 기준, `claude/s06-issuer-seat`) | Claude Code Main | 10/31 09:10 |
+| [#448](https://github.com/kco994553-star/Investment-System1/pull/448) Worker 수정 PR(`redirect: 'error'` → `'manual'`, `cf.cacheTtl` 제거, 3xx 거부, `claude/worker-redirect-fix`, 배포는 승인 뒤) | Claude Code Main | 10/31 11:16 |
+| [#449](https://github.com/kco994553-star/Investment-System1/pull/449) 마지막 체결 시각 ① 판독기·검증기 먼저(`claude/iex-last-trade-time-readers`). 게시 쪽 ③은 다음 PR | Claude Code Main | 10/31 11:35 |
 
 ## 1. 10/31 오너 결정과 처리
 
