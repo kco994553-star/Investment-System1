@@ -57,7 +57,7 @@ def replay_prices(root, calendar, start, end):
                 if day not in expected:continue
                 if day in observed:require(observed[day]['raw']==row['raw'],'conflicting source bars')
                 observed[day]=row
-            inputs.extend([p,folder/'store/blobs'/r['artifact_id']])
+            inputs.extend([p,store._blob_path(r['artifact_id'])])
     require(sorted(observed)==expected,'raw price coverage incomplete')
     saved_path=root/'long-2016-20261030/restored/ABT/normalized.json'
     saved={r['session_date']:r for r in loads(saved_path.read_bytes())}

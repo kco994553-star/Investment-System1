@@ -104,3 +104,23 @@ def test_mixed_old_archive_does_not_relabel_another_company_as_abt():
     selected=select(meta,'2016-02-12','2017-02-21')
     assert selected['symbol']=='ABT'
     assert selected['days']==['2016-03-28','2016-03-29','2016-03-30','2016-03-31','2016-04-01']
+
+
+def test_raw_provenance_paths_use_existing_store_encoding(tmp_path):
+    from types import SimpleNamespace
+    import export_lab_pilot as exporter
+    from pilot import RawDatasetStore, encoded
+    from github_alpaca_probe import normalize
+    folder=tmp_path/'github-alpaca-20261031/restored'
+    (folder/'requests').mkdir(parents=True)
+    store=RawDatasetStore(folder/'store')
+    body=encoded({'symbol':'ABT','bars':[{'t':'2016-03-28T04:00:00Z','o':10,'h':11,'l':9,'c':10,'v':100}],
+                  'next_page_token':None})
+    receipt=store.put('test:ABT',body,'https://example.test/test-only','TEST','application/json','test').to_dict()
+    req={'symbol':'ABT','feed':'sip','adjustment':'raw','days':['2016-03-28']}
+    (folder/'requests/test.json').write_bytes(encoded({'request':req,'receipt':receipt}))
+    saved=tmp_path/'long-2016-20261030/restored/ABT';saved.mkdir(parents=True)
+    (saved/'normalized.json').write_bytes(encoded(normalize(body,req)))
+    cal=SimpleNamespace(sessions=[SimpleNamespace(day=date(2016,3,28))])
+    _,paths=exporter.replay_prices(tmp_path,cal,'2016-03-28','2016-03-28')
+    assert all(p.is_file() for p in paths),'manifest must point to preserved bytes, not guessed artifact filenames'
