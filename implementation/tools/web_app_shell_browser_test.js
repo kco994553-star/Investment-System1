@@ -22,8 +22,9 @@ const MENUS = { qgv: ['1-1', '1-2', '1-3', '1-4'], technical: ['2-1', '2-2', '2-
 const DETAILS = ['settings', 'data-status', 'financials', 'sec-cover', 'playbook', 'virtual-trading', 'target-v1'];
 const HEADER = ['qgv', 'technical', 'macro', 'news', 'portfolio', 'prompts', 'tree', 'lab'];
 // Published by the data workflow only (absent from the offline build; checked below): their 404 is the NOT_PUBLISHED state.
-// Exactly the two core files IS2.data.ready() reads that this build lacks (the company page calls it); nothing else is excused.
-const LIVE_ONLY = ['sec-qgv2.json', 'sec-public-inputs.json'];
+// Exactly the two core files IS2.data.ready() reads that this build lacks (the company page calls it) and the two central V files
+// IS2.data.official() reads for the QGV page (DC-31); nothing else is excused.
+const LIVE_ONLY = ['sec-qgv2.json', 'sec-public-inputs.json', 'qgv-official.json', 'qgv-official-status.json'];
 for (const f of LIVE_ONLY) if (fs.existsSync(path.join(OUT, f))) throw new Error(f + ' is in the offline build: not live-only');
 let phase = 'START';
 (async () => {

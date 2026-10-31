@@ -138,7 +138,7 @@ APPROVED_SHA256 = {
     "qgv2-inputs.js": "f53cc206b1655f7a8602f8f0aab12d8199cd58a4818561eff02a9c18294c251f",
     "scoring-default.js": "02eae2182de717bf0620e9616fe2aabd78c7ec8484c60d65f4231262df868beb",
     "qgv-v2.js": "0f06a8904b156e18f503c47844b540b4b12f3368933ff21bc3157afe482b3717",
-    "qgv-scores.js": "86912a79fb2e466c4e20023d47ca4977729592cf78a689f58c8314ee48fcd2f3",
+    "qgv-scores.js": "c4b668d3c1319d926eddc188948b78f6a81175ff8e5b80beea1e64cea42942da",
     "playbook-screen.js": "5d432af74fdda5dae3e467158885c366fe0bde6277264a77be4c585f75129207",
     "news-signals.js": "6a85c92329ca6968175d357ec10a81198b692d762a29ab1a30374a3f0b3c718c",
     "dart-disclosures.js": "7ea88fa32ffa0be446e28f3b91532532bf2b98073f31d4ec1d62db8e73d7efdf",

@@ -29,7 +29,7 @@ const LOAD_ORDER=Object.freeze([
  'locale.js','entity-search.js','price-time.js','device-market.js','device-actual.js','profile-defaults.js','type-config-defaults.js',
  'device-profiles.js','engine-preview.js','dcf-parameters-defaults.js','device-valuation.js','playbook-config-defaults.js','playbook-engine.js',
  'qgv-v2.js','scoring-default.js','qgv2-inputs.js','qgv-scores.js','private-subset.js','share-class-groups.js','sec-universe-shares.js',
- 'sec-qgv2.js','private-subset-view.js','target-v1-config-defaults.js','target-v1-builder.js','playbook-screen.js','target-v1-screen.js',
+ 'sec-qgv2.js','qgv-official.js','private-subset-view.js','target-v1-config-defaults.js','target-v1-builder.js','playbook-screen.js','target-v1-screen.js',
  'device-backup.js','watchlist.js','app-config.js','google-sheet-core.js','google-sheet-quotes.js','technical-chart.js','chart-workbench.js',
  'google-sheet-setup.js','private-trades.js','holdings-capture.js','worker-quote-fallback.js','forward-validation.js','private-history.js',
  'sec-reported.js','manager-styles-v0.js','thirteenf-quarter.js','macro-lights.js','macro-cycle-ring.js','macro-evidence.js','public-screens.js',
@@ -48,12 +48,12 @@ const NAMESPACES=Object.freeze({data:'data.js',prices:'prices.js',store:'store.j
 // old modules and engines.js (source rules) have no facade member.
 const API=Object.freeze({
  data:{FILES:'v',CORE:'v',LIST_FILES:'v',STATIC:'v',READERS:'v',MAX_BYTES:'v',EVENT:'v',strictFetch:'p',ready:'p',get:'s',screens:'s',state:'s',
-  publication:'s',list:'p',shares:'p',financials:'p',refresh:'a',static:'p',peek:'p',subscribe:'sub',universe:'p'},
+  publication:'s',list:'p',shares:'p',financials:'p',refresh:'a',static:'p',peek:'p',subscribe:'sub',universe:'p',official:'p'},
  prices:{UNIVERSE_SOURCE_KEY:'v',WORKER_ORIGIN_KEY:'v',status:'s',subscribe:'sub',deviceSettings:'p',prepare:'a',login:'a',logout:'a',readUniverse:'a',
   universeView:{prices:'s',priceBasis:'s',readStatus:'s',ranks:'s'},universeRanks:'s',rankFor:'s',useTabs:'a',loadTabs:'a',syncSymbols:'a',
   syncUniverse:'a',history:'a',held:'s',quote:'p',periodReturns:'p'},
  store:{KEYS:'v',prefs:'s',savePrefs:'a',recent:'s',pushRecent:'a',clearRecent:'a',weights:'s',saveWeights:'a',holdings:'p',playbook:'s',saveThesis:'a',saveHold:'a',saveRecord:'a',
-  stars:'s',toggleStar:'a',backup:{create:'p',download:'a',restore:'a',restored:'s'},vHistory:'s',sheetSource:{has:'s',set:'a'},
+  stars:'s',toggleStar:'a',backup:{create:'p',download:'a',restore:'a',restored:'s'},vHistoryKeys:{count:'s',clear:'a'},sheetSource:{has:'s',set:'a'},
   universeSource:{has:'s',set:'a',useSheet:'a'},workerOrigin:{has:'s',approved:'s',set:'a'},marketQuotes:{count:'p',clear:'a'},subscribe:'sub',PRODUCT_PRESETS:'v'},
  qgv:{V_SOURCES:'v',RANK_LABELS:'v',READERS:'v',vSource:'s',page:'p',isPage:'s',row:'s',rows:'s',coverage:'s',preview:'s',model:'s',setProfile:'s',profile:'s',
   reasonText:'s',rankLabel:'s',constants:'s',subscribe:'sub'},

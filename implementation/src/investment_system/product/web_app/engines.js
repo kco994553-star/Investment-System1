@@ -1,16 +1,17 @@
 /* P1 engine wiring (IS2.engines): TARGET v1, playbook, virtual trading and macro lights on the old engines, unchanged and called
    with the arguments the old screens passed (P1 implementation spec, Main decision 9; design §1.1 (6); critique #5, #7a/c/d).
-   - Scores are the one QGV page's device result (qgv.forEngines, as QgvScores made it). Every V-bearing result says the V it was
-     computed with as v_source (page.engine_v_source.id: always DEVICE_TEMPORARY in P1, never page.v_source), and so do the TARGET
-     records whose format has room for it: the saved draft, each R-B row and a finalized version (from its draft). The playbook
-     store's records are exact-key formats and carry none: a TARGET card judgement (thresholds.v) and the playbook occurrences
-     (V-driven codes such as T1 V_DETERIORATED) stay source-less device-V records (P1_DATA_LAYER.md §8, §10).
+   - Scores (owner decision 2026-10-31, DC-31): the playbook facts and the rehearsal read the page's central result
+     (qgv.centralComputed: the official V of qgv-official.json, no price), v_source page.v_source.id (OFFICIAL_CENTRAL); there is no
+     device V history, so the facts' 20-session V comparison is NA (v_prev20 null, V_HISTORY_NOT_PUBLISHED) and the V-change
+     playbook rules report it missing (engine unchanged). The TARGET v1 builder keeps its V source until the 11/16 PR: its draft,
+     R-B rows and finalize read the hidden device result (await qgv.forEngines) and record page.engine_v_source.id
+     (DEVICE_TEMPORARY). The playbook store's records are exact-key formats and carry no source (P1_DATA_LAYER.md §8, §10).
    - Every write is a user action on the store's gated storage (WRITE; SYNC when the user's own Sheet is written too). The old
      screens wrote some of these on open (R-B selection, playbook occurrences); here they need the user's click (owner 2026-10-24:
      kept). A judgement says whether this device's playbook store holds what record() writes for it (recorded / recorded_reason
      JUDGEMENT_NOT_RECORDED, shown as "기록 안 됨"; NOTHING_TO_RECORD when it has no occurrence to write).
-   - The V history is not recorded (owner 2026-10-24; the central V history is the server's private store, D9): the recording run
-     that captured it (app.js paintReport) is not here, and nothing calls VirtualTradingVHistory.capture / captureV2.
+   - No device V history (DC-31): nothing calls VirtualTradingVHistory.capture / captureV2, and the gate answers its keys as absent
+     (action.js STOPPED), so the runner's V store is empty and no V-slope signal fires.
    - Prices only through the one price view and its facade: no price request outside a SYNC click, nothing stored, and prices
      leave only in RAM results of the virtual engine and the set comparison (display only, [data-ram-price]).
    - Only glue the old screens kept unexported is written again, each with its old place named. */
@@ -40,7 +41,8 @@ function create({win,action,data,prices,store,qgv}){
  // The V source a stored draft was built with (null: a draft from before sources were kept, or from the old screen).
  const draftSource=st=>st&&st.draft&&typeof st.draft.v_source==='string'?st.draft.v_source:null;
  // The page's device result and the sec-qgv2.json value it was computed from; a page without one is the builder's QGV2_NOT_READY.
- async function scored(page){const pg=await pageOf(page);try{return{pg,computed:qgv.forEngines(pg),inputs:qgv.engineInputs(pg)};}catch(e){if(e&&e.message==='PAGE_NOT_READY')throw Error('QGV2_NOT_READY');throw e;}}
+ // TARGET v1 only (until the 11/16 PR): the hidden device result, computed when the builder first asks.
+ async function scored(page){const pg=await pageOf(page);try{const computed=await qgv.forEngines(pg);return{pg,computed,inputs:qgv.engineInputs(pg)};}catch(e){if(e&&e.message==='PAGE_NOT_READY')throw Error('QGV2_NOT_READY');throw e;}}
 
  // ---------------------------------------------------------------- TARGET v1 (2.1.7, detail screen target-v1)
  // Its state lives inside the playbook store (TargetV1Screen.readState / writeState); an unreadable store is never overwritten.
@@ -72,7 +74,7 @@ function create({win,action,data,prices,store,qgv}){
  function finalize(event,{date=today(),page}={}){return action.run(event,'WRITE',async()=>{
   const B=TB(),cfg=CFG(),pg=await pageOf(page),p=await published(),b=await basisOf(p),st=readState();let check=B.finalizeBlockers(st,{date,published:p,basis:b,cfg});
   if(check.basis_changed&&check.check&&!check.check.reasons.some(r=>NO_REGEN.includes(r))){
-   let computed=null,inputs=null;try{computed=qgv.forEngines(pg);inputs=qgv.engineInputs(pg);}catch(_){computed=null;}
+   let computed=null,inputs=null;try{computed=await qgv.forEngines(pg);inputs=qgv.engineInputs(pg);}catch(_){computed=null;}
    if(computed&&computed.v2_state==='READY'&&inputs&&inputs.as_of&&p.as_of===inputs.as_of){const catalog=await catalogNow();
     const r=B.regenerateDraft(st,{computed,inputs,universeCodes:await codesNow(),existing:TS().existingSymbols(catalog),date,basis:b,cfg}),next={...r.state,draft:{...r.state.draft,v_source:sourceOf(pg)}};
     save(next);check=B.finalizeBlockers(next,{date,published:p,basis:b,cfg});
@@ -130,16 +132,18 @@ function create({win,action,data,prices,store,qgv}){
  function readPlaybook(){try{return PB().read(storage);}catch(e){if(e&&e.message==='READER_MISSING')throw e;throw Error('PLAYBOOK_INVALID');}}
  /* One company's facts as the old screens assembled them (app.js / PlaybookScreen.mount → prepareScores, heldSymbolsFor, factsFor).
     The news list is read first through the public view: prepareScores fills the structural-news RAM from DataRefresh's list of
-    this generation, so through the score view it is a cached read, never a request. Scores: the shared page result with the
-    page profile. ram (DeviceActual.ramView) and actual_pct are device RAM values (price-derived weights): display only. The old
+    this generation, so through the score view it is a cached read, never a request; prepareScores is called without
+    sec-qgv2.json, only for that news fill (no device V). Scores: the page's central result (DC-31). ram (DeviceActual.ramView) and actual_pct are device RAM values (price-derived weights): display only. The old
     CompanyScreen is not loaded, so factsFor's v1 Q·G fallback (sec-qg-factors.json) is absent: Q·G come from the v2 result only. */
  async function facts(symbol,{date=today()}={}){
   const P=PB(),catalog=await catalogNow(),pg=await qgv.page();await data.list('news').catch(()=>null);await action.stores();
   const screens=data.screens(),idByTicker=new Map(idsOf(catalog).map(r=>[r.ticker,r.company_id])),prof=qgv.profile();
-  const computed=await P.prepareScores(qgv.scoreView,{catalog,screens,idByTicker,scoreOptions:()=>({quotes:{},preset:prof.preset,gate:prof.gate,referenceRows:{}})});
+  await P.prepareScores(qgv.scoreView,{catalog,screens:{...screens,[QGV2]:null},idByTicker,scoreOptions:()=>({quotes:{},preset:prof.preset,gate:prof.gate,referenceRows:{}})});
+  let computed=null;try{computed=qgv.centralComputed(pg);}catch(_){computed=null;}
   const heldSymbols=await P.heldSymbolsFor(priceView,catalog);let ram=null;try{ram=await need('DeviceActual').ramView(priceView,catalog);}catch(_){ram=null;}
   const prefs=store.prefs(),interests=prefs.value&&Array.isArray(prefs.value.interests)?[...prefs.value.interests]:[];
-  return out({...P.factsFor(symbol,{catalog,screens,idByTicker,ram,date,computed,heldSymbols,storage,interests}),v_source:sourceOf(pg)});}
+  const f=P.factsFor(symbol,{catalog,screens,idByTicker,ram,date,computed,heldSymbols,storage,interests});
+  return out({...f,...(f&&f.basis==='v2'?{v_prev20:null,v_comparison_reason:'V_HISTORY_NOT_PUBLISHED'}:{}),v_source:pg.v_source.id});}
  /* openPanel's judgement step (playbook-screen.js openPanel), read only: the situation with this device's thesis event, hold and
     follow-up, the macro state, PlaybookEngine.evaluate, and the R1_FILING rule (a filing choice needs an EVIDENCE-grade invalidation
     event). openPanel also recorded the candidate signals at this point; that is record(event, judged) now (owner 2026-10-24: only on
@@ -201,13 +205,13 @@ function create({win,action,data,prices,store,qgv}){
   if(!p){const s=data.state(LEDGER);return out({state:s.state==='NOT_PUBLISHED'?'NOT_PUBLISHED':'NOT_AVAILABLE',reason:s.why,rows:[],comparison:[],segments:[],evidence:null});}
   const primary=p.schema_version===2?FV.V2_VERSION:FV.VERSION,rows=p.versions[primary],line=r=>({date:r.date,version:r.version,state:r.state,summary:FV.qgSummary(r),evaluation:FV.rowEvaluation(r)});
   return out({state:'LOADED',reason:null,status:p.status,as_of:p.as_of,start_date:p.start_date,primary,rows:rows.map(line),comparison:p.schema_version===2?p.versions[FV.VERSION].map(line):[],segments:FV.segments(rows),evidence:FV.evidence(p)});}
- /* Rehearsal (app.js go('REHEARSAL')): an in-memory engine run over the last sessions with the page's Q·G rows, never recorded;
+ /* Rehearsal (app.js go('REHEARSAL')): an in-memory engine run over the last sessions with the page's central Q·G rows, never recorded;
     stored and RAM prices only here (fetch:false). Holds prices: RAM. app.js always passed QgvScores.judgmentRows of its own compute
     and that compute's basis as snapshot_basis; a page without a result (no usable sec-qgv2.json) does the same here: the old
     compute over the catalog identities and this generation's files gives the TARGET rows with null Q·G (BLOCKED snapshots) and
     the v2 basis. Any other page error is thrown (no silent run without Q·G rows). */
  async function rehearse({reportDate=seoulDay(),page,signal=null}={}){const catalog=await data.static(CATALOG);if(!catalog)return Object.freeze({result:noCatalog(),config:null});
-  const QS=need('QgvScores'),pg=await pageOf(page);let computed=null;try{computed=qgv.forEngines(pg);}catch(e){if(!e||e.message!=='PAGE_NOT_READY')throw e;}
+  const QS=need('QgvScores'),pg=await pageOf(page);let computed=null;try{computed=qgv.centralComputed(pg);}catch(e){if(!e||e.message!=='PAGE_NOT_READY')throw e;}
   if(!computed){const prof=qgv.profile();computed=QS.compute({identities:idsOf(catalog),publicScreens:data.screens(),preset:prof.preset,gate:prof.gate,referenceRows:{}});}
   const qg={...QS.judgmentRows(computed)};
   await action.stores();const o=await need('VirtualTradingSignals').rehearse(priceView,{config:config(),catalog,reportDate,signal,fetch:false,qgRows:qg});

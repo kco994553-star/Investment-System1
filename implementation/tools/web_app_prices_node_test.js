@@ -268,10 +268,10 @@ test('one price view: sessionFor and every PriceStore call get it (spies) throug
   assert.equal(read.state, 'READY'); assert.equal(read.inputs, 'READY'); assert.doesNotMatch(JSON.stringify(read), PX, 'the read result has codes and counts, no price');
   const hist = await e.prices.history(e.click(), 'nvda');
   assert.equal(hist.symbol, 'NVDA'); assert.ok(Object.isFrozen(hist.bars)); assert.equal(e.prices.held('NVDA'), hist); assert.equal(e.prices.held('nvda'), hist);
-  // The QGV page prices from the kept read (universeView) and the stored month-ends (facade), never asking the network.
+  // The QGV page never prices from the kept read (DC-31: the Universe read feeds the M3 ranks only) and asks no network.
   const before = e.priv().length, pg = await e.qgv.page();
   assert.equal(e.priv().length, before, 'the score path sent nothing');
-  assert.equal(pg.price_basis.read_id, read.read_id); assert.equal(pg.price_basis.connected, true); assert.ok(pg.coverage.priced > 0);
+  assert.equal(pg.price_basis.kind, 'CENTRAL_IEX'); assert.ok(pg.rows.length > 0 && pg.rows.every((r) => r.score.v === null), 'no screen V from the device read');
   assert.doesNotMatch(JSON.stringify(pg), PX); assert.doesNotMatch(JSON.stringify(pg), CLOSE);
   // Facade calls naming another view still use the price view.
   await e.prices.storeFacade.monthEndCloses('NVDA', { view: e.win }); e.prices.storeFacade.coverage('SPY', { view: e.win }); e.prices.storeFacade.subscribe(() => {}, { view: e.win })();
@@ -397,7 +397,7 @@ test('store writes: without a trusted click nothing runs (CLICK_REQUIRED); an ol
   assert.equal(e.win.localStorage.getItem(K.PERSONAL), JSON.stringify({ version: 1, interests: ['amd'], groups: [] }));
 });
 
-test('store reads and settings: prefs (unreadable value never overwritten), weights versions, playbook, stars, V history read-only, sources never returned', async () => {
+test('store reads and settings: prefs (unreadable value never overwritten), weights versions, playbook, stars, device V history stopped (count / clear click), sources never returned', async () => {
   const e = env(), K = e.store.KEYS, L = e.win.localStorage;
   assert.deepEqual(plain(e.store.prefs()), { state: 'EMPTY', value: { version: 1, interests: [], groups: [] } });
   L.setItem(K.PERSONAL, '{broken'); assert.deepEqual(plain(e.store.prefs()), { state: 'INVALID', value: null });
@@ -412,7 +412,11 @@ test('store reads and settings: prefs (unreadable value never overwritten), weig
   assert.deepEqual([...(await e.store.toggleStar(e.click(), '0000000001'))], ['0000000001']); assert.deepEqual([...e.store.stars()], ['0000000001']);
   let notes = []; e.store.subscribe((what) => notes.push(what)); await e.store.toggleStar(e.click(), '0000000001'); assert.deepEqual(notes, ['INVESTOR_STARS']); assert.deepEqual([...e.store.stars()], []);
   const vh = JSON.stringify({ schema: 'virtual-trading-v-scores/2', scores: { '2026-10-01': { nvda: 61 } }, composition: {} }); L.setItem(K.V_HISTORY, vh);
-  const before = JSON.stringify([...L.map]); const h = e.store.vHistory(); assert.equal(h.v1.state, 'OK'); assert.equal(h.v2.state, 'EMPTY'); assert.equal(JSON.stringify([...L.map]), before, 'read only');
+  // Device V history (DC-31): stopped at the gate (reads absent, writes refused); a count and the user's clear click only.
+  const before = JSON.stringify([...L.map]); assert.equal(e.store.vHistory, undefined); assert.equal(e.store.storage.getItem(K.V_HISTORY), null, 'reads absent');
+  assert.throws(() => e.action.run(e.click(), 'WRITE', () => e.store.storage.setItem(K.V_HISTORY_V2, vh)), /V_HISTORY_STOPPED/);
+  assert.equal(e.store.vHistoryKeys.count(), 1); assert.equal(JSON.stringify([...L.map]), before, 'nothing changed on its own');
+  assert.throws(() => e.store.vHistoryKeys.clear(new Event('click')), /CLICK_REQUIRED/); assert.equal(e.store.vHistoryKeys.clear(e.click()), 1); assert.equal(L.getItem(K.V_HISTORY), null); assert.equal(e.store.vHistoryKeys.count(), 0);
   // Sources: has() / set() only; the id or address never comes back.
   assert.equal(e.store.sheetSource.has(), false); const set = await e.store.sheetSource.set(e.click(), 'https://docs.google.com/spreadsheets/d/' + ID + '/edit');
   assert.deepEqual(set, { set: true }); assert.equal(L.getItem(K.SHEET_SOURCE), ID); assert.equal(e.store.sheetSource.has(), true);
@@ -532,7 +536,7 @@ test('device quotes stopped (DC-18): a stored record the old path reads is never
   assert.deepEqual(await QS.collectQuotes(e.qgv.scoreView, { identities: ids, v2Inputs: inputs, catalog: CATALOG }), {});
   const pg = await e.qgv.page(), row = e.qgv.row(pg, 'asml');
   if (row) assert.equal(row.score.v, null);
-  assert.equal(pg.price_basis.connected, false, 'no device price on the page');
+  assert.equal(pg.price_basis.kind, 'CENTRAL_IEX', 'no device price on the page');
   assert.ok(idb.opened.length > 0, 'the existing database was opened (holdings, settings)');
   assert.ok(!idb.reads.some((k) => k === 'market' || k === 'market-import-history'), 'no read of a stored quote record');
   assert.ok(idb.reads.includes('MARKET_STORE_STOPPED'), 'asked under the no-record key instead');
