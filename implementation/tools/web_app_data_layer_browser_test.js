@@ -194,6 +194,28 @@ async function scores(page) {
     await context.addInitScript(() => { window.__csp = 0; window.__gis = { init: 0, tokens: 0, revoke: 0 }; document.addEventListener('securitypolicyviolation', () => { window.__csp++; }); });
     const page = await context.newPage(), seen = site.watch(page, s.origin, { allow404: UNPUBLISHED }), rec = record(context, page);
     await rec.install(s.origin);
+    // Diagnostics for a wait that times out (owner 2026-10-31): the requests still open (request without requestfinished /
+    // requestfailed), the failed ones, page errors and console errors, printed before the error is thrown again.
+    // Every request and every main-frame navigation (commit, also a hash change) takes the next number: a request numbered
+    // before the last navigation belongs to an earlier document or route. A reload drops the old document's open reads
+    // without a requestfinished / requestfailed event, so those are counted as left behind, never as still open.
+    const open = new Map(), failed = [], pageErrors = [], consoleErrors = [], t0 = Date.now(), answered = [], number = new WeakMap();
+    let seq = 0, navAt = 0;
+    page.on('request', (r) => { number.set(r, ++seq); open.set(r, Date.now()); });
+    page.on('framenavigated', (f) => { if (f === page.mainFrame()) navAt = ++seq; });
+    page.on('requestfinished', (r) => { open.delete(r); answered.push({ url: r.url(), n: number.get(r) || 0 }); });
+    page.on('requestfailed', (r) => { open.delete(r); failed.push({ at: Date.now() - t0, line: r.method() + ' ' + r.url() + ' ' + r.resourceType() + ' ' + ((r.failure() || {}).errorText || '') }); });
+    page.on('pageerror', (e) => pageErrors.push(String(e && e.stack || e)));
+    page.on('console', (m) => { if (m.type() === 'error') consoleErrors.push(m.text() + ' @' + JSON.stringify(m.location())); });
+    const diagnose = (what) => {
+      const now = Date.now();
+      console.log('DIAG ' + what + ' at=' + phase + ' t=' + (now - t0) + 'ms open=' + open.size + ' failed=' + failed.length + ' pageerror=' + pageErrors.length + ' console_error=' + consoleErrors.length);
+      for (const [r, at] of open) console.log('DIAG ' + ((number.get(r) || 0) > navAt ? 'open ' : 'left behind ') + r.method() + ' ' + r.url() + ' ' + r.resourceType() + ' age=' + (now - at) + 'ms');
+      for (const f of failed.slice(-20)) console.log('DIAG failed t=' + f.at + 'ms ' + f.line);
+      for (const e of pageErrors.slice(-10)) console.log('DIAG pageerror ' + e);
+      for (const e of consoleErrors.slice(-20)) console.log('DIAG console ' + e);
+    };
+    const diagnosed = async (what, wait) => { try { await wait(); } catch (err) { diagnose(what); throw err; } };
     const FILES = new Set(), pageFiles = new Set([...R.scripts(), ...fs.readdirSync(R.NEW)]);
     const since = (at) => rec.log.slice(at);
     const outside = (list) => list.filter((r) => new URL(r.url).origin !== s.origin).map((r) => r.method + ' ' + r.url);
@@ -211,24 +233,44 @@ async function scores(page) {
     const routes = await page.evaluate(() => { const I = window.IS2; return [...I.MENU.map((m) => I.href(m.id)), I.href('company', 'NYSE:FIX'), ...I.DETAILS.map((d) => I.href('detail', d.id)), '#/nowhere/x']; });
     assert.equal(routes.length, 9 + 1 + 7 + 1);
     const settle = () => page.evaluate(() => new Promise((r) => setTimeout(r, 100)));
-    // A phase ends only once the route's own reads are done, so a read a screen started cannot land in the next route's phase:
-    // 1. QGV computes its page after IS2.ready (CORE, then actual-catalog.json) and draws its table after that (P2-2a); the company
-    // page reads CORE through the layer after IS2.ready. Then the network has to be idle.
-    const drawn = async (hash) => { if (hash === '#/qgv') await page.locator('[data-lb-table]').waitFor(); await page.waitForLoadState('networkidle'); };
     // The files a route's screen may read when it opens (P2-1: 0. 기업 검색 and its company page); every other route reads nothing.
     const QGV_READS = [...(await page.evaluate(() => window.IS2.data.CORE)), 'actual-catalog.json', 'company-names-ko.json', 'qgv-official.json', 'qgv-official-status.json'];
+    // The company page's own list reads (P2-1), asked again on every open of the page.
+    const COMPANY_LISTS = ['sec-disclosures.json', 'news-signals.json'];
+    // A phase ends only once the route's own reads are answered, so a read a screen started cannot land in the next route's phase
+    // (an explicit wait, owner 2026-10-31: the load-state wait it replaces timed out once in CI, then passed locally and on the next CI run).
+    // A fresh load answers every file of its route's list: 1. QGV its QGV_READS (CORE, then actual-catalog.json, then the
+    // central V files; the table is drawn after that, P2-2a), the home its HOME_READS, the company page both lists and its own
+    // lists; a route change only the company page's lists (the layer keeps the rest in memory). Only answers to requests of the
+    // current document and route count (numbered after the last navigation), and none of its data requests may still be open.
+    // Which files are read, and that nothing else is, stays the job of the checks below.
+    const expected = (hash, fresh) => (hash === '#/qgv' ? (fresh ? QGV_READS : []) : hash === '#/' || hash === '#/nowhere/x' ? (fresh ? HOME_READS : [])
+      : hash.startsWith('#/company/') ? [...(fresh ? [...HOME_READS, ...QGV_READS] : []), ...COMPANY_LISTS] : []);
+    const isData = (u) => new URL(u).origin === s.origin && !!nameOf(u) && !pageFiles.has(nameOf(u));
+    const answers = async (what, names, from) => {
+      const missing = () => { const got = new Set(answered.slice(from).filter((a) => a.n > navAt && isData(a.url)).map((a) => nameOf(a.url))); return names.filter((n) => !got.has(n)); };
+      const busy = () => [...open.keys()].filter((r) => (number.get(r) || 0) > navAt && isData(r.url()));
+      for (const end = Date.now() + 30000; missing().length || busy().length;) {
+        if (Date.now() > end) { diagnose(what + ' missing=' + missing().join(',')); throw new Error('READS_NOT_ANSWERED ' + what + ' missing=' + missing().join(',') + ' open=' + busy().length); }
+        await new Promise((r) => setTimeout(r, 25));
+      }
+    };
+    const drawn = async (hash, fresh, from) => {
+      if (hash === '#/qgv') await diagnosed('table wait', () => page.locator('[data-lb-table]').waitFor());
+      await answers((fresh ? 'fresh ' : 'change ') + hash, expected(hash, fresh), from);
+    };
     const opens = (hash, names) => (hash === '#/' || hash === '#/nowhere/x' ? names.filter((n) => !HOME_READS.includes(n)) : hash.startsWith('#/company/') ? names.filter((n) => !FILES.has(n))
       : hash === '#/qgv' ? names.filter((n) => !QGV_READS.includes(n)) : names);
     for (const hash of routes) {
       phase = 'A fresh ' + hash;
-      const at0 = rec.log.length;
-      await page.goto(s.base + hash); await page.reload(); await page.locator('main[data-route]').waitFor(); await loaded(); await drawn(hash); await settle();
+      const at0 = rec.log.length, an0 = answered.length;
+      await page.goto(s.base + hash); await page.reload(); await page.locator('main[data-route]').waitFor(); await loaded(); await drawn(hash, true, an0); await settle();
       assert.deepEqual(opens(hash, dataNames(since(at0))), [], hash + ': opening the route in a fresh load reads no data file its screen did not ask for');
     }
     for (const hash of routes) {
       phase = 'A ' + hash;
-      const at0 = rec.log.length;
-      await page.goto(s.base + hash); await page.locator('main[data-route]').waitFor(); await loaded(); await drawn(hash); await settle();
+      const at0 = rec.log.length, an0 = answered.length;
+      await page.goto(s.base + hash); await page.locator('main[data-route]').waitFor(); await loaded(); await drawn(hash, false, an0); await settle();
       assert.deepEqual(opens(hash, dataNames(since(at0))), [], hash + ': a route change reads nothing before a screen asks');
       const r = await page.evaluate(async () => { const I = window.IS2, pub = await I.data.ready(), pg = await I.qgv.page(); window.__first = window.__first || pg; return { generation: pub.generation, same: pg === window.__first, state: pg.state }; });
       assert.deepEqual(r, { generation: 1, same: true, state: 'READY' }, hash + ': every screen shares one page of one generation');
