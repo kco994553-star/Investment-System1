@@ -5,7 +5,7 @@
 
 ## 0. 요약
 
-> **10/31 오너 승인(`PRIV-AUTH-GOOGLE`): Cloudflare Zero Trust·Access 설계는 대체됐다.** 접근은 [Zero Trust 없이 본인 전용 접근](PRIVATE_AREA_NO_ZT_ACCESS_20261031.md)(Google 로그인 토큰을 기존 Worker가 서버에서 확인, 패스키는 나중)이다. 5절·11절 4~6단계·17.5절은 대체됨. `PRIV-PAYMENT`는 불필요. 비공개 저장소 이름은 `investment-system1-kis-private`.
+> **10/31 오너 승인(`PRIV-AUTH-GOOGLE`): Cloudflare Zero Trust·Access 설계는 대체됐다.** 접근은 [Zero Trust 없이 본인 전용 접근](PRIVATE_AREA_NO_ZT_ACCESS_20261031.md)(Google 로그인 토큰을 기존 Worker가 서버에서 확인, 패스키는 나중)이다. 5절·11절 4~6단계·17.5절은 대체됨. `PRIV-PAYMENT`는 불필요. 비공개 저장소 이름은 `investment-system1-kis-private`. **KIS 키는 그 저장소의 Actions Secrets에만 있다(10/31, 공개 저장소의 KIS Secrets는 오너가 지움). KIS 키를 읽는 코드도 그 저장소에만 둔다.** 첫 인증 확인 실행 성공(run 41191280649, [대체 설계](PRIVATE_AREA_NO_ZT_ACCESS_20261031.md) 3.1절).
 
 - **무엇:** 오너 한 사람만 보는 비공개 칸. 1단계(10/31 바뀜, 17절)는 KIS 통합 일봉(시가·고가·저가·종가·거래량·거래대금)과 수정주가(분할 반영) 여부, 확장 모집단 거래대금 기준이다. 대상은 Universe504 + 확장 모집단이고, 주목적은 기술적 분석의 실가격 전환이다. V는 중앙 V(IEX) 그대로다. 2단계(한국 종목)는 1단계 뒤에 정한다.
 - **어디서 모으나:** 새 비공개 저장소의 Actions. 기존 비공개 원자료 저장소는 재사용할 수는 있지만 권장하지 않는다(3.1).

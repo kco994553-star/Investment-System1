@@ -14,7 +14,7 @@
 | 결제 수단 등록이 필요한가 | **아니오(10/31부터).** Zero Trust를 쓰지 않으므로 필요 없다(`PRIV-PAYMENT` 불필요). 옛 안내: Cloudflare Zero Trust 가입 때만 필요했다. 무료 요금제를 고르면 청구되지 않는다(Cloudflare 안내: "this step is still needed but you will not be charged"). GitHub와 KIS는 결제 수단이 필요 없다. GitHub에는 결제 수단을 넣지 않는다. 그래야 한도를 넘어도 청구 대신 실행이 멈춘다 |
 | 비용 | 0원(설계 10절) |
 | 걸리는 시간 | 4~6단계 합쳐 약 12분 |
-| 순서 | 1~3은 끝났다. 공개 저장소 KIS Secrets는 Codex 연구 가지의 워크플로 2개만 쓰고 Codex 자료 이관에는 필요 없으므로 지워도 된다(10/31 확인). 4~6은 Main이 Worker PR을 배포하기 직전에 한다 |
+| 순서 | 1~3은 끝났다(10/31). KIS 키는 `investment-system1-kis-private`에만 있고, 공개 저장소의 KIS Secrets는 지웠다. 첫 인증 확인(run 41191280649)은 성공했다. 4~6은 Main이 Worker PR을 배포하기 직전에 한다 |
 
 ## 1. 새 비공개 저장소 만들기 (GitHub, 약 3분)
 
@@ -35,7 +35,7 @@
 
 ## 3. 공개 저장소의 KIS 흔적 지우기 (GitHub, 약 5분)
 
-1. `Investment-System1` → **Settings** → **Secrets and variables** → **Actions** → `KIS_APP_KEY` 줄의 휴지통(삭제) → 확인. `KIS_APP_SECRET`도 같은 방법으로 지운다. `KIS_APPKEY`·`KIS_APPSECRET`이라는 이름이 있으면 그것도 지운다.
+1. **(10/31 완료)** `Investment-System1` → **Settings** → **Secrets and variables** → **Actions** → `KIS_APP_KEY` 줄의 휴지통(삭제) → 확인. `KIS_APP_SECRET`도 같은 방법으로 지운다. `KIS_APPKEY`·`KIS_APPSECRET`이라는 이름이 있으면 그것도 지운다.
    - 10/31 확인: 이 Secrets를 쓰는 것은 Codex 연구 가지 2곳(`research/bt-data-pilot-alpaca-probe-20261031`, `research/lab-contract-private-pilot-20261031`)의 워크플로 2개(`bt-data-pilot-kis.yml`·`bt-data-pilot-pre2016.yml`)뿐이다. canonical과 다른 가지에는 없다. Codex 자료 이관은 원자료 저장소 토큰만 쓰므로 KIS 키가 필요 없다. **지워도 된다.** 지운 뒤 그 두 워크플로가 돌면 KIS 단계에서 실패한다(오너가 꺼 둠, `PRIV-CODEX-WF-OFF`).
 2. 가지 삭제: `Investment-System1` → **Branches** → `claude/kis-verify-once` 휴지통.
    - 세션은 가지를 지울 권한이 없다(403).

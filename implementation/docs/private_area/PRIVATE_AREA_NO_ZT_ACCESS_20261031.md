@@ -1,6 +1,6 @@
 # 1인 비공개 구역 — Cloudflare Zero Trust 없이 본인 전용 접근 (조사·설계·검증, 2026-10-31)
 
-상태: **설계 승인(10/31 `PRIV-AUTH-GOOGLE`: Google 토큰 + Worker 확인으로 시작, 패스키는 나중).** 배포, KIS 호출, 운영 설정 변경(Cloudflare·GitHub Secrets·워크플로)은 구현 PR마다 오너 승인 뒤에 한다. 공개 저장소의 KIS Secrets는 쓰는 곳이 Codex 연구 가지의 워크플로 2개뿐이라 지워도 된다(10/31 확인, 오너가 지움).
+상태: **설계 승인(10/31 `PRIV-AUTH-GOOGLE`: Google 토큰 + Worker 확인으로 시작, 패스키는 나중).** 배포, KIS 호출, 운영 설정 변경(Cloudflare·GitHub Secrets·워크플로)은 구현 PR마다 오너 승인 뒤에 한다. **KIS 키는 비공개 저장소 `investment-system1-kis-private`의 Actions Secrets에만 둔다**(10/31 오너). 공개 저장소의 KIS Secrets(`KIS_APP_KEY`·`KIS_APP_SECRET`)는 오너가 지웠다(10/31). 공개 저장소의 코드·설정·워크플로·자료 파일은 KIS Secret 이름을 쓰지 못한다(가드, 문서만 허용).
 
 원문(사용자, 2026-10-31): 「투자시스템의 GitHub 비공개 저장소 생성, KIS_APP_KEY 및 KIS_APP_SECRET 등록, 기존 브랜치·로그 정리를 완료했다. Cloudflare Zero Trust는 결제 수단이 없어 보류한다. 대신 기존 Cloudflare Workers 무료 환경에서 개인 전용 접근 제어를 구현하는 방향으로 진행한다. … 특히 인증 우회, 토큰 노출, 비밀값의 클라이언트 전달, 공개 API를 통한 비인가 데이터 접근을 중점 검증하라. 현재 단계에서는 조사·설계·검증까지만 진행하고, 실제 배포와 KIS 호출 및 운영 설정 변경은 오너의 승인을 받은 뒤 수행하라.」
 
@@ -42,11 +42,22 @@
 [브라우저]  로그인한 오너만 /kis/* 호출 → 비공개 칸(privatePanel)에 표시
 ```
 
+- **KIS 키를 읽는 코드는 비공개 저장소에만 둔다(10/31 오너).** 비공개 저장소의 실행 스크립트가 Secrets를 환경에서 읽어, 공개 저장소 수집기 모듈에 함수 인자로 넘긴다. 공개 모듈은 Secret 이름을 쓰지 않는다(가드가 막는다).
 - 수집기 코드는 공개 저장소에 두고 가드·시험으로 검사한다. 비공개 워크플로는 그 코드를 **전체 커밋 SHA로 고정**해 쓴다. SHA를 바꾸는 것은 비공개 저장소의 PR(Main 작성·오너 승인)이다. 공개 저장소에서 수집기를 실행하면 스스로 멈춘다(`GITHUB_REPOSITORY` 확인).
 - 비공개 워크플로 규칙: 외부 action은 SHA 고정, `pull_request_target` 없음, 결과물(artifact) 없음, `set -x` 없음, 응답 본문·가격 출력 없음, 토큰 발급은 실행마다 1회(카카오톡 알림 1회).
 - 1단계에는 장중가가 없으므로(PRIV-INTRADAY (a)) Worker가 KIS를 부를 일이 없다. 그래서 KIS 키를 Cloudflare에 넣지 않는다.
 - 저장: 비공개 저장소의 `data` 가지(설계 4절·17.2절 파일 배치). **R2·KV는 쓰지 않는다:** R2는 켤 때 결제 수단이 필요하고, KV 무료는 하루 쓰기 1,000회라 매일 약 3,100종목 갱신에 모자란다.
 - 저장소 크기: 연도별 파일에 하루 한 줄씩 더하는 구조라 git 차이 압축으로 늘어나는 양이 작다. 1 GB를 넘기 전에 연 단위 정리를 제안한다(강제 push는 쓰지 않는다).
+
+### 3.1 첫 시험 실행 — 인증 확인 1회 (10/31 오너 지시, 결과)
+
+| 항목 | 결과 |
+| --- | --- |
+| 워크플로 | 비공개 저장소 `.github/workflows/kis-auth-check.yml`(수동 실행만) + `tools/kis_auth_check.py`. 토큰 발급(`/oauth2/tokenP`)과 폐기(`/oauth2/revokeP`) 두 경로만 허용, 시세·주문·계좌·잔고 호출 없음. 다른 저장소에서 돌면 멈춤 |
+| 실행 | run 41191280649 (10/31 10:05 UTC), 성공 |
+| Secret 이름 | `KIS_APP_KEY=present`, `KIS_APP_SECRET=present` — 설계 문서 이름과 같음(값은 보지 않음) |
+| 인증 | 토큰 발급 HTTP 200(유효 86,400초) · 폐기 HTTP 200 |
+| 로그 | 정해진 세 줄뿐. 키·토큰·응답 본문 없음. 카카오톡 토큰 알림 1건 |
 
 ## 4. 본인 전용 인증 — Zero Trust 없이 서버에서 검증
 
@@ -154,4 +165,4 @@
 | PRIV-REPO-NAME | `investment-system1-kis-private`로 변경(오너가 함). 문서·워크플로·Worker 설정은 새 이름만 쓴다 |
 | PRIV-CODEX-WF-OFF | Codex KIS 워크플로 2개를 오너가 끈다(삭제 아님) |
 | PRIV-PAYMENT | 불필요(Zero Trust를 쓰지 않음) |
-| 공개 저장소 KIS Secrets | 쓰는 곳은 Codex 연구 가지 워크플로 2개뿐 → 지워도 됨(오너가 지움) |
+| 공개 저장소 KIS Secrets | 쓰는 곳은 Codex 연구 가지 워크플로 2개뿐 → 오너가 지움(10/31). KIS 키는 비공개 저장소에만. 두 워크플로는 이제 돌면 KIS 단계에서 실패하며, 고치지 않고 비공개 저장소 이관 작업에 포함한다 |
