@@ -12,7 +12,7 @@ function setup(symbol='NVDA', range='1mo', options={}) {
   const fetch=async (url,init)=>{
     calls.push({url:String(url),init});
     if(String(url).includes('oauth2.googleapis.com'))return json({aud:env.GOOGLE_CLIENT_ID,email:env.ALLOWED_EMAIL,email_verified:true,expires_in:3600});
-    if(String(url).includes('query1.finance.yahoo.com'))return json({},503);
+    if(String(url).includes('query1.finance.yahoo.com'))return options.yahoo?options.yahoo(String(url),init):json({},503);
     return options.provider?options.provider(String(url),init):String(url).includes('/prices?')?json([{date:'2026-10-08T00:00:00.000Z',open:100,high:104,low:98,close:102,adjClose:91,volume:10}]):json({ticker:symbol.toLowerCase(),exchangeCode:'NASDAQ'});
   };
   const handler=createHandler({fetch,now:()=>NOW,...options.dependencies});
@@ -23,7 +23,7 @@ test('Yahoo failure falls back to authenticated Tiingo EOD without leaking keys 
   const s=setup();const r=await s.run(),v=await r.json();assert.equal(r.status,200);assert.equal(v.provider,'Tiingo EOD');assert.equal(v.bars[0].session_date,'2026-10-08');assert.equal(v.timestamp_kind,'PROVIDER_SESSION_LABEL');assert.equal(v.bars[0].close,102);assert.equal(v.bars[0].adjusted_close,91);assert.equal(v.bars[0].session_status,'COMPLETE');assert.equal(s.released(),1);
   assert.equal(r.headers.get('Cache-Control'),'private, no-store, max-age=0');
   const requests=s.calls.filter(c=>c.url.includes('api.tiingo.com'));assert.equal(requests.length,2);
-  for(const c of requests){assert.equal(c.init.headers.Authorization,'Token '+s.env.TIINGO_API_KEY);assert.equal(c.init.cache,'no-store');assert.equal(c.init.redirect,'error');assert.ok(!c.url.includes(s.env.TIINGO_API_KEY));}
+  for(const c of requests){assert.equal(c.init.headers.Authorization,'Token '+s.env.TIINGO_API_KEY);assert.equal(c.init.cache,'no-store');assert.equal(c.init.redirect,'manual');assert.deepEqual(c.init.cf,{cacheEverything:false});assert.ok(!c.url.includes(s.env.TIINGO_API_KEY));}
   assert.ok(!JSON.stringify(v).includes(s.env.TIINGO_API_KEY));
 });
 test('KRX falls back only for the Korean listing, keeps explicit session date, and bounds day requests',async()=>{
@@ -48,4 +48,42 @@ test('provider metadata mismatch, OHLC corruption, duplicate/future dates and up
 });
 test('KRX duplicate listing, malformed grouping, mismatched day and zero placeholders fail closed',async()=>{
   for(const mode of ['duplicate','number','day','zero']){const s=setup('042700.KS','1mo',{provider:u=>{const day=new URL(u).searchParams.get('basDd'),row={ISU_CD:'042700',BAS_DD:mode==='day'?'20260101':day,MKT_NM:'KOSPI',TDD_OPNPRC:'100',TDD_HGPRC:'104',TDD_LWPRC:'98',TDD_CLSPRC:mode==='number'?'10,20':mode==='zero'?'0':'102',ACC_TRDVOL:'10'};return json({OutBlock_1:mode==='duplicate'?[row,row]:[row]});}});const r=await s.run();assert.equal(r.status,502);assert.deepEqual(await r.json(),{error:{code:'KRX_FORMAT_CHANGED'}});assert.equal(s.released(),1);}
+});
+const LOCATION='https://redirect-target.invalid/elsewhere';
+const tiingoOk=u=>u.includes('/prices?')?json([{date:'2026-10-08T00:00:00.000Z',open:100,high:104,low:98,close:102,adjClose:91,volume:10}]):json({ticker:'nvda',exchangeCode:'NASDAQ'});
+// 3xx with Location, opaque redirect, or an already-followed answer carrying an otherwise valid body.
+const redirectAnswers=ok=>[...[301,302,303,307,308].map(status=>[String(status),()=>json({privateMessage:'never forwarded'},status,{Location:LOCATION})]),
+  ['opaqueredirect',()=>Object.defineProperties(new Response(null),{type:{value:'opaqueredirect'},status:{value:0},ok:{value:false}})],
+  ['followed',u=>Object.defineProperty(ok(u),'redirected',{value:true})]];
+const answer=async s=>{const r=await s.run();assert.equal(r.headers.get('Location'),null);return {status:r.status,body:await r.json()};};
+test('a Tiingo redirect on either request fails exactly like a Tiingo outage and its Location is never fetched',async()=>{
+  for(const step of ['meta','prices']){
+    const hit=u=>(step==='prices')===u.includes('/prices?');
+    const outage=await answer(setup('NVDA','1mo',{provider:u=>hit(u)?json({},503):tiingoOk(u)}));
+    assert.deepEqual(outage,{status:503,body:{error:{code:'TIINGO_UNAVAILABLE'}}});
+    for(const [name,redirect] of redirectAnswers(tiingoOk)){
+      const s=setup('NVDA','1mo',{provider:u=>hit(u)?redirect(u):tiingoOk(u)});
+      assert.deepEqual(await answer(s),outage,step+' '+name);assert.ok(!s.calls.some(c=>c.url===LOCATION),step+' '+name);assert.equal(s.released(),1);
+    }
+  }
+});
+test('a KRX redirect fails exactly like a KRX outage and its Location is never fetched',async()=>{
+  const outage=await answer(setup('042700.KS','1mo',{provider:()=>json({},503)}));
+  assert.deepEqual(outage,{status:503,body:{error:{code:'KRX_UNAVAILABLE'}}});
+  for(const [name,redirect] of redirectAnswers(()=>json({OutBlock_1:[]}))){
+    const s=setup('042700.KS','1mo',{provider:redirect});
+    assert.deepEqual(await answer(s),outage,name);assert.ok(!s.calls.some(c=>c.url===LOCATION),name);assert.equal(s.released(),1);
+    for(const c of s.calls.filter(c=>c.url.includes('krx.co.kr'))){assert.equal(c.init.redirect,'manual');assert.equal(c.init.cache,'no-store');}
+  }
+});
+test('a Yahoo redirect takes the same Tiingo fallback as a Yahoo outage and its Location is never fetched',async()=>{
+  const outage=await answer(setup());
+  assert.equal(outage.status,200);assert.equal(outage.body.provider,'Tiingo EOD');
+  const t=NOW/1000-86400,ok=()=>json({chart:{error:null,result:[{meta:{symbol:'NVDA',currency:'USD',exchangeName:'NMS',exchangeTimezoneName:'America/New_York',dataGranularity:'1d'},
+    timestamp:[t],indicators:{quote:[{open:[100],high:[104],low:[98],close:[102],volume:[10]}]}}]}});
+  assert.equal((await answer(setup('NVDA','1mo',{yahoo:ok}))).body.provider,'Yahoo Finance(비공식)');
+  for(const [name,redirect] of redirectAnswers(ok)){
+    const s=setup('NVDA','1mo',{yahoo:redirect});
+    assert.deepEqual(await answer(s),outage,name);assert.ok(!s.calls.some(c=>c.url===LOCATION),name);
+  }
 });

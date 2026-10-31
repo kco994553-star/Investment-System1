@@ -62,7 +62,9 @@ const MAX_BARS = 1500;
 const MIN_SPACING_MS = 5000;
 const WINDOW_MS = 60_000;
 const LEASE_MS = 30_000;
-const NO_CACHE = { cache: 'no-store', cf: { cacheTtl: 0, cacheEverything: false }, redirect: 'error' };
+// Workers fetch throws a TypeError for redirect 'error' and for cache 'no-store' with any cf.cacheTtl other than -1.
+// 'no-store' already bypasses the edge cache. Redirect answers are rejected in upstreamFetch and are never followed.
+const NO_CACHE = { cache: 'no-store', cf: { cacheEverything: false }, redirect: 'manual' };
 
 class Failure extends Error {
   constructor(code, status) { super(code); this.code = code; this.status = status; }
@@ -268,6 +270,15 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
     finally { cancel(timer); }
   }
 
+  // Every upstream request. A 3xx, an opaque redirect (status 0) or a followed redirect gets the same fixed error
+  // as a failed upstream answer. The Location is never read or fetched and the body is never passed through.
+  async function upstreamFetch(url, init, code, status) {
+    const response = await fetchImpl(url, { ...init, ...NO_CACHE });
+    const redirect = response.type === 'opaqueredirect' || response.redirected === true || response.status === 0
+      || (response.status >= 300 && response.status <= 399);
+    return redirect ? closeAndFail(response, code, status) : response;
+  }
+
   async function authenticate(request, env) {
     if (typeof env.ALLOWED_EMAIL !== 'string' || !env.ALLOWED_EMAIL || env.ALLOWED_EMAIL.trim() !== env.ALLOWED_EMAIL
       || typeof env.GOOGLE_CLIENT_ID !== 'string' || !env.GOOGLE_CLIENT_ID || env.GOOGLE_CLIENT_ID.trim() !== env.GOOGLE_CLIENT_ID) throw new Failure('CONFIG_UNAVAILABLE', 503);
@@ -276,10 +287,10 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
     let info;
     try {
       info = await timed(5000, 'AUTH_UNAVAILABLE', 503, async (signal) => {
-        const response = await fetchImpl(TOKENINFO_URL, {
-          ...NO_CACHE, method: 'POST', signal,
+        const response = await upstreamFetch(TOKENINFO_URL, {
+          method: 'POST', signal,
           headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8', Authorization: authorization },
-        });
+        }, 'AUTH_UNAVAILABLE', 503);
         if ([400, 401, 403].includes(response.status)) return closeAndFail(response, 'AUTH_FORBIDDEN', 403);
         if (!response.ok) return closeAndFail(response, 'AUTH_UNAVAILABLE', 503);
         return readJson(response, 32 * 1024, 'AUTH_UNAVAILABLE', 'AUTH_UNAVAILABLE', 503);
@@ -312,9 +323,9 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
   async function history(symbol, range) {
     try {
       return await timed(10_000, 'YAHOO_TIMEOUT', 504, async (signal) => {
-        const response = await fetchImpl(`${YAHOO_ROOT}${symbol}?interval=1d&range=${range}`, {
-          ...NO_CACHE, method: 'GET', signal, headers: { Accept: 'application/json' },
-        });
+        const response = await upstreamFetch(`${YAHOO_ROOT}${symbol}?interval=1d&range=${range}`, {
+          method: 'GET', signal, headers: { Accept: 'application/json' },
+        }, 'YAHOO_UNAVAILABLE', 503);
         if ([401, 403, 429].includes(response.status)) return closeAndFail(response, 'YAHOO_BLOCKED', 502);
         if (response.status === 404) return closeAndFail(response, 'HISTORY_UNAVAILABLE', 404);
         if (!response.ok) return closeAndFail(response, 'YAHOO_UNAVAILABLE', 503);
@@ -338,8 +349,9 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
       return await timed(15_000, provider + '_TIMEOUT', 504, async (signal) => {
         const request = async (url, limit = MAX_BODY_BYTES) => {
           if (signal.aborted) throw new Failure(provider + '_TIMEOUT', 504);
-          const response = await fetchImpl(url, { ...NO_CACHE, method: 'GET', signal,
-            headers: provider === 'TIINGO' ? { Accept: 'application/json', Authorization: 'Token ' + secret } : { Accept: 'application/json', AUTH_KEY: secret } });
+          const response = await upstreamFetch(url, { method: 'GET', signal,
+            headers: provider === 'TIINGO' ? { Accept: 'application/json', Authorization: 'Token ' + secret } : { Accept: 'application/json', AUTH_KEY: secret } },
+          provider + '_UNAVAILABLE', 503);
           if (!response.ok) return closeAndFail(response, provider + '_UNAVAILABLE', 503);
           return readJson(response, limit, provider + '_FORMAT_CHANGED', provider + '_TOO_LARGE', 502);
         };
