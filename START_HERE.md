@@ -9,7 +9,7 @@
 3. [WORKING_RULES.md](WORKING_RULES.md) — 작업 규칙
 4. [CURRENT_HANDOFF.md](CURRENT_HANDOFF.md) — 지금 상태(기준 HEAD·게시·열린 PR·다음 할 일)
 5. [docs/SPEC/FUNCTION_HIERARCHY_v1.0.md](docs/SPEC/FUNCTION_HIERARCHY_v1.0.md) — 제품 기능 명세 원문(수정 금지)
-6. [docs/SPEC/FUNCTION_STATUS.md](docs/SPEC/FUNCTION_STATUS.md) — 명세 번호별 현황과 메뉴 번호 대응표
+6. [docs/SPEC/FUNCTION_STATUS.md](docs/SPEC/FUNCTION_STATUS.md) — 명세 번호별 현황과 메뉴 번호 대응표. **화면마다 공개 층과 비공개 층(로그인 오너 전용 KIS·Lab 비공개)의 경계는 [1-3절 "공개 + 비공개 2층 구조"](docs/SPEC/FUNCTION_STATUS.md#1-3-공개--비공개-2층-구조-2026-10-31-오너-dc-36) 표를 따른다(DC-36). 공개 화면은 비공개 자료 없이 완전히 동작해야 한다**
 7. [implementation/docs/USER_DECISIONS_PENDING.md](implementation/docs/USER_DECISIONS_PENDING.md) — 결정 원문과 남은 결정
 
 루트의 2026-09 문서와 `SUPERSEDED` 머리말이 붙은 문서는 **기록 보존용**이다. 현재 상태 판단에 쓰지 않는다.
@@ -17,12 +17,12 @@
 ## 2. 절대 틀리면 안 되는 것 (상세는 DIRECTION_CHANGES)
 
 - **Universe504** = S&P 500 구성에서 출발해 **고정한** 504코드 목록이다. 시가총액 상위 504가 아니고, S&P 500 지수를 따라가지도 않는다(DC-01).
-- **공식 V** = 서버가 IEX HIST로 계산해 공개하는 점수·순위(2026-10-23 결정). 원시 가격은 공개하지 않는다. **아직 구현되지 않았다.** 지금 화면의 V는 기기 V이며 공식값이 아니다(DC-02).
+- **공식 V** = 서버가 IEX HIST로 계산해 공개하는 점수·순위(2026-10-23 결정, 2026-10-29 첫 게시, 정밀값 공개 허용 GSQ-025). 원시 가격은 공개하지 않는다. **기기 V는 폐지됐다(DC-31, 2026-10-31, #435·#439 병합)**: 화면은 중앙 V만 보이고, 중앙 V가 없거나 늦으면 마지막 중앙 V를 갱신 시각·STALE과 함께 보인다(기기 값으로 채우지 않음). TARGET v1 빌더만 11/16 PR까지 옛 V 출처를 유지한다.
 - 화면 점수는 **QGV v2만**(DC-03).
 - **TARGET v0(카탈로그 19, `actual-catalog.json`)은 QGV와 전혀 무관하다.** 사용자가 QGV 없이 고른 목록이다(DC-04). QGV 화면·점수·순위·후보·공개 데이터의 "TARGET"에 v0을 쓰지 않는다. 공개 TARGET은 **확정된 TARGET v1만**이다(DC-24, 사용자 2026-10-27: "이유를 계속 잊는 것 같다").
 - 기능 번호는 **명세 v1.0의 1~9**만 쓴다. 메뉴 번호(0 검색, 1 QGV…)로 보고하지 않는다(DC-08).
 - 새 프론트엔드는 **시안(같은 아티팩트) 배치대로 새로 작성** 중이다. 무채색 미니멀 지시는 대체됐다(DC-07). 시각 양식은 **혼잡스 영상 기준(DC-25, [VISUAL_STYLE](implementation/docs/frontend_v2/VISUAL_STYLE.md))**: 흰 바탕 선화, 제목 Jua·본문 기기 고딕, 그림자 없음. 색은 6가지에 뜻 하나씩, 메뉴별 색 없음(DC-26).
-- 역할: 병합·공용 파일은 Claude Code Main 하나. Codex는 검증·리뷰만(DC-09).
+- 역할(DC-35, 2026-10-31 밤 개정 — 3개 흐름): 코드·공용 파일·워크플로·`docs/SPEC`·병합·인수인계·결정 기록·DC 번호 부여는 **Main(Claude Code)만**. **Codex**는 백테스트 연구(French 요인 대리 검증)와 재구성 결과 감사, 연구 가지와 문서만. **GPT Work**는 문서 조사·정리와 Notion 정리, `docs/` 가지의 Draft PR만.
 
 ## 3. 매 작업 규칙
 
@@ -31,3 +31,18 @@
 - 금지 표현 검사: `python implementation/tools/spec_direction_guard.py`(CI 전체 시험 `test_spec_direction_guard.py`에 포함).
 - 원시 가격·개인 자료·토큰·이메일은 저장소·Pages·로그에 넣지 않는다. 병합·배포는 사용자 승인 범위에서만 한다.
 - 사용자는 폰만 쓴다. 사용자에게 시키는 절차는 폰 브라우저에서 할 수 있어야 한다. 보고는 한국어로 묶어서 한다.
+
+## 4. 파일 담당표 (2026-10-31, DC-35 — 같은 날 밤 3개 흐름으로 개정)
+
+개발 흐름은 셋이다: Main(Claude Code) · Codex · GPT Work(결정 문서: [DEV_SYSTEM_20261031](implementation/docs/DEV_SYSTEM_20261031.md)).
+
+| 담당 | 파일 | 할 수 있는 것 |
+| --- | --- | --- |
+| **Main** | `implementation/src/investment_system/product/web_app/` 전부(화면 파일 `screen-*.js` 포함), 옛 화면(`web_assets/`), 공용 엔진, 가드·CI 목록, 워크플로, `docs/SPEC`, CURRENT_HANDOFF, USER_DECISIONS_PENDING, 결정 문서, 데이터 계약(lab-backtest-v1, 기업 목록 공통 접근 계약) | 바꾸고 병합한다(병합·배포는 오너 승인 범위에서). 독립 화면은 하위 에이전트로 병렬 구현할 수 있다 |
+| **Codex** | 백테스트 연구 가지(`research/*`)의 연구 코드·결과 원본·연구 문서: 백테스트 연구(French 요인 대리 검증)와 재구성 결과 감사 | 연구 PR까지. 병합·워크플로·DC 번호 부여 안 함. 결과 원본 경로는 제안하고 Main이 확인한다. 재구성 계산 엔진은 Main 것이다(감사만) |
+| **GPT Work** | `docs/` 가지의 문서(조사·정리, 규칙표 등)와 Notion 정리 | `docs/` 가지의 Draft PR만. 코드·워크플로·공용 파일·병합·DC 번호 부여·결정 기록 직접 수정 안 함. 예: #426(공급처 조사, #431로 옮기고 닫음), #443(전진검증 v3 규칙표) |
+
+- Main은 Codex 소유 연구 코드·결과 원본을 고치거나 숫자를 다시 계산하지 않는다. GPT Work 문서도 직접 고치지 않고, 바꿀 곳은 PR 댓글로 남긴다.
+- **다른 흐름(Codex·GPT Work)의 PR이 DC 번호·`DIRECTION_CHANGES`·`USER_DECISIONS_PENDING` 같은 결정 기록을 직접 바꾸면, Main이 번호를 다시 매겨 자기 PR에 반영한다**(그 PR의 해당 변경은 병합하지 않는다).
+- 외부 개발 책임자(별도 화면 세션 등)는 늘리지 않는다. DC-32의 "화면 세션(Frontend)"은 시행 전에 대체됐다.
+- Codex·GPT Work PR 병합 조건: canonical과 동기화, 필수 CI 6개 녹색, **담당 파일만 바뀜**(Main이 파일 목록으로 확인), 오너 승인. 병합은 Main이 한다.

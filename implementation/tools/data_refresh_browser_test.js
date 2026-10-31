@@ -16,9 +16,10 @@
    Checked: the open leaderboard follows day 2 in place, every other screen and the calculation inputs show day 2 (one set),
    no Worker / Sheets / outside request, settings unchanged, a failed refresh keeps every old value with '갱신 실패' and the old
    basis time, re-judging makes a row STALE as the clock passes its window (no new publication), the v1 badge names its input,
-   and a failed read and a not-published file read differently. With device prices: the D11 official ranking / QG list, the V
-   coverage panel counts, its PriceTime line, the footnote scope and the stat-radar V all come from the one page result of the
-   new inputs object, and every price-tab read the refresh causes is RAM only (no Worker sync, no Sheets read). */
+   and a failed read and a not-published file read differently. With the central V publication (DC-31, synthetic
+   qgv-official.json): the D11 official ranking / QG list, the V coverage panel counts and the stat-radar V stay the published
+   ones across the refresh (the publication is read again; no device price makes a V), and every price-tab read the refresh causes
+   is RAM only (no Worker sync, no Sheets read). */
 const { chromium } = require('playwright'), assert = require('node:assert/strict'), fs = require('node:fs'), path = require('node:path');
 const WA = path.join(__dirname, '../src/investment_system/product/web_assets');
 globalThis.QgvV2 = require(path.join(WA, 'qgv-v2.js'));
@@ -27,13 +28,13 @@ const QI = globalThis.Qgv2Inputs = require(path.join(WA, 'qgv2-inputs.js'));
 globalThis.MacroLights = require(path.join(WA, 'macro-lights.js'));
 const QS = require(path.join(WA, 'qgv-scores.js')), PS = require(path.join(WA, 'public-screens.js'));
 const SD = require(path.join(WA, 'sec-disclosures.js')), NS = require(path.join(WA, 'news-signals.js'));
-const F = require('./qgv_v2_fixture.js'), secFx = require('./sec_disclosures_fixture.js'), newsFx = require('./news_signals_fixture.js');
+const O = require('./qgv_official_fixture.js'), F = require('./qgv_v2_fixture.js'), secFx = require('./sec_disclosures_fixture.js'), newsFx = require('./news_signals_fixture.js');
 const { EMPTY, routeEmptyPublicScreens } = require('./empty_public_screens.js');
 const BASE = process.env.PAGES_COCKPIT_URL, ORIGIN = new URL(BASE).origin;
 const DAYS = { 1: { as_of: '2026-10-13T22:30:00Z', now: '2026-10-14T03:00:00Z' }, 2: { as_of: '2026-10-14T22:30:00Z', now: '2026-10-15T03:00:00Z' } };
 const RECOLLECTED = 'NASDAQ:AKAM', KEPT = 'NASDAQ:ABNB', AGING = 'NYSE:ABT', AGING_AT = '2026-09-30T06:00:00Z', PAST_WINDOW = '2026-10-14T07:00:00Z';
 const PRESET = 'growth';
-const PUBLIC = new Set(['sec-qgv2.json', 'sec-public-inputs.json', 'company-classification.json', 'dart-financials.json', 'sec-disclosures.json', 'news-signals.json', 'dart-disclosures.json', 'sec-universe-shares.json', 'macro-evidence.json', ...Object.keys(PS.FILES)]);
+const PUBLIC = new Set(['sec-qgv2.json', 'qgv-official.json', 'sec-public-inputs.json', 'company-classification.json', 'dart-financials.json', 'sec-disclosures.json', 'news-signals.json', 'dart-disclosures.json', 'sec-universe-shares.json', 'macro-evidence.json', ...Object.keys(PS.FILES)]);
 const clock = (x) => x.slice(0, 10) + ' ' + x.slice(11, 16) + ' UTC';
 const fmt = (v) => new Intl.NumberFormat('ko-KR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(v);
 const fmt1 = (v) => (Math.round(v * 10) / 10).toFixed(1);
@@ -185,7 +186,7 @@ async function press(page, expect) {
 // scrolls the page there, as a user does.
 const settings = (page) => page.evaluate(() => ({ local: Object.fromEntries(Object.keys(localStorage).sort().map((k) => [k, localStorage.getItem(k)])),
   session: Object.fromEntries(Object.keys(sessionStorage).sort().map((k) => { let v = sessionStorage.getItem(k); try { const o = JSON.parse(v); if (o && typeof o === 'object' && 'scrollY' in o) { delete o.scrollY; delete o.anchor; delete o.offset; v = JSON.stringify(o); } } catch (_) {} return [k, v]; })),
-  profile: JSON.stringify(qgv2Profile), quotes: JSON.stringify(qgv2Quotes), theme: document.documentElement.dataset.theme || null, lang: document.documentElement.lang }));
+  profile: JSON.stringify(qgv2Profile), theme: document.documentElement.dataset.theme || null, lang: document.documentElement.lang }));
 function requestsCheck(label, reqs, what) {
   const private_ = reqs.filter((u) => /workers\.dev|googleapis|google\.com/.test(u));
   eq(label, private_, [], what + ': no Worker or Google Sheets request');
@@ -330,83 +331,48 @@ function requestsCheck(label, reqs, what) {
       eq(label, s.errors, [], 'no page errors'); await c.close();
     }
 
-    // ---------- E. with device prices: rank / QG list, V panel, radar V, PriceTime and footnote follow one new set ----------
-    // HARNESS_PRICES: synthetic Universe-tab prices (made-up numbers) through a stubbed PrivateSubsetView in RAM, as in
-    // stat_radar_browser_test.js; the public files still come over REAL_FETCH. A stubbed sheet session counts reads: none may happen.
-    phase = 'E_PRICES';
+    // ---------- E. with the central V publication: rank / QG list, V panel and radar V stay the published ones ----------
+    // DC-31: the synthetic qgv-official.json (qgv_official_fixture.js) is served; a stubbed sheet session counts reads (none may
+    // happen) and a fake loaded price tab records the fetch option of every read. No device price makes a V.
+    phase = 'E_CENTRAL';
     {
-      const st = { day: 1 }, { context: c, page: p, seen: s } = await newContext(browser, st), prices = {};
-      for (const [code, , price] of F.strictUniverseValues().slice(1)) prices[code] = { price, currency: 'USD' };
+      const st = { day: 1 }, { context: c, page: p, seen: s } = await newContext(browser, st);await O.routeOfficial(c);
       await p.goto(BASE + '#leaderboard'); await p.locator('[data-leaderboard-table]').waitFor();
-      await p.evaluate((q) => { window.__sheetReads = 0; const real = window.PrivateSubsetView; window.PrivateSubsetView = { ...real, prices: () => new Map(Object.entries(q)), priceBasis: () => ({ source: 'SYNTHETIC_TEST', read_id: 'synthetic-refresh', acquired_at: null, currency: 'USD', price_time: null }) };
+      await p.evaluate(() => { window.__sheetReads = 0;
         const session = { state: () => ({ enabled: true, connected: true }), revision: () => 1, setEnabled() {}, subscribe: () => () => {}, async fetchValues() { window.__sheetReads++; return { values: [] }; } };
         window.GoogleSheetQuotes = { ...GoogleSheetQuotes, sessionFor: () => session };
-        // A price tab that is connected and already loaded (fake, RAM): it records the fetch option of every read.
         window.__storeCalls = []; const PS = window.PriceStore; window.PriceStore = { ...PS, status: () => ({ ...PS.status(), state: 'READY', tabs: { Prices_D: { present: true, read: true, rows: 0 }, Prices_M: { present: true, read: true, rows: 0 } } }),
           monthEndCloses: async (sym, o) => { window.__storeCalls.push(o && o.fetch); return {}; }, dailyCloses: async (sym, from, o) => { window.__storeCalls.push(o && o.fetch); return {}; } };
-        location.hash = 'home'; }, prices);
+        location.hash = 'home'; });
       await p.locator('main').waitFor(); await p.evaluate(() => { location.hash = 'leaderboard'; });
-      const settled = (asOf) => p.waitForFunction((a) => typeof leaderPage === 'object' && leaderPage && leaderPage.inputs === publicScreens['sec-qgv2.json'] && publicScreens['sec-qgv2.json'].as_of === a
-        && document.querySelector('[data-v-coverage="READY"], [data-v-coverage-state="READY"]') && (document.querySelector('[data-v-calc-version]')?.textContent || '').includes(a) && document.querySelectorAll('[data-leaderboard-rank]').length > 0, asOf);
+      const settled = (asOf) => p.waitForFunction((a) => publicScreens['sec-qgv2.json'] && publicScreens['sec-qgv2.json'].as_of === a && document.querySelector('[data-v-coverage="READY"]') && document.querySelectorAll('[data-leaderboard-rank]').length > 0, asOf);
       await settled(DAYS[1].as_of);
-      const snap = () => p.evaluate(async () => { const inputs = publicScreens['sec-qgv2.json'], R = await QgvScores.pageResult(window, { v2Inputs: inputs, catalog: await deviceCatalog().catch(() => null), identities: identityCompanies, preset: qgv2Profile.preset, gate: qgv2Profile.gate }), cov = QgvScores.vCoverage(R, inputs), S = leaderScores();
-        const q = (sel, a) => document.querySelector(sel)?.getAttribute(a) ?? null;
-        return { same: leaderPage.result === R, quotes: leaderPage.result.quotes, asOf: inputs.as_of,
-          rows: Object.fromEntries(Object.entries(S.rows).filter(([, r]) => Number.isInteger(r.rank) || r.qg_reference).map(([k, r]) => [k, Number.isInteger(r.rank) ? 'R' + r.rank : 'QG' + r.qg_reference.order])),
-          dom: Object.fromEntries([...document.querySelectorAll('[data-leaderboard-row]')].map((tr) => [tr.dataset.leaderboardRow, tr.querySelector('[data-leaderboard-rank]') ? 'R' + tr.querySelector('[data-leaderboard-rank]').dataset.leaderboardRank : tr.querySelector('[data-leaderboard-unranked="QG_REFERENCE"]') ? 'QG' + tr.querySelector('[data-leaderboard-unranked="QG_REFERENCE"]').dataset.qgOrder : null]).filter(([, v]) => v)),
-          panel: { v: q('[data-v-full]', 'data-v-full'), qg: q('[data-qg-only-full]', 'data-qg-only-full'), time: q('[data-v-price-time]', 'data-v-price-time'), calc: document.querySelector('[data-v-calc-version]')?.textContent || '' },
-          cov: cov ? { v: String(cov.v.full), qg: String(cov.qg_only_total.full) } : null, scope: q('[data-leaderboard-rank-scope]', 'data-ranked'), rankable: q('[data-leaderboard-counts]', 'data-rankable'), base: q('[data-leaderboard-rank-scope]', 'data-rank-base') }; });
-      const s1 = await snap();
-      ok('HARNESS_PRICES', s1.same && Object.keys(s1.quotes).length > 3, 'day 1: the leaderboard uses the shared page result with device prices');
-      const expect = (n, now, quotes) => expectedRanks(n, now, identities, null, quotes);
-      const e1 = Object.fromEntries(Object.entries(expect(1, DAYS[1].now, s1.quotes)).map(([k, x]) => [k, (x.list === 'RANKED' ? 'R' : 'QG') + x.rank]));
-      eq('HARNESS_PRICES', [s1.rows, s1.dom], [e1, e1], 'day 1 official ranking and QG list = engine with the same quotes');
-      // The open Universe page of a priced code: its stat radar V comes from the same page result.
-      const code = KEPT; ok('HARNESS_PRICES', Object.hasOwn(prices, code), code + ' has a synthetic price');
-      // Click-only rule (owner decision 2026-10-23): a screen open reads the stored price tab only — every read passes
-      // fetch:false and no Worker request is made; prices are requested only by a button (checked at the end of this phase).
+      const snap = () => p.evaluate(() => { const S = leaderScores(), q = (sel, a) => document.querySelector(sel)?.getAttribute(a) ?? null;
+        return { source: S.source, asOf: publicScreens['sec-qgv2.json'].as_of, read: q('[data-v-coverage]', 'data-cx-read-id'),
+          rows: Object.fromEntries(Object.values(S.rows).filter((r) => Number.isInteger(r.rank)).map((r) => [r.code, r.rank])),
+          dom: [...document.querySelectorAll('[data-leaderboard-rank]')].length, panel: { v: q('[data-v-full]', 'data-v-full'), qg: q('[data-qg-only-full]', 'data-qg-only-full'), ranked: q('[data-v-coverage] [data-ranked]', 'data-ranked') } }; });
+      const s1 = await snap(), label = 'REAL_FETCH+CENTRAL';
+      eq(label, [s1.source, s1.rows, s1.read], ['PUBLICATION', O.RANKS, O.PUB.publication_id], 'day 1: the official ranks are the published ones (no Universe read, no device price)');
+      eq(label, [s1.panel.v, s1.panel.qg, s1.panel.ranked], [String(O.PUB.coverage.v.full), String(O.PUB.coverage.qg_only_total.full), String(O.PUB.coverage.ranked)], 'V panel counts = the publication coverage');
       const opened = await p.evaluate(() => window.__storeCalls.splice(0));
-      ok('HARNESS_PRICES', opened.length > 0 && opened.every((x) => x === false), 'a normal screen open reads the price tab stored-only (fetch:false, zero automatic requests): ' + opened.length + ' reads');
-      eq('HARNESS_PRICES', s.requests.filter((u) => /workers\.dev/.test(u)), [], 'no Worker request from opening home, the leaderboard and the V panel');
+      ok(label, opened.every((x) => x === false), 'a normal screen open reads the price tab stored-only (fetch:false, zero automatic requests): ' + opened.length + ' reads');
+      eq(label, s.requests.filter((u) => /workers\.dev/.test(u)), [], 'no Worker request from opening home, the leaderboard and the V panel');
       st.day = 2; await c.clock.setFixedTime(new Date(DAYS[2].now)); const mark3 = s.requests.length, reads0 = await p.evaluate(() => window.__sheetReads);
       await press(p, 'APPLIED'); await settled(DAYS[2].as_of);
-      const s2 = await snap(), label = 'REAL_FETCH+HARNESS_PRICES';
-      const reqs = requestsCheck(label, s.requests.slice(mark3), 'refresh with device prices (leaderboard open)');
+      const s2 = await snap();
+      const reqs = requestsCheck(label, s.requests.slice(mark3), 'refresh with the central publication (leaderboard open)');
+      ok(label, reqs.includes('qgv-official.json'), 'the refresh reads the central V publication again');
       eq(label, await p.evaluate(() => window.__sheetReads), reads0, 'no Google Sheets read during the refresh');
       const during = await p.evaluate(() => window.__storeCalls.splice(0));
-      ok(label, during.length > 0 && during.every((x) => x === false), 'every price-tab read caused by the refresh is RAM only (fetch:false, no Worker sync): ' + during.length + ' reads');
-      eq(label, [s2.same, s2.asOf], [true, DAYS[2].as_of], 'after the refresh the leaderboard reads the page result of the NEW inputs object (memo keyed by the inputs object)');
-      const e2 = Object.fromEntries(Object.entries(expect(2, DAYS[2].now, s2.quotes)).map(([k, x]) => [k, (x.list === 'RANKED' ? 'R' : 'QG') + x.rank]));
-      eq(label, [s2.rows, s2.dom], [e2, e2], 'D11 leaderScores(): official ranking and QG list on screen = engine day 2 with the same device quotes');
-      eq(label, s2.quotes, s1.quotes, 'device quotes are the same RAM quotes (prices did not change, nothing was read again)');
-      eq(label, [s2.panel.v, s2.panel.qg], [s2.cov.v, s2.cov.qg], 'V panel counts = QgvScores.vCoverage of the same day-2 page result');
-      ok(label, s2.panel.calc.includes(DAYS[2].as_of) && !s2.panel.calc.includes(DAYS[1].as_of), 'V panel names the day-2 public file: ' + s2.panel.calc);
-      eq(label, s2.panel.time, s1.panel.time, 'PriceTime display of the panel unchanged (same quotes, same price time rule): ' + s2.panel.time);
-      const rankedCount = String(Object.values(e2).filter((x) => x.startsWith('R')).length);
-      eq(label, [s2.rankable, s2.scope === null ? rankedCount : s2.scope], [rankedCount, rankedCount], 'counts line and footnote scope = day-2 official ranked count');
-      if (s2.scope !== null) eq(label, s2.base, String(Object.keys(PUB[2]['sec-qgv2.json'].records).length), 'footnote rank base = the Universe codes of the file (D12)');
-      // Radar V on a Universe page, refreshed in place.
+      ok(label, during.every((x) => x === false), 'every price-tab read caused by the refresh is RAM only (fetch:false, no Worker sync): ' + during.length + ' reads');
+      eq(label, [s2.asOf, s2.source, s2.rows, s2.panel], [DAYS[2].as_of, 'PUBLICATION', O.RANKS, s1.panel], 'after the refresh: day-2 Q·G inputs, the same published ranks and coverage (a new score file never changes the central V)');
+      // Radar V on a Universe page = the published V of that code.
+      const code = 'NYSE:AFL', pubV = O.PUB.rows[code].axes.V.score;
       await go(p, 'company/' + encodeURIComponent(code), '[data-universe-page] [data-stat-radar]');
-      const radarV = () => p.evaluate(async (cd) => { await new Promise((r) => setTimeout(r, 50)); const cell = document.querySelector('[data-stat-radar] tr[data-sr-axis="v"] td[data-sr-series="company"]'); const R = await QgvScores.pageResult(window, { v2Inputs: publicScreens['sec-qgv2.json'], catalog: await deviceCatalog().catch(() => null), identities: [{ company_id: cd, ticker: cd.slice(cd.indexOf(':') + 1) }] });
-        const d = R.computed.rows[cd].primary; return { cell: cell ? { score: cell.dataset.srScore, reason: cell.dataset.srReason } : null, v: Number.isFinite(d.v) ? d.v : null, asOf: publicScreens['sec-qgv2.json'].as_of, quotes: R.quotes[cd] || null, all: R.quotes }; }, code);
       await p.waitForFunction(() => { const c2 = document.querySelector('[data-stat-radar] tr[data-sr-axis="v"] td[data-sr-series="company"]'); return c2 && c2.dataset.srReason !== 'PENDING'; });
-      const rv = await radarV();
-      ok(label, rv.v !== null && rv.quotes && Math.abs(Number(rv.cell.score) - rv.v) <= 1e-9, 'radar V on the Universe page = page result V of the day-2 inputs (' + rv.cell.score + ' vs ' + rv.v + ')');
-      // The next publication arrives while this Universe page is open (the server now answers the day-1 file again): the page
-      // and its radar are repainted in place from that set.
-      st.day = 1; const mark4 = s.requests.length; await p.evaluate(() => { window.__samePage = document.querySelector('[data-universe-card="technical"]'); });
-      await press(p, 'APPLIED');
-      await p.waitForFunction((a) => (document.querySelector('[data-universe-card="qgv"] [data-uc-fresh]')?.textContent || '').includes('as_of ' + a), clock(DAYS[1].as_of));
-      await p.waitForFunction((a) => { const c2 = document.querySelector('[data-stat-radar] tr[data-sr-axis="v"] td[data-sr-series="company"]'); return c2 && c2.dataset.srReason !== 'PENDING' && publicScreens['sec-qgv2.json'].as_of === a; }, DAYS[1].as_of);
-      const rv1 = await radarV();
-      ok(label, rv1.asOf === DAYS[1].as_of && rv1.v !== null && Math.abs(Number(rv1.cell.score) - rv1.v) <= 1e-9, 'radar repainted in place = page result V of the newly applied inputs (' + rv1.cell.score + ' vs ' + rv1.v + ')');
-      eq(label, await p.evaluate(() => window.__samePage === document.querySelector('[data-universe-card="technical"]')), true, 'the mounted chart card was kept (no route re-mount)');
-      requestsCheck(label, s.requests.slice(mark4), 'in-place refresh of the Universe page');
-      const in2 = inputsAt(2, DAYS[2].now), every = Object.keys(in2.records).filter((k) => !k.startsWith('TARGET:')).map((k) => ({ company_id: k, ticker: k.slice(k.indexOf(':') + 1) }));
-      const nodeV = QS.compute({ identities: every, publicScreens: { 'sec-qgv2.json': in2 }, quotes: rv.all }).rows[code].primary.v;
-      ok('NODE', Math.abs(nodeV - rv.v) <= 1e-9, 'engine in Node gives the same V for the day-2 file and the same quotes (' + nodeV + ')');
-      eq(label, await p.evaluate(() => [window.__sheetReads, DataRefresh.pricesGuarded()]), [reads0, true], 'no Google Sheets read on the in-place refresh either; the device price guard is still on (no screen change yet)');
-      await go(p, 'leaderboard', '[data-leaderboard-table]'); eq(label, await p.evaluate(() => DataRefresh.pricesGuarded()), false, 'the guard ends with the next screen change');
+      const rv = await p.evaluate(() => { const cell = document.querySelector('[data-stat-radar] tr[data-sr-axis="v"] td[data-sr-series="company"]'); return { score: Number(cell.dataset.srScore), central: document.querySelector('[data-stat-radar]').dataset.srCentral }; });
+      ok(label, rv.central === 'PUBLICATION' && Math.abs(rv.score - pubV) <= 1e-9, 'radar V on the Universe page = the published V (' + rv.score + ' vs ' + pubV + ')');
+      await go(p, 'leaderboard', '[data-leaderboard-table]');
       ok(label, !reqs.some((f) => /^prices?/i.test(f)), 'no price file read');
       // The explicit button still requests: with the real price store on (synthetic sheet session that records history
       // requests, no network), opening a Universe company page asks for nothing; its '이 종목 월말 종가 받기' button asks once.

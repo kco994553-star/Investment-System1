@@ -690,3 +690,19 @@ def test_no_stored_copy_of_data_or_scores_can_outlive_a_rejected_file():
                   'leaderboard-screen.js', 'company-screen.js'):
         text = (WEB / asset).read_text()
         assert 'localStorage.setItem' not in text and 'indexedDB' not in text and 'caches.' not in text, asset
+
+
+def test_screens_reach_no_device_price_path_by_ticker():
+    """DC-31 (PR-1b): the withdrawal guards of the device price path (collectQuotes by ticker, UNI-TARGET above) now protect only
+    the TARGET v1 builder's device result until the 11/16 PR. Every screen reads the central publication (QgvScores.officialPage),
+    whose own rows carry the withdrawal (state WITHDRAWN, price_status PRICE_IDENTITY_CONFLICT): no screen module calls the device
+    path any more, so no screen can price a withdrawn code by its ticker."""
+    allowed = {'qgv-scores.js', 'playbook-screen.js', 'data-refresh.js', 'target-v1-builder.js', 'target-v1-screen.js'}
+    for path in sorted(WEB.glob('*.js')):
+        if path.name in allowed:
+            continue
+        text = path.read_text(encoding='utf-8')
+        assert 'collectQuotes(' not in text and '.pageResult(' not in text, path.name
+    playbook = (WEB / 'playbook-screen.js').read_text(encoding='utf-8')
+    # The playbook keeps the device result only for TargetV1Screen; its facts and candidates read officialPage.
+    assert 'officialPage(' in playbook and 'computed:device' in playbook

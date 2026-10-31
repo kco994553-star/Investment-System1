@@ -44,7 +44,7 @@ const { EMPTY } = require('./empty_public_screens.js');
 
 // The sec-qgv2.json fixture rows were collected 2026-10-13 (14-day window): a fixed clock keeps them LIVE.
 const NOW = '2026-10-14T03:00:00.000Z';
-const UNPUBLISHED = ['sec-public-inputs.json', 'sec-universe-shares.json', 'forward-validation-ledger.json'];
+const UNPUBLISHED = ['sec-public-inputs.json', 'sec-universe-shares.json', 'forward-validation-ledger.json', 'qgv-official.json', 'qgv-official-status.json'];
 const RECENT_KEY = 'investment.web.v1.recent-search', PERSONAL_KEY = 'investment.web.v1.personal';
 // Draft example values and words (the draft's numbers are examples and must never show).
 const DRAFT = /예시|EXA\b|상승 깃발|회복 후반|상승 초입|보유 비중 6%|모델 적합 비중 8%|23 \/ 498|QGV 72\b/;

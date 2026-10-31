@@ -12,6 +12,10 @@
 //    handed the gated storage, storage unchanged); backups /1–/5 round trip (/5 user objects through the old validators);
 //    IndexedDB never created by a read. Recent searches (P2-1): the old home's key and shape (entity keys only, at most 6,
 //    newest first, invalid entries dropped on read, the query text never stored); pushRecent / clearRecent only in a click.
+//    Macro cycle user estimates (4.4, bundle 1): MacroCycleRing's key and schema through its own store functions, read freely,
+//    added / removed only in a click (seq and saved_at set by the store), an unreadable value never overwritten, carried by the
+//    /5 backup. Prompt favorites and personal copies (7.1.4): the old prompt page's keys and shapes (research-bridge.js), read
+//    as it read them, written only in a click with its save rules, not carried by any backup.
 //  - Device quotes stopped (owner 2026-10-24, DC-18): a valid stored 'market' record that the old path reads is never read by
 //    quote() or the score path, never written by an old writer even inside a click, never deleted automatically;
 //    marketQuotes.count() gives a number without opening a missing database, clear() works only on a trusted click and keeps
@@ -268,10 +272,10 @@ test('one price view: sessionFor and every PriceStore call get it (spies) throug
   assert.equal(read.state, 'READY'); assert.equal(read.inputs, 'READY'); assert.doesNotMatch(JSON.stringify(read), PX, 'the read result has codes and counts, no price');
   const hist = await e.prices.history(e.click(), 'nvda');
   assert.equal(hist.symbol, 'NVDA'); assert.ok(Object.isFrozen(hist.bars)); assert.equal(e.prices.held('NVDA'), hist); assert.equal(e.prices.held('nvda'), hist);
-  // The QGV page prices from the kept read (universeView) and the stored month-ends (facade), never asking the network.
+  // The QGV page never prices from the kept read (DC-31: the Universe read feeds the M3 ranks only) and asks no network.
   const before = e.priv().length, pg = await e.qgv.page();
   assert.equal(e.priv().length, before, 'the score path sent nothing');
-  assert.equal(pg.price_basis.read_id, read.read_id); assert.equal(pg.price_basis.connected, true); assert.ok(pg.coverage.priced > 0);
+  assert.equal(pg.price_basis.kind, 'CENTRAL_IEX'); assert.ok(pg.rows.length > 0 && pg.rows.every((r) => r.score.v === null), 'no screen V from the device read');
   assert.doesNotMatch(JSON.stringify(pg), PX); assert.doesNotMatch(JSON.stringify(pg), CLOSE);
   // Facade calls naming another view still use the price view.
   await e.prices.storeFacade.monthEndCloses('NVDA', { view: e.win }); e.prices.storeFacade.coverage('SPY', { view: e.win }); e.prices.storeFacade.subscribe(() => {}, { view: e.win })();
@@ -383,7 +387,10 @@ test('store writes: without a trusted click nothing runs (CLICK_REQUIRED); an ol
     saveRecord: (ev) => e.store.saveRecord(ev, { id: 'x' }), toggleStar: (ev) => e.store.toggleStar(ev, '0000000001'), restore: (ev) => e.store.backup.restore(ev, '{}'), download: (ev) => e.store.backup.download(ev),
     sheetSource: (ev) => e.store.sheetSource.set(ev, ID), universeSource: (ev) => e.store.universeSource.set(ev, ID), workerOrigin: (ev) => e.store.workerOrigin.set(ev, WORKER),
     useSheet: (ev) => e.store.universeSource.useSheet(ev), marketQuotes: (ev) => e.store.marketQuotes.clear(ev),
-    pushRecent: (ev) => e.store.pushRecent(ev, 'COMPANY:nvda'), clearRecent: (ev) => e.store.clearRecent(ev) };
+    pushRecent: (ev) => e.store.pushRecent(ev, 'COMPANY:nvda'), clearRecent: (ev) => e.store.clearRecent(ev),
+    macroAdd: (ev) => e.store.macroEstimates.add(ev, 'economy', { from: { phase: '회복', part: '초입' }, to: { phase: '회복', part: '초입' }, note: '' }),
+    macroRemove: (ev) => e.store.macroEstimates.remove(ev, 'economy', 1), promptFavorite: (ev) => e.store.promptFavorites.toggle(ev, 'plv1.fund.030'),
+    promptCopySave: (ev) => e.store.promptCopies.save(ev, 'plv1.fund.030', 'x', 'PLV1_CONTENT_V1.0'), promptCopyRemove: (ev) => e.store.promptCopies.remove(ev, 'plv1.fund.030') };
   for (const [name, call] of Object.entries(WRITES)) for (const ev of [undefined, new Event('click'), { type: 'click', isTrusted: true }]) assert.throws(() => call(ev), /CLICK_REQUIRED/, name);
   const S = e.store.storage, M = e.mods;
   for (const [name, call] of Object.entries({ playbook: () => M.PlaybookScreen.saveThesis(S, 'NVDA', 't', 'i'), stars: () => M.PublicScreens.toggleStar(S, '0000000001'), weights: () => M.DeviceProfiles.writeV2(S, M.DeviceProfiles.emptyV2()),
@@ -397,7 +404,7 @@ test('store writes: without a trusted click nothing runs (CLICK_REQUIRED); an ol
   assert.equal(e.win.localStorage.getItem(K.PERSONAL), JSON.stringify({ version: 1, interests: ['amd'], groups: [] }));
 });
 
-test('store reads and settings: prefs (unreadable value never overwritten), weights versions, playbook, stars, V history read-only, sources never returned', async () => {
+test('store reads and settings: prefs (unreadable value never overwritten), weights versions, playbook, stars, device V history stopped (count / clear click), sources never returned', async () => {
   const e = env(), K = e.store.KEYS, L = e.win.localStorage;
   assert.deepEqual(plain(e.store.prefs()), { state: 'EMPTY', value: { version: 1, interests: [], groups: [] } });
   L.setItem(K.PERSONAL, '{broken'); assert.deepEqual(plain(e.store.prefs()), { state: 'INVALID', value: null });
@@ -412,7 +419,11 @@ test('store reads and settings: prefs (unreadable value never overwritten), weig
   assert.deepEqual([...(await e.store.toggleStar(e.click(), '0000000001'))], ['0000000001']); assert.deepEqual([...e.store.stars()], ['0000000001']);
   let notes = []; e.store.subscribe((what) => notes.push(what)); await e.store.toggleStar(e.click(), '0000000001'); assert.deepEqual(notes, ['INVESTOR_STARS']); assert.deepEqual([...e.store.stars()], []);
   const vh = JSON.stringify({ schema: 'virtual-trading-v-scores/2', scores: { '2026-10-01': { nvda: 61 } }, composition: {} }); L.setItem(K.V_HISTORY, vh);
-  const before = JSON.stringify([...L.map]); const h = e.store.vHistory(); assert.equal(h.v1.state, 'OK'); assert.equal(h.v2.state, 'EMPTY'); assert.equal(JSON.stringify([...L.map]), before, 'read only');
+  // Device V history (DC-31): stopped at the gate (reads absent, writes refused); a count and the user's clear click only.
+  const before = JSON.stringify([...L.map]); assert.equal(e.store.vHistory, undefined); assert.equal(e.store.storage.getItem(K.V_HISTORY), null, 'reads absent');
+  assert.throws(() => e.action.run(e.click(), 'WRITE', () => e.store.storage.setItem(K.V_HISTORY_V2, vh)), /V_HISTORY_STOPPED/);
+  assert.equal(e.store.vHistoryKeys.count(), 1); assert.equal(JSON.stringify([...L.map]), before, 'nothing changed on its own');
+  assert.throws(() => e.store.vHistoryKeys.clear(new Event('click')), /CLICK_REQUIRED/); assert.equal(e.store.vHistoryKeys.clear(e.click()), 1); assert.equal(L.getItem(K.V_HISTORY), null); assert.equal(e.store.vHistoryKeys.count(), 0);
   // Sources: has() / set() only; the id or address never comes back.
   assert.equal(e.store.sheetSource.has(), false); const set = await e.store.sheetSource.set(e.click(), 'https://docs.google.com/spreadsheets/d/' + ID + '/edit');
   assert.deepEqual(set, { set: true }); assert.equal(L.getItem(K.SHEET_SOURCE), ID); assert.equal(e.store.sheetSource.has(), true);
@@ -465,7 +476,78 @@ test('KEYS equal the old modules\' constants (existing devices keep their data)'
   assert.equal(K.PRICE_STORE_ENABLED, M.PriceStore.FLAG_KEY); assert.equal(K.DEVICE_DB, lit('device-actual.js', /DB_NAME = '([^']+)'/));
   assert.equal(K.CHART_USER_OBJECTS, M.ChartWorkbench.USER_KEY); assert.equal(K.MACRO_USER_ESTIMATES, M.MacroCycleRing.USER_KEY);
   assert.equal(K.RECENT, lit('home-screen.js', /RECENT_KEY='([^']+)'/));
+  assert.equal(K.PROMPT_FAVORITES, lit('research-bridge.js', /PL_FAV_KEY="([^"]+)"/)); assert.equal(K.PROMPT_COPIES, lit('research-bridge.js', /PL_COPY_KEY="([^"]+)"/));
   assert.deepEqual(fresh('store.js').KEYS, K); assert.ok(Object.isFrozen(K));
+});
+
+test('macro cycle user estimates (4.4): MacroCycleRing\'s key and schema through its own store; read freely, written only in a click; unreadable never overwritten; in the /5 backup', async () => {
+  const e = env(), K = e.store.KEYS, L = e.win.localStorage, MC = e.mods.MacroCycleRing, E = e.store.macroEstimates;
+  const entry = (note) => ({ from: { phase: '회복', part: '후반' }, to: { phase: '확장', part: '초입' }, note, system: { state: 'NOT_COMPUTED', text: '미산출', reason: 'NO_MODEL_OUTPUT', layer: null, model_id: null, as_of: null } });
+  assert.equal(K.MACRO_USER_ESTIMATES, MC.USER_KEY);
+  assert.deepEqual(plain(E.read()), { state: 'EMPTY', value: { schema: MC.USER_SCHEMA, rings: {} } }); assert.ok(Object.isFrozen(E.read()));
+  for (const ev of [undefined, new Event('click'), { type: 'click', isTrusted: true }]) { assert.throws(() => E.add(ev, 'economy', entry('x')), /CLICK_REQUIRED/); assert.throws(() => E.remove(ev, 'economy', 1), /CLICK_REQUIRED/); }
+  assert.equal(L.getItem(K.MACRO_USER_ESTIMATES), null, 'nothing written without a click');
+  // An old writer handed the gated storage outside a click: refused, nothing written.
+  assert.equal(MC.writeUserStore({ schema: MC.USER_SCHEMA, rings: { economy: [{ seq: 1, saved_at: 'x', ...entry('y') }] } }, e.store.storage), false); assert.equal(L.getItem(K.MACRO_USER_ESTIMATES), null);
+  let notes = []; e.store.subscribe((what) => notes.push(what));
+  const a = E.add(e.click(), 'economy', entry('제조 주문 회복')), b = E.add(e.click(), 'economy', { ...entry(''), seq: 99, saved_at: 'ignored' }), c = E.add(e.click(), 'industry:semis', entry('업종'));
+  assert.deepEqual([a.seq, b.seq, c.seq], [1, 2, 1], 'the store numbers each ring'); assert.match(a.saved_at, /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/); assert.notEqual(b.saved_at, 'ignored');
+  assert.deepEqual(notes, ['MACRO_USER_ESTIMATES', 'MACRO_USER_ESTIMATES', 'MACRO_USER_ESTIMATES']);
+  const raw = JSON.parse(L.getItem(K.MACRO_USER_ESTIMATES));
+  assert.equal(raw.schema, MC.USER_SCHEMA); assert.deepEqual(Object.keys(raw.rings), ['economy', 'industry:semis']);
+  assert.deepEqual(plain(MC.readUserStore(e.store.storage)), plain(E.read().value), 'the old module reads what the store wrote (same key and schema)');
+  assert.deepEqual(plain(E.read().value.rings.economy.map((x) => [x.seq, x.note, x.from, x.to, x.system.text])), [[1, '제조 주문 회복', { phase: '회복', part: '후반' }, { phase: '확장', part: '초입' }, '미산출'], [2, '', { phase: '회복', part: '후반' }, { phase: '확장', part: '초입' }, '미산출']]);
+  // The old validator refuses what the schema has no place for (a price, an unknown phase or ring); storage unchanged.
+  const before = L.getItem(K.MACRO_USER_ESTIMATES);
+  for (const [key, bad] of [['economy', { ...entry('p'), price: 1 }], ['economy', { ...entry('p'), from: { phase: '바닥', part: '초입' } }], ['nowhere', entry('p')], ['economy', { ...entry('p'), note: 'x'.repeat(201) }]])
+    assert.throws(() => E.add(e.click(), key, bad), /MACRO_ESTIMATE_INVALID/, JSON.stringify(bad).slice(0, 60));
+  assert.equal(L.getItem(K.MACRO_USER_ESTIMATES), before, 'a refused record changes nothing');
+  // Delete: one record by seq; the last record of a ring removes the ring; the last ring removes the key (writeUser).
+  assert.deepEqual(plain(E.remove(e.click(), 'economy', 1)).map((x) => x.seq), [2]); assert.throws(() => E.remove(e.click(), 'economy', 1), /MACRO_ESTIMATE_NOT_FOUND/);
+  // The /5 backup carries them (DeviceBackup looks MacroCycleRing up itself); /4 does not.
+  const p5 = await e.store.backup.create({ userObjects: true });
+  assert.deepEqual(p5.user_objects.macro.rings.economy.map((x) => x.seq), [2]); assert.deepEqual(p5.user_objects.macro.rings['industry:semis'].map((x) => x.note), ['업종']);
+  assert.equal((await e.store.backup.create()).user_objects, undefined);
+  E.remove(e.click(), 'economy', 2); E.remove(e.click(), 'industry:semis', 1); assert.equal(L.getItem(K.MACRO_USER_ESTIMATES), null, 'no records: no key');
+  // An unreadable stored value is never overwritten.
+  L.setItem(K.MACRO_USER_ESTIMATES, '{broken'); assert.deepEqual(plain(E.read()), { state: 'INVALID', value: null });
+  assert.throws(() => E.add(e.click(), 'economy', entry('x')), /MACRO_ESTIMATES_STORAGE_INVALID/); assert.equal(L.getItem(K.MACRO_USER_ESTIMATES), '{broken');
+  // One click, one action.
+  L.removeItem(K.MACRO_USER_ESTIMATES); const ev = e.click(); E.add(ev, 'economy', entry('')); assert.throws(() => E.add(ev, 'economy', entry('')), /ACTION_ALREADY_STARTED/);
+  assert.equal(E.read().value.rings.economy.length, 1);
+});
+
+test('prompt favorites and personal copies (7.1.4): the old prompt page\'s keys and shapes; read as it read them; written only in a click with its rules; in no backup', async () => {
+  const e = env(), K = e.store.KEYS, L = e.win.localStorage, F = e.store.promptFavorites, C = e.store.promptCopies;
+  const old = fs.readFileSync(R.oldPath('research-bridge.js'), 'utf8');
+  assert.match(old, /PL_MAX_CHARS=50000,PL_MAX_COPIES=100/, 'the old limits the store keeps');
+  assert.deepEqual([...F.read()], []); assert.deepEqual(plain(C.read()), {}); assert.ok(Object.isFrozen(F.read()) && Object.isFrozen(C.read()));
+  // What the old page stored is read the old way: an id array (strings, once each); copies with a string body (cut to 50,000).
+  L.setItem(K.PROMPT_FAVORITES, JSON.stringify(['plv1.fund.030', 7, 'plv1.fund.030', 'plv1.macro.001', 'bad id', null]));
+  L.setItem(K.PROMPT_COPIES, JSON.stringify({ 'plv1.fund.030': { body: 'b', saved_at: '2026-10-01T00:00:00.000Z', content_version: 'PLV1_CONTENT_V1.0' }, 'plv1.macro.001': { body: 7 }, 'bad id': { body: 'x' }, 'plv1.tech.001': { body: 'y'.repeat(50005) } }));
+  assert.deepEqual([...F.read()], ['plv1.fund.030', 'plv1.macro.001']);
+  assert.deepEqual(plain(C.read()), { 'plv1.fund.030': { body: 'b', saved_at: '2026-10-01T00:00:00.000Z', content_version: 'PLV1_CONTENT_V1.0' }, 'plv1.tech.001': { body: 'y'.repeat(50000), saved_at: '', content_version: '' } });
+  L.setItem(K.PROMPT_FAVORITES, '{broken'); L.setItem(K.PROMPT_COPIES, '[1]'); assert.deepEqual([...F.read()], []); assert.deepEqual(plain(C.read()), {});
+  L.removeItem(K.PROMPT_FAVORITES); L.removeItem(K.PROMPT_COPIES);
+  for (const ev of [undefined, new Event('click'), { type: 'click', isTrusted: true }]) {
+    assert.throws(() => F.toggle(ev, 'plv1.fund.030'), /CLICK_REQUIRED/); assert.throws(() => C.save(ev, 'plv1.fund.030', 'x', 'v'), /CLICK_REQUIRED/); assert.throws(() => C.remove(ev, 'plv1.fund.030'), /CLICK_REQUIRED/); }
+  assert.deepEqual([L.getItem(K.PROMPT_FAVORITES), L.getItem(K.PROMPT_COPIES)], [null, null], 'nothing written without a click');
+  assert.throws(() => e.store.storage.setItem(K.PROMPT_FAVORITES, '[]'), /ACTION_REQUIRED/, 'the gated storage refuses a write outside a click');
+  // ★: on, off, in the order clicked.
+  assert.deepEqual([...F.toggle(e.click(), 'plv1.fund.030')], ['plv1.fund.030']); assert.deepEqual([...F.toggle(e.click(), 'plv1.macro.001')], ['plv1.fund.030', 'plv1.macro.001']);
+  assert.deepEqual([...F.toggle(e.click(), 'plv1.fund.030')], ['plv1.macro.001']); assert.deepEqual(JSON.parse(L.getItem(K.PROMPT_FAVORITES)), ['plv1.macro.001']);
+  assert.throws(() => F.toggle(e.click(), 'bad id'), /PROMPT_ID_INVALID/);
+  // Copies: the old save rules (not empty, at most 50,000 characters, at most 100 copies; a saved copy can always be saved again).
+  const c = C.save(e.click(), 'plv1.fund.030', '내 사본 본문', 'PLV1_CONTENT_V1.0');
+  assert.equal(c.body, '내 사본 본문'); assert.equal(c.content_version, 'PLV1_CONTENT_V1.0'); assert.ok(Number.isFinite(Date.parse(c.saved_at)));
+  assert.deepEqual(JSON.parse(L.getItem(K.PROMPT_COPIES)), { 'plv1.fund.030': plain(c) });
+  assert.throws(() => C.save(e.click(), 'plv1.fund.030', '   ', 'v'), /PROMPT_COPY_EMPTY/); assert.throws(() => C.save(e.click(), 'plv1.fund.030', 'x'.repeat(50001), 'v'), /PROMPT_COPY_TOO_LONG/);
+  const full = Object.fromEntries(Array.from({ length: 100 }, (_, i) => ['plv1.x.' + i, { body: 'b', saved_at: '', content_version: '' }])); L.setItem(K.PROMPT_COPIES, JSON.stringify(full));
+  assert.throws(() => C.save(e.click(), 'plv1.fund.030', 'x', 'v'), /PROMPT_COPIES_FULL/); assert.equal(C.save(e.click(), 'plv1.x.3', 'again', 'v').body, 'again');
+  assert.equal(C.remove(e.click(), 'plv1.x.3'), true); assert.equal(C.remove(e.click(), 'plv1.x.3'), false); assert.equal(Object.keys(C.read()).length, 99);
+  // Neither key is in a backup (DeviceBackup /4 or /5): they stay in this browser.
+  F.toggle(e.click(), 'plv1.fund.030'); C.save(e.click(), 'plv1.fund.030', 'BACKUP_SENTINEL_TEXT', 'v');
+  for (const p of [await e.store.backup.create(), await e.store.backup.create({ userObjects: true })]) { const t = JSON.stringify(p); assert.ok(!t.includes('BACKUP_SENTINEL_TEXT') && !t.includes('plv1.fund.030'), p.schema); }
 });
 
 test('backup: /4 round trip through the old module (no price, sheet id or Worker address); /1–/3 accepted; /5 user objects round trip through the old validators; no device database created by a restore', async () => {
@@ -532,7 +614,7 @@ test('device quotes stopped (DC-18): a stored record the old path reads is never
   assert.deepEqual(await QS.collectQuotes(e.qgv.scoreView, { identities: ids, v2Inputs: inputs, catalog: CATALOG }), {});
   const pg = await e.qgv.page(), row = e.qgv.row(pg, 'asml');
   if (row) assert.equal(row.score.v, null);
-  assert.equal(pg.price_basis.connected, false, 'no device price on the page');
+  assert.equal(pg.price_basis.kind, 'CENTRAL_IEX', 'no device price on the page');
   assert.ok(idb.opened.length > 0, 'the existing database was opened (holdings, settings)');
   assert.ok(!idb.reads.some((k) => k === 'market' || k === 'market-import-history'), 'no read of a stored quote record');
   assert.ok(idb.reads.includes('MARKET_STORE_STOPPED'), 'asked under the no-record key instead');

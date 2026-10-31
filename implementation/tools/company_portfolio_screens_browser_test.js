@@ -62,15 +62,16 @@ const text=async(page,selector)=>(await page.locator(selector).first().textConte
     await page.locator('[data-raw-data] > summary').click();assert.ok(await page.locator('[data-raw-data] [data-public-screen="qg"]').isVisible());
     phase='S05-EMPTY';await open(page,'analysis/nvda','[data-analysis-tab]');
     assert.equal(await text(page,'main h1'),'NVDA');assert.equal(await text(page,'[data-analysis-back]'),'← NVDA 요약');assert.equal(await page.locator('[data-analysis-back]').getAttribute('href'),'#company/nvda');
-    assert.equal(await page.locator('[data-analysis-tab]').count(),7);
-    assert.deepEqual(await page.locator('[data-analysis-tab]').allTextContents(),['종합','사업·경쟁','재무','주가·이벤트','QGV 요소','가치·시나리오','비교·컨센서스']);
+    assert.equal(await page.locator('[data-analysis-tab]').count(),6);
+    assert.deepEqual(await page.locator('[data-analysis-tab]').allTextContents(),['종합','사업·경쟁','재무','주가·이벤트','QGV 요소','비교·컨센서스']);
     assert.equal(await text(page,'.sub-category'),'종목 찾기');assert.equal(await page.locator('#primary-nav [data-nav-tab][aria-current="page"]').getAttribute('data-nav-tab'),'qgv');
     assert.ok((await text(page,'[data-confidence-note]')).includes('확률 아님'));assert.ok((await text(page,'[data-na="overall"]')).includes('NOT_AVAILABLE'));
-    for(const key of ['business','financials','events','factors','value','compare']){await page.locator('[data-analysis-tab="'+key+'"]').click();assert.equal(await page.locator('[data-analysis-panel="'+key+'"]').isVisible(),true,key);assert.equal(await page.locator('[data-analysis-panel]:visible').count(),1,'one panel '+key);}
+    for(const key of ['business','financials','events','factors','compare']){await page.locator('[data-analysis-tab="'+key+'"]').click();assert.equal(await page.locator('[data-analysis-panel="'+key+'"]').isVisible(),true,key);assert.equal(await page.locator('[data-analysis-panel]:visible').count(),1,'one panel '+key);}
     await page.locator('[data-analysis-tab="factors"]').click();assert.equal(await page.locator('[data-v2-factor]').count(),15);assert.equal(await page.locator('[data-factor]').count(),0,'no v1 factor table');
     assert.deepEqual(await page.locator('[data-factor-score]').evaluateAll(n=>[...new Set(n.map(x=>x.textContent))]),['—']);
     await page.locator('[data-analysis-tab="financials"]').click();assert.equal(await page.locator('[data-analysis-panel="financials"] #sec-reported-panel').count(),1);
-    await page.locator('[data-analysis-tab="value"]').click();assert.ok((await text(page,'[data-analysis-panel="value"]')).includes('NOT_AVAILABLE'));
+    // DC-31: the device value tab '가치·시나리오' is removed with the device V.
+    assert.equal(await page.locator('[data-analysis-tab="value"],[data-analysis-panel="value"],#company-value').count(),0);
     await noScroll(page,'S05 empty');
     await open(page,'analysis/unknown-company','h1');assert.equal(await page.locator('[data-analysis-tab]').count(),0);
     phase='S03-EMPTY';await open(page,'portfolio','[data-portfolio-card="themes"] [data-theme-row]');

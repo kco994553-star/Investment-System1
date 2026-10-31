@@ -103,7 +103,7 @@ async function main() {
     page.on("pageerror", (e) => errors.push(`${locale} ${e.message}`));
     // The optional SEC sidecar is absent from a build without collection; any other failure stays an error.
     page.on("response", (response) => {
-      if (response.status() >= 400 && !(response.status() === 404 && ["sec-public-inputs.json", "sec-qgv2.json", "forward-validation-ledger.json"].some(name => response.url() === new URL(name, base).href))) traffic.failed_responses++;
+      if (response.status() >= 400 && !(response.status() === 404 && ["sec-public-inputs.json", "sec-qgv2.json", "forward-validation-ledger.json", "qgv-official.json"].some(name => response.url() === new URL(name, base).href))) traffic.failed_responses++;
     });
     if (clock) await page.clock.setFixedTime(new Date(clock));
     page.go = async (hash) => {

@@ -9,6 +9,9 @@
      GoogleSheetSetup.codes, EntitySearch.loadNames, DeviceValuation.load, ForwardValidation.load); nothing is re-checked here.
    - All or nothing, generations, 404 = NOT_PUBLISHED on first read, late answers of a replaced generation dropped, stale states
      re-judged without network: DataRefresh's rules, unchanged. Its bar, view-state code and listeners (attach) are not used.
+   - The central V (DC-31): official() reads qgv-official.json through QgvOfficial.load (its own strict validation, byte-identical
+     web_assets/qgv-official.js) and qgv-official-status.json through requireStatus below (the twin of Python require_status), once
+     per page and again after the user's re-read (refresh). Nothing is stored: the server keeps the last good publication.
    - DataRefresh exports no getter for the set it commits (only attach hooks receive it), so the core readers are handed to it
      through the public view and their validated results are kept per read; a refresh commits them on DataRefresh's own
      'public-data-updated' event, a re-judgement replaces the sec-qgv2.json rows it restated (data-refresh.js judge).
@@ -17,18 +20,38 @@
 'use strict';
 const MAX_BYTES=2*1024*1024,EVENT='public-data-updated',TICK=60000;
 const QGV2='sec-qgv2.json',REPORTED='sec-public-inputs.json',FIN='dart-financials.json',EVIDENCE='macro-evidence.json',SHARES='sec-universe-shares.json',CODES='universe-codes.json';
+const OFFICIAL='qgv-official.json',OFFICIAL_STATUS='qgv-official-status.json',OFFICIAL_FILES=Object.freeze([OFFICIAL,OFFICIAL_STATUS]);
 // DataRefresh's set: PublicScreens.FILES, classification, sec-qgv2, sec-public-inputs, dart-financials, macro-evidence; its lists; shares.
 const CORE=Object.freeze(['macro-screen.json','sec-13f-changes.json','sec-filing-windows.json','sec-qg-factors.json','company-types-pricefree.json','company-classification.json',QGV2,REPORTED,FIN,EVIDENCE]);
 const LIST_FILES=Object.freeze(['sec-disclosures.json','news-signals.json','dart-disclosures.json']);
 // Read once per page, outside the generation (identity catalog, search names, the fixed 504-code Universe list, financial detail, ledger).
 const STATIC=Object.freeze(['actual-catalog.json','entities.json','company-names-ko.json',CODES,'sec-valuation-inputs.json','forward-validation-ledger.json']);
-const FILES=Object.freeze([...CORE,...LIST_FILES,SHARES,...STATIC]),FILE_SET=new Set(FILES),STATIC_SET=new Set(STATIC);
+const FILES=Object.freeze([...CORE,...LIST_FILES,SHARES,...STATIC,...OFFICIAL_FILES]),FILE_SET=new Set(FILES),STATIC_SET=new Set(STATIC);
 // Without these the public path would silently change (light sec-qgv2 check, macro file rejected, cyclical V basis lost): READER_MISSING.
 const READERS=Object.freeze(['DataRefresh','SecQgv2','Qgv2Inputs','PublicScreens','MacroLights','PlaybookEngine','PlaybookConfigDefaults']);
 // Core readers whose results DataRefresh commits, with the call its readCore makes (data-refresh.js:65).
 const CORE_READERS=Object.freeze({SecReported:'load',PublicScreens:'load',ClassificationScreens:'load',Qgv2Inputs:'load',DartDisclosures:'loadFinancials',MacroEvidence:'read'});
 const TEXT=Object.freeze({READER_MISSING:['읽기 실패 · 읽기 모듈 없음','Read failed · reader missing']});
+const NOTICE_OFFICIAL=Object.freeze({reason:'OFFICIAL'});
 const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
+/* qgv-official-status/1 (Python qgv/qgv_official.py require_status, same rules in the same order): exact keys, no forbidden key
+   (QgvOfficial.FORBIDDEN_KEYS, depth <= 32), schema / kind / attempt_state, times, reason (null exactly when OK, never a
+   price-dependent code), publication fields together, NO_OFFICIAL_YET without an id, LIVE_UNREACHABLE only as NOT_RUN without an
+   id, latest_inputs, and the attribution equal to the publication's. Throws Error('OFFICIAL_STATUS_INVALID'). */
+const STATUS_KEYS=Object.freeze(['schema','kind','last_attempt_at','attempt_state','reason_code','official_publication_id','official_price_basis_date','official_verified_at','latest_inputs','attribution']);
+const ATTEMPT_STATES=Object.freeze(['OK','SUPPLY_FAILED','VERIFY_FAILED','NOT_RUN','NO_OFFICIAL_YET']);
+const SX={clock:/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z$/,day:/^\d{4}-\d{2}-\d{2}$/,hex:/^[0-9a-f]{64}$/,reason:/^[A-Z][A-Z0-9_]{0,63}$/,pub:/^qgvpub-[0-9a-f]{64}$/};
+function requireStatus(p,QO){const need=v=>{if(!v)throw Error('OFFICIAL_STATUS_INVALID');},keys=(o,ks)=>need(object(o)&&Object.keys(o).length===ks.length&&ks.every(k=>Object.hasOwn(o,k)));
+ const re=(v,rx)=>typeof v==='string'&&rx.test(v),orNull=(v,rx)=>v===null||re(v,rx),bad=new Set(QO.FORBIDDEN_KEYS);
+ const walk=(v,d)=>{need(d<=32);if(Array.isArray(v))v.forEach(x=>walk(x,d+1));else if(object(v))for(const k of Object.keys(v)){need(!bad.has(k.toLowerCase()));walk(v[k],d+1);}else if(typeof v==='number')need(Number.isFinite(v));};
+ keys(p,STATUS_KEYS);walk(p,0);need(p.schema==='qgv-official-status/1'&&p.kind==='QGV_OFFICIAL_STATUS'&&ATTEMPT_STATES.includes(p.attempt_state));
+ need(re(p.last_attempt_at,SX.clock)&&(p.reason_code===null||re(p.reason_code,SX.reason)&&!QO.PRICE_DEPENDENT.includes(p.reason_code)));
+ need((p.reason_code===null)===(p.attempt_state==='OK'));const has=p.official_publication_id!==null;need(!has||re(p.official_publication_id,SX.pub));
+ need(has===(p.official_price_basis_date!==null)&&orNull(p.official_price_basis_date,SX.day));
+ need(orNull(p.official_verified_at,SX.clock)&&(p.attempt_state!=='NO_OFFICIAL_YET'||!has));
+ need(p.reason_code!=='LIVE_UNREACHABLE'||(p.attempt_state==='NOT_RUN'&&!has));
+ keys(p.latest_inputs,['sha256','as_of']);need(orNull(p.latest_inputs.sha256,SX.hex)&&orNull(p.latest_inputs.as_of,SX.clock));
+ keys(p.attribution,Object.keys(QO.ATTRIBUTION));need(Object.keys(QO.ATTRIBUTION).every(k=>p.attribution[k]===QO.ATTRIBUTION[k]));return p;}
 function deepFreeze(v){if(v&&typeof v==='object'&&!Object.isFrozen(v)){Object.freeze(v);for(const x of Object.values(v))deepFreeze(x);}return v;}
 function create({win,action}){
  if(!action||typeof action.view!=='function')throw Error('ACTION_MISSING');
@@ -107,9 +130,22 @@ function create({win,action}){
  async function shares(){await ready();return DR().shares(publicView);}
  async function financials(){await ready();return DR().financials(publicView);}
  // The user-pressed re-read (all or nothing). Public files only: the PUBLIC_REFRESH kind never opens the private gate.
+ // After it the central V files are read again on the next official() (subscribers hear {reason:'OFFICIAL'}).
  function refresh(event){return action.run(event,'PUBLIC_REFRESH',()=>{
-  if(!refreshing)refreshing=(async()=>{await ready();const s={},p=started(s,()=>DR().refresh());pending=s;try{return await p;}finally{if(pending===s)pending=null;}})().finally(()=>{refreshing=null;});
+  if(!refreshing)refreshing=(async()=>{await ready();const s={},p=started(s,()=>DR().refresh());pending=s;try{return await p;}finally{if(pending===s)pending=null;}})().finally(()=>{refreshing=null;officialP=null;notify(NOTICE_OFFICIAL);});
   return refreshing;});}
+ /* The central V (DC-31). official() -> {state:'OFFICIAL'|'NOT_PUBLISHED'|'FAILED', reason:null|'OFFICIAL_NOT_PUBLISHED'|
+    'OFFICIAL_INVALID'|'OFFICIAL_UNAVAILABLE', payload (the deep-frozen validated publication, or null), status:{state:'OK'|
+    'NOT_PUBLISHED'|'FAILED', reason, value}}. One strict read of each file per page (and after refresh); never throws. */
+ let officialP=null;
+ async function readStatus(QO){let r;try{r=await strictFetch(OFFICIAL_STATUS,{cache:'no-store'});}catch(_){return{state:'FAILED',reason:'OFFICIAL_UNAVAILABLE',value:null};}
+  if(r.status===404)return{state:'NOT_PUBLISHED',reason:null,value:null};if(!r.ok)return{state:'FAILED',reason:'OFFICIAL_UNAVAILABLE',value:null};
+  try{const text=await r.text();if(QO.duplicateKeys(text))throw Error('DUP');return{state:'OK',reason:null,value:deepFreeze(requireStatus(JSON.parse(text),QO))};}catch(_){return{state:'FAILED',reason:'OFFICIAL_STATUS_INVALID',value:null};}}
+ function official(){if(!officialP){const p=(async()=>{const QO=win.QgvOfficial;if(!QO)return deepFreeze({state:'FAILED',reason:'OFFICIAL_UNAVAILABLE',payload:null,status:{state:'FAILED',reason:'READER_MISSING',value:null}});
+   let got=null,reason=null;try{got=await QO.load(publicView);}catch(e){reason=QO.reasonOf(e);}const status=await readStatus(QO);
+   if(got&&got.state==='OFFICIAL')return Object.freeze({state:'OFFICIAL',reason:null,payload:got.payload,status:deepFreeze(status)});
+   return deepFreeze({state:got?'NOT_PUBLISHED':'FAILED',reason:got?'OFFICIAL_NOT_PUBLISHED':reason,payload:null,status});})();officialP=p;p.catch(()=>{if(officialP===p)officialP=null;});}
+  return officialP;}
  function failure(name,err){const m=String(err&&err.message),http=seen.has(name)?seen.get(name):null;let f;
   if(m==='READER_MISSING')f={state:'FAILED',why:m,http:null};else if(http===404||m==='LEDGER_NOT_PUBLISHED')f={state:'NOT_PUBLISHED',why:null,http:404};
   else f={state:'FAILED',why:http===null||http===0?'NETWORK':http>=200&&http<300?'INVALID':'HTTP',http};
@@ -140,7 +176,7 @@ function create({win,action}){
   subs.add(fn);const off=()=>{subs.delete(fn);};if(signal)signal.addEventListener('abort',off,{once:true});return off;}
  // The fixed 504-code Universe list (universe-codes.json, GoogleSheetSetup.codes), or null.
  const universe=()=>staticFile(CODES);
- return Object.freeze({FILES,CORE,LIST_FILES,STATIC,READERS,MAX_BYTES,EVENT,strictFetch,ready,get,screens,state,publication,list,shares,financials,refresh,static:staticFile,peek,subscribe,universe});
+ return Object.freeze({FILES,CORE,LIST_FILES,STATIC,READERS,MAX_BYTES,EVENT,strictFetch,ready,get,screens,state,publication,list,shares,financials,refresh,static:staticFile,peek,subscribe,universe,official});
 }
-return Object.freeze({create,FILES,READERS,MAX_BYTES,EVENT});
+return Object.freeze({create,FILES,READERS,MAX_BYTES,EVENT,requireStatus});
 });

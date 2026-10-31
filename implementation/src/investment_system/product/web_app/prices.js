@@ -9,7 +9,8 @@
    - storeFacade is PriceStore as every other caller sees it: the price view forced into every call, closes answered only after
      a click read the user's price tabs in this sign-in (else {} / null: a read with fetch:false still loads the tabs from the
      Sheet, price-store.js ensureLoaded), never a Worker request. The old boot-time tab read is not used.
-   - The Universe read (the source of device V prices) is the old click pipeline of PrivateSubsetView.mount without a screen,
+   - The Universe read (owner 2026-10-31, DC-31: no screen V is computed from it any more; it feeds the M3 market-cap ranks, and the
+     TARGET v1 builder's hidden device result until the 11/16 PR) is the old click pipeline of PrivateSubsetView.mount without a screen,
      same calls in the same order (private-subset-view.js:67-75), including SecUniverseShares.loadInputs(view, {now: read time});
      only its unexported glue (US prices of the read, the kept state, the sign-out rule) is written again here.
    - Prices and price-derived values leave this module only through quote() and history() / held() (prices), periodReturns()
@@ -56,7 +57,7 @@ function create({win,action,data}){
  function failed(code){failure=Object.freeze({code,at:new Date().toISOString()});emit();}
  const prices=()=>kept?new Map(kept.prices):null,priceBasis=()=>kept?kept.basis:null;
  const readStatus=()=>Object.freeze({state:kept?'READY':'NOT_READ',basis:kept?kept.basis:null,failure});
- // PrivateSubsetView's contract, for QgvScores (collectQuotes / pageResult / readMarks) through the price and score views.
+ // PrivateSubsetView's contract through the price and score views: M3 ranks, and QgvScores' device path for TARGET v1 only (11/16).
  const universeView=Object.freeze({prices,priceBasis,readStatus,ranks:()=>ranks});
 
  // ---- the price tabs (PriceStore), always with the price view
