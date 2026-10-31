@@ -35,7 +35,7 @@ const sortSpec=id=>SORTS.find(s=>s[0]===id)||SORTS[0];// sortSpec :135
 // oppositeSort :140 over this list: the same key in the other direction; null for the one-way keys ticker, name, favorites.
 function oppositeSort(id){const[,key,dir]=sortSpec(id),o=SORTS.find(s=>s[1]===key&&s[2]===-dir);return o?o[0]:null;}
 /* sortRows :146–158 (D11) for the ids it orders (qgv, q, g, v, asof, cap): QGV = ranked rows, then the QG reference tier by its own
-   total, then rows without a total, never interleaved; ties by ticker (rank order), cap ties by company id; NA last both ways.
+   total, then rows without a total, never interleaved; equal totals by place number (rank / QG order, the publication's tie order), then ticker; cap ties by company id; NA last both ways.
    ticker / favorites as DeviceWatchlist.filter (watchlist.js:5). name: NEW rule (Main 2026-10-25), the shown title with
    localeCompare 'ko', ties by ticker. rows = page rows; cap(row) = M3 rank (1 = largest) or null; rank(row) = the rank shown. */
 function sortRows(rows,id,{cap=null,title=null,interests=[],rank=r=>r.rank.official}={}){
@@ -47,8 +47,11 @@ function sortRows(rows,id,{cap=null,title=null,interests=[],rank=r=>r.rank.offic
  const value=r=>{if(key==='qgv')return ranked(r)||qg(r)?num(r.score.total):null;if(key==='q'||key==='g'||key==='v')return num(r.score[key]);
   if(key==='asof'){const t=Date.parse(r.acquired_at);return Number.isFinite(t)?t:null;}if(key==='cap'){const m=cap?cap(r):null;return Number.isInteger(m)?m:null;}return null;};
  const tie=key==='cap'?(a,b)=>(a.id<b.id?-1:a.id>b.id?1:0):(a,b)=>String(a.ticker).localeCompare(String(b.ticker));
- const m=key==='cap'?-dir:dir,tier=r=>(key==='qgv'&&qg(r)&&!ranked(r)?1:0),keyed=rows.map(r=>({r,v:value(r),t:tier(r)}));
- keyed.sort((a,b)=>(a.v===null)-(b.v===null)||a.t-b.t||(a.v!==null&&b.v!==null?(a.v<b.v?-1:a.v>b.v?1:0)*m:0)||tie(a.r,b.r));
+ // Equal totals under the qgv sort follow the place number (rank, or the QG order in tier 1), the publication's tie order
+ // (total, symbol, key), reversed for low-first; then ticker. Same rule as the old S06 sortRows (leaderboard-screen.js).
+ const m=key==='cap'?-dir:dir,tier=r=>(key==='qgv'&&qg(r)&&!ranked(r)?1:0);
+ const place=r=>key!=='qgv'?null:ranked(r)?rank(r):qg(r)&&Number.isInteger(r.rank.qg_reference_order)?r.rank.qg_reference_order:null,keyed=rows.map(r=>({r,v:value(r),t:tier(r),p:place(r)}));
+ keyed.sort((a,b)=>(a.v===null)-(b.v===null)||a.t-b.t||(a.v!==null&&b.v!==null?(a.v<b.v?-1:a.v>b.v?1:0)*m:0)||(a.v!==null&&b.v!==null&&a.p!==null&&b.p!==null?(a.p-b.p)*-m:0)||tie(a.r,b.r));
  return keyed.map(x=>x.r);}
 // sicOf :41 (identity.company_id = the row id): the published 4-digit SIC; '0000', WITHDRAWN and identity_withdrawn are null.
 const SIC4=/^\d{4}$/;

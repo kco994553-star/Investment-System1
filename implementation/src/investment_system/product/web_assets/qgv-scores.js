@@ -40,8 +40,11 @@ const key=t=>String(t||'').replaceAll('.','-').toUpperCase(),symbolOf=code=>key(
    independent and unchanged. */
 function conflictedSymbols(inputs){const out=new Set();if(inputs&&object(inputs.records))for(const[code,r]of Object.entries(inputs.records))if(!code.startsWith('TARGET:')&&r&&r.universe_withdrawal===true)out.add(symbolOf(code));return out;}
 function priceConflict(inputs,c,code,symbols){return !!code&&code.startsWith('TARGET:')&&symbols.has(key(c.ticker))&&inputs.records[code]?.identity_withdrawn!==true;}
-function codeIndex(inputs){const codes=new Map();if(inputs)for(const code of Object.keys(inputs.records))if(!code.startsWith('TARGET:')&&!codes.has(symbolOf(code)))codes.set(symbolOf(code),code);
- return c=>{const t='TARGET:'+c.company_id,r=inputs&&Object.hasOwn(inputs.records,t)?inputs.records[t]:null;if(r&&r.state!=='NOT_AVAILABLE')return t;return codes.get(key(c.ticker))||null;};}
+/* skipTarget (optional, publication path only — compute({publication})): a TARGET key that must not stand for its identity there
+   (CALC_VERSION_MISMATCH: assign_ranks makes the Universe code the representative), so that identity reads its Universe code by
+   ticker (the TARGET row only when there is none). Without it (device path, typeMemberships, the Python code_index twin) unchanged. */
+function codeIndex(inputs,skipTarget){const codes=new Map();if(inputs)for(const code of Object.keys(inputs.records))if(!code.startsWith('TARGET:')&&!codes.has(symbolOf(code)))codes.set(symbolOf(code),code);
+ return c=>{const t='TARGET:'+c.company_id,r=inputs&&Object.hasOwn(inputs.records,t)?inputs.records[t]:null,live=!!r&&r.state!=='NOT_AVAILABLE';if(live&&!(skipTarget&&skipTarget(t)))return t;return codes.get(key(c.ticker))||(live?t:null);};}
 function v2Display(r){
  if(!r)return{version:'v2',q:null,g:null,v:null,total:null,partial:true,factors_available:0,factors_total:qgvV2().FACTORS.length,flags:['V2_INPUTS_NOT_AVAILABLE'],state:'NOT_AVAILABLE',total_reason:'V2_INPUTS_NOT_AVAILABLE'};
  const ax=a=>r.axes[a].score;
@@ -313,7 +316,8 @@ function compute({identities=[],publicScreens={},v2Inputs,quotes={},preset,gate=
  const V2=qgvV2(),intended='v2',pub=object(publication)&&object(publication.rows)?publication:null;let inputs=v2Inputs===undefined?(publicScreens&&qgv2Inputs()?publicScreens[qgv2Inputs().FILE]||null:null):v2Inputs;
  const match=pub?inputsMatch(inputs,pub)&&inputs.publication_only!==true:null;if(pub&&!match&&!(inputs&&inputs.publication_only===true))inputs=pubRecords(pub);if(pub)quotes={};
  const chosen=!pub&&preset&&Object.hasOwn(V2.PRESETS,preset)?preset:V2.DEFAULT_PRESET,gateOn=pub||gate===null||gate===undefined?V2.GATE_DEFAULT:Boolean(gate),personalGate=gate===null||gate===undefined?V2.GATE_DEFAULT:Boolean(gate);
- const codeFor=codeIndex(inputs);
+ // Publication path: a TARGET identity whose TARGET key is CALC_VERSION_MISMATCH reads its Universe code (the published representative).
+ const codeFor=codeIndex(inputs,pub?k=>Object.hasOwn(pub.rows,k)&&pub.rows[k].total_reason==='CALC_VERSION_MISMATCH':undefined);
  const cyclicalBasis={};if(!pub)try{const engine=globalThis.PlaybookEngine,cfg=globalThis.PlaybookConfigDefaults;if(engine?.classifyTypesV0&&cfg&&inputs?.records){const symbols={};for(const c of identities){const code=codeFor(c);if(code)symbols[code]=c.ticker;}for(const[code,r]of Object.entries(inputs.records)){const symbol=symbols[code]||symbolOf(code),group=engine.sectorFor?.(cfg,symbol,null,r.sic);cyclicalBasis[code]=engine.classifyTypesV0(cfg,{sic:r.sic,sector_subgroup:group?.sector??null,revenue_volatility_5y_rank_pct:finite(r.metrics?.revenue_volatility_5y_rank_pct)?r.metrics.revenue_volatility_5y_rank_pct/100:null}).cyclical?.member===true;}}}catch(_){}
  // A file this page cannot read: SCHEMA_NEWER (a newer data format; reload) is told apart from a missing file (Qgv2Inputs.lastReason).
  const newer=!inputs&&(()=>{try{return qgv2Inputs().lastReason?.()==='SCHEMA_NEWER';}catch(_){return false;}})();
@@ -367,11 +371,16 @@ function compute({identities=[],publicScreens={},v2Inputs,quotes={},preset,gate=
  // The other codes of a placed issuer point to its seat (rank_row: official; personal_rank_row: personal).
  const pointTo=(list,placed,field)=>{for(const r of list){const s=seatOf(r);if(s&&s!==r&&placed(s))r[field]=s.code;}};
  if(pub){const held=new Map();
-  // The publication's own places (one per CIK, D-CV8/9): each on the seat of its key, when the seat shows the same kind of total
-  // (D11: a ranked row has a V score, a QG reference row has none).
-  for(const[K,t]of Object.entries(pub.rows)){const rk=Number.isInteger(t.rank);if(!rk&&!Number.isInteger(t.qg_reference_order))continue;const s=seat(t.cik,K);
-   if(!s||!scoredSet.has(s)||finite(s.primary.v)!==rk)continue;held.set(t.cik,s);tieKey.set(s,K);
-   if(rk)s.rank=t.rank;else s.qg_reference={order:t.qg_reference_order,...(qgReference(s.primary)||{reason:'V_INPUTS_NOT_AVAILABLE'})};}
+  /* The publication's own places (one per CIK, D-CV8/9), every one shown once: on the seat of its key when it shows the same kind of
+     total (D11: a ranked row has a V score, a QG reference row has none) — always so when the seat reads that key. A seat that reads
+     another record (the key's row is not on the page, e.g. no TARGET identity) and has no total or the other kind gives the place
+     to the first row of the same CIK and the same kind (key order of the record it reads); with none, the place stays on that seat
+     if it has a total (the old fallback), else on the first row of the CIK with a total. The other codes point to the holder;
+     the personal result uses the same holder. */
+  const fits=(x,rk)=>!!x&&scoredSet.has(x)&&finite(x.primary.v)===rk,ofCik=cik=>inPage.filter(x=>cikOf(x)===cik&&scoredSet.has(x)).sort((a,b)=>byCodeUnit(a.code,b.code));
+  for(const[K,t]of Object.entries(pub.rows)){const rk=Number.isInteger(t.rank);if(!rk&&!Number.isInteger(t.qg_reference_order))continue;const s=seat(t.cik,K),all=fits(s,rk)?[]:ofCik(t.cik);
+   const h=fits(s,rk)?s:all.find(x=>fits(x,rk))||(s&&scoredSet.has(s)?s:all[0]||null);if(!h)continue;held.set(t.cik,h);seats.set(t.cik,h);tieKey.set(h,K);
+   if(rk)h.rank=t.rank;else h.qg_reference={order:t.qg_reference_order,...(qgReference(h.primary)||{reason:'V_INPUTS_NOT_AVAILABLE'})};}
   for(const r of scored){const p=pubOf(r);if(!p||p.rank_row===null)continue;const s=held.get(p.cik);if(s===r)continue;r.rank_row=s?s.code:p.rank_row;}}
  else{const pool=scored.filter(own);ranked=pool.filter(r=>!qgReference(r.primary)).sort(byTotal('primary'));ranked.forEach((r,i)=>{r.rank=i+1;});
   pool.filter(r=>qgReference(r.primary)).sort(byTotal('primary')).forEach((r,i)=>{r.qg_reference={order:i+1,...qgReference(r.primary)};});

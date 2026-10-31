@@ -125,8 +125,9 @@ const EXPLORE_OF={RANKED:'ranked',QG_REFERENCE:'qg',PARTIAL_AXES:'partial',CHECK
 function exploreOf(r){const QS=qgvScores(),s=r.score,g=QS&&QS.exploreGroup?QS.exploreGroup(s):'CHECK_DATA';
  if(s&&!Number.isInteger(s.rank)&&!s.qg_reference&&(g==='QG_REFERENCE'||s.rank_row))return null;return EXPLORE_OF[g]||'check';}
 /* S06 structured sort (owner directive 2026-10-18 §4.4). [id, key, direction (1 asc, -1 desc), [ko, en]]. Keys are numbers or
-   strings from the score rows, never display text. NA is last in both directions; ties: QGV by ticker (= the official rank
-   order), market cap by company_id (M3 rule), others by ticker. Sorting only orders rows: the rank shown is always the official
+   strings from the score rows, never display text. NA is last in both directions; ties: QGV by the place number (rank in the
+   official ranking, QG order in the QG list: the publication's own tie order, total then symbol then key; reversed for low
+   first), then by ticker; market cap by company_id (M3 rule), others by ticker. Sorting only orders rows: the rank shown is always the official
    device rank. 'ticker', 'name' and 'favorites' are the legacy ids that DeviceWatchlist.filter already orders (unchanged).
    Market cap = the M3 cap rank of this device's private Universe read (offered only while that subset is READY). No per-company
    return column exists (spec §19 only), so no return sort is offered. */
@@ -157,8 +158,9 @@ function sortRows(rows,S,id,{deviceRanks=null}={}){
   if(key==='cap'){const m=m3For(deviceRanks,r);return Number.isInteger(m.rank)?m.rank:null;}return null;};
  const tie=key==='cap'?(a,b)=>(a.company_id<b.company_id?-1:a.company_id>b.company_id?1:0):(a,b)=>String(a.ticker).localeCompare(String(b.ticker));
  // Market cap: the M3 rank is 1 = largest, so 'largest first' is rank ascending.
- const m=key==='cap'?-dir:dir,tier=r=>{const x=key==='qgv'?score(r):null;return x&&x.qg_reference&&!Number.isInteger(x.rank)?1:0;},keyed=rows.map(r=>({r,v:value(r),t:tier(r)}));
- keyed.sort((a,b)=>(a.v===null)-(b.v===null)||a.t-b.t||(a.v!==null&&b.v!==null?(typeof a.v==='string'?a.v.localeCompare(b.v):a.v<b.v?-1:a.v>b.v?1:0)*m:0)||tie(a.r,b.r));
+ const m=key==='cap'?-dir:dir,tier=r=>{const x=key==='qgv'?score(r):null;return x&&x.qg_reference&&!Number.isInteger(x.rank)?1:0;};
+ const place=r=>{const x=key==='qgv'?score(r):null;return !x?null:Number.isInteger(x.rank)?x.rank:x.qg_reference&&Number.isInteger(x.qg_reference.order)?x.qg_reference.order:null;},keyed=rows.map(r=>({r,v:value(r),t:tier(r),p:place(r)}));
+ keyed.sort((a,b)=>(a.v===null)-(b.v===null)||a.t-b.t||(a.v!==null&&b.v!==null?(typeof a.v==='string'?a.v.localeCompare(b.v):a.v<b.v?-1:a.v>b.v?1:0)*m:0)||(a.v!==null&&b.v!==null&&a.p!==null&&b.p!==null?(a.p-b.p)*-m:0)||tie(a.r,b.r));
  return keyed.map(x=>x.r);}
 // Analysis population (pooled sec-qgv2 cross-section points), not the screen's identities nor the device market-cap subset.
 function populationOf(publicScreens){const inputs=publicScreens&&publicScreens['sec-qgv2.json'];if(!inputs||!inputs.records||typeof inputs.records!=='object')return null;

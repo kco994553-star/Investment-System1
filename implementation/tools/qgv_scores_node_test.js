@@ -446,9 +446,11 @@ test('S06 sortRows: structured keys, NA last in both directions, ties, official 
   // Legacy ids are ordered by DeviceWatchlist.filter: unchanged here.
   for (const id of ['ticker', 'name', 'favorites']) assert.equal(L.sortRows(rows, S, id), rows);
   assert.deepEqual(L.sortRows(rows, S, 'ticker-desc').map((r) => r.ticker), rows.map((r) => r.ticker).sort((a, b) => b.localeCompare(a)));
-  // QGV ties by ticker in both directions.
-  const tieS = { rows: { a: { rank: 1, primary: { total: 50 } }, b: { rank: 2, primary: { total: 50 } }, c: { rank: null, primary: { total: null } } } }, tieRows = [{ company_id: 'c', ticker: 'AAA' }, { company_id: 'b', ticker: 'BBB' }, { company_id: 'a', ticker: 'ZZZ' }];
-  assert.deepEqual(L.sortRows(tieRows, tieS, 'qgv').map((r) => r.company_id), ['b', 'a', 'c']);assert.deepEqual(L.sortRows(tieRows, tieS, 'qgv-asc').map((r) => r.company_id), ['b', 'a', 'c']);
+  // QGV ties by the place number (the publication's tie order), not the ticker: high first = rank order (#1 'ZZZ' above #2 'BBB'),
+  // low first = its exact reverse; the same in the QG list by QG order. The ticker still orders rows without a place (NA, above).
+  const tieS = { rows: { a: { rank: 1, primary: { total: 50 } }, b: { rank: 2, primary: { total: 50 } }, c: { rank: null, primary: { total: null } }, d: { rank: null, qg_reference: { order: 1 }, primary: { total: 40 } }, e: { rank: null, qg_reference: { order: 2 }, primary: { total: 40 } } } };
+  const tieRows = [{ company_id: 'c', ticker: 'AAA' }, { company_id: 'b', ticker: 'BBB' }, { company_id: 'a', ticker: 'ZZZ' }, { company_id: 'e', ticker: 'CCC' }, { company_id: 'd', ticker: 'YYY' }];
+  assert.deepEqual(L.sortRows(tieRows, tieS, 'qgv').map((r) => r.company_id), ['a', 'b', 'd', 'e', 'c']);assert.deepEqual(L.sortRows(tieRows, tieS, 'qgv-asc').map((r) => r.company_id), ['b', 'a', 'e', 'd', 'c']);
   // Market cap: M3 rank (1 = largest), ties by company_id, NA last; unavailable without the device subset.
   const ranksM3 = { state: 'READY', entries: new Map([['id:nvda', { state: 'READY', rank: 1, reason_codes: [] }], ['id:amd', { state: 'READY', rank: 2, reason_codes: [] }], ['id:asml', { state: 'READY', rank: 2, reason_codes: [] }]]) };
   const cap = L.sortRows(rows, S, 'cap-desc', { deviceRanks: ranksM3 }).map((r) => r.company_id);assert.deepEqual(cap.slice(0, 3), ['nvda', 'amd', 'asml']);
@@ -762,6 +764,55 @@ test('ties: equal totals are ordered by the key\'s symbol (\'.\' -> \'-\'), then
   const m = pubPage(more, ids, { weights: V2.officialWeights(), typeWeights: true, gate: true }), at = (k) => QS.rowOf(m, k).personal_rank;
   assert.deepEqual([at('NASDAQ:AB-C'), at('NYSE:AB.C'), at('NYSE:AB-D')], [at('NASDAQ:AB-C'), at('NASDAQ:AB-C') + 1, at('NASDAQ:AB-C') + 2], 'symbol AB-C (key NASDAQ < NYSE), then AB-D');
 });
+const TARGET_IDS = () => { const QO = require(path.join(W, 'qgv-official.js')); return Object.keys(QO.TARGET_TICKERS).map((id) => ({ company_id: id, ticker: QO.TARGET_TICKERS[id] })); };
+test('every valid publication vector: S06 ranked / QG counts and chips == the publication, with the TARGET identities on the page (as app.js registers them) and without (catalog unreadable)', async () => {
+  const OV = JSON.parse(fs.readFileSync(path.join(__dirname, '../tests/fixtures/qgv_official_vectors_v1.json'), 'utf8')), V2 = globalThis.QgvV2, chip = (x) => L.exploreOf({ score: x });
+  const ids = OV.cases.filter((c) => c.id.endsWith('_valid')).map((c) => c.id);assert.ok(ids.includes('target_calc_mismatch_valid') && ids.includes('target_for_two_share_classes_valid') && ids.length >= 20, 'the valid vectors');
+  for (const id of ids) {
+    const pub = await validatedCase(id), want = [Object.values(pub.rows).filter((x) => Number.isInteger(x.rank)).length, Object.values(pub.rows).filter((x) => Number.isInteger(x.qg_reference_order)).length];
+    for (const targets of [true, false]) {
+      const r = QS.officialPage({}, { publication: pub, v2Inputs: null, identities: targets ? TARGET_IDS() : [] }), c = r.computed, uni = Object.values(c.rows).filter((x) => x.universe_code), at = id + (targets ? ' (TARGET identities)' : ' (no TARGET identity)');
+      assert.deepEqual([placedCount(c, 'rank'), placedCount(c, 'qg')], want, at + ': ranked / QG list == the publication');
+      assert.deepEqual([uni.filter((x) => chip(x) === 'ranked').length, uni.filter((x) => chip(x) === 'qg').length], want, at + ': S06 chips == the publication');
+      assert.deepEqual(uni.map((x) => x.rank).filter(Number.isInteger).sort((a, b) => a - b), Array.from({ length: want[0] }, (_, i) => i + 1), at + ': every published rank once');
+      // With the TARGET identities on the page every place is on a row that reads its key: the personal result with the official
+      // weights gives every row the published place. (Without them a holder may read another record of the issuer; see below.)
+      if (targets) { const o = QS.compute({ identities: r.identities, v2Inputs: null, publication: pub, official: r.official, weights: V2.officialWeights(), typeWeights: true, gate: true });
+        for (const [cid, x] of Object.entries(o.rows)) { assert.equal(x.personal_rank, c.rows[cid].rank, at + ' ' + cid + ' personal rank');assert.equal(x.personal_qg_reference ? x.personal_qg_reference.order : null, c.rows[cid].qg_reference ? c.rows[cid].qg_reference.order : null, at + ' ' + cid + ' personal QG order'); } }
+    }
+  }
+});
+test('CALC_VERSION_MISMATCH TARGET (publication path only): the TARGET identity reads its Universe code, the published representative NASDAQ:AMD, and shows its rank; the device codeIndex is unchanged', async () => {
+  const pub = await validatedCase('target_calc_mismatch_valid'), a = pub.rows['NASDAQ:AMD'];
+  assert.deepEqual([pub.rows['TARGET:amd'].state, pub.rows['TARGET:amd'].total_reason, a.rank_row], ['LIVE', 'CALC_VERSION_MISMATCH', 'NASDAQ:AMD']);assert.ok(Number.isInteger(a.rank), 'NASDAQ:AMD is the ranked representative');
+  const r = QS.officialPage({}, { publication: pub, v2Inputs: null, identities: TARGET_IDS() }), amd = r.computed.rows.amd;
+  assert.deepEqual([amd.code, amd.universe_code, amd.rank, amd.primary.total, amd.primary.v], ['NASDAQ:AMD', 'NASDAQ:AMD', a.rank, a.total, a.axes.V.score], 'the amd row shows the published NASDAQ:AMD row and its rank');
+  assert.equal(QS.rowOf(r.computed, 'NASDAQ:AMD'), amd, 'one row for the security (D12)');assert.equal(r.computed.official.ranked, pub.coverage.ranked);
+  // Without a publication (device path / any other codeIndex caller) a TARGET row with data still stands for its identity.
+  const view = { records: Object.fromEntries(Object.entries(pub.rows).map(([k, x]) => [k, { cik: x.cik, state: x.state, calc_version_mismatch: x.total_reason === 'CALC_VERSION_MISMATCH' }])) };
+  assert.equal(QS.compute({ identities: [{ company_id: 'amd', ticker: 'AMD' }], v2Inputs: view, quotes: {} }).rows.amd.code, 'TARGET:amd', 'device path unchanged');
+});
+test('TARGET representative not on the page, D12 seat of the other kind (target_for_two_share_classes_valid as published): the place goes to the same-CIK row of the same kind (GOOG), never dropped', async () => {
+  const pub = await validatedCase('target_for_two_share_classes_valid'), t = pub.rows['TARGET:googl'];
+  const c = pubPage(pub), goog = QS.rowOf(c, 'NASDAQ:GOOG'), googl = QS.rowOf(c, 'NASDAQ:GOOGL');
+  assert.ok(Number.isInteger(t.rank) && googl.primary.v === null && Number.isFinite(goog.primary.v), 'the D12 seat GOOGL has no V, GOOG has one');
+  assert.deepEqual([goog.rank, goog.rank_row], [t.rank, undefined], 'GOOG (same CIK, ranked kind) holds the TARGET place');
+  assert.deepEqual([googl.rank, googl.qg_reference, googl.rank_row, L.exploreOf({ score: googl })], [null, null, 'NASDAQ:GOOG', null], 'GOOGL points to GOOG and is in no list');
+  assert.deepEqual([placedCount(c, 'rank'), placedCount(c, 'qg')], [pub.coverage.ranked, pub.coverage.qg_reference], 'counts == the publication');
+  const p = pubPage(pub, [], { weights: globalThis.QgvV2.officialWeights(), typeWeights: true, gate: true });
+  assert.ok(Number.isInteger(QS.rowOf(p, 'NASDAQ:GOOG').personal_rank));assert.deepEqual([QS.rowOf(p, 'NASDAQ:GOOGL').personal_rank, QS.rowOf(p, 'NASDAQ:GOOGL').personal_rank_row], [null, 'NASDAQ:GOOG'], 'personal: the same holder');
+});
+test('S06 QGV sort: equal totals follow the place numbers (rank, then QG order; reversed for low first), so the table order equals the rank numbers', async () => {
+  const pub = await validatedCase('tie_dot_symbols_valid'), ids = [...TARGET_IDS(), { company_id: 'NYSE:AB.C', ticker: 'AB.C' }, { company_id: 'NYSE:Q.R.S', ticker: 'Q.R.S' }];
+  const r = QS.officialPage({}, { publication: pub, v2Inputs: null, identities: ids }), c = r.computed, rows = r.identities.filter((x) => r.official.universe[x.company_id]).map((x) => ({ company_id: x.company_id, ticker: x.ticker }));
+  const placeOf = (x) => { const s = c.rows[x.company_id];return Number.isInteger(s.rank) ? [0, s.rank] : s.qg_reference ? [1, s.qg_reference.order] : null; };
+  const head = (id) => L.sortRows(rows, c, id).map(placeOf).filter(Boolean), n = Object.values(c.rows).filter((x) => Number.isInteger(x.rank) || x.qg_reference).length;
+  const desc = head('qgv'), asc = head('qgv-asc'), byTier = (a, t) => a.filter((x) => x[0] === t).map((x) => x[1]);
+  assert.equal(desc.length, n);assert.deepEqual(byTier(desc, 0), byTier(desc, 0).slice().sort((x, y) => x - y), 'QGV high first: ranks 1..N in order, ties included (AB.C #1 above AB-D #2)');
+  assert.deepEqual(byTier(desc, 1), byTier(desc, 1).slice().sort((x, y) => x - y), 'then the QG list in its order');
+  assert.deepEqual(byTier(asc, 0), byTier(desc, 0).slice().reverse(), 'QGV low first: the exact reverse of the rank order');assert.deepEqual(byTier(asc, 1), byTier(desc, 1).slice().reverse());
+  const t = L.sortRows(rows, c, 'qgv').map((x) => x.company_id);assert.ok(t.indexOf('NYSE:AB.C') < t.indexOf('NYSE:AB-D') && t.indexOf('NYSE:Q.R.S') < t.indexOf('NYSE:Q.R-T'), 'the tied pairs in rank order');
+});
 
 test('officialPage: only a QgvOfficial-validated publication; without one the price-free Q·G rows, every V NA with the OFFICIAL_* reason, Q·G totals in the QG reference list', async () => {
   const inputs = screens[SQ.FILE], { pub } = await publicationOf();
@@ -777,7 +828,7 @@ test('officialPage: only a QgvOfficial-validated publication; without one the pr
     assert.ok(general.length > 0 && general.every((x) => placed(x) || (x.rank_row && placed(seatOf(x)) && x.qg_reference === null && x.rank === null)), want + ': Q·G totals in the QG reference list (one place per CIK)');
     assert.deepEqual(rows.filter((x) => x.rank_row).map((x) => [x.company_id, x.rank_row]), [['NASDAQ:GOOG', 'TARGET:googl']], want + ': the second share class points to the representative TARGET row');
     const ciks = rows.filter(placed).map((x) => inputs.records[x.code].cik).filter(Boolean);assert.equal(new Set(ciks).size, ciks.length, want + ': one QG place per CIK');
-    assert.ok(general.some((x) => x.qg_reference.reason === want), want + ' is the V reason'); assert.doesNotMatch(JSON.stringify(r.computed), /NO_DEVICE_PRICE|PRICE_HISTORY_NOT_AVAILABLE/);
+    assert.ok(general.some((x) => x.qg_reference && x.qg_reference.reason === want), want + ' is the V reason'); assert.doesNotMatch(JSON.stringify(r.computed), /NO_DEVICE_PRICE|PRICE_HISTORY_NOT_AVAILABLE/);
   }
   assert.equal(QS.officialPage({}, { publication: null, v2Inputs: null }), null);
   assert.equal(QS.officialPage({}, { publication: null, v2Inputs: inputs, identities }), QS.officialPage({}, { publication: null, v2Inputs: inputs, identities }), 'memoized');
