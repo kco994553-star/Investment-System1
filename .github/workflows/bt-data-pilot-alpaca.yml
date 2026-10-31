@@ -1,0 +1,33 @@
+# Owner approved 2026-10-31: one bounded private-data probe; no merge/deploy.
+name: BT-DATA-PILOT v0.6 Alpaca bounded private probe
+on:
+  push:
+    branches: [research/bt-data-pilot-alpaca-probe-20261031]
+    paths:
+      - .github/workflows/bt-data-pilot-alpaca.yml
+permissions:
+  contents: read
+concurrency:
+  group: bt-data-pilot-v06-alpaca-probe
+  cancel-in-progress: false
+jobs:
+  private-probe:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify isolated probe without credentials
+        run: python -m unittest discover -s implementation/experiments/bt-data-pilot-v06 -p test_github_alpaca_probe.py -v
+      - name: Bounded data query and private archive roundtrip
+        env:
+          APCA_API_KEY_ID: ${{ secrets.APCA_API_KEY_ID }}
+          APCA_API_SECRET_KEY: ${{ secrets.APCA_API_SECRET_KEY }}
+          RAW_REPO_TOKEN: ${{ secrets.RAW_REPO_TOKEN }}
+        run: |
+          umask 077
+          python implementation/experiments/bt-data-pilot-v06/github_alpaca_probe.py --private-dir "$RUNNER_TEMP/bt-data-pilot-v06"

@@ -1,0 +1,34 @@
+name: BT-DATA-PILOT v0.6 fixed-ten long SIP acquisition
+on:
+  push:
+    branches: [research/bt-data-pilot-alpaca-probe-20261031]
+    paths: [.github/workflows/bt-data-pilot-long.yml]
+permissions:
+  contents: read
+concurrency:
+  group: bt-data-pilot-long
+  cancel-in-progress: false
+jobs:
+  collect:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Collect raw SIP prices into private checkpoints
+        env:
+          APCA_API_KEY_ID: ${{ secrets.APCA_API_KEY_ID }}
+          APCA_API_SECRET_KEY: ${{ secrets.APCA_API_SECRET_KEY }}
+          RAW_REPO_TOKEN: ${{ secrets.RAW_REPO_TOKEN }}
+          GH_TOKEN: ${{ secrets.RAW_REPO_TOKEN }}
+        run: |
+          umask 077
+          for tag in bt-data-pilot-v06-alpaca-41152748825-1 bt-data-pilot-v06-kis-41167550137-1; do
+            mkdir -p "$RUNNER_TEMP/imports/$tag"
+            gh release download "$tag" --repo kco994553-star/investment-system1-raw --pattern 'private-inputs.zip*' --dir "$RUNNER_TEMP/imports/$tag"
+          done
+          python implementation/experiments/bt-data-pilot-v06/long_prices.py --private-dir "$RUNNER_TEMP/long-prices" --imports "$RUNNER_TEMP/imports"
