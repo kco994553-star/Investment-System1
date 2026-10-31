@@ -21,7 +21,7 @@
   g_revenue_growth:['매출 성장','Revenue growth'],g_per_share_growth:['주당 성장','Per-share growth'],g_growth_efficiency:['성장 효율','Growth efficiency'],g_consistency:['성장 일관성','Growth consistency'],g_recent_acceleration:['최근 가속','Recent acceleration'],
   v_earnings_yield:['이익 수익률','Earnings yield'],v_fcf_yield:['FCF 수익률','FCF yield'],v_vs_industry:['업종 대비','vs industry'],v_vs_own_history:['자기 과거 대비','vs own history'],v_expectation_check:['기대 점검','Expectation check']};
  const AXIS={Q:['질','Quality'],G:['성장','Growth'],V:['가치','Value']};
- // How each V factor is formed (qgv-v2.js metrics(); V is computed on this device with its own prices only).
+ // How each V factor is formed (qgv-v2.js metrics(); the official V is computed centrally from IEX last trades, DC-31).
  const V_HOW={v_earnings_yield:['EBIT ÷ EV','EBIT ÷ EV'],v_fcf_yield:['FCF ÷ EV','FCF ÷ EV'],v_vs_industry:['이익 수익률의 업종 안 백분위','Earnings yield percentile within the industry'],
   v_vs_own_history:['지금 주당 EBIT ÷ 가격을 과거 결산 시점과 비교','Current EBIT per share ÷ price vs past fiscal year-ends'],v_expectation_check:['역DCF 내재 성장률 − 실현 3년 매출 성장률','Reverse-DCF implied growth − realised 3-year revenue growth']};
  const qv=()=>root.QgvV2||null,sq=()=>root.SecQgv2||null;

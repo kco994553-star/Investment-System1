@@ -144,6 +144,7 @@ const REASON={
  PRICE_DEPENDENT_NOT_COMPUTABLE:['계산 불가: 가격이 들어가는 값이 성립하지 않아 중앙 계산에서 값이 없습니다','Not computable: a price-dependent value did not hold in the central calculation'],
  OFFICIAL_MONTH_END_NOT_AVAILABLE:['일부 자료 부족: 중앙 게시본에 그 해의 월말 IEX 체결가가 없습니다','Some data missing: no IEX month-end trade for those years in the central publication'],
  V_HISTORY_NOT_PUBLISHED:['V 이력 없음: 중앙 V 이력은 게시되지 않았고 기기 V 이력은 쓰지 않습니다','No V history: the central V history is not published and no device V history is used'],
+ OFFICIAL_LOADING:['공식 V 확인 중: 중앙 V 게시본을 읽는 중입니다','Official V pending: the central V publication is being read'],
  OFFICIAL_NOT_PUBLISHED:['공식 V 없음: 중앙 V 게시본이 아직 없습니다','No official V: no central V publication yet'],
  OFFICIAL_INVALID:['공식 V 없음: 중앙 V 게시본 검증 실패','No official V: the central V publication did not validate'],
  OFFICIAL_UNAVAILABLE:['공식 V 없음: 중앙 V 게시본을 읽지 못했습니다','No official V: the central V publication could not be read'],
@@ -152,7 +153,7 @@ const REASON={
 // Missing-factor reason -> data state of the row ('PARTIAL' when not listed).
 const CATEGORY={NOT_APPLICABLE_PROFILE:'NOT_APPLICABLE',FINANCIAL_PROFILE_V_NOT_DEFINED:'NOT_APPLICABLE',NORMALIZED_HISTORY_NOT_AVAILABLE:'NOT_APPLICABLE',NO_DEVICE_PRICE:'PRICE_NEEDED',PRICE_HISTORY_NOT_AVAILABLE:'PRICE_NEEDED',
  PRICE_IDENTITY_CONFLICT:'IDENTITY_STOPPED',IDENTITY_CONFLICT_WITHDRAWN:'IDENTITY_STOPPED',CALC_VERSION_MISMATCH:'CALC_VERSION',ROW_NOT_AVAILABLE:'SOURCE_MISSING',SOURCE_NOT_AVAILABLE:'SOURCE_MISSING',
- ...Object.fromEntries(['NO_IEX_TRADE','ODD_LOT_ONLY','PRICE_SYMBOL_UNMAPPED','ADR_RATIO_UNCONFIRMED','SPLIT_AFTER_SHARE_COUNT','OFFICIAL_NOT_PUBLISHED','OFFICIAL_INVALID','OFFICIAL_UNAVAILABLE'].map(c=>[c,'CENTRAL_V_MISSING']))};
+ ...Object.fromEntries(['NO_IEX_TRADE','ODD_LOT_ONLY','PRICE_SYMBOL_UNMAPPED','ADR_RATIO_UNCONFIRMED','SPLIT_AFTER_SHARE_COUNT','OFFICIAL_LOADING','OFFICIAL_NOT_PUBLISHED','OFFICIAL_INVALID','OFFICIAL_UNAVAILABLE'].map(c=>[c,'CENTRAL_V_MISSING']))};
 // Price-free V inputs a V factor needs (v_inputs of sec-qgv2.json), checked so that 'price needed' does not hide a missing input.
 const V_INPUT={ebit:['EBIT','EBIT'],fcf:['FCF','FCF'],total_debt:['총부채','Total debt'],cash:['현금','Cash'],diluted_shares:['희석 주식수','Diluted shares'],ebit_per_share_history:['연도별 EBIT/주(3년 이상)','EBIT/share history (3+ years)'],revenue_cagr_3y:['3년 매출 성장','3-year revenue growth']};
 function reasonText(code,en){return code&&Object.hasOwn(REASON,code)?REASON[code][en?1:0]:(en?'Not calculated':'계산 불가')+(code?' ('+code+')':'');}
@@ -205,7 +206,7 @@ const QG_REFERENCE_LABEL=['QG 참고 목록 (V 미포함)','Q·G reference list 
 const OUTSIDE_UNIVERSE_LABEL=['Universe 밖 TARGET · 공식 순위 대상 아님','TARGET outside the Universe · not in the official ranking'];
 const PORTFOLIO_RANK_LABEL=['포트폴리오 내 순위','Rank within the portfolio'];
 const POPULATION_LABEL=Object.freeze({EVALUATION:['평가 모집단','Evaluation population'],RANK:['순위 모집단','Rank population'],ELIGIBLE:['후보 자격','Candidate eligibility'],FILTER:['화면 필터','Screen filters']});
-const NO_OFFICIAL_RANK=['가격 연결 전: 공식 QGV 순위 없음 · QG 참고 목록 보기','Before prices: no official QGV ranking · see the Q·G reference list'];
+const NO_OFFICIAL_RANK=['공식 V 없음: 공식 QGV 순위 없음 · QG 참고 목록 보기','No official V: no official QGV ranking · see the Q·G reference list'];
 const PERSONAL_V0_LABEL=['개인 설정 결과 (V 비중 0) · 공식 순위 아님','Personal setting result (V weight 0) · not the official ranking'];
 function qgReference(d){if(!d||d.reference_only===true||!finite(d.total)||finite(d.v))return null;const ax=d.coverage&&d.coverage.axes?d.coverage.axes.V:null,f=ax&&Array.isArray(ax.factors)?ax.factors.find(x=>x.score===null&&x.reason):null;
  return{reason:ax&&ax.reason?ax.reason:f?f.reason:d.factors&&d.factors.v_earnings_yield&&d.factors.v_earnings_yield.reason?d.factors.v_earnings_yield.reason:'V_INPUTS_NOT_AVAILABLE'};}
@@ -215,9 +216,10 @@ function qgReference(d){if(!d||d.reference_only===true||!finite(d.total)||finite
 function exploreGroup(row){if(!row||!row.primary)return 'CHECK_DATA';if(row.rank!==null&&row.rank!==undefined)return 'RANKED';const p=row.primary;if(qgReference(p))return 'QG_REFERENCE';return [p.q,p.g,p.v].some(finite)?'PARTIAL_AXES':'CHECK_DATA';}
 /* Cross-screen marks (owner 2026-10-19 'V 일치': the same input, version and settings show the same values and states on every
    screen; tools/v_cross_screen_consistency_browser_test.js). The values a screen shows for one row of a computed result and the
-   Universe read that result was priced from, as data-cx-* attributes. Display only: nothing is computed, stored or sent, and no
-   price, market cap or EV is named. read failure = the last failed re-read after the kept read (PrivateSubsetView.readStatus). */
-function readMarks(basis,win){const b=object(basis)?basis:null;let f='';try{const s=win&&win.PrivateSubsetView&&typeof win.PrivateSubsetView.readStatus==='function'?win.PrivateSubsetView.readStatus():null;f=s&&s.failure&&typeof s.failure.code==='string'?s.failure.code:'';}catch(_){f='';}
+   central publication that result was read from (DC-31: publication id + generation time), as data-cx-* attributes. Display only:
+   nothing is computed, stored or sent, and no price, market cap or EV is named. read failure = the last failed re-read of
+   qgv-official.json after the kept publication (pagePublication().last_attempt_reason). */
+function readMarks(basis,win){const b=object(basis)?basis:null,f=pagePublication().last_attempt_reason||'';
  return{'data-cx-read-id':b&&typeof b.read_id==='string'?b.read_id:'','data-cx-read-at':b&&typeof b.acquired_at==='string'?b.acquired_at:'','data-cx-read-failure':f};}
 function marks(row,basis,win){const p=row&&object(row.primary)?row.primary:null,ax=p&&object(p.coverage)&&object(p.coverage.axes)?p.coverage.axes.V:null,n=v=>finite(v)?String(v):'NA';
  return{'data-cx-v':n(p&&p.v),'data-cx-v-status':ax&&typeof ax.status==='string'?ax.status:'NA','data-cx-v-reason':ax&&typeof ax.reason==='string'?ax.reason:'','data-cx-total':n(p&&p.total),
@@ -488,15 +490,70 @@ function pageResult(win,{v2Inputs,catalog=null,identities=[],preset,gate}={}){
    {}, quote_meta {}, price_basis null, identities, official, reference_key, publication_id, source, v_reason, inputs_match} or null
    (neither a publication nor a readable sec-qgv2.json). */
 const NONE=Object.freeze({});let officialMemo=null;
-function officialPage(win,{publication=null,v2Inputs=null,identities=[],reason=null}={}){
+/* PAGE PUBLICATION (old app, DC-31): the app registers a read-only getter of the qgv-official.json read it made once on open
+   ({publication, reason, promise, last_attempt_reason}: the validated payload, or null with OFFICIAL_NOT_PUBLISHED /
+   OFFICIAL_INVALID / OFFICIAL_UNAVAILABLE). While the first read is pending (neither a payload nor a reason) the reason is
+   OFFICIAL_LOADING ('확인 중'), never 'not published'. A failed re-read keeps the last validated payload (the app does that) and
+   reports last_attempt_reason. officialPage() without publication/reason reads it, so every screen shows the same one. */
+let publicationOf=null;
+function setPagePublication(getter){publicationOf=typeof getter==='function'?getter:null;}
+// data-cx read marks of the shown scores: the registered publication (id + generation time); null without one.
+function publicationBasis(){const p=pagePublication().publication;return p?{read_id:p.publication_id,acquired_at:p.times.generated_at}:null;}
+function rawPublication(){try{return publicationOf?publicationOf():null;}catch(_){return null;}}
+function pagePublication(){const p=rawPublication(),pub=object(p)&&object(p.publication)?p.publication:null,why=object(p)&&typeof p.reason==='string'?p.reason:null;
+ return Object.freeze({publication:pub,reason:pub?null:why||(publicationOf?'OFFICIAL_LOADING':null),last_attempt_reason:object(p)&&typeof p.last_attempt_reason==='string'?p.last_attempt_reason:null});}
+// Resolves once the registered read settled (at once without a registered read); never rejects.
+function pagePublicationReady(){const p=rawPublication();return object(p)&&p.promise&&typeof p.promise.then==='function'?p.promise.then(()=>undefined,()=>undefined):Promise.resolve();}
+function officialPage(win,opts={}){
+ const own=object(opts)&&(Object.hasOwn(opts,'publication')||Object.hasOwn(opts,'reason')),R=own?null:pagePublication();
+ const{v2Inputs=null,identities=[]}=object(opts)?opts:{},publication=own?opts.publication||null:R.publication,reason=own?opts.reason||null:R.reason;
  let QO=null;try{QO=qgvOfficial();}catch(_){QO=null;}const pub=publication&&QO&&typeof QO.state==='function'&&QO.state(publication)==='OFFICIAL'?publication:null;
- const vr=pub?null:publication?'OFFICIAL_INVALID':['OFFICIAL_NOT_PUBLISHED','OFFICIAL_INVALID','OFFICIAL_UNAVAILABLE'].includes(reason)?reason:'OFFICIAL_NOT_PUBLISHED';
+ const vr=pub?null:publication?'OFFICIAL_INVALID':['OFFICIAL_LOADING','OFFICIAL_NOT_PUBLISHED','OFFICIAL_INVALID','OFFICIAL_UNAVAILABLE'].includes(reason)?reason:'OFFICIAL_NOT_PUBLISHED';
  const match=pub?inputsMatch(v2Inputs,pub):null,base=pub&&!match?pubRecords(pub):v2Inputs;if(!base||!object(base.records))return null;
  const ids=pageIdentityList(base,identities),refs=pageReferences(),k=JSON.stringify([pub?pub.publication_id:null,vr,ids,refs]);
  if(officialMemo&&officialMemo.pub===pub&&officialMemo.inputs===v2Inputs&&officialMemo.key===k)return officialMemo.value;
  const U=universeIdentities(base,ids),computed=compute({identities:U.identities,v2Inputs:base,quotes:NONE,referenceRows:refs,official:U,...(pub?{publication:pub}:{vMissing:vr})});
  const value=Object.freeze({computed,quotes:NONE,quote_meta:NONE,price_basis:null,identities:U.identities,official:U,reference_key:JSON.stringify(refs),publication_id:pub?pub.publication_id:null,source:pub?'PUBLICATION':'NONE',v_reason:vr,inputs_match:match});
  officialMemo={pub,inputs:v2Inputs,key:k,value};return value;}
+/* PRESET VIEW (old app S06, DC-31): an officialPage result seen under the registered S06 preset/gate (pageProfile). The official
+   default profile (balanced, gate on) is the page's own computed result; any other preset or the gate toggled is the personal
+   recompute from the published factor scores (compute({publication, weights: QgvV2.officialWeights(preset), gate})) shown in
+   the official slots (primary, rank, qg_reference) with profile {preset, gate, id 'qgv-v2/<preset>/gate-<on|off>'}, so provenance
+   calls it 개인 프리셋 and never the official ranking. Without a publication the same over the price-free Q·G compute (every V NA
+   with the page's reason). Memoized per page result and setting. RAM only. */
+let presetMemo=null;
+function presetView(P,{v2Inputs}={}){if(!object(P)||!object(P.computed))return null;const V2=qgvV2(),pp=pageProfile(),pr=pp.preset&&Object.hasOwn(V2.PRESETS,pp.preset)?pp.preset:V2.DEFAULT_PRESET,gate=typeof pp.gate==='boolean'?pp.gate:V2.GATE_DEFAULT;
+ if(pr===V2.DEFAULT_PRESET&&gate===V2.GATE_DEFAULT)return P.computed;
+ if(presetMemo&&presetMemo.P===P&&presetMemo.pr===pr&&presetMemo.gate===gate)return presetMemo.S;
+ const pub=P.source==='PUBLICATION'?pagePublication().publication:null;let refs={};try{refs=JSON.parse(P.reference_key);}catch(_){refs={};}
+ const out=compute({identities:P.identities,v2Inputs:v2Inputs||undefined,quotes:NONE,referenceRows:refs,official:P.official,gate,weights:V2.officialWeights(pr),typeWeights:true,...(pub?{publication:pub}:{vMissing:P.v_reason})});
+ const profile={preset:pr,gate,id:V2.VERSION+'/'+pr+'/gate-'+(gate?'on':'off'),name:V2.PRESETS[pr],type_scope:out.profile.type_scope},rows={};
+ for(const[k,r]of Object.entries(out.rows)){const d={...r.personal,profile};rows[k]={...r,primary:d,v2:d,rank:r.personal_rank,qg_reference:r.personal_qg_reference,rank_row:r.personal_rank_row||null};}
+ const S=Object.freeze({...out,rows,profile,preset_view:true});presetMemo={P,pr,gate,S};return S;}
+/* CENTRAL BASIS (display only, DC-31; the web_app qgv.js centralBasis twin without the status file): the publication's price basis
+   day, generation and verification times, publication_id and calc_version; sessions = completed New York sessions after the basis
+   day (QgvOfficial.sessionsAfter), stale = more than FRESH_SESSIONS (null: not countable); calc_differs = the loaded sec-qgv2.json
+   declares another calc_version (null: unknown); reason = why there is no official V; attribution = the IEX text and terms link
+   the publication carries (IEX HIST terms clause 01, DC-29). No price. */
+const CENTRAL_LABEL=['공식 V · 중앙 게시 · IEX 마지막 체결가 기준(공식 종가 아님)','Official V · published centrally · IEX last trade (not an official close)'];
+function centralBasis(publication,{reason=null,v2Inputs=null,attempt}={}){let QO=null;try{QO=qgvOfficial();}catch(_){QO=null;}
+ const pub=publication&&QO&&typeof QO.state==='function'&&QO.state(publication)==='OFFICIAL'?publication:null;
+ if(!pub)return Object.freeze({kind:'CENTRAL_IEX',reason:publication?'OFFICIAL_INVALID':reason||'OFFICIAL_NOT_PUBLISHED',price_basis_date:null,generated_at:null,verified_at:null,publication_id:null,calc_version:null,sessions:null,stale:null,calc_differs:null,attribution:null});
+ let sessions=null;try{const ny=QO.nyNow();sessions=ny?QO.sessionsAfter(pub.times.price_basis_date,ny.date,!(ny.minutes<QO.CLOSE_MINUTES)):null;}catch(_){sessions=null;}
+ const own=v2Inputs&&typeof v2Inputs.calc_version==='string'?v2Inputs.calc_version:null;
+ return Object.freeze({kind:'CENTRAL_IEX',reason:null,price_basis_date:pub.times.price_basis_date,generated_at:pub.times.generated_at,verified_at:pub.times.verified_at,publication_id:pub.publication_id,calc_version:pub.calc_version,
+  sessions,stale:sessions===null?null:sessions>QO.FRESH_SESSIONS,calc_differs:own===null?null:own!==pub.calc_version,last_attempt_reason:attempt!==undefined?attempt||null:pagePublication().publication===pub?pagePublication().last_attempt_reason:null,attribution:Object.freeze({text:pub.attribution.text,terms_url:pub.attribution.terms_url})});}
+const stampOf=x=>typeof x==='string'&&/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(x)?x.slice(0,10)+' '+x.slice(11,16)+' UTC':'NA';
+// '공식 V · 중앙 게시 · IEX 마지막 체결가 기준(공식 종가 아님) · 가격 기준일 2026-10-13 · 게시 2026-10-13 22:40 UTC (· STALE) (· 계산 버전 다름)';
+// without a publication: '공식 V 없음: 중앙 V 게시본이 아직 없습니다' (the reason in words; never a device V).
+function centralText(b,en){if(!object(b))return reasonText('OFFICIAL_NOT_PUBLISHED',en);if(!b.publication_id)return reasonText(b.reason||'OFFICIAL_NOT_PUBLISHED',en);
+ return CENTRAL_LABEL[en?1:0]+(en?' · price basis day ':' · 가격 기준일 ')+b.price_basis_date+(en?' · published ':' · 게시 ')+stampOf(b.generated_at)+(b.stale===true?' · STALE':b.stale===null?(en?' · STALE undetermined':' · STALE 판정 불가'):'')+(b.calc_differs===true?(en?' · calculation version differs':' · 계산 버전 다름'):'')+(b.last_attempt_reason?(en?' · latest re-read failed (':' · 다시 읽기 실패(')+b.last_attempt_reason+(en?'), last publication shown':') · 마지막 게시본 표시'):'');}
+const attr=v=>String(v).replace(/[&"<>']/g,c=>({'&':'&amp;','"':'&quot;','<':'&lt;','>':'&gt;',"'":'&#39;'})[c]);
+/* The basis line plus, with a publication, the IEX attribution text and its terms link (opens apart, no referrer). data-central-*
+   attributes for tests: publication id, state (OK / STALE / NA). */
+function centralHtml(b,en){const t=centralText(b,en),pub=object(b)&&b.publication_id,st=!pub?'NA':b.stale===true?'STALE':'OK';
+ return '<p class="small" data-central-basis="'+attr(pub?b.publication_id:'')+'" data-central-state="'+st+'"'+(pub?'':' data-na="'+attr(b&&b.reason||'OFFICIAL_NOT_PUBLISHED')+'"')+'>'+attr(t)+'</p>'
+  +(pub&&b.attribution?'<p class="small" data-attribution>'+attr(b.attribution.text)+' <a href="'+attr(b.attribution.terms_url)+'" target="_blank" rel="noopener noreferrer">'+(en?'IEX terms':'IEX 약관')+'</a></p>':'');}
 /* V coverage counts of one pageResult (the V coverage panel; owner 2026-10-18). Read only from the engine's rows: V = a finite
    axis score, reasons = coverageFor's V axis reason (+ the missing factors' own reasons), input-complete = coverageFor
    v_inputs_missing; no new required input. Financials (FINANCIAL_PROFILE_V_NOT_DEFINED) are their own population, never a
@@ -680,5 +737,5 @@ function label(version,en){return(LABEL[version]||LABEL.v2)[en?1:0];}
 // (+ ' · 유형 범위 qgv2-type-scope/…' = the type-application scope id the scores use).
 function basisText(S,en){const b=S&&S.basis?S.basis:basis('v2',false);return label('v2',en)+' · '+(en?b.label_en:b.label)+(b.since?(en?' · since ':' · ')+b.since+(en?'':'부터'):'')+(b.type_scope?(en?' · type scope ':' · 유형 범위 ')+b.type_scope:'');}
 function presets(){return qgvV2().PRESETS;}
-return Object.freeze({RANK_LABEL,provenance,provenanceText,provenanceAttrs,provenanceAttrHtml,rankLabel,OUTSIDE_UNIVERSE_LABEL,PORTFOLIO_RANK_LABEL,POPULATION_LABEL,universeIdentities,rowOf,codeRow,setPageReferences,modelPortfolios,officialModel,MODEL_NS,MODEL_PRIMARY,MODEL_RULES,MODEL_LABEL,MODES,LABEL,PERSONAL_LABEL,PERSONAL_V0_LABEL,QG_REFERENCE_LABEL,NO_OFFICIAL_RANK,qgReference,FLAG,DATA_STATE,AXIS_STATUS,REASON,coverageFor,exploreGroup,reasonText,stateText,axisStatusText,vInputText,scoringDefault,compute,typeMemberships,judgmentRows,collectQuotes,pageResult,officialPage,PRICE_STATUS_REASONS,setPageIdentities,setPageProfile,pageProfile,isCurrent,vCoverage,V_TARGET_SHARE,summaryText,naText,flagText,label,basis,basisText,presets,symbolOf,LIMITS_16,TIERS_RC,limits16,sectorName,pageReferences,marks,readMarks,markAttrs});
+return Object.freeze({RANK_LABEL,provenance,provenanceText,provenanceAttrs,provenanceAttrHtml,rankLabel,OUTSIDE_UNIVERSE_LABEL,PORTFOLIO_RANK_LABEL,POPULATION_LABEL,universeIdentities,rowOf,codeRow,setPageReferences,modelPortfolios,officialModel,MODEL_NS,MODEL_PRIMARY,MODEL_RULES,MODEL_LABEL,MODES,LABEL,PERSONAL_LABEL,PERSONAL_V0_LABEL,QG_REFERENCE_LABEL,NO_OFFICIAL_RANK,qgReference,FLAG,DATA_STATE,AXIS_STATUS,REASON,coverageFor,exploreGroup,reasonText,stateText,axisStatusText,vInputText,scoringDefault,compute,typeMemberships,judgmentRows,collectQuotes,pageResult,officialPage,setPagePublication,pagePublication,pagePublicationReady,publicationBasis,presetView,centralBasis,centralText,centralHtml,CENTRAL_LABEL,PRICE_STATUS_REASONS,setPageIdentities,setPageProfile,pageProfile,isCurrent,vCoverage,V_TARGET_SHARE,summaryText,naText,flagText,label,basis,basisText,presets,symbolOf,LIMITS_16,TIERS_RC,limits16,sectorName,pageReferences,marks,readMarks,markAttrs});
 });

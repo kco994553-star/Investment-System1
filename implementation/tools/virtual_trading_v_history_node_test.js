@@ -27,8 +27,10 @@ test('same key and schema as the runner reader', () => {
   const s = memory();
   assert.equal(rec(s, '2026-10-19', { msft: 55.123, googl: 40 }).state, 'RECORDED');
   assert.deepEqual(stored(s), { schema: 'virtual-trading-v-scores/2', scores: { '2026-10-19': { googl: 40, msft: 55.12 } }, composition: { '2026-10-19': { googl: K, msft: K } } });
-  assert.deepEqual(R.readVStore(s), { '2026-10-19': { googl: 40, msft: 55.12 } });
-  assert.deepEqual(R.readVComposition(s), { '2026-10-19': { googl: K, msft: K } });
+  assert.deepEqual(H.readStore(s).scores, { '2026-10-19': { googl: 40, msft: 55.12 } });
+  assert.deepEqual(H.readStore(s).composition, { '2026-10-19': { googl: K, msft: K } });
+  // DC-31: the runner no longer reads this store (no screen captures; the module goes with the cleanup PR after 11/16).
+  assert.deepEqual(R.readVStore(s), {});assert.deepEqual(R.readVComposition(s), {});
 });
 
 test('a V without its composition key is not stored; /1 entries are kept with an unknown composition and upgraded on write', () => {
@@ -37,12 +39,12 @@ test('a V without its composition key is not stored; /1 entries are kept with an
   assert.equal(H.record(s, '2026-10-19', { msft: 55 }, { msft: 'Not A Key' }).reason, 'UNCHANGED');
   assert.equal(s.writes.length, 0);
   const old = memory({ [H.KEY]: JSON.stringify({ schema: 'virtual-trading-v-scores/1', scores: { '2026-10-19': { msft: 50 } } }) });
-  assert.deepEqual(R.readVStore(old), { '2026-10-19': { msft: 50 } });
-  assert.deepEqual(R.readVComposition(old), {}, '/1 → composition unknown');
+  assert.deepEqual(H.readStore(old).scores, { '2026-10-19': { msft: 50 } });
+  assert.deepEqual(H.readStore(old).composition, {}, '/1 → composition unknown');
   assert.equal(rec(old, '2026-10-20', { msft: 51 }).state, 'RECORDED');
   assert.deepEqual(stored(old), { schema: 'virtual-trading-v-scores/2', scores: { '2026-10-19': { msft: 50 }, '2026-10-20': { msft: 51 } }, composition: { '2026-10-20': { msft: K } } });
   // The engine compares only equal compositions: the /1 day cannot anchor a slope.
-  assert.deepEqual(R.vCompositionFromStore(R.readVComposition(old)), { '2026-10-20': { msft: K } });
+  assert.deepEqual(R.vCompositionFromStore(H.readStore(old).composition), { '2026-10-20': { msft: K } });
 });
 
 test('append-only: an existing value is never overwritten, a new company on the same date is added', () => {
@@ -109,13 +111,13 @@ test('capture (PLAYBOOK_V1 §13-1): V below the condition is NA and never stored
   const kept = stored(storage);
   assert.deepEqual(kept.scores['2026-11-30'], v.expected.v_scores);assert.deepEqual(kept.composition['2026-11-30'], v.expected.v_composition);
   assert.ok(!Object.hasOwn(kept.scores['2026-11-30'], 'amzn'), 'nothing stored for an NA V');
-  // A V recorded with its composition reaches every READY ledger input (scores + composition).
+  // An existing date/company value is never overwritten (msft keeps 61.5); the other companies are appended.
   storage.removeItem(H.KEY);storage.writes.length = 0;
   rec(storage, '2026-11-30', { msft: 61.5 });
   const fed = await H.capture(view, assembled);
-  // An existing date/company value is never overwritten (msft keeps 61.5); the other companies are appended.
-  assert.deepEqual(fed.result.ledgers.SET_A.input.v_scores, { '2026-11-30': { ...v.expected.v_scores, msft: 61.5 } });
-  assert.deepEqual(fed.result.ledgers.SET_A.input.v_composition, { '2026-11-30': { ...v.expected.v_composition, msft: K } });
+  assert.deepEqual(stored(storage).scores['2026-11-30'], { ...v.expected.v_scores, msft: 61.5 });
+  // DC-31: the runner no longer reads the store, so no stored V reaches a ledger input.
+  assert.deepEqual(fed.result.ledgers.SET_A.input.v_scores, {});assert.deepEqual(fed.result.ledgers.SET_A.input.v_composition, {});
   assert.equal(storage.writes.length, 2);
   // No valuation inputs → nothing recorded; no session → nothing recorded.
   const none = await H.capture({ localStorage: memory(), DeviceValuation: { load: async () => null, parameters: DV.parameters } }, assembled);

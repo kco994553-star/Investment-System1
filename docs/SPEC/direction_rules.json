@@ -108,6 +108,108 @@
         "제외",
         "빼"
       ]
+    },
+    {
+      "id": "DC-31a",
+      "title": "중앙 V가 없거나 늦을 때 기기 V·임시 V로 채운다고 단정 (2026-10-31 기기 V 폐지; TARGET v1 예외 단어는 11/16 PR에서 지운다)",
+      "pattern": "(기기|임시) ?V[\"”’)\\]]?(로|으로) ?(대체|채우|채움|채운|채워|표시|폴백|대신)|(없으면|없을 때|실패하면|늦으면|미게시면|게시 전에는|아니면)[,\\s]{0,3}[\"“]?(기기|임시) ?V(?![A-Za-z0-9_])|(STALE이면|오래되면|늦을 때는?|늦으면|없을 때는?|없으면|실패하면|미게시면)[^\\n]{0,25}((기기|임시) ?V|기기에서 계산한 V)(를|을)? ?(보여|보인|표시|쓴|쓰|사용|대신)",
+      "flags": "i",
+      "exempt": [
+        "폐지",
+        "abolish",
+        "DC-31",
+        "되살리지",
+        "채우지 않",
+        "대체하지 않",
+        "쓰지 않는다",
+        "never fill",
+        "no device v",
+        "without device v",
+        "no fallback",
+        "옛 방향",
+        "superseded",
+        "TARGET v1",
+        "target-v1",
+        "tv1",
+        "TARGET 빌더",
+        "확정 창",
+        "11/16",
+        "11-16"
+      ]
+    },
+    {
+      "id": "DC-31b",
+      "title": "Falling back to a device / temporary V (English; 2026-10-31 device V abolished; the TARGET v1 exempt words expire with the 11/16 PR)",
+      "pattern": "\\b(fall(s|ing)?[ -]?back|fallback)\\b[^\\n]{0,30}\\b(device|temporary)[- ]V\\b|\\b(device|temporary)[- ]V\\b[^\\n]{0,20}\\b(fallback|instead)\\b|\\botherwise\\b[^\\n]{0,40}\\b(device|temporary)[- ]V\\b|\\b(missing|stale|late|unavailable|absent)\\b[^\\n]{0,40}\\b(show|use|display)s?\\b[^\\n]{0,20}\\b(device|temporary)[- ]V\\b",
+      "flags": "i",
+      "exempt": [
+        "폐지",
+        "abolish",
+        "DC-31",
+        "되살리지",
+        "채우지 않",
+        "대체하지 않",
+        "쓰지 않는다",
+        "never fill",
+        "no device v",
+        "without device v",
+        "no fallback",
+        "옛 방향",
+        "superseded",
+        "TARGET v1",
+        "target-v1",
+        "tv1",
+        "TARGET 빌더",
+        "확정 창",
+        "11/16",
+        "11-16"
+      ]
+    },
+    {
+      "id": "DC-31c",
+      "title": "화면의 V를 기기 가격으로 계산한 V(기기 V)로 단정 (2026-10-31: 화면은 중앙 V만)",
+      "pattern": "화면의 V[^\\n]{0,20}기기 V|(?<![A-Za-z])V(?![A-Za-z0-9_-])[^\\n]{0,30}\\b(is |are )?(computed|calculated) (on|in) (this|the) device\\b|(?<![A-Za-z])V[^\\n]{0,6}(는|가) (이 )?기기(에서|의) (시세|가격)(으)?로 계산|(?<![A-Za-z])V( 점수)?(는|가) (이 )?기기에서 (계산|산출)",
+      "flags": "i",
+      "exempt": [
+        "폐지",
+        "abolish",
+        "DC-31",
+        "되살리지",
+        "채우지 않",
+        "대체하지 않",
+        "쓰지 않는다",
+        "never fill",
+        "no device v",
+        "without device v",
+        "no fallback",
+        "옛 방향",
+        "superseded"
+      ]
+    },
+    {
+      "id": "DC-31d",
+      "title": "기기에 V 이력을 쌓는다고 단정 (2026-10-31: 기기 V 이력 없음, 필요하면 중앙에서 날짜별 공개)",
+      "pattern": "(기기|device)[^\\n]{0,12}V ?(이력|기록|history)[^\\n]{0,30}(저장|기록(한다|함)|남긴|capture|store|record)",
+      "flags": "i",
+      "exempt": [
+        "폐지",
+        "abolish",
+        "DC-31",
+        "되살리지",
+        "채우지 않",
+        "대체하지 않",
+        "쓰지 않는다",
+        "never fill",
+        "no device v",
+        "without device v",
+        "no fallback",
+        "옛 방향",
+        "superseded",
+        "read only",
+        "읽기만",
+        "not recorded",
+        "기록하지 않"
+      ]
     }
   ]
 }

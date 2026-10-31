@@ -2,7 +2,7 @@
 // Device value view (v1+dcf_v1_1_default): JS port vs Python reference vectors, reader validation, value-card HTML.
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const W=path.join(__dirname,'../src/investment_system/product/web_assets');
-const V=require(path.join(W,'device-valuation.js')),CS=require(path.join(W,'company-screen.js')),P=require(path.join(W,'dcf-parameters-defaults.js'));
+const V=require(path.join(W,'device-valuation.js')),P=require(path.join(W,'dcf-parameters-defaults.js'));
 const vectors=JSON.parse(fs.readFileSync(path.join(__dirname,'../tests/fixtures/device_valuation_reference_v1.json'),'utf8'));
 function equal(a,b,at='$'){if(typeof b==='number'){assert.equal(typeof a,'number',at);assert.ok(Number.isFinite(a)&&Math.abs(a-b)<=Math.max(1e-10,Math.abs(b)*1e-10),at+' '+a+' vs '+b);}else if(Array.isArray(b)){assert.ok(Array.isArray(a),at);assert.equal(a.length,b.length,at);b.forEach((v,i)=>equal(a[i],v,at+'['+i+']'));}else if(b&&typeof b==='object'){assert.deepEqual(Object.keys(a).sort(),Object.keys(b).sort(),at);Object.keys(b).forEach(k=>equal(a[k],b[k],at+'.'+k));}else assert.equal(a,b,at);}
 for(const c of vectors.cases)test('python reference vector '+c.id,()=>{const input=structuredClone(c.input),before=JSON.stringify(input);equal(V.view(input),c.expected);assert.equal(JSON.stringify(input),before,'input not mutated');});
@@ -14,26 +14,5 @@ test('reader rejects files that are not the valuation file or carry extra fields
 test('deviceQuote reads only DeviceActual.ramQuote and fails closed',async()=>{const calls=[];const win={DeviceActual:{ramQuote:async(w,c,t)=>{calls.push(t);return{price:50,currency:'USD',as_of:'2026-10-10T00:00:00Z',source:'MANUAL',stale:false};}}};
  assert.deepEqual(await V.deviceQuote(win,{},'NVDA'),{price:50,currency:'USD',as_of:'2026-10-10T00:00:00Z',source:'MANUAL',stale:false});assert.deepEqual(calls,['NVDA']);
  assert.equal(await V.deviceQuote({DeviceActual:{ramQuote:async()=>({price:0,currency:'USD'})}},{},'X'),null);assert.equal(await V.deviceQuote({},{},'X'),null);assert.equal(await V.deviceQuote({DeviceActual:{ramQuote:async()=>{throw Error('x');}}},{},'X'),null);});
-test('value card: badge, defaults, growth, DCF value and margin of safety',()=>{const c=vectors.cases.find(x=>x.id==='full'),html=CS.valueHtml({locale:'ko-KR',row:{fcfe:{...c.input.row.fcfe,fiscal_period_end:'2025-12-31',form:'10-K',taxonomy:'us-gaap',accn:'000104581026000001',components:{}}},result:c.expected,quote:{source:'MANUAL',as_of:'2026-10-10T00:00:00Z',currency:'USD'},params:P});
- assert.ok(html.includes('v1.1 UNCALIBRATED 기본값 · 나중에 수정 가능'));assert.ok(html.includes('v1+dcf_v1_1_default'));assert.ok(html.includes('명시 5년 · 할인율 10.0% · 영구성장 2.0% · 역DCF 탐색 −50.0%~+100.0% · 명시기간 성장률 h = 자사 3년 매출 CAGR, 0.0%~15.0% 범위로 제한 (PROVISIONAL)'));
- assert.ok(html.includes('0001045810-26-000001'));assert.ok(html.includes('US GAAP'));assert.ok(html.includes('data-implied-growth>0.8%'));assert.ok(html.includes('data-explicit-growth>8.0%'));
- assert.ok(html.includes('data-dcf-value>USD 135.02'));assert.ok(html.includes('data-mos-score>52.1'));assert.ok(!html.includes('EXPLICIT_GROWTH'));assert.ok(!html.includes('data-value="assumed-zero"'));assert.ok(!html.includes('CURRENCY_BASIS_UNCONFIRMED'));
- assert.ok(html.includes('data-v-factor="reverse_dcf"'));assert.ok(!html.includes('100.0</span>'));
- const empty=CS.valueHtml({locale:'ko-KR',params:P});assert.ok(empty.includes('NOT_AVAILABLE'));assert.ok(empty.includes('NO_DEVICE_PRICE'));assert.ok(!/data-implied-growth|data-dcf-value|data-mos-score/.test(empty));assert.ok(empty.includes('DCF_NOT_AVAILABLE'));
- const en=CS.valueHtml({locale:'en-US',params:P,compact:true});assert.ok(en.includes('v1.1 UNCALIBRATED default'));assert.ok(!en.includes('data-v-table'));});
-test('value card: missing CAGR keeps the forward DCF and margin of safety unavailable',()=>{const c=vectors.cases.find(x=>x.id==='cagr-missing-dcf-not-available'),html=CS.valueHtml({locale:'ko-KR',row:c.input.row,result:c.expected,params:P});
- assert.equal((html.match(/EXPLICIT_GROWTH_NOT_AVAILABLE/g)||[]).length,2);assert.ok(html.includes('DCF_NOT_AVAILABLE'));assert.ok(!/data-dcf-value|data-mos-score|data-explicit-growth/.test(html));
- const v1=vectors.cases.find(x=>x.id==='v1-history-parameters-growth-undecided');const h1=CS.valueHtml({locale:'ko-KR',row:v1.input.row,result:v1.expected,params:v1.input.parameters});assert.ok(h1.includes('v1 UNCALIBRATED 기본값'));assert.ok(h1.includes('EXPLICIT_GROWTH_UNDECIDED'));});
-test('value card: unreported borrowing lines are shown as assumed 0, IFRS and currency basis are shown',()=>{const c=vectors.cases.find(x=>x.id==='ifrs-eur-filer-usd-price-no-fx'),zero={concepts:[],value:0,assumed_zero:true,reason:'NOT_REPORTED_ASSUMED_ZERO'};
- const row={fcfe:{...c.input.row.fcfe,fiscal_period_end:'2025-12-31',form:'20-F',taxonomy:'ifrs-full',accn:'000093796626000001',components:{net_short_term_borrowing:zero,long_term_debt_repayment:zero,long_term_debt_issuance:{concepts:['ProceedsFromNoncurrentBorrowings'],value:1,assumed_zero:false,reason:null}}}};
- const html=CS.valueHtml({locale:'ko-KR',row,result:c.expected,quote:{source:'MANUAL',as_of:'2026-10-10T00:00:00Z',currency:'USD'},params:P});
- assert.ok(html.includes('미보고 → 0 가정'));assert.ok(html.includes('장기차입 상환 · 단기차입 순증감 (NOT_REPORTED_ASSUMED_ZERO)'));assert.ok(!html.includes('장기차입 발행 ·'));
- assert.ok(html.includes('IFRS'));assert.ok(html.includes('20-F'));assert.ok(html.includes('data-value="currency-basis"'));assert.ok(html.includes('보고 통화 EUR · 가격 통화 USD · 기준 통화 USD · 환율 변환 없음'));
- assert.ok(!/data-dcf-value|data-mos-score|data-implied-growth/.test(html));
- const en=CS.valueHtml({locale:'en-US',row,result:c.expected,params:P});assert.ok(en.includes('Not reported → assumed 0'));assert.ok(en.includes('no FX conversion'));});
-test('value card: a half-reported borrowing pair shows the reported side and BORROWING_PAIR_PARTIAL',()=>{const c=vectors.cases.find(x=>x.id==='ifrs-eur-filer-usd-price-no-fx');
- const row={fcfe:{...c.input.row.fcfe,fiscal_period_end:'2025-12-31',form:'20-F',taxonomy:'ifrs-full',accn:'000093796626000001',components:{net_short_term_borrowing:{concepts:['ProceedsFromCurrentBorrowings'],value:40,assumed_zero:false,reason:'BORROWING_PAIR_PARTIAL'}}}};
- const html=CS.valueHtml({locale:'ko-KR',row,result:c.expected,params:P});
- assert.ok(html.includes('data-value="pair-partial"'));assert.ok(html.includes('미보고 쪽 → 0 가정'));assert.ok(html.includes('단기차입 순증감: ProceedsFromCurrentBorrowings (BORROWING_PAIR_PARTIAL)'));
- assert.ok(!html.includes('data-value="assumed-zero"'));
- const en=CS.valueHtml({locale:'en-US',row,result:c.expected,params:P});assert.ok(en.includes('Unreported side → assumed 0'));});
+// DC-31 (2026-10-31): the S04/S05 value card that rendered this view (CompanyScreen.valueHtml) is removed with the device V;
+// the reader and view stay until the cleanup PR after 11/16.

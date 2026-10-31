@@ -234,9 +234,11 @@ function holdingsFromSnapshot(snapshot,catalog){
  return{effective_at:snapshot.effective_at,positions:sortedObject(positions)};
 }
 // V history store: schema /1 (V only, composition unknown) or /2 (V + factor composition per date and company).
-function readVStoreRaw(storage){try{const raw=storage.getItem(V_KEY);if(!raw)return null;const v=JSON.parse(raw);return object(v)&&(v.schema==='virtual-trading-v-scores/1'||v.schema==='virtual-trading-v-scores/2')&&object(v.scores)?v:null;}catch(_){return null;}}
-function readVStore(storage){const v=readVStoreRaw(storage);return v?v.scores:{};}
-function readVComposition(storage){const v=readVStoreRaw(storage);return v&&v.schema==='virtual-trading-v-scores/2'&&object(v.composition)?v.composition:{};}
+/* DC-31 (owner decision 2026-10-31, device V abolished): no device V history is read or written. The keys already stored on a
+   device are left untouched (never read here, never auto-deleted; removal only by an explicit Settings action, as DC-18), so the
+   ledger input gets no v_scores and the D-21 V slope stays NA. */
+function readVStore(_storage){return {};}
+function readVComposition(_storage){return {};}
 
 /* Engine run for one report tab. Not READY → a ledger-shaped NOT_STARTED/NOT_AVAILABLE result with the reasons. */
 function ledgerFor(result,kind,cfg){

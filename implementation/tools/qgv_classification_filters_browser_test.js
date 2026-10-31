@@ -1,8 +1,9 @@
 'use strict';
-// Real app controls with synthetic public publications and a synthetic, RAM-only Universe read.
+// Real app controls with synthetic public publications: the strictly valid synthetic sec-qgv2.json and the synthetic central V
+// publication (qgv_official_fixture.js; DC-31: screens show only the central V, no Universe read, no price).
 // Optional proposal overlay is for a worker review BEFORE Main integrates the app hooks; CI uses served assets normally.
 const {chromium}=require('playwright'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
-const {routeEmptyPublicScreens}=require('./empty_public_screens.js'),F=require('./qgv_v2_fixture.js');
+const {routeEmptyPublicScreens}=require('./empty_public_screens.js'),F=require('./qgv_v2_fixture.js'),O=require('./qgv_official_fixture.js');
 const W=path.join(__dirname,'../src/investment_system/product/web_assets'),BASE=process.env.PAGES_COCKPIT_URL,ORIGIN=new URL(BASE).origin;
 const CLASS=require('../tests/fixtures/company_classification_v0_payloads.json').live,CS=require(path.join(W,'classification-screens.js'));
 function classification(day){const p=structuredClone(CLASS);if(day===1){p.data.companies.gev.industry={...structuredClone(p.data.companies.nvda.industry),sic:'4900',group:'utilities',subgroup:null};}
@@ -16,8 +17,8 @@ const ids=page=>page.locator('[data-leaderboard-row]').evaluateAll(rs=>rs.map(r=
 // L3: each shown row's published SIC (row attribute), official rank cell and the visible SIC text (wide: SIC column; phone: company cell).
 const rowsInfo=page=>page.locator('[data-leaderboard-row]').evaluateAll(rs=>rs.map(r=>({id:r.dataset.leaderboardRow,sic:r.dataset.leaderboardSic,rank:r.querySelector('[data-leaderboard-rank]')?.dataset.leaderboardRank||null,
  cell:r.querySelector('[data-leaderboard-sic-cell]')?.textContent??null,code:r.querySelector('[data-leaderboard-sic-code]')?.textContent??null})));
-async function settle(page){await page.waitForFunction(()=>leaderPage&&leaderPage.inputs===publicScreens['sec-qgv2.json']&&QgvScores.isCurrent(window,leaderPage.result)&&leaderScores()===leaderPage.result.computed);}
-async function official(page){return page.evaluate(()=>{const S=leaderScores(),pop=officialPopulation();return {scores:S,model:QgvScores.officialModel({identities:pop.official.identities,v2Inputs:publicScreens[Qgv2Inputs.FILE],quotes:leaderQuotes,official:pop.official,computed:S})};});}
+async function settle(page){await page.waitForFunction(()=>QgvScores.pagePublication().publication&&leaderScores()&&leaderPage&&leaderPage.source==='PUBLICATION');}
+async function official(page){return page.evaluate(()=>{const S=leaderScores(),pop=officialPopulation();return {scores:S,model:QgvScores.officialModel({identities:pop.official.identities,v2Inputs:publicScreens[Qgv2Inputs.FILE],quotes:{},official:pop.official,computed:S})};});}
 (async()=>{const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH});let checks=0,phase='START';
  try{for(const width of [390,1280])for(const locale of ['ko-KR','en-US']){
   const context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block'}),served={day:1,fail:false};let external=0;const errors=[];
@@ -25,6 +26,7 @@ async function official(page){return page.evaluate(()=>{const S=leaderScores(),p
   await routeEmptyPublicScreens(context);
   await context.route('**/sec-qgv2.json*',r=>r.fulfill({status:200,contentType:'application/json',body:JSON.stringify(F.strictPayload())}));
   await context.route('**/company-classification.json*',r=>r.fulfill(served.fail?{status:503,body:'synthetic unavailable'}:{status:200,contentType:'application/json',body:JSON.stringify(classification(served.day))}));
+  await O.routeOfficial(context);
   await context.route('**/company-types-pricefree.json*',r=>r.fulfill({status:200,contentType:'application/json',body:JSON.stringify(types())}));
   if(process.env.QGV_FILTERS_PROPOSAL_APP){await context.route('**/app.js',r=>r.fulfill({path:process.env.QGV_FILTERS_PROPOSAL_APP,contentType:'text/javascript'}));
    for(const name of ['leaderboard-screen.js','portfolio-screen.js'])await context.route('**/'+name,r=>r.fulfill({path:path.join(W,name),contentType:'text/javascript'}));}
@@ -32,9 +34,8 @@ async function official(page){return page.evaluate(()=>{const S=leaderScores(),p
   try{
    phase=width+' '+locale+' setup';await page.goto(BASE+'#settings');await page.locator('[data-universe-source]').waitFor();
    if(locale==='en-US'){await page.locator('#display-locale').selectOption(locale);await page.waitForFunction(()=>appSettings.display_locale==='en-US');}
-   await page.locator('[data-universe-source]').fill('u'.repeat(24));await page.locator('[data-universe-settings] button[type="submit"]').click();
-   await page.evaluate(values=>{const session={state:()=>({enabled:true,connected:true}),revision:()=>1,setEnabled(){},subscribe:()=>()=>{},async fetchValues(){return{values};}};window.GoogleSheetQuotes={...GoogleSheetQuotes,sessionFor:()=>session};location.hash='leaderboard';},F.strictUniverseValues());
-   await page.locator('[data-leaderboard-table]').waitFor();await page.locator('details:has(#private-subset-root)>summary').click();await page.locator('[data-subset-action="read"]:enabled').click();await settle(page);
+   await page.evaluate(()=>{location.hash='leaderboard';});
+   await page.locator('[data-leaderboard-table]').waitFor();await settle(page);
    await page.locator('[data-leaderboard-rank]').first().waitFor();const before=await official(page);assert.equal(before.scores.official.codes,504);assert.ok(before.model.sets.N20.selected.length);checks++;
    const industry=page.locator('#leader-classification-industry'),type=page.locator('#leader-classification-type');
    assert.equal(await industry.count(),1);assert.equal(await type.count(),1);assert.match(await page.locator('[data-classification-note]').textContent(),locale==='en-US'?/separate axes/:/서로 다른 축/);checks++;
