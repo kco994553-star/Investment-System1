@@ -9,7 +9,7 @@
 3. [WORKING_RULES.md](WORKING_RULES.md) — 작업 규칙
 4. [CURRENT_HANDOFF.md](CURRENT_HANDOFF.md) — 지금 상태(기준 HEAD·게시·열린 PR·다음 할 일)
 5. [docs/SPEC/FUNCTION_HIERARCHY_v1.0.md](docs/SPEC/FUNCTION_HIERARCHY_v1.0.md) — 제품 기능 명세 원문(수정 금지)
-6. [docs/SPEC/FUNCTION_STATUS.md](docs/SPEC/FUNCTION_STATUS.md) — 명세 번호별 현황과 메뉴 번호 대응표
+6. [docs/SPEC/FUNCTION_STATUS.md](docs/SPEC/FUNCTION_STATUS.md) — 명세 번호별 현황과 메뉴 번호 대응표. **화면마다 공개 층과 비공개 층(로그인 오너 전용 KIS·Lab 비공개)의 경계는 [1-3절 "공개 + 비공개 2층 구조"](docs/SPEC/FUNCTION_STATUS.md#1-3-공개--비공개-2층-구조-2026-10-31-오너-dc-36) 표를 따른다(DC-36). 공개 화면은 비공개 자료 없이 완전히 동작해야 한다**
 7. [implementation/docs/USER_DECISIONS_PENDING.md](implementation/docs/USER_DECISIONS_PENDING.md) — 결정 원문과 남은 결정
 
 루트의 2026-09 문서와 `SUPERSEDED` 머리말이 붙은 문서는 **기록 보존용**이다. 현재 상태 판단에 쓰지 않는다.
