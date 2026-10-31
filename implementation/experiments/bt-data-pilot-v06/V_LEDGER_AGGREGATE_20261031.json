@@ -1,0 +1,40 @@
+{
+  "abt_calculated_cells": 59,
+  "abt_calculation_slots": 75,
+  "abt_ev_shares_changed": false,
+  "actual_abt_evaluation_dates": 15,
+  "baseline_calculation_completed": 20,
+  "baseline_cells": 50,
+  "baseline_date": "2016-04-01",
+  "baseline_reconstructed_pit_pass": 4,
+  "contemporaneous_snapshot_replays": 0,
+  "formal_backtests": 0,
+  "kis_replay": {
+    "numeric_replays_including_reused_pages": 13525,
+    "unique_raw_hashes": 31
+  },
+  "kis_sip_overlap_close_matches": 162,
+  "kis_sip_overlap_field_matches": {
+    "close": 162,
+    "high": 162,
+    "low": 162,
+    "open": 154,
+    "volume": 0
+  },
+  "ledger": {
+    "all_component_reconciliations_passed": true,
+    "buy": "2016-02-16",
+    "component_comparisons": 1032,
+    "daily_snapshots": 258,
+    "duplicate_event_and_fill_checks": 6,
+    "formal_backtest": false,
+    "scope": "ACTUAL_INPUT_LEDGER_DIAGNOSTIC_NOT_QGV_STRATEGY",
+    "sell": "2017-02-21",
+    "sell_signal": "2017-02-17",
+    "start": "2016-02-12"
+  },
+  "market_population_scores": 0,
+  "v5_baseline_traces_checked": 4,
+  "v5_future_sales_used": false,
+  "version": "BT-DATA-PILOT v0.6"
+}
