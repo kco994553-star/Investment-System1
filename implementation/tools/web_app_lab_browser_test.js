@@ -15,7 +15,8 @@
 //    PIT not met, limitations shown, login needed (비공개 연구 결과 · 로그인 필요, never a signed-in word), a source that fails
 //    (LAB_SOURCE_FAILED) and one that never answers (the panel stays NOT_READY, the public part is drawn).
 //  - Curve: months in the file's order (value table = the file, x strictly increasing), both lines start on the 100 line, the end
-//    value consistent with total_return and with the metric shown, and the validator's refusals drawn as ERROR with nothing of
+//    value consistent with total_return and with the metric shown (as text only: the chart's label and data attributes carry no
+//    result value), and the validator's refusals drawn as ERROR with nothing of
 //    the file (months not ascending, start not 100, total_return off the curve, a non-finite number, a zero and a negative value).
 //  - 9.2: facts, the daily table (10 rows newest first, the rest under a fold), evaluation words (PRIMARY with basis counts,
 //    PREPARATORY, COMPARISON, input missing), three calc-version segments, the latest 7 session days with the PARTIAL day and the
@@ -169,7 +170,8 @@ let phase = 'START', pass = 0;
     // Curve: the file's months in order, x strictly increasing, both lines start on the 100 line, end value = total_return.
     const c = await page.locator('[data-curve="' + pilot.id + '"]').evaluate((g) => {
       const pts = (d) => [...d.matchAll(/[ML](-?[\d.]+) (-?[\d.]+)/g)].map((m) => [Number(m[1]), Number(m[2])]), svg = g.querySelector('svg');
-      return { months: [...g.querySelectorAll('[data-curve-point]')].map((r) => r.dataset.curvePoint), base: Number(svg.dataset.curveBase), n: Number(svg.dataset.curveMonths),
+      return { months: [...g.querySelectorAll('[data-curve-point]')].map((r) => r.dataset.curvePoint), base: Number(svg.querySelector('[data-curve-line=base]').getAttribute('d').split(' ')[1]),
+        baseAttr: 'curveBase' in svg.dataset, n: Number(svg.dataset.curveMonths),
         s: pts(svg.querySelector('[data-curve-line=strategy]').getAttribute('d')), b: pts(svg.querySelector('[data-curve-line=benchmark]').getAttribute('d')),
         end: Number(g.querySelector('[data-curve-end=strategy]').textContent), endB: Number(g.querySelector('[data-curve-end=benchmark]').textContent),
         aria: svg.getAttribute('aria-label'), range: g.querySelector('[data-curve-range]').textContent };
@@ -181,7 +183,8 @@ let phase = 'START', pass = 0;
     assert.equal(c.end, pilot.equity_curve[c.n - 1].strategy); assert.equal(c.endB, pilot.equity_curve[c.n - 1].benchmark);
     assert.ok(Math.abs(c.end / 100 - 1 - pilot.metrics.total_return) <= 1e-4, label + ': the end value is consistent with total_return');
     assert.ok(c.range.endsWith('총수익률 ' + pct(pilot.metrics.total_return)) && metrics[1][2] === pct(pilot.metrics.total_return), label + ': the same total return in the caption and the table');
-    assert.match(c.aria, /^자산 곡선 · 2024-01 시작 100 · 2025-06 끝 전략 /);
+    assert.equal(c.aria, '자산 곡선 · 2024-01 시작 100 · 2025-06 끝 · ' + c.n + '개 월 · 끝 값은 곡선 아래 글', label + ': a value-free chart label');
+    assert.ok(!c.aria.includes(String(c.end)) && !c.aria.includes(String(c.endB)) && !c.baseAttr, label + ': no end value in the label, no derived y in a data attribute');
     assert.deepEqual(await page.locator('[data-lab-run="' + pilot.id + '"] [data-lab-limitations] li').allTextContents(), pilot.limitations, label + ': limitations shown');
     assert.match(await text(page, '[data-lab-run="' + pilot.id + '"] [data-lab-run-facts]'), /현금 \(시험용 금리\) · 배당 재투자 포함[\s\S]*수수료 5 bp · 슬리피지 10 bp/);
     // Run tabs by keys: → the SYNTHETIC run, End / Home.

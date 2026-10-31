@@ -168,8 +168,9 @@ function install(win){
   if(!g)return h('p',{class:'reason',dataset:{curve:'NONE'}},r.equity_curve.length===1?'곡선 점 1개 (시작 100) · 선을 그리지 않음':'곡선 없음 · 성과 지표가 모두 계산 불가라 그리지 않음');
   const tr=r.metrics.total_return,n=r.equity_curve.length;
   return h('div',{class:'card-body',role:'group','aria-label':'자산 곡선 · '+r.name,dataset:{curve:r.id}},
-   h('svg:svg',{class:'curve',viewBox:'0 0 '+g.w+' '+g.h,role:'img',focusable:'false',dataset:{curveMonths:String(n),curveBase:String(g.base)},
-    'aria-label':'자산 곡선 · '+g.first.date+' 시작 100 · '+g.last.date+' 끝 전략 '+g.last.strategy+' · 비교 기준 '+g.last.benchmark+' · '+n+'개 월'},
+   // No result value in the label or a data attribute: the end values are text in [data-curve-range] below.
+   h('svg:svg',{class:'curve',viewBox:'0 0 '+g.w+' '+g.h,role:'img',focusable:'false',dataset:{curveMonths:String(n)},
+    'aria-label':'자산 곡선 · '+g.first.date+' 시작 100 · '+g.last.date+' 끝 · '+n+'개 월 · 끝 값은 곡선 아래 글'},
     h('svg:path',{class:'curve-base',d:'M'+g.pad+' '+g.base+' H'+(g.w-g.pad),dataset:{curveLine:'base'}}),
     h('svg:path',{class:'curve-b',d:g.b,dataset:{curveLine:'benchmark'}}),
     h('svg:path',{class:'curve-s',d:g.s,dataset:{curveLine:'strategy'}})),

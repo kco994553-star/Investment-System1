@@ -6,14 +6,16 @@
 //  - SMA lines: sma(closes(bars), n) equals ResearchIndicators.calculate's SMA_20 / 60 / 120 on synthetic bars (COMPLETE closes
 //    only; a missing close restarts the window), so the device chart draws the old indicator's numbers.
 //  - Chart geometry: priceAt reads TechnicalChart.geometry's y backwards (rounded to six significant digits, the old pointer rule)
-//    and indexAt its x; marks() places notes on bar dates inside the price range only.
+//    strictly inside the plot band only: on or outside its edges (where the highest / lowest close sits) there is no price, so
+//    a pointer never yields the extreme close; indexAt reads its x; marks() places notes on bar dates inside the price range only.
 //  - Notes and scenarios: noteFor / scenarioFor build objects ChartWorkbench.validUserObject accepts once the store adds id,
 //    author, price_basis and times; invalid input gives null.
 //  - Store: ChartWorkbench's key and schema (chart-user-objects/1) through its own device store; read freely; added / removed only
 //    in a trusted click (CLICK_REQUIRED, ACTION_REQUIRED for a direct write outside one); a price series or any unknown field is
 //    refused (CHART_NOTE_INVALID, storage unchanged); an unreadable stored value is never overwritten and unreadable entries are
-//    written back; 500 at most; carried by the /5 backup only; one click, one action.
-// Synthetic data only (tools/web_app_technical_fixture.js closes end in made-up decimals). The helpers run in their own vm realm, so
+//    written back; 500 at most; carried by the /5 backup only; one click, one action; without ChartWorkbench read throws
+//    READER_MISSING (the screen's CHART_MODULE_MISSING, kept apart from a storage failure).
+// Synthetic data only (tools/web_app_technical_fixture.js closes have six significant digits ending in the made-up .718). The helpers run in their own vm realm, so
 // their arrays and objects are compared as plain JSON copies.
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -72,11 +74,16 @@ test('SMA lines: sma(closes(bars), n) equals ResearchIndicators SMA_20 / 60 / 12
   assert.deepEqual(plain(H.sma([1, 2, null, 3, 4, 5], 2)), [null, 1.5, null, null, 3.5, 4.5]);
 });
 
-test('chart geometry: priceAt / indexAt read TechnicalChart.geometry backwards; marks() keeps notes on bar dates inside the range', () => {
-  const TC = OLD.TechnicalChart, g = TC.geometry(BARS, []), n = BARS.length;
-  for (const v of [181.0718293, 200, 222.5, 240.0718293]) assert.equal(H.priceAt(g, g.y(v)), Number(v.toPrecision(6)), 'price at y(' + v + ')');
-  assert.equal(H.priceAt(g, 0), H.priceAt(g, 20), 'above the plot: the top price'); assert.equal(H.priceAt(g, 400), H.priceAt(g, 220), 'below: the bottom price');
-  assert.ok(!String(H.priceAt(g, 123)).includes(FX.SENTINEL), 'a pointer price is never a supplier close');
+test('chart geometry: priceAt / indexAt read TechnicalChart.geometry backwards (no price outside the plot band); marks() keeps notes on bar dates inside the range', () => {
+  const TC = OLD.TechnicalChart, g = TC.geometry(BARS, []), n = BARS.length, cl = BARS.map((b) => b.close), lo = Math.min(...cl), hi = Math.max(...cl);
+  assert.deepEqual([g.minimum * g.scale, g.maximum * g.scale].map((v) => Number(v.toPrecision(6))), [lo, hi], 'the band spans the lowest to the highest close');
+  for (const v of [181.9, 200, 222.5, 240.123456]) { assert.ok(v > lo && v < hi); assert.equal(H.priceAt(g, g.y(v)), Number(v.toPrecision(6)), 'price at y(' + v + ')'); }
+  for (const y of [20, 220, g.y(hi), g.y(lo), 19.99, 220.01, 0, -5, 400, NaN, undefined]) assert.equal(H.priceAt(g, y), null, 'on or outside the band (y ' + y + '): no price');
+  for (const y of [20.5, 123, 219.5]) {
+    const p = H.priceAt(g, y);
+    assert.ok(p > lo && p < hi && !cl.includes(p), 'y ' + y + ': a pointer price strictly inside the range, never a supplier close: ' + p);
+    assert.ok(!String(p).includes(FX.SENTINEL), 'y ' + y + ': no sentinel decimals in a pointer price');
+  }
   for (const i of [0, 1, 7, n - 2, n - 1]) assert.equal(H.indexAt(n, g.x(i)), i);
   assert.equal(H.indexAt(n, -50), 0); assert.equal(H.indexAt(n, 900), n - 1); assert.equal(H.indexAt(1, 300), 0);
   const dates = OLD.ChartWorkbench.dailyView(BARS, 'America/New_York').map((b) => b.time), d = (i) => dates[i];
@@ -158,6 +165,8 @@ test('store.chartNotes: ChartWorkbench\'s key and schema; read freely; written o
   assert.equal(C.remove(e.click(), b.id), 0); assert.equal(L.getItem(K.CHART_USER_OBJECTS), null, 'no objects: no key');
   // One click, one action.
   const ev = e.click(); C.add(ev, NOTE); assert.throws(() => C.add(ev, NOTE), /ACTION_ALREADY_STARTED/); assert.equal(C.read().items.length, 1);
+  // ChartWorkbench missing: read throws the store's READER_MISSING, which the screen shows as CHART_MODULE_MISSING (not storage).
+  delete e.win.ChartWorkbench; assert.throws(() => C.read(), /READER_MISSING/);
 });
 
 test('store.chartNotes: an unreadable value is never overwritten; unreadable entries are kept; 500 at most; in the /5 backup only', async () => {

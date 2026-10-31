@@ -19,11 +19,14 @@
 //  - Degree: 스윙 (D) / 장기 (W) switches the pattern-rules/1 table, the minimum bars and the scenario horizon.
 //  - Device chart after a sign-in (Google and Worker stand-ins, synthetic bars from tools/web_app_technical_fixture.js): one real
 //    click asks the Worker once; the close line, optional SMA lines and the user's notes draw; prices show only as text inside
-//    [data-ram-price] (assertRamOnly); verdicts stay on hold (PRICE_BASIS_CONTINUITY_UNCONFIRMED); a chart click fills the note
-//    form with a bar date and a pointer price (never a supplier close); no sentinel in storage, requests or the console; a reload
-//    drops the bars.
+//    [data-ram-price]: the closes' sentinel decimals (.718, six significant digits, so the six-digit display keeps them) are
+//    nowhere on the page before the bars, do show inside [data-ram-price] (positive control), and nowhere else (assertRamOnly:
+//    other text, attributes, form values, the title); verdicts stay on hold (PRICE_BASIS_CONTINUITY_UNCONFIRMED); a chart click
+//    inside the plot band fills the note form with a bar date and a pointer price (never a supplier close), a click on the band's
+//    top / bottom margin fills nothing; no sentinel in storage, requests, the console or the address; a reload drops the bars.
 //  - Partial failure: the names table failing (the list without names: the route's TARGET id is not found and says which part is
-//    missing; a ticker pick still works and the device path is off) and an unreadable stored notes value (never overwritten).
+//    missing; a ticker pick still works and the device path is off), an unreadable stored notes value (never overwritten), and
+//    the ChartWorkbench module missing (notes and scenarios say CHART_MODULE_MISSING, not a storage failure).
 //  - Error: data.js answering 404 (the structure still draws, the company box and notes say why) and screen-technical-live.js
 //    answering 404 (every slot shows the failure with the alarm character).
 //  - Boundaries everywhere: same-origin requests only (stand-ins excepted), no console error but the intended ones, no CSP
@@ -312,13 +315,16 @@ let phase = 'START', pass = 0;
       assert.deepEqual(worker, [], phase + ': no Worker request without the approved address');
       assert.equal(await testClick('origin'), 'OK');
       assert.deepEqual(worker, [], phase + ': still no Worker request before the button');
+      assert.deepEqual(site.leaks([await page.content(), page.url()], [FX.SENTINEL]), [], phase + ': no sentinel anywhere on the page before the bars (it cannot collide)');
       // One real click: one Worker request, the chart, prices only inside [data-ram-price], verdicts on hold.
       await page.locator('[data-tech-load]').focus(); await page.keyboard.press('Enter');
       await page.locator('[data-tech-chart][data-state=OK] svg[data-tech-chart-svg=NVDA]').waitFor({ timeout: 20000 });
       assert.deepEqual(worker, ['?symbol=NVDA&range=1y'], phase + ': exactly one Worker request for the click');
       const bars = FX.history('NVDA', '1y', NOW).bars, closes = bars.map((b) => b.close), fmt = (v) => v.toLocaleString('ko-KR', { maximumSignificantDigits: 6 });
       assert.ok(await count(page, 'svg[data-tech-chart-svg] [data-close-line]') >= 1, phase + ': the close line');
-      assert.deepEqual(await page.locator('[data-ram-price]').allTextContents(), [fmt(Math.min(...closes)), fmt(Math.max(...closes)), fmt(closes.at(-1)) + ' USD'], phase + ': the scale and last close as RAM text');
+      const ram = await page.locator('[data-ram-price]').allTextContents();
+      assert.deepEqual(ram, [fmt(Math.min(...closes)), fmt(Math.max(...closes)), fmt(closes.at(-1)) + ' USD'], phase + ': the scale and last close as RAM text');
+      assert.ok(ram.every((t) => t.includes(FX.SENTINEL)), phase + ': positive control: the sentinel decimals do show inside [data-ram-price]');
       assert.match(await text(page, '[data-tech-chart-range]'), /^세로 [\d.,]+ ~ [\d.,]+ USD · 가로 \d{4}-\d{2}-\d{2} ~ 2026-10-14$/);
       assert.match(await text(page, '[data-tech-chart-facts]'), new RegExp('Yahoo Finance\\(비공식\\) · NVDA · SYNTHETIC[\\s\\S]*1년 · ' + bars.length + '봉[\\s\\S]*장중 또는 미확정[\\s\\S]*' + CONT));
       assert.equal(await text(page, '[data-tech-load-status]'), '이 기기 일봉을 이 화면에만 보였습니다 · 저장·전송 안 함 · 새로고침하면 사라짐');
@@ -339,13 +345,19 @@ let phase = 'START', pass = 0;
       // A chart click fills the form: a bar date and a pointer price (six significant digits), never a supplier close.
       const chart = page.locator('svg[data-tech-chart-svg]'); await chart.scrollIntoViewIfNeeded();
       const box = await chart.boundingBox();
+      const form = () => Promise.all([page.locator('[data-note-date]').inputValue(), page.locator('[data-note-price]').inputValue(), text(page, '[data-note-status]')]);
+      const before = await form();
+      for (const at of [0.02, 0.98]) {
+        await chart.click({ position: { x: box.width * 0.5, y: box.height * at } });
+        assert.deepEqual(await form(), before, phase + ': a click on the plot band\'s ' + (at < 0.5 ? 'top' : 'bottom') + ' margin fills nothing (no extreme close)');
+      }
       await chart.click({ position: { x: box.width * 0.5, y: box.height * 0.45 } });
       assert.match(await text(page, '[data-note-status]'), /^차트에서 고른 자리를 양식에 채웠습니다 · \d{4}-\d{2}-\d{2} · 저장은 노트 저장 단추로$/);
       const pickedDate = await page.locator('[data-note-date]').inputValue(), pickedPrice = Number(await page.locator('[data-note-price]').inputValue());
       const dates = bars.map((b) => new Date(b.timestamp * 1000).toISOString().slice(0, 10));
       assert.ok(dates.includes(pickedDate), phase + ': a bar date');
       assert.ok(pickedPrice > Math.min(...closes) && pickedPrice < Math.max(...closes) && String(pickedPrice).replace('.', '').length <= 6, phase + ': a pointer price inside the range: ' + pickedPrice);
-      assert.ok(!String(pickedPrice).includes(FX.SENTINEL), phase + ': never a supplier close');
+      assert.ok(!closes.includes(pickedPrice) && !String(pickedPrice).includes(FX.SENTINEL), phase + ': never a supplier close');
       await page.locator('[data-note-save]').click();
       await page.locator('svg [data-note-mark][data-note-kind=MEMO]').waitFor({ state: 'attached' });
       await site.assertRamOnly(page, [FX.SENTINEL], phase);
@@ -353,7 +365,8 @@ let phase = 'START', pass = 0;
       assert.deepEqual(Object.keys(st.localItems).sort(), [NOTE_KEY, ORIGIN_KEY].sort(), phase + ': only the notes and the test click\'s Worker setting');
       assert.equal(st.session, 0);
       assert.equal(JSON.parse(st.localItems[NOTE_KEY]).items.length, 3);
-      assert.deepEqual(site.leaks([...Object.values(st.localItems), ...log, ...seen.errors], [FX.SENTINEL]), [], phase + ': no bar value in storage, requests or the console');
+      assert.deepEqual(site.leaks([...Object.values(st.localItems), ...Object.values(st.sessionItems), ...log, ...seen.errors, page.url(), await page.evaluate(() => JSON.stringify(history.state))], [FX.SENTINEL]), [],
+        phase + ': no bar value in storage, requests, the console or the address');
       // Another range: one more request on its own click.
       await page.locator('[data-tech-range]').selectOption('3mo'); await page.locator('[data-tech-load]').click();
       await page.locator('[data-tech-chart-facts]:has-text("3개월")').waitFor();
@@ -367,6 +380,7 @@ let phase = 'START', pass = 0;
       await page.reload(); await drawn(page); await page.locator('[data-tech-chosen-state=CHOSEN]').waitFor(); await settle(page, 300);
       assert.deepEqual([await page.locator('[data-tech-chart]').getAttribute('data-state'), await count(page, '[data-ram-price]'), worker.length], ['BEFORE', 0, 2], phase + ': a reload drops the bars');
       assert.equal(await count(page, '[data-note-items] > li'), 3, phase + ': the notes stay');
+      assert.deepEqual(site.leaks([await page.content(), page.url()], [FX.SENTINEL]), [], phase + ': after the reload no sentinel anywhere on the page');
       await ctx.close(); pass++;
     }
     // ================================================================ partial failure: names table 500, unreadable stored notes
@@ -387,7 +401,23 @@ let phase = 'START', pass = 0;
       await boundaries(page, seen, phase, { stored: [NOTE_KEY], errors: [/status of 500/] });
       assert.equal((await site.storage(page)).localItems[NOTE_KEY], '{broken', phase + ': never overwritten');
       s.fixture('company-names-ko.json', null);
-      await ctx.close(); pass++;
+      await ctx.close();
+      // The ChartWorkbench module missing (its file answers but installs nothing): its own words, never the storage wording.
+      phase = 'module missing 390';
+      const c2 = await context(390);
+      await c2.page.route('**/chart-workbench.js', (r) => r.fulfill({ status: 200, contentType: 'application/javascript', body: '/* synthetic: ChartWorkbench withheld */' }));
+      await open(c2.page, '#/technical/nvda'); await drawn(c2.page); await c2.page.locator('[data-tech-chosen-state=CHOSEN]').waitFor();
+      assert.equal(await c2.page.evaluate(() => typeof window.ChartWorkbench), 'undefined');
+      for (const sel of ['[data-notes]', '[data-scenario-list]']) {
+        assert.equal(await count(c2.page, sel + ' [data-state=error][data-na=CHART_MODULE_MISSING]'), 1, phase + ' ' + sel + ': CHART_MODULE_MISSING');
+        const words = await text(c2.page, sel + ' [data-na=CHART_MODULE_MISSING]');
+        assert.match(words, /차트 노트 모듈\(ChartWorkbench\)을 불러오지 못해 노트를 읽지 못했습니다/, phase + ' ' + sel + ': the module words');
+        assert.doesNotMatch(words, /사생활 보호 모드|저장소 차단|저장소를 쓸 수 없습니다/, phase + ' ' + sel + ': not blamed on storage');
+      }
+      assert.equal(await count(c2.page, '[data-na=STORAGE_UNAVAILABLE]'), 0, phase + ': no storage-failure card');
+      assert.equal(await count(c2.page, '[data-note-save], [data-scenario-save]'), 0, phase + ': no save offered without the module');
+      await boundaries(c2.page, c2.seen, phase);
+      await c2.ctx.close(); pass++;
     }
     // ================================================================ errors: data.js 404 (layer failed), screen-technical-live.js 404
     {
@@ -414,7 +444,7 @@ let phase = 'START', pass = 0;
       await boundaries(c2.page, c2.seen, phase, { errors: [/status of 404/] });
       await c2.ctx.close(); pass++;
     }
-    console.log('web_app_technical_browser_test: PASS (' + pass + ' groups: public 1440, public 390, device chart, partial failure, errors)');
+    console.log('web_app_technical_browser_test: PASS (' + pass + ' groups: public 1440, public 390, device chart, partial failure (names, stored notes, module), errors)');
   } catch (e) {
     console.error('web_app_technical_browser_test: FAIL at ' + phase);
     throw e;

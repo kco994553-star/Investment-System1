@@ -13,19 +13,23 @@
      (tech-kis-pattern): NOT_READY, nothing sent or stored, the public part never waits for them.
    - Device daily bars (table 1-3 "기기: 클릭 시 Worker 일봉(RAM)"): only behind the 일봉 불러오기 button, through the layer's one
      member IS2.prices.history(event, company) (the action gate's HISTORY click: Google sign-in, the approved Worker address, a
-     TARGET symbol). The bars stay in this render's RAM (a company change, leaving the route or a reload drops them; never stored,
-     logged or sent); the chart draws the close line with TechnicalChart.geometry / paths (the old renderer's math) and optional SMA
-     lines (a port of ResearchIndicators' sma, node-checked); every price shown as text sits inside [data-ram-price]. Device bars are
-     chart only: verdicts stay on hold (PRICE_BASIS_CONTINUITY_UNCONFIRMED, raw closes without confirmed splits).
+     TARGET symbol). The bars stay in RAM only (never stored, logged or sent): this screen drops its own copy on a company change
+     or when leaving the route, and the layer keeps its page-life cache of each read (prices.js histories, readable through
+     IS2.prices.held) until a sign-out or a reload. The chart draws the close line with TechnicalChart.geometry / paths (the old
+     renderer's math) and optional SMA lines (a port of ResearchIndicators' sma, node-checked); every price shown as text sits
+     inside [data-ram-price]. Device bars are chart only: verdicts stay on hold (PRICE_BASIS_CONTINUITY_UNCONFIRMED, raw closes
+     without confirmed splits).
    - Notes (3.3) and scenarios (3.1.3): the user's own anchors and words, kept on this device only through IS2.store.chartNotes
      (ChartWorkbench's key, schema chart-user-objects/1 and validator; backup /5), written only inside the save / delete click; no
      account step. A click on the device chart fills the note form with that bar's date and the pointer's price (rounded to six
-     significant digits, the old rule), never a supplier close.
+     significant digits, the old rule), never a supplier close: a click on or outside the plot band's edges (y 20 / 220, where
+     the highest / lowest value drawn sits) fills nothing.
    - Degree (3.2.2): swing = daily rule values (D), long = weekly (W) of pattern-rules/1 (ported here, node-checked against
      pattern-config-defaults.js); the exploration sets come from ChartWorkbench.EXPLORE_GRID, the minimum bars from
      ChartWorkbench.minBars. The choice lives in this module's RAM only.
    - States: loading (skeleton), empty (no company, no note), error (layer failed: the structure still draws, the company box and
-     notes say why), partial failure (company list part missing, unreadable stored notes kept, an old module missing). */
+     notes say why), partial failure (company list part missing, unreadable stored notes kept, an old module missing: without
+     ChartWorkbench the notes say CHART_MODULE_MISSING, never a storage failure). */
 (function(){
 'use strict';
 const I=window.IS2,{h,href,parts:{mascot}}=I;
@@ -70,7 +74,8 @@ function mean(xs){const scale=Math.max(...xs.map(Math.abs));return scale===0?0:x
 function sma(xs,n){const out=[];let w=[];for(const x of xs){if(x===null)w=[];else{w.push(x);if(w.length>n)w.shift();}const v=w.length===n?mean(w):null;out.push(finite(v)?v:null);}return out;}
 const closes=bars=>bars.map(b=>b.session_status==='COMPLETE'?b.close:null);
 // TechnicalChart.geometry's y(v) = 220 − (v/scale − minimum)/spread·200, read backwards; the old pointer rounding (toPrecision(6)).
-function priceAt(g,y){const spread=g.maximum-g.minimum||1,yy=Math.min(220,Math.max(20,y));return Number((((220-yy)/200*spread+g.minimum)*g.scale).toPrecision(6));}
+// Only strictly inside the plot band: on or outside its edges (the highest / lowest value drawn) there is no price (null).
+function priceAt(g,y){if(!(y>20&&y<220))return null;const spread=g.maximum-g.minimum||1;return Number((((220-y)/200*spread+g.minimum)*g.scale).toPrecision(6));}
 // The bar nearest to a viewBox x (TechnicalChart x(i) = 20 + i·600/(n−1)).
 function indexAt(n,x){if(n<=1)return 0;return Math.min(n-1,Math.max(0,Math.round((x-20)/600*(n-1))));}
 const isDate=v=>typeof v==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(v)&&Number.isFinite(Date.parse(v+'T00:00:00Z'))&&new Date(Date.parse(v+'T00:00:00Z')).toISOString().slice(0,10)===v;
@@ -145,8 +150,11 @@ function screen(route,{root,box,chosen,slots}){
  const onChange=fn=>{S.repaints.add(fn);return fn;};
  const changed=()=>{for(const fn of[...S.repaints]){try{fn();}catch(_){}}};
  // ---- notes store (read at every draw; the facade refuses before / after a failed layer)
- function stored(){if(!layer)return{state:'LOADER_FAILED',items:[],unreadable:0};let r=null;try{r=I.store.chartNotes.read();}catch(_){r=null;}
+ // A missing ChartWorkbench (the store's READER_MISSING) is its own state, not a storage failure (storeFail words each).
+ function stored(){if(!layer)return{state:'LOADER_FAILED',items:[],unreadable:0};let r=null;
+  try{r=I.store.chartNotes.read();}catch(err){return{state:errCode(err)==='READER_MISSING'?'MODULE_MISSING':'UNAVAILABLE',items:[],unreadable:0};}
   return r&&typeof r.state==='string'&&Array.isArray(r.items)?r:{state:'UNAVAILABLE',items:[],unreadable:0};}
+ const unusable=st=>st.state==='INVALID'||st.state==='UNAVAILABLE'||st.state==='MODULE_MISSING';
  const tfWord=()=>V.tf==='W'?'장기 · 주봉 기준 (W)':'스윙 · 일봉 기준 (D)';
 
  /* ---------------- company box and chosen line */
@@ -215,7 +223,7 @@ function screen(route,{root,box,chosen,slots}){
    lines.flatMap(l=>TC.paths(l.values,g).map(p=>h('svg:path',{d:p,fill:'none',stroke:MUTED,'stroke-width':'1.5','stroke-dasharray':SMA_DASH[l.n],'vector-effect':'non-scaling-stroke',dataset:{smaLine:String(l.n)}}))),
    markNodes(g,dates,d.symbol));
   svg.addEventListener('click',e=>{const m=svg.getScreenCTM();if(!m)return;const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const q=pt.matrixTransform(m.inverse());
-   const i=indexAt(bars.length,q.x);notes.fill(dates[i],priceAt(g,q.y));},{signal});
+   const p=priceAt(g,q.y);if(p===null)return;notes.fill(dates[indexAt(bars.length,q.x)],p);},{signal});
   // The scale as text under the chart (SVG text would shrink to nothing on a phone); prices only inside [data-ram-price].
   dev.chart.replaceChildren(svg,h('p',{class:'reason',dataset:{techChartRange:''}},'세로 ',h('span',{dataset:{ramPrice:''}},fmt(g.minimum*g.scale)),' ~ ',
    h('span',{dataset:{ramPrice:''}},fmt(g.maximum*g.scale)),' ',d.currency,' · 가로 ',dates[0],' ~ ',dates[last]));
@@ -277,10 +285,10 @@ function screen(route,{root,box,chosen,slots}){
  function scenarioForm(){const r=S.row,st=stored();sc.horizon.textContent=tfWord();
   if(!layer){put(scen.form,failed('LOADER_FAILED','층을 불러오지 못해 시나리오를 읽지 못했습니다','새로고침해 주세요'));return;}
   if(!r){put(scen.form,h('p',{class:'reason'},'기업을 고르면 그 기업의 시나리오를 이 기기에 적을 수 있습니다'));return;}
-  if(st.state==='INVALID'||st.state==='UNAVAILABLE'){put(scen.form);return;}
+  if(unusable(st)){put(scen.form);return;}
   if(scen.form.firstChild!==sc.node)put(scen.form,sc.node);}
  function scenarioList(){const r=S.row;if(!layer||!r){put(scen.list);return;}
-  const st=stored();if(st.state==='INVALID'||st.state==='UNAVAILABLE'){put(scen.list,storeFail(st));return;}
+  const st=stored();if(unusable(st)){put(scen.list,storeFail(st));return;}
   const mine=ofSymbol(st.items,r.ticker,'chart-scenario/1');
   if(!mine.length){put(scen.list,empty('NO_SCENARIO',r.ticker+'의 시나리오가 아직 없습니다 · 이 기기 기준'));return;}
   put(scen.list,h('ul',{class:'news-lines',dataset:{scenarios:r.ticker}},mine.map(o=>h('li',{dataset:{scenario:o.id}},h('span',{class:'pill'},'사용자 작성'),' ',
@@ -346,7 +354,7 @@ function screen(route,{root,box,chosen,slots}){
   function paint(){const r=S.row,st=stored();
    if(!layer){put(wrap,failed('LOADER_FAILED','층을 불러오지 못해 노트를 읽지 못했습니다','새로고침해 주세요'));return;}
    if(!r){put(wrap,empty('NO_COMPANY','기업을 고르면 그 기업의 노트를 씁니다 · 이 기기에만 저장'));return;}
-   if(st.state==='INVALID'||st.state==='UNAVAILABLE'){put(wrap,storeFail(st));return;}
+   if(unusable(st)){put(wrap,storeFail(st));return;}
    save.disabled=false;
    const mine=ofSymbol(st.items,r.ticker,'chart-annotation/1'),all=st.items.length,lim=window.ChartWorkbench?window.ChartWorkbench.USER_LIMIT:500;
    put(list,h('p',{class:'meta',dataset:{noteCounts:mine.length+'/'+all}},r.ticker,' 노트 ',String(mine.length),'개 · 이 기기 전체 사용자 작성 ',String(all),'개 / ',String(lim)),
@@ -362,6 +370,7 @@ function screen(route,{root,box,chosen,slots}){
   onChange(paint);
   return{wrap,fill};})();
  function storeFail(st){return st.state==='INVALID'?failed('CHART_NOTES_STORAGE_INVALID','이 기기에 저장된 노트를 읽지 못했습니다','덮어쓰지 않습니다 · 기기 백업으로 옮긴 뒤 설정에서 지울 수 있습니다')
+  :st.state==='MODULE_MISSING'?failed('CHART_MODULE_MISSING','차트 노트 모듈(ChartWorkbench)을 불러오지 못해 노트를 읽지 못했습니다','저장된 노트는 그대로입니다 · 새로고침해 주세요')
   :failed('STORAGE_UNAVAILABLE','이 브라우저 저장소를 쓸 수 없습니다','사생활 보호 모드나 저장소 차단을 확인해 주세요');}
  function remove(e,id,status){try{I.store.chartNotes.remove(e,id);}catch(err){const c=errCode(err);status.textContent='지우지 않음 · '+noteWords(c);if(c==='CHART_NOTE_NOT_FOUND')changed();return;}
   status.textContent='지웠습니다 · 이 기기에서만';changed();}
