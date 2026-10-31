@@ -51,7 +51,7 @@
   3. action은 `actions/*`만 쓰고 SHA로 고정한다. 각 SHA가 어느 릴리스 태그인지 PR에 적는다(SHA ↔ 태그).
   4. 수집 잡에는 `pip install`이 없다. 수집기는 표준 라이브러리만 쓰고(수집기 PR에서 `kis_collector.py`를 import 고정 시험에 넣는다. 네트워크 표준 모듈은 허용, 제3자 패키지 금지), `python -I`(사용자·현재 폴더 경로 무시)와 checkout 경로를 명시한 `sys.path`로 실행한다.
 - **비공개 저장소의 쓰기 권한 = KIS 키 접근(보안 검토 A3, 10/31).** GitHub Free 비공개 저장소에는 보호 가지·규칙·환경 보호가 없다. 그래서 쓰기 권한이 있는 자격 증명은 무엇이든 워크플로나 워크플로가 읽는 파일을 바꿔 KIS Secrets를 읽을 수 있고, "Main 작성·오너 승인"(DC-35)은 GitHub가 강제하지 않는다. 그래서:
-  1. Claude GitHub 앱은 워크플로를 처음 넣을 때만 이 저장소에 추가하고, 넣은 뒤 **바로 뺀다**(폰 설정 1.3단계). 오너가 파일을 직접 붙여 넣는 방법도 된다.
+  1. Claude GitHub 앱의 이 저장소 접근은 **Main이 바꿀 때만 켜고, 끝나면 끈다**(폰 설정 1.3단계, 10/31 저녁). 비공개 저장소의 워크플로·코드는 Main이 고친다. 오너는 접근 켜기·끄기만 하고 코드를 고치지 않는다(오너가 폰으로 붙여 넣는 방식은 쓰지 않는다).
   2. KIS Secrets를 읽는 코드는 **워크플로 YAML 안에 직접**(inline) 두거나, 위 조상 확인을 거친 공개 SHA의 코드에만 둔다. 워크플로가 읽는 비공개 저장소의 `.py`·설정 파일이 Secrets를 다루지 않게 한다(Contents 쓰기만 있으면 Workflows 권한 없이도 그런 파일을 바꿀 수 있기 때문이다).
   3. Codex는 이 저장소에 **Contents: Read-only + Issues: Read and write**만 받는다. 요청은 이슈로 낸다(설계 20절). `issues: types: [opened]` 워크플로가 이슈 본문을 env 변수로 받아(`run:` 안에 `${{ github.event.issue.body }}`를 쓰지 않는다) `research_request.parse_request`로 검사하고, 결과는 그 워크플로의 `GITHUB_TOKEN`이 쓴다.
   4. 비공개 저장소 워크플로의 실행 조건은 `schedule`·`workflow_dispatch`·`issues`뿐이다. **`push`·`pull_request`는 쓰지 않는다**(push 워크플로는 아무 가지에서나 Secrets를 받는다).
@@ -68,7 +68,7 @@
 | Secret 이름 | `KIS_APP_KEY=present`, `KIS_APP_SECRET=present` — 설계 문서 이름과 같음(값은 보지 않음) |
 | 인증 | 토큰 발급 HTTP 200(유효 86,400초) · 폐기 HTTP 200 |
 | 로그 | 정해진 세 줄뿐. 키·토큰·응답 본문 없음. 카카오톡 토큰 알림 1건 |
-| 후속(보안 검토 A3, 10/31) | 지금은 `kis-auth-check.yml`이 Secrets를 다루는 `tools/kis_auth_check.py`를 읽는다. 위 3절 규칙 2에 맞게 **Main이 비공개 저장소에서 그 스크립트 내용을 워크플로 YAML 안으로 옮기고 `.py`를 지운다**(이 공개 PR에서는 하지 않는다. 비공개 저장소 변경이라 오너 승인 뒤 Main이 한다) |
+| 후속(보안 검토 A3, 10/31) | **완료(10/31 저녁, 오너 승인 ③):** 비공개 저장소 `kis-auth-check.yml`이 인증 확인을 YAML 안에서 직접 돌리고 저장소 코드를 체크아웃하지 않는다. `tools/kis_auth_check.py`는 지웠다(비공개 저장소 커밋 `9beed3e`) |
 
 ## 4. 본인 전용 인증 — Zero Trust 없이 서버에서 검증
 
