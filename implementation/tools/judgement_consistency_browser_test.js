@@ -246,8 +246,9 @@ async function checkS17(page, VTinfo, { kind, label }) {
     const t = await page.locator('[data-basis="' + cid + '"]').textContent();
     assert.ok(t.includes(code) && t.includes(VTinfo.codeLabel[code]) && t.includes(VTinfo.codeLabel.BASIS_NOT_AVAILABLE), 'basis ' + cid + ' ' + t);
   }
-  assert.ok((await page.locator('[data-basis="c07_additional"]').textContent()).includes(VTinfo.codeLabel.V_HISTORY_SHORT));
-  assert.ok((await page.locator('[data-v-capture]').textContent()).includes(VTinfo.codeTextAll.V_STORE_INVALID));
+  // DC-31: no V history is kept on the device and the central one is not published: the V slope is NA and no capture line shows.
+  assert.ok((await page.locator('[data-basis="c07_additional"]').textContent()).includes('V 기울기 NA · 중앙 V 이력 미게시'));
+  assert.equal(await page.locator('[data-v-capture], [data-v2-capture]').count(), 0, 'no device V capture line');
   const legend = await page.locator('[data-cancel-legend]').textContent();
   for (const c of VTinfo.families.execution) assert.ok(legend.includes(c + ': ' + VTinfo.codeLabel[c]), 'legend ' + c);
   const dictionary = out.template.slice(out.template.indexOf('## 사유 코드 사전'));

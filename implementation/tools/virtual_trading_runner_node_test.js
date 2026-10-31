@@ -126,11 +126,11 @@ test('holdingsFromSnapshot maps catalog rows to company ids, drops zero quantiti
   assert.equal(R.holdingsFromSnapshot(null, catalog), null);
 });
 
-test('device V store: V scores only, unreadable store is empty', () => {
-  const store = { getItem: (k) => (k === R.V_KEY ? JSON.stringify({ schema: 'virtual-trading-v-scores/1', scores: { '2026-10-20': { nvda: 50 } } }) : null) };
-  assert.deepEqual(R.readVStore(store), { '2026-10-20': { nvda: 50 } });
+test('DC-31: the stored device V history is never read (the key is left untouched), so the ledger gets no V scores', () => {
+  const reads = [], store = { getItem: (k) => { reads.push(k); return k === R.V_KEY ? JSON.stringify({ schema: 'virtual-trading-v-scores/2', scores: { '2026-10-20': { nvda: 50 } }, composition: {} }) : null; } };
+  assert.deepEqual(R.readVStore(store), {});assert.deepEqual(R.readVComposition(store), {});
+  assert.deepEqual(reads, [], 'the V store key is not read');
   assert.deepEqual(R.readVStore({ getItem: () => { throw new Error('x'); } }), {});
-  assert.deepEqual(R.readVStore({ getItem: () => '{bad' }), {});
 });
 
 test('module writes nothing: no storage writes, no logging, no network other than the session', () => {

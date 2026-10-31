@@ -4,8 +4,9 @@
 // rows are read back here and every Q/G axis score, factor percentile, peer basis/count, SIC/group/profile and source state on the
 // page must equal them. SYNTHETIC mode (PR builds publish no data file): the strictly valid synthetic payload (qgv_v2_fixture.js)
 // plus one Universe identity-conflict withdrawal is served by route. Cases: a LIVE general row, a policy-NA row (LIVE, an axis
-// below 50% of its weight), a NOT_COLLECTED / CIK_UNRESOLVED code, a FINANCIAL row and (synthetic) a withdrawn code. No device
-// prices exist in this browser, so V must be NOT_AVAILABLE with the engine's reason (financial: not applicable). Never 0 for NA.
+// below 50% of its weight), a NOT_COLLECTED / CIK_UNRESOLVED code, a FINANCIAL row and (synthetic) a withdrawn code. V is the central
+// V only (DC-31); no publication is served here (qgv-official.json 404), so V must be NA with the OFFICIAL_* reason (financial: not
+// applicable), never a device V. Never 0 for NA.
 const { chromium } = require('playwright'), assert = require('node:assert/strict'), fs = require('node:fs'), path = require('node:path');
 const F = require('./qgv_v2_fixture.js'), SQ = require('../src/investment_system/product/web_assets/sec-qgv2.js'), ES = require('../src/investment_system/product/web_assets/entity-search.js');
 const BASE = process.env.PAGES_COCKPIT_URL, ORIGIN = new URL(BASE).origin, SHOTS = process.env.PAGES_COCKPIT_EVIDENCE_DIR || '';
@@ -73,11 +74,12 @@ async function check(page, p, kind, code) {
   const labels = await page.locator('[data-uc-factor] th b').allTextContents();
   assert.deepEqual(labels, ['Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'G1', 'G2', 'G3', 'G4', 'G5', 'V1', 'V2', 'V3', 'V4', 'V5']);
   assert.match(await page.locator('[data-uc-factor="q_profitability"] th').textContent(), /수익성/);
-  // V: no device price in this browser -> NOT_AVAILABLE with the engine reason; financial -> not applicable.
-  phase = kind + ' V';assert.equal(await pg.getAttribute('data-universe-v'), 'NO_DEVICE_PRICE');
+  // V: no central publication -> NA with its OFFICIAL_* reason and the NA basis line; financial -> not applicable. Never a device V.
+  phase = kind + ' V';assert.equal(await pg.getAttribute('data-universe-v'), 'NO_OFFICIAL_V');
   const v = page.locator('[data-universe-card="qgv"] [data-uc-axis="V"]');assert.equal(await v.getAttribute('data-uc-score'), 'NA');
   if (kind === 'FINANCIAL') { assert.equal(await v.getAttribute('data-uc-axis-state'), 'NOT_APPLICABLE');assert.match(await v.textContent(), /현재 금융업 가치평가 모델 미지원/); }
-  else if (kind === 'LIVE' || kind === 'POLICY_NA') { assert.equal(await v.getAttribute('data-uc-axis-state'), 'DEVICE_NA');assert.match(await v.textContent(), /가격 입력 필요/); }
+  else if (kind === 'LIVE' || kind === 'POLICY_NA') { assert.equal(await v.getAttribute('data-uc-axis-state'), 'OFFICIAL_NA');assert.match(await v.textContent(), /공식 V 없음: 중앙 V 게시본/);assert.doesNotMatch(await v.textContent(), /가격 입력 필요|기기/); }
+  if (r && r.state && ['LIVE', 'STALE'].includes(r.state)) { assert.equal(await page.locator('[data-universe-card="qgv"] [data-uc-central] [data-central-basis]').getAttribute('data-central-state'), 'NA');assert.equal(await page.locator('[data-uc-central] [data-attribution]').count(), 0); }
   for (const f of Object.keys(require('../src/investment_system/product/web_assets/qgv-v2.js').WEIGHTS.V)) assert.equal(await page.locator('[data-uc-factor="' + f + '"]').getAttribute('data-uc-value'), 'NA');
   // Freshness and classification blocks.
   phase = kind + ' FRESH';const fl = await page.locator('[data-universe-card="qgv"] [data-uc-fresh]').first().textContent();
@@ -104,6 +106,7 @@ async function check(page, p, kind, code) {
       const errors = [];page.on('pageerror', (e) => errors.push(String(e)));
       await page.route('**/*', (r) => new URL(r.request().url()).origin === ORIGIN ? r.fallback() : r.abort());
       if (!live) await page.route('**/sec-qgv2.json*', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(p) }));
+      await page.route('**/qgv-official.json*', (r) => r.fulfill({ status: 404, contentType: 'text/plain', body: 'not found' }));
       for (const [kind, code] of list) {
         await check(page, p, kind, code);pass++;
         if (SHOTS) { fs.mkdirSync(SHOTS, { recursive: true });await page.screenshot({ path: path.join(SHOTS, 'universe-company-' + kind.toLowerCase() + '-' + width + '.png'), fullPage: true }); }

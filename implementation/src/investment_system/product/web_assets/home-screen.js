@@ -176,6 +176,9 @@
   return '<div class="res-bar" data-axis="'+axis+'" data-res-state="'+(ok?'AVAILABLE':'NOT_AVAILABLE')+'"><b>'+axis+'</b><svg viewBox="0 0 100 12" preserveAspectRatio="none" aria-hidden="true" focusable="false"><rect class="res-bar-track" x="1" y="1.5" width="98" height="9" rx="2"/>'+
    (ok?'<rect class="res-bar-fill" x="1" y="1.5" width="'+(w*.98).toFixed(1)+'" height="9" rx="2"/>':'<path class="res-bar-none" d="M4 6h92"/>')+'</svg><span class="res-bar-v">'+(ok?'<span class="num">'+esc(num(v))+'</span>':esc(T(locale,'미산출','n/a')))+'</span></div>';
  }
+ // DC-31: the central V basis (basis day, publication time, STALE, calc version) and the IEX attribution with its terms link.
+ function centralLine(screens){const QS=root.QgvScores;if(!QS||typeof QS.centralHtml!=='function')return '';const P=QS.pagePublication();
+  return '<div data-res-central>'+QS.centralHtml(QS.centralBasis(P.publication,{reason:P.reason,v2Inputs:screens&&screens['sec-qgv2.json']||null}),locale==='en-US')+'</div>';}
  function qgvCard(e,screens,ctx){
   const id=e.canonical_id,QS=root.QgvScores,en=locale==='en-US',S=call(ctx.scores),r=S&&QS&&QS.rowOf?QS.rowOf(S,id):null,d=r?r.primary:null,cid=encodeURIComponent(id);
   const total=d&&typeof d.total==='number'?'<span class="num" data-res-state="AVAILABLE">'+esc(num(d.total))+'</span>'+(Number.isFinite(d.v)?'':' <span class="res-why">'+esc(T(locale,'V 미포함','V not included'))+'</span>'):naHtml(QS&&QS.naText?QS.naText(d,en):T(locale,'공개 점수 없음','no public score'));
@@ -185,7 +188,7 @@
    :naHtml(T(locale,'공식 순위 없음','no official rank'));
   const ind=industryOf(screens,id),group=d?T(locale,'Universe504 백분위 · 업종: ','Universe504 percentile · industry: ')+(ind?ind.group:T(locale,'미산출','not computed')):null;
   return card('qgv','1','QGV','<div class="res-bars" role="img" aria-label="'+esc('Q '+(d&&Number.isFinite(d.q)?num(d.q):T(locale,'미산출','n/a'))+' · G '+(d&&Number.isFinite(d.g)?num(d.g):T(locale,'미산출','n/a'))+' · V '+(d&&Number.isFinite(d.v)?num(d.v):T(locale,'미산출','n/a')))+'">'+['Q','G','V'].map(a=>bar(a,d?d[a.toLowerCase()]:null)).join('')+'</div>'+
-   '<dl class="res-dl">'+dlRow('score',T(locale,'QGV 점수','QGV score'),total)+dlRow('rank',T(locale,'순위','Rank'),rank)+dlRow('group',T(locale,'비교군','Comparison group'),group?esc(group):naHtml(T(locale,'점수 없음','no score')))+'</dl>',
+   '<dl class="res-dl">'+dlRow('score',T(locale,'QGV 점수','QGV score'),total)+dlRow('rank',T(locale,'순위','Rank'),rank)+dlRow('group',T(locale,'비교군','Comparison group'),group?esc(group):naHtml(T(locale,'점수 없음','no score')))+'</dl>'+centralLine(screens),
    [['#leaderboard',T(locale,'리더보드','Leaderboard'),'leaderboard','1.1'],['#profiles',T(locale,'가중치','Weights'),'profiles','1.2'],['#company/'+cid,T(locale,'스탯창','Stat window'),'radar','']]);
  }
  function taCard(e){
@@ -250,7 +253,7 @@
   if(host.dataset.resultKey===key&&RES.screens===screens&&!host.hidden)return;
   const token=++RES.token,e=hit.entity;RES.screens=screens;host.dataset.resultKey=key;host.dataset.resultCompany=e.canonical_id;host.dataset.resultEntity=hit.canonical_entity_id;
   host.innerHTML=resultHead(e,screens)+'<div class="res-cards">'+qgvCard(e,screens,ctx)+taCard(e)+macroCard(e,screens)+newsCard(e)+portfolioCard()+'</div>'+
-   '<p class="res-foot" data-res-foot>'+esc(T(locale,'검색 순서는 추천 순위가 아님 · 가격 기반 값은 내 기기에서만 계산 · 숫자는 공개 자료 그대로, 없으면 미산출','Search order is not a recommendation · price-based values are computed on this device only · numbers come from public data as published, otherwise “not computed”'))+'</p>';
+   '<p class="res-foot" data-res-foot>'+esc(T(locale,'검색 순서는 추천 순위가 아님 · V는 중앙 게시(IEX 마지막 체결가 기준) · 가격 차트는 내 기기 시세로만 그림 · 숫자는 공개 자료 그대로, 없으면 미산출','Search order is not a recommendation · V is published centrally (IEX last trade) · the price chart uses this device’s prices only · numbers come from public data as published, otherwise “not computed”'))+'</p>';
   host.hidden=false;fillNews(host,e.canonical_id,token);fillPortfolio(host,e,ctx,token);
  }
 
@@ -409,6 +412,8 @@
   if(currentRoute!=='home'||!home.ctx)return false;
   home.ctx={...home.ctx,interests};personal(home.ctx);return true;
  }
+ // The central V read settled (app.js refreshScoreViews): repaint the open result card with the same search state.
+ function refreshScores(){const host=$('#home-result');if(!host||host.hidden)return false;delete host.dataset.resultKey;result();return true;}
  // A company / entity opened from the home results offers the way back to them (query, scope and row are restored).
  function backLink(route,id){
   if(!home.pending||!home.saved||!['company','analysis','entity'].includes(route))return;
@@ -420,5 +425,5 @@
  }
  wire();
  root.SearchUI=Object.freeze({refresh,setUnavailable,setLocale,paint,readRecent,clearRecent,KO_NAMES});
- root.HomeScreen=Object.freeze({html,afterRender,park,refreshPersonal,state:()=>({route:currentRoute,quoteId:home.quoteId,filter:S.filter})});
+ root.HomeScreen=Object.freeze({html,afterRender,park,refreshPersonal,refreshScores,state:()=>({route:currentRoute,quoteId:home.quoteId,filter:S.filter})});
 })(window);

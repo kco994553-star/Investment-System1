@@ -10,7 +10,7 @@
 
 | 흐름 / 기능번호 | Main 이행 | 현재 상태 |
 | --- | --- | --- |
-| **1 기기 V 폐지 / 2·6** (Main 순서 1) | DC-31: 화면은 중앙 V만. PR-1a(새 앱 공식 V 판독기 + 점수 접근자 게시본 모드) → PR-1b(옛 화면 기기 V 제거, direction guard 규칙) → 11/16 TARGET 경로 PR | PR-1a 구현·검토 중(`claude/device-v-abolition-1a`) |
+| **1 기기 V 폐지 / 2·6** (Main 순서 1) | DC-31: 화면은 중앙 V만. PR-1a(새 앱 공식 V 판독기 + 점수 접근자 게시본 모드) → PR-1b(옛 화면 기기 V 제거, direction guard 규칙) → 11/16 TARGET 경로 PR | PR-1a #435 병합(`44cd0b43`) · PR-1b #439 병합(`5e16d3e6`). 남은 것: S06 대표 증권 후속 PR, 11/16 TARGET 경로 PR |
 | **2 IEX 확장 구현 / 공통** (Main 순서 2) | 10/31 결정: PR 3개(① 파서·공개 경계 ② 워크플로 시험·월말가 채우기 ③ 공개 파일 한도), 거래대금 기준 제외, 확장분 정밀값·공개는 승격 뒤 | 기기 V PR 뒤 시작 |
 | **3 V가 필요한 화면** (Main 순서 3) | 2.2, 2.4·레이더, 6 | 대기 |
 | 가격 표시 | "가격은 클릭할 때만" 폐지 제안(GSQ-026·DC-33, 공개 IEX 마지막 체결가) | #433, 오너 승인 대기 |
@@ -34,7 +34,7 @@
 | #429 → #431 병합 | #429 01:10(`b10b841a`), #431 02:24(`32cc3ffd`). #430은 #417 담당 확인 뒤 |
 | 비공개 구역·유료 공급처 | 불필요로 기록(#431, GSQ-025 보충은 이 PR). **같은 날 뒤 결정으로 비공개 구역은 "1인 비공개 구역 신설(KIS 한정)"로 바뀜**(#436). 유료 공급처 V·유료 공급처 비교는 계속 하지 않음 |
 | 확장 결정 | `IEX-EXP-ADV` 기준 제외, `IEX-EXP-BUILD` PR 3개, `IEX-EXP-FORMAT` 정밀값·승격 뒤 공개(#431) |
-| 기기 V 폐지 | DC-31(#431). PR-1a [#435](https://github.com/kco994553-star/Investment-System1/pull/435) **병합**(`44cd0b43`, 새 앱 공식 V 판독기). PR-1b [#439](https://github.com/kco994553-star/Investment-System1/pull/439)(옛 화면, 전체 시험 통과, 승인 대기). TARGET 경로는 11/16 PR |
+| 기기 V 폐지 | DC-31(#431). PR-1a [#435](https://github.com/kco994553-star/Investment-System1/pull/435) **병합**(`44cd0b43`, 새 앱 공식 V 판독기). PR-1b [#439](https://github.com/kco994553-star/Investment-System1/pull/439) **병합**(`5e16d3e6`, 10/31 오너 승인, 옛 화면은 중앙 V만). S06 같은 발행사 두 번째 주식 종류(GOOG) 표시는 후속 PR(오너 원칙 "시총은 발행사 단위, 점수는 대표 증권 하나"). TARGET 경로는 11/16 PR |
 | 병렬 진행 체계 | DC-32·WORKING_RULES·START_HERE 담당표(이 PR) |
 | #426 | 필요한 원칙만 #431로 옮기고 닫음 |
 | 측정용 가지 | 오너가 지움(세션 삭제 권한 없음) |
@@ -65,7 +65,7 @@
 | 이 문서 PR | DC-35 개발 체계(Main + Codex)·결정 문서·lab-backtest-v1 계약, START_HERE 담당표, 오늘 인수인계·기능 현황, GSQ-025 보충(#434 커밋 포함) | CI 확인 | 문서 병합 승인 필요 |
 | [#434](https://github.com/kco994553-star/Investment-System1/pull/434) | DC-32 병렬 진행 체계(시행 전 대체) | 대체 종료 | 이 PR이 대체(이력 보존) |
 | [#436](https://github.com/kco994553-star/Investment-System1/pull/436) | 설계: 1인 비공개 구역(KIS 한정), DC-34·GSQ-027 제안, 오너 폰 설정 절차, KIS 문의 초안 | CI 확인 | **설계 승인 필요**(`PRIV-*` 7개). 구현은 승인 뒤 |
-| [#439](https://github.com/kco994553-star/Investment-System1/pull/439) | 기기 V 폐지 1b: 옛 화면은 중앙 V만, 기기 V·V 이력·가치 패널 제거, direction guard DC-31a~d | CI 확인(#435 병합 뒤 canonical 위) | **병합 승인 필요** |
+| [#439](https://github.com/kco994553-star/Investment-System1/pull/439) | 기기 V 폐지 1b: 옛 화면은 중앙 V만, 기기 V·V 이력·가치 패널 제거, direction guard DC-31a~d | CI 녹색 | **병합**(`5e16d3e6`, 10/31 오너 승인) |
 | [#433](https://github.com/kco994553-star/Investment-System1/pull/433) | GSQ-026·DC-33 가격 표시 결정 기록(공개 IEX 마지막 체결가, 클릭 전용 폐지 범위) | CI 확인 | **결정 승인 필요**. 구현은 승인 뒤 |
 | [#432](https://github.com/kco994553-star/Investment-System1/pull/432) | Codex 연구 `[WIP]` BT-DATA-PILOT v0.6(Alpaca OHLCV·IEX 빈 응답) | Draft | DC-32 연구 가지. 병합 전 Main 확인(담당 파일·CI·자료 권리) + 오너 승인 |
 | [#430](https://github.com/kco994553-star/Investment-System1/pull/430) | #417 연구 명세 재고정(`96037d1c`·23.1), base = #417 가지 | CI 6 녹색 | #417 담당 확인 뒤 병합 |
@@ -81,14 +81,14 @@
 | 대상 / 기능번호 | 상태 |
 | --- | --- |
 | 중앙 V / 2·6 | 매일 게시. 10/30분 정기 #31: 성공, `attempt_state OK`, 가격 기준일 2026-10-29, 새 게시본(02:31 배포). 행 523·순위 356·V 358. **PSKY V 보류 확인**(`price_status` `SPLIT_AFTER_SHARE_COUNT`, #428). 가격 상태: SUPPLIED 501·ADR 1·체결 없음 1·주식수 사건 1 |
-| 화면의 V | 리더보드·상세·레이더 V축은 아직 옛 화면 기기 계산값이다. DC-31로 폐지 결정, PR-1a·1b가 공식 V로 바꾼다. 공식 V를 읽는 화면은 옛 TARGET 빌더뿐(11/16까지 그대로) |
-| 새 앱(`web_app/`) | 병합됨, 배포 안 됨(P3 전환 때). PR-1a가 `qgv.js` 공식 판독기를 채운다 |
+| 화면의 V | 기기 V 폐지(DC-31, #435·#439 병합): 새 앱과 옛 화면( 리더보드·상세·레이더·V 산출 현황·Universe 페이지·S13 비교·플레이북)은 중앙 V(`qgv-official.json`)만 보인다. 늦으면 마지막 중앙 V + 게시 시각 + STALE. TARGET v1 빌더만 11/16 PR까지 옛 V 출처 유지. 가치(DCF) 패널 제거. S06 GOOG 표시 차이는 후속 PR |
+| 새 앱(`web_app/`) | 병합됨, 배포 안 됨(P3 전환 때). `qgv.js` 공식 판독기 채움(#435 병합) |
 | `sec-universe-shares.json` PSKY 행 | 10/31 03:13 UTC STALE → PSKY M3 시가총액 순위만 사유 있는 NA. `sec-qgv2.json`·`sec-universe-qg.json` PSKY 행은 LIVE |
 | IEX 확장 | 측정·설계·결정 완료(#431). 구현 없음 |
 
 ## 5. 다음 우선순위 (10/31 밤 DC-35 기준)
 
-1. #435(PR-1a 공식 V 판독기, CI 녹색) 오너 승인 병합 → PR-1b(옛 화면 기기 V 제거) PR·CI → 승인 병합. TARGET 경로는 11/16 PR.
+1. #435·#439 병합 완료(기기 V 폐지 1a·1b). 다음: S06 대표 증권 후속 PR → 11/16 TARGET 경로 PR.
 2. IEX 확장 구현 PR ①②③(각 계산·워크플로 변경, 독립 검토 1). #435와 함께 최우선.
 3. 공통 기반 PR → 묶음 1(4 매크로·7 프롬프트·8 트리) → 묶음 2(3 기술적 분석·5 뉴스·9 Lab). 화면 PR은 자체 검토, 묶음 PR마다 보고 1회.
 4. #436 설계 보강(차트 이력 MODP=0 장부·MODP=1 차트 계열, Lab 결과 비공개 저장·조회). 구현은 `PRIV-*` 승인 뒤.
@@ -119,7 +119,7 @@
 | TARGET v1 확정 | 확정 창 11/09~11/15. V 출처는 그 기간 바꾸지 않는다(DC-31). 열린 항목: EME·CMG 새 10-Q 칸 원문 대조 |
 | PSKY | ① 공식 V는 #428로 보류(새 10-K 주식수가 나오면 저절로 풀림) ② 주식수 파일 행 STALE(M3 순위만 NA) ③ Q·G는 인수 전 재무(FYE 2024-12-31) 기준 |
 | 규칙 변경 PR과 라이브 게시본 | 엔진·가중치·설정 버전을 바꾸는 PR은 라이브 게시본을 무효로 만들 수 있다(점검표 7절). 버전 상수를 바꾸지 않는 PR(#428)은 해당 없음 |
-| 기기 V 폐지 중 | PR-1a는 새 앱만 바꾼다(라이브 사이트 동작 같음). 라이브 화면은 PR-1b 병합 뒤 바뀐다 |
+| 기기 V 폐지 | #439 병합으로 라이브 옛 화면은 중앙 V만 보인다(기기 V·V 이력·가치 패널 없음). S06에서 GOOG가 QG 보기에 순서 없이 나와 QG 개수 12 · 게시본 11로 다르다 → 후속 PR |
 | 측정용 가지 | `claude/iex-expansion-measure-once`·`claude/kis-verify-once`: 세션 삭제 권한 없음(403). 오너가 지운다. 두 가지의 워크플로는 그 가지에 push할 때만 돈다. KIS 가지에 push하면 KIS 토큰이 발급되어 오너에게 카카오톡 알림이 간다 |
 | telecom MIN_PEERS=8 경계 | 하나 빠지면 Q가 GENERAL `UNIVERSE_FALLBACK`. 매일 8 미만이면 즉시 보고 |
 | verify 시간 | 35~37/60분 |

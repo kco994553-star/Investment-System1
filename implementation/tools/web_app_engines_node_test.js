@@ -9,8 +9,8 @@
 //    reference-only display without writing, equals the old openPanel's judgement, and record(event) writes what openPanel wrote
 //    on open; a judgement says recorded:false / JUDGEMENT_NOT_RECORDED until its occurrences are in the store, then recorded:true
 //    (owner 2026-10-24: recorded only on the click), read from the store, so a judgement made again, after a reload too, says the
-//    same; NOTHING_TO_RECORD when there is no occurrence to write; facts() reads the shared result through the score view after
-//    the news list.
+//    same; NOTHING_TO_RECORD when there is no occurrence to write; facts() reads the page's central result (DC-31: the official V,
+//    v_prev20 NA with V_HISTORY_NOT_PUBLISHED) after the news list; TARGET reads the hidden device result (await qgv.forEngines).
 //  - One event, one top-level action: syncScoringPrices' tab sync is a nested step presenting its SYNC action's signal.
 //  - Virtual: stored() is the runner's open pass on the price view with fetch:false (NOT_AVAILABLE before sign-in with zero
 //    requests; PRICE_NOT_FETCHED after it with zero private requests); compare / forward / rehearse; run() is NOT_IN_P1.
@@ -28,6 +28,8 @@ const F = require('./qgv_v2_fixture.js');
 const QGV2 = 'sec-qgv2.json', DATE = '2026-10-20', WORKER = 'https://private-investment-history.kco994553.workers.dev';
 const CATALOG = JSON.parse(execFileSync('python3', ['-c', 'import json;from investment_system.product.device_actual_catalog import public_actual_catalog as c;print(json.dumps(c()))'],
   { env: { ...process.env, PYTHONPATH: path.join(R.ROOT, 'implementation/src') }, encoding: 'utf8' }));
+// The synthetic central V publication (tests/fixtures/qgv_official_vectors_v1.json base_text; its input as_of = the fixture's).
+const PUB_TEXT = JSON.parse(fs.readFileSync(path.join(R.ROOT, 'implementation/tests/fixtures/qgv_official_vectors_v1.json'), 'utf8')).base_text;
 const CODES = { schema: 'universe-codes/1', codes: JSON.parse(fs.readFileSync(path.join(R.ROOT, 'implementation/src/investment_system/universe/universe_codes_v1.json'), 'utf8')) };
 const TOKEN = ['memory', 'only', 'synthetic', 'engines'].join('-'), SCOPE = 'https://www.googleapis.com/auth/drive.file email';
 // Universe-tab prices of the fixture (every LIVE code but MSFT, plus NVDA, as qgv_v2_fixture.strictUniverseValues), made-up decimals.
@@ -60,7 +62,7 @@ const plain = (v) => JSON.parse(JSON.stringify(v));
 /* One page: a browser-like window, the reused old modules (index.html order), fresh P1 modules. The QGV accessor reads the Universe
    tab above (no price click in these tests); every other price path goes through the real price layer. */
 function env({ files = {} } = {}) {
-  const table = { [QGV2]: { json: F.strictPayload() }, 'actual-catalog.json': { json: CATALOG }, 'universe-codes.json': { json: CODES }, 'forward-validation-ledger.json': { json: ledger() }, ...files };
+  const table = { [QGV2]: { json: F.strictPayload() }, 'actual-catalog.json': { json: CATALOG }, 'universe-codes.json': { json: CODES }, 'forward-validation-ledger.json': { json: ledger() }, 'qgv-official.json': { body: PUB_TEXT }, ...files };
   const win = R.nodeWindow({ files: (name) => table[name] || null }), mods = R.loadOld(win);
   win.InvestmentAppConfig = Object.freeze({ ...mods.InvestmentAppConfig, virtualTradingRequestSpacingMs: 0 });
   win.localStorage = memoryStorage(); win.sessionStorage = memoryStorage(); win.google = gis();
@@ -89,13 +91,13 @@ test('TARGET draft: the accessor result gives the draft TargetV1Builder makes fr
   const ids = mods.DeviceWatchlist.identities(CATALOG).map((c) => ({ company_id: c.company_id, ticker: c.ticker })), U2 = QS.universeIdentities(inputs, ids);
   const quotes = await QS.collectQuotes({ PrivateSubsetView: { prices: () => e.U.prices } }, { identities: ids, v2Inputs: inputs, catalog: CATALOG });
   const computed = QS.compute({ identities: U2.identities, v2Inputs: inputs, quotes, preset: null, gate: null, referenceRows: {}, official: U2 });
-  assert.deepEqual(plain(qgv.forEngines(pg).rows), plain(computed.rows), 'the accessor result is QgvScores.compute on the same inputs and quotes');
+  assert.deepEqual(plain((await qgv.forEngines(pg)).rows), plain(computed.rows), 'the hidden TARGET device result is QgvScores.compute on the same inputs and quotes');
   const ref = TB.buildDraft({ computed, inputs, universeCodes: CODES.codes, existing: mods.TargetV1Screen.existingSymbols(CATALOG), date: DATE, basis: null, cfg: mods.TargetV1ConfigDefaults });
   assert.deepEqual(got, { ...plain(ref), v_source: 'DEVICE_TEMPORARY' }, 'the old draft, plus the V source its pool V came from');
   assert.ok(got.pool.length >= 10 && got.eligible_count === got.pool.length, 'fixture gives a real candidate pool');
   assert.equal(calls.buildDraft.length, 1); const [a] = calls.buildDraft[0];
   assert.deepEqual(Object.keys(a).sort(), ['basis', 'cfg', 'computed', 'date', 'existing', 'inputs', 'universeCodes']);
-  assert.equal(a.computed, qgv.forEngines(pg)); assert.equal(a.inputs, inputs); assert.equal(a.cfg, mods.TargetV1ConfigDefaults);
+  assert.equal(a.computed, await qgv.forEngines(pg)); assert.notEqual(a.computed, qgv.centralComputed(pg), 'never the central result (TARGET keeps its V source until 11/16)'); assert.equal(a.inputs, inputs); assert.equal(a.cfg, mods.TargetV1ConfigDefaults);
   assert.deepEqual([...a.universeCodes], CODES.codes); assert.deepEqual(a.existing, mods.TargetV1Screen.existingSymbols(CATALOG)); assert.equal(a.date, DATE); assert.equal(a.basis, null);
   assert.ok(Object.isFrozen(got) && Object.isFrozen(got.pool[0]));
   assert.ok(!SENTINEL.test(JSON.stringify(got)), 'no device price in the draft');
@@ -164,7 +166,7 @@ test('TARGET finalize: re-checks the RAW published JSON (data.peek), regenerates
   const g = await engines.target.finalize(e.click(), { date: DATE });
   assert.equal(g.outcome, 'DRAFT_REGENERATED'); assert.deepEqual(engines.target.state().draft.basis, await TB.inputBasis(raw));
   assert.equal(engines.target.state().draft.v_source, 'DEVICE_TEMPORARY', 'a regenerated draft keeps its V source');
-  const [, o] = calls.regenerateDraft[0]; assert.equal(o.computed, qgv.forEngines(pg)); assert.equal(o.inputs, qgv.engineInputs(pg)); assert.equal(o.date, DATE);
+  const [, o] = calls.regenerateDraft[0]; assert.equal(o.computed, await qgv.forEngines(pg)); assert.equal(o.inputs, qgv.engineInputs(pg)); assert.equal(o.date, DATE);
   // A version that passes: the engines add v_source = page.engine_v_source.id (#391 writes the same id itself; another id fails).
   const B = mods.TargetV1Builder, pass = (extra) => Object.freeze({ ...B, finalizeBlockers: () => ({ blockers: [], check: { reasons: [] }, basis_changed: false }),
     finalize: (s, x) => ({ ...s, versions: [...s.versions, { version: 'v1', date: x.date, rows: [{ symbol: 'NVDA', pct: 10 }], ...extra }], rule_c: { start: x.date, version: 'v1' } }) });
@@ -293,16 +295,17 @@ test('playbook macro reference only and facts: CRISIS shown, no U3, no macro blo
   const pg = await qgv.page(), f = await engines.playbook.facts('NVDA', { date: '2026-10-13' });
   assert.equal(order[0][2], 'news'); assert.notEqual(order[0][1], qgv.scoreView, 'the news list is first read through the public view');
   const [view, o] = calls.prepareScores[0];
-  assert.equal(view, qgv.scoreView); assert.equal(o.screens, data.screens()); assert.equal(o.catalog.schema, 'DEVICE_ACTUAL_CATALOG/1'); assert.equal(o.idByTicker.get('NVDA'), 'nvda'); assert.equal(o.idByTicker.size, 19);
+  assert.equal(view, qgv.scoreView); assert.equal(o.screens[QGV2], null, 'prepareScores only fills the news RAM: no sec-qgv2.json, no device V'); assert.equal(o.catalog.schema, 'DEVICE_ACTUAL_CATALOG/1'); assert.equal(o.idByTicker.get('NVDA'), 'nvda'); assert.equal(o.idByTicker.size, 19);
   assert.equal(order.length, 2); assert.equal(order[1][1], qgv.scoreView, 'prepareScores re-reads the cached list through the score view');
   globalThis.DataRefresh = DR;
   assert.equal(calls.heldSymbolsFor[0][0], e.prices.priceView);
   const [sym, fo] = calls.factsFor[0]; assert.equal(sym, 'NVDA'); assert.equal(fo.storage, e.store.storage); assert.equal(fo.date, '2026-10-13'); assert.equal(fo.screens, data.screens());
-  assert.equal(fo.computed.v2_as_of, qgv.forEngines(pg).v2_as_of); assert.deepEqual(plain(fo.computed.rows), plain(qgv.forEngines(pg).rows), 'the shared page result');
-  assert.equal(f.v_now, qgv.forEngines(pg).rows.nvda.primary.v); assert.equal(f.sector, 'semiconductors');
-  assert.equal(f.v_source, 'DEVICE_TEMPORARY', 'facts say the V source of v_now / v_prev20');
+  assert.equal(fo.computed, qgv.centralComputed(pg), 'the page\'s central result');
+  assert.equal(f.v_now, qgv.centralComputed(pg).rows.nvda.primary.v); assert.equal(typeof f.v_now, 'number', 'the official V of the publication'); assert.equal(f.sector, 'semiconductors');
+  assert.equal(f.v_prev20, null); assert.equal(f.v_comparison_reason, 'V_HISTORY_NOT_PUBLISHED', 'no device V history (DC-31)');
+  assert.equal(f.v_source, 'OFFICIAL_CENTRAL', 'facts say the V source of v_now');
   const fj = await engines.playbook.judge({ symbol: 'NVDA', date: '2026-10-13', situation: f });
-  assert.equal(fj.v_source, 'DEVICE_TEMPORARY'); assert.ok(!('v_source' in fj.situation), 'the engine gets the old situation keys only');
+  assert.equal(fj.v_source, 'OFFICIAL_CENTRAL'); assert.ok(!('v_source' in fj.situation), 'the engine gets the old situation keys only');
   assert.deepEqual(fj.judgement, plain(mods.PlaybookEngine.evaluate(mods.PlaybookConfigDefaults, fj.situation)));
   assert.ok(e.win.requests.every((r) => data.FILES.includes(r.name)), 'only public files; the score path made none'); assert.deepEqual(e.priv(), []);
 });
@@ -333,11 +336,11 @@ test('virtual: stored() = runner open pass on the price view (fetch:false): NOT_
   assert.equal(c.state, 'NOT_AVAILABLE'); assert.deepEqual(c.reason_codes, ['COMPARE_NEEDS_TWO_SETS']); assert.deepEqual(c.sets.map((s) => s.kind), ['SET_A']);
   assert.throws(() => engines.virtual.run(e.click()), /NOT_IN_P1/);
   const r = await engines.virtual.rehearse({ reportDate: '2026-10-23' });
-  assert.equal(r.result.mode, 'REHEARSAL'); assert.equal(r.result.snapshot_basis, e.qgv.forEngines(await e.qgv.page()).default); assert.deepEqual(e.priv(), []);
+  assert.equal(r.result.mode, 'REHEARSAL'); assert.equal(r.result.snapshot_basis, e.qgv.centralComputed(await e.qgv.page()).default, 'the central Q·G rows'); assert.deepEqual(e.priv(), []);
 });
 
 test('virtual rehearse without a usable sec-qgv2.json: as app.js, the TARGET Q·G rows (null) and the v2 basis from the old compute', async () => {
-  const e = env({ files: { [QGV2]: null } }), { mods, engines, qgv } = e, calls = spy(e, 'VirtualTradingSignals', ['rehearse']);
+  const e = env({ files: { [QGV2]: null, 'qgv-official.json': null } }), { mods, engines, qgv } = e, calls = spy(e, 'VirtualTradingSignals', ['rehearse']);
   const pg = await qgv.page(); assert.equal(pg.state, 'NO_DATA');
   const r = await engines.virtual.rehearse({ reportDate: '2026-10-23' });
   assert.equal(r.result.mode, 'REHEARSAL'); assert.equal(r.result.snapshot_basis, 'v2', 'QgvScores.basis is v2 whatever the file');

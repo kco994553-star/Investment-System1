@@ -40,7 +40,7 @@ globalThis.MacroLights = require(path.join(WA, 'macro-lights.js'));
 const QS = require(path.join(WA, 'qgv-scores.js')), PS = require(path.join(WA, 'public-screens.js'));
 const SD = require(path.join(WA, 'sec-disclosures.js')), NS = require(path.join(WA, 'news-signals.js'));
 const F = require('./qgv_v2_fixture.js'), secFx = require('./sec_disclosures_fixture.js'), newsFx = require('./news_signals_fixture.js');
-const { EMPTY, routeEmptyPublicScreens } = require('./empty_public_screens.js');
+const { EMPTY, routeEmptyPublicScreens } = require('./empty_public_screens.js'), O = require('./qgv_official_fixture.js'), QO = require(path.join(WA, 'qgv-official.js'));
 const BASE = process.env.PAGES_COCKPIT_URL, ORIGIN = new URL(BASE).origin;
 const DAYS = { 1: { as_of: '2026-10-13T22:30:00Z', now: '2026-10-14T03:00:00Z' }, 2: { as_of: '2026-10-14T22:30:00Z', now: '2026-10-15T03:00:00Z' } };
 const RECOLLECTED = 'NASDAQ:AKAM', KEPT = 'NASDAQ:ABNB', AGING = 'NYSE:ABT', AGING_AT = '2026-09-30T06:00:00Z';
@@ -102,6 +102,17 @@ function expectedRanks(n, identities, now = DAYS[n].now, quotes = {}) {
   return out;
 }
 // The two lists the engine gives in Node: official ranked ids in rank order, QG 참고 목록 ids in their own order.
+// DC-31: the same over the central V publication (qgv_official_fixture.js, validated in Node by the page's own validator first).
+const PUBV = JSON.parse(O.PUB_TEXT);
+function expectedPub(n, identities, now = DAYS[n].now) {
+  const U = officialOf(n, identities, now), S = QS.compute({ identities: U.identities, v2Inputs: inputsAt(n, now), quotes: {}, official: U, publication: PUBV }), out = {};
+  for (const [id, r] of Object.entries(S.rows)) if (Number.isInteger(r.rank) || r.qg_reference) out[id] = { rank: Number.isInteger(r.rank) ? r.rank : r.qg_reference.order, list: Number.isInteger(r.rank) ? 'RANKED' : 'QG_REFERENCE', total: fmt1(r.primary.total), q: r.primary.q, g: r.primary.g };
+  return out;
+}
+function secondCodes(n, identities, now = DAYS[n].now) {
+  const U = officialOf(n, identities, now), S = QS.compute({ identities: U.identities, v2Inputs: inputsAt(n, now), quotes: {}, official: U, publication: PUBV });
+  return Object.entries(S.rows).filter(([, r]) => r.rank_row && !Number.isInteger(r.rank) && !r.qg_reference && QS.exploreGroup(r) === 'QG_REFERENCE').map(([id]) => id);
+}
 function expectedLists(e) {
   const of = (list) => Object.entries(e).filter(([, x]) => x.list === list).sort((a, b) => a[1].rank - b[1].rank).map(([id]) => id);
   return { ranked: of('RANKED'), qg: of('QG_REFERENCE') };
@@ -128,15 +139,19 @@ const popSnapshot = (page) => page.evaluate(() => {
     controls: { query: document.getElementById('leader-query')?.value ?? null, group: document.getElementById('leader-group')?.value ?? null, interest: document.getElementById('leader-interest')?.checked === true, target: document.getElementById('leader-target')?.checked === true, sort: document.getElementById('leader-sort')?.value ?? null, explore: leaderboardView.explore },
     dom: { scope: attrs('[data-leaderboard-rank-scope]'), counts: attrs('[data-leaderboard-counts]'), explore: document.querySelector('[data-leaderboard-explore]')?.dataset.leaderboardExplore ?? null,
       buttons: Object.fromEntries([...document.querySelectorAll('[data-leaderboard-explore-option]')].map((b) => [b.dataset.leaderboardExploreOption, Number((b.textContent.match(/(\d+)\s*$/) || [])[1])])),
-      rows: [...document.querySelectorAll('[data-leaderboard-table] tbody tr[data-leaderboard-row]')].map((tr) => ({ id: tr.dataset.leaderboardRow, rank: tr.querySelector('[data-leaderboard-rank]')?.dataset.leaderboardRank ?? null, qg: tr.querySelector('[data-leaderboard-unranked="QG_REFERENCE"]')?.dataset.qgOrder ?? null,
+      rows: [...document.querySelectorAll('[data-leaderboard-table] tbody tr[data-leaderboard-row]')].map((tr) => ({ id: tr.dataset.leaderboardRow, rank: tr.querySelector('[data-leaderboard-rank]')?.dataset.leaderboardRank ?? null, qg: tr.querySelector('[data-leaderboard-unranked="QG_REFERENCE"]')?.dataset.qgOrder || null,  // '' = the second code of an issuer (its place is the issuer row, D11)
         prank: tr.querySelector('[data-leaderboard-portfolio-rank]')?.dataset.leaderboardPortfolioRank ?? null, prankText: tr.querySelector('[data-leaderboard-portfolio-rank]')?.textContent ?? null })),
       outside: [...document.querySelectorAll('[data-leaderboard-outside-row]')].map((li) => li.dataset.leaderboardOutsideRow), outsideList: document.querySelector('[data-leaderboard-outside]')?.dataset.leaderboardOutside ?? null } };
 });
 const sortIds = (a) => [...a].sort();
 /* One S06 state. `expect` = { asOf, population, ranked: [ids in rank order], qg: [ids in QG order] } from Node (independent of
    the page). Returns the sizes so that a sweep can show sorting moves no row in or out. */
-function checkPopulation(label, { truth: T, controls: C, dom: D }, expect) {
+function checkPopulation(label, { truth: T, controls: C, dom: D0 }, expect) {
   const L = (m) => label + ': ' + m, ids = T.identities.map((x) => x.id), R = T.rows;
+  // DC-31 publication (D11 one place per issuer): the second share class of an issuer (expect.second, rank_row set, no place of its
+  // own) is listed by S06 under the QG view without an order; it is checked apart (open display decision) and left out below.
+  const second = new Set(expect.second || []), D = second.size ? { ...D0, rows: D0.rows.filter((r) => !second.has(r.id)) } : D0;
+  for (const r of D0.rows.filter((x) => second.has(x.id))) eq([r.rank, r.qg], [null, null], L(r.id + ' (second code of an issuer) has no rank or QG order of its own'));
   eq(T.asOf, expect.asOf, L('the leaderboard reads the expected publication'));
   // D12: the rank population = the Universe of the file, one row per security (a TARGET company in the Universe is that code's
   // row); the TARGET outside the Universe are rows of the same result but never ranked and never in the table. Truth: leaderScores()
@@ -159,7 +174,8 @@ function checkPopulation(label, { truth: T, controls: C, dom: D }, expect) {
   const q = (C.query || '').trim().toLocaleLowerCase(), g = C.group === GROUP.id ? GROUP : null;
   ok(C.group === '' || g, L('group filter is the test group'));
   const keep = (x) => (!q || (x.ticker + ' ' + x.name).toLocaleLowerCase().includes(q)) && (!g || g.members.includes(x.id)) && (!C.interest || INTERESTS.includes(x.id));
-  const filtered = T.identities.filter((x) => keep(x) && (!C.target || x.target)).map((x) => x.id), inF = new Set(filtered);
+  const filtered = T.identities.filter((x) => keep(x) && (!C.target || x.target) && !second.has(x.id)).map((x) => x.id), inF = new Set(filtered);
+  const secondShown = T.identities.filter((x) => keep(x) && (!C.target || x.target) && second.has(x.id)).length;
   // TARGET outside the Universe: only in their own list (after the same filters), never in the table.
   eq(D.rows.filter((r) => T.outside.includes(r.id)), [], L('no TARGET outside the Universe in the table'));
   eq([D.outsideList, sortIds(D.outside)], [String(T.outsideRows.filter(keep).length), sortIds(T.outsideRows.filter(keep).map((x) => x.id))], L('TARGET outside the Universe only in their own list, after the same search / group / interest filters'));
@@ -183,12 +199,12 @@ function checkPopulation(label, { truth: T, controls: C, dom: D }, expect) {
   }
   // Counts line: population of the file, official ranked / QG rows among the filtered rows, shown = visible rows.
   ok(!('__count' in D.counts), L('exactly one counts line [data-leaderboard-counts] (found ' + D.counts.__count + ')'));
-  eq([D.counts['data-population'], D.counts['data-rankable'], D.counts['data-qg-reference'], D.counts['data-shown']], [String(expect.population), String(fr.length), String(fq.length), String(visible.length)],
+  eq([D.counts['data-population'], D.counts['data-rankable'], D.counts['data-qg-reference'], D.counts['data-shown']], [String(expect.population), String(fr.length), String(fq.length + secondShown), String(visible.length + (['all', 'qg'].includes(C.explore) ? secondShown : 0))],
     L('counts line data-population / data-rankable / data-qg-reference / data-shown'));
   eq([D.counts['data-evaluated'], D.counts['data-target-in-universe'], D.counts['data-outside-universe']], [String(expect.official.codes), String(expect.official.target_in_universe.length), String(expect.official.outside.length)],
     L('counts line data-evaluated / data-target-in-universe / data-outside-universe (D12 populations)'));
-  eq(D.counts['data-shown'], String(D.rows.length), L('data-shown = the rows on screen'));
-  eq(D.buttons, { all: filtered.length, ranked: fr.length, qg: fq.length, partial: fp.length, check: fc.length }, L('explore option counts'));
+  eq(D.counts['data-shown'], String(D0.rows.length), L('data-shown = the rows on screen'));
+  eq(D.buttons, { all: filtered.length + secondShown, ranked: fr.length, qg: fq.length + secondShown, partial: fp.length, check: fc.length }, L('explore option counts'));
   popChecks++;
   return { ranked: ranked.length, qg: qg.length, shown: D.rows.length, filtered: filtered.length };
 }
@@ -225,18 +241,9 @@ async function populationSweep(page, label, expect) {
   console.log('UPDATE_PROPAGATION POPULATION ' + label + ' base=' + base.filtered + ' ranked=' + base.ranked + ' qg=' + base.qg + ' population=' + expect.population + ' (sorts ' + SORTS_SWEPT.length + ', searches ' + SEARCHES.length + ', group, interests, explore views)');
   return base;
 }
-// Synthetic device prices (made-up numbers, RAM only) through a stubbed PrivateSubsetView, as in data_refresh_browser_test.js;
-// a stubbed sheet session must never be read. Re-applied after a reload (a reload drops every stub).
-const PRICES = Object.fromEntries(F.strictUniverseValues().slice(1).map(([code, , price]) => [code, { price, currency: 'USD' }]));
-async function stubPrices(page) {
-  await page.evaluate((q) => { window.__sheetReads = 0; const real = window.PrivateSubsetView; window.PrivateSubsetView = { ...real, prices: () => new Map(Object.entries(q)), priceBasis: () => ({ source: 'SYNTHETIC_TEST', read_id: 'synthetic-propagation', acquired_at: null, currency: 'USD', price_time: null }) };
-    const session = { state: () => ({ enabled: true, connected: true }), revision: () => 1, setEnabled() {}, subscribe: () => () => {}, async fetchValues() { window.__sheetReads++; return { values: [] }; } };
-    window.GoogleSheetQuotes = { ...GoogleSheetQuotes, sessionFor: () => session }; location.hash = 'home'; }, PRICES);
-  await page.locator('main').waitFor(); await page.evaluate(() => { location.hash = 'leaderboard'; });
-}
-// The leaderboard reads the shared page result of the current inputs object, with device prices, and shows official ranks.
-const pricedSettled = (page, asOf) => page.waitForFunction((a) => typeof leaderPage === 'object' && leaderPage && leaderPage.inputs === publicScreens['sec-qgv2.json'] && publicScreens['sec-qgv2.json'].as_of === a
-  && leaderPage.result.price_basis && document.querySelectorAll('[data-leaderboard-rank]').length > 0, asOf);
+// The leaderboard reads the shared official page of the current inputs object with the central publication and shows its ranks.
+const publishedSettled = (page, asOf) => page.waitForFunction((a) => typeof leaderPage === 'object' && leaderPage && leaderPage.source === 'PUBLICATION' && publicScreens['sec-qgv2.json'].as_of === a
+  && leaderPage === QgvScores.officialPage(window, { v2Inputs: publicScreens['sec-qgv2.json'], identities: identityCompanies }) && document.querySelectorAll('[data-leaderboard-rank]').length > 0, asOf);
 async function press(page, expect) {
   await page.locator('#data-refresh [data-refresh-button]').click();
   await page.waitForFunction((s) => document.getElementById('data-refresh')?.dataset.refreshState === s, expect);
@@ -434,33 +441,23 @@ function checkMacro(n, m) {
     eq(seen.errors, [], 'no page errors'); eq(seen.outside, [], 'no request outside the local origin');
     await context.close();
 
-    // ---------- the QGV / Q·G split with device prices: day 1, '자료 새로고침' to day 2 in the same tab, then a reload ----------
-    // HARNESS_PRICES: synthetic Universe-tab prices (made-up numbers, never real prices) in RAM; the public files come over the
-    // page's own requests. Expected lists = the engine in Node over the same file with the very quotes the page used.
+    // ---------- the QGV / Q·G split with the central V publication (DC-31: no device V): day 1, then a reload ----------
+    // The synthetic qgv-official.json joins the day-1 file (same as_of). Expected lists = the engine in Node over the same file and
+    // the same publication. Day 2 (another as_of) is a different input than the publication's and is covered above without V.
     phase = 'QGV_QG_SPLIT';
     {
+      await QO.validate(PUBV);
       const st = { day: 1 }, { context: c, page: p, seen: s } = await newContext(browser, st, { prefs: true });
-      const quotes = () => p.evaluate(() => JSON.parse(JSON.stringify(leaderPage.result.quotes)));
-      const priced = (n, q) => ({ asOf: PUB[n]['sec-qgv2.json'].as_of, population: populationOf(n), official: officialOf(n, identities), ...expectedLists(expectedRanks(n, identities, DAYS[n].now, q)) });
-      await p.goto(BASE + '#leaderboard'); await p.locator('[data-leaderboard-table]').waitFor();
-      await stubPrices(p); await pricedSettled(p, DAYS[1].as_of);
-      const q1 = await quotes(), e1 = priced(1, q1);
-      ok(Object.keys(q1).length > 3, 'device quotes from the synthetic price tab: ' + Object.keys(q1).length);
-      ok(e1.ranked.length > 0 && e1.qg.length > 0, 'day 1 with prices has an official ranking and a separate QG list (ranked ' + e1.ranked.length + ', QG ' + e1.qg.length + ')');
-      const b1 = await populationSweep(p, 'PRICED_DAY1', e1);
-      st.day = 2; await c.clock.setFixedTime(new Date(DAYS[2].now));
-      phase = 'PRICED_REFRESH_DAY2'; await go(p, 'leaderboard', '[data-leaderboard-table]'); await press(p, 'APPLIED'); await pricedSettled(p, DAYS[2].as_of);
-      const q2 = await quotes(), e2 = priced(2, q2);
-      eq(q2, q1, 'the refresh keeps the same RAM device quotes');
-      ok(e2.ranked.length > 0 && e2.qg.length > 0, 'day 2 with prices has an official ranking and a separate QG list (ranked ' + e2.ranked.length + ', QG ' + e2.qg.length + ')');
-      checkPopulation('PRICED_REFRESH_DAY2 · open leaderboard repainted in place', await popSnapshot(p), e2);
-      const b2 = await populationSweep(p, 'PRICED_REFRESH_DAY2', e2);
-      phase = 'PRICED_RELOAD_DAY2'; await p.reload(); await p.locator('[data-leaderboard-table]').waitFor();
-      await stubPrices(p); await pricedSettled(p, DAYS[2].as_of);
-      eq(await quotes(), q1, 'the reload uses the same synthetic quotes');
-      eq(await populationSweep(p, 'PRICED_RELOAD_DAY2', e2), b2, 'reload of day 2 = the in-tab refresh of day 2 (same population display)');
-      eq(await p.evaluate(() => window.__sheetReads), 0, 'no Google Sheets read'); eq(s.errors, [], 'no page errors (prices)'); eq(s.outside, [], 'no request outside the local origin (prices)');
-      log('QGV_QG_SPLIT day1 ranked=' + b1.ranked + ' qg=' + b1.qg + ' · day2 ranked=' + b2.ranked + ' qg=' + b2.qg + ' · base=' + b1.filtered + ' (Universe rows; TARGET identities ' + identities.length + ')');
+      await c.route('**/qgv-official.json*', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: O.PUB_TEXT }));
+      const published = (n) => ({ asOf: PUB[n]['sec-qgv2.json'].as_of, population: populationOf(n), official: officialOf(n, identities), second: secondCodes(n, identities, DAYS[n].now), ...expectedLists(expectedPub(n, identities, DAYS[n].now)) });
+      await p.goto(BASE + '#leaderboard'); await p.locator('[data-leaderboard-table]').waitFor(); await publishedSettled(p, DAYS[1].as_of);
+      const e1 = published(1);
+      ok(e1.ranked.length > 0 && e1.qg.length > 0, 'day 1 with the publication has an official ranking and a separate QG list (ranked ' + e1.ranked.length + ', QG ' + e1.qg.length + ')');
+      const b1 = await populationSweep(p, 'PUBLISHED_DAY1', e1);
+      phase = 'PUBLISHED_RELOAD_DAY1'; await p.reload(); await p.locator('[data-leaderboard-table]').waitFor(); await publishedSettled(p, DAYS[1].as_of);
+      eq(await populationSweep(p, 'PUBLISHED_RELOAD_DAY1', e1), b1, 'reload of day 1 = the first display (same population display)');
+      eq(s.errors, [], 'no page errors (publication)'); eq(s.outside, [], 'no request outside the local origin (publication)');
+      log('QGV_QG_SPLIT day1 ranked=' + b1.ranked + ' qg=' + b1.qg + ' · base=' + b1.filtered + ' (Universe rows; TARGET identities ' + identities.length + ')');
       await c.close();
     }
 

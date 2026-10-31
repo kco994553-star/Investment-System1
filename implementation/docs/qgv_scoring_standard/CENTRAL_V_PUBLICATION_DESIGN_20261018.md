@@ -435,6 +435,8 @@ sec-qgv2.json(같은 실행, sha256) ─┐
 
 ## 11. 재사용 지도
 
+> 2026-10-31 갱신(DC-31): 기기 V는 폐지됐다. "기기 가격 경로는 개인 미리보기로만"도 없어졌다: 개인 미리보기는 게시된 요인 점수로 다시 계산한다(PR-1a `compute({publication, weights})`). 옛 화면은 PR-1b에서 `officialPage`로 바뀌었고 `refreshQgv2Quotes`는 지워졌다. 기기 가격 경로(`collectQuotes`·`pageResult`)는 TARGET v1 빌더만 11/16 PR까지 쓴다.
+
 | 파일 | 재사용 | 바꿈(다음 라운드, 승인 뒤) | 새로 |
 | --- | --- | --- | --- |
 | `src/qgv/qgv_v2.py` | `score_universe`·`axis_score`·`type_axis_weights`·`weights_id`·`TYPE_SCOPE` 전부 | `v_factors` 입력 경로(§9-3) | — |
