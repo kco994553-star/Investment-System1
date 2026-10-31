@@ -27,7 +27,10 @@
      is never overwritten (writeUser refuses it).
    - Prompt favorites and personal copies (7.1.4, table 1-3: kept in this browser): the old prompt page's two keys and shapes
      (research-bridge.js:189-208 PL_FAV_KEY / PL_COPY_KEY, plRead / plState / the save rules), read as plState read them and
-     written only on a click. DeviceBackup /4 and /5 do not carry them (this browser only). */
+     written only on a click. DeviceBackup /4 and /5 do not carry them (this browser only).
+   - Chart notes and scenarios (3.3 · 3.1.3, bundle 2, table 1-3: kept on this device, in backup /5): ChartWorkbench's own user
+     objects (key and schema chart-user-objects/1, validUserObject, createDeviceUserStore) on the gated storage; id, author,
+     price_basis and the times are set here; an unreadable stored value is never overwritten and unreadable entries are kept. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else{const I=root.IS2=root.IS2||{};I.store=api.create({win:root,action:I.action,data:I.data});}})(typeof globalThis==='object'?globalThis:this,function(){
 'use strict';
 // The old device keys, unchanged so existing devices keep their data (the node test checks each against the old constant).
@@ -152,6 +155,27 @@ function create({win,action,data}){
   // The delete click; returns whether a copy was removed.
   remove(event,id){return write(event,'PROMPT_COPIES',()=>{const cur=readCopies();if(!Object.hasOwn(cur,id))return false;delete cur[id];storage.setItem(KEYS.PROMPT_COPIES,JSON.stringify(cur));return true;});}});
 
+ // ---- chart notes and scenarios (3.3 · 3.1.3): ChartWorkbench's device user store on the gated storage (old key and schema, backup /5)
+ const NOTE_STATE=Object.freeze({EMPTY:'EMPTY',LOADED:'OK',PARTLY_INVALID:'PARTLY_INVALID',STORE_INVALID:'INVALID'});
+ // chart-workbench.js newId: 'u-' and 8 random bytes in base 36 (validUserObject: /^u-[a-z0-9]{6,32}$/).
+ function noteId(){const b=new Uint8Array(8),c=win.crypto;if(c&&typeof c.getRandomValues==='function')c.getRandomValues(b);else for(let i=0;i<b.length;i++)b[i]=Math.floor(Math.random()*256);
+  return 'u-'+[...b].map(x=>x.toString(36)).join('').slice(0,16).padEnd(6,'0');}
+ const chartNotes=Object.freeze({
+  // {state:'OK'|'EMPTY'|'PARTLY_INVALID'|'INVALID'|'UNAVAILABLE', items:[valid user objects, stored order], unreadable:n}
+  read(){const r=need('ChartWorkbench').createDeviceUserStore(storage).load();return deepFreeze({state:NOTE_STATE[r.code]||'UNAVAILABLE',items:copy(r.items),unreadable:r.unreadable});},
+  // One more note (chart-annotation/1) or scenario (chart-scenario/1): the caller's fields, checked by validUserObject; returns it.
+  add(event,obj){return write(event,'CHART_USER_OBJECTS',()=>{const CW=need('ChartWorkbench'),st=CW.createDeviceUserStore(storage),cur=st.load();
+   if(cur.code==='STORE_INVALID'||cur.code==='STORAGE_UNAVAILABLE')throw Error('CHART_NOTES_STORAGE_INVALID');
+   if(cur.items.length>=CW.USER_LIMIT)throw Error('CHART_NOTES_FULL');
+   const now=new Date().toISOString(),item=object(obj)?{...copy(obj),id:noteId(),author:'USER',price_basis:'RAW_CLOSE',created_at:now,updated_at:now}:null;
+   if(!item||!['chart-annotation/1','chart-scenario/1'].includes(item.schema)||!CW.validUserObject(item))throw Error('CHART_NOTE_INVALID');
+   if(!st.save([...cur.items,item]))throw Error('CHART_NOTE_SAVE_FAILED');return deepFreeze(copy(item));});},
+  // The user's delete of one object by id; returns how many valid objects remain.
+  remove(event,id){return write(event,'CHART_USER_OBJECTS',()=>{const CW=need('ChartWorkbench'),st=CW.createDeviceUserStore(storage),cur=st.load();
+   if(cur.code==='STORE_INVALID'||cur.code==='STORAGE_UNAVAILABLE')throw Error('CHART_NOTES_STORAGE_INVALID');
+   const next=cur.items.filter(o=>o.id!==id);if(next.length===cur.items.length)throw Error('CHART_NOTE_NOT_FOUND');
+   if(!st.save(next))throw Error('CHART_NOTE_SAVE_FAILED');return next.length;});}});
+
  // ---- investor stars (2.3.1)
  const stars=()=>Object.freeze([...need('PublicScreens').readStars(storage)]);
  const toggleStar=(event,cik)=>write(event,'INVESTOR_STARS',()=>Object.freeze([...need('PublicScreens').toggleStar(storage,cik)]));
@@ -205,7 +229,7 @@ function create({win,action,data}){
 
  function subscribe(fn,{signal}={}){if(typeof fn!=='function')throw Error('SUBSCRIBER_INVALID');if(signal&&signal.aborted)return()=>{};subs.add(fn);const off=()=>{subs.delete(fn);};if(signal)signal.addEventListener('abort',off,{once:true});return off;}
  const api={KEYS,storage,prefs,savePrefs,recent,pushRecent,clearRecent,weights,saveWeights,holdings,playbook,saveThesis,saveHold,saveRecord,stars,toggleStar,macroEstimates,promptFavorites,promptCopies,
-  backup,vHistoryKeys,sheetSource,universeSource,workerOrigin,marketQuotes,subscribe};
+  chartNotes,backup,vHistoryKeys,sheetSource,universeSource,workerOrigin,marketQuotes,subscribe};
  // DeviceProfiles' preset list, read when asked (the old module loads before this one; tests swap modules).
  Object.defineProperty(api,'PRODUCT_PRESETS',{enumerable:true,get:()=>need('DeviceProfiles').PRODUCT_PRESETS});
  return Object.freeze(api);
