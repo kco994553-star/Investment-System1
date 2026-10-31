@@ -32,17 +32,15 @@
 - 원시 가격·개인 자료·토큰·이메일은 저장소·Pages·로그에 넣지 않는다. 병합·배포는 사용자 승인 범위에서만 한다.
 - 사용자는 폰만 쓴다. 사용자에게 시키는 절차는 폰 브라우저에서 할 수 있어야 한다. 보고는 한국어로 묶어서 한다.
 
-## 4. 파일 담당표 (2026-10-31, DC-32)
+## 4. 파일 담당표 (2026-10-31, DC-35 — DC-32를 대체)
 
-경로는 `implementation/src/investment_system/product/web_app/` 기준이다. 시험 파일은 `implementation/tools/`에 있다.
+개발 흐름은 둘이다(결정 문서: [DEV_SYSTEM_20261031](implementation/docs/DEV_SYSTEM_20261031.md)).
 
 | 담당 | 파일 | 할 수 있는 것 |
 | --- | --- | --- |
-| **Frontend(화면 세션)** | `screen-technical.js` · `screen-macro.js` · `screen-news.js` · `screen-prompts.js` · `screen-tree.js` · `screen-lab.js`, 그리고 각 화면의 시험 파일(파일 이름이 그 화면 이름으로 시작하는 `implementation/tools/web_app_*` 시험) | 이 파일만 바꾸고 **Draft PR까지만** 연다. 병합하지 않는다 |
-| **Main** | 나머지 `web_app` 파일 전부: `qgv.js` · `core.js` · `data.js` · `store.js` · `shell.js` · `parts.js` · `app.css` · `index.html` · `boot.js` · `loader.js` · `screen-qgv*.js` · `screen-detail.js` · `screen-portfolio.js` · `screen-search*.js` 등. 옛 화면(`web_assets/`), 공용 엔진, 가드·CI 목록, 워크플로, `docs/SPEC`, CURRENT_HANDOFF, USER_DECISIONS_PENDING, 결정 문서 | 바꾸고 병합한다(병합·배포는 오너 승인 범위에서) |
-| **Codex** | 연구 가지(`research/*`)와 문서(`docs/SPEC`·인수인계·결정 문서 제외) | 연구·문서 PR까지. 병합하지 않는다 |
+| **Main** | `implementation/src/investment_system/product/web_app/` 전부(화면 파일 `screen-*.js` 포함), 옛 화면(`web_assets/`), 공용 엔진, 가드·CI 목록, 워크플로, `docs/SPEC`, CURRENT_HANDOFF, USER_DECISIONS_PENDING, 결정 문서, 데이터 계약(lab-backtest-v1, 기업 목록 공통 접근 계약) | 바꾸고 병합한다(병합·배포는 오너 승인 범위에서). 독립 화면은 하위 에이전트로 병렬 구현할 수 있다 |
+| **Codex** | 백테스트 연구 가지(`research/*`)의 연구 코드·결과 원본·연구 문서(백테스트 한정 예외) | 연구 PR까지. 병합하지 않는다. 결과 원본 경로는 제안하고 Main이 확인한다 |
 
-- Frontend가 공용 파일(위 Main 담당) 변경이 필요하면 PR 본문에 "Main 요청: 무엇을 왜"만 적는다. Main이 따로 PR로 반영한다.
-- Frontend·Codex PR 병합 조건: canonical과 동기화, 필수 CI 6개 녹색, **담당 파일만 바뀜**(Main이 파일 목록으로 확인), 오너 승인.
-- 표에 없는 새 화면 파일은 처음 만드는 쪽이 PR 본문에 담당을 적고, Main이 이 표에 더한다.
-
+- Main은 Codex 소유 연구 코드·결과 원본을 고치거나 숫자를 다시 계산하지 않는다.
+- 외부 개발 책임자(별도 화면 세션 등)는 늘리지 않는다. DC-32의 "화면 세션(Frontend)"은 시행 전에 대체됐다.
+- Codex PR 병합 조건: canonical과 동기화, 필수 CI 6개 녹색, **담당 파일만 바뀜**(Main이 파일 목록으로 확인), 오너 승인.

@@ -20,7 +20,10 @@
 | PR·작업 | 담당 | 시작 (UTC) |
 | --- | --- | --- |
 | PR-1b 옛 화면 기기 V 제거·DCF 패널 제거·direction guard 규칙(`claude/device-v-abolition-1b`, push 전) | Claude Code Main | 10/31 03:17 |
-| 이 문서 PR(DC-32 병렬 진행 체계·담당표·오늘 인수인계·기능 현황) | Claude Code Main | 10/31 02:26 |
+| 이 문서 PR(DC-35 개발 체계 Main + Codex·#434 대체·lab-backtest-v1 계약 기록) | Claude Code Main | 10/31 08:05 |
+| 공통 기반 PR(기업 목록 공통 접근·Lab 판독기·비공개 기능 상태, `claude/web-app-common-base`, base = #435 가지) | Claude Code Main | 10/31 08:10 |
+| 묶음 1 PR(매크로·프롬프트·트리, `claude/web-app-bundle-1`, base = #435 가지) | Claude Code Main | 10/31 08:10 |
+| #436 보강(차트 이력·Lab 결과 저장·조회 계약) | Claude Code Main | 10/31 08:10 |
 
 ## 1. 10/31 오너 결정과 처리
 
@@ -58,7 +61,8 @@
 
 | PR | 요지 | 상태 | 오너 승인·조건 |
 | --- | --- | --- | --- |
-| 이 문서 PR | DC-32 병렬 진행 체계, START_HERE 담당표, 오늘 인수인계·기능 현황, GSQ-025 보충 | CI 확인 | 문서 병합 승인 필요 |
+| 이 문서 PR | DC-35 개발 체계(Main + Codex)·결정 문서·lab-backtest-v1 계약, START_HERE 담당표, 오늘 인수인계·기능 현황, GSQ-025 보충(#434 커밋 포함) | CI 확인 | 문서 병합 승인 필요 |
+| [#434](https://github.com/kco994553-star/Investment-System1/pull/434) | DC-32 병렬 진행 체계(시행 전 대체) | 대체 종료 | 이 PR이 대체(이력 보존) |
 | [#436](https://github.com/kco994553-star/Investment-System1/pull/436) | 설계: 1인 비공개 구역(KIS 한정), DC-34·GSQ-027 제안, 오너 폰 설정 절차, KIS 문의 초안 | CI 확인 | **설계 승인 필요**(`PRIV-*` 7개). 구현은 승인 뒤 |
 | [#435](https://github.com/kco994553-star/Investment-System1/pull/435) | PR-1a 기기 V 폐지: 새 앱 `qgv.js` 공식 V 판독기, `qgv-scores.js` 게시본 모드(DC-31). 라이브 화면 동작은 같음 | CI 확인 | **병합 승인 필요** |
 | [#433](https://github.com/kco994553-star/Investment-System1/pull/433) | GSQ-026·DC-33 가격 표시 결정 기록(공개 IEX 마지막 체결가, 클릭 전용 폐지 범위) | CI 확인 | **결정 승인 필요**. 구현은 승인 뒤 |
@@ -81,14 +85,15 @@
 | `sec-universe-shares.json` PSKY 행 | 10/31 03:13 UTC STALE → PSKY M3 시가총액 순위만 사유 있는 NA. `sec-qgv2.json`·`sec-universe-qg.json` PSKY 행은 LIVE |
 | IEX 확장 | 측정·설계·결정 완료(#431). 구현 없음 |
 
-## 5. 다음 우선순위
+## 5. 다음 우선순위 (10/31 밤 DC-35 기준)
 
-1. PR-1a 검토 반영 → 전체 시험 1회 → push·PR → CI → 오너 승인 병합.
-2. PR-1b(옛 화면 기기 V 제거·direction guard 규칙·문서) → 같은 절차. TARGET 경로는 11/16 PR.
-3. IEX 확장 구현 PR ①②③(각 계산·워크플로 변경, 독립 검토 1).
-4. V가 필요한 화면(2.2, 2.4·레이더, 6).
-5. 가격 표시: GSQ-026 승인 뒤 가드 → 게시기·워크플로 → 새 앱 자료 층·Main 화면.
-6. TARGET v1 확정 창 11/09~11/15(V 출처 바꾸지 않음), 11/16 기기 V 경로 제거 PR.
+1. #435(PR-1a 공식 V 판독기, CI 녹색) 오너 승인 병합 → PR-1b(옛 화면 기기 V 제거) PR·CI → 승인 병합. TARGET 경로는 11/16 PR.
+2. IEX 확장 구현 PR ①②③(각 계산·워크플로 변경, 독립 검토 1). #435와 함께 최우선.
+3. 공통 기반 PR → 묶음 1(4 매크로·7 프롬프트·8 트리) → 묶음 2(3 기술적 분석·5 뉴스·9 Lab). 화면 PR은 자체 검토, 묶음 PR마다 보고 1회.
+4. #436 설계 보강(차트 이력 MODP=0 장부·MODP=1 차트 계열, Lab 결과 비공개 저장·조회). 구현은 `PRIV-*` 승인 뒤.
+5. 6. 포트폴리오: 독립 UI는 진행 가능, 공식 V에 의존하는 결론·선정은 #435 뒤.
+6. 가격 표시: GSQ-026 승인 뒤 가드 → 게시기·워크플로 → 새 앱 자료 층.
+7. TARGET v1 확정 창 11/09~11/15(V 출처 바꾸지 않음), 11/16 기기 V 경로 제거 PR.
 
 ## 6. 정기 실행·수동 실행
 
