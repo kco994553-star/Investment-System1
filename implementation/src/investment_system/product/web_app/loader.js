@@ -8,10 +8,12 @@
    - Each file is a same-origin <script src> with a plain file name (NAME below; the build and tools/web_app_reuse.js refuse
      the same names and a name listed twice, so a build that passes never meets LOADER_NAME_INVALID here), async=false so all
      of them download in parallel and run in list order. No inline code, no eval; the CSP is unchanged ('self').
-   - IS2.ready resolves when every file ran and the layer installed itself (IS2.action and the five namespaces). It rejects with
+   - IS2.ready resolves when every file ran and the layer installed itself (IS2.action and the eight namespaces). It rejects with
      Error('LOADER_FAILED <file>') for the first file in list order that did not arrive, threw while it ran, or did not install
      its namespace; it never retries (a reload does).
-   - Until then IS2.data / qgv / prices / store / engines are facades with the layer's own members (API below):
+   - Until then IS2.data / qgv / prices / store / engines and the common base's IS2.companies / privateArea / lab (2026-10-31:
+     the one company list, the private area's state and the Lab reader; COMMON_BASE_20261031.md) are facades with the layer's
+     own members (API below):
        'p'   returns a promise: waits for IS2.ready, then calls the layer;
        'a'   an action (its first argument is the user's event): throws LAYER_NOT_READY, because the gate needs the event still
              being dispatched and a click cannot wait (screens keep action buttons off until IS2.ready);
@@ -24,7 +26,8 @@
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else api.install(root);})(typeof globalThis==='object'?globalThis:this,function(){
 'use strict';
 // The old modules in the old page's relative order (backup /5 validators chart-workbench.js and macro-cycle-ring.js included),
-// then the P1 layer action → data → prices → store → qgv → engines, then screen logic files (web_app; P1_DATA_LAYER.md §1.1).
+// then the P1 layer action → data → prices → store → qgv → engines, then the common base companies → private → lab
+// (2026-10-31), then screen logic files (web_app; P1_DATA_LAYER.md §1.1).
 const LOAD_ORDER=Object.freeze([
  'locale.js','entity-search.js','price-time.js','device-market.js','device-actual.js','profile-defaults.js','type-config-defaults.js',
  'device-profiles.js','engine-preview.js','dcf-parameters-defaults.js','device-valuation.js','playbook-config-defaults.js','playbook-engine.js',
@@ -37,12 +40,13 @@ const LOAD_ORDER=Object.freeze([
  'virtual-trading-signals.js','virtual-trading-v-history.js','virtual-ledger-sheets.js','price-store.js','report-benchmarks.js',
  'virtual-trading-compare.js','home-quotes.js','data-refresh.js',
  'action.js','data.js','prices.js','store.js','qgv.js','engines.js',
+ 'companies.js','private.js','lab.js',
  'search-part-live.js','screen-search-live.js','screen-qgv-live.js',
 ]);
 // A plain lowercase script name. tools/build_web_app.py holds this exact line (the build fails when the two differ).
 const NAME=/^[a-z0-9][a-z0-9-]*(?:\.[a-z0-9-]+)*\.js$/;
 // The namespace each layer file installs on IS2 (action.js installs IS2.action, which has no facade: screens do not call it).
-const NAMESPACES=Object.freeze({data:'data.js',prices:'prices.js',store:'store.js',qgv:'qgv.js',engines:'engines.js'});
+const NAMESPACES=Object.freeze({data:'data.js',prices:'prices.js',store:'store.js',qgv:'qgv.js',engines:'engines.js',companies:'companies.js',privateArea:'private.js',lab:'lab.js'});
 // The layer's members a screen may use (the node test checks this against the real layer: async or promise → 'p', first
 // parameter `event` → 'a', subscribe → 'sub', the rest 's', non-functions 'v'). The views and results the layer hands only to
 // old modules and engines.js (source rules) have no facade member.
@@ -59,7 +63,12 @@ const API=Object.freeze({
   reasonText:'s',rankLabel:'s',constants:'s',subscribe:'sub'},
  engines:{target:{state:'s',basis:'p',draft:'p',build:'a',blockers:'p',finalize:'a',answer:'a',ruleBDue:'s',selectRuleB:'a',compare:'a',scoringPending:'p',
   refreshScoring:'p',syncScoringPrices:'a'},playbook:{facts:'p',judge:'p',record:'a',due:'s',limits:'s'},
-  virtual:{stored:'p',compare:'s',forward:'p',rehearse:'p',run:'s'},macro:{current:'p'}}});
+  virtual:{stored:'p',compare:'s',forward:'p',rehearse:'p',run:'s'},macro:{current:'p'}},
+ // Common base (2026-10-31): list / get / find / exact read the list ready() built (NOT_READY before IS2.ready, [] / null until
+ // ready() settled); validate / status / nullText are pure.
+ companies:{ready:'p',list:'s',get:'s',find:'s',exact:'s',korean:'s',scope:'s'},
+ privateArea:{STATES:'v',PANEL_STATES:'v',state:'s',text:'s',panelText:'s',panelState:'s'},
+ lab:{SCHEMA:'v',METRICS:'v',TEXT:'v',validate:'s',status:'s',nullText:'s',source:'p'}});
 const NOT_READY=Object.freeze({state:'NOT_READY',reason:'LAYER_NOT_READY'}),LOAD_FAILED=Object.freeze({state:'NOT_READY',reason:'LOADER_FAILED'});
 const MARK_READY='is2-ready',MARK_FAILED='is2-load-failed',PAINT_WAIT_MS=3000,IDLE_WAIT_MS=200;
 

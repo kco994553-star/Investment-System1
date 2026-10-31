@@ -72,3 +72,4 @@ web_app_prices_node_test.js  # new frontend P1: click-only prices, device store
 web_app_engines_node_test.js  # new frontend P1: TARGET v1 / playbook / virtual trading / macro wiring
 web_app_qgv_screen_node_test.js  # new frontend P2-2a: leaderboard ports equal the old leaderboard-screen.js functions (and frozen vectors)
 web_app_search_part_node_test.js  # new frontend DC-23: the shared company search (Universe504 only, ticker + English name, listing-ended)
+web_app_common_base_node_test.js  # new frontend common base: IS2.companies (one company list), IS2.lab (lab-backtest-v1 validator, status texts), IS2.privateArea

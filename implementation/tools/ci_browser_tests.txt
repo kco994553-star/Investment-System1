@@ -93,3 +93,4 @@ web_app_data_layer_browser_test.js  # new frontend P1 data layer: no-action read
 web_app_first_paint_browser_test.js  # new frontend P2-1a: shell first, layer after first paint; phone targets 390x844, 150 ms, 1.6 Mbps, CPU x4 (median of 3)
 web_app_home_browser_test.js  # new frontend P2-1 menu 0 home · company search: combobox, recent on a real click, favorites / developer default, company cards, boundaries
 web_app_qgv_browser_test.js  # new frontend P2-2a menu 1 QGV leaderboard: layer values, sort/filter never re-rank, click-only prices and returns, boundaries
+web_app_private_panel_browser_test.js  # common base: one private panel shape for every screen (public + private two layers), shared states/words, no request/storage
