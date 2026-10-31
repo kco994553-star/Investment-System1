@@ -6,9 +6,11 @@
    - The search box is the shared company search (search-part-live.js, DC-23: Universe504 only, ticker + English name, in
      memory). A chosen option is saved as a recent search with that click (store.pushRecent, one action per event; a refused or
      failed save still navigates); a submit's single exact match opens its page and saves nothing; no match stays on the page.
-   - Company index (EntitySearch, reused) for the chips and the company page (never for the search box), built from the three
-     static public files: the TARGET catalog (DeviceWatchlist.identities), the fixed Universe504 code list (universe-codes.json)
-     and the reviewed names table (company-names-ko.json, also the code → company_id links). A missing file leaves its part out.
+   - Company index (EntitySearch, reused) for the chips and the company page (never for the search box): the Universe504 codes
+     and their code → company_id links come from the one company list (IS2.companies, companies.js: universe-codes.json and
+     company-names-ko.json), the TARGET catalog (actual-catalog.json, DeviceWatchlist.identities) adds the TARGET companies,
+     and the reviewed names table (the same once-per-page read) gives EntitySearch its names and aliases. A missing file
+     leaves its part out. A listing-ended code's page says so from its IS2.companies row (status WITHDRAWN).
    - Home: recent chips (titles from the index, unknown keys skipped, 최근 지우기), favorites (store prefs interests) or, without
      any, the developer default (P21-DEFAULTS: the catalog's 19 companies, labelled as such, never written; also shown when the
      stored favorites cannot be read, so device storage never hides it; HOME-DEFAULT-V0 (c), owner 2026-10-28: it stays until a
@@ -39,11 +41,10 @@ function companyIndex(){
  if(!indexP){indexP=build();indexP.then(x=>{if(x.missing.length)indexP=null;},()=>{indexP=null;});}
  return indexP;}
 async function build(){
- const D=I.data,ES=window.EntitySearch,W=window.DeviceWatchlist;
- const[catalog,names,codes]=await Promise.all([D.static(CATALOG),D.static(NAMES),D.universe()]);
+ const D=I.data,C=I.companies,ES=window.EntitySearch,W=window.DeviceWatchlist;
+ const[catalog,names]=await Promise.all([D.static(CATALOG),D.static(NAMES),C.ready()]);
  let ids=[];try{ids=catalog?W.identities(catalog):[];}catch(_){ids=[];}
- const list=Array.isArray(codes)?codes:[],links={};for(const c of list)links[c]=null;
- if(names)for(const[c,id]of names.codes())if(id&&Object.hasOwn(links,c))links[c]=id;
+ const rows=C.list(),list=rows.map(r=>r.code),links={};for(const r of rows)links[r.code]=r.id===r.code?null:r.id;
  const idx=ES.createIndex(ES.companyEntities(ids,links,names));
  // A TARGET company's Universe504 code: the code linked to its company_id, else the code with its ticker (companyEntities' rule).
  const tick=t=>String(t).replaceAll('.','-'),codeOf=new Map(),targetOf=new Map();
@@ -219,9 +220,9 @@ function company(route,{box,given,name,facts,star,bodies}){
   const cid=e.canonical_id;I.selection.set(cid);
   const title=idx.title(e);name.textContent=title;
   const bits=[e.ticker&&!title.includes(e.ticker)?e.ticker:null,idx.code(e),idx.member(e)].filter(Boolean),extra=h('span',{class:'facts-more'});
-  const ended=I.searchPart.LISTING_ENDED[idx.code(e)];// display only (search-part-live.js table; LISTING-ENDED-CODE pending)
+  const row=I.companies.get(idx.code(e)),ended=row&&row.status==='WITHDRAWN'?row.withdrawn_on:null;// display only (LISTING-ENDED-CODE pending)
   facts.replaceChildren(h('p',{class:'facts-line'},...bits.flatMap((b,i)=>[i?' · ':'',h('span',{class:'nobr'},b)]),extra),
-   ended?h('p',{class:'reason',dataset:{listingEnded:ended.effective}},'상장 종료 ',ended.effective,' · 점수 없음'):'');star.replaceWith(starButton(cid));
+   ended?h('p',{class:'reason',dataset:{listingEnded:ended}},'상장 종료 ',ended,' · 점수 없음'):'');star.replaceWith(starButton(cid));
   I.data.ready().then(settled(signal,()=>{const add=classOf(cid);if(add.length)extra.append(...add.map(t=>' · '+t));}),()=>{});
   qgvCard(bodies.qgv,cid,signal);macroCard(bodies.macro,signal);newsCard(bodies.news,e,cid,signal);portfolioCard(bodies.portfolio,e,idx,signal);}),
  ()=>{if(!signal.aborted)facts.replaceChildren(na('기업 목록을 불러오지 못했습니다','INDEX_FAILED'));});

@@ -12,6 +12,7 @@ P2 화면 레인이 쓰는 함수, 기록 모양, 사유 코드, 지켜야 할 �
     - 화면 논리 파일(P2-1, Main 결정 2026-10-25): 첫 그림 예산은 메뉴 9개가 함께 쓰므로, 화면의 첫 그림 파일(index.html의 `screen-*.js`)은 뼈대만 두고 `IS2.ready` 뒤에만 도는 논리는 `engines.js` 뒤의 web_app 파일로 옮긴다(1.1절 화면 규칙). web_app에 있는 이름이라 빌드는 web_app에서 가져온다(A안 재사용 아님, 옛 파일과 같은 이름 금지). 이름·중복·순서 규칙은 다른 `LOAD_ORDER` 이름과 같다.
       - 화면 논리 파일도 `LOAD_ORDER`의 파일이다. 그래서 그 파일이 오지 않거나(404) 불러올 때 오류를 내면 `IS2.ready`가 `LOADER_FAILED <파일>`로 거절되고, **메뉴 9개 모두** 층을 쓰지 못한다(대리 객체가 거절, 행동 버튼 꺼짐, 셸의 실패 안내). 한 레인의 파일이 모든 메뉴의 층을 막을 수 있다는 이 대가는 P2-1 PR 본문에서 Main 확인을 요청했다. P2-2a의 `screen-qgv-live.js`도 같다(404나 불러올 때 오류면 `LOADER_FAILED screen-qgv-live.js`로 메뉴 9개 모두, Main 승인 2026-10-25). 그러므로 논리 파일은 불러올 때 `IS2.<이름>`에 채우는 함수만 두고, 던질 수 있는 최상위 작업을 하지 않는다(노드 시험 `web_app_reuse_node_test.js`가 불러올 때 층을 건드리지 않고 그 이름만 두는지 본다).
   - 레인은 index.html도 `LOAD_ORDER`도 고치지 않고 자기 파일만 채운다(바꿀 때는 Main 승인. 자기 화면 논리 파일을 `LOAD_ORDER` 끝에 더하는 것도 Main 승인).
+  - 묶음 1(2026-10-31, Main): 매크로·프롬프트·트리는 첫 그림에 작은 뼈대(`screen-macro.js`·`screen-prompts.js`·`screen-tree.js`, 각 5 KB 이하)만 싣고, 무거운 논리는 `LOAD_ORDER` 끝의 `screen-macro-live.js`·`screen-prompts-live.js`·`screen-tree-live.js`가 맡는다(첫 전송 96.0 → 36.1 KB). 매크로는 층이 필요해 로더 실패면 오류 상태를 보인다. 프롬프트·트리는 층이 필요 없어 자기 `-live` 파일이 돌았으면 그대로 그리고, 자기 파일이 실패했을 때만 오류 상태다.
 - 등록:
   - `IS2.register(id, render)`: 자리표시를 실제 화면이 대신한다. 실제 화면을 두 번 등록하면 `SCREEN_DUPLICATE`다.
   - `IS2.registerDetail(name, render)`: `#/detail/<name>`에 쓴다. 이름은 `IS2.DETAILS`에 있어야 한다(`DETAIL_UNKNOWN`).
@@ -242,6 +243,8 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
 
 ## 7. 기기 저장: `IS2.store` (옛 키·스키마 그대로)
 
+- 묶음 1(2026-10-31) 추가: `macroEstimates`(4.4 내 국면 판단, 옛 키 `investment.web.v1.macro-cycle-user-estimate`·스키마 `macro-cycle-user-estimate/2`를 MacroCycleRing의 읽기·쓰기·검증으로, 백업 /5에 들어감), `promptFavorites`·`promptCopies`(7.1 ★·내 사본, 옛 프롬프트 페이지 `research-bridge.js`의 키와 규칙 그대로. 기기 백업 /4·/5에는 아직 없음). 쓰기는 모두 클릭 안에서만.
+
 - 읽기는 자유롭다. 쓰기는 `WRITE` 클릭 안에서만 한다.
 - `KEYS`: personal, settings, profile-drafts(-v2), playbook, investor-stars, backup-restored, virtual-trading-v-scores(v1·v2), unified-sheet-source, universe-source, private-history-origin, price-store-enabled, chart-user-objects, macro-cycle-user-estimate(백업 /5), recent-search(P2-1), 그리고 IndexedDB `investment-device-actual-v1`.
 - 함수
@@ -399,7 +402,7 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
 - 두 키(`investment.web.v1.virtual-trading-v-scores`, `investment.web.v2.virtual-trading-v-scores`)는 `action.js` `STOPPED.localStorage`에 넣었다. 뷰로 읽으면 없음이고, 키로 쓰거나 지우면 클릭 안에서도 `V_HISTORY_STOPPED`다. 러너의 V 저장소는 비어 있어 V 기울기 신호가 나지 않는다.
 - 이미 저장된 값은 사용자가 지울 때까지 남는다. `store.vHistoryKeys.count()`(개수만)와 `clear(event)`(WRITE 클릭, DC-18 선례)가 그 수동 설정 동작이다. 자동 삭제는 하지 않는다(소유자 확인 기본값).
 
-**PR-1b(옛 화면)**: 리더보드·기업 상세 QGV 카드·레이더 V축(kind SCORE, central)·"V 산출 현황 · 중앙 게시"(게시본 coverage)·Universe 페이지·S13 비교·플레이북 사실(`v_now` 공식, `v_prev20` NA)이 `QgvScores.officialPage`(앱이 연 뒤 한 번 읽은 게시본, `setPagePublication`)를 읽는다. 기준 줄·IEX 출처 문구·약관 링크는 `QgvScores.centralHtml`. S06 프리셋은 게시된 요인 점수로 다시 계산한 개인 프리셋 보기. V 이력 기록·읽기, 가치(DCF) 패널, 기기 시세 배지를 지움. TARGET v1 빌더만 기기 결과를 받음(포트폴리오·기업 화면은 기기 V를 계산하지 않음). 읽기 대기 중에는 `OFFICIAL_LOADING`('확인 중', 게시본 없음으로 표시하지 않음)이고 플레이북은 그 읽기를 기다림. 다시 읽기가 실패해도 마지막 검증 게시본을 그대로 쓰고 기준 줄에 '다시 읽기 실패(사유) · 마지막 게시본 표시'를 붙임(`last_attempt_reason`, data-cx-read-failure). 홈 QGV 카드·S13 비교·레이더·TARGET 작성기 후보 표에도 기준 줄과 IEX 출처를 붙임. 방향 규칙 DC-31a~d.
+**PR-1b(옛 화면)**: 리더보드·기업 상세 QGV 카드·레이더 V축(kind SCORE, central)·"V 산출 현황 · 중앙 게시"(게시본 coverage)·Universe 페이지·S13 비교·플레이북 사실(`v_now` 공식, `v_prev20` NA)이 `QgvScores.officialPage`(앱이 연 뒤 한 번 읽은 게시본, `setPagePublication`)를 읽는다. 기준 줄·IEX 출처 문구·약관 링크는 `QgvScores.centralHtml`. S06 프리셋은 게시된 요인 점수로 다시 계산한 개인 프리셋 보기. V 이력 기록·읽기, 가치(DCF) 패널, 기기 시세 배지를 지움. TARGET v1 빌더만 기기 결과를 받음(포트폴리오·기업 화면은 기기 V를 계산하지 않음). 읽기 대기 중에는 `OFFICIAL_LOADING`('확인 중', 게시본 없음으로 표시하지 않음)이고 플레이북은 그 읽기를 기다림. 다시 읽기가 실패해도 마지막 검증 게시본을 그대로 쓰고 기준 줄에 '다시 읽기 실패(사유) · 마지막 게시본 표시'를 붙임(`last_attempt_reason`, data-cx-read-failure). 홈 QGV 카드·S13 비교·레이더·TARGET 작성기 후보 표에도 기준 줄과 IEX 출처를 붙임. S06은 발행사(CIK) 하나에 자리 하나를 대표 증권 하나에만 주고(게시본 `assign_ranks`와 같은 대표 규칙과 동점 순서: 종합점수, 기호, 키), 같은 CIK의 다른 주식 종류(GOOG 등)는 그 자리를 `rank_row`로 가리키며 공식 순위·QG 참고 목록 개수에 따로 세지 않음. 방향 규칙 DC-31a~d.
 
 **남은 것**: 11/16 PR(TARGET V 출처, `V_SOURCES`에서 `DEVICE_TEMPORARY` 정리, 기기 경로 삭제).
 

@@ -148,10 +148,12 @@ const sortIds = (a) => [...a].sort();
    the page). Returns the sizes so that a sweep can show sorting moves no row in or out. */
 function checkPopulation(label, { truth: T, controls: C, dom: D0 }, expect) {
   const L = (m) => label + ': ' + m, ids = T.identities.map((x) => x.id), R = T.rows;
-  // DC-31 publication (D11 one place per issuer): the second share class of an issuer (expect.second, rank_row set, no place of its
-  // own) is listed by S06 under the QG view without an order; it is checked apart (open display decision) and left out below.
+  // DC-31 publication (D11 one place per issuer on ONE representative security, owner rule 2026-10-31): the second share class of an
+  // issuer (expect.second, rank_row set, no place of its own) is shown only under the 'all' view: in no explore list and in no chip
+  // count but 'all'. It is checked here and left out below.
   const second = new Set(expect.second || []), D = second.size ? { ...D0, rows: D0.rows.filter((r) => !second.has(r.id)) } : D0;
   for (const r of D0.rows.filter((x) => second.has(x.id))) eq([r.rank, r.qg], [null, null], L(r.id + ' (second code of an issuer) has no rank or QG order of its own'));
+  if (C.explore !== 'all') eq(D0.rows.filter((x) => second.has(x.id)).map((x) => x.id), [], L('a second share class is in no explore list (' + C.explore + ')'));
   eq(T.asOf, expect.asOf, L('the leaderboard reads the expected publication'));
   // D12: the rank population = the Universe of the file, one row per security (a TARGET company in the Universe is that code's
   // row); the TARGET outside the Universe are rows of the same result but never ranked and never in the table. Truth: leaderScores()
@@ -199,12 +201,12 @@ function checkPopulation(label, { truth: T, controls: C, dom: D0 }, expect) {
   }
   // Counts line: population of the file, official ranked / QG rows among the filtered rows, shown = visible rows.
   ok(!('__count' in D.counts), L('exactly one counts line [data-leaderboard-counts] (found ' + D.counts.__count + ')'));
-  eq([D.counts['data-population'], D.counts['data-rankable'], D.counts['data-qg-reference'], D.counts['data-shown']], [String(expect.population), String(fr.length), String(fq.length + secondShown), String(visible.length + (['all', 'qg'].includes(C.explore) ? secondShown : 0))],
+  eq([D.counts['data-population'], D.counts['data-rankable'], D.counts['data-qg-reference'], D.counts['data-shown']], [String(expect.population), String(fr.length), String(fq.length), String(visible.length + (C.explore === 'all' ? secondShown : 0))],
     L('counts line data-population / data-rankable / data-qg-reference / data-shown'));
   eq([D.counts['data-evaluated'], D.counts['data-target-in-universe'], D.counts['data-outside-universe']], [String(expect.official.codes), String(expect.official.target_in_universe.length), String(expect.official.outside.length)],
     L('counts line data-evaluated / data-target-in-universe / data-outside-universe (D12 populations)'));
   eq(D.counts['data-shown'], String(D0.rows.length), L('data-shown = the rows on screen'));
-  eq(D.buttons, { all: filtered.length + secondShown, ranked: fr.length, qg: fq.length + secondShown, partial: fp.length, check: fc.length }, L('explore option counts'));
+  eq(D.buttons, { all: filtered.length + secondShown, ranked: fr.length, qg: fq.length, partial: fp.length, check: fc.length }, L('explore option counts'));
   popChecks++;
   return { ranked: ranked.length, qg: qg.length, shown: D.rows.length, filtered: filtered.length };
 }
@@ -453,6 +455,8 @@ function checkMacro(n, m) {
       await p.goto(BASE + '#leaderboard'); await p.locator('[data-leaderboard-table]').waitFor(); await publishedSettled(p, DAYS[1].as_of);
       const e1 = published(1);
       ok(e1.ranked.length > 0 && e1.qg.length > 0, 'day 1 with the publication has an official ranking and a separate QG list (ranked ' + e1.ranked.length + ', QG ' + e1.qg.length + ')');
+      // D11 one place per issuer (owner rule 2026-10-31): the official ranked / QG lists (and so the S06 chips) equal the publication's counts.
+      eq([e1.ranked.length, e1.qg.length], [PUBV.coverage.ranked, PUBV.coverage.qg_reference], 'day 1: ranked / QG list counts == the publication (one place per issuer)');
       const b1 = await populationSweep(p, 'PUBLISHED_DAY1', e1);
       phase = 'PUBLISHED_RELOAD_DAY1'; await p.reload(); await p.locator('[data-leaderboard-table]').waitFor(); await publishedSettled(p, DAYS[1].as_of);
       eq(await populationSweep(p, 'PUBLISHED_RELOAD_DAY1', e1), b1, 'reload of day 1 = the first display (same population display)');

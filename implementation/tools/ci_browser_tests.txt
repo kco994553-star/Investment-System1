@@ -93,3 +93,10 @@ web_app_data_layer_browser_test.js  # new frontend P1 data layer: no-action read
 web_app_first_paint_browser_test.js  # new frontend P2-1a: shell first, layer after first paint; phone targets 390x844, 150 ms, 1.6 Mbps, CPU x4 (median of 3)
 web_app_home_browser_test.js  # new frontend P2-1 menu 0 home · company search: combobox, recent on a real click, favorites / developer default, company cards, boundaries
 web_app_qgv_browser_test.js  # new frontend P2-2a menu 1 QGV leaderboard: layer values, sort/filter never re-rank, click-only prices and returns, boundaries
+web_app_private_panel_browser_test.js  # common base: one private panel shape for every screen (public + private two layers), shared states/words, no request/storage
+web_app_macro_browser_test.js  # new frontend menu 3 매크로: lights, evidence, ring concept with 준비 중 models, split first paint, click-only device quote, stored user position, two private panels, states, boundaries
+web_app_prompts_browser_test.js  # new frontend feature 7 프롬프트 라이브러리: split first paint, filters, fill and copy checks, ★ and copies kept in this browser, selected company, states, boundaries
+web_app_tree_browser_test.js  # new frontend feature 8 구조 트리: spec hierarchy, registry statuses, WAI-ARIA tree keyboard, states, reads nothing
+web_app_technical_browser_test.js  # new frontend menu 2 기술적 분석: split first paint, company pick through IS2.companies, verdicts on hold, two private panels NOT_READY, click-only device bars (RAM, [data-ram-price]), notes and scenarios kept on this device, states, boundaries
+web_app_news_browser_test.js  # new frontend feature 5 뉴스·공시·관계망: public lists and filters, collection state, 관계 자료 미연결 centre, ★ on this device, one private panel, tree facts, states, boundaries
+web_app_lab_browser_test.js  # new frontend feature 9 Lab: 9.1 public words + checklist, private panel states with lab-backtest-v1 fixtures (normal/empty/404/schema/missing/null/SYNTHETIC/MIXED/PIT/login, curve refusals), 9.2 price-free ledger, partial failure, split first paint, boundaries
