@@ -13,6 +13,7 @@
 - 1단계 범위 → 설계 17절(DC-34 갱신). 질문 답(수정주가·과거 기간·분봉·3.2.5·TA-G1·#361), 차트 이력 계약, Lab 결과 비공개 저장·조회, 로그인 빈도·브라우저 표도 17절.
 - Codex KIS 워크플로 두 개: 오너가 "Disable workflow"로 끈다. 공개 로그 10회는 값 없음(삭제할 실행 없음). KIS 원자료 release는 새 비공개 저장소로 옮긴 뒤 지운다. #437에 중단·금지·DC-35를 남겼다.
 - `TA-361`: 10/31 오너 승인으로 #361을 닫았다(결정 기록은 10/31 밤 2차 블록, #440).
+- 10/31 오너: Cloudflare Zero Trust 보류(결제 수단 없음) → [Zero Trust 없이 본인 전용 접근](private_area/PRIVATE_AREA_NO_ZT_ACCESS_20261031.md) 조사·설계·검증. 새 결정 대기 `PRIV-AUTH-GOOGLE`·`PRIV-REPO-NAME`·`PRIV-CODEX-WF-OFF`. 배포·KIS 호출·운영 설정 변경은 승인 뒤.
 
 ## 결정됨 — 2026-10-31 저녁 (1인 비공개 구역 신설(KIS 한정) · KIS 보류 취소, DC-34 · 설계 PR, 구현은 승인 뒤)
 
@@ -296,6 +297,9 @@
 | PSKY-SHARES-ALIAS | `sec-universe-shares.json` PSKY 행(10/31 03:13 UTC STALE)을 SKYD 별칭으로 주식수 경로에서 다시 수집할지 | (a) 3분기 10-Q(표지 SKYD·인수 뒤 주식수)가 나온 뒤 별칭 + 주식수 사건 규칙을 함께 넣는 PR / (b) 지금 별칭 PR | (a). 지금 별칭을 넣으면 인수 전 주식수(2025-11, 약 10.7억 주)로 시총이 '새로 수집됨'이 된다(#428과 같은 문제). 그동안 영향은 PSKY M3 시가총액 순위의 사유 있는 NA(`STALE_INPUT`)뿐 | 행 STALE, M3 순위 NA |
 | PRICE-DISPLAY | "가격은 클릭할 때만"(DC-18 관련) 폐지: 중앙 파이프라인의 IEX 마지막 체결가(T+1)를 공개 파일로 게시 | 결정 기록 PR(GSQ-026·대장 새 줄)로 제안 → 오너 승인 뒤 구현 | 제안 PR 참조 | 클릭 전용 유지 |
 | EXP-OFFICIAL | 확장 모집단의 공식 승격 | 승격 / 연구 유지 | 연구 유지(운영 권리·성능·감사·P3 승인 전 승격 안 함) | Universe504만 공식 |
+| PRIV-AUTH-GOOGLE | 비공개 구역 인증(Zero Trust 보류 뒤) | A Google 로그인 토큰 + 기존 Worker가 `tokeninfo`로 서버 확인 / B 패스키 / 그 밖 | A로 시작, 필요하면 2단계에 B. [제안 문서](private_area/PRIVATE_AREA_NO_ZT_ACCESS_20261031.md) | 비공개 기능 준비 중 |
+| PRIV-REPO-NAME | 비공개 저장소 이름 맨 앞 하이픈(`-investment-system1-kis-private`) | 그대로 / `investment-system1-kis-private`로 변경 | 변경(명령줄에서 옵션으로 오인될 수 있음, 옛 주소는 넘겨 줌) | 그대로 |
+| PRIV-CODEX-WF-OFF | 이관 전까지 Codex KIS 워크플로 2개(`bt-data-pilot-kis.yml`·`bt-data-pilot-pre2016.yml`) | Actions 화면에서 끔 / 그대로 | 끔(삭제 아님) | 그대로(파일을 바꾸는 push 때만 돎) |
 | EXP-417-REPIN | #417 연구 명세의 점수 원본 고정값(`scoring_source_sha` bb57398c·calc_version 17.1) | 다시 고정 / 17.1 고정 유지(canonical과 못 맞춤) | 다시 고정. 10/30 Main이 PR #430(base = #417 가지)으로 `96037d1c`·`qgv2-calc/2026-10-23.1`에 다시 고정했다(tests/research 141 통과, 전에는 33 실패). #417 담당 확인 뒤 병합 | #417 Draft 유지 |
 | LAB-PUBLISH | 9.1 Lab 결과 게시 계약 `lab-results/1`(전략·기간 단위 집계만, 회사별·가격·NAV 곡선 금지, 결과 없으면 `BLOCKED_ON_DATA`) | 채택(가드 규칙 추가 PR) / 수정 | 채택 권장. 실데이터 권리가 없어 당분간 게시할 숫자는 없음 | 9.1은 `BLOCKED_ON_DATA` 표시만 |
 | PRIVATE-LIST | 포트폴리오·사용자 QGV 가중치 밖의 개인 데이터 후보(DC-22, 목록만 제안) | 후보: 관심(★)·그룹, 최근 검색, 13F 별표, 차트 노트·표시 설정, 내 국면 판단(4.4), 플레이북·판단 기록·TARGET v1 초안, 가상매매 세트 B/C/D, 보고서 AI 답·금액 숨김, 프롬프트 즐겨찾기·사본, 뉴스 필터, 시트 연결 설정, 백업 파일, 표시 설정(언어·테마 등) | 모두 개인(그 기기에만)으로 두기를 권장: 지금도 이 브라우저 저장·사용자 시트에만 있고 공개 파일에 없다 | 지금처럼 기기·사용자 시트에만 |

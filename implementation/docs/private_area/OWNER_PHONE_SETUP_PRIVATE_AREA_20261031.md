@@ -1,5 +1,7 @@
 # 1인 비공개 구역 — 오너 폰 설정 절차 (2026-10-31, 설계 승인 뒤 진행)
 
+> **10/31 진행 상황(오너):** 1단계(비공개 저장소, 실제 이름 `-investment-system1-kis-private`)·2단계(KIS Secrets)·3단계(가지·로그 정리) 완료. 공개 저장소 KIS Secrets는 아직 지우지 않는다. **4~6단계(Cloudflare Zero Trust·Access)는 결제 수단이 없어 보류**하고, [Zero Trust 없이 본인 전용 접근](PRIVATE_AREA_NO_ZT_ACCESS_20261031.md) 제안으로 바꾼다. 그 경우 오너가 할 일은 Worker 비밀값 1개(비공개 저장소 읽기 전용 토큰) 등록뿐이다(승인 뒤).
+
 설계: [PRIVATE_AREA_KIS_DESIGN_20261031](PRIVATE_AREA_KIS_DESIGN_20261031.md). 모든 단계는 폰 브라우저로 한다.
 - GitHub 모바일 앱은 Secrets·토큰 화면이 없으니 브라우저를 쓴다.
 - 키·토큰·이메일 값은 화면에 넣기만 한다. 채팅·문서·Notion에는 적지 않는다.
@@ -17,16 +19,16 @@
 ## 1. 새 비공개 저장소 만들기 (GitHub, 약 3분)
 
 1. github.com 로그인 → 오른쪽 위 `+` → **New repository**.
-2. 이름: `investment-system1-kis`(다른 이름이면 Main에게 알려 준다). **Private** 선택. **Add a README file** 체크. **Create repository**.
+2. 이름: `-investment-system1-kis-private`(다른 이름이면 Main에게 알려 준다). **Private** 선택. **Add a README file** 체크. **Create repository**.
 3. Claude가 이 저장소에 워크플로를 넣을 수 있게, Claude GitHub 앱 설치에 이 저장소를 추가한다.
-   - 경로: github.com → Settings → Applications → Claude → Configure → Repository access → `investment-system1-kis` 추가 → Save.
+   - 경로: github.com → Settings → Applications → Claude → Configure → Repository access → `-investment-system1-kis-private` 추가 → Save.
    - 이 단계를 건너뛰면 워크플로 파일을 오너가 직접 붙여 넣어야 한다.
 
 ## 2. 새 저장소에 KIS 키 넣기 (GitHub, 약 3분)
 
 1. KIS Developers(apiportal.koreainvestment.com) 로그인 → 마이페이지/API 신청 정보에서 앱키·앱시크릿을 확인한다.
    - GitHub에 이미 넣은 Secret 값은 다시 볼 수 없으니 KIS에서 다시 확인한다.
-2. `investment-system1-kis` → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**:
+2. `-investment-system1-kis-private` → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**:
    - 이름 `KIS_APP_KEY`, 값: 앱키 → Add secret.
    - 이름 `KIS_APP_SECRET`, 값: 앱시크릿 → Add secret.
    - 이름만 정확히 맞추면 된다. 값은 앞뒤 공백 없이 넣는다.
@@ -41,7 +43,7 @@
 3. (권장, `PRIV-LOGS`) 지난 KIS 검증 실행 로그 3건을 지운다.
    - 경로: `Investment-System1` → **Actions** → 왼쪽 `kis-verify-once` → 각 실행(41165294743, 41165951277, 41169962364) → 오른쪽 위 `…` → **Delete workflow run**.
 
-## 4. Cloudflare Zero Trust 켜기 (약 10분, 결제 수단 입력)
+## 4. Cloudflare Zero Trust 켜기 (약 10분, 결제 수단 입력) — 보류(10/31)
 
 1. dash.cloudflare.com 로그인 → 왼쪽 메뉴 **Zero Trust**.
 2. 팀 이름을 정한다(예: `kco-invest`).
@@ -57,7 +59,7 @@
    - Session duration: 24 hours(원하면 1주).
    - 저장한다. **Everyone·Emails ending in·Bypass는 쓰지 않는다.**
 
-## 5. 로그인 Worker에 Access 걸기 (Main이 `kis-auth` 배포 뒤, 약 5분)
+## 5. 로그인 Worker에 Access 걸기 (Main이 `kis-auth` 배포 뒤, 약 5분) — 보류(10/31)
 
 1. dash.cloudflare.com → **Workers & Pages** → `kis-auth` → **Access** 탭으로 간다.
    - 화면에 따라 Settings → Domains & Routes → **Enable Cloudflare Access**일 수 있다.
@@ -74,7 +76,7 @@
    - 경로: github.com → 프로필 → **Settings** → **Developer settings** → **Personal access tokens** → **Fine-grained tokens** → **Generate new token**.
    - 이름: `kis-worker-read`.
    - Expiration: 366 days. 만료일을 Main에게 알려 주면 교체일을 기록한다.
-   - Repository access: **Only select repositories** → `investment-system1-kis` 하나.
+   - Repository access: **Only select repositories** → `-investment-system1-kis-private` 하나.
    - Permissions → Repository → **Contents: Read-only**(나머지는 손대지 않음).
    - **Generate token** → 표시된 토큰을 복사한다. 한 번만 보인다.
 2. dash.cloudflare.com → **Workers & Pages** → `private-investment-history` → **Settings** → **Variables and Secrets** → **Add**:
