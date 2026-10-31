@@ -155,6 +155,25 @@ test('sortRows equals LeaderboardScreen.sortRows for the ids it orders; ticker /
     assert.notDeepEqual(mine, rows.map((r) => r.id), id + ' reorders');
     frozenCheck(env, 'sort ' + id, order(env, mine.map((x) => ({ id: x }))));
   }
+  // Exact total ties follow the place number (rank / QG order), not the ticker, in both apps (S06 tie order, 2026-10-31).
+  {
+    const tied = rows.map((r) => ({ ...r, rank: { ...r.rank }, score: { ...r.score } }));
+    const ranked = tied.filter((r) => Number.isInteger(r.rank.official)).sort((a, b) => a.rank.official - b.rank.official);
+    const qgs = tied.filter((r) => !Number.isInteger(r.rank.official) && r.rank.qg_reference_order !== null).sort((a, b) => a.rank.qg_reference_order - b.rank.qg_reference_order);
+    assert.ok(ranked.length >= 2 && qgs.length >= 2, 'tie fixture needs two ranked and two QG rows');
+    const [r1, r2] = ranked, [g1, g2] = qgs;
+    [r1.ticker, r2.ticker] = ['ZZZ' + r1.ticker, 'AAA' + r2.ticker]; r2.score.total = r1.score.total;
+    [g1.ticker, g2.ticker] = ['ZZZ' + g1.ticker, 'AAA' + g2.ticker]; g2.score.total = g1.score.total;
+    const tIds = tied.map((r) => ({ company_id: r.id, ticker: r.ticker, name: 'Name ' + r.ticker }));
+    const TS = { rows: Object.fromEntries(tied.map((r) => [r.id, { rank: r.rank.official, qg_reference: r.rank.qg_reference_order !== null ? { order: r.rank.qg_reference_order } : null,
+      primary: { total: r.score.total, q: r.score.q, g: r.score.g, v: r.score.v, coverage: { source: { acquired_at: r.acquired_at } } } }])) };
+    for (const id of ['qgv', 'qgv-asc']) {
+      const mine = Array.from(H.sortRows(tied, id, { cap }), (r) => r.id), theirs = old.sortRows(tIds, TS, id, { deviceRanks }).map((r) => r.company_id);
+      assert.deepEqual(mine, theirs, 'tie ' + id);
+      const at = (x) => mine.indexOf(x.id);
+      assert.ok(id === 'qgv' ? at(r1) < at(r2) && at(g1) < at(g2) : at(r1) > at(r2) && at(g1) > at(g2), 'tie by place number ' + id);
+    }
+  }
   // QGV keeps the tiers: ranked, then the QG reference order, then the rest; never interleaved.
   const tiers = H.sortRows(rows, 'qgv', { cap }).map((r) => (Number.isInteger(r.rank.official) ? 0 : r.rank.qg_reference_order !== null ? 1 : 2));
   assert.deepEqual(tiers, [...tiers].sort((a, b) => a - b), 'ranked, then QG reference, then no total');
