@@ -44,6 +44,13 @@ let phase = 'START';
         out.back = view((p.set('NOT_READY'), p));
         try { p.set('ERROR', { code: 'see https://x' }); out.badCode = 'accepted'; } catch (e) { out.badCode = String(e.message); }
         try { P.privatePanel({ id: 'Bad Id' }); out.badId = 'accepted'; } catch (e) { out.badId = String(e.message); }
+        // Loader facade (before IS2.ready / after a loader failure): getters give an object, not words.
+        const real = window.IS2.privateArea, desc = Object.getOwnPropertyDescriptor(window.IS2, 'privateArea');
+        try {
+          Object.defineProperty(window.IS2, 'privateArea', { configurable: true, writable: true, value: { panelState: () => ({ state: 'NOT_READY', reason: 'LAYER_NOT_READY' }), panelText: () => ({ state: 'NOT_READY', reason: 'LAYER_NOT_READY' }) } });
+          const f = P.privatePanel({ id: 'facade-test', title: '시험' }); host.append(f.node); out.facade = view(f);
+          try { f.set('SIGNED_IN'); out.badState = 'accepted'; } catch (e) { out.badState = String(e.message); }
+        } finally { if (desc) Object.defineProperty(window.IS2, 'privateArea', desc); else window.IS2.privateArea = real; }
         out.styleAttrs = document.querySelectorAll('[style]').length;
         out.overflow = document.documentElement.scrollWidth > window.innerWidth + 1;
         return out;
@@ -58,6 +65,8 @@ let phase = 'START';
       assert.equal(r.back.status, '비공개 기능 준비 중'); assert.equal(r.back.body, '');
       for (const v of Object.values(r)) if (v && typeof v === 'object') assert.doesNotMatch(v.status, /로그인됨/, phase + ' no login words');
       assert.match(r.badCode, /PRIVATE_CODE_INVALID/); assert.match(r.badId, /PANEL_ID_INVALID/);
+      assert.equal(r.facade.state, 'NOT_READY', phase + ' facade first state'); assert.equal(r.facade.status, '비공개 기능 준비 중', phase + ' facade words, never [object Object]');
+      assert.match(r.badState, /PRIVATE_PANEL_STATE_UNKNOWN/, phase + ' unknown state refused even before ready');
       assert.equal(r.styleAttrs, 0, phase + ' no style attribute'); assert.equal(r.overflow, false, phase + ' no horizontal overflow');
       assert.equal(await page.evaluate(() => performance.getEntriesByType('resource').length), at0, phase + ' panels send no request');
       assert.deepEqual(await page.evaluate(() => ({ ls: localStorage.length, ss: sessionStorage.length })), before, phase + ' panels store nothing');
