@@ -8,6 +8,8 @@
 //    part); ties by ticker. An id is the TARGET company_id linked to the code, else the code.
 //  - exact(): one exact ticker / code, else one exact English name, else null.
 //  - Listing-ended codes are found and say so (WBD). The index is built once per page; a missing names file is built again.
+//  - Since the common base (2026-10-31) the part builds on IS2.companies (companies.js, the one company list), loaded on the same
+//    IS2 before it, as loader.js LOAD_ORDER does; every assertion below is unchanged.
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -22,6 +24,7 @@ const NAMES = JSON.parse(fs.readFileSync(R.oldPath('company-names-ko.json'), 'ut
 function load({ codes = CODES, names = NAMES } = {}) {
   const calls = { universe: 0, names: 0 };
   const IS2 = { h: () => null, data: { universe: async () => { calls.universe++; return codes; }, static: async (n) => { assert.equal(n, 'company-names-ko.json'); calls.names++; return names ? ES.nameIndex(names) : null; } } };
+  vm.runInNewContext(fs.readFileSync(R.newPath('companies.js'), 'utf8'), { IS2, Object }, { filename: 'companies.js' });
   vm.runInNewContext(fs.readFileSync(R.newPath('search-part-live.js'), 'utf8'), { window: { IS2 }, Object }, { filename: 'search-part-live.js' });
   return { P: IS2.searchPart, calls };
 }

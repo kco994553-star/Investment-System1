@@ -16,6 +16,11 @@ function card(title,{id=null,link=null}={},...children){
  const inner=[h('h3',{class:'card-title'},title),...children];
  return link?h('a',{...attrs,href:link},...inner):h('div',attrs,...inner);}
 function pending(what){return h('p',{class:'pending',dataset:{pending:''}},'연결 전 · ',what);}
+/* A feature that is not built yet (owner rule, common base 2026-10-31): an unfinished model or a private feature says so with
+   what is missing, never as a result. text: the line (e.g. IS2.privateArea.text() → 비공개 기능 준비 중, or 공식 국면 미산출 · 준비
+   중); missing: optional list of what is still missing. No number of its own. */
+function notReady(text,missing){
+ return h('p',{class:'pending not-ready',dataset:{notReady:''}},text,...(Array.isArray(missing)&&missing.length?[h('span',{class:'not-ready-why'},' · 없는 것: ',missing.join(' · '))]:[]));}
 function more(text,link){return link?h('a',{class:'more',href:link},'→ ',text):h('span',{class:'more'},'→ ',text);}
 /* The shared company search box (DC-23): its first-paint half. search-part-live.js (IS2.searchPart.attach) takes it over once
    IS2.ready resolved; until then typing opens the list with 불러오는 중, Escape closes it and keeps the text, and a submit is
@@ -50,6 +55,29 @@ function mascot(mood='plain'){
    h('svg:ellipse',{cx:'50',cy:'57',rx:'5',ry:'4'})]
    :[h('svg:ellipse',{cx:'36',cy:'40',rx:'4',ry:'5',class:'eye'}),h('svg:ellipse',{cx:'64',cy:'40',rx:'4',ry:'5',class:'eye'}),P('M40 54 Q50 62 60 54','open')]),
   h('svg:rect',{x:'30',y:'74',width:'40',height:'34',rx:'8'}),h('svg:rect',{x:'40',y:'84',width:'20',height:'10',rx:'2'}),P('M30 84 Q18 90 20 100 M70 84 Q82 90 80 100','open'));}
-window.IS2.parts=Object.freeze({head,section,card,pending,more,searchBox,mascot});
+/* A private panel (public + private two layers, owner 2026-10-31): the one way a screen adds its private section next to
+   the public part. privatePanel({id, title, area}) → {node, set(state, {code, render}), state()}. The panel shows a 비공개 label,
+   a status line (role=status) with IS2.privateArea.panelText, the drawn character on ERROR / EMPTY, and on READY the
+   screen's own render(body) content. It starts in privateArea.panelState() (NOT_READY today), sends nothing and stores
+   nothing; the public part never waits for it. Before the layer is there (first paint) it says 비공개 기능 준비 중. */
+const PANEL=Object.freeze(['NOT_READY','LOGIN_REQUIRED','LOADING','ERROR','EMPTY','READY']);
+function privatePanel({id,title,area}={}){
+ if(typeof id!=='string'||!/^[a-z0-9-]{1,40}$/.test(id))throw Error('PANEL_ID_INVALID');
+ const P=()=>window.IS2.privateArea,status=h('p',{class:'pending',role:'status',dataset:{privateStatus:''}}),art=h('div',{class:'private-art'}),body=h('div',{class:'private-body'});
+ const node=h('section',{class:'sk card private-panel',dataset:{privatePanel:id},'aria-label':'비공개 · '+(title||id)},
+  h('h3',{class:'card-title'},h('span',{class:'chip',dataset:{privateLabel:''}},'비공개'),' ',title||''),status,art,body);
+ let cur=null;
+ function set(s,{code,render}={}){
+  if(!PANEL.includes(s))throw Error('PRIVATE_PANEL_STATE_UNKNOWN');
+  // Before IS2.ready (or after a loader failure) privateArea is the loader facade, whose getters return the NOT_READY /
+  // LOAD_FAILED object, not words: the panel then shows the not-ready words, never the object.
+  const A=P(),t=A&&typeof A.panelText==='function'?A.panelText(s,{area,code}):null,txt=typeof t==='string'?t:s==='READY'?'':'비공개 기능 준비 중';
+  cur=s;node.dataset.privateState=s;status.textContent=txt;status.hidden=s==='READY';
+  art.replaceChildren(...(s==='ERROR'?[mascot('alarm')]:s==='EMPTY'?[mascot('plain')]:[]));
+  body.replaceChildren();if(s==='READY'&&typeof render==='function')render(body);
+  return cur;}
+ const first=P()&&typeof P().panelState==='function'?P().panelState():null;set(PANEL.includes(first)?first:'NOT_READY');
+ return Object.freeze({node,set,state:()=>cur});}
+window.IS2.parts=Object.freeze({head,section,card,pending,notReady,more,searchBox,mascot,privatePanel});
 window.IS2.register=register;
 })();

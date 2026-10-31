@@ -209,6 +209,18 @@ svg.ico{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stro
 .check input{width:22px;height:22px;accent-color:var(--ink)}
 .lk{display:inline-flex;align-items:center;min-height:44px}
 .m-only{display:none}
+/* ---------- common base (2026-10-31): 준비 중 line, Lab status line, Lab table numbers and equity curve. Line art only (DC-25);
+   unverified = dashed, checked = solid; the strategy is the ink line and the benchmark a dashed gray line, no new colour (DC-26). */
+.not-ready-why{color:var(--muted)}
+.lab-status{display:inline-flex;align-items:center;gap:6px;border:1.5px dashed var(--dash);border-radius:999px;padding:2px 12px;font-size:14px;background:var(--wash);color:var(--ink)}
+.lab-status.checked{border-style:solid;border-color:var(--line);background:var(--paper)}
+.tbl th.num,.tbl td.num{text-align:right}
+.curve{display:block;width:100%;height:auto;max-height:280px}
+.curve-s,.curve-b,.curve-base{fill:none;vector-effect:non-scaling-stroke;stroke-linejoin:round;stroke-linecap:round}
+.curve-s{stroke:var(--ink);stroke-width:2.5}.curve-b{stroke:var(--muted);stroke-width:2;stroke-dasharray:6 4}.curve-base{stroke:var(--dash);stroke-width:1;stroke-dasharray:2 4}
+.curve-key{display:flex;flex-wrap:wrap;gap:6px 16px;margin:0;font-size:14px;color:var(--muted)}
+.curve-key .s::before,.curve-key .b::before{content:"";display:inline-block;width:20px;margin-right:6px;vertical-align:middle;border-top:2.5px solid var(--ink)}
+.curve-key .b::before{border-top:2px dashed var(--muted)}
 /* ---------- phone (draft: 390 px boards, bottom tabs) ---------- */
 @media (max-width:720px){
  :root{--gutter:16px}

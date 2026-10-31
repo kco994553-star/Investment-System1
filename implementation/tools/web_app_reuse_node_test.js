@@ -4,7 +4,8 @@
 //    placeholders, the P0 screens, boot.js last; web_app files only, every tag a deferred file, the CSP byte-identical to the old
 //    page), then loader.js LOAD_ORDER after the first paint: the 60 old engines/readers (old page's relative order, each once;
 //    home-quotes.js for the home's investor story, P2-1, Main)
-//    and the P1 layer (action → data → prices → store → qgv → engines), then the screens' after-first-paint halves (web_app
+//    and the P1 layer (action → data → prices → store → qgv → engines), then the common base (companies → private → lab,
+//    2026-10-31: IS2.companies / privateArea / lab, with facades like the layer's), then the screens' after-first-paint halves (web_app
 //    files, P2-1: screen-search-live.js; P2-2a: screen-qgv-live.js; a screen's first-paint file holds only its skeleton and stays
 //    small, screen-search.js and screen-qgv.js ≤ 5 KB). LOAD_ORDER is the one load list: the loader's runtime list, tools/web_app_reuse.js and tools/build_web_app.py
 //    read the same literal.
@@ -62,6 +63,8 @@ const REUSED = [
   'virtual-trading-v-history.js', 'virtual-ledger-sheets.js', 'price-store.js', 'report-benchmarks.js', 'virtual-trading-compare.js', 'home-quotes.js', 'data-refresh.js',
 ];
 const P1 = ['action.js', 'data.js', 'prices.js', 'store.js', 'qgv.js', 'engines.js'];
+// The common base (2026-10-31, docs/frontend_v2/COMMON_BASE_20261031.md): the one company list, the private area, the Lab reader.
+const COMMON = ['companies.js', 'private.js', 'lab.js'];
 // The screens' after-first-paint halves (web_app files, loaded after the layer; P1_DATA_LAYER.md §1.1 screen-file rule).
 const LIVE = ['search-part-live.js', 'screen-search-live.js', 'screen-qgv-live.js'];
 const SKELETON_MAX_BYTES = { 'screen-search.js': 5 * 1024, 'screen-qgv.js': 5 * 1024 };
@@ -108,10 +111,10 @@ const py = (code, args = [], input = '') => execFileSync('python3', ['-c', code,
 test('index.html loads the first screen only; loader.js LOAD_ORDER loads the reused old modules, then the P1 layer', () => {
   assert.equal(REUSED.length, 61);
   assert.deepEqual(R.firstPaint(), FIRST);
-  assert.deepEqual(R.loadOrder(), [...REUSED, ...P1, ...LIVE]);
+  assert.deepEqual(R.loadOrder(), [...REUSED, ...P1, ...COMMON, ...LIVE]);
   delete require.cache[require.resolve(R.newPath(LOADER))];
   assert.deepEqual([...R.requireNew(LOADER).LOAD_ORDER], R.loadOrder(), 'the loader runs the list the build and the helper read');
-  assert.deepEqual(R.scripts(), [...FIRST, ...REUSED, ...P1, ...LIVE], 'the page load order: index.html, then LOAD_ORDER');
+  assert.deepEqual(R.scripts(), [...FIRST, ...REUSED, ...P1, ...COMMON, ...LIVE], 'the page load order: index.html, then LOAD_ORDER');
 });
 
 test('a screen\'s first-paint file holds only its skeleton; its logic is a web_app LOAD_ORDER file after the layer', () => {
@@ -142,6 +145,7 @@ test('load-time bindings come before their users and companions are present', ()
   const lastOld = Math.max(...REUSED.map((n) => at.get(n))), firstLoaded = Math.min(...R.loadOrder().map((n) => at.get(n)));
   for (const name of P1) assert.ok(at.get(name) > lastOld, name + ' after every reused module');
   for (const name of LIVE) assert.ok(at.get(name) > Math.max(...P1.map((n) => at.get(n))), name + ' after the P1 layer');
+  for (const name of COMMON) assert.ok(at.get(name) > Math.max(...P1.map((n) => at.get(n))) && at.get(name) < Math.min(...LIVE.map((n) => at.get(n))), name + ' after the P1 layer, before the screens');
   for (const name of FIRST) assert.ok(at.get(name) < firstLoaded, name + ' is on the first screen, before every LOAD_ORDER file');
   assert.ok(at.get('core.js') < at.get('action.js') && at.get('parts.js') < at.get(LANES[0]), 'IS2 and parts exist before the layer and the screens');
   for (const name of [...LANES, ...P0_SCREENS]) assert.ok(at.get(LOADER) < at.get(name), 'the loader facades exist before ' + name);
@@ -454,7 +458,9 @@ test('the loader facade API is the real layer API: every member, each kind match
   const fresh = (n) => { delete require.cache[require.resolve(R.newPath(n))]; return R.requireNew(n); };
   const action = fresh('action.js').create({ win }), data = fresh('data.js').create({ win, action }), prices = fresh('prices.js').create({ win, action, data });
   const store = fresh('store.js').create({ win, action, data }), qgv = fresh('qgv.js').create({ win, data, prices, action });
-  const engines = fresh('engines.js').create({ win, action, data, prices, store, qgv }), real = { data, prices, store, qgv, engines };
+  const engines = fresh('engines.js').create({ win, action, data, prices, store, qgv });
+  const companies = fresh('companies.js').create({ data, ended: {} }), privateArea = fresh('private.js').create(), lab = fresh('lab.js').create({ privateArea });
+  const real = { data, prices, store, qgv, engines, companies, privateArea, lab };
   const L = freshLoader();
   assert.deepEqual(Object.keys(L.API), Object.keys(L.NAMESPACES));
   const firstParam = (fn) => { const src = String(fn); const m = /^(?:async\s+)?(?:function\b[^(]*|[A-Za-z_$][\w$]*\s*)?\(\s*([A-Za-z_$][\w$]*)/.exec(src) || /^(?:async\s+)?([A-Za-z_$][\w$]*)\s*=>/.exec(src); return m ? m[1] : null; };
