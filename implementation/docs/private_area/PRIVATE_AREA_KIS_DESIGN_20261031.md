@@ -160,18 +160,18 @@ CORS 주의: 출처 `https://kco994553-star.github.io`는 이 계정의 모든 P
 
 ## 7. 안전 — 막는 방법과 가드
 
-| 막을 것 | 방법 |
-| --- | --- |
-| 주문·계좌·잔고 | 수집기·검증 도구 공통: 허용 경로 목록(토큰 발급·폐기·시세)만. 경로 단어 거부(order·trading·balance·account). 시험으로 고정 |
-| 키·토큰·가격이 로그에 | 고정 문구 로그, Secret 한 단계·자식 프로세스 제거, `::add-mask::`, 리다이렉트 금지, 응답 본문 미출력, 아티팩트 없음 |
-| Pages에 KIS 자료 | `pages_artifact_guard`에 KIS 표지 추가: KIS 호스트(`openapi(vts).koreainvestment.com`), TR 번호 패턴(`HHDFS`/`FHKST` + 숫자 8자리), `KIS_APP_KEY`·`KIS_APP_SECRET`, 스키마 접두어 `kis-`. 하나라도 있으면 빌드 실패. 새 파일은 기존 ALLOWED_NAMES가 이미 막는다 |
-| 공개 저장소에 KIS 자료 | 정적 시험: 추적 파일에 `kis-` 스키마 자료가 없을 것. KIS 호스트·TR 번호는 허용 목록 파일(수집기 모듈·그 시험·KIS 조사 문서·이 설계 문서)에만 |
-| 공개 Actions에서 KIS 호출 | 정적 시험: 공개 저장소 워크플로 어디에도 `secrets.KIS_`가 없고 수집기 모듈을 부르지 않을 것(공개 Secrets 삭제도 이 시험이 뒷받침). 수집기 자체도 공개 저장소에서 실행되면 멈춘다 |
-| 공개 로그·결과물에 KIS 파생 수치 | 이 설계·결정 기록에도 KIS 비교 수치는 적지 않는다. 오너 보고에만 둔다. 지난 공개 검증 실행 3건은 오너가 지우기를 권장한다(`PRIV-LOGS`) |
-| 비공개 응답이 캐시에 | `private, no-store`, 시험으로 고정. 배포 확인 단계가 익명 401과 헤더를 확인 |
-| 허용 이메일 밖 로그인 | Access 정책: 허용 1개(이메일 1개), 로그인 방법은 일회용 코드만, 기본 IdP 제거, `Everyone`·도메인 허용·Bypass 금지. Worker도 이메일을 다시 확인 |
+| 막을 것 | 방법 | 상태 |
+| --- | --- | --- |
+| 주문·계좌·잔고 | 수집기·검증 도구 공통: 허용 경로 목록(토큰 발급·폐기·시세)만. 경로 단어 거부(order·trading·balance·account). 시험으로 고정 | 구현(이 PR): 공통 허용 목록·검증 도구 쪽(20.1). 수집기는 수집기 PR에서 같은 목록을 쓴다 |
+| 키·토큰·가격이 로그에 | 고정 문구 로그, Secret 한 단계·자식 프로세스 제거, `::add-mask::`, 리다이렉트 금지, 응답 본문 미출력, 아티팩트 없음 | 수집기 PR |
+| Pages에 KIS 자료 | `pages_artifact_guard`에 KIS 표지 추가: KIS 호스트(`openapi(vts).koreainvestment.com`), TR 번호 패턴(`HHDFS`/`FHKST` + 숫자 8자리), `KIS_APP_KEY`·`KIS_APP_SECRET`, 스키마 접두어 `kis-`. 하나라도 있으면 빌드 실패. 새 파일은 기존 ALLOWED_NAMES가 이미 막는다 | 구현(이 PR, 20.1) |
+| 공개 저장소에 KIS 자료 | 정적 시험: 추적 파일에 `kis-` 스키마 자료가 없을 것. KIS 호스트·TR 번호는 허용 목록 파일(수집기 모듈·그 시험·KIS 조사 문서·이 설계 문서)에만 | 구현(이 PR, 20.1) |
+| 공개 Actions에서 KIS 호출 | 정적 시험: 공개 저장소 워크플로 어디에도 `secrets.KIS_`가 없고 수집기 모듈을 부르지 않을 것(공개 Secrets 삭제도 이 시험이 뒷받침). 수집기 자체도 공개 저장소에서 실행되면 멈춘다 | 구현(이 PR): 정적 시험. 수집기의 자기 정지는 수집기 PR |
+| 공개 로그·결과물에 KIS 파생 수치 | 이 설계·결정 기록에도 KIS 비교 수치는 적지 않는다. 오너 보고에만 둔다. 지난 공개 검증 실행 3건은 오너가 지우기를 권장한다(`PRIV-LOGS`) | 운영 규칙(코드 없음) |
+| 비공개 응답이 캐시에 | `private, no-store`, 시험으로 고정. 배포 확인 단계가 익명 401과 헤더를 확인 | Worker PR |
+| 허용 이메일 밖 로그인 | Access 정책: 허용 1개(이메일 1개), 로그인 방법은 일회용 코드만, 기본 IdP 제거, `Everyone`·도메인 허용·Bypass 금지. Worker도 이메일을 다시 확인 | Worker PR·오너 설정 |
 
-가드 추가·수정은 승인 뒤 첫 구현 PR에서 한다(이 PR은 문서만).
+가드 추가는 첫 구현 PR에서 했다(20.1). 가드는 더하거나 좁히기만 하고 풀지 않는다.
 
 ## 8. 확장 모집단 거래대금 기준을 KIS로 다시 켤 수 있나
 
@@ -469,3 +469,27 @@ Actions 사용량: 매일 약 15분 × 22거래일 ≈ 330분. 처음 채우기 
   3. 옮긴 것을 확인한다.
   4. 공개 저장소의 KIS Secrets와 Codex KIS 워크플로를 지운다(오너).
   5. 원자료 저장소의 KIS release를 지운다.
+
+### 20.1 첫 구현 PR — 가드와 요청서 형식 (2026-10-31)
+
+가드를 더하고 요청서 형식을 넣었다. KIS 호출·KIS를 부르는 워크플로·Secret·배포는 없다. 기존 가드와 허용 목록은 하나도 풀지 않았다.
+
+| 무엇 | 파일(`implementation/`) | 시험(`implementation/tests/`) |
+| --- | --- | --- |
+| Pages KIS·비공개 표지 | `tools/pages_artifact_guard.py` | `test_pages_artifact_guard.py` |
+| 공개 저장소 정적 시험 | — | `test_private_boundary_static.py` |
+| KIS 경로 허용 목록(수집기와 공통) | `src/investment_system/private_area/kis_routes.py` | `test_research_request.py` |
+| `research-request/1` 검사·`plan()` | `src/investment_system/private_area/research_request.py` | `test_research_request.py` |
+
+- Pages 가드: 하나라도 있으면 빌드 실패.
+  - `kis_markers`: KIS 호스트(`koreainvestment.com` 아래 모든 주소), TR 번호(시세 계열 `HHDFS`·`HHKST`·`FHKST`·`FHKSW`·`FHPST`·`FHKUP` + 숫자 8자리, 주문·잔고 계열 `TTTC`·`VTTC`·`TTTS`·`VTTS`·`JTTT`·`VTTT`·`CTRP`·`VTRP` + 숫자 4자리 + 영문 1자), KIS Secret 이름 2개. 대소문자 무관. 모든 텍스트 파일 원문과, JSON은 풀린 키·문자열까지 본다.
+  - `private_area_schema`: `kis-`·`private-` 스키마 이름. JSON은 어느 깊이든 schema·schema_version 값, 코드는 `이름/숫자` 꼴과 `schema: '…'`. 예외는 기존 기기 시세 Worker 응답 `private-history/1` 하나다(정확한 철자, 지금 그것을 읽는 고정 해시 파일 6개 안에서만).
+  - `private_area_paths`: 코드의 `/kis/`·`/lab/`·`/private/`와 따옴표·`?`·`#` 바로 앞 `/kis`·`/private`. JSON 문자열은 첫 경로 칸이 셋 중 하나인 주소만 친다(뉴스 링크 안쪽의 `/lab/`은 Worker 경로가 아니다). 앱 자체 해시 경로 `'/lab'`은 통과한다.
+- 정적 시험(추적 파일과 아직 add하지 않은 새 파일, `.gz`는 풀어서):
+  - `kis-` 스키마 값이 어디에도 없다.
+  - KIS 호스트·TR 번호는 시험 안 허용 목록에만 있다: KIS 조사 문서 4개(`manual_quotes_owner/`의 `KIS_DIRECT_API_RESEARCH_26E.md`·`KIS_DIRECT_API_SOURCES_26E.json`·`DIRECT_API_SOURCES_26E.json`·`DIRECT_API_SERVICE_OPTIONS_26E.md`), 이 설계·폰 절차 문서, `kis_routes.py`, 나중 파일 2개(수집기 `private_area/kis_collector.py`와 `tests/test_kis_collector.py`). 목록의 기존 파일에 표지가 없어지면 시험이 실패한다.
+  - 공개 워크플로는 `secrets.KIS_`(대소문자 무관)·KIS Secret 이름·KIS 호스트·TR 번호·`kis_collector`를 쓰지 않고, `private_area` 패키지를 python으로 실행하지 않는다.
+  - web_app·web_assets·`web_mvp.py`는 비공개 경로를 부르지 않는다.
+- `research-request/1`: 칸은 schema·request_id(`rr-YYYYMMDD-소문자 단어`, 64자 이하)·symbols(미국 티커 1~600개)·period(2000-01-01 이후, 10년 이하, once는 끝이 오늘 이하, daily는 오늘+366일 이하)·items(`daily_raw`·`daily_adjusted_crosscheck`·`volume`·`dollar_volume` 중 일부)·frequency(`once`·`daily`)·purpose(한 줄 120자 이하, 주소·이메일·키 같은 토큰·8자리 이상 숫자 금지). 파일 16 KiB 이하, 모르는 키 거부, order·trading·balance·account·주문·매매·잔고·계좌는 요청 어디에서나 거부. 오류는 고정 코드만 낸다.
+- `plan(request)`: 토큰 발급 → 종목마다 해외 기간별시세(원주가 `MODP=0`, 대조를 요청했을 때만 `MODP=1`) → 토큰 폐기. 호출 서술만 돌려주며 호스트·네트워크가 없다. 서술마다 `kis_routes.require_route`를 거치고, 경로 단어 거부가 허용 목록보다 먼저다.
+- 뒤 PR에 남는 일: 화면 PR(13절 4번)의 `private-kis.js`가 `/kis/us-daily`를 부르면 이 가드에 막힌다. 그때 파일 하나·주소 하나로 좁힌 예외를 오너 승인과 함께 더한다.

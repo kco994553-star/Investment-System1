@@ -8,6 +8,9 @@ quotation code is an asset, never permission to publish device data.
 GSQ-024 (owner decision 2026-10-23, guard PR approved separately): the central QGV publication `qgv-official.json` and its
 attempt record `qgv-official-status.json` are allowed names with their own strict validators, and the ONE sensitive-key
 exception is the official rank at the exact path rows.<code>.rank of `qgv-official.json` (PUBLIC_SCORE_PATHS below).
+
+Private area (owner approval 2026-10-31, design docs/private_area/PRIVATE_AREA_KIS_DESIGN_20261031.md §7, §18.3, §20.1):
+KIS markers, private-area schema names and private Worker paths fail the build in every public file (added checks only).
 """
 from __future__ import annotations
 
@@ -249,6 +252,92 @@ SECRET_PATTERNS = (
     re.compile(r"(?i)authorization\s*:\s*[\"']?bearer\s+[a-z0-9._~+/=-]{8,}"),
 )
 
+# Private area boundary (owner approval 2026-10-31; design PRIVATE_AREA_KIS_DESIGN_20261031.md §7, §18.3, §20.1). Added checks
+# only, nothing above is relaxed: "공개 저장소, Pages, 공개 Actions 로그·결과물에는 KIS 자료를 절대 넣지 않는다."
+# - kis_markers: any KIS host, KIS TR id or KIS Secret name, in the raw text of every text file and in every decoded JSON key
+#   and string (a JSON escape cannot hide it). TR ids: the quotation families (5 letters + 8 digits, e.g. the overseas period
+#   quote of design §3.2) and the order / balance families (4 letters + 4 digits + 1 letter), any letter case.
+# - private_area_schema: a schema name with the `kis-` or `private-` prefix. JSON: the value of any schema / schema_version key
+#   at any depth. Other text (code): a versioned schema name `kis-…/N` / `private-…/N` or a `schema: '…'` assignment. The one
+#   exception is the existing device price-history Worker answer `private-history/1` (/history path, device RAM only, older
+#   than the private area), exact spelling, only inside the pinned assets of LEGACY_PRIVATE_SCHEMA_FILES that read it today.
+# - private_area_paths: the private Worker paths /kis/*, /lab/*, /private/*. Code: `/kis/`, `/lab/`, `/private/`, or `/kis` /
+#   `/private` right before a quote, `?` or `#` (`'/lab'` alone stays: it is the app's own hash route). JSON strings: a URL or
+#   path whose FIRST path segment is one of them (a third-party link with a deeper `/lab/` segment, e.g. a news article, is
+#   not a private Worker path).
+# The patterns below are matched against casefolded text (any letter case counts); call the helpers, not the patterns.
+KIS_HOST = re.compile(r"koreainvestment\.com")
+KIS_TR_ID = re.compile(r"(?:hhdfs|hhkst|fhkst|fhksw|fhpst|fhkup)\d{8}|(?:tttc|vttc|ttts|vtts|jttt|vttt|ctrp|vtrp)\d{4}[a-z]")
+KIS_SECRET_NAME = re.compile(r"kis_app_(?:key|secret)")
+KIS_MARKERS = (KIS_HOST, KIS_TR_ID, KIS_SECRET_NAME)
+_KIS_HINTS = ("koreainvestment", "kis_app_", "hhdfs", "hhkst", "fhkst", "fhksw", "fhpst", "fhkup",
+              "tttc", "vttc", "ttts", "vtts", "jttt", "vttt", "ctrp", "vtrp")  # literal prefilter, same coverage
+PRIVATE_SCHEMA_PREFIXES = ("kis-", "private-")
+# (the two schema patterns run on the original text with IGNORECASE, so the legacy exception sees the real spelling)
+PRIVATE_SCHEMA_NAME = re.compile(r"(?i)(?<![a-z0-9_-])(?:kis|private)-[a-z0-9][a-z0-9_.-]*/\d+")
+PRIVATE_SCHEMA_FIELD = re.compile(r"""(?i)schema(?:_version)?["']?\s*[:=]\s*["'`]\s*((?:kis|private)-[^"'`\s]*)""")
+LEGACY_PRIVATE_SCHEMA = "private-history/1"
+LEGACY_PRIVATE_SCHEMA_FILES = frozenset({"chart-bars.js", "chart-workbench.js", "price-store.js", "private-history.js",
+                                         "virtual-trading-runner.js", "worker-quote-fallback.js"})
+PRIVATE_PATH_CODE = re.compile(r"/(?:kis|lab|private)/|/(?:kis|private)(?=[\"'`?#])")
+PRIVATE_PATH_VALUE = re.compile(r"(?:^|[\s\"'(<\[,;=])(?:(?:[a-z][a-z0-9+.-]*:)?//[^/?#\s\"'<>]*)?/(?:kis|lab|private)(?![a-z0-9_.-])")
+_PATH_HINTS = ("/kis", "/lab", "/private")
+
+
+def _kis_count_folded(folded: str, markers: tuple = KIS_MARKERS) -> int:
+    if not any(hint in folded for hint in _KIS_HINTS):
+        return 0
+    return sum(len(pattern.findall(folded)) for pattern in markers)
+
+
+def kis_marker_count(text: str, markers: tuple = KIS_MARKERS) -> int:
+    """KIS hosts, TR ids and Secret names in `text` (any letter case); `markers` narrows to a subset of KIS_MARKERS."""
+    return _kis_count_folded(text.casefold(), markers)
+
+
+def private_schema_names(text: str, legacy_ok: bool = False, folded: str | None = None) -> int:
+    """`kis-` / `private-` schema names in code text; `legacy_ok` admits the exact LEGACY_PRIVATE_SCHEMA spelling only."""
+    folded = text.casefold() if folded is None else folded
+    if "kis-" not in folded and "private-" not in folded:
+        return 0
+    found = [m.group(0) for m in PRIVATE_SCHEMA_NAME.finditer(text)] + [m.group(1) for m in PRIVATE_SCHEMA_FIELD.finditer(text)]
+    # The exception compares the exact spelling: `Private-History/1` is not the legacy name.
+    return sum(1 for name in found if not (legacy_ok and name == LEGACY_PRIVATE_SCHEMA))
+
+
+def private_code_paths(text: str, folded: str | None = None) -> int:
+    """Private Worker paths requested from code text (/kis/, /lab/, /private/, or '/kis' / '/private' ending a literal)."""
+    folded = text.casefold() if folded is None else folded
+    if not any(hint in folded for hint in _PATH_HINTS):
+        return 0
+    return len(PRIVATE_PATH_CODE.findall(folded))
+
+
+def private_value_path(value: str) -> bool:
+    """A JSON string that is, or contains, a URL / path whose first path segment is /kis, /lab or /private."""
+    folded = value.casefold()
+    return any(hint in folded for hint in _PATH_HINTS) and PRIVATE_PATH_VALUE.search(folded) is not None
+
+
+def _private_area_text(name: str, text: str, violations: Counter) -> bool:
+    """Raw-text private-area checks. JSON files get only the KIS markers here; their schema and path checks are structural
+    (_inspect_json), so third-party links and titles inside public data are judged as values, not as code.
+    Returns whether a JSON file needs the per-string checks: only when it has an escape (backslash) or a hint in its raw
+    text, since without an escape every decoded key and string is a verbatim piece of the raw text."""
+    folded = text.casefold()
+    markers = _kis_count_folded(folded)
+    if markers:
+        violations["kis_markers"] += markers
+    if name.endswith(".json"):
+        return "\\" in text or any(hint in folded for hint in _KIS_HINTS + _PATH_HINTS)
+    schemas = private_schema_names(text, legacy_ok=name in LEGACY_PRIVATE_SCHEMA_FILES, folded=folded)
+    if schemas:
+        violations["private_area_schema"] += schemas
+    paths = private_code_paths(text, folded=folded)
+    if paths:
+        violations["private_area_paths"] += paths
+    return False
+
 
 def _receipt(violations: Counter, files_scanned: int) -> dict:
     return {
@@ -276,8 +365,10 @@ def _populated(value: object) -> bool:
     return value is not None and value != "" and value != [] and value != {}
 
 
-def _inspect_json(value: object, violations: Counter, depth: int = 0, *, name: str | None = None, path: tuple = ()) -> None:
-    """`name` = the artifact file name (only for PUBLIC_SCORE_PATHS); `path` = the keys down to `value` (a list adds an index)."""
+def _inspect_json(value: object, violations: Counter, depth: int = 0, *, name: str | None = None, path: tuple = (),
+                  strings: bool = True) -> None:
+    """`name` = the artifact file name (only for PUBLIC_SCORE_PATHS); `path` = the keys down to `value` (a list adds an index);
+    `strings` = run the private-area per-string checks (see _private_area_text)."""
     if depth > MAX_JSON_DEPTH:
         raise ValueError("JSON nesting limit")
     if isinstance(value, float) and not math.isfinite(value):
@@ -290,14 +381,25 @@ def _inspect_json(value: object, violations: Counter, depth: int = 0, *, name: s
             if key in {"schema", "schema_version"} and isinstance(child, str):
                 if re.search(r"device[-_]actual[-_](?:holdings|export)(?:/|$)", child, re.I):
                     violations["private_device_schema"] += 1
-            _inspect_json(child, violations, depth + 1, name=name, path=path + (key,))
+            # Private area: a `kis-` / `private-` schema name under any spelling of the key, no exception in JSON.
+            if normalized in {"schema", "schemaversion"} and isinstance(child, str) \
+                    and child.strip().casefold().startswith(PRIVATE_SCHEMA_PREFIXES):
+                violations["private_area_schema"] += 1
+            if strings and kis_marker_count(key):
+                violations["kis_markers"] += 1
+            _inspect_json(child, violations, depth + 1, name=name, path=path + (key,), strings=strings)
     elif isinstance(value, list):
         for index, child in enumerate(value):
-            _inspect_json(child, violations, depth + 1, name=name, path=path + (index,))
+            _inspect_json(child, violations, depth + 1, name=name, path=path + (index,), strings=strings)
     elif isinstance(value, str):
         # JSON escapes must not hide a contact address from the raw-text scan.
         if SECRET_PATTERNS[0].search(value):
             violations["secret_patterns"] += 1
+        # Nor a KIS marker or a private Worker path (an escaped slash or letter decodes back before this check).
+        if strings and kis_marker_count(value):
+            violations["kis_markers"] += 1
+        if strings and private_value_path(value):
+            violations["private_area_paths"] += 1
 
 
 def _valid_woff2_header(payload: bytes) -> bool:
@@ -345,9 +447,10 @@ def _check_payload(name: str, payload: bytes, violations: Counter) -> None:
         violations["secret_patterns"] += sum(len(pattern.findall(text)) for pattern in SECRET_PATTERNS)
         if not violations["secret_patterns"]:
             del violations["secret_patterns"]
+        per_string = _private_area_text(name, text, violations)
         if name.endswith(".json"):
             value = json.loads(text, object_pairs_hook=_unique_pairs, parse_constant=_reject_constant)
-            _inspect_json(value, violations, name=name)
+            _inspect_json(value, violations, name=name, strings=per_string)
             if name == "sec-m2-candidates.json":
                 try:
                     require_public_candidates(value)

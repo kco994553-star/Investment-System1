@@ -1,5 +1,6 @@
 """Public artifact checks use temporary synthetic mutations, never private exports."""
 import contextlib
+from collections import Counter
 from copy import deepcopy
 import importlib.util
 import io
@@ -686,6 +687,132 @@ class PagesArtifactGuardTests(unittest.TestCase):
         valid = self.make_tar()
         archive_path.write_bytes(valid.read_bytes()[:10000])
         self.assertEqual(self.tar_receipt(archive_path)["pages_artifact_guard"], "FAIL")
+
+    # ---- private area boundary (owner approval 2026-10-31; PRIVATE_AREA_KIS_DESIGN_20261031.md §7, §18.3, §20.1) ----------
+    # Canaries are assembled at run time so this file carries no KIS marker itself (tests/test_private_boundary_static.py
+    # scans every tracked file). All values are synthetic.
+    KIS_CANARIES = (
+        'openapi.korea' + 'investment.com', 'https://OPENAPIVTS.Korea' + 'Investment.com:29443/oauth2/tokenP',
+        'HHDFS' + '76240000', 'FHKST' + '03010100', 'FHKSW' + '00000001', 'hhdfs' + '76950200',
+        'TTTC' + '0802U', 'CTRP' + '6504R', 'KIS_APP' + '_KEY', 'kis_app' + '_secret',
+    )
+    PRIVATE_SCHEMA_CANARIES = ('const S="private' + '-bars/1";', "x = {schema: 'k" + "is-us-daily'};",
+                               "'private" + "-liquidity/1'", "if (v.schema === 'K" + "IS-x/2') {}")
+    PRIVATE_PATH_CANARIES = ("fetch(W + '/k" + "is/us-daily')", "'/lab" + "/backtest'", "u + '/priv" + "ate'",
+                             "'/k" + "is'", "'https://x.workers.dev/k" + "is?x=1'")
+
+    def check(self, name, payload):
+        violations = Counter()
+        self.guard()._check_payload(name, payload, violations)
+        return violations
+
+    def test_current_build_carries_no_private_area_marker(self):
+        guard = self.guard()
+        receipt = self.scan()
+        self.assertEqual(receipt["pages_artifact_guard"], "PASS")
+        for category in ("kis_markers", "private_area_schema", "private_area_paths"):
+            self.assertNotIn(category, receipt["violations"])
+        # The legacy exception is exactly the files that read the device price-history answer today, nothing more.
+        readers = {path.name for path in self.baseline.iterdir() if path.suffix != '.woff2' and path.suffix != '.png'
+                   and guard.LEGACY_PRIVATE_SCHEMA in path.read_text(encoding='utf-8')}
+        self.assertEqual(readers, guard.LEGACY_PRIVATE_SCHEMA_FILES)
+        self.assertTrue(guard.LEGACY_PRIVATE_SCHEMA_FILES <= set(guard.APPROVED_SHA256))
+
+    def test_kis_markers_fail_in_every_text_kind_and_never_leak(self):
+        for marker in self.KIS_CANARIES:
+            for name in ("index.html", "app.js", "style.css", "third-party-notices.txt", "research.html"):
+                with self.subTest(marker=marker[:9], file=name):
+                    original = (self.baseline / name).read_bytes()
+                    violations = self.check(name, original + ("\n/* " + marker + " */\n").encode())
+                    self.assertGreater(violations["kis_markers"], 0)
+        # Directory and CLI mode: the category fails the build and the receipt never repeats the marker.
+        marker = self.KIS_CANARIES[1]
+        (self.site / "app.js").write_bytes((self.baseline / "app.js").read_bytes() + marker.encode())
+        receipt = self.assert_rejected("kis_markers")
+        self.assertNotIn(marker, json.dumps(receipt))
+        result = self.cli()
+        self.assertEqual(result.returncode, 1)
+        self.assertNotIn(marker, result.stdout + result.stderr)
+        self.assertIn("kis_markers", json.loads(result.stdout)["violations"])
+
+    def test_kis_markers_in_json_values_and_keys_fail_even_when_escaped(self):
+        original = (self.baseline / "data.json").read_text(encoding="utf-8")
+        for marker in self.KIS_CANARIES:
+            for place in ("value", "key", "escaped"):
+                with self.subTest(marker=marker[:9], place=place):
+                    data = json.loads(original)
+                    data["nested"] = {marker: 1} if place == "key" else {"note": "PLACEHOLDER"}
+                    text = json.dumps(data)
+                    hidden = marker if place != "escaped" else "".join("\\u%04x" % ord(c) for c in marker)
+                    text = text.replace("PLACEHOLDER", hidden)
+                    self.assertGreater(self.check("data.json", text.encode())["kis_markers"], 0)
+
+    def test_private_schema_names_fail_in_json_at_any_depth_and_in_code(self):
+        original = (self.baseline / "data.json").read_text(encoding="utf-8")
+        legacy = self.guard().LEGACY_PRIVATE_SCHEMA  # no JSON exception, not even for the legacy name
+        for key in ("schema", "schema_version", "Schema", "SCHEMA-VERSION"):
+            for value in ("k" + "is-us-daily/1", "private" + "-bars/1", " K" + "IS-x", "private" + "-quote/1", legacy):
+                with self.subTest(key=key, value=value):
+                    data = json.loads(original)
+                    data["nested"] = [{"deeper": {key: value}}]
+                    self.assertEqual(self.check("data.json", json.dumps(data).encode())["private_area_schema"], 1)
+        for sample in self.PRIVATE_SCHEMA_CANARIES:
+            for name in ("app.js", "index.html", "chart-bars.js"):
+                with self.subTest(sample=sample[:12], file=name):
+                    payload = (self.baseline / name).read_bytes() + ("\n" + sample + "\n").encode()
+                    self.assertGreater(self.check(name, payload)["private_area_schema"], 0)
+
+    def test_legacy_private_history_name_is_admitted_only_exactly_and_only_in_its_readers(self):
+        guard = self.guard()
+        legacy = guard.LEGACY_PRIVATE_SCHEMA
+        for name in sorted(guard.LEGACY_PRIVATE_SCHEMA_FILES):
+            with self.subTest(file=name):
+                payload = (self.baseline / name).read_bytes()
+                self.assertNotIn("private_area_schema", self.check(name, payload + ("\n'" + legacy + "'\n").encode()))
+                for other in (legacy.replace("p", "P", 1), legacy.upper(), legacy.replace("/1", "/2"), "private" + "-history-v2/1"):
+                    self.assertEqual(self.check(name, payload + ("\n'" + other + "'\n").encode())["private_area_schema"], 1)
+        for name in ("app.js", "company-screen.js", "index.html", "style.css"):
+            with self.subTest(file=name):
+                payload = (self.baseline / name).read_bytes() + ("\n'" + legacy + "'\n").encode()
+                self.assertEqual(self.check(name, payload)["private_area_schema"], 1)
+
+    def test_private_worker_paths_fail_in_code(self):
+        for sample in self.PRIVATE_PATH_CANARIES:
+            for name in ("app.js", "index.html", "private-history.js", "service-worker.js"):
+                with self.subTest(sample=sample[:14], file=name):
+                    payload = (self.baseline / name).read_bytes() + ("\n" + sample + "\n").encode()
+                    self.assertGreater(self.check(name, payload)["private_area_paths"], 0)
+        # The app's own hash route '/lab' and prose such as public/private are not Worker paths.
+        for sample in ("{id:'lab',path:'/lab'}", "/* public/private split */", "'/laboratory'", "'/private-subset-root'"):
+            with self.subTest(sample=sample):
+                payload = (self.baseline / "app.js").read_bytes() + ("\n" + sample + "\n").encode()
+                self.assertNotIn("private_area_paths", self.check("app.js", payload))
+
+    def test_private_worker_paths_fail_in_json_values_even_when_escaped(self):
+        original = (self.baseline / "data.json").read_text(encoding="utf-8")
+        failing = ("/k" + "is/us-daily", "https://x.workers.dev/k" + "is/us-daily", "//x.workers.dev/lab" + "/backtest",
+                   "/priv" + "ate", "see https://x.invalid/LAB" + "/y", "/k" + "is?x=1")
+        passing = ("https://news.invalid/en-us/research/lab/x", "https://ex.invalid/private-equity/x", "public/private",
+                   "lab results")
+        for value in failing + passing:
+            for escaped in (False, True):
+                with self.subTest(value=value, escaped=escaped):
+                    data = json.loads(original)
+                    data["nested"] = {"link": value}
+                    text = json.dumps(data)
+                    if escaped:
+                        text = text.replace("/", "\\/")
+                    count = self.check("data.json", text.encode())["private_area_paths"]
+                    self.assertEqual(count, 1 if value in failing else 0)
+
+    def test_private_area_markers_fail_the_tar_mode_with_the_same_receipt(self):
+        (self.site / "app.js").write_bytes((self.baseline / "app.js").read_bytes()
+                                           + ("\n" + self.KIS_CANARIES[2] + self.PRIVATE_SCHEMA_CANARIES[0]
+                                              + self.PRIVATE_PATH_CANARIES[0] + "\n").encode())
+        receipt = self.scan()
+        for category in ("kis_markers", "private_area_schema", "private_area_paths"):
+            self.assertGreater(receipt["violations"].get(category, 0), 0)
+        self.assertEqual(self.tar_receipt(self.make_tar()), receipt)
 
 
 if __name__ == "__main__":
