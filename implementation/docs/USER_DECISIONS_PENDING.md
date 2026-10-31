@@ -15,6 +15,18 @@
 - `TA-361`: 10/31 오너 승인으로 #361을 닫았다(결정 기록은 10/31 밤 2차 블록, #440).
 - 10/31 오너: Cloudflare Zero Trust 보류(결제 수단 없음) → [Zero Trust 없이 본인 전용 접근](private_area/PRIVATE_AREA_NO_ZT_ACCESS_20261031.md). `PRIV-AUTH-GOOGLE`·`PRIV-REPO-NAME`·`PRIV-CODEX-WF-OFF` 승인, `PRIV-PAYMENT` 불필요(10/31 밤 3차 블록).
 
+## 결정됨 — 2026-10-31 밤 4차 (KIS 키는 비공개 저장소에만 · 첫 인증 확인)
+
+원문(사용자, 2026-10-31): 「공개 저장소의 KIS Secrets를 지웠다(KIS_APP_KEY, KIS_APP_SECRET). 1. 공개 저장소에서 이 Secrets를 참조하는 워크플로·가지가 있는지 확인하고, 있으면 목록을 보고하라. 실패해도 고치지 말고 비공개 저장소로 옮기는 작업에 포함한다. 2. 이제 KIS 키는 investment-system1-kis-private에만 둔다. 설계·폰 설정 문서를 그렇게 고치고, 공개 저장소에서 KIS Secrets 이름을 참조하는 코드가 다시 들어오지 않게 가드에 검사를 추가하라. 3. 이 결정을 결정 기록에 남겨라. 비공개 저장소 investment-system1-kis-private에 KIS 키를 등록했다. 이름이 설계 문서와 같은지 Secret 이름만 확인하라(값은 보지 않는다). 그다음 비공개 수집 워크플로의 첫 시험 실행(인증 확인 1회)해라」
+
+| 항목 | 결정·결과 |
+| --- | --- |
+| KIS 키 위치 | **`investment-system1-kis-private`의 Actions Secrets에만.** 공개 저장소의 `KIS_APP_KEY`·`KIS_APP_SECRET`은 오너가 지웠다. KIS 키를 읽는 코드도 비공개 저장소에만 두고, 공개 수집기 모듈은 키를 함수 인자로만 받는다 |
+| 공개 저장소에서 그 이름을 쓰는 곳 | 워크플로 2개: `bt-data-pilot-kis.yml`·`bt-data-pilot-pre2016.yml`. 가지 2곳: `research/bt-data-pilot-alpaca-probe-20261031`, `research/lab-contract-private-pilot-20261031`(같은 두 파일). canonical·다른 가지·코드에는 없다. 이제 돌면 KIS 단계에서 실패한다. 고치지 않고 비공개 저장소 이관(설계 20절)에 포함한다 |
+| 가드 | #436 가드 PR에 검사 추가: 공개 저장소의 코드·설정·워크플로·자료 파일(Markdown 문서 제외)에 KIS Secret 이름(밑줄 유무 무관)이 있으면 시험 실패. Pages 산출물 검사도 같은 패턴 |
+| Secret 이름 확인 | 비공개 저장소 실행에서 `KIS_APP_KEY=present`, `KIS_APP_SECRET=present`(값은 보지 않음). 설계 문서 이름과 같다 |
+| 첫 시험 실행(인증 확인 1회) | run 41191280649 성공: 토큰 발급 HTTP 200(유효 86,400초), 폐기 HTTP 200. 시세·주문 호출 없음, 로그에 값 없음, 카카오톡 알림 1건 |
+
 ## 결정됨 — 2026-10-31 밤 3차 (Zero Trust 없이 본인 전용 접근, DC-37)
 
 원문(사용자, 2026-10-31): 「결정: PRIV-AUTH-GOOGLE(Google 토큰 + Worker 확인으로 시작, 패스키는 나중), PRIV-REPO-NAME(investment-system1-kis-private로 변경, 내가 한다), PRIV-CODEX-WF-OFF(내가 끈다) 모두 승인한다. Zero Trust·Access 설계는 대체됐다고 정식 반영하고, PRIV-PAYMENT는 "불필요"로 기록하라. 1. 공개 저장소의 KIS Secrets를 지금 지우려 한다. … 공개 저장소의 어떤 워크플로나 가지가 이 Secrets를 쓰는지 확인해 답하라. 없으면 지워도 된다고 답하라. 2. Worker가 비공개 저장소를 읽는 토큰은 해당 저장소 하나, 읽기 전용, 최소 권한으로 만든다. 폰 생성 절차를 적고, 만료일 전에 화면과 상태 파일에 경고가 뜨게 하라. 만료되면 비공개 칸은 "오류(토큰 만료)"로 보이게 한다. 3. Notion 관리자 페이지의 Access 설명과 9. Lab의 "로그인 시 계정 설정"(DC-22 위반)을 고쳐라. 4. 독립 보안 검토 1회는 이 설계와 #436 가드 PR을 묶어서 한 번에 한다. 보고는 다음 PR을 올릴 때 1회만 보낸다. 비공개 저장소 이름을 investment-system1-kis-private로 바꿨다. 설계 문서, 폰 설정 문서, 워크플로·Worker 설정의 저장소 이름을 모두 새 이름으로 고쳐라. 옛 주소 자동 연결에 기대지 마라.」
