@@ -17,12 +17,12 @@
 ## 2. 절대 틀리면 안 되는 것 (상세는 DIRECTION_CHANGES)
 
 - **Universe504** = S&P 500 구성에서 출발해 **고정한** 504코드 목록이다. 시가총액 상위 504가 아니고, S&P 500 지수를 따라가지도 않는다(DC-01).
-- **공식 V** = 서버가 IEX HIST로 계산해 공개하는 점수·순위(2026-10-23 결정). 원시 가격은 공개하지 않는다. **아직 구현되지 않았다.** 지금 화면의 V는 기기 V이며 공식값이 아니다(DC-02).
+- **공식 V** = 서버가 IEX HIST로 계산해 공개하는 점수·순위(2026-10-23 결정, 2026-10-29 첫 게시, 정밀값 공개 허용 GSQ-025). **기기 V는 폐지(2026-10-31, DC-31)**: 화면 반영은 Main 폐지 PR에서 하고, TARGET v1 빌더 경로만 11/16에 바꾼다(DC-02·DC-31).
 - 화면 점수는 **QGV v2만**(DC-03).
 - **TARGET v0(카탈로그 19, `actual-catalog.json`)은 QGV와 전혀 무관하다.** 사용자가 QGV 없이 고른 목록이다(DC-04). QGV 화면·점수·순위·후보·공개 데이터의 "TARGET"에 v0을 쓰지 않는다. 공개 TARGET은 **확정된 TARGET v1만**이다(DC-24, 사용자 2026-10-27: "이유를 계속 잊는 것 같다").
 - 기능 번호는 **명세 v1.0의 1~9**만 쓴다. 메뉴 번호(0 검색, 1 QGV…)로 보고하지 않는다(DC-08).
 - 새 프론트엔드는 **시안(같은 아티팩트) 배치대로 새로 작성** 중이다. 무채색 미니멀 지시는 대체됐다(DC-07). 시각 양식은 **혼잡스 영상 기준(DC-25, [VISUAL_STYLE](implementation/docs/frontend_v2/VISUAL_STYLE.md))**: 흰 바탕 선화, 제목 Jua·본문 기기 고딕, 그림자 없음. 색은 6가지에 뜻 하나씩, 메뉴별 색 없음(DC-26).
-- 역할: 병합·공용 파일은 Claude Code Main 하나. Codex는 검증·리뷰만(DC-09).
+- 역할(DC-32, 2026-10-31): 병합·공용 파일·워크플로·`docs/SPEC`·인수인계·결정 문서는 **Main만**. 화면 세션(Frontend)은 아래 4절 담당 화면 파일만 바꾸고 Draft PR까지만. Codex는 연구 가지와 문서만.
 
 ## 3. 매 작업 규칙
 
@@ -31,3 +31,18 @@
 - 금지 표현 검사: `python implementation/tools/spec_direction_guard.py`(CI 전체 시험 `test_spec_direction_guard.py`에 포함).
 - 원시 가격·개인 자료·토큰·이메일은 저장소·Pages·로그에 넣지 않는다. 병합·배포는 사용자 승인 범위에서만 한다.
 - 사용자는 폰만 쓴다. 사용자에게 시키는 절차는 폰 브라우저에서 할 수 있어야 한다. 보고는 한국어로 묶어서 한다.
+
+## 4. 파일 담당표 (2026-10-31, DC-32)
+
+경로는 `implementation/src/investment_system/product/web_app/` 기준이다. 시험 파일은 `implementation/tools/`에 있다.
+
+| 담당 | 파일 | 할 수 있는 것 |
+| --- | --- | --- |
+| **Frontend(화면 세션)** | `screen-technical.js` · `screen-macro.js` · `screen-news.js` · `screen-prompts.js` · `screen-tree.js` · `screen-lab.js`, 그리고 각 화면의 시험 파일(파일 이름이 그 화면 이름으로 시작하는 `implementation/tools/web_app_*` 시험) | 이 파일만 바꾸고 **Draft PR까지만** 연다. 병합하지 않는다 |
+| **Main** | 나머지 `web_app` 파일 전부: `qgv.js` · `core.js` · `data.js` · `store.js` · `shell.js` · `parts.js` · `app.css` · `index.html` · `boot.js` · `loader.js` · `screen-qgv*.js` · `screen-detail.js` · `screen-portfolio.js` · `screen-search*.js` 등. 옛 화면(`web_assets/`), 공용 엔진, 가드·CI 목록, 워크플로, `docs/SPEC`, CURRENT_HANDOFF, USER_DECISIONS_PENDING, 결정 문서 | 바꾸고 병합한다(병합·배포는 오너 승인 범위에서) |
+| **Codex** | 연구 가지(`research/*`)와 문서(`docs/SPEC`·인수인계·결정 문서 제외) | 연구·문서 PR까지. 병합하지 않는다 |
+
+- Frontend가 공용 파일(위 Main 담당) 변경이 필요하면 PR 본문에 "Main 요청: 무엇을 왜"만 적는다. Main이 따로 PR로 반영한다.
+- Frontend·Codex PR 병합 조건: canonical과 동기화, 필수 CI 6개 녹색, **담당 파일만 바뀜**(Main이 파일 목록으로 확인), 오너 승인.
+- 표에 없는 새 화면 파일은 처음 만드는 쪽이 PR 본문에 담당을 적고, Main이 이 표에 더한다.
+
