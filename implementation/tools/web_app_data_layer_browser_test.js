@@ -238,6 +238,12 @@ async function scores(page) {
     // 3. 매크로 (feature 4, screen-macro.js): the screen only asks IS2.data.ready(), DataRefresh.load's page-open read of the core
     // files, which leaves dart-financials.json to its lazy reader; a route change reads nothing new (the layer keeps the generation).
     const MACRO_READS = (await page.evaluate(() => window.IS2.data.CORE)).filter((n) => n !== 'dart-financials.json');
+    // 4. 뉴스 (feature 5, screen-news.js): the same core set, the three public lists (IS2.data.list) and the company list's two
+    // static files (IS2.companies.ready()); a route change reads nothing new.
+    const NEWS_READS = [...MACRO_READS, ...(await page.evaluate(() => window.IS2.data.LIST_FILES)), 'universe-codes.json', 'company-names-ko.json'];
+    // n+1. Lab (feature 9.2, screen-lab.js): the price-free forward ledger through IS2.data.static on every open here (this test
+    // leaves it unpublished, and a static read that failed is read again on the next call); 9.1 reads nothing (no public Lab file).
+    const LAB_READS = ['forward-validation-ledger.json'];
     // The company page's own list reads (P2-1), asked again on every open of the page.
     const COMPANY_LISTS = ['sec-disclosures.json', 'news-signals.json'];
     // A phase ends only once the route's own reads are answered, so a read a screen started cannot land in the next route's phase
@@ -247,8 +253,10 @@ async function scores(page) {
     // lists; a route change only the company page's lists (the layer keeps the rest in memory). Only answers to requests of the
     // current document and route count (numbered after the last navigation), and none of its data requests may still be open.
     // Which files are read, and that nothing else is, stays the job of the checks below.
-    const expected = (hash, fresh) => (hash === '#/qgv' ? (fresh ? QGV_READS : []) : hash === '#/macro' ? (fresh ? MACRO_READS : []) : hash === '#/' || hash === '#/nowhere/x' ? (fresh ? HOME_READS : [])
-      : hash.startsWith('#/company/') ? [...(fresh ? [...HOME_READS, ...QGV_READS] : []), ...COMPANY_LISTS] : []);
+    const expected = (hash, fresh) => (hash === '#/qgv' ? (fresh ? QGV_READS : []) : hash === '#/macro' ? (fresh ? MACRO_READS : []) : hash === '#/news' ? (fresh ? NEWS_READS : []) : hash === '#/lab' ? LAB_READS : hash === '#/' || hash === '#/nowhere/x' ? (fresh ? HOME_READS : [])
+      // The layer keeps one read of each list per publication (DataRefresh.list): in the route-change pass 4. 뉴스 (before the
+      // company page in MENU order, same document) has already read them, so the company page does not ask again.
+      : hash.startsWith('#/company/') ? [...(fresh ? [...HOME_READS, ...QGV_READS, ...COMPANY_LISTS] : COMPANY_LISTS.filter((n) => !NEWS_READS.includes(n)))] : []);
     const isData = (u) => new URL(u).origin === s.origin && !!nameOf(u) && !pageFiles.has(nameOf(u));
     const answers = async (what, names, from) => {
       const missing = () => { const got = new Set(answered.slice(from).filter((a) => a.n > navAt && isData(a.url)).map((a) => nameOf(a.url))); return names.filter((n) => !got.has(n)); };
@@ -263,7 +271,7 @@ async function scores(page) {
       await answers((fresh ? 'fresh ' : 'change ') + hash, expected(hash, fresh), from);
     };
     const opens = (hash, names) => (hash === '#/' || hash === '#/nowhere/x' ? names.filter((n) => !HOME_READS.includes(n)) : hash.startsWith('#/company/') ? names.filter((n) => !FILES.has(n))
-      : hash === '#/qgv' ? names.filter((n) => !QGV_READS.includes(n)) : hash === '#/macro' ? names.filter((n) => !MACRO_READS.includes(n)) : names);
+      : hash === '#/qgv' ? names.filter((n) => !QGV_READS.includes(n)) : hash === '#/macro' ? names.filter((n) => !MACRO_READS.includes(n)) : hash === '#/news' ? names.filter((n) => !NEWS_READS.includes(n)) : hash === '#/lab' ? names.filter((n) => !LAB_READS.includes(n)) : names);
     for (const hash of routes) {
       phase = 'A fresh ' + hash;
       const at0 = rec.log.length, an0 = answered.length;
@@ -282,11 +290,11 @@ async function scores(page) {
     const sig = await page.evaluate(async () => {
       const I = window.IS2, P = I.prices, seen = []; let live = 0;
       I.prices = Object.freeze({ ...P, subscribe: (fn, o) => { live++; if (o && o.signal) o.signal.addEventListener('abort', () => { live--; }, { once: true }); return P.subscribe(fn, o); } });
-      I.register('lab', (route) => { seen.push(route.signal); return I.h('p', null, 'lab'); });
+      I.register('portfolio', (route) => { seen.push(route.signal); return I.h('p', null, 'portfolio'); });
       const go = (h) => new Promise((r) => { window.addEventListener('hashchange', () => setTimeout(r, 0), { once: true }); location.hash = h; });
       try {
-        await go('#/lab'); const first = seen[seen.length - 1]; await go('#/qgv'); const firstAborted = first.aborted;
-        for (let i = 0; i < 10; i++) await go(i % 2 ? '#/lab' : '#/news');
+        await go('#/portfolio'); const first = seen[seen.length - 1]; await go('#/qgv'); const firstAborted = first.aborted;
+        for (let i = 0; i < 10; i++) await go(i % 2 ? '#/portfolio' : '#/news');
         return { firstAborted, live, lastAborted: seen[seen.length - 1].aborted, renders: seen.length };
       } finally { I.prices = P; }
     });

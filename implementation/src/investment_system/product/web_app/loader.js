@@ -42,6 +42,7 @@ const LOAD_ORDER=Object.freeze([
  'action.js','data.js','prices.js','store.js','qgv.js','engines.js',
  'companies.js','private.js','lab.js',
  'search-part-live.js','screen-search-live.js','screen-qgv-live.js','screen-macro-live.js','screen-prompts-live.js','screen-tree-live.js',
+ 'screen-technical-live.js','screen-news-live.js','screen-lab-live.js',
 ]);
 // A plain lowercase script name. tools/build_web_app.py holds this exact line (the build fails when the two differ).
 const NAME=/^[a-z0-9][a-z0-9-]*(?:\.[a-z0-9-]+)*\.js$/;
@@ -57,7 +58,7 @@ const API=Object.freeze({
   universeView:{prices:'s',priceBasis:'s',readStatus:'s',ranks:'s'},universeRanks:'s',rankFor:'s',useTabs:'a',loadTabs:'a',syncSymbols:'a',
   syncUniverse:'a',history:'a',held:'s',quote:'p',periodReturns:'p'},
  store:{KEYS:'v',prefs:'s',savePrefs:'a',recent:'s',pushRecent:'a',clearRecent:'a',weights:'s',saveWeights:'a',holdings:'p',playbook:'s',saveThesis:'a',saveHold:'a',saveRecord:'a',
-  stars:'s',toggleStar:'a',macroEstimates:{read:'s',add:'a',remove:'a'},promptFavorites:{read:'s',toggle:'a'},promptCopies:{read:'s',save:'a',remove:'a'},
+  stars:'s',toggleStar:'a',macroEstimates:{read:'s',add:'a',remove:'a'},promptFavorites:{read:'s',toggle:'a'},promptCopies:{read:'s',save:'a',remove:'a'},chartNotes:{read:'s',add:'a',remove:'a'},
   backup:{create:'p',download:'a',restore:'a',restored:'s'},vHistoryKeys:{count:'s',clear:'a'},sheetSource:{has:'s',set:'a'},
   universeSource:{has:'s',set:'a',useSheet:'a'},workerOrigin:{has:'s',approved:'s',set:'a'},marketQuotes:{count:'p',clear:'a'},subscribe:'sub',PRODUCT_PRESETS:'v'},
  qgv:{V_SOURCES:'v',RANK_LABELS:'v',READERS:'v',vSource:'s',page:'p',isPage:'s',row:'s',rows:'s',coverage:'s',preview:'s',model:'s',setProfile:'s',profile:'s',
