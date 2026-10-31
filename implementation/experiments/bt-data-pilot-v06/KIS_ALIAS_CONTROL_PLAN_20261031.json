@@ -60,6 +60,22 @@
           "role": "TICKER_CHANGE_DOCUMENT"
         }
       ]
+    },
+    {
+      "company": "ACU",
+      "alias": "ACU",
+      "exchange": "AMS",
+      "fallback_exchange": null,
+      "start": "1900-01-01",
+      "end": "2015-12-31",
+      "identity_status": "ORIGINAL_FILING_TICKER_AND_CLASS_QUERY_ONLY_NOT_FULL_SECURITY_MASTER",
+      "evidence": [
+        {
+          "url": "https://www.sec.gov/Archives/edgar/data/2098/000102660810000024/acme_10k123109.htm",
+          "filed": "2010-03-09",
+          "accession": "0001026608-10-000024"
+        }
+      ]
     }
   ],
   "historical_universe": false,

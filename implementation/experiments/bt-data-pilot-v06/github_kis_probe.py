@@ -95,6 +95,28 @@ def kis_normalize(body, symbol, modp, bymd):
     return rows
 
 
+def kis_partition(body,symbol,modp,bymd):
+    """Keep original response; quarantine bad bars through the existing validator.
+
+    Date scope and duplicate dates remain page-wide fail-closed boundaries.
+    No prices are corrected, imputed, or taken from an adjacent day.
+    """
+    obj=json.loads(body)
+    if obj.get('rt_cd')!='0' or not isinstance(obj.get('output2'),list):raise ValueError('KIS_RESPONSE_SCHEMA')
+    days=[]
+    for row in obj['output2']:
+        day=datetime.strptime(row['xymd'],'%Y%m%d').date().isoformat()
+        if day.replace('-','')>bymd:raise ValueError('AFTER_QUERY_DATE')
+        if day in days:raise ValueError('DUPLICATE_DATE')
+        days.append(day)
+    rows=[];rejected=[]
+    for index,(day,row)in enumerate(zip(days,obj['output2'])):
+        try:rows.extend(kis_normalize(encoded({'rt_cd':'0','output2':[row]}),symbol,modp,bymd))
+        except (ValueError,KeyError,TypeError)as error:
+            rejected.append({'row_index':index,'date':day,'reason':str(error),'status':'BLOCKED_ROW_QUALITY'})
+    return rows,rejected
+
+
 def progress(previous, rows):
     dates = {r["session_date"] for r in rows}
     if not dates:

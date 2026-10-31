@@ -10,7 +10,7 @@ import json
 import os
 from pathlib import Path
 
-from github_kis_probe import KIS, FIXED, choose_keys, kis_normalize
+from github_kis_probe import KIS, FIXED, choose_keys, kis_normalize, kis_partition
 from long_prices import safe_extract, checkpoint
 from pilot import private_dir, RawDatasetStore, encoded, digest
 from github_alpaca_probe import release, RAW_REPO
@@ -161,7 +161,7 @@ def stable_run(output,archive,resume,plan_path):
     prior_state=json.loads((root/'stable-state.json').read_bytes())if(root/'stable-state.json').exists()else None
     run_id=os.environ['GITHUB_RUN_ID']+'-'+os.environ.get('GITHUB_RUN_ATTEMPT','1')
     if prior_state:(root/('stable-state-before-'+run_id+'.json')).write_bytes(encoded(prior_state))
-    series={};cache={};conflicts=[]
+    series={};cache={};conflicts=[];quality_rejections=[]
     for folder in (old,root):
         source=RawDatasetStore(folder/'store')
         for p in sorted((folder/'requests').glob('*.json')):
@@ -171,7 +171,9 @@ def stable_run(output,archive,resume,plan_path):
             key=(q['SYMB'],q['EXCD'],q['BYMD'])
             if response_state(m['http_status'],o)in('FETCHED','EMPTY_RESPONSE'):
                 cache[key]=(b,m)
-                for row in kis_normalize(b,q['SYMB'],'0',q['BYMD']):
+                valid,rejected=kis_partition(b,q['SYMB'],'0',q['BYMD'])
+                quality_rejections.extend({**x,'symbol':q['SYMB'],'source_sha256':r['sha256']}for x in rejected)
+                for row in valid:
                     if row['session_date']>='2016-01-01':continue
                     sid=q['SYMB'];d=row['session_date'];series.setdefault(sid,{})
                     if d in series[sid]and series[sid][d]['raw']!=row['raw']:
@@ -188,7 +190,7 @@ def stable_run(output,archive,resume,plan_path):
     # ABT's exact gap first, then rotate companies each year; a rejection is not a global completion.
     tasks.sort(key=lambda t:(0 if t['company']=='ABT'else 1,-t['year'],list(routes).index(t['company'])))
     report={'version':'BT-DATA-PILOT v0.6','run_id':run_id,'token_issuances':0,'token_refreshes':0,'workers':1,
-        'requests':[],'tasks':tasks,'conflicts':conflicts,'formal_backtests':0,'plan':plan,'old_snapshot_preserved':True,
+        'requests':[],'tasks':tasks,'conflicts':conflicts,'quality_rejections':quality_rejections,'formal_backtests':0,'plan':plan,'old_snapshot_preserved':True,
         'started_at':datetime.now(timezone.utc).isoformat(),'all_key_users_observable':False,'max_new_calls':210}
     keys,status=choose_keys(os.environ);client=KIS(root,store,keys,max_calls=210)if keys else None
     if client:
@@ -234,7 +236,9 @@ def stable_run(output,archive,resume,plan_path):
             if failures[company]>=2:return (b,m),state
         return (b,m),state
     def add_rows(company,alias,b,m,cursor):
-        rows=kis_normalize(b,alias,'0',cursor);group=series.setdefault(alias,{})
+        rows,rejected=kis_partition(b,alias,'0',cursor)
+        quality_rejections.extend({**x,'symbol':alias,'source_sha256':m.get('receipt',{}).get('sha256')}for x in rejected)
+        group=series.setdefault(alias,{})
         for row in rows:
             d=row['session_date']
             if d>='2016-01-01':continue
@@ -267,6 +271,7 @@ def stable_run(output,archive,resume,plan_path):
                 if state!='FETCHED':break
                 try:rows=add_rows(c,alias,b,m,cursor)
                 except (ValueError,KeyError,TypeError):task.update(state='BLOCKED',reason='QUALITY_OR_OVERLAP_FAILED');break
+                if not rows:task.update(state='BLOCKED',reason='ALL_ROWS_QUALITY_REJECTED');break
                 earliest=min(x['session_date']for x in rows);nxt=(date.fromisoformat(earliest)-timedelta(days=1)).strftime('%Y%m%d')
                 if nxt>=cursor:task.update(state='BLOCKED',reason='NO_BACKWARD_PROGRESS');break
                 cursor=nxt;task['cursor']=cursor

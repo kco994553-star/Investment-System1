@@ -85,3 +85,16 @@ class KISRetryArchiveTest(unittest.TestCase):
                 self.assertEqual(client.page('TEST','NAS','20241001','0')[0],rejected)
                 self.assertEqual(client.page('TEST','NAS','20241001','0',attempt=1)[0],second)
             self.assertEqual(client.calls,2)
+
+class KISPartitionTest(unittest.TestCase):
+    def test_bad_ohlc_is_quarantined_without_losing_valid_other_dates(self):
+        import github_kis_probe as module
+        partition=getattr(module,'kis_partition',None)
+        self.assertIsNotNone(partition,'one malformed bar must not erase valid page rows')
+        good=json.loads(payload())['output2'][0]
+        bad={**good,'xymd':'20241002','low':'12','high':'12','open':'12','clos':'11'}
+        rows,rejected=partition(payload([good,bad]),'TEST','0','20241002')
+        self.assertEqual([r['session_date']for r in rows],['2024-10-01'])
+        self.assertEqual([(r['date'],r['reason'])for r in rejected],[('2024-10-02','OHLC range mismatch')])
+        with self.assertRaises(ValueError):partition(payload([good,good]),'TEST','0','20241002')
+        with self.assertRaises(ValueError):partition(payload([good,bad]),'TEST','0','20241001')

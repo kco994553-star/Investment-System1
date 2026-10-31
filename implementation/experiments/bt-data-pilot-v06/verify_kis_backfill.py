@@ -74,6 +74,8 @@ def verify(root,baseline,old,output):
     public={k:v for k,v in report.items()if k not in ('errors','off_calendar_rejections')}
     public['error_summary']=[{k:x.get(k)for k in ('company','bymd','http_status','provider_code','provider_message','state','attempt','retrieved_at')}for x in report['errors']]
     public['off_calendar_rows_excluded']=len(rejections)
+    unique_bad={(x['symbol'],x['date'],x['reason']) for x in state.get('quality_rejections',[])}
+    public['quality_rejected_symbol_dates']=[{'symbol':s,'date':d,'reason':reason}for s,d,reason in sorted(unique_bad)]
     (out/'aggregate.json').write_bytes(encoded(public));return public
 
 if __name__=='__main__':
