@@ -166,10 +166,12 @@ def alpaca_stage_a(output, rights):
         return {"status": "API_CALL_FAILED" if receipt.get("http_status") else "NETWORK_REQUEST_FAILED",
                 "http_status": receipt.get("http_status"), "network_policy_block_proven": False}
     data = json.loads(body)
-    if data.get("symbol") != "ABT" or not isinstance(data.get("bars"), list):
+    if (data.get("symbol") != "ABT" or "bars" not in data
+            or (data["bars"] is not None and not isinstance(data.get("bars"), list))):
         return {"status": "RESPONSE_QUALITY_FAILED", "reason": "SYMBOL_OR_SCHEMA"}
     if data.get("next_page_token"):
         return {"status": "RESPONSE_INCOMPLETE", "reason": "UNEXPECTED_PAGINATION_FOR_FIVE_DAY_PROBE"}
+    data["bars"] = data["bars"] or []
     mapped = []
     for row in data["bars"]:
         timestamp = datetime.fromisoformat(row["t"].replace("Z", "+00:00"))

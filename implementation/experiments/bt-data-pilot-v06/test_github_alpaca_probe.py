@@ -42,6 +42,14 @@ class ProbeSafety(unittest.TestCase):
         self.assertEqual(summary["missing_day_rate"], 1)
         self.assertFalse(summary["complete_ohlcv"])
 
+    def test_explicit_null_bars_is_data_absent_but_missing_key_is_invalid(self):
+        request = probe.plan()[0]
+        rows = probe.normalize(b'{"symbol":"ABT","bars":null,"next_page_token":null}', request)
+        self.assertEqual(rows, [])
+        self.assertEqual(probe.summary_for(rows, request)["missing_day_rate"], 1)
+        with self.assertRaises(ValueError):
+            probe.normalize(b'{"symbol":"ABT"}', request)
+
     def test_no_secrets_no_network(self):
         with patch.dict(os.environ, {}, clear=True), patch.object(probe.release, "http") as http:
             result = probe.collect(Path("unused"))

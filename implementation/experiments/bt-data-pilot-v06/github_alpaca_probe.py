@@ -39,12 +39,15 @@ def plan():
 
 def normalize(body, request):
     data = json.loads(body)
-    if data.get("symbol") != request["symbol"] or not isinstance(data.get("bars"), list):
+    if (data.get("symbol") != request["symbol"] or "bars" not in data
+            or (data["bars"] is not None and not isinstance(data["bars"], list))):
         raise ValueError("SYMBOL_OR_SCHEMA")
     if data.get("next_page_token"):
         raise ValueError("UNEXPECTED_PAGINATION_IN_BOUNDED_PROBE")
     mapped, originals = [], {}
-    for row in data["bars"]:
+    # Alpaca returns bars:null for a valid, authenticated window with no data.
+    # Keep the original bytes; normalize this explicit empty response to zero rows.
+    for row in data["bars"] or []:
         at = datetime.fromisoformat(row["t"].replace("Z", "+00:00"))
         if at.tzinfo is None:
             raise ValueError("NAIVE_BAR_TIMESTAMP")
