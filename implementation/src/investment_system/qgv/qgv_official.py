@@ -189,7 +189,9 @@ def split_after_share_count(code, v, basis_day) -> bool:
 
     True when (1) the F_k chain of calc_version 2026-10-23.1 (V-PRICE-BASIS) marks the history item at or after the share-count
     period end SPLIT_TIMING_UNCONFIRMED (a split-ratio fact or a cover share-count jump between that fiscal-year-end month-end and
-    the annual filing that reports the count), or (2) a verified window of iex_hist.SPLITS applies (empty: no verified source).
+    the annual filing that reports the count), (2) a verified window of iex_hist.SPLITS applies (empty: no verified source), or
+    (3) a reviewed non-split share-count event of iex_hist.SHARE_COUNT_EVENTS (large issuance with an acquisition, e.g.
+    NASDAQ:PSKY 2026-10-06) is dated after the count's period end and on or before the basis day.
     Case (1) is a split BEFORE the count's filing: that filing reports the count restated to the post-split basis (US GAAP
     ASC 260 retroactive adjustment; #393 QGV_V2_QG_METHOD.md V-PRICE-BASIS, e.g. WMT 3:1 2024-02-26, 10-K 2024-03-15), which is
     the basis of today's IEX price, so such a row would usually be priced correctly and is left out only as a precaution
@@ -208,7 +210,7 @@ def split_after_share_count(code, v, basis_day) -> bool:
         if isinstance(h, dict) and h.get('share_basis_factor', 0) is None and \
                 h.get('share_basis_factor_reason') == vf.SPLIT_TIMING_UNCONFIRMED and str(h.get('fiscal_year_end')) >= period_end:
             return True
-    return iex_hist.split_after(code, period_end, basis_day)
+    return iex_hist.split_after(code, period_end, basis_day) or iex_hist.share_count_event_after(code, period_end, basis_day)
 
 
 def split_ratio_hit(r) -> bool:

@@ -374,6 +374,37 @@ def test_conservative_split_rule_reads_the_fk_evidence_d6a(monkeypatch):
     assert qo.price_status(qo.prepare(base_payload(), NOW), synthetic_day(base_payload()))[code] == 'SPLIT_AFTER_SHARE_COUNT'
 
 
+def test_reviewed_share_count_event_withholds_the_price_until_a_count_after_the_event(monkeypatch):
+    """iex_hist.SHARE_COUNT_EVENTS (owner approval in its PR): a non-split share-count event after the count's period end
+    (NASDAQ:PSKY 2026-10-06: WBD acquisition closed, 3,917,657,246 Class B shares issued, SEC 8-K 0001104659-26-113913) makes
+    the row SPLIT_AFTER_SHARE_COUNT (V NA, no new public code) from the event date until a count dated on or after it."""
+    assert iex_hist.SPLITS == {}
+    assert [d for d, _ in iex_hist.SHARE_COUNT_EVENTS['NASDAQ:PSKY']] == ['2026-10-06']
+    assert set(iex_hist.SHARE_COUNT_EVENTS) == {'NASDAQ:PSKY'}
+    v = {'diluted_shares': {'period_end': '2026-06-30', 'value': 1}, 'ebit_per_share_history': []}
+    assert qo.split_after_share_count('NASDAQ:PSKY', v, '2026-10-28')            # pre-event count, post-event price
+    assert qo.split_after_share_count('NASDAQ:PSKY', v, '2026-10-06')            # the event day itself
+    assert not qo.split_after_share_count('NASDAQ:PSKY', v, '2026-10-05')        # basis before the event
+    q3 = dict(v, diluted_shares={'period_end': '2026-09-30', 'value': 1})       # Q3 10-Q: period end still before the event
+    assert qo.split_after_share_count('NASDAQ:PSKY', q3, '2026-11-20')
+    fy = dict(v, diluted_shares={'period_end': '2026-12-31', 'value': 1})       # first count after the event: priced again
+    assert not qo.split_after_share_count('NASDAQ:PSKY', fy, '2027-03-01')
+    assert not qo.split_after_share_count('NASDAQ:PSKY', {'diluted_shares': {}}, '2026-10-28')   # no period end: rule not run
+    assert not qo.split_after_share_count('NYSE:ABT', v, '2026-10-28')           # other codes untouched
+    # end to end on the synthetic day (basis 2026-10-13): a code with an event after its count period end is withheld
+    code = 'NYSE:ABT'
+    payload = base_payload()
+    assert payload['records'][code]['v_inputs_v2']['diluted_shares']['period_end'] < '2026-10-13'
+    assert qo.price_status(qo.prepare(payload, NOW), synthetic_day(payload))[code] == 'SUPPLIED'
+    monkeypatch.setitem(iex_hist.SHARE_COUNT_EVENTS, code, (('2026-10-01', 'synthetic'),))
+    official, internal = build(payload)
+    row = official['rows'][code]
+    assert row['price_status'] == 'SPLIT_AFTER_SHARE_COUNT' and row['axes']['V']['score'] is None and row['rank'] is None
+    assert code not in internal['quotes'] and official['price_source']['rejected']['SPLIT_AFTER_SHARE_COUNT'] == 1
+    monkeypatch.setitem(iex_hist.SHARE_COUNT_EVENTS, code, (('2026-10-14', 'synthetic'),))   # after the basis day: priced
+    assert qo.price_status(qo.prepare(payload, NOW), synthetic_day(payload))[code] == 'SUPPLIED'
+
+
 def test_residual_without_short_store_steps_a_split_after_the_count_filing_is_not_detected():
     """RESIDUAL of D6 (b) (owner decision CV-SPLIT (ii) 2026-10-24; was the KNOWN LIMITATION of the 2026-10-24 review). A split
     after the share count's own filing (NVDA type: Q1 10-Q 2024-05-29, 10:1 split 2024-06-10) leaves no evidence in sec-qgv2.json
