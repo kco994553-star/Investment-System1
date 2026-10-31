@@ -579,3 +579,63 @@ GSQ-009의 KRX 대체 출처 후보와 나머지 경계는 유지한다. 과거 
 | 유료 공급처 V | GSQ-025와 별개. 유료 공급처 자료로 만든 V는 **비공개 구역(로그인)에서만** 보인다. 공개 사이트·공개 JSON에는 싣지 않는다. 앞 지시 2번(공개 V 5구간 전환)과, 10/30 오후 권고안 승인에 들어 있던 "유료 공급처 V 5구간 공개"(`EXP-V-BUCKET`)는 이 결정으로 대체된다. 결정 대기표는 확장 문서 PR에서 함께 고친다 |
 | 남는 확인 | 약관·정책 페이지가 바뀌면 다시 확인한다. HIST 약관에는 금지 조항이 없다. 웹사이트 약관과의 관계는 해석으로 정리했고, IEX 서면 확인은 받지 않았다(소유자 판단, GSQ-024). 서면 확인을 원하면 보낼 영문 문의 초안은 소유자 보고에 둔다 |
 | 병합 | 이 기록 PR은 소유자 승인 후 병합한다 |
+
+## GSQ-026 — 26E IEX 마지막 체결가 공개 게시 · "가격은 클릭할 때만" 폐지(공개 IEX 가격 한정) (2026-10-31 UTC, 제안 · 오너 승인 대기)
+
+권한 근거는 2026-10-31 오너 지시 원문이다(아래 인용). 앞선 기록의 bytes를 보존하고 끝에 추가한다. GSQ-001·005·010·023·024·025를 지우지 않고, 아래 범위만 고친다. **이 기록은 제안이며 오너가 승인한 뒤에 병합하고, 구현은 그 뒤에 한다.**
+
+> 「"가격은 클릭할 때만"(DC-18 관련 규칙)을 폐지하는 방향으로 검토하고 제안하라. 1. 중앙 파이프라인이 매일 받는 IEX HIST로 종목별 마지막 체결가(T+1)를 공개 파일에 넣어, 화면이 열리면 바로 보이게 한다. 화면에 출처(IEX 마지막 체결가, 공식 종가 아님), 가격 기준일, 마지막 체결일을 표시한다. … 3. 이전 결정(GSQ-024의 원시 가격 비공개, DC-18, 클릭 전용)을 무엇으로 바꾸는지 결정 기록 PR로 올리고 방향 전환 대장을 갱신하라. 내가 승인한 뒤 구현한다.」
+
+### 1. 약관 재확인 (2026-10-31에 원문을 다시 받음)
+
+| 문서 | 조항(원문) | 가격 공개에 대한 뜻 |
+| --- | --- | --- |
+| IEX HIST 약관 01 | "If you distribute, sell, lease, furnish, or otherwise permit or provide access to Investors' Exchange LLC ("IEX") historical data, you must cite IEX as the source with the following text and link: "Data provided for free by IEX. By accessing or using IEX Historical Data, you agree to the IEX Historical Data Terms of Use."" | historical data **자체**를 배포·제공하는 경우를 전제로, 지정 문구와 링크만 조건으로 둔다. 원시 가격은 GSQ-025가 본 파생 V보다 이 조항에 더 직접 해당한다 |
+| HIST 약관 03 | "IEX has the exclusive proprietary rights in and to the IEX historical data." | 권리는 IEX에 있다. 우리 것이라고 쓰지 않는다 |
+| HIST 약관 07 | "You agree to indemnify and hold harmless IEX … (b) any third-party actions related to your receipt and use of IEX historical data." | 게시로 생기는 제3자 청구는 우리가 IEX를 면책해야 한다(알고 받아들임) |
+| HIST 약관 08·10 | "… does not reflect trading activity on markets other than IEX, and is intended to provide you with a reference point only, rather than as a basis for making trading decisions." | IEX 한 곳의 체결이고 참고용이라는 안내를 화면에 둔다(권장) |
+| 시장자료 정책(2026-09) §1 정의 | HIST = "Data that is distributed after the current trading day on a T+1 basis through the following IEX website …"; 주석 "Real-Time or Delayed IEX Market Data that is databased or stored beyond the current trading day will not be considered IEX Historical Data …" | T+1 HIST 파일만 쓴다. 다른 경로로 받은 실시간·지연 자료를 HIST처럼 게시하지 않는다(지금 고정한 HIST 경로만 사용) |
+| 시장자료 정책 §15 | "IEX does not require an IEX Data Subscriber Agreement from any Person who receives, uses, or distributes IEX Historical Data in accordance with the IEX Historical Data Terms of Use." | HIST 약관대로 배포하면 구독 계약이 필요 없다 |
+| 구독 계약(2026-09) 정의 | "IEX Market Data … does not include IEX Historical Data …" | 정책 §5(표시 문구)·지연 표기·§11(파생 자료)은 HIST에 적용되지 않는다. 화면에 "실시간"·"지연 시세"라고 쓰지 않는다 |
+| iex.io 웹사이트 약관(2016-09-06) | "The Content is for Customer's personal use …", "Customer shall not … display, distribute, publish … without IEX's prior written consent."; 우선 조항 "… agreement(s), in the event of any conflicting terms, will govern." | GSQ-024·025와 같은 해석: HIST 약관(내려받기 페이지가 "By accessing or using IEX Historical Data, you agree to the IEX Historical Data Terms of Use"라고 적는 별도 약정)이 우선한다. **IEX 서면 확인은 받지 않았다** |
+
+판정: **허용(조건부).** HIST 약관에 금지·개인 용도 제한·지연·비상업·파생 조항이 없다. 조건은 01의 지정 문구와 약관 링크다. 남는 것은 웹사이트 약관과의 겹침에 대한 해석이며, 서면 확인을 원하면 아래 영문 문의를 오너 계정으로 보낸다.
+
+> We operate a free, non-commercial personal research website. Each trading day we download the IEX HIST TOPS file from the official HIST download page and publish, for about 500–5,600 US-listed symbols, only the last regular-session IEX trade price of the previous trading day, its trade date and time, and status codes. Every page and data file carries the exact attribution 'Data provided for free by IEX. By accessing or using IEX Historical Data, you agree to the IEX Historical Data Terms of Use.' with a link to the terms, and states that the data reflects IEX trading only and is a reference point, not a basis for trading decisions. We do not publish price history, quotes, depth or real-time/delayed IEX Market Data. Please confirm that this use complies with the IEX Historical Data Terms of Use and that the iex.io website Terms of Use do not require separate written consent for it.
+
+### 2. 지금 클릭 경로와 남길 이유
+
+- 지금 클릭 경로는 IEX를 쓰지 않는다.
+  - 오너 비공개 시트의 `GOOGLEFINANCE`(장중, 최대 20분 지연)
+  - 오너 전용 Worker(Yahoo 일봉, 장중에는 진행 중인 봉 포함. Tiingo·KRX 예비)
+- 공개 IEX 가격으로 바꾸는 것:
+  - 화면을 열 때의 가격 표시(기업·리더보드·검색·TARGET)
+  - 기기 V 입력(이미 DC-31로 폐지)
+- 클릭 경로를 남길 이유가 있는 것:
+  - 장중 현재가(포트폴리오 현재 가치, 선택 버튼)
+  - 차트 일봉 이력(1개월~5년. IEX 파일은 하루치 IEX 단독 마지막 체결뿐이다)
+  - 한국·일본 종목과 환율(IEX에 없다)
+  - 기간 수익률·가상매매·전진검증(여러 날 이력이 필요하다)
+
+### 3. 결정(제안)
+
+| 항목 | 결정(제안) |
+| --- | --- |
+| 해제 범위 | GSQ-001 "공개 JSON·Pages 산출물에 시세 값 기록 금지", GSQ-005 "공개 가격 JSON 배포 경로를 열지 않음", GSQ-010·024·025의 "원시 가격 공개 금지" 가운데 **"중앙 파이프라인이 받은 IEX HIST 정규장 마지막 체결가(최신 1일분)를 Pages 공개 파일과 화면에 게시"**하는 것에 한정해 해제한다. 그 밖의 문장은 그대로 유효하다 |
+| 공개 대상 | 종목별 IEX 정규장 마지막 체결가(Last Sale Eligible, 단주 제외 — 중앙 V와 같은 값), 체결일·체결 시각(뉴욕), 가격 기준일(IEX 파일 날짜), 요청 기준일, 상태·사유 코드 |
+| 공개 파일 | 새 파일 `iex-last-trade.json`(스키마 `iex-last-trade/1`, Universe504 + 확정 TARGET v1 행). 행당 약 100B → 504행 약 54KB. 중앙 V 게시본(`qgv-official.json`, 이미 약 1.1MB·2,048행 상한)에는 가격을 넣지 않는다 |
+| 확장 모집단 | 확장 점수와 같은 시점(공식 승격 `EXP-OFFICIAL` 뒤)에 별도 분할 파일 `iex-last-trade-x0..xN.json`(파일당 최대 2,048행) + 목록 파일 `iex-last-trade-index.json`. 3,000행 약 0.30MiB, 5,600행 약 0.55MiB로 2MiB 한도와 멀다. 공개 가격 × 공개 SEC 주식수로 시가총액을 계산할 수 있게 되므로, DC-28의 "정확한 시총 숨김"은 IEX 기반 확장분에서 "시가총액 원값을 게시하지 않음"으로 읽는다(계산 가능함을 인정) |
+| 화면 | 화면을 열면 공개 파일에서 바로 보인다. 같은 화면에 ① "IEX 마지막 체결가(공식 종가 아님)" ② 가격 기준일(뉴욕 거래일) ③ 마지막 체결일·시각(뉴욕) ④ 게시 시각 ⑤ IEX 지정 문구와 약관 링크 ⑥ "IEX 한 곳의 체결만 반영 · 참고용(매매 판단 근거 아님)". "실시간"·"지연 시세"라고 쓰지 않는다. 기준일 뒤 마감된 뉴욕 거래일이 2일을 넘으면 STALE(중앙 V와 같은 기준) |
+| 없음 처리 | 체결이 없으면 가격을 비우고 사유를 보인다. 0이나 다른 출처 값으로 채우지 않는다 |
+| 이월(P-CARRY) | 권장: 표시용으로만 최대 5거래일 이월(상태 `CARRIED`, 옛 체결일 표시). 중앙 V에는 쓰지 않는다. 대안: 이월 없음 |
+| 갱신 연동(P-COUPLE) | 권장: 가격 파일은 자기 검증기를 통과하면 바꾼다(중앙 V가 이전 게시본을 유지해도). 화면에 두 기준일을 함께 보인다 |
+| 시점(P-LAG) | 권장: 지금 정기 실행 하나 유지. 뉴욕 거래일 D의 실행은 D-1 체결을 게시한다(한국 아침에는 1거래일, 미국 장중에는 2거래일 전) |
+| ADR·분할 표시(P-ADR) | 권장: 체결가 자체는 유효하므로 보인다. 그 행의 V가 NA인 사유는 따로 보인다 |
+| 이력 | 공개본은 최신 1개만. 날짜별 가격 이력은 공개하지 않는다 |
+| 기기 시세 | "가격은 클릭할 때만"은 **공개 IEX 가격에는 적용하지 않는다(폐지).** 기기 시세(GOOGLEFINANCE, Worker의 Yahoo·Tiingo·KRX, 가격 탭)는 계속 클릭할 때만 요청하고 RAM과 사용자 시트에만 둔다(DC-18·GSQ-023 그대로) |
+| 계속 비공개 | 기기 경로 가격(서버 수집·공개 금지 유지), EV·시가총액·수익률·배율·내재 성장률 원값(공개 가격·주식수로 계산할 수 있음을 인정. "비공개"는 원값을 게시하지 않는다는 뜻), 월말가 저장소, 가격 이력, 저장소·Actions 로그·잡 요약·캐시·Pages 밖 아티팩트의 가격 |
+| 개인 자료(변경 없음) | 보유·수량·평단·현금·계좌·거래·포트폴리오·사용자 가중치·스프레드시트 ID·URL·토큰·이메일은 공개·저장소·로그 금지 그대로(DC-22) |
+| 가드(승인 뒤 별도 PR) | 새 파일 허용, `rows.<code>.price` 정확한 경로 한 곳만 예외(키 이름 바꾸기 금지, `SENSITIVE_KEYS`는 그대로), 전용 검증기(Python·JS 쌍), 신선도 규칙(같은 게시본 id면 같은 바이트, 더 옛 기준일 거부), 워크플로 정적 시험, `public_price_boundary/AUDIT.md` 새 절. CSP 변경 없음(같은 출처 파일) |
+| 화면 세션 지시 | Frontend 지시의 "가격은 클릭할 때만"을 "공개 IEX 마지막 체결가는 화면을 열면 공개 파일에서 표시한다(출처·가격 기준일·마지막 체결일 표시). 기기 시세 요청은 계속 클릭할 때만"으로 바꾼다(승인 뒤) |
+| 구현 순서(승인 뒤) | ① 가드·검증기 PR ② 게시기·워크플로 PR(같은 IEX 하루 스트림에서 작성) ③ 새 앱 자료 층과 Main 담당 화면 ④ 문서. 각 PR은 계산·워크플로·가드 변경이라 독립 검토 1개 |
+| 병합 | 이 기록 PR은 오너 승인 후 병합한다 |
