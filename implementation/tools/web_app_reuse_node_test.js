@@ -49,12 +49,12 @@ const R = require('./web_app_reuse');
 
 const P0_BASE = ['core.js', 'shell.js', 'parts.js'];
 // Design 1.3 (57 files) plus the two backup /5 validator modules (owner 2026-10-24) and the home's checked investor stories
-// (home-quotes.js, P2-1, Main), in the old page's order.
+// (home-quotes.js, P2-1, Main), and the central V reader qgv-official.js (DC-31, byte-identical), in the old page's order.
 const REUSED = [
   'locale.js', 'entity-search.js', 'price-time.js', 'device-market.js', 'device-actual.js', 'profile-defaults.js', 'type-config-defaults.js',
   'device-profiles.js', 'engine-preview.js', 'dcf-parameters-defaults.js', 'device-valuation.js', 'playbook-config-defaults.js', 'playbook-engine.js',
   'qgv-v2.js', 'scoring-default.js', 'qgv2-inputs.js', 'qgv-scores.js', 'private-subset.js', 'share-class-groups.js', 'sec-universe-shares.js',
-  'sec-qgv2.js', 'private-subset-view.js', 'target-v1-config-defaults.js', 'target-v1-builder.js', 'playbook-screen.js', 'target-v1-screen.js',
+  'sec-qgv2.js', 'qgv-official.js', 'private-subset-view.js', 'target-v1-config-defaults.js', 'target-v1-builder.js', 'playbook-screen.js', 'target-v1-screen.js',
   'device-backup.js', 'watchlist.js', 'app-config.js', 'google-sheet-core.js', 'google-sheet-quotes.js', 'technical-chart.js', 'chart-workbench.js', 'google-sheet-setup.js',
   'private-trades.js', 'holdings-capture.js', 'worker-quote-fallback.js', 'forward-validation.js', 'private-history.js', 'sec-reported.js',
   'manager-styles-v0.js', 'thirteenf-quarter.js', 'macro-lights.js', 'macro-cycle-ring.js', 'macro-evidence.js', 'public-screens.js', 'sec-disclosures.js', 'news-signals.js',
@@ -106,7 +106,7 @@ const csp = (html) => (/<meta http-equiv="Content-Security-Policy" content="([^"
 const py = (code, args = [], input = '') => execFileSync('python3', ['-c', code, ...args], { encoding: 'utf8', input });
 
 test('index.html loads the first screen only; loader.js LOAD_ORDER loads the reused old modules, then the P1 layer', () => {
-  assert.equal(REUSED.length, 60);
+  assert.equal(REUSED.length, 61);
   assert.deepEqual(R.firstPaint(), FIRST);
   assert.deepEqual(R.loadOrder(), [...REUSED, ...P1, ...LIVE]);
   delete require.cache[require.resolve(R.newPath(LOADER))];
@@ -353,7 +353,7 @@ const RULES = [
   ['network outside data.js and prices.js', /\bfetch\(/, ['data.js', 'prices.js']],
   ['price fetch outside prices.js and engines.js', /\bfetch\s*:\s*true\b/, ['prices.js', 'engines.js']],
   ['Google session outside prices.js', /\bsessionFor\(/, ['prices.js']],
-  ['engine rows / score view outside qgv.js and engines.js', /\b(?:forEngines|engineInputs)\(|\bscoreView\b/, ['qgv.js', 'engines.js']],
+  ['engine rows / score view outside qgv.js and engines.js', /\b(?:forEngines|engineInputs|centralComputed)\(|\bscoreView\b/, ['qgv.js', 'engines.js']],
   // P2-2a: storeFacade (PriceStore as the old modules see it) was covered by no rule; screens never touch it either.
   ['the price view / store facade outside the layer', /\bpriceView\b|\bstoreFacade\b/, ['prices.js', 'qgv.js', 'engines.js']],
   ['old paths that bypass the price view', /\bautoLoad\b|\blatestPublished\b|\bStatRadar\b|\bDataRefresh\.attach\b|\b(PrivateSubsetView|TargetV1Screen|PriceStore|VirtualLedgerSheets)\.mount\w*\(/, []],
@@ -445,7 +445,7 @@ test('web_app text files pass the Pages guard secret patterns', () => {
 // ---------------------------------------------------------------- loader (P2-1a)
 const freshLoader = () => { delete require.cache[require.resolve(R.newPath(LOADER))]; return R.requireNew(LOADER); };
 // The views and results the layer hands only to old modules and engines.js (source rules): no facade member.
-const INTERNAL = { prices: ['priceView', 'storeFacade'], store: ['storage'], qgv: ['scoreView', 'forEngines', 'engineInputs'] };
+const INTERNAL = { prices: ['priceView', 'storeFacade'], store: ['storage'], qgv: ['scoreView', 'forEngines', 'centralComputed', 'engineInputs'] };
 // Arguments for the non-async members that return a promise (each is called once on the real layer).
 const SAMPLE = { 'data.static': ['entities.json'] };
 test('the loader facade API is the real layer API: every member, each kind matching the function', async () => {

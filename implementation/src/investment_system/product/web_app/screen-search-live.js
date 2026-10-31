@@ -135,6 +135,8 @@ function bar(axis,v,why){
 // The score file's refresh time (its as_of, date and time in UTC) and calc_version under the QGV card (DC-22), in every state.
 let SF=null;
 const stamp=t=>{const d=Date.parse(t);return Number.isFinite(d)?(SF||(SF=new Intl.DateTimeFormat('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'UTC'}))).format(d)+' UTC':null;};
+// The central V basis (DC-31): the IEX wording, the price basis day, STALE past the session threshold.
+const centralLine=pg=>{const b=pg.price_basis||{};return[b.label||'',' · 가격 기준일 ',b.price_basis_date||'NA',b.stale===true?' · STALE':'',b.calc_differs===true?' · 계산 버전 다름':''].join('');};
 const basisLine=pg=>h('p',{class:'reason',dataset:{qgvBasis:''}},'점수 갱신 ',stamp(pg.as_of)||'없음',' · 계산 버전 ',pg.calc_version||'없음');
 function qgvCard(body,cid,signal){
  const Q=I.qgv;
@@ -144,7 +146,7 @@ function qgvCard(body,cid,signal){
   const s=row.score,r=row.na_reason;
   const rank=Number.isInteger(row.rank.official)?h('span',null,'순위 ',String(row.rank.official),' / ',String(row.rank.of),' · ',Q.rankLabel(pg)):h('span',{class:'na'},'순위 NA · ',Q.reasonText(r.rank));
   body.replaceChildren(h('div',{class:'qbars',dataset:{qgv:row.id}},...bar('Q',s.q,r.q&&Q.reasonText(r.q)),...bar('G',s.g,r.g&&Q.reasonText(r.g)),...bar('V',s.v,r.v&&Q.reasonText(r.v))),
-   h('p',{class:'reason'},'V 출처: ',row.source_label),
+   h('p',{class:'reason',dataset:{vSource:row.source}},'V 출처: ',row.source_label,' · ',centralLine(pg)),
    h('p',{dataset:{total:''}},ok(s.total)?['QGV 종합 ',h('b',null,fmt(s.total)),ok(s.v)?'':h('span',{class:'reason'},' · V 미포함')]:h('span',{class:'na'},'QGV 종합 NA · ',Q.reasonText(r.total))),
    h('p',{dataset:{rank:''}},rank),basisLine(pg));}),
  e=>{if(!signal.aborted&&String(e&&e.message)!=='ABORTED')body.replaceChildren(na('QGV 점수를 계산하지 못했습니다','PAGE_FAILED'));});

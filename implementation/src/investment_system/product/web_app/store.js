@@ -14,8 +14,9 @@
      A backup never holds a price, a sheet id, a token or the Worker address.
    - Device quotes (owner 2026-10-24, DC-18): never stored by the new frontend (the gate stops them, action.js STOPPED). What a
      device stored before stays until the user removes it: marketQuotes.count() (a number only) and marketQuotes.clear(event).
-   - V history (6.3): read only. Not recorded in the new frontend (owner 2026-10-24); the central V history is the server's
-     private store (D9). Nothing in the P1 layer calls VirtualTradingVHistory.capture / captureV2 / record / recordV2.
+   - Device V history (owner 2026-10-31, DC-31: no device V history): neither read nor written. Its two keys are stopped at the gate
+     (action.js STOPPED: reads absent, writes refused); what a device stored before stays until the user removes it on a click
+     (vHistoryKeys.count() a number only, vHistoryKeys.clear(event): the manual settings action, DC-18 precedent).
    - Sheet ids and the Worker address never come back to a screen: has() / set() only.
    - Recent searches (1.1.4, P2-1, Main): the old home's device list (home-screen.js RECENT_KEY): entity keys only, newest first,
      at most 6, never the query text. Read as the old readRecent read it (invalid entries dropped); the new screen writes
@@ -31,7 +32,7 @@ const KEYS=Object.freeze({
  PLAYBOOK:'investment.web.v1.playbook',// PlaybookScreen (TARGET v1 state lives inside it)
  INVESTOR_STARS:'investment.web.v1.investor-stars',// PublicScreens / DeviceBackup
  BACKUP_RESTORED:'investment.web.v1.backup-restored',// DeviceBackup restore marker (time + schema)
- V_HISTORY:'investment.web.v1.virtual-trading-v-scores',V_HISTORY_V2:'investment.web.v2.virtual-trading-v-scores',// VirtualTradingVHistory
+ V_HISTORY:'investment.web.v1.virtual-trading-v-scores',V_HISTORY_V2:'investment.web.v2.virtual-trading-v-scores',// VirtualTradingVHistory (stopped, DC-31)
  SHEET_SOURCE:'investment.web.v1.unified-sheet-source',// GoogleSheetSetup (PriceStore, PrivateTrades)
  UNIVERSE_SOURCE:'investment.web.v1.universe-source',// PrivateSubsetView's own Universe tab source
  WORKER_ORIGIN:'investment.web.v1.private-history-origin',// PrivateHistory / PriceStore / WorkerQuoteFallback
@@ -122,8 +123,9 @@ function create({win,action,data}){
   restore(event,text){return write(event,'BACKUP',async()=>{const B=need('DeviceBackup'),payload=parseBackup(text),catalog=await data.static(CATALOG);await B.restore(view,catalog,payload);return Object.freeze({schema:payload.schema});});},
   restored(){const B=need('DeviceBackup');return B.restoredNotice(storage);}});
 
- // ---- device V history (6.3): read only; not recorded here (owner 2026-10-24: the central V history is the server's, D9)
- function vHistory(){const VH=need('VirtualTradingVHistory');return deepFreeze(copy({v1:VH.readStore(storage),v2:VH.readV2(storage)}));}
+ // ---- device V history keys (DC-31): how many of the two stopped keys this device still holds (never a value), and their removal
+ // on the user's click (a WRITE action; nothing else is removed).
+ const vHistoryKeys=Object.freeze({count:()=>action.stoppedKeys.count(),clear(event){return write(event,'V_HISTORY',signal=>action.stoppedKeys.clear(signal));}});
 
  // ---- sheet ids and the Worker address: never returned, only whether one is set
  const sheetSource=Object.freeze({
@@ -155,7 +157,7 @@ function create({win,action,data}){
   clear(event){return write(event,'MARKET_QUOTES',signal=>action.stoppedRecords.clear(signal));}});
 
  function subscribe(fn,{signal}={}){if(typeof fn!=='function')throw Error('SUBSCRIBER_INVALID');if(signal&&signal.aborted)return()=>{};subs.add(fn);const off=()=>{subs.delete(fn);};if(signal)signal.addEventListener('abort',off,{once:true});return off;}
- const api={KEYS,storage,prefs,savePrefs,recent,pushRecent,clearRecent,weights,saveWeights,holdings,playbook,saveThesis,saveHold,saveRecord,stars,toggleStar,backup,vHistory,sheetSource,universeSource,workerOrigin,marketQuotes,subscribe};
+ const api={KEYS,storage,prefs,savePrefs,recent,pushRecent,clearRecent,weights,saveWeights,holdings,playbook,saveThesis,saveHold,saveRecord,stars,toggleStar,backup,vHistoryKeys,sheetSource,universeSource,workerOrigin,marketQuotes,subscribe};
  // DeviceProfiles' preset list, read when asked (the old module loads before this one; tests swap modules).
  Object.defineProperty(api,'PRODUCT_PRESETS',{enumerable:true,get:()=>need('DeviceProfiles').PRODUCT_PRESETS});
  return Object.freeze(api);

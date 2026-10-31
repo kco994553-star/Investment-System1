@@ -62,7 +62,7 @@ const UNIVERSE_SOURCE_KEY = 'investment.web.v1.universe-source';
 // Stored device quotes seeded in C3 (made-up decimals, distinct from the Universe tab sentinels).
 const STORED_PRICE = '612.0761937', STORED_HIST = '401.0761953';
 // Live-only public files this test leaves unpublished: their 404 is intended (no console error is accepted for anything else).
-const UNPUBLISHED = ['sec-public-inputs.json', 'forward-validation-ledger.json'];
+const UNPUBLISHED = ['sec-public-inputs.json', 'forward-validation-ledger.json', 'qgv-official.json', 'qgv-official-status.json'];
 const FRONTEND_SUFFIXES = ['.html', '.css', '.js', '.woff2', '.txt', '.png', '.svg'];
 // What a screen reads when it opens (P2-1 menu 0): the home's company index (static files only), the company page's public files.
 const HOME_READS = ['actual-catalog.json', 'company-names-ko.json', 'universe-codes.json'];
@@ -92,7 +92,7 @@ let phase = 'START';
 function checkBuild(out) {
   phase = 'build output';
   const reused = R.reused(), served = fs.readdirSync(out).filter((n) => isFile(path.join(out, n)));
-  assert.equal(reused.length, 60);
+  assert.equal(reused.length, 61);
   for (const name of reused) assert.equal(sha(path.join(out, name)), sha(R.oldPath(name)), name + ' byte-identical to web_assets');
   for (const name of fs.readdirSync(R.NEW).filter((n) => isFile(R.newPath(n)))) assert.equal(sha(path.join(out, name)), sha(R.newPath(name)), name + ' from web_app');
   const stray = fs.readdirSync(R.OLD).filter((n) => (FRONTEND_SUFFIXES.includes(path.extname(n)) || n === 'manifest.json') && !reused.includes(n) && !isFile(R.newPath(n)) && served.includes(n));
@@ -177,7 +177,7 @@ async function scores(page) {
   return page.evaluate(async () => {
     const Q = window.IS2.qgv, pg = await Q.page(), again = await Q.page(), rows = pg.rows, msft = Q.row(pg, 'NASDAQ:MSFT');
     return { json: JSON.stringify(pg), coverage: JSON.stringify(Q.coverage(pg)), same: pg === again, state: pg.state, v_source: pg.v_source, engine_v_source: pg.engine_v_source,
-      expected: Q.V_SOURCES.DEVICE_TEMPORARY, price_basis: pg.price_basis, n: rows.length,
+      expected: Q.V_SOURCES.OFFICIAL_CENTRAL, engine: Q.V_SOURCES.DEVICE_TEMPORARY, price_basis: pg.price_basis, n: rows.length,
       labels: [...new Set(rows.map((r) => r.source + '|' + r.source_label))], v: rows.filter((r) => r.score.v !== null).length,
       vNullWithoutReason: rows.filter((r) => r.score.v === null && !(typeof r.na_reason.v === 'string' && r.na_reason.v)).length,
       vWithReason: rows.filter((r) => r.score.v !== null && r.na_reason.v !== null).length, msft: msft ? { v: msft.score.v, reason: msft.na_reason.v } : null };
@@ -216,7 +216,7 @@ async function scores(page) {
     // page reads CORE through the layer after IS2.ready. Then the network has to be idle.
     const drawn = async (hash) => { if (hash === '#/qgv') await page.locator('[data-lb-table]').waitFor(); await page.waitForLoadState('networkidle'); };
     // The files a route's screen may read when it opens (P2-1: 0. 기업 검색 and its company page); every other route reads nothing.
-    const QGV_READS = [...(await page.evaluate(() => window.IS2.data.CORE)), 'actual-catalog.json', 'company-names-ko.json'];
+    const QGV_READS = [...(await page.evaluate(() => window.IS2.data.CORE)), 'actual-catalog.json', 'company-names-ko.json', 'qgv-official.json', 'qgv-official-status.json'];
     const opens = (hash, names) => (hash === '#/' || hash === '#/nowhere/x' ? names.filter((n) => !HOME_READS.includes(n)) : hash.startsWith('#/company/') ? names.filter((n) => !FILES.has(n))
       : hash === '#/qgv' ? names.filter((n) => !QGV_READS.includes(n)) : names);
     for (const hash of routes) {
@@ -259,7 +259,7 @@ async function scores(page) {
     assert.deepEqual(reads.settings, { stored: false, enabled: false }, 'no device database: the saved Google setting is not read (nothing created)');
     assert.deepEqual(reads.holdings, { state: 'NOT_AVAILABLE', reason: 'DEVICE_STORE_NOT_OPENED' });
     assert.equal(reads.quotesHeld, 0, 'no device database: no stored quote, and none opened or created to count');
-    assert.equal(reads.rank, '임시 V 기준 순위 · 공식 순위 아님', 'the rank wording comes from the accessor');
+    assert.equal(reads.rank, '공식 순위 · 중앙 게시 V', 'the rank wording comes from the accessor');
     assert.equal(reads.stored, 'NOT_AVAILABLE', 'stored run after the start day, without sign-in and Worker address');
     assert.equal(reads.forward, 'NOT_PUBLISHED');
     assert.equal(reads.draft, 'object');
@@ -279,12 +279,13 @@ async function scores(page) {
     const a = await scores(page);
     assert.equal(a.state, 'READY'); assert.equal(a.same, true);
     assert.ok(a.n > 500, 'the whole Universe plus TARGET rows');
-    assert.deepEqual(a.expected, { id: 'DEVICE_TEMPORARY', ko: '임시 V', note: '기기 시세로 계산 · 중앙 V 미게시' });
-    assert.deepEqual([a.v_source, a.engine_v_source], [a.expected, a.expected]);
-    assert.deepEqual(a.labels, ['DEVICE_TEMPORARY|' + a.expected.ko], 'every row is the temporary device V, labelled by the accessor');
-    assert.deepEqual([a.v, a.vNullWithoutReason], [0, 0], 'no device price yet: every V is null and carries its reason');
-    assert.deepEqual(a.msft, { v: null, reason: 'NO_DEVICE_PRICE' });
-    assert.equal(a.price_basis.connected, false);
+    // DC-31: the central V only; without a publication every V is NA with OFFICIAL_NOT_PUBLISHED (never a device V).
+    assert.deepEqual(a.expected, { id: 'OFFICIAL_CENTRAL', ko: '공식 V', note: '중앙 게시 · IEX 마지막 체결가 기준(공식 종가 아님)' });
+    assert.deepEqual([a.v_source, a.engine_v_source], [a.expected, a.engine], 'the device result labels only the hidden TARGET engine result');
+    assert.deepEqual(a.labels, ['OFFICIAL_CENTRAL|' + a.expected.ko], 'every row is the central V, labelled by the accessor');
+    assert.deepEqual([a.v, a.vNullWithoutReason], [0, 0], 'no publication: every V is null and carries its reason');
+    assert.deepEqual(a.msft, { v: null, reason: 'OFFICIAL_NOT_PUBLISHED' });
+    assert.deepEqual([a.price_basis.kind, a.price_basis.reason, a.price_basis.publication_id], ['CENTRAL_IEX', 'OFFICIAL_NOT_PUBLISHED', null]);
 
     // ---------------------------------------------------------------- B: imitated actions
     phase = 'B imitated actions';
@@ -377,13 +378,12 @@ async function scores(page) {
     const c = await scores(page);
     assert.deepEqual(since(at), [], 'the score path sends nothing');
     assert.equal(c.state, 'READY'); assert.equal(c.same, true);
-    assert.deepEqual([c.v_source, c.engine_v_source], [c.expected, c.expected]);
-    assert.deepEqual(c.labels, ['DEVICE_TEMPORARY|' + c.expected.ko]);
-    assert.ok(c.v >= 8, 'V computed from the device prices (' + c.v + ' rows)');
+    assert.deepEqual([c.v_source, c.engine_v_source], [c.expected, c.engine]);
+    assert.deepEqual(c.labels, ['OFFICIAL_CENTRAL|' + c.expected.ko]);
+    assert.equal(c.v, 0, 'the Universe read gives no screen V (DC-31: M3 ranks only)'); assert.equal(c.json, a.json, 'the page is unchanged by the read');
     assert.deepEqual([c.vNullWithoutReason, c.vWithReason], [0, 0], 'a value has no reason, a null always has one');
-    assert.deepEqual(c.msft, { v: null, reason: 'NO_DEVICE_PRICE' }, 'the row without a sheet price keeps V null with its reason');
-    assert.deepEqual([c.price_basis.connected, c.price_basis.source, c.price_basis.read_at], [true, 'GOOGLEFINANCE_PRIVATE_UNIVERSE', NOW]);
-    assert.equal(c.price_basis.time_status, 'UNCONFIRMED', 'the Universe tab carries no price time');
+    assert.deepEqual(c.msft, { v: null, reason: 'OFFICIAL_NOT_PUBLISHED' });
+    assert.equal(c.price_basis.kind, 'CENTRAL_IEX');
     phase = 'C RAM display';
     const quote = await page.evaluate(async (code) => { const q = await window.IS2.prices.quote({ code }); const el = document.createElement('p'); el.dataset.ramPrice = ''; el.textContent = String(q.price) + ' ' + q.currency; document.body.appendChild(el); return q; }, PRICED[0]);
     assert.deepEqual([quote.state, String(quote.price), quote.source, quote.time_status], ['OK', PRICE[0], 'UNIVERSE_SHEET', 'UNCONFIRMED'], 'quote() is the one way out, for [data-ram-price]');
@@ -537,8 +537,8 @@ async function scores(page) {
     const d = await page.evaluate(() => { const P = window.IS2.prices, st = P.status(); return { google: st.google.connected, enabled: st.google.enabled, universe: st.universe.state, ranks: P.universeRanks(), gis: typeof window.google }; });
     assert.deepEqual(d, { google: false, enabled: false, universe: 'NOT_READ', ranks: null, gis: 'undefined' }, 'sign-in, the Universe read and ranks were RAM only');
     const after = await scores(page);
-    assert.deepEqual([after.v, after.vNullWithoutReason, after.price_basis.connected], [0, 0, false], 'V back to null with reasons');
-    assert.deepEqual(after.msft, { v: null, reason: 'NO_DEVICE_PRICE' });
+    assert.deepEqual([after.v, after.vNullWithoutReason, after.price_basis.kind], [0, 0, 'CENTRAL_IEX'], 'V null with reasons');
+    assert.deepEqual(after.msft, { v: null, reason: 'OFFICIAL_NOT_PUBLISHED' });
     await addButtons(page);
     at = rec.log.length;
     assert.deepEqual(await click(page, 'read'), { ok: false, code: 'AUTH_REQUIRED' }, 'a read after the reload needs a new sign-in');
