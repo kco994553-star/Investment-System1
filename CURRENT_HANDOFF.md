@@ -1,8 +1,8 @@
 # 현재 인수인계 — 2026-11-01
 
-기준 **2026-11-01 03:30 UTC 무렵**, canonical **`9a4e249d`**(#447). 10/31 저녁 오너 승인으로 병합: #448 `ef0e90cb`(Worker 배포 run 41252518944) → #438 `f8e9a4ef` → #440 `edb11b1c` → #442 `70d0e447` → #441 `37b7ddc4` → #445 `1c73cb9b` → #450 `c33ec071` → #446 `1465260e`. 11/01 병합: #436 `c86be9b9` → #449 `111f86c7` → #451 `d8fe9bc8` → #453 `428b417e` → #447 `9a4e249d`(워크플로 ① `private-boundary-push.yml` 포함). 실제 기본 브랜치는 **`claude/investment-system-top500-validation-alrugm`**.
+기준 **2026-11-01 07:10 UTC GitHub 조회**, canonical **`9a4e249d`**(#447). 앞 판(`1465260e`, #446) 뒤 병합은 아래 11/01 다섯 건뿐이다(첫 부모 이력으로 확인). 10/31 저녁 오너 승인으로 병합: #448 `ef0e90cb`(Worker 배포 run 41252518944) → #438 `f8e9a4ef` → #440 `edb11b1c` → #442 `70d0e447` → #441 `37b7ddc4` → #445 `1c73cb9b` → #450 `c33ec071` → #446 `1465260e`. 11/01 병합: #436 `c86be9b9` → #449 `111f86c7` → #451 `d8fe9bc8` → #453 `428b417e` → #447 `9a4e249d`(워크플로 ① `private-boundary-push.yml` 포함). 실제 기본 브랜치는 **`claude/investment-system-top500-validation-alrugm`**.
 
-읽기: [START_HERE](START_HERE.md) → [방향 전환 대장](docs/SPEC/DIRECTION_CHANGES.md) → [WORKING_RULES](WORKING_RULES.md) → [기능 현황](docs/SPEC/FUNCTION_STATUS.md) → [결정 원문](implementation/docs/USER_DECISIONS_PENDING.md). 오늘 이행은 오너 10/31 결정 두 묶음(병합·확장·기기 V 폐지 DC-31 / 병렬 진행 체계 DC-32·가격 표시 검토)이다.
+읽기: [START_HERE](START_HERE.md) → [방향 전환 대장](docs/SPEC/DIRECTION_CHANGES.md) → [WORKING_RULES](WORKING_RULES.md) → [기능 현황](docs/SPEC/FUNCTION_STATUS.md) → [결정 원문](implementation/docs/USER_DECISIONS_PENDING.md). 11/01 이행은 오너 결정 세 묶음(DC-40 두 흐름·연구 인계 / 11/01 2차 15항목 / 보완 지시: NAV 정정·점수화 모집단 검토, DC-41)이다. 원문은 결정 기록 2026-11-01 블록.
 
 ## 0. 역할·지금 관리할 흐름
 
@@ -17,14 +17,20 @@
 
 ### 작업 중
 
-| PR·작업 | 담당 | 시작 (UTC) |
-| --- | --- | --- |
-| 중앙 V 기준일 고침 PR(`claude/iex-select-session-day`): IEX가 토요일 파일 `20261031`을 올려 11/01 야간이 `SUPPLY_BELOW_THRESHOLD`·`KEPT_LAST_GOOD`(공개 기준일 10/29 유지). NYSE 거래일 파일만 고름. 병합은 오너 승인 뒤, 병합 전까지 야간은 같은 이유로 실패 | Claude Code Main | 11/01 03:10 |
-| [#454](https://github.com/kco994553-star/Investment-System1/pull/454) 연구 엔진 `EXP-STOCK-INDICATOR-DECILES-v1`(Draft). `78ac5c3e`를 #437에 인계, 독립 검토 11건 수정 중(`claude/exp-deciles-engine-fix`) | Claude Code Main | 11/01 01:20 |
-| 결정 기록 PR(`claude/decisions-1101-second`: 11/01 2차 15항목·보완 지시, 연구 설정 정정, 점수화 기준 모집단 검토 10절 → 결정 대기 `EXP-SCORING-POP`·`EXP-CALC-ALIGN`) | Claude Code Main | 11/01 03:00 |
-| SEC 1회용 수집 계획 PR(11/01 결정 1: 계획 먼저, 승인 뒤 실행. 8% 분류 측정·인계 release 포함) | Claude Code Main | 준비 중 |
-| Alpaca 소표본 수집(11/01 결정 2) | Claude Code Main | 준비 중 |
-| 자료층 브라우저 시험 경합 고침 PR(`claude/data-layer-test-fresh-load`, 시험만 바꿈) | Claude Code Main | 11/01 03:15 |
+근거 표시: **(조회)** = 07:10 UTC GitHub 직접 조회, **(실행)** = Main이 이 세션에서 직접 실행, **(PR 보고)** = PR 본문·댓글의 보고(재실행 안 함).
+
+| PR·작업 | 담당 | 시작 (UTC) | 상태·다음 |
+| --- | --- | --- | --- |
+| [#456](https://github.com/kco994553-star/Investment-System1/pull/456) 중앙 V 기준일: IEX 목록의 비거래일 파일 건너뛰기 | Main | 11/01 03:10 | CI 9개 성공(조회). 전체 시험 통과(실행). **병합은 오너 승인 뒤**. 병합 전까지 야간 중앙 V는 같은 이유로 `KEPT_LAST_GOOD` |
+| [#457](https://github.com/kco994553-star/Investment-System1/pull/457) 결정 기록 11/01 2차·보완, DC-41, 연구 설정 10절(이 문서도 여기서 갱신) | Main | 11/01 03:00 | CI 성공(조회). 오너 승인 뒤 병합. 결정 대기 `EXP-SCORING-POP`·`EXP-CALC-ALIGN` |
+| [#455](https://github.com/kco994553-star/Investment-System1/pull/455) 자료층 브라우저 시험 경합 고침(시험만) | Main | 11/01 03:15 | CI 성공(조회). 오너 검토 뒤 병합(11/01 결정 12) |
+| [#454](https://github.com/kco994553-star/Investment-System1/pull/454) 연구 엔진 `EXP-STOCK-INDICATOR-DECILES-v1`(Draft) | Main | 11/01 01:20 | 원격 머리 `78ac5c3e`(CI 성공, 조회) = #437 인계 1. 로컬 고침: 결함 11건 → 독립 검토 2회에서 추가 결함 확인 → 장부 고침 `bb7cde5b`(검증 통과, 실행) 뒤 나머지 영역 고침 진행 중. **push·#437 인계 2 전** |
+| SEC 1회용 수집 계획 PR(`claude/sec-once-collect-plan`) | Main | 11/01 | 로컬 `63d4c2b7`, 독립 검토·고침 끝, 전체 시험 중. **push·PR 전, 실행은 승인 뒤**. 측정 가지 코드 이관 포함 |
+| Alpaca 소표본(`claude/alpaca-sample-once`) | Main | 11/01 | 로컬 `7ab5cd4d`, 독립 검토·고침 끝. **push 전·실행 전**. 실행 전 오너 확인 필요: 공개 로그에 범위·개수 줄만 남기는 것 |
+| [#452](https://github.com/kco994553-star/Investment-System1/pull/452) 책 규칙 인수·종목 비교 경계·동결 French 보유기간 분석(Draft) | Codex | 11/01 01:04 | 연구 경로 새 3파일, CI 성공(조회). Main 요청 4개(담당표 두 흐름 갱신 = #453 반영됨, 인계, LOSS 구분, #443 대체 범위) |
+| [#437](https://github.com/kco994553-star/Investment-System1/pull/437) Lab 계약·EXP 연구 대사 창구(Draft, base #432) | Codex | 10/31 | Codex가 `78ac5c3e` 합성 묶음 재현(19/19 바이트 일치, 대사 28 일치·알려진 3 불일치, PR 보고). 다음: Main 인계 2 수령 뒤 재검증 |
+| [#417](https://github.com/kco994553-star/Investment-System1/pull/417) QGV 장기 백테스트(Draft) | Codex | 10/26 | 11/01 `c68af2c0`로 의존성 코드 보존(PR 보고 204 passed). mergeable `unstable`(조회). calc 17.1 보존본, Main 엔진 아님 |
+| [#443](https://github.com/kco994553-star/Investment-System1/pull/443) 전진검증 v3 책 규칙표(Draft) | Codex(옛 GPT Work) | 10/31 | #452: 대체된 시행 초안은 되살리지 않고 원문 대기 부분만 Codex가 이어받음 |
 
 ## 1. 10/31 오너 결정과 처리
 
@@ -47,6 +53,13 @@
 
 | PR | 내용 | UTC | merge SHA |
 | --- | --- | --- | --- |
+| [#447](https://github.com/kco994553-star/Investment-System1/pull/447) | 비공개 구역 1단계 가드·research-request/1, 워크플로 ① `private-boundary-push.yml` | 11-01 03:11:05 | `9a4e249d` |
+| [#453](https://github.com/kco994553-star/Investment-System1/pull/453) | DC-40 두 흐름 + 연구 `EXP-STOCK-INDICATOR-DECILES-v1` 설정·인계 계약 | 11-01 02:21:19 | `428b417e` |
+| [#451](https://github.com/kco994553-star/Investment-System1/pull/451) | 10/31 저녁 결정(FV3-TR·PIT-TICKER·FV3-SIZE·443 대조, DC-39) | 11-01 02:09:52 | `d8fe9bc8` |
+| [#449](https://github.com/kco994553-star/Investment-System1/pull/449) | 마지막 체결 시각 ① 판독기·검증기(게시 쪽은 다음 PR) | 11-01 01:22:55 | `111f86c7` |
+| [#436](https://github.com/kco994553-star/Investment-System1/pull/436) | 1인 비공개 구역(KIS 한정) 설계 | 11-01 00:37:41 | `c86be9b9` |
+| [#446](https://github.com/kco994553-star/Investment-System1/pull/446) · [#450](https://github.com/kco994553-star/Investment-System1/pull/450) · [#445](https://github.com/kco994553-star/Investment-System1/pull/445) · [#441](https://github.com/kco994553-star/Investment-System1/pull/441) · [#442](https://github.com/kco994553-star/Investment-System1/pull/442) · [#440](https://github.com/kco994553-star/Investment-System1/pull/440) · [#438](https://github.com/kco994553-star/Investment-System1/pull/438) · [#448](https://github.com/kco994553-star/Investment-System1/pull/448) | 10/31 저녁 오너 승인 병합(머리말 순서) | 10-31 23:25~23:29 | 머리말 |
+| [#439](https://github.com/kco994553-star/Investment-System1/pull/439) | 기기 V 폐지 1b | 10-31 09:11:55 | `5e16d3e6` |
 | [#435](https://github.com/kco994553-star/Investment-System1/pull/435) | 기기 V 폐지 1a: 새 앱 공식 V 판독기(`qgv.js` OFFICIAL_READER)·`qgv-scores.js` 게시본 모드, 자료층 브라우저 시험의 명시적 대기(DC-31, 새 앱 미배포) | 10-31 07:56:53 | `44cd0b43` |
 | [#431](https://github.com/kco994553-star/Investment-System1/pull/431) | IEX 확장 측정·설계·결정, DC-30·DC-31, 10/30·10/31 결정 기록, #426 이관 | 10-31 02:24:04 | `32cc3ffd` |
 | [#429](https://github.com/kco994553-star/Investment-System1/pull/429) | GSQ-025·DC-29 결정 기록 | 10-31 01:10:59 | `b10b841a` |
@@ -59,43 +72,40 @@
 
 10/29 병합(중앙 V 첫 게시 사슬 #393·#400·#403·#404·#405, 화면 #421·#415·#419·#420, #411)은 git 이력과 [10/29판](https://github.com/kco994553-star/Investment-System1/blob/f1c28bac/CURRENT_HANDOFF.md)에 있다.
 
-## 3. 열린 PR·승인
+## 3. 열린 PR·승인 (07:10 UTC 조회, 17개)
 
-| PR | 요지 | 상태 | 오너 승인·조건 |
+| PR | 요지 | 상태(조회) | 오너 승인·조건 |
 | --- | --- | --- | --- |
-| 이 문서 PR | DC-35 개발 체계(밤 개정: Main·Codex·GPT Work 셋)·결정 문서·lab-backtest-v1 계약, START_HERE 담당표, 오늘 인수인계·기능 현황, GSQ-025 보충(#434 커밋 포함) | CI 확인 | 문서 병합 승인 필요 |
-| [#434](https://github.com/kco994553-star/Investment-System1/pull/434) | DC-32 병렬 진행 체계(시행 전 대체) | 대체 종료 | 이 PR이 대체(이력 보존) |
-| [#436](https://github.com/kco994553-star/Investment-System1/pull/436) | 설계: 1인 비공개 구역(KIS 한정), DC-34·GSQ-027 제안, 오너 폰 설정 절차, KIS 문의 초안 | CI 확인 | **설계 승인 필요**(`PRIV-*` 7개). 구현은 승인 뒤 |
-| [#439](https://github.com/kco994553-star/Investment-System1/pull/439) | 기기 V 폐지 1b: 옛 화면은 중앙 V만, 기기 V·V 이력·가치 패널 제거, direction guard DC-31a~d | CI 녹색 | **병합**(`5e16d3e6`, 10/31 오너 승인) |
-| [#433](https://github.com/kco994553-star/Investment-System1/pull/433) | GSQ-026·DC-33 가격 표시 결정 기록(공개 IEX 마지막 체결가, 클릭 전용 폐지 범위) | CI 확인 | **결정 승인 필요**. 구현은 승인 뒤 |
-| [#432](https://github.com/kco994553-star/Investment-System1/pull/432) | Codex 연구 `[WIP]` BT-DATA-PILOT v0.6(Alpaca OHLCV·IEX 빈 응답) | Draft | DC-32 연구 가지. 병합 전 Main 확인(담당 파일·CI·자료 권리) + 오너 승인 |
-| [#430](https://github.com/kco994553-star/Investment-System1/pull/430) | #417 연구 명세 재고정(`96037d1c`·23.1), base = #417 가지 | CI 6 녹색 | #417 담당 확인 뒤 병합 |
-| [#418](https://github.com/kco994553-star/Investment-System1/pull/418) · [#417](https://github.com/kco994553-star/Investment-System1/pull/417) · [#416](https://github.com/kco994553-star/Investment-System1/pull/416) | 백테스트 연구·기준(연구 담당) | Draft·Open | DC-32상 Codex 연구 가지 |
-| [#392](https://github.com/kco994553-star/Investment-System1/pull/392) | TARGET v0 결합 해소 | DIRTY | 통합 검증·최종 승인 별도 |
-| [#361](https://github.com/kco994553-star/Investment-System1/pull/361) | Worker 분할 이벤트 | DIRTY | 공급원 권리로 보류 |
+| [#457](https://github.com/kco994553-star/Investment-System1/pull/457) · [#456](https://github.com/kco994553-star/Investment-System1/pull/456) · [#455](https://github.com/kco994553-star/Investment-System1/pull/455) · [#454](https://github.com/kco994553-star/Investment-System1/pull/454) | Main 11/01 PR(위 작업 중 표) | #454 Draft, 나머지 CI 성공 | 각각 오너 승인 뒤 |
+| [#433](https://github.com/kco994553-star/Investment-System1/pull/433) | GSQ-026·DC-33 가격 표시 결정 기록 | **DIRTY**(base `32cc3ffd`, 그 뒤 대장·결정 기록이 바뀜) | 결정 승인 필요. 승인 나면 Main이 canonical과 합친 뒤 병합 |
+| [#452](https://github.com/kco994553-star/Investment-System1/pull/452) · [#437](https://github.com/kco994553-star/Investment-System1/pull/437) · [#432](https://github.com/kco994553-star/Investment-System1/pull/432) · [#443](https://github.com/kco994553-star/Investment-System1/pull/443) · [#418](https://github.com/kco994553-star/Investment-System1/pull/418) · [#417](https://github.com/kco994553-star/Investment-System1/pull/417) · [#416](https://github.com/kco994553-star/Investment-System1/pull/416) | Codex 연구·문서 PR | #417 `unstable`, 나머지 clean·Draft(#416 Open) | 연구 가지. 병합 전 Main 확인(담당 파일·CI·자료 권리) + 오너 승인 |
+| [#430](https://github.com/kco994553-star/Investment-System1/pull/430) | #417 연구 명세 재고정(base = #417 가지) | Open | #417 담당 확인 뒤 |
+| [#392](https://github.com/kco994553-star/Investment-System1/pull/392) | TARGET v0 결합 해소 | `unknown`(10/24 이후 갱신 없음) | 통합 검증·최종 승인 별도 |
 | #305 · #281 · #267 | 옛 시안·스튜디오 | draft·보류 | 참고 |
 
-닫음: #426(10/31, 오너 결정 — DC-27 번호 중복, #431과 겹침). 조회 범위: repo ruleset HG-02 — PR 필수, 리뷰 승인 수 0, 필수 check `repository-guard`. GitHub 리뷰 0과 오너 승인(대화·결정 기록)은 별개다.
+닫음: #361(10-31 09:16, 병합 안 함 — TA-361), #444(#445가 대체), #434(#438이 대체), #426. 조회 범위: repo ruleset HG-02 — PR 필수, 리뷰 승인 수 0, 필수 check `repository-guard`. GitHub 리뷰 0과 오너 승인(대화·결정 기록)은 별개다.
 
 ## 4. 실제 상태·게시 검증
 
 | 대상 / 기능번호 | 상태 |
 | --- | --- |
-| 중앙 V / 2·6 | 매일 게시. 10/30분 정기 #31: 성공, `attempt_state OK`, 가격 기준일 2026-10-29, 새 게시본(02:31 배포). 행 523·순위 356·V 358. **PSKY V 보류 확인**(`price_status` `SPLIT_AFTER_SHARE_COUNT`, #428). 가격 상태: SUPPLIED 501·ADR 1·체결 없음 1·주식수 사건 1 |
+| 중앙 V / 2·6 | **10/31분 정기 #32(11-01 01:06→01:53, 워크플로 성공)에서 게시 시도는 `SUPPLY_FAILED`·`SUPPLY_BELOW_THRESHOLD`, 지난 정상본 유지(공개 기준일 2026-10-29)** — 공개 `qgv-official-status.json` 직접 확인(07:10 UTC). 원인: IEX가 토요일 파일 `20261031`을 올렸고 기준일 선택이 거래일인지 보지 않음 → #456. 그 전: 10/30분 정기 #31: 성공, `attempt_state OK`, 가격 기준일 2026-10-29, 새 게시본(02:31 배포). 행 523·순위 356·V 358. **PSKY V 보류 확인**(`price_status` `SPLIT_AFTER_SHARE_COUNT`, #428). 가격 상태: SUPPLIED 501·ADR 1·체결 없음 1·주식수 사건 1 |
 | 화면의 V | 기기 V 폐지(DC-31, #435·#439 병합): 새 앱과 옛 화면( 리더보드·상세·레이더·V 산출 현황·Universe 페이지·S13 비교·플레이북)은 중앙 V(`qgv-official.json`)만 보인다. 늦으면 마지막 중앙 V + 게시 시각 + STALE. TARGET v1 빌더만 11/16 PR까지 옛 V 출처 유지. 가치(DCF) 패널 제거. S06 GOOG 표시 차이는 후속 PR |
 | 새 앱(`web_app/`) | 병합됨, 배포 안 됨(P3 전환 때). `qgv.js` 공식 판독기 채움(#435 병합) |
 | `sec-universe-shares.json` PSKY 행 | 10/31 03:13 UTC STALE → PSKY M3 시가총액 순위만 사유 있는 NA. `sec-qgv2.json`·`sec-universe-qg.json` PSKY 행은 LIVE |
 | IEX 확장 | 측정·설계·결정 완료(#431). 구현 없음 |
+| 비공개 구역 / 2층 | 설계 #436·가드 #447 병합. Worker 수정 #448 병합·배포(run 41252518944, PR 보고). 로그인 /history 실기기 확인은 오너 폰 절차 전(미확인) |
+| 마지막 체결 시각 | ① 판독기 #449 병합. ③ 게시 쪽 PR 미착수 |
+| 연구 `EXP-STOCK-INDICATOR-DECILES-v1` | **합성 자료만**: 엔진 `78ac5c3e` 합성 묶음은 Main 재현(실행)·Codex 재현(PR 보고). 실자료 파일럿·전체 백테스트·실환경 검증은 **없음**(SEC 수집·T 시가 원천 승인 전). 합성 통과를 실자료 결과로 쓰지 않는다 |
 
-## 5. 다음 우선순위 (10/31 밤 DC-35 기준)
+## 5. 다음 우선순위 (11/01, DC-40 기준)
 
-1. #435·#439 병합 완료(기기 V 폐지 1a·1b). 다음: S06 대표 증권 후속 PR → 11/16 TARGET 경로 PR.
-2. IEX 확장 구현 PR ①②③(각 계산·워크플로 변경, 독립 검토 1). #435와 함께 최우선.
-3. 공통 기반 PR → 묶음 1(4 매크로·7 프롬프트·8 트리) → 묶음 2(3 기술적 분석·5 뉴스·9 Lab). 화면 PR은 자체 검토, 묶음 PR마다 보고 1회.
-4. #436 설계 보강(차트 이력 MODP=0 장부·MODP=1 차트 계열, Lab 결과 비공개 저장·조회). 구현은 `PRIV-*` 승인 뒤.
-5. 6. 포트폴리오: 독립 UI는 진행 가능, 공식 V에 의존하는 결론·선정은 #435 뒤.
-6. 가격 표시: GSQ-026 승인 뒤 가드 → 게시기·워크플로 → 새 앱 자료 층.
-7. TARGET v1 확정 창 11/09~11/15(V 출처 바꾸지 않음), 11/16 기기 V 경로 제거 PR.
+1. **#456 병합 승인**(중앙 V 야간 실패 해소). 병합 뒤 다음 정기 실행에서 기준일·공급 비율 확인.
+2. 연구 엔진: 나머지 고침 → 전체 시험 → #454 push → #437 인계 2(새 SHA·명령·기대 해시, NAV 정정 포함) → Codex 재검증.
+3. SEC 1회용 수집 계획 PR 올리기(실행은 승인 뒤). Alpaca 소표본은 공개 로그 범위 오너 확인 뒤 1회 실행.
+4. 결정 대기: `EXP-SCORING-POP`·`EXP-CALC-ALIGN`(#457), #433 가격 표시, #455 시험 고침.
+5. 기기 V 폐지 남은 것: 11/16 TARGET 경로 PR. TARGET v1 확정 창 11/09~11/15(V 출처 바꾸지 않음).
+6. IEX 확장 구현 PR ①②③, 마지막 체결 시각 ③ 게시 쪽 PR — 위 순서 뒤.
 
 ## 6. 정기 실행·수동 실행
 
@@ -112,11 +122,14 @@
 | **중앙 V 첫 게시 all_shards** | [#29 / 40871484448](https://github.com/kco994553-star/Investment-System1/actions/runs/40871484448) | 10-29 12:13→13:31 | **성공**(수동, `d149c91d`). collect 39분(샤드 28.7·V 단계 6), verify 35분, deploy 1분. `attempt=OK published=NEW basis=2026-10-28 rows=523 ranked=356 supplied=357/357` |
 | SEC 10/29분 | [#30 / 40988690629](https://github.com/kco994553-star/Investment-System1/actions/runs/40988690629) | 10-30 01:55→02:54 | 성공(연속 8). collect 22분, verify 37분. `attempt_state OK`, 가격 기준일 2026-10-28, 새 게시본 |
 | SEC 10/30분 | [#31 / 41155975780](https://github.com/kco994553-star/Investment-System1/actions/runs/41155975780) | 10-31 01:34→02:31 | 성공(연속 9). collect 20분, verify 36분, deploy 1분. `attempt_state OK`, 가격 기준일 2026-10-29, PSKY V 보류 |
+| SEC 10/31분 | [#32 / 41259677591](https://github.com/kco994553-star/Investment-System1/actions/runs/41259677591) | 11-01 01:06→01:53 | 워크플로 성공(조회). 중앙 V 게시 시도 `SUPPLY_FAILED`·`KEPT_LAST_GOOD`, 공개 기준일 10/29 유지(공개 상태 파일 확인). 원인 IEX 토요일 파일 → #456 |
 
 ## 7. 알려진 위험·관리자 노트
 
 | 위험 | 영향·확인 |
 | --- | --- |
+| 중앙 V 야간 | #456 병합 전까지 매일 `KEPT_LAST_GOOD`(공개 V는 10/29 기준에 머묾). 화면은 마지막 중앙 V + STALE 표시 |
+| 측정 가지 `claude/fv3-pit-ticker-measure` | 재현 코드는 아직 그 가지에만 있다. SEC 계획 PR(코드 이관 포함)이 올라간 뒤 오너가 지운다 |
 | TARGET v1 확정 | 확정 창 11/09~11/15. V 출처는 그 기간 바꾸지 않는다(DC-31). 열린 항목: EME·CMG 새 10-Q 칸 원문 대조 |
 | PSKY | ① 공식 V는 #428로 보류(새 10-K 주식수가 나오면 저절로 풀림) ② 주식수 파일 행 STALE(M3 순위만 NA) ③ Q·G는 인수 전 재무(FYE 2024-12-31) 기준 |
 | 규칙 변경 PR과 라이브 게시본 | 엔진·가중치·설정 버전을 바꾸는 PR은 라이브 게시본을 무효로 만들 수 있다(점검표 7절). 버전 상수를 바꾸지 않는 PR(#428)은 해당 없음 |
