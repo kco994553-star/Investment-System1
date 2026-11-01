@@ -8,6 +8,7 @@ import os
 from pathlib import Path
 import re
 import stat
+import subprocess
 import uuid
 
 import pytest
@@ -253,3 +254,159 @@ def test_synthetic_bundle_runs_end_to_end_and_replays_byte_identically(cli, caps
     # a second run into the same directory is refused (never overwrites)
     code, _, err = run(cli, capsys, 'synthetic', '--out', str(first), '--generated-at', WHEN)
     assert code == 2 and 'OUTPUT_EXISTS' in err
+
+
+def _select_2018(cli, capsys, manifest, out_dir):
+    code, _, err = run(cli, capsys, 'select', '--manifest', str(manifest), '--year', '2018', '--out', str(out_dir),
+                       '--generated-at', WHEN)
+    assert code == 0, err
+    return out_dir / 'selection_inputs.json'
+
+
+# ---- review F7: a selection file must verify against its select run's manifest ------------------------------------
+def test_ledger_refuses_an_edited_or_unverified_selection_file(cli, capsys, tmp_path):
+    """Review d9: a copy of the 2018 selection with AXIS_G/U_A's top pick replaced was replayed silently."""
+    manifest = write_bundle(tmp_path / 'bundle')
+    original = _select_2018(cli, capsys, manifest, tmp_path / 's18')
+    payload = json.loads(original.read_text())
+    sel = payload['selections']['AXIS_G']['U_A']
+    sel['top'][0]['security_id'] = sel['order'][len(sel['order']) // 2]
+    edited = tmp_path / 'edited'
+    edited.mkdir(mode=0o700)
+    (edited / 'selection_inputs.json').write_text(json.dumps(payload))
+    (edited / 'manifest.json').write_bytes((tmp_path / 's18' / 'manifest.json').read_bytes())
+    code, out, err = run(cli, capsys, 'verify', '--run', str(edited))
+    assert code == 1 and 'verify=FAILED' in out
+    args = ['ledger', '--manifest', str(manifest), '--out', str(tmp_path / 'led'), '--end', '2019-02-15']
+    code, out, err = run(cli, capsys, *args, '--selection', str(edited / 'selection_inputs.json'))
+    assert (code, out, err.strip()) == (2, '', 'REFUSED SELECTION_MANIFEST_MISMATCH')
+    loose = tmp_path / 'loose'
+    loose.mkdir(mode=0o700)
+    (loose / 'selection_inputs.json').write_bytes(original.read_bytes())
+    code, _, err = run(cli, capsys, *args, '--selection', str(loose / 'selection_inputs.json'))
+    assert code == 2 and err.strip() == 'REFUSED SELECTION_MANIFEST_MISSING'
+    assert not (tmp_path / 'led').exists()
+    code, out, err = run(cli, capsys, *args, '--selection', str(original))
+    assert code == 0, err
+
+
+def test_ledger_flags_another_input_manifest_and_refuses_mixed_selection_code(cli, capsys, tmp_path, monkeypatch):
+    manifest = write_bundle(tmp_path / 'bundle')
+    s18 = _select_2018(cli, capsys, manifest, tmp_path / 's18')
+    other = write_bundle(tmp_path / 'other')                     # same files, one more resource: another manifest
+    body = json.loads(other.read_text())
+    body['resources'].append(dict(body['resources'][0], name='records:2017'))
+    other.write_text(json.dumps(body))
+    code, out, err = run(cli, capsys, 'ledger', '--manifest', str(other), '--selection', str(s18), '--out',
+                         str(tmp_path / 'led'), '--end', '2019-02-15', '--generated-at', WHEN)
+    assert code == 0, err
+    assert 'SELECTION_INPUT_MANIFEST_DIFFERS' in out
+    assert 'SELECTION_INPUT_MANIFEST_DIFFERS' in json.loads((tmp_path / 'led' / 'ledger_outputs.json').read_text())[
+        'flags']
+    monkeypatch.setattr(cli, 'code_state', lambda: ('f' * 40, []))
+    code, _, err = run(cli, capsys, 'select', '--manifest', str(manifest), '--year', '2019', '--previous-u-a', str(s18),
+                       '--out', str(tmp_path / 's19'), '--generated-at', WHEN)
+    assert code == 0, err
+    code, _, err = run(cli, capsys, 'ledger', '--manifest', str(manifest), '--selection', str(s18), '--selection',
+                       str(tmp_path / 's19' / 'selection_inputs.json'), '--out', str(tmp_path / 'led2'),
+                       '--end', '2019-03-29')
+    assert code == 2 and err.strip() == 'REFUSED SELECTION_CODE_SHA_MISMATCH'
+
+
+# ---- review F10: outputs never inside any git working tree --------------------------------------------------------
+def _git(*args, cwd):
+    env = {k: v for k, v in os.environ.items() if not k.startswith('GIT_')}
+    ident = ['-c', 'user.name=synthetic', '-c', 'user.email=' + '@'.join(['synthetic', 'example.invalid'])]
+    subprocess.run(['git', *ident, *args], cwd=cwd, env=env, check=True, capture_output=True)
+
+
+def test_output_inside_any_git_working_tree_is_refused(cli, capsys, tmp_path, monkeypatch):
+    """Review d5: run from a worktree, an --out inside the main checkout (another working tree) was accepted."""
+    main_tree, worktree, unrelated = tmp_path / 'main', tmp_path / 'wt', tmp_path / 'unrelated'
+    for tree in (main_tree, unrelated):
+        tree.mkdir()
+        _git('init', '-q', cwd=tree)
+        _git('commit', '-q', '--allow-empty', '-m', 'synthetic', cwd=tree)
+    _git('worktree', 'add', '-q', str(worktree), cwd=main_tree)
+    (main_tree / 'implementation').mkdir()
+    monkeypatch.setattr(cli, 'REPO_ROOT', worktree)
+    with pytest.raises(cli.CliError, match='OUTPUT_INSIDE_REPO'):
+        cli._output_dir(str(worktree / 'out'))
+    with pytest.raises(cli.CliError, match='OUTPUT_INSIDE_REPO'):
+        cli._output_dir(str(main_tree / 'implementation' / 'exp_private_out'))
+    with pytest.raises(cli.CliError, match='OUTPUT_INSIDE_GIT_WORKTREE'):
+        cli._output_dir(str(unrelated / 'out'))
+    with pytest.raises(cli.CliError, match='OUTPUT_INSIDE_GIT_WORKTREE'):
+        cli._output_dir(str(unrelated / '.git' / 'out'))
+    assert cli._output_dir(str(tmp_path / 'outside')) == (tmp_path / 'outside').resolve()
+
+
+# ---- review F11: settings body and reproduction command in the run block and the output manifest -----------------
+def test_run_block_and_manifest_carry_settings_and_a_reproduction_command(cli, capsys, tmp_path):
+    """Review d12: only settings_sha256 and no reproduction command were recorded."""
+    manifest = write_bundle(tmp_path / 'bundle')
+    s18 = _select_2018(cli, capsys, manifest, tmp_path / 's18')
+    payload, written = json.loads(s18.read_text()), json.loads((tmp_path / 's18' / 'manifest.json').read_text())
+    for block in (payload['run'], written):
+        assert hashlib.sha256(json.dumps(block['settings'], sort_keys=True, separators=(',', ':'),
+                                         ensure_ascii=True).encode()).hexdigest() == block['settings_sha256']
+        assert block['reproduction']['argv'] == [
+            'python', 'implementation/tools/exp_stock_indicator_deciles.py', 'select', '--manifest', '<INPUT_MANIFEST>',
+            '--year', '2018', '--out', '<NEW_PRIVATE_OUTPUT_DIR>', '--generated-at', WHEN]
+        assert block['reproduction']['placeholders']['INPUT_MANIFEST'] == {
+            'sha256': hashlib.sha256(manifest.read_bytes()).hexdigest()}
+        assert str(tmp_path) not in json.dumps(block['reproduction'])
+    assert payload['run']['settings'] == written['settings'] and payload['settings_sha256'] == written['settings_sha256']
+    code, out, _ = run(cli, capsys, 'ledger', '--manifest', str(manifest), '--selection', str(s18), '--out',
+                       str(tmp_path / 'led'), '--generated-at', WHEN, '--daily-positions')
+    assert code == 0 and 'end_rule=NEXT_RESELECTION_T_OPEN' in out and 'end_valuation=OPEN' in out
+    led = json.loads((tmp_path / 'led' / 'manifest.json').read_text())
+    digest = hashlib.sha256(s18.read_bytes()).hexdigest()
+    assert led['reproduction']['argv'][5:] == ['--selection', '<SELECTION_2018>', '--daily-positions', '--out',
+                                               '<NEW_PRIVATE_OUTPUT_DIR>', '--generated-at', WHEN]
+    assert led['reproduction']['placeholders']['SELECTION_2018'] == {'sha256': digest}
+    code, out, _ = run(cli, capsys, 'verify', '--run', str(tmp_path / 'led'))
+    assert code == 0 and 'settings_ok=true' in out
+    led['settings']['account']['cost_bps_per_side'] = '0'          # a changed settings body no longer verifies
+    (tmp_path / 'led' / 'manifest.json').chmod(0o600)
+    (tmp_path / 'led' / 'manifest.json').write_text(json.dumps(led))
+    code, out, _ = run(cli, capsys, 'verify', '--run', str(tmp_path / 'led'))
+    assert code == 1 and 'settings_ok=false' in out
+
+
+# ---- review F3: the previous U-A state forms ----------------------------------------------------------------------
+def test_previous_u_a_as_object_or_bare_list(cli, capsys, tmp_path):
+    manifest = write_bundle(tmp_path / 'bundle')
+    s18 = json.loads(_select_2018(cli, capsys, manifest, tmp_path / 's18').read_text())
+    state = tmp_path / 'state.json'
+    state.write_text(json.dumps({'members': s18['universe']['U_A']['members'],
+                                 'unknown': s18['universe']['U_A']['unknown']}))
+    code, out, err = run(cli, capsys, 'select', '--manifest', str(manifest), '--year', '2019', '--previous-u-a',
+                         str(state), '--out', str(tmp_path / 'a'), '--generated-at', WHEN)
+    assert code == 0 and 'PREVIOUS_U_A_UNKNOWN_SET_NOT_SUPPLIED' not in out, err
+    bare = tmp_path / 'bare.json'
+    bare.write_text(json.dumps(s18['universe']['U_A']['members']))
+    code, out, err = run(cli, capsys, 'select', '--manifest', str(manifest), '--year', '2019', '--previous-u-a',
+                         str(bare), '--out', str(tmp_path / 'b'), '--generated-at', WHEN)
+    assert code == 0 and 'flags=PREVIOUS_U_A_UNKNOWN_SET_NOT_SUPPLIED' in out, err
+
+
+# ---- review d8: CLI text never carries a security ID or a price, refusals included ---------------------------------
+def test_cli_text_never_carries_security_ids_or_prices_including_refusals(cli, capsys, tmp_path):
+    manifest = write_bundle(tmp_path / 'bundle')
+    texts = []
+    code, out, err = run(cli, capsys, 'select', '--manifest', str(manifest), '--year', '2018', '--out',
+                         str(tmp_path / 's18'), '--generated-at', WHEN)
+    texts.append(out + err)
+    code, out, err = run(cli, capsys, 'select', '--manifest', str(manifest), '--year', '2018', '--out',
+                         str(tmp_path / 's18'), '--generated-at', WHEN)
+    assert code == 2 and err.strip() == 'REFUSED OUTPUT_EXISTS'
+    texts.append(out + err)
+    prices = tmp_path / 'bundle' / 'prices.json'
+    prices.write_bytes(prices.read_bytes()[:-2] + bytes([prices.read_bytes()[-2] ^ 1]) + prices.read_bytes()[-1:])
+    code, out, err = run(cli, capsys, 'ledger', '--manifest', str(manifest), '--selection',
+                         str(tmp_path / 's18' / 'selection_inputs.json'), '--out', str(tmp_path / 'led'))
+    assert code == 2 and err.strip() == 'REFUSED MANIFEST_HASH_MISMATCH'
+    texts.append(out + err)
+    for text in texts:
+        assert_clean_stdout(text)

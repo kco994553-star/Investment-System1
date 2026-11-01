@@ -14,10 +14,17 @@ Input manifest (JSON object, schema INPUT_MANIFEST_SCHEMA):
     source, period, rights_note: non-empty text. No other key is accepted.
   Every file is hashed before use and a mismatch is refused (MANIFEST_HASH_MISMATCH).
 
-Output manifest (written last, schema OUTPUT_MANIFEST_SCHEMA): experiment_id, settings_sha256, code_sha (git HEAD of the
-checkout, or 'UNKNOWN' with the flag CODE_SHA_UNKNOWN), code_sha_flags, input_manifest_sha256, the input resources,
-extra_inputs (selection / previous U-A files with their sha256), stage, run_id, generated_at (UTC, injectable so a
-replay is byte-identical) and the output files with their sha256 and size.
+Output manifest (written last, schema OUTPUT_MANIFEST_SCHEMA): experiment_id, settings_sha256, the settings body
+(settings.settings_dict(); verify checks it hashes to settings_sha256), code_sha (git HEAD of the checkout, or 'UNKNOWN'
+with the flag CODE_SHA_UNKNOWN), code_sha_flags, input_manifest_sha256, the input resources, extra_inputs (selection /
+previous U-A files with their sha256), stage, run_id, generated_at (UTC, injectable so a replay is byte-identical), the
+reproduction command and the output files with their sha256 and size. The payload's run block carries the same run
+identity, settings body and reproduction command (review F11).
+
+Reproduction command: argv of the CLI subcommand that rebuilds the run from the repository root at code_sha, with the
+stage's parameters (year, end, --daily-positions, --generated-at) written out and every private file location replaced
+by a placeholder (<INPUT_MANIFEST>, <PREVIOUS_U_A>, <SELECTION_YYYY>, <NEW_PRIVATE_OUTPUT_DIR>) whose sha256 is listed, so
+no private path is recorded.
 
 run_id = the first 24 hex characters of sha256(canonical JSON of {experiment_id, settings_sha256, code_sha,
 input_manifest_sha256, stage}). stage is the stage name with its parameters (year and previous U-A hash for 'select';
@@ -43,6 +50,8 @@ RESOURCE_KINDS = ('records', 'quotes', 'companyfacts', 'filings', 'prices', 'eve
 YEAR_KINDS = ('records', 'quotes')
 SINGLE_KINDS = ('tr_series',)
 STAGES = ('select', 'ledger')
+CLI_PATH = 'implementation/tools/exp_stock_indicator_deciles.py'
+OUTPUT_DIR_PLACEHOLDER = 'NEW_PRIVATE_OUTPUT_DIR'
 CODE_SHA_UNKNOWN = 'UNKNOWN'
 CODE_SHA_UNKNOWN_FLAG = 'CODE_SHA_UNKNOWN'
 RUN_ID_HEX = 24
@@ -213,9 +222,38 @@ def run_id(*, experiment_id, settings_sha256, code_sha, input_manifest_sha256, s
     return hashlib.sha256(canonical_bytes(body)).hexdigest()[:RUN_ID_HEX]
 
 
+def reproduction_command(stage, *, input_manifest_sha256, generated_at, code_sha, extra_inputs=()):
+    """{'argv', 'placeholders', 'code_sha', 'cwd'} rebuilding the run (module doc); placeholders name each private file
+    by role with its sha256, never by path."""
+    stage = _stage(stage)
+    argv = ['python', CLI_PATH, stage['name'], '--manifest', '<INPUT_MANIFEST>']
+    placeholders = {'INPUT_MANIFEST': {'sha256': input_manifest_sha256}}
+    roles = {item['role']: item['sha256'] for item in extra_inputs}
+    if stage['name'] == 'select':
+        argv += ['--year', str(stage['year'])]
+        if stage.get('previous_u_a_sha256'):
+            argv += ['--previous-u-a', '<PREVIOUS_U_A>']
+            placeholders['PREVIOUS_U_A'] = {'sha256': stage['previous_u_a_sha256']}
+    else:
+        for role, digest in sorted(roles.items()):
+            if role.startswith('selection:'):
+                name = 'SELECTION_' + role.split(':', 1)[1]
+                argv += ['--selection', f'<{name}>']
+                placeholders[name] = {'sha256': digest}
+        if stage.get('end') is not None:
+            argv += ['--end', str(stage['end'])]
+        if stage.get('daily_positions'):
+            argv.append('--daily-positions')
+    argv += ['--out', f'<{OUTPUT_DIR_PLACEHOLDER}>', '--generated-at', generated_at]
+    placeholders[OUTPUT_DIR_PLACEHOLDER] = {'rule': 'a new directory outside every git working tree'}
+    return {'argv': argv, 'placeholders': placeholders, 'code_sha': code_sha,
+            'cwd': 'repository root checked out at code_sha'}
+
+
 def run_metadata(*, input_manifest, code_sha, stage, generated_at, extra_inputs=(), code_flags=()):
-    """The 'run' block every output payload carries (and the output manifest repeats). code_flags: extra UPPER_SNAKE
-    flags about the code state (e.g. CODE_TREE_DIRTY from the CLI)."""
+    """The 'run' block every output payload carries (and the output manifest repeats): run identity, the settings body
+    and the reproduction command (review F11). code_flags: extra UPPER_SNAKE flags about the code state (e.g.
+    CODE_TREE_DIRTY from the CLI)."""
     sha, flags = code_sha_record(code_sha)
     flags = flags + [flag(code) for code in code_flags if code not in flags]
     stage = _stage(stage)
@@ -225,11 +263,15 @@ def run_metadata(*, input_manifest, code_sha, stage, generated_at, extra_inputs=
             raise HandoffError('EXTRA_INPUT_INVALID')
         extras.append({'role': _text(item['role'], 'EXTRA_INPUT_INVALID'), 'sha256': item['sha256']})
     settings_sha = settings.settings_sha256()
-    return {'experiment_id': settings.EXPERIMENT_ID, 'settings_sha256': settings_sha, 'code_sha': sha,
+    when = generated_at_text(generated_at)
+    return {'experiment_id': settings.EXPERIMENT_ID, 'settings_sha256': settings_sha,
+            'settings': settings.settings_dict(), 'code_sha': sha,
             'code_sha_flags': flags, 'input_manifest_sha256': input_manifest['sha256'],
             'run_id': run_id(experiment_id=settings.EXPERIMENT_ID, settings_sha256=settings_sha, code_sha=sha,
                              input_manifest_sha256=input_manifest['sha256'], stage=stage),
-            'stage': stage, 'generated_at': generated_at_text(generated_at), 'extra_inputs': extras}
+            'stage': stage, 'generated_at': when, 'extra_inputs': extras,
+            'reproduction': reproduction_command(stage, input_manifest_sha256=input_manifest['sha256'],
+                                                 generated_at=when, code_sha=sha, extra_inputs=extras)}
 
 
 def build_output_manifest(run, input_manifest, outputs) -> dict:
@@ -245,18 +287,19 @@ def build_output_manifest(run, input_manifest, outputs) -> dict:
     if run.get('input_manifest_sha256') != input_manifest['sha256']:
         raise HandoffError('RUN_INPUT_MANIFEST_MISMATCH')
     return {'schema': OUTPUT_MANIFEST_SCHEMA, 'experiment_id': run['experiment_id'],
-            'settings_sha256': run['settings_sha256'], 'code_sha': run['code_sha'],
+            'settings_sha256': run['settings_sha256'], 'settings': run['settings'], 'code_sha': run['code_sha'],
             'code_sha_flags': list(run['code_sha_flags']), 'input_manifest_sha256': run['input_manifest_sha256'],
             'inputs': [dict(item) for item in input_manifest['resources']],
             'extra_inputs': [dict(item) for item in run['extra_inputs']], 'stage': run['stage'],
-            'run_id': run['run_id'], 'generated_at': run['generated_at'], 'outputs': files}
+            'run_id': run['run_id'], 'generated_at': run['generated_at'], 'reproduction': run['reproduction'],
+            'outputs': files}
 
 
 def verify_output_manifest(manifest, files) -> dict:
     """Re-hash a run directory. files = {file name: bytes} of every regular file in it except manifest.json.
 
-    Returns {'ok', 'run_id', 'run_id_ok', 'files': [{'file', 'status' OK | HASH_MISMATCH | MISSING | UNLISTED}],
-    'counts': {status: n}}."""
+    Returns {'ok', 'run_id', 'run_id_ok', 'settings_ok', 'files': [{'file', 'status' OK | HASH_MISMATCH | MISSING |
+    UNLISTED}], 'counts': {status: n}}. settings_ok: the settings body hashes to settings_sha256."""
     if not isinstance(manifest, dict) or manifest.get('schema') != OUTPUT_MANIFEST_SCHEMA:
         raise HandoffError('OUTPUT_MANIFEST_SCHEMA_INVALID')
     expected = run_id(experiment_id=manifest.get('experiment_id'), settings_sha256=manifest.get('settings_sha256'),
@@ -282,8 +325,12 @@ def verify_output_manifest(manifest, files) -> dict:
     for row in rows:
         counts[row['status']] = counts.get(row['status'], 0) + 1
     run_ok = manifest.get('run_id') == expected
-    return {'ok': run_ok and bool(rows) and all(r['status'] == 'OK' for r in rows), 'run_id': manifest.get('run_id'),
-            'run_id_ok': run_ok, 'files': rows, 'counts': counts}
+    body = manifest.get('settings')
+    settings_ok = isinstance(body, dict) and hashlib.sha256(
+        settings.canonical_json(body).encode('ascii')).hexdigest() == manifest.get('settings_sha256')
+    return {'ok': run_ok and settings_ok and bool(rows) and all(r['status'] == 'OK' for r in rows),
+            'run_id': manifest.get('run_id'), 'run_id_ok': run_ok, 'settings_ok': settings_ok, 'files': rows,
+            'counts': counts}
 
 
 def flag(code):

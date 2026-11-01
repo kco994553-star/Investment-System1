@@ -14,7 +14,12 @@ Subcommands
   ledger   --manifest M --selection FILE [--selection FILE ...] --out DIR [--generated-at ISO] [--end YYYY-MM-DD]
            [--daily-positions]
                            ledger stage over consecutive yearly selection_inputs.json files
-                           -> DIR/ledger_outputs.json + DIR/manifest.json
+                           -> DIR/ledger_outputs.json + DIR/manifest.json. Each FILE must sit in its select run
+                           directory, whose manifest.json must verify and list FILE's sha256 (review F7); every selection
+                           must share one code SHA (SELECTION_CODE_SHA_MISMATCH); a selection made from another input
+                           manifest or another code SHA than this ledger run is flagged (SELECTION_INPUT_MANIFEST_DIFFERS,
+                           SELECTION_CODE_SHA_DIFFERS_FROM_LEDGER). Without --end the run is held to the next
+                           reselection T open; an --end past it is refused (END_PAST_NEXT_RESELECTION)
   verify   --run DIR       re-hash a run directory against its manifest.json; exit 0 when every file matches
   synthetic --out DIR [--generated-at ISO]
                            synthetic run bundle for interface / settings / ledger checks (no real data): writes the
@@ -63,8 +68,11 @@ Bundle files (JSON), by resource name:
   Numbers in records, quotes, prices, events and tr_series are read exactly (JSON numbers become Decimal, never float;
   decimal text is accepted). companyfacts and filings are read as the SEC publishes them. Dates are ISO text.
 
-Outputs: DIR must be outside this repository checkout (OUTPUT_INSIDE_REPO) and its parent must exist. A new DIR is created
-with mode 0700; an existing DIR must be a private (0700-type) directory of this user. Every file is created with
+Outputs: DIR must be outside this repository checkout and every working tree of it ('git worktree list';
+OUTPUT_INSIDE_REPO) and outside any other git working tree or git directory ('git -C <parent> rev-parse --git-dir'
+must fail; OUTPUT_INSIDE_GIT_WORKTREE), and its parent must exist (review F10). A new DIR is created with mode 0700; an
+existing DIR must be a private (0700-type) directory of this user. The payload's run block and manifest.json carry the
+settings body and a reproduction command whose private file locations are placeholders with their sha256 (review F11). Every file is created with
 O_CREAT|O_EXCL|O_NOFOLLOW, mode 0600, so an existing file is never overwritten (OUTPUT_EXISTS); manifest.json is written
 last. --generated-at fixes the UTC timestamp so a replay of the same inputs and code is byte-identical.
 stdout carries counts, statuses, the run_id and file names only: never a price, a score of a named security or a security
@@ -97,6 +105,8 @@ MANIFEST_FILE = handoff.MANIFEST_FILE
 CODE_TREE_DIRTY = 'CODE_TREE_DIRTY'
 QUOTES_NOT_SUPPLIED = 'QUOTES_NOT_SUPPLIED'
 PREVIOUS_U_A_UNKNOWN_SET_NOT_SUPPLIED = 'PREVIOUS_U_A_UNKNOWN_SET_NOT_SUPPLIED'
+SELECTION_INPUT_MANIFEST_DIFFERS = 'SELECTION_INPUT_MANIFEST_DIFFERS'
+SELECTION_CODE_SHA_DIFFERS_FROM_LEDGER = 'SELECTION_CODE_SHA_DIFFERS_FROM_LEDGER'
 _CODE = re.compile(r'[A-Z][A-Z0-9_]{2,63}')
 _CHUNK = 1 << 20
 
@@ -263,9 +273,41 @@ def _previous_u_a(path, year):
     return state, handoff.sha256_hex(data), flags
 
 
+def _run_files(directory):
+    """({file name: bytes} of the regular files of a run directory except manifest.json, irregular entry count)."""
+    files, irregular = {}, 0
+    for entry in sorted(os.scandir(directory), key=lambda e: e.name):
+        if entry.name == MANIFEST_FILE:
+            continue
+        if entry.is_symlink() or not entry.is_file(follow_symlinks=False):
+            irregular += 1
+            continue
+        files[entry.name] = _read_bytes(entry.path)
+    return files, irregular
+
+
 def _verify_selection_file(path, data, payload):
-    """Placeholder: a selection file is accepted as read (manifest verification is added with review F7)."""
-    return None
+    """A selection_inputs.json must verify against its select run's manifest.json (review F7): the run directory
+    verifies, the manifest is a 'select' run listing this file's exact sha256, and the payload's run block names the same
+    run, input manifest and code SHA. Returns the manifest."""
+    directory = Path(path).absolute().parent
+    manifest_path = directory / MANIFEST_FILE
+    if not manifest_path.is_file() or manifest_path.is_symlink():
+        raise CliError('SELECTION_MANIFEST_MISSING')
+    manifest = _json(_read_bytes(manifest_path), exact=False)
+    if not isinstance(manifest, dict):
+        raise CliError('SELECTION_MANIFEST_MISMATCH')
+    files, irregular = _run_files(directory)
+    if not handoff.verify_output_manifest(manifest, files)['ok'] or irregular:
+        raise CliError('SELECTION_MANIFEST_MISMATCH')
+    listed = {item.get('file'): item.get('sha256') for item in manifest.get('outputs') or [] if isinstance(item, dict)}
+    run = payload.get('run') if isinstance(payload.get('run'), dict) else {}
+    if (not isinstance(manifest.get('stage'), dict) or manifest['stage'].get('name') != 'select'
+            or listed.get(Path(path).name) != handoff.sha256_hex(data) or run.get('run_id') != manifest.get('run_id')
+            or run.get('input_manifest_sha256') != manifest.get('input_manifest_sha256')
+            or run.get('code_sha') != manifest.get('code_sha')):
+        raise CliError('SELECTION_MANIFEST_MISMATCH')
+    return manifest
 
 
 # ---- code state -----------------------------------------------------------------------------------------------------
@@ -276,6 +318,26 @@ def _git(*args):
     except (OSError, subprocess.SubprocessError):
         return None
     return done.stdout if done.returncode == 0 else None
+
+
+def _clean_env():
+    return {key: value for key, value in os.environ.items() if not key.startswith('GIT_')}
+
+
+def _inside_git(directory):
+    """True when `directory` lies in any git working tree or git directory (git -C <dir> rev-parse --git-dir)."""
+    try:
+        done = subprocess.run(['git', '-C', str(directory), 'rev-parse', '--git-dir'], capture_output=True, text=True,
+                              timeout=60, check=False, env=_clean_env())
+    except (OSError, subprocess.SubprocessError):
+        return False
+    return done.returncode == 0
+
+
+def _worktrees():
+    """Every working tree of this repository ('git worktree list --porcelain'), the main checkout included."""
+    out = _git('worktree', 'list', '--porcelain') or ''
+    return [Path(line[len('worktree '):]).resolve() for line in out.splitlines() if line.startswith('worktree ')]
 
 
 def code_state():
@@ -296,9 +358,11 @@ def _output_dir(value):
     if not target.parent.is_dir():
         raise CliError('OUTPUT_PARENT_MISSING')
     target = target.parent.resolve() / target.name
-    repo = REPO_ROOT.resolve()
-    if target == repo or target.is_relative_to(repo):
-        raise CliError('OUTPUT_INSIDE_REPO')
+    for tree in [REPO_ROOT.resolve()] + _worktrees():
+        if target == tree or target.is_relative_to(tree):
+            raise CliError('OUTPUT_INSIDE_REPO')
+    if _inside_git(target.parent):
+        raise CliError('OUTPUT_INSIDE_GIT_WORKTREE')
     if os.path.lexists(target):
         info = os.lstat(target)
         if not stat.S_ISDIR(info.st_mode) or stat.S_IMODE(info.st_mode) & 0o077 or info.st_uid != os.getuid():
@@ -413,17 +477,21 @@ def cmd_ledger(args):
     bundle = Bundle(args.manifest)
     if not bundle.of('prices'):
         raise CliError('PRICES_NOT_SUPPLIED')
-    selections, hashes = [], []
+    selections, hashes, manifests = [], [], []
     for path in args.selection:
         data = _read_bytes(path)
         payload = _json(data, exact=False)
         if not isinstance(payload, dict) or payload.get('schema') != runner.SELECTION_SCHEMA:
             raise CliError('SELECTION_SCHEMA_INVALID')
+        manifests.append(_verify_selection_file(Path(path), data, payload))
         selections.append(payload)
         hashes.append((payload.get('year'), handoff.sha256_hex(data)))
     if len({year for year, _ in hashes}) != len(hashes) or not all(type(y) is int for y, _ in hashes):
         raise CliError('SELECTION_YEAR_DUPLICATE')
     hashes.sort()
+    selection_code = {m['code_sha'] for m in manifests}
+    if len(selection_code) != 1:
+        raise CliError('SELECTION_CODE_SHA_MISMATCH')
     tr = bundle.of('tr_series')
     tr_series = bundle.read(tr[0], exact=True) if tr else None
     extra = [{'role': f'selection:{year}', 'sha256': digest} for year, digest in hashes]
@@ -434,14 +502,18 @@ def cmd_ledger(args):
                                generated_at=generated_at, extra_inputs=extra, code_flags=code_flags)
     payload = runner.ledger_stage(selections, prices=bundle.concat('prices'), events=bundle.concat('events'),
                                   end=args.end, tr_series=tr_series, daily_positions=args.daily_positions, run=run)
+    if any(m['input_manifest_sha256'] != bundle.manifest['sha256'] for m in manifests):
+        payload['flags'].append(SELECTION_INPUT_MANIFEST_DIFFERS)
+    if selection_code != {run['code_sha']}:
+        payload['flags'].append(SELECTION_CODE_SHA_DIFFERS_FROM_LEDGER)
     body = handoff.canonical_bytes(payload)
     manifest = handoff.build_output_manifest(run, bundle.manifest, {LEDGER_FILE: body})
     _write_outputs(out_dir, [(LEDGER_FILE, body), (MANIFEST_FILE, handoff.canonical_bytes(manifest))])
     counts = payload['counts']
     by_status = counts['ledger_runs_by_status']
     _emit([('stage', 'ledger'), ('run_id', run['run_id']), ('years', len(payload['selection_years'])),
-           ('end_rule', payload['end_rule']), ('sessions', payload['session_count']),
-           ('flags', ','.join(run['code_sha_flags']) or '-'),
+           ('end_rule', payload['end_rule']), ('end_valuation', payload['end_valuation']),
+           ('sessions', payload['session_count']), ('flags', ','.join(payload['flags'] + run['code_sha_flags']) or '-'),
            ('portfolios', counts['portfolios']), ('portfolios_run', counts['portfolios_run']),
            ('portfolios_all_cash', counts['portfolios_all_cash']), ('cash_years', counts['cash_years']),
            ('ledger_runs', counts['ledger_runs']),
@@ -460,17 +532,11 @@ def cmd_verify(args):
     if not stat.S_ISDIR(info.st_mode):
         raise CliError('RUN_DIR_MISSING')
     manifest = _json(_read_bytes(directory / MANIFEST_FILE), exact=False)
-    files, irregular = {}, 0
-    for entry in sorted(os.scandir(directory), key=lambda e: e.name):
-        if entry.name == MANIFEST_FILE:
-            continue
-        if entry.is_symlink() or not entry.is_file(follow_symlinks=False):
-            irregular += 1
-            continue
-        files[entry.name] = _read_bytes(entry.path)
+    files, irregular = _run_files(directory)
     result = handoff.verify_output_manifest(manifest, files)
     ok = result['ok'] and irregular == 0
     _emit([('stage', 'verify'), ('run_id', result['run_id']), ('run_id_ok', str(result['run_id_ok']).lower()),
+           ('settings_ok', str(result['settings_ok']).lower()),
            ('files', len(result['files'])),
            ('statuses', ','.join(f'{k}:{v}' for k, v in sorted(result['counts'].items())) or '-'),
            ('irregular_entries', irregular), ('verify', 'OK' if ok else 'FAILED')])

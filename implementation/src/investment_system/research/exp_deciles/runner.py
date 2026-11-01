@@ -592,7 +592,7 @@ def ledger_stage(selections, *, prices, events=(), end=None, tr_series=None, ini
     status_counts = Counter(p['status'] for p in portfolios.values())
     out = {
         'schema': LEDGER_SCHEMA, 'experiment_id': settings.EXPERIMENT_ID, 'settings_sha256': settings.settings_sha256(),
-        'stage': 'ledger', 'run': run or {},
+        'stage': 'ledger', 'run': run or {}, 'flags': [],
         'selection_years': [x['year'] for x in items],
         'selection_run_ids': [(x.get('run') or {}).get('run_id') for x in items],
         'schedule': [{'year': x['year'], 'S': x['signal']['S'], 'T': x['signal']['T']} for x in items],
