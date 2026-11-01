@@ -40,33 +40,11 @@ def _dumps(value):
 
 
 def write_bundle(root):
+    """The synthetic bundle (research/exp_deciles/synthetic.py) written with its input manifest."""
     root.mkdir()
-    files = {
-        'records:2018': ('records_2018.json', {'signal_day': '2018-02-16', 'records': syn.records(2018)}),
-        'records:2019': ('records_2019.json', {'signal_day': '2019-02-15', 'records': syn.records(2019)}),
-        'quotes:2018': ('quotes_2018.json', {'signal_day': '2018-02-16', 'quotes': syn.quotes(2018)}),
-        'quotes:2019': ('quotes_2019.json', {'signal_day': '2019-02-15', 'quotes': syn.quotes(2019)}),
-        'filings': ('filings.json', syn.filing_rows()),
-        'prices': ('prices.json', syn.price_rows()),
-        'events': ('events.json', syn.event_rows()),
-        'tr_series': ('tr.json', {'label': 'S&P 500 Total Return Index', 'claim': 'SP500_TR', 'source': 'synthetic',
-                                  'rows': syn.tr_rows()}),
-    }
-    facts = syn.companyfacts_by_cik()
-    for key in sorted(facts)[:3]:                      # three issuers as one-CIK files, the rest as one mapping file
-        files[f'companyfacts:{key}'] = (f'cf_{key}.json', facts.pop(key))
-    files['companyfacts:rest'] = ('cf_rest.json', facts)
-    resources = []
-    for name, (filename, payload) in files.items():
-        data = _dumps(payload)
+    for filename, data in syn.bundle_bytes():
         (root / filename).write_bytes(data)
-        resources.append({'name': name, 'path': filename, 'sha256': hashlib.sha256(data).hexdigest(),
-                          'source': 'synthetic generator', 'period': '2018-02-16..2019-03-29',
-                          'rights_note': 'synthetic test data, no third-party rights'})
-    manifest = root / 'manifest.json'
-    manifest.write_text(json.dumps({'schema': 'exp-deciles-input-manifest/1',
-                                    'experiment_id': 'EXP-STOCK-INDICATOR-DECILES-v1', 'resources': resources}))
-    return manifest
+    return root / 'manifest.json'
 
 
 def run(cli, capsys, *argv):
@@ -101,19 +79,21 @@ def test_select_ledger_verify_end_to_end_with_byte_identical_replay(cli, capsys,
     code, out, err = run(cli, capsys, 'select', '--manifest', str(manifest), '--year', '2018', '--out', str(out18),
                          '--generated-at', WHEN)
     assert code == 0, err
-    assert 'stage=select' in out and 'first_build=true' in out and 'U_A=candidate:19 eligible:15 excluded:2 unknown:2' in out
+    assert 'stage=select' in out and 'first_build=true' in out and 'U_A=candidate:36 eligible:30 excluded:2 unknown:4' in out
+    assert 'U_B=candidate:36 eligible:13 excluded:19 unknown:4' in out and 'strategy_cells_run=14' in out
     assert 'files=selection_inputs.json,manifest.json' in out
     assert_clean_stdout(out)
     code, out, err = run(cli, capsys, 'select', '--manifest', str(manifest), '--year', '2019', '--previous-u-a',
                          str(out18 / 'selection_inputs.json'), '--out', str(out19), '--generated-at', WHEN)
     assert code == 0, err
-    assert 'first_build=false' in out and 'U_A=candidate:19 eligible:14 excluded:3 unknown:2' in out
+    assert 'first_build=false' in out and 'U_A=candidate:35 eligible:28 excluded:3 unknown:4' in out
     assert_clean_stdout(out)
     code, out, err = run(cli, capsys, 'ledger', '--manifest', str(manifest), '--selection',
                          str(out19 / 'selection_inputs.json'), '--selection', str(out18 / 'selection_inputs.json'),
                          '--out', str(ledger_dir), '--end', '2019-03-29', '--generated-at', WHEN)
     assert code == 0, err
-    assert 'portfolios=30' in out and 'portfolios_run=6' in out and 'ledger_runs_by_status=COMPLETE:24' in out
+    assert 'portfolios=30' in out and 'portfolios_run=30' in out and 'ledger_runs_by_status=COMPLETE:120' in out
+    assert 'daily_coverage=DAILY_COVERAGE_COMPLETE:30' in out and 'settlement_conflicts=0' in out
     assert 'external_total_return=COMPLETE' in out
     assert_clean_stdout(out)
     # private modes: directory 0700, files 0600
@@ -238,14 +218,15 @@ def test_synthetic_bundle_runs_end_to_end_and_replays_byte_identically(cli, caps
     first, second = tmp_path / 'syn1', tmp_path / 'syn2'
     code, out1, err = run(cli, capsys, 'synthetic', '--out', str(first), '--generated-at', WHEN)
     assert code == 0, err
-    assert 'synthetic=OK' in out1 and out1.count('verify=OK') == 3
+    assert 'synthetic=OK' in out1 and out1.count('verify=OK') == 4
+    assert 'end_rule=NEXT_RESELECTION_T_OPEN' in out1 and 'end_valuation=OPEN' in out1
     assert_clean_stdout(out1)
     code, out2, err = run(cli, capsys, 'synthetic', '--out', str(second), '--generated-at', WHEN)
     assert code == 0, err
     hashes1 = [line for line in out1.splitlines() if 'manifest_sha256=' in line]
     hashes2 = [line for line in out2.splitlines() if 'manifest_sha256=' in line]
-    assert len(hashes1) == 4 and hashes1 == hashes2
-    for name in ('bundle', 'select-2018', 'select-2019', 'ledger'):
+    assert len(hashes1) == 5 and hashes1 == hashes2
+    for name in ('bundle', 'select-2018', 'select-2019', 'ledger-2018', 'ledger'):
         a, b = first / name, second / name
         assert sorted(p.name for p in a.iterdir()) == sorted(p.name for p in b.iterdir())
         for child in a.iterdir():

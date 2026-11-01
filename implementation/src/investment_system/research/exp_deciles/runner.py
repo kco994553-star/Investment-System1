@@ -64,6 +64,7 @@ KIND_GROUP_EW = benchmarks.GROUP_EQUAL_WEIGHT
 HOLD_SELECTED, HOLD_CASH = 'SELECTED', 'CASH'
 PORTFOLIO_RUN, PORTFOLIO_ALL_CASH = 'RUN', 'ALL_CASH'
 NO_GROUP_MEMBERS = 'NO_GROUP_MEMBERS'
+NO_FILL = 'NO_FILL'          # a run whose every order went unfilled holds cash only (metrics null with NO_FILL)
 QUOTE_ADR_PER_ORDINARY_SHARE = 'ADR_PER_ORDINARY_SHARE'
 ADR_QUOTE_PRICE_INVALID = 'ADR_QUOTE_PRICE_INVALID'
 END_NEXT_RESELECTION_T_OPEN = 'NEXT_RESELECTION_T_OPEN'
@@ -272,7 +273,7 @@ def selection_stage(records, *, year, companyfacts=None, filing_rows=(), quotes=
                                 'left': len(transitions['left']),
                                 'left_by_reason': dict(sorted(Counter(item['reasons'][0] for item in transitions['left']
                                                                       if item['reasons']).items())),
-                                'unknown_carried': len(ua['unknown']), 'terminated': len(ua['terminated'])},
+                                'unknown_to_next_s': len(ua['unknown']), 'terminated': len(ua['terminated'])},
             'pit_rows': {'rows': len(rows), 'by_state': dict(sorted(row_states.items()))},
             'scoring': dict(scores['summary'], quote_status=dict(sorted(quote_status.items()))),
             'strategies': _strategy_counts(selections),
@@ -592,8 +593,9 @@ def ledger_stage(selections, *, prices, events=(), end=None, tr_series=None, ini
             coverage = {side_metrics['daily_coverage']['status'] for comparison in measured.values()
                         for side_metrics in (comparison['before_cost'], comparison['after_cost'])}
             entry.update(status=PORTFOLIO_RUN, runs=runs, metrics=measured,
-                         daily_coverage=(metrics.DAILY_COVERAGE_COMPLETE if coverage == {metrics.DAILY_COVERAGE_COMPLETE}
-                                         else metrics.DAILY_PRICES_NOT_SUPPLIED))
+                         daily_coverage=(metrics.DAILY_PRICES_NOT_SUPPLIED
+                                         if metrics.DAILY_PRICES_NOT_SUPPLIED in coverage
+                                         else NO_FILL if coverage == {NO_FILL} else metrics.DAILY_COVERAGE_COMPLETE))
             run_status.update(result['status'] for by_cost in runs.values() for result in by_cost.values())
         portfolios[pid] = entry
     external = None

@@ -22,10 +22,12 @@ Subcommands
                            reselection T open; an --end past it is refused (END_PAST_NEXT_RESELECTION)
   verify   --run DIR       re-hash a run directory against its manifest.json; exit 0 when every file matches
   synthetic --out DIR [--generated-at ISO]
-                           synthetic run bundle for interface / settings / ledger checks (no real data): writes the
-                           invented input bundle and its manifest to DIR/bundle, then runs select 2018 -> DIR/select-2018,
-                           select 2019 (previous U-A from 2018) -> DIR/select-2019, ledger over both years to 2019-03-29
-                           -> DIR/ledger, and verify on each run directory; prints each run's run_id and manifest sha256
+                           synthetic run bundle for interface / settings / ledger checks (no real data; research/
+                           exp_deciles/synthetic.py lists the cases it exercises): writes the invented input bundle and its
+                           manifest to DIR/bundle, then runs select 2018 -> DIR/select-2018, select 2019 (previous U-A
+                           state from 2018) -> DIR/select-2019, the first bundle (2018 selection held to the 2019-02-19 T
+                           open, default end) -> DIR/ledger-2018, ledger over both years to 2019-03-29 -> DIR/ledger, and
+                           verify on each run directory; prints each run's counts and manifest sha256
 
 Input manifest: see research/exp_deciles/handoff.py (resources {name, path, sha256, source, period, rights_note}; a path is
 relative to the manifest's directory or absolute). Every resource file is hashed before anything is computed and again
@@ -52,7 +54,12 @@ Bundle files (JSON), by resource name:
   companyfacts[:x]    (x not all digits) one SEC companyfacts JSON, or {"<cik>": companyfacts, ...}; read whole
   filings[:x]         [{"cik", "accn", "filed": "YYYY-MM-DD", "sic"}, ...]: filing rows for the as-filed SIC
   prices[:x]          [{"date", "security_id", "open", "close", "suspended", "price_basis": "RAW", "currency"?: "USD"}]
-                      raw (unadjusted) USD session prices for the ledger
+                      raw (unadjusted) USD session prices for the ledger. Price scope (owner 11/01 decision 7): the S
+                      close, the T open (entry), the holding-period valuation prices, the next reselection's T open
+                      (execution / terminal valuation) and the corporate actions (events). When the rows do not cover
+                      every session of a holding period for every held name, the portfolio is DAILY_PRICES_NOT_SUPPLIED:
+                      its daily volatility and daily MDD / recovery are null and its month-end (MONTHLY) metrics are
+                      reported separately
   events[:x]          [{"type": "SPLIT", "event_id", "effective_date", "security_id", "ratio"},
                        {"type": "DIVIDEND", "event_id", "effective_date" (ex-date), "security_id", "cash_per_share",
                         "pay_date"?, "depositary_fee_per_share"? (ADR: fee per ADS deducted from the cash; recorded as
@@ -563,6 +570,8 @@ def cmd_synthetic(args):
         ['select', '--manifest', manifest, '--year', '2018', '--out', str(root / 'select-2018')] + when,
         ['select', '--manifest', manifest, '--year', '2019', '--previous-u-a',
          str(root / 'select-2018' / SELECTION_FILE), '--out', str(root / 'select-2019')] + when,
+        ['ledger', '--manifest', manifest, '--selection', str(root / 'select-2018' / SELECTION_FILE), '--out',
+         str(root / 'ledger-2018')] + when,
         ['ledger', '--manifest', manifest, '--selection', str(root / 'select-2018' / SELECTION_FILE), '--selection',
          str(root / 'select-2019' / SELECTION_FILE), '--out', str(root / 'ledger'), '--end', SYNTHETIC_END] + when,
     ]
@@ -571,7 +580,7 @@ def cmd_synthetic(args):
         if args_i.func(args_i) != 0:
             raise CliError('SYNTHETIC_STEP_FAILED')
     status = 0
-    for name in ('select-2018', 'select-2019', 'ledger'):
+    for name in ('select-2018', 'select-2019', 'ledger-2018', 'ledger'):
         if cmd_verify(build_parser().parse_args(['verify', '--run', str(root / name)])) != 0:
             status = 1
         print(f"run {name} manifest_sha256={handoff.sha256_hex(_read_bytes(root / name / MANIFEST_FILE))}")
