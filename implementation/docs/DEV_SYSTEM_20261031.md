@@ -6,7 +6,9 @@
 - #434는 이 PR로 대체 종료한다. #434의 커밋은 이 가지에 그대로 들어 있다(이력 보존).
 - Lab 결과 계약 원문은 [lab/LAB_BACKTEST_V1_CONTRACT.md](lab/LAB_BACKTEST_V1_CONTRACT.md). Codex는 이 두 문서를 읽는다.
 
-## 1. 개발 체계 (DC-35 — DC-32를 대체, DC-32는 시행 전에 대체됨. 10/31 밤 개정: 흐름 셋)
+## 1. 개발 체계 (DC-35 — DC-32를 대체. 10/31 밤 개정: 흐름 셋 → **11/01 개정(DC-40): 흐름 둘**)
+
+**2026-11-01 개정(DC-40, 사용자 "[오너 확정 지시 — Main·Codex 두 흐름 통합 및 백테스트 인계 착수]"):** 흐름은 Main · Codex 둘이다. 아래 표의 GPT Work 일(문서 조사·규칙표·Notion)은 Codex가 맡는다. 별도 구현 담당은 없다. Main은 공통 계산·가격·재구성·장부 엔진과 역사 모집단·가격·재무 입력 연결·Codex 인계를 맡고, Codex는 연구 설정과 공통 엔진으로 실험 실행·검증·보고와 Main 구현의 독립 대사를 맡는다. 연구 설정: [lab/EXP_STOCK_INDICATOR_DECILES_V1.md](lab/EXP_STOCK_INDICATOR_DECILES_V1.md). 아래 표는 10/31 기록으로 남긴다.
 
 | 흐름 | 맡는 것 | 하지 않는 것 |
 | --- | --- | --- |
