@@ -43,6 +43,10 @@ Changed for this experiment (settings doc section 1, inventory item 7):
   receivables, CARRY value and positions frozen by a corporate action cannot fund trades, so they are reported but
   left out of the base. Every NAV still includes them.
 - The run never halts on a data gap; each day carries a status and reason codes.
+- Terminal valuation at an open (review F4): with end_valuation='OPEN' the last session `end` (the next reselection T)
+  applies that day's pre-open events and receivables, marks every tradable position at that day's OPEN, executes no
+  trade and makes no decision; CARRY and LOSS values follow the same rules as any day. Every daily row says which mark
+  it used ('valuation': CLOSE or OPEN); an OPEN row without that day's open is flagged STALE_MARK like a close row.
 
 Prices must be raw (unadjusted) in USD, so a split or a dividend is counted exactly once. Pure: no file or network IO.
 """
@@ -65,6 +69,9 @@ SCENARIOS = (SCENARIO_LOSS, SCENARIO_CARRY)
 CASH_INTEREST_ZERO = 'ZERO'
 CURRENCY = 'USD'
 PRICE_BASIS_RAW = 'RAW'
+VALUATION_CLOSE = 'CLOSE'
+VALUATION_OPEN = 'OPEN'
+VALUATIONS = (VALUATION_CLOSE, VALUATION_OPEN)
 DEFAULT_INITIAL_CAPITAL = Decimal('1000000')
 DEFAULT_COST_BPS = Decimal('10')
 
@@ -570,12 +577,12 @@ class Ledger:
                 self._day_events.append(f'CASH_RECEIVED:{item.kind}:{item.event_id}')
 
     # -- prices ---------------------------------------------------------------------------------------------------
-    def observe(self, rows: Mapping[str, PriceRow]):
+    def observe(self, rows: Mapping[str, PriceRow], *, opens_only: bool = False):
         session = self._require_session()
         for sid, row in sorted(rows.items()):
             if row.open is not None:
                 self.last_price[sid] = (session, row.open, 'open')
-            if row.close is not None:
+            if row.close is not None and not opens_only:
                 self.last_price[sid] = (session, row.close, 'close')
 
     def _close_today(self, sid):
@@ -773,8 +780,12 @@ class Ledger:
 
     # -- daily valuation (close) ------------------------------------------------------------------------------
     @_precision
-    def snapshot(self, *, with_positions: bool = True) -> dict:
-        """Close valuation. with_positions=False keeps every total and flag but omits the per-position detail."""
+    def snapshot(self, *, with_positions: bool = True, valuation: str = VALUATION_CLOSE) -> dict:
+        """Close (or terminal open) valuation. with_positions=False keeps every total and flag but omits the
+        per-position detail."""
+        if valuation not in VALUATIONS:
+            raise LedgerError('UNKNOWN_VALUATION')
+        fresh_field = 'close' if valuation == VALUATION_CLOSE else 'open'
         session = self._require_session()
         flags, reasons, positions = list(self._day_flags), [], {}
         market, carry = Decimal(0), Decimal(0)
@@ -802,14 +813,14 @@ class Ledger:
                     price_date, price = mark[0], mark[1]
                     value = quantity * price
                     market += value
-                    if not (mark[0] == session and mark[2] == 'close'):
+                    if not (mark[0] == session and mark[2] == fresh_field):
                         stale = True
                         flags.append(f'STALE_MARK:{sid}')
             positions[sid] = dict(quantity=quantity, state=state, price=price, price_date=price_date, value=value,
                                   stale=stale)
         receivables = self._receivable_total()
         nav = None if reasons else self.cash + receivables + market + carry
-        return dict(date=session, nav=nav, status='INCOMPLETE_NAV' if reasons else 'COMPLETE',
+        return dict(date=session, valuation=valuation, nav=nav, status='INCOMPLETE_NAV' if reasons else 'COMPLETE',
                     reasons=tuple(sorted(set(reasons))), cash=self.cash, reserved_cash=self.reserved_cash,
                     spendable_cash=_sum_exact((self.cash, self.reserved_cash.copy_negate())),
                     receivables=receivables,
@@ -935,8 +946,11 @@ def _apply(ledger, event):
 def run_ledger(sessions: Sequence[date], rebalances: Sequence[Rebalance], prices, events=(), *, scenario: str,
                cost_bps=DEFAULT_COST_BPS, initial_capital=DEFAULT_INITIAL_CAPITAL,
                cash_interest: str = CASH_INTEREST_ZERO, end: date | None = None,
-               daily_positions: bool = True) -> dict:
+               end_valuation: str = VALUATION_CLOSE, daily_positions: bool = True) -> dict:
     """Replay one scenario from the first signal date S to `end` (default: the last supplied session).
+
+    end_valuation: CLOSE (the run ends after `end`'s close) or OPEN (terminal valuation at `end`'s open: pre-open
+    events, open marks, no trades, no decision; `end` must be a session; a rebalance whose T is `end` is cancelled).
 
     sessions: the verified trading sessions (strictly increasing dates).
     rebalances: Rebalance rows in order; the run starts at the first signal date with all capital in cash.
@@ -953,7 +967,11 @@ def run_ledger(sessions: Sequence[date], rebalances: Sequence[Rebalance], prices
     end = days_all[-1] if end is None else _date(end, 'END')
     if end < start:
         raise LedgerError('END_BEFORE_START')
+    if end_valuation not in VALUATIONS:
+        raise LedgerError('UNKNOWN_VALUATION')
     days = [day for day in days_all if start <= day <= end]
+    if end_valuation == VALUATION_OPEN and days[-1] != end:
+        raise LedgerError('END_NOT_A_SESSION')
     price_index = index_price_rows(prices)
     schedule = _event_schedule(events)
     ledger = Ledger(scenario=scenario, initial_cash=initial_capital, cost_bps=cost_bps, cash_interest=cash_interest)
@@ -968,6 +986,10 @@ def run_ledger(sessions: Sequence[date], rebalances: Sequence[Rebalance], prices
             cursor += 1
         ledger.pay_due()
         rows_today = price_index.get(day, {})
+        if end_valuation == VALUATION_OPEN and day == end:
+            ledger.observe(rows_today, opens_only=True)
+            daily.append(ledger.snapshot(with_positions=daily_positions, valuation=VALUATION_OPEN))
+            break
         if day in by_execution and by_execution[day].signal_date in records:
             record = records[by_execution[day].signal_date]
             if record['status'] == 'OK':
@@ -989,7 +1011,7 @@ def run_ledger(sessions: Sequence[date], rebalances: Sequence[Rebalance], prices
     fills = tuple(ledger.fills)
     return dict(engine='EXP_DECILES_LEDGER', scenario=scenario, currency=CURRENCY,
                 initial_capital=ledger.initial_cash, cost_bps=ledger.cost_bps, cash_interest=CASH_INTEREST_ZERO,
-                start=days[0], end=days[-1],
+                start=days[0], end=days[-1], end_valuation=end_valuation,
                 first_fill_date=fills[0].session if fills else None,
                 status='COMPLETE' if all(row['nav'] is not None for row in daily) else 'INCOMPLETE_NAV',
                 daily=daily, rebalances=[records[row.signal_date] for row in rows if row.signal_date in records],

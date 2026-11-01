@@ -581,3 +581,25 @@ def test_adr_dividend_depositary_fee_is_deducted_and_recorded_as_an_instrument_f
     with pytest.raises(LedgerError, match='ADR_FEE_EXCEEDS_DIVIDEND'):
         run([Rebalance(d[0], d[1], ['A'])], flat('A', 10),
             [Dividend('bad', d[3], 'A', D('0.05'), d[5], depositary_fee_per_share=D('0.06'))])
+
+
+
+# -- review F4: terminal valuation at an open --------------------------------------------------------------------
+def test_terminal_open_valuation_marks_opens_trades_nothing_and_keeps_loss_carry():
+    prices = ([px(day, 'A', 10, 10) for day in DAYS[:6]] + [px(d[6], 'A', 12, 15)]
+              + [px(day, 'B', 10, 10) for day in DAYS[:6]])
+    delisting = Settlement('dl', d[3], 'B', 'DELISTING', d[3], EVIDENCE)
+    rebalances = [Rebalance(d[0], d[1], ['A', 'B']), Rebalance(d[5], d[6], ['A'])]
+    runs = run_scenarios(DAYS[:7], rebalances, prices, [delisting], cost_bps=0, initial_capital=1000, end=d[6],
+                         end_valuation='OPEN')
+    for scenario, result in runs.items():
+        last = result['daily'][-1]
+        assert (last['date'], last['valuation'], result['end_valuation']) == (d[6], 'OPEN', 'OPEN')
+        assert last['positions']['A']['price'] == 12 and last['fills'] == ()
+        assert result['rebalances'][1]['execution_status'] == 'AFTER_RUN_END'      # T == end: no trade
+    assert runs['LOSS']['daily'][-1]['nav'] == 600 and runs['CARRY']['daily'][-1]['nav'] == 1100
+    stale = run_ledger(DAYS[:7], rebalances[:1], [px(day, 'A', None if day == d[6] else 10, 10) for day in DAYS[:7]],
+                       scenario='LOSS', cost_bps=0, initial_capital=1000, end=d[6], end_valuation='OPEN')
+    assert 'STALE_MARK:A' in stale['daily'][-1]['flags'] and stale['daily'][-1]['nav'] == 1000
+    with pytest.raises(LedgerError, match='END_NOT_A_SESSION'):
+        run_ledger(DAYS[:7], rebalances[:1], prices, scenario='LOSS', end=date(2031, 1, 1), end_valuation='OPEN')

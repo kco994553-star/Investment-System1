@@ -273,8 +273,8 @@ def test_selection_files_and_in_memory_results_give_the_same_ledger(years):
 
 def test_default_end_and_event_rows():
     rows = runner.price_rows([{'date': '2026-03-02', 'security_id': 'X'}, {'date': '2026-03-03', 'security_id': 'X'}])
-    assert runner.default_end(2019, rows) == (date(2020, 2, 14), 'NEXT_YEAR_SIGNAL_DAY')
-    assert runner.default_end(2026, rows) == (date(2026, 3, 3), 'LAST_PRICE_DATE')
+    assert runner.default_end(2019, rows) == (date(2020, 2, 18), 'NEXT_RESELECTION_T_OPEN', 'OPEN')
+    assert runner.default_end(2026, rows) == (date(2026, 3, 3), 'LAST_PRICE_DATE', 'CLOSE')
     events = runner.ledger_events(syn.event_rows())
     assert events[0] == ledger.Dividend('DIV-XQ014-1', date(2018, 6, 1), 'XQ014', Decimal('0.2517'), date(2018, 6, 15))
     assert events[1] == ledger.Split('SPLIT-XQ013-1', date(2018, 9, 4), 'XQ013', Decimal('2'))
@@ -292,3 +292,54 @@ def test_dividend_rows_carry_an_optional_depositary_fee():
                                                             date(2018, 6, 15), Decimal('0.0207'))
     with pytest.raises(runner.RunnerError, match='EVENT_AMOUNT_INVALID'):
         runner.ledger_events([dict(rows[0], depositary_fee_per_share=0.02)])
+
+
+
+# ---- review F4: the first bundle is held to the next reselection T open ------------------------------------------
+def test_default_end_values_every_portfolio_and_the_external_tr_at_the_next_t_open(years):
+    s18, _ = years
+    assert runner.default_end(2018, []) == (date(2019, 2, 19), 'NEXT_RESELECTION_T_OPEN', 'OPEN')
+    tr = {'label': 'SPY total return', 'claim': 'OTHER_TR', 'is_etf': True, 'source': 'synthetic', 'rows': syn.tr_rows()}
+    out = runner.ledger_stage([s18], prices=syn.price_rows(), events=syn.event_rows(), tr_series=tr)
+    assert (out['end'], out['end_rule'], out['end_valuation']) == ('2019-02-19', 'NEXT_RESELECTION_T_OPEN', 'OPEN')
+    for pid in ('GROUP_EQUAL_WEIGHT/U_A', 'AXIS_G/U_A/TOP'):
+        for scenario in ('LOSS', 'CARRY'):
+            run = out['portfolios'][pid]['runs'][scenario]['10']
+            last, before = run['daily'][-1], run['daily'][-2]
+            assert (last['date'], last['valuation'], run['end_valuation']) == ('2019-02-19', 'OPEN', 'OPEN')
+            assert before['date'] == '2019-02-15' and before['valuation'] == 'CLOSE'
+            assert last['fills'] == [] and last['costs'] == '0'            # no trade at the terminal open
+    external = out['benchmarks']['external_total_return']['result']
+    assert external['daily'][-1]['date'] == '2019-02-19' and external['daily'][-1]['valuation'] == 'OPEN'
+    assert external['end_valuation'] == 'OPEN' and 'END_AT_PREVIOUS_CLOSE' not in external['flags']
+    no_open = dict(tr, rows=[dict(r, open_total_return_index=None) if r['date'] == '2019-02-19' else r
+                             for r in syn.tr_rows()])
+    out = runner.ledger_stage([s18], prices=syn.price_rows(), tr_series=no_open)
+    external = out['benchmarks']['external_total_return']['result']
+    assert external['daily'][-1]['valuation'] == 'PREVIOUS_CLOSE' and 'END_AT_PREVIOUS_CLOSE' in external['flags']
+    assert external['daily'][-1]['level'] == external['daily'][-2]['level']
+
+
+def test_one_name_held_flat_to_the_next_s_close_measures_the_move_to_the_next_t_open():
+    """Review d1: flat 100 through the 2019-02-15 close, 110 at the 2019-02-19 open -> +10%, not 0%."""
+    end, rule, valuation = runner.default_end(2018, [])
+    sessions = runner.calendar_sessions('2018-02-16', end)
+    rows = [dict(date=day, security_id='SYN_A', open=Decimal(110 if day == end else 100),
+                 close=Decimal(110 if day == end else 100), price_basis='RAW') for day in sessions]
+    result = ledger.run_ledger(sessions, [ledger.Rebalance(date(2018, 2, 16), date(2018, 2, 20), ('SYN_A',))], rows,
+                               scenario='LOSS', cost_bps=0, end=end, end_valuation=valuation)
+    assert result['daily'][-1]['date'] == date(2019, 2, 19) and result['daily'][-1]['nav'] == Decimal('1100000')
+    assert result['daily'][-2]['nav'] == Decimal('1000000')
+
+
+# ---- review F9: an end past the next reselection is refused when that year's selection is absent ------------------
+def test_end_past_the_next_reselection_without_its_selection_is_refused(years):
+    s18, s19 = years
+    with pytest.raises(runner.RunnerError, match='END_PAST_NEXT_RESELECTION'):
+        runner.ledger_stage([s18], prices=syn.price_rows(), events=syn.event_rows(), end=END)
+    at_t = runner.ledger_stage([s18], prices=syn.price_rows(), end='2019-02-19')
+    assert (at_t['end_rule'], at_t['end_valuation']) == ('SUPPLIED', 'OPEN')
+    before = runner.ledger_stage([s18], prices=syn.price_rows(), end='2019-02-15')
+    assert (before['end_rule'], before['end_valuation']) == ('SUPPLIED', 'CLOSE')
+    both = runner.ledger_stage([s18, s19], prices=syn.price_rows(), end=END)       # 2019 selection supplied
+    assert [len(p['runs']['LOSS']['10']['rebalances']) for p in both['portfolios'].values() if p['runs']][0] == 2

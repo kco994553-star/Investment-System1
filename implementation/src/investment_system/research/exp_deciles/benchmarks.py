@@ -19,7 +19,8 @@ import re
 from typing import Mapping, Sequence
 
 from .ledger import (
-    DEFAULT_COST_BPS, DEFAULT_INITIAL_CAPITAL, SCENARIOS, Rebalance, run_ledger,
+    DEFAULT_COST_BPS, DEFAULT_INITIAL_CAPITAL, SCENARIOS, VALUATION_CLOSE, VALUATION_OPEN, VALUATIONS, Rebalance,
+    run_ledger,
 )
 
 
@@ -70,14 +71,16 @@ def group_equal_weight_benchmark(sessions: Sequence[date], schedule: Sequence,
                                  eligible_by_signal: Mapping[date, Sequence[str]], prices, events=(), *,
                                  group: str, cost_bps=DEFAULT_COST_BPS, initial_capital=DEFAULT_INITIAL_CAPITAL,
                                  scenarios: Sequence[str] = SCENARIOS, end: date | None = None,
-                                 daily_positions: bool = True) -> dict:
-    """Run the experiment ledger on all eligible names of one group (U-A or U-B), per scenario."""
+                                 end_valuation: str = VALUATION_CLOSE, daily_positions: bool = True) -> dict:
+    """Run the experiment ledger on all eligible names of one group (U-A or U-B), per scenario (same end and end
+    valuation as the strategies)."""
     if not isinstance(group, str) or not group.strip():
         raise BenchmarkError('INVALID_GROUP_LABEL')
     rebalances = group_equal_weight_rebalances(schedule, eligible_by_signal)
     prices, events = tuple(prices), tuple(events)
     runs = {scenario: run_ledger(sessions, rebalances, prices, events, scenario=scenario, cost_bps=cost_bps,
-                                 initial_capital=initial_capital, end=end, daily_positions=daily_positions)
+                                 initial_capital=initial_capital, end=end, end_valuation=end_valuation,
+                                 daily_positions=daily_positions)
             for scenario in scenarios}
     return dict(benchmark_id=GROUP_EQUAL_WEIGHT, group=group, name=f'{group} eligible names, equal weight',
                 is_etf=False, is_sp500_index=False, cost_bps=Decimal(str(cost_bps)),
@@ -139,7 +142,8 @@ def _index_rows(rows):
 def external_tr_benchmark(index_rows, *, label: str, claim: str, entry_date: date, end: date | None = None,
                           sessions: Sequence[date] | None = None, entry_basis: str = ENTRY_OPEN,
                           is_etf: bool | None = None, source: str | None = None,
-                          initial_capital=DEFAULT_INITIAL_CAPITAL, entry_cost_bps=0) -> dict:
+                          initial_capital=DEFAULT_INITIAL_CAPITAL, entry_cost_bps=0,
+                          end_valuation: str = VALUATION_CLOSE) -> dict:
     """Value a caller-supplied daily total-return index from entry_date (normally the first T) to end.
 
     index_rows: mappings {date, total_return_index, open_total_return_index?, currency='USD'}.
@@ -147,11 +151,15 @@ def external_tr_benchmark(index_rows, *, label: str, claim: str, entry_date: dat
     entry_basis: OPEN uses the entry date's open level; PREVIOUS_CLOSE uses the last close level before the entry
     date and is flagged ENTRY_AT_PREVIOUS_CLOSE. NAV = capital x level / entry level / (1 + entry cost).
     A missing daily level is None with MISSING_INDEX_LEVEL, never carried or filled.
+    end_valuation OPEN (the strategies' terminal valuation at the next T open, review F4): the end day uses its open
+    level; without one it uses the last close level before it and is flagged END_AT_PREVIOUS_CLOSE.
     """
     if claim not in CLAIMS:
         raise BenchmarkError('UNKNOWN_BENCHMARK_CLAIM')
     if entry_basis not in (ENTRY_OPEN, ENTRY_PREVIOUS_CLOSE):
         raise BenchmarkError('UNKNOWN_ENTRY_BASIS')
+    if end_valuation not in VALUATIONS:
+        raise BenchmarkError('UNKNOWN_END_VALUATION')
     if type(entry_date) is not date or (end is not None and type(end) is not date):
         raise BenchmarkError('ENTRY_AND_END_MUST_BE_DATES')
     info = classify_tr_label(label, is_etf=is_etf, source=source)
@@ -179,7 +187,7 @@ def external_tr_benchmark(index_rows, *, label: str, claim: str, entry_date: dat
                   is_sp500_index=info['is_sp500_index'], is_french_market=info['is_french_market'],
                   substitute_for=CLAIM_SP500_TR if claim == CLAIM_SP500_TR and info['is_etf'] else None,
                   currency='USD', source=source, entry_date=entry_date, entry_basis=entry_basis,
-                  entry_cost_bps=cost, initial_capital=capital, flags=flags)
+                  entry_cost_bps=cost, initial_capital=capital, end_valuation=end_valuation, flags=flags)
     if entry_basis == ENTRY_OPEN:
         entry = index.get(entry_date, (None, None))[1]
         missing = 'MISSING_ENTRY_OPEN_LEVEL'
@@ -201,10 +209,17 @@ def external_tr_benchmark(index_rows, *, label: str, claim: str, entry_date: dat
         for day in days:
             if not entry_date <= day <= last:
                 continue
-            level = index.get(day, (None, None))[0]
+            level, valuation = index.get(day, (None, None))[0], VALUATION_CLOSE
+            if end_valuation == VALUATION_OPEN and day == last:
+                level, valuation = index.get(day, (None, None))[1], VALUATION_OPEN
+                if level is None:
+                    earlier = [d for d, (close, _) in index.items() if d < day and close is not None]
+                    level = index[max(earlier)][0] if earlier else None
+                    valuation = ENTRY_PREVIOUS_CLOSE
+                    flags.append('END_AT_PREVIOUS_CLOSE')
             if level is None:
                 reasons.add('MISSING_INDEX_LEVEL')
-            daily.append(dict(date=day, level=level, nav=None if level is None else scale * level,
+            daily.append(dict(date=day, valuation=valuation, level=level, nav=None if level is None else scale * level,
                               reason=None if level is not None else 'MISSING_INDEX_LEVEL'))
     result.update(status='INCOMPLETE' if reasons else 'COMPLETE', reasons=tuple(sorted(reasons)), entry_level=entry,
                   daily=daily)

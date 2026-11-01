@@ -27,9 +27,14 @@ Ledger stage (ledger_stage, one or more consecutive yearly selection_inputs):
     metrics.cost_comparison (which holds metrics.ledger_metrics of both runs) per scenario;
   - optional external total-return series: benchmarks.external_tr_benchmark from the first T and
     metrics.series_metrics; a refused label is recorded as REFUSED with its code, the rest of the stage continues;
-  - sessions are the canonical NYSE rule calendar (schedule.is_session) from the first S; every run stops at `end`,
-    which defaults to the S of the year after the last selection year (the last close before the next reselection) when
-    that year is in the frozen schedule, else the last price-row date.
+  - sessions are the canonical NYSE rule calendar (schedule.is_session) from the first S; every run stops at `end`.
+    Default end (review F4, settings doc 6.2 "hold to the next reselection T open"): the T of the year after the last
+    selection year when that year is frozen, valued at that T's OPEN (end_rule NEXT_RESELECTION_T_OPEN, end_valuation
+    OPEN: open marks, no trades, LOSS / CARRY unchanged) for every strategy, the group EW and the external TR (which
+    uses its open level, else the previous close flagged END_AT_PREVIOUS_CLOSE); without a frozen next year, the last
+    price-row date at the close (LAST_PRICE_DATE). A supplied end later than that next frozen T is refused
+    (END_PAST_NEXT_RESELECTION, review F9: the picks would be held through a reselection whose selection is absent); a
+    supplied end equal to it is valued at its open; an earlier one at its close.
   Returns a ledger_outputs/1 dict (LEDGER_SCHEMA). 'QGV_DEFAULT' is an alias of the QGV_BALANCED portfolios.
 
 Both results are JSON-ready (handoff.jsonable): Decimals as text, dates as ISO text, so the in-memory result and its JSON
@@ -53,7 +58,7 @@ HOLD_SELECTED, HOLD_CASH = 'SELECTED', 'CASH'
 PORTFOLIO_RUN, PORTFOLIO_ALL_CASH = 'RUN', 'ALL_CASH'
 NO_GROUP_MEMBERS = 'NO_GROUP_MEMBERS'
 QUOTE_ADR_PER_ORDINARY_SHARE = 'ADR_PER_ORDINARY_SHARE'
-END_NEXT_SIGNAL_DAY = 'NEXT_YEAR_SIGNAL_DAY'
+END_NEXT_RESELECTION_T_OPEN = 'NEXT_RESELECTION_T_OPEN'
 END_LAST_PRICE_DATE = 'LAST_PRICE_DATE'
 END_SUPPLIED = 'SUPPLIED'
 FIRST_BUILD_NOT_FIRST_BUNDLE = 'FIRST_BUILD_NOT_FIRST_BUNDLE_SIGNAL_DAY'
@@ -360,16 +365,34 @@ def calendar_sessions(start, end):
     return out
 
 
-def default_end(last_year, prices):
-    """(end, rule): the next year's S when that year is frozen, else the last price-row date."""
+def next_reselection_t(last_year):
+    """The frozen T of the year after `last_year`, or None when that year is not in the frozen schedule."""
     try:
-        return _day(schedule.frozen_row(year=last_year + 1)['S']), END_NEXT_SIGNAL_DAY
+        return _day(schedule.frozen_row(year=last_year + 1)['T'])
     except ValueError:
-        pass
+        return None
+
+
+def default_end(last_year, prices):
+    """(end, rule, valuation): the next reselection T valued at its open when that year is frozen (review F4), else
+    the last price-row date at its close."""
+    next_t = next_reselection_t(last_year)
+    if next_t is not None:
+        return next_t, END_NEXT_RESELECTION_T_OPEN, ledger.VALUATION_OPEN
     dates = [row['date'] for row in prices]
     if not dates:
         raise RunnerError('END_NOT_DETERMINABLE')
-    return max(dates), END_LAST_PRICE_DATE
+    return max(dates), END_LAST_PRICE_DATE, ledger.VALUATION_CLOSE
+
+
+def supplied_end(value, last_year):
+    """(end, rule, valuation) of a supplied end: refused past the next frozen reselection T (review F9), valued at the
+    open when it is that T, else at its close."""
+    end = _day(value, 'END_INVALID')
+    next_t = next_reselection_t(last_year)
+    if next_t is not None and end > next_t:
+        raise RunnerError('END_PAST_NEXT_RESELECTION')
+    return end, END_SUPPLIED, ledger.VALUATION_OPEN if end == next_t else ledger.VALUATION_CLOSE
 
 
 def _strategy_years(items, strategy, group, side):
@@ -420,18 +443,21 @@ def _needed_securities(selected, events):
     return needed
 
 
-def _run_portfolio(rebalances, prices_by_sid, events, *, sessions, end, initial_capital, daily_positions, group=None):
+def _run_portfolio(rebalances, prices_by_sid, events, *, sessions, end, end_valuation, initial_capital, daily_positions,
+                   group=None):
     needed = _needed_securities({sid for r in rebalances for sid in r.selected}, events)
     rows = [row for sid in sorted(needed) for row in prices_by_sid.get(sid, ())]
     runs = {scenario: {} for scenario in ledger.SCENARIOS}
     for cost in (Decimal(0), settings.COST_BPS_PER_SIDE):
         if group is None:
             result = ledger.run_scenarios(sessions, rebalances, rows, events, cost_bps=cost,
-                                          initial_capital=initial_capital, end=end, daily_positions=daily_positions)
+                                          initial_capital=initial_capital, end=end, end_valuation=end_valuation,
+                                          daily_positions=daily_positions)
         else:
             result = benchmarks.group_equal_weight_benchmark(
                 sessions, rebalances, {r.signal_date: r.selected for r in rebalances}, rows, events, group=group,
-                cost_bps=cost, initial_capital=initial_capital, end=end, daily_positions=daily_positions)['runs']
+                cost_bps=cost, initial_capital=initial_capital, end=end, end_valuation=end_valuation,
+                daily_positions=daily_positions)['runs']
         for scenario in ledger.SCENARIOS:
             runs[scenario][str(cost)] = result[scenario]
     measured = {scenario: metrics.cost_comparison(runs[scenario]['0'], runs[scenario][str(settings.COST_BPS_PER_SIDE)],
@@ -440,7 +466,7 @@ def _run_portfolio(rebalances, prices_by_sid, events, *, sessions, end, initial_
     return runs, measured
 
 
-def _external_tr(tr_series, *, entry_date, end, sessions, initial_capital):
+def _external_tr(tr_series, *, entry_date, end, end_valuation, sessions, initial_capital):
     if not isinstance(tr_series, Mapping) or not isinstance(tr_series.get('rows'), list):
         raise RunnerError('TR_SERIES_INVALID')
     allowed = {'label', 'claim', 'source', 'is_etf', 'entry_basis', 'rows'}
@@ -456,7 +482,7 @@ def _external_tr(tr_series, *, entry_date, end, sessions, initial_capital):
             rows, label=tr_series['label'], claim=tr_series.get('claim', benchmarks.CLAIM_SP500_TR),
             entry_date=entry_date, end=end, sessions=sessions,
             entry_basis=tr_series.get('entry_basis', benchmarks.ENTRY_OPEN), is_etf=tr_series.get('is_etf'),
-            source=tr_series.get('source'), initial_capital=initial_capital)
+            source=tr_series.get('source'), initial_capital=initial_capital, end_valuation=end_valuation)
     except benchmarks.BenchmarkError as exc:
         return {'status': 'REFUSED', 'reason': str(exc), 'label': tr_series['label'], 'result': None, 'metrics': None}
     measured = None
@@ -481,9 +507,9 @@ def ledger_stage(selections, *, prices, events=(), end=None, tr_series=None, ini
     ledger.index_price_rows(prices)          # every row is validated once, also rows no portfolio needs
     events = ledger_events(events)
     if end is None:
-        end, end_rule = default_end(items[-1]['year'], prices)
+        end, end_rule, end_valuation = default_end(items[-1]['year'], prices)
     else:
-        end, end_rule = _day(end, 'END_INVALID'), END_SUPPLIED
+        end, end_rule, end_valuation = supplied_end(end, items[-1]['year'])
     start = _day(items[0]['signal']['S'])
     if end < start:
         raise RunnerError('END_BEFORE_START')
@@ -510,15 +536,16 @@ def ledger_stage(selections, *, prices, events=(), end=None, tr_series=None, ini
         else:
             rebalances = [ledger.Rebalance(_day(y['S']), _day(y['T']), tuple(y['selected'])) for y in years]
             runs, measured = _run_portfolio(rebalances, prices_by_sid, events, sessions=sessions, end=end,
-                                            initial_capital=capital, daily_positions=daily_positions,
+                                            end_valuation=end_valuation, initial_capital=capital,
+                                            daily_positions=daily_positions,
                                             group=group if kind == KIND_GROUP_EW else None)
             entry.update(status=PORTFOLIO_RUN, runs=runs, metrics=measured)
             run_status.update(result['status'] for by_cost in runs.values() for result in by_cost.values())
         portfolios[pid] = entry
     external = None
     if tr_series is not None:
-        external = _external_tr(tr_series, entry_date=_day(items[0]['signal']['T']), end=end, sessions=sessions,
-                                initial_capital=capital)
+        external = _external_tr(tr_series, entry_date=_day(items[0]['signal']['T']), end=end,
+                                end_valuation=end_valuation, sessions=sessions, initial_capital=capital)
     status_counts = Counter(p['status'] for p in portfolios.values())
     out = {
         'schema': LEDGER_SCHEMA, 'experiment_id': settings.EXPERIMENT_ID, 'settings_sha256': settings.settings_sha256(),
@@ -526,7 +553,8 @@ def ledger_stage(selections, *, prices, events=(), end=None, tr_series=None, ini
         'selection_years': [x['year'] for x in items],
         'selection_run_ids': [(x.get('run') or {}).get('run_id') for x in items],
         'schedule': [{'year': x['year'], 'S': x['signal']['S'], 'T': x['signal']['T']} for x in items],
-        'start': start, 'end': end, 'end_rule': end_rule, 'session_count': sum(1 for d in sessions if d <= end),
+        'start': start, 'end': end, 'end_rule': end_rule, 'end_valuation': end_valuation,
+        'session_count': sum(1 for d in sessions if d <= end),
         'scenarios': list(ledger.SCENARIOS), 'cost_bps_levels': ['0', str(settings.COST_BPS_PER_SIDE)],
         'initial_capital': capital, 'currency': settings.CURRENCY, 'daily_positions': bool(daily_positions),
         'strategy_aliases': dict(settings.STRATEGY_ALIASES),
@@ -551,4 +579,5 @@ def portfolio_alias(ledger_outputs, portfolio_id):
 
 
 __all__ = ['SELECTION_SCHEMA', 'LEDGER_SCHEMA', 'RunnerError', 'selection_stage', 'ledger_stage', 'u_a_members',
-           'scoring_quotes', 'price_rows', 'ledger_events', 'calendar_sessions', 'default_end', 'portfolio_alias']
+           'scoring_quotes', 'price_rows', 'ledger_events', 'calendar_sessions', 'default_end', 'supplied_end',
+           'next_reselection_t', 'portfolio_alias']
