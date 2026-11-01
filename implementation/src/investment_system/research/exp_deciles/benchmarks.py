@@ -8,6 +8,9 @@ optional one-sided entry cost, USD only). The group equal-weight benchmark is ne
     group on each rebalance, the same S/T schedule, the same costs, both termination scenarios.
 (b) External total-return index: a caller-supplied daily series with a label. An ETF (for example SPY) is marked
     is_etf=True and its name never says S&P 500. A French / Fama-French market series is refused as an S&P 500 series.
+    French markers and ETF markers (an S&P 500 ETF ticker or the word ETF) are looked for in the label AND the source
+    text (review F8): a series labelled like the index but built from an ETF is named as that ETF (flag
+    ETF_NAMED_IN_SOURCE), never as the S&P 500 index.
 
 Pure functions: no data provider, file or network access.
 """
@@ -46,6 +49,14 @@ _TR_SUFFIXES = ('TOTALRETURNINDEX', 'TOTALRETURN', 'TRINDEX', 'TR')
 
 def _norm(text: str) -> str:
     return re.sub(r'[^A-Z0-9]', '', text.upper())
+
+
+def _tokens(text: str | None) -> list[str]:
+    return re.findall(r'[A-Z0-9]+', (text or '').upper())
+
+
+def _etf_marked(tokens) -> bool:
+    return any(token in ('ETF', 'ETFS') or token in ETF_TICKERS for token in tokens)
 
 
 # -- (a) group equal weight -------------------------------------------------------------------------------------
@@ -102,11 +113,17 @@ def classify_tr_label(label: str, *, is_etf: bool | None = None, source: str | N
             base = norm[:-len(suffix)]
             break
     french = any(marker in _norm(f'{label} {source or ""}') for marker in FRENCH_MARKERS)
-    etf_label = base in ETF_TICKERS or 'ETF' in norm
+    etf_label = base in ETF_TICKERS or 'ETF' in norm or _etf_marked(_tokens(label))
+    etf_source = _etf_marked(_tokens(source))
     if is_etf is False and etf_label:
         raise BenchmarkError('ETF_LABEL_DECLARED_NOT_ETF')
-    etf = bool(is_etf) or etf_label
-    return dict(label=label, normalized=norm, ticker=base, is_etf=etf, is_french_market=french,
+    if is_etf is False and etf_source:
+        raise BenchmarkError('ETF_SOURCE_DECLARED_NOT_ETF')
+    etf = bool(is_etf) or etf_label or etf_source
+    tickers = [t for t in _tokens(label) + _tokens(source) if t in ETF_TICKERS]
+    ticker = base if base in ETF_TICKERS else (tickers[0] if tickers else base)
+    return dict(label=label, normalized=norm, ticker=ticker, is_etf=etf, is_french_market=french,
+                etf_named_in_source=etf_source and not etf_label,
                 is_sp500_index=(not etf and not french and norm in SP500_TR_INDEX_LABELS))
 
 
@@ -170,6 +187,8 @@ def external_tr_benchmark(index_rows, *, label: str, claim: str, entry_date: dat
         benchmark_id, name = f'ETF_TR:{info["ticker"]}', f'{info["ticker"]} total return (ETF)'
         if claim == CLAIM_SP500_TR:
             flags.append('ETF_SUBSTITUTE_NOT_INDEX')
+        if info['etf_named_in_source']:
+            flags.append('ETF_NAMED_IN_SOURCE')
     elif claim == CLAIM_SP500_TR:
         if not info['is_sp500_index']:
             raise BenchmarkError('LABEL_NOT_SP500_TR_INDEX')

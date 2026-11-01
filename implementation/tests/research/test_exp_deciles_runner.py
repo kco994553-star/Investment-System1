@@ -351,3 +351,20 @@ def test_end_past_the_next_reselection_without_its_selection_is_refused(years):
     assert (before['end_rule'], before['end_valuation']) == ('SUPPLIED', 'CLOSE')
     both = runner.ledger_stage([s18, s19], prices=syn.price_rows(), end=END)       # 2019 selection supplied
     assert [len(p['runs']['LOSS']['10']['rebalances']) for p in both['portfolios'].values() if p['runs']][0] == 2
+
+
+# ---- review F6: an ADR float quote is divided too, never passed per ADS ----------------------------------------------
+def test_adr_float_quote_is_divided_through_decimal_text_or_withheld():
+    """Review d4: a float price 30.0 stayed 30.0 per ADS while the basis said ADR_PER_ORDINARY_SHARE."""
+    uni = {'issuers': {cik(16): {'classes': [{'security_id': 'A', 'security_type': 'ADR', 'adr_ratio': Decimal('2')}]}},
+           'U_A': {'member_securities': ['A']}, 'securities': {'A': {'security_type': 'ADR'}}}
+    for price in ('30', 30.0, Decimal('30'), 30):
+        out, basis = runner.scoring_quotes({'A': {'price': price, 'currency': 'USD', 'month_closes': {'2018-01': price}}},
+                                           uni)
+        assert out['A']['price'] == Decimal('15') and isinstance(out['A']['price'], Decimal)
+        assert out['A']['month_closes'] == {'2018-01': Decimal('15')} and basis == {'A': 'ADR_PER_ORDINARY_SHARE'}
+    out, basis = runner.scoring_quotes({'A': {'price': 30.1, 'currency': 'USD'}}, uni)
+    assert out['A']['price'] == Decimal('15.05')                       # Decimal(str(30.1)) / 2, no binary noise
+    out, basis = runner.scoring_quotes({'A': {'price': 'n/a', 'currency': 'USD',
+                                              'month_closes': {'2018-01': 'x', '2018-02': 40.0}}}, uni)
+    assert out['A']['withheld_reason'] == 'ADR_QUOTE_PRICE_INVALID' and basis == {'A': 'ADR_QUOTE_PRICE_INVALID'}

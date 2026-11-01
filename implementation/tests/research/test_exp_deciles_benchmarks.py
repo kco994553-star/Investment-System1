@@ -166,3 +166,26 @@ def test_tr_series_feeds_the_same_metrics():
     report = m.series_metrics(points, started_at=started, initial_capital=capital)
     assert report['performance']['cumulative_return'].value == pytest.approx(109 / 100 - 1)
     assert report['trailing_returns']['1y']['total_return'] == m.Metric(None, 'INSUFFICIENT_HISTORY')
+
+
+# -- review F8: ETF markers are read in the source text as well --------------------------------------------------
+def test_an_index_label_built_from_an_etf_named_in_the_source_is_named_as_that_etf():
+    """Review d10: label 'SP500TR' with source 'SPY ETF closes plus SPY distributions' was accepted as the index."""
+    rows = tr_rows(LEVELS, open_on=d[1], open_level=100)
+    result = b.external_tr_benchmark(rows, label='SP500TR', claim='SP500_TR', entry_date=d[1],
+                                     source='SPY ETF closes plus SPY distributions')
+    assert (result['benchmark_id'], result['name'], result['is_etf']) == ('ETF_TR:SPY', 'SPY total return (ETF)', True)
+    assert result['is_sp500_index'] is False
+    assert {'ETF_SUBSTITUTE_NOT_INDEX', 'ETF_NAMED_IN_SOURCE'} <= set(result['flags'])
+    with pytest.raises(b.BenchmarkError, match='ETF_SOURCE_DECLARED_NOT_ETF'):
+        b.external_tr_benchmark(rows, label='SP500TR', claim='SP500_TR', entry_date=d[1], is_etf=False,
+                                source='closes of IVV')
+    with pytest.raises(b.BenchmarkError, match='FRENCH_MARKET_NOT_SP500'):
+        b.external_tr_benchmark(rows, label='SP500TR', claim='SP500_TR', entry_date=d[1],
+                                source='Kenneth French data library')
+    index = b.external_tr_benchmark(rows, label='S&P 500 Total Return Index', claim='SP500_TR', entry_date=d[1],
+                                    source='S&P Dow Jones Indices daily levels')
+    assert index['benchmark_id'] == 'SP500_TR_INDEX' and index['flags'] == []
+    labelled = b.external_tr_benchmark(rows, label='SPY total return (ETF, synthetic)', claim='OTHER_TR',
+                                       entry_date=d[1], is_etf=True, source='synthetic')
+    assert (labelled['benchmark_id'], labelled['name']) == ('ETF_TR:SPY', 'SPY total return (ETF)')

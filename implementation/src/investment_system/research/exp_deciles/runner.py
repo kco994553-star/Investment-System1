@@ -15,8 +15,10 @@ Selection stage (selection_stage, one signal year from the frozen schedule):
   market cap, representative and group statuses, the PIT rows, factor / axis / total scores, gate flags, ranks and the
   top / bottom lists. 'QGV_DEFAULT' is recorded in strategy_aliases (-> QGV_BALANCED), never as a second selection.
   ADR quotes: the quote of an ADR representative is per ADS; it is divided by the record's adr_ratio so the engine sees
-  a price per ordinary share (quote_basis ADR_PER_ORDINARY_SHARE); without a confirmed ratio it is withheld with
-  ADR_RATIO_UNCONFIRMED. Quote prices given as decimal text are read as Decimal.
+  a price per ordinary share (quote_basis ADR_PER_ORDINARY_SHARE, set only when the division happened); without a
+  confirmed ratio it is withheld with ADR_RATIO_UNCONFIRMED. An ADR quote price or month close given as a float is read
+  through Decimal(str(x)) before the division (review F6), one that is not a number withholds the quote
+  (ADR_QUOTE_PRICE_INVALID) or drops that close. Quote prices given as decimal text are read as Decimal.
 
 Ledger stage (ledger_stage, one or more consecutive yearly selection_inputs):
   - portfolios: one per strategy x group x side (TOP / BOTTOM) plus GROUP_EQUAL_WEIGHT per group (every U-A / U-B member
@@ -59,6 +61,7 @@ HOLD_SELECTED, HOLD_CASH = 'SELECTED', 'CASH'
 PORTFOLIO_RUN, PORTFOLIO_ALL_CASH = 'RUN', 'ALL_CASH'
 NO_GROUP_MEMBERS = 'NO_GROUP_MEMBERS'
 QUOTE_ADR_PER_ORDINARY_SHARE = 'ADR_PER_ORDINARY_SHARE'
+ADR_QUOTE_PRICE_INVALID = 'ADR_QUOTE_PRICE_INVALID'
 END_NEXT_RESELECTION_T_OPEN = 'NEXT_RESELECTION_T_OPEN'
 END_LAST_PRICE_DATE = 'LAST_PRICE_DATE'
 END_SUPPLIED = 'SUPPLIED'
@@ -85,6 +88,24 @@ def _cik(value):
         return pit._cik(value)
     except ValueError:
         raise RunnerError('CIK_INVALID') from None
+
+
+def _quote_decimal(value):
+    """int / Decimal / finite float (through Decimal(str(x))) / decimal text -> finite Decimal, else None."""
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, float):
+        value = str(value)
+    if isinstance(value, int):
+        return Decimal(value)
+    if isinstance(value, str):
+        try:
+            value = Decimal(value.strip())
+        except InvalidOperation:
+            return None
+    if isinstance(value, Decimal) and value.is_finite():
+        return value
+    return None
 
 
 def _decimal_or_same(value):
@@ -143,7 +164,8 @@ def scoring_quotes(quotes, universe_result):
     """(quotes for scoring.score_population keyed by the U-A representative IDs, {security_id: quote basis}).
 
     Decimal text is read as Decimal; an ADR representative's per-ADS quote is divided by its adr_ratio (price and month
-    closes), or withheld with ADR_RATIO_UNCONFIRMED when the ratio is not confirmed. Other quotes pass unchanged."""
+    closes; floats through Decimal(str(x))), or withheld with ADR_RATIO_UNCONFIRMED when the ratio is not confirmed or
+    ADR_QUOTE_PRICE_INVALID when its price is not a number. Other quotes pass unchanged."""
     quotes = quotes or {}
     if not isinstance(quotes, Mapping):
         raise RunnerError('QUOTES_MAPPING_REQUIRED')
@@ -163,18 +185,20 @@ def scoring_quotes(quotes, universe_result):
         if universe_result['securities'][sid]['security_type'] == settings.ADR_SECURITY_TYPE \
                 and quote.get('withheld_reason') is None:
             ratio = ratios.get(sid)
+            price = _quote_decimal(quote['price'])
             if ratio is None:
                 quote['withheld_reason'] = universe.ADR_RATIO_UNCONFIRMED
                 basis[sid] = universe.ADR_RATIO_UNCONFIRMED
+            elif price is None:
+                quote['withheld_reason'] = ADR_QUOTE_PRICE_INVALID
+                basis[sid] = ADR_QUOTE_PRICE_INVALID
             else:
                 with localcontext() as ctx:
                     ctx.prec = universe.DECIMAL_PRECISION
-                    if isinstance(quote['price'], (int, Decimal)) and not isinstance(quote['price'], bool):
-                        quote['price'] = Decimal(quote['price']) / ratio
+                    quote['price'] = price / ratio
                     if isinstance(quote.get('month_closes'), Mapping):
-                        quote['month_closes'] = {
-                            m: (Decimal(v) / ratio if isinstance(v, (int, Decimal)) and not isinstance(v, bool) else v)
-                            for m, v in quote['month_closes'].items()}
+                        closes = {m: _quote_decimal(v) for m, v in quote['month_closes'].items()}
+                        quote['month_closes'] = {m: v / ratio for m, v in closes.items() if v is not None}
                 basis[sid] = QUOTE_ADR_PER_ORDINARY_SHARE
         out[sid] = quote
     return out, basis
