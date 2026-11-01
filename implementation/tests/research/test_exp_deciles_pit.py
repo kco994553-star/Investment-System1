@@ -124,9 +124,14 @@ def test_as_filed_sic_uses_only_filings_usable_at_s():
 def test_missing_inputs_give_reasoned_not_available_rows_and_a_bare_sic_is_refused():
     with pytest.raises(TypeError, match='AS_FILED_SIC_RECORD_REQUIRED'):
         pit.compute_row(company(), sic_record='3674', signal_day=S)
+    # Review SYN-2: a missing as-filed SIC is recorded but the row is still computed, as calc 23.1 does (GENERAL,
+    # industry NA); a current SIC is never substituted.
     no_sic = pit.compute_row(company(), sic_record=pit.as_filed_sic([], S, cik=1), signal_day=S)
-    assert (no_sic['state'], no_sic['reason_codes'], no_sic['profile']) == ('NOT_AVAILABLE', ['SIC_AS_FILED_NOT_AVAILABLE'], None)
-    assert all(v is None for v in no_sic['metrics'].values())
+    assert (no_sic['state'], no_sic['reason_codes'], no_sic['profile']) == ('LIVE', ['SIC_AS_FILED_NOT_AVAILABLE'],
+                                                                            'GENERAL')
+    assert no_sic['sic'] is None and no_sic['industry_group'] is None and no_sic['pit']['sic']['sic'] is None
+    view = pit.filter_companyfacts(company(), S)
+    assert no_sic['metrics'] == v2_factors.compute(view.payload, sic=None, cutoff=view.compute_cutoff)[3]
     no_facts = pit.compute_row(None, sic_record=sic_record(), signal_day=S, cik='1')
     assert no_facts['reason_codes'] == ['COMPANYFACTS_NOT_AVAILABLE'] and no_facts['cik'] == '0000000001'
     old = pit.compute_row(company(), sic_record=sic_record(), signal_day=date(2016, 2, 24))
@@ -142,6 +147,6 @@ def test_build_rows_keys_by_security_and_joins_as_filed_sic():
     assert rows['SEC-1']['state'] == 'LIVE' and rows['SEC-1']['sic'] == '3674'
     assert rows['SEC-1']['pit']['sic']['accn'] == 'K2017'
     assert rows['SEC-1']['calc_version'] == v2_factors.CALC_VERSION
-    assert rows['SEC-7']['reason_codes'] == ['SIC_AS_FILED_NOT_AVAILABLE']
+    assert rows['SEC-7']['reason_codes'] == ['SIC_AS_FILED_NOT_AVAILABLE', 'COMPANYFACTS_NOT_AVAILABLE']
     with pytest.raises(ValueError, match='DUPLICATE_SECURITY_ID'):
         pit.build_rows({}, [], [{'cik': '1', 'security_id': 'X'}, {'cik': '2', 'security_id': 'X'}], S)

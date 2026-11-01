@@ -11,7 +11,10 @@ Selection stage (selection_stage, one signal year from the frozen schedule):
   population -> selection.select_all for U_A and U_B.
   Returns a selection_inputs/1 dict (SELECTION_SCHEMA): run metadata, the signal context, counts (securities; candidate /
   eligible / excluded / unknown and by-reason counts per group; U-A transitions; scoring coverage; per strategy and group
-  status, N, k, NOT_RUN reason and not-eligible reasons), every security's universe status and reasons, every issuer's
+  status, N, k, NOT_RUN reason, not-eligible reasons and, per preset-total cell, totals_without_v: operational D11 is not
+  applied, owner decision pending; rows scored without an as-filed SIC, review SYN-2), the pinned scoring config
+  identities (review SYN-M1; an override that differs is refused, NON_FROZEN_SCORING_CONFIG), every security's universe
+  status and reasons, every issuer's
   market cap, representative and group statuses, the PIT rows, factor / axis / total scores, gate flags, ranks and the
   top / bottom lists. 'QGV_DEFAULT' is recorded in strategy_aliases (-> QGV_BALANCED), never as a second selection.
   ADR quotes: the quote of an ADR representative is per ADS; it is divided by the record's adr_ratio so the engine sees
@@ -222,15 +225,22 @@ def scoring_quotes(quotes, universe_result):
     return out, basis
 
 
-def _strategy_counts(selections):
+def _strategy_counts(selections, groups, scores):
+    """Per strategy and group: status, N, k, not-eligible reasons and, for a preset total, totals_without_v = the
+    eligible (ranked) members whose total has no V axis (operational D11 is not applied, owner decision pending)."""
     out = {}
     for strategy in settings.STRATEGY_IDS:
         out[strategy] = {}
+        total = settings.STRATEGIES[strategy]['kind'] == 'TOTAL'
         for group in settings.GROUPS:
             sel = selections[strategy][group]
+            eligible = set(groups[group]) - set(sel['not_eligible'])
             out[strategy][group] = {'status': sel['status'], 'reason': sel['reason'], 'members': sel['members'],
                                     'N': sel['N'], 'k': sel['k'],
-                                    'not_eligible_by_reason': dict(sorted(Counter(sel['not_eligible'].values()).items()))}
+                                    'not_eligible_by_reason': dict(sorted(Counter(sel['not_eligible'].values()).items())),
+                                    'totals_without_v': (sum(1 for sid in eligible
+                                                             if scores['securities'][sid]['axes']['V'] is None)
+                                                         if total else None)}
     return out
 
 
@@ -254,6 +264,18 @@ def selection_stage(records, *, year, companyfacts=None, filing_rows=(), quotes=
     except ValueError:
         raise RunnerError('YEAR_NOT_IN_FROZEN_SCHEDULE') from None
     context = pit.signal_context(frozen['S'], frozen['T'])
+    # Review SYN-M1: the scoring configs are the ones pinned in settings_sha256; an override that differs is refused.
+    configs = settings.scoring_configs()
+    for name, override in (('type_config', type_config), ('dcf_parameters', parameters),
+                           ('playbook', playbook_config)):
+        if override is not None:
+            configs[name] = override
+    try:
+        identities = {name: settings.config_identity(config) for name, config in configs.items()}
+    except (ValueError, TypeError):
+        raise RunnerError('NON_FROZEN_SCORING_CONFIG') from None
+    if identities != settings.SCORING_CONFIG:
+        raise RunnerError('NON_FROZEN_SCORING_CONFIG')
     previous = None if previous_u_a is None else sorted({_cik(c) for c in previous_u_a})
     if previous is None and previous_u_a_unknown:
         raise RunnerError('PREVIOUS_U_A_UNKNOWN_WITHOUT_MEMBERS')
@@ -274,8 +296,9 @@ def selection_stage(records, *, year, companyfacts=None, filing_rows=(), quotes=
     issuers = [{'cik': cik, 'security_id': ua['representatives'][cik]} for cik in ua['members']]
     rows = pit_rows(issuers, companyfacts, filing_rows, frozen['S'], frozen['T'])
     engine_quotes, quote_basis = scoring_quotes(quotes, uni)
-    scores = scoring.score_population(rows, engine_quotes, population=ua['member_securities'], type_config=type_config,
-                                      parameters=parameters, playbook_config=playbook_config)
+    scores = scoring.score_population(rows, engine_quotes, population=ua['member_securities'],
+                                      type_config=configs['type_config'], parameters=configs['dcf_parameters'],
+                                      playbook_config=configs['playbook'])
     groups = {group: uni[group]['member_securities'] for group in settings.GROUPS}
     selections = selection.select_all(scores, groups)
     flags = []
@@ -299,9 +322,16 @@ def selection_stage(records, *, year, companyfacts=None, filing_rows=(), quotes=
                                 'left_by_reason': dict(sorted(Counter(item['reasons'][0] for item in transitions['left']
                                                                       if item['reasons']).items())),
                                 'unknown_to_next_s': len(ua['unknown']), 'terminated': len(ua['terminated'])},
-            'pit_rows': {'rows': len(rows), 'by_state': dict(sorted(row_states.items()))},
+            'pit_rows': {'rows': len(rows), 'by_state': dict(sorted(row_states.items())),
+                         # review SYN-2: scored as calc 23.1 does without a SIC (GENERAL, industry NA), never with a
+                         # current SIC
+                         'without_as_filed_sic': sum(1 for row in rows.values()
+                                                     if pit.SIC_AS_FILED_NOT_AVAILABLE in row['reason_codes']),
+                         'scored_without_as_filed_sic': sum(
+                             1 for sid, row in rows.items() if pit.SIC_AS_FILED_NOT_AVAILABLE in row['reason_codes']
+                             and sid in scores['securities'] and scores['securities'][sid]['row_state'] == 'LIVE')},
             'scoring': dict(scores['summary'], quote_status=dict(sorted(quote_status.items()))),
-            'strategies': _strategy_counts(selections),
+            'strategies': _strategy_counts(selections, groups, scores),
         },
         'universe': {'schema': uni['schema'], 'signal_day': uni['signal_day'], 'first_build': uni['first_build'],
                      'thresholds': uni['thresholds'], 'securities': uni['securities'], 'issuers': uni['issuers'],
@@ -317,6 +347,8 @@ def selection_stage(records, *, year, companyfacts=None, filing_rows=(), quotes=
                                                 'securities')},
         'selections': {strategy: selections[strategy] for strategy in settings.STRATEGY_IDS},
         'strategy_aliases': dict(settings.STRATEGY_ALIASES), 'preset_aliases': dict(settings.PRESET_ALIASES),
+        'scoring_config': dict(identities),
+        'operational_d11': 'NOT_APPLIED_OWNER_DECISION_PENDING',
     }
     return handoff.jsonable(out)
 

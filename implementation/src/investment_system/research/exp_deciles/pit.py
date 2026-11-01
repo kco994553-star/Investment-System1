@@ -9,7 +9,11 @@ pit_adapter.filter_companyfacts (L119), pit_adapter.as_filed_sic (L172) and the 
 - acceptance / vendor known_at times are not read: with 5 full sessions between F and first use, the filing date alone
   decides (settings doc section 1). companyfacts carries the filing date only, which is enough;
 - membership, share-class choice and quotes are not built here (universe.py / the price part own them);
-- each row records the signal day S, the execution day T, both cutoffs and the filings it used, each with its usable date.
+- each row records the signal day S, the execution day T, both cutoffs and the filings it used, each with its usable date;
+- a missing as-filed SIC no longer drops the row (review SYN-2, conformance with calc 23.1's own missing-data rule; owner
+  11/01: the original QGV missing-data rule is kept and 15-factor completeness is not a new selection condition): the row
+  keeps the reason SIC_AS_FILED_NOT_AVAILABLE and is still computed with sic=None, which calc 23.1 scores as GENERAL with
+  industry group NA (universe fallback, v2_factors.profile_for_sic(None)). A current SIC is never substituted.
 
 How v2_factors.compute treats `cutoff` (checked in qgv/v2_factors.py: _Facts._table, _share_filings, _split_ratios,
 _cover_counts and _taxonomy_and_currency): a fact is kept iff its `filed` (strict YYYY-MM-DD string) is <= cutoff; a fact
@@ -201,7 +205,8 @@ def _sic_of(sic_record):
 
 
 def compute_row(companyfacts, *, sic_record, signal_day, execution_day=None, cik=None, security_id=None):
-    """One operational-shape input row for v2_scoring.score_rows, computed with the 6th-session cutoff.
+    """One operational-shape input row for v2_scoring.score_rows, computed with the 6th-session cutoff. A missing
+    as-filed SIC is recorded (SIC_AS_FILED_NOT_AVAILABLE) and the row is computed with sic=None (GENERAL, industry NA).
 
     Shape (as universe.sec_qgv2.build_row plus `security_id` and `pit`): security_id, cik, state LIVE | NOT_AVAILABLE,
     profile, sic, industry_group, fiscal_year_end, currency, metrics (None kept for missing), v_inputs_v2, calc_version,
@@ -222,8 +227,8 @@ def compute_row(companyfacts, *, sic_record, signal_day, execution_day=None, cik
            'pit': dict(ctx, sic=deepcopy(sic_record), latest_filing_used=None, filings_used=(), rejected={},
                        shares_basis=None)}
     if sic is None:
+        # calc 23.1: no SIC -> GENERAL, industry NA (universe fallback); the row is still computed (review SYN-2).
         row['reason_codes'].append(SIC_AS_FILED_NOT_AVAILABLE)
-        return row
     if not isinstance(companyfacts, dict):
         row['reason_codes'].append(COMPANYFACTS_NOT_AVAILABLE)
         return row

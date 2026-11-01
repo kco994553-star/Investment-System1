@@ -7,6 +7,14 @@ ceil(n/10), no n >= 100 minimum, no top-500 universe, no monthly rebalancing.
 Presets come from qgv.qgv_v2.PRESETS (the four fixed presets). 'default' is qgv_v2.DEFAULT_PRESET, which is 'balanced',
 so it is an alias and is never scored a second time. settings_sha256() hashes a canonical JSON of settings_dict(); any
 change of a value here, of the preset weights in qgv_v2 or of the calc version in v2_factors changes the hash.
+
+Scoring configuration (review SYN-M1; section 1 "유형 가중치·관문 유지", section 10.8 settings-hash inputs): the four
+canonical configs calc 23.1 scores with are pinned by version and content hash in settings_dict()['scoring']['config']:
+type_config/1 (qgv.type_config.load_official_type_config().to_dict()), the dcf parameters
+(qgv.dcf_parameters.load_default_dcf_parameters()), the playbook (qgv.playbook.load_config()) and the SIC industry
+groups (qgv.sic_industry.load_sic_config()); sha256 of each config's canonical JSON (sorted keys, compact, ASCII). A
+change of any of those files therefore changes settings_sha256, and runner.selection_stage refuses scoring overrides that
+do not hash to the pinned identities (NON_FROZEN_SCORING_CONFIG).
 """
 from __future__ import annotations
 
@@ -14,7 +22,10 @@ from decimal import Decimal
 import hashlib
 import json
 
-from ...qgv import qgv_v2, v2_factors
+from ...qgv import playbook, qgv_v2, v2_factors
+from ...qgv.dcf_parameters import load_default_dcf_parameters
+from ...qgv.sic_industry import load_sic_config
+from ...qgv.type_config import load_official_type_config
 
 EXPERIMENT_ID = 'EXP-STOCK-INDICATOR-DECILES-v1'
 SETTINGS_SCHEMA = 'exp-deciles-settings/1'
@@ -57,6 +68,24 @@ PRESET_WEIGHTS = {p: dict(qgv_v2.PRESETS[p]['weights']) for p in PRESET_IDS}
 AXES = ('Q', 'G', 'V')
 GATE = qgv_v2.GATE_DEFAULT          # value-trap gate ON (engine default), type weights ON, official inner weights
 TYPE_WEIGHTS = True
+
+
+def config_identity(config):
+    """{'version', 'sha256'} of one scoring config: its config_version and the sha256 of its canonical JSON."""
+    if not isinstance(config, dict):
+        raise ValueError('SCORING_CONFIG_INVALID')
+    body = json.dumps(config, sort_keys=True, separators=(',', ':'), ensure_ascii=True, allow_nan=False)
+    return {'version': config.get('config_version'), 'sha256': hashlib.sha256(body.encode('ascii')).hexdigest()}
+
+
+def scoring_configs():
+    """{name: config} of the canonical configs calc 23.1 scores with, loaded fresh from the repository."""
+    return {'type_config': load_official_type_config().to_dict(), 'dcf_parameters': load_default_dcf_parameters(),
+            'playbook': playbook.load_config(), 'sic_industry_groups': load_sic_config()}
+
+
+# Pinned at import (review SYN-M1): the identity of every scoring config, part of settings_sha256.
+SCORING_CONFIG = {name: config_identity(config) for name, config in scoring_configs().items()}
 
 # ---- strategies: one score per security, higher is better for every one of them ----
 STRATEGIES = {
@@ -134,6 +163,7 @@ def settings_dict():
         'scoring': {
             'population': SCORING_POPULATION, 'calc_version': SCORING_CALC_VERSION, 'presets': PRESET_WEIGHTS,
             'preset_aliases': PRESET_ALIASES, 'axes': AXES, 'gate': GATE, 'type_weights': TYPE_WEIGHTS,
+            'config': SCORING_CONFIG,
         },
         'strategies': STRATEGIES, 'strategy_aliases': STRATEGY_ALIASES,
         'selection': {'decile': DECILE, 'min_n': MIN_N, 'order': ORDER, 'rule': SELECTION_RULE, 'weighting': WEIGHTING},

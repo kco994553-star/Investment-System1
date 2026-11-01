@@ -9,7 +9,7 @@ from investment_system.qgv import qgv_v2, v2_factors
 from investment_system.research.exp_deciles import settings
 
 # Frozen: a deliberate settings (or engine preset / calc version) change must update this pin together with the doc.
-SETTINGS_SHA256 = 'bb785463aa41f43f324ef609b83089be6ef20612f5015fce80ec8d71cb037b60'
+SETTINGS_SHA256 = '8598bd4857b1fa4a7f4bd8b9f5096757fd9c25e388cc4918df10f01f496c06a5'
 
 
 def test_experiment_identity_and_universe_thresholds():
@@ -124,3 +124,19 @@ def test_package_imports_no_qgv_backtest_network_or_io_modules():
     reads = [name for name in modules if 'read_text' in (pkg / name).read_text(encoding='utf-8')
              or 'read_bytes' in (pkg / name).read_text(encoding='utf-8')]
     assert reads == ['schedule.py']
+
+
+def test_scoring_configuration_is_pinned_by_version_and_content_hash(monkeypatch):
+    """Review SYN-M1: type_config/1, the dcf parameters, the playbook and the SIC industry groups were in no hash."""
+    config = settings.settings_dict()['scoring']['config']
+    assert set(config) == {'type_config', 'dcf_parameters', 'playbook', 'sic_industry_groups'}
+    assert config['type_config']['version'] == 'type_config/1'
+    loaded = settings.scoring_configs()
+    for name, item in config.items():
+        body = json.dumps(loaded[name], sort_keys=True, separators=(',', ':'), ensure_ascii=True, allow_nan=False)
+        assert item == {'version': loaded[name].get('config_version'),
+                        'sha256': hashlib.sha256(body.encode('ascii')).hexdigest()}
+    before = settings.settings_sha256()
+    changed = dict(settings.SCORING_CONFIG, playbook={'version': 'playbook/v1', 'sha256': '0' * 64})
+    monkeypatch.setattr(settings, 'SCORING_CONFIG', changed)
+    assert settings.settings_sha256() != before

@@ -608,3 +608,48 @@ def test_trailing_one_year_is_reported_for_the_first_bundle_cycle(years):
         one = metrics['trailing_returns']['1y']
         assert one['basis'] == 'RESELECTION_CYCLES' and one['end'] == '2019-02-19'
         assert one['total_return']['value'] == metrics['performance']['cumulative_return']['value']
+
+
+# ---- review SYN-2 / SYN-M1 / D11 count ---------------------------------------------------------------------------
+def test_a_member_without_as_filed_sic_is_still_scored_as_calc_23_1_does(years):
+    """Review SYN-2 (sic1.py): removing issuer 10's filing row made XQ010 NOT_AVAILABLE with no Q, G or V, so AXIS_Q
+    U_A N fell from 30 to 29. calc 23.1 scores a row without SIC as GENERAL with industry NA."""
+    s18, _ = years
+    filings = [r for r in syn.filing_rows() if r['cik'] != syn.cik(10)]
+    out = runner.selection_stage(syn.records(2018), year=2018, companyfacts=syn.companyfacts_by_cik(),
+                                 filing_rows=filings, quotes=syn.quotes(2018))
+    row = out['pit']['rows']['XQ010']
+    assert (row['state'], row['profile'], row['sic']) == ('LIVE', 'GENERAL', None)
+    assert row['reason_codes'] == ['SIC_AS_FILED_NOT_AVAILABLE']
+    assert all(out['scores']['securities']['XQ010']['axes'][a] is not None for a in ('Q', 'G'))
+    assert out['selections']['AXIS_Q']['U_A']['N'] == s18['selections']['AXIS_Q']['U_A']['N'] == 30
+    assert out['counts']['pit_rows']['without_as_filed_sic'] == 1
+    assert out['counts']['pit_rows']['scored_without_as_filed_sic'] == 1
+    assert s18['counts']['pit_rows']['without_as_filed_sic'] == 0
+
+
+def test_scoring_config_overrides_that_differ_from_the_pinned_ones_are_refused(years):
+    """Review SYN-M1: selection_stage accepted type_config / parameters / playbook overrides under the frozen hash."""
+    s18, _ = years
+    assert s18['scoring_config'] == settings.SCORING_CONFIG == settings.settings_dict()['scoring']['config']
+    changed = settings.scoring_configs()['type_config']
+    changed['fallback'] = {'changed': True}
+    with pytest.raises(runner.RunnerError, match='NON_FROZEN_SCORING_CONFIG'):
+        select(2018, type_config=changed)
+    same = select(2018, type_config=settings.scoring_configs()['type_config'])
+    assert same['selections'] == s18['selections']
+
+
+def test_every_preset_total_cell_reports_its_totals_without_v(years):
+    """Operational D11 is not applied (owner decision pending); each total cell counts its ranked totals without V."""
+    s18, _ = years
+    assert s18['operational_d11'] == 'NOT_APPLIED_OWNER_DECISION_PENDING'
+    for strategy, by_group in s18['counts']['strategies'].items():
+        for group, cell in by_group.items():
+            if settings.STRATEGIES[strategy]['kind'] != 'TOTAL':
+                assert cell['totals_without_v'] is None
+                continue
+            ranked = set(s18['universe'][group]['member_securities']) - set(
+                s18['selections'][strategy][group]['not_eligible'])
+            assert cell['totals_without_v'] == sum(1 for sid in ranked
+                                                   if s18['scores']['securities'][sid]['axes']['V'] is None)
