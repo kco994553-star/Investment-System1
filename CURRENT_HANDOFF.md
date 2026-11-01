@@ -1,6 +1,6 @@
 # 현재 인수인계 — 2026-10-31
 
-기준 **2026-10-31 02:35 UTC / 11:35 KST**, canonical **`32cc3ffd`** (#431). 직전 판: 2026-10-30, `b10b841a`(#429). 실제 기본 브랜치는 **`claude/investment-system-top500-validation-alrugm`**이다(`origin/main` 없음). git log·PR·Actions·공개 파일을 대조했다. 이후 실행은 다시 조회한다.
+기준 **2026-10-31 저녁(UTC 23:30대)**, canonical **`1465260e`**(#446). 10/31 저녁 오너 승인으로 병합: #448 `ef0e90cb`(Worker 배포 run 41252518944) → #438 `f8e9a4ef` → #440 `edb11b1c` → #442 `70d0e447` → #441 `37b7ddc4` → #445 `1c73cb9b` → #450 `c33ec071` → #446 `1465260e`. 실제 기본 브랜치는 **`claude/investment-system-top500-validation-alrugm`**.
 
 읽기: [START_HERE](START_HERE.md) → [방향 전환 대장](docs/SPEC/DIRECTION_CHANGES.md) → [WORKING_RULES](WORKING_RULES.md) → [기능 현황](docs/SPEC/FUNCTION_STATUS.md) → [결정 원문](implementation/docs/USER_DECISIONS_PENDING.md). 오늘 이행은 오너 10/31 결정 두 묶음(병합·확장·기기 V 폐지 DC-31 / 병렬 진행 체계 DC-32·가격 표시 검토)이다.
 
@@ -19,16 +19,9 @@
 
 | PR·작업 | 담당 | 시작 (UTC) |
 | --- | --- | --- |
-| [#438](https://github.com/kco994553-star/Investment-System1/pull/438) 이 문서 PR(DC-35 개발 체계 — 밤 개정으로 흐름 셋 Main·Codex·GPT Work·#434 대체·lab-backtest-v1 계약 기록) | Claude Code Main | 10/31 08:05 |
-| [#440](https://github.com/kco994553-star/Investment-System1/pull/440) 표 PR(공개 + 비공개 2층 구조 표·DC-36, `claude/public-private-two-layer-table`, 이 문서 PR 위) | Claude Code Main | 10/31 08:50 |
-| [#442](https://github.com/kco994553-star/Investment-System1/pull/442) 전진검증 v3 설계 PR(DC-38, `claude/forward-validation-v3-design`, 표 PR 위) | Claude Code Main | 10/31 10:20 |
-| [#441](https://github.com/kco994553-star/Investment-System1/pull/441) 공통 기반 PR(기업 목록 공통 접근·Lab 판독기·비공개 기능 상태·`parts.privatePanel`, `claude/web-app-common-base`, base = canonical) | Claude Code Main | 10/31 08:10 |
-| [#445](https://github.com/kco994553-star/Investment-System1/pull/445) 묶음 1 PR(매크로·프롬프트·트리, `claude/web-app-bundle-1-v2`, #441 위. #444는 저장소 가드 EMAIL_PATTERN 때문에 커밋 하나로 다시 올리고 닫음) | Claude Code Main | 10/31 08:10 |
-| #436 보강(차트 이력·Lab 결과 저장·조회 계약) | Claude Code Main | 10/31 08:10 |
-| [#447](https://github.com/kco994553-star/Investment-System1/pull/447) #436 1단계 가드 PR(KIS·비공개 경계 가드·research-request/1·보안 검토 수정, `claude/private-area-guards`, #436 위) | Claude Code Main | 10/31 09:40 |
-| [#446](https://github.com/kco994553-star/Investment-System1/pull/446) S06 대표 증권 PR(발행사 한 자리·정렬 기준, `claude/s06-issuer-seat`) | Claude Code Main | 10/31 09:10 |
-| [#448](https://github.com/kco994553-star/Investment-System1/pull/448) Worker 수정 PR(`redirect: 'error'` → `'manual'`, `cf.cacheTtl` 제거, 3xx 거부, `claude/worker-redirect-fix`, 배포는 승인 뒤) | Claude Code Main | 10/31 11:16 |
-| [#449](https://github.com/kco994553-star/Investment-System1/pull/449) 마지막 체결 시각 ① 판독기·검증기 먼저(`claude/iex-last-trade-time-readers`). 게시 쪽 ③은 다음 PR | Claude Code Main | 10/31 11:35 |
+| [#449](https://github.com/kco994553-star/Investment-System1/pull/449) 마지막 체결 시각 ① 판독기·검증기 먼저. #446과 겹친 고정값(`qgv-scores.js`·`leaderboard-screen.js`)을 canonical과 합친 뒤 다시 계산 | Claude Code Main | 10/31 11:35 |
+| [#436](https://github.com/kco994553-star/Investment-System1/pull/436) 비공개 구역 설계 → [#447](https://github.com/kco994553-star/Investment-System1/pull/447) 가드(canonical과 합침, 워크플로 ① `private-boundary-push.yml` 포함) | Claude Code Main | 10/31 09:40 |
+| 전진검증 v3 결정 반영 문서 PR(`claude/fv3-decisions-1031-evening`: FV3-TR·FV3-PIT-TICKER·FV3-SIZE 누적 시총 비율·FV3-ALIGN-443·DC-39) | Claude Code Main | 10/31 23:35 |
 
 ## 1. 10/31 오너 결정과 처리
 
@@ -42,7 +35,7 @@
 | 기기 V 폐지 | DC-31(#431). PR-1a [#435](https://github.com/kco994553-star/Investment-System1/pull/435) **병합**(`44cd0b43`, 새 앱 공식 V 판독기). PR-1b [#439](https://github.com/kco994553-star/Investment-System1/pull/439) **병합**(`5e16d3e6`, 10/31 오너 승인, 옛 화면은 중앙 V만). S06 같은 발행사 두 번째 주식 종류(GOOG) 표시는 후속 PR(오너 원칙 "시총은 발행사 단위, 점수는 대표 증권 하나"). TARGET 경로는 11/16 PR |
 | 병렬 진행 체계 | DC-32·WORKING_RULES·START_HERE 담당표(이 PR) |
 | #426 | 필요한 원칙만 #431로 옮기고 닫음 |
-| 측정용 가지 | 오너가 지움(세션 삭제 권한 없음) |
+| 측정용 가지 | 오너가 지움(세션 삭제 권한 없음). 11/01 추가: `claude/fv3-pit-ticker-measure`(워크플로 ② 측정 끝남, [run 41255597310](https://github.com/kco994553-star/Investment-System1/actions/runs/41255597310): `dei:TradingSymbol` 48%, 파일 이름 앞부분 100%, 둘이 같음 92% — 설계 12절) |
 | 사용량 | 독립 검토는 계산·워크플로 변경에만 1개, 전체 시험은 push 전 1회, 보고는 하루 1회 |
 | 가격 표시 | #433 GSQ-026·DC-33 결정 기록(승인 대기) |
 | KIS·1인 비공개 구역 | 인증 검증 1회([41165951277](https://github.com/kco994553-star/Investment-System1/actions/runs/41165951277))·IEX 대비 비교 1회([41169962364](https://github.com/kco994553-star/Investment-System1/actions/runs/41169962364)) 완료. 같은 날 "KIS 보류" 지시는 뒤 지시로 **취소**, **1인 비공개 구역 신설(KIS 한정)** 설계 문서 PR [#436](https://github.com/kco994553-star/Investment-System1/pull/436)(DC-34·GSQ-027 제안, 결정 대기 `PRIV-*` 7개, 구현은 승인 뒤). 결정 기록·방향 전환 줄·"비공개 구역 불필요" 기록 수정은 #436에 있다 |
