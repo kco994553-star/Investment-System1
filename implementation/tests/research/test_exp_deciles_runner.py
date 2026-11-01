@@ -283,3 +283,12 @@ def test_default_end_and_event_rows():
     with pytest.raises(runner.RunnerError, match='EVENT_AMOUNT_INVALID'):
         runner.ledger_events([{'type': 'SPLIT', 'event_id': 'S', 'effective_date': '2018-01-02', 'security_id': 'X',
                                'ratio': 2.5}])
+
+
+def test_dividend_rows_carry_an_optional_depositary_fee():
+    rows = [{'type': 'DIVIDEND', 'event_id': 'D1', 'effective_date': '2018-06-01', 'security_id': 'X',
+             'cash_per_share': '0.4007', 'pay_date': '2018-06-15', 'depositary_fee_per_share': '0.0207'}]
+    assert runner.ledger_events(rows)[0] == ledger.Dividend('D1', date(2018, 6, 1), 'X', Decimal('0.4007'),
+                                                            date(2018, 6, 15), Decimal('0.0207'))
+    with pytest.raises(runner.RunnerError, match='EVENT_AMOUNT_INVALID'):
+        runner.ledger_events([dict(rows[0], depositary_fee_per_share=0.02)])

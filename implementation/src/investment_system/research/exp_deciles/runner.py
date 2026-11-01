@@ -305,7 +305,8 @@ def price_rows(rows):
 
 _EVENT_FIELDS = {
     'SPLIT': (ledger.Split, ('event_id', 'effective_date', 'security_id', 'ratio'), ()),
-    'DIVIDEND': (ledger.Dividend, ('event_id', 'effective_date', 'security_id', 'cash_per_share'), ('pay_date',)),
+    'DIVIDEND': (ledger.Dividend, ('event_id', 'effective_date', 'security_id', 'cash_per_share'),
+                 ('pay_date', 'depositary_fee_per_share')),
     'SETTLEMENT': (ledger.Settlement, ('event_id', 'effective_date', 'security_id', 'kind', 'available_at', 'evidence'),
                    ('settlement_date', 'cash_per_share', 'new_security_id', 'stock_ratio')),
     'SETTLEMENT_CONFIRMATION': (ledger.SettlementConfirmation,
@@ -313,7 +314,7 @@ _EVENT_FIELDS = {
                                 ('new_security_id', 'stock_ratio')),
 }
 _EVENT_DATES = ('effective_date', 'available_at', 'settlement_date', 'pay_date')
-_EVENT_DECIMALS = ('ratio', 'cash_per_share', 'stock_ratio')
+_EVENT_DECIMALS = ('ratio', 'cash_per_share', 'stock_ratio', 'depositary_fee_per_share')
 
 
 def ledger_events(rows):

@@ -41,7 +41,8 @@ Bundle files (JSON), by resource name:
                       raw (unadjusted) USD session prices for the ledger
   events[:x]          [{"type": "SPLIT", "event_id", "effective_date", "security_id", "ratio"},
                        {"type": "DIVIDEND", "event_id", "effective_date" (ex-date), "security_id", "cash_per_share",
-                        "pay_date"?},
+                        "pay_date"?, "depositary_fee_per_share"? (ADR: fee per ADS deducted from the cash; recorded as
+                        an instrument fee; a fee above the cash is refused)},
                        {"type": "SETTLEMENT", "event_id", "effective_date", "security_id", "kind" (CASH_MERGER,
                         STOCK_MERGER, DELISTING or SPINOFF), "available_at", "evidence", "settlement_date"?,
                         "cash_per_share"?, "new_security_id"?, "stock_ratio"?},

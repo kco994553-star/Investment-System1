@@ -563,3 +563,21 @@ def test_split_of_a_frozen_carry_position_keeps_its_value():
     assert 'SPLIT_ON_TERMINATED_SECURITY:rs' in row['flags']
     assert row['positions']['A']['quantity'] == 5 and row['positions']['A']['price'] == 80
     assert row['carry_value'] == 400 and row['nav'] == 900
+
+
+# -- ADR dividend depositary fee (owner task, as in the preserved Codex research ledger c68af2c0) ------------------
+def test_adr_dividend_depositary_fee_is_deducted_and_recorded_as_an_instrument_fee():
+    dividend = Dividend('adr-div', d[3], 'A', D('0.50'), d[5], depositary_fee_per_share=D('0.05'))
+    result = run([Rebalance(d[0], d[1], ['A'])], flat('A', 10), [dividend])
+    assert row_on(result, d[3])['receivables'] == D('45')            # 100 ADS x (0.50 - 0.05)
+    assert 'DEPOSITARY_FEE:adr-div' in row_on(result, d[3])['events']
+    assert row_on(result, d[5])['cash'] == row_on(result, d[5])['reserved_cash'] == 45
+    assert result['instrument_fees'] == ({'session': d[3], 'event_id': 'adr-div', 'security_id': 'A',
+                                          'kind': 'DEPOSITARY_FEE', 'quantity': D('100'), 'fee_per_share': D('0.05'),
+                                          'amount': D('5.00')},)
+    assert result['total_instrument_fees'] == 5 and result['total_costs'] == 0     # not a trading cost
+    plain = run([Rebalance(d[0], d[1], ['A'])], flat('A', 10), [Dividend('div', d[3], 'A', D('0.50'), d[5])])
+    assert plain['instrument_fees'] == () and row_on(plain, d[3])['receivables'] == 50
+    with pytest.raises(LedgerError, match='ADR_FEE_EXCEEDS_DIVIDEND'):
+        run([Rebalance(d[0], d[1], ['A'])], flat('A', 10),
+            [Dividend('bad', d[3], 'A', D('0.05'), d[5], depositary_fee_per_share=D('0.06'))])

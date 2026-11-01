@@ -35,6 +35,9 @@ Changed for this experiment (settings doc section 1, inventory item 7):
   evidence, unknown kind, impossible dates or amounts) are still refused for the whole run.
 - A missing price is not a termination: the position is marked at its last observed price and flagged STALE_MARK.
   Price gaps alone never trigger LOSS or CARRY.
+- ADR dividends may carry depositary_fee_per_share (as in the preserved Codex research ledger, commit c68af2c0): the
+  receivable is quantity x (cash_per_share - fee), the fee is recorded as an instrument fee (`instrument_fees`, kind
+  DEPOSITARY_FEE, separate from trading costs) and a fee above the cash per share is refused (ADR_FEE_EXCEEDS_DIVIDEND).
 - Cash interest is zero (mode 'ZERO'; no rate rows). Initial capital defaults to USD 1,000,000. Currency is USD only.
 - The equal-weight target base at S is cash (reserved cash released) plus tradable holdings at S marks. Unpaid
   receivables, CARRY value and positions frozen by a corporate action cannot fund trades, so they are reported but
@@ -195,6 +198,7 @@ class Dividend:
     security_id: str
     cash_per_share: Decimal
     pay_date: date | None = None  # None: cash on the ex-date, flagged DIVIDEND_PAY_DATE_ASSUMED_EX_DATE.
+    depositary_fee_per_share: Decimal | None = None  # ADR depositary fee per ADS, deducted from the cash per share.
 
 
 @dataclass(frozen=True)
@@ -282,6 +286,16 @@ def _validate_terms(kind, security_id, effective_date, settlement_date, cash_per
         raise LedgerError('UNEXPECTED_STOCK_TERMS')
 
 
+def _dividend_amounts(event):
+    """(cash per share, depositary fee per share); a fee above the cash is refused."""
+    cash = _decimal(event.cash_per_share, 'DIVIDEND')
+    fee = Decimal(0) if event.depositary_fee_per_share is None else _decimal(event.depositary_fee_per_share,
+                                                                               'DEPOSITARY_FEE')
+    if fee > cash:
+        raise LedgerError('ADR_FEE_EXCEEDS_DIVIDEND')
+    return cash, fee
+
+
 def _validate_settlement(event):
     _security(event.event_id)
     _security(event.security_id)
@@ -332,6 +346,7 @@ class Ledger:
         self.requested: dict[str, Decimal] = {}
         self.terminated: dict[str, str] = {}
         self.fills: list[Fill] = []
+        self.instrument_fees: list[dict] = []  # Depositary fees deducted from ADR dividends (not trading costs).
         self.unfilled: list[Unfilled] = []
         self._settlements: dict[str, _SettlementState] = {}
         self._entitlements: dict[str, Decimal] = {}  # event_id -> legal quantity before the effective-date open
@@ -394,8 +409,14 @@ class Ledger:
     def apply_dividend(self, event: Dividend):
         """Entitlement on the legal quantity held before the ex-date open (in every state, so both scenarios agree)."""
         session = self._require_session()
-        amount = _product_exact(self.holdings.get(event.security_id, Decimal(0)),
-                                _decimal(event.cash_per_share, 'DIVIDEND'))
+        cash, fee = _dividend_amounts(event)
+        quantity = self.holdings.get(event.security_id, Decimal(0))
+        amount = _product_exact(quantity, _sum_exact((cash, fee.copy_negate())))
+        if fee and quantity:
+            self.instrument_fees.append(dict(session=session, event_id=event.event_id, security_id=event.security_id,
+                                             kind='DEPOSITARY_FEE', quantity=quantity, fee_per_share=fee,
+                                             amount=_product_exact(quantity, fee)))
+            self._day_events.append(f'DEPOSITARY_FEE:{event.event_id}')
         pay_date = event.pay_date
         if pay_date is None:
             pay_date = session
@@ -876,7 +897,7 @@ def _event_schedule(events):
             _decimal(event.ratio, 'SPLIT_RATIO', positive=True)
             schedule.append((event.effective_date, 0, event.event_id, event))
         elif isinstance(event, Dividend):
-            _decimal(event.cash_per_share, 'DIVIDEND')
+            _dividend_amounts(event)
             if event.pay_date is not None:
                 _date(event.pay_date, 'PAY_DATE')
                 if event.pay_date < event.effective_date:
@@ -975,7 +996,9 @@ def run_ledger(sessions: Sequence[date], rebalances: Sequence[Rebalance], prices
                 not_reached=tuple(row.signal_date for row in rows if row.signal_date not in records),
                 fills=fills, unfilled=tuple(ledger.unfilled), conflicts=tuple(ledger.conflicts),
                 total_costs=_sum_exact(fill.fee for fill in fills),
-                total_gross_traded=_sum_exact(fill.gross for fill in fills))
+                total_gross_traded=_sum_exact(fill.gross for fill in fills),
+                instrument_fees=tuple(ledger.instrument_fees),
+                total_instrument_fees=_sum_exact(item['amount'] for item in ledger.instrument_fees))
 
 
 def run_scenarios(sessions, rebalances, prices, events=(), **kwargs) -> dict[str, dict]:
