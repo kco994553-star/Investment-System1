@@ -47,9 +47,9 @@ from . import settings
 INPUT_MANIFEST_SCHEMA = 'exp-deciles-input-manifest/1'
 OUTPUT_MANIFEST_SCHEMA = 'exp-deciles-output-manifest/1'
 RESOURCE_KEYS = ('name', 'path', 'sha256', 'source', 'period', 'rights_note')
-RESOURCE_KINDS = ('records', 'quotes', 'companyfacts', 'filings', 'prices', 'events', 'tr_series', 'risk_free')
+RESOURCE_KINDS = ('records', 'quotes', 'companyfacts', 'filings', 'prices', 'events', 'tr_series', 'risk_free', 'cpi')
 YEAR_KINDS = ('records', 'quotes')
-SINGLE_KINDS = ('tr_series', 'risk_free')
+SINGLE_KINDS = ('tr_series', 'risk_free', 'cpi')
 STAGES = ('select', 'ledger')
 CLI_PATH = 'implementation/tools/exp_stock_indicator_deciles.py'
 OUTPUT_DIR_PLACEHOLDER = 'NEW_PRIVATE_OUTPUT_DIR'
@@ -226,11 +226,11 @@ def run_id(*, experiment_id, settings_sha256, code_sha, code_sha_flags, input_ma
     return hashlib.sha256(canonical_bytes(body)).hexdigest()[:RUN_ID_HEX]
 
 
-def reproduction_command(stage, *, input_manifest_sha256, generated_at, code_sha, extra_inputs=()):
+def reproduction_command(stage, *, input_manifest_sha256, generated_at, code_sha, extra_inputs=(), market_cap_version="nominal-v1"):
     """{'argv', 'placeholders', 'code_sha', 'cwd'} rebuilding the run (module doc); placeholders name each private file
     by role with its sha256, never by path."""
     stage = _stage(stage)
-    argv = ['python', CLI_PATH, stage['name'], '--manifest', '<INPUT_MANIFEST>']
+    argv = ['python', CLI_PATH, stage['name'], '--manifest', '<INPUT_MANIFEST>', '--market-cap-version', market_cap_version]
     placeholders = {'INPUT_MANIFEST': {'sha256': input_manifest_sha256}}
     roles = {item['role']: item['sha256'] for item in extra_inputs}
     if stage['name'] == 'select':
@@ -254,7 +254,7 @@ def reproduction_command(stage, *, input_manifest_sha256, generated_at, code_sha
             'cwd': 'repository root checked out at code_sha'}
 
 
-def run_metadata(*, input_manifest, code_sha, stage, generated_at, extra_inputs=(), code_flags=()):
+def run_metadata(*, input_manifest, code_sha, stage, generated_at, extra_inputs=(), code_flags=(), market_cap_version="nominal-v1"):
     """The 'run' block every output payload carries (and the output manifest repeats): run identity, the settings body
     and the reproduction command (review F11). code_flags: extra UPPER_SNAKE flags about the code state (e.g.
     CODE_TREE_DIRTY from the CLI)."""
@@ -266,16 +266,16 @@ def run_metadata(*, input_manifest, code_sha, stage, generated_at, extra_inputs=
         if not isinstance(item, dict) or set(item) != {'role', 'sha256'} or not _HEX64.fullmatch(str(item['sha256'])):
             raise HandoffError('EXTRA_INPUT_INVALID')
         extras.append({'role': _text(item['role'], 'EXTRA_INPUT_INVALID'), 'sha256': item['sha256']})
-    settings_sha = settings.settings_sha256()
+    settings_sha = settings.settings_sha256(market_cap_version)
     when = generated_at_text(generated_at)
     return {'experiment_id': settings.EXPERIMENT_ID, 'settings_sha256': settings_sha,
-            'settings': settings.settings_dict(), 'code_sha': sha,
+            'settings': settings.settings_dict(market_cap_version), 'code_sha': sha,
             'code_sha_flags': flags, 'input_manifest_sha256': input_manifest['sha256'],
             'run_id': run_id(experiment_id=settings.EXPERIMENT_ID, settings_sha256=settings_sha, code_sha=sha,
                              code_sha_flags=flags, input_manifest_sha256=input_manifest['sha256'], stage=stage),
             'stage': stage, 'generated_at': when, 'extra_inputs': extras,
             'reproduction': reproduction_command(stage, input_manifest_sha256=input_manifest['sha256'],
-                                                 generated_at=when, code_sha=sha, extra_inputs=extras)}
+                                                 generated_at=when, code_sha=sha, extra_inputs=extras, market_cap_version=market_cap_version)}
 
 
 def build_output_manifest(run, input_manifest, outputs) -> dict:

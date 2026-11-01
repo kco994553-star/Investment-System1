@@ -2,6 +2,9 @@
 """EXP-STOCK-INDICATOR-DECILES-v1 private-run CLI: the only IO layer of research/exp_deciles. RESEARCH ONLY.
 
 Subcommands
+  select / ledger use --market-cap-version cpi-2025-v1 by default; the cpi resource is required. Historical nominal
+                           replay must explicitly pass --market-cap-version nominal-v1. The synthetic command retains
+                           its original nominal policy. CPI mode requires a verified previous selection, not bare state.
   schedule                 verify the frozen schedule (exp_deciles/schedule_v1.json) against the rule calendar and print
                            its rows (dates only); exit 0 when it verifies, 1 otherwise
   select   --manifest M --year Y [--previous-u-a FILE] --out DIR [--generated-at ISO]
@@ -42,6 +45,9 @@ relative to the manifest's directory or absolute). Every resource file is hashed
 when it is parsed; any mismatch is refused (MANIFEST_HASH_MISMATCH).
 
 Bundle files (JSON), by resource name:
+  cpi                exp-deciles-cpi-input/1 (cap_thresholds.py): fixed 2025 annual CPI-U NSA average, monthly vintages,
+                      release-calendar coverage, signal timestamps, and source/version/hash evidence. Decimal values
+                      are strings. No download, guessed CPI or silent nominal fallback. Required for cpi-2025-v1 only.
   records:<year>      {"signal_day": "<the frozen S of that year>", "records": [record, ...], "terminations"?: [...]}
                       record (universe.py module doc): security_id, cik, listed (true / false / null), security_type
                       (COMMON, COMMON_CLASS, ADR, REIT, ETF, CLOSED_END_FUND, PREFERRED, WARRANT, RIGHT, UNIT, or null),
@@ -61,7 +67,8 @@ Bundle files (JSON), by resource name:
                       close}, "withheld_reason"?: UPPER_SNAKE}}}; a quote is per traded security (an ADR quote is per
                       ADS; the runner divides it by adr_ratio). Optional: without it V is NA for every name and the
                       output carries the flag QUOTES_NOT_SUPPLIED.
-  companyfacts:<CIK>  one SEC companyfacts JSON ({"cik", "facts", ...}); read only when that CIK is a U-A member
+  companyfacts:<CIK>  one SEC companyfacts JSON ({"cik", "facts", ...}); read for the scoring reference members
+                      (C2 for cpi-2025-v1; U-A for preserved nominal-v1)
   companyfacts[:x]    (x not all digits) one SEC companyfacts JSON, or {"<cik>": companyfacts, ...}; read whole
   filings[:x]         [{"cik", "accn", "filed": "YYYY-MM-DD", "sic"}, ...]: filing rows for the as-filed SIC
   prices[:x]          [{"date", "security_id", "open", "close", "suspended", "price_basis": "RAW", "currency"?: "USD"}]
@@ -128,7 +135,7 @@ REPO_ROOT = ROOT.parent
 if str(ROOT / 'src') not in sys.path:
     sys.path.insert(0, str(ROOT / 'src'))
 
-from investment_system.research.exp_deciles import handoff, runner, schedule, settings, synthetic  # noqa: E402
+from investment_system.research.exp_deciles import handoff, runner, schedule, settings, synthetic, cap_thresholds  # noqa: E402
 
 SELECTION_FILE = 'selection_inputs.json'
 LEDGER_FILE = 'ledger_outputs.json'
@@ -481,11 +488,24 @@ def cmd_schedule(_args):
     return 0 if check['ok'] else 1
 
 
+def _cpi_resource(bundle, version):
+    resources = bundle.of('cpi')
+    if version == cap_thresholds.CPI2025:
+        if not resources:
+            raise CliError('CPI_INPUT_MISSING')
+        # CPI values are exact decimal strings; integer years stay integers for canonical provenance.
+        return bundle.read(resources[0], exact=False)
+    if resources:
+        raise CliError('CPI_RESOURCE_WITH_NOMINAL_POLICY')
+    return None
+
+
 def cmd_select(args):
     out_dir = _output_dir(args.out)
     _refuse_existing(out_dir, (SELECTION_FILE, MANIFEST_FILE))
     generated_at = _generated_at(args.generated_at)
     bundle = Bundle(args.manifest)
+    cpi = _cpi_resource(bundle, args.market_cap_version)
     try:
         frozen = schedule.frozen_row(year=args.year)
     except ValueError:
@@ -501,6 +521,10 @@ def cmd_select(args):
         previous, digest, previous_flags, previous_manifest = _previous_u_a(args.previous_u_a, args.year)
         extra.append({'role': 'previous_u_a', 'sha256': digest})
     code_sha, code_flags = code_state()
+    if args.previous_u_a is not None and args.market_cap_version == cap_thresholds.CPI2025 and previous_manifest is None:
+        raise CliError('CPI_PREVIOUS_SELECTION_REQUIRED')
+    if previous_manifest is not None and previous_manifest.get('settings_sha256') != settings.settings_sha256(args.market_cap_version):
+        raise CliError('PREVIOUS_U_A_MARKET_CAP_POLICY_MISMATCH')
     if previous_manifest is not None:              # review PREV-UA-PROVENANCE: the same checks as the ledger's
         if previous_manifest.get('input_manifest_sha256') != bundle.manifest['sha256']:
             raise CliError('PREVIOUS_U_A_INPUT_MANIFEST_DIFFERS')
@@ -508,13 +532,13 @@ def cmd_select(args):
             previous_flags = previous_flags + [PREVIOUS_U_A_CODE_SHA_DIFFERS]
     stage = {'name': 'select', 'year': args.year, 'previous_u_a_sha256': extra[0]['sha256'] if extra else None}
     run = handoff.run_metadata(input_manifest=bundle.manifest, code_sha=code_sha, stage=stage,
-                               generated_at=generated_at, extra_inputs=extra, code_flags=code_flags)
+                               generated_at=generated_at, extra_inputs=extra, code_flags=code_flags, market_cap_version=args.market_cap_version)
     payload = runner.selection_stage(records, year=args.year, companyfacts=_companyfacts_loader(bundle),
                                      filing_rows=bundle.concat('filings', exact=False), quotes=quotes,
                                      previous_u_a=None if previous is None else previous['members'],
                                      previous_u_a_unknown=None if previous is None else previous['unknown'],
                                      previous_u_a_securities=None if previous is None else previous['securities'],
-                                     terminations=more.get('terminations'), run=run)
+                                     terminations=more.get('terminations'), run=run, market_cap_version=args.market_cap_version, cpi=cpi)
     payload['flags'] = payload['flags'] + previous_flags
     if quotes is None:
         payload['flags'] = payload['flags'] + [QUOTES_NOT_SUPPLIED]
@@ -523,7 +547,7 @@ def cmd_select(args):
     _write_outputs(out_dir, [(SELECTION_FILE, body), (MANIFEST_FILE, handoff.canonical_bytes(manifest))])
     counts = payload['counts']
     strategies = [sel for by_group in counts['strategies'].values() for sel in by_group.values()]
-    pairs = [('stage', 'select'), ('run_id', run['run_id']), ('year', args.year),
+    pairs = [('stage', 'select'), ('market_cap_version', args.market_cap_version), ('run_id', run['run_id']), ('year', args.year),
              ('first_build', str(payload['first_build']).lower()),
              ('flags', ','.join(payload['flags'] + run['code_sha_flags']) or '-')]
     for group in settings.GROUPS:
@@ -542,6 +566,7 @@ def cmd_ledger(args):
     _refuse_existing(out_dir, (LEDGER_FILE, MANIFEST_FILE))
     generated_at = _generated_at(args.generated_at)
     bundle = Bundle(args.manifest)
+    cpi = _cpi_resource(bundle, args.market_cap_version)
     if not bundle.of('prices'):
         raise CliError('PRICES_NOT_SUPPLIED')
     selections, hashes, manifests = [], [], []
@@ -555,6 +580,10 @@ def cmd_ledger(args):
             raise CliError('SELECTION_CODE_STATE_UNVERIFIED')
         if manifest.get('input_manifest_sha256') != bundle.manifest['sha256']:
             raise CliError('SELECTION_INPUT_MANIFEST_DIFFERS')
+        if manifest.get('settings_sha256') != settings.settings_sha256(args.market_cap_version):
+            raise CliError('SELECTION_MARKET_CAP_POLICY_MISMATCH')
+        if cpi is not None and (payload.get('market_cap_context') or {}).get('input_sha256') != cap_thresholds._digest(cpi):
+            raise CliError('SELECTION_CPI_INPUT_MISMATCH')
         manifests.append(manifest)
         selections.append(payload)
         hashes.append((payload.get('year'), handoff.sha256_hex(data)))
@@ -573,7 +602,7 @@ def cmd_ledger(args):
     stage = {'name': 'ledger', 'selection_sha256': [digest for _, digest in hashes], 'end': args.end,
              'daily_positions': bool(args.daily_positions)}
     run = handoff.run_metadata(input_manifest=bundle.manifest, code_sha=code_sha, stage=stage,
-                               generated_at=generated_at, extra_inputs=extra, code_flags=code_flags)
+                               generated_at=generated_at, extra_inputs=extra, code_flags=code_flags, market_cap_version=args.market_cap_version)
     payload = runner.ledger_stage(selections, prices=bundle.concat('prices'), events=bundle.concat('events'),
                                   end=args.end, tr_series=tr_series, daily_positions=args.daily_positions, run=run,
                                   risk_free=risk_free)
@@ -631,7 +660,7 @@ def cmd_synthetic(args):
     _refuse_existing(bundle_dir, tuple(name for name, _ in synthetic.bundle_bytes()))
     _write_outputs(bundle_dir, synthetic.bundle_bytes())
     manifest = str(bundle_dir / 'manifest.json')
-    when = ['--generated-at', args.generated_at] if args.generated_at is not None else []
+    when = (['--generated-at', args.generated_at] if args.generated_at is not None else []) + ['--market-cap-version', 'nominal-v1']
     steps = [
         ['select', '--manifest', manifest, '--year', '2018', '--out', str(root / 'select-2018')] + when,
         ['select', '--manifest', manifest, '--year', '2019', '--previous-u-a',
@@ -663,6 +692,7 @@ def build_parser():
     p.set_defaults(func=cmd_schedule)
     p = sub.add_parser('select', allow_abbrev=False)
     p.add_argument('--manifest', required=True)
+    p.add_argument('--market-cap-version', choices=('nominal-v1', 'cpi-2025-v1'), default='cpi-2025-v1')
     p.add_argument('--year', type=int, required=True)
     p.add_argument('--previous-u-a')
     p.add_argument('--out', required=True)
@@ -670,6 +700,7 @@ def build_parser():
     p.set_defaults(func=cmd_select)
     p = sub.add_parser('ledger', allow_abbrev=False)
     p.add_argument('--manifest', required=True)
+    p.add_argument('--market-cap-version', choices=('nominal-v1', 'cpi-2025-v1'), default='cpi-2025-v1')
     p.add_argument('--selection', action='append', required=True)
     p.add_argument('--out', required=True)
     p.add_argument('--generated-at')
