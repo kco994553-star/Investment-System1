@@ -6,7 +6,7 @@
 
 ## 0. 역할·지금 관리할 흐름
 
-역할은 **DC-35(10/31 밤 개정, 흐름 셋)**: 코드·공용 파일·워크플로·`docs/SPEC`·병합·인수인계·결정 기록·DC 번호 부여는 Main(Claude Code)만. **Codex**는 백테스트 연구(French 요인 대리 검증)와 재구성 결과 감사, 연구 가지와 문서만. **GPT Work**는 문서 조사·정리와 Notion 정리, `docs/` 가지의 Draft PR만(예: #443). 다른 흐름의 PR이 DC 번호·결정 기록을 직접 바꾸면 Main이 번호를 다시 매겨 반영한다. Codex·GPT Work PR은 Main이 canonical 동기화·CI 녹색·담당 파일만 바뀜을 확인하고 오너 승인 뒤 병합한다. 담당표: [START_HERE 4절](START_HERE.md).
+역할은 **DC-40(11/01, 흐름 둘 — DC-35의 흐름 셋을 대체)**: **Main**은 공통 계산·가격·재구성·장부 엔진, 역사 모집단·가격·재무 입력 연결과 Codex 인계, 운영 코드·공용 파일·데이터 계약·가드·워크플로, 담당표·결정 기록·DC 번호·최종 통합, 승인 범위의 병합·배포. **Codex**는 연구 설정과 공통 엔진으로 실험 실행·검증·보고, Main 구현의 독립 대사, 책 원문 조사·규칙표(#443)·연구 문서, Notion 정리(옛 GPT Work 일). Codex PR이 DC 번호·결정 기록을 직접 바꾸면 Main이 번호를 다시 매겨 반영한다. Codex PR은 Main이 canonical 동기화·CI 녹색·담당 파일만 바뀜을 확인하고 오너 승인 뒤 병합한다. 담당표: [START_HERE 4절](START_HERE.md). 지금 Main이 진행하는 연구 인계: `EXP-STOCK-INDICATOR-DECILES-v1`([설정](implementation/docs/lab/EXP_STOCK_INDICATOR_DECILES_V1.md), #437 회신).
 
 | 흐름 / 기능번호 | Main 이행 | 현재 상태 |
 | --- | --- | --- |
