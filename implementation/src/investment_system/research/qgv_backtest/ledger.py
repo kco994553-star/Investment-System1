@@ -121,6 +121,7 @@ class Dividend:
     security_id: str
     cash_per_share: Decimal
     pay_date: date
+    depositary_fee_per_share: Decimal = Decimal(0)
 
 
 @dataclass(frozen=True)
@@ -160,6 +161,7 @@ class Ledger:
         self.fills: list[Fill] = []
         self.unfilled: list[Unfilled] = []
         self.cancellations: list[Cancellation] = []
+        self.instrument_fees: list[dict] = []
         self._events: dict[str, Split | Dividend | Settlement] = {}
         self._dividends: dict[str, Dividend] = {}
         self._settlements: dict[str, tuple[Settlement, Decimal]] = {}
@@ -337,10 +339,17 @@ class Ledger:
                 self.pending[event.security_id] = _product_exact(self.pending[event.security_id], ratio)
         elif isinstance(event, Dividend):
             amount = _decimal(event.cash_per_share, 'DIVIDEND')
+            fee = _decimal(event.depositary_fee_per_share,'DEPOSITARY_FEE')
+            if fee > amount:
+                raise LedgerError('ADR_FEE_EXCEEDS_DIVIDEND')
             _date(event.pay_date)
             if event.pay_date < event.effective_date:
                 raise LedgerError('PAY_DATE_PRECEDES_EX_DATE')
-            self.receivables[event.event_id] = self.holdings.get(event.security_id, Decimal(0)) * amount
+            quantity=self.holdings.get(event.security_id, Decimal(0))
+            self.receivables[event.event_id] = quantity * (amount-fee)
+            if fee and quantity:
+                self.instrument_fees.append(dict(event_id=event.event_id,security_id=event.security_id,
+                    session=session,quantity=quantity,fee=quantity*fee,kind='DEPOSITARY_FEE'))
             self._dividends[event.event_id] = event
         else:
             self._validate_settlement(event)

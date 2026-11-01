@@ -84,7 +84,7 @@ def prepare_companies(rows, *, type_config=None):
     return companies, summary
 
 
-def score_variants(rows, quotes, *, type_config=None, parameters=None, include_diagnostics=False):
+def score_variants(rows, quotes, *, type_config=None, parameters=None, include_diagnostics=False, variants=None):
     type_config = load_official_type_config().to_dict() if type_config is None else type_config
     parameters = load_default_dcf_parameters() if parameters is None else parameters
     companies, population = prepare_companies(rows, type_config=type_config)
@@ -114,12 +114,14 @@ def score_variants(rows, quotes, *, type_config=None, parameters=None, include_d
                     and _accession(receipt.get('shares_filing_accn')) == _accession(shares_basis['accn'])):
                 aligned[key] = quote
         quotes = aligned
-    variants = VARIANTS + (('D0', 'D2') if include_diagnostics else ())
+    variants = (VARIANTS + (('D0', 'D2') if include_diagnostics else ())) if variants is None else tuple(variants)
+    if not variants or 'W0' not in variants or set(variants) - set(VARIANTS + ('D0','D2')):
+        raise ValueError('VARIANT_INVALID')
     scores = {variant: qgv_v2.score_universe(companies, quotes, type_config=type_config,
                                             parameters=parameters, **variant_options(variant))
               for variant in variants}
     common_ids = tuple(key for key in sorted(companies) if all(
-        _finite(scores[v][key]['axes'][axis]['score']) for v in VARIANTS for axis in qgv_v2.PILLARS))
+        _finite(scores[v][key]['axes'][axis]['score']) for v in variants for axis in qgv_v2.PILLARS))
     common_set = set(common_ids)
     practical = {v: tuple(key for key in sorted(companies) if _finite(scores[v][key]['total'])) for v in variants}
     common = {v: tuple(key for key in practical[v] if key in common_set) for v in variants}

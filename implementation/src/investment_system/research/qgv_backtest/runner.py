@@ -12,6 +12,7 @@ import hashlib
 import io
 import json
 import os
+import re
 from bisect import bisect_right
 from dataclasses import asdict, is_dataclass
 from datetime import date, datetime, timezone
@@ -48,9 +49,18 @@ def _number(value, *, positive=False, signed=False):
     return result
 
 
-def _selected_cells(spec, period_id, stage):
+def _selected_cells(spec, period_id, stage, experiment_ids=None):
     cells = execution_cells(spec, period_id)
     primary = {r['id'] for r in spec['strategies'] if r['stage'] == 'primary'}
+    if experiment_ids is not None:
+        ids = set(experiment_ids)
+        known = {r['id'] for r in spec['strategies']} | {'D0-N15-Q','D2-N15-Q'}
+        if not ids or ids - known:
+            raise ValueError('UNKNOWN_EXPERIMENT')
+        # An explicit allowlist may select a deferred fixed-N strategy without
+        # executing any other registered strategy; costs remain stage-specific.
+        if stage in ('smoke','primary'):
+            return [c for c in cells if c['strategy_id'] in ids and c['cost_bps'] == 10]
     if stage in ('smoke', 'primary'):
         return [c for c in cells if c['strategy_id'] in primary and c['cost_bps'] == 10]
     if stage in ('sensitivity', 'report'):
@@ -60,7 +70,8 @@ def _selected_cells(spec, period_id, stage):
                 extra.append(dict(c, execution_delay=1))
             if c['strategy_id'] == 'W0-N15-Q':
                 extra.extend(dict(c, strategy_id=f'{variant}-N15-Q', diagnostic=True) for variant in ('D0', 'D2'))
-        return cells + extra
+        rows = cells + extra
+        return [c for c in rows if c['strategy_id'] in ids] if experiment_ids is not None else rows
     return []
 
 
@@ -187,7 +198,8 @@ def _event(row):
     if kind == 'SPLIT':
         return Split(*common, _number(row['ratio'], positive=True))
     if kind == 'DIVIDEND':
-        return Dividend(*common, _number(row['cash_per_share']), date.fromisoformat(row['pay_date']))
+        return Dividend(*common, _number(row['cash_per_share']), date.fromisoformat(row['pay_date']),
+                         _number(row.get('depositary_fee_per_share',0)))
     if kind in ('CASH_MERGER', 'STOCK_MERGER', 'SPINOFF', 'DELISTING'):
         return Settlement(*common, kind,
                           date.fromisoformat(row['settlement_date']) if row.get('settlement_date') else None,
@@ -407,7 +419,7 @@ def _advance_dates(ledger, events, previous, day, start, rate, stale, payments, 
                             key=lambda event: (0 if event.__class__.__name__ == 'Split' else 1 if isinstance(event, Dividend) else 2, event.event_id)):
             quantity = ledger.holdings.get(event.security_id, Decimal(0))
             if isinstance(event, Dividend):
-                payments[event.event_id] = (event.pay_date, event.security_id, quantity * event.cash_per_share)
+                payments[event.event_id] = (event.pay_date, event.security_id, quantity * (event.cash_per_share-event.depositary_fee_per_share))
             elif isinstance(event, Settlement):
                 complete = event.settlement_date is not None and event.cash_per_share is not None
                 if event.kind in ('STOCK_MERGER', 'SPINOFF'):
@@ -426,7 +438,7 @@ def _advance_dates(ledger, events, previous, day, start, rate, stale, payments, 
     return interest, cash, failed
 
 
-def _replay(spec, bundle, period_id, cells, *, smoke=False):
+def _replay(spec, bundle, period_id, cells, *, smoke=False, extension=None, preparation_cache=None):
     from . import calendar_adapter as ca, pit_adapter as pit, scoring_adapter as scoring
     from .ledger import Ledger, LedgerError
     from .metrics import NavPoint, exposure_metrics, performance_metrics
@@ -435,6 +447,7 @@ def _replay(spec, bundle, period_id, cells, *, smoke=False):
     blockers = _semantic_audit(spec, bundle, period_id)
     result = dict(spec_id=spec['spec_id'], period_id=period_id, status='BLOCKED_ON_DATA',
                   oos_status='OOS_NOT_ESTABLISHED', blockers=blockers, runs=[],
+                  period=period_for(spec,period_id),synthetic=bundle.get('synthetic') is True,real_data_executed=False,
                   benchmark_label='SP500_TR_INDEX' if period_id == 'TARGET_QGV_V2' else 'SPY_TR')
     if blockers:
         return result
@@ -443,8 +456,30 @@ def _replay(spec, bundle, period_id, cells, *, smoke=False):
     start, end = date.fromisoformat(p['start']), date.fromisoformat(p['end'])
     strategies = {r['id']: r for r in spec['strategies']}
     strategies.update({f'{v}-N15-Q': dict(id=f'{v}-N15-Q', variant=v, n=15, rebalance='QUARTERLY') for v in ('D0', 'D2')})
-    schedules = {mode: ca.rebalance_schedule(cal, start, end, rebalance=mode)
-                 for mode in {strategies[c['strategy_id']]['rebalance'] for c in cells}}
+    if extension is not None:
+        from .extensions import validate_extension
+        validate_extension(extension)
+        result['extension_spec']=extension
+        result['research_spec_id']=extension['spec_id']
+        expanded = []
+        for requested in cells:
+            roles = ('FACTOR','MATCHED_QGV') if requested['kind'] == 'FACTOR_PAIR' else ('QGV',)
+            for role in roles:
+                sid = requested['id'] + (f'-{role}' if len(roles) == 2 else '')
+                if requested.get('formation_month') is not None:
+                    sid+=f"-M{requested['formation_month']:02}"
+                strategy = dict(requested,id=sid)
+                strategies[sid] = strategy
+                expanded.append(dict(requested,strategy_id=sid,cohort_id=requested['id'],role=role,
+                    source_type='MATCHED_HEAD_TO_HEAD' if len(roles)==2 else 'QGV_REPRODUCED'))
+        cells = expanded
+    def schedule_for(mode):
+        if mode.startswith('ANNUAL_OFFSET_'):
+            from .annual import formation_schedule
+            return formation_schedule(cal,start,end,int(mode.rsplit('_',1)[1]))
+        return ca.rebalance_schedule(cal,start,end,rebalance=mode)
+    schedules = {mode:schedule_for(mode) for mode in {
+        strategies[c['strategy_id']].get('schedule_mode',strategies[c['strategy_id']]['rebalance']) for c in cells}}
     if not schedules or any(not rows for rows in schedules.values()):
         result['blockers'] = ['NO_VERIFIED_REBALANCE_IN_PERIOD']
         return result
@@ -462,9 +497,26 @@ def _replay(spec, bundle, period_id, cells, *, smoke=False):
         return result
     rate_curve = _rate_curve(bundle, cal)
     score_cache = {}
+    preparation_stats = dict(pit_calls=0,score_calls=0)
+    if extension is not None:
+        from .cache import PreparationCache, dependency_fingerprint, digest
+        from . import preparation
+        cache = preparation_cache if preparation_cache is not None else PreparationCache()
+        dependencies = dict(bundle=digest(bundle),rules=digest(extension),code=dependency_fingerprint())
     for rows in schedules.values():
         for rebalance in rows:
             signal = rebalance.signal_day
+            if extension is not None:
+                for group in sorted({cell['group'] for cell in cells}):
+                    key = group,signal
+                    if key in score_cache:
+                        continue
+                    try:
+                        variants=('W0','W1','W2','W3') if any(c['group']==group and c['kind']=='FIXED_N' for c in cells) else ('W0',)
+                        score_cache[key] = preparation.prepare(bundle,group,signal,cal,cache,dependencies,preparation_stats,variants=variants)
+                    except ValueError as exc:
+                        score_cache[key] = str(exc) if re.fullmatch('[A-Z_]{1,96}',str(exc)) else 'INVALID_EXTENSION_INPUT'
+                continue
             if signal in score_cache:
                 continue
             rows_asof = pit.build_pit_rows(bundle['companyfacts_by_cik'], bundle['filings'], bundle['membership'],
@@ -476,7 +528,8 @@ def _replay(spec, bundle, period_id, cells, *, smoke=False):
     reference_cache = {}
     for cell in cells:
         strategy = strategies[cell['strategy_id']]
-        schedule = schedules[strategy['rebalance']]
+        schedule = schedules[strategy.get('schedule_mode',strategy['rebalance'])]
+        run_start=schedule[0].execution_day if cell.get('formation_month') is not None else start
         baseline = schedule[0].signal_day
         days = [s.day for s in cal.sessions if baseline <= s.day <= end]
         regular = {r.signal_day: r for r in schedule}
@@ -484,21 +537,47 @@ def _replay(spec, bundle, period_id, cells, *, smoke=False):
         attribution = _Attribution(initial, events)
         payments = {}
         run = dict(cell=cell, status='COMPLETE', blockers=[], decisions=[], nav=[], fills=[],
-                   metrics=None, monthly=[], benchmark=[], risk_free=[], coverage=[], exposure=[])
+                   metrics=None, monthly=[], benchmark=[], risk_free=[], coverage=[], exposure=[],
+                   period_start=str(run_start),period_end=str(end),book_exactness=cell.get('book_exactness'))
+        plans_by_day = {}
+        if extension is not None:
+            # Validate every requested signal before any portfolio execution.
+            # A missing date cannot disappear from an apparently complete NAV.
+            for rebalance in schedule:
+                prepared = score_cache[(cell['group'],rebalance.signal_day)]
+                try:
+                    if isinstance(prepared,str):
+                        raise ValueError(prepared)
+                    candidates = preparation.plans(*prepared,cell,rebalance.signal_day,cache,dependencies)
+                    plans_by_day[rebalance.signal_day] = candidates[1 if cell['role']=='MATCHED_QGV' else 0]
+                except ValueError as exc:
+                    reason = str(exc) if re.fullmatch('[A-Z_]{1,96}',str(exc)) else 'INVALID_EXTENSION_INPUT'
+                    run.update(status='NO_DECILE_COVERAGE' if reason=='NO_DECILE_COVERAGE' else 'BLOCKED_ON_DATA',blockers=[reason])
+                    run['failed_signal_day'] = str(rebalance.signal_day)
+                    break
+            if run['status'] != 'COMPLETE':
+                result['runs'].append(run)
+                continue
         current_rows, current_scores = {}, {}
         ready_day = None
         failed_nav = False
         previous = None
+        previous_selection=set()
         for day in days:
             rate, stale = rate_curve[previous] if previous is not None else (None, 0)
-            interest, event_cash, interest_failed = _advance_dates(ledger, events, previous, day, start,
+            interest, event_cash, interest_failed = _advance_dates(ledger, events, previous, day, run_start,
                                                                    rate, stale, payments, attribution)
             if interest_failed:
                 failed_nav = True
                 run['blockers'].append('CASH_RATE_UNVERIFIED')
             prices = price_days.get(day, {})
             opens = {sid: row.get('open') for sid, row in prices.items()}
-            closes = {sid: row.get('close') for sid, row in prices.items()}
+            # Signal NAV and target sizing must obey the same availability
+            # cutoff as PIT scoring. A vendor observation published after S
+            # close cannot fund new orders, including an incumbent's exit.
+            close_at = cal.session(day).close_at
+            closes = {sid: row.get('close') if pit._visible(row, close_at) else None
+                      for sid, row in prices.items()}
             filled_before = len(ledger.fills)
             if ready_day is not None and day >= ready_day and not failed_nav:
                 ledger.execute_open(day, opens, suspended=[sid for sid, row in prices.items() if row.get('suspended') is True])
@@ -510,18 +589,31 @@ def _replay(spec, bundle, period_id, cells, *, smoke=False):
             if failed_nav:
                 attribution.incomplete = True
             attribution.observe(day, ledger, snapshot, closes, ledger.fills[filled_before:], event_cash, interest,
-                                current_rows, current_scores, enabled=day >= start, verified_nav=not failed_nav)
+                                current_rows, current_scores, enabled=day >= run_start, verified_nav=not failed_nav)
             if day in regular and not failed_nav:
-                rows_asof, scores = score_cache[day]
+                if extension is None:
+                    rows_asof, scores = score_cache[day]
+                else:
+                    payload,scores = score_cache[(cell['group'],day)]
+                    rows_asof = payload['rows']
                 rebalance = regular[day]
                 variant = strategy['variant']
                 attribution.links.clear()  # Observed signal-close marks start separate future holding bases.
                 current_rows, current_scores = rows_asof, scores['scores'][variant]
-                eligible = scores['panels'][cell['panel']][variant]
-                selected = scoring.select_top(scores['scores'][variant], rows_asof, strategy['n'], eligible_ids=eligible)
+                if extension is None:
+                    eligible = scores['panels'][cell['panel']][variant]
+                    selected = scoring.select_top(scores['scores'][variant], rows_asof, strategy['n'], eligible_ids=eligible)
+                    slots = strategy['n']
+                else:
+                    plan = plans_by_day[day]
+                    selected,slots = plan.selected,plan.slots
+                    eligible = range(plan.eligible_count)
                 ids = [r['security_id'] for r in selected]
+                entries=set(ids)-previous_selection
+                exits=previous_selection-set(ids)
+                continuing=previous_selection&set(ids)
                 try:
-                    orders = ledger.rebalance(day, ids, strategy['n'], closes)
+                    orders = ledger.rebalance(day, ids, slots, closes)
                 except LedgerError:
                     run['blockers'].append('INCOMPLETE_SIGNAL_NAV')
                     run['status'] = 'INCOMPLETE_NAV'
@@ -536,10 +628,13 @@ def _replay(spec, bundle, period_id, cells, *, smoke=False):
                 run['decisions'].append(dict(signal_day=str(day), execution_day=str(ready_day), selected=ids,
                                              quantities=_jsonable(orders), candidate_count=len(rows_asof),
                                              common_candidate_count=len(scores['common_ids']),
-                                             selected_details=selected))
+                                             selected_details=selected,selection_mode='FULL_UNIVERSE_RESELECTION',
+                                             entry_count=len(entries),exit_count=len(exits),continuing_count=len(continuing),
+                                             entries=sorted(entries),exits=sorted(exits),continuing=sorted(continuing)))
+                previous_selection=set(ids)
                 run['coverage'].append(dict(signal_day=str(day), **_jsonable(scores['summary']),
                                              eligible_count=len(eligible), selected_count=len(ids),
-                                             slots=strategy['n'], empty_slots=strategy['n'] - len(ids),
+                                             slots=slots, empty_slots=slots - len(ids),
                                              flags={sid: row.get('flags', []) for sid, row in rows_asof.items()},
                                              score_flags={sid: row.get('flags', []) for sid, row in current_scores.items()}))
             weights = {}
@@ -567,20 +662,22 @@ def _replay(spec, bundle, period_id, cells, *, smoke=False):
             run['status'] = 'INCOMPLETE_ATTRIBUTION'
             run['blockers'].append('ATTRIBUTION_INCOMPLETE')
         run['fills'] = _jsonable(ledger.fills)
+        run['instrument_fees'] = _jsonable(ledger.instrument_fees)
         run['unfilled'] = _jsonable(ledger.unfilled)
         run['cancellations'] = _jsonable(ledger.cancellations)
         if any(r['nav'] is None for r in run['nav']):
             run['status'] = 'INCOMPLETE_NAV'
             run['blockers'].append('INCOMPLETE_CURRENT_NAV')
         points = [(date.fromisoformat(r['session']), Decimal(r['nav']) if r['nav'] is not None else None) for r in run['nav']]
-        actual_points = [(d, value) for d, value in points if d >= start]
-        monthly = _monthly(actual_points, cal, start, end, initial_value=initial)
+        actual_points = [(d, value) for d, value in points if d >= run_start]
+        monthly = _monthly(actual_points, cal, run_start, end, initial_value=initial)
         run['monthly'] = _jsonable(monthly)
-        if cell['cost_bps'] not in reference_cache:
-            reference_cache[cell['cost_bps']] = _references(bundle, cal, start, end, initial, cell['cost_bps'], rate_curve)
-        references = reference_cache[cell['cost_bps']]
-        benchmark_monthly = _monthly(references['benchmark'], cal, start, end, initial_value=initial)
-        risk_free_monthly = _monthly(references['risk_free'], cal, start, end, initial_value=initial)
+        reference_key=(cell['cost_bps'],run_start,end)
+        if reference_key not in reference_cache:
+            reference_cache[reference_key] = _references(bundle, cal, run_start, end, initial, cell['cost_bps'], rate_curve)
+        references = reference_cache[reference_key]
+        benchmark_monthly = _monthly(references['benchmark'], cal, run_start, end, initial_value=initial)
+        risk_free_monthly = _monthly(references['risk_free'], cal, run_start, end, initial_value=initial)
         run['benchmark'] = _jsonable(benchmark_monthly)
         run['risk_free'] = _jsonable(risk_free_monthly)
         run['benchmark_nav'] = [dict(session=str(d), nav=float(v) if v is not None else None,
@@ -592,40 +689,47 @@ def _replay(spec, bundle, period_id, cells, *, smoke=False):
             run['blockers'].extend(references['blockers'])
             if run['status'] == 'COMPLETE':
                 run['status'] = 'INCOMPLETE_REFERENCE'
-        expected = [d for d in days if d >= start]
+        expected = [d for d in days if d >= run_start]
         # Keep the pre-entry baseline in private audit data; performance API uses
         # the actual first-fill date and capital to include entry costs.
-        actual = [NavPoint(d, float(v) if v is not None else None) for d, v in points if d >= start]
+        actual = [NavPoint(d, float(v) if v is not None else None) for d, v in points if d >= run_start]
         run['metrics'] = _jsonable(performance_metrics(actual, expected_sessions=expected,
-                                                       initial_capital=float(initial), started_at=start,
+                                                       initial_capital=float(initial), started_at=run_start,
                                                        monthly_returns=monthly,
                                                        risk_free_monthly=risk_free_monthly,
                                                        benchmark_monthly=benchmark_monthly))
         result['runs'].append(run)
     result['blockers'] = sorted({reason for run in result['runs'] for reason in run['blockers']})
+    if extension is not None:
+        result['preparation_stats'] = dict(preparation_stats,cache=dict(cache.stats))
     if any(run['status'] != 'COMPLETE' for run in result['runs']):
         result['status'] = 'INCOMPLETE_REPLAY'
     else:
         result['status'] = 'SMOKE_COMPLETE' if smoke else 'REPLAY_COMPLETE'
+    result['real_data_executed'] = bundle.get('synthetic') is not True and any(run.get('fills') for run in result['runs'])
     return result
 
 
-def replay_bundle(spec, bundle, period_id, cells=None):
+def replay_bundle(spec, bundle, period_id, cells=None, *, extension=None, preparation_cache=None):
     """Replay an explicitly synthetic in-memory bundle; never a CLI bypass."""
     if bundle.get('synthetic') is not True:
         raise ValueError('PURE_REPLAY_SYNTHETIC_ONLY')
-    return _replay(spec, bundle, period_id, cells if cells is not None else _selected_cells(spec, period_id, 'primary'))
+    if cells is None and extension is not None:
+        from .extensions import selected_cells
+        cells = [c for c in selected_cells(extension,'primary') if c['phase']=='P1']
+    return _replay(spec, bundle, period_id, cells if cells is not None else _selected_cells(spec, period_id, 'primary'),
+                   extension=extension,preparation_cache=preparation_cache)
 
 
-def _contract(spec, manifest, stage, period_id):
-    code = hashlib.sha256()
-    for path in sorted(Path(__file__).parent.glob('*.py')):
-        code.update(path.name.encode())
-        code.update(path.read_bytes())
+def _contract(spec, manifest, stage, period_id, extension=None, experiment_ids=None,formation_months=None):
+    from .cache import dependency_fingerprint
     spec_hash = hashlib.sha256(json.dumps(spec, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
     contract = dict(stage=stage, period_id=period_id, config_sha256=spec_hash,
-                    research_code_sha256=code.hexdigest(), source_sha=spec['source']['scoring_source_sha'],
+                    research_code_sha256=dependency_fingerprint(), source_sha=spec['source']['scoring_source_sha'],
                     manifest_sha256=hashlib.sha256(json.dumps(manifest, sort_keys=True).encode()).hexdigest())
+    if extension is not None or experiment_ids is not None:
+        contract.update(extension=extension,experiment_ids=sorted(experiment_ids) if experiment_ids is not None else None,
+                        formation_months=sorted(set(formation_months)) if formation_months else None)
     contract['contract_sha256'] = hashlib.sha256(json.dumps(contract, sort_keys=True).encode()).hexdigest()
     contract['run_id'] = contract['contract_sha256'][:24]
     return contract
@@ -654,7 +758,17 @@ def _safe_summary(result, detailed, stage, *, written=0, cached=False):
     runs = detailed.get('runs', [])
     result.update(status=status, blockers=detailed.get('blockers', []),
                   completed_cells=sum(r['status'] == 'COMPLETE' for r in runs),
-                  requested_cells=len(runs), private_artifacts_written=written, cached=cached)
+                  requested_cells=len(runs), private_artifacts_written=written, cached=cached,
+                  real_data_executed=detailed.get('real_data_executed',False))
+    if 'extension' in result:
+        completed=set()
+        for cohort in result['extension']['cohorts']:
+            rows=[r for r in runs if r['cell'].get('cohort_id')==cohort['id']]
+            if rows:
+                cohort['status']='PRIVATE_REPLAY_RECORDED' if all(r['status']=='COMPLETE' for r in rows) else 'INCOMPLETE_PRIVATE_REPLAY'
+                if all(r['status']=='COMPLETE' for r in rows):
+                    completed.add(cohort['id'])
+        result['extension']['completed_cohorts']=len(completed)
     for row in result['strategies']:
         strategy_runs = [r for r in runs if r['cell']['strategy_id'] == row['id']]
         if strategy_runs:
@@ -672,7 +786,13 @@ def _csv_payload(rows, fields):
 
 def _report_artifacts(spec, detailed):
     from .reporting import build_report, render_markdown, render_svg
-    report = build_report(spec, detailed)
+    if detailed.get('extension_spec'):
+        from .research_tables import build_tables,render_tables_markdown
+        report=build_tables(detailed,spec)
+        markdown=render_tables_markdown(report)
+    else:
+        report = build_report(spec, detailed)
+        markdown=render_markdown(report)
     detailed['report'] = report
     detailed['status'] = report.get('status', 'REPORT_PARTIAL')
     detailed['blockers'] = sorted(set(detailed['blockers'] + report.get('blockers', [])))
@@ -692,18 +812,39 @@ def _report_artifacts(spec, detailed):
                 profit_loss=group['profit_loss'], contribution=group['contribution'], sector=group['sector'], type_group=group['type_group']))
     fields = ['period_id', 'strategy_id', 'panel', 'cost_bps', 'execution_delay']
     return {'report.json': (json.dumps(report, indent=2, ensure_ascii=False, allow_nan=False) + '\n').encode(),
-            'report.md': render_markdown(report).encode(), 'nav-drawdown.svg': render_svg(detailed).encode(),
+            'report.md': markdown.encode(), 'nav-drawdown.svg': render_svg(detailed).encode(),
             'daily-nav.csv': _csv_payload(rows, fields + ['session', 'nav', 'status', 'cash', 'receivables']),
             'comparisons.csv': _csv_payload(metric_rows, fields + ['metric', 'value', 'reason']),
             'contributions.csv': _csv_payload(contribution_rows, fields + ['group_id', 'members', 'profit_loss', 'contribution', 'sector', 'type_group'])}
 
 
-def run_stage(spec, stage, period_id, manifest=None, output=None):
+def run_stage(spec, stage, period_id, manifest=None, output=None, *, extension=None, experiment_ids=None,formation_months=None):
     """Run an authorized local stage and return privacy-safe status metadata."""
     if stage not in STAGES:
         raise ValueError('UNKNOWN_STAGE')
     validate_spec(spec)
     period = period_for(spec, period_id)
+    requests = None
+    if extension is not None:
+        from .extensions import selected_cells
+        requests = selected_cells(extension,stage,experiment_ids)
+        if experiment_ids is None:
+            # Registered priority is not permission to launch P1 and P2
+            # together. P2 is selected explicitly after P1 review.
+            requests = [r for r in requests if r['phase']=='P1']
+        if formation_months is not None:
+            if not extension.get('formation_robustness'):
+                raise ValueError('FORMATION_REQUIRES_ANNUAL_CONTRACT')
+            from .annual import with_formation_months
+            requests=with_formation_months(requests,formation_months)
+        if manifest:
+            from .cache import check_rights
+            try:
+                check_rights(manifest.get('cache_rights'),datetime.now(timezone.utc))
+            except PermissionError:
+                result = audit_inputs(spec,None,period_id)
+                result.update(status='BLOCKED_ON_PERMISSION',blockers=['CURRENT_DERIVED_STORAGE_RIGHTS_REQUIRED'],real_data_executed=False)
+                return result
     # Check explicit protected access scope BEFORE audit_inputs hashes any file.
     if manifest and manifest.get('protection_status') == 'AUTHORIZED_PROTECTED':
         scope = manifest.get('protected_scope', {})
@@ -712,9 +853,40 @@ def run_stage(spec, stage, period_id, manifest=None, output=None):
             result.update(status='BLOCKED_ON_PERMISSION', blockers=['PROTECTED_PERIOD_SCOPE_UNVERIFIED'], stage=stage)
             return result
     result = audit_inputs(spec, manifest, period_id)
-    result['stage'] = stage
+    result.update(stage=stage,real_data_executed=False)
+    if extension is not None:
+        cohort_ids=sorted({r['id'] for r in requests})
+        result['extension'] = dict(spec_id=extension['spec_id'],registered_deciles=40,registered_factor_cohorts=60,
+            requested_cohorts=len(cohort_ids),completed_cohorts=0,
+            cohorts=[dict(id=cid,status='NOT_RUN',metrics=None) for cid in cohort_ids])
+        if extension.get('bt01_version'):
+            result['extension'].update(bt01_research_version=extension['bt01_version'],legacy_fixed_structures=30,
+                annual_fixed_primary=4,additional_fixed_structures=2,total_unique_fixed_structures=32,
+                book_exactness='BOOK_EXACT_UNCONFIRMED',formation_months=formation_months,
+                primary_reselection='ANNUAL_FEBRUARY')
+        result['execution_cells'] = sum(2 if r['kind']=='FACTOR_PAIR' else 1 for r in requests)
+    elif experiment_ids is not None:
+        # Validate an allowlist even if data is unavailable; a typo must not
+        # silently schedule the original eight primary execution cells.
+        requested = _selected_cells(spec,period_id,'primary' if stage=='audit' else stage,experiment_ids)
+        result['execution_cells'] = len(requested)
     if result['status'] != 'INPUT_INTEGRITY_PASS':
         return result
+    if extension is not None:
+        names = ['research_universe'] + (['factor_inputs'] if any(r['kind']=='FACTOR_PAIR' for r in requests) else [])
+        for name in names:
+            resource = manifest.get('resources',{}).get(name,{})
+            try:
+                if (resource.get('verified') is not True or not resource.get('source') or not resource.get('rights_receipt')
+                        or resource.get('start','9999') > period['start'] or resource.get('end','') < period['end']
+                        or hashlib.sha256(Path(resource['path']).read_bytes()).hexdigest() != resource['sha256']):
+                    raise ValueError('resource unverified')
+            except (KeyError,ValueError,TypeError,OSError):
+                result.update(status='BLOCKED_ON_DATA',blockers=[f'UNVERIFIED_{name.upper()}'])
+                return result
+        if any(r['kind']=='FACTOR_PAIR' for r in requests) and not manifest.get('p1_review_receipt'):
+            result.update(status='BLOCKED_ON_PERMISSION',blockers=['P1_REVIEW_NOT_RECORDED'])
+            return result
     descriptor = manifest.get('bundle', {})
     try:
         raw = Path(descriptor['path']).read_bytes()
@@ -745,7 +917,7 @@ def run_stage(spec, stage, period_id, manifest=None, output=None):
     except (KeyError, ValueError, OSError, TypeError):
         result.update(status='BLOCKED_ON_PERMISSION', blockers=['VERIFIED_PRIVATE_OUTPUT_REQUIRED'])
         return result
-    contract = _contract(spec, manifest, stage, period_id)
+    contract = _contract(spec, manifest, stage, period_id,extension,experiment_ids,formation_months)
     artifact = destination / f'{stage}-private.json'
     if artifact.exists() or artifact.is_symlink():
         try:
@@ -760,12 +932,34 @@ def run_stage(spec, stage, period_id, manifest=None, output=None):
             result.update(status='BLOCKED_ON_PERMISSION', blockers=['PRIVATE_OUTPUT_COLLISION_NEW_RUN_REQUIRED'])
             return result
     try:
-        detailed = _replay(spec, bundle, period_id, _selected_cells(spec, period_id, stage), smoke=stage == 'smoke')
+        preparation_cache = None
+        if extension is not None:
+            from .cache import PreparationCache
+            preparation_cache = PreparationCache(private_root/'.qgv-preparation-cache',private_root=private_root,rights=manifest['cache_rights'])
+            if experiment_ids is None and formation_months is None:
+                # Eligible equal-weight comparators are diagnostic runs, not
+                # extra members of the forty structural decile portfolios.
+                for group,short in (('U-BOOK200','ALL'),('U-SPX-HIST','SPX')):
+                    for cost in sorted({r['cost_bps'] for r in requests}):
+                        mode=extension.get('primary_rebalance','QUARTERLY')
+                        suffix='Y' if mode=='ANNUAL_FEBRUARY' else 'Q'
+                        requests.append(dict(id=f'EW-{short}-{suffix}',kind='ELIGIBLE_EW',group=group,variant='W0',
+                            rebalance=mode,panel='PANEL_FULL_QGV',cost_bps=cost,diagnostic=True,
+                            analysis_role='PRIMARY_ANNUAL_RESELECTION' if suffix=='Y' else 'PRIMARY_QUARTERLY_LEGACY'))
+            cells = requests
+        else:
+            cells = _selected_cells(spec,period_id,stage,experiment_ids)
+        detailed = _replay(spec, bundle, period_id,cells,smoke=stage=='smoke',extension=extension,preparation_cache=preparation_cache)
+    except PermissionError:
+        result.update(status='BLOCKED_ON_PERMISSION',blockers=['PRIVATE_PREPARATION_CACHE_PERMISSION'])
+        return result
     except (ValueError, KeyError, TypeError, NotImplementedError):
         result.update(status='BLOCKED_ON_IMPLEMENTATION', blockers=['UNSUPPORTED_OR_INCOMPLETE_REPLAY_INPUT'])
         return result
     detailed['provenance'] = dict(contract, executed_at=datetime.now(timezone.utc).isoformat(),
                                    source_hashes=bundle['source_hashes'])
+    if extension is not None:
+        detailed['extension_spec'] = extension
     artifacts = _report_artifacts(spec, detailed) if stage == 'report' else {}
     detailed['artifact_sha256'] = {name: hashlib.sha256(payload).hexdigest() for name, payload in artifacts.items()}
     try:

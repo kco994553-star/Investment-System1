@@ -132,6 +132,7 @@ def _run_summary(spec, run):
         summary['blockers'].append('INVALID_TURNOVER_INPUT')
     fees = sum(float(fill.get('fee', 0)) for fill in run.get('fills', []))
     summary['booked_costs'] = fees
+    summary['booked_instrument_fees'] = sum(float(row['fee']) for row in run.get('instrument_fees',[]))
     summary['fixed_trade_cost_attribution'] = {
         'method': 'BOOKED_COST_ONLY_NO_INTEREST_REPLAY',
         'same_executed_quantities': True,

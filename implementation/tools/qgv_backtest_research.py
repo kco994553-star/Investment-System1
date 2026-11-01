@@ -18,9 +18,20 @@ def main(argv=None):
     p.add_argument('--spec',default=str(ROOT/'docs/backtest/QGV_BACKTEST_SPEC_V1_20261026.json'))
     p.add_argument('--period-id',default='TARGET_QGV_V2',choices=('TARGET_QGV_V2','SECONDARY_DIAGNOSTIC_NOT_TARGET','DATA_LIMITED_DIAGNOSTIC_NOT_TARGET'))
     p.add_argument('--input-manifest');p.add_argument('--output')
+    p.add_argument('--extension-spec',help='Separate versioned decile/factor contract; frozen thirty-strategy spec remains intact')
+    p.add_argument('--experiment-id',action='append',help='Explicit repeatable experiment allowlist; no implicit fallback')
+    p.add_argument('--formation-month',action='append',choices=['all']+[str(m) for m in range(1,13)],
+                   help='Annual contract robustness only; each offset reselects once every twelve months')
     args=p.parse_args(argv)
     try:
         spec=json.loads(Path(args.spec).read_text());validate_spec(spec)
+        extension=json.loads(Path(args.extension_spec).read_text()) if args.extension_spec else None
+        formation_months=sorted({m for value in args.formation_month or [] for m in (range(1,13) if value=='all' else [int(value)])}) or None
+        if formation_months is not None and extension is None:
+            raise ValueError('FORMATION_REQUIRES_ANNUAL_CONTRACT')
+        if extension is not None:
+            from investment_system.research.qgv_backtest.extensions import validate_extension
+            validate_extension(extension)
         if args.stage=='synthetic':
             files=sorted(str(f) for f in (ROOT/'tests/research').glob('test_qgv_backtest_*.py') if f.name!='test_qgv_backtest_cli.py')
             env=dict(os.environ,PYTHONPATH=str(ROOT/'src')+os.pathsep+str(ROOT))
@@ -30,11 +41,11 @@ def main(argv=None):
             code=0 if result.returncode==0 else 1
         else:
             manifest=json.loads(Path(args.input_manifest).read_text()) if args.input_manifest else None
-            if args.stage=='audit':out=audit_inputs(spec,manifest,args.period_id)
+            if args.stage=='audit' and extension is None and args.experiment_id is None:out=audit_inputs(spec,manifest,args.period_id)
             else:
                 from investment_system.research.qgv_backtest.runner import run_stage
-                out=run_stage(spec,args.stage,args.period_id,manifest,args.output)
-            code=0 if out['status'] in ('INPUT_INTEGRITY_PASS','SMOKE_PASS','PRIMARY_DONE','SENSITIVITY_DONE','REVIEWED','REPORT_READY','REPORT_DONE') else 2
+                out=run_stage(spec,args.stage,args.period_id,manifest,args.output,extension=extension,experiment_ids=args.experiment_id,formation_months=formation_months)
+            code=0 if out['status'] in ('INPUT_INTEGRITY_PASS','SEMANTIC_INPUT_CONTRACT_PASS','SMOKE_PASS','PRIMARY_DONE','SENSITIVITY_DONE','REVIEWED','REPORT_READY','REPORT_DONE') else 2
         print(json.dumps(out,ensure_ascii=False,allow_nan=False))
         return code
     except (ValueError,KeyError,OSError,TypeError) as exc:

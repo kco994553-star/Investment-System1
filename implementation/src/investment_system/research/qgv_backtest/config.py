@@ -59,6 +59,7 @@ def audit_inputs(s,m,period_id):
         except (KeyError,ValueError,TypeError):valid=False
         if not valid:
             out.update(status='BLOCKED_ON_PERMISSION',blockers=['PROTECTED_SCOPE_NOT_ESTABLISHED']);return out
+    checked_hashes={}
     for name in REQUIRED_INPUTS:
         r=m.get('resources',{}).get(name,{})
         if not r.get('verified') or not r.get('source') or not r.get('rights_receipt'):
@@ -67,7 +68,11 @@ def audit_inputs(s,m,period_id):
             if date.fromisoformat(r['start'])>date.fromisoformat(p['start']) or date.fromisoformat(r['end'])<date.fromisoformat(p['end']):
                 out['blockers'].append(f'PERIOD_GAP_{name.upper()}');continue
             path=Path(r['path'])
-            if not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest()!=r['sha256']:out['blockers'].append(f'INTEGRITY_{name.upper()}')
+            if not path.is_file():
+                out['blockers'].append(f'INTEGRITY_{name.upper()}');continue
+            key=path.resolve()
+            if key not in checked_hashes:checked_hashes[key]=hashlib.sha256(path.read_bytes()).hexdigest()
+            if checked_hashes[key]!=r['sha256']:out['blockers'].append(f'INTEGRITY_{name.upper()}')
         except (KeyError,ValueError,OSError):out['blockers'].append(f'INVALID_{name.upper()}')
     if not out['blockers']:out['status']='INPUT_INTEGRITY_PASS'
     return out

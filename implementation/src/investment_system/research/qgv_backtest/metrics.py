@@ -202,13 +202,15 @@ def _quantile(values: Sequence[float], probability: float) -> float:
 def paired_monthly_bootstrap(
     series: Mapping[str, Sequence[MonthlyReturn]], *, baseline: str = 'W0',
     replications: int = 10000, seed: int = 20261026, block_months: int = 12,
+    family_size: int = 3,
 ) -> dict:
     """Paired circular monthly moving-block CAGR difference percentile bound.
 
     Each sampled return travels with its actual interval day count. All series
     share each replication's indices. Complete months determine the 60-month
     evidence gate; supplied partial intervals are retained in CAGR resampling.
-    Bonferroni's lower tail is fixed at .05/3 for the three registered contrasts.
+    Bonferroni's lower tail defaults to .05/3 for the original three contrasts.
+    The separate decile/factor registration explicitly supplies family_size=20.
     ``replications``/``block_months`` are exposed for synthetic verification;
     formal research uses their registered defaults and records them in output.
     """
@@ -218,6 +220,8 @@ def paired_monthly_bootstrap(
         raise ValueError('replications must be a positive integer')
     if isinstance(block_months, bool) or not isinstance(block_months, int) or block_months < 1:
         raise ValueError('block_months must be a positive integer')
+    if type(family_size) is not int or family_size < 1:
+        raise ValueError('family_size must be a positive integer')
     rows = {name: list(values) for name, values in series.items()}
     reference = rows[baseline]
     grid = [(row.start, row.end, row.full_month) for row in reference]
@@ -243,7 +247,7 @@ def paired_monthly_bootstrap(
                    for name in rows if name != baseline}
     result = dict(method='PAIRED_CIRCULAR_MOVING_BLOCK', approximate_inference=True,
                   full_months=full_months, observations=len(reference), block_months=block_months,
-                  replications=replications, seed=seed, lower_tail_alpha=.05 / 3,
+                  replications=replications, seed=seed, lower_tail_alpha=.05 / family_size,
                   comparisons=comparisons, status=reason or 'OK')
     if reason:
         return result
@@ -258,7 +262,7 @@ def paired_monthly_bootstrap(
         for name in samples:
             samples[name].append(values[name] - values[baseline])
     for name in comparisons:
-        comparisons[name]['lower_bound'] = Metric(_quantile(samples[name], .05 / 3))
+        comparisons[name]['lower_bound'] = Metric(_quantile(samples[name], .05 / family_size))
     return result
 
 
