@@ -2,11 +2,11 @@
 
 기준 **2026-11-01 07:10 UTC GitHub 조회**, canonical **`9a4e249d`**(#447). 앞 판(`1465260e`, #446) 뒤 병합은 아래 11/01 다섯 건뿐이다(첫 부모 이력으로 확인). 10/31 저녁 오너 승인으로 병합: #448 `ef0e90cb`(Worker 배포 run 41252518944) → #438 `f8e9a4ef` → #440 `edb11b1c` → #442 `70d0e447` → #441 `37b7ddc4` → #445 `1c73cb9b` → #450 `c33ec071` → #446 `1465260e`. 11/01 병합: #436 `c86be9b9` → #449 `111f86c7` → #451 `d8fe9bc8` → #453 `428b417e` → #447 `9a4e249d`(워크플로 ① `private-boundary-push.yml` 포함). 실제 기본 브랜치는 **`claude/investment-system-top500-validation-alrugm`**.
 
-읽기: [START_HERE](START_HERE.md) → [방향 전환 대장](docs/SPEC/DIRECTION_CHANGES.md) → [WORKING_RULES](WORKING_RULES.md) → [기능 현황](docs/SPEC/FUNCTION_STATUS.md) → [결정 원문](implementation/docs/USER_DECISIONS_PENDING.md). 11/01 이행은 오너 결정 세 묶음(DC-40 두 흐름·연구 인계 / 11/01 2차 15항목 / 보완 지시: NAV 정정·점수화 모집단 검토, DC-41)이다. 원문은 결정 기록 2026-11-01 블록.
+읽기: [START_HERE](START_HERE.md) → [방향 전환 대장](docs/SPEC/DIRECTION_CHANGES.md) → [WORKING_RULES](WORKING_RULES.md) → [기능 현황](docs/SPEC/FUNCTION_STATUS.md) → [결정 원문](implementation/docs/USER_DECISIONS_PENDING.md). 11/01 이행은 오너 결정 네 묶음(DC-40 두 흐름·연구 인계 / 11/01 2차 15항목 / 보완 지시: NAV 정정·점수화 모집단 검토, DC-41 / **역할 확대·계산·자료 구현 인계, DC-42**)이다. 원문은 결정 기록 2026-11-01 블록.
 
 ## 0. 역할·지금 관리할 흐름
 
-역할은 **DC-40(11/01, 흐름 둘 — DC-35의 흐름 셋을 대체)**: **Main**은 공통 계산·가격·재구성·장부 엔진, 역사 모집단·가격·재무 입력 연결과 Codex 인계, 운영 코드·공용 파일·데이터 계약·가드·워크플로, 담당표·결정 기록·DC 번호·최종 통합, 승인 범위의 병합·배포. **Codex**는 연구 설정과 공통 엔진으로 실험 실행·검증·보고, Main 구현의 독립 대사, 책 원문 조사·규칙표(#443)·연구 문서, Notion 정리(옛 GPT Work 일). Codex PR이 DC 번호·결정 기록을 직접 바꾸면 Main이 번호를 다시 매겨 반영한다. Codex PR은 Main이 canonical 동기화·CI 녹색·담당 파일만 바뀜을 확인하고 오너 승인 뒤 병합한다. 담당표: [START_HERE 4절](START_HERE.md). 지금 Main이 진행하는 연구 인계: `EXP-STOCK-INDICATOR-DECILES-v1`([설정](implementation/docs/lab/EXP_STOCK_INDICATOR_DECILES_V1.md), #437 회신).
+역할은 **DC-42(11/01 3차, 역할 확대 — DC-40의 "Main 엔진·입력 / Codex 실행·대사" 분담을 대체)**: **Main**은 기능 계층 1~9의 모든 프론트엔드·UI/UX·차트·화면 연결(9 Lab 화면 포함), 인증·권한·Secret·워크플로·운영 인프라·공용 가드, 결정 기록·DC 번호·최종 통합, 승인 범위의 병합·배포. **Codex**는 계산·데이터·연구 구현(수집·변환 로직, PIT·증권 신원·입력 연결, 백테스트·전진검증 계산·결과 산출, 책 조사·규칙표·연구 문서, Notion. 인수한 공통 계산 모듈은 직접 수정). 역할은 오너가 확정했다(두 메시지, 재승인 대기 없음). #454 엔진·입력 어댑터 [#464](https://github.com/kco994553-star/Investment-System1/pull/464)·#459/#460의 수집·변환·진단 코드는 [#437 인계 3](https://github.com/kco994553-star/Investment-System1/pull/437#issuecomment-6557255668)로 Codex에 넘겼다(11/01 11:19 UTC). 넘긴 파일은 Main이 병행 수정하지 않는다. 파일 담당표·공통 파일 규칙: [START_HERE 4절·4.1절](START_HERE.md). Codex PR이 DC 번호·결정 기록을 직접 바꾸면 Main이 번호를 다시 매겨 반영한다. Codex PR은 Main이 canonical 동기화·CI 녹색·담당 파일만 바뀜을 확인하고 오너 승인 뒤 병합한다. 이 역할 변경은 병합·배포·SEC/Alpaca 실행 승인이 아니다. 이전 분담(DC-40) 원문은 [방향 전환 대장](docs/SPEC/DIRECTION_CHANGES.md)에만 남고 현행 규칙이 아니다. **AUD-01**(레거시 플레이북 `target_v1.grades` GENERAL 4~5% ↔ 승인된 일반 6%)은 인계 3으로 Codex에 넘겼다(설정 수정 Codex, 생성 사본·가드 고정값·화면 영향 Main).
 
 | 흐름 / 기능번호 | Main 이행 | 현재 상태 |
 | --- | --- | --- |
@@ -21,12 +21,13 @@
 
 | PR·작업 | 담당 | 시작 (UTC) | 상태·다음 |
 | --- | --- | --- | --- |
-| [#456](https://github.com/kco994553-star/Investment-System1/pull/456) 중앙 V 기준일: IEX 목록의 비거래일 파일 건너뛰기 | Main | 11/01 03:10 | CI 9개 성공(조회). 전체 시험 통과(실행). **병합은 오너 승인 뒤**. 병합 전까지 야간 중앙 V는 같은 이유로 `KEPT_LAST_GOOD` |
-| [#457](https://github.com/kco994553-star/Investment-System1/pull/457) 결정 기록 11/01 2차·보완, DC-41, 연구 설정 10절(이 문서도 여기서 갱신) | Main | 11/01 03:00 | CI 성공(조회). 오너 승인 뒤 병합. 결정 대기 `EXP-SCORING-POP`·`EXP-CALC-ALIGN` |
+| [#456](https://github.com/kco994553-star/Investment-System1/pull/456) 중앙 V 기준일: IEX 목록의 비거래일 파일 건너뛰기 | Main | 11/01 03:10 | CI 9개 중 7 성공·2 생략(조회, 생략은 PR에서 원래 도는 일 없는 deploy·replay_source). 전체 시험 통과(실행). **병합은 오너 승인 뒤**. 병합 전까지 야간 중앙 V는 같은 이유로 `KEPT_LAST_GOOD` **11/01 재확인(조회):** 머리 `a922d6eb` 그대로, base `9a4e249d` 최신, 파일 3개, calc_version 그대로, 공개 JSON 스키마 그대로(`engine.publisher_sha256` 값만 바뀜, 검사는 16진수 형식만), Pages 가드 고정 파일 변경 없음. CI 7 성공·2 생략(deploy·replay_source는 PR에서 원래 생략). 병합 뒤 확인: 워크플로 성공 / `attempt_state` / 실제 거래 기준일 / 게시본 갱신을 따로 |
+| [#457](https://github.com/kco994553-star/Investment-System1/pull/457) 결정 기록 11/01 2차·보완, DC-41, 연구 설정 10절(이 문서도 여기서 갱신) | Main | 11/01 03:00 | CI 성공(조회). 오너 승인 뒤 병합. 결정 대기 `EXP-SCORING-POP`·`EXP-CALC-ALIGN` **DC-42 역할 확대**(정본 4개·START_HERE 4.1절 공통 파일 규칙)와 새 결정 대기 `EXP-T-OPEN-DEF`(체결가 시가의 뜻)도 이 PR |
 | [#455](https://github.com/kco994553-star/Investment-System1/pull/455) 자료층 브라우저 시험 경합 고침(시험만) | Main | 11/01 03:15 | CI 성공(조회). 오너 검토 뒤 병합(11/01 결정 12) |
-| [#454](https://github.com/kco994553-star/Investment-System1/pull/454) 연구 엔진 `EXP-STOCK-INDICATOR-DECILES-v1`(Draft) | Main | 11/01 01:20 | 머리 `ec1fa06c` push(08:30 UTC 무렵). 전체 시험 Python 4,661·브라우저 101 통과, 합성 묶음 두 번 바이트 동일(실행). F1~F11 상태표·새 기대 해시를 [#437 인계 2](https://github.com/kco994553-star/Investment-System1/pull/437#issuecomment-6555502936)에 남김. 다음: Codex 재검증 |
-| [#460](https://github.com/kco994553-star/Investment-System1/pull/460) SEC 1회용 수집 계획(실행 안 함) | Main | 11/01 07:25 | `63d4c2b7`, CI 성공(조회), 전체 시험 Python 4,610 passed(실행). 실행은 오너 승인 뒤(열린 질문 Q1~Q7). 측정 가지 코드 이관 포함 |
-| [#459](https://github.com/kco994553-star/Investment-System1/pull/459) Alpaca 소표본 1회 측정 도구(Draft, 병합 안 함) | Main | 11/01 07:20 | `7ab5cd4d` push, 전체 시험 Python 4,458 passed(실행). **실행 전**. 실행 전 오너 확인: 공개 로그에 범위·개수 줄만 남기는 것, Alpaca Secret 존재 |
+| [#454](https://github.com/kco994553-star/Investment-System1/pull/454) 연구 엔진 `EXP-STOCK-INDICATOR-DECILES-v1`(Draft) | Codex(11/01 11:19 인계 3. 그 전 Main) | 11/01 01:20 | 머리 `ec1fa06c` push(08:30 UTC 무렵). 전체 시험 Python 4,661·브라우저 101 통과, 합성 묶음 두 번 바이트 동일(실행). F1~F11 상태표·새 기대 해시를 [#437 인계 2](https://github.com/kco994553-star/Investment-System1/pull/437#issuecomment-6555502936)에 남김. **11/01 DC-42로 후속 구현은 Codex**([#437 인계 3](https://github.com/kco994553-star/Investment-System1/pull/437#issuecomment-6557255668)). Codex 재검증 [6555833317](https://github.com/kco994553-star/Investment-System1/pull/437#issuecomment-6555833317)(PR 보고: 280 passed+1 skipped, 21/21·5/5 동일, 기대값 75/0) |
+| [#464](https://github.com/kco994553-star/Investment-System1/pull/464) 연구 엔진 입력 어댑터(Draft, base #454) | Codex(11/01 11:19 인계 3. 작성 Main) | 11/01 08:40 | `36d8e3f9`. 연구 시험 377 passed·전체 시험 Python 4,694·node·worker·저장소 가드·빌드·Pages 가드·브라우저 통과(실행). 지금 원천(SEC·IEX·Alpaca)만으로는 모든 발행사 UNKNOWN(상장 상태·증권 종류·분할 기준은 `attributes`로만). 후속 구현 Codex |
+| [#460](https://github.com/kco994553-star/Investment-System1/pull/460) SEC 1회용 수집 계획(실행 안 함) | Codex 코드·문서 / Main 워크플로·Secret·실행(DC-42) | 11/01 07:25 | `63d4c2b7`, CI 성공(조회), 전체 시험 Python 4,610 passed(실행). 실행은 오너 승인 뒤(열린 질문 Q1~Q7). 측정 가지 코드 이관 포함 파일별 담당은 PR 본문 표. 실행은 여전히 오너 승인 뒤 |
+| [#459](https://github.com/kco994553-star/Investment-System1/pull/459) Alpaca 소표본 1회 측정 도구(Draft, 병합 안 함) | Codex 코드·문서 / Main 워크플로·Secret·실행(DC-42) | 11/01 07:20 | `7ab5cd4d` push, 전체 시험 Python 4,458 passed(실행). **실행 전**. 실행 전 오너 확인: 공개 로그에 범위·개수 줄만 남기는 것, Alpaca Secret 존재 파일별 담당은 PR 본문 표. 실행은 여전히 오너 확인 뒤 |
 | [#452](https://github.com/kco994553-star/Investment-System1/pull/452) 책 규칙 인수·종목 비교 경계·동결 French 보유기간 분석(Draft) | Codex | 11/01 01:04 | 연구 경로 새 3파일, CI 성공(조회). Main 요청 4개(담당표 두 흐름 갱신 = #453 반영됨, 인계, LOSS 구분, #443 대체 범위) |
 | [#437](https://github.com/kco994553-star/Investment-System1/pull/437) Lab 계약·EXP 연구 대사 창구(Draft, base #432) | Codex | 10/31 | Codex가 `78ac5c3e` 합성 묶음 재현(19/19 바이트 일치, 대사 28 일치·알려진 3 불일치, PR 보고). 다음: Main 인계 2 수령 뒤 재검증 |
 | [#417](https://github.com/kco994553-star/Investment-System1/pull/417) QGV 장기 백테스트(Draft) | Codex | 10/26 | 11/01 `c68af2c0`로 의존성 코드 보존(PR 보고 204 passed). mergeable `unstable`(조회). calc 17.1 보존본, Main 엔진 아님 |
@@ -101,14 +102,17 @@
 | 마지막 체결 시각 | ① 판독기 #449 병합. ③ 게시 쪽 PR 미착수 |
 | 연구 `EXP-STOCK-INDICATOR-DECILES-v1` | **합성 자료만**: 엔진 `78ac5c3e` 합성 묶음은 Main 재현(실행)·Codex 재현(PR 보고). 실자료 파일럿·전체 백테스트·실환경 검증은 **없음**(SEC 수집·T 시가 원천 승인 전). 합성 통과를 실자료 결과로 쓰지 않는다 |
 
-## 5. 다음 우선순위 (11/01, DC-40 기준)
+## 5. 다음 우선순위 (11/01, DC-42 기준)
 
+**Main**
 1. **#456 병합 승인**(중앙 V 야간 실패 해소). 병합 뒤 다음 정기 실행에서 기준일·공급 비율 확인.
-2. 연구 엔진: 나머지 고침 → 전체 시험 → #454 push → #437 인계 2(새 SHA·명령·기대 해시, NAV 정정 포함) → Codex 재검증.
-3. SEC 1회용 수집 계획 PR 올리기(실행은 승인 뒤). Alpaca 소표본은 공개 로그 범위 오너 확인 뒤 1회 실행.
-4. 결정 대기: `EXP-SCORING-POP`·`EXP-CALC-ALIGN`(#457), #433 가격 표시, #455 시험 고침.
+2. 계층 1~9 승인된 프론트엔드 잔여: P3 전환 조건([정리 11/01](implementation/docs/frontend_v2/P3_SWITCH_CONDITIONS_20261101.md) — 막는 것은 아직 없는 화면 6·2.2~2.4·세부 7개, 배포 빌드·가드 고정값, 옛 모듈 61개·PWA 방침), 포트폴리오 P2-6/#392, 계산 결과 → 화면 입력 계약(Codex에 스키마·상태값·예시 데이터 요청, 인계 3의 8절). 실자료 백테스트·회원 DB 완성은 선행 조건이 아니다.
+3. 실행 기반: #459 공개 로그 범위·Secret 오너 확인 뒤 1회 실행, #460 Q1~Q7 답 뒤 실행(둘 다 실행 가지 push는 Main).
+4. 결정 대기: `EXP-SCORING-POP`·`EXP-CALC-ALIGN` ②·`EXP-T-OPEN-DEF`(#457), #433 가격 표시, #455 시험 고침.
 5. 기기 V 폐지 남은 것: 11/16 TARGET 경로 PR. TARGET v1 확정 창 11/09~11/15(V 출처 바꾸지 않음).
 6. IEX 확장 구현 PR ①②③, 마지막 체결 시각 ③ 게시 쪽 PR — 위 순서 뒤.
+
+**Codex**(인계 3): 실자료 차단 입력(역사 상장 상태·증권 종류·대표 증권·ADR 비율·다중 종류 주식 수·기업행사·SPY 분배금) 확보 경로 조사와 입력 연결, 첫 실자료 묶음, 엔진·어댑터 후속, 화면용 스키마·예시.
 
 ## 6. 정기 실행·수동 실행
 
