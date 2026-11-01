@@ -6,7 +6,11 @@ timestamp inside 09:30-16:00 New York). It is not an official close and covers t
 
 Basis day (owner decision D3 2026-10-24): the latest TOPS 1.6 file in the index dated <= the run's New York day (shard_day). The
 files are T+1 (generated 04:24-10:22 UTC), so the daily run (~00:37 UTC) normally gets the previous trading day; a weekend or
-market holiday has no file, so the last trading day before it is used. A half day (13:00 close) needs no calendar here: the
+market holiday normally has no file, so the last trading day before it is used. Only NYSE session days are eligible: IEX did list
+a Saturday file (20261031, 3,178,963 bytes, no session), and taking it failed the 2026-11-01 run (SUPPLY_BELOW_THRESHOLD,
+KEPT_LAST_GOOD), so a Saturday / Sunday / NYSE full-day holiday (validation.forward_ledger.NYSE_HOLIDAYS) in the index is
+skipped. Past forward_ledger.CALENDAR_END only weekends are skipped; a holiday file there still ends in the supply minimum
+(KEPT_LAST_GOOD), never in a wrong basis. A half day (13:00 close) needs no calendar here: the
 parser drops every trade with the TOPS sale-condition flag 0x40 (extended hours = outside the regular market session, TOPS 1.6
 spec), so the price is the last eligible trade before the early close (spec rule; not yet observed on a real half day, the first
 is 2026-11-27).
@@ -63,6 +67,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from .. import public_price_boundary as boundary
+from ..validation.forward_ledger import NYSE_HOLIDAYS
 
 PROVIDER = 'IEX_HIST'
 FEED = ('TOPS', '1.6')
@@ -272,11 +277,21 @@ def _link_ok(link) -> bool:
     return boundary.price_source_kind(link) in _FILE_KINDS
 
 
+def session_file_day(day: str) -> bool:
+    """True when the index day YYYYMMDD is an NYSE session day (no weekend, no known full-day holiday)."""
+    try:
+        date = dt.datetime.strptime(day, '%Y%m%d').date()
+    except ValueError:
+        return False
+    return date.weekday() < 5 and date not in NYSE_HOLIDAYS
+
+
 def select_day(index, basis_date: dt.date):
-    """(YYYYMMDD, entry): the latest TOPS 1.6 day <= the basis date (T+1: usually the previous trading day)."""
+    """(YYYYMMDD, entry): the latest TOPS 1.6 session day <= the basis date (T+1: usually the previous trading day). An index day
+    that is not an NYSE session (a Saturday file, module doc) is skipped, never used as a basis."""
     files = tops_files(index)
     limit = basis_date.strftime('%Y%m%d')
-    days = sorted(d for d in files if d <= limit)
+    days = sorted(d for d in files if d <= limit and session_file_day(d))
     if not days:
         _fail('NO_FILE_FOR_BASIS')
     day = days[-1]
