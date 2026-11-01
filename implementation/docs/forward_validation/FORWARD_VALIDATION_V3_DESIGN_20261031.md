@@ -329,13 +329,13 @@
 
 ### 13.1 CRSP 방법론 원문 (10/31 확인)
 
-- **지금의 문서:** CRSP 지수는 2026년 2월 Morningstar가 인수해 2026년 7월 "Morningstar Market Indexes"로 이름이 바뀌었다. 규칙은 2018년 판부터 같다.
+- **지금의 문서:** CRSP 지수는 2026년 2월 Morningstar가 인수해 2026년 7월 "Morningstar Market Indexes"로 이름이 바뀌었다. 크기 구간 규칙(70/85/98% 기준, 띠, packeting, 분기 순위·5일 이행)은 2018년 1월 판과 2026년 7월 판이 같다(다른 규칙은 2026년에 바뀐 것이 있다: 지금 판 부록 8, p.99).
   - 원문(지금 판 p.6): "In February 2026, the acquisition of CRSP brought the CRSP Market Indexes—benchmarks for over $3 trillion in AUM—into the Morningstar Indexes family. In July 2026, the CRSP indexes were rebranded the Morningstar Market Indexes."
-  - 출처: *Morningstar Market Indexes Methodology Guide, July 2026*(시행 2026-07-17) — https://indexes.morningstar.com/docs/rulebook/morningstar-us-total-market-FS00009VTK (PDF https://indexes.morningstar.com/api/docs/6ad9e17b74bdb8580f905c36). 옛 crsp.org 지수 주소는 이 페이지로 넘어간다.
+  - 출처: *Morningstar Market Indexes Methodology Guide, July 2026*(웹페이지 문서 날짜 2026-07-17. PDF에는 "July 2026"만 있다. 이 판의 쪽 번호는 인쇄 쪽 = PDF 쪽) — https://indexes.morningstar.com/docs/rulebook/morningstar-us-total-market-FS00009VTK (PDF https://indexes.morningstar.com/api/docs/6ad9e17b74bdb8580f905c36). 옛 crsp.org 지수 주소는 이 페이지로 넘어간다.
 - **기준(p.15):** "Breakpoint targets are then set at 70%, 85%, and 98% of the cumulative market cap of the index-eligible universe."
   - 점수(p.15): "each company is then assigned a cumulative market capitalization score, which is equal to the cumulative capitalization of all higher capitalization companies plus half of the capitalization of the company that is being ranked, expressed as a percentage of the market capitalization of all eligible companies."
   - 시총(p.15): "the company's total market capitalization calculated using TSO" — 유동주식이 아니라 총 발행주식, 회사 단위.
-- **구간과 완충 띠(pp.17–18, 원문 그대로):**
+- **구간과 완충 띠(pp.17–18, 원문 그대로. 표의 X는 원문의 X<sub>i,t</sub>):**
 
 | 구간 | 범위 | 완충 띠 |
 | --- | --- | --- |
@@ -345,17 +345,18 @@
 | Small Cap(소형) | "85% < X ≤ 98%" | 81–89%, "96% < X ≤ 99.5%; breakpoint: X = 98%" |
 | Micro Cap(초소형) | "98%< X ≤ 100%" | 96–99.5% |
 
-- **이동(packeting, p.16):** "CRSP defines a packet as 50% of the index's total holdings of a company. Movement occurs when a company passes completely through to the other side of a shared band between indexes into the core of the adjacent index." / "Once a company crosses the threshold into the adjacent core, one packet (50%) is moved. If a company remains in the adjacent core at the next ranking, then the second packet (remaining 50%) is moved into the adjacent index." / "No movement is exercised if the company ranks within the band." / 새 편입 종목은 "based strictly on the breakpoints … (bands are ignored)".
+- **이동(packeting, p.16):** "CRSP defines a packet as 50% of the index's total holdings of a company. Movement occurs when a company passes completely through to the other side of a shared band between indexes into the core of the adjacent index." / "Once a company crosses the threshold into the adjacent core, one packet (50%) is moved. If a company remains in the adjacent core at the next ranking, then the second packet (remaining 50%) is moved into the adjacent index." / "At ranking, if a company with a 100% allocation in an index moves beyond the core of the adjacent index, then the company is moved entirely to the new capitalization-based index." / "No movement is exercised if the company ranks within the band." / 새 편입 종목(원문 예: IPO)은 "based strictly on the breakpoints determined at the most recent quarterly ranking (bands are ignored)".
+  - 코어(p.17): 초대형 지수의 이웃 코어는 "76% < X ≤ 81% (mid core)", 중형 지수의 이웃 코어는 "50% < X ≤ 64% … (mega core)", 초대형만 "0% < X ≤ 50%".
 - **주기(p.42):** 순위는 3·6·9·12월 첫 금요일 장 마감 뒤, 변경은 5거래일에 나눠(하루 20%).
-- **CRSP 자체 문서(2022, 지금도 열림):** "Mega 0 - 70% / Mid 70 - 85% / Small 85 - 98%" — https://www.crsp.org/wp-content/uploads/2023/08/Market-Indexes-Key-Concepts.pdf p.4.
-- **2016~2026 같은 규칙:** CRSP *Methodology Guide, January 2018* p.10 "Breakpoint targets are then set at 70 percent, 85 percent, and 98 percent …", p.12 "Band range: 64% < Xi,t ≤ 76%"(제3자 사본: https://retirementincomejournal.com/wp-content/uploads/2019/02/Equity-Indexes-Methodology-Guide_0.pdf).
-- 참고: Morningstar Style Box는 대형 = 상위 70%, 중형 = 다음 20%, 소형 = 나머지(구간 이름·비율이 CRSP와 다르다). 이 설계는 CRSP 비율을 쓴다.
+- **CRSP 자체 문서(2022, 지금도 열림):** "Mega 0 - 70% / Mid 70 - 85% / Small 85 - 98%" — https://www.crsp.org/wp-content/uploads/2023/08/Market-Indexes-Key-Concepts.pdf 인쇄 쪽 2(PDF p.4), 그림 "Cap-Based Index Breakpoints"의 이름표 셋을 " / "로 이었다.
+- **2018-01 판 ~ 2026 판 같은 크기 규칙:** CRSP *Methodology Guide, January 2018* 인쇄 쪽 7(PDF p.10) "Breakpoint targets are then set at 70 percent, 85 percent, and 98 percent …", 인쇄 쪽 9(PDF p.12) "Band range: 64% < Xi,t ≤ 76%". 2016~2017의 규칙은 2018년 판 이전 원문으로 확인하지 못했다(제3자 사본: https://retirementincomejournal.com/wp-content/uploads/2019/02/Equity-Indexes-Methodology-Guide_0.pdf).
+- 참고: Morningstar Style Box는 대형 = 상위 70%(±5%), 중형 = 70~90%(±3%), 소형 = 나머지이고, 유동 시총으로 스타일 지역마다 나눈다. 첫 경계 70%는 CRSP 초대형 경계와 같은 숫자지만 이름이 "대형"이고, 둘째 경계 90%는 CRSP 85%와 다르다. 이 설계는 CRSP 비율을 쓴다.
 
 ### 13.2 v3 규칙 (오너 결정 반영)
 
 - **모집단 안 두 구간:** 시점별 PIT 상위 500 안에서 **초대형**(CRSP 점수 ≤ 70%)과 **대형**(나머지)으로 나눈다. 바구니 `SZMEGA-TOP`(초대형 종합 상위 10%)·`SZLARGE-TOP`(대형 종합 상위 10%).
-- **점수 계산:** PIT 상위 500을 고르려면 그날 거래되는 미국 보통주 발행사 전체의 시총을 이미 순위 매긴다. 그 **전체 합을 분모**로 CRSP 점수(큰 회사 누적 + 자기 시총의 절반) / 전체를 계산한다. 회사 단위 총 발행주식 × 그날 가격(종류주 합산). 상위 500의 시총만 있는 경우의 대안(500 안 누적 70/85 ≈ 82.35%)은 쓰지 않는다(상위 500이 전체의 85%라는 가정이 해마다 어긋난다. CRSP Large Cap 구성 수는 2021~23년 537~583개, 2026-09 420개).
-- **최소 수:** 한 구간이 30개 미만이면 그 달 그 바구니를 만들지 않는다(이유 코드). 이 크기 바구니에는 오너의 30개 규칙을 쓴다(일반 10% 바구니의 n ≥ 100 규칙보다 이 규칙이 우선). 확인된 CRSP Mega Cap 구성 수는 165~293개(2016-02 293, 2018-08 260, 2023-07 226, 2026-09 165; Vanguard MGC 보고서·CRSP Market Update)라 상위 500 안에서 두 구간 모두 30개를 크게 넘는다(2019·2020·2022·2024·2025 수치는 못 찾음, 앞뒤 수치로 보면 30에 가깝지 않다).
+- **점수 계산:** PIT 상위 500을 고르려면 그날 거래되는 미국 보통주 발행사 전체의 시총을 이미 순위 매긴다. 그 **전체 합을 분모**로 CRSP 점수(큰 회사 누적 + 자기 시총의 절반) / 전체를 계산한다. 회사 단위 총 발행주식 × 그날 가격(종류주 합산). CRSP는 순위일 전 7거래일 중 무작위로 고른 날의 가격과 순위일 5거래일 전에 굳힌 주식 수를 쓰지만(지금 판 p.15·p.44·p.99), v3는 재조정 점수일의 가격·주식 수를 쓴다(다른 바구니와 같은 날 기준). 상위 500의 시총만 있는 경우의 대안(500 안 누적 70/85 ≈ 82.35%)은 쓰지 않는다(상위 500이 전체의 85%라는 가정이 해마다 어긋난다. CRSP Large Cap 구성 수는 2021-02~12·2023-04·2023-07 표본 달 기준 537~583개(2022 미확인), 2026-09 420개).
+- **최소 수:** 한 구간이 30개 미만이면 그 달 그 바구니를 만들지 않는다(이유 코드). 이 크기 바구니에는 오너의 30개 규칙을 쓴다(일반 10% 바구니의 n ≥ 100 규칙보다 이 규칙이 우선). 확인된 CRSP Mega Cap 구성 수는 165~293개(2016-02 293, 2017-02 276, 2017-08 275, 2018-08 260, 2021년 231~244, 2023-07 226, 2026-09 165; Vanguard MGC 보고서·CRSP Market Update)라 상위 500 안에서 두 구간 모두 30개를 크게 넘는다(2019·2020·2022·2024·2025 수치는 못 찾음, 앞뒤 수치로 보면 30에 가깝지 않다).
 - **중형·소형:** 확장 모집단이 v3에 들어갈 때 같은 방식(85%·98% 기준, 81–89%·96–99.5% 띠)으로 `SZMID-TOP`·`SZSMALL-TOP`을 **새 규칙 버전으로** 더한다. 지금은 만들지 않는다.
 
 ### 13.3 완충 규칙 제안 (`FV3-SIZE-BUFFER`, 결정 대기)
@@ -365,8 +366,9 @@ CRSP 띠와 packeting을 동일가중·월 1회 재조정에 맞게 바꾼다(�
 1. **띠:** CRSP와 같은 64%~76%(전체 시장 누적 시총 점수).
 2. **띠 안:** 지난달 구간을 그대로 둔다(CRSP처럼 기한 없음).
 3. **이동:** 대형 → 초대형은 점수가 **64% 이하인 달이 2번 연달아**일 때, 초대형 → 대형은 **76% 초과인 달이 2번 연달아**일 때만 옮긴다. 두 번째 확인 전에 띠로 돌아오면 다시 센다.
-4. **새 편입·첫 달:** 상위 500에 새로 들어온 회사와 시작 달의 모든 회사는 띠 없이 70%로 나눈다(CRSP "bands are ignored"). 상위 500에서 빠지면 구간에서도 빠진다.
+   - **한 번에 옮김(CRSP p.16 "moves beyond the core of the adjacent index" 대응):** 이웃 코어를 넘어가면 첫 달에 바로 옮긴다. 초대형 → 대형은 점수 **81% 초과**(중형 코어 76~81% 너머), 대형 → 초대형은 점수 **50% 이하**(초대형 코어 50~64% 너머).
+4. **새 편입·첫 달(v3 규칙):** 상위 500에 새로 들어온 회사와 시작 달의 모든 회사는 띠 없이 70%로 나눈다. CRSP의 새 편입 규칙("bands are ignored", 원문 예: IPO)을 본뜬 것이다. CRSP 규칙 자체는 지수에 처음 들어오는 종목만 다루고, 이미 거래되다가 상위 500에 들어온 회사와 시작 달에 넓힌 것은 v3의 선택이다. 상위 500에서 빠지면 구간에서도 빠진다.
 5. **결과:** 초대형 구간의 시총 비중은 정확히 70%가 아니라 대략 64~76% 사이를 오간다(CRSP도 같다).
 6. 민감도(보조): 3번 연달아 확인, 또는 CRSP처럼 분기 순위일(3·6·9·12월 첫 금요일)에만 이동 판단. 주 결과는 1~4번으로 고정한다.
 
-권장: 위 1~4번 승인. 엔진 PR에서 구간 배정·이동을 합성 시험으로 고정하고, 첫 재구성 실행에서 달마다 구간 수·이동 수를 보고한다.
+권장: 위 1~4번(3번의 한 번에 옮김 포함) 승인. 엔진 PR에서 구간 배정·이동을 합성 시험으로 고정하고, 첫 재구성 실행에서 달마다 구간 수·이동 수를 보고한다.
