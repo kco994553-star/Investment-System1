@@ -14,11 +14,25 @@ Changed for this experiment (settings doc section 1, inventory item 7):
   The cash planned at S for such a slot is held back at T, so other names' open-price drift cannot spend it.
 - Every corporate-action cash amount (dividends, merger and settlement cash) is reserved until the next reselection.
   The source added settlement cash to cash without reserving it; that is fixed here.
+- Settlement entitlement (review F1): the quantity a Settlement's terms apply to is the legal quantity held before the
+  open of its effective (ex) date, snapshot when that date is reached even if the evidence comes later. Terms are
+  delivered only from activation = max(effective_date, available_at) or from a later confirmation, never back-dated.
+  A SPINOFF parent keeps trading ex-distribution, so a holder that sells it after the effective date still receives the
+  distribution at activation and a buyer after the effective date does not. A terminating event applies to the snapshot
+  quantity less anything sold after the effective date; quantity bought after it is void (flagged
+  HOLDING_CHANGED_AFTER_EFFECTIVE_DATE in both cases).
 - Termination events (DELISTING / CASH_MERGER / STOCK_MERGER) act only from max(effective_date, available_at). With
   confirmed terms they settle by those terms in both scenarios. Without confirmed terms the scenario applies: LOSS sets
   the position's value to 0, CARRY keeps it at its last observed price as a non-cash, non-tradable asset (never sold,
   never turned into cash, never reinvested). The legal quantity is kept in both. A later confirmation replaces the
   scenario value from its own date (no back-dating).
+- Per-security conflicts (review F5): events are global, so one security's data issue must not refuse every portfolio.
+  A later terminating event of an already terminated security is supporting evidence; if the termination is still
+  unconfirmed and the later event carries complete terms, those terms settle it from the later event's activation. Terms
+  that contradict terms already applied (or a settlement's own partial terms) are recorded in `conflicts` and flagged
+  SETTLEMENT_CONFLICT on that day; the position is left as it was. A split of a terminated security scales a frozen
+  position (flag SPLIT_ON_TERMINATED_SECURITY) and is ignored when nothing is held. Malformed event records (missing
+  evidence, unknown kind, impossible dates or amounts) are still refused for the whole run.
 - A missing price is not a termination: the position is marked at its last observed price and flagged STALE_MARK.
   Price gaps alone never trigger LOSS or CARRY.
 - Cash interest is zero (mode 'ZERO'; no rate rows). Initial capital defaults to USD 1,000,000. Currency is USD only.
@@ -223,9 +237,17 @@ class Receivable:
 class _SettlementState:
     event: Settlement
     activated_on: date
-    quantity: Decimal  # Entitlement quantity locked at activation.
+    quantity: Decimal  # Entitlement quantity (snapshot before the effective-date open; terminating: less later sales).
+    snapshot: Decimal  # Legal quantity held before the open of the effective date.
     confirmed: bool = False
     terms: tuple | None = None
+    role: str = 'PRIMARY'  # SUPPORTING: a later terminating event of an already terminated security.
+
+
+@dataclass(frozen=True)
+class _EntitlementSnapshot:
+    """Schedule entry: the effective date of a Settlement is reached (pre-open); its entitlement quantity is recorded."""
+    event: Settlement
 
 
 _TERM_FIELDS = ('settlement_date', 'cash_per_share', 'new_security_id', 'stock_ratio')
@@ -312,6 +334,8 @@ class Ledger:
         self.fills: list[Fill] = []
         self.unfilled: list[Unfilled] = []
         self._settlements: dict[str, _SettlementState] = {}
+        self._entitlements: dict[str, Decimal] = {}  # event_id -> legal quantity before the effective-date open
+        self.conflicts: list[dict] = []
         self._signal: Rebalance | None = None
         self._planned_value: dict[str, Decimal] = {}
         self._signal_holdback = Decimal(0)
@@ -338,13 +362,25 @@ class Ledger:
         return security_id in self.terminated or security_id in self.states
 
     # -- corporate actions (pre-open) ---------------------------------------------------------------------------
+    def _conflict(self, event_id, security_id, reason):
+        """A per-security data conflict: recorded and flagged, the position is left as it was (review F5)."""
+        self.conflicts.append(dict(session=self._session, event_id=event_id, security_id=security_id, reason=reason))
+        self._day_flags.append(f'SETTLEMENT_CONFLICT:{event_id}')
+
     @_precision
     def apply_split(self, event: Split):
         self._require_session()
         ratio = _decimal(event.ratio, 'SPLIT_RATIO', positive=True)
         sid = event.security_id
         if self.frozen(sid):
-            raise LedgerError('SPLIT_ON_TERMINATED_SECURITY')
+            if not any(sid in book for book in (self.holdings, self.pending, self.requested)):
+                self._day_events.append(f'SPLIT_IGNORED_NO_POSITION:{event.event_id}')
+                return
+            # A frozen (LOSS / CARRY) position keeps its value: the legal quantity and the carry mark move together.
+            self._day_flags.append(f'SPLIT_ON_TERMINATED_SECURITY:{event.event_id}')
+            if self.carry_marks.get(sid) is not None:
+                day, price = self.carry_marks[sid]
+                self.carry_marks[sid] = (day, price / ratio)
         for book in (self.holdings, self.pending, self.requested):
             if sid in book:
                 book[sid] = _product_exact(book[sid], ratio)
@@ -370,22 +406,48 @@ class Ledger:
         self._day_events.append(f'DIVIDEND_EX:{event.event_id}')
 
     @_precision
+    def record_entitlement(self, event: Settlement):
+        """The effective date is reached (pre-open): record the legal quantity the event's terms will apply to.
+
+        Nothing is delivered, frozen or flagged here; the evidence may become available only later (activation)."""
+        self._require_session()
+        _validate_settlement(event)
+        if event.event_id in self._entitlements or event.event_id in self._settlements:
+            raise LedgerError('DUPLICATE_SETTLEMENT')
+        self._entitlements[event.event_id] = self.holdings.get(event.security_id, Decimal(0))
+
+    @_precision
     def apply_settlement(self, event: Settlement):
         session = self._require_session()
         _validate_settlement(event)
         if event.event_id in self._settlements:
             raise LedgerError('DUPLICATE_SETTLEMENT')
         sid = event.security_id
-        if event.kind in TERMINATING_KINDS and sid in self.terminated:
-            raise LedgerError('OVERLAPPING_TERMINATION')
-        state = _SettlementState(event, session, self.holdings.get(sid, Decimal(0)))
+        held = self.holdings.get(sid, Decimal(0))
+        snapshot = self._entitlements.pop(event.event_id, held)
+        terminating = event.kind in TERMINATING_KINDS
+        quantity = min(snapshot, held) if terminating else snapshot
+        if terminating and held != snapshot:
+            self._day_flags.append(f'HOLDING_CHANGED_AFTER_EFFECTIVE_DATE:{event.event_id}')
+        state = _SettlementState(event, session, quantity, snapshot)
         self._settlements[event.event_id] = state
-        if event.kind in TERMINATING_KINDS:
+        terms = _terms(event)
+        complete = _terms_complete(event.kind, *terms)
+        if terminating and sid in self.terminated:
+            state.role = 'SUPPORTING'
+            self._supporting_termination(state, terms if complete else None)
+            return
+        if terminating:
             self.terminated[sid] = event.event_id
-        if _terms_complete(event.kind, *_terms(event)):
-            self._deliver(state, _terms(event))
-        elif event.kind in TERMINATING_KINDS:
-            if state.quantity:
+            if held != quantity:  # Quantity bought after the effective date is void.
+                if quantity:
+                    self.holdings[sid] = quantity
+                else:
+                    self.holdings.pop(sid, None)
+        if complete:
+            self._deliver(state, terms, kind=event.kind, quantity=quantity, pay_id=event.event_id)
+        elif terminating:
+            if quantity:
                 self.states[sid] = self.scenario
                 if self.scenario == SCENARIO_CARRY:
                     mark = self.last_price.get(sid)
@@ -394,6 +456,29 @@ class Ledger:
         else:
             self._day_flags.append(f'SPINOFF_TERMS_UNCONFIRMED:{event.event_id}')
             self._day_events.append(f'SPINOFF_UNCONFIRMED:{event.event_id}')
+
+    def _settle_termination(self, owner: _SettlementState, terms, *, kind, pay_id, label):
+        """Settle the (still unconfirmed) termination `owner` by confirmed terms from today, on the frozen legal quantity."""
+        quantity = self.holdings.get(owner.event.security_id, Decimal(0))
+        self._deliver(owner, terms, kind=kind, quantity=quantity, pay_id=pay_id)
+        self._day_events.append(label)
+
+    def _supporting_termination(self, state: _SettlementState, terms):
+        """A later terminating event of an already terminated security (review F5): supporting evidence, the settlement
+        of a still open termination, or a recorded conflict on that security only."""
+        event = state.event
+        owner = self._settlements[self.terminated[event.security_id]]
+        if terms is None:
+            self._day_events.append(f'TERMINATION_SUPPORTING_EVIDENCE:{event.event_id}')
+        elif owner.confirmed:
+            if owner.terms != tuple(terms):
+                self._conflict(event.event_id, event.security_id, 'TERMINATION_TERMS_DIFFER_FROM_APPLIED_TERMS')
+            else:
+                self._day_events.append(f'TERMINATION_SUPPORTING_EVIDENCE:{event.event_id}')
+        else:
+            self._settle_termination(owner, terms, kind=event.kind, pay_id=event.event_id,
+                                     label=f'TERMINATION_SETTLED_BY:{owner.event.event_id}:{event.event_id}')
+            state.confirmed, state.terms = True, tuple(terms)
 
     @_precision
     def confirm_settlement(self, confirmation: SettlementConfirmation):
@@ -408,32 +493,42 @@ class Ledger:
         _validate_terms(event.kind, event.security_id, event.effective_date, *terms)
         if not _terms_complete(event.kind, *terms):
             raise LedgerError('INCOMPLETE_CONFIRMED_TERMS')
-        for old, new in zip(_terms(event), terms):
-            if old is not None and old != new:
-                raise LedgerError('CONFLICTING_CONFIRMED_TERMS')
+        if any(old is not None and old != new for old, new in zip(_terms(event), terms)):
+            self._conflict(event.event_id, event.security_id, 'CONFIRMED_TERMS_CONTRADICT_SETTLEMENT')
+            return
         if state.confirmed:
-            if state.terms == terms:
-                return
-            raise LedgerError('SETTLEMENT_ALREADY_CONFIRMED')
-        self._deliver(state, terms)
+            if state.terms != terms:
+                self._conflict(event.event_id, event.security_id, 'SETTLEMENT_ALREADY_CONFIRMED_WITH_OTHER_TERMS')
+            return
+        if event.kind in TERMINATING_KINDS:
+            owner = self._settlements[self.terminated[event.security_id]]
+            if owner.confirmed:  # A supporting event confirmed after the termination was settled.
+                if owner.terms != terms:
+                    self._conflict(event.event_id, event.security_id, 'TERMINATION_TERMS_DIFFER_FROM_APPLIED_TERMS')
+                    return
+            else:
+                self._settle_termination(owner, terms, kind=event.kind, pay_id=event.event_id,
+                                         label=f'SETTLEMENT_CONFIRMED:{confirmation.event_id}')
+            state.confirmed, state.terms = True, tuple(terms)
+            return
+        self._deliver(state, terms, kind=event.kind, quantity=state.quantity, pay_id=event.event_id)
         self._day_events.append(f'SETTLEMENT_CONFIRMED:{confirmation.event_id}')
 
-    def _deliver(self, state: _SettlementState, terms):
-        """Apply confirmed terms from the current session; cash is paid no earlier than today."""
+    def _deliver(self, state: _SettlementState, terms, *, kind, quantity, pay_id):
+        """Apply confirmed terms from the current session to `quantity`; cash is paid no earlier than today."""
         session = self._require_session()
         settlement_date, cash_per_share, new_security_id, stock_ratio = terms
-        event = state.event
-        sid = event.security_id
-        if event.kind in TERMINATING_KINDS:
+        sid = state.event.security_id
+        if kind in TERMINATING_KINDS:
             self.holdings.pop(sid, None)
             self.states.pop(sid, None)
             self.carry_marks.pop(sid, None)
-        cash = _product_exact(state.quantity, _decimal(cash_per_share, 'SETTLEMENT_CASH'))
+        cash = _product_exact(quantity, _decimal(cash_per_share, 'SETTLEMENT_CASH'))
         if cash:
-            self.receivables[('SETTLEMENT', event.event_id)] = Receivable(
-                'SETTLEMENT_CASH', event.event_id, sid, cash, max(settlement_date, session))
-        if event.kind in STOCK_KINDS:
-            received = _product_exact(state.quantity, _decimal(stock_ratio, 'STOCK_RATIO', positive=True))
+            self.receivables[('SETTLEMENT', pay_id)] = Receivable(
+                'SETTLEMENT_CASH', pay_id, sid, cash, max(settlement_date, session))
+        if kind in STOCK_KINDS:
+            received = _product_exact(quantity, _decimal(stock_ratio, 'STOCK_RATIO', positive=True))
             if received:
                 if self.frozen(new_security_id):
                     raise LedgerError('STOCK_CONSIDERATION_IN_TERMINATED_SECURITY')
@@ -441,7 +536,7 @@ class Ledger:
                                                              received))
         state.confirmed = True
         state.terms = tuple(terms)
-        self._day_events.append(f'SETTLEMENT_APPLIED:{event.event_id}')
+        self._day_events.append(f'SETTLEMENT_APPLIED:{pay_id}')
 
     def pay_due(self):
         """Move due receivables into cash. All of it stays reserved until the next reselection."""
@@ -756,7 +851,7 @@ def index_price_rows(rows) -> dict[date, dict[str, PriceRow]]:
     return index
 
 
-_PRIORITY = {Split: 0, Dividend: 1, Settlement: 2, SettlementConfirmation: 3}
+_PRIORITY = {Split: 0, Dividend: 1, Settlement: 3, SettlementConfirmation: 4}  # 2: entitlement snapshot
 
 
 def _event_schedule(events):
@@ -790,19 +885,23 @@ def _event_schedule(events):
         else:
             _validate_settlement(event)
             settlements[event.event_id] = event
-            schedule.append((activation_date(event), 2, event.event_id, event))
+            # The entitlement is fixed before the effective-date open; terms act from activation (review F1).
+            schedule.append((event.effective_date, 2, event.event_id, _EntitlementSnapshot(event)))
+            schedule.append((activation_date(event), 3, event.event_id, event))
     for event in events:
         if isinstance(event, SettlementConfirmation):
             if event.event_id not in settlements:
                 raise LedgerError('CONFIRMATION_WITHOUT_SETTLEMENT')
             trigger = max(event.available_at, activation_date(settlements[event.event_id]))
-            schedule.append((trigger, 3, event.event_id, event))
+            schedule.append((trigger, 4, event.event_id, event))
     schedule.sort(key=lambda item: item[:3])
     return schedule
 
 
 def _apply(ledger, event):
-    if isinstance(event, Split):
+    if isinstance(event, _EntitlementSnapshot):
+        ledger.record_entitlement(event.event)
+    elif isinstance(event, Split):
         ledger.apply_split(event)
     elif isinstance(event, Dividend):
         ledger.apply_dividend(event)
@@ -874,7 +973,7 @@ def run_ledger(sessions: Sequence[date], rebalances: Sequence[Rebalance], prices
                 status='COMPLETE' if all(row['nav'] is not None for row in daily) else 'INCOMPLETE_NAV',
                 daily=daily, rebalances=[records[row.signal_date] for row in rows if row.signal_date in records],
                 not_reached=tuple(row.signal_date for row in rows if row.signal_date not in records),
-                fills=fills, unfilled=tuple(ledger.unfilled),
+                fills=fills, unfilled=tuple(ledger.unfilled), conflicts=tuple(ledger.conflicts),
                 total_costs=_sum_exact(fill.fee for fill in fills),
                 total_gross_traded=_sum_exact(fill.gross for fill in fills))
 
