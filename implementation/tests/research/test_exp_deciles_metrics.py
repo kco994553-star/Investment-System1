@@ -197,7 +197,7 @@ def _long_run(cost, selected=('A', 'B')):
                       initial_capital=1000000)
 
 
-def test_ledger_metrics_measure_from_first_fill_with_turnover_and_cost_attribution():
+def test_ledger_metrics_measure_from_the_first_selected_t_with_turnover_and_cost_attribution():
     result = _long_run(10)
     metrics = m.ledger_metrics(result)
     assert metrics['started_at'] == LONG_DAYS[1] and metrics['status'] == 'COMPLETE'
@@ -218,8 +218,10 @@ def test_ledger_metrics_measure_from_first_fill_with_turnover_and_cost_attributi
     assert metrics['month_end_nav'][0].month == '2030-02' and metrics['month_end_nav'][0].complete
     assert metrics['rolling_windows'][12]['count'] >= 1
     assert metrics['rolling_windows'][36]['worst'] == m.Metric(None, 'INSUFFICIENT_HISTORY')
-    assert metrics['trailing_returns']['1y']['total_return'].value is not None
-    assert metrics['trailing_returns']['3y']['total_return'] == m.Metric(None, 'INSUFFICIENT_HISTORY')
+    # Review R5: trailing horizons are reselection cycles; this run ends at a close, not at a reselection T open.
+    for key in ('1y', '3y'):
+        assert metrics['trailing_returns'][key]['total_return'] == m.Metric(None, 'RUN_NOT_ENDED_AT_RESELECTION_T_OPEN')
+        assert metrics['trailing_returns'][key]['basis'] == 'RESELECTION_CYCLES'
     assert metrics['monthly']['sharpe'] == m.Metric(None, 'MISSING_RISK_FREE') and 'sharpe' not in metrics['performance']
     assert metrics['daily_coverage']['status'] == 'DAILY_COVERAGE_COMPLETE'
     assert metrics['performance']['basis'] == 'DAILY' and metrics['monthly']['basis'] == 'MONTHLY'
@@ -243,15 +245,33 @@ def test_cost_comparison_reports_before_and_after_cost_side_by_side():
         m.cost_comparison(before, _long_run(10, selected=('A',)))
 
 
-def test_ledger_metrics_without_any_fill_are_null_with_reason():
+def test_an_all_unfilled_year_is_cash_from_its_t_and_only_a_run_without_a_selected_t_is_not_started():
+    """Review M1: a run whose picks all went unfilled was NO_FILL with every metric null (and a later year's metrics
+    started at that year's first fill); the rules hold that year as cash."""
     days = LONG_DAYS[:10]
     rows = [dict(date=day, security_id='A', open=None, close=10, price_basis='RAW') for day in days]
     result = run_ledger(days, [Rebalance(days[0], days[1], ['A'])], rows, scenario='LOSS', cost_bps=0,
                         initial_capital=1000)
     metrics = m.ledger_metrics(result)
-    assert metrics['status'] == 'NO_FILL'
-    assert metrics['performance']['cagr'] == m.Metric(None, 'NO_FILL')
-    assert metrics['trailing_returns']['1y']['total_return'] == m.Metric(None, 'INSUFFICIENT_HISTORY')
+    assert metrics['status'] == 'COMPLETE' and metrics['started_at'] == days[1]
+    assert metrics['start_basis'] == 'FIRST_SELECTED_REBALANCE_T'
+    assert metrics['performance']['cumulative_return'] == m.Metric(0.0)
+    empty = m.ledger_metrics(run_ledger(days, [Rebalance(days[0], days[1], [])], rows, scenario='LOSS', cost_bps=0,
+                                        initial_capital=1000))
+    assert (empty['status'], empty['reason']) == ('NOT_STARTED', 'NO_SELECTED_REBALANCE_REACHED')
+    assert empty['performance']['cagr'] == m.Metric(None, 'NOT_STARTED')
+    assert empty['trailing_returns']['1y']['total_return'] == m.Metric(None, 'NOT_STARTED')
+    # Two cycles: year 1 all unfilled (cash), year 2 filled. The anchor stays at year 1's T.
+    long_rows = [r for r in _long_prices() if not (r['security_id'] == 'B' and r['date'] == LONG_DAYS[1])]
+    two = run_ledger(LONG_DAYS[:500], [Rebalance(LONG_DAYS[0], LONG_DAYS[1], ['B']),
+                                       Rebalance(LONG_DAYS[365], LONG_DAYS[366], ['A'])],
+                     long_rows, scenario='LOSS', cost_bps=0, initial_capital=1000)
+    measured = m.ledger_metrics(two)
+    assert two['first_fill_date'] == LONG_DAYS[366] and measured['started_at'] == LONG_DAYS[1]
+    assert measured['performance']['annual_returns'][2030] == 0.0
+    days_held = (LONG_DAYS[499] - LONG_DAYS[1]).days
+    final = float(two['daily'][-1]['nav']) / 1000
+    assert measured['performance']['cagr'].value == pytest.approx(final ** (365.25 / days_held) - 1)
 
 
 
@@ -318,3 +338,102 @@ def test_base_100_nav_index_next_to_usd_nav_is_a_display_normalisation():
     assert final['nav_index'] == pytest.approx(final['nav_usd'] / 10000)
     assert metrics['nav_index_label'].startswith('REPORTED_NAV_INDEX_BASE_100')
     assert m.nav_index(1100000, 1000000) == pytest.approx(110.0) and m.nav_index(None, 1000000) is None
+
+
+# -- review R1 / R3 / M2 / R5 / R6 -------------------------------------------------------------------------------
+def _terminal_open_run(skip_terminal_open=False, end_index=366):
+    """Two names from LONG_DAYS[1]; run held to LONG_DAYS[end_index] valued at its OPEN (the next reselection T)."""
+    days = LONG_DAYS[:end_index + 1]
+    rows = [r for r in _long_prices() if r['date'] in set(days)
+            and not (skip_terminal_open and r['date'] == days[-1])]
+    return run_ledger(days, [Rebalance(days[0], days[1], ['A', 'B'])], rows, scenario='LOSS', cost_bps=0,
+                      initial_capital=1000000, end=days[-1], end_valuation='OPEN')
+
+
+def test_a_stale_terminal_mark_is_not_an_end_value():
+    """Review R1: with the next-T open missing, the final NAV was a stale mark labelled OPEN and cumulative return /
+    CAGR were reported from it."""
+    fresh = m.ledger_metrics(_terminal_open_run())
+    assert fresh['status'] == 'COMPLETE' and fresh['final']['valuation'] == 'OPEN'
+    assert fresh['performance']['cagr'].value is not None
+    stale = m.ledger_metrics(_terminal_open_run(skip_terminal_open=True))
+    assert stale['status'] == 'TERMINAL_MARK_STALE' and stale['terminal_mark_stale'] is True
+    assert stale['final'] == {'date': LONG_DAYS[366], 'valuation': 'STALE', 'nav_usd': None, 'nav_index': None,
+                              'reason': 'TERMINAL_MARK_STALE'}
+    for key in ('cumulative_return', 'cagr'):
+        assert stale['performance'][key] == m.Metric(None, 'TERMINAL_MARK_STALE')
+    assert all(item['total_return'] == m.Metric(None, 'TERMINAL_MARK_STALE')
+               for item in stale['trailing_returns'].values())
+    assert stale['performance']['annual_returns'][LONG_DAYS[366].year] is None
+    assert stale['monthly_returns'][-1].value is None
+    # The month-end MDD leaves the stale endpoint out instead of using it.
+    assert stale['monthly']['max_drawdown'].value is not None
+
+
+def test_calendar_years_use_fresh_boundaries_and_worst_year_skips_partial_years():
+    """Review R3 / M2: a stale 31 December went into the calendar-year returns, and partial first / last years were
+    compared with full ones in worst_year."""
+    days = LONG_DAYS[:700]
+    rows = [r for r in _long_prices() if r['date'] in set(days)]
+    rebalances = [Rebalance(days[0], days[1], ['A', 'B'])]
+    full = m.ledger_metrics(run_ledger(days, rebalances, rows, scenario='LOSS', cost_bps=0, initial_capital=1000000))
+    detail = full['performance']['annual_return_detail']
+    assert [(y, detail[y]['partial']) for y in sorted(detail)] == [(2030, True), (2031, False), (2032, True)]
+    assert full['performance']['worst_year'] == 2031 and full['performance']['worst_year_reason'] is None
+    assert detail[2031]['start'] == date(2030, 12, 31) and detail[2031]['end'] == date(2031, 12, 31)
+    gap = [r for r in rows if not (r['security_id'] == 'B' and r['date'] == date(2030, 12, 31))]
+    stale = m.ledger_metrics(run_ledger(days, rebalances, gap, scenario='LOSS', cost_bps=0, initial_capital=1000000))
+    annual = stale['performance']['annual_returns']
+    assert annual[2030] is None and annual[2031] is None and annual[2032] is not None
+    assert stale['performance']['annual_return_detail'][2030]['reason'] == 'YEAR_END_MARK_STALE'
+    assert stale['performance']['worst_year'] is None
+    assert stale['performance']['worst_year_reason'] == 'INCOMPLETE_ANNUAL_RETURNS'
+    short = m.ledger_metrics(_terminal_open_run())
+    assert short['performance']['worst_year'] is None
+    assert short['performance']['worst_year_reason'] == 'NO_FULL_CALENDAR_YEAR'
+
+
+def test_trailing_horizons_are_complete_reselection_cycles():
+    """Review R5: T 2018-02-20 to T 2019-02-19 (one full cycle) gave INSUFFICIENT_HISTORY for 1y because the dates
+    moved; an N-year horizon is now N complete cycles from the T open N cycles back to the terminal T open."""
+    result = _terminal_open_run(end_index=365)                 # 364 calendar days: one cycle, shorter than a year
+    metrics = m.ledger_metrics(result)
+    one = metrics['trailing_returns']['1y']
+    assert (one['basis'], one['start'], one['end']) == ('RESELECTION_CYCLES', LONG_DAYS[1], LONG_DAYS[365])
+    assert one['total_return'].value == pytest.approx(float(result['daily'][-1]['nav']) / 1000000 - 1)
+    assert metrics['trailing_returns']['3y']['total_return'] == m.Metric(None, 'INSUFFICIENT_HISTORY')
+    # Two cycles: the 1y base is the second T's open NAV before trades.
+    days = LONG_DAYS[:731]
+    two = run_ledger(days, [Rebalance(days[0], days[1], ['A', 'B']), Rebalance(days[365], days[366], ['A'])],
+                     [r for r in _long_prices() if r['date'] in set(days)], scenario='LOSS', cost_bps=0,
+                     initial_capital=1000000, end=days[730], end_valuation='OPEN')
+    trailing = m.ledger_metrics(two)['trailing_returns']
+    base = float(two['rebalances'][1]['open_nav_before_trades'])
+    assert trailing['1y']['start'] == days[366]
+    assert trailing['1y']['total_return'].value == pytest.approx(float(two['daily'][-1]['nav']) / base - 1)
+    assert trailing['3y']['total_return'] == m.Metric(None, 'INSUFFICIENT_HISTORY')
+
+
+def test_information_ratio_and_sharpe_use_the_supplied_benchmark_and_verified_risk_free():
+    """Review R6: IR was always MISSING_BENCHMARK and Sharpe / Sortino could never be computed."""
+    before, after = _long_run(0), _long_run(10)
+    bench = m.cost_comparison(_long_run(0, selected=('A',)), _long_run(10, selected=('A',)))
+    report = m.cost_comparison(before, after, benchmark_before=bench['before_cost']['monthly_returns'],
+                               benchmark_after=bench['after_cost']['monthly_returns'])
+    assert report['before_cost']['monthly']['information_ratio'].value is not None
+    assert report['after_cost']['monthly']['information_ratio'].value is not None
+    assert report['after_cost']['monthly']['sharpe'] == m.Metric(None, 'MISSING_RISK_FREE')
+    months = {f'{y:04d}-{mo:02d}': 0.001 for y in (2030, 2031, 2032) for mo in range(1, 13)}
+    verified = m.ledger_metrics(after, risk_free=m.MonthlyRiskFreeRates('synthetic verified source', True, months))
+    assert verified['monthly']['sharpe'].value is not None and verified['monthly']['sortino'].value is not None
+    unverified = m.ledger_metrics(after, risk_free=m.MonthlyRiskFreeRates('synthetic', False, months))
+    assert unverified['monthly']['sharpe'] == m.Metric(None, 'RISK_FREE_UNVERIFIED')
+    gap = m.ledger_metrics(after, risk_free=m.MonthlyRiskFreeRates('synthetic', True, {'2030-03': 0.001}))
+    assert gap['monthly']['sharpe'] == m.Metric(None, 'MISSING_RISK_FREE')
+
+
+def test_ledger_metric_headers_name_the_internal_notional_and_the_reported_nav():
+    """Review R8: the metrics header exported the internal notional as 'initial_capital'."""
+    metrics = m.ledger_metrics(_long_run(0))
+    assert 'initial_capital' not in metrics
+    assert (metrics['internal_notional_capital_usd'], metrics['reported_nav']) == (1000000.0, 'INDEX_BASE_100')

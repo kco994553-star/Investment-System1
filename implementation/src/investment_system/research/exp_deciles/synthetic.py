@@ -36,8 +36,8 @@ Issuers (CIK 100 + i, security XQnnn), signal days S 2018-02-16 and S 2019-02-15
 Companyfacts: 10-Ks FY2011..FY2018 (filed 1 February of the next year unless stated) with revenue, gross profit,
 operating income, pretax income, tax, net income, operating cash flow, capex, D&A, interest, diluted EPS and shares,
 assets, equity, debt and cash, and the cover share count, so Q, G and V are computed for every U-A member.
-External TR: 'SPY total return', is_etf true, claim OTHER_TR (owner 11/01: an ETF supplementary comparison, never the
-S&P 500 index TR).
+External TR: 'SPY total return', is_etf true, claim SPY_TOTAL_RETURN_ETF_AUXILIARY (owner 11/01: the external slot is an
+ETF auxiliary comparison, never the S&P 500 index TR; review R2 / SYN-1).
 """
 from __future__ import annotations
 
@@ -277,7 +277,7 @@ TR_SERIES_LABEL = 'SPY total return'
 
 def tr_series():
     # Owner 11/01: SPY total return is an ETF supplementary comparison only, never labelled S&P 500 index TR.
-    return {'label': TR_SERIES_LABEL, 'claim': 'OTHER_TR', 'is_etf': True,
+    return {'label': TR_SERIES_LABEL, 'claim': 'SPY_TOTAL_RETURN_ETF_AUXILIARY', 'is_etf': True,
             'source': 'synthetic SPY closes plus synthetic distributions', 'rows': tr_rows()}
 
 

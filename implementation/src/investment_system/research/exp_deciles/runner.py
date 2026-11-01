@@ -27,21 +27,30 @@ Ledger stage (ledger_stage, one or more consecutive yearly selection_inputs):
     the ledger sells what it holds at that T open and keeps the cash; the year is recorded with holding 'CASH' and the
     reason. A portfolio that is cash in every year is ALL_CASH and no ledger is run for it;
   - every other portfolio: ledger.run_scenarios (LOSS and CARRY) at 0 bp and at settings.COST_BPS_PER_SIDE, then
-    metrics.cost_comparison (which holds metrics.ledger_metrics of both runs) per scenario; the portfolio's
+    metrics.cost_comparison (which holds metrics.ledger_metrics of both runs) per scenario. Metrics start at the T of
+    the portfolio's first selected rebalance (a year whose picks all went unfilled is cash, review M1); the information
+    ratio of a strategy uses the same group's equal-weight portfolio of the same scenario and cost as its benchmark
+    (review R6); Sharpe / Sortino use the optional verified risk_free input, else MISSING_RISK_FREE. The portfolio's
     daily_coverage is DAILY_COVERAGE_COMPLETE only when every run's price rows cover every session of the holding period
     for every held name, else DAILY_PRICES_NOT_SUPPLIED and its daily metrics are null (monthly metrics are reported
-    separately, basis MONTHLY; owner 11/01 decision 7). Month-end series and final values carry the base-100 NAV index
-    next to the internal notional USD NAV (the index is the reported NAV);
-  - optional external total-return series: benchmarks.external_tr_benchmark from the first T and
-    metrics.series_metrics; a refused label is recorded as REFUSED with its code, the rest of the stage continues;
+    separately, basis MONTHLY; owner 11/01 decision 7). A stale terminal mark nulls the endpoint metrics
+    (TERMINAL_MARK_STALE, review R1). Reported NAV (review R8): every daily ledger row carries nav_index (the base-100
+    index, the reported NAV) next to the internal notional USD nav; the run, metrics and output headers name the USD base
+    internal_notional_capital_usd with reported_nav INDEX_BASE_100 (never 'initial_capital');
+  - optional external total-return series, bound to the settings slot SPY_TOTAL_RETURN_ETF_AUXILIARY (review R2 /
+    SYN-1): only an SPY ETF series is accepted, as an ETF auxiliary comparison; a claim or label of the S&P 500 index
+    total return, another claim, or a non-SPY series is recorded as REFUSED with its code and the rest of the stage
+    continues. benchmarks.external_tr_benchmark from the first T, then metrics.series_metrics;
   - sessions are the canonical NYSE rule calendar (schedule.is_session) from the first S; every run stops at `end`.
     Default end (review F4, settings doc 6.2 "hold to the next reselection T open"): the T of the year after the last
-    selection year when that year is frozen, valued at that T's OPEN (end_rule NEXT_RESELECTION_T_OPEN, end_valuation
-    OPEN: open marks, no trades, LOSS / CARRY unchanged) for every strategy, the group EW and the external TR (which
-    uses its open level, else the previous close flagged END_AT_PREVIOUS_CLOSE); without a frozen next year, the last
-    price-row date at the close (LAST_PRICE_DATE). A supplied end later than that next frozen T is refused
-    (END_PAST_NEXT_RESELECTION, review F9: the picks would be held through a reselection whose selection is absent); a
-    supplied end equal to it is valued at its open; an earlier one at its close.
+    selection year, valued at that T's OPEN (end_rule NEXT_RESELECTION_T_OPEN, end_valuation OPEN: open marks, no
+    trades, LOSS / CARRY unchanged) for every strategy, the group EW and the external TR (which uses its open level,
+    else the immediately preceding session's close flagged END_AT_PREVIOUS_CLOSE). That T comes from the frozen
+    schedule, or, for the year after the last frozen year, from the rule calendar (schedule.annual_dates;
+    next_reselection_t_source RULE_CALENDAR, review R4); where the rule calendar ends no end is determinable
+    (END_NOT_DETERMINABLE, fail closed). A supplied end later than that next T is refused (END_PAST_NEXT_RESELECTION,
+    review F9: the picks would be held through a reselection whose selection is absent); a supplied end equal to it is
+    valued at its open; an earlier one at its close.
   Each selection's flags are copied into selection_flags by year (review U3).
   Returns a ledger_outputs/1 dict (LEDGER_SCHEMA). 'QGV_DEFAULT' is an alias of the QGV_BALANCED portfolios.
 
@@ -65,12 +74,15 @@ KIND_GROUP_EW = benchmarks.GROUP_EQUAL_WEIGHT
 HOLD_SELECTED, HOLD_CASH = 'SELECTED', 'CASH'
 PORTFOLIO_RUN, PORTFOLIO_ALL_CASH = 'RUN', 'ALL_CASH'
 NO_GROUP_MEMBERS = 'NO_GROUP_MEMBERS'
-NO_FILL = 'NO_FILL'          # a run whose every order went unfilled holds cash only (metrics null with NO_FILL)
+NOT_STARTED = metrics.NOT_STARTED   # a run that reached no selected rebalance (every metric null); review M1
 QUOTE_ADR_PER_ORDINARY_SHARE = 'ADR_PER_ORDINARY_SHARE'
 ADR_QUOTE_PRICE_INVALID = 'ADR_QUOTE_PRICE_INVALID'
 END_NEXT_RESELECTION_T_OPEN = 'NEXT_RESELECTION_T_OPEN'
-END_LAST_PRICE_DATE = 'LAST_PRICE_DATE'
 END_SUPPLIED = 'SUPPLIED'
+NEXT_T_FROZEN, NEXT_T_RULE_CALENDAR = 'FROZEN_SCHEDULE', 'RULE_CALENDAR'
+EXTERNAL_SLOT_IS_SPY_ETF_AUXILIARY = 'EXTERNAL_SLOT_IS_SPY_ETF_AUXILIARY'
+if benchmarks.CLAIM_SPY_ETF_AUXILIARY not in settings.BENCHMARKS:      # the external slot is the settings slot
+    raise RuntimeError('EXTERNAL_BENCHMARK_SLOT_NOT_IN_SETTINGS')
 FIRST_BUILD_NOT_FIRST_BUNDLE = 'FIRST_BUILD_NOT_FIRST_BUNDLE_SIGNAL_DAY'
 
 
@@ -429,32 +441,41 @@ def calendar_sessions(start, end):
     return out
 
 
-def next_reselection_t(last_year):
-    """The frozen T of the year after `last_year`, or None when that year is not in the frozen schedule."""
+def next_reselection(last_year):
+    """(T, source) of the year after `last_year`: the frozen T, else the rule calendar's T (review R4), else
+    (None, None) where the rule calendar ends."""
     try:
-        return _day(schedule.frozen_row(year=last_year + 1)['T'])
+        return _day(schedule.frozen_row(year=last_year + 1)['T']), NEXT_T_FROZEN
     except ValueError:
-        return None
+        pass
+    try:
+        return _day(schedule.annual_dates(last_year + 1)['T']), NEXT_T_RULE_CALENDAR
+    except Exception:  # noqa: BLE001 - outside the rule calendar (CalendarNotConfigured and the like)
+        return None, None
 
 
-def default_end(last_year, prices):
-    """(end, rule, valuation): the next reselection T valued at its open when that year is frozen (review F4), else
-    the last price-row date at its close."""
+def next_reselection_t(last_year):
+    """The T of the year after `last_year` (frozen, else rule calendar), or None where the rule calendar ends."""
+    return next_reselection(last_year)[0]
+
+
+def default_end(last_year, prices=()):
+    """(end, rule, valuation): the next reselection T valued at its open (review F4 / R4); refused
+    (END_NOT_DETERMINABLE) where no next T can be determined."""
     next_t = next_reselection_t(last_year)
-    if next_t is not None:
-        return next_t, END_NEXT_RESELECTION_T_OPEN, ledger.VALUATION_OPEN
-    dates = [row['date'] for row in prices]
-    if not dates:
+    if next_t is None:
         raise RunnerError('END_NOT_DETERMINABLE')
-    return max(dates), END_LAST_PRICE_DATE, ledger.VALUATION_CLOSE
+    return next_t, END_NEXT_RESELECTION_T_OPEN, ledger.VALUATION_OPEN
 
 
 def supplied_end(value, last_year):
-    """(end, rule, valuation) of a supplied end: refused past the next frozen reselection T (review F9), valued at the
-    open when it is that T, else at its close."""
+    """(end, rule, valuation) of a supplied end: refused past the next reselection T (review F9 / R4), valued at the
+    open when it is that T, else at its close; refused where no next T can be determined."""
     end = _day(value, 'END_INVALID')
     next_t = next_reselection_t(last_year)
-    if next_t is not None and end > next_t:
+    if next_t is None:
+        raise RunnerError('END_NOT_DETERMINABLE')
+    if end > next_t:
         raise RunnerError('END_PAST_NEXT_RESELECTION')
     return end, END_SUPPLIED, ledger.VALUATION_OPEN if end == next_t else ledger.VALUATION_CLOSE
 
@@ -507,8 +528,21 @@ def _needed_securities(selected, events):
     return needed
 
 
+def _reported(result, capital):
+    """A ledger / TR result with the USD base named internal_notional_capital_usd and a base-100 nav_index on every
+    daily row (review R8)."""
+    out = dict(result)
+    out['internal_notional_capital_usd'] = out.pop('initial_capital')
+    out['reported_nav'] = settings.REPORTED_NAV
+    with localcontext() as ctx:
+        ctx.prec = 50
+        out['daily'] = [dict(row, nav_index=None if row['nav'] is None else row['nav'] / capital * 100)
+                        for row in out['daily']]
+    return out
+
+
 def _run_portfolio(rebalances, prices_by_sid, events, *, sessions, end, end_valuation, initial_capital, daily_positions,
-                   group=None):
+                   group=None, benchmark=None, risk_free=None):
     needed = _needed_securities({sid for r in rebalances for sid in r.selected}, events)
     rows = [row for sid in sorted(needed) for row in prices_by_sid.get(sid, ())]
     runs = {scenario: {} for scenario in ledger.SCENARIOS}
@@ -524,13 +558,22 @@ def _run_portfolio(rebalances, prices_by_sid, events, *, sessions, end, end_valu
                 daily_positions=daily_positions)['runs']
         for scenario in ledger.SCENARIOS:
             runs[scenario][str(cost)] = result[scenario]
-    measured = {scenario: metrics.cost_comparison(runs[scenario]['0'], runs[scenario][str(settings.COST_BPS_PER_SIDE)],
-                                                  sessions=sessions, coverage_end=end)
-                for scenario in ledger.SCENARIOS}
+    after = str(settings.COST_BPS_PER_SIDE)
+    measured = {scenario: metrics.cost_comparison(
+        runs[scenario]['0'], runs[scenario][after], sessions=sessions, coverage_end=end, risk_free=risk_free,
+        benchmark_before=None if benchmark is None else benchmark[scenario]['before_cost']['monthly_returns'],
+        benchmark_after=None if benchmark is None else benchmark[scenario]['after_cost']['monthly_returns'])
+        for scenario in ledger.SCENARIOS}
+    runs = {scenario: {cost: _reported(result, initial_capital) for cost, result in by_cost.items()}
+            for scenario, by_cost in runs.items()}
     return runs, measured
 
 
-def _external_tr(tr_series, *, entry_date, end, end_valuation, sessions, initial_capital):
+def _external_tr(tr_series, *, entry_date, end, end_valuation, sessions, initial_capital, cycle_dates=(),
+                 risk_free=None):
+    """The external slot (settings.BENCHMARKS: SPY_TOTAL_RETURN_ETF_AUXILIARY, review R2 / SYN-1): claim defaults to
+    the slot; SP500_TR is refused (SP500_INDEX_TR_NOT_USED) and so is any other claim
+    (EXTERNAL_SLOT_IS_SPY_ETF_AUXILIARY); benchmarks refuses a non-SPY or index-labelled series."""
     if not isinstance(tr_series, Mapping) or not isinstance(tr_series.get('rows'), list):
         raise RunnerError('TR_SERIES_INVALID')
     allowed = {'label', 'claim', 'source', 'is_etf', 'entry_basis', 'rows'}
@@ -541,37 +584,70 @@ def _external_tr(tr_series, *, entry_date, end, end_valuation, sessions, initial
         if not isinstance(row, Mapping):
             raise RunnerError('TR_SERIES_INVALID')
         rows.append(dict(row, date=_day(row.get('date'), 'TR_DATE_INVALID')))
+    claim = tr_series.get('claim', benchmarks.CLAIM_SPY_ETF_AUXILIARY)
+
+    def refused(reason):
+        return {'status': 'REFUSED', 'reason': reason, 'label': tr_series['label'], 'result': None, 'metrics': None}
+    if claim == benchmarks.CLAIM_SP500_TR:
+        return refused(benchmarks.SP500_INDEX_TR_NOT_USED)
+    if claim != benchmarks.CLAIM_SPY_ETF_AUXILIARY:
+        return refused(EXTERNAL_SLOT_IS_SPY_ETF_AUXILIARY)
     try:
         result = benchmarks.external_tr_benchmark(
-            rows, label=tr_series['label'], claim=tr_series.get('claim', benchmarks.CLAIM_SP500_TR),
-            entry_date=entry_date, end=end, sessions=sessions,
+            rows, label=tr_series['label'], claim=claim, entry_date=entry_date, end=end, sessions=sessions,
             entry_basis=tr_series.get('entry_basis', benchmarks.ENTRY_OPEN), is_etf=tr_series.get('is_etf'),
-            source=tr_series.get('source'), initial_capital=initial_capital, end_valuation=end_valuation)
+            source=tr_series.get('source'), initial_capital=initial_capital, end_valuation=end_valuation,
+            cycle_dates=cycle_dates)
     except benchmarks.BenchmarkError as exc:
-        return {'status': 'REFUSED', 'reason': str(exc), 'label': tr_series['label'], 'result': None, 'metrics': None}
+        return refused(str(exc))
     measured = None
     if result['daily']:
         points, started, capital = benchmarks.tr_nav_points(result)
         stale = {row['date'] for row in result['daily'] if row['valuation'] == benchmarks.ENTRY_PREVIOUS_CLOSE}
         measured = metrics.series_metrics(points, started_at=started, initial_capital=capital, sessions=sessions,
-                                          coverage_end=end, stale_dates=stale,
-                                          final_valuation=result['daily'][-1]['valuation'])
-    return {'status': result['status'], 'reason': None, 'label': tr_series['label'], 'result': result,
-            'metrics': measured}
+                                          coverage_end=end, stale_dates=stale, risk_free=risk_free,
+                                          final_valuation=result['daily'][-1]['valuation'],
+                                          cycle_boundaries=benchmarks.tr_cycle_boundaries(result))
+    return {'status': result['status'], 'reason': None, 'label': tr_series['label'],
+            'result': _reported(result, initial_capital), 'metrics': measured}
 
 
-def ledger_stage(selections, *, prices, events=(), end=None, tr_series=None, initial_capital=settings.INTERNAL_NOTIONAL_CAPITAL_USD,
-                 daily_positions=False, run=None):
+def risk_free_rates(value):
+    """metrics.MonthlyRiskFreeRates from {'source', 'verified', 'monthly': {'YYYY-MM': decimal fraction}} (or None).
+    Sharpe / Sortino need verified true and a named source (else RISK_FREE_UNVERIFIED in the metrics; review R6)."""
+    if value is None or isinstance(value, metrics.MonthlyRiskFreeRates):
+        return value
+    if not isinstance(value, Mapping) or set(value) != {'source', 'verified', 'monthly'} \
+            or not isinstance(value['monthly'], Mapping) or type(value['verified']) is not bool \
+            or not isinstance(value['source'], str):
+        raise RunnerError('RISK_FREE_INVALID')
+    by_month = {}
+    for month, rate in value['monthly'].items():
+        number = _quote_decimal(rate) if not isinstance(rate, float) else None
+        if not isinstance(month, str) or len(month) != 7 or month[4] != '-' or not (month[:4] + month[5:]).isdigit() \
+                or not 1 <= int(month[5:]) <= 12 or number is None or number <= -1:
+            raise RunnerError('RISK_FREE_INVALID')
+        by_month[month] = float(number)
+    return metrics.MonthlyRiskFreeRates(value['source'], value['verified'], dict(sorted(by_month.items())))
+
+
+def ledger_stage(selections, *, prices, events=(), end=None, tr_series=None,
+                 initial_capital=settings.INTERNAL_NOTIONAL_CAPITAL_USD, daily_positions=False, run=None,
+                 risk_free=None):
     """ledger_outputs/1 from consecutive yearly selection_inputs/1 results (see the module doc).
 
     prices: ledger price rows {date, security_id, open, close, suspended?, price_basis 'RAW', currency?}; events: ledger
     event objects or rows (ledger_events); end: last session (date or ISO text) or None for the default rule; tr_series:
-    {label, claim?, source?, is_etf?, entry_basis?, rows [{date, total_return_index, open_total_return_index?,
-    currency}]} or None; daily_positions: keep per-position detail in every daily row."""
+    {label, claim? (SPY_TOTAL_RETURN_ETF_AUXILIARY, the default), source?, is_etf?, entry_basis?, rows [{date,
+    total_return_index, open_total_return_index?, currency}]} or None; daily_positions: keep per-position detail in every
+    daily row; risk_free: {source, verified, monthly {'YYYY-MM': decimal fraction}} or None (Sharpe / Sortino stay
+    MISSING_RISK_FREE without it); initial_capital: the internal notional USD capital (an engine setting)."""
     items = _ordered_selections(selections)
+    risk_free = risk_free_rates(risk_free)
     prices = price_rows(prices)
     ledger.index_price_rows(prices)          # every row is validated once, also rows no portfolio needs
     events = ledger_events(events)
+    next_t, next_t_source = next_reselection(items[-1]['year'])
     if end is None:
         end, end_rule, end_valuation = default_end(items[-1]['year'], prices)
     else:
@@ -586,18 +662,19 @@ def ledger_stage(selections, *, prices, events=(), end=None, tr_series=None, ini
         prices_by_sid[row.get('security_id')].append(row)
     capital = Decimal(str(initial_capital))
     specs = []
+    # The group equal-weight portfolios first: each is the information-ratio benchmark of its group (review R6).
+    for group in settings.GROUPS:
+        specs.append((f'{KIND_GROUP_EW}/{group}', KIND_GROUP_EW, None, group, None, _group_years(items, group)))
     for strategy in settings.STRATEGY_IDS:
         for group in settings.GROUPS:
             for side in SIDES:
                 specs.append((f'{strategy}/{group}/{side}', KIND_STRATEGY, strategy, group, side,
                               _strategy_years(items, strategy, group, side)))
-    for group in settings.GROUPS:
-        specs.append((f'{KIND_GROUP_EW}/{group}', KIND_GROUP_EW, None, group, None, _group_years(items, group)))
-    portfolios, run_status = {}, Counter()
+    portfolios, run_status, group_benchmark, metric_status = {}, Counter(), {}, Counter()
     for pid, kind, strategy, group, side, years in specs:
         entry = {'portfolio_id': pid, 'kind': kind, 'strategy': strategy, 'group': group, 'side': side, 'years': years,
                  'cash_years': [y['year'] for y in years if y['holding'] == HOLD_CASH], 'runs': None, 'metrics': None,
-                 'daily_coverage': None}
+                 'daily_coverage': None, 'information_ratio_benchmark': None}
         if all(y['holding'] == HOLD_CASH for y in years):
             entry['status'] = PORTFOLIO_ALL_CASH
         else:
@@ -605,19 +682,29 @@ def ledger_stage(selections, *, prices, events=(), end=None, tr_series=None, ini
             runs, measured = _run_portfolio(rebalances, prices_by_sid, events, sessions=sessions, end=end,
                                             end_valuation=end_valuation, initial_capital=capital,
                                             daily_positions=daily_positions,
-                                            group=group if kind == KIND_GROUP_EW else None)
+                                            group=group if kind == KIND_GROUP_EW else None,
+                                            benchmark=None if kind == KIND_GROUP_EW else group_benchmark.get(group),
+                                            risk_free=risk_free)
+            if kind == KIND_GROUP_EW:
+                group_benchmark[group] = measured
             coverage = {side_metrics['daily_coverage']['status'] for comparison in measured.values()
                         for side_metrics in (comparison['before_cost'], comparison['after_cost'])}
             entry.update(status=PORTFOLIO_RUN, runs=runs, metrics=measured,
+                         information_ratio_benchmark=(None if kind == KIND_GROUP_EW or group not in group_benchmark
+                                                      else f'{KIND_GROUP_EW}/{group}'),
                          daily_coverage=(metrics.DAILY_PRICES_NOT_SUPPLIED
                                          if metrics.DAILY_PRICES_NOT_SUPPLIED in coverage
-                                         else NO_FILL if coverage == {NO_FILL} else metrics.DAILY_COVERAGE_COMPLETE))
+                                         else NOT_STARTED if coverage == {NOT_STARTED}
+                                         else metrics.DAILY_COVERAGE_COMPLETE))
+            metric_status.update(side_metrics['status'] for comparison in measured.values()
+                                 for side_metrics in (comparison['before_cost'], comparison['after_cost']))
             run_status.update(result['status'] for by_cost in runs.values() for result in by_cost.values())
         portfolios[pid] = entry
     external = None
     if tr_series is not None:
         external = _external_tr(tr_series, entry_date=_day(items[0]['signal']['T']), end=end,
-                                end_valuation=end_valuation, sessions=sessions, initial_capital=capital)
+                                end_valuation=end_valuation, sessions=sessions, initial_capital=capital,
+                                cycle_dates=[_day(x['signal']['T']) for x in items[1:]], risk_free=risk_free)
     status_counts = Counter(p['status'] for p in portfolios.values())
     coverage_counts = Counter(p['daily_coverage'] for p in portfolios.values() if p['daily_coverage'])
     out = {
@@ -628,18 +715,25 @@ def ledger_stage(selections, *, prices, events=(), end=None, tr_series=None, ini
         'selection_flags': {x['year']: list(x.get('flags') or []) for x in items},   # review U3: never dropped
         'schedule': [{'year': x['year'], 'S': x['signal']['S'], 'T': x['signal']['T']} for x in items],
         'start': start, 'end': end, 'end_rule': end_rule, 'end_valuation': end_valuation,
+        'next_reselection_t': next_t, 'next_reselection_t_source': next_t_source,
         'session_count': sum(1 for d in sessions if d <= end),
         'scenarios': list(ledger.SCENARIOS), 'cost_bps_levels': ['0', str(settings.COST_BPS_PER_SIDE)],
-        'initial_capital': capital, 'currency': settings.CURRENCY, 'daily_positions': bool(daily_positions),
+        'internal_notional_capital_usd': capital, 'reported_nav': settings.REPORTED_NAV,
+        'nav_index_label': metrics.NAV_INDEX_LABEL, 'currency': settings.CURRENCY,
+        'daily_positions': bool(daily_positions),
+        'risk_free': None if risk_free is None else {'source': risk_free.source, 'verified': risk_free.verified,
+                                                     'months': len(risk_free.by_month)},
         'strategy_aliases': dict(settings.STRATEGY_ALIASES),
         'portfolios': portfolios,
         'benchmarks': {'group_equal_weight': [f'{KIND_GROUP_EW}/{g}' for g in settings.GROUPS],
-                       'external_total_return': external},
+                       'information_ratio_benchmark': 'GROUP_EQUAL_WEIGHT_SAME_GROUP_SCENARIO_AND_COST',
+                       'external_slot': benchmarks.CLAIM_SPY_ETF_AUXILIARY, 'external_total_return': external},
         'counts': {'portfolios': len(portfolios), 'portfolios_run': status_counts[PORTFOLIO_RUN],
                    'portfolios_all_cash': status_counts[PORTFOLIO_ALL_CASH],
                    'cash_years': sum(len(p['cash_years']) for p in portfolios.values()),
                    'ledger_runs': sum(run_status.values()), 'ledger_runs_by_status': dict(sorted(run_status.items())),
                    'daily_coverage': dict(sorted(coverage_counts.items())),
+                   'metrics_by_status': dict(sorted(metric_status.items())),
                    'settlement_conflicts': sum(len(result['conflicts']) for p in portfolios.values() if p['runs']
                                                for by_cost in p['runs'].values() for result in by_cost.values()),
                    'price_rows': len(prices), 'events': len(events),
@@ -657,4 +751,4 @@ def portfolio_alias(ledger_outputs, portfolio_id):
 
 __all__ = ['SELECTION_SCHEMA', 'LEDGER_SCHEMA', 'RunnerError', 'selection_stage', 'ledger_stage', 'u_a_members', 'u_a_state',
            'scoring_quotes', 'price_rows', 'ledger_events', 'calendar_sessions', 'default_end', 'supplied_end',
-           'next_reselection_t', 'portfolio_alias']
+           'next_reselection', 'next_reselection_t', 'risk_free_rates', 'portfolio_alias']

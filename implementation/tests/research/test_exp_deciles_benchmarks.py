@@ -72,36 +72,79 @@ def tr_rows(levels, *, open_on=None, open_level=None, skip=()):
 LEVELS = [100 + i for i in range(10)]
 
 
-@pytest.mark.parametrize('label', ['SPY', 'SPY_TR', 'spy total return', 'IVV'])
-def test_etf_series_is_marked_etf_and_never_named_sp500(label):
-    result = b.external_tr_benchmark(tr_rows(LEVELS, open_on=d[1], open_level=100), label=label,
-                                     claim='SP500_TR', entry_date=d[1])
-    assert result['is_etf'] is True and result['is_sp500_index'] is False
+SLOT = 'SPY_TOTAL_RETURN_ETF_AUXILIARY'
+
+
+@pytest.mark.parametrize('label', ['SPY', 'SPY_TR', 'spy total return'])
+def test_spy_series_fills_the_etf_auxiliary_slot_and_is_never_named_sp500(label):
+    """Owner 11/01 decision 3 (review R2 / SYN-1): the slot is SPY total return as an ETF auxiliary comparison; no
+    substitute_for an S&P 500 index slot, no S&P 500 in the name."""
+    result = b.external_tr_benchmark(tr_rows(LEVELS, open_on=d[1], open_level=100), label=label, claim=SLOT,
+                                     entry_date=d[1])
+    assert result['is_etf'] is True and result['is_sp500_index'] is False and result['ticker'] == 'SPY'
+    assert (result['benchmark_id'], result['role']) == (SLOT, 'ETF_AUXILIARY_COMPARISON')
     assert 'S&P 500' not in result['name'] and 'SP500' not in result['name'].replace(' ', '').upper()
-    assert result['name'].endswith('total return (ETF)')
-    assert result['benchmark_id'].startswith('ETF_TR:')
-    assert result['substitute_for'] == 'SP500_TR' and 'ETF_SUBSTITUTE_NOT_INDEX' in result['flags']
+    assert 'substitute_for' not in result and 'ETF_SUBSTITUTE_NOT_INDEX' not in result['flags']
+
+
+@pytest.mark.parametrize('label,kwargs', [
+    ('SP500TR', {}), ('SPXT', {}), ('S&P 500 Total Return', {}), ('S&P 500 TR', {'is_etf': True}),
+    ('SP500TR', {'source': 'SPDR S&P 500 Trust daily bars plus distributions'}),
+    ('SP500TR', {'source': 'iShares Core S&P 500 NAV with distributions'}),
+    ('SP500TR', {'source': 'SPY ETF closes plus SPY distributions'}),
+])
+@pytest.mark.parametrize('claim', [SLOT, 'OTHER_TR'])
+def test_any_series_labelled_as_the_sp500_index_total_return_is_refused(label, kwargs, claim):
+    """Review R2 / SYN-1: an SP500TR label (with or without fund text in the source) was published as 'S&P 500 total
+    return index'; 'S&P 500 TR' with is_etf was named 'SP500 total return (ETF)'."""
+    with pytest.raises(b.BenchmarkError, match='SP500_INDEX_TR_NOT_USED'):
+        b.external_tr_benchmark(tr_rows(LEVELS, open_on=d[1], open_level=100), label=label, claim=claim,
+                                entry_date=d[1], **kwargs)
+    with pytest.raises(b.BenchmarkError, match='SP500_INDEX_TR_NOT_USED'):
+        b.external_tr_benchmark(tr_rows(LEVELS, open_on=d[1], open_level=100), label='SPY', claim='SP500_TR',
+                                entry_date=d[1])
+
+
+@pytest.mark.parametrize('label,kwargs', [
+    ('RSP total return', {'is_etf': True}), ('IVV', {}), ('Broad fund X', {'is_etf': True}),
+    ('Russell 2000 TR', {}), ('SPDR S&P 500 ETF Trust total return', {}),
+])
+def test_the_auxiliary_slot_accepts_only_an_spy_etf_series(label, kwargs):
+    """Review R2: RSP (equal weight) and any OTHER_TR label filled the slot."""
+    with pytest.raises(b.BenchmarkError, match='TR_SERIES_NOT_SPY_ETF'):
+        b.external_tr_benchmark(tr_rows(LEVELS, open_on=d[1], open_level=100), label=label, claim=SLOT,
+                                entry_date=d[1], **kwargs)
+
+
+def test_an_etf_without_a_known_ticker_is_never_named_from_its_label():
+    """Review R2: an ETF without a known ticker took the label base ('SP500 total return (ETF)')."""
+    result = b.external_tr_benchmark(tr_rows(LEVELS, open_on=d[1], open_level=100),
+                                     label='SPDR S&P 500 ETF Trust total return', claim='OTHER_TR', entry_date=d[1])
+    assert (result['benchmark_id'], result['name']) == ('ETF_TR:UNIDENTIFIED', 'ETF total return (ticker not identified)')
+    rsp = b.external_tr_benchmark(tr_rows(LEVELS, open_on=d[1], open_level=100), label='RSP total return',
+                                  claim='OTHER_TR', entry_date=d[1], is_etf=True)
+    assert (rsp['benchmark_id'], rsp['name'], rsp['role']) == ('ETF_TR:RSP', 'RSP total return (ETF)', 'OTHER_SERIES')
 
 
 def test_etf_label_cannot_be_declared_not_etf():
     with pytest.raises(b.BenchmarkError, match='ETF_LABEL_DECLARED_NOT_ETF'):
-        b.external_tr_benchmark(tr_rows(LEVELS, open_on=d[1], open_level=100), label='SPY', claim='SP500_TR',
+        b.external_tr_benchmark(tr_rows(LEVELS, open_on=d[1], open_level=100), label='SPY', claim=SLOT,
                                 entry_date=d[1], is_etf=False)
     flagged = b.external_tr_benchmark(tr_rows(LEVELS, open_on=d[1], open_level=100), label='Broad fund X',
                                       claim='OTHER_TR', entry_date=d[1], is_etf=True)
-    assert flagged['is_etf'] is True and flagged['name'].endswith('(ETF)')
+    assert flagged['is_etf'] is True and flagged['benchmark_id'] == 'ETF_TR:UNIDENTIFIED'
 
 
 @pytest.mark.parametrize('label,source', [
     ('Fama-French market', None),
     ('French Mkt-RF', None),
     ('MKT_RF', None),
-    ('SP500_TR', 'Ken French data library'),
-    ('S&P 500 TR', 'Fama/French factors'),
+    ('SPY', 'Ken French data library'),
+    ('SPY total return', 'Fama/French factors'),
 ])
-def test_french_market_factor_is_refused_as_sp500(label, source):
-    with pytest.raises(b.BenchmarkError, match='FRENCH_MARKET_NOT_SP500'):
-        b.external_tr_benchmark(tr_rows(LEVELS, open_on=d[1], open_level=100), label=label, claim='SP500_TR',
+def test_french_market_factor_is_refused_in_the_etf_slot(label, source):
+    with pytest.raises(b.BenchmarkError, match='FRENCH_MARKET_NOT_SPY_ETF'):
+        b.external_tr_benchmark(tr_rows(LEVELS, open_on=d[1], open_level=100), label=label, claim=SLOT,
                                 entry_date=d[1], source=source)
 
 
@@ -110,23 +153,13 @@ def test_french_market_series_is_allowed_only_as_another_labelled_series():
                                      claim='OTHER_TR', entry_date=d[1])
     assert result['is_sp500_index'] is False and result['is_french_market'] is True
     assert result['benchmark_id'].startswith('OTHER_TR:') and 'not S&P 500' in result['name']
-
-
-def test_sp500_total_return_index_label_is_accepted_and_unknown_labels_are_refused():
-    result = b.external_tr_benchmark(tr_rows(LEVELS, open_on=d[1], open_level=100), label='S&P 500 TR',
-                                     claim='SP500_TR', entry_date=d[1])
-    assert result['benchmark_id'] == 'SP500_TR_INDEX' and result['is_sp500_index'] is True
-    assert result['is_etf'] is False and result['name'] == 'S&P 500 total return index'
-    with pytest.raises(b.BenchmarkError, match='LABEL_NOT_SP500_TR_INDEX'):
-        b.external_tr_benchmark(tr_rows(LEVELS, open_on=d[1], open_level=100), label='Broad market index',
-                                claim='SP500_TR', entry_date=d[1])
     with pytest.raises(b.BenchmarkError, match='UNKNOWN_BENCHMARK_CLAIM'):
-        b.external_tr_benchmark(tr_rows(LEVELS), label='SPXT', claim='SP500', entry_date=d[1])
+        b.external_tr_benchmark(tr_rows(LEVELS), label='SPY', claim='SP500', entry_date=d[1])
 
 
 def test_tr_nav_enters_at_the_t_open_level_and_never_fills_missing_levels():
     rows = tr_rows(LEVELS, open_on=d[1], open_level=D('100.5'), skip=(d[3],))
-    result = b.external_tr_benchmark(rows, label='SPXT', claim='SP500_TR', entry_date=d[1], end=d[6],
+    result = b.external_tr_benchmark(rows, label='SPY', claim=SLOT, entry_date=d[1], end=d[6],
                                      sessions=DAYS, initial_capital=1000, entry_cost_bps=10)
     assert result['entry_level'] == D('100.5') and result['entry_basis'] == 'OPEN'
     assert [row['date'] for row in result['daily']] == list(d[1:7])
@@ -138,13 +171,42 @@ def test_tr_nav_enters_at_the_t_open_level_and_never_fills_missing_levels():
 
 
 def test_tr_entry_basis_previous_close_is_flagged_and_missing_open_blocks():
-    blocked = b.external_tr_benchmark(tr_rows(LEVELS), label='SPXT', claim='SP500_TR', entry_date=d[1])
+    blocked = b.external_tr_benchmark(tr_rows(LEVELS), label='SPY', claim=SLOT, entry_date=d[1])
     assert blocked['status'] == 'BLOCKED' and blocked['reasons'] == ('MISSING_ENTRY_OPEN_LEVEL',)
     assert blocked['daily'] == []
-    previous = b.external_tr_benchmark(tr_rows(LEVELS), label='SPXT', claim='SP500_TR', entry_date=d[1],
+    previous = b.external_tr_benchmark(tr_rows(LEVELS), label='SPY', claim=SLOT, entry_date=d[1], sessions=DAYS,
                                        entry_basis='PREVIOUS_CLOSE', initial_capital=1000)
     assert previous['entry_level'] == 100 and 'ENTRY_AT_PREVIOUS_CLOSE' in previous['flags']
     assert previous['daily'][0]['nav'] == 1010
+
+
+def test_previous_close_fallbacks_use_only_the_immediately_preceding_session():
+    """Review M3: the entry and end fallbacks took the last close of any age (223 sessions old in the review)."""
+    gap = tr_rows(LEVELS, skip=(d[0],))
+    blocked = b.external_tr_benchmark(gap, label='SPY', claim=SLOT, entry_date=d[1], sessions=DAYS,
+                                      entry_basis='PREVIOUS_CLOSE')
+    assert blocked['status'] == 'BLOCKED' and blocked['reasons'] == ('MISSING_PREVIOUS_CLOSE_LEVEL',)
+    rows = tr_rows(LEVELS[:5], open_on=d[1], open_level=100)       # closes only up to d[4]
+    fresh = b.external_tr_benchmark(rows, label='SPY', claim=SLOT, entry_date=d[1], end=d[5], sessions=DAYS,
+                                    end_valuation='OPEN', initial_capital=1000)
+    assert fresh['daily'][-1]['valuation'] == 'PREVIOUS_CLOSE' and 'END_AT_PREVIOUS_CLOSE' in fresh['flags']
+    assert fresh['daily'][-1]['nav'] == 1040
+    stale = b.external_tr_benchmark(rows, label='SPY', claim=SLOT, entry_date=d[1], end=d[9], sessions=DAYS,
+                                    end_valuation='OPEN', initial_capital=1000)
+    assert stale['daily'][-1]['nav'] is None and stale['daily'][-1]['reason'] == 'MISSING_END_LEVEL'
+    assert 'MISSING_END_LEVEL' in stale['reasons'] and 'END_AT_PREVIOUS_CLOSE' not in stale['flags']
+    points, started, capital = b.tr_nav_points(stale)
+    report = m.series_metrics(points, started_at=started, initial_capital=capital, sessions=DAYS, coverage_end=d[9],
+                              final_valuation=stale['daily'][-1]['valuation'])
+    assert report['performance']['cumulative_return'].value is None and report['final']['nav_index'] is None
+
+
+def test_previous_close_entry_anchors_annualization_at_that_close():
+    """Review R7: with PREVIOUS_CLOSE entry the return accrues from the S close but CAGR was annualized from T."""
+    result = b.external_tr_benchmark(tr_rows(LEVELS), label='SPY', claim=SLOT, entry_date=d[3], sessions=DAYS,
+                                     entry_basis='PREVIOUS_CLOSE', initial_capital=1000)
+    points, started, _ = b.tr_nav_points(result)
+    assert result['entry_level_date'] == d[2] and started == d[2] and points[0].date == d[3]
 
 
 @pytest.mark.parametrize('rows,reason', [
@@ -156,11 +218,11 @@ def test_tr_entry_basis_previous_close_is_flagged_and_missing_open_blocks():
 ])
 def test_tr_rows_are_validated(rows, reason):
     with pytest.raises(b.BenchmarkError, match=reason):
-        b.external_tr_benchmark(rows, label='SPXT', claim='SP500_TR', entry_date=d[1])
+        b.external_tr_benchmark(rows, label='SPY', claim=SLOT, entry_date=d[1])
 
 
 def test_tr_series_feeds_the_same_metrics():
-    result = b.external_tr_benchmark(tr_rows(LEVELS, open_on=d[1], open_level=100), label='SPY', claim='SP500_TR',
+    result = b.external_tr_benchmark(tr_rows(LEVELS, open_on=d[1], open_level=100), label='SPY', claim=SLOT,
                                      entry_date=d[1], initial_capital=1000)
     points, started, capital = b.tr_nav_points(result)
     report = m.series_metrics(points, started_at=started, initial_capital=capital)
@@ -169,23 +231,18 @@ def test_tr_series_feeds_the_same_metrics():
 
 
 # -- review F8: ETF markers are read in the source text as well --------------------------------------------------
-def test_an_index_label_built_from_an_etf_named_in_the_source_is_named_as_that_etf():
-    """Review d10: label 'SP500TR' with source 'SPY ETF closes plus SPY distributions' was accepted as the index."""
+def test_etf_markers_in_the_source_name_the_series_as_that_etf():
+    """Review d10 / R2: a series whose source names an ETF is that ETF, never the index."""
     rows = tr_rows(LEVELS, open_on=d[1], open_level=100)
-    result = b.external_tr_benchmark(rows, label='SP500TR', claim='SP500_TR', entry_date=d[1],
-                                     source='SPY ETF closes plus SPY distributions')
-    assert (result['benchmark_id'], result['name'], result['is_etf']) == ('ETF_TR:SPY', 'SPY total return (ETF)', True)
-    assert result['is_sp500_index'] is False
-    assert {'ETF_SUBSTITUTE_NOT_INDEX', 'ETF_NAMED_IN_SOURCE'} <= set(result['flags'])
+    result = b.external_tr_benchmark(rows, label='Large-cap total return', claim=SLOT, entry_date=d[1],
+                                     source='SPY closes plus SPY distributions')
+    assert (result['benchmark_id'], result['is_etf']) == (SLOT, True) and 'ETF_NAMED_IN_SOURCE' in result['flags']
     with pytest.raises(b.BenchmarkError, match='ETF_SOURCE_DECLARED_NOT_ETF'):
-        b.external_tr_benchmark(rows, label='SP500TR', claim='SP500_TR', entry_date=d[1], is_etf=False,
-                                source='closes of IVV')
-    with pytest.raises(b.BenchmarkError, match='FRENCH_MARKET_NOT_SP500'):
-        b.external_tr_benchmark(rows, label='SP500TR', claim='SP500_TR', entry_date=d[1],
-                                source='Kenneth French data library')
-    index = b.external_tr_benchmark(rows, label='S&P 500 Total Return Index', claim='SP500_TR', entry_date=d[1],
-                                    source='S&P Dow Jones Indices daily levels')
-    assert index['benchmark_id'] == 'SP500_TR_INDEX' and index['flags'] == []
-    labelled = b.external_tr_benchmark(rows, label='SPY total return (ETF, synthetic)', claim='OTHER_TR',
+        b.external_tr_benchmark(rows, label='Large-cap total return', claim='OTHER_TR', entry_date=d[1],
+                                is_etf=False, source='closes of IVV')
+    fund = b.external_tr_benchmark(rows, label='Large-cap total return', claim='OTHER_TR', entry_date=d[1],
+                                   source='iShares Core fund NAV with distributions')
+    assert fund['is_etf'] is True and fund['benchmark_id'] == 'ETF_TR:UNIDENTIFIED'
+    labelled = b.external_tr_benchmark(rows, label='SPY total return (ETF, synthetic)', claim=SLOT,
                                        entry_date=d[1], is_etf=True, source='synthetic')
-    assert (labelled['benchmark_id'], labelled['name']) == ('ETF_TR:SPY', 'SPY total return (ETF)')
+    assert (labelled['benchmark_id'], labelled['ticker']) == (SLOT, 'SPY')

@@ -495,3 +495,25 @@ def test_cli_text_never_carries_security_ids_or_prices_including_refusals(cli, c
     texts.append(out + err)
     for text in texts:
         assert_clean_stdout(text)
+
+
+# ---- review R6: an optional verified risk-free series reaches Sharpe / Sortino --------------------------------------
+def test_ledger_reads_an_optional_risk_free_resource(cli, capsys, tmp_path):
+    manifest = write_bundle(tmp_path / 'bundle')
+    rf = _dumps({'source': 'synthetic verified bill series', 'verified': True,
+                 'monthly': {f'2018-{m:02d}': Decimal('0.0011') for m in range(1, 13)}
+                 | {'2019-01': Decimal('0.0012'), '2019-02': Decimal('0.0012')}})
+    (tmp_path / 'bundle' / 'rf.json').write_bytes(rf)
+    body = json.loads(manifest.read_text())
+    body['resources'].append(dict(body['resources'][0], name='risk_free', path='rf.json',
+                                  sha256=hashlib.sha256(rf).hexdigest()))
+    manifest.write_text(json.dumps(body))
+    s18 = _select_2018(cli, capsys, manifest, tmp_path / 's18')
+    code, out, err = run(cli, capsys, 'ledger', '--manifest', str(manifest), '--selection', str(s18), '--out',
+                         str(tmp_path / 'led'), '--generated-at', WHEN)
+    assert code == 0, err
+    assert_clean_stdout(out)
+    payload = json.loads((tmp_path / 'led' / 'ledger_outputs.json').read_text())
+    assert payload['risk_free'] == {'source': 'synthetic verified bill series', 'verified': True, 'months': 14}
+    sharpe = payload['portfolios']['AXIS_Q/U_A/TOP']['metrics']['LOSS']['after_cost']['monthly']['sharpe']
+    assert sharpe['value'] is not None

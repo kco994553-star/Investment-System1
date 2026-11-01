@@ -80,10 +80,19 @@ Bundle files (JSON), by resource name:
                         "cash_per_share"?, "new_security_id"?, "stock_ratio"?},
                        {"type": "SETTLEMENT_CONFIRMATION", "event_id", "available_at", "evidence", "settlement_date",
                         "cash_per_share", "new_security_id"?, "stock_ratio"?}]
-  tr_series           optional external total-return series: {"label", "claim"? (SP500_TR | OTHER_TR), "source"?,
-                      "is_etf"?, "entry_basis"? (OPEN | PREVIOUS_CLOSE), "rows": [{"date", "total_return_index",
-                      "open_total_return_index"?, "currency": "USD"}]}
-  Numbers in records, quotes, prices, events and tr_series are read exactly (JSON numbers become Decimal, never float;
+  tr_series           optional external total-return series for the settings slot SPY_TOTAL_RETURN_ETF_AUXILIARY (owner
+                      11/01: SPY total return as an ETF auxiliary comparison only; review R2): {"label", "claim"?
+                      (SPY_TOTAL_RETURN_ETF_AUXILIARY, the default), "source"?, "is_etf"?, "entry_basis"? (OPEN |
+                      PREVIOUS_CLOSE), "rows": [{"date", "total_return_index", "open_total_return_index"?, "currency":
+                      "USD"}]}. Only an SPY ETF series is accepted; a claim SP500_TR or a label of the S&P 500 index
+                      total return (SP500_INDEX_TR_NOT_USED), any other claim (EXTERNAL_SLOT_IS_SPY_ETF_AUXILIARY) or a
+                      non-SPY series (TR_SERIES_NOT_SPY_ETF) is recorded as REFUSED in the ledger output. A missing
+                      end-day open uses only the immediately preceding session's close (END_AT_PREVIOUS_CLOSE)
+  risk_free           optional verified risk-free series for Sharpe / Sortino: {"source", "verified" (true / false),
+                      "monthly": {"YYYY-MM": monthly return as a decimal fraction}}; without it (or unverified) Sharpe
+                      and Sortino are null (MISSING_RISK_FREE / RISK_FREE_UNVERIFIED). The information ratio always
+                      uses the same group's equal-weight portfolio (same scenario and cost)
+  Numbers in records, quotes, prices, events, tr_series and risk_free are read exactly (JSON numbers become Decimal, never float;
   decimal text is accepted). companyfacts and filings are read as the SEC publishes them. Dates are ISO text.
 
 Outputs: DIR must be outside this repository checkout and every working tree of it ('git worktree list';
@@ -557,6 +566,8 @@ def cmd_ledger(args):
         raise CliError('SELECTION_CODE_SHA_MISMATCH')
     tr = bundle.of('tr_series')
     tr_series = bundle.read(tr[0], exact=True) if tr else None
+    rf = bundle.of('risk_free')
+    risk_free = bundle.read(rf[0], exact=True) if rf else None
     extra = [{'role': f'selection:{year}', 'sha256': digest} for year, digest in hashes]
     code_sha, code_flags = code_state()
     stage = {'name': 'ledger', 'selection_sha256': [digest for _, digest in hashes], 'end': args.end,
@@ -564,7 +575,8 @@ def cmd_ledger(args):
     run = handoff.run_metadata(input_manifest=bundle.manifest, code_sha=code_sha, stage=stage,
                                generated_at=generated_at, extra_inputs=extra, code_flags=code_flags)
     payload = runner.ledger_stage(selections, prices=bundle.concat('prices'), events=bundle.concat('events'),
-                                  end=args.end, tr_series=tr_series, daily_positions=args.daily_positions, run=run)
+                                  end=args.end, tr_series=tr_series, daily_positions=args.daily_positions, run=run,
+                                  risk_free=risk_free)
     if selection_code != {run['code_sha']}:
         payload['flags'].append(SELECTION_CODE_SHA_DIFFERS_FROM_LEDGER)
     body = handoff.canonical_bytes(payload)

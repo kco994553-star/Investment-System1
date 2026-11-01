@@ -249,16 +249,28 @@ def test_external_total_return_series_is_the_spy_etf_and_a_french_label_is_refus
     external = outputs['benchmarks']['external_total_return']
     assert external['status'] == 'COMPLETE'
     result = external['result']
-    assert (result['benchmark_id'], result['name'], result['is_etf']) == ('ETF_TR:SPY', 'SPY total return (ETF)', True)
-    assert result['is_sp500_index'] is False and result['claim'] == 'OTHER_TR'
+    slot = 'SPY_TOTAL_RETURN_ETF_AUXILIARY'
+    assert (result['benchmark_id'], result['claim'], result['role'], result['is_etf']) == (
+        slot, slot, 'ETF_AUXILIARY_COMPARISON', True)
+    assert result['is_sp500_index'] is False and 'substitute_for' not in result and 'S&P' not in result['name']
     assert result['entry_date'] == '2018-02-20' and external['metrics']['performance']['cagr']['value']
-    french = {'label': 'Fama-French market', 'claim': 'SP500_TR', 'source': 'Kenneth French library',
-              'rows': syn.tr_rows(end=date(2018, 3, 2))}
-    out = runner.ledger_stage([years[0]], prices=syn.price_rows(end=date(2018, 3, 2)), end='2018-03-02',
-                              tr_series=french)
-    assert out['benchmarks']['external_total_return'] == {'status': 'REFUSED', 'reason': 'FRENCH_MARKET_NOT_SP500',
-                                                         'label': 'Fama-French market', 'result': None, 'metrics': None}
-    assert out['counts']['portfolios_run'] == 30
+    assert outputs['benchmarks']['external_slot'] == slot and slot in settings.BENCHMARKS
+    rows = syn.tr_rows(end=date(2018, 3, 2))
+    # Review R2 / SYN-1: the slot is bound to settings.BENCHMARKS; nothing is ever claimed as the S&P 500 index TR.
+    for series, reason in (
+            ({'label': 'Fama-French market', 'source': 'Kenneth French library'}, 'FRENCH_MARKET_NOT_SPY_ETF'),
+            ({'label': 'Fama-French market', 'claim': 'SP500_TR'}, 'SP500_INDEX_TR_NOT_USED'),
+            ({'label': 'S&P 500 Total Return'}, 'SP500_INDEX_TR_NOT_USED'),
+            ({'label': 'SP500TR', 'source': 'SPDR S&P 500 Trust daily bars plus distributions'},
+             'SP500_INDEX_TR_NOT_USED'),
+            ({'label': 'SPY total return', 'is_etf': True, 'claim': 'OTHER_TR'}, 'EXTERNAL_SLOT_IS_SPY_ETF_AUXILIARY'),
+            ({'label': 'RSP total return', 'is_etf': True}, 'TR_SERIES_NOT_SPY_ETF'),
+            ({'label': 'Russell 2000 TR'}, 'TR_SERIES_NOT_SPY_ETF')):
+        out = runner.ledger_stage([years[0]], prices=syn.price_rows(end=date(2018, 3, 2)), end='2018-03-02',
+                                  tr_series=dict(series, rows=rows))
+        assert out['benchmarks']['external_total_return'] == {'status': 'REFUSED', 'reason': reason,
+                                                             'label': series['label'], 'result': None, 'metrics': None}
+        assert out['counts']['portfolios_run'] == 30
 
 
 # ---- the corporate-action and fill cases of the synthetic bundle -------------------------------------------------
@@ -382,7 +394,16 @@ def test_selection_files_and_in_memory_results_give_the_same_ledger(years):
 def test_default_end_and_event_rows():
     rows = runner.price_rows([{'date': '2026-03-02', 'security_id': 'X'}, {'date': '2026-03-03', 'security_id': 'X'}])
     assert runner.default_end(2019, rows) == (date(2020, 2, 18), 'NEXT_RESELECTION_T_OPEN', 'OPEN')
-    assert runner.default_end(2026, rows) == (date(2026, 3, 3), 'LAST_PRICE_DATE', 'CLOSE')
+    # Review R4: the year after the last frozen year takes its T from the rule calendar; past the calendar, refused.
+    assert runner.default_end(2026, rows) == (date(2027, 2, 16), 'NEXT_RESELECTION_T_OPEN', 'OPEN')
+    assert runner.next_reselection(2026) == (date(2027, 2, 16), 'RULE_CALENDAR')
+    assert runner.next_reselection(2018) == (date(2019, 2, 19), 'FROZEN_SCHEDULE')
+    with pytest.raises(runner.RunnerError, match='END_PAST_NEXT_RESELECTION'):
+        runner.supplied_end('2027-06-30', 2026)
+    assert runner.supplied_end('2027-02-16', 2026) == (date(2027, 2, 16), 'SUPPLIED', 'OPEN')
+    for call in (lambda: runner.default_end(2028, rows), lambda: runner.supplied_end('2029-01-02', 2028)):
+        with pytest.raises(runner.RunnerError, match='END_NOT_DETERMINABLE'):
+            call()
     events = runner.ledger_events(syn.event_rows())
     assert events[0] == ledger.Dividend('DIV-XQ012-1', date(2018, 6, 1), 'XQ012', Decimal('0.2517'), date(2018, 6, 15))
     assert events[1] == ledger.Dividend('DIV-XQ026-1', date(2018, 8, 1), 'XQ026', Decimal('0.4007'), date(2018, 8, 15),
@@ -409,7 +430,7 @@ def test_dividend_rows_carry_an_optional_depositary_fee():
 def test_default_end_values_every_portfolio_and_the_external_tr_at_the_next_t_open(years):
     s18, _ = years
     assert runner.default_end(2018, []) == (date(2019, 2, 19), 'NEXT_RESELECTION_T_OPEN', 'OPEN')
-    tr = {'label': 'SPY total return', 'claim': 'OTHER_TR', 'is_etf': True, 'source': 'synthetic', 'rows': syn.tr_rows()}
+    tr = {'label': 'SPY total return', 'is_etf': True, 'source': 'synthetic', 'rows': syn.tr_rows()}
     out = runner.ledger_stage([s18], prices=syn.price_rows(), events=syn.event_rows(), tr_series=tr)
     assert (out['end'], out['end_rule'], out['end_valuation']) == ('2019-02-19', 'NEXT_RESELECTION_T_OPEN', 'OPEN')
     for pid in ('GROUP_EQUAL_WEIGHT/U_A', 'AXIS_G/U_A/TOP'):
@@ -481,12 +502,13 @@ def test_portfolio_daily_coverage_and_monthly_metrics_without_daily_prices(years
     full = runner.ledger_stage([s18], prices=syn.price_rows(), events=syn.event_rows())
     sparse = runner.ledger_stage([s18], prices=[r for r in syn.price_rows() if r['date'] in keep],
                                  events=syn.event_rows())
-    # A U-B cell whose only (k = 1) pick has no T open holds cash all year: NO_FILL, not a coverage gap.
-    no_fill = full['counts']['daily_coverage'].get('NO_FILL', 0)
-    assert full['counts']['daily_coverage'] == {'DAILY_COVERAGE_COMPLETE': 30 - no_fill, **({'NO_FILL': no_fill}
-                                                                                            if no_fill else {})}
-    assert sparse['counts']['daily_coverage'] == {'DAILY_PRICES_NOT_SUPPLIED': 30 - no_fill,
-                                                  **({'NO_FILL': no_fill} if no_fill else {})}
+    # A U-B cell whose only (k = 1) pick has no T open holds cash all year (review M1): measured as cash from T, so a
+    # NAV on every session even without daily prices.
+    cash = sorted(pid for pid, p in full['portfolios'].items() if p['runs'] and not p['runs']['LOSS']['0']['fills'])
+    assert cash == ['QGV_BALANCED/U_B/TOP', 'QGV_VALUE/U_B/TOP']
+    assert full['counts']['daily_coverage'] == {'DAILY_COVERAGE_COMPLETE': 30}
+    assert sparse['counts']['daily_coverage'] == {'DAILY_COVERAGE_COMPLETE': len(cash),
+                                                  'DAILY_PRICES_NOT_SUPPLIED': 30 - len(cash)}
     ew_full = full['portfolios']['GROUP_EQUAL_WEIGHT/U_A']['metrics']['LOSS']['after_cost']
     ew = sparse['portfolios']['GROUP_EQUAL_WEIGHT/U_A']['metrics']['LOSS']['after_cost']
     assert ew['performance']['max_drawdown'] == {'value': None, 'reason': 'DAILY_PRICES_NOT_SUPPLIED'}
@@ -513,3 +535,76 @@ def test_ledger_output_keeps_every_selection_flag_by_year(years):
     flagged = dict(s18, flags=['SOME_SELECTION_FLAG'])
     out = runner.ledger_stage([flagged], prices=syn.price_rows(end=date(2018, 3, 2)), end='2018-03-02')
     assert out['selection_flags'] == {'2018': ['SOME_SELECTION_FLAG']}
+
+
+# ---- review R1 / R6 / R8 / M1 / M3 at the stage level ---------------------------------------------------------------
+def test_an_all_unfilled_strategy_year_is_cash_from_the_first_t_like_the_group_benchmark(outputs):
+    """Review missed M1: QGV_BALANCED/U_B/TOP (2018 pick unfilled) started at 2019-02-19 with CAGR over 38 days."""
+    cell = outputs['portfolios']['QGV_BALANCED/U_B/TOP']['metrics']['LOSS']['before_cost']
+    ew = outputs['portfolios']['GROUP_EQUAL_WEIGHT/U_B']['metrics']['LOSS']['before_cost']
+    assert cell['started_at'] == ew['started_at'] == '2018-02-20'
+    assert cell['performance']['annual_returns']['2018'] == 0.0
+    assert cell['monthly']['information_ratio']['reason'] != 'MISSING_BENCHMARK'
+
+
+def test_strategy_information_ratio_uses_the_same_group_equal_weight_and_sharpe_needs_a_verified_rf(years, outputs):
+    """Review R6: IR was always MISSING_BENCHMARK although the group EW was computed in the same output."""
+    top = outputs['portfolios']['AXIS_Q/U_A/TOP']
+    assert top['information_ratio_benchmark'] == 'GROUP_EQUAL_WEIGHT/U_A'
+    assert outputs['portfolios']['GROUP_EQUAL_WEIGHT/U_A']['information_ratio_benchmark'] is None
+    for cost in ('before_cost', 'after_cost'):
+        assert top['metrics']['LOSS'][cost]['monthly']['information_ratio']['value'] is not None
+        assert top['metrics']['LOSS'][cost]['monthly']['sharpe'] == {'value': None, 'reason': 'MISSING_RISK_FREE'}
+    rf = {'source': 'synthetic verified bill series', 'verified': True,
+          'monthly': {f'2018-{m:02d}': '0.0011' for m in range(1, 13)} | {'2019-01': '0.0012', '2019-02': '0.0012'}}
+    out = runner.ledger_stage([years[0]], prices=syn.price_rows(), risk_free=rf)
+    sharpe = out['portfolios']['AXIS_Q/U_A/TOP']['metrics']['LOSS']['after_cost']['monthly']['sharpe']
+    assert sharpe['value'] is not None and out['risk_free'] == {'source': rf['source'], 'verified': True, 'months': 14}
+    with pytest.raises(runner.RunnerError, match='RISK_FREE_INVALID'):
+        runner.ledger_stage([years[0]], prices=syn.price_rows(), risk_free=dict(rf, monthly={'2018-13': '0.001'}))
+
+
+def test_reported_nav_index_and_internal_notional_are_named_apart_in_every_output(outputs):
+    """Review R8: 'initial_capital' was exported at the top, in every run and every metrics header, and the daily
+    NAV had no base-100 index."""
+    assert 'initial_capital' not in outputs
+    assert (outputs['internal_notional_capital_usd'], outputs['reported_nav']) == ('1000000', 'INDEX_BASE_100')
+    run = outputs['portfolios']['AXIS_Q/U_A/TOP']['runs']['LOSS']['10']
+    assert 'initial_capital' not in run and run['internal_notional_capital_usd'] == '1000000'
+    with localcontext() as ctx:
+        ctx.prec = 100
+        for row in run['daily']:
+            assert Decimal(row['nav_index']) == Decimal(row['nav']).scaleb(-4)    # exact: nav / 1,000,000 x 100
+    header = outputs['portfolios']['AXIS_Q/U_A/TOP']['metrics']['LOSS']['after_cost']
+    assert 'initial_capital' not in header and header['reported_nav'] == 'INDEX_BASE_100'
+    external = outputs['benchmarks']['external_total_return']['result']
+    assert 'initial_capital' not in external and external['daily'][0]['nav_index'] is not None
+
+
+def test_a_missing_next_t_open_leaves_the_endpoint_metrics_null(years):
+    """Review R1: with the T row missing the stale final NAV was labelled OPEN and CAGR was reported from it; with
+    prices only through 2019-03-29 a two-year run reported CAGR 'at the 2020-02-18 open'."""
+    s18, s19 = years
+    out = runner.ledger_stage([s18], prices=[r for r in syn.price_rows() if r['date'] != date(2019, 2, 19)])
+    ew = out['portfolios']['GROUP_EQUAL_WEIGHT/U_A']['metrics']['LOSS']['after_cost']
+    assert ew['status'] == 'TERMINAL_MARK_STALE' and ew['final']['valuation'] == 'STALE'
+    assert ew['performance']['cagr'] == {'value': None, 'reason': 'TERMINAL_MARK_STALE'}
+    assert out['counts']['metrics_by_status'].get('TERMINAL_MARK_STALE', 0) > 0
+    two = runner.ledger_stage([s18, s19], prices=syn.price_rows(), tr_series=syn.tr_series())
+    assert two['end'] == '2020-02-18'
+    ew = two['portfolios']['GROUP_EQUAL_WEIGHT/U_A']['metrics']['LOSS']['after_cost']
+    assert ew['performance']['cumulative_return']['reason'] == 'TERMINAL_MARK_STALE'
+    # Review M3: the external series' end fallback is only the immediately preceding session's close.
+    external = two['benchmarks']['external_total_return']
+    assert external['result']['daily'][-1]['reason'] == 'MISSING_END_LEVEL'
+    assert external['metrics']['performance']['cumulative_return']['value'] is None
+
+
+def test_trailing_one_year_is_reported_for_the_first_bundle_cycle(years):
+    """Review R5: the handoff target window T 2018-02-20 -> T 2019-02-19 open gave INSUFFICIENT_HISTORY for 1y."""
+    out = runner.ledger_stage([years[0]], prices=syn.price_rows(), tr_series=syn.tr_series())
+    for metrics in (out['portfolios']['GROUP_EQUAL_WEIGHT/U_A']['metrics']['LOSS']['after_cost'],
+                    out['benchmarks']['external_total_return']['metrics']):
+        one = metrics['trailing_returns']['1y']
+        assert one['basis'] == 'RESELECTION_CYCLES' and one['end'] == '2019-02-19'
+        assert one['total_return']['value'] == metrics['performance']['cumulative_return']['value']

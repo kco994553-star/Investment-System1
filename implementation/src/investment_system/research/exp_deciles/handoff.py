@@ -9,7 +9,7 @@ Input manifest (JSON object, schema INPUT_MANIFEST_SCHEMA):
    "resources": [{"name", "path", "sha256", "source", "period", "rights_note"}, ...]}
   - name = KIND or KIND:QUALIFIER (unique). KIND is one of RESOURCE_KINDS. records and quotes need a 4-digit year as
     the qualifier (records:2018). companyfacts:<digits> is one issuer's companyfacts (the qualifier is its CIK); any
-    other qualifier is a free label of one part of a split bundle. tr_series appears at most once.
+    other qualifier is a free label of one part of a split bundle. tr_series and risk_free appear at most once.
   - path: the file, relative to the manifest's directory or absolute; sha256: 64 lowercase hex of the file's bytes;
     source, period, rights_note: non-empty text. No other key is accepted.
   Every file is hashed before use and a mismatch is refused (MANIFEST_HASH_MISMATCH).
@@ -47,9 +47,9 @@ from . import settings
 INPUT_MANIFEST_SCHEMA = 'exp-deciles-input-manifest/1'
 OUTPUT_MANIFEST_SCHEMA = 'exp-deciles-output-manifest/1'
 RESOURCE_KEYS = ('name', 'path', 'sha256', 'source', 'period', 'rights_note')
-RESOURCE_KINDS = ('records', 'quotes', 'companyfacts', 'filings', 'prices', 'events', 'tr_series')
+RESOURCE_KINDS = ('records', 'quotes', 'companyfacts', 'filings', 'prices', 'events', 'tr_series', 'risk_free')
 YEAR_KINDS = ('records', 'quotes')
-SINGLE_KINDS = ('tr_series',)
+SINGLE_KINDS = ('tr_series', 'risk_free')
 STAGES = ('select', 'ledger')
 CLI_PATH = 'implementation/tools/exp_stock_indicator_deciles.py'
 OUTPUT_DIR_PLACEHOLDER = 'NEW_PRIVATE_OUTPUT_DIR'
