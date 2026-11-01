@@ -18,9 +18,20 @@ Changed for this experiment (settings doc section 1, inventory item 7):
   open of its effective (ex) date, snapshot when that date is reached even if the evidence comes later. Terms are
   delivered only from activation = max(effective_date, available_at) or from a later confirmation, never back-dated.
   A SPINOFF parent keeps trading ex-distribution, so a holder that sells it after the effective date still receives the
-  distribution at activation and a buyer after the effective date does not. A terminating event applies to the snapshot
-  quantity less anything sold after the effective date; quantity bought after it is void (flagged
-  HOLDING_CHANGED_AFTER_EFFECTIVE_DATE in both cases).
+  distribution at activation and a buyer after the effective date does not; its snapshot stays on the effective-date
+  share basis because the ratio is per share held then. A terminating event applies to the legal holding at activation:
+  the snapshot (rescaled by later splits of the security) less sales after the effective date plus shares delivered
+  into it by other corporate actions, which are never voided. Only this portfolio's own buy fills on or after the
+  effective date (tracked per pending event, rescaled by later splits) are treated differently, by kind: a DELISTING's
+  shares still exist, so they stay in the holding and the scenario or terms apply to all of it; a CASH_MERGER's or
+  STOCK_MERGER's shares ceased to exist, so those buys are reversed and their gross + fee is refunded to cash, reserved
+  until the next reselection (flag POST_EFFECTIVE_PURCHASE_REVERSED). Any change after the effective date is flagged
+  HOLDING_CHANGED_AFTER_EFFECTIVE_DATE.
+- Deferred delivery (review F1): new shares delivered after the effective date (activation or confirmation later than
+  it) are legally owned from the effective date, so every split of the new security effective in (effective date,
+  today] scales the received quantity and every dividend of it with an ex-date in that window is booked on the
+  received quantity, paid at max(pay date, today), depositary fee rules applied (event
+  DIVIDEND_ON_DEFERRED_DELIVERY).
 - Termination events (DELISTING / CASH_MERGER / STOCK_MERGER) act only from max(effective_date, available_at). With
   confirmed terms they settle by those terms in both scenarios. Without confirmed terms the scenario applies: LOSS sets
   the position's value to 0, CARRY keeps it at its last observed price as a non-cash, non-tradable asset (never sold,
@@ -28,9 +39,17 @@ Changed for this experiment (settings doc section 1, inventory item 7):
   scenario value from its own date (no back-dating).
 - Per-security conflicts (review F5): events are global, so one security's data issue must not refuse every portfolio.
   A later terminating event of an already terminated security is supporting evidence; if the termination is still
-  unconfirmed and the later event carries complete terms, those terms settle it from the later event's activation. Terms
-  that contradict terms already applied (or a settlement's own partial terms) are recorded in `conflicts` and flagged
-  SETTLEMENT_CONFLICT on that day; the position is left as it was. A split of a terminated security scales a frozen
+  unconfirmed and the later event (or its confirmation) carries complete terms, those terms settle it from that date.
+  Terms that contradict terms already applied, a settlement's own partial terms, or the partial terms of the open
+  termination they would settle (or a CASH_MERGER against an open STOCK_MERGER, or the reverse) are recorded in
+  `conflicts` (TERMINATION_TERMS_DIFFER_FROM_APPLIED_TERMS, CONFIRMED_TERMS_CONTRADICT_SETTLEMENT,
+  TERMINATION_TERMS_CONTRADICT_OPEN_TERMINATION, ...) and flagged SETTLEMENT_CONFLICT on that day; the position is
+  left as it was. Stock consideration delivered into an already terminated security takes that security's state
+  (flag STOCK_CONSIDERATION_IN_TERMINATED_SECURITY): with confirmed terms they are chained onto the received shares
+  from today (cash as a reserved receivable, stock delivered on); otherwise the shares join its frozen LOSS / CARRY
+  position at its carry mark. On one date, settlements of a security that receives shares by corporate action are
+  handled after those of every security delivering into it (entitlement snapshot, activation, confirmation per
+  security), so the outcome never depends on how event_ids sort. A split of a terminated security scales a frozen
   position (flag SPLIT_ON_TERMINATED_SECURITY) and is ignored when nothing is held. Malformed event records (missing
   evidence, unknown kind, impossible dates or amounts) are still refused for the whole run.
 - A missing price is not a termination: the position is marked at its last observed price and flagged STALE_MARK.
@@ -91,6 +110,7 @@ UNFILLED_REASONS = (MISSING_SIGNAL_PRICE, INCOMPLETE_SIGNAL_NAV, UNAVAILABLE_OPE
                     UNSETTLED_CORPORATE_ACTION, INSUFFICIENT_CASH)
 
 TERMINATING_KINDS = frozenset({'CASH_MERGER', 'STOCK_MERGER', 'DELISTING'})
+MERGER_KINDS = frozenset({'CASH_MERGER', 'STOCK_MERGER'})  # The shares cease to exist at the effective date.
 STOCK_KINDS = frozenset({'STOCK_MERGER', 'SPINOFF'})
 SETTLEMENT_KINDS = TERMINATING_KINDS | {'SPINOFF'}
 
@@ -253,7 +273,18 @@ class _SettlementState:
     snapshot: Decimal  # Legal quantity held before the open of the effective date.
     confirmed: bool = False
     terms: tuple | None = None
+    terms_since: date | None = None  # Effective date of the event whose terms were applied (legal holding date).
     role: str = 'PRIMARY'  # SUPPORTING: a later terminating event of an already terminated security.
+
+
+@dataclass
+class _Entitlement:
+    """A Settlement between its effective date and its activation."""
+    security_id: str
+    terminating: bool
+    snapshot: Decimal  # Legal quantity before the effective-date open (terminating kinds: rescaled by later splits).
+    bought: Decimal = Decimal(0)  # Bought by this portfolio's own fills since the effective date (current split basis).
+    cost: Decimal = Decimal(0)  # Gross + fee paid for `bought`.
 
 
 @dataclass(frozen=True)
@@ -357,7 +388,8 @@ class Ledger:
         self.instrument_fees: list[dict] = []  # Depositary fees deducted from ADR dividends (not trading costs).
         self.unfilled: list[Unfilled] = []
         self._settlements: dict[str, _SettlementState] = {}
-        self._entitlements: dict[str, Decimal] = {}  # event_id -> legal quantity before the effective-date open
+        self._entitlements: dict[str, _Entitlement] = {}  # event_id -> pending between effective date and activation
+        self._history: dict[str, list] = {}  # security_id -> Splits and Dividends applied so far, in order
         self.conflicts: list[dict] = []
         self._signal: Rebalance | None = None
         self._planned_value: dict[str, Decimal] = {}
@@ -395,15 +427,20 @@ class Ledger:
         self._require_session()
         ratio = _decimal(event.ratio, 'SPLIT_RATIO', positive=True)
         sid = event.security_id
+        self._history.setdefault(sid, []).append(event)
+        for pending in self._entitlements.values():
+            if pending.terminating and pending.security_id == sid:
+                pending.snapshot = _product_exact(pending.snapshot, ratio)
+                pending.bought = _product_exact(pending.bought, ratio)
+        if self.carry_marks.get(sid) is not None:
+            # A frozen CARRY mark moves with the legal quantity (also one recorded before any share is delivered).
+            day, price = self.carry_marks[sid]
+            self.carry_marks[sid] = (day, price / ratio)
         if self.frozen(sid):
             if not any(sid in book for book in (self.holdings, self.pending, self.requested)):
                 self._day_events.append(f'SPLIT_IGNORED_NO_POSITION:{event.event_id}')
                 return
-            # A frozen (LOSS / CARRY) position keeps its value: the legal quantity and the carry mark move together.
             self._day_flags.append(f'SPLIT_ON_TERMINATED_SECURITY:{event.event_id}')
-            if self.carry_marks.get(sid) is not None:
-                day, price = self.carry_marks[sid]
-                self.carry_marks[sid] = (day, price / ratio)
         for book in (self.holdings, self.pending, self.requested):
             if sid in book:
                 book[sid] = _product_exact(book[sid], ratio)
@@ -416,23 +453,40 @@ class Ledger:
     @_precision
     def apply_dividend(self, event: Dividend):
         """Entitlement on the legal quantity held before the ex-date open (in every state, so both scenarios agree)."""
-        session = self._require_session()
+        self._require_session()
+        self._history.setdefault(event.security_id, []).append(event)
+        self._book_dividend(event, self.holdings.get(event.security_id, Decimal(0)), event.event_id)
+        self._day_events.append(f'DIVIDEND_EX:{event.event_id}')
+
+    def _book_dividend(self, event: Dividend, quantity, key):
+        """Receivable quantity x (cash - depositary fee), paid at max(pay date, today)."""
+        session = self._session
         cash, fee = _dividend_amounts(event)
-        quantity = self.holdings.get(event.security_id, Decimal(0))
         amount = _product_exact(quantity, _sum_exact((cash, fee.copy_negate())))
         if fee and quantity:
-            self.instrument_fees.append(dict(session=session, event_id=event.event_id, security_id=event.security_id,
+            self.instrument_fees.append(dict(session=session, event_id=key, security_id=event.security_id,
                                              kind='DEPOSITARY_FEE', quantity=quantity, fee_per_share=fee,
                                              amount=_product_exact(quantity, fee)))
-            self._day_events.append(f'DEPOSITARY_FEE:{event.event_id}')
-        pay_date = event.pay_date
-        if pay_date is None:
-            pay_date = session
-            self._day_flags.append(f'DIVIDEND_PAY_DATE_ASSUMED_EX_DATE:{event.event_id}')
+            self._day_events.append(f'DEPOSITARY_FEE:{key}')
+        if event.pay_date is None:
+            self._day_flags.append(f'DIVIDEND_PAY_DATE_ASSUMED_EX_DATE:{key}')
+        pay_date = session if event.pay_date is None else max(event.pay_date, session)
         if amount:
-            self.receivables[('DIVIDEND', event.event_id)] = Receivable('DIVIDEND', event.event_id,
-                                                                        event.security_id, amount, pay_date)
-        self._day_events.append(f'DIVIDEND_EX:{event.event_id}')
+            self.receivables[('DIVIDEND', key)] = Receivable('DIVIDEND', key, event.security_id, amount, pay_date)
+
+    def _book_settlement_cash(self, pay_id, security_id, amount, settlement_date):
+        if amount:
+            self.receivables[('SETTLEMENT', pay_id)] = Receivable(
+                'SETTLEMENT_CASH', pay_id, security_id, amount, max(settlement_date, self._session))
+
+    def _freeze(self, sid):
+        """An unconfirmed termination: this run's scenario (LOSS at 0, CARRY at the last observed price)."""
+        if sid in self.states:
+            return
+        self.states[sid] = self.scenario
+        if self.scenario == SCENARIO_CARRY:
+            mark = self.last_price.get(sid)
+            self.carry_marks[sid] = None if mark is None else (mark[0], mark[1])
 
     @_precision
     def record_entitlement(self, event: Settlement):
@@ -443,7 +497,8 @@ class Ledger:
         _validate_settlement(event)
         if event.event_id in self._entitlements or event.event_id in self._settlements:
             raise LedgerError('DUPLICATE_SETTLEMENT')
-        self._entitlements[event.event_id] = self.holdings.get(event.security_id, Decimal(0))
+        self._entitlements[event.event_id] = _Entitlement(event.security_id, event.kind in TERMINATING_KINDS,
+                                                          self.holdings.get(event.security_id, Decimal(0)))
 
     @_precision
     def apply_settlement(self, event: Settlement):
@@ -452,13 +507,12 @@ class Ledger:
         if event.event_id in self._settlements:
             raise LedgerError('DUPLICATE_SETTLEMENT')
         sid = event.security_id
-        held = self.holdings.get(sid, Decimal(0))
-        snapshot = self._entitlements.pop(event.event_id, held)
         terminating = event.kind in TERMINATING_KINDS
-        quantity = min(snapshot, held) if terminating else snapshot
-        if terminating and held != snapshot:
+        held = self.holdings.get(sid, Decimal(0))
+        pending = self._entitlements.pop(event.event_id, None) or _Entitlement(sid, terminating, held)
+        if terminating and held != pending.snapshot:
             self._day_flags.append(f'HOLDING_CHANGED_AFTER_EFFECTIVE_DATE:{event.event_id}')
-        state = _SettlementState(event, session, quantity, snapshot)
+        state = _SettlementState(event, session, held if terminating else pending.snapshot, pending.snapshot)
         self._settlements[event.event_id] = state
         terms = _terms(event)
         complete = _terms_complete(event.kind, *terms)
@@ -468,44 +522,65 @@ class Ledger:
             return
         if terminating:
             self.terminated[sid] = event.event_id
-            if held != quantity:  # Quantity bought after the effective date is void.
-                if quantity:
-                    self.holdings[sid] = quantity
-                else:
-                    self.holdings.pop(sid, None)
+            void = min(pending.bought, held) if event.kind in MERGER_KINDS else Decimal(0)
+            if void:  # DELISTING: the shares still exist, so the whole legal holding stays.
+                self._reverse_post_effective_buys(event, pending, void)
+                state.quantity = self.holdings.get(sid, Decimal(0))
         if complete:
-            self._deliver(state, terms, kind=event.kind, quantity=quantity, pay_id=event.event_id)
+            self._deliver(state, terms, kind=event.kind, quantity=state.quantity, pay_id=event.event_id)
         elif terminating:
-            if quantity:
-                self.states[sid] = self.scenario
-                if self.scenario == SCENARIO_CARRY:
-                    mark = self.last_price.get(sid)
-                    self.carry_marks[sid] = None if mark is None else (mark[0], mark[1])
+            self._freeze(sid)
             self._day_events.append(f'TERMINATION_UNCONFIRMED:{event.event_id}:{self.scenario}')
         else:
             self._day_flags.append(f'SPINOFF_TERMS_UNCONFIRMED:{event.event_id}')
             self._day_events.append(f'SPINOFF_UNCONFIRMED:{event.event_id}')
 
-    def _settle_termination(self, owner: _SettlementState, terms, *, kind, pay_id, label):
+    def _reverse_post_effective_buys(self, event: Settlement, pending: _Entitlement, void):
+        """Shares of a merged company cannot be bought after its effective date: the fills are reversed, their gross +
+        fee goes back to cash (reserved until the next reselection) instead of being destroyed."""
+        sid = event.security_id
+        refund = pending.cost if void == pending.bought else pending.cost * void / pending.bought
+        self.cash = _sum_exact((self.cash, refund))
+        self.reserved_cash = _sum_exact((self.reserved_cash, refund))
+        remaining = _sum_exact((self.holdings[sid], void.copy_negate()))
+        if remaining:
+            self.holdings[sid] = remaining
+        else:
+            del self.holdings[sid]
+        self._day_flags.append(f'POST_EFFECTIVE_PURCHASE_REVERSED:{event.event_id}')
+
+    def _settle_termination(self, owner: _SettlementState, terms, *, kind, pay_id, label, since):
         """Settle the (still unconfirmed) termination `owner` by confirmed terms from today, on the frozen legal quantity."""
         quantity = self.holdings.get(owner.event.security_id, Decimal(0))
-        self._deliver(owner, terms, kind=kind, quantity=quantity, pay_id=pay_id)
+        self._deliver(owner, terms, kind=kind, quantity=quantity, pay_id=pay_id, since=since)
         self._day_events.append(label)
+
+    def _termination_conflict(self, owner: _SettlementState, terms, kind):
+        """Reason code when `terms` (None = absent) or `kind` contradict the termination `owner`: its applied terms once
+        confirmed, otherwise its own partial terms and its merger kind (review F5). None when they agree."""
+        if owner.confirmed:
+            if any(new is not None and new != old for old, new in zip(owner.terms, terms)):
+                return 'TERMINATION_TERMS_DIFFER_FROM_APPLIED_TERMS'
+            return None
+        if {owner.event.kind, kind} == MERGER_KINDS or any(
+                old is not None and new is not None and old != new for old, new in zip(_terms(owner.event), terms)):
+            return 'TERMINATION_TERMS_CONTRADICT_OPEN_TERMINATION'
+        return None
 
     def _supporting_termination(self, state: _SettlementState, terms):
         """A later terminating event of an already terminated security (review F5): supporting evidence, the settlement
         of a still open termination, or a recorded conflict on that security only."""
         event = state.event
         owner = self._settlements[self.terminated[event.security_id]]
-        if terms is None:
+        reason = self._termination_conflict(owner, _terms(event), event.kind)
+        if reason is None and owner.confirmed and terms is not None and owner.terms != tuple(terms):
+            reason = 'TERMINATION_TERMS_DIFFER_FROM_APPLIED_TERMS'
+        if reason is not None:
+            self._conflict(event.event_id, event.security_id, reason)
+        elif terms is None or owner.confirmed:
             self._day_events.append(f'TERMINATION_SUPPORTING_EVIDENCE:{event.event_id}')
-        elif owner.confirmed:
-            if owner.terms != tuple(terms):
-                self._conflict(event.event_id, event.security_id, 'TERMINATION_TERMS_DIFFER_FROM_APPLIED_TERMS')
-            else:
-                self._day_events.append(f'TERMINATION_SUPPORTING_EVIDENCE:{event.event_id}')
         else:
-            self._settle_termination(owner, terms, kind=event.kind, pay_id=event.event_id,
+            self._settle_termination(owner, terms, kind=event.kind, pay_id=event.event_id, since=event.effective_date,
                                      label=f'TERMINATION_SETTLED_BY:{owner.event.event_id}:{event.event_id}')
             state.confirmed, state.terms = True, tuple(terms)
 
@@ -531,41 +606,78 @@ class Ledger:
             return
         if event.kind in TERMINATING_KINDS:
             owner = self._settlements[self.terminated[event.security_id]]
-            if owner.confirmed:  # A supporting event confirmed after the termination was settled.
-                if owner.terms != terms:
-                    self._conflict(event.event_id, event.security_id, 'TERMINATION_TERMS_DIFFER_FROM_APPLIED_TERMS')
+            if owner is not state:  # A supporting event confirmed: checked against the termination it supports.
+                reason = self._termination_conflict(owner, terms, event.kind)
+                if reason is None and owner.confirmed and owner.terms != terms:
+                    reason = 'TERMINATION_TERMS_DIFFER_FROM_APPLIED_TERMS'
+                if reason is not None:
+                    self._conflict(event.event_id, event.security_id, reason)
                     return
-            else:
+            if not owner.confirmed:
                 self._settle_termination(owner, terms, kind=event.kind, pay_id=event.event_id,
+                                         since=event.effective_date,
                                          label=f'SETTLEMENT_CONFIRMED:{confirmation.event_id}')
             state.confirmed, state.terms = True, tuple(terms)
             return
         self._deliver(state, terms, kind=event.kind, quantity=state.quantity, pay_id=event.event_id)
         self._day_events.append(f'SETTLEMENT_CONFIRMED:{confirmation.event_id}')
 
-    def _deliver(self, state: _SettlementState, terms, *, kind, quantity, pay_id):
-        """Apply confirmed terms from the current session to `quantity`; cash is paid no earlier than today."""
-        session = self._require_session()
+    def _deliver(self, state: _SettlementState, terms, *, kind, quantity, pay_id, since=None):
+        """Apply confirmed terms from the current session to `quantity`; cash is paid no earlier than today.
+
+        `since` is the effective date of the event the terms belong to: the holder owns any new shares from then."""
+        self._require_session()
         settlement_date, cash_per_share, new_security_id, stock_ratio = terms
         sid = state.event.security_id
+        since = state.event.effective_date if since is None else since
         if kind in TERMINATING_KINDS:
             self.holdings.pop(sid, None)
             self.states.pop(sid, None)
             self.carry_marks.pop(sid, None)
-        cash = _product_exact(quantity, _decimal(cash_per_share, 'SETTLEMENT_CASH'))
-        if cash:
-            self.receivables[('SETTLEMENT', pay_id)] = Receivable(
-                'SETTLEMENT_CASH', pay_id, sid, cash, max(settlement_date, session))
+        self._book_settlement_cash(pay_id, sid, _product_exact(quantity, _decimal(cash_per_share, 'SETTLEMENT_CASH')),
+                                   settlement_date)
         if kind in STOCK_KINDS:
             received = _product_exact(quantity, _decimal(stock_ratio, 'STOCK_RATIO', positive=True))
-            if received:
-                if self.frozen(new_security_id):
-                    raise LedgerError('STOCK_CONSIDERATION_IN_TERMINATED_SECURITY')
-                self.holdings[new_security_id] = _sum_exact((self.holdings.get(new_security_id, Decimal(0)),
-                                                             received))
-        state.confirmed = True
-        state.terms = tuple(terms)
+            self._receive(new_security_id, received, pay_id, since)
+        state.confirmed, state.terms, state.terms_since = True, tuple(terms), since
         self._day_events.append(f'SETTLEMENT_APPLIED:{pay_id}')
+
+    def _receive(self, sid, quantity, source_id, since, chain=()):
+        """Credit `quantity` shares of `sid` legally owned since `since` but delivered only today (review F1).
+
+        The splits of `sid` effective in (since, today] scale the quantity, and its dividends with an ex-date in that
+        window are booked on it (pay date no earlier than today). Shares of an already terminated security (review F5)
+        take that security's terms: confirmed terms are chained onto them from today; otherwise they join its frozen
+        LOSS / CARRY position. Either way the day is flagged STOCK_CONSIDERATION_IN_TERMINATED_SECURITY."""
+        session = self._session
+        for event in self._history.get(sid, ()):
+            if since < event.effective_date <= session:
+                if isinstance(event, Split):
+                    quantity = _product_exact(quantity, _decimal(event.ratio, 'SPLIT_RATIO', positive=True))
+                else:
+                    self._book_dividend(event, quantity, f'{event.event_id}:{source_id}')
+                    self._day_events.append(f'DIVIDEND_ON_DEFERRED_DELIVERY:{event.event_id}:{source_id}')
+        if not quantity:
+            return
+        owner_id = self.terminated.get(sid)
+        if owner_id is not None:
+            self._day_flags.append(f'STOCK_CONSIDERATION_IN_TERMINATED_SECURITY:{source_id}:{sid}')
+            owner = self._settlements[owner_id]
+            if owner.confirmed:
+                if sid in chain:
+                    self._conflict(source_id, sid, 'CIRCULAR_STOCK_CONSIDERATION')
+                    return
+                settlement_date, cash_per_share, new_security_id, stock_ratio = owner.terms
+                pay_id = f'{source_id}>{owner_id}'
+                self._book_settlement_cash(pay_id, sid, _product_exact(
+                    quantity, _decimal(cash_per_share, 'SETTLEMENT_CASH')), settlement_date)
+                if new_security_id is not None:
+                    received = _product_exact(quantity, _decimal(stock_ratio, 'STOCK_RATIO', positive=True))
+                    self._receive(new_security_id, received, pay_id, owner.terms_since, chain + (sid,))
+                self._day_events.append(f'SETTLEMENT_APPLIED:{pay_id}')
+                return
+            self._freeze(sid)
+        self.holdings[sid] = _sum_exact((self.holdings.get(sid, Decimal(0)), quantity))
 
     def pay_due(self):
         """Move due receivables into cash. All of it stays reserved until the next reselection."""
@@ -697,6 +809,11 @@ class Ledger:
         self.holdings[sid] = _sum_exact((self.holdings.get(sid, Decimal(0)), quantity))
         if not self.holdings[sid]:
             del self.holdings[sid]
+        if quantity > 0:  # A buy between a termination's effective date and its activation (review F1).
+            for pending in self._entitlements.values():
+                if pending.terminating and pending.security_id == sid:
+                    pending.bought = _sum_exact((pending.bought, quantity))
+                    pending.cost = _sum_exact((pending.cost, debit))
         return Fill(self._session, sid, quantity, price, gross, fee, signal_date)
 
     @_precision
@@ -884,14 +1001,30 @@ def index_price_rows(rows) -> dict[date, dict[str, PriceRow]]:
     return index
 
 
-_PRIORITY = {Split: 0, Dividend: 1, Settlement: 3, SettlementConfirmation: 4}  # 2: entitlement snapshot
+_BAND = {Split: 0, Dividend: 1, Settlement: 2, SettlementConfirmation: 2}
+_SNAPSHOT, _ACTIVATION, _CONFIRMATION = 0, 1, 2  # Steps of one security's settlements within band 2 on one date.
+
+
+def _delivery_levels(edges):
+    """Rank securities so that, on one date, a security receiving shares by corporate action is handled after every
+    security delivering into it, whatever the event_ids (review F1/F5). Bounded, so a cycle cannot loop."""
+    level: dict[str, int] = {}
+    for _ in range(len(edges)):
+        changed = False
+        for source, target in edges:
+            if level.get(target, 0) <= level.get(source, 0):
+                level[target], changed = level.get(source, 0) + 1, True
+        if not changed:
+            break
+    return level
 
 
 def _event_schedule(events):
-    settlements, seen, confirmations, schedule = {}, set(), set(), []
+    """Sorted (trigger date, band, delivery level, step, event_id, event) entries."""
+    settlements, seen, confirmations, schedule, edges = {}, set(), set(), [], set()
     events = tuple(events)
     for event in events:
-        if type(event) not in _PRIORITY:
+        if type(event) not in _BAND:
             raise LedgerError('UNKNOWN_EVENT_TYPE')
         _security(event.event_id)
         if isinstance(event, SettlementConfirmation):
@@ -907,27 +1040,38 @@ def _event_schedule(events):
         _date(event.effective_date, 'EFFECTIVE_DATE')
         if isinstance(event, Split):
             _decimal(event.ratio, 'SPLIT_RATIO', positive=True)
-            schedule.append((event.effective_date, 0, event.event_id, event))
         elif isinstance(event, Dividend):
             _dividend_amounts(event)
             if event.pay_date is not None:
                 _date(event.pay_date, 'PAY_DATE')
                 if event.pay_date < event.effective_date:
                     raise LedgerError('PAY_DATE_PRECEDES_EX_DATE')
-            schedule.append((event.effective_date, 1, event.event_id, event))
         else:
             _validate_settlement(event)
             settlements[event.event_id] = event
-            # The entitlement is fixed before the effective-date open; terms act from activation (review F1).
-            schedule.append((event.effective_date, 2, event.event_id, _EntitlementSnapshot(event)))
-            schedule.append((activation_date(event), 3, event.event_id, event))
+            if event.new_security_id is not None:
+                edges.add((event.security_id, event.new_security_id))
     for event in events:
         if isinstance(event, SettlementConfirmation):
             if event.event_id not in settlements:
                 raise LedgerError('CONFIRMATION_WITHOUT_SETTLEMENT')
-            trigger = max(event.available_at, activation_date(settlements[event.event_id]))
-            schedule.append((trigger, 4, event.event_id, event))
-    schedule.sort(key=lambda item: item[:3])
+            if event.new_security_id is not None:
+                edges.add((settlements[event.event_id].security_id, event.new_security_id))
+    level = _delivery_levels(sorted(edges))
+    for event in events:
+        band = _BAND[type(event)]
+        if isinstance(event, (Split, Dividend)):
+            schedule.append((event.effective_date, band, 0, 0, event.event_id, event))
+        elif isinstance(event, Settlement):
+            rank = level.get(event.security_id, 0)
+            # The entitlement is fixed before the effective-date open; terms act from activation (review F1).
+            schedule.append((event.effective_date, band, rank, _SNAPSHOT, event.event_id, _EntitlementSnapshot(event)))
+            schedule.append((activation_date(event), band, rank, _ACTIVATION, event.event_id, event))
+        else:
+            settlement = settlements[event.event_id]
+            trigger = max(event.available_at, activation_date(settlement))
+            schedule.append((trigger, band, level.get(settlement.security_id, 0), _CONFIRMATION, event.event_id, event))
+    schedule.sort(key=lambda item: item[:5])
     return schedule
 
 
@@ -983,7 +1127,7 @@ def run_ledger(sessions: Sequence[date], rebalances: Sequence[Rebalance], prices
     for day in days:
         ledger.begin_session(day)
         while cursor < len(schedule) and schedule[cursor][0] <= day:
-            _apply(ledger, schedule[cursor][3])
+            _apply(ledger, schedule[cursor][-1])
             cursor += 1
         ledger.pay_due()
         rows_today = price_index.get(day, {})

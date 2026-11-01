@@ -499,12 +499,33 @@ def test_terminating_event_applies_to_the_effective_date_holding_less_later_sale
         row = row_on(result, d[6])
         assert 'HOLDING_CHANGED_AFTER_EFFECTIVE_DATE:DL1' in row['flags']
         assert qty(result, d[11]) == {'B': D('100')} and row_on(result, d[11])['nav'] == 1000   # sold: no CARRY too
-    # Bought after the effective date: the purchase is void at activation (no phantom CARRY asset).
+    # Bought after a DELISTING's effective date: the shares still exist legally, so the scenario applies to the whole
+    # legal holding (LOSS 0, CARRY at the last mark); the purchase money is never destroyed.
     runs = run_scenarios(DAYS[:12], [Rebalance(d[0], d[1], ['B']), Rebalance(d[4], d[5], ['A'])], prices, [delist],
                          cost_bps=0, initial_capital=1000)
-    for result in runs.values():
-        assert 'A' not in qty(result, d[6]) and row_on(result, d[6])['nav'] == 0
+    for scenario, result in runs.items():
+        assert qty(result, d[6]) == {'A': D('100')}
+        assert row_on(result, d[6])['positions']['A']['state'] == scenario
         assert 'HOLDING_CHANGED_AFTER_EFFECTIVE_DATE:DL1' in row_on(result, d[6])['flags']
+    assert row_on(runs['LOSS'], d[11])['nav'] == 0 and row_on(runs['CARRY'], d[11])['nav'] == 1000
+
+
+def test_merger_buy_after_the_effective_date_is_reversed_and_refunded_to_reserved_cash():
+    # CASH_MERGER effective d[3], evidence d[6]; the d[4] -> d[5] reselection tops A up from 50 to 100 at an open of 10.
+    merger = Settlement('CM', d[3], 'A', 'CASH_MERGER', d[6], EVIDENCE, d[7], D('10'))
+    runs = run_scenarios(DAYS[:12], [Rebalance(d[0], d[1], ['A', 'B']), Rebalance(d[4], d[5], ['A'])],
+                         flat('A', 10, days=DAYS[:6]) + flat('B', 10, days=DAYS[:12]), [merger], cost_bps=10,
+                         initial_capital=1000)
+    for result in runs.values():
+        buy = next(f for f in result['fills'] if f.session == d[5] and f.security_id == 'A')
+        row = row_on(result, d[6])
+        assert 'POST_EFFECTIVE_PURCHASE_REVERSED:CM' in row['flags'] and result['conflicts'] == ()
+        assert 'A' not in row['positions']
+        # Only the 50 A held at the effective date get the merger cash; the top-up's gross + fee is refunded, reserved.
+        close_to(row['receivables'], D(50) * D(10) * D(1000) / D(1001))
+        close_to(row['reserved_cash'] - row_on(result, d[5])['reserved_cash'], buy.gross + buy.fee)
+        close_to(row['nav'], row_on(result, d[5])['nav'] + buy.fee)
+    assert [r['nav'] for r in runs['LOSS']['daily']] == [r['nav'] for r in runs['CARRY']['daily']]
 
 
 # -- review F5: per-security conflicts, never a refusal of every portfolio -------------------------------------
@@ -563,6 +584,138 @@ def test_split_of_a_frozen_carry_position_keeps_its_value():
     assert 'SPLIT_ON_TERMINATED_SECURITY:rs' in row['flags']
     assert row['positions']['A']['quantity'] == 5 and row['positions']['A']['price'] == 80
     assert row['carry_value'] == 400 and row['nav'] == 900
+
+
+# -- engine review 11/01: entitlement, deferred delivery and per-security conflicts --------------------------------
+def test_shares_delivered_by_a_merger_before_a_later_termination_are_not_voided():
+    # X -> Y stock merger effective d[3], evidence d[6]; Y is delisted effective d[4] with evidence on d[8].
+    merger = Settlement('X-SM', d[3], 'X', 'STOCK_MERGER', d[6], EVIDENCE, d[6], D('0'), 'Y', D('1'))
+    prices = flat('X', 10, days=DAYS[:3]) + flat('Y', 10, days=DAYS[:8])
+    for delist, expected in ((Settlement('Y-DL', d[4], 'Y', 'DELISTING', d[8], EVIDENCE), {'LOSS': 0, 'CARRY': 1000}),
+                             (Settlement('Y-DL', d[4], 'Y', 'DELISTING', d[8], EVIDENCE, d[9], D('10')),
+                              {'LOSS': 1000, 'CARRY': 1000})):
+        runs = run_scenarios(DAYS[:12], [Rebalance(d[0], d[1], ['X'])], prices, [merger, delist], cost_bps=0,
+                             initial_capital=1000)
+        for scenario, result in runs.items():
+            assert row_on(result, d[7])['nav'] == 1000 and qty(result, d[7]) == {'Y': D('100')}
+            assert row_on(result, d[11])['nav'] == expected[scenario] and result['conflicts'] == ()
+    # Confirmation lag: the X -> Y terms are confirmed on d[6]; Y's cash merger (effective d[5]) acts on d[9].
+    partial = Settlement('X-SM', d[3], 'X', 'STOCK_MERGER', d[3], EVIDENCE, None, None, 'Y', None)
+    confirm = SettlementConfirmation('X-SM', d[6], EVIDENCE, d[6], D('0'), 'Y', D('1'))
+    y_merger = Settlement('Y-CM', d[5], 'Y', 'CASH_MERGER', d[9], EVIDENCE, d[10], D('10'))
+    runs = run_scenarios(DAYS[:12], [Rebalance(d[0], d[1], ['X'])], flat('X', 10, days=DAYS[:3]) + flat('Y', 10),
+                         [partial, confirm, y_merger], cost_bps=0, initial_capital=1000)
+    for result in runs.values():
+        assert row_on(result, d[9])['receivables'] == 1000 and row_on(result, d[11])['nav'] == 1000
+
+
+def test_same_day_delivery_into_a_terminated_security_does_not_depend_on_event_id_order():
+    prices = flat('X', 10, days=DAYS[:4]) + flat('Y', 10, days=DAYS[:4])
+    merger = Settlement('M-X-SM', d[4], 'X', 'STOCK_MERGER', d[4], EVIDENCE, d[4], D('0'), 'Y', D('1'))
+    navs = []
+    for event_id in ('A-Y-DL', 'Z-Y-DL'):
+        delist = Settlement(event_id, d[4], 'Y', 'DELISTING', d[4], EVIDENCE)
+        runs = run_scenarios(DAYS[:10], [Rebalance(d[0], d[1], ['X'])], prices, [delist, merger], cost_bps=0,
+                             initial_capital=1000)
+        row = row_on(runs['CARRY'], d[4])
+        # The delivery into Y comes before Y's own entitlement snapshot and termination.
+        assert not any(flag.startswith(('HOLDING_CHANGED', 'STOCK_CONSIDERATION')) for flag in row['flags'])
+        navs.append((row_on(runs['LOSS'], d[9])['nav'], row_on(runs['CARRY'], d[9])['nav']))
+    assert navs == [(0, 1000), (0, 1000)]
+
+
+def test_forward_split_between_a_delisting_effective_date_and_its_evidence_keeps_the_whole_holding():
+    prices = flat('A', 10, days=DAYS[:5]) + flat('A', 5, days=DAYS[5:8])
+    split = Split('SP', d[5], 'A', D('2'))
+    runs = run_scenarios(DAYS[:12], [Rebalance(d[0], d[1], ['A'])], prices,
+                         [Settlement('DL', d[3], 'A', 'DELISTING', d[8], EVIDENCE), split], cost_bps=0,
+                         initial_capital=1000)
+    for scenario, result in runs.items():
+        row = row_on(result, d[8])
+        assert qty(result, d[8]) == {'A': D('200')} and 'HOLDING_CHANGED_AFTER_EFFECTIVE_DATE:DL' not in row['flags']
+    assert row_on(runs['LOSS'], d[11])['nav'] == 0 and row_on(runs['CARRY'], d[11])['nav'] == 1000
+    confirmed = run([Rebalance(d[0], d[1], ['A'])], prices,
+                    [Settlement('DL', d[3], 'A', 'DELISTING', d[8], EVIDENCE, d[9], D('5')), split], days=DAYS[:12])
+    assert row_on(confirmed, d[11])['cash'] == 1000
+
+
+def test_stock_consideration_in_a_terminated_security_takes_its_terms_without_refusing_the_run():
+    # Y is delisted (no terms) on d[4]; the X -> Y merger effective d[3] is evidenced only on d[6].
+    delist = Settlement('Y-DL', d[4], 'Y', 'DELISTING', d[4], EVIDENCE)
+    merger = Settlement('X-SM', d[3], 'X', 'STOCK_MERGER', d[6], EVIDENCE, d[6], D('0'), 'Y', D('1'))
+    prices = flat('X', 10, days=DAYS[:3]) + flat('Y', 10, days=DAYS[:4]) + flat('Q', 10)
+    runs = run_scenarios(DAYS[:10], [Rebalance(d[0], d[1], ['X'])], prices, [delist, merger], cost_bps=0,
+                         initial_capital=1000)
+    for scenario, result in runs.items():
+        row = row_on(result, d[6])
+        assert result['status'] == 'COMPLETE' and result['conflicts'] == ()
+        assert 'STOCK_CONSIDERATION_IN_TERMINATED_SECURITY:X-SM:Y' in row['flags']
+        assert row['positions']['Y']['state'] == scenario and row['positions']['Y']['quantity'] == 100
+    assert row_on(runs['LOSS'], d[9])['nav'] == 0 and row_on(runs['CARRY'], d[9])['nav'] == 1000
+    # Y already settled by confirmed cash terms: the later X -> Y delivery is chained onto them from today.
+    partial = Settlement('X-SM', d[3], 'X', 'STOCK_MERGER', d[3], EVIDENCE, None, None, 'Y', None)
+    y_merger = Settlement('Y-CM', d[5], 'Y', 'CASH_MERGER', d[5], EVIDENCE, d[6], D('10'))
+    confirm = SettlementConfirmation('X-SM', d[8], EVIDENCE, d[8], D('0'), 'Y', D('1'))
+    runs = run_scenarios(DAYS[:12], [Rebalance(d[0], d[1], ['X'])], flat('X', 10, days=DAYS[:3])
+                         + flat('Y', 10, days=DAYS[:5]), [partial, y_merger, confirm], cost_bps=0, initial_capital=1000)
+    assert row_on(runs['LOSS'], d[7])['nav'] == 0 and row_on(runs['CARRY'], d[7])['nav'] == 1000
+    for result in runs.values():
+        row = row_on(result, d[8])
+        assert 'STOCK_CONSIDERATION_IN_TERMINATED_SECURITY:X-SM:Y' in row['flags'] and row['positions'] == {}
+        assert row['cash'] == row['reserved_cash'] == 1000 and row_on(result, d[11])['nav'] == 1000
+
+
+@pytest.mark.parametrize('ratio,child_price,child_quantity', [(D('2'), D('2'), D('200')), (D('0.1'), D('40'), D('10'))])
+def test_deferred_spinoff_delivery_applies_splits_of_the_new_security_since_the_effective_date(
+        ratio, child_price, child_quantity):
+    spin = Settlement('SP', d[3], 'P', 'SPINOFF', d[7], EVIDENCE, d[7], D('0'), 'C', D('1'))
+    prices = (flat('P', 10, days=DAYS[:3]) + flat('P', 6, days=DAYS[3:12]) + flat('C', 4, days=DAYS[3:5])
+              + flat('C', child_price, days=DAYS[5:12]))
+    result = run([Rebalance(d[0], d[1], ['P'])], prices, [spin, Split('CS', d[5], 'C', ratio)], days=DAYS[:12])
+    assert qty(result, d[7]) == {'P': D('100'), 'C': child_quantity}
+    assert row_on(result, d[7])['nav'] == 1000 and row_on(result, d[11])['nav'] == 1000
+
+
+def test_deferred_merger_delivery_books_dividends_of_the_new_security_since_the_effective_date():
+    merger = Settlement('X-SM', d[3], 'X', 'STOCK_MERGER', d[7], EVIDENCE, d[7], D('0'), 'Y', D('1'))
+    prices = flat('X', 10, days=DAYS[:3]) + flat('Y', 10, days=DAYS[:5]) + flat('Y', 9, days=DAYS[5:12])
+    result = run([Rebalance(d[0], d[1], ['X'])], prices, [merger, Dividend('Y-DV', d[5], 'Y', D('1'), d[6])],
+                 days=DAYS[:12])
+    row = row_on(result, d[7])
+    assert 'DIVIDEND_ON_DEFERRED_DELIVERY:Y-DV:X-SM' in row['events']
+    assert row['cash'] == row['reserved_cash'] == 100 and row['nav'] == 1000   # paid no earlier than the delivery
+    assert row_on(result, d[11])['nav'] == 1000
+    adr = run([Rebalance(d[0], d[1], ['X'])], prices,
+              [merger, Dividend('Y-DV', d[5], 'Y', D('1'), d[9], depositary_fee_per_share=D('0.1'))], days=DAYS[:12])
+    assert row_on(adr, d[7])['receivables'] == 90 and adr['total_instrument_fees'] == 10
+
+
+def test_supporting_terms_that_contradict_the_open_terminations_partial_terms_change_nothing():
+    owner = Settlement('M1', d[3], 'A', 'CASH_MERGER', d[3], EVIDENCE, None, D('50'))
+    other = Settlement('M2', d[3], 'A', 'CASH_MERGER', d[6], EVIDENCE, d[7], D('40'))
+    runs = run_scenarios(DAYS[:10], [Rebalance(d[0], d[1], ['A'])], flat('A', 10, days=DAYS[:3]), [owner, other],
+                         cost_bps=0, initial_capital=1000)
+    for result in runs.values():
+        assert [c['reason'] for c in result['conflicts']] == ['TERMINATION_TERMS_CONTRADICT_OPEN_TERMINATION']
+        assert 'SETTLEMENT_CONFLICT:M2' in row_on(result, d[6])['flags']
+    assert row_on(runs['LOSS'], d[9])['nav'] == 0 and row_on(runs['CARRY'], d[9])['nav'] == 1000
+    # A stock merger into Y (ratio still unknown) is not settled by a cash merger's terms, nor by their confirmation.
+    stock = Settlement('M1', d[3], 'A', 'STOCK_MERGER', d[3], EVIDENCE, None, None, 'Y', None)
+    for events in ([stock, Settlement('M2', d[3], 'A', 'CASH_MERGER', d[6], EVIDENCE, d[7], D('1'))],
+                   [stock, Settlement('M2', d[3], 'A', 'CASH_MERGER', d[5], EVIDENCE),
+                    SettlementConfirmation('M2', d[6], EVIDENCE, d[7], D('1'))]):
+        result = run([Rebalance(d[0], d[1], ['A'])], flat('A', 10, days=DAYS[:3]) + flat('Y', 10), events,
+                     scenario='CARRY', days=DAYS[:10])
+        # The termless cash-merger record already contradicts the stock merger's kind; so does its confirmation.
+        assert {(c['event_id'], c['reason']) for c in result['conflicts']} == {
+            ('M2', 'TERMINATION_TERMS_CONTRADICT_OPEN_TERMINATION')}
+        assert row_on(result, d[9])['nav'] == 1000 and qty(result, d[9]) == {'A': D('100')}
+    # Partial supporting terms that contradict terms already applied are a conflict too.
+    applied = Settlement('x', d[3], 'A', 'DELISTING', d[3], EVIDENCE, d[4], D('1'))
+    partial = Settlement('z', d[6], 'A', 'CASH_MERGER', d[6], EVIDENCE, None, D('3'))
+    result = run([Rebalance(d[0], d[1], ['A'])], flat('A', 10), [applied, partial])
+    assert [c['reason'] for c in result['conflicts']] == ['TERMINATION_TERMS_DIFFER_FROM_APPLIED_TERMS']
+    assert row_on(result, d[9])['cash'] == 100
 
 
 # -- ADR dividend depositary fee (owner task, as in the preserved Codex research ledger c68af2c0) ------------------
