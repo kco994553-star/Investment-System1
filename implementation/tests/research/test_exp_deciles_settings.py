@@ -9,7 +9,7 @@ from investment_system.qgv import qgv_v2, v2_factors
 from investment_system.research.exp_deciles import settings
 
 # Frozen: a deliberate settings (or engine preset / calc version) change must update this pin together with the doc.
-SETTINGS_SHA256 = 'a4390831db3967757e1ff508b8d6cbb0730e1858d826d5d41635cd6f43206ba7'
+SETTINGS_SHA256 = '525dca26a48636bb63715cb3ac968bdafac848cee2ba648d934569b086a38191'
 
 
 def test_experiment_identity_and_universe_thresholds():
@@ -67,6 +67,11 @@ def test_settings_dict_is_json_with_decimals_as_strings_and_fresh():
     assert d['selection']['decile'] == '0.10' and d['account']['nav_base_usd'] == '1000000'
     assert d['scoring']['population'] == 'U_A_AT_S'
     assert list(d['scoring']['presets']) == list(settings.PRESET_IDS)
+    # Security types (owner decision 2026-10-30, EXPANDED_DEFINITION_20261030.md section 1.2) are part of the hash.
+    assert d['universes']['security_types'] == {
+        'decision': settings.SECURITY_TYPES_DECISION, 'eligible': ['COMMON', 'COMMON_CLASS', 'ADR', 'REIT'],
+        'excluded': ['ETF', 'CLOSED_END_FUND', 'PREFERRED', 'WARRANT', 'RIGHT', 'UNIT'],
+        'adr_market_cap_rule': settings.ADR_MARKET_CAP_RULE}
     d['universes']['U_A']['entry_usd'] = '1'
     assert settings.settings_dict()['universes']['U_A']['entry_usd'] == '250000000'
 
@@ -89,20 +94,32 @@ def test_settings_sha256_changes_with_any_value(monkeypatch):
     monkeypatch.undo()
     monkeypatch.setattr(settings, 'MIN_N', 11)
     assert settings.settings_sha256() != before
+    monkeypatch.undo()
+    monkeypatch.setattr(settings, 'ELIGIBLE_SECURITY_TYPES', ('COMMON', 'COMMON_CLASS'))
+    assert settings.settings_sha256() != before
 
 
 def test_package_imports_no_qgv_backtest_network_or_io_modules():
     # The #417/#430 package is not on canonical and Codex's originals stay untouched: ported code only, no import.
+    # The CLI (implementation/tools/exp_stock_indicator_deciles.py) is the only IO layer and lives outside the package.
     import ast
     from pathlib import Path
 
     pkg = Path(settings.__file__).parent
     banned = {'qgv_backtest', 'urllib', 'requests', 'http', 'socket', 'subprocess', 'providers'}
-    for path in sorted(pkg.glob('*.py')):
-        for node in ast.walk(ast.parse(path.read_text(encoding='utf-8'))):
+    modules = sorted(p.name for p in pkg.glob('*.py'))
+    assert modules == ['__init__.py', 'benchmarks.py', 'handoff.py', 'ledger.py', 'metrics.py', 'pit.py', 'runner.py',
+                       'schedule.py', 'scoring.py', 'selection.py', 'settings.py', 'universe.py']
+    for name in modules:
+        tree = ast.parse((pkg / name).read_text(encoding='utf-8'))
+        for node in ast.walk(tree):
             names = ([a.name for a in node.names] if isinstance(node, ast.Import)
                      else [node.module or ''] + [a.name for a in node.names] if isinstance(node, ast.ImportFrom) else [])
-            for name in names:
-                assert not set(name.split('.')) & banned, (path.name, name)
-    assert sorted(p.name for p in pkg.glob('*.py')) == ['__init__.py', 'pit.py', 'schedule.py', 'scoring.py',
-                                                        'selection.py', 'settings.py', 'universe.py']
+            for imported in names:
+                assert not set(imported.split('.')) & banned, (name, imported)
+            if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
+                assert node.func.id not in ('open', 'exec', 'eval', '__import__'), (name, node.func.id)
+    # the only package file read stays the frozen schedule
+    reads = [name for name in modules if 'read_text' in (pkg / name).read_text(encoding='utf-8')
+             or 'read_bytes' in (pkg / name).read_text(encoding='utf-8')]
+    assert reads == ['schedule.py']

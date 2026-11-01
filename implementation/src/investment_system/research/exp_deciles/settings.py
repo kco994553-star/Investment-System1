@@ -29,8 +29,17 @@ U_A_ENTRY_USD = Decimal('250000000')
 U_A_STAY_USD = Decimal('200000000')
 U_B_MIN_USD = Decimal('10000000000')
 MARKET_CAP_BASIS = 'ISSUER_NOMINAL_CLASS_SUM_AT_S'
-# Canonical common-stock type names (universe.expanded_catalog.SECURITY_TYPES). ADR / REIT / others are not common here.
-COMMON_SECURITY_TYPES = ('COMMON', 'COMMON_CLASS')
+# Security types (owner decision 2026-10-30, implementation/docs/expanded_universe/EXPANDED_DEFINITION_20261030.md section
+# 1.2), named as universe.expanded_catalog.SECURITY_TYPES: common stock (each class; the issuer is counted once), ADR/ADS
+# and REIT are in; ETF, closed-end fund, preferred, warrant, right and unit are out (NOT_ELIGIBLE_SECURITY_TYPE). A type
+# outside both lists is not a canonical name and leaves the security UNKNOWN (never excluded).
+SECURITY_TYPES_DECISION = ('implementation/docs/expanded_universe/EXPANDED_DEFINITION_20261030.md section 1.2 '
+                           '(owner 2026-10-30)')
+ELIGIBLE_SECURITY_TYPES = ('COMMON', 'COMMON_CLASS', 'ADR', 'REIT')
+EXCLUDED_SECURITY_TYPES = ('ETF', 'CLOSED_END_FUND', 'PREFERRED', 'WARRANT', 'RIGHT', 'UNIT')
+ADR_SECURITY_TYPE = 'ADR'
+# ADR issuer cap = ordinary shares outstanding / adr_ratio (ordinary shares per ADS) x ADS price; no confirmed ratio -> NA.
+ADR_MARKET_CAP_RULE = 'ORDINARY_SHARES_OUTSTANDING_DIV_ADR_RATIO_X_ADS_PRICE_UNCONFIRMED_RATIO_NA'
 U_A_RULE = 'ENTRY_250M_STAY_200M_FOR_PREVIOUS_U_A_MEMBERS_FIRST_BUILD_ENTRY'
 U_B_RULE = 'MIN_10BN_EACH_EVALUATION_DATE_NO_HYSTERESIS'
 
@@ -111,7 +120,9 @@ def settings_dict():
     return _jsonable({
         'schema': SETTINGS_SCHEMA, 'experiment_id': EXPERIMENT_ID, 'settings_doc': SETTINGS_DOC,
         'universes': {
-            'currency': CURRENCY, 'market_cap_basis': MARKET_CAP_BASIS, 'common_security_types': COMMON_SECURITY_TYPES,
+            'currency': CURRENCY, 'market_cap_basis': MARKET_CAP_BASIS,
+            'security_types': {'decision': SECURITY_TYPES_DECISION, 'eligible': ELIGIBLE_SECURITY_TYPES,
+                               'excluded': EXCLUDED_SECURITY_TYPES, 'adr_market_cap_rule': ADR_MARKET_CAP_RULE},
             U_A: {'entry_usd': U_A_ENTRY_USD, 'stay_usd': U_A_STAY_USD, 'rule': U_A_RULE},
             U_B: {'min_usd': U_B_MIN_USD, 'rule': U_B_RULE},
         },

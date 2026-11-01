@@ -14,7 +14,9 @@ scoring_adapter.prepare_companies (L43) and the score_universe calls of scoring_
   ticker-to-sector table is not applied to history);
 - #430's VERIFIED basis_alignment receipt check on quotes is not ported. Quotes are taken as already basis-checked by the
   price part, which withholds a quote with an UPPER_SNAKE reason (as the operating path withholds SPLIT_AFTER_SHARE_COUNT
-  or ADR_RATIO_UNCONFIRMED). A withheld or missing quote leaves V to the engine's own NA rule (NO_DEVICE_PRICE).
+  or ADR_RATIO_UNCONFIRMED). A withheld or missing quote leaves V to the engine's own NA rule (NO_DEVICE_PRICE). An ADR
+  quote is per ADS; runner.scoring_quotes turns it into a price per ordinary share with the record's adr_ratio before it
+  reaches this module, or withholds it with ADR_RATIO_UNCONFIRMED.
 
 Missing-data rules, type weights and the gate are the engine's, unchanged; no 15-factor completeness rule is added.
 Scores are returned unrounded as the engine gives them (floats). Engine quotes are {price, currency, month_closes}: the

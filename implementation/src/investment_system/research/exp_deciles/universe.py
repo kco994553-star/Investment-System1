@@ -4,31 +4,47 @@ Ported from research/qgv_backtest @ 56a0e8ce (#417/#430) and changed for EXP-STO
 pit_adapter.choose_share_classes (L251: one security per CIK, highest median dollar volume, ties by permanent ID, else the
 lowest ID flagged SHARE_CLASS_LIQUIDITY_UNCONFIRMED). Changed: a supplied representative flag is used first; the median
 dollar volume is a supplied input (no 60-session price window is read here); the fallback flag is REPRESENTATIVE_UNCONFIRMED;
-the issuer nominal market cap (class sum), the U-A entry/stay hysteresis, the U-B threshold and the candidate / eligible /
-excluded / unknown counts are new.
+the issuer nominal market cap (class sum, ADR rule), the security-type scope, the U-A entry/stay hysteresis, the U-B
+threshold and the candidate / eligible / excluded / unknown counts are new.
+
+Security types (owner decision 2026-10-30, implementation/docs/expanded_universe/EXPANDED_DEFINITION_20261030.md section
+1.2; canonical names of universe.expanded_catalog.SECURITY_TYPES):
+  eligible (settings.ELIGIBLE_SECURITY_TYPES)   COMMON, COMMON_CLASS (each class; the issuer is counted once), ADR (ADR/ADS),
+                                                 REIT
+  excluded (settings.EXCLUDED_SECURITY_TYPES)   ETF, CLOSED_END_FUND, PREFERRED, WARRANT, RIGHT, UNIT
+                                                 -> EXCLUDED with NOT_ELIGIBLE_SECURITY_TYPE
+  None                                           -> UNKNOWN with SECURITY_TYPE_UNKNOWN
+  any other string (not a canonical name)        -> UNKNOWN with SECURITY_TYPE_NOT_CANONICAL (a mapping gap is not a rule
+                                                    exclusion)
 
 Record (one per security at S; dict keys):
   security_id           fixed security ID (required, non-empty str)
   cik                   issuer CIK (digits, any padding) or None = unknown
   listed                True / False / None = unknown (listed on S)
-  security_type         'COMMON' / 'COMMON_CLASS' = common stock (settings.COMMON_SECURITY_TYPES); any other str = not
-                        common; None = unknown
-  shares_outstanding    class shares outstanding at S: Decimal / int / decimal str, or None (float refused)
-  price                 price at S: Decimal / int / decimal str, or None; price_label names it (e.g. a labelled proxy)
+  security_type         canonical type name (see above) or None = unknown
+  shares_outstanding    class shares outstanding at S: Decimal / int / decimal str, or None (float refused); for an ADR the
+                        issuer's ORDINARY shares outstanding (e.g. the 20-F cover), not the ADS count
+  price                 price at S: Decimal / int / decimal str, or None; price_label names it (e.g. a labelled proxy); for
+                        an ADR the ADS price
+  adr_ratio             ADR only: ordinary shares per ADS (Decimal / int / decimal str, > 0). Missing or unusable (None,
+                        float, bool, text, <= 0) -> the issuer cap is NA with ADR_RATIO_UNCONFIRMED; ignored for other types
   representative        supplied representative flag True / False / None
   median_dollar_volume  input of the representative rule (Decimal / int / str, or None)
-  same_economic_rights  for an unlisted common class: True values it at the representative's price; False / None -> NA
+  same_economic_rights  for an unlisted eligible-type class: True values it at the representative's price; False / None -> NA
 
-Issuer nominal market cap (Decimal, precision 50) = sum over the issuer's common classes of shares x price, where a listed
-class uses its own price and an unlisted class uses the representative's price only when same_economic_rights is True.
-Any missing or unusable input of any (possibly) common class makes the cap NA with reasons; it is never partially summed.
+Issuer nominal market cap (Decimal, precision 50) = sum over the issuer's eligible-type classes (COMMON, COMMON_CLASS,
+REIT) of shares x price, where a listed class uses its own price and an unlisted class uses the representative's price
+only when same_economic_rights is True. An ADR issuer's cap = ordinary shares outstanding / adr_ratio x ADS price (the
+ADR stands for the whole ordinary class); an ADR next to any other eligible-type record of the same issuer (a second ADR,
+an ordinary or REIT class) could count the ordinary class twice, so that cap is NA with ADR_CLASS_OVERLAP_UNCONFIRMED.
+Any missing or unusable input of any (possibly) eligible class makes the cap NA with reasons; it is never partially summed.
 
 Membership: U-A first build (previous_u_a is None): cap >= entry. Later S: a previous U-A member stays iff cap >= stay;
 any other issuer enters iff cap >= entry. U-B: cap >= 10bn at that S, no hysteresis. NA cap -> UNKNOWN, never EXCLUDED,
 and an UNKNOWN issuer is not a member at S (so at the next S it is judged against the entry threshold).
 
-Counting unit = issuer: each known CIK, plus each security without a CIK that could be a listed common stock (it cannot be
-attached to an issuer, so it is its own unknown unit). candidate = eligible + excluded + unknown for every group; each unit
+Counting unit = issuer: each known CIK, plus each security without a CIK that could be a listed eligible security (it
+cannot be attached to an issuer, so it is its own unknown unit). candidate = eligible + excluded + unknown for every group; each unit
 is counted once under its first reason (`*_by_reason`), its full reason list stays on the unit.
 """
 from __future__ import annotations
@@ -44,8 +60,8 @@ DECIMAL_PRECISION = 50
 
 # reason codes (UPPER_SNAKE): exclusions by rule
 NOT_LISTED = 'NOT_LISTED'
-NOT_COMMON_STOCK = 'NOT_COMMON_STOCK'
-NO_LISTED_COMMON_STOCK = 'NO_LISTED_COMMON_STOCK'
+NOT_ELIGIBLE_SECURITY_TYPE = 'NOT_ELIGIBLE_SECURITY_TYPE'
+NO_LISTED_ELIGIBLE_SECURITY = 'NO_LISTED_ELIGIBLE_SECURITY'
 BELOW_U_A_ENTRY = 'BELOW_U_A_ENTRY_THRESHOLD'
 BELOW_U_A_STAY = 'BELOW_U_A_STAY_THRESHOLD'
 BELOW_U_B = 'BELOW_U_B_THRESHOLD'
@@ -54,6 +70,9 @@ CIK_UNKNOWN = 'CIK_UNKNOWN'
 CIK_INVALID = 'CIK_INVALID'
 LISTING_STATUS_UNKNOWN = 'LISTING_STATUS_UNKNOWN'
 SECURITY_TYPE_UNKNOWN = 'SECURITY_TYPE_UNKNOWN'
+SECURITY_TYPE_NOT_CANONICAL = 'SECURITY_TYPE_NOT_CANONICAL'
+ADR_RATIO_UNCONFIRMED = 'ADR_RATIO_UNCONFIRMED'
+ADR_CLASS_OVERLAP_UNCONFIRMED = 'ADR_CLASS_OVERLAP_UNCONFIRMED'
 SHARES_OUTSTANDING_MISSING = 'SHARES_OUTSTANDING_MISSING'
 SHARES_OUTSTANDING_INVALID = 'SHARES_OUTSTANDING_INVALID'
 PRICE_MISSING = 'PRICE_MISSING'
@@ -65,12 +84,12 @@ MARKET_CAP_NOT_AVAILABLE = 'MARKET_CAP_NOT_AVAILABLE'
 NOT_IN_RECORDS_AT_S = 'NOT_IN_RECORDS_AT_S'
 # representative sources and flags
 REP_SUPPLIED_FLAG = 'SUPPLIED_FLAG'
-REP_ONLY_CLASS = 'ONLY_LISTED_COMMON_CLASS'
+REP_ONLY_CLASS = 'ONLY_LISTED_ELIGIBLE_CLASS'
 REP_MEDIAN_DOLLAR_VOLUME = 'HIGHEST_MEDIAN_DOLLAR_VOLUME'
 REP_LOWEST_ID = 'LOWEST_SECURITY_ID'
 REPRESENTATIVE_UNCONFIRMED = 'REPRESENTATIVE_UNCONFIRMED'
 REPRESENTATIVE_FLAG_CONFLICT = 'REPRESENTATIVE_FLAG_CONFLICT'
-REPRESENTATIVE_FLAG_NOT_LISTED_COMMON = 'REPRESENTATIVE_FLAG_NOT_LISTED_COMMON'
+REPRESENTATIVE_FLAG_NOT_LISTED_ELIGIBLE = 'REPRESENTATIVE_FLAG_NOT_LISTED_ELIGIBLE'
 
 
 def _decimal(value, field):
@@ -93,6 +112,15 @@ def _decimal(value, field):
     if not out.is_finite():
         raise ValueError(field.upper() + '_INVALID')
     return out
+
+
+def _adr_ratio(value):
+    """Ordinary shares per ADS as a positive finite Decimal, else None (missing or unusable: the cap rule makes it NA)."""
+    try:
+        ratio = _decimal(value, 'adr_ratio')
+    except (TypeError, ValueError):
+        return None
+    return ratio if ratio is not None and ratio > 0 else None
 
 
 def _tristate(value, field):
@@ -132,6 +160,7 @@ def normalize_record(record):
             'security_type': security_type,
             'shares_outstanding': _decimal(record.get('shares_outstanding'), 'shares_outstanding'),
             'price': _decimal(record.get('price'), 'price'), 'price_label': label,
+            'adr_ratio': _adr_ratio(record.get('adr_ratio')) if security_type == settings.ADR_SECURITY_TYPE else None,
             'representative': _tristate(record.get('representative'), 'representative'),
             'median_dollar_volume': _decimal(record.get('median_dollar_volume'), 'median_dollar_volume'),
             'same_economic_rights': _tristate(record.get('same_economic_rights'), 'same_economic_rights')}
@@ -148,8 +177,21 @@ def _index(records):
     return out
 
 
-def _is_common(rec):
-    return rec['security_type'] in settings.COMMON_SECURITY_TYPES
+def _is_eligible_type(rec):
+    return rec['security_type'] in settings.ELIGIBLE_SECURITY_TYPES
+
+
+def _is_excluded_type(rec):
+    return rec['security_type'] in settings.EXCLUDED_SECURITY_TYPES
+
+
+def _type_unknown_reason(rec):
+    """SECURITY_TYPE_UNKNOWN / SECURITY_TYPE_NOT_CANONICAL, or None for a canonical type name."""
+    if rec['security_type'] is None:
+        return SECURITY_TYPE_UNKNOWN
+    if not _is_eligible_type(rec) and not _is_excluded_type(rec):
+        return SECURITY_TYPE_NOT_CANONICAL
+    return None
 
 
 def security_status(rec):
@@ -158,12 +200,13 @@ def security_status(rec):
     excluded, unknown = [], []
     if rec['listed'] is False:
         excluded.append(NOT_LISTED)
-    if rec['security_type'] is not None and not _is_common(rec):
-        excluded.append(NOT_COMMON_STOCK)
+    if _is_excluded_type(rec):
+        excluded.append(NOT_ELIGIBLE_SECURITY_TYPE)
     if rec['cik'] is None:
         unknown.append(rec['cik_reason'])
-    if rec['security_type'] is None:
-        unknown.append(SECURITY_TYPE_UNKNOWN)
+    type_reason = _type_unknown_reason(rec)
+    if type_reason:
+        unknown.append(type_reason)
     if rec['listed'] is None:
         unknown.append(LISTING_STATUS_UNKNOWN)
     if excluded:
@@ -173,16 +216,16 @@ def security_status(rec):
     return ELIGIBLE, []
 
 
-def choose_representative(listed_common, flagged_elsewhere=False):
-    """(security_id, source, flags) among one issuer's listed common records.
+def choose_representative(listed_eligible, flagged_elsewhere=False):
+    """(security_id, source, flags) among one issuer's listed eligible-type records.
 
-    Supplied flag first (exactly one True); one listed common class -> that class; else highest median dollar volume when
+    Supplied flag first (exactly one True); one listed eligible class -> that class; else highest median dollar volume when
     every class has a usable (>= 0) median, ties by security_id ascending; else the lowest security_id flagged
     REPRESENTATIVE_UNCONFIRMED. Several True flags -> REPRESENTATIVE_FLAG_CONFLICT and the rule decides."""
-    if not listed_common:
-        raise ValueError('NO_LISTED_COMMON_CLASS')
-    flags = [REPRESENTATIVE_FLAG_NOT_LISTED_COMMON] if flagged_elsewhere else []
-    classes = sorted(listed_common, key=lambda r: r['security_id'])
+    if not listed_eligible:
+        raise ValueError('NO_LISTED_ELIGIBLE_CLASS')
+    flags = [REPRESENTATIVE_FLAG_NOT_LISTED_ELIGIBLE] if flagged_elsewhere else []
+    classes = sorted(listed_eligible, key=lambda r: r['security_id'])
     flagged = [r for r in classes if r['representative'] is True]
     if len(flagged) == 1:
         return flagged[0]['security_id'], REP_SUPPLIED_FLAG, flags
@@ -207,16 +250,21 @@ def _positive(value, missing, invalid):
 
 
 def issuer_market_cap(issuer_records, representative_id):
-    """(cap | None, reasons, classes) for one issuer's normalized records; classes = valued common classes
-    [{'security_id', 'shares_outstanding', 'price', 'price_basis', 'price_label', 'value'}]."""
+    """(cap | None, reasons, classes) for one issuer's normalized records; classes = valued eligible-type classes
+    [{'security_id', 'security_type', 'shares_outstanding', 'adr_ratio', 'share_basis', 'price', 'price_basis',
+    'price_label', 'value'}]. share_basis is CLASS_SHARES, or ORDINARY_SHARES_DIV_ADR_RATIO for an ADR."""
     by_id = {r['security_id']: r for r in issuer_records}
     rep = by_id.get(representative_id)
     reasons, classes = [], []
+    eligible_type = [r for r in issuer_records if _is_eligible_type(r)]
+    if any(r['security_type'] == settings.ADR_SECURITY_TYPE for r in eligible_type) and len(eligible_type) > 1:
+        reasons.append(ADR_CLASS_OVERLAP_UNCONFIRMED)
     for rec in sorted(issuer_records, key=lambda r: r['security_id']):
-        if rec['security_type'] is None:
-            reasons.append(SECURITY_TYPE_UNKNOWN)
+        type_reason = _type_unknown_reason(rec)
+        if type_reason:
+            reasons.append(type_reason)
             continue
-        if not _is_common(rec):
+        if not _is_eligible_type(rec):
             continue
         if rec['listed'] is None:
             reasons.append(LISTING_STATUS_UNKNOWN)
@@ -224,6 +272,10 @@ def issuer_market_cap(issuer_records, representative_id):
         problem = _positive(rec['shares_outstanding'], SHARES_OUTSTANDING_MISSING, SHARES_OUTSTANDING_INVALID)
         if problem:
             reasons.append(problem)
+        is_adr = rec['security_type'] == settings.ADR_SECURITY_TYPE
+        if is_adr and rec['adr_ratio'] is None:
+            reasons.append(ADR_RATIO_UNCONFIRMED)
+            problem = problem or ADR_RATIO_UNCONFIRMED
         if rec['listed'] is True:
             price, basis, label = rec['price'], 'OWN_PRICE', rec['price_label']
         elif rec['same_economic_rights'] is True:
@@ -238,7 +290,9 @@ def issuer_market_cap(issuer_records, representative_id):
             reasons.append(price_problem)
         if problem or price_problem:
             continue
-        classes.append({'security_id': rec['security_id'], 'shares_outstanding': rec['shares_outstanding'],
+        classes.append({'security_id': rec['security_id'], 'security_type': rec['security_type'],
+                        'shares_outstanding': rec['shares_outstanding'], 'adr_ratio': rec['adr_ratio'],
+                        'share_basis': 'ORDINARY_SHARES_DIV_ADR_RATIO' if is_adr else 'CLASS_SHARES',
                         'price': price, 'price_basis': basis, 'price_label': label, 'value': None})
     reasons = list(dict.fromkeys(reasons))
     if reasons:
@@ -247,7 +301,8 @@ def issuer_market_cap(issuer_records, representative_id):
         ctx.prec = DECIMAL_PRECISION
         total = Decimal(0)
         for c in classes:
-            c['value'] = c['shares_outstanding'] * c['price']
+            shares = c['shares_outstanding'] / c['adr_ratio'] if c['adr_ratio'] is not None else c['shares_outstanding']
+            c['value'] = shares * c['price']
             total += c['value']
     return total, [], classes
 
@@ -298,38 +353,38 @@ def build_universes(records, *, previous_u_a=None, signal_day=None):
     for sid in sorted(index):
         rec = index[sid]
         status, reasons = security_status(rec)
-        securities[sid] = {'security_id': sid, 'cik': rec['cik'], 'status': status, 'reasons': reasons,
-                           'price_label': rec['price_label']}
+        securities[sid] = {'security_id': sid, 'cik': rec['cik'], 'security_type': rec['security_type'],
+                           'status': status, 'reasons': reasons, 'price_label': rec['price_label']}
         if rec['cik'] is not None:
             by_cik[rec['cik']].append(rec)
         elif status == UNKNOWN:
             unknown = {'status': UNKNOWN, 'reasons': list(reasons)}
             units['SECURITY:' + sid] = {'issuer_id': 'SECURITY:' + sid, 'cik': None, 'securities': [sid],
-                                        'listed_common': [], 'representative': None, 'representative_source': None,
+                                        'listed_eligible': [], 'representative': None, 'representative_source': None,
                                         'representative_flags': [], 'price_label': None, 'market_cap_usd': None,
                                         'market_cap_reasons': list(reasons), 'classes': [],
                                         settings.U_A: dict(unknown, basis=None), settings.U_B: dict(unknown)}
     for cik in sorted(by_cik):
         recs = by_cik[cik]
-        listed_common = [r for r in recs if securities[r['security_id']]['status'] == ELIGIBLE]
+        listed_eligible = [r for r in recs if securities[r['security_id']]['status'] == ELIGIBLE]
         unit = {'issuer_id': cik, 'cik': cik, 'securities': [r['security_id'] for r in recs],
-                'listed_common': [r['security_id'] for r in listed_common], 'representative': None,
+                'listed_eligible': [r['security_id'] for r in listed_eligible], 'representative': None,
                 'representative_source': None, 'representative_flags': [], 'price_label': None, 'market_cap_usd': None,
                 'market_cap_reasons': [], 'classes': []}
-        if not listed_common:
+        if not listed_eligible:
             possible = [r for r in recs if securities[r['security_id']]['status'] == UNKNOWN]
             if possible:
                 reasons = list(dict.fromkeys(x for r in possible for x in securities[r['security_id']]['reasons']))
                 status = UNKNOWN
             else:
-                reasons, status = [NO_LISTED_COMMON_STOCK], EXCLUDED
+                reasons, status = [NO_LISTED_ELIGIBLE_SECURITY], EXCLUDED
             unit['market_cap_reasons'] = list(reasons)
             unit[settings.U_A] = {'status': status, 'reasons': list(reasons), 'basis': None}
             unit[settings.U_B] = {'status': status, 'reasons': list(reasons)}
             units[cik] = unit
             continue
-        flagged_elsewhere = any(r['representative'] is True and r not in listed_common for r in recs)
-        rep, source, flags = choose_representative(listed_common, flagged_elsewhere)
+        flagged_elsewhere = any(r['representative'] is True and r not in listed_eligible for r in recs)
+        rep, source, flags = choose_representative(listed_eligible, flagged_elsewhere)
         cap, cap_reasons, classes = issuer_market_cap(recs, rep)
         unit.update(representative=rep, representative_source=source, representative_flags=flags,
                     price_label=index[rep]['price_label'], market_cap_usd=cap, market_cap_reasons=cap_reasons,
@@ -350,7 +405,7 @@ def build_universes(records, *, previous_u_a=None, signal_day=None):
     for s in securities.values():
         if s['status'] in sec_reasons:
             sec_reasons[s['status']][s['reasons'][0]] += 1
-    out['security_counts'] = {'candidate': len(securities), 'listed_common': sec_counts[ELIGIBLE],
+    out['security_counts'] = {'candidate': len(securities), 'listed_eligible': sec_counts[ELIGIBLE],
                               'excluded': sec_counts[EXCLUDED], 'unknown': sec_counts[UNKNOWN],
                               'excluded_by_reason': dict(sorted(sec_reasons[EXCLUDED].items())),
                               'unknown_by_reason': dict(sorted(sec_reasons[UNKNOWN].items()))}

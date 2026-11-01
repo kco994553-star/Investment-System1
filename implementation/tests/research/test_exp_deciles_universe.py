@@ -34,9 +34,9 @@ def test_class_sum_cap_uses_own_prices_and_representative_price_for_same_rights_
     assert [(c['security_id'], c['price_basis']) for c in issuer['classes']] == [
         ('A', 'OWN_PRICE'), ('B', 'REPRESENTATIVE_PRICE'), ('C', 'OWN_PRICE')]
     assert out['U_A']['members'] == ('0000000010',) and out['U_A']['member_securities'] == ('A',)
-    assert out['securities']['B'] == {'security_id': 'B', 'cik': '0000000010', 'status': 'EXCLUDED',
-                                      'reasons': ['NOT_LISTED'], 'price_label': None}
-    assert out['securities']['P']['reasons'] == ['NOT_COMMON_STOCK']
+    assert out['securities']['B'] == {'security_id': 'B', 'cik': '0000000010', 'security_type': 'COMMON_CLASS',
+                                      'status': 'EXCLUDED', 'reasons': ['NOT_LISTED'], 'price_label': None}
+    assert out['securities']['P']['reasons'] == ['NOT_ELIGIBLE_SECURITY_TYPE']
 
 
 @pytest.mark.parametrize('rights, reason', [(None, 'UNLISTED_CLASS_RIGHTS_UNKNOWN'), (False, 'UNLISTED_CLASS_RIGHTS_DIFFER')])
@@ -69,8 +69,8 @@ def test_representative_supplied_flag_first_then_rule_then_lowest_id_unconfirmed
     assert issuer['representative'] == 'B' and issuer['representative_flags'] == ['REPRESENTATIVE_FLAG_CONFLICT']
     only = uv.build_universes([rec('Z', '1'), rec('P', '1', security_type='PREFERRED', representative=True)])
     issuer = only['issuers']['0000000001']
-    assert (issuer['representative'], issuer['representative_source']) == ('Z', 'ONLY_LISTED_COMMON_CLASS')
-    assert issuer['representative_flags'] == ['REPRESENTATIVE_FLAG_NOT_LISTED_COMMON']
+    assert (issuer['representative'], issuer['representative_source']) == ('Z', 'ONLY_LISTED_ELIGIBLE_CLASS')
+    assert issuer['representative_flags'] == ['REPRESENTATIVE_FLAG_NOT_LISTED_ELIGIBLE']
 
 
 def test_u_a_first_build_uses_entry_and_boundaries_are_inclusive():
@@ -140,14 +140,14 @@ def test_missing_inputs_are_unknown_never_excluded_and_counts_balance():
                rec('MIXA', '9', shares='1000000000', price='5'), rec('MIXB', '9', security_type=None, listed=False)]
     out = uv.build_universes(records)
     sec = out['security_counts']
-    assert sec['candidate'] == 13 and sec['listed_common'] + sec['excluded'] + sec['unknown'] == 13
-    assert sec['excluded_by_reason'] == {'NOT_COMMON_STOCK': 2, 'NOT_LISTED': 2}
+    assert sec['candidate'] == 13 and sec['listed_eligible'] + sec['excluded'] + sec['unknown'] == 13
+    assert sec['excluded_by_reason'] == {'NOT_ELIGIBLE_SECURITY_TYPE': 2, 'NOT_LISTED': 2}
     assert sec['unknown_by_reason'] == {'CIK_INVALID': 1, 'CIK_UNKNOWN': 1, 'LISTING_STATUS_UNKNOWN': 1,
                                         'SECURITY_TYPE_UNKNOWN': 1}
     ua = out['U_A']['counts']
     assert ua['candidate'] == ua['eligible'] + ua['excluded'] + ua['unknown'] == 11   # 9 CIKs + 2 CIK-less units
     assert ua['eligible'] == 1
-    assert ua['excluded_by_reason'] == {'BELOW_U_A_ENTRY_THRESHOLD': 1, 'NO_LISTED_COMMON_STOCK': 2}
+    assert ua['excluded_by_reason'] == {'BELOW_U_A_ENTRY_THRESHOLD': 1, 'NO_LISTED_ELIGIBLE_SECURITY': 2}
     assert ua['unknown_by_reason'] == {'CIK_INVALID': 1, 'CIK_UNKNOWN': 1, 'LISTING_STATUS_UNKNOWN': 1,
                                        'PRICE_INVALID': 1, 'SECURITY_TYPE_UNKNOWN': 2,
                                        'SHARES_OUTSTANDING_MISSING': 1}
@@ -155,7 +155,7 @@ def test_missing_inputs_are_unknown_never_excluded_and_counts_balance():
     assert 'SECURITY:NOCIKPREF' not in out['issuers']
     ub = out['U_B']['counts']
     assert (ub['candidate'], ub['eligible'], ub['unknown']) == (11, 0, 7)
-    assert ub['excluded_by_reason'] == {'BELOW_U_B_THRESHOLD': 2, 'NO_LISTED_COMMON_STOCK': 2}
+    assert ub['excluded_by_reason'] == {'BELOW_U_B_THRESHOLD': 2, 'NO_LISTED_ELIGIBLE_SECURITY': 2}
 
 
 def test_inputs_validated_decimal_only_and_duplicates_checked():
@@ -182,3 +182,91 @@ def test_pure_order_independent_and_price_label_carried():
     assert a['issuers']['0000000002']['price_label'] == 'PROXY_LAST_TRADE'
     assert a['issuers']['0000000002']['classes'][0]['price_label'] == 'PROXY_LAST_TRADE'
     assert a['signal_day'] == '2018-02-16'
+
+
+# ---- security types and the ADR rule (owner decision 2026-10-30, EXPANDED_DEFINITION_20261030.md section 1.2) ----
+def test_security_type_lists_cover_the_canonical_catalog_names_exactly():
+    from investment_system.research.exp_deciles import settings
+    from investment_system.universe.expanded_catalog import SECURITY_TYPES
+
+    assert settings.ELIGIBLE_SECURITY_TYPES == ('COMMON', 'COMMON_CLASS', 'ADR', 'REIT')
+    assert settings.EXCLUDED_SECURITY_TYPES == ('ETF', 'CLOSED_END_FUND', 'PREFERRED', 'WARRANT', 'RIGHT', 'UNIT')
+    assert set(settings.ELIGIBLE_SECURITY_TYPES) | set(settings.EXCLUDED_SECURITY_TYPES) == set(SECURITY_TYPES)
+    assert not set(settings.ELIGIBLE_SECURITY_TYPES) & set(settings.EXCLUDED_SECURITY_TYPES)
+    assert not hasattr(settings, 'COMMON_SECURITY_TYPES')
+
+
+@pytest.mark.parametrize('kind', ['ETF', 'CLOSED_END_FUND', 'PREFERRED', 'WARRANT', 'RIGHT', 'UNIT'])
+def test_excluded_security_types_are_rule_exclusions(kind):
+    out = uv.build_universes([rec('X', '1', security_type=kind, price='500')])
+    assert out['securities']['X']['status'] == 'EXCLUDED'
+    assert out['securities']['X']['reasons'] == ['NOT_ELIGIBLE_SECURITY_TYPE']
+    assert out['issuers']['0000000001']['U_A'] == {'status': 'EXCLUDED', 'reasons': ['NO_LISTED_ELIGIBLE_SECURITY'],
+                                                   'basis': None}
+
+
+def test_reit_is_eligible_and_valued_like_a_common_class():
+    out = uv.build_universes([rec('R', '1', security_type='REIT', shares='100000000', price='3.5')])
+    issuer = out['issuers']['0000000001']
+    assert out['securities']['R']['status'] == 'ELIGIBLE' and out['securities']['R']['security_type'] == 'REIT'
+    assert issuer['market_cap_usd'] == D('350000000.0') and issuer['representative'] == 'R'
+    assert issuer['classes'][0]['share_basis'] == 'CLASS_SHARES' and issuer['classes'][0]['adr_ratio'] is None
+    assert out['U_A']['members'] == ('0000000001',)
+
+
+def test_adr_cap_is_ordinary_shares_over_ratio_times_ads_price():
+    # 600,000,000 ordinary shares, 4 ordinary shares per ADS -> 150,000,000 ADS x 70.10 = 10,515,000,000
+    out = uv.build_universes([rec('ADS', '7', security_type='ADR', shares='600000000', price='70.10', adr_ratio='4')])
+    issuer = out['issuers']['0000000007']
+    assert issuer['market_cap_usd'] == D('10515000000.00') and isinstance(issuer['market_cap_usd'], D)
+    assert issuer['classes'][0] == {'security_id': 'ADS', 'security_type': 'ADR', 'shares_outstanding': D('600000000'),
+                                    'adr_ratio': D('4'), 'share_basis': 'ORDINARY_SHARES_DIV_ADR_RATIO',
+                                    'price': D('70.10'), 'price_basis': 'OWN_PRICE', 'price_label': None,
+                                    'value': D('10515000000.00')}
+    assert out['U_A']['members'] == ('0000000007',) and out['U_B']['members'] == ('0000000007',)
+    # A fractional ratio (one ordinary share = 2 ADS): 10 ordinary / 0.5 = 20 ADS x 15 = 300
+    half = uv.build_universes([rec('H', '8', security_type='ADR', shares='10', price='15', adr_ratio='0.5')])
+    assert half['issuers']['0000000008']['market_cap_usd'] == D('300')
+
+
+@pytest.mark.parametrize('ratio', [None, '0', '-2', 'two', 2.0, True, 'NaN'])
+def test_missing_or_unusable_adr_ratio_is_unknown_never_excluded(ratio):
+    record = rec('ADS', '7', security_type='ADR', shares='600000000', price='70.10')
+    if ratio is not None:
+        record['adr_ratio'] = ratio
+    out = uv.build_universes([record])
+    issuer = out['issuers']['0000000007']
+    assert out['securities']['ADS']['status'] == 'ELIGIBLE'          # the security itself is in scope
+    assert issuer['market_cap_usd'] is None and issuer['market_cap_reasons'] == ['ADR_RATIO_UNCONFIRMED']
+    assert issuer['U_A'] == {'status': 'UNKNOWN', 'reasons': ['ADR_RATIO_UNCONFIRMED'], 'basis': None}
+    assert issuer['U_B'] == {'status': 'UNKNOWN', 'reasons': ['ADR_RATIO_UNCONFIRMED']}
+    counts = out['U_A']['counts']
+    assert (counts['unknown'], counts['excluded']) == (1, 0)
+    assert counts['unknown_by_reason'] == {'ADR_RATIO_UNCONFIRMED': 1}
+
+
+def test_adr_next_to_another_eligible_class_of_the_issuer_is_unknown():
+    both = uv.build_universes([rec('ADS', '7', security_type='ADR', shares='600000000', price='70', adr_ratio='4'),
+                               rec('ORD', '7', listed=False, same_economic_rights=True, shares='600000000')])
+    issuer = both['issuers']['0000000007']
+    assert issuer['market_cap_usd'] is None and issuer['market_cap_reasons'] == ['ADR_CLASS_OVERLAP_UNCONFIRMED']
+    assert issuer['U_A']['status'] == 'UNKNOWN'
+    two = uv.build_universes([rec('A1', '7', security_type='ADR', shares='600000000', price='70', adr_ratio='4'),
+                              rec('A2', '7', security_type='ADR', shares='600000000', price='35', adr_ratio='2')])
+    assert two['issuers']['0000000007']['market_cap_reasons'] == ['ADR_CLASS_OVERLAP_UNCONFIRMED']
+    # A preferred line of the same issuer is out of scope and does not block the ADR cap.
+    pref = uv.build_universes([rec('ADS', '7', security_type='ADR', shares='600000000', price='70', adr_ratio='4'),
+                               rec('P', '7', security_type='PREFERRED', price='25')])
+    assert pref['issuers']['0000000007']['market_cap_usd'] == D('10500000000')
+
+
+def test_non_canonical_type_name_is_unknown_and_blocks_the_issuer_cap():
+    out = uv.build_universes([rec('LP1', '1', security_type='LP'), rec('C', '2'),
+                              rec('C2', '2', security_type='MLP_UNIT', listed=True)])
+    assert out['securities']['LP1'] == {'security_id': 'LP1', 'cik': '0000000001', 'security_type': 'LP',
+                                        'status': 'UNKNOWN', 'reasons': ['SECURITY_TYPE_NOT_CANONICAL'],
+                                        'price_label': None}
+    assert out['issuers']['0000000001']['U_A'] == {'status': 'UNKNOWN', 'reasons': ['SECURITY_TYPE_NOT_CANONICAL'],
+                                                   'basis': None}
+    assert out['issuers']['0000000002']['market_cap_reasons'] == ['SECURITY_TYPE_NOT_CANONICAL']
+    assert out['U_A']['counts']['unknown_by_reason'] == {'SECURITY_TYPE_NOT_CANONICAL': 2}
