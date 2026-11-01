@@ -10,12 +10,10 @@
 - **무엇:** 오너 한 사람만 보는 비공개 칸. 1단계(10/31 바뀜, 17절)는 KIS 통합 일봉(시가·고가·저가·종가·거래량·거래대금)과 수정주가(분할 반영) 여부, 확장 모집단 거래대금 기준이다. 대상은 Universe504 + 확장 모집단이고, 주목적은 기술적 분석의 실가격 전환이다. V는 중앙 V(IEX) 그대로다. 2단계(한국 종목)는 1단계 뒤에 정한다.
 - **어디서 모으나:** 새 비공개 저장소의 Actions. 기존 비공개 원자료 저장소는 재사용할 수는 있지만 권장하지 않는다(3.1).
 - **어디에 두나:** 같은 새 비공개 저장소(권장, 결제 수단 없이 0원). R2도 가능하다(4절).
-- **누가 보나:** Cloudflare Access 이메일 일회용 코드로 로그인한다. 허용 이메일은 오너 1개다. Worker가 Access JWT를 직접 검증한다. 응답은 `Cache-Control: private, no-store`, CORS는 앱 주소만 허용한다.
+- **누가 보나:** ~~Cloudflare Access 이메일 일회용 코드, Worker의 Access JWT 검증~~ 대체됨(10/31) → NO_ZT §4: 오너의 Google 로그인 접근 토큰을 기존 Worker가 Google `tokeninfo`로 확인한다(`aud`·`email`·`email_verified`·만료). 허용 이메일은 오너 1개다. 응답은 `Cache-Control: private, no-store`, CORS는 앱 주소만 허용한다.
 - **화면:** 새 앱(web_app)에 비공개 칸을 더한다. 로그인하지 않으면 그 칸에만 "로그인 필요"가 보이고, 공개 화면은 바뀌지 않는다.
 - **도메인:** 필요 없다(workers.dev 그대로).
-- **결제 수단:**
-  - Cloudflare Zero Trust 무료 요금제를 켤 때 결제 수단 입력이 필요하다(청구 없음). 이는 GSQ-008("카드 없는 Workers Free만")을 뒤집으므로 오너 결정이 필요하다(`PRIV-PAYMENT`).
-  - GitHub·KIS는 결제 수단이 필요 없다.
+- **결제 수단:** 필요 없다. ~~Cloudflare Zero Trust 무료 요금제를 켤 때 결제 수단 입력(`PRIV-PAYMENT`)~~ 대체됨(10/31) → NO_ZT §4: Zero Trust를 쓰지 않으므로 `PRIV-PAYMENT`는 불필요하다. GitHub·KIS도 결제 수단이 필요 없다.
 - **비용:** 0원으로 본다(10절).
 - **매일 걸리는 시간:** 확장 모집단 약 3,100종목 기준 약 6~8분. 미국 주식형 전체 6,699종목은 약 12~15분. 새 키는 처음 3일 동안 초당 3건으로 묶이며, 이때는 약 17분(3,100종목)~37분(6,699종목)이다(9절).
 - **거래대금 기준:** 비공개 보기에서는 다시 켤 수 있다(통합 거래량 확인 뒤). 공개 확장 모집단에는 KIS 서면 확인 전까지 켜지 않는다(8절).
@@ -40,11 +38,13 @@
                                           [새 비공개 저장소 data 가지: 최신 묶음 + 날짜별 기록]
                                                            │ 읽기 전용 PAT(이 저장소만, Contents: Read-only)
                                                            ▼
-[앱 web_app] ──Authorization: Bearer <Access JWT>──> [Worker private-investment-history: 새 경로 /kis/*]
-     ▲                                                     (JWT 직접 검증 · private, no-store · CORS 앱 주소만)
-     │ #조각으로 토큰 전달(맨 위 이동, 쿠키 안 씀)
-[로그인 전용 Worker kis-auth] ◀── Cloudflare Access(이메일 일회용 코드, 허용 이메일 1개)
+[앱 web_app] ──Authorization: Bearer <Google 접근 토큰>──> [Worker private-investment-history: 새 경로 /kis/*]
+     ▲                                                     (Google tokeninfo 확인 · private, no-store · CORS 앱 주소만)
+     │ 사용자 클릭 → Google 로그인 창(GIS 토큰, openid email만, 메모리에만)
+[오너 브라우저]
 ```
+
+- 그림의 로그인 부분은 대체됨(10/31) → NO_ZT §4. 옛 그림의 Access JWT·로그인 전용 Worker `kis-auth`·Cloudflare Access는 쓰지 않는다.
 
 - 공개 저장소에는 **코드만** 둔다(수집기·Worker 경로·시험, 가상 자료로만 시험).
 - KIS 자료는 공개 저장소·Pages·공개 Actions 로그·결과물에 들어가지 않는다(7절 가드).
@@ -69,7 +69,7 @@
 | 항목 | 설계 |
 | --- | --- |
 | 실행 | 새 비공개 저장소의 워크플로 하나. `schedule`(화~토 03:37 UTC = 12:37 KST) + `workflow_dispatch`. 03:37은 KIS가 전날 미국 시세를 전 거래소 통합(UTP) 자료로 정정한다는 12:00 KST 뒤다 |
-| 코드 | 공개 저장소의 고정 커밋을 checkout(토큰 없이)해 수집기 모듈만 실행. 수집기는 `GITHUB_REPOSITORY`가 지정한 비공개 저장소가 아니면 바로 멈춘다 |
+| 코드 | 공개 저장소의 고정 커밋을 checkout(토큰 없이, `persist-credentials: false`)해 수집기 모듈만 실행. **고정 SHA가 공개 기본 가지 `claude/investment-system-top500-validation-alrugm`의 조상인지 `git merge-base --is-ancestor`로 확인하고 아니면 멈춘다**(보안 검토 A2, 절차는 [NO_ZT](PRIVATE_AREA_NO_ZT_ACCESS_20261031.md) 3절). action은 `actions/*`만(SHA ↔ 릴리스 태그를 PR에 기록), 수집 잡에 `pip install` 없음, 수집기는 표준 라이브러리만 쓰고 `python -I`로 실행. 수집기는 `GITHUB_REPOSITORY`가 지정한 비공개 저장소가 아니면 바로 멈춘다 |
 | 호출 | `/oauth2/tokenP` 1회 → 종목마다 해외주식 기간별시세 `HHDFS76240000`(GUBN=0 일, MODP=0 수정 안 함, BYMD=대상 미국 거래일) 1회 → `/oauth2/revokeP`. 한 번에 최근 100거래일이 오므로 63거래일 중앙값과 전날 정정이 같은 호출로 해결된다 |
 | 막는 경로 | 허용 경로 목록(토큰 발급·폐기·기간별시세)만 호출. 경로에 order·trading·balance·account가 있으면 거부. 주문·계좌·잔고 코드는 만들지 않는다. 리다이렉트를 따라가지 않는다(헤더의 키가 다른 곳으로 가지 않게) |
 | 대상 종목 | 1단계: 공개 확장 모집단 후보 목록(공개 파일, 종목 코드만) ∩ KIS 미국 마스터(인증 없는 공개 파일). 거래소 코드는 마스터 소속으로 정한다(NASMST→NAS, NYSMST→NYS, AMSMST→AMS). 클래스주는 KIS 표기(`/`)로 바꾼다. 두 거래소에 겹치거나 없으면 그 종목만 사유와 함께 뺀다 |
@@ -78,7 +78,7 @@
 | 토큰 알림 | **토큰을 발급할 때마다 오너 폰으로 카카오톡·문자 알림이 간다(KIS 정책). 하루 1회 실행이면 하루 1번 알림이다.** 토큰은 실행마다 새로 받고 끝에 폐기한다(토큰을 저장하지 않는다) |
 | 로그 | 고정 문구 한 줄씩, 개수·코드·날짜만. 가격·종목별 값·키·토큰·응답 본문은 찍지 않는다. 런타임 토큰은 `::add-mask::`. 아티팩트·캐시·잡 요약 없음. Secret은 한 단계에만 넣고 자식 프로세스에 넘기지 않는다 |
 | 쓰기 | 그 잡에만 `permissions: contents: write`. `data` 가지에 커밋(기본 가지는 워크플로만). `GITHUB_TOKEN` push는 새 실행을 만들지 않는다 |
-| Secrets | 새 저장소의 저장소 Secrets에 `KIS_APP_KEY`·`KIS_APP_SECRET`(GitHub Free 비공개 저장소는 환경 Secrets를 쓸 수 없다). **공개 저장소의 KIS Secrets는 지운다**(오너, 폰 절차 3단계) |
+| Secrets | 새 저장소의 저장소 Secrets에 `KIS_APP_KEY`·`KIS_APP_SECRET`(GitHub Free 비공개 저장소는 환경 Secrets를 쓸 수 없다). **공개 저장소의 KIS Secrets는 오너가 지웠다(10/31, 폰 절차 3단계).** Secrets를 읽는 코드는 비공개 저장소 **워크플로 YAML 안에 직접** 둔다(워크플로가 읽는 `.py`에 두지 않는다, 보안 검토 A3). 공개 수집기는 키를 함수 인자로만 받고 Secret 이름을 쓰지 않는다(가드). 실행 조건은 `schedule`·`workflow_dispatch`·`issues`뿐, `push`·`pull_request`는 쓰지 않는다 |
 | 2단계(한국) | 같은 수집기에 국내 TR(일봉 `FHKST03010100` 등)만 더한다. 이번에는 만들지 않는다 |
 
 ## 4. 저장
@@ -86,14 +86,14 @@
 | 선택지 | 결제 수단 | 비용 | Worker가 읽는 방법 | 판단 |
 | --- | --- | --- | --- | --- |
 | **(a) 새 비공개 저장소 `data` 가지(권장)** | 필요 없음 | 0원(청구 경로 없음) | 읽기 전용 fine-grained PAT 1개(이 저장소만, Contents: Read-only)를 Worker Secret에 | 기록이 남고 검토가 쉽다. 하루 수백 KB라 저장소 한도(10GB 권장) 안에 오래 머문다 |
-| (b) Cloudflare R2 | R2 구독 결제 절차 필요(무료 한도 10GB 안에서는 청구 없음) | 0원(한도 안) | Worker 바인딩(토큰 없음). 수집기는 R2 쓰기 키를 비공개 저장소 Secrets에 | 오너가 처음에 R2를 말했다. Access 때문에 결제 수단이 어차피 들어가면 가능. 다만 한도를 넘으면 청구될 수 있다 |
+| (b) Cloudflare R2 | R2 구독 결제 절차 필요(무료 한도 10GB 안에서는 청구 없음) | 0원(한도 안) | Worker 바인딩(토큰 없음). 수집기는 R2 쓰기 키를 비공개 저장소 Secrets에 | 오너가 처음에 R2를 말했다. **R2는 결제 수단이 필요하다 — 오너 결정 필요.** ~~Access 때문에 결제 수단이 어차피 들어가면 가능~~ 대체됨(10/31) → NO_ZT §4(Access를 쓰지 않으므로 결제 수단이 따로 들어가지 않는다). 한도를 넘으면 청구될 수 있다 |
 | (c) Workers KV | 필요 없음 | 0원(넘으면 막힘) | Worker 바인딩. 수집기는 Cloudflare API 토큰(KV 쓰기) | 쓰기 하루 1,000회·값 25MiB면 충분. 기록 보관은 따로 필요 |
 
 권장은 (a)다. 청구될 길이 없고, Cloudflare 쪽에 새 제품을 켜지 않는다.
 
-파일(비공개, 예시 이름): `latest/us-daily.json`(최신 묶음, 종목별 날짜·종가·거래량·거래대금·63거래일 거래대금 중앙값·표본 수·기준 통과 여부·사유)과 `daily/YYYY/MM/DD.json.gz`(그날 받은 원 행, 1년 보관). 스키마 이름은 `kis-` 접두어로 시작하게 해 공개 쪽 가드가 바로 잡을 수 있게 한다.
+파일(비공개, 예시 이름): `latest/us-daily.json`(최신 묶음, 종목별 날짜·종가·거래량·거래대금·63거래일 거래대금 중앙값·표본 수·기준 통과 여부·사유)과 `daily/YYYY/MM/DD.json.gz`(그날 받은 원 행, 1년 보관). 스키마 이름은 `kis-` 접두어로 시작하게 해 공개 쪽 가드가 바로 잡을 수 있게 한다. 17.2절의 CSV 장부는 첫 줄 주석 `# schema: kis-ohlcv/1`, 차트 파일은 `kis-bars/1` 스키마를 단다(보안 검토 B1).
 
-## 5. 접근 — Cloudflare Access + Worker
+## 5. 접근 — Cloudflare Access + Worker (대체됨(10/31) → NO_ZT §4)
 
 > **대체됨(10/31 오너 승인 `PRIV-AUTH-GOOGLE`).** 이 절의 Access·`kis-auth` Worker·Access JWT 검증은 쓰지 않는다. 현재 설계: [PRIVATE_AREA_NO_ZT_ACCESS_20261031](PRIVATE_AREA_NO_ZT_ACCESS_20261031.md) 4절.
 
@@ -135,12 +135,12 @@
 | 항목 | 설계 |
 | --- | --- |
 | 경로 | `GET /kis/us-daily`(최신 묶음 전체). 다른 경로는 404 |
-| 인증 | 5.4 검증 실패 → 401 `ACCESS_REQUIRED`(본문은 고정 코드만) |
+| 인증 | ~~5.4 검증 실패 → 401 `ACCESS_REQUIRED`~~ 대체됨(10/31) → NO_ZT §4: Google 토큰 확인 실패 → 403 `AUTH_FORBIDDEN`, Google 무응답 → 503 `AUTH_UNAVAILABLE`(본문은 고정 코드만) |
 | 헤더 | `Cache-Control: private, no-store, max-age=0`, `Vary: Origin`, `X-Content-Type-Options: nosniff`. `Access-Control-Allow-Origin`은 `https://kco994553-star.github.io`일 때만. `Allow-Credentials` 없음. 사전 요청은 GET + `authorization` 헤더만 |
 | 읽기 | 비공개 저장소 API를 읽기 전용 PAT로 호출(`Accept: application/vnd.github.raw+json`, User-Agent 지정, ETag 재사용). 받은 바이트를 해석하지 않고 넘긴다(Workers Free CPU 10ms 안) |
 | 속도 제한 | 기존 Durable Object 제한기와 같은 방식(분당 몇 회) |
 | 로그 | Worker 관측 기능은 지금처럼 끈다. 토큰·이메일·가격을 찍지 않는다 |
-| 배포 확인 | 공개 저장소의 배포 워크플로가 익명으로 `/kis/us-daily`를 불러 401과 `no-store`를 확인한다(자료 없이) |
+| 배포 확인 | 공개 저장소의 배포 워크플로가 익명으로 `/kis/us-daily`를 불러 ~~401~~ 403과 `no-store`를 확인한다(자료 없이, 대체됨(10/31) → NO_ZT §4). 가짜 Bearer 한 번은 403 `AUTH_FORBIDDEN`이어야 한다(503이면 실패, NO_ZT 7절 3-1) |
 
 CORS 주의: 출처 `https://kco994553-star.github.io`는 이 계정의 모든 Pages 사이트를 뜻한다. 그 출처에 제3자 스크립트를 두지 않는다(지금 CSP가 막고 있다).
 
@@ -164,18 +164,18 @@ CORS 주의: 출처 `https://kco994553-star.github.io`는 이 계정의 모든 P
 
 ## 7. 안전 — 막는 방법과 가드
 
-| 막을 것 | 방법 |
-| --- | --- |
-| 주문·계좌·잔고 | 수집기·검증 도구 공통: 허용 경로 목록(토큰 발급·폐기·시세)만. 경로 단어 거부(order·trading·balance·account). 시험으로 고정 |
-| 키·토큰·가격이 로그에 | 고정 문구 로그, Secret 한 단계·자식 프로세스 제거, `::add-mask::`, 리다이렉트 금지, 응답 본문 미출력, 아티팩트 없음 |
-| Pages에 KIS 자료 | `pages_artifact_guard`에 KIS 표지 추가: KIS 호스트(`openapi(vts).koreainvestment.com`), TR 번호 패턴(`HHDFS`/`FHKST` + 숫자 8자리), `KIS_APP_KEY`·`KIS_APP_SECRET`, 스키마 접두어 `kis-`. 하나라도 있으면 빌드 실패. 새 파일은 기존 ALLOWED_NAMES가 이미 막는다 |
-| 공개 저장소에 KIS 자료 | 정적 시험: 추적 파일에 `kis-` 스키마 자료가 없을 것. KIS 호스트·TR 번호는 허용 목록 파일(수집기 모듈·그 시험·KIS 조사 문서·이 설계 문서)에만 |
-| 공개 Actions에서 KIS 호출 | 정적 시험: 공개 저장소 워크플로 어디에도 `secrets.KIS_`가 없고 수집기 모듈을 부르지 않을 것(공개 Secrets 삭제도 이 시험이 뒷받침). 수집기 자체도 공개 저장소에서 실행되면 멈춘다 |
-| 공개 로그·결과물에 KIS 파생 수치 | 이 설계·결정 기록에도 KIS 비교 수치는 적지 않는다. 오너 보고에만 둔다. 지난 공개 검증 실행 3건은 오너가 지우기를 권장한다(`PRIV-LOGS`) |
-| 비공개 응답이 캐시에 | `private, no-store`, 시험으로 고정. 배포 확인 단계가 익명 401과 헤더를 확인 |
-| 허용 이메일 밖 로그인 | Access 정책: 허용 1개(이메일 1개), 로그인 방법은 일회용 코드만, 기본 IdP 제거, `Everyone`·도메인 허용·Bypass 금지. Worker도 이메일을 다시 확인 |
+| 막을 것 | 방법 | 상태 |
+| --- | --- | --- |
+| 주문·계좌·잔고 | 수집기·검증 도구 공통: 허용 경로 목록(토큰 발급·폐기·시세)만. 경로 단어 거부(order·trading·balance·account). 시험으로 고정 | 구현(이 PR): 공통 허용 목록·검증 도구 쪽(20.1). 수집기는 수집기 PR에서 같은 목록을 쓴다 |
+| 키·토큰·가격이 로그에 | 고정 문구 로그, Secret 한 단계·자식 프로세스 제거, `::add-mask::`, 리다이렉트 금지, 응답 본문 미출력, 아티팩트 없음 | 수집기 PR |
+| Pages에 KIS 자료 | `pages_artifact_guard`에 KIS 표지 추가: KIS 호스트(`openapi(vts).koreainvestment.com`), TR 번호 패턴(`HHDFS`/`FHKST` 등 + 숫자 8자리, 주문·잔고 계열은 `kis_routes.ORDER_TR_FAMILIES`와 같은 목록), `KIS_APP_KEY`·`KIS_APP_SECRET`, 스키마 접두어 `kis-`·`private-`. 하나라도 있으면 빌드 실패. 새 파일은 기존 ALLOWED_NAMES가 이미 막는다 | 구현(이 PR, 20.1) |
+| 공개 저장소에 KIS 자료 | 정적 시험: 추적 파일에 `kis-` 스키마 자료(CSV 장부 첫 줄 `# schema: kis-…` 포함)와 비공개 구역 `private-` 스키마 이름(기존 `private-history` 이름 2개 제외)이 없을 것. KIS 호스트·TR 번호는 허용 목록 파일(수집기 모듈·그 시험·KIS 조사 문서·이 설계 문서)에만. 이 시험은 모든 가지 push에도 돈다(감지, 막지는 못함) | 구현(이 PR, 20.1) |
+| 공개 Actions에서 KIS 호출 | 정적 시험: 공개 저장소 워크플로 어디에도 `secrets.KIS_`가 없고 수집기 모듈을 부르지 않을 것(공개 Secrets 삭제도 이 시험이 뒷받침). 수집기 자체도 공개 저장소에서 실행되면 멈춘다 | 구현(이 PR): 정적 시험. 수집기의 자기 정지는 수집기 PR |
+| 공개 로그·결과물에 KIS 파생 수치 | 이 설계·결정 기록에도 KIS 비교 수치는 적지 않는다. 오너 보고에만 둔다. 지난 공개 검증 실행 3건은 오너가 지우기를 권장한다(`PRIV-LOGS`) | 운영 규칙(코드 없음) |
+| 비공개 응답이 캐시에 | `private, no-store`, 시험으로 고정. 배포 확인 단계가 익명 403(~~401~~, 대체됨(10/31) → NO_ZT §4)과 헤더를 확인 | Worker PR |
+| 허용 이메일 밖 로그인 | Google 토큰 `tokeninfo`의 `aud`(앱 OAuth 클라이언트)·`email`(Worker 비밀값 `ALLOWED_EMAIL`)·`email_verified`·만료 확인(Worker, NO_ZT 4.2절). 하나라도 틀리면 403. ~~Access 정책(허용 1개, 일회용 코드만, Bypass 금지)~~ 대체됨(10/31) → NO_ZT §4 | Worker PR(이미 `/history`에 있는 확인을 공용화) |
 
-가드 추가·수정은 승인 뒤 첫 구현 PR에서 한다(이 PR은 문서만).
+가드 추가는 첫 구현 PR에서 했다(20.1). 가드는 더하거나 좁히기만 하고 풀지 않는다.
 
 ## 8. 확장 모집단 거래대금 기준을 KIS로 다시 켤 수 있나
 
@@ -209,7 +209,7 @@ CORS 주의: 출처 `https://kco994553-star.github.io`는 이 계정의 모든 P
 | GitHub 비공개 저장소 Actions | 0원 | GitHub Free는 매월 $12 상당이 포함된다(Linux 약 2,000분). 월 180~330분은 $1~2 상당. **GitHub에는 결제 수단을 넣지 않는다.** 그러면 넘쳐도 청구 대신 실행이 멈춘다 |
 | 새 비공개 저장소 저장 | 0원 | 저장소 크기 권장 10GB 안 |
 | Cloudflare Workers | 0원 | Free 하루 10만 요청 |
-| Cloudflare Zero Trust(Access) | 0원 | 무료 요금제(50명까지, 오너 1자리). **가입 때 결제 수단 입력 필요, 청구 없음** |
+| ~~Cloudflare Zero Trust(Access)~~ | — | 대체됨(10/31) → NO_ZT §4: 쓰지 않는다. 결제 수단도 필요 없다 |
 | R2(선택 시) | 0원(10GB 안) | 결제 수단 필요. 권장안 (a)에서는 쓰지 않음 |
 | 도메인 | 0원 | 필요 없음(workers.dev) |
 | KIS Open API | 0원 | 기본 서비스 유량 0원(KIS FAQ). 약관상 요금표 게시 가능성은 남음 |
@@ -226,13 +226,15 @@ CORS 주의: 출처 `https://kco994553-star.github.io`는 이 계정의 모든 P
 
 [OWNER_PHONE_SETUP_PRIVATE_AREA_20261031](OWNER_PHONE_SETUP_PRIVATE_AREA_20261031.md). 승인 뒤, 구현 PR과 맞춰 진행한다.
 - 도메인: 필요 없음.
-- 결제 수단: Cloudflare Zero Trust 가입 때만 필요(청구 없음). GitHub·KIS는 필요 없음.
+- 결제 수단: 필요 없음(~~Cloudflare Zero Trust 가입 때만 필요~~ 대체됨(10/31) → NO_ZT §4). GitHub·KIS도 필요 없음.
 
 ## 12. KIS 서면 문의 초안 (오너가 보낸다)
 
 창구: 한국투자증권 홈페이지 로그인 → 고객의 소리(2024-09-20부터 Open API 문의는 여기로 통합). 키·토큰은 절대 적지 않는다.
 
-> 안녕하세요. 개인 계좌로 KIS Developers Open API를 이용하는 고객입니다. 본인 투자 판단용으로, 해외주식 기간별시세(HHDFS76240000)에서 미국 종목의 일별 종가·거래량·거래대금을 매 거래일 1회(장 종료 다음 날 12시 이후, 초당 약 10건, 종목당 1회) 자동 조회해 본인만 접근할 수 있는 비공개 저장소(GitHub 비공개 저장소 또는 Cloudflare 비공개 저장공간)에 보관하고, 본인 이메일 인증을 거친 본인 전용 웹 화면에서만 보려고 합니다. 조회는 GitHub Actions(해외 클라우드 서버, 고정 IP 아님)에서 실행됩니다. 문의드립니다. ① 이 이용이 이용약관 제5조③의 "개인의 업무"에 해당하는지, 해외 클라우드 실행과 비공개 클라우드 보관에 제한이 있는지 ② 이 자료로 계산한 "63거래일 거래대금 중앙값이 100만 달러 이상인지"와 같은 예/아니오 결과만 공개 웹사이트에 게시하는 것이 제3자 제공에 해당하는지 ③ 다음 날 정정된 거래량·거래대금·종가가 미국 전체 거래소 통합 기준(통합 거래량, 공식 종가)과 같은지, 거래대금(tamt)도 정정 대상인지 ④ 이 API로 조회할 수 있는 과거 일자의 범위 ⑤ 해외 기간별시세 조회 중 받은 오류 코드 EGW00316과 OPSQ1002의 뜻과 권장 재시도 방법입니다. 감사합니다.
+> 안녕하세요. 개인 계좌로 KIS Developers Open API를 이용하는 고객입니다. 본인 투자 판단용으로, 해외주식 기간별시세(HHDFS76240000)에서 미국 종목의 일별 종가·거래량·거래대금을 매 거래일 1회(장 종료 다음 날 12시 이후, 초당 약 10건, 종목당 1회) 자동 조회해 본인만 접근할 수 있는 비공개 저장소(GitHub 비공개 저장소 또는 Cloudflare 비공개 저장공간)에 보관하고, 본인 이메일 인증을 거친 본인 전용 웹 화면에서만 보려고 합니다. 조회는 GitHub Actions(해외 클라우드 서버, 고정 IP 아님)에서 실행됩니다. 문의드립니다. ① 이 이용이 이용약관 제5조③의 "개인의 업무"에 해당하는지, 해외 클라우드 실행과 비공개 클라우드 보관에 제한이 있는지 ② 이 자료로 계산한 "63거래일 거래대금 중앙값이 100만 달러 이상인지"와 같은 예/아니오 결과만 공개 웹사이트에 게시하는 것이 제3자 제공에 해당하는지 ③ 다음 날 정정된 거래량·거래대금·종가가 미국 전체 거래소 통합 기준(통합 거래량, 공식 종가)과 같은지, 거래대금(tamt)도 정정 대상인지 ④ 이 API로 조회할 수 있는 과거 일자의 범위 ⑤ 해외 기간별시세 조회 중 받은 오류 코드 EGW00316과 OPSQ1002의 뜻과 권장 재시도 방법 ⑥ 본인 연구용으로, 고객이 쓰는 AI 코딩 도구(제3자가 운영하는 서비스)가 고객의 비공개 저장소에 있는 이 시세 자료를 읽어 백테스트를 돌리는 것이 허용되는지, 허용되지 않는다면 가격이 아닌 파생 통계(개수·기간·일치율·백테스트 요약 수치)만 그 도구에 주는 것은 괜찮은지입니다. 감사합니다.
+
+- ⑥은 보안 검토 A9(10/31)로 더했다. 회신 전까지 Codex에는 가격이 아닌 파생 통계만 준다(20절, [NO_ZT](PRIVATE_AREA_NO_ZT_ACCESS_20261031.md) 5절).
 
 ## 13. 구현 순서 (승인 뒤)
 
@@ -242,12 +244,14 @@ CORS 주의: 출처 `https://kco994553-star.github.io`는 이 계정의 모든 P
    - 내용: Pages KIS 표지, 공개 저장소 정적 시험, 공개 워크플로의 `secrets.KIS_` 금지.
    - 함께 할 일: 공개 KIS Secrets 삭제를 확인한다.
 2. **수집기 PR**:
-   - 공개 저장소: 수집기 모듈과 가상 자료 시험. 허용 경로·재시도·로그 형식·마스터 대응을 시험한다.
-   - 비공개 저장소: 고정 커밋을 가리키는 워크플로 1개(오너 승인 뒤 Main이 넣는다. 세션에 그 저장소 쓰기 권한이 필요하다).
+   - 공개 저장소: 수집기 모듈과 가상 자료 시험. 허용 경로·재시도·로그 형식·마스터 대응을 시험한다. `kis_collector.py`를 표준 라이브러리만 허용하는 import 고정 시험에 넣는다(보안 검토 A2).
+   - 비공개 저장소: 고정 커밋을 가리키는 워크플로 1개(오너 승인 뒤 Main이 넣는다. 세션에 그 저장소 쓰기 권한이 필요하다). 조상 확인·`persist-credentials: false`·`actions/*`만(SHA ↔ 태그)·`python -I`·Secrets 처리는 YAML 안에(NO_ZT 3절). 넣은 뒤 오너가 Claude 앱을 그 저장소에서 뺀다(폰 설정 1.3).
    - 첫 실행: 수동 1회, 개수·코드만 확인한다.
-3. **Worker PR**:
-   - 내용: `kis-auth` Worker 새로 만들기, 기존 Worker에 `/kis/us-daily` 경로와 JWT 검증, 모의 시험, 배포 확인 단계.
-   - 배포: 기존 수동 배포 워크플로로 한다.
+3. **Worker PR**: ~~`kis-auth` Worker 새로 만들기, JWT 검증~~ 대체됨(10/31) → NO_ZT §4. 순서와 내용은 [NO_ZT](PRIVATE_AREA_NO_ZT_ACCESS_20261031.md) 7절 3단계:
+   1. **첫 항목 — 기존 Worker 버그(보안 검토 A4):** 모든 외부 fetch의 `redirect: 'error'`(index.js:65)를 Cloudflare Workers가 거부해 운영의 로그인 `/history`가 503으로 닫힌다. `redirect: 'manual'` + 3xx 고정 실패, Node 시험 `worker.test.mjs:240`·`fallback.test.mjs:26` 수정, 배포 확인에 가짜 Bearer → 403 확인 추가. (이 PR은 Worker 코드를 바꾸지 않는다.)
+   2. 배포 잡 `environment: private-worker`와 그 정적 시험(보안 검토 A1, 오너가 먼저 폰 설정 7단계).
+   3. 기존 Worker에 `/kis/us-daily`·`/kis/status` 경로, Google 토큰 확인 공용화, 토큰 상태 순서·만료일 검사(NO_ZT 4.4절), 모의 시험, 배포 확인 단계.
+   - 배포: 기존 수동 배포 워크플로로 한다(오너 승인, `private-worker` 환경 검토).
 4. **화면 PR**:
    - 내용: web_app `private-kis.js`, `action.js` 종류 추가, 기업 화면 칸, 로그아웃 상태, 시험(가상 토큰·가상 자료, 실제 폰 Safari 확인 포함).
 5. **확인 1주**:
@@ -262,7 +266,7 @@ CORS 주의: 출처 `https://kco994553-star.github.io`는 이 계정의 모든 P
 | `PRIV-DESIGN` | 이 설계대로 구현을 시작할까 | 승인 |
 | `PRIV-REPO` | 수집·저장을 어느 비공개 저장소에서 할까 | 새 비공개 저장소(기존 원자료 저장소 재사용 안 함, 3.1) |
 | `PRIV-STORE` | 저장소 | (a) 새 비공개 저장소 `data` 가지. 대안 (b) R2, (c) KV |
-| `PRIV-PAYMENT` | Cloudflare Zero Trust 무료 요금제 가입 때 결제 수단 입력(청구 없음)을 받아들일까. GSQ-008 "카드 없는 Workers Free만"을 이 범위에서 바꾼다 | 받아들임(Access 이메일 일회용 코드의 전제) |
+| `PRIV-PAYMENT` | ~~Cloudflare Zero Trust 무료 요금제 가입 때 결제 수단 입력(청구 없음)을 받아들일까~~ | **불필요**(대체됨(10/31) → NO_ZT §4, Zero Trust를 쓰지 않음) |
 | `PRIV-LOAD` | 로그인 뒤 비공개 자료를 한 번 더 눌러 불러올까, 바로 불러올까 | 한 번 더 누름(클릭 때만 규칙 유지) |
 | `PRIV-ADV` | 거래대금 기준 | 비공개 보기에서만 켬(통합 확인 뒤). 공개는 KIS 서면 확인 전까지 끔 |
 | `PRIV-LOGS` | 공개 저장소의 지난 KIS 검증 실행 3건(41165294743·41165951277·41169962364) 로그 | 오너가 삭제(코드·개수·요약만 찍혔지만 "공개 로그에 KIS 자료 없음" 원칙에 맞춘다) |
@@ -290,13 +294,13 @@ CORS 주의: 출처 `https://kco994553-star.github.io`는 이 계정의 모든 P
   - 7절 제목과 본문을 고친다.
   - 부록 B의 "비공개 구역 다루지 않음"·"증권사 API 범위 밖" 줄에 바뀜 표시를 더한다.
 - GSQ 결정 기록: GSQ-027(제안)을 더한다.
-  - GSQ-008의 "Zero Trust/Access 안 씀"을 이 범위에서 바꾸는 제안이다.
+  - GSQ-008의 "Zero Trust/Access 안 씀"을 이 범위에서 바꾸는 제안이다. ~~이 부분~~ 대체됨(10/31) → NO_ZT §4: Zero Trust를 쓰지 않으므로 이 부분 제안은 필요 없다.
   - "KIS·중계 DEFERRED"를 KIS 미국 시세의 1인 비공개 구역 한정으로 바꾸는 제안이다.
 - 인수인계·작업 규칙은 열린 문서 PR #434에서 같은 날 상태로 고친다.
 
 ## 17. 승인과 1단계 범위 변경 (2026-10-31 오너)
 
-- **승인:** 이 설계와 `PRIV-*` 7개를 권장안대로 승인했다. `PRIV-PAYMENT`는 Zero Trust 무료 요금제의 결제 수단 등록을 허용한다(청구 없음 확인). 구현을 진행한다.
+- **승인:** 이 설계와 `PRIV-*` 7개를 권장안대로 승인했다. ~~`PRIV-PAYMENT`는 Zero Trust 무료 요금제의 결제 수단 등록을 허용한다~~ 대체됨(10/31) → NO_ZT §4: `PRIV-PAYMENT`는 불필요해졌다. 구현을 진행한다.
 - **1단계 범위(바뀜):** 앞 0·1·3·8절의 "1단계 = 종가·거래량"을 아래로 바꾼다. 주목적은 기술적 분석(3장)을 실가격으로 바꾸는 것이다.
 
 | 항목 | 내용 |
@@ -333,17 +337,17 @@ CORS 주의: 출처 `https://kco994553-star.github.io`는 이 계정의 모든 P
 - **결측·거래일:** 미국 거래소 달력(NYSE) 기준. 빈 날은 채우지 않고 결측으로 둔다(0으로 채우지 않음). 거래정지일은 거래량 0 또는 공백(KIS FAQ)으로 구분한다.
 - **거래량·거래대금 뜻:** 정정 뒤 통합 기준 거래량(중간 확신). 거래대금 `tamt`는 정정 대상인지 문서에 없어 `clos×tvol`로 교차 확인한다.
 - **저장 형식(비공개 저장소 `data` 가지, `PRIV-STORE` (a)):**
-  - 종목별 연도 파일 `ohlcv/<첫 글자>/<SYM>/<YYYY>.csv`(원주가·대조 계열). 매일 한 줄씩 덧붙인다. git 압축이 덧붙인 줄만 저장하므로 저장소가 크게 늘지 않는다.
-  - 화면용 종목별 파일 `chart/<첫 글자>/<SYM>.json`(분할 반영 계열·확인 구간·보류 구간·출처·기준 시각). Worker가 이 파일 하나만 읽는다.
-  - 저장소가 권장 크기(10GB)에 가까워지면 R2로 옮긴다(결제 수단은 `PRIV-PAYMENT`로 이미 있음, 무료 한도 안).
+  - 종목별 연도 파일 `ohlcv/<첫 글자>/<SYM>/<YYYY>.csv`(원주가·대조 계열). 매일 한 줄씩 덧붙인다. git 압축이 덧붙인 줄만 저장하므로 저장소가 크게 늘지 않는다. **모든 CSV 장부의 첫 줄은 주석 `# schema: kis-ohlcv/1`이다**(보안 검토 B1, 10/31). 이 파일이 공개 저장소에 복사되면 공개 정적 시험이 이 줄로 잡는다.
+  - 화면용 종목별 파일 `chart/<첫 글자>/<SYM>.json`(분할 반영 계열·확인 구간·보류 구간·출처·기준 시각). Worker가 이 파일 하나만 읽는다. **스키마는 `kis-bars/1`이다**(보안 검토 B1, 18.2절 표도 `kis-` 이름으로 바꿈).
+  - 저장소가 권장 크기(10GB)에 가까워지면 옮길 곳을 정한다. **R2는 결제 수단이 필요하다 — 오너 결정 필요.** ~~결제 수단은 `PRIV-PAYMENT`로 이미 있음~~ 대체됨(10/31) → NO_ZT §4(`PRIV-PAYMENT` 불필요, 결제 수단 없음).
 - **3.2.5 데이터 적합성·TA-G1(분할 공급원):** 비공개 차트에서는 위 방법으로 해결된다(분할 공급원 = KIS 원주가·수정주가 비율 + SEC 주식수 교차 확인). 공개 화면은 해결되지 않는다(KIS는 공개할 수 없음). 공개 실가격 창은 계속 `PRICE_BASIS_CONTINUITY_UNCONFIRMED`이고 판정을 보류한다.
 - **#361(Yahoo 분할 이벤트 Worker):** Yahoo 약관 판정(무허가 자동 조회 부적합)이 그대로이고, 비공개 차트는 KIS로 대체된다. **닫기를 권장한다**(오너 결정). 남길 것은 분할 사건 형식(`split_coverage`·`splits`)뿐이고 17.2가 이어받는다.
 
 ### 17.3 Lab 결과 비공개 저장·조회 계약
 
 - Codex가 만든 lab-backtest-v1 결과 원본은 비공개 저장소의 `lab/lab-backtest-v1.json`에 둔다(정식 위치). 증거 파일은 Codex 쪽 비공개 위치에 남긴다.
-- 전달: Codex 작업 공간 → 비공개 저장소로 올리는 방법(토큰 권한·범위)은 따로 정한다. 정해지기 전까지 앱은 fixture로만 시험한다.
-- 조회: Worker `GET /lab/backtest`(5.4 검증 같음, `private, no-store`) → 앱의 Lab 화면이 Main 판독기(계약 문서 4.1)로 검증한다. 실패하면 파일 전체를 쓰지 않는다.
+- 전달: Codex 작업 공간 → 비공개 저장소로 올리는 방법은 따로 정한다. 정해지기 전까지 앱은 fixture로만 시험한다. 정할 때 기준(보안 검토 A3·A9, 10/31): Codex 토큰은 Contents 읽기 + Issues 쓰기뿐이라 파일을 직접 올리지 못한다. 결과는 이슈로 내고 비공개 워크플로가 받아 쓴다. KIS 서면 회신(12절 ⑥) 전까지 Codex 쪽 증거 파일에는 원 KIS 가격 행을 두지 않는다(파생 통계만).
+- 조회: Worker `GET /lab/backtest`(~~5.4 검증 같음~~ 대체됨(10/31) → NO_ZT §4: Google 토큰 확인 같음, `private, no-store`) → 앱의 Lab 화면이 Main 판독기(계약 문서 4.1)로 검증한다. 실패하면 파일 전체를 쓰지 않는다.
 - 공개 Lab은 "연구 결과가 아직 없습니다"다. 공개 게시(`lab-results/1`)는 공개권 확인 뒤 별도 결정이다.
 
 ### 17.4 걸리는 시간 (1단계, Universe504 + 확장 모집단 약 3,100종목, 원주가·대조 2계열)
@@ -355,7 +359,7 @@ CORS 주의: 출처 `https://kco994553-star.github.io`는 이 계정의 모든 P
 
 Actions 사용량: 매일 약 15분 × 22거래일 ≈ 330분. 처음 채우기 약 270분은 한 번이다. 월 $12 포함분(약 2,000분) 안이다.
 
-### 17.5 아이폰 로그인 빈도와 브라우저별 표
+### 17.5 아이폰 로그인 빈도와 브라우저별 표 (대체됨(10/31) → NO_ZT §4)
 
 > **대체됨(10/31).** 아래는 Access 기준 옛 표다. 현재 빈도는 [Google 토큰 방식](PRIVATE_AREA_NO_ZT_ACCESS_20261031.md) 4.2절.
 
@@ -401,13 +405,14 @@ Actions 사용량: 매일 약 15분 × 22거래일 ≈ 330분. 처음 채우기 
 ### 18.2 공급처 어댑터 한 층
 
 - 공급처 연결은 **어댑터** 한 층에 모은다. 화면·계산·Worker는 어댑터가 주는 공통 형식만 읽는다.
-- 공통 형식(비공개, 스키마 이름은 `private-` 접두어):
+- 공통 형식(비공개, 스키마 이름은 `kis-` 접두어 — 보안 검토 B1(10/31)로 옛 `private-` 이름에서 바꿈. 공개 정적 시험과 Pages 가드가 둘 다 잡는다. 다른 공급처 어댑터를 더하면 그때 공급처 접두어를 정하고 가드를 같이 넓힌다):
 
   | 형식 | 내용 |
   | --- | --- |
-  | `private-bars/1` | 종목·날짜·OHLC·거래량·거래대금·조정 기준(원주가 / 분할 반영)·확인 구간·보류 구간·출처·받은 시각·정정 여부 |
-  | `private-quote/1` | 장중 가격·시각·출처·지연 여부 |
-  | `private-liquidity/1` | 63거래일 거래대금 중앙값·표본 수·기준 통과 여부·사유 |
+  | `kis-bars/1` | 종목·날짜·OHLC·거래량·거래대금·조정 기준(원주가 / 분할 반영)·확인 구간·보류 구간·출처·받은 시각·정정 여부 |
+  | `kis-quote/1` | 장중 가격·시각·출처·지연 여부 |
+  | `kis-liquidity/1` | 63거래일 거래대금 중앙값·표본 수·기준 통과 여부·사유 |
+  | `kis-ohlcv/1` | 원자료 CSV 장부(17.2, 첫 줄 주석으로 표시) |
 
 - 어댑터 계약:
   - `fetch_daily(code, start, end, adjust)` → 원자료 행(공급처 고유 형식은 어댑터 안에서만).
@@ -431,13 +436,13 @@ Actions 사용량: 매일 약 15분 × 22거래일 ≈ 330분. 처음 채우기 
 
 - 지금 사용자는 오너 1명이다. 그래도 저장 경로와 접근 검사에 사용자 ID 자리를 둔다.
   - 저장 경로: `users/<uid>/…`(지금은 `uid = owner` 고정). 공급처 원자료처럼 사용자와 상관없는 자료는 `shared/…`.
-  - 접근 검사: Worker는 Access JWT의 이메일을 고정 표(지금 1줄: 오너 이메일 → `owner`)로 `uid`에 맞춘다. 표에 없는 이메일은 거부한다.
+  - 접근 검사: Worker는 Google 토큰 `tokeninfo`의 이메일(~~Access JWT의 이메일~~ 대체됨(10/31) → NO_ZT §4)을 고정 표(지금 1줄: 오너 이메일 → `owner`)로 `uid`에 맞춘다. 표에 없는 이메일은 거부한다.
 - 가입, 사용자별 키 저장, 여러 사용자 화면은 만들지 않는다.
 
 ### 18.5 기술적 분석 화면 흐름 (1단계 주목적)
 
 - 로그인 전: 지금 공개 화면 그대로다. 실가격 창은 `PRICE_BASIS_CONTINUITY_UNCONFIRMED`로 판정을 보류한다. 기기 시세는 클릭할 때만 요청한다.
-- 로그인 뒤 "비공개 자료 불러오기"(`PRIV-LOAD` (a))를 누르면 차트가 `private-bars/1`(분할 반영 계열)로 바뀐다.
+- 로그인 뒤 "비공개 자료 불러오기"(`PRIV-LOAD` (a))를 누르면 차트가 `kis-bars/1`(분할 반영 계열, 보안 검토 B1로 이름 바꿈)로 바뀐다.
   - 차트 위에 "출처: KIS 통합 일봉(다음 날 정정 값) · 기준 시각 · 분할 반영(확인된 분할만)"을 보인다.
   - 확인 구간에서만 지표·패턴을 판정한다. 보류 구간은 칸을 흐리게 하고 사유를 보인다.
 - 차트 메모·사용자 그림은 지금처럼 기기에만 둔다(DC-22). 비공개 저장소로 보내지 않는다.
@@ -449,7 +454,7 @@ Actions 사용량: 매일 약 15분 × 22거래일 ≈ 330분. 처음 채우기 
   - 비공개 추가분은 2026-10-31 오너 승인으로 확정됐다(`TWO-LAYER-ADD`).
 - 수집 대상(`PRIV-ETF`, 10/31 승인): 2.1·2.4·4.1·4.2·5.2·9.2가 쓰는 SPY·HYG·IEF·섹터 ETF 12개를 17.4의 대상(Universe504 + 확장 모집단)에 더한다(약 15종목, 매일 몇 초).
 - 장중가: 이 설계는 하루 1회 수집(다음 날 정정 값)이다. 장중가는 Worker가 그때그때 KIS를 부르는 별도 경로가 필요하다. 토큰 보관과 토큰마다 가는 알림이 문제라 1단계에서는 뺀다(`PRIV-INTRADAY` (a), 10/31 승인). 필요해지면 따로 설계한다.
-- 문구: 구글 시트 로그인(기기 시세)과 비공개 구역 로그인(Access)을 화면에서 "시트 연결 필요" / "비공개 로그인 필요"로 나눈다.
+- 문구: 구글 시트 로그인(기기 시세)과 비공개 구역 로그인(Google 토큰, ~~Access~~ 대체됨(10/31) → NO_ZT §4)을 화면에서 "시트 연결 필요" / "비공개 로그인 필요"로 나눈다.
 
 ## 19. 향후 배포 시 확장 방식 (기록만, 결정하지 않음)
 
@@ -469,15 +474,57 @@ Actions 사용량: 매일 약 15분 × 22거래일 ≈ 330분. 처음 채우기 
 
 ## 20. 연구 자료 요청 수집 (2026-10-31 오너, 첫 구현 PR에 넣는다)
 
-- Codex(백테스트 연구)가 KIS 자료가 필요하면 **요청서**를 낸다. 요청서는 비공개 저장소의 `requests/` 아래 JSON 하나다.
+- Codex(백테스트 연구)가 KIS 자료가 필요하면 **요청서**를 낸다. 요청서는 비공개 저장소의 **이슈 본문**(JSON 하나)이다(보안 검토 A3, 10/31: 옛 안 "`requests/` 아래 JSON 파일"은 Codex에 Contents 쓰기를 줘야 해서 바꿈. GitHub Free 비공개 저장소에서는 그 쓰기 권한이 곧 KIS 키 접근이다).
   - 형식: `research-request/1`.
   - 칸: 요청 ID, 종목 목록, 기간, 항목(일봉 원주가·수정주가·거래량·거래대금), 빈도(한 번 / 매일), 목적 한 줄.
-- 비공개 저장소의 Actions(Main이 만든 워크플로 하나)가 요청서를 검사해 KIS 어댑터로 받는다. 결과는 비공개 저장소 `shared/research/<요청 ID>/`에 둔다.
-- 검사는 요청 크기 한도, 허용 항목, 주문·계좌 경로 금지다. 공개 로그에는 개수·코드만 남긴다.
+  - Codex 권한: 비공개 저장소 Contents 읽기 + Issues 쓰기뿐(폰 설정 8단계).
+- 비공개 저장소의 Actions(Main이 만든 워크플로 하나, 실행 조건은 `issues: types: [opened]`·`schedule`·`workflow_dispatch`뿐, `push` 없음)가 이슈 본문을 env 변수로 받아(`run:` 안에 `${{ github.event.issue.body }}`를 쓰지 않는다) 요청서를 검사해 KIS 어댑터로 받는다. 결과는 비공개 저장소 `shared/research/<요청 ID>/`에 그 워크플로의 `GITHUB_TOKEN`으로 쓴다.
+- 검사는 요청 크기 한도, 허용 항목, 주문·계좌 경로 금지, **호출 수 상한**이다. 공개 로그에는 개수·코드만 남긴다.
+- **호출 수(보안 검토 A8, 10/31):**
+  - `plan()`이 `estimated_calls` = 종목마다 계열 수 × ceil(구간의 평일 수 ÷ 100)의 합을 돌려준다(평일은 미국 거래일의 상한이라 적게 세지 않는다. 토큰 호출은 빼고 센다). 첫 실행이 **6,000회**(초당 10건이면 약 10분)를 넘는 요청은 `REQUEST_TOO_COSTLY`로 거부한다. 최대 종목 600 × 10년은 이제 거부된다(약 16,000~31,000회).
+  - `daily` 요청은 첫 채우기(backfill) 뒤에는 **최신 한 쪽(BYMD = 최근 미국 거래일)만** 받는다(종목 × 계열 회). 첫 채우기가 끝났다는 상태는 비공개 저장소 `shared/research/<요청 ID>/state.json`에 둔다. 요청 워크플로가 채우기를 다 마친 뒤 쓰고, `plan(request, backfill_done=...)`을 부르기 전에 읽는다(검사 모듈은 파일을 읽지 않는다). `once` 요청은 채우기가 끝나면 다시 돌지 않는다(`REQUEST_ALREADY_DONE`).
+  - 요청 워크플로(요청 수집 PR)는 월 호출·분 예산을 `status/private-area.json`에 두고, 매일 수집 **뒤에** 돌며, 실행마다 요청 하나만 처리하고, 매일 수집 몫(월 약 330분)에 닿기 전에 `BUDGET_EXHAUSTED`로 멈춘다. 결제 수단이 없어 2,000분을 넘으면 매일 수집까지 막히기 때문이다.
+- **Codex에 주는 것(보안 검토 A9, 10/31):** KIS 서면 회신(12절 ⑥) 전까지 원 KIS 계열(가격·거래량 행)은 비공개 저장소 Actions 안에만 둔다. Codex에는 가격이 아닌 **파생 통계**(개수·기간·일치율·백테스트 요약 수치)만 준다. KIS 파생 lab 파일은 `kis-` 스키마를 달아 가드가 잡게 한다.
+- **규칙(보안 검토 B2, 10/31): KIS 파생 파일은 공개 저장소의 어느 가지에도 올리지 않는다(Codex·Claude 모두).** 공개 저장소의 모든 가지 push에 경계 정적 시험을 돌리는 워크플로(`private-boundary-push.yml`, 10/31 오너 승인 ①)가 돈다. 그것도 노출 **뒤에** 알리는 감지일 뿐 막지 못한다. Main은 매일 점검에서 이 워크플로의 실패한 실행을 확인한다(봇이 push한 실행은 오너에게 알림이 안 갈 수 있다).
 - 워크플로는 Main만 만든다(DC-35). Codex는 요청서만 낸다.
 - 이관 순서:
   1. 요청 수집이 동작한다.
-  2. 기존 원자료 저장소의 KIS release를 새 저장소 `shared/research/legacy/`로 옮긴다.
+  2. 기존 원자료 저장소의 KIS release를 새 저장소 `shared/research/legacy/`로 옮긴다. 공개 Codex 연구 가지 두 곳의 KIS 파생 요약 파일도 옮긴다(보안 검토 A9: `research/bt-data-pilot-alpaca-probe-20261031`·`research/lab-contract-private-pilot-20261031`의 `KIS_ALPACA_ACTUAL_RESULT_20261031.md`, `PERIOD_EXTENSION_AGGREGATE_20261031.json` 등 KIS 비교 요약. 가격 행은 아니지만 KIS 파생 수치다).
   3. 옮긴 것을 확인한다.
-  4. 공개 저장소의 KIS Secrets와 Codex KIS 워크플로를 지운다(오너).
+  4. ~~공개 저장소의 KIS Secrets~~(오너가 지움, 10/31)와 Codex KIS 워크플로를 지운다. 두 연구 가지는 옮긴 뒤 지운다(오너, 세션은 가지 삭제 권한이 없다).
   5. 원자료 저장소의 KIS release를 지운다.
+
+### 20.1 첫 구현 PR — 가드와 요청서 형식 (2026-10-31)
+
+가드를 더하고 요청서 형식을 넣었다. KIS 호출·KIS를 부르는 워크플로·Secret·배포는 없다. 기존 가드와 허용 목록은 하나도 풀지 않았다.
+
+보안 검토(10/31) 반영: B1·B2·B4·A8은 검사를 더하거나 좁혔다. B3만 이 PR이 새로 더한 두 검사의 오탐을 줄였다(다른 사이트 뉴스 링크의 첫 경로 칸, 긴 base64 안의 우연한 주문 번호 꼴). Worker 주소·Pages 출처의 비공개 경로와 따옴표·`=`·공백으로 끊긴 주문 번호는 그대로 실패하고, 이 PR 전부터 있던 가드는 바뀌지 않았다.
+
+| 무엇 | 파일(`implementation/`) | 시험(`implementation/tests/`) |
+| --- | --- | --- |
+| Pages KIS·비공개 표지 | `tools/pages_artifact_guard.py` | `test_pages_artifact_guard.py` |
+| 공개 저장소 정적 시험 | — | `test_private_boundary_static.py` |
+| KIS 경로 허용 목록(수집기와 공통) | `src/investment_system/private_area/kis_routes.py` | `test_research_request.py` |
+| `research-request/1` 검사·`plan()` | `src/investment_system/private_area/research_request.py` | `test_research_request.py` |
+| 모든 가지 push에 경계 시험(보안 검토 B2, 10/31 오너 승인 ①) | `.github/workflows/private-boundary-push.yml` | `test_private_boundary_static.py`가 모양을 고정 |
+
+- Pages 가드: 하나라도 있으면 빌드 실패.
+  - `kis_markers`: KIS 호스트(`koreainvestment.com` 아래 모든 주소), TR 번호(시세 계열 `HHDFS`·`HHKST`·`FHKST`·`FHKSW`·`FHPST`·`FHKUP` + 숫자 8자리, 주문·잔고 계열 `TTTC`·`VTTC`·`TTTS`·`VTTS`·`TTTT`·`VTTT`·`JTTT`·`TTTO`·`VTTO`·`CTRP`·`VTRP`·`CTSC`·`CTOS` + 숫자 4자리 + 영문 1자), KIS Secret 이름 2개. 대소문자 무관. 모든 텍스트 파일 원문과, JSON은 풀린 키·문자열까지 본다.
+    - 주문·잔고 계열은 `kis_routes.ORDER_TR_FAMILIES` 한 곳에서 정한다. 가드는 공개 워크플로가 그 패키지를 import하지 않도록 같은 목록을 글자 그대로 갖고, 시험이 둘이 같은지 본다(보안 검토 B4, 10/31: 미국 주문 `TTTT`·선물옵션 주문 `TTTO`·`VTTO`·계좌 조회 `CTSC`·`CTOS`를 더함).
+    - 주문·잔고 번호는 앞뒤에 영문·숫자가 붙어 있지 않을 때만 센다(보안 검토 B3: 실제 번호는 따옴표·`=`·공백으로 끊기고, 긴 base64 로고 자료에서 우연히 맞아 매일 배포가 실패하는 것을 막는다). 2 MB 무작위 base64는 0건, `TTTC0802U`·`tr_id=TTTC0802U`는 그대로 실패.
+  - `private_area_schema`: `kis-`·`private-` 스키마 이름. JSON은 어느 깊이든 schema·schema_version 값, 코드는 `이름/숫자` 꼴과 `schema: '…'`. 예외는 기존 기기 시세 Worker 응답 `private-history/1` 하나다(정확한 철자, 지금 그것을 읽는 고정 해시 파일 6개 안에서만).
+  - `private_area_paths`: 코드의 `/kis/`·`/lab/`·`/private/`와 따옴표·`?`·`#` 바로 앞 `/kis`·`/private`. JSON 문자열은 첫 경로 칸이 셋 중 하나인 주소만 친다(뉴스 링크 안쪽의 `/lab/`은 Worker 경로가 아니다). 그중 절대 주소(`scheme://호스트/…`, `//호스트/…`)는 호스트가 Worker(`*.workers.dev`)나 Pages 출처(`kco994553-star.github.io`)일 때만 친다. 상대 경로는 늘 친다(보안 검토 B3, 10/31: 다른 사이트 뉴스 링크의 첫 칸이 `/lab/`이어도 통과, Worker `/kis` 주소는 실패). 앱 자체 해시 경로 `'/lab'`은 통과한다.
+- 정적 시험(추적 파일과 아직 add하지 않은 새 파일, `.gz`는 풀어서):
+  - `kis-` 스키마 값이 어디에도 없다. CSV 장부의 첫 줄 주석 `# schema: kis-…`도 잡는다(보안 검토 B1, 10/31: 17.2절의 장부·차트 파일 표시).
+  - 코드·자료 파일(Markdown 문서 제외)에 비공개 구역 스키마 이름이 없다: 새 계열 `private-bars/`·`private-quote/`·`private-liquidity/` + 판 번호는 어디에 있든, 그 밖의 `private-` 스키마 값(JSON 어느 깊이든, `schema:`·`schema=`·YAML·CSV 주석 꼴)은 기존 이름 2개(`private-history/1` 기기 시세 Worker 응답, `private-history/2` 판독기가 거부해야 하는 시험 입력)만 예외다. 예외 이름이 더는 안 쓰이면 시험이 실패한다(낡은 예외 금지).
+  - KIS 호스트·TR 번호는 시험 안 허용 목록에만 있다: KIS 조사 문서 4개(`manual_quotes_owner/`의 `KIS_DIRECT_API_RESEARCH_26E.md`·`KIS_DIRECT_API_SOURCES_26E.json`·`DIRECT_API_SOURCES_26E.json`·`DIRECT_API_SERVICE_OPTIONS_26E.md`), 이 설계·폰 절차 문서, `kis_routes.py`, 나중 파일 2개(수집기 `private_area/kis_collector.py`와 `tests/test_kis_collector.py`). 목록의 기존 파일에 표지가 없어지면 시험이 실패한다.
+  - 공개 워크플로는 `secrets.KIS_`(대소문자 무관)·KIS Secret 이름·KIS 호스트·TR 번호·`kis_collector`를 쓰지 않고, `private_area` 패키지를 python으로 실행하지 않는다.
+  - web_app·web_assets·`web_mvp.py`는 비공개 경로를 부르지 않는다.
+- `research-request/1`: 칸은 schema·request_id(`rr-YYYYMMDD-소문자 단어`, 64자 이하)·symbols(미국 티커 1~600개)·period(2000-01-01 이후, 10년 이하, once는 끝이 오늘 이하, daily는 오늘+366일 이하)·items(`daily_raw`·`daily_adjusted_crosscheck`·`volume`·`dollar_volume` 중 일부)·frequency(`once`·`daily`)·purpose(한 줄 120자 이하, 주소·이메일·키 같은 토큰·8자리 이상 숫자 금지). 파일 16 KiB 이하, 모르는 키 거부, order·trading·balance·account·주문·매매·잔고·계좌는 요청 어디에서나 거부. 오류는 고정 코드만 낸다.
+- `plan(request)`: 토큰 발급 → 종목마다 해외 기간별시세(원주가 `MODP=0`, 대조를 요청했을 때만 `MODP=1`) → 토큰 폐기. 호출 서술만 돌려주며 호스트·네트워크가 없다. 서술마다 `kis_routes.require_route`를 거치고, 경로 단어 거부가 허용 목록보다 먼저다.
+  - 보안 검토 A8(10/31): 결과 목록에 `estimated_calls`가 붙고, 서술마다 `fetch`(`BACKFILL` / `NEWEST_PAGE`)와 `pages`가 붙는다. 첫 실행이 6,000회를 넘는 요청은 검사 단계에서 `REQUEST_TOO_COSTLY`. `plan(request, backfill_done=True)`는 `daily` 요청에 최신 한 쪽만 준다(상태 위치는 20절).
+- 모든 가지 push 감지(보안 검토 B2, 10/31): `.github/workflows/private-boundary-push.yml`이 모든 가지 push에서 `test_private_boundary_static.py`만 돌린다(`contents: read`, Secret 없음, 기존 워크플로와 같은 `pytest==9.1.1`). **노출 뒤 감지이지 막는 장치가 아니다**(push된 가지는 그 순간 공개다). 새 워크플로라 오너 승인이 먼저였다. 10/31 저녁 오너가 승인(①)해 이 PR에 넣었다.
+- 뒤 PR에 남는 일:
+  - 화면 PR(13절 4번)의 `private-kis.js`가 `/kis/us-daily`를 부르면 이 가드에 막힌다. 그때 파일 하나·주소 하나로 좁힌 예외를 오너 승인과 함께 더한다.
+  - **`NOT_READY` 실행 중 요청 시험(브라우저, 화면 PR 또는 공통 기반 PR, 보안 검토 B7):** 모든 공개 화면을 비공개 상태 `NOT_READY`로 띄워 모든 요청을 가로채고, Worker 호스트로는 `GET /history` 말고 아무것도 가지 않는지, `/kis`·`/lab`·`/private`로 시작하는 경로가 없는지, KIS 호스트로 가는 요청이 없는지 확인한다(18.3절 약속). 글자 검사(이 PR)는 쪼개거나 이스케이프한 문자열을 놓칠 수 있어 첫 그물로만 둔다.
+  - Worker PR 첫 항목: 기존 Worker의 `redirect: 'error'` 버그(13절 3번, NO_ZT 7절).
