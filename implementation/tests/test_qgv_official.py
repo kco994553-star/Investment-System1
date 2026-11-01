@@ -926,6 +926,124 @@ def test_parse_rejects_duplicate_keys_and_oversize(official):
         qo.parse(b' ' * (qo.MAX_BYTES + 1))
 
 
+# ---- last-trade time (owner decision 2026-10-31, docs/qgv_official/LAST_TRADE_TIME_20261031.md) -------------------------
+# The fixture's price basis day 2026-10-13 is New York daylight time (UTC-4): 09:30 = 13:30Z, 13:00 = 17:00Z, 16:00 = 20:00Z.
+CLOSE, EARLY_CLOSE = '2026-10-13T20:00:00Z', '2026-10-13T17:00:00Z'
+
+
+def _v_keys(o):
+    return [k for k, r in sorted(o['rows'].items()) if r['axes']['V']['score'] is not None and r['price_status'] == 'SUPPLIED']
+
+
+def _no_v_key(o, supplied=True):
+    return next(k for k, r in sorted(o['rows'].items()) if r['axes']['V']['score'] is None and (r['price_status'] == 'SUPPLIED') == supplied)
+
+
+def _with_times(official, close=CLOSE, at='2026-10-13T19:00:00Z', keys=None):
+    o = copy.deepcopy(official)
+    if close is not None:
+        o['times']['price_session_close_at'] = close
+    for k in (_v_keys(o) if keys is None else keys):
+        o['rows'][k]['v_last_trade_at'] = at
+    return o
+
+
+def test_last_trade_keys_are_optional_and_old_files_stay_valid(official):
+    """This PR is readers only: the publisher does not write the keys yet, a file without them is valid as before, and a file
+    with them (session close alone, or with a time on every row that has a V) is valid too."""
+    assert 'price_session_close_at' not in official['times'] and not any('v_last_trade_at' in r for r in official['rows'].values())
+    assert set(qo.TIMES_OPTIONAL_KEYS) == {'price_session_close_at'} and set(qo.ROW_OPTIONAL_KEYS) == {'v_last_trade_at'}
+    assert set(qo.TIMES_OPTIONAL_KEYS).isdisjoint(qo.TIMES_KEYS) and set(qo.ROW_OPTIONAL_KEYS).isdisjoint(qo.ROW_KEYS)
+    qo.require_qgv_official(official)
+    qo.require_qgv_official(_with_times(official, keys=[]))
+    full = _with_times(official)
+    assert len(_v_keys(full)) >= 10
+    qo.require_qgv_official(full)
+    assert qo.parse(qo._canonical(full))['rows'][_v_keys(full)[0]]['v_last_trade_at'] == '2026-10-13T19:00:00Z'
+    # the time changes no score, rank or count: the same rows and coverage as the file without it
+    for k, r in official['rows'].items():
+        assert {f: v for f, v in full['rows'][k].items() if f != 'v_last_trade_at'} == r
+    assert full['coverage'] == official['coverage']
+
+
+@pytest.mark.parametrize('name,fn', [
+    ('row_key_other_spelling', lambda o: o['rows'][_v_keys(o)[0]].update(v_last_trade='2026-10-13T19:00:00Z')),
+    ('times_key_other_spelling', lambda o: o['times'].update(session_close_at=CLOSE)),
+    ('times_open_key', lambda o: o['times'].update(price_session_open_at='2026-10-13T13:30:00Z')),
+    ('top_level_key', lambda o: o.update(price_session_close_at=CLOSE)),
+    ('price_source_key', lambda o: o['price_source'].update(price_session_close_at=CLOSE)),
+])
+def test_unknown_keys_stay_refused(official, name, fn):
+    _tamper(_with_times(official), fn)
+
+
+@pytest.mark.parametrize('name,close,at,key', [
+    ('trade_without_session_close', None, '2026-10-13T19:00:00Z', None),
+    ('trade_on_a_supplied_row_without_v', CLOSE, '2026-10-13T19:00:00Z', 'NO_V'),
+    ('trade_on_a_row_without_a_price', CLOSE, '2026-10-13T19:00:00Z', 'NO_PRICE'),
+    ('trade_null', CLOSE, None, None),
+    ('trade_number', CLOSE, CANARY, None),
+    ('trade_fraction', CLOSE, '2026-10-13T19:00:00.5Z', None),
+    ('trade_offset', CLOSE, '2026-10-13T15:00:00-04:00', None),
+    ('trade_lower_case_z', CLOSE, '2026-10-13T19:00:00z', None),
+    ('trade_before_open', CLOSE, '2026-10-13T13:29:59Z', None),
+    ('trade_at_close', CLOSE, CLOSE, None),
+    ('trade_after_close', CLOSE, '2026-10-13T20:00:01Z', None),
+    ('trade_after_early_close', EARLY_CLOSE, '2026-10-13T17:00:00Z', None),
+    ('trade_other_day', CLOSE, '2026-10-14T14:00:00Z', None),
+    ('trade_hour_24', CLOSE, '2026-10-13T24:00:00Z', None),
+    ('trade_second_60', CLOSE, '2026-10-13T19:59:60Z', None),
+    ('close_null', None, None, 'CLOSE_NULL'),
+    ('close_15h', '2026-10-13T19:00:00Z', '2026-10-13T18:00:00Z', None),
+    ('close_with_seconds', '2026-10-13T20:00:01Z', '2026-10-13T19:00:00Z', None),
+    ('close_fraction', '2026-10-13T20:00:00.000Z', '2026-10-13T19:00:00Z', None),
+    ('close_standard_time_spelling_on_a_daylight_day', '2026-10-13T21:00:00Z', '2026-10-13T19:00:00Z', None),
+    ('close_other_day', '2026-10-12T20:00:00Z', None, 'NONE'),
+    ('close_number', CANARY, None, 'NONE'),
+])
+def test_last_trade_and_session_close_are_typed_times_inside_the_session(official, name, close, at, key):
+    o = _with_times(official, close=close, keys=[])
+    if key == 'CLOSE_NULL':
+        o['times']['price_session_close_at'] = None
+    elif key != 'NONE':
+        target = _no_v_key(o) if key == 'NO_V' else _no_v_key(o, supplied=False) if key == 'NO_PRICE' else _v_keys(o)[0]
+        o['rows'][target]['v_last_trade_at'] = at
+    with pytest.raises(ValueError, match='^OFFICIAL_INVALID$'):
+        qo.require_qgv_official(o)
+
+
+def test_session_rule_follows_new_york_time_and_the_stated_early_close(official):
+    early = _with_times(official, close=EARLY_CLOSE, at='2026-10-13T16:59:59Z')
+    qo.require_qgv_official(early)
+    qo.require_qgv_official(_with_times(official, at='2026-10-13T13:30:00Z'))         # the open itself
+    qo.require_qgv_official(_with_times(official, at='2026-10-13T19:59:59Z'))         # one second before the close
+    # standard time (UTC-5): 2026-11-27 (the NYSE-scheduled early close) 13:00 = 18:00Z; 17:00Z would be 12:00 there
+    winter = _with_times(official, close='2026-11-27T18:00:00Z', at='2026-11-27T14:30:00Z')
+    winter['price_source'].update(basis_date='2026-11-27', requested_basis_date='2026-11-27')
+    winter['times']['price_basis_date'] = '2026-11-27'
+    qo.require_qgv_official(winter)
+    assert qo.session_close(winter['times'], '2026-11-27') == dt.datetime(2026, 11, 27, 18, tzinfo=dt.timezone.utc)
+    for close, at in (('2026-11-27T17:00:00Z', '2026-11-27T14:30:00Z'), ('2026-11-27T21:00:00Z', '2026-11-27T14:29:59Z')):
+        bad = copy.deepcopy(winter)
+        bad['times']['price_session_close_at'] = close
+        for k in _v_keys(bad):
+            bad['rows'][k]['v_last_trade_at'] = at
+        with pytest.raises(ValueError, match='^OFFICIAL_INVALID$'):
+            qo.require_qgv_official(bad)
+    assert qo.session_close({}, '2026-10-13') is None
+    assert (qo.SESSION_OPEN_NY, qo.SESSION_CLOSES_NY, qo.LAST_TRADE_NOTE_MINUTES) == ((9, 30), ((13, 0), (16, 0)), 30)
+
+
+def test_last_trade_keys_pass_the_pages_guard_scan_as_plain_times(official):
+    """Neither key is a sensitive or forbidden name: the guard's only content check stays the strict validator."""
+    import re as _re
+    for key in qo.TIMES_OPTIONAL_KEYS + qo.ROW_OPTIONAL_KEYS:
+        assert key.lower() not in qo.FORBIDDEN_KEYS
+        assert _re.sub(r'[^a-z0-9]', '', key) not in {'price', 'rank', 'cost', 'amount', 'cash', 'marketcap', 'mcap'}
+    body = qo._canonical(_with_times(official))
+    assert len(body) <= qo.MAX_BYTES and str(CANARY).encode() not in body
+
+
 # ---- rows, ranks, reasons -------------------------------------------------------------------------------------------
 def _row(cik, total, v, *, state='LIVE', cross=True):
     axes = {a: {'score': None, 'state': 'NOT_AVAILABLE', 'weight_available': 0, 'factors_available': 0, 'reason': 'X'} for a in 'QGV'}

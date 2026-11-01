@@ -240,7 +240,9 @@ function priceTable(dev,end){
 // D12: the row standing for an id (QgvScores.rowOf): a Universe code merged into its TARGET row reads that one row.
 function vOne(S,id,full=false){const QS=g.QgvScores,row=S&&S.rows?(QS&&typeof QS.rowOf==='function'?QS.rowOf(S,id):S.rows[id]):null,d=row?row.primary:null,cov=d&&d.coverage&&d.coverage.axes?d.coverage.axes.V:null;
  const x=!S?na('PENDING'):d&&finite(d.v)?{value:d.v,score:d.v,reason:null}:na(cov&&cov.reason||S.v_missing||'OFFICIAL_NOT_PUBLISHED');
- if(full){x.v_detail={detail:d&&object(d.detail)?d.detail:null,factors:cov&&Array.isArray(cov.factors)?cov.factors.map(f=>({id:f.id,reason:f.reason})):[]};x.total=d&&finite(d.total)?d.total:null;}return x;}
+ if(full){x.v_detail={detail:d&&object(d.detail)?d.detail:null,factors:cov&&Array.isArray(cov.factors)?cov.factors.map(f=>({id:f.id,reason:f.reason})):[]};x.total=d&&finite(d.total)?d.total:null;
+  // Owner decision 2026-10-31: the subject's shown V names its IEX last-trade time when >= 30 minutes before the session close.
+  const lt=QS&&typeof QS.lastTradeText==='function'?QS.lastTradeText(d,false):null;if(lt)x.last_trade={ny_time:d.v_last_trade.ny_time,ko:lt,en:QS.lastTradeText(d,true)};}return x;}
 function vScores(result,subject,points){
  const S=object(result)&&object(result.computed)?result.computed:null,map=new Map();for(const p of points)map.set(p.code,vOne(S,p.code));
  return{map,subject:vOne(S,subject.identity.company_id,true),central:!!S&&S.source==='PUBLICATION',reason:object(result)&&result.v_reason?result.v_reason:'OFFICIAL_NOT_PUBLISHED'};}
@@ -395,7 +397,8 @@ function cell(series,a,x,locale){
  if(series==='company'&&hasRaw&&!isScore(a)){
   body=T('원값 ','raw ')+'<b class="num">'+esc(fmtRaw(a.unit,x.value,locale))+'</b><br>'+esc(scoreLabel(a,T))+' '+(hasScore?'<b class="num">'+esc(scoreText(x.score,locale))+'</b>':badge(why)+' <span class="small">'+esc(reasonText(why,en)+' (n='+x.n+')')+'</span>')
    +'<span class="small">'+esc(counts)+'</span>'+(x.note?'<br><span class="small sr-note">'+esc(reasonText(x.note,en))+'</span>':'');}
- else if(hasScore)body=T(series==='company'?'점수 ':'평균 ',series==='company'?'score ':'mean ')+'<b class="num">'+esc(scoreText(x.score,locale))+'</b>'+(series!=='company'&&Number.isInteger(x.n)?' <span class="small">n='+x.n+'</span>':'');
+ else if(hasScore)body=T(series==='company'?'점수 ':'평균 ',series==='company'?'score ':'mean ')+'<b class="num">'+esc(scoreText(x.score,locale))+'</b>'+(series!=='company'&&Number.isInteger(x.n)?' <span class="small">n='+x.n+'</span>':'')
+  +(series==='company'&&a.central&&object(x.last_trade)?'<br><span class="small" data-v-last-trade="'+esc(x.last_trade.ny_time)+'">'+esc(en?x.last_trade.en:x.last_trade.ko)+'</span>':'');
  else{const code=series!=='company'&&why==='NO_DEVICE_PRICE'?'GROUP_NO_DEVICE_PRICE':why;
   const qgOnly=series==='company'&&a.id==='v'&&finite(x.total)?'<br><span class="small" data-sr-total-qg-only>'+esc(T('QGV 종합 ','QGV total ')+fmtNum(x.total,locale,1)+T(' · Q·G만 반영(V 미포함)',' · Q·G only (V not included)'))+'</span>':'';
   body=(why==='FINANCIAL_PROFILE_V_NOT_DEFINED'?badge(why):badge(why)+' <span class="small">'+esc(reasonText(code,en)+(x.detail?' · '+reasonText(x.detail,en):'')+(Number.isInteger(x.n)&&series!=='company'?' (n='+x.n+')':'')+counts)+'</span>')+qgOnly;}
