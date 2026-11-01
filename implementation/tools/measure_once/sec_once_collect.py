@@ -932,39 +932,55 @@ def _resume_one(client, assets, name, dest):
 
 
 def _resume_parts(client, assets, name, folder):
-    """A split file: its .parts.json (verified by sidecar), then every part (each by its sidecar), joined and checked."""
+    """Verify index/part sizes and hashes before atomically accepting a reconstructed file."""
     expected = _sidecar(client, assets, name)
     if expected is None:
         return False, None
     chunks = []
-    client.stream(assets[name]['id'], chunks.append)
+    size, sha = client.stream(assets[name]['id'], chunks.append)
     body = b''.join(chunks)
-    if hashlib.sha256(body).hexdigest() != expected:
+    if size != len(body) or size != assets[name].get('size') or sha != expected or hashlib.sha256(body).hexdigest() != expected:
         return False, None
     index = json.loads(body)
     key = base_name(name)[:-len('.parts.json')]
+    if (not isinstance(index, dict) or index.get('file') != key
+            or type(index.get('bytes')) is not int or index['bytes'] <= 0
+            or not isinstance(index.get('sha256'), str) or not _HEX64.fullmatch(index['sha256'])
+            or not isinstance(index.get('parts'), list) or not index['parts']):
+        return False, None
+    prefix = name[:-len('.parts.json')]
+    for number, part in enumerate(index['parts'], 1):
+        if (not isinstance(part, dict) or part.get('name') != f'{prefix}.part{number:02d}'
+                or not ASSET_NAME.fullmatch(part['name']) or part['name'] not in assets
+                or type(part.get('bytes')) is not int or part['bytes'] <= 0
+                or part['bytes'] != assets[part['name']].get('size')
+                or not isinstance(part.get('sha256'), str) or not _HEX64.fullmatch(part['sha256'])):
+            return False, None
+    if sum(p['bytes'] for p in index['parts']) != index['bytes']:
+        return False, None
     dest = folder / key
     tmp = Path(str(dest) + '.part')
-    digest = hashlib.sha256()
-    with open(tmp, 'wb') as handle:
-        for part in index['parts']:
-            part_name = part['name']
-            if not ASSET_NAME.fullmatch(part_name) or part_name not in assets or _sidecar(client, assets, part_name) != part['sha256']:
-                tmp.unlink(missing_ok=True)
-                return False, None
+    digest, total = hashlib.sha256(), 0
+    try:
+        with open(tmp, 'wb') as handle:
+            for part in index['parts']:
+                part_name = part['name']
+                if _sidecar(client, assets, part_name) != part['sha256']:
+                    return False, None
 
-            def write(chunk, handle=handle):
-                handle.write(chunk)
-                digest.update(chunk)
-            _, sha = client.stream(assets[part_name]['id'], write)
-            if sha != part['sha256']:
-                tmp.unlink(missing_ok=True)
-                return False, None
-    if digest.hexdigest() != index.get('sha256'):
+                def write(chunk):
+                    handle.write(chunk)
+                    digest.update(chunk)
+                size, sha = client.stream(assets[part_name]['id'], write)
+                if size != part['bytes'] or sha != part['sha256']:
+                    return False, None
+                total += size
+        if total != index['bytes'] or tmp.stat().st_size != total or digest.hexdigest() != index['sha256']:
+            return False, None
+        os.replace(tmp, dest)
+        return True, index['sha256']
+    finally:
         tmp.unlink(missing_ok=True)
-        return False, None
-    os.replace(tmp, dest)
-    return True, index['sha256']
 
 
 def upload(work, environ, *, call=None, open_url=None, out=print, verify_back=True):
