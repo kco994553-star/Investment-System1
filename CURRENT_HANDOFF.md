@@ -22,7 +22,6 @@
 | [#449](https://github.com/kco994553-star/Investment-System1/pull/449) 마지막 체결 시각 ① 판독기·검증기 먼저. #446과 겹친 고정값(`qgv-scores.js`·`leaderboard-screen.js`)을 canonical과 합친 뒤 다시 계산 | Claude Code Main | 10/31 11:35 |
 | [#436](https://github.com/kco994553-star/Investment-System1/pull/436) 비공개 구역 설계 → [#447](https://github.com/kco994553-star/Investment-System1/pull/447) 가드(canonical과 합침, 워크플로 ① `private-boundary-push.yml` 포함) | Claude Code Main | 10/31 09:40 |
 | 전진검증 v3 결정 반영 문서 PR(`claude/fv3-decisions-1031-evening`: FV3-TR·FV3-PIT-TICKER·FV3-SIZE 누적 시총 비율·FV3-ALIGN-443·DC-39) | Claude Code Main | 10/31 23:35 |
-| 워크플로 ② `FV3-PIT-TICKER` 측정 1회(`claude/fv3-pit-ticker-measure`, push 1회 실행·개수만 출력) | Claude Code Main | 10/31 23:40 |
 
 ## 1. 10/31 오너 결정과 처리
 
@@ -36,7 +35,7 @@
 | 기기 V 폐지 | DC-31(#431). PR-1a [#435](https://github.com/kco994553-star/Investment-System1/pull/435) **병합**(`44cd0b43`, 새 앱 공식 V 판독기). PR-1b [#439](https://github.com/kco994553-star/Investment-System1/pull/439) **병합**(`5e16d3e6`, 10/31 오너 승인, 옛 화면은 중앙 V만). S06 같은 발행사 두 번째 주식 종류(GOOG) 표시는 후속 PR(오너 원칙 "시총은 발행사 단위, 점수는 대표 증권 하나"). TARGET 경로는 11/16 PR |
 | 병렬 진행 체계 | DC-32·WORKING_RULES·START_HERE 담당표(이 PR) |
 | #426 | 필요한 원칙만 #431로 옮기고 닫음 |
-| 측정용 가지 | 오너가 지움(세션 삭제 권한 없음) |
+| 측정용 가지 | 오너가 지움(세션 삭제 권한 없음). 11/01 추가: `claude/fv3-pit-ticker-measure`(워크플로 ② 측정 끝남, [run 41255597310](https://github.com/kco994553-star/Investment-System1/actions/runs/41255597310): `dei:TradingSymbol` 48%, 파일 이름 앞부분 100%, 둘이 같음 92% — 설계 12절) |
 | 사용량 | 독립 검토는 계산·워크플로 변경에만 1개, 전체 시험은 push 전 1회, 보고는 하루 1회 |
 | 가격 표시 | #433 GSQ-026·DC-33 결정 기록(승인 대기) |
 | KIS·1인 비공개 구역 | 인증 검증 1회([41165951277](https://github.com/kco994553-star/Investment-System1/actions/runs/41165951277))·IEX 대비 비교 1회([41169962364](https://github.com/kco994553-star/Investment-System1/actions/runs/41169962364)) 완료. 같은 날 "KIS 보류" 지시는 뒤 지시로 **취소**, **1인 비공개 구역 신설(KIS 한정)** 설계 문서 PR [#436](https://github.com/kco994553-star/Investment-System1/pull/436)(DC-34·GSQ-027 제안, 결정 대기 `PRIV-*` 7개, 구현은 승인 뒤). 결정 기록·방향 전환 줄·"비공개 구역 불필요" 기록 수정은 #436에 있다 |
