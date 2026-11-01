@@ -1,6 +1,6 @@
-# 현재 인수인계 — 2026-10-31
+# 현재 인수인계 — 2026-11-01
 
-기준 **2026-10-31 저녁(UTC 23:30대)**, canonical **`1465260e`**(#446). 10/31 저녁 오너 승인으로 병합: #448 `ef0e90cb`(Worker 배포 run 41252518944) → #438 `f8e9a4ef` → #440 `edb11b1c` → #442 `70d0e447` → #441 `37b7ddc4` → #445 `1c73cb9b` → #450 `c33ec071` → #446 `1465260e`. 실제 기본 브랜치는 **`claude/investment-system-top500-validation-alrugm`**.
+기준 **2026-11-01 05:30 UTC 무렵**, canonical **`9a4e249d`**(#447). 10/31 저녁 오너 승인으로 병합: #448 `ef0e90cb`(Worker 배포 run 41252518944) → #438 `f8e9a4ef` → #440 `edb11b1c` → #442 `70d0e447` → #441 `37b7ddc4` → #445 `1c73cb9b` → #450 `c33ec071` → #446 `1465260e`. 11/01 병합: #436 `c86be9b9` → #449 `111f86c7` → #451 `d8fe9bc8` → #453 `428b417e` → #447 `9a4e249d`(워크플로 ① `private-boundary-push.yml` 포함). 실제 기본 브랜치는 **`claude/investment-system-top500-validation-alrugm`**.
 
 읽기: [START_HERE](START_HERE.md) → [방향 전환 대장](docs/SPEC/DIRECTION_CHANGES.md) → [WORKING_RULES](WORKING_RULES.md) → [기능 현황](docs/SPEC/FUNCTION_STATUS.md) → [결정 원문](implementation/docs/USER_DECISIONS_PENDING.md). 오늘 이행은 오너 10/31 결정 두 묶음(병합·확장·기기 V 폐지 DC-31 / 병렬 진행 체계 DC-32·가격 표시 검토)이다.
 
@@ -19,9 +19,12 @@
 
 | PR·작업 | 담당 | 시작 (UTC) |
 | --- | --- | --- |
-| [#449](https://github.com/kco994553-star/Investment-System1/pull/449) 마지막 체결 시각 ① 판독기·검증기 먼저. #446과 겹친 고정값(`qgv-scores.js`·`leaderboard-screen.js`)을 canonical과 합친 뒤 다시 계산 | Claude Code Main | 10/31 11:35 |
-| [#436](https://github.com/kco994553-star/Investment-System1/pull/436) 비공개 구역 설계 → [#447](https://github.com/kco994553-star/Investment-System1/pull/447) 가드(canonical과 합침, 워크플로 ① `private-boundary-push.yml` 포함) | Claude Code Main | 10/31 09:40 |
-| 전진검증 v3 결정 반영 문서 PR(`claude/fv3-decisions-1031-evening`: FV3-TR·FV3-PIT-TICKER·FV3-SIZE 누적 시총 비율·FV3-ALIGN-443·DC-39) | Claude Code Main | 10/31 23:35 |
+| 중앙 V 기준일 고침 PR(`claude/iex-select-session-day`): IEX가 토요일 파일 `20261031`을 올려 11/01 야간이 `SUPPLY_BELOW_THRESHOLD`·`KEPT_LAST_GOOD`(공개 기준일 10/29 유지). NYSE 거래일 파일만 고름. 병합은 오너 승인 뒤, 병합 전까지 야간은 같은 이유로 실패 | Claude Code Main | 11/01 05:10 |
+| [#454](https://github.com/kco994553-star/Investment-System1/pull/454) 연구 엔진 `EXP-STOCK-INDICATOR-DECILES-v1`(Draft). `78ac5c3e`를 #437에 인계, 독립 검토 11건 수정 중(`claude/exp-deciles-engine-fix`) | Claude Code Main | 11/01 01:20 |
+| 결정 기록 PR(`claude/decisions-1101-second`: 11/01 2차 15항목·보완 지시, 연구 설정 정정, 점수화 기준 모집단 검토 10절 → 결정 대기 `EXP-SCORING-POP`·`EXP-CALC-ALIGN`) | Claude Code Main | 11/01 03:00 |
+| SEC 1회용 수집 계획 PR(11/01 결정 1: 계획 먼저, 승인 뒤 실행. 8% 분류 측정·인계 release 포함) | Claude Code Main | 준비 중 |
+| Alpaca 소표본 수집(11/01 결정 2) | Claude Code Main | 준비 중 |
+| 자료층 브라우저 시험 경합 고침 PR(`claude/data-layer-test-fresh-load`, 시험만 바꿈) | Claude Code Main | 11/01 05:00 |
 
 ## 1. 10/31 오너 결정과 처리
 
