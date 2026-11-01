@@ -1,0 +1,37 @@
+# ONE-TIME MEASUREMENT (decision FV3-PIT-TICKER; owner approval 2026-10-31, "workflow ② 승인"). Runs only on the push to this
+# branch; never merged; the branch is deleted after the run. Public SEC EDGAR archive files only (full-index form.idx,
+# filing directory listings, XBRL instances), held in RAM; nothing written, uploaded, cached or summarised; no prices.
+# The log carries fixed PITTICKER_* count lines only (no ticker, CIK, company name, URL, User-Agent or exception text).
+name: fv3-pit-ticker-measure
+on:
+  push:
+    branches: [claude/fv3-pit-ticker-measure]
+permissions:
+  contents: read
+concurrency:
+  group: fv3-pit-ticker-measure-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  measure:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      # Offline first (synthetic inputs, no network, no Secret): a failing check stops the job before any SEC request.
+      # --tb=no: a failure names the test only, so no test value reaches the log.
+      - name: Offline unit test of the measurement (no network, no Secret)
+        working-directory: implementation
+        run: |
+          python -m pip install pytest==9.1.1
+          PYTHONPATH=src python -m pytest -q --tb=no -p no:cacheprovider tests/test_fv3_pit_ticker_measure.py
+      # The only step that holds the Secret. The script stops with one fixed line when it is missing and never prints it.
+      - name: Measure dei:TradingSymbol and instance-name prefix coverage of 2016-2019 10-K / 10-Q (fixed count lines only)
+        timeout-minutes: 25
+        env:
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+        run: python implementation/tools/measure_once/fv3_pit_ticker_measure.py
