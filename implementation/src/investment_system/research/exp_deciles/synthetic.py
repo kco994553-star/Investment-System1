@@ -163,8 +163,9 @@ def bundle_files():
         'filings': ('filings.json', filing_rows()),
         'prices': ('prices.json', price_rows()),
         'events': ('events.json', event_rows()),
-        'tr_series': ('tr.json', {'label': 'S&P 500 Total Return Index', 'claim': 'SP500_TR', 'source': 'synthetic',
-                                  'rows': tr_rows()}),
+        # Owner 11/01: SPY total return is an ETF supplementary comparison only, never labelled S&P 500 index TR.
+        'tr_series': ('tr.json', {'label': 'SPY total return (ETF, synthetic)', 'claim': 'OTHER_TR', 'is_etf': True,
+                                  'source': 'synthetic', 'rows': tr_rows()}),
     }
     facts = companyfacts_by_cik()
     for key in sorted(facts)[:3]:                      # three issuers as one-CIK files, the rest as one mapping file
