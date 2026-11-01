@@ -48,7 +48,9 @@ def test_fixture_is_synthetic_and_pins_the_valid_and_divergent_ids(vectors):
         'target_rank_row_valid_as_published', 'target_for_two_share_classes_valid', 'target_live_unplaced_valid',
         'target_calc_mismatch_valid', 'tie_dot_symbols_valid', 'stop_reason_skips_recompute_valid',
         'calc_mismatch_skips_recompute_valid', 'calc_version_later_day_valid', 'calc_version_same_day_n2_valid',
-        'calc_version_leap_day_valid', 'size_cap_at_canonical_length_valid']
+        'calc_version_leap_day_valid', 'last_trade_session_close_only_valid', 'last_trade_every_v_row_valid', 'last_trade_one_v_row_valid',
+        'last_trade_early_close_valid', 'last_trade_winter_early_close_valid', 'last_trade_winter_regular_close_valid',
+        'size_cap_at_canonical_length_valid']
     assert [(c['id'], c['js_stricter']) for c in vectors['cases'] if 'js_stricter' in c] == [('verified_at_null', 'OFFICIAL_INVALID')]
     assert [(b['id'], b['divergence']) for b in vectors['bodies'] if 'divergence' in b] == [('months_float_spelling', 'INT_FLOAT_SPELLING')]
     codes = {c['code'] for c in vectors['cases'] + vectors['bodies']}

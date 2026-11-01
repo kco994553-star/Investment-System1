@@ -3,7 +3,9 @@ docs/qgv_scoring_standard/CENTRAL_V_PUBLICATION_DESIGN_20261018.md §4-§7). PRO
 
 One publication = the WHOLE Universe (+ TARGET rows) of one `sec-qgv2.json` scored by `qgv_v2.score_universe` (official
 default: balanced preset, value-trap gate on, type weights on) with ONE IEX day of last regular-session trades (RAM only) and the
-private IEX month-end store for V4. Public fields: scores, ranks, reasons, coverage counts and basis times only. Never published:
+private IEX month-end store for V4. Public fields: scores, ranks, reasons, coverage counts and basis times only (accepted since
+the owner decision 2026-10-31, not yet written: the optional last-trade time of a V row and the session close, TIMES_OPTIONAL_KEYS /
+ROW_OPTIONAL_KEYS; times, never prices). Never published:
 prices, month-end prices, EV, market caps, yields, implied growth, expectation gaps, realized-growth detail, DCF reference ranges,
 per-code price hashes. Owner decisions applied:
 - calc_version: the ONE `sec-qgv2.json` calc_version (no separate v_calc_version);
@@ -101,12 +103,25 @@ ROW_KEYS = ('cik', 'profile', 'industry_group', 'in_cross_section', 'state', 'so
             'qg_reference_order', 'rank_row')
 FACTOR_KEYS = ('score', 'reason', 'basis')
 AXIS_KEYS = ('score', 'state', 'weight_available', 'factors_available', 'reason')
+TIMES_KEYS = ('price_basis_date', 'price_collected_from', 'price_collected_to', 'inputs_as_of', 'generated_at', 'verified_at')
+# Last-trade time (owner decision 2026-10-31, docs/qgv_official/LAST_TRADE_TIME_20261031.md): two OPTIONAL keys, exactly these, so
+# a file without them stays valid and every other key is still refused. A time, never a price.
+#   times.price_session_close_at  the regular-session close of the price basis day (New York 16:00, or 13:00 on an early close)
+#   rows.<code>.v_last_trade_at    the IEX last regular-session round-lot trade time behind that row's V (rows with a V only)
+# Both 'YYYY-MM-DDTHH:MM:SSZ' (UTC, whole seconds). A screen shows the time next to V only when the trade is at least
+# LAST_TRADE_NOTE_MINUTES before that close (web_assets/qgv-official.js lastTrade); the publisher writes them in a later PR.
+TIMES_OPTIONAL_KEYS = ('price_session_close_at',)
+ROW_OPTIONAL_KEYS = ('v_last_trade_at',)
+SESSION_OPEN_NY = (9, 30)
+SESSION_CLOSES_NY = ((13, 0), (16, 0))
+LAST_TRADE_NOTE_MINUTES = 30
 STOP_REASONS = ('PRICE_IDENTITY_CONFLICT', 'CALC_VERSION_MISMATCH', 'SOURCE_NOT_AVAILABLE')
 _REASON = re.compile(r'[A-Z][A-Z0-9_]{0,63}', re.ASCII)
 _CODE = re.compile(r'(?:[A-Z]{2,8}:[A-Z0-9][A-Z0-9.\-]{0,15}|TARGET:[a-z][a-z0-9_]{0,63})', re.ASCII)
 _HEX = re.compile(r'[0-9a-f]{64}', re.ASCII)
 _DAY = re.compile(r'\d{4}-\d{2}-\d{2}', re.ASCII)
 _CLOCK = re.compile(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z', re.ASCII)
+_SECOND = re.compile(r'(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})Z', re.ASCII)
 _STAMP = re.compile(r'\d{8}', re.ASCII)
 _TYPE_ID = re.compile(r'[a-z][a-z0-9_]{0,63}', re.ASCII)
 _CIK = re.compile(r'\d{10}', re.ASCII)      # ASCII digits only (the JS twin's /^\d{10}$/); a Unicode digit is no CIK
@@ -677,8 +692,9 @@ def _walk_forbidden(value, depth=0):
         _need(math.isfinite(value))
 
 
-def _keys(d, keys):
-    _need(type(d) is dict and set(d) == set(keys))
+def _keys(d, keys, optional=()):
+    """Exactly `keys`, plus any of `optional` (the last-trade keys); anything else is refused."""
+    _need(type(d) is dict and set(d) - set(optional) == set(keys))
 
 
 def _score_ok(v):
@@ -694,7 +710,7 @@ def _str_or_none(v, rx=None):
 
 
 def _row_ok(key, r):
-    _keys(r, ROW_KEYS)
+    _keys(r, ROW_KEYS, ROW_OPTIONAL_KEYS)
     _need(_CODE.fullmatch(key) is not None)
     _need(_str_or_none(r['cik'], _CIK) and r['profile'] in (None, 'GENERAL', 'FINANCIAL'))
     _need(_str_or_none(r['industry_group'], re.compile(r'[a-z][a-z0-9_]{0,63}')) and type(r['in_cross_section']) is bool)
@@ -746,6 +762,44 @@ def _row_ok(key, r):
             used += w[p]
         _need(r['total'] == acc / used)
     _need(r['value_trap_gate'] == (r['v_excluded'] == 'VALUE_TRAP_GATE'))
+
+
+def _second(v):
+    """'YYYY-MM-DDTHH:MM:SSZ' (UTC, whole seconds, a real calendar instant) -> aware datetime; else ValueError."""
+    m = _SECOND.fullmatch(v) if type(v) is str else None
+    _need(m is not None)
+    return _dt.datetime(*(int(x) for x in m.groups()), tzinfo=_dt.timezone.utc)
+
+
+def _new_york(moment):
+    return moment.astimezone(iex_hist.NY)
+
+
+def session_close(times, basis_date):
+    """times.price_session_close_at as a datetime, or None when the key is absent. When present: whole seconds, on the price
+    basis date in New York, and exactly a regular-session close there (16:00:00, or 13:00:00 on an early-close day). The
+    validator does not keep an early-close calendar: which of the two closes applies is the publisher's statement."""
+    if 'price_session_close_at' not in times:
+        return None
+    close = _second(times['price_session_close_at'])
+    ny = _new_york(close)
+    _need(times['price_session_close_at'][:10] == basis_date and ny.date().isoformat() == basis_date)
+    _need((ny.hour, ny.minute) in SESSION_CLOSES_NY and ny.second == 0)
+    return close
+
+
+def _last_trades_ok(rows, close, basis_date):
+    """rows.<code>.v_last_trade_at: only next to a session close, only on a row with a V (finite V axis score, SUPPLIED), and a
+    whole-second instant inside that day's regular session: New York date = the price basis date, at or after 09:30 New York,
+    strictly before the close."""
+    for r in rows.values():
+        if 'v_last_trade_at' not in r:
+            continue
+        _need(close is not None and _finite(r['axes']['V']['score']) and r['price_status'] == iex_hist.SUPPLIED)
+        at = _second(r['v_last_trade_at'])
+        ny = _new_york(at)
+        _need(r['v_last_trade_at'][:10] == basis_date and ny.date().isoformat() == basis_date)
+        _need((ny.hour, ny.minute) >= SESSION_OPEN_NY and at < close)
 
 
 def _ranks_ok(rows):
@@ -833,14 +887,16 @@ def require_qgv_official(payload) -> None:
               and (inp['acquired_oldest'] is None) == (inp['acquired_newest'] is None))
         _need(inp['acquired_oldest'] is None or inp['acquired_oldest'] <= inp['acquired_newest'])
         t = payload['times']
-        _keys(t, ('price_basis_date', 'price_collected_from', 'price_collected_to', 'inputs_as_of', 'generated_at', 'verified_at'))
+        _keys(t, TIMES_KEYS, TIMES_OPTIONAL_KEYS)
         _need(t['price_basis_date'] == ps['basis_date'] and t['inputs_as_of'] == inp['as_of'])
         _need(all(type(t[k]) is str and _CLOCK.fullmatch(t[k]) for k in ('price_collected_from', 'price_collected_to', 'generated_at')))
         _need(t['verified_at'] is None or (type(t['verified_at']) is str and _CLOCK.fullmatch(t['verified_at'])))
+        close = session_close(t, ps['basis_date'])
         rows = payload['rows']
         _need(type(rows) is dict and 0 < len(rows) <= 2048)
         for k, r in rows.items():
             _row_ok(k, r)
+        _last_trades_ok(rows, close, ps['basis_date'])
         _ranks_ok(rows)
         _need(pop['row_count'] == len(rows))
         _need(pop['pooled_count'] == sum(1 for r in rows.values() if r['in_cross_section']) and pop['pooled_digest'] == pooled_digest(rows))

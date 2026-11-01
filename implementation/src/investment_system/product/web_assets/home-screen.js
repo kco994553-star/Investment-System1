@@ -179,6 +179,8 @@
  // DC-31: the central V basis (basis day, publication time, STALE, calc version) and the IEX attribution with its terms link.
  function centralLine(screens){const QS=root.QgvScores;if(!QS||typeof QS.centralHtml!=='function')return '';const P=QS.pagePublication();
   return '<div data-res-central>'+QS.centralHtml(QS.centralBasis(P.publication,{reason:P.reason,v2Inputs:screens&&screens['sec-qgv2.json']||null}),locale==='en-US')+'</div>';}
+ // Owner decision 2026-10-31: under the bars, the shown V's IEX last-trade time when >= 30 minutes before the session close.
+ function lastTradeLine(d){const QS=root.QgvScores,h=QS&&typeof QS.lastTradeHtml==='function'?QS.lastTradeHtml(d,locale==='en-US'):'';return h?'<p class="res-why" data-res-v-last-trade>V · '+h+'</p>':'';}
  function qgvCard(e,screens,ctx){
   const id=e.canonical_id,QS=root.QgvScores,en=locale==='en-US',S=call(ctx.scores),r=S&&QS&&QS.rowOf?QS.rowOf(S,id):null,d=r?r.primary:null,cid=encodeURIComponent(id);
   const total=d&&typeof d.total==='number'?'<span class="num" data-res-state="AVAILABLE">'+esc(num(d.total))+'</span>'+(Number.isFinite(d.v)?'':' <span class="res-why">'+esc(T(locale,'V 미포함','V not included'))+'</span>'):naHtml(QS&&QS.naText?QS.naText(d,en):T(locale,'공개 점수 없음','no public score'));
@@ -187,7 +189,7 @@
    :ref?naHtml(QS.QG_REFERENCE_LABEL[en?1:0]+(ref.order?' · '+(en?'#'+ref.order:ref.order+'번'):'')+T(locale,' · 공식 QGV 순위 아님',' · not an official QGV rank'),'QG_REFERENCE')
    :naHtml(T(locale,'공식 순위 없음','no official rank'));
   const ind=industryOf(screens,id),group=d?T(locale,'Universe504 백분위 · 업종: ','Universe504 percentile · industry: ')+(ind?ind.group:T(locale,'미산출','not computed')):null;
-  return card('qgv','1','QGV','<div class="res-bars" role="img" aria-label="'+esc('Q '+(d&&Number.isFinite(d.q)?num(d.q):T(locale,'미산출','n/a'))+' · G '+(d&&Number.isFinite(d.g)?num(d.g):T(locale,'미산출','n/a'))+' · V '+(d&&Number.isFinite(d.v)?num(d.v):T(locale,'미산출','n/a')))+'">'+['Q','G','V'].map(a=>bar(a,d?d[a.toLowerCase()]:null)).join('')+'</div>'+
+  return card('qgv','1','QGV','<div class="res-bars" role="img" aria-label="'+esc('Q '+(d&&Number.isFinite(d.q)?num(d.q):T(locale,'미산출','n/a'))+' · G '+(d&&Number.isFinite(d.g)?num(d.g):T(locale,'미산출','n/a'))+' · V '+(d&&Number.isFinite(d.v)?num(d.v):T(locale,'미산출','n/a')))+'">'+['Q','G','V'].map(a=>bar(a,d?d[a.toLowerCase()]:null)).join('')+'</div>'+lastTradeLine(d)+
    '<dl class="res-dl">'+dlRow('score',T(locale,'QGV 점수','QGV score'),total)+dlRow('rank',T(locale,'순위','Rank'),rank)+dlRow('group',T(locale,'비교군','Comparison group'),group?esc(group):naHtml(T(locale,'점수 없음','no score')))+'</dl>'+centralLine(screens),
    [['#leaderboard',T(locale,'리더보드','Leaderboard'),'leaderboard','1.1'],['#profiles',T(locale,'가중치','Weights'),'profiles','1.2'],['#company/'+cid,T(locale,'스탯창','Stat window'),'radar','']]);
  }

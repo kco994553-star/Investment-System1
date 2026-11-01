@@ -73,6 +73,7 @@ universe_leaderboard_browser_test.js
 refresh_view_state_browser_test.js
 official_personal_labels_browser_test.js
 v_cross_screen_consistency_browser_test.js
+v_last_trade_browser_test.js  # owner decision 2026-10-31: 마지막 체결 HH:MM (뉴욕) next to the official V (new app + old app), synthetic publication
 macro_cycle_ring_browser_test.js
 macro_evidence_browser_test.js
 chart_workbench_browser_test.js

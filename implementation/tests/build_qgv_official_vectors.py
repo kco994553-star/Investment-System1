@@ -254,6 +254,39 @@ def calc(o, value):
     o['inputs'][0]['calc_version'] = value
 
 
+# Last-trade time (owner decision 2026-10-31, docs/qgv_official/LAST_TRADE_TIME_20261031.md). The base price basis day 2026-10-13 is
+# on New York daylight time (UTC-4): 09:30 = 13:30Z, 13:00 = 17:00Z, 16:00 = 20:00Z. Synthetic times only.
+CLOSE = '2026-10-13T20:00:00Z'
+EARLY_CLOSE = '2026-10-13T17:00:00Z'
+# Per V row, in key order: under 30 minutes before the close, exactly 30, at the open, then 15 minutes before for the rest.
+TRADE_TIMES = ('2026-10-13T19:59:59Z', '2026-10-13T19:30:00Z', '2026-10-13T13:30:00Z')
+
+
+def v_rows(o):
+    """Keys of the rows with a V (finite V axis score, SUPPLIED): the only rows that may carry v_last_trade_at."""
+    return [k for k, r in sorted(o['rows'].items()) if r['axes']['V']['score'] is not None and r['price_status'] == iex_hist.SUPPLIED]
+
+
+def last_trades(o, close=CLOSE, times=TRADE_TIMES, rest='2026-10-13T19:45:00Z', only=None):
+    o['times']['price_session_close_at'] = close
+    for i, k in enumerate(v_rows(o)[:only]):
+        o['rows'][k]['v_last_trade_at'] = times[i] if i < len(times) else rest
+
+
+def one_trade(o, value, key=None, close=CLOSE):
+    if close is not None:
+        o['times']['price_session_close_at'] = close
+    o['rows'][key or v_rows(o)[0]]['v_last_trade_at'] = value
+
+
+def winter_day(o, close, trade):
+    """The basis day moved to 2026-11-27 (New York standard time, UTC-5; the NYSE-scheduled early close): 13:00 = 18:00Z."""
+    o['price_source'].update(basis_date='2026-11-27', requested_basis_date='2026-11-27')
+    o['times']['price_basis_date'] = '2026-11-27'
+    o['times']['price_session_close_at'] = close
+    o['rows'][v_rows(o)[0]]['v_last_trade_at'] = trade
+
+
 # (id, mutate, expected Python verdict (True or the error code), flags)
 INVALID, FORBIDDEN, LARGE = 'OFFICIAL_INVALID', 'OFFICIAL_FORBIDDEN_KEY', 'OFFICIAL_TOO_LARGE'
 CASES = [
@@ -399,6 +432,37 @@ CASES = [
     ('coverage_reasons_order', lambda o: o['coverage'].update(reasons=list(reversed(o['coverage']['reasons']))), INVALID, {}),
     ('attribution_extra_key', lambda o: o['attribution'].update(note='x'), INVALID, {}),
     ('label_ko_other', lambda o: o['attribution'].update(label_ko='IEX'), INVALID, {}),
+    # last-trade time: two optional keys, exactly these (owner decision 2026-10-31); a file without them is the base above
+    ('last_trade_session_close_only_valid', lambda o: o['times'].update(price_session_close_at=CLOSE), True, {}),
+    ('last_trade_every_v_row_valid', last_trades, True, {}),
+    ('last_trade_one_v_row_valid', lambda o: last_trades(o, only=1), True, {}),
+    ('last_trade_early_close_valid', lambda o: last_trades(o, close=EARLY_CLOSE, times=('2026-10-13T16:59:59Z', '2026-10-13T16:30:00Z'), rest='2026-10-13T13:30:00Z'), True, {}),
+    ('last_trade_winter_early_close_valid', lambda o: winter_day(o, '2026-11-27T18:00:00Z', '2026-11-27T17:59:59Z'), True, {}),
+    ('last_trade_winter_regular_close_valid', lambda o: winter_day(o, '2026-11-27T21:00:00Z', '2026-11-27T14:30:00Z'), True, {}),
+    ('last_trade_without_session_close', lambda o: one_trade(o, '2026-10-13T19:00:00Z', close=None), INVALID, {}),
+    ('last_trade_on_a_supplied_row_without_v', lambda o: one_trade(o, '2026-10-13T19:00:00Z', key='NASDAQ:AAPL'), INVALID, {}),
+    ('last_trade_on_a_no_trade_row', lambda o: one_trade(o, '2026-10-13T19:00:00Z', key='NYSE:ARE'), INVALID, {}),
+    ('last_trade_null', lambda o: one_trade(o, None), INVALID, {}),
+    ('last_trade_number', lambda o: one_trade(o, SYN), INVALID, {}),
+    ('last_trade_fraction', lambda o: one_trade(o, '2026-10-13T19:00:00.5Z'), INVALID, {}),
+    ('last_trade_offset', lambda o: one_trade(o, '2026-10-13T15:00:00-04:00'), INVALID, {}),
+    ('last_trade_before_open', lambda o: one_trade(o, '2026-10-13T13:29:59Z'), INVALID, {}),
+    ('last_trade_at_close', lambda o: one_trade(o, CLOSE), INVALID, {}),
+    ('last_trade_after_close', lambda o: one_trade(o, '2026-10-13T20:30:00Z'), INVALID, {}),
+    ('last_trade_after_early_close', lambda o: one_trade(o, '2026-10-13T17:30:00Z', close=EARLY_CLOSE), INVALID, {}),
+    ('last_trade_other_day', lambda o: one_trade(o, '2026-10-12T19:00:00Z'), INVALID, {}),
+    ('last_trade_hour_24', lambda o: one_trade(o, '2026-10-13T24:00:00Z'), INVALID, {}),
+    ('last_trade_second_60', lambda o: one_trade(o, '2026-10-13T19:59:60Z'), INVALID, {}),
+    ('last_trade_other_spelling', lambda o: scored_row(o).update(v_last_trade='2026-10-13T19:00:00Z') or o['times'].update(price_session_close_at=CLOSE), INVALID, {}),
+    ('session_close_null', lambda o: o['times'].update(price_session_close_at=None), INVALID, {}),
+    ('session_close_number', lambda o: o['times'].update(price_session_close_at=SYN), INVALID, {}),
+    ('session_close_15h', lambda o: o['times'].update(price_session_close_at='2026-10-13T19:00:00Z'), INVALID, {}),
+    ('session_close_with_seconds', lambda o: o['times'].update(price_session_close_at='2026-10-13T20:00:01Z'), INVALID, {}),
+    ('session_close_fraction', lambda o: o['times'].update(price_session_close_at='2026-10-13T20:00:00.0Z'), INVALID, {}),
+    ('session_close_standard_time_on_a_daylight_day', lambda o: o['times'].update(price_session_close_at='2026-10-13T21:00:00Z'), INVALID, {}),
+    ('session_close_other_day', lambda o: o['times'].update(price_session_close_at='2026-10-12T20:00:00Z'), INVALID, {}),
+    ('session_close_winter_daylight_spelling', lambda o: winter_day(o, '2026-11-27T17:00:00Z', '2026-11-27T16:00:00Z'), INVALID, {}),
+    ('times_unknown_key', lambda o: o['times'].update(price_session_open_at='2026-10-13T13:30:00Z'), INVALID, {}),
 ]
 
 
@@ -510,6 +574,9 @@ def constants():
         'share_basis_since': [vf.SHARE_BASIS_FACTOR_SINCE[0].isoformat(), vf.SHARE_BASIS_FACTOR_SINCE[1]],
         'inputs_file': qo.qi.FILE, 'factors': list(qgv_v2.FACTORS), 'pillars': list(qgv_v2.PILLARS),
         'v_factors': list(qgv_v2.WEIGHTS['V']), 'min_axis_weight': qgv_v2.MIN_AXIS_WEIGHT,
+        'times_keys': list(qo.TIMES_KEYS), 'times_optional_keys': list(qo.TIMES_OPTIONAL_KEYS), 'row_optional_keys': list(qo.ROW_OPTIONAL_KEYS),
+        'session_open_minutes': qo.SESSION_OPEN_NY[0] * 60 + qo.SESSION_OPEN_NY[1],
+        'session_close_minutes': [h * 60 + m for h, m in qo.SESSION_CLOSES_NY], 'last_trade_note_minutes': qo.LAST_TRADE_NOTE_MINUTES,
     }
 
 

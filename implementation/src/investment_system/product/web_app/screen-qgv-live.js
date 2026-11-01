@@ -292,15 +292,19 @@ function leaderboard(route,refs){
  function row(r,v,active){
   const sic=sicOf({company_id:r.id},v.cls),ty=types(r),on=c=>(c===active?'on':''),pc=c=>'pc-col '+on(c);
   const sub=[['Q','q'],['G','g'],['V','v']].map(([a,k])=>h(k===active?'b':'span',{class:k===active?k+'-text':''},a,' ',ok(r.score[k])?fmt(r.score[k]):'NA'));
+  // Owner decision 2026-10-31: a shown V names its IEX last-trade time when the layer says so (r.v_last_trade.text; >= 30 minutes
+  // before the session close). Nothing otherwise; the V and its sort value are unchanged.
+  const lt=ok(r.score.v)&&r.v_last_trade&&typeof r.v_last_trade.text==='string'?r.v_last_trade:null,ltNote=cls=>h('small',{class:cls,dataset:{vLastTrade:lt.ny_time}},lt.text);
   const why=['total','q','g','v','rank'].filter(k=>r.na_reason[k]).map(k=>h('li',null,{total:'QGV',q:'Q',g:'G',v:'V',rank:'순위'}[k],' · ',text(r.na_reason[k])));
   const company=h('td',{class:on('name')},h('a',{href:href('company',r.id),class:'co'},title(r)),title(r).includes(r.ticker)?null:h('span',{class:'reason'},' ',r.ticker),
    h('span',{class:'m-only sub-line'},sic||'SIC NA',' · ',typeof ty==='string'?ty:'유형 NA'),
-   h('span',{class:'m-only sub-line'},...sub.flatMap((x,i)=>[i?' · ':'',x]),' · ',m3(r,v)),
+   h('span',{class:'m-only sub-line'},...sub.flatMap((x,i)=>[i?' · ':'',x]),lt?[' ',ltNote('note')]:null,' · ',m3(r,v)),
    why.length?h('details',{class:'m-only why'},h('summary',null,'사유 ▸'),h('ul',null,...why)):null);
   let qgvCell=score(r,'total'),vCell=score(r,'v');
   if(v.list==='QG_REFERENCE'&&!ok(r.score.v))vCell=h('span',{class:'reason'},'— 근거: ',text(r.na_reason.v));
   if(v.list==='CHECK_DATA'&&!ok(r.score.total))qgvCell=h('span',{class:'reason'},'어느 축도 산출 안 됨 → 근거: ',text(r.na_reason.total));
   if(v.list==='PARTIAL_AXES'&&!ok(r.score.total))qgvCell=h('span',{class:'reason'},'종합 없음 · 순위 없음 · ',text(r.na_reason.total));
+  if(lt)vCell=[vCell,ltNote('note sub')];
   const vf=r.coverage.v_factors,miss=(vf.missing||[]).map(f=>{const L=window.DeviceProfiles&&window.DeviceProfiles.FACTOR_LABELS;return L&&L[f]?L[f][0]:'이름 없는 요인';});
   return h('tr',{dataset:{row:r.id}},h('td',{class:'rk',dataset:{cell:'rank'}},rankCell(r,v)),company,
    h('td',{class:'pc-col',dataset:{cell:'sic'}},sic||naBox('분류 자료 없음','SIC_NOT_AVAILABLE')),h('td',{class:'pc-col',dataset:{cell:'type'}},ty),

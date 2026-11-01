@@ -62,6 +62,10 @@ async function test(name, f) { try { await f(); pass++; console.log('PASS ' + na
     assert.deepEqual([...V2.FACTORS], K.factors); assert.deepEqual([...V2.PILLARS], K.pillars); assert.deepEqual(Object.keys(V2.WEIGHTS.V), K.v_factors);
     assert.deepEqual(JSON.parse(JSON.stringify(Q.V_SOURCES)), JSON.parse(JSON.stringify(W.V_SOURCES)));
     assert.equal(Q.FRESH_SESSIONS, 2); assert.deepEqual([...Q.REASONS], ['OFFICIAL_NOT_PUBLISHED', 'OFFICIAL_UNAVAILABLE', 'OFFICIAL_INVALID', 'OFFICIAL_CALC_VERSION_DIFFERS', 'OFFICIAL_STALE']);
+    // last-trade time (owner decision 2026-10-31): exactly two optional keys, the session rule and the 30-minute note
+    assert.deepEqual([...Q.TIMES_KEYS], K.times_keys); assert.deepEqual([...Q.TIMES_OPTIONAL_KEYS], K.times_optional_keys); assert.deepEqual([...Q.ROW_OPTIONAL_KEYS], K.row_optional_keys);
+    assert.deepEqual([Q.SESSION_OPEN_MINUTES, [...Q.SESSION_CLOSE_MINUTES], Q.LAST_TRADE_NOTE_MINUTES], [K.session_open_minutes, K.session_close_minutes, K.last_trade_note_minutes]);
+    assert.deepEqual([K.times_optional_keys, K.row_optional_keys, K.session_open_minutes, K.session_close_minutes, K.last_trade_note_minutes], [['price_session_close_at'], ['v_last_trade_at'], 570, [780, 960], 30]);
   });
 
   await test('Python require_qgv_official verdicts replay identically (' + V.cases.length + ' vectors; js_stricter ones are refused)', async () => {
@@ -229,6 +233,58 @@ async function test(name, f) { try { await f(); pass++; console.log('PASS ' + na
     assert.ok(bytes.length > 800000 && bytes.length < Q.MAX_BYTES, String(bytes.length));
     const t0 = process.hrtime.bigint(); const got = await Q.parse(bytes); const ms = Number(process.hrtime.bigint() - t0) / 1e6;
     assert.equal(Q.state(got), 'OFFICIAL'); assert.ok(ms < 3000, ms + ' ms');
+  });
+
+  await test('last-trade time: lastTrade / lastTradeText give the one display rule (>= 30 min before the publication\'s close; early close; absent = nothing)', async () => {
+    const variant = (id, edit) => { const c = V.cases.find((x) => x.id === id); assert.ok(c && c.valid, id); const p = apply(base(), c.ops); if (edit) edit(p); return p; };
+    const vRows = (p) => Object.keys(p.rows).sort().filter((k) => p.rows[k].axes.V.score !== null && p.rows[k].price_status === 'SUPPLIED');
+    // absent: an old file (no key) and a file with only the session close give nothing for any row
+    for (const p of [await Q.validate(base()), await Q.validate(variant('last_trade_session_close_only_valid'))]) {
+      for (const k of Object.keys(p.rows)) assert.equal(Q.lastTrade(p, k), null, k);
+    }
+    const p = await Q.validate(variant('last_trade_every_v_row_valid')), keys = vRows(p);
+    assert.ok(keys.length >= 4);
+    const info = keys.map((k) => Q.lastTrade(p, k));
+    assert.deepEqual(info.slice(0, 3).map((x) => ({ ...x })), [
+      { at: '2026-10-13T19:59:59Z', ny_time: '15:59', minutes_before_close: 0, note: false },     // 1 second before 16:00: no note
+      { at: '2026-10-13T19:30:00Z', ny_time: '15:30', minutes_before_close: 30, note: true },     // exactly 30 minutes: note
+      { at: '2026-10-13T13:30:00Z', ny_time: '09:30', minutes_before_close: 390, note: true }]);   // at the open
+    assert.deepEqual({ ...info[3] }, { at: '2026-10-13T19:45:00Z', ny_time: '15:45', minutes_before_close: 15, note: false });
+    assert.ok(info.every((x) => Object.isFrozen(x)));
+    assert.deepEqual(info.slice(0, 3).map((x) => Q.lastTradeText(x)), [null, '마지막 체결 15:30 (뉴욕)', '마지막 체결 09:30 (뉴욕)']);
+    assert.equal(Q.lastTradeText(info[1], true), 'last trade 15:30 (New York)');
+    for (const k of Object.keys(p.rows).filter((x) => !keys.includes(x))) assert.equal(Q.lastTrade(p, k), null, k + ': a row without V never has one');
+    // the V itself is untouched: same scores, ranks and coverage as the file without the times
+    const plain = await Q.validate(base());
+    for (const k of Object.keys(plain.rows)) assert.deepEqual([p.rows[k].axes.V.score, p.rows[k].total, p.rows[k].rank], [plain.rows[k].axes.V.score, plain.rows[k].total, plain.rows[k].rank], k);
+    // early close (13:00 New York): 12:59:59 is under 30 minutes, 12:30 is exactly 30, the open is far before
+    const early = await Q.validate(variant('last_trade_early_close_valid')), ek = vRows(early);
+    assert.deepEqual(ek.slice(0, 3).map((k) => { const x = Q.lastTrade(early, k); return [x.ny_time, x.minutes_before_close, x.note, Q.lastTradeText(x)]; }),
+      [['12:59', 0, false, null], ['12:30', 30, true, '마지막 체결 12:30 (뉴욕)'], ['09:30', 210, true, '마지막 체결 09:30 (뉴욕)']]);
+    // the same wall clock on a regular day is under 30 minutes only near 16:00: 15:31 New York gives no note, 12:30 does
+    const late = await Q.validate(variant('last_trade_every_v_row_valid', (x) => { x.rows[keys[0]].v_last_trade_at = '2026-10-13T19:31:00Z'; x.rows[keys[1]].v_last_trade_at = '2026-10-13T16:30:00Z'; }));
+    assert.deepEqual([Q.lastTrade(late, keys[0]).note, Q.lastTrade(late, keys[1]).note, Q.lastTrade(late, keys[1]).minutes_before_close], [false, true, 210]);
+    // standard time (UTC-5): 2026-11-27 early close 13:00 = 18:00Z
+    const winter = await Q.validate(variant('last_trade_winter_early_close_valid')), wk = vRows(winter)[0], wx = Q.lastTrade(winter, wk);
+    assert.deepEqual([wx.ny_time, wx.minutes_before_close, wx.note], ['12:59', 0, false]);
+    const winter2 = await Q.validate(variant('last_trade_winter_regular_close_valid')), w2 = Q.lastTrade(winter2, vRows(winter2)[0]);
+    assert.deepEqual([w2.ny_time, w2.minutes_before_close, Q.lastTradeText(w2)], ['09:30', 390, '마지막 체결 09:30 (뉴욕)']);
+    // only a validated payload, a known row key; text only for a note
+    const raw = variant('last_trade_every_v_row_valid');
+    assert.equal(Q.lastTrade(raw, keys[1]), null, 'an unvalidated payload gives nothing');
+    for (const k of [null, 1, 'NYSE:ZZZZ', '__proto__']) assert.equal(Q.lastTrade(p, k), null, String(k));
+    for (const x of [null, undefined, {}, { note: true }, { note: true, ny_time: '9:30' }, { note: 'yes', ny_time: '09:30' }, { note: false, ny_time: '09:30' }]) assert.equal(Q.lastTradeText(x), null, JSON.stringify(x));
+  });
+
+  await test('last-trade time: no New York clock = OFFICIAL_UNAVAILABLE only for a file that carries the times; an old file still validates', async () => {
+    const id = require.resolve(path.join(WA, 'forward-validation.js')), saved = require.cache[id].exports;
+    const c = V.cases.find((x) => x.id === 'last_trade_every_v_row_valid');
+    require.cache[id].exports = {};
+    try {
+      await assert.rejects(Q.validate(apply(base(), c.ops)), /^Error: OFFICIAL_UNAVAILABLE$/);
+      assert.equal(Q.state(await Q.validate(base())), 'OFFICIAL');
+    } finally { require.cache[id].exports = saved; }
+    assert.equal(Q.state(await Q.validate(apply(base(), c.ops))), 'OFFICIAL');
   });
 
   await test('no storage or console use at run time (load, validate, usable, resolve)', async () => {
