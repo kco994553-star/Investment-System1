@@ -47,6 +47,10 @@ only when same_economic_rights is True. An ADR issuer's cap = ordinary shares ou
 ADR stands for the whole ordinary class); an ADR next to any other eligible-type record of the same issuer (a second ADR,
 an ordinary or REIT class) could count the ordinary class twice, so that cap is NA with ADR_CLASS_OVERLAP_UNCONFIRMED.
 Any missing or unusable input of any (possibly) eligible class makes the cap NA with reasons; it is never partially summed.
+A class can only be summed into its issuer through its CIK: a record without a CIK is its own UNKNOWN unit
+('SECURITY:<id>'), so an issuer with no history that has such a class next to its CIK-carrying classes is summed only
+over the latter (the input must carry a CIK on every record for the cap to be complete). An issuer WITH history (a
+previous U-A member or previous UNKNOWN unit) is protected by the class IDs carried with it (review U1 / M1, below).
 
 Membership: U-A first build (previous_u_a is None): cap >= entry. Later S: a previous U-A member stays iff cap >= stay;
 any other issuer enters iff cap >= entry. U-B: cap >= 10bn at that S, no hysteresis. NA cap -> UNKNOWN, never EXCLUDED.
@@ -55,10 +59,21 @@ Unknown carried to the next S (review F3; settings doc section 5: a missing inpu
 previous S's U-A UNKNOWN units (previous_u_a_unknown, unit IDs: CIKs or 'SECURITY:<id>') are carried with the members.
 An issuer whose previous status was UNKNOWN is ELIGIBLE at cap >= entry, EXCLUDED at cap < stay (either way) and UNKNOWN
 with PREVIOUS_U_A_STATUS_UNKNOWN in [stay, entry). A previous member or previous UNKNOWN unit without any record at S is
-an UNKNOWN candidate (NOT_IN_RECORDS_AT_S) in both groups, unless an evidenced termination of that issuer is supplied
-(terminations: [{'cik', 'evidence', 'filed' (NY filing date of the evidence, usable at S under the 6th-session rule),
-'effective_date'?}]); such an issuer is no longer a candidate and is listed in U_A.terminated and transitions.left.
-The result's U_A.members and U_A.unknown are exactly what the next S needs.
+an UNKNOWN candidate (NOT_IN_RECORDS_AT_S) in both groups, unless an evidenced termination of that unit is supplied
+(terminations: [{'cik' (an issuer CIK, or 'SECURITY:<id>' for a carried CIK-less unit; review M2), 'evidence', 'filed'
+(NY filing date of the evidence, usable at S under the 6th-session rule), 'effective_date'}]). A termination counts only
+when its filing is usable at S AND its effective_date is supplied and <= S (review U2); such a unit is no longer a
+candidate and is listed in U_A.terminated and transitions.left. A usable termination without an effective date
+(TERMINATION_EFFECTIVE_DATE_MISSING) or not yet effective at S (TERMINATION_NOT_EFFECTIVE_AT_S, e.g. a pending merger)
+leaves the unit an UNKNOWN candidate carried to the next S.
+Class IDs carried (review U1 / M1; previous_u_a_securities = the previous U_A.unit_securities): {unit ID: the security
+IDs of its eligible or possibly eligible classes (definitively excluded types left out)} for every previous member and
+UNKNOWN unit. At S a CIK-less record whose security ID is a carried class of a previous issuer is attached to that issuer
+(not counted as a separate SECURITY unit) and makes its cap NA (CIK_UNKNOWN); a carried class with no record attached to
+the issuer at S (missing, or now under another CIK) makes its cap NA (CLASS_RECORD_NOT_ATTACHED_AT_S). Either way the
+issuer is UNKNOWN in both groups, never partially summed into a threshold exclusion, and the unresolved class IDs stay
+carried. Without previous_u_a_securities (direct calls only; the runner always passes it) no class is tracked.
+The result's U_A.members, U_A.unknown and U_A.unit_securities are exactly what the next S needs.
 
 Counting unit = issuer: each known CIK, plus each security without a CIK that could be a listed eligible security (it
 cannot be attached to an issuer, so it is its own unknown unit), plus each carried unit without a record at S.
@@ -111,6 +126,10 @@ PREVIOUS_U_A_STATUS_UNKNOWN = 'PREVIOUS_U_A_STATUS_UNKNOWN'
 # a previous member / previous UNKNOWN unit without any record at S (an UNKNOWN candidate), or with termination evidence
 NOT_IN_RECORDS_AT_S = 'NOT_IN_RECORDS_AT_S'
 TERMINATION_EVIDENCED = 'TERMINATION_EVIDENCED'
+TERMINATION_NOT_EFFECTIVE_AT_S = 'TERMINATION_NOT_EFFECTIVE_AT_S'
+TERMINATION_EFFECTIVE_DATE_MISSING = 'TERMINATION_EFFECTIVE_DATE_MISSING'
+# a carried class ID of a previous issuer is not attached to it at S (missing, or under another CIK; review U1)
+CLASS_RECORD_NOT_ATTACHED_AT_S = 'CLASS_RECORD_NOT_ATTACHED_AT_S'
 SECURITY_UNIT_PREFIX = 'SECURITY:'
 # representative sources and flags
 REP_SUPPLIED_FLAG = 'SUPPLIED_FLAG'
@@ -436,15 +455,25 @@ def _unit_id(value):
     return cik
 
 
+def _termination_unit(value):
+    """The unit a termination names: an issuer CIK, or 'SECURITY:<id>' (a carried CIK-less unit; review M2)."""
+    if isinstance(value, str) and value.startswith(SECURITY_UNIT_PREFIX):
+        return value if value[len(SECURITY_UNIT_PREFIX):].strip() else None
+    return _cik(value)[0]
+
+
 def _terminations(terminations, signal_day):
-    """{cik: termination record} of the supplied termination evidence usable at S, and every supplied record."""
-    usable, listed = {}, []
+    """({unit: evidenced record}, {unit: UNKNOWN reason}, every supplied record).
+
+    Evidenced: the filing is usable at S and effective_date is supplied and <= S (review U2). A usable filing without an
+    effective date or with one after S is not a termination at S; the unit gets that reason instead."""
+    usable, pending, listed = {}, {}, []
     for item in terminations or ():
         if not isinstance(item, dict) or not {'cik', 'evidence', 'filed'} <= set(item) or \
                 set(item) - {'cik', 'evidence', 'filed', 'effective_date'}:
             raise ValueError('TERMINATION_RECORD_INVALID')
-        cik = _cik(item['cik'])[0]
-        if cik is None or not isinstance(item['evidence'], str) or not item['evidence'].strip():
+        unit = _termination_unit(item['cik'])
+        if unit is None or not isinstance(item['evidence'], str) or not item['evidence'].strip():
             raise ValueError('TERMINATION_RECORD_INVALID')
         filed = _date(item['filed'], 'termination_filed')
         effective = _date(item.get('effective_date'), 'termination_effective_date')
@@ -452,31 +481,70 @@ def _terminations(terminations, signal_day):
             usable_from = schedule.usable_from(filed)
         except pit_filings.CalendarNotConfigured:
             usable_from = None
-        record = {'cik': cik, 'evidence': item['evidence'], 'filed': filed, 'effective_date': effective,
-                  'usable_from': usable_from, 'usable_at_s': usable_from is not None and usable_from <= signal_day}
+        usable_at_s = usable_from is not None and usable_from <= signal_day
+        effective_at_s = effective is not None and effective <= signal_day
+        if not usable_at_s:
+            status = 'NOT_USABLE_AT_S'
+        elif effective is None:
+            status = TERMINATION_EFFECTIVE_DATE_MISSING
+        elif not effective_at_s:
+            status = TERMINATION_NOT_EFFECTIVE_AT_S
+        else:
+            status = TERMINATION_EVIDENCED
+        record = {'unit': unit, 'cik': None if unit.startswith(SECURITY_UNIT_PREFIX) else unit,
+                  'evidence': item['evidence'], 'filed': filed, 'effective_date': effective,
+                  'usable_from': usable_from, 'usable_at_s': usable_at_s, 'effective_at_s': effective_at_s,
+                  'status': status}
         listed.append(record)
-        if record['usable_at_s']:
-            usable.setdefault(cik, record)
-    return usable, listed
+        if status == TERMINATION_EVIDENCED:
+            usable.setdefault(unit, record)
+        elif status != 'NOT_USABLE_AT_S':
+            pending.setdefault(unit, status)
+    for unit in usable:
+        pending.pop(unit, None)
+    return usable, pending, listed
 
 
-def _carried_unit(unit_id, cik, carried_from):
-    unknown = {'status': UNKNOWN, 'reasons': [NOT_IN_RECORDS_AT_S]}
-    return {'issuer_id': unit_id, 'cik': cik, 'securities': [], 'listed_eligible': [], 'representative': None,
-            'representative_source': None, 'representative_flags': [], 'price_label': None, 'market_cap_usd': None,
-            'market_cap_reasons': [NOT_IN_RECORDS_AT_S], 'classes': [], 'share_provenance': [],
+def _class_ids(value):
+    """{unit ID: frozenset of security IDs} of a previous_u_a_securities mapping (review U1)."""
+    if value is None:
+        return None
+    if not isinstance(value, dict):
+        raise ValueError('PREVIOUS_U_A_SECURITIES_INVALID')
+    out = {}
+    for unit, ids in value.items():
+        unit = _unit_id(unit)
+        if isinstance(ids, str) or not all(isinstance(i, str) and i.strip() for i in ids) or unit in out:
+            raise ValueError('PREVIOUS_U_A_SECURITIES_INVALID')
+        out[unit] = frozenset(ids)
+    return out
+
+
+def _carried_unit(unit_id, cik, carried_from, reasons=(NOT_IN_RECORDS_AT_S,), securities=()):
+    unknown = {'status': UNKNOWN, 'reasons': list(reasons)}
+    return {'issuer_id': unit_id, 'cik': cik, 'securities': list(securities), 'listed_eligible': [],
+            'representative': None, 'representative_source': None, 'representative_flags': [], 'price_label': None,
+            'market_cap_usd': None, 'market_cap_reasons': list(reasons), 'classes': [], 'share_provenance': [],
             'carried_from': carried_from, settings.U_A: dict(unknown, basis=None), settings.U_B: dict(unknown)}
 
 
-def build_universes(records, *, signal_day=None, previous_u_a=None, previous_u_a_unknown=None, terminations=None):
+def _tracked_ids(records):
+    """Security IDs of the eligible or possibly eligible records (definitively excluded types left out)."""
+    return {r['security_id'] for r in records if not _is_excluded_type(r)}
+
+
+def build_universes(records, *, signal_day=None, previous_u_a=None, previous_u_a_unknown=None, terminations=None,
+                    previous_u_a_securities=None):
     """U-A and U-B at one S. previous_u_a: CIKs of the U-A members at the previous S (None = first build);
-    previous_u_a_unknown: the previous S's U-A UNKNOWN unit IDs (CIKs or 'SECURITY:<id>'); terminations: evidenced
-    terminations (module doc). signal_day (a session) is required: the share counts' filing dates are checked against it.
+    previous_u_a_unknown: the previous S's U-A UNKNOWN unit IDs (CIKs or 'SECURITY:<id>'); previous_u_a_securities: the
+    previous S's U_A.unit_securities (class IDs carried, review U1); terminations: evidenced terminations (module doc).
+    signal_day (a session) is required: the share counts' filing dates are checked against it.
 
     Returns {'schema', 'signal_day', 'first_build', 'previous', 'thresholds', 'securities', 'issuers', 'security_counts',
-    'terminations', 'U_A': {'members', 'member_securities', 'representatives', 'unknown', 'terminated', 'counts',
-    'transitions'}, 'U_B': {... no unknown / terminated / transitions}}. members are sorted CIKs; member_securities the
-    members' representative security IDs (the scoring keys); U_A.unknown the U-A UNKNOWN unit IDs (for the next S)."""
+    'terminations', 'U_A': {'members', 'member_securities', 'representatives', 'unknown', 'unit_securities',
+    'terminated', 'counts', 'transitions'}, 'U_B': {... no unknown / unit_securities / terminated / transitions}}.
+    members are sorted CIKs; member_securities the members' representative security IDs (the scoring keys); U_A.unknown
+    the U-A UNKNOWN unit IDs and U_A.unit_securities the class IDs of every member and UNKNOWN unit (for the next S)."""
     if signal_day is None:
         raise ValueError('SIGNAL_DAY_REQUIRED')
     signal = schedule._signal(signal_day)
@@ -487,10 +555,22 @@ def build_universes(records, *, signal_day=None, previous_u_a=None, previous_u_a
     elif previous_u_a_unknown:
         raise ValueError('PREVIOUS_U_A_UNKNOWN_WITHOUT_MEMBERS')
     previous_unknown = frozenset(_unit_id(u) for u in previous_u_a_unknown or ())
-    evidenced, termination_records = _terminations(terminations, signal)
+    previous_classes = _class_ids(previous_u_a_securities)
+    if previous_classes is not None and previous_u_a is None and previous_classes:
+        raise ValueError('PREVIOUS_U_A_SECURITIES_WITHOUT_MEMBERS')
+    previous_classes = previous_classes or {}
+    class_owner = {}
+    for unit in sorted(previous_classes):
+        if unit.startswith(SECURITY_UNIT_PREFIX):
+            continue
+        for class_id in previous_classes[unit]:
+            if class_owner.setdefault(class_id, unit) != unit:
+                raise ValueError('PREVIOUS_U_A_SECURITIES_INVALID')
+    evidenced, not_terminated, termination_records = _terminations(terminations, signal)
     index = _index(records)
     securities = {}
     by_cik = defaultdict(list)
+    attached = defaultdict(list)       # carried issuer -> its CIK-less class records at S (review U1 / M1)
     units = {}
     for sid in sorted(index):
         rec = index[sid]
@@ -499,6 +579,8 @@ def build_universes(records, *, signal_day=None, previous_u_a=None, previous_u_a
                            'status': status, 'reasons': reasons, 'price_label': rec['price_label']}
         if rec['cik'] is not None:
             by_cik[rec['cik']].append(rec)
+        elif sid in class_owner:
+            attached[class_owner[sid]].append(rec)
         elif status == UNKNOWN:
             unknown = {'status': UNKNOWN, 'reasons': list(reasons)}
             units[SECURITY_UNIT_PREFIX + sid] = {
@@ -540,26 +622,51 @@ def build_universes(records, *, signal_day=None, previous_u_a=None, previous_u_a
         unit[settings.U_A] = {'status': a_status, 'reasons': list(a_reasons), 'basis': a_basis}
         unit[settings.U_B] = {'status': b_status, 'reasons': list(b_reasons)}
         units[cik] = unit
+    # Carried class IDs (review U1 / M1): a previous issuer whose class is CIK-less at S, missing, or under another CIK
+    # cannot be summed; it is UNKNOWN in both groups and keeps the unresolved class IDs.
+    unresolved = {}
+    for unit_id in sorted(previous_classes):
+        if unit_id.startswith(SECURITY_UNIT_PREFIX):
+            continue
+        present = {r['security_id'] for r in list(by_cik.get(unit_id, ())) + list(attached.get(unit_id, ()))}
+        missing = previous_classes[unit_id] - present
+        reasons = ([CIK_UNKNOWN] if attached.get(unit_id) else []) + ([CLASS_RECORD_NOT_ATTACHED_AT_S] if missing else [])
+        if not reasons or (unit_id not in by_cik and not attached.get(unit_id)):
+            continue        # no record at all: the carried-unit rule below decides
+        unresolved[unit_id] = missing
+        if unit_id in by_cik:
+            unit = units[unit_id]
+            unit['securities'] = sorted(unit['securities'] + [r['security_id'] for r in attached.get(unit_id, [])])
+            reasons = reasons + [r for r in unit['market_cap_reasons'] if r not in reasons]
+            unit.update(market_cap_usd=None, market_cap_reasons=list(reasons), classes=[])
+            unit[settings.U_A] = {'status': UNKNOWN, 'reasons': list(reasons), 'basis': None}
+            unit[settings.U_B] = {'status': UNKNOWN, 'reasons': list(reasons)}
+        else:
+            origin = 'PREVIOUS_U_A_MEMBER' if unit_id in (previous_u_a or ()) else 'PREVIOUS_U_A_UNKNOWN'
+            units[unit_id] = _carried_unit(unit_id, unit_id, origin, reasons,
+                                           sorted(r['security_id'] for r in attached[unit_id]))
     # Previous members and previous UNKNOWN units without any record at S stay UNKNOWN candidates (review F3) unless
-    # an evidenced termination is supplied.
+    # an evidenced termination (filing usable at S, effective at S; review U2) is supplied.
     terminated = []
     carried = [(c, 'PREVIOUS_U_A_MEMBER') for c in sorted(previous_u_a or ())]
     carried += [(u, 'PREVIOUS_U_A_UNKNOWN') for u in sorted(previous_unknown) if u not in (previous_u_a or ())]
     for unit_id, origin in carried:
-        if unit_id.startswith(SECURITY_UNIT_PREFIX):
-            if unit_id[len(SECURITY_UNIT_PREFIX):] not in index:
-                units[unit_id] = _carried_unit(unit_id, None, origin)
-            continue
-        if unit_id in by_cik:
+        if unit_id in units:
+            continue        # it has records (or attached CIK-less class records) at S
+        is_security = unit_id.startswith(SECURITY_UNIT_PREFIX)
+        if (is_security and unit_id[len(SECURITY_UNIT_PREFIX):] in index) or (not is_security and unit_id in by_cik):
             continue
         if unit_id in evidenced:
             terminated.append(dict(evidenced[unit_id], previous_status=origin, reasons=[TERMINATION_EVIDENCED]))
             continue
-        units[unit_id] = _carried_unit(unit_id, unit_id, origin)
+        reasons = ([not_terminated[unit_id]] if unit_id in not_terminated else []) + [NOT_IN_RECORDS_AT_S]
+        units[unit_id] = _carried_unit(unit_id, None if is_security else unit_id, origin, reasons)
     out = {'schema': SCHEMA, 'signal_day': signal_day if isinstance(signal_day, str) else signal.isoformat(),
            'first_build': previous_u_a is None,
-           'previous': None if previous_u_a is None else {'members': tuple(sorted(previous_u_a)),
-                                                          'unknown': tuple(sorted(previous_unknown))},
+           'previous': None if previous_u_a is None else {
+               'members': tuple(sorted(previous_u_a)), 'unknown': tuple(sorted(previous_unknown)),
+               'securities': None if previous_u_a_securities is None else
+               {unit: tuple(sorted(ids)) for unit, ids in sorted(previous_classes.items())}},
            'thresholds': {'u_a_entry_usd': settings.U_A_ENTRY_USD, 'u_a_stay_usd': settings.U_A_STAY_USD,
                           'u_b_min_usd': settings.U_B_MIN_USD},
            'securities': securities, 'issuers': units, 'terminations': termination_records}
@@ -579,10 +686,21 @@ def build_universes(records, *, signal_day=None, previous_u_a=None, previous_u_a
                       'counts': _counts(units, group)}
     out[settings.U_A]['unknown'] = tuple(sorted(uid for uid, u in units.items()
                                                 if u[settings.U_A]['status'] == UNKNOWN))
+    carried_ids = {}
+    for uid in out[settings.U_A]['members'] + out[settings.U_A]['unknown']:
+        unit = units[uid]
+        if uid.startswith(SECURITY_UNIT_PREFIX):
+            ids = {uid[len(SECURITY_UNIT_PREFIX):]}
+        else:
+            ids = _tracked_ids(index[sid] for sid in unit['securities']) | unresolved.get(uid, set())
+            if not unit['securities']:                      # carried without any record: keep what was carried
+                ids |= previous_classes.get(uid, frozenset())
+        carried_ids[uid] = tuple(sorted(ids))
+    out[settings.U_A]['unit_securities'] = carried_ids
     out[settings.U_A]['terminated'] = tuple(terminated)
     previous = previous_u_a or frozenset()
     current = set(out[settings.U_A]['members'])
-    gone = {item['cik']: item['reasons'] for item in terminated}
+    gone = {item['unit']: item['reasons'] for item in terminated}
     left = []
     for cik in sorted(previous - current):
         unit = units.get(cik)

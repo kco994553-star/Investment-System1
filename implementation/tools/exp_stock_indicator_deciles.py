@@ -6,10 +6,12 @@ Subcommands
                            its rows (dates only); exit 0 when it verifies, 1 otherwise
   select   --manifest M --year Y [--previous-u-a FILE] --out DIR [--generated-at ISO]
                            selection stage of one frozen signal year -> DIR/selection_inputs.json + DIR/manifest.json.
-                           FILE is the previous year's selection_inputs.json (its U-A members and U-A UNKNOWN units; its
-                           year must be Y - 1; its run directory's manifest.json must verify), or a JSON object
-                           {"members": [CIK, ...], "unknown": [CIK or "SECURITY:<id>", ...]}, or a JSON list of the
-                           previous member CIKs (then no UNKNOWN set is known: flag PREVIOUS_U_A_UNKNOWN_SET_NOT_SUPPLIED).
+                           FILE is the previous year's selection_inputs.json (its U-A members, U-A UNKNOWN units and
+                           their carried class IDs; its year must be Y - 1; its run directory's manifest.json must
+                           verify), or a JSON object {"members": [CIK, ...], "unknown": [CIK or "SECURITY:<id>", ...],
+                           "securities": {unit ID: [security ID, ...]}} (the previous U_A.unit_securities, review U1).
+                           A bare JSON list of member CIKs is refused (PREVIOUS_U_A_BARE_LIST_REFUSED, review U3): without
+                           the UNKNOWN set a missing input would turn into a threshold exclusion.
                            Without it the U-A is a first build.
   ledger   --manifest M --selection FILE [--selection FILE ...] --out DIR [--generated-at ISO] [--end YYYY-MM-DD]
            [--daily-positions]
@@ -43,9 +45,12 @@ Bundle files (JSON), by resource name:
                       ("CONFIRMED" when the count and the S price are on one split basis; anything else leaves the
                       issuer UNKNOWN, never excluded), price (at S; for an ADR: per ADS), price_label?, representative?,
                       median_dollar_volume?, same_economic_rights?, adr_ratio? (ADR: ordinary shares per ADS)
-                      terminations: evidenced terminations of previous U-A members / UNKNOWN issuers that have no record
-                      at S: [{"cik", "evidence", "filed" (NY filing date of the evidence), "effective_date"?}]; without
-                      one such an issuer stays an UNKNOWN candidate (NOT_IN_RECORDS_AT_S)
+                      terminations: evidenced terminations of previous U-A members / UNKNOWN units that have no record
+                      at S: [{"cik" (CIK, or "SECURITY:<id>" for a carried CIK-less unit), "evidence", "filed" (NY
+                      filing date of the evidence), "effective_date"}]; one counts only when its filing is usable at S
+                      and its effective_date is supplied and <= S (review U2); otherwise such a unit stays an UNKNOWN
+                      candidate (TERMINATION_NOT_EFFECTIVE_AT_S, TERMINATION_EFFECTIVE_DATE_MISSING or
+                      NOT_IN_RECORDS_AT_S)
   quotes:<year>       {"signal_day": "<S>", "quotes": {security_id: {"price", "currency", "month_closes": {"YYYY-MM":
                       close}, "withheld_reason"?: UPPER_SNAKE}}}; a quote is per traded security (an ADR quote is per
                       ADS; the runner divides it by adr_ratio). Optional: without it V is NA for every name and the
@@ -111,7 +116,6 @@ LEDGER_FILE = 'ledger_outputs.json'
 MANIFEST_FILE = handoff.MANIFEST_FILE
 CODE_TREE_DIRTY = 'CODE_TREE_DIRTY'
 QUOTES_NOT_SUPPLIED = 'QUOTES_NOT_SUPPLIED'
-PREVIOUS_U_A_UNKNOWN_SET_NOT_SUPPLIED = 'PREVIOUS_U_A_UNKNOWN_SET_NOT_SUPPLIED'
 SELECTION_INPUT_MANIFEST_DIFFERS = 'SELECTION_INPUT_MANIFEST_DIFFERS'
 SELECTION_CODE_SHA_DIFFERS_FROM_LEDGER = 'SELECTION_CODE_SHA_DIFFERS_FROM_LEDGER'
 _CODE = re.compile(r'[A-Z][A-Z0-9_]{2,63}')
@@ -258,7 +262,7 @@ def _cik_list(value):
 
 
 def _previous_u_a(path, year):
-    """({'members', 'unknown'}, sha256, flags) of a --previous-u-a file (see the module doc)."""
+    """({'members', 'unknown', 'securities'}, sha256, flags) of a --previous-u-a file (see the module doc)."""
     data = _read_bytes(path)
     payload = _json(data, exact=False)
     flags = []
@@ -269,12 +273,12 @@ def _previous_u_a(path, year):
             raise CliError('PREVIOUS_U_A_YEAR_MISMATCH')
         _verify_selection_file(Path(path), data, payload)
         state = runner.u_a_state(payload)
-    elif isinstance(payload, dict) and set(payload) == {'members', 'unknown'} and _cik_list(payload['members']) \
-            and all(isinstance(u, str) for u in payload['unknown']):
-        state = {'members': payload['members'], 'unknown': payload['unknown']}
+    elif isinstance(payload, dict) and set(payload) == {'members', 'unknown', 'securities'} \
+            and _cik_list(payload['members']) and isinstance(payload['unknown'], list) \
+            and all(isinstance(u, str) for u in payload['unknown']) and isinstance(payload['securities'], dict):
+        state = {'members': payload['members'], 'unknown': payload['unknown'], 'securities': payload['securities']}
     elif _cik_list(payload):
-        state = {'members': payload, 'unknown': []}
-        flags.append(PREVIOUS_U_A_UNKNOWN_SET_NOT_SUPPLIED)
+        raise CliError('PREVIOUS_U_A_BARE_LIST_REFUSED')
     else:
         raise CliError('PREVIOUS_U_A_INVALID')
     return state, handoff.sha256_hex(data), flags
@@ -454,6 +458,7 @@ def cmd_select(args):
                                      filing_rows=bundle.concat('filings', exact=False), quotes=quotes,
                                      previous_u_a=None if previous is None else previous['members'],
                                      previous_u_a_unknown=None if previous is None else previous['unknown'],
+                                     previous_u_a_securities=None if previous is None else previous['securities'],
                                      terminations=more.get('terminations'), run=run)
     payload['flags'] = payload['flags'] + previous_flags
     if quotes is None:

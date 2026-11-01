@@ -17,7 +17,8 @@ def select(year, previous=None, **kw):
     """previous: runner.u_a_state of the previous selection (members and UNKNOWN units) or None."""
     facts = kw.pop('companyfacts', syn.companyfacts_by_cik())
     state = {} if previous is None else {'previous_u_a': previous['members'],
-                                         'previous_u_a_unknown': previous['unknown']}
+                                         'previous_u_a_unknown': previous['unknown'],
+                                         'previous_u_a_securities': previous['securities']}
     kw.setdefault('terminations', syn.terminations(year))
     return runner.selection_stage(syn.records(year), year=year, companyfacts=facts, filing_rows=syn.filing_rows(),
                                   quotes=syn.quotes(year), **state, **kw)
@@ -358,6 +359,9 @@ def test_ledger_stage_refuses_inconsistent_selections(years):
     lost_unknown = dict(s19, previous_u_a_unknown=[])           # review F3: the UNKNOWN set is part of the chain
     with pytest.raises(runner.RunnerError, match='HYSTERESIS_CHAIN_BROKEN'):
         runner.ledger_stage([s18, lost_unknown], prices=prices, end='2018-03-02')
+    lost_classes = dict(s19, previous_u_a_securities={})        # review U1: the carried class IDs too
+    with pytest.raises(runner.RunnerError, match='HYSTERESIS_CHAIN_BROKEN'):
+        runner.ledger_stage([s18, lost_classes], prices=prices, end='2018-03-02')
     with pytest.raises(runner.RunnerError, match='SELECTION_YEAR_DUPLICATE'):
         runner.ledger_stage([s18, s18], prices=prices, end='2018-03-02')
     gap = dict(s19, year=2020, signal={'S': '2020-02-14', 'T': '2020-02-18'})
@@ -490,3 +494,22 @@ def test_portfolio_daily_coverage_and_monthly_metrics_without_daily_prices(years
     assert ew['monthly']['basis'] == 'MONTHLY' and ew['monthly']['max_drawdown']['value'] is not None
     assert ew['final']['valuation'] == 'OPEN' and ew['final']['nav_index'] is not None
     assert [r['nav_index'] for r in ew['month_end_nav']] == [r['nav_index'] for r in ew_full['month_end_nav']]
+
+
+def test_selection_stage_requires_the_carried_class_ids_with_a_previous_u_a(years):
+    """Review U1: the previous U-A state is members + UNKNOWN units + their class IDs; selection_inputs records it."""
+    s18, s19 = years
+    state = runner.u_a_state(s18)
+    assert s19['previous_u_a_securities'] == state['securities'] == s18['universe']['U_A']['unit_securities']
+    assert set(state['securities']) == set(state['members']) | set(state['unknown'])
+    with pytest.raises(runner.RunnerError, match='PREVIOUS_U_A_SECURITIES_REQUIRED'):
+        runner.selection_stage(syn.records(2019), year=2019, previous_u_a=state['members'],
+                               previous_u_a_unknown=state['unknown'])
+
+
+def test_ledger_output_keeps_every_selection_flag_by_year(years):
+    """Review U3: the ledger stage dropped the selections' flags (its own flags list was always [])."""
+    s18, _ = years
+    flagged = dict(s18, flags=['SOME_SELECTION_FLAG'])
+    out = runner.ledger_stage([flagged], prices=syn.price_rows(end=date(2018, 3, 2)), end='2018-03-02')
+    assert out['selection_flags'] == {'2018': ['SOME_SELECTION_FLAG']}

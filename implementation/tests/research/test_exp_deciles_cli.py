@@ -357,19 +357,27 @@ def test_run_block_and_manifest_carry_settings_and_a_reproduction_command(cli, c
 
 # ---- review F3: the previous U-A state forms ----------------------------------------------------------------------
 def test_previous_u_a_as_object_or_bare_list(cli, capsys, tmp_path):
+    """Review U3: the bare-list form is refused; the object form carries members, UNKNOWN units and class IDs."""
     manifest = write_bundle(tmp_path / 'bundle')
     s18 = json.loads(_select_2018(cli, capsys, manifest, tmp_path / 's18').read_text())
+    block = s18['universe']['U_A']
     state = tmp_path / 'state.json'
-    state.write_text(json.dumps({'members': s18['universe']['U_A']['members'],
-                                 'unknown': s18['universe']['U_A']['unknown']}))
+    state.write_text(json.dumps({'members': block['members'], 'unknown': block['unknown'],
+                                 'securities': block['unit_securities']}))
     code, out, err = run(cli, capsys, 'select', '--manifest', str(manifest), '--year', '2019', '--previous-u-a',
                          str(state), '--out', str(tmp_path / 'a'), '--generated-at', WHEN)
-    assert code == 0 and 'PREVIOUS_U_A_UNKNOWN_SET_NOT_SUPPLIED' not in out, err
+    assert code == 0 and 'PREVIOUS_U_A' not in out, err
+    no_classes = tmp_path / 'no_classes.json'
+    no_classes.write_text(json.dumps({'members': block['members'], 'unknown': block['unknown']}))
+    code, _, err = run(cli, capsys, 'select', '--manifest', str(manifest), '--year', '2019', '--previous-u-a',
+                       str(no_classes), '--out', str(tmp_path / 'c'), '--generated-at', WHEN)
+    assert code == 2 and err.strip() == 'REFUSED PREVIOUS_U_A_INVALID'
     bare = tmp_path / 'bare.json'
-    bare.write_text(json.dumps(s18['universe']['U_A']['members']))
+    bare.write_text(json.dumps(block['members']))
     code, out, err = run(cli, capsys, 'select', '--manifest', str(manifest), '--year', '2019', '--previous-u-a',
                          str(bare), '--out', str(tmp_path / 'b'), '--generated-at', WHEN)
-    assert code == 0 and 'flags=PREVIOUS_U_A_UNKNOWN_SET_NOT_SUPPLIED' in out, err
+    assert code == 2 and err.strip() == 'REFUSED PREVIOUS_U_A_BARE_LIST_REFUSED' and out == ''
+    assert not (tmp_path / 'b').exists()
 
 
 # ---- review d8: CLI text never carries a security ID or a price, refusals included ---------------------------------

@@ -363,7 +363,8 @@ def test_previous_member_without_record_is_an_unknown_candidate_unless_terminati
     counts = b['U_A']['counts']
     assert (counts['candidate'], counts['eligible'], counts['unknown']) == (2, 1, 1)
     assert counts['unknown_by_reason'] == {'NOT_IN_RECORDS_AT_S': 1} and b['U_A']['unknown'] == ('0009000003',)
-    evidence = [{'cik': '9000003', 'evidence': 'synthetic Form 25', 'filed': '2018-11-01'}]
+    evidence = [{'cik': '9000003', 'evidence': 'synthetic Form 25', 'filed': '2018-11-01',
+                 'effective_date': '2018-11-12'}]
     c = build([dict(other, shares_filed='2019-01-10', shares_period_end='2018-12-31')], signal_day='2019-02-15',
               previous_u_a=a['U_A']['members'], previous_u_a_unknown=[], terminations=evidence)
     assert c['U_A']['counts']['candidate'] == 1 and c['U_A']['unknown'] == ()
@@ -382,3 +383,99 @@ def test_previous_member_without_record_is_an_unknown_candidate_unless_terminati
     assert f['issuers']['SECURITY:NC']['U_A']['reasons'] == ['NOT_IN_RECORDS_AT_S']
     with pytest.raises(ValueError, match='PREVIOUS_U_A_UNKNOWN_WITHOUT_MEMBERS'):
         build([], previous_u_a_unknown=['1'])
+
+
+# -- review U1 / M1 / U2 / M2: carried class IDs, effective-date terminations, security-unit terminations --------
+def _chain(*years, terminations=None):
+    """Build consecutive years from (signal_day, records) pairs, passing the full U-A state each time."""
+    out, state = [], None
+    for i, (day, records) in enumerate(years):
+        kwargs = {} if state is None else dict(previous_u_a=state['members'], previous_u_a_unknown=state['unknown'],
+                                               previous_u_a_securities=state['securities'])
+        result = build(records, signal_day=day, terminations=(terminations or {}).get(i), **kwargs)
+        out.append(result)
+        state = {'members': result['U_A']['members'], 'unknown': result['U_A']['unknown'],
+                 'securities': result['U_A']['unit_securities']}
+    return out
+
+
+def _dated(record, year):
+    return dict(record, shares_filed=f'{year}-01-10', shares_period_end=f'{year - 1}-12-31')
+
+
+def test_class_of_a_previous_issuer_without_cik_at_s_makes_the_issuer_unknown_not_partially_summed():
+    """Review U1 (a): two 150m COMMON_CLASS lines; at 2019 class B's record has no CIK. Before: cap 150m, EXCLUDED
+    BELOW_U_A_STAY_THRESHOLD plus a separate SECURITY:B unknown unit."""
+    a = cap_record('A', '2', 150000000) | {'security_type': 'COMMON_CLASS'}
+    b = cap_record('B', '2', 150000000) | {'security_type': 'COMMON_CLASS'}
+    y1, y2 = _chain((S, [a, b]), ('2019-02-15', [_dated(a, 2019), _dated(dict(b, cik=None), 2019)]))
+    assert y1['U_A']['members'] == ('0000000002',) and y1['U_A']['unit_securities'] == {'0000000002': ('A', 'B')}
+    issuer = y2['issuers']['0000000002']
+    assert issuer['market_cap_usd'] is None and issuer['U_A'] == {'status': 'UNKNOWN', 'reasons': ['CIK_UNKNOWN'],
+                                                                   'basis': None}
+    assert issuer['U_B']['status'] == 'UNKNOWN' and 'SECURITY:B' not in y2['issuers']
+    assert (y2['U_A']['counts']['candidate'], y2['U_A']['counts']['unknown']) == (1, 1)
+    assert y2['U_A']['transitions']['left'] == ({'cik': '0000000002', 'reasons': ['CIK_UNKNOWN']},)
+    assert y2['U_A']['unit_securities'] == {'0000000002': ('A', 'B')}
+    # Class B's record simply missing at S: CLASS_RECORD_NOT_ATTACHED_AT_S, and B stays carried.
+    _, missing = _chain((S, [a, b]), ('2019-02-15', [_dated(a, 2019)]))
+    assert missing['issuers']['0000000002']['U_A']['reasons'][0] == 'CLASS_RECORD_NOT_ATTACHED_AT_S'
+    assert missing['U_A']['unit_securities'] == {'0000000002': ('A', 'B')}
+    # Under another CIK at S: not attached to the previous issuer either.
+    _, moved = _chain((S, [a, b]), ('2019-02-15', [_dated(a, 2019), _dated(dict(b, cik='77'), 2019)]))
+    assert moved['issuers']['0000000002']['U_A']['reasons'][0] == 'CLASS_RECORD_NOT_ATTACHED_AT_S'
+
+
+def test_previous_member_with_a_preferred_and_a_cik_less_common_is_unknown_not_no_listed_eligible():
+    """Review U1 (c): 2018 member CIK 1 has COMMON A 300m and a PREFERRED P; in 2019 A has no CIK. Before: EXCLUDED
+    NO_LISTED_ELIGIBLE_SECURITY, and SECURITY:A counted again."""
+    a, p = cap_record('A', '1', 300000000), cap_record('P', '1', 50000000) | {'security_type': 'PREFERRED'}
+    y1, y2 = _chain((S, [a, p]), ('2019-02-15', [_dated(dict(a, cik=None), 2019), _dated(p, 2019)]))
+    assert y1['U_A']['unit_securities'] == {'0000000001': ('A',)}          # the preferred is not a tracked class
+    assert y2['issuers']['0000000001']['U_A']['status'] == 'UNKNOWN' and 'SECURITY:A' not in y2['issuers']
+    assert y2['U_A']['counts']['excluded'] == 0 and y2['U_A']['counts']['unknown'] == 1
+
+
+def test_single_class_member_whose_cik_is_lost_at_s_is_one_unknown_unit_not_two():
+    """Review missed M1: the member's only record has no CIK at S. Before: candidate 2, unknown 2 (CIK unit
+    NOT_IN_RECORDS_AT_S and SECURITY:A CIK_UNKNOWN)."""
+    a = cap_record('A', '1', 300000000)
+    y1, y2, y3 = _chain((S, [a]), ('2019-02-15', [_dated(dict(a, cik=None), 2019)]),
+                        ('2020-02-14', [_dated(cap_record('A', '1', 220000000), 2020)]))
+    assert y2['U_A']['unknown'] == ('0000000001',) and y2['U_B']['counts']['candidate'] == 1
+    assert y2['issuers']['0000000001']['U_A']['reasons'] == ['CIK_UNKNOWN']
+    assert (y2['U_A']['counts']['candidate'], y2['U_A']['counts']['unknown']) == (1, 1)
+    # Carried as UNKNOWN: 220m in [stay, entry) stays UNKNOWN, never a rule exclusion.
+    assert y3['issuers']['0000000001']['U_A']['reasons'] == ['PREVIOUS_U_A_STATUS_UNKNOWN']
+
+
+def test_termination_counts_only_when_effective_at_s():
+    """Review U2: a merger agreement filed 2018-12-03, effective 2019-06-28, must not end the carry at S 2019-02-15."""
+    a = cap_record('A', '1', 300000000)
+    pending = {1: [{'cik': '1', 'evidence': 'merger agreement 8-K', 'filed': '2018-12-03',
+                    'effective_date': '2019-06-28'}]}
+    y1, y2, y3 = _chain((S, [a]), ('2019-02-15', []), ('2020-02-14', [_dated(cap_record('A', '1', 220000000), 2020)]),
+                        terminations=pending)
+    assert y2['U_A']['terminated'] == () and y2['U_A']['unknown'] == ('0000000001',)
+    assert y2['issuers']['0000000001']['U_A']['reasons'] == ['TERMINATION_NOT_EFFECTIVE_AT_S', 'NOT_IN_RECORDS_AT_S']
+    assert y2['terminations'][0]['status'] == 'TERMINATION_NOT_EFFECTIVE_AT_S'
+    assert y3['issuers']['0000000001']['U_A']['reasons'] == ['PREVIOUS_U_A_STATUS_UNKNOWN']   # not BELOW_U_A_ENTRY
+    no_date = {1: [{'cik': '1', 'evidence': 'Form 25', 'filed': '2018-12-03'}]}
+    _, y2b = _chain((S, [a]), ('2019-02-15', []), terminations=no_date)
+    assert y2b['issuers']['0000000001']['U_A']['reasons'][0] == 'TERMINATION_EFFECTIVE_DATE_MISSING'
+    effective = {1: [{'cik': '1', 'evidence': 'Form 25', 'filed': '2018-12-03', 'effective_date': '2018-12-13'}]}
+    _, y2c = _chain((S, [a]), ('2019-02-15', []), terminations=effective)
+    assert [t['unit'] for t in y2c['U_A']['terminated']] == ['0000000001'] and y2c['U_A']['unknown'] == ()
+
+
+def test_carried_security_unit_can_be_ended_by_termination_evidence_keyed_by_its_unit_id():
+    """Review missed M2: a CIK-less SECURITY:NC unit carried forever; a termination naming it raised
+    TERMINATION_RECORD_INVALID."""
+    a = cap_record('A', '1', 300000000)
+    evidence = {1: [{'cik': 'SECURITY:NC', 'evidence': 'Form 25', 'filed': '2018-06-01',
+                     'effective_date': '2018-06-11'}]}
+    y1, y2 = _chain((S, [cap_record('NC', None, 50000000), a]), ('2019-02-15', [_dated(a, 2019)]),
+                    terminations=evidence)
+    assert y1['U_A']['unknown'] == ('SECURITY:NC',) and y1['U_A']['unit_securities']['SECURITY:NC'] == ('NC',)
+    assert y2['U_A']['unknown'] == () and y2['U_A']['terminated'][0]['unit'] == 'SECURITY:NC'
+    assert y2['U_A']['terminated'][0]['cik'] is None and y2['U_B']['counts']['candidate'] == 1
