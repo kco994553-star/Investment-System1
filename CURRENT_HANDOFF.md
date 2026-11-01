@@ -26,10 +26,11 @@
 | [#455](https://github.com/kco994553-star/Investment-System1/pull/455) 자료층 브라우저 시험 경합 고침(시험만) | Main | 11/01 03:15 | CI 성공(조회). 오너 검토 뒤 병합(11/01 결정 12) |
 | [#454](https://github.com/kco994553-star/Investment-System1/pull/454) 연구 엔진 `EXP-STOCK-INDICATOR-DECILES-v1`(Draft) | Main | 11/01 01:20 | 원격 머리 `78ac5c3e`(CI 성공, 조회) = #437 인계 1. 로컬 고침: 결함 11건 → 독립 검토 2회에서 추가 결함 확인 → 장부 고침 `bb7cde5b`(검증 통과, 실행) 뒤 나머지 영역 고침 진행 중. **push·#437 인계 2 전** |
 | SEC 1회용 수집 계획 PR(`claude/sec-once-collect-plan`) | Main | 11/01 | 로컬 `63d4c2b7`, 독립 검토·고침 끝, 전체 시험 중. **push·PR 전, 실행은 승인 뒤**. 측정 가지 코드 이관 포함 |
-| Alpaca 소표본(`claude/alpaca-sample-once`) | Main | 11/01 | 로컬 `7ab5cd4d`, 독립 검토·고침 끝. **push 전·실행 전**. 실행 전 오너 확인 필요: 공개 로그에 범위·개수 줄만 남기는 것 |
+| [#459](https://github.com/kco994553-star/Investment-System1/pull/459) Alpaca 소표본 1회 측정 도구(Draft, 병합 안 함) | Main | 11/01 07:20 | `7ab5cd4d` push, 전체 시험 Python 4,458 passed(실행). **실행 전**. 실행 전 오너 확인: 공개 로그에 범위·개수 줄만 남기는 것, Alpaca Secret 존재 |
 | [#452](https://github.com/kco994553-star/Investment-System1/pull/452) 책 규칙 인수·종목 비교 경계·동결 French 보유기간 분석(Draft) | Codex | 11/01 01:04 | 연구 경로 새 3파일, CI 성공(조회). Main 요청 4개(담당표 두 흐름 갱신 = #453 반영됨, 인계, LOSS 구분, #443 대체 범위) |
 | [#437](https://github.com/kco994553-star/Investment-System1/pull/437) Lab 계약·EXP 연구 대사 창구(Draft, base #432) | Codex | 10/31 | Codex가 `78ac5c3e` 합성 묶음 재현(19/19 바이트 일치, 대사 28 일치·알려진 3 불일치, PR 보고). 다음: Main 인계 2 수령 뒤 재검증 |
 | [#417](https://github.com/kco994553-star/Investment-System1/pull/417) QGV 장기 백테스트(Draft) | Codex | 10/26 | 11/01 `c68af2c0`로 의존성 코드 보존(PR 보고 204 passed). mergeable `unstable`(조회). calc 17.1 보존본, Main 엔진 아님 |
+| [#458](https://github.com/kco994553-star/Investment-System1/pull/458) AI 탐색 범위 정리 `AGENTS.md`(Draft, 문서만) | GPT 문서 정리 세션(PR 본문 등록) | 11/01 07:18 | mergeable `unstable`(조회). Main 검토용. DC-40상 흐름은 Main·Codex 둘이라 담당 정리는 오너 확인 필요 |
 | [#443](https://github.com/kco994553-star/Investment-System1/pull/443) 전진검증 v3 책 규칙표(Draft) | Codex(옛 GPT Work) | 10/31 | #452: 대체된 시행 초안은 되살리지 않고 원문 대기 부분만 Codex가 이어받음 |
 
 ## 1. 10/31 오너 결정과 처리
@@ -72,12 +73,14 @@
 
 10/29 병합(중앙 V 첫 게시 사슬 #393·#400·#403·#404·#405, 화면 #421·#415·#419·#420, #411)은 git 이력과 [10/29판](https://github.com/kco994553-star/Investment-System1/blob/f1c28bac/CURRENT_HANDOFF.md)에 있다.
 
-## 3. 열린 PR·승인 (07:10 UTC 조회, 17개)
+## 3. 열린 PR·승인 (07:10 UTC 조회 17개 + 그 뒤 #458·#459)
 
 | PR | 요지 | 상태(조회) | 오너 승인·조건 |
 | --- | --- | --- | --- |
 | [#457](https://github.com/kco994553-star/Investment-System1/pull/457) · [#456](https://github.com/kco994553-star/Investment-System1/pull/456) · [#455](https://github.com/kco994553-star/Investment-System1/pull/455) · [#454](https://github.com/kco994553-star/Investment-System1/pull/454) | Main 11/01 PR(위 작업 중 표) | #454 Draft, 나머지 CI 성공 | 각각 오너 승인 뒤 |
 | [#433](https://github.com/kco994553-star/Investment-System1/pull/433) | GSQ-026·DC-33 가격 표시 결정 기록 | **DIRTY**(base `32cc3ffd`, 그 뒤 대장·결정 기록이 바뀜) | 결정 승인 필요. 승인 나면 Main이 canonical과 합친 뒤 병합 |
+| [#458](https://github.com/kco994553-star/Investment-System1/pull/458) | AI 탐색 범위 정리(문서) | Draft·`unstable` | Main 검토 뒤 오너 승인 |
+| [#459](https://github.com/kco994553-star/Investment-System1/pull/459) | Alpaca 소표본 도구(Main) | Draft | 병합 안 함. 실행은 오너 확인 뒤 1회 |
 | [#452](https://github.com/kco994553-star/Investment-System1/pull/452) · [#437](https://github.com/kco994553-star/Investment-System1/pull/437) · [#432](https://github.com/kco994553-star/Investment-System1/pull/432) · [#443](https://github.com/kco994553-star/Investment-System1/pull/443) · [#418](https://github.com/kco994553-star/Investment-System1/pull/418) · [#417](https://github.com/kco994553-star/Investment-System1/pull/417) · [#416](https://github.com/kco994553-star/Investment-System1/pull/416) | Codex 연구·문서 PR | #417 `unstable`, 나머지 clean·Draft(#416 Open) | 연구 가지. 병합 전 Main 확인(담당 파일·CI·자료 권리) + 오너 승인 |
 | [#430](https://github.com/kco994553-star/Investment-System1/pull/430) | #417 연구 명세 재고정(base = #417 가지) | Open | #417 담당 확인 뒤 |
 | [#392](https://github.com/kco994553-star/Investment-System1/pull/392) | TARGET v0 결합 해소 | `unknown`(10/24 이후 갱신 없음) | 통합 검증·최종 승인 별도 |
