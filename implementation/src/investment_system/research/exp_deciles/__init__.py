@@ -7,21 +7,29 @@ Selection inputs:
 - schedule   annual S/T (third Monday of February), filing cutoff, usable_from, frozen schedule_v1.json
 - pit        6th-session SEC cutoff applied to qgv.v2_factors.compute, per-row PIT record
 - universe   security-type scope (common classes, ADR/ADS, REIT; owner 2026-10-30), issuer class-sum market cap (ADR:
-             ordinary shares / ADR ratio x ADS price), representative security, U-A (entry/stay) and U-B membership
+             ordinary shares / ADR ratio x ADS price) from share counts usable at S on a confirmed split basis,
+             representative security, U-A (entry/stay, UNKNOWN carried to the next S) and U-B membership
 - scoring    calc 23.1 scoring of the U-A population at S for the four fixed presets ('default' is an alias)
 - selection  top/bottom k = floor(N x 0.10) from one total order, N < 10 not run
 
 Ledger side:
-- ledger     T-open fills only, equal-weight restore, 10 bp per side, reserved corporate-action cash, LOSS / CARRY
-- metrics    CAGR, MDD, volatility, turnover, cost attribution, month-end NAV, rolling 12/36/60/120-month windows,
-             trailing 1/3/5/10-year returns (null with INSUFFICIENT_HISTORY), before/after-cost comparison
-- benchmarks group equal-weight cell, external total-return index consumer (ETF labelled, French refused)
+- ledger     T-open fills only, equal-weight restore, 10 bp per side, reserved corporate-action cash, LOSS / CARRY,
+             settlement entitlement fixed at the effective date, per-security conflicts, ADR depositary fees, terminal
+             valuation at the next reselection T open
+- metrics    CAGR, daily MDD / volatility only with daily price coverage (else null, DAILY_PRICES_NOT_SUPPLIED),
+             monthly metrics on month-end NAV, turnover, cost attribution, month-end NAV with a base-100 display index,
+             rolling 12/36/60/120-month windows, trailing 1/3/5/10-year returns (null with INSUFFICIENT_HISTORY),
+             before/after-cost comparison
+- benchmarks group equal-weight cell, external total-return index consumer (ETF labelled from label or source,
+             French refused)
 
 Run and handoff:
 - runner     pure orchestration: selection stage of one signal year (records -> universe -> pit -> scoring -> selection,
              selection_inputs/1) and ledger stage over consecutive years (strategy x group x side portfolios plus the
              group equal-weight benchmark, LOSS / CARRY at 0 and 10 bp, metrics, optional external TR; ledger_outputs/1)
-- handoff    input manifest parsing and sha256 verification, run_id, output manifest building and verification
+- handoff    input manifest parsing and sha256 verification, run_id, run block and output manifest with the settings
+             body and a reproduction command, output manifest verification
+- synthetic  the invented bundle of the CLI `synthetic` command and the tests
 
 Pure functions: no network, no data-provider call, no price stored. The only files read are the frozen schedule
 (schedule.load_frozen) and the canonical scoring configs the qgv loaders read. implementation/tools/
