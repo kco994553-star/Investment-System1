@@ -57,7 +57,7 @@ def test_the_entry_uses_the_existing_reason_code_and_changes_no_contract():
     assert uqg.REASONS == ('NOT_COLLECTED', 'CIK_UNRESOLVED', 'INVALID_INPUT', 'M1_NOT_AVAILABLE', 'UNRESOLVED_CURRENT_FACT_AMBIGUITY',
                            'QG_NOT_AVAILABLE', 'STALE_INPUT')
     assert (us.SCHEMA_VERSION, us.SCHEMA_VERSIONS) == (2, (1, 2))
-    assert vf.CALC_VERSION == 'qgv2-calc/2026-10-17.1'
+    assert vf.CALC_VERSION == 'qgv2-calc/2026-10-23.1'   # the V-PRICE-BASIS bump (share_basis_factor), none for this entry
     for name in ('sec-qgv2.js', 'sec-universe-qg.js', 'sec-universe-shares.js'):
         assert "'CIK_UNRESOLVED'" in (WEB / name).read_text(), name
 

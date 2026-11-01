@@ -14,6 +14,13 @@
 
 ## 1. 지금 있는 것 (사실, 2026-10-24 01:00 UTC 확인)
 
+> **갱신 2026-10-24 09:55 UTC (PR-A·B·C 작성 뒤, Main).** 아래 표와 "확인된 문제"는 01:00 UTC 기록 그대로 둔다. 바뀐 것:
+> - 결정 D1~D10은 소유자가 2026-10-24에 정했다([사용자 결정](../USER_DECISIONS_PENDING.md) 맨 위 절). D5 (b)는 D2 (a)(읽기 전용 토큰)와 충돌해 `D5-UPDATE`로 남았다.
+> - U1·U3: PR-A #400(`claude/central-v-core`)에서 #393 위로 정리했다. 실패하던 시험 3개는 #393의 실제 F_k 판독기로 고쳤고, C 파서 한 벌·별칭 표 하나(`iex_hist.SYMBOL_ALIASES`)로 줄였다. 설계 §4를 코드 스키마로 고쳤다.
+> - U5: PR-B #403(`claude/central-v-guard-r2`). U4: PR-C #404(`claude/central-v-workflow-r2`). (처음 연 #401·#402는 Gate A 이메일 검사가 옛 중간 커밋을 계속 잡아 같은 트리의 새 브랜치로 바꿨다.) 첫 게시 하루 절차는 [첫 게시 점검표](CENTRAL_V_GO_LIVE_CHECKLIST_20261024.md).
+> - U8 저장소 크기는 51,796 B(자산 6개)다. 실행 사실(시간·크기·커버리지, 가격 없음)은 [프로브·U8 사실](CENTRAL_V_PROBE_U8_FACTS_20261024.md)에 있다.
+> - 검토에서 첫 게시 전에 소유자가 정할 항목 3개가 나왔다: `CV-LEAK`(사유 묶음이 가격 경계를 다 숨기지 못함), `CV-SPLIT`(주식수 서류 접수 뒤 분할을 못 잡음), `CV-CARRY`(라이브 읽기 실패한 날 게시본 하루 빠짐). 점검표 0절과 사용자 결정 표에 있다.
+
 | 묶음 | 내용 | 상태 | 위치 |
 | --- | --- | --- | --- |
 | U1 | IEX HIST 어댑터: 색인 읽기, TOPS 1.6 스트림, 길이·MD5 확인, 정규장 마지막 체결가(Last Sale Eligible) | **코드 있음, 미병합** | `claude/cv-core-publisher` `providers/iex_hist.py`, C 파서 `tools/iex_tops/iex_last_trade.c` |
@@ -45,6 +52,12 @@
 | 4 | **PR-D** U6 화면 읽기 | 새 프론트엔드 P1의 V 접근자에서 `qgv-official.json`을 엄격 리더로 읽는다. 유효·같은 calc_version·신선하면 출처 `OFFICIAL_CENTRAL`, 아니면 `DEVICE_TEMPORARY`("임시 V"). 출처 문구(IEX 표시 문구·"IEX 마지막 체결가 기준(공식 종가 아님)")를 화면에 그대로 둔다. 기기 V는 "공식 V 대조" 도구로만 남기고 공식 순위에 섞지 않는다. 옛 화면 판독기는 결정 D8 | 화면 PR |
 | 5 | **PR-E** U8 후속 | 월말가 저장소 갱신 방식(결정 D5), 백필 도구가 단일 별칭 표를 import | 결정 뒤 |
 
+> **갱신 2026-10-24 (PR-D 분할, 결정 D8 (b), Main).** 위 4번 PR-D를 둘로 나눈다. 아래 규칙은 Main이 정한 것이고 소유자가 바꿀 수 있다.
+> - **PR-D(이번, 옛 화면 작은 판독기, 브랜치 `claude/central-v-reader`, 미병합):** 새 모듈 `web_assets/qgv-official.js`(전역 `QgvOfficial`, `qgv/qgv_official.py` `parse()`·`require_qgv_official()`의 엄격한 JS 쌍둥이, 같은 판정 벡터 `tests/fixtures/qgv_official_vectors_v1.json`). 쓰는 곳은 TARGET v1(2.1.7·6.1.2~6.1.4) 하나다. 다른 옛 화면(리더보드·기업·레이더·V 커버리지)과 R-B 자동 선정은 기기 V 그대로다(알려진 한계, 새 프론트엔드 P2·P3에서 표시를 정리).
+> - **PR-D2(다음, 새 프론트엔드):** `web_app/qgv.js`의 `OFFICIAL_READER` 전환. #398 병합 뒤.
+> - **사용 규칙(M4):** "규칙으로 초안 만들기"(기기 가격이 없으면 "중앙 V 게시본으로 초안 만들기")와 "TARGET v1 확정 저장"을 누르는 순간, 기존처럼 다시 읽는 `sec-qgv2.json` 옆에서 `qgv-official.json`을 읽는다. 다음이 모두 맞을 때만 공식 V(`OFFICIAL_CENTRAL`)다: ① 읽기와 엄격 검증 통과, ② `times.verified_at` 있음, ③ 게시본 calc_version = 다시 읽은 `sec-qgv2.json` calc_version, ④ `times.price_basis_date` 뒤 **마감된** 뉴욕 거래일이 2일 이하(D-CV6 권장값, 기존 달력 `ForwardValidation.sessionDay`; 기기의 뉴욕 날짜 전날까지의 거래일과, 오늘 거래일은 뉴욕 16:00 마감 뒤부터 셈 — `ForwardValidation`과 같은 마감 기준이며 13:00 조기 폐장 표는 옛 화면에 없음; 미래 기준일은 신선하지 않음; 뉴욕 시각을 모르면 오늘도 셈). 아니면 기기 경로 "임시 V"(GSQ-024)이고, 왜 공식 V를 안 썼는지 한 줄로 보인다: `OFFICIAL_NOT_PUBLISHED`(404)·`OFFICIAL_UNAVAILABLE`·`OFFICIAL_INVALID`·`OFFICIAL_CALC_VERSION_DIFFERS`·`OFFICIAL_STALE`. 입력 as_of 일치는 요구하지 않는다(sic·지표·재무 안전은 지금처럼 다시 읽은 `sec-qgv2.json`). 게시본 행은 기기 경로와 같은 식별 대응으로 읽는다(M6 갱신): Universe 코드는 그 종목 기호가 TARGET 티커인 `TARGET:<id>` 행이 있고 `NOT_AVAILABLE`이 아니면 그 행, 아니면 자기 행(`QgvScores` codeIndex와 같음). 게시본의 `rank_row`(D-CV8, CIK당 한 행)는 쓰지 않는다. 그래서 둘째 주식(GOOG)은 자기 점수, 총점 없는 TARGET 행·다른 calc_version TARGET 행이 대표하는 종목은 기기처럼 총점 없음(`TOTAL_NOT_AVAILABLE`)으로 빠진다. 공식 V 초안은 IEX 출처 문구(게시본 또는 판독기 상수)와 게시본 기록이 함께 있을 때만 점수를 보이고, 없으면 점수·후보를 숨기고 다시 만들라고만 한다. 공식 초안·버전은 게시본 id·가격 기준일·`inputs_as_of`를 남기고, 초안 출처와 확정 순간 출처가 다르거나 게시본 id가 바뀌면 `V_SOURCE_CHANGED`로 초안을 다시 만든다.
+> - **선행 조건(어느 V 출처든 같음):** 게시본은 calc_version `qgv2-calc/2026-10-23.1` 이상에서만 나온다. 그래서 확정 버튼은 5절 재대조·재기록 PR이 병합될 때까지 `NUMBER_CHECK_CALC_VERSION_MISMATCH`로, `all_shards=true` 1회 실행 전까지 `CALC_VERSION_MIXED`로 막힌다. 첫 게시 뒤 점검은 [점검표](CENTRAL_V_GO_LIVE_CHECKLIST_20261024.md) 5-1절.
+
 **첫 게시(배포 창 하나로 묶음)**
 1. #393, PR-A, PR-B, PR-C를 같은 날 순서대로 병합한다(텍스트 충돌 없음 확인 필요, 가드 파일은 줄이 다름).
 2. 소유자가 `SEC daily public inputs`를 `all_shards=true`로 한 번 실행한다(폰 브라우저: 저장소 → Actions → 워크플로 → Run workflow). 504행이 하루에 새 calc_version으로 바뀌어 혼합 기간이 하루로 줄어든다.
@@ -56,7 +69,7 @@
 
 - 가격은 실행기 RAM에만 있다. TOPS 파일은 `curl | gzip | C 파서`로 흘려 읽고 디스크에 쓰지 않는다(프로브 실측 디스크 0).
 - 저장소·Pages·Actions 로그·아티팩트·`GITHUB_STEP_SUMMARY`에 가격, 시가총액, EV, 수익률(EBIT·FCF), 배율, 내재 성장률, 기대 차이, DCF 범위, 종목별 가격 시각·해시를 넣지 않는다. 검증기 `FORBIDDEN_KEYS`가 어디서든 거부하고, 가드 민감 키도 그대로 둔다.
-- 가격을 거꾸로 추정할 수 있는 사유 코드(`EV_NON_POSITIVE`, `ROOT_NOT_BRACKETED` 등)는 공개본에서 `PRICE_DEPENDENT_NOT_COMPUTABLE` 하나로 묶는다.
+- 가격을 거꾸로 추정할 수 있는 사유 코드(`EV_NON_POSITIVE`, `ROOT_NOT_BRACKETED` 등)는 공개본에서 `PRICE_DEPENDENT_NOT_COMPUTABLE` 하나로 묶는다. (2026-10-24 검토: 묶어도 사유가 나오는 요인 칸·V 축 유무·순위로 가격 경계가 드러난다. V 공개 자체에 딸린 한계라 소유자 확인 `CV-LEAK`로 올렸다.)
 - 공개는 최신 게시본 1개만이다. 날짜별 점수 이력은 비공개 저장소에만 둔다.
 - `publication_id`는 가격 묶음의 HMAC을 넣어 만든다. HMAC 키는 Secret이다. 공개본에는 `publication_id`만 있고, HMAC 원값·종목별 가격 해시 키(`hmac`, `price_hmac`)는 검증기가 거부한다.
 - 비공개 저장소에 남는 가격은 U8 월말가(분할 미조정 원가)뿐이다. 일일 가격은 남기지 않는다.
@@ -99,7 +112,7 @@
 | --- | --- |
 | 10-24~10-27 | 결정 D1~D10. PR-A 작성·CI. PR-B·PR-C 작성 |
 | 10-28~10-31 | PR-A·PR-B·PR-C 승인. Secret 등록(D2). 배포 창 하루에 #393 포함 병합 → 전체 샤드 실행 → 첫 게시 확인 |
-| 11-01~11-04 | 5절 재대조·재기록 PR 승인. PR-D(새 프론트엔드 V 접근자 전환) |
+| 11-01~11-04 | 5절 재대조·재기록 PR 승인. PR-D(옛 화면 TARGET v1 작은 판독기) 승인. PR-D2(새 프론트엔드 V 접근자 전환)는 #398 뒤 |
 | 11-09~11-15 | TARGET v1 확정 창. 중앙 V가 게시돼 있으면 중앙 V, 아니면 "임시 V" |
 
 ## 7. 위험
@@ -108,4 +121,4 @@
 - 실행기 → GCS 대역폭: 프로브는 하루 1회뿐이다(61 MB/s). 변동성 큰 날 파일이 14.6 GB까지 커진다. 시간 초과 시 직전 정상본 유지.
 - 공개 파일 크기: `qgv-official.json` 약 1.06 MiB(한도 2 MiB), #393 뒤 `sec-qgv2.json` 약 1.84 MB(여유 약 8%). Pages 묶음은 약 4.0 → 5.1 MiB(경고 6 MiB, 한도 8 MiB, 추정).
 - V 커버리지 상한은 그대로다: 금융 67개는 V 정의 없음(공식 순위 없음), 일반기업 가격 무관 상한 360/434, ASML 통화 기준 미확인, WBD 체결 없음.
-- 공휴일·반일 장 동작은 시험이 없다. PR-A에 시험을 더한다.
+- 공휴일·반일 장 동작은 시험이 없다. PR-A에 시험을 더한다. (2026-10-24: PR-A에 더했다. 실제 반일은 2026-11-27에 처음 확인한다.)

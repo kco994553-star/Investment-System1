@@ -693,7 +693,7 @@ def test_v_inputs_stale_balance_sheet_values_are_na():
     """V-STALE-BS (2026-10-17 number check, calc_version 2026-10-17.1): total_debt / cash_and_equivalents dated before the FY0
     balance sheet are NA, never the last value reported years earlier; Q-NODEBT-INT issuers get no debt and so no EV, and the
     device FCF / EBIT yield is NA with reason DEBT_CASH_NOT_AVAILABLE (missing never becomes 0)."""
-    assert vf.CALC_VERSION == 'qgv2-calc/2026-10-17.1' and re.fullmatch(vf.CALC_VERSION_PATTERN, vf.CALC_VERSION)
+    assert vf.CALC_VERSION >= 'qgv2-calc/2026-10-17.1' and re.fullmatch(vf.CALC_VERSION_PATTERN, vf.CALC_VERSION)  # rule since 2026-10-17.1
     debt_lines = ('LongTermDebtNoncurrent', 'LongTermDebtCurrent')
     # INCY/EME/DECK-type: the only debt fact is years before FY0 and the NODEBT rule is NA (interest expense reported):
     # total_debt NA (was 19,094 from 2018 / 5.3 from 2023 / 0 from 2021), Q metrics as before (they use FY0 debt only).
@@ -761,7 +761,7 @@ def test_v_inputs_diluted_shares_newest_allowed_concept_by_period_end_else_na():
     REG 2020, TTWO 2024, HSY 2015, LYB 2019, SJM 2023, ERIE 2021), judged by its period END against FY0 end minus the
     YEAR_TOLERANCE_DAYS of V-STALE-BS, only from facts filed by the cutoff; else NA. Never basic shares / shares outstanding.
     The shared selection functions and the Q·G metrics are unchanged."""
-    assert vf.CALC_VERSION == 'qgv2-calc/2026-10-17.1'
+    assert vf.CALC_VERSION >= 'qgv2-calc/2026-10-17.1'  # rule since 2026-10-17.1
     assert vf.CONCEPTS['us-gaap']['diluted_shares'] == (DILUTED, BASIC_AND_DILUTED)
     q = dict(form='10-Q', filed='2026-08-01')
     # (a) First allowed concept stale (2021 quarter only), the second allowed concept fresh (FY0 annual + 2026 Q2):
@@ -855,7 +855,7 @@ def test_v_inputs_diluted_shares_scale_unconfirmed_is_na_never_rescaled():
     SAME filing is outside SHARES_SCALE_BAND (0.1..10); the per-share histories are NA when their FY0-basis count is. Never
     multiplied/divided by 1,000 or 1,000,000, never replaced by the cover, basic or balance-sheet count. Normal counts, counts
     without a same-filing cover (no reference) and every Q·G metric are unchanged."""
-    assert vf.CALC_VERSION == 'qgv2-calc/2026-10-17.1'
+    assert vf.CALC_VERSION >= 'qgv2-calc/2026-10-17.1'  # rule since 2026-10-17.1
     assert vf.SHARES_SCALE_BAND == (0.1, 10.0) and vf.SHARES_SCALE_UNCONFIRMED == 'SHARES_SCALE_UNCONFIRMED'
     base_v, base_m = compute(simple_company())[4], compute(simple_company())[3]
     assert len(base_v['ebit_per_share_history']) == 5
@@ -1009,7 +1009,7 @@ def test_calc_version_rows_of_another_version_never_share_a_percentile():
     legacy = json.loads(json.dumps(p))
     legacy.pop('calc_version')
     for r in [*legacy['records'].values(), *legacy['target'].values()]:
-        r.pop('calc_version')
+        REF.legacy_histories(r).pop('calc_version')
     q.require_qgv2(legacy)
     # Merging today's shard into a legacy previous copy: the kept legacy rows stay (data never erased) but are outside the
     # ranking population; today's current-version rows are ranked only among themselves.
@@ -1023,7 +1023,7 @@ def test_calc_version_rows_of_another_version_never_share_a_percentile():
     assert merged['records'][code]['axes']['Q']['reason_codes'] == ['PEERS_BELOW_MINIMUM']
     # A mixed file whose mismatched row still carries ranked scores is rejected (versions are never mixed).
     bad = json.loads(json.dumps(p))
-    bad['records'][REF._codes()[1]]['calc_version'] = 'qgv2-calc/2026-10-14.1'
+    REF.legacy_histories(bad['records'][REF._codes()[1]])['calc_version'] = 'qgv2-calc/2026-10-14.1'
     with pytest.raises(ValueError, match='SEC_QGV2_INVALID'):
         q.require_qgv2(bad)
     for value in ('qgv2-calc/latest', 7, ''):
@@ -1062,7 +1062,7 @@ def test_normal_na_rows_keep_an_explicit_source_reason_and_are_never_calc_versio
     legacy = json.loads(json.dumps(p))
     legacy.pop('calc_version')
     for r in [*legacy['records'].values(), *legacy['target'].values()]:
-        r.pop('calc_version')
+        REF.legacy_histories(r).pop('calc_version')
     merged = q.merge(legacy, {}, as_of=NOW, shard_index=4)
     reasons = [r['axes']['Q']['reason_codes'] for r in merged['records'].values() if r['state'] == 'NOT_AVAILABLE']
     assert reasons and all(x == ['ROW_NOT_AVAILABLE'] for x in reasons)
@@ -1232,12 +1232,154 @@ def test_size_at_504_issuers_stays_below_the_public_file_limit():
     assert len(q.encode(q.merge(None, {}, as_of=NOW, shard_index=None))) < 700 * 1024
 
 
+# ---------------- V-PRICE-BASIS (calc_version 2026-10-23.1): share_basis_factor of the per-share histories ----------------
+def _basis_company(*, ratio=10.0, effective=None, ratio_dates=(), covers=(), cik='0000002000'):
+    """Synthetic companyfacts (FY 2019..2025, 10-K of FY Y filed Y+1-02-15 reporting the diluted share counts of Y, Y-1, Y-2;
+    10-Q quarters 2024..2026 filed 08-01) where every share count is reported on the basis at its filing date: x `ratio`
+    when filed after the split `effective` (None: no split). `ratio_dates`: split-ratio facts as (start|None, end, filed);
+    `covers`: dei cover counts (as-of date, value, filed). Synthetic numbers only."""
+    facts, _ = REF.synthetic_sec(cik)
+    p = json.loads(facts)
+    rows = p['facts']['us-gaap']['WeightedAverageNumberOfDilutedSharesOutstanding']['units']['shares']
+    pre = {int(r['end'][:4]): r['val'] for r in rows if r['form'] == '10-K'}
+    basis = lambda filed: ratio if effective is not None and filed > effective else 1.0
+    out = []
+    for r in rows:
+        if r['form'] != '10-K':
+            out.append(dict(r, val=round(r['val'] * basis(r['filed']), 3)))
+            continue
+        year = int(r['end'][:4])
+        for y in (year, year - 1, year - 2):
+            if y in pre:
+                out.append(dict(r, start=f'{y}-01-01', end=f'{y}-12-31', val=round(pre[y] * basis(r['filed']), 3)))
+    rows[:] = out
+    ratio_rows = []
+    for start, end, filed in ratio_dates:
+        row = {'end': end, 'val': ratio, 'accn': f'{cik}-{filed[2:4]}-000010', 'form': '10-K', 'filed': filed, 'fy': int(filed[:4]), 'fp': 'FY'}
+        if start is not None:
+            row['start'] = start
+        ratio_rows.append(row)
+    if ratio_rows:
+        p['facts']['us-gaap']['StockholdersEquityNoteStockSplitConversionRatio1'] = {'units': {'pure': ratio_rows}}
+    if covers:
+        p['facts']['dei'] = {'EntityCommonStockSharesOutstanding': {'units': {'shares': [
+            {'end': end, 'val': value, 'accn': f'{cik}-{filed[2:4]}-0000{n:02d}', 'form': '10-K', 'filed': filed, 'fy': int(filed[:4]), 'fp': 'FY'}
+            for n, (end, value, filed) in enumerate(covers)]}}}
+    return p
+
+
+def _basis(p, key='ebit_per_share_history'):
+    v = vf.compute(p, sic='3674', cutoff=CUTOFF)[4]
+    return {h['fiscal_year_end'][:4]: h.get('share_basis_factor') if h.get('share_basis_factor') is not None else h.get('share_basis_factor_reason')
+            for h in v[key]}, v
+
+
+def test_share_basis_factor_restates_the_as_traded_basis_of_each_fiscal_year_to_the_published_one():
+    """V-PRICE-BASIS: a 10:1 split after FY-2 (effective 2024-06-15, ratio fact in the FY2024 10-K): FY-4..FY-2 month-end prices
+    are on the pre-split basis -> F = 10 (price_latest = raw / 10, per-share values unchanged); FY-1 and FY0 -> 1. Worked
+    example: FY2022 raw month-end close 1,000 -> 100 on the published basis, where FY2022 EBIT/share is 1/10 of its as-reported
+    value. No split -> 1.0 everywhere. fcf_per_share_history and operating_margin_history keep two keys."""
+    assert vf.CALC_VERSION == 'qgv2-calc/2026-10-23.1' and vf.carries_share_basis(vf.CALC_VERSION)
+    assert not vf.carries_share_basis('qgv2-calc/2026-10-17.1') and not vf.carries_share_basis(None)
+    assert vf.carries_share_basis('qgv2-calc/2026-10-23.12') and vf.carries_share_basis('qgv2-calc/2027-01-01.1')
+    plain, v0 = _basis(_basis_company())
+    assert plain == {'2021': 1.0, '2022': 1.0, '2023': 1.0, '2024': 1.0, '2025': 1.0}
+    split, v = _basis(_basis_company(effective='2024-06-15', ratio_dates=((None, '2024-06-15', '2025-02-15'),)))
+    assert split == {'2021': 10.0, '2022': 10.0, '2023': 10.0, '2024': 1.0, '2025': 1.0}
+    # Values are on the published (post-split) basis: 1/10 of the as-reported per-share value of the no-split twin.
+    for a, b in zip(v['ebit_per_share_history'], v0['ebit_per_share_history']):
+        assert a['value'] == pytest.approx(b['value'] / 10.0, rel=1e-5)
+        assert set(a) == {'fiscal_year_end', 'value', 'share_basis_factor'}
+    raw_close_2022 = 1000.0   # synthetic as-traded (split-UNadjusted) close of 2022-12
+    assert raw_close_2022 / split['2022'] == 100.0
+    assert all(set(h) == {'fiscal_year_end', 'value'} for k in ('fcf_per_share_history', 'operating_margin_history') for h in v[k])
+    # A reverse split 1:4 (ratio 0.25) after FY-2: the old counts were 4x larger -> F = 0.25.
+    rev, _ = _basis(_basis_company(ratio=0.25, effective='2024-06-15', ratio_dates=((None, '2024-06-15', '2025-02-15'),)))
+    assert rev == {'2021': 0.25, '2022': 0.25, '2023': 0.25, '2024': 1.0, '2025': 1.0}
+
+
+def _as_reported_ratio(p, v):
+    """{year: (EBIT / diluted shares of the year's own 10-K, as reported) / published value}: price-free, the factor that
+    takes the as-reported (= as-traded at the month-end, when no split falls in the filing window) basis to the published one."""
+    g = p['facts']['us-gaap']
+    ebit = {r['end'][:4]: r['val'] for r in g['OperatingIncomeLoss']['units']['USD'] if r['form'] == '10-K'}
+    shares = {r['end'][:4]: r['val'] for r in g['WeightedAverageNumberOfDilutedSharesOutstanding']['units']['shares']
+              if r['form'] == '10-K' and r['filed'][:4] == str(int(r['end'][:4]) + 1)}
+    return {h['fiscal_year_end'][:4]: ebit[h['fiscal_year_end'][:4]] / shares[h['fiscal_year_end'][:4]] / h['value'] for h in v['ebit_per_share_history']}
+
+
+def test_share_basis_factor_comes_from_each_entrys_own_reported_basis_wsm_type():
+    """U8 split check 2026-10-23 (run 39945012772): NYSE:WSM 2:1 split effective 2024-07-09 (after the FY-2 10-K, before FY-1
+    end) looked RAW_CONSISTENT on prices. V-PRICE-BASIS does not infer F from a split date: F of each entry is the SPLIT chain
+    from that fiscal year's own as-reported 10-K to the published basis, and it equals, price-free, (EBIT / as-reported
+    diluted shares) / published value of that entry (real WSM companyfacts 2026-10-22: 19.0313 / 9.51565 = 2.0, 21.6848 /
+    10.8425 = 2.0, 19.0617 / 9.53091 = 2.0, then 1.0, 1.0 -> F 2, 2, 2, 1, 1). Synthetic WSM shape: the same."""
+    p = _basis_company(ratio=2.0, effective='2024-07-09', ratio_dates=((None, '2024-07-09', '2025-02-15'),))
+    got, v = _basis(p)
+    assert got == {'2021': 2.0, '2022': 2.0, '2023': 2.0, '2024': 1.0, '2025': 1.0}
+    implied = _as_reported_ratio(p, v)
+    assert all(implied[y] == pytest.approx(got[y], rel=1e-5) for y in got)
+    # The same invariant on the 10:1 and reverse-split shapes and the no-split twin.
+    for kw in ({}, {'effective': '2024-06-15', 'ratio_dates': ((None, '2024-06-15', '2025-02-15'),)},
+               {'ratio': 0.25, 'effective': '2024-06-15', 'ratio_dates': ((None, '2024-06-15', '2025-02-15'),)}):
+        p = _basis_company(**kw)
+        got, v = _basis(p)
+        assert all(_as_reported_ratio(p, v)[y] == pytest.approx(got[y], rel=1e-4) for y in got)   # 3-decimal share counts
+
+
+def test_share_basis_factor_is_na_when_the_restatement_is_unconfirmed_or_the_split_timing_unknown():
+    """Never 1.0 by assumption: (a) the FY2021 10-K is restated 10x in the next 10-Ks without a split-ratio fact (an unconfirmed
+    restatement, e.g. a unit change): FY2021 value comes from a later filing (published basis) but its as-reported basis
+    cannot be linked -> null SHARE_BASIS_UNCONFIRMED; (b) WMT-type: a split effective after FYE and before the 10-K
+    (2024-01-20, FY2023 10-K filed 2024-02-15 already restated) -> FY2023 null SPLIT_TIMING_UNCONFIRMED, from the ratio-fact
+    date or, without a dated fact, from the cover counts around the month-end."""
+    unconfirmed, v = _basis(_basis_company(effective='2022-06-30'))
+    assert unconfirmed['2021'] == vf.SHARE_BASIS_UNCONFIRMED and {unconfirmed[y] for y in ('2022', '2023', '2024', '2025')} == {1.0}
+    entry = v['ebit_per_share_history'][0]
+    assert entry['share_basis_factor'] is None and entry['value'] is not None
+    assert set(entry) == {'fiscal_year_end', 'value', 'share_basis_factor', 'share_basis_factor_reason'}
+    dated, _ = _basis(_basis_company(effective='2024-01-20', ratio_dates=((None, '2024-01-20', '2024-02-15'),)))
+    assert dated == {'2021': 10.0, '2022': 10.0, '2023': vf.SPLIT_TIMING_UNCONFIRMED, '2024': 1.0, '2025': 1.0}
+    covers = (('2023-10-31', 1.0e8, '2023-11-05'), ('2023-07-31', 1.0e8, '2023-08-05'), ('2024-02-01', 1.0e9, '2024-02-15'))
+    # The ratio fact tagged only with the fiscal-year context (end 2023-12-31, not in the window): the cover jump decides.
+    by_cover, _ = _basis(_basis_company(effective='2024-01-20', ratio_dates=(('2023-01-01', '2023-12-31', '2024-02-15'),), covers=covers))
+    assert by_cover['2023'] == vf.SPLIT_TIMING_UNCONFIRMED and by_cover['2022'] == 10.0
+    # One mis-scaled cover before the month-end (NTAP 2024-02-23 type) is not a split: the other reference is on the same basis.
+    typo = (('2023-07-31', 1.0e8, '2023-08-05'), ('2023-10-31', 1.0e7, '2023-11-05'), ('2024-02-01', 1.01e8, '2024-02-15'))
+    clean, _ = _basis(_basis_company(covers=typo))
+    assert clean == {'2021': 1.0, '2022': 1.0, '2023': 1.0, '2024': 1.0, '2025': 1.0}
+    # A cover change within SHARE_BASIS_COVER_BAND (buybacks, issuance) is not evidence; one beyond it is (merger or split).
+    drift = (('2023-07-31', 1.0e8, '2023-08-05'), ('2023-10-31', 1.0e8, '2023-11-05'), ('2024-02-01', 0.9e8, '2024-02-15'))
+    assert _basis(_basis_company(covers=drift))[0]['2023'] == 1.0
+    jump = (('2023-07-31', 1.0e8, '2023-08-05'), ('2023-10-31', 1.0e8, '2023-11-05'), ('2024-02-01', 1.3e8, '2024-02-15'))
+    assert _basis(_basis_company(covers=jump))[0]['2023'] == vf.SPLIT_TIMING_UNCONFIRMED
+
+
+def test_share_basis_factor_rows_validate_and_older_rows_keep_two_keys():
+    """Python validator: rows of 2026-10-23.1 carry the factor on every ebit_per_share_history entry; rows of an earlier
+    version (or legacy rows) exactly {fiscal_year_end, value} (the mixed file of the transition validates)."""
+    facts, subs = REF.synthetic_sec('0000001000')
+    row = q_build(facts, subs)
+    assert row['calc_version'] == vf.CALC_VERSION
+    assert all(h['share_basis_factor'] == 1.0 for h in row['v_inputs_v2']['ebit_per_share_history'])
+    q._v_inputs(row['v_inputs_v2'], CUTOFF, True, row['calc_version'])
+    with pytest.raises(ValueError):
+        q._v_inputs(row['v_inputs_v2'], CUTOFF, True, 'qgv2-calc/2026-10-17.1')
+    old = REF.legacy_histories(json.loads(json.dumps(row)))
+    q._v_inputs(old['v_inputs_v2'], CUTOFF, True, 'qgv2-calc/2026-10-17.1')
+    q._v_inputs(old['v_inputs_v2'], CUTOFF, True, None)
+    with pytest.raises(ValueError):
+        q._v_inputs(old['v_inputs_v2'], CUTOFF, True, vf.CALC_VERSION)
+
+
 # ---------------- validators (Python; JS parity through the shared vectors) ----------------
 def test_vectors_fixture_is_regenerated_from_the_python_validator():
     fixture = json.loads((ROOT / 'tests/fixtures/sec_qgv2_vectors_v1.json').read_text())
     assert fixture == json.loads(json.dumps(REF.build()))
     assert fixture['synthetic'] is True and len(fixture['cases']) >= 40
-    assert [c['id'] for c in fixture['cases'] if c['valid']] == ['base_valid', 'null_shard_and_registry_valid', 'ebit_estimated_years_valid',
+    assert [c['id'] for c in fixture['cases'] if c['valid']] == ['base_valid', 'share_basis_factor_null_with_reason_valid',
+                                                                            'share_basis_factor_wsm_type_valid',
+                                                                            'null_shard_and_registry_valid', 'ebit_estimated_years_valid',
                                                                             'calc_version_legacy_file_valid', 'calc_version_mixed_population_valid',
                                                                             'target_withdrawn_valid', 'target_withdrawn_without_observation_valid',
                                                                             'universe_withdrawn_valid', 'schema_v1_valid',

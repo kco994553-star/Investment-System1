@@ -9,7 +9,7 @@ def validate_spec(s):
     from .scoring_adapter import variant_options
     from ...qgv.qgv_v2 import official_weights
     from ...qgv.v2_factors import CALC_VERSION
-    if s['source']['scoring_source_sha']!='bb57398c9c22a2dfa2443c5f3a23db3848cbe5ce' or s['source']['calc_version']!=CALC_VERSION or s['source']['score_version']!='qgv-v2' or s['source']['type_scope']!='qgv2-type-scope/2026-10-17.1':raise ValueError('SCORING_SOURCE_CHANGED')
+    if s['source']['scoring_source_sha']!='96037d1cd53fc5e7ffce89d241311b5fb12a66d1' or s['source']['calc_version']!=CALC_VERSION or s['source']['score_version']!='qgv-v2' or s['source']['type_scope']!='qgv2-type-scope/2026-10-17.1':raise ValueError('SCORING_SOURCE_CHANGED')
     if s['costs']['sensitivity_one_way_bps']!=[0,10,20,25,30] or s['costs']['primary_one_way_bps']!=10:raise ValueError('COST_GRID_CHANGED')
     if s['portfolio']['initial_capital']!=100000 or s['portfolio']['currency']!='USD':raise ValueError('PORTFOLIO_CONTRACT_CHANGED')
     if set(s['variants'])!={'W0','W1','W2','W3'}:raise ValueError('VARIANTS_CHANGED')
