@@ -109,7 +109,7 @@ def test_package_imports_no_qgv_backtest_network_or_io_modules():
     banned = {'qgv_backtest', 'urllib', 'requests', 'http', 'socket', 'subprocess', 'providers'}
     modules = sorted(p.name for p in pkg.glob('*.py'))
     assert modules == ['__init__.py', 'benchmarks.py', 'handoff.py', 'ledger.py', 'metrics.py', 'pit.py', 'runner.py',
-                       'schedule.py', 'scoring.py', 'selection.py', 'settings.py', 'universe.py']
+                       'schedule.py', 'scoring.py', 'selection.py', 'settings.py', 'synthetic.py', 'universe.py']
     for name in modules:
         tree = ast.parse((pkg / name).read_text(encoding='utf-8'))
         for node in ast.walk(tree):

@@ -13,6 +13,11 @@ Subcommands
                            ledger stage over consecutive yearly selection_inputs.json files
                            -> DIR/ledger_outputs.json + DIR/manifest.json
   verify   --run DIR       re-hash a run directory against its manifest.json; exit 0 when every file matches
+  synthetic --out DIR [--generated-at ISO]
+                           synthetic run bundle for interface / settings / ledger checks (no real data): writes the
+                           invented input bundle and its manifest to DIR/bundle, then runs select 2018 -> DIR/select-2018,
+                           select 2019 (previous U-A from 2018) -> DIR/select-2019, ledger over both years to 2019-03-29
+                           -> DIR/ledger, and verify on each run directory; prints each run's run_id and manifest sha256
 
 Input manifest: see research/exp_deciles/handoff.py (resources {name, path, sha256, source, period, rights_note}; a path is
 relative to the manifest's directory or absolute). Every resource file is hashed before anything is computed and again
@@ -74,7 +79,7 @@ REPO_ROOT = ROOT.parent
 if str(ROOT / 'src') not in sys.path:
     sys.path.insert(0, str(ROOT / 'src'))
 
-from investment_system.research.exp_deciles import handoff, runner, schedule, settings  # noqa: E402
+from investment_system.research.exp_deciles import handoff, runner, schedule, settings, synthetic  # noqa: E402
 
 SELECTION_FILE = 'selection_inputs.json'
 LEDGER_FILE = 'ledger_outputs.json'
@@ -439,6 +444,39 @@ def cmd_verify(args):
     return 0 if ok else 1
 
 
+SYNTHETIC_END = '2019-03-29'
+
+
+def cmd_synthetic(args):
+    root = _output_dir(args.out)
+    if not os.path.lexists(root):
+        os.mkdir(root, 0o700)
+    bundle_dir = _output_dir(str(root / 'bundle'))
+    _refuse_existing(bundle_dir, tuple(name for name, _ in synthetic.bundle_bytes()))
+    _write_outputs(bundle_dir, synthetic.bundle_bytes())
+    manifest = str(bundle_dir / 'manifest.json')
+    when = ['--generated-at', args.generated_at] if args.generated_at is not None else []
+    steps = [
+        ['select', '--manifest', manifest, '--year', '2018', '--out', str(root / 'select-2018')] + when,
+        ['select', '--manifest', manifest, '--year', '2019', '--previous-u-a',
+         str(root / 'select-2018' / SELECTION_FILE), '--out', str(root / 'select-2019')] + when,
+        ['ledger', '--manifest', manifest, '--selection', str(root / 'select-2018' / SELECTION_FILE), '--selection',
+         str(root / 'select-2019' / SELECTION_FILE), '--out', str(root / 'ledger'), '--end', SYNTHETIC_END] + when,
+    ]
+    for argv in steps:
+        args_i = build_parser().parse_args(argv)
+        if args_i.func(args_i) != 0:
+            raise CliError('SYNTHETIC_STEP_FAILED')
+    status = 0
+    for name in ('select-2018', 'select-2019', 'ledger'):
+        if cmd_verify(build_parser().parse_args(['verify', '--run', str(root / name)])) != 0:
+            status = 1
+        print(f"run {name} manifest_sha256={handoff.sha256_hex(_read_bytes(root / name / MANIFEST_FILE))}")
+    print(f"bundle manifest_sha256={handoff.sha256_hex(_read_bytes(bundle_dir / 'manifest.json'))}")
+    _emit([('stage', 'synthetic'), ('synthetic', 'OK' if status == 0 else 'VERIFY_FAILED')])
+    return status
+
+
 def build_parser():
     parser = _Parser(prog='exp_stock_indicator_deciles', description='EXP-STOCK-INDICATOR-DECILES-v1 private runs',
                      allow_abbrev=False)
@@ -463,6 +501,10 @@ def build_parser():
     p = sub.add_parser('verify', allow_abbrev=False)
     p.add_argument('--run', required=True)
     p.set_defaults(func=cmd_verify)
+    p = sub.add_parser('synthetic', allow_abbrev=False)
+    p.add_argument('--out', required=True)
+    p.add_argument('--generated-at')
+    p.set_defaults(func=cmd_synthetic)
     return parser
 
 

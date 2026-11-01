@@ -231,3 +231,25 @@ def test_unknown_code_sha_is_flagged_and_missing_inputs_are_refused(cli, capsys,
     code, _, err = run(cli, capsys, 'ledger', '--manifest', str(no_prices), '--selection',
                        str(out_dir / 'selection_inputs.json'), '--out', str(tmp_path / 'ledger'))
     assert code == 2 and err.strip() == 'REFUSED PRICES_NOT_SUPPLIED'
+
+
+def test_synthetic_bundle_runs_end_to_end_and_replays_byte_identically(cli, capsys, tmp_path):
+    first, second = tmp_path / 'syn1', tmp_path / 'syn2'
+    code, out1, err = run(cli, capsys, 'synthetic', '--out', str(first), '--generated-at', WHEN)
+    assert code == 0, err
+    assert 'synthetic=OK' in out1 and out1.count('verify=OK') == 3
+    assert_clean_stdout(out1)
+    code, out2, err = run(cli, capsys, 'synthetic', '--out', str(second), '--generated-at', WHEN)
+    assert code == 0, err
+    hashes1 = [line for line in out1.splitlines() if 'manifest_sha256=' in line]
+    hashes2 = [line for line in out2.splitlines() if 'manifest_sha256=' in line]
+    assert len(hashes1) == 4 and hashes1 == hashes2
+    for name in ('bundle', 'select-2018', 'select-2019', 'ledger'):
+        a, b = first / name, second / name
+        assert sorted(p.name for p in a.iterdir()) == sorted(p.name for p in b.iterdir())
+        for child in a.iterdir():
+            assert child.read_bytes() == (b / child.name).read_bytes(), (name, child.name)
+            assert stat.S_IMODE(os.stat(child).st_mode) == 0o600
+    # a second run into the same directory is refused (never overwrites)
+    code, _, err = run(cli, capsys, 'synthetic', '--out', str(first), '--generated-at', WHEN)
+    assert code == 2 and 'OUTPUT_EXISTS' in err
