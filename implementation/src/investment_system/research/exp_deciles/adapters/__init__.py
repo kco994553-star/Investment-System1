@@ -19,7 +19,7 @@ Modules
   sec_bulk    SEC one-time collection assets (PR #460 plan: companyfacts.zip, submissions.zip,
               full-index-<y>-QTR<n>-form.idx.gz, fsds-<y>q<n>.zip with sub.txt) -> PIT companyfacts per CIK, as-filed SIC
               filing rows, single-class cover share counts, Form 25 / 15 termination evidence
-  iex_signal  per-day IEX last-trade result held in RAM (providers/iex_hist.py shapes) -> S quote records
+  iex_signal  per-day IEX last-trade result held in RAM (shapes of the central-V IEX HIST provider) -> S quote records
   alpaca_bars Alpaca SIP raw daily-bar pages (raw/<series>/page-NN.json) -> ledger price rows and coverage
   bundle      one S: records + terminations, quotes, companyfacts, filings, prices, the input manifest and a provenance
               document (source name, file sha256 and reason codes per item) with candidate / input-present / UNKNOWN counts

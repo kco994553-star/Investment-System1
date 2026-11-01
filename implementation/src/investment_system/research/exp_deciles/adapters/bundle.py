@@ -149,7 +149,7 @@ def build(*, year, securities, sec=None, iex=None, attributes=None, carried_unit
 
     securities: [{'security_id', 'cik'?, 'iex_symbol'?, 'alpaca_series'? (a raw/<series> directory), 'alpaca_symbol'?,
     'span'? ([first session, first day no longer] under that series' symbol)}]; sec: {'companyfacts_zip'?,
-    'submissions_zip'?, 'form_idx'?: [paths], 'fsds'?: [paths]}; iex: {'rows', 'iex_day'} (iex_hist.parse_rows output) or
+    'submissions_zip'?, 'form_idx'?: [paths], 'fsds'?: [paths]}; iex: {'rows', 'iex_day'} (the IEX HIST provider's parse_rows output) or
     {'day_result': IexDay, 'security_of_key': {key: security_id}}; attributes / effective_dates: {'source', 'sha256',
     'values'} (values {security_id: {listed?, security_type?, adr_ratio?, share_price_basis?}} / {accession: date});
     carried_units: CIKs of the previous U-A members and UNKNOWN units (termination evidence is looked up for them)."""

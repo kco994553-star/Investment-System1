@@ -1,10 +1,10 @@
 """Per-day IEX last-trade result (RAM) -> EXP-STOCK-INDICATOR-DECILES-v1 S quote records. Offline, RAM only.
 
-Input shapes (providers/iex_hist.py, central V):
-  parser rows   iex_hist.parse_rows output: {IEX symbol: (parser status, price_e4 or None)}, parser status ROUND /
+Input shapes (the central-V IEX HIST provider):
+  parser rows   the provider's parse_rows output: {IEX symbol: (parser status, price_e4 or None)}, parser status ROUND /
                 ODD_ONLY / NO_TRADE (the published codes SUPPLIED / ODD_LOT_ONLY / NO_IEX_TRADE are accepted too), price_e4
                 the integer price x 10,000 of the last regular-session round-lot trade (exact: price = price_e4 / 10000)
-  IexDay        iex_hist.IexDay (`day` = the IEX file's day, `status` {key: code}, `quotes` {key: {price, currency}} for
+  IexDay        the provider's IexDay (`day` = the IEX file's day, `status` {key: code}, `quotes` {key: {price, currency}} for
                 SUPPLIED keys only); read through `signal_quotes_from_iex_day`
 plus the caller's mapping {security_id: IEX symbol or None} (for an IexDay: {IexDay key: security_id}).
 
@@ -34,7 +34,7 @@ from .common import AdapterError, iso_day
 
 LABEL = 'IEX_LAST_REGULAR_TRADE_APPROX'
 USE = 'S_SIGNAL_PRICE_APPROXIMATION_ONLY_NEVER_T_OPEN'
-SOURCE = 'IEX HIST TOPS last regular-session trade (providers/iex_hist.py)'
+SOURCE = 'IEX HIST TOPS last regular-session trade (central V provider)'
 CURRENCY = 'USD'
 SUPPLIED = 'SUPPLIED'
 ODD_LOT_ONLY = 'ODD_LOT_ONLY'
@@ -47,8 +47,8 @@ STATUSES = (SUPPLIED, ODD_LOT_ONLY, NO_IEX_TRADE, UNMAPPED, IEX_RESULT_MISSING_S
             IEX_NOT_SUPPLIED)
 _FROM_PARSER = {'ROUND': SUPPLIED, 'ODD_ONLY': ODD_LOT_ONLY, 'NO_TRADE': NO_IEX_TRADE,
                 SUPPLIED: SUPPLIED, ODD_LOT_ONLY: ODD_LOT_ONLY, NO_IEX_TRADE: NO_IEX_TRADE}
-_SYMBOL = re.compile(r'[A-Z0-9][A-Z0-9.\-+=^]{0,7}')    # iex_hist.valid_symbol's rule
-MAX_PRICE_E4 = 10 ** 11                             # iex_hist.MAX_PRICE_E4: above is a parser fault, never a price
+_SYMBOL = re.compile(r'[A-Z0-9][A-Z0-9.\-+=^]{0,7}')    # the provider's valid_symbol rule
+MAX_PRICE_E4 = 10 ** 11                             # the provider's MAX_PRICE_E4: above is a parser fault, never a price
 
 
 def _security(value):
@@ -112,7 +112,7 @@ def signal_quotes(rows, symbol_of, *, iex_day, signal_day):
 
 
 def signal_quotes_from_iex_day(iex_day, security_of_key, *, signal_day):
-    """S quote records from an iex_hist.IexDay held in RAM. Its quote price (a float price_e4 / 10000) is read through
+    """S quote records from the provider's IexDay held in RAM. Its quote price (a float price_e4 / 10000) is read through
     repr and rounded to 4 decimals, the precision of the IEX price; PRICE_SYMBOL_UNMAPPED maps to UNMAPPED and any other
     row-level code (ADR, split, identity rules of the central V) is withheld under its own code."""
     status_in, quotes_in = getattr(iex_day, 'status', None), getattr(iex_day, 'quotes', None)
