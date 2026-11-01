@@ -1,39 +1,56 @@
-"""Ticker-mismatch classification of the 2026-11-01 FV3-PIT-TICKER sample (owner decision 2026-11-01 item 9; EXP doc
-docs/lab/EXP_STOCK_INDICATOR_DECILES_V1.md section 9; plan docs/lab/SEC_ONCE_COLLECTION_PLAN_20261101.md section 9).
-Runs once inside the SEC one-time collection (.github/workflows/sec-once-collect.yml), in the same step as `collect`
-(SEC_USER_AGENT only), after it.
+"""Ticker-mismatch classification of the 2026-11-01 FV3-PIT-TICKER sample (owner decision 2026-11-01 item 9: "8%는 원인을
+분류해 보고하라. 미확인 매핑을 확정 신원으로 쓰지 마라"; plan docs/lab/SEC_ONCE_COLLECTION_PLAN_20261101.md section 9).
+Runs once inside the SEC one-time collection (.github/workflows/sec-once-collect.yml), in its own step right after
+`collect` (SEC_USER_AGENT only), started with `python -I -S`.
+
+Before any SEC request it requires (1) this attempt's raw-repository preflight marker (the private check of
+resume-check) and (2) collect-manifest.json with stopped=NONE. When collect stopped (403 or 429 repeats, request cap, wall
+clock, a local disk fault) or left no manifest, it sends NO request, writes an incomplete rows file and prints
+TICKERMIX_SKIP: SEC is not asked again by a fresh client right after it refused or throttled the run.
 
 Run 41255597310 counted 209 filings with a cover `dei:TradingSymbol` and 16 of them whose XBRL instance file-name prefix is
 not that symbol (case-insensitive), and kept no per-filing rows. This script re-builds exactly that sample with the moved
 measurement code (fv3_pit_ticker_measure.py: same 120-issuer panel from the in-repo registry, same 2016-2019 picks from
-form.idx, same instance choice and dei reading) and classifies each mismatch by fixed rules, first match wins:
-  NOTATION                 prefix and symbol equal once dots, hyphens, spaces and an exchange label ("NYSE:") are removed
-  CLASS_SHARE              they differ by one trailing class letter, written after a separator (BRK / BRK.B) or one of
-                           A, B, C, K, L (GOOG / GOOGL, FOX / FOXA), or both are today's tickers of the same issuer,
-                           which has two or more
-  OLD_TICKER               the prefix is another ticker of the same issuer: a TradingSymbol or a confirmed prefix of its
-                           other sample filings, or one of today's tickers (registry, submissions.zip)
+form.idx, same instance choice and dei reading) and classifies each mismatch by fixed rules, first match wins.
+"today" = the issuer's tickers now (registry, stored submissions.zip); "earlier" / "later" = TradingSymbol values (and
+prefixes confirmed equal to one) of the same issuer's sample filings of EARLIER / LATER years than this filing.
+A TradingSymbol value that lists several symbols ("GOOGL, GOOG", "A and B") is split first.
+  NOTATION                 prefix and a symbol are equal once dots, hyphens, spaces and an exchange label ("NYSE:")
+                           are removed, or once a several-symbol value is split
+  CLASS_SHARE              one trailing class letter apart AND evidence of a class: the separator is written (BRK /
+                           BRK.B), or the letter is A, B, C, K or L and the issuer has two or more tickers today or both
+                           strings are known tickers of the issuer; or both are today's tickers of an issuer with two or
+                           more
+  OLD_TICKER               the prefix is a ticker the issuer used BEFORE this filing (an earlier filing's symbol or
+                           confirmed prefix), it is NOT one of today's tickers, and it differs from the filing's symbol
+  SYMBOL_ODD               the prefix is the issuer's ticker today (or of a later filing): the prefix is normal and the
+                           cover symbol value is what differs (another class, a typo, a stale value); never OLD_TICKER
   INLINE_DOC_NAME          the filing is inline XBRL (the instance name follows the company's document name)
   SHORT_NAME_OR_DOC_NAME   not a ticker shape (more than 5 letters or digits, or a digit), a document word (form, annual,
                            report, ...), or a company-name word or initials (form.idx name, submissions.zip names)
   OTHER                    anything else; OTHER_SYMBOL_EMPTY counts the filings whose TradingSymbol has no value
-These are rule-based classes, not a person's review.
+These are rule-based classes, not a person's review, and NONE of them confirms an identity: every row carries
+identity_confirmed=false, and the file says it is a source of cause counts only, never of ticker <-> CIK links.
 form.idx comes from the files `collect` just stored (the same bytes SEC serves); a missing quarter is fetched as in the
 original measurement. Company names and today's tickers come from the stored submissions.zip when it is there.
+complete=yes needs: no stop, all 16 quarterly form.idx files read, and no transient per-filing error (HTTP 5xx / 429 /
+403, network, truncation, gzip, local read); deterministic ones (SIZE_CAP, BAD_INDEX, HTTP404, PARSE_*) are counted and
+allowed, so a re-run does not ask SEC again for them.
 
 Output: fixed count lines only (never a ticker, CIK, company name, URL, User-Agent or exception text):
   TICKERMIX_START panel=<n> years=2016-2019 names=SUBMISSIONS|INDEX_ONLY|RESUMED
+  TICKERMIX_SKIP reason=COLLECT_STOPPED|COLLECT_MANIFEST_MISSING   (no request made)
   TICKERMIX_INDEX local=<n> remote=<n>   (quarterly form.idx files read from the stored copy / fetched again)
   PITTICKER overall ... and PITTICKER_ERRORS overall ... (the original format, for comparison with run 41255597310)
   TICKERMIX symbol_filings=<n> prefix_eq_symbol=<n> mismatches=<n> expected_symbol=209 expected_mismatch=16 same=yes|no
-  TICKERMIX_CLASSES mismatches=<n> short_name_doc=<n> old_ticker=<n> class_share=<n> notation=<n> inline_doc=<n>
-      other=<n> other_symbol_empty=<n>
+  TICKERMIX_CLASSES mismatches=<n> short_name_doc=<n> old_ticker=<n> symbol_odd=<n> class_share=<n> notation=<n>
+      inline_doc=<n> other=<n> other_symbol_empty=<n>
   PITTICKER_REQUESTS ... (the original format)
   TICKERMIX_DONE complete=yes|no
   TICKERMIX_STOP reason=<code>   (configuration stop before any request)
 Per-filing rows (CIK, accession, symbols, prefix, instance name, class and evidence) go ONLY to the private file
 files/ticker-mismatch-rows.json, which the upload step puts in the private release.
-Exit 0 ran to the end (complete or not: the rows file says which), 2 configuration stop, 1 unexpected.
+Exit 0 ran to the end or skipped (complete or not: the rows file says which), 2 configuration stop, 1 unexpected.
 """
 from __future__ import annotations
 
@@ -48,6 +65,7 @@ import os  # noqa: E402
 import re  # noqa: E402
 import time  # noqa: E402
 import zipfile  # noqa: E402
+import zlib  # noqa: E402
 from collections import Counter  # noqa: E402
 from pathlib import Path  # noqa: E402
 
@@ -57,9 +75,14 @@ import fv3_pit_ticker_measure as pit  # noqa: E402
 import sec_once_collect as once  # noqa: E402
 
 EXPECTED_SYMBOL, EXPECTED_MISMATCH = 209, 16          # run 41255597310 (2026-11-01)
-CLASSES = ('SHORT_NAME_OR_DOC_NAME', 'OLD_TICKER', 'CLASS_SHARE', 'NOTATION', 'INLINE_DOC_NAME', 'OTHER')
-CLASS_FIELDS = (('short_name_doc', 'SHORT_NAME_OR_DOC_NAME'), ('old_ticker', 'OLD_TICKER'), ('class_share', 'CLASS_SHARE'),
-                ('notation', 'NOTATION'), ('inline_doc', 'INLINE_DOC_NAME'), ('other', 'OTHER'))
+CLASSES = ('SHORT_NAME_OR_DOC_NAME', 'OLD_TICKER', 'SYMBOL_ODD', 'CLASS_SHARE', 'NOTATION', 'INLINE_DOC_NAME', 'OTHER')
+CLASS_FIELDS = (('short_name_doc', 'SHORT_NAME_OR_DOC_NAME'), ('old_ticker', 'OLD_TICKER'), ('symbol_odd', 'SYMBOL_ODD'),
+                ('class_share', 'CLASS_SHARE'), ('notation', 'NOTATION'), ('inline_doc', 'INLINE_DOC_NAME'),
+                ('other', 'OTHER'))
+# deterministic per-filing errors: counted, allowed for complete=yes (a re-run would get the same answer from SEC)
+DETERMINISTIC_ERRORS = ('SIZE_CAP', 'BAD_INDEX', 'HTTP404')
+IDENTITY_USE = ('cause counts only (owner decision 2026-11-01 item 9); never an identity source: no row confirms a '
+                'ticker <-> CIK link')
 DOC_WORDS = ('form', 'annual', 'quarterly', 'report', 'xbrl', 'instance', 'document', 'filing', 'tenk', 'tenq')
 NAME_STOP = {'inc', 'incorporated', 'corp', 'corporation', 'co', 'company', 'ltd', 'limited', 'plc', 'llc', 'lp', 'l',
              'p', 'the', 'holdings', 'holding', 'group', 'trust', 'sa', 'nv', 'ag', 'de', 'new'}
@@ -67,6 +90,7 @@ _EXCHANGE_LABEL = re.compile(r'^\s*[A-Za-z][A-Za-z .]{1,40}:\s*')
 _CLASS_SUFFIX = re.compile(r'[A-Za-z]{1,6}[.\-/ ][A-Za-z]')     # BRK.B, BF-B, RDS/A, MOG A
 CLASS_LETTERS = 'abckl'                                        # FOXA, GOOGL, LBTYK, DISCK, ...
 _ROWS_SCHEMA = 'sec-once-ticker-mismatch/1'
+_LIST_SPLIT = re.compile(r'\s*[,;&]\s*|\s+and\s+', re.I)
 
 
 def norm(value):
@@ -94,31 +118,58 @@ def name_evidence(prefix, names):
     return False
 
 
+def split_symbols(values):
+    """TradingSymbol values with several symbols in one value split apart ("GOOGL, GOOG", "A and B", "GOOGL/GOOG");
+    a slash is a list only when every part has two or more letters or digits (RDS/A stays one class symbol)."""
+    out = []
+    for value in values:
+        for part in _LIST_SPLIT.split(value):
+            pieces = part.split('/')
+            if len(pieces) > 1 and all(len(norm(x)) >= 2 for x in pieces):
+                out.extend(x for x in pieces if norm(x))
+            elif norm(part):
+                out.append(part)
+    return out
+
+
 def classify(row, known, names):
-    """(class, evidence) of one mismatch row. `known`: {'today': set, 'other': set} of normalised tickers of the issuer."""
+    """(class, evidence) of one mismatch row. `known`: {'today', 'earlier', 'later'} sets of normalised tickers of the
+    issuer (today's; symbols of its sample filings of earlier / later years). See the module docstring for the rules."""
     prefix = row['prefix'] or ''
     p = norm(prefix)
-    symbols = [s for s in row['symbols'] if norm(s)]
-    evidence = {'notation': False, 'class_share': False, 'known_ticker': None, 'name_match': False,
-                'not_ticker_shape': False, 'doc_word': False}
-    if not symbols:
+    values = [s for s in row['symbols'] if norm(s)]
+    today = set(known.get('today', set())) - {''}
+    earlier = set(known.get('earlier', set())) - {''}
+    later = set(known.get('later', set())) - {''}
+    issuer = today | earlier | later
+    evidence = {'notation': False, 'multi_value': False, 'class_share': False, 'known_ticker': None,
+                'symbol_known': False, 'issuer_tickers_today': len(today), 'name_match': False,
+                'not_ticker_shape': False, 'doc_word': False, 'identity_confirmed': False}
+    if not values:
         return 'OTHER', dict(evidence, symbol_empty=True)
-    cleaned = [norm(_EXCHANGE_LABEL.sub('', s)) for s in symbols] + [norm(s) for s in symbols]
+    pieces = split_symbols(values)
+    evidence['multi_value'] = len(pieces) > len(values)
+    cleaned = {norm(_EXCHANGE_LABEL.sub('', s)) for s in pieces} | {norm(s) for s in pieces}
+    cleaned.discard('')
+    evidence['symbol_known'] = bool(cleaned & issuer)
     if p and p in cleaned:
         return 'NOTATION', dict(evidence, notation=True)
-    separated = any(_CLASS_SUFFIX.fullmatch(s.strip()) for s in symbols)
-    for s in cleaned:
+    prefix_separated = bool(_CLASS_SUFFIX.fullmatch(prefix.strip()))
+    for piece in pieces:
+        s = norm(_EXCHANGE_LABEL.sub('', piece))
         short, long_ = sorted((p, s), key=len)
-        if short and long_.startswith(short) and len(long_) - len(short) == 1 and long_[-1].isalpha() \
-                and (separated or long_[-1] in CLASS_LETTERS):
+        if not (short and long_.startswith(short) and len(long_) - len(short) == 1 and long_[-1].isalpha()):
+            continue
+        separated = prefix_separated or bool(_CLASS_SUFFIX.fullmatch(_EXCHANGE_LABEL.sub('', piece).strip()))
+        backed = len(today) >= 2 or (short in issuer and long_ in issuer)
+        if separated or (long_[-1] in CLASS_LETTERS and backed):
             return 'CLASS_SHARE', dict(evidence, class_share=True)
-    today = known.get('today', set())
-    if len(today) >= 2 and p in today and any(s in today for s in cleaned):
+    if len(today) >= 2 and p in today and cleaned & today:
         return 'CLASS_SHARE', dict(evidence, class_share=True)
-    if p and p in known.get('other', set()):
-        return 'OLD_TICKER', dict(evidence, known_ticker='other_filing')
-    if p and p in today:
-        return 'OLD_TICKER', dict(evidence, known_ticker='today')
+    if p and p in earlier and p not in today:
+        return 'OLD_TICKER', dict(evidence, known_ticker='earlier_filing')
+    if p and (p in today or p in later):
+        return 'SYMBOL_ODD', dict(evidence, known_ticker='today' if p in today else 'later_filing')
     if row['inline']:
         return 'INLINE_DOC_NAME', evidence
     shape = len(p) > 5 or any(c.isdigit() for c in prefix)
@@ -167,12 +218,14 @@ def submissions_info(path, ciks):
                     continue
                 try:
                     data = json.loads(archive.read(member))
-                except ValueError:
+                except (ValueError, RuntimeError, NotImplementedError, EOFError, zipfile.BadZipFile, zlib.error):
+                    continue
+                if not isinstance(data, dict):
                     continue
                 tickers = [t for t in data.get('tickers') or [] if isinstance(t, str)]
                 names = [data.get('name')] + [f.get('name') for f in data.get('formerNames') or [] if isinstance(f, dict)]
                 info[cik] = {'tickers': tickers, 'names': [n for n in names if isinstance(n, str)]}
-    except (OSError, zipfile.BadZipFile):
+    except (OSError, zipfile.BadZipFile, RuntimeError, NotImplementedError, EOFError, zlib.error):
         return {}
     return info
 
@@ -289,13 +342,26 @@ def run(work, environ, *, opener=None, sleep=time.sleep, clock=time.monotonic, o
         raise once.ConfigStop('SEC_USER_AGENT_MISSING')
     if not pit.valid_user_agent(agent):
         raise once.ConfigStop('SEC_USER_AGENT_INVALID')
-    once.run_context(environ)
+    once.require_preflight(work, environ)   # the raw repository was found private on THIS attempt
+    folder = once.files_dir(work)
+    collected = once.read_json(Path(work) / 'collect-manifest.json')
+    if not isinstance(collected, dict) or collected.get('stopped') != 'NONE':
+        # collect stopped (403 / 429 repeats, a cap, a local disk fault) or left nothing: no SEC request at all
+        reason = 'COLLECT_MANIFEST_MISSING' if not isinstance(collected, dict) else 'COLLECT_STOPPED'
+        stopped = collected.get('stopped') if isinstance(collected, dict) else None
+        once.write_json(folder / once.ROWS_FILE, {
+            'schema': _ROWS_SCHEMA, 'source_run_compared': 41255597310, 'complete': False,
+            'identity_confirmed': False, 'use': IDENTITY_USE,
+            'summary': {'skipped': reason, 'collect_stopped': once.code_token(stopped) if stopped else None},
+            'rows': [], 'written_at': once.utc_now()})
+        out(f'TICKERMIX_SKIP reason={reason}')
+        out('TICKERMIX_DONE complete=no')
+        return 0
     try:
         pool = pit.load_pool()
     except (OSError, ValueError, KeyError, TypeError, AttributeError):
         raise once.ConfigStop('SAMPLE_INPUT_INVALID') from None
     panel = pit.sample_panel(pool)
-    folder = once.files_dir(work)
     info = submissions_info(folder / 'submissions.zip', panel) if (folder / 'submissions.zip').is_file() else {}
     client = pit.SecClient(agent, opener=opener, sleep=sleep, clock=clock)
     out(f'TICKERMIX_START panel={len(panel)} years={pit.YEARS[0]}-{pit.YEARS[-1]} '
@@ -329,16 +395,23 @@ def run(work, environ, *, opener=None, sleep=time.sleep, clock=time.monotonic, o
     except Exception as exc:  # a bug must not hide the counts gathered so far; class name only
         stopped = 'UNEXPECTED'
         errors['UNEXPECTED_' + type(exc).__name__] += 1
-    mismatch_rows = classify_all(inspected, pool, info)
+    try:
+        mismatch_rows = classify_all(inspected, pool, info)
+    except Exception as exc:  # the counts above stay; the file then says complete=false
+        mismatch_rows, stopped = [], 'UNEXPECTED'
+        errors['UNEXPECTED_CLASSIFY_' + type(exc).__name__] += 1
     classes = class_counts(mismatch_rows)
-    complete = stopped == 'NONE' and totals['form_idx_ok'] == 4 * len(pit.YEARS)
+    transient = transient_errors(errors)
+    complete = stopped == 'NONE' and totals['form_idx_ok'] == 4 * len(pit.YEARS) and transient == 0
     summary = {'panel': len(panel), 'symbol_filings': totals['trading_symbol'], 'prefix_eq_symbol': totals['prefix_eq_symbol'],
                'mismatches': len(mismatch_rows), 'expected_symbol': EXPECTED_SYMBOL, 'expected_mismatch': EXPECTED_MISMATCH,
                'classes': {name: classes[name] for name in CLASSES}, 'other_symbol_empty': classes['OTHER_SYMBOL_EMPTY'],
                'index_local': sources['LOCAL'], 'index_remote': sources['REMOTE'],
-               'stopped': stopped, 'errors': {once.code_token(k): int(v) for k, v in errors.items()}}
+               'stopped': stopped, 'errors': {once.code_token(k): int(v) for k, v in errors.items()},
+               'transient_errors': transient}
     once.write_json(folder / once.ROWS_FILE, {
         'schema': _ROWS_SCHEMA, 'source_run_compared': 41255597310, 'complete': complete, 'summary': summary,
+        'identity_confirmed': False, 'use': IDENTITY_USE,
         'rules': 'sec_once_ticker_mismatch.classify (rule-based, first match wins; not a person review)',
         'rows': mismatch_rows, 'written_at': once.utc_now()})
     out(f'TICKERMIX_INDEX local={sources["LOCAL"]} remote={sources["REMOTE"]}')
@@ -351,28 +424,42 @@ def run(work, environ, *, opener=None, sleep=time.sleep, clock=time.monotonic, o
     return 0
 
 
+def transient_errors(errors):
+    """Errors a re-run could fix (HTTP 5xx / 429 / 403, network, truncation, form.idx or local read faults, anything
+    unknown); the deterministic ones (DETERMINISTIC_ERRORS, PARSE_*) do not count."""
+    return sum(int(n) for code, n in errors.items()
+               if not (code in DETERMINISTIC_ERRORS or str(code).startswith('PARSE_')))
+
+
+def filing_values(row):
+    """Normalised symbols a filing shows for its issuer: its TradingSymbol values (split) and, when it equals one of
+    them, its prefix."""
+    values = {norm(s) for s in split_symbols([v for v in row['symbols'] if norm(v)])}
+    if row['flags'].get('prefix_eq_symbol'):
+        values.add(norm(row['prefix']))
+    return values - {''}
+
+
 def classify_all(inspected, pool, info):
     """Mismatch rows (TradingSymbol present, prefix not equal to any symbol, case-insensitive) with class and evidence."""
-    other = {}
+    by_cik = {}
     for row in inspected:
-        mine = other.setdefault(row['cik'], {})
-        values = {norm(s) for s in row['symbols'] if norm(s)}
-        if row['flags'].get('prefix_eq_symbol'):
-            values.add(norm(row['prefix']))
-        mine[row['accession']] = values
+        by_cik.setdefault(row['cik'], []).append((row['year'], row['accession'], filing_values(row)))
     out = []
     for row in inspected:
         if not (row['flags'].get('trading_symbol') and not row['flags'].get('prefix_eq_symbol')):
             continue
         cik = row['cik']
         today = {norm(t) for t in pool.get(cik, set())} | {norm(t) for t in info.get(cik, {}).get('tickers', [])}
-        seen = set().union(*[v for acc, v in other.get(cik, {}).items() if acc != row['accession']])
+        mine = [(year, values) for year, acc, values in by_cik.get(cik, []) if acc != row['accession']]
+        earlier = set().union(*[values for year, values in mine if year < row['year']])
+        later = set().union(*[values for year, values in mine if year > row['year']])
         names = [n for n in [row.get('company')] + info.get(cik, {}).get('names', []) if n]
-        label, evidence = classify(row, {'today': today - {''}, 'other': seen - {''}}, names)
+        label, evidence = classify(row, {'today': today - {''}, 'earlier': earlier, 'later': later}, names)
         out.append({'year': row['year'], 'cik': cik, 'accession': row['accession'], 'form': row['form'],
                     'instance': row['instance'], 'inline': row['inline'], 'prefix': row['prefix'],
                     'symbols': row['symbols'], 'period_end': row['period'], 'company': row.get('company'),
-                    'class': label, 'evidence': evidence})
+                    'class': label, 'evidence': evidence, 'identity_confirmed': False})
     return out
 
 

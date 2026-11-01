@@ -4,12 +4,17 @@ offline checks on synthetic, in-memory inputs only (no network, no Secret).
 - the fixed plan: 2 bulk zips, 104 full-index files (2014-2026), 51 FSDS quarters (2014q1-2026q3), 157 requests;
 - the exact SEC URL allow-list (www.sec.gov only, four path shapes) and the run-branch lock;
 - the downloader: User-Agent and encodings, pacing, retries with backoff, truncation, size caps, 403 / 429 / request /
-  wall-clock stops, deterministic gzip storage, zip CRC check with one fresh download;
-- collect end to end on a fake SEC: fixed count lines only, the private manifest, partial runs, the resume skip;
-- the private release: the GitHub call allow-list (create-only, own tag only, no PATCH / PUT / DELETE, no listing),
-  attempt 1 reads nothing, uploads with sha256 sidecars, the 2 GiB split, the manifest last, the verify-back, re-run
-  attempts that skip verified assets and rename unverified ones;
-- the workflow's shape (push to the run branch only, one Secret per step, pinned actions, no sinks).
+  wall-clock stops, a local disk fault stops at once (never retried as a network error), deterministic gzip storage,
+  zip CRC check with one fresh download;
+- collect end to end on a fake SEC: fixed count lines only, the private manifest, partial runs, the resume skip, and no
+  request at all without this attempt's private-repository preflight marker;
+- the private release: the raw repository must answer private on every attempt (resume-check, before any SEC request)
+  and again before the release is created; the GitHub call allow-list (create-only, own tag only, no PATCH / PUT /
+  DELETE, no listing), attempt 1 reads no release, uploads with sha256 sidecars, the 2 GiB split, read-back before the
+  manifest, the manifest last, re-run attempts that skip verified assets (newest attempt first) and rename every name an
+  upload would collide with (a fake GitHub that refuses duplicate names with 422, an interrupted split re-run);
+- the workflow's shape (push to the run branch only, offline tests in their own job, `python -I -S` in the Secret job,
+  one Secret per step, upload still runs after a classifier failure, pinned actions, no sinks).
 """
 from __future__ import annotations
 
@@ -74,8 +79,9 @@ def test_plan_lines_and_disk_check():
     lines = once.plan_lines(20 * 1024 ** 3)
     assert lines == ['SECONCE_PLAN bulk=2 index_files=104 index_years=2014-2026 fsds_files=51 fsds_quarters=2014q1-2026q3 '
                      'sec_requests_planned=157 max_requests=500 wall_clock_s=3600 pace_s=0.15',
-                     'SECONCE_DISK free_gb=20 need_gb=14 ok=yes']
-    assert once.plan_lines(13 * 1024 ** 3)[1] == 'SECONCE_DISK free_gb=13 need_gb=14 ok=no'
+                     'SECONCE_DISK free_gb=20 need_gb=11 ok=yes']
+    assert once.plan_lines(11 * 1024 ** 3)[1] == 'SECONCE_DISK free_gb=11 need_gb=11 ok=yes'
+    assert once.plan_lines(11 * 1024 ** 3 - 1)[1] == 'SECONCE_DISK free_gb=10 need_gb=11 ok=no'
 
 
 def test_plan_command_stops_on_little_disk(tmp_path):
@@ -83,7 +89,7 @@ def test_plan_command_stops_on_little_disk(tmp_path):
         free = 3 * 1024 ** 3
     out = []
     assert once.main(['plan', '--work', str(tmp_path)], disk_usage=lambda p: Usage(), out=out.append, environ={}) == 2
-    assert out[-1] == 'SECONCE_DISK free_gb=3 need_gb=14 ok=no'
+    assert out[-1] == 'SECONCE_DISK free_gb=3 need_gb=11 ok=no'
 
 
 @pytest.mark.parametrize('url', [
@@ -396,7 +402,9 @@ LINE = [re.compile(p) for p in (
     r'SECONCE_INDEX year=20\d\d quarters=[1-4] rows=\d+(?: f[a-z0-9]+=\d+){9}',
     r'SECONCE_ERRORS codes=(?:-|[A-Za-z][A-Za-z0-9_]*:\d+(?:,[A-Za-z][A-Za-z0-9_]*:\d+)*)',
     r'SECONCE_REQUESTS(?: [a-z0-9]+=\d+){9} mb_wire=\d+\.\d mb_body=\d+\.\d elapsed_s=\d+ '
-    r'stopped=(?:NONE|REQUEST_CAP|WALL_CLOCK|HTTP403_REPEATED|HTTP429_REPEATED|UNEXPECTED) complete=(?:yes|no)',
+    r'stopped=(?:NONE|REQUEST_CAP|WALL_CLOCK|HTTP403_REPEATED|HTTP429_REPEATED|LOCAL_DISK_FULL|LOCAL_IO|UNEXPECTED) '
+    r'complete=(?:yes|no)',
+    r'SECONCE_PREFLIGHT raw_repo=private',
     r'SECONCE_RESUME attempt=\d+ release=(?:NOT_READ|ABSENT|PRESENT) assets=\d+ verified=\d+ unverified=\d+',
     r'SECONCE_RELEASE created=(?:yes|no) assets_uploaded=\d+ assets_present=\d+ assets_failed=\d+ mb=\d+\.\d '
     r'manifest=(?:OK|FAILED)',
@@ -413,9 +421,23 @@ def assert_fixed_lines(lines):
         assert TOKEN not in line and AGENT not in line and not re.search(r'\d{10}', line)
 
 
-def run_collect(tmp_path, opener, env=None, clock=None):
+def write_preflight(work, environ=None):
+    """The marker resume-check writes after the raw repository answered private (tests that do not run resume-check)."""
+    run_id, attempt = once.run_context(environ or ENV)
+    Path(work).mkdir(parents=True, exist_ok=True)
+    once.write_json(Path(work) / once.PREFLIGHT_FILE, {'repository': once.RAW_REPO, 'private': True,
+                                                       'visibility': 'private', 'run_id': run_id, 'attempt': attempt})
+
+
+def run_collect(tmp_path, opener, env=None, clock=None, preflight=True):
     lines = []
-    code = once.main(['collect', '--work', str(tmp_path)], environ=env or {**ENV, 'SEC_USER_AGENT': AGENT},
+    environ = env or {**ENV, 'SEC_USER_AGENT': AGENT}
+    if preflight and not (Path(tmp_path) / once.PREFLIGHT_FILE).is_file():
+        try:
+            write_preflight(tmp_path, environ)
+        except once.ConfigStop:
+            pass
+    code = once.main(['collect', '--work', str(tmp_path)], environ=environ,
                      opener=opener, sleep=lambda s: None, clock=clock or Clock(0.0), out=lines.append)
     return code, lines
 
@@ -535,26 +557,89 @@ def test_collect_configuration_stops_before_any_request(tmp_path, env, line):
     assert code == 2 and lines == [line]
 
 
+@pytest.mark.parametrize('marker, line', [
+    (None, 'SECONCE_STOP reason=RAW_PREFLIGHT_MISSING'),
+    ({'repository': once.RAW_REPO, 'private': True, 'visibility': 'private', 'run_id': RUN_ID, 'attempt': 2},
+     'SECONCE_STOP reason=RAW_PREFLIGHT_MISSING'),                      # an earlier / other attempt's marker
+    ({'repository': once.RAW_REPO, 'private': False, 'visibility': 'public', 'run_id': RUN_ID, 'attempt': 1},
+     'SECONCE_STOP reason=RAW_PREFLIGHT_MISSING'),
+    ({'repository': 'kco994553-star/other', 'private': True, 'visibility': 'private', 'run_id': RUN_ID, 'attempt': 1},
+     'SECONCE_STOP reason=RAW_PREFLIGHT_MISSING'),
+])
+def test_collect_refuses_to_start_without_this_attempts_private_preflight(tmp_path, marker, line):
+    if marker is not None:
+        once.write_json(tmp_path / once.PREFLIGHT_FILE, marker)
+    code, lines = run_collect(tmp_path, NoNetwork(), preflight=False)
+    assert code == 2 and lines == [line]
+
+
+class DiskFull(io.BytesIO):
+    """A local file whose writes fail with ENOSPC after `room` bytes."""
+
+    def __init__(self, room):
+        super().__init__()
+        self.room = room
+
+    def write(self, data):
+        if self.tell() + len(data) > self.room:
+            raise OSError(once.errno.ENOSPC, 'synthetic: no space left')
+        return super().write(data)
+
+
+@pytest.mark.parametrize('error, reason', [(once.errno.ENOSPC, 'LOCAL_DISK_FULL'), (once.errno.EIO, 'LOCAL_IO')])
+def test_local_disk_fault_stops_at_once_and_is_never_retried(tmp_path, monkeypatch, error, reason):
+    real_open = open
+
+    def fake_open(path, mode='r', *args, **kwargs):
+        if str(path).endswith('.part') and 'w' in mode:
+            if error == once.errno.ENOSPC:
+                return DiskFull(10)
+            raise OSError(error, 'synthetic I/O error')
+        return real_open(path, mode, *args, **kwargs)
+    monkeypatch.setattr(once, 'open', fake_open, raising=False)
+    d, sleeps = downloader([FakeResponse(FSDS)] * 3)
+    with pytest.raises(pit.Stop) as stop:
+        d.download(ITEM_ZIP, tmp_path / 'f.zip')
+    assert stop.value.reason == reason and d.counts['total'] == 1 and d.counts['retries'] == 0
+    assert sleeps == [once.SLEEP_S]                                     # no backoff wait, no second request
+    opener = FakeOpener(default=fake_sec)
+    code, lines = run_collect(tmp_path / 'w', opener)
+    assert code == 0 and len(opener.calls) == 1
+    assert_fixed_lines(lines)
+    assert lines[-1].endswith(f' stopped={reason} complete=no')
+    assert json.loads((tmp_path / 'w/collect-manifest.json').read_text())['stopped'] == reason
+
+
 def test_script_without_user_agent_prints_one_fixed_line(tmp_path):
+    """Started like the workflow starts it (python -I -S: no site-packages, no .pth hooks, no PYTHONPATH)."""
     env = {k: v for k, v in os.environ.items() if k not in ('SEC_USER_AGENT', 'RAW_REPO_TOKEN') and k.lower() not in
            ('http_proxy', 'https_proxy', 'all_proxy', 'no_proxy')}
     env.update(HTTPS_PROXY='http://127.0.0.1:9', HTTP_PROXY='http://127.0.0.1:9', **ENV)
-    run = subprocess.run([sys.executable, str(TOOL), 'collect', '--work', str(tmp_path / 'w')], cwd=tmp_path, env=env,
+    isolated = [sys.executable, '-I', '-S']
+    run = subprocess.run(isolated + [str(TOOL), 'collect', '--work', str(tmp_path / 'w')], cwd=tmp_path, env=env,
                          capture_output=True, text=True, timeout=60)
     assert (run.returncode, run.stdout, run.stderr) == (2, 'SECONCE_STOP reason=SEC_USER_AGENT_MISSING\n', '')
-    run = subprocess.run([sys.executable, str(TOOL), 'upload', '--work', str(tmp_path / 'w')], cwd=tmp_path, env=env,
-                         capture_output=True, text=True, timeout=60)
-    assert (run.returncode, run.stdout, run.stderr) == (2, 'SECONCE_STOP reason=RAW_REPO_TOKEN_MISSING\n', '')
+    for command in ('upload', 'resume-check'):
+        run = subprocess.run(isolated + [str(TOOL), command, '--work', str(tmp_path / 'w')], cwd=tmp_path, env=env,
+                             capture_output=True, text=True, timeout=60)
+        assert (run.returncode, run.stdout, run.stderr) == (2, 'SECONCE_STOP reason=RAW_REPO_TOKEN_MISSING\n', '')
+    run = subprocess.run(isolated + [str(TOOL.parent / 'sec_once_ticker_mismatch.py'), '--work', str(tmp_path / 'w')],
+                         cwd=tmp_path, env=env, capture_output=True, text=True, timeout=60)
+    assert (run.returncode, run.stdout, run.stderr) == (2, 'TICKERMIX_STOP reason=SEC_USER_AGENT_MISSING\n', '')
 
 
 # ---- the private release ---------------------------------------------------------------------------------------------------
+PRIVATE_REPO = {'full_name': 'kco994553-star/investment-system1-raw', 'private': True, 'visibility': 'private'}
+
+
 class FakeGitHub:
     """Fake api.github.com / uploads.github.com for the raw repository: `call` (raw_store_release.http signature) and
-    `open_url` (streaming downloads). Records every request."""
+    `open_url` (streaming downloads). Records every request. Like GitHub, it refuses a duplicate asset name (422)."""
 
-    def __init__(self, release=None, fail_upload=()):
+    def __init__(self, release=None, fail_upload=(), repo=None, repo_status=200):
         self.calls, self.assets, self.next_id, self.fail_upload = [], {}, 100, set(fail_upload)
         self.release = release
+        self.repo, self.repo_status = dict(PRIVATE_REPO if repo is None else repo), repo_status
         if release is not None:
             for asset in release['assets']:
                 self.assets[asset['id']] = asset
@@ -565,6 +650,10 @@ class FakeGitHub:
         if headers is not None and 'Content-Length' in headers:
             assert int(headers['Content-Length']) == len(body)
         self.calls.append((method, url, None if body is None else len(body)))
+        if method == 'GET' and url == API:
+            if isinstance(self.repo_status, BaseException):
+                raise self.repo_status
+            return self.repo_status, {}, json.dumps(self.repo).encode()
         if method == 'GET' and url == f'{API}/releases/tags/{TAG}':
             if self.release is None:
                 return 404, {}, b'{"message": "Not Found"}'
@@ -583,6 +672,8 @@ class FakeGitHub:
             name = urllib.parse.unquote(match.group(1))
             if name in self.fail_upload:
                 return 500, {}, b''
+            if any(a['name'] == name for a in self.release['assets']):
+                return 422, {}, b'{"errors": [{"code": "already_exists"}]}'
             self.next_id += 1
             asset = {'id': self.next_id, 'name': name, 'size': len(body), 'state': 'uploaded', '_body': body}
             self.assets[asset['id']] = asset
@@ -614,9 +705,11 @@ def env(attempt=1):
 
 def test_release_client_allow_list():
     client = once.ReleaseClient(TAG, call=lambda *a, **k: None)
+    client.check('GET', API)                                   # the raw repository's own metadata (private check)
     client.check('GET', f'{API}/releases/tags/{TAG}')
     client.check('POST', f'{API}/releases')
-    for method, url in (('GET', f'{API}/releases'), ('GET', f'{API}/releases/latest'),
+    for method, url in (('GET', f'{API}/releases'), ('GET', API + '/'), ('GET', 'https://api.github.com/repos/other/repo'),
+                        ('PATCH', API), ('DELETE', API), ('POST', API), ('GET', f'{API}/releases/latest'),
                         ('GET', f'{API}/releases/tags/sec-once-v1-1'), ('GET', f'{API}/releases/tags/kis-us-daily-1'),
                         ('GET', f'{API}/releases/tags/{TAG}x'), ('PATCH', f'{API}/releases/77'),
                         ('DELETE', f'{API}/releases/77'), ('DELETE', f'{API}/releases/assets/5'),
@@ -671,10 +764,11 @@ def test_upload_attempt_one_creates_without_reading_and_verifies_back(tmp_path, 
     assert lines[2] == 'SECONCE_ERRORS codes=-'
     methods = Counter((m, re.sub(r'/(?:assets|releases|x)/\d+', lambda g: g.group(0).rsplit('/', 1)[0] + '/N',
                                  u.split('?')[0])) for m, u, _ in gh.calls)
-    assert ('GET', f'{API}/releases/tags/{TAG}') not in [(m, u) for m, u, _ in gh.calls]      # attempt 1 reads nothing
-    assert set(methods) == {('POST', f'{API}/releases'), ('POST', f'{UPL}/releases/N/assets'),
+    assert ('GET', f'{API}/releases/tags/{TAG}') not in [(m, u) for m, u, _ in gh.calls]      # attempt 1 reads no release
+    assert set(methods) == {('GET', API), ('POST', f'{API}/releases'), ('POST', f'{UPL}/releases/N/assets'),
                             ('GET', f'{API}/releases/assets/N'), ('GET', 'https://release-assets.githubusercontent.com/x/N')}
-    assert methods[('POST', f'{API}/releases')] == 1
+    assert methods[('POST', f'{API}/releases')] == 1 and methods[('GET', API)] == 1
+    assert gh.calls[0][:2] == ('GET', API) and gh.calls[1][:2] == ('POST', f'{API}/releases')   # private check first
     names = [a['name'] for a in gh.release['assets']]
     assert len(names) == 318 and names[-2:] == ['sec-once-manifest-a1.json', 'sec-once-manifest-a1.json.sha256']
     assert all(once.ASSET_NAME.fullmatch(n) for n in names)
@@ -685,6 +779,8 @@ def test_upload_attempt_one_creates_without_reading_and_verifies_back(tmp_path, 
     assert by_name['companyfacts.zip'] == COMPANYFACTS
     manifest = json.loads(by_name['sec-once-manifest-a1.json'])
     assert manifest['complete'] is True and manifest['release'] == TAG and manifest['run']['run_id'] == RUN_ID
+    # the data assets were read back BEFORE the manifest was written; the manifest and its sidecar after it
+    assert manifest['verify'] == {'checked': True, 'ok': 316, 'bad': 0} and manifest['classification_complete'] is True
     assert len(manifest['files']) == 158 and all(f['assets'][0]['status'] == 'UPLOADED' for f in manifest['files'])
     assert TOKEN not in json.dumps(manifest) and AGENT not in json.dumps(manifest)
     assert json.loads((tmp_path / 'upload-status.json').read_text())['complete'] is True
@@ -719,7 +815,8 @@ def test_rerun_attempt_resumes_from_its_own_release(tmp_path, token):
                      out=lines.append) == 0
     assert_fixed_lines(lines)
     # attempt 1 left 157 data assets (156 SEC files + the rows file; fsds-2015q3 failed); submissions.zip has no sidecar
-    assert lines == ['SECONCE_RESUME attempt=2 release=PRESENT assets=157 verified=156 unverified=1']
+    assert lines == ['SECONCE_PREFLIGHT raw_repo=private',
+                     'SECONCE_RESUME attempt=2 release=PRESENT assets=157 verified=156 unverified=1']
     gets = [u for m, u, _ in gh.calls if m == 'GET' and '/releases/tags/' in u]
     assert gets == [f'{API}/releases/tags/{TAG}']
     before = len(gh.calls)
@@ -742,23 +839,74 @@ def test_rerun_attempt_resumes_from_its_own_release(tmp_path, token):
     assert sum(1 for m, u, _ in gh.calls[before:] if m == 'POST' and u == f'{API}/releases') == 0
 
 
-def test_resume_check_attempt_one_reads_nothing(tmp_path, token):
+def test_resume_check_attempt_one_checks_privacy_and_reads_no_release(tmp_path, token):
     gh = FakeGitHub()
     lines = []
     assert once.main(['resume-check', '--work', str(tmp_path)], environ=env(1), call=gh.call, open_url=gh.open_url,
                      out=lines.append) == 0
-    assert lines == ['SECONCE_RESUME attempt=1 release=NOT_READ assets=0 verified=0 unverified=0'] and gh.calls == []
+    assert lines == ['SECONCE_PREFLIGHT raw_repo=private',
+                     'SECONCE_RESUME attempt=1 release=NOT_READ assets=0 verified=0 unverified=0']
+    assert gh.calls == [('GET', API, None)]                    # exactly one call: the repository metadata
+    marker = json.loads((tmp_path / once.PREFLIGHT_FILE).read_text())
+    assert marker['private'] is True and marker['run_id'] == RUN_ID and marker['attempt'] == 1
+    assert once.require_preflight(tmp_path, env(1)) == (RUN_ID, 1)
+    with pytest.raises(once.ConfigStop):
+        once.require_preflight(tmp_path, env(2))               # a later attempt must check again
+    gh.calls.clear()
     lines = []
     assert once.main(['resume-check', '--work', str(tmp_path)], environ=env(2), call=gh.call, open_url=gh.open_url,
                      out=lines.append) == 0
-    assert lines == ['SECONCE_RESUME attempt=2 release=ABSENT assets=0 verified=0 unverified=0']
-    assert gh.calls == [('GET', f'{API}/releases/tags/{TAG}', None)]
+    assert lines == ['SECONCE_PREFLIGHT raw_repo=private',
+                     'SECONCE_RESUME attempt=2 release=ABSENT assets=0 verified=0 unverified=0']
+    assert gh.calls == [('GET', API, None), ('GET', f'{API}/releases/tags/{TAG}', None)]
+
+
+@pytest.mark.parametrize('repo, status, reason', [
+    ({**PRIVATE_REPO, 'private': False, 'visibility': 'public'}, 200, 'RAW_REPO_NOT_PRIVATE'),
+    ({**PRIVATE_REPO, 'private': True, 'visibility': 'internal'}, 200, 'RAW_REPO_NOT_PRIVATE'),
+    ({**PRIVATE_REPO, 'private': True, 'visibility': None}, 200, 'RAW_REPO_NOT_PRIVATE'),
+    ({k: v for k, v in PRIVATE_REPO.items() if k != 'visibility'}, 200, 'RAW_REPO_NOT_PRIVATE'),
+    ({**PRIVATE_REPO, 'private': 'true'}, 200, 'RAW_REPO_NOT_PRIVATE'),
+    ({**PRIVATE_REPO, 'full_name': 'kco994553-star/Investment-System1'}, 200, 'RAW_REPO_MISMATCH'),
+    (PRIVATE_REPO, 401, 'RAW_REPO_HTTP401'),
+    (PRIVATE_REPO, 403, 'RAW_REPO_HTTP403'),
+    (PRIVATE_REPO, 404, 'RAW_REPO_HTTP404'),
+    (PRIVATE_REPO, 301, 'RAW_REPO_HTTP301'),
+    (PRIVATE_REPO, urllib.error.URLError('synthetic'), 'RAW_REPO_UNREACHABLE'),
+])
+def test_resume_check_stops_unless_the_raw_repository_is_private(tmp_path, token, repo, status, reason):
+    for attempt in (1, 2):
+        gh = FakeGitHub(repo=repo, repo_status=status)
+        lines = []
+        assert once.main(['resume-check', '--work', str(tmp_path)], environ=env(attempt), call=gh.call,
+                         open_url=gh.open_url, out=lines.append) == 2
+        assert lines == [f'SECONCE_STOP reason={reason}'] and gh.calls == [('GET', API, None)]
+        assert not (tmp_path / once.PREFLIGHT_FILE).exists() and not (tmp_path / 'resume.json').exists()
+    # and so no SEC request is possible
+    code, lines = run_collect(tmp_path, NoNetwork(), env={**env(2), 'SEC_USER_AGENT': AGENT}, preflight=False)
+    assert code == 2 and lines == ['SECONCE_STOP reason=RAW_PREFLIGHT_MISSING']
+
+
+def test_stale_marker_is_removed_before_the_check(tmp_path, token):
+    write_preflight(tmp_path, env(1))
+    gh = FakeGitHub(repo={**PRIVATE_REPO, 'private': False, 'visibility': 'public'})
+    assert once.main(['resume-check', '--work', str(tmp_path)], environ=env(1), call=gh.call, open_url=gh.open_url,
+                     out=[].append) == 2
+    assert not (tmp_path / once.PREFLIGHT_FILE).exists()
+
+
+def test_upload_checks_privacy_again_before_creating_the_release(tmp_path, token):
+    collected(tmp_path)
+    gh = FakeGitHub(repo={**PRIVATE_REPO, 'private': False, 'visibility': 'public'})
+    code, lines = run_upload(tmp_path, gh)
+    assert code == 2 and lines == ['SECONCE_STOP reason=RAW_REPO_NOT_PRIVATE']
+    assert gh.calls == [('GET', API, None)] and gh.release is None
 
 
 def test_missing_token_stops_before_any_call(tmp_path, monkeypatch):
     monkeypatch.delenv('RAW_REPO_TOKEN', raising=False)
     gh = FakeGitHub()
-    for command, attempt in (('upload', 1), ('resume-check', 2)):
+    for command, attempt in (('upload', 1), ('resume-check', 1), ('resume-check', 2)):
         lines = []
         environ = {k: v for k, v in env(attempt).items() if k != 'RAW_REPO_TOKEN'}
         assert once.main([command, '--work', str(tmp_path)], environ=environ, call=gh.call, open_url=gh.open_url,
@@ -793,6 +941,93 @@ def test_large_files_are_split_and_joined_again(tmp_path, token, monkeypatch):
             'sha256': hashlib.sha256(COMPANYFACTS).hexdigest()} in resume['verified']
 
 
+def test_interrupted_split_upload_is_resumed_under_new_names(tmp_path, token, monkeypatch):
+    """Attempt 1 breaks after companyfacts.zip.part01: its part01 (+ sidecar) stay, DELETE is not allowed. Attempt 2 must
+    not upload any name that already exists (GitHub answers 422), so the whole split goes under a2-."""
+    monkeypatch.setattr(once, 'SPLIT_LIMIT', 200)
+    monkeypatch.setattr(once, 'PART_BYTES', 100)
+    first = tmp_path / 'first'
+    collected(first)
+    gh = FakeGitHub(fail_upload={'companyfacts.zip.part02'})
+    code, lines = run_upload(first, gh)
+    assert code == 1 and 'SECONCE_ERRORS codes=UPLOAD_HTTP500:1' in lines
+    names = {a['name'] for a in gh.release['assets']}
+    assert {'companyfacts.zip.part01', 'companyfacts.zip.part01.sha256'} <= names
+    assert 'companyfacts.zip.parts.json' not in names and 'companyfacts.zip' not in names
+    gh.fail_upload = set()
+    for attempt in (2, 3):                    # attempt 3 re-runs after a complete attempt 2: nothing left to upload
+        work = tmp_path / f'a{attempt}'
+        lines = []
+        assert once.main(['resume-check', '--work', str(work)], environ=env(attempt), call=gh.call, open_url=gh.open_url,
+                         out=lines.append) == 0
+        code, collect_lines = run_collect(work, FakeOpener(default=fake_sec), env={**env(attempt), 'SEC_USER_AGENT': AGENT})
+        assert code == 0
+        code, up = run_upload(work, gh, attempt=attempt)
+        assert code == 0, up
+        assert 'SECONCE_ERRORS codes=-' in up
+    by_name = {a['name']: a['_body'] for a in gh.release['assets']}
+    assert len(by_name) == len(gh.release['assets'])                  # no duplicate name was ever accepted
+    index = json.loads(by_name['a2-companyfacts.zip.parts.json'])
+    assert [p['name'] for p in index['parts']][:2] == ['a2-companyfacts.zip.part01', 'a2-companyfacts.zip.part02']
+    assert b''.join(by_name[p['name']] for p in index['parts']) == COMPANYFACTS
+    assert not any(n.startswith('a3-') for n in by_name)              # attempt 3 resumed everything from attempt 2
+    manifest = json.loads(by_name['sec-once-manifest-a3.json'])
+    assert manifest['complete'] is True
+    assert Counter(f['assets'][0]['status'] for f in manifest['files']) == {'PRESENT_VERIFIED': 158}
+
+
+def test_name_taken_covers_every_name_an_upload_creates():
+    existing = {'companyfacts.zip.part01': {}, 'companyfacts.zip.part01.sha256': {}, 'fsds-2014q1.zip.sha256': {},
+                'a2-submissions.zip.parts.json': {}}
+    assert once.name_taken('companyfacts.zip', existing) and once.name_taken('fsds-2014q1.zip', existing)
+    assert once.name_taken('a2-submissions.zip', existing) and not once.name_taken('submissions.zip', existing)
+    assert not once.name_taken('fsds-2014q2.zip', existing) and not once.name_taken('companyfacts.zi', existing)
+
+
+def test_resume_prefers_the_newest_attempt_of_a_file(tmp_path, token):
+    """Attempt 1 stored an incomplete rows file, attempt 2 a complete one (as a2-...), attempt 10 none. The resume check of
+    a later attempt must keep a2- (newest verified copy), not let the plain name overwrite it, and order a10 after a2."""
+    def asset(id_, name, body):
+        return {'id': id_, 'name': name, 'size': len(body), 'state': 'uploaded', '_body': body}
+
+    def pair(id_, name, body):
+        side = once.sidecar_text(hashlib.sha256(body).hexdigest(), name).encode()
+        return [asset(id_, name, body), asset(id_ + 1, name + '.sha256', side)]
+    old = (json.dumps({'schema': 'sec-once-ticker-mismatch/1', 'complete': False, 'rows': []}) + '\n').encode()
+    new = (json.dumps({'schema': 'sec-once-ticker-mismatch/1', 'complete': True, 'rows': []}) + '\n').encode()
+    a10 = b'attempt ten copy'
+    release = {'id': 77, 'tag_name': TAG, 'assets': pair(1, 'ticker-mismatch-rows.json', old)
+               + pair(3, 'a2-ticker-mismatch-rows.json', new)
+               + pair(5, 'fsds-2014q1.zip', FSDS) + pair(7, 'a10-fsds-2014q1.zip', a10)
+               + [asset(9, 'a2-fsds-2014q1.zip', b'no sidecar')]}
+    gh = FakeGitHub(release=release)
+    lines = []
+    assert once.main(['resume-check', '--work', str(tmp_path)], environ=env(11), call=gh.call, open_url=gh.open_url,
+                     out=lines.append) == 0
+    assert lines[-1] == 'SECONCE_RESUME attempt=11 release=PRESENT assets=5 verified=2 unverified=0'
+    assert (tmp_path / 'files' / once.ROWS_FILE).read_bytes() == new
+    assert (tmp_path / 'files/fsds-2014q1.zip').read_bytes() == a10
+    verified = {r['key']: r['asset'] for r in json.loads((tmp_path / 'resume.json').read_text())['verified']}
+    assert verified == {once.ROWS_FILE: 'a2-ticker-mismatch-rows.json', 'fsds-2014q1.zip': 'a10-fsds-2014q1.zip'}
+    read = [u for m, u, _ in gh.calls if u.startswith(f'{API}/releases/assets/')]
+    assert f'{API}/releases/assets/1' not in read and f'{API}/releases/assets/5' not in read   # older copies not read
+
+
+def test_manifest_is_not_complete_when_the_classification_is_not(tmp_path, token):
+    collected(tmp_path)
+    once.write_json(tmp_path / 'files' / once.ROWS_FILE, {'schema': 'sec-once-ticker-mismatch/1', 'complete': False,
+                                                         'rows': [], 'summary': {}})
+    gh = FakeGitHub()
+    code, lines = run_upload(tmp_path, gh)
+    assert code == 0 and lines[1] == 'SECONCE_VERIFY assets=318 ok=318 bad=0'      # the upload itself is fine
+    manifest = json.loads(next(a['_body'] for a in gh.release['assets'] if a['name'] == 'sec-once-manifest-a1.json'))
+    assert manifest['complete'] is False and manifest['classification_complete'] is False
+    assert manifest['collect_complete'] is True
+    done = []
+    assert once.main(['done', '--work', str(tmp_path)], out=done.append, environ={}) == 1
+    assert done == ['SECONCE_DONE complete=no collect=yes classify=no upload=yes']
+
+
 def test_redirect_to_another_host_is_refused(tmp_path, token):
     gh = FakeGitHub()
     client = once.ReleaseClient(TAG, call=gh.call, open_url=lambda request, timeout=None: (_ for _ in ()).throw(
@@ -810,9 +1045,20 @@ def test_done_without_files_is_not_complete(tmp_path):
 
 
 # ---- static: workflow and files ---------------------------------------------------------------------------------------------
-def steps_of(text):
-    """Step texts without the comment lines that introduce the next step."""
-    return [re.sub(r'(?:\n *#[^\n]*)+\s*$', '', step) for step in text.split('\n    steps:\n', 1)[1].split('\n      - ')]
+GUARD = ("    if: github.event_name == 'push' && github.ref == 'refs/heads/claude/sec-once-collect-run' && "
+         "github.repository == 'kco994553-star/Investment-System1'\n")
+
+
+def jobs_of(text):
+    """{job name: job text} of the workflow."""
+    body = text.split('\njobs:\n', 1)[1]
+    parts = re.split(r'\n?^  ([a-z_-]+):\n', body, flags=re.M)
+    return {parts[i]: parts[i + 1] for i in range(1, len(parts), 2)}
+
+
+def steps_of(job):
+    """Step texts of one job, without the comment lines that introduce the next step."""
+    return [re.sub(r'(?:\n *#[^\n]*)+\s*$', '', step) for step in job.split('\n    steps:\n', 1)[1].split('\n      - ')]
 
 
 def test_workflow_runs_only_on_the_run_branch_push_with_one_secret_per_step():
@@ -821,44 +1067,72 @@ def test_workflow_runs_only_on_the_run_branch_push_with_one_secret_per_step():
     for forbidden in ('workflow_dispatch', 'schedule:', 'pull_request', 'workflow_run', 'repository_dispatch',
                       'actions/upload', 'actions/cache', 'actions/download', 'GITHUB_STEP_SUMMARY', 'git push',
                       'git commit', 'always()', 'RAW_REPO_READ_TOKEN', ': write', 'id-token', 'continue-on-error',
-                      'tags:', 'branches-ignore', 'secrets.KIS', 'secrets.kis', 'secrets.GITHUB_TOKEN', 'github.token'):
+                      'tags:', 'branches-ignore', 'secrets.KIS', 'secrets.kis', 'secrets.GITHUB_TOKEN', 'github.token',
+                      'secrets: inherit', 'toJSON(secrets'):
         assert forbidden not in text, forbidden
     assert text.count('permissions:') == 1 and 'concurrency:\n  group: sec-once-collect\n  cancel-in-progress: false\n' in text
-    jobs = re.findall(r'\n  ([a-z_-]+):\n    if:', text)
-    assert jobs == ['collect'] and len(re.findall(r'\n  [a-z_-]+:\n    (?:if|runs-on):', text)) == 1
-    assert ("    if: github.event_name == 'push' && github.ref == 'refs/heads/claude/sec-once-collect-run' && "
-            "github.repository == 'kco994553-star/Investment-System1'\n") in text
-    assert int(re.search(r'\n    timeout-minutes: (\d+)\n', text)[1]) <= 180
-    steps = steps_of(text)
+    jobs = jobs_of(text)
+    assert list(jobs) == ['offline-tests', 'collect']
+    # both jobs check event, branch and repository; collect runs only after the offline tests passed
+    assert all(job.startswith(GUARD) or job.startswith('    needs: offline-tests\n' + GUARD) for job in jobs.values())
+    assert jobs['collect'].startswith('    needs: offline-tests\n' + GUARD) and 'needs:' not in jobs['offline-tests']
+    assert text.count(GUARD) == 2
+    for job in jobs.values():
+        assert '    runs-on: ubuntu-24.04\n' in job
+        assert job.count('actions/checkout@') == job.count('persist-credentials: false') == 1
+    assert int(re.search(r'\n    timeout-minutes: (\d+)\n', jobs['offline-tests'])[1]) <= 30
+    job_minutes = int(re.search(r'\n    timeout-minutes: (\d+)\n', jobs['collect'])[1])
+    assert job_minutes <= 180
+    # offline tests: pytest on a runner of their own, no Secret; a failure names the test only (no assertion text,
+    # no exception message, no warning text reaches the public log)
+    tests_job = jobs['offline-tests']
+    assert 'secrets' not in tests_job and 'python -m pip install pytest==9.1.1\n' in tests_job
+    assert len(re.findall(r'^ +(?:run: )?python -m pip ', tests_job, re.M)) == 1
+    pytest_line = next(line for line in tests_job.splitlines() if 'python -m pytest' in line)
+    for flag in (' -v ', ' --tb=no ', ' -rN ', ' -p no:warnings ', ' -p no:cacheprovider '):
+        assert flag in pytest_line, flag
+    assert ' -q ' not in pytest_line and '-r ' not in pytest_line.replace('-rN', '')
+    for name in ('tests/test_sec_once_collect.py', 'tests/test_sec_once_ticker_mismatch.py', 'tests/test_fv3_pit_ticker_measure.py'):
+        assert name in pytest_line
+    # the Secret job: no pip, every tool started with python -I -S (no site-packages, no .pth hooks, no PYTHONPATH)
+    collect_job = jobs['collect']
+    assert 'pip' not in collect_job and 'pytest' not in collect_job and 'PYTHONPATH' not in collect_job
+    runs = re.findall(r'\n        run: (.+)', collect_job)
+    assert len(runs) == 6 and all(r.startswith('python -I -S implementation/tools/measure_once/') for r in runs)
+    code_lines = [line for line in collect_job.splitlines() if not line.strip().startswith('#')]
+    assert not any(re.search(r'\bpython(?!-version:)(?!3? -I -S )', line.replace('setup-python', ''))
+                   for line in code_lines)
+    steps = steps_of(collect_job)
     holders = [s for s in steps if 'secrets.' in s]
-    assert text.count('secrets.') == 3 and len(holders) == 3
-    assert text.count('secrets.SEC_USER_AGENT') == 1 and text.count('secrets.RAW_REPO_TOKEN') == 2
+    assert text.count('secrets.') == 4 and len(holders) == 4
+    assert text.count('secrets.SEC_USER_AGENT') == 2 and text.count('secrets.RAW_REPO_TOKEN') == 2
     for step in holders:
         assert ('SEC_USER_AGENT' in step) != ('RAW_REPO_TOKEN' in step)      # never both in one step
+        assert step.count('secrets.') == 1
         assert re.search(r'\n        timeout-minutes: \d+\n', step)
-    tool = 'python implementation/tools/measure_once/sec_once_collect.py'
+    step_minutes = sum(int(m) for m in re.findall(r'\n        timeout-minutes: (\d+)\n', collect_job))
+    assert step_minutes + 5 <= job_minutes
+    tool = 'python -I -S implementation/tools/measure_once/sec_once_collect.py'
     work = '--work "$RUNNER_TEMP/sec-once"'
-    sec = next(s for s in holders if 'SEC_USER_AGENT' in s)
-    assert sec.rstrip().endswith(f'run: |\n          {tool} collect {work}\n          python implementation/tools/'
-                                 f'measure_once/sec_once_ticker_mismatch.py {work}')
+    sec = [s for s in holders if 'SEC_USER_AGENT' in s]
     raw = [s for s in holders if 'RAW_REPO_TOKEN' in s]
+    assert sec[0].rstrip().endswith(f'run: {tool} collect {work}') and '\n        id: collect\n' in sec[0]
+    assert sec[1].rstrip().endswith(f'run: python -I -S implementation/tools/measure_once/sec_once_ticker_mismatch.py {work}')
     assert raw[0].rstrip().endswith(f'run: {tool} resume-check {work}')
     assert raw[1].rstrip().endswith(f'run: {tool} upload {work}')
-    order = [i for i, s in enumerate(steps) if 'pytest' in s] + [steps.index(raw[0]), steps.index(sec),
-                                                                steps.index(raw[1])]
-    assert order == sorted(order) and len(order) == 4
-    tests = next(s for s in steps if 'pytest' in s)
-    assert 'secrets' not in tests and '--tb=no' in tests
-    for name in ('tests/test_sec_once_collect.py', 'tests/test_sec_once_ticker_mismatch.py', 'tests/test_fv3_pit_ticker_measure.py'):
-        assert name in tests
     plan = next(s for s in steps if f'{tool} plan {work}' in s)
     done = next(s for s in steps if f'{tool} done {work}' in s)
-    assert steps.index(plan) < steps.index(raw[0]) and steps.index(done) == len(steps) - 1
+    order = [steps.index(s) for s in (plan, raw[0], sec[0], sec[1], raw[1], done)]
+    assert order == sorted(order) and steps.index(done) == len(steps) - 1
     assert 'secrets' not in plan and 'secrets' not in done
+    # a classifier failure must not discard the collection: upload (and done) run whenever collect succeeded
+    keep = "        if: ${{ !cancelled() && steps.collect.outcome == 'success' }}\n"
+    assert keep in raw[1] and keep in done and collect_job.count('        if: ') == 2
+    for step in (plan, raw[0], sec[0], sec[1]):
+        assert '        if: ' not in step
     daily = (REPO / '.github/workflows/sec-daily-public-inputs.yml').read_text()
     pins = re.findall(r'uses: (\S+)', text)
-    assert pins and all(re.fullmatch(r'actions/[a-z-]+@[0-9a-f]{40}', p) and f'uses: {p}' in daily for p in pins)
-    assert text.count('actions/checkout@') == text.count('persist-credentials: false') == 1
+    assert len(pins) == 4 and all(re.fullmatch(r'actions/[a-z-]+@[0-9a-f]{40}', p) and f'uses: {p}' in daily for p in pins)
 
 
 def test_no_address_shaped_literal_in_the_new_files():

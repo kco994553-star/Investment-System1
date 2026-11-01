@@ -1,13 +1,17 @@
 # ONE-TIME SEC COLLECTION (owner decision 2026-11-01: "SEC 1회용 수집: 조건부 승인 ... 승인 뒤 실행한다"). Plan:
 # implementation/docs/lab/SEC_ONCE_COLLECTION_PLAN_20261101.md. It runs ONLY on a push to claude/sec-once-collect-run,
 # which Main makes once after the owner approves the plan PR. No other event starts it (pull requests, schedules and
-# manual runs never do), and the job checks the branch and repository again. Public SEC files only: bulk companyfacts.zip and
-# submissions.zip, EDGAR full-index form.idx / company.idx 2014 QTR1 .. 2026 QTR4, Financial Statement Data Sets
-# 2014q1 .. 2026q3, plus the ticker-mismatch classification of the 2026-11-01 measurement sample. Everything goes to ONE
-# new release sec-once-v1-<run id> of the private raw repository (create-only; the name and the allowed GitHub calls are
-# fixed in code). Nothing is published, cached, uploaded as an artifact or written to the step summary. No prices, no KIS.
-# Each step holds at most one Secret. The log carries fixed SECONCE_* / TICKERMIX_* / PITTICKER* count lines only.
-# A failed run is resumed with "Re-run failed jobs" (same run id, same release; verified assets are not fetched again).
+# manual runs never do), and both jobs check the event, branch and repository again. Public SEC files only: bulk
+# companyfacts.zip and submissions.zip, EDGAR full-index form.idx / company.idx 2014 QTR1 .. 2026 QTR4, Financial
+# Statement Data Sets 2014q1 .. 2026q3, plus the ticker-mismatch classification of the 2026-11-01 measurement sample.
+# Everything goes to ONE new release sec-once-v1-<run id> of the private raw repository (create-only; the name and the
+# allowed GitHub calls are fixed in code; the repository must answer private=true on every attempt before any SEC
+# request). Nothing is published, cached, uploaded as an artifact or written to the step summary. No prices, no KIS.
+# Two jobs: the offline tests install pytest on their own runner and hold no Secret; the collect job runs on a fresh
+# runner where pip installed nothing, starts every tool with `python -I -S` (no site-packages, no .pth hooks, no
+# PYTHONPATH) and gives each step at most one Secret. The log carries fixed SECONCE_* / TICKERMIX_* / PITTICKER* count
+# lines only. A failed run is resumed with "Re-run failed jobs" (same run id, same release; verified assets are not
+# fetched again).
 name: sec-once-collect
 on:
   push:
@@ -18,7 +22,27 @@ concurrency:
   group: sec-once-collect
   cancel-in-progress: false
 jobs:
+  offline-tests:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/claude/sec-once-collect-run' && github.repository == 'kco994553-star/Investment-System1'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      # Synthetic inputs, no network, no Secret, and a runner of its own: what pip installs here never runs next to a
+      # Secret. -v --tb=no -rN -p no:warnings: a failure prints the test name and FAILED only (no assertion text, no
+      # exception message, no warning text); a failing test stops the run before the collect job starts.
+      - name: Offline unit tests of the collection, the classifier and the moved measurement (no network, no Secret)
+        working-directory: implementation
+        run: |
+          python -m pip install pytest==9.1.1
+          PYTHONPATH=src python -m pytest -v --tb=no -rN -p no:warnings -p no:cacheprovider tests/test_sec_once_collect.py tests/test_sec_once_ticker_mismatch.py tests/test_fv3_pit_ticker_measure.py
   collect:
+    needs: offline-tests
     if: github.event_name == 'push' && github.ref == 'refs/heads/claude/sec-once-collect-run' && github.repository == 'kco994553-star/Investment-System1'
     runs-on: ubuntu-24.04
     timeout-minutes: 180
@@ -29,39 +53,43 @@ jobs:
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: '3.12'
-      # Offline first (synthetic inputs, no network, no Secret): a failing check stops the job before any request.
-      # --tb=no: a failure names the test only, so no test value reaches the log.
-      - name: Offline unit tests of the collection, the classifier and the moved measurement (no network, no Secret)
-        working-directory: implementation
-        run: |
-          python -m pip install pytest==9.1.1
-          PYTHONPATH=src python -m pytest -q --tb=no -p no:cacheprovider tests/test_sec_once_collect.py tests/test_sec_once_ticker_mismatch.py tests/test_fv3_pit_ticker_measure.py
-      # Fixed file list and planned request counts; stops (exit 2) before any request when the runner has too little disk.
+      # Fixed file list and planned request counts; stops (exit 2) before any request when the runner has less than
+      # 11 GiB free.
       - name: Fixed plan and free-disk check (no network, no Secret)
-        run: python implementation/tools/measure_once/sec_once_collect.py plan --work "$RUNNER_TEMP/sec-once"
-      # Attempt 1 reads nothing. A re-run attempt reads only this run's own release (tag sec-once-v1-<run id>) and keeps
-      # the assets whose sha256 sidecar matches, so they are neither fetched from SEC nor uploaded again.
-      - name: Resume check of this run's own release (re-run attempts only; RAW_REPO_TOKEN only)
-        timeout-minutes: 30
+        run: python -I -S implementation/tools/measure_once/sec_once_collect.py plan --work "$RUNNER_TEMP/sec-once"
+      # EVERY attempt: GET the raw repository's own metadata and stop unless it is this exact repository and private;
+      # only then the preflight marker is written that collect and the classifier require. Attempt 1 reads nothing
+      # else. A re-run attempt reads only this run's own release (tag sec-once-v1-<run id>) and keeps, per file, the
+      # newest asset whose sha256 sidecar matches, so it is neither fetched from SEC nor uploaded again.
+      - name: Private raw repository check and resume check of this run's own release (RAW_REPO_TOKEN only)
+        timeout-minutes: 25
         env:
           RAW_REPO_TOKEN: ${{ secrets.RAW_REPO_TOKEN }}
-        run: python implementation/tools/measure_once/sec_once_collect.py resume-check --work "$RUNNER_TEMP/sec-once"
-      # The only step that holds the SEC User-Agent. Both scripts stop with one fixed line when it is missing and never
-      # print it. A partial collection (a failed file, a stop) still exits 0 so the next step stores what was collected;
-      # the last step then fails the job.
-      - name: Collect the planned SEC files and classify the ticker mismatches (SEC_USER_AGENT only; fixed count lines)
-        timeout-minutes: 90
+        run: python -I -S implementation/tools/measure_once/sec_once_collect.py resume-check --work "$RUNNER_TEMP/sec-once"
+      # Holds the SEC User-Agent only; the script never prints it. A partial collection (a failed file, a stop) still
+      # exits 0 so the upload step stores what was collected; the last step then fails the job.
+      - name: Collect the planned SEC files (SEC_USER_AGENT only; fixed count lines)
+        id: collect
+        timeout-minutes: 75
         env:
           SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
-        run: |
-          python implementation/tools/measure_once/sec_once_collect.py collect --work "$RUNNER_TEMP/sec-once"
-          python implementation/tools/measure_once/sec_once_ticker_mismatch.py --work "$RUNNER_TEMP/sec-once"
-      # Creates the release (attempt 1: create only, no read), uploads every file with a sha256 sidecar (files over
-      # 2,000,000,000 bytes in parts), the manifest last, then downloads each new asset back and checks its sha256.
+        run: python -I -S implementation/tools/measure_once/sec_once_collect.py collect --work "$RUNNER_TEMP/sec-once"
+      # Its own step: a failure here never discards the collection (the upload below runs whenever collect succeeded).
+      # It sends no request when collect stopped (403 / 429 repeats, a cap, a local disk fault).
+      - name: Classify the ticker mismatches of the 2026-11-01 sample (SEC_USER_AGENT only; fixed count lines)
+        timeout-minutes: 25
+        env:
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+        run: python -I -S implementation/tools/measure_once/sec_once_ticker_mismatch.py --work "$RUNNER_TEMP/sec-once"
+      # Checks again that the raw repository is private, creates the release (attempt 1: create only, no read), uploads
+      # every file with a sha256 sidecar (files over 2,000,000,000 bytes in parts), downloads each new asset back and
+      # checks its sha256, then uploads the manifest last and reads it back.
       - name: Upload to the new private release sec-once-v1-<run id> and verify it back (RAW_REPO_TOKEN only)
+        if: ${{ !cancelled() && steps.collect.outcome == 'success' }}
         timeout-minutes: 45
         env:
           RAW_REPO_TOKEN: ${{ secrets.RAW_REPO_TOKEN }}
-        run: python implementation/tools/measure_once/sec_once_collect.py upload --work "$RUNNER_TEMP/sec-once"
+        run: python -I -S implementation/tools/measure_once/sec_once_collect.py upload --work "$RUNNER_TEMP/sec-once"
       - name: Completeness check (fails the job when anything is missing, so "Re-run failed jobs" resumes it)
-        run: python implementation/tools/measure_once/sec_once_collect.py done --work "$RUNNER_TEMP/sec-once"
+        if: ${{ !cancelled() && steps.collect.outcome == 'success' }}
+        run: python -I -S implementation/tools/measure_once/sec_once_collect.py done --work "$RUNNER_TEMP/sec-once"

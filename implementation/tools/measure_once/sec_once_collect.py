@@ -1,7 +1,7 @@
 """SEC ONE-TIME COLLECTION (owner decision 2026-11-01: "SEC 1회용 수집: 조건부 승인 ... PR을 먼저 올리고, 승인 뒤 실행한다").
 Plan: implementation/docs/lab/SEC_ONCE_COLLECTION_PLAN_20261101.md. Not part of any pipeline. It runs once from
 .github/workflows/sec-once-collect.yml on the push to claude/sec-once-collect-run, which is made only after the owner
-approves the plan PR.
+approves the plan PR. The workflow starts it with `python -I -S` on a runner where pip installed nothing.
 
 What it fetches (public SEC files only, fixed list; no prices, no KIS, nothing published):
 - bulk companyfacts.zip and submissions.zip (www.sec.gov/Archives/edgar/daily-index/...);
@@ -11,23 +11,31 @@ Where it goes: ONE new release of the private raw repository, tag and name `sec-
 
 Subcommands; each runs in its own workflow step and a step holds at most one Secret:
   plan          no network, no Secret: the fixed file list, planned request counts, free-disk check.
-  resume-check  RAW_REPO_TOKEN only. Attempt 1 of a run reads nothing. A re-run attempt of the SAME run (same run id)
-                reads that run's own release (the one tag above, nothing else) and downloads every asset whose sha256
-                sidecar matches into the work directory, so `collect` does not ask SEC for it again and `upload` does not
-                upload it again.
-  collect       SEC_USER_AGENT only. Streams each planned file to disk (sha256, byte count, Content-Length / gzip end and zip
-                CRC checks, retries with backoff), writes collect-manifest.json (private), prints fixed count lines.
-  upload        RAW_REPO_TOKEN only. Creates the release (create-only: attempt 1 never reads; a re-run reads only its own
-                tag), uploads each file with a `.sha256` sidecar (a file over 2,000,000,000 bytes is split into
-                1,900,000,000-byte parts plus a `.parts.json` index), uploads sec-once-manifest-a<attempt>.json last and
-                downloads every asset of this attempt back to check its sha256.
+  resume-check  RAW_REPO_TOKEN only. EVERY attempt first reads the raw repository's own metadata (GET /repos/<raw repo>)
+                and stops unless it answers 200 with the exact full name, private true and visibility private; only then
+                it writes the preflight marker raw-preflight.json (run id + attempt) that `collect` and the classifier
+                require before any SEC request. Attempt 1 then reads nothing else. A re-run attempt of the SAME run (same
+                run id) reads that run's own release (the one tag above, nothing else) and downloads, per file, the newest
+                asset whose sha256 sidecar matches into the work directory, so `collect` does not ask SEC for it again and
+                `upload` does not upload it again.
+  collect       SEC_USER_AGENT only. Refuses to start without this attempt's preflight marker. Streams each planned file
+                to disk (sha256, byte count, Content-Length / gzip end and zip CRC checks, retries with backoff for
+                network faults only; a local disk error stops the run at once), writes collect-manifest.json (private),
+                prints fixed count lines.
+  upload        RAW_REPO_TOKEN only. Checks again that the raw repository is private, then creates the release
+                (create-only: attempt 1 never reads it; a re-run reads only its own tag), uploads each file with a
+                `.sha256` sidecar (a file over 2,000,000,000 bytes is split into 1,900,000,000-byte parts plus a
+                `.parts.json` index; a name already taken by ANY asset of an earlier attempt, parts included, gets the
+                a<attempt>- prefix), downloads every data asset of this attempt back to check its sha256, then uploads
+                sec-once-manifest-a<attempt>.json (complete only when collection, classification, upload and the
+                read-back are all complete) last and reads it back too.
   done          no network: exits 1 unless collection, classification and upload are all complete (so the run shows
                 red and "Re-run failed jobs" resumes it).
 
 Code restrictions on the private repository (the token is repository-wide, so the limits are in code, not in the token):
-only the endpoints in ReleaseClient.check (create one release, upload assets to it, read that one release by its own tag
-on re-run attempts, download that release's own assets); never PATCH, PUT or DELETE; never list releases; never a KIS or
-any other release; asset names from one allow-list.
+only the endpoints in ReleaseClient.check (read the raw repository's metadata, create one release, upload assets to it,
+read that one release by its own tag on re-run attempts, download that release's own assets); never PATCH, PUT or DELETE;
+never list releases; never a KIS or any other release; asset names from one allow-list.
 
 SEC fair access: the User-Agent comes only from env SEC_USER_AGENT and is never printed; exact URL allow-list on
 www.sec.gov, redirects refused; a fixed 0.15 s sleep before every request (at most 6.7 requests per second, one request at
@@ -37,10 +45,12 @@ Output: fixed lines only (codes, counts, MB, seconds). Never a URL, User-Agent, 
 exception text (class names and fixed codes only):
   SECONCE_PLAN bulk=2 index_files=104 index_years=2014-2026 fsds_files=51 fsds_quarters=2014q1-2026q3
       sec_requests_planned=157 max_requests=<n> wall_clock_s=<s> pace_s=0.15
-  SECONCE_DISK free_gb=<n> need_gb=<n> ok=yes|no
+  SECONCE_DISK free_gb=<GiB> need_gb=<GiB> ok=yes|no
+  SECONCE_PREFLIGHT raw_repo=private
   SECONCE_RESUME attempt=<n> release=NOT_READ|ABSENT|PRESENT assets=<n> verified=<n> unverified=<n>
+      (older copies of a file are not read once a newer copy verified)
   SECONCE_FILES kind=bulk|index|fsds planned=<n> ok=<n> resumed=<n> failed=<n> optional_missing=<n> mb=<MB>
-      (optional: only the newest FSDS quarter, 2026q3, which may not be published yet; its 404 is not a failure)
+      (optional: only the newest FSDS quarter, 2026q3; its 404 is not a failure)
   SECONCE_ZIP name=companyfacts|submissions entries=<n>|NA overflow_pages=<n>|NA check=<CODE>
   SECONCE_ZIP name=fsds files=<n> ok=<n> bad=<n>
   SECONCE_INDEX year=<y> quarters=<n> rows=<n> f10k f10q f8k f25 f25nse f8a12b f1512b f1512g f1515d (key=<count>)
@@ -50,7 +60,7 @@ exception text (class names and fixed codes only):
   SECONCE_RELEASE created=yes|no assets_uploaded=<n> assets_present=<n> assets_failed=<n> mb=<MB> manifest=OK|FAILED
   SECONCE_VERIFY assets=<n> ok=<n> bad=<n>
   SECONCE_DONE complete=yes|no collect=yes|no classify=yes|no upload=yes|no
-  SECONCE_STOP reason=<code>   (configuration stop before any request)
+  SECONCE_STOP reason=<code>   (configuration stop before any request, e.g. RAW_REPO_NOT_PRIVATE, RAW_PREFLIGHT_MISSING)
 Exit: 0 ran to the end (complete or partial: the files say which); 2 configuration stop; 1 unexpected or upload failure
 (`done`: 1 when not complete).
 """
@@ -61,6 +71,7 @@ import sys
 sys.dont_write_bytecode = True
 
 import argparse  # noqa: E402
+import errno  # noqa: E402
 import gzip  # noqa: E402
 import hashlib  # noqa: E402
 import http.client  # noqa: E402
@@ -117,11 +128,13 @@ STOP_AFTER_403 = 5
 STOP_AFTER_429 = 10
 CHUNK = 1024 * 1024
 CAPS = {'bulk': 4 * 1024 ** 3, 'index': 512 * 1024 ** 2, 'fsds': 1024 ** 3}   # body bytes per file
-NEED_FREE_GB = 14              # estimate: about 8.1 GB kept on the runner (plan section 4) plus margin
+NEED_FREE_GB = 11              # GiB: about 8.1 GB (7.5 GiB) kept on the runner at the peak (plan section 4) + ~3.5 GiB
 SPLIT_LIMIT = 2_000_000_000    # GitHub: each release asset must be under 2 GiB (2,147,483,648 bytes)
 PART_BYTES = 1_900_000_000
 ROWS_FILE = 'ticker-mismatch-rows.json'
-STOP_REASONS = ('NONE', 'REQUEST_CAP', 'WALL_CLOCK', 'HTTP403_REPEATED', 'HTTP429_REPEATED', 'UNEXPECTED')
+PREFLIGHT_FILE = 'raw-preflight.json'
+STOP_REASONS = ('NONE', 'REQUEST_CAP', 'WALL_CLOCK', 'HTTP403_REPEATED', 'HTTP429_REPEATED', 'LOCAL_DISK_FULL', 'LOCAL_IO',
+                'UNEXPECTED')
 INDEX_FORMS = (('f10k', b'10-K'), ('f10q', b'10-Q'), ('f8k', b'8-K'), ('f25', b'25'), ('f25nse', b'25-NSE'),
                ('f8a12b', b'8-A12B'), ('f1512b', b'15-12B'), ('f1512g', b'15-12G'), ('f1515d', b'15-15D'))
 REQUEST_FIELDS = ('total', 'bulk', 'index', 'fsds', 'retries', 'redownloads', 'http403', 'http429', 'http5xx')
@@ -136,6 +149,18 @@ _HEX64 = re.compile(r'[0-9a-f]{64}')
 
 class ConfigStop(Exception):
     """Configuration stop before any request: one fixed SECONCE_STOP line, exit 2."""
+
+
+class LocalStop(pit.Stop):
+    """A local disk fault (no space, I/O error) while writing a download: the run stops at once; SEC is not asked again."""
+
+    def __init__(self, reason):
+        Exception.__init__(self, reason)
+        self.reason = reason if reason in STOP_REASONS else 'UNEXPECTED'
+
+
+def _local_stop(exc):
+    return LocalStop('LOCAL_DISK_FULL' if getattr(exc, 'errno', None) == errno.ENOSPC else 'LOCAL_IO')
 
 
 # ---- plan --------------------------------------------------------------------------------------------------------------
@@ -250,6 +275,16 @@ def release_tag(run_id):
     return tag
 
 
+def require_preflight(work, environ):
+    """This attempt's raw-repository preflight marker (written by resume-check after the private check), or a stop."""
+    run_id, attempt = run_context(environ)
+    data = read_json(Path(work) / PREFLIGHT_FILE)
+    if not (isinstance(data, dict) and data.get('repository') == RAW_REPO and data.get('private') is True
+            and data.get('visibility') == 'private' and data.get('run_id') == run_id and data.get('attempt') == attempt):
+        raise ConfigStop('RAW_PREFLIGHT_MISSING')
+    return run_id, attempt
+
+
 def write_json(path, payload):
     tmp = Path(str(path) + '.tmp')
     tmp.write_text(json.dumps(payload, indent=1, sort_keys=True) + '\n', encoding='utf-8')
@@ -343,11 +378,15 @@ class Downloader:
             except pit.FetchError:
                 raise
             except (urllib.error.URLError, http.client.HTTPException, OSError) as exc:
+                # network faults only: every local write is wrapped in _stream and raises LocalStop (never retried)
                 if attempt == MAX_RETRIES:
                     raise pit.FetchError(type(exc).__name__) from None
                 wait = BACKOFF_S[attempt]
             finally:
-                Path(str(dest) + '.part').unlink(missing_ok=True)
+                try:
+                    Path(str(dest) + '.part').unlink(missing_ok=True)
+                except OSError:
+                    pass
             self.counts['retries'] += 1
             self._sleep(wait)
         raise pit.FetchError('RETRIES_EXHAUSTED')  # not reached
@@ -364,48 +403,76 @@ class Downloader:
         inflate = zlib.decompressobj(31) if encoding != 'identity' else None
         part = Path(str(dest) + '.part')
         digest, wire, body = hashlib.sha256(), 0, 0
-        with open(part, 'wb') as raw:
-            sink = (gzip.GzipFile(filename='', mode='wb', fileobj=raw, mtime=0, compresslevel=6) if item['store'] == 'gzip'
-                    else raw)
-            try:
-                while True:
-                    self._deadline()
-                    chunk = response.read(CHUNK)
-                    if not chunk:
-                        break
-                    wire += len(chunk)
-                    self.counts['wire_bytes'] += len(chunk)
-                    if wire > cap:
+        raw = sink = None
+        finished = False
+        try:
+            try:      # local file: any OSError here is a disk fault, not a network one
+                raw = open(part, 'wb')
+                sink = (gzip.GzipFile(filename='', mode='wb', fileobj=raw, mtime=0, compresslevel=6)
+                        if item['store'] == 'gzip' else raw)
+            except OSError as exc:
+                raise _local_stop(exc) from None
+            while True:
+                self._deadline()
+                chunk = response.read(CHUNK)          # network: an OSError here is retried by download()
+                if not chunk:
+                    break
+                wire += len(chunk)
+                self.counts['wire_bytes'] += len(chunk)
+                if wire > cap:
+                    raise pit.FetchError('SIZE_CAP')
+                for piece in ((chunk,) if inflate is None else _inflate(inflate, chunk)):
+                    body += len(piece)
+                    self.counts['body_bytes'] += len(piece)
+                    if body > cap:
                         raise pit.FetchError('SIZE_CAP')
-                    for piece in ((chunk,) if inflate is None else _inflate(inflate, chunk)):
-                        body += len(piece)
-                        self.counts['body_bytes'] += len(piece)
-                        if body > cap:
-                            raise pit.FetchError('SIZE_CAP')
-                        digest.update(piece)
-                        sink.write(piece)
-                if inflate is not None:
-                    try:
-                        tail = inflate.flush()
-                    except zlib.error:
-                        raise pit.FetchError('BAD_GZIP') from None
-                    if tail:
-                        body += len(tail)
-                        self.counts['body_bytes'] += len(tail)
-                        digest.update(tail)
-                        sink.write(tail)
-                    if not inflate.eof:
-                        raise Truncated()
-            finally:
+                    digest.update(piece)
+                    _write_local(sink, piece)
+            if inflate is not None:
+                try:
+                    tail = inflate.flush()
+                except zlib.error:
+                    raise pit.FetchError('BAD_GZIP') from None
+                if tail:
+                    body += len(tail)
+                    self.counts['body_bytes'] += len(tail)
+                    digest.update(tail)
+                    _write_local(sink, tail)
+                if not inflate.eof:
+                    raise Truncated()
+            try:
                 if sink is not raw:
                     sink.close()
+                raw.close()
+            except OSError as exc:
+                raise _local_stop(exc) from None
+            finished = True
+        finally:
+            if not finished:
+                for handle in (sink, raw):
+                    try:
+                        if handle is not None:
+                            handle.close()
+                    except (OSError, ValueError):
+                        pass
         if length is not None and wire != length:
             raise Truncated()
-        os.replace(part, dest)
+        try:
+            os.replace(part, dest)
+            stored_bytes = dest.stat().st_size
+            stored_sha = sha256_file(dest) if item['store'] == 'gzip' else digest.hexdigest()
+        except OSError as exc:
+            raise _local_stop(exc) from None
         return {'key': item['key'], 'kind': item['kind'], 'source_url': item['url'], 'store': item['store'],
-                'source_bytes': body, 'source_sha256': digest.hexdigest(), 'stored_bytes': dest.stat().st_size,
-                'stored_sha256': sha256_file(dest) if item['store'] == 'gzip' else digest.hexdigest(),
-                'wire_bytes': wire, 'fetched_at': utc_now(), 'resumed': False}
+                'source_bytes': body, 'source_sha256': digest.hexdigest(), 'stored_bytes': stored_bytes,
+                'stored_sha256': stored_sha, 'wire_bytes': wire, 'fetched_at': utc_now(), 'resumed': False}
+
+
+def _write_local(sink, data):
+    try:
+        sink.write(data)
+    except OSError as exc:
+        raise _local_stop(exc) from None
 
 
 def _header(response, name):
@@ -479,7 +546,7 @@ def collect(work, environ, *, opener=None, sleep=time.sleep, clock=time.monotoni
         raise ConfigStop('SEC_USER_AGENT_MISSING')
     if not pit.valid_user_agent(agent):
         raise ConfigStop('SEC_USER_AGENT_INVALID')
-    run_context(environ)
+    require_preflight(work, environ)        # the raw repository was found private on THIS attempt, before any SEC request
     folder = files_dir(work)
     resumed = verified_resume(work)
     downloader = Downloader(agent, opener=opener, sleep=sleep, clock=clock)
@@ -509,7 +576,10 @@ def collect(work, environ, *, opener=None, sleep=time.sleep, clock=time.monotoni
                     if item['key'].endswith('.zip'):
                         record = _checked_zip(downloader, item, dest, record)
                 except pit.FetchError as exc:
-                    dest.unlink(missing_ok=True)
+                    try:
+                        dest.unlink(missing_ok=True)
+                    except OSError as error:
+                        raise _local_stop(error) from None
                     if item.get('optional') and exc.code == 'HTTP404':
                         optional_missing[item['key']] = 'HTTP404'
                         files[item['kind'], 'optional_missing'] += 1
@@ -649,7 +719,7 @@ class ReleaseClient:
 
     def check(self, method, url):
         api, uploads, repo = raw_store_release.API, raw_store_release.UPLOADS, RAW_REPO
-        if method == 'GET' and url == f'{api}/repos/{repo}/releases/tags/{self.tag}':
+        if method == 'GET' and url in (f'{api}/repos/{repo}', f'{api}/repos/{repo}/releases/tags/{self.tag}'):
             return
         if method == 'POST' and url == f'{api}/repos/{repo}/releases' and self.release_id is None:
             return
@@ -684,6 +754,22 @@ class ReleaseClient:
                 assets[asset['name']] = asset
                 self.asset_ids.add(asset['id'])
         return assets
+
+    def check_private(self):
+        """The raw repository's own metadata must say: this exact repository, private. Anything else stops the run
+        (ConfigStop) before any SEC request (resume-check) and before the release is created (upload)."""
+        try:
+            status, payload = self._json('GET', f'{raw_store_release.API}/repos/{RAW_REPO}')
+        except (OSError, urllib.error.URLError, http.client.HTTPException):
+            raise ConfigStop('RAW_REPO_UNREACHABLE') from None
+        if status != 200:
+            raise ConfigStop(f'RAW_REPO_HTTP{int(status)}' if type(status) is int and 100 <= status <= 599
+                             else 'RAW_REPO_UNREACHABLE')
+        if not isinstance(payload, dict) or payload.get('full_name') != RAW_REPO:
+            raise ConfigStop('RAW_REPO_MISMATCH')
+        if payload.get('private') is not True or payload.get('visibility') != 'private':
+            raise ConfigStop('RAW_REPO_NOT_PRIVATE')
+        return True
 
     def read_own(self):
         """This run's own release by its tag: (assets by name) or None when it does not exist."""
@@ -767,36 +853,53 @@ def _token_present(environ):
     return bool(environ.get('RAW_REPO_TOKEN'))
 
 
+def _attempt_of(name):
+    """The attempt that uploaded an asset: the number of its a<n>- prefix, 1 for a plain name."""
+    match = re.match(r'a([0-9]{1,3})-', name)
+    return int(match.group(1)) if match else 1
+
+
 def resume_check(work, environ, *, call=None, open_url=None, out=print):
     run_id, attempt = run_context(environ)
     tag = release_tag(run_id)
-    resume = {'attempt': attempt, 'tag': tag, 'release': 'NOT_READ', 'verified': [], 'unverified': []}
-    if attempt == 1:
-        write_json(Path(work) / 'resume.json', resume)
-        out(f'SECONCE_RESUME attempt=1 release=NOT_READ assets=0 verified=0 unverified=0')
-        return 0
+    Path(work, PREFLIGHT_FILE).unlink(missing_ok=True)
     if not _token_present(environ):
         raise ConfigStop('RAW_REPO_TOKEN_MISSING')
     client = ReleaseClient(tag, call=call, open_url=open_url)
+    client.check_private()                  # every attempt, before anything else and before any SEC request
+    write_json(Path(work) / PREFLIGHT_FILE, {'repository': RAW_REPO, 'private': True, 'visibility': 'private',
+                                             'run_id': run_id, 'attempt': attempt, 'checked_at': utc_now()})
+    out('SECONCE_PREFLIGHT raw_repo=private')
+    resume = {'attempt': attempt, 'tag': tag, 'release': 'NOT_READ', 'verified': [], 'unverified': []}
+    if attempt == 1:
+        write_json(Path(work) / 'resume.json', resume)
+        out('SECONCE_RESUME attempt=1 release=NOT_READ assets=0 verified=0 unverified=0')
+        return 0
     folder = files_dir(work)
     assets = client.read_own()
     resume['release'] = 'ABSENT' if assets is None else 'PRESENT'
     data_assets = {} if assets is None else {n: a for n, a in assets.items() if not n.endswith('.sha256')
                                              and not n.startswith('sec-once-manifest-')
                                              and not re.fullmatch(r'.*\.part[0-9]{2}', n)}
-    for name in sorted(data_assets):
+    by_target = {}
+    for name in data_assets:
         key = base_name(name)
-        try:
-            if key.endswith('.parts.json'):
-                ok, sha = _resume_parts(client, assets, name, folder)
-            else:
-                ok, sha = _resume_one(client, assets, name, folder / key)
-        except (ReleaseRefused, OSError, ValueError, urllib.error.URLError, http.client.HTTPException):
-            ok, sha = False, None
         target = key[:-len('.parts.json')] if key.endswith('.parts.json') else key
-        if ok:
-            resume['verified'].append({'key': target, 'asset': name, 'sha256': sha})
-        else:
+        by_target.setdefault(target, []).append(name)
+    for target in sorted(by_target):
+        # newest attempt first (numeric: a10- after a2-); older copies are not read once a newer one verified
+        for name in sorted(by_target[target], key=lambda n: (-_attempt_of(n), n)):
+            try:
+                if name.endswith('.parts.json'):
+                    ok, sha = _resume_parts(client, assets, name, folder)
+                else:
+                    ok, sha = _resume_one(client, assets, name, folder / target)
+            except (ReleaseRefused, OSError, ValueError, KeyError, TypeError, urllib.error.URLError,
+                    http.client.HTTPException):
+                ok, sha = False, None
+            if ok:
+                resume['verified'].append({'key': target, 'asset': name, 'sha256': sha})
+                break
             resume['unverified'].append(name)
     write_json(Path(work) / 'resume.json', resume)
     out(f'SECONCE_RESUME attempt={attempt} release={resume["release"]} assets={len(data_assets)} '
@@ -875,6 +978,7 @@ def upload(work, environ, *, call=None, open_url=None, out=print, verify_back=Tr
     folder = files_dir(work)
     resumed = verified_resume(work)
     client = ReleaseClient(tag, call=call, open_url=open_url)
+    client.check_private()                  # again, right before the release is created or read
     created, uploaded, present, failed, mb = False, [], 0, Counter(), 0
     manifest_ok, verify = False, Counter()
     try:
@@ -906,6 +1010,10 @@ def upload(work, environ, *, call=None, open_url=None, out=print, verify_back=Tr
                 entry['upload_failed'] = code_token(code)
                 failed[code_token(code)] += 1
             entries.append(entry)
+        if verify_back:                     # every data asset of this attempt is read back BEFORE the manifest is written
+            _verify(client, uploaded, verify)
+        rows_data = read_json(rows) if rows.is_file() else None
+        rows_complete = isinstance(rows_data, dict) and rows_data.get('complete') is True
         manifest = {'schema': 'sec-once-manifest/1', 'release': tag, 'repository': RAW_REPO,
                     'run': {'run_id': run_id, 'attempt': attempt, 'commit': environ.get('GITHUB_SHA'),
                             'workflow': '.github/workflows/sec-once-collect.yml', 'public_repository': PUBLIC_REPO},
@@ -913,7 +1021,13 @@ def upload(work, environ, *, call=None, open_url=None, out=print, verify_back=Tr
                     'collect_stopped': collected.get('stopped'), 'collect_failed': collected.get('failed'),
                     'collect_optional_missing': collected.get('optional_missing'),
                     'files': entries, 'upload_failed': sum(failed.values()),
-                    'complete': bool(collected.get('complete')) and not failed and rows.is_file(),
+                    'classification_complete': rows_complete,
+                    'verify': {'checked': bool(verify_back), 'ok': verify['ok'], 'bad': verify['bad']},
+                    'complete': (bool(collected.get('complete')) and rows_complete and not failed and bool(verify_back)
+                                 and verify['bad'] == 0),
+                    'complete_rule': 'collection complete, classification complete, every upload done and read back '
+                                     'with a matching sha256; the run is finished only when the highest-attempt '
+                                     'manifest says complete and the run log ends with SECONCE_DONE complete=yes',
                     'rights': 'SEC EDGAR public data (sec.gov privacy and dissemination statement); kept private together '
                               'with derived research results; no prices, no KIS data',
                     'reuse': 'owner, Main and Codex; EXP-STOCK-INDICATOR-DECILES-v1 and forward validation v3 point-in-time '
@@ -924,19 +1038,15 @@ def upload(work, environ, *, call=None, open_url=None, out=print, verify_back=Tr
         if name in existing or name + '.sha256' in existing:
             raise ReleaseRefused('MANIFEST_EXISTS')
         sha = hashlib.sha256(body).hexdigest()
-        uploaded.append(dict(client.upload(name, body, len(body), 'application/json'), _sha256=sha))
+        last = [dict(client.upload(name, body, len(body), 'application/json'), _sha256=sha)]
         side = sidecar_text(sha, name).encode()
-        uploaded.append(dict(client.upload(name + '.sha256', side, len(side), 'text/plain'),
-                             _sha256=hashlib.sha256(side).hexdigest()))
+        last.append(dict(client.upload(name + '.sha256', side, len(side), 'text/plain'),
+                         _sha256=hashlib.sha256(side).hexdigest()))
+        uploaded.extend(last)
         manifest_ok = True
         mb += len(body)
         if verify_back:
-            for asset in uploaded:
-                try:
-                    size, _sha = client.stream(asset['id'], lambda chunk: None)
-                    verify['ok' if size == asset['size'] and _sha == asset.get('_sha256') else 'bad'] += 1
-                except (ReleaseRefused, OSError, urllib.error.URLError, http.client.HTTPException, KeyError):
-                    verify['bad'] += 1
+            _verify(client, last, verify)
     except ReleaseRefused as exc:
         failed[exc.code] += 1
     except (OSError, urllib.error.URLError, http.client.HTTPException) as exc:
@@ -953,12 +1063,29 @@ def upload(work, environ, *, call=None, open_url=None, out=print, verify_back=Tr
     return 0 if status['complete'] else 1
 
 
+def _verify(client, assets, verify):
+    """Download each asset back and count it ok when its size and sha256 match what was uploaded."""
+    for asset in assets:
+        try:
+            size, sha = client.stream(asset['id'], lambda chunk: None)
+            verify['ok' if size == asset['size'] and sha == asset.get('_sha256') else 'bad'] += 1
+        except (ReleaseRefused, OSError, urllib.error.URLError, http.client.HTTPException, KeyError):
+            verify['bad'] += 1
+
+
+def name_taken(name, existing):
+    """True when the release already has `name` or any asset an upload under `name` would create (its .sha256
+    sidecar, its .partNN parts and their sidecars, its .parts.json index): GitHub refuses a duplicate asset name and
+    this tool never deletes one."""
+    return any(asset == name or asset.startswith(name + '.') for asset in existing)
+
+
 def _upload_file(client, existing, key, path, attempt, uploaded):
     """Upload one local file (split when needed) with sha256 sidecars; returns the manifest asset entries."""
     size = path.stat().st_size
     sha = sha256_file(path)
-    name = key if key not in existing and key + '.sha256' not in existing else f'a{attempt}-{key}'
-    if name in existing or name + '.sha256' in existing:
+    name = key if not name_taken(key, existing) else f'a{attempt}-{key}'
+    if name_taken(name, existing):
         raise ReleaseRefused('ASSET_EXISTS')
     content = 'application/zip' if key.endswith('.zip') else 'application/gzip' if key.endswith('.gz') \
         else 'application/json'

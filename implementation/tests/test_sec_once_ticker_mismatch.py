@@ -1,13 +1,17 @@
 """Ticker-mismatch classification (tools/measure_once/sec_once_ticker_mismatch.py): offline checks on synthetic inputs only
 (no network, no Secret).
 
-- the class rules and their order (notation, class share, old ticker, inline document name, short name / document name,
-  other with the empty-symbol count);
+- the class rules and their order (notation incl. several symbols in one value, class share only with evidence of a
+  class, old ticker only for a ticker the issuer used BEFORE the filing and never today's, symbol-odd when the prefix is
+  today's ticker, inline document name, short name / document name, other with the empty-symbol count); no row is ever
+  an identity (identity_confirmed=false);
 - company names from a stored form.idx (also when the name is glued to the CIK) and today's tickers / names from a stored
   submissions.zip;
 - the per-filing inspection is the moved measurement's (same requests, same flags);
 - end to end on a fake SEC with the stored form.idx: fixed count lines only, per-filing rows only in the private file,
-  a missing stored quarter fetched again, the resumed path without requests, configuration stops.
+  a missing stored quarter fetched again, the resumed path without requests, configuration stops, no request at all
+  without this attempt's private-repository preflight marker or when collect stopped (403 / 429 repeats, caps, disk),
+  complete=no after a transient filing error but yes after deterministic ones only.
 """
 from __future__ import annotations
 
@@ -48,12 +52,23 @@ def row(prefix, symbols, inline=False):
 @pytest.mark.parametrize('case, known, names, label', [
     (row('brkb', ['BRK.B']), {}, [], 'NOTATION'),
     (row('abcd', ['NYSE: AB.CD']), {}, [], 'NOTATION'),
-    (row('brk', ['BRK.B']), {}, [], 'CLASS_SHARE'),
-    (row('googl', ['GOOG']), {}, [], 'CLASS_SHARE'),
+    (row('goog', ['GOOGL, GOOG']), {'today': {'goog', 'googl'}}, [], 'NOTATION'),          # several symbols in one value
+    (row('goog', ['GOOGL and GOOG']), {}, [], 'NOTATION'),
+    (row('brk', ['BRK.B']), {}, [], 'CLASS_SHARE'),                                       # separator written
+    (row('rds', ['RDS/A']), {}, [], 'CLASS_SHARE'),
+    (row('googl', ['GOOG']), {'today': {'goog', 'googl'}}, [], 'CLASS_SHARE'),            # two tickers today
+    (row('googl', ['GOOG']), {'earlier': {'goog', 'googl'}}, [], 'CLASS_SHARE'),          # both known tickers
+    (row('googl', ['GOOG']), {}, [], 'OTHER'),                                            # no evidence of a class
     (row('fox', ['FOXA', 'FOX.B']), {}, [], 'CLASS_SHARE'),
     (row('lbtya', ['LBTYK']), {'today': {'lbtya', 'lbtyk'}}, [], 'CLASS_SHARE'),
-    (row('abcd', ['WXYZ']), {'other': {'abcd'}}, [], 'OLD_TICKER'),
-    (row('wxyz', ['ABCD']), {'today': {'wxyz'}}, [], 'OLD_TICKER'),
+    (row('int', ['INTC']), {'today': {'intc'}}, ['INTEL CORP'], 'SHORT_NAME_OR_DOC_NAME'),  # one ticker: a short name
+    (row('aa', ['AAL']), {}, [], 'OTHER'),                                                # another company's ticker
+    (row('abcd', ['WXYZ']), {'earlier': {'abcd'}}, [], 'OLD_TICKER'),                     # used before the filing
+    (row('abcd', ['WXYZ']), {'earlier': {'abcd'}, 'today': {'wxyz'}}, [], 'OLD_TICKER'),
+    (row('abcd', ['WXYZ']), {'earlier': {'abcd'}, 'today': {'abcd'}}, [], 'SYMBOL_ODD'),  # today's: never "old"
+    (row('wxyz', ['ABCD']), {'today': {'wxyz'}}, [], 'SYMBOL_ODD'),                       # prefix normal, symbol odd
+    (row('abc', ['XYZ']), {'today': {'abc'}}, ['ZETA CO'], 'SYMBOL_ODD'),
+    (row('abcd', ['WXYZ']), {'later': {'abcd'}}, [], 'SYMBOL_ODD'),                       # used only AFTER the filing
     (row('form10', ['EFGH'], inline=True), {}, [], 'INLINE_DOC_NAME'),
     (row('ab', ['EFGH'], inline=True), {}, ['AB HOLDINGS INC'], 'INLINE_DOC_NAME'),        # inline wins over a name
     (row('synthco', ['SYN']), {}, [], 'SHORT_NAME_OR_DOC_NAME'),                           # longer than a ticker
@@ -64,13 +79,33 @@ def row(prefix, symbols, inline=False):
     (row('qrs', ['BRK.B']), {'today': {'brkb'}}, ['SYNTHETIC COMPANY INC'], 'OTHER'),
     (row('abcd', ['ABCDE']), {}, [], 'OTHER'),                                              # E is not a class letter
     (row('abcd', []), {}, [], 'OTHER'),
-    (row('abcd', ['   ']), {'other': {'abcd'}}, [], 'OTHER'),                              # empty value
+    (row('abcd', ['   ']), {'earlier': {'abcd'}}, [], 'OTHER'),                            # empty value
 ])
 def test_classify(case, known, names, label):
     got, evidence = mix.classify(case, known, names)
     assert got == label
-    assert set(evidence) >= {'notation', 'class_share', 'known_ticker', 'name_match', 'not_ticker_shape', 'doc_word'}
+    assert set(evidence) >= {'notation', 'multi_value', 'class_share', 'known_ticker', 'symbol_known',
+                             'issuer_tickers_today', 'name_match', 'not_ticker_shape', 'doc_word'}
+    assert evidence['identity_confirmed'] is False
     assert evidence.get('symbol_empty', False) == (not any(s.strip() for s in case['symbols']))
+    if got == 'OLD_TICKER':
+        assert evidence['known_ticker'] == 'earlier_filing' and norm_in(case['prefix'], known.get('earlier'))
+        assert not norm_in(case['prefix'], known.get('today'))
+
+
+def norm_in(value, values):
+    return mix.norm(value) in (values or set())
+
+
+def test_split_symbols():
+    assert mix.split_symbols(['GOOGL, GOOG', 'RDS/A', 'A and B', 'AND', 'BAND', 'X;Y', 'GOOGL/GOOG']) == [
+        'GOOGL', 'GOOG', 'RDS/A', 'A', 'B', 'AND', 'BAND', 'X', 'Y', 'GOOGL', 'GOOG']
+
+
+def test_transient_errors():
+    assert mix.transient_errors({'SIZE_CAP': 2, 'BAD_INDEX': 1, 'HTTP404': 1, 'PARSE_ValueError': 1}) == 0
+    assert mix.transient_errors({'SIZE_CAP': 2, 'HTTP503': 1, 'URLError': 1, 'FORM_IDX_HTTP500': 1, 'HTTP429': 1,
+                                 'HTTP403': 1, 'TRUNCATED': 1, 'UNEXPECTED_KeyError': 1}) == 7
 
 
 def test_name_evidence():
@@ -197,7 +232,18 @@ def accession(cik, year):
     return f'{cik:010d}-{year % 100:02d}-000001'
 
 
+def ready(work, stopped='NONE'):
+    """What the earlier steps leave: this attempt's private-repository preflight marker and the collect manifest."""
+    Path(work).mkdir(parents=True, exist_ok=True)
+    once.write_json(Path(work) / once.PREFLIGHT_FILE, {'repository': once.RAW_REPO, 'private': True,
+                                                       'visibility': 'private', 'run_id': ENV['GITHUB_RUN_ID'],
+                                                       'attempt': 1})
+    once.write_json(Path(work) / 'collect-manifest.json', {'schema': 'sec-once-collect/1', 'records': [],
+                                                          'stopped': stopped, 'complete': stopped == 'NONE'})
+
+
 def setup_work(tmp_path, picked, skip=()):
+    ready(tmp_path)
     files = tmp_path / 'files'
     files.mkdir(parents=True)
     for year in pit.YEARS:
@@ -242,7 +288,8 @@ LINE = [re.compile(p) for p in (
     r'PITTICKER_ERRORS overall codes=(?:-|[A-Za-z][A-Za-z0-9_]*:\d+(?:,[A-Za-z][A-Za-z0-9_]*:\d+)*)',
     r'TICKERMIX symbol_filings=\d+ prefix_eq_symbol=\d+ mismatches=\d+ expected_symbol=209 expected_mismatch=16 '
     r'same=(?:yes|no)',
-    r'TICKERMIX_CLASSES mismatches=\d+(?: [a-z_]+=\d+){7}',
+    r'TICKERMIX_CLASSES mismatches=\d+(?: [a-z_]+=\d+){8}',
+    r'TICKERMIX_SKIP reason=(?:COLLECT_STOPPED|COLLECT_MANIFEST_MISSING)',
     r'PITTICKER_REQUESTS(?: [a-z0-9_]+=\d+){12} mb_wire=\d+\.\d mb_body=\d+\.\d elapsed_s=\d+ '
     r'stopped=(?:NONE|REQUEST_CAP|WALL_CLOCK|HTTP403_REPEATED|HTTP429_REPEATED|UNEXPECTED)',
     r'TICKERMIX_DONE complete=(?:yes|no)',
@@ -289,16 +336,18 @@ def test_end_to_end_counts_only_and_private_rows(tmp_path, panel):
     assert lines[3] == 'PITTICKER_ERRORS overall codes=-'
     assert lines[4] == ('TICKERMIX symbol_filings=11 prefix_eq_symbol=4 mismatches=7 expected_symbol=209 '
                         'expected_mismatch=16 same=no')
-    assert lines[5] == ('TICKERMIX_CLASSES mismatches=7 short_name_doc=1 old_ticker=1 class_share=1 notation=1 inline_doc=1 '
-                        'other=2 other_symbol_empty=1')
+    assert lines[5] == ('TICKERMIX_CLASSES mismatches=7 short_name_doc=1 old_ticker=1 symbol_odd=0 class_share=1 notation=1 '
+                        'inline_doc=1 other=2 other_symbol_empty=1')
     assert lines[6].startswith('PITTICKER_REQUESTS total=32 form_idx=0 filing_index=16 instance=16 ')
     assert lines[-1] == 'TICKERMIX_DONE complete=yes'
     data = json.loads((tmp_path / 'files' / once.ROWS_FILE).read_text())
     assert data['complete'] is True and data['summary']['mismatches'] == 7 and data['source_run_compared'] == 41255597310
+    assert data['identity_confirmed'] is False and 'never an identity source' in data['use']
+    assert all(r['identity_confirmed'] is False and r['evidence']['identity_confirmed'] is False for r in data['rows'])
     got = {(picked.index(int(r['cik'])), r['year']): r['class'] for r in data['rows']}
     assert got == EXPECTED
     first = next(r for r in data['rows'] if r['class'] == 'OLD_TICKER')
-    assert first['evidence']['known_ticker'] == 'other_filing' and first['prefix'] == 'abcd' and first['symbols'] == ['WXYZ']
+    assert first['evidence']['known_ticker'] == 'earlier_filing' and first['prefix'] == 'abcd' and first['symbols'] == ['WXYZ']
     assert first['company'] == 'SYNTHETIC COMPANY INC' and first['accession'] == accession(picked[0], 2017)
     assert AGENT not in json.dumps(data)
 
@@ -328,8 +377,8 @@ def test_resumed_rows_print_counts_without_requests(tmp_path):
     assert lines == ['TICKERMIX_START panel=120 years=2016-2019 names=RESUMED',
                      'TICKERMIX symbol_filings=209 prefix_eq_symbol=193 mismatches=2 expected_symbol=209 '
                      'expected_mismatch=16 same=no',
-                     'TICKERMIX_CLASSES mismatches=2 short_name_doc=0 old_ticker=0 class_share=0 notation=1 inline_doc=0 '
-                     'other=1 other_symbol_empty=1',
+                     'TICKERMIX_CLASSES mismatches=2 short_name_doc=0 old_ticker=0 symbol_odd=0 class_share=0 notation=1 '
+                     'inline_doc=0 other=1 other_symbol_empty=1',
                      'TICKERMIX_DONE complete=yes']
     (files / once.ROWS_FILE).write_text('{}')                           # changed since the check: not resumed
     code, lines = run(tmp_path, NoNetwork(), environ={})
@@ -345,10 +394,51 @@ def test_resumed_rows_print_counts_without_requests(tmp_path):
     ({k: v for k, v in ENV.items() if k != 'SEC_USER_AGENT'}, 'TICKERMIX_STOP reason=SEC_USER_AGENT_MISSING'),
     ({**ENV, 'SEC_USER_AGENT': 'no contact'}, 'TICKERMIX_STOP reason=SEC_USER_AGENT_INVALID'),
     ({**ENV, 'GITHUB_REF': 'refs/heads/claude/sec-once-collect-plan'}, 'TICKERMIX_STOP reason=NOT_THE_RUN_BRANCH'),
+    (ENV, 'TICKERMIX_STOP reason=RAW_PREFLIGHT_MISSING'),                # no private-repository check on this attempt
+    ({**ENV, 'GITHUB_RUN_ATTEMPT': '2'}, 'TICKERMIX_STOP reason=RAW_PREFLIGHT_MISSING'),
 ])
 def test_configuration_stops_before_any_request(tmp_path, environ, line):
+    if environ.get('GITHUB_RUN_ATTEMPT') == '2':
+        ready(tmp_path)                                                 # attempt 1's marker does not count for attempt 2
     code, lines = run(tmp_path, NoNetwork(), environ=environ)
     assert code == 2 and lines == [line]
+
+
+@pytest.mark.parametrize('stopped, reason', [
+    ('HTTP403_REPEATED', 'COLLECT_STOPPED'), ('HTTP429_REPEATED', 'COLLECT_STOPPED'), ('REQUEST_CAP', 'COLLECT_STOPPED'),
+    ('WALL_CLOCK', 'COLLECT_STOPPED'), ('LOCAL_DISK_FULL', 'COLLECT_STOPPED'), (None, 'COLLECT_MANIFEST_MISSING'),
+])
+def test_no_request_when_collect_stopped(tmp_path, stopped, reason):
+    ready(tmp_path, stopped=stopped or 'NONE')
+    if stopped is None:
+        (tmp_path / 'collect-manifest.json').unlink()
+    code, lines = run(tmp_path, NoNetwork())
+    assert code == 0 and lines == [f'TICKERMIX_SKIP reason={reason}', 'TICKERMIX_DONE complete=no']
+    assert_fixed_lines(lines)
+    data = json.loads((tmp_path / 'files' / once.ROWS_FILE).read_text())
+    assert data['complete'] is False and data['rows'] == [] and data['summary']['skipped'] == reason
+    assert data['identity_confirmed'] is False
+
+
+@pytest.mark.parametrize('broken, complete', [('SIZE_CAP', 'yes'), ('HTTP503', 'no')])
+def test_transient_filing_errors_leave_the_result_incomplete(tmp_path, panel, broken, complete):
+    pool, ciks = panel
+    picked = [int(ciks[3]), int(ciks[29]), int(ciks[64]), int(ciks[101])]
+    setup_work(tmp_path, picked)
+    answer = fake_sec(picked)
+    target = f'/{picked[1]}/{accession(picked[1], 2019).replace("-", "")}/zz-2019.xml'
+
+    def flaky(url):
+        if url.endswith(target):
+            if broken == 'SIZE_CAP':
+                return FakeResponse(b'x' * (pit.INSTANCE_CAP + 1))
+            return urllib.error.HTTPError(url, 503, 'x', {}, None)
+        return answer(url)
+    code, lines = run(tmp_path, FakeOpener(flaky))
+    assert code == 0 and lines[-1] == f'TICKERMIX_DONE complete={complete}'
+    assert f'PITTICKER_ERRORS overall codes={broken}:1' in lines
+    data = json.loads((tmp_path / 'files' / once.ROWS_FILE).read_text())
+    assert data['complete'] is (complete == 'yes') and data['summary']['transient_errors'] == (0 if complete == 'yes' else 1)
 
 
 def test_inspection_is_the_measurement_one():
