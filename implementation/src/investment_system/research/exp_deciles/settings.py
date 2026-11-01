@@ -149,9 +149,9 @@ def _jsonable(value):
     return value
 
 
-def settings_dict():
+def settings_dict(market_cap_version="nominal-v1"):
     """A fresh JSON-ready copy of every frozen setting (Decimals as strings)."""
-    return _jsonable({
+    out = _jsonable({
         'schema': SETTINGS_SCHEMA, 'experiment_id': EXPERIMENT_ID, 'settings_doc': SETTINGS_DOC,
         'universes': {
             'currency': CURRENCY, 'market_cap_basis': MARKET_CAP_BASIS,
@@ -178,6 +178,21 @@ def settings_dict():
                     'unresolved_exit_scenarios': UNRESOLVED_EXIT_SCENARIOS, 'cost_reporting': COST_REPORTING},
         'benchmarks': BENCHMARKS, 'performance_horizon_years': PERFORMANCE_HORIZON_YEARS,
     })
+    if market_cap_version == 'nominal-v1':
+        return out  # frozen settings/1 and hash preserved
+    if market_cap_version != 'cpi-2025-v1':
+        raise ValueError('MARKET_CAP_VERSION_INVALID')
+    out['schema'] = 'exp-deciles-settings/2'
+    out['market_cap_policy'] = dict(version=market_cap_version, series_id='CUUR0000SA0',
+        index_base='1982-84=100', base_year=2025, base_aggregation='ANNUAL_AVERAGE',
+        rule='BASE_AMOUNT_X_LATEST_RELEASED_MONTH_VINTAGE_AT_SIGNAL_DIV_FIXED_2025_ANNUAL_CPI',
+        missing='BLOCK_NO_NOMINAL_OR_OLDER_MONTH_FALLBACK', return_inflation_adjustment=False)
+    out['universes']['threshold_currency_basis'] = '2025_USD_PURCHASING_POWER'
+    out['universes'][U_A]['rule'] = 'CPI2025_ENTRY_STAY_FOR_IMMEDIATE_PREVIOUS_MEMBERS_FIRST_BUILD_ENTRY'
+    out['universes'][U_B]['rule'] = 'CPI2025_10BN_EACH_SIGNAL_NO_HYSTERESIS'
+    out['universes']['C2'] = dict(min_usd='200000000', rule='CPI2025_AT_SIGNAL_NO_HYSTERESIS')
+    out['scoring']['population'] = 'C2_AT_S_CPI2025'
+    return out
 
 
 def canonical_json(value=None):
@@ -186,8 +201,8 @@ def canonical_json(value=None):
                       ensure_ascii=True, allow_nan=False)
 
 
-def settings_sha256():
-    return hashlib.sha256(canonical_json().encode('ascii')).hexdigest()
+def settings_sha256(market_cap_version="nominal-v1"):
+    return hashlib.sha256(canonical_json(settings_dict(market_cap_version)).encode('ascii')).hexdigest()
 
 
 def resolve_preset(preset):

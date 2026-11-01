@@ -67,7 +67,7 @@ from datetime import date
 from decimal import Decimal, InvalidOperation, localcontext
 from typing import Mapping
 
-from . import benchmarks, handoff, ledger, metrics, pit, schedule, scoring, selection, settings, universe
+from . import benchmarks, handoff, ledger, metrics, pit, schedule, scoring, selection, settings, universe, cap_thresholds
 
 SELECTION_SCHEMA = 'exp-deciles-selection-inputs/1'
 LEDGER_SCHEMA = 'exp-deciles-ledger-outputs/1'
@@ -181,8 +181,8 @@ def pit_rows(issuers, companyfacts, filing_rows, signal_day, execution_day):
     return rows
 
 
-def scoring_quotes(quotes, universe_result):
-    """(quotes for scoring.score_population keyed by the U-A representative IDs, {security_id: quote basis}).
+def scoring_quotes(quotes, universe_result, *, population=None):
+    """(quotes keyed by the supplied scoring population (legacy default U-A), {security_id: quote basis}).
 
     Decimal text is read as Decimal; an ADR representative's per-ADS quote is divided by its adr_ratio (price and month
     closes; floats through Decimal(str(x))), or withheld with ADR_RATIO_UNCONFIRMED when the ratio is not confirmed or
@@ -193,7 +193,7 @@ def scoring_quotes(quotes, universe_result):
     ratios = {c['security_id']: c['adr_ratio'] for issuer in universe_result['issuers'].values()
               for c in issuer['classes'] if c['security_type'] == settings.ADR_SECURITY_TYPE}
     out, basis = {}, {}
-    for sid in universe_result[settings.U_A]['member_securities']:
+    for sid in (universe_result[settings.U_A]['member_securities'] if population is None else population):
         quote = quotes.get(sid)
         if quote is None:
             continue
@@ -246,7 +246,7 @@ def _strategy_counts(selections, groups, scores):
 
 def selection_stage(records, *, year, companyfacts=None, filing_rows=(), quotes=None, previous_u_a=None,
                     previous_u_a_unknown=None, previous_u_a_securities=None, terminations=None, run=None,
-                    type_config=None, parameters=None, playbook_config=None):
+                    type_config=None, parameters=None, playbook_config=None, market_cap_version="nominal-v1", cpi=None):
     """selection_inputs/1 for the frozen signal year `year` (see the module doc).
 
     records: universe security records at that S; companyfacts: {cik: SEC companyfacts} or a loader callable(cik);
@@ -291,14 +291,17 @@ def selection_stage(records, *, year, companyfacts=None, filing_rows=(), quotes=
         raise RunnerError('PREVIOUS_U_A_SECURITIES_INVALID') from None
     uni = universe.build_universes(records, previous_u_a=previous, previous_u_a_unknown=previous_unknown,
                                    previous_u_a_securities=previous_classes, terminations=terminations,
-                                   signal_day=frozen['S'])
+                                   signal_day=frozen['S'], market_cap_version=market_cap_version, cpi=cpi)
     ua = uni[settings.U_A]
-    issuers = [{'cik': cik, 'security_id': ua['representatives'][cik]} for cik in ua['members']]
+    reference = ua if market_cap_version == cap_thresholds.NOMINAL else uni['C2']
+    issuers = [{'cik': cik, 'security_id': reference['representatives'][cik]} for cik in reference['members']]
     rows = pit_rows(issuers, companyfacts, filing_rows, frozen['S'], frozen['T'])
-    engine_quotes, quote_basis = scoring_quotes(quotes, uni)
-    scores = scoring.score_population(rows, engine_quotes, population=ua['member_securities'],
+    engine_quotes, quote_basis = scoring_quotes(quotes, uni, population=reference['member_securities'])
+    scores = scoring.score_population(rows, engine_quotes, population=reference['member_securities'],
                                       type_config=configs['type_config'], parameters=configs['dcf_parameters'],
                                       playbook_config=configs['playbook'])
+    if market_cap_version == cap_thresholds.CPI2025:
+        scores['scoring_population'] = 'C2_AT_S_CPI2025'
     groups = {group: uni[group]['member_securities'] for group in settings.GROUPS}
     selections = selection.select_all(scores, groups)
     flags = []
@@ -309,7 +312,7 @@ def selection_stage(records, *, year, companyfacts=None, filing_rows=(), quotes=
     quote_status = Counter(sec['quote_status'] for sec in scores['securities'].values())
     out = {
         'schema': SELECTION_SCHEMA, 'experiment_id': settings.EXPERIMENT_ID,
-        'settings_sha256': settings.settings_sha256(), 'stage': 'select', 'run': run or {},
+        'settings_sha256': settings.settings_sha256(market_cap_version), 'stage': 'select', 'run': run or {},
         'year': year, 'signal': dict(frozen, compute_cutoff=context['compute_cutoff'], rule=context['rule']),
         'first_build': previous is None, 'previous_u_a': previous, 'previous_u_a_unknown': previous_unknown,
         'previous_u_a_securities': previous_classes,
@@ -350,6 +353,13 @@ def selection_stage(records, *, year, companyfacts=None, filing_rows=(), quotes=
         'scoring_config': dict(identities),
         'operational_d11': 'NOT_APPLIED_OWNER_DECISION_PENDING',
     }
+    if market_cap_version == cap_thresholds.CPI2025:
+        out['market_cap_version'] = market_cap_version
+        out['market_cap_context'] = uni['market_cap_context']
+        out['universe']['C2'] = uni['C2']
+        out['counts']['C2'] = uni['C2']['counts']
+    if run and run.get('settings_sha256') != out['settings_sha256']:
+        raise RunnerError('RUN_SETTINGS_MISMATCH')
     return handoff.jsonable(out)
 
 
@@ -374,7 +384,8 @@ def _check_selection(item):
         raise RunnerError('SELECTION_SCHEMA_INVALID')
     if item.get('experiment_id') != settings.EXPERIMENT_ID:
         raise RunnerError('SELECTION_EXPERIMENT_MISMATCH')
-    if item.get('settings_sha256') != settings.settings_sha256():
+    version = item.get('market_cap_version', cap_thresholds.NOMINAL)
+    if item.get('settings_sha256') != settings.settings_sha256(version):
         raise RunnerError('SETTINGS_SHA256_MISMATCH')
 
 
@@ -398,6 +409,9 @@ def _ordered_selections(selections):
         raise RunnerError('SELECTION_YEAR_DUPLICATE')
     if any(b - a != 1 for a, b in zip(years, years[1:])):
         raise RunnerError('SELECTION_YEARS_NOT_CONSECUTIVE')
+    identities = {(x['settings_sha256'], (x.get('market_cap_context') or {}).get('input_sha256')) for x in items}
+    if len(identities) != 1:
+        raise RunnerError('SELECTION_MARKET_CAP_POLICY_MISMATCH')
     for a, b in zip(items, items[1:]):
         state = a['universe'][settings.U_A]
         if (b['previous_u_a'] != state['members'] or b.get('previous_u_a_unknown') != state['unknown']
@@ -740,7 +754,7 @@ def ledger_stage(selections, *, prices, events=(), end=None, tr_series=None,
     status_counts = Counter(p['status'] for p in portfolios.values())
     coverage_counts = Counter(p['daily_coverage'] for p in portfolios.values() if p['daily_coverage'])
     out = {
-        'schema': LEDGER_SCHEMA, 'experiment_id': settings.EXPERIMENT_ID, 'settings_sha256': settings.settings_sha256(),
+        'schema': LEDGER_SCHEMA, 'experiment_id': settings.EXPERIMENT_ID, 'settings_sha256': items[0]['settings_sha256'],
         'stage': 'ledger', 'run': run or {}, 'flags': [],
         'selection_years': [x['year'] for x in items],
         'selection_run_ids': [(x.get('run') or {}).get('run_id') for x in items],
@@ -771,6 +785,11 @@ def ledger_stage(selections, *, prices, events=(), end=None, tr_series=None,
                    'price_rows': len(prices), 'events': len(events),
                    'external_total_return': None if external is None else external['status']},
     }
+    if items[0].get('market_cap_version') == cap_thresholds.CPI2025:
+        out['market_cap_version'] = cap_thresholds.CPI2025
+        out['market_cap_contexts'] = [x['market_cap_context'] for x in items]
+    if run and run.get('settings_sha256') != out['settings_sha256']:
+        raise RunnerError('RUN_SETTINGS_MISMATCH')
     return handoff.jsonable(out)
 
 
