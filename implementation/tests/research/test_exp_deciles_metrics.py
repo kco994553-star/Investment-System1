@@ -316,5 +316,5 @@ def test_base_100_nav_index_next_to_usd_nav_is_a_display_normalisation():
     assert final['date'] == LONG_DAYS[-1] and final['valuation'] == 'CLOSE'
     assert final['nav_usd'] == pytest.approx(float(result['daily'][-1]['nav']))
     assert final['nav_index'] == pytest.approx(final['nav_usd'] / 10000)
-    assert metrics['nav_index_label'].startswith('DISPLAY_NORMALISATION_BASE_100')
+    assert metrics['nav_index_label'].startswith('REPORTED_NAV_INDEX_BASE_100')
     assert m.nav_index(1100000, 1000000) == pytest.approx(110.0) and m.nav_index(None, 1000000) is None

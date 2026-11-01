@@ -24,9 +24,10 @@ next-reselection execution price and corporate actions; daily prices may not be 
   the start anchor and the final NAV); `monthly` (basis MONTHLY) holds the month-end NAV metrics, reported separately:
   worst month, monthly volatility (sample stdev of full-month returns x sqrt 12), month-end MDD, Sharpe / Sortino / IR.
   A month-end NAV that used a stale mark is not a month-end value (MONTH_END_MARK_STALE).
-- Base-100 NAV index (owner: USD NAV 1,000,000; Codex asked for 100): every month-end row and the final value carry
-  nav_index = NAV / initial capital x 100 next to the USD NAV. It is a display normalisation only (NAV_INDEX_LABEL); the
-  account value stays the USD NAV.
+- NAV index starting at 100 (the reported NAV, owner 11/01 supplementary instruction: "USD NAV=100만" meant this index):
+  every month-end row and the final value carry nav_index = NAV / initial capital x 100 next to the USD NAV of the internal
+  notional account (settings.INTERNAL_NOTIONAL_CAPITAL_USD, an engine setting, not an owner-set capital). Returns do not
+  depend on that capital.
 
 Returns and weights are decimal fractions. Callers supply the verified session calendar; this module never invents
 sessions, fills missing NAV or obtains data.
@@ -49,8 +50,8 @@ MONTH_END_MARK_STALE = 'MONTH_END_MARK_STALE'
 BASIS_DAILY = 'DAILY'
 BASIS_MONTHLY = 'MONTHLY'
 NAV_INDEX_BASE = 100.0
-NAV_INDEX_LABEL = ('DISPLAY_NORMALISATION_BASE_100: nav_index = NAV / initial capital x 100; '
-                   'the account value is the USD NAV')
+NAV_INDEX_LABEL = ('REPORTED_NAV_INDEX_BASE_100: nav_index = NAV / initial capital x 100 is the reported NAV; '
+                   'the USD NAV is the internal notional account (engine setting, not an owner-set capital)')
 DAILY_METRIC_KEYS = ('annualized_volatility', 'max_drawdown')
 DAILY_DETAIL_KEYS = ('max_drawdown_peak_date', 'max_drawdown_trough_date', 'max_drawdown_recovered',
                      'max_drawdown_recovery_date', 'max_drawdown_recovery_sessions', 'max_drawdown_elapsed_sessions')
@@ -92,7 +93,7 @@ class MonthEndNav:
     nav: float | None
     complete: bool
     reason: str | None = None
-    nav_index: float | None = None  # Display normalisation: NAV / initial capital x 100 (NAV_INDEX_LABEL).
+    nav_index: float | None = None  # Reported NAV: NAV / initial capital x 100 (NAV_INDEX_LABEL).
 
 
 def _finite(value) -> bool:
@@ -295,7 +296,7 @@ def fixed_trade_cost_attribution(trades: Sequence[Mapping], gross_nav: Sequence[
 
 # -- month-end NAV, rolling windows, trailing returns -----------------------------------------------------------
 def nav_index(nav, initial_capital):
-    """Base-100 display normalisation of a NAV (None when either is missing)."""
+    """The reported NAV index (base 100) of a NAV (None when either is missing)."""
     if nav is None or initial_capital is None or not _finite(initial_capital) or initial_capital <= 0:
         return None
     return float(nav) / float(initial_capital) * NAV_INDEX_BASE

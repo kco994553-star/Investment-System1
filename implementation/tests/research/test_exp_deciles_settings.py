@@ -9,7 +9,7 @@ from investment_system.qgv import qgv_v2, v2_factors
 from investment_system.research.exp_deciles import settings
 
 # Frozen: a deliberate settings (or engine preset / calc version) change must update this pin together with the doc.
-SETTINGS_SHA256 = '525dca26a48636bb63715cb3ac968bdafac848cee2ba648d934569b086a38191'
+SETTINGS_SHA256 = 'bb785463aa41f43f324ef609b83089be6ef20612f5015fce80ec8d71cb037b60'
 
 
 def test_experiment_identity_and_universe_thresholds():
@@ -51,7 +51,8 @@ def test_selection_account_and_pit_constants():
     assert settings.DECILE == Decimal('0.10') and settings.MIN_N == 10
     assert settings.COST_BPS_PER_SIDE == Decimal('10')
     assert settings.SLIPPAGE_BPS == Decimal('0') and settings.CASH_INTEREST_RATE == Decimal('0')
-    assert settings.NAV_BASE_USD == Decimal('1000000')
+    assert settings.INTERNAL_NOTIONAL_CAPITAL_USD == Decimal('1000000') and settings.REPORTED_NAV == 'INDEX_BASE_100'
+    assert settings.BENCHMARKS == ('GROUP_EQUAL_WEIGHT_ELIGIBLE', 'SPY_TOTAL_RETURN_ETF_AUXILIARY')
     assert settings.PIT_LAG_FULL_SESSIONS == 5 and settings.PIT_USABLE_SESSION == 6
     assert settings.SCHEDULE_YEARS == tuple(range(2017, 2027))
     assert settings.FIRST_BUNDLE == {'S': '2018-02-16', 'T': '2018-02-20', 'next_T': '2019-02-19'}
@@ -64,7 +65,7 @@ def test_settings_dict_is_json_with_decimals_as_strings_and_fresh():
     assert d['universes']['U_A'] == {'entry_usd': '250000000', 'stay_usd': '200000000',
                                      'rule': settings.U_A_RULE}
     assert d['universes']['U_B']['min_usd'] == '10000000000'
-    assert d['selection']['decile'] == '0.10' and d['account']['nav_base_usd'] == '1000000'
+    assert d['selection']['decile'] == '0.10' and d['account']['internal_notional_capital_usd'] == '1000000'
     assert d['scoring']['population'] == 'U_A_AT_S'
     assert list(d['scoring']['presets']) == list(settings.PRESET_IDS)
     # Security types (owner decision 2026-10-30, EXPANDED_DEFINITION_20261030.md section 1.2) are part of the hash.

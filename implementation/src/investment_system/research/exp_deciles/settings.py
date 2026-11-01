@@ -94,14 +94,19 @@ COST_BPS_PER_SIDE = Decimal('10')
 SLIPPAGE_BPS = Decimal('0')
 CASH_INTEREST_RATE = Decimal('0')
 ADDITIONAL_CONTRIBUTION = Decimal('0')
-NAV_BASE_USD = Decimal('1000000')
+# Internal notional capital of the ledger: an engine setting, not an owner-set initial capital (owner 11/01 supplementary
+# instruction). Results do not depend on it (fractional quantities, proportional costs; checked from 0.01 to 1e9). The
+# reported NAV is the index starting at 100 (REPORTED_NAV); the owner's "USD NAV=100만" meant that index.
+INTERNAL_NOTIONAL_CAPITAL_USD = Decimal('1000000')
+REPORTED_NAV = 'INDEX_BASE_100'
 KRW_REQUEST = Decimal('100000000')
 KRW_RULE = 'KRW_PERFORMANCE_NOT_COMPUTED_WITHOUT_HISTORICAL_FX'
 CASH_RULE = 'DIVIDEND_AND_MERGER_CASH_HELD_UNTIL_NEXT_RESELECTION'
 UNFILLED_RULE = 'NO_T_OPEN_UNFILLED_NO_NEXT_RANK_SUBSTITUTION'
 UNRESOLVED_EXIT_SCENARIOS = ('LOSS', 'CARRY')
 COST_REPORTING = 'BEFORE_AND_AFTER_COST'
-BENCHMARKS = ('GROUP_EQUAL_WEIGHT_ELIGIBLE', 'SP500_TOTAL_RETURN')
+# Owner 11/01 decision 3: SPY total return is an ETF auxiliary comparison only; no S&P 500 index total return is claimed.
+BENCHMARKS = ('GROUP_EQUAL_WEIGHT_ELIGIBLE', 'SPY_TOTAL_RETURN_ETF_AUXILIARY')
 PERFORMANCE_HORIZON_YEARS = (1, 3, 5, 10)   # a horizon longer than the data is null with a reason
 
 
@@ -138,7 +143,7 @@ def settings_dict():
                 'filing_date_basis': FILING_DATE_BASIS},
         'account': {'cost_bps_per_side': COST_BPS_PER_SIDE, 'slippage_bps': SLIPPAGE_BPS,
                     'cash_interest_rate': CASH_INTEREST_RATE, 'additional_contribution': ADDITIONAL_CONTRIBUTION,
-                    'nav_base_usd': NAV_BASE_USD, 'krw_request': KRW_REQUEST, 'krw_rule': KRW_RULE,
+                    'internal_notional_capital_usd': INTERNAL_NOTIONAL_CAPITAL_USD, 'reported_nav': REPORTED_NAV, 'krw_request': KRW_REQUEST, 'krw_rule': KRW_RULE,
                     'cash_rule': CASH_RULE, 'unfilled_rule': UNFILLED_RULE,
                     'unresolved_exit_scenarios': UNRESOLVED_EXIT_SCENARIOS, 'cost_reporting': COST_REPORTING},
         'benchmarks': BENCHMARKS, 'performance_horizon_years': PERFORMANCE_HORIZON_YEARS,

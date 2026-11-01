@@ -31,7 +31,7 @@ Ledger stage (ledger_stage, one or more consecutive yearly selection_inputs):
     daily_coverage is DAILY_COVERAGE_COMPLETE only when every run's price rows cover every session of the holding period
     for every held name, else DAILY_PRICES_NOT_SUPPLIED and its daily metrics are null (monthly metrics are reported
     separately, basis MONTHLY; owner 11/01 decision 7). Month-end series and final values carry the base-100 NAV index
-    next to the USD NAV (display normalisation);
+    next to the internal notional USD NAV (the index is the reported NAV);
   - optional external total-return series: benchmarks.external_tr_benchmark from the first T and
     metrics.series_metrics; a refused label is recorded as REFUSED with its code, the rest of the stage continues;
   - sessions are the canonical NYSE rule calendar (schedule.is_session) from the first S; every run stops at `end`.
@@ -544,7 +544,7 @@ def _external_tr(tr_series, *, entry_date, end, end_valuation, sessions, initial
             'metrics': measured}
 
 
-def ledger_stage(selections, *, prices, events=(), end=None, tr_series=None, initial_capital=settings.NAV_BASE_USD,
+def ledger_stage(selections, *, prices, events=(), end=None, tr_series=None, initial_capital=settings.INTERNAL_NOTIONAL_CAPITAL_USD,
                  daily_positions=False, run=None):
     """ledger_outputs/1 from consecutive yearly selection_inputs/1 results (see the module doc).
 

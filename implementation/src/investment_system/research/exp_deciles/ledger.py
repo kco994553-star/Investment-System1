@@ -38,7 +38,8 @@ Changed for this experiment (settings doc section 1, inventory item 7):
 - ADR dividends may carry depositary_fee_per_share (as in the preserved Codex research ledger, commit c68af2c0): the
   receivable is quantity x (cash_per_share - fee), the fee is recorded as an instrument fee (`instrument_fees`, kind
   DEPOSITARY_FEE, separate from trading costs) and a fee above the cash per share is refused (ADR_FEE_EXCEEDS_DIVIDEND).
-- Cash interest is zero (mode 'ZERO'; no rate rows). Initial capital defaults to USD 1,000,000. Currency is USD only.
+- Cash interest is zero (mode 'ZERO'; no rate rows). Initial capital defaults to an internal notional USD 1,000,000 (an engine setting, not
+  an owner-set capital; returns do not depend on it). Currency is USD only.
 - The equal-weight target base at S is cash (reserved cash released) plus tradable holdings at S marks. Unpaid
   receivables, CARRY value and positions frozen by a corporate action cannot fund trades, so they are reported but
   left out of the base. Every NAV still includes them.
