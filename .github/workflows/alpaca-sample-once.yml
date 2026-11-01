@@ -1,0 +1,66 @@
+# ONE-TIME MEASUREMENT (owner decision 2026-11-01 item 2: Alpaca SIP small sample only; bulk collection is decided after the
+# result; plan implementation/docs/lab/ALPACA_SAMPLE_PLAN_20261101.md). Runs only on the push to the run branch
+# claude/alpaca-sample-once-run: never on a PR, a schedule, a manual dispatch or any other branch; the run branch is deleted after
+# the run. Alpaca market data v2 daily bars (SIP, raw, 2016-01-01..2019-03-31) for a fixed 40-security sample, 67 requests,
+# prices held in RAM. The exact response bytes and a sha256 manifest (with the private value-comparison codes) go ONLY to a NEW
+# release alpaca-sample-v1-<run_id> of the private raw repository (create-only; no other release is read, changed or deleted).
+# This repository is public, so its log carries only the fixed presence / coverage lines of the tool's LINE_SPECS (whether a
+# bar exists on a day, counts, public dates, day differences): never a price, a value comparison, volume, key, token, URL or
+# exception text. Alpaca terms: personal, non-commercial use; public posting of derived results is unconfirmed, so the owner
+# confirms the coverage-only lines before the run (plan sections 4, 6, 9).
+name: alpaca-sample-once
+on:
+  push:
+    branches: [claude/alpaca-sample-once-run]
+permissions:
+  contents: read
+concurrency:
+  group: alpaca-sample-once-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  offline:
+    if: github.ref == 'refs/heads/claude/alpaca-sample-once-run'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      # Offline first, in its own job (fakes only, no network, no Secret): a failing check stops the run before any
+      # request, and the pip install never touches the runner that later holds the Secrets.
+      # --tb=no -rN -p no:warnings: no traceback, no short summary and no warnings summary, so a failure prints only
+      # pass / fail marks and counts (the tests use synthetic values only anyway).
+      - name: Offline unit test of the measurement (no network, no Secret)
+        working-directory: implementation
+        run: |
+          python -m pip install pytest==9.1.1
+          PYTHONPATH=src python -m pytest -q --tb=no -rN -p no:warnings -p no:cacheprovider tests/test_alpaca_sample_once.py
+  measure:
+    needs: offline
+    if: github.ref == 'refs/heads/claude/alpaca-sample-once-run'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      # The only step that holds Secrets, on a fresh runner where nothing was installed: the tool is stdlib-only and runs with
+      # `python -I -S` (no site-packages, no .pth, no user site, no PYTHON* variables). It stops with one fixed line when a
+      # Secret is missing, checks that the raw repository is private and that the run's release tag does not exist before any
+      # Alpaca request and again right before creating, and never prints them. Collection stops at 9 minutes; storage has its
+      # own 5-minute budget with short GitHub timeouts and bounded retries, so both fit inside the step limit.
+      - name: Measure the Alpaca SIP small sample (fixed lines only; raw bytes only to a new private release)
+        timeout-minutes: 20
+        env:
+          APCA_API_KEY_ID: ${{ secrets.APCA_API_KEY_ID }}
+          APCA_API_SECRET_KEY: ${{ secrets.APCA_API_SECRET_KEY }}
+          RAW_REPO_TOKEN: ${{ secrets.RAW_REPO_TOKEN }}
+        run: |
+          umask 077
+          python -I -S implementation/tools/measure_once/alpaca_sample_once.py
