@@ -27,7 +27,11 @@ Ledger stage (ledger_stage, one or more consecutive yearly selection_inputs):
     the ledger sells what it holds at that T open and keeps the cash; the year is recorded with holding 'CASH' and the
     reason. A portfolio that is cash in every year is ALL_CASH and no ledger is run for it;
   - every other portfolio: ledger.run_scenarios (LOSS and CARRY) at 0 bp and at settings.COST_BPS_PER_SIDE, then
-    metrics.cost_comparison (which holds metrics.ledger_metrics of both runs) per scenario;
+    metrics.cost_comparison (which holds metrics.ledger_metrics of both runs) per scenario; the portfolio's
+    daily_coverage is DAILY_COVERAGE_COMPLETE only when every run's price rows cover every session of the holding period
+    for every held name, else DAILY_PRICES_NOT_SUPPLIED and its daily metrics are null (monthly metrics are reported
+    separately, basis MONTHLY; owner 11/01 decision 7). Month-end series and final values carry the base-100 NAV index
+    next to the USD NAV (display normalisation);
   - optional external total-return series: benchmarks.external_tr_benchmark from the first T and
     metrics.series_metrics; a refused label is recorded as REFUSED with its code, the rest of the stage continues;
   - sessions are the canonical NYSE rule calendar (schedule.is_session) from the first S; every run stops at `end`.
@@ -531,8 +535,10 @@ def _external_tr(tr_series, *, entry_date, end, end_valuation, sessions, initial
     measured = None
     if result['daily']:
         points, started, capital = benchmarks.tr_nav_points(result)
+        stale = {row['date'] for row in result['daily'] if row['valuation'] == benchmarks.ENTRY_PREVIOUS_CLOSE}
         measured = metrics.series_metrics(points, started_at=started, initial_capital=capital, sessions=sessions,
-                                          coverage_end=end)
+                                          coverage_end=end, stale_dates=stale,
+                                          final_valuation=result['daily'][-1]['valuation'])
     return {'status': result['status'], 'reason': None, 'label': tr_series['label'], 'result': result,
             'metrics': measured}
 
@@ -573,7 +579,8 @@ def ledger_stage(selections, *, prices, events=(), end=None, tr_series=None, ini
     portfolios, run_status = {}, Counter()
     for pid, kind, strategy, group, side, years in specs:
         entry = {'portfolio_id': pid, 'kind': kind, 'strategy': strategy, 'group': group, 'side': side, 'years': years,
-                 'cash_years': [y['year'] for y in years if y['holding'] == HOLD_CASH], 'runs': None, 'metrics': None}
+                 'cash_years': [y['year'] for y in years if y['holding'] == HOLD_CASH], 'runs': None, 'metrics': None,
+                 'daily_coverage': None}
         if all(y['holding'] == HOLD_CASH for y in years):
             entry['status'] = PORTFOLIO_ALL_CASH
         else:
@@ -582,7 +589,11 @@ def ledger_stage(selections, *, prices, events=(), end=None, tr_series=None, ini
                                             end_valuation=end_valuation, initial_capital=capital,
                                             daily_positions=daily_positions,
                                             group=group if kind == KIND_GROUP_EW else None)
-            entry.update(status=PORTFOLIO_RUN, runs=runs, metrics=measured)
+            coverage = {side_metrics['daily_coverage']['status'] for comparison in measured.values()
+                        for side_metrics in (comparison['before_cost'], comparison['after_cost'])}
+            entry.update(status=PORTFOLIO_RUN, runs=runs, metrics=measured,
+                         daily_coverage=(metrics.DAILY_COVERAGE_COMPLETE if coverage == {metrics.DAILY_COVERAGE_COMPLETE}
+                                         else metrics.DAILY_PRICES_NOT_SUPPLIED))
             run_status.update(result['status'] for by_cost in runs.values() for result in by_cost.values())
         portfolios[pid] = entry
     external = None
@@ -590,6 +601,7 @@ def ledger_stage(selections, *, prices, events=(), end=None, tr_series=None, ini
         external = _external_tr(tr_series, entry_date=_day(items[0]['signal']['T']), end=end,
                                 end_valuation=end_valuation, sessions=sessions, initial_capital=capital)
     status_counts = Counter(p['status'] for p in portfolios.values())
+    coverage_counts = Counter(p['daily_coverage'] for p in portfolios.values() if p['daily_coverage'])
     out = {
         'schema': LEDGER_SCHEMA, 'experiment_id': settings.EXPERIMENT_ID, 'settings_sha256': settings.settings_sha256(),
         'stage': 'ledger', 'run': run or {}, 'flags': [],
@@ -608,6 +620,9 @@ def ledger_stage(selections, *, prices, events=(), end=None, tr_series=None, ini
                    'portfolios_all_cash': status_counts[PORTFOLIO_ALL_CASH],
                    'cash_years': sum(len(p['cash_years']) for p in portfolios.values()),
                    'ledger_runs': sum(run_status.values()), 'ledger_runs_by_status': dict(sorted(run_status.items())),
+                   'daily_coverage': dict(sorted(coverage_counts.items())),
+                   'settlement_conflicts': sum(len(result['conflicts']) for p in portfolios.values() if p['runs']
+                                               for by_cost in p['runs'].values() for result in by_cost.values()),
                    'price_rows': len(prices), 'events': len(events),
                    'external_total_return': None if external is None else external['status']},
     }

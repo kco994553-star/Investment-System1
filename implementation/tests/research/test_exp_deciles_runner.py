@@ -368,3 +368,22 @@ def test_adr_float_quote_is_divided_through_decimal_text_or_withheld():
     out, basis = runner.scoring_quotes({'A': {'price': 'n/a', 'currency': 'USD',
                                               'month_closes': {'2018-01': 'x', '2018-02': 40.0}}}, uni)
     assert out['A']['withheld_reason'] == 'ADR_QUOTE_PRICE_INVALID' and basis == {'A': 'ADR_QUOTE_PRICE_INVALID'}
+
+
+# ---- owner 11/01 decision 7: daily metrics only when daily prices cover the holding period -------------------------
+def test_portfolio_daily_coverage_and_monthly_metrics_without_daily_prices(years):
+    s18, _ = years
+    sessions = runner.calendar_sessions('2018-02-16', '2019-02-19')
+    month_ends = {day for day, nxt in zip(sessions, sessions[1:]) if nxt.month != day.month}
+    keep = {date(2018, 2, 16), date(2018, 2, 20), date(2019, 2, 19)} | month_ends
+    full = runner.ledger_stage([s18], prices=syn.price_rows())
+    sparse = runner.ledger_stage([s18], prices=[r for r in syn.price_rows() if r['date'] in keep])
+    assert set(full['counts']['daily_coverage']) == {'DAILY_COVERAGE_COMPLETE'}
+    assert sparse['counts']['daily_coverage'] == {'DAILY_PRICES_NOT_SUPPLIED': full['counts']['portfolios_run']}
+    ew_full = full['portfolios']['GROUP_EQUAL_WEIGHT/U_A']['metrics']['LOSS']['after_cost']
+    ew = sparse['portfolios']['GROUP_EQUAL_WEIGHT/U_A']['metrics']['LOSS']['after_cost']
+    assert ew['performance']['max_drawdown'] == {'value': None, 'reason': 'DAILY_PRICES_NOT_SUPPLIED'}
+    assert ew['performance']['annualized_volatility']['reason'] == 'DAILY_PRICES_NOT_SUPPLIED'
+    assert ew['monthly']['basis'] == 'MONTHLY' and ew['monthly']['max_drawdown']['value'] is not None
+    assert ew['final']['valuation'] == 'OPEN' and ew['final']['nav_index'] is not None
+    assert [r['nav_index'] for r in ew['month_end_nav']] == [r['nav_index'] for r in ew_full['month_end_nav']]

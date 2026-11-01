@@ -518,6 +518,8 @@ def cmd_ledger(args):
            ('portfolios_all_cash', counts['portfolios_all_cash']), ('cash_years', counts['cash_years']),
            ('ledger_runs', counts['ledger_runs']),
            ('ledger_runs_by_status', ','.join(f'{k}:{v}' for k, v in sorted(by_status.items())) or '-'),
+           ('daily_coverage', ','.join(f'{k}:{v}' for k, v in sorted(counts['daily_coverage'].items())) or '-'),
+           ('settlement_conflicts', counts['settlement_conflicts']),
            ('external_total_return', counts['external_total_return'] or '-'),
            ('files', f'{LEDGER_FILE},{MANIFEST_FILE}')])
     return 0

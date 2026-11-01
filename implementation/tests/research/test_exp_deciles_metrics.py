@@ -220,7 +220,9 @@ def test_ledger_metrics_measure_from_first_fill_with_turnover_and_cost_attributi
     assert metrics['rolling_windows'][36]['worst'] == m.Metric(None, 'INSUFFICIENT_HISTORY')
     assert metrics['trailing_returns']['1y']['total_return'].value is not None
     assert metrics['trailing_returns']['3y']['total_return'] == m.Metric(None, 'INSUFFICIENT_HISTORY')
-    assert metrics['performance']['sharpe'] == m.Metric(None, 'MISSING_RISK_FREE')
+    assert metrics['monthly']['sharpe'] == m.Metric(None, 'MISSING_RISK_FREE') and 'sharpe' not in metrics['performance']
+    assert metrics['daily_coverage']['status'] == 'DAILY_COVERAGE_COMPLETE'
+    assert metrics['performance']['basis'] == 'DAILY' and metrics['monthly']['basis'] == 'MONTHLY'
 
 
 def test_cost_comparison_reports_before_and_after_cost_side_by_side():
@@ -250,3 +252,69 @@ def test_ledger_metrics_without_any_fill_are_null_with_reason():
     assert metrics['status'] == 'NO_FILL'
     assert metrics['performance']['cagr'] == m.Metric(None, 'NO_FILL')
     assert metrics['trailing_returns']['1y']['total_return'] == m.Metric(None, 'INSUFFICIENT_HISTORY')
+
+
+
+# -- owner 11/01 decision 7: daily metrics only with daily prices; monthly metrics reported separately -------------
+def _monthly_only_prices():
+    """A, B priced at S, T, every month end and the last day only (no other session)."""
+    keep, rows = set(), []
+    for i, day in enumerate(LONG_DAYS[:400]):
+        nxt = LONG_DAYS[i + 1] if i + 1 < 400 else None
+        if i in (0, 1, 399) or nxt is None or nxt.month != day.month:
+            keep.add(day)
+    for row in _long_prices():
+        if row['date'] in keep:
+            rows.append(row)
+    return rows
+
+
+def test_daily_metrics_are_null_without_daily_prices_and_monthly_metrics_are_labelled():
+    days = LONG_DAYS[:400]
+    rebalances = [Rebalance(days[0], days[1], ['A', 'B'])]
+    full = m.ledger_metrics(run_ledger(days, rebalances, [r for r in _long_prices() if r['date'] in set(days)],
+                                       scenario='LOSS', cost_bps=0, initial_capital=1000000))
+    assert full['daily_coverage'] == {'status': 'DAILY_COVERAGE_COMPLETE', 'sessions': 399, 'uncovered_sessions': 0,
+                                      'first_uncovered': None}
+    assert full['performance']['annualized_volatility'].value is not None
+    sparse_run = run_ledger(days, rebalances, _monthly_only_prices(), scenario='LOSS', cost_bps=0,
+                            initial_capital=1000000)
+    sparse = m.ledger_metrics(sparse_run)
+    assert sparse['daily_coverage']['status'] == 'DAILY_PRICES_NOT_SUPPLIED'
+    assert sparse['daily_coverage']['first_uncovered'] == days[2]
+    for key in ('annualized_volatility', 'max_drawdown'):
+        assert sparse['performance'][key] == m.Metric(None, 'DAILY_PRICES_NOT_SUPPLIED')
+    assert sparse['performance']['max_drawdown_recovery_date'] is None
+    assert sparse['performance']['max_drawdown_peak_date'] is None
+    # Endpoint and month-end values do not need daily prices: they equal the fully priced run's.
+    assert sparse['performance']['cumulative_return'].value == pytest.approx(full['performance']['cumulative_return'].value)
+    assert [r.nav for r in sparse['month_end_nav']] == [r.nav for r in full['month_end_nav']]
+    assert sparse['monthly']['basis'] == 'MONTHLY' and sparse['monthly']['max_drawdown'].value is not None
+    assert sparse['monthly']['annualized_volatility'].value == pytest.approx(
+        full['monthly']['annualized_volatility'].value)
+    assert sparse['monthly']['worst_month'].value == pytest.approx(full['monthly']['worst_month'].value)
+
+
+def test_a_stale_month_end_mark_is_not_a_month_end_value():
+    days = LONG_DAYS[:60]
+    rows = [r for r in _long_prices() if r['date'] in set(days) and not (r['security_id'] == 'B'
+                                                                         and r['date'] == date(2030, 3, 31))]
+    metrics = m.ledger_metrics(run_ledger(days, [Rebalance(days[0], days[1], ['A', 'B'])], rows, scenario='LOSS',
+                                          cost_bps=0, initial_capital=1000000))
+    march = next(r for r in metrics['month_end_nav'] if r.month == '2030-03')
+    assert (march.nav, march.complete, march.reason) == (None, False, 'MONTH_END_MARK_STALE')
+    assert metrics['daily_coverage']['uncovered_sessions'] == 1
+
+
+def test_base_100_nav_index_next_to_usd_nav_is_a_display_normalisation():
+    result = _long_run(10)
+    metrics = m.ledger_metrics(result)
+    for row in metrics['month_end_nav']:
+        if row.complete:
+            assert row.nav_index == pytest.approx(row.nav / 1000000 * 100)
+    final = metrics['final']
+    assert final['date'] == LONG_DAYS[-1] and final['valuation'] == 'CLOSE'
+    assert final['nav_usd'] == pytest.approx(float(result['daily'][-1]['nav']))
+    assert final['nav_index'] == pytest.approx(final['nav_usd'] / 10000)
+    assert metrics['nav_index_label'].startswith('DISPLAY_NORMALISATION_BASE_100')
+    assert m.nav_index(1100000, 1000000) == pytest.approx(110.0) and m.nav_index(None, 1000000) is None

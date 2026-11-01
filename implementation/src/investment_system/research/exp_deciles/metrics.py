@@ -13,6 +13,21 @@ INSUFFICIENT_HISTORY when the period is too short, adapters that read run_ledger
 after-cost side-by-side report computed from two ledger runs (cost 0 and cost > 0). The #417 bootstrap and primary
 decision rules are not ported (they belong to that study).
 
+Daily vs monthly (owner 11/01 decision 7: the price scope is the entry price, holding-period valuation prices, the
+next-reselection execution price and corporate actions; daily prices may not be supplied for every period):
+- series_metrics / ledger_metrics report `daily_coverage`: DAILY_COVERAGE_COMPLETE only when the NAV has a value on
+  every session of the holding period and no session's valuation used a stale mark (for a ledger: no STALE_MARK flag,
+  i.e. every held tradable name had that session's price; LOSS / CARRY positions need none). Otherwise
+  DAILY_PRICES_NOT_SUPPLIED, and the daily-based metrics (annualized daily volatility, daily MDD with its peak / trough
+  / recovery) are null with that reason instead of being presented as computed.
+- `performance` (basis DAILY) keeps those daily metrics and the endpoint returns (cumulative return and CAGR need only
+  the start anchor and the final NAV); `monthly` (basis MONTHLY) holds the month-end NAV metrics, reported separately:
+  worst month, monthly volatility (sample stdev of full-month returns x sqrt 12), month-end MDD, Sharpe / Sortino / IR.
+  A month-end NAV that used a stale mark is not a month-end value (MONTH_END_MARK_STALE).
+- Base-100 NAV index (owner: USD NAV 1,000,000; Codex asked for 100): every month-end row and the final value carry
+  nav_index = NAV / initial capital x 100 next to the USD NAV. It is a display normalisation only (NAV_INDEX_LABEL); the
+  account value stays the USD NAV.
+
 Returns and weights are decimal fractions. Callers supply the verified session calendar; this module never invents
 sessions, fills missing NAV or obtains data.
 """
@@ -28,6 +43,18 @@ from typing import Mapping, Sequence
 ROLLING_WINDOW_MONTHS = (12, 36, 60, 120)
 TRAILING_YEARS = (1, 3, 5, 10)
 INSUFFICIENT_HISTORY = 'INSUFFICIENT_HISTORY'
+DAILY_COVERAGE_COMPLETE = 'DAILY_COVERAGE_COMPLETE'
+DAILY_PRICES_NOT_SUPPLIED = 'DAILY_PRICES_NOT_SUPPLIED'
+MONTH_END_MARK_STALE = 'MONTH_END_MARK_STALE'
+BASIS_DAILY = 'DAILY'
+BASIS_MONTHLY = 'MONTHLY'
+NAV_INDEX_BASE = 100.0
+NAV_INDEX_LABEL = ('DISPLAY_NORMALISATION_BASE_100: nav_index = NAV / initial capital x 100; '
+                   'the account value is the USD NAV')
+DAILY_METRIC_KEYS = ('annualized_volatility', 'max_drawdown')
+DAILY_DETAIL_KEYS = ('max_drawdown_peak_date', 'max_drawdown_trough_date', 'max_drawdown_recovered',
+                     'max_drawdown_recovery_date', 'max_drawdown_recovery_sessions', 'max_drawdown_elapsed_sessions')
+MONTHLY_METRIC_KEYS = ('full_months', 'worst_month', 'sharpe', 'sortino', 'information_ratio')
 
 
 @dataclass(frozen=True)
@@ -65,6 +92,7 @@ class MonthEndNav:
     nav: float | None
     complete: bool
     reason: str | None = None
+    nav_index: float | None = None  # Display normalisation: NAV / initial capital x 100 (NAV_INDEX_LABEL).
 
 
 def _finite(value) -> bool:
@@ -266,13 +294,24 @@ def fixed_trade_cost_attribution(trades: Sequence[Mapping], gross_nav: Sequence[
 
 
 # -- month-end NAV, rolling windows, trailing returns -----------------------------------------------------------
+def nav_index(nav, initial_capital):
+    """Base-100 display normalisation of a NAV (None when either is missing)."""
+    if nav is None or initial_capital is None or not _finite(initial_capital) or initial_capital <= 0:
+        return None
+    return float(nav) / float(initial_capital) * NAV_INDEX_BASE
+
+
 def month_end_nav(nav_points: Sequence[NavPoint], *, sessions: Sequence[date],
-                  coverage_end: date | None = None) -> list[MonthEndNav]:
+                  coverage_end: date | None = None, initial_capital: float | None = None,
+                  stale_dates=()) -> list[MonthEndNav]:
     """NAV at the last calendar session of each month from the first to the last NAV month.
 
     A month end counts only when the verified calendar covers the civil month end (coverage_end, default the last
-    supplied session) and the NAV series has a value on that month's last session. Never guesses by weekdays.
+    supplied session) and the NAV series has a value on that month's last session that did not use a stale mark
+    (stale_dates: MONTH_END_MARK_STALE). Never guesses by weekdays. With initial_capital every complete row also carries
+    the base-100 nav_index.
     """
+    stale_dates = frozenset(stale_dates or ())
     points = list(nav_points)
     _validate_points(points)
     if not points:
@@ -302,8 +341,11 @@ def month_end_nav(nav_points: Sequence[NavPoint], *, sessions: Sequence[date],
             result.append(MonthEndNav(label, session, None, False, 'MISSING_MONTH_END_NAV'))
         elif values[session] is None:
             result.append(MonthEndNav(label, session, None, False, 'INCOMPLETE_NAV'))
+        elif session in stale_dates:
+            result.append(MonthEndNav(label, session, None, False, MONTH_END_MARK_STALE))
         else:
-            result.append(MonthEndNav(label, session, values[session], True))
+            result.append(MonthEndNav(label, session, values[session], True, None,
+                                      nav_index(values[session], initial_capital)))
         year, month = (year + 1, 1) if month == 12 else (year, month + 1)
     return result
 
@@ -428,22 +470,93 @@ def trailing_returns(nav_points: Sequence[NavPoint], *, years: Sequence[int] = T
     return result
 
 
+def daily_coverage(nav_points: Sequence[NavPoint], expected_sessions: Sequence[date], stale_dates=()) -> dict:
+    """DAILY_COVERAGE_COMPLETE when every expected session has a NAV that used no stale mark, else
+    DAILY_PRICES_NOT_SUPPLIED with the session counts and the first uncovered session."""
+    values = {point.date: point.nav for point in nav_points}
+    stale = frozenset(stale_dates or ())
+    uncovered = [day for day in expected_sessions if values.get(day) is None or day in stale]
+    return dict(status=DAILY_PRICES_NOT_SUPPLIED if uncovered or not expected_sessions else DAILY_COVERAGE_COMPLETE,
+                sessions=len(expected_sessions), uncovered_sessions=len(uncovered),
+                first_uncovered=uncovered[0] if uncovered else None)
+
+
+def monthly_metrics(month_ends: Sequence[MonthEndNav], monthly: Sequence[MonthlyReturn], *, started_at: date,
+                    initial_capital: float, final: NavPoint | None, risk_free: RiskFreeSeries | None = None,
+                    benchmark_monthly: Sequence[MonthlyReturn] | None = None) -> dict:
+    """Month-end NAV metrics (basis MONTHLY): worst month, Sharpe / Sortino / IR, monthly volatility and month-end MDD."""
+    risk = monthly_risk_metrics(monthly, risk_free=risk_free, benchmark_monthly=benchmark_monthly)
+    out = {'basis': BASIS_MONTHLY, **{key: risk[key] for key in MONTHLY_METRIC_KEYS}}
+    full = [item.value for item in monthly if item.full_month]
+    if any(value is None for value in full):
+        out['annualized_volatility'] = Metric(None, 'INCOMPLETE_MONTHLY_RETURNS')
+    elif len(full) < 2:
+        out['annualized_volatility'] = Metric(None, 'INSUFFICIENT_MONTHS')
+    else:
+        out['annualized_volatility'] = Metric(stdev(full) * math.sqrt(12))
+    rows = [row for row in _core_months(month_ends) if row.date is not None and started_at < row.date
+            and (final is None or row.date <= final.date)]
+    path = [float(initial_capital)] + [row.nav for row in rows]
+    if final is not None and (not rows or rows[-1].date != final.date):
+        path.append(final.nav)
+    if any(value is None for value in path):
+        out['max_drawdown'] = Metric(None, 'INCOMPLETE_MONTH_END_NAV')
+    elif len(path) < 2:
+        out['max_drawdown'] = Metric(None, 'INSUFFICIENT_MONTHS')
+    else:
+        peak, worst = path[0], 0.0
+        for value in path:
+            peak = max(peak, value)
+            worst = min(worst, value / peak - 1 if peak else 0.0)
+        out['max_drawdown'] = Metric(worst)
+    return out
+
+
 def series_metrics(nav_points: Sequence[NavPoint], *, started_at: date, initial_capital: float,
                    sessions: Sequence[date] | None = None, coverage_end: date | None = None,
                    risk_free: RiskFreeSeries | None = None,
-                   benchmark_monthly: Sequence[MonthlyReturn] | None = None) -> dict:
-    """Performance, month-end NAV, monthly returns, rolling windows and trailing returns for one NAV path."""
+                   benchmark_monthly: Sequence[MonthlyReturn] | None = None, stale_dates=(),
+                   final_valuation: str | None = None) -> dict:
+    """Performance (DAILY), daily coverage, monthly metrics (MONTHLY), month-end NAV with the base-100 index, monthly
+    returns, rolling windows, trailing returns and the final value for one NAV path (module doc).
+
+    stale_dates: sessions whose NAV used a stale mark; final_valuation: CLOSE / OPEN / PREVIOUS_CLOSE of the last point."""
     points = list(nav_points)
     calendar = sorted(sessions) if sessions is not None else [point.date for point in points]
     expected = [day for day in calendar if points and points[0].date <= day <= points[-1].date]
-    month_ends = month_end_nav(points, sessions=calendar, coverage_end=coverage_end) if points else []
+    month_ends = (month_end_nav(points, sessions=calendar, coverage_end=coverage_end, initial_capital=initial_capital,
+                                stale_dates=stale_dates) if points else [])
     monthly = monthly_returns(points, month_ends, started_at=started_at, initial_capital=initial_capital)
-    return dict(performance=performance_metrics(points, monthly_returns=monthly, risk_free=risk_free,
-                                                benchmark_monthly=benchmark_monthly, expected_sessions=expected,
-                                                initial_capital=initial_capital, started_at=started_at),
+    perf = performance_metrics(points, monthly_returns=monthly, risk_free=risk_free,
+                               benchmark_monthly=benchmark_monthly, expected_sessions=expected,
+                               initial_capital=initial_capital, started_at=started_at)
+    coverage = daily_coverage(points, expected, stale_dates)
+    final = points[-1] if points else None
+    if perf['cumulative_return'].value is None and final is not None and final.nav is not None and initial_capital:
+        # Endpoint returns need only the start anchor and the final NAV, not every session.
+        days = (final.date - started_at).days
+        perf['cumulative_return'] = Metric(final.nav / initial_capital - 1)
+        perf['cagr'] = (Metric((final.nav / initial_capital) ** (365.25 / days) - 1) if days
+                        else Metric(None, 'ZERO_DURATION'))
+    if coverage['status'] != DAILY_COVERAGE_COMPLETE:
+        perf.update({key: Metric(None, DAILY_PRICES_NOT_SUPPLIED) for key in DAILY_METRIC_KEYS})
+        perf.update(dict.fromkeys(DAILY_DETAIL_KEYS))
+    performance = {'basis': BASIS_DAILY, **{key: value for key, value in perf.items()
+                                            if key not in MONTHLY_METRIC_KEYS}}
+    return dict(performance=performance, daily_coverage=coverage,
+                monthly=monthly_metrics(month_ends, monthly, started_at=started_at, initial_capital=initial_capital,
+                                        final=final, risk_free=risk_free, benchmark_monthly=benchmark_monthly),
                 month_end_nav=month_ends, monthly_returns=monthly,
                 rolling_windows=rolling_window_returns(month_ends),
-                trailing_returns=trailing_returns(points, started_at=started_at, initial_capital=initial_capital))
+                trailing_returns=trailing_returns(points, started_at=started_at, initial_capital=initial_capital),
+                final=final_value(final, initial_capital, final_valuation), nav_index_label=NAV_INDEX_LABEL)
+
+
+def final_value(point: NavPoint | None, initial_capital, valuation=None) -> dict:
+    """{'date', 'valuation', 'nav_usd', 'nav_index'} of the last NAV point (nav_index: base-100 display only)."""
+    return dict(date=None if point is None else point.date, valuation=valuation,
+                nav_usd=None if point is None else point.nav,
+                nav_index=None if point is None else nav_index(point.nav, initial_capital))
 
 
 # -- ledger adapters --------------------------------------------------------------------------------------------
@@ -460,24 +573,42 @@ def ledger_trades(result: Mapping) -> list[dict]:
                  notional=float(fill.gross), cost=float(fill.fee)) for fill in result['fills']]
 
 
+def ledger_stale_dates(result: Mapping) -> set:
+    """Sessions whose ledger valuation used a stale mark for a held tradable name (STALE_MARK flag)."""
+    return {row['date'] for row in result['daily'] if any(flag.startswith('STALE_MARK:') for flag in row['flags'])}
+
+
 def ledger_metrics(result: Mapping, *, sessions: Sequence[date] | None = None, coverage_end: date | None = None,
                    risk_free: RiskFreeSeries | None = None,
                    benchmark_monthly: Sequence[MonthlyReturn] | None = None) -> dict:
-    """All metrics for one run_ledger result, measured from the actual first fill (CAGR from first fill)."""
+    """All metrics for one run_ledger result, measured from the actual first fill (CAGR from first fill); daily
+    coverage from the run's STALE_MARK flags (module doc)."""
     points, started, initial = ledger_nav_points(result)
     header = dict(scenario=result['scenario'], cost_bps=float(result['cost_bps']), initial_capital=initial,
-                  currency=result['currency'], started_at=started, end=result['end'])
+                  currency=result['currency'], started_at=started, end=result['end'],
+                  end_valuation=result.get('end_valuation'))
+    last = result['daily'][-1] if result['daily'] else None
+    final = None if last is None else NavPoint(last['date'], None if last['nav'] is None else float(last['nav']))
     if started is None:
         null = Metric(None, 'NO_FILL')
-        return dict(header, status='NO_FILL', performance={key: null for key in
-                                                           ('cagr', 'cumulative_return', 'annualized_volatility',
-                                                            'max_drawdown', 'sharpe', 'sortino')},
+        return dict(header, status='NO_FILL',
+                    performance={'basis': BASIS_DAILY, **{key: null for key in
+                                                          ('cagr', 'cumulative_return', 'annualized_volatility',
+                                                           'max_drawdown')}},
+                    daily_coverage=dict(status='NO_FILL', sessions=0, uncovered_sessions=0, first_uncovered=None),
+                    monthly={'basis': BASIS_MONTHLY, **{key: null for key in ('worst_month', 'sharpe', 'sortino',
+                                                                             'annualized_volatility',
+                                                                             'max_drawdown')}},
                     month_end_nav=[], monthly_returns=[], rolling_windows=rolling_window_returns([]),
-                    trailing_returns=trailing_returns([]), turnover={}, cost_attribution=None)
+                    trailing_returns=trailing_returns([]), turnover={}, cost_attribution=None,
+                    final=final_value(final, initial, None if last is None else last.get('valuation')),
+                    nav_index_label=NAV_INDEX_LABEL)
     if sessions is None:
         sessions = [row['date'] for row in result['daily']]
     metrics = series_metrics(points, started_at=started, initial_capital=initial, sessions=sessions,
-                             coverage_end=coverage_end, risk_free=risk_free, benchmark_monthly=benchmark_monthly)
+                             coverage_end=coverage_end, risk_free=risk_free, benchmark_monthly=benchmark_monthly,
+                             stale_dates={day for day in ledger_stale_dates(result) if day >= started},
+                             final_valuation=last.get('valuation'))
     trades = [trade for trade in ledger_trades(result) if trade['date'] >= started]
     cumulative, gross_path = 0.0, []
     fees_by_day = {}
