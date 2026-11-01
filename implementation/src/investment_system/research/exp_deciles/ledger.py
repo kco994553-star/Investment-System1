@@ -31,7 +31,9 @@ Changed for this experiment (settings doc section 1, inventory item 7):
   it) are legally owned from the effective date, so every split of the new security effective in (effective date,
   today] scales the received quantity and every dividend of it with an ex-date in that window is booked on the
   received quantity, paid at max(pay date, today), depositary fee rules applied (event
-  DIVIDEND_ON_DEFERRED_DELIVERY).
+  DIVIDEND_ON_DEFERRED_DELIVERY). A SPINOFF of the new security with an effective date in that window entitles the
+  received quantity too (event SPINOFF_ON_DEFERRED_DELIVERY): it joins the spin-off's entitlement before its activation,
+  is added to its quantity while its terms are unconfirmed, and is delivered from today when they are confirmed.
 - Termination events (DELISTING / CASH_MERGER / STOCK_MERGER) act only from max(effective_date, available_at). With
   confirmed terms they settle by those terms in both scenarios. Without confirmed terms the scenario applies: LOSS sets
   the position's value to 0, CARRY keeps it at its last observed price as a non-cash, non-tradable asset (never sold,
@@ -41,7 +43,8 @@ Changed for this experiment (settings doc section 1, inventory item 7):
   A later terminating event of an already terminated security is supporting evidence; if the termination is still
   unconfirmed and the later event (or its confirmation) carries complete terms, those terms settle it from that date.
   Terms that contradict terms already applied, a settlement's own partial terms, or the partial terms of the open
-  termination they would settle (or a CASH_MERGER against an open STOCK_MERGER, or the reverse) are recorded in
+  termination they would settle (a CASH_MERGER against an open STOCK_MERGER, or the reverse; complete terms of a
+  DELISTING or CASH_MERGER that would settle an open STOCK_MERGER as cash and drop its stock consideration) are recorded in
   `conflicts` (TERMINATION_TERMS_DIFFER_FROM_APPLIED_TERMS, CONFIRMED_TERMS_CONTRADICT_SETTLEMENT,
   TERMINATION_TERMS_CONTRADICT_OPEN_TERMINATION, ...) and flagged SETTLEMENT_CONFLICT on that day; the position is
   left as it was. Stock consideration delivered into an already terminated security takes that security's state
@@ -49,7 +52,11 @@ Changed for this experiment (settings doc section 1, inventory item 7):
   from today (cash as a reserved receivable, stock delivered on); otherwise the shares join its frozen LOSS / CARRY
   position at its carry mark. On one date, settlements of a security that receives shares by corporate action are
   handled after those of every security delivering into it (entitlement snapshot, activation, confirmation per
-  security), so the outcome never depends on how event_ids sort. A split of a terminated security scales a frozen
+  security), so the outcome never depends on how event_ids sort. Among one security's settlements on one date the
+  earlier-activated one (then the earlier effective date) goes first at every step, so the owner of a termination is
+  confirmed before a supporting event's same-day confirmation (event_id only breaks a full tie). Stock consideration that
+  would come back into a security of its own delivery chain is a conflict (CIRCULAR_STOCK_CONSIDERATION; the shares
+  stay frozen in that security in this run's scenario). A split of a terminated security scales a frozen
   position (flag SPLIT_ON_TERMINATED_SECURITY) and is ignored when nothing is held. Malformed event records (missing
   evidence, unknown kind, impossible dates or amounts) are still refused for the whole run.
 - A missing price is not a termination: the position is marked at its last observed price and flagged STALE_MARK.
@@ -499,6 +506,8 @@ class Ledger:
             raise LedgerError('DUPLICATE_SETTLEMENT')
         self._entitlements[event.event_id] = _Entitlement(event.security_id, event.kind in TERMINATING_KINDS,
                                                           self.holdings.get(event.security_id, Decimal(0)))
+        if event.kind == 'SPINOFF':  # Shares of this security delivered later but owned since before it share in it.
+            self._history.setdefault(event.security_id, []).append(event)
 
     @_precision
     def apply_settlement(self, event: Settlement):
@@ -564,6 +573,9 @@ class Ledger:
             return None
         if {owner.event.kind, kind} == MERGER_KINDS or any(
                 old is not None and new is not None and old != new for old, new in zip(_terms(owner.event), terms)):
+            return 'TERMINATION_TERMS_CONTRADICT_OPEN_TERMINATION'
+        if owner.event.kind == 'STOCK_MERGER' and kind not in STOCK_KINDS and _terms_complete(kind, *terms):
+            # Complete cash-only terms would settle an open stock merger as cash and drop its stock consideration.
             return 'TERMINATION_TERMS_CONTRADICT_OPEN_TERMINATION'
         return None
 
@@ -636,10 +648,11 @@ class Ledger:
             self.carry_marks.pop(sid, None)
         self._book_settlement_cash(pay_id, sid, _product_exact(quantity, _decimal(cash_per_share, 'SETTLEMENT_CASH')),
                                    settlement_date)
+        # Confirmed before the delivery, so a chain that comes back to this security is seen as circular.
+        state.confirmed, state.terms, state.terms_since = True, tuple(terms), since
         if kind in STOCK_KINDS:
             received = _product_exact(quantity, _decimal(stock_ratio, 'STOCK_RATIO', positive=True))
-            self._receive(new_security_id, received, pay_id, since)
-        state.confirmed, state.terms, state.terms_since = True, tuple(terms), since
+            self._receive(new_security_id, received, pay_id, since, chain=(sid,))
         self._day_events.append(f'SETTLEMENT_APPLIED:{pay_id}')
 
     def _receive(self, sid, quantity, source_id, since, chain=()):
@@ -654,19 +667,24 @@ class Ledger:
             if since < event.effective_date <= session:
                 if isinstance(event, Split):
                     quantity = _product_exact(quantity, _decimal(event.ratio, 'SPLIT_RATIO', positive=True))
-                else:
+                elif isinstance(event, Dividend):
                     self._book_dividend(event, quantity, f'{event.event_id}:{source_id}')
                     self._day_events.append(f'DIVIDEND_ON_DEFERRED_DELIVERY:{event.event_id}:{source_id}')
+                elif quantity:
+                    self._spinoff_on_deferred_delivery(event, quantity, source_id, chain + (sid,))
         if not quantity:
             return
         owner_id = self.terminated.get(sid)
         if owner_id is not None:
             self._day_flags.append(f'STOCK_CONSIDERATION_IN_TERMINATED_SECURITY:{source_id}:{sid}')
             owner = self._settlements[owner_id]
+            if owner.confirmed and sid in chain:
+                # Impossible data (X -> Y -> X): recorded; the shares stay frozen in sid under this run's scenario.
+                self._conflict(source_id, sid, 'CIRCULAR_STOCK_CONSIDERATION')
+                self._freeze(sid)
+                self.holdings[sid] = _sum_exact((self.holdings.get(sid, Decimal(0)), quantity))
+                return
             if owner.confirmed:
-                if sid in chain:
-                    self._conflict(source_id, sid, 'CIRCULAR_STOCK_CONSIDERATION')
-                    return
                 settlement_date, cash_per_share, new_security_id, stock_ratio = owner.terms
                 pay_id = f'{source_id}>{owner_id}'
                 self._book_settlement_cash(pay_id, sid, _product_exact(
@@ -678,6 +696,30 @@ class Ledger:
                 return
             self._freeze(sid)
         self.holdings[sid] = _sum_exact((self.holdings.get(sid, Decimal(0)), quantity))
+
+    def _spinoff_on_deferred_delivery(self, event: Settlement, quantity, source_id, chain):
+        """Shares of event.security_id owned since before the spin-off's effective date but delivered only now (review
+        N1): they join its entitlement (pending), its quantity (activated, terms unconfirmed) or receive its confirmed
+        terms from today."""
+        self._day_events.append(f'SPINOFF_ON_DEFERRED_DELIVERY:{event.event_id}:{source_id}')
+        pending = self._entitlements.get(event.event_id)
+        if pending is not None:
+            pending.snapshot = _sum_exact((pending.snapshot, quantity))
+            return
+        state = self._settlements.get(event.event_id)
+        if state is None:
+            return
+        state.snapshot = _sum_exact((state.snapshot, quantity))
+        state.quantity = _sum_exact((state.quantity, quantity))
+        if not state.confirmed:
+            return
+        settlement_date, cash_per_share, new_security_id, stock_ratio = state.terms
+        pay_id = f'{event.event_id}:{source_id}'
+        self._book_settlement_cash(pay_id, event.security_id, _product_exact(
+            quantity, _decimal(cash_per_share, 'SETTLEMENT_CASH')), settlement_date)
+        received = _product_exact(quantity, _decimal(stock_ratio, 'STOCK_RATIO', positive=True))
+        self._receive(new_security_id, received, pay_id, state.terms_since or event.effective_date, chain)
+        self._day_events.append(f'SETTLEMENT_APPLIED:{pay_id}')
 
     def pay_due(self):
         """Move due receivables into cash. All of it stays reserved until the next reselection."""
@@ -1020,7 +1062,11 @@ def _delivery_levels(edges):
 
 
 def _event_schedule(events):
-    """Sorted (trigger date, band, delivery level, step, event_id, event) entries."""
+    """Sorted (trigger date, band, delivery level, step, activation date, effective date, event_id, event) entries.
+
+    activation and effective date are the settlement's (an event's own effective date for splits and dividends): among
+    one security's settlements on one date the earlier-activated one goes first at each step, so a termination's owner
+    is snapshotted, activated and confirmed before a supporting event (review N3); event_id breaks a full tie only."""
     settlements, seen, confirmations, schedule, edges = {}, set(), set(), [], set()
     events = tuple(events)
     for event in events:
@@ -1061,17 +1107,21 @@ def _event_schedule(events):
     for event in events:
         band = _BAND[type(event)]
         if isinstance(event, (Split, Dividend)):
-            schedule.append((event.effective_date, band, 0, 0, event.event_id, event))
+            schedule.append((event.effective_date, band, 0, 0, event.effective_date, event.effective_date,
+                             event.event_id, event))
         elif isinstance(event, Settlement):
-            rank = level.get(event.security_id, 0)
+            rank, active = level.get(event.security_id, 0), activation_date(event)
             # The entitlement is fixed before the effective-date open; terms act from activation (review F1).
-            schedule.append((event.effective_date, band, rank, _SNAPSHOT, event.event_id, _EntitlementSnapshot(event)))
-            schedule.append((activation_date(event), band, rank, _ACTIVATION, event.event_id, event))
+            schedule.append((event.effective_date, band, rank, _SNAPSHOT, active, event.effective_date, event.event_id,
+                             _EntitlementSnapshot(event)))
+            schedule.append((active, band, rank, _ACTIVATION, active, event.effective_date, event.event_id, event))
         else:
             settlement = settlements[event.event_id]
-            trigger = max(event.available_at, activation_date(settlement))
-            schedule.append((trigger, band, level.get(settlement.security_id, 0), _CONFIRMATION, event.event_id, event))
-    schedule.sort(key=lambda item: item[:5])
+            active = activation_date(settlement)
+            trigger = max(event.available_at, active)
+            schedule.append((trigger, band, level.get(settlement.security_id, 0), _CONFIRMATION, active,
+                             settlement.effective_date, event.event_id, event))
+    schedule.sort(key=lambda item: item[:7])
     return schedule
 
 

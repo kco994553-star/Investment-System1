@@ -756,3 +756,76 @@ def test_terminal_open_valuation_marks_opens_trades_nothing_and_keeps_loss_carry
     assert 'STALE_MARK:A' in stale['daily'][-1]['flags'] and stale['daily'][-1]['nav'] == 1000
     with pytest.raises(LedgerError, match='END_NOT_A_SESSION'):
         run_ledger(DAYS[:7], rebalances[:1], prices, scenario='LOSS', end=date(2031, 1, 1), end_valuation='OPEN')
+
+
+@pytest.mark.parametrize('spin_evidence', [5, 10])
+def test_spinoff_of_the_new_security_inside_a_deferred_delivery_window_is_delivered_too(spin_evidence):
+    """Review N1: X -> Y 1:1 effective d[3], evidenced d[8]; Y spins off C 1:1 effective d[5] (evidence d[5] or
+    d[10]). The holder owned Y from d[3], so the 100 Y delivered on d[8] are entitled to 100 C."""
+    merger = Settlement('XSM', d[3], 'X', 'STOCK_MERGER', d[8], EVIDENCE, d[8], D('0'), 'Y', D('1'))
+    spin = Settlement('YSP', d[5], 'Y', 'SPINOFF', d[spin_evidence], EVIDENCE, d[spin_evidence], D('0'), 'C', D('1'))
+    prices = (flat('X', 10, days=DAYS[:3]) + flat('Y', 10, days=DAYS[:5]) + flat('Y', 6, days=DAYS[5:14])
+              + flat('C', 4, days=DAYS[5:14]))
+    runs = run_scenarios(DAYS[:14], [Rebalance(d[0], d[1], ['X'])], prices, [merger, spin], cost_bps=0,
+                         initial_capital=1000)
+    for result in runs.values():
+        assert result['conflicts'] == () and qty(result, d[13]) == {'Y': D('100'), 'C': D('100')}
+        assert row_on(result, d[13])['nav'] == 1000
+        assert 'SPINOFF_ON_DEFERRED_DELIVERY:YSP:XSM' in row_on(result, d[8])['events']
+    # A split of Y between the merger and the spin-off scales the received Y before the spin-off ratio applies.
+    split = Split('YS', d[4], 'Y', D('2'))
+    prices = (flat('X', 10, days=DAYS[:3]) + flat('Y', 10, days=DAYS[:4]) + flat('Y', 5, days=DAYS[4:5])
+              + flat('Y', 3, days=DAYS[5:14]) + flat('C', 2, days=DAYS[5:14]))
+    result = run([Rebalance(d[0], d[1], ['X'])], prices, [merger, spin, split], days=DAYS[:14])
+    assert qty(result, d[13]) == {'Y': D('200'), 'C': D('200')} and row_on(result, d[13])['nav'] == 1000
+
+
+def test_open_stock_merger_is_not_settled_as_cash_by_a_supporting_delisting_with_complete_terms():
+    """Review N2: owner STOCK_MERGER into Y without a ratio; a supporting DELISTING with a settlement date and cash
+    would drop the stock consideration: a conflict, the position is kept."""
+    for cash in (D('0'), D('2.5')):
+        events = [Settlement('OWN', d[3], 'A', 'STOCK_MERGER', d[3], EVIDENCE, None, None, 'Y', None),
+                  Settlement('FORM25', d[5], 'A', 'DELISTING', d[6], EVIDENCE, d[7], cash)]
+        runs = run_scenarios(DAYS[:12], [Rebalance(d[0], d[1], ['A'])], flat('A', 10, days=DAYS[:3]) + flat('Y', 10),
+                             events, cost_bps=0, initial_capital=1000)
+        for scenario, result in runs.items():
+            assert [(c['event_id'], c['reason']) for c in result['conflicts']] == [
+                ('FORM25', 'TERMINATION_TERMS_CONTRADICT_OPEN_TERMINATION')]
+            assert qty(result, d[11]) == {'A': D('100')} and row_on(result, d[11])['cash'] == 0
+        assert row_on(runs['LOSS'], d[11])['nav'] == 0 and row_on(runs['CARRY'], d[11])['nav'] == 1000
+    # A Form 25 without terms after the same open stock merger is supporting evidence, not a conflict.
+    events = [Settlement('OWN', d[3], 'A', 'STOCK_MERGER', d[3], EVIDENCE, None, None, 'Y', None),
+              Settlement('FORM25', d[5], 'A', 'DELISTING', d[6], EVIDENCE)]
+    result = run([Rebalance(d[0], d[1], ['A'])], flat('A', 10, days=DAYS[:3]), events, scenario='CARRY',
+                 days=DAYS[:12])
+    assert result['conflicts'] == () and 'TERMINATION_SUPPORTING_EVIDENCE:FORM25' in row_on(result, d[6])['events']
+
+
+def test_same_day_owner_and_supporting_confirmations_do_not_depend_on_event_id_order():
+    """Review N3: the owner (activated first) is confirmed first whatever the event_ids; the supporting event's
+    contradicting confirmation is the conflict."""
+    outcomes = []
+    for own, sup in (('A-OWN', 'Z-SUP'), ('Z-OWN', 'A-SUP')):
+        events = [Settlement(own, d[3], 'A', 'CASH_MERGER', d[3], EVIDENCE),
+                  Settlement(sup, d[4], 'A', 'CASH_MERGER', d[4], EVIDENCE),
+                  SettlementConfirmation(own, d[6], EVIDENCE, d[7], D('10')),
+                  SettlementConfirmation(sup, d[6], EVIDENCE, d[7], D('8'))]
+        runs = run_scenarios(DAYS[:12], [Rebalance(d[0], d[1], ['A'])], flat('A', 10, days=DAYS[:3]), events,
+                             cost_bps=0, initial_capital=1000)
+        outcomes.append(({s: r['daily'][-1]['nav'] for s, r in runs.items()},
+                         [(c['event_id'] == sup, c['reason']) for c in runs['CARRY']['conflicts']]))
+    assert outcomes[0] == outcomes[1] == ({'LOSS': 1000, 'CARRY': 1000},
+                                          [(True, 'TERMINATION_TERMS_DIFFER_FROM_APPLIED_TERMS')])
+
+
+def test_circular_stock_consideration_is_recorded_as_a_conflict_without_refusing_the_run():
+    """Verification note: X -> Y and Y -> X stock mergers (impossible data). The chain that comes back into X is
+    recorded as CIRCULAR_STOCK_CONSIDERATION; the shares stay frozen in X under the run's scenario."""
+    y_into_x = Settlement('Y-SM', d[2], 'Y', 'STOCK_MERGER', d[2], EVIDENCE, d[2], D('0'), 'X', D('1'))
+    x_into_y = Settlement('X-SM', d[4], 'X', 'STOCK_MERGER', d[4], EVIDENCE, d[4], D('0'), 'Y', D('1'))
+    runs = run_scenarios(DAYS[:8], [Rebalance(d[0], d[1], ['X'])], flat('X', 10, days=DAYS[:4]) + flat('Y', 10),
+                         [y_into_x, x_into_y], cost_bps=0, initial_capital=1000)
+    for scenario, result in runs.items():
+        assert [c['reason'] for c in result['conflicts']] == ['CIRCULAR_STOCK_CONSIDERATION']
+        assert row_on(result, d[7])['positions']['X']['state'] == scenario
+    assert row_on(runs['LOSS'], d[7])['nav'] == 0 and row_on(runs['CARRY'], d[7])['nav'] == 1000
