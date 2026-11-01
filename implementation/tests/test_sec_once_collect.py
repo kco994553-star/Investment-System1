@@ -1143,3 +1143,41 @@ def test_no_address_shaped_literal_in_the_new_files():
                  ROOT / 'tests/test_sec_once_ticker_mismatch.py', WORKFLOW,
                  ROOT / 'docs/lab/SEC_ONCE_COLLECTION_PLAN_20261101.md'):
         assert guard.email_patterns(path.read_bytes()) == Counter(), path.name
+
+
+@pytest.mark.parametrize('fault', ['part_bytes', 'asset_bytes', 'total_bytes', 'file', 'index_bytes', 'stream_error'])
+def test_split_resume_refuses_inconsistent_manifest_and_keeps_existing_file(tmp_path, fault):
+    """Hash-correct bytes must not bless a different file/size manifest; a failed retry leaves no temp file."""
+    name = 'companyfacts.zip.parts.json'
+    part_name = 'companyfacts.zip.part01'
+    body = b'original synthetic bytes'
+    digest = hashlib.sha256(body).hexdigest()
+    index = {'file': 'companyfacts.zip', 'bytes': len(body), 'sha256': digest,
+             'parts': [{'name': part_name, 'bytes': len(body), 'sha256': digest}]}
+    if fault == 'part_bytes': index['parts'][0]['bytes'] += 1
+    if fault == 'total_bytes': index['bytes'] += 1
+    if fault == 'file': index['file'] = 'submissions.zip'
+    index_body = json.dumps(index).encode()
+    blobs = {name: index_body, part_name: body,
+             name+'.sha256': once.sidecar_text(hashlib.sha256(index_body).hexdigest(), name).encode(),
+             part_name+'.sha256': once.sidecar_text(digest, part_name).encode()}
+    assets = {n: {'id': n, 'size': len(b)} for n,b in blobs.items()}
+    if fault == 'asset_bytes': assets[part_name]['size'] += 1
+    if fault == 'index_bytes': assets[name]['size'] += 1
+
+    class Client:
+        def stream(self, asset_id, write):
+            value = blobs[asset_id]
+            write(value)
+            if fault == 'stream_error' and asset_id == part_name:
+                raise OSError('synthetic interruption')
+            return len(value), hashlib.sha256(value).hexdigest()
+
+    dest = tmp_path/'companyfacts.zip'
+    dest.write_bytes(b'previous verified copy')
+    if fault == 'stream_error':
+        with pytest.raises(OSError): once._resume_parts(Client(), assets, name, tmp_path)
+    else:
+        assert once._resume_parts(Client(), assets, name, tmp_path) == (False, None)
+    assert dest.read_bytes() == b'previous verified copy'
+    assert not Path(str(dest)+'.part').exists()
