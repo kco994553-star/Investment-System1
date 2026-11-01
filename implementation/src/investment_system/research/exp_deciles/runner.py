@@ -5,7 +5,8 @@ New for this experiment (nothing ported). No file, network or provider access: t
 JSON-ready results; this module only calls the package's pure functions in the fixed order (settings doc section 6.1).
 
 Selection stage (selection_stage, one signal year from the frozen schedule):
-  records -> universe.build_universes (previous U-A member CIKs passed in for later years) -> pit.build_rows for the U-A
+  records -> universe.build_universes (the previous S's U-A members and U-A UNKNOWN units passed in for later years, plus
+  any evidenced terminations; review F3) -> pit.build_rows for the U-A
   representative securities (one issuer at a time, companyfacts loaded lazily) -> scoring.score_population on the U-A
   population -> selection.select_all for U_A and U_B.
   Returns a selection_inputs/1 dict (SELECTION_SCHEMA): run metadata, the signal context, counts (securities; candidate /
@@ -191,14 +192,16 @@ def _strategy_counts(selections):
     return out
 
 
-def selection_stage(records, *, year, companyfacts=None, filing_rows=(), quotes=None, previous_u_a=None, run=None,
-                    type_config=None, parameters=None, playbook_config=None):
+def selection_stage(records, *, year, companyfacts=None, filing_rows=(), quotes=None, previous_u_a=None,
+                    previous_u_a_unknown=None, terminations=None, run=None, type_config=None, parameters=None,
+                    playbook_config=None):
     """selection_inputs/1 for the frozen signal year `year` (see the module doc).
 
     records: universe security records at that S; companyfacts: {cik: SEC companyfacts} or a loader callable(cik);
     filing_rows: as-filed SIC rows {cik, accn, filed, sic}; quotes: {security_id: {price, currency, month_closes,
-    withheld_reason?}} at S; previous_u_a: the U-A member CIKs at the previous S (None = first build); run: the
-    handoff.run_metadata block (or None)."""
+    withheld_reason?}} at S; previous_u_a: the U-A member CIKs at the previous S (None = first build);
+    previous_u_a_unknown: the previous S's U-A UNKNOWN unit IDs (u_a_state of the previous selection); terminations:
+    evidenced terminations (universe module doc); run: the handoff.run_metadata block (or None)."""
     if type(year) is not int:
         raise RunnerError('YEAR_MUST_BE_INT')
     if not schedule.verify_frozen()['ok']:
@@ -209,7 +212,11 @@ def selection_stage(records, *, year, companyfacts=None, filing_rows=(), quotes=
         raise RunnerError('YEAR_NOT_IN_FROZEN_SCHEDULE') from None
     context = pit.signal_context(frozen['S'], frozen['T'])
     previous = None if previous_u_a is None else sorted({_cik(c) for c in previous_u_a})
-    uni = universe.build_universes(records, previous_u_a=previous, signal_day=frozen['S'])
+    if previous is None and previous_u_a_unknown:
+        raise RunnerError('PREVIOUS_U_A_UNKNOWN_WITHOUT_MEMBERS')
+    previous_unknown = None if previous is None else sorted({universe._unit_id(u) for u in previous_u_a_unknown or ()})
+    uni = universe.build_universes(records, previous_u_a=previous, previous_u_a_unknown=previous_unknown,
+                                   terminations=terminations, signal_day=frozen['S'])
     ua = uni[settings.U_A]
     issuers = [{'cik': cik, 'security_id': ua['representatives'][cik]} for cik in ua['members']]
     rows = pit_rows(issuers, companyfacts, filing_rows, frozen['S'], frozen['T'])
@@ -228,22 +235,25 @@ def selection_stage(records, *, year, companyfacts=None, filing_rows=(), quotes=
         'schema': SELECTION_SCHEMA, 'experiment_id': settings.EXPERIMENT_ID,
         'settings_sha256': settings.settings_sha256(), 'stage': 'select', 'run': run or {},
         'year': year, 'signal': dict(frozen, compute_cutoff=context['compute_cutoff'], rule=context['rule']),
-        'first_build': previous is None, 'previous_u_a': previous, 'flags': flags,
+        'first_build': previous is None, 'previous_u_a': previous, 'previous_u_a_unknown': previous_unknown,
+        'flags': flags,
         'counts': {
             'securities': uni['security_counts'],
             settings.U_A: ua['counts'], settings.U_B: uni[settings.U_B]['counts'],
             'u_a_transitions': {'entered': len(transitions['entered']), 'stayed': len(transitions['stayed']),
                                 'left': len(transitions['left']),
                                 'left_by_reason': dict(sorted(Counter(item['reasons'][0] for item in transitions['left']
-                                                                      if item['reasons']).items()))},
+                                                                      if item['reasons']).items())),
+                                'unknown_carried': len(ua['unknown']), 'terminated': len(ua['terminated'])},
             'pit_rows': {'rows': len(rows), 'by_state': dict(sorted(row_states.items()))},
             'scoring': dict(scores['summary'], quote_status=dict(sorted(quote_status.items()))),
             'strategies': _strategy_counts(selections),
         },
         'universe': {'schema': uni['schema'], 'signal_day': uni['signal_day'], 'first_build': uni['first_build'],
                      'thresholds': uni['thresholds'], 'securities': uni['securities'], 'issuers': uni['issuers'],
+                     'previous': uni['previous'], 'terminations': uni['terminations'],
                      settings.U_A: {key: ua[key] for key in ('members', 'member_securities', 'representatives',
-                                                             'transitions')},
+                                                             'unknown', 'terminated', 'transitions')},
                      settings.U_B: {key: uni[settings.U_B][key] for key in ('members', 'member_securities',
                                                                             'representatives')}},
         'pit': {'context': context, 'rows': rows},
@@ -260,6 +270,14 @@ def u_a_members(selection_inputs):
     """The U-A member CIKs of a selection_inputs/1 result (the next year's previous_u_a)."""
     _check_selection(selection_inputs)
     return list(selection_inputs['universe'][settings.U_A]['members'])
+
+
+def u_a_state(selection_inputs):
+    """{'members', 'unknown'} of a selection_inputs/1 result: what the next S needs (previous_u_a and
+    previous_u_a_unknown; review F3)."""
+    _check_selection(selection_inputs)
+    block = selection_inputs['universe'][settings.U_A]
+    return {'members': list(block['members']), 'unknown': list(block['unknown'])}
 
 
 # ---- ledger stage --------------------------------------------------------------------------------------------------
@@ -293,7 +311,8 @@ def _ordered_selections(selections):
     if any(b - a != 1 for a, b in zip(years, years[1:])):
         raise RunnerError('SELECTION_YEARS_NOT_CONSECUTIVE')
     for a, b in zip(items, items[1:]):
-        if b['previous_u_a'] != a['universe'][settings.U_A]['members']:
+        state = a['universe'][settings.U_A]
+        if b['previous_u_a'] != state['members'] or b.get('previous_u_a_unknown') != state['unknown']:
             raise RunnerError('HYSTERESIS_CHAIN_BROKEN')
     return items
 
@@ -578,6 +597,6 @@ def portfolio_alias(ledger_outputs, portfolio_id):
     return ledger_outputs['portfolios'][f'{strategy}/{rest}']
 
 
-__all__ = ['SELECTION_SCHEMA', 'LEDGER_SCHEMA', 'RunnerError', 'selection_stage', 'ledger_stage', 'u_a_members',
+__all__ = ['SELECTION_SCHEMA', 'LEDGER_SCHEMA', 'RunnerError', 'selection_stage', 'ledger_stage', 'u_a_members', 'u_a_state',
            'scoring_quotes', 'price_rows', 'ledger_events', 'calendar_sessions', 'default_end', 'supplied_end',
            'next_reselection_t', 'portfolio_alias']

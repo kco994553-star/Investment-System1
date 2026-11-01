@@ -24,6 +24,15 @@ Record (one per security at S; dict keys):
   security_type         canonical type name (see above) or None = unknown
   shares_outstanding    class shares outstanding at S: Decimal / int / decimal str, or None (float refused); for an ADR the
                         issuer's ORDINARY shares outstanding (e.g. the 20-F cover), not the ADS count
+  shares_filed          New York filing date (ISO text or date) of the SEC filing the share count comes from (review F2).
+                        Missing -> SHARES_FILED_MISSING; not usable at S under the 6th-session rule (schedule.is_usable)
+                        -> SHARES_NOT_USABLE_AT_S. Either leaves the issuer UNKNOWN, never a threshold exclusion
+  shares_period_end     the date the share count is as of (ISO text or date); missing -> SHARES_PERIOD_END_MISSING, later
+                        than shares_filed -> SHARES_PERIOD_END_AFTER_FILED (UNKNOWN)
+  share_price_basis     split-basis status of this share count against the price used at S, supplied by the price part:
+                        'CONFIRMED' = same split basis (no split between the share count and S, or the count is
+                        restated); anything else (None, 'UNCONFIRMED', 'SPLIT_AFTER_SHARE_COUNT', ...) ->
+                        SHARE_PRICE_BASIS_UNCONFIRMED (UNKNOWN: a basis gap is never a rule exclusion)
   price                 price at S: Decimal / int / decimal str, or None; price_label names it (e.g. a labelled proxy); for
                         an ADR the ADS price
   adr_ratio             ADR only: ordinary shares per ADS (Decimal / int / decimal str, > 0). Missing or unusable (None,
@@ -40,19 +49,30 @@ an ordinary or REIT class) could count the ordinary class twice, so that cap is 
 Any missing or unusable input of any (possibly) eligible class makes the cap NA with reasons; it is never partially summed.
 
 Membership: U-A first build (previous_u_a is None): cap >= entry. Later S: a previous U-A member stays iff cap >= stay;
-any other issuer enters iff cap >= entry. U-B: cap >= 10bn at that S, no hysteresis. NA cap -> UNKNOWN, never EXCLUDED,
-and an UNKNOWN issuer is not a member at S (so at the next S it is judged against the entry threshold).
+any other issuer enters iff cap >= entry. U-B: cap >= 10bn at that S, no hysteresis. NA cap -> UNKNOWN, never EXCLUDED.
+
+Unknown carried to the next S (review F3; settings doc section 5: a missing input is never a legitimate exclusion): the
+previous S's U-A UNKNOWN units (previous_u_a_unknown, unit IDs: CIKs or 'SECURITY:<id>') are carried with the members.
+An issuer whose previous status was UNKNOWN is ELIGIBLE at cap >= entry, EXCLUDED at cap < stay (either way) and UNKNOWN
+with PREVIOUS_U_A_STATUS_UNKNOWN in [stay, entry). A previous member or previous UNKNOWN unit without any record at S is
+an UNKNOWN candidate (NOT_IN_RECORDS_AT_S) in both groups, unless an evidenced termination of that issuer is supplied
+(terminations: [{'cik', 'evidence', 'filed' (NY filing date of the evidence, usable at S under the 6th-session rule),
+'effective_date'?}]); such an issuer is no longer a candidate and is listed in U_A.terminated and transitions.left.
+The result's U_A.members and U_A.unknown are exactly what the next S needs.
 
 Counting unit = issuer: each known CIK, plus each security without a CIK that could be a listed eligible security (it
-cannot be attached to an issuer, so it is its own unknown unit). candidate = eligible + excluded + unknown for every group; each unit
-is counted once under its first reason (`*_by_reason`), its full reason list stays on the unit.
+cannot be attached to an issuer, so it is its own unknown unit), plus each carried unit without a record at S.
+candidate = eligible + excluded + unknown for every group; each unit is counted once under its first reason
+(`*_by_reason`), its full reason list stays on the unit.
 """
 from __future__ import annotations
 
 from collections import Counter, defaultdict
+from datetime import date
 from decimal import Decimal, InvalidOperation, localcontext
 
-from . import settings
+from .. import pit_filings
+from . import schedule, settings
 
 SCHEMA = 'exp-deciles-universe/1'
 ELIGIBLE, EXCLUDED, UNKNOWN = 'ELIGIBLE', 'EXCLUDED', 'UNKNOWN'
@@ -80,8 +100,18 @@ PRICE_INVALID = 'PRICE_INVALID'
 UNLISTED_CLASS_RIGHTS_UNKNOWN = 'UNLISTED_CLASS_RIGHTS_UNKNOWN'
 UNLISTED_CLASS_RIGHTS_DIFFER = 'UNLISTED_CLASS_RIGHTS_DIFFER'
 MARKET_CAP_NOT_AVAILABLE = 'MARKET_CAP_NOT_AVAILABLE'
-# transition reason for a previous member without any record at S
+SHARES_FILED_MISSING = 'SHARES_FILED_MISSING'
+SHARES_PERIOD_END_MISSING = 'SHARES_PERIOD_END_MISSING'
+SHARES_PERIOD_END_AFTER_FILED = 'SHARES_PERIOD_END_AFTER_FILED'
+SHARES_FILED_OUTSIDE_CALENDAR = 'SHARES_FILED_OUTSIDE_CALENDAR'
+SHARES_NOT_USABLE_AT_S = 'SHARES_NOT_USABLE_AT_S'
+SHARE_PRICE_BASIS_UNCONFIRMED = 'SHARE_PRICE_BASIS_UNCONFIRMED'
+SHARE_PRICE_BASIS_CONFIRMED = 'CONFIRMED'
+PREVIOUS_U_A_STATUS_UNKNOWN = 'PREVIOUS_U_A_STATUS_UNKNOWN'
+# a previous member / previous UNKNOWN unit without any record at S (an UNKNOWN candidate), or with termination evidence
 NOT_IN_RECORDS_AT_S = 'NOT_IN_RECORDS_AT_S'
+TERMINATION_EVIDENCED = 'TERMINATION_EVIDENCED'
+SECURITY_UNIT_PREFIX = 'SECURITY:'
 # representative sources and flags
 REP_SUPPLIED_FLAG = 'SUPPLIED_FLAG'
 REP_ONLY_CLASS = 'ONLY_LISTED_ELIGIBLE_CLASS'
@@ -112,6 +142,20 @@ def _decimal(value, field):
     if not out.is_finite():
         raise ValueError(field.upper() + '_INVALID')
     return out
+
+
+def _date(value, field):
+    """ISO text or date -> date; None stays None; anything else is refused."""
+    if value is None:
+        return None
+    if type(value) is date:
+        return value
+    if isinstance(value, str):
+        try:
+            return date.fromisoformat(value.strip())
+        except ValueError:
+            raise ValueError(field.upper() + '_INVALID') from None
+    raise TypeError(field.upper() + '_MUST_BE_DATE')
 
 
 def _adr_ratio(value):
@@ -155,10 +199,16 @@ def normalize_record(record):
     label = record.get('price_label')
     if label is not None and not isinstance(label, str):
         raise TypeError('PRICE_LABEL_MUST_BE_STR_OR_NONE')
+    basis = record.get('share_price_basis')
+    if basis is not None and (not isinstance(basis, str) or not basis.strip()):
+        raise TypeError('SHARE_PRICE_BASIS_MUST_BE_STR_OR_NONE')
     return {'security_id': sid, 'cik': cik, 'cik_reason': cik_reason,
             'listed': _tristate(record.get('listed'), 'listed'),
             'security_type': security_type,
             'shares_outstanding': _decimal(record.get('shares_outstanding'), 'shares_outstanding'),
+            'shares_filed': _date(record.get('shares_filed'), 'shares_filed'),
+            'shares_period_end': _date(record.get('shares_period_end'), 'shares_period_end'),
+            'share_price_basis': basis,
             'price': _decimal(record.get('price'), 'price'), 'price_label': label,
             'adr_ratio': _adr_ratio(record.get('adr_ratio')) if security_type == settings.ADR_SECURITY_TYPE else None,
             'representative': _tristate(record.get('representative'), 'representative'),
@@ -249,13 +299,41 @@ def _positive(value, missing, invalid):
     return None
 
 
-def issuer_market_cap(issuer_records, representative_id):
-    """(cap | None, reasons, classes) for one issuer's normalized records; classes = valued eligible-type classes
-    [{'security_id', 'security_type', 'shares_outstanding', 'adr_ratio', 'share_basis', 'price', 'price_basis',
-    'price_label', 'value'}]. share_basis is CLASS_SHARES, or ORDINARY_SHARES_DIV_ADR_RATIO for an ADR."""
+def share_provenance(rec, signal_day):
+    """({'security_id', 'shares_filed', 'shares_period_end', 'shares_usable_from', 'usable_at_s', 'share_price_basis'},
+    [reasons]) of one record's share count at S (review F2): filing date usable at S, period end, split-basis status."""
+    filed, period_end = rec['shares_filed'], rec['shares_period_end']
+    reasons, usable_from = [], None
+    if filed is None:
+        reasons.append(SHARES_FILED_MISSING)
+    else:
+        try:
+            usable_from = schedule.usable_from(filed)
+        except pit_filings.CalendarNotConfigured:
+            reasons.append(SHARES_FILED_OUTSIDE_CALENDAR)
+        else:
+            if usable_from > signal_day:
+                reasons.append(SHARES_NOT_USABLE_AT_S)
+    if period_end is None:
+        reasons.append(SHARES_PERIOD_END_MISSING)
+    elif filed is not None and period_end > filed:
+        reasons.append(SHARES_PERIOD_END_AFTER_FILED)
+    if rec['share_price_basis'] != SHARE_PRICE_BASIS_CONFIRMED:
+        reasons.append(SHARE_PRICE_BASIS_UNCONFIRMED)
+    record = {'security_id': rec['security_id'], 'shares_filed': filed, 'shares_period_end': period_end,
+              'shares_usable_from': usable_from, 'usable_at_s': usable_from is not None and usable_from <= signal_day,
+              'share_price_basis': rec['share_price_basis']}
+    return record, reasons
+
+
+def issuer_market_cap(issuer_records, representative_id, signal_day):
+    """(cap | None, reasons, classes, provenance) for one issuer's normalized records at S; classes = valued
+    eligible-type classes [{'security_id', 'security_type', 'shares_outstanding', 'adr_ratio', 'share_basis', 'price',
+    'price_basis', 'price_label', 'value'}]; share_basis is CLASS_SHARES, or ORDINARY_SHARES_DIV_ADR_RATIO for an ADR;
+    provenance = share_provenance of every eligible-type class with a known listing status."""
     by_id = {r['security_id']: r for r in issuer_records}
     rep = by_id.get(representative_id)
-    reasons, classes = [], []
+    reasons, classes, provenance = [], [], []
     eligible_type = [r for r in issuer_records if _is_eligible_type(r)]
     if any(r['security_type'] == settings.ADR_SECURITY_TYPE for r in eligible_type) and len(eligible_type) > 1:
         reasons.append(ADR_CLASS_OVERLAP_UNCONFIRMED)
@@ -272,6 +350,11 @@ def issuer_market_cap(issuer_records, representative_id):
         problem = _positive(rec['shares_outstanding'], SHARES_OUTSTANDING_MISSING, SHARES_OUTSTANDING_INVALID)
         if problem:
             reasons.append(problem)
+        origin, share_reasons = share_provenance(rec, signal_day)
+        provenance.append(origin)
+        if share_reasons:
+            reasons.extend(share_reasons)
+            problem = problem or share_reasons[0]
         is_adr = rec['security_type'] == settings.ADR_SECURITY_TYPE
         if is_adr and rec['adr_ratio'] is None:
             reasons.append(ADR_RATIO_UNCONFIRMED)
@@ -296,7 +379,7 @@ def issuer_market_cap(issuer_records, representative_id):
                         'price': price, 'price_basis': basis, 'price_label': label, 'value': None})
     reasons = list(dict.fromkeys(reasons))
     if reasons:
-        return None, reasons, classes
+        return None, reasons, classes, provenance
     with localcontext() as ctx:
         ctx.prec = DECIMAL_PRECISION
         total = Decimal(0)
@@ -304,15 +387,22 @@ def issuer_market_cap(issuer_records, representative_id):
             shares = c['shares_outstanding'] / c['adr_ratio'] if c['adr_ratio'] is not None else c['shares_outstanding']
             c['value'] = shares * c['price']
             total += c['value']
-    return total, [], classes
+    return total, [], classes, provenance
 
 
-def u_a_decision(cap, cik, previous_u_a):
-    """(status, reasons, basis): first build entry; later S stay for previous members, entry for the rest."""
+def u_a_decision(cap, cik, previous_u_a, previous_unknown=False):
+    """(status, reasons, basis): first build entry; later S stay for previous members, entry for the rest; an issuer
+    whose previous status was UNKNOWN is UNKNOWN between the stay and entry thresholds (review F3)."""
     if cap is None:
         return UNKNOWN, [MARKET_CAP_NOT_AVAILABLE], None
     if previous_u_a is not None and cik in previous_u_a:
         return (ELIGIBLE, [], 'STAY') if cap >= settings.U_A_STAY_USD else (EXCLUDED, [BELOW_U_A_STAY], 'STAY')
+    if previous_unknown:
+        if cap >= settings.U_A_ENTRY_USD:
+            return ELIGIBLE, [], 'ENTRY'
+        if cap < settings.U_A_STAY_USD:
+            return EXCLUDED, [BELOW_U_A_STAY], 'PREVIOUS_STATUS_UNKNOWN'
+        return UNKNOWN, [PREVIOUS_U_A_STATUS_UNKNOWN], 'PREVIOUS_STATUS_UNKNOWN'
     basis = 'FIRST_BUILD_ENTRY' if previous_u_a is None else 'ENTRY'
     return (ELIGIBLE, [], basis) if cap >= settings.U_A_ENTRY_USD else (EXCLUDED, [BELOW_U_A_ENTRY], basis)
 
@@ -336,16 +426,68 @@ def _counts(units, group):
             'unknown_by_reason': dict(sorted(by_reason[UNKNOWN].items()))}
 
 
-def build_universes(records, *, previous_u_a=None, signal_day=None):
-    """U-A and U-B at one S. previous_u_a: CIKs of the U-A members at the previous S (None = first build).
+def _unit_id(value):
+    """A carried unit ID: a zero-padded CIK, or 'SECURITY:<security id>'."""
+    if isinstance(value, str) and value.startswith(SECURITY_UNIT_PREFIX) and value[len(SECURITY_UNIT_PREFIX):].strip():
+        return value
+    cik = _cik(value)[0]
+    if cik is None:
+        raise ValueError('PREVIOUS_U_A_UNKNOWN_INVALID')
+    return cik
 
-    Returns {'schema', 'signal_day', 'first_build', 'thresholds', 'securities', 'issuers', 'security_counts',
-    'U_A': {'members', 'member_securities', 'representatives', 'counts', 'transitions'}, 'U_B': {... no transitions}}.
-    members are sorted CIKs; member_securities the members' representative security IDs (the scoring keys)."""
+
+def _terminations(terminations, signal_day):
+    """{cik: termination record} of the supplied termination evidence usable at S, and every supplied record."""
+    usable, listed = {}, []
+    for item in terminations or ():
+        if not isinstance(item, dict) or not {'cik', 'evidence', 'filed'} <= set(item) or \
+                set(item) - {'cik', 'evidence', 'filed', 'effective_date'}:
+            raise ValueError('TERMINATION_RECORD_INVALID')
+        cik = _cik(item['cik'])[0]
+        if cik is None or not isinstance(item['evidence'], str) or not item['evidence'].strip():
+            raise ValueError('TERMINATION_RECORD_INVALID')
+        filed = _date(item['filed'], 'termination_filed')
+        effective = _date(item.get('effective_date'), 'termination_effective_date')
+        try:
+            usable_from = schedule.usable_from(filed)
+        except pit_filings.CalendarNotConfigured:
+            usable_from = None
+        record = {'cik': cik, 'evidence': item['evidence'], 'filed': filed, 'effective_date': effective,
+                  'usable_from': usable_from, 'usable_at_s': usable_from is not None and usable_from <= signal_day}
+        listed.append(record)
+        if record['usable_at_s']:
+            usable.setdefault(cik, record)
+    return usable, listed
+
+
+def _carried_unit(unit_id, cik, carried_from):
+    unknown = {'status': UNKNOWN, 'reasons': [NOT_IN_RECORDS_AT_S]}
+    return {'issuer_id': unit_id, 'cik': cik, 'securities': [], 'listed_eligible': [], 'representative': None,
+            'representative_source': None, 'representative_flags': [], 'price_label': None, 'market_cap_usd': None,
+            'market_cap_reasons': [NOT_IN_RECORDS_AT_S], 'classes': [], 'share_provenance': [],
+            'carried_from': carried_from, settings.U_A: dict(unknown, basis=None), settings.U_B: dict(unknown)}
+
+
+def build_universes(records, *, signal_day=None, previous_u_a=None, previous_u_a_unknown=None, terminations=None):
+    """U-A and U-B at one S. previous_u_a: CIKs of the U-A members at the previous S (None = first build);
+    previous_u_a_unknown: the previous S's U-A UNKNOWN unit IDs (CIKs or 'SECURITY:<id>'); terminations: evidenced
+    terminations (module doc). signal_day (a session) is required: the share counts' filing dates are checked against it.
+
+    Returns {'schema', 'signal_day', 'first_build', 'previous', 'thresholds', 'securities', 'issuers', 'security_counts',
+    'terminations', 'U_A': {'members', 'member_securities', 'representatives', 'unknown', 'terminated', 'counts',
+    'transitions'}, 'U_B': {... no unknown / terminated / transitions}}. members are sorted CIKs; member_securities the
+    members' representative security IDs (the scoring keys); U_A.unknown the U-A UNKNOWN unit IDs (for the next S)."""
+    if signal_day is None:
+        raise ValueError('SIGNAL_DAY_REQUIRED')
+    signal = schedule._signal(signal_day)
     if previous_u_a is not None:
         previous_u_a = frozenset(_cik(c)[0] for c in previous_u_a)
         if None in previous_u_a:
             raise ValueError('PREVIOUS_U_A_CIK_INVALID')
+    elif previous_u_a_unknown:
+        raise ValueError('PREVIOUS_U_A_UNKNOWN_WITHOUT_MEMBERS')
+    previous_unknown = frozenset(_unit_id(u) for u in previous_u_a_unknown or ())
+    evidenced, termination_records = _terminations(terminations, signal)
     index = _index(records)
     securities = {}
     by_cik = defaultdict(list)
@@ -359,18 +501,18 @@ def build_universes(records, *, previous_u_a=None, signal_day=None):
             by_cik[rec['cik']].append(rec)
         elif status == UNKNOWN:
             unknown = {'status': UNKNOWN, 'reasons': list(reasons)}
-            units['SECURITY:' + sid] = {'issuer_id': 'SECURITY:' + sid, 'cik': None, 'securities': [sid],
-                                        'listed_eligible': [], 'representative': None, 'representative_source': None,
-                                        'representative_flags': [], 'price_label': None, 'market_cap_usd': None,
-                                        'market_cap_reasons': list(reasons), 'classes': [],
-                                        settings.U_A: dict(unknown, basis=None), settings.U_B: dict(unknown)}
+            units[SECURITY_UNIT_PREFIX + sid] = {
+                'issuer_id': SECURITY_UNIT_PREFIX + sid, 'cik': None, 'securities': [sid], 'listed_eligible': [],
+                'representative': None, 'representative_source': None, 'representative_flags': [], 'price_label': None,
+                'market_cap_usd': None, 'market_cap_reasons': list(reasons), 'classes': [], 'share_provenance': [],
+                settings.U_A: dict(unknown, basis=None), settings.U_B: dict(unknown)}
     for cik in sorted(by_cik):
         recs = by_cik[cik]
         listed_eligible = [r for r in recs if securities[r['security_id']]['status'] == ELIGIBLE]
         unit = {'issuer_id': cik, 'cik': cik, 'securities': [r['security_id'] for r in recs],
                 'listed_eligible': [r['security_id'] for r in listed_eligible], 'representative': None,
                 'representative_source': None, 'representative_flags': [], 'price_label': None, 'market_cap_usd': None,
-                'market_cap_reasons': [], 'classes': []}
+                'market_cap_reasons': [], 'classes': [], 'share_provenance': []}
         if not listed_eligible:
             possible = [r for r in recs if securities[r['security_id']]['status'] == UNKNOWN]
             if possible:
@@ -385,21 +527,42 @@ def build_universes(records, *, previous_u_a=None, signal_day=None):
             continue
         flagged_elsewhere = any(r['representative'] is True and r not in listed_eligible for r in recs)
         rep, source, flags = choose_representative(listed_eligible, flagged_elsewhere)
-        cap, cap_reasons, classes = issuer_market_cap(recs, rep)
+        cap, cap_reasons, classes, provenance = issuer_market_cap(recs, rep, signal)
         unit.update(representative=rep, representative_source=source, representative_flags=flags,
                     price_label=index[rep]['price_label'], market_cap_usd=cap, market_cap_reasons=cap_reasons,
-                    classes=classes)
-        a_status, a_reasons, a_basis = u_a_decision(cap, cik, previous_u_a)
+                    classes=classes, share_provenance=provenance)
+        was_unknown = cik in previous_unknown or any(SECURITY_UNIT_PREFIX + r['security_id'] in previous_unknown
+                                                     for r in recs)
+        a_status, a_reasons, a_basis = u_a_decision(cap, cik, previous_u_a, was_unknown)
         b_status, b_reasons = u_b_decision(cap)
         if cap is None:
             a_reasons = b_reasons = list(cap_reasons)
         unit[settings.U_A] = {'status': a_status, 'reasons': list(a_reasons), 'basis': a_basis}
         unit[settings.U_B] = {'status': b_status, 'reasons': list(b_reasons)}
         units[cik] = unit
-    out = {'schema': SCHEMA, 'signal_day': signal_day, 'first_build': previous_u_a is None,
+    # Previous members and previous UNKNOWN units without any record at S stay UNKNOWN candidates (review F3) unless
+    # an evidenced termination is supplied.
+    terminated = []
+    carried = [(c, 'PREVIOUS_U_A_MEMBER') for c in sorted(previous_u_a or ())]
+    carried += [(u, 'PREVIOUS_U_A_UNKNOWN') for u in sorted(previous_unknown) if u not in (previous_u_a or ())]
+    for unit_id, origin in carried:
+        if unit_id.startswith(SECURITY_UNIT_PREFIX):
+            if unit_id[len(SECURITY_UNIT_PREFIX):] not in index:
+                units[unit_id] = _carried_unit(unit_id, None, origin)
+            continue
+        if unit_id in by_cik:
+            continue
+        if unit_id in evidenced:
+            terminated.append(dict(evidenced[unit_id], previous_status=origin, reasons=[TERMINATION_EVIDENCED]))
+            continue
+        units[unit_id] = _carried_unit(unit_id, unit_id, origin)
+    out = {'schema': SCHEMA, 'signal_day': signal_day if isinstance(signal_day, str) else signal.isoformat(),
+           'first_build': previous_u_a is None,
+           'previous': None if previous_u_a is None else {'members': tuple(sorted(previous_u_a)),
+                                                          'unknown': tuple(sorted(previous_unknown))},
            'thresholds': {'u_a_entry_usd': settings.U_A_ENTRY_USD, 'u_a_stay_usd': settings.U_A_STAY_USD,
                           'u_b_min_usd': settings.U_B_MIN_USD},
-           'securities': securities, 'issuers': units}
+           'securities': securities, 'issuers': units, 'terminations': termination_records}
     sec_counts = Counter(s['status'] for s in securities.values())
     sec_reasons = {EXCLUDED: Counter(), UNKNOWN: Counter()}
     for s in securities.values():
@@ -414,12 +577,17 @@ def build_universes(records, *, previous_u_a=None, signal_day=None):
         reps = {cik: units[cik]['representative'] for cik in members}
         out[group] = {'members': members, 'member_securities': tuple(sorted(reps.values())), 'representatives': reps,
                       'counts': _counts(units, group)}
+    out[settings.U_A]['unknown'] = tuple(sorted(uid for uid, u in units.items()
+                                                if u[settings.U_A]['status'] == UNKNOWN))
+    out[settings.U_A]['terminated'] = tuple(terminated)
     previous = previous_u_a or frozenset()
     current = set(out[settings.U_A]['members'])
+    gone = {item['cik']: item['reasons'] for item in terminated}
     left = []
     for cik in sorted(previous - current):
         unit = units.get(cik)
-        left.append({'cik': cik, 'reasons': [NOT_IN_RECORDS_AT_S] if unit is None else list(unit[settings.U_A]['reasons'])})
+        left.append({'cik': cik, 'reasons': list(gone.get(cik, [NOT_IN_RECORDS_AT_S])) if unit is None
+                     else list(unit[settings.U_A]['reasons'])})
     out[settings.U_A]['transitions'] = {'entered': tuple(sorted(current - previous)) if previous_u_a is not None else (),
                                         'stayed': tuple(sorted(current & previous)), 'left': tuple(left)}
     return out

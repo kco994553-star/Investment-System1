@@ -127,7 +127,9 @@ def test_chain_universe_scoring_selection_on_synthetic_records():
     records = []
     for i in range(14):   # cap = 0.1bn x (1 + 20i): S000 below U-A entry; S000..S004 below U-B
         records.append({'security_id': f'S{i:03}', 'cik': str(i + 1), 'listed': True, 'security_type': 'COMMON',
-                        'shares_outstanding': D('100000000'), 'price': D(1 + 20 * i), 'price_label': 'PROXY_LAST_TRADE'})
+                        'shares_outstanding': D('100000000'), 'shares_filed': '2018-01-31',
+                        'shares_period_end': '2017-12-31', 'share_price_basis': 'CONFIRMED',
+                        'price': D(1 + 20 * i), 'price_label': 'PROXY_LAST_TRADE'})
     uni = universe.build_universes(records, signal_day='2018-02-16')
     assert uni['U_A']['counts']['eligible'] == 13 and uni['U_B']['counts']['eligible'] == 9
     rows, quotes = {}, {}

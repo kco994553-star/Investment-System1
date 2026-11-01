@@ -45,7 +45,8 @@ def records(year):
     out = []
     for i in range(1, 20):
         rec = {'security_id': sid(i), 'cik': cik(i), 'listed': True, 'security_type': TYPES[i],
-               'shares_outstanding': SHARES, 'price': D(prices[i]), 'price_label': 'SYNTHETIC_CLOSE_AT_S'}
+               'shares_outstanding': SHARES, 'shares_filed': f'{year}-01-31', 'shares_period_end': f'{year - 1}-12-31',
+               'share_price_basis': 'CONFIRMED', 'price': D(prices[i]), 'price_label': 'SYNTHETIC_CLOSE_AT_S'}
         if i in (16, 17):
             rec['shares_outstanding'] = D('600000000')
         if i == 16:

@@ -14,15 +14,18 @@ END = '2019-03-29'
 
 
 def select(year, previous=None, **kw):
+    """previous: runner.u_a_state of the previous selection (members and UNKNOWN units) or None."""
     facts = kw.pop('companyfacts', syn.companyfacts_by_cik())
+    state = {} if previous is None else {'previous_u_a': previous['members'],
+                                         'previous_u_a_unknown': previous['unknown']}
     return runner.selection_stage(syn.records(year), year=year, companyfacts=facts, filing_rows=syn.filing_rows(),
-                                  quotes=syn.quotes(year), previous_u_a=previous, **kw)
+                                  quotes=syn.quotes(year), **state, **kw)
 
 
 @pytest.fixture(scope='module')
 def years():
     s18 = select(2018)
-    s19 = select(2019, runner.u_a_members(s18))
+    s19 = select(2019, runner.u_a_state(s18))
     return s18, s19
 
 
@@ -90,7 +93,9 @@ def test_selection_stage_second_year_carries_hysteresis_through_previous_u_a(yea
     assert issuers[cik(1)]['U_A'] == {'status': 'EXCLUDED', 'reasons': ['BELOW_U_A_ENTRY_THRESHOLD'], 'basis': 'ENTRY'}
     assert issuers[cik(3)]['U_A'] == {'status': 'EXCLUDED', 'reasons': ['BELOW_U_A_STAY_THRESHOLD'], 'basis': 'STAY'}
     assert s19['counts']['u_a_transitions'] == {'entered': 0, 'stayed': 14, 'left': 1,
-                                                'left_by_reason': {'BELOW_U_A_STAY_THRESHOLD': 1}}
+                                                'left_by_reason': {'BELOW_U_A_STAY_THRESHOLD': 1},
+                                                'unknown_carried': 2, 'terminated': 0}
+    assert s19['previous_u_a_unknown'] == s18['universe']['U_A']['unknown'] == runner.u_a_state(s18)['unknown']
     assert s19['counts']['U_A']['eligible'] == 14
     # U-B has no hysteresis: issuer 10 rises above 10bn, issuer 11 falls below it
     assert cik(10) in s19['universe']['U_B']['members'] and cik(11) not in s19['universe']['U_B']['members']
@@ -254,6 +259,9 @@ def test_ledger_stage_refuses_inconsistent_selections(years):
     broken = dict(s19, previous_u_a=s19['previous_u_a'][1:])
     with pytest.raises(runner.RunnerError, match='HYSTERESIS_CHAIN_BROKEN'):
         runner.ledger_stage([s18, broken], prices=prices, end='2018-03-02')
+    lost_unknown = dict(s19, previous_u_a_unknown=[])           # review F3: the UNKNOWN set is part of the chain
+    with pytest.raises(runner.RunnerError, match='HYSTERESIS_CHAIN_BROKEN'):
+        runner.ledger_stage([s18, lost_unknown], prices=prices, end='2018-03-02')
     with pytest.raises(runner.RunnerError, match='SELECTION_YEAR_DUPLICATE'):
         runner.ledger_stage([s18, s18], prices=prices, end='2018-03-02')
     gap = dict(s19, year=2020, signal={'S': '2020-02-14', 'T': '2020-02-18'})
