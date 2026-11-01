@@ -52,14 +52,16 @@ def test_resource_bytes_with_another_hash_are_refused():
 
 
 def test_run_id_covers_identity_code_inputs_and_stage_but_not_the_clock():
-    base = dict(experiment_id=settings.EXPERIMENT_ID, settings_sha256='a' * 64, code_sha='b' * 40,
+    base = dict(experiment_id=settings.EXPERIMENT_ID, settings_sha256='a' * 64, code_sha='b' * 40, code_sha_flags=[],
                 input_manifest_sha256='c' * 64, stage={'name': 'select', 'year': 2018, 'previous_u_a_sha256': None})
     rid = handoff.run_id(**base)
     assert len(rid) == 24 and int(rid, 16) >= 0
     body = handoff.canonical_bytes({k: base[k] for k in ('experiment_id', 'settings_sha256', 'code_sha',
-                                                         'input_manifest_sha256', 'stage')})
+                                                         'code_sha_flags', 'input_manifest_sha256', 'stage')})
     assert rid == hashlib.sha256(body).hexdigest()[:24]
+    # Review F7: a dirty-tree (or unknown-code) run never shares the clean run's run_id.
     for key, value in (('code_sha', 'd' * 40), ('input_manifest_sha256', 'e' * 64), ('settings_sha256', 'f' * 64),
+                       ('code_sha_flags', ['CODE_TREE_DIRTY']), ('code_sha_flags', ['CODE_SHA_UNKNOWN']),
                        ('stage', {'name': 'select', 'year': 2019, 'previous_u_a_sha256': None})):
         assert handoff.run_id(**dict(base, **{key: value})) != rid
     with pytest.raises(handoff.HandoffError, match='STAGE_INVALID'):

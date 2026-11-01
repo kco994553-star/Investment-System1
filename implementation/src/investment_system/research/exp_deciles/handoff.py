@@ -27,9 +27,10 @@ by a placeholder (<INPUT_MANIFEST>, <PREVIOUS_U_A>, <SELECTION_YYYY>, <NEW_PRIVA
 no private path is recorded.
 
 run_id = the first 24 hex characters of sha256(canonical JSON of {experiment_id, settings_sha256, code_sha,
-input_manifest_sha256, stage}). stage is the stage name with its parameters (year and previous U-A hash for 'select';
-selection hashes, end and daily_positions for 'ledger'), so two different runs of one manifest never share a run_id;
-generated_at is not part of it.
+code_sha_flags, input_manifest_sha256, stage}). stage is the stage name with its parameters (year and previous U-A hash
+for 'select'; selection hashes, end and daily_positions for 'ledger'); code_sha_flags (CODE_TREE_DIRTY, CODE_SHA_UNKNOWN)
+are part of it (review F7), so a dirty-tree run never shares the clean run's run_id (or its release name) and two
+different runs of one manifest never share a run_id; generated_at is not part of it.
 """
 from __future__ import annotations
 
@@ -216,8 +217,11 @@ def _stage(stage):
     return jsonable(stage)
 
 
-def run_id(*, experiment_id, settings_sha256, code_sha, input_manifest_sha256, stage) -> str:
+def run_id(*, experiment_id, settings_sha256, code_sha, code_sha_flags, input_manifest_sha256, stage) -> str:
+    if not isinstance(code_sha_flags, (list, tuple)):
+        raise HandoffError('CODE_SHA_FLAGS_INVALID')
     body = {'experiment_id': experiment_id, 'settings_sha256': settings_sha256, 'code_sha': code_sha,
+            'code_sha_flags': [flag(code) for code in code_sha_flags],
             'input_manifest_sha256': input_manifest_sha256, 'stage': _stage(stage)}
     return hashlib.sha256(canonical_bytes(body)).hexdigest()[:RUN_ID_HEX]
 
@@ -268,7 +272,7 @@ def run_metadata(*, input_manifest, code_sha, stage, generated_at, extra_inputs=
             'settings': settings.settings_dict(), 'code_sha': sha,
             'code_sha_flags': flags, 'input_manifest_sha256': input_manifest['sha256'],
             'run_id': run_id(experiment_id=settings.EXPERIMENT_ID, settings_sha256=settings_sha, code_sha=sha,
-                             input_manifest_sha256=input_manifest['sha256'], stage=stage),
+                             code_sha_flags=flags, input_manifest_sha256=input_manifest['sha256'], stage=stage),
             'stage': stage, 'generated_at': when, 'extra_inputs': extras,
             'reproduction': reproduction_command(stage, input_manifest_sha256=input_manifest['sha256'],
                                                  generated_at=when, code_sha=sha, extra_inputs=extras)}
@@ -302,9 +306,12 @@ def verify_output_manifest(manifest, files) -> dict:
     UNLISTED}], 'counts': {status: n}}. settings_ok: the settings body hashes to settings_sha256."""
     if not isinstance(manifest, dict) or manifest.get('schema') != OUTPUT_MANIFEST_SCHEMA:
         raise HandoffError('OUTPUT_MANIFEST_SCHEMA_INVALID')
-    expected = run_id(experiment_id=manifest.get('experiment_id'), settings_sha256=manifest.get('settings_sha256'),
-                      code_sha=manifest.get('code_sha'), input_manifest_sha256=manifest.get('input_manifest_sha256'),
-                      stage=manifest.get('stage'))
+    try:
+        expected = run_id(experiment_id=manifest.get('experiment_id'), settings_sha256=manifest.get('settings_sha256'),
+                          code_sha=manifest.get('code_sha'), code_sha_flags=manifest.get('code_sha_flags'),
+                          input_manifest_sha256=manifest.get('input_manifest_sha256'), stage=manifest.get('stage'))
+    except HandoffError:
+        expected = None
     rows, listed = [], set()
     for item in manifest.get('outputs') or []:
         name = item.get('file') if isinstance(item, dict) else None

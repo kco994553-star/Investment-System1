@@ -11,16 +11,22 @@ Subcommands
                            verify), or a JSON object {"members": [CIK, ...], "unknown": [CIK or "SECURITY:<id>", ...],
                            "securities": {unit ID: [security ID, ...]}} (the previous U_A.unit_securities, review U1).
                            A bare JSON list of member CIKs is refused (PREVIOUS_U_A_BARE_LIST_REFUSED, review U3): without
-                           the UNKNOWN set a missing input would turn into a threshold exclusion.
+                           the UNKNOWN set a missing input would turn into a threshold exclusion. A previous selection
+                           file made from a dirty tree or an unknown code SHA is refused
+                           (PREVIOUS_U_A_CODE_STATE_UNVERIFIED), and so is one made from another input manifest
+                           (PREVIOUS_U_A_INPUT_MANIFEST_DIFFERS); one made from another code SHA than this run is flagged
+                           (PREVIOUS_U_A_CODE_SHA_DIFFERS).
                            Without it the U-A is a first build.
   ledger   --manifest M --selection FILE [--selection FILE ...] --out DIR [--generated-at ISO] [--end YYYY-MM-DD]
            [--daily-positions]
                            ledger stage over consecutive yearly selection_inputs.json files
                            -> DIR/ledger_outputs.json + DIR/manifest.json. Each FILE must sit in its select run
-                           directory, whose manifest.json must verify and list FILE's sha256 (review F7); every selection
-                           must share one code SHA (SELECTION_CODE_SHA_MISMATCH); a selection made from another input
-                           manifest or another code SHA than this ledger run is flagged (SELECTION_INPUT_MANIFEST_DIFFERS,
-                           SELECTION_CODE_SHA_DIFFERS_FROM_LEDGER). Without --end the run is held to the next
+                           directory, whose manifest.json must verify and list FILE's sha256 (review F7); a selection
+                           made from a dirty tree or an unknown code SHA (CODE_TREE_DIRTY / CODE_SHA_UNKNOWN in its
+                           manifest) is refused (SELECTION_CODE_STATE_UNVERIFIED), and so is one made from another input
+                           manifest (SELECTION_INPUT_MANIFEST_DIFFERS); every selection must share one code SHA
+                           (SELECTION_CODE_SHA_MISMATCH); one made from another code SHA than this ledger run is flagged
+                           (SELECTION_CODE_SHA_DIFFERS_FROM_LEDGER). Without --end the run is held to the next
                            reselection T open; an --end past it is refused (END_PAST_NEXT_RESELECTION)
   verify   --run DIR       re-hash a run directory against its manifest.json; exit 0 when every file matches
   synthetic --out DIR [--generated-at ISO]
@@ -81,8 +87,12 @@ Bundle files (JSON), by resource name:
   decimal text is accepted). companyfacts and filings are read as the SEC publishes them. Dates are ISO text.
 
 Outputs: DIR must be outside this repository checkout and every working tree of it ('git worktree list';
-OUTPUT_INSIDE_REPO) and outside any other git working tree or git directory ('git -C <parent> rev-parse --git-dir'
-must fail; OUTPUT_INSIDE_GIT_WORKTREE), and its parent must exist (review F10). A new DIR is created with mode 0700; an
+OUTPUT_INSIDE_REPO) and outside any other git working tree or git directory: DIR itself (when it exists) and every
+ancestor are walked in Python, and any directory holding a '.git' entry (file, directory or link) or laid out as a git
+directory (HEAD plus objects/ and refs/) refuses the run (OUTPUT_INSIDE_GIT_WORKTREE; review F10, also for an existing
+repository root or bare repository given as DIR). The walk does not depend on git being installed or on git's ownership
+checks; any error while walking refuses (OUTPUT_GIT_CHECK_FAILED). The parent must exist. Every git call runs without
+the inherited GIT_* environment, so the recorded code SHA is always this checkout's. A new DIR is created with mode 0700; an
 existing DIR must be a private (0700-type) directory of this user. The payload's run block and manifest.json carry the
 settings body and a reproduction command whose private file locations are placeholders with their sha256 (review F11). Every file is created with
 O_CREAT|O_EXCL|O_NOFOLLOW, mode 0600, so an existing file is never overwritten (OUTPUT_EXISTS); manifest.json is written
@@ -118,6 +128,8 @@ CODE_TREE_DIRTY = 'CODE_TREE_DIRTY'
 QUOTES_NOT_SUPPLIED = 'QUOTES_NOT_SUPPLIED'
 SELECTION_INPUT_MANIFEST_DIFFERS = 'SELECTION_INPUT_MANIFEST_DIFFERS'
 SELECTION_CODE_SHA_DIFFERS_FROM_LEDGER = 'SELECTION_CODE_SHA_DIFFERS_FROM_LEDGER'
+PREVIOUS_U_A_CODE_SHA_DIFFERS = 'PREVIOUS_U_A_CODE_SHA_DIFFERS'
+UNVERIFIED_CODE_FLAGS = (CODE_TREE_DIRTY, handoff.CODE_SHA_UNKNOWN_FLAG)
 _CODE = re.compile(r'[A-Z][A-Z0-9_]{2,63}')
 _CHUNK = 1 << 20
 
@@ -261,17 +273,27 @@ def _cik_list(value):
     return isinstance(value, list) and all(isinstance(c, (str, int)) and not isinstance(c, bool) for c in value)
 
 
+def _code_state_unverified(manifest):
+    """True when a run manifest records a dirty tree or an unknown code SHA (review F7)."""
+    flags = manifest.get('code_sha_flags')
+    return (not isinstance(flags, list) or any(code in flags for code in UNVERIFIED_CODE_FLAGS)
+            or manifest.get('code_sha') == handoff.CODE_SHA_UNKNOWN)
+
+
 def _previous_u_a(path, year):
-    """({'members', 'unknown', 'securities'}, sha256, flags) of a --previous-u-a file (see the module doc)."""
+    """({'members', 'unknown', 'securities'}, sha256, flags, select manifest | None) of a --previous-u-a file (see the
+    module doc)."""
     data = _read_bytes(path)
     payload = _json(data, exact=False)
-    flags = []
+    flags, manifest = [], None
     if isinstance(payload, dict) and 'schema' in payload:
         if payload.get('schema') != runner.SELECTION_SCHEMA:
             raise CliError('PREVIOUS_U_A_INVALID')
         if payload.get('year') != year - 1:
             raise CliError('PREVIOUS_U_A_YEAR_MISMATCH')
-        _verify_selection_file(Path(path), data, payload)
+        manifest = _verify_selection_file(Path(path), data, payload)
+        if _code_state_unverified(manifest):
+            raise CliError('PREVIOUS_U_A_CODE_STATE_UNVERIFIED')
         state = runner.u_a_state(payload)
     elif isinstance(payload, dict) and set(payload) == {'members', 'unknown', 'securities'} \
             and _cik_list(payload['members']) and isinstance(payload['unknown'], list) \
@@ -281,7 +303,7 @@ def _previous_u_a(path, year):
         raise CliError('PREVIOUS_U_A_BARE_LIST_REFUSED')
     else:
         raise CliError('PREVIOUS_U_A_INVALID')
-    return state, handoff.sha256_hex(data), flags
+    return state, handoff.sha256_hex(data), flags, manifest
 
 
 def _run_files(directory):
@@ -322,27 +344,46 @@ def _verify_selection_file(path, data, payload):
 
 
 # ---- code state -----------------------------------------------------------------------------------------------------
+def _clean_env():
+    return {key: value for key, value in os.environ.items() if not key.startswith('GIT_')}
+
+
 def _git(*args):
+    """git -C REPO_ROOT ... without the inherited GIT_* environment (review GIT-ENV-CODESHA), else None."""
     try:
         done = subprocess.run(['git', '-C', str(REPO_ROOT), *args], capture_output=True, text=True, timeout=60,
-                              check=False)
+                              check=False, env=_clean_env())
     except (OSError, subprocess.SubprocessError):
         return None
     return done.stdout if done.returncode == 0 else None
 
 
-def _clean_env():
-    return {key: value for key, value in os.environ.items() if not key.startswith('GIT_')}
-
-
-def _inside_git(directory):
-    """True when `directory` lies in any git working tree or git directory (git -C <dir> rev-parse --git-dir)."""
+def _entry_kind(path):
+    """stat.S_IFMT of an lstat, or None when nothing is there; any other OSError propagates (fail closed)."""
     try:
-        done = subprocess.run(['git', '-C', str(directory), 'rev-parse', '--git-dir'], capture_output=True, text=True,
-                              timeout=60, check=False, env=_clean_env())
-    except (OSError, subprocess.SubprocessError):
-        return False
-    return done.returncode == 0
+        return stat.S_IFMT(os.lstat(path).st_mode)
+    except (FileNotFoundError, NotADirectoryError):
+        return None
+
+
+def _git_marked(directory):
+    """True when `directory` holds a '.git' entry or is laid out as a git directory (HEAD plus objects/ and refs/)."""
+    if _entry_kind(directory / '.git') is not None:
+        return True
+    return (_entry_kind(directory / 'HEAD') is not None and _entry_kind(directory / 'objects') == stat.S_IFDIR
+            and _entry_kind(directory / 'refs') == stat.S_IFDIR)
+
+
+def _inside_git(target):
+    """True when `target` (if it exists) or any ancestor is a git working tree root or a git directory (review F10).
+
+    A pure-Python walk: no git binary, no ownership check, no filesystem-boundary rule can make it fail open; an error
+    while walking refuses (OUTPUT_GIT_CHECK_FAILED)."""
+    try:
+        chain = ([target] if _entry_kind(target) is not None else []) + list(target.parents)
+        return any(_git_marked(directory) for directory in chain)
+    except OSError:
+        raise CliError('OUTPUT_GIT_CHECK_FAILED') from None
 
 
 def _worktrees():
@@ -372,7 +413,7 @@ def _output_dir(value):
     for tree in [REPO_ROOT.resolve()] + _worktrees():
         if target == tree or target.is_relative_to(tree):
             raise CliError('OUTPUT_INSIDE_REPO')
-    if _inside_git(target.parent):
+    if _inside_git(target):
         raise CliError('OUTPUT_INSIDE_GIT_WORKTREE')
     if os.path.lexists(target):
         info = os.lstat(target)
@@ -446,11 +487,16 @@ def cmd_select(args):
     records, more = _per_year(bundle, 'records', args.year, 'records', frozen['S'], required=True,
                               optional=('terminations',))
     quotes = _per_year(bundle, 'quotes', args.year, 'quotes', frozen['S'], required=False)
-    previous, extra, previous_flags = None, [], []
+    previous, extra, previous_flags, previous_manifest = None, [], [], None
     if args.previous_u_a is not None:
-        previous, digest, previous_flags = _previous_u_a(args.previous_u_a, args.year)
+        previous, digest, previous_flags, previous_manifest = _previous_u_a(args.previous_u_a, args.year)
         extra.append({'role': 'previous_u_a', 'sha256': digest})
     code_sha, code_flags = code_state()
+    if previous_manifest is not None:              # review PREV-UA-PROVENANCE: the same checks as the ledger's
+        if previous_manifest.get('input_manifest_sha256') != bundle.manifest['sha256']:
+            raise CliError('PREVIOUS_U_A_INPUT_MANIFEST_DIFFERS')
+        if previous_manifest.get('code_sha') != handoff.code_sha_record(code_sha)[0]:
+            previous_flags = previous_flags + [PREVIOUS_U_A_CODE_SHA_DIFFERS]
     stage = {'name': 'select', 'year': args.year, 'previous_u_a_sha256': extra[0]['sha256'] if extra else None}
     run = handoff.run_metadata(input_manifest=bundle.manifest, code_sha=code_sha, stage=stage,
                                generated_at=generated_at, extra_inputs=extra, code_flags=code_flags)
@@ -495,7 +541,12 @@ def cmd_ledger(args):
         payload = _json(data, exact=False)
         if not isinstance(payload, dict) or payload.get('schema') != runner.SELECTION_SCHEMA:
             raise CliError('SELECTION_SCHEMA_INVALID')
-        manifests.append(_verify_selection_file(Path(path), data, payload))
+        manifest = _verify_selection_file(Path(path), data, payload)
+        if _code_state_unverified(manifest):           # review F7: dirty / unknown code never reaches a ledger
+            raise CliError('SELECTION_CODE_STATE_UNVERIFIED')
+        if manifest.get('input_manifest_sha256') != bundle.manifest['sha256']:
+            raise CliError('SELECTION_INPUT_MANIFEST_DIFFERS')
+        manifests.append(manifest)
         selections.append(payload)
         hashes.append((payload.get('year'), handoff.sha256_hex(data)))
     if len({year for year, _ in hashes}) != len(hashes) or not all(type(y) is int for y, _ in hashes):
@@ -514,8 +565,6 @@ def cmd_ledger(args):
                                generated_at=generated_at, extra_inputs=extra, code_flags=code_flags)
     payload = runner.ledger_stage(selections, prices=bundle.concat('prices'), events=bundle.concat('events'),
                                   end=args.end, tr_series=tr_series, daily_positions=args.daily_positions, run=run)
-    if any(m['input_manifest_sha256'] != bundle.manifest['sha256'] for m in manifests):
-        payload['flags'].append(SELECTION_INPUT_MANIFEST_DIFFERS)
     if selection_code != {run['code_sha']}:
         payload['flags'].append(SELECTION_CODE_SHA_DIFFERS_FROM_LEDGER)
     body = handoff.canonical_bytes(payload)

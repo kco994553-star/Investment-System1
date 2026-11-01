@@ -25,6 +25,12 @@ def cli():
     spec = importlib.util.spec_from_file_location('exp_stock_indicator_deciles_cli', TOOL)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
+    # The tests exercise the CLI, not this checkout's state: a dirty working tree (uncommitted edits while developing)
+    # would make every selection CODE_TREE_DIRTY, which the ledger refuses (review F7). Tests that need a code state
+    # set their own; the real one stays available as _real_code_state.
+    real = module.code_state
+    module._real_code_state = real
+    module.code_state = lambda: (real()[0], [])
     return module
 
 
@@ -271,7 +277,8 @@ def test_ledger_refuses_an_edited_or_unverified_selection_file(cli, capsys, tmp_
     assert code == 0, err
 
 
-def test_ledger_flags_another_input_manifest_and_refuses_mixed_selection_code(cli, capsys, tmp_path, monkeypatch):
+def test_ledger_refuses_another_input_manifest_and_mixed_selection_code(cli, capsys, tmp_path, monkeypatch):
+    """Review F7: a selection made from another input manifest is refused (it was only flagged)."""
     manifest = write_bundle(tmp_path / 'bundle')
     s18 = _select_2018(cli, capsys, manifest, tmp_path / 's18')
     other = write_bundle(tmp_path / 'other')                     # same files, one more resource: another manifest
@@ -280,18 +287,56 @@ def test_ledger_flags_another_input_manifest_and_refuses_mixed_selection_code(cl
     other.write_text(json.dumps(body))
     code, out, err = run(cli, capsys, 'ledger', '--manifest', str(other), '--selection', str(s18), '--out',
                          str(tmp_path / 'led'), '--end', '2019-02-15', '--generated-at', WHEN)
-    assert code == 0, err
-    assert 'SELECTION_INPUT_MANIFEST_DIFFERS' in out
-    assert 'SELECTION_INPUT_MANIFEST_DIFFERS' in json.loads((tmp_path / 'led' / 'ledger_outputs.json').read_text())[
-        'flags']
+    assert (code, out, err.strip()) == (2, '', 'REFUSED SELECTION_INPUT_MANIFEST_DIFFERS')
+    assert not (tmp_path / 'led').exists()
+    # select --previous-u-a: the same input-chain rule (review PREV-UA-PROVENANCE).
+    code, out, err = run(cli, capsys, 'select', '--manifest', str(other), '--year', '2019', '--previous-u-a', str(s18),
+                         '--out', str(tmp_path / 's19x'), '--generated-at', WHEN)
+    assert (code, out, err.strip()) == (2, '', 'REFUSED PREVIOUS_U_A_INPUT_MANIFEST_DIFFERS')
     monkeypatch.setattr(cli, 'code_state', lambda: ('f' * 40, []))
-    code, _, err = run(cli, capsys, 'select', '--manifest', str(manifest), '--year', '2019', '--previous-u-a', str(s18),
-                       '--out', str(tmp_path / 's19'), '--generated-at', WHEN)
-    assert code == 0, err
+    code, out, err = run(cli, capsys, 'select', '--manifest', str(manifest), '--year', '2019', '--previous-u-a', str(s18),
+                         '--out', str(tmp_path / 's19'), '--generated-at', WHEN)
+    assert code == 0 and 'PREVIOUS_U_A_CODE_SHA_DIFFERS' in out, err
+    assert 'PREVIOUS_U_A_CODE_SHA_DIFFERS' in json.loads((tmp_path / 's19' / 'selection_inputs.json').read_text())[
+        'flags']
     code, _, err = run(cli, capsys, 'ledger', '--manifest', str(manifest), '--selection', str(s18), '--selection',
                        str(tmp_path / 's19' / 'selection_inputs.json'), '--out', str(tmp_path / 'led2'),
                        '--end', '2019-03-29')
     assert code == 2 and err.strip() == 'REFUSED SELECTION_CODE_SHA_MISMATCH'
+
+
+@pytest.mark.parametrize('state', [('a' * 40, ['CODE_TREE_DIRTY']), (None, [])])
+def test_dirty_or_unknown_code_selection_gets_its_own_run_id_and_is_refused_downstream(cli, capsys, tmp_path,
+                                                                                         monkeypatch, state):
+    """Review F7: a dirty-tree selection had the clean run's run_id and the ledger accepted it with no flag; the same
+    for --previous-u-a (review PREV-UA-PROVENANCE)."""
+    manifest = write_bundle(tmp_path / 'bundle')
+    monkeypatch.setattr(cli, 'code_state', lambda: ('a' * 40, []))
+    clean = json.loads(_select_2018(cli, capsys, manifest, tmp_path / 'clean').read_text())
+    monkeypatch.setattr(cli, 'code_state', lambda: state)
+    dirty = _select_2018(cli, capsys, manifest, tmp_path / 'dirty')
+    assert json.loads(dirty.read_text())['run']['run_id'] != clean['run']['run_id']
+    assert run(cli, capsys, 'verify', '--run', str(tmp_path / 'dirty'))[0] == 0
+    monkeypatch.setattr(cli, 'code_state', lambda: ('a' * 40, []))
+    code, out, err = run(cli, capsys, 'ledger', '--manifest', str(manifest), '--selection', str(dirty), '--out',
+                         str(tmp_path / 'led'), '--end', '2019-02-15', '--generated-at', WHEN)
+    assert (code, out, err.strip()) == (2, '', 'REFUSED SELECTION_CODE_STATE_UNVERIFIED')
+    code, out, err = run(cli, capsys, 'select', '--manifest', str(manifest), '--year', '2019', '--previous-u-a',
+                         str(dirty), '--out', str(tmp_path / 's19'), '--generated-at', WHEN)
+    assert (code, out, err.strip()) == (2, '', 'REFUSED PREVIOUS_U_A_CODE_STATE_UNVERIFIED')
+
+
+def test_code_state_ignores_an_inherited_git_environment(cli, tmp_path, monkeypatch):
+    """Review GIT-ENV-CODESHA: GIT_DIR / GIT_WORK_TREE of another repository made code_sha that repository's HEAD."""
+    alt = tmp_path / 'alt'
+    alt.mkdir()
+    _git('init', '-q', cwd=alt)
+    _git('commit', '-q', '--allow-empty', '-m', 'synthetic', cwd=alt)
+    expected = cli._real_code_state()
+    monkeypatch.setenv('GIT_DIR', str(alt / '.git'))
+    monkeypatch.setenv('GIT_WORK_TREE', str(alt))
+    assert cli._real_code_state() == expected
+    assert cli._worktrees() and all(not str(tree).startswith(str(tmp_path)) for tree in cli._worktrees())
 
 
 # ---- review F10: outputs never inside any git working tree --------------------------------------------------------
@@ -320,6 +365,57 @@ def test_output_inside_any_git_working_tree_is_refused(cli, capsys, tmp_path, mo
     with pytest.raises(cli.CliError, match='OUTPUT_INSIDE_GIT_WORKTREE'):
         cli._output_dir(str(unrelated / '.git' / 'out'))
     assert cli._output_dir(str(tmp_path / 'outside')) == (tmp_path / 'outside').resolve()
+
+
+def test_existing_repository_root_bare_repository_or_unrecognised_repository_is_refused(cli, tmp_path, monkeypatch):
+    """Review F10-ROOT / F10-FAILOPEN: an existing 0700 repo root or bare repo given as --out was accepted (only its
+    parent was checked), and a repository git refused to recognise (dubious ownership, git not on PATH) failed open."""
+    repo, bare = tmp_path / 'repo', tmp_path / 'bare.git'
+    repo.mkdir()
+    _git('init', '-q', cwd=repo)
+    _git('init', '-q', '--bare', str(bare), cwd=tmp_path)
+    for target in (repo, bare):
+        os.chmod(target, 0o700)
+        with pytest.raises(cli.CliError, match='OUTPUT_INSIDE_GIT_WORKTREE'):
+            cli._output_dir(str(target))
+    # A '.git' file (a linked worktree or submodule) and a git-dir layout without git are refused too.
+    linked = tmp_path / 'linked'
+    linked.mkdir(mode=0o700)
+    (linked / '.git').write_text('gitdir: /nonexistent\n')
+    layout = tmp_path / 'layout'
+    for part in ('objects', 'refs'):
+        (layout / part).mkdir(parents=True)
+    (layout / 'HEAD').write_text('ref: refs/heads/main\n')
+    for target in (linked / 'out', layout / 'out', linked):
+        with pytest.raises(cli.CliError, match='OUTPUT_INSIDE_GIT_WORKTREE'):
+            cli._output_dir(str(target))
+    # No git binary at all: the walk does not need one.
+    monkeypatch.setenv('PATH', '/nonexistent')
+    with pytest.raises(cli.CliError, match='OUTPUT_INSIDE_GIT_WORKTREE'):
+        cli._output_dir(str(repo / 'out'))
+    monkeypatch.undo()
+    # Any error while walking refuses (fail closed).
+    real_lstat = os.lstat
+
+    def broken(path, *a, **k):
+        if str(path).endswith('.git'):
+            raise PermissionError('synthetic')
+        return real_lstat(path, *a, **k)
+    monkeypatch.setattr(cli.os, 'lstat', broken)
+    with pytest.raises(cli.CliError, match='OUTPUT_GIT_CHECK_FAILED'):
+        cli._output_dir(str(tmp_path / 'fresh'))
+
+
+@pytest.mark.skipif(os.geteuid() != 0, reason='needs root to hand a repository to another uid')
+def test_repository_owned_by_another_user_is_refused_as_root(cli, tmp_path):
+    """Review F10-FAILOPEN: as root, 'git rev-parse' fails with 'dubious ownership' and the output was accepted."""
+    other = tmp_path / 'other'
+    other.mkdir()
+    _git('init', '-q', cwd=other)
+    for path in [other, *other.rglob('*')]:
+        os.lchown(path, 1000, 1000)
+    with pytest.raises(cli.CliError, match='OUTPUT_INSIDE_GIT_WORKTREE'):
+        cli._output_dir(str(other / 'out'))
 
 
 # ---- review F11: settings body and reproduction command in the run block and the output manifest -----------------
