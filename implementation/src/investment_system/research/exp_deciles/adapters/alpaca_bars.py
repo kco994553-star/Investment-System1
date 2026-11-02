@@ -40,7 +40,8 @@ from zoneinfo import ZoneInfo
 
 from ... import pit_filings
 from .. import schedule
-from .common import SUPPLIED, AdapterError, iso_day, json_exact, positive_decimal, sha256_bytes
+from . import alpaca_normalization
+from .common import SUPPLIED, AdapterError, iso_day, positive_decimal, sha256_bytes
 
 SOURCE = 'ALPACA_SIP_DAILY_BAR_RAW'
 SOURCE_NAME = 'Alpaca market data v2 historical daily bars, feed=sip, adjustment=raw'
@@ -118,58 +119,63 @@ def page_files(series_dir):
     return sorted(found)
 
 
+def from_normalized(normalized, *, expected_symbol=None):
+    """Project shared candidates to ledger fields; retain complete normalization and unverified identity evidence."""
+    if normalized.get('schema') != 'alpaca-normalized-candidates/1':
+        raise AdapterError('NORMALIZED_SCHEMA_INVALID')
+    pages=[dict(file=f'page-{i:02d}.json', **p) for i,p in enumerate(normalized['source_pages'])]
+    extra=dict(normalization=normalized, normalization_status=normalized['status'],
+               identity_status=normalized['identity_status'], listing_status=normalized['listing_status'],
+               execution_open_status=normalized['execution_open_status'], pit_status=normalized['pit_status'],
+               corporate_actions_status=normalized['corporate_actions_status'], rights_status=normalized['rights_status'])
+    def refused(reason, counts=None):
+        return dict(_refused(reason,pages,counts),**extra)
+    if normalized['status']=='NOT_COLLECTED': return refused(PAGES_MISSING)
+    if not normalized['pages_complete']: return refused(PAGINATION_INCOMPLETE)
+    echoes={p.get('returned_symbol') for p in normalized['source_pages'] if p.get('returned_symbol') is not None}
+    if len(echoes)>1 or expected_symbol is not None and echoes and echoes!={expected_symbol}:
+        return refused(SYMBOL_MISMATCH)
+    counts,bars,symbol,last=Counter(),{},next(iter(echoes),None),None
+    for row in normalized['rows']:
+        if 'OHLC_INCONSISTENT' in row['quality_reasons']:
+            return refused('OHLC_INCONSISTENT')
+        echo=row['returned_symbol']
+        if symbol is not None and echo!=symbol or expected_symbol is not None and echo!=expected_symbol:
+            return refused(SYMBOL_MISMATCH)
+        symbol=echo
+        day,problem=session_date(row['source_timestamp'])
+        if problem:
+            counts[problem]+=1
+            return refused(problem,counts)
+        if last is not None and day<=last: return refused(BAR_ORDER_INVALID)
+        opening,closing=positive_decimal(row['open']),positive_decimal(row['close'])
+        counts['bars']+=1;counts['open_invalid']+=opening is None;counts['close_invalid']+=closing is None
+        bars[day],last={'open':opening,'close':closing},day
+    return dict(symbol=symbol or expected_symbol,status=OK,reason=None,bars=bars,pages=pages,
+                counts=dict(sorted(counts.items())),**extra)
+
+
 def read_series(series_dir, *, expected_symbol=None):
-    """{'symbol', 'status' OK | REFUSED, 'reason', 'bars': {date: {'open', 'close'}}, 'pages': [{'file', 'sha256'}],
-    'counts'} of one series directory (module doc)."""
-    files = page_files(series_dir)
-    pages, counts = [], Counter()
-    if not files:
-        return _refused(PAGES_MISSING, pages)
-    if [n for n, _ in files] != list(range(len(files))):
-        return _refused(PAGE_SEQUENCE_GAP, pages)
-    symbol, bars, last = None, {}, None
-    for position, (n, path) in enumerate(files):
-        try:
-            data = path.read_bytes()
-        except OSError:
-            raise AdapterError('ALPACA_PAGE_NOT_READABLE') from None
-        pages.append({'file': path.name, 'sha256': sha256_bytes(data)})
-        try:
-            body = json_exact(data)
-        except AdapterError:
-            return _refused(PAGE_NOT_JSON, pages)
-        if not isinstance(body, dict) or not isinstance(body.get('symbol'), str) or not body['symbol']:
-            return _refused(PAGE_SCHEMA_INVALID, pages)
-        rows = body.get('bars')
-        rows = [] if rows is None else rows
-        token = body.get('next_page_token')
-        if not isinstance(rows, list) or (token is not None and not isinstance(token, str)):
-            return _refused(PAGE_SCHEMA_INVALID, pages)
-        if symbol is None:
-            symbol = body['symbol']
-        if body['symbol'] != symbol or (expected_symbol is not None and symbol != expected_symbol):
-            return _refused(SYMBOL_MISMATCH, pages)
-        final = position == len(files) - 1
-        if final and token:
-            return _refused(PAGINATION_INCOMPLETE, pages)
-        if not final and not token:
-            return _refused(PAGINATION_INCONSISTENT, pages)
-        for bar in rows:
-            if not isinstance(bar, dict):
-                return _refused(PAGE_SCHEMA_INVALID, pages)
-            day, problem = session_date(bar.get('t'))
-            if problem is not None:
-                counts[problem] += 1
-                return _refused(problem, pages, counts)
-            if last is not None and day <= last:
-                return _refused(BAR_ORDER_INVALID, pages)
-            opening, closing = positive_decimal(bar.get('o')), positive_decimal(bar.get('c'))
-            counts['bars'] += 1
-            counts['open_invalid'] += opening is None
-            counts['close_invalid'] += closing is None
-            bars[day], last = {'open': opening, 'close': closing}, day
-    return {'symbol': symbol, 'status': OK, 'reason': None, 'bars': bars, 'pages': pages,
-            'counts': dict(sorted(counts.items()))}
+    """Compatibility reader for bare raw directories; request, receipt, identity and rights remain unverified.
+    Use from_normalized on #461 output when recorded request/receipt metadata is available.
+    """
+    files=page_files(series_dir)
+    if [n for n,_ in files] != list(range(len(files))):
+        return dict(_refused(PAGE_SEQUENCE_GAP,[]),normalization_status='INCOMPLETE',identity_status='UNVERIFIED')
+    pages=[]
+    for _,path in files:
+        try: body=path.read_bytes()
+        except OSError: raise AdapterError('ALPACA_PAGE_NOT_READABLE') from None
+        pages.append(dict(body=body,sha256=sha256_bytes(body)))
+    try:
+        normalized=alpaca_normalization.normalize_unrecorded_pages(pages)
+    except ValueError as e:
+        reason={'JSON':PAGE_NOT_JSON,'SCHEMA':PAGE_SCHEMA_INVALID,'BAR_SCHEMA':PAGE_SCHEMA_INVALID,
+                'SYMBOL_MISMATCH':SYMBOL_MISMATCH,'PAGE_CHAIN':PAGINATION_INCONSISTENT,
+                'PAGE_TOKEN':PAGE_SCHEMA_INVALID,'BAR_TIME':BAR_TIME_INVALID,'ORDER':BAR_ORDER_INVALID}.get(str(e),PAGE_SCHEMA_INVALID)
+        sources=[dict(file=f'page-{i:02d}.json',sha256=p['sha256']) for i,p in enumerate(pages)]
+        return dict(_refused(reason,sources),normalization_status='QUALITY_FAILED',identity_status='UNVERIFIED')
+    return from_normalized(normalized,expected_symbol=expected_symbol)
 
 
 def _in_span(day, span):

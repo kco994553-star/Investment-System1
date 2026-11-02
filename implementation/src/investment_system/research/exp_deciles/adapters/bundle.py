@@ -144,7 +144,7 @@ def _source(sources, name, role, path):
 
 
 def build(*, year, securities, sec=None, iex=None, attributes=None, carried_units=(), effective_dates=None,
-          s_price_source=S_PRICE_IEX, complete_population=False):
+          s_price_source=S_PRICE_IEX, complete_population=False, normalized_by_security=None):
     """The bundle for the frozen signal year `year` (module doc).
 
     securities: [{'security_id', 'cik'?, 'iex_symbol'?, 'alpaca_series'? (a raw/<series> directory), 'alpaca_symbol'?,
@@ -160,6 +160,9 @@ def build(*, year, securities, sec=None, iex=None, attributes=None, carried_unit
     signal, execution, next_t = _dates(year)
     entries = _securities(securities)
     ids = {e['security_id'] for e in entries}
+    normalized_by_security = normalized_by_security or {}
+    if set(normalized_by_security) - ids:
+        raise AdapterError("NORMALIZED_SECURITY_NOT_IN_MAP")
     attrs, attrs_source = _attributes(attributes, ids)
     sec = dict(sec or {})
     if set(sec) - {'companyfacts_zip', 'submissions_zip', 'form_idx', 'fsds'}:
@@ -213,7 +216,13 @@ def build(*, year, securities, sec=None, iex=None, attributes=None, carried_unit
     series_cache, alpaca, prices = {}, {}, []
     for entry in entries:
         sid, folder = entry['security_id'], entry.get('alpaca_series')
-        if folder is None:
+        if sid in normalized_by_security:
+            if folder is not None:
+                raise AdapterError("DUPLICATE_ALPACA_INPUT")
+            key = ("normalized:" + sid, entry.get("alpaca_symbol"))
+            series = alpaca_bars.from_normalized(normalized_by_security[sid], expected_symbol=entry.get("alpaca_symbol"))
+            series_cache[key] = series
+        elif folder is None:
             series = None
         else:
             key = (str(folder), entry.get('alpaca_symbol'))
@@ -227,6 +236,9 @@ def build(*, year, securities, sec=None, iex=None, attributes=None, carried_unit
         prices.extend(rows)
         alpaca[sid] = {'status': 'NOT_SUPPLIED' if series is None else series['status'],
                        'reason': None if series is None else series['reason'],
+                       'normalization_status': 'NOT_COLLECTED' if series is None else series.get('normalization_status'),
+                       'identity_status': 'UNVERIFIED' if series is None else series['identity_status'],
+                       'normalization': None if series is None else series.get('normalization'),
                        'pages': [] if series is None else series['pages'], 'rows': len(rows),
                        'coverage': alpaca_bars.coverage(series, signal_day=signal, execution_day=execution, end=next_t,
                                                         span=span),
