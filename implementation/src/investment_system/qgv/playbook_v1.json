@@ -2951,8 +2951,8 @@
   "version": "v0"
  },
  "target_v1": {
-  "decision": "DOC_V1",
-  "section": "15",
+  "decision": "USER_DECISION_2026-10-14",
+  "section": "18",
   "target_v0_role": "START_POINT_AND_BENCHMARK",
   "universe": "US_UNIVERSE_504",
   "candidates_max": 30,
@@ -2971,8 +2971,8 @@
    {
     "id": "GENERAL",
     "ko": "일반",
-    "min_pct": 4,
-    "max_pct": 5
+    "min_pct": 6,
+    "max_pct": 6
    },
    {
     "id": "WATCH",
@@ -3007,7 +3007,8 @@
    "U2",
    "BAND"
   ],
-  "version": "v0"
+  "version": "v1.1",
+  "decided": "2026-10-14 TARGET v1: 핵심 5 × 8% + 일반 10 × 6%; PLAYBOOK 18절이 15절보다 우선"
  },
  "portfolio_limits": {
   "decision": "DOC_V1",
