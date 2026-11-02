@@ -9,7 +9,7 @@ from investment_system.qgv import qgv_v2, v2_factors
 from investment_system.research.exp_deciles import settings
 
 # Frozen: a deliberate settings (or engine preset / calc version) change must update this pin together with the doc.
-SETTINGS_SHA256 = '8598bd4857b1fa4a7f4bd8b9f5096757fd9c25e388cc4918df10f01f496c06a5'
+SETTINGS_SHA256 = '7124044686e8cdb75c4f8450036d7818845753d06dce68c97f74f323866e7826'
 
 
 def test_experiment_identity_and_universe_thresholds():

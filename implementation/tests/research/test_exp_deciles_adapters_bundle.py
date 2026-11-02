@@ -203,7 +203,7 @@ def test_count_lines_carry_counts_only(src):
 def test_adapters_are_offline_pure_and_silent():
     banned = {'urllib', 'requests', 'http', 'socket', 'subprocess', 'providers', 'ftplib', 'smtplib'}
     modules = sorted(p.name for p in ADAPTERS.glob('*.py'))
-    assert modules == ['__init__.py', 'alpaca_bars.py', 'bundle.py', 'common.py', 'iex_signal.py', 'sec_bulk.py']
+    assert modules == ['__init__.py', 'alpaca_bars.py', 'alpaca_normalization.py', 'bundle.py', 'common.py', 'iex_signal.py', 'sec_bulk.py']
     for name in modules:
         text = (ADAPTERS / name).read_text(encoding='utf-8')
         tree = ast.parse(text)
