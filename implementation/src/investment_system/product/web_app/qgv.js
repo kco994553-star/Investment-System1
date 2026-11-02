@@ -209,10 +209,23 @@ function create({win,data,prices,action}){
    weight_stages:{state:'NOT_AVAILABLE',reason:'WEIGHT_STAGES_NOT_REBUILT'},rows:x.state==='INVALID'?[]:rs.map(y=>rowRecord(y,{vs,weights:'PERSONAL',of,targets,personal:true,pub:h.pub}))});}
  /* The model candidates N10 / N15 / N20 (feature 2.1.7, P2-2a, Main 2026-10-25): QgvScores.officialModel over the page's held
     result (official default profile, gate on, whatever profile the page shows; D12), projected to what is price-free: ranks,
-    group ids, tickers, totals, counts and percentages of an equal-weight set. No metric value, quote or price. null when there is
+    group ids, tickers, totals, counts and percentages of an equal-weight set, and on N15 the tier check (tierOf below, P2-6
+    portfolio 5.1). No metric value, quote or price. null when there is
     no official ranking (no publication) or the loaded sec-qgv2.json is not the publication's input (the safety metrics would be
     another file's). PAGE_NOT_READY for a page without a result. */
  const models=new WeakMap();
+ /* tier_check of a set (N15 only, else null): the TARGET v1 / R-C tier weights (rule TIERS_RC_20261014, owner decision
+    2026-10-14: core 5 x 8% + general 10 x 6%) put on the selected rows as a check that never changes the selection
+    (applied_to_selection false): status (PASS / UNVERIFIED / FAIL / CORE_SHORT / INCOMPLETE), core / general counts, per row the
+    rank, ticker, group, tier (CORE / GENERAL) and weight_pct, the summed weight and the §16 check of those weights (single name,
+    sector group with its group percentages and unknown share, minimum holdings). Weights and counts only: no metric or price. */
+ function tierOf(t,int,group){if(!object(t))return null;const l=object(t.limits)?t.limits:{},sg=object(l.single)?l.single:{},gr=object(l.group)?l.group:{},mh=object(l.min_holdings)?l.min_holdings:{},un=object(gr.unknown)?gr.unknown:{};
+  return{rule:str(t.rule),applied_to_selection:t.applied_to_selection===true,status:str(t.status),core:int(t.core),general:int(t.general),
+   rows:(Array.isArray(t.rows)?t.rows:[]).map(r=>({id:r.company_id,ticker:r.ticker,rank:int(r.rank),tier:str(r.tier),weight_pct:num(r.weight_pct),group:group(r.group)})),
+   sum_pct:num(l.sum_pct),
+   limits:{single:{limit:num(sg.limit),max_pct:num(sg.max_pct),ok:sg.ok===true},
+    group:{limit:num(gr.limit),status:str(gr.status),top_pct:num(gr.top_pct),groups:(Array.isArray(gr.groups)?gr.groups:[]).map(g=>({id:str(g.id),pct:num(g.pct),count:int(g.count),over:g.over===true})),unknown:{count:int(un.count),pct:num(un.pct)}},
+    min_holdings:{limit:int(mh.limit),count:int(mh.count),ok:mh.ok===true}}};}
  function model(pg){const h=result_(pg);if(models.has(pg))return models.get(pg);const QS=win.QgvScores;
   const M=h.pub&&h.base?QS.officialModel({identities:h.result.identities,v2Inputs:h.base,quotes:h.result.quotes,official:h.result.official,computed:h.result.computed}):null;
   let out=null;
@@ -222,7 +235,8 @@ function create({win,data,prices,action}){
     causes:(Array.isArray(x.causes)?x.causes:[]).map(c=>JSON.parse(JSON.stringify(c))),skipped:{SUBGROUP_MAX_4:int(x.skipped.SUBGROUP_MAX_4),SECTOR_GROUP_MAX_40:int(x.skipped.SECTOR_GROUP_MAX_40)},
     group_capped:x.group_capped.map(c=>({id:c.company_id,ticker:c.ticker,rank:int(c.rank),group:group(c.group)})),
     selected:x.selected.map(e=>({id:e.company_id,ticker:e.ticker,rank:int(e.rank),total:num(e.total),group:group(e.group)})),
-    issuer_check:{status:str(x.issuer_check.status),applied:x.issuer_check.applied===true,issuers_n:Array.isArray(x.issuer_check.issuers)?x.issuer_check.issuers.length:0}};
+    issuer_check:{status:str(x.issuer_check.status),applied:x.issuer_check.applied===true,issuers_n:Array.isArray(x.issuer_check.issuers)?x.issuer_check.issuers.length:0},
+    tier_check:tierOf(x.tier_check,int,group)};
    out=deepFreeze({v_source:pg.v_source,official_profile:{...M.official_profile},primary:str(M.primary),ns:[...M.ns],as_of:str(M.as_of),checked:int(M.checked),ranked:int(M.ranked),
     provisional:[...M.provisional],excluded:{...M.excluded},unknown:{subgroup:int(M.unknown.subgroup)},sets});}
   models.set(pg,out);return out;}
