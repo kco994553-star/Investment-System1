@@ -1,6 +1,6 @@
 # 현재 인수인계 — 2026-11-01
 
-기준 **2026-11-01 07:10 UTC GitHub 조회**, canonical **`9a4e249d`**(#447). 앞 판(`1465260e`, #446) 뒤 병합은 아래 11/01 다섯 건뿐이다(첫 부모 이력으로 확인). 10/31 저녁 오너 승인으로 병합: #448 `ef0e90cb`(Worker 배포 run 41252518944) → #438 `f8e9a4ef` → #440 `edb11b1c` → #442 `70d0e447` → #441 `37b7ddc4` → #445 `1c73cb9b` → #450 `c33ec071` → #446 `1465260e`. 11/01 병합: #436 `c86be9b9` → #449 `111f86c7` → #451 `d8fe9bc8` → #453 `428b417e` → #447 `9a4e249d`(워크플로 ① `private-boundary-push.yml` 포함). 실제 기본 브랜치는 **`claude/investment-system-top500-validation-alrugm`**.
+기준 **2026-11-01 07:10 UTC GitHub 조회**, canonical **`9a4e249d`**(#447). **11/02 09:45 UTC: #463 병합으로 canonical `ddcb2925`**(아래 2절 첫 줄). 앞 판(`1465260e`, #446) 뒤 병합은 아래 11/01 다섯 건뿐이다(첫 부모 이력으로 확인). 10/31 저녁 오너 승인으로 병합: #448 `ef0e90cb`(Worker 배포 run 41252518944) → #438 `f8e9a4ef` → #440 `edb11b1c` → #442 `70d0e447` → #441 `37b7ddc4` → #445 `1c73cb9b` → #450 `c33ec071` → #446 `1465260e`. 11/01 병합: #436 `c86be9b9` → #449 `111f86c7` → #451 `d8fe9bc8` → #453 `428b417e` → #447 `9a4e249d`(워크플로 ① `private-boundary-push.yml` 포함). 실제 기본 브랜치는 **`claude/investment-system-top500-validation-alrugm`**.
 
 읽기: [START_HERE](START_HERE.md) → [방향 전환 대장](docs/SPEC/DIRECTION_CHANGES.md) → [WORKING_RULES](WORKING_RULES.md) → [기능 현황](docs/SPEC/FUNCTION_STATUS.md) → [결정 원문](implementation/docs/USER_DECISIONS_PENDING.md). 11/01 이행은 오너 결정 네 묶음(DC-40 두 흐름·연구 인계 / 11/01 2차 15항목 / 보완 지시: NAV 정정·점수화 모집단 검토, DC-41 / **역할 확대·계산·자료 구현 인계, DC-42** / **2025년 실질가치 시총 문턱·점수화 기준 C2, DC-43**)이다. 원문은 결정 기록 2026-11-01 블록.
 
@@ -55,6 +55,7 @@
 
 | PR | 내용 | UTC | merge SHA |
 | --- | --- | --- | --- |
+| [#463](https://github.com/kco994553-star/Investment-System1/pull/463) | AUD-01: 레거시 플레이북 `target_v1.grades` 일반 6%(Codex `b8b2378f`) + 화면 사본·Pages 가드 고정값 동기화(Main `4f8ed7de`). 11/02 오너 승인(머리 `4f8ed7de` 한정). 병합 뒤 `private-boundary-push` 성공, 배포 없음 | 11-02 09:45 | `ddcb2925` |
 | [#447](https://github.com/kco994553-star/Investment-System1/pull/447) | 비공개 구역 1단계 가드·research-request/1, 워크플로 ① `private-boundary-push.yml` | 11-01 03:11:05 | `9a4e249d` |
 | [#453](https://github.com/kco994553-star/Investment-System1/pull/453) | DC-40 두 흐름 + 연구 `EXP-STOCK-INDICATOR-DECILES-v1` 설정·인계 계약 | 11-01 02:21:19 | `428b417e` |
 | [#451](https://github.com/kco994553-star/Investment-System1/pull/451) | 10/31 저녁 결정(FV3-TR·PIT-TICKER·FV3-SIZE·443 대조, DC-39) | 11-01 02:09:52 | `d8fe9bc8` |
