@@ -1,5 +1,8 @@
 # #467 지정 접수 건·C2 생성 기록 후속 점검
 
+후속 오너 승인에 따른 [SEC 직접 조회·당시 분류 연결 결과](SECTOR_QGV_APPROVED_SEC_LOOKUP_20261102.md):
+3 GET 성공, 지정 원문 확보. 아래 내용은 승인 전 백업 점검 기록으로 보존한다.
+
 작성자: 코덱스. 평가일 **2018-02-16**. 시작 SHA
 `cf0361cb2be089993025dcf64c980967da9355c3`, 일반 연구 가지
 `research/sector-liquidity-diagnostics-20261102`.
