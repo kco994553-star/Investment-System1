@@ -54,7 +54,10 @@ def write_bundle(root):
 
 
 def run(cli, capsys, *argv):
-    code = cli.main(list(argv))
+    argv = list(argv)
+    if argv[0] in ('select', 'ledger') and '--market-cap-version' not in argv:
+        argv += ['--market-cap-version', 'nominal-v1']
+    code = cli.main(argv)
     captured = capsys.readouterr()
     return code, captured.out, captured.err
 
@@ -429,7 +432,7 @@ def test_run_block_and_manifest_carry_settings_and_a_reproduction_command(cli, c
                                          ensure_ascii=True).encode()).hexdigest() == block['settings_sha256']
         assert block['reproduction']['argv'] == [
             'python', 'implementation/tools/exp_stock_indicator_deciles.py', 'select', '--manifest', '<INPUT_MANIFEST>',
-            '--year', '2018', '--out', '<NEW_PRIVATE_OUTPUT_DIR>', '--generated-at', WHEN]
+            '--market-cap-version', 'nominal-v1', '--year', '2018', '--out', '<NEW_PRIVATE_OUTPUT_DIR>', '--generated-at', WHEN]
         assert block['reproduction']['placeholders']['INPUT_MANIFEST'] == {
             'sha256': hashlib.sha256(manifest.read_bytes()).hexdigest()}
         assert str(tmp_path) not in json.dumps(block['reproduction'])
@@ -439,7 +442,7 @@ def test_run_block_and_manifest_carry_settings_and_a_reproduction_command(cli, c
     assert code == 0 and 'end_rule=NEXT_RESELECTION_T_OPEN' in out and 'end_valuation=OPEN' in out
     led = json.loads((tmp_path / 'led' / 'manifest.json').read_text())
     digest = hashlib.sha256(s18.read_bytes()).hexdigest()
-    assert led['reproduction']['argv'][5:] == ['--selection', '<SELECTION_2018>', '--daily-positions', '--out',
+    assert led['reproduction']['argv'][5:] == ['--market-cap-version', 'nominal-v1', '--selection', '<SELECTION_2018>', '--daily-positions', '--out',
                                                '<NEW_PRIVATE_OUTPUT_DIR>', '--generated-at', WHEN]
     assert led['reproduction']['placeholders']['SELECTION_2018'] == {'sha256': digest}
     code, out, _ = run(cli, capsys, 'verify', '--run', str(tmp_path / 'led'))

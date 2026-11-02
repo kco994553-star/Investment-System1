@@ -87,7 +87,7 @@ from datetime import date
 from decimal import Decimal, InvalidOperation, localcontext
 
 from .. import pit_filings
-from . import schedule, settings
+from . import schedule, settings, cap_thresholds
 
 SCHEMA = 'exp-deciles-universe/1'
 ELIGIBLE, EXCLUDED, UNKNOWN = 'ELIGIBLE', 'EXCLUDED', 'UNKNOWN'
@@ -534,7 +534,7 @@ def _tracked_ids(records):
 
 
 def build_universes(records, *, signal_day=None, previous_u_a=None, previous_u_a_unknown=None, terminations=None,
-                    previous_u_a_securities=None):
+                    previous_u_a_securities=None, market_cap_version="nominal-v1", cpi=None):
     """U-A and U-B at one S. previous_u_a: CIKs of the U-A members at the previous S (None = first build);
     previous_u_a_unknown: the previous S's U-A UNKNOWN unit IDs (CIKs or 'SECURITY:<id>'); previous_u_a_securities: the
     previous S's U_A.unit_securities (class IDs carried, review U1); terminations: evidenced terminations (module doc).
@@ -548,6 +548,14 @@ def build_universes(records, *, signal_day=None, previous_u_a=None, previous_u_a
     if signal_day is None:
         raise ValueError('SIGNAL_DAY_REQUIRED')
     signal = schedule._signal(signal_day)
+    settings.settings_dict(market_cap_version)  # validate version, never silently fall back
+    if market_cap_version == cap_thresholds.NOMINAL and cpi is not None:
+        raise ValueError('CPI_RESOURCE_WITH_NOMINAL_POLICY')
+    context = None
+    if market_cap_version == cap_thresholds.CPI2025:
+        context = cap_thresholds.resolve(cpi, signal)
+        if context['status'] == 'BLOCKED':
+            raise ValueError(context['reasons'][0])
     if previous_u_a is not None:
         previous_u_a = frozenset(_cik(c)[0] for c in previous_u_a)
         if None in previous_u_a:
@@ -615,8 +623,9 @@ def build_universes(records, *, signal_day=None, previous_u_a=None, previous_u_a
                     classes=classes, share_provenance=provenance)
         was_unknown = cik in previous_unknown or any(SECURITY_UNIT_PREFIX + r['security_id'] in previous_unknown
                                                      for r in recs)
-        a_status, a_reasons, a_basis = u_a_decision(cap, cik, previous_u_a, was_unknown)
-        b_status, b_reasons = u_b_decision(cap)
+        decision_cap = cap if context is None else cap_thresholds.comparison_cap(cap, context)
+        a_status, a_reasons, a_basis = u_a_decision(decision_cap, cik, previous_u_a, was_unknown)
+        b_status, b_reasons = u_b_decision(decision_cap)
         if cap is None:
             a_reasons = b_reasons = list(cap_reasons)
         unit[settings.U_A] = {'status': a_status, 'reasons': list(a_reasons), 'basis': a_basis}
@@ -670,6 +679,24 @@ def build_universes(records, *, signal_day=None, previous_u_a=None, previous_u_a
            'thresholds': {'u_a_entry_usd': settings.U_A_ENTRY_USD, 'u_a_stay_usd': settings.U_A_STAY_USD,
                           'u_b_min_usd': settings.U_B_MIN_USD},
            'securities': securities, 'issuers': units, 'terminations': termination_records}
+    if context is not None:
+        out['market_cap_context'] = context
+        out['thresholds'] = context['thresholds']
+        for unit in units.values():
+            cap = unit['market_cap_usd']
+            if cap is None:
+                # Structural exclusions stay excluded; missing identity/cap never becomes an exclusion.
+                status = EXCLUDED if unit[settings.U_A]['status'] == EXCLUDED else UNKNOWN
+                reasons = list(unit['market_cap_reasons'] or unit[settings.U_A]['reasons'])
+            elif cap_thresholds.comparison_cap(cap, context) >= cap_thresholds.BASE_AMOUNTS['c2_min_usd']:
+                status, reasons = ELIGIBLE, []
+            else:
+                status, reasons = EXCLUDED, ['BELOW_C2_THRESHOLD']
+            unit['C2'] = dict(status=status, reasons=reasons)
+        members = tuple(sorted(u['cik'] for u in units.values() if u['C2']['status'] == ELIGIBLE))
+        reps = {cik: units[cik]['representative'] for cik in members}
+        out['C2'] = dict(members=members, member_securities=tuple(sorted(reps.values())), representatives=reps,
+                         counts=_counts(units, 'C2'))
     sec_counts = Counter(s['status'] for s in securities.values())
     sec_reasons = {EXCLUDED: Counter(), UNKNOWN: Counter()}
     for s in securities.values():

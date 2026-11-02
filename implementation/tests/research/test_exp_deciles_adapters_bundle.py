@@ -169,7 +169,7 @@ def test_engine_select_runs_on_the_bundle_missing_inputs_stay_unknown(src, tmp_p
     for name, data in out['files']:
         (folder / name).write_bytes(data)
     cli = _cli()
-    code = cli.main(['select', '--manifest', str(folder / 'manifest.json'), '--year', '2018', '--out',
+    code = cli.main(['select', '--market-cap-version', 'nominal-v1', '--manifest', str(folder / 'manifest.json'), '--year', '2018', '--out',
                      str(tmp_path / 'select'), '--generated-at', '2026-11-01T00:00:00Z'])
     printed = capsys.readouterr().out
     assert code == 0, printed
