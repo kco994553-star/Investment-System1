@@ -1,0 +1,41 @@
+{
+  "schema": "sector-qgv-first-comparison-preregistration/1",
+  "registered_at": "2026-11-02T11:03:47Z",
+  "code_base_sha": "3f2c8d2817f5f7b4e1b2e7b8d36e221680354f46",
+  "status": "BLOCKED_ON_AS_OF_CLASSIFICATION_INPUT",
+  "executable_config": false,
+  "signal_day": "2018-02-16",
+  "selected_execution_sector": null,
+  "first_input_check_sector": "CONSUMER_DISCRETIONARY",
+  "book_table": "24.1",
+  "book_metric": "EV/FCF",
+  "engine_factor": "v_fcf_yield",
+  "change_kind": "EXISTING_FACTOR_REWEIGHTING",
+  "selection_reason": "Existing FCF/EV factor; isolate V inner weights without adding a new metric",
+  "baseline_preset": "balanced",
+  "axis_weights": {"Q": 34, "G": 33, "V": 33},
+  "candidate_v_inner_relative_weights": {
+    "v_earnings_yield": 50,
+    "v_fcf_yield": 150,
+    "v_vs_industry": 40,
+    "v_vs_own_history": 30,
+    "v_expectation_check": 30
+  },
+  "q_g_inner_weights": "UNCHANGED",
+  "type_weights": true,
+  "value_trap_gate": true,
+  "scoring_population": "C2",
+  "market_cap_version": "cpi-2025-v1",
+  "common_subset": "SAME_SECTOR_AND_CONFIRMED_IDENTITY_ELIGIBILITY_AND_BOTH_FINITE_SCORES_AND_POSITIVE_EV_FCF",
+  "rank_order": ["SCORE_DESC_UNROUNDED", "SECURITY_ID_ASC"],
+  "alternative": {
+    "sector": "INFORMATION_TECHNOLOGY",
+    "book_table": "24.19",
+    "book_metric": "EV/SALES",
+    "change_kind": "NEW_FACTOR_ADDITION",
+    "status": "REQUIRES_SEPARATE_PREREGISTRATION_IF_INPUT_READY_FIRST"
+  },
+  "performance_enabled": false,
+  "actual_companies_computed": 0,
+  "comparison_table": null
+}
