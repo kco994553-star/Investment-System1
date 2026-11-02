@@ -59,7 +59,7 @@ APPROVED_SHA256 = {
     "target-v1-config-defaults.js": "192422a1b4ae1d24c909d85d232e6e20e0fcedd89fd8fa8cb8974824563265cd",
     "target-v1-screen.js": "ef701885fda8382376152480e27e37fe6104acd88315b24639c6d0ca88038ab5",
     "playbook-engine.js": "b708a1772b4cd8e1af731cffdacbfab478d03c9c4e1e5fd663537babd64ee7d8",
-    "playbook-config-defaults.js": "b0dd6aeed54a11082953b83aa30497c99dd454040e7e7adbc46cdd4c0a1221a6",
+    "playbook-config-defaults.js": "3f236c1bb29d4effc7cc325f820bb0a1f7cbd1e0e291849873f9b1760ef64816",
     "virtual-trading-compare.js": "700054fd105b979b505c09ec0dad862b0ce435c0179d2ddbe9f85b5b9c23c3f7",
     "tradingview-widgets.js": "e78e43406d480bb743b5c23aacb99435c3470c0e709ac1e3fcc2cec805366efc",
     "company-logos.js": "63aceb4033f17bba403f62b6c4887a8a9c5dd64b8a6f8180b063ab704ce38581",
