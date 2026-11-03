@@ -103,8 +103,12 @@ def measure(rows, *, signal_day, symbol, series_id, evidence):
             raise ValueError('CONFLICTING_DAY')
         by_day[key] = row
     prices = {day: number(r.get('close')) for day, r in by_day.items()}
+    # A missing volume/open/high/low is not a missing close. Keep metrics independent;
+    # still reject close defects, OHLC inconsistency and unknown whole-row quality failures.
+    irrelevant_to_close = ('VOLUME_', 'TRADE_COUNT_', 'VWAP_', 'OPEN_', 'HIGH_', 'LOW_')
     prices = {day: p for day, p in prices.items()
-              if p is not None and p > 0 and not by_day[day].get('quality_reasons')}
+              if p is not None and p > 0 and not any(
+                  not q.startswith(irrelevant_to_close) for q in by_day[day].get('quality_reasons', []))}
     metrics = {}
     with localcontext() as ctx:
         ctx.prec = SETTINGS['price_decimal_precision']

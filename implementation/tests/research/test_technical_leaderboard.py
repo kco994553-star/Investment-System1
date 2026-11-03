@@ -242,3 +242,34 @@ def test_non_session_calendar_boundary_uses_prior_session_close():
     assert got['metrics']['momentum_6m']['value'] is not None
     from datetime import date
     assert mod.boundary(date(2020, 5, 31), 3) == date(2020, 2, 29)
+
+
+def test_missing_volume_quality_does_not_poison_close_only_metrics():
+    rows = bars()
+    rows[-1].update(volume=None, quality_reasons=['VOLUME_MISSING'])
+    metrics = measure(rows)['metrics']
+    assert all(Decimal(metrics[k]['value']) == 0 for k in IDS[:4])
+    assert metrics['dollar_volume_6m']['value'] is None
+    rows[-1]['quality_reasons'] = ['OHLC_INCONSISTENT']
+    assert measure(rows)['metrics']['volatility_6m']['value'] is None
+
+
+def test_unmeasured_group_member_is_retained_without_reducing_original_n():
+    mod = importlib.import_module('investment_system.research.exp_deciles.technical_leaderboard')
+    rows = records(10)
+    group = dict(group_id='SYNTHETIC:G', signal_day=S, membership_status='CONFIRMED',
+                 member_security_ids=[r['security_id'] for r in rows]+['SYNTHETIC:MISSING'], membership_source='SYNTHETIC:S')
+    m = mod.build_board(rows, group=group)['metrics']['momentum_3m']
+    assert m['n_members'] == 11 and m['n_valid'] == 10
+    missing = next(r for r in m['rows'] if r['security_id'] == 'SYNTHETIC:MISSING')
+    assert missing['rank'] is None and missing['conditions']['exclude_D10'] is None
+    empty = board([])['metrics']['momentum_3m']
+    assert empty['n_valid'] == 0 and empty['median'] is None and empty['rows'] == []
+
+
+@pytest.mark.parametrize('n,k', [(19,1), (20,2)])
+def test_tail_size_changes_only_at_floor_boundary(n,k):
+    m = board(records(n))['metrics']['momentum_3m']
+    assert m['k'] == k
+    assert sum(r['conditions']['top_decile'] for r in m['rows']) == k
+    assert sum(r['conditions']['bottom_decile'] for r in m['rows']) == k

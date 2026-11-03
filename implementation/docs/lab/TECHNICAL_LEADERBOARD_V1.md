@@ -19,6 +19,7 @@ are project settings chosen for this task, not a claim about a book's exact stra
   before measuring. U-A and U-B are separate dated membership snapshots; unknown membership is never an empty group.
 - Subtract calendar months with end-of-month clipping. Momentum anchor is the last NYSE session on/before S−3/6/12 months.
   Price momentum = `(P[S]−P[anchor])/P[anchor] × 100`, no skipped month. Require every expected close in [anchor,S].
+  Close validity is independent of volume/open/high/low missingness; close defects, OHLC inconsistency and unknown whole-row quality failures block it.
 - Volatility: daily simple returns `(P[t]−P[previous session])/P[previous session]` for sessions in `(S−6 calendar months,S]`.
   Include the previous-session close needed by the first return. Require every expected return and both closes, at least 2 returns.
   Sample standard deviation `sqrt(sum((r−mean(r))²)/(n−1)) × 100`; **ddof=1, not annualized**, unit percent per day.
@@ -73,6 +74,9 @@ Main can adapt it in a separately versioned application contract. Actual rows re
 
 Public synthetic examples will accompany the implementation: N=23 with middle-bin remainder, tied negative returns,
 N=9, unknown membership, and missing volatility during D10 exclusion. They use `SYNTHETIC:*` IDs and generated prices only.
+
+Initial Main handoff before real comparisons: [#437 comment 6601332838](https://github.com/kco994553-star/Investment-System1/pull/437#issuecomment-6601332838).
+Machine-readable examples: [technical_leaderboard_v1.json](../../tests/fixtures/technical_leaderboard_v1.json).
 
 ## Validation and privacy
 
