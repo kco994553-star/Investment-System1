@@ -70,7 +70,7 @@ const API=Object.freeze({
  // ready() settled); validate / status / nullText are pure.
  companies:{ready:'p',list:'s',get:'s',find:'s',exact:'s',korean:'s',scope:'s'},
  privateArea:{STATES:'v',PANEL_STATES:'v',state:'s',text:'s',panelText:'s',panelState:'s'},
- lab:{SCHEMA:'v',METRICS:'v',TEXT:'v',validate:'s',status:'s',nullText:'s',source:'p'}});
+ lab:{SCHEMA:'v',SCHEMA_V2:'v',SCHEMAS:'v',METRICS:'v',TEXT:'v',validate:'s',status:'s',nullText:'s',reasonText:'s',source:'p'}});
 const NOT_READY=Object.freeze({state:'NOT_READY',reason:'LAYER_NOT_READY'}),LOAD_FAILED=Object.freeze({state:'NOT_READY',reason:'LOADER_FAILED'});
 const MARK_READY='is2-ready',MARK_FAILED='is2-load-failed',PAINT_WAIT_MS=3000,IDLE_WAIT_MS=200;
 

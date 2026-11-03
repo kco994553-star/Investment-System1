@@ -196,6 +196,38 @@ let phase = 'START', pass = 0;
     await page.keyboard.press('End'); await page.locator('[data-lab-run="' + synth.id + '"]').waitFor();
     await page.keyboard.press('ArrowRight'); await page.locator('[data-lab-run="' + pilot.id + '"]').waitFor();
   }
+  // lab-backtest-v2 (Codex agreement #437 6600537423): four runs; the three non-strategy runs show the diagnostic view, the
+  // strategy run the backtest view with the sample and population lines. LAB_SHOTS=<dir> saves a screenshot for the PR.
+  async function v2(page, label, phone) {
+    const p = F.payloadV2(), ids = p.runs.map((r) => r.id);
+    await source(page, S.v2); await reopen(page); await waitPanel(page, 'READY');
+    assert.match(await text(page, '[data-lab-file]'), /^계약 lab-backtest-v2 판독 통과/);
+    assert.deepEqual(await page.locator('[data-lab-run-tab]').evaluateAll((n) => n.map((x) => x.dataset.labRunTab)), ids);
+    const want = [['합성 데이터 · 시험용 · 미산출 · C2 분모 미확인 · 표본 진단', 1], ['합성 데이터 · 시험용 · 1회사 지표 계산 · 전략 성과 아님', 1], ['합성 데이터 · 시험용 · 표본 진단 · 전략 성과 아님', 2]];
+    for (let i = 0; i < 3; i++) {
+      await page.locator('[data-lab-run-tab="' + ids[i] + '"]').click(); const run = page.locator('[data-lab-run="' + ids[i] + '"]'); await run.waitFor();
+      assert.equal(await run.locator('[data-lab-status]').textContent(), want[i][0], label + ': ' + ids[i] + ' status');
+      assert.equal(await run.locator('[data-lab-metrics]').count(), 0, label + ': no seven metrics for ' + ids[i]);
+      assert.equal(await run.locator('svg.curve').count(), 0, label + ': no curve for ' + ids[i]);
+      assert.equal(await run.locator('[data-diagnostic]').count(), want[i][1], label + ': diagnostics rows');
+      assert.match(await run.locator('[data-lab-not-strategy]').textContent(), /전략 성과 아님/);
+    }
+    await page.locator('[data-lab-run-tab="' + ids[0] + '"]').click();
+    const facts0 = await text(page, '[data-lab-run="' + ids[0] + '"] [data-lab-run-facts]');
+    assert.ok(facts0.includes('미산출 · C2 분모 미확인') && facts0.includes('요청 10개 중 0개 사용 (회사)') && facts0.includes('전체 NA · 전체 후보 명부가 불완전함'), label + ': not-computed facts: ' + facts0);
+    assert.match(await text(page, '[data-lab-run="' + ids[0] + '"] [data-diagnostic]'), /Q 계산 범위[\s\S]*– · C2 분모 미확인[\s\S]*NA \/ NA/);
+    await page.locator('[data-lab-run-tab="' + ids[2] + '"]').click();
+    const d2 = await page.locator('[data-lab-run="' + ids[2] + '"] [data-diagnostic]').allInnerTexts();
+    assert.ok(d2[0].includes('80.0%') && d2[0].includes('8 / 10') && d2[1].includes('– · 유효 표본 10개 미만') && d2[1].includes('7 / NA'), label + ': sample diagnostic rows ' + JSON.stringify(d2));
+    await page.locator('[data-lab-run-tab="' + ids[3] + '"]').click(); const bt = page.locator('[data-lab-run="' + ids[3] + '"]'); await bt.waitFor();
+    assert.equal(await bt.locator('[data-lab-status]').textContent(), '합성 데이터 · 시험용');
+    assert.equal(await bt.locator('[data-lab-metrics] [data-metric]').count(), 7, label + ': the strategy run keeps the seven metrics');
+    assert.equal(await bt.locator('svg.curve').count(), 1);
+    assert.match(await bt.locator('[data-lab-run-facts]').innerText(), /표본[\s\S]*요청 10개 중 10개 사용 \(증권\)[\s\S]*모집단 범위[\s\S]*표본 · 완전 · 전체 10개/);
+    const codes = (await page.locator('[data-private-panel="lab-backtest"]').innerText()).match(/\b[A-Z][A-Z0-9]+(?:_[A-Z0-9]+)+\b/g);
+    assert.equal(codes, null, label + ': no reason code shown in the result panel: ' + JSON.stringify(codes));
+    if (process.env.LAB_SHOTS) { await page.locator('[data-lab-run-tab="' + ids[2] + '"]').click(); await page.locator('[data-private-panel="lab-backtest"]').screenshot({ path: require('node:path').join(process.env.LAB_SHOTS, 'lab-v2-' + (phone ? '390' : '1440') + '.png') }); }
+  }
   async function refused(page, label, key) {
     const { src, code } = S.refused[key];
     await source(page, src); await reopen(page); await waitPanel(page, 'ERROR');
@@ -241,6 +273,8 @@ let phase = 'START', pass = 0;
       // ---- the Lab states with fixtures
       tag('normal'); await normal(page, phase);
       assert.deepEqual(await publicText(page), base, phase + ': the public text does not change with a private result');
+      tag('v2'); await v2(page, phase, width < 720);
+      assert.deepEqual(await publicText(page), base, phase + ': the public text does not change with a v2 result');
       await page.evaluate(() => document.querySelectorAll('main details').forEach((d) => { d.open = true; }));
       await keyboard(page, phase); await boundaries(page, seen, phase);
       tag('login'); await source(page, S.login); await reopen(page); await waitPanel(page, 'LOGIN_REQUIRED');

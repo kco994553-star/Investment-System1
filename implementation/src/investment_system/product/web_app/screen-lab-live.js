@@ -27,8 +27,13 @@
    - States: loading (skeleton, then the ledger line), empty (no run / no ledger row), error (loader, ledger, refused file),
      partial failure (one part fails, the other stays), login needed (panel). Keyboard: a roving tablist for runs (arrows, Home,
      End), folds, links. No request but the ledger read, no storage, no style attribute, no innerHTML, no number from the boards.
+   - lab-backtest-v2 runs (Main 2026-11-03, Codex #437 comment 6600537423): a run that is not a BACKTEST, or is NOT_COMPUTED, shows
+     its status line (미산출 · 사유 / 1회사 지표 계산 · 전략 성과 아님 / 표본 진단 · 전략 성과 아님, 합성 데이터 · 시험용 first), its facts
+     (결과 종류, 계산 상태, 평가일, 표본 n개 중 m개 사용, 모집단 범위·완전성·전체 수 or NA with its reason) and the diagnostics table
+     (count / fraction with n_valid / n_total, a null as – and its reason) instead of the seven metrics and the curve, and says
+     전략 성과 아님. A v2 BACKTEST shows the v1 view with the sample and population lines added.
    Pure helpers (node: tools/web_app_lab_node_test.js): panelPlan, metricRows, curveGeometry, statusKind, evaluationLabel,
-   ledgerTable, evidenceView. */
+   ledgerTable, evidenceView, v2Facts, diagnosticRows. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else api.install(typeof window==='object'&&window?window:root);})(typeof globalThis==='object'?globalThis:this,function(){
 'use strict';
 const LEDGER='forward-validation-ledger.json',ROWS_SHOWN=10,DAYS_SHOWN=7;
@@ -62,6 +67,9 @@ const PREP='준비 관측 · 주 평가 대상 아님';
 const RUNS='공개 원장에 미기록 · 원장에 정기/수동 구분과 실행 성공 여부가 없어 연속 횟수를 세지 않음';
 const RULE='주 평가는 Q·G 각 454개 이상, 계산 버전 일치, 행별 실제 수집 시각 7일 이내를 모두 충족한 기록만 씁니다. 나머지는 "준비 관측 · 주 평가 대상 아님"으로 사유와 함께 보존합니다.';
 const pct=v=>(v*100).toFixed(2)+'%';
+// lab-backtest-v2 diagnostic names the screen knows (others are shown as written).
+const DIAG_NAME=Object.freeze({q_coverage:'Q 계산 범위',g_coverage:'G 계산 범위',v_coverage:'V 계산 범위',momentum_6m_coverage:'6개월 모멘텀 계산 범위',
+ dollar_volume_6m_coverage:'6개월 거래대금 계산 범위',raw_metric_company_count:'원시 지표 계산 회사 수'});
 const isObj=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 
 /* ---------------------------------------------------------------- pure helpers */
@@ -120,6 +128,23 @@ function evidenceView(e,FV){
  const missing=e.latest===null?'범위 없음 · 기록 0건':(e.missing.length?e.missing.join(', ')+' · 기록 없음 · 나중에 채우지 않음':'없음')+' · 범위 '+e.start_date+' ~ '+e.latest+' · 미국 거래일 '+e.session_count+'일';
  return Object.freeze({days:Object.freeze(days),total:e.session_count,versions:Object.freeze(versions),latest:e.latest,missing,missingCount:e.missing.length,as_of:e.as_of});}
 
+// v2: true when a run shows the diagnostic view (not a BACKTEST, or NOT_COMPUTED) instead of the metrics and the curve.
+const diagnosticView=run=>isObj(run)&&Object.hasOwn(run,'result_kind')&&(run.result_kind!=='BACKTEST'||run.computation_status==='NOT_COMPUTED');
+// v2 facts of a validated run: [label, text] rows (lab = IS2.lab for TEXT and reasonText). v1 runs have none.
+function v2Facts(run,lab){
+ if(!isObj(run)||!Object.hasOwn(run,'result_kind'))return[];
+ const V=lab.TEXT.V2,s=run.sample,p=run.population,rt=lab.reasonText;
+ const sample=(s.n_requested===null?'요청 수 미확인 · ':'요청 '+s.n_requested+'개 중 ')+s.n_used+'개 사용 ('+V.UNIT[s.unit]+') · '+s.selection;
+ const pop=V.SCOPE[p.scope]+' · '+V.COMPLETENESS[p.completeness]+' · 전체 '+(p.n_total===null?'NA · '+rt(p.null_reason):p.n_total+'개')+(p.as_of?' · 기준일 '+p.as_of:'');
+ return Object.freeze([['결과 종류',V.KIND[run.result_kind]],['계산 상태',run.computation_status==='NOT_COMPUTED'?V.NOT_COMPUTED+' · '+rt(run.not_computed_reason):'계산됨'],
+  ['평가일',run.as_of===null?'—':run.as_of],['표본',sample],['모집단',pop]].map(Object.freeze));}
+// v2 diagnostics as display rows: count as an integer, fraction as a percent with 1 decimal, a null as – and its reason.
+function diagnosticRows(run,lab){
+ if(!isObj(run)||!Array.isArray(run.diagnostics))return[];
+ return run.diagnostics.map(d=>Object.freeze({name:DIAG_NAME[d.name]||d.name,unit:d.unit==='count'?'개수':'비율',na:d.value===null,
+  value:d.value===null?lab.TEXT.NULL+' · '+lab.reasonText(d.null_reason):d.unit==='count'?String(d.value):(d.value*100).toFixed(1)+'%',
+  n:(d.n_valid===null?'NA':String(d.n_valid))+' / '+(d.n_total===null?'NA':String(d.n_total))}));}
+
 /* ---------------------------------------------------------------- screen */
 function install(win){
  const I=win.IS2,{h,href}=I;
@@ -159,7 +184,8 @@ function install(win){
      h('li',null,'지표 ',String(labels.length),'개: ',labels.join(' · '),' · 계산할 수 없는 값은 – 와 사유 (0으로 채우지 않음)'),
      h('li',null,'자산 곡선 · 시작 100 · 월별 · 전략 = 실선 · 비교 기준 = 점선'),
      h('li',null,'한계 · 모집단 정의 · 생존 편향 설명'),
-     h('li',null,'아래 비공개 칸 (본인 인증 비공개 경로 · 계약 lab-backtest-v1)에만 보임')),
+     h('li',null,'계약 lab-backtest-v2 (11/03): 결과 종류 (전략 백테스트 / 1회사 지표 / 표본 진단) · 계산 상태 (미산출이면 사유) · 표본 · 모집단 · 진단 요약 — 표본 진단과 1회사 지표는 "전략 성과 아님"'),
+     h('li',null,'아래 비공개 칸 (본인 인증 비공개 경로 · 계약 lab-backtest-v1 · v2)에만 보임')),
     h('p',{class:'reason',dataset:{labRule:''}},'판독 규칙 · 계약과 다르면 ',L.TEXT.INVALID,' (오류 코드만 보임) · 판독 통과는 사실 검증 · 시점 검증 · 게시 허가가 아님'))];}
 
  /* ---------------- 9.1 private: one validated file */
@@ -181,7 +207,23 @@ function install(win){
    h('details',{dataset:{curveTable:''}},h('summary',null,'곡선 값 표 · ',String(n),'개 월'),
     h('div',{class:'tbl-wrap'},h('table',{class:'tbl'},h('thead',null,h('tr',null,h('th',{scope:'col'},'월'),h('th',{scope:'col',class:'num'},'전략'),h('th',{scope:'col',class:'num'},'비교 기준'))),
      h('tbody',null,r.equity_curve.map(p=>h('tr',{dataset:{curvePoint:p.date}},h('td',null,p.date),h('td',{class:'num'},String(p.strategy)),h('td',{class:'num'},String(p.benchmark)))))))));}
+ function diagDetail(r,i){
+  const L=I.lab,u=r.universe,rows=diagnosticRows(r,L);
+  return h('div',{role:'tabpanel',id:'lab-run-panel','aria-labelledby':'lab-run-tab-'+i,tabindex:'0',class:'card-body',dataset:{labRun:r.id,labKind:r.result_kind,labComputation:r.computation_status}},
+   h('h4',null,r.name),
+   h('p',null,h('span',{class:'lab-status',dataset:{labStatus:r.data_status+' '+r.validation_status}},L.status(r))),
+   h('p',null,r.description),
+   dl([['실행',r.id+' · '+KIND[r.run_type]+' · QGV '+r.qgv_version],...v2Facts(r,L),['모집단 정의',u.definition],['모집단 시점',u.point_in_time?'시점별 모집단':'시점 정합성 미확인',{labPit:String(u.point_in_time)}],
+    ['생존 · 선정 편향',u.survivorship_note]],{dataset:{labRunFacts:''}}),
+   rows.length?h('div',{class:'tbl-wrap'},h('table',{class:'tbl',dataset:{labDiagnostics:String(rows.length)}},h('caption',null,'진단 요약 · 집계만 · 회사별 값 없음'),
+    h('thead',null,h('tr',null,h('th',{scope:'col'},'항목'),h('th',{scope:'col'},'단위'),h('th',{scope:'col',class:'num'},'값'),h('th',{scope:'col',class:'num'},'유효 / 전체'))),
+    h('tbody',null,rows.map(d=>h('tr',{dataset:d.na?{diagnostic:'',na:'NULL'}:{diagnostic:''}},h('td',null,h('b',null,d.name)),h('td',null,d.unit),h('td',d.na?null:{class:'num'},d.value),h('td',{class:'num'},d.n))))))
+    :h('p',{class:'reason',dataset:{labDiagnostics:'0'}},'진단 항목 없음'),
+   h('p',{class:'reason',dataset:{labNotStrategy:''}},'전략 성과 아님 · 지표 7개와 자산 곡선을 그리지 않음 · 값이 없으면 0으로 채우지 않음'),
+   h('h4',null,'한계'),
+   r.limitations.length?h('ul',{class:'news-lines',dataset:{labLimitations:String(r.limitations.length)}},r.limitations.map(t=>h('li',null,t))):h('p',{class:'reason',dataset:{labLimitations:'0'}},'적힌 한계 없음'));}
  function runDetail(r,i){
+  if(diagnosticView(r))return diagDetail(r,i);
   const L=I.lab,u=r.universe,rows=metricRows(r,{metrics:L.METRICS,nullText:L.nullText});
   return h('div',{role:'tabpanel',id:'lab-run-panel','aria-labelledby':'lab-run-tab-'+i,tabindex:'0',class:'card-body',dataset:{labRun:r.id}},
    h('h4',null,r.name),
@@ -189,7 +231,8 @@ function install(win){
    h('p',null,r.description),
    dl([['실행',r.id+' · '+KIND[r.run_type]+' · QGV '+r.qgv_version],['기간',r.period.start+' ~ '+r.period.end],['재조정',REBALANCE[r.rebalance]],
     ['비교 기준',r.benchmark.name+' · '+(r.benchmark.total_return?'배당 재투자 포함':'배당 재투자 제외')],['비용','수수료 '+r.costs.fee_bps+' bp · 슬리피지 '+r.costs.slippage_bps+' bp (한쪽 체결당)'],
-    ['모집단',u.definition],['모집단 시점',u.point_in_time?'시점별 모집단':'시점 정합성 미확인',{labPit:String(u.point_in_time)}],['생존 · 선정 편향',u.survivorship_note]],{dataset:{labRunFacts:''}}),
+    ['모집단',u.definition],['모집단 시점',u.point_in_time?'시점별 모집단':'시점 정합성 미확인',{labPit:String(u.point_in_time)}],['생존 · 선정 편향',u.survivorship_note],
+    ...v2Facts(r,L).filter(([k])=>k==='표본'||k==='모집단').map(([k,v])=>[k==='모집단'?'모집단 범위':k,v])],{dataset:{labRunFacts:''}}),
    h('div',{class:'tbl-wrap'},h('table',{class:'tbl',dataset:{labMetrics:''}},h('caption',null,'지표 · 비율은 백분율 · 계산할 수 없는 값은 – 와 사유'),
     h('thead',null,h('tr',null,h('th',{scope:'col'},'지표'),h('th',{scope:'col',class:'num'},'값'))),
     h('tbody',null,rows.map(m=>h('tr',{dataset:m.na?{metric:m.key,na:'NULL'}:{metric:m.key}},h('td',null,h('b',null,m.label)),h('td',m.na?{dataset:{metricValue:''}}:{class:'num',dataset:{metricValue:''}},m.text)))))),
@@ -208,7 +251,7 @@ function install(win){
   draw(false);return box;}
  function results(v){
   return h('div',{class:'card-body',dataset:{labResults:''}},
-   h('p',{class:'reason',dataset:{labFile:''}},'계약 lab-backtest-v1 판독 통과 · 생성 ',utc(v.generated_at),' · 연구 코드 ',v.source_commit.slice(0,12),' · 판독 통과는 사실 검증 · 시점 검증 · 게시 허가가 아님'),
+   h('p',{class:'reason',dataset:{labFile:v.schema_version}},'계약 ',v.schema_version,' 판독 통과 · 생성 ',utc(v.generated_at),' · 연구 코드 ',v.source_commit.slice(0,12),' · 판독 통과는 사실 검증 · 시점 검증 · 게시 허가가 아님'),
    v.runs.length?runsView(v):empty('LAB_NO_RUNS',I.lab.status(null)));}
  function apply(p,plan){
   if(!p)return;
@@ -287,5 +330,5 @@ function install(win){
   Promise.all([fw,raw]).then(([f,p])=>{if(!aborted())paint92(refs,f,p);},()=>{if(!aborted())paint92(refs,null,null);});}
  I.labLive=Object.freeze({screen});
 }
-return Object.freeze({LEDGER,CHECKLIST,ROWS91,METRIC_LABEL,panelPlan,metricRows,curveGeometry,statusKind,evaluationLabel,ledgerTable,evidenceView,install});
+return Object.freeze({LEDGER,CHECKLIST,ROWS91,METRIC_LABEL,DIAG_NAME,panelPlan,metricRows,curveGeometry,statusKind,evaluationLabel,ledgerTable,evidenceView,diagnosticView,v2Facts,diagnosticRows,install});
 });
