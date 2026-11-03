@@ -16,27 +16,30 @@ filtering that silently recomputes the original population. Each is explicitly t
 Files: `research/exp_deciles/technical_measures.py`, `technical_leaderboard_v1.json`,
 `tests/research/test_technical_leaderboard.py`.
 Interface: `measure(rows, *, signal_day, symbol, series_id, evidence) -> dict`.
-- [ ] Write/run failing tests for six-month known returns, full coverage and anchor, raw/economic separation, scope/currency, duplicates.
-- [ ] Implement using canonical schedule and `liquidity.summarize`, preserving the five units and independent missing reasons.
-- [ ] Run focused tests; commit settings/measurement before actual sample comparisons.
+- [x] Write/run failing tests for six-month known returns, full coverage and anchor, raw/economic separation, scope/currency, duplicates.
+- [x] Implement using canonical schedule and `liquidity.summarize`, preserving the five units and independent missing reasons.
+- [x] Run focused tests; commit settings/measurement before actual sample comparisons.
 
 ## Task 2 — board and filter
 
 Files: `research/exp_deciles/technical_leaderboard.py`, same test file, synthetic fixture builder in tests.
 Interfaces: `build_board(measurements, *, group) -> dict`; `filter_board(board, conditions) -> list[str]`.
-- [ ] Write/run failing tests for N=9/10/11/23, decimal ties, nonpositive medians, per-metric N, missing/duplicate IDs and unknown groups.
-- [ ] Implement approved extreme tails via `selection.select`; allocate only interior bins; filter frozen conditions without reranking.
-- [ ] Generate public synthetic examples and send the field/unit/group contract to Main before real comparisons.
+- [x] Write/run failing tests for N=9/10/11/23, decimal ties, nonpositive medians, per-metric N, missing/duplicate IDs and unknown groups.
+- [x] Implement approved extreme tails via `selection.select`; allocate only interior bins; filter frozen conditions without reranking.
+- [x] Generate public synthetic examples and send the field/unit/group contract to Main before real comparisons.
 
 ## Task 3 — private execution and delivery
 
 File: `experiments/technical-leaderboard-20261103/run_held_sample.py`; research documentation.
-- [ ] Run through the public research functions on already restored normalized rows, preserving source/evidence references.
-- [ ] Compare old momentum/volume counts and values; independently check volatility with exact rational variance + sample stdev.
-- [ ] Record counts/null reasons, private manifest and remote readback receipt. No public real rows.
-- [ ] Run relevant regressions and required guards once; independent review; fix demonstrated issues and recheck affected tests.
-- [ ] Commit/push ordinary research branch, open one stacked Draft PR, and post final Main handoff links. No execution branch push.
+- [x] Run through the public research functions on already restored normalized rows, preserving source/evidence references.
+- [x] Compare old momentum/volume counts and values; independently check volatility with exact rational variance + sample stdev.
+- [x] Record counts/null reasons, private manifest and remote readback receipt. No public real rows.
+- [x] Run relevant regressions and required guards once; independent review; fix demonstrated issues and recheck affected tests.
+- [x] Commit/push ordinary research branch, open one stacked Draft PR, and post final Main handoff links. No execution branch push.
 
 Ruling: owner explicitly authorized completing this queue without per-step replies; implement the delegated formula/bin choices as
 recorded in the spec. Local worktree metadata uses `.git/info/exclude` to avoid an unrelated tracked `.gitignore` change.
 Ruling: pytest is absent from the environment; install the test tool into local scratch only. This is test setup, not research data collection.
+
+Completion: Draft #469; Main preliminary comment 6601332838 and final handoff 6601792076.
+Independent review found one volume/close coupling bug, fixed with a regression. Full-suite inventory failure also reproduced on base #467; updated explicit research-module and frozen-setting-read allowlists without relaxing network/price IO checks. See validation record.
