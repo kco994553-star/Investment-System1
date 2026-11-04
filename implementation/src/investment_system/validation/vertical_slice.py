@@ -50,7 +50,7 @@ class SelectionPolicy:
         raise ValueError("selection requires all, positive integer top_n, or top_percent in (0, 100]")
 
 
-def rank_cross_section(quality: dict[str, dict]) -> list[dict]:
+def rank_cross_section(quality: dict[str, dict], *, selection_policy: SelectionPolicy | None = None) -> list[dict]:
     rows = []
     for cid, q in quality.items():
         Q, G, V = q.get("Q"), q.get("G"), q.get("V")
@@ -60,6 +60,9 @@ def rank_cross_section(quality: dict[str, dict]) -> list[dict]:
         else:
             key = (int(eligible), Q or 0.0, G or 0.0, V)
         rows.append({"company_id": cid, "eligible": eligible, "Q": Q, "G": G, "V": V, "sort": key})
+    if selection_policy is not None:
+        # Stable score sort retains this tie order, matching select_provisional.
+        rows.sort(key=lambda r: r["company_id"])
     rows.sort(key=lambda r: r["sort"], reverse=True)
     for i, row in enumerate(rows, start=1):
         row["rank"] = i
@@ -129,7 +132,7 @@ def run_vertical_slice(
     store = ScopedTrackStore(FileTrackRecordStore(path))
     row = run_as_of(as_of, payloads, bars, store, company_ids, listings=listings)
     quality = row.get("quality") or {}
-    ranked = rank_cross_section(quality)
+    ranked = rank_cross_section(quality, selection_policy=selection_policy)
     selected = select_provisional(ranked, selection_policy)
     book = to_portfolio(selected, as_of, tickers)
     investable = [cid for cid, q in quality.items() if q.get("Q") is not None or q.get("G") is not None]

@@ -37,6 +37,15 @@ def test_invalid_policy_cannot_silently_change_selection(mode, value):
         vs.SelectionPolicy(mode, value)
 
 
+def test_policy_rank_table_and_selected_cutoff_share_the_same_tie_order():
+    quality = {'b': {'Q': 80, 'G': 70}, 'a': {'Q': 80, 'G': 70}}
+    policy = vs.SelectionPolicy('top_n', 1)
+    ranked = rank_cross_section(quality, selection_policy=policy)
+    assert [(r['company_id'], r['rank']) for r in ranked] == [('a', 1), ('b', 2)]
+    assert select_provisional(ranked, policy) == ['a']
+    assert [(r['company_id'], r['rank']) for r in rank_cross_section(quality)] == [('b', 1), ('a', 2)]
+
+
 def test_selection_is_qg_present_not_return_cutoff():
     quality = {
         "a": {"Q": 0.8, "G": 0.7, "V": 0.1},
