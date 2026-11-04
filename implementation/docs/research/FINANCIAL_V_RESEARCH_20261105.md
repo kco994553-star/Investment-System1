@@ -36,3 +36,28 @@ The existing book work does not establish the financial subgroup rules, weights,
 `financial-v-research/1`: code, CIK (issuer only), valuation_date, input_vintage, business_group, classification_basis, primary_metric, metrics {value, unit, reasons, inputs}, primary_available, score=null, rank=null. Distinguish `OPERATIONAL_CANDIDATE_RAW` from `EX_POST_FISCAL_DIAGNOSTIC`. Missing sources/periods/currency/share basis and nonpositive inputs are explicit. Real data/results remain private; synthetic tests are public. Main owns any UI integration.
 
 Independent review fixes: separate issuer-document linkage from class/economic-rights evidence; unconfirmed class ratios remain explicitly arithmetic-only diagnostics. Require the same fiscal-end month in the ex-post evaluator. Tangible book needs complete goodwill/intangibles and explicit zero NCI before using consolidated deductions. These input safeguards do not change the candidate selection criteria.
+
+## Main reader handoff (research only)
+
+No automatic public data connection. `metrics.*.value` is a ratio (`x`), never a 0–100 score. Null must display its `reasons`, not zero. `primary_available` concerns an unscored candidate input only. `security_basis.status/source/date` and `metrics.*.evidence_status` distinguish current class evidence from arithmetic-only diagnostics. Neither CIK nor a code string is a permanent security ID. `SIC_SCREEN_PROVISIONAL` must not display as a fully verified business model.
+
+Synthetic fragment (a complete executable fixture is in `test_financial_v.py`):
+
+```json
+{
+  "schema_version": "financial-v-research/1",
+  "code": "TEST:BANK",
+  "valuation_date": "2026-11-02",
+  "input_vintage": "2026-11-04",
+  "result_kind": "OPERATIONAL_CANDIDATE_RAW",
+  "business_group": "DEPOSITORY_BANK",
+  "primary_metric": "tangible_book_yield",
+  "metrics": {"tangible_book_yield": {"value": 0.2, "unit": "x", "reasons": [], "evidence_status": "CLASS_BASIS_DOCUMENTED"}},
+  "primary_available": true,
+  "score": null,
+  "rank": null,
+  "scoring_reason": "RESEARCH_RAW_ONLY_SCORING_NOT_DEFINED"
+}
+```
+
+A coverage reader keeps `same_date_primary_raw_valid`, `potential_joint_input_valid`, and `scored_joint_valid` separate. The last remains null because no candidate scoring rule exists. `EX_POST_FISCAL_DIAGNOSTIC` cannot enter same-date coverage even if its arithmetic succeeds. A later collector would need actual same-date quotes and explicit security/share-basis provenance before populating the current candidate contract. The current implementation reads only prepared local files.
