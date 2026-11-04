@@ -37,7 +37,7 @@ def _series_at(sid, row, as_of, generated):
         'reason': None, 'first_published_at': None, 'source_posted_at': None,
         'available_at': None, 'availability_basis': None, 'version_kind': None,
         'vintage_at': None, 'first_observed_at': None, 'new_observation': False,
-        'revised': False, 'held': False, 'observation_id': None,
+        'revised': False, 'held': False, 'newly_available': False, 'observation_id': None,
         'candidate_state': None, 'candidate_rule': definition['rule']['version'],
         'model_status': 'NOT_APPLIED', 'latest_archive_success_at': row['last_success_at'],
         'collection_state_at_query': row['state'] if generated and as_of >= generated else None,
@@ -97,8 +97,10 @@ def timeline(payload, cutoffs):
             row = _series_at(sid, series, at, generated)
             old = previous.get(sid)
             if old and row['value'] is not None:
-                row['new_observation'] = old['observation_period'] != row['observation_period']
-                row['revised'] = bool(not row['new_observation'] and old['observation_id'] != row['observation_id'])
+                row['newly_available'] = old['value'] is None
+                changed_period = old['observation_period'] != row['observation_period']
+                row['new_observation'] = changed_period and row['version_kind'] == 'FIRST'
+                row['revised'] = bool(not changed_period and old['observation_id'] != row['observation_id'])
                 row['held'] = old['observation_id'] == row['observation_id']
             rows[sid] = row
         snapshots.append({'as_of': el.iso(at), 'series': rows})

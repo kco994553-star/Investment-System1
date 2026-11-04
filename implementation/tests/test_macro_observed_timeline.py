@@ -20,6 +20,7 @@ def test_baseline_before_capture_is_unavailable_then_month_is_held_not_interpola
     a,b,c=[x['series'][SID] for x in result['snapshots']]
     assert a['value'] is None and a['reason']=='BEFORE_CAPTURE_HISTORY'
     assert b['value']==0.1 and b['observation_period']=='2025-11'
+    assert b['newly_available'] and not b['new_observation']
     assert c['value']==0.1 and c['held'] and not c['new_observation']
     assert c['first_published_at'] is None and c['frequency']=='M'
     assert result['interpolation']=='NONE' and result['historical_pit_status']=='OBSERVED_CAPTURE_ONLY'

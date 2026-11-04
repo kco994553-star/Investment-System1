@@ -57,7 +57,7 @@ DC-42 담당, MEV-1/9/10, M-RULE C 가설과 M-GATE B/M-REENABLE, GSQ-011 FRED/A
 - 부분실패는해당provider만재개하고성공한공유파일재요청안함. rate-limit/timeout후한번의지연재시도는Main설정승인대상; 실패시마지막성공값·실패시각·reason을남긴다. 관측값0대체없음.
 - `last_success_at`은수집성공, `observation_period`는통계대상기간, `available_at`은확인된관측또는보수상한. 달력의계획시각은`planned_release_at`. 실제원발표증거없으면`first_published_at=null`.
 - stale는기존근거선정책을재사용: W14일+발표지연7일, M62+45일, Q184+100일(기간말기준). 경고표시만이며데이터삭제/중립화없음. FOMC효력값은새사건전까지유지,자동stale추정없음.
-- 월·분기값의일간표시는`held=true`,동일`observation_id`·관측기간 유지. `new_observation`과`revised`를구분하며보간은`NONE`이다. 기존모델이공식국면산출에적격하다는뜻이아니다.
+- 월·분기값의일간표시는`held=true`,동일`observation_id`·관측기간 유지. `new_observation`과`revised`를구분하며보간은`NONE`이다. 첫 baseline의조회가능전환은`newly_available=true,new_observation=false`이며새발표로표시하지않는다. 기존모델이공식국면산출에적격하다는뜻이아니다.
 
 ## 공식 문서 확인과 사용권 경계
 
