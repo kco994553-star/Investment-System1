@@ -10,7 +10,7 @@ python implementation/tools/fv3_archive_compare.py --archive <qgv-official.json>
 
 The existing official reader and coverage adapter validate the archive. Missing optional evidence is reported, not filled. Every supplied file is hashed. Code membership, input vintage and price basis stay separate; an archive generated after its price date is not certified as information available on that date.
 
-`dated-security-links/1`: `links` contains code, security_id, namespace, valid_from, valid_to (exclusive, or null), evidence. CIK/ticker/company namespaces, expired and ambiguous links do not create security IDs. No join is inferred from a common issuer or ticker.
+`dated-security-links/1`: `links` contains code, security_id, namespace, valid_from, valid_to (exclusive, or null), evidence. Namespace is canonical uppercase ASCII (`[A-Z][A-Z0-9_.:/-]{0,63}`), without whitespace. CIK/TICKER/ISSUER/COMPANY_ID are forbidden in links and reconstructed rows. Expired and ambiguous links do not create security IDs, including collisions originating from a code with multiple links. No join is inferred from a common issuer or ticker.
 
 `fv3-pit-qgv/1`: `rows` contains security_id, namespace, as_of, calc_version, scores `{Q,G,V,total}` (0–100 or null), input_manifest_sha256, source_commit. The upstream existing calculation engine supplies these scores; this tool does not implement another QGV formula. Duplicate security/date/version keys are rejected. The contents of upstream PIT manifests are not audited here; `pit_reconstruction_certified=false` makes this scope explicit.
 

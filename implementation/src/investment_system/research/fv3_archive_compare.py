@@ -13,6 +13,11 @@ AXES = ('Q', 'G', 'V')
 SCORES = (*AXES, 'total')
 
 
+def _security_namespace(value):
+    return (isinstance(value, str) and re.fullmatch(r'[A-Z][A-Z0-9_.:/-]{0,63}', value) is not None
+            and value not in ('CIK', 'TICKER', 'ISSUER', 'COMPANY_ID'))
+
+
 def _day(value):
     return isinstance(value, str) and date.fromisoformat(value).isoformat() == value
 
@@ -20,7 +25,7 @@ def _day(value):
 def _identity(link, as_of):
     try:
         if (not all(isinstance(link.get(k), str) and link[k].strip() for k in ('code', 'security_id', 'namespace', 'evidence'))
-                or link['namespace'].upper() in ('CIK', 'TICKER', 'ISSUER', 'COMPANY_ID')):
+                or not _security_namespace(link['namespace'])):
             return None
         start, end = link['valid_from'], link.get('valid_to')
         if not _day(start) or (end is not None and not _day(end)):
@@ -37,6 +42,8 @@ def _reconstructed_index(rows):
     for r in rows:
         try:
             if not all(isinstance(r[k], str) and r[k].strip() for k in ('security_id', 'namespace', 'calc_version')):
+                raise ValueError()
+            if not _security_namespace(r['namespace']):
                 raise ValueError()
             if not _day(r['as_of']) or set(r['scores']) != set(SCORES):
                 raise ValueError()
@@ -66,8 +73,11 @@ def compare_rows(archive_rows, reconstructed_rows, links, *, as_of, calc_version
     # Multiple active links or two code rows pointing at one ID cannot silently
     # collapse share classes or duplicate a company's archived observation.
     candidates = {code: values[0] for code, values in active.items() if len(values) == 1}
-    occurrences = Counter(candidates.values())
-    identities = {code: identity for code, identity in candidates.items() if occurrences[identity] == 1}
+    owners = {}
+    for code, values in active.items():
+        for identity in values:
+            owners.setdefault(identity, set()).add(code)
+    identities = {code: identity for code, identity in candidates.items() if len(owners[identity]) == 1}
     reconstructed = _reconstructed_index(reconstructed_rows or [])
     comparisons, unmatched = [], []
     for code, row in sorted(rows.items()):

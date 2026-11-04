@@ -83,3 +83,21 @@ def test_cli_archive_only_completes_with_explicit_missing_inputs(tmp_path):
     assert result['counts']['comparable_total'] == 0
     assert result['computation_status'] == 'NOT_COMPUTED'
     assert result['missing_inputs'] == ['DATED_SECURITY_IDENTITY_LINKS', 'PIT_RECONSTRUCTED_QGV']
+
+
+def test_identity_owned_by_an_ambiguous_code_cannot_leak_to_another_code():
+    result = compare({'NYSE:A': archive_row(80), 'NYSE:B': archive_row(60)},
+                     [reconstructed('one', 70)],
+                     [link('NYSE:A', 'one'), link('NYSE:A', 'two'), link('NYSE:B', 'one')])
+    assert result['counts']['identity_linked'] == 0
+    assert result['counts']['matched_securities'] == 0
+    assert result['reason_counts'] == {'SECURITY_IDENTITY_AMBIGUOUS': 2}
+
+
+@pytest.mark.parametrize('namespace', [' CIK', 'CIK ', '\tTICKER', 'TICKER\n', 'ISSUER ', ' COMPANY_ID '])
+def test_noncanonical_reserved_namespaces_never_establish_security_identity(namespace):
+    bad = {**link('NYSE:A', 'one'), 'namespace': namespace}
+    result = compare({'NYSE:A': archive_row(80)}, [], [bad])
+    assert result['counts']['identity_linked'] == 0
+    with pytest.raises(ValueError, match='RECONSTRUCTION_ROW_INVALID'):
+        compare({'NYSE:A': archive_row(80)}, [reconstructed('one', 70, namespace=namespace)], [bad])
