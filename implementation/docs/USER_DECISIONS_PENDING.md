@@ -12,7 +12,7 @@
 | 인계 근거 | 6600537423을 인계 근거로 연결(Main 수령 [6601564604](https://github.com/kco994553-star/Investment-System1/pull/437#issuecomment-6601564604)) |
 | 계약 | 계약 규칙(바꿀 때 `schema_version` 올림)에 따라 새 필드는 `lab-backtest-v2`에만. v1 파일은 그대로 읽음. 계약 문서 §7 |
 | 화면 | 합성 예시 4개로 Lab 화면 작업 → Draft [#471](https://github.com/kco994553-star/Investment-System1/pull/471). 비공개 실제 값은 공개 화면에 연결하지 않음. 공개 연결은 `LAB-PUBLISH` 별도 |
-| 기술 리더보드 | Codex `technical-leaderboard/1` 제안([6601332838](https://github.com/kco994553-star/Investment-System1/pull/437#issuecomment-6601332838)) 수령. 화면 판독기를 그 이름·분위 규칙에 맞추기로 회신(보드 단위 확인 1건 요청) |
+| 기술 리더보드 | Codex `technical-leaderboard/1` 제안([6601332838](https://github.com/kco994553-star/Investment-System1/pull/437#issuecomment-6601332838)) 수령. 화면 판독기를 그 이름·분위 규칙에 맞추기로 회신(보드 단위 확인 1건 요청). **11/04 정정:** Codex가 11:27에 이미 답했다([6602595466](https://github.com/kco994553-star/Investment-System1/pull/437#issuecomment-6602595466), 보드는 평가일·그룹마다 하나, 기준 #469 `f1ca390a`). Main의 '회신 대기' 보고는 틀렸고, 남은 일은 Main의 #470 판독기 정합뿐 |
 
 ## 결정됨 — 2026-11-03 2차 (계층 3 기술적 분석 리더보드 화면)
 
@@ -55,7 +55,7 @@
 | #456 병합 | 병합 직전 머리 `a922d6eb`·파일 3개·변경 내용 같음 확인 → 11/03 08:43 UTC 병합, **`fb0ffcab67e44c9d681211a579aeab6a09a86f31`**. 병합 뒤 `private-boundary-push` 성공, 배포 없음 |
 | 실게시 검증 | 병합 뒤 첫 정기 실행(11/04 UTC 예정)에서 확인. 기대 거래일 2026-11-02(run_day 11/03의 직전 NYSE 거래일, T+1 파일). 11/03 08:47 UTC IEX 목록에는 `20261102`가 아직 없음 → 그때도 없으면 선택은 `20261030`. 그러면 기대 거래일과 달라서 운영 복구로 보지 않음. 병합 전 #34(11/03)는 `SUPPLY_FAILED`·`KEPT_LAST_GOOD`, 기준일 10/29 |
 | #468 | CI 7 성공·2 생략(조회), mergeable clean. **개발 빌드 검증 완료, 병합·배포 전**(CURRENT_HANDOFF) |
-| 인계표 | CURRENT_HANDOFF 작업 중 표: #464 `9fc8f7e5`·#465 `3b1ad9eb`(둘 다 `ddcb2925` 포함, `SETTINGS_SHA256` `7124044686e8…`), DC-43 구현·CPI 두 평가일 검증(Codex 보고). #454 남은 차이: `ec1fa06c`는 `ddcb2925`·`fb0ffcab`를 포함하지 않고 고정값이 `8598bd48…`. Lab은 #437 요청 필드로 합의 진행(Codex 회신 대기), 비공개 실제 값은 공개 화면에 연결하지 않음 |
+| 인계표 | CURRENT_HANDOFF 작업 중 표: #464 `9fc8f7e5`·#465 `3b1ad9eb`(둘 다 `ddcb2925` 포함, `SETTINGS_SHA256` `7124044686e8…`), DC-43 구현·CPI 두 평가일 검증(Codex 보고). #454 남은 차이: `ec1fa06c`는 `ddcb2925`·`fb0ffcab`를 포함하지 않고 고정값이 `8598bd48…`. Lab은 #437 요청 필드로 합의 진행(당시 'Codex 회신 대기'로 적었으나 회신 6600537423이 이미 있었음 → 11/03 3차 블록에서 충족·인계 근거 연결), 비공개 실제 값은 공개 화면에 연결하지 않음 |
 
 ## 결정됨 — 2026-11-02 2차 (P2-6 공개 화면·9.Lab 계약 재사용·#456 확인 · 보고 작성자명)
 

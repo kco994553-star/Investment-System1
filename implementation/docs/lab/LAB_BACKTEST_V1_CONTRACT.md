@@ -135,3 +135,44 @@
      - #436 승인 뒤 비공개 구역으로 옮길 계획을 낸다.
    - 오너가 공개 KIS Secrets를 지우면 이 워크플로는 멈춘다.
 2. **정식 결과 위치.** "#417 승인된 비공개 출력 루트와 나란히"는 그 루트가 어디인지(저장소·release·Codex 작업 공간) 적어 달라. 앱 연결은 #436 비공개 저장 계약(Lab 결과 절)을 따른다.
+
+## 7. `lab-backtest-v2` (Main, 2026-11-03) — 결과 종류 · 계산 상태 · 표본 · 모집단 · 진단
+
+근거와 버전 규칙은 다음과 같다.
+- 오너 11/02 "9.Lab은 기존 lab-backtest-v1 계약을 재사용하라"와 11/03 "합성 예시로 Lab 화면 작업을 진행하라".
+- Main 요청 [#437 6575853507](https://github.com/kco994553-star/Investment-System1/pull/437#issuecomment-6575853507), Codex 회신·합의 [#437 6600537423](https://github.com/kco994553-star/Investment-System1/pull/437#issuecomment-6600537423), Main 수령 [#437 6601564604](https://github.com/kco994553-star/Investment-System1/pull/437#issuecomment-6601564604).
+- 이 문서 머리의 규칙대로 `schema_version`을 올렸다.
+- v1 파일은 그대로 읽는다. v1에 새 키가 있으면 `KEY_UNKNOWN`으로 거부한다.
+
+실행(run)마다 v1 키에 다음 7개를 더한다.
+
+| 필드 | 규칙 |
+| --- | --- |
+| `result_kind` | `BACKTEST` · `SINGLE_COMPANY_METRIC` · `SAMPLE_DIAGNOSTIC` |
+| `computation_status` | `COMPUTED` · `NOT_COMPUTED`. 일부 지표가 계산됐으면 COMPUTED에 나머지 null 사유를 둔다. 요청 지표가 전부 미산출이면 NOT_COMPUTED |
+| `not_computed_reason` | NOT_COMPUTED일 때 비어 있지 않은 글(사유 코드), COMPUTED이면 null (`NOT_COMPUTED_REASON`) |
+| `as_of` | 평가일 `YYYY-MM-DD`. BACKTEST가 아니면 필수(`AS_OF_REQUIRED`), BACKTEST는 null 허용 |
+| `sample` | `{unit: company\|security, n_requested: 정수\|null, n_used: 정수, selection: 글}`. 둘 다 있으면 n_used ≤ n_requested (`SAMPLE_RANGE`). 이름·티커는 넣지 않는다 |
+| `population` | `{id, scope: SAMPLE\|FULL_MARKET, as_of, completeness: COMPLETE\|INCOMPLETE\|UNKNOWN, n_total: 정수\|null, null_reason}`. n_total이 null이면 사유 필수(`POPULATION_NULL_REASON`). FULL_MARKET이면서 COMPLETE가 아니면 n_total은 null(`POPULATION_INCOMPLETE`). 일부 확인 행 수를 전체 분모로 쓰지 않는다 |
+| `diagnostics` | 집계만 담는다: `[{name, value, unit: count\|fraction, null_reason, n_valid, n_total, population_ref}]`. BACKTEST는 `[]` (`DIAGNOSTICS_BACKTEST`). `population_ref`는 그 실행의 `population.id`와 같아야 한다(`POPULATION_REF`). count는 0 이상 정수. fraction은 `n_total > 0`이고 `value = n_valid / n_total`일 때만 값을 둔다(`DIAGNOSTIC_FRACTION`). 값이 null이면 사유 필수, 값이 있으면 사유는 null(`NULL_REASON_UNUSED`) |
+
+추가 규칙:
+- BACKTEST가 아니거나 NOT_COMPUTED인 실행: 성과 7개는 모두 null에 사유를 두고 곡선은 `[]`이다(`METRIC_NOT_ALLOWED`, `CURVE_NOT_ALLOWED`).
+- BACKTEST가 아닌 실행: `period`·`rebalance`·`benchmark`·`costs`는 null이다(`NON_BACKTEST_FIELD`). 가짜 기간이나 비용 0은 만들지 않는다.
+- BACKTEST이면서 COMPUTED인 실행은 v1 검사 규칙을 그대로 따른다.
+
+상태 문구(IS2.lab.status):
+- 합성이면 "합성 데이터 · 시험용"을 먼저 쓴다. 예: `합성 데이터 · 시험용 · 표본 진단 · 전략 성과 아님`.
+- 실자료 1회사 지표 = `실자료 1회사 지표 계산 · 전략 성과 아님`
+- 실자료 표본 진단 = `실자료 표본 진단 · 전략 성과 아님`
+- 실자료 미산출 = `미산출 · <사유> · 실자료 <종류>`
+- BACKTEST는 v1 문구를 쓴다. REAL·COMPUTED라고 해서 검증됨으로 쓰지 않는다.
+
+사유 코드는 화면에서 글로 바꿔 보여 준다(`IS2.lab.reasonText`). 모르는 코드는 "사유 코드 미등록"으로 표시한다. Codex가 회신에 적은 사유 코드 14개를 등록했다.
+
+화면(9.1 비공개 칸):
+- BACKTEST가 아니거나 NOT_COMPUTED인 실행은 지표 7개와 곡선 대신 다음을 보여 준다: 결과 종류, 계산 상태, 평가일, 표본("요청 n개 중 m개 사용"), 모집단(범위·완전성·전체 수 또는 NA와 사유), 진단 요약 표(값 · 유효/전체), "전략 성과 아님".
+- BACKTEST는 v1 화면에 표본·모집단 줄을 더한다.
+- 공개 연결(`LAB-PUBLISH`)과 `lab-results/1` 공개 투영은 바뀌지 않는다. 비공개 값은 공개 화면에 잇지 않는다.
+
+시험 자료: `tools/lab_backtest_fixture.js`의 `payloadV2()`(합의한 합성 4건), `validV2`, `invalidV2`(v2 거부 규칙마다 1개 이상).
