@@ -5,6 +5,7 @@ arithmetic and evidence-qualified values are separate, as in technical-measures/
 """
 from datetime import date
 import math
+import re
 from types import SimpleNamespace
 
 from investment_system.technical import research_display as display, patterns
@@ -26,17 +27,31 @@ def _number(value, *, zero=False):
         return None
 
 
-def measure_display(rows, *, signal_day, series_id, evidence, source_kind=None, include_sma240=False):
+def measure_display(rows, *, signal_day, series_id, symbol, evidence, source_kind=None, include_sma240=False):
     """Use all retained sessions through S, with no gap skipping or basis repair."""
     if source_kind != 'NORMALIZED_PROVIDER_DAILY_BARS':
         raise ValueError('DAILY_BAR_SOURCE_REQUIRED')
     end = date.fromisoformat(signal_day)
+    if not tm.schedule.is_session(end):
+        raise ValueError('SIGNAL_DAY_NOT_A_SESSION')
+    if not isinstance(symbol, str) or not symbol:
+        raise ValueError('SYMBOL_REQUIRED')
     if type(include_sma240) is not bool:
         raise ValueError('INVALID_DISPLAY_CONFIG')
     dates = [r['date'] for r in rows]
     if dates != sorted(dates) or len(dates) != len(set(dates)):
         raise ValueError('UNSORTED_OR_DUPLICATE_SESSION')
     eligible = [r for r in rows if date.fromisoformat(r['date']) <= end]
+    for row in eligible:
+        if row.get('returned_symbol') != symbol or row.get('requested_symbol', symbol) != symbol:
+            raise ValueError('SYMBOL_MISMATCH')
+        if row.get('price_basis') != 'RAW' or row.get('asof', '-') != '-':
+            raise ValueError('RAW_DIRECT_SYMBOL_BASIS_REQUIRED')
+        actual, problem = tm.session_date(row.get('source_timestamp'))
+        if problem or actual != date.fromisoformat(row['date']) or not tm.schedule.is_session(actual):
+            raise ValueError(problem or 'SESSION_DATE_MISMATCH')
+        if not isinstance(row.get('source_sha256'), str) or not re.fullmatch('[0-9a-f]{64}', row['source_sha256']):
+            raise ValueError('SOURCE_HASH_REQUIRED')
     start = eligible[0]['date'] if eligible else signal_day
     expected = tm.sessions(date.fromisoformat(start), end)
     close_reasons = []
@@ -96,17 +111,25 @@ def measure_display(rows, *, signal_day, series_id, evidence, source_kind=None, 
     volumes=[_number(r.get('volume'),zero=True) for r in eligible]
     v=volumes[-1] if volumes else None
     volume_missing=[] if v is not None else ['VOLUME_MISSING']
-    volume_note={'raw_state':'NOT_AVAILABLE','state':None,'reason':'INSUFFICIENT_BARS'}
+    last_session = eligible[-1]['date'] if eligible else None
+    if last_session != signal_day:
+        v = None
+        volume_missing.append('SIGNAL_SESSION_MISSING')
+    volume_economic=economic_for(signal_day)
+    note_start=eligible[-21]['date'] if len(eligible)>=21 else start
+    note_economic=economic_for(note_start)
+    volume_note={'raw_state':'NOT_AVAILABLE','state':None,'reason':'INSUFFICIENT_BARS','window_start':note_start,'window_end':signal_day}
     if eligible and [r['date'] for r in eligible]==expected:
         note=patterns._volume_note({'rules':patterns.load_rules(),'timeframe':'D',
                                     'bars':[{'volume':v} for v in volumes]},0,len(volumes)-1)
         volume_note.update(raw_state=note['state'],reason=note['reason_code'])
-        if not economic and note['state'] != 'NOT_AVAILABLE':volume_note['state']=note['state']
-    volume_note['null_reasons']=list(economic)+([volume_note['reason']] if volume_note['reason'] else [])
-    return dict(schema=SCHEMA,result_kind='RAW_SERIES_DIAGNOSTIC',series_id=series_id,
+        if not note_economic and note['state'] != 'NOT_AVAILABLE':volume_note['state']=note['state']
+    volume_note['null_reasons']=list(note_economic)+([volume_note['reason']] if volume_note['reason'] else [])
+    return dict(schema=SCHEMA,result_kind='RAW_SERIES_DIAGNOSTIC',series_id=series_id,symbol=symbol,
         signal_day=signal_day,source_kind=source_kind,input_start=start,history_count=len(eligible),excluded_future_rows=len(rows)-len(eligible),
         price_basis='RAW',pit_status='NOT_VERIFIED',publication_status='RESEARCH_PRIVATE_ONLY',
         evidence=dict(evidence),rank=None,metrics=metrics,volume_note=volume_note,
-        volume_latest=dict(raw_value=v,value=None if economic or volume_missing else v,unit='SHARES',
-                           null_reasons=volume_missing+economic),
+        volume_latest=dict(raw_value=v,value=None if volume_economic or volume_missing else v,unit='SHARES',
+                           last_observed_session=last_session,
+                           null_reasons=volume_missing+volume_economic),
         pattern_status='EXISTING_RULES_ONLY_NO_NEW_PATTERN_OR_SUCCESS_DEFINITION')

@@ -15,15 +15,17 @@
 
 ## 구현 계약
 
-`research.technical_display.measure_display(rows, signal_day, series_id, evidence, source_kind)`:
+`research.technical_display.measure_display(rows, signal_day, series_id, symbol, evidence, source_kind)`:
 `technical-offline-display/1`, `result_kind=RAW_SERIES_DIAGNOSTIC`, `price_basis=RAW`, `pit_status=NOT_VERIFIED`.
 `raw_value`는 보유 계열 산술, `value`는 신원·실제 의존 창 분할 연속성·통화 근거 충족 시만 값이다. 과거 공시 가용성/고정 증권 ID/공식 신호를 이 값으로 입증하지 않는다. 지표별 `unit`, `null_reasons`, `observation_days`, `expected_days`, `window_start`, `window_end`, `input_start`, `history_count`를 기록한다. 미래 행은 제외하며 중간 누락을 건너뛰어 EMA/RSI를 만들지 않는다. raw close·raw OHLC만 읽으며 IEX 마지막 체결을 봉으로 변환하지 않는다.
 
 GSQ-015 기간·seed·warm-up은 `technical/research_display.py`를 직접 사용한다. SMA240은 기본 OFF. 거래량 결손은 종가 지표를 막지 않는다. ATR은 온전한 raw OHLC, 거래량 메모는 현재와 이전20봉을 별도로 요구한다. 세션은 #469의 NYSE 달력을 재사용한다. 공식 합성 진입점의 `REAL_INPUT_NOT_AUTHORIZED`를 해제하지 않는다.
 
 CLI: `python tools/technical_display_offline.py --input <private JSON> --output <outside-git JSON>`.
-입력: `{signal_day, series:[{series_id, source_kind:NORMALIZED_PROVIDER_DAILY_BARS, rows, evidence}]}`. 출력은 Git 외부 0600, 덮어쓰기 금지, 네트워크 없음. 회사별 입력과 결과는 비공개.
+입력: `{signal_day, series:[{series_id, symbol, source_kind:NORMALIZED_PROVIDER_DAILY_BARS, rows, evidence}]}`. 출력은 Git 외부 0600, 덮어쓰기 금지, 네트워크 없음. 회사별 입력과 결과는 비공개.
 
 합성 예: 250개 연속 NYSE 세션의 close=1..250, raw high=close+1, low=close−0.5, open=close, volume=100을 넣으면 마지막 SMA20=240.5, RSI14=100, MACD12/26=7, signal=7, histogram=0. `identity_status=UNKNOWN`이면 raw 값은 남고 채택 value=null이다. 합성 예는 실자료 성과가 아니다.
 
 SMA/Bollinger는 실제 마지막 N봉에만 기업행사 근거를 요구한다. EMA/RSI/MACD/ATR의 재귀 seed는 전체 입력에 의존하므로 `input_start`부터의 근거가 필요하다. source_kind가 없거나 IEX_LAST_TRADE이면 DAILY_BAR_SOURCE_REQUIRED로 거절한다.
+
+정규화 provenance는 #469와 같은 요청/반환 symbol, direct-symbol asof, raw basis, NY 일봉 시작 timestamp, 원문 SHA, 거래세션을 확인한다. 현재 거래량은 S행이 없으면 null이고 실제 마지막 관측일만 표시한다. 거래량 메모의 기업행사 근거 창은 현재와 이전20봉, 단일 거래량은 S 한 세션이다. 독립 검토에서 이 세 경계(이전 날짜 거래량, 혼합 symbol, 거래량 근거 창)를 지적받아 회귀 시험으로 수정했다.

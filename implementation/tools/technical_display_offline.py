@@ -18,7 +18,7 @@ def main():
         parser.error('output must be outside Git working trees')
     payload=json.loads(args.input.read_bytes())
     result={'schema':SCHEMA,'signal_day':payload['signal_day'],'series':[
-        measure_display(s['rows'],signal_day=payload['signal_day'],series_id=s['series_id'],evidence=s['evidence'],source_kind=s.get('source_kind'))
+        measure_display(s['rows'],signal_day=payload['signal_day'],series_id=s['series_id'],symbol=s['symbol'],evidence=s['evidence'],source_kind=s.get('source_kind'))
         for s in payload['series']]}
     output.parent.mkdir(parents=True,exist_ok=True,mode=0o700)
     with os.fdopen(os.open(output,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600),'w') as f:
