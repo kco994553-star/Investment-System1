@@ -38,7 +38,7 @@ const CHOICES=Object.freeze({momentum_3m:Object.freeze(['gt_zero','ge_median','g
  momentum_12m:Object.freeze(['gt_zero','ge_median','gt_median','top_decile']),volatility_6m:Object.freeze(['exclude_D10','top_decile']),dollar_volume_6m:Object.freeze(['top_decile','bottom_decile'])});
 const REASON=Object.freeze({GROUP_MEMBERSHIP_UNCONFIRMED:'당시 그룹 구성원 미확인 · 순위·중앙값·분위 없음',N_BELOW_10:'유효 종목 10개 미만 · 분위 없음',
  METRIC_NOT_AVAILABLE:'이 지표 값 없음',NO_ROW:'이 지표 행 없음',CONDITION_NOT_AVAILABLE:'조건 판정 불가'});
-const TEXT=Object.freeze({NONE:'기술 지표 자료가 아직 없습니다',NONE_WHY:'계산은 Codex(#469) · 공개 합성 예시는 시험에서만 · 비공개 연구값은 공개 화면에 연결하지 않음',
+const TEXT=Object.freeze({NONE:'기술 지표 자료가 아직 없습니다',NONE_WHY:'계산은 Codex(#469) · 공개 합성 자료는 시험에서만 · 비공개 연구값은 공개 화면에 연결하지 않음',
  INVALID:'기술 지표 파일이 계약과 달라 파일 전체를 쓰지 않습니다',FAILED:'기술 지표 파일을 읽지 못했습니다',SYNTHETIC:'합성 데이터 · 시험용',UNKNOWN_REASON:'사유 코드 미등록'});
 const MAX=Object.freeze({boards:200,rows:20000,text:200,depth:10});
 const DAY=/^(\d{4})-(\d{2})-(\d{2})$/,HEX64=/^[0-9a-f]{64}$/,DEC=/^-?\d+(?:\.\d+)?$/,CODE=/^[A-Z][A-Z0-9_]{0,63}$/;
@@ -110,7 +110,7 @@ function validate(json){
   else list=[['0',v,'$']];
   if(!list.length)refuse('EMPTY','$');if(list.length>MAX.boards)refuse('TOO_LARGE','$');
   for(const[,b,p]of list)checkBoard(b,p);
-  const count=new Map();for(const[,b]of list){const k=b.signal_day+'|'+b.group_id;count.set(k,(count.get(k)||0)+1);}
+  const count=new Map();for(const[,b]of list){const k=b.signal_day+'|'+b.group_id;count.set(k,count.has(k)?count.get(k)+1:1);}
   const boards=list.map(([id,b])=>({id,label:b.signal_day+' · '+b.group_id+(count.get(b.signal_day+'|'+b.group_id)>1?' · '+id:''),board:b}));
   return{ok:true,value:deepFreeze({data_kind:kind,boards})};}
  catch(e){if(e instanceof Refusal)return{ok:false,code:e.code,path:e.path};throw e;}}
