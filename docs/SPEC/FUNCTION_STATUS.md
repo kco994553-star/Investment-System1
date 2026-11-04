@@ -2,6 +2,10 @@
 
 기준: canonical `claude/investment-system-top500-validation-alrugm` @ `81d7b58d`(#386 병합, 2026-10-23 12:44 UTC / 21:44 KST). 작성 2026-10-23 23:20 UTC / 2026-10-24 08:20 KST. 코드 읽기로 분류했고, 이 문서 작성 때 시험을 다시 돌리지 않았다.
 
+갱신 2026-11-03: #456 병합(`fb0ffcab`, 중앙 V 기준일은 NYSE 거래일 파일만). 기능 줄 변화 없음(2.1.5 운영 수정). 실게시 복구는 병합 뒤 첫 정기 실행에서 확인(CURRENT_HANDOFF 4·6절). 포트폴리오 5.1 공개 층 #468은 개발 빌드 검증 완료, 병합·배포 전.
+
+갱신 2026-11-01: #436(1인 비공개 구역 설계)·#449(마지막 체결 시각 ① 판독기)·#451(전진검증 v3 결정)·#453(DC-40, 연구 `EXP-STOCK-INDICATOR-DECILES-v1` 설정)·#447(비공개 경계 가드) 병합(canonical `9a4e249d`). 기능 줄 변화: 2.1.5 마지막 체결 시각 ①, 9.1 연구 엔진(합성만). 11/01 야간 중앙 V는 IEX 토요일 파일 때문에 지난 정상본 유지(#456, 운영 기록은 CURRENT_HANDOFF 4·6절).
+
 갱신 2026-10-29: 화면 #421·#415·#419·#420, 중앙 V 사슬 #393·#400·#403·#404·#405(첫 게시), #411 병합을 2.1.5~2.1.7·2.4.4·v2 표·결정 줄에 반영(canonical `3f3ccd2f`).
 
 갱신 2026-10-31: #428(PSKY 공식 V 보류 — 2.1.5 공식 V 행 하나가 사유 있는 NA)·#429(GSQ-025 결정 기록)·#431(IEX 확장 측정·설계, 기기 V 폐지 결정 DC-31) 병합(canonical `32cc3ffd`). 기능 줄 변화: 2.1.5·2.1.6과 v2 표 2.x 줄에 기기 V 폐지 결정과 구현 PR-1a 진행을 적었다. 코드 변화는 #428뿐이다. 10-31 07:56 UTC: **#435 병합**(`44cd0b43`) — 새 앱(`web_app`, 미배포)의 리더보드·검색이 공식 V 게시본을 읽는다(`qgv.js` OFFICIAL_READER, 2.1.5·2.1.6 새 앱 줄). 10-31: **#439 병합**(`5e16d3e6`) — 옛 화면(리더보드·기업 QGV 카드·레이더 V축·V 산출 현황·Universe·S13·플레이북 사실)이 공식 V 게시본만 읽는다. 기기 V·V 이력·가치(DCF) 패널 제거(2.1.5·2.1.6·2.4.4·2.4.5 줄). 남은 것: S06 같은 발행사 두 번째 주식 종류 표시(후속 PR).
@@ -44,7 +48,7 @@
 | 1.1.4 검색 전 개인화 | 부분 | — | `watchlist.js`, `profile-defaults.js` | 개발자 기본값임을 구분하는 표시, 계정 동기화(공통 규칙) |
 | 2.1.1~2.1.3 목록·정렬·분류 | 구현 | 실 | `leaderboard-screen.js`, `table-sort.js`, `classification-screens.js`(#381 SIC 필터) | — |
 | 2.1.4 기간별 수익률 | 부분 | 기기 | `leaderboard-screen.js` 기간 칩 | 값은 기기 가격 필요. 공개 불가(가격 파생값) |
-| 2.1.5·2.1.6 산출 상태·공식/개인 | 구현 | 실·기기 | `qgv-scores.js`, `v-coverage.js`, `qgv-official.js`(PR-D) | 중앙 V 게시됨(2026-10-29, `qgv-official.json`, 순위 356). 화면의 V는 중앙 V만(DC-31: 새 앱 PR-1a, 옛 화면 PR-1b). `v-coverage.js`는 "V 산출 현황 · 중앙 게시"(게시본 coverage). 기기 V·기기 V 이력 없음. #435·#439 병합(10-31). 남은 것: S06 GOOG(같은 발행사 두 번째 주식 종류) QG 개수 차이 후속 PR. **IEX 체결 지연 표시(10-31 결정 `IEX-LAST-TRADE-TIME`)**: 장 마감 30분 이상 전 체결인 종목의 V 옆에 마지막 체결 시각, V 계산은 그대로 — 구현 대기 **S06 발행사 한 자리(#446 병합 `1465260e`, 10/31):** 대표 증권 하나만 순위·QG 자리를 갖고 다른 종류주는 그 자리를 가리킨다. 순위·QG 개수 = 게시본. |
+| 2.1.5·2.1.6 산출 상태·공식/개인 | 구현 | 실·기기 | `qgv-scores.js`, `v-coverage.js`, `qgv-official.js`(PR-D) | 중앙 V 게시됨(2026-10-29, `qgv-official.json`, 순위 356). 화면의 V는 중앙 V만(DC-31: 새 앱 PR-1a, 옛 화면 PR-1b). `v-coverage.js`는 "V 산출 현황 · 중앙 게시"(게시본 coverage). 기기 V·기기 V 이력 없음. #435·#439 병합(10-31). 남은 것: S06 GOOG(같은 발행사 두 번째 주식 종류) QG 개수 차이 후속 PR. **IEX 체결 지연 표시(10-31 결정 `IEX-LAST-TRADE-TIME`)**: 장 마감 30분 이상 전 체결인 종목의 V 옆에 마지막 체결 시각, V 계산은 그대로 — ① 판독기·검증기 #449 병합(11/01 `111f86c7`, 옛 화면·새 앱), ③ 게시 쪽(시각·마감 시각을 게시본에 넣기) 대기 **S06 발행사 한 자리(#446 병합 `1465260e`, 10/31):** 대표 증권 하나만 순위·QG 자리를 갖고 다른 종류주는 그 자리를 가리킨다. 순위·QG 개수 = 게시본. |
 | 2.1.7 후보 선정 연결 | 구현 | 실·기기 | `target-v1-builder.js`, `target-v1-screen.js`, `qgv-official.js` | 공식 V 판독(PR-D #405, 병합 10-29): 초안 만들기·확정 클릭 때 `qgv-official.json`을 읽어 유효·검증·같은 calc_version·기준일 뒤 마감된 뉴욕 거래일 2일 이내면 공식 V, 아니면 임시 V(결정 D8 (b)). **10-29 실사이트 확인: 처음 쓰는 기기에서 공식 V 초안(가격 기준일 10-28)**. 확정 차단 점검 #411 병합(10-29, 다음 배포에 반영) |
 | 2.2.1~2.2.6 가중치·프리셋·영향·설정 | 구현 | 실·기기 | `device-profiles.js`(2단계 가중치 #300, 프리셋 v0.1, 변경 전후 비교) | 설정 저장은 이 브라우저만 |
 | 2.3.1 13F 보유 기록 | 부분 | 실 | `thirteenf-quarter.js`, `manager-styles-v0.js`, #381(2.3 흐름) | TARGET 중심. 운용사 범위 확대 |
@@ -77,13 +81,13 @@
 | 5.2.7 수집 상태 | 구현 | 실 | `ops-status.js`, `news-signals.js` | GDELT 429 원인 |
 | 5.3 뉴스 구조 트리 | 구현 | 실 | `ia-screens.js` | — |
 | 6.1.1·6.1.5 종류 구분·개인/모의 관리 | 구현 | 기기 | `portfolio-screen.js`, `device-actual.js`, `virtual-trading.js` | — |
-| 6.1.2~6.1.4 모델 후보·비중·버전 | 부분 | 기기 | `target-v1-builder.js` | TARGET v1 확정(2026-11 둘째 주 목표). 숫자 대조: 23.1로 재대조(10-29, 40칸 일치 34·정책 NA 6, FCF 수익률 앱 계산식 7/7·NA 3/3, [0-2-9절](../../implementation/docs/qgv_scoring_standard/QGV_V2_NUMBER_CHECK_20261017.md)) — 재기록 #424 병합(10-30, `96037d1c`)으로 calc_version 불일치 차단이 풀렸다. 남은 것은 실제 사용자 카드 응답. 공식 V 판독(PR-D #405, 병합 10-29): 초안·버전에 V 출처와 게시본 id·가격 기준일을 남기고, 출처가 바뀌면 `V_SOURCE_CHANGED`로 초안 재생성 |
+| 6.1.2~6.1.4 모델 후보·비중·버전 | 부분 | 기기 | `target-v1-builder.js` | TARGET v1 확정(2026-11 둘째 주 목표). 숫자 대조: 23.1로 재대조(10-29, 40칸 일치 34·정책 NA 6, FCF 수익률 앱 계산식 7/7·NA 3/3, [0-2-9절](../../implementation/docs/qgv_scoring_standard/QGV_V2_NUMBER_CHECK_20261017.md)) — 재기록 #424 병합(10-30, `96037d1c`)으로 calc_version 불일치 차단이 풀렸다. 남은 것은 실제 사용자 카드 응답. 공식 V 판독(PR-D #405, 병합 10-29): 초안·버전에 V 출처와 게시본 id·가격 기준일을 남기고, 출처가 바뀌면 `V_SOURCE_CHANGED`로 초안 재생성 11/02 #463(AUD-01) 병합: 레거시 플레이북 TARGET 초안 검사의 일반 등급이 승인된 6%로 맞춰짐(`playbook/v1` `target_v1` v1.1, 화면 사본 동기화). TARGET v1 빌더 설정은 원래 일반 10 × 6%라 변화 없음 |
 | 6.2 실제 포트폴리오 보고 | 구현(일일) · 신규(주간) | 기기 | `daily-report.js` | 주간 형식 WEEKLY-REPORT 결정 대기 |
 | 6.3 모의 포트폴리오 보고 | 구현(일일) · 신규(주간) | 기기 | `daily-report.js`, `virtual-trading-compare.js` | 같음 |
 | 6.4 포트폴리오 구조 트리 | 구현 | — | `ia-screens.js` | — |
 | 7.1 프롬프트 라이브러리 | 구현 | — | `research-bridge.js`(★·내 사본 = 이 브라우저) | 새 영역 목록 PROMPT-DOMAIN |
 | 8.1 전체 구조 트리 | 구현 | 실 | `ia-screens.js`(system) | 8.1.3 구현 상태 표시를 이 문서와 맞추기 |
-| 9.1 백테스트 | 신규 · 결정 | — | `screen-detail.js`(준비 목록), `docs/backtest/*`; 새 앱 `web_app/lab.js`·`screen-lab-live.js` | BT-1~17·MD-1~12 결정, 과거 자료 확보. **11/03 `lab-backtest-v2`(개발 빌드·합성):** 결과 종류(전략 백테스트·1회사 지표·표본 진단)·계산 상태·표본·모집단·진단 요약 판독·화면, Codex 합의 #437 6600537423. 실결과 연결·공개(LAB-PUBLISH)·병합·배포는 별도 |
+| 9.1 백테스트 | 신규 · 결정 | — | `screen-detail.js`(준비 목록), `docs/backtest/*`, 연구 엔진 #454(Draft, `research/exp_deciles/`); 새 앱 `web_app/lab.js`·`screen-lab-live.js` | BT-1~17·MD-1~12 결정, 과거 자료 확보. 11/01 연구 `EXP-STOCK-INDICATOR-DECILES-v1`: 설정 #453 병합, 엔진 #454는 **합성 묶음만**(실자료 파일럿·전체 백테스트 없음). 실자료는 SEC 1회용 수집·T 시가 원천 승인 뒤 **11/03 `lab-backtest-v2`(#471, 개발 빌드·합성):** 결과 종류(전략 백테스트·1회사 지표·표본 진단)·계산 상태·표본·모집단·진단 요약 판독·화면. Codex 합의 #437 6600537423, Codex의 v2 수령 확인 6602595466. 실결과 연결·공개(LAB-PUBLISH)·병합·배포는 별도 |
 | 9.2 전진검증 | 구현 | 실 | `forward-validation.js`, `tools/forward_validation_ledger.py` | 연속 성공 3/7(10/24분, run 40146210895; 10/25 Actions 확인). 배포 실패 뒤 복구 운영 증거는 아직 없음. **10-31 v3 방침(DC-38)**: v1·v2는 v3 시작과 함께 기록 멈춤·보존, 바구니 단위 IEX 수익률·재구성 구간 — [설계](../../implementation/docs/forward_validation/FORWARD_VALIDATION_V3_DESIGN_20261031.md), 구현 대기 |
 | 공통: 계정 동기화 | 신규 · 결정 | — | DRAW-STORE, IA-6 | 지금은 이 브라우저 + 내보내기·가져오기 |
 
