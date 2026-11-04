@@ -67,6 +67,23 @@ def assert_clean_stdout(out):
     assert 'XQ' not in out and not re.search(r'\d\.\d', out)
 
 
+def test_lab_metric_cli_hashes_preserved_evidence_and_exports_no_values(cli, capsys, tmp_path):
+    evidence = tmp_path / 'metric.json'
+    evidence.write_text(json.dumps({'result_kind': 'SINGLE_COMPANY_METRIC', 'signal_day': '2018-02-16',
+                                   'ev_sales': '7.123456', 'code_reference': 'a' * 40, 'symbol': 'PRIVATE_SENTINEL'}))
+    out = tmp_path / 'lab'
+    base = ['lab-metric', '--result', str(evidence), '--out', str(out), '--generated-at', WHEN]
+    code, _, err = run(cli, capsys, *base, '--expected-sha256', '0' * 64)
+    assert code == 2 and 'METRIC_EVIDENCE_HASH_MISMATCH' in err and not out.exists()
+    code, stdout, err = run(cli, capsys, *base, '--expected-sha256', hashlib.sha256(evidence.read_bytes()).hexdigest())
+    assert code == 0, err
+    payload = (out / 'lab-backtest-v2.json').read_text()
+    assert 'PRIVATE_SENTINEL' not in payload + stdout and '7.123456' not in payload + stdout
+    assert json.loads(payload)['runs'][0]['sample']['n_used'] == 1
+    assert json.loads((out / 'lab-evidence.json').read_text())['recalculated'] is False
+    assert stat.S_IMODE((out / 'lab-backtest-v2.json').stat().st_mode) == 0o600
+
+
 def test_schedule_prints_dates_only_and_exits_zero(cli, capsys):
     code, out, _ = run(cli, capsys, 'schedule')
     assert code == 0 and 'schedule=OK' in out and 'rows=10' in out

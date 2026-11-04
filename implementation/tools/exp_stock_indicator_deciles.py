@@ -135,7 +135,7 @@ REPO_ROOT = ROOT.parent
 if str(ROOT / 'src') not in sys.path:
     sys.path.insert(0, str(ROOT / 'src'))
 
-from investment_system.research.exp_deciles import handoff, runner, schedule, settings, synthetic, cap_thresholds  # noqa: E402
+from investment_system.research.exp_deciles import handoff, runner, schedule, settings, synthetic, cap_thresholds, lab_diagnostics  # noqa: E402
 
 SELECTION_FILE = 'selection_inputs.json'
 LEDGER_FILE = 'ledger_outputs.json'
@@ -684,6 +684,31 @@ def cmd_synthetic(args):
     return status
 
 
+def cmd_lab_metric(args):
+    """Bridge already verified private metric evidence; never invent selection or NAV."""
+    body = _read_bytes(args.result)
+    if hashlib.sha256(body).hexdigest() != args.expected_sha256:
+        raise CliError('METRIC_EVIDENCE_HASH_MISMATCH')
+    result = _json(body, exact=False)
+    sha, flags = code_state()
+    if sha is None or flags:
+        raise CliError('CODE_STATE_UNVERIFIED')
+    generated_at = _generated_at(args.generated_at)
+    payload = lab_diagnostics.single_company(result, source_commit=sha, generated_at=generated_at)
+    evidence = {'schema': 'exp-lab-metric-evidence/1', 'result_sha256': args.expected_sha256,
+                'calculation_code_reference': result['code_reference'], 'export_code_reference': sha,
+                'settings_sha256': settings.settings_sha256('cpi-2025-v1'),
+                'settings_scope': 'CURRENT_EXPERIMENT_CONTEXT_ONLY_NOT_APPLIED_TO_PRESERVED_METRIC',
+                'recalculated': False, 'selection_computed': False, 'ledger_computed': False}
+    directory = _output_dir(args.out)
+    files = [('lab-backtest-v2.json', json.dumps(payload, sort_keys=True, allow_nan=False).encode()),
+             ('lab-evidence.json', json.dumps(evidence, sort_keys=True, allow_nan=False).encode())]
+    _refuse_existing(directory, [name for name, _ in files])
+    _write_outputs(directory, files)
+    _emit([('stage', 'lab-metric'), ('runs', 1), ('result_kind', 'SINGLE_COMPANY_METRIC')])
+    return 0
+
+
 def build_parser():
     parser = _Parser(prog='exp_stock_indicator_deciles', description='EXP-STOCK-INDICATOR-DECILES-v1 private runs',
                      allow_abbrev=False)
@@ -714,6 +739,12 @@ def build_parser():
     p.add_argument('--out', required=True)
     p.add_argument('--generated-at')
     p.set_defaults(func=cmd_synthetic)
+    p = sub.add_parser('lab-metric', allow_abbrev=False)
+    p.add_argument('--result', required=True)
+    p.add_argument('--expected-sha256', required=True)
+    p.add_argument('--out', required=True)
+    p.add_argument('--generated-at')
+    p.set_defaults(func=cmd_lab_metric)
     return parser
 
 
