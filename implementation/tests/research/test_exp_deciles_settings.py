@@ -109,7 +109,7 @@ def test_package_imports_no_qgv_backtest_network_or_io_modules():
     pkg = Path(settings.__file__).parent
     banned = {'qgv_backtest', 'urllib', 'requests', 'http', 'socket', 'subprocess', 'providers'}
     modules = sorted(p.name for p in pkg.glob('*.py'))
-    assert modules == ['__init__.py', 'benchmarks.py', 'cap_thresholds.py', 'handoff.py', 'ledger.py',
+    assert modules == ['__init__.py', 'benchmarks.py', 'cap_thresholds.py', 'handoff.py', 'lab_diagnostics.py', 'ledger.py',
                        'liquidity.py', 'metrics.py', 'pit.py', 'runner.py', 'schedule.py', 'scoring.py',
                        'sector_comparison.py', 'selection.py', 'settings.py', 'synthetic.py', 'universe.py']
     for name in modules:
