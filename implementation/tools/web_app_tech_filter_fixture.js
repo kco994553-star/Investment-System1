@@ -1,77 +1,64 @@
 'use strict';
-// Feature 3.5 기술 조건 필터 test fixture (tools/web_app_tech_filter_node_test.js, tools/web_app_tech_filter_browser_test.js).
-// SYNTHETIC VALUES ONLY, in the proposed tech-screen-v0 shape (web_app/tech-screen.js); nothing here is written to a public file.
-// payload(companies) builds two evaluation days over the given [{id, ticker}] (the leaderboard's own rows in the browser test):
-//  - 2026-09-30 "market down": every 6-month momentum is negative, so D10 of 6개월 모멘텀 is still a negative return.
-//    U_A = every company, U_B = every second one, U_SMALL = six companies (n_valid 6 < 10: values and a median, no deciles,
-//    reason GROUP_TOO_SMALL). One U_B company in the 6-month momentum D10 has no volatility (SOURCE_MISSING), so the condition
-//    "변동성 D10 제외" is 판정 불가 for it; another one in that D10 is itself in the volatility D10 (fails that condition).
-//    "6개월 모멘텀 0% 초과" in U_B passes nobody (calculation fine, zero matches).
-//  - 2026-10-30: the same groups with positive momentum (a second day to pick).
-// Deciles are computed here per group over valid values (ascending value, D10 = top tenth); medians are the groups' medians.
-const DAYS = ['2026-09-30', '2026-10-30'];
-const H40 = 'd'.repeat(40);
-function decile(rank, n) { return Math.min(10, Math.floor((rank * 10) / n) + 1); }
-// value(i, k) for company index i on day k; null with a reason when the company has no value.
-function series(list) {
-  const n = list.length;
-  return {
-    // Scaled by the company count so the down day stays negative and 0.95 stays the largest volatility for any list size.
-    mom_3m: (i, k) => (k === 0 ? -0.30 + (0.25 * i) / n : 0.02 + (0.30 * i) / n),
-    mom_6m: (i, k) => (k === 0 ? -0.45 + (0.40 * i) / n : 0.05 + (0.40 * i) / n),
-    mom_12m: (i, k) => (i === 3 ? null : k === 0 ? -0.35 + (0.30 * i) / n : 0.11 + (0.50 * i) / n),
-    vol_6m: (i) => 0.18 + (0.30 * ((i * 7) % n)) / n,
-    adv_6m: (i) => 98765432.1 + 13579246.8 * ((i * 5) % n),
-  };
+// Feature 3.5 기술 조건 필터 test helpers (tools/web_app_tech_filter_node_test.js, tools/web_app_tech_filter_browser_test.js).
+//  - CODEX: Codex's public synthetic fixture of technical-leaderboard/1, byte-for-byte the file of #469 f1ca390a
+//    (implementation/tests/fixtures/technical_leaderboard_v1.json, sha256 pinned in CODEX_SHA256). The screen reads it unchanged.
+//  - joined(companies): one more SYNTHETIC board in the same schema whose security ids are the leaderboard's own row ids, so the
+//    leaderboard table filter (QGV order) can be shown. Ranks, deciles, medians and conditions follow Codex's rules
+//    (TECHNICAL_LEADERBOARD_V1.md): rank 1 = largest value, ties by security id ascending; k = floor(N×0.10); first k D10, last k D1;
+//    D9..D2 get (N−2k)//8 each, the first (N−2k)%8 bins one more; N < 10 no decile; median = middle value or mean of the middle pair.
+//    Market-down day: every 6-month momentum is negative. Two companies have no volatility (METRIC_NOT_AVAILABLE).
+// SYNTHETIC VALUES ONLY; nothing here is written to a public file.
+const fs = require('node:fs');
+const path = require('node:path');
+const crypto = require('node:crypto');
+const { ROOT } = require('./web_app_reuse');
+
+const CODEX_PATH = path.join(ROOT, 'implementation/tests/fixtures/technical_leaderboard_v1.json');
+const CODEX_SHA256 = '4df008ec1a71b315e7ca618f4ccaec63abcdf3d12b454a897297d414b4d2a634';
+const codexText = () => fs.readFileSync(CODEX_PATH, 'utf8');
+const codex = () => JSON.parse(codexText());
+const codexSha = () => crypto.createHash('sha256').update(fs.readFileSync(CODEX_PATH)).digest('hex');
+const METRICS = ['momentum_3m', 'momentum_6m', 'momentum_12m', 'volatility_6m', 'dollar_volume_6m'];
+
+// Values in hundredths (integers) so medians stay exact; written as decimal strings with two decimals.
+const str = (c) => (c < 0 ? '-' : '') + String(Math.floor(Math.abs(c) / 100)) + '.' + String(Math.abs(c) % 100).padStart(2, '0');
+function deciles(n) {
+  if (n < 10) return null;
+  const k = Math.floor(n / 10), rem = n - 2 * k, q = Math.floor(rem / 8), r = rem % 8, out = [];
+  for (let i = 0; i < k; i++) out.push(10);
+  for (let d = 9; d >= 2; d--) for (let i = 0; i < q + (9 - d < r ? 1 : 0); i++) out.push(d);
+  for (let i = 0; i < k; i++) out.push(1);
+  return out;
 }
-function payload(companies, { status = 'SYNTHETIC' } = {}) {
-  // The given order is kept: momentum rises with the index, so a caller puts the companies it wants in the top deciles last.
-  const list = [...companies];
-  if (new Set(list.map((c) => c.id)).size !== list.length) throw new Error('FIXTURE_DUPLICATE');
-  if (list.length < 40) throw new Error('FIXTURE_TOO_FEW ' + list.length);
-  const fn = series(list), METRICS = ['mom_3m', 'mom_6m', 'mom_12m', 'vol_6m', 'adv_6m'];
-  const groups = [
-    { id: 'U_A', label: 'U-A (합성)', ids: list.map((c) => c.id) },
-    { id: 'U_B', label: 'U-B (합성)', ids: list.filter((_, i) => i % 2 === 0).map((c) => c.id) },
-    { id: 'U_SMALL', label: '소표본 시험 그룹 (합성)', ids: list.slice(0, 6).map((c) => c.id) },
-  ];
-  const ub = groups[1].ids, top = (k) => ub.map((id) => list.findIndex((c) => c.id === id)).sort((a, b) => fn.mom_6m(b, k) - fn.mom_6m(a, k));
-  const evaluations = DAYS.map((as_of, k) => {
-    const raw = list.map((c, i) => Object.fromEntries(METRICS.map((m) => [m, fn[m](i, k)])));
-    // 6-month momentum D10 of U_B (top tenth): the first has no volatility; the second gets the group's largest volatility.
-    const order = top(k), nb = ub.length, d10 = order.slice(0, Math.max(2, Math.ceil(nb / 10)));
-    raw[d10[0]].vol_6m = null;
-    raw[d10[1]].vol_6m = 0.95;
-    const stats = {}, deciles = {};
-    for (const g of groups) {
-      stats[g.id] = {};
-      for (const m of METRICS) {
-        const vals = g.ids.map((id) => { const i = list.findIndex((c) => c.id === id); return { id, v: raw[i][m] }; }).filter((x) => x.v !== null).sort((a, b) => a.v - b.v);
-        const n = vals.length, small = n < 10, median = n ? (n % 2 ? vals[(n - 1) / 2].v : (vals[n / 2 - 1].v + vals[n / 2].v) / 2) : null;
-        stats[g.id][m] = { n_valid: n, median, deciles: !small, reason: small ? 'GROUP_TOO_SMALL' : null };
-        vals.forEach((x, r) => { (deciles[x.id] = deciles[x.id] || {}); (deciles[x.id][m] = deciles[x.id][m] || {}); deciles[x.id][m][g.id] = small ? null : decile(r, n); });
-      }
-    }
-    const rows = list.map((c, i) => {
-      const gs = groups.filter((g) => g.ids.includes(c.id)).map((g) => g.id);
-      const metrics = {};
-      for (const m of METRICS) {
-        const v = raw[i][m], dec = {};
-        for (const g of gs) dec[g] = v === null ? null : deciles[c.id][m][g];
-        const expected = m === 'mom_3m' ? 63 : m === 'mom_12m' ? 252 : 126;
-        metrics[m] = { value: v, obs_days: v === null ? null : expected - (i % 3), expected_days: expected, reason: v === null ? (m === 'vol_6m' ? 'SOURCE_MISSING' : 'PRICE_HISTORY_SHORT') : null, decile: dec };
-      }
-      return { company_id: c.id, ticker: c.ticker, groups: gs, metrics };
-    });
-    return { as_of, groups: groups.map((g) => ({ id: g.id, label: g.label, members: g.ids.length })), stats, rows };
+function metric(ids, values, reasonFor) {
+  const valid = ids.map((id, i) => ({ id, c: values[i] })).filter((x) => x.c !== null);
+  valid.sort((a, b) => b.c - a.c || (a.id < b.id ? -1 : 1));
+  const n = valid.length, dec = deciles(n), sorted = valid.map((x) => x.c).sort((a, b) => a - b);
+  const medC = n ? (n % 2 ? sorted[(n - 1) / 2] : (sorted[n / 2 - 1] + sorted[n / 2]) / 2) : null;
+  // medC is a whole or half hundredth: written exactly with three decimals (thousandths).
+  const m3 = medC === null ? null : Math.round(medC * 10), median = m3 === null ? null : (m3 < 0 ? '-' : '') + String(Math.floor(Math.abs(m3) / 1000)) + '.' + String(Math.abs(m3) % 1000).padStart(3, '0');
+  const place = new Map(valid.map((x, i) => [x.id, { rank: i + 1, decile: dec ? dec[i] : null }]));
+  const rows = ids.map((id, i) => {
+    const c = values[i];
+    if (c === null) return { value: null, null_reasons: [reasonFor], security_id: id, series_id: 'SYNTHETIC:R-' + id, rank: null, decile: null,
+      conditions: { gt_zero: null, ge_median: null, gt_median: null, top_decile: null, bottom_decile: null, exclude_D10: null } };
+    const p = place.get(id), d = p.decile, half = medC;
+    return { value: str(c), null_reasons: d === null ? ['N_BELOW_10'] : [], security_id: id, series_id: 'SYNTHETIC:R-' + id, rank: p.rank, decile: d,
+      conditions: { gt_zero: c > 0, ge_median: c >= half, gt_median: c > half, top_decile: d === null ? null : d === 10, bottom_decile: d === null ? null : d === 1, exclude_D10: d === null ? null : d !== 10 } };
   });
-  return { schema_version: 'tech-screen-v0', generated_at: '2026-11-03T09:00:00Z', source_commit: H40, data_status: status, evaluations };
+  return { n_valid: n, n_members: ids.length, median, k: n >= 10 ? Math.floor(n / 10) : null, null_reason: null, rows };
 }
-// The U_B 6-month momentum D10 companies of day k (ids), the one without volatility and the one in the volatility D10.
-function cases(p, k = 0) {
-  const ev = p.evaluations[k], ub = ev.rows.filter((r) => r.groups.includes('U_B'));
-  const d10 = ub.filter((r) => r.metrics.mom_6m.decile.U_B === 10);
-  return { d10: d10.map((r) => r.company_id), noVol: d10.filter((r) => r.metrics.vol_6m.value === null).map((r) => r.company_id),
-    volTop: d10.filter((r) => r.metrics.vol_6m.decile.U_B === 10).map((r) => r.company_id), small: ev.rows.filter((r) => r.groups.includes('U_SMALL')).map((r) => r.company_id) };
+// A confirmed board over the given ids (order kept: later ids get larger momentum, so callers put the rows they want at the top last).
+function joined(ids, { signal_day = '2018-02-16', group_id = 'SYNTHETIC:LEADERBOARD' } = {}) {
+  const n = ids.length, vals = {
+    momentum_3m: ids.map((_, i) => -3000 + Math.round((2500 * i) / n)),
+    momentum_6m: ids.map((_, i) => -4500 + Math.round((4000 * i) / n)),
+    momentum_12m: ids.map((_, i) => -3500 + Math.round((3000 * i) / n)),
+    volatility_6m: ids.map((_, i) => (i === n - 1 || i === n - 3 ? null : 80 + ((i * 7) % n))),
+    dollar_volume_6m: ids.map((_, i) => 9876543 + 13579 * ((i * 5) % n)),
+  };
+  const metrics = Object.fromEntries(METRICS.map((m) => [m, metric(ids, vals[m], 'METRIC_NOT_AVAILABLE')]));
+  return { schema: 'technical-leaderboard/1', signal_day, settings_version: 'technical-leaderboard/2026-11-03.1', settings_sha256: 'e'.repeat(64), group_id,
+    membership_status: 'CONFIRMED', membership_source: 'SYNTHETIC:MEMBERSHIP', population_hash: 'f'.repeat(64), metrics };
 }
-module.exports = { DAYS, payload, cases };
+module.exports = { CODEX_PATH, CODEX_SHA256, codex, codexText, codexSha, METRICS, deciles, joined };

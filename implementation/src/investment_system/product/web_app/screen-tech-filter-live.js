@@ -1,70 +1,84 @@
-/* 1.1.8 기술 조건 필터 (feature 3.5; owner 2026-11-03 "계층 3 기술적 분석 리더보드 화면"), the part of the QGV leaderboard that runs
-   after IS2.ready. screen-qgv-live.js asks IS2.techFilterLive.create({signal, redraw}) once per route and calls, on every draw:
-   keep(rows) (the leaderboard rows the tech filter lets through, or null while it is off), head() / cell(row) / sub(row) (the
-   table's tech column and the phone line) and block() (this block's content).
-   - Flow (owner): 평가일·비교 그룹 선택 → 지표 원값·분위 확인 → 필터 조합 → QGV 등으로 정렬. The sort stays the leaderboard's
-     (1.1.2, QGV high first by default): the filter only hides rows, never re-ranks; ranks and scores are unchanged.
-   - Deciles, medians and denominators are the file's for the chosen group; adding filters never changes them (IS2.techScreen).
-     A condition that needs a missing value or decile is 판정 불가: such rows leave the table and are listed here with their reason.
-   - Data: IS2.techScreen.source() (today NONE: no public file, no request) validated by IS2.techScreen.validate; the whole file is
-     refused at its first fault. Private research values are never wired to this public screen.
-   - Values are price-derived: they appear only as text inside [data-ram-price]; reason codes go to data-na; the view state (switch,
-     day, group, conditions) lives in RAM in this module (kept across routes of one page load, gone on reload). Nothing is stored. */
+/* 1.1.8 기술 조건 필터 (feature 3.5; owner 2026-11-03 and 2026-11-04), the part of the QGV leaderboard that runs after IS2.ready.
+   screen-qgv-live.js asks IS2.techFilterLive.create({signal, redraw}) once per route and calls on every draw: keep(rows) (the
+   leaderboard rows the filter lets through, or null when it does not apply), head() / cell(row) / sub(row) (the table's tech column
+   and the phone line) and block() (this block's content).
+   - Data: Codex's technical-leaderboard/1 boards (#469) through IS2.techScreen (validate, evaluate); today the source is NONE.
+     One board per (signal_day, group_id). Ranks, N, medians and deciles are the board's and never change with the filters; the
+     conditions are the board's own booleans (중앙값 이상 = ge_median, 중앙값 초과 = gt_median); a null condition is 판정 불가.
+   - Flow (owner): ① 평가일·비교 그룹(보드) → ② 지표 원값·분위 → ③ 필터 → ④ 결과. The block's own board table lists the board's rows
+     with their ORIGINAL rank of the chosen metric (the rank number is the board's, never renumbered after filtering). The
+     leaderboard table is filtered only for board rows that join a leaderboard row (security_id = the row's id or code; QGV join
+     key [signal_day, security_id]); its sort stays 1.1.2 (QGV high first by default). No join → the leaderboard is left as it is
+     and the block says why.
+   - States kept apart: 그룹 구성 미확인 (GROUP_MEMBERSHIP_UNCONFIRMED: no N, rank, median or decile), 유효 N < 10 (ranks and median,
+     no decile), 계산 후 조건 충족 0건 (every condition decided, none passed), 판정 불가 (a condition the board cannot decide).
+   - A null value is NA with its reason; raw_value is never shown and never fills it. Values are price-derived: text inside
+     [data-ram-price] only; the view state lives in RAM (this page load); nothing is stored. */
 (function(){
 'use strict';
 const I=window.IS2,{h}=I;
 const T=()=>I.techScreen;
-// RAM view state, this page load only.
-const V={on:false,day:null,group:null,f:null};
-const ramText=(...t)=>h('span',{dataset:{ramPrice:''}},...t);
-const naLine=(code,words)=>h('span',{class:'reason',dataset:{na:code||''}},words);
+const V={on:false,board:null,conds:{},by:'momentum_6m'};
+const ram=(...t)=>h('span',{dataset:{ramPrice:''}},...t);
+const na=(code,words)=>h('span',{class:'reason',dataset:{na:code||''}},words);
+const STATE_WORDS={UNCONFIRMED:'그룹 구성 미확인 · 순위·중앙값·분위 없음',N_BELOW_10:null,OK:null};
 
 function create({signal,redraw}){
  const ctx={src:null,value:null,err:null,loading:false};
- const S=T();if(!V.f)V.f=S.blank();
- function load(){if(ctx.loading)return;ctx.loading=true;
-  let p;try{p=T().source();}catch(e){p=Promise.reject(e);}
+ function load(){if(ctx.loading)return;ctx.loading=true;let p;try{p=T().source();}catch(e){p=Promise.reject(e);}
   Promise.resolve(p).then(src=>{if(signal.aborted)return;ctx.loading=false;ctx.src=src||null;ctx.value=null;ctx.err=null;
    if(src&&src.state==='OK'){const r=T().validate(src.payload);if(r.ok)ctx.value=r.value;else ctx.err=r.code;}
-   if(ctx.value){const ev=ctx.value.evaluations;if(!ev.some(e=>e.as_of===V.day))V.day=ev[ev.length-1].as_of;
-    const e=evOf();if(!e.groups.some(g=>g.id===V.group))V.group=e.groups[0].id;}
-   redraw();},()=>{if(signal.aborted)return;ctx.loading=false;ctx.src={state:'ERROR',code:'TECH_SOURCE_FAILED'};ctx.value=null;ctx.err=null;redraw();});}
- const evOf=()=>ctx.value?ctx.value.evaluations.find(e=>e.as_of===V.day)||null:null;
- const groupOf=()=>{const e=evOf();return e?e.groups.find(g=>g.id===V.group)||null:null;};
- const on=()=>V.on&&!!evOf()&&!!groupOf();
+   if(ctx.value&&!ctx.value.boards.some(b=>b.id===V.board))V.board=ctx.value.boards[0].id;redraw();},
+  ()=>{if(signal.aborted)return;ctx.loading=false;ctx.src={state:'ERROR',code:'TECH_SOURCE_FAILED'};ctx.value=null;redraw();});}
+ const entry=()=>ctx.value?ctx.value.boards.find(b=>b.id===V.board)||null:null;
+ const board=()=>{const e=entry();return e?e.board:null;};
+ const conds=()=>T().METRICS.filter(m=>V.conds[m]&&V.conds[m]!=='none').map(m=>({metric:m,condition:V.conds[m]}));
  let memo=null;
- function result(){const e=evOf();if(!e)return null;const key=e.as_of+'|'+V.group+'|'+JSON.stringify(V.f);
-  if(memo&&memo.key===key&&memo.e===e)return memo.r;memo={key,e,r:T().evaluate(e,V.group,V.f)};return memo.r;}
- const rowOf=id=>{const e=evOf();return e?e.rows.find(r=>r.company_id===id)||null:null;};
+ function result(){const b=board();if(!b)return null;const key=V.board+'|'+JSON.stringify(conds());if(memo&&memo.key===key&&memo.b===b)return memo.r;
+  memo={key,b,r:T().evaluate(b,conds())};return memo.r;}
+ let secMemo=null;const secs=()=>{const b=board();if(!b)return new Map();if(secMemo&&secMemo.b===b)return secMemo.s;secMemo={b,s:T().securities(b)};return secMemo.s;};
+ // Board rows joined to leaderboard rows (QGV join key: the security id equals the leaderboard row's id or code).
+ function joinOf(rows){const by=new Map();for(const r of rows){by.set(r.id,r);if(r.code)by.set(r.code,r);}const out=new Map();
+  for(const[k,s]of secs())if(s.security_id&&by.has(s.security_id))out.set(by.get(s.security_id).id,k);return out;}
+ let joinMemo=null;
+ function keep(rows){if(!V.on||!board())return null;const j=joinOf(rows);joinMemo=j;if(!j.size)return null;const r=result();
+  return{rows:rows.filter(x=>j.has(x.id)&&r.rows.get(j.get(x.id)).state==='PASS'),joined:j.size,result:r};}
+ const on=()=>V.on&&!!board()&&!!joinMemo&&joinMemo.size>0;
+ const secOfRow=row=>{const k=joinMemo&&joinMemo.get(row.id);return k?secs().get(k):null;};
 
- // The leaderboard rows the filter lets through (PASS of the chosen group), or null while it is off.
- function keep(rows){if(!on())return null;const r=result(),pass=new Set();for(const[id,x]of r.rows)if(x.state==='PASS')pass.add(id);
-  let outside=0;for(const row of rows)if(!r.rows.has(row.id))outside++;
-  return{rows:rows.filter(x=>pass.has(x.id)),outside,result:r};}
-
- /* ---- one metric of one row: value + decile (RAM text) or NA with its reason */
- function metricLine(r,m,{short=false}={}){
-  const S=T(),x=r.metrics[m],g=V.group,d=x.decile[g],e=evOf(),st=e.stats[g][m],label=short?S.META[m].short:S.META[m].label;
-  if(x.value===null)return h('span',{class:'tm',dataset:{metric:m}},label,' ',naLine(x.reason,'NA · '+S.reasonText(x.reason)));
-  return h('span',{class:'tm',dataset:{metric:m}},label,' ',ramText(S.format(m,x.value),d!==null?' · '+S.decileText(d):''),
-   d===null?[' ',naLine(st.reason||'DECILE_NA','분위 없음 · '+S.reasonText(st.reason||'DECILE_NA'))]:null);}
- function detail(r){const S=T(),e=evOf(),g=groupOf();
+ /* ---- one metric of one security: value + rank/decile (RAM text) or NA with its reason */
+ function metricLine(s,m,{short=false}={}){const S=T(),r=s.rows[m],label=short?S.META[m].short:S.META[m].label;
+  if(!r)return h('span',{class:'tm',dataset:{metric:m}},label,' ',na('NO_ROW',S.reasonText('NO_ROW')));
+  const v=S.display(m,r);if(v===null)return h('span',{class:'tm',dataset:{metric:m}},label,' ',na(r.null_reasons[0]||'',S.reasonText(r.null_reasons[0])));
+  return h('span',{class:'tm',dataset:{metric:m}},label,' ',ram(v,r.rank!==null?' · '+r.rank+'위':'',r.decile!==null?' · '+S.decileText(r.decile):''),
+   r.decile===null&&r.null_reasons.length?[' ',na(r.null_reasons[0],S.reasonText(r.null_reasons[0]))]:null);}
+ function detail(s){const S=T(),b=board();
   return h('details',{class:'why tech-why'},h('summary',null,'기술 상세 ▸'),
-   h('ul',null,...S.METRICS.map(m=>{const x=r.metrics[m],st=e.stats[g.id][m],d=x.decile[g.id];
-    return h('li',{dataset:{metric:m}},h('b',null,S.META[m].label),' · ',S.META[m].unit,' · ',
-     x.value===null?naLine(x.reason,'값 NA · '+S.reasonText(x.reason)):ramText('값 ',S.format(m,x.value),' · 분위 ',d===null?'없음':S.decileText(d)),
-     x.value!==null&&d===null?[' ',naLine(st.reason||'DECILE_NA',S.reasonText(st.reason||'DECILE_NA'))]:null,
-     ' · 분모 ',String(st.n_valid),'/',String(g.members),' (',g.label,') · 관측 ',x.obs_days===null?'NA':String(x.obs_days),'/',x.expected_days===null?'NA':String(x.expected_days),'일',
-     x.value!==null&&x.reason?[' · ',naLine(x.reason,S.reasonText(x.reason))]:null);})),
-   h('p',{class:'reason'},'기준일 ',e.as_of,' · 비교 그룹 ',g.label));}
- // Table column (PC) and phone line: the chosen conditions' metrics first, then the rest (PC) / 6개월 모멘텀 (phone).
- function order(){const S=T(),first=T().conditions(V.f).map(c=>c.metric);return[...new Set([...first,...S.METRICS])];}
- const head=()=>(on()?'기술 지표 · '+groupOf().label+' 기준':null);
- function cell(row){if(!on())return null;const r=rowOf(row.id);if(!r)return naLine('NO_TECH_ROW',T().reasonText('NO_TECH_ROW'));
-  return h('div',{class:'tech-cell'},...order().map(m=>metricLine(r,m,{short:false})),detail(r));}
- function sub(row){if(!on())return null;const r=rowOf(row.id);if(!r)return h('span',{class:'m-only sub-line'},naLine('NO_TECH_ROW',T().reasonText('NO_TECH_ROW')));
-  const firsts=T().conditions(V.f).map(c=>c.metric),show=firsts.length?[...new Set(firsts)].slice(0,3):['mom_6m'];
-  return[h('span',{class:'m-only sub-line tech-line'},...show.flatMap((m,i)=>[i?' · ':'',metricLine(r,m,{short:true})])),h('span',{class:'m-only'},detail(r))];}
+   h('ul',null,...S.METRICS.map(m=>{const x=b.metrics[m],r=s.rows[m],v=r?S.display(m,r):null;
+    return h('li',{dataset:{metric:m}},h('b',null,S.META[m].label),' · ',
+     v===null?na(r?r.null_reasons[0]||'':'NO_ROW','NA · '+S.reasonText(r?r.null_reasons[0]:'NO_ROW')):ram('값 ',v,' · 순위 ',r.rank===null?'없음':r.rank+'위',' · 분위 ',r.decile===null?'없음':S.decileText(r.decile)),
+     ' · 분모 ',x.n_valid===null?'NA':String(x.n_valid),'/',x.n_members===null?'NA':String(x.n_members),
+     r&&v!==null&&r.null_reasons.length?[' · ',na(r.null_reasons[0],S.reasonText(r.null_reasons[0]))]:null);})),
+   h('p',{class:'reason'},'기준일 ',b.signal_day,' · 비교 그룹 ',b.group_id));}
+ const head=()=>(on()?'기술 지표 · '+board().group_id+' · '+board().signal_day:null);
+ function cell(row){if(!on())return null;const s=secOfRow(row);if(!s)return na('NO_ROW',T().reasonText('NO_ROW'));
+  return h('div',{class:'tech-cell'},...T().METRICS.map(m=>metricLine(s,m)),detail(s));}
+ function sub(row){if(!on())return null;const s=secOfRow(row);if(!s)return h('span',{class:'m-only sub-line'},na('NO_ROW',T().reasonText('NO_ROW')));
+  const first=conds().map(c=>c.metric),show=first.length?[...new Set(first)].slice(0,3):['momentum_6m'];
+  return[h('span',{class:'m-only sub-line tech-line'},...show.flatMap((m,i)=>[i?' · ':'',metricLine(s,m,{short:true})])),h('span',{class:'m-only'},detail(s))];}
+
+ /* ---- the board table of ④: rows in the ORIGINAL rank of the chosen metric (null ranks last), never renumbered */
+ function boardTable(keys,phone){const S=T(),list=[...keys].map(k=>secs().get(k)),by=V.by;
+  const rk=s=>{const r=s.rows[by];return r&&r.rank!==null?r.rank:Infinity;};
+  list.sort((a,b)=>rk(a)-rk(b)||(a.key<b.key?-1:a.key>b.key?1:0));
+  const name=s=>s.symbol||s.security_id||s.series_id,rankCell=s=>{const r=s.rows[by];return r&&r.rank!==null?String(r.rank):'—';};
+  if(phone)return h('ol',{class:'news-lines tf-board',dataset:{tfBoard:String(list.length)}},...list.map(s=>h('li',{dataset:{tfRow:s.key}},
+   h('b',{dataset:{tfRank:''}},rankCell(s)),' ',name(s),h('span',{class:'sub-line tech-line'},...S.METRICS.flatMap((m,i)=>[i?' · ':'',metricLine(s,m,{short:true})])),detail(s))));
+  return h('div',{class:'tbl-wrap'},h('table',{class:'tbl tf-board',dataset:{tfBoard:String(list.length)}},
+   h('caption',null,'보드 행 · 원래 순위 = ',S.META[by].label,' 순위(보드 그대로, 필터 뒤 다시 매기지 않음)'),
+   h('thead',null,h('tr',null,h('th',{scope:'col'},'원래 순위'),h('th',{scope:'col'},'종목'),...S.METRICS.map(m=>h('th',{scope:'col'},S.META[m].short)))),
+   h('tbody',null,...list.map(s=>h('tr',{dataset:{tfRow:s.key}},h('td',{dataset:{tfRank:''}},rankCell(s)),h('td',null,name(s)),
+    ...S.METRICS.map(m=>h('td',{dataset:{metric:m}},metricLine(s,m,{short:true}))))))));}
 
  /* ---- the block */
  function block(){
@@ -73,50 +87,50 @@ function create({signal,redraw}){
   if(src.state==='NONE')return[h('div',{class:'sk state-card',dataset:{techState:'NONE',na:src.code||'TECH_SCREEN_NOT_CONNECTED'}},h('b',null,S.TEXT.NONE),h('span',null,S.TEXT.NONE_WHY)),
    h('p',{class:'hand'},'흐름: ① 평가일·비교 그룹 → ② 지표 원값·분위 → ③ 필터 → ④ QGV 순으로 보기 · 자료가 오면 켜짐'),
    h('div',{class:'tech-defs'},...S.METRICS.map(m=>h('p',{class:'reason',dataset:{metricDef:m}},h('b',null,S.META[m].label),' · ',S.META[m].unit,' · ',S.META[m].d10)))];
-  if(src.state!=='OK'||ctx.err)return[h('div',{class:'sk state-card',role:'alert',dataset:{techState:'ERROR',na:ctx.err||src.code||'TECH_SOURCE_FAILED'}},h('b',null,ctx.err?S.TEXT.INVALID:S.TEXT.FAILED),
-   h('span',{class:'reason'},'리더보드는 기술 조건 없이 그대로')),];
-  const e=evOf(),g=groupOf(),val=ctx.value;
-  const status=h('p',{class:'sk status-line',dataset:{techData:val.data_status}},S.status(val),' · 생성 ',val.generated_at.slice(0,16).replace('T',' '),' · 계산 Codex · 공개 판정 아님');
-  // ① 평가일 · 비교 그룹
-  const daySel=h('select',{id:'tf-day',dataset:{k:'tf-day'},onchange:ev=>{V.day=ev.target.value;const x=evOf();if(x&&!x.groups.some(q=>q.id===V.group))V.group=x.groups[0].id;redraw();}},
-   ...val.evaluations.map(x=>h('option',{value:x.as_of,selected:x.as_of===V.day},x.as_of)));
-  const groupSel=h('select',{id:'tf-group',dataset:{k:'tf-group'},onchange:ev=>{V.group=ev.target.value;redraw();}},
-   ...e.groups.map(q=>h('option',{value:q.id,selected:q.id===V.group},q.label,' · ',String(q.members),'개')));
-  const step1=h('div',{class:'tf-step',dataset:{tfStep:'1'}},h('b',null,'① 평가일 · 비교 그룹'),
-   h('div',{class:'sort-row'},h('label',{for:'tf-day'},'평가일'),daySel,h('label',{for:'tf-group'},'비교 그룹'),groupSel),
-   h('p',{class:'reason'},'분위·중앙값·분모는 이 그룹 기준으로 고정 · 필터를 더해도 다시 매기지 않음'));
-  // ② 지표 원값 · 분위 (one card per metric)
-  const cards=S.METRICS.map(m=>{const st=e.stats[g.id][m];
-   return h('div',{class:'sk tcard',dataset:{metricCard:m}},h('b',null,S.META[m].label),
-    h('span',{class:'reason'},'단위 ',S.META[m].unit,' · 창 ',S.META[m].window),
-    h('span',null,'기준일 ',e.as_of,' · 비교 그룹 ',g.label),
-    h('span',{dataset:{validCount:''}},'유효 종목 ',String(st.n_valid),' / ',String(g.members)),
-    st.median===null?naLine(st.reason||'GROUP_MEDIAN_NA','중앙값 없음 · '+S.reasonText(st.reason||'GROUP_MEDIAN_NA')):h('span',null,'중앙값 ',ramText(S.format(m,st.median))),
-    st.deciles?h('span',null,'분위 매김 (D1~D10)'):naLine(st.reason,'분위 없음 · '+S.reasonText(st.reason)),
-    h('span',{class:'hand'},S.META[m].d10));});
-  const step2=h('div',{class:'tf-step',dataset:{tfStep:'2'}},h('b',null,'② 지표 원값 · 분위'),h('div',{class:'tcards'},...cards),
-   h('p',{class:'reason'},'종목별 값은 표의 기술 지표 칸 · 휴대폰은 줄 아래 · 분모·관측일·결손 사유는 \'기술 상세\''));
+  if(src.state!=='OK'||ctx.err)return[h('div',{class:'sk state-card',role:'alert',dataset:{techState:'ERROR',na:ctx.err||src.code||'TECH_SOURCE_FAILED'}},
+   h('b',null,ctx.err?S.TEXT.INVALID:S.TEXT.FAILED),h('span',{class:'reason'},'리더보드는 기술 조건 없이 그대로'))];
+  const val=ctx.value,b=board(),phone=window.matchMedia&&window.matchMedia('(max-width:720px)').matches;
+  const status=h('p',{class:'sk status-line',dataset:{techData:val.data_kind||'UNSPECIFIED'}},S.status(val),' · ',S.SCHEMA,' · 설정 ',b.settings_version,' · 계산 Codex · 공개 판정 아님');
+  // ① 평가일 · 비교 그룹 (보드)
+  const sel=h('select',{id:'tf-board',dataset:{k:'tf-board'},onchange:e=>{V.board=e.target.value;redraw();}},...val.boards.map(x=>h('option',{value:x.id,selected:x.id===V.board},x.label)));
+  const step1=h('div',{class:'tf-step',dataset:{tfStep:'1'}},h('b',null,'① 평가일 · 비교 그룹'),h('div',{class:'sort-row'},h('label',{for:'tf-board'},'보드'),sel),
+   h('p',{class:'reason',dataset:{tfMembership:b.membership_status}},'평가일 ',b.signal_day,' · 그룹 ',b.group_id,' · 구성원 ',b.membership_status==='CONFIRMED'?'확인됨':'미확인',
+    ' · 순위·분위·중앙값·분모는 이 보드 그대로 · 필터를 더해도 다시 매기지 않음'));
+  // ② 지표 카드
+  const cards=S.METRICS.map(m=>{const x=b.metrics[m],st=S.metricState(b,m);
+   const words=st==='UNCONFIRMED'?STATE_WORDS.UNCONFIRMED:st==='N_BELOW_10'?'유효 종목 '+x.n_valid+' < 10 · 순위·중앙값만 · 분위 없음':'분위 매김 (D10·D1 각 '+x.k+'개)';
+   return h('div',{class:'sk tcard',dataset:{metricCard:m,techMetricState:st}},h('b',null,S.META[m].label),h('span',{class:'reason'},'단위 ',S.META[m].unit),
+    h('span',null,'기준일 ',b.signal_day,' · 비교 그룹 ',b.group_id),
+    h('span',{dataset:{validCount:''}},'유효 종목 ',x.n_valid===null?'NA':String(x.n_valid),' / ',x.n_members===null?'NA':String(x.n_members)),
+    x.median===null?na(x.null_reason||'',' 중앙값 없음'):h('span',null,'중앙값 ',ram(S.medianText(m,x.median))),
+    h('span',{class:st==='OK'?'':'reason',dataset:{metricStateText:st}},words),h('span',{class:'hand'},S.META[m].d10));});
+  const step2=h('div',{class:'tf-step',dataset:{tfStep:'2'}},h('b',null,'② 지표 원값 · 분위'),h('div',{class:'tcards'},...cards));
   // ③ 필터
-  const pick=(id,label,opts,value,set)=>h('div',{class:'sk fcard',dataset:{tfFilter:id}},h('label',{for:'tf-'+id},label),
-   h('select',{id:'tf-'+id,dataset:{k:'tf-'+id},onchange:ev=>{set(ev.target.value);redraw();}},...opts.map(([v,t])=>h('option',{value:v,selected:v===value},t))));
-  const filters=[...S.PERIODS.map(p=>pick('mom-'+p,S.META['mom_'+p].label,S.COND.mom,V.f.mom[p],v=>{V.f={...V.f,mom:{...V.f.mom,[p]:v}};})),
-   pick('vol',S.META.vol_6m.label,S.COND.vol,V.f.vol,v=>{V.f={...V.f,vol:v};}),pick('adv',S.META.adv_6m.label,S.COND.adv,V.f.adv,v=>{V.f={...V.f,adv:v};})];
-  const sw=h('label',{class:'check'},h('input',{type:'checkbox',checked:V.on,dataset:{k:'tf-on'},onchange:ev=>{V.on=ev.target.checked;redraw();}}),'기술 조건 적용 (표를 이 그룹·조건으로 거름)');
-  const step3=h('div',{class:'tf-step',dataset:{tfStep:'3'}},h('b',null,'③ 필터 조합'),sw,h('div',{class:'lb-filters open tf-filters'},...filters),
-   S.active(V.f)?h('button',{type:'button',class:'btn',dataset:{k:'tf-clear'},onclick:()=>{V.f=S.blank();redraw();}},'기술 조건 모두 풀기'):null,
-   h('p',{class:'reason'},'조건이 없으면 그룹 안의 모든 종목 · 판정할 수 없는 조건은 통과로도 미충족으로도 세지 않음'));
+  const pick=m=>h('div',{class:'sk fcard',dataset:{tfFilter:m}},h('label',{for:'tf-'+m},S.META[m].label),
+   h('select',{id:'tf-'+m,dataset:{k:'tf-'+m},onchange:e=>{V.conds={...V.conds,[m]:e.target.value};redraw();}},
+    h('option',{value:'none',selected:!V.conds[m]||V.conds[m]==='none'},'조건 없음'),...S.CHOICES[m].map(c=>h('option',{value:c,selected:V.conds[m]===c},S.COND_TEXT[c]))));
+  const by=h('div',{class:'sort-row'},h('label',{for:'tf-by'},'원래 순위 기준'),h('select',{id:'tf-by',dataset:{k:'tf-by'},onchange:e=>{V.by=e.target.value;redraw();}},
+   ...S.METRICS.map(m=>h('option',{value:m,selected:V.by===m},S.META[m].label))));
+  const sw=h('label',{class:'check'},h('input',{type:'checkbox',checked:V.on,dataset:{k:'tf-on'},onchange:e=>{V.on=e.target.checked;redraw();}}),'리더보드 표에도 적용 (보드와 결합된 행만)');
+  const step3=h('div',{class:'tf-step',dataset:{tfStep:'3'}},h('b',null,'③ 필터 조합'),h('div',{class:'lb-filters open tf-filters'},...S.METRICS.map(pick)),by,sw,
+   conds().length?h('button',{type:'button',class:'btn',dataset:{k:'tf-clear'},onclick:()=>{V.conds={};redraw();}},'기술 조건 모두 풀기'):null,
+   h('p',{class:'reason'},'중앙값 이상 = 중앙값과 같은 값 포함 · 중앙값 초과 = 같은 값 제외 · 판정할 수 없는 조건은 통과로도 미충족으로도 세지 않음'));
   // ④ 결과
-  const r=result(),conds=r.conditions,total=r.counts.PASS+r.counts.FAIL+r.counts.UNKNOWN;
-  const unknown=[...r.rows].filter(([,x])=>x.state==='UNKNOWN');
-  const tick=id=>{const x=rowOf(id);return x?x.ticker:id;};
+  const r=result(),cs=r.conditions,total=r.counts.PASS+r.counts.FAIL+r.counts.UNKNOWN,unknown=[...r.rows].filter(([,x])=>x.state==='UNKNOWN');
+  const shown=cs.length?[...r.rows].filter(([,x])=>x.state==='PASS').map(([k])=>k):[...r.rows.keys()];
+  const j=joinMemo,joined=j?j.size:null;
   const step4=h('div',{class:'tf-step',dataset:{tfStep:'4'}},h('b',null,'④ 결과 · QGV 등으로 정렬'),
-   h('p',{class:'sk status-line',role:'status',dataset:{tfCount:''}},g.label,' ',String(total),'개 중 · 통과 ',String(r.counts.PASS),' · 조건 미충족 ',String(r.counts.FAIL),' · 판정 불가 ',String(r.counts.UNKNOWN)),
-   conds.length?h('p',{class:'reason',dataset:{tfConds:''}},'조건: ',conds.map(c=>S.condText(c.metric,c.rule)).join(' · ')):h('p',{class:'reason'},'조건 없음 · 그룹 안 전체'),
-   total>0&&r.counts.PASS===0?h('div',{class:'sk empty',dataset:{empty:'TECH_ZERO'}},h('p',null,'계산은 정상 · 조건을 모두 만족하는 종목 0개'),h('p',{class:'reason'},'자료 결손이 아니라 조건 결과 · 조건을 줄여 보세요')):null,
-   total===0?h('div',{class:'sk empty',dataset:{empty:'TECH_GROUP_EMPTY'}},h('p',null,'이 그룹에 기술 지표 행이 없습니다')):null,
+   h('p',{class:'sk status-line',role:'status',dataset:{tfCount:''}},b.group_id,' ',String(total),'개 중 · 통과 ',String(r.counts.PASS),' · 조건 미충족 ',String(r.counts.FAIL),' · 판정 불가 ',String(r.counts.UNKNOWN)),
+   cs.length?h('p',{class:'reason',dataset:{tfConds:''}},'조건: ',cs.map(c=>S.condText(c.metric,c.condition)).join(' · ')):h('p',{class:'reason'},'조건 없음 · 보드 전체'),
+   cs.length&&r.counts.PASS===0&&r.counts.UNKNOWN===0?h('div',{class:'sk empty',dataset:{empty:'TECH_ZERO'}},h('p',null,'계산 후 조건 충족 0건'),h('p',{class:'reason'},'모든 조건을 판정했고 통과한 종목이 없음 · 자료 결손이 아님')):null,
+   cs.length&&r.counts.PASS===0&&r.counts.UNKNOWN>0?h('div',{class:'sk empty',dataset:{empty:'TECH_UNDECIDED'}},h('p',null,'조건 충족 0건 · 판정 불가 ',String(r.counts.UNKNOWN),'건'),h('p',{class:'reason'},'판정할 수 없는 조건이 있음 · 아래 사유')):null,
    unknown.length?h('details',{class:'na',dataset:{tfUnknown:String(unknown.length)}},h('summary',null,'판정 불가 ',String(unknown.length),'개 · 사유'),
-    h('ul',null,...unknown.map(([id,x])=>h('li',{dataset:{unknownRow:id}},tick(id),' · ',...x.unknown.flatMap((u,i)=>[i?' · ':'',S.META[u.metric].label,' ',naLine(u.reason,S.reasonText(u.reason))]))))):null,
-   h('p',{class:'reason'},V.on?'표: 통과한 종목만 · 정렬은 1.1.2 그대로 (기본 QGV 높은 순) · 순위 번호·점수 그대로':'표에 적용하려면 위 \'기술 조건 적용\'을 켜세요'));
+    h('ul',null,...unknown.map(([k,x])=>h('li',{dataset:{unknownRow:k}},(secs().get(k).symbol||secs().get(k).security_id||k),' · ',
+     ...x.unknown.flatMap((u,i)=>[i?' · ':'',S.META[u.metric].label,' ',na(u.reason,S.reasonText(u.reason))]))))):null,
+   shown.length?boardTable(shown,phone):null,
+   h('p',{class:'reason',dataset:{tfJoin:joined===null?'OFF':String(joined)}},!V.on?'리더보드 표에 적용하려면 위 스위치를 켜세요 · 보드 표는 원래 순위 그대로':
+    joined?'리더보드 표: 결합된 '+joined+'개 중 통과한 종목만 · 정렬은 1.1.2 그대로(기본 QGV 높은 순) · 순위 번호·점수 그대로':
+    '리더보드 표에 적용할 수 없음 · 보드 행의 증권 ID가 리더보드 행과 결합되지 않음(QGV 결합 키 [평가일, 증권 ID]) · 리더보드는 그대로'));
   return[status,step1,step2,step3,step4];}
  return Object.freeze({load,on,keep,head,cell,sub,block});}
 I.techFilterLive=Object.freeze({create});

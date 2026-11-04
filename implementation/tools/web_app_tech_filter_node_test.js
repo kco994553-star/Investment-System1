@@ -1,142 +1,110 @@
 'use strict';
-// Feature 3.5 기술 조건 필터 (owner 2026-11-03): the pure part of web_app/tech-screen.js in node.
-//  - validate: the synthetic fixture passes (deep-frozen copy, the argument unchanged); each contract rule refuses the whole file
-//    with its code and path (schema, zone, commit, status enum, duplicate day / group / row, unknown and missing keys, null without
-//    reason, deciles off without reason, a decile for a group the row is not in, a decile in a group without deciles, a missing
-//    decile, a decile without a value, decile range, n_valid > members, obs_days > expected_days, negative volatility / volume,
-//    momentum <= -100%, non-finite numbers, invalid reason codes).
-//  - evaluate: only the chosen group is judged; PASS / FAIL / UNKNOWN by the owner's rule (a condition needing a missing value or
-//    decile is 판정 불가, never FAIL or PASS); the four owner states: negative D10 momentum passes top10 and fails gt0; missing
-//    volatility makes "D10 제외" unknown; a group too small for deciles makes top10 unknown for every row while values and the
-//    median stay; zero matches with no unknown; gte_median against the group median; adv only_d10 / exclude_d1; the file's
-//    stats and deciles are never changed by evaluate (the same denominators before and after any filter).
-//  - format / decileText / reasonText / condText / status, conditions() order and FILTER_INVALID, source() NONE without a request.
+// Feature 3.5 기술 조건 필터 (owner 2026-11-03, 2026-11-04): web_app/tech-screen.js against Codex's technical-leaderboard/1 (#469).
+//  - Codex's public synthetic fixture (tests/fixtures/technical_leaderboard_v1.json, byte-identical to #469 f1ca390a, sha256
+//    pinned) is read unchanged: five boards, one per case, with signal_day · group_id labels.
+//  - The owner's checks: a row equal to the median is ge_median true and gt_median false (interior_remainder_23 S011, the all-tied
+//    negative_ties_10 momentum_3m); group membership unknown, valid N < 10 and "computed, zero matches" are told apart; the
+//    fixture's own filter_example keeps exactly kept_security_ids; filtering never changes ranks, N, medians or deciles.
+//  - A null adopted value is null on display even when raw_value exists (never filled from the raw arithmetic).
+//  - The validator refuses the whole input at its first fault (schema, decimal strings, k, ranks, N, conditions, unconfirmed groups).
+//  - The joined-board generator follows Codex's decile allocation (N=23 → 2,3,3,3,2,2,2,2,2,2) and passes the same validator.
 const assert = require('node:assert/strict');
 const T = require('../src/investment_system/product/web_app/tech-screen.js');
 const X = require('./web_app_tech_filter_fixture.js');
 
-const COS = Array.from({ length: 60 }, (_, i) => ({ id: 'syn' + String(i).padStart(2, '0'), ticker: 'SYN' + i }));
-const base = () => X.payload(COS);
-const F = (o = {}) => ({ ...T.blank(), ...o, mom: { ...T.blank().mom, ...(o.mom || {}) } });
 let n = 0;
 const ok = (name, fn) => { fn(); n++; console.log('PASS ' + name); };
+const P = X.codex(), V = T.validate(P), B = V.ok ? Object.fromEntries(V.value.boards.map((b) => [b.id, b.board])) : {};
+const C = (m, c) => ({ metric: m, condition: c });
+const pass = (r) => [...r.rows].filter(([, x]) => x.state === 'PASS').map(([k]) => k).sort();
 
-ok('fixture validates, copy is frozen and the argument unchanged', () => {
-  const p = base(), before = JSON.stringify(p), r = T.validate(p);
-  assert.equal(r.ok, true, JSON.stringify(r));
-  assert.equal(JSON.stringify(p), before);
-  assert.ok(Object.isFrozen(r.value) && Object.isFrozen(r.value.evaluations[0].rows[0].metrics.mom_6m.decile));
-  assert.equal(r.value.evaluations.length, 2);
+ok('Codex fixture: byte-identical to #469 f1ca390a and read unchanged', () => {
+  assert.equal(X.codexSha(), X.CODEX_SHA256);
+  assert.equal(V.ok, true, JSON.stringify(V));
+  assert.deepEqual(V.value.boards.map((b) => b.id), ['interior_remainder_23', 'negative_ties_10', 'small_n_9', 'unknown_group', 'missing_volatility']);
+  assert.equal(V.value.boards[0].label, '2018-02-16 · SYNTHETIC:GROUP · interior_remainder_23');
+  assert.equal(V.value.data_kind, 'SYNTHETIC');
+  assert.ok(Object.isFrozen(V.value.boards[0].board.metrics.momentum_6m.rows[0].conditions));
+  assert.equal(T.validate(P.cases.interior_remainder_23).ok, true, 'one board alone');
+  assert.equal(T.validate(Object.values(P.cases)).ok, true, 'an array of boards');
 });
-
+ok('median-equal rows: ge_median true, gt_median false (interior_remainder_23 S011; negative_ties_10 momentum_3m all tied)', () => {
+  for (const m of X.METRICS) {
+    const x = B.interior_remainder_23.metrics[m], row = x.rows.find((r) => r.value === x.median);
+    assert.equal(row.security_id, 'SYNTHETIC:S011'); assert.equal(row.conditions.ge_median, true, m); assert.equal(row.conditions.gt_median, false, m);
+  }
+  const ge = T.evaluate(B.negative_ties_10, [C('momentum_3m', 'ge_median')]), gt = T.evaluate(B.negative_ties_10, [C('momentum_3m', 'gt_median')]);
+  assert.deepEqual({ ...ge.counts }, { PASS: 10, FAIL: 0, UNKNOWN: 0 });
+  assert.deepEqual({ ...gt.counts }, { PASS: 0, FAIL: 10, UNKNOWN: 0 }, 'computed, zero matches (no unknown)');
+});
+ok('states kept apart: group unconfirmed, valid N < 10, computed zero matches', () => {
+  assert.deepEqual(X.METRICS.map((m) => T.metricState(B.unknown_group, m)), X.METRICS.map(() => 'UNCONFIRMED'));
+  assert.deepEqual(X.METRICS.map((m) => T.metricState(B.small_n_9, m)), X.METRICS.map(() => 'N_BELOW_10'));
+  assert.equal(T.metricState(B.interior_remainder_23, 'momentum_6m'), 'OK');
+  const u = T.evaluate(B.unknown_group, [C('momentum_6m', 'ge_median')]);
+  assert.deepEqual({ ...u.counts }, { PASS: 0, FAIL: 0, UNKNOWN: 2 });
+  for (const [, x] of u.rows) assert.deepEqual(x.unknown, [{ metric: 'momentum_6m', reason: 'GROUP_MEMBERSHIP_UNCONFIRMED' }]);
+  assert.equal(T.evaluate(B.unknown_group, [C('momentum_6m', 'gt_zero')]).counts.UNKNOWN, 0, 'an absolute condition is still decided');
+  const s = T.evaluate(B.small_n_9, [C('momentum_6m', 'top_decile')]);
+  assert.deepEqual({ ...s.counts }, { PASS: 0, FAIL: 0, UNKNOWN: 9 });
+  for (const [, x] of s.rows) assert.equal(x.unknown[0].reason, 'N_BELOW_10');
+  assert.equal(T.evaluate(B.small_n_9, [C('momentum_6m', 'ge_median')]).counts.UNKNOWN, 0, 'N < 10 keeps ranks and the median');
+});
+ok('the fixture filter_example keeps exactly kept_security_ids; missing volatility never passes exclude_D10', () => {
+  const fe = P.filter_example, r = T.evaluate(B[fe.case], fe.conditions.map((c) => C(c.metric, c.condition)));
+  assert.deepEqual(pass(r), [...fe.kept_security_ids].sort());
+  const s0 = r.rows.get('SYNTHETIC:S000');
+  assert.notEqual(s0.state, 'PASS');
+  const v = T.evaluate(B.missing_volatility, [C('volatility_6m', 'exclude_D10')]).rows.get('SYNTHETIC:S000');
+  assert.deepEqual(v.unknown, [{ metric: 'volatility_6m', reason: 'METRIC_NOT_AVAILABLE' }]);
+});
+ok('filtering never changes ranks, N, medians or deciles', () => {
+  const snap = JSON.stringify(B);
+  for (const b of Object.values(B)) for (const m of X.METRICS) for (const c of T.CHOICES[m]) T.evaluate(b, [C(m, c), C('momentum_6m', 'ge_median')]);
+  assert.equal(JSON.stringify(B), snap);
+});
+ok('a null adopted value is never filled from raw_value', () => {
+  const p = JSON.parse(X.codexText()), row = p.cases.unknown_group.metrics.dollar_volume_6m.rows[0];
+  Object.assign(row, { value: null, raw_value: '987654.32', null_reasons: ['TRADE_SCOPE_UNCONFIRMED'] });
+  row.conditions.gt_zero = null;
+  const r = T.validate(p); assert.equal(r.ok, true, JSON.stringify(r));
+  const got = r.value.boards.find((b) => b.id === 'unknown_group').board.metrics.dollar_volume_6m.rows[0];
+  assert.equal(T.display('dollar_volume_6m', got), null);
+  assert.equal(T.display('dollar_volume_6m', { value: '1025.00' }), '$1.0K');
+  assert.equal(T.display('volatility_6m', { value: '0.8123' }), '0.81%/일');
+  assert.equal(T.display('momentum_6m', { value: '-5.5' }), '−5.5%');
+  assert.equal(T.META.volatility_6m.label, '6개월 일간 변동성(%, 비연율화)');
+});
 const refusals = [
-  ['SCHEMA_VERSION', '$.schema_version', (p) => { p.schema_version = 'tech-screen-v1'; }],
-  ['GENERATED_AT_ZONE', '$.generated_at', (p) => { p.generated_at = '2026-11-03T09:00:00'; }],
-  ['SOURCE_COMMIT', '$.source_commit', (p) => { p.source_commit = 'D'.repeat(40); }],
-  ['ENUM', '$.data_status', (p) => { p.data_status = 'DEMO'; }],
-  ['KEY_UNKNOWN', '$.extra', (p) => { p.extra = 1; }],
-  ['KEY_MISSING', '$.evaluations[0].stats', (p) => { delete p.evaluations[0].stats; }],
-  ['AS_OF_DUPLICATE', '$.evaluations[1].as_of', (p) => { p.evaluations[1].as_of = p.evaluations[0].as_of; }],
-  ['DATE_INVALID', '$.evaluations[0].as_of', (p) => { p.evaluations[0].as_of = '2026-02-30'; }],
-  ['GROUP_DUPLICATE', '$.evaluations[0].groups[1].id', (p) => { p.evaluations[0].groups[1].id = 'U_A'; }],
-  ['ID_INVALID', '$.evaluations[0].groups[0].id', (p) => { p.evaluations[0].groups[0].id = 'u-a'; }],
-  ['ROW_DUPLICATE', '$.evaluations[0].rows[1].company_id', (p) => { p.evaluations[0].rows[1].company_id = p.evaluations[0].rows[0].company_id; }],
-  ['GROUP_UNKNOWN', '$.evaluations[0].rows[0].groups[0]', (p) => { p.evaluations[0].rows[0].groups[0] = 'U_Z'; }],
-  ['NULL_REASON_MISSING', '$.evaluations[0].rows[0].metrics.mom_3m.reason', (p) => { const x = p.evaluations[0].rows[0].metrics.mom_3m; x.value = null; x.reason = null; for (const g of Object.keys(x.decile)) x.decile[g] = null; }],
-  ['DECILES_OFF_REASON', '$.evaluations[0].stats.U_SMALL.mom_6m.reason', (p) => { p.evaluations[0].stats.U_SMALL.mom_6m.reason = null; }],
-  ['DECILE_GROUP', '$.evaluations[0].rows[1].metrics.mom_6m.decile.U_B', (p) => { p.evaluations[0].rows[1].metrics.mom_6m.decile.U_B = 3; }],
-  ['DECILES_OFF_ROW', '$.evaluations[0].rows[0].metrics.mom_6m.decile.U_SMALL', (p) => { p.evaluations[0].rows[0].metrics.mom_6m.decile.U_SMALL = 4; }],
-  ['DECILE_MISSING', '$.evaluations[0].rows[0].metrics.mom_6m.decile.U_A', (p) => { p.evaluations[0].rows[0].metrics.mom_6m.decile.U_A = null; }],
-  ['DECILE_RANGE', '$.evaluations[0].rows[0].metrics.mom_6m.decile.U_A', (p) => { p.evaluations[0].rows[0].metrics.mom_6m.decile.U_A = 11; }],
-  ['DECILE_WITHOUT_VALUE', '$.evaluations[0].rows[3].metrics.mom_12m.decile.U_A', (p) => { p.evaluations[0].rows[3].metrics.mom_12m.decile.U_A = 2; }],
-  ['N_VALID_RANGE', '$.evaluations[0].stats.U_B.vol_6m.n_valid', (p) => { p.evaluations[0].stats.U_B.vol_6m.n_valid = 999; }],
-  ['OBS_DAYS_RANGE', '$.evaluations[0].rows[0].metrics.mom_6m.obs_days', (p) => { p.evaluations[0].rows[0].metrics.mom_6m.obs_days = 500; }],
-  ['RANGE', '$.evaluations[0].rows[0].metrics.vol_6m.value', (p) => { p.evaluations[0].rows[0].metrics.vol_6m.value = -0.1; }],
-  ['RANGE', '$.evaluations[0].rows[0].metrics.mom_6m.value', (p) => { p.evaluations[0].rows[0].metrics.mom_6m.value = -1; }],
-  ['REASON_INVALID', '$.evaluations[0].rows[3].metrics.mom_12m.reason', (p) => { p.evaluations[0].rows[3].metrics.mom_12m.reason = 'short history'; }],
-  ['NUMBER_NOT_FINITE', '$.evaluations[0].rows[0].metrics.adv_6m.value', (p) => { p.evaluations[0].rows[0].metrics.adv_6m.value = Infinity; }],
-  ['TYPE', '$', () => 'text'],
+  ['SCHEMA_VERSION', '$.cases.small_n_9.schema', (p) => { p.cases.small_n_9.schema = 'technical-leaderboard/2'; }],
+  ['DECIMAL_INVALID', '$.cases.small_n_9.metrics.momentum_6m.rows[0].value', (p) => { p.cases.small_n_9.metrics.momentum_6m.rows[0].value = 8; }],
+  ['K_MISMATCH', '$.cases.interior_remainder_23.metrics.momentum_6m.k', (p) => { p.cases.interior_remainder_23.metrics.momentum_6m.k = 3; }],
+  ['RANK_INVALID', '$.cases.interior_remainder_23.metrics.momentum_6m.rows[1].rank', (p) => { p.cases.interior_remainder_23.metrics.momentum_6m.rows[1].rank = 1; }],
+  ['N_VALID_MISMATCH', '$.cases.missing_volatility.metrics.volatility_6m.n_valid', (p) => { p.cases.missing_volatility.metrics.volatility_6m.n_valid = 12; }],
+  ['CONDITION_MISMATCH', '$.cases.interior_remainder_23.metrics.momentum_3m.rows[11].conditions.gt_median',
+    (p) => { const r = p.cases.interior_remainder_23.metrics.momentum_3m.rows.find((x) => x.security_id === 'SYNTHETIC:S011'); r.conditions.gt_median = true; }],
+  ['GROUP_UNCONFIRMED_VALUES', '$.cases.unknown_group.metrics.momentum_6m', (p) => { p.cases.unknown_group.metrics.momentum_6m.median = '1'; }],
+  ['DECILE_BELOW_10', '$.cases.small_n_9.metrics.momentum_6m.rows[0].decile', (p) => { const r = p.cases.small_n_9.metrics.momentum_6m.rows[0]; r.decile = 10; }],
+  ['KEY_UNKNOWN', '$.cases.small_n_9.metrics.momentum_6m.rows[0].score', (p) => { p.cases.small_n_9.metrics.momentum_6m.rows[0].score = 1; }],
+  ['ENUM', '$.cases.small_n_9.membership_status', (p) => { p.cases.small_n_9.membership_status = 'PARTIAL'; }],
 ];
-ok('every contract rule refuses the whole file with its code and path', () => {
-  for (const [code, path, change] of refusals) {
-    const p = base(), out = change(p), r = T.validate(out === undefined ? p : out);
-    assert.deepEqual({ ok: r.ok, code: r.code, path: r.path }, { ok: false, code, path }, code + ' ' + path);
+ok('every rule refuses the whole input with its code and path', () => {
+  for (const [code, at, change] of refusals) {
+    const p = JSON.parse(X.codexText()); change(p);
+    const r = T.validate(p);
+    assert.deepEqual({ ok: r.ok, code: r.code, path: r.path }, { ok: false, code, path: at }, code);
   }
+  assert.throws(() => T.evaluate(B.small_n_9, [C('volatility_6m', 'gt_zero')]), /FILTER_INVALID/);
 });
-
-const V = T.validate(base()).value, D0 = V.evaluations[0], D1 = V.evaluations[1], C = X.cases(base());
-ok('owner state: market down, 6-month momentum D10 is negative and passes top10, fails gt0', () => {
-  const pass = T.evaluate(D0, 'U_B', F({ mom: { '6m': 'top10' } }));
-  const ids = [...pass.rows].filter(([, x]) => x.state === 'PASS').map(([id]) => id);
-  assert.deepEqual(ids.sort(), [...C.d10].sort());
-  for (const id of ids) assert.ok(D0.rows.find((r) => r.company_id === id).metrics.mom_6m.value < 0);
-  const gt0 = T.evaluate(D0, 'U_B', F({ mom: { '6m': 'gt0' } }));
-  assert.deepEqual({ ...gt0.counts }, { PASS: 0, FAIL: D0.rows.filter((r) => r.groups.includes('U_B')).length, UNKNOWN: 0 }, 'zero matches, no unknown');
+ok('joined-board generator: Codex allocation, valid, market-down D10 negative, missing volatility', () => {
+  const counts = (n) => { const c = {}; for (const d of X.deciles(n)) c[d] = (c[d] || 0) + 1; return [10, 9, 8, 7, 6, 5, 4, 3, 2, 1].map((d) => c[d]); };
+  assert.deepEqual(counts(23), [2, 3, 3, 3, 2, 2, 2, 2, 2, 2]);
+  assert.equal(X.deciles(9), null);
+  const ids = Array.from({ length: 40 }, (_, i) => 'co' + String(i).padStart(2, '0')), b = X.joined(ids), r = T.validate(b);
+  assert.equal(r.ok, true, JSON.stringify(r));
+  const top = b.metrics.momentum_6m.rows.filter((x) => x.decile === 10);
+  assert.ok(top.length && top.every((x) => x.value.startsWith('-')), 'D10 of a down market is negative');
+  assert.equal(b.metrics.volatility_6m.rows.filter((x) => x.value === null).length, 2);
 });
-ok('owner state: missing volatility makes "D10 제외" 판정 불가 (not pass, not fail); the D10-volatility row fails', () => {
-  const r = T.evaluate(D0, 'U_B', F({ mom: { '6m': 'top10' }, vol: 'exclude_d10' }));
-  assert.equal(r.rows.get(C.noVol[0]).state, 'UNKNOWN');
-  assert.deepEqual(r.rows.get(C.noVol[0]).unknown, [{ metric: 'vol_6m', reason: 'SOURCE_MISSING' }]);
-  assert.equal(r.rows.get(C.volTop[0]).state, 'FAIL');
-  assert.deepEqual(r.rows.get(C.volTop[0]).fails, ['vol_6m']);
-  assert.equal(r.counts.PASS, C.d10.length - 2);
-  assert.equal(r.counts.UNKNOWN, 1);
-  // A FAIL wins over an unknown on the same row.
-  const both = T.evaluate(D0, 'U_B', F({ mom: { '6m': 'gt0' }, vol: 'exclude_d10' }));
-  assert.equal(both.rows.get(C.noVol[0]).state, 'FAIL');
-});
-ok('owner state: values present, group too small for deciles: top10 unknown for every row, median still judged', () => {
-  const st = D0.stats.U_SMALL.mom_6m;
-  assert.equal(st.deciles, false); assert.equal(st.reason, 'GROUP_TOO_SMALL'); assert.equal(st.n_valid, 6); assert.notEqual(st.median, null);
-  for (const id of C.small) { const row = D0.rows.find((x) => x.company_id === id); assert.notEqual(row.metrics.mom_6m.value, null); assert.equal(row.metrics.mom_6m.decile.U_SMALL, null); }
-  const r = T.evaluate(D0, 'U_SMALL', F({ mom: { '6m': 'top10' } }));
-  assert.deepEqual({ ...r.counts }, { PASS: 0, FAIL: 0, UNKNOWN: 6 });
-  for (const [, x] of r.rows) assert.deepEqual(x.unknown, [{ metric: 'mom_6m', reason: 'GROUP_TOO_SMALL' }]);
-  const m = T.evaluate(D0, 'U_SMALL', F({ mom: { '6m': 'gte_median' } }));
-  assert.equal(m.counts.PASS, 3); assert.equal(m.counts.FAIL, 3);
-});
-ok('only the chosen group is judged; no filter = every member passes; adv rules; second day', () => {
-  const all = T.evaluate(D1, 'U_A', T.blank());
-  assert.deepEqual({ ...all.counts }, { PASS: D1.rows.length, FAIL: 0, UNKNOWN: 0 });
-  const ub = T.evaluate(D1, 'U_B', T.blank());
-  assert.equal(ub.rows.size, D1.groups.find((g) => g.id === 'U_B').members);
-  const top = T.evaluate(D1, 'U_A', F({ adv: 'only_d10' })), d1 = T.evaluate(D1, 'U_A', F({ adv: 'exclude_d1' }));
-  const want = (pred) => D1.rows.filter((r) => pred(r.metrics.adv_6m.decile.U_A)).length;
-  assert.equal(top.counts.PASS, want((d) => d === 10)); assert.equal(d1.counts.PASS, want((d) => d !== 1));
-  assert.ok(T.evaluate(D1, 'U_B', F({ mom: { '6m': 'gt0' } })).counts.PASS > 0, 'positive day');
-  assert.throws(() => T.evaluate(D1, 'U_Z', T.blank()), /GROUP_UNKNOWN/);
-});
-ok('filters never change the file\'s stats or deciles (denominators fixed to the chosen group)', () => {
-  const snap = JSON.stringify(D0);
-  for (const f of [F({ mom: { '3m': 'gt0', '6m': 'top10', '12m': 'gte_median' }, vol: 'exclude_d10', adv: 'exclude_d1' }), F({ vol: 'only_d10' }), T.blank()])
-    for (const g of ['U_A', 'U_B', 'U_SMALL']) T.evaluate(D0, g, f);
-  assert.equal(JSON.stringify(D0), snap);
-});
-ok('12-month momentum missing for one row: gt0 / gte_median / top10 are unknown with its reason', () => {
-  const id = D0.rows[3].company_id;
-  for (const rule of ['gt0', 'gte_median', 'top10']) {
-    const r = T.evaluate(D0, 'U_A', F({ mom: { '12m': rule } }));
-    assert.deepEqual(r.rows.get(id).unknown, [{ metric: 'mom_12m', reason: 'PRICE_HISTORY_SHORT' }], rule);
-  }
-});
-ok('conditions() order and FILTER_INVALID', () => {
-  assert.deepEqual(T.conditions(F({ adv: 'only_d10', vol: 'exclude_d10', mom: { '12m': 'gt0', '3m': 'top10' } })).map((c) => c.metric), ['mom_3m', 'mom_12m', 'vol_6m', 'adv_6m']);
-  assert.throws(() => T.conditions(F({ vol: 'top10' })), /FILTER_INVALID/);
-  assert.throws(() => T.conditions(F({ mom: { '6m': 'only_d10' } })), /FILTER_INVALID/);
-  assert.equal(T.active(T.blank()), false); assert.equal(T.active(F({ adv: 'exclude_d1' })), true);
-});
-ok('format / decileText / reasonText / condText / status', () => {
-  assert.equal(T.format('mom_6m', -0.1234), '−12.3%'); assert.equal(T.format('mom_6m', 0.05), '+5.0%'); assert.equal(T.format('mom_3m', 0), '0.0%');
-  assert.equal(T.format('vol_6m', 0.2345), '23.5%'); assert.equal(T.format('adv_6m', 98765432.1), '$98.8M'); assert.equal(T.format('adv_6m', 1.25e9), '$1.3B');
-  assert.equal(T.format('adv_6m', 512), '$512'); assert.equal(T.format('mom_6m', null), null);
-  assert.equal(T.decileText(10), 'D10'); assert.equal(T.decileText(null), null);
-  assert.equal(T.reasonText('GROUP_TOO_SMALL'), '비교 그룹의 유효 종목이 적어 분위를 매기지 않음'); assert.equal(T.reasonText('NEW_CODE'), '사유 코드 미등록');
-  assert.equal(T.condText('vol_6m', 'exclude_d10'), '6개월 변동성 · D10 제외 (가장 크게 흔들린 10% 빼기)');
-  assert.ok(T.META.vol_6m.d10.includes('크게 흔들린')); assert.ok(T.META.adv_6m.d10.includes('거래 규모가 가장 큰'));
-  assert.equal(T.status(V), '합성 데이터 · 시험용'); assert.equal(T.status({ data_status: 'REAL' }), '실데이터'); assert.equal(T.status(null), '기술 지표 자료가 아직 없습니다');
-});
-ok('source() answers NONE and makes no request', async () => {
-  const before = globalThis.fetch; let called = 0; globalThis.fetch = () => { called++; return Promise.reject(new Error('no')); };
-  return T.source().then((s) => { globalThis.fetch = before; assert.equal(s.state, 'NONE'); assert.equal(s.payload, null); assert.equal(called, 0); });
-});
+ok('source() answers NONE and makes no request', () => T.source().then((s) => { assert.equal(s.state, 'NONE'); assert.equal(s.payload, null); }));
 console.log(JSON.stringify({ passed: true, checks: n }));

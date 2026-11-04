@@ -60,7 +60,7 @@
 | 3.2.5 데이터 적합성 | 결정됨(10-31 TA-361) | — | #361 닫음(Yahoo 분할 이벤트 경로 안 씀) | 분할 확인은 1인 비공개 구역(#436) KIS 차트에서만(원주가÷수정주가 정수비 + SEC 주식수). 공개 실가격 창은 계속 `PRICE_BASIS_CONTINUITY_UNCONFIRMED` |
 | 3.3 차트 노트 | 구현 | 합성 | `chart-workbench.js`, #382(펜·수평선·지우개·되돌리기) | 계정·시트 저장(DRAW-STORE) |
 | 3.4 기술 구조 트리 | 구현 | — | `ia-screens.js` | — |
-| 3.5 기술 조건 리더보드 필터 (1.1.8) | 개발 빌드(합성) | 합성 | 새 앱 `web_app/tech-screen.js`, `screen-tech-filter-live.js`, `screen-qgv-live.js` | 11/03 오너 지시. 평가일·비교 그룹 → 지표 원값·분위 → 필터 → QGV 순. 실자료 미연결(원천 상태 NONE), 계산은 Codex, 화면 계약 `tech-screen-v0`는 Main 제안·Codex 합의 대기([TECH_FILTER_20261103](../../implementation/docs/frontend_v2/TECH_FILTER_20261103.md)). 비공개 연구값 공개·병합·배포는 별도 승인 |
+| 3.5 기술 조건 리더보드 필터 (1.1.8) | 개발 빌드(합성) | 합성 | 새 앱 `web_app/tech-screen.js`, `screen-tech-filter-live.js`, `screen-qgv-live.js` | 11/03 오너 지시, 11/04 Codex 계약 `technical-leaderboard/1`(#469 `f1ca390a`) 연동. 평가일·그룹별 보드 → 지표 원값·분위 → 필터(중앙값 이상/초과 구분) → 원래 순위 유지 · 결합 행만 QGV 순. 그룹 구성 미확인·유효 N<10·조건 충족 0건 구분. 실자료 미연결(원천 NONE), 리더보드 결합은 증권 ID 매핑 뒤([TECH_FILTER_20261103](../../implementation/docs/frontend_v2/TECH_FILTER_20261103.md)). 비공개 연구값 공개·병합·배포는 별도 |
 | 4.1.1·4.1.2 국면 그래프·탐색 | 부분 | — | `macro-cycle-ring.js` | 국면 모델 없음 → 공식 위치 "미산출" |
 | 4.1.3 근거 세로선 | 부분 | 실 | `macro-evidence.js`, #351·#352 | 탐색 전용. P1 13개 중 일부 수집(PARTIAL) |
 | 4.1.4 기존 매크로 연결 | 구현 | 실 | `macro-lights.js` | 게이트 재가동 M-REENABLE 결정 대기 |
