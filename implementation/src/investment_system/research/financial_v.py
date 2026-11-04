@@ -18,6 +18,10 @@ CONFIG = {
     },
     'metrics': ['earnings_yield', 'book_yield', 'tangible_book_yield'],
     'score_policy': 'NOT_DEFINED', 'rank_policy': 'NOT_DEFINED',
+    'book_common_basis': 'DIRECT_COMMON_EQUITY_OR_PARENT_WITH_EXPLICIT_ZERO_PREFERRED_SHARES',
+    'tangible_basis': 'EXPLICIT_ZERO_NCI_AND_COMPLETE_INTANGIBLES',
+    'diagnostic_date_policy': 'SAME_FISCAL_END_MONTH',
+    'security_basis_policy': 'CONFIRMED_CLASS_OR_EX_POST_ARITHMETIC_ONLY',
 }
 CONFIG_SHA256 = hashlib.sha256(json.dumps(CONFIG, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
 
@@ -51,6 +55,10 @@ def evaluate(row):
         raise ValueError('DATE_AND_CODE_REQUIRED')
     group, primary = CONFIG['groups'].get(str(row.get('sic')), ['BUSINESS_MODEL_UNRESOLVED', None])
     diagnostic = kind == 'EX_POST_FISCAL_DIAGNOSTIC'
+    security = row.get('security_basis') or {}
+    security_confirmed = (security.get('status') == 'SINGLE_CLASS_CONFIRMED' and bool(security.get('source')))
+    evidence_status = ('CLASS_BASIS_DOCUMENTED' if security_confirmed
+                       else 'ARITHMETIC_ONLY_SECURITY_BASIS_UNCONFIRMED')
     price = row.get('price') or {}
     results = {}
     for metric in CONFIG['metrics']:
@@ -76,6 +84,10 @@ def evaluate(row):
         end, filed = _day(fact.get('period_end')), _day(fact.get('filed'))
         if end is None or not 0 <= (valuation - end).days <= CONFIG['max_age_days']:
             reasons.append('PERIOD_NOT_ELIGIBLE')
+        if diagnostic and end is not None and (end.year, end.month) != (valuation.year, valuation.month):
+            reasons.append('DIAGNOSTIC_FISCAL_MONTH_MISMATCH')
+        if not diagnostic and not security_confirmed:
+            reasons.append('SECURITY_CLASS_BASIS_UNCONFIRMED')
         if metric == 'earnings_yield':
             start = _day(fact.get('period_start'))
             if start is None or end is None or not CONFIG['annual_days'][0] <= (end - start).days <= CONFIG['annual_days'][1]:
@@ -95,11 +107,13 @@ def evaluate(row):
         if value is not None and not _finite(value):
             reasons.append('RATIO_NOT_FINITE'); value = None
         results[metric] = {'value': value, 'unit': 'x', 'reasons': reasons,
-                           'inputs': {'numerator': fact or None, 'price': price or None}}
+                           'inputs': {'numerator': fact or None, 'price': price or None},
+                           'evidence_status': evidence_status}
     return {'schema_version': VERSION, 'config_sha256': CONFIG_SHA256, 'result_kind': kind,
             'code': row['code'], 'cik': row.get('cik'), 'valuation_date': str(valuation),
             'input_vintage': row['input_vintage'], 'business_group': group,
             'classification_basis': 'SIC_SCREEN_PROVISIONAL', 'identity_status': row.get('identity_status'),
+            'security_basis': security,
             'primary_metric': primary, 'metrics': results,
             'primary_available': bool(not diagnostic and primary and results[primary]['value'] is not None),
             'score': None, 'rank': None, 'scoring_reason': 'RESEARCH_RAW_ONLY_SCORING_NOT_DEFINED',
@@ -128,8 +142,8 @@ def candidate_coverage(official_rows, results, valuation_date):
 def common_book_inputs(payload, cutoff, class_evidence):
     """Conservative USD common-book inputs from one exact balance-sheet filing.
 
-    Parent equity excludes NCI by definition. Preferred carrying value is mandatory
-    (including explicit zero). Tangible deduction additionally requires explicit zero
+    Parent equity excludes NCI by definition. Direct common equity or explicit zero
+    preferred shares is mandatory; preferred par/stated value is never a deduction. Tangible deduction additionally requires explicit zero
     NCI because the consolidated intangible amount otherwise needs attribution.
     """
     empty = {'book_yield': None, 'tangible_book_yield': None, 'reasons': []}
@@ -153,23 +167,29 @@ def common_book_inputs(payload, cutoff, class_evidence):
             grouped.setdefault((end, filed, r['accn']), set()).add(r['val'])
         return {k: next(iter(v)) for k, v in grouped.items() if len(v) == 1}
 
+    direct_common = observations('CommonStockholdersEquity')
     equity = observations('StockholdersEquity')
-    if not equity:
+    anchors = {**equity, **direct_common}
+    if not anchors:
         return {**empty, 'reasons': ['PARENT_EQUITY_UNAVAILABLE']}
-    latest_end = max(k[0] for k in equity)
-    latest_filed = max(k[1] for k in equity if k[0] == latest_end)
-    keys = [k for k in equity if k[:2] == (latest_end, latest_filed)]
+    latest_end = max(k[0] for k in anchors)
+    latest_filed = max(k[1] for k in anchors if k[0] == latest_end)
+    keys = [k for k in anchors if k[:2] == (latest_end, latest_filed)]
     if len(keys) != 1 or proof_date < latest_end:
         return {**empty, 'reasons': ['BALANCE_OR_CLASS_DATE_UNCONFIRMED']}
     key = keys[0]
-    preferred = observations('PreferredStockValue').get(key)
+    preferred_shares = observations('PreferredStockSharesOutstanding', 'shares').get(key)
     shares = observations('CommonStockSharesOutstanding', 'shares').get(key)
-    if preferred is None or preferred < 0 or shares is None or shares <= 0:
-        return {**empty, 'reasons': ['SAME_FILING_PREFERRED_OR_INSTANT_SHARES_UNAVAILABLE']}
-    common = equity[key] - preferred
-    source = {'accession': key[2], 'concepts': ['StockholdersEquity', 'PreferredStockValue',
-               'CommonStockSharesOutstanding'], 'class_evidence': class_evidence,
-              'components': {'parent_equity': equity[key], 'preferred': preferred, 'shares': shares}}
+    common = direct_common.get(key)
+    if common is None and preferred_shares == 0:
+        common = equity.get(key)
+    if common is None or shares is None or shares <= 0:
+        return {**empty, 'reasons': ['COMMON_EQUITY_OR_SAME_FILING_INSTANT_SHARES_UNAVAILABLE']}
+    source = {'accession': key[2], 'class_evidence': class_evidence,
+              'components': {'parent_equity': equity.get(key), 'direct_common_equity': direct_common.get(key),
+                             'preferred_shares': preferred_shares, 'shares': shares},
+              'concepts': ['CommonStockholdersEquity', 'StockholdersEquity',
+                           'PreferredStockSharesOutstanding', 'CommonStockSharesOutstanding']}
     book = {'value': common / shares, 'unit': 'USD/share', 'currency': 'USD',
             'period_end': str(key[0]), 'filed': str(key[1]), 'source': source,
             'share_basis': 'BALANCE_COMMON:' + key[2], 'share_count_basis': 'POINT_IN_TIME',

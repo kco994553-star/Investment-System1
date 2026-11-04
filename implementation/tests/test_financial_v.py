@@ -15,6 +15,7 @@ def row():
     book.update(equity_basis='COMMON_EXCLUDING_PREFERRED_NCI', share_count_basis='POINT_IN_TIME')
     return {'code': 'TEST:BANK', 'cik': '0000000001', 'sic': '6021', 'valuation_date': '2026-11-02',
             'input_vintage': '2026-11-04', 'identity_status': 'DOCUMENT_LINKED',
+            'security_basis': {'status': 'SINGLE_CLASS_CONFIRMED', 'source': 'synthetic:cover'},
             'result_kind': 'OPERATIONAL_CANDIDATE_RAW',
             'price': {'value': 40, 'unit': 'USD/share', 'currency': 'USD', 'date': '2026-11-02',
                       'source': 'synthetic:trade', 'share_basis': 'basis-1'},
@@ -89,14 +90,14 @@ def test_book_metric_requires_common_equity_and_point_in_time_share_evidence():
     assert 'COMMON_EQUITY_BASIS_UNCONFIRMED' in r['metrics']['book_yield']['reasons']
 
 
-def test_common_book_subtracts_preferred_and_uses_instant_shares_without_zero_fill():
+def test_direct_common_book_uses_instant_shares_without_par_subtraction_or_zero_fill():
     from investment_system.research.financial_v import common_book_inputs
     from datetime import date
     def item(value, unit='USD', end='2026-06-30'):
         return {'units': {unit: [{'val': value, 'end': end, 'filed': '2026-08-01',
                                  'form': '10-Q', 'accn': 'synthetic-acc'}]}}
     facts = {'cik': 1, 'facts': {'us-gaap': {
-        'StockholdersEquity': item(120), 'PreferredStockValue': item(20),
+        'StockholdersEquity': item(120), 'CommonStockholdersEquity': item(100), 'PreferredStockValue': item(20),
         'CommonStockSharesOutstanding': item(10, 'shares'), 'MinorityInterest': item(0),
         'GoodwillAndIntangibleAssetsNet': item(30)}}}
     proof = {'status': 'SINGLE_CLASS_CONFIRMED', 'source': 'synthetic:cover',
@@ -104,7 +105,7 @@ def test_common_book_subtracts_preferred_and_uses_instant_shares_without_zero_fi
     r = common_book_inputs(facts, date(2026,11,2), proof)
     assert r['book_yield']['value'] == 10 and r['tangible_book_yield']['value'] == 7
     assert r['book_yield']['share_count_basis'] == 'POINT_IN_TIME'
-    facts['facts']['us-gaap'].pop('PreferredStockValue')
+    facts['facts']['us-gaap'].pop('CommonStockholdersEquity')
     r = common_book_inputs(facts, date(2026,11,2), proof)
     assert r['book_yield'] is None  # no silently assumed zero preferred equity
     proof['status'] = 'BASIS_UNCONFIRMED'
@@ -120,3 +121,34 @@ def test_book_never_combines_different_filing_or_balance_dates():
                                   'CommonStockSharesOutstanding':item(10,'shares')}}}
     proof={'status':'SINGLE_CLASS_CONFIRMED','source':'synthetic:cover','cik':'0000000001','date':'2026-08-01'}
     assert common_book_inputs(f,date(2026,11,2),proof)['book_yield'] is None
+
+
+def test_preferred_par_cannot_replace_carrying_amount():
+    from investment_system.research.financial_v import common_book_inputs
+    from datetime import date
+    def item(v,unit='USD'):
+        return {'units': {unit:[{'val':v,'end':'2026-06-30','filed':'2026-08-01','form':'10-Q','accn':'a'}]}}
+    f={'cik':1,'facts':{'us-gaap':{'StockholdersEquity':item(120),'PreferredStockValue':item(1),
+        'AdditionalPaidInCapitalPreferredStock':item(19),'CommonStockSharesOutstanding':item(10,'shares')}}}
+    proof={'status':'SINGLE_CLASS_CONFIRMED','source':'synthetic:cover','cik':'0000000001','date':'2026-08-01'}
+    assert common_book_inputs(f,date(2026,11,2),proof)['book_yield'] is None
+    f['facts']['us-gaap']['PreferredStockValue']=item(0)
+    assert common_book_inputs(f,date(2026,11,2),proof)['book_yield'] is None
+
+
+def test_unconfirmed_class_diagnostic_is_explicit_arithmetic_only():
+    x=row();x['result_kind']='EX_POST_FISCAL_DIAGNOSTIC';x['valuation_date']='2025-12-31';x['price']['date']='2025-12-31'
+    x['security_basis']={'status':'BASIS_UNCONFIRMED','source':'synthetic:shares'}
+    r=evaluate(x)
+    assert r['metrics']['earnings_yield']['value']==0.1
+    assert r['metrics']['earnings_yield']['evidence_status']=='ARITHMETIC_ONLY_SECURITY_BASIS_UNCONFIRMED'
+    assert not r['primary_available']
+    x['result_kind']='OPERATIONAL_CANDIDATE_RAW';x['valuation_date']='2026-11-02';x['price']['date']='2026-11-02'
+    assert evaluate(x)['metrics']['earnings_yield']['value'] is None
+
+
+def test_ex_post_diagnostic_cannot_mix_a_different_fiscal_year():
+    x=row();x['result_kind']='EX_POST_FISCAL_DIAGNOSTIC';x['valuation_date']='2025-12-31';x['price']['date']='2025-12-31'
+    x['inputs']['earnings_yield'].update(period_start='2024-01-01',period_end='2024-12-31',filed='2025-02-01')
+    r=evaluate(x)['metrics']['earnings_yield']
+    assert r['value'] is None and 'DIAGNOSTIC_FISCAL_MONTH_MISMATCH' in r['reasons']

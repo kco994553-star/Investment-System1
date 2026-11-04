@@ -22,14 +22,16 @@ No external collection, official formula/version changes, merge, deployment, wor
 ### Task 1: Exact archived XBRL supplement
 Files: `implementation/src/investment_system/research/xbrl_supplement.py`; `implementation/tests/test_xbrl_supplement.py`.
 Interface: `supplement(payload, xml, filing, cutoff) -> (copied_payload, audit)`.
-- [ ] Test exact missing insertion, duplicate/conflict, dimensional/foreign entity, future filing and prohibited custom/unit inputs; run red.
-- [ ] Implement allowlisted, source-preserving supplement; run green.
-- [ ] Run on 47 existing targets; preserve changed fields and normalizer comparisons privately.
+- [x] Test exact missing insertion, duplicate/conflict, dimensional/foreign entity, future filing and prohibited custom/unit inputs; run red.
+- [x] Implement allowlisted, source-preserving supplement; run green.
+- [x] Run on 47 existing targets; preserve changed fields and normalizer comparisons privately.
 
 ### Task 2: Financial candidate evaluator and CLI
 Files: `implementation/src/investment_system/research/financial_v.py`; `implementation/tools/financial_v_research.py`; `implementation/tests/test_financial_v.py`.
 Interface: `evaluate(row) -> result`; CLI local JSON rows to private output.
-- [ ] Test business routing, ratio arithmetic, negative/missing/unit/basis/date failures, ex-post isolation and CLI; run red.
-- [ ] Implement raw ratios only, immutable research version/config; run green.
-- [ ] Calculate same-date 68 rows and separate held-price fiscal diagnostics. Preserve 504 coverage and acquisition gaps privately.
+- [x] Test business routing, ratio arithmetic, negative/missing/unit/basis/date failures, ex-post isolation and CLI; run red.
+- [x] Implement raw ratios only, immutable research version/config; run green.
+- [x] Calculate same-date 68 rows and separate held-price fiscal diagnostics. Preserve 504 coverage and acquisition gaps privately.
 - [ ] One independent calculation review, required checks once, Draft PR, private remote preservation/readback.
+
+Execution record: 47 targets; 254 exact observations supplement four codes, all original missing requirements remain. Official Q/G recalculated on504 codes; G scores change71 codes without changing valid counts. One independent review: preferred par-value subtraction rejected, class evidence disclosed, diagnostic period enforced; regression tests red then green. Same-date V/total rescore blocked only by missing original daily quotes, not history research. No official modules edited.
