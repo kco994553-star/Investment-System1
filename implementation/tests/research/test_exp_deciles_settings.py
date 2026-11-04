@@ -102,7 +102,7 @@ def test_settings_sha256_changes_with_any_value(monkeypatch):
 
 def test_package_imports_no_qgv_backtest_network_or_io_modules():
     # The #417/#430 package is not on canonical and Codex's originals stay untouched: ported code only, no import.
-    # The CLI (implementation/tools/exp_stock_indicator_deciles.py) is the only IO layer and lives outside the package.
+    # Price/result IO stays in the external CLIs. Only the frozen schedule and technical settings are read here.
     import ast
     from pathlib import Path
 
@@ -111,7 +111,8 @@ def test_package_imports_no_qgv_backtest_network_or_io_modules():
     modules = sorted(p.name for p in pkg.glob('*.py'))
     assert modules == ['__init__.py', 'benchmarks.py', 'cap_thresholds.py', 'handoff.py', 'ledger.py',
                        'liquidity.py', 'metrics.py', 'pit.py', 'runner.py', 'schedule.py', 'scoring.py',
-                       'sector_comparison.py', 'selection.py', 'settings.py', 'synthetic.py', 'universe.py']
+                       'sector_comparison.py', 'selection.py', 'settings.py', 'synthetic.py',
+                       'technical_leaderboard.py', 'technical_measures.py', 'universe.py']
     for name in modules:
         tree = ast.parse((pkg / name).read_text(encoding='utf-8'))
         for node in ast.walk(tree):
@@ -121,10 +122,15 @@ def test_package_imports_no_qgv_backtest_network_or_io_modules():
                 assert not set(imported.split('.')) & banned, (name, imported)
             if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
                 assert node.func.id not in ('open', 'exec', 'eval', '__import__'), (name, node.func.id)
-    # the only package file read stays the frozen schedule
+    # Explicitly enumerate fixed metadata reads; never permit a raw-price/result file read.
     reads = [name for name in modules if 'read_text' in (pkg / name).read_text(encoding='utf-8')
              or 'read_bytes' in (pkg / name).read_text(encoding='utf-8')]
-    assert reads == ['schedule.py']
+    assert reads == ['schedule.py', 'technical_measures.py']
+    technical = ast.parse((pkg / 'technical_measures.py').read_text(encoding='utf-8'))
+    calls = [node for node in ast.walk(technical) if isinstance(node, ast.Call)
+             and isinstance(node.func, ast.Attribute) and node.func.attr in ('read_bytes', 'read_text')]
+    assert len(calls) == 1
+    assert ast.unparse(calls[0]) == "Path(__file__).with_name('technical_leaderboard_v1.json').read_bytes()"
 
 
 def test_scoring_configuration_is_pinned_by_version_and_content_hash(monkeypatch):
