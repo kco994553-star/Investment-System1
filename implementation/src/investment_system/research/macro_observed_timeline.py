@@ -35,7 +35,7 @@ def _series_at(sid, row, as_of, generated):
         'unit': definition['unit'], 'seasonal_adjustment': SEASONAL[definition['id']],
         'observation_period': None, 'value': None, 'state': 'NOT_AVAILABLE',
         'reason': None, 'first_published_at': None, 'source_posted_at': None,
-        'available_at': None, 'availability_basis': None, 'version_kind': None,
+        'available_at': None, 'availability_basis': None, 'version_kind': None, 'period_origin_kind': None,
         'vintage_at': None, 'first_observed_at': None, 'new_observation': False,
         'revised': False, 'held': False, 'newly_available': False, 'observation_id': None,
         'candidate_state': None, 'candidate_rule': definition['rule']['version'],
@@ -63,12 +63,12 @@ def _series_at(sid, row, as_of, generated):
         # upper bound must not reorder an earlier posting-based revision
         # after a later version with a known collection timestamp.
         chosen = eligible[-1]
-        selected.append((period, chosen, min(v['available'] for v in timed)))
+        selected.append((period, chosen, min(v['available'] for v in timed), versions[0]['kind']))
     if not selected:
         return {**output, 'reason': 'NO_CAPTURE_AVAILABLE_AT_QUERY'}
     selected.sort(key=lambda x: el.period_index(x[0], row['frequency']))
-    period, version, first_seen = selected[-1]
-    observations = [(p, v['v']) for p, v, _ in selected]
+    period, version, first_seen, origin = selected[-1]
+    observations = [(p, v['v']) for p, v, _, _ in selected]
     candidate = el.current_state(definition['id'], observations, row['frequency'])
     delayed = el._delayed({'frequency': row['frequency'], 'state': 'LIVE', 'obs': observations}, as_of)
     identity = hashlib.sha256(json.dumps([sid, period, version['v'], version['at'], version['kind']],
@@ -76,7 +76,7 @@ def _series_at(sid, row, as_of, generated):
     return {**output, 'value': version['v'], 'observation_period': period,
             'state': 'STALE' if delayed else 'AVAILABLE', 'reason': 'PERIOD_DELAYED' if delayed else None,
             'source_posted_at': version['source_posted_at'], 'available_at': el.iso(version['available']),
-            'availability_basis': version['availability_basis'], 'version_kind': version['kind'],
+            'availability_basis': version['availability_basis'], 'version_kind': version['kind'], 'period_origin_kind': origin,
             'vintage_at': version['at'], 'first_observed_at': el.iso(first_seen),
             'observation_id': identity, 'candidate_state': candidate['state'], 'valid_observations': len(selected)}
 
@@ -99,7 +99,10 @@ def timeline(payload, cutoffs):
             if old and row['value'] is not None:
                 row['newly_available'] = old['value'] is None
                 changed_period = old['observation_period'] != row['observation_period']
-                row['new_observation'] = changed_period and row['version_kind'] == 'FIRST'
+                # A period may arrive and be revised between display cutoffs.
+                # Its origin, not the selected latest version kind, identifies
+                # a new observation; BASELINE remains availability only.
+                row['new_observation'] = changed_period and row['period_origin_kind'] == 'FIRST'
                 row['revised'] = bool(not changed_period and old['observation_id'] != row['observation_id'])
                 row['held'] = old['observation_id'] == row['observation_id']
             rows[sid] = row

@@ -71,3 +71,14 @@ def test_later_collection_revision_wins_over_earlier_posting_version_with_late_u
     # A later, unchanged capture makes the conservative archive bound later still.
     p=el.build(capture({'2025-11':0.3},T0+timedelta(days=3)),previous=p,previous_state='LOADED',now=T0+timedelta(days=3))
     assert timeline(p,[T0+timedelta(days=3)])['snapshots'][0]['series'][SID]['value']==0.3
+
+
+def test_new_period_remains_new_when_revised_before_next_requested_cutoff():
+    p=el.build(capture({'2025-11':0.1},T0),previous=None,previous_state='NO_LIVE',now=T0)
+    p=el.build(capture({'2025-11':0.1,'2025-12':0.2},T0+timedelta(days=1)),previous=p,previous_state='LOADED',now=T0+timedelta(days=1))
+    p=el.build(capture({'2025-11':0.1,'2025-12':0.3},T0+timedelta(days=2)),previous=p,previous_state='LOADED',now=T0+timedelta(days=2))
+    first,last=[x['series'][SID] for x in timeline(p,[T0,T0+timedelta(days=2)])['snapshots']]
+    assert first['observation_period']=='2025-11'
+    assert last['observation_period']=='2025-12' and last['value']==0.3
+    assert last['version_kind']=='REVISION' and last['new_observation']
+    assert not last['held'] and not last['newly_available']
