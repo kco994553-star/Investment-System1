@@ -29,6 +29,8 @@
 // then the P1 layer action → data → prices → store → qgv → engines, then the common base companies → private → lab
 // (2026-10-31), then screen logic files (web_app; P1_DATA_LAYER.md §1.1). tech-screen.js is the reader of the 1.1.8 기술 조건 필터
 // (feature 3.5, owner 2026-11-03) that screen-tech-filter-live.js uses; it installs IS2.techScreen and reads nothing.
+// tech-display.js is the reader of the 3.1.2 per-company indicators (technical-offline-display/1, owner 2026-11-05) that
+// screen-tech-display-live.js draws into the 기술적 분석 screen; it installs IS2.techDisplay and reads nothing.
 const LOAD_ORDER=Object.freeze([
  'locale.js','entity-search.js','price-time.js','device-market.js','device-actual.js','profile-defaults.js','type-config-defaults.js',
  'device-profiles.js','engine-preview.js','dcf-parameters-defaults.js','device-valuation.js','playbook-config-defaults.js','playbook-engine.js',
@@ -43,7 +45,7 @@ const LOAD_ORDER=Object.freeze([
  'action.js','data.js','prices.js','store.js','qgv.js','engines.js',
  'companies.js','private.js','lab.js',
  'search-part-live.js','screen-search-live.js','screen-qgv-live.js','screen-macro-live.js','screen-prompts-live.js','screen-tree-live.js',
- 'screen-technical-live.js','screen-news-live.js','screen-lab-live.js','tech-screen.js','screen-tech-filter-live.js',
+ 'screen-technical-live.js','screen-news-live.js','screen-lab-live.js','tech-screen.js','screen-tech-filter-live.js','tech-display.js','screen-tech-display-live.js',
 ]);
 // A plain lowercase script name. tools/build_web_app.py holds this exact line (the build fails when the two differ).
 const NAME=/^[a-z0-9][a-z0-9-]*(?:\.[a-z0-9-]+)*\.js$/;

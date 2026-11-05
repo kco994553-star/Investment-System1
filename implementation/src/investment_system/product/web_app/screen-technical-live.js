@@ -8,7 +8,8 @@
      nothing. A pick sets IS2.selection (RAM). A listing-ended code says 상장 종료 <date> and asks for no price.
    - Prices (§3.2): no approved, validated chart series exists, and the IEX last-trade path is not chart OHLCV. So the public screen
      shows the structure (indicators, patterns, scenarios, the tree) and every indicator and pattern verdict stays 판정 보류 with its
-     reason (NO_APPROVED_PRICE_SERIES); no number is made up. The private layer (KIS integrated daily bars: raw MODP=0 plus confirmed
+     reason (NO_APPROVED_PRICE_SERIES); no number is made up. The chosen company's own indicator states (technical-offline-display/1, per company, no
+     rank) are drawn by screen-tech-display-live.js after 3.1.2; a shown adopted value is not a verdict. The private layer (KIS integrated daily bars: raw MODP=0 plus confirmed
      splits; MODP=0 is never treated as adjusted) is one IS2.parts.privatePanel each for 3.1 (tech-kis-chart) and 3.2
      (tech-kis-pattern): NOT_READY, nothing sent or stored, the public part never waits for them.
    - Device daily bars (table 1-3 "기기: 클릭 시 Worker 일봉(RAM)"): only behind the 일봉 불러오기 button, through the layer's one
@@ -258,6 +259,10 @@ function screen(route,{root,box,chosen,slots}){
     h('td',null,hold(HOLD.code))))))),
   prep('정도(기간 묶음) 고르기',['승인된 기간 묶음 정의']));
 
+ // 3.1.2 고른 기업의 지표 (screen-tech-display-live.js): per company, kept apart from the group ranks of 1.1.8 on #/qgv.
+ const dispNode=h('div',{class:'sk card',dataset:{techDisplay:''}}),dispLive=I.techDisplayLive?I.techDisplayLive.create({signal,redraw:()=>paintDisp()}):null;
+ const paintDisp=onChange(()=>{put(dispNode,...(dispLive?dispLive.block(S.row):[failed('TECH_DISPLAY_MISSING','기업별 지표 부분을 불러오지 못했습니다')]));});
+
  // 3.1.3 시나리오: the official one is not computed; the user's own are kept on this device.
  const scen={form:h('div',{dataset:{scenarioForm:''}}),list:h('div',{dataset:{scenarioList:''}}),status:h('p',{class:'reason',role:'status',dataset:{scenarioStatus:''}})};
  // Built once (typed values survive repaints); shown when a company is chosen and the store is readable.
@@ -397,7 +402,7 @@ function screen(route,{root,box,chosen,slots}){
   h('p',{class:'reason',dataset:{treePrivate:''}},'선택: 고른 기업의 KIS 지표 값 예시 (3.1 결과 읽기만) · ',typeof I.privateArea.text==='function'&&typeof I.privateArea.text()==='string'?I.privateArea.text():'비공개 기능 준비 중'));
 
  /* ---------------- assemble */
- put(slots['2-1'],verdictBand,b311,b312,b313,b314,panelChart.node);
+ put(slots['2-1'],verdictBand,b311,b312,dispNode,b313,b314,panelChart.node);
  put(slots['2-2'],b321,b322,b323,b324,b325,panelPattern.node);
  put(slots['2-3'],b33);
  put(slots['2-4'],b34);
