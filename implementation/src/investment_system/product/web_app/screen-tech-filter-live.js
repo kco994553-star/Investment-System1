@@ -21,7 +21,7 @@ const T=()=>I.techScreen;
 const V={on:false,board:null,conds:{},by:'momentum_6m'};
 const ram=(...t)=>h('span',{dataset:{ramPrice:''}},...t);
 const na=(code,words)=>h('span',{class:'reason',dataset:{na:code||''}},words);
-const STATE_WORDS={UNCONFIRMED:'그룹 구성 미확인 · 순위·중앙값·분위 없음',N_BELOW_10:null,OK:null};
+const STATE_WORDS={UNCONFIRMED:'그룹 구성 미확인 · 순위·중앙값·분위 없음',EMPTY_GROUP:'확인된 빈 그룹 · 구성원 0 · 순위·중앙값·분위 없음',N_BELOW_10:null,OK:null};
 
 function create({signal,redraw}){
  const ctx={src:null,value:null,err:null,loading:false};
@@ -98,7 +98,7 @@ function create({signal,redraw}){
     ' · 순위·분위·중앙값·분모는 이 보드 그대로 · 필터를 더해도 다시 매기지 않음'));
   // ② 지표 카드
   const cards=S.METRICS.map(m=>{const x=b.metrics[m],st=S.metricState(b,m);
-   const words=st==='UNCONFIRMED'?STATE_WORDS.UNCONFIRMED:st==='N_BELOW_10'?'유효 종목 '+x.n_valid+' < 10 · 순위·중앙값만 · 분위 없음':'분위 매김 (D10·D1 각 '+x.k+'개)';
+   const words=st==='UNCONFIRMED'?STATE_WORDS.UNCONFIRMED:x.n_members===0?STATE_WORDS.EMPTY_GROUP:st==='N_BELOW_10'?'유효 종목 '+x.n_valid+' < 10 · 순위·중앙값만 · 분위 없음':'분위 매김 (D10·D1 각 '+x.k+'개)';
    return h('div',{class:'sk tcard',dataset:{metricCard:m,techMetricState:st}},h('b',null,S.META[m].label),h('span',{class:'reason'},'단위 ',S.META[m].unit),
     h('span',null,'기준일 ',b.signal_day,' · 비교 그룹 ',b.group_id),
     h('span',{dataset:{validCount:''}},'유효 종목 ',x.n_valid===null?'NA':String(x.n_valid),' / ',x.n_members===null?'NA':String(x.n_members)),
@@ -122,7 +122,9 @@ function create({signal,redraw}){
   const step4=h('div',{class:'tf-step',dataset:{tfStep:'4'}},h('b',null,'④ 결과 · QGV 등으로 정렬'),
    h('p',{class:'sk status-line',role:'status',dataset:{tfCount:''}},b.group_id,' ',String(total),'개 중 · 통과 ',String(r.counts.PASS),' · 조건 미충족 ',String(r.counts.FAIL),' · 판정 불가 ',String(r.counts.UNKNOWN)),
    cs.length?h('p',{class:'reason',dataset:{tfConds:''}},'조건: ',cs.map(c=>S.condText(c.metric,c.condition)).join(' · ')):h('p',{class:'reason'},'조건 없음 · 보드 전체'),
-   cs.length&&r.counts.PASS===0&&r.counts.UNKNOWN===0?h('div',{class:'sk empty',dataset:{empty:'TECH_ZERO'}},h('p',null,'계산 후 조건 충족 0건'),h('p',{class:'reason'},'모든 조건을 판정했고 통과한 종목이 없음 · 자료 결손이 아님')):null,
+   // A confirmed group with no members is not "computed, zero matches" and not missing data: there is nothing to judge.
+   total===0&&b.membership_status==='CONFIRMED'?h('div',{class:'sk empty',dataset:{empty:'TECH_EMPTY_GROUP'}},h('p',null,'확인된 비교 그룹 · 종목 0개'),h('p',{class:'reason'},'판정할 종목이 없음 · 자료 결손이나 읽기 실패가 아님')):null,
+   total>0&&cs.length&&r.counts.PASS===0&&r.counts.UNKNOWN===0?h('div',{class:'sk empty',dataset:{empty:'TECH_ZERO'}},h('p',null,'계산 후 조건 충족 0건'),h('p',{class:'reason'},'모든 조건을 판정했고 통과한 종목이 없음 · 자료 결손이 아님')):null,
    cs.length&&r.counts.PASS===0&&r.counts.UNKNOWN>0?h('div',{class:'sk empty',dataset:{empty:'TECH_UNDECIDED'}},h('p',null,'조건 충족 0건 · 판정 불가 ',String(r.counts.UNKNOWN),'건'),h('p',{class:'reason'},'판정할 수 없는 조건이 있음 · 아래 사유')):null,
    unknown.length?h('details',{class:'na',dataset:{tfUnknown:String(unknown.length)}},h('summary',null,'판정 불가 ',String(unknown.length),'개 · 사유'),
     h('ul',null,...unknown.map(([k,x])=>h('li',{dataset:{unknownRow:k}},(secs().get(k).symbol||secs().get(k).security_id||k),' · ',
