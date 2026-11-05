@@ -24,6 +24,11 @@
      a write outside a click), so a record survives a reload.
    - Private additions (table 1-3, proposals): one IS2.parts.privatePanel each for 4.1 (macro-market-credit) and 4.2
      (macro-sector-rs); they stay NOT_READY and send or store nothing; the public part never waits for them.
+   - 4.1.3 관측 자료 · 갱신 상태 (owner 2026-11-05, Codex #477): a block after the evidence lines filled by
+     IS2.macroObservedLive.draw (screen-macro-observed-live.js; reader IS2.macroObserved, macro-current-query/1). Its source is
+     its own (today NONE: no request); it shows times, states and counts, never an observed value, and never an official regime.
+     Under it, one IS2.parts.privatePanel (macro-observed-private, owner 2026-11-05, DC-44): 비공개 펼치기 reads the owner's
+     private copy through IS2.privateExpand (kind 'macro') and draws it with the same block function (macroObservedLive.nodes).
    - View state (cycle, viewed cell, evidence tab, chosen group, chosen ring) lives in this module; quotes live in the render. */
 (function(){
 'use strict';
@@ -338,9 +343,16 @@ function screen(route,{legend,band,slots}){
   lights:block('4.1.4',sub('기존 경고등 · 상태판 (참고 모드)','4.1.4'),loading('경고등')),industry:block('4.3',sub('산업 사이클 상태','4.3.1 · 4.3.2 · 4.3.3'),loading('업종 그룹')),
   mine:block('4.4',sub('내 국면 판단 기록','4.4.1 · 4.4.2'),loading('기록 칸')),tree:block('4.6',sub('매크로 구조 트리','4.6.1 · 4.6.2'),loading('구조 트리'))};
  evidenceBox=refs.evidence;
+ // 4.1.3 관측 자료 · 갱신 상태 (screen-macro-observed-live.js, Codex #477 macro-current-query/1): its own source, drawn at once.
+ const observed=block('4.1.3-observed',sub('관측 자료 · 갱신 상태','4.1.3','관측 자료 전용 · 국면 판단 아님'),loading('관측 자료'));
+ if(I.macroObservedLive&&I.macroObserved)I.macroObservedLive.draw(observed,{signal:route.signal});
+ else put(observed,observed.firstChild,failed('READER_MISSING','관측 자료를 읽는 모듈이 없습니다'));
  // The public part never depends on a panel: a panel that cannot be built is left out (put skips null).
  const panel=(id,title)=>{try{return I.parts.privatePanel({id,title}).node;}catch(_){return null;}};
- put(slots['3-1'],h('p',{class:'hand'},'공식 국면은 아직 미산출 · 위치·확률을 임의로 찍지 않음 · 경고등 5개는 참고 모드 그대로'),refs.ring,refs.evidence,refs.lights,judgeBlock(),
+ // 비공개 · 보관 관측 자료: the private copy of the same file, drawn by the same block function; the public block never waits for it.
+ const observedPrivate=(()=>{if(!I.privateExpand||!I.macroObservedLive)return null;try{const p=I.parts.privatePanel({id:'macro-observed-private',title:'보관 관측 자료'});
+  I.privateExpand.attach(p,{signal:route.signal,kind:'macro',draw:value=>I.macroObservedLive.nodes({state:'OK',payload:value,data_kind:null})});return p.node;}catch(_){return null;}})();
+ put(slots['3-1'],h('p',{class:'hand'},'공식 국면은 아직 미산출 · 위치·확률을 임의로 찍지 않음 · 경고등 5개는 참고 모드 그대로'),refs.ring,refs.evidence,observed,observedPrivate,refs.lights,judgeBlock(),
   panel('macro-market-credit','시장·신용 근거 계열 (KIS 일봉)'));
  put(slots['3-2'],block('4.2',sub('순환매 · 위치 · 조건 · 확률','4.2.1 · 4.2.2 · 4.2.3','근거는 결정됨 · 계산·보정 방법 결정 대기 (IA-3)'),
    prep('지금 위치 미산출 · 순환매 위치 모델 없음 · 점·구간을 그리지 않음',['순환매 위치 모델','3.1 공식 국면 (미산출)','검증된 전환 빈도','자산 자료·단위 결정']),

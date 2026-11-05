@@ -77,11 +77,14 @@ let phase = 'START', pass = 0;
     const st = await site.storage(page);
     assert.deepEqual([Object.keys(st.localItems).sort(), st.session, st.idb], [[...stored].sort(), 0, 0], label + ': nothing stored on the device but the keys a click wrote');
   }
-  // The one private panel (table 1-3: 5.2.4 only): NOT_READY, the shared words, in 4.2; nothing else in it.
+  // The private panels (table 1-3: 5.2.4; 5.2.7 비공개 · 보관 재생 결과 added 2026-11-05): the shared words, in 4.2; nothing else in them.
   async function panel(page, label) {
     const got = await page.locator('[data-private-panel]').evaluateAll((n) => n.map((x) => [x.dataset.privatePanel, x.dataset.privateState, x.querySelector('[data-private-status]').textContent,
       x.querySelector('.card-title').textContent, x.closest('[data-section]').dataset.section, x.querySelectorAll('[data-mascot]').length, x.querySelector('.private-body').textContent]));
-    assert.deepEqual(got, [['news-event-reaction', 'NOT_READY', '비공개 기능 준비 중', '비공개 사건 전후 반응 · 통합 거래량 배수 (KIS 일봉 · 분봉)', '4-2', 0, '']], label + ': one private panel, NOT_READY');
+    // 5.2.7 carries 비공개 펼치기 (owner 2026-11-05, DC-44; tools/web_app_kis_private_browser_test.js): with the approved Worker in the
+    // site settings it waits for a sign-in; 5.2.4 has no private path yet.
+    assert.deepEqual(got, [['news-refresh-private', 'LOGIN_REQUIRED', '로그인 필요', '비공개 보관 재생 결과', '4-2', 0, ''],
+      ['news-event-reaction', 'NOT_READY', '비공개 기능 준비 중', '비공개 사건 전후 반응 · 통합 거래량 배수 (KIS 일봉 · 분봉)', '4-2', 0, '']], label + ': two private panels (5.2.7 waits for a sign-in, 5.2.4 not ready)');
   }
   // Every focusable control of main is reached by Tab, with a visible focus ring; every button is named. The one exception is the
   // shared company search's input (parts.searchBox: its bordered box and caret, app.css `.search-box input{outline:none}`, Main's

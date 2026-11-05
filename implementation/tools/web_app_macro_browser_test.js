@@ -46,7 +46,10 @@ const DRAFT = /\(예상\)|강세 중반|스타벅스|브라질|커피|(?<![\d.])
 const FULL = { 'macro-screen.json': { json: M.macroScreen() }, 'macro-evidence.json': { json: M.evidence() }, 'sec-qgv2.json': { json: M.qgv() }, 'company-classification.json': { json: M.classification() } };
 // The one device key 3.4 writes (MacroCycleRing USER_KEY, IS2.store.KEYS.MACRO_USER_ESTIMATES).
 const MACRO_KEY = 'investment.web.v1.macro-cycle-user-estimate';
-const PANELS = [['macro-market-credit', '시장·신용 근거 계열 (KIS 일봉)', '3-1'], ['macro-sector-rs', '섹터 ETF 상대강도 (KIS, 탐색 전용)', '3-2']];
+// macro-observed-private carries 비공개 펼치기 (owner 2026-11-05, DC-44; tools/web_app_kis_private_browser_test.js): with the approved
+// Worker in the site settings it waits for a sign-in (LOGIN_REQUIRED); the other two have no private path yet (NOT_READY).
+const PANELS = [['macro-observed-private', '보관 관측 자료', '3-1', 'LOGIN_REQUIRED', '로그인 필요'], ['macro-market-credit', '시장·신용 근거 계열 (KIS 일봉)', '3-1', 'NOT_READY', '비공개 기능 준비 중'],
+  ['macro-sector-rs', '섹터 ETF 상대강도 (KIS, 탐색 전용)', '3-2', 'NOT_READY', '비공개 기능 준비 중']];
 // Google stand-ins for the device quote after a sign-in (as web_app_qgv_browser_test.js): the GIS script, the user's Universe tab
 // with three ETF rows priced with sentinel decimals (made-up values, never real prices).
 const SHEET_ID = ['synthetic', 'macro', 'quote', 'universe', 'sheet'].join('_');
@@ -96,7 +99,7 @@ let phase = 'START', pass = 0;
   async function panels(page, label) {
     const got = await page.locator('[data-private-panel]').evaluateAll((n) => n.map((x) => [x.dataset.privatePanel, x.dataset.privateState, x.querySelector('[data-private-status]').textContent,
       x.querySelector('.card-title').textContent, x.closest('[data-section]').dataset.section, x.querySelectorAll('[data-mascot]').length, x.querySelector('.private-body').textContent]));
-    assert.deepEqual(got, PANELS.map(([id, title, sec]) => [id, 'NOT_READY', '비공개 기능 준비 중', '비공개 ' + title, sec, 0, '']), label + ': two private panels, NOT_READY');
+    assert.deepEqual(got, PANELS.map(([id, title, sec, st, word]) => [id, st, word, '비공개 ' + title, sec, 0, '']), label + ': three private panels (4.1.3 waits for a sign-in, the two others not ready)');
   }
   // Every focusable control of main is reached by Tab (roving tablists: the selected tab), with a visible focus ring.
   async function keyboard(page, label) {

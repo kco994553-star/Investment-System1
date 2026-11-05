@@ -69,6 +69,7 @@
 | 3.5 기술 조건 리더보드 필터 (1.1.8) | 병합 · 합성 연결 검증 | 합성 | 새 앱 `web_app/tech-screen.js`, `screen-tech-filter-live.js`, `screen-qgv-live.js` | 11/03 오너 지시, 11/04 Codex 계약 `technical-leaderboard/1`(#469 `f1ca390a`) 연동. 평가일·그룹별 보드 → 지표 원값·분위 → 필터(중앙값 이상/초과 구분) → 원래 순위 유지 · 결합 행만 QGV 순. 그룹 구성 미확인·유효 N<10·조건 충족 0건 구분. 실자료 미연결(원천 NONE), 리더보드 결합은 증권 ID 매핑 뒤([TECH_FILTER_20261103](../../implementation/docs/frontend_v2/TECH_FILTER_20261103.md)). **11/04 #470 병합(`620f57f2`): 합성 입력으로 연결을 검증한 상태 · 실자료 기술 리더보드 아님.** 비공개 연구값 공개·배포는 별도 |
 | 4.1.1·4.1.2 국면 그래프·탐색 | 부분 | — | `macro-cycle-ring.js` | 국면 모델 없음 → 공식 위치 "미산출" |
 | 4.1.3 근거 세로선 | 부분 | 실 | `macro-evidence.js`, #351·#352 | 탐색 전용. P1 13개 중 일부 수집(PARTIAL) |
+| 4.1.3 관측 자료 · 갱신 상태 | 개발 빌드(합성) | 합성 | 새 앱 `web_app/macro-observed.js`, `screen-macro-observed-live.js`, `screen-macro-live.js` | 11/05 오너 지시, Codex 계약 `macro-current-query/1`(#477 `efc8715f`, Draft) 연결. 합성 입력으로 연결을 검증한 상태: 계열별 기준 기간·갱신 시각·원발표 미확인(`NOT_PROVEN_IN_ARCHIVE`)·값 유지/수정 버전·stale·갱신 상태, 진단값과 미채택 국면 구분. 값은 표시하지 않음(현재 조회 파일 비공개·공개 사용 미승인). 원천 NONE([MACRO_OBSERVED_20261105](../../implementation/docs/frontend_v2/MACRO_OBSERVED_20261105.md)). 공개 파일 게시·스케줄·M-REENABLE은 별도 |
 | 4.1.4 기존 매크로 연결 | 구현 | 실 | `macro-lights.js` | 게이트 재가동 M-REENABLE 결정 대기 |
 | 4.1.5 판단 상태 | 부분 | — | `ia-screens.js` 4.1.5 | 모델 출력이 없어 미산출 |
 | 4.2 순환매 | 신규 | — | 화면 틀(`ia-screens.js` g42) | 위치 모델·전환 빈도 검증 |
@@ -81,7 +82,7 @@
 | 5.2.2~5.2.4 요약·영향·주가 반영 | 결정 | — | `news-signals.js`(칸만) | 5줄 요약 방식 IA-14(외부 모델 호출은 별도 승인) |
 | 5.2.5 신규·중복·변경 | 부분 | 실 | `news-signals.js` | — |
 | 5.2.6 컨센서스 변화 | 신규 | — | "컨센서스 자료 미연결" | 무료 자료원 |
-| 5.2.7 수집 상태 | 구현 | 실 | `ops-status.js`, `news-signals.js` | GDELT 429 원인 |
+| 5.2.7 수집 상태 | 구현 | 실 | `ops-status.js`, `news-signals.js`, 새 앱 `web_app/news-refresh.js` | GDELT 429 원인 · 11/05 원천별 갱신 기록(마지막 성공·시도·결과·회사 성공/실패/미실행·새 항목·이월 시작)은 공개 파일 schema 2 `refresh.sources`를 그대로 표시, 합성 입력(Codex #483 `e3154ee3` merge)으로 연결을 검증한 상태 · 수정·중복 수는 공개 파일에 없어 미제공 (`docs/frontend_v2/NEWS_SOURCE_REFRESH_20261105.md`) |
 | 5.3 뉴스 구조 트리 | 구현 | 실 | `ia-screens.js` | — |
 | 6.1.1·6.1.5 종류 구분·개인/모의 관리 | 구현 | 기기 | `portfolio-screen.js`, `device-actual.js`, `virtual-trading.js` | — |
 | 6.1.2~6.1.4 모델 후보·비중·버전 | 부분 | 기기 | `target-v1-builder.js` | TARGET v1 확정(2026-11 둘째 주 목표). 숫자 대조: 23.1로 재대조(10-29, 40칸 일치 34·정책 NA 6, FCF 수익률 앱 계산식 7/7·NA 3/3, [0-2-9절](../../implementation/docs/qgv_scoring_standard/QGV_V2_NUMBER_CHECK_20261017.md)) — 재기록 #424 병합(10-30, `96037d1c`)으로 calc_version 불일치 차단이 풀렸다. 남은 것은 실제 사용자 카드 응답. 공식 V 판독(PR-D #405, 병합 10-29): 초안·버전에 V 출처와 게시본 id·가격 기준일을 남기고, 출처가 바뀌면 `V_SOURCE_CHANGED`로 초안 재생성 11/02 #463(AUD-01) 병합: 레거시 플레이북 TARGET 초안 검사의 일반 등급이 승인된 6%로 맞춰짐(`playbook/v1` `target_v1` v1.1, 화면 사본 동기화). TARGET v1 빌더 설정은 원래 일반 10 × 6%라 변화 없음 |

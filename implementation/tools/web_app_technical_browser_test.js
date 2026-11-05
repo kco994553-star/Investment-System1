@@ -6,8 +6,8 @@
 //    blocks and the two private panels are drawn. A fresh open with no company reads no file at all.
 //  - Verdict on hold: the band 지표 판정 보류 (NO_APPROVED_PRICE_SERIES, the IEX last-trade path is not chart OHLCV), six indicator
 //    rows and five pattern rows each 판정 보류 with that code, no public chart, no price, no other verdict.
-//  - Private layer: two IS2.parts.privatePanel (tech-kis-chart in 2-1, tech-kis-pattern in 2-2) in NOT_READY with the shared words,
-//    empty bodies, nothing sent or stored.
+//  - Private layer: two IS2.parts.privatePanel (tech-kis-chart in 2-1 in LOGIN_REQUIRED with its 비공개 펼치기 button, tech-kis-pattern
+//    in 2-2 in NOT_READY) with the shared words, empty bodies, nothing sent or stored.
 //  - Company pick only through IS2.companies (the shared search part): the list is read on the first focus of the box (its two
 //    files, once), a keyboard pick shows the company and sets IS2.selection; a listing-ended code (WBD) and a company outside the
 //    device history path (FIX) ask for no price; the route parameter and the selection open the chosen company.
@@ -41,7 +41,9 @@ const NOW = '2026-10-14T21:00:00.000Z', TODAY = NOW.slice(0, 10);
 const NOTE_KEY = 'investment.web.v1.chart-user-objects', ORIGIN_KEY = 'investment.web.v1.private-history-origin';
 const NOTE_FIELDS = ['schema', 'id', 'kind', 'symbol', 'interval', 'price_basis', 'author', 'points', 'text', 'created_at', 'updated_at'];
 const SCENARIO_FIELDS = ['schema', 'id', 'symbol', 'interval', 'price_basis', 'author', 'text', 'anchor_time', 'created_at', 'updated_at', 'horizon', 'direction', 'levels', 'condition', 'invalidation', 'invalidation_price'];
-const PANELS = [['tech-kis-chart', '실가격 차트 · 지표 (KIS 통합 일봉)', '2-1'], ['tech-kis-pattern', '패턴 탐색 (KIS 분할 반영 계열, 탐색 전용)', '2-2']];
+// 2-1 carries 비공개 펼치기 (owner 2026-11-05, DC-44; tools/web_app_kis_private_browser_test.js): with the approved Worker in the
+// site settings it waits for a sign-in (LOGIN_REQUIRED); 2-2 has no private path yet (NOT_READY).
+const PANELS = [['tech-kis-chart', '실가격 차트 · 지표 (KIS 통합 일봉)', '2-1', 'LOGIN_REQUIRED', '로그인 필요'], ['tech-kis-pattern', '패턴 탐색 (KIS 분할 반영 계열, 탐색 전용)', '2-2', 'NOT_READY', '비공개 기능 준비 중']];
 const INDICATORS = ['SMA', 'EMA', 'BOLL', 'RSI', 'MACD', 'ATR'], PATTERNS = ['SUPPORT_RESISTANCE_ZONE', 'BOX_BREAKOUT_UP', 'BOX_BREAKDOWN', 'DOUBLE_BOTTOM', 'DOUBLE_TOP'];
 const HOLD = 'NO_APPROVED_PRICE_SERIES', CONT = 'PRICE_BASIS_CONTINUITY_UNCONFIRMED';
 // Google and Worker stand-ins for the device chart (as web_app_macro_browser_test.js): the GIS script and the Worker's /history.
@@ -92,10 +94,10 @@ let phase = 'START', pass = 0;
     const st = await site.storage(page);
     assert.deepEqual([Object.keys(st.localItems).sort(), st.session], [[...keys].sort(), 0], label + ': nothing stored on the device but the keys a click wrote');
   }
-  async function panels(page, label) {
+  async function panels(page, label, { layerFailed = false } = {}) {
     const got = await page.locator('[data-private-panel]').evaluateAll((n) => n.map((x) => [x.dataset.privatePanel, x.dataset.privateState, x.querySelector('[data-private-status]').textContent,
       x.querySelector('.card-title').textContent, x.closest('[data-section]').dataset.section, x.querySelectorAll('[data-mascot]').length, x.querySelector('.private-body').textContent]));
-    assert.deepEqual(got, PANELS.map(([id, title, sec]) => [id, 'NOT_READY', '비공개 기능 준비 중', '비공개 ' + title, sec, 0, '']), label + ': two private panels, NOT_READY');
+    assert.deepEqual(got, PANELS.map(([id, title, sec, st, word]) => [id, layerFailed ? 'NOT_READY' : st, layerFailed ? '비공개 기능 준비 중' : word, '비공개 ' + title, sec, 0, '']), label + ': two private panels (2-1 waits for a sign-in, 2-2 not ready)');
   }
   async function keyboard(page, label) {
     const n = await page.evaluate(() => {
@@ -431,7 +433,7 @@ let phase = 'START', pass = 0;
       assert.equal(await count(page, '[data-notes] [data-na=LOADER_FAILED]'), 1);
       assert.equal(await count(page, '[data-indicator] [data-verdict=HOLD]'), 6, phase + ': the structure still draws');
       assert.equal(await page.locator('[data-tech-load]').isDisabled(), true);
-      await panels(page, phase);
+      await panels(page, phase, { layerFailed: true });
       await boundaries(page, seen, phase, { errors: [/status of 404/] });
       await ctx.close();
       phase = 'live file 404 390';
