@@ -411,7 +411,11 @@ ADAPTER_FILES = {'implementation/src/investment_system/providers/iex_hist.py',
                  'implementation/src/investment_system/providers/iex_monthend.py',
                  'implementation/src/investment_system/qgv/qgv_official.py',
                  'implementation/src/investment_system/public_price_boundary.py',
-                 'implementation/tools/qgv_official_publish.py'}
+                 'implementation/tools/qgv_official_publish.py',
+                 # owner directive 2026-11-05 (plan 안 A): the one-shot 2026-11-02 preservation tool reuses the adapter
+                 # (HIST_URL, select/link/metadata helpers, iex_symbol); it names no price-source host itself and runs live only
+                 # in .github/workflows/iex-20261102-preserve-once.yml (docs/expanded_universe/IEX_20261102_PRESERVE_ONCE_20261105.md)
+                 'implementation/tools/iex_day_preserve_once.py'}
 
 
 def _code_files():
