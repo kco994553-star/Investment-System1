@@ -218,3 +218,35 @@ def test_private_qgv_contract_is_rejected_by_existing_public_schema_guard():
     path=Path(__file__).parents[2]/'tools/pages_artifact_guard.py'
     spec=importlib.util.spec_from_file_location('guard_for_private_contract',path);guard=importlib.util.module_from_spec(spec);spec.loader.exec_module(guard)
     assert guard.private_schema_names(json.dumps({'schema':RESULT_SCHEMA}))>0
+
+
+def test_partial_action_evidence_adopts_only_metrics_inside_the_proven_window():
+    """A rolling window may be proven while the retained recursive seed is not."""
+    from datetime import date
+    from investment_system.research.exp_deciles.technical_measures import sessions
+    from investment_system.research.technical_display import measure_display
+    from investment_system.research.kis_price_bridge import _stamp
+    body,receipt,request,evidence=fixture()
+    days=sessions(date(2026,9,1),date(2026,10,23))
+    source=json.loads(body);template=source['output2'][-1]
+    source['output2']=[{**template,'xymd':d.replace('-','')} for d in days]
+    body=json.dumps(source).encode()
+    receipt.update(sha256=hashlib.sha256(body).hexdigest(),bytes=len(body))
+    evidence.update(identity_start=days[0])
+    evidence['confirmed_ranges']=[{'from':days[-20],'to':days[-1],'evidence':'synthetic scoped action record'}]
+    c=normalize_page(body,receipt=receipt,request=request,evidence=evidence)
+    actual=analyze(c,evaluation_day=days[-1])
+    assert actual['adopted_count']==5
+    assert actual['metrics']['SMA_20']['value']==11
+    assert actual['metrics']['EMA_20']['raw_value']==11
+    assert actual['metrics']['EMA_20']['value'] is None
+    assert 'ACTION_BASIS_UNCONFIRMED' in actual['metrics']['EMA_20']['null_reasons']
+    rows=[{'date':r['date'],**{k:r[k] for k in ('open','high','low','close','volume')},
+           'requested_symbol':'SYN','returned_symbol':'SYN','price_basis':'RAW','asof':'-',
+           'source_timestamp':_stamp(r['date']).isoformat(),'source_sha256':r['source_sha256'],'quality_reasons':[]}
+          for r in c['raw_bars']]
+    shared_evidence={**evidence,'no_split_start':days[-20],'no_split_end':days[-1],
+                     'no_split_reference':'synthetic scoped action record'}
+    expected=measure_display(rows,signal_day=days[-1],series_id='SYN',symbol='SYN',
+                             evidence=shared_evidence,source_kind='NORMALIZED_PROVIDER_DAILY_BARS')
+    assert actual['metrics']==expected['metrics']

@@ -177,7 +177,10 @@ def analyze(c, *, evaluation_day):
     end=rows[-1]['date'] if rows else evaluation_day
     if not schedule.is_session(date.fromisoformat(end)):end=schedule.previous_session(date.fromisoformat(end)).isoformat()
     evidence={**c['identity'],'security_id':c['security_id'],'currency':c['currency'],'currency_reference':c['currency_reference']}
-    ranges=[r for r in c['confirmed_ranges'] if rows and _covers(r,rows[0]['date'],end)]
+    # Pass the widest evidenced interval ending at this observation to the shared
+    # kernel. It checks each rolling/recursive window separately; requiring the
+    # full retained seed here incorrectly suppresses already-proven short windows.
+    ranges=sorted((r for r in c['confirmed_ranges'] if rows and _covers(r,end,end)),key=lambda r:r['from'])
     if ranges:evidence.update(no_split_start=ranges[0]['from'],no_split_end=ranges[0]['to'],no_split_reference=ranges[0]['evidence'])
     normalized=[{'date':r['date'],**{f:r[f] for f in FIELDS[:5]},'returned_symbol':c['symbol'],'requested_symbol':c['symbol'],
                  'price_basis':'RAW','asof':'-','source_timestamp':_stamp(r['date']).isoformat(),
