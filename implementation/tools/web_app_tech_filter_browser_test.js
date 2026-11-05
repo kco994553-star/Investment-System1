@@ -8,6 +8,8 @@
 //    exactly kept_security_ids; a null adopted dollar volume stays NA even with a raw_value in the row.
 //  - A joined board (tools/web_app_tech_filter_fixture.js joined(): the leaderboard's own row ids as security ids) filters the
 //    leaderboard table to PASS rows in its QGV order; with Codex's fixture (no join) the leaderboard table is left as it is.
+//  - #489 screen fixtures (tests/research/fixtures/technical_screen_v1, unchanged): order, filter counts and ids, valid N, a
+//    confirmed empty group vs an unknown group vs a missing value vs a failed read, evaluation day (not the query day).
 //  - Phone: board rows as a list, tech line and 기술 상세, no horizontal overflow, 44 px controls.
 //  - Boundaries: values only as [data-ram-price] text, no new data request, no storage, no request outside the origin, no console
 //    error, CSP 0. TECH_SHOTS=<dir> saves screenshots (deviceScaleFactor 2).
@@ -26,6 +28,11 @@ const CLASS = JSON.parse(fs.readFileSync(path.join(R.ROOT, 'implementation/tests
 const UNPUBLISHED = ['sec-public-inputs.json', 'qgv-official.json', 'qgv-official-status.json'];
 const SHOTS = process.env.TECH_SHOTS || null;
 const CODEX = X.codex();
+// #489 hand-over (Codex 59eb33ca): the screen inputs of tests/research/fixtures/technical_screen_v1, read unchanged. Transport state,
+// freshness and the long company name are harness metadata outside the strict board (expectations.json).
+const SCREEN_DIR = path.join(R.ROOT, 'implementation/tests/research/fixtures/technical_screen_v1');
+const SCREEN = JSON.parse(fs.readFileSync(path.join(SCREEN_DIR, 'expectations.json'), 'utf8'));
+const screenCase = (e) => JSON.parse(fs.readFileSync(path.join(SCREEN_DIR, e.file), 'utf8'));
 let phase = 'START', pass = 0;
 const ok = (name) => { pass++; console.log('PASS ' + name); };
 
@@ -198,6 +205,52 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       await page.locator(B + ' [data-tech-state=ERROR][data-na=K_MISMATCH]').waitFor();
       assert.ok((await drawnIds()).length > 1);
       ok(tag + ' invalid input refused whole');
+
+      // ---------------- #489 screen fixtures: order, filter result, N, meaning of zero and of missing, failed read
+      for (const [name, e] of Object.entries(SCREEN.cases)) {
+        phase = tag + ' #489 ' + name;
+        const p = screenCase(e);
+        if (e.transport_state !== 'OK') {
+          assert.equal(p, null, 'failed case carries no payload');
+          await page.evaluate((code) => { const I = window.IS2; I.__realTech = I.__realTech || I.techScreen;
+            I.techScreen = Object.freeze({ ...I.__realTech, source: () => Promise.resolve({ state: 'ERROR', code, payload: null, text: '' }) }); }, e.error);
+          await reopen(); await page.locator(B + ' [data-tech-state=ERROR][data-na="' + e.error + '"]').waitFor();
+          assert.equal(await page.locator(B + ' [data-tf-row], ' + B + ' [data-empty], ' + B + ' [data-tf-count]').count(), 0, 'a failed read is not an empty population');
+          continue;
+        }
+        assert.equal(T.validate(p).ok, true, name + ' passes the merged reader');
+        await swap(p); await reopen(); await page.locator(B + ' [data-tech-data=SYNTHETIC]').waitFor();
+        await clear(); await page.selectOption('#tf-by', 'momentum_3m');
+        const b = p.cases.private, rows3 = b.metrics.momentum_3m.rows;
+        await page.waitForFunction((n) => document.querySelectorAll('[data-lb="3.5"] [data-tf-row]').length === n, rows3.length);
+        const drawn = await boardRows();
+        if (rows3.every((r) => r.rank !== null)) assert.deepEqual(drawn.map((r) => r.id), e.expected_order, name + ' order');
+        else assert.ok(drawn.every((r) => r.rank === '—'), name + ' no rank without a confirmed group');
+        const step1 = await text(B + ' [data-tf-step="1"]');
+        assert.ok(step1.includes('평가일 ' + e.evaluation_day), name + ' evaluation day');
+        if (e.query_day !== e.evaluation_day) assert.ok(!(await text(B)).includes(e.query_day), name + ' query day is not shown as the basis');
+        const vol = await text(B + ' [data-metric-card=volatility_6m] [data-valid-count]');
+        assert.ok(vol.startsWith('유효 종목 ' + (e.valid_volatility_n === null ? 'NA' : String(e.valid_volatility_n)) + ' / '), name + ' N: ' + vol);
+        if (e.null_meaning === 'MISSING_VALUE_NOT_ZERO') {   // before the filter hides the row: the missing value reads NA with its reason
+          const miss = b.metrics.volatility_6m.rows.filter((r) => r.value === null);
+          assert.ok(miss.length > 0);
+          for (const r of miss) assert.equal(await page.locator(B + ' [data-tf-row="' + r.security_id + '"] [data-metric=volatility_6m] [data-na="' + r.null_reasons[0] + '"]').count() > 0, true, name + ' NA for ' + r.security_id);
+        }
+        for (const c of e.filter) await cond(c.metric, c.condition);
+        const k = e.expected_filter_counts;
+        await page.waitForFunction((w) => (document.querySelector('[data-lb="3.5"] [data-tf-count]') || {}).textContent.includes(w),
+          '통과 ' + k.PASS + ' · 조건 미충족 ' + k.FAIL + ' · 판정 불가 ' + k.UNKNOWN);
+        assert.deepEqual((await boardRows()).map((r) => r.id).sort(), [...e.expected_selected_ids].sort(), name + ' selected ids');
+        const kept = await boardRows();
+        for (const r of kept) assert.equal(r.rank, drawn.find((d) => d.id === r.id).rank, name + ' rank kept for ' + r.id);
+        const empties = await page.$$eval('[data-lb="3.5"] [data-empty]', (n) => n.map((x) => x.dataset.empty));
+        const wantEmpty = { CALCULATED: [], UNDECIDABLE: ['TECH_UNDECIDED'], CONFIRMED_EMPTY: ['TECH_EMPTY_GROUP'] }[e.filter_semantics];
+        assert.deepEqual(empties, wantEmpty, name + ' meaning of the result');
+        if (e.null_meaning === 'EMPTY_CONFIRMED_GROUP') assert.ok((await text(B + ' [data-metric-card=volatility_6m]')).includes('확인된 빈 그룹 · 구성원 0'));
+        if (e.null_meaning === 'UNKNOWN_GROUP_NOT_ZERO') assert.ok((await text(B + ' [data-metric-card=volatility_6m]')).includes('그룹 구성 미확인'));
+        await clear();
+      }
+      ok(tag + ' #489 screen fixtures: order, filter counts and ids, N, empty group vs unknown group vs missing, failed read');
 
       phase = tag + ' boundaries';
       assert.deepEqual(seen.outside, []); assert.deepEqual(seen.errors, []);
