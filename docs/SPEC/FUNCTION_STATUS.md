@@ -79,7 +79,7 @@
 | 5.2.2~5.2.4 요약·영향·주가 반영 | 결정 | — | `news-signals.js`(칸만) | 5줄 요약 방식 IA-14(외부 모델 호출은 별도 승인) |
 | 5.2.5 신규·중복·변경 | 부분 | 실 | `news-signals.js` | — |
 | 5.2.6 컨센서스 변화 | 신규 | — | "컨센서스 자료 미연결" | 무료 자료원 |
-| 5.2.7 수집 상태 | 구현 | 실 | `ops-status.js`, `news-signals.js` | GDELT 429 원인 |
+| 5.2.7 수집 상태 | 구현 | 실 | `ops-status.js`, `news-signals.js`, 새 앱 `web_app/news-refresh.js` | GDELT 429 원인 · 11/05 원천별 갱신 기록(마지막 성공·시도·결과·회사 성공/실패/미실행·새 항목·이월 시작)은 공개 파일 schema 2 `refresh.sources`를 그대로 표시, 합성 입력(Codex #483 `e3154ee3` merge)으로 연결을 검증한 상태 · 수정·중복 수는 공개 파일에 없어 미제공 (`docs/frontend_v2/NEWS_SOURCE_REFRESH_20261105.md`) |
 | 5.3 뉴스 구조 트리 | 구현 | 실 | `ia-screens.js` | — |
 | 6.1.1·6.1.5 종류 구분·개인/모의 관리 | 구현 | 기기 | `portfolio-screen.js`, `device-actual.js`, `virtual-trading.js` | — |
 | 6.1.2~6.1.4 모델 후보·비중·버전 | 부분 | 기기 | `target-v1-builder.js` | TARGET v1 확정(2026-11 둘째 주 목표). 숫자 대조: 23.1로 재대조(10-29, 40칸 일치 34·정책 NA 6, FCF 수익률 앱 계산식 7/7·NA 3/3, [0-2-9절](../../implementation/docs/qgv_scoring_standard/QGV_V2_NUMBER_CHECK_20261017.md)) — 재기록 #424 병합(10-30, `96037d1c`)으로 calc_version 불일치 차단이 풀렸다. 남은 것은 실제 사용자 카드 응답. 공식 V 판독(PR-D #405, 병합 10-29): 초안·버전에 V 출처와 게시본 id·가격 기준일을 남기고, 출처가 바뀌면 `V_SOURCE_CHANGED`로 초안 재생성 11/02 #463(AUD-01) 병합: 레거시 플레이북 TARGET 초안 검사의 일반 등급이 승인된 6%로 맞춰짐(`playbook/v1` `target_v1` v1.1, 화면 사본 동기화). TARGET v1 빌더 설정은 원래 일반 10 × 6%라 변화 없음 |
