@@ -111,7 +111,13 @@
    else if(e.key==='Enter'&&n&&!list().hidden){e.preventDefault();choose(S.active>=0?S.active:0);}
    else if(e.key==='Escape'){if(inp.value){e.preventDefault();inp.value='';paint();}else inp.blur();}
   });
-  inp.addEventListener('focus',()=>{if(narrow()&&currentRoute==='home'){const top=inp.getBoundingClientRect().top+root.scrollY-12;root.setTimeout(()=>root.scrollTo({top:Math.max(0,top),behavior:'auto'}),60);}});
+  // Phone: bring the focused box to the top a moment later (after the keyboard starts). A press that begins elsewhere, or the
+  // box losing focus, before that moment cancels it, so the page never moves under a finger that is already tapping.
+  inp.addEventListener('focus',()=>{if(narrow()&&currentRoute==='home'){const top=inp.getBoundingClientRect().top+root.scrollY-12;
+   const off=()=>{doc.removeEventListener('pointerdown',cancel,true);inp.removeEventListener('blur',cancel);};
+   const cancel=()=>{root.clearTimeout(timer);off();};
+   const timer=root.setTimeout(()=>{off();root.scrollTo({top:Math.max(0,top),behavior:'auto'});},60);
+   doc.addEventListener('pointerdown',cancel,true);inp.addEventListener('blur',cancel);}});
   doc.addEventListener('click',e=>{
    const f=e.target.closest('[data-search-filter]');if(f){S.filter=f.dataset.searchFilter;paint();input().focus({preventScroll:true});return;}
    // A chosen result is remembered (recent searches; on home also the query and row for the way back). The box is

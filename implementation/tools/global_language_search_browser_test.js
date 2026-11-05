@@ -239,6 +239,14 @@ if(!base.pathname.endsWith("/")) base.pathname+="/";
       await box.fill("am");await p.locator("#theme-button").tap();await p.locator('#theme-menu [data-theme-choice="dark"]').tap();
       assert.equal(await p.evaluate(()=>document.documentElement.dataset.theme),"dark");assert.equal(await box.inputValue(),"am");
       assert.equal(await p.locator("[data-home-discover]").isHidden(),true,"discovery steps aside while searching");
+      // A press that starts before the box's delayed focus scroll cancels that scroll (home-screen.js): a slow tap on the theme
+      // button (touch held 100 ms, longer than the 60 ms scroll delay) right after the box takes focus still opens the menu.
+      await p.keyboard.press("Escape");await p.waitForFunction(()=>document.querySelector("#theme-menu").hidden);
+      const tb=await p.locator("#theme-button").boundingBox(),tx=tb.x+tb.width/2,ty=tb.y+tb.height/2;
+      await p.evaluate(()=>document.querySelector("#global-search").focus());
+      await cdp.send("Input.dispatchTouchEvent",{type:"touchStart",touchPoints:[{x:tx,y:ty}]});await p.waitForTimeout(100);
+      await cdp.send("Input.dispatchTouchEvent",{type:"touchEnd",touchPoints:[]});
+      await p.waitForFunction(()=>!document.querySelector("#theme-menu").hidden);await p.keyboard.press("Escape");
       const images=[];p.on("request",r=>{if(["image","media","font"].includes(r.resourceType())||/\.svg$/.test(new URL(r.url()).pathname))images.push(r.url());});
       await p.reload();await p.locator("[data-home]").waitFor();
       assert.equal(await p.evaluate(()=>document.documentElement.dataset.theme),"dark","choice kept on this device");
