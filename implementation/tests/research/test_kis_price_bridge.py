@@ -47,7 +47,7 @@ def test_confirmed_split_adjusts_only_before_event_and_keeps_raw_amount():
     assert x['bars'][1]['close']=='5.5' and x['bars'][1]['volume']=='200'
     assert x['bars'][3]['close']=='11' and x['bars'][1]['amount']=='1100'
     assert x['raw_bars'][1]['close']=='11'
-    assert analyze(x,evaluation_day='2026-10-23')['adopted_count']==0
+    assert analyze(x,evaluation_day='2026-10-23')['adopted_count']==1
 
 
 def test_portfolio_uses_existing_ledger_raw_mark_and_matching_identity():

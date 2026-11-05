@@ -57,9 +57,9 @@ def describe_readiness(result):
             continuity=dict(state='INCOMPLETE' if 'PRICE_WINDOW_INCOMPLETE' in reasons else
                             'INVALID' if invalid else 'COMPLETE', reasons=invalid),
             adjustment=dict(price_basis=result['price_basis'],
-                            state='UNCONFIRMED' if 'ACTION_BASIS_UNCONFIRMED' in reasons else 'DOCUMENTED_NO_SPLIT',
+                            state='UNCONFIRMED' if 'ACTION_BASIS_UNCONFIRMED' in reasons else 'CONFIRMED_SPLITS_ONLY' if result['price_basis']=='SPLIT_ADJUSTED' else 'DOCUMENTED_NO_SPLIT',
                             required_start=metric['window_start'], required_end=metric['window_end'],
-                            evidence_start=evidence.get('no_split_start'), evidence_end=evidence.get('no_split_end')),
+                            evidence_start=evidence.get('adjustment_start') if result['price_basis']=='SPLIT_ADJUSTED' else evidence.get('no_split_start'), evidence_end=evidence.get('adjustment_end') if result['price_basis']=='SPLIT_ADJUSTED' else evidence.get('no_split_end')),
             identity=dict(state=evidence.get('identity_status', 'UNKNOWN'),
                           reference_present=bool(evidence.get('identity_reference')),
                           fixed_security_id_state='PRESENT_NOT_RANKED' if evidence.get('security_id') else 'MISSING_RANKING_BLOCKED'),
@@ -85,6 +85,7 @@ def measure_display(rows, *, signal_day, series_id, symbol, evidence, source_kin
     """Use all retained sessions through S, with no gap skipping or basis repair."""
     if source_kind != 'NORMALIZED_PROVIDER_DAILY_BARS':
         raise ValueError('DAILY_BAR_SOURCE_REQUIRED')
+    if evidence.get('price_basis','RAW') not in ('RAW','SPLIT_ADJUSTED'):raise ValueError('UNSUPPORTED_PRICE_BASIS')
     end = date.fromisoformat(signal_day)
     if not tm.schedule.is_session(end):
         raise ValueError('SIGNAL_DAY_NOT_A_SESSION')
@@ -99,7 +100,7 @@ def measure_display(rows, *, signal_day, series_id, symbol, evidence, source_kin
     for row in eligible:
         if row.get('returned_symbol') != symbol or row.get('requested_symbol', symbol) != symbol:
             raise ValueError('SYMBOL_MISMATCH')
-        if row.get('price_basis') != 'RAW' or row.get('asof', '-') != '-':
+        if row.get('price_basis') != evidence.get('price_basis','RAW') or row.get('asof', '-') != '-':
             raise ValueError('RAW_DIRECT_SYMBOL_BASIS_REQUIRED')
         actual, problem = tm.session_date(row.get('source_timestamp'))
         if problem or actual != date.fromisoformat(row['date']) or not tm.schedule.is_session(actual):
@@ -111,7 +112,7 @@ def measure_display(rows, *, signal_day, series_id, symbol, evidence, source_kin
     close_reasons = []
     if [r['date'] for r in eligible] != expected or not eligible:
         close_reasons.append('PRICE_WINDOW_INCOMPLETE')
-    if any(r.get('price_basis') != 'RAW' for r in eligible):
+    if any(r.get('price_basis') != evidence.get('price_basis','RAW') for r in eligible):
         close_reasons.append('RAW_PRICE_BASIS_REQUIRED')
     prices = [_number(r.get('close')) for r in eligible]
     irrelevant = ('VOLUME_','TRADE_COUNT_','VWAP_','OPEN_','HIGH_','LOW_')
@@ -178,9 +179,9 @@ def measure_display(rows, *, signal_day, series_id, symbol, evidence, source_kin
         volume_note.update(raw_state=note['state'],reason=note['reason_code'])
         if not note_economic and note['state'] != 'NOT_AVAILABLE':volume_note['state']=note['state']
     volume_note['null_reasons']=list(note_economic)+([volume_note['reason']] if volume_note['reason'] else [])
-    result = dict(schema=SCHEMA,result_kind='RAW_SERIES_DIAGNOSTIC',series_id=series_id,symbol=symbol,
+    result = dict(schema=SCHEMA,result_kind='SPLIT_ADJUSTED_SERIES_DIAGNOSTIC' if evidence.get('price_basis')=='SPLIT_ADJUSTED' else 'RAW_SERIES_DIAGNOSTIC',series_id=series_id,symbol=symbol,
         signal_day=signal_day,source_kind=source_kind,input_start=start,history_count=len(eligible),excluded_future_rows=len(rows)-len(eligible),
-        price_basis='RAW',pit_status='NOT_VERIFIED',publication_status='RESEARCH_PRIVATE_ONLY',
+        price_basis=evidence.get('price_basis','RAW'),pit_status='NOT_VERIFIED',publication_status='RESEARCH_PRIVATE_ONLY',
         evidence=dict(evidence),rank=None,metrics=metrics,volume_note=volume_note,
         volume_latest=dict(raw_value=v,value=None if volume_economic or volume_missing else v,unit='SHARES',
                            last_observed_session=last_session,

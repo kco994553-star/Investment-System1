@@ -19,6 +19,14 @@ SETTINGS = json.loads(SETTINGS_BYTES)
 METRIC_IDS = ('momentum_3m', 'momentum_6m', 'momentum_12m', 'volatility_6m', 'dollar_volume_6m')
 
 
+def settings_for_basis(basis):
+    if basis=='RAW':return SETTINGS,SETTINGS_BYTES
+    if basis!='SPLIT_ADJUSTED':raise ValueError('UNSUPPORTED_PRICE_BASIS')
+    config={**SETTINGS,'settings_version':'technical-leaderboard/split-adjusted-2026-11-05.1',
+            'split_policy':'CONFIRMED_SPLITS_ONLY_WITH_FULL_WINDOW_ACTION_COVERAGE'}
+    return config,json.dumps(config,sort_keys=True,separators=(',',':')).encode()
+
+
 def number(value):
     if value is None or isinstance(value, (bool, float)):
         return None
@@ -52,9 +60,12 @@ def _economic_reasons(evidence, anchor, signal):
     reasons = []
     if not _identity(evidence):
         reasons.append('IDENTITY_UNCONFIRMED')
-    if not (evidence.get('no_split_reference') and evidence.get('no_split_start') and evidence.get('no_split_end')
-            and date.fromisoformat(evidence['no_split_start']) <= date.fromisoformat(anchor)
-            and date.fromisoformat(evidence['no_split_end']) >= date.fromisoformat(signal)):
+    prefix='adjustment_' if evidence.get('price_basis')=='SPLIT_ADJUSTED' else 'no_split_'
+    if prefix=='adjustment_' and evidence.get('adjustment_method')!='CONFIRMED_SPLITS_ONLY':
+        reasons.append('ACTION_BASIS_UNCONFIRMED')
+    if not (evidence.get(prefix+'reference') and evidence.get(prefix+'start') and evidence.get(prefix+'end')
+            and date.fromisoformat(evidence[prefix+'start']) <= date.fromisoformat(anchor)
+            and date.fromisoformat(evidence[prefix+'end']) >= date.fromisoformat(signal)):
         reasons.append('ACTION_BASIS_UNCONFIRMED')
     return reasons
 
@@ -68,7 +79,7 @@ def _result(raw, reasons, *, unit, start, end, anchor, observed, expected, obser
                 observed_days=observed, expected_days=expected, observation_unit=observation_unit)
 
 
-def measure(rows, *, signal_day, symbol, series_id, evidence):
+def measure(rows, *, signal_day, symbol, series_id, evidence, liquidity_rows=None):
     """One original request series. Never merge aliases or infer a permanent security ID.
 
     Decimal strings, UTC daily-bar timestamps and source hashes follow the shared
@@ -76,6 +87,8 @@ def measure(rows, *, signal_day, symbol, series_id, evidence):
     Evidence may document identity without a permanent ID: raw/economic values then
     remain useful, while the security-group ranking and QGV join stay unavailable.
     """
+    if evidence.get('price_basis','RAW') not in ('RAW','SPLIT_ADJUSTED'):raise ValueError('UNSUPPORTED_PRICE_BASIS')
+    if evidence.get('price_basis')=='SPLIT_ADJUSTED' and liquidity_rows is None:raise ValueError('RAW_LIQUIDITY_ROWS_REQUIRED')
     end = date.fromisoformat(signal_day)
     if not schedule.is_session(end):
         raise ValueError('SIGNAL_DAY_NOT_A_SESSION')
@@ -83,20 +96,23 @@ def measure(rows, *, signal_day, symbol, series_id, evidence):
     for months in SETTINGS['momentum_months']:
         b = boundary(end, months)
         anchors[months] = b if schedule.is_session(b) else schedule.previous_session(b)
-    by_day = {}
-    for row in rows:
-        day = date.fromisoformat(row['date'])
-        if day < anchors[12] or day > end:
-            continue
+    def validate_source(row, day, basis):
         if row.get('returned_symbol') != symbol or row.get('requested_symbol', symbol) != symbol:
             raise ValueError('SYMBOL_MISMATCH')
-        if row.get('price_basis') != 'RAW' or row.get('asof', '-') != '-':
+        if row.get('price_basis') != basis or row.get('asof', '-') != '-':
             raise ValueError('RAW_DIRECT_SYMBOL_BASIS_REQUIRED')
         actual, problem = session_date(row.get('source_timestamp'))
         if problem or actual != day or not schedule.is_session(day):
             raise ValueError(problem or 'SESSION_DATE_MISMATCH')
         if not re.fullmatch('[0-9a-f]{64}', row.get('source_sha256', '')):
             raise ValueError('SOURCE_HASH_REQUIRED')
+
+    by_day = {}
+    for row in rows:
+        day = date.fromisoformat(row['date'])
+        if day < anchors[12] or day > end:
+            continue
+        validate_source(row,day,evidence.get('price_basis','RAW'))
         key = day.isoformat()
         fields = ('close', 'vwap', 'volume', 'quality_reasons')
         if key in by_day and any(by_day[key].get(k) != row.get(k) for k in fields):
@@ -143,9 +159,20 @@ def measure(rows, *, signal_day, symbol, series_id, evidence):
             end=signal_day, anchor=anchor.isoformat(), observed=len(returns), expected=len(days), observation_unit='DAILY_RETURNS')
         metrics['volatility_6m'].update(observed_price_days=sum(d in prices for d in price_days),
                                       expected_price_days=len(price_days), ddof=1, annualized=False)
+    if liquidity_rows is not None:
+        liquidity_days={}
+        for row in liquidity_rows:
+            day=date.fromisoformat(row['date'])
+            if day<anchors[12] or day>end:continue
+            validate_source(row,day,'RAW')
+            key=day.isoformat()
+            if key in liquidity_days and any(liquidity_days[key].get(k)!=row.get(k) for k in ('close','vwap','volume','quality_reasons')):
+                raise ValueError('CONFLICTING_DAY')
+            liquidity_days[key]=row
+        liquidity_rows=list(liquidity_days.values())
     with localcontext() as ctx:
         ctx.prec = SETTINGS['liquidity_decimal_precision']
-        liquid = liquidity.summarize(list(by_day.values()), signal_day=signal_day, symbol=symbol)
+        liquid = liquidity.summarize(list(by_day.values()) if liquidity_rows is None else liquidity_rows, signal_day=signal_day, symbol=symbol)
     reasons = []
     if not _identity(evidence):
         reasons.append('IDENTITY_UNCONFIRMED')
@@ -162,8 +189,9 @@ def measure(rows, *, signal_day, symbol, series_id, evidence):
     metrics['dollar_volume_6m'].update(mean_observed=vol['mean_observed'], close_volume_proxy=liquid['close_volume_proxy'],
         raw_unit='SOURCE_QUOTE_CURRENCY_PER_TRADING_DAY', trade_scope_status=evidence.get('trade_scope_status', 'UNCONFIRMED'),
         approximation='PROVIDER_ROUNDED_AGGREGATE_NOT_EXACT_TRADE_SUM')
+    config,config_bytes=settings_for_basis(evidence.get('price_basis','RAW'))
     sid = evidence.get('security_id')
     return dict(schema='technical-measures/1', signal_day=signal_day, series_id=series_id, symbol=symbol, security_id=sid,
                 identity_status=evidence.get('identity_status', 'UNKNOWN'), evidence=dict(evidence),
-                settings_version=SETTINGS['settings_version'], settings_sha256=hashlib.sha256(SETTINGS_BYTES).hexdigest(),
+                settings_version=config['settings_version'], settings_sha256=hashlib.sha256(config_bytes).hexdigest(),
                 qgv_join_key=[signal_day, sid] if sid and _identity(evidence) else None, metrics=metrics)
