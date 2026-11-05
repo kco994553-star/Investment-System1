@@ -209,3 +209,12 @@ def test_cli_writes_private_result_without_price_or_exception_output(tmp_path):
     r=subprocess.run([sys.executable,str(tool),'--job',str(job),'--output',str(out)],capture_output=True,text=True)
     assert r.returncode==1 and r.stdout=='' and r.stderr=='OFFLINE_PRIVATE_JOB_FAILED\n'
     assert out.read_bytes()==original
+
+
+def test_private_qgv_contract_is_rejected_by_existing_public_schema_guard():
+    import importlib.util
+    from pathlib import Path
+    from investment_system.research.private_layer_qgv import RESULT_SCHEMA
+    path=Path(__file__).parents[2]/'tools/pages_artifact_guard.py'
+    spec=importlib.util.spec_from_file_location('guard_for_private_contract',path);guard=importlib.util.module_from_spec(spec);spec.loader.exec_module(guard)
+    assert guard.private_schema_names(json.dumps({'schema':RESULT_SCHEMA}))>0

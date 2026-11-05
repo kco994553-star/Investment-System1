@@ -35,7 +35,7 @@ Use provider attribution “KIS 보관 일봉” until consolidated/correction e
 
 `positions` requires explicit same-day holdings, matched security identity and currency. It uses original raw denomination for the existing ledger's close marking and creates no orders. Missing holdings or fixed link yields NOT_COMPUTED; synthetic holdings are never reported as the owner's portfolio.
 
-Private QGV preserves original engine factors/axis reasons and configuration. Supplied prices need source security evidence for the requested day; missing dates are not carried from a neighboring session. All504 operational rows remain in the calculation. Engine totals without V are reference totals, not full QGV coverage. Relative comparison/ranks stay unavailable unless the paired population/inputs are established. Financial-model V exclusions remain the engine's own reasons.
+Private QGV uses the guarded `kis-qgv/1` output schema and preserves original engine factors/axis reasons and configuration. Supplied prices need source security evidence for the requested day; missing dates are not carried from a neighboring session. All504 operational rows remain in the calculation. Engine totals without V are reference totals, not full QGV coverage. Relative comparison/ranks stay unavailable unless the paired population/inputs are established. Financial-model V exclusions remain the engine's own reasons.
 
 ## Update interface, without activating collection
 

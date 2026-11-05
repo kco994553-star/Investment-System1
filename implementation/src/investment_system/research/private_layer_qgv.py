@@ -13,6 +13,9 @@ from investment_system.providers import iex_hist
 from .kis_price_bridge import validate_contract, _ts
 
 
+RESULT_SCHEMA = 'kis-qgv/1'
+
+
 def compute_private_qgv(payload, contracts, *, price_basis_date, calculated_at, monthends=None):
     if payload.get('calc_version')!=v2_factors.CALC_VERSION:raise ValueError('CALC_VERSION_MISMATCH')
     date.fromisoformat(price_basis_date); now=_ts(calculated_at)
@@ -55,7 +58,7 @@ def compute_private_qgv(payload, contracts, *, price_basis_date, calculated_at, 
             'QGV':sum(all(rows[k]['axes'][a]['score'] is not None for a in ('Q','G','V')) for k in payload['records']),
             'engine_total_without_V':sum(rows[k]['total'] is not None and rows[k]['axes']['V']['score'] is None for k in payload['records']),
             'engine_total_computed':sum(rows[k]['total'] is not None for k in payload['records'])}
-    return {'schema':'owner-layer-qgv/1','layer':'OWNER_PRIVATE','calculation_path':'qgv_official.prepare/price_status/engine_quotes/score/projection',
+    return {'schema':RESULT_SCHEMA,'layer':'OWNER_PRIVATE','calculation_path':'qgv_official.prepare/price_status/engine_quotes/score/projection',
             'calc_version':payload['calc_version'],'engine_version':qgv_v2.VERSION,
             'weights':common.weights_block(),'config_versions':common.config_versions_block(),
             'population':sorted(payload['records']),'population_sha256':hashlib.sha256(json.dumps(sorted(payload['records'])).encode()).hexdigest(),
