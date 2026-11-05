@@ -296,7 +296,9 @@ def retained_baseline(rows, *, symbol, source, currency_reference, evidence=None
     if any(r.get('price_basis')!='RAW' or r.get('returned_symbol')!=symbol or r.get('asof')!='-' for r in rows):
         raise ValueError('BASELINE_IDENTITY_OR_BASIS')
     if any(r.get('quality_reasons') for r in rows):raise ValueError('BASELINE_ROW_QUALITY')
-    bars=[{'date':r['date'],**{f:None if r.get(f) is None else str(r[f]) for f in FIELDS[:5]},'amount':None,'corrected':None,'source_sha256':r['source_sha256'],'collected_at':r['acquired_at']} for r in rows]
+    bars=[{'date':r['date'],**{f:None if r.get(f) is None else str(r[f]) for f in FIELDS[:5]},
+           'vwap':r.get('vwap'),'trade_count':r.get('trade_count'),
+           'amount':None,'corrected':None,'source_sha256':r['source_sha256'],'collected_at':r['acquired_at']} for r in rows]
     result={'schema':'retained-daily-price/1','symbol':symbol,'source':source,'currency':'USD','exchange':e.get('exchange','NASDAQ'),
             'security_id':e.get('security_id'),'issuer_id':e.get('issuer_id'),'basis':'RAW',
             'price_basis_date':rows[-1]['date'],'collected_at':max(r['acquired_at'] for r in rows),

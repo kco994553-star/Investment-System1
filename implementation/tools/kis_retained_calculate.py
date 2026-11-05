@@ -10,12 +10,14 @@ import sys
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'src'))
 from investment_system.research.kis_price_bridge import normalize_page,analyze,compare,value_positions,merge_update
 from investment_system.research.private_layer_qgv import compute_private_qgv
+from investment_system.research.private_technical_board import measure_contract, build_contract_board
 
 
 def execute(job):
     mode=job['mode'];a=job['arguments']
     if mode=='normalize':return normalize_page(Path(job['body_path']).read_bytes(),**a)
-    functions={'analyze':analyze,'compare':compare,'positions':value_positions,'update':merge_update,'qgv':compute_private_qgv}
+    functions={'analyze':analyze,'compare':compare,'positions':value_positions,'update':merge_update,'qgv':compute_private_qgv,
+               'technical-measures':measure_contract,'technical-board':build_contract_board}
     if mode not in functions:raise ValueError('UNSUPPORTED_OFFLINE_JOB')
     return functions[mode](**a)
 
