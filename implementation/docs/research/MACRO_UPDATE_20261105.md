@@ -94,3 +94,41 @@ Main은이필드로기준기간·원발표미확인·수집시각·값유지/수
 합성 예: 2026-01-02 12:00Z에 처음 보관한 2025-11 월값은 `value=4.0`, `data_asof=2025-11`, `result_kind=RAW_DIAGNOSTIC`, `first_acquired_at=first_acquired_by=2026-01-02T12:00:00Z`, `first_acquisition_status=RECORDED_CAPTURE`, `availability_status=OBSERVED_CAPTURE_BY_QUERY`, `query_usable=true`, `stale=false`다. `official_release_at=null`, `source_version_id=null`, 각 근거 상태는 `NOT_PROVEN_IN_ARCHIVE`, `historical_pit_eligible=false`를 동시에 표시한다. 다음 날 같은 기간·값이면 `held=true`이고 새 발표로 표시하지 않는다.
 
 이 보완은 현재 보관본으로 조회할 수 있는 자료와 과거 원기관 발표 당시 자료를 구분하는 오프라인 계약이다. M-REENABLE, GSQ-011 및 모든 운영 보류를 유지한다.
+
+## 현재 조회 파일 연결
+
+기존 `public_screens_pipeline.py --live --macro-v0 --macro-evidence` → 공급처 캐시 재사용 → 기존 정규화·계산 → `macro-evidence.json` 경로는 이미 구현되어 있다. 그 경로와 Main 운영 파일을 변경하거나 실행하지 않는다. 새로 연결한 구간은 **검증된 `macro-observed-timeline/1` 계산 캐시 → 현재 조회 파일 `macro-current-query/1`**이다. 기존 CLI에 다음 모드를 추가했다.
+
+```sh
+python tools/macro_observed_timeline.py \
+  --timeline-cache /private/timeline-evidence-v1.json \
+  --cache-sha256 <승인된-manifest의-해시> \
+  --at 2026-11-05T00:00:00Z \
+  --output /private/macro-current.json
+```
+
+이 명령은 네트워크 요청 없이 해시가 일치하는 로컬 캐시를 읽는다. 기존 원값·후보규칙 계산·11/14 가용성 판정은 재사용하고, 새 조회시각의 경과 시간과 기존 관측기간 stale 기준만 계산한다. 캐시 마지막 조회시각이 원 보관본 생성시각보다 이르거나 현재 요청시각이 캐시보다 과거이면 거부한다. 현재 조회용 캐시를 과거 PIT 파일로 사용하지 않는다. 원발표·vintage 미확인은 현재 진단값 조회를 막지 않는다. Git 밖 0600 신규 파일만 생성하며 기존 결과를 덮어쓰지 않는다.
+
+Main에 추가되는 필드는 다음과 같다.
+
+| 필드 | 단위·의미 |
+|---|---|
+| `query_at` / `cache_asof` | UTC. 새 화면 조회시각 / 재사용한 계산 캐시의 평가시각. 캐시 파일 작성시각을 추정하지 않는다. |
+| `seconds_since_cache_asof` | 초. 두 평가시각의 차이이며 새 관측이나 원기관 발표 지연 추정이 아니다. |
+| `archive_generated_at`, `archive_sha256`, `timeline_cache_sha256` | 원 보관본 생성시각과 입력 연결 해시. 새 수집 성공시각으로 갱신하지 않는다. |
+| 계열별 `source` | 기존 등록부의 agency/source/url/license_class/publication/terms_checked_on/terms_note. 공급처 정의와 기존 사용권 상태를 함께 전달한다. |
+| `last_successful_update_at`, `seconds_since_success` | 기록된 마지막 성공 수집 UTC와 그 이후 경과 초. 빈도가 월·분기라고 일간 관측으로 바꾸지 않는다. |
+| `update_status` | `LAST_SUCCESS_RETAINED`, `FAILED_AFTER_SUCCESS`, `NEVER_SUCCEEDED`. 실패 뒤 남은 값과 미수집을 구분한다. |
+| `refresh_status` | `CACHE_REUSED_NO_SOURCE_REFRESH`. 현재 파일 생성은 신규 원천 갱신이 아니다. |
+| `counts.stale`, `counts.held` | 현재 조회에서 기존 기간 지연 기준 초과 수 / 캐시에서 유지한 원값 수. `query_usable`과 PIT 집계는 별도로 유지한다. |
+
+기존 `value`, `result_kind`, `data_asof`, 단위·빈도·조정, 공식 발표 근거 수준, 첫 취득·수정 버전, `available_at`·`availability_status`, `query_usable`·`historical_pit_eligible`·결손 사유를 그대로 전달한다. 캐시 조회는 새 관측·수정 사건을 만들지 않으므로 세 전환 플래그는 false다. 마지막 성공 이후 실패했더라도 원값은 남고 `collection_reason_at_query`와 `FAILED_AFTER_SUCCESS`를 함께 표시한다. 일간 실행 성공 SLA는 승인되지 않았으므로 경과 초만 노출하고 새 운영 stale 문턱을 만들지 않는다.
+
+합성: 1월2일12시 성공한 월값을 1월3일12시에 캐시로 읽으면 `seconds_since_success=86400`, `held=true`, `refresh_status=CACHE_REUSED_NO_SOURCE_REFRESH`다. 1월2일13시 수집이 실패했던 캐시라면 같은 값에 `update_status=FAILED_AFTER_SUCCESS`, `collection_reason_at_query=SOURCE_NOT_AVAILABLE`를 표시한다. 공식 발표 미확인/PIT 미적격은 유지하며 현재 원값은 조회 가능하다.
+
+## 미산출 3계열의 최소 다음 조치
+
+- **Census E21·E26:** 기존 `CENSUS_API_KEY` 슬롯 사용 가능 여부를 Main이 확인한다(키를 채팅·공개 파일에 전달하지 않음). 승인된 키가 없다면 오너가 무료 키 발급·Secret 설정·최초 두 계열 요청 범위를 별도로 결정해야 한다. 기존 `m3` NXA/NO와 `resconst` APERMITS/TOTAL 파서를 재사용하며 새 공급처가 필요하지 않다. 원값 표시에 각 최신 유효 월 1행, 기존 후보규칙까지 계산하려면 각각 연속 15월·9월이 최소다. 입력은 `cell_value`, `data_type_code`, `category_code`, `seasonally_adj=yes`, `time`, 응답 출처·취득시각·해시가 필요하다. 승인 전 요청량 0; 최초 최소 파일은 두 endpoint 응답 각 1건이다. 이후 최신 월/수정치 겹침 갱신은 기존 표를 따른다.
+- **DOL E14:** 결손은 가격/통계 수집 실패로 바꾸지 않고 `TERMS_UNVERIFIED`를 유지한다. 필요한 첫 조치는 공식 DOL/ETA 저작권·재사용 원문에서 비공개 보존과 화면 재게시 범위를 확인한 기록이다. Codex가 근거를 정리한 뒤 오너가 사용 범위를 확정하고 Main이 운영 연결을 맡는다. 승인된 로컬 ETA539 입력이 생기면 기존 파서로 재사용한다. 원값에는 최신 SA 주 1행, 기존 4주/26주 후보 비교에는 연속 26주(교차 전후 확인에는 27주), 주 기준일·SA 구분·건수·출처·취득시각·해시가 필요하다. 이번에는 신규 취득·사용권 해제·공개를 하지 않는다.
+
+현재 조회 파일은 비공개로 생성해 Main 계약만 인계한다. 스케줄·워크플로·공개 화면의 파일 소비는 Main 담당이며 별도 승인 없이 바꾸지 않는다. 원본이나 캐시가 갱신되었을 때만 기존 archive 모드로 새 계산 캐시를 만들고, 동일 캐시는 해시로 재사용한다. M-REENABLE과 미승인 국면·가중치는 그대로다.
