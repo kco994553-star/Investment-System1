@@ -1,0 +1,5 @@
+/* Trial page layout only (development harness; the tables take app.css as they are). */
+.trial-controls{display:flex;gap:8px;align-items:center;margin:8px 0}
+.trial-controls select{min-height:44px}
+.trial-tab{height:600px}
+@media (max-width:720px){.trial-tab{height:70vh}}
