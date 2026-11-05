@@ -139,6 +139,98 @@ def candidate_coverage(official_rows, results, valuation_date):
             'reason': 'CANDIDATE_RAW_METRIC_IS_NOT_A_V_SCORE'}
 
 
+BALANCE_COMPONENTS = {
+    'common_equity': (('CommonStockholdersEquity',), 'USD'),
+    'parent_equity': (('StockholdersEquity',), 'USD'),
+    'preferred_shares': (('PreferredStockSharesOutstanding',), 'shares'),
+    'common_shares': (('CommonStockSharesOutstanding',), 'shares'),
+    'nci': (('MinorityInterest',), 'USD'),
+    'goodwill': (('Goodwill',), 'USD'),
+    'intangibles_ex_goodwill': (('IntangibleAssetsNetExcludingGoodwill',), 'USD'),
+    'combined_intangibles': (('IntangibleAssetsNetIncludingGoodwill', 'GoodwillAndIntangibleAssetsNet'), 'USD'),
+}
+
+
+def _balance_observations(payload, concepts, unit, cutoff):
+    """One value per exact balance/filing/accession; retain rejected pointers.
+
+    Shared by the existing numerator extractor and its component audit. No
+    cross-period, cross-filing, currency, issued-share or weighted-share fallback.
+    """
+    from investment_system.qgv.v2_factors import INSTANT_FORMS
+    tax = payload.get('facts', {}).get('us-gaap', {})
+    grouped, rejected, present = {}, [], False
+    for concept in concepts:
+        present |= concept in tax
+        for observed_unit, rows in tax.get(concept, {}).get('units', {}).items():
+            for index, row in enumerate(rows):
+                pointer = '/facts/us-gaap/' + concept + '/units/' + observed_unit.replace('~', '~0').replace('/', '~1') + '/' + str(index)
+                end, filed = _day(row.get('end')), _day(row.get('filed'))
+                reasons = []
+                if observed_unit != unit: reasons.append('UNIT_MISMATCH')
+                if row.get('start') is not None: reasons.append('INSTANT_REQUIRED')
+                if end is None or not 0 <= (cutoff-end).days <= CONFIG['max_age_days']: reasons.append('PERIOD_NOT_ELIGIBLE')
+                if filed is None: reasons.append('FILING_DATE_INVALID')
+                elif filed > cutoff: reasons.append('FILED_AFTER_CUTOFF')
+                if end is not None and filed is not None and end > filed: reasons.append('END_AFTER_FILING')
+                if row.get('form') not in INSTANT_FORMS: reasons.append('FORM_NOT_ELIGIBLE')
+                if not row.get('accn'): reasons.append('ACCESSION_MISSING')
+                if not _finite(row.get('val')): reasons.append('NONFINITE_VALUE')
+                if reasons:
+                    rejected.append({'json_pointer': pointer, 'reasons': reasons})
+                    continue
+                key = (end, filed, row['accn'])
+                grouped.setdefault(key, []).append((row['val'], pointer))
+    accepted = {}
+    for key, values in grouped.items():
+        if len({v for v, _ in values}) != 1:
+            rejected.extend({'json_pointer': p, 'balance_key': [str(v) for v in key],
+                             'reasons': ['CONFLICTING_OBSERVATIONS']} for _, p in values)
+        else:
+            accepted[key] = {'value': values[0][0], 'json_pointers': [p for _, p in values]}
+    return accepted, rejected, present
+
+
+def balance_input_audit(payload, cutoff, class_evidence, primary_metric):
+    """Connect held primitives even when class proof prevents book adoption.
+
+    ELIGIBLE_OBSERVATION means only the exact dated fiscal observation. It does
+    not assert common-holder attribution, security identity or ratio eligibility.
+    Assets/total equity may locate a balance date but never supply common equity.
+    """
+    anchor_tags = ('CommonStockholdersEquity', 'StockholdersEquity',
+                   'StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest', 'Assets')
+    keys = set()
+    for tag in anchor_tags:
+        keys.update(_balance_observations(payload, (tag,), 'USD', cutoff)[0])
+    latest = max((k[:2] for k in keys), default=None)
+    anchors = [k for k in keys if k[:2] == latest]
+    anchor = anchors[0] if len(anchors) == 1 else None
+    components = {}
+    for name, (tags, unit) in BALANCE_COMPONENTS.items():
+        accepted, rejected, present = _balance_observations(payload, tags, unit, cutoff)
+        selected = accepted.get(anchor)
+        reasons = sorted({r for entry in rejected for r in entry['reasons']})
+        if selected is None and accepted: reasons.append('ANCHOR_MISMATCH' if anchor else 'ANCHOR_UNCONFIRMED')
+        applicable = (primary_metric in ('book_yield', 'tangible_book_yield') and
+                      (name in ('common_equity', 'parent_equity', 'preferred_shares', 'common_shares') or primary_metric == 'tangible_book_yield'))
+        components[name] = {
+            'status': 'ELIGIBLE_OBSERVATION' if selected else 'PRESENT_BUT_INELIGIBLE' if present else 'NOT_PRESENT_IN_HELD_SOURCE',
+            'value': selected['value'] if selected else None, 'unit': unit,
+            'primary_applicability': 'INPUT_OR_EXPLICIT_ALTERNATIVE' if applicable else 'UNRESOLVED_MODEL' if primary_metric is None else 'NOT_APPLICABLE',
+            'reasons': [] if selected else sorted(set(reasons)),
+            'period_end': str(anchor[0]) if selected else None,
+            'filed': str(anchor[1]) if selected else None,
+            'source': {'accession': anchor[2], 'json_pointers': selected['json_pointers']} if selected else None,
+            'rejected_observations': rejected,
+        }
+    return {'schema_version': 'financial-v-balance-inputs/1',
+            'anchor': [str(v) for v in anchor] if anchor else None,
+            'anchor_reason': None if anchor else 'BALANCE_ANCHOR_UNCONFIRMED',
+            'class_status': class_evidence.get('status'), 'components': components,
+            'scope': 'DATED_COMPONENTS_NOT_COMMON_EQUITY_OR_CANDIDATE_ADOPTION'}
+
+
 def common_book_inputs(payload, cutoff, class_evidence):
     """Conservative USD common-book inputs from one exact balance-sheet filing.
 
@@ -153,19 +245,9 @@ def common_book_inputs(payload, cutoff, class_evidence):
             or class_evidence.get('cik') != cik or not class_evidence.get('source')
             or proof_date is None or proof_date > cutoff):
         return {**empty, 'reasons': ['COMMON_CLASS_BASIS_UNCONFIRMED']}
-    from investment_system.qgv.v2_factors import INSTANT_FORMS
-    taxonomy = payload.get('facts', {}).get('us-gaap', {})
-
     def observations(concept, unit='USD'):
-        grouped = {}
-        for r in taxonomy.get(concept, {}).get('units', {}).get(unit, []):
-            end, filed = _day(r.get('end')), _day(r.get('filed'))
-            if (r.get('start') is not None or end is None or filed is None or filed > cutoff
-                    or end > filed or not 0 <= (cutoff - end).days <= CONFIG['max_age_days']
-                    or r.get('form') not in INSTANT_FORMS or not r.get('accn') or not _finite(r.get('val'))):
-                continue
-            grouped.setdefault((end, filed, r['accn']), set()).add(r['val'])
-        return {k: next(iter(v)) for k, v in grouped.items() if len(v) == 1}
+        concepts = (concept,) if isinstance(concept, str) else concept
+        return {k: v['value'] for k, v in _balance_observations(payload, concepts, unit, cutoff)[0].items()}
 
     direct_common = observations('CommonStockholdersEquity')
     equity = observations('StockholdersEquity')
@@ -195,16 +277,23 @@ def common_book_inputs(payload, cutoff, class_evidence):
             'share_basis': 'BALANCE_COMMON:' + key[2], 'share_count_basis': 'POINT_IN_TIME',
             'equity_basis': 'COMMON_EXCLUDING_PREFERRED_NCI'}
     nci = observations('MinorityInterest').get(key)
-    intangible = observations('GoodwillAndIntangibleAssetsNet').get(key)
-    components = {'MinorityInterest': nci, 'GoodwillAndIntangibleAssetsNet': intangible}
-    if intangible is None:
+    tags = BALANCE_COMPONENTS['combined_intangibles'][0]
+    combined, rejected, _ = _balance_observations(payload, tags, 'USD', cutoff)
+    intangible = combined.get(key, {}).get('value')
+    # Conflicting aliases at this exact key cannot be bypassed through a sum.
+    aliases = [observations(tag).get(key) for tag in tags]
+    conflict = (len({v for v in aliases if v is not None}) > 1 or
+                any(r.get('balance_key') == [str(v) for v in key] for r in rejected))
+    components = {'MinorityInterest': nci, 'combined_intangibles': intangible,
+                  'combined_concepts': list(tags)}
+    if intangible is None and not conflict:
         goodwill = observations('Goodwill').get(key)
         other = observations('IntangibleAssetsNetExcludingGoodwill').get(key)
         components.update(Goodwill=goodwill, IntangibleAssetsNetExcludingGoodwill=other)
         if goodwill is not None and other is not None and goodwill >= 0 and other >= 0:
             intangible = goodwill + other
     tangible = None
-    if nci == 0 and intangible is not None and intangible >= 0:
+    if not conflict and nci == 0 and intangible is not None and intangible >= 0:
         tangible = {**book, 'value': (common - intangible) / shares,
                     'equity_basis': 'COMMON_TANGIBLE_EXCLUDING_GOODWILL_INTANGIBLES',
                     'source': {**source, 'tangible_components': components}}

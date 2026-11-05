@@ -4,16 +4,17 @@ Each metric keeps its own share basis. A quote needs an explicit matching basis
 and evidence; this adapter never guesses a split or carries a different day's price.
 """
 from collections import Counter
-from datetime import date, datetime, timezone
+from datetime import date, datetime, time, timezone
 import hashlib
 import json
 import re
 import xml.etree.ElementTree as ET
+from zoneinfo import ZoneInfo
 
 from investment_system.qgv import v2_factors as vf
-from investment_system.research.financial_v import CONFIG, CONFIG_SHA256, common_book_inputs, evaluate
+from investment_system.research.financial_v import CONFIG, CONFIG_SHA256, balance_input_audit, common_book_inputs, evaluate
 
-VERSION = 'financial-v-held-bridge/1'
+VERSION = 'financial-v-held-bridge/1.1'
 X = '{http://www.xbrl.org/2003/instance}'
 
 
@@ -57,6 +58,29 @@ def _cover_link(body, cik, symbol, cutoff):
 def _reference(value):
     return (isinstance(value, dict) and re.fullmatch(r'[0-9a-f]{64}', str(value.get('sha256', '')))
             and isinstance(value.get('json_pointer'), str) and value['json_pointer'].startswith('/'))
+
+
+def _quote_time_faults(quote, valuation, vintage):
+    """The prepared IEX handoff carries actual trade time, not only a date label."""
+    from investment_system.research.pit_filings import session_close
+    faults = []
+    if quote.get('price_type') != 'IEX_LAST_REGULAR_TRADE': faults.append('PRICE_TYPE_UNCONFIRMED')
+    if quote.get('price_basis') != 'RAW': faults.append('PRICE_RAW_BASIS_REQUIRED')
+    if quote.get('trade_validation') != 'ELIGIBLE': faults.append('PRICE_TRADE_VALIDATION_UNCONFIRMED')
+    trade, captured = None, None
+    try: trade = _capture(quote.get('traded_at'))
+    except ValueError: faults.append('PRICE_TRADE_TIME_UNCONFIRMED')
+    try: captured = _capture(quote.get('acquired_at'))
+    except ValueError: faults.append('PRICE_CAPTURE_TIME_UNCONFIRMED')
+    end = session_close(valuation).close_at
+    start = datetime.combine(valuation, time(9, 30), ZoneInfo('America/New_York'))
+    if trade is not None and (end is None or not start <= trade <= end):
+        faults.append('PRICE_OUTSIDE_REGULAR_SESSION')
+    if captured is not None:
+        if captured > vintage: faults.append('PRICE_CAPTURE_AFTER_VINTAGE')
+        if (trade is not None and captured < trade) or (end is not None and captured < end):
+            faults.append('PRICE_CAPTURE_BEFORE_SESSION_COMPLETE')
+    return faults
 
 
 def connect(*, record, companyfacts_bytes, shares, cover_bytes, valuation_date, input_vintage, prices=None):
@@ -140,6 +164,7 @@ def connect(*, record, companyfacts_bytes, shares, cover_bytes, valuation_date, 
         quote = (prices or {}).get(metric)
         faults = []
         if quote is not None:
+            faults.extend(_quote_time_faults(quote, valuation, vintage_stamp))
             if quote.get('code') != code or quote.get('cik') != cik:
                 faults.append('PRICE_IDENTITY_MISMATCH')
             if not _reference(quote.get('source')):
@@ -156,8 +181,13 @@ def connect(*, record, companyfacts_bytes, shares, cover_bytes, valuation_date, 
     result['metrics'] = results
     primary = result['primary_metric']
     result['primary_available'] = bool(primary and results[primary]['value'] is not None)
+    balance = balance_input_audit(payload, cutoff, proof, primary)
+    for component in balance['components'].values():
+        if component['source'] is not None:
+            component['source']['companyfacts_sha256'] = digest
     return {'schema_version': VERSION, 'code': code, 'cik': cik, 'cutoff': str(cutoff),
             'inputs': inputs, 'prepared_rows_by_metric': prepared, 'result': result,
+            'balance_inputs': balance,
             'extraction_reasons': {'earnings_yield': eps_reasons, 'book_inputs': books['reasons']},
             'source_sha256': {'companyfacts': digest, 'cover': cover_hash}}
 

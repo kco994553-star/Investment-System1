@@ -50,6 +50,9 @@ def connect(**kwargs):
 def price(basis, date='2026-11-02'):
     return {'code': 'NYSE:TEST', 'cik': '0000000001', 'value': 40, 'date': date,
             'currency': 'USD', 'unit': 'USD/share', 'share_basis': basis,
+            'price_type': 'IEX_LAST_REGULAR_TRADE', 'price_basis': 'RAW',
+            'traded_at': '2026-11-02T15:59:00-05:00', 'acquired_at': '2026-11-03T01:00:00Z',
+            'trade_validation': 'ELIGIBLE',
             'source': {'sha256': 'a'*64, 'json_pointer': '/synthetic/trade'},
             'basis_source': {'sha256': 'b'*64, 'json_pointer': '/synthetic/basis'}}
 

@@ -45,16 +45,85 @@ Evidence cutoffs are the earlier of financial acquisition date and valuation dat
 later filings cannot replace the annual input. Acquisition is not publication.
 Current companyfacts vintage is retained and is not labeled historical PIT.
 
-## Optional prepared prices
+## Dated balance components (bridge 1.1)
+
+`balance_inputs` connects eight primitive observations before the common-class
+gate: direct common equity, parent equity, preferred shares, common shares, NCI,
+goodwill, other intangibles and combined intangibles. Every selected value retains
+its unit, balance date, filing date, accession, companyfacts hash and JSON pointers.
+`ELIGIBLE_OBSERVATION` means a dated fiscal observation, **not** eligible common
+equity, a confirmed security, or an adopted candidate ratio. Parent/total equity
+cannot silently become common equity. Assets/total equity can locate the latest
+balance anchor but do not supply any numerator.
+
+`PRESENT_BUT_INELIGIBLE` and `NOT_PRESENT_IN_HELD_SOURCE` are distinct. Rejected
+observations retain reasons/pointers (unit, duration, stale/future date, accession,
+form, nonfinite or conflicting values). An eligible older/different-accession
+component cannot fill the selected anchor. `primary_applicability` separately
+marks required/alternative inputs, inputs not used by an earnings primary, and
+unresolved business models; absence of a standard tag does not prove absence
+from an unheld issuer-extension filing. Missing values remain null.
+
+The existing combined-intangibles mapping now also accepts
+`IntangibleAssetsNetIncludingGoodwill`. Conflicting aliases fail closed, including
+when a separate goodwill/other sum exists. Formula, class gate, explicit zero NCI,
+and research configuration hash remain unchanged.
+
+## Optional prepared IEX prices
 
 A price file uses `records[code][metric]`. Each metric requires its own prepared
 quote because EPS and balance-sheet shares can have different filing bases.
-Required quote fields are `code`, `cik`, `date`, `value`, `currency`, `unit`,
-`share_basis`, `source`, and `basis_source`. Each source reference contains a
-SHA-256 and a JSON pointer into the retained evidence. These references identify
-upstream reviewed price/basis evidence; this adapter validates their shape, not
-the economic correctness of arbitrary external evidence or a split conversion.
-The prepared price file itself is hash-verified by the manifest.
+The file envelope is `financial-v-price-input/1`, with `valuation_date` equal to
+the manifest and a `records` map. Required quote fields are `code`, `cik`, `date`,
+`value`, `currency`, `unit`, `share_basis`, `source`, `basis_source`, `traded_at`,
+`acquired_at`, `price_type=IEX_LAST_REGULAR_TRADE`, `price_basis=RAW`, and
+`trade_validation=ELIGIBLE`. This prepared handoff is for Main's IEX day file;
+it neither calls IEX nor labels its last trade an official closing price/OHLCV.
+Main must apply the existing trade-condition/correction/cancellation policy,
+record ROUND/ODD_ONLY/NO_TRADE and parser completeness, and leave rejected trades
+null. The calculation adapter does not reparse packets or approve new conditions.
+
+Both timestamps must include timezone. The trade must fall within the shared
+regular-session calendar on the valuation date (including early closes).
+Acquisition must follow session completion/trade and precede the new job's
+`input_vintage`; acquisition is not the historical availability time. A future
+delivery therefore gets a **new** manifest/vintage, never the old receipt time.
+
+Each source reference contains a SHA-256 and JSON pointer. `price_evidence` in
+the manifest lists the corresponding small local JSON file descriptors. Their
+bytes are verified and pointers must resolve. The trade record must match all
+quote value/identity/date/unit/time/type/validation fields; the basis record must
+match code/CIK/share_basis, cover S with `valid_from`/`valid_to`, and record
+`action_status=MATCHED_TO_NUMERATOR`. Main retains the actual supporting
+corporate-action/class evidence and original-source/packet manifest pointers in
+these records. Structural verification cannot establish the economic correctness
+of a claim or mint a security ID. No multi-GB pcap is loaded by this CLI.
+
+Synthetic quote (numbers/identifiers are invented; hashes below are placeholders):
+
+```json
+{
+  "schema_version": "financial-v-price-input/1",
+  "valuation_date": "2026-11-02",
+  "records": {"NYSE:EXAMPLE": {"earnings_yield": {
+    "code": "NYSE:EXAMPLE", "cik": "0000000001", "date": "2026-11-02",
+    "value": 40, "currency": "USD", "unit": "USD/share",
+    "share_basis": "FY0:synthetic-accession:2026-02-01",
+    "traded_at": "2026-11-02T15:59:00-05:00",
+    "acquired_at": "2026-11-05T12:00:00Z",
+    "price_type": "IEX_LAST_REGULAR_TRADE", "price_basis": "RAW",
+    "trade_validation": "ELIGIBLE",
+    "source": {"sha256": "<trade-file-sha256>", "json_pointer": "/records/0"},
+    "basis_source": {"sha256": "<basis-file-sha256>", "json_pointer": "/records/0"}
+  }}}
+}
+```
+
+The source record repeats the quote fields except its two references. The basis
+record additionally carries `valid_from`, `valid_to`, `action_status` and the
+documentary links. Manifest `prices` pins this file; `price_evidence` pins both
+evidence files. A synthetic EPS of USD 4/share gives E/P 0.1 only if all existing
+numerator/class gates also pass. Missing evidence is not a zero ratio.
 
 The evaluator requires an exact valuation date, positive finite price and
 numerator, matching currency/unit and exact share-basis identifier. An EPS basis
@@ -85,3 +154,12 @@ retained numerators without quotes, date/basis/issuer mismatches, hash and entit
 checks, future filings/class evidence, fixed membership and private output.
 Existing successful suites and old fiscal diagnostics need not be repeated to
 exercise this new adapter.
+
+The changed-path run on the same 68 held issuers connected 260/544 dated
+component cells (111 applicable/alternative primary component cells), with 84
+present-but-ineligible and 200 absent from the held standard-tag payloads.
+All 68 have at least one dated component. Prepared EPS/common-book/tangible-book
+numerators remain 64/3/0; existing numerators and candidate results are unchanged.
+Same-date prices and actual candidate ratios remain 0. These are input linkage
+counts, not a coverage improvement or historical PIT proof. Company-level values,
+source pointers, rejected observations and missing-input lists remain private.
