@@ -72,3 +72,25 @@ DC-42 담당, MEV-1/9/10, M-RULE C 가설과 M-GATE B/M-REENABLE, GSQ-011 FRED/A
 합성표시 예: `source_id=BLS:LNS14000000`, `observation_period=2025-11`, `value=4.0`, `unit=%`, `frequency=M`, `seasonal_adjustment=SA`, `available_at=2026-01-02T12:00:00Z`, `first_published_at=null`, `availability_basis=OBSERVED_CAPTURE`, 다음날`held=true,new_observation=false,revised=false`, `model_status=NOT_APPLIED`. 실값은이PR에넣지 않는다.
 
 Main은이필드로기준기간·원발표미확인·수집시각·값유지/수정·stale를연결한다. 새스케줄·원본보존정책·운영재시도적용은별도승인뒤Main이담당한다. Codex는승인된입력정규화·계산을유지한다. M-REENABLE은별도오너결정이며본PR로해제하지 않는다.
+
+## 시각·자료 버전의 근거 계약 보완
+
+기존 `macro-observed-timeline/1`에 `evidence_contract_version=macro-observed-evidence/1` 필드를 추가한다. 14계열 모두 같은 필드를 내보내며, 미수집 계열도 키를 생략하지 않는다. 기존 값·선택·후보 산식은 그대로다.
+
+| 의미 | 실제 CLI JSON 필드 | 근거와 결손 처리 |
+|---|---|---|
+| 통계 대상 기간 | `observation_period`, `data_asof`, `frequency` | 월·분기·사건 효력일. 발표일이나 수집일로 바꾸지 않는다. |
+| 원기관 공식 최초 발표 | `official_release_at`, `official_release_status`; 기존 `first_published_at` | 이 입력 계약에는 충분한 원발표 증거가 없어 null / `NOT_PROVEN_IN_ARCHIVE`. 최초 수집시각·계획일·Last-Modified를 대입하지 않는다. |
+| 원기관 자료 버전 | `source_version_id`, `source_version_status` | 원기관 vintage 식별/입증이 없으므로 null / `NOT_PROVEN_IN_ARCHIVE`. 원자료가 초기·2차·최종 수정치인지는 미확인이다. |
+| 보관본에서 선택한 버전 | `archive_version_id`, `version_kind`, `version_time_basis`, 기존 `vintage_at` | ID는 선택값·기간·기록시각·종류 해시이며, CLI의 상위 `archive_sha256`와 함께 추적한다. `vintage_at`은 원기관 vintage 시각이 아니라 `version_time_basis`에 따른 기록시각이다. |
+| 해당 기간의 첫 기록된 취득 | `first_acquired_at`, `first_acquisition_status`, `first_acquired_by` | 최초 보관 버전이 BASELINE/COLLECTION_TIME이면 기록된 수신시각. SOURCE_LAST_MODIFIED뿐이면 exact 시각은 null / `UPPER_BOUND_ONLY`, `first_acquired_by`에 확인 가능한 수신 상한만 기록한다. 세계 최초 취득이나 원기관 최초 발표가 아니다. |
+| 선택한 수정 버전의 취득 | `selected_version_acquired_at`, `available_at`, `availability_status` | 기록된 수신이면 `OBSERVED_CAPTURE_BY_QUERY`, 보관본 생성시각 상한이면 `CONSERVATIVE_CAPTURE_BOUND_BY_QUERY`. 후자는 원발표 당시 가용성 재구성이 아니다. |
+| 값·미산출·지연 | `value`, `result_kind`, `stale`, `state`, `reason` | 값이 있으면 `RAW_DIAGNOSTIC`, 없으면 `NOT_COMPUTED`. stale 값도 보존하며 신선한 값 수와 분리한다. 공식 국면·게이트 점수로 해석하지 않는다. |
+
+`query_usable=true`는 **PUBLIC 범위 + 기존 strict 보관본 검증 통과 + 유한 원값 + 선택한 버전의 기록된 가용시각 또는 보수 상한이 조회시각 이하**를 뜻한다. 관측 기간이 오래되면 `stale=true`이며 값은 진단용으로 남는다. `fresh_query_usable` 집계는 stale을 제외한다. 후보규칙 계산 가능성·운영 채택·역사 PIT 검증과 별도다.
+
+`historical_pit_eligible`는 공식 원발표와 원기관 자료 버전 근거를 모두 요구한다. 현재 입력 계약에서 그 근거를 입증할 수 없으므로 false이고, 값이 있는 행의 사유는 `OFFICIAL_RELEASE_AND_SOURCE_VINTAGE_NOT_PROVEN`이다. 각 조회의 `counts`는 `query_usable`, `fresh_query_usable`, `system_available_by_query`, `official_release_proven`, `source_vintage_proven`, `historical_pit_eligible`, `not_computed`를 14계열 분모와 함께 구분한다. 보관본 기준 시스템 가용성은 원기관 역사 PIT 입증과 다르다.
+
+합성 예: 2026-01-02 12:00Z에 처음 보관한 2025-11 월값은 `value=4.0`, `data_asof=2025-11`, `result_kind=RAW_DIAGNOSTIC`, `first_acquired_at=first_acquired_by=2026-01-02T12:00:00Z`, `first_acquisition_status=RECORDED_CAPTURE`, `availability_status=OBSERVED_CAPTURE_BY_QUERY`, `query_usable=true`, `stale=false`다. `official_release_at=null`, `source_version_id=null`, 각 근거 상태는 `NOT_PROVEN_IN_ARCHIVE`, `historical_pit_eligible=false`를 동시에 표시한다. 다음 날 같은 기간·값이면 `held=true`이고 새 발표로 표시하지 않는다.
+
+이 보완은 현재 보관본으로 조회할 수 있는 자료와 과거 원기관 발표 당시 자료를 구분하는 오프라인 계약이다. M-REENABLE, GSQ-011 및 모든 운영 보류를 유지한다.

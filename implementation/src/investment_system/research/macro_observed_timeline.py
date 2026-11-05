@@ -10,6 +10,13 @@ import json
 from investment_system.macro import evidence_lines as el, evidence_sources as es
 
 SCHEMA = 'macro-observed-timeline/1'
+EVIDENCE_CONTRACT = 'macro-observed-evidence/1'
+VALIDITY_RULES = {
+    'query_usable': 'PUBLIC scope, strict archive validation and a selected finite value with capture or conservative capture bound <= query; stale values remain diagnostic.',
+    'fresh_query_usable': 'query_usable and not stale under the existing period-delay policy.',
+    'system_available_by_query': 'Selected version was observed in this system, or conservatively known by archive generation, no later than query; not original agency release proof.',
+    'historical_pit_eligible': 'Requires original release and source-vintage evidence; macro-evidence/1 does not retain sufficient proof, so always false for this input contract.',
+}
 SEASONAL = {
     'E09': 'NOT_APPLICABLE', 'E13': 'SA', 'E14': 'SA', 'E16': 'SA', 'E17': 'SA',
     'E21': 'SA', 'E22': 'SA', 'E25': 'SAAR', 'E26': 'SAAR', 'E36': 'NSA',
@@ -35,6 +42,14 @@ def _series_at(sid, row, as_of, generated):
         'unit': definition['unit'], 'seasonal_adjustment': SEASONAL[definition['id']],
         'observation_period': None, 'value': None, 'state': 'NOT_AVAILABLE',
         'reason': None, 'first_published_at': None, 'source_posted_at': None,
+        'data_asof': None, 'result_kind': 'NOT_COMPUTED', 'stale': None,
+        'official_release_at': None, 'official_release_status': 'NOT_PROVEN_IN_ARCHIVE',
+        'source_version_id': None, 'source_version_status': 'NOT_PROVEN_IN_ARCHIVE',
+        'archive_version_id': None, 'version_time_basis': None,
+        'first_acquired_at': None, 'first_acquired_by': None,
+        'first_acquisition_status': 'NOT_AVAILABLE', 'selected_version_acquired_at': None,
+        'query_usable': False, 'availability_status': 'NOT_AVAILABLE_AT_QUERY',
+        'historical_pit_eligible': False, 'historical_pit_reason': 'NO_QUERYABLE_VALUE',
         'available_at': None, 'availability_basis': None, 'version_kind': None, 'period_origin_kind': None,
         'vintage_at': None, 'first_observed_at': None, 'new_observation': False,
         'revised': False, 'held': False, 'newly_available': False, 'observation_id': None,
@@ -63,7 +78,7 @@ def _series_at(sid, row, as_of, generated):
         # upper bound must not reorder an earlier posting-based revision
         # after a later version with a known collection timestamp.
         chosen = eligible[-1]
-        selected.append((period, chosen, min(v['available'] for v in timed), versions[0]['kind']))
+        selected.append((period, chosen, min(v['available'] for v in timed), versions[0]))
     if not selected:
         return {**output, 'reason': 'NO_CAPTURE_AVAILABLE_AT_QUERY'}
     selected.sort(key=lambda x: el.period_index(x[0], row['frequency']))
@@ -73,10 +88,21 @@ def _series_at(sid, row, as_of, generated):
     delayed = el._delayed({'frequency': row['frequency'], 'state': 'LIVE', 'obs': observations}, as_of)
     identity = hashlib.sha256(json.dumps([sid, period, version['v'], version['at'], version['kind']],
                                         separators=(',', ':')).encode()).hexdigest()
+    # A source posting timestamp is neither original release nor receipt time.
+    # Preserve exact first recorded receipt only when the archive actually has it.
+    first_acquired = origin['at'] if origin['basis'] != 'SOURCE_LAST_MODIFIED' else None
+    selected_acquired = version['at'] if version['basis'] != 'SOURCE_LAST_MODIFIED' else None
     return {**output, 'value': version['v'], 'observation_period': period,
+            'data_asof': period, 'result_kind': 'RAW_DIAGNOSTIC', 'stale': delayed,
+            'archive_version_id': identity, 'version_time_basis': version['basis'],
+            'first_acquired_at': first_acquired, 'first_acquired_by': el.iso(first_seen),
+            'first_acquisition_status': 'RECORDED_CAPTURE' if first_acquired else 'UPPER_BOUND_ONLY',
+            'selected_version_acquired_at': selected_acquired, 'query_usable': True,
+            'availability_status': 'OBSERVED_CAPTURE_BY_QUERY' if selected_acquired else 'CONSERVATIVE_CAPTURE_BOUND_BY_QUERY',
+            'historical_pit_reason': 'OFFICIAL_RELEASE_AND_SOURCE_VINTAGE_NOT_PROVEN',
             'state': 'STALE' if delayed else 'AVAILABLE', 'reason': 'PERIOD_DELAYED' if delayed else None,
             'source_posted_at': version['source_posted_at'], 'available_at': el.iso(version['available']),
-            'availability_basis': version['availability_basis'], 'version_kind': version['kind'], 'period_origin_kind': origin,
+            'availability_basis': version['availability_basis'], 'version_kind': version['kind'], 'period_origin_kind': origin['kind'],
             'vintage_at': version['at'], 'first_observed_at': el.iso(first_seen),
             'observation_id': identity, 'candidate_state': candidate['state'], 'valid_observations': len(selected)}
 
@@ -106,8 +132,18 @@ def timeline(payload, cutoffs):
                 row['revised'] = bool(not changed_period and old['observation_id'] != row['observation_id'])
                 row['held'] = old['observation_id'] == row['observation_id']
             rows[sid] = row
-        snapshots.append({'as_of': el.iso(at), 'series': rows})
+        counts = {
+            'series': len(rows), 'query_usable': sum(r['query_usable'] for r in rows.values()),
+            'fresh_query_usable': sum(r['query_usable'] and not r['stale'] for r in rows.values()),
+            'system_available_by_query': sum(r['availability_status'] != 'NOT_AVAILABLE_AT_QUERY' for r in rows.values()),
+            'official_release_proven': sum(r['official_release_at'] is not None for r in rows.values()),
+            'source_vintage_proven': sum(r['source_version_id'] is not None for r in rows.values()),
+            'historical_pit_eligible': sum(r['historical_pit_eligible'] for r in rows.values()),
+            'not_computed': sum(r['result_kind'] == 'NOT_COMPUTED' for r in rows.values()),
+        }
+        snapshots.append({'as_of': el.iso(at), 'series': rows, 'counts': counts})
         previous = rows
     return {'schema_version': SCHEMA, 'source_schema': payload['schema'], 'archive_generated_at': payload['generated_at'],
             'historical_pit_status': 'OBSERVED_CAPTURE_ONLY', 'interpolation': 'NONE',
+            'evidence_contract_version': EVIDENCE_CONTRACT, 'validity_rules': dict(VALIDITY_RULES),
             'scope': dict(el.SCOPE), 'snapshots': snapshots}
