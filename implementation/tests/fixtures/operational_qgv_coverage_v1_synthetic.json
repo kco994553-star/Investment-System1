@@ -1,0 +1,805 @@
+{
+ "engine_matched": {
+  "all_axes": {
+   "denominator": 30,
+   "valid": 15
+  },
+  "axes": {
+   "G": {
+    "denominator": 30,
+    "missing": 3,
+    "not_applicable": 0,
+    "reason_categories": {
+     "REPORTED_MISSING_INPUT_OR_RULE": 3
+    },
+    "reasons": {
+     "AXIS_NOT_PUBLISHED": 3
+    },
+    "valid": 27
+   },
+   "Q": {
+    "denominator": 30,
+    "missing": 3,
+    "not_applicable": 0,
+    "reason_categories": {
+     "REPORTED_MISSING_INPUT_OR_RULE": 3
+    },
+    "reasons": {
+     "AXIS_NOT_PUBLISHED": 3
+    },
+    "valid": 27
+   },
+   "V": {
+    "denominator": 30,
+    "missing": 15,
+    "not_applicable": 0,
+    "reason_categories": {
+     "REPORTED_MISSING_INPUT_OR_RULE": 15
+    },
+    "reasons": {
+     "AXIS_WEIGHT_INSUFFICIENT": 15
+    },
+    "valid": 15
+   }
+  },
+  "calc_version": "qgv2-calc/2026-10-23.1",
+  "denominator": {
+   "count": 30,
+   "cross_section_rows": 26,
+   "kind": "DATED_OPERATIONAL_UNIVERSE_CODES",
+   "missing_cik_rows": 3,
+   "published_rows": 36,
+   "security_identity_reason": "FIXED_SECURITY_ID_NOT_IN_PUBLICATION",
+   "target_rows_excluded": 6,
+   "unique_code_strings": 30,
+   "unique_issuer_ciks": null,
+   "unique_securities": null
+  },
+  "engine_matches": true,
+  "factors": {
+   "g_consistency": {
+    "denominator": 30,
+    "missing": 3,
+    "not_applicable": 0,
+    "reason_categories": {
+     "REPORTED_MISSING_INPUT_OR_RULE": 3
+    },
+    "reasons": {
+     "SEC_FACTOR_NOT_AVAILABLE": 3
+    },
+    "valid": 27
+   },
+   "g_growth_efficiency": {
+    "denominator": 30,
+    "missing": 3,
+    "not_applicable": 0,
+    "reason_categories": {
+     "REPORTED_MISSING_INPUT_OR_RULE": 3
+    },
+    "reasons": {
+     "SEC_FACTOR_NOT_AVAILABLE": 3
+    },
+    "valid": 27
+   },
+   "g_per_share_growth": {
+    "denominator": 30,
+    "missing": 3,
+    "not_applicable": 0,
+    "reason_categories": {
+     "REPORTED_MISSING_INPUT_OR_RULE": 3
+    },
+    "reasons": {
+     "SEC_FACTOR_NOT_AVAILABLE": 3
+    },
+    "valid": 27
+   },
+   "g_recent_acceleration": {
+    "denominator": 30,
+    "missing": 3,
+    "not_applicable": 0,
+    "reason_categories": {
+     "REPORTED_MISSING_INPUT_OR_RULE": 3
+    },
+    "reasons": {
+     "SEC_FACTOR_NOT_AVAILABLE": 3
+    },
+    "valid": 27
+   },
+   "g_revenue_growth": {
+    "denominator": 30,
+    "missing": 3,
+    "not_applicable": 0,
+    "reason_categories": {
+     "REPORTED_MISSING_INPUT_OR_RULE": 3
+    },
+    "reasons": {
+     "SEC_FACTOR_NOT_AVAILABLE": 3
+    },
+    "valid": 27
+   },
+   "q_capital_allocation": {
+    "denominator": 30,
+    "missing": 3,
+    "not_applicable": 0,
+    "reason_categories": {
+     "REPORTED_MISSING_INPUT_OR_RULE": 3
+    },
+    "reasons": {
+     "SEC_FACTOR_NOT_AVAILABLE": 3
+    },
+    "valid": 27
+   },
+   "q_earnings_quality": {
+    "denominator": 30,
+    "missing": 12,
+    "not_applicable": 0,
+    "reason_categories": {
+     "REPORTED_MISSING_INPUT_OR_RULE": 12
+    },
+    "reasons": {
+     "SEC_FACTOR_NOT_AVAILABLE": 12
+    },
+    "valid": 18
+   },
+   "q_financial_safety": {
+    "denominator": 30,
+    "missing": 3,
+    "not_applicable": 0,
+    "reason_categories": {
+     "REPORTED_MISSING_INPUT_OR_RULE": 3
+    },
+    "reasons": {
+     "SEC_FACTOR_NOT_AVAILABLE": 3
+    },
+    "valid": 27
+   },
+   "q_moat_proxy": {
+    "denominator": 30,
+    "missing": 3,
+    "not_applicable": 0,
+    "reason_categories": {
+     "REPORTED_MISSING_INPUT_OR_RULE": 3
+    },
+    "reasons": {
+     "SEC_FACTOR_NOT_AVAILABLE": 3
+    },
+    "valid": 27
+   },
+   "q_profitability": {
+    "denominator": 30,
+    "missing": 3,
+    "not_applicable": 0,
+    "reason_categories": {
+     "REPORTED_MISSING_INPUT_OR_RULE": 3
+    },
+    "reasons": {
+     "SEC_FACTOR_NOT_AVAILABLE": 3
+    },
+    "valid": 27
+   },
+   "v_earnings_yield": {
+    "denominator": 30,
+    "missing": 15,
+    "not_applicable": 9,
+    "reason_categories": {
+     "INPUT_NOT_LINKED": 5,
+     "NOT_APPLICABLE": 9,
+     "REPORTED_MISSING_INPUT_OR_RULE": 1
+    },
+    "reasons": {
+     "FINANCIAL_PROFILE_V_NOT_DEFINED": 9,
+     "NO_DEVICE_PRICE": 2,
+     "PRICE_DEPENDENT_NOT_COMPUTABLE": 1,
+     "V_INPUTS_NOT_AVAILABLE": 3
+    },
+    "valid": 15
+   },
+   "v_expectation_check": {
+    "denominator": 30,
+    "missing": 18,
+    "not_applicable": 9,
+    "reason_categories": {
+     "INPUT_NOT_LINKED": 5,
+     "NOT_APPLICABLE": 9,
+     "REPORTED_MISSING_INPUT_OR_RULE": 4
+    },
+    "reasons": {
+     "FINANCIAL_PROFILE_V_NOT_DEFINED": 9,
+     "NO_DEVICE_PRICE": 2,
+     "PRICE_DEPENDENT_NOT_COMPUTABLE": 4,
+     "V_INPUTS_NOT_AVAILABLE": 3
+    },
+    "valid": 12
+   },
+   "v_fcf_yield": {
+    "denominator": 30,
+    "missing": 15,
+    "not_applicable": 9,
+    "reason_categories": {
+     "INPUT_NOT_LINKED": 5,
+     "NOT_APPLICABLE": 9,
+     "REPORTED_MISSING_INPUT_OR_RULE": 1
+    },
+    "reasons": {
+     "FINANCIAL_PROFILE_V_NOT_DEFINED": 9,
+     "NO_DEVICE_PRICE": 2,
+     "PRICE_DEPENDENT_NOT_COMPUTABLE": 1,
+     "V_INPUTS_NOT_AVAILABLE": 3
+    },
+    "valid": 15
+   },
+   "v_vs_industry": {
+    "denominator": 30,
+    "missing": 15,
+    "not_applicable": 9,
+    "reason_categories": {
+     "INPUT_NOT_LINKED": 5,
+     "NOT_APPLICABLE": 9,
+     "REPORTED_MISSING_INPUT_OR_RULE": 1
+    },
+    "reasons": {
+     "FINANCIAL_PROFILE_V_NOT_DEFINED": 9,
+     "NO_DEVICE_PRICE": 2,
+     "PRICE_DEPENDENT_NOT_COMPUTABLE": 1,
+     "V_INPUTS_NOT_AVAILABLE": 3
+    },
+    "valid": 15
+   },
+   "v_vs_own_history": {
+    "denominator": 30,
+    "missing": 25,
+    "not_applicable": 9,
+    "reason_categories": {
+     "INPUT_NOT_LINKED": 5,
+     "NOT_APPLICABLE": 9,
+     "REPORTED_MISSING_INPUT_OR_RULE": 11
+    },
+    "reasons": {
+     "FINANCIAL_PROFILE_V_NOT_DEFINED": 9,
+     "NORMALIZED_HISTORY_NOT_AVAILABLE": 11,
+     "NO_DEVICE_PRICE": 2,
+     "V_INPUTS_NOT_AVAILABLE": 3
+    },
+    "valid": 5
+   }
+  },
+  "historical_whole_market_coverage": null,
+  "membership_codes": [
+   "BATS:CBOE",
+   "NASDAQ:AAPL",
+   "NASDAQ:ABNB",
+   "NASDAQ:ACGL",
+   "NASDAQ:ADBE",
+   "NASDAQ:AEP",
+   "NASDAQ:AKAM",
+   "NASDAQ:ALGN",
+   "NASDAQ:AMD",
+   "NASDAQ:AMZN",
+   "NASDAQ:GOOG",
+   "NASDAQ:GOOGL",
+   "NASDAQ:LNT",
+   "NYSE:A",
+   "NYSE:ABBV",
+   "NYSE:ABT",
+   "NYSE:ACN",
+   "NYSE:AEE",
+   "NYSE:AES",
+   "NYSE:AFL",
+   "NYSE:ALB",
+   "NYSE:ALL",
+   "NYSE:ALLE",
+   "NYSE:AMCR",
+   "NYSE:AOS",
+   "NYSE:APD",
+   "NYSE:ARE",
+   "NYSE:AXP",
+   "NYSE:MMM",
+   "NYSE:MO"
+  ],
+  "pit_reason": "INPUT_VINTAGE_NOT_VERIFIED_AT_PRICE_BASIS",
+  "presets": {
+   "balanced": {
+    "basis": "DERIVED_FROM_ARCHIVED_AXES",
+    "denominator": 30,
+    "known_valid": 27,
+    "reasons": {
+     "AXIS_WEIGHT_INSUFFICIENT": 3
+    },
+    "unknown": 0,
+    "valid": 27
+   },
+   "growth": {
+    "basis": "DERIVED_FROM_ARCHIVED_AXES",
+    "denominator": 30,
+    "known_valid": 27,
+    "reasons": {
+     "AXIS_WEIGHT_INSUFFICIENT": 3
+    },
+    "unknown": 0,
+    "valid": 27
+   },
+   "quality": {
+    "basis": "DERIVED_FROM_ARCHIVED_AXES",
+    "denominator": 30,
+    "known_valid": 27,
+    "reasons": {
+     "AXIS_WEIGHT_INSUFFICIENT": 3
+    },
+    "unknown": 0,
+    "valid": 27
+   },
+   "user-preset/aggressive@0.1": {
+    "basis": "DERIVED_FROM_ARCHIVED_AXES",
+    "denominator": 30,
+    "known_valid": 27,
+    "reasons": {
+     "AXIS_WEIGHT_INSUFFICIENT": 3
+    },
+    "unknown": 0,
+    "valid": 27
+   },
+   "user-preset/balanced@0.1": {
+    "basis": "DERIVED_FROM_ARCHIVED_AXES",
+    "denominator": 30,
+    "known_valid": 27,
+    "reasons": {
+     "AXIS_WEIGHT_INSUFFICIENT": 3
+    },
+    "unknown": 0,
+    "valid": 27
+   },
+   "user-preset/defensive@0.1": {
+    "basis": "DERIVED_FROM_ARCHIVED_AXES",
+    "denominator": 30,
+    "known_valid": 27,
+    "reasons": {
+     "AXIS_WEIGHT_INSUFFICIENT": 3
+    },
+    "unknown": 0,
+    "valid": 27
+   },
+   "value": {
+    "basis": "DERIVED_FROM_ARCHIVED_AXES",
+    "denominator": 30,
+    "known_valid": 15,
+    "reasons": {
+     "AXIS_WEIGHT_INSUFFICIENT": 15
+    },
+    "unknown": 0,
+    "valid": 15
+   }
+  },
+  "publication_id": "qgvpub-5ace1ccd49ae5623464dc9d10340300b5fe8efc0cacfefdc5e3938252fcf9b5b",
+  "published_default_total": {
+   "denominator": 30,
+   "valid": 27
+  },
+  "raw_input_connection_audit": null,
+  "raw_input_reason": "RAW_INPUTS_NOT_LINKED_TO_THIS_REVIEW",
+  "result_kind": "OPERATIONAL_COVERAGE",
+  "schema_version": "operational-qgv-coverage/1",
+  "scope": "SELECTED_OPERATIONAL_PUBLICATION_ONLY",
+  "signal_date_pit_eligible": null,
+  "source_inputs": [
+   {
+    "acquired_newest": "2026-10-13T22:30:00Z",
+    "acquired_oldest": "2026-10-13T22:30:00Z",
+    "as_of": "2026-10-13T22:30:00Z",
+    "calc_version": "qgv2-calc/2026-10-23.1",
+    "file": "sec-qgv2.json",
+    "sha256": "d2140a841b97d453c861195cde6b8366e2f6d244954a73a94a2e4eb5d5a4d4e8"
+   }
+  ],
+  "source_sha256": "49eceaf180dbddde8c77d8194a0aec957ba83321b409f1afbeddab15e7529955",
+  "times": {
+   "generated_at": "2026-10-13T22:40:00Z",
+   "inputs_as_of": "2026-10-13T22:30:00Z",
+   "price_basis_date": "2026-10-13",
+   "price_collected_from": "2026-10-13T22:41:00Z",
+   "price_collected_to": "2026-10-13T22:45:00Z",
+   "verified_at": "2026-10-13T22:46:00Z"
+  }
+ },
+ "engine_mismatch": {
+  "all_axes": {
+   "denominator": 30,
+   "valid": 15
+  },
+  "axes": {
+   "G": {
+    "denominator": 30,
+    "missing": 3,
+    "not_applicable": 0,
+    "reason_categories": {
+     "REPORTED_MISSING_INPUT_OR_RULE": 3
+    },
+    "reasons": {
+     "AXIS_NOT_PUBLISHED": 3
+    },
+    "valid": 27
+   },
+   "Q": {
+    "denominator": 30,
+    "missing": 3,
+    "not_applicable": 0,
+    "reason_categories": {
+     "REPORTED_MISSING_INPUT_OR_RULE": 3
+    },
+    "reasons": {
+     "AXIS_NOT_PUBLISHED": 3
+    },
+    "valid": 27
+   },
+   "V": {
+    "denominator": 30,
+    "missing": 15,
+    "not_applicable": 0,
+    "reason_categories": {
+     "REPORTED_MISSING_INPUT_OR_RULE": 15
+    },
+    "reasons": {
+     "AXIS_WEIGHT_INSUFFICIENT": 15
+    },
+    "valid": 15
+   }
+  },
+  "calc_version": "qgv2-calc/2026-10-23.1",
+  "denominator": {
+   "count": 30,
+   "cross_section_rows": 26,
+   "kind": "DATED_OPERATIONAL_UNIVERSE_CODES",
+   "missing_cik_rows": 3,
+   "published_rows": 36,
+   "security_identity_reason": "FIXED_SECURITY_ID_NOT_IN_PUBLICATION",
+   "target_rows_excluded": 6,
+   "unique_code_strings": 30,
+   "unique_issuer_ciks": null,
+   "unique_securities": null
+  },
+  "engine_matches": false,
+  "factors": {
+   "g_consistency": {
+    "denominator": 30,
+    "missing": 3,
+    "not_applicable": 0,
+    "reason_categories": {
+     "REPORTED_MISSING_INPUT_OR_RULE": 3
+    },
+    "reasons": {
+     "SEC_FACTOR_NOT_AVAILABLE": 3
+    },
+    "valid": 27
+   },
+   "g_growth_efficiency": {
+    "denominator": 30,
+    "missing": 3,
+    "not_applicable": 0,
+    "reason_categories": {
+     "REPORTED_MISSING_INPUT_OR_RULE": 3
+    },
+    "reasons": {
+     "SEC_FACTOR_NOT_AVAILABLE": 3
+    },
+    "valid": 27
+   },
+   "g_per_share_growth": {
+    "denominator": 30,
+    "missing": 3,
+    "not_applicable": 0,
+    "reason_categories": {
+     "REPORTED_MISSING_INPUT_OR_RULE": 3
+    },
+    "reasons": {
+     "SEC_FACTOR_NOT_AVAILABLE": 3
+    },
+    "valid": 27
+   },
+   "g_recent_acceleration": {
+    "denominator": 30,
+    "missing": 3,
+    "not_applicable": 0,
+    "reason_categories": {
+     "REPORTED_MISSING_INPUT_OR_RULE": 3
+    },
+    "reasons": {
+     "SEC_FACTOR_NOT_AVAILABLE": 3
+    },
+    "valid": 27
+   },
+   "g_revenue_growth": {
+    "denominator": 30,
+    "missing": 3,
+    "not_applicable": 0,
+    "reason_categories": {
+     "REPORTED_MISSING_INPUT_OR_RULE": 3
+    },
+    "reasons": {
+     "SEC_FACTOR_NOT_AVAILABLE": 3
+    },
+    "valid": 27
+   },
+   "q_capital_allocation": {
+    "denominator": 30,
+    "missing": 3,
+    "not_applicable": 0,
+    "reason_categories": {
+     "REPORTED_MISSING_INPUT_OR_RULE": 3
+    },
+    "reasons": {
+     "SEC_FACTOR_NOT_AVAILABLE": 3
+    },
+    "valid": 27
+   },
+   "q_earnings_quality": {
+    "denominator": 30,
+    "missing": 12,
+    "not_applicable": 0,
+    "reason_categories": {
+     "REPORTED_MISSING_INPUT_OR_RULE": 12
+    },
+    "reasons": {
+     "SEC_FACTOR_NOT_AVAILABLE": 12
+    },
+    "valid": 18
+   },
+   "q_financial_safety": {
+    "denominator": 30,
+    "missing": 3,
+    "not_applicable": 0,
+    "reason_categories": {
+     "REPORTED_MISSING_INPUT_OR_RULE": 3
+    },
+    "reasons": {
+     "SEC_FACTOR_NOT_AVAILABLE": 3
+    },
+    "valid": 27
+   },
+   "q_moat_proxy": {
+    "denominator": 30,
+    "missing": 3,
+    "not_applicable": 0,
+    "reason_categories": {
+     "REPORTED_MISSING_INPUT_OR_RULE": 3
+    },
+    "reasons": {
+     "SEC_FACTOR_NOT_AVAILABLE": 3
+    },
+    "valid": 27
+   },
+   "q_profitability": {
+    "denominator": 30,
+    "missing": 3,
+    "not_applicable": 0,
+    "reason_categories": {
+     "REPORTED_MISSING_INPUT_OR_RULE": 3
+    },
+    "reasons": {
+     "SEC_FACTOR_NOT_AVAILABLE": 3
+    },
+    "valid": 27
+   },
+   "v_earnings_yield": {
+    "denominator": 30,
+    "missing": 15,
+    "not_applicable": 9,
+    "reason_categories": {
+     "INPUT_NOT_LINKED": 5,
+     "NOT_APPLICABLE": 9,
+     "REPORTED_MISSING_INPUT_OR_RULE": 1
+    },
+    "reasons": {
+     "FINANCIAL_PROFILE_V_NOT_DEFINED": 9,
+     "NO_DEVICE_PRICE": 2,
+     "PRICE_DEPENDENT_NOT_COMPUTABLE": 1,
+     "V_INPUTS_NOT_AVAILABLE": 3
+    },
+    "valid": 15
+   },
+   "v_expectation_check": {
+    "denominator": 30,
+    "missing": 18,
+    "not_applicable": 9,
+    "reason_categories": {
+     "INPUT_NOT_LINKED": 5,
+     "NOT_APPLICABLE": 9,
+     "REPORTED_MISSING_INPUT_OR_RULE": 4
+    },
+    "reasons": {
+     "FINANCIAL_PROFILE_V_NOT_DEFINED": 9,
+     "NO_DEVICE_PRICE": 2,
+     "PRICE_DEPENDENT_NOT_COMPUTABLE": 4,
+     "V_INPUTS_NOT_AVAILABLE": 3
+    },
+    "valid": 12
+   },
+   "v_fcf_yield": {
+    "denominator": 30,
+    "missing": 15,
+    "not_applicable": 9,
+    "reason_categories": {
+     "INPUT_NOT_LINKED": 5,
+     "NOT_APPLICABLE": 9,
+     "REPORTED_MISSING_INPUT_OR_RULE": 1
+    },
+    "reasons": {
+     "FINANCIAL_PROFILE_V_NOT_DEFINED": 9,
+     "NO_DEVICE_PRICE": 2,
+     "PRICE_DEPENDENT_NOT_COMPUTABLE": 1,
+     "V_INPUTS_NOT_AVAILABLE": 3
+    },
+    "valid": 15
+   },
+   "v_vs_industry": {
+    "denominator": 30,
+    "missing": 15,
+    "not_applicable": 9,
+    "reason_categories": {
+     "INPUT_NOT_LINKED": 5,
+     "NOT_APPLICABLE": 9,
+     "REPORTED_MISSING_INPUT_OR_RULE": 1
+    },
+    "reasons": {
+     "FINANCIAL_PROFILE_V_NOT_DEFINED": 9,
+     "NO_DEVICE_PRICE": 2,
+     "PRICE_DEPENDENT_NOT_COMPUTABLE": 1,
+     "V_INPUTS_NOT_AVAILABLE": 3
+    },
+    "valid": 15
+   },
+   "v_vs_own_history": {
+    "denominator": 30,
+    "missing": 25,
+    "not_applicable": 9,
+    "reason_categories": {
+     "INPUT_NOT_LINKED": 5,
+     "NOT_APPLICABLE": 9,
+     "REPORTED_MISSING_INPUT_OR_RULE": 11
+    },
+    "reasons": {
+     "FINANCIAL_PROFILE_V_NOT_DEFINED": 9,
+     "NORMALIZED_HISTORY_NOT_AVAILABLE": 11,
+     "NO_DEVICE_PRICE": 2,
+     "V_INPUTS_NOT_AVAILABLE": 3
+    },
+    "valid": 5
+   }
+  },
+  "historical_whole_market_coverage": null,
+  "membership_codes": [
+   "BATS:CBOE",
+   "NASDAQ:AAPL",
+   "NASDAQ:ABNB",
+   "NASDAQ:ACGL",
+   "NASDAQ:ADBE",
+   "NASDAQ:AEP",
+   "NASDAQ:AKAM",
+   "NASDAQ:ALGN",
+   "NASDAQ:AMD",
+   "NASDAQ:AMZN",
+   "NASDAQ:GOOG",
+   "NASDAQ:GOOGL",
+   "NASDAQ:LNT",
+   "NYSE:A",
+   "NYSE:ABBV",
+   "NYSE:ABT",
+   "NYSE:ACN",
+   "NYSE:AEE",
+   "NYSE:AES",
+   "NYSE:AFL",
+   "NYSE:ALB",
+   "NYSE:ALL",
+   "NYSE:ALLE",
+   "NYSE:AMCR",
+   "NYSE:AOS",
+   "NYSE:APD",
+   "NYSE:ARE",
+   "NYSE:AXP",
+   "NYSE:MMM",
+   "NYSE:MO"
+  ],
+  "pit_reason": "INPUT_VINTAGE_NOT_VERIFIED_AT_PRICE_BASIS",
+  "presets": {
+   "balanced": {
+    "basis": "DERIVED_FROM_ARCHIVED_AXES",
+    "denominator": 30,
+    "known_valid": null,
+    "reasons": {
+     "ENGINE_VERSION_MISMATCH": 30
+    },
+    "unknown": 30,
+    "valid": null
+   },
+   "growth": {
+    "basis": "DERIVED_FROM_ARCHIVED_AXES",
+    "denominator": 30,
+    "known_valid": null,
+    "reasons": {
+     "ENGINE_VERSION_MISMATCH": 30
+    },
+    "unknown": 30,
+    "valid": null
+   },
+   "quality": {
+    "basis": "DERIVED_FROM_ARCHIVED_AXES",
+    "denominator": 30,
+    "known_valid": null,
+    "reasons": {
+     "ENGINE_VERSION_MISMATCH": 30
+    },
+    "unknown": 30,
+    "valid": null
+   },
+   "user-preset/aggressive@0.1": {
+    "basis": "DERIVED_FROM_ARCHIVED_AXES",
+    "denominator": 30,
+    "known_valid": null,
+    "reasons": {
+     "ENGINE_VERSION_MISMATCH": 30
+    },
+    "unknown": 30,
+    "valid": null
+   },
+   "user-preset/balanced@0.1": {
+    "basis": "DERIVED_FROM_ARCHIVED_AXES",
+    "denominator": 30,
+    "known_valid": null,
+    "reasons": {
+     "ENGINE_VERSION_MISMATCH": 30
+    },
+    "unknown": 30,
+    "valid": null
+   },
+   "user-preset/defensive@0.1": {
+    "basis": "DERIVED_FROM_ARCHIVED_AXES",
+    "denominator": 30,
+    "known_valid": null,
+    "reasons": {
+     "ENGINE_VERSION_MISMATCH": 30
+    },
+    "unknown": 30,
+    "valid": null
+   },
+   "value": {
+    "basis": "DERIVED_FROM_ARCHIVED_AXES",
+    "denominator": 30,
+    "known_valid": null,
+    "reasons": {
+     "ENGINE_VERSION_MISMATCH": 30
+    },
+    "unknown": 30,
+    "valid": null
+   }
+  },
+  "publication_id": "qgvpub-5ace1ccd49ae5623464dc9d10340300b5fe8efc0cacfefdc5e3938252fcf9b5b",
+  "published_default_total": {
+   "denominator": 30,
+   "valid": 27
+  },
+  "raw_input_connection_audit": null,
+  "raw_input_reason": "RAW_INPUTS_NOT_LINKED_TO_THIS_REVIEW",
+  "result_kind": "OPERATIONAL_COVERAGE",
+  "schema_version": "operational-qgv-coverage/1",
+  "scope": "SELECTED_OPERATIONAL_PUBLICATION_ONLY",
+  "signal_date_pit_eligible": null,
+  "source_inputs": [
+   {
+    "acquired_newest": "2026-10-13T22:30:00Z",
+    "acquired_oldest": "2026-10-13T22:30:00Z",
+    "as_of": "2026-10-13T22:30:00Z",
+    "calc_version": "qgv2-calc/2026-10-23.1",
+    "file": "sec-qgv2.json",
+    "sha256": "d2140a841b97d453c861195cde6b8366e2f6d244954a73a94a2e4eb5d5a4d4e8"
+   }
+  ],
+  "source_sha256": "49eceaf180dbddde8c77d8194a0aec957ba83321b409f1afbeddab15e7529955",
+  "times": {
+   "generated_at": "2026-10-13T22:40:00Z",
+   "inputs_as_of": "2026-10-13T22:30:00Z",
+   "price_basis_date": "2026-10-13",
+   "price_collected_from": "2026-10-13T22:41:00Z",
+   "price_collected_to": "2026-10-13T22:45:00Z",
+   "verified_at": "2026-10-13T22:46:00Z"
+  }
+ },
+ "note": "SYNTHETIC. Generated by Codex #474 (572f0b5e) research.operational_coverage from the public fixture tests/fixtures/qgv_official_vectors_v1.json base_text. engine_mismatch = coverage_from_archive as is (this engine differs from the vector archive); engine_matched = the same rows through summarize_rows with engine_matches true (preset availability derived)."
+}
