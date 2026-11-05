@@ -60,6 +60,7 @@
 | 2.4.5 기업 비교 레이더 | 부분 | 실·기기 | `stat-radar.js`(Q·G·V + 후보 3축, 비교군 #381) | 후보 축 채택(454/504 커버리지), 경쟁사 평균 미산출. V축은 중앙 V(DC-31, #439) |
 | 2.5 QGV 구조 트리 | 구현 | 실 | `ia-screens.js` | — |
 | 3.1 지표·시나리오 | 구현 | 합성 | `chart-workbench.js`, `chart-renderer.js`(LWC 5.2.1), `chart-indicators.js` | 실가격 창은 판정 불가(3.2.5) |
+| 3.1.2 기업별 지표 값 (기술적 분석 화면) | 개발 빌드(합성) | 합성 | 새 앱 `web_app/tech-display.js`, `screen-tech-display-live.js`, `screen-technical-live.js` | 11/05 오너 지시, Codex 계약 `technical-offline-display/1` + `technical-display-readiness/1`(#478 `419add34`, Draft). 합성 입력으로 연결을 검증한 상태: 13개 구성요소 채택값/진단값만 있음(값 숨김, 개수만)/미산출(사유), 관측·창·초기 봉·연속·조정·신원, 순위 없음(사유)이어도 지표 표시, 가용 시각 NOT_VERIFIED, 최신 여부 UNKNOWN. 그룹 순위·필터는 3.5(1.1.8)에 따로. 원천 NONE(비공개 연구 결과), 지표 판정 보류 유지([TECH_DISPLAY_20261105](../../implementation/docs/frontend_v2/TECH_DISPLAY_20261105.md)) |
 | 3.2.1~3.2.4 패턴 | 구현 | 합성 | `pattern-engine.js`, `pattern-history.js` | 후속 패턴 후보 |
 | 3.2.5 데이터 적합성 | 결정됨(10-31 TA-361) | — | #361 닫음(Yahoo 분할 이벤트 경로 안 씀) | 분할 확인은 1인 비공개 구역(#436) KIS 차트에서만(원주가÷수정주가 정수비 + SEC 주식수). 공개 실가격 창은 계속 `PRICE_BASIS_CONTINUITY_UNCONFIRMED` |
 | 3.3 차트 노트 | 구현 | 합성 | `chart-workbench.js`, #382(펜·수평선·지우개·되돌리기) | 계정·시트 저장(DRAW-STORE) |

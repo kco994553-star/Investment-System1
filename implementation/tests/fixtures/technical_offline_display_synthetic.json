@@ -1,0 +1,3719 @@
+{
+ "data_kind": "SYNTHETIC",
+ "description": "SYNTHETIC bars only (no company, no real price). Output of Codex tools/technical_display_offline.py at #478 419add34, unchanged; built by tools/build_tech_display_fixture.py.",
+ "symbols": [
+  "SYN_VALUE",
+  "SYN_SPLIT120",
+  "SYN_IDENTITY",
+  "SYN_FLAT35",
+  "SYN_NOHIGH",
+  "SYN_EMPTY"
+ ],
+ "display": {
+  "schema": "technical-offline-display/1",
+  "signal_day": "2017-12-28",
+  "series": [
+   {
+    "schema": "technical-offline-display/1",
+    "result_kind": "RAW_SERIES_DIAGNOSTIC",
+    "series_id": "SYNTHETIC:SYN_VALUE",
+    "symbol": "SYN_VALUE",
+    "signal_day": "2017-12-28",
+    "source_kind": "NORMALIZED_PROVIDER_DAILY_BARS",
+    "input_start": "2017-01-03",
+    "history_count": 250,
+    "excluded_future_rows": 0,
+    "price_basis": "RAW",
+    "pit_status": "NOT_VERIFIED",
+    "publication_status": "RESEARCH_PRIVATE_ONLY",
+    "evidence": {
+     "identity_status": "DOCUMENT_RECONSTRUCTED",
+     "identity_reference": "synthetic",
+     "no_split_start": "2017-01-03",
+     "no_split_end": "2017-12-28",
+     "no_split_reference": "synthetic",
+     "currency": "USD",
+     "currency_reference": "synthetic"
+    },
+    "rank": null,
+    "metrics": {
+     "SMA_5": {
+      "raw_value": 248.0,
+      "value": 248.0,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 5,
+      "expected_days": 5,
+      "window_start": "2017-12-21",
+      "window_end": "2017-12-28"
+     },
+     "SMA_20": {
+      "raw_value": 240.5,
+      "value": 240.5,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 20,
+      "expected_days": 20,
+      "window_start": "2017-11-30",
+      "window_end": "2017-12-28"
+     },
+     "SMA_60": {
+      "raw_value": 220.5,
+      "value": 220.5,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 60,
+      "expected_days": 60,
+      "window_start": "2017-10-04",
+      "window_end": "2017-12-28"
+     },
+     "SMA_120": {
+      "raw_value": 190.5,
+      "value": 190.5,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 120,
+      "expected_days": 120,
+      "window_start": "2017-07-11",
+      "window_end": "2017-12-28"
+     },
+     "EMA_20": {
+      "raw_value": 240.5,
+      "value": 240.5,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 250,
+      "expected_days": 250,
+      "window_start": "2017-01-03",
+      "window_end": "2017-12-28"
+     },
+     "RSI_14": {
+      "raw_value": 100.0,
+      "value": 100.0,
+      "unit": "PERCENT",
+      "null_reasons": [],
+      "observation_days": 250,
+      "expected_days": 250,
+      "window_start": "2017-01-03",
+      "window_end": "2017-12-28"
+     },
+     "MACD_12_26": {
+      "raw_value": 7.0,
+      "value": 7.0,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 250,
+      "expected_days": 250,
+      "window_start": "2017-01-03",
+      "window_end": "2017-12-28"
+     },
+     "MACD_SIGNAL_9": {
+      "raw_value": 7.0,
+      "value": 7.0,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 250,
+      "expected_days": 250,
+      "window_start": "2017-01-03",
+      "window_end": "2017-12-28"
+     },
+     "MACD_HISTOGRAM_12_26_9": {
+      "raw_value": 0.0,
+      "value": 0.0,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 250,
+      "expected_days": 250,
+      "window_start": "2017-01-03",
+      "window_end": "2017-12-28"
+     },
+     "BOLL_MIDDLE_20": {
+      "raw_value": 240.5,
+      "value": 240.5,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 20,
+      "expected_days": 20,
+      "window_start": "2017-11-30",
+      "window_end": "2017-12-28"
+     },
+     "BOLL_UPPER_20_2": {
+      "raw_value": 252.0325625946708,
+      "value": 252.0325625946708,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 20,
+      "expected_days": 20,
+      "window_start": "2017-11-30",
+      "window_end": "2017-12-28"
+     },
+     "BOLL_LOWER_20_2": {
+      "raw_value": 228.9674374053292,
+      "value": 228.9674374053292,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 20,
+      "expected_days": 20,
+      "window_start": "2017-11-30",
+      "window_end": "2017-12-28"
+     },
+     "ATR_14": {
+      "raw_value": 2.0,
+      "value": 2.0,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 250,
+      "expected_days": 250,
+      "window_start": "2017-01-03",
+      "window_end": "2017-12-28"
+     }
+    },
+    "volume_note": {
+     "raw_state": "WITHOUT_VOLUME",
+     "state": "WITHOUT_VOLUME",
+     "reason": null,
+     "window_start": "2017-11-29",
+     "window_end": "2017-12-28",
+     "null_reasons": []
+    },
+    "volume_latest": {
+     "raw_value": 100.0,
+     "value": 100.0,
+     "unit": "SHARES",
+     "last_observed_session": "2017-12-28",
+     "null_reasons": []
+    },
+    "pattern_status": "EXISTING_RULES_ONLY_NO_NEW_PATTERN_OR_SUCCESS_DEFINITION",
+    "readiness": {
+     "schema": "technical-display-readiness/1",
+     "as_of": "2017-12-28",
+     "value_scope": "PRIVATE_RESEARCH_DOCUMENT_RECONSTRUCTION",
+     "availability_status": "NOT_VERIFIED",
+     "source_available_at": null,
+     "availability_reason": "HISTORICAL_SOURCE_AVAILABILITY_NOT_VERIFIED",
+     "stale_status": "UNKNOWN",
+     "stale_reason": "UPDATE_SCHEDULE_NOT_CONNECTED",
+     "metrics": {
+      "SMA_5": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 5,
+        "observed_sessions": 5,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-12-21",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "SMA_20": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 20,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-11-30",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "SMA_60": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 60,
+        "observed_sessions": 60,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-10-04",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "SMA_120": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 120,
+        "observed_sessions": 120,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-07-11",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "EMA_20": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "FIRST_20_CLOSE_SMA_THEN_EMA",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 250,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-01-03",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "RSI_14": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "FIRST_14_CHANGES_MEAN_THEN_WILDER",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 15,
+        "observed_sessions": 250,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-01-03",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "MACD_12_26": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "FULL_INPUT_SMA_SEEDED_EMA_12_MINUS_26",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 26,
+        "observed_sessions": 250,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-01-03",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "MACD_SIGNAL_9": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "FIRST_9_VALID_MACD_MEAN_THEN_EMA",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 34,
+        "observed_sessions": 250,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-01-03",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "MACD_HISTOGRAM_12_26_9": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "MACD_MINUS_SIGNAL",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 34,
+        "observed_sessions": 250,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-01-03",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "BOLL_MIDDLE_20": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 20,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-11-30",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "BOLL_UPPER_20_2": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "ROLLING_20_CLOSE_POPULATION_STDDEV",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 20,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-11-30",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "BOLL_LOWER_20_2": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "ROLLING_20_CLOSE_POPULATION_STDDEV",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 20,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-11-30",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "ATR_14": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "FIRST_14_TRUE_RANGES_MEAN_THEN_WILDER_RESET_AFTER_OHLC_GAP",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 15,
+        "observed_sessions": 250,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-01-03",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      }
+     }
+    }
+   },
+   {
+    "schema": "technical-offline-display/1",
+    "result_kind": "RAW_SERIES_DIAGNOSTIC",
+    "series_id": "SYNTHETIC:SYN_SPLIT120",
+    "symbol": "SYN_SPLIT120",
+    "signal_day": "2017-12-28",
+    "source_kind": "NORMALIZED_PROVIDER_DAILY_BARS",
+    "input_start": "2017-01-03",
+    "history_count": 250,
+    "excluded_future_rows": 0,
+    "price_basis": "RAW",
+    "pit_status": "NOT_VERIFIED",
+    "publication_status": "RESEARCH_PRIVATE_ONLY",
+    "evidence": {
+     "identity_status": "DOCUMENT_RECONSTRUCTED",
+     "identity_reference": "synthetic",
+     "no_split_start": "2017-07-11",
+     "no_split_end": "2017-12-28",
+     "no_split_reference": "synthetic",
+     "currency": "USD",
+     "currency_reference": "synthetic"
+    },
+    "rank": null,
+    "metrics": {
+     "SMA_5": {
+      "raw_value": 248.0,
+      "value": 248.0,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 5,
+      "expected_days": 5,
+      "window_start": "2017-12-21",
+      "window_end": "2017-12-28"
+     },
+     "SMA_20": {
+      "raw_value": 240.5,
+      "value": 240.5,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 20,
+      "expected_days": 20,
+      "window_start": "2017-11-30",
+      "window_end": "2017-12-28"
+     },
+     "SMA_60": {
+      "raw_value": 220.5,
+      "value": 220.5,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 60,
+      "expected_days": 60,
+      "window_start": "2017-10-04",
+      "window_end": "2017-12-28"
+     },
+     "SMA_120": {
+      "raw_value": 190.5,
+      "value": 190.5,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 120,
+      "expected_days": 120,
+      "window_start": "2017-07-11",
+      "window_end": "2017-12-28"
+     },
+     "EMA_20": {
+      "raw_value": 240.5,
+      "value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [
+       "ACTION_BASIS_UNCONFIRMED"
+      ],
+      "observation_days": 250,
+      "expected_days": 250,
+      "window_start": "2017-01-03",
+      "window_end": "2017-12-28"
+     },
+     "RSI_14": {
+      "raw_value": 100.0,
+      "value": null,
+      "unit": "PERCENT",
+      "null_reasons": [
+       "ACTION_BASIS_UNCONFIRMED"
+      ],
+      "observation_days": 250,
+      "expected_days": 250,
+      "window_start": "2017-01-03",
+      "window_end": "2017-12-28"
+     },
+     "MACD_12_26": {
+      "raw_value": 7.0,
+      "value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [
+       "ACTION_BASIS_UNCONFIRMED"
+      ],
+      "observation_days": 250,
+      "expected_days": 250,
+      "window_start": "2017-01-03",
+      "window_end": "2017-12-28"
+     },
+     "MACD_SIGNAL_9": {
+      "raw_value": 7.0,
+      "value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [
+       "ACTION_BASIS_UNCONFIRMED"
+      ],
+      "observation_days": 250,
+      "expected_days": 250,
+      "window_start": "2017-01-03",
+      "window_end": "2017-12-28"
+     },
+     "MACD_HISTOGRAM_12_26_9": {
+      "raw_value": 0.0,
+      "value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [
+       "ACTION_BASIS_UNCONFIRMED"
+      ],
+      "observation_days": 250,
+      "expected_days": 250,
+      "window_start": "2017-01-03",
+      "window_end": "2017-12-28"
+     },
+     "BOLL_MIDDLE_20": {
+      "raw_value": 240.5,
+      "value": 240.5,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 20,
+      "expected_days": 20,
+      "window_start": "2017-11-30",
+      "window_end": "2017-12-28"
+     },
+     "BOLL_UPPER_20_2": {
+      "raw_value": 252.0325625946708,
+      "value": 252.0325625946708,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 20,
+      "expected_days": 20,
+      "window_start": "2017-11-30",
+      "window_end": "2017-12-28"
+     },
+     "BOLL_LOWER_20_2": {
+      "raw_value": 228.9674374053292,
+      "value": 228.9674374053292,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 20,
+      "expected_days": 20,
+      "window_start": "2017-11-30",
+      "window_end": "2017-12-28"
+     },
+     "ATR_14": {
+      "raw_value": 2.0,
+      "value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [
+       "ACTION_BASIS_UNCONFIRMED"
+      ],
+      "observation_days": 250,
+      "expected_days": 250,
+      "window_start": "2017-01-03",
+      "window_end": "2017-12-28"
+     }
+    },
+    "volume_note": {
+     "raw_state": "WITHOUT_VOLUME",
+     "state": "WITHOUT_VOLUME",
+     "reason": null,
+     "window_start": "2017-11-29",
+     "window_end": "2017-12-28",
+     "null_reasons": []
+    },
+    "volume_latest": {
+     "raw_value": 100.0,
+     "value": 100.0,
+     "unit": "SHARES",
+     "last_observed_session": "2017-12-28",
+     "null_reasons": []
+    },
+    "pattern_status": "EXISTING_RULES_ONLY_NO_NEW_PATTERN_OR_SUCCESS_DEFINITION",
+    "readiness": {
+     "schema": "technical-display-readiness/1",
+     "as_of": "2017-12-28",
+     "value_scope": "PRIVATE_RESEARCH_DOCUMENT_RECONSTRUCTION",
+     "availability_status": "NOT_VERIFIED",
+     "source_available_at": null,
+     "availability_reason": "HISTORICAL_SOURCE_AVAILABILITY_NOT_VERIFIED",
+     "stale_status": "UNKNOWN",
+     "stale_reason": "UPDATE_SCHEDULE_NOT_CONNECTED",
+     "metrics": {
+      "SMA_5": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 5,
+        "observed_sessions": 5,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-12-21",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-07-11",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "SMA_20": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 20,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-11-30",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-07-11",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "SMA_60": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 60,
+        "observed_sessions": 60,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-10-04",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-07-11",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "SMA_120": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 120,
+        "observed_sessions": 120,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-07-11",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-07-11",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "EMA_20": {
+       "state": "DIAGNOSTIC",
+       "initialization": {
+        "method": "FIRST_20_CLOSE_SMA_THEN_EMA",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 250,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "UNCONFIRMED",
+        "required_start": "2017-01-03",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-07-11",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": [
+        "ACTION_BASIS_UNCONFIRMED"
+       ]
+      },
+      "RSI_14": {
+       "state": "DIAGNOSTIC",
+       "initialization": {
+        "method": "FIRST_14_CHANGES_MEAN_THEN_WILDER",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 15,
+        "observed_sessions": 250,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "UNCONFIRMED",
+        "required_start": "2017-01-03",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-07-11",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": [
+        "ACTION_BASIS_UNCONFIRMED"
+       ]
+      },
+      "MACD_12_26": {
+       "state": "DIAGNOSTIC",
+       "initialization": {
+        "method": "FULL_INPUT_SMA_SEEDED_EMA_12_MINUS_26",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 26,
+        "observed_sessions": 250,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "UNCONFIRMED",
+        "required_start": "2017-01-03",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-07-11",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": [
+        "ACTION_BASIS_UNCONFIRMED"
+       ]
+      },
+      "MACD_SIGNAL_9": {
+       "state": "DIAGNOSTIC",
+       "initialization": {
+        "method": "FIRST_9_VALID_MACD_MEAN_THEN_EMA",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 34,
+        "observed_sessions": 250,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "UNCONFIRMED",
+        "required_start": "2017-01-03",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-07-11",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": [
+        "ACTION_BASIS_UNCONFIRMED"
+       ]
+      },
+      "MACD_HISTOGRAM_12_26_9": {
+       "state": "DIAGNOSTIC",
+       "initialization": {
+        "method": "MACD_MINUS_SIGNAL",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 34,
+        "observed_sessions": 250,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "UNCONFIRMED",
+        "required_start": "2017-01-03",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-07-11",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": [
+        "ACTION_BASIS_UNCONFIRMED"
+       ]
+      },
+      "BOLL_MIDDLE_20": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 20,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-11-30",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-07-11",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "BOLL_UPPER_20_2": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "ROLLING_20_CLOSE_POPULATION_STDDEV",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 20,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-11-30",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-07-11",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "BOLL_LOWER_20_2": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "ROLLING_20_CLOSE_POPULATION_STDDEV",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 20,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-11-30",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-07-11",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "ATR_14": {
+       "state": "DIAGNOSTIC",
+       "initialization": {
+        "method": "FIRST_14_TRUE_RANGES_MEAN_THEN_WILDER_RESET_AFTER_OHLC_GAP",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 15,
+        "observed_sessions": 250,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "UNCONFIRMED",
+        "required_start": "2017-01-03",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-07-11",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": [
+        "ACTION_BASIS_UNCONFIRMED"
+       ]
+      }
+     }
+    }
+   },
+   {
+    "schema": "technical-offline-display/1",
+    "result_kind": "RAW_SERIES_DIAGNOSTIC",
+    "series_id": "SYNTHETIC:SYN_IDENTITY",
+    "symbol": "SYN_IDENTITY",
+    "signal_day": "2017-12-28",
+    "source_kind": "NORMALIZED_PROVIDER_DAILY_BARS",
+    "input_start": "2017-01-03",
+    "history_count": 250,
+    "excluded_future_rows": 0,
+    "price_basis": "RAW",
+    "pit_status": "NOT_VERIFIED",
+    "publication_status": "RESEARCH_PRIVATE_ONLY",
+    "evidence": {
+     "identity_status": "UNKNOWN",
+     "identity_reference": "synthetic",
+     "no_split_start": "2017-01-03",
+     "no_split_end": "2017-12-28",
+     "no_split_reference": "synthetic",
+     "currency": "USD",
+     "currency_reference": "synthetic"
+    },
+    "rank": null,
+    "metrics": {
+     "SMA_5": {
+      "raw_value": 248.3125,
+      "value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [
+       "IDENTITY_UNCONFIRMED"
+      ],
+      "observation_days": 5,
+      "expected_days": 5,
+      "window_start": "2017-12-21",
+      "window_end": "2017-12-28"
+     },
+     "SMA_20": {
+      "raw_value": 240.8125,
+      "value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [
+       "IDENTITY_UNCONFIRMED"
+      ],
+      "observation_days": 20,
+      "expected_days": 20,
+      "window_start": "2017-11-30",
+      "window_end": "2017-12-28"
+     },
+     "SMA_60": {
+      "raw_value": 220.8125,
+      "value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [
+       "IDENTITY_UNCONFIRMED"
+      ],
+      "observation_days": 60,
+      "expected_days": 60,
+      "window_start": "2017-10-04",
+      "window_end": "2017-12-28"
+     },
+     "SMA_120": {
+      "raw_value": 190.8125,
+      "value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [
+       "IDENTITY_UNCONFIRMED"
+      ],
+      "observation_days": 120,
+      "expected_days": 120,
+      "window_start": "2017-07-11",
+      "window_end": "2017-12-28"
+     },
+     "EMA_20": {
+      "raw_value": 240.8125,
+      "value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [
+       "IDENTITY_UNCONFIRMED"
+      ],
+      "observation_days": 250,
+      "expected_days": 250,
+      "window_start": "2017-01-03",
+      "window_end": "2017-12-28"
+     },
+     "RSI_14": {
+      "raw_value": 100.0,
+      "value": null,
+      "unit": "PERCENT",
+      "null_reasons": [
+       "IDENTITY_UNCONFIRMED"
+      ],
+      "observation_days": 250,
+      "expected_days": 250,
+      "window_start": "2017-01-03",
+      "window_end": "2017-12-28"
+     },
+     "MACD_12_26": {
+      "raw_value": 7.0,
+      "value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [
+       "IDENTITY_UNCONFIRMED"
+      ],
+      "observation_days": 250,
+      "expected_days": 250,
+      "window_start": "2017-01-03",
+      "window_end": "2017-12-28"
+     },
+     "MACD_SIGNAL_9": {
+      "raw_value": 7.0,
+      "value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [
+       "IDENTITY_UNCONFIRMED"
+      ],
+      "observation_days": 250,
+      "expected_days": 250,
+      "window_start": "2017-01-03",
+      "window_end": "2017-12-28"
+     },
+     "MACD_HISTOGRAM_12_26_9": {
+      "raw_value": 0.0,
+      "value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [
+       "IDENTITY_UNCONFIRMED"
+      ],
+      "observation_days": 250,
+      "expected_days": 250,
+      "window_start": "2017-01-03",
+      "window_end": "2017-12-28"
+     },
+     "BOLL_MIDDLE_20": {
+      "raw_value": 240.8125,
+      "value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [
+       "IDENTITY_UNCONFIRMED"
+      ],
+      "observation_days": 20,
+      "expected_days": 20,
+      "window_start": "2017-11-30",
+      "window_end": "2017-12-28"
+     },
+     "BOLL_UPPER_20_2": {
+      "raw_value": 252.3450625946708,
+      "value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [
+       "IDENTITY_UNCONFIRMED"
+      ],
+      "observation_days": 20,
+      "expected_days": 20,
+      "window_start": "2017-11-30",
+      "window_end": "2017-12-28"
+     },
+     "BOLL_LOWER_20_2": {
+      "raw_value": 229.2799374053292,
+      "value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [
+       "IDENTITY_UNCONFIRMED"
+      ],
+      "observation_days": 20,
+      "expected_days": 20,
+      "window_start": "2017-11-30",
+      "window_end": "2017-12-28"
+     },
+     "ATR_14": {
+      "raw_value": 2.0,
+      "value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [
+       "IDENTITY_UNCONFIRMED"
+      ],
+      "observation_days": 250,
+      "expected_days": 250,
+      "window_start": "2017-01-03",
+      "window_end": "2017-12-28"
+     }
+    },
+    "volume_note": {
+     "raw_state": "WITHOUT_VOLUME",
+     "state": null,
+     "reason": null,
+     "window_start": "2017-11-29",
+     "window_end": "2017-12-28",
+     "null_reasons": [
+      "IDENTITY_UNCONFIRMED"
+     ]
+    },
+    "volume_latest": {
+     "raw_value": 100.0,
+     "value": null,
+     "unit": "SHARES",
+     "last_observed_session": "2017-12-28",
+     "null_reasons": [
+      "IDENTITY_UNCONFIRMED"
+     ]
+    },
+    "pattern_status": "EXISTING_RULES_ONLY_NO_NEW_PATTERN_OR_SUCCESS_DEFINITION",
+    "readiness": {
+     "schema": "technical-display-readiness/1",
+     "as_of": "2017-12-28",
+     "value_scope": "PRIVATE_RESEARCH_DOCUMENT_RECONSTRUCTION",
+     "availability_status": "NOT_VERIFIED",
+     "source_available_at": null,
+     "availability_reason": "HISTORICAL_SOURCE_AVAILABILITY_NOT_VERIFIED",
+     "stale_status": "UNKNOWN",
+     "stale_reason": "UPDATE_SCHEDULE_NOT_CONNECTED",
+     "metrics": {
+      "SMA_5": {
+       "state": "DIAGNOSTIC",
+       "initialization": {
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 5,
+        "observed_sessions": 5,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-12-21",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "UNKNOWN",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": [
+        "IDENTITY_UNCONFIRMED"
+       ]
+      },
+      "SMA_20": {
+       "state": "DIAGNOSTIC",
+       "initialization": {
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 20,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-11-30",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "UNKNOWN",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": [
+        "IDENTITY_UNCONFIRMED"
+       ]
+      },
+      "SMA_60": {
+       "state": "DIAGNOSTIC",
+       "initialization": {
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 60,
+        "observed_sessions": 60,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-10-04",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "UNKNOWN",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": [
+        "IDENTITY_UNCONFIRMED"
+       ]
+      },
+      "SMA_120": {
+       "state": "DIAGNOSTIC",
+       "initialization": {
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 120,
+        "observed_sessions": 120,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-07-11",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "UNKNOWN",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": [
+        "IDENTITY_UNCONFIRMED"
+       ]
+      },
+      "EMA_20": {
+       "state": "DIAGNOSTIC",
+       "initialization": {
+        "method": "FIRST_20_CLOSE_SMA_THEN_EMA",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 250,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-01-03",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "UNKNOWN",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": [
+        "IDENTITY_UNCONFIRMED"
+       ]
+      },
+      "RSI_14": {
+       "state": "DIAGNOSTIC",
+       "initialization": {
+        "method": "FIRST_14_CHANGES_MEAN_THEN_WILDER",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 15,
+        "observed_sessions": 250,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-01-03",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "UNKNOWN",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": [
+        "IDENTITY_UNCONFIRMED"
+       ]
+      },
+      "MACD_12_26": {
+       "state": "DIAGNOSTIC",
+       "initialization": {
+        "method": "FULL_INPUT_SMA_SEEDED_EMA_12_MINUS_26",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 26,
+        "observed_sessions": 250,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-01-03",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "UNKNOWN",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": [
+        "IDENTITY_UNCONFIRMED"
+       ]
+      },
+      "MACD_SIGNAL_9": {
+       "state": "DIAGNOSTIC",
+       "initialization": {
+        "method": "FIRST_9_VALID_MACD_MEAN_THEN_EMA",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 34,
+        "observed_sessions": 250,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-01-03",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "UNKNOWN",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": [
+        "IDENTITY_UNCONFIRMED"
+       ]
+      },
+      "MACD_HISTOGRAM_12_26_9": {
+       "state": "DIAGNOSTIC",
+       "initialization": {
+        "method": "MACD_MINUS_SIGNAL",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 34,
+        "observed_sessions": 250,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-01-03",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "UNKNOWN",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": [
+        "IDENTITY_UNCONFIRMED"
+       ]
+      },
+      "BOLL_MIDDLE_20": {
+       "state": "DIAGNOSTIC",
+       "initialization": {
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 20,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-11-30",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "UNKNOWN",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": [
+        "IDENTITY_UNCONFIRMED"
+       ]
+      },
+      "BOLL_UPPER_20_2": {
+       "state": "DIAGNOSTIC",
+       "initialization": {
+        "method": "ROLLING_20_CLOSE_POPULATION_STDDEV",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 20,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-11-30",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "UNKNOWN",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": [
+        "IDENTITY_UNCONFIRMED"
+       ]
+      },
+      "BOLL_LOWER_20_2": {
+       "state": "DIAGNOSTIC",
+       "initialization": {
+        "method": "ROLLING_20_CLOSE_POPULATION_STDDEV",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 20,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-11-30",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "UNKNOWN",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": [
+        "IDENTITY_UNCONFIRMED"
+       ]
+      },
+      "ATR_14": {
+       "state": "DIAGNOSTIC",
+       "initialization": {
+        "method": "FIRST_14_TRUE_RANGES_MEAN_THEN_WILDER_RESET_AFTER_OHLC_GAP",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 15,
+        "observed_sessions": 250,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-01-03",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "UNKNOWN",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": [
+        "IDENTITY_UNCONFIRMED"
+       ]
+      }
+     }
+    }
+   },
+   {
+    "schema": "technical-offline-display/1",
+    "result_kind": "RAW_SERIES_DIAGNOSTIC",
+    "series_id": "SYNTHETIC:SYN_FLAT35",
+    "symbol": "SYN_FLAT35",
+    "signal_day": "2017-12-28",
+    "source_kind": "NORMALIZED_PROVIDER_DAILY_BARS",
+    "input_start": "2017-11-08",
+    "history_count": 35,
+    "excluded_future_rows": 0,
+    "price_basis": "RAW",
+    "pit_status": "NOT_VERIFIED",
+    "publication_status": "RESEARCH_PRIVATE_ONLY",
+    "evidence": {
+     "identity_status": "DOCUMENT_RECONSTRUCTED",
+     "identity_reference": "synthetic",
+     "no_split_start": "2017-11-08",
+     "no_split_end": "2017-12-28",
+     "no_split_reference": "synthetic",
+     "currency": "USD",
+     "currency_reference": "synthetic"
+    },
+    "rank": null,
+    "metrics": {
+     "SMA_5": {
+      "raw_value": 10.0,
+      "value": 10.0,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 5,
+      "expected_days": 5,
+      "window_start": "2017-12-21",
+      "window_end": "2017-12-28"
+     },
+     "SMA_20": {
+      "raw_value": 10.0,
+      "value": 10.0,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 20,
+      "expected_days": 20,
+      "window_start": "2017-11-30",
+      "window_end": "2017-12-28"
+     },
+     "SMA_60": {
+      "raw_value": null,
+      "value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [
+       "WARMUP"
+      ],
+      "observation_days": 35,
+      "expected_days": 60,
+      "window_start": "2017-11-08",
+      "window_end": "2017-12-28"
+     },
+     "SMA_120": {
+      "raw_value": null,
+      "value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [
+       "WARMUP"
+      ],
+      "observation_days": 35,
+      "expected_days": 120,
+      "window_start": "2017-11-08",
+      "window_end": "2017-12-28"
+     },
+     "EMA_20": {
+      "raw_value": 10.0,
+      "value": 10.0,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 35,
+      "expected_days": 35,
+      "window_start": "2017-11-08",
+      "window_end": "2017-12-28"
+     },
+     "RSI_14": {
+      "raw_value": null,
+      "value": null,
+      "unit": "PERCENT",
+      "null_reasons": [
+       "ZERO_TOTAL_CHANGE"
+      ],
+      "observation_days": 35,
+      "expected_days": 35,
+      "window_start": "2017-11-08",
+      "window_end": "2017-12-28"
+     },
+     "MACD_12_26": {
+      "raw_value": 0.0,
+      "value": 0.0,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 35,
+      "expected_days": 35,
+      "window_start": "2017-11-08",
+      "window_end": "2017-12-28"
+     },
+     "MACD_SIGNAL_9": {
+      "raw_value": 0.0,
+      "value": 0.0,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 35,
+      "expected_days": 35,
+      "window_start": "2017-11-08",
+      "window_end": "2017-12-28"
+     },
+     "MACD_HISTOGRAM_12_26_9": {
+      "raw_value": 0.0,
+      "value": 0.0,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 35,
+      "expected_days": 35,
+      "window_start": "2017-11-08",
+      "window_end": "2017-12-28"
+     },
+     "BOLL_MIDDLE_20": {
+      "raw_value": 10.0,
+      "value": 10.0,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 20,
+      "expected_days": 20,
+      "window_start": "2017-11-30",
+      "window_end": "2017-12-28"
+     },
+     "BOLL_UPPER_20_2": {
+      "raw_value": 10.0,
+      "value": 10.0,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 20,
+      "expected_days": 20,
+      "window_start": "2017-11-30",
+      "window_end": "2017-12-28"
+     },
+     "BOLL_LOWER_20_2": {
+      "raw_value": 10.0,
+      "value": 10.0,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 20,
+      "expected_days": 20,
+      "window_start": "2017-11-30",
+      "window_end": "2017-12-28"
+     },
+     "ATR_14": {
+      "raw_value": 2.0,
+      "value": 2.0,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 35,
+      "expected_days": 35,
+      "window_start": "2017-11-08",
+      "window_end": "2017-12-28"
+     }
+    },
+    "volume_note": {
+     "raw_state": "WITHOUT_VOLUME",
+     "state": "WITHOUT_VOLUME",
+     "reason": null,
+     "window_start": "2017-11-29",
+     "window_end": "2017-12-28",
+     "null_reasons": []
+    },
+    "volume_latest": {
+     "raw_value": 100.0,
+     "value": 100.0,
+     "unit": "SHARES",
+     "last_observed_session": "2017-12-28",
+     "null_reasons": []
+    },
+    "pattern_status": "EXISTING_RULES_ONLY_NO_NEW_PATTERN_OR_SUCCESS_DEFINITION",
+    "readiness": {
+     "schema": "technical-display-readiness/1",
+     "as_of": "2017-12-28",
+     "value_scope": "PRIVATE_RESEARCH_DOCUMENT_RECONSTRUCTION",
+     "availability_status": "NOT_VERIFIED",
+     "source_available_at": null,
+     "availability_reason": "HISTORICAL_SOURCE_AVAILABILITY_NOT_VERIFIED",
+     "stale_status": "UNKNOWN",
+     "stale_reason": "UPDATE_SCHEDULE_NOT_CONNECTED",
+     "metrics": {
+      "SMA_5": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-11-08"
+       },
+       "warmup": {
+        "minimum_sessions": 5,
+        "observed_sessions": 5,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-12-21",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-11-08",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "SMA_20": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-11-08"
+       },
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 20,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-11-30",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-11-08",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "SMA_60": {
+       "state": "NOT_COMPUTED",
+       "initialization": {
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-11-08"
+       },
+       "warmup": {
+        "minimum_sessions": 60,
+        "observed_sessions": 35,
+        "state": "INSUFFICIENT"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-11-08",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-11-08",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": [
+        "WARMUP"
+       ]
+      },
+      "SMA_120": {
+       "state": "NOT_COMPUTED",
+       "initialization": {
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-11-08"
+       },
+       "warmup": {
+        "minimum_sessions": 120,
+        "observed_sessions": 35,
+        "state": "INSUFFICIENT"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-11-08",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-11-08",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": [
+        "WARMUP"
+       ]
+      },
+      "EMA_20": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "FIRST_20_CLOSE_SMA_THEN_EMA",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY",
+        "input_start": "2017-11-08"
+       },
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 35,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-11-08",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-11-08",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "RSI_14": {
+       "state": "NOT_COMPUTED",
+       "initialization": {
+        "method": "FIRST_14_CHANGES_MEAN_THEN_WILDER",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY",
+        "input_start": "2017-11-08"
+       },
+       "warmup": {
+        "minimum_sessions": 15,
+        "observed_sessions": 35,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-11-08",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-11-08",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": [
+        "ZERO_TOTAL_CHANGE"
+       ]
+      },
+      "MACD_12_26": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "FULL_INPUT_SMA_SEEDED_EMA_12_MINUS_26",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY",
+        "input_start": "2017-11-08"
+       },
+       "warmup": {
+        "minimum_sessions": 26,
+        "observed_sessions": 35,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-11-08",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-11-08",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "MACD_SIGNAL_9": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "FIRST_9_VALID_MACD_MEAN_THEN_EMA",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY",
+        "input_start": "2017-11-08"
+       },
+       "warmup": {
+        "minimum_sessions": 34,
+        "observed_sessions": 35,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-11-08",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-11-08",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "MACD_HISTOGRAM_12_26_9": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "MACD_MINUS_SIGNAL",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY",
+        "input_start": "2017-11-08"
+       },
+       "warmup": {
+        "minimum_sessions": 34,
+        "observed_sessions": 35,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-11-08",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-11-08",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "BOLL_MIDDLE_20": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-11-08"
+       },
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 20,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-11-30",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-11-08",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "BOLL_UPPER_20_2": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "ROLLING_20_CLOSE_POPULATION_STDDEV",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-11-08"
+       },
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 20,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-11-30",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-11-08",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "BOLL_LOWER_20_2": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "ROLLING_20_CLOSE_POPULATION_STDDEV",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-11-08"
+       },
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 20,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-11-30",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-11-08",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "ATR_14": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "FIRST_14_TRUE_RANGES_MEAN_THEN_WILDER_RESET_AFTER_OHLC_GAP",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY",
+        "input_start": "2017-11-08"
+       },
+       "warmup": {
+        "minimum_sessions": 15,
+        "observed_sessions": 35,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-11-08",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-11-08",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      }
+     }
+    }
+   },
+   {
+    "schema": "technical-offline-display/1",
+    "result_kind": "RAW_SERIES_DIAGNOSTIC",
+    "series_id": "SYNTHETIC:SYN_NOHIGH",
+    "symbol": "SYN_NOHIGH",
+    "signal_day": "2017-12-28",
+    "source_kind": "NORMALIZED_PROVIDER_DAILY_BARS",
+    "input_start": "2017-01-03",
+    "history_count": 250,
+    "excluded_future_rows": 0,
+    "price_basis": "RAW",
+    "pit_status": "NOT_VERIFIED",
+    "publication_status": "RESEARCH_PRIVATE_ONLY",
+    "evidence": {
+     "identity_status": "DOCUMENT_RECONSTRUCTED",
+     "identity_reference": "synthetic",
+     "no_split_start": "2017-01-03",
+     "no_split_end": "2017-12-28",
+     "no_split_reference": "synthetic",
+     "currency": "USD",
+     "currency_reference": "synthetic"
+    },
+    "rank": null,
+    "metrics": {
+     "SMA_5": {
+      "raw_value": 248.0,
+      "value": 248.0,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 5,
+      "expected_days": 5,
+      "window_start": "2017-12-21",
+      "window_end": "2017-12-28"
+     },
+     "SMA_20": {
+      "raw_value": 240.5,
+      "value": 240.5,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 20,
+      "expected_days": 20,
+      "window_start": "2017-11-30",
+      "window_end": "2017-12-28"
+     },
+     "SMA_60": {
+      "raw_value": 220.5,
+      "value": 220.5,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 60,
+      "expected_days": 60,
+      "window_start": "2017-10-04",
+      "window_end": "2017-12-28"
+     },
+     "SMA_120": {
+      "raw_value": 190.5,
+      "value": 190.5,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 120,
+      "expected_days": 120,
+      "window_start": "2017-07-11",
+      "window_end": "2017-12-28"
+     },
+     "EMA_20": {
+      "raw_value": 240.5,
+      "value": 240.5,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 250,
+      "expected_days": 250,
+      "window_start": "2017-01-03",
+      "window_end": "2017-12-28"
+     },
+     "RSI_14": {
+      "raw_value": 100.0,
+      "value": 100.0,
+      "unit": "PERCENT",
+      "null_reasons": [],
+      "observation_days": 250,
+      "expected_days": 250,
+      "window_start": "2017-01-03",
+      "window_end": "2017-12-28"
+     },
+     "MACD_12_26": {
+      "raw_value": 7.0,
+      "value": 7.0,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 250,
+      "expected_days": 250,
+      "window_start": "2017-01-03",
+      "window_end": "2017-12-28"
+     },
+     "MACD_SIGNAL_9": {
+      "raw_value": 7.0,
+      "value": 7.0,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 250,
+      "expected_days": 250,
+      "window_start": "2017-01-03",
+      "window_end": "2017-12-28"
+     },
+     "MACD_HISTOGRAM_12_26_9": {
+      "raw_value": 0.0,
+      "value": 0.0,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 250,
+      "expected_days": 250,
+      "window_start": "2017-01-03",
+      "window_end": "2017-12-28"
+     },
+     "BOLL_MIDDLE_20": {
+      "raw_value": 240.5,
+      "value": 240.5,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 20,
+      "expected_days": 20,
+      "window_start": "2017-11-30",
+      "window_end": "2017-12-28"
+     },
+     "BOLL_UPPER_20_2": {
+      "raw_value": 252.0325625946708,
+      "value": 252.0325625946708,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 20,
+      "expected_days": 20,
+      "window_start": "2017-11-30",
+      "window_end": "2017-12-28"
+     },
+     "BOLL_LOWER_20_2": {
+      "raw_value": 228.9674374053292,
+      "value": 228.9674374053292,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [],
+      "observation_days": 20,
+      "expected_days": 20,
+      "window_start": "2017-11-30",
+      "window_end": "2017-12-28"
+     },
+     "ATR_14": {
+      "raw_value": null,
+      "value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [
+       "OHLC_MISSING"
+      ],
+      "observation_days": 250,
+      "expected_days": 250,
+      "window_start": "2017-01-03",
+      "window_end": "2017-12-28"
+     }
+    },
+    "volume_note": {
+     "raw_state": "WITHOUT_VOLUME",
+     "state": "WITHOUT_VOLUME",
+     "reason": null,
+     "window_start": "2017-11-29",
+     "window_end": "2017-12-28",
+     "null_reasons": []
+    },
+    "volume_latest": {
+     "raw_value": 100.0,
+     "value": 100.0,
+     "unit": "SHARES",
+     "last_observed_session": "2017-12-28",
+     "null_reasons": []
+    },
+    "pattern_status": "EXISTING_RULES_ONLY_NO_NEW_PATTERN_OR_SUCCESS_DEFINITION",
+    "readiness": {
+     "schema": "technical-display-readiness/1",
+     "as_of": "2017-12-28",
+     "value_scope": "PRIVATE_RESEARCH_DOCUMENT_RECONSTRUCTION",
+     "availability_status": "NOT_VERIFIED",
+     "source_available_at": null,
+     "availability_reason": "HISTORICAL_SOURCE_AVAILABILITY_NOT_VERIFIED",
+     "stale_status": "UNKNOWN",
+     "stale_reason": "UPDATE_SCHEDULE_NOT_CONNECTED",
+     "metrics": {
+      "SMA_5": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 5,
+        "observed_sessions": 5,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-12-21",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "SMA_20": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 20,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-11-30",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "SMA_60": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 60,
+        "observed_sessions": 60,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-10-04",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "SMA_120": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 120,
+        "observed_sessions": 120,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-07-11",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "EMA_20": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "FIRST_20_CLOSE_SMA_THEN_EMA",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 250,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-01-03",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "RSI_14": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "FIRST_14_CHANGES_MEAN_THEN_WILDER",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 15,
+        "observed_sessions": 250,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-01-03",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "MACD_12_26": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "FULL_INPUT_SMA_SEEDED_EMA_12_MINUS_26",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 26,
+        "observed_sessions": 250,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-01-03",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "MACD_SIGNAL_9": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "FIRST_9_VALID_MACD_MEAN_THEN_EMA",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 34,
+        "observed_sessions": 250,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-01-03",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "MACD_HISTOGRAM_12_26_9": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "MACD_MINUS_SIGNAL",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 34,
+        "observed_sessions": 250,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-01-03",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "BOLL_MIDDLE_20": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 20,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-11-30",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "BOLL_UPPER_20_2": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "ROLLING_20_CLOSE_POPULATION_STDDEV",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 20,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-11-30",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "BOLL_LOWER_20_2": {
+       "state": "VALUE",
+       "initialization": {
+        "method": "ROLLING_20_CLOSE_POPULATION_STDDEV",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 20,
+        "state": "READY"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-11-30",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": []
+      },
+      "ATR_14": {
+       "state": "NOT_COMPUTED",
+       "initialization": {
+        "method": "FIRST_14_TRUE_RANGES_MEAN_THEN_WILDER_RESET_AFTER_OHLC_GAP",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY",
+        "input_start": "2017-01-03"
+       },
+       "warmup": {
+        "minimum_sessions": 15,
+        "observed_sessions": 250,
+        "state": "NOT_EVALUATED"
+       },
+       "continuity": {
+        "state": "COMPLETE",
+        "reasons": []
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-01-03",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": [
+        "OHLC_MISSING"
+       ]
+      }
+     }
+    }
+   },
+   {
+    "schema": "technical-offline-display/1",
+    "result_kind": "RAW_SERIES_DIAGNOSTIC",
+    "series_id": "SYNTHETIC:SYN_EMPTY",
+    "symbol": "SYN_EMPTY",
+    "signal_day": "2017-12-28",
+    "source_kind": "NORMALIZED_PROVIDER_DAILY_BARS",
+    "input_start": "2017-12-28",
+    "history_count": 0,
+    "excluded_future_rows": 0,
+    "price_basis": "RAW",
+    "pit_status": "NOT_VERIFIED",
+    "publication_status": "RESEARCH_PRIVATE_ONLY",
+    "evidence": {
+     "identity_status": "DOCUMENT_RECONSTRUCTED",
+     "identity_reference": "synthetic",
+     "no_split_start": "2017-01-03",
+     "no_split_end": "2017-12-28",
+     "no_split_reference": "synthetic",
+     "currency": "USD",
+     "currency_reference": "synthetic"
+    },
+    "rank": null,
+    "metrics": {
+     "SMA_5": {
+      "raw_value": null,
+      "value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [
+       "PRICE_WINDOW_INCOMPLETE"
+      ],
+      "observation_days": 0,
+      "expected_days": 5,
+      "window_start": "2017-12-28",
+      "window_end": "2017-12-28"
+     },
+     "SMA_20": {
+      "raw_value": null,
+      "value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [
+       "PRICE_WINDOW_INCOMPLETE"
+      ],
+      "observation_days": 0,
+      "expected_days": 20,
+      "window_start": "2017-12-28",
+      "window_end": "2017-12-28"
+     },
+     "SMA_60": {
+      "raw_value": null,
+      "value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [
+       "PRICE_WINDOW_INCOMPLETE"
+      ],
+      "observation_days": 0,
+      "expected_days": 60,
+      "window_start": "2017-12-28",
+      "window_end": "2017-12-28"
+     },
+     "SMA_120": {
+      "raw_value": null,
+      "value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [
+       "PRICE_WINDOW_INCOMPLETE"
+      ],
+      "observation_days": 0,
+      "expected_days": 120,
+      "window_start": "2017-12-28",
+      "window_end": "2017-12-28"
+     },
+     "EMA_20": {
+      "raw_value": null,
+      "value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [
+       "PRICE_WINDOW_INCOMPLETE"
+      ],
+      "observation_days": 0,
+      "expected_days": 1,
+      "window_start": "2017-12-28",
+      "window_end": "2017-12-28"
+     },
+     "RSI_14": {
+      "raw_value": null,
+      "value": null,
+      "unit": "PERCENT",
+      "null_reasons": [
+       "PRICE_WINDOW_INCOMPLETE"
+      ],
+      "observation_days": 0,
+      "expected_days": 1,
+      "window_start": "2017-12-28",
+      "window_end": "2017-12-28"
+     },
+     "MACD_12_26": {
+      "raw_value": null,
+      "value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [
+       "PRICE_WINDOW_INCOMPLETE"
+      ],
+      "observation_days": 0,
+      "expected_days": 1,
+      "window_start": "2017-12-28",
+      "window_end": "2017-12-28"
+     },
+     "MACD_SIGNAL_9": {
+      "raw_value": null,
+      "value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [
+       "PRICE_WINDOW_INCOMPLETE"
+      ],
+      "observation_days": 0,
+      "expected_days": 1,
+      "window_start": "2017-12-28",
+      "window_end": "2017-12-28"
+     },
+     "MACD_HISTOGRAM_12_26_9": {
+      "raw_value": null,
+      "value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [
+       "PRICE_WINDOW_INCOMPLETE"
+      ],
+      "observation_days": 0,
+      "expected_days": 1,
+      "window_start": "2017-12-28",
+      "window_end": "2017-12-28"
+     },
+     "BOLL_MIDDLE_20": {
+      "raw_value": null,
+      "value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [
+       "PRICE_WINDOW_INCOMPLETE"
+      ],
+      "observation_days": 0,
+      "expected_days": 20,
+      "window_start": "2017-12-28",
+      "window_end": "2017-12-28"
+     },
+     "BOLL_UPPER_20_2": {
+      "raw_value": null,
+      "value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [
+       "PRICE_WINDOW_INCOMPLETE"
+      ],
+      "observation_days": 0,
+      "expected_days": 20,
+      "window_start": "2017-12-28",
+      "window_end": "2017-12-28"
+     },
+     "BOLL_LOWER_20_2": {
+      "raw_value": null,
+      "value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [
+       "PRICE_WINDOW_INCOMPLETE"
+      ],
+      "observation_days": 0,
+      "expected_days": 20,
+      "window_start": "2017-12-28",
+      "window_end": "2017-12-28"
+     },
+     "ATR_14": {
+      "raw_value": null,
+      "value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "null_reasons": [
+       "PRICE_WINDOW_INCOMPLETE"
+      ],
+      "observation_days": 0,
+      "expected_days": 1,
+      "window_start": "2017-12-28",
+      "window_end": "2017-12-28"
+     }
+    },
+    "volume_note": {
+     "raw_state": "NOT_AVAILABLE",
+     "state": null,
+     "reason": "INSUFFICIENT_BARS",
+     "window_start": "2017-12-28",
+     "window_end": "2017-12-28",
+     "null_reasons": [
+      "INSUFFICIENT_BARS"
+     ]
+    },
+    "volume_latest": {
+     "raw_value": null,
+     "value": null,
+     "unit": "SHARES",
+     "last_observed_session": null,
+     "null_reasons": [
+      "VOLUME_MISSING",
+      "SIGNAL_SESSION_MISSING"
+     ]
+    },
+    "pattern_status": "EXISTING_RULES_ONLY_NO_NEW_PATTERN_OR_SUCCESS_DEFINITION",
+    "readiness": {
+     "schema": "technical-display-readiness/1",
+     "as_of": "2017-12-28",
+     "value_scope": "PRIVATE_RESEARCH_DOCUMENT_RECONSTRUCTION",
+     "availability_status": "NOT_VERIFIED",
+     "source_available_at": null,
+     "availability_reason": "HISTORICAL_SOURCE_AVAILABILITY_NOT_VERIFIED",
+     "stale_status": "UNKNOWN",
+     "stale_reason": "UPDATE_SCHEDULE_NOT_CONNECTED",
+     "metrics": {
+      "SMA_5": {
+       "state": "NOT_COMPUTED",
+       "initialization": {
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-12-28"
+       },
+       "warmup": {
+        "minimum_sessions": 5,
+        "observed_sessions": 0,
+        "state": "NOT_EVALUATED"
+       },
+       "continuity": {
+        "state": "INCOMPLETE",
+        "reasons": [
+         "PRICE_WINDOW_INCOMPLETE"
+        ]
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-12-28",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": [
+        "PRICE_WINDOW_INCOMPLETE"
+       ]
+      },
+      "SMA_20": {
+       "state": "NOT_COMPUTED",
+       "initialization": {
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-12-28"
+       },
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 0,
+        "state": "NOT_EVALUATED"
+       },
+       "continuity": {
+        "state": "INCOMPLETE",
+        "reasons": [
+         "PRICE_WINDOW_INCOMPLETE"
+        ]
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-12-28",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": [
+        "PRICE_WINDOW_INCOMPLETE"
+       ]
+      },
+      "SMA_60": {
+       "state": "NOT_COMPUTED",
+       "initialization": {
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-12-28"
+       },
+       "warmup": {
+        "minimum_sessions": 60,
+        "observed_sessions": 0,
+        "state": "NOT_EVALUATED"
+       },
+       "continuity": {
+        "state": "INCOMPLETE",
+        "reasons": [
+         "PRICE_WINDOW_INCOMPLETE"
+        ]
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-12-28",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": [
+        "PRICE_WINDOW_INCOMPLETE"
+       ]
+      },
+      "SMA_120": {
+       "state": "NOT_COMPUTED",
+       "initialization": {
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-12-28"
+       },
+       "warmup": {
+        "minimum_sessions": 120,
+        "observed_sessions": 0,
+        "state": "NOT_EVALUATED"
+       },
+       "continuity": {
+        "state": "INCOMPLETE",
+        "reasons": [
+         "PRICE_WINDOW_INCOMPLETE"
+        ]
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-12-28",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": [
+        "PRICE_WINDOW_INCOMPLETE"
+       ]
+      },
+      "EMA_20": {
+       "state": "NOT_COMPUTED",
+       "initialization": {
+        "method": "FIRST_20_CLOSE_SMA_THEN_EMA",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY",
+        "input_start": "2017-12-28"
+       },
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 0,
+        "state": "NOT_EVALUATED"
+       },
+       "continuity": {
+        "state": "INCOMPLETE",
+        "reasons": [
+         "PRICE_WINDOW_INCOMPLETE"
+        ]
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-12-28",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": [
+        "PRICE_WINDOW_INCOMPLETE"
+       ]
+      },
+      "RSI_14": {
+       "state": "NOT_COMPUTED",
+       "initialization": {
+        "method": "FIRST_14_CHANGES_MEAN_THEN_WILDER",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY",
+        "input_start": "2017-12-28"
+       },
+       "warmup": {
+        "minimum_sessions": 15,
+        "observed_sessions": 0,
+        "state": "NOT_EVALUATED"
+       },
+       "continuity": {
+        "state": "INCOMPLETE",
+        "reasons": [
+         "PRICE_WINDOW_INCOMPLETE"
+        ]
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-12-28",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": [
+        "PRICE_WINDOW_INCOMPLETE"
+       ]
+      },
+      "MACD_12_26": {
+       "state": "NOT_COMPUTED",
+       "initialization": {
+        "method": "FULL_INPUT_SMA_SEEDED_EMA_12_MINUS_26",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY",
+        "input_start": "2017-12-28"
+       },
+       "warmup": {
+        "minimum_sessions": 26,
+        "observed_sessions": 0,
+        "state": "NOT_EVALUATED"
+       },
+       "continuity": {
+        "state": "INCOMPLETE",
+        "reasons": [
+         "PRICE_WINDOW_INCOMPLETE"
+        ]
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-12-28",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": [
+        "PRICE_WINDOW_INCOMPLETE"
+       ]
+      },
+      "MACD_SIGNAL_9": {
+       "state": "NOT_COMPUTED",
+       "initialization": {
+        "method": "FIRST_9_VALID_MACD_MEAN_THEN_EMA",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY",
+        "input_start": "2017-12-28"
+       },
+       "warmup": {
+        "minimum_sessions": 34,
+        "observed_sessions": 0,
+        "state": "NOT_EVALUATED"
+       },
+       "continuity": {
+        "state": "INCOMPLETE",
+        "reasons": [
+         "PRICE_WINDOW_INCOMPLETE"
+        ]
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-12-28",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": [
+        "PRICE_WINDOW_INCOMPLETE"
+       ]
+      },
+      "MACD_HISTOGRAM_12_26_9": {
+       "state": "NOT_COMPUTED",
+       "initialization": {
+        "method": "MACD_MINUS_SIGNAL",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY",
+        "input_start": "2017-12-28"
+       },
+       "warmup": {
+        "minimum_sessions": 34,
+        "observed_sessions": 0,
+        "state": "NOT_EVALUATED"
+       },
+       "continuity": {
+        "state": "INCOMPLETE",
+        "reasons": [
+         "PRICE_WINDOW_INCOMPLETE"
+        ]
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-12-28",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": [
+        "PRICE_WINDOW_INCOMPLETE"
+       ]
+      },
+      "BOLL_MIDDLE_20": {
+       "state": "NOT_COMPUTED",
+       "initialization": {
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-12-28"
+       },
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 0,
+        "state": "NOT_EVALUATED"
+       },
+       "continuity": {
+        "state": "INCOMPLETE",
+        "reasons": [
+         "PRICE_WINDOW_INCOMPLETE"
+        ]
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-12-28",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": [
+        "PRICE_WINDOW_INCOMPLETE"
+       ]
+      },
+      "BOLL_UPPER_20_2": {
+       "state": "NOT_COMPUTED",
+       "initialization": {
+        "method": "ROLLING_20_CLOSE_POPULATION_STDDEV",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-12-28"
+       },
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 0,
+        "state": "NOT_EVALUATED"
+       },
+       "continuity": {
+        "state": "INCOMPLETE",
+        "reasons": [
+         "PRICE_WINDOW_INCOMPLETE"
+        ]
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-12-28",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": [
+        "PRICE_WINDOW_INCOMPLETE"
+       ]
+      },
+      "BOLL_LOWER_20_2": {
+       "state": "NOT_COMPUTED",
+       "initialization": {
+        "method": "ROLLING_20_CLOSE_POPULATION_STDDEV",
+        "policy": "GSQ015_ROLLING_WINDOW",
+        "input_start": "2017-12-28"
+       },
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 0,
+        "state": "NOT_EVALUATED"
+       },
+       "continuity": {
+        "state": "INCOMPLETE",
+        "reasons": [
+         "PRICE_WINDOW_INCOMPLETE"
+        ]
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-12-28",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": [
+        "PRICE_WINDOW_INCOMPLETE"
+       ]
+      },
+      "ATR_14": {
+       "state": "NOT_COMPUTED",
+       "initialization": {
+        "method": "FIRST_14_TRUE_RANGES_MEAN_THEN_WILDER_RESET_AFTER_OHLC_GAP",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY",
+        "input_start": "2017-12-28"
+       },
+       "warmup": {
+        "minimum_sessions": 15,
+        "observed_sessions": 0,
+        "state": "NOT_EVALUATED"
+       },
+       "continuity": {
+        "state": "INCOMPLETE",
+        "reasons": [
+         "PRICE_WINDOW_INCOMPLETE"
+        ]
+       },
+       "adjustment": {
+        "price_basis": "RAW",
+        "state": "DOCUMENTED_NO_SPLIT",
+        "required_start": "2017-12-28",
+        "required_end": "2017-12-28",
+        "evidence_start": "2017-01-03",
+        "evidence_end": "2017-12-28"
+       },
+       "identity": {
+        "state": "DOCUMENT_RECONSTRUCTED",
+        "reference_present": true,
+        "fixed_security_id_state": "MISSING_RANKING_BLOCKED"
+       },
+       "block_reasons": [
+        "PRICE_WINDOW_INCOMPLETE"
+       ]
+      }
+     }
+    }
+   }
+  ]
+ }
+}
