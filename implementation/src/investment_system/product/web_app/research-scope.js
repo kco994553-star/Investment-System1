@@ -2,7 +2,7 @@
    calculation is Codex's (DC-42), this file only checks, reads and words them. validateCoverage / coverageView / validateSelection /
    selectionView are pure and run in node as in the page.
    - Coverage: operational-qgv-coverage/1 (#474 572f0b5e, research/operational_coverage.py and
-     docs/lab/OPERATIONAL_COVERAGE_CONTRACT_20261104.md). One dated operational publication; the denominator is that publication's
+     the coverage contract doc OPERATIONAL_COVERAGE_CONTRACT_20261104.md). One dated operational publication; the denominator is that publication's
      non-TARGET code rows (the operational Universe504 codes), not fixed security ids and not a historical whole market. Q, G and V,
      all three axes at once, each preset total (derived from the archived axes, never a stored or PIT total) and the published
      default total are separate counts and never share a label. NOT_APPLICABLE stays apart from missing. A preset left null by the
