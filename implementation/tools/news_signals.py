@@ -35,8 +35,8 @@ from investment_system.providers import news_feeds as nf
 SOURCE = 'https://kco994553-star.github.io/Investment-System1/' + ns.FILENAME
 FIXED_CODES = frozenset({'REDIRECT_REJECTED', 'RESPONSE_TOO_LARGE', 'URL_NOT_ALLOWED', 'CONFIG_INVALID', 'TRANSPORT_FAILED',
                          'RESPONSE_INVALID', 'HTTP_429', 'HTTP_FAILED', 'BUDGET_EXHAUSTED', 'CLOCK_INVALID',
-                         'GDELT_RESPONSE_INVALID', 'GDELT_RATE_LIMITED', 'IR_FEED_INVALID'})
-STOP_GDELT = frozenset({'BUDGET_EXHAUSTED', 'GDELT_RATE_LIMITED', 'HTTP_429'})
+                         'GDELT_RESPONSE_INVALID', 'GDELT_RATE_LIMITED', 'IR_FEED_INVALID', 'SOURCE_PAUSED'})
+STOP_GDELT = frozenset({'BUDGET_EXHAUSTED', 'GDELT_RATE_LIMITED', 'HTTP_429', 'SOURCE_PAUSED'})
 
 
 class NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -140,6 +140,8 @@ def collect(gdelt, ir, counts):
             failures.append(('GDELT', index, code))
             if code in STOP_GDELT:
                 stopped = code
+            if code == 'GDELT_RATE_LIMITED':
+                gdelt.pause(nf.gdelt_url(cid))
             continue
         kept = []
         for row in rows:
@@ -243,7 +245,8 @@ def run(out, *, live, preserve_only=False, now=_utc_now, gdelt_kwargs=None, ir_k
           f"ir_collected={len(collected['IR'])} ir_requests={ir.used} sec_reference={'AVAILABLE' if sec else 'NOT_AVAILABLE'} "
           f"rows_irrelevant={counts.get('irrelevant', 0)} rows_invalid={counts.get('invalid', 0)} "
           f"rows_out_of_window={counts.get('out_of_window', 0)} rows_foreign_link={counts.get('foreign_link', 0)} "
-          f"rows_secret_like={counts.get('secret_like', 0)} duplicates={counts.get('duplicates', 0)} " + _summary(payload))
+          f"rows_secret_like={counts.get('secret_like', 0)} duplicates={counts.get('duplicates', 0)} "
+          f"revisions={counts.get('revisions', 0)} " + _summary(payload))
     if not collected['GDELT'] and not collected['IR']:
         print('NEWS_SIGNALS ALL_SOURCES_FAILED ' + ('previous_kept' if previous is not None else 'not_available'))
     return 0

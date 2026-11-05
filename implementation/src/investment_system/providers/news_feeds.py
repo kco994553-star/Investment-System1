@@ -9,7 +9,7 @@ article/item; descriptions, bodies and images are ignored. Errors carry fixed co
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
 import html
 import json
@@ -18,7 +18,7 @@ import re
 import time
 from typing import Callable
 from urllib.error import HTTPError, URLError
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlsplit
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 from xml.etree import ElementTree
 
@@ -39,6 +39,7 @@ RETRY_WAIT = 10.0
 # 429 / 5xx: one retry after RETRY_WAIT, or after the server's Retry-After when it is longer. A Retry-After above
 # MAX_RETRY_AFTER is honoured by not retrying in this run (no further request). Never more attempts, budget or parallelism.
 MAX_RETRY_AFTER = 60.0
+RATE_LIMIT_PAUSE = 600.0  # conservative cooldown when the provider gives no usable Retry-After
 USER_AGENT = 'Investment-System1 news-signals/1 (+https://github.com/kco994553-star/Investment-System1)'
 XML_ITEMS_MAX = 200
 
@@ -108,11 +109,25 @@ class PacedClient:
     """Serial GET of allowed URLs with a minimum interval, a per-run request budget and one retry."""
 
     def __init__(self, *, min_interval, budget, transport: Callable = default_transport, sleep: Callable = time.sleep,
-                 monotonic: Callable = time.monotonic, now: Callable = lambda: datetime.now(timezone.utc)):
+                 monotonic: Callable = time.monotonic, now: Callable = lambda: datetime.now(timezone.utc), state=None):
         self._interval, self._budget, self._transport = float(min_interval), int(budget), transport
         self._sleep, self._time, self._now = sleep, monotonic, now
         self._last = None
         self.used = 0
+        # Optional caller-owned JSON state; never persisted into the public payload.
+        self.state = {} if state is None else state
+
+    def pause(self, url, seconds=RATE_LIMIT_PAUSE):
+        if url not in ALLOWED_URLS:
+            raise NewsFetchError('URL_NOT_ALLOWED')
+        try:
+            until = self._now() + timedelta(seconds=seconds)
+        except OverflowError:
+            until = datetime.max.replace(tzinfo=timezone.utc)  # never shorten a provider's pause
+        until = until.astimezone(timezone.utc)
+        host = urlsplit(url).netloc
+        old = self.state.get(host)
+        self.state[host] = max(old, until.isoformat()) if old else until.isoformat()
 
     def _pace(self):
         if self._last is not None:
@@ -125,6 +140,17 @@ class PacedClient:
         """Body bytes and the UTC acquisition time; NewsFetchError(code) otherwise."""
         if url not in ALLOWED_URLS:
             raise NewsFetchError('URL_NOT_ALLOWED')
+        paused = self.state.get(urlsplit(url).netloc)
+        if paused:
+            try:
+                until = datetime.fromisoformat(paused)
+                if until.utcoffset() is None:
+                    raise ValueError
+                blocked = until > self._now()
+            except (TypeError, ValueError):
+                raise NewsFetchError('CONFIG_INVALID') from None
+            if blocked:
+                raise NewsFetchError('SOURCE_PAUSED')
         for attempt in range(MAX_ATTEMPTS):
             if self.used >= self._budget:
                 raise NewsFetchError('BUDGET_EXHAUSTED')
@@ -157,6 +183,9 @@ class PacedClient:
                 if asked is None or asked <= MAX_RETRY_AFTER:
                     self._sleep(max(RETRY_WAIT, asked or 0.0))
                     continue
+            if response.status == 429 or response.status == 503 and response.retry_after:
+                asked = retry_after_seconds(response.retry_after, self._now())
+                self.pause(url, max(RATE_LIMIT_PAUSE, asked or 0.0))
             raise NewsFetchError('HTTP_429' if response.status == 429 else 'HTTP_FAILED')
         raise NewsFetchError('TRANSPORT_FAILED')
 
