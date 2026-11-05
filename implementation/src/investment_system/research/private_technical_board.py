@@ -25,6 +25,7 @@ def board_reader_payload(result):
             or result.get('publication_scope') != 'OWNER_PRIVATE_ONLY'):
         raise ValueError('PRIVATE_BOARD_RESULT_REQUIRED')
     board = result['board']
+    _day(result['signal_day'])
     if board.get('schema') != 'technical-leaderboard/1' or board['signal_day'] != result['signal_day']:
         raise ValueError('READER_BOARD_DATE_OR_SCHEMA_MISMATCH')
     if result.get('evidence_kind') not in ('SYNTHETIC', 'RETAINED_INPUT'):

@@ -1,0 +1,58 @@
+{
+  "data_kind": "SYNTHETIC",
+  "publication_scope": "OWNER_PRIVATE_ONLY",
+  "cases": {
+    "private": {
+      "schema": "technical-leaderboard/1",
+      "signal_day": "2017-01-06",
+      "settings_version": "technical-leaderboard/2026-11-03.1",
+      "settings_sha256": "837689c35f98825bc0be36b4e3ced9a197e153cdcbaf297c1b6eb75e372273cc",
+      "group_id": "SYNTHETIC:SCREEN",
+      "membership_status": "CONFIRMED",
+      "membership_source": "AUTHOR_CREATED",
+      "population_hash": "1b4609f2e04149fe789f16f3aa9206ab7e6ddb6b73684900e234e4d9ae16cf3c",
+      "metrics": {
+        "momentum_3m": {
+          "n_valid": 0,
+          "n_members": 0,
+          "median": null,
+          "k": null,
+          "null_reason": "NO_VALID_VALUES",
+          "rows": []
+        },
+        "momentum_6m": {
+          "n_valid": 0,
+          "n_members": 0,
+          "median": null,
+          "k": null,
+          "null_reason": "NO_VALID_VALUES",
+          "rows": []
+        },
+        "momentum_12m": {
+          "n_valid": 0,
+          "n_members": 0,
+          "median": null,
+          "k": null,
+          "null_reason": "NO_VALID_VALUES",
+          "rows": []
+        },
+        "volatility_6m": {
+          "n_valid": 0,
+          "n_members": 0,
+          "median": null,
+          "k": null,
+          "null_reason": "NO_VALID_VALUES",
+          "rows": []
+        },
+        "dollar_volume_6m": {
+          "n_valid": 0,
+          "n_members": 0,
+          "median": null,
+          "k": null,
+          "null_reason": "NO_VALID_VALUES",
+          "rows": []
+        }
+      }
+    }
+  }
+}
