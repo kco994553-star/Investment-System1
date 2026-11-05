@@ -8,6 +8,12 @@
      미산출 reasons; then the five measures (kis-technical-measures/1): 채택값 only when adopted, 진단값 as a count, 미산출 with
      its reasons, each window, signal day, data_asof, capture time, no rank. The measures file is its own part: a missing file
      (404) is that part's 자료 없음 and a refused one that part's refusal; the analysis and the chart stay.
+     Price basis (Codex #498, owner 11/05): the chart's basis, the analysis' indicator basis / result kind / evidence / per-indicator
+     split state, and the measures' basis and settings version are each shown with the evaluation day. When a result's basis
+     differs from the chart file's (IS2.kisPrivate.basisAgreement) its indicators are not attached to the chart: the part says
+     가격 기준 불일치 · 지표를 이 차트에 붙이지 않음 ([data-private-basis-agreement=BASIS_MISMATCH]) and shows no value or count.
+     An adjusted result carries the fixed line 실제 분할 사건 검증 미완료 · 분할 없는 구간의 조정 경로 확인. Counts read
+     채택값 N개 (이 기업·이 평가일); two evaluation days are never merged into one count.
    - kind 'macro' / 'news' (owner 2026-11-05): the macro / news route → the private copy in the public file's format, validated by
      the public reader (IS2.macroObserved; NewsSignals + IS2.newsRefresh) and drawn by the public block's own function (opts.draw,
      given by the screen), under the source words 비공개 보관본 · 인증 경로 and the two-layer line. A refused file is refused whole.
@@ -36,30 +42,44 @@ function chart(bars,symbol){const TC=window.TechnicalChart;const nums=bars.map(b
  return h('svg:svg',{class:'curve tech-chart',viewBox:'0 0 640 240',role:'img',focusable:'false',dataset:{privateChart:symbol},'aria-label':'비공개 · KIS 보관 일봉 종가 선 · '+symbol+' · '+bars.length+'봉'},
   h('svg:path',{d:'M20,220 L620,220',class:'curve-base'}),TC.paths(nums.map(b=>b.close),g).map(p=>h('svg:path',{d:p,class:'curve-s',dataset:{privateCloseLine:''}})));}
 
-// The five measures part: EMPTY (no file), REFUSED (the file breaks its contract: nothing of it shown) or READY.
-function measuresPart(K,raw,symbol){
+const agreeLine=(g,part)=>h('p',{class:g.same?'sub':'reason',dataset:{privateBasisAgreement:g.code,privateBasisPart:part}},g.text);
+const noteLine=(t,part)=>t?h('p',{class:'reason',dataset:{privateAdjustedNote:part}},t):null;
+// The five measures part: EMPTY (no file), REFUSED (the file breaks its contract: nothing of it shown), BASIS_MISMATCH (its basis
+// is not the chart's: basis words only, no value or count) or READY.
+function measuresPart(K,raw,symbol,chartBasis,analysisDay){
  const part=(st,...c)=>h('div',{class:'sk card',dataset:{privateMeasures:st}},h('h4',null,'다섯 측정값 · 공통 엔진 (#469 설정)'),...c);
  if(raw===null)return part('EMPTY',h('p',{class:'reason'},'자료 없음 · 이 기업의 비공개 측정 파일이 아직 없습니다'));
  const r=K.validateMeasures(raw);
  if(!r.ok||r.value.symbol!==symbol){const code=r.ok?'SYMBOL_MISMATCH':r.code;return part('REFUSED',h('p',{class:'reason',dataset:{na:code}},'측정 파일이 형식과 달라 보이지 않습니다 · ',code,r.ok?'':' '+r.path));}
- const v=K.measuresView(r.value);
- return part('READY',dl([['신호일',v.signal_day],['자료 기준일',v.data_asof||'없음'],['수집 시각',v.collected_at],['상태',v.statusText,{privateMeasuresStatus:v.status}],['순위',v.rank,{privateMeasuresRank:'NONE'}]],{privateMeta:'measures'}),
+ const v=K.measuresView(r.value),g=K.basisAgreement(chartBasis,r.value);
+ const meta=dl([['신호일',v.signal_day],['자료 기준일',v.data_asof||'없음'],['수집 시각',v.collected_at],['상태',v.statusText,{privateMeasuresStatus:v.status}],['순위',v.rank,{privateMeasuresRank:'NONE'}],
+  ['평가일',v.evaluation_day,{privateEvaluationDay:'measures'}],['측정 가격 기준',v.basisText,{privateMeasuresBasis:v.basis}],['설정 판',v.settings_version,{privateSettingsVersion:''}],['분할 증거',v.evidence]],{privateMeta:'measures'});
+ const days=analysisDay&&analysisDay!==v.evaluation_day?h('p',{class:'reason',dataset:{privateEvaluationDays:'DIFFERENT'}},'분석 평가일 '+analysisDay+' · 측정 평가일 '+v.evaluation_day+' · 평가일이 달라 개수를 합치지 않음'):null;
+ if(!g.same)return part('BASIS_MISMATCH',meta,agreeLine(g,'measures'),noteLine(v.note,'measures'),days);
+ return part('READY',meta,agreeLine(g,'measures'),noteLine(v.note,'measures'),days,
   h('p',{dataset:{privateMeasuresCounts:''}},v.summary),
   h('ul',null,v.rows.map(x=>h('li',{dataset:{privateMeasure:x.id,privateMeasureKind:x.kind}},h('b',null,x.label),' · ',x.kind==='VALUE'?['채택값 ',ram(x.value)]:x.text,h('span',{class:'sub'},' · ',x.window)))));}
 
 function renderTechnical(body,[aRaw,bRaw,mRaw],{symbol,publicBasis}){const K=I.kisPrivate,a=K.validateAnalysis(aRaw),b=K.validateBars(bRaw);
  if(!a.ok||!b.ok){const r=a.ok?b:a;throw Error(r.code);}
  const v=K.analysisView(a.value),m=K.barsMeta(b.value),cmp=K.basisCompare(publicBasis,m.price_basis_date),last=b.value.bars[b.value.bars.length-1];
- I.append(body,[h('p',{class:'hand',dataset:{privateLayer:'technical'}},'비공개 · 같은 화면 같은 형식 · 공개 화면의 판정 보류는 그대로'),h('p',{class:'reason',dataset:{privateLayerNote:''}},K.LAYER_NOTE),
-  dl([['공급처',m.source],['가격 기준',m.basis],['가격 기준일',m.price_basis_date||'없음'],['수집 시각',m.collected_at],['정정',m.corrected],
-   ['상태',v.statusText+' (평가일 '+a.value.evaluation_day+')',{privateStatusWord:v.status}],['기준일 비교',cmp.text,{privateBasisCompare:cmp.same?'SAME':'DIFFERENT'}],
-   last?['마지막 종가',ram(last.date,' · ',last.close===null?'NA':last.close)]:null],{privateMeta:'technical'}),
-  chart(b.value.bars,symbol),
-  h('p',{dataset:{privateCounts:''}},v.summary),
+ const g=K.basisAgreement(m.basisCode,a.value);
+ // Indicators only on a chart of the same basis; otherwise the mismatch words and nothing of the indicators (no value, no count).
+ const indicators=g.same?[h('p',{dataset:{privateCounts:''}},v.summary),
   v.adopted.length?h('ul',{dataset:{privateAdopted:String(v.adopted.length)}},v.adopted.map(x=>h('li',{dataset:{privateIndicator:x.id}},x.id,' · ',ram(x.value))))
    :h('p',{class:'reason',dataset:{privateAdopted:'0'}},'채택된 기술 지표 없음 · 원시 계산값은 채택값으로 보이지 않습니다'),
-  v.held.length?h('details',{class:'why'},h('summary',null,'미산출 지표 ',String(v.held.length),'개 · 사유 ▸'),h('ul',null,v.held.map(x=>h('li',{dataset:{privateHeld:x.id}},x.id,' · ',x.text)))):null,
-  measuresPart(K,mRaw===undefined?null:mRaw,symbol)]);}
+  v.held.length?h('details',{class:'why'},h('summary',null,'미산출 지표 ',String(v.held.length),'개 · 사유 ▸'),h('ul',null,v.held.map(x=>h('li',{dataset:{privateHeld:x.id}},x.id,' · ',x.text)))):null]:[];
+ I.append(body,[h('p',{class:'hand',dataset:{privateLayer:'technical'}},'비공개 · 같은 화면 같은 형식 · 공개 화면의 판정 보류는 그대로'),h('p',{class:'reason',dataset:{privateLayerNote:''}},K.LAYER_NOTE),
+  dl([['공급처',m.source],['차트 가격 기준',m.basis,{privateChartBasis:m.basisCode}],['가격 기준일',m.price_basis_date||'없음'],['수집 시각',m.collected_at],['정정',m.corrected],
+   ['상태',v.statusText+' (평가일 '+v.evaluation_day+')',{privateStatusWord:v.status}],['기준일 비교',cmp.text,{privateBasisCompare:cmp.same?'SAME':'DIFFERENT'}],
+   last?['마지막 종가',ram(last.date,' · ',last.close===null?'NA':last.close)]:null,
+   ['평가일',v.evaluation_day,{privateEvaluationDay:'analysis'}],v.signal_day?['신호일',v.signal_day]:null,
+   ['지표 가격 기준',v.basisText,{privateIndicatorBasis:v.basis}],['분할 증거',v.evidence],v.adjustment?['분할 상태',v.adjustment,{privateAdjustmentStates:''}]:null],{privateMeta:'technical'}),
+  noteLine(m.note||v.note,'technical'),
+  chart(b.value.bars,symbol),
+  agreeLine(g,'analysis'),
+  ...indicators,
+  measuresPart(K,mRaw===undefined?null:mRaw,symbol,m.basisCode,v.evaluation_day)]);}
 
 // Macro and news: the public file format, the public reader, the public block's own drawing (DC-44: one component, one format).
 function renderShared(body,[raw],{kind,draw}){const K=I.kisPrivate;let value;

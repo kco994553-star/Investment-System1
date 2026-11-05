@@ -38,6 +38,30 @@
 value, DIAGNOSTIC = raw만+사유, NOT_COMPUTED = 둘 다 없음+사유) · 창 순서 · 일수 · raw/adopted 개수 · rank_count ≠ 0 ·
 rank 필드가 null 아님. 첫 오류에서 파일 전체를 거부.
 
+## 가격 기준 표시 (Codex #498, 오너 11/05)
+
+#498(5597e25e)은 확인된 분할만 반영한 계열(SPLIT_ADJUSTED)도 같은 계산 커널로 낸다. 필드 이름·위치는 #498 자체 코드
+(`analyze`, `measure_contract`)를 #498 합성 시험 입력(`tests/research/test_adjusted_technical_link.py`의 `case()`)에 돌려 확인했다.
+
+| 결과 | 읽는 필드 | 화면 글 |
+|---|---|---|
+| 차트 (chart) | `basis` | 차트 가격 기준: RAW 원주가 · SPLIT_ADJUSTED 확인된 분할 반영 |
+| 분석 (analysis) | `price_basis` = `diagnostic_basis`, `chart_basis`, `result_kind` (RAW_SERIES_DIAGNOSTIC / SPLIT_ADJUSTED_SERIES_DIAGNOSTIC), `evaluation_day`, `signal_day` | 지표 가격 기준 · 평가일 · 신호일 |
+| 분석 증거 | `evidence.adjustment_start/_end/_reference/_method`(CONFIRMED_SPLITS_ONLY) 또는 `evidence.no_split_*` | 분할 반영 증거 구간 A ~ B · 확인된 분할만 반영 · 근거 기록 있음 (근거 문자열은 보이지 않음) |
+| 분석 지표별 | `readiness.metrics.<지표>.adjustment.state` (CONFIRMED_SPLITS_ONLY · DOCUMENTED_NO_SPLIT · UNCONFIRMED) | 지표별 분할 상태 · 확인된 분할만 반영 지표 N개 |
+| 다섯 측정값 (technical) | `diagnostic_basis`, `chart_basis`, `settings_version`, `evidence.price_basis`, `evaluation_day`, `signal_day` | 측정 가격 기준 · 설정 판 · 평가일 |
+
+- 설정 판은 기준마다 하나: RAW `technical-leaderboard/2026-11-03.1`, 분할 반영 `technical-leaderboard/split-adjusted-2026-11-05.1`.
+  기준과 판이 엇갈리면(SETTINGS_BASIS_MISMATCH), 파일 안 기준 필드끼리 다르면(BASIS_CONFLICT), 모르는 값이면(ENUM ·
+  SETTINGS_VERSION) 파일 전체를 거부.
+- 차트·지표 기준 일치: 결과의 `chart_basis`나 `diagnostic_basis`가 차트 파일의 `basis`와 다르면 그 결과의 지표를 차트에
+  붙이지 않는다. 그 부분은 "가격 기준 불일치 · 지표를 이 차트에 붙이지 않음"(`data-private-basis-agreement=BASIS_MISMATCH`)만
+  보이고 값·개수는 없다. #498 이전 파일(차트 분할 반영, 지표 원주가)도 같은 규칙으로 불일치.
+- 분할 반영 결과에는 고정 줄 "실제 분할 사건 검증 미완료 · 분할 없는 구간의 조정 경로 확인".
+- 개수는 "채택값 N개 (이 기업·이 평가일)": 기업 수·시장 범위로 읽히지 않게. 분석과 측정의 평가일이 다르면 따로 보이고
+  합치지 않는다. 출처·수집 시각·평가일은 각각 따로.
+- 옛 사유 SPLIT_ADJUSTED_DISPLAY_ADAPTER_PENDING은 #498이 더 내지 않지만 옛 파일을 위해 글("#498 이전 판 결과")을 남김.
+
 ## 합성 전용 (실자료 미표시)
 
 - 시험 자료는 모두 합성: `tools/web_app_kis_private_fixture.js`의 `measures()`는 Codex 출력의 키·값 형태·state 규칙만 보고 손으로

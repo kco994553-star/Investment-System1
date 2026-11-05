@@ -19,6 +19,11 @@
 //  - Technical five measures (kis-technical-measures/1, the third read of the same click): 채택값 inside [data-ram-price] only,
 //    진단값 as a count (never a value), 미산출 with reasons, windows, signal day, no rank; a missing measures file (404) makes that
 //    part alone 자료 없음 and a refused one that part alone refused — the analysis and the chart stay.
+//  - Price basis (Codex #498), technical at 1440 and 390: an adjusted pair (chart, analysis and measures all 확인된 분할 반영)
+//    shows each basis, the evaluation day, the settings version technical-leaderboard/split-adjusted-2026-11-05.1, the split
+//    evidence, the fixed line 실제 분할 사건 검증 미완료 · 분할 없는 구간의 조정 경로 확인 and 채택값 N개 (이 기업·이 평가일);
+//    a mismatched pair (원주가 chart, adjusted analysis and measures) attaches no indicator: 가격 기준 불일치 · 지표를 이 차트에
+//    붙이지 않음 (BASIS_MISMATCH) on both parts, no value and no count; never 종목 / coverage words; no overflow at 390.
 //  - Macro (#/macro 4.1.3, macro-observed-private) and news (#/news 5.2.7, news-refresh-private): the private copy in the public
 //    file's format, read by the public readers and drawn by the public block's own function, under 비공개 보관본 · 인증 경로 and
 //    the two-layer line; macro still shows no observed value; the public block is the same before and after; 403 / 404 /
@@ -147,7 +152,7 @@ let phase = 'START', pass = 0;
       assert.equal(await page.locator('[data-private-basis-compare]').getAttribute('data-private-basis-compare'), 'DIFFERENT');
       assert.equal(await text(page, '[data-private-layer-note]'), '공개와 같은 계산식·규칙·판 · 공급처·기준일·확보 범위는 다를 수 있음 · 공개 결과는 바뀌지 않음', phase + ': the two-layer line');
       assert.equal(await count(page, 'svg[data-private-chart=NVDA] [data-private-close-line]'), 1, phase + ': the close line');
-      assert.equal(await text(page, '[data-private-counts]'), '진단값(원시 계산) 2개 · 채택값 0개 · 미산출 3개', phase + ': raw diagnostics as a count');
+      assert.equal(await text(page, '[data-private-counts]'), '진단값(원시 계산) 2개 · 채택값 0개 (이 기업·이 평가일) · 미산출 3개', phase + ': raw diagnostics as a count');
       assert.equal(await page.locator('[data-private-adopted]').getAttribute('data-private-adopted'), '0');
       assert.match(await text(page, '[data-private-adopted]'), /채택된 기술 지표 없음/);
       assert.deepEqual(await page.locator('[data-private-held]').evaluateAll((n) => n.map((x) => [x.dataset.privateHeld, /^[A-Z0-9_]+ · 미산출 · /.test(x.textContent)])),
@@ -158,7 +163,7 @@ let phase = 'START', pass = 0;
       assert.equal(await count(page, '[data-private-measures=READY]'), 1, phase + ': the measures part');
       assert.deepEqual(await page.locator('[data-private-measure]').evaluateAll((n) => n.map((x) => [x.dataset.privateMeasure, x.dataset.privateMeasureKind])),
         [['momentum_3m', 'VALUE'], ['momentum_6m', 'DIAGNOSTIC'], ['momentum_12m', 'NOT_COMPUTED'], ['volatility_6m', 'NOT_COMPUTED'], ['dollar_volume_6m', 'NOT_COMPUTED']], phase + ': five measures in order');
-      assert.equal(await text(page, '[data-private-measures-counts]'), '진단값(원시 계산) 2개 · 채택값 1개 · 미산출 4개');
+      assert.equal(await text(page, '[data-private-measures-counts]'), '진단값(원시 계산) 2개 · 채택값 1개 (이 기업·이 평가일) · 미산출 4개');
       assert.match(await text(page, '[data-private-measure=momentum_6m]'), /^모멘텀 6개월 · 미산출 · 증권 신원 기간 미확인 · 진단값만 있음 \(값 미표시\)/, phase + ': a diagnostic is 미산출, not a value');
       assert.match(await text(page, '[data-private-measure=dollar_volume_6m]'), /거래량 창이 모자라거나 맞지 않음 · 거래 범위 미확인 · 관측 창 2026-05-01 ~ 2026-10-30 · 100 \/ 126 거래일/);
       assert.match(await text(page, '[data-private-measure=momentum_3m]'), /^모멘텀 3개월 · 채택값 12\.4242 % · 관측 창 2026-07-30 ~ 2026-10-30 · 64 \/ 64 종가$/);
@@ -229,6 +234,55 @@ let phase = 'START', pass = 0;
       // A reload keeps nothing: the panel waits for a sign-in again.
       await page.reload(); await page.locator('[data-private-expand=technical]').waitFor({ timeout: 20000 });
       assert.equal(await state(page, 'tech-kis-chart'), 'LOGIN_REQUIRED', phase + ': nothing survives a reload');
+      await ctx.close(); pass++;
+    }
+    // ================================================================ technical 2-1 price basis (#498), 1440 and 390
+    for (const width of [1440, 390]) {
+      phase = 'technical basis ' + width;
+      const { ctx, page, seen, w } = await context(width);
+      const P = '[data-private-panel=tech-kis-chart] ';
+      const set = (chart, basis) => {
+        w.answers.chart = (sym) => ({ status: 200, body: X.bars({ symbol: sym, basis: chart }) });
+        w.answers.analysis = () => ({ status: 200, body: X.analysis({ adopted: true, basis }) });
+        w.answers.technical = (sym) => ({ status: 200, body: X.measures({ symbol: sym, basis }) });
+      };
+      set('SPLIT_ADJUSTED', 'SPLIT_ADJUSTED');
+      await page.goto(s.base + '#/technical/NASDAQ%3ANVDA'); await page.locator('main[data-route=technical]').waitFor();
+      await page.locator('[data-tech-chosen-state=CHOSEN]').waitFor({ timeout: 20000 }); await page.locator('[data-private-expand=technical]').waitFor();
+      await signIn(page, 'technical', 'tech-kis-chart');
+      // The adjusted pair: every part says 확인된 분할 반영, the indicators sit on the chart, the fixed line is there.
+      await page.locator('[data-private-expand=technical]').click(); await page.locator('[data-private-measures=READY]').waitFor({ timeout: 30000 });
+      assert.equal(await text(page, P + '[data-private-chart-basis]'), '확인된 분할 반영', phase + ': chart basis');
+      assert.equal(await page.locator(P + '[data-private-indicator-basis]').getAttribute('data-private-indicator-basis'), 'SPLIT_ADJUSTED');
+      assert.equal(await text(page, P + '[data-private-indicator-basis]'), '확인된 분할 반영', phase + ': indicator basis');
+      assert.equal(await text(page, P + '[data-private-measures-basis]'), '확인된 분할 반영', phase + ': measures basis');
+      assert.deepEqual([await text(page, P + '[data-private-evaluation-day=analysis]'), await text(page, P + '[data-private-evaluation-day=measures]')], ['2026-10-30', '2026-10-30'], phase + ': evaluation day on both parts');
+      assert.equal(await text(page, P + '[data-private-settings-version]'), 'technical-leaderboard/split-adjusted-2026-11-05.1', phase + ': settings version');
+      assert.match(await text(page, P + '[data-private-meta=technical]'), /분할 반영 증거 구간 2026-10-26 ~ 2026-10-30 · 확인된 분할만 반영 · 근거 기록 있음/, phase + ': adjustment evidence');
+      assert.match(await text(page, P + '[data-private-adjustment-states]'), /^지표별 분할 상태 · 확인된 분할만 반영 지표 1개/, phase + ': per-indicator split state');
+      assert.deepEqual(await page.locator(P + '[data-private-adjusted-note]').allTextContents(), Array(2).fill('실제 분할 사건 검증 미완료 · 분할 없는 구간의 조정 경로 확인'), phase + ': the fixed line on both adjusted parts');
+      assert.deepEqual(await page.locator(P + '[data-private-basis-agreement]').evaluateAll((n) => n.map((x) => x.dataset.privateBasisAgreement)), ['BASIS_MATCH', 'BASIS_MATCH']);
+      assert.equal(await text(page, P + '[data-private-counts]'), '진단값(원시 계산) 2개 · 채택값 1개 (이 기업·이 평가일) · 미산출 2개', phase + ': counts of this company on this day');
+      assert.equal(await text(page, P + '[data-private-measures-counts]'), '진단값(원시 계산) 2개 · 채택값 1개 (이 기업·이 평가일) · 미산출 4개');
+      assert.deepEqual(await page.locator(P + '[data-private-indicator]').evaluateAll((n) => n.map((x) => x.dataset.privateIndicator)), ['SMA_20'], phase + ': the adopted indicator on the adjusted chart');
+      await site.assertRamOnly(page, ['101.25', ADOPTED], phase);
+      assert.doesNotMatch(await text(page, P + '.private-body'), /종목|coverage|커버리지/i, phase + ': never a number of companies or coverage');
+      await boundaries(page, seen, w, phase + ' adjusted');
+      // The mismatched pair: a 원주가 chart with adjusted results → nothing of the indicators on that chart, the words say why.
+      await page.locator('[data-private-expand=technical]').click();
+      set('RAW', 'SPLIT_ADJUSTED');
+      await page.locator('[data-private-expand=technical]').click(); await page.locator('[data-private-measures=BASIS_MISMATCH]').waitFor({ timeout: 30000 });
+      assert.equal(await state(page, 'tech-kis-chart'), 'READY', phase + ': a mismatch is shown, not refused');
+      assert.equal(await text(page, P + '[data-private-chart-basis]'), '원주가');
+      assert.equal(await count(page, P + 'svg[data-private-chart=NVDA] [data-private-close-line]'), 1, phase + ': the chart stays');
+      const mis = await page.locator(P + '[data-private-basis-agreement]').evaluateAll((n) => n.map((x) => [x.dataset.privateBasisAgreement, x.dataset.privateBasisPart, x.textContent]));
+      assert.deepEqual(mis, ['analysis', 'measures'].map((part) => ['BASIS_MISMATCH', part, '가격 기준 불일치 · 지표를 이 차트에 붙이지 않음 · 차트 파일 원주가 · 지표 확인된 분할 반영']), phase + ': the mismatch on both parts');
+      assert.deepEqual([await count(page, P + '[data-private-counts]'), await count(page, P + '[data-private-adopted]'), await count(page, P + '[data-private-indicator]'), await count(page, P + '[data-private-held]'),
+        await count(page, P + '[data-private-measure]'), await count(page, P + '[data-private-measures-counts]')], [0, 0, 0, 0, 0, 0], phase + ': no indicator, measure or count on a chart of another basis');
+      assert.deepEqual(site.leaks([await page.content()], ['101.25', ADOPTED, ...RAW, ...X.MEASURE_RAW]), [], phase + ': no indicator value on the page');
+      assert.equal(await text(page, P + '[data-private-settings-version]'), 'technical-leaderboard/split-adjusted-2026-11-05.1', phase + ': the measures settings version still named');
+      assert.doesNotMatch(await text(page, P + '.private-body'), /종목|coverage|커버리지/i);
+      await boundaries(page, seen, w, phase + ' mismatch');
       await ctx.close(); pass++;
     }
     // ================================================================ QGV 2.1.6, 1440 and 390
@@ -348,7 +402,7 @@ let phase = 'START', pass = 0;
       await boundaries(page, seen, w, phase + ' after refusals');
       await ctx.close(); pass++;
     }
-    console.log('web_app_kis_private_browser_test: PASS (' + pass + ' groups: technical 1440 (sign-in, three reads, five measures, measures 404 / refused alone, fold, 403, 404, refused payload, disconnect, expiry, reload), qgv 1440, qgv 390, macro 1440, macro 390, news 1440, news 390)');
+    console.log('web_app_kis_private_browser_test: PASS (' + pass + ' groups: technical 1440 (sign-in, three reads, five measures, measures 404 / refused alone, fold, 403, 404, refused payload, disconnect, expiry, reload), technical basis 1440 / 390 (adjusted pair, mismatched pair), qgv 1440, qgv 390, macro 1440, macro 390, news 1440, news 390)');
   } catch (e) {
     console.error('web_app_kis_private_browser_test: FAIL at ' + phase); console.error(e); process.exitCode = 1;
   } finally { await browser.close(); await s.close(); }
