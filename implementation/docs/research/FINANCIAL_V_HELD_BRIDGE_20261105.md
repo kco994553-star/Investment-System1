@@ -69,6 +69,18 @@ The existing combined-intangibles mapping now also accepts
 when a separate goodwill/other sum exists. Formula, class gate, explicit zero NCI,
 and research configuration hash remain unchanged.
 
+The same CLI also passes the held, hash-matched XBRL instance through the existing
+`xbrl_supplement.supplement` parser with an explicit financial balance-concept
+subset. Default calc23.1 parser behavior is retained. Only consolidated standard
+concepts in exact filing/period/unit contexts can supplement companyfacts; issuer
+extensions, dimensional/class contexts and currency conversion are not inferred.
+`balance_supplement` records additions, conflicts and rejected context/unit
+references. Future/unidentified filings are skipped with a reason. The original
+companyfacts bytes are immutable; derived pointers are reproducible from the
+original payload plus audited additions and a canonical derived-payload hash.
+An instance/companyfacts conflict at the selected balance key blocks that
+component and affected book numerator rather than choosing either observation.
+
 ## Optional prepared IEX prices
 
 A price file uses `records[code][metric]`. Each metric requires its own prepared
@@ -155,11 +167,13 @@ checks, future filings/class evidence, fixed membership and private output.
 Existing successful suites and old fiscal diagnostics need not be repeated to
 exercise this new adapter.
 
-The changed-path run on the same 68 held issuers connected 260/544 dated
-component cells (111 applicable/alternative primary component cells), with 84
-present-but-ineligible and 200 absent from the held standard-tag payloads.
-All 68 have at least one dated component. Prepared EPS/common-book/tangible-book
-numerators remain 64/3/0; existing numerators and candidate results are unchanged.
-Same-date prices and actual candidate ratios remain 0. These are input linkage
-counts, not a coverage improvement or historical PIT proof. Company-level values,
-source pointers, rejected observations and missing-input lists remain private.
+The first component-only run on the same 68 held issuers exposed 260/544 dated
+cells, with 84 ineligible and 200 absent from companyfacts. The subsequent held
+instance check found five apparently absent cells in ineligible XML contexts and
+four cross-source conflicts, three at the selected balance key. No missing
+eligible observation was added from XML. The final component and numerator
+counts are recorded in the private handoff and PR result; the component-only
+counts are not the final adoption counts. Same-date prices and actual candidate
+ratios remain 0. These are input linkage diagnostics, not a coverage improvement
+or historical PIT proof. Company-level values, source pointers, rejected
+observations and missing-input lists remain private.

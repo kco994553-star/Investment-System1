@@ -149,3 +149,64 @@ def test_price_source_pointer_must_match_the_value_and_basis(fault, reason):
     elif fault == 'date': basis['valid_to'] = '2026-10-30'
     else: sources.pop('a'*64)
     with pytest.raises(ValueError, match=reason): cli._verify_price_sources({'NYSE:TEST': {'earnings_yield':q}}, sources, '2026-11-02')
+
+
+def instance_fixture(*, wrong_unit=False, dimension=False):
+    x = fixture(); p = json.loads(x['companyfacts_bytes'])
+    p['facts']['us-gaap'].pop('CommonStockSharesOutstanding')
+    x['companyfacts_bytes'] = json.dumps(p).encode()
+    x['record']['source_sha256']['companyfacts'] = hashlib.sha256(x['companyfacts_bytes']).hexdigest()
+    segment = '<segment><dimension>business</dimension></segment>' if dimension else ''
+    unit = 'i:USD' if wrong_unit else 'x:shares'
+    extra = f'''<context id="b"><entity><identifier scheme="http://www.sec.gov/CIK">0000000001</identifier>{segment}</entity><period><instant>2025-12-31</instant></period></context>
+      <unit id="shares"><measure>{unit}</measure></unit>
+      <g:CommonStockSharesOutstanding contextRef="b" unitRef="shares">10</g:CommonStockSharesOutstanding>'''
+    body=x['cover_bytes'].replace(b'<xbrl ', b'<xbrl xmlns:g="http://fasb.org/us-gaap/2026" xmlns:x="http://www.xbrl.org/2003/instance" xmlns:i="http://www.xbrl.org/2003/iso4217" ')
+    x['cover_bytes']=body.replace(b'</xbrl>',extra.encode()+b'</xbrl>')
+    x['shares'].update(accn='0000000001-26-000001',form='10-K')
+    x['shares']['source_sha256']['cover']=hashlib.sha256(x['cover_bytes']).hexdigest()
+    return x
+
+
+def test_held_instance_fills_exact_missing_balance_fact_through_existing_parser():
+    x=instance_fixture(); before=x['companyfacts_bytes']; result=connect(**x)
+    assert result['inputs']['book_yield']['value']==12
+    assert result['balance_supplement']['added']==1
+    assert result['balance_supplement']['source_sha256']==x['shares']['source_sha256']['cover']
+    source=result['balance_inputs']['components']['common_shares']['source']
+    assert source['payload_kind']=='RESEARCH_INSTANCE_SUPPLEMENTED'
+    assert source['instance_sha256']==x['shares']['source_sha256']['cover']
+    assert x['companyfacts_bytes']==before
+    assert result['result']['primary_available'] is False
+
+
+@pytest.mark.parametrize('fault',[{'wrong_unit':True},{'dimension':True}])
+def test_held_ineligible_instance_is_distinct_from_missing_source(fault):
+    result=connect(**instance_fixture(**fault))
+    c=result['balance_inputs']['components']['common_shares']
+    assert c['value'] is None and c['status']=='PRESENT_BUT_INELIGIBLE'
+    assert 'INSTANCE_CONTEXT_OR_UNIT_NOT_ELIGIBLE' in c['reasons']
+    assert result['inputs']['book_yield'] is None
+
+
+def test_instance_filing_after_cutoff_cannot_supply_balance_input():
+    x=instance_fixture();x['shares']['filed']='2026-11-03'
+    result=connect(**x)
+    assert result['balance_supplement']['reason']=='FILING_NOT_ELIGIBLE'
+    assert result['balance_supplement']['added']==0
+    assert result['balance_inputs']['components']['common_shares']['value'] is None
+
+
+def test_instance_companyfacts_conflict_blocks_selected_component_and_book():
+    x=instance_fixture();p=json.loads(x['companyfacts_bytes'])
+    p['facts']['us-gaap']['CommonStockSharesOutstanding']={'units':{'shares':[dict(
+        val=11,end='2025-12-31',filed='2026-02-01',accn='0000000001-26-000001',form='10-K')]}}
+    x['companyfacts_bytes']=json.dumps(p).encode()
+    x['record']['source_sha256']['companyfacts']=hashlib.sha256(x['companyfacts_bytes']).hexdigest()
+    result=connect(**x)
+    assert result['inputs']['book_yield'] is None
+    assert result['inputs']['tangible_book_yield'] is None
+    assert result['inputs']['earnings_yield']['value']==4
+    c=result['balance_inputs']['components']['common_shares']
+    assert c['value'] is None and c['status']=='PRESENT_BUT_INELIGIBLE'
+    assert 'INSTANCE_COMPANYFACTS_CONFLICT' in c['reasons']

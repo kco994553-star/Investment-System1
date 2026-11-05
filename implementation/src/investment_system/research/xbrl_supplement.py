@@ -1,6 +1,7 @@
 """Exact, offline XBRL-instance supplements; never changes an official extraction rule.
 
-Only consolidated standard concepts already allowed by calc23.1 are read. Missing
+By default, only consolidated standard concepts allowed by calc23.1 are read. A
+research caller can select its explicit USD/share standard-concept subset. Missing
 companyfacts observations may be added; conflicting observations are never replaced.
 The returned payload is research input, not a publication or collector side effect.
 """
@@ -24,7 +25,7 @@ def _day(value):
     return vf._day(value)
 
 
-def supplement(payload, xml, filing, cutoff):
+def supplement(payload, xml, filing, cutoff, *, concept_units=None):
     """Return (copied companyfacts, audit), retaining accession/period/unit provenance."""
     if (not isinstance(filing, dict) or filing.get('form') not in vf.INSTANT_FORMS
             or not re.fullmatch(r'\d{10}-\d{2}-\d{6}', str(filing.get('accn', '')))
@@ -56,24 +57,40 @@ def supplement(payload, xml, filing, cutoff):
             for name in concepts:
                 allowed.setdefault((tax, name), set()).update(unit)
     allowed[('dei', 'EntityCommonStockSharesOutstanding')] = {'shares'}
-    ctx = {}
+    # Research candidates can reuse this parser for an explicit, narrower set
+    # of standard balance concepts. The default calc23.1 mapping is unchanged.
+    if concept_units is not None:
+        if (not isinstance(concept_units, dict) or any(
+                not isinstance(key, tuple) or len(key) != 2 or key[0] != 'us-gaap'
+                or not re.fullmatch('[A-Za-z][A-Za-z0-9]*', key[1])
+                or not units or not set(units) <= {'USD', 'shares'}
+                for key, units in concept_units.items())):
+            raise ValueError('RESEARCH_STANDARD_CONCEPTS_REQUIRED')
+        allowed = {key: set(units) for key, units in concept_units.items()}
+    ctx, rejected_contexts = {}, {}
     for e in root.findall(X + 'context'):
         ids = e.findall(X + 'entity/' + X + 'identifier')
         if (len(ids) != 1 or ids[0].get('scheme') != 'http://www.sec.gov/CIK'
-                or (ids[0].text or '').strip().zfill(10) != cik
-                or e.find('.//' + X + 'segment') is not None or e.find(X + 'scenario') is not None):
+                or (ids[0].text or '').strip().zfill(10) != cik):
+            rejected_contexts[e.get('id')] = 'ENTITY_MISMATCH'
+            continue
+        if e.find('.//' + X + 'segment') is not None or e.find(X + 'scenario') is not None:
+            rejected_contexts[e.get('id')] = 'DIMENSIONAL_CONTEXT_NOT_ELIGIBLE'
             continue
         period = e.find(X + 'period')
         if period is None:
+            rejected_contexts[e.get('id')] = 'PERIOD_MISSING'
             continue
         instant = period.findtext(X + 'instant')
         start, end = period.findtext(X + 'startDate'), period.findtext(X + 'endDate')
         if instant is not None:
             if start is not None or end is not None:
+                rejected_contexts[e.get('id')] = 'PERIOD_AMBIGUOUS'
                 continue
             start, end = None, instant
         if (_day(end) is None or _day(end) > _day(filing['filed'])
                 or start is not None and (_day(start) is None or _day(start) > _day(end))):
+            rejected_contexts[e.get('id')] = 'PERIOD_NOT_ELIGIBLE'
             continue
         if e.get('id') in ctx:
             raise ValueError('DUPLICATE_CONTEXT_ID')
@@ -106,7 +123,8 @@ def supplement(payload, xml, filing, cutoff):
         units[e.get('id')] = unit
     groups = defaultdict(list)
     skipped = Counter()
-    for e in root:
+    observations = []
+    for element_index, e in enumerate(root):
         if 'contextRef' not in e.attrib or not e.tag.startswith('{'):
             continue
         uri, name = e.tag[1:].split('}', 1)
@@ -116,8 +134,14 @@ def supplement(payload, xml, filing, cutoff):
         if (tax, name) not in allowed:
             skipped['CONCEPT_NOT_ALLOWED'] += 1
             continue
+        observation = dict(taxonomy=tax, concept=name, element_index=element_index,
+                           context_id=e.get('contextRef'), unit_id=e.get('unitRef'), reason=None)
+        observations.append(observation)
         period, unit = ctx.get(e.get('contextRef')), units.get(e.get('unitRef'))
         if period is None or unit not in allowed[(tax, name)]:
+            observation['reason'] = 'CONTEXT_OR_UNIT_NOT_ELIGIBLE'
+            observation['context_reason'] = rejected_contexts.get(e.get('contextRef'), 'CONTEXT_NOT_FOUND') if period is None else None
+            observation['unit_reason'] = 'UNIT_NOT_ELIGIBLE' if unit not in allowed[(tax, name)] else None
             skipped['CONTEXT_OR_UNIT_NOT_ELIGIBLE'] += 1
             continue
         try:
@@ -128,12 +152,14 @@ def supplement(payload, xml, filing, cutoff):
             if not math.isfinite(value):
                 raise ValueError()
         except (ValueError, InvalidOperation, OverflowError):
+            observation['reason'] = 'VALUE_NOT_FINITE'
             skipped['VALUE_NOT_FINITE'] += 1
             continue
         groups[(tax, name, unit, *period)].append(value)
     result = deepcopy(payload)
     audit = {'source_sha256': hashlib.sha256(xml).hexdigest(), 'filing': dict(filing),
-             'added': 0, 'additions': [], 'conflicts': [], 'skipped': dict(skipped)}
+             'added': 0, 'additions': [], 'conflicts': [], 'skipped': dict(skipped),
+             'observations': observations}
     for (tax, name, unit, start, end), values in sorted(groups.items(), key=str):
         old = result.get('facts', {}).get(tax, {}).get(name, {}).get('units', {}).get(unit, [])
         hits = [r for r in old if r.get('start') == start and r.get('end') == end

@@ -12,7 +12,8 @@ import xml.etree.ElementTree as ET
 from zoneinfo import ZoneInfo
 
 from investment_system.qgv import v2_factors as vf
-from investment_system.research.financial_v import CONFIG, CONFIG_SHA256, balance_input_audit, common_book_inputs, evaluate
+from investment_system.research.financial_v import BALANCE_COMPONENTS, CONFIG, CONFIG_SHA256, balance_input_audit, common_book_inputs, evaluate
+from investment_system.research.xbrl_supplement import supplement
 
 VERSION = 'financial-v-held-bridge/1.1'
 X = '{http://www.xbrl.org/2003/instance}'
@@ -150,12 +151,37 @@ def connect(*, record, companyfacts_bytes, shares, cover_bytes, valuation_date, 
                                   'basis_filed': str(basis[1]), 'rule': 'calc23.1 Company.eps'}}
         if eps is None:
             eps_reasons.append('ANNUAL_DILUTED_EPS_OR_SHARE_BASIS_UNAVAILABLE')
-    books = common_book_inputs(payload, cutoff, proof)
+    balance_payload = payload
+    balance_supplement = {'added': 0, 'reason': 'HELD_INSTANCE_NOT_AVAILABLE', 'observations': []}
+    if cover_bytes is not None:
+        filing = {k: shares.get(k) for k in ('accn', 'filed', 'form')}
+        concepts = {('us-gaap', tag): {unit} for tags, unit in BALANCE_COMPONENTS.values() for tag in tags}
+        try:
+            balance_payload, balance_supplement = supplement(payload, cover_bytes, filing, cutoff, concept_units=concepts)
+        except ValueError as error:
+            balance_supplement = {'added': 0, 'reason': str(error), 'source_sha256': cover_hash,
+                                  'filing': filing, 'observations': []}
+    balance_digest = _sha(json.dumps(balance_payload, sort_keys=True, separators=(',', ':'), allow_nan=False).encode())
+    books = common_book_inputs(balance_payload, cutoff, proof)
+    for metric in ('book_yield', 'tangible_book_yield'):
+        fact = books[metric]
+        concepts = {tag for name, (tags, _) in BALANCE_COMPONENTS.items()
+                    if metric == 'tangible_book_yield' or name in ('common_equity', 'parent_equity', 'preferred_shares', 'common_shares')
+                    for tag in tags}
+        if fact and any(c['concept'] in concepts and c['start'] is None
+                and c['end'] == fact['period_end']
+                and balance_supplement['filing']['filed'] == fact['filed']
+                and balance_supplement['filing']['accn'] == fact['source']['accession']
+                for c in balance_supplement.get('conflicts', [])):
+            books[metric] = None
+            books['reasons'].append('INSTANCE_COMPANYFACTS_CONFLICT')
     inputs = {'earnings_yield': eps, 'book_yield': books['book_yield'],
               'tangible_book_yield': books['tangible_book_yield']}
     for metric in ('book_yield', 'tangible_book_yield'):
         if inputs[metric] is not None:
             inputs[metric]['source']['companyfacts_sha256'] = digest
+            if balance_supplement['added']:
+                inputs[metric]['source'].update(balance_payload_sha256=balance_digest, instance_sha256=cover_hash)
     common = {'code': code, 'cik': cik, 'sic': record['sic'], 'valuation_date': valuation_date,
               'input_vintage': input_vintage, 'result_kind': 'OPERATIONAL_CANDIDATE_RAW',
               'identity_status': 'DOCUMENT_LINKED' if linked else 'SYMBOL_ONLY', 'security_basis': proof}
@@ -181,13 +207,32 @@ def connect(*, record, companyfacts_bytes, shares, cover_bytes, valuation_date, 
     result['metrics'] = results
     primary = result['primary_metric']
     result['primary_available'] = bool(primary and results[primary]['value'] is not None)
-    balance = balance_input_audit(payload, cutoff, proof, primary)
-    for component in balance['components'].values():
+    balance = balance_input_audit(balance_payload, cutoff, proof, primary)
+    balance['derived_payload_sha256'] = balance_digest
+    for name, component in balance['components'].items():
+        tags = BALANCE_COMPONENTS[name][0]
+        seen = [o for o in balance_supplement['observations'] if o['concept'] in tags]
+        component['instance_observations'] = seen
+        if component['source'] is not None and any(
+                c['concept'] in tags and c['start'] is None and c['end'] == component['period_end']
+                and balance_supplement['filing']['filed'] == component['filed']
+                and balance_supplement['filing']['accn'] == component['source']['accession']
+                for c in balance_supplement.get('conflicts', [])):
+            component['status'] = 'PRESENT_BUT_INELIGIBLE'
+            component['value'] = None
+            component['reasons'] = ['INSTANCE_COMPANYFACTS_CONFLICT']
+        if component['status'] == 'NOT_PRESENT_IN_HELD_SOURCE' and seen:
+            component['status'] = 'PRESENT_BUT_INELIGIBLE'
+            component['reasons'] = sorted({'INSTANCE_' + (o['reason'] or 'CONFLICTING_OBSERVATIONS') for o in seen})
         if component['source'] is not None:
             component['source']['companyfacts_sha256'] = digest
+            if balance_supplement['added']:
+                component['source'].update(payload_kind='RESEARCH_INSTANCE_SUPPLEMENTED',
+                    derived_payload_sha256=balance_digest, instance_sha256=cover_hash)
     return {'schema_version': VERSION, 'code': code, 'cik': cik, 'cutoff': str(cutoff),
             'inputs': inputs, 'prepared_rows_by_metric': prepared, 'result': result,
             'balance_inputs': balance,
+            'balance_supplement': balance_supplement,
             'extraction_reasons': {'earnings_yield': eps_reasons, 'book_inputs': books['reasons']},
             'source_sha256': {'companyfacts': digest, 'cover': cover_hash}}
 
