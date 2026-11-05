@@ -249,6 +249,22 @@ def test_t_plus_one_file_not_yet_generated_uses_the_previous_trading_day():
     assert ih.select_day(_hist_index(), dt.date(2026, 11, 24))[0] == '20261124'
 
 
+def test_non_session_index_days_are_never_a_basis():
+    # 2026-11-01 run: IEX listed a Saturday file (20261031, ~3 MB, no session); the run took it and failed SUPPLY_BELOW_THRESHOLD
+    index = _hist_index(('20261029', '20261030', '20261031', '20261101'))
+    for requested in (dt.date(2026, 10, 31), dt.date(2026, 11, 1), dt.date(2026, 11, 2)):
+        assert ih.select_day(index, requested)[0] == '20261030'
+    # a file dated on an NYSE full-day holiday (Thanksgiving) is skipped too; the half day after it stays a session
+    holiday = _hist_index(('20261125', '20261126', '20261127'))
+    assert ih.select_day(holiday, dt.date(2026, 11, 26))[0] == '20261125'
+    assert ih.select_day(holiday, dt.date(2026, 11, 27))[0] == '20261127'
+    # only non-session files on or before the basis: no basis, never a later file
+    with pytest.raises(ih.IexHistError, match='NO_FILE_FOR_BASIS'):
+        ih.select_day(_hist_index(('20261031', '20261102')), dt.date(2026, 11, 1))
+    assert [d for d in ('20261030', '20261031', '20261101', '20261126', '20290101', '20290106')
+            if ih.session_file_day(d)] == ['20261030', '20290101']   # past the calendar end: weekends only
+
+
 def test_holiday_run_publishes_requested_and_actual_basis_dates(tmp_path):
     md5 = base64.b64encode(hashlib.md5(b'x').digest()).decode()
 

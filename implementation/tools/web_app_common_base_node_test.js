@@ -151,6 +151,32 @@ test('lab validate: each invalid variant is refused, whole, with its code and pa
   assert.deepEqual([...seen].sort(), [...RULES].sort(), 'one variant (at least) per rule');
 });
 
+test('lab validate v2 (Codex agreement #437 6600537423): the four cases and more are accepted; each v2 rule refuses the whole file', () => {
+  for (const [name, make] of F.validV2) { const v = L.validate(make()); assert.equal(v.ok, true, name + ': ' + JSON.stringify(v)); deepFrozen(v.value); }
+  const seen = new Set();
+  for (const [name, codeWanted, at, make] of F.invalidV2) {
+    const r = L.validate(make());
+    assert.deepEqual({ ...r }, { ok: false, code: codeWanted, path: at }, name); assert.equal('value' in r, false, name + ': nothing of the file is kept');
+    seen.add(codeWanted);
+  }
+  for (const rule of ['NOT_COMPUTED_REASON', 'AS_OF_REQUIRED', 'NON_BACKTEST_FIELD', 'METRIC_NOT_ALLOWED', 'CURVE_NOT_ALLOWED', 'SAMPLE_RANGE', 'POPULATION_NULL_REASON',
+    'POPULATION_INCOMPLETE', 'DIAGNOSTICS_BACKTEST', 'POPULATION_REF', 'DIAGNOSTIC_FRACTION']) assert.ok(seen.has(rule), 'a variant for ' + rule);
+  assert.equal(L.SCHEMA, 'lab-backtest-v1'); assert.equal(L.SCHEMA_V2, 'lab-backtest-v2'); assert.deepEqual([...L.SCHEMAS], ['lab-backtest-v1', 'lab-backtest-v2']);
+});
+
+test('lab status v2: the agreed words, 합성 데이터 · 시험용 first, never verified; reasonText', () => {
+  const runs = L.validate(F.payloadV2()).value.runs, real = JSON.parse(JSON.stringify(F.payloadV2()));
+  for (const r of real.runs) r.data_status = 'REAL';
+  const rr = L.validate(real).value.runs;
+  assert.deepEqual(runs.map(L.status), ['합성 데이터 · 시험용 · 미산출 · C2 분모 미확인 · 표본 진단', '합성 데이터 · 시험용 · 1회사 지표 계산 · 전략 성과 아님',
+    '합성 데이터 · 시험용 · 표본 진단 · 전략 성과 아님', '합성 데이터 · 시험용']);
+  assert.deepEqual(rr.map(L.status), ['미산출 · C2 분모 미확인 · 실자료 표본 진단', '실자료 1회사 지표 계산 · 전략 성과 아님', '실자료 표본 진단 · 전략 성과 아님', '실데이터 파일럿 · 미검증']);
+  for (const r of rr) assert.doesNotMatch(L.status(r), /검증됨|검토 완료/);
+  assert.equal(L.nullText(runs[1], 'cagr'), '– · 전략 백테스트 아님');
+  assert.equal(L.reasonText('VALID_N_BELOW_10'), '유효 표본 10개 미만'); assert.equal(L.reasonText('SOME_NEW_CODE'), '사유 코드 미등록');
+  assert.equal(L.reasonText('무위험 수익률 기준 미정 (시험용)'), '무위험 수익률 기준 미정 (시험용)'); assert.equal(L.reasonText(null), '사유 코드 미등록');
+});
+
 test('lab validate: tolerances, non-JSON values, __proto__ and depth', () => {
   const ok = (fn) => { const p = F.payload(); fn(p.runs[0]); return L.validate(p); };
   const m = (r) => r.metrics;
