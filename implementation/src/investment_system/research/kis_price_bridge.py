@@ -61,6 +61,35 @@ def _stamp(day):
     return datetime.combine(date.fromisoformat(day), time(0), ZoneInfo('America/New_York'))
 
 
+def _split_adjust(rows, splits):
+    adjusted=deepcopy(rows)
+    for split in splits:
+        ratio=Decimal(split['ratio'])
+        for row in adjusted:
+            if row['date']<split['date']:
+                with localcontext() as ctx:
+                    ctx.prec=50
+                    for field in ('open','high','low','close'):
+                        if row.get(field) is not None:row[field]=_str(Decimal(row[field])/ratio)
+                    if row.get('volume') is not None:row['volume']=_str(Decimal(row['volume'])*ratio)
+    return adjusted
+
+
+def price_rows(c, evaluation_day):
+    """Rebase only confirmed splits through S, never a later archive event."""
+    rows=[r for r in c['raw_bars'] if r['date']<=evaluation_day]
+    return _split_adjust(rows,[s for s in c['splits'] if s['date']<=evaluation_day]) if c['basis']=='SPLIT_ADJUSTED' else rows
+
+
+def basis_evidence(evidence, c):
+    evidence['price_basis']=c['basis']
+    if c['basis']=='SPLIT_ADJUSTED':
+        for old,new in [('no_split_start','adjustment_start'),('no_split_end','adjustment_end'),('no_split_reference','adjustment_reference')]:
+            if old in evidence:evidence[new]=evidence.pop(old)
+        evidence['adjustment_method']='CONFIRMED_SPLITS_ONLY'
+    return evidence
+
+
 def normalize_page(body, *, receipt, request, evidence, basis='RAW'):
     if hashlib.sha256(body).hexdigest()!=receipt.get('sha256') or len(body)!=receipt.get('bytes'):
         raise ValueError('SOURCE_HASH_OR_SIZE_MISMATCH')
@@ -102,14 +131,7 @@ def normalize_page(body, *, receipt, request, evidence, basis='RAW'):
         _day(s['date']);ratio=_decimal(s['ratio'],nullable=False)
         if not s.get('evidence') or s.get('status')!='CONFIRMED': raise ValueError('SPLIT_EVIDENCE_REQUIRED')
         if not raw or s['date']>raw[-1]['date']: raise ValueError('SPLIT_AFTER_BASIS_DATE')
-        if basis=='SPLIT_ADJUSTED':
-            for r in bars:
-                if r['date']<s['date']:
-                    with localcontext() as ctx:
-                        ctx.prec=50
-                        for f in ('open','high','low','close'):
-                            if r[f] is not None:r[f]=_str(Decimal(r[f])/ratio)
-                        if r['volume'] is not None:r['volume']=_str(Decimal(r['volume'])*ratio)
+    if basis=='SPLIT_ADJUSTED':bars=_split_adjust(raw,splits)
     result={'schema':SCHEMA,'symbol':symbol,'security_id':evidence.get('security_id'),
             'issuer_id':evidence.get('issuer_id'),'exchange':EXCHANGES[exchange],'currency':currency,
             'source':'KIS retained dailyprice MODP0','price_basis_date':raw[-1]['date'] if raw else None,
@@ -162,6 +184,10 @@ def validate_contract(c):
         _decimal(split['ratio'],nullable=False)
         if not split.get('evidence') or split.get('status')!='CONFIRMED':raise ValueError('SPLIT_EVIDENCE_REQUIRED')
         if not c['price_basis_date'] or _day(split['date'])>c['price_basis_date']:raise ValueError('SPLIT_AFTER_BASIS_DATE')
+    if c['basis']=='SPLIT_ADJUSTED' and c.get('dividend_adjustment')!='NONE':
+        raise ValueError('SPLIT_ONLY_ADJUSTMENT_REQUIRED')
+    if c['basis']=='SPLIT_ADJUSTED' and c['bars']!=_split_adjust(c['raw_bars'],splits):
+        raise ValueError('ADJUSTED_ROWS_DO_NOT_MATCH_CONFIRMED_SPLITS')
     for r in c['confirmed_ranges']+c['held_ranges']:
         if _day(r['from'])>_day(r['to']):raise ValueError('INVALID_EVIDENCE_RANGE')
 
@@ -173,7 +199,7 @@ def _status(c, evaluation_day):
 
 def analyze(c, *, evaluation_day):
     validate_contract(c);_day(evaluation_day)
-    rows=[r for r in c['raw_bars'] if r['date']<=evaluation_day]
+    rows=price_rows(c,evaluation_day)
     end=rows[-1]['date'] if rows else evaluation_day
     if not schedule.is_session(date.fromisoformat(end)):end=schedule.previous_session(date.fromisoformat(end)).isoformat()
     evidence={**c['identity'],'security_id':c['security_id'],'currency':c['currency'],'currency_reference':c['currency_reference']}
@@ -182,16 +208,16 @@ def analyze(c, *, evaluation_day):
     # full retained seed here incorrectly suppresses already-proven short windows.
     ranges=sorted((r for r in c['confirmed_ranges'] if rows and _covers(r,end,end)),key=lambda r:r['from'])
     if ranges:evidence.update(no_split_start=ranges[0]['from'],no_split_end=ranges[0]['to'],no_split_reference=ranges[0]['evidence'])
+    basis_evidence(evidence,c)
     normalized=[{'date':r['date'],**{f:r[f] for f in FIELDS[:5]},'returned_symbol':c['symbol'],'requested_symbol':c['symbol'],
-                 'price_basis':'RAW','asof':'-','source_timestamp':_stamp(r['date']).isoformat(),
+                 'price_basis':c['basis'],'asof':'-','source_timestamp':_stamp(r['date']).isoformat(),
                  'source_sha256':r['source_sha256'],'quality_reasons':[]} for r in rows]
     result=measure_display(normalized,signal_day=end,series_id=c['symbol'],symbol=c['symbol'],evidence=evidence,source_kind='NORMALIZED_PROVIDER_DAILY_BARS')
     for metric in result['metrics'].values():
         a,b=metric['window_start'],metric['window_end'];reasons=metric['null_reasons']
         if not (c['identity'].get('identity_start','9999') or '9999')<=a<=b<=(c['identity'].get('identity_end','0000') or '0000'):reasons.append('IDENTITY_RANGE_UNCONFIRMED')
-        if c['basis']!='RAW':reasons.append('SPLIT_ADJUSTED_DISPLAY_ADAPTER_PENDING')
         if any(a<=r['to'] and r['from']<=b for r in c['held_ranges']):reasons.append('HELD_RANGE_IN_WINDOW')
-        if any(a<s['date']<=b for s in c['splits']):reasons.append('CORPORATE_ACTION_IN_RAW_WINDOW')
+        if c['basis']=='RAW' and any(a<s['date']<=b for s in c['splits']):reasons.append('CORPORATE_ACTION_IN_RAW_WINDOW')
         if not any(_covers(r,a,b) for r in c['confirmed_ranges']):reasons.append('ACTION_BASIS_UNCONFIRMED')
         metric['null_reasons']=list(dict.fromkeys(reasons))
         if reasons:metric['value']=None
@@ -201,7 +227,7 @@ def analyze(c, *, evaluation_day):
     result['volume_note']['state']=None
     result.update(schema=SCHEMA+'/analysis',status=_status({'price_basis_date':end if rows else None},evaluation_day),data_asof=end if rows else None,
                   evaluation_day=evaluation_day,collected_at=c['collected_at'],corrected_at=c['corrected_at'],
-                  historical_available_at=None,diagnostic_basis='RAW',chart_basis=c['basis'],
+                  historical_available_at=None,diagnostic_basis=c['basis'],chart_basis=c['basis'],
                   raw_count=sum(m['raw_value'] is not None for m in result['metrics'].values()),
                   adopted_count=sum(m['value'] is not None for m in result['metrics'].values()),
                   QGV_coverage_change=None,QGV_reason='OFFICIAL_MODEL_UNCHANGED_NOT_RECALCULATED')

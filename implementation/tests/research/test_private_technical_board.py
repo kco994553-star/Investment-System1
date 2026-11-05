@@ -152,12 +152,12 @@ def test_dated_link_does_not_extend_expired_source_identity():
     assert r['linkage'][0]['reason']=='IDENTITY_RANGE_UNCONFIRMED'
 
 
-def test_adjusted_chart_does_not_adopt_raw_diagnostics_as_adjusted_measures():
+def test_documented_split_free_adjusted_series_uses_the_same_price_measures():
     c=contract();c['basis']='SPLIT_ADJUSTED'
     r=measure_contract(c,evaluation_day='2017-01-06',series_id='REQUEST:ADJUSTED')
-    assert r['raw_count']==4 and r['adopted_count']==0
-    assert r['diagnostic_basis']=='RAW' and r['chart_basis']=='SPLIT_ADJUSTED'
-    assert 'SPLIT_ADJUSTED_DISPLAY_ADAPTER_PENDING' in r['metrics']['momentum_3m']['null_reasons']
+    assert r['raw_count']==4 and r['adopted_count']==4
+    assert r['diagnostic_basis']=='SPLIT_ADJUSTED' and r['chart_basis']=='SPLIT_ADJUSTED'
+    assert r['metrics']['momentum_3m']['value']==r['metrics']['momentum_3m']['raw_value']
 
 
 def test_synthetic_ids_cannot_be_assigned_to_actual_retained_contracts():

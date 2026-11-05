@@ -4,7 +4,7 @@ import hashlib
 import json
 
 from . import selection
-from .technical_measures import METRIC_IDS, SETTINGS, SETTINGS_BYTES, number
+from .technical_measures import METRIC_IDS, SETTINGS, SETTINGS_BYTES, number, settings_for_basis
 
 CONDITIONS = ('gt_zero', 'ge_median', 'gt_median', 'top_decile', 'bottom_decile', 'exclude_D10')
 
@@ -29,8 +29,9 @@ def build_board(measurements, *, group):
     signal = group['signal_day']
     if any(m['signal_day'] != signal for m in measurements):
         raise ValueError('SIGNAL_DAY_MISMATCH')
-    settings_hash = hashlib.sha256(SETTINGS_BYTES).hexdigest()
-    if any(m.get('settings_version', SETTINGS['settings_version']) != SETTINGS['settings_version']
+    config,config_bytes=settings_for_basis(group.get('price_basis','RAW'))
+    settings_hash = hashlib.sha256(config_bytes).hexdigest()
+    if any(m.get('settings_version', config['settings_version']) != config['settings_version']
            or m.get('settings_sha256', settings_hash) != settings_hash for m in measurements):
         raise ValueError('SETTINGS_MISMATCH')
     by_id = {}
@@ -58,7 +59,7 @@ def build_board(measurements, *, group):
         if members is not None:
             raise ValueError('UNKNOWN_MEMBERSHIP_MUST_BE_NULL')
         candidates, population_hash = measurements, None
-    out = dict(schema='technical-leaderboard/1', settings_version=SETTINGS['settings_version'],
+    out = dict(schema='technical-leaderboard/1', settings_version=config['settings_version'],
                settings_sha256=settings_hash, signal_day=signal,
                group_id=group['group_id'], membership_status=group.get('membership_status'),
                membership_source=group.get('membership_source'), population_hash=population_hash, metrics={})
