@@ -63,7 +63,7 @@
 | 출처 | 막힌 이유 | 필요한 조치 (이것만) |
 | --- | --- | --- |
 | Census EITS (E21 M3 신규 주문, E26 건축 허가) | API 키 미설정. 코드(`macro_evidence_collection.py` `CENSUS_API_KEY`)와 workflow 환경 연결(`sec-daily-public-inputs.yml`)은 이미 있다. 키가 없으면 요청 0·null이다 | ① 오너가 api.census.gov/data/key_signup.html에서 무료 키를 발급한다. ② 이 저장소 Actions Secret `CENSUS_API_KEY`로 등록한다. 코드 변경·새 workflow는 없다. 출처 표시는 기존 Census API 조건을 따른다 |
-| DOL ETA 539 (E14 신규 실업수당 청구) | 약관 원문 미확인(`HELD_TERMS_UNVERIFIED`): 10/20 수집 환경에서 DOL 저작권 페이지가 HTTP 403이었다. 파서·수집 코드는 있다 | ① 오너가 DOL 저작권·이용 조건 페이지(dol.gov/general/aboutdol/copyright)를 브라우저로 열어 확인한다. 미국 연방 저작물이면 공개 사용이 가능하다. ② 확인 결과를 결정 기록에 남긴다. ③ Main이 `evidence_sources.py`의 E14 `publication`을 `PUBLIC`으로 바꾸는 PR을 연다. 새 키·Secret은 필요 없다. 주간 목요일 08:30 ET + 30분 수집은 기존 경로를 쓴다 |
+| DOL ETA 539 (E14 신규 실업수당 청구) | 약관 원문 미확인(`HELD_TERMS_UNVERIFIED`): 10/20 수집 환경에서 DOL 저작권 페이지가 HTTP 403이었다. 파서·수집 코드는 있다 | ① 오너가 dol.gov의 저작권·이용 조건 페이지를 브라우저로 열어 확인한다(수집 환경에서는 403이라 Main이 원문을 읽지 못했다). 미국 연방 저작물로 명시돼 있으면 공개 사용이 가능하다. ② 확인 결과를 결정 기록에 남긴다. ③ Main이 `evidence_sources.py`의 E14 `publication`을 `PUBLIC`으로 바꾸는 PR을 연다. 새 키·Secret은 필요 없다. 주간 목요일 08:30 ET + 30분 수집은 기존 경로를 쓴다 |
 
 ## 3. Main 다음 구현 순서 (승인 뒤)
 
