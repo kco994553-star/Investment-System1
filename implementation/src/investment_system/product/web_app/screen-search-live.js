@@ -121,7 +121,9 @@ function quote(host){
   h('p',{class:'quote-who'},'— ',q.speaker.ko),
   h('p',{class:'quote-src'},'출처: ',q.source,q.date?' ('+q.date+')':'',' ',q.url?h('a',{href:q.url,target:'_blank',rel:'noopener noreferrer',dataset:{quoteLink:''}},'원문 보기 ↗'):null));
 }
-function home(route,{box,chips:host,quote:story}){attach(route,box);chips(route,host);quote(story);}
+function home(route,{box,chips:host,quote:story,scope}){attach(route,box);chips(route,host);quote(story);
+ // 검색·계산 범위 (screen-population-live.js, owner 2026-11-05): Universe504 and the expansion population counted apart.
+ if(scope&&I.populationLive)I.populationLive.fill(route,scope);}
 
 /* ---------------------------------------------------------------- company page */
 const na=(text,code)=>h('p',{class:'na',dataset:{na:code||''}},text);
