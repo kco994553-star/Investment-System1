@@ -261,7 +261,8 @@ function leaderboard(route,refs){
    vf?th(null,'V 요인',null,true):null].filter(Boolean);
   const dirText=v.byRet?'내림차순':oppositeSort(V.sort)===null?'한 방향':dir===-1?'내림차순':'오름차순';
   const sortText=v.byRet?'수익률 '+V.period+' 높은 순 · QGV 순위와 별개':sortSpec(V.sort)[3];
-  const caption=h('caption',{tabindex:'-1'},LIST_NAME(v.list),' · ',rankHead(v),' · 정렬: ',sortText,' · ',dirText,' · 표시 ',String(v.drawn.length),'개');
+  // The caption also says when a 2.1.3 filter hides rows: the filters sit below the table (quality audit 2026-11-05).
+  const caption=h('caption',{tabindex:'-1'},LIST_NAME(v.list),' · ',rankHead(v),' · 정렬: ',sortText,' · ',dirText,' · 표시 ',String(v.drawn.length),'개',v.any?' · 필터 적용 중':'');
   let body;
   if(v.pv&&v.pv.out.state==='INVALID')body=[emptyRow(cols.length,h('p',{class:'na',dataset:{na:v.pv.out.reason||''}},say(v.pv.out.reason,'내 설정으로 계산하지 못했습니다')))];
   else if(v.list==='RANKED'&&!v.listed.length)body=[emptyRow(cols.length,noRanking())];
@@ -330,8 +331,9 @@ function leaderboard(route,refs){
   const sel=h('select',{id:'lb-sort',dataset:{k:'sort'},onchange:e=>{V.ret=false;V.sort=e.target.value;draw();}},
    ...SORTS.map(([id,key,,label])=>{const capOff=key==='cap'&&!v.ur,favOff=key==='favorites'&&!fav.ids.length;
     return h('option',{value:id,selected:id===V.sort,disabled:capOff||favOff},label,capOff?' (이 기기 가격 시트 읽은 뒤)':'');}));
-  const toggle=h('button',{type:'button',class:'chip dir','aria-pressed':String(opp!==null&&dir===-1),disabled:opp===null,'aria-label':dir===-1?'내림차순':'오름차순',dataset:{k:'dir'},
-   onclick:set(()=>{const o=oppositeSort(V.sort);if(o){V.ret=false;V.sort=o;}})},dir===-1?'↓ 내림':'↑ 오름',h('span',{class:'pc-only'},'차순'));
+  // Its name is its visible words (WCAG 2.5.3, quality audit 2026-11-05): 내림 / 오름 on a phone, 내림차순 / 오름차순 where 차순 shows; the arrow is decoration.
+  const toggle=h('button',{type:'button',class:'chip dir','aria-pressed':String(opp!==null&&dir===-1),disabled:opp===null,dataset:{k:'dir'},
+   onclick:set(()=>{const o=oppositeSort(V.sort);if(o){V.ret=false;V.sort=o;}})},h('span',{'aria-hidden':'true'},dir===-1?'↓ ':'↑ '),dir===-1?'내림':'오름',h('span',{class:'pc-only'},'차순'));
   const reset=h('button',{type:'button',class:'btn reset',dataset:{k:'reset'},onclick:set(()=>{V.ret=false;V.sort='qgv';})},'기본 정렬(QGV 높은 순)');
   const of=Number.isInteger(v.of)?String(v.of):'NA',E=populationOf(v.cls),M=ctx.model,L=S.POPULATION_LABEL;
   const eligible=M?['N20 선정에서 살펴본 ',String(M.checked),'행 · 자격 제외 ',String(M.excluded.AXES_50+M.excluded.VALUE_TRAP_GATE+M.excluded.FINANCIAL_SAFETY+M.excluded.FINANCIAL_SAFETY_NA),
