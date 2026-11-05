@@ -15,7 +15,10 @@
      a select change is not one). Importance = held / watchlist / other / market only (holdings are not connected here: 보유 정보
      미연결); event materiality is not computed. Collection state per file and per news source for the companies in view
      (새 뉴스 반영 / 새 뉴스 없음 / 이전 자료 유지 · 최근 갱신 실패 never share words), the file's as_of and STALE line, GDELT
-     attribution. A file that did not read shows its own words (IS2.data.state(name).text) and the other files stay (partial
+     attribution. 원천별 갱신 기록 (owner 2026-11-05): the schema 2 file's refresh.sources[S] as published, through the reader
+     web_app/news-refresh.js (IS2.newsRefresh: 마지막 성공 · 마지막 시도 · 결과 · 회사 성공/실패/미실행 · 이번 새 항목 · 이월 시작;
+     수정 · 중복 미제공, the public file has no such count), each source drawn on its own so a failed source never hides the
+     other; schema 1 and a file without a run say so. A file that did not read shows its own words (IS2.data.state(name).text) and the other files stay (partial
      failure). Title, link, time, company and class only: no body text, no summary and no score effect.
      Not built and shown as such, never invented: 5.2.2 five-line summary and 5.2.3 impact (IA-14; an outside model call needs
      its own approval), 5.2.4 price reaction (no price in public files), 5.2.6 consensus (자료 미연결).
@@ -278,6 +281,29 @@ function screen(route,{legend,band,slots}){
  function paintBand(){
   const chip=f=>{const s=fileState(f.file),ok=f.state==='OK';return h('span',{class:'chip'+(ok?'':' err'),dataset:{file:f.file,fileState:f.state}},FILE_LABEL[f.key],' · ',ok?'기준 '+utc(f.value.as_of):f.text);};
   put(band,...files().map(chip));}
+ // 5.2.7 원천별 갱신 기록: the file's own refresh.sources[S] through IS2.newsRefresh (validate → view), the whole file, not the range in
+ // view. Each source is drawn on its own: a failed source never hides the one that answered. Its source() is looked up at each paint
+ // (tests put a synthetic payload there); a refused block shows its code and draws no number.
+ function sourceRefreshBox(news){
+  const RF=I.newsRefresh,box=(state,...c)=>h('div',{class:'card-body',dataset:{newsSourceRefresh:state}},h('h4',null,'원천별 갱신 기록'),...c);
+  if(!RF||typeof RF.validate!=='function')return box('READER_MISSING',h('p',{class:'err'},'원천별 갱신 기록 · 읽기 모듈 없음'));
+  let src;try{src=RF.source(news);}catch(_){src=null;}
+  if(!src||src.state!=='OK')return box('NONE',h('p',{class:'reason'},src&&src.text?src.text:RF.TEXT.NONE));
+  const synth=src.data_kind==='SYNTHETIC'?h('p',{class:'chip err',dataset:{newsRefreshData:'SYNTHETIC'}},RF.TEXT.SYNTHETIC):null;
+  const r=RF.validate(src.payload);
+  if(!r.ok)return box('INVALID',synth,h('p',{class:'err',dataset:{na:r.code,path:r.path}},RF.TEXT.INVALID,' · ',r.code,' ',r.path));
+  const v=RF.view(r.value);
+  if(v.kind!=='RECORDED')return box(v.kind,synth,h('p',{class:'reason',dataset:{na:v.kind}},v.text));
+  // One column per source (항목 | GDELT | 회사 IR): both are always drawn, side by side, from the file's own fields.
+  const S2=v.sources,rowsOf=S2[0].cells.map(c=>c.key);
+  const table=h('div',{class:'tbl-wrap',dataset:{newsSourceTable:''}},h('table',{class:'tbl'},
+   h('caption',null,'원천별 · 파일 전체 기준 (보는 범위와 무관)'),
+   h('thead',null,h('tr',null,h('th',{scope:'col'},'항목'),S2.map(x=>h('th',{scope:'col',dataset:{newsSourceRow:x.source,newsSourceResult:x.result}},x.label,h('span',{class:'sub'+(x.bad?' err':'')},RF.RESULT_TEXT[x.result]))))),
+   h('tbody',null,rowsOf.map(k=>h('tr',null,h('th',{scope:'row'},h('span',{class:'nobr'},S2[0].cells.find(c=>c.key===k).label)),
+    S2.map(x=>{const c=x.cells.find(y=>y.key===k);return h('td',{class:k==='last_result'&&x.bad?'err':null,dataset:c.kind==='NA'?{refreshSource:x.source,sourceCell:k,na:'NA'}:{refreshSource:x.source,sourceCell:k}},c.text);}))))));
+  return box('RECORDED',synth,h('p',{class:v.overall.result==='UPDATED'||v.overall.result==='NO_NEW_ITEMS'?'meta':'err',dataset:{newsSourceRefreshOverall:v.overall.result}},'이번 실행 ',v.overall.when,' · ',v.overall.text),
+   table,
+   h('p',{class:'reason'},'실패한 원천은 이전 수집분을 그대로 목록에 둠 · 수정·중복 개수는 수집 기록(로그)에만 있어 미제공 · 반복 보도 묶음은 5.2.5'));}
  function paintLists(){
   if(!S.lists)return;
   if(S.lists.error){for(const b of[listBody,occBody,statusBody,factsBody])put(b,failed('DATA_FAILED','공개 자료를 읽지 못했습니다 · 새로고침해 주세요'));
@@ -303,6 +329,7 @@ function screen(route,{legend,band,slots}){
    return out;};
   put(statusBody,h('div',{class:'links',dataset:{listStates:''}},F.map(stateChip),badge&&badge!=='OK'?h('span',{class:'chip err',dataset:{newsRefreshBadge:badge}},badge==='FAILED'?'최근 갱신 실패 · 이전 자료 유지':'일부 갱신 실패'):null),
    ...F.flatMap(fileLines),
+   sourceRefreshBox(news),
    news?h('p',{class:'reason',dataset:{newsAttribution:''}},'뉴스·신호 출처: ',ext('https://www.gdeltproject.org/','The GDELT Project',{dataset:{gdeltAttribution:''}}),' (GDELT DOC 2.0 API) · 회사 IR 보도자료 피드 · 제목·링크만 표시, 기사는 각 언론사 소유'):null,
    h('p',{class:'reason',dataset:{scoreEffect:'NONE'}},'점수에 반영하지 않음 · 제목·링크·시각·기업·분류만 표시'),
    ids?h('p',{class:'reason'},'갱신 결과는 보는 범위의 기업 기준 (',scope==='CENTER'?'가운데 기업':'관심 기업',')'):null);
