@@ -9,7 +9,6 @@ import json
 from types import SimpleNamespace
 from investment_system.qgv import qgv_official as common
 from investment_system.qgv import qgv_v2, v2_factors
-from investment_system.providers import iex_hist
 from .kis_price_bridge import validate_contract, _ts
 
 
@@ -44,7 +43,8 @@ def compute_private_qgv(payload, contracts, *, price_basis_date, calculated_at, 
         if share_end and any(share_end<s['date']<=price_basis_date for s in c['splits']):
             status[key]='SPLIT_AFTER_SHARE_COUNT';continue
         quotes[key]={'price':float(r['close']),'currency':c['currency']}
-        status[key]=iex_hist.SUPPLIED
+        # Normalized availability is a shared calculator status, not a supplier client.
+        status[key]='SUPPLIED'
     day=SimpleNamespace(day=price_basis_date,quotes=quotes,status=status)
     # Same withdrawn identity, ADR/share basis and split checks as the public path.
     statuses=common.price_status(ctx,day,months=monthends or {})
