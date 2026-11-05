@@ -56,6 +56,7 @@ ok('Universe504 words: list, totals, official ranks; missing page is 미확정',
   assert.deepEqual(v.rows.map((r) => r.value), ['4', '2 / 3', '1 / 3'], 'a real 0 total is a value');
   assert.match(v.basis, /공식 운영 모집단 · 고정 504 코드 · 점수 기준 2026-11-02/);
   assert.deepEqual(P.universeView({ codes: [], rows: null }).rows.map((r) => r.value), ['0', '미확정 · 점수 파일 없음', '미확정 · 점수 파일 없음']);
+  assert.deepEqual(P.universeView({ codes: ['A'], rows: undefined }).rows.map((r) => r.value).slice(1), Array(2).fill('QGV 화면을 열면 셉니다 · 첫 화면은 점수 파일을 읽지 않음'), 'not read yet is not 미확정');
 });
 ok('source is NONE (no request) until a private connection is approved', async () => {
   const s = await P.source(); assert.equal(s.state, 'NONE'); assert.equal(s.payload, null);

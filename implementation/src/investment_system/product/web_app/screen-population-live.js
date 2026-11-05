@@ -36,7 +36,11 @@ function expansionCard(src){const P=I.population;
   h('p',{class:'meta'},'판 ',v.version));}
 function fill(route,slot){const signal=route.signal,Q=I.qgv,C=I.companies,P=I.population;
  if(!slot||!P)return;
- const universe=Promise.all([C.ready().catch(()=>null),Q.page({signal}).catch(()=>null)]).then(([,pg])=>{
+ // The home reads only its company index (web_app_data_layer_browser_test.js): QGV totals and ranks are counted only when the
+ // public score file is already read in this tab (after #/qgv or a company page); otherwise the card says where they are.
+ const held=(()=>{try{return I.data.state('sec-qgv2.json').state!=='NOT_READ';}catch(_){return false;}})();
+ const universe=Promise.all([C.ready().catch(()=>null),held?Q.page({signal}).catch(()=>null):Promise.resolve(undefined)]).then(([,pg])=>{
+  if(pg===undefined)return P.universeView({codes:C.list(),rows:undefined});
   let rows=null;try{rows=pg?Q.rows(pg,{scope:'UNIVERSE'}):null;}catch(_){rows=null;}
   return P.universeView({codes:C.list(),rows,asOf:pg&&pg.as_of?String(pg.as_of).slice(0,10):null});});
  Promise.all([universe,P.source().catch(()=>null)]).then(([u,src])=>{if(signal.aborted)return;

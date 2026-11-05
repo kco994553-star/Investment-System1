@@ -100,13 +100,14 @@ function expansionView(x){const c=x.counts,v=x.coverage,rs=x.population_reasons,
    Object.freeze({id:'rank',label:'순위 가능',value:v.ranked===null?unset(null,why):String(v.ranked)+' / '+v.denominator,note:v.ranked===0?'V 없는 총점은 QG 참고 순서만':null})])});}
 
 // Universe504 from what the layer holds: the company list and the public QGV page (IS2.qgv.rows(pg, {scope:'UNIVERSE'})).
-function universeView({codes,rows,asOf}){const list=Array.isArray(codes)?codes:[],rs=Array.isArray(rows)?rows:null;
+function universeView({codes,rows,asOf}){const list=Array.isArray(codes)?codes:[],rs=Array.isArray(rows)?rows:null,later=rows===undefined;
+ const none=later?'QGV 화면을 열면 셉니다 · 첫 화면은 점수 파일을 읽지 않음':'미확정 · 점수 파일 없음';
  const total=rs?rs.filter(r=>r&&r.score&&r.score.total!==null).length:null,ranked=rs?rs.filter(r=>r&&r.rank&&Number.isInteger(r.rank.official)).length:null;
  return Object.freeze({basis:'공식 운영 모집단 · 고정 504 코드'+(asOf?' · 점수 기준 '+asOf:''),
   rows:Object.freeze([
    Object.freeze({id:'searchable',label:'검색 가능',value:String(list.length),note:'Universe504 코드 목록'}),
-   Object.freeze({id:'qgv',label:'QGV 총점 산출',value:rs?String(total)+' / '+rs.length:'미확정 · 점수 파일 없음',note:null}),
-   Object.freeze({id:'rank',label:'공식 순위',value:rs?String(ranked)+' / '+rs.length:'미확정 · 점수 파일 없음',note:'공개 점수 파일의 공식 순위'})])});}
+   Object.freeze({id:'qgv',label:'QGV 총점 산출',value:rs?String(total)+' / '+rs.length:none,note:null}),
+   Object.freeze({id:'rank',label:'공식 순위',value:rs?String(ranked)+' / '+rs.length:none,note:'공개 점수 파일의 공식 순위'})])});}
 
 function source(){return Promise.resolve(Object.freeze({state:'NONE',code:'EXPANSION_NOT_CONNECTED',payload:null,text:TEXT.NONE}));}
 return Object.freeze({SCHEMA,UNIVERSE,TEXT,validate,expansionView,universeView,reasonText,source});

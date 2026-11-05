@@ -41,25 +41,28 @@ let phase = 'START';
       // Two cards and the separation line.
       assert.equal(await page.locator('[data-population] [data-population-card]').count(), 2, phase + ': two cards');
       assert.match(await page.locator('[data-population-separate]').innerText(), /Universe504\(공식 운영\)와 확장 모집단\(연구\)은 다른 모집단입니다 · 확장 결과는 공식 점수·순위·TARGET을 바꾸지 않습니다/);
-      // Universe504 from the layer.
-      const expect = await page.evaluate(async () => { const I = window.IS2, pg = await I.qgv.page({}), r = I.qgv.rows(pg, { scope: 'UNIVERSE' });
-        return { codes: I.companies.list().length, n: r.length, total: r.filter((x) => x.score.total !== null).length, ranked: r.filter((x) => Number.isInteger(x.rank.official)).length }; });
-      const u = await rows('UNIVERSE504');
-      assert.deepEqual(u.map((x) => x[0]), ['searchable', 'qgv', 'rank']);
-      assert.ok(u[0][1].includes(String(expect.codes)) && expect.codes > 0, phase + ': searchable = the company list (' + expect.codes + ')');
-      assert.ok(u[1][1].includes(expect.total + ' / ' + expect.n), phase + ': QGV totals from the public page');
-      assert.ok(u[2][1].includes(expect.ranked + ' / ' + expect.n), phase + ': official ranks from the public page');
+      // A fresh home reads only its company index: the QGV rows say where they are counted, and no core file is read.
+      const u0 = await rows('UNIVERSE504');
+      assert.deepEqual(u0.map((x) => x[0]), ['searchable', 'qgv', 'rank']);
+      assert.ok(u0.slice(1).every((x) => x[1].includes('QGV 화면을 열면 셉니다')), phase + ': no score file read for the home');
+      assert.deepEqual(s.requests.slice(at).map((r) => r.name).filter((n) => /^(sec-qgv2|macro-screen|sec-public-inputs)\.json$/.test(n)), [], phase + ': the home reads no core file');
       // Real source NONE: words, no number.
       assert.match(await expansion(), /확장 모집단 연구 결과 미연결 · 비공개 연구 결과이며 공개 화면 연결은 승인 전입니다/);
       assert.equal(await page.locator('[data-population-card=EXPANSION] [data-population-row]').count(), 0);
       assert.doesNotMatch((await expansion()).replace('확장 모집단', ''), /\d/, phase + ': no number without a result');
       const put = async (payload) => {
         await page.evaluate((x) => { const I = window.IS2, real = I.population; I.population = Object.freeze({ ...real, source: () => Promise.resolve(Object.freeze({ state: 'OK', payload: x })) }); }, payload);
-        await page.goto(s.base + '#/qgv'); await page.locator('main[data-route=qgv]').waitFor();
+        await page.goto(s.base + '#/qgv'); await page.locator('main[data-route=qgv] [data-lb-table] tbody tr[data-row]').first().waitFor({ timeout: 20000 });
         await page.goto(s.base + '#/'); await page.locator('main[data-route=search]').waitFor(); await ready();
       };
-      // Partial synthetic roster.
+      // Partial synthetic roster (put() opens #/qgv first, so the public page is now held and Universe504 is counted).
       await put(X.cases.partial12);
+      const expect = await page.evaluate(async () => { const I = window.IS2, pg = await I.qgv.page({}), r = I.qgv.rows(pg, { scope: 'UNIVERSE' });
+        return { codes: I.companies.list().length, n: r.length, total: r.filter((x) => x.score.total !== null).length, ranked: r.filter((x) => Number.isInteger(x.rank.official)).length }; });
+      const u = await rows('UNIVERSE504');
+      assert.ok(u[0][1].includes(String(expect.codes)) && expect.codes > 0, phase + ': searchable = the company list (' + expect.codes + ')');
+      assert.ok(u[1][1].includes(expect.total + ' / ' + expect.n), phase + ': QGV totals from the public page');
+      assert.ok(u[2][1].includes(expect.ranked + ' / ' + expect.n), phase + ': official ranks from the public page');
       assert.equal(await page.locator('[data-population-synthetic]').innerText(), '합성 개발 검증 · 실제 시장 자료 아님');
       assert.equal(await page.locator('[data-population-partial]').innerText(), '부분 목록 · 전체 시장 분모 미확정 · 점수·순위 없음');
       const p = Object.fromEntries(await rows('EXPANSION'));
