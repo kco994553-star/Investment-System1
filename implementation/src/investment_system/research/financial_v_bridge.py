@@ -224,6 +224,11 @@ def connect(*, record, companyfacts_bytes, shares, cover_bytes, valuation_date, 
         if component['status'] == 'NOT_PRESENT_IN_HELD_SOURCE' and seen:
             component['status'] = 'PRESENT_BUT_INELIGIBLE'
             component['reasons'] = sorted({'INSTANCE_' + (o['reason'] or 'CONFLICTING_OBSERVATIONS') for o in seen})
+        elif component['status'] == 'NOT_PRESENT_IN_HELD_SOURCE' and cover_bytes is not None and balance_supplement.get('reason'):
+            # A held but inadmissible filing was not inspected for this field.
+            # Do not turn an unknown XML value into a claim of source absence.
+            component['status'] = 'HELD_INSTANCE_NOT_EVALUATED'
+            component['reasons'] = ['INSTANCE_' + balance_supplement['reason']]
         if component['source'] is not None:
             component['source']['companyfacts_sha256'] = digest
             if balance_supplement['added']:

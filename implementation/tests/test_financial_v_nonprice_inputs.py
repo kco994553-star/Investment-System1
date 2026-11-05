@@ -195,6 +195,7 @@ def test_instance_filing_after_cutoff_cannot_supply_balance_input():
     assert result['balance_supplement']['reason']=='FILING_NOT_ELIGIBLE'
     assert result['balance_supplement']['added']==0
     assert result['balance_inputs']['components']['common_shares']['value'] is None
+    assert result['balance_inputs']['components']['common_shares']['status']=='HELD_INSTANCE_NOT_EVALUATED'
 
 
 def test_instance_companyfacts_conflict_blocks_selected_component_and_book():

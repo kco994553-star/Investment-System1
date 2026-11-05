@@ -76,6 +76,9 @@ concepts in exact filing/period/unit contexts can supplement companyfacts; issue
 extensions, dimensional/class contexts and currency conversion are not inferred.
 `balance_supplement` records additions, conflicts and rejected context/unit
 references. Future/unidentified filings are skipped with a reason. The original
+unobserved component stays `HELD_INSTANCE_NOT_EVALUATED` when such a filing
+could contain it; this is not a confirmed absence or a new collection need.
+The original
 companyfacts bytes are immutable; derived pointers are reproducible from the
 original payload plus audited additions and a canonical derived-payload hash.
 An instance/companyfacts conflict at the selected balance key blocks that
