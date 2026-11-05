@@ -162,3 +162,22 @@ def test_unconfirmed_exclusion_cannot_shrink_scoring_population(change):
 def test_confirmed_type_exclusion_does_not_require_irrelevant_price():
     out=run(mutate=lambda c,e,f,s:e['0'].update(security_type='ETF',price=None,price_date=None))
     assert out['rows'][0]['eligibility']=='EXCLUDED' and out['counts']['scored']==11
+
+
+def test_complete_financial_fixture_reaches_v_and_existing_official_rank():
+    import json
+    from datetime import datetime,timezone
+    from investment_system.universe import sec_qgv2 as sec
+    fixture=Path(__file__).resolve().parents[1]/'test_sec_qgv2.py'
+    spec=importlib.util.spec_from_file_location('synthetic_sec_facts',fixture)
+    helper=importlib.util.module_from_spec(spec);spec.loader.exec_module(helper)
+    def mutate(c,e,f,s):
+        for cik in f:
+            facts=helper.simple_company();facts['cik']=int(cik)
+            f[cik]=sec.build_row(cik=cik,companyfacts_body=json.dumps(facts).encode(),
+                submissions_body=json.dumps({'cik':int(cik),'sic':'3674'}).encode(),
+                acquired_at=datetime(2026,11,1,tzinfo=timezone.utc))
+    out=run(mutate=mutate)
+    assert out['coverage']['simultaneous']==12 and out['coverage']['ranked']==12
+    assert sorted(r['rank'] for r in out['rows'])==list(range(1,13))
+    assert out['coverage']['preset_actual_total']==12
