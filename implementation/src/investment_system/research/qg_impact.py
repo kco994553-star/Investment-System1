@@ -124,9 +124,26 @@ def audit_g_impact(before, after, *, calc_version, target=None):
                     detail['score_unrounded'] = official['factors'][fid]
             changed_input = row['metrics'] != newer['metrics']
             changed_score = a['score_unrounded'] != b['score_unrounded']
+            own_delta = None if fa is None or fm is None else fm-fa
+            peer_delta = None if fm is None or fb is None else fb-fm
+            def ranks(trace):
+                return {(fid, s['metric']): (s['less'], s['equal'], s['n'], s['percentile_exact'])
+                        for fid, factor in trace['factor_details'].items() for s in factor['submetrics']}
+            rank_changed = ranks(a) != ranks(b)
+            if own_delta is None or peer_delta is None:
+                kind = 'SCORE_UNAVAILABLE_OR_TRANSITION'
+            elif own_delta and peer_delta:
+                kind = 'DIRECT_INPUT_AND_PEER' if fb != fa else 'CONTRIBUTIONS_OFFSET'
+            elif own_delta:
+                kind = 'DIRECT_INPUT_ONLY'
+            elif peer_delta:
+                kind = 'PEER_ONLY'
+            elif rank_changed:
+                kind = 'SCORE_UNCHANGED_RANK_CHANGED'
+            else:
+                kind = 'INPUT_CHANGED_ORDER_PRESERVED' if changed_input else 'UNCHANGED'
             entry = {'input_changed': changed_input, 'score_changed': changed_score,
-                     'effect_kind': ('DIRECT_INPUT_AND_PEER' if changed_input else 'PEER_ONLY') if changed_score
-                                    else 'INPUT_CHANGED_ORDER_PRESERVED' if changed_input else 'UNCHANGED',
+                     'effect_kind': kind, 'submetric_ranks_changed': rank_changed,
                      'changed_metrics': {m: {'before': row['metrics'].get(m), 'after': newer['metrics'].get(m)}
                                          for m in sorted(set(row['metrics']) | set(newer['metrics']))
                                          if row['metrics'].get(m) != newer['metrics'].get(m)},
@@ -134,8 +151,8 @@ def audit_g_impact(before, after, *, calc_version, target=None):
                      'peer_crossings': _peer_crossings(newer, old_points, new_points),
                      'own_change_with_old_peers': mid,
                      'delta_exact': _fraction(None if fa is None or fb is None else fb-fa),
-                     'own_input_delta_exact': _fraction(None if fa is None or fm is None else fm-fa),
-                     'peer_delta_exact': _fraction(None if fm is None or fb is None else fb-fm)}
+                     'own_input_delta_exact': _fraction(own_delta),
+                     'peer_delta_exact': _fraction(peer_delta)}
             output[(role, code)] = entry
     all_rows = {k: output[('universe', k)] for k in before}
     sets = {}
@@ -159,8 +176,9 @@ def audit_g_impact(before, after, *, calc_version, target=None):
             'weights': dict(vs.G_WEIGHTS_V2), 'comparison_sets': sets, 'unaffected_checks': checks,
             'counts': {'codes': len(before), 'input_changed': sum(r['input_changed'] for r in all_rows.values()),
                        'score_changed': sum(r['score_changed'] for r in all_rows.values()),
-                       'direct_changed': sum(r['score_changed'] and r['input_changed'] for r in all_rows.values()),
-                       'indirect_changed': sum(r['score_changed'] and not r['input_changed'] for r in all_rows.values()),
+                       'direct_changed': sum(r['score_changed'] and r['effect_kind'] in ('DIRECT_INPUT_ONLY', 'DIRECT_INPUT_AND_PEER') for r in all_rows.values()),
+                       'indirect_changed': sum(r['score_changed'] and r['effect_kind']=='PEER_ONLY' for r in all_rows.values()),
+                       'unattributed_score_changes': sum(r['score_changed'] and r['effect_kind']=='SCORE_UNAVAILABLE_OR_TRANSITION' for r in all_rows.values()),
                        'input_changed_score_unchanged': sum(r['input_changed'] and not r['score_changed'] for r in all_rows.values())},
             'rows': all_rows,
             'target_rows': {k: output[('target', k)] for k in target or {}},

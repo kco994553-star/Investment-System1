@@ -17,7 +17,7 @@ def test_one_source_change_propagates_across_general_sectors_not_financials():
     before={**rows(),**rows('FINANCIAL','F')}; after=deepcopy(before)
     after['G0']['metrics']['revenue_acceleration']=9.5
     r=audit_g_impact(before,after,calc_version=CALC_VERSION)
-    assert r['counts']=={'codes':20,'input_changed':1,'score_changed':10,'direct_changed':1,'indirect_changed':9,'input_changed_score_unchanged':0}
+    assert r['counts']=={'codes':20,'input_changed':1,'score_changed':10,'direct_changed':1,'indirect_changed':9,'unattributed_score_changes':0,'input_changed_score_unchanged':0}
     assert r['rows']['G0']['before']['score_unrounded']==42.5
     assert r['rows']['G0']['after']['score_unrounded']==57.5
     assert r['rows']['G1']['delta_exact']=={'numerator':-5,'denominator':3}
@@ -71,3 +71,29 @@ def test_indirect_effect_names_the_peer_that_crossed_the_unchanged_input():
     assert len(crossings)==1 and crossings[0]['issuer_cik']=='G0'
     assert crossings[0]['less_delta']==-1 and crossings[0]['equal_delta']==0
     assert r['rows']['G0']['peer_crossings']==[]
+
+
+def test_own_only_change_is_not_labeled_as_peer_contribution():
+    before=rows();after=deepcopy(before);after['G0']['metrics']['revenue_acceleration']=9.5
+    r=audit_g_impact(before,after,calc_version=CALC_VERSION)
+    assert r['rows']['G0']['effect_kind']=='DIRECT_INPUT_ONLY'
+
+
+def test_q_only_input_change_does_not_reclassify_peer_g_effect_as_direct():
+    before=rows();after=deepcopy(before)
+    after['G0']['metrics']['revenue_acceleration']=9.5
+    after['G1']['metrics']['roic']=.25
+    r=audit_g_impact(before,after,calc_version=CALC_VERSION)
+    assert r['rows']['G1']['input_changed']
+    assert r['rows']['G1']['effect_kind']=='PEER_ONLY'
+    assert r['counts']['direct_changed']==1 and r['counts']['indirect_changed']==9
+
+
+def test_null_axis_score_does_not_claim_unchanged_factor_order():
+    before=rows();before['G0']['metrics']={'revenue_acceleration':0};after=deepcopy(before)
+    after['G0']['metrics']['revenue_acceleration']=9.5
+    r=audit_g_impact(before,after,calc_version=CALC_VERSION)
+    row=r['rows']['G0']
+    assert row['before']['score_unrounded'] is None and row['after']['score_unrounded'] is None
+    assert row['submetric_ranks_changed'] is True
+    assert row['effect_kind']=='SCORE_UNAVAILABLE_OR_TRANSITION'
