@@ -7,11 +7,14 @@ check turns that into a named failure:
   - every pin in tests/research/dependencies/technical-properties.txt is installed at exactly that version
     (else PROPERTY_DEPENDENCY_MISSING / PROPERTY_DEPENDENCY_VERSION);
   - the pytest JUnit report of the property run has no skip, failure or error (else PROPERTY_TESTS_SKIPPED / _FAILED);
-  - every test function defined in the property module is in the report and passed (else PROPERTY_TESTS_MISSING), so a
-    renamed or deleted module cannot pass by running nothing.
+  - every test function defined in the property module and in the screen-fixture module is in the report and passed, and
+    the report holds exactly that many tests (else PROPERTY_TESTS_MISSING / PROPERTY_TESTS_COUNT), so a renamed or deleted
+    module cannot pass by running nothing.
 
-Usage (implementation/):  python tools/require_property_tests.py <junit.xml>
-Output is one fixed line per outcome with counts only. Main owns this file and the workflow step; the tests are Codex's.
+Usage (implementation/):  python tools/require_property_tests.py --installed   (before pytest)
+                          python tools/require_property_tests.py <junit.xml>   (after pytest)
+Output is one fixed line per outcome with counts only: expected (functions in the two modules), collected (testcases in the
+report), passed, skipped, failed and property_passed. Main owns this file and the workflow step; the tests are Codex's.
 """
 from __future__ import annotations
 
@@ -25,6 +28,8 @@ ROOT = Path(__file__).resolve().parents[1]
 REQUIREMENTS = ROOT / 'tests/research/dependencies/technical-properties.txt'
 MODULE = ROOT / 'tests/research/test_technical_properties.py'
 MODULE_CLASS = 'tests.research.test_technical_properties'
+FIXTURES = ROOT / 'tests/research/test_technical_screen_fixtures.py'
+FIXTURES_CLASS = 'tests.research.test_technical_screen_fixtures'
 
 
 def pins(path: Path = REQUIREMENTS) -> dict[str, str]:
@@ -58,26 +63,33 @@ def module_tests(path: Path = MODULE) -> set[str]:
     return {n.name for n in tree.body if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)) and n.name.startswith('test_')}
 
 
-def check_report(xml_text: str, expected: set[str], classname: str = MODULE_CLASS) -> tuple[str | None, dict[str, int]]:
+def expected_tests() -> set[tuple[str, str]]:
+    return {(MODULE_CLASS, n) for n in module_tests(MODULE)} | {(FIXTURES_CLASS, n) for n in module_tests(FIXTURES)}
+
+
+def check_report(xml_text: str, expected: set[tuple[str, str]]) -> tuple[str | None, dict[str, int]]:
     root = ET.fromstring(xml_text)
     cases = list(root.iter('testcase'))
-    counts = {'tests': len(cases), 'skipped': 0, 'failed': 0, 'property_passed': 0}
-    passed_props = set()
+    counts = {'expected': len(expected), 'collected': len(cases), 'passed': 0, 'skipped': 0, 'failed': 0, 'property_passed': 0}
+    passed = set()
     for case in cases:
         kids = {child.tag for child in case}
         if 'skipped' in kids:
             counts['skipped'] += 1
         elif kids & {'failure', 'error'}:
             counts['failed'] += 1
-        elif case.get('classname') == classname:
-            passed_props.add(case.get('name', '').split('[', 1)[0])
-    counts['property_passed'] = len(passed_props & expected)
+        else:
+            counts['passed'] += 1
+            passed.add((case.get('classname', ''), case.get('name', '').split('[', 1)[0]))
+    counts['property_passed'] = len({k for k in passed & expected if k[0] == MODULE_CLASS})
     if counts['skipped']:
         return 'PROPERTY_TESTS_SKIPPED', counts
     if counts['failed']:
         return 'PROPERTY_TESTS_FAILED', counts
-    if not expected or not expected <= passed_props:
+    if not any(k[0] == MODULE_CLASS for k in expected) or not expected <= passed:
         return 'PROPERTY_TESTS_MISSING', counts
+    if counts['collected'] != counts['expected']:
+        return 'PROPERTY_TESTS_COUNT', counts
     return None, counts
 
 
@@ -85,10 +97,19 @@ def main(argv: list[str]) -> int:
     if len(argv) != 2:
         print('PROPERTY_CHECK_USAGE')
         return 2
+    if argv[1] == '--installed':   # before pytest: a missing pin is named here, not as a pytest usage error
+        try:
+            required = pins()
+        except (OSError, ValueError) as exc:
+            print('PROPERTY_CHECK_UNREADABLE ' + type(exc).__name__)
+            return 1
+        problem = check_installed(required)
+        print(problem or 'PROPERTY_PINS_INSTALLED ' + ' '.join(f'{k}=={v}' for k, v in sorted(required.items())))
+        return 1 if problem else 0
     try:
         problem = check_installed(pins())
         if problem is None:
-            problem, counts = check_report(Path(argv[1]).read_text(encoding='utf-8'), module_tests())
+            problem, counts = check_report(Path(argv[1]).read_text(encoding='utf-8'), expected_tests())
         else:
             counts = None
     except (OSError, ValueError, SyntaxError, ET.ParseError) as exc:

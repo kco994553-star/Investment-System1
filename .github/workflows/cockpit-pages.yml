@@ -148,8 +148,12 @@ jobs:
         env:
           HYPOTHESIS_STORAGE_DIRECTORY: ${{ runner.temp }}/hypothesis
         run: |
-          PYTHONPATH=src python -m pytest -q --tb=short -p no:cacheprovider -rs --hypothesis-show-statistics --junitxml="$RUNNER_TEMP/technical-properties.xml" tests/research/test_technical_properties.py tests/research/test_technical_screen_fixtures.py
-          python tools/require_property_tests.py "$RUNNER_TEMP/technical-properties.xml"
+          python tools/require_property_tests.py --installed > "$RUNNER_TEMP/technical-properties-result.txt" || { cat "$RUNNER_TEMP/technical-properties-result.txt"; exit 1; }
+          cat "$RUNNER_TEMP/technical-properties-result.txt"
+          PYTHONPATH=src python -m pytest -q --tb=short -p no:cacheprovider -rs --hypothesis-show-statistics --junitxml="$RUNNER_TEMP/technical-properties.xml" tests/research/test_technical_properties.py tests/research/test_technical_screen_fixtures.py > "$RUNNER_TEMP/technical-properties-pytest.txt" 2>&1 || { cat "$RUNNER_TEMP/technical-properties-pytest.txt"; exit 1; }
+          cat "$RUNNER_TEMP/technical-properties-pytest.txt"
+          python tools/require_property_tests.py "$RUNNER_TEMP/technical-properties.xml" > "$RUNNER_TEMP/technical-properties-result.txt" || { cat "$RUNNER_TEMP/technical-properties-result.txt"; exit 1; }
+          cat "$RUNNER_TEMP/technical-properties-result.txt"
       - name: Full Python unit suite
         working-directory: implementation
         env:
@@ -210,6 +214,13 @@ jobs:
           M2_SERVER_PID=$!
           trap 'kill "$SERVER_PID" "$M2_SERVER_PID"' EXIT
           M2_BROWSER_EVIDENCE="$RUNNER_TEMP/m2-browser-evidence" node implementation/tools/sec_m2_candidates_browser_test.js
+
+      # Only repeats the property step's own two result lines, so they can be read from the tail of a long log.
+      - name: Technical property result (repeated at the end of the log)
+        if: always()
+        run: |
+          tail -n 1 "$RUNNER_TEMP/technical-properties-pytest.txt" 2>/dev/null || echo 'PROPERTY_PYTEST_OUTPUT_MISSING'
+          cat "$RUNNER_TEMP/technical-properties-result.txt" 2>/dev/null || echo 'PROPERTY_RESULT_MISSING'
 
       - name: Upload checked price-free Pages artifact
         if: github.event_name == 'workflow_dispatch' && github.ref_name == 'claude/investment-system-top500-validation-alrugm'
