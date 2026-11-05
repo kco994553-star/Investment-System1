@@ -15,6 +15,60 @@ SCHEMA = 'technical-offline-display/1'
 PRICE_IDS = ('SMA_5','SMA_20','SMA_60','SMA_120','EMA_20','RSI_14',
              'MACD_12_26','MACD_SIGNAL_9','MACD_HISTOGRAM_12_26_9',
              'BOLL_MIDDLE_20','BOLL_UPPER_20_2','BOLL_LOWER_20_2','ATR_14')
+_INITIALIZATION = {
+    'EMA_20': (20, 'FIRST_20_CLOSE_SMA_THEN_EMA'),
+    'RSI_14': (15, 'FIRST_14_CHANGES_MEAN_THEN_WILDER'),
+    'MACD_12_26': (26, 'FULL_INPUT_SMA_SEEDED_EMA_12_MINUS_26'),
+    'MACD_SIGNAL_9': (34, 'FIRST_9_VALID_MACD_MEAN_THEN_EMA'),
+    'MACD_HISTOGRAM_12_26_9': (34, 'MACD_MINUS_SIGNAL'),
+    'ATR_14': (15, 'FIRST_14_TRUE_RANGES_MEAN_THEN_WILDER_RESET_AFTER_OHLC_GAP'),
+}
+
+
+def describe_readiness(result):
+    """Project existing measures for readers, without recomputing or relaxing gates.
+
+    Minimum sessions describe GSQ-015's first value, not a replacement seed window.
+    Observation date is never treated as source availability or freshness evidence.
+    """
+    evidence = result['evidence']
+    metrics = {}
+    for name, metric in result['metrics'].items():
+        reasons = metric['null_reasons']
+        if name.startswith('SMA_'):
+            minimum, method = int(name.split('_')[1]), 'ROLLING_CLOSE_MEAN'
+        elif name.startswith('BOLL_'):
+            minimum = 20
+            method = 'ROLLING_CLOSE_MEAN' if name == 'BOLL_MIDDLE_20' else 'ROLLING_20_CLOSE_POPULATION_STDDEV'
+        else:
+            minimum, method = _INITIALIZATION[name]
+        raw_missing = metric['raw_value'] is None
+        invalid = [reason for reason in reasons if reason in (
+            'PRICE_WINDOW_INCOMPLETE', 'RAW_PRICE_BASIS_REQUIRED', 'CLOSE_INVALID')]
+        warmup_unverifiable = invalid or any(reason in reasons for reason in (
+            'OHLC_MISSING', 'OHLC_BASIS_UNCONFIRMED', 'CALCULATION_ERROR'))
+        warmup = ('NOT_EVALUATED' if warmup_unverifiable else 'INSUFFICIENT' if 'WARMUP' in reasons
+                  or metric['observation_days'] < minimum else 'READY')
+        metrics[name] = dict(
+            state='VALUE' if metric['value'] is not None else 'DIAGNOSTIC' if not raw_missing else 'NOT_COMPUTED',
+            initialization=dict(method=method, policy='GSQ015_FULL_RETAINED_HISTORY' if name in _INITIALIZATION else 'GSQ015_ROLLING_WINDOW',
+                                input_start=result['input_start']),
+            warmup=dict(minimum_sessions=minimum, observed_sessions=metric['observation_days'], state=warmup),
+            continuity=dict(state='INCOMPLETE' if 'PRICE_WINDOW_INCOMPLETE' in reasons else
+                            'INVALID' if invalid else 'COMPLETE', reasons=invalid),
+            adjustment=dict(price_basis=result['price_basis'],
+                            state='UNCONFIRMED' if 'ACTION_BASIS_UNCONFIRMED' in reasons else 'DOCUMENTED_NO_SPLIT',
+                            required_start=metric['window_start'], required_end=metric['window_end'],
+                            evidence_start=evidence.get('no_split_start'), evidence_end=evidence.get('no_split_end')),
+            identity=dict(state=evidence.get('identity_status', 'UNKNOWN'),
+                          reference_present=bool(evidence.get('identity_reference')),
+                          fixed_security_id_state='PRESENT_NOT_RANKED' if evidence.get('security_id') else 'MISSING_RANKING_BLOCKED'),
+            block_reasons=list(reasons))
+    return dict(schema='technical-display-readiness/1', as_of=result['signal_day'],
+                value_scope='PRIVATE_RESEARCH_DOCUMENT_RECONSTRUCTION',
+                availability_status='NOT_VERIFIED', source_available_at=None,
+                availability_reason='HISTORICAL_SOURCE_AVAILABILITY_NOT_VERIFIED',
+                stale_status='UNKNOWN', stale_reason='UPDATE_SCHEDULE_NOT_CONNECTED', metrics=metrics)
 
 
 def _number(value, *, zero=False):
@@ -69,7 +123,6 @@ def measure_display(rows, *, signal_day, series_id, symbol, evidence, source_kin
         if not evidence.get('currency') or not evidence.get('currency_reference'):
             reasons.append('CURRENCY_UNCONFIRMED')
         return reasons
-    economic = economic_for(start)
     ids = PRICE_IDS + (('SMA_240',) if include_sma240 else ())
     metrics = {}
 
@@ -125,7 +178,7 @@ def measure_display(rows, *, signal_day, series_id, symbol, evidence, source_kin
         volume_note.update(raw_state=note['state'],reason=note['reason_code'])
         if not note_economic and note['state'] != 'NOT_AVAILABLE':volume_note['state']=note['state']
     volume_note['null_reasons']=list(note_economic)+([volume_note['reason']] if volume_note['reason'] else [])
-    return dict(schema=SCHEMA,result_kind='RAW_SERIES_DIAGNOSTIC',series_id=series_id,symbol=symbol,
+    result = dict(schema=SCHEMA,result_kind='RAW_SERIES_DIAGNOSTIC',series_id=series_id,symbol=symbol,
         signal_day=signal_day,source_kind=source_kind,input_start=start,history_count=len(eligible),excluded_future_rows=len(rows)-len(eligible),
         price_basis='RAW',pit_status='NOT_VERIFIED',publication_status='RESEARCH_PRIVATE_ONLY',
         evidence=dict(evidence),rank=None,metrics=metrics,volume_note=volume_note,
@@ -133,3 +186,5 @@ def measure_display(rows, *, signal_day, series_id, symbol, evidence, source_kin
                            last_observed_session=last_session,
                            null_reasons=volume_missing+volume_economic),
         pattern_status='EXISTING_RULES_ONLY_NO_NEW_PATTERN_OR_SUCCESS_DEFINITION')
+    result['readiness'] = describe_readiness(result)
+    return result

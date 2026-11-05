@@ -43,6 +43,7 @@ def test_missing_volume_or_high_does_not_erase_close_metrics():
     assert r['metrics']['SMA_20']['raw_value']==240.5
     assert r['metrics']['ATR_14']['raw_value'] is None
     assert r['volume_note']['raw_state']=='NOT_AVAILABLE'
+    assert r['readiness']['metrics']['ATR_14']['warmup']['state']=='NOT_EVALUATED'
 
 
 def test_calendar_gap_cannot_be_smoothed_or_filled_and_future_bars_excluded():
@@ -119,3 +120,63 @@ def test_volume_uses_its_actual_21_session_evidence_window():
     out=measure_display(rows,signal_day=rows[-1]['date'],series_id='SYNTHETIC',symbol='SYNTHETIC',evidence=e,source_kind='NORMALIZED_PROVIDER_DAILY_BARS')
     assert out['volume_note']['state']=='WITHOUT_VOLUME'
     assert out['volume_latest']['value']==100
+
+
+def test_readiness_separates_seed_warmup_identity_and_action_window():
+    rows,e=sample();e['no_split_start']=rows[-120]['date']
+    out=measure_display(rows,signal_day=rows[-1]['date'],series_id='SYNTHETIC',symbol='SYNTHETIC',evidence=e,source_kind='NORMALIZED_PROVIDER_DAILY_BARS')
+    readiness=out['readiness']['metrics']['EMA_20']
+    assert readiness['state']=='DIAGNOSTIC'
+    assert readiness['initialization']['method']=='FIRST_20_CLOSE_SMA_THEN_EMA'
+    assert readiness['initialization']['input_start']==rows[0]['date']
+    assert readiness['warmup']==dict(minimum_sessions=20,observed_sessions=250,state='READY')
+    assert readiness['continuity']['state']=='COMPLETE'
+    assert readiness['identity']['state']=='DOCUMENT_RECONSTRUCTED'
+    assert readiness['identity']['fixed_security_id_state']=='MISSING_RANKING_BLOCKED'
+    assert readiness['adjustment']['state']=='UNCONFIRMED'
+    assert readiness['block_reasons']==['ACTION_BASIS_UNCONFIRMED']
+    assert out['readiness']['as_of']==rows[-1]['date']
+    assert out['readiness']['availability_status']=='NOT_VERIFIED'
+    assert out['readiness']['source_available_at'] is None
+    assert out['readiness']['stale_status']=='UNKNOWN'
+    assert out['readiness']['metrics']['BOLL_MIDDLE_20']['initialization']['method']=='ROLLING_CLOSE_MEAN'
+    assert out['readiness']['metrics']['BOLL_UPPER_20_2']['initialization']['method']=='ROLLING_20_CLOSE_POPULATION_STDDEV'
+
+
+def test_extending_documented_action_evidence_never_changes_seed_or_raw_values():
+    rows,e=sample();e['no_split_start']=rows[31]['date']
+    kwargs=dict(signal_day=rows[-1]['date'],series_id='SYNTHETIC',symbol='SYNTHETIC',source_kind='NORMALIZED_PROVIDER_DAILY_BARS')
+    before=measure_display(rows,evidence=e,**kwargs)
+    e['no_split_start']=rows[0]['date']
+    after=measure_display(rows,evidence=e,**kwargs)
+    recursive=('EMA_20','RSI_14','MACD_12_26','MACD_SIGNAL_9','MACD_HISTOGRAM_12_26_9','ATR_14')
+    for name in before['metrics']:
+        assert before['metrics'][name]['raw_value']==after['metrics'][name]['raw_value']
+    for name in recursive:
+        assert before['metrics'][name]['value'] is None
+        assert after['metrics'][name]['value']==before['metrics'][name]['raw_value']
+        assert after['readiness']['metrics'][name]['state']=='VALUE'
+        assert after['metrics'][name]['window_start']==rows[0]['date']
+    assert before['input_start']==after['input_start']==rows[0]['date']
+    assert after['pit_status']=='NOT_VERIFIED' and after['rank'] is None
+
+
+def test_empty_series_is_not_a_warmed_up_or_available_measurement():
+    rows,e=sample()
+    out=measure_display([],signal_day=rows[-1]['date'],series_id='SYNTHETIC',symbol='SYNTHETIC',evidence=e,source_kind='NORMALIZED_PROVIDER_DAILY_BARS')
+    status=out['readiness']['metrics']['RSI_14']
+    assert status['state']=='NOT_COMPUTED'
+    assert status['warmup']==dict(minimum_sessions=15,observed_sessions=0,state='NOT_EVALUATED')
+    assert status['continuity']['state']=='INCOMPLETE'
+    assert 'PRICE_WINDOW_INCOMPLETE' in status['block_reasons']
+
+
+def test_undefined_rsi_is_not_warmup_and_valid_zero_is_value():
+    rows,e=sample(35)
+    for row in rows:row.update(close='10',open='10',high='11',low='9')
+    out=measure_display(rows,signal_day=rows[-1]['date'],series_id='SYNTHETIC',symbol='SYNTHETIC',evidence=e,source_kind='NORMALIZED_PROVIDER_DAILY_BARS')
+    rsi=out['readiness']['metrics']['RSI_14']
+    assert rsi['state']=='NOT_COMPUTED' and rsi['warmup']['state']=='READY'
+    assert rsi['block_reasons']==['ZERO_TOTAL_CHANGE']
+    assert out['metrics']['MACD_12_26']['value']==0
+    assert out['readiness']['metrics']['MACD_12_26']['state']=='VALUE'
