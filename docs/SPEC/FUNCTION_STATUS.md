@@ -67,6 +67,7 @@
 | 3.5 기술 조건 리더보드 필터 (1.1.8) | 개발 빌드(합성) | 합성 | 새 앱 `web_app/tech-screen.js`, `screen-tech-filter-live.js`, `screen-qgv-live.js` | 11/03 오너 지시, 11/04 Codex 계약 `technical-leaderboard/1`(#469 `f1ca390a`) 연동. 평가일·그룹별 보드 → 지표 원값·분위 → 필터(중앙값 이상/초과 구분) → 원래 순위 유지 · 결합 행만 QGV 순. 그룹 구성 미확인·유효 N<10·조건 충족 0건 구분. 실자료 미연결(원천 NONE), 리더보드 결합은 증권 ID 매핑 뒤([TECH_FILTER_20261103](../../implementation/docs/frontend_v2/TECH_FILTER_20261103.md)). 비공개 연구값 공개·병합·배포는 별도 |
 | 4.1.1·4.1.2 국면 그래프·탐색 | 부분 | — | `macro-cycle-ring.js` | 국면 모델 없음 → 공식 위치 "미산출" |
 | 4.1.3 근거 세로선 | 부분 | 실 | `macro-evidence.js`, #351·#352 | 탐색 전용. P1 13개 중 일부 수집(PARTIAL) |
+| 4.1.3 관측 자료 · 갱신 상태 | 개발 빌드(합성) | 합성 | 새 앱 `web_app/macro-observed.js`, `screen-macro-observed-live.js`, `screen-macro-live.js` | 11/05 오너 지시, Codex 계약 `macro-current-query/1`(#477 `efc8715f`, Draft) 연결. 합성 입력으로 연결을 검증한 상태: 계열별 기준 기간·갱신 시각·원발표 미확인(`NOT_PROVEN_IN_ARCHIVE`)·값 유지/수정 버전·stale·갱신 상태, 진단값과 미채택 국면 구분. 값은 표시하지 않음(현재 조회 파일 비공개·공개 사용 미승인). 원천 NONE([MACRO_OBSERVED_20261105](../../implementation/docs/frontend_v2/MACRO_OBSERVED_20261105.md)). 공개 파일 게시·스케줄·M-REENABLE은 별도 |
 | 4.1.4 기존 매크로 연결 | 구현 | 실 | `macro-lights.js` | 게이트 재가동 M-REENABLE 결정 대기 |
 | 4.1.5 판단 상태 | 부분 | — | `ia-screens.js` 4.1.5 | 모델 출력이 없어 미산출 |
 | 4.2 순환매 | 신규 | — | 화면 틀(`ia-screens.js` g42) | 위치 모델·전환 빈도 검증 |
