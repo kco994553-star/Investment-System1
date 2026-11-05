@@ -17,6 +17,17 @@ Series (one signal day, the 250th NYSE session from 2017-01-03; symbols are SYN_
 
 Usage (CODEX = a folder holding `git archive refs/remotes/pr/478 implementation/src implementation/tools/technical_display_offline.py`):
   python3 -I tools/build_tech_display_fixture.py --codex CODEX --out tests/fixtures/technical_offline_display_synthetic.json
+
+--adjusted (Codex #498 head 5597e25e, TECHNICAL_ADJUSTED_LINK_20261105.md; CODEX = a checkout of that head incl. implementation/tests):
+the same direct-kernel tool, now with price_basis SPLIT_ADJUSTED, on #498's own synthetic contract
+(tests/research/test_adjusted_technical_link.py case(): one confirmed 2:1 split on 2016-07-01, price 100 after rebasing). The rows
+and evidence are the ones kis_price_bridge.analyze hands to measure_display (price_rows, basis_evidence); the KIS wrapper fields
+(kis-bars/1/analysis) are not used. Series (signal day 2017-01-06; SYN_* only):
+  SYN_ADJ_FULL      adjusted, action coverage for the whole input -> CONFIRMED_SPLITS_ONLY, RSI NOT_COMPUTED (ZERO_TOTAL_CHANGE)
+  SYN_RAW_REF       the unsplit RAW reference path (no_split_* evidence) -> DOCUMENTED_NO_SPLIT, the same adopted values
+  SYN_ADJ_LAST120   adjusted, coverage for the last 120 sessions only -> rolling adopted, recursive UNCONFIRMED (diagnostic)
+  SYN_ADJ_NOCOVER   adjusted, no coverage range -> every window UNCONFIRMED, evidence null
+  python3 -I tools/build_tech_display_fixture.py --adjusted --codex CODEX --out tests/fixtures/technical_offline_display_adjusted_synthetic.json
 """
 from __future__ import annotations
 
@@ -30,15 +41,19 @@ import tempfile
 from zoneinfo import ZoneInfo
 
 CODEX_HEAD = '419add34'
+ADJUSTED_HEAD = '5597e25e'
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument('--codex', type=Path, required=True)
     parser.add_argument('--out', type=Path, required=True)
+    parser.add_argument('--adjusted', action='store_true')
     args = parser.parse_args()
     codex = args.codex.resolve()
     sys.path.insert(0, str(codex / 'implementation/src'))
+    if args.adjusted:
+        return adjusted(codex, args.out)
     from investment_system.research.exp_deciles import schedule  # Codex's NYSE calendar, read only
 
     days, d = [], date(2017, 1, 3)
@@ -82,12 +97,7 @@ def main() -> None:
     add('SYN_NOHIGH', nohigh, evidence(days[0]))
     add('SYN_EMPTY', [], evidence(days[0]))
 
-    with tempfile.TemporaryDirectory() as tmp:
-        source, out = Path(tmp) / 'input.json', Path(tmp) / 'out' / 'display.json'
-        source.write_text(json.dumps({'signal_day': days[-1], 'series': series}))
-        subprocess.run([sys.executable, '-I', str(codex / 'implementation/tools/technical_display_offline.py'), '--input', str(source), '--output', str(out)],
-                       check=True, stdout=subprocess.DEVNULL)
-        display = json.loads(out.read_text())
+    display = run(codex, days[-1], series)
     fixture = {
         'data_kind': 'SYNTHETIC',
         'description': 'SYNTHETIC bars only (no company, no real price). Output of Codex tools/technical_display_offline.py at #478 '
@@ -96,6 +106,53 @@ def main() -> None:
         'display': display,
     }
     args.out.write_text(json.dumps(fixture, indent=1, allow_nan=False) + '\n')
+
+
+def run(codex: Path, signal_day: str, series: list[dict]) -> dict:
+    with tempfile.TemporaryDirectory() as tmp:
+        source, out = Path(tmp) / 'input.json', Path(tmp) / 'out' / 'display.json'
+        source.write_text(json.dumps({'signal_day': signal_day, 'series': series}))
+        subprocess.run([sys.executable, '-I', str(codex / 'implementation/tools/technical_display_offline.py'), '--input', str(source), '--output', str(out)],
+                       check=True, stdout=subprocess.DEVNULL)
+        return json.loads(out.read_text())
+
+
+def adjusted(codex: Path, target: Path) -> None:
+    sys.path.insert(0, str(codex / 'implementation/tests/research'))
+    from test_adjusted_technical_link import case  # Codex's synthetic contract, read only
+    from investment_system.research import kis_price_bridge as kb
+    signal = '2017-01-06'
+    series = []
+
+    def add(symbol: str, c: dict, cover_from: str | None) -> None:
+        # As kis_price_bridge.analyze builds the direct-kernel input (rows through S, coverage range -> basis evidence).
+        c['confirmed_ranges'] = [] if cover_from is None else [{'from': cover_from, 'to': signal, 'evidence': 'SYNTHETIC_COMPLETE_ACTION_COVERAGE'}]
+        kb.validate_contract(c)
+        rows = kb.price_rows(c, signal)
+        evidence = {**c['identity'], 'security_id': c['security_id'], 'currency': c['currency'], 'currency_reference': c['currency_reference']}
+        if c['confirmed_ranges']:
+            r = c['confirmed_ranges'][0]
+            evidence.update(no_split_start=r['from'], no_split_end=r['to'], no_split_reference=r['evidence'])
+        kb.basis_evidence(evidence, c)
+        bars = [{'date': r['date'], **{f: r[f] for f in kb.FIELDS[:5]}, 'returned_symbol': symbol, 'requested_symbol': symbol,
+                 'price_basis': c['basis'], 'asof': '-', 'source_timestamp': kb._stamp(r['date']).isoformat(),
+                 'source_sha256': r['source_sha256'], 'quality_reasons': []} for r in rows]
+        series.append(dict(series_id='SYNTHETIC:' + symbol, symbol=symbol, source_kind='NORMALIZED_PROVIDER_DAILY_BARS', rows=bars, evidence=evidence))
+
+    first = case()['raw_bars'][0]['date']
+    add('SYN_ADJ_FULL', case(), first)
+    add('SYN_RAW_REF', case(False), first)
+    add('SYN_ADJ_LAST120', case(), case()['raw_bars'][-120]['date'])
+    add('SYN_ADJ_NOCOVER', case(), None)
+    display = run(codex, signal, series)
+    fixture = {
+        'data_kind': 'SYNTHETIC',
+        'description': 'SYNTHETIC bars only (no company, no real price): Codex #498 test_adjusted_technical_link case(). Output of Codex '
+                       'tools/technical_display_offline.py at #498 ' + ADJUSTED_HEAD + ', unchanged; built by tools/build_tech_display_fixture.py --adjusted.',
+        'symbols': [s['symbol'] for s in series],
+        'display': display,
+    }
+    target.write_text(json.dumps(fixture, indent=1, allow_nan=False) + '\n')
 
 
 if __name__ == '__main__':

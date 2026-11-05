@@ -9,6 +9,10 @@
 //    (a real 0 shows 0); DIAGNOSTIC → 진단값만 있음 with no number at all (raw_value nowhere in the page, text or attribute);
 //    NOT_COMPUTED → 미산출 with its reasons; warm-up / adjustment / continuity words; 순위 없음 with its reason while the indicators
 //    still show; availability NOT_VERIFIED; freshness UNKNOWN · 갱신 일정 미연결.
+//  - Price basis (owner 11/05 item 5, Codex #498): the adjusted SYNTHETIC fixture (pinned) shows 확인된 분할 반영 with the fixed
+//    line '실제 분할 사건 검증 미완료 · 분할 없는 구간의 조정 경로 확인', the evaluation (signal) day, CONFIRMED_SPLITS_ONLY per card,
+//    the counts as this result's cells (never 종목); its RAW reference shows 원주가 and no fixed line; a RAW and an adjusted series of
+//    one symbol stay AMBIGUOUS; a basis contradiction is refused whole (BASIS_MISMATCH).
 //  - Another company (AMD) is not in the file: NOT_IN_FILE, no number. An invalid file is refused whole (ERROR with its code).
 //  - Boundaries: values only as [data-ram-price] text (assertRamOnly), no data request, no storage, no request outside the origin,
 //    no console error, CSP 0, no [style], no horizontal overflow at 390. TECH_DISPLAY_SHOTS=<dir> saves screenshots.
@@ -26,7 +30,8 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
 
 (async () => {
   assert.equal(X.sha(), X.SHA256, 'fixture unchanged');
-  const P = X.display();
+  assert.equal(X.adjustedSha(), X.ADJUSTED_SHA256, 'adjusted fixture unchanged');
+  const P = X.display(), A = X.adjustedDisplay();
   const s = await site.start({});
   const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_EXECUTABLE_PATH || undefined });
   try {
@@ -45,7 +50,7 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
         await page.locator('[data-block="3.4"]').waitFor(); };
       const swap = (src) => page.evaluate((x) => { const I = window.IS2; I.__realDisplay = I.__realDisplay || I.techDisplay;
         I.techDisplay = Object.freeze({ ...I.__realDisplay, source: () => Promise.resolve(x) }); }, src);
-      const show = async (symbol) => { await swap(X.source(X.relabel(P, { [symbol]: 'NVDA' }))); await go('#/technical/nvda');
+      const show = async (symbol, from = P) => { await swap(X.source(X.relabel(from, { [symbol]: 'NVDA' }))); await go('#/technical/nvda');
         await page.locator(B + ' [data-tech-display-state=FOUND]').waitFor(); };
       const card = (id) => B + ' [data-display-metric=' + id + ']';
       const kinds = () => page.$$eval(B + ' [data-display-metric]', (n) => n.map((x) => x.dataset.displayMetric + ':' + x.dataset.displayKind));
@@ -72,7 +77,9 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       // ---------------- VALUE: every component adopted
       phase = tag + ' value';
       await show('SYN_VALUE');
-      assert.ok((await text(B + ' [data-tech-display-data=SYNTHETIC]')).startsWith('합성 개발 검증 · technical-offline-display/1 · 평가일 2017-12-28'));
+      assert.ok((await text(B + ' [data-tech-display-data=SYNTHETIC]')).startsWith('합성 개발 검증 · technical-offline-display/1 · 평가일(신호일) 2017-12-28 · 가격 기준 원주가'));
+      assert.equal(await count(B + ' [data-display-adjusted-note]'), 0, 'RAW: no adjusted line');
+      assert.equal(await page.locator(B + ' [data-display-basis]').getAttribute('data-display-basis'), 'RAW');
       assert.equal(await page.locator(B + ' [data-display-counts]').getAttribute('data-display-counts'), '13/0/0');
       assert.equal(await count(B + ' [data-display-kind=VALUE]'), 13);
       const want = { SMA_20: '240.5', SMA_60: '220.5', SMA_120: '190.5', RSI_14: '100', MACD_12_26: '7', MACD_HISTOGRAM_12_26_9: '0', ATR_14: '2' };
@@ -103,7 +110,7 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       const html = await page.content();
       assert.ok(!html.includes('240.8125') && !html.includes('190.8125'), 'raw_value nowhere in the page');
       assert.ok((await text(B + ' [data-display-facts]')).includes('신원 미확인'));
-      assert.ok((await text(B + ' [data-display-counts]')).startsWith('채택값 0 · 진단값만 있음 13 · 미산출 0 · 진단값은 개수만'));
+      assert.ok((await text(B + ' [data-display-counts]')).startsWith('이 결과(평가일 2017-12-28)의 지표 13칸 · 채택값 0 · 진단값만 있음 13 · 미산출 0 · 진단값은 개수만 · 기업 수·범위가 아님'));
       ok(tag + ' DIAGNOSTIC: 진단값만 있음 counted, no number, raw_value nowhere');
 
       phase = tag + ' split';
@@ -137,6 +144,55 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       assert.ok((await text(card('SMA_5'))).includes('세션 결손'));
       if (SHOTS) await page.locator(B).screenshot({ path: path.join(SHOTS, 'td-' + tag + '-empty.png') });
       ok(tag + ' NOT_COMPUTED: 미산출 with reasons, warm-up INSUFFICIENT / READY / NOT_EVALUATED, empty series');
+
+      // ---------------- price basis: Codex #498 SPLIT_ADJUSTED next to its RAW reference
+      phase = tag + ' adjusted';
+      await show('SYN_ADJ_FULL', A);
+      const st0 = await text(B + ' [data-tech-display-data=SYNTHETIC]');
+      assert.ok(st0.startsWith('합성 개발 검증 · technical-offline-display/1 · 평가일(신호일) 2017-01-06 · 가격 기준 확인된 분할 반영'), st0);
+      assert.equal(await text(B + ' [data-display-adjusted-note]'), '실제 분할 사건 검증 미완료 · 분할 없는 구간의 조정 경로 확인');
+      assert.equal(await page.locator(B + ' [data-display-basis]').getAttribute('data-display-basis'), 'SPLIT_ADJUSTED');
+      assert.ok((await text(B + ' [data-display-basis]')).startsWith('가격 기준 확인된 분할 반영(SPLIT_ADJUSTED) · PIT 미검증'));
+      assert.equal(await page.locator(B + ' [data-display-day]').getAttribute('data-display-day'), '2017-01-06');
+      assert.equal(await page.locator(B + ' [data-display-counts]').getAttribute('data-display-counts'), '12/0/1');
+      const cnt = await text(B + ' [data-display-counts]');
+      assert.ok(cnt.startsWith('이 결과(평가일 2017-01-06)의 지표 13칸 · 채택값 12') && !/종목/.test(cnt), cnt);
+      assert.equal(await page.locator(card('SMA_20') + ' [data-display-value] [data-ram-price]').textContent(), '100');
+      assert.equal(await page.locator(card('ATR_14') + ' [data-display-value] [data-ram-price]').textContent(), '2');
+      assert.ok((await text(card('RSI_14'))).includes('미산출 · 가격 변화 0 · 정의 불가'));
+      const ema0 = await text(card('EMA_20'));
+      for (const w of ['채택값', '주당 · 확인된 분할 반영 · 원 통화 USD', '의존 구간 확인된 분할 반영 · 필요 2016-01-04 ~ 2017-01-06 · 근거 2016-01-04 ~ 2017-01-06']) assert.ok(ema0.includes(w), 'EMA_20 card has ' + w);
+      assert.equal(await page.locator(card('EMA_20') + ' [data-adjustment]').getAttribute('data-adjustment'), 'CONFIRMED_SPLITS_ONLY');
+      assert.ok((await text(B)).includes('채택값 = 신원 · 의존 구간 확인된 분할 반영 근거 · 통화 근거를 모두 갖춘 값'));
+      assert.equal(await text(B + ' [data-display-rank]'), '순위 없음 · 고정 증권 ID 있음 · 이 파일은 순위를 매기지 않음 · 지표는 순위 없이도 표시');
+      assert.equal(await page.locator(B + ' [data-display-availability]').getAttribute('data-display-availability'), 'NOT_VERIFIED');
+      assert.equal(await page.locator(B + ' [data-display-stale]').getAttribute('data-display-stale'), 'UNKNOWN');
+      assert.equal(await count('[style]'), 0, 'no style attribute');
+      assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), 'no horizontal overflow (adjusted)');
+      if (SHOTS) await page.locator(B).screenshot({ path: path.join(SHOTS, 'td-' + tag + '-adjusted.png') });
+      await show('SYN_ADJ_LAST120', A);
+      assert.equal(await page.locator(B + ' [data-display-counts]').getAttribute('data-display-counts'), '7/5/1');
+      assert.equal(await count(card('EMA_20') + ' [data-ram-price]'), 0);
+      assert.ok((await text(card('EMA_20'))).includes('분할 반영 근거가 의존 구간을 덮지 못함'));
+      assert.ok((await text(card('EMA_20'))).includes('의존 구간 분할 반영 근거 미확인'));
+      assert.equal(await page.locator(card('SMA_120') + ' [data-ram-price]').textContent(), '100');
+      await show('SYN_RAW_REF', A);
+      assert.equal(await page.locator(B + ' [data-display-basis]').getAttribute('data-display-basis'), 'RAW');
+      assert.equal(await count(B + ' [data-display-adjusted-note]'), 0);
+      assert.ok((await text(B + ' [data-tech-display-data=SYNTHETIC]')).includes('가격 기준 원주가'));
+      assert.equal(await page.locator(card('SMA_20') + ' [data-ram-price]').textContent(), '100');
+      assert.ok((await text(card('EMA_20'))).includes('의존 구간 무분할 문서 확인'));
+      await swap(X.source(X.relabel(A, { SYN_ADJ_FULL: 'NVDA', SYN_RAW_REF: 'NVDA' }))); await go('#/technical/nvda');
+      await page.locator(B + ' [data-tech-display-state=AMBIGUOUS]').waitFor();
+      const amb = await text(B);
+      assert.ok(amb.includes('NVDA 계열이 2개라 고르지 않습니다') && amb.includes('신원·자동 연결 키가 아님'), amb);
+      assert.equal(await count('[data-ram-price]'), 0);
+      const mixed = X.relabel(A, { SYN_ADJ_FULL: 'NVDA' }); mixed.series[0].result_kind = 'RAW_SERIES_DIAGNOSTIC';
+      await swap(X.source(mixed)); await go('#/technical/nvda');
+      await page.locator(B + ' [data-tech-display-state=ERROR][data-na=BASIS_MISMATCH]').waitFor();
+      assert.equal(await page.locator(B + ' [data-tech-display-state=ERROR]').getAttribute('data-path'), '$.series[0].result_kind');
+      assert.equal(await count('[data-ram-price]'), 0);
+      ok(tag + ' adjusted: 확인된 분할 반영 + fixed line, evaluation day, CONFIRMED_SPLITS_ONLY, cells not companies; RAW 원주가; AMBIGUOUS; BASIS_MISMATCH refused whole');
 
       // ---------------- another company: not in the file
       phase = tag + ' not in file';

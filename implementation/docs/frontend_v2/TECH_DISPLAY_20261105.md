@@ -25,6 +25,34 @@
 | 원천 | `source()` = NONE: "기업별 지표 자료가 아직 없습니다", 숫자 없음. 합성 자료면 "합성 개발 검증" |
 | 거절·없음 | 계약과 다른 파일 → 파일 전체 미사용(코드 표시) · 파일에 그 기업 계열 없음 / 같은 symbol 2개 → 고르지 않음 |
 
+## 가격 기준: 원주가 / 확인된 분할 반영 (오너 11/05 지시 5, Codex #498)
+
+- Codex #498(head `5597e25e`, `docs/research/TECHNICAL_ADJUSTED_LINK_20261105.md`)의 직접 커널 출력도 같은 `technical-offline-display/1`로 읽는다.
+  `technical_display.py`의 `measure_display` / `describe_readiness`가 쓰는 필드를 그대로 대응:
+
+| 필드 | RAW | SPLIT_ADJUSTED |
+|---|---|---|
+| `price_basis` · `evidence.price_basis`(없으면 RAW) · 지표별 `adjustment.price_basis` | `RAW` | `SPLIT_ADJUSTED` |
+| `result_kind` | `RAW_SERIES_DIAGNOSTIC` | `SPLIT_ADJUSTED_SERIES_DIAGNOSTIC` |
+| 근거 필드 | `no_split_start/end/reference` | `adjustment_start/end/reference` + `adjustment_method=CONFIRMED_SPLITS_ONLY` |
+| `adjustment.state` | `DOCUMENTED_NO_SPLIT` / `UNCONFIRMED` | `CONFIRMED_SPLITS_ONLY` / `UNCONFIRMED` |
+| `adjustment.evidence_start/end` | = `no_split_start/end` | = `adjustment_start/end` |
+| 화면 | 가격 기준 원주가(RAW) | 가격 기준 확인된 분할 반영(SPLIT_ADJUSTED) + 고정 문구 "실제 분할 사건 검증 미완료 · 분할 없는 구간의 조정 경로 확인" |
+
+- 서로 어긋나면 파일 전체 거절(코드+경로): `BASIS_MISMATCH`(기준·결과 종류·근거 키 섞임·기준에 맞지 않는 상태), `EVIDENCE_MISMATCH`(근거 범위가
+  evidence와 다름, 확인 상태인데 reference/method 없음), `ADJUSTMENT_STATE_MISMATCH`(UNCONFIRMED ⇔ `ACTION_BASIS_UNCONFIRMED`),
+  `EVIDENCE_RANGE_MISMATCH`(확인 상태인데 근거가 의존 구간을 덮지 못함). 모르는 기준·상태·method는 `ENUM`.
+- 지표별: 채택값(값) / 진단값만 있음(개수만, 값 숨김) / 미산출(사유). 사유·조정 문구는 기준에 맞게("분할 반영 근거가 의존 구간을 덮지 못함").
+  창 적격성은 지표별 `block_reasons`, 신원은 한 출력 안에서 지표 간 동일.
+- 평가일(신호일)을 표시. 개수는 "이 결과(평가일 S)의 지표 13칸"으로만 쓰고 기업 수·범위(커버리지)로 쓰지 않는다(예: 18셀은 18종목이 아님).
+- 설정 버전: 직접 커널 출력에는 없다(`settings_for_basis`의 `technical-leaderboard/split-adjusted-2026-11-05.1`은 다섯 측정 보드 쪽, 1.1.8). 여기서는 표시하지 않음.
+- `symbol`은 이 payload 안에서 표시 계열을 찾는 키일 뿐, 신원·자동 연결 키가 아니다. 같은 symbol 계열이 여럿이면(RAW와 분할 반영이 함께여도) AMBIGUOUS로 두고 고르지 않는다.
+- 직접 커널 readiness는 `availability_status=NOT_VERIFIED`, `stale_status=UNKNOWN`만 받는다. KIS 래퍼(`kis-bars/1/analysis`: `evaluation_day`,
+  `RETAINED_CAPTURE`, `NORMAL/STALE/MISSING`)는 다른 스키마라 여기서 거절하며, 서로 이름을 바꿔 읽지 않는다.
+- 고정 자료 `tests/fixtures/technical_offline_display_adjusted_synthetic.json`(SYNTHETIC, sha256 고정): #498 `tools/technical_display_offline.py`를
+  #498의 합성 계약(`test_adjusted_technical_link.py` `case()`, 2:1 분할 1건)에 그대로 돌린 출력(`tools/build_tech_display_fixture.py --adjusted`).
+  계열: 전 구간 분할 반영 · RAW 기준 경로 · 최근 120봉만 근거 · 근거 없음.
+
 공개 판정 띠(지표 판정 보류, `NO_APPROVED_PRICE_SERIES`)와 3.1.2 표의 판정 보류는 그대로다. 값 표시는 판정이 아니다.
 
 ## 시험

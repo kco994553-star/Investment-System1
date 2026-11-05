@@ -12,6 +12,10 @@
      as RAM text: the block says a diagnostic exists and counts it); NOT_COMPUTED → 미산출 with its null reasons in words. Also
      observation / expected days, window, warm-up, initialization policy, continuity and adjustment; per series the identity,
      availability (NOT_VERIFIED) and freshness (UNKNOWN · UPDATE_SCHEDULE_NOT_CONNECTED). Synthetic input says 합성 개발 검증.
+   - Price basis (owner 11/05 item 5, Codex #498): the status line and the facts say 원주가 (RAW) or 확인된 분할 반영
+     (SPLIT_ADJUSTED) and the evaluation (signal) day; an adjusted result always carries the fixed line '실제 분할 사건 검증 미완료 ·
+     분할 없는 구간의 조정 경로 확인'. Counts are this one result's indicator cells on its day, never companies or coverage. The
+     symbol only finds the display series inside the payload (not an identity or join key; several → AMBIGUOUS, none chosen).
    - The public verdict band and the 3.1.2 table stay 판정 보류 (NO_APPROVED_PRICE_SERIES): a shown value is not a verdict.
    Values are price-derived: text inside [data-ram-price] only; the read lives in RAM (this route); nothing is stored. */
 (function(){
@@ -52,17 +56,18 @@ function create({signal,redraw}){
   const hit=S.find(ctx.value,row.ticker);
   if(hit.state!=='FOUND')return[head(),h('p',{class:'sk status-line',dataset:{techDisplayData:src.data_kind||'UNSPECIFIED'}},S.status(src),' · ',S.SCHEMA),
    h('div',{class:'sk state-card',dataset:{techDisplayState:hit.state}},h('b',null,hit.state==='AMBIGUOUS'?row.ticker+' 계열이 '+hit.count+'개라 고르지 않습니다':'이 파일에 '+row.ticker+' 계열이 없습니다'),
-    h('span',{class:'reason'},'계열 기호(symbol)로만 찾습니다 · 숫자를 만들지 않음')),group()];
+    h('span',{class:'reason'},'계열 기호(symbol)로만 찾습니다 · 기호는 이 파일 안의 찾기 키일 뿐 신원·자동 연결 키가 아님 · 숫자를 만들지 않음')),group()];
   const v=S.view(hit.series);
   return[head(),
-   h('p',{class:'sk status-line',dataset:{techDisplayData:src.data_kind||'UNSPECIFIED',techDisplayState:'FOUND'}},S.status(src),' · ',S.SCHEMA,' · 평가일 ',v.as_of,' · 계산 Codex · 공개 판정 아님'),
+   h('p',{class:'sk status-line',dataset:{techDisplayData:src.data_kind||'UNSPECIFIED',techDisplayState:'FOUND'}},S.status(src),' · ',S.SCHEMA,' · ',v.day,' · 가격 기준 ',v.basisText,' · 계산 Codex · 공개 판정 아님'),
+   v.adjustedNote?h('p',{class:'reason',role:'note',dataset:{displayAdjustedNote:''}},v.adjustedNote):null,
    h('p',{dataset:{displayRank:v.rankCode}},h('b',null,v.rank),' · 지표는 순위 없이도 표시'),group(),
    h('dl',{class:'card-body',dataset:{displayFacts:''}},
-    [['보유 일봉',v.history],['가격 기준',v.basis],['신원',v.identity],['가용 시각',h('span',{dataset:{displayAvailability:v.availabilityCode}},v.availability)],
+    [['평가일(신호일)',h('span',{dataset:{displayDay:v.as_of}},v.as_of,' · 이 결과 하루 기준')],['보유 일봉',v.history],['가격 기준',h('span',{dataset:{displayBasis:v.basisCode}},v.basis)],['신원',v.identity],['가용 시각',h('span',{dataset:{displayAvailability:v.availabilityCode}},v.availability)],
      ['최신 여부',h('span',{dataset:{displayStale:v.staleCode,na:v.staleReason}},v.stale)]].map(([k,x])=>[h('dt',null,h('b',null,k)),h('dd',null,x)])),
-   h('p',{class:'sk status-line',role:'status',dataset:{displayCounts:v.counts.VALUE+'/'+v.counts.DIAGNOSTIC+'/'+v.counts.NOT_COMPUTED}},v.countsText,' · 진단값은 개수만'),
+   h('p',{class:'sk status-line',role:'status',dataset:{displayCounts:v.counts.VALUE+'/'+v.counts.DIAGNOSTIC+'/'+v.counts.NOT_COMPUTED}},v.countsText,' · 진단값은 개수만 · 기업 수·범위가 아님'),
    h('div',{class:'td-cards'},...v.items.map(card)),
-   h('p',{class:'reason'},'채택값 = 신원 · 의존 구간 무분할 · 통화 근거를 모두 갖춘 값 · 값 표시는 판정이 아님 · 지표 판정은 위 표대로 보류')];}
+   h('p',{class:'reason'},'채택값 = 신원 · ',v.basisCode==='SPLIT_ADJUSTED'?'의존 구간 확인된 분할 반영 근거':'의존 구간 무분할',' · 통화 근거를 모두 갖춘 값 · 값 표시는 판정이 아님 · 지표 판정은 위 표대로 보류')].filter(Boolean);}
  return Object.freeze({load,block});}
 I.techDisplayLive=Object.freeze({create});
 })();

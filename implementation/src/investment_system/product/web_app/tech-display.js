@@ -3,8 +3,18 @@
    technical-offline-display/1 with its readiness projection technical-display-readiness/1 (#478 head 419add34,
    TECHNICAL_OFFLINE_DISPLAY_20261105.md, technical_display_offline.py) as written, with no conversion. Calculation
    is Codex's (DC-42): this file only checks, reads and words. validate / find / view are pure and run in node as in the page.
-   - Input: {schema, signal_day, series:[{schema, result_kind RAW_SERIES_DIAGNOSTIC, series_id, symbol, signal_day, source_kind
-     NORMALIZED_PROVIDER_DAILY_BARS, input_start, history_count, excluded_future_rows, price_basis RAW, pit_status NOT_VERIFIED,
+   Price basis (owner 11/05 item 5; Codex #498 head 5597e25e, TECHNICAL_ADJUSTED_LINK_20261105.md, technical_display.py
+   describe_readiness / measure_display): a series is RAW (result_kind RAW_SERIES_DIAGNOSTIC, evidence no_split_*, readiness
+   adjustment.state DOCUMENTED_NO_SPLIT | UNCONFIRMED, evidence_start/end = no_split_start/end) or SPLIT_ADJUSTED (result_kind
+   SPLIT_ADJUSTED_SERIES_DIAGNOSTIC, evidence adjustment_start/end/reference + adjustment_method CONFIRMED_SPLITS_ONLY, state
+   CONFIRMED_SPLITS_ONLY | UNCONFIRMED, evidence_start/end = adjustment_start/end). The basis, result_kind, evidence.price_basis,
+   every adjustment.price_basis, the state and its evidence range must agree (BASIS_MISMATCH, EVIDENCE_MISMATCH,
+   ADJUSTMENT_STATE_MISMATCH, EVIDENCE_RANGE_MISMATCH); an unknown basis / state / method is ENUM. This is the direct-kernel
+   output only: the KIS wrapper (kis-bars/1/analysis: evaluation_day, RETAINED_CAPTURE, NORMAL/STALE/MISSING) is another schema
+   and is refused here, never renamed into this one. The direct-kernel output carries no settings version (only the five-measure
+   boards of 1.1.8 do), so none is shown.
+   - Input: {schema, signal_day, series:[{schema, result_kind, series_id, symbol, signal_day, source_kind
+     NORMALIZED_PROVIDER_DAILY_BARS, input_start, history_count, excluded_future_rows, price_basis RAW|SPLIT_ADJUSTED, pit_status NOT_VERIFIED,
      publication_status RESEARCH_PRIVATE_ONLY, evidence, rank null, metrics:{<13 ids>:{raw_value, value, unit, null_reasons,
      observation_days, expected_days, window_start, window_end}}, volume_note, volume_latest, pattern_status, readiness:{schema,
      as_of, value_scope, availability_status, source_available_at, availability_reason, stale_status, stale_reason, metrics:{<id>:
@@ -16,16 +26,27 @@
      sessions = observation_days and its minimum / the initialization method and policy are the contract's table; the adjustment's
      required range = the metric's window; one identity per series; window_end = signal_day = readiness.as_of; rank is null.
    - find(value, symbol) → {state:'FOUND', series} | {state:'NOT_IN_FILE'} | {state:'AMBIGUOUS', count}: by the series' symbol.
+     The symbol is only the lookup key of a display series inside this payload (Codex #491): never an identity or join key;
+     several series with one symbol stay AMBIGUOUS and none is chosen. Identity is per series (one per output component set);
+     window eligibility is per indicator (block_reasons).
    - view(series) → words: per component the kind (채택값 / 진단값만 있음 / 미산출), the adopted value's display text (VALUE only;
      raw_value is never shown, a DIAGNOSTIC says only that a diagnostic exists, counted), the null reasons in words, observation /
      expected days, window, warm-up, continuity, adjustment; per series counts, identity, rank (always 순위 없음 with its reason),
-     availability (NOT_VERIFIED) and freshness (UNKNOWN · UPDATE_SCHEDULE_NOT_CONNECTED). A null stays 미산출, never 0; a real 0 is
-     a value.
+     availability (NOT_VERIFIED) and freshness (UNKNOWN · UPDATE_SCHEDULE_NOT_CONNECTED), the basis (원주가 / 확인된 분할 반영)
+     with, on adjusted results, the fixed line ADJUSTED_NOTE, and the evaluation (signal) day. Counts are indicator cells of this one
+     result on its one day, never companies or coverage. A null stays 미산출, never 0; a real 0 is a value.
    - source() → Promise {state:'NONE'}: the output is private research (Git-outside, 0600); no public file, no request.
    Values are price-derived: screens show them only as text inside [data-ram-price]; nothing is stored. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else{const I=root.IS2=root.IS2||{};I.techDisplay=api;}})(typeof globalThis==='object'?globalThis:this,function(){
 'use strict';
 const SCHEMA='technical-offline-display/1',READINESS='technical-display-readiness/1';
+const BASIS=Object.freeze({RAW:'원주가',SPLIT_ADJUSTED:'확인된 분할 반영'});
+const RESULT_KIND=Object.freeze({RAW:'RAW_SERIES_DIAGNOSTIC',SPLIT_ADJUSTED:'SPLIT_ADJUSTED_SERIES_DIAGNOSTIC'});
+// Per basis: the evidence prefix, the confirmed adjustment state, the other basis' evidence keys (never mixed in one series).
+const BASIS_RULE=Object.freeze({RAW:Object.freeze({prefix:'no_split_',confirmed:'DOCUMENTED_NO_SPLIT',other:'adjustment_'}),
+ SPLIT_ADJUSTED:Object.freeze({prefix:'adjustment_',confirmed:'CONFIRMED_SPLITS_ONLY',other:'no_split_'})});
+const METHOD=Object.freeze({CONFIRMED_SPLITS_ONLY:'확인된 분할만 반영'});
+const ADJUSTED_NOTE='실제 분할 사건 검증 미완료 · 분할 없는 구간의 조정 경로 확인';
 const COMPONENTS=Object.freeze(['SMA_5','SMA_20','SMA_60','SMA_120','EMA_20','RSI_14','MACD_12_26','MACD_SIGNAL_9','MACD_HISTOGRAM_12_26_9',
  'BOLL_MIDDLE_20','BOLL_UPPER_20_2','BOLL_LOWER_20_2','ATR_14']);
 const OPTIONAL=Object.freeze(['SMA_240']);
@@ -39,21 +60,24 @@ const META=Object.freeze(Object.fromEntries([
  ['MACD_HISTOGRAM_12_26_9','MACD 히스토그램','MACD',34,'MACD_MINUS_SIGNAL',FULL],
  ['BOLL_MIDDLE_20','볼린저 중심선 (20)','BOLL',20,MEAN,ROLL],['BOLL_UPPER_20_2','볼린저 상단 (20 · 2σ)','BOLL',20,SD,ROLL],['BOLL_LOWER_20_2','볼린저 하단 (20 · 2σ)','BOLL',20,SD,ROLL],
  ['ATR_14','ATR 14','ATR',15,'FIRST_14_TRUE_RANGES_MEAN_THEN_WILDER_RESET_AFTER_OHLC_GAP',FULL]].map(([id,label,group,min,method,policy])=>[id,Object.freeze({label,group,min,method,policy})])));
-const UNIT=Object.freeze({PERCENT:'% (0~100)',SOURCE_CURRENCY_PER_SHARE:'주당 · 원 통화'});
+const UNIT=Object.freeze({PERCENT:'% (0~100)',SOURCE_CURRENCY_PER_SHARE:'주당 · 원 통화',ADJUSTED_PER_SHARE:'주당 · 확인된 분할 반영 · 원 통화'});
 const KIND=Object.freeze({VALUE:'채택값',DIAGNOSTIC:'진단값만 있음',NOT_COMPUTED:'미산출'});
 const REASON=Object.freeze({PRICE_WINDOW_INCOMPLETE:'보유 일봉에 빠진 거래일',RAW_PRICE_BASIS_REQUIRED:'원주가 기준이 아님',CLOSE_INVALID:'종가 값 이상',
  WARMUP:'초기 봉 부족',CALCULATION_ERROR:'계산 오류',ZERO_TOTAL_CHANGE:'가격 변화 0 · 정의 불가',OHLC_MISSING:'고가·저가 결손',OHLC_BASIS_UNCONFIRMED:'OHLC 기준 미확인',
  ACTION_BASIS_UNCONFIRMED:'무분할 근거가 의존 구간을 덮지 못함',IDENTITY_UNCONFIRMED:'증권 신원 미확인',CURRENCY_UNCONFIRMED:'통화 근거 미확인'});
 const WARMUP=Object.freeze({READY:'초기 봉 충족',INSUFFICIENT:'초기 봉 부족',NOT_EVALUATED:'초기 봉 평가 불가'});
 const CONTINUITY=Object.freeze({COMPLETE:'세션 연속',INCOMPLETE:'세션 결손',INVALID:'종가·기준 이상'});
-const ADJUSTMENT=Object.freeze({DOCUMENTED_NO_SPLIT:'의존 구간 무분할 문서 확인',UNCONFIRMED:'의존 구간 무분할 근거 미확인'});
-const IDENTITY=Object.freeze({DOCUMENT_RECONSTRUCTED:'문서 재구성 신원',UNKNOWN:'신원 미확인'});
+// Words of the basis-dependent codes on an adjusted series (RAW keeps REASON / ADJUSTMENT).
+const REASON_ADJUSTED=Object.freeze({RAW_PRICE_BASIS_REQUIRED:'봉 가격 기준이 분할 반영 기준과 다름',ACTION_BASIS_UNCONFIRMED:'분할 반영 근거가 의존 구간을 덮지 못함'});
+const ADJUSTMENT=Object.freeze({DOCUMENTED_NO_SPLIT:'의존 구간 무분할 문서 확인',CONFIRMED_SPLITS_ONLY:'의존 구간 확인된 분할 반영',UNCONFIRMED:'의존 구간 무분할 근거 미확인'});
+const ADJUSTMENT_ADJUSTED=Object.freeze({...ADJUSTMENT,UNCONFIRMED:'의존 구간 분할 반영 근거 미확인'});
+const IDENTITY=Object.freeze({CONFIRMED:'신원 확인',DOCUMENT_RECONSTRUCTED:'문서 재구성 신원',UNKNOWN:'신원 미확인'});
 const FIXED_ID=Object.freeze({MISSING_RANKING_BLOCKED:'고정 증권 ID 없음 · 순위를 매기지 않음',PRESENT_NOT_RANKED:'고정 증권 ID 있음 · 이 파일은 순위를 매기지 않음'});
 const POLICY=Object.freeze({[ROLL]:'최근 N봉 창',[FULL]:'전체 보유 이력으로 시작값'});
 const SCOPE=Object.freeze({PRIVATE_RESEARCH_DOCUMENT_RECONSTRUCTION:'비공개 연구 문서 재구성 범위의 값 · 공식 운영 가격 아님'});
 const AVAILABILITY=Object.freeze({NOT_VERIFIED:'과거 자료 가용 시각 미확인 · 날짜로 추정하지 않음'});
 const STALE=Object.freeze({UNKNOWN:'최신 여부 알 수 없음'}),STALE_REASON=Object.freeze({UPDATE_SCHEDULE_NOT_CONNECTED:'갱신 일정 미연결'});
-const TEXT=Object.freeze({NONE:'기업별 지표 자료가 아직 없습니다',NONE_WHY:'계산은 Codex(#478 technical-offline-display/1) · 비공개 연구 결과라 공개 화면에 연결하지 않음 · 합성 자료는 개발 검증에서만',
+const TEXT=Object.freeze({NONE:'기업별 지표 자료가 아직 없습니다',NONE_WHY:'계산은 Codex(#478 · #498 technical-offline-display/1, 원주가 · 확인된 분할 반영) · 비공개 연구 결과라 공개 화면에 연결하지 않음 · 합성 자료는 개발 검증에서만',
  INVALID:'지표 파일이 계약과 달라 파일 전체를 쓰지 않습니다',FAILED:'지표 파일을 읽지 못했습니다',SYNTHETIC:'합성 개발 검증',UNKNOWN_REASON:'사유 코드 미등록',
  RANK_NONE:'순위 없음',GROUP:'그룹별 순위·필터는 1. QGV의 1.1.8 기술 조건 필터에서 따로 봅니다'});
 const MAX=Object.freeze({series:1000,text:200,depth:10,list:50,evidence:40});
@@ -89,7 +113,7 @@ const SERIES=['schema','result_kind','series_id','symbol','signal_day','source_k
 const METRIC=['raw_value','value','unit','null_reasons','observation_days','expected_days','window_start','window_end'];
 const RDY=['schema','as_of','value_scope','availability_status','source_available_at','availability_reason','stale_status','stale_reason','metrics'];
 const RMETRIC=['state','initialization','warmup','continuity','adjustment','identity','block_reasons'];
-function checkMetric(id,m,r,s,path,rpath){
+function checkMetric(id,m,r,s,path,rpath){const B=BASIS_RULE[s.price_basis];
  keys(m,METRIC,path);numOrNull(m.raw_value,path+'.raw_value');numOrNull(m.value,path+'.value');
  is(m.unit,id==='RSI_14'?'PERCENT':'SOURCE_CURRENCY_PER_SHARE',path+'.unit');codes(m.null_reasons,path+'.null_reasons');
  count(m.observation_days,path+'.observation_days');count(m.expected_days,path+'.expected_days');
@@ -105,21 +129,34 @@ function checkMetric(id,m,r,s,path,rpath){
  keys(r.warmup,['minimum_sessions','observed_sessions','state'],rpath+'.warmup');is(r.warmup.minimum_sessions,M.min,rpath+'.warmup.minimum_sessions');
  if(r.warmup.observed_sessions!==m.observation_days)refuse('OBSERVED_MISMATCH',rpath+'.warmup.observed_sessions');oneOf(r.warmup.state,WARMUP,rpath+'.warmup.state');
  keys(r.continuity,['state','reasons'],rpath+'.continuity');oneOf(r.continuity.state,CONTINUITY,rpath+'.continuity.state');codes(r.continuity.reasons,rpath+'.continuity.reasons');
- const a=r.adjustment;keys(a,['price_basis','state','required_start','required_end','evidence_start','evidence_end'],rpath+'.adjustment');
- is(a.price_basis,'RAW',rpath+'.adjustment.price_basis');oneOf(a.state,ADJUSTMENT,rpath+'.adjustment.state');
- if(a.required_start!==m.window_start||a.required_end!==m.window_end)refuse('WINDOW_MISMATCH',rpath+'.adjustment.required_start');
- dayOrNull(a.evidence_start,rpath+'.adjustment.evidence_start');dayOrNull(a.evidence_end,rpath+'.adjustment.evidence_end');
+ const a=r.adjustment,ap=rpath+'.adjustment';keys(a,['price_basis','state','required_start','required_end','evidence_start','evidence_end'],ap);
+ oneOf(a.price_basis,BASIS,ap+'.price_basis');if(a.price_basis!==s.price_basis)refuse('BASIS_MISMATCH',ap+'.price_basis');
+ oneOf(a.state,ADJUSTMENT,ap+'.state');if(a.state!=='UNCONFIRMED'&&a.state!==B.confirmed)refuse('BASIS_MISMATCH',ap+'.state');
+ if(a.required_start!==m.window_start||a.required_end!==m.window_end)refuse('WINDOW_MISMATCH',ap+'.required_start');
+ dayOrNull(a.evidence_start,ap+'.evidence_start');dayOrNull(a.evidence_end,ap+'.evidence_end');
+ // evidence_start/end are the series' own no_split_* (RAW) or adjustment_* (SPLIT_ADJUSTED) range, as written.
+ for(const e of['start','end'])if(a['evidence_'+e]!==(own(s.evidence,B.prefix+e)?s.evidence[B.prefix+e]:null))refuse('EVIDENCE_MISMATCH',ap+'.evidence_'+e);
+ if((a.state==='UNCONFIRMED')!==m.null_reasons.includes('ACTION_BASIS_UNCONFIRMED'))refuse('ADJUSTMENT_STATE_MISMATCH',ap+'.state');
+ if(a.state===B.confirmed){if(a.evidence_start===null||a.evidence_end===null||a.evidence_start>a.required_start||a.evidence_end<a.required_end)refuse('EVIDENCE_RANGE_MISMATCH',ap+'.evidence_start');
+  if(s.price_basis==='SPLIT_ADJUSTED'&&s.evidence.adjustment_method!=='CONFIRMED_SPLITS_ONLY')refuse('EVIDENCE_MISMATCH',path.replace(/\.metrics\.[A-Z0-9_]+$/,'')+'.evidence.adjustment_method');
+  if(typeof s.evidence[B.prefix+'reference']!=='string'||!s.evidence[B.prefix+'reference'])refuse('EVIDENCE_MISMATCH',path.replace(/\.metrics\.[A-Z0-9_]+$/,'')+'.evidence.'+B.prefix+'reference');}
  keys(r.identity,['state','reference_present','fixed_security_id_state'],rpath+'.identity');code(r.identity.state,rpath+'.identity.state');
  if(typeof r.identity.reference_present!=='boolean')refuse('TYPE',rpath+'.identity.reference_present');oneOf(r.identity.fixed_security_id_state,FIXED_ID,rpath+'.identity.fixed_security_id_state');
  codes(r.block_reasons,rpath+'.block_reasons');if(!same(r.block_reasons,m.null_reasons))refuse('BLOCK_REASONS_MISMATCH',rpath+'.block_reasons');}
 function checkSeries(s,top,path){
- keys(s,SERIES,path);is(s.schema,SCHEMA,path+'.schema');is(s.result_kind,'RAW_SERIES_DIAGNOSTIC',path+'.result_kind');str(s.series_id,path+'.series_id');str(s.symbol,path+'.symbol');
+ keys(s,SERIES,path);is(s.schema,SCHEMA,path+'.schema');oneOf(s.price_basis,BASIS,path+'.price_basis');
+ if(typeof s.result_kind!=='string'||!Object.values(RESULT_KIND).includes(s.result_kind))refuse('ENUM',path+'.result_kind');
+ if(s.result_kind!==RESULT_KIND[s.price_basis])refuse('BASIS_MISMATCH',path+'.result_kind');str(s.series_id,path+'.series_id');str(s.symbol,path+'.symbol');
  day(s.signal_day,path+'.signal_day');if(s.signal_day!==top.signal_day)refuse('SIGNAL_DAY_MISMATCH',path+'.signal_day');
  is(s.source_kind,'NORMALIZED_PROVIDER_DAILY_BARS',path+'.source_kind');day(s.input_start,path+'.input_start');if(s.input_start>s.signal_day)refuse('RANGE',path+'.input_start');
  count(s.history_count,path+'.history_count');count(s.excluded_future_rows,path+'.excluded_future_rows');
- is(s.price_basis,'RAW',path+'.price_basis');is(s.pit_status,'NOT_VERIFIED',path+'.pit_status');is(s.publication_status,'RESEARCH_PRIVATE_ONLY',path+'.publication_status');
+ is(s.pit_status,'NOT_VERIFIED',path+'.pit_status');is(s.publication_status,'RESEARCH_PRIVATE_ONLY',path+'.publication_status');
  if(!isObj(s.evidence))refuse('TYPE',path+'.evidence');if(Object.keys(s.evidence).length>MAX.evidence)refuse('TOO_LARGE',path+'.evidence');
  for(const[k,v]of Object.entries(s.evidence))if(v!==null&&!['string','number','boolean'].includes(typeof v))refuse('TYPE',path+'.evidence.'+k);
+ const ep=path+'.evidence',B=BASIS_RULE[s.price_basis];
+ if(own(s.evidence,'price_basis')?s.evidence.price_basis!==s.price_basis:s.price_basis!=='RAW')refuse('BASIS_MISMATCH',ep+'.price_basis');
+ for(const k of Object.keys(s.evidence))if(k.startsWith(B.other))refuse('BASIS_MISMATCH',ep+'.'+k);
+ if(own(s.evidence,'adjustment_method'))oneOf(s.evidence.adjustment_method,METHOD,ep+'.adjustment_method');
  if(s.rank!==null)refuse('RANK_UNEXPECTED',path+'.rank');
  code(s.pattern_status,path+'.pattern_status');
  const vn=s.volume_note,vp=path+'.volume_note';keys(vn,['raw_state','state','reason','window_start','window_end','null_reasons'],vp);
@@ -147,31 +184,33 @@ function find(value,symbol){const hits=value.series.filter(s=>s.symbol===symbol)
 // Display of one adopted value (display only; never used for logic): up to four decimals, a real 0 is '0', a null is null.
 function num(v){if(v===null||v===undefined||typeof v!=='number'||!Number.isFinite(v))return null;
  const t=Math.abs(v).toFixed(4).replace(/\.?0+$/,'');return(v<0&&t!=='0'?'−':'')+t;}
-const reasonText=c=>(typeof c==='string'&&own(REASON,c)?REASON[c]:TEXT.UNKNOWN_REASON);
+const reasonText=(c,basis)=>(typeof c==='string'&&basis==='SPLIT_ADJUSTED'&&own(REASON_ADJUSTED,c)?REASON_ADJUSTED[c]:typeof c==='string'&&own(REASON,c)?REASON[c]:TEXT.UNKNOWN_REASON);
 const words=(set,c)=>(typeof c==='string'&&own(set,c)?set[c]:TEXT.UNKNOWN_REASON);
-function view(s){const R=s.readiness,ids=Object.keys(s.metrics),first=R.metrics[ids[0]];
+function view(s){const R=s.readiness,ids=Object.keys(s.metrics),first=R.metrics[ids[0]],adj=s.price_basis==='SPLIT_ADJUSTED';
  const cur=typeof s.evidence.currency==='string'&&/^[A-Z]{3}$/.test(s.evidence.currency)?s.evidence.currency:null;
  const counts={VALUE:0,DIAGNOSTIC:0,NOT_COMPUTED:0};
  const items=[...COMPONENTS,...OPTIONAL].filter(id=>ids.includes(id)).map(id=>{const m=s.metrics[id],r=R.metrics[id],a=r.adjustment;counts[r.state]++;
   return Object.freeze({id,label:META[id].label,group:META[id].group,kind:r.state,kindText:KIND[r.state],
-   value:r.state==='VALUE'?num(m.value):null,unit:m.unit==='PERCENT'?UNIT.PERCENT:UNIT.SOURCE_CURRENCY_PER_SHARE+(cur?' '+cur:''),
-   reasons:Object.freeze(m.null_reasons.map(c=>Object.freeze({code:c,text:reasonText(c)}))),
+   value:r.state==='VALUE'?num(m.value):null,unit:m.unit==='PERCENT'?UNIT.PERCENT:(adj?UNIT.ADJUSTED_PER_SHARE:UNIT.SOURCE_CURRENCY_PER_SHARE)+(cur?' '+cur:''),
+   reasons:Object.freeze(m.null_reasons.map(c=>Object.freeze({code:c,text:reasonText(c,s.price_basis)}))),
    observed:m.observation_days+' / '+m.expected_days+'세션',window:m.window_start+' ~ '+m.window_end,
    warmup:words(WARMUP,r.warmup.state)+' · 최소 '+r.warmup.minimum_sessions+' · 관측 '+r.warmup.observed_sessions,warmupState:r.warmup.state,
    init:words(POLICY,r.initialization.policy)+(r.initialization.policy===FULL?' (시작 '+r.initialization.input_start+')':''),
    continuity:words(CONTINUITY,r.continuity.state),continuityState:r.continuity.state,
-   adjustment:words(ADJUSTMENT,a.state)+' · 필요 '+a.required_start+' ~ '+a.required_end+' · 근거 '+(a.evidence_start===null||a.evidence_end===null?'없음':a.evidence_start+' ~ '+a.evidence_end),
+   adjustment:words(adj?ADJUSTMENT_ADJUSTED:ADJUSTMENT,a.state)+' · 필요 '+a.required_start+' ~ '+a.required_end+' · 근거 '+(a.evidence_start===null||a.evidence_end===null?'없음':a.evidence_start+' ~ '+a.evidence_end),
    adjustmentState:a.state});});
  const id=first.identity;
  return Object.freeze({symbol:s.symbol,series_id:s.series_id,as_of:R.as_of,items:Object.freeze(items),counts:Object.freeze(counts),
-  countsText:KIND.VALUE+' '+counts.VALUE+' · '+KIND.DIAGNOSTIC+' '+counts.DIAGNOSTIC+' · '+KIND.NOT_COMPUTED+' '+counts.NOT_COMPUTED,
+  countsText:'이 결과(평가일 '+R.as_of+')의 지표 '+items.length+'칸 · '+KIND.VALUE+' '+counts.VALUE+' · '+KIND.DIAGNOSTIC+' '+counts.DIAGNOSTIC+' · '+KIND.NOT_COMPUTED+' '+counts.NOT_COMPUTED,
+  day:'평가일(신호일) '+s.signal_day,
   history:'보유 일봉 '+s.history_count+'봉 · '+s.input_start+' ~ '+s.signal_day+(s.excluded_future_rows?' · 평가일 뒤 '+s.excluded_future_rows+'봉 제외':''),
-  basis:'가격 기준 원주가(RAW) · PIT 미검증 · '+words(SCOPE,R.value_scope),
+  basis:'가격 기준 '+BASIS[s.price_basis]+'('+s.price_basis+') · PIT 미검증 · '+words(SCOPE,R.value_scope),basisCode:s.price_basis,basisText:BASIS[s.price_basis],
+  adjustedNote:adj?ADJUSTED_NOTE:null,
   identity:words(IDENTITY,id.state)+(id.reference_present?' · 근거 문서 있음':' · 근거 문서 없음'),identityState:id.state,
   rank:TEXT.RANK_NONE+' · '+words(FIXED_ID,id.fixed_security_id_state),rankCode:id.fixed_security_id_state,
   availability:words(AVAILABILITY,R.availability_status),availabilityCode:R.availability_status,
   stale:words(STALE,R.stale_status)+' · '+words(STALE_REASON,R.stale_reason),staleCode:R.stale_status,staleReason:R.stale_reason});}
 const status=src=>(!src?TEXT.NONE:src.data_kind==='SYNTHETIC'?TEXT.SYNTHETIC:typeof src.data_kind==='string'&&src.data_kind?'자료 종류 · '+src.data_kind:'자료 종류 표시 없음');
 function source(){return Promise.resolve(Object.freeze({state:'NONE',code:'TECH_DISPLAY_NOT_CONNECTED',payload:null,data_kind:null,text:TEXT.NONE}));}
-return Object.freeze({SCHEMA,READINESS,COMPONENTS,OPTIONAL,META,KIND,REASON,TEXT,validate,find,view,num,reasonText,status,source});
+return Object.freeze({SCHEMA,READINESS,BASIS,ADJUSTED_NOTE,COMPONENTS,OPTIONAL,META,KIND,REASON,TEXT,validate,find,view,num,reasonText,status,source});
 });
