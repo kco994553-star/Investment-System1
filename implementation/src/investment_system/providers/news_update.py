@@ -7,12 +7,13 @@ late arrivals and revisions before the frontier are not silently lost.
 from __future__ import annotations
 
 import copy
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 import hashlib
 import json
 
 from ..markets.us import US_LISTINGS
 from ..product import news_signals as ns
+from .dart_collection import KST
 from .sec_8k_disclosures import index_url
 
 
@@ -118,13 +119,23 @@ class UpdateLedger:
         # Stage all mutations first: invalid batches cannot advance the cursor or partially commit rows.
         items = copy.deepcopy(self.state['items'])
         frontier = [entry['cursor']] if entry['cursor'] else []
+        seen_ids = set()
         for row in rows:
             expected_issuer = row['issuer_id'] if source == 'DART' and row['issuer_id'].startswith('DART:') else issuer_id(company)
             if row['source'] != source or row['company_id'] != company or row['issuer_id'] != expected_issuer:
                 raise ValueError('NEWS_ISSUER_MISMATCH')
             moment = row.get('accepted_at') or row.get('published_at') or row.get('source_seen_at') or row.get('filing_date')
-            if moment and moment > acquired:
+            if source == 'DART' and row.get('time_precision') == 'DATE_KST':
+                after_acquisition = date.fromisoformat(row['filing_date']) > acquired_at.astimezone(KST).date()
+            else:
+                after_acquisition = moment and moment > acquired
+            if after_acquisition:
                 raise ValueError('NEWS_EVENT_AFTER_ACQUISITION')
+            # Match public merge precedence: one response cannot manufacture successive versions.
+            if row['item_id'] in seen_ids:
+                entry['changes']['duplicate'] += 1
+                continue
+            seen_ids.add(row['item_id'])
             frontier.append([moment or '', row['item_id']])
             # GDELT's discovery timestamp is observational, not an article content revision.
             fingerprint = _digest({k: v for k, v in row.items() if k != 'source_seen_at'})

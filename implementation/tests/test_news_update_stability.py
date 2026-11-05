@@ -226,3 +226,40 @@ def test_different_filing_receipts_with_generic_equal_titles_are_new_filings():
         for receipt in ['20261104000001', '20261104000002']]}
     result = ledger.apply('DART', 'hanmi', dart_rows(data, 'hanmi'), acquired_at=NOW, attempted_at=NOW)
     assert result['changes'] == {'new': 2, 'duplicate': 0, 'revision': 0}
+
+
+def test_dart_date_uses_kst_day_at_utc_boundary_without_inventing_acceptance():
+    from investment_system.providers.news_update import UpdateLedger, dart_rows
+    acquired = datetime(2026, 11, 4, 23, tzinfo=timezone.utc)  # Nov 5, 08:00 KST
+    data = {'companies': {'hanmi': {'corp_code': '00161383'}}, 'events': [{
+        'source': 'DART', 'company_id': 'hanmi', 'title': '공시',
+        'link': 'https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20261105000001',
+        'classification': 'OTHER', 'filing_date': '2026-11-05', 'accepted_at': None,
+        'time_precision': 'DATE_KST', 'rcept_no': '20261105000001'}]}
+    rows = dart_rows(data, 'hanmi')
+    ledger = UpdateLedger()
+    result = ledger.apply('DART', 'hanmi', rows, acquired_at=acquired, attempted_at=acquired)
+    assert result['changes'] == {'new': 1, 'duplicate': 0, 'revision': 0}
+    stored = next(iter(ledger.state['items'].values()))
+    assert stored['filing_date'] == '2026-11-05'
+    assert stored['accepted_at'] is None and stored['published_at'] is None
+    future = copy.deepcopy(rows)
+    future[0]['filing_date'] = '2026-11-06'
+    with pytest.raises(ValueError, match='NEWS_EVENT_AFTER_ACQUISITION'):
+        ledger.apply('DART', 'hanmi', future, acquired_at=acquired, attempted_at=acquired)
+    assert ledger.state['items'][rows[0]['item_id']] == stored
+
+
+def test_same_batch_same_identity_conflicting_titles_keep_first_without_replay_revisions():
+    from investment_system.providers.news_update import UpdateLedger, news_rows
+    raw = [{'title': title, 'link': URL, 'published_at': NOW - timedelta(hours=1)}
+           for title in ('Nvidia preliminary results', 'Nvidia corrected results')]
+    rows = news_rows('GDELT', 'nvda', raw, acquired_at=NOW)
+    ledger = UpdateLedger()
+    initial = ledger.apply('GDELT', 'nvda', rows, acquired_at=NOW, attempted_at=NOW)
+    assert initial['changes'] == {'new': 1, 'duplicate': 1, 'revision': 0}
+    stored = copy.deepcopy(next(iter(ledger.state['items'].values())))
+    assert stored['title'] == 'Nvidia preliminary results' and stored['revision'] == 1
+    repeated = ledger.apply('GDELT', 'nvda', rows, acquired_at=NOW, attempted_at=NOW + timedelta(hours=1))
+    assert repeated['changes'] == {'new': 0, 'duplicate': 2, 'revision': 0}
+    assert ledger.state['items'][rows[0]['item_id']] == stored
