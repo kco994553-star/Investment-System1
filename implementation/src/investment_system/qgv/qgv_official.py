@@ -46,6 +46,7 @@ from . import qgv2_inputs as qi
 from . import qgv_v2
 from . import v2_factors as vf
 from ..providers import iex_hist, iex_monthend
+from ..validation import forward_ledger
 
 SCHEMA = 'qgv-official/1'
 KIND = 'QGV_OFFICIAL'
@@ -92,8 +93,9 @@ FORBIDDEN_KEYS = frozenset({'price', 'prices', 'close', 'closes', 'month_closes'
 _HERE = Path(__file__).resolve().parent
 ENGINE_PY = _HERE / 'qgv_v2.py'
 ENGINE_JS = _HERE.parent / 'product' / 'web_assets' / 'qgv-v2.js'
+# forward_ledger: the NYSE calendar iex_hist.select_day skips non-session index days with
 PUBLISHER_SOURCES = (Path(__file__).resolve(), Path(iex_hist.__file__).resolve(), Path(iex_monthend.__file__).resolve(),
-                     Path(qi.__file__).resolve())
+                     Path(qi.__file__).resolve(), Path(forward_ledger.__file__).resolve())
 
 TOP_KEYS = ('schema', 'kind', 'publication_id', 'state', 'calc_version', 'engine', 'population', 'weights', 'type_scope',
             'config_versions', 'price_source', 'attribution', 'inputs', 'times', 'coverage', 'rows')

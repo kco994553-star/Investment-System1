@@ -73,6 +73,7 @@ function sources(F) {
     login: { state: 'NONE', code: 'LAB_NO_PUBLIC_RESULT', payload: null, private: 'PRIVATE_LOGIN_REQUIRED', text: '연구 결과가 아직 없습니다', private_text: '비공개 연구 결과 · 로그인 필요' },
     allNull: ok(good('every metric null with its reason and an empty curve')),
     fourRuns: ok(good('with a MIXED and a point_in_time false run')),
+    v2: ok(F.payloadV2()),
     refused: {
       schema: refused('wrong schema_version'), missingTop: refused('missing top key'), missingRun: refused('missing run key'),
       order: refused('months not ascending'), start: refused('first strategy not 100'), total: refused('total_return off the last point'),

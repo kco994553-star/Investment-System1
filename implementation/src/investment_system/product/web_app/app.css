@@ -209,6 +209,15 @@ svg.ico{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stro
 .check input{width:22px;height:22px;accent-color:var(--ink)}
 .lk{display:inline-flex;align-items:center;min-height:44px}
 .m-only{display:none}
+/* ---------- 1.1.8 기술 조건 필터 (feature 3.5): steps, metric cards, the table's tech column; line art only, no new colour (DC-25, DC-26) */
+.tf-step{display:flex;flex-direction:column;gap:8px;padding:10px 0;border-top:1.5px dashed var(--dash)}
+.tcards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
+.tcard{padding:12px 16px;display:flex;flex-direction:column;gap:4px;min-width:0;overflow-wrap:anywhere}
+.tf-filters{grid-template-columns:repeat(5,minmax(0,1fr))}
+.tech-cell{display:flex;flex-direction:column;gap:2px;font-size:13px;min-width:12em}
+.tech-cell .tm,.tech-line .tm{overflow-wrap:anywhere}
+.tech-why ul{margin:4px 0 0;padding-left:18px;font-size:13px}
+.tech-defs{display:flex;flex-direction:column;gap:4px}
 /* ---------- common base (2026-10-31): 준비 중 line, Lab status line, Lab table numbers and equity curve. Line art only (DC-25);
    unverified = dashed, checked = solid; the strategy is the ink line and the benchmark a dashed gray line, no new colour (DC-26). */
 .not-ready-why{color:var(--muted)}
@@ -258,6 +267,9 @@ svg.ico{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stro
  .model-boxes{grid-template-columns:minmax(0,1fr)}
  .lb-filters{grid-template-columns:repeat(2,minmax(0,1fr))}
  .lb-filters:not(.open){display:none}
+ .tcards{grid-template-columns:minmax(0,1fr)}
+ .tf-filters{grid-template-columns:minmax(0,1fr)}
+ .tf-step .sort-row{flex-wrap:wrap}
  [data-filter=industry],[data-filter=type],[data-filter=state]{grid-column:1/-1}
  .btn.reset{width:100%}
  .tbl td.qgv{text-align:right;font-weight:700}

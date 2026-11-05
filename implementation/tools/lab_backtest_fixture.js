@@ -9,6 +9,10 @@
 //    middle of June, a partial last month) and a SYNTHETIC run.
 //  - empty(): runs []. mixedRun(), pitFalseRun(): one more run each (MIXED data; universe.point_in_time false).
 //  - valid: more payloads the validator must accept; invalid: one payload per rejection rule, with its code and path.
+//  - lab-backtest-v2 (Main 2026-11-03, Codex #437 comment 6600537423): payloadV2() has the four agreed cases as full runs —
+//    not_computed (SAMPLE_DIAGNOSTIC, NOT_COMPUTED, C2_DENOMINATOR_UNKNOWN, FULL_MARKET population with n_total null), single
+//    company metric, sample diagnostic (8 of 10 securities, fraction 0.8) and the strategy backtest (the SYNTHETIC run's curve
+//    and metrics). validV2 / invalidV2 list more v2 payloads and one per v2 rejection rule.
 const SYNTHETIC_NOTE = '시험용 합성 값 · 실제 연구 결과 아님 (fixture)';
 const COMMIT = 'f00dfeed'.repeat(5);
 const r6 = (x) => Math.round(x * 1e6) / 1e6;
@@ -78,7 +82,7 @@ const invalid = [
   ['not an object: array', 'NOT_OBJECT', '$', () => [payload()]],
   ['not an object: JSON text', 'NOT_OBJECT', '$', () => JSON.stringify(payload())],
   ['not an object: null', 'NOT_OBJECT', '$', () => null],
-  ['wrong schema_version', 'SCHEMA_VERSION', '$.schema_version', edit((p) => { p.schema_version = 'lab-backtest-v2'; })],
+  ['wrong schema_version', 'SCHEMA_VERSION', '$.schema_version', edit((p) => { p.schema_version = 'lab-backtest-v3'; })],
   ['missing top key', 'KEY_MISSING', '$.source_commit', edit((p) => { delete p.source_commit; })],
   ['unknown top key', 'KEY_UNKNOWN', '$.note', edit((p) => { p.note = 'x'; })],
   ['missing nested key', 'KEY_MISSING', R0 + '.universe.survivorship_note', edit((p, r) => { delete r.universe.survivorship_note; })],
@@ -139,4 +143,74 @@ const invalid = [
   ['negative benchmark value', 'CURVE_VALUE', R0 + '.equity_curve[4].benchmark', edit((p, r) => { r.equity_curve[4].benchmark = -5; })],
 ];
 
-module.exports = Object.freeze({ SYNTHETIC_NOTE, COMMIT, payload, empty, mixedRun, pitFalseRun, wrap, metricsOf, drawdown, years, valid, invalid });
+// ---------------------------------------------------------------- lab-backtest-v2 (Codex agreement, synthetic cases only)
+const wrapV2 = (runs) => ({ ...wrap(runs), schema_version: 'lab-backtest-v2' });
+const nullMetrics = (reason) => ({ metrics: Object.fromEntries(['cagr', 'total_return', 'max_drawdown', 'volatility', 'sharpe', 'benchmark_cagr', 'excess_cagr'].map((k) => [k, null])),
+  null_reasons: Object.fromEntries(['cagr', 'total_return', 'max_drawdown', 'volatility', 'sharpe', 'benchmark_cagr', 'excess_cagr'].map((k) => [k, reason])) });
+function point({ id, name, kind, status = 'COMPUTED', reason = null, sample, population, diagnostics, data_status = 'SYNTHETIC' }) {
+  return { id, name, description: SYNTHETIC_NOTE, run_type: 'PILOT', data_status, validation_status: 'NOT_VALIDATED', qgv_version: 'v2',
+    universe: { definition: population.scope === 'FULL_MARKET' ? '전체 시장 C2 후보 (시험용 정의)' : '합성 고정 표본 (시험용 정의)', point_in_time: true, survivorship_note: '시험용 서술 · 실제 모집단 아님' },
+    period: null, rebalance: null, benchmark: null, costs: null, ...nullMetrics(status === 'NOT_COMPUTED' ? reason : 'NOT_A_STRATEGY_BACKTEST'), equity_curve: [],
+    limitations: [SYNTHETIC_NOTE, '전략 성과 아님'], result_kind: kind, computation_status: status, not_computed_reason: reason, as_of: '2018-02-16', sample, population, diagnostics };
+}
+const notComputed = () => point({ id: 'v2-not-computed', name: '입력 점검 · 미산출 (합성)', kind: 'SAMPLE_DIAGNOSTIC', status: 'NOT_COMPUTED', reason: 'C2_DENOMINATOR_UNKNOWN',
+  sample: { unit: 'company', n_requested: 10, n_used: 0, selection: '합성 입력 점검 표본' },
+  population: { id: 'synthetic-c2', scope: 'FULL_MARKET', as_of: '2018-02-16', completeness: 'UNKNOWN', n_total: null, null_reason: 'CANDIDATE_ROSTER_INCOMPLETE' },
+  diagnostics: [{ name: 'q_coverage', value: null, unit: 'fraction', null_reason: 'C2_DENOMINATOR_UNKNOWN', n_valid: null, n_total: null, population_ref: 'synthetic-c2' }] });
+const singleCompany = () => point({ id: 'v2-single-company', name: '1회사 원시 지표 (합성)', kind: 'SINGLE_COMPANY_METRIC',
+  sample: { unit: 'company', n_requested: 1, n_used: 1, selection: '합성 1회사 원시 지표 시험' },
+  population: { id: 'synthetic-one', scope: 'SAMPLE', as_of: '2018-02-16', completeness: 'COMPLETE', n_total: 1, null_reason: null },
+  diagnostics: [{ name: 'raw_metric_company_count', value: 1, unit: 'count', null_reason: null, n_valid: 1, n_total: 1, population_ref: 'synthetic-one' }] });
+const sampleDiagnostic = () => point({ id: 'v2-sample-diagnostic', name: '표본 진단 · 6개월 모멘텀 계산 범위 (합성)', kind: 'SAMPLE_DIAGNOSTIC',
+  sample: { unit: 'security', n_requested: 10, n_used: 8, selection: '합성 고정 10증권 표본; 전체시장 아님' },
+  population: { id: 'synthetic-sample', scope: 'SAMPLE', as_of: '2018-02-16', completeness: 'COMPLETE', n_total: 10, null_reason: null },
+  diagnostics: [{ name: 'momentum_6m_coverage', value: 0.8, unit: 'fraction', null_reason: null, n_valid: 8, n_total: 10, population_ref: 'synthetic-sample' },
+    { name: 'dollar_volume_6m_coverage', value: null, unit: 'fraction', null_reason: 'VALID_N_BELOW_10', n_valid: 7, n_total: null, population_ref: 'synthetic-sample' }] });
+const strategy = () => ({ ...synthetic(), id: 'v2-strategy-backtest', name: '전략 백테스트 (합성 장부)', result_kind: 'BACKTEST', computation_status: 'COMPUTED', not_computed_reason: null, as_of: null,
+  sample: { unit: 'security', n_requested: 10, n_used: 10, selection: '합성 장부 시험 모집단' },
+  population: { id: 'synthetic-strategy', scope: 'SAMPLE', as_of: '2018-02-16', completeness: 'COMPLETE', n_total: 10, null_reason: null }, diagnostics: [] });
+const payloadV2 = () => wrapV2([notComputed(), singleCompany(), sampleDiagnostic(), strategy()]);
+// p.runs: [0] not computed, [1] single company, [2] sample diagnostic, [3] strategy backtest.
+const editV2 = (fn) => () => { const p = payloadV2(); fn(p, ...p.runs); return p; };
+const validV2 = [
+  ['the four agreed cases', payloadV2],
+  ['empty runs (v2)', () => wrapV2([])],
+  ['REAL sample diagnostic with an unknown requested count', editV2((p, a, b, c) => { c.data_status = 'REAL'; c.sample.n_requested = null; })],
+  ['BACKTEST not computed: metrics null, empty curve, period kept', editV2((p, a, b, c, d) => { d.computation_status = 'NOT_COMPUTED'; d.not_computed_reason = 'PRICE_HISTORY_NOT_ATTACHED';
+    Object.assign(d, nullMetrics('PRICE_HISTORY_NOT_ATTACHED')); d.equity_curve = []; })],
+  ['fraction 0 of a known positive total', editV2((p, a, b, c) => { c.diagnostics[0] = { ...c.diagnostics[0], value: 0, n_valid: 0 }; })],
+];
+const RV = (i) => '$.runs[' + i + ']';
+const invalidV2 = [
+  ['v1 file with a v2 key', 'KEY_UNKNOWN', R0 + '.result_kind', edit((p, r) => { r.result_kind = 'BACKTEST'; })],
+  ['v2 run without result_kind', 'KEY_MISSING', RV(0) + '.result_kind', editV2((p, a) => { delete a.result_kind; })],
+  ['unknown result_kind', 'ENUM', RV(0) + '.result_kind', editV2((p, a) => { a.result_kind = 'SCREEN'; })],
+  ['unknown computation_status', 'ENUM', RV(0) + '.computation_status', editV2((p, a) => { a.computation_status = 'PARTIAL'; })],
+  ['NOT_COMPUTED without reason', 'TYPE', RV(0) + '.not_computed_reason', editV2((p, a) => { a.not_computed_reason = null; })],
+  ['COMPUTED with a reason', 'NOT_COMPUTED_REASON', RV(1) + '.not_computed_reason', editV2((p, a, b) => { b.not_computed_reason = 'NOT_A_STRATEGY_BACKTEST'; })],
+  ['diagnostic without as_of', 'AS_OF_REQUIRED', RV(2) + '.as_of', editV2((p, a, b, c) => { c.as_of = null; })],
+  ['bad as_of', 'DATE_INVALID', RV(2) + '.as_of', editV2((p, a, b, c) => { c.as_of = '2018-02-30'; })],
+  ['non-backtest with a period', 'NON_BACKTEST_FIELD', RV(1) + '.period', editV2((p, a, b) => { b.period = { start: '2018-01-01', end: '2018-02-16' }; })],
+  ['non-backtest with zero costs', 'NON_BACKTEST_FIELD', RV(2) + '.costs', editV2((p, a, b, c) => { c.costs = { fee_bps: 0, slippage_bps: 0 }; })],
+  ['non-backtest with a metric', 'METRIC_NOT_ALLOWED', RV(2) + '.metrics.total_return', editV2((p, a, b, c) => { c.metrics.total_return = 0.1; delete c.null_reasons.total_return; })],
+  ['non-backtest with a curve', 'CURVE_NOT_ALLOWED', RV(1) + '.equity_curve', editV2((p, a, b) => { b.equity_curve = [{ date: '2018-02', strategy: 100, benchmark: 100 }]; })],
+  ['sample unit unknown', 'ENUM', RV(2) + '.sample.unit', editV2((p, a, b, c) => { c.sample.unit = 'issuer'; })],
+  ['n_used above n_requested', 'SAMPLE_RANGE', RV(2) + '.sample.n_used', editV2((p, a, b, c) => { c.sample.n_used = 11; })],
+  ['negative n_used', 'RANGE', RV(2) + '.sample.n_used', editV2((p, a, b, c) => { c.sample.n_used = -1; })],
+  ['population n_total null without reason', 'POPULATION_NULL_REASON', RV(0) + '.population.null_reason', editV2((p, a) => { a.population.null_reason = null; })],
+  ['incomplete full market with a total', 'POPULATION_INCOMPLETE', RV(0) + '.population.n_total', editV2((p, a) => { a.population.n_total = 4200; })],
+  ['bad population id', 'ID_INVALID', RV(1) + '.population.id', editV2((p, a, b) => { b.population.id = 'bad id'; b.diagnostics[0].population_ref = 'bad id'; })],
+  ['backtest with diagnostics', 'DIAGNOSTICS_BACKTEST', RV(3) + '.diagnostics', editV2((p, a, b, c, d) => { d.diagnostics = [{ ...b.diagnostics[0], population_ref: 'synthetic-strategy' }]; })],
+  ['diagnostic of another population', 'POPULATION_REF', RV(2) + '.diagnostics[0].population_ref', editV2((p, a, b, c) => { c.diagnostics[0].population_ref = 'synthetic-one'; })],
+  ['diagnostic unit unknown', 'ENUM', RV(2) + '.diagnostics[0].unit', editV2((p, a, b, c) => { c.diagnostics[0].unit = 'percent'; })],
+  ['fraction not n_valid / n_total', 'DIAGNOSTIC_FRACTION', RV(2) + '.diagnostics[0].value', editV2((p, a, b, c) => { c.diagnostics[0].value = 0.75; })],
+  ['fraction with an unknown total', 'DIAGNOSTIC_FRACTION', RV(2) + '.diagnostics[0].value', editV2((p, a, b, c) => { c.diagnostics[0].n_total = null; })],
+  ['fraction above 1', 'RANGE', RV(2) + '.diagnostics[0].value', editV2((p, a, b, c) => { c.diagnostics[0].value = 1.2; })],
+  ['count not an integer', 'TYPE', RV(1) + '.diagnostics[0].value', editV2((p, a, b) => { b.diagnostics[0].value = 1.5; })],
+  ['null diagnostic without reason', 'TYPE', RV(0) + '.diagnostics[0].null_reason', editV2((p, a) => { a.diagnostics[0].null_reason = null; })],
+  ['diagnostic value with a reason', 'NULL_REASON_UNUSED', RV(1) + '.diagnostics[0].null_reason', editV2((p, a, b) => { b.diagnostics[0].null_reason = 'VALID_N_BELOW_10'; })],
+  ['n_valid above n_total', 'RANGE', RV(1) + '.diagnostics[0].n_valid', editV2((p, a, b) => { b.diagnostics[0].n_valid = 2; })],
+];
+
+module.exports = Object.freeze({ SYNTHETIC_NOTE, COMMIT, payload, empty, mixedRun, pitFalseRun, wrap, metricsOf, drawdown, years, valid, invalid,
+  wrapV2, payloadV2, validV2, invalidV2 });
