@@ -463,12 +463,18 @@ def merge(previous, collected, *, as_of, sec=None, counts=None, failures=None):
             empty = _empty_source(source, cid)
             got = collected.get(source, {}).get(cid)
             old_entry = previous['sources'][source][cid] if previous is not None else None
+            older_input = bool(got is not None and old_entry and old_entry['acquired_at']
+                               and instant(got['acquired_at']) < old_entry['acquired_at'])
+            if older_input:
+                got = None
             old_rows = [dict(i) for i in previous_items if i['source'] == source and i['company_id'] == cid
                         and _clock(i['published_at']) >= cutoff]
             if source == 'IR' and cid not in IR_FEEDS:
                 sources[source][cid] = dict(empty, last_result=None, last_result_code=None)
                 continue
-            if not attempted:
+            if older_input:
+                result = ('NOT_RUN', 'OLDER_INPUT')
+            elif not attempted:
                 result = (None, None)
             elif got is not None:
                 result = ('COLLECTED', None)  # UPDATED or NO_NEW_ITEMS once the published items are known
@@ -481,8 +487,20 @@ def merge(previous, collected, *, as_of, sec=None, counts=None, failures=None):
                 _need(acquired <= as_of)
                 fresh = [n for n in (normalize(source, cid, r, acquired_at=acquired, cutoff=cutoff, counts=counts)
                                      for r in got['rows']) if n is not None]
-                known = {i['link'] for i in old_rows}
-                rows = old_rows + [n for n in fresh if n['link'] not in known]
+                # The link is identity, not an immutable version: publishers can correct a title.
+                # Only the first row of a response for that link wins (same precedence as before).
+                known = {i['link']: i for i in old_rows}
+                seen_fresh = set()
+                for n in fresh:
+                    if n['link'] in seen_fresh:
+                        counts['duplicates'] = counts.get('duplicates', 0) + 1
+                        continue
+                    seen_fresh.add(n['link'])
+                    old = known.get(n['link'])
+                    if old and (old['title'], old['published_at']) != (n['title'], n['published_at']):
+                        counts['revisions'] = counts.get('revisions', 0) + 1
+                    known[n['link']] = n
+                rows = list(known.values())
                 acquired_at = instant(acquired)
             elif old_entry is not None and old_entry['acquired_at'] is not None:
                 rows, acquired_at = old_rows, old_entry['acquired_at']
