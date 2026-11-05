@@ -1,0 +1,786 @@
+"""Pure orchestration of EXP-STOCK-INDICATOR-DECILES-v1: the selection stage of one signal year and the ledger stage.
+
+New for this experiment (nothing ported). No file, network or provider access: the CLI
+(implementation/tools/exp_stock_indicator_deciles.py) reads the verified bundle, calls these two functions and writes their
+JSON-ready results; this module only calls the package's pure functions in the fixed order (settings doc section 6.1).
+
+Selection stage (selection_stage, one signal year from the frozen schedule):
+  records -> universe.build_universes (the previous S's U-A members, U-A UNKNOWN units and their carried class IDs passed
+  in for later years, plus any evidenced terminations; review F3 / U1) -> pit.build_rows for the U-A
+  representative securities (one issuer at a time, companyfacts loaded lazily) -> scoring.score_population on the U-A
+  population -> selection.select_all for U_A and U_B.
+  Returns a selection_inputs/1 dict (SELECTION_SCHEMA): run metadata, the signal context, counts (securities; candidate /
+  eligible / excluded / unknown and by-reason counts per group; U-A transitions; scoring coverage; per strategy and group
+  status, N, k, NOT_RUN reason, not-eligible reasons and, per preset-total cell, totals_without_v: operational D11 is not
+  applied, owner decision pending; rows scored without an as-filed SIC, review SYN-2), the pinned scoring config
+  identities (review SYN-M1; an override that differs is refused, NON_FROZEN_SCORING_CONFIG), every security's universe
+  status and reasons, every issuer's
+  market cap, representative and group statuses, the PIT rows, factor / axis / total scores, gate flags, ranks and the
+  top / bottom lists. 'QGV_DEFAULT' is recorded in strategy_aliases (-> QGV_BALANCED), never as a second selection.
+  ADR quotes: the quote of an ADR representative is per ADS; it is divided by the record's adr_ratio so the engine sees
+  a price per ordinary share (quote_basis ADR_PER_ORDINARY_SHARE, set only when the division happened); without a
+  confirmed ratio it is withheld with ADR_RATIO_UNCONFIRMED. An ADR quote price or month close given as a float is read
+  through Decimal(str(x)) before the division (review F6), one that is not a number withholds the quote
+  (ADR_QUOTE_PRICE_INVALID) or drops that close. Quote prices given as decimal text are read as Decimal.
+
+Ledger stage (ledger_stage, one or more consecutive yearly selection_inputs):
+  - portfolios: one per strategy x group x side (TOP / BOTTOM) plus GROUP_EQUAL_WEIGHT per group (every U-A / U-B member
+    security at that S, settings doc section 1 "같은 그룹 적격 전체 동일가중");
+  - a strategy NOT_RUN in a year (or a group with no members) holds cash that year: its Rebalance has no selected names, so
+    the ledger sells what it holds at that T open and keeps the cash; the year is recorded with holding 'CASH' and the
+    reason. A portfolio that is cash in every year is ALL_CASH and no ledger is run for it;
+  - every other portfolio: ledger.run_scenarios (LOSS and CARRY) at 0 bp and at settings.COST_BPS_PER_SIDE, then
+    metrics.cost_comparison (which holds metrics.ledger_metrics of both runs) per scenario. Metrics start at the T of
+    the portfolio's first selected rebalance (a year whose picks all went unfilled is cash, review M1); the information
+    ratio of a strategy uses the same group's equal-weight portfolio of the same scenario and cost as its benchmark
+    (review R6); Sharpe / Sortino use the optional verified risk_free input, else MISSING_RISK_FREE. The portfolio's
+    daily_coverage is DAILY_COVERAGE_COMPLETE only when every run's price rows cover every session of the holding period
+    for every held name, else DAILY_PRICES_NOT_SUPPLIED and its daily metrics are null (monthly metrics are reported
+    separately, basis MONTHLY; owner 11/01 decision 7). A stale terminal mark nulls the endpoint metrics
+    (TERMINAL_MARK_STALE, review R1). Reported NAV (review R8): every daily ledger row carries nav_index (the base-100
+    index, the reported NAV) next to the internal notional USD nav; the run, metrics and output headers name the USD base
+    internal_notional_capital_usd with reported_nav INDEX_BASE_100 (never 'initial_capital');
+  - optional external total-return series, bound to the settings slot SPY_TOTAL_RETURN_ETF_AUXILIARY (review R2 /
+    SYN-1): only an SPY ETF series is accepted, as an ETF auxiliary comparison; a claim or label of the S&P 500 index
+    total return, another claim, or a non-SPY series is recorded as REFUSED with its code and the rest of the stage
+    continues. benchmarks.external_tr_benchmark from the first T, then metrics.series_metrics;
+  - sessions are the canonical NYSE rule calendar (schedule.is_session) from the first S; every run stops at `end`.
+    Default end (review F4, settings doc 6.2 "hold to the next reselection T open"): the T of the year after the last
+    selection year, valued at that T's OPEN (end_rule NEXT_RESELECTION_T_OPEN, end_valuation OPEN: open marks, no
+    trades, LOSS / CARRY unchanged) for every strategy, the group EW and the external TR (which uses its open level,
+    else the immediately preceding session's close flagged END_AT_PREVIOUS_CLOSE). That T comes from the frozen
+    schedule, or, for the year after the last frozen year, from the rule calendar (schedule.annual_dates;
+    next_reselection_t_source RULE_CALENDAR, review R4); where the rule calendar ends no end is determinable
+    (END_NOT_DETERMINABLE, fail closed). A supplied end later than that next T is refused (END_PAST_NEXT_RESELECTION,
+    review F9: the picks would be held through a reselection whose selection is absent); a supplied end equal to it is
+    valued at its open; an earlier one at its close.
+  Each selection's flags are copied into selection_flags by year (review U3).
+  Returns a ledger_outputs/1 dict (LEDGER_SCHEMA). 'QGV_DEFAULT' is an alias of the QGV_BALANCED portfolios.
+
+Both results are JSON-ready (handoff.jsonable): Decimals as text, dates as ISO text, so the in-memory result and its JSON
+file are the same object.
+"""
+from __future__ import annotations
+
+from collections import Counter, defaultdict
+from datetime import date
+from decimal import Decimal, InvalidOperation, localcontext
+from typing import Mapping
+
+from . import benchmarks, handoff, ledger, metrics, pit, schedule, scoring, selection, settings, universe
+
+SELECTION_SCHEMA = 'exp-deciles-selection-inputs/1'
+LEDGER_SCHEMA = 'exp-deciles-ledger-outputs/1'
+SIDES = ('TOP', 'BOTTOM')
+KIND_STRATEGY = 'STRATEGY'
+KIND_GROUP_EW = benchmarks.GROUP_EQUAL_WEIGHT
+HOLD_SELECTED, HOLD_CASH = 'SELECTED', 'CASH'
+PORTFOLIO_RUN, PORTFOLIO_ALL_CASH = 'RUN', 'ALL_CASH'
+NO_GROUP_MEMBERS = 'NO_GROUP_MEMBERS'
+NOT_STARTED = metrics.NOT_STARTED   # a run that reached no selected rebalance (every metric null); review M1
+QUOTE_ADR_PER_ORDINARY_SHARE = 'ADR_PER_ORDINARY_SHARE'
+ADR_QUOTE_PRICE_INVALID = 'ADR_QUOTE_PRICE_INVALID'
+END_NEXT_RESELECTION_T_OPEN = 'NEXT_RESELECTION_T_OPEN'
+END_SUPPLIED = 'SUPPLIED'
+NEXT_T_FROZEN, NEXT_T_RULE_CALENDAR = 'FROZEN_SCHEDULE', 'RULE_CALENDAR'
+EXTERNAL_SLOT_IS_SPY_ETF_AUXILIARY = 'EXTERNAL_SLOT_IS_SPY_ETF_AUXILIARY'
+if benchmarks.CLAIM_SPY_ETF_AUXILIARY not in settings.BENCHMARKS:      # the external slot is the settings slot
+    raise RuntimeError('EXTERNAL_BENCHMARK_SLOT_NOT_IN_SETTINGS')
+FIRST_BUILD_NOT_FIRST_BUNDLE = 'FIRST_BUILD_NOT_FIRST_BUNDLE_SIGNAL_DAY'
+
+
+class RunnerError(ValueError):
+    """Refused stage input. The message is an UPPER_SNAKE reason code."""
+
+
+def _day(value, code='DATE_INVALID'):
+    if type(value) is date:
+        return value
+    if isinstance(value, str):
+        try:
+            return date.fromisoformat(value)
+        except ValueError:
+            pass
+    raise RunnerError(code)
+
+
+def _cik(value):
+    try:
+        return pit._cik(value)
+    except ValueError:
+        raise RunnerError('CIK_INVALID') from None
+
+
+def _quote_decimal(value):
+    """int / Decimal / finite float (through Decimal(str(x))) / decimal text -> finite Decimal, else None."""
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, float):
+        value = str(value)
+    if isinstance(value, int):
+        return Decimal(value)
+    if isinstance(value, str):
+        try:
+            value = Decimal(value.strip())
+        except InvalidOperation:
+            return None
+    if isinstance(value, Decimal) and value.is_finite():
+        return value
+    return None
+
+
+def _decimal_or_same(value):
+    """Decimal text -> Decimal; anything else unchanged (the scoring quote check decides)."""
+    if isinstance(value, str):
+        try:
+            out = Decimal(value.strip())
+        except InvalidOperation:
+            return value
+        return out if out.is_finite() else value
+    return value
+
+
+# ---- selection stage -----------------------------------------------------------------------------------------------
+def _companyfacts_loader(companyfacts):
+    """callable(cik) -> companyfacts | None from None, a mapping (any CIK padding) or a loader callable."""
+    if companyfacts is None:
+        return lambda cik: None
+    if callable(companyfacts):
+        return companyfacts
+    if not isinstance(companyfacts, Mapping):
+        raise RunnerError('COMPANYFACTS_MAPPING_REQUIRED')
+    normalized = {}
+    for key, facts in companyfacts.items():
+        cik = _cik(key)
+        if cik in normalized:
+            raise RunnerError('DUPLICATE_COMPANYFACTS_CIK')
+        normalized[cik] = facts
+    return normalized.get
+
+
+def pit_rows(issuers, companyfacts, filing_rows, signal_day, execution_day):
+    """pit.build_rows one issuer at a time: each issuer's companyfacts is loaded only for its own row (a whole-market
+    bundle never sits in memory at once) and only its own as-filed SIC rows are scanned. Same rows as one build_rows call."""
+    load = _companyfacts_loader(companyfacts)
+    filings = defaultdict(list)
+    for row in filing_rows or ():
+        if isinstance(row, Mapping):
+            try:
+                filings[pit._cik(row.get('cik'))].append(row)
+            except ValueError:
+                continue     # as_filed_sic skips a row without a valid CIK as well
+    rows = {}
+    for issuer in issuers:
+        cik = _cik(issuer['cik'])
+        facts = load(cik)
+        built = pit.build_rows({} if facts is None else {cik: facts}, filings.get(cik, ()), [issuer], signal_day,
+                               execution_day)
+        if set(built) & set(rows):
+            raise RunnerError('DUPLICATE_SECURITY_ID')
+        rows.update(built)
+    return rows
+
+
+def scoring_quotes(quotes, universe_result):
+    """(quotes for scoring.score_population keyed by the U-A representative IDs, {security_id: quote basis}).
+
+    Decimal text is read as Decimal; an ADR representative's per-ADS quote is divided by its adr_ratio (price and month
+    closes; floats through Decimal(str(x))), or withheld with ADR_RATIO_UNCONFIRMED when the ratio is not confirmed or
+    ADR_QUOTE_PRICE_INVALID when its price is not a number. Other quotes pass unchanged."""
+    quotes = quotes or {}
+    if not isinstance(quotes, Mapping):
+        raise RunnerError('QUOTES_MAPPING_REQUIRED')
+    ratios = {c['security_id']: c['adr_ratio'] for issuer in universe_result['issuers'].values()
+              for c in issuer['classes'] if c['security_type'] == settings.ADR_SECURITY_TYPE}
+    out, basis = {}, {}
+    for sid in universe_result[settings.U_A]['member_securities']:
+        quote = quotes.get(sid)
+        if quote is None:
+            continue
+        if not isinstance(quote, Mapping):
+            raise RunnerError('QUOTE_MUST_BE_DICT')
+        quote = dict(quote)
+        quote['price'] = _decimal_or_same(quote.get('price'))
+        if isinstance(quote.get('month_closes'), Mapping):
+            quote['month_closes'] = {m: _decimal_or_same(v) for m, v in quote['month_closes'].items()}
+        if universe_result['securities'][sid]['security_type'] == settings.ADR_SECURITY_TYPE \
+                and quote.get('withheld_reason') is None:
+            ratio = ratios.get(sid)
+            price = _quote_decimal(quote['price'])
+            if ratio is None:
+                quote['withheld_reason'] = universe.ADR_RATIO_UNCONFIRMED
+                basis[sid] = universe.ADR_RATIO_UNCONFIRMED
+            elif price is None:
+                quote['withheld_reason'] = ADR_QUOTE_PRICE_INVALID
+                basis[sid] = ADR_QUOTE_PRICE_INVALID
+            else:
+                with localcontext() as ctx:
+                    ctx.prec = universe.DECIMAL_PRECISION
+                    quote['price'] = price / ratio
+                    if isinstance(quote.get('month_closes'), Mapping):
+                        closes = {m: _quote_decimal(v) for m, v in quote['month_closes'].items()}
+                        quote['month_closes'] = {m: v / ratio for m, v in closes.items() if v is not None}
+                basis[sid] = QUOTE_ADR_PER_ORDINARY_SHARE
+        out[sid] = quote
+    return out, basis
+
+
+def _strategy_counts(selections, groups, scores):
+    """Per strategy and group: status, N, k, not-eligible reasons and, for a preset total, totals_without_v = the
+    eligible (ranked) members whose total has no V axis (operational D11 is not applied, owner decision pending)."""
+    out = {}
+    for strategy in settings.STRATEGY_IDS:
+        out[strategy] = {}
+        total = settings.STRATEGIES[strategy]['kind'] == 'TOTAL'
+        for group in settings.GROUPS:
+            sel = selections[strategy][group]
+            eligible = set(groups[group]) - set(sel['not_eligible'])
+            out[strategy][group] = {'status': sel['status'], 'reason': sel['reason'], 'members': sel['members'],
+                                    'N': sel['N'], 'k': sel['k'],
+                                    'not_eligible_by_reason': dict(sorted(Counter(sel['not_eligible'].values()).items())),
+                                    'totals_without_v': (sum(1 for sid in eligible
+                                                             if scores['securities'][sid]['axes']['V'] is None)
+                                                         if total else None)}
+    return out
+
+
+def selection_stage(records, *, year, companyfacts=None, filing_rows=(), quotes=None, previous_u_a=None,
+                    previous_u_a_unknown=None, previous_u_a_securities=None, terminations=None, run=None,
+                    type_config=None, parameters=None, playbook_config=None):
+    """selection_inputs/1 for the frozen signal year `year` (see the module doc).
+
+    records: universe security records at that S; companyfacts: {cik: SEC companyfacts} or a loader callable(cik);
+    filing_rows: as-filed SIC rows {cik, accn, filed, sic}; quotes: {security_id: {price, currency, month_closes,
+    withheld_reason?}} at S; previous_u_a: the U-A member CIKs at the previous S (None = first build);
+    previous_u_a_unknown: the previous S's U-A UNKNOWN unit IDs and previous_u_a_securities their and the members' class
+    IDs (u_a_state of the previous selection; both required with previous_u_a, review U1); terminations:
+    evidenced terminations (universe module doc); run: the handoff.run_metadata block (or None)."""
+    if type(year) is not int:
+        raise RunnerError('YEAR_MUST_BE_INT')
+    if not schedule.verify_frozen()['ok']:
+        raise RunnerError('FROZEN_SCHEDULE_INVALID')
+    try:
+        frozen = schedule.frozen_row(year=year)
+    except ValueError:
+        raise RunnerError('YEAR_NOT_IN_FROZEN_SCHEDULE') from None
+    context = pit.signal_context(frozen['S'], frozen['T'])
+    # Review SYN-M1: the scoring configs are the ones pinned in settings_sha256; an override that differs is refused.
+    configs = settings.scoring_configs()
+    for name, override in (('type_config', type_config), ('dcf_parameters', parameters),
+                           ('playbook', playbook_config)):
+        if override is not None:
+            configs[name] = override
+    try:
+        identities = {name: settings.config_identity(config) for name, config in configs.items()}
+    except (ValueError, TypeError):
+        raise RunnerError('NON_FROZEN_SCORING_CONFIG') from None
+    if identities != settings.SCORING_CONFIG:
+        raise RunnerError('NON_FROZEN_SCORING_CONFIG')
+    previous = None if previous_u_a is None else sorted({_cik(c) for c in previous_u_a})
+    if previous is None and previous_u_a_unknown:
+        raise RunnerError('PREVIOUS_U_A_UNKNOWN_WITHOUT_MEMBERS')
+    if previous is None and previous_u_a_securities:
+        raise RunnerError('PREVIOUS_U_A_SECURITIES_WITHOUT_MEMBERS')
+    if previous is not None and previous_u_a_securities is None:
+        raise RunnerError('PREVIOUS_U_A_SECURITIES_REQUIRED')
+    previous_unknown = None if previous is None else sorted({universe._unit_id(u) for u in previous_u_a_unknown or ()})
+    try:
+        previous_classes = None if previous is None else {
+            unit: sorted(ids) for unit, ids in sorted(universe._class_ids(previous_u_a_securities).items())}
+    except (ValueError, TypeError):
+        raise RunnerError('PREVIOUS_U_A_SECURITIES_INVALID') from None
+    uni = universe.build_universes(records, previous_u_a=previous, previous_u_a_unknown=previous_unknown,
+                                   previous_u_a_securities=previous_classes, terminations=terminations,
+                                   signal_day=frozen['S'])
+    ua = uni[settings.U_A]
+    issuers = [{'cik': cik, 'security_id': ua['representatives'][cik]} for cik in ua['members']]
+    rows = pit_rows(issuers, companyfacts, filing_rows, frozen['S'], frozen['T'])
+    engine_quotes, quote_basis = scoring_quotes(quotes, uni)
+    scores = scoring.score_population(rows, engine_quotes, population=ua['member_securities'],
+                                      type_config=configs['type_config'], parameters=configs['dcf_parameters'],
+                                      playbook_config=configs['playbook'])
+    groups = {group: uni[group]['member_securities'] for group in settings.GROUPS}
+    selections = selection.select_all(scores, groups)
+    flags = []
+    if previous is None and frozen['S'] != settings.FIRST_BUNDLE['S']:
+        flags.append(FIRST_BUILD_NOT_FIRST_BUNDLE)
+    transitions = ua['transitions']
+    row_states = Counter(row['state'] for row in rows.values())
+    quote_status = Counter(sec['quote_status'] for sec in scores['securities'].values())
+    out = {
+        'schema': SELECTION_SCHEMA, 'experiment_id': settings.EXPERIMENT_ID,
+        'settings_sha256': settings.settings_sha256(), 'stage': 'select', 'run': run or {},
+        'year': year, 'signal': dict(frozen, compute_cutoff=context['compute_cutoff'], rule=context['rule']),
+        'first_build': previous is None, 'previous_u_a': previous, 'previous_u_a_unknown': previous_unknown,
+        'previous_u_a_securities': previous_classes,
+        'flags': flags,
+        'counts': {
+            'securities': uni['security_counts'],
+            settings.U_A: ua['counts'], settings.U_B: uni[settings.U_B]['counts'],
+            'u_a_transitions': {'entered': len(transitions['entered']), 'stayed': len(transitions['stayed']),
+                                'left': len(transitions['left']),
+                                'left_by_reason': dict(sorted(Counter(item['reasons'][0] for item in transitions['left']
+                                                                      if item['reasons']).items())),
+                                'unknown_to_next_s': len(ua['unknown']), 'terminated': len(ua['terminated'])},
+            'pit_rows': {'rows': len(rows), 'by_state': dict(sorted(row_states.items())),
+                         # review SYN-2: scored as calc 23.1 does without a SIC (GENERAL, industry NA), never with a
+                         # current SIC
+                         'without_as_filed_sic': sum(1 for row in rows.values()
+                                                     if pit.SIC_AS_FILED_NOT_AVAILABLE in row['reason_codes']),
+                         'scored_without_as_filed_sic': sum(
+                             1 for sid, row in rows.items() if pit.SIC_AS_FILED_NOT_AVAILABLE in row['reason_codes']
+                             and sid in scores['securities'] and scores['securities'][sid]['row_state'] == 'LIVE')},
+            'scoring': dict(scores['summary'], quote_status=dict(sorted(quote_status.items()))),
+            'strategies': _strategy_counts(selections, groups, scores),
+        },
+        'universe': {'schema': uni['schema'], 'signal_day': uni['signal_day'], 'first_build': uni['first_build'],
+                     'thresholds': uni['thresholds'], 'securities': uni['securities'], 'issuers': uni['issuers'],
+                     'previous': uni['previous'], 'terminations': uni['terminations'],
+                     settings.U_A: {key: ua[key] for key in ('members', 'member_securities', 'representatives',
+                                                             'unknown', 'unit_securities', 'terminated',
+                                                             'transitions')},
+                     settings.U_B: {key: uni[settings.U_B][key] for key in ('members', 'member_securities',
+                                                                            'representatives')}},
+        'pit': {'context': context, 'rows': rows},
+        'quote_basis': quote_basis,
+        'scores': {key: scores[key] for key in ('schema', 'scoring_population', 'calc_version', 'summary',
+                                                'securities')},
+        'selections': {strategy: selections[strategy] for strategy in settings.STRATEGY_IDS},
+        'strategy_aliases': dict(settings.STRATEGY_ALIASES), 'preset_aliases': dict(settings.PRESET_ALIASES),
+        'scoring_config': dict(identities),
+        'operational_d11': 'NOT_APPLIED_OWNER_DECISION_PENDING',
+    }
+    return handoff.jsonable(out)
+
+
+def u_a_members(selection_inputs):
+    """The U-A member CIKs of a selection_inputs/1 result (the next year's previous_u_a)."""
+    _check_selection(selection_inputs)
+    return list(selection_inputs['universe'][settings.U_A]['members'])
+
+
+def u_a_state(selection_inputs):
+    """{'members', 'unknown', 'securities'} of a selection_inputs/1 result: what the next S needs (previous_u_a,
+    previous_u_a_unknown and previous_u_a_securities; review F3 / U1)."""
+    _check_selection(selection_inputs)
+    block = selection_inputs['universe'][settings.U_A]
+    return {'members': list(block['members']), 'unknown': list(block['unknown']),
+            'securities': {unit: list(ids) for unit, ids in block['unit_securities'].items()}}
+
+
+# ---- ledger stage --------------------------------------------------------------------------------------------------
+def _check_selection(item):
+    if not isinstance(item, Mapping) or item.get('schema') != SELECTION_SCHEMA:
+        raise RunnerError('SELECTION_SCHEMA_INVALID')
+    if item.get('experiment_id') != settings.EXPERIMENT_ID:
+        raise RunnerError('SELECTION_EXPERIMENT_MISMATCH')
+    if item.get('settings_sha256') != settings.settings_sha256():
+        raise RunnerError('SETTINGS_SHA256_MISMATCH')
+
+
+def _ordered_selections(selections):
+    items = list(selections)
+    if not items:
+        raise RunnerError('SELECTION_REQUIRED')
+    for item in items:
+        _check_selection(item)
+        if type(item.get('year')) is not int:
+            raise RunnerError('SELECTION_YEAR_INVALID')
+        try:
+            frozen = schedule.frozen_row(year=item['year'])
+        except ValueError:
+            raise RunnerError('SELECTION_YEAR_INVALID') from None
+        if (item['signal'].get('S'), item['signal'].get('T')) != (frozen['S'], frozen['T']):
+            raise RunnerError('SELECTION_SIGNAL_DAY_MISMATCH')
+    items.sort(key=lambda x: x['year'])
+    years = [x['year'] for x in items]
+    if len(set(years)) != len(years):
+        raise RunnerError('SELECTION_YEAR_DUPLICATE')
+    if any(b - a != 1 for a, b in zip(years, years[1:])):
+        raise RunnerError('SELECTION_YEARS_NOT_CONSECUTIVE')
+    for a, b in zip(items, items[1:]):
+        state = a['universe'][settings.U_A]
+        if (b['previous_u_a'] != state['members'] or b.get('previous_u_a_unknown') != state['unknown']
+                or b.get('previous_u_a_securities') != state.get('unit_securities')):
+            raise RunnerError('HYSTERESIS_CHAIN_BROKEN')
+    return items
+
+
+def price_rows(rows):
+    """Ledger price rows with `date` as a date (ISO text accepted); every other field is passed to the ledger as is."""
+    out = []
+    for row in rows or ():
+        if not isinstance(row, Mapping):
+            raise RunnerError('PRICE_ROW_MUST_BE_DICT')
+        out.append(dict(row, date=_day(row.get('date'), 'PRICE_DATE_INVALID')))
+    return out
+
+
+_EVENT_FIELDS = {
+    'SPLIT': (ledger.Split, ('event_id', 'effective_date', 'security_id', 'ratio'), ()),
+    'DIVIDEND': (ledger.Dividend, ('event_id', 'effective_date', 'security_id', 'cash_per_share'),
+                 ('pay_date', 'depositary_fee_per_share')),
+    'SETTLEMENT': (ledger.Settlement, ('event_id', 'effective_date', 'security_id', 'kind', 'available_at', 'evidence'),
+                   ('settlement_date', 'cash_per_share', 'new_security_id', 'stock_ratio')),
+    'SETTLEMENT_CONFIRMATION': (ledger.SettlementConfirmation,
+                                ('event_id', 'available_at', 'evidence', 'settlement_date', 'cash_per_share'),
+                                ('new_security_id', 'stock_ratio')),
+}
+_EVENT_DATES = ('effective_date', 'available_at', 'settlement_date', 'pay_date')
+_EVENT_DECIMALS = ('ratio', 'cash_per_share', 'stock_ratio', 'depositary_fee_per_share')
+
+
+def ledger_events(rows):
+    """Ledger event objects from rows {'type': SPLIT | DIVIDEND | SETTLEMENT | SETTLEMENT_CONFIRMATION, ...fields}.
+    Ledger objects pass through. Dates as ISO text; amounts as decimal text or numbers (read exactly)."""
+    out = []
+    for row in rows or ():
+        if isinstance(row, tuple(spec[0] for spec in _EVENT_FIELDS.values())):
+            out.append(row)
+            continue
+        if not isinstance(row, Mapping) or row.get('type') not in _EVENT_FIELDS:
+            raise RunnerError('EVENT_TYPE_INVALID')
+        cls, required, optional = _EVENT_FIELDS[row['type']]
+        keys = set(row) - {'type'}
+        if not set(required) <= keys or keys - set(required) - set(optional):
+            raise RunnerError('EVENT_FIELDS_INVALID')
+        values = {}
+        for key in keys:
+            value = row[key]
+            if key in _EVENT_DATES and value is not None:
+                value = _day(value, 'EVENT_DATE_INVALID')
+            elif key in _EVENT_DECIMALS and value is not None:
+                if isinstance(value, bool) or not isinstance(value, (int, str, Decimal)):
+                    raise RunnerError('EVENT_AMOUNT_INVALID')
+                try:
+                    value = Decimal(str(value))
+                except InvalidOperation:
+                    raise RunnerError('EVENT_AMOUNT_INVALID') from None
+            values[key] = value
+        out.append(cls(**values))
+    return out
+
+
+def calendar_sessions(start, end):
+    """Canonical NYSE rule-calendar sessions from start to end inclusive."""
+    start, end = _day(start), _day(end)
+    if end < start:
+        raise RunnerError('END_BEFORE_START')
+    out, day = [], schedule.session_on_or_after(start)
+    while day <= end:
+        out.append(day)
+        day = schedule.next_session(day)
+    return out
+
+
+def next_reselection(last_year):
+    """(T, source) of the year after `last_year`: the frozen T, else the rule calendar's T (review R4), else
+    (None, None) where the rule calendar ends."""
+    try:
+        return _day(schedule.frozen_row(year=last_year + 1)['T']), NEXT_T_FROZEN
+    except ValueError:
+        pass
+    try:
+        return _day(schedule.annual_dates(last_year + 1)['T']), NEXT_T_RULE_CALENDAR
+    except Exception:  # noqa: BLE001 - outside the rule calendar (CalendarNotConfigured and the like)
+        return None, None
+
+
+def next_reselection_t(last_year):
+    """The T of the year after `last_year` (frozen, else rule calendar), or None where the rule calendar ends."""
+    return next_reselection(last_year)[0]
+
+
+def default_end(last_year, prices=()):
+    """(end, rule, valuation): the next reselection T valued at its open (review F4 / R4); refused
+    (END_NOT_DETERMINABLE) where no next T can be determined."""
+    next_t = next_reselection_t(last_year)
+    if next_t is None:
+        raise RunnerError('END_NOT_DETERMINABLE')
+    return next_t, END_NEXT_RESELECTION_T_OPEN, ledger.VALUATION_OPEN
+
+
+def supplied_end(value, last_year):
+    """(end, rule, valuation) of a supplied end: refused past the next reselection T (review F9 / R4), valued at the
+    open when it is that T, else at its close; refused where no next T can be determined."""
+    end = _day(value, 'END_INVALID')
+    next_t = next_reselection_t(last_year)
+    if next_t is None:
+        raise RunnerError('END_NOT_DETERMINABLE')
+    if end > next_t:
+        raise RunnerError('END_PAST_NEXT_RESELECTION')
+    return end, END_SUPPLIED, ledger.VALUATION_OPEN if end == next_t else ledger.VALUATION_CLOSE
+
+
+def _strategy_years(items, strategy, group, side):
+    years = []
+    for item in items:
+        sel = item['selections'][strategy][group]
+        base = {'year': item['year'], 'S': item['signal']['S'], 'T': item['signal']['T'], 'status': sel['status'],
+                'reason': sel['reason'], 'N': sel['N'], 'k': sel['k']}
+        if sel['status'] == selection.RUN:
+            names = [entry['security_id'] for entry in sel[side.lower()]]
+            years.append(dict(base, holding=HOLD_SELECTED if names else HOLD_CASH, selected=names))
+        else:
+            years.append(dict(base, holding=HOLD_CASH, selected=[]))
+    return years
+
+
+def _group_years(items, group):
+    years = []
+    for item in items:
+        names = list(item['universe'][group]['member_securities'])
+        years.append({'year': item['year'], 'S': item['signal']['S'], 'T': item['signal']['T'],
+                      'status': selection.RUN if names else selection.NOT_RUN,
+                      'reason': None if names else NO_GROUP_MEMBERS, 'N': len(names), 'k': None,
+                      'holding': HOLD_SELECTED if names else HOLD_CASH, 'selected': names})
+    return years
+
+
+def _needed_securities(selected, events):
+    """Selected IDs plus every security a stock merger or spin-off of a needed security can deliver (closure)."""
+    needed = set(selected)
+    deliveries = defaultdict(set)
+    by_event = {}
+    for event in events:
+        if isinstance(event, ledger.Settlement):
+            by_event[event.event_id] = event.security_id
+            if event.new_security_id:
+                deliveries[event.security_id].add(event.new_security_id)
+    for event in events:
+        if isinstance(event, ledger.SettlementConfirmation) and event.new_security_id and event.event_id in by_event:
+            deliveries[by_event[event.event_id]].add(event.new_security_id)
+    frontier = list(needed)
+    while frontier:
+        sid = frontier.pop()
+        for new in deliveries.get(sid, ()):
+            if new not in needed:
+                needed.add(new)
+                frontier.append(new)
+    return needed
+
+
+def _reported(result, capital):
+    """A ledger / TR result with the USD base named internal_notional_capital_usd and a base-100 nav_index on every
+    daily row (review R8)."""
+    out = dict(result)
+    out['internal_notional_capital_usd'] = out.pop('initial_capital')
+    out['reported_nav'] = settings.REPORTED_NAV
+    with localcontext() as ctx:
+        ctx.prec = 50
+        out['daily'] = [dict(row, nav_index=None if row['nav'] is None else row['nav'] / capital * 100)
+                        for row in out['daily']]
+    return out
+
+
+def _run_portfolio(rebalances, prices_by_sid, events, *, sessions, end, end_valuation, initial_capital, daily_positions,
+                   group=None, benchmark=None, risk_free=None):
+    needed = _needed_securities({sid for r in rebalances for sid in r.selected}, events)
+    rows = [row for sid in sorted(needed) for row in prices_by_sid.get(sid, ())]
+    runs = {scenario: {} for scenario in ledger.SCENARIOS}
+    for cost in (Decimal(0), settings.COST_BPS_PER_SIDE):
+        if group is None:
+            result = ledger.run_scenarios(sessions, rebalances, rows, events, cost_bps=cost,
+                                          initial_capital=initial_capital, end=end, end_valuation=end_valuation,
+                                          daily_positions=daily_positions)
+        else:
+            result = benchmarks.group_equal_weight_benchmark(
+                sessions, rebalances, {r.signal_date: r.selected for r in rebalances}, rows, events, group=group,
+                cost_bps=cost, initial_capital=initial_capital, end=end, end_valuation=end_valuation,
+                daily_positions=daily_positions)['runs']
+        for scenario in ledger.SCENARIOS:
+            runs[scenario][str(cost)] = result[scenario]
+    after = str(settings.COST_BPS_PER_SIDE)
+    measured = {scenario: metrics.cost_comparison(
+        runs[scenario]['0'], runs[scenario][after], sessions=sessions, coverage_end=end, risk_free=risk_free,
+        benchmark_before=None if benchmark is None else benchmark[scenario]['before_cost']['monthly_returns'],
+        benchmark_after=None if benchmark is None else benchmark[scenario]['after_cost']['monthly_returns'])
+        for scenario in ledger.SCENARIOS}
+    runs = {scenario: {cost: _reported(result, initial_capital) for cost, result in by_cost.items()}
+            for scenario, by_cost in runs.items()}
+    return runs, measured
+
+
+def _external_tr(tr_series, *, entry_date, end, end_valuation, sessions, initial_capital, cycle_dates=(),
+                 risk_free=None):
+    """The external slot (settings.BENCHMARKS: SPY_TOTAL_RETURN_ETF_AUXILIARY, review R2 / SYN-1): claim defaults to
+    the slot; SP500_TR is refused (SP500_INDEX_TR_NOT_USED) and so is any other claim
+    (EXTERNAL_SLOT_IS_SPY_ETF_AUXILIARY); benchmarks refuses a non-SPY or index-labelled series."""
+    if not isinstance(tr_series, Mapping) or not isinstance(tr_series.get('rows'), list):
+        raise RunnerError('TR_SERIES_INVALID')
+    allowed = {'label', 'claim', 'source', 'is_etf', 'entry_basis', 'rows'}
+    if set(tr_series) - allowed or 'label' not in tr_series:
+        raise RunnerError('TR_SERIES_INVALID')
+    rows = []
+    for row in tr_series['rows']:
+        if not isinstance(row, Mapping):
+            raise RunnerError('TR_SERIES_INVALID')
+        rows.append(dict(row, date=_day(row.get('date'), 'TR_DATE_INVALID')))
+    claim = tr_series.get('claim', benchmarks.CLAIM_SPY_ETF_AUXILIARY)
+
+    def refused(reason):
+        return {'status': 'REFUSED', 'reason': reason, 'label': tr_series['label'], 'result': None, 'metrics': None}
+    if claim == benchmarks.CLAIM_SP500_TR:
+        return refused(benchmarks.SP500_INDEX_TR_NOT_USED)
+    if claim != benchmarks.CLAIM_SPY_ETF_AUXILIARY:
+        return refused(EXTERNAL_SLOT_IS_SPY_ETF_AUXILIARY)
+    try:
+        result = benchmarks.external_tr_benchmark(
+            rows, label=tr_series['label'], claim=claim, entry_date=entry_date, end=end, sessions=sessions,
+            entry_basis=tr_series.get('entry_basis', benchmarks.ENTRY_OPEN), is_etf=tr_series.get('is_etf'),
+            source=tr_series.get('source'), initial_capital=initial_capital, end_valuation=end_valuation,
+            cycle_dates=cycle_dates)
+    except benchmarks.BenchmarkError as exc:
+        return refused(str(exc))
+    measured = None
+    if result['daily']:
+        points, started, capital = benchmarks.tr_nav_points(result)
+        stale = {row['date'] for row in result['daily'] if row['valuation'] == benchmarks.ENTRY_PREVIOUS_CLOSE}
+        measured = metrics.series_metrics(points, started_at=started, initial_capital=capital, sessions=sessions,
+                                          coverage_end=end, stale_dates=stale, risk_free=risk_free,
+                                          final_valuation=result['daily'][-1]['valuation'],
+                                          cycle_boundaries=benchmarks.tr_cycle_boundaries(result))
+    return {'status': result['status'], 'reason': None, 'label': tr_series['label'],
+            'result': _reported(result, initial_capital), 'metrics': measured}
+
+
+def risk_free_rates(value):
+    """metrics.MonthlyRiskFreeRates from {'source', 'verified', 'monthly': {'YYYY-MM': decimal fraction}} (or None).
+    Sharpe / Sortino need verified true and a named source (else RISK_FREE_UNVERIFIED in the metrics; review R6)."""
+    if value is None or isinstance(value, metrics.MonthlyRiskFreeRates):
+        return value
+    if not isinstance(value, Mapping) or set(value) != {'source', 'verified', 'monthly'} \
+            or not isinstance(value['monthly'], Mapping) or type(value['verified']) is not bool \
+            or not isinstance(value['source'], str):
+        raise RunnerError('RISK_FREE_INVALID')
+    by_month = {}
+    for month, rate in value['monthly'].items():
+        number = _quote_decimal(rate) if not isinstance(rate, float) else None
+        if not isinstance(month, str) or len(month) != 7 or month[4] != '-' or not (month[:4] + month[5:]).isdigit() \
+                or not 1 <= int(month[5:]) <= 12 or number is None or number <= -1:
+            raise RunnerError('RISK_FREE_INVALID')
+        by_month[month] = float(number)
+    return metrics.MonthlyRiskFreeRates(value['source'], value['verified'], dict(sorted(by_month.items())))
+
+
+def ledger_stage(selections, *, prices, events=(), end=None, tr_series=None,
+                 initial_capital=settings.INTERNAL_NOTIONAL_CAPITAL_USD, daily_positions=False, run=None,
+                 risk_free=None):
+    """ledger_outputs/1 from consecutive yearly selection_inputs/1 results (see the module doc).
+
+    prices: ledger price rows {date, security_id, open, close, suspended?, price_basis 'RAW', currency?}; events: ledger
+    event objects or rows (ledger_events); end: last session (date or ISO text) or None for the default rule; tr_series:
+    {label, claim? (SPY_TOTAL_RETURN_ETF_AUXILIARY, the default), source?, is_etf?, entry_basis?, rows [{date,
+    total_return_index, open_total_return_index?, currency}]} or None; daily_positions: keep per-position detail in every
+    daily row; risk_free: {source, verified, monthly {'YYYY-MM': decimal fraction}} or None (Sharpe / Sortino stay
+    MISSING_RISK_FREE without it); initial_capital: the internal notional USD capital (an engine setting)."""
+    items = _ordered_selections(selections)
+    risk_free = risk_free_rates(risk_free)
+    prices = price_rows(prices)
+    ledger.index_price_rows(prices)          # every row is validated once, also rows no portfolio needs
+    events = ledger_events(events)
+    next_t, next_t_source = next_reselection(items[-1]['year'])
+    if end is None:
+        end, end_rule, end_valuation = default_end(items[-1]['year'], prices)
+    else:
+        end, end_rule, end_valuation = supplied_end(end, items[-1]['year'])
+    start = _day(items[0]['signal']['S'])
+    if end < start:
+        raise RunnerError('END_BEFORE_START')
+    # The ledger needs every S and T as a session even when `end` cuts the run short; it stops at `end` itself.
+    sessions = calendar_sessions(start, max(end, _day(items[-1]['signal']['T'])))
+    prices_by_sid = defaultdict(list)
+    for row in prices:
+        prices_by_sid[row.get('security_id')].append(row)
+    capital = Decimal(str(initial_capital))
+    specs = []
+    # The group equal-weight portfolios first: each is the information-ratio benchmark of its group (review R6).
+    for group in settings.GROUPS:
+        specs.append((f'{KIND_GROUP_EW}/{group}', KIND_GROUP_EW, None, group, None, _group_years(items, group)))
+    for strategy in settings.STRATEGY_IDS:
+        for group in settings.GROUPS:
+            for side in SIDES:
+                specs.append((f'{strategy}/{group}/{side}', KIND_STRATEGY, strategy, group, side,
+                              _strategy_years(items, strategy, group, side)))
+    portfolios, run_status, group_benchmark, metric_status = {}, Counter(), {}, Counter()
+    for pid, kind, strategy, group, side, years in specs:
+        entry = {'portfolio_id': pid, 'kind': kind, 'strategy': strategy, 'group': group, 'side': side, 'years': years,
+                 'cash_years': [y['year'] for y in years if y['holding'] == HOLD_CASH], 'runs': None, 'metrics': None,
+                 'daily_coverage': None, 'information_ratio_benchmark': None}
+        if all(y['holding'] == HOLD_CASH for y in years):
+            entry['status'] = PORTFOLIO_ALL_CASH
+        else:
+            rebalances = [ledger.Rebalance(_day(y['S']), _day(y['T']), tuple(y['selected'])) for y in years]
+            runs, measured = _run_portfolio(rebalances, prices_by_sid, events, sessions=sessions, end=end,
+                                            end_valuation=end_valuation, initial_capital=capital,
+                                            daily_positions=daily_positions,
+                                            group=group if kind == KIND_GROUP_EW else None,
+                                            benchmark=None if kind == KIND_GROUP_EW else group_benchmark.get(group),
+                                            risk_free=risk_free)
+            if kind == KIND_GROUP_EW:
+                group_benchmark[group] = measured
+            coverage = {side_metrics['daily_coverage']['status'] for comparison in measured.values()
+                        for side_metrics in (comparison['before_cost'], comparison['after_cost'])}
+            entry.update(status=PORTFOLIO_RUN, runs=runs, metrics=measured,
+                         information_ratio_benchmark=(None if kind == KIND_GROUP_EW or group not in group_benchmark
+                                                      else f'{KIND_GROUP_EW}/{group}'),
+                         daily_coverage=(metrics.DAILY_PRICES_NOT_SUPPLIED
+                                         if metrics.DAILY_PRICES_NOT_SUPPLIED in coverage
+                                         else NOT_STARTED if coverage == {NOT_STARTED}
+                                         else metrics.DAILY_COVERAGE_COMPLETE))
+            metric_status.update(side_metrics['status'] for comparison in measured.values()
+                                 for side_metrics in (comparison['before_cost'], comparison['after_cost']))
+            run_status.update(result['status'] for by_cost in runs.values() for result in by_cost.values())
+        portfolios[pid] = entry
+    external = None
+    if tr_series is not None:
+        external = _external_tr(tr_series, entry_date=_day(items[0]['signal']['T']), end=end,
+                                end_valuation=end_valuation, sessions=sessions, initial_capital=capital,
+                                cycle_dates=[_day(x['signal']['T']) for x in items[1:]], risk_free=risk_free)
+    status_counts = Counter(p['status'] for p in portfolios.values())
+    coverage_counts = Counter(p['daily_coverage'] for p in portfolios.values() if p['daily_coverage'])
+    out = {
+        'schema': LEDGER_SCHEMA, 'experiment_id': settings.EXPERIMENT_ID, 'settings_sha256': settings.settings_sha256(),
+        'stage': 'ledger', 'run': run or {}, 'flags': [],
+        'selection_years': [x['year'] for x in items],
+        'selection_run_ids': [(x.get('run') or {}).get('run_id') for x in items],
+        'selection_flags': {x['year']: list(x.get('flags') or []) for x in items},   # review U3: never dropped
+        'schedule': [{'year': x['year'], 'S': x['signal']['S'], 'T': x['signal']['T']} for x in items],
+        'start': start, 'end': end, 'end_rule': end_rule, 'end_valuation': end_valuation,
+        'next_reselection_t': next_t, 'next_reselection_t_source': next_t_source,
+        'session_count': sum(1 for d in sessions if d <= end),
+        'scenarios': list(ledger.SCENARIOS), 'cost_bps_levels': ['0', str(settings.COST_BPS_PER_SIDE)],
+        'internal_notional_capital_usd': capital, 'reported_nav': settings.REPORTED_NAV,
+        'nav_index_label': metrics.NAV_INDEX_LABEL, 'currency': settings.CURRENCY,
+        'daily_positions': bool(daily_positions),
+        'risk_free': None if risk_free is None else {'source': risk_free.source, 'verified': risk_free.verified,
+                                                     'months': len(risk_free.by_month)},
+        'strategy_aliases': dict(settings.STRATEGY_ALIASES),
+        'portfolios': portfolios,
+        'benchmarks': {'group_equal_weight': [f'{KIND_GROUP_EW}/{g}' for g in settings.GROUPS],
+                       'information_ratio_benchmark': 'GROUP_EQUAL_WEIGHT_SAME_GROUP_SCENARIO_AND_COST',
+                       'external_slot': benchmarks.CLAIM_SPY_ETF_AUXILIARY, 'external_total_return': external},
+        'counts': {'portfolios': len(portfolios), 'portfolios_run': status_counts[PORTFOLIO_RUN],
+                   'portfolios_all_cash': status_counts[PORTFOLIO_ALL_CASH],
+                   'cash_years': sum(len(p['cash_years']) for p in portfolios.values()),
+                   'ledger_runs': sum(run_status.values()), 'ledger_runs_by_status': dict(sorted(run_status.items())),
+                   'daily_coverage': dict(sorted(coverage_counts.items())),
+                   'metrics_by_status': dict(sorted(metric_status.items())),
+                   'settlement_conflicts': sum(len(result['conflicts']) for p in portfolios.values() if p['runs']
+                                               for by_cost in p['runs'].values() for result in by_cost.values()),
+                   'price_rows': len(prices), 'events': len(events),
+                   'external_total_return': None if external is None else external['status']},
+    }
+    return handoff.jsonable(out)
+
+
+def portfolio_alias(ledger_outputs, portfolio_id):
+    """Resolve 'QGV_DEFAULT/U_A/TOP' to the QGV_BALANCED portfolio of a ledger_outputs/1 result."""
+    strategy, _, rest = portfolio_id.partition('/')
+    strategy = settings.resolve_strategy(strategy)
+    return ledger_outputs['portfolios'][f'{strategy}/{rest}']
+
+
+__all__ = ['SELECTION_SCHEMA', 'LEDGER_SCHEMA', 'RunnerError', 'selection_stage', 'ledger_stage', 'u_a_members', 'u_a_state',
+           'scoring_quotes', 'price_rows', 'ledger_events', 'calendar_sessions', 'default_end', 'supplied_end',
+           'next_reselection', 'next_reselection_t', 'risk_free_rates', 'portfolio_alias']
