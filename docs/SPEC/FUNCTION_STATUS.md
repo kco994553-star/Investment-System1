@@ -2,6 +2,8 @@
 
 기준: canonical `claude/investment-system-top500-validation-alrugm` @ `81d7b58d`(#386 병합, 2026-10-23 12:44 UTC / 21:44 KST). 작성 2026-10-23 23:20 UTC / 2026-10-24 08:20 KST. 코드 읽기로 분류했고, 이 문서 작성 때 시험을 다시 돌리지 않았다.
 
+갱신 2026-11-04: #457(`3887c79b`, 결정 기록)·#471(`49d19ff4`, 9.1 `lab-backtest-v2`)·#470(`620f57f2`, 3.5 기술 조건 필터) 병합. 3.5·9.1은 **합성 입력으로 연결을 검증한 상태**이고 실자료 리더보드·전략 백테스트 완료가 아니다. 배포·P3 전환 없음
+
 갱신 2026-11-03: #456 병합(`fb0ffcab`, 중앙 V 기준일은 NYSE 거래일 파일만). 기능 줄 변화 없음(2.1.5 운영 수정). 실게시 복구는 병합 뒤 첫 정기 실행에서 확인(CURRENT_HANDOFF 4·6절). 포트폴리오 5.1 공개 층 #468은 개발 빌드 검증 완료, 병합·배포 전.
 
 갱신 2026-11-01: #436(1인 비공개 구역 설계)·#449(마지막 체결 시각 ① 판독기)·#451(전진검증 v3 결정)·#453(DC-40, 연구 `EXP-STOCK-INDICATOR-DECILES-v1` 설정)·#447(비공개 경계 가드) 병합(canonical `9a4e249d`). 기능 줄 변화: 2.1.5 마지막 체결 시각 ①, 9.1 연구 엔진(합성만). 11/01 야간 중앙 V는 IEX 토요일 파일 때문에 지난 정상본 유지(#456, 운영 기록은 CURRENT_HANDOFF 4·6절).
@@ -64,9 +66,10 @@
 | 3.2.5 데이터 적합성 | 결정됨(10-31 TA-361) | — | #361 닫음(Yahoo 분할 이벤트 경로 안 씀) | 분할 확인은 1인 비공개 구역(#436) KIS 차트에서만(원주가÷수정주가 정수비 + SEC 주식수). 공개 실가격 창은 계속 `PRICE_BASIS_CONTINUITY_UNCONFIRMED` |
 | 3.3 차트 노트 | 구현 | 합성 | `chart-workbench.js`, #382(펜·수평선·지우개·되돌리기) | 계정·시트 저장(DRAW-STORE) |
 | 3.4 기술 구조 트리 | 구현 | — | `ia-screens.js` | — |
-| 3.5 기술 조건 리더보드 필터 (1.1.8) | 개발 빌드(합성) | 합성 | 새 앱 `web_app/tech-screen.js`, `screen-tech-filter-live.js`, `screen-qgv-live.js` | 11/03 오너 지시, 11/04 Codex 계약 `technical-leaderboard/1`(#469 `f1ca390a`) 연동. 평가일·그룹별 보드 → 지표 원값·분위 → 필터(중앙값 이상/초과 구분) → 원래 순위 유지 · 결합 행만 QGV 순. 그룹 구성 미확인·유효 N<10·조건 충족 0건 구분. 실자료 미연결(원천 NONE), 리더보드 결합은 증권 ID 매핑 뒤([TECH_FILTER_20261103](../../implementation/docs/frontend_v2/TECH_FILTER_20261103.md)). 비공개 연구값 공개·병합·배포는 별도 |
+| 3.5 기술 조건 리더보드 필터 (1.1.8) | 병합 · 합성 연결 검증 | 합성 | 새 앱 `web_app/tech-screen.js`, `screen-tech-filter-live.js`, `screen-qgv-live.js` | 11/03 오너 지시, 11/04 Codex 계약 `technical-leaderboard/1`(#469 `f1ca390a`) 연동. 평가일·그룹별 보드 → 지표 원값·분위 → 필터(중앙값 이상/초과 구분) → 원래 순위 유지 · 결합 행만 QGV 순. 그룹 구성 미확인·유효 N<10·조건 충족 0건 구분. 실자료 미연결(원천 NONE), 리더보드 결합은 증권 ID 매핑 뒤([TECH_FILTER_20261103](../../implementation/docs/frontend_v2/TECH_FILTER_20261103.md)). **11/04 #470 병합(`620f57f2`): 합성 입력으로 연결을 검증한 상태 · 실자료 기술 리더보드 아님.** 비공개 연구값 공개·배포는 별도 |
 | 4.1.1·4.1.2 국면 그래프·탐색 | 부분 | — | `macro-cycle-ring.js` | 국면 모델 없음 → 공식 위치 "미산출" |
 | 4.1.3 근거 세로선 | 부분 | 실 | `macro-evidence.js`, #351·#352 | 탐색 전용. P1 13개 중 일부 수집(PARTIAL) |
+| 4.1.3 관측 자료 · 갱신 상태 | 개발 빌드(합성) | 합성 | 새 앱 `web_app/macro-observed.js`, `screen-macro-observed-live.js`, `screen-macro-live.js` | 11/05 오너 지시, Codex 계약 `macro-current-query/1`(#477 `efc8715f`, Draft) 연결. 합성 입력으로 연결을 검증한 상태: 계열별 기준 기간·갱신 시각·원발표 미확인(`NOT_PROVEN_IN_ARCHIVE`)·값 유지/수정 버전·stale·갱신 상태, 진단값과 미채택 국면 구분. 값은 표시하지 않음(현재 조회 파일 비공개·공개 사용 미승인). 원천 NONE([MACRO_OBSERVED_20261105](../../implementation/docs/frontend_v2/MACRO_OBSERVED_20261105.md)). 공개 파일 게시·스케줄·M-REENABLE은 별도 |
 | 4.1.4 기존 매크로 연결 | 구현 | 실 | `macro-lights.js` | 게이트 재가동 M-REENABLE 결정 대기 |
 | 4.1.5 판단 상태 | 부분 | — | `ia-screens.js` 4.1.5 | 모델 출력이 없어 미산출 |
 | 4.2 순환매 | 신규 | — | 화면 틀(`ia-screens.js` g42) | 위치 모델·전환 빈도 검증 |
@@ -79,7 +82,7 @@
 | 5.2.2~5.2.4 요약·영향·주가 반영 | 결정 | — | `news-signals.js`(칸만) | 5줄 요약 방식 IA-14(외부 모델 호출은 별도 승인) |
 | 5.2.5 신규·중복·변경 | 부분 | 실 | `news-signals.js` | — |
 | 5.2.6 컨센서스 변화 | 신규 | — | "컨센서스 자료 미연결" | 무료 자료원 |
-| 5.2.7 수집 상태 | 구현 | 실 | `ops-status.js`, `news-signals.js` | GDELT 429 원인 |
+| 5.2.7 수집 상태 | 구현 | 실 | `ops-status.js`, `news-signals.js`, 새 앱 `web_app/news-refresh.js` | GDELT 429 원인 · 11/05 원천별 갱신 기록(마지막 성공·시도·결과·회사 성공/실패/미실행·새 항목·이월 시작)은 공개 파일 schema 2 `refresh.sources`를 그대로 표시, 합성 입력(Codex #483 `e3154ee3` merge)으로 연결을 검증한 상태 · 수정·중복 수는 공개 파일에 없어 미제공 (`docs/frontend_v2/NEWS_SOURCE_REFRESH_20261105.md`) |
 | 5.3 뉴스 구조 트리 | 구현 | 실 | `ia-screens.js` | — |
 | 6.1.1·6.1.5 종류 구분·개인/모의 관리 | 구현 | 기기 | `portfolio-screen.js`, `device-actual.js`, `virtual-trading.js` | — |
 | 6.1.2~6.1.4 모델 후보·비중·버전 | 부분 | 기기 | `target-v1-builder.js` | TARGET v1 확정(2026-11 둘째 주 목표). 숫자 대조: 23.1로 재대조(10-29, 40칸 일치 34·정책 NA 6, FCF 수익률 앱 계산식 7/7·NA 3/3, [0-2-9절](../../implementation/docs/qgv_scoring_standard/QGV_V2_NUMBER_CHECK_20261017.md)) — 재기록 #424 병합(10-30, `96037d1c`)으로 calc_version 불일치 차단이 풀렸다. 남은 것은 실제 사용자 카드 응답. 공식 V 판독(PR-D #405, 병합 10-29): 초안·버전에 V 출처와 게시본 id·가격 기준일을 남기고, 출처가 바뀌면 `V_SOURCE_CHANGED`로 초안 재생성 11/02 #463(AUD-01) 병합: 레거시 플레이북 TARGET 초안 검사의 일반 등급이 승인된 6%로 맞춰짐(`playbook/v1` `target_v1` v1.1, 화면 사본 동기화). TARGET v1 빌더 설정은 원래 일반 10 × 6%라 변화 없음 |
@@ -88,7 +91,7 @@
 | 6.4 포트폴리오 구조 트리 | 구현 | — | `ia-screens.js` | — |
 | 7.1 프롬프트 라이브러리 | 구현 | — | `research-bridge.js`(★·내 사본 = 이 브라우저) | 새 영역 목록 PROMPT-DOMAIN |
 | 8.1 전체 구조 트리 | 구현 | 실 | `ia-screens.js`(system) | 8.1.3 구현 상태 표시를 이 문서와 맞추기 |
-| 9.1 백테스트 | 신규 · 결정 | — | `screen-detail.js`(준비 목록), `docs/backtest/*`, 연구 엔진 #454(Draft, `research/exp_deciles/`); 새 앱 `web_app/lab.js`·`screen-lab-live.js` | BT-1~17·MD-1~12 결정, 과거 자료 확보. 11/01 연구 `EXP-STOCK-INDICATOR-DECILES-v1`: 설정 #453 병합, 엔진 #454는 **합성 묶음만**(실자료 파일럿·전체 백테스트 없음). 실자료는 SEC 1회용 수집·T 시가 원천 승인 뒤 **11/03 `lab-backtest-v2`(#471, 개발 빌드·합성):** 결과 종류(전략 백테스트·1회사 지표·표본 진단)·계산 상태·표본·모집단·진단 요약 판독·화면. Codex 합의 #437 6600537423, Codex의 v2 수령 확인 6602595466. 실결과 연결·공개(LAB-PUBLISH)·병합·배포는 별도 |
+| 9.1 백테스트 | 신규 · 결정 | — | `screen-detail.js`(준비 목록), `docs/backtest/*`, 연구 엔진 #454(Draft, `research/exp_deciles/`); 새 앱 `web_app/lab.js`·`screen-lab-live.js` | BT-1~17·MD-1~12 결정, 과거 자료 확보. 11/01 연구 `EXP-STOCK-INDICATOR-DECILES-v1`: 설정 #453 병합, 엔진 #454는 **합성 묶음만**(실자료 파일럿·전체 백테스트 없음). 실자료는 SEC 1회용 수집·T 시가 원천 승인 뒤 **11/03 `lab-backtest-v2`(#471, 11/04 병합 `49d19ff4` · 합성 입력으로 연결을 검증한 상태 · 전략 백테스트 완료 아님):** 결과 종류(전략 백테스트·1회사 지표·표본 진단)·계산 상태·표본·모집단·진단 요약 판독·화면. Codex 합의 #437 6600537423, Codex의 v2 수령 확인 6602595466. 실결과 연결·공개(LAB-PUBLISH)·배포는 별도 |
 | 9.2 전진검증 | 구현 | 실 | `forward-validation.js`, `tools/forward_validation_ledger.py` | 연속 성공 3/7(10/24분, run 40146210895; 10/25 Actions 확인). 배포 실패 뒤 복구 운영 증거는 아직 없음. **10-31 v3 방침(DC-38)**: v1·v2는 v3 시작과 함께 기록 멈춤·보존, 바구니 단위 IEX 수익률·재구성 구간 — [설계](../../implementation/docs/forward_validation/FORWARD_VALIDATION_V3_DESIGN_20261031.md), 구현 대기 |
 | 공통: 계정 동기화 | 신규 · 결정 | — | DRAW-STORE, IA-6 | 지금은 이 브라우저 + 내보내기·가져오기 |
 
