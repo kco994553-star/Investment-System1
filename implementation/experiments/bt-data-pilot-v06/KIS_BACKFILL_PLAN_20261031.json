@@ -1,0 +1,198 @@
+{
+  "version": "BT-DATA-PILOT v0.6",
+  "calendar": {
+    "url": "https://raw.githubusercontent.com/gerrymanoim/exchange_calendars/bbda29fed902374bdb75acab008f421fbd567823/tests/resources/xnys.csv",
+    "sha256": "5f91ec537dd8672130d41f2796a194f5b2c1733dfe79191af8593d80600fb3cc"
+  },
+  "routes": [
+    {
+      "company": "ABT",
+      "alias": "ABT",
+      "exchange": "NYS",
+      "fallback_exchange": null,
+      "start": "1900-01-01",
+      "end": "2015-12-31",
+      "identity_status": "ORIGINAL_FILING_TICKER_AND_CLASS_QUERY_ONLY_NOT_FULL_SECURITY_MASTER",
+      "evidence": [
+        {
+          "url": "https://www.sec.gov/Archives/edgar/data/1800/000104746910001018/a2196380z10-k.htm",
+          "filed": "2010-02-19",
+          "accession": "0001047469-10-001018"
+        }
+      ]
+    },
+    {
+      "company": "ACU",
+      "alias": "ACU",
+      "exchange": "AMS",
+      "fallback_exchange": null,
+      "start": "1900-01-01",
+      "end": "2015-12-31",
+      "identity_status": "ORIGINAL_FILING_TICKER_AND_CLASS_QUERY_ONLY_NOT_FULL_SECURITY_MASTER",
+      "evidence": [
+        {
+          "url": "https://www.sec.gov/Archives/edgar/data/2098/000102660810000024/acme_10k123109.htm",
+          "filed": "2010-03-09",
+          "accession": "0001026608-10-000024"
+        }
+      ]
+    },
+    {
+      "company": "AE",
+      "alias": "AE",
+      "exchange": "AMS",
+      "fallback_exchange": null,
+      "start": "1900-01-01",
+      "end": "2015-12-31",
+      "identity_status": "ORIGINAL_FILING_TICKER_AND_CLASS_QUERY_ONLY_NOT_FULL_SECURITY_MASTER",
+      "evidence": [
+        {
+          "url": "https://www.sec.gov/Archives/edgar/data/2178/000000217810000008/body_10k.htm",
+          "filed": "2010-03-23",
+          "accession": "0000002178-10-000008"
+        }
+      ]
+    },
+    {
+      "company": "BKTI",
+      "alias": "RWC",
+      "exchange": "AMS",
+      "fallback_exchange": null,
+      "start": "1900-01-01",
+      "end": "2015-12-31",
+      "identity_status": "ORIGINAL_FILING_TICKER_AND_CLASS_QUERY_ONLY_NOT_FULL_SECURITY_MASTER",
+      "evidence": [
+        {
+          "url": "https://www.sec.gov/Archives/edgar/data/2186/000111650210000192/rwc_10k.htm",
+          "filed": "2010-03-04",
+          "accession": "0001116502-10-000192"
+        }
+      ]
+    },
+    {
+      "company": "AMD",
+      "alias": "AMD",
+      "exchange": "NAS",
+      "fallback_exchange": "NYS",
+      "start": "1900-01-01",
+      "end": "2015-12-31",
+      "identity_status": "ORIGINAL_FILING_TICKER_AND_CLASS_QUERY_ONLY_NOT_FULL_SECURITY_MASTER",
+      "evidence": [
+        {
+          "url": "https://www.sec.gov/Archives/edgar/data/2488/000119312510035218/d10k.htm",
+          "filed": "2010-02-19",
+          "accession": "0001193125-10-035218"
+        }
+      ]
+    },
+    {
+      "company": "CECO",
+      "alias": "CECE",
+      "exchange": "NAS",
+      "fallback_exchange": null,
+      "start": "1900-01-01",
+      "end": "2015-12-31",
+      "identity_status": "ORIGINAL_FILING_TICKER_AND_CLASS_QUERY_ONLY_NOT_FULL_SECURITY_MASTER",
+      "evidence": [
+        {
+          "url": "https://www.sec.gov/Archives/edgar/data/3197/000119312510069639/d10k.htm",
+          "filed": "2010-03-29",
+          "accession": "0001193125-10-069639"
+        }
+      ]
+    },
+    {
+      "company": "MATX",
+      "alias": "MATX",
+      "exchange": "NYS",
+      "fallback_exchange": null,
+      "start": "2012-07-02",
+      "end": "2015-12-31",
+      "identity_status": "ORIGINAL_FILING_TICKER_AND_CLASS_QUERY_ONLY_NOT_FULL_SECURITY_MASTER",
+      "evidence": [
+        {
+          "url": "https://www.sec.gov/Archives/edgar/data/3453/000000345310000006/form10-k.htm",
+          "filed": "2010-02-26",
+          "accession": "0000003453-10-000006"
+        },
+        {
+          "url": "https://www.sec.gov/Archives/edgar/data/3453/000110465915014988/a14-26312_110k.htm",
+          "filed": "2015-02-27",
+          "accession": "0001104659-15-014988"
+        }
+      ]
+    },
+    {
+      "company": "ALX",
+      "alias": "ALX",
+      "exchange": "NYS",
+      "fallback_exchange": null,
+      "start": "1900-01-01",
+      "end": "2015-12-31",
+      "identity_status": "ORIGINAL_FILING_TICKER_AND_CLASS_QUERY_ONLY_NOT_FULL_SECURITY_MASTER",
+      "evidence": [
+        {
+          "url": "https://www.sec.gov/Archives/edgar/data/3499/000000349910000002/alx10k09v2.htm",
+          "filed": "2010-02-22",
+          "accession": "0000003499-10-000002"
+        }
+      ]
+    },
+    {
+      "company": "LNG",
+      "alias": "LNG",
+      "exchange": "NYS",
+      "fallback_exchange": "AMS",
+      "start": "1900-01-01",
+      "end": "2015-12-31",
+      "identity_status": "ORIGINAL_FILING_TICKER_AND_CLASS_QUERY_ONLY_NOT_FULL_SECURITY_MASTER",
+      "evidence": [
+        {
+          "url": "https://www.sec.gov/Archives/edgar/data/3570/000000357010000005/form_10k.htm",
+          "filed": "2010-02-26",
+          "accession": "0000003570-10-000005"
+        }
+      ]
+    },
+    {
+      "company": "IDSA",
+      "alias": "IDSA",
+      "exchange": "NAS",
+      "fallback_exchange": null,
+      "start": "1900-01-01",
+      "end": "2015-12-31",
+      "identity_status": "ORIGINAL_FILING_TICKER_AND_CLASS_QUERY_ONLY_NOT_FULL_SECURITY_MASTER",
+      "evidence": [
+        {
+          "url": "https://www.sec.gov/Archives/edgar/data/4187/000093041310001532/c60754_10k.htm",
+          "filed": "2010-03-22",
+          "accession": "0000930413-10-001532"
+        }
+      ]
+    },
+    {
+      "company": "MATX_PRESPIN_QUARANTINE",
+      "parent_company": "MATX",
+      "alias": "ALEX",
+      "exchange": "NYS",
+      "start": "1900-01-01",
+      "end": "2012-06-29",
+      "identity_status": "UNCONFIRMED_SYMBOL_REUSE_ACROSS_SPINOFF_DO_NOT_JOIN",
+      "evidence": [
+        {
+          "url": "https://www.sec.gov/Archives/edgar/data/3453/000000345310000006/form10-k.htm",
+          "filed": "2010-02-26",
+          "accession": "0000003453-10-000006"
+        },
+        {
+          "url": "https://www.sec.gov/Archives/edgar/data/3453/000110465915014988/a14-26312_110k.htm",
+          "filed": "2015-02-27",
+          "accession": "0001104659-15-014988"
+        }
+      ]
+    }
+  ],
+  "historical_universe": false,
+  "adjustment": "RAW",
+  "security_identity_not_inferred_from_cik_only": true
+}

@@ -1,0 +1,327 @@
+{
+  "coverage": [
+    {
+      "acquired_in_target": 1300,
+      "alias": "ABT",
+      "company": "ABT",
+      "expected_reference_sessions_2010_2015": 1510,
+      "first": "2009-11-06",
+      "formal_eligible_period": null,
+      "last": "2015-12-31",
+      "missing_blocks": [
+        {
+          "first": "2010-04-05",
+          "last": "2011-01-31",
+          "sessions": 210
+        }
+      ],
+      "missing_is_not_ipo_or_delisting_inference": true,
+      "missing_reference_sessions": 210,
+      "new_2010_request_executed": true,
+      "pre2016_rows": 1338,
+      "reason": "SESSION_FULL_HALTED",
+      "target_start": "2010-01-01"
+    },
+    {
+      "acquired_in_target": 38,
+      "alias": "ACU",
+      "company": "ACU",
+      "expected_reference_sessions_2010_2015": 1510,
+      "first": "2015-11-06",
+      "formal_eligible_period": null,
+      "last": "2015-12-31",
+      "missing_blocks": [
+        {
+          "first": "2010-01-04",
+          "last": "2015-11-05",
+          "sessions": 1472
+        }
+      ],
+      "missing_is_not_ipo_or_delisting_inference": true,
+      "missing_reference_sessions": 1472,
+      "new_2010_request_executed": false,
+      "pre2016_rows": 38,
+      "reason": "NOT_ATTEMPTED_AFTER_GLOBAL_STOP",
+      "target_start": "2010-01-01"
+    },
+    {
+      "acquired_in_target": 0,
+      "alias": "AE",
+      "company": "AE",
+      "expected_reference_sessions_2010_2015": 1510,
+      "first": null,
+      "formal_eligible_period": null,
+      "last": null,
+      "missing_blocks": [
+        {
+          "first": "2010-01-04",
+          "last": "2015-12-31",
+          "sessions": 1510
+        }
+      ],
+      "missing_is_not_ipo_or_delisting_inference": true,
+      "missing_reference_sessions": 1510,
+      "new_2010_request_executed": false,
+      "pre2016_rows": 0,
+      "reason": "NOT_ATTEMPTED_AFTER_GLOBAL_STOP",
+      "target_start": "2010-01-01"
+    },
+    {
+      "acquired_in_target": 0,
+      "alias": "RWC",
+      "company": "BKTI",
+      "expected_reference_sessions_2010_2015": 1510,
+      "first": null,
+      "formal_eligible_period": null,
+      "last": null,
+      "missing_blocks": [
+        {
+          "first": "2010-01-04",
+          "last": "2015-12-31",
+          "sessions": 1510
+        }
+      ],
+      "missing_is_not_ipo_or_delisting_inference": true,
+      "missing_reference_sessions": 1510,
+      "new_2010_request_executed": false,
+      "pre2016_rows": 0,
+      "reason": "NOT_ATTEMPTED_AFTER_GLOBAL_STOP",
+      "target_start": "2010-01-01"
+    },
+    {
+      "acquired_in_target": 38,
+      "alias": "AMD",
+      "company": "AMD",
+      "expected_reference_sessions_2010_2015": 1510,
+      "first": "2015-11-06",
+      "formal_eligible_period": null,
+      "last": "2015-12-31",
+      "missing_blocks": [
+        {
+          "first": "2010-01-04",
+          "last": "2015-11-05",
+          "sessions": 1472
+        }
+      ],
+      "missing_is_not_ipo_or_delisting_inference": true,
+      "missing_reference_sessions": 1472,
+      "new_2010_request_executed": false,
+      "pre2016_rows": 38,
+      "reason": "NOT_ATTEMPTED_AFTER_GLOBAL_STOP",
+      "target_start": "2010-01-01"
+    },
+    {
+      "acquired_in_target": 0,
+      "alias": "CECE",
+      "company": "CECO",
+      "expected_reference_sessions_2010_2015": 1510,
+      "first": null,
+      "formal_eligible_period": null,
+      "last": null,
+      "missing_blocks": [
+        {
+          "first": "2010-01-04",
+          "last": "2015-12-31",
+          "sessions": 1510
+        }
+      ],
+      "missing_is_not_ipo_or_delisting_inference": true,
+      "missing_reference_sessions": 1510,
+      "new_2010_request_executed": false,
+      "pre2016_rows": 0,
+      "reason": "NOT_ATTEMPTED_AFTER_GLOBAL_STOP",
+      "target_start": "2010-01-01"
+    },
+    {
+      "acquired_in_target": 38,
+      "alias": "MATX",
+      "company": "MATX",
+      "expected_reference_sessions_2010_2015": 1510,
+      "first": "2015-11-06",
+      "formal_eligible_period": null,
+      "last": "2015-12-31",
+      "missing_blocks": [
+        {
+          "first": "2010-01-04",
+          "last": "2015-11-05",
+          "sessions": 1472
+        }
+      ],
+      "missing_is_not_ipo_or_delisting_inference": true,
+      "missing_reference_sessions": 1472,
+      "new_2010_request_executed": false,
+      "pre2016_rows": 38,
+      "reason": "NOT_ATTEMPTED_AFTER_GLOBAL_STOP",
+      "target_start": "2010-01-01"
+    },
+    {
+      "acquired_in_target": 38,
+      "alias": "ALX",
+      "company": "ALX",
+      "expected_reference_sessions_2010_2015": 1510,
+      "first": "2015-11-06",
+      "formal_eligible_period": null,
+      "last": "2015-12-31",
+      "missing_blocks": [
+        {
+          "first": "2010-01-04",
+          "last": "2015-11-05",
+          "sessions": 1472
+        }
+      ],
+      "missing_is_not_ipo_or_delisting_inference": true,
+      "missing_reference_sessions": 1472,
+      "new_2010_request_executed": false,
+      "pre2016_rows": 38,
+      "reason": "NOT_ATTEMPTED_AFTER_GLOBAL_STOP",
+      "target_start": "2010-01-01"
+    },
+    {
+      "acquired_in_target": 0,
+      "alias": "LNG",
+      "company": "LNG",
+      "expected_reference_sessions_2010_2015": 1510,
+      "first": null,
+      "formal_eligible_period": null,
+      "last": null,
+      "missing_blocks": [
+        {
+          "first": "2010-01-04",
+          "last": "2015-12-31",
+          "sessions": 1510
+        }
+      ],
+      "missing_is_not_ipo_or_delisting_inference": true,
+      "missing_reference_sessions": 1510,
+      "new_2010_request_executed": false,
+      "pre2016_rows": 0,
+      "reason": "NOT_ATTEMPTED_AFTER_GLOBAL_STOP",
+      "target_start": "2010-01-01"
+    },
+    {
+      "acquired_in_target": 0,
+      "alias": "IDSA",
+      "company": "IDSA",
+      "expected_reference_sessions_2010_2015": 1510,
+      "first": null,
+      "formal_eligible_period": null,
+      "last": null,
+      "missing_blocks": [
+        {
+          "first": "2010-01-04",
+          "last": "2015-12-31",
+          "sessions": 1510
+        }
+      ],
+      "missing_is_not_ipo_or_delisting_inference": true,
+      "missing_reference_sessions": 1510,
+      "new_2010_request_executed": false,
+      "pre2016_rows": 0,
+      "reason": "NOT_ATTEMPTED_AFTER_GLOBAL_STOP",
+      "target_start": "2010-01-01"
+    }
+  ],
+  "formal_backtests": 0,
+  "older_sec_originals": [
+    {
+      "filed": "1999-03-09",
+      "fiscal_year": 1998,
+      "full_qgv_ready": false,
+      "source_id": "abt-1998-10k",
+      "timestamp_status": "DATE_ONLY_PENDING_ORIGINAL_HEADER"
+    },
+    {
+      "filed": "2001-02-15",
+      "fiscal_year": 2000,
+      "full_qgv_ready": false,
+      "source_id": "abt-2000-10k",
+      "timestamp_status": "DATE_ONLY_PENDING_ORIGINAL_HEADER"
+    },
+    {
+      "filed": "2009-02-20",
+      "fiscal_year": 2008,
+      "full_qgv_ready": false,
+      "source_id": "abt-2008-10k",
+      "timestamp_status": "EXACT_SUBMISSIONS"
+    },
+    {
+      "filed": "2010-02-19",
+      "fiscal_year": 2009,
+      "full_qgv_ready": false,
+      "source_id": "abt-2009-10k",
+      "timestamp_status": "EXACT_SUBMISSIONS"
+    }
+  ],
+  "quarantined_csv": {
+    "adjustment": "NOT_VERIFIED",
+    "adopted": false,
+    "close_equal_within_one_cent": 0,
+    "commit": "c2a1af916490810bc01866deefbd509620225846",
+    "currency_and_identity": "NOT_VERIFIED",
+    "data_license": "NOT_VERIFIED",
+    "duplicate_dates": 0,
+    "file": "Kaggle/Data/Stocks/abt.us.txt",
+    "first": "1983-04-06",
+    "invalid_ohlcv": 0,
+    "kis_overlap_rows": 1400,
+    "last": "2017-11-10",
+    "missing_or_non_numeric_rows": 0,
+    "original_supplier": "NOT_VERIFIED",
+    "reason": "AUDIT_ONLY_NOT_EXECUTION_OR_VALUATION_INPUT",
+    "repository": "https://github.com/wmhbrown121/trade-datasets",
+    "rows": 8726
+  },
+  "raw_replay": {
+    "numeric_replays_including_reused_pages": 13525,
+    "unique_raw_hashes": 31
+  },
+  "universe": [
+    {
+      "candidate_interval_rows": 0,
+      "date": "1990-01-02",
+      "end_boundary_convention": "ASSUMED_HALF_OPEN_NOT_VERIFIED",
+      "iex_membership_verified": false,
+      "reason": "MISSING_AUTHORITATIVE_EFFECTIVE_DATES_AND_DATA_RIGHTS",
+      "unique_tickers": 0,
+      "verified_historical_members": 0
+    },
+    {
+      "candidate_interval_rows": 491,
+      "date": "2000-01-03",
+      "end_boundary_convention": "ASSUMED_HALF_OPEN_NOT_VERIFIED",
+      "iex_membership_verified": false,
+      "reason": "MISSING_AUTHORITATIVE_EFFECTIVE_DATES_AND_DATA_RIGHTS",
+      "unique_tickers": 491,
+      "verified_historical_members": 0
+    },
+    {
+      "candidate_interval_rows": 499,
+      "date": "2010-01-04",
+      "end_boundary_convention": "ASSUMED_HALF_OPEN_NOT_VERIFIED",
+      "iex_membership_verified": false,
+      "reason": "MISSING_AUTHORITATIVE_EFFECTIVE_DATES_AND_DATA_RIGHTS",
+      "unique_tickers": 499,
+      "verified_historical_members": 0
+    },
+    {
+      "candidate_interval_rows": 505,
+      "date": "2016-04-01",
+      "end_boundary_convention": "ASSUMED_HALF_OPEN_NOT_VERIFIED",
+      "iex_membership_verified": false,
+      "reason": "MISSING_AUTHORITATIVE_EFFECTIVE_DATES_AND_DATA_RIGHTS",
+      "unique_tickers": 505,
+      "verified_historical_members": 0
+    },
+    {
+      "candidate_interval_rows": 503,
+      "date": "2026-10-30",
+      "end_boundary_convention": "ASSUMED_HALF_OPEN_NOT_VERIFIED",
+      "iex_membership_verified": false,
+      "reason": "MISSING_AUTHORITATIVE_EFFECTIVE_DATES_AND_DATA_RIGHTS",
+      "unique_tickers": 503,
+      "verified_historical_members": 0
+    }
+  ],
+  "universe_source_rows": 1262,
+  "version": "BT-DATA-PILOT v0.6"
+}

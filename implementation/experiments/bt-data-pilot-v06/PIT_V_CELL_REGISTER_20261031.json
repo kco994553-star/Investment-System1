@@ -1,0 +1,1729 @@
+{
+  "version": "BT-DATA-PILOT v0.6",
+  "signal_date": "2016-04-01",
+  "denominator": "10 frozen issuers x 5 canonical V factors; excludes prices/OHLCV fields",
+  "value_disclosure": "ALL_PRICES_RAW_METRICS_AND_FINANCIAL_VALUES_PRIVATE",
+  "official_qgv_changed": false,
+  "cells": [
+    {
+      "basis_adapter_accepted": true,
+      "cik": 1800,
+      "factor": "v_earnings_yield",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "EBIT / (raw_close * weighted_average_diluted_shares + debt - cash)",
+      "identity_status": "ABT_SINGLE_CLASS_EVIDENCE",
+      "missing_inputs": [],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": true,
+      "raw_reason": null,
+      "required_financial": [
+        "ebit",
+        "diluted_shares",
+        "total_debt",
+        "cash"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": true,
+      "shares_accession": "0001047469-16-010246",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "ABT"
+    },
+    {
+      "basis_adapter_accepted": true,
+      "cik": 1800,
+      "factor": "v_fcf_yield",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "(OCF - capex) / (raw_close * weighted_average_diluted_shares + debt - cash)",
+      "identity_status": "ABT_SINGLE_CLASS_EVIDENCE",
+      "missing_inputs": [],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": true,
+      "raw_reason": null,
+      "required_financial": [
+        "fcf",
+        "diluted_shares",
+        "total_debt",
+        "cash"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": true,
+      "shares_accession": "0001047469-16-010246",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "ABT"
+    },
+    {
+      "basis_adapter_accepted": true,
+      "cik": 1800,
+      "factor": "v_vs_industry",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "percentile(EBIT/EV, eligible industry peers; canonical fallback)",
+      "identity_status": "ABT_SINGLE_CLASS_EVIDENCE",
+      "missing_inputs": [
+        "historical_peer_population"
+      ],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": false,
+      "raw_reason": "HISTORICAL_PEER_POPULATION_NOT_VERIFIED",
+      "required_financial": [
+        "ebit",
+        "diluted_shares",
+        "total_debt",
+        "cash",
+        "historical_peer_population"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0001047469-16-010246",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "ABT"
+    },
+    {
+      "basis_adapter_accepted": true,
+      "cik": 1800,
+      "factor": "v_vs_own_history",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "percentile(current EBIT/share/price, >=3 historical fiscal-year-end month yields plus current)",
+      "identity_status": "ABT_SINGLE_CLASS_EVIDENCE",
+      "missing_inputs": [
+        "aligned_historical_month_prices"
+      ],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": false,
+      "raw_reason": "PRICE_HISTORY_NOT_AVAILABLE",
+      "required_financial": [
+        "ebit",
+        "diluted_shares",
+        "ebit_per_share_history",
+        "aligned_historical_month_prices"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0001047469-16-010246",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "ABT"
+    },
+    {
+      "basis_adapter_accepted": true,
+      "cik": 1800,
+      "factor": "v_expectation_check",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "reverse_DCF(FCF/diluted_shares,raw_close,approved_parameters) - revenue_CAGR_3y",
+      "identity_status": "ABT_SINGLE_CLASS_EVIDENCE",
+      "missing_inputs": [],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": true,
+      "raw_reason": null,
+      "required_financial": [
+        "fcf",
+        "diluted_shares",
+        "revenue_cagr_3y"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": true,
+      "shares_accession": "0001047469-16-010246",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "ABT"
+    },
+    {
+      "cik": 2098,
+      "factor": "v_earnings_yield",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "EBIT / (raw_close * weighted_average_diluted_shares + debt - cash)",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": true,
+      "raw_reason": null,
+      "required_financial": [
+        "ebit",
+        "diluted_shares",
+        "total_debt",
+        "cash"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0001026608-16-000091",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "ACU"
+    },
+    {
+      "cik": 2098,
+      "factor": "v_fcf_yield",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "(OCF - capex) / (raw_close * weighted_average_diluted_shares + debt - cash)",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": true,
+      "raw_reason": null,
+      "required_financial": [
+        "fcf",
+        "diluted_shares",
+        "total_debt",
+        "cash"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0001026608-16-000091",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "ACU"
+    },
+    {
+      "cik": 2098,
+      "factor": "v_vs_industry",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "percentile(EBIT/EV, eligible industry peers; canonical fallback)",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [
+        "historical_peer_population"
+      ],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": false,
+      "raw_reason": "HISTORICAL_PEER_POPULATION_NOT_VERIFIED",
+      "required_financial": [
+        "ebit",
+        "diluted_shares",
+        "total_debt",
+        "cash",
+        "historical_peer_population"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0001026608-16-000091",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "ACU"
+    },
+    {
+      "cik": 2098,
+      "factor": "v_vs_own_history",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "percentile(current EBIT/share/price, >=3 historical fiscal-year-end month yields plus current)",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [
+        "aligned_historical_month_prices"
+      ],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": false,
+      "raw_reason": "PRICE_HISTORY_NOT_AVAILABLE",
+      "required_financial": [
+        "ebit",
+        "diluted_shares",
+        "ebit_per_share_history",
+        "aligned_historical_month_prices"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0001026608-16-000091",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "ACU"
+    },
+    {
+      "cik": 2098,
+      "factor": "v_expectation_check",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "reverse_DCF(FCF/diluted_shares,raw_close,approved_parameters) - revenue_CAGR_3y",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": false,
+      "raw_reason": "NON_POSITIVE_CASHFLOW",
+      "required_financial": [
+        "fcf",
+        "diluted_shares",
+        "revenue_cagr_3y"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0001026608-16-000091",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "ACU"
+    },
+    {
+      "cik": 2178,
+      "factor": "v_earnings_yield",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "EBIT / (raw_close * weighted_average_diluted_shares + debt - cash)",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": true,
+      "raw_reason": null,
+      "required_financial": [
+        "ebit",
+        "diluted_shares",
+        "total_debt",
+        "cash"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0000002178-16-000064",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "AE"
+    },
+    {
+      "cik": 2178,
+      "factor": "v_fcf_yield",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "(OCF - capex) / (raw_close * weighted_average_diluted_shares + debt - cash)",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": true,
+      "raw_reason": null,
+      "required_financial": [
+        "fcf",
+        "diluted_shares",
+        "total_debt",
+        "cash"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0000002178-16-000064",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "AE"
+    },
+    {
+      "cik": 2178,
+      "factor": "v_vs_industry",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "percentile(EBIT/EV, eligible industry peers; canonical fallback)",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [
+        "historical_peer_population"
+      ],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": false,
+      "raw_reason": "HISTORICAL_PEER_POPULATION_NOT_VERIFIED",
+      "required_financial": [
+        "ebit",
+        "diluted_shares",
+        "total_debt",
+        "cash",
+        "historical_peer_population"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0000002178-16-000064",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "AE"
+    },
+    {
+      "cik": 2178,
+      "factor": "v_vs_own_history",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "percentile(current EBIT/share/price, >=3 historical fiscal-year-end month yields plus current)",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [
+        "aligned_historical_month_prices"
+      ],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": false,
+      "raw_reason": "PRICE_HISTORY_NOT_AVAILABLE",
+      "required_financial": [
+        "ebit",
+        "diluted_shares",
+        "ebit_per_share_history",
+        "aligned_historical_month_prices"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0000002178-16-000064",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "AE"
+    },
+    {
+      "cik": 2178,
+      "factor": "v_expectation_check",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "reverse_DCF(FCF/diluted_shares,raw_close,approved_parameters) - revenue_CAGR_3y",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": true,
+      "raw_reason": null,
+      "required_financial": [
+        "fcf",
+        "diluted_shares",
+        "revenue_cagr_3y"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0000002178-16-000064",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "AE"
+    },
+    {
+      "cik": 2186,
+      "factor": "v_earnings_yield",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "EBIT / (raw_close * weighted_average_diluted_shares + debt - cash)",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [
+        "diluted_shares"
+      ],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": false,
+      "raw_reason": "SHARES_NOT_AVAILABLE",
+      "required_financial": [
+        "ebit",
+        "diluted_shares",
+        "total_debt",
+        "cash"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0001354488-16-006435",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": null,
+      "symbol": "BKTI"
+    },
+    {
+      "cik": 2186,
+      "factor": "v_fcf_yield",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "(OCF - capex) / (raw_close * weighted_average_diluted_shares + debt - cash)",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [
+        "diluted_shares"
+      ],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": false,
+      "raw_reason": "SHARES_NOT_AVAILABLE",
+      "required_financial": [
+        "fcf",
+        "diluted_shares",
+        "total_debt",
+        "cash"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0001354488-16-006435",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": null,
+      "symbol": "BKTI"
+    },
+    {
+      "cik": 2186,
+      "factor": "v_vs_industry",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "percentile(EBIT/EV, eligible industry peers; canonical fallback)",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [
+        "diluted_shares",
+        "historical_peer_population"
+      ],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": false,
+      "raw_reason": "HISTORICAL_PEER_POPULATION_NOT_VERIFIED",
+      "required_financial": [
+        "ebit",
+        "diluted_shares",
+        "total_debt",
+        "cash",
+        "historical_peer_population"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0001354488-16-006435",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": null,
+      "symbol": "BKTI"
+    },
+    {
+      "cik": 2186,
+      "factor": "v_vs_own_history",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "percentile(current EBIT/share/price, >=3 historical fiscal-year-end month yields plus current)",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [
+        "diluted_shares",
+        "ebit_per_share_history",
+        "aligned_historical_month_prices"
+      ],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": false,
+      "raw_reason": "SHARES_NOT_AVAILABLE",
+      "required_financial": [
+        "ebit",
+        "diluted_shares",
+        "ebit_per_share_history",
+        "aligned_historical_month_prices"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0001354488-16-006435",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": null,
+      "symbol": "BKTI"
+    },
+    {
+      "cik": 2186,
+      "factor": "v_expectation_check",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "reverse_DCF(FCF/diluted_shares,raw_close,approved_parameters) - revenue_CAGR_3y",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [
+        "diluted_shares"
+      ],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": false,
+      "raw_reason": "SHARES_NOT_AVAILABLE",
+      "required_financial": [
+        "fcf",
+        "diluted_shares",
+        "revenue_cagr_3y"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0001354488-16-006435",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": null,
+      "symbol": "BKTI"
+    },
+    {
+      "cik": 2488,
+      "factor": "v_earnings_yield",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "(revenue * mean(last_5_operating_margins)) / (raw_close * weighted_average_diluted_shares + debt - cash)",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": true,
+      "raw_reason": null,
+      "required_financial": [
+        "diluted_shares",
+        "total_debt",
+        "cash",
+        "revenue",
+        "operating_margin_history"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0000002488-16-000111",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-26",
+      "symbol": "AMD"
+    },
+    {
+      "cik": 2488,
+      "factor": "v_fcf_yield",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "(OCF - capex) / (raw_close * weighted_average_diluted_shares + debt - cash)",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": true,
+      "raw_reason": null,
+      "required_financial": [
+        "fcf",
+        "diluted_shares",
+        "total_debt",
+        "cash"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0000002488-16-000111",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-26",
+      "symbol": "AMD"
+    },
+    {
+      "cik": 2488,
+      "factor": "v_vs_industry",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "percentile(normalized_EBIT/EV, eligible industry peers; canonical fallback)",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [
+        "historical_peer_population"
+      ],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": false,
+      "raw_reason": "HISTORICAL_PEER_POPULATION_NOT_VERIFIED",
+      "required_financial": [
+        "diluted_shares",
+        "total_debt",
+        "cash",
+        "historical_peer_population",
+        "revenue",
+        "operating_margin_history"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0000002488-16-000111",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-26",
+      "symbol": "AMD"
+    },
+    {
+      "cik": 2488,
+      "factor": "v_vs_own_history",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "percentile(current EBIT/share/price, >=3 historical fiscal-year-end month yields plus current)",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [
+        "aligned_historical_month_prices"
+      ],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": false,
+      "raw_reason": "NORMALIZED_HISTORY_NOT_AVAILABLE",
+      "required_financial": [
+        "ebit",
+        "diluted_shares",
+        "ebit_per_share_history",
+        "aligned_historical_month_prices"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0000002488-16-000111",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-26",
+      "symbol": "AMD"
+    },
+    {
+      "cik": 2488,
+      "factor": "v_expectation_check",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "reverse_DCF(FCF/diluted_shares,raw_close,approved_parameters) - revenue_CAGR_3y",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": false,
+      "raw_reason": "NON_POSITIVE_CASHFLOW",
+      "required_financial": [
+        "fcf",
+        "diluted_shares",
+        "revenue_cagr_3y"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0000002488-16-000111",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-26",
+      "symbol": "AMD"
+    },
+    {
+      "cik": 3197,
+      "factor": "v_earnings_yield",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "(revenue * mean(last_5_operating_margins)) / (raw_close * weighted_average_diluted_shares + debt - cash)",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": true,
+      "raw_reason": null,
+      "required_financial": [
+        "diluted_shares",
+        "total_debt",
+        "cash",
+        "revenue",
+        "operating_margin_history"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0001564590-16-015157",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "CECO"
+    },
+    {
+      "cik": 3197,
+      "factor": "v_fcf_yield",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "(OCF - capex) / (raw_close * weighted_average_diluted_shares + debt - cash)",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": true,
+      "raw_reason": null,
+      "required_financial": [
+        "fcf",
+        "diluted_shares",
+        "total_debt",
+        "cash"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0001564590-16-015157",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "CECO"
+    },
+    {
+      "cik": 3197,
+      "factor": "v_vs_industry",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "percentile(normalized_EBIT/EV, eligible industry peers; canonical fallback)",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [
+        "historical_peer_population"
+      ],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": false,
+      "raw_reason": "HISTORICAL_PEER_POPULATION_NOT_VERIFIED",
+      "required_financial": [
+        "diluted_shares",
+        "total_debt",
+        "cash",
+        "historical_peer_population",
+        "revenue",
+        "operating_margin_history"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0001564590-16-015157",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "CECO"
+    },
+    {
+      "cik": 3197,
+      "factor": "v_vs_own_history",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "percentile(current EBIT/share/price, >=3 historical fiscal-year-end month yields plus current)",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [
+        "aligned_historical_month_prices"
+      ],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": false,
+      "raw_reason": "NORMALIZED_HISTORY_NOT_AVAILABLE",
+      "required_financial": [
+        "ebit",
+        "diluted_shares",
+        "ebit_per_share_history",
+        "aligned_historical_month_prices"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0001564590-16-015157",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "CECO"
+    },
+    {
+      "cik": 3197,
+      "factor": "v_expectation_check",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "reverse_DCF(FCF/diluted_shares,raw_close,approved_parameters) - revenue_CAGR_3y",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": true,
+      "raw_reason": null,
+      "required_financial": [
+        "fcf",
+        "diluted_shares",
+        "revenue_cagr_3y"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0001564590-16-015157",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "CECO"
+    },
+    {
+      "cik": 3453,
+      "factor": "v_earnings_yield",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "(revenue * mean(last_5_operating_margins)) / (raw_close * weighted_average_diluted_shares + debt - cash)",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": true,
+      "raw_reason": null,
+      "required_financial": [
+        "diluted_shares",
+        "total_debt",
+        "cash",
+        "revenue",
+        "operating_margin_history"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0001104659-16-100342",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "MATX"
+    },
+    {
+      "cik": 3453,
+      "factor": "v_fcf_yield",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "(OCF - capex) / (raw_close * weighted_average_diluted_shares + debt - cash)",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": true,
+      "raw_reason": null,
+      "required_financial": [
+        "fcf",
+        "diluted_shares",
+        "total_debt",
+        "cash"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0001104659-16-100342",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "MATX"
+    },
+    {
+      "cik": 3453,
+      "factor": "v_vs_industry",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "percentile(normalized_EBIT/EV, eligible industry peers; canonical fallback)",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [
+        "historical_peer_population"
+      ],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": false,
+      "raw_reason": "HISTORICAL_PEER_POPULATION_NOT_VERIFIED",
+      "required_financial": [
+        "diluted_shares",
+        "total_debt",
+        "cash",
+        "historical_peer_population",
+        "revenue",
+        "operating_margin_history"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0001104659-16-100342",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "MATX"
+    },
+    {
+      "cik": 3453,
+      "factor": "v_vs_own_history",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "percentile(current EBIT/share/price, >=3 historical fiscal-year-end month yields plus current)",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [
+        "aligned_historical_month_prices"
+      ],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": false,
+      "raw_reason": "NORMALIZED_HISTORY_NOT_AVAILABLE",
+      "required_financial": [
+        "ebit",
+        "diluted_shares",
+        "ebit_per_share_history",
+        "aligned_historical_month_prices"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0001104659-16-100342",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "MATX"
+    },
+    {
+      "cik": 3453,
+      "factor": "v_expectation_check",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "reverse_DCF(FCF/diluted_shares,raw_close,approved_parameters) - revenue_CAGR_3y",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": true,
+      "raw_reason": null,
+      "required_financial": [
+        "fcf",
+        "diluted_shares",
+        "revenue_cagr_3y"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0001104659-16-100342",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "MATX"
+    },
+    {
+      "cik": 3499,
+      "factor": "v_earnings_yield",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "EBIT / (raw_close * weighted_average_diluted_shares + debt - cash)",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [
+        "total_debt"
+      ],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": false,
+      "raw_reason": "DEBT_CASH_NOT_AVAILABLE",
+      "required_financial": [
+        "ebit",
+        "diluted_shares",
+        "total_debt",
+        "cash"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0000003499-16-000034",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "ALX"
+    },
+    {
+      "cik": 3499,
+      "factor": "v_fcf_yield",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "(OCF - capex) / (raw_close * weighted_average_diluted_shares + debt - cash)",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [
+        "fcf",
+        "total_debt"
+      ],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": false,
+      "raw_reason": "DEBT_CASH_NOT_AVAILABLE",
+      "required_financial": [
+        "fcf",
+        "diluted_shares",
+        "total_debt",
+        "cash"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0000003499-16-000034",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "ALX"
+    },
+    {
+      "cik": 3499,
+      "factor": "v_vs_industry",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "percentile(EBIT/EV, eligible industry peers; canonical fallback)",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [
+        "total_debt",
+        "historical_peer_population"
+      ],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": false,
+      "raw_reason": "HISTORICAL_PEER_POPULATION_NOT_VERIFIED",
+      "required_financial": [
+        "ebit",
+        "diluted_shares",
+        "total_debt",
+        "cash",
+        "historical_peer_population"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0000003499-16-000034",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "ALX"
+    },
+    {
+      "cik": 3499,
+      "factor": "v_vs_own_history",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "percentile(current EBIT/share/price, >=3 historical fiscal-year-end month yields plus current)",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [
+        "aligned_historical_month_prices"
+      ],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": false,
+      "raw_reason": "PRICE_HISTORY_NOT_AVAILABLE",
+      "required_financial": [
+        "ebit",
+        "diluted_shares",
+        "ebit_per_share_history",
+        "aligned_historical_month_prices"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0000003499-16-000034",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "ALX"
+    },
+    {
+      "cik": 3499,
+      "factor": "v_expectation_check",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "reverse_DCF(FCF/diluted_shares,raw_close,approved_parameters) - revenue_CAGR_3y",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [
+        "fcf",
+        "revenue_cagr_3y"
+      ],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": false,
+      "raw_reason": "FCF_NOT_AVAILABLE",
+      "required_financial": [
+        "fcf",
+        "diluted_shares",
+        "revenue_cagr_3y"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0000003499-16-000034",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "ALX"
+    },
+    {
+      "cik": 3570,
+      "factor": "v_earnings_yield",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "EBIT / (raw_close * weighted_average_diluted_shares + debt - cash)",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": true,
+      "raw_reason": null,
+      "required_financial": [
+        "ebit",
+        "diluted_shares",
+        "total_debt",
+        "cash"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0000003570-16-000284",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "LNG"
+    },
+    {
+      "cik": 3570,
+      "factor": "v_fcf_yield",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "(OCF - capex) / (raw_close * weighted_average_diluted_shares + debt - cash)",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": true,
+      "raw_reason": null,
+      "required_financial": [
+        "fcf",
+        "diluted_shares",
+        "total_debt",
+        "cash"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0000003570-16-000284",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "LNG"
+    },
+    {
+      "cik": 3570,
+      "factor": "v_vs_industry",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "percentile(EBIT/EV, eligible industry peers; canonical fallback)",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [
+        "historical_peer_population"
+      ],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": false,
+      "raw_reason": "HISTORICAL_PEER_POPULATION_NOT_VERIFIED",
+      "required_financial": [
+        "ebit",
+        "diluted_shares",
+        "total_debt",
+        "cash",
+        "historical_peer_population"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0000003570-16-000284",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "LNG"
+    },
+    {
+      "cik": 3570,
+      "factor": "v_vs_own_history",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "percentile(current EBIT/share/price, >=3 historical fiscal-year-end month yields plus current)",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [
+        "aligned_historical_month_prices"
+      ],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": false,
+      "raw_reason": "PRICE_HISTORY_NOT_AVAILABLE",
+      "required_financial": [
+        "ebit",
+        "diluted_shares",
+        "ebit_per_share_history",
+        "aligned_historical_month_prices"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0000003570-16-000284",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "LNG"
+    },
+    {
+      "cik": 3570,
+      "factor": "v_expectation_check",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "reverse_DCF(FCF/diluted_shares,raw_close,approved_parameters) - revenue_CAGR_3y",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [
+        "revenue_cagr_3y"
+      ],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": false,
+      "raw_reason": "NON_POSITIVE_CASHFLOW",
+      "required_financial": [
+        "fcf",
+        "diluted_shares",
+        "revenue_cagr_3y"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0000003570-16-000284",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "LNG"
+    },
+    {
+      "cik": 4187,
+      "factor": "v_earnings_yield",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "EBIT / (raw_close * weighted_average_diluted_shares + debt - cash)",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": true,
+      "raw_reason": null,
+      "required_financial": [
+        "ebit",
+        "diluted_shares",
+        "total_debt",
+        "cash"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0000004187-16-000034",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "IDSA"
+    },
+    {
+      "cik": 4187,
+      "factor": "v_fcf_yield",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "(OCF - capex) / (raw_close * weighted_average_diluted_shares + debt - cash)",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [
+        "fcf"
+      ],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": false,
+      "raw_reason": "FCF_NOT_AVAILABLE",
+      "required_financial": [
+        "fcf",
+        "diluted_shares",
+        "total_debt",
+        "cash"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0000004187-16-000034",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "IDSA"
+    },
+    {
+      "cik": 4187,
+      "factor": "v_vs_industry",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "percentile(EBIT/EV, eligible industry peers; canonical fallback)",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [
+        "historical_peer_population"
+      ],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": false,
+      "raw_reason": "HISTORICAL_PEER_POPULATION_NOT_VERIFIED",
+      "required_financial": [
+        "ebit",
+        "diluted_shares",
+        "total_debt",
+        "cash",
+        "historical_peer_population"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0000004187-16-000034",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "IDSA"
+    },
+    {
+      "cik": 4187,
+      "factor": "v_vs_own_history",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "percentile(current EBIT/share/price, >=3 historical fiscal-year-end month yields plus current)",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [
+        "aligned_historical_month_prices"
+      ],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": false,
+      "raw_reason": "PRICE_HISTORY_NOT_AVAILABLE",
+      "required_financial": [
+        "ebit",
+        "diluted_shares",
+        "ebit_per_share_history",
+        "aligned_historical_month_prices"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0000004187-16-000034",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "IDSA"
+    },
+    {
+      "cik": 4187,
+      "factor": "v_expectation_check",
+      "financial_availability": "ACTUAL_SUBMISSIONS_ACCEPTANCE_FILTER",
+      "formula": "reverse_DCF(FCF/diluted_shares,raw_close,approved_parameters) - revenue_CAGR_3y",
+      "identity_status": "COMPANY_SECURITY_MAPPING_PENDING",
+      "missing_inputs": [
+        "fcf"
+      ],
+      "official_percentile_score_calculated": false,
+      "pit_blockers": [
+        "SECURITY_ID_AND_SPLIT_BASIS_NOT_YET_VERIFIED",
+        "EXACT_PRICE_PUBLICATION_AND_REVISION_VINTAGE_UNVERIFIED"
+      ],
+      "pit_eligible": false,
+      "pit_scope": "RECONSTRUCTED_AS_OF_EXISTING_ADAPTER_NOT_VENDOR_VINTAGE_REPLAY",
+      "price_acquired": true,
+      "price_basis": "RAW_SIP",
+      "price_event_time_convention": "2016-04-01T20:00:00+00:00",
+      "price_publication_at": null,
+      "raw_metric_calculated": false,
+      "raw_reason": "FCF_NOT_AVAILABLE",
+      "required_financial": [
+        "fcf",
+        "diluted_shares",
+        "revenue_cagr_3y"
+      ],
+      "requires_diluted_shares": true,
+      "research_pit_adapter_eligible": false,
+      "shares_accession": "0000004187-16-000034",
+      "shares_basis": "LATEST_FILED_WEIGHTED_AVERAGE_DILUTED_NOT_OUTSTANDING",
+      "shares_period_end": "2015-12-31",
+      "symbol": "IDSA"
+    }
+  ]
+}

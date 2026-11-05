@@ -1,0 +1,42 @@
+# Owner requested GitHub-secret KIS authentication/quotes; no orders/merge/deploy.
+name: BT-DATA-PILOT v0.6 KIS private price probe
+on:
+  push:
+    branches: [research/bt-data-pilot-alpaca-probe-20261031]
+    paths:
+      - .github/workflows/bt-data-pilot-kis.yml
+permissions:
+  contents: read
+concurrency:
+  group: bt-data-pilot-v06-kis-probe
+  cancel-in-progress: false
+jobs:
+  private-probe:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Test isolated KIS adapter without credentials
+        run: python -m unittest discover -s implementation/experiments/bt-data-pilot-v06 -p test_github_kis_probe.py -v
+      - name: Quote-only probe with private raw archive and replay
+        env:
+          KIS_APP_KEY: ${{ secrets.KIS_APP_KEY }}
+          KIS_APP_SECRET: ${{ secrets.KIS_APP_SECRET }}
+          KIS_APPKEY: ${{ secrets.KIS_APPKEY }}
+          KIS_APPSECRET: ${{ secrets.KIS_APPSECRET }}
+          APCA_API_KEY_ID: ${{ secrets.APCA_API_KEY_ID }}
+          APCA_API_SECRET_KEY: ${{ secrets.APCA_API_SECRET_KEY }}
+          RAW_REPO_TOKEN: ${{ secrets.RAW_REPO_TOKEN }}
+          GH_TOKEN: ${{ secrets.RAW_REPO_TOKEN }}
+        run: |
+          umask 077
+          # Resume preserved data; retry failed KIS requests once with 10-second spacing.
+          # Existing successful/empty KIS responses and all Alpaca data are reused.
+          mkdir -p "$RUNNER_TEMP/kis-resume"
+          gh release download bt-data-pilot-v06-kis-41167695581-1 --repo kco994553-star/investment-system1-raw --pattern 'private-inputs.zip*' --dir "$RUNNER_TEMP/kis-resume"
+          python implementation/experiments/bt-data-pilot-v06/github_kis_probe.py --kis-only --resume-zip "$RUNNER_TEMP/kis-resume/private-inputs.zip" --private-dir "$RUNNER_TEMP/bt-data-pilot-v06-kis"
