@@ -1,0 +1,203 @@
+{
+  "schema": "technical-screen-fixture-expectations/1",
+  "data_kind": "SYNTHETIC",
+  "cases": {
+    "normal": {
+      "file": "normal.json",
+      "transport_state": "OK",
+      "freshness": "NORMAL",
+      "evaluation_day": "2017-01-06",
+      "query_day": "2017-01-06",
+      "company_display_name": "합성기업_아주긴한글기업명_화면줄바꿈과접근성검사용_가나다라마바사아자차카타파하",
+      "expected_order": [
+        "SYNTHETIC:009",
+        "SYNTHETIC:010",
+        "SYNTHETIC:007",
+        "SYNTHETIC:008",
+        "SYNTHETIC:005",
+        "SYNTHETIC:006",
+        "SYNTHETIC:003",
+        "SYNTHETIC:004",
+        "SYNTHETIC:001",
+        "SYNTHETIC:002"
+      ],
+      "filter": [
+        {
+          "metric": "volatility_6m",
+          "condition": "exclude_D10"
+        }
+      ],
+      "expected_selected_ids": [
+        "SYNTHETIC:001",
+        "SYNTHETIC:002",
+        "SYNTHETIC:003",
+        "SYNTHETIC:004",
+        "SYNTHETIC:005",
+        "SYNTHETIC:006",
+        "SYNTHETIC:007",
+        "SYNTHETIC:008",
+        "SYNTHETIC:010"
+      ],
+      "filter_semantics": "CALCULATED",
+      "expected_filter_counts": {
+        "PASS": 9,
+        "FAIL": 1,
+        "UNKNOWN": 0
+      },
+      "valid_volatility_n": 10,
+      "null_meaning": null
+    },
+    "empty": {
+      "file": "empty.json",
+      "transport_state": "OK",
+      "freshness": "NORMAL",
+      "evaluation_day": "2017-01-06",
+      "query_day": "2017-01-06",
+      "company_display_name": "합성기업_아주긴한글기업명_화면줄바꿈과접근성검사용_가나다라마바사아자차카타파하",
+      "expected_order": [],
+      "filter": [
+        {
+          "metric": "volatility_6m",
+          "condition": "exclude_D10"
+        }
+      ],
+      "expected_selected_ids": [],
+      "filter_semantics": "CONFIRMED_EMPTY",
+      "expected_filter_counts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "UNKNOWN": 0
+      },
+      "valid_volatility_n": 0,
+      "null_meaning": "EMPTY_CONFIRMED_GROUP"
+    },
+    "partial_missing": {
+      "file": "partial_missing.json",
+      "transport_state": "OK",
+      "freshness": "NORMAL",
+      "evaluation_day": "2017-01-06",
+      "query_day": "2017-01-06",
+      "company_display_name": "합성기업_아주긴한글기업명_화면줄바꿈과접근성검사용_가나다라마바사아자차카타파하",
+      "expected_order": [
+        "SYNTHETIC:009",
+        "SYNTHETIC:010",
+        "SYNTHETIC:007",
+        "SYNTHETIC:008",
+        "SYNTHETIC:005",
+        "SYNTHETIC:006",
+        "SYNTHETIC:003",
+        "SYNTHETIC:004",
+        "SYNTHETIC:001",
+        "SYNTHETIC:002"
+      ],
+      "filter": [
+        {
+          "metric": "volatility_6m",
+          "condition": "exclude_D10"
+        }
+      ],
+      "expected_selected_ids": [],
+      "filter_semantics": "UNDECIDABLE",
+      "expected_filter_counts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "UNKNOWN": 10
+      },
+      "valid_volatility_n": 9,
+      "null_meaning": "MISSING_VALUE_NOT_ZERO"
+    },
+    "stale": {
+      "file": "stale.json",
+      "transport_state": "OK",
+      "freshness": "STALE",
+      "evaluation_day": "2017-01-06",
+      "query_day": "2017-01-09",
+      "company_display_name": "합성기업_아주긴한글기업명_화면줄바꿈과접근성검사용_가나다라마바사아자차카타파하",
+      "expected_order": [
+        "SYNTHETIC:009",
+        "SYNTHETIC:010",
+        "SYNTHETIC:007",
+        "SYNTHETIC:008",
+        "SYNTHETIC:005",
+        "SYNTHETIC:006",
+        "SYNTHETIC:003",
+        "SYNTHETIC:004",
+        "SYNTHETIC:001",
+        "SYNTHETIC:002"
+      ],
+      "filter": [
+        {
+          "metric": "volatility_6m",
+          "condition": "exclude_D10"
+        }
+      ],
+      "expected_selected_ids": [
+        "SYNTHETIC:001",
+        "SYNTHETIC:002",
+        "SYNTHETIC:003",
+        "SYNTHETIC:004",
+        "SYNTHETIC:005",
+        "SYNTHETIC:006",
+        "SYNTHETIC:007",
+        "SYNTHETIC:008",
+        "SYNTHETIC:010"
+      ],
+      "filter_semantics": "CALCULATED",
+      "expected_filter_counts": {
+        "PASS": 9,
+        "FAIL": 1,
+        "UNKNOWN": 0
+      },
+      "valid_volatility_n": 10,
+      "null_meaning": null
+    },
+    "unknown_group": {
+      "file": "unknown_group.json",
+      "transport_state": "OK",
+      "freshness": "NORMAL",
+      "evaluation_day": "2017-01-06",
+      "query_day": "2017-01-06",
+      "company_display_name": "합성기업_아주긴한글기업명_화면줄바꿈과접근성검사용_가나다라마바사아자차카타파하",
+      "expected_order": [
+        "SYNTHETIC:001",
+        "SYNTHETIC:002",
+        "SYNTHETIC:003",
+        "SYNTHETIC:004",
+        "SYNTHETIC:005",
+        "SYNTHETIC:006",
+        "SYNTHETIC:007",
+        "SYNTHETIC:008",
+        "SYNTHETIC:009",
+        "SYNTHETIC:010"
+      ],
+      "filter": [
+        {
+          "metric": "volatility_6m",
+          "condition": "exclude_D10"
+        }
+      ],
+      "expected_selected_ids": [],
+      "filter_semantics": "UNDECIDABLE",
+      "expected_filter_counts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "UNKNOWN": 10
+      },
+      "valid_volatility_n": null,
+      "null_meaning": "UNKNOWN_GROUP_NOT_ZERO"
+    },
+    "failed": {
+      "file": "failed.json",
+      "transport_state": "ERROR",
+      "error": "SYNTHETIC_UPSTREAM_FAILURE",
+      "expected_selected_ids": null,
+      "null_meaning": "NO_PAYLOAD_NOT_EMPTY_POPULATION"
+    }
+  },
+  "units": {
+    "momentum": "PERCENT",
+    "volatility": "PERCENT_PER_DAY_NON_ANNUALISED",
+    "dollar_volume": "USD_PER_TRADING_DAY"
+  },
+  "invariants": "Filters retain original metric N/ranks/percentiles; no post-filter reranking. Transport/name/freshness metadata is harness-only, outside the strict board contract."
+}
