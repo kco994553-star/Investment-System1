@@ -11,9 +11,10 @@ function head(no,title,lead,{back=true}={}){
 function section(id,stampText,ax,...children){
  return h('section',{class:'screen',dataset:{section:id},'aria-labelledby':'s-'+id},
   h('div',null,h('h2',{id:'s-'+id,class:'stamp'+(ax?' ax-'+ax:'')},stampText)),...children);}
+// The title is an h2: the card sits right under the screen's h1 (the company page), so headings do not skip a level (quality audit 2026-11-05).
 function card(title,{id=null,link=null}={},...children){
  const attrs={class:'sk card',dataset:id?{card:id}:{}};
- const inner=[h('h3',{class:'card-title'},title),...children];
+ const inner=[h('h2',{class:'card-title'},title),...children];
  return link?h('a',{...attrs,href:link},...inner):h('div',attrs,...inner);}
 function pending(what){return h('p',{class:'pending',dataset:{pending:''}},'연결 전 · ',what);}
 /* A feature that is not built yet (owner rule, common base 2026-10-31): an unfinished model or a private feature says so with

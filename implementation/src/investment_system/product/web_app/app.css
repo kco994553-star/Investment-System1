@@ -116,6 +116,8 @@ svg.ico{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stro
 @media (max-width:1240px){.hero-aside{position:static;transform:none;width:auto;text-align:center}}
 .search-box{width:min(760px,100%);min-height:72px;display:flex;align-items:center;gap:14px;padding:0 22px}
 .search-box input{flex:1;min-width:0;border:0;outline:none;font-size:24px;background:transparent}
+/* The input draws no ring of its own (the box is its border): the box takes the same focus ring as every other control (quality audit 2026-11-05, WCAG 2.4.7). */
+.search-box:has(input:focus-visible){outline:3px solid var(--ink);outline-offset:2px}
 .result-head{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
 .result-name{font-size:36px;overflow-wrap:anywhere}
 .hero-underline{width:min(560px,80%);height:26px;margin-top:-14px;fill:none;stroke:var(--ink);stroke-width:6;stroke-linecap:round}
@@ -235,6 +237,8 @@ svg.ico{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stro
 /* ---------- phone (draft: 390 px boards, bottom tabs) ---------- */
 @media (max-width:720px){
  :root{--gutter:16px}
+ /* Keyboard focus never lands under the fixed tab bar (quality audit 2026-11-05, WCAG 2.4.11): scrolling to a focused control keeps the bar's height free. */
+ html{scroll-padding-bottom:calc(var(--tabbar) + 12px)}
  .page{padding:20px var(--gutter) calc(var(--tabbar) + 24px);gap:20px}
  .top .menu{display:none}
  .brand span{font-size:22px}

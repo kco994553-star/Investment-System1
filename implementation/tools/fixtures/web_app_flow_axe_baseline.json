@@ -1,0 +1,9 @@
+{
+ "note": "Pre-existing axe-core violations of the 0 -> 1.1 -> company flow (tools/web_app_flow_quality_browser_test.js), counted by page|width|rule; the test fails only on counts above these. Audit: implementation/docs/frontend_v2/QUALITY_AUDIT_FLOW_20261105.md. Synthetic fixtures.",
+ "axe": "4.14.0",
+ "tags": ["wcag2a", "wcag2aa", "wcag21aa"],
+ "counts": {
+  "home@no-match|1440|aria-required-children": 1,
+  "home@no-match|390|aria-required-children": 1
+ }
+}
