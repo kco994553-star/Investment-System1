@@ -116,6 +116,8 @@ function leaderboard(route,refs){
  const ctx={pg:null,names:null,model:null,ret:null,retGen:0,band:{err:null},tabs:{err:null,after:false},pub:{busy:false,result:null,err:null},preview:null,gen:0};
  let queued=false;
  const later=()=>{if(queued)return;queued=true;Promise.resolve().then(()=>{queued=false;if(!signal.aborted)draw();});};
+ // 1.1.8 기술 조건 필터 (feature 3.5, screen-tech-filter-live.js): hides rows only; ranks, scores and the sort stay this screen's.
+ const TF=I.techFilterLive?I.techFilterLive.create({signal,redraw:later}):null;
 
  // ---- names, classification, prices
  const title=r=>{const N=ctx.names,ES=window.EntitySearch,rec=N?N.get(r.id)||(r.code?N.get(r.code):null):null;return ES?ES.companyTitle(rec,r.ticker,'ko-KR'):r.ticker;};
@@ -206,13 +208,14 @@ function leaderboard(route,refs){
   const byId=new Map(filterClassified(listed.map(r=>({company_id:r.id,row:r})),cls,f).map(x=>[x.company_id,x.row]));
   const filtered=listed.filter(r=>byId.has(r.id)&&(!f.type||(f.type==='UNCLASSIFIED'?!r.types.selected.length&&r.types.reason==='NO_RECOGNIZED_TYPE':f.type==='NOT_AVAILABLE'?!r.types.selected.length&&r.types.reason!=='NO_RECOGNIZED_TYPE':r.types.selected.includes(f.type)))
    &&(!f.state||r.coverage.states.includes(f.state))&&(!V.fav||fav.ids.includes(r.id)));
+  const tech=TF?TF.keep(filtered):null,kept=tech?tech.rows:filtered;
   const ur=ranks(),m3=new Map(),cap=r=>{if(!ur)return null;if(!m3.has(r.id))m3.set(r.id,P.rankFor({company_id:r.id,ticker:r.ticker}));const e=m3.get(r.id);return e&&Number.isInteger(e.rank)?e.rank:null;};
   if(sortSpec(V.sort)[1]==='cap'&&!ur||V.sort==='favorites'&&!fav.ids.length||!SORTS.some(s=>s[0]===V.sort))V.sort='qgv';
   const ret=ctx.ret&&ctx.ret.state==='READY'?ctx.ret:null,byRet=V.ret&&!!ret;
   const rv=r=>{const x=ret&&Object.hasOwn(ret.rows,r.id)?ret.rows[r.id]:null;return x&&x.state==='OK'?x.value:null;};
-  const ordered=byRet?returnOrder(filtered,rv):sortRows(filtered,V.sort,{cap,title,interests:fav.ids,rank:pv?r=>r.rank.personal:r=>r.rank.official});
+  const ordered=byRet?returnOrder(kept,rv):sortRows(kept,V.sort,{cap,title,interests:fav.ids,rank:pv?r=>r.rank.personal:r=>r.rank.official});
   const official=Q.rows(pg,{scope:'UNIVERSE'});
-  return{byRet,pg,pv,scoped,official,list,listed,filtered,ordered,drawn:ordered.slice(0,V.shown),any,fav,ur,m3,cap,ret,cls,of:pg.rows.length?pg.rows[0].rank.of:null};}
+  return{byRet,pg,pv,scoped,official,list,listed,filtered,tech,ordered,drawn:ordered.slice(0,V.shown),any,fav,ur,m3,cap,ret,cls,of:pg.rows.length?pg.rows[0].rank.of:null};}
 
  /* ---- draw everything (each control has data-k so the focus comes back after a repaint) */
  function draw(){
@@ -221,6 +224,7 @@ function leaderboard(route,refs){
   paintChips(pg);const v=view();
   const fill=(fn,list)=>B[fn].replaceChildren(...list.flat(Infinity).filter(x=>x!==null&&x!==undefined&&x!==false));
   fill('2.1.1',block1(v));fill('2.1.2',block2(v));fill('2.1.3',block3(v));fill('2.1.4',block4(v));fill('2.1.5',block5(v));fill('2.1.6',block6(v));fill('2.1.7',block7(v));
+  if(B['3.5'])fill('3.5',TF?TF.block():[h('p',{class:'na',dataset:{na:'LOADER_FAILED'}},'기술 조건 필터를 불러오지 못했습니다')]);
   refocus(k);}
  const set=(fn)=>()=>{fn();draw();};
  function stateCards(pg){
@@ -253,6 +257,7 @@ function leaderboard(route,refs){
    th('v',headBtn('v','V',pick('v-desc','v-asc')),pg.v_source.ko,true),th('cap',headBtn('cap','M3',pick('cap-desc','cap-asc'),!v.ur),null,true),
    th('ret',headBtn('ret','수익률 '+V.period,set(()=>{V.ret=!v.byRet;}),!v.ret),text('PRICE_BASIS_CONTINUITY_UNCONFIRMED')),
    th('asof',headBtn('asof','자료 기준일',pick('asof-desc','asof-asc')),'수집 시각 · 공개 점수 파일',true),
+   v.tech?th(null,TF.head(),'값·분위는 이 그룹 기준 · 1.1.8',true):null,
    vf?th(null,'V 요인',null,true):null].filter(Boolean);
   const dirText=v.byRet?'내림차순':oppositeSort(V.sort)===null?'한 방향':dir===-1?'내림차순':'오름차순';
   const sortText=v.byRet?'수익률 '+V.period+' 높은 순 · QGV 순위와 별개':sortSpec(V.sort)[3];
@@ -260,6 +265,7 @@ function leaderboard(route,refs){
   let body;
   if(v.pv&&v.pv.out.state==='INVALID')body=[emptyRow(cols.length,h('p',{class:'na',dataset:{na:v.pv.out.reason||''}},say(v.pv.out.reason,'내 설정으로 계산하지 못했습니다')))];
   else if(v.list==='RANKED'&&!v.listed.length)body=[emptyRow(cols.length,noRanking())];
+  else if(!v.drawn.length&&v.tech&&v.filtered.length)body=[emptyRow(cols.length,h('div',{class:'empty',dataset:{empty:'TECH_FILTER'}},h('p',null,'기술 조건을 만족하는 종목이 없습니다'),h('p',{class:'reason'},'1.1.8 결과 · 판정 불가 종목은 따로 표시')))];
   else if(!v.drawn.length)body=[emptyRow(cols.length,v.any?h('div',{class:'empty',dataset:{empty:'FILTER'}},h('p',null,'일치하는 기업이 없습니다'),
    h('button',{type:'button',class:'btn',dataset:{k:'clear-filters'},onclick:set(clearFilters)},'필터 모두 풀기')):h('p',{class:'empty',dataset:{empty:'VIEW'}},'이 보기에 해당하는 기업이 없습니다'))];
   else body=v.drawn.map(r=>row(r,v,active));
@@ -299,7 +305,7 @@ function leaderboard(route,refs){
   const company=h('td',{class:on('name')},h('a',{href:href('company',r.id),class:'co'},title(r)),title(r).includes(r.ticker)?null:h('span',{class:'reason'},' ',r.ticker),
    h('span',{class:'m-only sub-line'},sic||'SIC NA',' · ',typeof ty==='string'?ty:'유형 NA'),
    h('span',{class:'m-only sub-line'},...sub.flatMap((x,i)=>[i?' · ':'',x]),lt?[' ',ltNote('note')]:null,' · ',m3(r,v)),
-   why.length?h('details',{class:'m-only why'},h('summary',null,'사유 ▸'),h('ul',null,...why)):null);
+   why.length?h('details',{class:'m-only why'},h('summary',null,'사유 ▸'),h('ul',null,...why)):null,v.tech?TF.sub(r):null);
   let qgvCell=score(r,'total'),vCell=score(r,'v');
   if(v.list==='QG_REFERENCE'&&!ok(r.score.v))vCell=h('span',{class:'reason'},'— 근거: ',text(r.na_reason.v));
   if(v.list==='CHECK_DATA'&&!ok(r.score.total))qgvCell=h('span',{class:'reason'},'어느 축도 산출 안 됨 → 근거: ',text(r.na_reason.total));
@@ -311,6 +317,7 @@ function leaderboard(route,refs){
    h('td',{class:'num qgv '+on('qgv'),dataset:{cell:'qgv'}},qgvCell),h('td',{class:'num ax-q '+pc('q'),dataset:{cell:'q'}},score(r,'q')),h('td',{class:'num ax-g '+pc('g'),dataset:{cell:'g'}},score(r,'g')),
    h('td',{class:'num ax-v '+pc('v'),dataset:{cell:'v'}},vCell),h('td',{class:pc('cap'),dataset:{cell:'m3'}},m3(r,v)),h('td',{class:on('ret'),dataset:{cell:'ret'}},ret(r,v)),
    h('td',{class:pc('asof'),dataset:{cell:'asof'}},day(r.acquired_at)||naBox('자료 기준일 없음','ACQUIRED_AT_NOT_AVAILABLE')),
+   v.tech?h('td',{class:'pc-col',dataset:{cell:'tech'}},TF.cell(r)):null,
    v.list==='RANKED'?h('td',{class:'pc-col',dataset:{cell:'vfactors'}},String(vf.n),'/',String(vf.total),miss.length?h('details',{class:'na'},h('summary',null,'빠진 요인'),h('span',{class:'reason'},miss.join(' · '))):null):null);}
  // The 2.1.5 empty state of 종합 순위: no official rank without a central V publication (no device price can give one, DC-31).
  const noRankWhy=()=>{const b=ctx.pg&&ctx.pg.price_basis;return b&&b.reason?text(b.reason):text('OFFICIAL_NOT_PUBLISHED');};
@@ -333,7 +340,7 @@ function leaderboard(route,refs){
   return[h('div',{class:'sort-row'},h('label',{for:'lb-sort'},'정렬'),sel,toggle,reset),opp===null?h('p',{class:'reason',dataset:{oneWay:''}},'이 정렬은 한 방향만'):null,
    h('p',{class:'sk status-line',dataset:{sortStatus:''}},'정렬: ',sortSpec(V.sort)[3],' · ',opp===null?'한 방향':dir===-1?'내림차순':'오름차순',' · 순위 모집단: V 포함 종합점수 ',of,'개'),
    h('div',{class:'pop'},box('EVALUATION',L.EVALUATION[0],'Universe504 점수 행 ',E===null?'NA':String(E)),box('RANK',L.RANK[0],'종합점수 + V 있는 행 ',of),
-    box('ELIGIBLE',L.ELIGIBLE[0],...eligible),box('FILTER',L.FILTER[0],'표시 ',String(v.drawn.length),' · 순위 다시 매기지 않음')),
+    box('ELIGIBLE',L.ELIGIBLE[0],...eligible),box('FILTER',L.FILTER[0],'표시 ',String(v.drawn.length),v.tech?' · 기술 조건 적용':'',' · 순위 다시 매기지 않음')),
    h('div',{class:'hand rules'},h('p',null,'· NA는 오름·내림 모두 맨 뒤'),h('p',null,'· 동점: QGV는 티커 순(순위 순서), 시총은 기업 ID 순'),h('p',null,'· 정렬은 줄 순서만 바꿈 · 순위 번호는 그대로')),toTable('sort')];}
 
  /* ---- 2.1.3 분류와 필터 */

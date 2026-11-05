@@ -64,6 +64,7 @@
 | 3.2.5 데이터 적합성 | 결정됨(10-31 TA-361) | — | #361 닫음(Yahoo 분할 이벤트 경로 안 씀) | 분할 확인은 1인 비공개 구역(#436) KIS 차트에서만(원주가÷수정주가 정수비 + SEC 주식수). 공개 실가격 창은 계속 `PRICE_BASIS_CONTINUITY_UNCONFIRMED` |
 | 3.3 차트 노트 | 구현 | 합성 | `chart-workbench.js`, #382(펜·수평선·지우개·되돌리기) | 계정·시트 저장(DRAW-STORE) |
 | 3.4 기술 구조 트리 | 구현 | — | `ia-screens.js` | — |
+| 3.5 기술 조건 리더보드 필터 (1.1.8) | 개발 빌드(합성) | 합성 | 새 앱 `web_app/tech-screen.js`, `screen-tech-filter-live.js`, `screen-qgv-live.js` | 11/03 오너 지시, 11/04 Codex 계약 `technical-leaderboard/1`(#469 `f1ca390a`) 연동. 평가일·그룹별 보드 → 지표 원값·분위 → 필터(중앙값 이상/초과 구분) → 원래 순위 유지 · 결합 행만 QGV 순. 그룹 구성 미확인·유효 N<10·조건 충족 0건 구분. 실자료 미연결(원천 NONE), 리더보드 결합은 증권 ID 매핑 뒤([TECH_FILTER_20261103](../../implementation/docs/frontend_v2/TECH_FILTER_20261103.md)). 비공개 연구값 공개·병합·배포는 별도 |
 | 4.1.1·4.1.2 국면 그래프·탐색 | 부분 | — | `macro-cycle-ring.js` | 국면 모델 없음 → 공식 위치 "미산출" |
 | 4.1.3 근거 세로선 | 부분 | 실 | `macro-evidence.js`, #351·#352 | 탐색 전용. P1 13개 중 일부 수집(PARTIAL) |
 | 4.1.4 기존 매크로 연결 | 구현 | 실 | `macro-lights.js` | 게이트 재가동 M-REENABLE 결정 대기 |
@@ -87,7 +88,7 @@
 | 6.4 포트폴리오 구조 트리 | 구현 | — | `ia-screens.js` | — |
 | 7.1 프롬프트 라이브러리 | 구현 | — | `research-bridge.js`(★·내 사본 = 이 브라우저) | 새 영역 목록 PROMPT-DOMAIN |
 | 8.1 전체 구조 트리 | 구현 | 실 | `ia-screens.js`(system) | 8.1.3 구현 상태 표시를 이 문서와 맞추기 |
-| 9.1 백테스트 | 신규 · 결정 | — | `screen-detail.js`(준비 목록), `docs/backtest/*`, 연구 엔진 #454(Draft, `research/exp_deciles/`) | BT-1~17·MD-1~12 결정, 과거 자료 확보. 11/01 연구 `EXP-STOCK-INDICATOR-DECILES-v1`: 설정 #453 병합, 엔진 #454는 **합성 묶음만**(실자료 파일럿·전체 백테스트 없음). 실자료는 SEC 1회용 수집·T 시가 원천 승인 뒤 |
+| 9.1 백테스트 | 신규 · 결정 | — | `screen-detail.js`(준비 목록), `docs/backtest/*`, 연구 엔진 #454(Draft, `research/exp_deciles/`); 새 앱 `web_app/lab.js`·`screen-lab-live.js` | BT-1~17·MD-1~12 결정, 과거 자료 확보. 11/01 연구 `EXP-STOCK-INDICATOR-DECILES-v1`: 설정 #453 병합, 엔진 #454는 **합성 묶음만**(실자료 파일럿·전체 백테스트 없음). 실자료는 SEC 1회용 수집·T 시가 원천 승인 뒤 **11/03 `lab-backtest-v2`(#471, 개발 빌드·합성):** 결과 종류(전략 백테스트·1회사 지표·표본 진단)·계산 상태·표본·모집단·진단 요약 판독·화면. Codex 합의 #437 6600537423, Codex의 v2 수령 확인 6602595466. 실결과 연결·공개(LAB-PUBLISH)·병합·배포는 별도 |
 | 9.2 전진검증 | 구현 | 실 | `forward-validation.js`, `tools/forward_validation_ledger.py` | 연속 성공 3/7(10/24분, run 40146210895; 10/25 Actions 확인). 배포 실패 뒤 복구 운영 증거는 아직 없음. **10-31 v3 방침(DC-38)**: v1·v2는 v3 시작과 함께 기록 멈춤·보존, 바구니 단위 IEX 수익률·재구성 구간 — [설계](../../implementation/docs/forward_validation/FORWARD_VALIDATION_V3_DESIGN_20261031.md), 구현 대기 |
 | 공통: 계정 동기화 | 신규 · 결정 | — | DRAW-STORE, IA-6 | 지금은 이 브라우저 + 내보내기·가져오기 |
 
