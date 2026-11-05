@@ -52,7 +52,9 @@ P=<세션 scratchpad>   # 도구 설치 위치
 AXE_CORE_PATH=$P/tools-axe/node_modules/axe-core/axe.min.js \
 NODE_PATH=$P/pw158/node_modules PLAYWRIGHT_BROWSERS_PATH=$P/pw158/browsers \
 node implementation/tools/web_app_flow_quality_browser_test.js
-# axe 없이 (CI 현재 상태와 같음: 규칙 검사는 건너뛰고 그렇게 출력, 나머지 검사는 실행)
+# CI와 같은 필수 모드 (axe가 없거나 다른 파일이면 실패)
+AXE_CORE_PATH=... QUALITY_REQUIRE_AXE=1 NODE_PATH=... PLAYWRIGHT_BROWSERS_PATH=... node implementation/tools/web_app_flow_quality_browser_test.js
+# axe 없이 (로컬 전용: 규칙 검사는 건너뛰고 그렇게 출력, 나머지 검사는 실행. 이 결과는 접근성 규칙 검증이 아님)
 NODE_PATH=... PLAYWRIGHT_BROWSERS_PATH=... node implementation/tools/web_app_flow_quality_browser_test.js
 # 관찰값을 기준선 형식으로 쓰기
 AXE_WRITE_BASELINE=$P/qa/axe_observed.json ... node implementation/tools/web_app_flow_quality_browser_test.js
@@ -166,8 +168,13 @@ HOME=$P/tools-impeccable/home unshare -n $P/tools-impeccable/bin16/package/bin/i
 
 ## 10. CI 연결에 필요한 것
 
-- 이번 PR: `tools/ci_browser_tests.txt`에 새 시험 한 줄(목록 추가는 허용 범위). CI에는 axe가 없으므로 **규칙 검사는 건너뛰고 그렇게 출력하며, 키보드·초점·확대·상태·구분 검사만 돈다**(약 30초).
-- axe까지 CI에서 돌리려면 **워크플로 변경(오너 승인 필요)**: `cockpit-pages.yml` build 단계에서 `npm install --prefix "$RUNNER_TEMP/pages-browser" axe-core@4.14.0`(--ignore-scripts)과 환경 변수 `AXE_CORE_PATH=$RUNNER_TEMP/pages-browser/node_modules/axe-core/axe.min.js`, `QUALITY_REQUIRE_AXE=1`. axe는 시험 러너에만 설치되고 Pages 산출물·web_app에는 들어가지 않는다.
+- 이번 PR: `tools/ci_browser_tests.txt`에 새 시험 한 줄(목록 추가는 허용 범위).
+- **axe 규칙 검사는 필수 완료 조건이다(오너 11/05 후속 지시 3).** 첫 머리 `b0ee283e`의 CI에는 axe가 없어 규칙 검사가 **생략**되었다(로그 `AXE_NOT_AVAILABLE: rule scan skipped`). 그 녹색은 접근성 규칙 검증 완료가 아니다.
+- 그래서 이 PR이 `cockpit-pages.yml` build 단계를 바꾼다(워크플로 변경이므로 병합은 오너 승인 뒤):
+  - `npm install --ignore-scripts --no-audit --no-fund --prefix "$RUNNER_TEMP/axe" axe-core@4.14.0`(시험 러너 전용 위치. Pages 산출물·web_app에는 들어가지 않음)
+  - 환경 변수 `AXE_CORE_PATH=$RUNNER_TEMP/axe/node_modules/axe-core/axe.min.js`, `QUALITY_REQUIRE_AXE=1`
+- 시험은 `QUALITY_REQUIRE_AXE=1`일 때 axe가 없으면 `AXE_NOT_AVAILABLE`, 고정한 4.14.0 파일(SHA-256 `20c09fe1…c46e878`)과 다르면 `AXE_BUILD_UNEXPECTED`로 **실패**한다. 그래서 이 build의 녹색은 규칙 검사 45회가 실제로 돌았다는 뜻이다. 실행되면 로그에 `axe 4.14.0 wcag2a,wcag2aa,wcag21aa: 45 scans …` 줄이 남는다.
+- `tests/test_quality_axe_ci.py`가 설치 줄·환경 변수·시험 쪽 거부를 고정한다.
 - Lighthouse는 합격 기준으로 쓰지 않는다. 쓴다면 별도 수동 워크플로로 보고서만 산출물에 남기는 방식을 권한다(업로드 없음). 이것도 워크플로 변경이다.
 - Impeccable은 CI에 넣지 않는다(엔진 바이너리 내려받기·사용 통계 API·live 모드가 있는 도구. 오프라인 `detect`의 이득이 작다).
 

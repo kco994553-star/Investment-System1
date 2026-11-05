@@ -19,12 +19,14 @@
 //    from a pinned scratch install) or a resolvable axe-core package. It is evaluated in the page through the DevTools protocol
 //    (page.evaluate), never added to web_app, the build or the Pages artifact, and the CSP is not relaxed. Violations are counted
 //    by page|width|rule and compared with tools/fixtures/web_app_flow_axe_baseline.json: the pre-existing ones there do not fail,
-//    anything new does. Without an axe build the rule scan is skipped and says so (QUALITY_REQUIRE_AXE=1 makes that a failure);
-//    the hard checks still run. AXE_WRITE_BASELINE=<file> writes the observed counts.
+//    anything new does. Without an axe build the rule scan is skipped and says so; QUALITY_REQUIRE_AXE=1 (set by the required
+//    cockpit-pages build) makes a missing build, or a build other than the pinned axe 4.14.0 bytes (AXE_SHA256), a failure, so a
+//    green CI there means the rule scan ran. The hard checks always run. AXE_WRITE_BASELINE=<file> writes the observed counts.
 const { chromium } = require('playwright');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const crypto = require('node:crypto');
 const R = require('./web_app_reuse');
 const site = require('./web_app_test_site');
 const F = require('./qgv_v2_fixture.js');
@@ -40,6 +42,8 @@ const PUB = JSON.parse(fixture('qgv_official_vectors_v1.json').base_text);
 const WEIGHTS = fixture('qgv_v2_custom_vectors_v1.json').cases[0].input.weights;
 const BASELINE_FILE = path.join(__dirname, 'fixtures/web_app_flow_axe_baseline.json');
 const TAGS = ['wcag2a', 'wcag2aa', 'wcag21aa'];
+// axe-core 4.14.0 axe.min.js (npm axe-core@4.14.0, integrity sha512-9WTZxEjs…zzpcQ==): the only build the required CI run accepts.
+const AXE_SHA256 = '20c09fe157a8a34a30e241aaa1fcdade657734f08ab379ecfbeb7d45cc46e878';
 
 // A real 0: the publication with NYSE:ABBV's last published V factor at 0, so its V axis is exactly 0, re-derived through the
 // reader's own engine (axis, total, ranks, coverage) and checked by the reader's validate() before use. Synthetic.
@@ -63,14 +67,17 @@ function axeSource() {
   let file = process.env.AXE_CORE_PATH || null;
   if (!file) { try { file = path.join(path.dirname(require.resolve('axe-core/package.json')), 'axe.min.js'); } catch (_) { file = null; } }
   if (!file || !fs.existsSync(file)) return null;
-  const text = fs.readFileSync(file, 'utf8'), version = (/axe v([\d.]+)/.exec(text.slice(0, 400)) || [])[1] || 'unknown';
-  return { text, version, file };
+  const bytes = fs.readFileSync(file), text = bytes.toString('utf8'), version = (/axe v([\d.]+)/.exec(text.slice(0, 400)) || [])[1] || 'unknown';
+  return { text, version, file, sha256: crypto.createHash('sha256').update(bytes).digest('hex') };
 }
 
 let phase = 'START';
 (async () => {
   const AXE = axeSource();
-  if (!AXE && process.env.QUALITY_REQUIRE_AXE === '1') throw new Error('AXE_NOT_AVAILABLE: set AXE_CORE_PATH to a pinned axe.min.js');
+  if (process.env.QUALITY_REQUIRE_AXE === '1') {
+    if (!AXE) throw new Error('AXE_NOT_AVAILABLE: QUALITY_REQUIRE_AXE=1 and no axe build (set AXE_CORE_PATH to the pinned axe.min.js)');
+    if (AXE.sha256 !== AXE_SHA256) throw new Error('AXE_BUILD_UNEXPECTED: ' + AXE.version + ' sha256 ' + AXE.sha256 + ' is not the pinned 4.14.0 build');
+  }
   if (!AXE) console.log('AXE_NOT_AVAILABLE: rule scan skipped (set AXE_CORE_PATH); hard checks run');
   const baseline = JSON.parse(fs.readFileSync(BASELINE_FILE, 'utf8'));
   const ZERO = await zeroPublication();

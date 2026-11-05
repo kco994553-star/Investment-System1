@@ -185,8 +185,13 @@ jobs:
           PAGES_COCKPIT_URL: http://127.0.0.1:8990/
           PRIVATE_HISTORY_URL: http://127.0.0.1:8990/
           PAGES_COCKPIT_EVIDENCE_DIR: ${{ runner.temp }}/pages-browser-evidence
+          # axe-core only for the flow quality test's rule scan, in its own prefix with install scripts off; the test refuses
+          # any build other than the pinned 4.14.0 bytes and, with QUALITY_REQUIRE_AXE=1, fails instead of skipping (#494).
+          AXE_CORE_PATH: ${{ runner.temp }}/axe/node_modules/axe-core/axe.min.js
+          QUALITY_REQUIRE_AXE: '1'
         run: |
           npm install --prefix "$RUNNER_TEMP/pages-browser" playwright@1.58.2
+          npm install --ignore-scripts --no-audit --no-fund --prefix "$RUNNER_TEMP/axe" axe-core@4.14.0
           "$RUNNER_TEMP/pages-browser/node_modules/.bin/playwright" install --with-deps chromium
           bash implementation/tools/run_js_tests.sh implementation/tools/ci_node_tests.txt
           node --test implementation/worker/tests/*.test.mjs
