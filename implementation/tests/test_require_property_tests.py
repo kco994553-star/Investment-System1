@@ -74,5 +74,5 @@ def test_required_build_job_installs_pins_refuses_a_skip_and_repeats_the_result_
     assert 'python tools/require_property_tests.py "$RUNNER_TEMP/technical-properties.xml" > "$RUNNER_TEMP/technical-properties-result.txt" || { cat "$RUNNER_TEMP/technical-properties-result.txt"; exit 1; }\n' in step
     assert 'continue-on-error' not in step and '|| true' not in step
     tail = build[repeat:]
-    assert '        if: always()\n' in tail and 'PROPERTY_RESULT_MISSING' in tail
+    assert 'always()' not in build and 'PROPERTY_RESULT_MISSING' in tail   # the publication-sink guard forbids always() here
     assert tail.count('\n      - ') <= 1, 'the repeat is the last step of the build job before upload'

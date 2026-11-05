@@ -215,9 +215,9 @@ jobs:
           trap 'kill "$SERVER_PID" "$M2_SERVER_PID"' EXIT
           M2_BROWSER_EVIDENCE="$RUNNER_TEMP/m2-browser-evidence" node implementation/tools/sec_m2_candidates_browser_test.js
 
-      # Only repeats the property step's own two result lines, so they can be read from the tail of a long log.
+      # Only repeats the property step's own two result lines, so they can be read from the tail of a long log. It runs only when
+      # every step before it passed (the property step prints the same lines itself when it fails).
       - name: Technical property result (repeated at the end of the log)
-        if: always()
         run: |
           tail -n 1 "$RUNNER_TEMP/technical-properties-pytest.txt" 2>/dev/null || echo 'PROPERTY_PYTEST_OUTPUT_MISSING'
           cat "$RUNNER_TEMP/technical-properties-result.txt" 2>/dev/null || echo 'PROPERTY_RESULT_MISSING'
