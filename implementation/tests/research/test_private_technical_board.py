@@ -10,7 +10,7 @@ import sys
 import pytest
 
 from investment_system.research.kis_price_bridge import normalize_page, retained_baseline
-from investment_system.research.private_technical_board import measure_contract, build_contract_board
+from investment_system.research.private_technical_board import measure_contract, build_contract_board, board_reader_payload
 from investment_system.research.exp_deciles.technical_measures import sessions
 
 
@@ -185,3 +185,80 @@ def test_normal_cli_private_output_and_no_provider_request(mode,tmp_path):
     assert r.returncode==0 and r.stdout=='OFFLINE_PRIVATE_JOB_WRITTEN\n' and r.stderr==''
     assert out.stat().st_mode&0o777==0o600
     assert json.loads(out.read_text())['publication_scope']=='OWNER_PRIVATE_ONLY'
+
+
+@pytest.mark.parametrize('known', [True, False])
+def test_reader_export_cli_uses_merged_main_reader_without_recalculation(known, tmp_path):
+    # Regression: rich metric rows contain unit/window fields refused by #470.
+    # Exercise the real reader, not a second Python copy of its validator.
+    import shutil
+    if not shutil.which('node'):
+        pytest.skip('Node is required to check the merged Main reader')
+    series, links, group = board_input(20 if known else 1)
+    if not known:
+        group.update(membership_status='UNKNOWN', member_security_ids=None, membership_source=None)
+    result = build_contract_board(series, group=group, security_links=links if known else ())
+    # Decimal calculations may emit exponent notation; the real JS reader only
+    # accepts plain decimal strings, including null-adopted raw diagnostics.
+    result['board']['metrics']['dollar_volume_6m']['rows'][0]['raw_value'] = '0E-49'
+    original = deepcopy(result)
+    job, out = tmp_path/'reader-job.json', tmp_path/'reader.json'
+    job.write_text(json.dumps(dict(mode='technical-reader', arguments=dict(result=result))))
+    root = Path(__file__).parents[2]
+    run = subprocess.run([sys.executable, str(root/'tools/kis_retained_calculate.py'),
+                          '--job', str(job), '--output', str(out)], capture_output=True, text=True)
+    assert run.returncode == 0, run.stderr
+    assert run.stdout == 'OFFLINE_PRIVATE_JOB_WRITTEN\n'
+    payload = json.loads(out.read_text())
+    assert payload['publication_scope'] == 'OWNER_PRIVATE_ONLY'
+    assert payload['data_kind'] == 'SYNTHETIC'
+    projected = payload['cases']['private']['metrics']
+    for name, metric in result['board']['metrics'].items():
+        assert projected[name]['n_valid'] == metric['n_valid']
+        for before, after in zip(metric['rows'], projected[name]['rows']):
+            for key in ('value', 'rank', 'decile', 'conditions', 'null_reasons'):
+                assert after[key] == before[key]
+    assert result == original
+    assert out.stat().st_mode & 0o777 == 0o600
+    reader = root/'src/investment_system/product/web_app/tech-screen.js'
+    script = "const fs=require('fs'),T=require(process.argv[1]); const r=T.validate(JSON.parse(fs.readFileSync(process.argv[2],'utf8'))); console.log(JSON.stringify({ok:r.ok,code:r.code,path:r.path}));"
+    checked = subprocess.run(['node', '-e', script, str(reader), str(out)], capture_output=True, text=True)
+    assert checked.returncode == 0, checked.stderr
+    assert json.loads(checked.stdout) == {'ok': True}
+
+
+def test_reader_export_preserves_exact_tiny_decimal_values_and_median():
+    series, links, group = board_input(1)
+    result = build_contract_board(series, group=group, security_links=links)
+    metric = result['board']['metrics']['momentum_3m']
+    metric['rows'][0]['value'] = '1.23456789012345678901234567890123456789E-20'
+    metric['rows'][0]['raw_value'] = '1.23456789012345678901234567890123456789E-20'
+    metric['median'] = '1.23456789012345678901234567890123456789E-20'
+    exported = board_reader_payload(result)['cases']['private']['metrics']['momentum_3m']
+    exact = '0.0000000000000000000123456789012345678901234567890123456789'
+    assert exported['median'] == exact
+    assert exported['rows'][0]['value'] == exported['rows'][0]['raw_value'] == exact
+    assert metric['median'].endswith('E-20')
+
+
+@pytest.mark.parametrize('change,error', [
+    ('unit', 'READER_METRIC_UNIT_MISMATCH'),
+    ('day', 'READER_BOARD_DATE_OR_SCHEMA_MISMATCH'),
+    ('missing_member', 'READER_SERIES_ID_MISSING'),
+    ('scope', 'PRIVATE_BOARD_RESULT_REQUIRED'),
+])
+def test_reader_export_refuses_semantic_changes_without_filling_or_dropping_members(change, error):
+    series, links, group = board_input(1)
+    if change == 'missing_member':
+        group['member_security_ids'].append('SYNTHETIC:MISSING')
+    result = build_contract_board(series, group=group, security_links=links)
+    if change == 'unit':
+        result['board']['metrics']['momentum_3m']['rows'][0]['unit'] = 'FRACTION'
+    elif change == 'day':
+        result['signal_day'] = '2017-01-05'
+    elif change == 'scope':
+        result['publication_scope'] = 'PUBLIC'
+    before = deepcopy(result)
+    with pytest.raises(ValueError, match=error):
+        board_reader_payload(result)
+    assert result == before

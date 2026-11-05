@@ -14,6 +14,59 @@ SECURITY_IDENTIFIER_TYPES = frozenset(('PERMNO', 'FIGI', 'ISIN', 'CUSIP', 'EXCHA
                                        'PROVIDER_SECURITY_ID', 'SYNTHETIC_FIXED_SECURITY_ID'))
 
 
+def board_reader_payload(result):
+    """Project a saved result to the existing #470 reader without calculating.
+
+    The original board keeps window, unit and diagnostic evidence. Its reader
+    accepts an exact row shape; exporting those evidence fields directly causes
+    KEY_UNKNOWN. Keep the original artifact, values, nulls and population intact.
+    """
+    if (result.get('schema') != 'kis-technical-board/1'
+            or result.get('publication_scope') != 'OWNER_PRIVATE_ONLY'):
+        raise ValueError('PRIVATE_BOARD_RESULT_REQUIRED')
+    board = result['board']
+    if board.get('schema') != 'technical-leaderboard/1' or board['signal_day'] != result['signal_day']:
+        raise ValueError('READER_BOARD_DATE_OR_SCHEMA_MISMATCH')
+    if result.get('evidence_kind') not in ('SYNTHETIC', 'RETAINED_INPUT'):
+        raise ValueError('READER_EVIDENCE_KIND_REQUIRED')
+    def decimal_text(value):
+        if value is None:
+            return None
+        number = measures.number(value) if isinstance(value, str) else None
+        if number is None:
+            raise ValueError('READER_DECIMAL_INVALID')
+        # Decimal's fixed-point rendering is exact and independent of the
+        # arithmetic context. Never round through float or change a null to zero.
+        return format(number, 'f')
+    units = dict(momentum_3m='PERCENT', momentum_6m='PERCENT', momentum_12m='PERCENT',
+                 volatility_6m='PERCENT_PER_DAY', dollar_volume_6m='USD_PER_TRADING_DAY')
+    if set(board['metrics']) != set(units):
+        raise ValueError('READER_METRICS_MISMATCH')
+    out = {k: deepcopy(board[k]) for k in ('schema', 'signal_day', 'settings_version',
+           'settings_sha256', 'group_id', 'membership_status', 'membership_source', 'population_hash')}
+    out['metrics'] = {}
+    for name, metric in board['metrics'].items():
+        projected = {k: deepcopy(metric[k]) for k in ('n_valid', 'n_members', 'median', 'k', 'null_reason')}
+        projected['median'] = decimal_text(metric['median'])
+        projected['rows'] = []
+        for row in metric['rows']:
+            if row.get('unit') != units[name] and (row.get('unit') is not None or row['value'] is not None):
+                raise ValueError('READER_METRIC_UNIT_MISMATCH')
+            # The existing Main reader requires a series ID, even for a known
+            # group member with no input. Do not invent an ID or drop that member.
+            if not isinstance(row.get('series_id'), str) or not row['series_id'].strip():
+                raise ValueError('READER_SERIES_ID_MISSING')
+            keys = ('value', 'null_reasons', 'security_id', 'series_id', 'rank', 'decile', 'conditions')
+            item = {k: deepcopy(row[k]) for k in keys}
+            item.update({k: deepcopy(row[k]) for k in ('symbol', 'raw_value') if k in row})
+            item['value'] = decimal_text(item['value'])
+            if 'raw_value' in item:
+                item['raw_value'] = decimal_text(item['raw_value'])
+            projected['rows'].append(item)
+        out['metrics'][name] = projected
+    return dict(data_kind=result['evidence_kind'], publication_scope='OWNER_PRIVATE_ONLY', cases={'private': out})
+
+
 def measure_contract(c, *, evaluation_day, series_id):
     """Measure exactly S, never substitute the last retained date for missing S."""
     validate_contract(c); _day(evaluation_day)
