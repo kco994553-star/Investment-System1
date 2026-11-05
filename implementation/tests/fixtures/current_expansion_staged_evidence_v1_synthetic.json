@@ -1,0 +1,2890 @@
+{
+ "cases": {
+  "staged6_none_at_basis": {
+   "basis_date": "2026-11-02",
+   "counts": {
+    "candidate_rows": 6,
+    "stages": {
+     "external_fixed_id": {
+      "NOT_SUPPLIED": 5,
+      "UNVERIFIED_INPUT": 1
+     },
+     "issuer_link": {
+      "CATALOG_ONLY": 1,
+      "SUBMISSIONS_CORROBORATED": 5
+     },
+     "market_cap_eligibility": {
+      "NOT_COMPUTED": 6
+     },
+     "representative": {
+      "UNCONFIRMED": 6
+     },
+     "same_security_at_basis": {
+      "ARCHIVED_DESCRIPTION_ONLY": 1,
+      "DOCUMENTED_OUTSIDE_BASIS": 2,
+      "UNKNOWN": 3
+     },
+     "security_type_evidence": {
+      "DOCUMENTED_ARCHIVED_TYPE": 3,
+      "UNKNOWN": 3
+     }
+    },
+    "unique_issuers": 5
+   },
+   "evaluation": {
+    "basis_date": "2026-11-02",
+    "calc_version": "qgv2-calc/2026-10-23.1",
+    "counts": {
+     "candidate_rows": 6,
+     "eligible": 0,
+     "excluded": 0,
+     "financial_rows": 5,
+     "fixed_security_ids": 0,
+     "scored": 0,
+     "unique_issuers": 5,
+     "unique_tickers": 6,
+     "unknown": 6
+    },
+    "coverage": {
+     "G": null,
+     "Q": null,
+     "V": null,
+     "denominator": null,
+     "factors": null,
+     "preset_actual_total": null,
+     "ranked": null,
+     "simultaneous": null
+    },
+    "full_market_denominator": null,
+    "policy": {
+     "adv_gate": "DEFERRED",
+     "entry_market_cap_usd": 250000000,
+     "entry_price_usd": 5,
+     "official_universe_replaced": false,
+     "rebalance": "MONTH_END",
+     "representatives": "ONE_PER_ISSUER",
+     "retain_market_cap_usd": 200000000,
+     "retain_price_usd": 3,
+     "version": "current-nominal-20261031/1"
+    },
+    "population_reasons": [
+     "COMPLETE_CURRENT_IEX_ROSTER_UNCONFIRMED",
+     "ELIGIBILITY_UNRESOLVED"
+    ],
+    "rows": [
+     {
+      "calculation_attempted": false,
+      "cik": "0000000002",
+      "eligibility": "UNKNOWN",
+      "financial_acquired_at": "2026-09-25T01:00:00Z",
+      "financial_available": true,
+      "financial_reasons": [],
+      "name": "Synthetic issuer, title is not a security type",
+      "observation_id": "0",
+      "rank": null,
+      "raw_metrics": {
+       "net_margin": 12.5
+      },
+      "reasons": [
+       "IDENTITY_DATE_UNCONFIRMED",
+       "SECURITY_ID_UNCONFIRMED",
+       "SECURITY_TYPE_UNCONFIRMED",
+       "EXCHANGE_UNCONFIRMED",
+       "LISTING_STATUS_UNCONFIRMED",
+       "IEX_MEMBERSHIP_UNCONFIRMED",
+       "REPRESENTATIVE_UNCONFIRMED",
+       "SHELL_STATUS_UNCONFIRMED",
+       "ISSUER_MARKET_CAP_UNCONFIRMED",
+       "PRICE_DATE_MISMATCH",
+       "PRICE_IDENTITY_MISMATCH",
+       "PRICE_BASIS_UNCONFIRMED"
+      ],
+      "score": null,
+      "searchable": true,
+      "security_id": null,
+      "ticker": "SYN"
+     },
+     {
+      "calculation_attempted": false,
+      "cik": "0000000003",
+      "eligibility": "UNKNOWN",
+      "financial_acquired_at": null,
+      "financial_available": false,
+      "financial_reasons": [
+       "FINANCIAL_NOT_HELD"
+      ],
+      "name": "Synthetic issuer SYNB",
+      "observation_id": "1",
+      "rank": null,
+      "raw_metrics": {},
+      "reasons": [
+       "IDENTITY_DATE_UNCONFIRMED",
+       "SECURITY_ID_UNCONFIRMED",
+       "SECURITY_TYPE_UNCONFIRMED",
+       "EXCHANGE_UNCONFIRMED",
+       "LISTING_STATUS_UNCONFIRMED",
+       "IEX_MEMBERSHIP_UNCONFIRMED",
+       "REPRESENTATIVE_UNCONFIRMED",
+       "SHELL_STATUS_UNCONFIRMED",
+       "ISSUER_MARKET_CAP_UNCONFIRMED",
+       "PRICE_DATE_MISMATCH",
+       "PRICE_IDENTITY_MISMATCH",
+       "PRICE_BASIS_UNCONFIRMED"
+      ],
+      "score": null,
+      "searchable": true,
+      "security_id": null,
+      "ticker": "SYNB"
+     },
+     {
+      "calculation_attempted": false,
+      "cik": "0000000004",
+      "eligibility": "UNKNOWN",
+      "financial_acquired_at": "2026-09-25T01:00:00Z",
+      "financial_available": true,
+      "financial_reasons": [],
+      "name": "Synthetic issuer SYNC",
+      "observation_id": "2",
+      "rank": null,
+      "raw_metrics": {
+       "net_margin": 12.5
+      },
+      "reasons": [
+       "IDENTITY_DATE_UNCONFIRMED",
+       "SECURITY_ID_UNCONFIRMED",
+       "SECURITY_TYPE_UNCONFIRMED",
+       "EXCHANGE_UNCONFIRMED",
+       "LISTING_STATUS_UNCONFIRMED",
+       "IEX_MEMBERSHIP_UNCONFIRMED",
+       "REPRESENTATIVE_UNCONFIRMED",
+       "SHELL_STATUS_UNCONFIRMED",
+       "ISSUER_MARKET_CAP_UNCONFIRMED",
+       "PRICE_DATE_MISMATCH",
+       "PRICE_IDENTITY_MISMATCH",
+       "PRICE_BASIS_UNCONFIRMED"
+      ],
+      "score": null,
+      "searchable": true,
+      "security_id": null,
+      "ticker": "SYNC"
+     },
+     {
+      "calculation_attempted": false,
+      "cik": "0000000005",
+      "eligibility": "UNKNOWN",
+      "financial_acquired_at": "2026-09-25T01:00:00Z",
+      "financial_available": true,
+      "financial_reasons": [],
+      "name": "Synthetic issuer SYND",
+      "observation_id": "3",
+      "rank": null,
+      "raw_metrics": {
+       "net_margin": 12.5
+      },
+      "reasons": [
+       "IDENTITY_DATE_UNCONFIRMED",
+       "SECURITY_ID_UNCONFIRMED",
+       "SECURITY_TYPE_UNCONFIRMED",
+       "EXCHANGE_UNCONFIRMED",
+       "LISTING_STATUS_UNCONFIRMED",
+       "IEX_MEMBERSHIP_UNCONFIRMED",
+       "REPRESENTATIVE_UNCONFIRMED",
+       "SHELL_STATUS_UNCONFIRMED",
+       "ISSUER_MARKET_CAP_UNCONFIRMED",
+       "PRICE_DATE_MISMATCH",
+       "PRICE_IDENTITY_MISMATCH",
+       "PRICE_BASIS_UNCONFIRMED"
+      ],
+      "score": null,
+      "searchable": true,
+      "security_id": null,
+      "ticker": "SYND"
+     },
+     {
+      "calculation_attempted": false,
+      "cik": "0000000006",
+      "eligibility": "UNKNOWN",
+      "financial_acquired_at": "2026-09-25T01:00:00Z",
+      "financial_available": true,
+      "financial_reasons": [],
+      "name": "Synthetic issuer SYNE",
+      "observation_id": "4",
+      "rank": null,
+      "raw_metrics": {
+       "net_margin": 12.5
+      },
+      "reasons": [
+       "IDENTITY_DATE_UNCONFIRMED",
+       "SECURITY_ID_UNCONFIRMED",
+       "SECURITY_TYPE_UNCONFIRMED",
+       "EXCHANGE_UNCONFIRMED",
+       "LISTING_STATUS_UNCONFIRMED",
+       "IEX_MEMBERSHIP_UNCONFIRMED",
+       "REPRESENTATIVE_UNCONFIRMED",
+       "SHELL_STATUS_UNCONFIRMED",
+       "ISSUER_MARKET_CAP_UNCONFIRMED",
+       "PRICE_DATE_MISMATCH",
+       "PRICE_IDENTITY_MISMATCH",
+       "PRICE_BASIS_UNCONFIRMED"
+      ],
+      "score": null,
+      "searchable": true,
+      "security_id": null,
+      "ticker": "SYNE"
+     },
+     {
+      "calculation_attempted": false,
+      "cik": "0000000006",
+      "eligibility": "UNKNOWN",
+      "financial_acquired_at": "2026-09-25T01:00:00Z",
+      "financial_available": true,
+      "financial_reasons": [],
+      "name": "Synthetic issuer SYNF",
+      "observation_id": "5",
+      "rank": null,
+      "raw_metrics": {
+       "net_margin": 12.5
+      },
+      "reasons": [
+       "IDENTITY_DATE_UNCONFIRMED",
+       "SECURITY_ID_UNCONFIRMED",
+       "SECURITY_TYPE_UNCONFIRMED",
+       "EXCHANGE_UNCONFIRMED",
+       "LISTING_STATUS_UNCONFIRMED",
+       "IEX_MEMBERSHIP_UNCONFIRMED",
+       "REPRESENTATIVE_UNCONFIRMED",
+       "SHELL_STATUS_UNCONFIRMED",
+       "ISSUER_MARKET_CAP_UNCONFIRMED",
+       "PRICE_DATE_MISMATCH",
+       "PRICE_IDENTITY_MISMATCH",
+       "PRICE_BASIS_UNCONFIRMED"
+      ],
+      "score": null,
+      "searchable": true,
+      "security_id": null,
+      "ticker": "SYNF"
+     }
+    ],
+    "schema_version": "current-expansion-research/1",
+    "source": {
+     "basis_date": "2026-09-25",
+     "catalog_rows_observed": 7,
+     "complete": false,
+     "observed_at": "2026-09-25T00:00:00Z",
+     "scope": "HELD_FINANCIAL_CROSSWALK_SUBSET",
+     "selection_scope": "EXACT_SUPPLIED_CROSSWALK_ROWS",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "source_ref": "SYNTHETIC:catalog"
+    },
+    "universe_version": "U-US-EXPANDED-CURRENT/1",
+    "visibility": "PRIVATE_RESEARCH"
+   },
+   "financial_reuse": {
+    "financial_issuers_reused": 4,
+    "financial_records_recomputed": 0,
+    "raw_metrics_equal": true
+   },
+   "rows": [
+    {
+     "cik": "0000000002",
+     "engine_evidence": {
+      "basis_date": "2026-11-02",
+      "cik": "0000000002",
+      "document_references": {
+       "archived_covers": [],
+       "bounded_links": [],
+       "catalog": {
+        "basis_date": "2026-09-25",
+        "complete": false,
+        "observed_at": "2026-09-25T00:00:00Z",
+        "scope": "SEC_TICKER_OBSERVATIONS",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "source_ref": "SYNTHETIC:catalog"
+       },
+       "submissions": {
+        "fetched_at": "2026-09-25T00:01:00Z",
+        "member": "data/raw/blobs/submissions__0000000002",
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "source_url": "SYNTHETIC:submissions"
+       }
+      },
+      "exchange": null,
+      "iex_tradable": null,
+      "issuer_id": "CIK:0000000002",
+      "issuer_market_cap_usd": null,
+      "listed": null,
+      "market_cap_basis": null,
+      "original_observation_id": "1",
+      "previous_member": null,
+      "price": null,
+      "price_basis": null,
+      "price_currency": null,
+      "price_date": null,
+      "price_source_ref": null,
+      "quote_security_id": null,
+      "representative": null,
+      "security_id": null,
+      "security_type": null,
+      "shell_or_spac": null,
+      "source_ref": "SYNTHETIC:catalog",
+      "ticker": "SYN",
+      "valid_from": null,
+      "valid_to": null
+     },
+     "evaluation_observation_id": "0",
+     "original_observation_id": "1",
+     "pipeline_result": {
+      "calculation_attempted": false,
+      "eligibility": "UNKNOWN",
+      "rank": null,
+      "reasons": [
+       "IDENTITY_DATE_UNCONFIRMED",
+       "SECURITY_ID_UNCONFIRMED",
+       "SECURITY_TYPE_UNCONFIRMED",
+       "EXCHANGE_UNCONFIRMED",
+       "LISTING_STATUS_UNCONFIRMED",
+       "IEX_MEMBERSHIP_UNCONFIRMED",
+       "REPRESENTATIVE_UNCONFIRMED",
+       "SHELL_STATUS_UNCONFIRMED",
+       "ISSUER_MARKET_CAP_UNCONFIRMED",
+       "PRICE_DATE_MISMATCH",
+       "PRICE_IDENTITY_MISMATCH",
+       "PRICE_BASIS_UNCONFIRMED"
+      ],
+      "score": null
+     },
+     "stages": {
+      "external_fixed_id": {
+       "reason": "EXTERNAL_SECURITY_ID_NOT_EVIDENCED",
+       "state": "NOT_SUPPLIED",
+       "supplied_value": null,
+       "value": null
+      },
+      "issuer_link": {
+       "catalog_reference": {
+        "basis_date": "2026-09-25",
+        "complete": false,
+        "observed_at": "2026-09-25T00:00:00Z",
+        "scope": "SEC_TICKER_OBSERVATIONS",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "source_ref": "SYNTHETIC:catalog"
+       },
+       "exact_ticker_match": true,
+       "financial_available": true,
+       "financial_record_ref": "/financials/0000000002",
+       "issuer_id": "CIK:0000000002",
+       "observed_exchanges": [
+        "Nasdaq"
+       ],
+       "state": "SUBMISSIONS_CORROBORATED",
+       "submissions_reference": {
+        "fetched_at": "2026-09-25T00:01:00Z",
+        "member": "data/raw/blobs/submissions__0000000002",
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "source_url": "SYNTHETIC:submissions"
+       }
+      },
+      "market_cap_eligibility": {
+       "issuer_market_cap_usd": null,
+       "reasons": [
+        "ALL_CLASS_SHARES_UNCONFIRMED",
+        "SAME_DAY_RAW_PRICE_MISSING",
+        "QUOTE_SECURITY_LINK_MISSING",
+        "PRICE_CURRENCY_UNCONFIRMED",
+        "SHARE_PRICE_ACTION_SCALE_UNCONFIRMED"
+       ],
+       "state": "NOT_COMPUTED",
+       "value": null
+      },
+      "representative": {
+       "observed_issuer_ticker_rows": 1,
+       "reason": "TICKER_COUNT_DOES_NOT_ESTABLISH_REPRESENTATIVE",
+       "state": "UNCONFIRMED",
+       "value": null
+      },
+      "same_security_at_basis": {
+       "basis_date": "2026-11-02",
+       "document_reference": null,
+       "reason": "DATED_SAME_SECURITY_EVIDENCE_MISSING_OR_OUTSIDE_BASIS",
+       "state": "UNKNOWN",
+       "valid_from": null,
+       "valid_to": null,
+       "value": null
+      },
+      "security_type_evidence": {
+       "archived_cover_references": [],
+       "archived_descriptions": [],
+       "bounded_document_references": [],
+       "current_type": null,
+       "state": "UNKNOWN"
+      },
+      "valuation_inputs": {
+       "actions": {
+        "reference": null,
+        "state": "UNCONFIRMED_FOR_SHARE_PRICE_LINK"
+       },
+       "currency": {
+        "financial_currency": "USD",
+        "price_currency": null,
+        "state": "UNCONFIRMED_FOR_PRICE"
+       },
+       "price": {
+        "basis_date": "2026-11-02",
+        "source_ref": null,
+        "state": "NOT_SUPPLIED",
+        "value": null
+       },
+       "shares": {
+        "all_class_same_day_shares": null,
+        "candidate_financial_value_present": false,
+        "candidate_period_end": null,
+        "financial_input_ref": "/financials/0000000002/v_inputs_v2/diluted_shares",
+        "reason": "FINANCIAL_DILUTED_SHARES_NOT_ALL_CLASS_MARKET_CAP_PROOF",
+        "state": "UNCONFIRMED_FOR_MARKET_CAP"
+       }
+      }
+     },
+     "ticker": "SYN"
+    },
+    {
+     "cik": "0000000003",
+     "engine_evidence": {
+      "basis_date": "2026-11-02",
+      "cik": "0000000003",
+      "document_references": {
+       "archived_covers": [],
+       "bounded_links": [],
+       "catalog": {
+        "basis_date": "2026-09-25",
+        "complete": false,
+        "observed_at": "2026-09-25T00:00:00Z",
+        "scope": "SEC_TICKER_OBSERVATIONS",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "source_ref": "SYNTHETIC:catalog"
+       },
+       "submissions": {
+        "fetched_at": "2026-09-25T00:01:00Z",
+        "member": "data/raw/blobs/submissions__0000000002",
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "source_url": "SYNTHETIC:submissions"
+       }
+      },
+      "exchange": null,
+      "iex_tradable": null,
+      "issuer_id": "CIK:0000000003",
+      "issuer_market_cap_usd": null,
+      "listed": null,
+      "market_cap_basis": null,
+      "original_observation_id": "2",
+      "previous_member": null,
+      "price": null,
+      "price_basis": null,
+      "price_currency": null,
+      "price_date": null,
+      "price_source_ref": null,
+      "quote_security_id": null,
+      "representative": null,
+      "security_id": null,
+      "security_type": null,
+      "shell_or_spac": null,
+      "source_ref": "SYNTHETIC:catalog",
+      "ticker": "SYNB",
+      "valid_from": null,
+      "valid_to": null
+     },
+     "evaluation_observation_id": "1",
+     "original_observation_id": "2",
+     "pipeline_result": {
+      "calculation_attempted": false,
+      "eligibility": "UNKNOWN",
+      "rank": null,
+      "reasons": [
+       "IDENTITY_DATE_UNCONFIRMED",
+       "SECURITY_ID_UNCONFIRMED",
+       "SECURITY_TYPE_UNCONFIRMED",
+       "EXCHANGE_UNCONFIRMED",
+       "LISTING_STATUS_UNCONFIRMED",
+       "IEX_MEMBERSHIP_UNCONFIRMED",
+       "REPRESENTATIVE_UNCONFIRMED",
+       "SHELL_STATUS_UNCONFIRMED",
+       "ISSUER_MARKET_CAP_UNCONFIRMED",
+       "PRICE_DATE_MISMATCH",
+       "PRICE_IDENTITY_MISMATCH",
+       "PRICE_BASIS_UNCONFIRMED"
+      ],
+      "score": null
+     },
+     "stages": {
+      "external_fixed_id": {
+       "reason": "EXTERNAL_SECURITY_ID_NOT_EVIDENCED",
+       "state": "NOT_SUPPLIED",
+       "supplied_value": null,
+       "value": null
+      },
+      "issuer_link": {
+       "catalog_reference": {
+        "basis_date": "2026-09-25",
+        "complete": false,
+        "observed_at": "2026-09-25T00:00:00Z",
+        "scope": "SEC_TICKER_OBSERVATIONS",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "source_ref": "SYNTHETIC:catalog"
+       },
+       "exact_ticker_match": false,
+       "financial_available": false,
+       "financial_record_ref": "/financials/0000000003",
+       "issuer_id": "CIK:0000000003",
+       "observed_exchanges": [
+        "Nasdaq"
+       ],
+       "state": "CATALOG_ONLY",
+       "submissions_reference": {
+        "fetched_at": "2026-09-25T00:01:00Z",
+        "member": "data/raw/blobs/submissions__0000000002",
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "source_url": "SYNTHETIC:submissions"
+       }
+      },
+      "market_cap_eligibility": {
+       "issuer_market_cap_usd": null,
+       "reasons": [
+        "ALL_CLASS_SHARES_UNCONFIRMED",
+        "SAME_DAY_RAW_PRICE_MISSING",
+        "QUOTE_SECURITY_LINK_MISSING",
+        "PRICE_CURRENCY_UNCONFIRMED",
+        "SHARE_PRICE_ACTION_SCALE_UNCONFIRMED"
+       ],
+       "state": "NOT_COMPUTED",
+       "value": null
+      },
+      "representative": {
+       "observed_issuer_ticker_rows": 1,
+       "reason": "TICKER_COUNT_DOES_NOT_ESTABLISH_REPRESENTATIVE",
+       "state": "UNCONFIRMED",
+       "value": null
+      },
+      "same_security_at_basis": {
+       "basis_date": "2026-11-02",
+       "document_reference": null,
+       "reason": "DATED_SAME_SECURITY_EVIDENCE_MISSING_OR_OUTSIDE_BASIS",
+       "state": "UNKNOWN",
+       "valid_from": null,
+       "valid_to": null,
+       "value": null
+      },
+      "security_type_evidence": {
+       "archived_cover_references": [],
+       "archived_descriptions": [],
+       "bounded_document_references": [],
+       "current_type": null,
+       "state": "UNKNOWN"
+      },
+      "valuation_inputs": {
+       "actions": {
+        "reference": null,
+        "state": "UNCONFIRMED_FOR_SHARE_PRICE_LINK"
+       },
+       "currency": {
+        "financial_currency": null,
+        "price_currency": null,
+        "state": "UNCONFIRMED_FOR_PRICE"
+       },
+       "price": {
+        "basis_date": "2026-11-02",
+        "source_ref": null,
+        "state": "NOT_SUPPLIED",
+        "value": null
+       },
+       "shares": {
+        "all_class_same_day_shares": null,
+        "candidate_financial_value_present": false,
+        "candidate_period_end": null,
+        "financial_input_ref": "/financials/0000000003/v_inputs_v2/diluted_shares",
+        "reason": "FINANCIAL_DILUTED_SHARES_NOT_ALL_CLASS_MARKET_CAP_PROOF",
+        "state": "UNCONFIRMED_FOR_MARKET_CAP"
+       }
+      }
+     },
+     "ticker": "SYNB"
+    },
+    {
+     "cik": "0000000004",
+     "engine_evidence": {
+      "basis_date": "2026-11-02",
+      "cik": "0000000004",
+      "document_references": {
+       "archived_covers": [
+        {
+         "accession": "SYNTHETIC",
+         "cik": "0000000004",
+         "context": {
+          "period_end": "2024-03-31",
+          "period_start": "2024-01-01"
+         },
+         "context_id": "ctx",
+         "context_period_is_identity_validity": false,
+         "evidence_id": 1,
+         "source_member": "cover",
+         "source_reference": {
+          "fetched_at": "2026-09-25T00:00:00Z",
+          "member": "cover",
+          "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "source_url": "SYNTHETIC:cover"
+         },
+         "source_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+         "symbol": "SYNC",
+         "symbol_byte_ranges": [
+          {
+           "end_exclusive": 3,
+           "start": 1
+          }
+         ],
+         "title_byte_ranges": [
+          {
+           "end_exclusive": 7,
+           "start": 4
+          }
+         ],
+         "titles": [
+          "Common Stock"
+         ]
+        }
+       ],
+       "bounded_links": [],
+       "catalog": {
+        "basis_date": "2026-09-25",
+        "complete": false,
+        "observed_at": "2026-09-25T00:00:00Z",
+        "scope": "SEC_TICKER_OBSERVATIONS",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "source_ref": "SYNTHETIC:catalog"
+       },
+       "submissions": {
+        "fetched_at": "2026-09-25T00:01:00Z",
+        "member": "data/raw/blobs/submissions__0000000002",
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "source_url": "SYNTHETIC:submissions"
+       }
+      },
+      "exchange": null,
+      "iex_tradable": null,
+      "issuer_id": "CIK:0000000004",
+      "issuer_market_cap_usd": null,
+      "listed": null,
+      "market_cap_basis": null,
+      "original_observation_id": "3",
+      "previous_member": null,
+      "price": null,
+      "price_basis": null,
+      "price_currency": null,
+      "price_date": null,
+      "price_source_ref": null,
+      "quote_security_id": null,
+      "representative": null,
+      "security_id": null,
+      "security_type": null,
+      "shell_or_spac": null,
+      "source_ref": "SYNTHETIC:catalog",
+      "ticker": "SYNC",
+      "valid_from": null,
+      "valid_to": null
+     },
+     "evaluation_observation_id": "2",
+     "original_observation_id": "3",
+     "pipeline_result": {
+      "calculation_attempted": false,
+      "eligibility": "UNKNOWN",
+      "rank": null,
+      "reasons": [
+       "IDENTITY_DATE_UNCONFIRMED",
+       "SECURITY_ID_UNCONFIRMED",
+       "SECURITY_TYPE_UNCONFIRMED",
+       "EXCHANGE_UNCONFIRMED",
+       "LISTING_STATUS_UNCONFIRMED",
+       "IEX_MEMBERSHIP_UNCONFIRMED",
+       "REPRESENTATIVE_UNCONFIRMED",
+       "SHELL_STATUS_UNCONFIRMED",
+       "ISSUER_MARKET_CAP_UNCONFIRMED",
+       "PRICE_DATE_MISMATCH",
+       "PRICE_IDENTITY_MISMATCH",
+       "PRICE_BASIS_UNCONFIRMED"
+      ],
+      "score": null
+     },
+     "stages": {
+      "external_fixed_id": {
+       "reason": "EXTERNAL_SECURITY_ID_NOT_EVIDENCED",
+       "state": "NOT_SUPPLIED",
+       "supplied_value": null,
+       "value": null
+      },
+      "issuer_link": {
+       "catalog_reference": {
+        "basis_date": "2026-09-25",
+        "complete": false,
+        "observed_at": "2026-09-25T00:00:00Z",
+        "scope": "SEC_TICKER_OBSERVATIONS",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "source_ref": "SYNTHETIC:catalog"
+       },
+       "exact_ticker_match": true,
+       "financial_available": true,
+       "financial_record_ref": "/financials/0000000004",
+       "issuer_id": "CIK:0000000004",
+       "observed_exchanges": [
+        "Nasdaq"
+       ],
+       "state": "SUBMISSIONS_CORROBORATED",
+       "submissions_reference": {
+        "fetched_at": "2026-09-25T00:01:00Z",
+        "member": "data/raw/blobs/submissions__0000000002",
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "source_url": "SYNTHETIC:submissions"
+       }
+      },
+      "market_cap_eligibility": {
+       "issuer_market_cap_usd": null,
+       "reasons": [
+        "ALL_CLASS_SHARES_UNCONFIRMED",
+        "SAME_DAY_RAW_PRICE_MISSING",
+        "QUOTE_SECURITY_LINK_MISSING",
+        "PRICE_CURRENCY_UNCONFIRMED",
+        "SHARE_PRICE_ACTION_SCALE_UNCONFIRMED"
+       ],
+       "state": "NOT_COMPUTED",
+       "value": null
+      },
+      "representative": {
+       "observed_issuer_ticker_rows": 1,
+       "reason": "TICKER_COUNT_DOES_NOT_ESTABLISH_REPRESENTATIVE",
+       "state": "UNCONFIRMED",
+       "value": null
+      },
+      "same_security_at_basis": {
+       "basis_date": "2026-11-02",
+       "document_reference": null,
+       "reason": "DATED_SAME_SECURITY_EVIDENCE_MISSING_OR_OUTSIDE_BASIS",
+       "state": "ARCHIVED_DESCRIPTION_ONLY",
+       "valid_from": null,
+       "valid_to": null,
+       "value": null
+      },
+      "security_type_evidence": {
+       "archived_cover_references": [
+        {
+         "accession": "SYNTHETIC",
+         "cik": "0000000004",
+         "context": {
+          "period_end": "2024-03-31",
+          "period_start": "2024-01-01"
+         },
+         "context_id": "ctx",
+         "context_period_is_identity_validity": false,
+         "evidence_id": 1,
+         "source_member": "cover",
+         "source_reference": {
+          "fetched_at": "2026-09-25T00:00:00Z",
+          "member": "cover",
+          "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "source_url": "SYNTHETIC:cover"
+         },
+         "source_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+         "symbol": "SYNC",
+         "symbol_byte_ranges": [
+          {
+           "end_exclusive": 3,
+           "start": 1
+          }
+         ],
+         "title_byte_ranges": [
+          {
+           "end_exclusive": 7,
+           "start": 4
+          }
+         ],
+         "titles": [
+          "Common Stock"
+         ]
+        }
+       ],
+       "archived_descriptions": [
+        "EXPLICIT_COMMON_DESCRIPTION"
+       ],
+       "bounded_document_references": [],
+       "current_type": null,
+       "state": "DOCUMENTED_ARCHIVED_TYPE"
+      },
+      "valuation_inputs": {
+       "actions": {
+        "reference": null,
+        "state": "UNCONFIRMED_FOR_SHARE_PRICE_LINK"
+       },
+       "currency": {
+        "financial_currency": "USD",
+        "price_currency": null,
+        "state": "UNCONFIRMED_FOR_PRICE"
+       },
+       "price": {
+        "basis_date": "2026-11-02",
+        "source_ref": null,
+        "state": "NOT_SUPPLIED",
+        "value": null
+       },
+       "shares": {
+        "all_class_same_day_shares": null,
+        "candidate_financial_value_present": false,
+        "candidate_period_end": null,
+        "financial_input_ref": "/financials/0000000004/v_inputs_v2/diluted_shares",
+        "reason": "FINANCIAL_DILUTED_SHARES_NOT_ALL_CLASS_MARKET_CAP_PROOF",
+        "state": "UNCONFIRMED_FOR_MARKET_CAP"
+       }
+      }
+     },
+     "ticker": "SYNC"
+    },
+    {
+     "cik": "0000000005",
+     "engine_evidence": {
+      "basis_date": "2026-11-02",
+      "cik": "0000000005",
+      "document_references": {
+       "archived_covers": [],
+       "bounded_links": [
+        {
+         "cover_identity": {
+          "EntityCentralIndexKey": "0000000005",
+          "Security12bTitle": "Common Stock, $0.01 par value",
+          "SecurityExchangeName": "NASDAQ",
+          "TradingSymbol": "SYND"
+         },
+         "existing_research_evidence": {
+          "from": "2026-08-05",
+          "level": "DOCUMENT_RECONSTRUCTED",
+          "source_commit": "cccccccccccccccccccccccccccccccccccccccc",
+          "source_evidence": "proof.json",
+          "source_repo": "SYNTHETIC:private",
+          "to": "2026-10-30"
+         },
+         "issuer_cik": "0000000005",
+         "kind": "EXISTING_DOCUMENT_EVIDENCE_LINK",
+         "ticker_observation": "SYND"
+        }
+       ],
+       "catalog": {
+        "basis_date": "2026-09-25",
+        "complete": false,
+        "observed_at": "2026-09-25T00:00:00Z",
+        "scope": "SEC_TICKER_OBSERVATIONS",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "source_ref": "SYNTHETIC:catalog"
+       },
+       "submissions": {
+        "fetched_at": "2026-09-25T00:01:00Z",
+        "member": "data/raw/blobs/submissions__0000000002",
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "source_url": "SYNTHETIC:submissions"
+       }
+      },
+      "exchange": null,
+      "iex_tradable": null,
+      "issuer_id": "CIK:0000000005",
+      "issuer_market_cap_usd": null,
+      "listed": null,
+      "market_cap_basis": null,
+      "original_observation_id": "4",
+      "previous_member": null,
+      "price": null,
+      "price_basis": null,
+      "price_currency": null,
+      "price_date": null,
+      "price_source_ref": null,
+      "quote_security_id": null,
+      "representative": null,
+      "security_id": null,
+      "security_type": null,
+      "shell_or_spac": null,
+      "source_ref": "SYNTHETIC:catalog",
+      "ticker": "SYND",
+      "valid_from": "2026-08-05",
+      "valid_to": "2026-10-30"
+     },
+     "evaluation_observation_id": "3",
+     "original_observation_id": "4",
+     "pipeline_result": {
+      "calculation_attempted": false,
+      "eligibility": "UNKNOWN",
+      "rank": null,
+      "reasons": [
+       "IDENTITY_DATE_UNCONFIRMED",
+       "SECURITY_ID_UNCONFIRMED",
+       "SECURITY_TYPE_UNCONFIRMED",
+       "EXCHANGE_UNCONFIRMED",
+       "LISTING_STATUS_UNCONFIRMED",
+       "IEX_MEMBERSHIP_UNCONFIRMED",
+       "REPRESENTATIVE_UNCONFIRMED",
+       "SHELL_STATUS_UNCONFIRMED",
+       "ISSUER_MARKET_CAP_UNCONFIRMED",
+       "PRICE_DATE_MISMATCH",
+       "PRICE_IDENTITY_MISMATCH",
+       "PRICE_BASIS_UNCONFIRMED"
+      ],
+      "score": null
+     },
+     "stages": {
+      "external_fixed_id": {
+       "reason": "EXTERNAL_SECURITY_ID_NOT_EVIDENCED",
+       "state": "NOT_SUPPLIED",
+       "supplied_value": null,
+       "value": null
+      },
+      "issuer_link": {
+       "catalog_reference": {
+        "basis_date": "2026-09-25",
+        "complete": false,
+        "observed_at": "2026-09-25T00:00:00Z",
+        "scope": "SEC_TICKER_OBSERVATIONS",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "source_ref": "SYNTHETIC:catalog"
+       },
+       "exact_ticker_match": true,
+       "financial_available": true,
+       "financial_record_ref": "/financials/0000000005",
+       "issuer_id": "CIK:0000000005",
+       "observed_exchanges": [
+        "Nasdaq"
+       ],
+       "state": "SUBMISSIONS_CORROBORATED",
+       "submissions_reference": {
+        "fetched_at": "2026-09-25T00:01:00Z",
+        "member": "data/raw/blobs/submissions__0000000002",
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "source_url": "SYNTHETIC:submissions"
+       }
+      },
+      "market_cap_eligibility": {
+       "issuer_market_cap_usd": null,
+       "reasons": [
+        "ALL_CLASS_SHARES_UNCONFIRMED",
+        "SAME_DAY_RAW_PRICE_MISSING",
+        "QUOTE_SECURITY_LINK_MISSING",
+        "PRICE_CURRENCY_UNCONFIRMED",
+        "SHARE_PRICE_ACTION_SCALE_UNCONFIRMED"
+       ],
+       "state": "NOT_COMPUTED",
+       "value": null
+      },
+      "representative": {
+       "observed_issuer_ticker_rows": 1,
+       "reason": "TICKER_COUNT_DOES_NOT_ESTABLISH_REPRESENTATIVE",
+       "state": "UNCONFIRMED",
+       "value": null
+      },
+      "same_security_at_basis": {
+       "basis_date": "2026-11-02",
+       "document_reference": {
+        "cover_identity": {
+         "EntityCentralIndexKey": "0000000005",
+         "Security12bTitle": "Common Stock, $0.01 par value",
+         "SecurityExchangeName": "NASDAQ",
+         "TradingSymbol": "SYND"
+        },
+        "existing_research_evidence": {
+         "from": "2026-08-05",
+         "level": "DOCUMENT_RECONSTRUCTED",
+         "source_commit": "cccccccccccccccccccccccccccccccccccccccc",
+         "source_evidence": "proof.json",
+         "source_repo": "SYNTHETIC:private",
+         "to": "2026-10-30"
+        },
+        "issuer_cik": "0000000005",
+        "kind": "EXISTING_DOCUMENT_EVIDENCE_LINK",
+        "ticker_observation": "SYND"
+       },
+       "reason": "DATED_SAME_SECURITY_EVIDENCE_MISSING_OR_OUTSIDE_BASIS",
+       "state": "DOCUMENTED_OUTSIDE_BASIS",
+       "valid_from": "2026-08-05",
+       "valid_to": "2026-10-30",
+       "value": null
+      },
+      "security_type_evidence": {
+       "archived_cover_references": [],
+       "archived_descriptions": [],
+       "bounded_document_references": [
+        {
+         "cover_identity": {
+          "EntityCentralIndexKey": "0000000005",
+          "Security12bTitle": "Common Stock, $0.01 par value",
+          "SecurityExchangeName": "NASDAQ",
+          "TradingSymbol": "SYND"
+         },
+         "existing_research_evidence": {
+          "from": "2026-08-05",
+          "level": "DOCUMENT_RECONSTRUCTED",
+          "source_commit": "cccccccccccccccccccccccccccccccccccccccc",
+          "source_evidence": "proof.json",
+          "source_repo": "SYNTHETIC:private",
+          "to": "2026-10-30"
+         },
+         "issuer_cik": "0000000005",
+         "kind": "EXISTING_DOCUMENT_EVIDENCE_LINK",
+         "ticker_observation": "SYND"
+        }
+       ],
+       "current_type": null,
+       "state": "DOCUMENTED_ARCHIVED_TYPE"
+      },
+      "valuation_inputs": {
+       "actions": {
+        "reference": null,
+        "state": "UNCONFIRMED_FOR_SHARE_PRICE_LINK"
+       },
+       "currency": {
+        "financial_currency": "USD",
+        "price_currency": null,
+        "state": "UNCONFIRMED_FOR_PRICE"
+       },
+       "price": {
+        "basis_date": "2026-11-02",
+        "source_ref": null,
+        "state": "NOT_SUPPLIED",
+        "value": null
+       },
+       "shares": {
+        "all_class_same_day_shares": null,
+        "candidate_financial_value_present": false,
+        "candidate_period_end": null,
+        "financial_input_ref": "/financials/0000000005/v_inputs_v2/diluted_shares",
+        "reason": "FINANCIAL_DILUTED_SHARES_NOT_ALL_CLASS_MARKET_CAP_PROOF",
+        "state": "UNCONFIRMED_FOR_MARKET_CAP"
+       }
+      }
+     },
+     "ticker": "SYND"
+    },
+    {
+     "cik": "0000000006",
+     "engine_evidence": {
+      "basis_date": "2026-11-02",
+      "cik": "0000000006",
+      "document_references": {
+       "archived_covers": [],
+       "bounded_links": [
+        {
+         "cover_identity": {
+          "EntityCentralIndexKey": "0000000006",
+          "Security12bTitle": "Common Stock, $0.01 par value",
+          "SecurityExchangeName": "NASDAQ",
+          "TradingSymbol": "SYNE"
+         },
+         "existing_research_evidence": {
+          "from": "2026-08-05",
+          "level": "DOCUMENT_RECONSTRUCTED",
+          "source_commit": "cccccccccccccccccccccccccccccccccccccccc",
+          "source_evidence": "proof.json",
+          "source_repo": "SYNTHETIC:private",
+          "to": "2026-10-31"
+         },
+         "issuer_cik": "0000000006",
+         "kind": "EXISTING_DOCUMENT_EVIDENCE_LINK",
+         "ticker_observation": "SYNE"
+        }
+       ],
+       "catalog": {
+        "basis_date": "2026-09-25",
+        "complete": false,
+        "observed_at": "2026-09-25T00:00:00Z",
+        "scope": "SEC_TICKER_OBSERVATIONS",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "source_ref": "SYNTHETIC:catalog"
+       },
+       "submissions": {
+        "fetched_at": "2026-09-25T00:01:00Z",
+        "member": "data/raw/blobs/submissions__0000000002",
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "source_url": "SYNTHETIC:submissions"
+       }
+      },
+      "exchange": null,
+      "iex_tradable": null,
+      "issuer_id": "CIK:0000000006",
+      "issuer_market_cap_usd": null,
+      "listed": null,
+      "market_cap_basis": null,
+      "original_observation_id": "5",
+      "previous_member": null,
+      "price": null,
+      "price_basis": null,
+      "price_currency": null,
+      "price_date": null,
+      "price_source_ref": null,
+      "quote_security_id": null,
+      "representative": null,
+      "security_id": null,
+      "security_type": null,
+      "shell_or_spac": null,
+      "source_ref": "SYNTHETIC:catalog",
+      "ticker": "SYNE",
+      "valid_from": "2026-08-05",
+      "valid_to": "2026-10-31"
+     },
+     "evaluation_observation_id": "4",
+     "original_observation_id": "5",
+     "pipeline_result": {
+      "calculation_attempted": false,
+      "eligibility": "UNKNOWN",
+      "rank": null,
+      "reasons": [
+       "IDENTITY_DATE_UNCONFIRMED",
+       "SECURITY_ID_UNCONFIRMED",
+       "SECURITY_TYPE_UNCONFIRMED",
+       "EXCHANGE_UNCONFIRMED",
+       "LISTING_STATUS_UNCONFIRMED",
+       "IEX_MEMBERSHIP_UNCONFIRMED",
+       "REPRESENTATIVE_UNCONFIRMED",
+       "SHELL_STATUS_UNCONFIRMED",
+       "ISSUER_MARKET_CAP_UNCONFIRMED",
+       "PRICE_DATE_MISMATCH",
+       "PRICE_IDENTITY_MISMATCH",
+       "PRICE_BASIS_UNCONFIRMED"
+      ],
+      "score": null
+     },
+     "stages": {
+      "external_fixed_id": {
+       "reason": "EXTERNAL_SECURITY_ID_NOT_EVIDENCED",
+       "state": "NOT_SUPPLIED",
+       "supplied_value": null,
+       "value": null
+      },
+      "issuer_link": {
+       "catalog_reference": {
+        "basis_date": "2026-09-25",
+        "complete": false,
+        "observed_at": "2026-09-25T00:00:00Z",
+        "scope": "SEC_TICKER_OBSERVATIONS",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "source_ref": "SYNTHETIC:catalog"
+       },
+       "exact_ticker_match": true,
+       "financial_available": true,
+       "financial_record_ref": "/financials/0000000006",
+       "issuer_id": "CIK:0000000006",
+       "observed_exchanges": [
+        "Nasdaq"
+       ],
+       "state": "SUBMISSIONS_CORROBORATED",
+       "submissions_reference": {
+        "fetched_at": "2026-09-25T00:01:00Z",
+        "member": "data/raw/blobs/submissions__0000000002",
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "source_url": "SYNTHETIC:submissions"
+       }
+      },
+      "market_cap_eligibility": {
+       "issuer_market_cap_usd": null,
+       "reasons": [
+        "ALL_CLASS_SHARES_UNCONFIRMED",
+        "SAME_DAY_RAW_PRICE_MISSING",
+        "QUOTE_SECURITY_LINK_MISSING",
+        "PRICE_CURRENCY_UNCONFIRMED",
+        "SHARE_PRICE_ACTION_SCALE_UNCONFIRMED"
+       ],
+       "state": "NOT_COMPUTED",
+       "value": null
+      },
+      "representative": {
+       "observed_issuer_ticker_rows": 2,
+       "reason": "TICKER_COUNT_DOES_NOT_ESTABLISH_REPRESENTATIVE",
+       "state": "UNCONFIRMED",
+       "value": null
+      },
+      "same_security_at_basis": {
+       "basis_date": "2026-11-02",
+       "document_reference": {
+        "cover_identity": {
+         "EntityCentralIndexKey": "0000000006",
+         "Security12bTitle": "Common Stock, $0.01 par value",
+         "SecurityExchangeName": "NASDAQ",
+         "TradingSymbol": "SYNE"
+        },
+        "existing_research_evidence": {
+         "from": "2026-08-05",
+         "level": "DOCUMENT_RECONSTRUCTED",
+         "source_commit": "cccccccccccccccccccccccccccccccccccccccc",
+         "source_evidence": "proof.json",
+         "source_repo": "SYNTHETIC:private",
+         "to": "2026-10-31"
+        },
+        "issuer_cik": "0000000006",
+        "kind": "EXISTING_DOCUMENT_EVIDENCE_LINK",
+        "ticker_observation": "SYNE"
+       },
+       "reason": "DATED_SAME_SECURITY_EVIDENCE_MISSING_OR_OUTSIDE_BASIS",
+       "state": "DOCUMENTED_OUTSIDE_BASIS",
+       "valid_from": "2026-08-05",
+       "valid_to": "2026-10-31",
+       "value": null
+      },
+      "security_type_evidence": {
+       "archived_cover_references": [],
+       "archived_descriptions": [],
+       "bounded_document_references": [
+        {
+         "cover_identity": {
+          "EntityCentralIndexKey": "0000000006",
+          "Security12bTitle": "Common Stock, $0.01 par value",
+          "SecurityExchangeName": "NASDAQ",
+          "TradingSymbol": "SYNE"
+         },
+         "existing_research_evidence": {
+          "from": "2026-08-05",
+          "level": "DOCUMENT_RECONSTRUCTED",
+          "source_commit": "cccccccccccccccccccccccccccccccccccccccc",
+          "source_evidence": "proof.json",
+          "source_repo": "SYNTHETIC:private",
+          "to": "2026-10-31"
+         },
+         "issuer_cik": "0000000006",
+         "kind": "EXISTING_DOCUMENT_EVIDENCE_LINK",
+         "ticker_observation": "SYNE"
+        }
+       ],
+       "current_type": null,
+       "state": "DOCUMENTED_ARCHIVED_TYPE"
+      },
+      "valuation_inputs": {
+       "actions": {
+        "reference": null,
+        "state": "UNCONFIRMED_FOR_SHARE_PRICE_LINK"
+       },
+       "currency": {
+        "financial_currency": "USD",
+        "price_currency": null,
+        "state": "UNCONFIRMED_FOR_PRICE"
+       },
+       "price": {
+        "basis_date": "2026-11-02",
+        "source_ref": null,
+        "state": "NOT_SUPPLIED",
+        "value": null
+       },
+       "shares": {
+        "all_class_same_day_shares": null,
+        "candidate_financial_value_present": false,
+        "candidate_period_end": null,
+        "financial_input_ref": "/financials/0000000006/v_inputs_v2/diluted_shares",
+        "reason": "FINANCIAL_DILUTED_SHARES_NOT_ALL_CLASS_MARKET_CAP_PROOF",
+        "state": "UNCONFIRMED_FOR_MARKET_CAP"
+       }
+      }
+     },
+     "ticker": "SYNE"
+    },
+    {
+     "cik": "0000000006",
+     "engine_evidence": {
+      "basis_date": "2026-11-02",
+      "cik": "0000000006",
+      "document_references": {
+       "archived_covers": [],
+       "bounded_links": [],
+       "catalog": {
+        "basis_date": "2026-09-25",
+        "complete": false,
+        "observed_at": "2026-09-25T00:00:00Z",
+        "scope": "SEC_TICKER_OBSERVATIONS",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "source_ref": "SYNTHETIC:catalog"
+       },
+       "submissions": {
+        "fetched_at": "2026-09-25T00:01:00Z",
+        "member": "data/raw/blobs/submissions__0000000002",
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "source_url": "SYNTHETIC:submissions"
+       }
+      },
+      "exchange": null,
+      "iex_tradable": null,
+      "issuer_id": "CIK:0000000006",
+      "issuer_market_cap_usd": null,
+      "listed": null,
+      "market_cap_basis": null,
+      "original_observation_id": "6",
+      "previous_member": null,
+      "price": null,
+      "price_basis": null,
+      "price_currency": null,
+      "price_date": null,
+      "price_source_ref": null,
+      "quote_security_id": null,
+      "representative": null,
+      "security_id": null,
+      "security_type": null,
+      "shell_or_spac": null,
+      "source_ref": "SYNTHETIC:catalog",
+      "ticker": "SYNF",
+      "valid_from": null,
+      "valid_to": null
+     },
+     "evaluation_observation_id": "5",
+     "original_observation_id": "6",
+     "pipeline_result": {
+      "calculation_attempted": false,
+      "eligibility": "UNKNOWN",
+      "rank": null,
+      "reasons": [
+       "IDENTITY_DATE_UNCONFIRMED",
+       "SECURITY_ID_UNCONFIRMED",
+       "SECURITY_TYPE_UNCONFIRMED",
+       "EXCHANGE_UNCONFIRMED",
+       "LISTING_STATUS_UNCONFIRMED",
+       "IEX_MEMBERSHIP_UNCONFIRMED",
+       "REPRESENTATIVE_UNCONFIRMED",
+       "SHELL_STATUS_UNCONFIRMED",
+       "ISSUER_MARKET_CAP_UNCONFIRMED",
+       "PRICE_DATE_MISMATCH",
+       "PRICE_IDENTITY_MISMATCH",
+       "PRICE_BASIS_UNCONFIRMED"
+      ],
+      "score": null
+     },
+     "stages": {
+      "external_fixed_id": {
+       "reason": "EXTERNAL_SECURITY_ID_NOT_EVIDENCED",
+       "state": "UNVERIFIED_INPUT",
+       "supplied_value": "SYNTHETIC-SECURITY-ID",
+       "value": null
+      },
+      "issuer_link": {
+       "catalog_reference": {
+        "basis_date": "2026-09-25",
+        "complete": false,
+        "observed_at": "2026-09-25T00:00:00Z",
+        "scope": "SEC_TICKER_OBSERVATIONS",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "source_ref": "SYNTHETIC:catalog"
+       },
+       "exact_ticker_match": true,
+       "financial_available": true,
+       "financial_record_ref": "/financials/0000000006",
+       "issuer_id": "CIK:0000000006",
+       "observed_exchanges": [
+        "Nasdaq"
+       ],
+       "state": "SUBMISSIONS_CORROBORATED",
+       "submissions_reference": {
+        "fetched_at": "2026-09-25T00:01:00Z",
+        "member": "data/raw/blobs/submissions__0000000002",
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "source_url": "SYNTHETIC:submissions"
+       }
+      },
+      "market_cap_eligibility": {
+       "issuer_market_cap_usd": null,
+       "reasons": [
+        "ALL_CLASS_SHARES_UNCONFIRMED",
+        "SAME_DAY_RAW_PRICE_MISSING",
+        "QUOTE_SECURITY_LINK_MISSING",
+        "PRICE_CURRENCY_UNCONFIRMED",
+        "SHARE_PRICE_ACTION_SCALE_UNCONFIRMED"
+       ],
+       "state": "NOT_COMPUTED",
+       "value": null
+      },
+      "representative": {
+       "observed_issuer_ticker_rows": 2,
+       "reason": "TICKER_COUNT_DOES_NOT_ESTABLISH_REPRESENTATIVE",
+       "state": "UNCONFIRMED",
+       "value": null
+      },
+      "same_security_at_basis": {
+       "basis_date": "2026-11-02",
+       "document_reference": null,
+       "reason": "DATED_SAME_SECURITY_EVIDENCE_MISSING_OR_OUTSIDE_BASIS",
+       "state": "UNKNOWN",
+       "valid_from": null,
+       "valid_to": null,
+       "value": null
+      },
+      "security_type_evidence": {
+       "archived_cover_references": [],
+       "archived_descriptions": [],
+       "bounded_document_references": [],
+       "current_type": null,
+       "state": "UNKNOWN"
+      },
+      "valuation_inputs": {
+       "actions": {
+        "reference": null,
+        "state": "UNCONFIRMED_FOR_SHARE_PRICE_LINK"
+       },
+       "currency": {
+        "financial_currency": "USD",
+        "price_currency": null,
+        "state": "UNCONFIRMED_FOR_PRICE"
+       },
+       "price": {
+        "basis_date": "2026-11-02",
+        "source_ref": null,
+        "state": "NOT_SUPPLIED",
+        "value": null
+       },
+       "shares": {
+        "all_class_same_day_shares": null,
+        "candidate_financial_value_present": false,
+        "candidate_period_end": null,
+        "financial_input_ref": "/financials/0000000006/v_inputs_v2/diluted_shares",
+        "reason": "FINANCIAL_DILUTED_SHARES_NOT_ALL_CLASS_MARKET_CAP_PROOF",
+        "state": "UNCONFIRMED_FOR_MARKET_CAP"
+       }
+      }
+     },
+     "ticker": "SYNF"
+    }
+   ],
+   "schema_version": "current-expansion-staged-evidence/1",
+   "visibility": "PRIVATE_RESEARCH"
+  },
+  "staged6_one_at_basis": {
+   "basis_date": "2026-11-02",
+   "counts": {
+    "candidate_rows": 6,
+    "stages": {
+     "external_fixed_id": {
+      "NOT_SUPPLIED": 5,
+      "UNVERIFIED_INPUT": 1
+     },
+     "issuer_link": {
+      "CATALOG_ONLY": 1,
+      "SUBMISSIONS_CORROBORATED": 5
+     },
+     "market_cap_eligibility": {
+      "NOT_COMPUTED": 6
+     },
+     "representative": {
+      "UNCONFIRMED": 6
+     },
+     "same_security_at_basis": {
+      "ARCHIVED_DESCRIPTION_ONLY": 1,
+      "DOCUMENTED_AT_BASIS": 1,
+      "DOCUMENTED_OUTSIDE_BASIS": 1,
+      "UNKNOWN": 3
+     },
+     "security_type_evidence": {
+      "DOCUMENTED_ARCHIVED_TYPE": 2,
+      "DOCUMENTED_AT_BASIS": 1,
+      "UNKNOWN": 3
+     }
+    },
+    "unique_issuers": 5
+   },
+   "evaluation": {
+    "basis_date": "2026-11-02",
+    "calc_version": "qgv2-calc/2026-10-23.1",
+    "counts": {
+     "candidate_rows": 6,
+     "eligible": 0,
+     "excluded": 0,
+     "financial_rows": 5,
+     "fixed_security_ids": 0,
+     "scored": 0,
+     "unique_issuers": 5,
+     "unique_tickers": 6,
+     "unknown": 6
+    },
+    "coverage": {
+     "G": null,
+     "Q": null,
+     "V": null,
+     "denominator": null,
+     "factors": null,
+     "preset_actual_total": null,
+     "ranked": null,
+     "simultaneous": null
+    },
+    "full_market_denominator": null,
+    "policy": {
+     "adv_gate": "DEFERRED",
+     "entry_market_cap_usd": 250000000,
+     "entry_price_usd": 5,
+     "official_universe_replaced": false,
+     "rebalance": "MONTH_END",
+     "representatives": "ONE_PER_ISSUER",
+     "retain_market_cap_usd": 200000000,
+     "retain_price_usd": 3,
+     "version": "current-nominal-20261031/1"
+    },
+    "population_reasons": [
+     "COMPLETE_CURRENT_IEX_ROSTER_UNCONFIRMED",
+     "ELIGIBILITY_UNRESOLVED"
+    ],
+    "rows": [
+     {
+      "calculation_attempted": false,
+      "cik": "0000000002",
+      "eligibility": "UNKNOWN",
+      "financial_acquired_at": "2026-09-25T01:00:00Z",
+      "financial_available": true,
+      "financial_reasons": [],
+      "name": "Synthetic issuer, title is not a security type",
+      "observation_id": "0",
+      "rank": null,
+      "raw_metrics": {
+       "net_margin": 12.5
+      },
+      "reasons": [
+       "IDENTITY_DATE_UNCONFIRMED",
+       "SECURITY_ID_UNCONFIRMED",
+       "SECURITY_TYPE_UNCONFIRMED",
+       "EXCHANGE_UNCONFIRMED",
+       "LISTING_STATUS_UNCONFIRMED",
+       "IEX_MEMBERSHIP_UNCONFIRMED",
+       "REPRESENTATIVE_UNCONFIRMED",
+       "SHELL_STATUS_UNCONFIRMED",
+       "ISSUER_MARKET_CAP_UNCONFIRMED",
+       "PRICE_DATE_MISMATCH",
+       "PRICE_IDENTITY_MISMATCH",
+       "PRICE_BASIS_UNCONFIRMED"
+      ],
+      "score": null,
+      "searchable": true,
+      "security_id": null,
+      "ticker": "SYN"
+     },
+     {
+      "calculation_attempted": false,
+      "cik": "0000000003",
+      "eligibility": "UNKNOWN",
+      "financial_acquired_at": null,
+      "financial_available": false,
+      "financial_reasons": [
+       "FINANCIAL_NOT_HELD"
+      ],
+      "name": "Synthetic issuer SYNB",
+      "observation_id": "1",
+      "rank": null,
+      "raw_metrics": {},
+      "reasons": [
+       "IDENTITY_DATE_UNCONFIRMED",
+       "SECURITY_ID_UNCONFIRMED",
+       "SECURITY_TYPE_UNCONFIRMED",
+       "EXCHANGE_UNCONFIRMED",
+       "LISTING_STATUS_UNCONFIRMED",
+       "IEX_MEMBERSHIP_UNCONFIRMED",
+       "REPRESENTATIVE_UNCONFIRMED",
+       "SHELL_STATUS_UNCONFIRMED",
+       "ISSUER_MARKET_CAP_UNCONFIRMED",
+       "PRICE_DATE_MISMATCH",
+       "PRICE_IDENTITY_MISMATCH",
+       "PRICE_BASIS_UNCONFIRMED"
+      ],
+      "score": null,
+      "searchable": true,
+      "security_id": null,
+      "ticker": "SYNB"
+     },
+     {
+      "calculation_attempted": false,
+      "cik": "0000000004",
+      "eligibility": "UNKNOWN",
+      "financial_acquired_at": "2026-09-25T01:00:00Z",
+      "financial_available": true,
+      "financial_reasons": [],
+      "name": "Synthetic issuer SYNC",
+      "observation_id": "2",
+      "rank": null,
+      "raw_metrics": {
+       "net_margin": 12.5
+      },
+      "reasons": [
+       "IDENTITY_DATE_UNCONFIRMED",
+       "SECURITY_ID_UNCONFIRMED",
+       "SECURITY_TYPE_UNCONFIRMED",
+       "EXCHANGE_UNCONFIRMED",
+       "LISTING_STATUS_UNCONFIRMED",
+       "IEX_MEMBERSHIP_UNCONFIRMED",
+       "REPRESENTATIVE_UNCONFIRMED",
+       "SHELL_STATUS_UNCONFIRMED",
+       "ISSUER_MARKET_CAP_UNCONFIRMED",
+       "PRICE_DATE_MISMATCH",
+       "PRICE_IDENTITY_MISMATCH",
+       "PRICE_BASIS_UNCONFIRMED"
+      ],
+      "score": null,
+      "searchable": true,
+      "security_id": null,
+      "ticker": "SYNC"
+     },
+     {
+      "calculation_attempted": false,
+      "cik": "0000000005",
+      "eligibility": "UNKNOWN",
+      "financial_acquired_at": "2026-09-25T01:00:00Z",
+      "financial_available": true,
+      "financial_reasons": [],
+      "name": "Synthetic issuer SYND",
+      "observation_id": "3",
+      "rank": null,
+      "raw_metrics": {
+       "net_margin": 12.5
+      },
+      "reasons": [
+       "IDENTITY_DATE_UNCONFIRMED",
+       "SECURITY_ID_UNCONFIRMED",
+       "SECURITY_TYPE_UNCONFIRMED",
+       "EXCHANGE_UNCONFIRMED",
+       "LISTING_STATUS_UNCONFIRMED",
+       "IEX_MEMBERSHIP_UNCONFIRMED",
+       "REPRESENTATIVE_UNCONFIRMED",
+       "SHELL_STATUS_UNCONFIRMED",
+       "ISSUER_MARKET_CAP_UNCONFIRMED",
+       "PRICE_DATE_MISMATCH",
+       "PRICE_IDENTITY_MISMATCH",
+       "PRICE_BASIS_UNCONFIRMED"
+      ],
+      "score": null,
+      "searchable": true,
+      "security_id": null,
+      "ticker": "SYND"
+     },
+     {
+      "calculation_attempted": false,
+      "cik": "0000000006",
+      "eligibility": "UNKNOWN",
+      "financial_acquired_at": "2026-09-25T01:00:00Z",
+      "financial_available": true,
+      "financial_reasons": [],
+      "name": "Synthetic issuer SYNE",
+      "observation_id": "4",
+      "rank": null,
+      "raw_metrics": {
+       "net_margin": 12.5
+      },
+      "reasons": [
+       "SECURITY_ID_UNCONFIRMED",
+       "IEX_MEMBERSHIP_UNCONFIRMED",
+       "REPRESENTATIVE_UNCONFIRMED",
+       "SHELL_STATUS_UNCONFIRMED",
+       "ISSUER_MARKET_CAP_UNCONFIRMED",
+       "PRICE_DATE_MISMATCH",
+       "PRICE_IDENTITY_MISMATCH",
+       "PRICE_BASIS_UNCONFIRMED"
+      ],
+      "score": null,
+      "searchable": true,
+      "security_id": null,
+      "ticker": "SYNE"
+     },
+     {
+      "calculation_attempted": false,
+      "cik": "0000000006",
+      "eligibility": "UNKNOWN",
+      "financial_acquired_at": "2026-09-25T01:00:00Z",
+      "financial_available": true,
+      "financial_reasons": [],
+      "name": "Synthetic issuer SYNF",
+      "observation_id": "5",
+      "rank": null,
+      "raw_metrics": {
+       "net_margin": 12.5
+      },
+      "reasons": [
+       "IDENTITY_DATE_UNCONFIRMED",
+       "SECURITY_ID_UNCONFIRMED",
+       "SECURITY_TYPE_UNCONFIRMED",
+       "EXCHANGE_UNCONFIRMED",
+       "LISTING_STATUS_UNCONFIRMED",
+       "IEX_MEMBERSHIP_UNCONFIRMED",
+       "REPRESENTATIVE_UNCONFIRMED",
+       "SHELL_STATUS_UNCONFIRMED",
+       "ISSUER_MARKET_CAP_UNCONFIRMED",
+       "PRICE_DATE_MISMATCH",
+       "PRICE_IDENTITY_MISMATCH",
+       "PRICE_BASIS_UNCONFIRMED"
+      ],
+      "score": null,
+      "searchable": true,
+      "security_id": null,
+      "ticker": "SYNF"
+     }
+    ],
+    "schema_version": "current-expansion-research/1",
+    "source": {
+     "basis_date": "2026-09-25",
+     "catalog_rows_observed": 7,
+     "complete": false,
+     "observed_at": "2026-09-25T00:00:00Z",
+     "scope": "HELD_FINANCIAL_CROSSWALK_SUBSET",
+     "selection_scope": "EXACT_SUPPLIED_CROSSWALK_ROWS",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "source_ref": "SYNTHETIC:catalog"
+    },
+    "universe_version": "U-US-EXPANDED-CURRENT/1",
+    "visibility": "PRIVATE_RESEARCH"
+   },
+   "financial_reuse": {
+    "financial_issuers_reused": 4,
+    "financial_records_recomputed": 0,
+    "raw_metrics_equal": true
+   },
+   "rows": [
+    {
+     "cik": "0000000002",
+     "engine_evidence": {
+      "basis_date": "2026-11-02",
+      "cik": "0000000002",
+      "document_references": {
+       "archived_covers": [],
+       "bounded_links": [],
+       "catalog": {
+        "basis_date": "2026-09-25",
+        "complete": false,
+        "observed_at": "2026-09-25T00:00:00Z",
+        "scope": "SEC_TICKER_OBSERVATIONS",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "source_ref": "SYNTHETIC:catalog"
+       },
+       "submissions": {
+        "fetched_at": "2026-09-25T00:01:00Z",
+        "member": "data/raw/blobs/submissions__0000000002",
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "source_url": "SYNTHETIC:submissions"
+       }
+      },
+      "exchange": null,
+      "iex_tradable": null,
+      "issuer_id": "CIK:0000000002",
+      "issuer_market_cap_usd": null,
+      "listed": null,
+      "market_cap_basis": null,
+      "original_observation_id": "1",
+      "previous_member": null,
+      "price": null,
+      "price_basis": null,
+      "price_currency": null,
+      "price_date": null,
+      "price_source_ref": null,
+      "quote_security_id": null,
+      "representative": null,
+      "security_id": null,
+      "security_type": null,
+      "shell_or_spac": null,
+      "source_ref": "SYNTHETIC:catalog",
+      "ticker": "SYN",
+      "valid_from": null,
+      "valid_to": null
+     },
+     "evaluation_observation_id": "0",
+     "original_observation_id": "1",
+     "pipeline_result": {
+      "calculation_attempted": false,
+      "eligibility": "UNKNOWN",
+      "rank": null,
+      "reasons": [
+       "IDENTITY_DATE_UNCONFIRMED",
+       "SECURITY_ID_UNCONFIRMED",
+       "SECURITY_TYPE_UNCONFIRMED",
+       "EXCHANGE_UNCONFIRMED",
+       "LISTING_STATUS_UNCONFIRMED",
+       "IEX_MEMBERSHIP_UNCONFIRMED",
+       "REPRESENTATIVE_UNCONFIRMED",
+       "SHELL_STATUS_UNCONFIRMED",
+       "ISSUER_MARKET_CAP_UNCONFIRMED",
+       "PRICE_DATE_MISMATCH",
+       "PRICE_IDENTITY_MISMATCH",
+       "PRICE_BASIS_UNCONFIRMED"
+      ],
+      "score": null
+     },
+     "stages": {
+      "external_fixed_id": {
+       "reason": "EXTERNAL_SECURITY_ID_NOT_EVIDENCED",
+       "state": "NOT_SUPPLIED",
+       "supplied_value": null,
+       "value": null
+      },
+      "issuer_link": {
+       "catalog_reference": {
+        "basis_date": "2026-09-25",
+        "complete": false,
+        "observed_at": "2026-09-25T00:00:00Z",
+        "scope": "SEC_TICKER_OBSERVATIONS",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "source_ref": "SYNTHETIC:catalog"
+       },
+       "exact_ticker_match": true,
+       "financial_available": true,
+       "financial_record_ref": "/financials/0000000002",
+       "issuer_id": "CIK:0000000002",
+       "observed_exchanges": [
+        "Nasdaq"
+       ],
+       "state": "SUBMISSIONS_CORROBORATED",
+       "submissions_reference": {
+        "fetched_at": "2026-09-25T00:01:00Z",
+        "member": "data/raw/blobs/submissions__0000000002",
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "source_url": "SYNTHETIC:submissions"
+       }
+      },
+      "market_cap_eligibility": {
+       "issuer_market_cap_usd": null,
+       "reasons": [
+        "ALL_CLASS_SHARES_UNCONFIRMED",
+        "SAME_DAY_RAW_PRICE_MISSING",
+        "QUOTE_SECURITY_LINK_MISSING",
+        "PRICE_CURRENCY_UNCONFIRMED",
+        "SHARE_PRICE_ACTION_SCALE_UNCONFIRMED"
+       ],
+       "state": "NOT_COMPUTED",
+       "value": null
+      },
+      "representative": {
+       "observed_issuer_ticker_rows": 1,
+       "reason": "TICKER_COUNT_DOES_NOT_ESTABLISH_REPRESENTATIVE",
+       "state": "UNCONFIRMED",
+       "value": null
+      },
+      "same_security_at_basis": {
+       "basis_date": "2026-11-02",
+       "document_reference": null,
+       "reason": "DATED_SAME_SECURITY_EVIDENCE_MISSING_OR_OUTSIDE_BASIS",
+       "state": "UNKNOWN",
+       "valid_from": null,
+       "valid_to": null,
+       "value": null
+      },
+      "security_type_evidence": {
+       "archived_cover_references": [],
+       "archived_descriptions": [],
+       "bounded_document_references": [],
+       "current_type": null,
+       "state": "UNKNOWN"
+      },
+      "valuation_inputs": {
+       "actions": {
+        "reference": null,
+        "state": "UNCONFIRMED_FOR_SHARE_PRICE_LINK"
+       },
+       "currency": {
+        "financial_currency": "USD",
+        "price_currency": null,
+        "state": "UNCONFIRMED_FOR_PRICE"
+       },
+       "price": {
+        "basis_date": "2026-11-02",
+        "source_ref": null,
+        "state": "NOT_SUPPLIED",
+        "value": null
+       },
+       "shares": {
+        "all_class_same_day_shares": null,
+        "candidate_financial_value_present": false,
+        "candidate_period_end": null,
+        "financial_input_ref": "/financials/0000000002/v_inputs_v2/diluted_shares",
+        "reason": "FINANCIAL_DILUTED_SHARES_NOT_ALL_CLASS_MARKET_CAP_PROOF",
+        "state": "UNCONFIRMED_FOR_MARKET_CAP"
+       }
+      }
+     },
+     "ticker": "SYN"
+    },
+    {
+     "cik": "0000000003",
+     "engine_evidence": {
+      "basis_date": "2026-11-02",
+      "cik": "0000000003",
+      "document_references": {
+       "archived_covers": [],
+       "bounded_links": [],
+       "catalog": {
+        "basis_date": "2026-09-25",
+        "complete": false,
+        "observed_at": "2026-09-25T00:00:00Z",
+        "scope": "SEC_TICKER_OBSERVATIONS",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "source_ref": "SYNTHETIC:catalog"
+       },
+       "submissions": {
+        "fetched_at": "2026-09-25T00:01:00Z",
+        "member": "data/raw/blobs/submissions__0000000002",
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "source_url": "SYNTHETIC:submissions"
+       }
+      },
+      "exchange": null,
+      "iex_tradable": null,
+      "issuer_id": "CIK:0000000003",
+      "issuer_market_cap_usd": null,
+      "listed": null,
+      "market_cap_basis": null,
+      "original_observation_id": "2",
+      "previous_member": null,
+      "price": null,
+      "price_basis": null,
+      "price_currency": null,
+      "price_date": null,
+      "price_source_ref": null,
+      "quote_security_id": null,
+      "representative": null,
+      "security_id": null,
+      "security_type": null,
+      "shell_or_spac": null,
+      "source_ref": "SYNTHETIC:catalog",
+      "ticker": "SYNB",
+      "valid_from": null,
+      "valid_to": null
+     },
+     "evaluation_observation_id": "1",
+     "original_observation_id": "2",
+     "pipeline_result": {
+      "calculation_attempted": false,
+      "eligibility": "UNKNOWN",
+      "rank": null,
+      "reasons": [
+       "IDENTITY_DATE_UNCONFIRMED",
+       "SECURITY_ID_UNCONFIRMED",
+       "SECURITY_TYPE_UNCONFIRMED",
+       "EXCHANGE_UNCONFIRMED",
+       "LISTING_STATUS_UNCONFIRMED",
+       "IEX_MEMBERSHIP_UNCONFIRMED",
+       "REPRESENTATIVE_UNCONFIRMED",
+       "SHELL_STATUS_UNCONFIRMED",
+       "ISSUER_MARKET_CAP_UNCONFIRMED",
+       "PRICE_DATE_MISMATCH",
+       "PRICE_IDENTITY_MISMATCH",
+       "PRICE_BASIS_UNCONFIRMED"
+      ],
+      "score": null
+     },
+     "stages": {
+      "external_fixed_id": {
+       "reason": "EXTERNAL_SECURITY_ID_NOT_EVIDENCED",
+       "state": "NOT_SUPPLIED",
+       "supplied_value": null,
+       "value": null
+      },
+      "issuer_link": {
+       "catalog_reference": {
+        "basis_date": "2026-09-25",
+        "complete": false,
+        "observed_at": "2026-09-25T00:00:00Z",
+        "scope": "SEC_TICKER_OBSERVATIONS",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "source_ref": "SYNTHETIC:catalog"
+       },
+       "exact_ticker_match": false,
+       "financial_available": false,
+       "financial_record_ref": "/financials/0000000003",
+       "issuer_id": "CIK:0000000003",
+       "observed_exchanges": [
+        "Nasdaq"
+       ],
+       "state": "CATALOG_ONLY",
+       "submissions_reference": {
+        "fetched_at": "2026-09-25T00:01:00Z",
+        "member": "data/raw/blobs/submissions__0000000002",
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "source_url": "SYNTHETIC:submissions"
+       }
+      },
+      "market_cap_eligibility": {
+       "issuer_market_cap_usd": null,
+       "reasons": [
+        "ALL_CLASS_SHARES_UNCONFIRMED",
+        "SAME_DAY_RAW_PRICE_MISSING",
+        "QUOTE_SECURITY_LINK_MISSING",
+        "PRICE_CURRENCY_UNCONFIRMED",
+        "SHARE_PRICE_ACTION_SCALE_UNCONFIRMED"
+       ],
+       "state": "NOT_COMPUTED",
+       "value": null
+      },
+      "representative": {
+       "observed_issuer_ticker_rows": 1,
+       "reason": "TICKER_COUNT_DOES_NOT_ESTABLISH_REPRESENTATIVE",
+       "state": "UNCONFIRMED",
+       "value": null
+      },
+      "same_security_at_basis": {
+       "basis_date": "2026-11-02",
+       "document_reference": null,
+       "reason": "DATED_SAME_SECURITY_EVIDENCE_MISSING_OR_OUTSIDE_BASIS",
+       "state": "UNKNOWN",
+       "valid_from": null,
+       "valid_to": null,
+       "value": null
+      },
+      "security_type_evidence": {
+       "archived_cover_references": [],
+       "archived_descriptions": [],
+       "bounded_document_references": [],
+       "current_type": null,
+       "state": "UNKNOWN"
+      },
+      "valuation_inputs": {
+       "actions": {
+        "reference": null,
+        "state": "UNCONFIRMED_FOR_SHARE_PRICE_LINK"
+       },
+       "currency": {
+        "financial_currency": null,
+        "price_currency": null,
+        "state": "UNCONFIRMED_FOR_PRICE"
+       },
+       "price": {
+        "basis_date": "2026-11-02",
+        "source_ref": null,
+        "state": "NOT_SUPPLIED",
+        "value": null
+       },
+       "shares": {
+        "all_class_same_day_shares": null,
+        "candidate_financial_value_present": false,
+        "candidate_period_end": null,
+        "financial_input_ref": "/financials/0000000003/v_inputs_v2/diluted_shares",
+        "reason": "FINANCIAL_DILUTED_SHARES_NOT_ALL_CLASS_MARKET_CAP_PROOF",
+        "state": "UNCONFIRMED_FOR_MARKET_CAP"
+       }
+      }
+     },
+     "ticker": "SYNB"
+    },
+    {
+     "cik": "0000000004",
+     "engine_evidence": {
+      "basis_date": "2026-11-02",
+      "cik": "0000000004",
+      "document_references": {
+       "archived_covers": [
+        {
+         "accession": "SYNTHETIC",
+         "cik": "0000000004",
+         "context": {
+          "period_end": "2024-03-31",
+          "period_start": "2024-01-01"
+         },
+         "context_id": "ctx",
+         "context_period_is_identity_validity": false,
+         "evidence_id": 1,
+         "source_member": "cover",
+         "source_reference": {
+          "fetched_at": "2026-09-25T00:00:00Z",
+          "member": "cover",
+          "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "source_url": "SYNTHETIC:cover"
+         },
+         "source_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+         "symbol": "SYNC",
+         "symbol_byte_ranges": [
+          {
+           "end_exclusive": 3,
+           "start": 1
+          }
+         ],
+         "title_byte_ranges": [
+          {
+           "end_exclusive": 7,
+           "start": 4
+          }
+         ],
+         "titles": [
+          "Common Stock"
+         ]
+        }
+       ],
+       "bounded_links": [],
+       "catalog": {
+        "basis_date": "2026-09-25",
+        "complete": false,
+        "observed_at": "2026-09-25T00:00:00Z",
+        "scope": "SEC_TICKER_OBSERVATIONS",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "source_ref": "SYNTHETIC:catalog"
+       },
+       "submissions": {
+        "fetched_at": "2026-09-25T00:01:00Z",
+        "member": "data/raw/blobs/submissions__0000000002",
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "source_url": "SYNTHETIC:submissions"
+       }
+      },
+      "exchange": null,
+      "iex_tradable": null,
+      "issuer_id": "CIK:0000000004",
+      "issuer_market_cap_usd": null,
+      "listed": null,
+      "market_cap_basis": null,
+      "original_observation_id": "3",
+      "previous_member": null,
+      "price": null,
+      "price_basis": null,
+      "price_currency": null,
+      "price_date": null,
+      "price_source_ref": null,
+      "quote_security_id": null,
+      "representative": null,
+      "security_id": null,
+      "security_type": null,
+      "shell_or_spac": null,
+      "source_ref": "SYNTHETIC:catalog",
+      "ticker": "SYNC",
+      "valid_from": null,
+      "valid_to": null
+     },
+     "evaluation_observation_id": "2",
+     "original_observation_id": "3",
+     "pipeline_result": {
+      "calculation_attempted": false,
+      "eligibility": "UNKNOWN",
+      "rank": null,
+      "reasons": [
+       "IDENTITY_DATE_UNCONFIRMED",
+       "SECURITY_ID_UNCONFIRMED",
+       "SECURITY_TYPE_UNCONFIRMED",
+       "EXCHANGE_UNCONFIRMED",
+       "LISTING_STATUS_UNCONFIRMED",
+       "IEX_MEMBERSHIP_UNCONFIRMED",
+       "REPRESENTATIVE_UNCONFIRMED",
+       "SHELL_STATUS_UNCONFIRMED",
+       "ISSUER_MARKET_CAP_UNCONFIRMED",
+       "PRICE_DATE_MISMATCH",
+       "PRICE_IDENTITY_MISMATCH",
+       "PRICE_BASIS_UNCONFIRMED"
+      ],
+      "score": null
+     },
+     "stages": {
+      "external_fixed_id": {
+       "reason": "EXTERNAL_SECURITY_ID_NOT_EVIDENCED",
+       "state": "NOT_SUPPLIED",
+       "supplied_value": null,
+       "value": null
+      },
+      "issuer_link": {
+       "catalog_reference": {
+        "basis_date": "2026-09-25",
+        "complete": false,
+        "observed_at": "2026-09-25T00:00:00Z",
+        "scope": "SEC_TICKER_OBSERVATIONS",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "source_ref": "SYNTHETIC:catalog"
+       },
+       "exact_ticker_match": true,
+       "financial_available": true,
+       "financial_record_ref": "/financials/0000000004",
+       "issuer_id": "CIK:0000000004",
+       "observed_exchanges": [
+        "Nasdaq"
+       ],
+       "state": "SUBMISSIONS_CORROBORATED",
+       "submissions_reference": {
+        "fetched_at": "2026-09-25T00:01:00Z",
+        "member": "data/raw/blobs/submissions__0000000002",
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "source_url": "SYNTHETIC:submissions"
+       }
+      },
+      "market_cap_eligibility": {
+       "issuer_market_cap_usd": null,
+       "reasons": [
+        "ALL_CLASS_SHARES_UNCONFIRMED",
+        "SAME_DAY_RAW_PRICE_MISSING",
+        "QUOTE_SECURITY_LINK_MISSING",
+        "PRICE_CURRENCY_UNCONFIRMED",
+        "SHARE_PRICE_ACTION_SCALE_UNCONFIRMED"
+       ],
+       "state": "NOT_COMPUTED",
+       "value": null
+      },
+      "representative": {
+       "observed_issuer_ticker_rows": 1,
+       "reason": "TICKER_COUNT_DOES_NOT_ESTABLISH_REPRESENTATIVE",
+       "state": "UNCONFIRMED",
+       "value": null
+      },
+      "same_security_at_basis": {
+       "basis_date": "2026-11-02",
+       "document_reference": null,
+       "reason": "DATED_SAME_SECURITY_EVIDENCE_MISSING_OR_OUTSIDE_BASIS",
+       "state": "ARCHIVED_DESCRIPTION_ONLY",
+       "valid_from": null,
+       "valid_to": null,
+       "value": null
+      },
+      "security_type_evidence": {
+       "archived_cover_references": [
+        {
+         "accession": "SYNTHETIC",
+         "cik": "0000000004",
+         "context": {
+          "period_end": "2024-03-31",
+          "period_start": "2024-01-01"
+         },
+         "context_id": "ctx",
+         "context_period_is_identity_validity": false,
+         "evidence_id": 1,
+         "source_member": "cover",
+         "source_reference": {
+          "fetched_at": "2026-09-25T00:00:00Z",
+          "member": "cover",
+          "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "source_url": "SYNTHETIC:cover"
+         },
+         "source_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+         "symbol": "SYNC",
+         "symbol_byte_ranges": [
+          {
+           "end_exclusive": 3,
+           "start": 1
+          }
+         ],
+         "title_byte_ranges": [
+          {
+           "end_exclusive": 7,
+           "start": 4
+          }
+         ],
+         "titles": [
+          "Common Stock"
+         ]
+        }
+       ],
+       "archived_descriptions": [
+        "EXPLICIT_COMMON_DESCRIPTION"
+       ],
+       "bounded_document_references": [],
+       "current_type": null,
+       "state": "DOCUMENTED_ARCHIVED_TYPE"
+      },
+      "valuation_inputs": {
+       "actions": {
+        "reference": null,
+        "state": "UNCONFIRMED_FOR_SHARE_PRICE_LINK"
+       },
+       "currency": {
+        "financial_currency": "USD",
+        "price_currency": null,
+        "state": "UNCONFIRMED_FOR_PRICE"
+       },
+       "price": {
+        "basis_date": "2026-11-02",
+        "source_ref": null,
+        "state": "NOT_SUPPLIED",
+        "value": null
+       },
+       "shares": {
+        "all_class_same_day_shares": null,
+        "candidate_financial_value_present": false,
+        "candidate_period_end": null,
+        "financial_input_ref": "/financials/0000000004/v_inputs_v2/diluted_shares",
+        "reason": "FINANCIAL_DILUTED_SHARES_NOT_ALL_CLASS_MARKET_CAP_PROOF",
+        "state": "UNCONFIRMED_FOR_MARKET_CAP"
+       }
+      }
+     },
+     "ticker": "SYNC"
+    },
+    {
+     "cik": "0000000005",
+     "engine_evidence": {
+      "basis_date": "2026-11-02",
+      "cik": "0000000005",
+      "document_references": {
+       "archived_covers": [],
+       "bounded_links": [
+        {
+         "cover_identity": {
+          "EntityCentralIndexKey": "0000000005",
+          "Security12bTitle": "Common Stock, $0.01 par value",
+          "SecurityExchangeName": "NASDAQ",
+          "TradingSymbol": "SYND"
+         },
+         "existing_research_evidence": {
+          "from": "2026-08-05",
+          "level": "DOCUMENT_RECONSTRUCTED",
+          "source_commit": "cccccccccccccccccccccccccccccccccccccccc",
+          "source_evidence": "proof.json",
+          "source_repo": "SYNTHETIC:private",
+          "to": "2026-10-30"
+         },
+         "issuer_cik": "0000000005",
+         "kind": "EXISTING_DOCUMENT_EVIDENCE_LINK",
+         "ticker_observation": "SYND"
+        }
+       ],
+       "catalog": {
+        "basis_date": "2026-09-25",
+        "complete": false,
+        "observed_at": "2026-09-25T00:00:00Z",
+        "scope": "SEC_TICKER_OBSERVATIONS",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "source_ref": "SYNTHETIC:catalog"
+       },
+       "submissions": {
+        "fetched_at": "2026-09-25T00:01:00Z",
+        "member": "data/raw/blobs/submissions__0000000002",
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "source_url": "SYNTHETIC:submissions"
+       }
+      },
+      "exchange": null,
+      "iex_tradable": null,
+      "issuer_id": "CIK:0000000005",
+      "issuer_market_cap_usd": null,
+      "listed": null,
+      "market_cap_basis": null,
+      "original_observation_id": "4",
+      "previous_member": null,
+      "price": null,
+      "price_basis": null,
+      "price_currency": null,
+      "price_date": null,
+      "price_source_ref": null,
+      "quote_security_id": null,
+      "representative": null,
+      "security_id": null,
+      "security_type": null,
+      "shell_or_spac": null,
+      "source_ref": "SYNTHETIC:catalog",
+      "ticker": "SYND",
+      "valid_from": "2026-08-05",
+      "valid_to": "2026-10-30"
+     },
+     "evaluation_observation_id": "3",
+     "original_observation_id": "4",
+     "pipeline_result": {
+      "calculation_attempted": false,
+      "eligibility": "UNKNOWN",
+      "rank": null,
+      "reasons": [
+       "IDENTITY_DATE_UNCONFIRMED",
+       "SECURITY_ID_UNCONFIRMED",
+       "SECURITY_TYPE_UNCONFIRMED",
+       "EXCHANGE_UNCONFIRMED",
+       "LISTING_STATUS_UNCONFIRMED",
+       "IEX_MEMBERSHIP_UNCONFIRMED",
+       "REPRESENTATIVE_UNCONFIRMED",
+       "SHELL_STATUS_UNCONFIRMED",
+       "ISSUER_MARKET_CAP_UNCONFIRMED",
+       "PRICE_DATE_MISMATCH",
+       "PRICE_IDENTITY_MISMATCH",
+       "PRICE_BASIS_UNCONFIRMED"
+      ],
+      "score": null
+     },
+     "stages": {
+      "external_fixed_id": {
+       "reason": "EXTERNAL_SECURITY_ID_NOT_EVIDENCED",
+       "state": "NOT_SUPPLIED",
+       "supplied_value": null,
+       "value": null
+      },
+      "issuer_link": {
+       "catalog_reference": {
+        "basis_date": "2026-09-25",
+        "complete": false,
+        "observed_at": "2026-09-25T00:00:00Z",
+        "scope": "SEC_TICKER_OBSERVATIONS",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "source_ref": "SYNTHETIC:catalog"
+       },
+       "exact_ticker_match": true,
+       "financial_available": true,
+       "financial_record_ref": "/financials/0000000005",
+       "issuer_id": "CIK:0000000005",
+       "observed_exchanges": [
+        "Nasdaq"
+       ],
+       "state": "SUBMISSIONS_CORROBORATED",
+       "submissions_reference": {
+        "fetched_at": "2026-09-25T00:01:00Z",
+        "member": "data/raw/blobs/submissions__0000000002",
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "source_url": "SYNTHETIC:submissions"
+       }
+      },
+      "market_cap_eligibility": {
+       "issuer_market_cap_usd": null,
+       "reasons": [
+        "ALL_CLASS_SHARES_UNCONFIRMED",
+        "SAME_DAY_RAW_PRICE_MISSING",
+        "QUOTE_SECURITY_LINK_MISSING",
+        "PRICE_CURRENCY_UNCONFIRMED",
+        "SHARE_PRICE_ACTION_SCALE_UNCONFIRMED"
+       ],
+       "state": "NOT_COMPUTED",
+       "value": null
+      },
+      "representative": {
+       "observed_issuer_ticker_rows": 1,
+       "reason": "TICKER_COUNT_DOES_NOT_ESTABLISH_REPRESENTATIVE",
+       "state": "UNCONFIRMED",
+       "value": null
+      },
+      "same_security_at_basis": {
+       "basis_date": "2026-11-02",
+       "document_reference": {
+        "cover_identity": {
+         "EntityCentralIndexKey": "0000000005",
+         "Security12bTitle": "Common Stock, $0.01 par value",
+         "SecurityExchangeName": "NASDAQ",
+         "TradingSymbol": "SYND"
+        },
+        "existing_research_evidence": {
+         "from": "2026-08-05",
+         "level": "DOCUMENT_RECONSTRUCTED",
+         "source_commit": "cccccccccccccccccccccccccccccccccccccccc",
+         "source_evidence": "proof.json",
+         "source_repo": "SYNTHETIC:private",
+         "to": "2026-10-30"
+        },
+        "issuer_cik": "0000000005",
+        "kind": "EXISTING_DOCUMENT_EVIDENCE_LINK",
+        "ticker_observation": "SYND"
+       },
+       "reason": "DATED_SAME_SECURITY_EVIDENCE_MISSING_OR_OUTSIDE_BASIS",
+       "state": "DOCUMENTED_OUTSIDE_BASIS",
+       "valid_from": "2026-08-05",
+       "valid_to": "2026-10-30",
+       "value": null
+      },
+      "security_type_evidence": {
+       "archived_cover_references": [],
+       "archived_descriptions": [],
+       "bounded_document_references": [
+        {
+         "cover_identity": {
+          "EntityCentralIndexKey": "0000000005",
+          "Security12bTitle": "Common Stock, $0.01 par value",
+          "SecurityExchangeName": "NASDAQ",
+          "TradingSymbol": "SYND"
+         },
+         "existing_research_evidence": {
+          "from": "2026-08-05",
+          "level": "DOCUMENT_RECONSTRUCTED",
+          "source_commit": "cccccccccccccccccccccccccccccccccccccccc",
+          "source_evidence": "proof.json",
+          "source_repo": "SYNTHETIC:private",
+          "to": "2026-10-30"
+         },
+         "issuer_cik": "0000000005",
+         "kind": "EXISTING_DOCUMENT_EVIDENCE_LINK",
+         "ticker_observation": "SYND"
+        }
+       ],
+       "current_type": null,
+       "state": "DOCUMENTED_ARCHIVED_TYPE"
+      },
+      "valuation_inputs": {
+       "actions": {
+        "reference": null,
+        "state": "UNCONFIRMED_FOR_SHARE_PRICE_LINK"
+       },
+       "currency": {
+        "financial_currency": "USD",
+        "price_currency": null,
+        "state": "UNCONFIRMED_FOR_PRICE"
+       },
+       "price": {
+        "basis_date": "2026-11-02",
+        "source_ref": null,
+        "state": "NOT_SUPPLIED",
+        "value": null
+       },
+       "shares": {
+        "all_class_same_day_shares": null,
+        "candidate_financial_value_present": false,
+        "candidate_period_end": null,
+        "financial_input_ref": "/financials/0000000005/v_inputs_v2/diluted_shares",
+        "reason": "FINANCIAL_DILUTED_SHARES_NOT_ALL_CLASS_MARKET_CAP_PROOF",
+        "state": "UNCONFIRMED_FOR_MARKET_CAP"
+       }
+      }
+     },
+     "ticker": "SYND"
+    },
+    {
+     "cik": "0000000006",
+     "engine_evidence": {
+      "basis_date": "2026-11-02",
+      "cik": "0000000006",
+      "document_references": {
+       "archived_covers": [],
+       "bounded_links": [
+        {
+         "cover_identity": {
+          "EntityCentralIndexKey": "0000000006",
+          "Security12bTitle": "Common Stock, $0.01 par value",
+          "SecurityExchangeName": "NASDAQ",
+          "TradingSymbol": "SYNE"
+         },
+         "existing_research_evidence": {
+          "from": "2026-08-05",
+          "level": "DOCUMENT_RECONSTRUCTED",
+          "source_commit": "cccccccccccccccccccccccccccccccccccccccc",
+          "source_evidence": "proof.json",
+          "source_repo": "SYNTHETIC:private",
+          "to": "2026-11-30"
+         },
+         "issuer_cik": "0000000006",
+         "kind": "EXISTING_DOCUMENT_EVIDENCE_LINK",
+         "ticker_observation": "SYNE"
+        }
+       ],
+       "catalog": {
+        "basis_date": "2026-09-25",
+        "complete": false,
+        "observed_at": "2026-09-25T00:00:00Z",
+        "scope": "SEC_TICKER_OBSERVATIONS",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "source_ref": "SYNTHETIC:catalog"
+       },
+       "submissions": {
+        "fetched_at": "2026-09-25T00:01:00Z",
+        "member": "data/raw/blobs/submissions__0000000002",
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "source_url": "SYNTHETIC:submissions"
+       }
+      },
+      "exchange": "NASDAQ",
+      "iex_tradable": null,
+      "issuer_id": "CIK:0000000006",
+      "issuer_market_cap_usd": null,
+      "listed": true,
+      "market_cap_basis": null,
+      "original_observation_id": "5",
+      "previous_member": null,
+      "price": null,
+      "price_basis": null,
+      "price_currency": null,
+      "price_date": null,
+      "price_source_ref": null,
+      "quote_security_id": null,
+      "representative": null,
+      "security_id": null,
+      "security_type": "COMMON",
+      "shell_or_spac": null,
+      "source_ref": "SYNTHETIC:catalog",
+      "ticker": "SYNE",
+      "valid_from": "2026-08-05",
+      "valid_to": "2026-11-30"
+     },
+     "evaluation_observation_id": "4",
+     "original_observation_id": "5",
+     "pipeline_result": {
+      "calculation_attempted": false,
+      "eligibility": "UNKNOWN",
+      "rank": null,
+      "reasons": [
+       "SECURITY_ID_UNCONFIRMED",
+       "IEX_MEMBERSHIP_UNCONFIRMED",
+       "REPRESENTATIVE_UNCONFIRMED",
+       "SHELL_STATUS_UNCONFIRMED",
+       "ISSUER_MARKET_CAP_UNCONFIRMED",
+       "PRICE_DATE_MISMATCH",
+       "PRICE_IDENTITY_MISMATCH",
+       "PRICE_BASIS_UNCONFIRMED"
+      ],
+      "score": null
+     },
+     "stages": {
+      "external_fixed_id": {
+       "reason": "EXTERNAL_SECURITY_ID_NOT_EVIDENCED",
+       "state": "NOT_SUPPLIED",
+       "supplied_value": null,
+       "value": null
+      },
+      "issuer_link": {
+       "catalog_reference": {
+        "basis_date": "2026-09-25",
+        "complete": false,
+        "observed_at": "2026-09-25T00:00:00Z",
+        "scope": "SEC_TICKER_OBSERVATIONS",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "source_ref": "SYNTHETIC:catalog"
+       },
+       "exact_ticker_match": true,
+       "financial_available": true,
+       "financial_record_ref": "/financials/0000000006",
+       "issuer_id": "CIK:0000000006",
+       "observed_exchanges": [
+        "Nasdaq"
+       ],
+       "state": "SUBMISSIONS_CORROBORATED",
+       "submissions_reference": {
+        "fetched_at": "2026-09-25T00:01:00Z",
+        "member": "data/raw/blobs/submissions__0000000002",
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "source_url": "SYNTHETIC:submissions"
+       }
+      },
+      "market_cap_eligibility": {
+       "issuer_market_cap_usd": null,
+       "reasons": [
+        "ALL_CLASS_SHARES_UNCONFIRMED",
+        "SAME_DAY_RAW_PRICE_MISSING",
+        "QUOTE_SECURITY_LINK_MISSING",
+        "PRICE_CURRENCY_UNCONFIRMED",
+        "SHARE_PRICE_ACTION_SCALE_UNCONFIRMED"
+       ],
+       "state": "NOT_COMPUTED",
+       "value": null
+      },
+      "representative": {
+       "observed_issuer_ticker_rows": 2,
+       "reason": "TICKER_COUNT_DOES_NOT_ESTABLISH_REPRESENTATIVE",
+       "state": "UNCONFIRMED",
+       "value": null
+      },
+      "same_security_at_basis": {
+       "basis_date": "2026-11-02",
+       "document_reference": {
+        "cover_identity": {
+         "EntityCentralIndexKey": "0000000006",
+         "Security12bTitle": "Common Stock, $0.01 par value",
+         "SecurityExchangeName": "NASDAQ",
+         "TradingSymbol": "SYNE"
+        },
+        "existing_research_evidence": {
+         "from": "2026-08-05",
+         "level": "DOCUMENT_RECONSTRUCTED",
+         "source_commit": "cccccccccccccccccccccccccccccccccccccccc",
+         "source_evidence": "proof.json",
+         "source_repo": "SYNTHETIC:private",
+         "to": "2026-11-30"
+        },
+        "issuer_cik": "0000000006",
+        "kind": "EXISTING_DOCUMENT_EVIDENCE_LINK",
+        "ticker_observation": "SYNE"
+       },
+       "reason": null,
+       "state": "DOCUMENTED_AT_BASIS",
+       "valid_from": "2026-08-05",
+       "valid_to": "2026-11-30",
+       "value": true
+      },
+      "security_type_evidence": {
+       "archived_cover_references": [],
+       "archived_descriptions": [],
+       "bounded_document_references": [
+        {
+         "cover_identity": {
+          "EntityCentralIndexKey": "0000000006",
+          "Security12bTitle": "Common Stock, $0.01 par value",
+          "SecurityExchangeName": "NASDAQ",
+          "TradingSymbol": "SYNE"
+         },
+         "existing_research_evidence": {
+          "from": "2026-08-05",
+          "level": "DOCUMENT_RECONSTRUCTED",
+          "source_commit": "cccccccccccccccccccccccccccccccccccccccc",
+          "source_evidence": "proof.json",
+          "source_repo": "SYNTHETIC:private",
+          "to": "2026-11-30"
+         },
+         "issuer_cik": "0000000006",
+         "kind": "EXISTING_DOCUMENT_EVIDENCE_LINK",
+         "ticker_observation": "SYNE"
+        }
+       ],
+       "current_type": "COMMON",
+       "state": "DOCUMENTED_AT_BASIS"
+      },
+      "valuation_inputs": {
+       "actions": {
+        "reference": null,
+        "state": "UNCONFIRMED_FOR_SHARE_PRICE_LINK"
+       },
+       "currency": {
+        "financial_currency": "USD",
+        "price_currency": null,
+        "state": "UNCONFIRMED_FOR_PRICE"
+       },
+       "price": {
+        "basis_date": "2026-11-02",
+        "source_ref": null,
+        "state": "NOT_SUPPLIED",
+        "value": null
+       },
+       "shares": {
+        "all_class_same_day_shares": null,
+        "candidate_financial_value_present": false,
+        "candidate_period_end": null,
+        "financial_input_ref": "/financials/0000000006/v_inputs_v2/diluted_shares",
+        "reason": "FINANCIAL_DILUTED_SHARES_NOT_ALL_CLASS_MARKET_CAP_PROOF",
+        "state": "UNCONFIRMED_FOR_MARKET_CAP"
+       }
+      }
+     },
+     "ticker": "SYNE"
+    },
+    {
+     "cik": "0000000006",
+     "engine_evidence": {
+      "basis_date": "2026-11-02",
+      "cik": "0000000006",
+      "document_references": {
+       "archived_covers": [],
+       "bounded_links": [],
+       "catalog": {
+        "basis_date": "2026-09-25",
+        "complete": false,
+        "observed_at": "2026-09-25T00:00:00Z",
+        "scope": "SEC_TICKER_OBSERVATIONS",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "source_ref": "SYNTHETIC:catalog"
+       },
+       "submissions": {
+        "fetched_at": "2026-09-25T00:01:00Z",
+        "member": "data/raw/blobs/submissions__0000000002",
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "source_url": "SYNTHETIC:submissions"
+       }
+      },
+      "exchange": null,
+      "iex_tradable": null,
+      "issuer_id": "CIK:0000000006",
+      "issuer_market_cap_usd": null,
+      "listed": null,
+      "market_cap_basis": null,
+      "original_observation_id": "6",
+      "previous_member": null,
+      "price": null,
+      "price_basis": null,
+      "price_currency": null,
+      "price_date": null,
+      "price_source_ref": null,
+      "quote_security_id": null,
+      "representative": null,
+      "security_id": null,
+      "security_type": null,
+      "shell_or_spac": null,
+      "source_ref": "SYNTHETIC:catalog",
+      "ticker": "SYNF",
+      "valid_from": null,
+      "valid_to": null
+     },
+     "evaluation_observation_id": "5",
+     "original_observation_id": "6",
+     "pipeline_result": {
+      "calculation_attempted": false,
+      "eligibility": "UNKNOWN",
+      "rank": null,
+      "reasons": [
+       "IDENTITY_DATE_UNCONFIRMED",
+       "SECURITY_ID_UNCONFIRMED",
+       "SECURITY_TYPE_UNCONFIRMED",
+       "EXCHANGE_UNCONFIRMED",
+       "LISTING_STATUS_UNCONFIRMED",
+       "IEX_MEMBERSHIP_UNCONFIRMED",
+       "REPRESENTATIVE_UNCONFIRMED",
+       "SHELL_STATUS_UNCONFIRMED",
+       "ISSUER_MARKET_CAP_UNCONFIRMED",
+       "PRICE_DATE_MISMATCH",
+       "PRICE_IDENTITY_MISMATCH",
+       "PRICE_BASIS_UNCONFIRMED"
+      ],
+      "score": null
+     },
+     "stages": {
+      "external_fixed_id": {
+       "reason": "EXTERNAL_SECURITY_ID_NOT_EVIDENCED",
+       "state": "UNVERIFIED_INPUT",
+       "supplied_value": "SYNTHETIC-SECURITY-ID",
+       "value": null
+      },
+      "issuer_link": {
+       "catalog_reference": {
+        "basis_date": "2026-09-25",
+        "complete": false,
+        "observed_at": "2026-09-25T00:00:00Z",
+        "scope": "SEC_TICKER_OBSERVATIONS",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "source_ref": "SYNTHETIC:catalog"
+       },
+       "exact_ticker_match": true,
+       "financial_available": true,
+       "financial_record_ref": "/financials/0000000006",
+       "issuer_id": "CIK:0000000006",
+       "observed_exchanges": [
+        "Nasdaq"
+       ],
+       "state": "SUBMISSIONS_CORROBORATED",
+       "submissions_reference": {
+        "fetched_at": "2026-09-25T00:01:00Z",
+        "member": "data/raw/blobs/submissions__0000000002",
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "source_url": "SYNTHETIC:submissions"
+       }
+      },
+      "market_cap_eligibility": {
+       "issuer_market_cap_usd": null,
+       "reasons": [
+        "ALL_CLASS_SHARES_UNCONFIRMED",
+        "SAME_DAY_RAW_PRICE_MISSING",
+        "QUOTE_SECURITY_LINK_MISSING",
+        "PRICE_CURRENCY_UNCONFIRMED",
+        "SHARE_PRICE_ACTION_SCALE_UNCONFIRMED"
+       ],
+       "state": "NOT_COMPUTED",
+       "value": null
+      },
+      "representative": {
+       "observed_issuer_ticker_rows": 2,
+       "reason": "TICKER_COUNT_DOES_NOT_ESTABLISH_REPRESENTATIVE",
+       "state": "UNCONFIRMED",
+       "value": null
+      },
+      "same_security_at_basis": {
+       "basis_date": "2026-11-02",
+       "document_reference": null,
+       "reason": "DATED_SAME_SECURITY_EVIDENCE_MISSING_OR_OUTSIDE_BASIS",
+       "state": "UNKNOWN",
+       "valid_from": null,
+       "valid_to": null,
+       "value": null
+      },
+      "security_type_evidence": {
+       "archived_cover_references": [],
+       "archived_descriptions": [],
+       "bounded_document_references": [],
+       "current_type": null,
+       "state": "UNKNOWN"
+      },
+      "valuation_inputs": {
+       "actions": {
+        "reference": null,
+        "state": "UNCONFIRMED_FOR_SHARE_PRICE_LINK"
+       },
+       "currency": {
+        "financial_currency": "USD",
+        "price_currency": null,
+        "state": "UNCONFIRMED_FOR_PRICE"
+       },
+       "price": {
+        "basis_date": "2026-11-02",
+        "source_ref": null,
+        "state": "NOT_SUPPLIED",
+        "value": null
+       },
+       "shares": {
+        "all_class_same_day_shares": null,
+        "candidate_financial_value_present": false,
+        "candidate_period_end": null,
+        "financial_input_ref": "/financials/0000000006/v_inputs_v2/diluted_shares",
+        "reason": "FINANCIAL_DILUTED_SHARES_NOT_ALL_CLASS_MARKET_CAP_PROOF",
+        "state": "UNCONFIRMED_FOR_MARKET_CAP"
+       }
+      }
+     },
+     "ticker": "SYNF"
+    }
+   ],
+   "schema_version": "current-expansion-staged-evidence/1",
+   "visibility": "PRIVATE_RESEARCH"
+  }
+ },
+ "generated_by": "git worktree of origin/research/current-evidence-bridge-20261105 (589fd980) → python3 -I gen.py: tests/research/test_current_evidence_bridge.py sample()/document_link() extended to six crosswalk rows, then current_evidence_bridge.link_and_evaluate(basis_date=2026-11-02); pipeline_inputs dropped (not read by the screen)",
+ "note": "SYNTHETIC. Codex #500 staged evidence (current-expansion-staged-evidence/1) with the evaluator result under evaluation (the CLI writes it as current-expansion.json). Rows: 1 submissions-corroborated only; 2 catalog-only without a financial record; 3 archived cover description only; 4 bounded document ending 2026-10-30 (outside S); 5 bounded document covering S in staged6_one_at_basis and ending 2026-10-31 in staged6_none_at_basis; 6 same issuer as 5 with an unverified supplied external ID. Not a company, not market coverage."
+}

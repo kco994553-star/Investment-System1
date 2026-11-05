@@ -6,11 +6,21 @@
 //  - Refusals: wrong schema, official population replaced, a partial source shown as the whole market, coverage or a score without
 //    an established population, counts that do not add up.
 //  - Universe504 words from the company list and the public page rows.
+//  - #500 staged evidence (current-expansion-staged-evidence/1; tests/fixtures/current_expansion_staged_evidence_v1_synthetic.json
+//    from Codex's link_and_evaluate on its synthetic test inputs): one row per stage with its own count and denominator and the basis
+//    day S; a documentary type is not eligibility; the older result says NA for every stage row (not 0); stage promotions, unknown
+//    states and join breaks refuse the whole file.
+//  - #499 financial V candidate summary (tests/fixtures/financial_v_held_bridge_v1_summary_synthetic.json): one separate line,
+//    never QGV coverage; financialSource() is NONE.
 const assert = require('node:assert/strict');
 const path = require('node:path');
 const P = require('../src/investment_system/product/web_app/population.js');
 const F = require(path.join(__dirname, '../tests/fixtures/current_expansion_research_v1_synthetic.json'));
+const G = require(path.join(__dirname, '../tests/fixtures/current_expansion_staged_evidence_v1_synthetic.json'));
+const H = require(path.join(__dirname, '../tests/fixtures/financial_v_held_bridge_v1_summary_synthetic.json'));
 const fresh = (k) => JSON.parse(JSON.stringify(F.cases[k]));
+const staged = (k) => JSON.parse(JSON.stringify(G.cases[k]));
+const STAGE_IDS = ['issuer', 'type', 'identity', 'external', 'representative', 'cap'];
 let n = 0; const ok = (name, fn) => { fn(); n++; console.log('PASS ' + name); };
 
 ok('synthetic cases pass and freeze', () => {
@@ -30,8 +40,83 @@ ok('partial roster: 부분 목록, 미확정 with reasons, never 0, synthetic la
 ok('complete synthetic roster: stages apart, ranked 0 without V', () => {
   const v = P.expansionView(P.validate(fresh('complete12_missing1')).value);
   assert.equal(v.partial, false);
-  assert.deepEqual(v.rows.map((r) => [r.id, r.value]), [['searchable', '12 / 후보 12'], ['market', '12'], ['eligibility', '12 · 0 · 0'], ['financial', '11'],
-    ['qgv', 'Q 11 · G 11 · V 0 · 세 축 0 / 12'], ['rank', '0 / 12']]);
+  const NA = 'NA · 증거 단계 평가 없음';
+  assert.deepEqual(v.rows.map((r) => [r.id, r.value]), [['searchable', '12 / 후보 12'], ['market', '12'], ...STAGE_IDS.map((id) => [id, NA]),
+    ['eligibility', '12 · 0 · 0'], ['financial', '11'], ['qgv', 'Q 11 · G 11 · V 0 · 세 축 0 / 12'], ['rank', '0 / 12']]);
+  assert.equal(v.staged, false);
+});
+ok('#500 staged evidence: both synthetic cases pass; one row per stage, own count and denominator, basis day S', () => {
+  for (const k of ['staged6_one_at_basis', 'staged6_none_at_basis']) { const r = P.validate(staged(k)); assert.equal(r.ok, true, k + ' ' + JSON.stringify(r)); }
+  const row = (v, id) => v.rows.find((r) => r.id === id);
+  const one = P.expansionView(P.validate(staged('staged6_one_at_basis')).value);
+  assert.equal(one.staged, true); assert.equal(one.synthetic, true); assert.equal(one.partial, true);
+  assert.deepEqual(one.rows.map((r) => r.id), ['searchable', 'market', ...STAGE_IDS, 'eligibility', 'financial', 'qgv', 'rank']);
+  assert.deepEqual(one.rows.filter((r) => STAGE_IDS.includes(r.id)).map((r) => [r.label, r.value]), [
+    ['재무 연결', '5 / 티커 관측 6'], ['증권 설명', '3 / 티커 관측 6'], ['평가일 동일 증권', '1 / 티커 관측 6 · S 2026-11-02'],
+    ['외부 증권 ID', '확인 0 / 티커 관측 6'], ['대표 증권', '확정 0 / 발행사 5'], ['시총 적격성', 'NA · 미산출 6 / 티커 관측 6']]);
+  assert.match(row(one, 'issuer').note, /카탈로그만 1 · 발행사 5/);
+  assert.match(row(one, 'type').note, /적격 판정 아님 · 평가일 S 적용 1 · 설명 없음 3/);
+  assert.match(row(one, 'identity').note, /^S 밖 문서 1 · 보관 설명만 1 · 증거 없음 3/);
+  assert.match(row(one, 'external').note, /입력만 있음\(미검증\) 1 · 없음 5/);
+  assert.match(row(one, 'cap').note, /^전 종류 같은 날 주식수 미확인 6 · 같은 날 원 주가 없음 6 · 주가–증권 연결 없음 6 · 주가 통화 미확인 6 · 주식수·주가 조정 척도 미확인 6$/);
+  // A documentary type (even at S) is not eligibility; QGV and rank stay 미확정 on the partial subset.
+  assert.equal(row(one, 'eligibility').value, '0 · 0 · 6');
+  assert.match(row(one, 'qgv').value, /^미확정 · /); assert.match(row(one, 'rank').value, /^미확정 · /);
+  assert.match(one.basis, /^평가일\(S\) 2026-11-02 · .*보유 재무 연결 부분 목록 \(IEX 목록 아님\) · 부분 목록$/);
+  assert.match(one.version, /^current-expansion-staged-evidence\/1 · /);
+  // The evaluated zero: no document covers S, so 평가일 동일 증권 is a real 0 (the stage was evaluated).
+  const none = P.expansionView(P.validate(staged('staged6_none_at_basis')).value);
+  assert.equal(row(none, 'identity').value, '0 / 티커 관측 6 · S 2026-11-02');
+  assert.match(row(none, 'identity').note, /^S 밖 문서 2 · /);
+  assert.equal(row(none, 'type').value, '3 / 티커 관측 6', 'archived descriptions still counted as 증권 설명');
+});
+ok('#500 refusals: promotion, unknown state, join and count breaks refuse the whole file', () => {
+  const R = (i) => (x) => x.rows[i].stages;
+  const cases = [
+    [(x) => { x.schema_version = 'current-expansion-staged-evidence/2'; }, 'SCHEMA_VERSION', '$.schema_version'],
+    [(x) => { delete x.evaluation; }, 'EVALUATION_MISSING', '$.evaluation'],
+    [(x) => { x.evaluation.full_market_denominator = 6; }, 'PARTIAL_AS_FULL_MARKET', '$.evaluation.full_market_denominator'],
+    [(x) => { x.evaluation.basis_date = '2026-11-03'; }, 'BASIS_DATE_MISMATCH', '$.evaluation.basis_date'],
+    [(x) => { x.visibility = 'PUBLIC'; }, 'VISIBILITY', '$.visibility'],
+    [(x) => { R(0)(x).representative.state = 'CONFIRMED'; }, 'STAGE_STATE', '$.rows[0].stages.representative.state'],
+    [(x) => { R(0)(x).representative.value = true; }, 'STAGE_PROMOTED', '$.rows[0].stages.representative.value'],
+    [(x) => { R(2)(x).same_security_at_basis.value = true; }, 'STAGE_PROMOTED', '$.rows[2].stages.same_security_at_basis.value'],
+    [(x) => { R(2)(x).security_type_evidence.state = 'DOCUMENTED_AT_BASIS'; R(2)(x).security_type_evidence.current_type = 'COMMON'; x.counts.stages.security_type_evidence = { DOCUMENTED_ARCHIVED_TYPE: 1, DOCUMENTED_AT_BASIS: 2, UNKNOWN: 3 }; }, 'STAGE_PROMOTED', '$.rows[2].stages.security_type_evidence.current_type'],
+    [(x) => { R(4)(x).same_security_at_basis.valid_to = '2026-11-01'; }, 'STAGE_PROMOTED', '$.rows[4].stages.same_security_at_basis.valid_from'],
+    [(x) => { R(5)(x).external_fixed_id.value = 'SYNTHETIC-SECURITY-ID'; }, 'STAGE_PROMOTED', '$.rows[5].stages.external_fixed_id.value'],
+    [(x) => { R(0)(x).market_cap_eligibility.issuer_market_cap_usd = 1; }, 'STAGE_PROMOTED', '$.rows[0].stages.market_cap_eligibility.value'],
+    [(x) => { R(0)(x).market_cap_eligibility.reasons.push('NEW_BLOCKER'); }, 'STAGE_STATE', '$.rows[0].stages.market_cap_eligibility.reasons'],
+    [(x) => { R(0)(x).valuation_inputs.price.value = 1; }, 'STAGE_PROMOTED', '$.rows[0].stages.valuation_inputs'],
+    [(x) => { x.rows[1].evaluation_observation_id = '2'; }, 'JOIN_MISMATCH', '$.rows[1].evaluation_observation_id'],
+    [(x) => { x.rows[1].original_observation_id = x.rows[0].original_observation_id; }, 'DUPLICATE_OBSERVATION_ID', '$.rows[1].original_observation_id'],
+    [(x) => { x.rows[1].pipeline_result.eligibility = 'EXCLUDED'; }, 'JOIN_MISMATCH', '$.rows[1].pipeline_result.eligibility'],
+    [(x) => { x.counts.stages.same_security_at_basis.DOCUMENTED_AT_BASIS = 0; x.counts.stages.same_security_at_basis.UNKNOWN = 4; }, 'COUNT_MISMATCH', '$.counts.stages.same_security_at_basis.DOCUMENTED_AT_BASIS'],
+    [(x) => { x.counts.unique_issuers = 6; }, 'COUNT_MISMATCH', '$.counts.unique_issuers'],
+  ];
+  for (const [change, code, at] of cases) { const x = staged('staged6_one_at_basis'); change(x); const r = P.validate(x); assert.equal(r.ok, false, code); assert.deepEqual([r.code, r.path], [code, at], JSON.stringify(r)); }
+  // An ELIGIBLE row cannot come out of documentary evidence: refuse even when the evaluation itself is consistent.
+  const x = staged('staged6_one_at_basis'); x.evaluation.rows[4].eligibility = 'ELIGIBLE'; x.rows[4].pipeline_result.eligibility = 'ELIGIBLE';
+  x.evaluation.counts.eligible = 1; x.evaluation.counts.unknown = 5;
+  assert.deepEqual(P.validate(x), { ok: false, code: 'STAGE_PROMOTED', path: '$.evaluation.rows[4].eligibility' });
+  // An EXCLUDED row needs identity on S: row 4 (document covers S) may be excluded, row 3 (document outside S) may not.
+  const y = staged('staged6_one_at_basis'); y.evaluation.rows[3].eligibility = 'EXCLUDED'; y.rows[3].pipeline_result.eligibility = 'EXCLUDED';
+  y.evaluation.counts.excluded = 1; y.evaluation.counts.unknown = 5;
+  assert.deepEqual(P.validate(y), { ok: false, code: 'STAGE_PROMOTED', path: '$.evaluation.rows[3].eligibility' });
+});
+ok('#499 financial candidate line: summary only, separate wording, never QGV coverage; source NONE', async () => {
+  const r = P.financialValidate(JSON.parse(JSON.stringify(H.report))); assert.equal(r.ok, true, JSON.stringify(r));
+  assert.deepEqual(Object.keys(r.value), ['schema_version', 'valuation_date', 'summary'], 'rows and receipts are not kept');
+  const v = P.financialView(r.value);
+  assert.equal(v.label, '금융업 후보 입력 (연구) · 공식 QGV와 별개');
+  assert.equal(v.value, '분자 준비 2 · 같은 날 주가 1 · 기준 맞는 비율 1 / 금융업 코드 2');
+  assert.match(v.note, /공식 QGV 커버리지·점수·순위 아님/);
+  const bad = [
+    [(x) => { x.summary.scored_joint_valid = 1; }, 'QGV_COVERAGE_CLAIMED'], [(x) => { x.summary.preset_totals = {}; }, 'QGV_COVERAGE_CLAIMED'],
+    [(x) => { x.summary.operational_denominator = 2; }, 'OPERATIONAL_DENOMINATOR'], [(x) => { x.schema_version = 'financial-v-research/1'; }, 'SCHEMA_VERSION'],
+    [(x) => { x.summary.financial_codes = 3; }, 'COUNT_MISMATCH'], [(x) => { x.summary.subtypes.DEPOSITORY_BANK.metrics.book_yield.ratio_valid = 2; }, 'COUNT_MISMATCH'],
+    [(x) => { x.rows = []; }, 'COUNT_MISMATCH']];
+  for (const [change, code] of bad) { const x = JSON.parse(JSON.stringify(H.report)); change(x); const q = P.financialValidate(x); assert.equal(q.ok, false); assert.equal(q.code, code, JSON.stringify(q)); }
+  const s = await P.financialSource(); assert.equal(s.state, 'NONE'); assert.equal(s.payload, null); assert.match(s.text, /^금융업 후보 입력 \(연구\) · 공식 QGV와 별개 · /);
 });
 ok('refusals', () => {
   const cases = [

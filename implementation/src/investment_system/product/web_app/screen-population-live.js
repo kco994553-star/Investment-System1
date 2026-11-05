@@ -6,6 +6,11 @@
      eligible / excluded / unknown, financial rows, QGV computable, rankable.
    - The expansion result is private research: IS2.population.source() is NONE today and the card says so in words, with no number.
      A synthetic result says 합성 개발 검증; a partial roster says 부분 목록 · 전체 시장 분모 미확정 and shows no score or rank.
+   - #500 staged evidence (current-expansion-staged-evidence/1): the card adds one row per stage (재무 연결 · 증권 설명 · 평가일
+     동일 증권 · 외부 증권 ID · 대표 증권 · 시총 적격성), each with its own count and denominator, and the basis day S. An older
+     result says NA for those rows (not evaluated), never 0.
+   - #499 financial-sector V candidate inputs: one separate line under both cards, 금융업 후보 입력 (연구) · 공식 QGV와 별개, never in
+     the Universe504 card and never as QGV coverage; IS2.population.financialSource() is NONE today (words, no number).
    - A file that breaks its contract is refused whole (code and path). The official population, scores, ranks and TARGET are not
      changed by anything here; changing the operating population, publishing or deploying needs its own approval.
    No request of its own (the page and the list are the layer's), no storage. */
@@ -31,9 +36,17 @@ function expansionCard(src){const P=I.population;
  return card(v.synthetic?h('p',{class:'chip wait',dataset:{populationSynthetic:''}},P.TEXT.SYNTHETIC):null,
   h('p',{class:'hand',dataset:{populationState:v.partial?'PARTIAL':'ESTABLISHED'}},v.basis),
   v.partial?h('p',{class:'reason',dataset:{populationPartial:''}},P.TEXT.PARTIAL):null,
+  v.staged?h('p',{class:'reason',dataset:{populationStages:''}},P.TEXT.STAGES):null,
   rowsOf(v.rows,'EXPANSION'),
   v.reasons.length?h('p',{class:'reason',dataset:{populationReasons:String(v.reasons.length)}},'미확정 사유 · ',v.reasons.join(' · ')):null,
   h('p',{class:'meta'},'판 ',v.version));}
+// #499: a line of its own, outside both cards. The source wrapper says whether its numbers are synthetic (the summary has no marker).
+function financialLine(src){const P=I.population,line=(state,code,...kids)=>h('p',{class:state==='REFUSED'?'err':'reason',dataset:code?{populationFinancial:state,na:code}:{populationFinancial:state}},...kids);
+ if(!src||src.state==='NONE')return line('NONE',src&&src.code||'FINANCIAL_V_NOT_CONNECTED',src&&src.text||P.TEXT.FIN_NONE);
+ const r=P.financialValidate(src.payload);
+ if(!r.ok)return line('REFUSED',r.code,P.TEXT.FIN_LABEL,' · 계약과 달라 전부 읽지 않았습니다 · ',r.code,' · ',r.path);
+ const v=P.financialView(r.value);
+ return line('OK',null,src.synthetic===true?P.TEXT.SYNTHETIC+' · ':'',h('b',null,v.label),' · ',v.value,' · ',v.note);}
 function fill(route,slot){const signal=route.signal,Q=I.qgv,C=I.companies,P=I.population;
  if(!slot||!P)return;
  // The home reads only its company index (web_app_data_layer_browser_test.js): QGV totals and ranks are counted only when the
@@ -43,8 +56,8 @@ function fill(route,slot){const signal=route.signal,Q=I.qgv,C=I.companies,P=I.po
   if(pg===undefined)return P.universeView({codes:C.list(),rows:undefined});
   let rows=null;try{rows=pg?Q.rows(pg,{scope:'UNIVERSE'}):null;}catch(_){rows=null;}
   return P.universeView({codes:C.list(),rows,asOf:pg&&pg.as_of?String(pg.as_of).slice(0,10):null});});
- Promise.all([universe,P.source().catch(()=>null)]).then(([u,src])=>{if(signal.aborted)return;
+ Promise.all([universe,P.source().catch(()=>null),P.financialSource().catch(()=>null)]).then(([u,src,fin])=>{if(signal.aborted)return;
   slot.replaceChildren(head('검색·계산 범위','두 모집단은 따로 셉니다'),h('p',{class:'reason',dataset:{populationSeparate:''}},P.TEXT.SEPARATE),
-   h('div',{class:'cards'},universeCard(u),expansionCard(src)));});}
+   h('div',{class:'cards'},universeCard(u),expansionCard(src)),financialLine(fin));});}
 I.populationLive=Object.freeze({fill});
 })();

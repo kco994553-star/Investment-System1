@@ -9,6 +9,11 @@
 //  - Codex's synthetic outputs put in place of source(): partial roster → 합성 개발 검증, 부분 목록 · 전체 시장 분모 미확정, every
 //    QGV / rank row 미확정 with reasons (no 0); complete synthetic roster → the stages apart (Q 11 · G 11 · V 0 · 세 축 0 / 12, 순위 0 / 12).
 //  - A payload that breaks the contract (a partial roster with a full-market denominator) is refused whole.
+//  - #500 staged evidence (synthetic, Codex's link_and_evaluate): the expansion card adds 재무 연결 · 증권 설명 · 평가일 동일 증권 ·
+//    외부 증권 ID · 대표 증권 · 시총 적격성 rows, each with its own count and denominator, and the basis day S; an older result shows
+//    NA in those rows; a staged file promoting a stage is refused whole.
+//  - #499 financial V candidates: one line outside both cards, 금융업 후보 입력 (연구) · 공식 QGV와 별개; NONE in production (no
+//    number); with the synthetic summary it says 합성 개발 검증 and never appears in the Universe504 card.
 //  - Boundaries: no request of its own (same-origin reads only, no new file), nothing stored, no style attribute, no CSP violation,
 //    no horizontal overflow at 390.
 const { chromium } = require('playwright');
@@ -17,6 +22,9 @@ const path = require('node:path');
 const site = require('./web_app_test_site');
 const F = require('./qgv_v2_fixture.js');
 const X = require(path.join(__dirname, '../tests/fixtures/current_expansion_research_v1_synthetic.json'));
+const G = require(path.join(__dirname, '../tests/fixtures/current_expansion_staged_evidence_v1_synthetic.json'));
+const H = require(path.join(__dirname, '../tests/fixtures/financial_v_held_bridge_v1_summary_synthetic.json'));
+const STAGE_IDS = ['issuer', 'type', 'identity', 'external', 'representative', 'cap'];
 const NOW = '2026-11-04T03:00:00.000Z';
 // The public files this synthetic site does not publish (as web_app_home_browser_test.js).
 const UNPUBLISHED = ['sec-public-inputs.json', 'sec-universe-shares.json', 'forward-validation-ledger.json', 'qgv-official.json', 'qgv-official-status.json'];
@@ -50,8 +58,14 @@ let phase = 'START';
       assert.match(await expansion(), /확장 모집단 연구 결과 미연결 · 비공개 연구 결과이며 공개 화면 연결은 승인 전입니다/);
       assert.equal(await page.locator('[data-population-card=EXPANSION] [data-population-row]').count(), 0);
       assert.doesNotMatch((await expansion()).replace('확장 모집단', ''), /\d/, phase + ': no number without a result');
-      const put = async (payload) => {
-        await page.evaluate((x) => { const I = window.IS2, real = I.population; I.population = Object.freeze({ ...real, source: () => Promise.resolve(Object.freeze({ state: 'OK', payload: x })) }); }, payload);
+      // #499 line: outside both cards, NONE in production, words only.
+      const finLine = page.locator('[data-population] > [data-population-financial]');
+      assert.equal(await finLine.getAttribute('data-population-financial'), 'NONE');
+      assert.equal(await finLine.innerText(), '금융업 후보 입력 (연구) · 공식 QGV와 별개 · 비공개 연구 결과 미연결');
+      assert.equal(await page.locator('[data-population-card] [data-population-financial]').count(), 0, phase + ': not inside a card');
+      const put = async (payload, fin) => {
+        await page.evaluate(([x, f]) => { const I = window.IS2, real = I.population; I.population = Object.freeze({ ...real, source: () => Promise.resolve(Object.freeze({ state: 'OK', payload: x })),
+          financialSource: f ? () => Promise.resolve(Object.freeze({ state: 'OK', synthetic: true, payload: f })) : real.financialSource }); }, [payload, fin || null]);
         await page.goto(s.base + '#/qgv'); await page.locator('main[data-route=qgv] [data-lb-table] tbody tr[data-row]').first().waitFor({ timeout: 20000 });
         await page.goto(s.base + '#/'); await page.locator('main[data-route=search]').waitFor(); await ready();
       };
@@ -77,6 +91,34 @@ let phase = 'START';
       assert.equal(await page.locator('[data-population-synthetic]').count(), 1, phase + ': still synthetic');
       // Universe504 card is unchanged by the expansion result.
       assert.deepEqual(await rows('UNIVERSE504'), u, phase + ': Universe504 unchanged');
+      // The older result has no stages: each stage row is NA, never 0.
+      for (const id of STAGE_IDS) assert.ok(c[id] && c[id].includes('NA · 증거 단계 평가 없음') && !/(?<![\d.-])0(?![\d.-])/.test(c[id]), phase + ': ' + id + ' NA, not 0: ' + c[id]);
+      assert.equal(await page.locator('[data-population-stages]').count(), 0);
+      // #500 staged evidence with the #499 synthetic summary.
+      await put(G.cases.staged6_one_at_basis, H.report);
+      const g = Object.fromEntries(await rows('EXPANSION'));
+      assert.deepEqual(Object.keys(g), ['searchable', 'market', ...STAGE_IDS, 'eligibility', 'financial', 'qgv', 'rank'], phase + ': one row per stage');
+      const want = { issuer: '재무 연결 · 5 / 티커 관측 6', type: '증권 설명 · 3 / 티커 관측 6', identity: '평가일 동일 증권 · 1 / 티커 관측 6 · S 2026-11-02',
+        external: '외부 증권 ID · 확인 0 / 티커 관측 6', representative: '대표 증권 · 확정 0 / 발행사 5', cap: '시총 적격성 · NA · 미산출 6 / 티커 관측 6' };
+      for (const [id, text] of Object.entries(want)) { const [label, value] = text.split(/ · (.*)/s); assert.ok(g[id].includes(label) && g[id].includes(value), phase + ': ' + id + ' ' + g[id]); }
+      assert.match(g.type, /적격 판정 아님/); assert.match(g.eligibility, /0 · 0 · 6/); assert.match(g.qgv, /미확정/);
+      assert.match(await page.locator('[data-population-card=EXPANSION] [data-population-state]').innerText(), /^평가일\(S\) 2026-11-02 · /);
+      assert.equal(await page.locator('[data-population-stages]').innerText(), '증거 단계는 따로 셉니다 · 문서상 증권 종류는 적격이 아니며 대표 증권도 아닙니다');
+      assert.equal(await page.locator('[data-population-partial]').count(), 1); assert.equal(await page.locator('[data-population-synthetic]').count(), 1);
+      assert.equal(await finLine.getAttribute('data-population-financial'), 'OK');
+      assert.equal((await finLine.innerText()).replace(/\s+/g, ' '), '합성 개발 검증 · 실제 시장 자료 아님 · 금융업 후보 입력 (연구) · 공식 QGV와 별개 · 분자 준비 2 · 같은 날 주가 1 · 기준 맞는 비율 1 / 금융업 코드 2 · 업종별 주 지표 기준 · 평가일 2026-11-02 · 공식 QGV 커버리지·점수·순위 아님 · 하위 업종 1');
+      assert.doesNotMatch(await page.locator('[data-population-card=UNIVERSE504]').innerText(), /금융업|재무 연결|증권 설명|대표 증권|시총/, phase + ': nothing of it in Universe504');
+      assert.deepEqual(await rows('UNIVERSE504'), u, phase + ': Universe504 unchanged by staged evidence');
+      assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), phase + ': no horizontal overflow with stage rows');
+      // A staged file promoting documentary evidence is refused whole; a #499 summary claiming QGV coverage is refused.
+      const promoted = JSON.parse(JSON.stringify(G.cases.staged6_one_at_basis)); promoted.rows[0].stages.representative.value = true;
+      const claimed = JSON.parse(JSON.stringify(H.report)); claimed.summary.scored_joint_valid = 2;
+      await put(promoted, claimed);
+      assert.match(await page.locator('[data-population-card=EXPANSION] [data-population-state=REFUSED]').innerText(), /STAGE_PROMOTED · \$\.rows\[0\]\.stages\.representative\.value/);
+      assert.equal(await page.locator('[data-population-card=EXPANSION] [data-population-row]').count(), 0);
+      assert.equal(await finLine.getAttribute('data-population-financial'), 'REFUSED');
+      assert.match(await finLine.innerText(), /QGV_COVERAGE_CLAIMED · \$\.summary\.scored_joint_valid/);
+      assert.doesNotMatch(await finLine.innerText(), /분자 준비/);
       // A partial roster that claims a full-market denominator is refused whole.
       const bad = JSON.parse(JSON.stringify(X.cases.partial12)); bad.full_market_denominator = 12;
       await put(bad);
@@ -91,7 +133,7 @@ let phase = 'START';
       const st = await site.storage(page); assert.deepEqual([st.local, st.session], [0, 0], phase + ': nothing stored');
       await ctx.close(); pass++;
     }
-    console.log('web_app_population_browser_test: PASS (' + pass + ' widths: two cards, Universe504 from the layer, NONE, partial and complete synthetic, refusal, boundaries)');
+    console.log('web_app_population_browser_test: PASS (' + pass + ' widths: two cards, Universe504 from the layer, NONE, partial and complete synthetic, #500 stage rows, #499 separate line, refusals, boundaries)');
   } catch (e) { console.error('web_app_population_browser_test: FAIL at ' + phase); console.error(e); process.exitCode = 1; }
   finally { await browser.close(); await s.close(); }
 })();
