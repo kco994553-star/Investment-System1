@@ -219,6 +219,8 @@ function company(route,{box,given,name,facts,star,bodies}){
    return;}
   const cid=e.canonical_id;I.selection.set(cid);
   const title=idx.title(e);name.textContent=title;
+  // 2.4.6 의외의 기업 mark (screen-discovery-live.js): the same reader and status as the 2.1.8 list, by the existing company key.
+  if(I.discoveryLive)I.discoveryLive.mark({name,cid,signal});
   const bits=[e.ticker&&!title.includes(e.ticker)?e.ticker:null,idx.code(e),idx.member(e)].filter(Boolean),extra=h('span',{class:'facts-more'});
   const row=I.companies.get(idx.code(e)),ended=row&&row.status==='WITHDRAWN'?row.withdrawn_on:null;// display only (LISTING-ENDED-CODE pending)
   facts.replaceChildren(h('p',{class:'facts-line'},...bits.flatMap((b,i)=>[i?' · ':'',h('span',{class:'nobr'},b)]),extra),
