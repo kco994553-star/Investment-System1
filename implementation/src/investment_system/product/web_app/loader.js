@@ -28,7 +28,8 @@
 // The old modules in the old page's relative order (backup /5 validators chart-workbench.js and macro-cycle-ring.js included),
 // then the P1 layer action → data → prices → store → qgv → engines, then the common base companies → private → lab
 // (2026-10-31), then screen logic files (web_app; P1_DATA_LAYER.md §1.1). tech-screen.js is the reader of the 1.1.8 기술 조건 필터
-// (feature 3.5, owner 2026-11-03) that screen-tech-filter-live.js uses; it installs IS2.techScreen and reads nothing.
+// (feature 3.5, owner 2026-11-03) that screen-tech-filter-live.js uses; it installs IS2.techScreen and reads nothing. sector-qgv.js
+// is the sector QGV reader and roll-up (feature 2.2, owner 2026-11-06) that screen-sector-qgv-live.js uses; it installs IS2.sectorQgv.
 const LOAD_ORDER=Object.freeze([
  'locale.js','entity-search.js','price-time.js','device-market.js','device-actual.js','profile-defaults.js','type-config-defaults.js',
  'device-profiles.js','engine-preview.js','dcf-parameters-defaults.js','device-valuation.js','playbook-config-defaults.js','playbook-engine.js',
@@ -44,6 +45,7 @@ const LOAD_ORDER=Object.freeze([
  'companies.js','private.js','lab.js',
  'search-part-live.js','screen-search-live.js','screen-qgv-live.js','screen-macro-live.js','screen-prompts-live.js','screen-tree-live.js',
  'screen-technical-live.js','screen-news-live.js','screen-lab-live.js','tech-screen.js','screen-tech-filter-live.js',
+ 'sector-qgv.js','screen-sector-qgv-live.js',
 ]);
 // A plain lowercase script name. tools/build_web_app.py holds this exact line (the build fails when the two differ).
 const NAME=/^[a-z0-9][a-z0-9-]*(?:\.[a-z0-9-]+)*\.js$/;
@@ -61,7 +63,7 @@ const API=Object.freeze({
  store:{KEYS:'v',prefs:'s',savePrefs:'a',recent:'s',pushRecent:'a',clearRecent:'a',weights:'s',saveWeights:'a',holdings:'p',playbook:'s',saveThesis:'a',saveHold:'a',saveRecord:'a',
   stars:'s',toggleStar:'a',macroEstimates:{read:'s',add:'a',remove:'a'},promptFavorites:{read:'s',toggle:'a'},promptCopies:{read:'s',save:'a',remove:'a'},chartNotes:{read:'s',add:'a',remove:'a'},
   backup:{create:'p',download:'a',restore:'a',restored:'s'},vHistoryKeys:{count:'s',clear:'a'},sheetSource:{has:'s',set:'a'},
-  universeSource:{has:'s',set:'a',useSheet:'a'},workerOrigin:{has:'s',approved:'s',set:'a'},marketQuotes:{count:'p',clear:'a'},subscribe:'sub',PRODUCT_PRESETS:'v'},
+  universeSource:{has:'s',set:'a',useSheet:'a'},workerOrigin:{has:'s',approved:'s',set:'a'},marketQuotes:{count:'p',clear:'a'},sectorQgv:{read:'s',save:'a',clear:'a'},subscribe:'sub',PRODUCT_PRESETS:'v'},
  qgv:{V_SOURCES:'v',RANK_LABELS:'v',READERS:'v',vSource:'s',page:'p',isPage:'s',row:'s',rows:'s',coverage:'s',preview:'s',model:'s',setProfile:'s',profile:'s',
   reasonText:'s',rankLabel:'s',constants:'s',subscribe:'sub'},
  engines:{target:{state:'s',basis:'p',draft:'p',build:'a',blockers:'p',finalize:'a',answer:'a',ruleBDue:'s',selectRuleB:'a',compare:'a',scoringPending:'p',

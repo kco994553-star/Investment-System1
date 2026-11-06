@@ -27,9 +27,12 @@ function render(route){
   h('div',{class:'conn'},conn,buttons[0],h('span',{'aria-hidden':'true'},'→'),buttons[1],h('span',{'aria-hidden':'true'},'→'),buttons[2],
    h('span',{class:'hand'},'준비되기 전에는 세 버튼 모두 꺼짐 · 누를 때만 가격을 부름 · V는 중앙 게시본만')),status,nav);
  later(route,'leaderboard',{band,chips,conn,buttons,status,nav,bodies},()=>{for(const b of Object.values(bodies))b.replaceChildren(h('p',{class:'na',dataset:{na:'LOADER_FAILED'}},'층을 불러오지 못해 리더보드를 그리지 못했습니다'));});
+ // 1.2 (2.2): screen-sector-qgv-live.js fills it
+ const sq=h('div',{dataset:{sqBody:''}},pending('섹터 QGV 구성 · 요소 · 미리보기'));
+ (I.ready||Promise.reject()).then(()=>{if(!route.signal.aborted&&I.sectorQgvLive)I.sectorQgvLive.fill(route,{body:sq});},()=>{});
  return h('div',{class:'screen lb-screen'},head('1','QGV','기업의 질(Q) · 성장(G) · 가치(V)를 한 장으로'),band,
   section('1-1','1.1 리더보드',null,...blocks),
-  section('1-2','1.2 가중치',null,pending('다음 단계에서 연결')),
+  section('1-2','1.2 가중치 · QGV 구성',null,sq),
   section('1-3','1.3 13F (연구 단계)',null,pending('다음 단계에서 연결')),
   section('1-4','1.4 구조 트리',null,pending('다음 단계에서 연결')));
 }
