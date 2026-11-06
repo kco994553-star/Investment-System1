@@ -105,7 +105,8 @@ ok('#500 refusals: promotion, unknown state, join and count breaks refuse the wh
 });
 ok('#499 financial candidate line: summary only, separate wording, never QGV coverage; source NONE', async () => {
   const r = P.financialValidate(JSON.parse(JSON.stringify(H.report))); assert.equal(r.ok, true, JSON.stringify(r));
-  assert.deepEqual(Object.keys(r.value), ['schema_version', 'valuation_date', 'summary'], 'rows and receipts are not kept');
+  assert.deepEqual(Object.keys(r.value), ['schema_version', 'valuation_date', 'source_ref', 'summary'], 'rows and receipts are not kept');
+  assert.equal(r.value.source_ref, null, 'no source_ref in this file: kept as null, never guessed');
   const v = P.financialView(r.value);
   assert.equal(v.label, '금융업 후보 입력 (연구) · 공식 QGV와 별개');
   assert.equal(v.value, '분자 준비 2 · 같은 날 주가 1 · 기준 맞는 비율 1 / 금융업 코드 2');
@@ -117,6 +118,37 @@ ok('#499 financial candidate line: summary only, separate wording, never QGV cov
     [(x) => { x.rows = []; }, 'COUNT_MISMATCH']];
   for (const [change, code] of bad) { const x = JSON.parse(JSON.stringify(H.report)); change(x); const q = P.financialValidate(x); assert.equal(q.ok, false); assert.equal(q.code, code, JSON.stringify(q)); }
   const s = await P.financialSource(); assert.equal(s.state, 'NONE'); assert.equal(s.payload, null); assert.match(s.text, /^금융업 후보 입력 \(연구\) · 공식 QGV와 별개 · /);
+});
+// Codex #437 6680388919: the two faults reproduced with a /1.1 summary (e1f1f35d) whose BUSINESS_MODEL_UNRESOLVED subtype has
+// primary_metric null. Regression on Codex's own fixture() run through #499 summarize (tests/fixtures/..._v1_1_summary_synthetic.json).
+const H11 = require(path.join(__dirname, '../tests/fixtures/financial_v_held_bridge_v1_1_summary_synthetic.json'));
+ok('#499 /1.1 summary with primary_metric null: accepted, unresolved kept in the denominator and named; nothing else widened', () => {
+  assert.deepEqual(P.FIN_SCHEMAS, ['financial-v-held-bridge/1', 'financial-v-held-bridge/1.1']);
+  const doc = JSON.parse(JSON.stringify(H11.report));
+  assert.equal(doc.schema_version, 'financial-v-held-bridge/1.1');
+  assert.equal(doc.summary.subtypes.BUSINESS_MODEL_UNRESOLVED.primary_metric, null);
+  const r = P.financialValidate(doc); assert.equal(r.ok, true, JSON.stringify(r));
+  const v = P.financialView(r.value);
+  assert.equal(v.value, '분자 준비 1 · 같은 날 주가 0 · 기준 맞는 비율 0 / 금융업 코드 2', 'the unresolved code stays in the denominator');
+  assert.equal(v.unresolved, 1);
+  assert.match(v.note, /주 지표 미정 1코드\(업종 모델 미정 1개 · 분모에 포함 · 다른 지표로 대체 안 함\)/);
+  const bad = [
+    [(x) => { x.schema_version = 'financial-v-held-bridge/1.2'; }, 'SCHEMA_VERSION', '$.schema_version'],
+    [(x) => { x.schema_version = 'financial-v-held-bridge/2'; }, 'SCHEMA_VERSION', '$.schema_version'],
+    [(x) => { delete x.schema_version; }, 'SCHEMA_VERSION', '$.schema_version'],
+    [(x) => { x.summary.subtypes.BUSINESS_MODEL_UNRESOLVED.primary_available = 1; x.summary.same_date_primary_available = 1; }, 'COUNT_MISMATCH', '$.summary.subtypes.BUSINESS_MODEL_UNRESOLVED.primary_available'],
+    [(x) => { x.summary.subtypes.BUSINESS_MODEL_UNRESOLVED.primary_metric = 'no_such_metric'; }, 'SUMMARY', '$.summary.subtypes.BUSINESS_MODEL_UNRESOLVED.primary_metric'],
+    [(x) => { delete x.summary.subtypes.BUSINESS_MODEL_UNRESOLVED.primary_metric; }, 'SUMMARY', '$.summary.subtypes.BUSINESS_MODEL_UNRESOLVED.primary_metric'],
+    [(x) => { delete x.summary.subtypes.BUSINESS_MODEL_UNRESOLVED.codes; }, 'COUNT_INVALID', '$.summary.subtypes.BUSINESS_MODEL_UNRESOLVED'],
+    [(x) => { delete x.summary.operational_denominator; }, 'OPERATIONAL_DENOMINATOR', '$.summary.operational_denominator'],
+    [(x) => { delete x.valuation_date; }, 'DATE_INVALID', '$.valuation_date'],
+    [(x) => { x.source_ref = 'fixture-1'; }, 'SOURCE', '$.source_ref'],
+    [(x) => { x.source_ref = 7; }, 'SOURCE', '$.source_ref']];
+  for (const [change, code, at] of bad) { const x = JSON.parse(JSON.stringify(H11.report)); change(x); assert.deepEqual(P.financialValidate(x), { ok: false, code, path: at }); }
+  for (const ref of ['SYNTHETIC:fixture-1', 'RETAINED:' + 'a'.repeat(64)]) {
+    const x = JSON.parse(JSON.stringify(H11.report)); x.source_ref = ref; const q = P.financialValidate(x); assert.equal(q.ok, true);
+    assert.equal(q.value.source_ref, ref); assert.match(P.financialView(q.value).note, ref.startsWith('SYNTHETIC:') ? / · 출처 합성$/ : / · 출처 보유 자료$/);
+  }
 });
 ok('refusals', () => {
   const cases = [
