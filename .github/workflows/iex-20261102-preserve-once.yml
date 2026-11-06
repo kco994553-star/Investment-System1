@@ -7,7 +7,8 @@
 # no Range/resume, no other date. Body cap 20,000,000,000 bytes (index size = metadata size). Private release requests
 # (reads, uploads, download-back checks, deletes) are counted apart in the run's manifest.
 # Trigger: a push of the exact branch run/iex-20261102-once only (no pull_request / schedule / dispatch). Push that branch
-# ONLY after the owner's approval, and delete the branch right after the run (success or failure); a re-run needs a new
+# ONLY after the owner's approval, and delete the branch after the run (success or failure) only once the run id, the code SHA, the COMPLETE or FAILED
+# manifest in the private release and the same SHA on the prep branch are confirmed; a re-run needs a new
 # approval. Logs: fixed codes, counts, sizes, hashes, HTTP status and exit codes only (no prices, symbols, codes, URLs,
 # tokens or response bodies). The tool is public_price_boundary.ACTIONS_PRICE_ROUTES entry 2 and asks require_price_source
 # before each source GET; its asset names carry this run's id (GITHUB_RUN_ID + GITHUB_RUN_ATTEMPT), it refuses a release
