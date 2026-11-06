@@ -196,6 +196,34 @@
       "type": "string",
       "minLength": 1
     },
+    "counterevidence_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "evidence_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "first_recorded_at": {
+            "type": "string",
+            "minLength": 1
+          },
+          "disposition": {
+            "enum": [
+              "CURRENT",
+              "RETAINED_FOR_REVIEW"
+            ]
+          }
+        },
+        "required": [
+          "evidence_id",
+          "first_recorded_at",
+          "disposition"
+        ],
+        "additionalProperties": false
+      }
+    },
     "publication_approved": {
       "const": false
     },
@@ -337,6 +365,7 @@
     "events",
     "history",
     "history_ref",
+    "counterevidence_history",
     "publication_approved",
     "previous_record_hash",
     "input_hash",

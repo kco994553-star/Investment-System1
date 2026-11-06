@@ -98,6 +98,12 @@ ID with different content is rejected; same event repeats are idempotent. An
 unrelated document changes no selection state. Original evidence is retained;
 new observations use new IDs. Events, selection reasons/times, original snapshots
 and rule versions are append-only. A result points to its predecessor hash.
+Corrected source metadata gets a new evidence version without replacing the old
+observation. `counterevidence_history` retains removed references as
+RETAINED_FOR_REVIEW; they remain in display.risks. Imported snapshots must pass
+hash, state-history, first-selection, gate and display consistency checks.
+Hashes establish integrity, not access authorization; Main's trusted private
+storage and authentication remain necessary.
 
 ## First handoff and execution
 
@@ -110,6 +116,9 @@ actual research. UI filters cannot change original scope, state or QGV rank.
 Offline command: `PYTHONPATH=implementation/src python implementation/tools/discovery_company.py --job /private/job.json --output-dir /private/results`.
 Job: explicit company registry, local document receipts + hashes + extraction
 selectors, review judgments, as_of, review scope and optional previous record / events.
+Real jobs require `storage: {classification: "APPROVED_PRIVATE", root: "/approved/private/path"}`;
+the output must resolve under that explicit root. This declaration records an
+existing approval and does not grant new access or authorize public publishing.
 The CLI emits content-addressed records and summary; no network, AI API, pricing,
 workflow or public write. Actual records must stay in the approved private repo.
 Never pass a public output directory for held real-company inputs.

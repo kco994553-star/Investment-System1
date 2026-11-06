@@ -25,30 +25,6 @@
         "last_reviewed_at": null,
         "evidence": [
           {
-            "evidence_id": "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b",
-            "company_id": "SYNTH:001",
-            "document_id": "synthetic:filing",
-            "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
-            "source_url": "https://example.invalid/filing",
-            "locator": {
-              "json_pointer": "/risk"
-            },
-            "value": "One customer",
-            "published_on": "2026-10-31",
-            "published_at": null,
-            "period": {
-              "start": "2026-01-01",
-              "end": "2026-09-30"
-            },
-            "acquired_at": "2026-11-01T12:00:00Z",
-            "unit": "text",
-            "region": null,
-            "region_basis": null,
-            "origin": "SOURCE_EXTRACT",
-            "source_assertion": true
-          },
-          {
-            "evidence_id": "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155",
             "company_id": "SYNTH:001",
             "document_id": "synthetic:filing",
             "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
@@ -68,7 +44,31 @@
             "region": null,
             "region_basis": null,
             "origin": "SOURCE_EXTRACT",
-            "source_assertion": true
+            "source_assertion": true,
+            "evidence_id": "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
+          },
+          {
+            "company_id": "SYNTH:001",
+            "document_id": "synthetic:filing",
+            "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
+            "source_url": "https://example.invalid/filing",
+            "locator": {
+              "json_pointer": "/risk"
+            },
+            "value": "One customer",
+            "published_on": "2026-10-31",
+            "published_at": null,
+            "period": {
+              "start": "2026-01-01",
+              "end": "2026-09-30"
+            },
+            "acquired_at": "2026-11-01T12:00:00Z",
+            "unit": "text",
+            "region": null,
+            "region_basis": null,
+            "origin": "SOURCE_EXTRACT",
+            "source_assertion": true,
+            "evidence_id": "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
           }
         ],
         "judgments": [
@@ -78,10 +78,10 @@
             "topic": null,
             "claim": "합성 원문의 반복 구매 근거를 검토했다.",
             "evidence_ids": [
-              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
             ],
             "counterevidence_ids": [
-              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             ],
             "status": "CONFIRMED",
             "reason": "합성 수작업 대조",
@@ -96,10 +96,10 @@
             "topic": null,
             "claim": "합성 교체 필터를 판매한다.",
             "evidence_ids": [
-              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
             ],
             "counterevidence_ids": [
-              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             ],
             "status": "CONFIRMED",
             "reason": "합성 수작업 대조",
@@ -114,10 +114,10 @@
             "topic": null,
             "claim": "단일 고객 위험을 검토했으며 핵심 주장을 반증하지 않는다.",
             "evidence_ids": [
-              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
             ],
             "counterevidence_ids": [
-              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             ],
             "status": "CONFIRMED",
             "reason": "합성 수작업 대조",
@@ -132,10 +132,10 @@
             "topic": null,
             "claim": "이 검토일의 주장 범위에 자료가 유효함을 검토했다.",
             "evidence_ids": [
-              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
             ],
             "counterevidence_ids": [
-              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             ],
             "status": "CONFIRMED",
             "reason": "합성 수작업 대조",
@@ -150,10 +150,10 @@
             "topic": null,
             "claim": "교체 필터의 반복 수요를 조사할 이유가 있다.",
             "evidence_ids": [
-              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
             ],
             "counterevidence_ids": [
-              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             ],
             "status": "CONFIRMED",
             "reason": "합성 수작업 대조",
@@ -168,10 +168,10 @@
             "topic": null,
             "claim": "합성 기업의 기존 식별자와 원문을 대조했다.",
             "evidence_ids": [
-              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
             ],
             "counterevidence_ids": [
-              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             ],
             "status": "CONFIRMED",
             "reason": "합성 수작업 대조",
@@ -198,9 +198,16 @@
         "events": [],
         "history": [],
         "history_ref": "discovery_history_868b78c5a4deec60c71dd60b152bb219e41b19bd46f20cd7daf0d0a969a0c0e4",
+        "counterevidence_history": [
+          {
+            "evidence_id": "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27",
+            "first_recorded_at": "2026-11-06T12:00:00Z",
+            "disposition": "CURRENT"
+          }
+        ],
         "publication_approved": false,
         "previous_record_hash": null,
-        "input_hash": "360a1a3a620dfd9ac97e633b330c2e119494c0aa8f7188d4ef6d843c840fc40a",
+        "input_hash": "fae82cd8a4f3d7a0eaa5d0733e7e0037a8406f2e22937a8774a42390c6ad3375",
         "display": {
           "list_eligible": false,
           "mark": null,
@@ -212,10 +219,10 @@
               "topic": null,
               "claim": "합성 교체 필터를 판매한다.",
               "evidence_ids": [
-                "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+                "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
               ],
               "counterevidence_ids": [
-                "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+                "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
               ],
               "status": "CONFIRMED",
               "reason": "합성 수작업 대조",
@@ -232,10 +239,10 @@
               "topic": null,
               "claim": "교체 필터의 반복 수요를 조사할 이유가 있다.",
               "evidence_ids": [
-                "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+                "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
               ],
               "counterevidence_ids": [
-                "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+                "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
               ],
               "status": "CONFIRMED",
               "reason": "합성 수작업 대조",
@@ -252,10 +259,10 @@
               "topic": null,
               "claim": "합성 원문의 반복 구매 근거를 검토했다.",
               "evidence_ids": [
-                "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+                "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
               ],
               "counterevidence_ids": [
-                "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+                "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
               ],
               "status": "CONFIRMED",
               "reason": "합성 수작업 대조",
@@ -271,7 +278,6 @@
           "types": [],
           "risks": [
             {
-              "evidence_id": "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b",
               "company_id": "SYNTH:001",
               "document_id": "synthetic:filing",
               "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
@@ -291,7 +297,8 @@
               "region": null,
               "region_basis": null,
               "origin": "SOURCE_EXTRACT",
-              "source_assertion": true
+              "source_assertion": true,
+              "evidence_id": "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             }
           ],
           "risk_judgments": [],
@@ -300,7 +307,7 @@
             "지역 수익성 미확인"
           ]
         },
-        "record_hash": "d934868d87b4db318f442ec7aa534061dd30049b840b6bdb5d6b4b5bc49bf148"
+        "record_hash": "bbbeca32bf56cd7593197834f955792d7509d4f67e43eb5fccbb4cf1a11146cd"
       },
       "expected": {
         "state": "CANDIDATE",
@@ -338,30 +345,6 @@
         "last_reviewed_at": "2026-11-06T12:00:00Z",
         "evidence": [
           {
-            "evidence_id": "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b",
-            "company_id": "SYNTH:001",
-            "document_id": "synthetic:filing",
-            "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
-            "source_url": "https://example.invalid/filing",
-            "locator": {
-              "json_pointer": "/risk"
-            },
-            "value": "One customer",
-            "published_on": "2026-10-31",
-            "published_at": null,
-            "period": {
-              "start": "2026-01-01",
-              "end": "2026-09-30"
-            },
-            "acquired_at": "2026-11-01T12:00:00Z",
-            "unit": "text",
-            "region": null,
-            "region_basis": null,
-            "origin": "SOURCE_EXTRACT",
-            "source_assertion": true
-          },
-          {
-            "evidence_id": "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155",
             "company_id": "SYNTH:001",
             "document_id": "synthetic:filing",
             "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
@@ -381,7 +364,31 @@
             "region": null,
             "region_basis": null,
             "origin": "SOURCE_EXTRACT",
-            "source_assertion": true
+            "source_assertion": true,
+            "evidence_id": "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
+          },
+          {
+            "company_id": "SYNTH:001",
+            "document_id": "synthetic:filing",
+            "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
+            "source_url": "https://example.invalid/filing",
+            "locator": {
+              "json_pointer": "/risk"
+            },
+            "value": "One customer",
+            "published_on": "2026-10-31",
+            "published_at": null,
+            "period": {
+              "start": "2026-01-01",
+              "end": "2026-09-30"
+            },
+            "acquired_at": "2026-11-01T12:00:00Z",
+            "unit": "text",
+            "region": null,
+            "region_basis": null,
+            "origin": "SOURCE_EXTRACT",
+            "source_assertion": true,
+            "evidence_id": "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
           }
         ],
         "judgments": [
@@ -391,10 +398,10 @@
             "topic": null,
             "claim": "합성 원문의 반복 구매 근거를 검토했다.",
             "evidence_ids": [
-              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
             ],
             "counterevidence_ids": [
-              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             ],
             "status": "CONFIRMED",
             "reason": "합성 수작업 대조",
@@ -409,10 +416,10 @@
             "topic": null,
             "claim": "합성 교체 필터를 판매한다.",
             "evidence_ids": [
-              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
             ],
             "counterevidence_ids": [
-              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             ],
             "status": "CONFIRMED",
             "reason": "합성 수작업 대조",
@@ -427,10 +434,10 @@
             "topic": null,
             "claim": "단일 고객 위험을 검토했으며 핵심 주장을 반증하지 않는다.",
             "evidence_ids": [
-              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
             ],
             "counterevidence_ids": [
-              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             ],
             "status": "CONFIRMED",
             "reason": "합성 수작업 대조",
@@ -445,10 +452,10 @@
             "topic": null,
             "claim": "이 검토일의 주장 범위에 자료가 유효함을 검토했다.",
             "evidence_ids": [
-              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
             ],
             "counterevidence_ids": [
-              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             ],
             "status": "CONFIRMED",
             "reason": "합성 수작업 대조",
@@ -463,10 +470,10 @@
             "topic": null,
             "claim": "교체 필터의 반복 수요를 조사할 이유가 있다.",
             "evidence_ids": [
-              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
             ],
             "counterevidence_ids": [
-              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             ],
             "status": "CONFIRMED",
             "reason": "합성 수작업 대조",
@@ -481,10 +488,10 @@
             "topic": null,
             "claim": "합성 기업의 기존 식별자와 원문을 대조했다.",
             "evidence_ids": [
-              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
             ],
             "counterevidence_ids": [
-              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             ],
             "status": "CONFIRMED",
             "reason": "합성 수작업 대조",
@@ -520,9 +527,16 @@
           }
         ],
         "history_ref": "discovery_history_af437705dc707738ee4430d837c9835410a61675a114af013ecfae0e6fac5c83",
+        "counterevidence_history": [
+          {
+            "evidence_id": "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27",
+            "first_recorded_at": "2026-11-06T12:00:00Z",
+            "disposition": "CURRENT"
+          }
+        ],
         "publication_approved": false,
-        "previous_record_hash": "d934868d87b4db318f442ec7aa534061dd30049b840b6bdb5d6b4b5bc49bf148",
-        "input_hash": "cbf5732d59c603ac1e3204641181d7792283de659aa22478dc053f36435917b0",
+        "previous_record_hash": "bbbeca32bf56cd7593197834f955792d7509d4f67e43eb5fccbb4cf1a11146cd",
+        "input_hash": "e303345be6037ea4a186f02c8cc4a988ed5ddca8d48ce71ebecb6d56ea67c596",
         "display": {
           "list_eligible": false,
           "mark": null,
@@ -534,10 +548,10 @@
               "topic": null,
               "claim": "합성 교체 필터를 판매한다.",
               "evidence_ids": [
-                "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+                "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
               ],
               "counterevidence_ids": [
-                "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+                "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
               ],
               "status": "CONFIRMED",
               "reason": "합성 수작업 대조",
@@ -554,10 +568,10 @@
               "topic": null,
               "claim": "교체 필터의 반복 수요를 조사할 이유가 있다.",
               "evidence_ids": [
-                "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+                "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
               ],
               "counterevidence_ids": [
-                "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+                "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
               ],
               "status": "CONFIRMED",
               "reason": "합성 수작업 대조",
@@ -574,10 +588,10 @@
               "topic": null,
               "claim": "합성 원문의 반복 구매 근거를 검토했다.",
               "evidence_ids": [
-                "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+                "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
               ],
               "counterevidence_ids": [
-                "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+                "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
               ],
               "status": "CONFIRMED",
               "reason": "합성 수작업 대조",
@@ -593,7 +607,6 @@
           "types": [],
           "risks": [
             {
-              "evidence_id": "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b",
               "company_id": "SYNTH:001",
               "document_id": "synthetic:filing",
               "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
@@ -613,7 +626,8 @@
               "region": null,
               "region_basis": null,
               "origin": "SOURCE_EXTRACT",
-              "source_assertion": true
+              "source_assertion": true,
+              "evidence_id": "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             }
           ],
           "risk_judgments": [],
@@ -622,7 +636,7 @@
             "지역 수익성 미확인"
           ]
         },
-        "record_hash": "f6f2ced6572aaf035e715acfdbbb5d2bbb4d8a7e2ae6792b241792a27a821f04"
+        "record_hash": "810bf2ff74e9de4154681d7acc9dd81bb75910f3ecb832729d739401cb79a90a"
       },
       "expected": {
         "state": "IN_REVIEW",
@@ -660,30 +674,6 @@
         "last_reviewed_at": "2026-11-06T12:00:00Z",
         "evidence": [
           {
-            "evidence_id": "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b",
-            "company_id": "SYNTH:001",
-            "document_id": "synthetic:filing",
-            "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
-            "source_url": "https://example.invalid/filing",
-            "locator": {
-              "json_pointer": "/risk"
-            },
-            "value": "One customer",
-            "published_on": "2026-10-31",
-            "published_at": null,
-            "period": {
-              "start": "2026-01-01",
-              "end": "2026-09-30"
-            },
-            "acquired_at": "2026-11-01T12:00:00Z",
-            "unit": "text",
-            "region": null,
-            "region_basis": null,
-            "origin": "SOURCE_EXTRACT",
-            "source_assertion": true
-          },
-          {
-            "evidence_id": "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155",
             "company_id": "SYNTH:001",
             "document_id": "synthetic:filing",
             "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
@@ -703,7 +693,31 @@
             "region": null,
             "region_basis": null,
             "origin": "SOURCE_EXTRACT",
-            "source_assertion": true
+            "source_assertion": true,
+            "evidence_id": "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
+          },
+          {
+            "company_id": "SYNTH:001",
+            "document_id": "synthetic:filing",
+            "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
+            "source_url": "https://example.invalid/filing",
+            "locator": {
+              "json_pointer": "/risk"
+            },
+            "value": "One customer",
+            "published_on": "2026-10-31",
+            "published_at": null,
+            "period": {
+              "start": "2026-01-01",
+              "end": "2026-09-30"
+            },
+            "acquired_at": "2026-11-01T12:00:00Z",
+            "unit": "text",
+            "region": null,
+            "region_basis": null,
+            "origin": "SOURCE_EXTRACT",
+            "source_assertion": true,
+            "evidence_id": "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
           }
         ],
         "judgments": [
@@ -713,10 +727,10 @@
             "topic": null,
             "claim": "합성 원문의 반복 구매 근거를 검토했다.",
             "evidence_ids": [
-              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
             ],
             "counterevidence_ids": [
-              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             ],
             "status": "CONFIRMED",
             "reason": "합성 수작업 대조",
@@ -731,10 +745,10 @@
             "topic": null,
             "claim": "합성 교체 필터를 판매한다.",
             "evidence_ids": [
-              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
             ],
             "counterevidence_ids": [
-              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             ],
             "status": "CONFIRMED",
             "reason": "합성 수작업 대조",
@@ -749,10 +763,10 @@
             "topic": null,
             "claim": "단일 고객 위험을 검토했으며 핵심 주장을 반증하지 않는다.",
             "evidence_ids": [
-              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
             ],
             "counterevidence_ids": [
-              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             ],
             "status": "CONFIRMED",
             "reason": "합성 수작업 대조",
@@ -767,10 +781,10 @@
             "topic": null,
             "claim": "이 검토일의 주장 범위에 자료가 유효함을 검토했다.",
             "evidence_ids": [
-              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
             ],
             "counterevidence_ids": [
-              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             ],
             "status": "CONFIRMED",
             "reason": "합성 수작업 대조",
@@ -785,10 +799,10 @@
             "topic": null,
             "claim": "교체 필터의 반복 수요를 조사할 이유가 있다.",
             "evidence_ids": [
-              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
             ],
             "counterevidence_ids": [
-              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             ],
             "status": "CONFIRMED",
             "reason": "합성 수작업 대조",
@@ -803,10 +817,10 @@
             "topic": null,
             "claim": "합성 기업의 기존 식별자와 원문을 대조했다.",
             "evidence_ids": [
-              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
             ],
             "counterevidence_ids": [
-              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             ],
             "status": "CONFIRMED",
             "reason": "합성 수작업 대조",
@@ -850,9 +864,16 @@
           }
         ],
         "history_ref": "discovery_history_62ad4fdd48d287084da3e5b1a096362770beb14acd477049a83f5220d7bb9698",
+        "counterevidence_history": [
+          {
+            "evidence_id": "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27",
+            "first_recorded_at": "2026-11-06T12:00:00Z",
+            "disposition": "CURRENT"
+          }
+        ],
         "publication_approved": false,
-        "previous_record_hash": "f6f2ced6572aaf035e715acfdbbb5d2bbb4d8a7e2ae6792b241792a27a821f04",
-        "input_hash": "657fe1911c68aea479dd91eaa3afc53b1e3a21c2439b88a03ca9a015fc7ad630",
+        "previous_record_hash": "810bf2ff74e9de4154681d7acc9dd81bb75910f3ecb832729d739401cb79a90a",
+        "input_hash": "96981569025db154d52dabe4cc1f9b130bc4a8a724e3eef1fc82c1be0475c903",
         "display": {
           "list_eligible": true,
           "mark": "SELECTED",
@@ -864,10 +885,10 @@
               "topic": null,
               "claim": "합성 교체 필터를 판매한다.",
               "evidence_ids": [
-                "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+                "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
               ],
               "counterevidence_ids": [
-                "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+                "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
               ],
               "status": "CONFIRMED",
               "reason": "합성 수작업 대조",
@@ -884,10 +905,10 @@
               "topic": null,
               "claim": "교체 필터의 반복 수요를 조사할 이유가 있다.",
               "evidence_ids": [
-                "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+                "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
               ],
               "counterevidence_ids": [
-                "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+                "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
               ],
               "status": "CONFIRMED",
               "reason": "합성 수작업 대조",
@@ -904,10 +925,10 @@
               "topic": null,
               "claim": "합성 원문의 반복 구매 근거를 검토했다.",
               "evidence_ids": [
-                "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+                "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
               ],
               "counterevidence_ids": [
-                "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+                "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
               ],
               "status": "CONFIRMED",
               "reason": "합성 수작업 대조",
@@ -923,7 +944,6 @@
           "types": [],
           "risks": [
             {
-              "evidence_id": "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b",
               "company_id": "SYNTH:001",
               "document_id": "synthetic:filing",
               "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
@@ -943,7 +963,8 @@
               "region": null,
               "region_basis": null,
               "origin": "SOURCE_EXTRACT",
-              "source_assertion": true
+              "source_assertion": true,
+              "evidence_id": "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             }
           ],
           "risk_judgments": [],
@@ -952,7 +973,7 @@
             "지역 수익성 미확인"
           ]
         },
-        "record_hash": "03f2f94b579bcf6c668a7030bf175681e8cb20349cf4ab1c21a82478f7a0b1ed"
+        "record_hash": "1861c8920d0f05b90b9fd1bfe42ba01cff41689023bc60bcc3e88a2d14cbc060"
       },
       "expected": {
         "state": "SELECTED",
@@ -990,30 +1011,6 @@
         "last_reviewed_at": "2026-11-06T12:00:00Z",
         "evidence": [
           {
-            "evidence_id": "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b",
-            "company_id": "SYNTH:001",
-            "document_id": "synthetic:filing",
-            "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
-            "source_url": "https://example.invalid/filing",
-            "locator": {
-              "json_pointer": "/risk"
-            },
-            "value": "One customer",
-            "published_on": "2026-10-31",
-            "published_at": null,
-            "period": {
-              "start": "2026-01-01",
-              "end": "2026-09-30"
-            },
-            "acquired_at": "2026-11-01T12:00:00Z",
-            "unit": "text",
-            "region": null,
-            "region_basis": null,
-            "origin": "SOURCE_EXTRACT",
-            "source_assertion": true
-          },
-          {
-            "evidence_id": "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155",
             "company_id": "SYNTH:001",
             "document_id": "synthetic:filing",
             "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
@@ -1033,7 +1030,31 @@
             "region": null,
             "region_basis": null,
             "origin": "SOURCE_EXTRACT",
-            "source_assertion": true
+            "source_assertion": true,
+            "evidence_id": "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
+          },
+          {
+            "company_id": "SYNTH:001",
+            "document_id": "synthetic:filing",
+            "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
+            "source_url": "https://example.invalid/filing",
+            "locator": {
+              "json_pointer": "/risk"
+            },
+            "value": "One customer",
+            "published_on": "2026-10-31",
+            "published_at": null,
+            "period": {
+              "start": "2026-01-01",
+              "end": "2026-09-30"
+            },
+            "acquired_at": "2026-11-01T12:00:00Z",
+            "unit": "text",
+            "region": null,
+            "region_basis": null,
+            "origin": "SOURCE_EXTRACT",
+            "source_assertion": true,
+            "evidence_id": "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
           }
         ],
         "judgments": [
@@ -1043,10 +1064,10 @@
             "topic": null,
             "claim": "합성 원문의 반복 구매 근거를 검토했다.",
             "evidence_ids": [
-              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
             ],
             "counterevidence_ids": [
-              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             ],
             "status": "CONFIRMED",
             "reason": "합성 수작업 대조",
@@ -1061,10 +1082,10 @@
             "topic": null,
             "claim": "합성 교체 필터를 판매한다.",
             "evidence_ids": [
-              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
             ],
             "counterevidence_ids": [
-              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             ],
             "status": "CONFIRMED",
             "reason": "합성 수작업 대조",
@@ -1079,10 +1100,10 @@
             "topic": null,
             "claim": "단일 고객 위험을 검토했으며 핵심 주장을 반증하지 않는다.",
             "evidence_ids": [
-              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
             ],
             "counterevidence_ids": [
-              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             ],
             "status": "CONFIRMED",
             "reason": "합성 수작업 대조",
@@ -1097,10 +1118,10 @@
             "topic": null,
             "claim": "이 검토일의 주장 범위에 자료가 유효함을 검토했다.",
             "evidence_ids": [
-              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
             ],
             "counterevidence_ids": [
-              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             ],
             "status": "CONFIRMED",
             "reason": "합성 수작업 대조",
@@ -1115,10 +1136,10 @@
             "topic": null,
             "claim": "교체 필터의 반복 수요를 조사할 이유가 있다.",
             "evidence_ids": [
-              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
             ],
             "counterevidence_ids": [
-              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             ],
             "status": "CONFIRMED",
             "reason": "합성 수작업 대조",
@@ -1133,10 +1154,10 @@
             "topic": null,
             "claim": "합성 기업의 기존 식별자와 원문을 대조했다.",
             "evidence_ids": [
-              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
             ],
             "counterevidence_ids": [
-              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             ],
             "status": "CONFIRMED",
             "reason": "합성 수작업 대조",
@@ -1188,9 +1209,16 @@
           }
         ],
         "history_ref": "discovery_history_ba1be36cf7053d16746684a8ab95978c10269809cf10fe57011d9406676b3cdd",
+        "counterevidence_history": [
+          {
+            "evidence_id": "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27",
+            "first_recorded_at": "2026-11-06T12:00:00Z",
+            "disposition": "CURRENT"
+          }
+        ],
         "publication_approved": false,
-        "previous_record_hash": "03f2f94b579bcf6c668a7030bf175681e8cb20349cf4ab1c21a82478f7a0b1ed",
-        "input_hash": "78bd0daa02a02c7ea1c27df3b1a106ad737a33eabcabf8704665365c71b52f06",
+        "previous_record_hash": "1861c8920d0f05b90b9fd1bfe42ba01cff41689023bc60bcc3e88a2d14cbc060",
+        "input_hash": "bafc09ac777f2cc00aa4c7daa18448052de5e9530ec3e9b2276e5b89793c36bf",
         "display": {
           "list_eligible": true,
           "mark": "REVIEW_REQUIRED",
@@ -1202,10 +1230,10 @@
               "topic": null,
               "claim": "합성 교체 필터를 판매한다.",
               "evidence_ids": [
-                "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+                "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
               ],
               "counterevidence_ids": [
-                "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+                "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
               ],
               "status": "CONFIRMED",
               "reason": "합성 수작업 대조",
@@ -1222,10 +1250,10 @@
               "topic": null,
               "claim": "교체 필터의 반복 수요를 조사할 이유가 있다.",
               "evidence_ids": [
-                "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+                "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
               ],
               "counterevidence_ids": [
-                "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+                "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
               ],
               "status": "CONFIRMED",
               "reason": "합성 수작업 대조",
@@ -1242,10 +1270,10 @@
               "topic": null,
               "claim": "합성 원문의 반복 구매 근거를 검토했다.",
               "evidence_ids": [
-                "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+                "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
               ],
               "counterevidence_ids": [
-                "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+                "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
               ],
               "status": "CONFIRMED",
               "reason": "합성 수작업 대조",
@@ -1261,7 +1289,6 @@
           "types": [],
           "risks": [
             {
-              "evidence_id": "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b",
               "company_id": "SYNTH:001",
               "document_id": "synthetic:filing",
               "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
@@ -1281,7 +1308,8 @@
               "region": null,
               "region_basis": null,
               "origin": "SOURCE_EXTRACT",
-              "source_assertion": true
+              "source_assertion": true,
+              "evidence_id": "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             }
           ],
           "risk_judgments": [],
@@ -1290,7 +1318,7 @@
             "지역 수익성 미확인"
           ]
         },
-        "record_hash": "5e31ce18660a446ed153ed8db2f585cdd2c253fb19e9f47bb2f1c5aba706eb4f"
+        "record_hash": "f148a745b9bfa37a3cd9f06b8d2ecce8c319e484e283da725f387e746ab6b822"
       },
       "expected": {
         "state": "REVIEW_REQUIRED",
@@ -1328,30 +1356,6 @@
         "last_reviewed_at": "2026-11-06T12:00:00Z",
         "evidence": [
           {
-            "evidence_id": "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b",
-            "company_id": "SYNTH:001",
-            "document_id": "synthetic:filing",
-            "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
-            "source_url": "https://example.invalid/filing",
-            "locator": {
-              "json_pointer": "/risk"
-            },
-            "value": "One customer",
-            "published_on": "2026-10-31",
-            "published_at": null,
-            "period": {
-              "start": "2026-01-01",
-              "end": "2026-09-30"
-            },
-            "acquired_at": "2026-11-01T12:00:00Z",
-            "unit": "text",
-            "region": null,
-            "region_basis": null,
-            "origin": "SOURCE_EXTRACT",
-            "source_assertion": true
-          },
-          {
-            "evidence_id": "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155",
             "company_id": "SYNTH:001",
             "document_id": "synthetic:filing",
             "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
@@ -1371,7 +1375,31 @@
             "region": null,
             "region_basis": null,
             "origin": "SOURCE_EXTRACT",
-            "source_assertion": true
+            "source_assertion": true,
+            "evidence_id": "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
+          },
+          {
+            "company_id": "SYNTH:001",
+            "document_id": "synthetic:filing",
+            "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
+            "source_url": "https://example.invalid/filing",
+            "locator": {
+              "json_pointer": "/risk"
+            },
+            "value": "One customer",
+            "published_on": "2026-10-31",
+            "published_at": null,
+            "period": {
+              "start": "2026-01-01",
+              "end": "2026-09-30"
+            },
+            "acquired_at": "2026-11-01T12:00:00Z",
+            "unit": "text",
+            "region": null,
+            "region_basis": null,
+            "origin": "SOURCE_EXTRACT",
+            "source_assertion": true,
+            "evidence_id": "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
           }
         ],
         "judgments": [
@@ -1381,10 +1409,10 @@
             "topic": null,
             "claim": "합성 원문의 반복 구매 근거를 검토했다.",
             "evidence_ids": [
-              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
             ],
             "counterevidence_ids": [
-              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             ],
             "status": "CONFIRMED",
             "reason": "합성 수작업 대조",
@@ -1399,10 +1427,10 @@
             "topic": null,
             "claim": "합성 교체 필터를 판매한다.",
             "evidence_ids": [
-              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
             ],
             "counterevidence_ids": [
-              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             ],
             "status": "CONFIRMED",
             "reason": "합성 수작업 대조",
@@ -1417,10 +1445,10 @@
             "topic": null,
             "claim": "단일 고객 위험을 검토했으며 핵심 주장을 반증하지 않는다.",
             "evidence_ids": [
-              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
             ],
             "counterevidence_ids": [
-              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             ],
             "status": "CONFIRMED",
             "reason": "합성 수작업 대조",
@@ -1435,10 +1463,10 @@
             "topic": null,
             "claim": "이 검토일의 주장 범위에 자료가 유효함을 검토했다.",
             "evidence_ids": [
-              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
             ],
             "counterevidence_ids": [
-              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             ],
             "status": "CONFIRMED",
             "reason": "합성 수작업 대조",
@@ -1453,10 +1481,10 @@
             "topic": null,
             "claim": "교체 필터의 반복 수요를 조사할 이유가 있다.",
             "evidence_ids": [
-              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
             ],
             "counterevidence_ids": [
-              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             ],
             "status": "CONFIRMED",
             "reason": "합성 수작업 대조",
@@ -1471,10 +1499,10 @@
             "topic": null,
             "claim": "합성 기업의 기존 식별자와 원문을 대조했다.",
             "evidence_ids": [
-              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
             ],
             "counterevidence_ids": [
-              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             ],
             "status": "CONFIRMED",
             "reason": "합성 수작업 대조",
@@ -1534,9 +1562,16 @@
           }
         ],
         "history_ref": "discovery_history_a6375c4f191c9ed8c832219a2709b0b53f5edc25d43c432722a7e2d361bdc5a0",
+        "counterevidence_history": [
+          {
+            "evidence_id": "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27",
+            "first_recorded_at": "2026-11-06T12:00:00Z",
+            "disposition": "CURRENT"
+          }
+        ],
         "publication_approved": false,
-        "previous_record_hash": "5e31ce18660a446ed153ed8db2f585cdd2c253fb19e9f47bb2f1c5aba706eb4f",
-        "input_hash": "6dd5a060de586b4226f7aa81ca5986ea3aa2c7ddaf44650b066e45a110d3eea0",
+        "previous_record_hash": "f148a745b9bfa37a3cd9f06b8d2ecce8c319e484e283da725f387e746ab6b822",
+        "input_hash": "776da2d5caf86bc609fc6779fae6a66275de7064ecd5f930c28a8acadd5a4d6b",
         "display": {
           "list_eligible": false,
           "mark": null,
@@ -1548,10 +1583,10 @@
               "topic": null,
               "claim": "합성 교체 필터를 판매한다.",
               "evidence_ids": [
-                "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+                "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
               ],
               "counterevidence_ids": [
-                "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+                "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
               ],
               "status": "CONFIRMED",
               "reason": "합성 수작업 대조",
@@ -1568,10 +1603,10 @@
               "topic": null,
               "claim": "교체 필터의 반복 수요를 조사할 이유가 있다.",
               "evidence_ids": [
-                "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+                "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
               ],
               "counterevidence_ids": [
-                "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+                "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
               ],
               "status": "CONFIRMED",
               "reason": "합성 수작업 대조",
@@ -1588,10 +1623,10 @@
               "topic": null,
               "claim": "합성 원문의 반복 구매 근거를 검토했다.",
               "evidence_ids": [
-                "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+                "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
               ],
               "counterevidence_ids": [
-                "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+                "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
               ],
               "status": "CONFIRMED",
               "reason": "합성 수작업 대조",
@@ -1607,7 +1642,6 @@
           "types": [],
           "risks": [
             {
-              "evidence_id": "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b",
               "company_id": "SYNTH:001",
               "document_id": "synthetic:filing",
               "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
@@ -1627,7 +1661,8 @@
               "region": null,
               "region_basis": null,
               "origin": "SOURCE_EXTRACT",
-              "source_assertion": true
+              "source_assertion": true,
+              "evidence_id": "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             }
           ],
           "risk_judgments": [],
@@ -1636,7 +1671,7 @@
             "지역 수익성 미확인"
           ]
         },
-        "record_hash": "f47e8b8c443c0e583d96c651d71a956aa172a8c74089eb5eb3a0caa89f7f3ed9"
+        "record_hash": "9dac0690656dc8fbe9bb9371f2e20ec70c6acb1f29a769b2459869ff9fc197a8"
       },
       "expected": {
         "state": "SUSPENDED",
@@ -1674,30 +1709,6 @@
         "last_reviewed_at": "2026-11-06T12:00:00Z",
         "evidence": [
           {
-            "evidence_id": "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b",
-            "company_id": "SYNTH:001",
-            "document_id": "synthetic:filing",
-            "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
-            "source_url": "https://example.invalid/filing",
-            "locator": {
-              "json_pointer": "/risk"
-            },
-            "value": "One customer",
-            "published_on": "2026-10-31",
-            "published_at": null,
-            "period": {
-              "start": "2026-01-01",
-              "end": "2026-09-30"
-            },
-            "acquired_at": "2026-11-01T12:00:00Z",
-            "unit": "text",
-            "region": null,
-            "region_basis": null,
-            "origin": "SOURCE_EXTRACT",
-            "source_assertion": true
-          },
-          {
-            "evidence_id": "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155",
             "company_id": "SYNTH:001",
             "document_id": "synthetic:filing",
             "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
@@ -1717,7 +1728,31 @@
             "region": null,
             "region_basis": null,
             "origin": "SOURCE_EXTRACT",
-            "source_assertion": true
+            "source_assertion": true,
+            "evidence_id": "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
+          },
+          {
+            "company_id": "SYNTH:001",
+            "document_id": "synthetic:filing",
+            "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
+            "source_url": "https://example.invalid/filing",
+            "locator": {
+              "json_pointer": "/risk"
+            },
+            "value": "One customer",
+            "published_on": "2026-10-31",
+            "published_at": null,
+            "period": {
+              "start": "2026-01-01",
+              "end": "2026-09-30"
+            },
+            "acquired_at": "2026-11-01T12:00:00Z",
+            "unit": "text",
+            "region": null,
+            "region_basis": null,
+            "origin": "SOURCE_EXTRACT",
+            "source_assertion": true,
+            "evidence_id": "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
           }
         ],
         "judgments": [
@@ -1727,10 +1762,10 @@
             "topic": null,
             "claim": "합성 원문의 반복 구매 근거를 검토했다.",
             "evidence_ids": [
-              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
             ],
             "counterevidence_ids": [
-              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             ],
             "status": "CONFIRMED",
             "reason": "합성 수작업 대조",
@@ -1745,10 +1780,10 @@
             "topic": null,
             "claim": "합성 교체 필터를 판매한다.",
             "evidence_ids": [
-              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
             ],
             "counterevidence_ids": [
-              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             ],
             "status": "CONFIRMED",
             "reason": "합성 수작업 대조",
@@ -1763,10 +1798,10 @@
             "topic": null,
             "claim": "단일 고객 위험을 검토했으며 핵심 주장을 반증하지 않는다.",
             "evidence_ids": [
-              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
             ],
             "counterevidence_ids": [
-              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             ],
             "status": "CONFIRMED",
             "reason": "합성 수작업 대조",
@@ -1781,10 +1816,10 @@
             "topic": null,
             "claim": "이 검토일의 주장 범위에 자료가 유효함을 검토했다.",
             "evidence_ids": [
-              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
             ],
             "counterevidence_ids": [
-              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             ],
             "status": "CONFIRMED",
             "reason": "합성 수작업 대조",
@@ -1799,10 +1834,10 @@
             "topic": null,
             "claim": "교체 필터의 반복 수요를 조사할 이유가 있다.",
             "evidence_ids": [
-              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
             ],
             "counterevidence_ids": [
-              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             ],
             "status": "CONFIRMED",
             "reason": "합성 수작업 대조",
@@ -1817,10 +1852,10 @@
             "topic": null,
             "claim": "합성 기업의 기존 식별자와 원문을 대조했다.",
             "evidence_ids": [
-              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
             ],
             "counterevidence_ids": [
-              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             ],
             "status": "CONFIRMED",
             "reason": "합성 수작업 대조",
@@ -1888,9 +1923,16 @@
           }
         ],
         "history_ref": "discovery_history_9051980b8b433be6ee88924d0bd3bc6f4c8423ef07fdece5c2dd2b8aacf0b113",
+        "counterevidence_history": [
+          {
+            "evidence_id": "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27",
+            "first_recorded_at": "2026-11-06T12:00:00Z",
+            "disposition": "CURRENT"
+          }
+        ],
         "publication_approved": false,
-        "previous_record_hash": "f47e8b8c443c0e583d96c651d71a956aa172a8c74089eb5eb3a0caa89f7f3ed9",
-        "input_hash": "75ee874ff506b76a56fa89e3cb77660b16a4ff9614381f132dbf5c2113171eab",
+        "previous_record_hash": "9dac0690656dc8fbe9bb9371f2e20ec70c6acb1f29a769b2459869ff9fc197a8",
+        "input_hash": "f9b487c447f7f52b19a411b2df8e687a46290beb664b3ffcc555e3963ff2dec7",
         "display": {
           "list_eligible": false,
           "mark": null,
@@ -1902,10 +1944,10 @@
               "topic": null,
               "claim": "합성 교체 필터를 판매한다.",
               "evidence_ids": [
-                "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+                "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
               ],
               "counterevidence_ids": [
-                "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+                "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
               ],
               "status": "CONFIRMED",
               "reason": "합성 수작업 대조",
@@ -1922,10 +1964,10 @@
               "topic": null,
               "claim": "교체 필터의 반복 수요를 조사할 이유가 있다.",
               "evidence_ids": [
-                "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+                "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
               ],
               "counterevidence_ids": [
-                "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+                "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
               ],
               "status": "CONFIRMED",
               "reason": "합성 수작업 대조",
@@ -1942,10 +1984,10 @@
               "topic": null,
               "claim": "합성 원문의 반복 구매 근거를 검토했다.",
               "evidence_ids": [
-                "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+                "discovery_evidence_34f7be0e4a0990a4e797150745d9b10bc12b271602a37ef818f2283a61196a47"
               ],
               "counterevidence_ids": [
-                "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+                "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
               ],
               "status": "CONFIRMED",
               "reason": "합성 수작업 대조",
@@ -1961,7 +2003,6 @@
           "types": [],
           "risks": [
             {
-              "evidence_id": "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b",
               "company_id": "SYNTH:001",
               "document_id": "synthetic:filing",
               "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
@@ -1981,7 +2022,8 @@
               "region": null,
               "region_basis": null,
               "origin": "SOURCE_EXTRACT",
-              "source_assertion": true
+              "source_assertion": true,
+              "evidence_id": "discovery_evidence_62eebccc100dc208607ecc6da20396ebe08c148ce2a409f4a99c830c68a59d27"
             }
           ],
           "risk_judgments": [],
@@ -1990,7 +2032,7 @@
             "지역 수익성 미확인"
           ]
         },
-        "record_hash": "03760ccb1dc7f75f243b057f793ae4f214f20b12bbcd2475e270121485da49af"
+        "record_hash": "69a83d3bcc99b2739776435ffcea4cb0e07a80565d448fb6cbac2965aee16c9a"
       },
       "expected": {
         "state": "REMOVED",

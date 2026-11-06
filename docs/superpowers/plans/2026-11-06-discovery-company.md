@@ -27,3 +27,9 @@ automatic promotion and real data leaking into public output.
 Ruling: RIG dependency guard prohibits consumers of its private model. The initial
 reuse attempt failed test_no_other_package_depends_on_rig; use common
 IssuerIdentity instead and retain RIG's isolation. No shared guard changed.
+
+Completed: contract/6 synthetic states; offline producer/CLI; first held-company
+execution (candidate, no forced selection); one independent review and six
+RED→GREEN fixes. Targeted tests 22 + common/RIG 15 passed. No deferred findings.
+The output-root declaration is an existing private authorization record, not a
+substitute for Main authentication. Whole-market/PIT/awareness measurement absent.

@@ -189,3 +189,58 @@ def test_cli_replay_is_content_addressed_and_does_not_print_company_values(tmp_p
     before=paths[0].read_bytes()
     b=subprocess.run(args,capture_output=True,text=True);assert b.returncode==0,b.stderr
     assert paths[0].read_bytes()==before and 'Synthetic replacement' not in a.stdout+b.stdout
+
+
+def test_rehashed_snapshot_cannot_skip_selection_history():
+    p=package();r=engine().evaluate(p)
+    r['state']='SELECTED';r['display'].update(list_eligible=True,mark='SELECTED')
+    r['record_hash']=engine().digest({k:v for k,v in r.items() if k!='record_hash'})
+    with pytest.raises(ValueError,match='history'):engine().evaluate(p,r)
+
+
+def test_material_refutation_from_review_suspends_and_keeps_opposition():
+    p,r=selected();p['requested_state']=None
+    p['judgments'][3].update(status='REFUTED',material=True)
+    out=engine().evaluate(p,r)
+    assert out['state']=='SUSPENDED' and not out['display']['list_eligible']
+
+
+def test_removing_counter_links_does_not_hide_previous_opposition():
+    p,r=selected();p['requested_state']=None
+    for j in p['judgments']:j['counterevidence_ids']=[]
+    out=engine().evaluate(p,r)
+    assert out['state']=='REVIEW_REQUIRED'
+    assert [f['value'] for f in out['display']['risks']]==['One customer']
+    assert out['counterevidence_history'][0]['disposition']=='RETAINED_FOR_REVIEW'
+
+
+def test_duplicate_event_remains_idempotent_after_processing_clock_advances():
+    p,r=selected();p['requested_state']=None
+    p['events']=[dict(event_id='repeat',kind='NEW_FILING',at=p['as_of'],reason='review new filing',
+                      document_id='doc',sha256='a'*64,evidence_ids=[])]
+    r=engine().evaluate(p,r)
+    for day in (7,8):
+        p['as_of']=f'2026-11-{day:02d}T12:00:00Z';r=engine().evaluate(p,r)
+    assert len(r['events'])==1 and r['state']=='SELECTED'
+
+
+def test_corrected_provenance_gets_new_evidence_version_retaining_old():
+    p=package();f=p['evidence'][0]
+    body=b'{"business":"Synthetic replacement filters","risk":"One customer"}'
+    receipt=dict(artifact_id=f['document_id'],source_url=f['source_url'],sha256=f['sha256'],bytes=len(body),fetched_at=f['acquired_at'])
+    meta=dict(published_on=f['published_on'],period=f['period'],unit=f['unit'],region=f['region'],region_basis=f['region_basis'])
+    old=engine().extract_fact(body,receipt,f['locator'],p['company_id'],{**meta,'published_on':None})
+    assert old['evidence_id']!=f['evidence_id']
+    p['evidence'].append(old);r=engine().evaluate(p)
+    p['evidence'].remove(old);out=engine().evaluate(p,r)
+    assert old in out['evidence'] and f in out['evidence']
+
+
+def test_cli_real_job_requires_explicit_private_location_even_outside_git(tmp_path):
+    import importlib.util
+    tool=Path(__file__).parents[1]/'tools/discovery_company.py'
+    spec=importlib.util.spec_from_file_location('discovery_cli',tool)
+    cli=importlib.util.module_from_spec(spec);spec.loader.exec_module(cli)
+    p=package();p['company_id']='REAL:001'
+    with pytest.raises(ValueError,match='private'):
+        cli.run({'packages':[p]},tmp_path/'public_html')

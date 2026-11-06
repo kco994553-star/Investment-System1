@@ -14,9 +14,12 @@ def run(job, output_dir):
     output = Path(output_dir)
     # Do not accidentally commit real research through this runner.
     real = any(not p['company_id'].startswith('SYNTH:') for p in job['packages'])
-    if real and (any((p / '.git').exists() for p in (output.resolve(), *output.resolve().parents))
-                 and job.get('approved_private_repository') is not True):
-        raise ValueError('real research requires approved private output storage')
+    if real:
+        storage = job.get('storage', {})
+        root = Path(storage.get('root', '/'))
+        if (storage.get('classification') != 'APPROVED_PRIVATE' or not root.is_absolute()
+                or root.resolve() == Path('/') or not output.resolve().is_relative_to(root.resolve())):
+            raise ValueError('real research requires explicit approved private output root')
     records = []
     planned = {}
     for entry in job['packages']:
@@ -44,7 +47,7 @@ def run(job, output_dir):
     from investment_system.research.discovery_company import digest
     manifest = dict(schema_version='discovery-company-run/v1', summary=summary, records=sorted(planned))
     planned[f"run-{digest(manifest)}.json"] = canonical(manifest) + '\n'
-    output.mkdir(parents=True, exist_ok=True)
+    output.mkdir(parents=True, exist_ok=True, mode=0o700)
     for name, content in planned.items():
         dest = output / name
         if dest.exists():
@@ -52,6 +55,7 @@ def run(job, output_dir):
                 raise ValueError('immutable result collision')
         else:
             with dest.open('x') as f:
+                dest.chmod(0o600)
                 f.write(content)
     return summary
 

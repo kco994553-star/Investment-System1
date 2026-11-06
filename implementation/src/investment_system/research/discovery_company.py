@@ -109,16 +109,15 @@ def extract_fact(body: bytes, receipt: dict, selector: dict, company_id: str, me
         value = ''.join(nodes[0].itertext())
     else:
         raise ValueError('unsupported source selector; generated text is not a fact')
-    fact = dict(evidence_id=_content_id('discovery_evidence', company_id, receipt['artifact_id'],
-                                    receipt['sha256'], canonical(selector)),
-                company_id=company_id, document_id=receipt['artifact_id'], sha256=receipt['sha256'],
+    fact = dict(company_id=company_id, document_id=receipt['artifact_id'], sha256=receipt['sha256'],
                 source_url=receipt['source_url'], locator=deepcopy(selector), value=value,
                 published_on=metadata.get('published_on'), published_at=metadata.get('published_at'),
                 period=deepcopy(metadata.get('period', {'start': None, 'end': None})),
                 acquired_at=receipt['fetched_at'], unit=metadata.get('unit'),
                 region=metadata.get('region'), region_basis=metadata.get('region_basis'),
                 origin='SOURCE_EXTRACT', source_assertion=True)
-    canonical(fact)
+    # Same source observation with corrected provenance is a new immutable version.
+    fact['evidence_id'] = _content_id('discovery_evidence', digest(fact))
     return fact
 
 
@@ -188,7 +187,7 @@ def _display(record):
     js = record['judgments']
     def rows(category):
         return [deepcopy(j) for j in js if j['category'] == category]
-    counters = sorted({i for j in js for i in j['counterevidence_ids']})
+    counters = sorted({h['evidence_id'] for h in record['counterevidence_history']})
     facts = {f['evidence_id']: f for f in record['evidence']}
     return dict(list_eligible=record['state'] in {'SELECTED', 'REVIEW_REQUIRED'},
                 mark=record['state'] if record['state'] in {'SELECTED', 'REVIEW_REQUIRED'} else None,
@@ -197,6 +196,41 @@ def _display(record):
                 strengths=rows('STRENGTH'), regions=rows('REGION'), signals=rows('SIGNAL'),
                 types=rows('TYPE'), risks=[deepcopy(facts[i]) for i in counters],
                 risk_judgments=rows('RISK'), unknowns=deepcopy(record['unknowns']))
+
+
+def _validate_snapshot(previous):
+    """A digest proves integrity, not authorization; validate internal state history.
+
+    The enclosing private store/authentication still determines who may supply a
+    snapshot. This is not a signature or a replacement for Main's access control.
+    """
+    state, first, last = 'CANDIDATE', None, None
+    for h in previous['history']:
+        at = _time(h['at'])
+        if h['from_state'] != state or h['to_state'] not in TRANSITIONS[state]:
+            raise ValueError('invalid previous state history')
+        if last is not None and at < last or at > _time(previous['as_of']):
+            raise ValueError('invalid previous history time')
+        _text(h['reason'], 'history reason')
+        if h['to_state'] == 'SELECTED':
+            _text(h['reviewer'], 'history reviewer')
+            first = first or h['at']
+        state, last = h['to_state'], at
+    if previous['state'] != state or previous['first_selected_at'] != first:
+        raise ValueError('previous selection history mismatch')
+    if previous['history_ref'] != _content_id('discovery_history', previous['company_id'], digest(previous['history'])):
+        raise ValueError('previous history reference mismatch')
+    facts = _unique(previous['evidence'], 'evidence_id')
+    for j in previous['judgments']:
+        _validate_judgment(j, facts)
+    ready = (all(any(j['category'] == g and j['core'] and _is_supported(j, facts, previous['invalidated_evidence_ids'])
+                     for j in previous['judgments']) for g in GATES)
+             and not any((j['core'] and not _is_supported(j, facts, previous['invalidated_evidence_ids']))
+                         or (j['material'] and j['status'] == 'REFUTED') for j in previous['judgments']))
+    if previous['selection_ready'] != ready or state == 'SELECTED' and not ready:
+        raise ValueError('previous selection gates mismatch')
+    if previous['display'] != _display(previous) or previous['publication_approved'] is not False:
+        raise ValueError('previous display/publication mismatch')
 
 
 def evaluate(package: dict, previous: dict | None = None) -> dict:
@@ -237,6 +271,7 @@ def evaluate(package: dict, previous: dict | None = None) -> dict:
         prior = deepcopy(previous); claimed_hash = prior.pop('record_hash')
         if digest(prior) != claimed_hash:
             raise ValueError('previous record hash mismatch')
+        _validate_snapshot(previous)
         if previous['schema_version'] != VERSION or previous['company_id'] != company:
             raise ValueError('previous company/schema mismatch')
         if previous['identity_ref'] != identity:
@@ -270,12 +305,12 @@ def evaluate(package: dict, previous: dict | None = None) -> dict:
         _text(ev['document_id'], 'document_id'); _sha(ev['sha256'])
         if ev['kind'] not in CRITICAL | {'DOCUMENT_CHANGED', 'EVIDENCE_AGED', 'NEW_FILING'}:
             raise ValueError('unknown event kind')
-        if _time(ev['at']) > as_of or (previous and _time(ev['at']) < _time(previous['as_of'])):
-            raise ValueError('event time outside current processing window')
         if ev['event_id'] in seen:
             if seen[ev['event_id']] != ev:
                 raise ValueError('conflicting event ID')
             continue
+        if _time(ev['at']) > as_of or (previous and _time(ev['at']) < _time(previous['as_of'])):
+            raise ValueError('event time outside current processing window')
         if any(eid not in facts for eid in ev['evidence_ids']):
             raise ValueError('event evidence reference missing')
         changed = {j['judgment_id'] for j in js.values()
@@ -294,6 +329,8 @@ def evaluate(package: dict, previous: dict | None = None) -> dict:
                              if j['core'] and not _is_supported(j, facts, invalidated))
     refuted = sorted(j['judgment_id'] for j in js.values() if j['material'] and j['status'] == 'REFUTED')
     ready = not (blocked or unresolved_core or refuted)
+    if refuted and state in {'SELECTED', 'REVIEW_REQUIRED'}:
+        transition('SUSPENDED', 'REVIEWED_MATERIAL_REFUTATION')
     if state == 'SELECTED' and not ready:
         transition('REVIEW_REQUIRED', 'CORE_REVIEW_INCOMPLETE')
     requested = p.get('requested_state')
@@ -313,6 +350,12 @@ def evaluate(package: dict, previous: dict | None = None) -> dict:
     first = previous['first_selected_at'] if previous else None
     if first is None and state == 'SELECTED':
         first = p['as_of']
+    counter_history = {h['evidence_id']: deepcopy(h) for h in previous['counterevidence_history']} if previous else {}
+    current_counters = {eid for j in js.values() for eid in j['counterevidence_ids']}
+    for eid in current_counters:
+        counter_history.setdefault(eid, dict(evidence_id=eid, first_recorded_at=p['as_of']))
+    for eid, h in counter_history.items():
+        h['disposition'] = 'CURRENT' if eid in current_counters else 'RETAINED_FOR_REVIEW'
     result = dict(schema_version=VERSION, rule_version=RULES, company_id=company,
                   company_name=registry['name'], identity_ref=identity, qgv_ref={'company_id': company},
                   as_of=p['as_of'], population=p['population'], review_scope=p['review_scope'],
@@ -323,6 +366,7 @@ def evaluate(package: dict, previous: dict | None = None) -> dict:
                   blocked_gates=blocked, unresolved_core=unresolved_core, material_refutations=refuted,
                   affected_judgment_ids=sorted(affected), invalidated_evidence_ids=sorted(invalidated),
                   events=events, history=history, history_ref=_content_id('discovery_history', company, digest(history)),
+                  counterevidence_history=[counter_history[k] for k in sorted(counter_history)],
                   publication_approved=False,
                   previous_record_hash=previous['record_hash'] if previous else None, input_hash=input_hash)
     result['display'] = _display(result)
