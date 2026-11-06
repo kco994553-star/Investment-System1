@@ -1,0 +1,707 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:investment-system:discovery-company:v1",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "discovery-company/v1"
+    },
+    "rule_version": {
+      "const": "discovery-rules/1"
+    },
+    "company_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "company_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "identity_ref": {
+      "type": "object",
+      "properties": {
+        "issuer_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "security_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "listing_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "issuer_id",
+        "security_id",
+        "listing_id"
+      ],
+      "additionalProperties": false
+    },
+    "qgv_ref": {
+      "type": "object",
+      "properties": {
+        "company_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "company_id"
+      ],
+      "additionalProperties": false
+    },
+    "as_of": {
+      "type": "string",
+      "minLength": 1
+    },
+    "population": {
+      "type": "string",
+      "minLength": 1
+    },
+    "review_scope": {
+      "type": "string",
+      "minLength": 1
+    },
+    "state": {
+      "enum": [
+        "CANDIDATE",
+        "IN_REVIEW",
+        "SELECTED",
+        "REVIEW_REQUIRED",
+        "SUSPENDED",
+        "REMOVED"
+      ]
+    },
+    "state_reason": {
+      "type": "string",
+      "minLength": 1
+    },
+    "first_selected_at": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "last_reviewed_at": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/fact"
+      }
+    },
+    "judgments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/judgment"
+      }
+    },
+    "awareness": {
+      "type": "object",
+      "properties": {
+        "consumer_contact": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "market_attention": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "consumer_contact",
+        "market_attention"
+      ],
+      "additionalProperties": false
+    },
+    "unknowns": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "selection_ready": {
+      "type": "boolean"
+    },
+    "blocked_gates": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "IDENTITY",
+          "BUSINESS",
+          "DISCOVERY",
+          "ATTRACTIVENESS",
+          "COUNTER_REVIEW",
+          "CURRENTNESS"
+        ]
+      }
+    },
+    "unresolved_core": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "material_refutations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "affected_judgment_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "invalidated_evidence_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/event"
+      }
+    },
+    "history": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/history"
+      }
+    },
+    "history_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "counterevidence_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "evidence_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "first_recorded_at": {
+            "type": "string",
+            "minLength": 1
+          },
+          "disposition": {
+            "enum": [
+              "CURRENT",
+              "RETAINED_FOR_REVIEW"
+            ]
+          }
+        },
+        "required": [
+          "evidence_id",
+          "first_recorded_at",
+          "disposition"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "publication_approved": {
+      "const": false
+    },
+    "previous_record_hash": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "input_hash": {
+      "type": "string",
+      "minLength": 1
+    },
+    "display": {
+      "type": "object",
+      "properties": {
+        "list_eligible": {
+          "type": "boolean"
+        },
+        "mark": {
+          "enum": [
+            null,
+            "SELECTED",
+            "REVIEW_REQUIRED"
+          ]
+        },
+        "state_reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "business": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/judgment"
+          }
+        },
+        "discovery_reason": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/judgment"
+          }
+        },
+        "selection_summary": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/judgment"
+          }
+        },
+        "strengths": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/judgment"
+          }
+        },
+        "regions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/judgment"
+          }
+        },
+        "signals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/judgment"
+          }
+        },
+        "types": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/judgment"
+          }
+        },
+        "risk_judgments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/judgment"
+          }
+        },
+        "risks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/fact"
+          }
+        },
+        "unknowns": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "list_eligible",
+        "mark",
+        "state_reason",
+        "business",
+        "discovery_reason",
+        "selection_summary",
+        "strengths",
+        "regions",
+        "signals",
+        "types",
+        "risk_judgments",
+        "risks",
+        "unknowns"
+      ],
+      "additionalProperties": false
+    },
+    "record_hash": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "schema_version",
+    "rule_version",
+    "company_id",
+    "company_name",
+    "identity_ref",
+    "qgv_ref",
+    "as_of",
+    "population",
+    "review_scope",
+    "state",
+    "state_reason",
+    "first_selected_at",
+    "last_reviewed_at",
+    "evidence",
+    "judgments",
+    "awareness",
+    "unknowns",
+    "selection_ready",
+    "blocked_gates",
+    "unresolved_core",
+    "material_refutations",
+    "affected_judgment_ids",
+    "invalidated_evidence_ids",
+    "events",
+    "history",
+    "history_ref",
+    "counterevidence_history",
+    "publication_approved",
+    "previous_record_hash",
+    "input_hash",
+    "display",
+    "record_hash"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "fact": {
+      "type": "object",
+      "properties": {
+        "evidence_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "company_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "document_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "source_url": {
+          "type": "string",
+          "pattern": "^https?://"
+        },
+        "locator": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "json_pointer": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "json_pointer"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "xml_id": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "xml_id"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "value": {},
+        "published_on": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "published_at": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "period": {
+          "type": "object",
+          "properties": {
+            "start": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "end": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "start",
+            "end"
+          ],
+          "additionalProperties": false
+        },
+        "acquired_at": {
+          "type": "string",
+          "minLength": 1
+        },
+        "unit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "region": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "region_basis": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "origin": {
+          "const": "SOURCE_EXTRACT"
+        },
+        "source_assertion": {
+          "const": true
+        }
+      },
+      "required": [
+        "evidence_id",
+        "company_id",
+        "document_id",
+        "sha256",
+        "source_url",
+        "locator",
+        "value",
+        "published_on",
+        "published_at",
+        "period",
+        "acquired_at",
+        "unit",
+        "region",
+        "region_basis",
+        "origin",
+        "source_assertion"
+      ],
+      "additionalProperties": false
+    },
+    "judgment": {
+      "type": "object",
+      "properties": {
+        "judgment_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "category": {
+          "enum": [
+            "IDENTITY",
+            "BUSINESS",
+            "DISCOVERY",
+            "ATTRACTIVENESS",
+            "COUNTER_REVIEW",
+            "CURRENTNESS",
+            "TYPE",
+            "STRENGTH",
+            "REGION",
+            "SIGNAL",
+            "RISK",
+            "AWARENESS"
+          ]
+        },
+        "topic": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "claim": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "counterevidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "status": {
+          "enum": [
+            "CONFIRMED",
+            "UNCONFIRMED",
+            "REFUTED"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reviewed_by": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rule_version": {
+          "const": "discovery-rules/1"
+        },
+        "core": {
+          "type": "boolean"
+        },
+        "material": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "judgment_id",
+        "category",
+        "topic",
+        "claim",
+        "evidence_ids",
+        "counterevidence_ids",
+        "status",
+        "reason",
+        "reviewed_by",
+        "rule_version",
+        "core",
+        "material"
+      ],
+      "additionalProperties": false
+    },
+    "event": {
+      "type": "object",
+      "properties": {
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "enum": [
+            "CORE_EVIDENCE_ERROR",
+            "DOCUMENT_CHANGED",
+            "EVIDENCE_AGED",
+            "IDENTITY_ERROR",
+            "MATERIAL_REFUTATION",
+            "NEW_FILING"
+          ]
+        },
+        "at": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "document_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "event_id",
+        "kind",
+        "at",
+        "reason",
+        "document_id",
+        "sha256",
+        "evidence_ids"
+      ],
+      "additionalProperties": false
+    },
+    "history": {
+      "type": "object",
+      "properties": {
+        "from_state": {
+          "enum": [
+            "CANDIDATE",
+            "IN_REVIEW",
+            "SELECTED",
+            "REVIEW_REQUIRED",
+            "SUSPENDED",
+            "REMOVED"
+          ]
+        },
+        "to_state": {
+          "enum": [
+            "CANDIDATE",
+            "IN_REVIEW",
+            "SELECTED",
+            "REVIEW_REQUIRED",
+            "SUSPENDED",
+            "REMOVED"
+          ]
+        },
+        "at": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rule_version": {
+          "const": "discovery-rules/1"
+        },
+        "reviewer": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "from_state",
+        "to_state",
+        "at",
+        "reason",
+        "rule_version",
+        "reviewer"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
