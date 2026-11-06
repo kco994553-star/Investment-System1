@@ -2,6 +2,7 @@
 > **사용자 원문 · 수정 금지.** 2026-10-24 사용자가 제공한 「프론트엔드 기능 계층 명세 v1.0」(기준일 2026-10-20)을 한 글자도 바꾸지 않고 옮겼다.
 > 아래 `---` 뒤 본문의 SHA-256이 첫 줄 값과 같아야 한다(`implementation/tests/test_spec_direction_guard.py`). 본문 변경은 사용자 승인으로 새 버전 파일을 만들 때만 한다.
 > 이 번호(1~9)가 기능 보고의 유일한 번호다. 메뉴 번호와의 대응은 [FUNCTION_STATUS.md](FUNCTION_STATUS.md) 0절.
+> 원문 적용 원칙에 따라 기존 화면 3단계 이하에 더한 기능(2.1.8 의외의 기업, 2.4.6 의외의 기업 마크 등)은 [FUNCTION_HIERARCHY_ADDITIONS.md](FUNCTION_HIERARCHY_ADDITIONS.md)에 적는다(이 원문은 그대로).
 
 ---
 Investment-System1 프론트엔드 기능 계층 명세 v1.0
