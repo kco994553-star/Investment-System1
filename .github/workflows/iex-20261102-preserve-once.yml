@@ -8,7 +8,11 @@
 # (reads, uploads, download-back checks, deletes) are counted apart in the run's manifest.
 # Trigger: a push of the exact branch run/iex-20261102-once only (no pull_request / schedule / dispatch). Push that branch
 # ONLY after the owner's approval, and delete the branch right after the run (success or failure); a re-run needs a new
-# approval. Logs: fixed codes, counts, sizes and hashes only (no prices, symbols, codes, URLs or tokens).
+# approval. Logs: fixed codes, counts, sizes, hashes, HTTP status and exit codes only (no prices, symbols, codes, URLs,
+# tokens or response bodies). The tool is public_price_boundary.ACTIONS_PRICE_ROUTES entry 2 and asks require_price_source
+# before each source GET; its asset names carry this run's id (GITHUB_RUN_ID + GITHUB_RUN_ATTEMPT), it refuses a release
+# that already holds a COMPLETE manifest, and it deletes only assets it created itself. Disk: >= 22e9 bytes free before the
+# first source GET, >= size + 2e9 after the metadata.
 name: iex-20261102-preserve-once
 on:
   push:

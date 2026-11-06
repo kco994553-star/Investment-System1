@@ -21,8 +21,10 @@ download | md5 + size pump | gzip -dc | iex_last_trade (C, tools/iex_tops/iex_la
 process only. Nothing is written but the public ticker list the parser reads; no price, yield or per-code price hash is printed,
 logged, raised or stored (GSQ-010). Errors carry a fixed code only and are raised `from None`.
 Every request URL is one of public_price_boundary.PRICE_SOURCE_URL_PATTERNS (the IEX hist index, a file of the public `iex`
-bucket) and is only sent inside the approved route tools/qgv_official_publish.py (public_price_boundary.require_price_source):
-SOURCE_URL_INVALID / SOURCE_ROUTE_NOT_ALLOWED otherwise, before any network access.
+bucket) and is only sent inside an approved route of public_price_boundary.ACTIONS_PRICE_ROUTES (require_price_source): the
+publisher tools/qgv_official_publish.py, and the one-shot private preservation tools/iex_day_preserve_once.py (owner 2026-11-06,
+which asks require_price_source itself before each of its three source requests); SOURCE_URL_INVALID / SOURCE_ROUTE_NOT_ALLOWED
+otherwise, before any network access.
 
 Stream failures (2026-10-25, rehearsal run 40156760950: IEX_GZIP_FAILED after 105 s on a 13,079,032,608-byte file that decompresses
 cleanly elsewhere): curl no longer retries by itself (a curl retry after a mid-transfer failure restarts the file from byte 0 into

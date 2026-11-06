@@ -1,38 +1,51 @@
 #!/usr/bin/env python3
-"""One-shot preservation of the IEX HIST TOPS 1.6 original of exactly 2026-11-02 (owner directive 2026-11-05, plan "안 A").
+"""One-shot preservation of the IEX HIST TOPS 1.6 original of exactly 2026-11-02 (owner directives 2026-11-05 plan "안 A",
+2026-11-06 revision A-G).
 
 Run ONLY by .github/workflows/iex-20261102-preserve-once.yml (a push of the branch run/iex-20261102-once after the owner's
-approval). Design and request budget: docs/expanded_universe/IEX_20261102_PRESERVE_ONCE_20261105.md.
+approval). It is the second entry of public_price_boundary.ACTIONS_PRICE_ROUTES: every source request is preceded by
+public_price_boundary.require_price_source(kind, url), which refuses any process whose entry script is not an approved route.
+Design, request budget and disk table: docs/expanded_universe/IEX_20261102_PRESERVE_ONCE_20261105.md.
 
 What one live run does, and nothing more:
-  0. ENV         free disk on the work dir >= 25 GB (DISK_PRECHECK_FAILED), parser binary present, python / cc versions,
-                 RAW_REPO_TOKEN present (never printed).
-  1. PRIVATE     read the private handoff `connected-final.json` at a pinned commit of the private raw repository and its
-                 directory manifest (manifest SHA-256 pinned below; file SHA-256 and size from that manifest); take the rows
-                 at ROW_INDEXES and map each `code` to its IEX symbol with providers.iex_hist.iex_symbol(code, '2026-11-02').
+  0. ENV         same filesystem for the free-space probe and the chunk directory; free >= BODY_CAP + CHUNK_BYTES +
+                 DISK_RESERVE (22e9) before any source request (DISK_PRECHECK_FAILED); parser present; RAW_REPO_TOKEN present.
+  1. PRIVATE     read the private handoff connected-final.json at a pinned commit of the private raw repository and its
+                 directory manifest (manifest SHA-256 pinned below, file SHA-256 and size from that manifest); rows at
+                 ROW_INDEXES give `code`; providers.iex_hist.iex_symbol(code, '2026-11-02') gives the IEX symbol.
                  The 11 codes are never written into this public repository.
-  2. RELEASE     the private release RELEASE_TAG must be new or hold only earlier FAILED manifests.
+  2. RELEASE     private release lookup BEFORE the first source request: a release holding any COMPLETE manifest ->
+                 RELEASE_HAS_COMPLETE; an asset carrying this run's unique name -> NAME_COLLISION. Both stop with nothing
+                 touched. Other assets (earlier FAILED manifests, anything else) are left untouched.
   3. SOURCE      at most THREE source GETs, free, no retry, no Range / resume, no other date:
                    (a) the hist index (providers.iex_hist.HIST_URL), body capped at 8 MiB; its TOPS 1.6 entry must be dated
                        exactly 20261102 (no fallback day);
-                   (b) the object metadata of that link (size, md5), body capped at 1 MiB; size = index size <= 20e9 bytes;
-                   (c) the body, streamed ONCE by curl (no --retry, no -C / -r, no -L).
+                   (b) the object metadata of that link (size, md5), capped at 1 MiB; size = index size <= 20e9 bytes; then
+                       free >= S + CHUNK_BYTES + DISK_RESERVE;
+                   (c) the body, streamed ONCE by curl (-sS --fail, no --retry, no -C / -r, no -L; stderr discarded, only
+                       its exit code is kept).
   4. STREAM      one pass over the body: whole-file SHA-256 + MD5 + byte count; lossless chunks of exactly CHUNK_BYTES
-                 (last one smaller, at most MAX_CHUNKS); the same bytes go to `gzip -dc | iex_last_trade <symbols-file>
-                 <start_ns> <end_ns>` (the existing symbols-file mode of tools/iex_tops/iex_last_trade.c).
-                 Every closed chunk is handed to a background uploader thread (upload -> download back -> SHA-256 check ->
-                 delete the local copy). The reading loop never waits for an upload: the disk precheck (>= 25 GB for a body
-                 of <= 20 GB) holds every chunk on disk even if no upload finished, so curl's low-speed limit (1 MiB/s over
-                 60 s) can only trip on a real source stall, never on our own upload.
-  5. CHECKS      size = metadata size, md5 = metadata md5, curl / gzip / parser exit 0 (stage named by
-                 providers.iex_hist.failed_stage), every chunk uploaded and verified.
-  6. REASSEMBLY  download every chunk back in order into one SHA-256 + byte count; must equal the whole-file values.
-  7. OUTPUT      upload the derived file (11 rows, private only) and then manifest.json (state COMPLETE) last.
-Any failure: stop at once (no further source request), kill the pipeline, delete local partial files, DELETE every asset
-this run uploaded (chunks, derived), and upload a small `manifest-FAILED-<utc>.json` (state FAILED, failed_stage, the chunk
-assets uploaded and whether each was deleted), so no partial original remains looking complete.
+                 (last one smaller, at most MAX_CHUNKS), named with this run's id; the same bytes go to `gzip -dc |
+                 iex_last_trade <symbols-file> <start_ns> <end_ns>` (the existing symbols-file mode). Closed chunks go to a
+                 background uploader thread (upload -> streamed download-back SHA-256 check -> delete the local copy): the
+                 reading loop never waits for an upload, and the disk budget holds every chunk on disk even if no upload
+                 finished, so curl's low-speed limit can only trip on a real source stall. Peak local bytes are tracked.
+  5. CHECKS      size = metadata size, md5 = metadata md5, curl / gzip / parser exit 0 (providers.iex_hist.failed_stage),
+                 every chunk uploaded and verified.
+  6. REASSEMBLY  STREAMING reassembly verification, no physical file: chunks downloaded back in order into one SHA-256 +
+                 MD5 + byte count + `gzip -t` through a pipe.
+  7. OUTPUT      the private, source-native derived file (iex-day-financial11-last-trade/1: one row per code, a state and a
+                 reason each, the exact 4-decimal price string and the trade's ns; NOT the #499 financial-v-price-input/1,
+                 which Codex builds from it), then manifest-<run id>.json (state COMPLETE) last. Times are kept apart and
+                 named: per-row trade time, source receipt complete (size + md5 verified), chunks preserved, streaming
+                 reassembly verified, derived generated, manifest written; never the job's finish time as acquisition.
+Any failure: stop at once (no further source request), kill the pipeline, delete local partial files, DELETE only the
+assets whose ids this run recorded from its own upload answers (plus, after its own release check, assets carrying this
+run's unique name found in one listing: a lost answer), never the release, never anything else; then upload
+manifest-<run id>.json with state FAILED listing every asset and whether it was deleted.
 
-Logs: fixed codes, counts, sizes and hashes only. Never a price, a symbol, a code, a URL or a token.
+Logs: fixed codes, counts, sizes, hashes, HTTP status codes, exit codes and exception class names only. Never a price, a
+symbol, a code, a CIK, a URL, a token or a response body.
 """
 from __future__ import annotations
 
@@ -77,17 +90,21 @@ INPUT_FILE = 'connected-final.json'
 INPUT_MANIFEST = 'manifest.json'
 INPUT_MANIFEST_SHA256 = 'd7b5c0715496857644f1971b236141b296caf80207f56fce40d0c204a22fbb2a'
 ROW_INDEXES = (12, 13, 17, 25, 29, 30, 34, 38, 51, 64, 67)
+DRY_RUN_ID = 'r0a0'
 
-# ---- caps and sizes -----------------------------------------------------------------------------------------------------
+# ---- caps, sizes, disk ----------------------------------------------------------------------------------------------------
 SOURCE_GET_BUDGET = 3
 INDEX_CAP = 8 * 1024 * 1024
 METADATA_CAP = 1024 * 1024
 BODY_CAP = 20_000_000_000
 CHUNK_BYTES = 1_000_000_000            # < 2 GiB, GitHub's per-asset limit
 MAX_CHUNKS = 20
-MIN_FREE_BYTES = 25_000_000_000
-RUNTIME_MARGIN = 1_000_000_000         # free disk left over when a new chunk file is opened
+DISK_RESERVE = 1_000_000_000
+# Peak local disk <= S (chunks written, not yet verified and deleted) + CHUNK_BYTES (budget for one verification copy; the
+# verification and the reassembly are streamed, so they actually use 0 bytes) + small files.
+MIN_FREE_BEFORE_SOURCE = BODY_CAP + CHUNK_BYTES + DISK_RESERVE          # 22e9, before the first source GET
 PRIVATE_INPUT_CAP = 8 * 1024 * 1024
+EXISTING_MANIFEST_CAP = 1024 * 1024
 READ_BLOCK = 1 << 22                   # 4 MiB: the only body buffer held by the reading loop
 NET_BLOCK = 1 << 20
 PARSER_OUT_CAP = 1 << 20
@@ -96,39 +113,57 @@ CURL_MAX_TIME_S = 3600
 SOURCE_TIMEOUT_S = 120
 HTTP_TIMEOUT_S = 600
 
-SCHEMA = 'iex-day-preserve-once/1'
+SCHEMA = 'iex-day-preserve-once/2'
 DERIVED_SCHEMA = 'iex-day-financial11-last-trade/1'
 SOURCE_LABEL = 'IEX_HIST TOPS 1.6 last regular-session trade'
-CHUNK_PREFIX = f'iex-tops16-{DAY}.pcap.gz.part-'
-DERIVED_NAME = f'iex-{DAY}-financial11-last-trade.json'
-MANIFEST_NAME = 'manifest.json'
-FAILED_PREFIX = 'manifest-FAILED-'
 STATES = ('PRICE', 'NO_TRADE', 'NOT_IN_FILE', 'PRICE_INVALID')
-_HEX = re.compile(r'[0-9a-f]+')
 _CODE = re.compile(r'[A-Z][A-Z0-9]*:[A-Z0-9][A-Z0-9.\-]{0,9}')
-
-
 _LIVE = False                          # set by main() in live mode only (signal handling)
 
 
+def chunk_prefix(run_id: str) -> str:
+    return f'iex-tops-{DAY}-{run_id}.part-'
+
+
+def chunk_name(run_id: str, i: int, total: int) -> str:
+    w = max(2, len(str(total)))
+    return f'{chunk_prefix(run_id)}{i:0{w}d}-of-{total:0{w}d}'
+
+
+def manifest_name(run_id: str) -> str:
+    return f'manifest-{run_id}.json'
+
+
+def derived_name(run_id: str) -> str:
+    return f'iex-{DAY}-financial11-last-trade-{run_id}.json'
+
+
+def is_ours(name: str, run_id: str) -> bool:
+    """An asset name that carries this run's unique id (the only names this run may create, and so delete)."""
+    return name.startswith(chunk_prefix(run_id)) or name in (manifest_name(run_id), derived_name(run_id))
+
+
 class PreserveError(RuntimeError):
-    """Fixed code only (the failed stage). Never a URL, a token, a symbol, a price or a response body."""
+    """Fixed code only (the failed stage) plus an HTTP status / exit code. Never a URL, a token, a symbol, a price or a
+    response body."""
+
+    def __init__(self, code: str, *, http=None, rc=None):
+        super().__init__(code)
+        self.http, self.rc = http, rc
 
 
-def _fail(code: str):
-    raise PreserveError(code) from None
+def _fail(code: str, *, http=None, rc=None):
+    raise PreserveError(code, http=http if type(http) is int else None, rc=rc if type(rc) is int else None) from None
 
 
 def _log(event: str, **fields) -> None:
-    """One log line: a fixed event code and int / bool / hex / fixed-code values only."""
+    """One log line: a fixed event code and int / bool / hex / fixed-code / class-name values only; anything else REDACTED."""
     parts = [f'IEX_PRESERVE {event}']
     for key, value in fields.items():
-        if isinstance(value, bool) or isinstance(value, int) or value is None:
-            parts.append(f'{key}={value}')
-        elif isinstance(value, str) and (re.fullmatch(r'[0-9a-f]{32,64}', value) or re.fullmatch(r'[A-Z][A-Z0-9_]*', value)):
-            parts.append(f'{key}={value}')
-        else:
-            parts.append(f'{key}=REDACTED')
+        ok = (isinstance(value, (bool, int)) or value is None
+              or isinstance(value, str) and (re.fullmatch(r'[0-9a-f]{32,64}', value) or re.fullmatch(r'[A-Z][A-Z0-9_]*', value)
+                                             or key.endswith('_class') and re.fullmatch(r'[A-Za-z_][A-Za-z0-9_]{0,60}', value)))
+        parts.append(f'{key}={value}' if ok else f'{key}=REDACTED')
     print(' '.join(parts), flush=True)
 
 
@@ -140,13 +175,14 @@ def _utc(ts: float) -> str:
     return dt.datetime.fromtimestamp(ts, dt.timezone.utc).isoformat().replace('+00:00', 'Z')
 
 
-def _ns_utc(ns: int) -> str:
+def ns_utc(ns: int) -> str:
+    """A TOPS timestamp (ns since the epoch) as UTC ISO-8601 with all nine fractional digits (no rounding)."""
     secs, frac = divmod(ns, 10**9)
     return dt.datetime.fromtimestamp(secs, dt.timezone.utc).strftime('%Y-%m-%dT%H:%M:%S') + f'.{frac:09d}Z'
 
 
 def price_text(price_e4: int) -> str:
-    """TOPS price (int, 1e-4 USD) as an exact decimal string, USD per share."""
+    """TOPS price (int, 1e-4 USD) as its exact decimal string, USD per share (no rounding, no float)."""
     return f'{price_e4 // 10000}.{price_e4 % 10000:04d}'
 
 
@@ -167,11 +203,29 @@ class Counts:
             return dict(self.n)
 
 
+class DiskUse:
+    """Bytes this run holds in local files right now, and their peak (thread safe)."""
+
+    def __init__(self):
+        self._lock = threading.Lock()
+        self.now = self.peak = 0
+
+    def add(self, n: int) -> None:
+        with self._lock:
+            self.now += n
+            self.peak = max(self.peak, self.now)
+
+    def sub(self, n: int) -> None:
+        with self._lock:
+            self.now -= n
+
+
 # ---- 1. private input ---------------------------------------------------------------------------------------------------
 def select_codes(manifest_bytes: bytes, file_bytes: bytes, *, expected_manifest_sha: str = INPUT_MANIFEST_SHA256,
                  indexes=ROW_INDEXES, file_name: str = INPUT_FILE) -> tuple[list, dict]:
-    """([code, ...] in ROW_INDEXES order, receipt). The directory manifest must hash to the pinned SHA-256; the input file must
-    match its manifest entry (SHA-256 and size); every selected row's `code` must be 'EXCH:TICKER' and the codes distinct."""
+    """([code, ...] in ROW_INDEXES order, receipt). The directory manifest must hash to the pinned SHA-256; the input file
+    must match its manifest entry (SHA-256 and size); every selected row's `code` must be 'EXCH:TICKER' and the codes
+    distinct."""
     if _sha256(manifest_bytes) != expected_manifest_sha:
         _fail('PRIVATE_INPUT_MANIFEST_SHA_MISMATCH')
     try:
@@ -210,43 +264,56 @@ def symbols_file_bytes(symbol_of: dict) -> bytes:
 
 # ---- 3. source requests ---------------------------------------------------------------------------------------------------
 def _urllib_get(url: str, cap: int) -> bytes:
-    """One GET, no retry, no Range; at most cap + 1 bytes are read. Any non-200 or transport error -> fixed code."""
+    """One GET, no retry, no Range; at most cap + 1 bytes are read. Non-200 -> SOURCE_HTTP_STATUS with the status code only
+    (the response body is never read); any transport error -> SOURCE_UNAVAILABLE."""
     req = urllib.request.Request(url, method='GET', headers={'Accept': 'application/json', 'Accept-Encoding': 'identity'})
     try:
         with urllib.request.urlopen(req, timeout=SOURCE_TIMEOUT_S) as r:
             if r.status != 200:
-                _fail('SOURCE_HTTP_STATUS')
+                _fail('SOURCE_HTTP_STATUS', http=r.status)
             return r.read(cap + 1)
     except PreserveError:
         raise
-    except urllib.error.HTTPError:
-        _fail('SOURCE_HTTP_STATUS')
+    except urllib.error.HTTPError as e:
+        code = e.code
+        e.close()
+        _fail('SOURCE_HTTP_STATUS', http=code)
     except Exception:  # noqa: BLE001 - the message may carry a URL
         _fail('SOURCE_UNAVAILABLE')
 
 
 def curl_body_command(link: str, max_time: int = CURL_MAX_TIME_S) -> list:
-    """The body GET: once, https only, no --retry, no -C / -r (Range / resume), no -L. Low-speed limit as providers.iex_hist."""
+    """The body GET: once, https only, -sS --fail, no --retry, no -C / -r (Range / resume), no -L. Low-speed limit as
+    providers.iex_hist."""
     return ['curl', '-sS', '--fail', '--proto', '=https', '--connect-timeout', str(ih.CURL_CONNECT_TIMEOUT_S),
             '--speed-limit', str(ih.CURL_SPEED_LIMIT_BPS), '--speed-time', str(ih.CURL_SPEED_TIME_S),
             '--max-time', str(max(1, int(max_time))), '-o', '-', link]
 
 
 class SourceClient:
-    """The ONLY way to the price source: at most SOURCE_GET_BUDGET requests, each kind once, exact approved URL shapes
-    (public_price_boundary.PRICE_SOURCE_URL_PATTERNS) checked before any network access."""
+    """The ONLY way to the price source: at most SOURCE_GET_BUDGET requests, each kind once. Immediately before each one,
+    public_price_boundary.require_price_source(kind, url) (the exact URL shape AND the approved route of
+    ACTIONS_PRICE_ROUTES) must pass, else SOURCE_ROUTE_NOT_ALLOWED with nothing sent. `require` is injectable for tests only;
+    main() always uses the boundary's own function."""
 
-    def __init__(self, counts: Counts, *, get=_urllib_get, body_command=curl_body_command, budget: int = SOURCE_GET_BUDGET):
+    def __init__(self, counts: Counts, *, get=_urllib_get, body_command=curl_body_command, budget: int = SOURCE_GET_BUDGET,
+                 require=None):
         self.counts, self._get, self._body_command, self.budget = counts, get, body_command, budget
+        self._require = require or boundary.require_price_source
         self.used: list = []
 
     def _spend(self, kind: str, url: str, kinds) -> None:
-        if boundary.price_source_kind(url) not in kinds:
+        source_kind = boundary.price_source_kind(url)
+        if source_kind not in kinds:
             _fail('SOURCE_URL_INVALID')
         if kind in self.used:
             _fail('SOURCE_REQUEST_REPEATED')
         if len(self.used) >= self.budget:
             _fail('SOURCE_BUDGET_EXCEEDED')
+        try:
+            self._require(source_kind, url)
+        except boundary.PublicPriceBoundaryError:
+            _fail('SOURCE_ROUTE_NOT_ALLOWED')
         self.used.append(kind)
         self.counts.add('source_get')
 
@@ -338,19 +405,72 @@ def http_stream(method: str, url: str, *, body=None, length=None, headers=None, 
         return e.code, dict(e.headers or {}), (e.read(cap + 1) if e.fp else b'')
 
 
-def _file_blocks(path: Path, digest) -> 'iter':
+def _file_blocks(path: Path, digest):
     with path.open('rb') as f:
         for block in iter(lambda: f.read(NET_BLOCK), b''):
             digest.update(block)
             yield block
 
 
+def _manifest_state(data: bytes):
+    try:
+        return json.loads(data).get('state')
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def _is_manifest(name: str) -> bool:
+    return name.startswith('manifest') and name.endswith('.json')
+
+
+class _Capped:
+    def __init__(self, cap):
+        self.cap, self.parts, self.n = cap, [], 0
+
+    def __call__(self, block):
+        self.n += len(block)
+        if self.n > self.cap:
+            _fail('RELEASE_MANIFEST_UNREADABLE')
+        self.parts.append(block)
+
+    def data(self):
+        return b''.join(self.parts)
+
+
+def check_release(assets: list, read, run_id: str) -> dict:
+    """The release check before any source request. `assets` = [{id, name, size}], `read(asset) -> bytes` (a capped private
+    download). A COMPLETE manifest anywhere -> RELEASE_HAS_COMPLETE; a manifest that cannot be read -> RELEASE_MANIFEST_
+    UNREADABLE (fail closed); an asset carrying this run's unique name -> NAME_COLLISION. Nothing is written or deleted."""
+    states = []
+    for a in assets:
+        if _is_manifest(a['name']):
+            if (a.get('size') or 0) > EXISTING_MANIFEST_CAP:
+                _fail('RELEASE_MANIFEST_UNREADABLE')
+            states.append(_manifest_state(read(a)))
+    if 'COMPLETE' in states:
+        _fail('RELEASE_HAS_COMPLETE')
+    if any(s not in ('FAILED',) for s in states):
+        _fail('RELEASE_MANIFEST_UNREADABLE')
+    if any(is_ours(a['name'], run_id) for a in assets):
+        _fail('NAME_COLLISION')
+    return {'existing_assets': len(assets), 'existing_failed_manifests': len(states)}
+
+
 class ReleaseStore:
-    """The private release RELEASE_TAG of RAW_REPO, through raw_store_release (release_for_tag, the token, its http style)."""
+    """The private release RELEASE_TAG of RAW_REPO, through raw_store_release (release_for_tag, the token, its http style).
+    Every failure is a fixed code with the HTTP status only; a transport exception is PRIVATE_TRANSPORT_FAILED (its text,
+    which can carry a URL, is dropped)."""
 
     def __init__(self, counts: Counts, *, repo: str = RAW_REPO, tag: str = RELEASE_TAG, transport=http_stream):
-        self.counts, self.repo, self.tag, self._t = counts, repo, tag, transport
+        self.counts, self.repo, self.tag, self._transport = counts, repo, tag, transport
         self.release_id = None
+        self.created = False
+
+    def _t(self, method, url, **kw):
+        try:
+            return self._transport(method, url, **kw)
+        except Exception:  # noqa: BLE001
+            _fail('PRIVATE_TRANSPORT_FAILED')
 
     def _call(self, method, url, *, data=None, headers=None, auth=True):   # raw_store_release.http signature
         return self._t(method, url, body=data, length=None if data is None else len(data), headers=headers, auth=auth)
@@ -359,57 +479,75 @@ class ReleaseStore:
         self.counts.add('private_read')
         url = f'{rsr.API}/repos/{self.repo}/contents/{urllib.parse.quote(path)}?ref={ref}'
         status, _, data = self._t('GET', url, headers={'Accept': 'application/vnd.github.raw+json'})
-        if status != 200 or len(data) > PRIVATE_INPUT_CAP:
-            _fail('PRIVATE_INPUT_READ_FAILED')
+        if status != 200:
+            _fail('PRIVATE_INPUT_READ_FAILED', http=status)
+        if len(data) > PRIVATE_INPUT_CAP:
+            _fail('PRIVATE_INPUT_TOO_LARGE')
         return data
 
-    def prepare(self) -> list:
-        """The release, created when missing. Refused when it holds anything but earlier FAILED manifests."""
+    def lookup(self) -> list:
+        """The release's assets, the release created when missing (self.created)."""
         self.counts.add('release_lookup')
         try:
             release = rsr.release_for_tag(self.repo, self.tag, create=False, call=self._call)
         except rsr.ReleaseError as e:
-            if 'http=404' not in str(e):
-                _fail('RELEASE_LOOKUP_FAILED')
+            m = re.search(r'http=(\d+)', str(e))
+            status = int(m.group(1)) if m else None
+            if status != 404:
+                _fail('RELEASE_LOOKUP_FAILED', http=status)
             self.counts.add('release_create')
             payload = json.dumps({'tag_name': self.tag, 'name': self.tag, 'draft': False, 'prerelease': False,
-                                  'body': 'IEX HIST TOPS 1.6 original of one day (private, chunked). See manifest.json.'}).encode()
+                                  'body': 'IEX HIST TOPS 1.6 original of one day (private, chunked). See manifest-*.json.'}).encode()
             status, _, body = self._call('POST', f'{rsr.API}/repos/{self.repo}/releases', data=payload,
                                          headers={'Content-Type': 'application/json'})
             if status != 201:
-                _fail('RELEASE_CREATE_FAILED')
+                _fail('RELEASE_CREATE_FAILED', http=status)
             release = json.loads(body)
+            self.created = True
+        except PreserveError:
+            raise
         except Exception:  # noqa: BLE001
             _fail('RELEASE_LOOKUP_FAILED')
         self.release_id = release['id']
-        names = [a.get('name', '') for a in release.get('assets', [])]
-        if any(not (n.startswith(FAILED_PREFIX) and n.endswith('.json')) for n in names):
-            _fail('RELEASE_NOT_EMPTY')
-        return names
+        return [] if self.created else self.list_assets()
+
+    def list_assets(self) -> list:
+        out, page = [], 1
+        while True:
+            self.counts.add('release_lookup')
+            status, _, body = self._t('GET', f'{rsr.API}/repos/{self.repo}/releases/{self.release_id}/assets?per_page=100&page={page}')
+            if status != 200:
+                _fail('RELEASE_LOOKUP_FAILED', http=status)
+            try:
+                got = [{'id': a['id'], 'name': a['name'], 'size': a.get('size')} for a in json.loads(body)]
+            except Exception:  # noqa: BLE001
+                _fail('RELEASE_LOOKUP_FAILED')
+            out += got
+            if len(got) < 100 or page >= 50:
+                return out
+            page += 1
 
     def _upload(self, name: str, body, length: int, ctype: str) -> dict:
         self.counts.add('upload')
         url = f'{rsr.UPLOADS}/repos/{self.repo}/releases/{self.release_id}/assets?name={urllib.parse.quote(name)}'
         status, _, resp = self._t('POST', url, body=body, length=length, headers={'Content-Type': ctype})
         if status != 201:
+            _fail('ASSET_UPLOAD_FAILED', http=status)
+        try:
+            asset = json.loads(resp)
+            ok = asset.get('name') == name and asset.get('size') == length
+            asset_id = asset['id']
+        except Exception:  # noqa: BLE001
             _fail('ASSET_UPLOAD_FAILED')
-        asset = json.loads(resp)
-        if asset.get('name') != name or asset.get('size') != length:
+        if not ok:
             _fail('ASSET_UPLOAD_FAILED')
-        return {'id': asset['id'], 'name': name, 'size': length}
+        return {'id': asset_id, 'name': name, 'size': length}
 
     def upload_file(self, path: Path, name: str) -> tuple:
         """(asset, SHA-256 of the bytes sent): streamed from disk in NET_BLOCK pieces, hashed on the way."""
         digest = hashlib.sha256()
         asset = self._upload(name, _file_blocks(path, digest), path.stat().st_size, 'application/octet-stream')
         return asset, digest.hexdigest()
-
-    def list_assets(self) -> list:
-        self.counts.add('release_lookup')
-        status, _, body = self._t('GET', f'{rsr.API}/repos/{self.repo}/releases/{self.release_id}/assets?per_page=100')
-        if status != 200:
-            _fail('RELEASE_LOOKUP_FAILED')
-        return [{'id': a['id'], 'name': a['name'], 'size': a.get('size')} for a in json.loads(body)]
 
     def upload_bytes(self, name: str, data: bytes) -> dict:
         return self._upload(name, data, len(data), 'application/json')
@@ -426,7 +564,7 @@ class ReleaseStore:
             self.counts.add('download')
             status, _, n = self._t('GET', location, headers={'Accept': 'application/octet-stream'}, auth=False, sink=sink)
         if status != 200:
-            _fail('ASSET_DOWNLOAD_FAILED')
+            _fail('ASSET_DOWNLOAD_FAILED', http=status)
         return n
 
     def delete_asset(self, asset: dict) -> bool:
@@ -436,20 +574,23 @@ class ReleaseStore:
 
 
 class FakeStore:
-    """A release store on a local directory (dry run and tests). Same interface and the same request counting."""
+    """A release store on a local directory (dry run and tests). Same interface and the same request counting.
+    `existing` = {name: bytes} already in the release (another run's assets)."""
 
-    def __init__(self, counts: Counts, root: Path, inputs: dict, *, existing=()):
+    def __init__(self, counts: Counts, root: Path, inputs: dict, *, existing=None, release_exists=None):
         self.counts, self.root, self.inputs = counts, Path(root), inputs
         self.root.mkdir(parents=True, exist_ok=True)
         self.assets: dict = {}
         self.release_id = None
+        self.created = False
+        self._exists = bool(existing) if release_exists is None else release_exists
         self._next = 1
-        for name in existing:
-            self._put(name, b'{}')
+        for name, data in (existing or {}).items():
+            self._put(name, data)
 
     def _put(self, name: str, data: bytes) -> dict:
         if name in {a['name'] for a in self.assets.values()}:
-            _fail('ASSET_UPLOAD_FAILED')
+            _fail('ASSET_UPLOAD_FAILED', http=422)
         asset = {'id': self._next, 'name': name, 'size': len(data)}
         self._next += 1
         (self.root / str(asset['id'])).write_bytes(data)
@@ -459,23 +600,26 @@ class FakeStore:
     def read_input(self, path: str, ref: str) -> bytes:
         self.counts.add('private_read')
         if ref != INPUT_COMMIT or path not in self.inputs:
-            _fail('PRIVATE_INPUT_READ_FAILED')
+            _fail('PRIVATE_INPUT_READ_FAILED', http=404)
         return self.inputs[path]
 
-    def prepare(self) -> list:
+    def lookup(self) -> list:
         self.counts.add('release_lookup')
-        if self.release_id is None:
+        self.release_id = 1
+        if not self._exists:
             self.counts.add('release_create')
-            self.release_id = 1
-        names = [a['name'] for a in self.assets.values()]
-        if any(not (n.startswith(FAILED_PREFIX) and n.endswith('.json')) for n in names):
-            _fail('RELEASE_NOT_EMPTY')
-        return names
+            self.created = self._exists = True
+            return []
+        return self.list_assets()
+
+    def list_assets(self) -> list:
+        self.counts.add('release_lookup')
+        return [dict(a) for a in self.assets.values()]
 
     def upload_file(self, path: Path, name: str) -> tuple:
         self.counts.add('upload')
         if name in {a['name'] for a in self.assets.values()}:
-            _fail('ASSET_UPLOAD_FAILED')
+            _fail('ASSET_UPLOAD_FAILED', http=422)
         digest, size = hashlib.sha256(), 0
         dest = self.root / f'.{self._next}.tmp'
         with dest.open('wb') as out:
@@ -488,10 +632,6 @@ class FakeStore:
         self.assets[asset['id']] = asset
         return dict(asset), digest.hexdigest()
 
-    def list_assets(self) -> list:
-        self.counts.add('release_lookup')
-        return [dict(a) for a in self.assets.values()]
-
     def upload_bytes(self, name: str, data: bytes) -> dict:
         self.counts.add('upload')
         return self._put(name, data)
@@ -500,7 +640,7 @@ class FakeStore:
         self.counts.add('download', 2)          # the API request and its redirect, as the real store
         path = self.root / str(asset['id'])
         if asset['id'] not in self.assets or not path.exists():
-            _fail('ASSET_DOWNLOAD_FAILED')
+            _fail('ASSET_DOWNLOAD_FAILED', http=404)
         n = 0
         with path.open('rb') as f:
             for block in iter(lambda: f.read(NET_BLOCK), b''):
@@ -520,7 +660,20 @@ class FakeStore:
         return (self.root / str(asset['id'])).read_bytes()
 
 
+def prepare_release(store, run_id: str) -> dict:
+    assets = store.lookup()
+
+    def read(asset):
+        sink = _Capped(EXISTING_MANIFEST_CAP)
+        store.stream_asset(asset, sink)
+        return sink.data()
+    out = check_release(assets, read, run_id)
+    out['created_by_this_run'] = bool(store.created)
+    return out
+
+
 def verify_asset(store, asset: dict, size: int, sha256: str) -> None:
+    """Streamed download-back: 0 bytes on disk."""
     digest = hashlib.sha256()
     n = store.stream_asset(asset, digest.update)
     if n != size or digest.hexdigest() != sha256:
@@ -529,14 +682,14 @@ def verify_asset(store, asset: dict, size: int, sha256: str) -> None:
 
 # ---- 4. chunk uploader (background) --------------------------------------------------------------------------------------
 class ChunkUploader:
-    """Uploads closed chunk files in order on its own thread: upload (streamed from disk) -> download back -> SHA-256 and size
-    check -> delete the local copy. The reading loop only enqueues (never waits), so the body download is never paused by an
-    upload. The first failure is kept in `error` (a fixed code); later chunks are then only deleted locally."""
+    """Uploads closed chunk files in order on its own thread: upload (streamed from disk) -> download back (streamed) ->
+    SHA-256 and size check -> delete the local copy. The reading loop only enqueues (never waits). The first failure is kept
+    in `error` (a fixed code) and `error_http`; later chunks are then only deleted locally."""
 
-    def __init__(self, store, *, deadline: float, monotonic=time.monotonic):
-        self.store, self.deadline, self._monotonic = store, deadline, monotonic
-        self.error = None
-        self.uploaded: list = []      # every asset this run created (verified or not): the cleanup list
+    def __init__(self, store, *, deadline: float, disk: DiskUse, monotonic=time.monotonic):
+        self.store, self.deadline, self.disk, self._monotonic = store, deadline, disk, monotonic
+        self.error = self.error_http = None
+        self.uploaded: list = []      # assets this run created, from its own successful upload answers
         self.verified: list = []      # {name, size, sha256, id} in chunk order
         self._q: queue.Queue = queue.Queue()
         self._thread = threading.Thread(target=self._run, daemon=True)
@@ -558,11 +711,14 @@ class ChunkUploader:
                     verify_asset(self.store, asset, size, sha256)
                     self.verified.append({'name': name, 'size': size, 'sha256': sha256, 'id': asset['id']})
             except PreserveError as e:
-                self.error = self.error or str(e)
+                if self.error is None:
+                    self.error, self.error_http = str(e), e.http
             except Exception:  # noqa: BLE001
                 self.error = self.error or 'CHUNK_UPLOAD_FAILED'
             finally:
-                path.unlink(missing_ok=True)
+                if path.exists():
+                    path.unlink()
+                    self.disk.sub(size)
 
     def close(self, timeout=None) -> None:
         self._q.put(None)
@@ -579,26 +735,35 @@ def _drain(stream, out: list, cap: int) -> None:
     out.append((b''.join(kept), total))
 
 
-def stream_once(command: list, *, size: int, md5: str, parser: str, symfile: Path, t0: int, t1: int, workdir: Path,
-                uploader: ChunkUploader, chunk_bytes: int = CHUNK_BYTES, max_chunks: int = MAX_CHUNKS,
-                deadline: float, disk_free=lambda p: shutil.disk_usage(p).free, runtime_margin: int = RUNTIME_MARGIN,
-                popen=subprocess.Popen, monotonic=time.monotonic) -> dict:
+def stream_once(command: list, *, size: int, md5: str, parser: str, symfile: Path, t0: int, t1: int, chunk_dir: Path,
+                uploader: ChunkUploader, run_id: str, disk: DiskUse, chunk_bytes: int = CHUNK_BYTES,
+                max_chunks: int = MAX_CHUNKS, deadline: float, disk_free=lambda p: shutil.disk_usage(p).free,
+                reserve: int = DISK_RESERVE, popen=subprocess.Popen, monotonic=time.monotonic) -> dict:
     """body | (sha256 + md5 + count + chunk files) | gzip -dc | parser, in one pass. Returns the stream result; PreserveError
-    (failed stage) on any check failure, with every child killed and reaped and the open chunk file removed."""
+    (failed stage, curl exit code on DOWNLOAD_FAILED) on any check failure, with every child killed and reaped and the open
+    chunk file removed. curl and gzip stderr are discarded (DEVNULL); the parser's stderr is read for its #STATS counts."""
+    total = -(-size // chunk_bytes)
     whole_sha, whole_md5 = hashlib.sha256(), hashlib.md5()
     got, chunks, cur, cur_sha, cur_len, cur_path = 0, [], None, None, 0, None
     procs, broken, abort, codes = [], False, None, None
-    out, err = [], []
-    readers = []
+    out, err, readers = [], [], []
     start = monotonic()
 
     def close_chunk():
         nonlocal cur, cur_path, cur_len, cur_sha
         cur.close()
-        name = f'{CHUNK_PREFIX}{len(chunks) + 1:03d}'
+        name = chunk_name(run_id, len(chunks) + 1, total)
         chunks.append({'name': name, 'size': cur_len, 'sha256': cur_sha.hexdigest()})
         uploader.submit(cur_path, name, cur_len, cur_sha.hexdigest())
         cur, cur_path, cur_len, cur_sha = None, None, 0, None
+
+    def drop_open_chunk():
+        nonlocal cur
+        if cur is not None:
+            cur.close()
+            cur_path.unlink(missing_ok=True)
+            disk.sub(cur_len)
+            cur = None
 
     try:
         p1 = popen(command, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
@@ -635,13 +800,14 @@ def stream_once(command: list, *, size: int, md5: str, parser: str, symfile: Pat
                         if len(chunks) >= max_chunks:
                             abort = 'CHUNK_LIMIT_EXCEEDED'
                             break
-                        if disk_free(workdir) < min(chunk_bytes, size - (got - len(view))) + runtime_margin:
+                        if disk_free(chunk_dir) < min(chunk_bytes, size - (got - len(view))) + reserve:
                             abort = 'DISK_RUNTIME_LOW'
                             break
-                        cur_path = workdir / f'{CHUNK_PREFIX}{len(chunks) + 1:03d}'
+                        cur_path = chunk_dir / chunk_name(run_id, len(chunks) + 1, total)
                         cur, cur_sha, cur_len = cur_path.open('wb'), hashlib.sha256(), 0
                     take = view[:chunk_bytes - cur_len]
                     cur.write(take)
+                    disk.add(len(take))
                     cur_sha.update(take)
                     cur_len += len(take)
                     view = view[len(take):]
@@ -686,22 +852,18 @@ def stream_once(command: list, *, size: int, md5: str, parser: str, symfile: Pat
                         pipe.close()
                 except OSError:
                     pass
-        if cur is not None and (abort or codes is None):
-            cur.close()
-            cur_path.unlink(missing_ok=True)
-            cur = None
+        if abort or codes is None:
+            drop_open_chunk()
     flow_s = round(monotonic() - start, 3)
     if abort:
-        _fail(abort)
+        _fail(abort, http=uploader.error_http if abort == uploader.error else None)
     stage = ih.failed_stage(codes, broken, size_ok=got == size, md5_ok=whole_md5.hexdigest() == md5)
     if stage:
-        if cur is not None:
-            cur.close()
-            cur_path.unlink(missing_ok=True)
-        _fail(stage)
+        drop_open_chunk()
+        _fail(stage, rc=codes[0] if stage == 'DOWNLOAD_FAILED' else None)
     if cur is not None:
         close_chunk()
-    if sum(c['size'] for c in chunks) != got:
+    if sum(c['size'] for c in chunks) != got or len(chunks) != total:
         _fail('CHUNK_SUM_MISMATCH')
     try:
         text = out[0][0].decode('ascii') if out[0][1] <= PARSER_OUT_CAP else None
@@ -725,16 +887,44 @@ def parse_stats(text: str) -> dict:
     return out
 
 
-# ---- 6. reassembly -------------------------------------------------------------------------------------------------------
-def reassembly_check(store, verified: list, *, sha256: str, size: int) -> None:
-    digest, n = hashlib.sha256(), 0
-    for c in verified:
-        n += store.stream_asset({'id': c['id'], 'name': c['name']}, digest.update)
-    if n != size or digest.hexdigest() != sha256:
+# ---- 6. streaming reassembly verification ---------------------------------------------------------------------------------
+def reassembly_check(store, verified: list, *, sha256: str, md5: str, size: int, popen=subprocess.Popen) -> dict:
+    """Chunks downloaded back in order into one SHA-256 + MD5 + byte count + `gzip -t` through a pipe. No physical
+    whole-file reassembly (that would need another S bytes of disk)."""
+    d_sha, d_md5, n, broken = hashlib.sha256(), hashlib.md5(), 0, False
+    proc = popen(['gzip', '-t'], stdin=subprocess.PIPE, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+    def sink(block):
+        nonlocal broken
+        d_sha.update(block)
+        d_md5.update(block)
+        if not broken:
+            try:
+                proc.stdin.write(block)
+            except BrokenPipeError:
+                broken = True
+    try:
+        for c in verified:
+            n += store.stream_asset({'id': c['id'], 'name': c['name']}, sink)
+        try:
+            proc.stdin.close()
+        except BrokenPipeError:
+            broken = True
+        rc = proc.wait()
+    except BaseException:
+        proc.kill()
+        proc.wait()
+        raise
+    result = {'mode': 'STREAMING_NO_FILE', 'bytes': n, 'chunks': len(verified), 'sha256_match': d_sha.hexdigest() == sha256,
+              'md5_match': d_md5.hexdigest() == md5, 'gzip_test_ok': rc == 0 and not broken}
+    if n != size or not (result['sha256_match'] and result['md5_match']):
         _fail('REASSEMBLY_MISMATCH')
+    if not result['gzip_test_ok']:
+        _fail('REASSEMBLY_GZIP_TEST_FAILED', rc=rc)
+    return result
 
 
-# ---- 7. derived rows -----------------------------------------------------------------------------------------------------
+# ---- 7. derived rows (source-native) --------------------------------------------------------------------------------------
 def parser_rows(text: str, symbols) -> dict:
     """Parser stdout -> {SYM: (status, price_e4, ts_ns, dir_seen, trading_status, all_trades)} for exactly `symbols`."""
     rows = {}
@@ -753,12 +943,14 @@ def parser_rows(text: str, symbols) -> dict:
 
 
 def derive_rows(codes, symbol_of: dict, rows: dict, *, t0: int, t1: int, parser_sha: str) -> list:
-    """One row per code. A missing or invalid price gets a reason; never another day's or another symbol's price."""
+    """One row per code with a state and a reason. A price (exact decimal string from the TOPS integer) and its trade time
+    (ns and UTC) only for a ROUND regular-session trade with an in-range price inside [t0, t1); never another day's or another
+    symbol's price."""
     out = []
     for i, code in zip(ROW_INDEXES if len(codes) == len(ROW_INDEXES) else range(len(codes)), codes):
         sym = symbol_of[code]
-        row = {'row_index': i, 'code': code, 'iex_symbol': sym, 'state': None, 'reason': None, 'price': None,
-               'last_trade_ns': None, 'last_trade_utc': None, 'basis_date': BASIS_DATE, 'source': SOURCE_LABEL,
+        row = {'row_index': i, 'code': code, 'iex_symbol': sym, 'state': None, 'reason': None, 'parser_status': None,
+               'price': None, 'last_trade_ns': None, 'last_trade_utc': None, 'basis_date': BASIS_DATE, 'source': SOURCE_LABEL,
                'parser_source_sha256': parser_sha}
         if sym is None:
             row.update(state='NOT_IN_FILE', reason='IEX_SYMBOL_NONE_FROM_ALIAS_DATE')
@@ -766,13 +958,15 @@ def derive_rows(codes, symbol_of: dict, rows: dict, *, t0: int, t1: int, parser_
             row.update(state='PRICE_INVALID', reason='IEX_SYMBOL_INVALID')
         else:
             status, px, ts, dir_seen, trading, all_trades = rows[sym]
+            row['parser_status'] = status
             if status == 'ROUND':
                 if not 0 < px < ih.MAX_PRICE_E4:
                     row.update(state='PRICE_INVALID', reason='PRICE_OUT_OF_RANGE')
                 elif not t0 <= ts < t1:
                     row.update(state='PRICE_INVALID', reason='TIMESTAMP_OUTSIDE_SESSION')
                 else:
-                    row.update(state='PRICE', price=price_text(px), last_trade_ns=ts, last_trade_utc=_ns_utc(ts))
+                    row.update(state='PRICE', reason='REGULAR_SESSION_ROUND_LOT_LAST_TRADE', price=price_text(px),
+                               last_trade_ns=ts, last_trade_utc=ns_utc(ts))
             elif status == 'ODD_ONLY':
                 row.update(state='NO_TRADE', reason='ODD_LOT_ONLY')
             elif dir_seen == '0' and trading == '-' and all_trades == 0:
@@ -788,7 +982,7 @@ def state_counts(rows) -> dict:
 
 
 # ---- the run --------------------------------------------------------------------------------------------------------------
-def _versions(parser: str) -> dict:
+def _versions() -> dict:
     def first_line(cmd):
         try:
             return subprocess.run(cmd, capture_output=True, text=True, timeout=30).stdout.splitlines()[0][:120]
@@ -816,29 +1010,32 @@ def _file_sha(path: Path) -> str | None:
         return None
 
 
-def run(*, store, source: SourceClient, counts: Counts, parser: str, workdir: Path, token_present: bool = True,
-        chunk_bytes: int = CHUNK_BYTES, max_chunks: int = MAX_CHUNKS, min_free: int = MIN_FREE_BYTES,
-        runtime_margin: int = RUNTIME_MARGIN, disk_free=lambda p: shutil.disk_usage(p).free,
+def run(*, store, source: SourceClient, counts: Counts, parser: str, workdir: Path, run_id: str, token_present: bool = True,
+        chunk_bytes: int = CHUNK_BYTES, max_chunks: int = MAX_CHUNKS, min_free: int = MIN_FREE_BEFORE_SOURCE,
+        reserve: int = DISK_RESERVE, disk_free=lambda p: shutil.disk_usage(p).free, fs_id=lambda p: os.stat(p).st_dev,
         expected_manifest_sha: str = INPUT_MANIFEST_SHA256, deadline_s: float = DEADLINE_S,
         monotonic=time.monotonic, now=time.time, popen=subprocess.Popen, versions=None) -> dict:
-    """The whole pipeline. Returns the manifest written (state COMPLETE or FAILED); never raises a PreserveError."""
+    """The whole pipeline. Returns the manifest written (state COMPLETE or FAILED); never raises."""
     t_start, m_start = now(), monotonic()
     deadline = m_start + deadline_s
     timings: dict = {}
+    disk = DiskUse()
     parser_src = ROOT / 'tools/iex_tops/iex_last_trade.c'
     man = {'schema_version': SCHEMA, 'state': None, 'failed_stage': None, 'day': BASIS_DATE, 'release_tag': RELEASE_TAG,
+           'run_id': run_id, 'manifest_name': manifest_name(run_id),
            'parser': {'source_path': 'implementation/tools/iex_tops/iex_last_trade.c', 'source_sha256': _file_sha(parser_src),
                       'binary_sha256': _file_sha(Path(parser)), 'git_commit': _git_commit(), 'mode': 'SYMBOLS_FILE'},
-           'environment': versions if versions is not None else _versions(parser),
+           'environment': versions if versions is not None else _versions(),
            'limits': {'source_get_budget': SOURCE_GET_BUDGET, 'index_cap_bytes': INDEX_CAP, 'metadata_cap_bytes': METADATA_CAP,
                       'body_cap_bytes': BODY_CAP, 'chunk_bytes': chunk_bytes, 'max_chunks': max_chunks,
-                      'min_free_bytes': min_free}}
+                      'min_free_before_source': min_free, 'disk_reserve': reserve}}
     uploader = None
-    outputs: list = []                 # derived / manifest assets this run uploaded (cleanup on failure)
+    outputs: list = []                 # derived / manifest assets this run uploaded (from their upload answers)
+    chunk_dir = workdir / 'chunks'
     symfile = workdir / f'iex-symbols-{DAY}.txt'
     stage = 'ENV'
-    prepared = False                   # this run saw the release empty (but for FAILED manifests): every asset named
-    mark = monotonic()                 # like ours after that is this run's own
+    prepared = False                   # this run's own release check passed: assets named like ours are this run's
+    mark = monotonic()
 
     def done(name):
         nonlocal mark
@@ -847,14 +1044,18 @@ def run(*, store, source: SourceClient, counts: Counts, parser: str, workdir: Pa
 
     try:
         # 0. environment, before any request
-        workdir.mkdir(parents=True, exist_ok=True)
         if not token_present:
             _fail('RAW_REPO_TOKEN_MISSING')
         if not (Path(parser).is_file() and os.access(parser, os.X_OK)) or man['parser']['source_sha256'] is None:
             _fail('PARSER_MISSING')
-        free = disk_free(workdir)
-        man['environment']['free_bytes_at_start'] = free
-        _log('ENV', free_bytes=free, min_free_bytes=min_free)
+        if not re.fullmatch(r'r[0-9]{1,20}a[0-9]{1,4}', run_id):
+            _fail('RUN_ID_INVALID')
+        chunk_dir.mkdir(parents=True, exist_ok=True)
+        if fs_id(chunk_dir) != fs_id(workdir):
+            _fail('DISK_PATH_MISMATCH')
+        free = disk_free(chunk_dir)
+        man['disk'] = {'free_bytes_at_start': free, 'required_before_source': min_free}
+        _log('ENV', free_bytes=free, required_bytes=min_free)
         if free < min_free:
             _fail('DISK_PRECHECK_FAILED')
         done('env_s')
@@ -870,11 +1071,11 @@ def run(*, store, source: SourceClient, counts: Counts, parser: str, workdir: Pa
         man['symbols_filter'] = {'sha256': _sha256(sym_bytes), 'count': sym_bytes.count(b'\n'), 'codes': len(codes)}
         _log('PRIVATE_INPUT_OK', codes=len(codes), symbols=man['symbols_filter']['count'], file_sha256=receipt['file_sha256'])
         done('private_input_s')
-        # 2. release
+        # 2. release check, before the first source request
         stage = 'RELEASE_PREPARE'
-        earlier = store.prepare()
+        man['release'] = prepare_release(store, run_id)
         prepared = True
-        man['earlier_failed_manifests'] = len(earlier)
+        _log('RELEASE_OK', created=man['release']['created_by_this_run'], existing_assets=man['release']['existing_assets'])
         done('release_prepare_s')
         # 3. source (a) index, (b) metadata
         stage = 'SOURCE_INDEX'
@@ -886,136 +1087,163 @@ def run(*, store, source: SourceClient, counts: Counts, parser: str, workdir: Pa
         n_chunks = -(-size // chunk_bytes)
         if n_chunks > max_chunks:
             _fail('CHUNK_LIMIT_EXCEEDED')
+        need = size + chunk_bytes + reserve
+        free = disk_free(chunk_dir)
+        man['disk'].update(free_bytes_after_metadata=free, required_after_metadata=need, budget_peak_bytes=size + chunk_bytes)
+        if free < need:
+            _fail('DISK_PRECHECK_FAILED')
         man['source'] = {'index_url': ih.HIST_URL, 'link': entry['link'], 'metadata_url': ih.gcs_metadata_url(entry['link']),
                          'feed': 'TOPS', 'version': '1.6', 'index_day': DAY, 'index_size': entry['size'],
                          'metadata_size': size, 'metadata_md5': md5, 'expected_chunks': n_chunks}
-        _log('METADATA_OK', size=size, md5=md5, expected_chunks=n_chunks)
+        _log('METADATA_OK', size=size, md5=md5, expected_chunks=n_chunks, free_bytes=free, required_bytes=need)
         done('source_metadata_s')
         # 4-5. one streaming pass (source GET (c)) with the background uploader
         stage = 'STREAM'
         symfile.write_bytes(sym_bytes)
+        disk.add(len(sym_bytes))
         t0, t1 = ih.session_ns(DAY)
         man['session_window_ns'] = [t0, t1]
-        uploader = ChunkUploader(store, deadline=deadline, monotonic=monotonic)
+        uploader = ChunkUploader(store, deadline=deadline, disk=disk, monotonic=monotonic)
         command = source.body_command(entry['link'], min(CURL_MAX_TIME_S, max(1, int(deadline - monotonic()))))
-        result = stream_once(command, size=size, md5=md5, parser=parser, symfile=symfile, t0=t0, t1=t1, workdir=workdir,
-                             uploader=uploader, chunk_bytes=chunk_bytes, max_chunks=max_chunks, deadline=deadline,
-                             disk_free=disk_free, runtime_margin=runtime_margin, popen=popen, monotonic=monotonic)
+        received_started = _utc(now())
+        result = stream_once(command, size=size, md5=md5, parser=parser, symfile=symfile, t0=t0, t1=t1, chunk_dir=chunk_dir,
+                             uploader=uploader, run_id=run_id, disk=disk, chunk_bytes=chunk_bytes, max_chunks=max_chunks,
+                             deadline=deadline, disk_free=disk_free, reserve=reserve, popen=popen, monotonic=monotonic)
+        received_completed = _utc(now())         # stream_once returned: every byte received, size + md5 + gzip + parser ok
         symfile.unlink(missing_ok=True)
+        disk.sub(len(sym_bytes))
         man['received'] = {'bytes': result['bytes'], 'md5': result['md5'], 'sha256': result['sha256'],
-                           'exit_codes': result['exit_codes'], 'flow_s': result['flow_s']}
+                           'exit_codes': result['exit_codes'], 'flow_s': result['flow_s'],
+                           'started_at_utc': received_started, 'completed_at_utc': received_completed}
         man['parser_stats'] = result['parser_stats']
         _log('STREAM_OK', bytes=result['bytes'], sha256=result['sha256'], md5=result['md5'], chunks=len(result['chunks']))
         done('stream_s')
         stage = 'CHUNK_UPLOAD'
         uploader.close(timeout=max(1, deadline - monotonic()))
         if uploader.error:
-            _fail(uploader.error)
+            _fail(uploader.error, http=uploader.error_http)
         if [c['name'] for c in uploader.verified] != [c['name'] for c in result['chunks']] or \
                 any(v['sha256'] != c['sha256'] or v['size'] != c['size'] for v, c in zip(uploader.verified, result['chunks'])):
             _fail('CHUNK_VERIFY_FAILED')
-        _log('CHUNKS_VERIFIED', chunks=len(uploader.verified))
+        man['disk']['peak_bytes'] = disk.peak
+        man['chunks_preserved_at_utc'] = _utc(now())
+        _log('CHUNKS_VERIFIED', chunks=len(uploader.verified), peak_disk_bytes=disk.peak)
         done('chunk_upload_wait_s')
-        # 6. reassembly
+        # 6. streaming reassembly verification
         stage = 'REASSEMBLY'
-        reassembly_check(store, uploader.verified, sha256=result['sha256'], size=result['bytes'])
-        _log('REASSEMBLY_OK', bytes=result['bytes'], sha256=result['sha256'])
+        man['reassembly'] = reassembly_check(store, uploader.verified, sha256=result['sha256'], md5=result['md5'],
+                                             size=result['bytes'], popen=popen)
+        man['reassembly']['verified_at_utc'] = _utc(now())
+        _log('REASSEMBLY_OK', bytes=result['bytes'], sha256=result['sha256'], gzip_test_ok=True)
         done('reassembly_s')
-        # 7. derived rows, then manifest.json last
+        # 7. derived rows, then the manifest last
         stage = 'DERIVE'
         wanted = sorted({s for s in symbol_of.values() if ih.valid_symbol(s)})
         rows = derive_rows(codes, symbol_of, parser_rows(result['parser_text'], wanted), t0=t0, t1=t1,
                            parser_sha=man['parser']['source_sha256'])
         del result['parser_text']
+        counts_by_state = state_counts(rows)
         derived = {'schema_version': DERIVED_SCHEMA, 'basis_date': BASIS_DATE, 'source': SOURCE_LABEL,
-                   'basis_kind': ih.BASIS_KIND, 'currency': ih.CURRENCY, 'unit': 'USD per share',
+                   'basis_kind': ih.BASIS_KIND, 'currency': ih.CURRENCY, 'unit': 'USD/share',
                    'adjustment_basis': ih.ADJUSTMENT_BASIS, 'attribution': ih.ATTRIBUTION,
-                   'original': {'release_tag': RELEASE_TAG, 'sha256': man['received']['sha256'], 'md5': man['received']['md5'],
-                                'bytes': man['received']['bytes']},
+                   'acquired_at_utc': received_completed, 'generated_at_utc': _utc(now()),
+                   'manifest': manifest_name(run_id), 'release_tag': RELEASE_TAG,
+                   'original': {'sha256': result['sha256'], 'md5': result['md5'], 'bytes': result['bytes']},
                    'input': {k: receipt[k] for k in ('commit', 'path', 'file_sha256', 'row_indexes')},
                    'session_window_ns': [t0, t1], 'parser_source_sha256': man['parser']['source_sha256'],
-                   'parser_git_commit': man['parser']['git_commit'], 'rows': rows}
+                   'parser_git_commit': man['parser']['git_commit'], 'states': counts_by_state, 'rows': rows}
         derived_bytes = json.dumps(derived, ensure_ascii=True, indent=1).encode()
-        counts_by_state = state_counts(rows)
         stage = 'OUTPUT_UPLOAD'
-        outputs.append(store.upload_bytes(DERIVED_NAME, derived_bytes))
-        man['derived'] = {'name': DERIVED_NAME, 'sha256': _sha256(derived_bytes), 'bytes': len(derived_bytes),
-                          'rows': len(rows), 'states': counts_by_state}
+        outputs.append(store.upload_bytes(derived_name(run_id), derived_bytes))
+        man['derived'] = {'name': derived_name(run_id), 'schema_version': DERIVED_SCHEMA, 'sha256': _sha256(derived_bytes),
+                          'bytes': len(derived_bytes), 'rows': len(rows), 'states': counts_by_state,
+                          'generated_at_utc': derived['generated_at_utc']}
         man['chunks'] = [{'name': c['name'], 'size': c['size'], 'sha256': c['sha256']} for c in uploader.verified]
         man['completeness'] = {'size_match': True, 'md5_match': True, 'gzip_exit_0': True, 'parser_exit_0': True,
-                               'curl_exit_0': True, 'all_chunks_verified': True, 'reassembly_match': True,
+                               'curl_exit_0': True, 'all_chunks_verified': True, 'reassembly_streaming_verified': True,
                                'derived_rows': len(rows), 'derived_rows_expected': len(ROW_INDEXES)}
         man['state'] = 'COMPLETE'
         timings['total_s'] = round(monotonic() - m_start, 3)
-        man['timings'] = dict(timings, started_at=_utc(t_start), finished_at=_utc(now()))
-        man['requests'] = dict(counts.snapshot(), upload=counts.snapshot()['upload'] + 1)   # + this manifest upload
-        outputs.append(store.upload_bytes(MANIFEST_NAME, json.dumps(man, ensure_ascii=True, indent=1).encode()))
+        man['timings'] = dict(timings, job_started_at_utc=_utc(t_start))
+        man['written_at_utc'] = _utc(now())
+        snap = counts.snapshot()
+        man['requests'] = dict(snap, upload=snap['upload'] + 1)   # + this manifest upload
+        outputs.append(store.upload_bytes(manifest_name(run_id), json.dumps(man, ensure_ascii=True, indent=1).encode()))
         _log('COMPLETE', chunks=len(man['chunks']), bytes=man['received']['bytes'], sha256=man['received']['sha256'],
-             **{s.lower(): n for s, n in counts_by_state.items()})
+             peak_disk_bytes=disk.peak, **{s.lower(): n for s, n in counts_by_state.items()})
         _log('REQUESTS', **counts.snapshot())
         return man
     except BaseException as e:  # noqa: BLE001 - every failure, a signal included, ends in the cleanup below
-        code = str(e) if isinstance(e, PreserveError) else ('CANCELLED' if isinstance(e, KeyboardInterrupt) else 'UNEXPECTED_ERROR')
-        failed = _failure(code, stage, man, store=store, uploader=uploader, outputs=outputs, workdir=workdir, symfile=symfile,
-                          counts=counts, timings=timings, t_start=t_start, now=now, monotonic=monotonic, m_start=m_start,
-                          token_present=token_present, prepared=prepared)
-        return failed
+        if isinstance(e, PreserveError):
+            code, http, rc, cls = str(e), e.http, e.rc, None
+        else:
+            code, http, rc, cls = ('CANCELLED' if isinstance(e, KeyboardInterrupt) else 'UNEXPECTED_ERROR'), None, None, \
+                type(e).__name__
+        return _failure(code, stage, man, store=store, uploader=uploader, outputs=outputs, workdir=workdir, chunk_dir=chunk_dir,
+                        symfile=symfile, counts=counts, timings=timings, t_start=t_start, now=now, monotonic=monotonic,
+                        m_start=m_start, token_present=token_present, prepared=prepared, run_id=run_id, disk=disk,
+                        http=http, rc=rc, error_class=cls)
 
 
-def _ours(name: str) -> bool:
-    return name.startswith(CHUNK_PREFIX) or name in (DERIVED_NAME, MANIFEST_NAME)
-
-
-def _failure(code, stage, man, *, store, uploader, outputs, workdir, symfile, counts, timings, t_start, now, monotonic,
-             m_start, token_present, prepared) -> dict:
-    """Stop, delete local partial files, delete every asset this run uploaded, upload a small FAILED manifest. An upload
-    whose answer was lost may still have created its asset, so after this run's own empty-release check (`prepared`) the
-    release is listed once and every asset named like ours is deleted too; before that check nothing is listed or deleted
-    (a refused, non-empty release is never touched)."""
+def _failure(code, stage, man, *, store, uploader, outputs, workdir, chunk_dir, symfile, counts, timings, t_start, now,
+             monotonic, m_start, token_present, prepared, run_id, disk, http, rc, error_class) -> dict:
+    """Stop, delete local partial files, delete ONLY this run's own assets (ids from its own upload answers, plus, after its
+    own release check, names carrying its unique id from one listing: a lost answer), never the release; then upload
+    manifest-<run id>.json with state FAILED. A release this run refused (RELEASE_PREPARE) is never written to."""
     if _LIVE:                          # a second cancel signal must not cut the cleanup short
         signal.signal(signal.SIGTERM, signal.SIG_IGN)
         signal.signal(signal.SIGINT, signal.SIG_IGN)
-    _log('FAILED', failed_stage=code if re.fullmatch(r'[A-Z][A-Z0-9_]*', code) else 'UNEXPECTED_ERROR', stage=stage)
+    code = code if re.fullmatch(r'[A-Z][A-Z0-9_]*', code or '') else 'UNEXPECTED_ERROR'
+    _log('FAILED', failed_stage=code, stage=stage, http=http, exit_code=rc, error_class=error_class)
     if uploader is not None:
         uploader.error = uploader.error or 'ABORTED'
         uploader.close(timeout=HTTP_TIMEOUT_S)
     symfile.unlink(missing_ok=True)
-    for p in workdir.glob(f'{CHUNK_PREFIX}*'):
-        p.unlink(missing_ok=True)
-    uploaded = (list(uploader.uploaded) if uploader is not None else []) + list(outputs)
+    if chunk_dir.exists():
+        for p in chunk_dir.glob(f'{chunk_prefix(run_id)}*'):
+            p.unlink(missing_ok=True)
+        try:
+            chunk_dir.rmdir()
+        except OSError:
+            pass
+    recorded = (list(uploader.uploaded) if uploader is not None else []) + [a for a in outputs if a]
+    found = []
     if prepared:
         try:
-            uploaded += [a for a in store.list_assets() if _ours(a['name'])]
+            ids = {a['id'] for a in recorded}
+            found = [a for a in store.list_assets() if is_ours(a['name'], run_id) and a['id'] not in ids]
         except BaseException:  # noqa: BLE001
-            pass
-    seen, cleanup = set(), []
-    for a in uploaded:
-        if a and a['id'] not in seen:
-            seen.add(a['id'])
-            try:
-                deleted = bool(store.delete_asset(a))
-            except Exception:  # noqa: BLE001
-                deleted = False
-            cleanup.append({'name': a['name'], 'size': a.get('size'), 'deleted': deleted})
-    failed = {'schema_version': SCHEMA, 'state': 'FAILED', 'failed_stage': code, 'stage': stage, 'day': BASIS_DATE,
-              'release_tag': RELEASE_TAG, 'uploaded_assets': cleanup,
+            found = []
+    cleanup, seen = [], set()
+    for a, how in [(a, 'UPLOAD_ANSWER') for a in recorded] + [(a, 'LISTED_LOST_ANSWER') for a in found]:
+        if a['id'] in seen or not is_ours(a['name'], run_id):
+            continue
+        seen.add(a['id'])
+        try:
+            deleted = bool(store.delete_asset(a))
+        except BaseException:  # noqa: BLE001
+            deleted = False
+        cleanup.append({'name': a['name'], 'size': a.get('size'), 'known_from': how, 'deleted': deleted})
+    failed = {'schema_version': SCHEMA, 'state': 'FAILED', 'failed_stage': code, 'stage': stage, 'http_status': http,
+              'exit_code': rc, 'error_class': error_class, 'day': BASIS_DATE, 'release_tag': RELEASE_TAG, 'run_id': run_id,
+              'manifest_name': manifest_name(run_id), 'uploaded_assets': cleanup,
               'all_partial_assets_deleted': all(c['deleted'] for c in cleanup),
+              'release': man.get('release'), 'disk': dict(man.get('disk') or {}, peak_bytes=disk.peak),
               'source': {k: v for k, v in (man.get('source') or {}).items() if k in ('index_size', 'metadata_size', 'metadata_md5')},
               'parser': man.get('parser'), 'timings': dict(timings, total_s=round(monotonic() - m_start, 3),
                                                            started_at=_utc(t_start), finished_at=_utc(now()))}
     _log('CLEANUP', uploaded_assets=len(cleanup), deleted=sum(c['deleted'] for c in cleanup))
-    if token_present and stage != 'RELEASE_PREPARE':     # a release this run refused (not empty) is never written to
+    failed['failed_manifest_uploaded'] = False
+    if token_present and stage != 'RELEASE_PREPARE':
         try:
             if not prepared:
-                store.prepare()
-            failed['requests'] = dict(counts.snapshot(), upload=counts.snapshot()['upload'] + 1)
-            name = FAILED_PREFIX + dt.datetime.fromtimestamp(now(), dt.timezone.utc).strftime('%Y%m%dT%H%M%SZ') + '.json'
-            store.upload_bytes(name, json.dumps(failed, ensure_ascii=True, indent=1).encode())
+                prepare_release(store, run_id)       # the same check: a refused release is never written to
+            snap = counts.snapshot()
+            failed['requests'] = dict(snap, upload=snap['upload'] + 1)
+            store.upload_bytes(manifest_name(run_id), json.dumps(failed, ensure_ascii=True, indent=1).encode())
             failed['failed_manifest_uploaded'] = True
-        except BaseException:  # noqa: BLE001 - the private repository is not reachable: the log line is all that is left
-            failed['failed_manifest_uploaded'] = False
-    else:
-        failed['failed_manifest_uploaded'] = False
+        except BaseException:  # noqa: BLE001 - the private repository is not reachable: the log lines are all that is left
+            pass
     failed.setdefault('requests', counts.snapshot())
     _log('FAILED_MANIFEST', uploaded=failed['failed_manifest_uploaded'])
     _log('REQUESTS', **counts.snapshot())
@@ -1040,14 +1268,24 @@ class DryRunSource:
         return ['cat', str(self.body_path)]
 
 
+def live_run_id(environ) -> str | None:
+    rid, attempt = environ.get('GITHUB_RUN_ID', ''), environ.get('GITHUB_RUN_ATTEMPT', '')
+    if re.fullmatch(r'[0-9]{1,20}', rid) and re.fullmatch(r'[0-9]{1,4}', attempt):
+        return f'r{rid}a{attempt}'
+    return None
+
+
 def _require_live_route() -> None:
-    """Live mode only as this file's own entry point, inside the one-shot workflow run of RUN_BRANCH."""
+    """Live mode only as this file's own entry point, inside the one-shot workflow run of RUN_BRANCH (on top of
+    public_price_boundary.require_price_route, which every source request asks)."""
     main = sys.modules.get('__main__')
     entry = getattr(main, '__file__', None)
     if not isinstance(entry, str) or Path(entry).resolve() != Path(__file__).resolve():
         _fail('LIVE_ROUTE_NOT_ALLOWED')
     if os.environ.get('GITHUB_ACTIONS') != 'true' or os.environ.get('GITHUB_REF') != f'refs/heads/{RUN_BRANCH}':
         _fail('LIVE_ROUTE_NOT_ALLOWED')
+    if live_run_id(os.environ) is None:
+        _fail('RUN_ID_INVALID')
 
 
 def _on_signal(signum, frame):  # noqa: ARG001 - a cancelled job still deletes its partial assets
@@ -1055,6 +1293,7 @@ def _on_signal(signum, frame):  # noqa: ARG001 - a cancelled job still deletes i
 
 
 def main(argv=None) -> int:
+    global _LIVE
     ap = argparse.ArgumentParser(description=__doc__.split('\n', 1)[0])
     mode = ap.add_mutually_exclusive_group(required=True)
     mode.add_argument('--live', action='store_true')
@@ -1067,7 +1306,7 @@ def main(argv=None) -> int:
     ap.add_argument('--expected-manifest-sha', help='dry run: SHA-256 of that manifest.json')
     ap.add_argument('--store-dir', help='dry run: the fake release store directory')
     ap.add_argument('--chunk-bytes', type=int, default=CHUNK_BYTES, help='dry run only')
-    ap.add_argument('--min-free-bytes', type=int, default=MIN_FREE_BYTES, help='dry run only')
+    ap.add_argument('--min-free-bytes', type=int, default=MIN_FREE_BEFORE_SOURCE, help='dry run only')
     a = ap.parse_args(argv)
     counts = Counts()
     workdir = Path(a.workdir)
@@ -1077,15 +1316,14 @@ def main(argv=None) -> int:
         except PreserveError as e:
             _log('REFUSED', code=str(e))
             return 2
-        if a.chunk_bytes != CHUNK_BYTES or a.min_free_bytes != MIN_FREE_BYTES or a.index or a.body or a.inputs_dir:
+        if a.chunk_bytes != CHUNK_BYTES or a.min_free_bytes != MIN_FREE_BEFORE_SOURCE or a.index or a.body or a.inputs_dir:
             _log('REFUSED', code='LIVE_ARGUMENTS_INVALID')
             return 2
-        global _LIVE
         _LIVE = True
         signal.signal(signal.SIGTERM, _on_signal)
         signal.signal(signal.SIGINT, _on_signal)
         man = run(store=ReleaseStore(counts), source=SourceClient(counts), counts=counts, parser=a.parser, workdir=workdir,
-                  token_present=bool(os.environ.get('RAW_REPO_TOKEN')))
+                  run_id=live_run_id(os.environ), token_present=bool(os.environ.get('RAW_REPO_TOKEN')))
     else:
         if not all((a.index, a.body, a.inputs_dir, a.expected_manifest_sha, a.store_dir)):
             ap.error('--dry-run needs --index --body --inputs-dir --expected-manifest-sha --store-dir')
@@ -1093,8 +1331,8 @@ def main(argv=None) -> int:
         inputs = {f'{INPUT_DIR}/{n}': (inputs_dir / n).read_bytes() for n in (INPUT_MANIFEST, INPUT_FILE)}
         dry = DryRunSource(Path(a.index), Path(a.body))
         man = run(store=FakeStore(counts, Path(a.store_dir), inputs), counts=counts, parser=a.parser, workdir=workdir,
-                  source=SourceClient(counts, get=dry.get, body_command=dry.body_command), chunk_bytes=a.chunk_bytes,
-                  min_free=a.min_free_bytes, runtime_margin=0, expected_manifest_sha=a.expected_manifest_sha)
+                  source=SourceClient(counts, get=dry.get, body_command=dry.body_command), run_id=DRY_RUN_ID,
+                  chunk_bytes=a.chunk_bytes, min_free=a.min_free_bytes, reserve=0, expected_manifest_sha=a.expected_manifest_sha)
     return 0 if man['state'] == 'COMPLETE' else 1
 
 

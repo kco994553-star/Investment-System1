@@ -3,8 +3,9 @@
 - tools/pages_artifact_guard.py: qgv-official.json / qgv-official-status.json are allowed with their strict validators, and the
   ONLY sensitive-key exception is rows.<code>.rank of qgv-official.json (`rank` anywhere else and price / market cap / cash keys
   anywhere still fail);
-- src/investment_system/public_price_boundary.py: the IEX HIST sources (exact URL shapes) are allowed only inside the route
-  tools/qgv_official_publish.py, apart from AUDITED_ROUTES and the SEC allowlists; the adapters ask the boundary before any request;
+- src/investment_system/public_price_boundary.py: the IEX HIST sources (exact URL shapes) are allowed only inside the routes of
+  ACTIONS_PRICE_ROUTES (the publisher tools/qgv_official_publish.py and, owner 2026-11-06, the one-shot private preservation
+  tools/iex_day_preserve_once.py), apart from AUDITED_ROUTES and the SEC allowlists; the adapters ask the boundary before any request;
 - tools/pages_freshness_guard.py: the qgv-official rule (older basis refused, same publication_id byte-equal, status never
   compared, a broken or missing live publication withholds the publication only, D-CV16 (a));
 - static: who may reference the IEX sources, how workflows may call the publisher and hold its Secrets, AUDIT.md append-only.
@@ -290,7 +291,9 @@ def test_the_price_source_url_shapes_are_exact():
             assert boundary.price_source_kind(url) == kind, url
     for url in REJECTED:
         assert boundary.price_source_kind(url) is None, url
-    assert boundary.ACTIONS_PRICE_ROUTES == ('implementation/tools/qgv_official_publish.py',)
+    # owner 2026-11-06: the one-shot private preservation tool is the second route (AUDIT.md §12, publisher first)
+    assert boundary.ACTIONS_PRICE_ROUTES == ('implementation/tools/qgv_official_publish.py',
+                                             'implementation/tools/iex_day_preserve_once.py')
     assert not set(boundary.ACTIONS_PRICE_ROUTES) & set(boundary.AUDITED_ROUTES)   # separate from the 27+1 audited routes
 
 
@@ -412,9 +415,12 @@ ADAPTER_FILES = {'implementation/src/investment_system/providers/iex_hist.py',
                  'implementation/src/investment_system/qgv/qgv_official.py',
                  'implementation/src/investment_system/public_price_boundary.py',
                  'implementation/tools/qgv_official_publish.py',
-                 # owner directive 2026-11-05 (plan 안 A): the one-shot 2026-11-02 preservation tool reuses the adapter
-                 # (HIST_URL, select/link/metadata helpers, iex_symbol); it names no price-source host itself and runs live only
-                 # in .github/workflows/iex-20261102-preserve-once.yml (docs/expanded_universe/IEX_20261102_PRESERVE_ONCE_20261105.md)
+                 # Purpose of this list: every file that may reference the IEX adapters. The one-shot 2026-11-02 private
+                 # preservation route (owner 2026-11-05/06, ACTIONS_PRICE_ROUTES entry 2) imports providers.iex_hist for
+                 # HIST_URL, tops_files / session_file_day / file_checks / gcs_metadata_url (index and metadata checks),
+                 # failed_stage / session_ns and iex_symbol (the one alias table). Call path: workflow
+                 # iex-20261102-preserve-once.yml -> main --live -> SourceClient (require_price_source before each of the 3
+                 # source GETs) -> iex_hist helpers. It names no price-source host itself.
                  'implementation/tools/iex_day_preserve_once.py'}
 
 
