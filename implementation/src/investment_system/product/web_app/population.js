@@ -48,6 +48,9 @@ const CAP_BLOCKER=Object.freeze({ALL_CLASS_SHARES_UNCONFIRMED:'전 종류 같은
 // subtypes carry primary_metric null). Any other version is refused; a file is never read as another version.
 const FIN_SCHEMAS=Object.freeze(['financial-v-held-bridge/1','financial-v-held-bridge/1.1']);const FIN_SCHEMA=FIN_SCHEMAS[FIN_SCHEMAS.length-1];
 const FIN_SOURCE_REF=/^(SYNTHETIC|RETAINED):[^\s]{1,200}$/;
+// The contract's one reason for primary_metric null (#499 financial_v.py: an unmapped SIC → ['BUSINESS_MODEL_UNRESOLVED', None];
+// every mapped group names its metric). The subtype key carries it. Null under any other key, or a metric under this key, is refused.
+const FIN_NULL_REASON='BUSINESS_MODEL_UNRESOLVED';
 const FIN_METRIC=Object.freeze(['numerator_present','positive_numerator','same_date_price_present','ratio_valid']);
 const ROSTER_REASON='COMPLETE_CURRENT_IEX_ROSTER_UNCONFIRMED';
 const REASON=Object.freeze({
@@ -228,7 +231,9 @@ function checkFinancial(x){
  for(const[g,s]of Object.entries(m.subtypes)){const at='$.summary.subtypes.'+g;
   if(!isObj(s)||!nat(s.codes)||!nat(s.primary_available)||!isObj(s.metrics))refuse('COUNT_INVALID',at);
   // null = business model unresolved (contract): kept in the denominator, no primary metric, so nothing can be primary-available.
-  if(s.primary_metric===null){if(s.primary_available!==0)refuse('COUNT_MISMATCH',at+'.primary_available');}
+  if(!own(s,'primary_metric'))refuse('SUMMARY',at+'.primary_metric');
+  if(s.primary_metric===null){if(g!==FIN_NULL_REASON)refuse('PRIMARY_NULL_REASON',at+'.primary_metric');if(s.primary_available!==0)refuse('COUNT_MISMATCH',at+'.primary_available');}
+  else if(g===FIN_NULL_REASON)refuse('PRIMARY_NULL_REASON',at+'.primary_metric');
   else if(typeof s.primary_metric!=='string'||!own(s.metrics,s.primary_metric))refuse('SUMMARY',at+'.primary_metric');
   if(s.primary_available>s.codes)refuse('COUNT_MISMATCH',at+'.primary_available');
   for(const[k,q]of Object.entries(s.metrics)){const w=at+'.metrics.'+k;if(!isObj(q))refuse('COUNT_INVALID',w);
@@ -245,9 +250,10 @@ function financialView(x){const m=x.summary;let num=0,px=0,ok=0,unresolved=0,gro
  for(const s of Object.values(m.subtypes)){if(s.primary_metric===null){unresolved+=s.codes;groups++;continue;}const q=s.metrics[s.primary_metric];num+=q.numerator_present;px+=q.same_date_price_present;ok+=q.ratio_valid;}
  return Object.freeze({label:TEXT.FIN_LABEL,value:'분자 준비 '+fmt(num)+' · 같은 날 주가 '+fmt(px)+' · 기준 맞는 비율 '+fmt(ok)+' / 금융업 코드 '+fmt(m.financial_codes),
   note:'업종별 주 지표 기준 · 평가일 '+x.valuation_date+' · 공식 QGV 커버리지·점수·순위 아님 · 하위 업종 '+fmt(Object.keys(m.subtypes).length)+
-   (unresolved?' · 주 지표 미정 '+fmt(unresolved)+'코드(업종 모델 미정 '+fmt(groups)+'개 · 분모에 포함 · 다른 지표로 대체 안 함)':'')+
    (x.source_ref?' · 출처 '+(x.source_ref.startsWith('SYNTHETIC:')?'합성':'보유 자료'):''),
-  unresolved:unresolved,schema_version:x.schema_version});}
+  // null primary = 미산출 with the contract's reason (never 0, never another metric); its words apart so the screen tags the code.
+  unresolved_text:unresolved?'주 지표 미산출 '+fmt(unresolved)+'코드 · 사유 '+FIN_NULL_REASON+'(업종 모델 미정) · 분모에 포함 · 다른 지표로 대체 안 함':null,
+  null_reason:unresolved?FIN_NULL_REASON:null,unresolved:unresolved,schema_version:x.schema_version});}
 
 // Universe504 from what the layer holds: the company list and the public QGV page (IS2.qgv.rows(pg, {scope:'UNIVERSE'})).
 function universeView({codes,rows,asOf}){const list=Array.isArray(codes)?codes:[],rs=Array.isArray(rows)?rows:null,later=rows===undefined;
@@ -261,5 +267,5 @@ function universeView({codes,rows,asOf}){const list=Array.isArray(codes)?codes:[
 
 function source(){return Promise.resolve(Object.freeze({state:'NONE',code:'EXPANSION_NOT_CONNECTED',payload:null,text:TEXT.NONE}));}
 function financialSource(){return Promise.resolve(Object.freeze({state:'NONE',code:'FINANCIAL_V_NOT_CONNECTED',payload:null,text:TEXT.FIN_NONE}));}
-return Object.freeze({SCHEMA,STAGED,FIN_SCHEMA,FIN_SCHEMAS,UNIVERSE,TEXT,validate,expansionView,universeView,reasonText,source,financialValidate,financialView,financialSource});
+return Object.freeze({SCHEMA,STAGED,FIN_SCHEMA,FIN_SCHEMAS,FIN_NULL_REASON,UNIVERSE,TEXT,validate,expansionView,universeView,reasonText,source,financialValidate,financialView,financialSource});
 });

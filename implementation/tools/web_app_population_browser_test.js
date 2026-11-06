@@ -24,6 +24,7 @@ const F = require('./qgv_v2_fixture.js');
 const X = require(path.join(__dirname, '../tests/fixtures/current_expansion_research_v1_synthetic.json'));
 const G = require(path.join(__dirname, '../tests/fixtures/current_expansion_staged_evidence_v1_synthetic.json'));
 const H = require(path.join(__dirname, '../tests/fixtures/financial_v_held_bridge_v1_summary_synthetic.json'));
+const H11 = require(path.join(__dirname, '../tests/fixtures/financial_v_held_bridge_v1_1_summary_synthetic.json'));
 const STAGE_IDS = ['issuer', 'type', 'identity', 'external', 'representative', 'cap'];
 const NOW = '2026-11-04T03:00:00.000Z';
 // The public files this synthetic site does not publish (as web_app_home_browser_test.js).
@@ -110,6 +111,11 @@ let phase = 'START';
       assert.doesNotMatch(await page.locator('[data-population-card=UNIVERSE504]').innerText(), /금융업|재무 연결|증권 설명|대표 증권|시총/, phase + ': nothing of it in Universe504');
       assert.deepEqual(await rows('UNIVERSE504'), u, phase + ': Universe504 unchanged by staged evidence');
       assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), phase + ': no horizontal overflow with stage rows');
+      // #499 /1.1 with a normal primary_metric null: read, the null shown as 미산출 with the contract's reason code (never 0).
+      await put(JSON.parse(JSON.stringify(G.cases.staged6_one_at_basis)), JSON.parse(JSON.stringify(H11.report)));
+      assert.equal(await finLine.getAttribute('data-population-financial'), 'OK');
+      assert.equal(await finLine.locator('[data-na=BUSINESS_MODEL_UNRESOLVED]').innerText(), '주 지표 미산출 1코드 · 사유 BUSINESS_MODEL_UNRESOLVED(업종 모델 미정) · 분모에 포함 · 다른 지표로 대체 안 함');
+      assert.match(await finLine.innerText(), /금융업 코드 2/);
       // A staged file promoting documentary evidence is refused whole; a #499 summary claiming QGV coverage is refused.
       const promoted = JSON.parse(JSON.stringify(G.cases.staged6_one_at_basis)); promoted.rows[0].stages.representative.value = true;
       const claimed = JSON.parse(JSON.stringify(H.report)); claimed.summary.scored_joint_valid = 2;

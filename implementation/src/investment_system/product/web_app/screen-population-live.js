@@ -46,7 +46,8 @@ function financialLine(src){const P=I.population,line=(state,code,...kids)=>h('p
  const r=P.financialValidate(src.payload);
  if(!r.ok)return line('REFUSED',r.code,P.TEXT.FIN_LABEL,' · 계약과 달라 전부 읽지 않았습니다 · ',r.code,' · ',r.path);
  const v=P.financialView(r.value);
- return line('OK',null,src.synthetic===true?P.TEXT.SYNTHETIC+' · ':'',h('b',null,v.label),' · ',v.value,' · ',v.note);}
+ return line('OK',null,src.synthetic===true?P.TEXT.SYNTHETIC+' · ':'',h('b',null,v.label),' · ',v.value,' · ',v.note,
+  v.unresolved_text?[' · ',h('span',{dataset:{na:v.null_reason,populationUnresolved:String(v.unresolved)}},v.unresolved_text)]:null);}
 function fill(route,slot){const signal=route.signal,Q=I.qgv,C=I.companies,P=I.population;
  if(!slot||!P)return;
  // The home reads only its company index (web_app_data_layer_browser_test.js): QGV totals and ranks are counted only when the

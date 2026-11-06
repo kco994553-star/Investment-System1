@@ -131,13 +131,14 @@ ok('#499 /1.1 summary with primary_metric null: accepted, unresolved kept in the
   const v = P.financialView(r.value);
   assert.equal(v.value, '분자 준비 1 · 같은 날 주가 0 · 기준 맞는 비율 0 / 금융업 코드 2', 'the unresolved code stays in the denominator');
   assert.equal(v.unresolved, 1);
-  assert.match(v.note, /주 지표 미정 1코드\(업종 모델 미정 1개 · 분모에 포함 · 다른 지표로 대체 안 함\)/);
+  assert.equal(v.unresolved_text, '주 지표 미산출 1코드 · 사유 BUSINESS_MODEL_UNRESOLVED(업종 모델 미정) · 분모에 포함 · 다른 지표로 대체 안 함');
+  assert.equal(v.null_reason, 'BUSINESS_MODEL_UNRESOLVED');
   const bad = [
     [(x) => { x.schema_version = 'financial-v-held-bridge/1.2'; }, 'SCHEMA_VERSION', '$.schema_version'],
     [(x) => { x.schema_version = 'financial-v-held-bridge/2'; }, 'SCHEMA_VERSION', '$.schema_version'],
     [(x) => { delete x.schema_version; }, 'SCHEMA_VERSION', '$.schema_version'],
     [(x) => { x.summary.subtypes.BUSINESS_MODEL_UNRESOLVED.primary_available = 1; x.summary.same_date_primary_available = 1; }, 'COUNT_MISMATCH', '$.summary.subtypes.BUSINESS_MODEL_UNRESOLVED.primary_available'],
-    [(x) => { x.summary.subtypes.BUSINESS_MODEL_UNRESOLVED.primary_metric = 'no_such_metric'; }, 'SUMMARY', '$.summary.subtypes.BUSINESS_MODEL_UNRESOLVED.primary_metric'],
+    [(x) => { x.summary.subtypes.BUSINESS_MODEL_UNRESOLVED.primary_metric = 'no_such_metric'; }, 'PRIMARY_NULL_REASON', '$.summary.subtypes.BUSINESS_MODEL_UNRESOLVED.primary_metric'],
     [(x) => { delete x.summary.subtypes.BUSINESS_MODEL_UNRESOLVED.primary_metric; }, 'SUMMARY', '$.summary.subtypes.BUSINESS_MODEL_UNRESOLVED.primary_metric'],
     [(x) => { delete x.summary.subtypes.BUSINESS_MODEL_UNRESOLVED.codes; }, 'COUNT_INVALID', '$.summary.subtypes.BUSINESS_MODEL_UNRESOLVED'],
     [(x) => { delete x.summary.operational_denominator; }, 'OPERATIONAL_DENOMINATOR', '$.summary.operational_denominator'],
@@ -149,6 +150,40 @@ ok('#499 /1.1 summary with primary_metric null: accepted, unresolved kept in the
     const x = JSON.parse(JSON.stringify(H11.report)); x.source_ref = ref; const q = P.financialValidate(x); assert.equal(q.ok, true);
     assert.equal(q.value.source_ref, ref); assert.match(P.financialView(q.value).note, ref.startsWith('SYNTHETIC:') ? / · 출처 합성$/ : / · 출처 보유 자료$/);
   }
+});
+// Owner 2026-11-06 (3rd): one table that keeps the three apart — a normal value, a normal null (the contract's reason) and a wrong
+// input — for both supported versions; /1 files read exactly as before (compatibility).
+ok('#499 three kinds: normal value · normal null (BUSINESS_MODEL_UNRESOLVED → 미산출) · wrong input; /1 compatibility kept', () => {
+  const v10 = P.financialValidate(JSON.parse(JSON.stringify(H.report))), view10 = P.financialView(v10.value);
+  assert.equal(v10.ok, true); assert.equal(v10.value.schema_version, 'financial-v-held-bridge/1');
+  assert.equal(view10.value, '분자 준비 2 · 같은 날 주가 1 · 기준 맞는 비율 1 / 금융업 코드 2', '/1 value unchanged');
+  assert.equal(view10.unresolved_text, null); assert.equal(view10.null_reason, null);
+  const as11 = JSON.parse(JSON.stringify(H.report)); as11.schema_version = 'financial-v-held-bridge/1.1';
+  assert.deepEqual(P.financialView(P.financialValidate(as11).value).value, view10.value, 'normal value: same reading under /1.1');
+  // normal null, under both versions (the same summary contract)
+  for (const ver of ['financial-v-held-bridge/1', 'financial-v-held-bridge/1.1']) {
+    const x = JSON.parse(JSON.stringify(H11.report)); x.schema_version = ver; const r = P.financialValidate(x);
+    assert.equal(r.ok, true, ver + ' ' + JSON.stringify(r));
+    const w = P.financialView(r.value);
+    assert.equal(w.null_reason, 'BUSINESS_MODEL_UNRESOLVED'); assert.match(w.unresolved_text, /^주 지표 미산출 1코드 · 사유 BUSINESS_MODEL_UNRESOLVED/);
+    assert.doesNotMatch(w.value + w.note + w.unresolved_text, /(^| )0점|0으로/, 'never shown as zero');
+  }
+  // wrong inputs: unknown version, a required field missing, a wrong value — each refused whole with its code
+  const U = 'BUSINESS_MODEL_UNRESOLVED', bad = [
+    ['unknown version', (x) => { x.schema_version = 'financial-v-held-bridge/1.0.1'; }, 'SCHEMA_VERSION', '$.schema_version'],
+    ['unknown version', (x) => { x.schema_version = 'FINANCIAL-V-HELD-BRIDGE/1.1'; }, 'SCHEMA_VERSION', '$.schema_version'],
+    ['missing field', (x) => { delete x.summary.subtypes[U].primary_metric; }, 'SUMMARY', '$.summary.subtypes.' + U + '.primary_metric'],
+    ['missing field', (x) => { delete x.summary.subtypes[U].primary_available; }, 'COUNT_INVALID', '$.summary.subtypes.' + U],
+    ['missing field', (x) => { delete x.summary.same_date_primary_available; }, 'COUNT_INVALID', '$.summary.same_date_primary_available'],
+    ['wrong value', (x) => { x.summary.subtypes.DEPOSITORY_BANK.primary_metric = null; }, 'PRIMARY_NULL_REASON', '$.summary.subtypes.DEPOSITORY_BANK.primary_metric'],
+    ['wrong value', (x) => { x.summary.subtypes[U].primary_metric = 'book_yield'; }, 'PRIMARY_NULL_REASON', '$.summary.subtypes.' + U + '.primary_metric'],
+    ['wrong value', (x) => { x.summary.subtypes[U].primary_metric = 0; }, 'PRIMARY_NULL_REASON', '$.summary.subtypes.' + U + '.primary_metric'],
+    ['wrong value', (x) => { x.summary.subtypes.DEPOSITORY_BANK.primary_metric = 7; }, 'SUMMARY', '$.summary.subtypes.DEPOSITORY_BANK.primary_metric'],
+    ['wrong value', (x) => { x.summary.subtypes[U].codes = -1; }, 'COUNT_INVALID', '$.summary.subtypes.' + U],
+    ['wrong value', (x) => { x.summary.subtypes[U].primary_available = 1; x.summary.same_date_primary_available += 1; }, 'COUNT_MISMATCH', '$.summary.subtypes.' + U + '.primary_available'],
+  ];
+  assert.ok(H11.report.summary.subtypes.DEPOSITORY_BANK, 'fixture has one mapped subtype');
+  for (const [kind, change, code, at] of bad) { const x = JSON.parse(JSON.stringify(H11.report)); change(x); assert.deepEqual(P.financialValidate(x), { ok: false, code, path: at }, kind); }
 });
 ok('refusals', () => {
   const cases = [
