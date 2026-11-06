@@ -1,0 +1,68 @@
+{
+ "generated_by": "git worktree of origin/research/financial-v-held-bridge-20261105 (b182cbe0) → python3 -I gen.py: tests/test_financial_v_bridge.py fixture() connected twice (with the three synthetic same-day prepared quotes, and without quotes), then financial_v_bridge.summarize(rows); rows and source receipts dropped (the screen reads only the summary)",
+ "note": "SYNTHETIC. Codex #499 financial-v-held-bridge/1 summary only: subtype counts, no company value, no price. Research candidate inputs, not official QGV coverage.",
+ "report": {
+  "input_vintage": "2026-11-04T12:00:00Z",
+  "schema_version": "financial-v-held-bridge/1",
+  "summary": {
+   "calc_version": "qgv2-calc/2026-10-23.1",
+   "candidate_config_sha256": "f665829d95ead0d4ec8679ac29b53506f6bbf84ef3fec143190c88669a7c7e8a",
+   "financial_codes": 2,
+   "new_external_requests": 0,
+   "operational_denominator": 504,
+   "preset_totals": null,
+   "same_date_primary_available": 1,
+   "scored_joint_valid": null,
+   "subtypes": {
+    "DEPOSITORY_BANK": {
+     "codes": 2,
+     "metrics": {
+      "book_yield": {
+       "missing_reasons": {
+        "CURRENCY_OR_UNIT_MISMATCH": 1,
+        "PRICE_DATE_MISMATCH": 1,
+        "PRICE_UNAVAILABLE": 1,
+        "SHARE_BASIS_UNCONFIRMED": 1,
+        "SOURCE_UNCONFIRMED": 1
+       },
+       "numerator_present": 2,
+       "positive_numerator": 2,
+       "ratio_valid": 1,
+       "same_date_price_present": 1
+      },
+      "earnings_yield": {
+       "missing_reasons": {
+        "CURRENCY_OR_UNIT_MISMATCH": 1,
+        "PRICE_DATE_MISMATCH": 1,
+        "PRICE_UNAVAILABLE": 1,
+        "SHARE_BASIS_UNCONFIRMED": 1,
+        "SOURCE_UNCONFIRMED": 1
+       },
+       "numerator_present": 2,
+       "positive_numerator": 2,
+       "ratio_valid": 1,
+       "same_date_price_present": 1
+      },
+      "tangible_book_yield": {
+       "missing_reasons": {
+        "CURRENCY_OR_UNIT_MISMATCH": 1,
+        "PRICE_DATE_MISMATCH": 1,
+        "PRICE_UNAVAILABLE": 1,
+        "SHARE_BASIS_UNCONFIRMED": 1,
+        "SOURCE_UNCONFIRMED": 1
+       },
+       "numerator_present": 2,
+       "positive_numerator": 2,
+       "ratio_valid": 1,
+       "same_date_price_present": 1
+      }
+     },
+     "primary_available": 1,
+     "primary_metric": "tangible_book_yield",
+     "security_class_documented": 2
+    }
+   }
+  },
+  "valuation_date": "2026-11-02"
+ }
+}

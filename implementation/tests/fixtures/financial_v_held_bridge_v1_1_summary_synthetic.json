@@ -1,0 +1,128 @@
+{
+ "generated_by": "git worktree of origin/research/financial-v-held-bridge-20261105 at e1f1f35d (financial-v-held-bridge/1.1) -> python3 -I gen.py: tests/test_financial_v_bridge.py fixture() connected as is, and the same fixture with code NYSE:TESU and SIC 6000 (FINANCIAL profile with no mapped business model, so primary_metric null), then financial_v_bridge.summarize(rows); envelope schema_version/valuation_date as the CLI writes; rows and source receipts dropped (the screen reads only the summary). Codex #437 6680388919 reproduced the two reader faults with this kind of input.",
+ "note": "SYNTHETIC. Codex #499 financial-v-held-bridge/1.1 summary only: subtype counts, no company value, no price.",
+ "report": {
+  "schema_version": "financial-v-held-bridge/1.1",
+  "summary": {
+   "calc_version": "qgv2-calc/2026-10-23.1",
+   "candidate_config_sha256": "f665829d95ead0d4ec8679ac29b53506f6bbf84ef3fec143190c88669a7c7e8a",
+   "financial_codes": 2,
+   "new_external_requests": 0,
+   "operational_denominator": 504,
+   "preset_totals": null,
+   "same_date_primary_available": 0,
+   "scored_joint_valid": null,
+   "subtypes": {
+    "BUSINESS_MODEL_UNRESOLVED": {
+     "codes": 1,
+     "metrics": {
+      "book_yield": {
+       "missing_reasons": {
+        "COMMON_EQUITY_BASIS_UNCONFIRMED": 1,
+        "CURRENCY_OR_UNIT_MISMATCH": 1,
+        "FILING_NOT_ELIGIBLE": 1,
+        "INPUT_UNAVAILABLE": 1,
+        "PERIOD_NOT_ELIGIBLE": 1,
+        "PRICE_DATE_MISMATCH": 1,
+        "PRICE_UNAVAILABLE": 1,
+        "SECURITY_CLASS_BASIS_UNCONFIRMED": 1,
+        "SECURITY_LINK_UNCONFIRMED": 1,
+        "SHARE_BASIS_UNCONFIRMED": 1,
+        "SOURCE_UNCONFIRMED": 1
+       },
+       "numerator_present": 0,
+       "positive_numerator": 0,
+       "ratio_valid": 0,
+       "same_date_price_present": 0
+      },
+      "earnings_yield": {
+       "missing_reasons": {
+        "CURRENCY_OR_UNIT_MISMATCH": 1,
+        "PRICE_DATE_MISMATCH": 1,
+        "PRICE_UNAVAILABLE": 1,
+        "SECURITY_CLASS_BASIS_UNCONFIRMED": 1,
+        "SECURITY_LINK_UNCONFIRMED": 1,
+        "SHARE_BASIS_UNCONFIRMED": 1,
+        "SOURCE_UNCONFIRMED": 1
+       },
+       "numerator_present": 1,
+       "positive_numerator": 1,
+       "ratio_valid": 0,
+       "same_date_price_present": 0
+      },
+      "tangible_book_yield": {
+       "missing_reasons": {
+        "COMMON_EQUITY_BASIS_UNCONFIRMED": 1,
+        "CURRENCY_OR_UNIT_MISMATCH": 1,
+        "FILING_NOT_ELIGIBLE": 1,
+        "INPUT_UNAVAILABLE": 1,
+        "PERIOD_NOT_ELIGIBLE": 1,
+        "PRICE_DATE_MISMATCH": 1,
+        "PRICE_UNAVAILABLE": 1,
+        "SECURITY_CLASS_BASIS_UNCONFIRMED": 1,
+        "SECURITY_LINK_UNCONFIRMED": 1,
+        "SHARE_BASIS_UNCONFIRMED": 1,
+        "SOURCE_UNCONFIRMED": 1
+       },
+       "numerator_present": 0,
+       "positive_numerator": 0,
+       "ratio_valid": 0,
+       "same_date_price_present": 0
+      }
+     },
+     "primary_available": 0,
+     "primary_metric": null,
+     "security_class_documented": 0
+    },
+    "DEPOSITORY_BANK": {
+     "codes": 1,
+     "metrics": {
+      "book_yield": {
+       "missing_reasons": {
+        "CURRENCY_OR_UNIT_MISMATCH": 1,
+        "PRICE_DATE_MISMATCH": 1,
+        "PRICE_UNAVAILABLE": 1,
+        "SHARE_BASIS_UNCONFIRMED": 1,
+        "SOURCE_UNCONFIRMED": 1
+       },
+       "numerator_present": 1,
+       "positive_numerator": 1,
+       "ratio_valid": 0,
+       "same_date_price_present": 0
+      },
+      "earnings_yield": {
+       "missing_reasons": {
+        "CURRENCY_OR_UNIT_MISMATCH": 1,
+        "PRICE_DATE_MISMATCH": 1,
+        "PRICE_UNAVAILABLE": 1,
+        "SHARE_BASIS_UNCONFIRMED": 1,
+        "SOURCE_UNCONFIRMED": 1
+       },
+       "numerator_present": 1,
+       "positive_numerator": 1,
+       "ratio_valid": 0,
+       "same_date_price_present": 0
+      },
+      "tangible_book_yield": {
+       "missing_reasons": {
+        "CURRENCY_OR_UNIT_MISMATCH": 1,
+        "PRICE_DATE_MISMATCH": 1,
+        "PRICE_UNAVAILABLE": 1,
+        "SHARE_BASIS_UNCONFIRMED": 1,
+        "SOURCE_UNCONFIRMED": 1
+       },
+       "numerator_present": 1,
+       "positive_numerator": 1,
+       "ratio_valid": 0,
+       "same_date_price_present": 0
+      }
+     },
+     "primary_available": 0,
+     "primary_metric": "tangible_book_yield",
+     "security_class_documented": 1
+    }
+   }
+  },
+  "valuation_date": "2026-11-02"
+ }
+}

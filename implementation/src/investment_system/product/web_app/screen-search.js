@@ -7,13 +7,14 @@ function search(route){
  const b=box(h('label',{for:'q',class:'hand hero-label'},'티커 · 영문 회사명으로 검색'));
  const chips=h('div',{class:'chip-rows',tabindex:'-1',dataset:{homeChips:''}},pending('최근 · ★ 즐겨찾기 기업'));
  const quote=h('section',{class:'sk home-quote','aria-label':'투자 이야기',dataset:{quote:''}},pending('투자 이야기 · 인물과 출처'));
- later(route,'home',{box:b,chips,quote});
+ const scope=h('section',{class:'sk home-population','aria-label':'검색·계산 범위',dataset:{population:''}},pending('검색·계산 범위 · 공식 운영과 확장 연구 모집단'));
+ later(route,'home',{box:b,chips,quote,scope});
  return h('div',{class:'screen'},
   h('section',{class:'hero'},
    h('h1',{class:'hero-title'},'어떤 기업을 ',h('span',{class:'here'},'볼까요?')),
    h('svg:svg',{class:'hero-underline',viewBox:'0 0 560 26',preserveAspectRatio:'none','aria-hidden':'true'},h('svg:path',{d:'M8 16 C 120 6, 260 22, 380 12 S 520 8, 552 14'})),
    b.node,chips,h('p',{class:'hand hero-aside'},'검색하면 ↓ QGV + 기술적 분석 + 매크로를 한 장에 보여 줌')),
-  quote);
+  quote,scope);
 }
 function result(route){
  const given=route.params[0],b=box(h('label',{for:'q',class:'sr-only'},'다른 기업 검색')),body=x=>h('div',{class:'card-body'},x);

@@ -1,0 +1,2572 @@
+{
+ "cases": {
+  "complete12_missing1": {
+   "basis_date": "2026-11-02",
+   "calc_version": "qgv2-calc/2026-10-23.1",
+   "counts": {
+    "candidate_rows": 12,
+    "eligible": 12,
+    "excluded": 0,
+    "financial_rows": 11,
+    "fixed_security_ids": 12,
+    "scored": 12,
+    "unique_issuers": 12,
+    "unique_tickers": 12,
+    "unknown": 0
+   },
+   "coverage": {
+    "G": 11,
+    "Q": 11,
+    "V": 0,
+    "denominator": 12,
+    "factors": {
+     "g_consistency": 11,
+     "g_growth_efficiency": 11,
+     "g_per_share_growth": 11,
+     "g_recent_acceleration": 11,
+     "g_revenue_growth": 11,
+     "q_capital_allocation": 11,
+     "q_earnings_quality": 11,
+     "q_financial_safety": 11,
+     "q_moat_proxy": 11,
+     "q_profitability": 11,
+     "v_earnings_yield": 0,
+     "v_expectation_check": 0,
+     "v_fcf_yield": 0,
+     "v_vs_industry": 0,
+     "v_vs_own_history": 0
+    },
+    "preset_actual_total": 11,
+    "ranked": 0,
+    "simultaneous": 0
+   },
+   "full_market_denominator": 12,
+   "policy": {
+    "adv_gate": "DEFERRED",
+    "entry_market_cap_usd": 250000000,
+    "entry_price_usd": 5,
+    "official_universe_replaced": false,
+    "rebalance": "MONTH_END",
+    "representatives": "ONE_PER_ISSUER",
+    "retain_market_cap_usd": 200000000,
+    "retain_price_usd": 3,
+    "version": "current-nominal-20261031/1"
+   },
+   "population_reasons": [],
+   "rows": [
+    {
+     "calculation_attempted": true,
+     "cik": "0000000001",
+     "eligibility": "ELIGIBLE",
+     "financial_acquired_at": null,
+     "financial_available": false,
+     "financial_reasons": [
+      "FINANCIAL_NOT_HELD"
+     ],
+     "name": "Synthetic 0",
+     "observation_id": "0",
+     "price_status": "SUPPLIED",
+     "rank": null,
+     "raw_metrics": {},
+     "reasons": [],
+     "score": {
+      "acquired_at": null,
+      "axes": {
+       "G": {
+        "factors_available": 0,
+        "reason": "AXIS_NOT_PUBLISHED",
+        "score": null,
+        "state": "NOT_AVAILABLE",
+        "weight_available": 0.0
+       },
+       "Q": {
+        "factors_available": 0,
+        "reason": "AXIS_NOT_PUBLISHED",
+        "score": null,
+        "state": "NOT_AVAILABLE",
+        "weight_available": 0.0
+       },
+       "V": {
+        "factors_available": 0,
+        "reason": "AXIS_WEIGHT_INSUFFICIENT",
+        "score": null,
+        "state": "NOT_AVAILABLE",
+        "weight_available": 0.0
+       }
+      },
+      "cik": "0000000001",
+      "factors": {
+       "g_consistency": {
+        "basis": null,
+        "reason": "SEC_FACTOR_NOT_AVAILABLE",
+        "score": null
+       },
+       "g_growth_efficiency": {
+        "basis": null,
+        "reason": "SEC_FACTOR_NOT_AVAILABLE",
+        "score": null
+       },
+       "g_per_share_growth": {
+        "basis": null,
+        "reason": "SEC_FACTOR_NOT_AVAILABLE",
+        "score": null
+       },
+       "g_recent_acceleration": {
+        "basis": null,
+        "reason": "SEC_FACTOR_NOT_AVAILABLE",
+        "score": null
+       },
+       "g_revenue_growth": {
+        "basis": null,
+        "reason": "SEC_FACTOR_NOT_AVAILABLE",
+        "score": null
+       },
+       "q_capital_allocation": {
+        "basis": null,
+        "reason": "SEC_FACTOR_NOT_AVAILABLE",
+        "score": null
+       },
+       "q_earnings_quality": {
+        "basis": null,
+        "reason": "SEC_FACTOR_NOT_AVAILABLE",
+        "score": null
+       },
+       "q_financial_safety": {
+        "basis": null,
+        "reason": "SEC_FACTOR_NOT_AVAILABLE",
+        "score": null
+       },
+       "q_moat_proxy": {
+        "basis": null,
+        "reason": "SEC_FACTOR_NOT_AVAILABLE",
+        "score": null
+       },
+       "q_profitability": {
+        "basis": null,
+        "reason": "SEC_FACTOR_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_earnings_yield": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_expectation_check": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_fcf_yield": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_vs_industry": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_vs_own_history": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       }
+      },
+      "fiscal_year_end": null,
+      "flags": [
+       "GATE_NOT_EVALUATED",
+       "V_NOT_AVAILABLE"
+      ],
+      "in_cross_section": false,
+      "industry_group": null,
+      "price_status": "SUPPLIED",
+      "profile": null,
+      "q_industry_percentile": null,
+      "qg_reference_order": null,
+      "rank": null,
+      "rank_row": null,
+      "selected_types": [],
+      "source_reason_codes": [
+       "NOT_COLLECTED"
+      ],
+      "state": "NOT_AVAILABLE",
+      "total": null,
+      "total_reason": "SOURCE_NOT_AVAILABLE",
+      "type_reason": "TYPE_UNCONFIRMED",
+      "type_weights": {
+       "G": 33.0,
+       "Q": 34.0,
+       "V": 33.0
+      },
+      "v_excluded": null,
+      "value_trap_gate": false,
+      "weights": {
+       "G": 33.0,
+       "Q": 34.0,
+       "V": 33.0
+      }
+     },
+     "searchable": true,
+     "security_id": "SYNTHETIC-SEC-0",
+     "ticker": "T0"
+    },
+    {
+     "calculation_attempted": true,
+     "cik": "0000000002",
+     "eligibility": "ELIGIBLE",
+     "financial_acquired_at": "2026-11-01T01:00:00Z",
+     "financial_available": true,
+     "financial_reasons": [],
+     "name": "Synthetic 1",
+     "observation_id": "1",
+     "price_status": "SUPPLIED",
+     "rank": null,
+     "raw_metrics": {
+      "accruals_to_assets": 2.0,
+      "dilution_3y": 2.0,
+      "eps_cagr_3y": 2.0,
+      "fcf_per_share_cagr_3y": 2.0,
+      "fcf_to_net_income": 2.0,
+      "gross_profit_to_assets": 2.0,
+      "incremental_roic_3y": 2.0,
+      "incremental_roic_5y": 2.0,
+      "interest_coverage": 2.0,
+      "moat_proxy": 2.0,
+      "net_debt_to_ebitda": 2.0,
+      "revenue_acceleration": 2.0,
+      "revenue_cagr_3y": 2.0,
+      "revenue_growth_volatility": 2.0,
+      "revenue_positive_growth_share": 2.0,
+      "roic": 2.0
+     },
+     "reasons": [],
+     "score": {
+      "acquired_at": "2026-11-01T01:00:00Z",
+      "axes": {
+       "G": {
+        "factors_available": 5,
+        "reason": null,
+        "score": 7.5,
+        "state": "READY",
+        "weight_available": 1.0
+       },
+       "Q": {
+        "factors_available": 5,
+        "reason": null,
+        "score": 27.5,
+        "state": "READY",
+        "weight_available": 1.0
+       },
+       "V": {
+        "factors_available": 0,
+        "reason": "AXIS_WEIGHT_INSUFFICIENT",
+        "score": null,
+        "state": "NOT_AVAILABLE",
+        "weight_available": 0.0
+       }
+      },
+      "cik": "0000000002",
+      "factors": {
+       "g_consistency": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "g_growth_efficiency": {
+        "basis": null,
+        "reason": null,
+        "score": 0.0
+       },
+       "g_per_share_growth": {
+        "basis": null,
+        "reason": null,
+        "score": 0.0
+       },
+       "g_recent_acceleration": {
+        "basis": null,
+        "reason": null,
+        "score": 0.0
+       },
+       "g_revenue_growth": {
+        "basis": null,
+        "reason": null,
+        "score": 0.0
+       },
+       "q_capital_allocation": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "q_earnings_quality": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "q_financial_safety": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "q_moat_proxy": {
+        "basis": null,
+        "reason": null,
+        "score": 0.0
+       },
+       "q_profitability": {
+        "basis": null,
+        "reason": null,
+        "score": 0.0
+       },
+       "v_earnings_yield": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_expectation_check": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_fcf_yield": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_vs_industry": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_vs_own_history": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       }
+      },
+      "fiscal_year_end": "2025-12-31",
+      "flags": [
+       "VALUE_TRAP_CAUTION",
+       "V_NOT_AVAILABLE"
+      ],
+      "in_cross_section": true,
+      "industry_group": null,
+      "price_status": "SUPPLIED",
+      "profile": "GENERAL",
+      "q_industry_percentile": 0.0,
+      "qg_reference_order": 11,
+      "rank": null,
+      "rank_row": "NASDAQ:T1",
+      "selected_types": [
+       "growth"
+      ],
+      "source_reason_codes": [],
+      "state": "LIVE",
+      "total": 15.0,
+      "total_reason": null,
+      "type_reason": null,
+      "type_weights": {
+       "G": 50.0,
+       "Q": 30.0,
+       "V": 20.0
+      },
+      "v_excluded": "VALUE_TRAP_GATE",
+      "value_trap_gate": true,
+      "weights": {
+       "G": 50.0,
+       "Q": 30.0,
+       "V": 20.0
+      }
+     },
+     "searchable": true,
+     "security_id": "SYNTHETIC-SEC-1",
+     "ticker": "T1"
+    },
+    {
+     "calculation_attempted": true,
+     "cik": "0000000003",
+     "eligibility": "ELIGIBLE",
+     "financial_acquired_at": "2026-11-01T01:00:00Z",
+     "financial_available": true,
+     "financial_reasons": [],
+     "name": "Synthetic 2",
+     "observation_id": "2",
+     "price_status": "SUPPLIED",
+     "rank": null,
+     "raw_metrics": {
+      "accruals_to_assets": 3.0,
+      "dilution_3y": 3.0,
+      "eps_cagr_3y": 3.0,
+      "fcf_per_share_cagr_3y": 3.0,
+      "fcf_to_net_income": 3.0,
+      "gross_profit_to_assets": 3.0,
+      "incremental_roic_3y": 3.0,
+      "incremental_roic_5y": 3.0,
+      "interest_coverage": 3.0,
+      "moat_proxy": 3.0,
+      "net_debt_to_ebitda": 3.0,
+      "revenue_acceleration": 3.0,
+      "revenue_cagr_3y": 3.0,
+      "revenue_growth_volatility": 3.0,
+      "revenue_positive_growth_share": 3.0,
+      "roic": 3.0
+     },
+     "reasons": [],
+     "score": {
+      "acquired_at": "2026-11-01T01:00:00Z",
+      "axes": {
+       "G": {
+        "factors_available": 5,
+        "reason": null,
+        "score": 16.0,
+        "state": "READY",
+        "weight_available": 1.0
+       },
+       "Q": {
+        "factors_available": 5,
+        "reason": null,
+        "score": 32.0,
+        "state": "READY",
+        "weight_available": 1.0
+       },
+       "V": {
+        "factors_available": 0,
+        "reason": "AXIS_WEIGHT_INSUFFICIENT",
+        "score": null,
+        "state": "NOT_AVAILABLE",
+        "weight_available": 0.0
+       }
+      },
+      "cik": "0000000003",
+      "factors": {
+       "g_consistency": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "g_growth_efficiency": {
+        "basis": null,
+        "reason": null,
+        "score": 10.0
+       },
+       "g_per_share_growth": {
+        "basis": null,
+        "reason": null,
+        "score": 10.0
+       },
+       "g_recent_acceleration": {
+        "basis": null,
+        "reason": null,
+        "score": 10.0
+       },
+       "g_revenue_growth": {
+        "basis": null,
+        "reason": null,
+        "score": 10.0
+       },
+       "q_capital_allocation": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "q_earnings_quality": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "q_financial_safety": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "q_moat_proxy": {
+        "basis": null,
+        "reason": null,
+        "score": 10.0
+       },
+       "q_profitability": {
+        "basis": null,
+        "reason": null,
+        "score": 10.0
+       },
+       "v_earnings_yield": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_expectation_check": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_fcf_yield": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_vs_industry": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_vs_own_history": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       }
+      },
+      "fiscal_year_end": "2025-12-31",
+      "flags": [
+       "VALUE_TRAP_CAUTION",
+       "V_NOT_AVAILABLE"
+      ],
+      "in_cross_section": true,
+      "industry_group": null,
+      "price_status": "SUPPLIED",
+      "profile": "GENERAL",
+      "q_industry_percentile": 10.0,
+      "qg_reference_order": 10,
+      "rank": null,
+      "rank_row": "NASDAQ:T2",
+      "selected_types": [
+       "growth"
+      ],
+      "source_reason_codes": [],
+      "state": "LIVE",
+      "total": 22.0,
+      "total_reason": null,
+      "type_reason": null,
+      "type_weights": {
+       "G": 50.0,
+       "Q": 30.0,
+       "V": 20.0
+      },
+      "v_excluded": "VALUE_TRAP_GATE",
+      "value_trap_gate": true,
+      "weights": {
+       "G": 50.0,
+       "Q": 30.0,
+       "V": 20.0
+      }
+     },
+     "searchable": true,
+     "security_id": "SYNTHETIC-SEC-2",
+     "ticker": "T2"
+    },
+    {
+     "calculation_attempted": true,
+     "cik": "0000000004",
+     "eligibility": "ELIGIBLE",
+     "financial_acquired_at": "2026-11-01T01:00:00Z",
+     "financial_available": true,
+     "financial_reasons": [],
+     "name": "Synthetic 3",
+     "observation_id": "3",
+     "price_status": "SUPPLIED",
+     "rank": null,
+     "raw_metrics": {
+      "accruals_to_assets": 4.0,
+      "dilution_3y": 4.0,
+      "eps_cagr_3y": 4.0,
+      "fcf_per_share_cagr_3y": 4.0,
+      "fcf_to_net_income": 4.0,
+      "gross_profit_to_assets": 4.0,
+      "incremental_roic_3y": 4.0,
+      "incremental_roic_5y": 4.0,
+      "interest_coverage": 4.0,
+      "moat_proxy": 4.0,
+      "net_debt_to_ebitda": 4.0,
+      "revenue_acceleration": 4.0,
+      "revenue_cagr_3y": 4.0,
+      "revenue_growth_volatility": 4.0,
+      "revenue_positive_growth_share": 4.0,
+      "roic": 4.0
+     },
+     "reasons": [],
+     "score": {
+      "acquired_at": "2026-11-01T01:00:00Z",
+      "axes": {
+       "G": {
+        "factors_available": 5,
+        "reason": null,
+        "score": 24.5,
+        "state": "READY",
+        "weight_available": 1.0
+       },
+       "Q": {
+        "factors_available": 5,
+        "reason": null,
+        "score": 36.5,
+        "state": "READY",
+        "weight_available": 1.0
+       },
+       "V": {
+        "factors_available": 0,
+        "reason": "AXIS_WEIGHT_INSUFFICIENT",
+        "score": null,
+        "state": "NOT_AVAILABLE",
+        "weight_available": 0.0
+       }
+      },
+      "cik": "0000000004",
+      "factors": {
+       "g_consistency": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "g_growth_efficiency": {
+        "basis": null,
+        "reason": null,
+        "score": 20.0
+       },
+       "g_per_share_growth": {
+        "basis": null,
+        "reason": null,
+        "score": 20.0
+       },
+       "g_recent_acceleration": {
+        "basis": null,
+        "reason": null,
+        "score": 20.0
+       },
+       "g_revenue_growth": {
+        "basis": null,
+        "reason": null,
+        "score": 20.0
+       },
+       "q_capital_allocation": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "q_earnings_quality": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "q_financial_safety": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "q_moat_proxy": {
+        "basis": null,
+        "reason": null,
+        "score": 20.0
+       },
+       "q_profitability": {
+        "basis": null,
+        "reason": null,
+        "score": 20.0
+       },
+       "v_earnings_yield": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_expectation_check": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_fcf_yield": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_vs_industry": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_vs_own_history": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       }
+      },
+      "fiscal_year_end": "2025-12-31",
+      "flags": [
+       "VALUE_TRAP_CAUTION",
+       "V_NOT_AVAILABLE"
+      ],
+      "in_cross_section": true,
+      "industry_group": null,
+      "price_status": "SUPPLIED",
+      "profile": "GENERAL",
+      "q_industry_percentile": 20.0,
+      "qg_reference_order": 9,
+      "rank": null,
+      "rank_row": "NASDAQ:T3",
+      "selected_types": [
+       "growth"
+      ],
+      "source_reason_codes": [],
+      "state": "LIVE",
+      "total": 29.0,
+      "total_reason": null,
+      "type_reason": null,
+      "type_weights": {
+       "G": 50.0,
+       "Q": 30.0,
+       "V": 20.0
+      },
+      "v_excluded": "VALUE_TRAP_GATE",
+      "value_trap_gate": true,
+      "weights": {
+       "G": 50.0,
+       "Q": 30.0,
+       "V": 20.0
+      }
+     },
+     "searchable": true,
+     "security_id": "SYNTHETIC-SEC-3",
+     "ticker": "T3"
+    },
+    {
+     "calculation_attempted": true,
+     "cik": "0000000005",
+     "eligibility": "ELIGIBLE",
+     "financial_acquired_at": "2026-11-01T01:00:00Z",
+     "financial_available": true,
+     "financial_reasons": [],
+     "name": "Synthetic 4",
+     "observation_id": "4",
+     "price_status": "SUPPLIED",
+     "rank": null,
+     "raw_metrics": {
+      "accruals_to_assets": 5.0,
+      "dilution_3y": 5.0,
+      "eps_cagr_3y": 5.0,
+      "fcf_per_share_cagr_3y": 5.0,
+      "fcf_to_net_income": 5.0,
+      "gross_profit_to_assets": 5.0,
+      "incremental_roic_3y": 5.0,
+      "incremental_roic_5y": 5.0,
+      "interest_coverage": 5.0,
+      "moat_proxy": 5.0,
+      "net_debt_to_ebitda": 5.0,
+      "revenue_acceleration": 5.0,
+      "revenue_cagr_3y": 5.0,
+      "revenue_growth_volatility": 5.0,
+      "revenue_positive_growth_share": 5.0,
+      "roic": 5.0
+     },
+     "reasons": [],
+     "score": {
+      "acquired_at": "2026-11-01T01:00:00Z",
+      "axes": {
+       "G": {
+        "factors_available": 5,
+        "reason": null,
+        "score": 33.0,
+        "state": "READY",
+        "weight_available": 1.0
+       },
+       "Q": {
+        "factors_available": 5,
+        "reason": null,
+        "score": 41.0,
+        "state": "READY",
+        "weight_available": 1.0
+       },
+       "V": {
+        "factors_available": 0,
+        "reason": "AXIS_WEIGHT_INSUFFICIENT",
+        "score": null,
+        "state": "NOT_AVAILABLE",
+        "weight_available": 0.0
+       }
+      },
+      "cik": "0000000005",
+      "factors": {
+       "g_consistency": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "g_growth_efficiency": {
+        "basis": null,
+        "reason": null,
+        "score": 30.0
+       },
+       "g_per_share_growth": {
+        "basis": null,
+        "reason": null,
+        "score": 30.0
+       },
+       "g_recent_acceleration": {
+        "basis": null,
+        "reason": null,
+        "score": 30.0
+       },
+       "g_revenue_growth": {
+        "basis": null,
+        "reason": null,
+        "score": 30.0
+       },
+       "q_capital_allocation": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "q_earnings_quality": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "q_financial_safety": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "q_moat_proxy": {
+        "basis": null,
+        "reason": null,
+        "score": 30.0
+       },
+       "q_profitability": {
+        "basis": null,
+        "reason": null,
+        "score": 30.0
+       },
+       "v_earnings_yield": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_expectation_check": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_fcf_yield": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_vs_industry": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_vs_own_history": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       }
+      },
+      "fiscal_year_end": "2025-12-31",
+      "flags": [
+       "VALUE_TRAP_CAUTION",
+       "V_NOT_AVAILABLE"
+      ],
+      "in_cross_section": true,
+      "industry_group": null,
+      "price_status": "SUPPLIED",
+      "profile": "GENERAL",
+      "q_industry_percentile": 30.0,
+      "qg_reference_order": 8,
+      "rank": null,
+      "rank_row": "NASDAQ:T4",
+      "selected_types": [
+       "growth"
+      ],
+      "source_reason_codes": [],
+      "state": "LIVE",
+      "total": 36.0,
+      "total_reason": null,
+      "type_reason": null,
+      "type_weights": {
+       "G": 50.0,
+       "Q": 30.0,
+       "V": 20.0
+      },
+      "v_excluded": "VALUE_TRAP_GATE",
+      "value_trap_gate": true,
+      "weights": {
+       "G": 50.0,
+       "Q": 30.0,
+       "V": 20.0
+      }
+     },
+     "searchable": true,
+     "security_id": "SYNTHETIC-SEC-4",
+     "ticker": "T4"
+    },
+    {
+     "calculation_attempted": true,
+     "cik": "0000000006",
+     "eligibility": "ELIGIBLE",
+     "financial_acquired_at": "2026-11-01T01:00:00Z",
+     "financial_available": true,
+     "financial_reasons": [],
+     "name": "Synthetic 5",
+     "observation_id": "5",
+     "price_status": "SUPPLIED",
+     "rank": null,
+     "raw_metrics": {
+      "accruals_to_assets": 6.0,
+      "dilution_3y": 6.0,
+      "eps_cagr_3y": 6.0,
+      "fcf_per_share_cagr_3y": 6.0,
+      "fcf_to_net_income": 6.0,
+      "gross_profit_to_assets": 6.0,
+      "incremental_roic_3y": 6.0,
+      "incremental_roic_5y": 6.0,
+      "interest_coverage": 6.0,
+      "moat_proxy": 6.0,
+      "net_debt_to_ebitda": 6.0,
+      "revenue_acceleration": 6.0,
+      "revenue_cagr_3y": 6.0,
+      "revenue_growth_volatility": 6.0,
+      "revenue_positive_growth_share": 6.0,
+      "roic": 6.0
+     },
+     "reasons": [],
+     "score": {
+      "acquired_at": "2026-11-01T01:00:00Z",
+      "axes": {
+       "G": {
+        "factors_available": 5,
+        "reason": null,
+        "score": 41.5,
+        "state": "READY",
+        "weight_available": 1.0
+       },
+       "Q": {
+        "factors_available": 5,
+        "reason": null,
+        "score": 45.5,
+        "state": "READY",
+        "weight_available": 1.0
+       },
+       "V": {
+        "factors_available": 0,
+        "reason": "AXIS_WEIGHT_INSUFFICIENT",
+        "score": null,
+        "state": "NOT_AVAILABLE",
+        "weight_available": 0.0
+       }
+      },
+      "cik": "0000000006",
+      "factors": {
+       "g_consistency": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "g_growth_efficiency": {
+        "basis": null,
+        "reason": null,
+        "score": 40.0
+       },
+       "g_per_share_growth": {
+        "basis": null,
+        "reason": null,
+        "score": 40.0
+       },
+       "g_recent_acceleration": {
+        "basis": null,
+        "reason": null,
+        "score": 40.0
+       },
+       "g_revenue_growth": {
+        "basis": null,
+        "reason": null,
+        "score": 40.0
+       },
+       "q_capital_allocation": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "q_earnings_quality": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "q_financial_safety": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "q_moat_proxy": {
+        "basis": null,
+        "reason": null,
+        "score": 40.0
+       },
+       "q_profitability": {
+        "basis": null,
+        "reason": null,
+        "score": 40.0
+       },
+       "v_earnings_yield": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_expectation_check": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_fcf_yield": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_vs_industry": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_vs_own_history": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       }
+      },
+      "fiscal_year_end": "2025-12-31",
+      "flags": [
+       "V_NOT_AVAILABLE"
+      ],
+      "in_cross_section": true,
+      "industry_group": null,
+      "price_status": "SUPPLIED",
+      "profile": "GENERAL",
+      "q_industry_percentile": 40.0,
+      "qg_reference_order": 7,
+      "rank": null,
+      "rank_row": "NASDAQ:T5",
+      "selected_types": [
+       "growth"
+      ],
+      "source_reason_codes": [],
+      "state": "LIVE",
+      "total": 43.0,
+      "total_reason": null,
+      "type_reason": null,
+      "type_weights": {
+       "G": 50.0,
+       "Q": 30.0,
+       "V": 20.0
+      },
+      "v_excluded": null,
+      "value_trap_gate": false,
+      "weights": {
+       "G": 50.0,
+       "Q": 30.0,
+       "V": 20.0
+      }
+     },
+     "searchable": true,
+     "security_id": "SYNTHETIC-SEC-5",
+     "ticker": "T5"
+    },
+    {
+     "calculation_attempted": true,
+     "cik": "0000000007",
+     "eligibility": "ELIGIBLE",
+     "financial_acquired_at": "2026-11-01T01:00:00Z",
+     "financial_available": true,
+     "financial_reasons": [],
+     "name": "Synthetic 6",
+     "observation_id": "6",
+     "price_status": "SUPPLIED",
+     "rank": null,
+     "raw_metrics": {
+      "accruals_to_assets": 7.0,
+      "dilution_3y": 7.0,
+      "eps_cagr_3y": 7.0,
+      "fcf_per_share_cagr_3y": 7.0,
+      "fcf_to_net_income": 7.0,
+      "gross_profit_to_assets": 7.0,
+      "incremental_roic_3y": 7.0,
+      "incremental_roic_5y": 7.0,
+      "interest_coverage": 7.0,
+      "moat_proxy": 7.0,
+      "net_debt_to_ebitda": 7.0,
+      "revenue_acceleration": 7.0,
+      "revenue_cagr_3y": 7.0,
+      "revenue_growth_volatility": 7.0,
+      "revenue_positive_growth_share": 7.0,
+      "roic": 7.0
+     },
+     "reasons": [],
+     "score": {
+      "acquired_at": "2026-11-01T01:00:00Z",
+      "axes": {
+       "G": {
+        "factors_available": 5,
+        "reason": null,
+        "score": 50.0,
+        "state": "READY",
+        "weight_available": 1.0
+       },
+       "Q": {
+        "factors_available": 5,
+        "reason": null,
+        "score": 50.0,
+        "state": "READY",
+        "weight_available": 1.0
+       },
+       "V": {
+        "factors_available": 0,
+        "reason": "AXIS_WEIGHT_INSUFFICIENT",
+        "score": null,
+        "state": "NOT_AVAILABLE",
+        "weight_available": 0.0
+       }
+      },
+      "cik": "0000000007",
+      "factors": {
+       "g_consistency": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "g_growth_efficiency": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "g_per_share_growth": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "g_recent_acceleration": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "g_revenue_growth": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "q_capital_allocation": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "q_earnings_quality": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "q_financial_safety": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "q_moat_proxy": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "q_profitability": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "v_earnings_yield": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_expectation_check": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_fcf_yield": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_vs_industry": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_vs_own_history": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       }
+      },
+      "fiscal_year_end": "2025-12-31",
+      "flags": [
+       "V_NOT_AVAILABLE"
+      ],
+      "in_cross_section": true,
+      "industry_group": null,
+      "price_status": "SUPPLIED",
+      "profile": "GENERAL",
+      "q_industry_percentile": 50.0,
+      "qg_reference_order": 6,
+      "rank": null,
+      "rank_row": "NASDAQ:T6",
+      "selected_types": [
+       "growth"
+      ],
+      "source_reason_codes": [],
+      "state": "LIVE",
+      "total": 50.0,
+      "total_reason": null,
+      "type_reason": null,
+      "type_weights": {
+       "G": 50.0,
+       "Q": 30.0,
+       "V": 20.0
+      },
+      "v_excluded": null,
+      "value_trap_gate": false,
+      "weights": {
+       "G": 50.0,
+       "Q": 30.0,
+       "V": 20.0
+      }
+     },
+     "searchable": true,
+     "security_id": "SYNTHETIC-SEC-6",
+     "ticker": "T6"
+    },
+    {
+     "calculation_attempted": true,
+     "cik": "0000000008",
+     "eligibility": "ELIGIBLE",
+     "financial_acquired_at": "2026-11-01T01:00:00Z",
+     "financial_available": true,
+     "financial_reasons": [],
+     "name": "Synthetic 7",
+     "observation_id": "7",
+     "price_status": "SUPPLIED",
+     "rank": null,
+     "raw_metrics": {
+      "accruals_to_assets": 8.0,
+      "dilution_3y": 8.0,
+      "eps_cagr_3y": 8.0,
+      "fcf_per_share_cagr_3y": 8.0,
+      "fcf_to_net_income": 8.0,
+      "gross_profit_to_assets": 8.0,
+      "incremental_roic_3y": 8.0,
+      "incremental_roic_5y": 8.0,
+      "interest_coverage": 8.0,
+      "moat_proxy": 8.0,
+      "net_debt_to_ebitda": 8.0,
+      "revenue_acceleration": 8.0,
+      "revenue_cagr_3y": 8.0,
+      "revenue_growth_volatility": 8.0,
+      "revenue_positive_growth_share": 8.0,
+      "roic": 8.0
+     },
+     "reasons": [],
+     "score": {
+      "acquired_at": "2026-11-01T01:00:00Z",
+      "axes": {
+       "G": {
+        "factors_available": 5,
+        "reason": null,
+        "score": 58.5,
+        "state": "READY",
+        "weight_available": 1.0
+       },
+       "Q": {
+        "factors_available": 5,
+        "reason": null,
+        "score": 54.5,
+        "state": "READY",
+        "weight_available": 1.0
+       },
+       "V": {
+        "factors_available": 0,
+        "reason": "AXIS_WEIGHT_INSUFFICIENT",
+        "score": null,
+        "state": "NOT_AVAILABLE",
+        "weight_available": 0.0
+       }
+      },
+      "cik": "0000000008",
+      "factors": {
+       "g_consistency": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "g_growth_efficiency": {
+        "basis": null,
+        "reason": null,
+        "score": 60.0
+       },
+       "g_per_share_growth": {
+        "basis": null,
+        "reason": null,
+        "score": 60.0
+       },
+       "g_recent_acceleration": {
+        "basis": null,
+        "reason": null,
+        "score": 60.0
+       },
+       "g_revenue_growth": {
+        "basis": null,
+        "reason": null,
+        "score": 60.0
+       },
+       "q_capital_allocation": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "q_earnings_quality": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "q_financial_safety": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "q_moat_proxy": {
+        "basis": null,
+        "reason": null,
+        "score": 60.0
+       },
+       "q_profitability": {
+        "basis": null,
+        "reason": null,
+        "score": 60.0
+       },
+       "v_earnings_yield": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_expectation_check": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_fcf_yield": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_vs_industry": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_vs_own_history": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       }
+      },
+      "fiscal_year_end": "2025-12-31",
+      "flags": [
+       "V_NOT_AVAILABLE"
+      ],
+      "in_cross_section": true,
+      "industry_group": null,
+      "price_status": "SUPPLIED",
+      "profile": "GENERAL",
+      "q_industry_percentile": 60.0,
+      "qg_reference_order": 5,
+      "rank": null,
+      "rank_row": "NASDAQ:T7",
+      "selected_types": [
+       "growth"
+      ],
+      "source_reason_codes": [],
+      "state": "LIVE",
+      "total": 57.0,
+      "total_reason": null,
+      "type_reason": null,
+      "type_weights": {
+       "G": 50.0,
+       "Q": 30.0,
+       "V": 20.0
+      },
+      "v_excluded": null,
+      "value_trap_gate": false,
+      "weights": {
+       "G": 50.0,
+       "Q": 30.0,
+       "V": 20.0
+      }
+     },
+     "searchable": true,
+     "security_id": "SYNTHETIC-SEC-7",
+     "ticker": "T7"
+    },
+    {
+     "calculation_attempted": true,
+     "cik": "0000000009",
+     "eligibility": "ELIGIBLE",
+     "financial_acquired_at": "2026-11-01T01:00:00Z",
+     "financial_available": true,
+     "financial_reasons": [],
+     "name": "Synthetic 8",
+     "observation_id": "8",
+     "price_status": "SUPPLIED",
+     "rank": null,
+     "raw_metrics": {
+      "accruals_to_assets": 9.0,
+      "dilution_3y": 9.0,
+      "eps_cagr_3y": 9.0,
+      "fcf_per_share_cagr_3y": 9.0,
+      "fcf_to_net_income": 9.0,
+      "gross_profit_to_assets": 9.0,
+      "incremental_roic_3y": 9.0,
+      "incremental_roic_5y": 9.0,
+      "interest_coverage": 9.0,
+      "moat_proxy": 9.0,
+      "net_debt_to_ebitda": 9.0,
+      "revenue_acceleration": 9.0,
+      "revenue_cagr_3y": 9.0,
+      "revenue_growth_volatility": 9.0,
+      "revenue_positive_growth_share": 9.0,
+      "roic": 9.0
+     },
+     "reasons": [],
+     "score": {
+      "acquired_at": "2026-11-01T01:00:00Z",
+      "axes": {
+       "G": {
+        "factors_available": 5,
+        "reason": null,
+        "score": 67.0,
+        "state": "READY",
+        "weight_available": 1.0
+       },
+       "Q": {
+        "factors_available": 5,
+        "reason": null,
+        "score": 59.0,
+        "state": "READY",
+        "weight_available": 1.0
+       },
+       "V": {
+        "factors_available": 0,
+        "reason": "AXIS_WEIGHT_INSUFFICIENT",
+        "score": null,
+        "state": "NOT_AVAILABLE",
+        "weight_available": 0.0
+       }
+      },
+      "cik": "0000000009",
+      "factors": {
+       "g_consistency": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "g_growth_efficiency": {
+        "basis": null,
+        "reason": null,
+        "score": 70.0
+       },
+       "g_per_share_growth": {
+        "basis": null,
+        "reason": null,
+        "score": 70.0
+       },
+       "g_recent_acceleration": {
+        "basis": null,
+        "reason": null,
+        "score": 70.0
+       },
+       "g_revenue_growth": {
+        "basis": null,
+        "reason": null,
+        "score": 70.0
+       },
+       "q_capital_allocation": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "q_earnings_quality": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "q_financial_safety": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "q_moat_proxy": {
+        "basis": null,
+        "reason": null,
+        "score": 70.0
+       },
+       "q_profitability": {
+        "basis": null,
+        "reason": null,
+        "score": 70.0
+       },
+       "v_earnings_yield": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_expectation_check": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_fcf_yield": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_vs_industry": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_vs_own_history": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       }
+      },
+      "fiscal_year_end": "2025-12-31",
+      "flags": [
+       "V_NOT_AVAILABLE"
+      ],
+      "in_cross_section": true,
+      "industry_group": null,
+      "price_status": "SUPPLIED",
+      "profile": "GENERAL",
+      "q_industry_percentile": 70.0,
+      "qg_reference_order": 4,
+      "rank": null,
+      "rank_row": "NASDAQ:T8",
+      "selected_types": [
+       "growth"
+      ],
+      "source_reason_codes": [],
+      "state": "LIVE",
+      "total": 64.0,
+      "total_reason": null,
+      "type_reason": null,
+      "type_weights": {
+       "G": 50.0,
+       "Q": 30.0,
+       "V": 20.0
+      },
+      "v_excluded": null,
+      "value_trap_gate": false,
+      "weights": {
+       "G": 50.0,
+       "Q": 30.0,
+       "V": 20.0
+      }
+     },
+     "searchable": true,
+     "security_id": "SYNTHETIC-SEC-8",
+     "ticker": "T8"
+    },
+    {
+     "calculation_attempted": true,
+     "cik": "0000000010",
+     "eligibility": "ELIGIBLE",
+     "financial_acquired_at": "2026-11-01T01:00:00Z",
+     "financial_available": true,
+     "financial_reasons": [],
+     "name": "Synthetic 9",
+     "observation_id": "9",
+     "price_status": "SUPPLIED",
+     "rank": null,
+     "raw_metrics": {
+      "accruals_to_assets": 10.0,
+      "dilution_3y": 10.0,
+      "eps_cagr_3y": 10.0,
+      "fcf_per_share_cagr_3y": 10.0,
+      "fcf_to_net_income": 10.0,
+      "gross_profit_to_assets": 10.0,
+      "incremental_roic_3y": 10.0,
+      "incremental_roic_5y": 10.0,
+      "interest_coverage": 10.0,
+      "moat_proxy": 10.0,
+      "net_debt_to_ebitda": 10.0,
+      "revenue_acceleration": 10.0,
+      "revenue_cagr_3y": 10.0,
+      "revenue_growth_volatility": 10.0,
+      "revenue_positive_growth_share": 10.0,
+      "roic": 10.0
+     },
+     "reasons": [],
+     "score": {
+      "acquired_at": "2026-11-01T01:00:00Z",
+      "axes": {
+       "G": {
+        "factors_available": 5,
+        "reason": null,
+        "score": 75.5,
+        "state": "READY",
+        "weight_available": 1.0
+       },
+       "Q": {
+        "factors_available": 5,
+        "reason": null,
+        "score": 63.5,
+        "state": "READY",
+        "weight_available": 1.0
+       },
+       "V": {
+        "factors_available": 0,
+        "reason": "AXIS_WEIGHT_INSUFFICIENT",
+        "score": null,
+        "state": "NOT_AVAILABLE",
+        "weight_available": 0.0
+       }
+      },
+      "cik": "0000000010",
+      "factors": {
+       "g_consistency": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "g_growth_efficiency": {
+        "basis": null,
+        "reason": null,
+        "score": 80.0
+       },
+       "g_per_share_growth": {
+        "basis": null,
+        "reason": null,
+        "score": 80.0
+       },
+       "g_recent_acceleration": {
+        "basis": null,
+        "reason": null,
+        "score": 80.0
+       },
+       "g_revenue_growth": {
+        "basis": null,
+        "reason": null,
+        "score": 80.0
+       },
+       "q_capital_allocation": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "q_earnings_quality": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "q_financial_safety": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "q_moat_proxy": {
+        "basis": null,
+        "reason": null,
+        "score": 80.0
+       },
+       "q_profitability": {
+        "basis": null,
+        "reason": null,
+        "score": 80.0
+       },
+       "v_earnings_yield": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_expectation_check": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_fcf_yield": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_vs_industry": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_vs_own_history": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       }
+      },
+      "fiscal_year_end": "2025-12-31",
+      "flags": [
+       "V_NOT_AVAILABLE"
+      ],
+      "in_cross_section": true,
+      "industry_group": null,
+      "price_status": "SUPPLIED",
+      "profile": "GENERAL",
+      "q_industry_percentile": 80.0,
+      "qg_reference_order": 3,
+      "rank": null,
+      "rank_row": "NASDAQ:T9",
+      "selected_types": [
+       "growth"
+      ],
+      "source_reason_codes": [],
+      "state": "LIVE",
+      "total": 71.0,
+      "total_reason": null,
+      "type_reason": null,
+      "type_weights": {
+       "G": 50.0,
+       "Q": 30.0,
+       "V": 20.0
+      },
+      "v_excluded": null,
+      "value_trap_gate": false,
+      "weights": {
+       "G": 50.0,
+       "Q": 30.0,
+       "V": 20.0
+      }
+     },
+     "searchable": true,
+     "security_id": "SYNTHETIC-SEC-9",
+     "ticker": "T9"
+    },
+    {
+     "calculation_attempted": true,
+     "cik": "0000000011",
+     "eligibility": "ELIGIBLE",
+     "financial_acquired_at": "2026-11-01T01:00:00Z",
+     "financial_available": true,
+     "financial_reasons": [],
+     "name": "Synthetic 10",
+     "observation_id": "10",
+     "price_status": "SUPPLIED",
+     "rank": null,
+     "raw_metrics": {
+      "accruals_to_assets": 11.0,
+      "dilution_3y": 11.0,
+      "eps_cagr_3y": 11.0,
+      "fcf_per_share_cagr_3y": 11.0,
+      "fcf_to_net_income": 11.0,
+      "gross_profit_to_assets": 11.0,
+      "incremental_roic_3y": 11.0,
+      "incremental_roic_5y": 11.0,
+      "interest_coverage": 11.0,
+      "moat_proxy": 11.0,
+      "net_debt_to_ebitda": 11.0,
+      "revenue_acceleration": 11.0,
+      "revenue_cagr_3y": 11.0,
+      "revenue_growth_volatility": 11.0,
+      "revenue_positive_growth_share": 11.0,
+      "roic": 11.0
+     },
+     "reasons": [],
+     "score": {
+      "acquired_at": "2026-11-01T01:00:00Z",
+      "axes": {
+       "G": {
+        "factors_available": 5,
+        "reason": null,
+        "score": 84.0,
+        "state": "READY",
+        "weight_available": 1.0
+       },
+       "Q": {
+        "factors_available": 5,
+        "reason": null,
+        "score": 68.0,
+        "state": "READY",
+        "weight_available": 1.0
+       },
+       "V": {
+        "factors_available": 0,
+        "reason": "AXIS_WEIGHT_INSUFFICIENT",
+        "score": null,
+        "state": "NOT_AVAILABLE",
+        "weight_available": 0.0
+       }
+      },
+      "cik": "0000000011",
+      "factors": {
+       "g_consistency": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "g_growth_efficiency": {
+        "basis": null,
+        "reason": null,
+        "score": 90.0
+       },
+       "g_per_share_growth": {
+        "basis": null,
+        "reason": null,
+        "score": 90.0
+       },
+       "g_recent_acceleration": {
+        "basis": null,
+        "reason": null,
+        "score": 90.0
+       },
+       "g_revenue_growth": {
+        "basis": null,
+        "reason": null,
+        "score": 90.0
+       },
+       "q_capital_allocation": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "q_earnings_quality": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "q_financial_safety": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "q_moat_proxy": {
+        "basis": null,
+        "reason": null,
+        "score": 90.0
+       },
+       "q_profitability": {
+        "basis": null,
+        "reason": null,
+        "score": 90.0
+       },
+       "v_earnings_yield": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_expectation_check": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_fcf_yield": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_vs_industry": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_vs_own_history": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       }
+      },
+      "fiscal_year_end": "2025-12-31",
+      "flags": [
+       "V_NOT_AVAILABLE"
+      ],
+      "in_cross_section": true,
+      "industry_group": null,
+      "price_status": "SUPPLIED",
+      "profile": "GENERAL",
+      "q_industry_percentile": 90.0,
+      "qg_reference_order": 2,
+      "rank": null,
+      "rank_row": "NASDAQ:T10",
+      "selected_types": [
+       "growth"
+      ],
+      "source_reason_codes": [],
+      "state": "LIVE",
+      "total": 78.0,
+      "total_reason": null,
+      "type_reason": null,
+      "type_weights": {
+       "G": 50.0,
+       "Q": 30.0,
+       "V": 20.0
+      },
+      "v_excluded": null,
+      "value_trap_gate": false,
+      "weights": {
+       "G": 50.0,
+       "Q": 30.0,
+       "V": 20.0
+      }
+     },
+     "searchable": true,
+     "security_id": "SYNTHETIC-SEC-10",
+     "ticker": "T10"
+    },
+    {
+     "calculation_attempted": true,
+     "cik": "0000000012",
+     "eligibility": "ELIGIBLE",
+     "financial_acquired_at": "2026-11-01T01:00:00Z",
+     "financial_available": true,
+     "financial_reasons": [],
+     "name": "Synthetic 11",
+     "observation_id": "11",
+     "price_status": "SUPPLIED",
+     "rank": null,
+     "raw_metrics": {
+      "accruals_to_assets": 12.0,
+      "dilution_3y": 12.0,
+      "eps_cagr_3y": 12.0,
+      "fcf_per_share_cagr_3y": 12.0,
+      "fcf_to_net_income": 12.0,
+      "gross_profit_to_assets": 12.0,
+      "incremental_roic_3y": 12.0,
+      "incremental_roic_5y": 12.0,
+      "interest_coverage": 12.0,
+      "moat_proxy": 12.0,
+      "net_debt_to_ebitda": 12.0,
+      "revenue_acceleration": 12.0,
+      "revenue_cagr_3y": 12.0,
+      "revenue_growth_volatility": 12.0,
+      "revenue_positive_growth_share": 12.0,
+      "roic": 12.0
+     },
+     "reasons": [],
+     "score": {
+      "acquired_at": "2026-11-01T01:00:00Z",
+      "axes": {
+       "G": {
+        "factors_available": 5,
+        "reason": null,
+        "score": 92.5,
+        "state": "READY",
+        "weight_available": 1.0
+       },
+       "Q": {
+        "factors_available": 5,
+        "reason": null,
+        "score": 72.5,
+        "state": "READY",
+        "weight_available": 1.0
+       },
+       "V": {
+        "factors_available": 0,
+        "reason": "AXIS_WEIGHT_INSUFFICIENT",
+        "score": null,
+        "state": "NOT_AVAILABLE",
+        "weight_available": 0.0
+       }
+      },
+      "cik": "0000000012",
+      "factors": {
+       "g_consistency": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "g_growth_efficiency": {
+        "basis": null,
+        "reason": null,
+        "score": 100.0
+       },
+       "g_per_share_growth": {
+        "basis": null,
+        "reason": null,
+        "score": 100.0
+       },
+       "g_recent_acceleration": {
+        "basis": null,
+        "reason": null,
+        "score": 100.0
+       },
+       "g_revenue_growth": {
+        "basis": null,
+        "reason": null,
+        "score": 100.0
+       },
+       "q_capital_allocation": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "q_earnings_quality": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "q_financial_safety": {
+        "basis": null,
+        "reason": null,
+        "score": 50.0
+       },
+       "q_moat_proxy": {
+        "basis": null,
+        "reason": null,
+        "score": 100.0
+       },
+       "q_profitability": {
+        "basis": null,
+        "reason": null,
+        "score": 100.0
+       },
+       "v_earnings_yield": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_expectation_check": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_fcf_yield": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_vs_industry": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       },
+       "v_vs_own_history": {
+        "basis": null,
+        "reason": "V_INPUTS_NOT_AVAILABLE",
+        "score": null
+       }
+      },
+      "fiscal_year_end": "2025-12-31",
+      "flags": [
+       "V_NOT_AVAILABLE"
+      ],
+      "in_cross_section": true,
+      "industry_group": null,
+      "price_status": "SUPPLIED",
+      "profile": "GENERAL",
+      "q_industry_percentile": 100.0,
+      "qg_reference_order": 1,
+      "rank": null,
+      "rank_row": "NASDAQ:T11",
+      "selected_types": [
+       "growth"
+      ],
+      "source_reason_codes": [],
+      "state": "LIVE",
+      "total": 85.0,
+      "total_reason": null,
+      "type_reason": null,
+      "type_weights": {
+       "G": 50.0,
+       "Q": 30.0,
+       "V": 20.0
+      },
+      "v_excluded": null,
+      "value_trap_gate": false,
+      "weights": {
+       "G": 50.0,
+       "Q": 30.0,
+       "V": 20.0
+      }
+     },
+     "searchable": true,
+     "security_id": "SYNTHETIC-SEC-11",
+     "ticker": "T11"
+    }
+   ],
+   "schema_version": "current-expansion-research/1",
+   "source": {
+    "basis_date": "2026-11-02",
+    "complete": true,
+    "observed_at": "2026-11-02T21:00:00Z",
+    "scope": "IEX_TRADABLE",
+    "source_ref": "SYNTHETIC:complete-iex-list"
+   },
+   "universe_version": "U-US-EXPANDED-CURRENT/1",
+   "visibility": "PRIVATE_RESEARCH"
+  },
+  "partial12": {
+   "basis_date": "2026-11-02",
+   "calc_version": "qgv2-calc/2026-10-23.1",
+   "counts": {
+    "candidate_rows": 12,
+    "eligible": 0,
+    "excluded": 0,
+    "financial_rows": 11,
+    "fixed_security_ids": 0,
+    "scored": 0,
+    "unique_issuers": 12,
+    "unique_tickers": 12,
+    "unknown": 12
+   },
+   "coverage": {
+    "G": null,
+    "Q": null,
+    "V": null,
+    "denominator": null,
+    "factors": null,
+    "preset_actual_total": null,
+    "ranked": null,
+    "simultaneous": null
+   },
+   "full_market_denominator": null,
+   "policy": {
+    "adv_gate": "DEFERRED",
+    "entry_market_cap_usd": 250000000,
+    "entry_price_usd": 5,
+    "official_universe_replaced": false,
+    "rebalance": "MONTH_END",
+    "representatives": "ONE_PER_ISSUER",
+    "retain_market_cap_usd": 200000000,
+    "retain_price_usd": 3,
+    "version": "current-nominal-20261031/1"
+   },
+   "population_reasons": [
+    "COMPLETE_CURRENT_IEX_ROSTER_UNCONFIRMED",
+    "ELIGIBILITY_UNRESOLVED"
+   ],
+   "rows": [
+    {
+     "calculation_attempted": false,
+     "cik": "0000000001",
+     "eligibility": "UNKNOWN",
+     "financial_acquired_at": null,
+     "financial_available": false,
+     "financial_reasons": [
+      "FINANCIAL_NOT_HELD"
+     ],
+     "name": "Synthetic 0",
+     "observation_id": "0",
+     "rank": null,
+     "raw_metrics": {},
+     "reasons": [
+      "ISSUER_LINK_UNCONFIRMED"
+     ],
+     "score": null,
+     "searchable": true,
+     "security_id": null,
+     "ticker": "T0"
+    },
+    {
+     "calculation_attempted": false,
+     "cik": "0000000002",
+     "eligibility": "UNKNOWN",
+     "financial_acquired_at": "2026-11-01T01:00:00Z",
+     "financial_available": true,
+     "financial_reasons": [],
+     "name": "Synthetic 1",
+     "observation_id": "1",
+     "rank": null,
+     "raw_metrics": {
+      "accruals_to_assets": 2.0,
+      "dilution_3y": 2.0,
+      "eps_cagr_3y": 2.0,
+      "fcf_per_share_cagr_3y": 2.0,
+      "fcf_to_net_income": 2.0,
+      "gross_profit_to_assets": 2.0,
+      "incremental_roic_3y": 2.0,
+      "incremental_roic_5y": 2.0,
+      "interest_coverage": 2.0,
+      "moat_proxy": 2.0,
+      "net_debt_to_ebitda": 2.0,
+      "revenue_acceleration": 2.0,
+      "revenue_cagr_3y": 2.0,
+      "revenue_growth_volatility": 2.0,
+      "revenue_positive_growth_share": 2.0,
+      "roic": 2.0
+     },
+     "reasons": [
+      "ISSUER_LINK_UNCONFIRMED"
+     ],
+     "score": null,
+     "searchable": true,
+     "security_id": null,
+     "ticker": "T1"
+    },
+    {
+     "calculation_attempted": false,
+     "cik": "0000000003",
+     "eligibility": "UNKNOWN",
+     "financial_acquired_at": "2026-11-01T01:00:00Z",
+     "financial_available": true,
+     "financial_reasons": [],
+     "name": "Synthetic 2",
+     "observation_id": "2",
+     "rank": null,
+     "raw_metrics": {
+      "accruals_to_assets": 3.0,
+      "dilution_3y": 3.0,
+      "eps_cagr_3y": 3.0,
+      "fcf_per_share_cagr_3y": 3.0,
+      "fcf_to_net_income": 3.0,
+      "gross_profit_to_assets": 3.0,
+      "incremental_roic_3y": 3.0,
+      "incremental_roic_5y": 3.0,
+      "interest_coverage": 3.0,
+      "moat_proxy": 3.0,
+      "net_debt_to_ebitda": 3.0,
+      "revenue_acceleration": 3.0,
+      "revenue_cagr_3y": 3.0,
+      "revenue_growth_volatility": 3.0,
+      "revenue_positive_growth_share": 3.0,
+      "roic": 3.0
+     },
+     "reasons": [
+      "ISSUER_LINK_UNCONFIRMED"
+     ],
+     "score": null,
+     "searchable": true,
+     "security_id": null,
+     "ticker": "T2"
+    },
+    {
+     "calculation_attempted": false,
+     "cik": "0000000004",
+     "eligibility": "UNKNOWN",
+     "financial_acquired_at": "2026-11-01T01:00:00Z",
+     "financial_available": true,
+     "financial_reasons": [],
+     "name": "Synthetic 3",
+     "observation_id": "3",
+     "rank": null,
+     "raw_metrics": {
+      "accruals_to_assets": 4.0,
+      "dilution_3y": 4.0,
+      "eps_cagr_3y": 4.0,
+      "fcf_per_share_cagr_3y": 4.0,
+      "fcf_to_net_income": 4.0,
+      "gross_profit_to_assets": 4.0,
+      "incremental_roic_3y": 4.0,
+      "incremental_roic_5y": 4.0,
+      "interest_coverage": 4.0,
+      "moat_proxy": 4.0,
+      "net_debt_to_ebitda": 4.0,
+      "revenue_acceleration": 4.0,
+      "revenue_cagr_3y": 4.0,
+      "revenue_growth_volatility": 4.0,
+      "revenue_positive_growth_share": 4.0,
+      "roic": 4.0
+     },
+     "reasons": [
+      "ISSUER_LINK_UNCONFIRMED"
+     ],
+     "score": null,
+     "searchable": true,
+     "security_id": null,
+     "ticker": "T3"
+    },
+    {
+     "calculation_attempted": false,
+     "cik": "0000000005",
+     "eligibility": "UNKNOWN",
+     "financial_acquired_at": "2026-11-01T01:00:00Z",
+     "financial_available": true,
+     "financial_reasons": [],
+     "name": "Synthetic 4",
+     "observation_id": "4",
+     "rank": null,
+     "raw_metrics": {
+      "accruals_to_assets": 5.0,
+      "dilution_3y": 5.0,
+      "eps_cagr_3y": 5.0,
+      "fcf_per_share_cagr_3y": 5.0,
+      "fcf_to_net_income": 5.0,
+      "gross_profit_to_assets": 5.0,
+      "incremental_roic_3y": 5.0,
+      "incremental_roic_5y": 5.0,
+      "interest_coverage": 5.0,
+      "moat_proxy": 5.0,
+      "net_debt_to_ebitda": 5.0,
+      "revenue_acceleration": 5.0,
+      "revenue_cagr_3y": 5.0,
+      "revenue_growth_volatility": 5.0,
+      "revenue_positive_growth_share": 5.0,
+      "roic": 5.0
+     },
+     "reasons": [
+      "ISSUER_LINK_UNCONFIRMED"
+     ],
+     "score": null,
+     "searchable": true,
+     "security_id": null,
+     "ticker": "T4"
+    },
+    {
+     "calculation_attempted": false,
+     "cik": "0000000006",
+     "eligibility": "UNKNOWN",
+     "financial_acquired_at": "2026-11-01T01:00:00Z",
+     "financial_available": true,
+     "financial_reasons": [],
+     "name": "Synthetic 5",
+     "observation_id": "5",
+     "rank": null,
+     "raw_metrics": {
+      "accruals_to_assets": 6.0,
+      "dilution_3y": 6.0,
+      "eps_cagr_3y": 6.0,
+      "fcf_per_share_cagr_3y": 6.0,
+      "fcf_to_net_income": 6.0,
+      "gross_profit_to_assets": 6.0,
+      "incremental_roic_3y": 6.0,
+      "incremental_roic_5y": 6.0,
+      "interest_coverage": 6.0,
+      "moat_proxy": 6.0,
+      "net_debt_to_ebitda": 6.0,
+      "revenue_acceleration": 6.0,
+      "revenue_cagr_3y": 6.0,
+      "revenue_growth_volatility": 6.0,
+      "revenue_positive_growth_share": 6.0,
+      "roic": 6.0
+     },
+     "reasons": [
+      "ISSUER_LINK_UNCONFIRMED"
+     ],
+     "score": null,
+     "searchable": true,
+     "security_id": null,
+     "ticker": "T5"
+    },
+    {
+     "calculation_attempted": false,
+     "cik": "0000000007",
+     "eligibility": "UNKNOWN",
+     "financial_acquired_at": "2026-11-01T01:00:00Z",
+     "financial_available": true,
+     "financial_reasons": [],
+     "name": "Synthetic 6",
+     "observation_id": "6",
+     "rank": null,
+     "raw_metrics": {
+      "accruals_to_assets": 7.0,
+      "dilution_3y": 7.0,
+      "eps_cagr_3y": 7.0,
+      "fcf_per_share_cagr_3y": 7.0,
+      "fcf_to_net_income": 7.0,
+      "gross_profit_to_assets": 7.0,
+      "incremental_roic_3y": 7.0,
+      "incremental_roic_5y": 7.0,
+      "interest_coverage": 7.0,
+      "moat_proxy": 7.0,
+      "net_debt_to_ebitda": 7.0,
+      "revenue_acceleration": 7.0,
+      "revenue_cagr_3y": 7.0,
+      "revenue_growth_volatility": 7.0,
+      "revenue_positive_growth_share": 7.0,
+      "roic": 7.0
+     },
+     "reasons": [
+      "ISSUER_LINK_UNCONFIRMED"
+     ],
+     "score": null,
+     "searchable": true,
+     "security_id": null,
+     "ticker": "T6"
+    },
+    {
+     "calculation_attempted": false,
+     "cik": "0000000008",
+     "eligibility": "UNKNOWN",
+     "financial_acquired_at": "2026-11-01T01:00:00Z",
+     "financial_available": true,
+     "financial_reasons": [],
+     "name": "Synthetic 7",
+     "observation_id": "7",
+     "rank": null,
+     "raw_metrics": {
+      "accruals_to_assets": 8.0,
+      "dilution_3y": 8.0,
+      "eps_cagr_3y": 8.0,
+      "fcf_per_share_cagr_3y": 8.0,
+      "fcf_to_net_income": 8.0,
+      "gross_profit_to_assets": 8.0,
+      "incremental_roic_3y": 8.0,
+      "incremental_roic_5y": 8.0,
+      "interest_coverage": 8.0,
+      "moat_proxy": 8.0,
+      "net_debt_to_ebitda": 8.0,
+      "revenue_acceleration": 8.0,
+      "revenue_cagr_3y": 8.0,
+      "revenue_growth_volatility": 8.0,
+      "revenue_positive_growth_share": 8.0,
+      "roic": 8.0
+     },
+     "reasons": [
+      "ISSUER_LINK_UNCONFIRMED"
+     ],
+     "score": null,
+     "searchable": true,
+     "security_id": null,
+     "ticker": "T7"
+    },
+    {
+     "calculation_attempted": false,
+     "cik": "0000000009",
+     "eligibility": "UNKNOWN",
+     "financial_acquired_at": "2026-11-01T01:00:00Z",
+     "financial_available": true,
+     "financial_reasons": [],
+     "name": "Synthetic 8",
+     "observation_id": "8",
+     "rank": null,
+     "raw_metrics": {
+      "accruals_to_assets": 9.0,
+      "dilution_3y": 9.0,
+      "eps_cagr_3y": 9.0,
+      "fcf_per_share_cagr_3y": 9.0,
+      "fcf_to_net_income": 9.0,
+      "gross_profit_to_assets": 9.0,
+      "incremental_roic_3y": 9.0,
+      "incremental_roic_5y": 9.0,
+      "interest_coverage": 9.0,
+      "moat_proxy": 9.0,
+      "net_debt_to_ebitda": 9.0,
+      "revenue_acceleration": 9.0,
+      "revenue_cagr_3y": 9.0,
+      "revenue_growth_volatility": 9.0,
+      "revenue_positive_growth_share": 9.0,
+      "roic": 9.0
+     },
+     "reasons": [
+      "ISSUER_LINK_UNCONFIRMED"
+     ],
+     "score": null,
+     "searchable": true,
+     "security_id": null,
+     "ticker": "T8"
+    },
+    {
+     "calculation_attempted": false,
+     "cik": "0000000010",
+     "eligibility": "UNKNOWN",
+     "financial_acquired_at": "2026-11-01T01:00:00Z",
+     "financial_available": true,
+     "financial_reasons": [],
+     "name": "Synthetic 9",
+     "observation_id": "9",
+     "rank": null,
+     "raw_metrics": {
+      "accruals_to_assets": 10.0,
+      "dilution_3y": 10.0,
+      "eps_cagr_3y": 10.0,
+      "fcf_per_share_cagr_3y": 10.0,
+      "fcf_to_net_income": 10.0,
+      "gross_profit_to_assets": 10.0,
+      "incremental_roic_3y": 10.0,
+      "incremental_roic_5y": 10.0,
+      "interest_coverage": 10.0,
+      "moat_proxy": 10.0,
+      "net_debt_to_ebitda": 10.0,
+      "revenue_acceleration": 10.0,
+      "revenue_cagr_3y": 10.0,
+      "revenue_growth_volatility": 10.0,
+      "revenue_positive_growth_share": 10.0,
+      "roic": 10.0
+     },
+     "reasons": [
+      "ISSUER_LINK_UNCONFIRMED"
+     ],
+     "score": null,
+     "searchable": true,
+     "security_id": null,
+     "ticker": "T9"
+    },
+    {
+     "calculation_attempted": false,
+     "cik": "0000000011",
+     "eligibility": "UNKNOWN",
+     "financial_acquired_at": "2026-11-01T01:00:00Z",
+     "financial_available": true,
+     "financial_reasons": [],
+     "name": "Synthetic 10",
+     "observation_id": "10",
+     "rank": null,
+     "raw_metrics": {
+      "accruals_to_assets": 11.0,
+      "dilution_3y": 11.0,
+      "eps_cagr_3y": 11.0,
+      "fcf_per_share_cagr_3y": 11.0,
+      "fcf_to_net_income": 11.0,
+      "gross_profit_to_assets": 11.0,
+      "incremental_roic_3y": 11.0,
+      "incremental_roic_5y": 11.0,
+      "interest_coverage": 11.0,
+      "moat_proxy": 11.0,
+      "net_debt_to_ebitda": 11.0,
+      "revenue_acceleration": 11.0,
+      "revenue_cagr_3y": 11.0,
+      "revenue_growth_volatility": 11.0,
+      "revenue_positive_growth_share": 11.0,
+      "roic": 11.0
+     },
+     "reasons": [
+      "ISSUER_LINK_UNCONFIRMED"
+     ],
+     "score": null,
+     "searchable": true,
+     "security_id": null,
+     "ticker": "T10"
+    },
+    {
+     "calculation_attempted": false,
+     "cik": "0000000012",
+     "eligibility": "UNKNOWN",
+     "financial_acquired_at": "2026-11-01T01:00:00Z",
+     "financial_available": true,
+     "financial_reasons": [],
+     "name": "Synthetic 11",
+     "observation_id": "11",
+     "rank": null,
+     "raw_metrics": {
+      "accruals_to_assets": 12.0,
+      "dilution_3y": 12.0,
+      "eps_cagr_3y": 12.0,
+      "fcf_per_share_cagr_3y": 12.0,
+      "fcf_to_net_income": 12.0,
+      "gross_profit_to_assets": 12.0,
+      "incremental_roic_3y": 12.0,
+      "incremental_roic_5y": 12.0,
+      "interest_coverage": 12.0,
+      "moat_proxy": 12.0,
+      "net_debt_to_ebitda": 12.0,
+      "revenue_acceleration": 12.0,
+      "revenue_cagr_3y": 12.0,
+      "revenue_growth_volatility": 12.0,
+      "revenue_positive_growth_share": 12.0,
+      "roic": 12.0
+     },
+     "reasons": [
+      "ISSUER_LINK_UNCONFIRMED"
+     ],
+     "score": null,
+     "searchable": true,
+     "security_id": null,
+     "ticker": "T11"
+    }
+   ],
+   "schema_version": "current-expansion-research/1",
+   "source": {
+    "basis_date": "2026-11-02",
+    "complete": false,
+    "observed_at": "2026-11-02T21:00:00Z",
+    "scope": "SEC_TICKER_OBSERVATIONS",
+    "source_ref": "SYNTHETIC:complete-iex-list"
+   },
+   "universe_version": "U-US-EXPANDED-CURRENT/1",
+   "visibility": "PRIVATE_RESEARCH"
+  }
+ },
+ "generated_by": "git show refs/remotes/pr/482 → python3 -I gen.py (test_current_expansion.run with the two mutations)",
+ "note": "SYNTHETIC. Codex #482 (bbe62aed) investment_system.research.current_expansion.evaluate run on the test module inputs of implementation/tests/research/test_current_expansion.py: partial12 = SEC ticker observations only (no IEX roster, one financial row missing); complete12_missing1 = a synthetic complete IEX roster with one financial row missing. Not a company, not market coverage."
+}
