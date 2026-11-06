@@ -901,3 +901,82 @@ def test_workflow_is_one_shot_push_of_the_run_branch_only():
     assert steps.index(build) < steps.index(holders[0])
     assert 'dotnet' in body and 'android' in body
     assert not re.search(r'iextrading\.com|iexapis\.com|storage\.googleapis\.com|/b/iex/o/', text)
+
+
+# ---- synthetic examples for the hand-over (owner 2026-11-06, 3rd: the contract before any real acquisition) -----------------
+# tests/fixtures/iex_day_financial11_examples_v1.json holds what THIS tool writes for an all-synthetic run: the derived file and
+# the COMPLETE manifest of one run, and the FAILED manifest of a run stopped by an md5 mismatch. Invented codes only (QZP*, no
+# real ticker; the alias rows 13 and 30 take invented codes here), invented prices, a fixed clock. Values that depend on the
+# machine or the commit (compiler output hash, git commit, measured seconds, exit-code lists, free bytes) are replaced by
+# "VARIES:<what>". The test below rebuilds the examples from the tool and compares: the hand-over cannot drift from the code.
+# Write mode: IEX_EXAMPLES_WRITE=1 python -m pytest tests/test_iex_day_preserve_once.py -k examples
+EXAMPLE_FILE = ROOT / 'tests' / 'fixtures' / 'iex_day_financial11_examples_v1.json'
+EXAMPLE_CODES = {**CODES, 13: 'NYSE:QZPJ', 30: 'NYSE:QZPK'}
+EXAMPLE_T0 = 1794013200                      # 2026-11-07T01:00:00Z: after the trade day, so trade < acquisition < generation
+VARIES = {('parser', 'binary_sha256'), ('parser', 'git_commit'), ('received', 'flow_s'), ('received', 'exit_codes'),
+          ('disk', 'free_bytes_at_start'), ('disk', 'free_bytes_after_metadata'), ('disk', 'peak_bytes'),
+          ('reassembly', 'exit_codes'), ('reassembly', 'flow_s')}
+# Compared loosely (the stored file keeps the real values): hashes and sizes of the gzip bytes (zlib versions may compress the
+# same synthetic pcap differently) and of the derived file (it carries the commit). Everything else is compared exactly.
+LOOSE = {'sha256', 'md5', 'bytes', 'size', 'index_size', 'metadata_size', 'metadata_md5', 'budget_peak_bytes',
+         'required_after_metadata', 'chunk_bytes'}
+
+
+def _loose(x):
+    if isinstance(x, dict):
+        return {k: ('LOOSE' if k in LOOSE and not isinstance(v, (dict, list)) else _loose(v)) for k, v in x.items()}
+    return [_loose(v) for v in x] if isinstance(x, list) else x
+
+
+def _example_normal(man):
+    out = json.loads(json.dumps(man))
+    for a, b in VARIES:
+        if isinstance(out.get(a), dict) and b in out[a]:
+            out[a][b] = 'VARIES:' + a + '.' + b
+    if 'timings' in out:
+        out['timings'] = {k: ('VARIES:seconds' if k.endswith('_s') else v) for k, v in out['timings'].items()}
+    if 'parser_git_commit' in out:
+        out['parser_git_commit'] = 'VARIES:parser.git_commit'
+    return out
+
+
+def _examples(parser, tmp_path):
+    clock = iter(range(EXAMPLE_T0, EXAMPLE_T0 + 1000))
+    kw, store, src, counts, body = make(tmp_path / 'ok', codes=EXAMPLE_CODES)
+    kw['chunk_bytes'] = -(-len(body) // 4)                            # always four chunks, whatever the gzip size
+    man = pre.run(parser=parser, now=lambda: float(next(clock)), **kw)
+    assert man['state'] == 'COMPLETE'
+    derived = json.loads(store.get(pre.derived_name(RID)))
+    clock2 = iter(range(EXAMPLE_T0, EXAMPLE_T0 + 1000))
+    body2 = synthetic_body()
+    kw2, store2, *_ = make(tmp_path / 'fail', codes=EXAMPLE_CODES, meta=meta_of(body2, md5=hashlib.md5(b'other').digest()))
+    kw2['chunk_bytes'] = -(-len(body2) // 4)
+    failed = pre.run(parser=parser, now=lambda: float(next(clock2)), **kw2)
+    assert failed['state'] == 'FAILED'
+    return {'note': 'SYNTHETIC ONLY: invented codes (QZP*), invented prices, fixed clock; written by '
+                    'tools/iex_day_preserve_once.py run() on a synthetic TOPS file; not market data. VARIES:* = machine or commit value.',
+            'derived_complete': _example_normal(derived), 'manifest_complete': _example_normal(man),
+            'manifest_failed_md5': _example_normal(failed)}
+
+
+def test_synthetic_examples_match_the_tool(parser, tmp_path):
+    got = _examples(parser, tmp_path)
+    text = json.dumps(got, ensure_ascii=False, indent=1, sort_keys=True) + '\n'
+    if __import__('os').environ.get('IEX_EXAMPLES_WRITE') == '1':
+        EXAMPLE_FILE.write_text(text, encoding='utf-8')
+    stored = json.loads(EXAMPLE_FILE.read_text(encoding='utf-8'))
+    # How many chunks the background uploader finished before the md5 failure depends on timing: the failed example is
+    # compared by meaning there (every listed asset is this run's and deleted; three source GETs), exactly everywhere else.
+    def failed_meaning(m):
+        m = dict(m)
+        assets = m.pop('uploaded_assets')
+        assert all(a['deleted'] is True and pre.is_ours(a['name'], RID) and a['known_from'] == 'UPLOAD_ANSWER' for a in assets)
+        assert m.pop('requests')['source_get'] == 3
+        return m
+    assert _loose(failed_meaning(stored.pop('manifest_failed_md5'))) == _loose(failed_meaning(json.loads(text)['manifest_failed_md5']))
+    assert _loose(stored) == _loose({k: v for k, v in json.loads(text).items() if k != 'manifest_failed_md5'})
+    d = got['derived_complete']
+    assert {r['code'] for r in d['rows']}.isdisjoint({'NASDAQ:PSKY', 'NASDAQ:WBD'}) and all('QZP' in r['code'] for r in d['rows'])
+    assert set(d['states']) == set(pre.STATES) and d['acquired_at_utc'] == got['manifest_complete']['received']['completed_at_utc']
+    assert 'acquired_at_utc' not in json.dumps(got['manifest_failed_md5']) and 'completed_at_utc' not in json.dumps(got['manifest_failed_md5']), \
+        'a run that never finished receiving has no acquisition-complete time'

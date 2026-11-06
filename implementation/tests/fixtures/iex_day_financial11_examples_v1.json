@@ -1,0 +1,469 @@
+{
+ "derived_complete": {
+  "acquired_at_utc": "2026-11-07T01:00:02Z",
+  "adjustment_basis": "AS_TRADED",
+  "attribution": "Data provided for free by IEX. By accessing or using IEX Historical Data, you agree to the IEX Historical Data Terms of Use.",
+  "basis_date": "2026-11-02",
+  "basis_kind": "IEX_LAST_REGULAR_SESSION_TRADE",
+  "currency": "USD",
+  "generated_at_utc": "2026-11-07T01:00:05Z",
+  "input": {
+   "commit": "fc88bf410b7896dbfe7898a58fd4cf07ca18d451",
+   "file_sha256": "02686bd0793439cb532aaa58b690c61b85f4f4c60b07dacd40c54d05e729d1bf",
+   "path": "handoffs/financial-v-connection-20261105/connected-final.json",
+   "row_indexes": [
+    12,
+    13,
+    17,
+    25,
+    29,
+    30,
+    34,
+    38,
+    51,
+    64,
+    67
+   ]
+  },
+  "manifest": "manifest-r0a0.json",
+  "original": {
+   "bytes": 647,
+   "md5": "29ca0087ca4e072e14781db5d7d35876",
+   "sha256": "fb4fba17e2e709e38f24ff657403fe12f325ab805461623f36b3d2b5874316c6"
+  },
+  "parser_git_commit": "VARIES:parser.git_commit",
+  "parser_source_sha256": "23a99339f4f43c1a381c5b90a3df536b00f2dc12079b639c9ae0d34a8a458b34",
+  "release_tag": "current-iex-20261102",
+  "rows": [
+   {
+    "basis_date": "2026-11-02",
+    "code": "NYSE:QZPA",
+    "iex_symbol": "QZPA",
+    "last_trade_ns": 1793629920000000000,
+    "last_trade_utc": "2026-11-02T14:32:00.000000000Z",
+    "parser_source_sha256": "23a99339f4f43c1a381c5b90a3df536b00f2dc12079b639c9ae0d34a8a458b34",
+    "parser_status": "ROUND",
+    "price": "7373.7373",
+    "reason": "REGULAR_SESSION_ROUND_LOT_LAST_TRADE",
+    "row_index": 12,
+    "source": "IEX_HIST TOPS 1.6 last regular-session trade",
+    "state": "PRICE"
+   },
+   {
+    "basis_date": "2026-11-02",
+    "code": "NYSE:QZPJ",
+    "iex_symbol": "QZPJ",
+    "last_trade_ns": null,
+    "last_trade_utc": null,
+    "parser_source_sha256": "23a99339f4f43c1a381c5b90a3df536b00f2dc12079b639c9ae0d34a8a458b34",
+    "parser_status": "NO_TRADE",
+    "price": null,
+    "reason": "SYMBOL_NOT_IN_FILE",
+    "row_index": 13,
+    "source": "IEX_HIST TOPS 1.6 last regular-session trade",
+    "state": "NOT_IN_FILE"
+   },
+   {
+    "basis_date": "2026-11-02",
+    "code": "NYSE:QZPB",
+    "iex_symbol": "QZPB",
+    "last_trade_ns": null,
+    "last_trade_utc": null,
+    "parser_source_sha256": "23a99339f4f43c1a381c5b90a3df536b00f2dc12079b639c9ae0d34a8a458b34",
+    "parser_status": "ODD_ONLY",
+    "price": null,
+    "reason": "ODD_LOT_ONLY",
+    "row_index": 17,
+    "source": "IEX_HIST TOPS 1.6 last regular-session trade",
+    "state": "NO_TRADE"
+   },
+   {
+    "basis_date": "2026-11-02",
+    "code": "NYSE:QZPC",
+    "iex_symbol": "QZPC",
+    "last_trade_ns": null,
+    "last_trade_utc": null,
+    "parser_source_sha256": "23a99339f4f43c1a381c5b90a3df536b00f2dc12079b639c9ae0d34a8a458b34",
+    "parser_status": "NO_TRADE",
+    "price": null,
+    "reason": "NO_REGULAR_SESSION_ROUND_LOT_TRADE",
+    "row_index": 25,
+    "source": "IEX_HIST TOPS 1.6 last regular-session trade",
+    "state": "NO_TRADE"
+   },
+   {
+    "basis_date": "2026-11-02",
+    "code": "NYSE:QZPD",
+    "iex_symbol": "QZPD",
+    "last_trade_ns": null,
+    "last_trade_utc": null,
+    "parser_source_sha256": "23a99339f4f43c1a381c5b90a3df536b00f2dc12079b639c9ae0d34a8a458b34",
+    "parser_status": "NO_TRADE",
+    "price": null,
+    "reason": "SYMBOL_NOT_IN_FILE",
+    "row_index": 29,
+    "source": "IEX_HIST TOPS 1.6 last regular-session trade",
+    "state": "NOT_IN_FILE"
+   },
+   {
+    "basis_date": "2026-11-02",
+    "code": "NYSE:QZPK",
+    "iex_symbol": "QZPK",
+    "last_trade_ns": null,
+    "last_trade_utc": null,
+    "parser_source_sha256": "23a99339f4f43c1a381c5b90a3df536b00f2dc12079b639c9ae0d34a8a458b34",
+    "parser_status": "NO_TRADE",
+    "price": null,
+    "reason": "SYMBOL_NOT_IN_FILE",
+    "row_index": 30,
+    "source": "IEX_HIST TOPS 1.6 last regular-session trade",
+    "state": "NOT_IN_FILE"
+   },
+   {
+    "basis_date": "2026-11-02",
+    "code": "NYSE:QZPE",
+    "iex_symbol": "QZPE",
+    "last_trade_ns": null,
+    "last_trade_utc": null,
+    "parser_source_sha256": "23a99339f4f43c1a381c5b90a3df536b00f2dc12079b639c9ae0d34a8a458b34",
+    "parser_status": "NO_TRADE",
+    "price": null,
+    "reason": "NO_REGULAR_SESSION_ROUND_LOT_TRADE",
+    "row_index": 34,
+    "source": "IEX_HIST TOPS 1.6 last regular-session trade",
+    "state": "NO_TRADE"
+   },
+   {
+    "basis_date": "2026-11-02",
+    "code": "NYSE:QZPF",
+    "iex_symbol": "QZPF",
+    "last_trade_ns": null,
+    "last_trade_utc": null,
+    "parser_source_sha256": "23a99339f4f43c1a381c5b90a3df536b00f2dc12079b639c9ae0d34a8a458b34",
+    "parser_status": "ROUND",
+    "price": null,
+    "reason": "PRICE_OUT_OF_RANGE",
+    "row_index": 38,
+    "source": "IEX_HIST TOPS 1.6 last regular-session trade",
+    "state": "PRICE_INVALID"
+   },
+   {
+    "basis_date": "2026-11-02",
+    "code": "NYSE:QZP.G",
+    "iex_symbol": "QZP.G",
+    "last_trade_ns": 1793653199999999999,
+    "last_trade_utc": "2026-11-02T20:59:59.999999999Z",
+    "parser_source_sha256": "23a99339f4f43c1a381c5b90a3df536b00f2dc12079b639c9ae0d34a8a458b34",
+    "parser_status": "ROUND",
+    "price": "0.4200",
+    "reason": "REGULAR_SESSION_ROUND_LOT_LAST_TRADE",
+    "row_index": 51,
+    "source": "IEX_HIST TOPS 1.6 last regular-session trade",
+    "state": "PRICE"
+   },
+   {
+    "basis_date": "2026-11-02",
+    "code": "NYSE:QZPH",
+    "iex_symbol": "QZPH",
+    "last_trade_ns": null,
+    "last_trade_utc": null,
+    "parser_source_sha256": "23a99339f4f43c1a381c5b90a3df536b00f2dc12079b639c9ae0d34a8a458b34",
+    "parser_status": "ROUND",
+    "price": null,
+    "reason": "PRICE_OUT_OF_RANGE",
+    "row_index": 64,
+    "source": "IEX_HIST TOPS 1.6 last regular-session trade",
+    "state": "PRICE_INVALID"
+   },
+   {
+    "basis_date": "2026-11-02",
+    "code": "NYSE:QZPI",
+    "iex_symbol": "QZPI",
+    "last_trade_ns": 1793630100000000000,
+    "last_trade_utc": "2026-11-02T14:35:00.000000000Z",
+    "parser_source_sha256": "23a99339f4f43c1a381c5b90a3df536b00f2dc12079b639c9ae0d34a8a458b34",
+    "parser_status": "ROUND",
+    "price": "0.0101",
+    "reason": "REGULAR_SESSION_ROUND_LOT_LAST_TRADE",
+    "row_index": 67,
+    "source": "IEX_HIST TOPS 1.6 last regular-session trade",
+    "state": "PRICE"
+   }
+  ],
+  "schema_version": "iex-day-financial11-last-trade/1",
+  "session_window_ns": [
+   1793629800000000000,
+   1793653200000000000
+  ],
+  "source": "IEX_HIST TOPS 1.6 last regular-session trade",
+  "states": {
+   "NOT_IN_FILE": 3,
+   "NO_TRADE": 3,
+   "PRICE": 3,
+   "PRICE_INVALID": 2
+  },
+  "unit": "USD/share"
+ },
+ "manifest_complete": {
+  "chunks": [
+   {
+    "name": "iex-tops-20261102-r0a0.part-01-of-04",
+    "sha256": "8b4cb47758dec0978f9fdd6bad7b60fd62ed89156931c0b9c99553f23bd92d8e",
+    "size": 162
+   },
+   {
+    "name": "iex-tops-20261102-r0a0.part-02-of-04",
+    "sha256": "fde8cef57265e97e90d0ff78f3a972f25d1a1b491d98fa90ef7dda092b61ad0f",
+    "size": 162
+   },
+   {
+    "name": "iex-tops-20261102-r0a0.part-03-of-04",
+    "sha256": "ee93aa67c87700e441156fb1478729067b66c8c3aeee489148d89a837f7821c4",
+    "size": 162
+   },
+   {
+    "name": "iex-tops-20261102-r0a0.part-04-of-04",
+    "sha256": "326f463de473e04d5db9f4295db663b38c9d22b73e6b7bc90b216490dca994fb",
+    "size": 161
+   }
+  ],
+  "chunks_preserved_at_utc": "2026-11-07T01:00:03Z",
+  "completeness": {
+   "all_chunks_verified": true,
+   "curl_exit_0": true,
+   "derived_rows": 11,
+   "derived_rows_expected": 11,
+   "gzip_exit_0": true,
+   "md5_match": true,
+   "parser_exit_0": true,
+   "reassembly_streaming_verified": true,
+   "size_match": true
+  },
+  "day": "2026-11-02",
+  "derived": {
+   "bytes": 6310,
+   "generated_at_utc": "2026-11-07T01:00:05Z",
+   "name": "iex-20261102-financial11-last-trade-r0a0.json",
+   "rows": 11,
+   "schema_version": "iex-day-financial11-last-trade/1",
+   "sha256": "d9fa183f6955635c2436e568c872d42f20be6563a80161c138982677713d6056",
+   "states": {
+    "NOT_IN_FILE": 3,
+    "NO_TRADE": 3,
+    "PRICE": 3,
+    "PRICE_INVALID": 2
+   }
+  },
+  "disk": {
+   "budget_peak_bytes": 809,
+   "free_bytes_after_metadata": "VARIES:disk.free_bytes_after_metadata",
+   "free_bytes_at_start": "VARIES:disk.free_bytes_at_start",
+   "peak_bytes": "VARIES:disk.peak_bytes",
+   "required_after_metadata": 809,
+   "required_before_source": 22000000000
+  },
+  "environment": {},
+  "failed_stage": null,
+  "input": {
+   "commit": "fc88bf410b7896dbfe7898a58fd4cf07ca18d451",
+   "file_bytes": 3091,
+   "file_sha256": "02686bd0793439cb532aaa58b690c61b85f4f4c60b07dacd40c54d05e729d1bf",
+   "git_blob_sha1": "e9bad5f9c13bbd7bdf71dcb5a0238748eb4e0446",
+   "manifest_sha256": "8bea84712d3d27c8417d08bb9abeda99c2255db30f3ee8b602556b2f84898e02",
+   "path": "handoffs/financial-v-connection-20261105/connected-final.json",
+   "repository": "PRIVATE_RAW",
+   "row_indexes": [
+    12,
+    13,
+    17,
+    25,
+    29,
+    30,
+    34,
+    38,
+    51,
+    64,
+    67
+   ]
+  },
+  "limits": {
+   "body_cap_bytes": 20000000000,
+   "chunk_bytes": 162,
+   "disk_reserve": 0,
+   "index_cap_bytes": 8388608,
+   "max_chunks": 20,
+   "metadata_cap_bytes": 1048576,
+   "min_free_before_source": 22000000000,
+   "source_get_budget": 3
+  },
+  "manifest_name": "manifest-r0a0.json",
+  "parser": {
+   "binary_sha256": "VARIES:parser.binary_sha256",
+   "git_commit": "VARIES:parser.git_commit",
+   "mode": "SYMBOLS_FILE",
+   "source_path": "implementation/tools/iex_tops/iex_last_trade.c",
+   "source_sha256": "23a99339f4f43c1a381c5b90a3df536b00f2dc12079b639c9ae0d34a8a458b34"
+  },
+  "parser_stats": {
+   "bad": 0,
+   "messages": 460,
+   "no_trade": 5,
+   "odd_only": 1,
+   "packets": 240,
+   "round": 5,
+   "segments": 240,
+   "symbols": 11,
+   "trades": 260
+  },
+  "reassembly": {
+   "bytes": 647,
+   "chunks": 4,
+   "gzip_test_ok": true,
+   "md5_match": true,
+   "mode": "STREAMING_NO_FILE",
+   "sha256_match": true,
+   "verified_at_utc": "2026-11-07T01:00:04Z"
+  },
+  "received": {
+   "bytes": 647,
+   "completed_at_utc": "2026-11-07T01:00:02Z",
+   "exit_codes": "VARIES:received.exit_codes",
+   "flow_s": "VARIES:received.flow_s",
+   "md5": "29ca0087ca4e072e14781db5d7d35876",
+   "sha256": "fb4fba17e2e709e38f24ff657403fe12f325ab805461623f36b3d2b5874316c6",
+   "started_at_utc": "2026-11-07T01:00:01Z"
+  },
+  "release": {
+   "created_by_this_run": true,
+   "existing_assets": 0,
+   "existing_failed_manifests": 0
+  },
+  "release_tag": "current-iex-20261102",
+  "requests": {
+   "delete": 0,
+   "download": 16,
+   "private_read": 2,
+   "release_create": 1,
+   "release_lookup": 1,
+   "source_get": 3,
+   "upload": 6
+  },
+  "run_id": "r0a0",
+  "schema_version": "iex-day-preserve-once/2",
+  "session_window_ns": [
+   1793629800000000000,
+   1793653200000000000
+  ],
+  "source": {
+   "expected_chunks": 4,
+   "feed": "TOPS",
+   "index_day": "20261102",
+   "index_size": 647,
+   "index_url": "https://iextrading.com/api/1.0/hist",
+   "link": "https://www.googleapis.com/download/storage/v1/b/iex/o/data%2Ffeeds%2F20261102%2Fsynthetic.pcap.gz?generation=1&alt=media",
+   "metadata_md5": "29ca0087ca4e072e14781db5d7d35876",
+   "metadata_size": 647,
+   "metadata_url": "https://www.googleapis.com/storage/v1/b/iex/o/data%2Ffeeds%2F20261102%2Fsynthetic.pcap.gz?generation=1",
+   "version": "1.6"
+  },
+  "state": "COMPLETE",
+  "symbols_filter": {
+   "codes": 11,
+   "count": 11,
+   "sha256": "936cdccf5478e92cb6cdbaf29e6705aee8525bacd1a4887c1bec3649fe342878"
+  },
+  "timings": {
+   "chunk_upload_wait_s": "VARIES:seconds",
+   "env_s": "VARIES:seconds",
+   "job_started_at_utc": "2026-11-07T01:00:00Z",
+   "private_input_s": "VARIES:seconds",
+   "reassembly_s": "VARIES:seconds",
+   "release_prepare_s": "VARIES:seconds",
+   "source_index_s": "VARIES:seconds",
+   "source_metadata_s": "VARIES:seconds",
+   "stream_s": "VARIES:seconds",
+   "total_s": "VARIES:seconds"
+  },
+  "written_at_utc": "2026-11-07T01:00:06Z"
+ },
+ "manifest_failed_md5": {
+  "all_partial_assets_deleted": true,
+  "day": "2026-11-02",
+  "disk": {
+   "budget_peak_bytes": 809,
+   "free_bytes_after_metadata": "VARIES:disk.free_bytes_after_metadata",
+   "free_bytes_at_start": "VARIES:disk.free_bytes_at_start",
+   "peak_bytes": "VARIES:disk.peak_bytes",
+   "required_after_metadata": 809,
+   "required_before_source": 22000000000
+  },
+  "error_class": null,
+  "exit_code": null,
+  "failed_manifest_uploaded": true,
+  "failed_stage": "MD5_MISMATCH",
+  "http_status": null,
+  "manifest_name": "manifest-r0a0.json",
+  "parser": {
+   "binary_sha256": "VARIES:parser.binary_sha256",
+   "git_commit": "VARIES:parser.git_commit",
+   "mode": "SYMBOLS_FILE",
+   "source_path": "implementation/tools/iex_tops/iex_last_trade.c",
+   "source_sha256": "23a99339f4f43c1a381c5b90a3df536b00f2dc12079b639c9ae0d34a8a458b34"
+  },
+  "release": {
+   "created_by_this_run": true,
+   "existing_assets": 0,
+   "existing_failed_manifests": 0
+  },
+  "release_tag": "current-iex-20261102",
+  "requests": {
+   "delete": 3,
+   "download": 6,
+   "private_read": 2,
+   "release_create": 1,
+   "release_lookup": 2,
+   "source_get": 3,
+   "upload": 4
+  },
+  "run_id": "r0a0",
+  "schema_version": "iex-day-preserve-once/2",
+  "source": {
+   "index_size": 647,
+   "metadata_md5": "795f3202b17cb6bc3d4b771d8c6c9eaf",
+   "metadata_size": 647
+  },
+  "stage": "STREAM",
+  "state": "FAILED",
+  "timings": {
+   "env_s": "VARIES:seconds",
+   "finished_at": "2026-11-07T01:00:02Z",
+   "private_input_s": "VARIES:seconds",
+   "release_prepare_s": "VARIES:seconds",
+   "source_index_s": "VARIES:seconds",
+   "source_metadata_s": "VARIES:seconds",
+   "started_at": "2026-11-07T01:00:00Z",
+   "total_s": "VARIES:seconds"
+  },
+  "uploaded_assets": [
+   {
+    "deleted": true,
+    "known_from": "UPLOAD_ANSWER",
+    "name": "iex-tops-20261102-r0a0.part-01-of-04",
+    "size": 162
+   },
+   {
+    "deleted": true,
+    "known_from": "UPLOAD_ANSWER",
+    "name": "iex-tops-20261102-r0a0.part-02-of-04",
+    "size": 162
+   },
+   {
+    "deleted": true,
+    "known_from": "UPLOAD_ANSWER",
+    "name": "iex-tops-20261102-r0a0.part-03-of-04",
+    "size": 162
+   }
+  ]
+ },
+ "note": "SYNTHETIC ONLY: invented codes (QZP*), invented prices, fixed clock; written by tools/iex_day_preserve_once.py run() on a synthetic TOPS file; not market data. VARIES:* = machine or commit value."
+}
