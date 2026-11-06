@@ -5008,3 +5008,13 @@ manifest의 URL/hash/크기/상태, SEC share facts·par value·split/exchange r
 - Pages 업로드 1개·배포 1개, `persist-credentials: false`, 캐시·push·`GITHUB_STEP_SUMMARY` 없음, verify·deploy의 Secret 없음(시험 `tests/test_public_price_boundary.py`).
 - 원장·샤드 단계의 Secret과 순서(W-F1/W-F2), collect 잡 한도(정기 40분·`all_shards` 120분).
 - `RAW_REPO_TOKEN`을 가진 단계는 샤드·원장·이력 세 개다. 셋 다 도구 안에서만 비공개 저장소에 쓴다. V 단계는 그 토큰을 갖지 않는다.
+
+## 12. 2026-11-02 원본 1회 보존 경로 등록 (2026-11-06, append-only)
+
+- 작성: 2026-11-06 UTC, Claude Code Main(`claude/iex-20261102-preserve-prep`, Draft PR #502). **준비만 했고 실행하지 않았다.** 실행은 소유자 승인 뒤 한 번이다. §1~§11은 바꾸지 않았다.
+- 근거: 소유자 지시 2026-11-05(계획 「안 A」)·2026-11-06(수정 A~G). 설계: [IEX_20261102_PRESERVE_ONCE_20261105.md](../expanded_universe/IEX_20261102_PRESERVE_ONCE_20261105.md).
+- §10-1의 「허용 호출자」 줄(진입 스크립트가 게시기 하나)에 두 번째 경로를 더한다. `ACTIONS_PRICE_ROUTES`는 이제 `('implementation/tools/qgv_official_publish.py', 'implementation/tools/iex_day_preserve_once.py')`이다(게시기가 먼저). `AUDITED_ROUTES`와 겹치지 않는다. 도구는 원천 요청 세 번 모두 직전에 `require_price_source(kind, url)`를 부른다. 거부되면 `SOURCE_ROUTE_NOT_ALLOWED`이고 아무것도 보내지 않는다.
+
+| 경로 | 목적 | 워크플로 | 트리거 |
+| --- | --- | --- | --- |
+| `implementation/tools/iex_day_preserve_once.py` | 2026-11-02 TOPS 1.6 원본 1회 보존(원천 GET 최대 3회, 본문 상한 20,000,000,000 바이트). 비공개 원자료 저장소 릴리스 `current-iex-20261102`에만 쓴다. 재무 후보 11개 코드의 비공개 파생 파일(원천 형태의 마지막 정규장 체결)을 만든다. 공개 게시는 없다(GSQ-010 유지). | `.github/workflows/iex-20261102-preserve-once.yml` | `run/iex-20261102-once` 브랜치 push만(PR·일정·수동 실행 없음). 실행 뒤 브랜치 삭제 |

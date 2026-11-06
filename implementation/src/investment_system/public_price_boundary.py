@@ -113,11 +113,16 @@ AUDITED_ROUTES = (
 
 
 # GSQ-024 (owner decision 2026-10-23: "IEX HIST server collection + derived score/rank publication" only; GSQ-010 raw price
-# publication ban kept; guard PR approved separately). The ONE Actions price source and its ONE route (design
-# docs/qgv_scoring_standard/CENTRAL_V_PUBLICATION_DESIGN_20261018.md §12-3-1, docs/public_price_boundary/AUDIT.md §10). Kept apart
-# from AUDITED_ROUTES (the 27+1 audited public-output routes above stay withheld and their audit table test is unchanged) and from
-# the SEC allowlists (require_financial_url rejects every URL below; require_price_source rejects every SEC URL).
-ACTIONS_PRICE_ROUTES = ('implementation/tools/qgv_official_publish.py',)
+# publication ban kept; guard PR approved separately). The ONE Actions price source and its approved routes (design
+# docs/qgv_scoring_standard/CENTRAL_V_PUBLICATION_DESIGN_20261018.md §12-3-1, docs/public_price_boundary/AUDIT.md §10, §12). Kept
+# apart from AUDITED_ROUTES (the 27+1 audited public-output routes above stay withheld and their audit table test is unchanged) and
+# from the SEC allowlists (require_financial_url rejects every URL below; require_price_source rejects every SEC URL).
+#   1. tools/qgv_official_publish.py   the central V publisher (daily, sec-daily-public-inputs.yml): derived scores/ranks only.
+#   2. tools/iex_day_preserve_once.py  owner directives 2026-11-05/06 (plan 안 A): ONE-SHOT preservation of the 2026-11-02
+#      TOPS 1.6 original into the PRIVATE raw repository (at most 3 source GETs) plus a private derived last-trade file for 11
+#      financial codes; publishes nothing. Runs only from .github/workflows/iex-20261102-preserve-once.yml on a push of the branch
+#      run/iex-20261102-once (docs/expanded_universe/IEX_20261102_PRESERVE_ONCE_20261105.md).
+ACTIONS_PRICE_ROUTES = ('implementation/tools/qgv_official_publish.py', 'implementation/tools/iex_day_preserve_once.py')
 _SEGMENT = r'[A-Za-z0-9%_~-][A-Za-z0-9%._~-]*'      # no empty, '.' or '..' path segment
 _QUERY = r'(?:\?[A-Za-z0-9%._~=&-]*)?'
 PRICE_SOURCE_URL_PATTERNS = {
