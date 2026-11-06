@@ -1,0 +1,2008 @@
+{
+  "synthetic_only": true,
+  "cases": [
+    {
+      "case_id": "CANDIDATE",
+      "record": {
+        "schema_version": "discovery-company/v1",
+        "rule_version": "discovery-rules/1",
+        "company_id": "SYNTH:001",
+        "company_name": "아주 긴 합성 기업 이름 주식회사",
+        "identity_ref": {
+          "issuer_id": "SYNTH:issuer-1",
+          "security_id": null,
+          "listing_id": null
+        },
+        "qgv_ref": {
+          "company_id": "SYNTH:001"
+        },
+        "as_of": "2026-11-06T12:00:00Z",
+        "population": "synthetic-1",
+        "review_scope": "single-company source review",
+        "state": "CANDIDATE",
+        "state_reason": "AUTOMATIC_CANDIDATE_REQUIRES_REVIEW",
+        "first_selected_at": null,
+        "last_reviewed_at": null,
+        "evidence": [
+          {
+            "evidence_id": "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b",
+            "company_id": "SYNTH:001",
+            "document_id": "synthetic:filing",
+            "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
+            "source_url": "https://example.invalid/filing",
+            "locator": {
+              "json_pointer": "/risk"
+            },
+            "value": "One customer",
+            "published_on": "2026-10-31",
+            "published_at": null,
+            "period": {
+              "start": "2026-01-01",
+              "end": "2026-09-30"
+            },
+            "acquired_at": "2026-11-01T12:00:00Z",
+            "unit": "text",
+            "region": null,
+            "region_basis": null,
+            "origin": "SOURCE_EXTRACT",
+            "source_assertion": true
+          },
+          {
+            "evidence_id": "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155",
+            "company_id": "SYNTH:001",
+            "document_id": "synthetic:filing",
+            "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
+            "source_url": "https://example.invalid/filing",
+            "locator": {
+              "json_pointer": "/business"
+            },
+            "value": "Synthetic replacement filters",
+            "published_on": "2026-10-31",
+            "published_at": null,
+            "period": {
+              "start": "2026-01-01",
+              "end": "2026-09-30"
+            },
+            "acquired_at": "2026-11-01T12:00:00Z",
+            "unit": "text",
+            "region": null,
+            "region_basis": null,
+            "origin": "SOURCE_EXTRACT",
+            "source_assertion": true
+          }
+        ],
+        "judgments": [
+          {
+            "judgment_id": "attractiveness",
+            "category": "ATTRACTIVENESS",
+            "topic": null,
+            "claim": "합성 원문의 반복 구매 근거를 검토했다.",
+            "evidence_ids": [
+              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+            ],
+            "counterevidence_ids": [
+              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+            ],
+            "status": "CONFIRMED",
+            "reason": "합성 수작업 대조",
+            "reviewed_by": "synthetic-reviewer",
+            "rule_version": "discovery-rules/1",
+            "core": true,
+            "material": false
+          },
+          {
+            "judgment_id": "business",
+            "category": "BUSINESS",
+            "topic": null,
+            "claim": "합성 교체 필터를 판매한다.",
+            "evidence_ids": [
+              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+            ],
+            "counterevidence_ids": [
+              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+            ],
+            "status": "CONFIRMED",
+            "reason": "합성 수작업 대조",
+            "reviewed_by": "synthetic-reviewer",
+            "rule_version": "discovery-rules/1",
+            "core": true,
+            "material": false
+          },
+          {
+            "judgment_id": "counter_review",
+            "category": "COUNTER_REVIEW",
+            "topic": null,
+            "claim": "단일 고객 위험을 검토했으며 핵심 주장을 반증하지 않는다.",
+            "evidence_ids": [
+              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+            ],
+            "counterevidence_ids": [
+              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+            ],
+            "status": "CONFIRMED",
+            "reason": "합성 수작업 대조",
+            "reviewed_by": "synthetic-reviewer",
+            "rule_version": "discovery-rules/1",
+            "core": true,
+            "material": false
+          },
+          {
+            "judgment_id": "currentness",
+            "category": "CURRENTNESS",
+            "topic": null,
+            "claim": "이 검토일의 주장 범위에 자료가 유효함을 검토했다.",
+            "evidence_ids": [
+              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+            ],
+            "counterevidence_ids": [
+              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+            ],
+            "status": "CONFIRMED",
+            "reason": "합성 수작업 대조",
+            "reviewed_by": "synthetic-reviewer",
+            "rule_version": "discovery-rules/1",
+            "core": true,
+            "material": false
+          },
+          {
+            "judgment_id": "discovery",
+            "category": "DISCOVERY",
+            "topic": null,
+            "claim": "교체 필터의 반복 수요를 조사할 이유가 있다.",
+            "evidence_ids": [
+              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+            ],
+            "counterevidence_ids": [
+              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+            ],
+            "status": "CONFIRMED",
+            "reason": "합성 수작업 대조",
+            "reviewed_by": "synthetic-reviewer",
+            "rule_version": "discovery-rules/1",
+            "core": true,
+            "material": false
+          },
+          {
+            "judgment_id": "identity",
+            "category": "IDENTITY",
+            "topic": null,
+            "claim": "합성 기업의 기존 식별자와 원문을 대조했다.",
+            "evidence_ids": [
+              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+            ],
+            "counterevidence_ids": [
+              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+            ],
+            "status": "CONFIRMED",
+            "reason": "합성 수작업 대조",
+            "reviewed_by": "synthetic-reviewer",
+            "rule_version": "discovery-rules/1",
+            "core": true,
+            "material": false
+          }
+        ],
+        "awareness": {
+          "consumer_contact": null,
+          "market_attention": null
+        },
+        "unknowns": [
+          "시장 인지도 미측정",
+          "지역 수익성 미확인"
+        ],
+        "selection_ready": true,
+        "blocked_gates": [],
+        "unresolved_core": [],
+        "material_refutations": [],
+        "affected_judgment_ids": [],
+        "invalidated_evidence_ids": [],
+        "events": [],
+        "history": [],
+        "history_ref": "discovery_history_868b78c5a4deec60c71dd60b152bb219e41b19bd46f20cd7daf0d0a969a0c0e4",
+        "publication_approved": false,
+        "previous_record_hash": null,
+        "input_hash": "360a1a3a620dfd9ac97e633b330c2e119494c0aa8f7188d4ef6d843c840fc40a",
+        "display": {
+          "list_eligible": false,
+          "mark": null,
+          "state_reason": "AUTOMATIC_CANDIDATE_REQUIRES_REVIEW",
+          "business": [
+            {
+              "judgment_id": "business",
+              "category": "BUSINESS",
+              "topic": null,
+              "claim": "합성 교체 필터를 판매한다.",
+              "evidence_ids": [
+                "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              ],
+              "counterevidence_ids": [
+                "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              ],
+              "status": "CONFIRMED",
+              "reason": "합성 수작업 대조",
+              "reviewed_by": "synthetic-reviewer",
+              "rule_version": "discovery-rules/1",
+              "core": true,
+              "material": false
+            }
+          ],
+          "discovery_reason": [
+            {
+              "judgment_id": "discovery",
+              "category": "DISCOVERY",
+              "topic": null,
+              "claim": "교체 필터의 반복 수요를 조사할 이유가 있다.",
+              "evidence_ids": [
+                "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              ],
+              "counterevidence_ids": [
+                "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              ],
+              "status": "CONFIRMED",
+              "reason": "합성 수작업 대조",
+              "reviewed_by": "synthetic-reviewer",
+              "rule_version": "discovery-rules/1",
+              "core": true,
+              "material": false
+            }
+          ],
+          "selection_summary": [
+            {
+              "judgment_id": "attractiveness",
+              "category": "ATTRACTIVENESS",
+              "topic": null,
+              "claim": "합성 원문의 반복 구매 근거를 검토했다.",
+              "evidence_ids": [
+                "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              ],
+              "counterevidence_ids": [
+                "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              ],
+              "status": "CONFIRMED",
+              "reason": "합성 수작업 대조",
+              "reviewed_by": "synthetic-reviewer",
+              "rule_version": "discovery-rules/1",
+              "core": true,
+              "material": false
+            }
+          ],
+          "strengths": [],
+          "regions": [],
+          "signals": [],
+          "types": [],
+          "risks": [
+            {
+              "evidence_id": "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b",
+              "company_id": "SYNTH:001",
+              "document_id": "synthetic:filing",
+              "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
+              "source_url": "https://example.invalid/filing",
+              "locator": {
+                "json_pointer": "/risk"
+              },
+              "value": "One customer",
+              "published_on": "2026-10-31",
+              "published_at": null,
+              "period": {
+                "start": "2026-01-01",
+                "end": "2026-09-30"
+              },
+              "acquired_at": "2026-11-01T12:00:00Z",
+              "unit": "text",
+              "region": null,
+              "region_basis": null,
+              "origin": "SOURCE_EXTRACT",
+              "source_assertion": true
+            }
+          ],
+          "risk_judgments": [],
+          "unknowns": [
+            "시장 인지도 미측정",
+            "지역 수익성 미확인"
+          ]
+        },
+        "record_hash": "d934868d87b4db318f442ec7aa534061dd30049b840b6bdb5d6b4b5bc49bf148"
+      },
+      "expected": {
+        "state": "CANDIDATE",
+        "list_eligible": false,
+        "mark": null,
+        "first_selected_null": true,
+        "publication_approved": false,
+        "direct_link": "same authorized state, not an authorization grant",
+        "unknown_market_attention": true,
+        "risk_visible": "One customer",
+        "filter_effect": "no score/rank/state recomputation"
+      }
+    },
+    {
+      "case_id": "IN_REVIEW",
+      "record": {
+        "schema_version": "discovery-company/v1",
+        "rule_version": "discovery-rules/1",
+        "company_id": "SYNTH:001",
+        "company_name": "아주 긴 합성 기업 이름 주식회사",
+        "identity_ref": {
+          "issuer_id": "SYNTH:issuer-1",
+          "security_id": null,
+          "listing_id": null
+        },
+        "qgv_ref": {
+          "company_id": "SYNTH:001"
+        },
+        "as_of": "2026-11-06T12:00:00Z",
+        "population": "synthetic-1",
+        "review_scope": "single-company source review",
+        "state": "IN_REVIEW",
+        "state_reason": "합성 근거 검토 시작",
+        "first_selected_at": null,
+        "last_reviewed_at": "2026-11-06T12:00:00Z",
+        "evidence": [
+          {
+            "evidence_id": "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b",
+            "company_id": "SYNTH:001",
+            "document_id": "synthetic:filing",
+            "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
+            "source_url": "https://example.invalid/filing",
+            "locator": {
+              "json_pointer": "/risk"
+            },
+            "value": "One customer",
+            "published_on": "2026-10-31",
+            "published_at": null,
+            "period": {
+              "start": "2026-01-01",
+              "end": "2026-09-30"
+            },
+            "acquired_at": "2026-11-01T12:00:00Z",
+            "unit": "text",
+            "region": null,
+            "region_basis": null,
+            "origin": "SOURCE_EXTRACT",
+            "source_assertion": true
+          },
+          {
+            "evidence_id": "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155",
+            "company_id": "SYNTH:001",
+            "document_id": "synthetic:filing",
+            "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
+            "source_url": "https://example.invalid/filing",
+            "locator": {
+              "json_pointer": "/business"
+            },
+            "value": "Synthetic replacement filters",
+            "published_on": "2026-10-31",
+            "published_at": null,
+            "period": {
+              "start": "2026-01-01",
+              "end": "2026-09-30"
+            },
+            "acquired_at": "2026-11-01T12:00:00Z",
+            "unit": "text",
+            "region": null,
+            "region_basis": null,
+            "origin": "SOURCE_EXTRACT",
+            "source_assertion": true
+          }
+        ],
+        "judgments": [
+          {
+            "judgment_id": "attractiveness",
+            "category": "ATTRACTIVENESS",
+            "topic": null,
+            "claim": "합성 원문의 반복 구매 근거를 검토했다.",
+            "evidence_ids": [
+              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+            ],
+            "counterevidence_ids": [
+              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+            ],
+            "status": "CONFIRMED",
+            "reason": "합성 수작업 대조",
+            "reviewed_by": "synthetic-reviewer",
+            "rule_version": "discovery-rules/1",
+            "core": true,
+            "material": false
+          },
+          {
+            "judgment_id": "business",
+            "category": "BUSINESS",
+            "topic": null,
+            "claim": "합성 교체 필터를 판매한다.",
+            "evidence_ids": [
+              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+            ],
+            "counterevidence_ids": [
+              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+            ],
+            "status": "CONFIRMED",
+            "reason": "합성 수작업 대조",
+            "reviewed_by": "synthetic-reviewer",
+            "rule_version": "discovery-rules/1",
+            "core": true,
+            "material": false
+          },
+          {
+            "judgment_id": "counter_review",
+            "category": "COUNTER_REVIEW",
+            "topic": null,
+            "claim": "단일 고객 위험을 검토했으며 핵심 주장을 반증하지 않는다.",
+            "evidence_ids": [
+              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+            ],
+            "counterevidence_ids": [
+              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+            ],
+            "status": "CONFIRMED",
+            "reason": "합성 수작업 대조",
+            "reviewed_by": "synthetic-reviewer",
+            "rule_version": "discovery-rules/1",
+            "core": true,
+            "material": false
+          },
+          {
+            "judgment_id": "currentness",
+            "category": "CURRENTNESS",
+            "topic": null,
+            "claim": "이 검토일의 주장 범위에 자료가 유효함을 검토했다.",
+            "evidence_ids": [
+              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+            ],
+            "counterevidence_ids": [
+              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+            ],
+            "status": "CONFIRMED",
+            "reason": "합성 수작업 대조",
+            "reviewed_by": "synthetic-reviewer",
+            "rule_version": "discovery-rules/1",
+            "core": true,
+            "material": false
+          },
+          {
+            "judgment_id": "discovery",
+            "category": "DISCOVERY",
+            "topic": null,
+            "claim": "교체 필터의 반복 수요를 조사할 이유가 있다.",
+            "evidence_ids": [
+              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+            ],
+            "counterevidence_ids": [
+              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+            ],
+            "status": "CONFIRMED",
+            "reason": "합성 수작업 대조",
+            "reviewed_by": "synthetic-reviewer",
+            "rule_version": "discovery-rules/1",
+            "core": true,
+            "material": false
+          },
+          {
+            "judgment_id": "identity",
+            "category": "IDENTITY",
+            "topic": null,
+            "claim": "합성 기업의 기존 식별자와 원문을 대조했다.",
+            "evidence_ids": [
+              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+            ],
+            "counterevidence_ids": [
+              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+            ],
+            "status": "CONFIRMED",
+            "reason": "합성 수작업 대조",
+            "reviewed_by": "synthetic-reviewer",
+            "rule_version": "discovery-rules/1",
+            "core": true,
+            "material": false
+          }
+        ],
+        "awareness": {
+          "consumer_contact": null,
+          "market_attention": null
+        },
+        "unknowns": [
+          "시장 인지도 미측정",
+          "지역 수익성 미확인"
+        ],
+        "selection_ready": true,
+        "blocked_gates": [],
+        "unresolved_core": [],
+        "material_refutations": [],
+        "affected_judgment_ids": [],
+        "invalidated_evidence_ids": [],
+        "events": [],
+        "history": [
+          {
+            "from_state": "CANDIDATE",
+            "to_state": "IN_REVIEW",
+            "at": "2026-11-06T12:00:00Z",
+            "reason": "합성 근거 검토 시작",
+            "rule_version": "discovery-rules/1",
+            "reviewer": "synthetic-reviewer"
+          }
+        ],
+        "history_ref": "discovery_history_af437705dc707738ee4430d837c9835410a61675a114af013ecfae0e6fac5c83",
+        "publication_approved": false,
+        "previous_record_hash": "d934868d87b4db318f442ec7aa534061dd30049b840b6bdb5d6b4b5bc49bf148",
+        "input_hash": "cbf5732d59c603ac1e3204641181d7792283de659aa22478dc053f36435917b0",
+        "display": {
+          "list_eligible": false,
+          "mark": null,
+          "state_reason": "합성 근거 검토 시작",
+          "business": [
+            {
+              "judgment_id": "business",
+              "category": "BUSINESS",
+              "topic": null,
+              "claim": "합성 교체 필터를 판매한다.",
+              "evidence_ids": [
+                "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              ],
+              "counterevidence_ids": [
+                "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              ],
+              "status": "CONFIRMED",
+              "reason": "합성 수작업 대조",
+              "reviewed_by": "synthetic-reviewer",
+              "rule_version": "discovery-rules/1",
+              "core": true,
+              "material": false
+            }
+          ],
+          "discovery_reason": [
+            {
+              "judgment_id": "discovery",
+              "category": "DISCOVERY",
+              "topic": null,
+              "claim": "교체 필터의 반복 수요를 조사할 이유가 있다.",
+              "evidence_ids": [
+                "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              ],
+              "counterevidence_ids": [
+                "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              ],
+              "status": "CONFIRMED",
+              "reason": "합성 수작업 대조",
+              "reviewed_by": "synthetic-reviewer",
+              "rule_version": "discovery-rules/1",
+              "core": true,
+              "material": false
+            }
+          ],
+          "selection_summary": [
+            {
+              "judgment_id": "attractiveness",
+              "category": "ATTRACTIVENESS",
+              "topic": null,
+              "claim": "합성 원문의 반복 구매 근거를 검토했다.",
+              "evidence_ids": [
+                "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              ],
+              "counterevidence_ids": [
+                "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              ],
+              "status": "CONFIRMED",
+              "reason": "합성 수작업 대조",
+              "reviewed_by": "synthetic-reviewer",
+              "rule_version": "discovery-rules/1",
+              "core": true,
+              "material": false
+            }
+          ],
+          "strengths": [],
+          "regions": [],
+          "signals": [],
+          "types": [],
+          "risks": [
+            {
+              "evidence_id": "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b",
+              "company_id": "SYNTH:001",
+              "document_id": "synthetic:filing",
+              "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
+              "source_url": "https://example.invalid/filing",
+              "locator": {
+                "json_pointer": "/risk"
+              },
+              "value": "One customer",
+              "published_on": "2026-10-31",
+              "published_at": null,
+              "period": {
+                "start": "2026-01-01",
+                "end": "2026-09-30"
+              },
+              "acquired_at": "2026-11-01T12:00:00Z",
+              "unit": "text",
+              "region": null,
+              "region_basis": null,
+              "origin": "SOURCE_EXTRACT",
+              "source_assertion": true
+            }
+          ],
+          "risk_judgments": [],
+          "unknowns": [
+            "시장 인지도 미측정",
+            "지역 수익성 미확인"
+          ]
+        },
+        "record_hash": "f6f2ced6572aaf035e715acfdbbb5d2bbb4d8a7e2ae6792b241792a27a821f04"
+      },
+      "expected": {
+        "state": "IN_REVIEW",
+        "list_eligible": false,
+        "mark": null,
+        "first_selected_null": true,
+        "publication_approved": false,
+        "direct_link": "same authorized state, not an authorization grant",
+        "unknown_market_attention": true,
+        "risk_visible": "One customer",
+        "filter_effect": "no score/rank/state recomputation"
+      }
+    },
+    {
+      "case_id": "SELECTED",
+      "record": {
+        "schema_version": "discovery-company/v1",
+        "rule_version": "discovery-rules/1",
+        "company_id": "SYNTH:001",
+        "company_name": "아주 긴 합성 기업 이름 주식회사",
+        "identity_ref": {
+          "issuer_id": "SYNTH:issuer-1",
+          "security_id": null,
+          "listing_id": null
+        },
+        "qgv_ref": {
+          "company_id": "SYNTH:001"
+        },
+        "as_of": "2026-11-06T12:00:00Z",
+        "population": "synthetic-1",
+        "review_scope": "single-company source review",
+        "state": "SELECTED",
+        "state_reason": "합성 근거 대조 완료 — 공개 승인 아님",
+        "first_selected_at": "2026-11-06T12:00:00Z",
+        "last_reviewed_at": "2026-11-06T12:00:00Z",
+        "evidence": [
+          {
+            "evidence_id": "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b",
+            "company_id": "SYNTH:001",
+            "document_id": "synthetic:filing",
+            "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
+            "source_url": "https://example.invalid/filing",
+            "locator": {
+              "json_pointer": "/risk"
+            },
+            "value": "One customer",
+            "published_on": "2026-10-31",
+            "published_at": null,
+            "period": {
+              "start": "2026-01-01",
+              "end": "2026-09-30"
+            },
+            "acquired_at": "2026-11-01T12:00:00Z",
+            "unit": "text",
+            "region": null,
+            "region_basis": null,
+            "origin": "SOURCE_EXTRACT",
+            "source_assertion": true
+          },
+          {
+            "evidence_id": "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155",
+            "company_id": "SYNTH:001",
+            "document_id": "synthetic:filing",
+            "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
+            "source_url": "https://example.invalid/filing",
+            "locator": {
+              "json_pointer": "/business"
+            },
+            "value": "Synthetic replacement filters",
+            "published_on": "2026-10-31",
+            "published_at": null,
+            "period": {
+              "start": "2026-01-01",
+              "end": "2026-09-30"
+            },
+            "acquired_at": "2026-11-01T12:00:00Z",
+            "unit": "text",
+            "region": null,
+            "region_basis": null,
+            "origin": "SOURCE_EXTRACT",
+            "source_assertion": true
+          }
+        ],
+        "judgments": [
+          {
+            "judgment_id": "attractiveness",
+            "category": "ATTRACTIVENESS",
+            "topic": null,
+            "claim": "합성 원문의 반복 구매 근거를 검토했다.",
+            "evidence_ids": [
+              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+            ],
+            "counterevidence_ids": [
+              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+            ],
+            "status": "CONFIRMED",
+            "reason": "합성 수작업 대조",
+            "reviewed_by": "synthetic-reviewer",
+            "rule_version": "discovery-rules/1",
+            "core": true,
+            "material": false
+          },
+          {
+            "judgment_id": "business",
+            "category": "BUSINESS",
+            "topic": null,
+            "claim": "합성 교체 필터를 판매한다.",
+            "evidence_ids": [
+              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+            ],
+            "counterevidence_ids": [
+              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+            ],
+            "status": "CONFIRMED",
+            "reason": "합성 수작업 대조",
+            "reviewed_by": "synthetic-reviewer",
+            "rule_version": "discovery-rules/1",
+            "core": true,
+            "material": false
+          },
+          {
+            "judgment_id": "counter_review",
+            "category": "COUNTER_REVIEW",
+            "topic": null,
+            "claim": "단일 고객 위험을 검토했으며 핵심 주장을 반증하지 않는다.",
+            "evidence_ids": [
+              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+            ],
+            "counterevidence_ids": [
+              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+            ],
+            "status": "CONFIRMED",
+            "reason": "합성 수작업 대조",
+            "reviewed_by": "synthetic-reviewer",
+            "rule_version": "discovery-rules/1",
+            "core": true,
+            "material": false
+          },
+          {
+            "judgment_id": "currentness",
+            "category": "CURRENTNESS",
+            "topic": null,
+            "claim": "이 검토일의 주장 범위에 자료가 유효함을 검토했다.",
+            "evidence_ids": [
+              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+            ],
+            "counterevidence_ids": [
+              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+            ],
+            "status": "CONFIRMED",
+            "reason": "합성 수작업 대조",
+            "reviewed_by": "synthetic-reviewer",
+            "rule_version": "discovery-rules/1",
+            "core": true,
+            "material": false
+          },
+          {
+            "judgment_id": "discovery",
+            "category": "DISCOVERY",
+            "topic": null,
+            "claim": "교체 필터의 반복 수요를 조사할 이유가 있다.",
+            "evidence_ids": [
+              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+            ],
+            "counterevidence_ids": [
+              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+            ],
+            "status": "CONFIRMED",
+            "reason": "합성 수작업 대조",
+            "reviewed_by": "synthetic-reviewer",
+            "rule_version": "discovery-rules/1",
+            "core": true,
+            "material": false
+          },
+          {
+            "judgment_id": "identity",
+            "category": "IDENTITY",
+            "topic": null,
+            "claim": "합성 기업의 기존 식별자와 원문을 대조했다.",
+            "evidence_ids": [
+              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+            ],
+            "counterevidence_ids": [
+              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+            ],
+            "status": "CONFIRMED",
+            "reason": "합성 수작업 대조",
+            "reviewed_by": "synthetic-reviewer",
+            "rule_version": "discovery-rules/1",
+            "core": true,
+            "material": false
+          }
+        ],
+        "awareness": {
+          "consumer_contact": null,
+          "market_attention": null
+        },
+        "unknowns": [
+          "시장 인지도 미측정",
+          "지역 수익성 미확인"
+        ],
+        "selection_ready": true,
+        "blocked_gates": [],
+        "unresolved_core": [],
+        "material_refutations": [],
+        "affected_judgment_ids": [],
+        "invalidated_evidence_ids": [],
+        "events": [],
+        "history": [
+          {
+            "from_state": "CANDIDATE",
+            "to_state": "IN_REVIEW",
+            "at": "2026-11-06T12:00:00Z",
+            "reason": "합성 근거 검토 시작",
+            "rule_version": "discovery-rules/1",
+            "reviewer": "synthetic-reviewer"
+          },
+          {
+            "from_state": "IN_REVIEW",
+            "to_state": "SELECTED",
+            "at": "2026-11-06T12:00:00Z",
+            "reason": "합성 근거 대조 완료 — 공개 승인 아님",
+            "rule_version": "discovery-rules/1",
+            "reviewer": "synthetic-reviewer"
+          }
+        ],
+        "history_ref": "discovery_history_62ad4fdd48d287084da3e5b1a096362770beb14acd477049a83f5220d7bb9698",
+        "publication_approved": false,
+        "previous_record_hash": "f6f2ced6572aaf035e715acfdbbb5d2bbb4d8a7e2ae6792b241792a27a821f04",
+        "input_hash": "657fe1911c68aea479dd91eaa3afc53b1e3a21c2439b88a03ca9a015fc7ad630",
+        "display": {
+          "list_eligible": true,
+          "mark": "SELECTED",
+          "state_reason": "합성 근거 대조 완료 — 공개 승인 아님",
+          "business": [
+            {
+              "judgment_id": "business",
+              "category": "BUSINESS",
+              "topic": null,
+              "claim": "합성 교체 필터를 판매한다.",
+              "evidence_ids": [
+                "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              ],
+              "counterevidence_ids": [
+                "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              ],
+              "status": "CONFIRMED",
+              "reason": "합성 수작업 대조",
+              "reviewed_by": "synthetic-reviewer",
+              "rule_version": "discovery-rules/1",
+              "core": true,
+              "material": false
+            }
+          ],
+          "discovery_reason": [
+            {
+              "judgment_id": "discovery",
+              "category": "DISCOVERY",
+              "topic": null,
+              "claim": "교체 필터의 반복 수요를 조사할 이유가 있다.",
+              "evidence_ids": [
+                "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              ],
+              "counterevidence_ids": [
+                "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              ],
+              "status": "CONFIRMED",
+              "reason": "합성 수작업 대조",
+              "reviewed_by": "synthetic-reviewer",
+              "rule_version": "discovery-rules/1",
+              "core": true,
+              "material": false
+            }
+          ],
+          "selection_summary": [
+            {
+              "judgment_id": "attractiveness",
+              "category": "ATTRACTIVENESS",
+              "topic": null,
+              "claim": "합성 원문의 반복 구매 근거를 검토했다.",
+              "evidence_ids": [
+                "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              ],
+              "counterevidence_ids": [
+                "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              ],
+              "status": "CONFIRMED",
+              "reason": "합성 수작업 대조",
+              "reviewed_by": "synthetic-reviewer",
+              "rule_version": "discovery-rules/1",
+              "core": true,
+              "material": false
+            }
+          ],
+          "strengths": [],
+          "regions": [],
+          "signals": [],
+          "types": [],
+          "risks": [
+            {
+              "evidence_id": "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b",
+              "company_id": "SYNTH:001",
+              "document_id": "synthetic:filing",
+              "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
+              "source_url": "https://example.invalid/filing",
+              "locator": {
+                "json_pointer": "/risk"
+              },
+              "value": "One customer",
+              "published_on": "2026-10-31",
+              "published_at": null,
+              "period": {
+                "start": "2026-01-01",
+                "end": "2026-09-30"
+              },
+              "acquired_at": "2026-11-01T12:00:00Z",
+              "unit": "text",
+              "region": null,
+              "region_basis": null,
+              "origin": "SOURCE_EXTRACT",
+              "source_assertion": true
+            }
+          ],
+          "risk_judgments": [],
+          "unknowns": [
+            "시장 인지도 미측정",
+            "지역 수익성 미확인"
+          ]
+        },
+        "record_hash": "03f2f94b579bcf6c668a7030bf175681e8cb20349cf4ab1c21a82478f7a0b1ed"
+      },
+      "expected": {
+        "state": "SELECTED",
+        "list_eligible": true,
+        "mark": "SELECTED",
+        "first_selected_null": false,
+        "publication_approved": false,
+        "direct_link": "same authorized state, not an authorization grant",
+        "unknown_market_attention": true,
+        "risk_visible": "One customer",
+        "filter_effect": "no score/rank/state recomputation"
+      }
+    },
+    {
+      "case_id": "REVIEW_REQUIRED",
+      "record": {
+        "schema_version": "discovery-company/v1",
+        "rule_version": "discovery-rules/1",
+        "company_id": "SYNTH:001",
+        "company_name": "아주 긴 합성 기업 이름 주식회사",
+        "identity_ref": {
+          "issuer_id": "SYNTH:issuer-1",
+          "security_id": null,
+          "listing_id": null
+        },
+        "qgv_ref": {
+          "company_id": "SYNTH:001"
+        },
+        "as_of": "2026-11-06T12:00:00Z",
+        "population": "synthetic-1",
+        "review_scope": "single-company source review",
+        "state": "REVIEW_REQUIRED",
+        "state_reason": "자료 경과로 재검토 필요 — 부정 평가 아님",
+        "first_selected_at": "2026-11-06T12:00:00Z",
+        "last_reviewed_at": "2026-11-06T12:00:00Z",
+        "evidence": [
+          {
+            "evidence_id": "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b",
+            "company_id": "SYNTH:001",
+            "document_id": "synthetic:filing",
+            "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
+            "source_url": "https://example.invalid/filing",
+            "locator": {
+              "json_pointer": "/risk"
+            },
+            "value": "One customer",
+            "published_on": "2026-10-31",
+            "published_at": null,
+            "period": {
+              "start": "2026-01-01",
+              "end": "2026-09-30"
+            },
+            "acquired_at": "2026-11-01T12:00:00Z",
+            "unit": "text",
+            "region": null,
+            "region_basis": null,
+            "origin": "SOURCE_EXTRACT",
+            "source_assertion": true
+          },
+          {
+            "evidence_id": "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155",
+            "company_id": "SYNTH:001",
+            "document_id": "synthetic:filing",
+            "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
+            "source_url": "https://example.invalid/filing",
+            "locator": {
+              "json_pointer": "/business"
+            },
+            "value": "Synthetic replacement filters",
+            "published_on": "2026-10-31",
+            "published_at": null,
+            "period": {
+              "start": "2026-01-01",
+              "end": "2026-09-30"
+            },
+            "acquired_at": "2026-11-01T12:00:00Z",
+            "unit": "text",
+            "region": null,
+            "region_basis": null,
+            "origin": "SOURCE_EXTRACT",
+            "source_assertion": true
+          }
+        ],
+        "judgments": [
+          {
+            "judgment_id": "attractiveness",
+            "category": "ATTRACTIVENESS",
+            "topic": null,
+            "claim": "합성 원문의 반복 구매 근거를 검토했다.",
+            "evidence_ids": [
+              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+            ],
+            "counterevidence_ids": [
+              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+            ],
+            "status": "CONFIRMED",
+            "reason": "합성 수작업 대조",
+            "reviewed_by": "synthetic-reviewer",
+            "rule_version": "discovery-rules/1",
+            "core": true,
+            "material": false
+          },
+          {
+            "judgment_id": "business",
+            "category": "BUSINESS",
+            "topic": null,
+            "claim": "합성 교체 필터를 판매한다.",
+            "evidence_ids": [
+              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+            ],
+            "counterevidence_ids": [
+              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+            ],
+            "status": "CONFIRMED",
+            "reason": "합성 수작업 대조",
+            "reviewed_by": "synthetic-reviewer",
+            "rule_version": "discovery-rules/1",
+            "core": true,
+            "material": false
+          },
+          {
+            "judgment_id": "counter_review",
+            "category": "COUNTER_REVIEW",
+            "topic": null,
+            "claim": "단일 고객 위험을 검토했으며 핵심 주장을 반증하지 않는다.",
+            "evidence_ids": [
+              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+            ],
+            "counterevidence_ids": [
+              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+            ],
+            "status": "CONFIRMED",
+            "reason": "합성 수작업 대조",
+            "reviewed_by": "synthetic-reviewer",
+            "rule_version": "discovery-rules/1",
+            "core": true,
+            "material": false
+          },
+          {
+            "judgment_id": "currentness",
+            "category": "CURRENTNESS",
+            "topic": null,
+            "claim": "이 검토일의 주장 범위에 자료가 유효함을 검토했다.",
+            "evidence_ids": [
+              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+            ],
+            "counterevidence_ids": [
+              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+            ],
+            "status": "CONFIRMED",
+            "reason": "합성 수작업 대조",
+            "reviewed_by": "synthetic-reviewer",
+            "rule_version": "discovery-rules/1",
+            "core": true,
+            "material": false
+          },
+          {
+            "judgment_id": "discovery",
+            "category": "DISCOVERY",
+            "topic": null,
+            "claim": "교체 필터의 반복 수요를 조사할 이유가 있다.",
+            "evidence_ids": [
+              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+            ],
+            "counterevidence_ids": [
+              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+            ],
+            "status": "CONFIRMED",
+            "reason": "합성 수작업 대조",
+            "reviewed_by": "synthetic-reviewer",
+            "rule_version": "discovery-rules/1",
+            "core": true,
+            "material": false
+          },
+          {
+            "judgment_id": "identity",
+            "category": "IDENTITY",
+            "topic": null,
+            "claim": "합성 기업의 기존 식별자와 원문을 대조했다.",
+            "evidence_ids": [
+              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+            ],
+            "counterevidence_ids": [
+              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+            ],
+            "status": "CONFIRMED",
+            "reason": "합성 수작업 대조",
+            "reviewed_by": "synthetic-reviewer",
+            "rule_version": "discovery-rules/1",
+            "core": true,
+            "material": false
+          }
+        ],
+        "awareness": {
+          "consumer_contact": null,
+          "market_attention": null
+        },
+        "unknowns": [
+          "시장 인지도 미측정",
+          "지역 수익성 미확인"
+        ],
+        "selection_ready": true,
+        "blocked_gates": [],
+        "unresolved_core": [],
+        "material_refutations": [],
+        "affected_judgment_ids": [],
+        "invalidated_evidence_ids": [],
+        "events": [],
+        "history": [
+          {
+            "from_state": "CANDIDATE",
+            "to_state": "IN_REVIEW",
+            "at": "2026-11-06T12:00:00Z",
+            "reason": "합성 근거 검토 시작",
+            "rule_version": "discovery-rules/1",
+            "reviewer": "synthetic-reviewer"
+          },
+          {
+            "from_state": "IN_REVIEW",
+            "to_state": "SELECTED",
+            "at": "2026-11-06T12:00:00Z",
+            "reason": "합성 근거 대조 완료 — 공개 승인 아님",
+            "rule_version": "discovery-rules/1",
+            "reviewer": "synthetic-reviewer"
+          },
+          {
+            "from_state": "SELECTED",
+            "to_state": "REVIEW_REQUIRED",
+            "at": "2026-11-06T12:00:00Z",
+            "reason": "자료 경과로 재검토 필요 — 부정 평가 아님",
+            "rule_version": "discovery-rules/1",
+            "reviewer": "synthetic-reviewer"
+          }
+        ],
+        "history_ref": "discovery_history_ba1be36cf7053d16746684a8ab95978c10269809cf10fe57011d9406676b3cdd",
+        "publication_approved": false,
+        "previous_record_hash": "03f2f94b579bcf6c668a7030bf175681e8cb20349cf4ab1c21a82478f7a0b1ed",
+        "input_hash": "78bd0daa02a02c7ea1c27df3b1a106ad737a33eabcabf8704665365c71b52f06",
+        "display": {
+          "list_eligible": true,
+          "mark": "REVIEW_REQUIRED",
+          "state_reason": "자료 경과로 재검토 필요 — 부정 평가 아님",
+          "business": [
+            {
+              "judgment_id": "business",
+              "category": "BUSINESS",
+              "topic": null,
+              "claim": "합성 교체 필터를 판매한다.",
+              "evidence_ids": [
+                "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              ],
+              "counterevidence_ids": [
+                "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              ],
+              "status": "CONFIRMED",
+              "reason": "합성 수작업 대조",
+              "reviewed_by": "synthetic-reviewer",
+              "rule_version": "discovery-rules/1",
+              "core": true,
+              "material": false
+            }
+          ],
+          "discovery_reason": [
+            {
+              "judgment_id": "discovery",
+              "category": "DISCOVERY",
+              "topic": null,
+              "claim": "교체 필터의 반복 수요를 조사할 이유가 있다.",
+              "evidence_ids": [
+                "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              ],
+              "counterevidence_ids": [
+                "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              ],
+              "status": "CONFIRMED",
+              "reason": "합성 수작업 대조",
+              "reviewed_by": "synthetic-reviewer",
+              "rule_version": "discovery-rules/1",
+              "core": true,
+              "material": false
+            }
+          ],
+          "selection_summary": [
+            {
+              "judgment_id": "attractiveness",
+              "category": "ATTRACTIVENESS",
+              "topic": null,
+              "claim": "합성 원문의 반복 구매 근거를 검토했다.",
+              "evidence_ids": [
+                "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              ],
+              "counterevidence_ids": [
+                "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              ],
+              "status": "CONFIRMED",
+              "reason": "합성 수작업 대조",
+              "reviewed_by": "synthetic-reviewer",
+              "rule_version": "discovery-rules/1",
+              "core": true,
+              "material": false
+            }
+          ],
+          "strengths": [],
+          "regions": [],
+          "signals": [],
+          "types": [],
+          "risks": [
+            {
+              "evidence_id": "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b",
+              "company_id": "SYNTH:001",
+              "document_id": "synthetic:filing",
+              "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
+              "source_url": "https://example.invalid/filing",
+              "locator": {
+                "json_pointer": "/risk"
+              },
+              "value": "One customer",
+              "published_on": "2026-10-31",
+              "published_at": null,
+              "period": {
+                "start": "2026-01-01",
+                "end": "2026-09-30"
+              },
+              "acquired_at": "2026-11-01T12:00:00Z",
+              "unit": "text",
+              "region": null,
+              "region_basis": null,
+              "origin": "SOURCE_EXTRACT",
+              "source_assertion": true
+            }
+          ],
+          "risk_judgments": [],
+          "unknowns": [
+            "시장 인지도 미측정",
+            "지역 수익성 미확인"
+          ]
+        },
+        "record_hash": "5e31ce18660a446ed153ed8db2f585cdd2c253fb19e9f47bb2f1c5aba706eb4f"
+      },
+      "expected": {
+        "state": "REVIEW_REQUIRED",
+        "list_eligible": true,
+        "mark": "REVIEW_REQUIRED",
+        "first_selected_null": false,
+        "publication_approved": false,
+        "direct_link": "same authorized state, not an authorization grant",
+        "unknown_market_attention": true,
+        "risk_visible": "One customer",
+        "filter_effect": "no score/rank/state recomputation"
+      }
+    },
+    {
+      "case_id": "SUSPENDED",
+      "record": {
+        "schema_version": "discovery-company/v1",
+        "rule_version": "discovery-rules/1",
+        "company_id": "SYNTH:001",
+        "company_name": "아주 긴 합성 기업 이름 주식회사",
+        "identity_ref": {
+          "issuer_id": "SYNTH:issuer-1",
+          "security_id": null,
+          "listing_id": null
+        },
+        "qgv_ref": {
+          "company_id": "SYNTH:001"
+        },
+        "as_of": "2026-11-06T12:00:00Z",
+        "population": "synthetic-1",
+        "review_scope": "single-company source review",
+        "state": "SUSPENDED",
+        "state_reason": "핵심 근거 검토 중 보류",
+        "first_selected_at": "2026-11-06T12:00:00Z",
+        "last_reviewed_at": "2026-11-06T12:00:00Z",
+        "evidence": [
+          {
+            "evidence_id": "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b",
+            "company_id": "SYNTH:001",
+            "document_id": "synthetic:filing",
+            "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
+            "source_url": "https://example.invalid/filing",
+            "locator": {
+              "json_pointer": "/risk"
+            },
+            "value": "One customer",
+            "published_on": "2026-10-31",
+            "published_at": null,
+            "period": {
+              "start": "2026-01-01",
+              "end": "2026-09-30"
+            },
+            "acquired_at": "2026-11-01T12:00:00Z",
+            "unit": "text",
+            "region": null,
+            "region_basis": null,
+            "origin": "SOURCE_EXTRACT",
+            "source_assertion": true
+          },
+          {
+            "evidence_id": "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155",
+            "company_id": "SYNTH:001",
+            "document_id": "synthetic:filing",
+            "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
+            "source_url": "https://example.invalid/filing",
+            "locator": {
+              "json_pointer": "/business"
+            },
+            "value": "Synthetic replacement filters",
+            "published_on": "2026-10-31",
+            "published_at": null,
+            "period": {
+              "start": "2026-01-01",
+              "end": "2026-09-30"
+            },
+            "acquired_at": "2026-11-01T12:00:00Z",
+            "unit": "text",
+            "region": null,
+            "region_basis": null,
+            "origin": "SOURCE_EXTRACT",
+            "source_assertion": true
+          }
+        ],
+        "judgments": [
+          {
+            "judgment_id": "attractiveness",
+            "category": "ATTRACTIVENESS",
+            "topic": null,
+            "claim": "합성 원문의 반복 구매 근거를 검토했다.",
+            "evidence_ids": [
+              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+            ],
+            "counterevidence_ids": [
+              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+            ],
+            "status": "CONFIRMED",
+            "reason": "합성 수작업 대조",
+            "reviewed_by": "synthetic-reviewer",
+            "rule_version": "discovery-rules/1",
+            "core": true,
+            "material": false
+          },
+          {
+            "judgment_id": "business",
+            "category": "BUSINESS",
+            "topic": null,
+            "claim": "합성 교체 필터를 판매한다.",
+            "evidence_ids": [
+              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+            ],
+            "counterevidence_ids": [
+              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+            ],
+            "status": "CONFIRMED",
+            "reason": "합성 수작업 대조",
+            "reviewed_by": "synthetic-reviewer",
+            "rule_version": "discovery-rules/1",
+            "core": true,
+            "material": false
+          },
+          {
+            "judgment_id": "counter_review",
+            "category": "COUNTER_REVIEW",
+            "topic": null,
+            "claim": "단일 고객 위험을 검토했으며 핵심 주장을 반증하지 않는다.",
+            "evidence_ids": [
+              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+            ],
+            "counterevidence_ids": [
+              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+            ],
+            "status": "CONFIRMED",
+            "reason": "합성 수작업 대조",
+            "reviewed_by": "synthetic-reviewer",
+            "rule_version": "discovery-rules/1",
+            "core": true,
+            "material": false
+          },
+          {
+            "judgment_id": "currentness",
+            "category": "CURRENTNESS",
+            "topic": null,
+            "claim": "이 검토일의 주장 범위에 자료가 유효함을 검토했다.",
+            "evidence_ids": [
+              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+            ],
+            "counterevidence_ids": [
+              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+            ],
+            "status": "CONFIRMED",
+            "reason": "합성 수작업 대조",
+            "reviewed_by": "synthetic-reviewer",
+            "rule_version": "discovery-rules/1",
+            "core": true,
+            "material": false
+          },
+          {
+            "judgment_id": "discovery",
+            "category": "DISCOVERY",
+            "topic": null,
+            "claim": "교체 필터의 반복 수요를 조사할 이유가 있다.",
+            "evidence_ids": [
+              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+            ],
+            "counterevidence_ids": [
+              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+            ],
+            "status": "CONFIRMED",
+            "reason": "합성 수작업 대조",
+            "reviewed_by": "synthetic-reviewer",
+            "rule_version": "discovery-rules/1",
+            "core": true,
+            "material": false
+          },
+          {
+            "judgment_id": "identity",
+            "category": "IDENTITY",
+            "topic": null,
+            "claim": "합성 기업의 기존 식별자와 원문을 대조했다.",
+            "evidence_ids": [
+              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+            ],
+            "counterevidence_ids": [
+              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+            ],
+            "status": "CONFIRMED",
+            "reason": "합성 수작업 대조",
+            "reviewed_by": "synthetic-reviewer",
+            "rule_version": "discovery-rules/1",
+            "core": true,
+            "material": false
+          }
+        ],
+        "awareness": {
+          "consumer_contact": null,
+          "market_attention": null
+        },
+        "unknowns": [
+          "시장 인지도 미측정",
+          "지역 수익성 미확인"
+        ],
+        "selection_ready": true,
+        "blocked_gates": [],
+        "unresolved_core": [],
+        "material_refutations": [],
+        "affected_judgment_ids": [],
+        "invalidated_evidence_ids": [],
+        "events": [],
+        "history": [
+          {
+            "from_state": "CANDIDATE",
+            "to_state": "IN_REVIEW",
+            "at": "2026-11-06T12:00:00Z",
+            "reason": "합성 근거 검토 시작",
+            "rule_version": "discovery-rules/1",
+            "reviewer": "synthetic-reviewer"
+          },
+          {
+            "from_state": "IN_REVIEW",
+            "to_state": "SELECTED",
+            "at": "2026-11-06T12:00:00Z",
+            "reason": "합성 근거 대조 완료 — 공개 승인 아님",
+            "rule_version": "discovery-rules/1",
+            "reviewer": "synthetic-reviewer"
+          },
+          {
+            "from_state": "SELECTED",
+            "to_state": "REVIEW_REQUIRED",
+            "at": "2026-11-06T12:00:00Z",
+            "reason": "자료 경과로 재검토 필요 — 부정 평가 아님",
+            "rule_version": "discovery-rules/1",
+            "reviewer": "synthetic-reviewer"
+          },
+          {
+            "from_state": "REVIEW_REQUIRED",
+            "to_state": "SUSPENDED",
+            "at": "2026-11-06T12:00:00Z",
+            "reason": "핵심 근거 검토 중 보류",
+            "rule_version": "discovery-rules/1",
+            "reviewer": "synthetic-reviewer"
+          }
+        ],
+        "history_ref": "discovery_history_a6375c4f191c9ed8c832219a2709b0b53f5edc25d43c432722a7e2d361bdc5a0",
+        "publication_approved": false,
+        "previous_record_hash": "5e31ce18660a446ed153ed8db2f585cdd2c253fb19e9f47bb2f1c5aba706eb4f",
+        "input_hash": "6dd5a060de586b4226f7aa81ca5986ea3aa2c7ddaf44650b066e45a110d3eea0",
+        "display": {
+          "list_eligible": false,
+          "mark": null,
+          "state_reason": "핵심 근거 검토 중 보류",
+          "business": [
+            {
+              "judgment_id": "business",
+              "category": "BUSINESS",
+              "topic": null,
+              "claim": "합성 교체 필터를 판매한다.",
+              "evidence_ids": [
+                "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              ],
+              "counterevidence_ids": [
+                "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              ],
+              "status": "CONFIRMED",
+              "reason": "합성 수작업 대조",
+              "reviewed_by": "synthetic-reviewer",
+              "rule_version": "discovery-rules/1",
+              "core": true,
+              "material": false
+            }
+          ],
+          "discovery_reason": [
+            {
+              "judgment_id": "discovery",
+              "category": "DISCOVERY",
+              "topic": null,
+              "claim": "교체 필터의 반복 수요를 조사할 이유가 있다.",
+              "evidence_ids": [
+                "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              ],
+              "counterevidence_ids": [
+                "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              ],
+              "status": "CONFIRMED",
+              "reason": "합성 수작업 대조",
+              "reviewed_by": "synthetic-reviewer",
+              "rule_version": "discovery-rules/1",
+              "core": true,
+              "material": false
+            }
+          ],
+          "selection_summary": [
+            {
+              "judgment_id": "attractiveness",
+              "category": "ATTRACTIVENESS",
+              "topic": null,
+              "claim": "합성 원문의 반복 구매 근거를 검토했다.",
+              "evidence_ids": [
+                "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              ],
+              "counterevidence_ids": [
+                "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              ],
+              "status": "CONFIRMED",
+              "reason": "합성 수작업 대조",
+              "reviewed_by": "synthetic-reviewer",
+              "rule_version": "discovery-rules/1",
+              "core": true,
+              "material": false
+            }
+          ],
+          "strengths": [],
+          "regions": [],
+          "signals": [],
+          "types": [],
+          "risks": [
+            {
+              "evidence_id": "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b",
+              "company_id": "SYNTH:001",
+              "document_id": "synthetic:filing",
+              "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
+              "source_url": "https://example.invalid/filing",
+              "locator": {
+                "json_pointer": "/risk"
+              },
+              "value": "One customer",
+              "published_on": "2026-10-31",
+              "published_at": null,
+              "period": {
+                "start": "2026-01-01",
+                "end": "2026-09-30"
+              },
+              "acquired_at": "2026-11-01T12:00:00Z",
+              "unit": "text",
+              "region": null,
+              "region_basis": null,
+              "origin": "SOURCE_EXTRACT",
+              "source_assertion": true
+            }
+          ],
+          "risk_judgments": [],
+          "unknowns": [
+            "시장 인지도 미측정",
+            "지역 수익성 미확인"
+          ]
+        },
+        "record_hash": "f47e8b8c443c0e583d96c651d71a956aa172a8c74089eb5eb3a0caa89f7f3ed9"
+      },
+      "expected": {
+        "state": "SUSPENDED",
+        "list_eligible": false,
+        "mark": null,
+        "first_selected_null": false,
+        "publication_approved": false,
+        "direct_link": "same authorized state, not an authorization grant",
+        "unknown_market_attention": true,
+        "risk_visible": "One customer",
+        "filter_effect": "no score/rank/state recomputation"
+      }
+    },
+    {
+      "case_id": "REMOVED",
+      "record": {
+        "schema_version": "discovery-company/v1",
+        "rule_version": "discovery-rules/1",
+        "company_id": "SYNTH:001",
+        "company_name": "아주 긴 합성 기업 이름 주식회사",
+        "identity_ref": {
+          "issuer_id": "SYNTH:issuer-1",
+          "security_id": null,
+          "listing_id": null
+        },
+        "qgv_ref": {
+          "company_id": "SYNTH:001"
+        },
+        "as_of": "2026-11-06T12:00:00Z",
+        "population": "synthetic-1",
+        "review_scope": "single-company source review",
+        "state": "REMOVED",
+        "state_reason": "선정 이유가 더 이상 유지되지 않아 해제",
+        "first_selected_at": "2026-11-06T12:00:00Z",
+        "last_reviewed_at": "2026-11-06T12:00:00Z",
+        "evidence": [
+          {
+            "evidence_id": "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b",
+            "company_id": "SYNTH:001",
+            "document_id": "synthetic:filing",
+            "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
+            "source_url": "https://example.invalid/filing",
+            "locator": {
+              "json_pointer": "/risk"
+            },
+            "value": "One customer",
+            "published_on": "2026-10-31",
+            "published_at": null,
+            "period": {
+              "start": "2026-01-01",
+              "end": "2026-09-30"
+            },
+            "acquired_at": "2026-11-01T12:00:00Z",
+            "unit": "text",
+            "region": null,
+            "region_basis": null,
+            "origin": "SOURCE_EXTRACT",
+            "source_assertion": true
+          },
+          {
+            "evidence_id": "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155",
+            "company_id": "SYNTH:001",
+            "document_id": "synthetic:filing",
+            "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
+            "source_url": "https://example.invalid/filing",
+            "locator": {
+              "json_pointer": "/business"
+            },
+            "value": "Synthetic replacement filters",
+            "published_on": "2026-10-31",
+            "published_at": null,
+            "period": {
+              "start": "2026-01-01",
+              "end": "2026-09-30"
+            },
+            "acquired_at": "2026-11-01T12:00:00Z",
+            "unit": "text",
+            "region": null,
+            "region_basis": null,
+            "origin": "SOURCE_EXTRACT",
+            "source_assertion": true
+          }
+        ],
+        "judgments": [
+          {
+            "judgment_id": "attractiveness",
+            "category": "ATTRACTIVENESS",
+            "topic": null,
+            "claim": "합성 원문의 반복 구매 근거를 검토했다.",
+            "evidence_ids": [
+              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+            ],
+            "counterevidence_ids": [
+              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+            ],
+            "status": "CONFIRMED",
+            "reason": "합성 수작업 대조",
+            "reviewed_by": "synthetic-reviewer",
+            "rule_version": "discovery-rules/1",
+            "core": true,
+            "material": false
+          },
+          {
+            "judgment_id": "business",
+            "category": "BUSINESS",
+            "topic": null,
+            "claim": "합성 교체 필터를 판매한다.",
+            "evidence_ids": [
+              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+            ],
+            "counterevidence_ids": [
+              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+            ],
+            "status": "CONFIRMED",
+            "reason": "합성 수작업 대조",
+            "reviewed_by": "synthetic-reviewer",
+            "rule_version": "discovery-rules/1",
+            "core": true,
+            "material": false
+          },
+          {
+            "judgment_id": "counter_review",
+            "category": "COUNTER_REVIEW",
+            "topic": null,
+            "claim": "단일 고객 위험을 검토했으며 핵심 주장을 반증하지 않는다.",
+            "evidence_ids": [
+              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+            ],
+            "counterevidence_ids": [
+              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+            ],
+            "status": "CONFIRMED",
+            "reason": "합성 수작업 대조",
+            "reviewed_by": "synthetic-reviewer",
+            "rule_version": "discovery-rules/1",
+            "core": true,
+            "material": false
+          },
+          {
+            "judgment_id": "currentness",
+            "category": "CURRENTNESS",
+            "topic": null,
+            "claim": "이 검토일의 주장 범위에 자료가 유효함을 검토했다.",
+            "evidence_ids": [
+              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+            ],
+            "counterevidence_ids": [
+              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+            ],
+            "status": "CONFIRMED",
+            "reason": "합성 수작업 대조",
+            "reviewed_by": "synthetic-reviewer",
+            "rule_version": "discovery-rules/1",
+            "core": true,
+            "material": false
+          },
+          {
+            "judgment_id": "discovery",
+            "category": "DISCOVERY",
+            "topic": null,
+            "claim": "교체 필터의 반복 수요를 조사할 이유가 있다.",
+            "evidence_ids": [
+              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+            ],
+            "counterevidence_ids": [
+              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+            ],
+            "status": "CONFIRMED",
+            "reason": "합성 수작업 대조",
+            "reviewed_by": "synthetic-reviewer",
+            "rule_version": "discovery-rules/1",
+            "core": true,
+            "material": false
+          },
+          {
+            "judgment_id": "identity",
+            "category": "IDENTITY",
+            "topic": null,
+            "claim": "합성 기업의 기존 식별자와 원문을 대조했다.",
+            "evidence_ids": [
+              "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+            ],
+            "counterevidence_ids": [
+              "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+            ],
+            "status": "CONFIRMED",
+            "reason": "합성 수작업 대조",
+            "reviewed_by": "synthetic-reviewer",
+            "rule_version": "discovery-rules/1",
+            "core": true,
+            "material": false
+          }
+        ],
+        "awareness": {
+          "consumer_contact": null,
+          "market_attention": null
+        },
+        "unknowns": [
+          "시장 인지도 미측정",
+          "지역 수익성 미확인"
+        ],
+        "selection_ready": true,
+        "blocked_gates": [],
+        "unresolved_core": [],
+        "material_refutations": [],
+        "affected_judgment_ids": [],
+        "invalidated_evidence_ids": [],
+        "events": [],
+        "history": [
+          {
+            "from_state": "CANDIDATE",
+            "to_state": "IN_REVIEW",
+            "at": "2026-11-06T12:00:00Z",
+            "reason": "합성 근거 검토 시작",
+            "rule_version": "discovery-rules/1",
+            "reviewer": "synthetic-reviewer"
+          },
+          {
+            "from_state": "IN_REVIEW",
+            "to_state": "SELECTED",
+            "at": "2026-11-06T12:00:00Z",
+            "reason": "합성 근거 대조 완료 — 공개 승인 아님",
+            "rule_version": "discovery-rules/1",
+            "reviewer": "synthetic-reviewer"
+          },
+          {
+            "from_state": "SELECTED",
+            "to_state": "REVIEW_REQUIRED",
+            "at": "2026-11-06T12:00:00Z",
+            "reason": "자료 경과로 재검토 필요 — 부정 평가 아님",
+            "rule_version": "discovery-rules/1",
+            "reviewer": "synthetic-reviewer"
+          },
+          {
+            "from_state": "REVIEW_REQUIRED",
+            "to_state": "SUSPENDED",
+            "at": "2026-11-06T12:00:00Z",
+            "reason": "핵심 근거 검토 중 보류",
+            "rule_version": "discovery-rules/1",
+            "reviewer": "synthetic-reviewer"
+          },
+          {
+            "from_state": "SUSPENDED",
+            "to_state": "REMOVED",
+            "at": "2026-11-06T12:00:00Z",
+            "reason": "선정 이유가 더 이상 유지되지 않아 해제",
+            "rule_version": "discovery-rules/1",
+            "reviewer": "synthetic-reviewer"
+          }
+        ],
+        "history_ref": "discovery_history_9051980b8b433be6ee88924d0bd3bc6f4c8423ef07fdece5c2dd2b8aacf0b113",
+        "publication_approved": false,
+        "previous_record_hash": "f47e8b8c443c0e583d96c651d71a956aa172a8c74089eb5eb3a0caa89f7f3ed9",
+        "input_hash": "75ee874ff506b76a56fa89e3cb77660b16a4ff9614381f132dbf5c2113171eab",
+        "display": {
+          "list_eligible": false,
+          "mark": null,
+          "state_reason": "선정 이유가 더 이상 유지되지 않아 해제",
+          "business": [
+            {
+              "judgment_id": "business",
+              "category": "BUSINESS",
+              "topic": null,
+              "claim": "합성 교체 필터를 판매한다.",
+              "evidence_ids": [
+                "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              ],
+              "counterevidence_ids": [
+                "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              ],
+              "status": "CONFIRMED",
+              "reason": "합성 수작업 대조",
+              "reviewed_by": "synthetic-reviewer",
+              "rule_version": "discovery-rules/1",
+              "core": true,
+              "material": false
+            }
+          ],
+          "discovery_reason": [
+            {
+              "judgment_id": "discovery",
+              "category": "DISCOVERY",
+              "topic": null,
+              "claim": "교체 필터의 반복 수요를 조사할 이유가 있다.",
+              "evidence_ids": [
+                "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              ],
+              "counterevidence_ids": [
+                "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              ],
+              "status": "CONFIRMED",
+              "reason": "합성 수작업 대조",
+              "reviewed_by": "synthetic-reviewer",
+              "rule_version": "discovery-rules/1",
+              "core": true,
+              "material": false
+            }
+          ],
+          "selection_summary": [
+            {
+              "judgment_id": "attractiveness",
+              "category": "ATTRACTIVENESS",
+              "topic": null,
+              "claim": "합성 원문의 반복 구매 근거를 검토했다.",
+              "evidence_ids": [
+                "discovery_evidence_7a9a09be6b5fe7ded81fafc396614084604481f7991c349ec78da93938ba4155"
+              ],
+              "counterevidence_ids": [
+                "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b"
+              ],
+              "status": "CONFIRMED",
+              "reason": "합성 수작업 대조",
+              "reviewed_by": "synthetic-reviewer",
+              "rule_version": "discovery-rules/1",
+              "core": true,
+              "material": false
+            }
+          ],
+          "strengths": [],
+          "regions": [],
+          "signals": [],
+          "types": [],
+          "risks": [
+            {
+              "evidence_id": "discovery_evidence_387d8bc7b391e36c0440e5372cfdfb134d8c2baac48605dc03a0ca54642e981b",
+              "company_id": "SYNTH:001",
+              "document_id": "synthetic:filing",
+              "sha256": "d46ec5de1152bf895bb40d7b3cc7b5fbac524d146db55d3788a644f9fb1cb0be",
+              "source_url": "https://example.invalid/filing",
+              "locator": {
+                "json_pointer": "/risk"
+              },
+              "value": "One customer",
+              "published_on": "2026-10-31",
+              "published_at": null,
+              "period": {
+                "start": "2026-01-01",
+                "end": "2026-09-30"
+              },
+              "acquired_at": "2026-11-01T12:00:00Z",
+              "unit": "text",
+              "region": null,
+              "region_basis": null,
+              "origin": "SOURCE_EXTRACT",
+              "source_assertion": true
+            }
+          ],
+          "risk_judgments": [],
+          "unknowns": [
+            "시장 인지도 미측정",
+            "지역 수익성 미확인"
+          ]
+        },
+        "record_hash": "03760ccb1dc7f75f243b057f793ae4f214f20b12bbcd2475e270121485da49af"
+      },
+      "expected": {
+        "state": "REMOVED",
+        "list_eligible": false,
+        "mark": null,
+        "first_selected_null": false,
+        "publication_approved": false,
+        "direct_link": "same authorized state, not an authorization grant",
+        "unknown_market_attention": true,
+        "risk_visible": "One customer",
+        "filter_effect": "no score/rank/state recomputation"
+      }
+    }
+  ]
+}
