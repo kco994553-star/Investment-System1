@@ -25,8 +25,8 @@ const P = require('../src/investment_system/product/web_app/policy-impact.js');
 
 const NOW = '2026-11-07T03:00:00.000Z';
 const CLASS = JSON.parse(fs.readFileSync(path.join(R.ROOT, 'implementation/tests/fixtures/company_classification_v0_payloads.json'), 'utf8')).live;
-const UNPUBLISHED = ['sec-public-inputs.json', 'sec-universe-shares.json', 'forward-validation-ledger.json', 'qgv-official.json', 'qgv-official-status.json', 'macro-evidence.json', 'dart-financials.json', 'policy-impact-navigation.json'];
-const FILE = 'policy-impact.json', NAV_FILE = 'policy-impact-navigation.json';
+const UNPUBLISHED = ['sec-public-inputs.json', 'sec-universe-shares.json', 'forward-validation-ledger.json', 'qgv-official.json', 'qgv-official-status.json', 'macro-evidence.json', 'dart-financials.json', 'policy-impact-navigation.json', 'policy-impact-private.json', 'policy-impact-navigation-private.json'];
+const FILE = 'policy-impact.json', NAV_FILE = 'policy-impact-navigation.json', PRIV_FILE = 'policy-impact-private.json', PRIV_NAV = 'policy-impact-navigation-private.json';
 const SHOTS = process.env.POL_SHOTS || null;
 const VAR = X.variants();
 let phase = 'START', pass = 0;
@@ -49,7 +49,7 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
   const text = (page, sel) => page.locator(sel).first().evaluate((e) => e.innerText);
   const B = '[data-policy-body]';
   const cards = (page) => page.$$eval(B + ' [data-pol-card]', (n) => n.map((x) => x.dataset.polCard));
-  const polReads = (from) => s.requests.slice(from).filter((r) => r.name === FILE).length;
+  const polReads = (from) => s.requests.slice(from).filter((r) => r.name === FILE || r.name === PRIV_FILE).length;
   const noNull = async (page) => { const all = await text(page, B), m = all.match(/.{0,60}\b(null|undefined|NaN)\b.{0,30}/); assert.ok(!m, m && m[0]); };
   try {
     // ---------------- not published / invalid / failed
@@ -62,9 +62,19 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       assert.equal(polReads(0), 0, 'opening #/macro sends no policy request');
       await page.locator(B + ' [data-k=pol-open]').focus(); await page.keyboard.press('Enter');
       await page.locator(B + ' [data-pol-state=NONE]').waitFor();
-      assert.ok((await text(page, B)).includes('자료 없음 · 정책 파일 미게시')); assert.equal(polReads(r0), 1);
+      assert.ok((await text(page, B)).includes('자료 없음 · 정책 파일 미게시')); assert.equal(polReads(r0), 2, 'the public file, then the development-only private name; nothing else');
       assert.equal(await page.locator(B + ' [data-pol-card]').count(), 0, 'no synthetic stand-in');
-      s.fixture(FILE, { json: X.edit((v) => { v.bundle.score_effect = 'RANK'; }) }); await page.reload(); await page.evaluate(() => window.IS2.ready);
+      // delivery paths: a private / retained view/1 on the public name is refused whole, never read as view/2
+      s.fixture(FILE, { json: X.codexView() }); await page.reload(); await page.evaluate(() => window.IS2.ready);
+      await page.locator(B + ' [data-k=pol-open]').click(); await page.locator(B + ' [data-pol-state=INVALID]').waitFor();
+      assert.ok((await text(page, B)).includes('VIEW_DELIVERY_MISMATCH · $.schema_version'));
+      s.fixture(FILE, null); s.fixture(PRIV_FILE, { json: X.publicV2() }); await page.reload(); await page.evaluate(() => window.IS2.ready);
+      await page.locator(B + ' [data-k=pol-open]').click(); await page.locator(B + ' [data-pol-state=INVALID]').waitFor();
+      assert.ok((await text(page, B)).includes('VIEW_DELIVERY_MISMATCH'), 'a public view/2 on the private name is not taken as private output');
+      s.fixture(PRIV_FILE, null); s.fixture(FILE, { json: X.edit((v) => { v.schema_version = 'policy-impact-view/3'; }, X.publicV2()) }); await page.reload(); await page.evaluate(() => window.IS2.ready);
+      await page.locator(B + ' [data-k=pol-open]').click(); await page.locator(B + ' [data-pol-state=INVALID]').waitFor();
+      assert.ok((await text(page, B)).includes('VIEW_VERSION'), 'an unknown version is refused, not read as another');
+      s.fixture(FILE, { json: X.edit((v) => { v.bundle.score_effect = 'RANK'; }, X.publicV2()) }); await page.reload(); await page.evaluate(() => window.IS2.ready);
       await page.locator(B + ' [data-k=pol-open]').click(); await page.locator(B + ' [data-pol-state=INVALID]').waitFor();
       assert.ok((await text(page, B)).includes('FORBIDDEN_EFFECT · $.bundle.score_effect'));
       s.fixture(FILE, { json: X.codexView().bundle }); await page.reload(); await page.evaluate(() => window.IS2.ready);
@@ -73,11 +83,12 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       s.fixture(FILE, { status: 500 }); await page.reload(); await page.evaluate(() => window.IS2.ready);
       await page.locator(B + ' [data-k=pol-open]').click(); await page.locator(B + ' [data-pol-state=FAILED]').waitFor();
       assert.equal(await page.locator(B + ' [data-k=pol-retry]').count(), 1);
-      s.fixture(FILE, { json: X.codexView() }); await page.locator(B + ' [data-k=pol-retry]').click(); await page.locator(B + ' [data-pol-card]').first().waitFor();
-      assert.deepEqual(await cards(page), ['p0', 'p1', 'p2'], 'Codex synthetic-view.json in the engine order after 다시 읽기');
+      s.fixture(FILE, { json: X.publicV2() }); await page.locator(B + ' [data-k=pol-retry]').click(); await page.locator(B + ' [data-pol-card]').first().waitFor();
+      assert.deepEqual(await cards(page), ['p0', 'p1', 'p2'], 'Codex synthetic-public-v2.json in the engine order after 다시 읽기');
+      assert.ok((await text(page, B + ' [data-pol-delivery=PUBLIC]')).includes('공개 파일'));
       assert.deepEqual(seen.outside, []);
       await ctx.close();
-      ok('not published = 자료 없음 (no stand-in, no request on open); invalid / bare bundle = 파일 전체 거부; HTTP 500 = 불러오기 실패 → 다시 읽기 → Codex synthetic view');
+      ok('not published = 자료 없음 (no stand-in, no request on open); delivery path fixes the version (v1 on public, v2 on private, v3 refused); invalid / bare bundle = 파일 전체 거부; HTTP 500 = 불러오기 실패 → 다시 읽기 → Codex public v2');
     }
 
     for (const width of [1440, 390]) {
@@ -192,19 +203,30 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       assert.ok((await text(page, B + ' [data-pol-title-ko]')).includes('합성 한국어 설명 제목') && (await text(page, B + ' [data-pol-title-ko]')).includes('공식 제목 아님'));
       assert.ok((await text(page, B + ' [data-pol-identifier="p0"]')).includes('정책 식별자 p0'));
       // the NEWS variant (a private view/1 citing a NEWS_REFERENCE source): a reference in the detail, never a 5.2 link
-      s.fixture(NAV_FILE, null); s.fixture(FILE, { json: X.linked(ids, VAR.NEWS) });
+      s.fixture(NAV_FILE, null); s.fixture(FILE, null);
+      s.fixture(PRIV_FILE, { json: X.edit((v) => { v.bundle.hypotheses.find((x) => x.hypothesis_id === 'h0').watch_items[0].availability = 'UNKNOWN'; }, X.linked(ids, VAR.NEWS)) });
       await page.goto(s.base + '#/macro/policy/p0'); await page.reload(); await page.evaluate(() => window.IS2.ready); await page.locator(B + ' [data-pol-detail="p0"]').waitFor();
       await page.$$eval(B + ' details', (n) => n.forEach((d) => { d.open = true; }));
       assert.ok((await text(page, B + ' [data-pol-sources]')).includes('뉴스 참조') && (await text(page, B + ' [data-pol-sources]')).includes('처음 발견 2026-11-06 12:00:00 UTC (게시 시각 아님)'));
       assert.ok((await text(page, B + ' [data-pol-sources]')).includes('관련 기사(참조) · 정책 검증 근거 아님'));
+      assert.ok((await text(page, B + ' [data-pol-delivery=PRIVATE_DEV]')).includes('비공개 개발 자료'), 'the private name reads as private output');
+      // UNKNOWN availability (private output keeps it): said as unknown, not public, and links nowhere
+      const unk = B + ' [data-pol-hypothesis=h0] [data-pol-availability=UNKNOWN]';
+      assert.ok((await text(page, unk)).includes('이용 상태 확인 못함 · 공개 허가 아님'), 'UNKNOWN is neither public nor 자료 없음');
+      assert.equal(await page.locator(unk + ' a').count(), 0, 'UNKNOWN links nowhere');
       await go(page, '#/news', 'news'); await page.locator('[data-policy-news] [data-k=pol-news]').click(); await page.locator('[data-policy-news] [data-pol-news-state=NO_LINK_FILE]').waitFor();
       assert.ok((await text(page, '[data-policy-news]')).includes('연결 자료 없음') && (await text(page, '[data-policy-news]')).includes('연결 기능 자체는 합성 시험으로 확인됨'));
+      // a sidecar bound to its view with 0 reviewed links: 연결 0건, said apart from the tested function
+      s.fixture(PRIV_FILE, null); s.fixture(FILE, { json: VAR.NAV.view }); s.fixture(NAV_FILE, { json: X.edit((n) => { n.news_links = []; }, VAR.NAV.navigation) });
+      await page.goto(s.base + '#/news'); await page.reload(); await page.evaluate(() => window.IS2.ready);
+      await page.locator('[data-policy-news] [data-k=pol-news]').click(); await page.locator('[data-policy-news] [data-pol-news-state=NO_LINK_DATA]').waitFor();
+      assert.ok((await text(page, '[data-policy-news]')).includes('검토된 정책–기사 연결 0건'));
       // a sidecar of another view is refused whole (hash), never joined
-      s.fixture(FILE, { json: X.linked(ids, VAR.REVISED) }); s.fixture(NAV_FILE, { json: VAR.NAV.navigation });
+      s.fixture(PRIV_FILE, null); s.fixture(FILE, { json: X.linked(ids, VAR.REVISED) }); s.fixture(NAV_FILE, { json: VAR.NAV.navigation });
       await page.goto(s.base + '#/news'); await page.reload(); await page.evaluate(() => window.IS2.ready);
       await page.locator('[data-policy-news] [data-k=pol-news]').click(); await page.locator('[data-policy-news] [data-pol-news-state=NAV_INVALID]').waitFor();
       s.fixture(NAV_FILE, null);
-      ok(tag + ' 5.2 관련 정책 연결 보기 → reviewed navigation link only (탐색 참조, not evidence) → official title / Korean explanation / identifier apart; a NEWS_REFERENCE stays a detail reference; no sidecar = 연결 자료 없음; another view\'s sidecar refused');
+      ok(tag + ' 5.2 관련 정책 연결 보기 → reviewed navigation link only (탐색 참조, not evidence) → official title / Korean explanation / identifier apart; a NEWS_REFERENCE stays a detail reference; UNKNOWN links nowhere; no sidecar = 연결 자료 없음; 0 reviewed links = 0건; another view\'s sidecar refused');
 
       phase = tag + ' boundaries';
       assert.deepEqual(seen.outside, []); assert.deepEqual(seen.errors, []);
@@ -221,7 +243,7 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
     // A long unbreakable official-style title (the real file had one: an identifier-shaped title ran 18 px past 320) wraps in place.
     const LONG = JSON.parse(JSON.stringify(VAR.REVISED)), LONG_TITLE = 'SYNTHETIC:AGENCY20241210:LONG-UNBROKEN-IDENTIFIER-TITLE-0123456789';
     LONG.bundle.policies.filter((p) => p.policy_id === 'p0').forEach((p) => { p.title = LONG_TITLE; });
-    assert.ok(P.validate(LONG).ok, 'the long-title variant is still a valid file');
+    assert.ok(P.validate(LONG, { delivery: 'PUBLIC' }).ok, 'the long-title variant is still a valid public file');
     s.fixture(FILE, { json: LONG });
     for (const width of [320, 390, 720, 1440]) {
       const { ctx, page } = await open(width, { allow404: [...UNPUBLISHED, FILE] });

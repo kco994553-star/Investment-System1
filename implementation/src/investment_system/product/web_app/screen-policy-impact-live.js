@@ -40,16 +40,17 @@ const chip=(txt,data,cls='chip')=>h('span',{class:cls,dataset:data||{}},txt);
 // The company list is awaited with it (no new file: the search list's own), so company links resolve on a direct visit.
 // The navigation sidecar is optional: not published -> the file's own titles and no 5.2 links (NONE); refused -> the same, with
 // its code (INVALID); it never changes a policy fact, a status or an evidence list.
-async function readNav(viewJson){const name=P().NAV_FILE;let n=null;try{n=await I.data.static(name);}catch(_){n=null;}
+async function readNav(viewJson,delivery){const name=P().DELIVERY[delivery].nav;let n=null;try{n=await I.data.static(name);}catch(_){n=null;}
  if(n===null){let st=null;try{st=I.data.state(name);}catch(_){st=null;}return {state:st&&st.state==='NOT_PUBLISHED'?'NONE':'FAILED',index:P().navIndex(null)};}
  const r=await P().validateNavigation(n,viewJson);return r.ok?{state:'OK',index:P().navIndex(r.value)}:{state:'INVALID',code:r.code,path:r.path,index:P().navIndex(null)};}
-async function load(){const name=P().FILE;let v=null;const ready=I.companies&&I.companies.ready?I.companies.ready().catch(()=>null):null;
- try{v=await I.data.static(name);}catch(_){v=null;}await ready;
- if(v===null){let st=null;try{st=I.data.state(name);}catch(_){st=null;}
-  if(st&&st.state==='NOT_PUBLISHED')return {state:'NONE'};return {state:'FAILED',text:st&&st.text||'읽기 실패'};}
- const r=P().validate(v);if(!r.ok)return {state:'INVALID',code:r.code,path:r.path};
- const nav=await readNav(r.value);const vw=P().view(r.value);vw.nav=nav.index;vw.navState=nav;
- return {state:'OK',view:vw};}
+// The public file first; only when it is not published, the development-only private name (never allowed on Pages). Each file
+// is read as its own delivery path; neither is ever read as the other.
+async function readOne(delivery){const name=P().DELIVERY[delivery].file;let v=null;try{v=await I.data.static(name);}catch(_){v=null;}
+ if(v===null){let st=null;try{st=I.data.state(name);}catch(_){st=null;}return st&&st.state==='NOT_PUBLISHED'?{state:'NONE'}:{state:'FAILED',text:st&&st.text||'읽기 실패'};}
+ const r=P().validate(v,{delivery});if(!r.ok)return {state:'INVALID',code:r.code,path:r.path,delivery};
+ const nav=await readNav(r.value,delivery);const vw=P().view(r.value);vw.nav=nav.index;vw.navState=nav;return {state:'OK',view:vw};}
+async function load(){const ready=I.companies&&I.companies.ready?I.companies.ready().catch(()=>null):null;
+ let res=await readOne('PUBLIC');if(res.state==='NONE')res=await readOne('PRIVATE_DEV');await ready;return res;}
 const titleOf=(vw,r)=>P().titleOf(r,vw.nav);
 // Official title, Korean explanation and identifier apart (Codex navigation/1); without the sidecar, the file's title as it is.
 function titleLines(vw,r){const t=P().titleState(r,vw.nav),out=[];
@@ -65,6 +66,7 @@ function stateCard(res,retry){
 
 function band(vw){const P_=P(),r=vw.refresh,f=vw.freshness,out=[];
  out.push(h('p',{class:'sk status-line',dataset:{polBand:vw.data_kind}},chip(P_.text(P_.KIND_DATA_TEXT,vw.data_kind),{polKind:vw.data_kind}),
+  chip(vw.delivery==='PUBLIC'?'공개 파일':'비공개 개발 자료 · 이 개발 경로 전용 · 게시본 아님',{polDelivery:vw.delivery}),
   ' 현재 지원: ',vw.scope.policy_types.map(x=>P_.text(P_.TYPE_TEXT,x)).join(' · '),' · 관할 ',vw.scope.jurisdictions.join(' · '),' · 선별 소표본(검토한 범위만)',
   ' · 조회 기준 ',utc(vw.as_of),' (',vw.query_timezone,') · 정책 확인 ',vw.policy_as_of?utc(vw.policy_as_of):'이 조회 시점의 확인 기록 없음',
   ' · 마지막 원천 확인 ',utc(f.last_source_check_at),' · 마지막 검토 ',utc(f.last_reviewed_at)));
@@ -127,7 +129,9 @@ function exposureLine(vw,e){const P_=P();
   h('p',{class:'reason'},'검토 ',utc(e.reviewed_at),' · ',P_.text(P_.REVIEW_TEXT,e.review_status)));}
 function watchLine(vw,w){const P_=P();let go=null;
  const av=P_.availability(w.availability);
- if(w.kind==='MACRO_SERIES'&&w.availability==='PUBLIC_REFERENCE')go=h('a',{href:href('macro'),class:'lk',dataset:{polWatchLink:'MACRO'}},'→ 4.1 지표 보기');
+ // UNKNOWN availability links nowhere (never read as public, never as 자료 없음).
+ if(w.availability==='UNKNOWN')go=null;
+ else if(w.kind==='MACRO_SERIES'&&w.availability==='PUBLIC_REFERENCE')go=h('a',{href:href('macro'),class:'lk',dataset:{polWatchLink:'MACRO'}},'→ 4.1 지표 보기');
  else if(w.kind==='COMPANY_DISCLOSURE'&&companyRow(w.reference_id))go=h('a',{href:href('company',companyRow(w.reference_id).id),class:'lk',dataset:{polWatchLink:'COMPANY'}},'→ 기업 화면');
  else if(w.kind==='POLICY_UPDATE'&&vw.policies.has(w.reference_id))go=h('a',{href:href('macro','policy',w.reference_id),class:'lk',dataset:{polWatchLink:'POLICY'}},'→ 정책');
  return h('li',{dataset:{polWatch:w.kind,polAvailability:w.availability}},P_.text(P_.WATCH_TEXT,w.kind),' · ',w.kind==='COMPANY_DISCLOSURE'?label(w.reference_id):w.reference_id,' · ',w.rationale,' · ',h('span',{dataset:{polAvailabilityKnown:av.known?'yes':'no'}},av.text),go?' ':null,go);}

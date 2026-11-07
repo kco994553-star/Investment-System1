@@ -23,6 +23,12 @@
 // navigation sidecar policy-impact-navigation/1 (NAV_FILE) is bound to the exact view by base_view_hash.
 const PUBLIC_VIEW='policy-impact-view/2',PRIVATE_VIEW='policy-impact-view/1',VIEW_SCHEMA=PUBLIC_VIEW,VIEW_SCHEMAS=Object.freeze([PRIVATE_VIEW,PUBLIC_VIEW]);
 const SCHEMA='policy-impact/1',FILE='policy-impact.json',NAV_FILE='policy-impact-navigation.json',NAV_SCHEMA='policy-impact-navigation/1';
+// Delivery paths (owner 2026-11-07 ARGON_05): the path a file came by fixes the one view version it may carry. PUBLIC = the Pages
+// files (Codex public projection, view/2); PRIVATE_DEV = the development-only private names (Codex private output, view/1),
+// which the Pages guard never allows. A version is never read as another, and never as a publication permission: public
+// output checks (the Pages boundary) and private access checks (the private tool: outside Git, mode 600) stay separate.
+const DELIVERY=Object.freeze({PUBLIC:Object.freeze({file:FILE,nav:NAV_FILE,view:PUBLIC_VIEW}),
+ PRIVATE_DEV:Object.freeze({file:'policy-impact-private.json',nav:'policy-impact-navigation-private.json',view:PRIVATE_VIEW})});
 const E=Object.freeze({
  data_kind:['SYNTHETIC','REAL_REVIEWED'],policy_type:['TARIFF','EXPORT_CONTROL','INDUSTRIAL_SUBSIDY'],
  lifecycle_status:['STATEMENT','PROPOSED','ADOPTED','EFFECTIVE','SUSPENDED','WITHDRAWN','EXPIRED','UNKNOWN'],
@@ -121,8 +127,9 @@ const copyFreeze=v=>{const c=JSON.parse(JSON.stringify(v));(function f(x){if(x&&
 const kpair=(a,b)=>a+'\u0000'+b;
 const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
 
-function check(j){
- keys(j,KEYS.view,'$');need(VIEW_SCHEMAS.includes(j.schema_version),'VIEW_VERSION','$.schema_version');const pub=j.schema_version===PUBLIC_VIEW;need(typeof j.query_timezone==='string'&&TZ.test(j.query_timezone),'TIMEZONE','$.query_timezone');
+function check(j,delivery){
+ keys(j,KEYS.view,'$');need(VIEW_SCHEMAS.includes(j.schema_version),'VIEW_VERSION','$.schema_version');
+ need(j.schema_version===DELIVERY[delivery].view,'VIEW_DELIVERY_MISMATCH','$.schema_version');const pub=j.schema_version===PUBLIC_VIEW;need(typeof j.query_timezone==='string'&&TZ.test(j.query_timezone),'TIMEZONE','$.query_timezone');
  utc(j.as_of,'$.as_of');need(j.historical_pit_eligible===false,'PIT_UNPROVEN','$.historical_pit_eligible');
  const b=j.bundle,B='$.bundle';keys(b,KEYS.top,B);need(b.schema_version===SCHEMA,'VERSION',B+'.schema_version');
  need(b.score_effect==='NONE','FORBIDDEN_EFFECT',B+'.score_effect');need(b.gate_effect==='NONE','FORBIDDEN_EFFECT',B+'.gate_effect');
@@ -203,7 +210,8 @@ function check(j){
   arr(r.sources,p+'.sources');r.sources.forEach((s,i)=>refresh(s,p+'.sources['+i+']',depth+1));};
  refresh(b.refresh,B+'.refresh',0);
 }
-function validate(json){try{if(typeof json==='string')return {ok:false,code:'TYPE',path:'$'};check(json);return {ok:true,value:copyFreeze(json)};}
+function validate(json,{delivery=null}={}){try{if(!Object.prototype.hasOwnProperty.call(DELIVERY,delivery))return {ok:false,code:'DELIVERY_REQUIRED',path:'$'};
+ if(typeof json==='string')return {ok:false,code:'TYPE',path:'$'};check(json,delivery);return {ok:true,value:copyFreeze(json)};}
  catch(e){if(e instanceof Fault)return {ok:false,code:e.code,path:e.path};return {ok:false,code:'INVALID',path:'$'};}}
 
 // ---- view: an index of the engine's output. No revision is chosen, no time compared, no review state set here.
@@ -218,7 +226,7 @@ function view(v){const b=v.bundle,cur=v.current_policy_revisions,src=new Map(b.s
  const reviews=new Map();for(const r of b.review_records){const k=r.group+'\u0000'+kpair(r.id,r.revision_id);if(!reviews.has(k))reviews.set(k,[]);reviews.get(k).push(r);}
  // the list keeps the engine's order: the position of each policy's current revision in bundle.policies
  const order=b.policies.filter(r=>r.revision_id===cur[r.policy_id]).map(r=>policies.get(r.policy_id));
- return {schema:v.schema_version,public:v.schema_version===PUBLIC_VIEW,data_kind:b.data_kind,bundle_id:b.bundle_id,as_of:v.as_of,query_timezone:v.query_timezone,policy_as_of:b.policy_as_of,generated_at:b.generated_at,scope:b.scope,
+ return {schema:v.schema_version,public:v.schema_version===PUBLIC_VIEW,delivery:v.schema_version===PUBLIC_VIEW?'PUBLIC':'PRIVATE_DEV',data_kind:b.data_kind,bundle_id:b.bundle_id,as_of:v.as_of,query_timezone:v.query_timezone,policy_as_of:b.policy_as_of,generated_at:b.generated_at,scope:b.scope,
   refresh:b.refresh,freshness:b.freshness,reason_codes:b.reason_codes,historical:b.reason_codes.includes(HISTORICAL),policies,order,sources:src,reviews};}
 const source=(vw,ref)=>vw.sources.get(kpair(ref.source_id,ref.source_revision_id))||null;
 const reviewsOf=(vw,group,idv,rev)=>vw.reviews.get(group+'\u0000'+kpair(idv,rev))||[];
@@ -293,7 +301,7 @@ function navIndex(n){const titles=new Map(),news=new Map();if(!n)return {titles,
  for(const l of n.news_links){if(!news.has(l.news_ref.link))news.set(l.news_ref.link,[]);news.get(l.news_ref.link).push(l);}
  return {titles,news,count:n.news_links.length};}
 
-return Object.freeze({VIEW_SCHEMA,VIEW_SCHEMAS,PUBLIC_VIEW,PRIVATE_VIEW,NAV_SCHEMA,NAV_FILE,SCHEMA,FILE,ENUMS:E,TYPE_TEXT,STATUS_TEXT,REVIEW_TEXT,STAGE_TEXT,EXPOSURE_TEXT,EVIDENCE_TEXT,APPLY_TEXT,EPI_TEXT,KIND_TEXT,VERIFY_TEXT,
+return Object.freeze({VIEW_SCHEMA,VIEW_SCHEMAS,PUBLIC_VIEW,PRIVATE_VIEW,DELIVERY,NAV_SCHEMA,NAV_FILE,SCHEMA,FILE,ENUMS:E,TYPE_TEXT,STATUS_TEXT,REVIEW_TEXT,STAGE_TEXT,EXPOSURE_TEXT,EVIDENCE_TEXT,APPLY_TEXT,EPI_TEXT,KIND_TEXT,VERIFY_TEXT,
  WATCH_TEXT,AVAIL_TEXT,METHOD_TEXT,KIND_DATA_TEXT,REFRESH_TEXT,REASON_TEXT,
  text:t,availability,titleState,titleOf,canon,validateNavigation,navIndex,linkable,validate,view,source,reviewsOf,status,facets,list,get,forCompany,newsLinks});
 });

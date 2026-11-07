@@ -11,8 +11,12 @@ const X = require('./web_app_policy_impact_fixture.js');
 
 let n = 0;
 const ok = (name, fn) => { fn(); n++; console.log('PASS ' + name); };
-const accept = (v) => { const r = P.validate(v); assert.equal(r.ok, true, JSON.stringify(r)); return P.view(r.value); };
-const refused = (fn, code, pathPart = null, base) => { const r = P.validate(X.edit(fn, base)); assert.equal(r.ok, false, code); assert.equal(r.code, code, JSON.stringify(r)); if (pathPart) assert.ok(r.path.includes(pathPart), r.path); };
+// Test helper: each fixture is read on the delivery path it was built for (Codex public build -> PUBLIC; the retained v1 files
+// and private builds -> PRIVATE_DEV). The screen never derives the path from the version: the file name it read decides.
+const pathOf = (v) => (v && v.schema_version === P.PUBLIC_VIEW ? 'PUBLIC' : 'PRIVATE_DEV');
+const V = (v, delivery = pathOf(v)) => P.validate(v, { delivery });
+const accept = (v) => { const r = V(v); assert.equal(r.ok, true, JSON.stringify(r)); return P.view(r.value); };
+const refused = (fn, code, pathPart = null, base) => { const r = V(X.edit(fn, base)); assert.equal(r.ok, false, code); assert.equal(r.code, code, JSON.stringify(r)); if (pathPart) assert.ok(r.path.includes(pathPart), r.path); };
 const VAR = X.variants();
 const AT = String.fromCharCode(64); // a credentials-in-URL case, built at run time (no address-like text in the file)
 
@@ -92,7 +96,7 @@ ok('sources by (source_id, revision); review records with method; news reference
   const rs = P.reviewsOf(v, 'policies', 'p0', '1'); assert.equal(rs.length, 1); assert.equal(rs[0].method, 'AI_INDEPENDENT_SOURCE_CHECK');
   assert.ok(P.text(P.METHOD_TEXT, 'AI_INDEPENDENT_SOURCE_CHECK').includes('사람 검토 아님'));
 });
-ok('titles, availability and related articles: an id-only title says so; unknown availability is not public; a news reference is not evidence', () => {
+ok('titles, availability, related articles and delivery paths: an id-only title says so; UNKNOWN is not public; a news reference is not evidence; the path fixes the version', () => {
   const v = accept(X.codexView()), p = v.order[0].current;
   assert.deepEqual(P.titleState(p), { state: 'TITLE', text: null });
   assert.equal(P.availability('UNKNOWN').known, false); assert.ok(P.availability('UNKNOWN').text.includes('공개 허가 아님'));
@@ -103,12 +107,18 @@ ok('titles, availability and related articles: an id-only title says so; unknown
   const u = P.availability('MAYBE'); assert.equal(u.known, false); assert.ok(u.text.includes('확인 안 된 이용 상태'));
   // the contract's three values only (Codex contract.py WATCH_AVAILABILITY): another value refuses the file
   refused((x) => { x.bundle.hypotheses[0].watch_items[0].availability = 'MAYBE'; }, 'ENUM', 'availability');
-  assert.equal(P.validate(X.edit((x) => { x.bundle.hypotheses[0].watch_items[0].availability = 'UNKNOWN'; })).ok, true, 'a private (v1) view keeps UNKNOWN');
+  assert.equal(V(X.edit((x) => { x.bundle.hypotheses[0].watch_items[0].availability = 'UNKNOWN'; })).ok, true, 'a private (v1) view keeps UNKNOWN');
   // public view/2: a watch item is there only as PUBLIC_REFERENCE with an explicit permission (build-side); never UNKNOWN / UNAVAILABLE
-  const v2 = X.publicV2(); assert.equal(P.validate(v2).ok, true); assert.equal(accept(v2).public, true); assert.equal(accept(X.codexView()).public, false);
+  const v2 = X.publicV2(); assert.equal(V(v2).ok, true); assert.equal(accept(v2).public, true); assert.equal(accept(X.codexView()).public, false);
   assert.ok(v2.bundle.hypotheses.every((h) => h.watch_items.length === 0), 'no permission given: no public watch item');
   const leak = X.edit((x) => { x.bundle.hypotheses[0].watch_items = [{ kind: 'POLICY_UPDATE', reference_id: 'p0', rationale: 'r', availability: 'UNKNOWN' }]; }, v2);
-  assert.equal(P.validate(leak).code, 'WATCH_NOT_PUBLIC');
+  assert.equal(V(leak).code, 'WATCH_NOT_PUBLIC');
+  // delivery paths: the path fixes the version; neither version is read as the other, and the path must be named
+  assert.equal(P.validate(v2, { delivery: 'PRIVATE_DEV' }).code, 'VIEW_DELIVERY_MISMATCH', 'a public view/2 is not taken as private output');
+  assert.equal(P.validate(X.codexView(), { delivery: 'PUBLIC' }).code, 'VIEW_DELIVERY_MISMATCH', 'a retained / private view/1 is never read on the public path');
+  assert.equal(P.validate(v2).code, 'DELIVERY_REQUIRED'); assert.equal(P.validate(v2, { delivery: 'v2' }).code, 'DELIVERY_REQUIRED');
+  for (const d of ['PUBLIC', 'PRIVATE_DEV']) assert.equal(P.validate(X.edit((x) => { x.schema_version = 'policy-impact-view/3'; }, v2), { delivery: d }).code, 'VIEW_VERSION', 'an unknown version is refused on ' + d);
+  assert.deepEqual(Object.keys(P.DELIVERY), ['PUBLIC', 'PRIVATE_DEV']); assert.equal(P.DELIVERY.PUBLIC.file, P.FILE);
   refused((x) => { x.schema_version = 'policy-impact-view/3'; }, 'VIEW_VERSION');
   assert.ok(P.text(P.KIND_TEXT, 'NEWS_REFERENCE').includes('정책 검증 근거 아님'));
   assert.ok(!/title|similar|levenshtein|includes\(\s*s\.title/i.test(String(P.newsLinks)), 'news links come from the file, never from title matching');
@@ -157,7 +167,7 @@ ok('refusals: the whole file at its first fault, with Codex contract codes where
     [(x) => { x.bundle.freshness.review_due = 'no'; }, 'BOOLEAN'],
   ];
   for (const [fn, code] of C) refused(fn, code);
-  assert.equal(P.validate('{}').ok, false); assert.equal(P.validate(null).ok, false); assert.equal(P.validate(X.codexView().bundle).code, 'KEY_MISSING', 'a bare bundle is not the envelope');
+  assert.equal(V('{}').ok, false); assert.equal(V(null).ok, false); assert.equal(V(X.codexView().bundle).code, 'KEY_MISSING', 'a bare bundle is not the envelope');
 });
 ok('an identity mutation inside one policy id is refused (issuer / type / jurisdiction kept across revisions)', () => {
   refused((x) => { const p = x.bundle.policies.find((r) => r.policy_id === 'p0' && r.revision_id === '1'); p.jurisdiction = 'US_STATE'; }, 'POLICY_IDENTITY_MUTATION', null, VAR.REVISED);
@@ -168,7 +178,7 @@ ok('the reader is pure and decides nothing: no request, storage, clock, sort by 
     assert.ok(!bad.test(src), String(bad));
   const screen = fs.readFileSync(path.join(__dirname, '..', 'src', 'investment_system', 'product', 'web_app', 'screen-policy-impact-live.js'), 'utf8');
   for (const bad of [/\bfetch\(/, /localStorage|sessionStorage/, /new Date\(\)|Date\.now\(/, /supersedes_revision_id\s*[!=]==/, /policy_revision_id\s*[!=]==\s*\w+\.current/]) assert.ok(!bad.test(screen), 'screen: ' + bad);
-  const v = accept(X.codexView()); assert.ok(Object.isFrozen(P.validate(X.codexView()).value.bundle.policies[0]));
+  const v = accept(X.codexView()); assert.ok(Object.isFrozen(V(X.codexView()).value.bundle.policies[0]));
   assert.equal(v.order[0].current.lifecycle_status, 'ADOPTED', 'effective_from 2026-11-02 before as_of does not make it EFFECTIVE');
 });
 (async () => {

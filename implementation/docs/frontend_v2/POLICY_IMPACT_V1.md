@@ -37,7 +37,7 @@
 | 게시 | **아직 안 함.** 게시 승인 때 할 일: `cockpit-pages` 공개 파일 목록·Pages 가드 허용 경로에 이 한 파일을 등록하고, 실패 시 마지막 정상본을 유지한다. 지금 가드·워크플로는 바꾸지 않았다 |
 | 파일이 없을 때 | 404 → "자료 없음 · 정책 파일 미게시". 합성 파일로 채우지 않는다. 합성 자료는 시험에서 명시적으로만 넣는다 |
 | 언제 읽나 | `정책·지정학 열기`를 누를 때, 정책 주소로 들어올 때, 기업 화면 "관련 정책"을 펼칠 때, 5.2 `관련 정책 연결 보기`를 누를 때. `#/macro`를 열기만 해서는 읽지 않는다 |
-| 비공개 실자료(개발 전용) | `tools/web_app_policy_impact_private.js serve|check` + `POLICY_IMPACT_PRIVATE_VIEW=<절대 경로>` (선택 `POLICY_IMPACT_PRIVATE_NAV=<절대 경로>`, 같은 규칙). 127.0.0.1에서만, `REAL_REVIEWED`·Git 밖·mode 600·8 MiB 이하만 받는다. 복사·게시·저장·스크린숏 없음, 출력은 PASS와 개수뿐. CI 밖 |
+| 비공개 실자료(개발 전용) | `tools/web_app_policy_impact_private.js serve|check` + `POLICY_IMPACT_PRIVATE_VIEW=<절대 경로>`(비공개 이름 `policy-impact-private.json`으로 냄) (선택 `POLICY_IMPACT_PRIVATE_NAV=<절대 경로>`, 같은 규칙). 127.0.0.1에서만, `REAL_REVIEWED`·Git 밖·mode 600·8 MiB 이하만 받는다. 복사·게시·저장·스크린숏 없음, 출력은 PASS와 개수뿐. CI 밖 |
 
 ## 3. 화면 입력 = Codex `policy-impact-view/1` (Main 인수)
 
@@ -95,9 +95,9 @@ Main이 앞서 낸 초안 `policy-impact/1`(Main 필드 이름)은 **철회**한
 
 | 항목 | Codex 계약 (c2ae92a0) | 화면 |
 | --- | --- | --- |
-| 공개 view | 공개 투영은 `policy-impact-view/2`, 비공개는 `policy-impact-view/1` 그대로. 예전 공개 v1 파일은 보관만(자동 승격 없음) | 둘 다 읽고 `view.public`으로 구분. v2에서는 감시 항목이 `PUBLIC_REFERENCE`가 아니면 파일 전체 거부(`WATCH_NOT_PUBLIC`) |
+| 공개 view | 공개 투영은 `policy-impact-view/2`, 비공개는 `policy-impact-view/1` 그대로. 예전 공개 v1 파일은 보관만(자동 승격 없음) | **전달 경로가 버전을 정한다**(ARGON_05): 공개 Pages `policy-impact.json`(+`policy-impact-navigation.json`)은 v2만, 개발 전용 비공개 이름 `policy-impact-private.json`(+`policy-impact-navigation-private.json`)은 v1만 받는다. 다르면 `VIEW_DELIVERY_MISMATCH`, 모르는 버전은 `VIEW_VERSION`, 경로 없이 부르면 `DELIVERY_REQUIRED`. 버전 문자열은 공개 권한이 아니다: 공개 출력 검증(게시 경계 패치)과 비공개 접근 검사(비공개 도구: Git 밖·mode 600·REAL_REVIEWED)는 따로 남는다. 비공개 이름은 Pages 가드 허용 목록에 없어 게시될 수 없다. 화면 띠에 "공개 파일" / "비공개 개발 자료 · 게시본 아님"을 보인다. v2에서는 감시 항목이 `PUBLIC_REFERENCE`가 아니면 파일 전체 거부(`WATCH_NOT_PUBLIC`) |
 | 정책 제목 | bundle의 `title`은 그대로(덮어쓰지 않음). 별도 `policy-impact-navigation/1.titles`: `official_title`(보관 원문 h1 재추출·원문 해시) + `explanation_title_ko`(`RESEARCH_SUMMARY`) | 사이드카가 있으면 큰 제목 = 공식 원문 제목, 아래 줄 "한국어 설명 제목 · 연구 요약 · 공식 제목 아님", 그 아래 "정책 식별자 · 개정"을 따로 보임. 없으면 파일 제목, id뿐이면 "공식 정책 제목·한국어 설명 제목 미제공" |
-| `watch_items[].availability` | `PUBLIC_REFERENCE` · `UNAVAILABLE` · `UNKNOWN` 고정. 다른 값은 검증 실패 | 세 값만 받고 그 밖은 파일 전체 거부(`ENUM`). UNKNOWN = "이용 상태 확인 못함 · 공개 허가 아님 · 연결하지 않음" |
+| `watch_items[].availability` | `PUBLIC_REFERENCE` · `UNAVAILABLE` · `UNKNOWN` 고정. 다른 값은 검증 실패 | 세 값만 받고 그 밖은 파일 전체 거부(`ENUM`). UNKNOWN = "이용 상태 확인 못함 · 공개 허가 아님 · 연결하지 않음"이고 실제로 링크를 만들지 않는다(공개 허용으로도, 자료 없음으로도 바꾸지 않음) |
 | 이용 가능 ≠ 공개 허가 | `build(watch_publication_permissions={"kind:reference_id": ALLOWED|PRIVATE_ONLY|UNKNOWN})`. 없으면 UNKNOWN → 공개 제외. 투영 권한일 뿐 게시 승인이 아님 | 화면은 권한을 정하지 않는다. `PUBLIC_REFERENCE` 문구도 "공개 허가와 별개"라고 적는다 |
 | 검증 근거 vs 관련 기사 | `NEWS_REFERENCE` 출처는 늘 `SOURCE_UNVERIFIED`, 공개 근거는 VERIFIED만. 검토된 기사 연결은 `navigation/1.news_links`(`DISCOVERY_REFERENCE_ONLY`, `evidence_effect=NONE`, `policy_application=NOT_ASSESSED`) | 5.2 → 4.5는 `news_links`에서만, 기사 링크가 정확히 같을 때만(제목 비교 없음). "탐색 참조 · 정책 검증 근거 아님 · 시행·기업 적용 미평가 · 연결 검토 시각". 정책 파일 안 `NEWS_REFERENCE`는 상세의 출처 목록에만 참조로 남음 |
 | 연결 0과 기능 검증 | 실제 뉴스 연결 0건, 합성 1건 | 사이드카 미게시 `NO_LINK_FILE`, 연결 0건 `NO_LINK_DATA`, 겹침 없음 `NO_OVERLAP`, 사이드카 거부 `NAV_INVALID`. 모두 "연결 기능 자체는 합성 시험으로 확인됨"과 따로 |

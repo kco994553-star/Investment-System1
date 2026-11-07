@@ -17,7 +17,8 @@ const P = require('../src/investment_system/product/web_app/policy-impact.js');
 const site = require('./web_app_test_site');
 const F = require('./qgv_v2_fixture.js');
 
-const FILE = 'policy-impact.json', NAV_FILE = 'policy-impact-navigation.json';
+// The private delivery path (development-only names the Pages guard never allows): the real file is read as private output.
+const FILE = P.DELIVERY.PRIVATE_DEV.file, NAV_FILE = P.DELIVERY.PRIVATE_DEV.nav;
 const fail = (code) => { console.error('PRIVATE_VIEW_REFUSED ' + code); process.exit(2); };
 function readFileRules(file) {
   if (!file || !path.isAbsolute(file)) fail('PATH_NOT_ABSOLUTE');
@@ -37,14 +38,14 @@ async function readNav(file, json) {
 }
 function readPrivate(file) {
   const json = readFileRules(file);
-  const r = P.validate(json); if (!r.ok) fail(r.code + ' ' + r.path);
+  const r = P.validate(json, { delivery: 'PRIVATE_DEV' }); if (!r.ok) fail(r.code + ' ' + r.path);
   if (r.value.bundle.data_kind !== 'REAL_REVIEWED') fail('NOT_REAL_REVIEWED');
   return json;
 }
 
 async function check(json, nav) {
   const { chromium } = require('playwright');
-  const v = P.view(P.validate(json).value), nix = P.navIndex(nav);
+  const v = P.view(P.validate(json, { delivery: 'PRIVATE_DEV' }).value), nix = P.navIndex(nav);
   const fixtures = { 'sec-qgv2.json': { json: F.strictPayload() }, [FILE]: { json } }; if (nav) fixtures[NAV_FILE] = { json: nav };
   const s = await site.start({ fixtures });
   const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_EXECUTABLE_PATH || undefined });
@@ -53,13 +54,13 @@ async function check(json, nav) {
   try {
     for (const width of [1440, 390, 320]) {
       const ctx = await browser.newContext({ viewport: { width, height: 900 } });
-      const page = await ctx.newPage(), seen = site.watch(page, s.origin, { allow404: ['sec-public-inputs.json', 'sec-universe-shares.json', 'forward-validation-ledger.json', 'qgv-official.json', 'qgv-official-status.json', 'macro-evidence.json', 'dart-financials.json', 'company-classification.json', 'news-signals.json', 'sec-disclosures.json', 'dart-disclosures.json', ...(nav ? [] : [NAV_FILE])] });
+      const page = await ctx.newPage(), seen = site.watch(page, s.origin, { allow404: ['sec-public-inputs.json', 'sec-universe-shares.json', 'forward-validation-ledger.json', 'qgv-official.json', 'qgv-official-status.json', 'macro-evidence.json', 'dart-financials.json', 'company-classification.json', 'news-signals.json', 'sec-disclosures.json', 'dart-disclosures.json', P.FILE, ...(nav ? [] : [NAV_FILE])] });
       const text = (sel) => page.locator(sel).first().evaluate((e) => e.innerText);
       await page.goto(s.base + '#/macro'); await page.evaluate(() => window.IS2.ready);
       await page.locator(B + ' [data-k=pol-open]').click(); await page.locator(B + ' [data-pol-card]').first().waitFor();
       const ids = await page.$$eval(B + ' [data-pol-card]', (n) => n.map((x) => x.dataset.polCard));
       assert.deepEqual(ids, v.order.map((p) => p.policy_id), 'engine order');
-      assert.ok((await text(B + ' [data-pol-band]')).includes('실자료 · 검토 기록 있음'));
+      assert.ok((await text(B + ' [data-pol-band]')).includes('실자료 · 검토 기록 있음') && (await text(B + ' [data-pol-band]')).includes('비공개 개발 자료'), 'real data on the private path only');
       for (const id of ids) assert.equal(await page.locator(B + ' [data-pol-card="' + id + '"] [data-pol-historical]').innerText(), '역사 사례 · 현재 상태 미확인');
       ok(width + ' list: ' + ids.length + ' policies, engine order, 실자료, every one 역사 사례 · 현재 상태 미확인');
       for (const p of v.order) {
