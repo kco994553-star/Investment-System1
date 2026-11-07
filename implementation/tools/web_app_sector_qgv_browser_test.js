@@ -8,6 +8,9 @@
 //    engine call), before → after, the original denominator; save only for the shown, current preview; reload keeps it.
 //  - Gate: 관문 통과 / 가치(V) 제외 / 판정 불가 (no final score, no rank); a refused input keeps the last good result.
 //  - Cancel, restore, a bank change that stays in banks, a late answer dropped, the published site without the route.
+//  - Owner 2026-11-07: the flow is ① 10섹터 기본값 (base preset id / version of the scope) → ② 내 설정; 공격형·균형형·수비형 are
+//    not offered; 기본값 복원 names and shows the base preset id / version; an old leaderboard weight tree (DeviceProfiles v2)
+//    on the device is listed as 이전 설정 호환, still loads in 1.1.6 (today's data, not a past-result replay), never rewritten.
 //  - Phone: no horizontal overflow, 44 px controls. Boundaries: no request leaves the origin, the engine route is POST only,
 //    nothing stored but the one sector key, no console error, CSP 0. SQ_SHOTS=<dir> saves screenshots (deviceScaleFactor 2).
 const { chromium } = require('playwright');
@@ -24,6 +27,10 @@ const NOW = '2026-11-06T03:00:00.000Z';
 const CLASS = JSON.parse(fs.readFileSync(path.join(R.ROOT, 'implementation/tests/fixtures/company_classification_v0_payloads.json'), 'utf8')).live;
 const UNPUBLISHED = ['sec-public-inputs.json', 'qgv-official.json', 'qgv-official-status.json'];
 const KEY = 'investment.web.v2.sector-qgv-user-config';
+const LEGACY_KEY = 'investment.web.v1.profile-drafts-v2';
+const DP = require('../src/investment_system/product/web_assets/device-profiles.js');
+const LEGACY = JSON.stringify(DP.saveV2(DP.emptyV2(), { name: '공격형 v0.1', weights: DP.candidateFor('aggressive').weights }, new Date('2026-10-18T00:00:00Z')));
+const BASE = 'sector-qgv-default/0.1.0';
 const SHOTS = process.env.SQ_SHOTS || null;
 let phase = 'START', pass = 0;
 const ok = (name) => { pass++; console.log('PASS ' + name); };
@@ -69,6 +76,13 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       assert.ok(!/\b(null|undefined|NaN)\b/.test(all), 'no null / undefined text');
       for (const w of ['모델 sector-qgv-default/0.1.0', '엔진 sector-qgv-engine/0.1.0', '계산 Codex 공통 엔진', '관문 official-q-percentile-required/1', '이 기기(이 브라우저)에만 저장', '기업 유형 태그는 점수에 영향 없음'])
         assert.ok(all.includes(w), w);
+      const flow = B + ' [data-sq-flow]';
+      assert.equal(await page.locator(flow).getAttribute('data-sq-flow'), 'SECTOR_DEFAULT'); assert.equal(await page.locator(flow).getAttribute('data-sq-base'), BASE + '@0.1.0');
+      assert.equal(await text(flow + ' [data-sq-step=SECTOR_DEFAULT]'), '① 10섹터 기본값 · 정보기술·일반 · ' + BASE + ' v0.1.0');
+      assert.equal(await text(flow + ' [data-sq-step=MY_SETTING]'), '② 내 설정 · 저장 전');
+      assert.equal(await page.locator(flow + ' [data-sq-step=SECTOR_DEFAULT]').getAttribute('aria-current'), 'step');
+      assert.doesNotMatch(all, /공격형|균형형|수비형|이전 설정 호환/, 'no old profile offered (none saved on this device)');
+      assert.equal(await page.locator(B + ' [data-sq-legacy]').count(), 0);
       await page.locator(B + ' [data-k=sq-tab-V]').click();
       assert.deepEqual(await factorIds(), ['ep_ttm_diluted', 'cfo_mcap', 'sales_ev'], 'IT general V from the engine preset');
       const ep = B + ' [data-sq-factor=ep_ttm_diluted]';
@@ -87,7 +101,8 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       await page.fill('#sq-q', ''); await page.locator(B + ' [data-k=sq-tab-V]').click();
       await page.selectOption(B + ' [data-k="sq-replace-sales_ev"]', 'common_bp');
       assert.deepEqual(await factorIds(), ['ep_ttm_diluted', 'cfo_mcap', 'common_bp']);
-      ok(tag + ' engine context and factor list; badges as words; PER / PBR search; pending and unfit not selectable; PBR replaces EV/Sales');
+      assert.equal(await page.locator(flow).getAttribute('data-sq-flow'), 'MY_SETTING', 'an edit is the 내 설정 step');
+      ok(tag + ' flow ① 10섹터 기본값 (' + BASE + ' v0.1.0) → ② 내 설정, no old profile offered; engine context and factor list; badges as words; PER / PBR search; pending and unfit not selectable; PBR replaces EV/Sales');
 
       // ---------------- preview = engine recalculation; save; reload
       phase = tag + ' preview';
@@ -125,6 +140,7 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       assert.equal(await tableRows(), boardRows, 'official board unchanged');
       await page.reload(); await page.evaluate(() => window.IS2.ready); await page.locator(B + ' [data-sq-state=IDLE]').waitFor(); await connect();
       assert.ok((await text(B + ' [data-sq-saved=OK]')).includes(stored.preview_id.slice(0, 12)));
+      assert.equal(await page.locator(flow).getAttribute('data-sq-flow'), 'MY_SETTING'); assert.equal(await text(flow + ' [data-sq-step=MY_SETTING]'), '② 내 설정 · 이 기기에 저장됨');
       await page.locator(B + ' [data-k=sq-tab-V]').click();
       assert.deepEqual(await factorIds(), ['ep_ttm_diluted', 'cfo_mcap', 'ebitda_ev'], 'saved on this device');
       ok(tag + ' preview is one engine call each (PBR: V 0 / 20 strict, never 0; EV/EBITDA: 20 / 20, ranks = engine), saved record of that preview, kept after reload');
@@ -143,9 +159,11 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       assert.deepEqual(await factorIds(), ['ep_ttm_diluted', 'cfo_mcap', 'ebitda_ev'], 'cancel = last saved');
       await page.locator(B + ' [data-k=sq-restore]').click(); await ready(); await page.locator(B + ' [data-k=sq-tab-V]').click();
       assert.deepEqual(await factorIds(), ['ep_ttm_diluted', 'cfo_mcap', 'sales_ev'], 'restore = the engine default preset');
-      assert.ok((await text(B + ' [data-sq-msg]')).includes('엔진 기본값(sector-qgv-default/0.1.0)'));
+      assert.equal(await text(B + ' [data-sq-msg]'), '기본값 복원 · 10섹터 기본값 ' + BASE + ' v0.1.0 · 정보기술·일반 · 저장 전까지 기기 설정은 그대로', 'restore names the base preset id / version');
+      assert.equal(await page.locator(flow).getAttribute('data-sq-flow'), 'SECTOR_DEFAULT'); assert.equal(await page.locator(flow).getAttribute('data-sq-base'), BASE + '@0.1.0');
+      assert.equal(await page.locator(B + ' [data-k=sq-axis-Q]').inputValue(), '30', 'base axis weights back');
       assert.equal(JSON.parse(await page.evaluate((k) => localStorage.getItem(k), KEY)).preview_id, stored.preview_id, 'not saved until the user saves');
-      ok(tag + ' a changed config hides the stale preview and blocks save; bad sum blocks preview; cancel = saved; restore = engine default');
+      ok(tag + ' a changed config hides the stale preview and blocks save; bad sum blocks preview; cancel = saved; restore = base preset ' + BASE + ' v0.1.0');
 
       // ---------------- a bank change stays in banks
       phase = tag + ' bank';
@@ -217,6 +235,37 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       ok(tag + ' boundaries');
       await ctx.close();
     }
+
+    // ---------------- an old leaderboard weight tree on the device: 이전 설정 호환, still loads in 1.1.6, never rewritten
+    phase = 'legacy';
+    {
+      const ctx = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
+      await ctx.clock.setFixedTime(new Date(NOW));
+      await ctx.addInitScript(([k, v]) => { if (!sessionStorage.getItem('seeded')) { localStorage.setItem(k, v); sessionStorage.setItem('seeded', '1'); } }, [LEGACY_KEY, LEGACY]);
+      const page = await ctx.newPage(), seen = site.watch(page, s.origin, { allow404: UNPUBLISHED }), B = '[data-sq-body]';
+      await page.goto(s.base + '#/qgv'); await page.evaluate(() => window.IS2.ready);
+      await page.locator('[data-lb-table] tbody tr[data-row]').first().waitFor();
+      await page.locator(B + ' [data-k=sq-connect]').click(); await page.locator(B + ' [data-sq-role]').first().waitFor();
+      assert.equal(await page.locator(B + ' [data-sq-flow]').getAttribute('data-sq-flow'), 'SECTOR_DEFAULT', 'the flow still starts at 10섹터 기본값');
+      const lg = B + ' [data-sq-legacy="1"]';
+      assert.equal(await page.locator(lg).count(), 1);
+      await page.locator(lg + ' summary').click();
+      const lt = await page.locator(lg).innerText();
+      assert.ok(lt.startsWith('이전 설정 호환 · 이전 리더보드 가중치 1개') && lt.includes('새 섹터 모형의 기본 선택이 아님') && lt.includes('과거 결과 재현 아님') && lt.includes('공격형 v0.1 · v1 · 이전 설정 호환'), lt);
+      assert.equal(await page.locator(B + ' [data-sq-flow] [data-sq-step]').count(), 2, 'two steps only: the old profile is not a step');
+      // 1.1.6: the same saved tree still loads for the preview (past results), labelled 이전 설정 호환.
+      await page.waitForFunction(() => { const b = document.querySelector('[data-k=mode-preview]'); return b && !b.disabled; });
+      assert.ok((await page.locator('[data-legacy-profiles="1"]').innerText()).includes('지금 자료로 계산(과거 결과 재현 아님)'));
+      assert.ok((await page.locator('[data-legacy-profiles="1"]').innerText()).startsWith('이전 설정 호환 · 옛 가중치 편집기(공격형·균형형·수비형·사용자 설정)에서 저장한 리더보드 가중치 1개 · 새 기본 선택이 아님'));
+      assert.equal(await page.locator('[data-k=mode-preview]').innerText(), '이전 설정 결과(미리보기 · 호환)');
+      await page.locator('[data-k=mode-preview]').click(); await page.locator('[data-list-lock=PREVIEW]').waitFor();
+      assert.equal(await page.locator('[data-badges] [data-badge=weights] .hl').innerText(), '개인 가중치', 'the old tree computes as before');
+      await page.locator('[data-k=mode-official]').click(); await page.locator('[data-list-lock=PREVIEW]').waitFor({ state: 'detached' });
+      assert.equal(await page.evaluate((k) => localStorage.getItem(k), LEGACY_KEY), LEGACY, 'the old tree is never rewritten');
+      assert.deepEqual(seen.outside, []); assert.deepEqual(seen.errors, []);
+      await ctx.close();
+    }
+    ok('legacy: an old weight tree is listed as 이전 설정 호환 (not a step of the flow), still loads in 1.1.6, stored value unchanged');
 
     // ---------------- the published site has no engine route
     phase = 'no route';

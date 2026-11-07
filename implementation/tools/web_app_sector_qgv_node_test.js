@@ -2,7 +2,8 @@
 // Sector QGV screen side (web_app/sector-qgv.js) against Codex's common engine #505 through Main's engine route
 // (tools/sector_qgv_engine_bridge.py, run here as the real child process; SYNTHETIC inputs only). Owner 2026-11-06 「섹터 QGV 실제
 // 연결」: no second set of defaults, no score / gate / rank on the screen side, edits in the engine's own shape, a recalculation
-// is an engine call, an answer of another request is refused.
+// is an engine call, an answer of another request is refused. Owner 2026-11-07: the default flow is 10섹터 기본값 → 내 설정,
+// 공격형·균형형·수비형 only as 이전 설정 호환, 기본값 복원 = the selected model's base preset id / version, no preset id rewritten.
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -152,6 +153,66 @@ const copy = (v) => JSON.parse(JSON.stringify(v));
       const a = copy(ctx.default_config), b = { ...copy(ctx.default_config), owner_scope: 'PRIVATE', config_id: 'device', display_preferences: { lynch_tags: true, names: 'long' } };
       const ra = await ask('preview', { config: a, before_config: a, input_id: 'NORMAL' }, ctx), rb = await ask('preview', { config: b, before_config: b, input_id: 'NORMAL' }, ctx);
       assert.equal(ra.res.after.config_hash, rb.res.after.config_hash); assert.deepEqual(ra.res.after.result_rows, rb.res.after.result_rows);
+    });
+
+    // ---- owner 2026-11-07: default flow 10섹터 기본값 → 내 설정; 공격형·균형형·수비형 only as 이전 설정 호환; restore = base id / version.
+    await ok('new default flow: 10섹터 기본값 → 내 설정; every scope starts from the engine\'s base preset id / version; the three old profiles are not a step', async () => {
+      assert.deepEqual(S.FLOW, ['SECTOR_DEFAULT', 'MY_SETTING']); assert.deepEqual([S.FLOW_TEXT.SECTOR_DEFAULT, S.FLOW_TEXT.MY_SETTING, S.FLOW_TEXT.LEGACY], ['10섹터 기본값', '내 설정', '이전 설정 호환']);
+      assert.equal(new Set(PRESETS.map((p) => p.sector_id)).size, 10, '10 sectors');
+      for (const p of PRESETS) {
+        const v = await view(ctx.default_config, p.sector_id, p.accounting_template);
+        assert.deepEqual({ ...S.base(v, ctx.versions) }, { preset_id: p.preset_id, version: p.version, scope: p.sector_id + '|' + p.accounting_template });
+        assert.equal(S.origin(ctx.default_config, p.sector_id, p.accounting_template), 'SECTOR_DEFAULT');
+      }
+      const it = await view(ctx.default_config, ...IT);
+      assert.equal(S.origin(S.withScope(ctx.default_config, S.setAxis(S.setAxis(it.preset, 'Q', 3100), 'V', 4400)), ...IT), 'MY_SETTING');
+      assert.equal(S.origin(S.withScope(ctx.default_config, it.preset), 'FINANCIALS', 'BANK'), 'SECTOR_DEFAULT', 'another scope stays on its default');
+      assert.throws(() => S.base(it, { ...ctx.versions, model_version: 'sector-qgv-default/9.9.9' }), /BASE_PRESET_MISMATCH/, 'a base of another model is refused');
+      assert.throws(() => S.base({ ...it, default_preset: { ...it.default_preset, version: '' } }, ctx.versions), /BASE_PRESET_MISMATCH/);
+      const src = fs.readFileSync(path.join(W, 'sector-qgv.js'), 'utf8') + fs.readFileSync(path.join(W, 'screen-sector-qgv-live.js'), 'utf8');
+      assert.doesNotMatch(src, /user-preset\/|aggressive|balanced|defensive|candidateFor|PRODUCT_PRESETS|saveWeights/, 'the old profiles are not offered or written by the sector screen');
+    });
+
+    await ok('restore = the selected model\'s base preset id / version: an edited scope comes back to the engine\'s default_preset, other scopes kept', async () => {
+      const it = await view(ctx.default_config, ...IT), bank = await view(ctx.default_config, 'FINANCIALS', 'BANK');
+      let cfg = S.withScope(ctx.default_config, S.setAxis(S.setAxis(it.preset, 'Q', 3100), 'V', 4400));
+      cfg = S.withScope(cfg, S.setAxis(S.setAxis(bank.preset, 'Q', 5000), 'V', 3500));
+      const edited = await view(cfg, ...IT); assert.notDeepEqual(edited.preset, edited.default_preset);
+      const r = S.restore(cfg, edited, ctx.versions);
+      assert.deepEqual({ ...r.base }, { preset_id: ctx.versions.model_version, version: edited.default_preset.version, scope: 'INFORMATION_TECHNOLOGY|GENERAL' });
+      assert.deepEqual(Object.keys(r.config.scoped_overrides), ['FINANCIALS|BANK'], 'only this scope is restored');
+      const back = await view(r.config, ...IT), want = PRESETS.find((p) => p.sector_id === IT[0] && p.accounting_template === IT[1]);
+      assert.deepEqual(back.preset, back.default_preset); assert.deepEqual(back.preset, want, 'the base preset of presets.json');
+      assert.ok(S.sameIdentity(back.preset, r.base));
+      assert.equal((await view(r.config, 'FINANCIALS', 'BANK')).preset.axis_weights.Q, 5000, 'the bank edit is kept');
+      assert.throws(() => S.restore(cfg, edited, { ...ctx.versions, model_version: 'other/1' }), /BASE_PRESET_MISMATCH/);
+    });
+
+    await ok('no preset id is rewritten: edits keep id / version / scope; after a saved user setting every base preset still equals presets.json; the old user-preset numbers are as they were', async () => {
+      const it = await view(ctx.default_config, ...IT), by = new Map(it.factors.map((f) => [f.variant_id, f])), b = S.base(it, ctx.versions);
+      let p = S.setAxis(S.setAxis(it.preset, 'Q', 3100), 'V', 4400); p = S.addFactor(p, by.get('ebitda_ev')); p = S.replaceFactor(p, 'V', 'other_value', 'sales_ev', by.get('common_bp'));
+      assert.ok(S.sameIdentity(p, b), 'an edit changes weights only');
+      for (const bad of [{ ...p, preset_id: 'sector-qgv-default/0.1.1' }, { ...p, version: '0.1.1' }, { ...p, sector_id: 'ENERGY' }]) assert.equal(S.sameIdentity(bad, b), false);
+      assert.equal(S.withScope(ctx.default_config, p).base_preset_id, ctx.default_config.base_preset_id, 'the user setting names its base, it is not a new preset id');
+      const cfg = S.withScope(ctx.default_config, p), pv = await ask('preview', { config: cfg, before_config: ctx.default_config, input_id: 'NORMAL' }, ctx);
+      assert.equal(pv.chk.ok, true); const sv = await ask('save', { config: cfg, preview_id: pv.res.after.preview_id }, ctx); assert.equal(sv.chk.ok, true, JSON.stringify(sv.chk));
+      for (const q of PRESETS) assert.deepEqual((await view(sv.res.saved.config, q.sector_id, q.accounting_template)).default_preset, q, 'base unchanged: ' + q.sector_id + '|' + q.accounting_template);
+      assert.deepEqual(it.default_preset, PRESETS.find((q) => q.sector_id === IT[0] && q.accounting_template === IT[1]), 'the view answer was not changed by the edits');
+      const V2 = require('../src/investment_system/product/web_assets/qgv-v2.js');
+      assert.deepEqual(Object.fromEntries(Object.entries(V2.USER_PRESETS).map(([id, x]) => [id, [x.name, x.version, x.axis]])),
+        { 'user-preset/aggressive@0.1': ['공격형', '0.1', { Q: 30, G: 50, V: 20 }], 'user-preset/balanced@0.1': ['균형형', '0.1', { Q: 40, G: 30, V: 30 }], 'user-preset/defensive@0.1': ['수비형', '0.1', { Q: 55, G: 15, V: 30 }] }, 'old ids keep their numbers');
+    });
+
+    await ok('legacy saved settings (old leaderboard weight trees) still load, read-only, labelled 이전 설정 호환', async () => {
+      const P = require('../src/investment_system/product/web_assets/device-profiles.js');
+      const doc = P.saveV2(P.emptyV2(), { name: '공격형 v0.1', weights: P.candidateFor('aggressive').weights }, new Date('2026-10-18T00:00:00Z'));
+      const read = { state: 'OK', value: P.validateV2(JSON.parse(JSON.stringify(doc))) }, before = JSON.stringify(read);
+      const lg = S.legacy(read);
+      assert.equal(lg.state, 'OK'); assert.deepEqual(lg.profiles.map((x) => [x.name, x.version, x.label]), [['공격형 v0.1', 1, '이전 설정 호환']]);
+      assert.equal(JSON.stringify(read), before, 'the stored trees are not changed');
+      assert.deepEqual(S.legacy({ state: 'OK', value: P.emptyV2() }), { state: 'EMPTY', profiles: [] });
+      assert.deepEqual(S.legacy({ state: 'INVALID', value: null }), { state: 'INVALID', profiles: [] });
+      assert.deepEqual(S.legacy(null), { state: 'UNKNOWN', profiles: [] });
     });
   } finally { await eng.close(); }
   assert.deepEqual(eng.stderr, [], 'nothing on the bridge stderr');

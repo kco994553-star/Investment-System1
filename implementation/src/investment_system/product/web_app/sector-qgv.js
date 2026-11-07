@@ -15,7 +15,14 @@
      적용 — into every scope whose template every selected variant applies to (the others are listed, never changed);
    - sums(preset): the sum lines the screen shows while editing (the engine's validate_config stays the authority);
    - words: sector / template / role / status / gate / factor-status texts, unknown codes shown as the code itself;
-   - validateSaved(x): the shape of the engine's save_user_config answer, the only thing the device stores. */
+   - validateSaved(x): the shape of the engine's save_user_config answer, the only thing the device stores;
+   - start point (owner 2026-11-07 「10섹터 기본값 → 내 설정」): FLOW is the new default flow, base(view, versions) the selected
+     scope's base preset identity (preset_id / version / scope) read from the engine's view answer, restore() drops this scope's
+     override so that base applies again, origin() says which step a scope is on, sameIdentity() refuses a preset whose id / version
+     / scope is not the base's (an id never gets other numbers here: the base presets are the engine's and are never written);
+     legacy(read) lists the old leaderboard weight trees (DeviceProfiles v2: 공격형·균형형·수비형·사용자 설정 editor) as
+     이전 설정 호환 only: read for existing saved settings (a tree has no start preset or calc / input versions, so it is
+     never shown as a replay of a past result), never offered as a new default. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else{const I=root.IS2=root.IS2||{};I.sectorQgv=api;}})(typeof globalThis==='object'?globalThis:this,function(){
 'use strict';
 const REQUEST='sector-qgv-engine-request/1',RESPONSE='sector-qgv-engine-response/1',PREVIEW='sector-qgv-preview/1',CONFIG='sector-qgv-config/1';
@@ -143,6 +150,23 @@ function applyAll(config,p,scopes,catalog){const c=withScope(config,p),used=sele
   if(!fits){skipped.push(key);continue;}c.scoped_overrides[key]={...copy(p),sector_id:s.sector_id,accounting_template:s.accounting_template};applied.push(key);}
  return {config:c,applied,skipped};}
 
+// ---- start point: 10섹터 기본값 → 내 설정 (owner 2026-11-07). The three old profiles are not a step of this flow.
+const FLOW=Object.freeze(['SECTOR_DEFAULT','MY_SETTING']);
+const FLOW_TEXT=Object.freeze({SECTOR_DEFAULT:'10섹터 기본값',MY_SETTING:'내 설정',LEGACY:'이전 설정 호환'});
+// The base preset of the view's scope, as the engine answered it (view.default_preset); its id must be the context's model.
+function base(view,versions){const d=object(view)?view.default_preset:null;
+ if(!object(d)||!object(versions)||d.preset_id!==versions.model_version||typeof d.version!=='string'||!d.version||d.sector_id!==view.sector_id||d.accounting_template!==view.accounting_template)throw Error('BASE_PRESET_MISMATCH');
+ return Object.freeze({preset_id:d.preset_id,version:d.version,scope:scopeKey(d.sector_id,d.accounting_template)});}
+// A preset keeps its base's id, version and scope (edits change weights only; never a new id, never another scope's id).
+const sameIdentity=(p,b)=>object(p)&&object(b)&&p.preset_id===b.preset_id&&p.version===b.version&&scopeKey(p.sector_id,p.accounting_template)===b.scope;
+// 기본값 복원: this scope goes back to the selected model's base preset (that id / version); other scopes are kept.
+function restore(config,view,versions){const b=base(view,versions);return {config:withoutScope(config,view.sector_id,view.accounting_template),base:b};}
+const origin=(config,sector,template)=>object(config)&&object(config.scoped_overrides)&&own(config.scoped_overrides,scopeKey(sector,template))?'MY_SETTING':'SECTOR_DEFAULT';
+// The old leaderboard weight trees (IS2.store.weights(): DeviceProfiles v2, device-profile-drafts/2) as 이전 설정 호환 entries.
+function legacy(read){if(!object(read))return {state:'UNKNOWN',profiles:[]};if(read.state!=='OK')return {state:read.state==='INVALID'?'INVALID':'UNKNOWN',profiles:[]};
+ const list=object(read.value)&&Array.isArray(read.value.profiles)?read.value.profiles:[];
+ return {state:list.length?'OK':'EMPTY',profiles:list.filter(object).map(p=>({id:String(p.id),name:String(p.name),version:p.version,saved_at:String(p.saved_at),label:FLOW_TEXT.LEGACY}))};}
+
 // ---- factor list words (facts from the engine's list_factors answer and the last preview's coverage)
 function badges(factor,coverage){const out=[];
  if(factor.is_default)out.push({code:'BASE',text:'기본값 · 초기 설정'});
@@ -156,5 +180,6 @@ function search(factors,q){const t=String(q||'').trim().toLowerCase();if(!t)retu
  return factors.filter(f=>[f.display_name,f.factor_id,f.variant_id,...(f.aliases||[])].some(x=>String(x||'').toLowerCase().includes(t)));}
 
 return Object.freeze({REQUEST,RESPONSE,PREVIEW,CONFIG,AXES,OPS,SECTOR_TEXT,TEMPLATE_TEXT,AXIS_TEXT,ROLE_TEXT,STATUS_TEXT,GATE_TEXT,FACTOR_TEXT,ERROR_TEXT,EVIDENCE_TEXT,
- text,errorText,request,check,validateSaved,scopeKey,rescale,setAxis,setRole,setFactor,selectable,addFactor,removeFactor,replaceFactor,sums,withScope,withoutScope,applyAll,badges,search});
+ text,errorText,request,check,validateSaved,scopeKey,rescale,setAxis,setRole,setFactor,selectable,addFactor,removeFactor,replaceFactor,sums,withScope,withoutScope,applyAll,badges,search,
+ FLOW,FLOW_TEXT,base,sameIdentity,restore,origin,legacy});
 });

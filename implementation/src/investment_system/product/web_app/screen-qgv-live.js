@@ -401,7 +401,9 @@ function leaderboard(route,refs){
    v.pv?h('p',{class:'reason',dataset:{listLock:'PREVIEW'}},'산출 상태별 목록은 공식 가중치 결과 기준'):null,
    hand('후보 자격 없는 결과는 순위에 섞지 않음 · 0점 아님 · 순위 번호 없음'),toTable('lists')];}
 
- /* ---- 2.1.6 공식 결과와 개인 결과 */
+ /* ---- 2.1.6 공식 결과와 개인 결과. The saved trees here (IS2.store.weights(), DeviceProfiles v2) come from the old weight editor
+    (공격형·균형형·수비형·사용자 설정): owner 2026-11-07 keeps them only as 이전 설정 호환 (read for saved settings, labelled so;
+    a tree has no start preset or calc / input versions, so its preview is today's data, not a replay of a past result); the new default flow is 1.2 섹터 QGV 10섹터 기본값 → 내 설정. */
  function block6(v){
   const S=QS(),pg=v.pg,list=profiles(),canPreview=list.length>0&&pg.state==='READY';if(!canPreview&&V.preview)V.preview=false;
   const pv=v.pv,p=pv?pv.p:null;
@@ -410,10 +412,11 @@ function leaderboard(route,refs){
   const turn=on=>set(()=>{if(on===V.preview)return;V.preview=on;ctx.preview=null;if(on){const q=list.find(y=>y.id===V.profile)||list[0];V.profile=q.id;V.gate=q.gate===false?false:true;}});
   const badge=(k,label,word)=>h('div',{class:'sk badge',dataset:{badge:k}},h('b',null,label),h('span',{class:'hl'},word));
   const b=pg.price_basis,time=['가격 기준일 ',b.price_basis_date||'NA',' · 게시 ',stamp(b.generated_at)||'NA',b.stale===true?' · STALE':b.publication_id&&b.stale===null?' · STALE 판정 불가':''];
-  return[group('결과 보기',chip('공식 가중치 결과',!V.preview,{dataset:{k:'mode-official'},onclick:turn(false)}),chip('내 설정 결과(미리보기)',V.preview,{disabled:!canPreview,dataset:{k:'mode-preview'},onclick:turn(true)})),
-   canPreview?null:h('p',{class:'reason',dataset:{previewOff:''}},'저장된 내 설정이 없습니다 · 1.2 가중치 화면에서 만듭니다(다음 단계)'),
-   V.preview&&list.length>1?h('div',{class:'sort-row'},h('label',{for:'lb-profile'},'내 설정'),h('select',{id:'lb-profile',dataset:{k:'profile'},onchange:e=>{const q=list.find(y=>y.id===e.target.value);if(q){V.profile=q.id;V.gate=q.gate===false?false:true;ctx.preview=null;}draw();}},
-    ...list.map(q=>h('option',{value:q.id,selected:p&&q.id===p.id},q.name)))):null,
+  return[group('결과 보기',chip('공식 가중치 결과',!V.preview,{dataset:{k:'mode-official'},onclick:turn(false)}),chip('이전 설정 결과(미리보기 · 호환)',V.preview,{disabled:!canPreview,dataset:{k:'mode-preview'},onclick:turn(true)})),
+   canPreview?null:h('p',{class:'reason',dataset:{previewOff:''}},'저장된 이전 설정이 없습니다 · 새 설정은 1.2 섹터 QGV에서(10섹터 기본값 → 내 설정)'),
+   canPreview?h('p',{class:'reason',dataset:{legacyProfiles:String(list.length)}},'이전 설정 호환 · 옛 가중치 편집기(공격형·균형형·수비형·사용자 설정)에서 저장한 리더보드 가중치 ',String(list.length),'개 · 새 기본 선택이 아님 · 지금 자료로 계산(과거 결과 재현 아님) · 새 설정은 1.2 섹터 QGV(10섹터 기본값 → 내 설정)'):null,
+   V.preview&&list.length>1?h('div',{class:'sort-row'},h('label',{for:'lb-profile'},'이전 설정 호환'),h('select',{id:'lb-profile',dataset:{k:'profile'},onchange:e=>{const q=list.find(y=>y.id===e.target.value);if(q){V.profile=q.id;V.gate=q.gate===false?false:true;ctx.preview=null;}draw();}},
+    ...list.map(q=>h('option',{value:q.id,selected:p&&q.id===p.id},q.name,' · v',String(q.version),' · 이전 설정 호환')))):null,
    h('label',{class:'check'},h('input',{type:'checkbox',checked:V.preview?V.gate:true,disabled:!V.preview,dataset:{k:'gate'},onchange:e=>{V.gate=e.target.checked;ctx.preview=null;draw();}}),'가치 함정 관문 (기본 켬)'),
    V.preview?null:h('p',{class:'reason'},'공식 결과는 관문 켬 고정'),
    h('div',{class:'badges',dataset:{badges:''},...S.provenanceAttrs(x)},badge('weights','가중치',weightWord),badge('prices','가격',pv?'가격 없음 · 게시 요인 점수':b.label||pg.v_source.ko),badge('where','계산 장소',where),badge('vsource','V 출처',pg.v_source.ko)),
@@ -421,7 +424,7 @@ function leaderboard(route,refs){
    V.preview&&pv?h('p',{class:'reason',dataset:{na:pv.out.weight_stages.reason}},text(pv.out.weight_stages.reason)):null,
    V.preview&&pv&&pv.out.state==='INVALID'?h('p',{class:'na',dataset:{na:pv.out.reason||''}},say(pv.out.reason,'내 설정으로 계산하지 못했습니다')):null,
    h('div',{class:'cards'},h('div',{class:'sk card-now'},h('b',null,'지금'),h('span',null,pg.v_source.ko,' · ',where),h('span',{class:'boxed'},Q.rankLabel(pg)),h('span',null,...time)),
-    h('div',{class:'sk'},h('b',null,'내 설정 결과(미리보기)를 켜면'),h('span',{class:'boxed'},S.PERSONAL_LABEL[0]),h('span',null,'V 비중 0이면 → ',S.PERSONAL_V0_LABEL[0]))),
+    h('div',{class:'sk'},h('b',null,'이전 설정 결과(미리보기)를 켜면'),h('span',{class:'boxed'},S.PERSONAL_LABEL[0]),h('span',null,'V 비중 0이면 → ',S.PERSONAL_V0_LABEL[0]))),
    hand('개인 결과는 공식 점수·순위를 덮어쓰지 않음 · 계산값은 저장 안 함(RAM)'),toTable('results')];}
 
  /* ---- 2.1.7 후보 선정 연결 (the official default profile; filters and personal settings change nothing) */

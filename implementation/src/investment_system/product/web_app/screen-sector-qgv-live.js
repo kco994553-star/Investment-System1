@@ -13,7 +13,12 @@
      of another config is hidden as stale.
    - 저장 stores the engine's save_user_config record of the shown, current preview on this device only (IS2.store.sectorQgv: no
      account sync, not in a backup). A newer engine default never rewrites it. 변경 취소 returns to the saved (or default)
-     config; 기본값 복원 drops this scope's override (stored only after the next preview and 저장).
+     config; 기본값 복원 drops this scope's override (stored only after the next preview and 저장) and checks that the scope
+     now shows exactly the selected model's base preset (the engine's default_preset: same preset_id / version / numbers).
+   - Start point (owner 2026-11-07): the flow is 10섹터 기본값 (the engine's base preset of the chosen sector · accounting model)
+     → 내 설정 (this device's saved engine record). 공격형·균형형·수비형 are not a step of it: the old leaderboard weight trees
+     (IS2.store.weights(), DeviceProfiles v2) are only listed, read-only, as 이전 설정 호환 (1.1.6 still reads them for its
+     preview); nothing here writes them, and no preset id gets other numbers.
    - Q/G 부분 비교 (#505 7c2225a3, sector-qgv-axis-comparison/1; screen-sector-qgv-axis-live.js): every preview answer carries
      Codex's compare_axes of the same two previews, drawn under the preview; 「비교 파일 목록」 (a click) lists the engine's comparison
      files (Codex's synthetic D1; retained private D1 / I1 only on a development process started with them) and one opens on a click.
@@ -24,7 +29,7 @@
 const I=window.IS2,{h}=I;
 const X=()=>I.sectorQgv;
 const V={viewLoading:false,conn:'IDLE',code:null,ctx:null,sector:'INFORMATION_TECHNOLOGY',template:'GENERAL',input:'NORMAL',saved:null,savedState:'EMPTY',work:null,
- view:null,viewId:null,edit:null,cmp:{state:'IDLE',list:null,code:null,name:null,el:null,pending:null},axis:'Q',scope:'CONTEXT',adv:false,query:'',only:true,shown:null,pendingId:null,dropped:0,msg:null,err:null,coverage:null};
+ view:null,viewId:null,edit:null,legacy:null,restoring:null,cmp:{state:'IDLE',list:null,code:null,name:null,el:null,pending:null},axis:'Q',scope:'CONTEXT',adv:false,query:'',only:true,shown:null,pendingId:null,dropped:0,msg:null,err:null,coverage:null};
 let NF=null;const fmt=v=>(NF||(NF=new Intl.NumberFormat('ko-KR',{minimumFractionDigits:1,maximumFractionDigits:1}))).format(v);
 const pct=bp=>fmt(bp/100)+'%';
 const copy=v=>JSON.parse(JSON.stringify(v));
@@ -48,16 +53,22 @@ function fill(route,{body}){
  // ---- engine steps (each started by a click)
  async function connect(){V.conn='CONNECTING';V.code=null;draw();const{res,chk}=await call('context');
   if(!chk.ok){V.conn=signal.aborted?'IDLE':'ERROR';V.code=chk.code;draw();return;}
-  V.ctx=res;V.conn='READY';readSaved();V.work=V.savedState==='OK'?copy(V.saved.config):copy(res.default_config);if(!res.inputs.some(x=>x.input_id===V.input))V.input=res.inputs[0].input_id;
+  V.ctx=res;V.conn='READY';readSaved();readLegacy();V.work=V.savedState==='OK'?copy(V.saved.config):copy(res.default_config);if(!res.inputs.some(x=>x.input_id===V.input))V.input=res.inputs[0].input_id;
   if(signal.aborted)return;await loadView();}
  function readSaved(){const st=I.store.sectorQgv.read();V.saved=null;V.savedState=st.state;
   if(st.state==='OK'){V.saved=copy(st.value);if(st.value.config.base_preset_id!==V.ctx.versions.model_version)V.savedState='BASE_DIFFERS';}}
+ function readLegacy(){let r=null;try{r=I.store.weights();}catch(_){r=null;}V.legacy=S.legacy(r);}
  async function loadView(){const req=S.request('view',{config:V.work,sector_id:V.sector,accounting_template:V.template});V.viewId=req.request_id;V.viewLoading=true;draw();
   let res=null,chk;try{res=await I.data.engine(req,{signal});chk=S.check('view',req,res,V.ctx);}catch(e){chk={ok:false,code:String(e&&e.message||'ENGINE_UNREACHABLE')};}
   if(req.request_id!==V.viewId){V.dropped++;draw();return;}// a later scope's request is the current one
   V.viewLoading=false;if(signal.aborted)return;// left the screen: the next visit offers 다시 불러오기 (a click)
+  const back=V.restoring;V.restoring=null;
   if(!chk.ok){V.err=S.errorText(chk.code);draw();return;}
-  V.view=res;V.edit=copy(res.preset);V.err=null;draw();}
+  let b=null;try{b=S.base(res,V.ctx.versions);}catch(e){V.err='기본값 기준 확인 실패 · '+String(e&&e.message);draw();return;}
+  V.view=res;V.edit=copy(res.preset);V.err=null;
+  // 기본값 복원: the scope must now be the base preset it named (same id / version / scope, the engine's own numbers).
+  if(back&&(back.scope!==b.scope||back.preset_id!==b.preset_id||back.version!==b.version||!S.sameIdentity(res.preset,b)||JSON.stringify(res.preset)!==JSON.stringify(res.default_preset))){V.msg=null;V.err='기본값 복원 확인 실패 · 엔진 기본값과 다름';}
+  draw();}
  async function preview(){const cur=current();if(!cur)return;
   const before=V.savedState==='OK'?V.saved.config:V.ctx.default_config,fields={config:cur.config,before_config:before,input_id:V.input};
   const req0=S.request('preview',fields);V.pendingId=req0.request_id;V.msg=null;V.err=null;draw();
@@ -93,7 +104,7 @@ function fill(route,{body}){
   if(V.conn==='IDLE'||V.conn==='CONNECTING'||V.conn==='ERROR'){
    const btn=h('button',{type:'button',class:'btn solid',disabled:V.conn==='CONNECTING',dataset:{k:'sq-connect'},onclick:()=>{void connect();}},V.conn==='CONNECTING'?'연결 중…':V.conn==='ERROR'?'다시 연결':'계산 엔진 연결');
    body.replaceChildren(V.conn==='ERROR'?card('ERROR',S.errorText(V.code),'공식 QGV(1.1 리더보드)는 그대로',true):card('IDLE','계산 엔진 연결 전','누를 때만 계산 엔진에 요청 · 화면은 점수를 계산하지 않음'),btn,
-    h('p',{class:'hand'},'연결하면: 섹터·회계모형 → Q/G/V 비중 → 요소 교체·추가 → 결과 미리보기(공통 엔진 재계산) → 내 설정으로 저장 · 변경 취소 · 기본값 복원'),
+    h('p',{class:'hand'},'연결하면: 10섹터 기본값(섹터·회계모형) → Q/G/V 비중 → 요소 교체·추가 → 결과 미리보기(공통 엔진 재계산) → 내 설정으로 저장 · 변경 취소 · 기본값 복원'),
     h('p',{class:'reason'},'계산: Codex 공통 엔진 sector_qgv · 입력은 합성 자료만 · 공식 QGV·순위·TARGET은 바뀌지 않음'));
    if(V.conn==='ERROR')body.dataset.sqCode=V.code;else delete body.dataset.sqCode;refocus(k);return;}
   delete body.dataset.sqCode;
@@ -115,6 +126,16 @@ function fill(route,{body}){
   if(!V.view||!V.edit){body.replaceChildren(...[status,gate,store,initial,...notes,ctxRow,V.err?h('p',{class:'hand err',role:'alert',dataset:{sqErr:''}},V.err):V.viewLoading?h('p',{class:'pending',role:'status',dataset:{sqState:'VIEW_LOADING'}},'요소 목록 불러오는 중'):null,
    V.viewLoading?null:h('button',{type:'button',class:'btn',dataset:{k:'sq-reload-view'},onclick:()=>{void loadView();}},'요소 목록 다시 불러오기')].filter(Boolean));refocus(k);return;}
   const p=V.edit,F=factorsBy(),sm=S.sums(p);
+  // 10섹터 기본값 → 내 설정: which step this scope is on, and the base preset (id / version) it starts from.
+  const bp0=S.base(V.view,vs),step=dirty()||S.origin(V.work,V.sector,V.template)==='MY_SETTING'?'MY_SETTING':'SECTOR_DEFAULT';
+  const flow=h('div',{class:'scroll',role:'list','aria-label':'설정 흐름',dataset:{sqFlow:step,sqBase:bp0.preset_id+'@'+bp0.version}},
+   h('span',{class:'chip'+(step==='SECTOR_DEFAULT'?' on':''),role:'listitem','aria-current':step==='SECTOR_DEFAULT'?'step':null,dataset:{sqStep:'SECTOR_DEFAULT'}},'① ',S.FLOW_TEXT.SECTOR_DEFAULT,' · ',S.text(S.SECTOR_TEXT,V.sector),'·',S.text(S.TEMPLATE_TEXT,V.template),' · ',bp0.preset_id,' v',bp0.version),
+   h('span',{'aria-hidden':'true'},'→'),
+   h('span',{class:'chip'+(step==='MY_SETTING'?' on':''),role:'listitem','aria-current':step==='MY_SETTING'?'step':null,dataset:{sqStep:'MY_SETTING'}},'② ',S.FLOW_TEXT.MY_SETTING,V.savedState==='OK'?' · 이 기기에 저장됨':' · 저장 전'));
+  const lg=V.legacy;
+  const legacyEl=lg&&lg.state==='OK'?h('details',{class:'why',dataset:{sqLegacy:String(lg.profiles.length)}},h('summary',null,S.FLOW_TEXT.LEGACY,' · 이전 리더보드 가중치 ',String(lg.profiles.length),'개 ▸'),
+   h('p',{class:'reason'},'옛 가중치 편집기(공격형·균형형·수비형·사용자 설정)에서 이 기기에 저장한 설정 · 새 섹터 모형의 기본 선택이 아님 · 1.1.6 미리보기에서 그대로 읽음(지금 자료로 계산 · 과거 결과 재현 아님) · 여기서 바꾸지 않음'),
+   h('ul',null,...lg.profiles.map(x=>h('li',{dataset:{sqLegacyId:x.id}},x.name,' · v',String(x.version),' · ',x.label)))):null;
   const num=(idk,label,valueBp,on)=>h('input',{type:'number',min:'0',max:'100',step:'0.01',inputmode:'decimal',value:String(valueBp/100),dataset:{k:idk},'aria-label':label,
    onchange:e=>{const n=Math.round(Number(e.target.value)*100);if(!Number.isFinite(n)||n<0||n>10000){V.err='비중은 0~100%';draw();return;}V.err=null;on(n);draw();}});
   const axes=h('div',{class:'sq-axes',role:'group','aria-label':'축 비중'},...S.AXES.map(a=>h('label',{class:'sq-ax'},S.AXIS_TEXT[a],' ',num('sq-axis-'+a,S.AXIS_TEXT[a]+' 축 비중(%)',p.axis_weights[a],n=>{V.edit=S.setAxis(V.edit,a,n);}),'%')),
@@ -162,12 +183,14 @@ function fill(route,{body}){
    h('button',{type:'button',class:'btn solid',disabled:!sm.ok||!!V.pendingId,dataset:{k:'sq-preview'},onclick:()=>{void preview();}},V.pendingId?'계산 중…':'결과 미리보기'),
    h('button',{type:'button',class:'btn',disabled:!savable,dataset:{k:'sq-save'},onclick:e=>save(e)},'내 설정으로 저장'),
    h('button',{type:'button',class:'btn',dataset:{k:'sq-cancel'},onclick:()=>{V.work=V.savedState==='OK'?copy(V.saved.config):copy(c.default_config);V.view=null;V.edit=null;V.msg='마지막 저장 상태로 되돌림';V.err=null;draw();void loadView();}},'변경 취소'),
-   h('button',{type:'button',class:'btn',dataset:{k:'sq-restore'},onclick:()=>{V.work=S.withoutScope(V.work,V.sector,V.template);V.view=null;V.edit=null;V.msg='이 섹터·회계모형을 엔진 기본값('+vs.model_version+')으로 · 저장 전까지 기기 설정은 그대로';V.err=null;draw();void loadView();}},'기본값 복원'),
+   h('button',{type:'button',class:'btn',dataset:{k:'sq-restore'},onclick:()=>{let r;try{r=S.restore(V.work,V.view,vs);}catch(e){V.err='기본값 기준 확인 실패 · '+String(e&&e.message);draw();return;}
+    V.work=r.config;V.restoring=r.base;V.view=null;V.edit=null;V.err=null;
+    V.msg='기본값 복원 · '+S.FLOW_TEXT.SECTOR_DEFAULT+' '+r.base.preset_id+' v'+r.base.version+' · '+S.text(S.SECTOR_TEXT,V.sector)+'·'+S.text(S.TEMPLATE_TEXT,V.template)+' · 저장 전까지 기기 설정은 그대로';draw();void loadView();}},'기본값 복원'),
    h('label',{class:'check'},h('input',{type:'checkbox',checked:V.adv,dataset:{k:'sq-adv'},onchange:e=>{V.adv=e.target.checked;draw();}}),'고급: 역할·요소 비중 편집'),
    h('span',{class:'reason',dataset:{sqSaveNeed:savable?'OK':fresh?'REFUSED':'PREVIEW'}},savable?'미리보기와 같은 설정 · 저장 가능':fresh?'엔진이 저장을 거부 · '+S.errorText(V.shown.res.saved.refused):'저장하려면 지금 설정으로 미리보기'));
   const msg=V.msg||V.err?h('p',{class:V.err?'hand err':'reason',role:'status',dataset:{sqMsg:''}},V.err||V.msg):null;
   const prev=fresh?previewView(V.shown):V.shown?h('p',{class:'reason',dataset:{sqStale:''}},'설정이나 입력이 바뀜 · 이전 미리보기는 지금과 맞지 않아 숨김 · 다시 미리보기'):null;
-  body.replaceChildren(...[status,gate,store,initial,...notes,ctxRow,valid,axes,tabs,roles,search,sumLine,scopeEl,actions,msg,prev,comparisonsBlock(),h('span',{hidden:true,dataset:{sqDropped:String(V.dropped)}})].filter(Boolean));
+  body.replaceChildren(...[status,gate,store,initial,...notes,ctxRow,flow,legacyEl,valid,axes,tabs,roles,search,sumLine,scopeEl,actions,msg,prev,comparisonsBlock(),h('span',{hidden:true,dataset:{sqDropped:String(V.dropped)}})].filter(Boolean));
   refocus(k);}
 
  function previewView(shown){const {before,after,comparison}=shown.res,c=V.ctx;
