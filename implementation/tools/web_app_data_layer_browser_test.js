@@ -8,7 +8,8 @@
 //  - A (no user action): opening a route reads only what its screen asks for (each route opened in a fresh load, and again on
 //    a route change before the test's own call): the placeholder menus nothing, 0. 기업 검색 home only the three static files of
 //    its company index (P2-1), the company page public files in IS2.data.FILES, 1. QGV (P2-2a) only IS2.data.CORE + actual-catalog.json +
-//    company-names-ko.json (its leaderboard: IS2.qgv.page() and the reviewed names); every route can call IS2.data.ready() / IS2.qgv.page() and gets the same page; each render's
+//    company-names-ko.json (its leaderboard: IS2.qgv.page() and the reviewed names), 5. 포트폴리오 (P2-6) the same without the names;
+//    every route can call IS2.data.ready() / IS2.qgv.page() and gets the same page; each render's
 //    route.signal is aborted by the next one and the device chip's subscription ends with it; requests stay same-origin and
 //    every data request is a name in IS2.data.FILES; read-only layer calls add no request either; zero Sheets / OAuth /
 //    Worker / Google requests, zero localStorage / sessionStorage / IndexedDB, action.blocked() 0; every row is the temporary
@@ -244,6 +245,9 @@ async function scores(page) {
     // n+1. Lab (feature 9.2, screen-lab.js): the price-free forward ledger through IS2.data.static on every open here (this test
     // leaves it unpublished, and a static read that failed is read again on the next call); 9.1 reads nothing (no public Lab file).
     const LAB_READS = ['forward-validation-ledger.json'];
+    // 5. 포트폴리오 (feature 6.1 public layer, P2-6, screen-portfolio.js): the shared QGV page (IS2.qgv.page(): CORE, the catalog
+    // and the central V files) and its model, without the names table; a route change reads nothing new.
+    const PORTFOLIO_READS = QGV_READS.filter((n) => n !== 'company-names-ko.json');
     // The company page's own list reads (P2-1), asked again on every open of the page.
     const COMPANY_LISTS = ['sec-disclosures.json', 'news-signals.json'];
     // A phase ends only once the route's own reads are answered, so a read a screen started cannot land in the next route's phase
@@ -253,7 +257,7 @@ async function scores(page) {
     // lists; a route change only the company page's lists (the layer keeps the rest in memory). Only answers to requests of the
     // current document and route count (numbered after the last navigation), and none of its data requests may still be open.
     // Which files are read, and that nothing else is, stays the job of the checks below.
-    const expected = (hash, fresh) => (hash === '#/qgv' ? (fresh ? QGV_READS : []) : hash === '#/macro' ? (fresh ? MACRO_READS : []) : hash === '#/news' ? (fresh ? NEWS_READS : []) : hash === '#/lab' ? LAB_READS : hash === '#/' || hash === '#/nowhere/x' ? (fresh ? HOME_READS : [])
+    const expected = (hash, fresh) => (hash === '#/qgv' ? (fresh ? QGV_READS : []) : hash === '#/portfolio' ? (fresh ? PORTFOLIO_READS : []) : hash === '#/macro' ? (fresh ? MACRO_READS : []) : hash === '#/news' ? (fresh ? NEWS_READS : []) : hash === '#/lab' ? LAB_READS : hash === '#/' || hash === '#/nowhere/x' ? (fresh ? HOME_READS : [])
       // The layer keeps one read of each list per publication (DataRefresh.list): in the route-change pass 4. 뉴스 (before the
       // company page in MENU order, same document) has already read them, so the company page does not ask again.
       : hash.startsWith('#/company/') ? [...(fresh ? [...HOME_READS, ...QGV_READS, ...COMPANY_LISTS] : COMPANY_LISTS.filter((n) => !NEWS_READS.includes(n)))] : []);
@@ -271,7 +275,7 @@ async function scores(page) {
       await answers((fresh ? 'fresh ' : 'change ') + hash, expected(hash, fresh), from);
     };
     const opens = (hash, names) => (hash === '#/' || hash === '#/nowhere/x' ? names.filter((n) => !HOME_READS.includes(n)) : hash.startsWith('#/company/') ? names.filter((n) => !FILES.has(n))
-      : hash === '#/qgv' ? names.filter((n) => !QGV_READS.includes(n)) : hash === '#/macro' ? names.filter((n) => !MACRO_READS.includes(n)) : hash === '#/news' ? names.filter((n) => !NEWS_READS.includes(n)) : hash === '#/lab' ? names.filter((n) => !LAB_READS.includes(n)) : names);
+      : hash === '#/qgv' ? names.filter((n) => !QGV_READS.includes(n)) : hash === '#/portfolio' ? names.filter((n) => !PORTFOLIO_READS.includes(n)) : hash === '#/macro' ? names.filter((n) => !MACRO_READS.includes(n)) : hash === '#/news' ? names.filter((n) => !NEWS_READS.includes(n)) : hash === '#/lab' ? names.filter((n) => !LAB_READS.includes(n)) : names);
     for (const hash of routes) {
       phase = 'A fresh ' + hash;
       const at0 = rec.log.length, an0 = answered.length;
@@ -290,11 +294,14 @@ async function scores(page) {
     const sig = await page.evaluate(async () => {
       const I = window.IS2, P = I.prices, seen = []; let live = 0;
       I.prices = Object.freeze({ ...P, subscribe: (fn, o) => { live++; if (o && o.signal) o.signal.addEventListener('abort', () => { live--; }, { once: true }); return P.subscribe(fn, o); } });
-      I.register('portfolio', (route) => { seen.push(route.signal); return I.h('p', null, 'portfolio'); });
+      // A test screen on a detail route nothing registered yet (every menu has its real screen since P2-6, so no menu
+      // placeholder is left to stand in for one).
+      const free = I.DETAILS.find((d) => !I.detail(d.id)), at = I.href('detail', free.id);
+      I.registerDetail(free.id, (route) => { seen.push(route.signal); return I.h('p', null, 'test'); });
       const go = (h) => new Promise((r) => { window.addEventListener('hashchange', () => setTimeout(r, 0), { once: true }); location.hash = h; });
       try {
-        await go('#/portfolio'); const first = seen[seen.length - 1]; await go('#/qgv'); const firstAborted = first.aborted;
-        for (let i = 0; i < 10; i++) await go(i % 2 ? '#/portfolio' : '#/news');
+        await go(at); const first = seen[seen.length - 1]; await go('#/qgv'); const firstAborted = first.aborted;
+        for (let i = 0; i < 10; i++) await go(i % 2 ? at : '#/news');
         return { firstAborted, live, lastAborted: seen[seen.length - 1].aborted, renders: seen.length };
       } finally { I.prices = P; }
     });

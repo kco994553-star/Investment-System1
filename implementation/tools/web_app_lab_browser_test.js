@@ -64,9 +64,10 @@ let phase = 'START', pass = 0;
     await page.goto(s.base + hash, opts); await page.locator('main[data-route=lab]').waitFor();
     return at;
   }
-  // A route change (the screen renders again and asks IS2.lab.source() again).
+  // A route change (the screen renders again and asks IS2.lab.source() again). Through n. 구조 트리, which reads nothing (since
+  // P2-6 the 5. 포트폴리오 screen reads the shared QGV page).
   async function reopen(page) {
-    await page.evaluate(() => { location.hash = '#/portfolio'; }); await page.locator('main[data-route=portfolio]').waitFor();
+    await page.evaluate(() => { location.hash = '#/tree'; }); await page.locator('main[data-route=tree]').waitFor();
     await page.evaluate(() => { location.hash = '#/lab'; }); await page.locator('main[data-route=lab]').waitFor(); await drawn(page);
   }
   // IS2.lab with a synthetic source() (the rest of the real reader kept: validate, status, nullText, TEXT, METRICS).

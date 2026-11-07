@@ -683,11 +683,18 @@ test('qgv.model: null without a publication; with one the price-free projection 
   const set = (x) => ({ n: x.n, complete: x.complete, status: x.status, weight_pct: x.weight_pct, shortfall_pct: x.shortfall_pct, causes: JSON.parse(JSON.stringify(x.causes)),
     skipped: { ...x.skipped }, group_capped: x.group_capped.map((c) => ({ id: c.company_id, ticker: c.ticker, rank: c.rank, group: c.group })),
     selected: x.selected.map((e) => ({ id: e.company_id, ticker: e.ticker, rank: e.rank, total: e.total, group: e.group })),
-    issuer_check: { status: x.issuer_check.status, applied: x.issuer_check.applied, issuers_n: x.issuer_check.issuers.length } });
+    issuer_check: { status: x.issuer_check.status, applied: x.issuer_check.applied, issuers_n: x.issuer_check.issuers.length },
+    // P2-6 (portfolio 5.1): the N15 tier check (R-C weights, selection unchanged); null on N10 / N20.
+    tier_check: x.tier_check ? { rule: x.tier_check.rule, applied_to_selection: x.tier_check.applied_to_selection, status: x.tier_check.status, core: x.tier_check.core, general: x.tier_check.general,
+      rows: x.tier_check.rows.map((r) => ({ id: r.company_id, ticker: r.ticker, rank: r.rank, tier: r.tier, weight_pct: r.weight_pct, group: r.group })), sum_pct: x.tier_check.limits.sum_pct,
+      limits: { single: { ...x.tier_check.limits.single }, group: { limit: x.tier_check.limits.group.limit, status: x.tier_check.limits.group.status, top_pct: x.tier_check.limits.group.top_pct,
+        groups: x.tier_check.limits.group.groups.map((g) => ({ ...g })), unknown: { ...x.tier_check.limits.group.unknown } }, min_holdings: { ...x.tier_check.limits.min_holdings } } } : null });
   const want = { v_source: pg.v_source, official_profile: { ...M.official_profile }, primary: 'N15', ns: [10, 15, 20], as_of: M.as_of, checked: M.checked, ranked: M.ranked,
     provisional: [...M.provisional], excluded: { ...M.excluded }, unknown: { subgroup: M.unknown.subgroup }, sets: Object.fromEntries(Object.entries(M.sets).map(([k, x]) => [k, set(x)])) };
   assert.deepEqual(JSON.parse(JSON.stringify(m)), JSON.parse(JSON.stringify(want)), 'the projection of officialModel (provisional, unknown, skipped, group_capped included)');
   assert.equal(m.ranked, pg.rows[0].rank.of, 'the model ranks the page\'s official rank population'); assert.equal(m.v_source.id, 'OFFICIAL_CENTRAL');
+  assert.ok(m.sets.N15.tier_check && m.sets.N15.tier_check.rows.length === M.sets.N15.selected.length, 'N15 carries its tier check, one row per selected row');
+  assert.deepEqual([m.sets.N10.tier_check, m.sets.N20.tier_check], [null, null], 'no tier rule on N10 / N20');
   const bad = [...keysDeep(m)].filter((k) => /price|quote|close/i.test(k) || k.split('_').includes('cap') || PRICE_KEYS.has(k));
   assert.deepEqual(bad, [], 'no price, quote, close or cap key');
   assert.ok(Object.isFrozen(m) && Object.isFrozen(m.sets.N15) && Object.isFrozen(m.sets.N15.selected[0]), 'frozen');
