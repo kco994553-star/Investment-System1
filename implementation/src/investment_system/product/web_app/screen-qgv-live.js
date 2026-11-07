@@ -208,7 +208,7 @@ function leaderboard(route,refs){
   const byId=new Map(filterClassified(listed.map(r=>({company_id:r.id,row:r})),cls,f).map(x=>[x.company_id,x.row]));
   const filtered=listed.filter(r=>byId.has(r.id)&&(!f.type||(f.type==='UNCLASSIFIED'?!r.types.selected.length&&r.types.reason==='NO_RECOGNIZED_TYPE':f.type==='NOT_AVAILABLE'?!r.types.selected.length&&r.types.reason!=='NO_RECOGNIZED_TYPE':r.types.selected.includes(f.type)))
    &&(!f.state||r.coverage.states.includes(f.state))&&(!V.fav||fav.ids.includes(r.id)));
-  const tech=TF?TF.keep(filtered,{basis:pg.price_basis,universe:scoped}):null,kept=tech?tech.rows:filtered;
+  const tech=TF?TF.keep(filtered,{universe:scoped}):null,kept=tech?tech.rows:filtered;
   const ur=ranks(),m3=new Map(),cap=r=>{if(!ur)return null;if(!m3.has(r.id))m3.set(r.id,P.rankFor({company_id:r.id,ticker:r.ticker}));const e=m3.get(r.id);return e&&Number.isInteger(e.rank)?e.rank:null;};
   if(sortSpec(V.sort)[1]==='cap'&&!ur||V.sort==='favorites'&&!fav.ids.length||!SORTS.some(s=>s[0]===V.sort))V.sort='qgv';
   const ret=ctx.ret&&ctx.ret.state==='READY'?ctx.ret:null,byRet=V.ret&&!!ret;

@@ -1,64 +1,75 @@
-# 1.1.8 기술 조건 필터 — QGV 리더보드 결합 계약 제안
+# 1.1.8 기술 조건 필터 — QGV 리더보드 결합 (Codex #515 계약 소비)
 
-작성 2026-11-07 · Main. 근거는 오너 감사(11/07)다. "같은 평가일, 같은 증권으로 확인될 때만 결합한다."
+작성 2026-11-07 · Main. 근거는 오너 감사(11/07)와 같은 날 오너 지시다. "#515 계약과 반례를 그대로 쓰고, 티커 문자열로 대신 결합하지 않는다. 평가일·기업 ID·검증된 증권 ID·유효기간을 확인한다."
 
-이 문서는 Main이 Codex에 요청하는 필드 제안이다. Codex 계약 `technical-leaderboard/1`(#469)을 바꾸지 않는다.
+Main은 Codex PR #515(`research/technical-filter-join-20261107`, `b6fd0112`)의 결합 계약을 그대로 소비한다. Main이 따로 만든 계약은 없다. 이전 판에서 제안했던 `tech-qgv-security-map/0`은 버렸다.
 
-## 1. 지금 결합하지 않는 이유
+## 1. 계약 (#515 `TECHNICAL_FILTER_JOIN_20261107.md`)
 
-- 보드에는 `signal_day`와 `security_id`(고정 증권 ID, null 가능)가 있다. 문서상 QGV 결합 키는 `[signal_day, security_id]`다.
-- 그런데 고정 증권 ID를 Universe504 상장 키(`NASDAQ:GOOGL` 같은 행 code)와 기업 ID(행 id)로 잇는 표가 계약에 없다. 유효기간도 없다.
-- 그래서 Main은 결합을 추측하지 않는다. 지금은 모든 보드가 **증권 매핑 계약 없음**으로 거부된다.
-- 이전 코드는 `security_id`가 행 id나 code와 글자가 같으면 결합했다. 이 방식은 없앴다.
+- 결합 키는 정확히 `(signal_day, security_id)`다.
+- QGV 행마다 `signal_day`(계산 평가일)와 `security_id`(검증된 고정 증권 ID)가 있어야 한다. 행의 `id`(발행사 ID), `ticker`, `code`는 결합 키가 아니다.
+- 증권 링크 항목: `series_id`, `security_id`, `identifier_type`, `reference`, `valid_from`, `valid_to`, `issuer_id`, `symbol`, `share_class`, `identity_status`, `identity_reference`.
+  - `identity_status`는 `CONFIRMED`여야 한다.
+  - 유효기간은 양 끝 날짜를 포함한다. 평가일에 유효한 링크가 정확히 하나여야 한다.
+  - 링크의 `issuer_id`는 행 `id`와, `symbol`은 행 `ticker`(보드에 symbol이 있으면 그것과도)와, `series_id`는 보드 시리즈와 같아야 한다.
+- 행이나 링크 하나라도 틀리면 결합 전체를 거부한다. 필터에서 빠질 행도 먼저 검사한다.
 
-## 2. Main이 Codex에 요청하는 필드
+## 2. Main 구현
 
-| 필드 | 뜻 |
+- `web_app/tech-screen.js::joinRows`는 `join_filtered_rows`를 순수 JS로 옮긴 것이다. 검사 순서와 사유 코드가 같다.
+- Main만의 코드가 하나 있다. 원천에 링크 자료가 아예 없으면 `SECURITY_LINKS_NOT_CONNECTED`다.
+- `web_app/qgv.js::rowRecord`는 `signal_day`와 `security_id`를 내지만, 지금은 근거가 없어 둘 다 null이다. `company_id`, 티커, 코드, `as_of`, 가격 기준일에서 만들지 않는다.
+- QGV 평가일: #515는 QGV 행의 `signal_day`가 계산 평가일이라고만 정하고, 기존 Main 필드 중 어느 것인지는 정하지 않는다. 그래서 Main은 공식 게시본의 `price_basis_date`도 평가일로 쓰지 않는다. 이전 판의 선택은 버렸다.
+- 결합이 안 되면 리더보드 표에 기술 조건을 적용하지 않는다. 표는 그대로 두고 블록에 사유를 적는다(`data-tf-join`, `data-na`에 코드).
+- 문구는 "리더보드 표에 적용할 수 없음 · (사유) · … · 리더보드는 기술 조건 없이 그대로"다.
+
+## 3. 사유 코드와 화면 문구
+
+| 코드 | 문구 |
 |---|---|
-| 보드 `signal_day` | 평가일(완결된 NYSE 거래일, YYYY-MM-DD). 지금도 있다. |
-| 행 `security_id` | 고정 증권 ID. 티커나 CIK가 아니고, null이면 결합하지 않는다. |
-| 매핑 `listing_key` | Universe504 상장 키(행 code, 거래소:티커). 클래스주마다 따로 둔다. |
-| 매핑 `company_id` | Universe504 행 id. `listing_key`와 함께 맞아야 한다. |
-| 매핑 `valid_from`, `valid_to` | 그 증권이 그 상장 키를 쓴 기간. `valid_to`가 null이면 지금까지다. |
+| `SECURITY_LINKS_NOT_CONNECTED` (Main) | 고정 증권 매핑 자료 미연결 · 매핑이 오기 전에는 결합하지 않음 |
+| `JOIN_DATA_KIND_REQUIRED` | 자료 종류 표시 없음(합성 또는 보관 입력) |
+| `TECHNICAL_BOARD_SCHEMA_MISMATCH` | 기술 보드 스키마 불일치 |
+| `INVALID_SESSION_DATE` | 평가일 없음 또는 형식 오류 · QGV 행에 계산 평가일이 없음 |
+| `GROUP_MEMBERSHIP_UNCONFIRMED` | 비교 그룹 구성원 미확인 |
+| `TECHNICAL_METRICS_MISMATCH` | 기술 지표 목록 불일치 |
+| `PERMANENT_SECURITY_ID_REQUIRED` | 고정 증권 ID 없음 |
+| `REQUEST_SERIES_ID_REQUIRED` | 시리즈 ID 없음 |
+| `DUPLICATE_TECHNICAL_KEY` | 기술 보드에 같은 증권이 두 번 |
+| `TECHNICAL_IDENTITY_MISMATCH` | 지표 사이 증권·시리즈 불일치 |
+| `FIXED_SECURITY_LINK_EVIDENCE_REQUIRED` | 증권 매핑 근거 없음 |
+| `FIXED_SECURITY_LINK_UNCONFIRMED` | 증권 신원 미확인 |
+| `ISSUER_OR_TICKER_IS_NOT_SECURITY_ID` | 발행사 ID·티커·코드는 증권 ID가 아님 |
+| `SYNTHETIC_SECURITY_ID_ON_RETAINED_INPUT` | 합성 증권 ID가 실자료에 섞임 |
+| `INVALID_SECURITY_LINK_RANGE` | 매핑 유효기간 오류(시작이 끝보다 늦음) |
+| `DUPLICATE_SECURITY_LINK` | 매핑 중복 · 평가일에 겹치는 매핑 |
+| `SIGNAL_DAY_MISMATCH` | 평가일 불일치 · 보드 (날짜) · QGV (날짜) |
+| `DUPLICATE_QGV_KEY` | QGV 결합 키 중복(같은 평가일·같은 증권 두 행) |
+| `SECURITY_ID_NOT_IN_BOARD` | 보드에 없는 증권 · 같은 티커의 다른 증권 또는 다른 종류주 |
+| `FIXED_SECURITY_LINK_MISSING` | 매핑 없음 |
+| `SECURITY_LINK_OUTSIDE_SIGNAL_DAY` | 매핑 유효기간 밖(만료 또는 아직 유효 전) |
+| `SERIES_LINK_MISMATCH` | 매핑 시리즈 불일치 |
+| `ISSUER_LINK_MISMATCH` | 발행사 불일치(QGV 행 id ≠ 매핑 발행사) |
+| `SYMBOL_LINK_MISMATCH` | 티커 불일치(QGV 행·보드 ≠ 매핑 티커) |
 
-매핑 표 모양(Main 제안 `tech-qgv-security-map/0`)은 다음과 같다.
+## 4. 시험
 
-```json
-{"schema": "tech-qgv-security-map/0",
- "entries": [{"security_id": "…", "company_id": "…", "listing_key": "NASDAQ:GOOGL", "valid_from": "2020-01-01", "valid_to": null}]}
-```
+- #515 fixture 두 파일을 바이트 그대로 `implementation/tests/fixtures/technical_filter_join_v1/`에 복사했다.
+  - git blob이 #515와 같고, sha256을 고정했다(`inputs.json` 8411e823…, `expectations.json` f395414d…).
+  - 내용은 고치지 않는다.
+- `tools/web_app_tech_filter_node_test.js`는 이 두 파일을 직접 읽는다.
+  - 시나리오 11개 모두 Codex 기대와 같다.
+  - 성공이면 원래 QGV 순위 4·9, 점수 80·70, 모집단 10이 그대로다.
+  - #515의 추가 경계 10개와 과거 링크 시험도 같은 코드로 확인한다.
+- `tools/web_app_tech_filter_browser_test.js`(1440·390)는 다음을 확인한다.
+  - 거부: 링크 없음, 오늘의 행(평가일 없음), 다른 날짜, 같은 티커·다른 증권, 다른 종류주, 링크 누락, 링크 중복. 모두 표가 그대로이고 사유가 보인다.
+  - 성공: 시험 안에서만 만든 합성 키와 링크로 PASS 행만 QGV 순으로 남는다.
 
-- 보드의 모든 증권이 평가일에 유효한 항목을 정확히 하나 가져야 한다.
-- Universe504에 없는 증권은 `company_id`와 `listing_key`를 둘 다 null로 적는다. 이 증권은 결합하지 않는다.
-- 평가일에 한 상장 키에는 증권 하나만 있어야 한다.
+## 5. 실자료 연결에 아직 없는 것
 
-## 3. QGV 쪽 평가일
+- QGV 행마다 근거가 있는 `signal_day`(QGV 계산 평가일)와 `security_id`. 지금은 어느 공개 파일에도 없다.
+- Universe504 전체에 대한 `CONFIRMED` 증권 링크 파일과 그 공개 경로. 원천은 지금 `NONE`(`security_links: null`)이다.
+- 보드 그룹이 Universe504 행 전부를 덮어야 한다. 행 하나라도 보드에 없으면 `SECURITY_ID_NOT_IN_BOARD`로 전체가 거부된다.
+- 실자료 `data_kind`(`RETAINED_INPUT`) 표시.
 
-- QGV 목록의 평가일은 공식 게시본(`qgv-official.json`)의 `price_basis_date`로 본다.
-- 게시본이 있고 입력이 맞을 때만 쓴다(`inputs_match = true`). 둘 중 하나라도 아니면 평가일이 없는 것으로 본다.
-- 보드 `signal_day`와 글자 그대로 같아야 한다.
-
-## 4. 결합 실패 때 Main이 하는 일
-
-결합이 안 되면 리더보드 표에 기술 조건을 적용하지 않는다. 표는 그대로 두고, 블록에 사유를 적는다(`data-tf-join`, `data-na`에 코드).
-
-| 코드 | 화면 문구 |
-|---|---|
-| `QGV_DATE_MISSING` | QGV 평가일 없음 · 공식 게시본의 가격 기준일이 없거나 입력이 다름 |
-| `DATE_MISMATCH` | 평가일 불일치 · 보드 (날짜) · QGV (날짜) |
-| `MAPPING_CONTRACT_MISSING` | 증권 매핑 계약 없음 · 고정 증권 ID ↔ 상장 키·유효기간 매핑이 오지 않음 |
-| `MAPPING_INVALID` | 증권 매핑이 계약과 다름 |
-| `MAPPING_MISSING` | 매핑 없음 · 증권 n개 (항목 없음, 유효기간 밖, 증권 ID null, 리더보드에 없는 상장 키, 맨 티커) |
-| `MAPPING_AMBIGUOUS` | 매핑 중복 · 한 증권이 두 행에, 또는 두 증권이 한 행에 |
-| `IDENTITY_MISMATCH` | 증권 신원 불일치 · 같은 상장 키, 다른 기업 ID (재사용된 티커, 클래스주 혼동) |
-| `NO_JOINED_ROWS` | 매핑은 맞지만 리더보드 행과 결합된 증권 없음 |
-
-문구 앞에는 "리더보드 표에 적용할 수 없음"이, 뒤에는 "리더보드는 기술 조건 없이 그대로"가 붙는다.
-
-클래스주(GOOGL·GOOG, BRK.A·BRK.B)는 상장 키가 다르다. 그래서 매핑이 어느 클래스인지 정확히 적을 때만 결합한다.
-
-## 5. 결론
-
-- Codex가 매핑 표(2절)를 주기 전에는 아무것도 결합하지 않는다.
-- 판독기는 `web_app/tech-screen.js`의 `joinRows`이고, 원천은 지금 `NONE`(`map: null`)이다.
-- 시험은 `tools/web_app_tech_filter_node_test.js`와 `tools/web_app_tech_filter_browser_test.js`에 있다. 성공 사례는 시험 안에서 만든 합성 매핑으로만 확인한다.
+이것이 오기 전에는 아무것도 결합하지 않는다.
