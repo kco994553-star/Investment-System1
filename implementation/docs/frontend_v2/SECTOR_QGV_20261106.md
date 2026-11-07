@@ -1,11 +1,12 @@
 # 섹터 QGV 요소 선택·재계산 — 화면(2.2)과 Codex 공통 엔진 연결
 
-작성 2026-11-06 Main, 개정 2026-11-07(오너 「섹터 QGV 실제 연결과 통합 마무리」).
+작성 2026-11-06 Main, 개정 2026-11-07(오너 「섹터 QGV 실제 연결과 통합 마무리」, 「#505 실자료 부분 비교 계약 추가 인수」).
 
 **근거**
 - 오너 지시 「섹터별 QGV 요소 선택·재계산 화면 구현」과 첨부 설계서
 - Codex #505 `dc11144b`: `implementation/docs/research/sector_qgv/CONTRACT.md`, `catalog.json`, `presets.json`, `synthetic-input.json`, `synthetic-preview.json`, `synthetic-states.json`
 - Codex #505 갱신 `aa9c4484`: `MAIN_INTEGRATION.md`, Main 전달 함수 `research/sector_qgv_main.run_preview_request`(`sector-qgv-main-request/1`). 연결기의 미리보기는 이 함수를 그대로 부른다
+- Codex #505 갱신 `7c2225a382aedf275749eb5c2f9f2385db7cdcf3`: `PARTIAL_COMPARISON.md`, `research/sector_qgv_partial.compare_axes`(`sector-qgv-axis-comparison/1`), `partial-synthetic-{snapshot,config,comparison}.json`
 
 **범위**
 - 병합·배포·신규 수집 승인이 아니다.
@@ -110,12 +111,47 @@
   - 저장 기록의 기준(`base_preset_id`)이 지금 엔진 기본값과 다르면 알리고 덮어쓰지 않는다.
   - 읽을 수 없는 값은 사용자가 지울 때까지 그대로 둔다.
 
+## 5.5 Q/G 부분 비교 (`sector-qgv-axis-comparison/1`)
+
+**실제 호출 연결**
+- 미리보기 응답에 Codex `compare_axes(전 미리보기, 후 미리보기, 전 설정, 후 설정, request_id)`를 붙인다(`axis`). 연결기는 다시 조합하지 않고, 화면은 `comparison_id = request_id`와 양쪽 `config_hash`가 그 미리보기와 같은지 확인한다.
+- `comparisons`·`comparison`(둘 다 클릭 때만): 비교 파일 목록과 이름으로 한 개.
+  - 목록은 Codex 합성 D1(`partial-synthetic-comparison.json`, SHA-256 `18f3d0ef…`)과 Main 합성 I1이다.
+  - Main 합성 I1은 Codex `compare_axes(input_treatment=True)` 출력이고 `tools/sector_qgv_axis_main_variants.py`로 만든다. pytest가 바이트 일치를 확인한다.
+  - 비공개 실파일은 **개발 프로세스를 `SECTOR_QGV_PRIVATE_COMPARISONS`로 시작했을 때만** 목록에 들어간다. 조건은 절대 경로, Git 밖, mode 600, 8 MiB 이하, 같은 규격이다. 요청은 경로를 쓸 수 없고 목록의 이름만 쓴다.
+
+**화면 표시** (`sector-qgv-axis.js` 판독기, `screen-sector-qgv-axis-live.js`)
+- Q와 G를 따로 보인다.
+  - 행마다: 전 → 후(차이), 전환(전후 모두 산출 / 새로 산출 / 빠짐 / 전후 모두 미산출), 미산출 사유, 변경 원인
+  - 축마다: 전 산출 · 후 산출 · 공통 · 새로 · 빠짐 · 둘 다 없음 · 공통 중 바뀜 / 전체
+- 총점 공통 산출이 0건이어도 Q/G 행을 숨기지 않는다. V·총점은 "산출 없음"으로만 보이고 0점으로 쓰지 않는다.
+- 원인 구분:
+  - D1(`SAME_INPUT_CONFIGURATION`) = "요소·비중 변경(같은 입력·분류)"
+  - I1(`INPUT_CLASSIFICATION`) = "분류 보완·비교집단 확대(설정은 같음)". "상대점수 변화는 … 기업 실적이 좋아지거나 나빠졌다는 뜻이 아님"을 함께 보인다. 원인 `PEER_RESCORING`은 "비교집단 변화로 상대점수 재계산(실적 변화 아님)"으로 쓴다.
+- 양쪽의 설정·입력·스냅숏·입력 버전·엔진·모델·정규화·분류 버전을 표로 보이고 다른 칸을 표시한다.
+- 판독기는 D1과 I1이 섞이면 거부한다(`TREATMENT_MIXED`).
+  - D1인데 입력·스냅숏·분류가 다르거나 원인이 재평가인 경우
+  - I1인데 설정이 다르거나 원인이 요소 비중인 경우
+- 행은 엔진 순서(회사 ID) 그대로 보인다.
+  - 화면은 축별 순위·총점·시장 순위·성과를 만들지 않는다(정렬 없음).
+  - 필터는 보이는 행만 고르고 개수와 비교집단을 바꾸지 않는다.
+  - 50행씩 보이고, 요소 상세는 행을 열 때 그린다.
+
+**실자료 (비공개, 개발 환경)**
+- 보관: 비공개 저장소 `handoffs/sector-qgv-followup-20261107`, commit `0a628d52`. manifest·묶음 SHA-256은 #437 Codex 댓글과 같다.
+- `settings-comparison/axis-comparison.json`(D1)과 `classification-result/axis-comparison.json`(I1)을 `tools/web_app_sector_qgv_private.js check`로 1440·390에서 확인했다(6개 통과).
+  - D1: Q 공통 206 중 49 변경, G 280 불변
+  - I1: Q 206→213(새로 7, 공통 중 바뀜 125), G 280→293(새로 13, 공통 중 바뀜 173), 분류 바뀐 행 14
+  - 두 비교 모두 총점·V 산출 0건이지만 Q/G 행은 504행 모두 보인다.
+- 출력은 PASS와 개수뿐이다. 저장소·Pages·로그에 넣지 않았다.
+
 ## 6. 지금 연결 상태
 
 | 항목 | 상태 |
 | --- | --- |
 | 화면 → 엔진 재계산 → 판독 → 전후 → 저장·복원 | 개발 환경에서 끝까지 연결. 합성 입력으로 검증 |
-| 실자료(비공개) 실행 | 연결 안 함. 인증 서버·비공개 전달이 필요(Main), 날짜가 있는 책 섹터·회계모형 분류 근거와 관문 원천 연결이 필요(Codex 판정, Main은 보유 자료 위치 인계) |
+| Q/G 부분 비교 | 미리보기마다 엔진 비교 표시. 비교 파일은 합성 D1·I1(CI), 비공개 실파일 D1·I1(개발 환경 전용 확인) |
+| 실자료(비공개) 실행 | 미리보기 재계산은 연결 안 함. 인증 서버·비공개 전달이 필요(Main), 날짜가 있는 책 섹터·회계모형 분류 근거와 관문 원천 연결이 필요(Codex 판정, Main은 보유 자료 위치 인계) |
 | 배포 | 안 함. 공개 사이트에는 엔진 경로가 없음 |
 | 공식 QGV·TARGET | 바뀌지 않음 |
 
@@ -125,4 +161,15 @@
 | --- | --- |
 | `tests/test_sector_qgv_bridge.py` | 응답 = 엔진 함수 결과(context·view·preview·compare·save); 70개 프리셋 = `presets.json`; Codex `synthetic-preview.json` 재현; 상태 변형이 `synthetic-states.json` 기대값과 같음(6 + FAILED); 관문 세 결과·판정 불가 null; 저장은 같은 설정의 보관 미리보기만; 합성 전용·고정 코드; stdio 순서·stderr 없음 |
 | `tools/web_app_sector_qgv_node_test.js` (11) | 실제 연결기 프로세스로: 기본값은 엔진 것뿐(화면 파일에 상수·순위 계산 없음); 배지 근거; 편집(역할 예산 분할·빼기·교체·준비 중·부적합 거부); 엔진 검증 코드; 은행 변경이 번지지 않음·전체 적용 명시 복사; 재계산 = 엔진 호출(점수·순위 변화); 관문 세 결과; 상태; 다른 요청 응답 거부; 저장 기록; 표시 설정은 숫자를 바꾸지 않음 |
+| `tests/test_sector_qgv_partial.py` (Codex, 4) | 부분 비교 생성 쪽. build `pytest tests`에 수집됨(4개 확인) |
+| `tools/web_app_sector_qgv_axis_node_test.js` (5) | Codex 합성 D1 고정; Main 합성 I1; 실제 엔진 미리보기에 붙은 비교; D1/I1 섞임·개수·null 사유·순위/성과 없음 거부; 판독기·화면에 정렬·순위·저장 없음 |
+| `tools/web_app_sector_qgv_axis_browser_test.js` (1440·390·320, 12) | 미리보기 한 번 = 엔진 호출 한 번에 비교 포함; 파일 목록(클릭, 비공개 없음); D1 총점 공통 0인데 Q/G 20행; I1 원인 글자·버전 차이·분류 바뀐 행·요소 상세; 필터는 행만; 넘침 없음·44 px·키보드; 경계 |
+| `tools/web_app_sector_qgv_private.js check` (CI 밖) | 비공개 D1·I1이 파일 그대로 보이는지 |
 | `tools/web_app_sector_qgv_browser_test.js` (1440·390, 18) | 열 때 요청 없음; 연결(context·view); 배지 글자·검색·교체; 미리보기 한 번 = 엔진 호출 한 번(PBR은 합성 자료에 없어 V 0/20 엄격 결측, EV/EBITDA는 20/20); 화면 순위 = 엔진 직접 호출 순위; 저장·새로고침 유지; 바뀐 설정은 이전 미리보기 숨김·저장 막음; 취소·복원; 은행만 저장; 관문 세 결과; 거부 입력은 이전 결과 유지; 늦은 응답 버림; 휴대폰 넘침 없음·44 px; 경계(외부 요청 없음, 엔진 경로는 POST만, 저장 키 하나, 콘솔 오류 0, CSP 0); 엔진 경로 없는 사이트 = 연결 전 |
+
+## 8. 금융 의존성과 통합 순서 (2026-11-07)
+
+- #504(Codex 금융 변환기) `41075615cca715e94396bcde56594f8159f333ee`는 Main #508 `df1a9abb`의 순수 도우미 `providers/iex_values`를 import한다. #508의 정확한 patch를 그대로 포함한다.
+- 그래서 **#508 → #504** 순서로 병합해야 한다. 가드 문제는 #508로 이미 해결했고 다시 조사하지 않는다.
+- 섹터 QGV 통합 #510(#506+#507+#505)과 #504·#508은 서로 선행 조건이 아니다.
+- 실금융 11 가격(11/02)은 11/04 섹터 자료와 합치지 않는다(Codex 문서 그대로).

@@ -209,7 +209,7 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       phase = tag + ' boundaries';
       assert.deepEqual(seen.outside, []); assert.deepEqual(seen.errors, []);
       assert.ok(posts.length > 0 && posts.every((m) => m === 'POST'), 'the engine route is POST only');
-      assert.deepEqual(seen.requests.filter((u) => /sector/i.test(u) && !/\/(sector-qgv|screen-sector-qgv-live)\.js$|\/sector-qgv-engine$/.test(new URL(u).pathname)), [], 'no sector data file request');
+      assert.deepEqual(seen.requests.filter((u) => /sector/i.test(u) && !/\/(sector-qgv|sector-qgv-axis|screen-sector-qgv-axis-live|screen-sector-qgv-live)\.js$|\/sector-qgv-engine$/.test(new URL(u).pathname)), [], 'no sector data file request');
       const st = await site.storage(page);
       assert.deepEqual(Object.keys(st.localItems).filter((k) => !/recent-search/.test(k)), [KEY], 'only the sector key is written by this screen');
       assert.equal(await page.evaluate(() => window.__csp), 0);

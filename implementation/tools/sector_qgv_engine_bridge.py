@@ -14,6 +14,14 @@ checked against the SHA-256 pinned in synthetic-job.json, plus the named state v
 other input: there is no such field. A real (private) run needs Main's authenticated server and private storage, which are not
 built; this bridge is not an authorization boundary and is never deployed (development site and tests only).
 
+Q/G partial comparison (#505 7c2225a3, `sector-qgv-axis-comparison/1`): every preview also carries Codex's own
+`research.sector_qgv_partial.compare_axes` of the same before / after previews and configs (`axis`, comparison_id = the
+request id). `comparisons` lists the comparison files this process may show and `comparison` returns one by name: Codex's
+pinned synthetic file partial-synthetic-comparison.json, plus, ONLY when this development process was started with
+SECTOR_QGV_PRIVATE_COMPARISONS (absolute paths of retained private axis-comparison.json files, os.pathsep separated; each
+outside every Git checkout, owner-only, at most 8 MiB, of that schema), those files read unchanged. A request still cannot
+name a path: it names a listed comparison. Nothing is recomputed; no axis rank, total or market rank is made.
+
 Transport: one JSON object per line on stdin -> one JSON object per line on stdout (tools/web_app_sector_qgv_engine.js runs it
 behind the development site's POST route `sector-qgv-engine`). Errors are fixed codes; no input value, company result or
 exception text is printed on stderr.
@@ -32,6 +40,7 @@ sys.path.insert(0, str(ROOT / 'src'))
 from investment_system.qgv.qgv_v2 import GATE_PERCENTILE  # noqa: E402
 from investment_system.research import sector_qgv as engine  # noqa: E402
 from investment_system.research import sector_qgv_main as main_bridge  # noqa: E402
+from investment_system.research import sector_qgv_partial as partial  # noqa: E402
 from investment_system.research.sector_qgv_registry import (ENGINE, MAPPING, MODEL, NORMALIZATION, SECTORS,  # noqa: E402
                                                              TEMPLATES)
 
@@ -39,7 +48,7 @@ REQUEST = 'sector-qgv-engine-request/1'
 MAIN_REQUEST = 'sector-qgv-main-request/1'
 RESPONSE = 'sector-qgv-engine-response/1'
 FIXTURES = ROOT / 'docs' / 'research' / 'sector_qgv'
-OPS = ('context', 'view', 'preview', 'save')
+OPS = ('context', 'view', 'preview', 'save', 'comparisons', 'comparison')
 MAX_REQUEST_BYTES = 1 << 20
 MAX_KEPT_PREVIEWS = 8
 REQUEST_ID = re.compile(r'[A-Za-z0-9][A-Za-z0-9._:-]{0,79}')
@@ -51,6 +60,15 @@ INPUTS = ('NORMAL', 'GATE_UNKNOWN', 'GATE_EXCLUDED', 'PARTIAL', 'STALE', 'MAPPIN
 INPUT_TEXT = {'NORMAL': '합성 · 정상', 'GATE_UNKNOWN': '합성 · 관문 판정 불가 1개', 'GATE_EXCLUDED': '합성 · 관문 V 제외 1개',
               'PARTIAL': '합성 · 필수 요소 결측', 'STALE': '합성 · 오래된 자료', 'MAPPING_UNKNOWN': '합성 · 분류 미확정',
               'PEER_SAMPLE_SMALL': '합성 · 비교집단 19개', 'EMPTY': '합성 · 빈 모집단', 'FAILED': '합성 · 회사 ID 중복(거부)'}
+
+
+AXIS = 'sector-qgv-axis-comparison/1'
+SYNTHETIC_COMPARISON = ('PARTIAL_SYNTHETIC', FIXTURES / 'partial-synthetic-comparison.json',
+                        '18f3d0eff9d58bbb7127d3fbad2902a507b7f218f9c1c83e5c5a26b3c5a5d903')
+# Main's synthetic I1-shaped comparison: Codex's compare_axes(input_treatment=True) output, made by
+# tools/sector_qgv_axis_main_variants.py and checked byte for byte by tests/test_sector_qgv_bridge.py.
+MAIN_SYNTHETIC_I1 = ('MAIN_SYNTHETIC_I1', ROOT / 'tests' / 'fixtures' / 'sector_qgv_axis_i1_synthetic.json')
+MAX_COMPARISON_BYTES = 8 << 20
 
 
 class Refused(Exception):
@@ -126,9 +144,49 @@ def _code(exc):
     return code
 
 
+def _inside_git(path):
+    for d in [path.parent, *path.parents]:
+        if (d / '.git').exists():
+            return True
+    return False
+
+
+def private_comparisons(env=None):
+    """{name: path} of the retained private comparison files named at process start (never by a request)."""
+    import os
+    import stat
+    raw = (os.environ if env is None else env).get('SECTOR_QGV_PRIVATE_COMPARISONS', '')
+    out = {}
+    for item in [x for x in raw.split(os.pathsep) if x]:
+        path = Path(item)
+        if not path.is_absolute():
+            raise Refused('PRIVATE_PATH_NOT_ABSOLUTE')
+        st = path.lstat()
+        if not stat.S_ISREG(st.st_mode) or st.st_mode & 0o077 or st.st_size > MAX_COMPARISON_BYTES:
+            raise Refused('PRIVATE_FILE_REFUSED')
+        if _inside_git(path.resolve()):
+            raise Refused('PRIVATE_INSIDE_GIT_CHECKOUT')
+        data = json.loads(path.read_text(encoding='utf-8'))
+        if data.get('schema_version') != AXIS or not REQUEST_ID.fullmatch(str(data.get('comparison_id'))):
+            raise Refused('PRIVATE_NOT_AXIS_COMPARISON')
+        if data['comparison_id'] in out or data['comparison_id'] in (SYNTHETIC_COMPARISON[0], MAIN_SYNTHETIC_I1[0]):
+            raise Refused('PRIVATE_DUPLICATE_NAME')
+        out[data['comparison_id']] = path
+    return out
+
+
+def _synthetic_comparison():
+    name, path, pin = SYNTHETIC_COMPARISON
+    raw = path.read_bytes()
+    if hashlib.sha256(raw).hexdigest() != pin:
+        raise Refused('SYNTHETIC_COMPARISON_HASH_MISMATCH')
+    return json.loads(raw)
+
+
 class Bridge:
-    def __init__(self):
+    def __init__(self, env=None):
         self.kept = {}
+        self.private = private_comparisons(env)
 
     def handle(self, req):
         if not isinstance(req, dict) or req.get('schema_version') != REQUEST:
@@ -172,6 +230,8 @@ class Bridge:
         try:
             out = main_bridge.run_preview_request(snapshot, {'schema_version': MAIN_REQUEST, 'request_id': rid,
                                                              'before_config': before_config, 'after_config': config})
+            # Codex's own Q/G partial comparison of exactly these two previews (no second composition here).
+            axis = partial.compare_axes(out['before'], out['after'], out['before_config'], out['after_config'], rid)
         except (ValueError, KeyError, TypeError, AttributeError) as exc:
             raise Refused(_code(exc)) from None
         after = out['after']
@@ -179,7 +239,25 @@ class Bridge:
         while len(self.kept) > MAX_KEPT_PREVIEWS:
             self.kept.pop(next(iter(self.kept)))
         return {'input_id': input_id, 'data_kind': 'SYNTHETIC', 'bridge_version': out['bridge_version'], 'before': out['before'],
-                'after': after, 'comparison': out['diff'], 'saved': out['saved_config']}
+                'after': after, 'comparison': out['diff'], 'saved': out['saved_config'], 'axis': axis}
+
+    def _comparisons(self, req, rid):
+        listed = [(SYNTHETIC_COMPARISON[0], 'SYNTHETIC', _synthetic_comparison()),
+                  (MAIN_SYNTHETIC_I1[0], 'SYNTHETIC', json.loads(MAIN_SYNTHETIC_I1[1].read_text(encoding='utf-8')))]
+        listed += [(name, 'PRIVATE', json.loads(path.read_text(encoding='utf-8'))) for name, path in self.private.items()]
+        return {'comparisons': [{'name': name, 'data_kind': kind, 'comparison_id': c['comparison_id'], 'treatment': c['treatment'],
+                                 'valuation_date': c['valuation_date'], 'denominator': c['denominator']}
+                                for name, kind, c in listed]}
+
+    def _comparison(self, req, rid):
+        name = req.get('name')
+        if name == SYNTHETIC_COMPARISON[0]:
+            return {'name': name, 'data_kind': 'SYNTHETIC', 'comparison': _synthetic_comparison()}
+        if name == MAIN_SYNTHETIC_I1[0]:
+            return {'name': name, 'data_kind': 'SYNTHETIC', 'comparison': json.loads(MAIN_SYNTHETIC_I1[1].read_text(encoding='utf-8'))}
+        if name in self.private:
+            return {'name': name, 'data_kind': 'PRIVATE', 'comparison': json.loads(self.private[name].read_text(encoding='utf-8'))}
+        raise Refused('COMPARISON_UNKNOWN')
 
     def _save(self, req, rid):
         config, preview_id = _config(req.get('config')), req.get('preview_id')
@@ -215,7 +293,11 @@ def answer(bridge, line):
 
 
 def main():
-    bridge = Bridge()
+    try:
+        bridge = Bridge()
+    except (Refused, OSError, ValueError) as exc:
+        sys.stderr.write('PRIVATE_COMPARISONS_REFUSED ' + (str(exc) if isinstance(exc, Refused) else type(exc).__name__) + '\n')
+        return 2
     for line in sys.stdin:
         if not line.strip():
             continue

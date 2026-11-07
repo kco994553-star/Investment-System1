@@ -52,12 +52,23 @@ def run(job,output,synthetic=False):
         for cid,candidate in comparison_configs().items():
             result=preview_qgv(candidate,snapshot,cid)
             comparisons.append(compare_previews(preview,result,cid))
+    axis_comparison=None
+    if job.get('axis_comparison'):
+        from investment_system.research.sector_qgv_partial import assert_retained_preview,compare_axes
+        spec=job['axis_comparison']
+        retained=json.loads(checked_bytes(spec['before_preview']))
+        before_config=spec.get('before_config',default_config())
+        reference_snapshot=json.loads(checked_bytes(spec['before_snapshot'])) if spec.get('input_treatment') else snapshot
+        assert_retained_preview(retained,reference_snapshot,before_config)
+        axis_comparison=compare_axes(retained,preview,before_config,config,spec['comparison_id'],
+                                     input_treatment=spec.get('input_treatment',False))
     baseline=json.loads(checked_bytes(job['official_baseline_coverage'])) if job.get('official_baseline_coverage') else None
     artifacts={'preview.json':preview,'saved-config.json':saved,'snapshot.json':snapshot,
         'catalog.json':list_factors(config,'INFORMATION_TECHNOLOGY','GENERAL'),
         'comparisons.json':comparisons,'connection-audit.json':audit,
         'official-baseline-reference.json':baseline}
     if main_response:artifacts['main-response.json']=main_response
+    if axis_comparison:artifacts['axis-comparison.json']=axis_comparison
     output.mkdir(parents=True,mode=0o700)
     manifest={'schema_version':'sector-qgv-run/1','data_kind':job.get('data_kind','PRIVATE'),
               'request_id':job['request_id'],'input_job':job,'files':[]}

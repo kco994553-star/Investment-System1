@@ -136,3 +136,23 @@ Private final resume location: `/workspace/private-sector-qgv-classified-2026110
 initial `run/` is superseded and excluded from remote handoff. Aggregate before/
 after counts, job, source references, raw-preservation audit and manifest are
 saved alongside it. Actual company inputs/results are not repository fixtures.
+
+## 2026-11-07 partial comparison and additive source correspondence
+
+Reference aa9c4484 results are reused, not recalculated. D1 settings comparison
+and independent I1 classification treatment are specified in
+[PARTIAL_COMPARISON.md](PARTIAL_COMPARISON.md). Retained 504-row financial matrix,
+gate input and previous351 mappings are unchanged. Independent read-only review
+checked the49 affected Q deltas using0.2×(ROA−margin), G/gate invariance and
+new14-source linkage. Q/G after classification is213/293; V/joint/total0 computed
+rows, performance unmeasured.
+
+Affected checks: `test_sector_qgv_partial.py` (4), new classification addendum
+regression (1), existing partial-classification integration (1); all passed.
+The counter contract now explicitly includes0 gains/losses. The final run also
+executes the28 static private-boundary checks because new public fixtures were
+added. It does not repeat the old whole-sector test/real calculation audit.
+
+Main CI-list request: add `tests/test_sector_qgv_partial.py`. New fixtures are
+synthetic20-company rows; real company comparisons, source evidence, input gaps
+and targeted policy audit are only in the approved private handoff.

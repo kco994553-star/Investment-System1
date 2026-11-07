@@ -17,6 +17,7 @@ import pytest
 
 from investment_system.research import sector_qgv as engine
 from investment_system.research import sector_qgv_main as main_bridge
+from investment_system.research import sector_qgv_partial as partial
 
 ROOT = Path(__file__).resolve().parents[1]
 TOOL = ROOT / 'tools' / 'sector_qgv_engine_bridge.py'
@@ -87,6 +88,9 @@ def test_preview_is_the_engine_preview_compare_and_save():
                                                   'before_config': c, 'after_config': edited})
     assert (out['before'], out['after'], out['comparison'], out['saved']) == (main['before'], main['after'], main['diff'], main['saved_config'])
     assert out['bridge_version'] == main['bridge_version']
+    # The Q/G partial comparison is Codex's compare_axes of the same two previews and configs (#505 7c2225a3).
+    assert out['axis'] == partial.compare_axes(before, after, main['before_config'], main['after_config'], 'p-1')
+    assert out['axis']['schema_version'] == 'sector-qgv-axis-comparison/1' and out['axis']['rank'] is None
     # Codex's published synthetic preview is reproduced through the route (default config, request id synthetic-normal).
     again = ask(bridge.Bridge(), req('preview', 'synthetic-normal', config=c, before_config=c, input_id='NORMAL'))
     assert again['after'] == json.loads((FIX / 'synthetic-preview.json').read_text())
@@ -152,3 +156,51 @@ def test_stdio_one_answer_per_line_in_order_and_nothing_on_stderr():
     assert run.returncode == 0 and run.stderr == ''
     out = [json.loads(x) for x in run.stdout.splitlines()]
     assert [x['request_id'] for x in out] == ['a-1', None, 'a-2'] and [x['ok'] for x in out] == [True, False, True]
+
+
+def test_partial_comparison_files_are_listed_and_returned_unchanged(tmp_path):
+    b = bridge.Bridge(env={})
+    listed = ask(b, req('comparisons'))
+    assert listed['ok'] and [x['name'] for x in listed['comparisons']] == ['PARTIAL_SYNTHETIC', 'MAIN_SYNTHETIC_I1']
+    raw = (FIX / 'partial-synthetic-comparison.json').read_bytes()
+    one = ask(b, req('comparison', name='PARTIAL_SYNTHETIC'))
+    assert one['data_kind'] == 'SYNTHETIC' and one['comparison'] == json.loads(raw)
+    assert ask(b, req('comparison', name='/etc/passwd'))['code'] == 'COMPARISON_UNKNOWN'
+    assert ask(b, req('comparison', name='SQGV-20261107-D1'))['code'] == 'COMPARISON_UNKNOWN', 'private names exist only when started with them'
+
+
+def test_private_comparisons_only_from_the_process_environment(tmp_path):
+    import os
+    good = json.loads((FIX / 'partial-synthetic-comparison.json').read_text())
+    good['comparison_id'] = 'PRIVATE-D1'
+    f = tmp_path / 'axis-comparison.json'
+    f.write_text(json.dumps(good)); f.chmod(0o600)
+    b = bridge.Bridge(env={'SECTOR_QGV_PRIVATE_COMPARISONS': str(f)})
+    listed = ask(b, req('comparisons'))['comparisons']
+    assert [(x['name'], x['data_kind']) for x in listed] == [('PARTIAL_SYNTHETIC', 'SYNTHETIC'), ('MAIN_SYNTHETIC_I1', 'SYNTHETIC'), ('PRIVATE-D1', 'PRIVATE')]
+    assert ask(b, req('comparison', name='PRIVATE-D1'))['comparison'] == good
+    f.chmod(0o644)
+    with pytest.raises(bridge.Refused, match='PRIVATE_FILE_REFUSED'):
+        bridge.Bridge(env={'SECTOR_QGV_PRIVATE_COMPARISONS': str(f)})
+    f.chmod(0o600)
+    with pytest.raises(bridge.Refused, match='PRIVATE_PATH_NOT_ABSOLUTE'):
+        bridge.Bridge(env={'SECTOR_QGV_PRIVATE_COMPARISONS': 'axis-comparison.json'})
+    with pytest.raises(bridge.Refused, match='PRIVATE_INSIDE_GIT_CHECKOUT'):
+        inside = FIX / 'partial-synthetic-comparison.json'
+        mode = inside.stat().st_mode
+        try:
+            inside.chmod(0o600); bridge.Bridge(env={'SECTOR_QGV_PRIVATE_COMPARISONS': str(inside)})
+        finally:
+            inside.chmod(mode & 0o777)
+    other = dict(good, schema_version='sector-qgv-preview/1'); g = tmp_path / 'x.json'; g.write_text(json.dumps(other)); g.chmod(0o600)
+    with pytest.raises(bridge.Refused, match='PRIVATE_NOT_AXIS_COMPARISON'):
+        bridge.Bridge(env={'SECTOR_QGV_PRIVATE_COMPARISONS': str(g)})
+    assert os.pathsep not in str(f)
+
+
+def test_main_synthetic_i1_is_codex_compare_axes_output():
+    r = subprocess.run([sys.executable, str(ROOT / 'tools' / 'sector_qgv_axis_main_variants.py'), '--check'], capture_output=True, text=True, cwd=ROOT)
+    assert r.returncode == 0, r.stdout + r.stderr
+    one = ask(bridge.Bridge(env={}), req('comparison', name='MAIN_SYNTHETIC_I1'))['comparison']
+    assert one['treatment'] == 'INPUT_CLASSIFICATION' and one['before_identity']['config_hash'] == one['after_identity']['config_hash']
+    assert one['axes']['Q']['GAINED'] == 20 and one['rank'] is None

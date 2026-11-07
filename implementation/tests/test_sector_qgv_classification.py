@@ -128,3 +128,21 @@ def test_gate_replay_clock_is_not_a_new_input_or_cache_identity():
     second=official_q_gate(companies,as_of=ASOF,source_sha256='a'*64,calc_version='qgv2-calc/2026-10-23.1')
     assert first==second
     assert all('computed_at' not in r for r in first.values())
+
+
+def test_addendum_connects_exact_activity_without_touching_previous_inputs():
+    from investment_system.research.sector_qgv_classification import extend_held_classification
+    s={'as_of':ASOF,'valuation_date':'2026-11-04','snapshot_id':'old','members':['A','B','C'],
+       'rows':[{'company_id':'A','issuer_id':'0000000001','source_sic':'2070','source_profile':'GENERAL',
+                'reasons':['EXACT_SIC_CORRESPONDENCE_NOT_REVIEWED'],'mapping':None,'observations':{'kept':1},'gate':{'kept':2}},
+               {'company_id':'B','mapping':{'original':True},'observations':{},'gate':None},
+               {'company_id':'C','source_sic':'6798','mapping':None,'reasons':['REIT_ACCOUNTING_AND_BOOK_SECTOR_UNRESOLVED']}]}
+    original=copy.deepcopy(s)
+    linked,audit=extend_held_classification(s,{'A':evidence('2070','Fats & Oils')})
+    assert s==original and audit['newly_mapped']==1
+    assert linked['rows'][0]['sector_id']=='CONSUMER_STAPLES'
+    assert linked['rows'][0]['observations']=={'kept':1} and linked['rows'][0]['gate']=={'kept':2}
+    assert linked['rows'][1:]==s['rows'][1:] and linked['members']==s['members']
+    assert classify(evidence('2070','Fats & Oils'),as_of=ASOF,expected_issuer='0000000001',expected_sic='2070',source_profile='GENERAL')['mapping'] is None
+    for e in [evidence('2070','Wrong activity'),dict(evidence('2070','Fats & Oils'),acquired_at='2026-11-05T00:00:00Z')]:
+        assert extend_held_classification(s,{'A':e})[1]['newly_mapped']==0
