@@ -82,7 +82,7 @@ function fill(route,{body}){
   const status=h('p',{class:'sk status-line',dataset:{sqEngine:vs.engine_version}},'모델 ',vs.model_version,' · 엔진 ',vs.engine_version,' · 정규화 ',vs.normalization_version,' · 분류 ',vs.mapping_version,' · 계산 Codex 공통 엔진');
   const gate=h('p',{class:'reason',dataset:{sqGatePolicy:c.gate.policy}},'관문 ',c.gate.policy,' · 공식 Q 업종 분위 ',String(c.gate.value_excluded_at_or_below),' 이하이면 V 제외 · 공식 분위가 없으면 판정 불가(최종 점수·순위 없음) · 관문은 엔진이 판정');
   const store=h('p',{class:'reason',dataset:{sqStorage:'DEVICE'}},'내 설정은 이 기기(이 브라우저)에만 저장 · 다른 기기와 동기화 안 됨 · 백업 파일에 들어가지 않음');
-  const initial=h('p',{class:'reason',dataset:{sqInitial:''}},'기본값 · 초기 설정 = 비교검증으로 조정할 시작값 · 성과 검증 완료가 아님 · 린치 유형 태그는 점수에 영향 없음 · 공식 QGV(1.1)는 그대로');
+  const initial=h('p',{class:'reason',dataset:{sqInitial:''}},'기본값 · 초기 설정 = 비교검증으로 조정할 시작값 · 성과 검증 완료가 아님 · 기업 유형 태그는 점수에 영향 없음 · 공식 QGV(1.1)는 그대로');
   const notes=[];
   if(V.savedState==='BASE_DIFFERS')notes.push(h('p',{class:'hand err',dataset:{sqSaved:'BASE_DIFFERS'}},'저장한 설정의 기준('+V.saved.config.base_preset_id+')이 지금 엔진 기본값('+vs.model_version+')과 다름 · 자동으로 바꾸지 않음 · 지금은 기본값으로 편집'));
   if(V.savedState==='INVALID')notes.push(h('p',{class:'hand err',dataset:{sqSaved:'INVALID'}},'이 기기의 저장 설정을 읽을 수 없음 · 덮어쓰지 않음',
