@@ -111,3 +111,14 @@ One independent review found three boundary defects; RED→GREEN regressions now
 reject two missing/invalid symbols as identity proof, manifests written after the
 input vintage, and final-session absence inferred from preclose acquisition.
 No real price calculation was run and no deferred review finding remains.
+
+## Main pure helper dependency (2026-11-07 continuation)
+
+Codex consumer now imports `MAX_PRICE_E4`, `session_ns`, `valid_symbol` from
+`providers.iex_values`, supplied unchanged by Main #508 at
+`df1a9abb8c72ee57a7f7a50011bb0dbf9ffb116f`. The exact Main commit is retained
+as a dependency; its provider/guard files are Main-authored, not a Codex guard
+relaxation. #504 still builds on #499. Integrate #508 before the #504 consumer.
+Only the offline converter import changed. The previous producer-byte/contract
+verification is reused. Actual financial11 prices/manifest are still pending;
+no acquisition, raw ratio calculation or adoption success is claimed.

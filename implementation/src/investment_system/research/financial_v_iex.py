@@ -5,7 +5,7 @@ import hashlib
 import json
 import re
 
-from investment_system.providers.iex_hist import MAX_PRICE_E4, session_ns, valid_symbol
+from investment_system.providers.iex_values import MAX_PRICE_E4, session_ns, valid_symbol
 from investment_system.research.financial_v_bridge import _capture, _quote_time_faults
 
 VERSION = 'financial-v-iex-adapter/1'
