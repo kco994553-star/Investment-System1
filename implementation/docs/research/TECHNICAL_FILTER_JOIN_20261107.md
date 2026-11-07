@@ -91,18 +91,30 @@ DC-42에 따른 연구·자료 구현이다. 화면·가드·CI 목록·워크�
 3. Python 어댑터를 서버에서 호출하거나 동일 계약을 Main의 순수 JS 결합기에 적용할 수 있다.
    소비자 시험은 이번 `inputs.json`/`expectations.json`을 그대로 읽어 위 실패를 확인한다.
    화면 미연결 시 현재 표를 기술 필터 적용 성공으로 표시하지 않는다.
-4. 신규 연구 시험 `tests/research/test_technical_filter_join.py`의 적절한 CI 목록 등록은 Main 담당이다.
+4. 신규 연구 시험 `tests/research/test_technical_filter_join.py`는 기존
+   `.github/workflows/cockpit-pages.yml`의 `Full Python unit suite`
+   (`PYTHONPATH=src python -m pytest -q --tb=short -p no:cacheprovider tests`)에서 자동 발견한다.
+   별도 CI 목록 등록·워크플로·가드 변경은 필요 없다.
    #497의 성질 시험 의존성과 기존 성공시험은 이번에 반복하지 않았다.
 
 현재 Main 화면은 이 계약을 아직 소비하지 않는다. UI 완료·실자료 연결 완료로 계산하지 않는다.
 
 ## 실행과 한계
 
-실행 명령(이 환경에 이미 설치된 pytest 사용):
+일반 재현 명령(저장소 루트에서 실행):
 
 ```sh
-PYTHONPATH=implementation/src:/workspace/scratch/technical-leaderboard-test-deps python -m pytest -q implementation/tests/research/test_technical_filter_join.py
+PYTHONPATH=implementation/src python -m pytest -q implementation/tests/research/test_technical_filter_join.py
 ```
+
+Python과 시험 의존성은 저장소 `.github/workflows/cockpit-pages.yml`의 설치 절차를 따른다
+(현재 Python 3.12, `pytest==9.1.1`, `jsonschema==4.26.0`). 새 fixture를 기존 Main 판독기에
+직접 넣는 시험은 `node` 명령도 사용한다. 이 변경에서 새 의존성은 추가하지 않았다.
+
+당시 실행 환경에는 pytest 8.4.2가 이미
+`/workspace/scratch/technical-leaderboard-test-deps`에 설치돼 있어 위 명령의 `PYTHONPATH`에
+그 경로를 덧붙여 사용했다. 이는 기존 설치를 재사용한 당시 환경 기록이며,
+다른 세션에서 그 경로를 만들거나 같은 위치에 설치할 필요는 없다.
 
 결과: 신규 시험 **13 passed**. 공개 합성 시나리오 11개, 추가 실패 경계 10개,
 과거 매핑이 평가일의 신원을 덮어쓰지 않음과 기존 Main `techScreen.validate/evaluate`로
