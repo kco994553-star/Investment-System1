@@ -93,7 +93,7 @@ def join_filtered_rows(board, *, qgv_rows, security_links, conditions, data_kind
         if _day(row.get('signal_day')) != signal:
             raise ValueError('SIGNAL_DAY_MISMATCH')
         sid = _text(row.get('security_id'), 'PERMANENT_SECURITY_ID_REQUIRED')
-        if sid in (row.get('id'), row.get('ticker'), row.get('code')):
+        if sid in (row.get('id'), row.get('issuer_id'), row.get('ticker'), row.get('code')):
             raise ValueError('ISSUER_OR_TICKER_IS_NOT_SECURITY_ID')
         key = (signal, sid)
         if key in seen:
@@ -111,7 +111,10 @@ def join_filtered_rows(board, *, qgv_rows, security_links, conditions, data_kind
         series, symbol = securities[sid]
         if link['series_id'] != series:
             raise ValueError('SERIES_LINK_MISMATCH')
-        if row.get('id') != link['issuer_id']:
+        # New common records retain the original company code as id and carry
+        # issuer_id separately. Absence (not an explicit null) preserves /1.
+        issuer = row['issuer_id'] if 'issuer_id' in row else row.get('id')
+        if issuer != link['issuer_id']:
             raise ValueError('ISSUER_LINK_MISMATCH')
         if row.get('ticker') != link['symbol'] or symbol not in (None, link['symbol']):
             raise ValueError('SYMBOL_LINK_MISMATCH')
