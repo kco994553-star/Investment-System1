@@ -23,6 +23,7 @@ from urllib.request import HTTPRedirectHandler, Request, build_opener
 from xml.etree import ElementTree
 
 from ..product.news_signals import IR_FEEDS, MATCH, QUERY_DAYS
+from ..request_limits import retry_after_seconds, MAX_BODY_BYTES
 
 GDELT_API = 'https://api.gdeltproject.org/api/v2/doc/doc'
 GDELT_MIN_INTERVAL = 5.5  # GDELT asks for at most one request every 5 seconds
@@ -32,7 +33,6 @@ GDELT_REQUEST_BUDGET = 40
 IR_MIN_INTERVAL = 1.0
 IR_REQUEST_BUDGET = 20
 IR_KEEP_PER_FEED = 20
-MAX_BODY_BYTES = 1024 * 1024
 REQUEST_TIMEOUT = 30
 MAX_ATTEMPTS = 2
 RETRY_WAIT = 10.0
@@ -55,20 +55,6 @@ class NewsResponse:
     retry_after: str | None = field(default=None, repr=False)  # raw Retry-After header of an error response
 
 
-def retry_after_seconds(value, now):
-    """Retry-After (delta-seconds or HTTP-date) -> seconds >= 0 from `now`, or None when absent or unreadable."""
-    if not isinstance(value, str) or not value.strip() or len(value) > 64:
-        return None
-    text = value.strip()
-    if text.isascii() and text.isdigit():
-        return float(int(text))
-    try:
-        moment = parsedate_to_datetime(text)
-    except (TypeError, ValueError, IndexError):
-        return None
-    if moment is None or moment.utcoffset() is None or not isinstance(now, datetime) or now.utcoffset() is None:
-        return None
-    return max(0.0, (moment - now).total_seconds())
 
 
 class _RejectRedirects(HTTPRedirectHandler):

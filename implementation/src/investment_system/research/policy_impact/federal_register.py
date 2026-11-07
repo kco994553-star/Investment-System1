@@ -11,8 +11,7 @@ import json
 import re
 from datetime import date,datetime,timedelta,timezone
 from urllib.parse import urlencode
-from investment_system.providers.dart_collection import CallBudget
-from investment_system.providers.news_feeds import retry_after_seconds,MAX_BODY_BYTES
+from investment_system.request_limits import retry_after_seconds,MAX_BODY_BYTES
 from .build import collection_outcome,retain_good
 
 VERSION='policy-fr-replay/1'
@@ -140,14 +139,14 @@ def _advance(state):
 
 
 def replay(state,responses,*,through,now,settings=None,last_good=None):
-    c=settings or DEFAULTS;config(c);s=copy.deepcopy(state);budget=CallBudget(c['max_requests']);at=instant(now)
+    c=settings or DEFAULTS;config(c);s=copy.deepcopy(state);used=0;at=instant(now)
     if s.get('schema_version')!=VERSION:raise ValueError('FR_STATE_VERSION')
     results=[];changes={'NEW_DOCUMENT':0,'CONTENT_CHANGED':0,'DUPLICATE':0,'OLDER_RESPONSE':0}
     if s.get('retry_at') and at<instant(s['retry_at']):
         return {'state':s,'attempts':[],'changes':changes,'next_plan':plan(s,through,now,c),'retained_good':last_good,'actual_http_requests':0}
     for response in responses:
-        if budget.used>=c['max_requests']:results.append({'result':'INCOMPLETE','reason':'REQUEST_BUDGET','checkpoint_advance':False});break
-        budget.spend();req=response['request'];acquired=response['acquired_at']
+        if used>=c['max_requests']:results.append({'result':'INCOMPLETE','reason':'REQUEST_BUDGET','checkpoint_advance':False});break
+        used+=1;req=response['request'];acquired=response['acquired_at']
         if instant(acquired)>at:raise ValueError('FR_ACQUISITION_AFTER_REPLAY')
         supplied=response.get('body');body=json.dumps(supplied,sort_keys=True,ensure_ascii=False).encode() if not isinstance(supplied,str) else supplied.encode()
         if s['data_kind']=='RETAINED_API' and not isinstance(supplied,str):raise ValueError('FR_ORIGINAL_RESPONSE_TEXT_REQUIRED')
@@ -222,7 +221,7 @@ def replay(state,responses,*,through,now,settings=None,last_good=None):
     failure=next((r for r in results if r['result']=='FAILED' or r['result']=='INCOMPLETE' and r.get('reason')!='PAGE_OR_REQUEST_LIMIT'),None)
     if failure is None and (any(not r['complete'] for r in s['ranges'].values()) or s.get('split_ranges')):failure={'result':'INCOMPLETE','reason':'PAGES_PENDING'}
     s['result']=failure['result'] if failure else 'UPDATED' if changes['NEW_DOCUMENT'] or changes['CONTENT_CHANGED'] else 'NO_NEW_ITEMS' if results else 'NOT_RUN'
-    s['attempts'].append({'at':now,'result':s['result'],'response_count':budget.used,'changes':changes})
+    s['attempts'].append({'at':now,'result':s['result'],'response_count':used,'changes':changes})
     retained=retain_good(last_good,{'result':s['result'],'at':now,'incomplete_ranges':[r for r in s['ranges'].values() if not r['complete']]}) if last_good and failure else copy.deepcopy(last_good)
     return {'state':s,'attempts':results,'changes':changes,'next_plan':plan(s,through,now,c),'retained_good':retained,
             'actual_http_requests':0,'compatibility':'SYNTHETIC_ONLY' if s['data_kind']=='SYNTHETIC' else 'RETAINED_RESPONSE_REPLAY_NOT_LIVE_API'}
