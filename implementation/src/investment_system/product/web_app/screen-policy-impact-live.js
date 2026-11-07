@@ -40,15 +40,19 @@ const chip=(txt,data,cls='chip')=>h('span',{class:cls,dataset:data||{}},txt);
 // The company list is awaited with it (no new file: the search list's own), so company links resolve on a direct visit.
 // The navigation sidecar is optional: not published -> the file's own titles and no 5.2 links (NONE); refused -> the same, with
 // its code (INVALID); it never changes a policy fact, a status or an evidence list.
-async function readNav(viewJson,delivery){const name=P().DELIVERY[delivery].nav;let n=null;try{n=await I.data.static(name);}catch(_){n=null;}
+async function readNav(record,delivery){const name=P().DELIVERY[delivery].nav;let n=null;try{n=await I.data.static(name);}catch(_){n=null;}
  if(n===null){let st=null;try{st=I.data.state(name);}catch(_){st=null;}return {state:st&&st.state==='NOT_PUBLISHED'?'NONE':'FAILED',index:P().navIndex(null)};}
- const r=await P().validateNavigation(n,viewJson);return r.ok?{state:'OK',index:P().navIndex(r.value)}:{state:'INVALID',code:r.code,path:r.path,index:P().navIndex(null)};}
+ const r=await P().validateNavigation(n,record);return r.ok?{state:'OK',index:P().navIndex(r.value)}:{state:'INVALID',code:r.code,path:r.path,index:P().navIndex(null)};}
 // The public file first; only when it is not published, the development-only private name (never allowed on Pages). Each file
-// is read as its own delivery path; neither is ever read as the other.
+// is read as its own delivery path; neither is ever read as the other. The file comes as its delivered bytes (IS2.data.static);
+// decodeView checks and reads those same bytes, and the navigation sidecar is checked against that record (navigation/2: the
+// byte hash; /1: the canonical digest as before).
 async function readOne(delivery){const name=P().DELIVERY[delivery].file;let v=null;try{v=await I.data.static(name);}catch(_){v=null;}
  if(v===null){let st=null;try{st=I.data.state(name);}catch(_){st=null;}return st&&st.state==='NOT_PUBLISHED'?{state:'NONE'}:{state:'FAILED',text:st&&st.text||'읽기 실패'};}
- const r=P().validate(v,{delivery});if(!r.ok)return {state:'INVALID',code:r.code,path:r.path,delivery};
- const nav=await readNav(r.value,delivery);const vw=P().view(r.value);vw.nav=nav.index;vw.navState=nav;return {state:'OK',view:vw};}
+ const d=v&&v.kind==='DELIVERED_BYTES'?await P().decodeView(v.copy()):{ok:false,code:'VIEW_BYTES_REQUIRED',path:'$'};
+ if(!d.ok)return {state:'INVALID',code:d.code,path:d.path,delivery};
+ const r=P().validate(d.value.json,{delivery});if(!r.ok)return {state:'INVALID',code:r.code,path:r.path,delivery};
+ const nav=await readNav(d.value,delivery);const vw=P().view(r.value);vw.nav=nav.index;vw.navState=nav;return {state:'OK',view:vw};}
 async function load(){const ready=I.companies&&I.companies.ready?I.companies.ready().catch(()=>null):null;
  let res=await readOne('PUBLIC');if(res.state==='NONE')res=await readOne('PRIVATE_DEV');await ready;return res;}
 const titleOf=(vw,r)=>P().titleOf(r,vw.nav);

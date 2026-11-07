@@ -23,6 +23,9 @@
 // navigation sidecar policy-impact-navigation/1 (NAV_FILE) is bound to the exact view by base_view_hash.
 const PUBLIC_VIEW='policy-impact-view/2',PRIVATE_VIEW='policy-impact-view/1',VIEW_SCHEMA=PUBLIC_VIEW,VIEW_SCHEMAS=Object.freeze([PRIVATE_VIEW,PUBLIC_VIEW]);
 const SCHEMA='policy-impact/1',FILE='policy-impact.json',NAV_FILE='policy-impact-navigation.json',NAV_SCHEMA='policy-impact-navigation/1';
+// Codex #512 (37cef584, owner 2026-11-07 3rd): navigation/2 binds to the SHA-256 of the exact delivered view file bytes
+// (SHA256_VIEW_UTF8_BYTES_V1), never a re-serialization. /1 (canonical-object digest) is kept as it was, explicitly.
+const NAV_SCHEMA_V2='policy-impact-navigation/2',NAV_SCHEMAS=Object.freeze([NAV_SCHEMA,NAV_SCHEMA_V2]),NAV_HASH_V2='SHA256_VIEW_UTF8_BYTES_V1';
 // Delivery paths (owner 2026-11-07 ARGON_05): the path a file came by fixes the one view version it may carry. PUBLIC = the Pages
 // files (Codex public projection, view/2); PRIVATE_DEV = the development-only private names (Codex private output, view/1),
 // which the Pages guard never allows. A version is never read as another, and never as a publication permission: public
@@ -259,9 +262,30 @@ function canon(v){if(v===null)return 'null';if(typeof v==='boolean')return v?'tr
  if(typeof v==='string')return JSON.stringify(v);if(typeof v==='number')fail('NAV_HASH_NUMBER','$');
  if(Array.isArray(v))return '['+v.map(canon).join(',')+']';
  if(object(v))return '{'+Object.keys(v).sort().map(k=>JSON.stringify(k)+':'+canon(v[k])).join(',')+'}';fail('TYPE','$');}
-async function sha256Hex(str){const c=globalThis.crypto;if(!c||!c.subtle)fail('NAV_HASH_UNAVAILABLE','$');
- const d=new Uint8Array(await c.subtle.digest('SHA-256',new TextEncoder().encode(str)));return Array.from(d,b=>b.toString(16).padStart(2,'0')).join('');}
-function checkNav(n,viewJson){const N='$';keys(n,KEYS.nav,N);need(n.schema_version===NAV_SCHEMA,'NAV_VERSION',N+'.schema_version');
+async function sha256Bytes(bytes){const c=globalThis.crypto;if(!c||!c.subtle)fail('NAV_HASH_UNAVAILABLE','$');
+ const d=new Uint8Array(await c.subtle.digest('SHA-256',bytes));return Array.from(d,b=>b.toString(16).padStart(2,'0')).join('');}
+const sha256Hex=str=>sha256Bytes(new TextEncoder().encode(str));
+// ---- the delivered view bytes (navigation/2). decodeView(bytes): the file exactly as received -> a view record {json,
+// sha256, byteLength}: strict UTF-8 (no BOM, no invalid sequence), then those same bytes parsed as JSON, refusing what Codex's
+// reader refuses (a duplicate key in any object, a number that is not finite); sha256 is over the same bytes. Only a record
+// made here can carry a navigation/2 sidecar. Resolves {ok, value} or {ok:false, code, path}.
+const RECORDS=new WeakSet();
+function noDuplicateKeys(text){const stack=[];let i=0;const n=text.length;
+ while(i<n){const ch=text[i];
+  if(ch==='"'){let j=i+1;while(j<n&&text[j]!=='"'){if(text[j]==='\\')j++;j++;}const raw=text.slice(i,j+1),top=stack[stack.length-1];
+   if(top&&top.obj&&top.expectKey){const key=JSON.parse(raw);need(!top.keys.has(key),'VIEW_DUPLICATE_KEY','$');top.keys.add(key);top.expectKey=false;}
+   i=j+1;continue;}
+  if(ch==='{')stack.push({obj:true,keys:new Set(),expectKey:true});else if(ch==='[')stack.push({obj:false});
+  else if(ch==='}'||ch===']')stack.pop();else if(ch===','){const top=stack[stack.length-1];if(top&&top.obj)top.expectKey=true;}
+  i++;}}
+function finiteNumbers(v){if(typeof v==='number')need(Number.isFinite(v),'VIEW_NUMBER','$');else if(Array.isArray(v))v.forEach(finiteNumbers);else if(object(v))Object.values(v).forEach(finiteNumbers);}
+async function decodeView(bytes){try{need(bytes instanceof Uint8Array,'VIEW_BYTES_REQUIRED','$');
+  let text;try{text=new TextDecoder('utf-8',{fatal:true,ignoreBOM:true}).decode(bytes);}catch(_){fail('VIEW_UTF8','$');}
+  need(text.charCodeAt(0)!==0xFEFF,'VIEW_BOM','$');let json;try{json=JSON.parse(text);}catch(_){fail('VIEW_JSON','$');}
+  need(object(json),'VIEW_JSON','$');noDuplicateKeys(text);finiteNumbers(json);
+  const rec=Object.freeze({json,sha256:await sha256Bytes(bytes),byteLength:bytes.byteLength});RECORDS.add(rec);return {ok:true,value:rec};}
+ catch(e){if(e instanceof Fault)return {ok:false,code:e.code,path:e.path};return {ok:false,code:'VIEW_JSON',path:'$'};}}
+function checkNav(n,viewJson,v2){const N='$';keys(n,v2?[...KEYS.nav,'hash_algorithm']:KEYS.nav,N);need(n.schema_version===(v2?NAV_SCHEMA_V2:NAV_SCHEMA),'NAV_VERSION',N+'.schema_version');
  en(n.data_kind,'data_kind',N+'.data_kind');need(n.data_kind===viewJson.bundle.data_kind,'MIXED_KIND',N+'.data_kind');
  need(typeof n.base_view_hash==='string'&&/^[0-9a-f]{64}$/.test(n.base_view_hash),'HASH',N+'.base_view_hash');utc(n.as_of,N+'.as_of');
  need(n.policy_evidence_effect==='NONE','NAV_EVIDENCE_EFFECT',N+'.policy_evidence_effect');need(n.automatic_publication===false,'NAV_AUTO_PUBLICATION',N+'.automatic_publication');
@@ -290,10 +314,18 @@ function checkNav(n,viewJson){const N='$';keys(n,KEYS.nav,N);need(n.schema_versi
   need(l.policy_application==='NOT_ASSESSED','NOT_POLICY_EVIDENCE',p+'.policy_application');
   need(pol.has(kpair(l.policy_id,l.policy_revision_id))&&viewJson.current_policy_revisions[l.policy_id]===l.policy_revision_id,'NAV_POLICY_REF',p);
   const k=l.news_ref.link+'\u0000'+l.news_ref.company_id+'\u0000'+kpair(l.policy_id,l.policy_revision_id);need(!pairs.has(k),'DUPLICATE_NEWS_LINK',p);pairs.add(k);});}
-// validateNavigation(nav, viewJson): viewJson is the policy file already accepted by validate(). Resolves {ok, value} or
-// {ok:false, code, path}; a refused sidecar is never partly used (the screen then shows the file's own titles, no links).
-async function validateNavigation(n,viewJson){try{checkNav(n,viewJson);const h=await sha256Hex(canon(viewJson));
-  need(h===n.base_view_hash,'BASE_VIEW_HASH','$.base_view_hash');return {ok:true,value:copyFreeze(n)};}
+// validateNavigation(nav, view): view is a record from decodeView whose json validate() accepted (or, for navigation/1 only,
+// that json itself). The sidecar's schema_version picks the rule explicitly, never a fallback: /1 the canonical-object digest
+// (a view holding a number: NAV_HASH_NUMBER, as before); /2 hash_algorithm SHA256_VIEW_UTF8_BYTES_V1 and base_view_hash =
+// the record's byte hash (a plain object: NAV_VIEW_BYTES_REQUIRED); anything else NAV_VERSION. Permission and schema checks
+// are the same for both. Resolves {ok, value} or {ok:false, code, path}; a refused sidecar is never partly used (the screen
+// then shows the file's own titles, no links).
+async function validateNavigation(n,view){try{const rec=RECORDS.has(view)?view:null,viewJson=rec?rec.json:view;
+  need(object(n)&&NAV_SCHEMAS.includes(n.schema_version),'NAV_VERSION','$.schema_version');
+  if(n.schema_version===NAV_SCHEMA_V2){need(rec!==null,'NAV_VIEW_BYTES_REQUIRED','$');checkNav(n,viewJson,true);
+   need(n.hash_algorithm===NAV_HASH_V2,'NAV_HASH_ALGORITHM','$.hash_algorithm');need(rec.sha256===n.base_view_hash,'BASE_VIEW_HASH','$.base_view_hash');}
+  else{checkNav(n,viewJson,false);const h=await sha256Hex(canon(viewJson));need(h===n.base_view_hash,'BASE_VIEW_HASH','$.base_view_hash');}
+  return {ok:true,value:copyFreeze(n)};}
  catch(e){if(e instanceof Fault)return {ok:false,code:e.code,path:e.path};return {ok:false,code:'INVALID',path:'$'};}}
 // navIndex: titles by policy revision; reviewed news links by article link (the 5.2 join is the exact link, never a title match).
 function navIndex(n){const titles=new Map(),news=new Map();if(!n)return {titles,news,count:0};
@@ -301,7 +333,7 @@ function navIndex(n){const titles=new Map(),news=new Map();if(!n)return {titles,
  for(const l of n.news_links){if(!news.has(l.news_ref.link))news.set(l.news_ref.link,[]);news.get(l.news_ref.link).push(l);}
  return {titles,news,count:n.news_links.length};}
 
-return Object.freeze({VIEW_SCHEMA,VIEW_SCHEMAS,PUBLIC_VIEW,PRIVATE_VIEW,DELIVERY,NAV_SCHEMA,NAV_FILE,SCHEMA,FILE,ENUMS:E,TYPE_TEXT,STATUS_TEXT,REVIEW_TEXT,STAGE_TEXT,EXPOSURE_TEXT,EVIDENCE_TEXT,APPLY_TEXT,EPI_TEXT,KIND_TEXT,VERIFY_TEXT,
+return Object.freeze({VIEW_SCHEMA,VIEW_SCHEMAS,PUBLIC_VIEW,PRIVATE_VIEW,DELIVERY,NAV_SCHEMA,NAV_SCHEMA_V2,NAV_SCHEMAS,NAV_HASH_V2,NAV_FILE,SCHEMA,FILE,ENUMS:E,TYPE_TEXT,STATUS_TEXT,REVIEW_TEXT,STAGE_TEXT,EXPOSURE_TEXT,EVIDENCE_TEXT,APPLY_TEXT,EPI_TEXT,KIND_TEXT,VERIFY_TEXT,
  WATCH_TEXT,AVAIL_TEXT,METHOD_TEXT,KIND_DATA_TEXT,REFRESH_TEXT,REASON_TEXT,
- text:t,availability,titleState,titleOf,canon,validateNavigation,navIndex,linkable,validate,view,source,reviewsOf,status,facets,list,get,forCompany,newsLinks});
+ text:t,availability,titleState,titleOf,canon,decodeView,validateNavigation,navIndex,linkable,validate,view,source,reviewsOf,status,facets,list,get,forCompany,newsLinks});
 });

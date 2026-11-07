@@ -209,5 +209,42 @@ ok('the reader is pure and decides nothing: no request, storage, clock, sort by 
   // the same text as Python json.dumps(sort_keys=True, ensure_ascii=False, separators=(',', ':')): {"a":{},"b":[true,null,"é\"\n"]}
   assert.equal(P.canon({ b: [true, null, 'é"\n'], a: {} }), '{"a":{},"b":[true,null,"é\\"\\n"]}');
   n++; console.log('PASS navigation sidecar: bound to the exact view by base_view_hash (JS digest = Codex digest), official / Korean titles apart, reviewed news links only, every fault refuses it whole');
+  // ---- navigation/2 (Codex #512 37cef584): bound to the SHA-256 of the exact delivered view bytes; /1 kept explicitly
+  const u8 = (b) => new Uint8Array(b), dec = async (b) => { const d = await P.decodeView(u8(b)); assert.equal(d.ok, true, JSON.stringify(d)); return d.value; };
+  const cases = X.nav2Cases(); assert.deepEqual(cases.map((c) => c.ratio), [0, 1, 0.125, 1e-7, 0, 1]);
+  for (const c of cases) {
+    const rec = await dec(c.viewBytes);
+    assert.equal(rec.sha256, c.viewSha256, c.name + ': the hash is over the delivered bytes'); assert.equal(rec.byteLength, c.viewBytes.length);
+    const v = P.validate(rec.json, { delivery: 'PUBLIC' }); assert.equal(v.ok, true, c.name + ' ' + JSON.stringify(v));
+    assert.equal(typeof rec.json.bundle.exposures[0].ratio.value, 'number', c.name + ': the number stays a number');
+    const q = await P.validateNavigation(c.navigation, rec); assert.equal(q.ok, true, c.name + ' ' + JSON.stringify(q));
+    const ix = P.navIndex(q.value); assert.equal(q.value.titles.length, c.expected.titles); assert.equal(ix.count, c.expected.news_links);
+    assert.equal(P.titleState(rec.json.bundle.policies[0], ix).state, 'OFFICIAL');
+    // /2 needs the byte record: the parsed object alone is refused (no re-serialized hash), whatever its content
+    await bad(c.navigation, rec.json, 'NAV_VIEW_BYTES_REQUIRED');
+    // the same view re-serialized or re-indented is other bytes: refused, never re-hashed to fit
+    for (const other of [JSON.stringify(rec.json), JSON.stringify(rec.json, null, 1) + '\n', c.viewBytes.toString('utf8').replace(/\n$/, '')]) {
+      const r2 = await dec(Buffer.from(other, 'utf8')); assert.notEqual(r2.sha256, c.viewSha256); await bad(c.navigation, r2, 'BASE_VIEW_HASH'); }
+    const n2 = (fn) => { const x = JSON.parse(JSON.stringify(c.navigation)); fn(x); return x; };
+    await bad(n2((x) => { x.hash_algorithm = 'SHA256_CANONICAL_JSON'; }), rec, 'NAV_HASH_ALGORITHM');
+    await bad(n2((x) => { delete x.hash_algorithm; }), rec, 'KEY_MISSING');
+    await bad(n2((x) => { x.schema_version = 'policy-impact-navigation/3'; }), rec, 'NAV_VERSION');
+    await bad(n2((x) => { x.titles[0].publication_permission = 'PRIVATE_ONLY'; }), rec, 'NAV_NOT_PUBLIC');
+    await bad(n2((x) => { x.news_links[0].evidence_effect = 'SUPPORTS'; }), rec, 'NOT_POLICY_EVIDENCE');
+    // the legacy /1 rule on the same numeric view: NAV_HASH_NUMBER, as before (never a guessed hash)
+    const legacy = n2((x) => { x.schema_version = 'policy-impact-navigation/1'; delete x.hash_algorithm; });
+    const l = await P.validateNavigation(legacy, rec); assert.equal(l.code, c.expected.legacy_reader, c.name);
+  }
+  // the decoder refuses what Codex's reader refuses, before any check
+  const code = async (bytes) => (await P.decodeView(bytes)).code, T = (s2) => new TextEncoder().encode(s2);
+  const base = cases[0].viewBytes.toString('utf8');
+  assert.equal(await code(T(base.replace('"schema_version": "policy-impact-view/2",', '"schema_version": "policy-impact-view/2", "schema_version": "policy-impact-view/2",'))), 'VIEW_DUPLICATE_KEY');
+  assert.equal(await code(T(base.replace(/"value": 0\b/, '"value": 1e400'))), 'VIEW_NUMBER');
+  assert.equal(await code(T('\ufeff' + base)), 'VIEW_BOM');
+  assert.equal(await code(u8([...cases[0].viewBytes.subarray(0, 20), 0xff, ...cases[0].viewBytes.subarray(20)])), 'VIEW_UTF8');
+  assert.equal(await code(T(base.slice(0, -10))), 'VIEW_JSON'); assert.equal(await code(T('[]')), 'VIEW_JSON'); assert.equal(await code(base), 'VIEW_BYTES_REQUIRED');
+  // a /1 sidecar still binds to its view (record or plain object), unchanged
+  const r1 = await P.validateNavigation(navv, await dec(Buffer.from(JSON.stringify(job.view)))); assert.equal(r1.ok, true, JSON.stringify(r1));
+  n++; console.log('PASS navigation/2: Codex 6 pairs (0, 1, 0.125, 1e-7, 0.0, 1.0) bound to the delivered bytes, 1 title + 1 news link each; re-serialized / re-indented / unbound / wrong algorithm / version 3 / permission refused; /1 kept (NAV_HASH_NUMBER on numbers); duplicate key, non-finite number, BOM, bad UTF-8 refused');
   console.log('ok ' + n + ' checks');
 })().catch((e) => { console.error(e); process.exitCode = 1; });

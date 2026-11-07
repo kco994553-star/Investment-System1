@@ -238,6 +238,58 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       await ctx.close();
     }
 
+    // ---------------- navigation/2 (Codex #512 37cef584): the six synthetic pairs served as their exact file bytes
+    phase = 'navigation/2';
+    {
+      const { ctx, page, seen } = await open(1440);
+      const bytes = (b) => ({ body: b, type: 'application/json' });
+      // this phase's own copy of the news file: its first article carries the pairs' reviewed link (reserved test domain), so the
+      // 5.2 join has something to meet; nothing else changes and the shared fixture is put back after
+      const NEWS2 = JSON.parse(JSON.stringify(NEWS));
+      NEWS2.items[0].link = 'https://example.org/synthetic-news';
+      s.fixture('news-signals.json', { json: NEWS2 });
+      const detail = async () => { await page.goto(s.base + '#/macro/policy/p0'); await page.reload(); await page.evaluate(() => window.IS2.ready);
+        await page.locator(B + ' [data-pol-detail="p0"], ' + B + ' [data-pol-state=INVALID]').first().waitFor(); };
+      for (const c of X.nav2Cases()) {
+        s.fixture(FILE, bytes(c.viewBytes)); s.fixture(NAV_FILE, bytes(c.navBytes));
+        await detail();
+        assert.equal(await text(page, B + ' .pol-detail-title'), 'Synthetic official policy title', c.name + ': the official title from navigation/2');
+        assert.ok((await text(page, B + ' [data-pol-title-ko]')).includes('합성 한국어 설명 제목') && (await text(page, B + ' [data-pol-title-ko]')).includes('공식 제목 아님'), c.name);
+        assert.ok((await text(page, B + ' [data-pol-identifier="p0"]')).includes('정책 식별자 p0'), c.name);
+        assert.equal(await page.locator(B + ' [data-pol-nav-state=INVALID]').count(), 0, c.name);
+        await page.goto(s.base + '#/news'); await page.reload(); await page.evaluate(() => window.IS2.ready);
+        await page.locator('[data-file="news-signals.json"][data-file-state=OK]').first().waitFor({ state: 'attached' });
+        await page.locator('[data-policy-news] [data-k=pol-news]').click(); await page.locator('[data-policy-news] [data-pol-news-hits]').waitFor();
+        assert.equal(await page.locator('[data-policy-news] [data-pol-news-hits]').getAttribute('data-pol-news-hits'), '1', c.name + ': one reviewed news link joined by its exact link');
+        assert.ok((await text(page, '[data-policy-news] [data-pol-news-link="p0"]')).includes('Synthetic official policy title'), c.name);
+      }
+      ok('navigation/2 in the browser: Codex 6 pairs (ratio 0, 1, 0.125, 1e-7, 0.0, 1.0) served as exact bytes -> official title / 한국어 설명 제목 (공식 아님) / 정책 식별자, and 5.2 → 4.5 one link each');
+      // tampering, each in the page: the sidecar refused (file titles, no links) or the whole view refused
+      const c = X.nav2Cases()[2], view = JSON.parse(c.viewBytes.toString('utf8')), nav = c.navigation, enc = (x) => Buffer.from(x, 'utf8');
+      const navState = async (code) => { await detail(); assert.ok((await text(page, B + ' [data-pol-nav-state=INVALID]')).includes(code), code);
+        assert.notEqual(await text(page, B + ' .pol-detail-title'), 'Synthetic official policy title', code + ': the sidecar title is not used'); };
+      const viewState = async (code) => { await detail(); await page.locator(B + ' [data-pol-state=INVALID]').waitFor(); assert.ok((await text(page, B)).includes(code), code); };
+      s.fixture(FILE, bytes(enc(JSON.stringify(view, null, 1) + '\n'))); await navState('BASE_VIEW_HASH');                  // same JSON, other bytes
+      s.fixture(FILE, { json: view }); await navState('BASE_VIEW_HASH');                                                    // re-serialized by the server
+      s.fixture(FILE, bytes(c.viewBytes)); s.fixture(NAV_FILE, { json: { ...nav, hash_algorithm: 'SHA256_CANONICAL_JSON' } }); await navState('NAV_HASH_ALGORITHM');
+      const legacy = { ...nav, schema_version: 'policy-impact-navigation/1' }; delete legacy.hash_algorithm;
+      s.fixture(NAV_FILE, { json: legacy }); await navState('NAV_HASH_NUMBER');                                             // /1 on a numeric view, as before
+      s.fixture(NAV_FILE, { json: { ...nav, base_view_hash: '0'.repeat(64) } }); await navState('BASE_VIEW_HASH');
+      s.fixture(NAV_FILE, bytes(c.navBytes));
+      const text0 = c.viewBytes.toString('utf8');
+      s.fixture(FILE, bytes(enc(text0.replace('"schema_version": "policy-impact-view/2",', '"schema_version": "policy-impact-view/2", "schema_version": "policy-impact-view/2",')))); await viewState('VIEW_DUPLICATE_KEY');
+      s.fixture(FILE, bytes(Buffer.concat([c.viewBytes.subarray(0, 20), Buffer.from([0xff]), c.viewBytes.subarray(20)]))); await viewState('VIEW_UTF8');
+      s.fixture(FILE, bytes(Buffer.concat([Buffer.from([0xef, 0xbb, 0xbf]), c.viewBytes]))); await viewState('VIEW_BOM');
+      s.fixture(FILE, bytes(enc(text0.replace(/"value": [0-9.e-]+/, '"value": 1e400')))); await viewState('VIEW_NUMBER');
+      // the retained /1 pair still works next to /2 (canonical digest; the view has no number)
+      s.fixture(FILE, { json: VAR.NAV.view }); s.fixture(NAV_FILE, { json: VAR.NAV.navigation }); await detail();
+      assert.equal(await text(page, B + ' .pol-detail-title'), 'Synthetic official policy title', 'navigation/1 kept');
+      assert.deepEqual(seen.outside, []); assert.deepEqual(seen.errors, []); assert.equal(await page.evaluate(() => window.__csp), 0);
+      s.fixture(FILE, null); s.fixture(NAV_FILE, null); s.fixture('news-signals.json', { json: NEWS });
+      await ctx.close();
+      ok('navigation/2 tampering refused in the page: re-indented / server re-serialized view (BASE_VIEW_HASH), wrong algorithm, /1 on a numeric view (NAV_HASH_NUMBER), wrong hash -> sidecar unused; duplicate key, bad UTF-8, BOM, 1e400 -> the whole view refused; /1 pair still bound');
+    }
+
     // ---------------- widths: 320 / 390 / 720 (= 1440 at 200 %) / 1440
     phase = 'widths';
     // A long unbreakable official-style title (the real file had one: an identifier-shaped title ran 18 px past 320) wraps in place.

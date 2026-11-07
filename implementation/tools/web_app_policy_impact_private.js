@@ -1,7 +1,8 @@
 'use strict';
 // 4.5 정책·지정학 on Codex's PRIVATE real output (owner 2026-11-07; #509 REAL_REVIEWED handoff), development only.
-//   [POLICY_IMPACT_PRIVATE_NAV=<abs path>] optional: Codex's private policy-impact-navigation/1 for that view (#509 c2ae92a0 handoff,
-//   same file rules); then the official / Korean titles are checked too.
+//   [POLICY_IMPACT_PRIVATE_NAV=<abs path>] optional: Codex's private policy-impact-navigation/1 (#509 c2ae92a0 handoff) or /2
+//   (#512 37cef584: bound to the view file's exact bytes) for that view, same file rules; then the official / Korean titles are
+//   checked too. The view file is read and served as its exact bytes (never re-serialized), as the page reads it.
 //   POLICY_IMPACT_PRIVATE_VIEW=<abs path> node implementation/tools/web_app_policy_impact_private.js serve
 //       → a 127.0.0.1 site serving that file as policy-impact.json (Ctrl-C stops)
 //   POLICY_IMPACT_PRIVATE_VIEW=<abs path> node implementation/tools/web_app_policy_impact_private.js check
@@ -27,26 +28,28 @@ function readFileRules(file) {
   if ((st.mode & 0o077) !== 0) fail('NOT_OWNER_ONLY');
   if (st.size > 8 * 1024 * 1024) fail('TOO_LARGE');
   for (let d = path.dirname(fs.realpathSync(file)); ; d = path.dirname(d)) { if (fs.existsSync(path.join(d, '.git'))) fail('INSIDE_GIT_CHECKOUT'); if (path.dirname(d) === d) break; }
-  try { return JSON.parse(fs.readFileSync(file, 'utf8')); } catch (_) { fail('NOT_JSON'); }
+  return fs.readFileSync(file);
 }
-async function readNav(file, json) {
+const readJsonRules = (file) => { try { return JSON.parse(readFileRules(file).toString('utf8')); } catch (_) { fail('NOT_JSON'); } };
+async function readNav(file, view) {
   if (!file) return null;
-  const n = readFileRules(file), r = await P.validateNavigation(n, json);
+  const n = readJsonRules(file), r = await P.validateNavigation(n, view.record);
   if (!r.ok) fail('NAV ' + r.code + ' ' + r.path);
   if (n.data_kind !== 'REAL_REVIEWED') fail('NAV_NOT_REAL_REVIEWED');
   return n;
 }
-function readPrivate(file) {
-  const json = readFileRules(file);
-  const r = P.validate(json, { delivery: 'PRIVATE_DEV' }); if (!r.ok) fail(r.code + ' ' + r.path);
+async function readPrivate(file) {
+  const bytes = readFileRules(file), d = await P.decodeView(new Uint8Array(bytes)); if (!d.ok) fail(d.code + ' ' + d.path);
+  const r = P.validate(d.value.json, { delivery: 'PRIVATE_DEV' }); if (!r.ok) fail(r.code + ' ' + r.path);
   if (r.value.bundle.data_kind !== 'REAL_REVIEWED') fail('NOT_REAL_REVIEWED');
-  return json;
+  return { bytes, record: d.value, json: d.value.json };
 }
 
-async function check(json, nav) {
+async function check(view, nav) {
+  const json = view.json;
   const { chromium } = require('playwright');
   const v = P.view(P.validate(json, { delivery: 'PRIVATE_DEV' }).value), nix = P.navIndex(nav);
-  const fixtures = { 'sec-qgv2.json': { json: F.strictPayload() }, [FILE]: { json } }; if (nav) fixtures[NAV_FILE] = { json: nav };
+  const fixtures = { 'sec-qgv2.json': { json: F.strictPayload() }, [FILE]: { body: view.bytes, type: 'application/json' } }; if (nav) fixtures[NAV_FILE] = { json: nav };
   const s = await site.start({ fixtures });
   const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_EXECUTABLE_PATH || undefined });
   const B = '[data-policy-body]';
@@ -107,10 +110,10 @@ async function check(json, nav) {
 }
 
 (async () => {
-  const mode = process.argv[2], json = readPrivate(process.env.POLICY_IMPACT_PRIVATE_VIEW), nav = await readNav(process.env.POLICY_IMPACT_PRIVATE_NAV, json);
-  if (mode === 'check') { await check(json, nav); return; }
+  const mode = process.argv[2], view = await readPrivate(process.env.POLICY_IMPACT_PRIVATE_VIEW), nav = await readNav(process.env.POLICY_IMPACT_PRIVATE_NAV, view);
+  if (mode === 'check') { await check(view, nav); return; }
   if (mode !== 'serve') fail('MODE');
-  const fixtures = { 'sec-qgv2.json': { json: F.strictPayload() }, [FILE]: { json } }; if (nav) fixtures[NAV_FILE] = { json: nav };
+  const fixtures = { 'sec-qgv2.json': { json: F.strictPayload() }, [FILE]: { body: view.bytes, type: 'application/json' } }; if (nav) fixtures[NAV_FILE] = { json: nav };
   const s = await site.start({ fixtures });
   console.log('policy-impact private development site: ' + s.base + '#/macro (REAL_REVIEWED, this machine only)');
   const stop = async () => { await s.close(); process.exit(0); };

@@ -3,6 +3,7 @@
 // research/policy_impact/build.py and navigation.py); Main never writes a policy view or a navigation sidecar by hand.
 //  - publicV2(), navJob(), navView(): Codex's public view/2 example and the title / news navigation pair (pinned, #437).
 //  - codexView(), states(): Codex's shared synthetic view and state cases, SHA-256 pinned as handed over on #437.
+//  - nav2Cases(): Codex #512's six navigation/2 pairs as exact bytes (manifest pinned, every file checked against it).
 //  - variants(): REVISED / HISTORICAL / NEWS, made by tools/policy_impact_main_variants.py through Codex's build
 //    (tests/test_policy_impact_main_variants.py checks the file is exactly that output).
 //  - linked(ids, base): AT TEST TIME ONLY, the synthetic company ids synthetic-company-0..2 put on given company rows so the
@@ -13,7 +14,9 @@ const crypto = require('node:crypto');
 const ROOT = path.join(__dirname, '..');
 const CODEX = path.join(ROOT, 'docs', 'research', 'policy_impact');
 const FILES = {
-  contract: [path.join(CODEX, 'contract.json'), '875824317870e48e8a6a7293885755d0642d6e2ef7640497a86d2f7ea0984349'],
+  // #512 37cef584 added navigation_sidecar_bytes (navigation/2) to the contract: the value Codex handed over on #512.
+  contract: [path.join(CODEX, 'contract.json'), 'e1af42d31a0e6ff062165c12831f5833447670181793407d075033d0c1380374'],
+  nav2_manifest: [path.join(CODEX, 'numeric-navigation-v2', 'manifest.json'), '49fb059f8be51782dda826cc48fc47a2013c62d7ffaf625f0d0354bc22597234'],
   public_v2: [path.join(CODEX, 'synthetic-public-v2.json'), 'd0840110936d05ec4eba8278fada73774c803d8aaed44af13fa93875dd72a146'],
   nav_job: [path.join(CODEX, 'navigation-synthetic-job.json'), '8e813c7b13a032bf9ac780e1e646836d49fb56745bf6048fb3d2d422afab374a'],
   nav_view: [path.join(CODEX, 'navigation-synthetic-view.json'), '95dfe82da1320fd3dca16b46ce58dc7f1bdedf714b8fecc70323d3be49d0c76c'],
@@ -31,6 +34,16 @@ const publicV2 = () => read(FILES.public_v2[0]);
 const navJob = () => read(FILES.nav_job[0]);
 const navView = () => read(FILES.nav_view[0]);
 const variants = () => read(VARIANTS).variants;
+// navigation/2 (Codex #512 37cef584): the six synthetic view / navigation pairs (ratio.value 0, 1, 0.125, 1e-7, 0.0, 1.0) as
+// their exact file bytes. The manifest is pinned above; each file must have the SHA-256 the manifest gives.
+function nav2Cases() {
+  const dir = path.dirname(FILES.nav2_manifest[0]), m = read(FILES.nav2_manifest[0]);
+  return m.cases.map((c) => {
+    const file = (name, want) => { const f = path.join(dir, name); if (sha(f) !== want) throw new Error('NAV2_PIN ' + name); return fs.readFileSync(f); };
+    const viewBytes = file(c.view, c.view_sha256), navBytes = file(c.navigation, c.navigation_sha256);
+    return { name: c.case, ratio: c.ratio_value, viewBytes, viewSha256: c.view_sha256, navBytes, navigation: JSON.parse(navBytes.toString('utf8')), expected: c.expected };
+  });
+}
 const copy = (v) => JSON.parse(JSON.stringify(v));
 const edit = (fn, base = codexView()) => { const out = copy(base); fn(out); return out; };
 function linked(ids, base = codexView()) {
@@ -41,4 +54,4 @@ function linked(ids, base = codexView()) {
     for (const x of v.bundle.hypotheses) { x.company_ids = x.company_ids.map(swap); for (const w of x.watch_items) w.reference_id = swap(w.reference_id); }
   }, base);
 }
-module.exports = { FILES, VARIANTS, sha, codexView, states, contract, publicV2, navJob, navView, variants, edit, linked };
+module.exports = { FILES, VARIANTS, sha, codexView, states, contract, publicV2, navJob, navView, variants, nav2Cases, edit, linked };
