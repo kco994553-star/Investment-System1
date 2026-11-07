@@ -209,7 +209,7 @@ def resume(pack,market,request_id):
                     for key in ('debt','cash','preferred','nci'):
                         value=cap.get('components',{}).get(key)
                         if isinstance(value,dict):timed(value)
-                        if not isinstance(value,dict) or not finite(value.get('value')) or value['value']<0 or not value.get('evidence_refs') or value.get('currency')!=x.get('currency') or not value.get('period_end') or day(value['period_end'])>day(s['valuation_date']):raise ValueError('V_EV_COMPONENT_UNCONFIRMED')
+                        if not isinstance(value,dict) or not finite(value.get('value')) or value['value']<0 or not value.get('evidence_refs') or value.get('currency')!=x.get('currency') or value.get('unit')!=x.get('currency') or value.get('period_kind')!='INSTANT' or value.get('scope')!='CONSOLIDATED' or not value.get('period_end') or day(value['period_end'])>day(s['valuation_date']):raise ValueError('V_EV_COMPONENT_UNCONFIRMED')
                     components=cap['components']
                     if len({components[k]['period_end'] for k in ('debt','cash','preferred','nci')})!=1:raise ValueError('V_EV_PERIOD_MISMATCH')
                     expected+=math.fsum(components[k]['value'] for k in ('debt','preferred','nci'))-components['cash']['value']

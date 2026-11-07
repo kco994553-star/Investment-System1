@@ -29,7 +29,7 @@ def fixture():
         b=record['basis'];b.update(available_at=s['as_of'],retrieved_at=s['as_of'])
         cap=record['capital_evidence'];c=cap['classes'][0];c.update(available_at=s['as_of'],retrieved_at=s['as_of'],share_basis='COMMON:1')
         c['quote']={'security_id':c['security_id'],'date':s['valuation_date'],'value':10,'currency':'USD','unit':'USD/share','share_basis':'COMMON:1','corporate_action_basis':'NO_CHANGE_VERIFIED','evidence_refs':['synthetic:quote'],'available_at':s['as_of'],'retrieved_at':s['as_of']}
-        for v in cap['components'].values():v.update(available_at=s['as_of'],retrieved_at=s['as_of'])
+        for v in cap['components'].values():v.update(available_at=s['as_of'],retrieved_at=s['as_of'],unit='USD',period_kind='INSTANT',scope='CONSOLIDATED')
     pack={'schema_version':VERSION,'valuation_date':s['valuation_date'],'as_of':s['as_of'],'snapshot':s,'rows':rows,'data_kind':'SYNTHETIC'}
     market={'schema_version':'sector-qgv-v-market-input/1','data_kind':'SYNTHETIC','valuation_date':s['valuation_date'],'as_of':s['as_of'],'resume_hash':digest(pack),'records':records}
     return pack,market
@@ -72,12 +72,13 @@ def test_late_source_rejected_not_retimed():
 
 
 def test_future_capital_and_inconsistent_amounts_are_rejected():
-    for mutation,reason in [('future','FUTURE'),('class','TARGET_CLASS'),('quote','QUOTE_BASIS'),('amount','RECONCILIATION')]:
+    for mutation,reason in [('future','FUTURE'),('class','TARGET_CLASS'),('quote','QUOTE_BASIS'),('amount','RECONCILIATION'),('component_unit','EV_COMPONENT')]:
         p,m=fixture();r=next(iter(m['records'].values()))
         if mutation=='future':r['capital_evidence']['components']['nci']['available_at']='2099-01-01T00:00:00Z'
         if mutation=='class':r['capital_evidence']['classes'][0]['security_id']='UNRELATED'
         if mutation=='quote':r['capital_evidence']['classes'][0]['quote']['currency']='EUR'
         if mutation=='amount':r['inputs']['enterprise_value']['value']=999
+        if mutation=='component_unit':r['capital_evidence']['components']['debt']['unit']='USD_millions'
         with pytest.raises(ValueError,match=reason):resume(p,m,'invalid')
 
 

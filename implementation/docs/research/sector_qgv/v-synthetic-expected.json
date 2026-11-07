@@ -915,8 +915,8 @@
     },
     "row_failures": {}
   },
-  "preview_id": "dbda14f6da9f7cb91f6a3a8fab264747ee6aaedcb7cd65fbd20fb459e40e5a13",
-  "full_preview_sha256": "666f22dc85c3c6ac937b3c3955c71d6cfec8a7cf1af2207b8f2c47a7b1b5b7ff",
+  "preview_id": "7ffed068dda48d1389ec988c6606ebc5514e599bc9da39f063db61929d94a373",
+  "full_preview_sha256": "608a1a6aa65a817308984d77bad2acd7a62b4add9c388e0c2e018cc27fcd1847",
   "expected_first_raw": {
     "ep_ttm_diluted": 0.1,
     "cfo_mcap": 0.1,
