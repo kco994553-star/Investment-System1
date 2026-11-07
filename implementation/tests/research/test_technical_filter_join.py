@@ -63,6 +63,18 @@ def test_historical_mapping_cannot_override_active_identity():
     assert [row['rank']['of'] for row in rows] == [10, 10]
 
 
+def test_separate_company_and_issuer_ids_preserve_legacy_join_and_reject_explicit_unknown():
+    payload=inputs(); case=payload['join_inputs']['same_date_same_security']
+    board=payload['cases']['original_board']
+    for row in case['qgv_rows']:
+        row['issuer_id']=row['id']; row['id']='COMPANY:'+row['id']
+    result=join_filtered_rows(board,**case,data_kind='SYNTHETIC')
+    assert [r['rank']['official'] for r in result]==[4,9]
+    case['qgv_rows'][0]['issuer_id']=None
+    with pytest.raises(ValueError,match='ISSUER_LINK_MISMATCH'):
+        join_filtered_rows(board,**case,data_kind='SYNTHETIC')
+
+
 @pytest.mark.parametrize('change,error', [
     ('duplicate_board', 'DUPLICATE_TECHNICAL_KEY'),
     ('inconsistent_series', 'TECHNICAL_IDENTITY_MISMATCH'),
