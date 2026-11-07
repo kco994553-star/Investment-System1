@@ -6,6 +6,7 @@
 - 오너 지시 「섹터별 QGV 요소 선택·재계산 화면 구현」과 첨부 설계서
 - Codex #505 `dc11144b`: `implementation/docs/research/sector_qgv/CONTRACT.md`, `catalog.json`, `presets.json`, `synthetic-input.json`, `synthetic-preview.json`, `synthetic-states.json`
 - Codex #505 갱신 `aa9c4484`: `MAIN_INTEGRATION.md`, Main 전달 함수 `research/sector_qgv_main.run_preview_request`(`sector-qgv-main-request/1`). 연결기의 미리보기는 이 함수를 그대로 부른다
+- Codex #505 갱신 `802752549def4bba34d8743a3b983e0bcfda8966`(`3a555f7b` V 재개 + `80275254` EV 단위·회계 범위): `V_RESUME.md`, `research/sector_qgv_v.py`, `v-synthetic-{pack,market,job,expected}.json`, `tests/test_sector_qgv_v.py`
 - Codex #505 갱신 `7c2225a382aedf275749eb5c2f9f2385db7cdcf3`: `PARTIAL_COMPARISON.md`, `research/sector_qgv_partial.compare_axes`(`sector-qgv-axis-comparison/1`), `partial-synthetic-{snapshot,config,comparison}.json`
 
 **범위**
@@ -145,15 +146,43 @@
   - 두 비교 모두 총점·V 산출 0건이지만 Q/G 행은 504행 모두 보인다.
 - 출력은 PASS와 개수뿐이다. 저장소·Pages·로그에 넣지 않았다.
 
-## 6. 지금 연결 상태
+## 6. 지금 연결 상태 (세 상태를 따로 적는다, 2026-11-07 3차)
+
+| 상태 | 지금 | 근거 |
+| --- | --- | --- |
+| ① 합성 입력의 실제 엔진 재계산 | **연결됨** (개발 환경) | 화면 → 공통 엔진 `run_preview_request` → 판독 → 전후 → Q/G 부분 비교 → 저장·복원. 입력 10종(상태 변형 9 + `V_RESUMED`) 모두 합성 |
+| ② 비공개 실자료 비교 파일의 개발 화면 표시 | **확인됨** (개발 환경, CI 밖) | 비공개 D1·I1 `axis-comparison.json`을 `SECTOR_QGV_PRIVATE_COMPARISONS`로 시작한 개발 서버에서만 표시. 재계산이 아니라 Codex가 만든 결과 파일을 그대로 읽음 |
+| ③ 인증된 경로에서의 비공개 실자료 재계산 | **미연결** | 인증 서버·비공개 전달(Main)이 없음. 연결기는 합성 입력 이름만 받고 경로·묶음 필드가 없음 |
+
+- **③에 필요한 승인·입력:**
+  - 인증 서버 배포와 Secret(로그인·세션 키)
+  - 비공개 저장소에서 서버로 전달하는 경로
+  - Codex의 실 V 재개 입력: 가격 전달 묶음과 근거 파일(`V_RESUME.md`의 `market_inputs`·`market_evidence`)
+  - 날짜 있는 분류 근거
+- **이미 구현·검증한 준비:**
+  - 연결기의 요청 규격·응답 검사·늦은 응답 버림
+  - 비공개 파일 수용 조건(절대 경로·Git 밖·mode 600·크기·규격)
+  - 합성 V 재개 입력으로 같은 미리보기 경로 확인
 
 | 항목 | 상태 |
 | --- | --- |
-| 화면 → 엔진 재계산 → 판독 → 전후 → 저장·복원 | 개발 환경에서 끝까지 연결. 합성 입력으로 검증 |
-| Q/G 부분 비교 | 미리보기마다 엔진 비교 표시. 비교 파일은 합성 D1·I1(CI), 비공개 실파일 D1·I1(개발 환경 전용 확인) |
-| 실자료(비공개) 실행 | 미리보기 재계산은 연결 안 함. 인증 서버·비공개 전달이 필요(Main), 날짜가 있는 책 섹터·회계모형 분류 근거와 관문 원천 연결이 필요(Codex 판정, Main은 보유 자료 위치 인계) |
 | 배포 | 안 함. 공개 사이트에는 엔진 경로가 없음 |
 | 공식 QGV·TARGET | 바뀌지 않음 |
+
+### 6.1 V 재개 (#505 `3a555f7b`·`80275254`, `sector-qgv-v-resume/1`)
+
+- Codex CLI의 `v-prepare`·`v-resume`은 오프라인 생산 쪽이다. 화면 계약(`sector-qgv-preview/1`·저장)은 바뀌지 않는다.
+- 연결기는 합성 입력 `V_RESUMED` 하나를 더했다.
+  - 고정 SHA-256의 `v-synthetic-pack.json`·`v-synthetic-market.json`을 Codex `research.sector_qgv_v.resume`에 넣어 만든 스냅숏이다. 연결기는 값을 채우지 않는다.
+  - 같은 미리보기 호출로 V가 20/20 산출된다(시험 확인).
+- 실 V는 0건이다(Codex 보고: 비가격 결손 1,053행·365사, 가격만으로 준비된 행 0).
+  - 이것은 0점이 아니라 미산출이다.
+  - 화면에 실 V 결과는 없다.
+- **금융과 섹터 V는 따로 관리한다.**
+  - 11/02 금융 11코드 가격 취득(#502·#504 쪽)과 11/04 섹터 504 V(이 쪽)는 별도 전달이다.
+  - 금융 가격 취득이 섹터 V의 비가격 결손(CFO·capex·D&A·EPS 구성·자본 구성 근거 등)을 해소한다고 표시하지 않는다.
+  - 기준일이 다르면 Codex 검증에서 거부된다.
+  - 금융 의존성 #508 → #504는 이 섹터 통합과 별도 순서다.
 
 ## 7. 시험
 
@@ -161,6 +190,7 @@
 | --- | --- |
 | `tests/test_sector_qgv_bridge.py` | 응답 = 엔진 함수 결과(context·view·preview·compare·save); 70개 프리셋 = `presets.json`; Codex `synthetic-preview.json` 재현; 상태 변형이 `synthetic-states.json` 기대값과 같음(6 + FAILED); 관문 세 결과·판정 불가 null; 저장은 같은 설정의 보관 미리보기만; 합성 전용·고정 코드; stdio 순서·stderr 없음 |
 | `tools/web_app_sector_qgv_node_test.js` (11) | 실제 연결기 프로세스로: 기본값은 엔진 것뿐(화면 파일에 상수·순위 계산 없음); 배지 근거; 편집(역할 예산 분할·빼기·교체·준비 중·부적합 거부); 엔진 검증 코드; 은행 변경이 번지지 않음·전체 적용 명시 복사; 재계산 = 엔진 호출(점수·순위 변화); 관문 세 결과; 상태; 다른 요청 응답 거부; 저장 기록; 표시 설정은 숫자를 바꾸지 않음 |
+| `tests/test_sector_qgv_v.py` (Codex) | V 재개. build `pytest tests`에 수집됨 |
 | `tests/test_sector_qgv_partial.py` (Codex, 4) | 부분 비교 생성 쪽. build `pytest tests`에 수집됨(4개 확인) |
 | `tools/web_app_sector_qgv_axis_node_test.js` (5) | Codex 합성 D1 고정; Main 합성 I1; 실제 엔진 미리보기에 붙은 비교; D1/I1 섞임·개수·null 사유·순위/성과 없음 거부; 판독기·화면에 정렬·순위·저장 없음 |
 | `tools/web_app_sector_qgv_axis_browser_test.js` (1440·390·320, 12) | 미리보기 한 번 = 엔진 호출 한 번에 비교 포함; 파일 목록(클릭, 비공개 없음); D1 총점 공통 0인데 Q/G 20행; I1 원인 글자·버전 차이·분류 바뀐 행·요소 상세; 필터는 행만; 넘침 없음·44 px·키보드; 경계 |
