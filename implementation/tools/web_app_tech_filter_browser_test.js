@@ -6,8 +6,11 @@
 //    중앙값 이상 and fails 중앙값 초과; adding filters keeps every shown row's ORIGINAL board rank (never renumbered, still ascending);
 //    group membership unknown, valid N < 10 and "computed, zero matches" read differently; the fixture's filter_example keeps
 //    exactly kept_security_ids; a null adopted dollar volume stays NA even with a raw_value in the row.
-//  - A joined board (tools/web_app_tech_filter_fixture.js joined(): the leaderboard's own row ids as security ids) filters the
-//    leaderboard table to PASS rows in its QGV order; with Codex's fixture (no join) the leaderboard table is left as it is.
+//  - The QGV join (owner audit 2026-11-07): the synthetic central publication (qgv_official_fixture.js, price basis day
+//    2026-10-13) gives the QGV evaluation date. Refused, with the leaderboard table unchanged, no tech column and the reason in the
+//    block: Codex's boards (2018-02-16, 평가일 불일치), a board whose security ids are the leaderboard's own row ids but no
+//    security map (증권 매핑 계약 없음: plain id equality no longer joins), a map sending two securities to one row (매핑 중복).
+//    Only a synthetic verified map (same day, listing key + company id, one to one) filters the table to PASS rows in QGV order.
 //  - Phone: board rows as a list, tech line and 기술 상세, no horizontal overflow, 44 px controls.
 //  - Boundaries: values only as [data-ram-price] text, no new data request, no storage, no request outside the origin, no console
 //    error, CSP 0. TECH_SHOTS=<dir> saves screenshots (deviceScaleFactor 2).
@@ -19,6 +22,7 @@ const R = require('./web_app_reuse');
 const site = require('./web_app_test_site');
 const F = require('./qgv_v2_fixture.js');
 const X = require('./web_app_tech_filter_fixture.js');
+const O = require('./qgv_official_fixture.js');
 const T = require('../src/investment_system/product/web_app/tech-screen.js');
 
 const NOW = '2026-10-14T03:00:00.000Z';
@@ -31,7 +35,10 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
 
 (async () => {
   assert.equal(X.codexSha(), X.CODEX_SHA256, 'Codex fixture unchanged');
-  const s = await site.start({ fixtures: { 'sec-qgv2.json': { json: F.strictPayload() }, 'company-classification.json': { json: CLASS } } });
+  const s = await site.start({ fixtures: { 'sec-qgv2.json': { json: F.strictPayload() }, 'company-classification.json': { json: CLASS },
+    'qgv-official.json': { body: O.PUB_TEXT, type: 'application/json' } } });
+  const QGV_DAY = O.PUB.times.price_basis_date;
+  assert.equal(QGV_DAY, '2026-10-13');
   const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_EXECUTABLE_PATH || undefined });
   try {
     for (const width of [1440, 390]) {
@@ -51,8 +58,8 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
         await page.evaluate(() => { location.hash = '#/macro'; }); await page.locator('main[data-route=macro]').waitFor();
         await page.evaluate(() => { location.hash = '#/qgv'; }); await page.locator('main[data-route=qgv]').waitFor();
         await page.locator('[data-lb-table] tbody tr[data-row]').first().waitFor(); };
-      const swap = (payload) => page.evaluate((p) => { const I = window.IS2; I.__realTech = I.__realTech || I.techScreen;
-        I.techScreen = Object.freeze({ ...I.__realTech, source: () => Promise.resolve({ state: 'OK', code: null, payload: p, text: '' }) }); }, payload);
+      const swap = (payload, map = null) => page.evaluate(([p, m]) => { const I = window.IS2; I.__realTech = I.__realTech || I.techScreen;
+        I.techScreen = Object.freeze({ ...I.__realTech, source: () => Promise.resolve({ state: 'OK', code: null, payload: p, map: m, text: '' }) }); }, [payload, map]);
       const cond = async (m, c) => { await page.selectOption('#tf-' + m, c); };
       const clear = async () => { for (const m of X.METRICS) await page.selectOption('#tf-' + m, 'none'); };
 
@@ -132,10 +139,12 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       // ---------------- no join: the leaderboard table is left as it is
       phase = tag + ' no join';
       const before = await drawnIds();
-      await page.locator('[data-k=tf-on]').check(); await page.locator(B + ' [data-tf-join="0"]').waitFor();
+      await page.locator('[data-k=tf-on]').check(); await page.locator(B + ' [data-tf-join=DATE_MISMATCH][data-na=DATE_MISMATCH]').waitFor();
       assert.deepEqual(await drawnIds(), before); assert.equal(await page.locator('[data-lb-table] [data-cell=tech]').count(), 0);
+      const why = await text(B + ' [data-tf-join]');
+      assert.ok(why.includes('리더보드 표에 적용할 수 없음 · 평가일 불일치 · 보드 2018-02-16 · QGV ' + QGV_DAY) && why.includes('리더보드는 기술 조건 없이 그대로'), why);
       await page.locator('[data-k=tf-on]').uncheck();
-      ok(tag + ' Codex boards do not join leaderboard rows: table unchanged, reason shown');
+      ok(tag + ' Codex boards (another evaluation date) do not join: table unchanged, 평가일 불일치 shown');
 
       if (SHOTS) {
         await clear(); await page.selectOption('#tf-board', 'interior_remainder_23'); await cond('momentum_6m', 'ge_median'); await cond('volatility_6m', 'exclude_D10');
@@ -154,20 +163,36 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
 
       // ---------------- a joined board filters the leaderboard in QGV order
       phase = tag + ' joined';
-      const ids = await page.evaluate(async () => { const Q = window.IS2.qgv, pg = await Q.page();
-        const rows = Q.rows(pg, { scope: 'UNIVERSE' }).map((r) => ({ id: r.id, t: typeof r.score.total === 'number' ? r.score.total : null }));
-        return rows.sort((a, b) => (a.t !== null) - (b.t !== null) || (a.t !== null ? a.t - b.t : 0) || (a.id < b.id ? -1 : 1)).map((r) => r.id); });
-      const J = X.joined(ids);
+      const uni = await page.evaluate(async () => { const Q = window.IS2.qgv, pg = await Q.page();
+        const rows = Q.rows(pg, { scope: 'UNIVERSE' }).map((r) => ({ id: r.id, code: r.code, t: typeof r.score.total === 'number' ? r.score.total : null }));
+        return rows.sort((a, b) => (a.t !== null) - (b.t !== null) || (a.t !== null ? a.t - b.t : 0) || (a.id < b.id ? -1 : 1)).map((r) => ({ id: r.id, code: r.code })); });
+      const ids = uni.map((r) => r.id), SEC = ids.map((_, i) => 'SYNTHETIC:FIX' + String(i).padStart(3, '0'));
+      const MAP = X.securityMap(uni.map((r, i) => [SEC[i], r.id, r.code])), rowOf = Object.fromEntries(SEC.map((k, i) => [k, ids[i]]));
+      const J = X.joined(SEC, { signal_day: QGV_DAY });
       assert.equal(T.validate(J).ok, true);
-      await swap(J); await reopen(); await page.locator(B + ' [data-tech-data]').waitFor();
+      const refused = async (board, map, code, words) => {
+        await swap(board, map); await reopen(); await page.locator(B + ' [data-tech-data]').waitFor();
+        await clear(); await cond('momentum_6m', 'top_decile');
+        const was = await drawnIds();
+        await page.locator('[data-k=tf-on]').check(); await page.locator(B + ' [data-tf-join="' + code + '"][data-na="' + code + '"]').waitFor();
+        assert.deepEqual(await drawnIds(), was, code + ': leaderboard unchanged');
+        assert.equal(await page.locator('[data-lb-table] [data-cell=tech], [data-lb-table] .tech-line').count(), 0, code + ': no tech column');
+        const t = await text(B + ' [data-tf-join]');
+        assert.ok(t.includes('리더보드 표에 적용할 수 없음 · ' + words) && t.includes('리더보드는 기술 조건 없이 그대로'), t);
+        await page.locator('[data-k=tf-on]').uncheck(); };
+      await refused(X.joined(ids, { signal_day: QGV_DAY }), null, 'MAPPING_CONTRACT_MISSING', '증권 매핑 계약 없음');
+      await refused(J, X.securityMap(uni.map((r, i) => (i === 1 ? [SEC[1], uni[0].id, uni[0].code] : [SEC[i], r.id, r.code]))), 'MAPPING_AMBIGUOUS', '매핑 중복');
+      ok(tag + ' no security map / a duplicate mapping: not joined, table unchanged, reason shown');
+      await swap(J, MAP); await reopen(); await page.locator(B + ' [data-tech-data]').waitFor();
       await clear();
       await cond('momentum_6m', 'top_decile'); await cond('volatility_6m', 'exclude_D10');
       await page.locator('[data-k=tf-on]').check();
       await page.locator('[data-lb-table] [data-cell=tech]' + (phone ? ', [data-lb-table] .tech-line' : '')).first().waitFor({ state: 'attached' });
-      const wantOrder = await page.evaluate(async (b) => { const I = window.IS2, Q = I.qgv, pg = await Q.page(), v = I.techScreen.validate(b).value.boards[0].board;
+      await page.locator(B + ' [data-tf-join="' + ids.length + '"]').waitFor();
+      const wantOrder = await page.evaluate(async ([b, of]) => { const I = window.IS2, Q = I.qgv, pg = await Q.page(), v = I.techScreen.validate(b).value.boards[0].board;
         const r = I.techScreen.evaluate(v, [{ metric: 'momentum_6m', condition: 'top_decile' }, { metric: 'volatility_6m', condition: 'exclude_D10' }]);
-        const p = new Set([...r.rows].filter(([, x]) => x.state === 'PASS').map(([k]) => k));
-        return I.qgvLive.helpers.sortRows(Q.rows(pg, { scope: 'UNIVERSE' }).filter((x) => p.has(x.id)), 'qgv').map((x) => x.id); }, J);
+        const p = new Set([...r.rows].filter(([, x]) => x.state === 'PASS').map(([k]) => of[k]));
+        return I.qgvLive.helpers.sortRows(Q.rows(pg, { scope: 'UNIVERSE' }).filter((x) => p.has(x.id)), 'qgv').map((x) => x.id); }, [J, rowOf]);
       assert.ok(wantOrder.length > 0);
       assert.deepEqual(await drawnIds(), wantOrder, 'leaderboard = PASS joined rows in QGV order');
       const firstRow = '[data-lb-table] tr[data-row="' + wantOrder[0] + '"] ' + (phone ? '.tech-line' : '[data-cell=tech]');
@@ -176,10 +201,10 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
         const row = page.locator('[data-lb-table] tr[data-row="' + wantOrder[0] + '"]');
         await row.locator('.tech-why summary').first().click();
         const det = await row.locator('.tech-why').first().evaluate((e) => e.innerText);
-        assert.ok(det.includes('분모 ') && det.includes('순위 ') && det.includes('기준일 2018-02-16'), det);
+        assert.ok(det.includes('분모 ') && det.includes('순위 ') && det.includes('기준일 ' + QGV_DAY), det);
       }
       await site.assertRamOnly(page, [...new Set(J.metrics.dollar_volume_6m.rows.map((r) => T.display('dollar_volume_6m', r)))], tag);
-      ok(tag + ' joined board filters the leaderboard to PASS rows in QGV order; values only as RAM text');
+      ok(tag + ' verified same-date, same-security map filters the leaderboard to PASS rows in QGV order; values only as RAM text');
 
       // ---------------- phone layout
       if (phone) {

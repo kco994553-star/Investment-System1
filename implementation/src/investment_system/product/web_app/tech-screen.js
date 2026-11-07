@@ -19,7 +19,15 @@
    - evaluate(board, conds) → {conditions, counts:{PASS, FAIL, UNKNOWN}, rows: Map(key → {state, fails, unknown})}: the file's own
      condition booleans only (never recomputed; ranks, N and medians are never rebuilt after filtering). A null condition is 판정 불가
      with the row's or the metric's reason; FAIL wins over UNKNOWN. key = security_id (series_id when the security id is null).
-   - source() → Promise {state:'NONE'}: no public file, no request. Private research values are never wired to a public screen.
+   - joinRows(board, rows, {day, map}) → {ok:true, pairs: Map(leaderboard row id → board key)} or {ok:false, code, …} (owner audit
+     2026-11-07, docs/frontend_v2/TECH_FILTER_QGV_JOIN.md): a board row joins a leaderboard row only when it is verified to be the same
+     evaluation date AND the same security. day (the QGV list's evaluation date) is present and equals signal_day exactly; a security
+     map (Main's proposal tech-qgv-security-map/0, not in technical-leaderboard/1) gives every board security exactly one entry valid
+     on that day, whose listing_key is exactly one leaderboard row's code and whose company_id is that row's id; one row takes one
+     security. A security_id, ticker, code or company id is never matched to a row by plain string equality. Refusals:
+     QGV_DATE_MISSING, DATE_MISMATCH, MAPPING_CONTRACT_MISSING (no map: today), MAPPING_INVALID, MAPPING_MISSING, MAPPING_AMBIGUOUS,
+     IDENTITY_MISMATCH, NO_JOINED_ROWS; joinText words them.
+   - source() → Promise {state:'NONE', map:null}: no public file, no request. Private research values are never wired to a public screen.
    Values are price-derived: screens show them only as text inside [data-ram-price]; nothing is stored. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else{const I=root.IS2=root.IS2||{};I.techScreen=api;}})(typeof globalThis==='object'?globalThis:this,function(){
 'use strict';
@@ -144,7 +152,39 @@ const medianText=(m,median)=>(median===null?null:display(m,{value:median}));
 const decileText=d=>(Number.isInteger(d)?'D'+d:null);
 const reasonText=c=>(typeof c==='string'&&own(REASON,c)?REASON[c]:TEXT.UNKNOWN_REASON);
 const condText=(m,c)=>META[m].label+' · '+COND_TEXT[c];
+// The QGV join (header): Main's proposed security map, checked whole like a board; dates compare as YYYY-MM-DD strings.
+const MAP_SCHEMA='tech-qgv-security-map/0',MAP_ENTRY=['security_id','company_id','listing_key','valid_from','valid_to'];
+const JOIN_TEXT=Object.freeze({QGV_DATE_MISSING:'QGV 평가일 없음 · 공식 게시본의 가격 기준일이 없거나 입력이 다름',DATE_MISMATCH:'평가일 불일치',
+ MAPPING_CONTRACT_MISSING:'증권 매핑 계약 없음 · 고정 증권 ID ↔ 상장 키·유효기간 매핑이 오지 않음',MAPPING_INVALID:'증권 매핑이 계약과 다름',
+ MAPPING_MISSING:'매핑 없음',MAPPING_AMBIGUOUS:'매핑 중복 · 한 증권이 두 행에, 또는 두 증권이 한 행에',IDENTITY_MISMATCH:'증권 신원 불일치 · 같은 상장 키, 다른 기업 ID',
+ NO_JOINED_ROWS:'매핑은 맞지만 리더보드 행과 결합된 증권 없음'});
+function checkMap(m){keys(m,['schema','entries'],'$map');if(m.schema!==MAP_SCHEMA)refuse('SCHEMA_VERSION','$map.schema');if(!Array.isArray(m.entries))refuse('TYPE','$map.entries');
+ if(m.entries.length>MAX.rows)refuse('TOO_LARGE','$map.entries');
+ m.entries.forEach((e,i)=>{const q='$map.entries['+i+']';keys(e,MAP_ENTRY,q);str(e.security_id,q+'.security_id');
+  if((e.company_id===null)!==(e.listing_key===null))refuse('TYPE',q+'.listing_key');if(e.company_id!==null){str(e.company_id,q+'.company_id');str(e.listing_key,q+'.listing_key');}
+  day(e.valid_from,q+'.valid_from');if(e.valid_to!==null){day(e.valid_to,q+'.valid_to');if(e.valid_to<e.valid_from)refuse('RANGE',q+'.valid_to');}});}
+const noJoin=(code,more)=>Object.freeze({ok:false,code,...more});
+function joinRows(board,rows,{day:d=null,map=null}={}){
+ if(typeof d!=='string'||!DAY.test(d))return noJoin('QGV_DATE_MISSING');
+ if(board.signal_day!==d)return noJoin('DATE_MISMATCH',{board_day:board.signal_day,qgv_day:d});
+ if(map===null||map===undefined)return noJoin('MAPPING_CONTRACT_MISSING');
+ try{checkMap(map);}catch(e){if(e instanceof Refusal)return noJoin('MAPPING_INVALID',{why:e.code,path:e.path});throw e;}
+ const bySec=new Map(),perKey=new Map(),byCode=new Map(),add=(m,k,v)=>m.set(k,[...(m.get(k)||[]),v]);
+ for(const e of map.entries)if(e.valid_from<=d&&(e.valid_to===null||d<=e.valid_to)){add(bySec,e.security_id,e);if(e.listing_key!==null)add(perKey,e.listing_key,e);}
+ for(const r of rows)if(r&&typeof r.code==='string'&&r.code)add(byCode,r.code,r);
+ const missing=[],pairs=new Map();
+ for(const[k,s]of securities(board)){const es=s.security_id===null?[]:bySec.get(s.security_id)||[];
+  if(!es.length){missing.push(k);continue;}if(es.length>1)return noJoin('MAPPING_AMBIGUOUS',{security:k});
+  const e=es[0];if(e.listing_key===null)continue;if(perKey.get(e.listing_key).length>1)return noJoin('MAPPING_AMBIGUOUS',{security:k});
+  const rs=byCode.get(e.listing_key)||[];if(!rs.length){missing.push(k);continue;}if(rs.length>1)return noJoin('MAPPING_AMBIGUOUS',{security:k});
+  if(rs[0].id!==e.company_id)return noJoin('IDENTITY_MISMATCH',{security:k,listing_key:e.listing_key});
+  if(pairs.has(rs[0].id))return noJoin('MAPPING_AMBIGUOUS',{security:k});pairs.set(rs[0].id,k);}
+ if(missing.length)return noJoin('MAPPING_MISSING',{count:missing.length});
+ if(!pairs.size)return noJoin('NO_JOINED_ROWS');
+ return Object.freeze({ok:true,pairs});}
+function joinText(j){if(!j||j.ok)return null;const w=own(JOIN_TEXT,j.code)?JOIN_TEXT[j.code]:TEXT.UNKNOWN_REASON;
+ return j.code==='DATE_MISMATCH'?w+' · 보드 '+j.board_day+' · QGV '+j.qgv_day:j.code==='MAPPING_MISSING'?w+' · 증권 '+j.count+'개':w;}
 const status=v=>(!v?TEXT.NONE:v.data_kind==='SYNTHETIC'?TEXT.SYNTHETIC:v.data_kind?'실자료 · '+v.data_kind:'자료 종류 표시 없음');
-function source(){return Promise.resolve(Object.freeze({state:'NONE',code:'TECH_SCREEN_NOT_CONNECTED',payload:null,text:TEXT.NONE}));}
-return Object.freeze({SCHEMA,METRICS,CONDITIONS,CHOICES,META,COND_TEXT,REASON,TEXT,validate,evaluate,securities,metricState,display,medianText,decileText,reasonText,condText,status,cmp,source});
+function source(){return Promise.resolve(Object.freeze({state:'NONE',code:'TECH_SCREEN_NOT_CONNECTED',payload:null,map:null,text:TEXT.NONE}));}
+return Object.freeze({SCHEMA,MAP_SCHEMA,METRICS,CONDITIONS,CHOICES,META,COND_TEXT,REASON,TEXT,JOIN_TEXT,validate,evaluate,securities,joinRows,joinText,metricState,display,medianText,decileText,reasonText,condText,status,cmp,source});
 });

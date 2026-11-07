@@ -7,6 +7,9 @@
 //    (TECHNICAL_LEADERBOARD_V1.md): rank 1 = largest value, ties by security id ascending; k = floor(N×0.10); first k D10, last k D1;
 //    D9..D2 get (N−2k)//8 each, the first (N−2k)%8 bins one more; N < 10 no decile; median = middle value or mean of the middle pair.
 //    Market-down day: every 6-month momentum is negative. Two companies have no volatility (METRIC_NOT_AVAILABLE).
+//  - securityMap(entries): Main's proposed tech-qgv-security-map/0 (docs/frontend_v2/TECH_FILTER_QGV_JOIN.md; not a Codex file):
+//    entries [security_id, company_id, listing_key, valid_from, valid_to]. The only way a board row joins a leaderboard row is a
+//    verified same-date, same-security entry (tech-screen.js joinRows); boards here use SYNTHETIC:* security ids unlike any row id.
 // SYNTHETIC VALUES ONLY; nothing here is written to a public file.
 const fs = require('node:fs');
 const path = require('node:path');
@@ -61,4 +64,6 @@ function joined(ids, { signal_day = '2018-02-16', group_id = 'SYNTHETIC:LEADERBO
   return { schema: 'technical-leaderboard/1', signal_day, settings_version: 'technical-leaderboard/2026-11-03.1', settings_sha256: 'e'.repeat(64), group_id,
     membership_status: 'CONFIRMED', membership_source: 'SYNTHETIC:MEMBERSHIP', population_hash: 'f'.repeat(64), metrics };
 }
-module.exports = { CODEX_PATH, CODEX_SHA256, codex, codexText, codexSha, METRICS, deciles, joined };
+const securityMap = (entries) => ({ schema: 'tech-qgv-security-map/0',
+  entries: entries.map(([security_id, company_id, listing_key, valid_from = '2020-01-01', valid_to = null]) => ({ security_id, company_id, listing_key, valid_from, valid_to })) });
+module.exports = { CODEX_PATH, CODEX_SHA256, codex, codexText, codexSha, METRICS, deciles, joined, securityMap };
