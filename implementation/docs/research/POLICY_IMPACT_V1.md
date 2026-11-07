@@ -12,7 +12,11 @@ workflow/Secret/operations, decisions, merge and deployment.
 append-only/as-of/public projection. No network, scoring engine, scheduler or
 external AI service. `policy_impact/contract.json` lists fixed fields/enums;
 `synthetic-job.json` and `synthetic-view.json` are public artificial fixtures.
-The envelope is `policy-impact-view/1`, its `bundle` carries `policy-impact/1`.
+The current public envelope is `policy-impact-view/2`; private output remains
+`policy-impact-view/1`. Both carry the factual `policy-impact/1` bundle.
+Retained public v1 fixtures are historical contracts, not implicit publication
+permission. See the availability/publication section below and
+`synthetic-public-v2.json` for the current public contract.
 `current_policy_revisions` identifies current visible revisions; the bundle also
 retains referenced previous revisions. Render old hypotheses REVIEW_REQUIRED,
 not as current assertions. `historical_pit_eligible` is always false.
@@ -25,7 +29,8 @@ PYTHONPATH=implementation/src python -m pytest implementation/tests/research/tes
 ```
 
 Job keys: bundle, company_ids (trusted existing company registry IDs), as_of UTC;
-optional public, public_macro_ids, query_timezone (IANA, default UTC), previous
+optional public, public_macro_ids, watch_publication_permissions,
+query_timezone (IANA, default UTC), previous
 (the full prior input ledger, not a projected view). CLI validates, builds and
 atomically replaces output; a rejected input leaves the previous file intact.
 Real output is required outside Git checkouts, mode600. stdout contains counts
@@ -165,8 +170,10 @@ Draft code availability is distinct from Main contract acceptance/UI integration
 
 `policy-fr-replay/1` adds `mode=fr-replay` to the existing policy CLI. See
 `policy_impact/fr-synthetic-job.json` and `fr-synthetic-result.json` for the public
-fixture. It reuses the existing news/DART CallBudget, Retry-After parsing and
-policy collection_outcome/retain_good. It does not add an HTTP client, scheduler,
+fixture. It reuses the pure `request_limits` Retry-After parser/size limit and
+policy collection_outcome/retain_good. A validated max_requests setting and the
+existing loop counter bound requests without importing operational providers.
+It does not add an HTTP client, scheduler,
 DB, policy identity resolver or automatic publication path.
 
 ```sh
