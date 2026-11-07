@@ -52,7 +52,7 @@ const KEYS=Object.freeze({
  RECENT:'investment.web.v1.recent-search',// home-screen.js RECENT_KEY: recent search entity keys (no query text)
  PROMPT_FAVORITES:'investment.web.v1.prompt-favorites',// research-bridge.js PL_FAV_KEY: favorite prompt ids (not in a backup)
  PROMPT_COPIES:'investment.web.v1.prompt-personal-copies',// research-bridge.js PL_COPY_KEY: personal prompt copies (not in a backup)
- SECTOR_QGV:'investment.web.v2.sector-qgv-user-config',// NEW (2026-11-06, 2.2): the user's sector QGV config (this device, not in a backup)
+ SECTOR_QGV:'investment.web.v2.sector-qgv-user-config',// NEW (2026-11-06, 2.2): the user's saved sector QGV config (engine save_user_config answer; this device, not in a backup)
  DEVICE_DB:'investment-device-actual-v1'});// DeviceActual IndexedDB
 const CATALOG='actual-catalog.json',ID=/^[A-Za-z0-9_-]{20,100}$/;
 // home-screen.js RECENT_MAX / KEY_SHAPE (read), and the one key shape the new screen writes.
@@ -229,16 +229,16 @@ function create({win,action,data}){
   clear(event){return write(event,'MARKET_QUOTES',signal=>action.stoppedRecords.clear(signal));}});
 
  // ---- sector QGV user config (2.2, owner 2026-11-06): this device only (no account sync, not in a backup); the shape is
- // IS2.sectorQgv.validateConfig's (read at call time: sector-qgv.js loads after this layer). An unreadable stored value is
+ // IS2.sectorQgv.validateSaved's: the engine's save_user_config answer (read at call time: sector-qgv.js loads after this layer). An unreadable stored value is
  // never overwritten silently: read() says INVALID and only an explicit clear(event) removes it.
- const SQ_MAX=200000,SQ=()=>{const x=win.IS2&&win.IS2.sectorQgv;if(!x||typeof x.validateConfig!=='function')throw Error('READER_MISSING');return x;};
+ const SQ_MAX=200000,SQ=()=>{const x=win.IS2&&win.IS2.sectorQgv;if(!x||typeof x.validateSaved!=='function')throw Error('READER_MISSING');return x;};
  const sectorQgv=Object.freeze({
   read(){const raw=storage.getItem(KEYS.SECTOR_QGV);if(raw===null||raw==='')return deepFreeze({state:'EMPTY',value:null});
    let v;try{v=JSON.parse(raw);}catch(_){return deepFreeze({state:'INVALID',value:null});}
-   let ok=false;try{ok=SQ().validateConfig(v).ok;}catch(_){ok=false;}return deepFreeze(ok?{state:'OK',value:v}:{state:'INVALID',value:null});},
-  save(event,config){return write(event,'SECTOR_QGV',()=>{const r=SQ().validateConfig(config);if(!r.ok)throw Error('SECTOR_QGV_CONFIG_INVALID');
-   const raw=storage.getItem(KEYS.SECTOR_QGV);if(raw){let cur=null;try{cur=JSON.parse(raw);}catch(_){cur=null;}if(!cur||!SQ().validateConfig(cur).ok)throw Error('SECTOR_QGV_STORAGE_INVALID');}
-   const text=JSON.stringify(config);if(text.length>SQ_MAX)throw Error('SECTOR_QGV_CONFIG_TOO_LARGE');storage.setItem(KEYS.SECTOR_QGV,text);return deepFreeze(copy(config));});},
+   let ok=false;try{ok=SQ().validateSaved(v).ok;}catch(_){ok=false;}return deepFreeze(ok?{state:'OK',value:v}:{state:'INVALID',value:null});},
+  save(event,saved){return write(event,'SECTOR_QGV',()=>{const r=SQ().validateSaved(saved);if(!r.ok)throw Error('SECTOR_QGV_CONFIG_INVALID');
+   const raw=storage.getItem(KEYS.SECTOR_QGV);if(raw){let cur=null;try{cur=JSON.parse(raw);}catch(_){cur=null;}if(!cur||!SQ().validateSaved(cur).ok)throw Error('SECTOR_QGV_STORAGE_INVALID');}
+   const text=JSON.stringify(saved);if(text.length>SQ_MAX)throw Error('SECTOR_QGV_CONFIG_TOO_LARGE');storage.setItem(KEYS.SECTOR_QGV,text);return deepFreeze(copy(saved));});},
   clear(event){return write(event,'SECTOR_QGV',()=>{storage.removeItem(KEYS.SECTOR_QGV);return true;});}});
 
  function subscribe(fn,{signal}={}){if(typeof fn!=='function')throw Error('SUBSCRIBER_INVALID');if(signal&&signal.aborted)return()=>{};subs.add(fn);const off=()=>{subs.delete(fn);};if(signal)signal.addEventListener('abort',off,{once:true});return off;}

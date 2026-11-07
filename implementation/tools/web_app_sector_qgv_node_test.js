@@ -1,182 +1,159 @@
 'use strict';
-// Sector QGV (owner 2026-11-06; feature 2.2): web_app/sector-qgv.js against the proposed sector-qgv-bundle/1 and the v0 presets.
-//  - sector-qgv-default/0.1.0 equals the design §5.1 axis table and §5.2 factor table (per-mille effective weights), state
-//    draft / initial; Lynch tags carry no weight.
-//  - The design's §9 checks that belong to the roll-up: role budget kept when a factor is added; Q/G/V 80/60/40 with axis bp
-//    3000/2000/5000 → 56; a 0-weight axis or role is not required; a bank override does not reach insurance / asset managers /
-//    REITs; models are never mixed; 100 companies with 90 per factor but 80 in common → 80 %; a changed snapshot or population
-//    changes the key; only the latest request is kept (screen); identical exact alias (PER = E/P) is one factor.
-//  - Strict missing: a required factor without a score leaves the axis and total unscored with its reason, never 0.
+// Sector QGV screen side (web_app/sector-qgv.js) against Codex's common engine #505 through Main's engine route
+// (tools/sector_qgv_engine_bridge.py, run here as the real child process; SYNTHETIC inputs only). Owner 2026-11-06 「섹터 QGV 실제
+// 연결」: no second set of defaults, no score / gate / rank on the screen side, edits in the engine's own shape, a recalculation
+// is an engine call, an answer of another request is refused.
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
 const S = require('../src/investment_system/product/web_app/sector-qgv.js');
-const X = require('./web_app_sector_qgv_fixture.js');
+const E = require('./web_app_sector_qgv_engine.js');
 
+const FIX = path.join(__dirname, '..', 'docs', 'research', 'sector_qgv');
+const PRESETS = JSON.parse(fs.readFileSync(path.join(FIX, 'presets.json'), 'utf8'));
+const W = path.join(__dirname, '..', 'src', 'investment_system', 'product', 'web_app');
 let n = 0;
-const ok = (name, fn) => { fn(); n++; console.log('PASS ' + name); };
-const R = S.validate(X.bundle()), v = R.value, BP = 10000;
-const ctx = (s, t) => ({ sector_id: s, template_id: t, key: s + '|' + t });
-const tree = (k) => JSON.parse(JSON.stringify(S.treeFor(v, null, k)));
+const ok = async (name, fn) => { await fn(); n++; console.log('PASS ' + name); };
+const copy = (v) => JSON.parse(JSON.stringify(v));
 
-ok('bundle valid; preset set sector-qgv-default/0.1.0, draft · initial, strict, no gate', () => {
-  assert.equal(R.ok, true, JSON.stringify(R)); assert.equal(R.version, '0.1.0');
-  for (const p of v.presets) { assert.equal(p.state, 'draft'); assert.equal(p.validation_state, 'initial'); assert.equal(p.missing_policy, 'STRICT'); assert.equal(p.gate_policy, 'NONE'); }
-  assert.equal(v.presets.length, 15); assert.equal(v.sectors.length, 10);
-});
-ok('v0 axis weights = design §5.1 (each row 100 %)', () => {
-  const want = { CONSUMER_DISCRETIONARY: [30, 25, 45], CONSUMER_STAPLES: [35, 15, 50], ENERGY: [35, 15, 50], FINANCIALS: [40, 15, 45], HEALTH_CARE: [35, 25, 40],
-    INDUSTRIALS: [35, 20, 45], INFORMATION_TECHNOLOGY: [30, 25, 45], MATERIALS: [35, 15, 50], TELECOM_SERVICES: [40, 15, 45], UTILITIES: [40, 10, 50] };
-  for (const p of v.presets) assert.deepEqual([p.axis_weights.Q, p.axis_weights.G, p.axis_weights.V].map((x) => x / 100), want[p.sector_id], p.sector_id + ' ' + p.template_id);
-});
-ok('v0 factor effective weights inside each axis = design §5.2 (to 0.1 %)', () => {
-  const inAxis = (k, a) => Object.fromEntries(S.effective(tree(k)).filter((e) => e.axis === a).map((e) => [e.factor_id, Math.round(e.share / (tree(k).axis_weights[a] / BP) * 1000) / 10]));
-  assert.deepEqual(inAxis('ENERGY|GENERAL', 'Q'), { Q01_OPERATING_MARGIN: 40, Q05_ACCRUALS: 30, Q06_DEBT_TO_ASSETS: 30 });
-  assert.deepEqual(inAxis('ENERGY|GENERAL', 'G'), { G02_SALES_CAGR3: 60, G06_ROA_CHANGE3: 40 });
-  const V = { CONSUMER_DISCRETIONARY: { V_EARNINGS_YIELD: 35, V_CFO_YIELD: 40, V06_FCF_TO_MCAP: 25 }, CONSUMER_STAPLES: { V_EARNINGS_YIELD: 35, V_CFO_YIELD: 35, V_DIVIDEND_YIELD_TTM: 30 },
-    ENERGY: { V_EARNINGS_YIELD: 40, V_CFO_YIELD: 30, V_EBITDA_TO_EV: 30 }, HEALTH_CARE: { V_EARNINGS_YIELD: 40, V_CFO_YIELD: 40, V_SALES_TO_MCAP: 20 },
-    INDUSTRIALS: { V_EARNINGS_YIELD: 35, V_CFO_YIELD: 35, V_EBITDA_TO_EV: 30 }, INFORMATION_TECHNOLOGY: { V_EARNINGS_YIELD: 30, V_CFO_YIELD: 40, V_SALES_TO_EV: 30 },
-    MATERIALS: { V_EARNINGS_YIELD: 40, V_CFO_YIELD: 30, V_EBITDA_TO_EV: 30 }, TELECOM_SERVICES: { V_EARNINGS_YIELD: 40, V_CFO_YIELD: 40, V_EBITDA_TO_EV: 20 },
-    UTILITIES: { V_EARNINGS_YIELD: 30, V_CFO_YIELD: 40, V_EBITDA_TO_EV: 30 } };
-  for (const [s, want] of Object.entries(V)) assert.deepEqual(inAxis(s + '|GENERAL', 'V'), want, s);
-  for (const t of ['BANK', 'INSURANCE', 'BROKER', 'MORTGAGE_REIT']) {
-    assert.deepEqual(inAxis('FINANCIALS|' + t, 'Q'), { Q_ROA: 35, Q_ROE_COMMON: 35, Q14_COMMON_EQUITY_TO_ASSETS: 30 }, t);
-    assert.deepEqual(inAxis('FINANCIALS|' + t, 'G'), { G13_COMMON_BPS_CAGR3: 60, G06_ROA_CHANGE3: 40 }, t);
-    assert.deepEqual(inAxis('FINANCIALS|' + t, 'V'), { V_EARNINGS_YIELD: 60, V_BOOK_YIELD: 40 }, t);
-  }
-  assert.deepEqual(inAxis('FINANCIALS|ASSET_MANAGER', 'Q'), { Q01_OPERATING_MARGIN: 40, Q05_ACCRUALS: 30, Q06_DEBT_TO_ASSETS: 30 });
-  assert.deepEqual(inAxis('FINANCIALS|ASSET_MANAGER', 'V'), { V_EARNINGS_YIELD: 60, V_BOOK_YIELD: 40 });
-  assert.deepEqual(inAxis('FINANCIALS|EQUITY_REIT', 'Q'), { Q_CFO_TO_AVG_ASSETS: 40, Q_INTEREST_COVERAGE: 30, Q06_DEBT_TO_ASSETS: 30 });
-  assert.deepEqual(inAxis('FINANCIALS|EQUITY_REIT', 'G'), { G02_SALES_CAGR3: 60, G14_CFO_AVG_ASSETS_CHANGE3: 40 });
-  assert.deepEqual(inAxis('FINANCIALS|EQUITY_REIT', 'V'), { V_FFO_TO_MCAP: 50, V_CFO_YIELD: 30, V_DIVIDEND_YIELD_TTM: 20 });
-});
-ok('roll-up: Q/G/V = 80/60/40 with axis bp 3000/2000/5000 → 56 (design §9)', () => {
-  const t = { axis_weights: { Q: 3000, G: 2000, V: 5000 }, roles: { Q: [{ role: 'profitability', weight_bp: BP, factors: [{ factor_id: 'Q01_OPERATING_MARGIN', weight_bp: BP }] }],
-    G: [{ role: 'growth', weight_bp: BP, factors: [{ factor_id: 'G02_SALES_CAGR3', weight_bp: BP }] }], V: [{ role: 'earnings', weight_bp: BP, factors: [{ factor_id: 'V_EARNINGS_YIELD', weight_bp: BP }] }] } };
-  const b = JSON.parse(JSON.stringify(X.bundle())), id = b.companies[0].company_id;
-  b.scores.Q01_OPERATING_MARGIN[id] = { score: 80, status: 'VALID' }; b.scores.G02_SALES_CAGR3[id] = { score: 60, status: 'VALID' }; b.scores.V_EARNINGS_YIELD[id] = { score: 40, status: 'VALID' };
-  const w = S.validate(b).value, c = b.companies[0], k = c.sector_id + '|' + c.template_id;
-  const cfg = { ...S.emptyConfig(w), overrides: { [k]: t } };
-  assert.equal(S.validateConfig(cfg, w).ok, true);
-  const row = S.compute(w, cfg).rows.find((r) => r.company_id === id);
-  assert.ok(Math.abs(row.total - 56) < 1e-9, String(row.total));
-});
-ok('strict: a required factor without a score leaves the axis and total unscored with its reason; never 0', () => {
-  const res = S.compute(v, S.emptyConfig(v));
-  const miss = res.rows.find((r) => r.total === null && r.reason === 'AXIS_UNSCORED');
-  const ax = S.AXES.find((a) => miss[a] === null);
-  assert.ok(S.MISSING.includes(miss.why[ax]), miss.why[ax]); assert.ok(miss.why[ax + '_factor']);
-  assert.equal(miss.rank, null);
-  for (const r of res.rows) if (r.total === null) for (const a of S.AXES) assert.notEqual(r[a], 0);
-  const unmapped = res.rows.filter((r) => r.reason === 'MAPPING_UNRESOLVED');
-  assert.equal(unmapped.length, 3, 'unmapped companies stay in the denominator'); assert.equal(res.denominator, v.companies.length);
-  const ins = res.rows.filter((r) => r.template_id === 'INSURANCE');
-  assert.ok(ins.every((r) => r.total === null && r.why.Q === 'PEER_SAMPLE_SMALL'), 'small peer group: unscored, not 0');
-});
-ok('a 0-weight axis or role is not required: the other active axes give the total, the axis says excluded', () => {
-  const k = 'ENERGY|GENERAL', t = S.setAxisWeights(tree(k), { Q: 5000, G: 0, V: 5000 });
-  const cfg = { ...S.emptyConfig(v), overrides: { [k]: t } };
-  assert.equal(S.validateConfig(cfg, v).ok, true);
-  const b = JSON.parse(JSON.stringify(X.bundle())), ids = b.companies.filter((c) => c.sector_id === 'ENERGY').map((c) => c.company_id);
-  for (const id of ids) b.scores.G02_SALES_CAGR3[id] = { score: null, status: 'MISSING_INPUT' };
-  const w = S.validate(b).value, res = S.compute(w, cfg);
-  const rows = res.rows.filter((r) => ids.includes(r.company_id));
-  assert.ok(rows.some((r) => r.total !== null), 'G missing does not block when G weight is 0');
-  for (const r of rows) { assert.equal(r.G, null); assert.equal(r.why.G, 'USER_EXCLUDED'); assert.deepEqual(r.excluded, ['G']); }
-  const t2 = S.setRoleWeight(S.setRoleWeight(tree(k), 'G', 'growth', 0), 'G', 'profitability_change', BP);
-  const res2 = S.compute(w, { ...S.emptyConfig(w), overrides: { [k]: t2 } });
-  assert.ok(res2.rows.filter((r) => ids.includes(r.company_id)).some((r) => r.G !== null), 'a 0-weight role is not required');
-});
-ok('edits: adding a factor keeps the role budget; removing re-splits; replace keeps the slot; duplicates refused', () => {
-  const k = 'ENERGY|GENERAL';
-  const t = S.addFactor(tree(k), v, 'Q', 'Q_ROA');
-  const prof = t.roles.Q.find((r) => r.role === 'profitability');
-  assert.equal(prof.weight_bp, 4000); assert.deepEqual(prof.factors.map((f) => f.weight_bp), [5000, 5000]);
-  assert.equal(S.checkTree(t, ctx('ENERGY', 'GENERAL'), v), null);
-  const eff = Object.fromEntries(S.effective(t).filter((e) => e.axis === 'Q').map((e) => [e.factor_id, e.share]));
-  assert.ok(Math.abs(eff.Q01_OPERATING_MARGIN + eff.Q_ROA - 0.35 * 0.4) < 1e-12, 'role total kept: 20 % + 20 % of Q, not 80 %');
-  const back = S.removeFactor(t, 'Q', 'Q_ROA'); assert.deepEqual(back.roles.Q.find((r) => r.role === 'profitability').factors, [{ factor_id: 'Q01_OPERATING_MARGIN', weight_bp: BP }]);
-  const rep = S.replaceFactor(tree(k), v, 'V', 'V_EBITDA_TO_EV', 'V_BOOK_YIELD');
-  assert.deepEqual(rep.roles.V.find((r) => r.role === 'other').factors, [{ factor_id: 'V_BOOK_YIELD', weight_bp: BP }]);
-  assert.throws(() => S.addFactor(tree(k), v, 'V', 'V_EARNINGS_YIELD'), /DUPLICATE/);
-  assert.throws(() => S.replaceFactor(tree(k), v, 'V', 'V_EARNINGS_YIELD', 'V_CFO_YIELD'), /ROLE_DIFFERS/);
-  const added = S.addFactor(tree(k), v, 'Q', 'Q_INTEREST_COVERAGE');
-  assert.equal(added.roles.Q.find((r) => r.role === 'coverage').weight_bp, 0, 'a new role starts at 0, never silently raised');
-  assert.equal(S.split(3).join(','), '3334,3333,3333');
-});
-ok('PER and E/P are one factor (aliases); a pending factor and a template-unfit factor are not selectable', () => {
-  const C = ctx('ENERGY', 'GENERAL'), t = tree(C.key);
-  const per = S.catalog(v, C, t, 'V', 'per'), ep = S.catalog(v, C, t, 'V', 'E/P');
-  assert.ok(per.length >= 1 && per[0].factor.factor_id === 'V_EARNINGS_YIELD' && ep[0].factor.factor_id === 'V_EARNINGS_YIELD');
-  const row = (id, c = C) => S.catalog(v, c, S.treeFor(v, null, c.key), 'V').find((r) => r.factor.factor_id === id);
-  assert.equal(row('V_FWD_EARNINGS_YIELD').state, 'PENDING'); assert.equal(row('V_FWD_EARNINGS_YIELD').selectable, false);
-  assert.equal(row('V_TBV_YIELD').state, 'NOT_FIT'); assert.equal(row('V_TBV_YIELD').selectable, false);
-  const ev = row('V_EBITDA_TO_EV'); assert.equal(ev.base, true); assert.equal(ev.selected, true);
-  assert.ok(['READY', 'PARTIAL'].includes(row('V_BOOK_YIELD').state) && row('V_BOOK_YIELD').base === false);
-  const it = row('V_SALES_TO_EV', ctx('INFORMATION_TECHNOLOGY', 'GENERAL'));
-  assert.equal(it.recommended[0].reason, '정보기술의 매출가치 비교에 적합'); assert.equal(it.recommended[0].evidence_level, 'BOOK_SECTOR');
-  assert.equal(S.checkTree(S.setFactorWeight(tree('FINANCIALS|BANK'), 'V', 'V_BOOK_YIELD', 9000), ctx('FINANCIALS', 'BANK'), v).code, 'FACTOR_SUM');
-  const bad = JSON.parse(JSON.stringify(tree('ENERGY|GENERAL'))); bad.roles.V[0].factors[0].factor_id = 'V_FWD_EARNINGS_YIELD';
-  assert.equal(S.checkTree(bad, C, v).code, 'FACTOR_PENDING');
-});
-ok('a bank override reaches no other template; "전체 적용" is an explicit copy that skips unfit contexts', () => {
-  const B = ctx('FINANCIALS', 'BANK'), t = S.replaceFactor(tree(B.key), v, 'V', 'V_BOOK_YIELD', 'V_TBV_YIELD');
-  const one = S.applyEdit(S.emptyConfig(v), v, B, t, 'CONTEXT').config;
-  assert.deepEqual(Object.keys(one.overrides), ['FINANCIALS|BANK']);
-  for (const k of ['FINANCIALS|INSURANCE', 'FINANCIALS|ASSET_MANAGER', 'FINANCIALS|EQUITY_REIT']) assert.deepEqual(S.treeFor(v, one, k), S.treeFor(v, null, k), k);
-  const all = S.applyEdit(S.emptyConfig(v), v, B, t, 'ALL');
-  assert.ok(all.skipped.includes('ENERGY|GENERAL') && all.skipped.includes('FINANCIALS|EQUITY_REIT'), 'P/TBV is not for general companies or REITs');
-  assert.ok(Object.keys(all.config.overrides).includes('FINANCIALS|INSURANCE'));
-});
-ok('Lynch tags change nothing: scores, weights and order equal when only the tags differ', () => {
-  const b = JSON.parse(JSON.stringify(X.bundle())); for (const c of b.companies) c.lynch_tags = ['회생', '자산 가치'];
-  const a = S.compute(v, S.emptyConfig(v)), w = S.validate(b).value, c = S.compute(w, S.emptyConfig(w));
-  assert.deepEqual(a.rows.map((r) => [r.company_id, r.total, r.rank]), c.rows.map((r) => [r.company_id, r.total, r.rank]));
-});
-ok('coverage counts on the original population: 100 companies, 90 per factor, 80 in common → 80 %', () => {
-  const b = JSON.parse(JSON.stringify(X.bundle()));
-  b.companies = Array.from({ length: 100 }, (_, i) => ({ company_id: 'C' + String(i).padStart(3, '0'), universe_code: null, sector_id: 'ENERGY', template_id: 'GENERAL', mapping_status: 'MAPPED', lynch_tags: [] }));
-  for (const [fid, cells] of Object.entries(b.scores)) { const out = {}; b.companies.forEach((c, i) => { out[c.company_id] = { score: 50, status: 'VALID' }; }); b.scores[fid] = out; }
-  const k = 'ENERGY|GENERAL', t = { axis_weights: { Q: 5000, G: 0, V: 5000 }, roles: { Q: [{ role: 'profitability', weight_bp: BP, factors: [{ factor_id: 'Q01_OPERATING_MARGIN', weight_bp: BP }] }], G: [],
-    V: [{ role: 'earnings', weight_bp: BP, factors: [{ factor_id: 'V_EARNINGS_YIELD', weight_bp: BP }] }] } };
-  b.companies.forEach((c, i) => { if (i < 10) b.scores.Q01_OPERATING_MARGIN[c.company_id] = { score: null, status: 'MISSING_INPUT' }; if (i >= 10 && i < 20) b.scores.V_EARNINGS_YIELD[c.company_id] = { score: null, status: 'MISSING_INPUT' }; });
-  const w = S.validate(b); assert.equal(w.ok, true, JSON.stringify(w));
-  const res = S.compute(w.value, { ...S.emptyConfig(w.value), overrides: { [k]: t } });
-  assert.equal(res.denominator, 100); assert.equal(res.axes.Q, 90); assert.equal(res.axes.V, 90); assert.equal(res.computed, 80, '80 %, not 90 %');
-});
-ok('models never mixed; key carries snapshot, population, engine, normalization, mapping, preset version and config', () => {
-  const base = S.compute(v, S.emptyConfig(v), { model: 'DEFAULT' }), mine = S.compute(v, S.emptyConfig(v));
-  assert.notEqual(base.key, mine.key); assert.match(base.key, /~DEFAULT~/);
-  const d = S.compare(base, mine); assert.equal(d.rows.length, v.companies.length);
-  const b2 = JSON.parse(JSON.stringify(X.bundle())); b2.snapshot.universe_version = 'syn-2'; const w2 = S.validate(b2).value;
-  assert.throws(() => S.compare(S.compute(w2, S.emptyConfig(w2)), mine), /COMPARE_MISMATCH/);
-  for (const f of ['snapshot_id', 'universe_id', 'universe_version', 'engine_version', 'normalization_version', 'mapping_version']) {
-    const b3 = JSON.parse(JSON.stringify(X.bundle())); b3.snapshot[f] = 'x'; const w3 = S.validate(b3).value; assert.notEqual(S.key(w3, S.emptyConfig(w3)), S.key(v, S.emptyConfig(v)), f); }
-  const k = 'ENERGY|GENERAL', c2 = { ...S.emptyConfig(v), overrides: { [k]: S.setAxisWeights(tree(k), { Q: 4000, G: 1500, V: 4500 }) } };
-  assert.notEqual(S.key(v, c2), S.key(v, S.emptyConfig(v)));
-});
-ok('compare: ranks among companies computed in both told apart from dropping out', () => {
-  const k = 'ENERGY|GENERAL', t = S.addFactor(tree(k), v, 'V', 'V_BOOK_YIELD');
-  const cfg = S.applyEdit(S.emptyConfig(v), v, ctx('ENERGY', 'GENERAL'), S.setRoleWeight(S.setRoleWeight(t, 'V', 'other', 3000), 'V', 'earnings', 4000), 'CONTEXT').config;
-  assert.equal(S.validateConfig(cfg, v).ok, true, JSON.stringify(S.validateConfig(cfg, v)));
-  const before = S.compute(v, S.emptyConfig(v)), after = S.compute(v, cfg), d = S.compare(before, after);
-  assert.ok(d.common > 0 && d.common <= Math.min(before.computed, after.computed));
-  for (const r of d.rows) if (r.before.total !== null && r.after.total !== null) { assert.ok(Number.isInteger(r.common_before) && Number.isInteger(r.common_after)); } else assert.equal(r.common_before, null);
-});
-ok('config: a newer base version is reported, never rewritten; refusals of the bundle', () => {
-  const c = { ...S.emptyConfig(v), version: '0.0.9' }; assert.equal(S.validateConfig(c, v).code, 'BASE_VERSION_DIFFERS'); assert.equal(S.validateConfig(c).ok, true, 'shape only without a bundle');
-  const cases = [
-    ['SCHEMA_VERSION', (b) => { b.schema = 'sector-qgv-bundle/2'; }], ['AXIS_SUM', (b) => { b.presets[0].axis_weights.Q += 1; }],
-    ['ROLE_SUM', (b) => { b.presets[0].roles.Q[0].weight_bp -= 1; }], ['FACTOR_SUM', (b) => { b.presets[0].roles.V[1].factors[0].weight_bp -= 1; }],
-    ['BP_INVALID', (b) => { b.presets[0].axis_weights.Q = 3000.5; }], ['BP_INVALID', (b) => { b.presets[0].axis_weights.Q = -1; }],
-    ['MATRIX_INCOMPLETE', (b) => { delete b.scores.V_CFO_YIELD[b.companies[0].company_id]; }], ['SCORE_WITH_MISSING', (b) => { const id = b.companies[0].company_id; b.scores.V_CFO_YIELD[id] = { score: 0, status: 'MISSING_INPUT' }; }],
-    ['SCORE_INVALID', (b) => { const id = b.companies[0].company_id; b.scores.V_CFO_YIELD[id] = { score: 101, status: 'VALID' }; }], ['FACTOR_PENDING', (b) => { b.scores.V_PEG_FWD = {}; }],
-    ['PRESET_VERSION_MIXED', (b) => { b.presets[1].version = '0.2.0'; }], ['GATE_POLICY_UNSUPPORTED', (b) => { b.presets[0].gate_policy = 'VALUE_TRAP'; }],
-    ['NOT_APPLICABLE', (b) => { b.presets[1].roles.V[2].factors[0].factor_id = 'V_TBV_YIELD'; }],
-  ];
-  for (const [code, fn] of cases) { const b = JSON.parse(JSON.stringify(X.bundle())); fn(b); const r = S.validate(b); assert.equal(r.ok, false, code); assert.equal(r.code, code, code + ' got ' + r.code + ' ' + r.path); }
-});
-ok('preview(): a Promise of before / after / compare; source() is NONE (no request)', async () => {
-  const p = S.preview(v, S.emptyConfig(v), S.emptyConfig(v)); assert.ok(p && typeof p.then === 'function');
-  const out = await p; assert.equal(out.after.computed, out.before.computed);
-  const s = await S.source(); assert.equal(s.state, 'NONE'); assert.equal(s.payload, null);
-});
-console.log('ok ' + n + ' checks');
+(async () => {
+  const eng = E.start();
+  try {
+    const ask = async (op, fields, ctx = null) => { const req = S.request(op, fields), res = await eng.call(req), chk = S.check(op, req, res, ctx); return { req, res, chk }; };
+    const { res: ctx, chk: c0 } = await ask('context');
+    assert.equal(c0.ok, true, JSON.stringify(c0));
+    const view = async (config, s, t) => { const r = await ask('view', { config, sector_id: s, accounting_template: t }, ctx); assert.equal(r.chk.ok, true, JSON.stringify(r.chk)); return r.res; };
+    const IT = ['INFORMATION_TECHNOLOGY', 'GENERAL'];
+
+    await ok('the defaults are the engine\'s: every scope\'s preset equals Codex presets.json, the screen file has none of its own', async () => {
+      assert.equal(ctx.versions.model_version, 'sector-qgv-default/0.1.0'); assert.equal(ctx.default_config.gate_policy, 'official-q-percentile-required/1');
+      assert.equal(PRESETS.length, ctx.sectors.length * ctx.templates.length);
+      for (const p of PRESETS) { const v = await view(ctx.default_config, p.sector_id, p.accounting_template); assert.deepEqual(v.preset, p, p.sector_id + '|' + p.accounting_template); assert.deepEqual(v.default_preset, p); }
+      const src = fs.readFileSync(path.join(W, 'sector-qgv.js'), 'utf8') + fs.readFileSync(path.join(W, 'screen-sector-qgv-live.js'), 'utf8');
+      for (const id of ['ep_ttm_diluted', 'cfo_mcap', 'operating_margin_ttm', 'sector-qgv-default/0.1.0', 'GATE_PERCENTILE']) assert.doesNotMatch(src, new RegExp(id.replace(/[/.]/g, '\\$&')), 'no engine constant copied into the screen: ' + id);
+      assert.doesNotMatch(src, /\bpercentile\(|midrank|\brank\s*=(?!=)|\.sort\([^)]*total/, 'no score, percentile or rank computed on the screen side');
+      assert.doesNotMatch(src, /\bfetch\(|localStorage|sessionStorage|indexedDB/); assert.doesNotMatch(src, /\|\|\s*0\b|\?\?\s*0\b/);
+    });
+
+    await ok('factor list: design IDs and variants from the engine; badge facts told apart (기본값 · 추천 · 선택됨 · 준비 중 · 부적합 · 자료 일부 부족)', async () => {
+      const v = await view(ctx.default_config, ...IT), by = new Map(v.factors.map((f) => [f.variant_id, f]));
+      assert.equal(v.factors.length, 51); assert.equal(by.get('operating_margin_ttm').factor_id, 'Q01');
+      const codes = (f, cov) => S.badges(f, cov).map((b) => b.code);
+      assert.deepEqual(codes(by.get('ep_ttm_diluted')), ['BASE', 'RECOMMENDED', 'SELECTED']);
+      assert.deepEqual(codes(by.get('fcff_ev')), ['PENDING']); assert.equal(S.selectable(by.get('fcff_ev')), 'PENDING');
+      assert.deepEqual(codes(by.get('roe_common_ttm')), ['NOT_FIT'], 'a bank-only factor on a general template');
+      const cov = { factors: { sales_mcap: { raw_valid: 18, denominator: 20 } } };
+      assert.deepEqual(codes(by.get('sales_mcap'), cov), ['PARTIAL']); assert.equal(S.badges(by.get('sales_mcap'), cov)[0].text, '자료 일부 부족 18/20 · 선택 가능');
+      assert.ok(['ep_ttm_diluted', 'ep_fy_diluted'].every((x) => S.search(v.factors, 'PER').some((f) => f.variant_id === x)), 'PER finds the E/P variants');
+      assert.ok(S.search(v.factors, 'pbr').some((f) => f.variant_id === 'common_bp'));
+      assert.ok(S.search(v.factors, 'PER_TTM_DILUTED').some((f) => f.variant_id === 'ep_ttm_diluted'), 'an alias finds its one canonical variant');
+    });
+
+    await ok('edits in the engine shape: a same-role addition splits that role\'s budget; remove / replace; pending and unfit refused', async () => {
+      const v = await view(ctx.default_config, ...IT), by = new Map(v.factors.map((f) => [f.variant_id, f]));
+      let p = S.addFactor(v.preset, by.get('ebitda_ev'));
+      assert.deepEqual(p.axes.V.other_value, { weight: v.preset.axes.V.other_value.weight, factors: { sales_ev: 5000, ebitda_ev: 5000 } });
+      assert.equal(S.sums(p).ok, true);
+      p = S.addFactor(p, by.get('interest_coverage_ttm'));
+      assert.deepEqual(p.axes.Q.interest_capacity, { weight: 0, factors: { interest_coverage_ttm: 10000 } }, 'a new role starts at 0: the user sets its budget');
+      assert.throws(() => S.addFactor(p, by.get('ebitda_ev')), /DUPLICATE_VARIANT_ALIAS/);
+      assert.throws(() => S.addFactor(p, by.get('fcff_ev')), /CALCULATOR_PENDING/);
+      assert.throws(() => S.addFactor(p, by.get('roe_common_ttm')), /NOT_APPLICABLE/);
+      p = S.removeFactor(p, 'V', 'other_value', 'ebitda_ev'); assert.deepEqual(p.axes.V.other_value.factors, { sales_ev: 10000 });
+      p = S.replaceFactor(p, 'V', 'other_value', 'sales_ev', by.get('common_bp')); assert.deepEqual(p.axes.V.other_value.factors, { common_bp: 10000 });
+      assert.throws(() => S.replaceFactor(p, 'V', 'earnings', 'ep_ttm_diluted', by.get('cfo_mcap')), /FACTOR_ROLE_MISMATCH/);
+      p = S.removeFactor(p, 'Q', 'interest_capacity', 'interest_coverage_ttm'); assert.equal('interest_capacity' in p.axes.Q, false);
+      p = S.removeFactor(p, 'G', 'profitability_change', 'roa_improvement_3y');
+      assert.deepEqual(p.axes.G, { growth: { weight: 10000, factors: { revenue_cagr_3y: 10000 } } }, 'the removed role\'s budget goes to the others');
+      assert.throws(() => S.removeFactor(p, 'G', 'growth', 'revenue_cagr_3y'), /LAST_FACTOR_OF_AXIS/);
+      assert.equal(S.sums(S.setAxis(p, 'Q', 3001)).ok, false);
+      const check = await view(S.withScope(ctx.default_config, p), ...IT); assert.equal(check.validation.valid, true, JSON.stringify(check.validation));
+    });
+
+    await ok('the engine is the validation authority: an alias twice, a pending factor with weight, bad sums are its codes', async () => {
+      const v = await view(ctx.default_config, ...IT), bad = copy(v.preset);
+      bad.axes.V.earnings.factors = { ep_ttm_diluted: 5000, PER_TTM_DILUTED: 5000 };
+      assert.equal((await view(S.withScope(ctx.default_config, bad), ...IT)).validation.code, 'DUPLICATE_VARIANT_ALIAS');
+      const pend = copy(v.preset); pend.axes.V.other_value.factors = { fcff_ev: 10000 };
+      assert.equal((await view(S.withScope(ctx.default_config, pend), ...IT)).validation.code, 'CALCULATOR_PENDING:fcff_ev');
+      assert.equal(S.errorText('CALCULATOR_PENDING:fcff_ev'), '계산 기능 준비 중인 요소에 비중이 있음 (fcff_ev)');
+      assert.equal((await view(S.withScope(ctx.default_config, S.setAxis(v.preset, 'Q', 2999)), ...IT)).validation.code, 'WEIGHTS_MUST_SUM_10000');
+    });
+
+    await ok('scope: a bank edit stays in FINANCIALS|BANK (insurance, asset managers, REITs keep the engine default); 전체 적용 is an explicit copy that skips unfit scopes', async () => {
+      const bank = await view(ctx.default_config, 'FINANCIALS', 'BANK');
+      const cfg = S.withScope(ctx.default_config, S.setAxis(S.setAxis(bank.preset, 'Q', 5000), 'V', 3500));
+      assert.deepEqual(Object.keys(cfg.scoped_overrides), ['FINANCIALS|BANK']);
+      for (const t of ['INSURANCE', 'ASSET_MANAGER', 'EQUITY_REIT']) assert.deepEqual((await view(cfg, 'FINANCIALS', t)).preset, (await view(ctx.default_config, 'FINANCIALS', t)).preset, t);
+      assert.equal((await view(cfg, 'FINANCIALS', 'BANK')).preset.axis_weights.Q, 5000);
+      const it = await view(ctx.default_config, ...IT), scopes = ctx.sectors.flatMap((s) => ctx.templates.map((t) => ({ sector_id: s.sector_id, accounting_template: t })));
+      const all = S.applyAll(ctx.default_config, it.preset, scopes, it.factors);
+      assert.ok(all.skipped.includes('FINANCIALS|BANK') && all.skipped.includes('ENERGY|EQUITY_REIT'), 'operating margin / accruals do not apply to banks or REITs');
+      assert.ok(all.applied.includes('ENERGY|GENERAL') && all.applied.includes('UTILITIES|ASSET_MANAGER'));
+      assert.equal(all.applied.length + all.skipped.length, 70);
+      assert.equal((await view(all.config, 'ENERGY', 'GENERAL')).validation.valid, true);
+    });
+
+    await ok('recalculation is an engine call: an edited config changes the engine\'s totals and ranks; comparison and save come from the engine', async () => {
+      const it = await view(ctx.default_config, ...IT), cfg = S.withScope(ctx.default_config, { ...it.preset, axis_weights: { Q: 3400, G: 3300, V: 3300 } });
+      const r = await ask('preview', { config: cfg, before_config: ctx.default_config, input_id: 'NORMAL' }, ctx);
+      assert.equal(r.chk.ok, true, JSON.stringify(r.chk));
+      assert.notEqual(r.res.after.config_hash, r.res.before.config_hash);
+      assert.deepEqual(r.res.after.coverage.total, { valid: 20, denominator: 20 });
+      assert.ok(r.res.comparison.rows.some((x) => x.delta !== 0), 'scores move'); assert.ok(r.res.comparison.rows.some((x) => x.before_common_rank !== x.after_common_rank), 'ranks move');
+      assert.equal(S.validateSaved(r.res.saved).ok, true); assert.equal(r.res.saved.preview_id, r.res.after.preview_id);
+      assert.deepEqual(eng.calls.filter((c) => c.op === 'preview').map((c) => c.input_id).slice(-1), ['NORMAL']);
+    });
+
+    await ok('gate: 관문 통과 / 가치(V) 제외 / 판정 불가 are the engine\'s; 판정 불가 has no final score and no rank', async () => {
+      const rows = {};
+      for (const k of ['NORMAL', 'GATE_EXCLUDED', 'GATE_UNKNOWN']) { const r = await ask('preview', { config: ctx.default_config, before_config: ctx.default_config, input_id: k }, ctx); assert.equal(r.chk.ok, true); rows[k] = r.res.after.result_rows[0]; }
+      assert.equal(S.text(S.GATE_TEXT, rows.NORMAL.gate_status), '관문 통과');
+      assert.equal(S.text(S.GATE_TEXT, rows.GATE_EXCLUDED.gate_status), '관문: 가치(V) 제외 · 남은 축 비례 재배분'); assert.equal(rows.GATE_EXCLUDED.post_gate_axis_weights.V, 0);
+      assert.equal(rows.GATE_UNKNOWN.total, null); assert.equal(rows.GATE_UNKNOWN.rank, null);
+      assert.equal(S.text(S.STATUS_TEXT, rows.GATE_UNKNOWN.status), '관문 판정 불가 · 최종 점수·순위 없음');
+    });
+
+    await ok('states: partial, stale, mapping unknown, small peers, empty are the engine\'s statuses on the original denominator; a refused input is a code', async () => {
+      const want = { PARTIAL: [0, 20, 'STRICT_INCOMPLETE'], STALE: [0, 20, 'STRICT_INCOMPLETE'], MAPPING_UNKNOWN: [0, 20, 'MAPPING_UNRESOLVED'], PEER_SAMPLE_SMALL: [0, 19, 'STRICT_INCOMPLETE'], EMPTY: [0, 0, null] };
+      for (const [k, [valid, den, st]] of Object.entries(want)) {
+        const r = await ask('preview', { config: ctx.default_config, before_config: ctx.default_config, input_id: k }, ctx); assert.equal(r.chk.ok, true, k);
+        assert.deepEqual(r.res.after.coverage.total, { valid, denominator: den }, k); assert.equal(r.res.after.result_rows[0] ? r.res.after.result_rows[0].status : null, st, k);
+      }
+      const f = await ask('preview', { config: ctx.default_config, before_config: ctx.default_config, input_id: 'FAILED' }, ctx);
+      assert.deepEqual(f.chk, { ok: false, code: 'DUPLICATE_COMPANY_ID' }); assert.equal(S.errorText('DUPLICATE_COMPANY_ID'), '입력 거부 · 회사 ID 중복');
+    });
+
+    await ok('answers of another request are refused: request id, op, engine versions, comparison id, saved record, data kind', async () => {
+      const r = await ask('preview', { config: ctx.default_config, before_config: ctx.default_config, input_id: 'NORMAL' }, ctx);
+      const other = S.request('preview', { config: ctx.default_config, before_config: ctx.default_config, input_id: 'NORMAL' });
+      assert.deepEqual(S.check('preview', other, r.res, ctx), { ok: false, code: 'ANSWER_MISMATCH' });
+      assert.deepEqual(S.check('view', r.req, r.res, ctx), { ok: false, code: 'ANSWER_MISMATCH' });
+      const moved = copy(r.res); moved.after.engine_version = 'sector-qgv-engine/9.9.9';
+      assert.deepEqual(S.check('preview', r.req, moved, ctx), { ok: false, code: 'ANSWER_MISMATCH' });
+      const cmp = copy(r.res); cmp.comparison.comparison_id = 'x'; assert.deepEqual(S.check('preview', r.req, cmp, ctx), { ok: false, code: 'ANSWER_MISMATCH' });
+      const sv = copy(r.res); sv.saved.preview_id = '0'.repeat(64); assert.deepEqual(S.check('preview', r.req, sv, ctx), { ok: false, code: 'ANSWER_MISMATCH' });
+      const kinds = copy(r.res); kinds.data_kind = 'PRIVATE'; assert.deepEqual(S.check('preview', r.req, kinds, ctx), { ok: false, code: 'ENGINE_ANSWER_INVALID' });
+      assert.deepEqual(S.check('preview', r.req, { ...r.res, ok: false, code: 'ENGINE_FAILED' }, ctx), { ok: false, code: 'ENGINE_FAILED' });
+    });
+
+    await ok('saved record: the engine\'s save_user_config shape only; a changed config cannot reuse an old preview', async () => {
+      const r = await ask('preview', { config: ctx.default_config, before_config: ctx.default_config, input_id: 'NORMAL' }, ctx), s = r.res.saved;
+      assert.deepEqual(S.validateSaved(s), { ok: true });
+      assert.equal(S.validateSaved({ ...s, extra: 1 }).code, 'SAVED_KEYS'); assert.equal(S.validateSaved({ ...s, preview_id: 'abc' }).code, 'SAVED_HASH');
+      assert.equal(S.validateSaved({ ...s, config: { schema_version: 'x' } }).code, 'SAVED_CONFIG');
+      const it = await view(ctx.default_config, ...IT), changed = S.withScope(ctx.default_config, S.setAxis(S.setAxis(it.preset, 'Q', 3100), 'V', 4400));
+      const sv = await ask('save', { config: changed, preview_id: r.res.after.preview_id }, ctx);
+      assert.deepEqual(sv.chk, { ok: false, code: 'PREVIEW_CONFIG_OR_REQUEST_MISMATCH' });
+      assert.equal(S.errorText('PREVIEW_CONFIG_OR_REQUEST_MISMATCH'), '미리보기와 설정이 달라 저장 거부');
+    });
+
+    await ok('display preferences and owner scope do not change the engine\'s numbers (Lynch tags / names are presentation only)', async () => {
+      const a = copy(ctx.default_config), b = { ...copy(ctx.default_config), owner_scope: 'PRIVATE', config_id: 'device', display_preferences: { lynch_tags: true, names: 'long' } };
+      const ra = await ask('preview', { config: a, before_config: a, input_id: 'NORMAL' }, ctx), rb = await ask('preview', { config: b, before_config: b, input_id: 'NORMAL' }, ctx);
+      assert.equal(ra.res.after.config_hash, rb.res.after.config_hash); assert.deepEqual(ra.res.after.result_rows, rb.res.after.result_rows);
+    });
+  } finally { await eng.close(); }
+  assert.deepEqual(eng.stderr, [], 'nothing on the bridge stderr');
+  console.log('ok ' + n + ' checks');
+})().catch((e) => { console.error('FAILED', e); process.exit(1); });

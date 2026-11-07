@@ -1,14 +1,15 @@
 'use strict';
-// Sector QGV (owner 2026-11-06; feature 2.2) on #/qgv section 1.2 in a real browser at 1440×1000 and 390×844.
-//  - Real source (IS2.sectorQgv.source → NONE): 자료 연결 전, the official 1.1 table untouched.
-//  - The SYNTHETIC bundle (tools/web_app_sector_qgv_fixture.js: v0 presets from the design §5, invented companies and scores) put
-//    in place of source(): badges 기본값 · 초기 설정 / 추천 / 선택됨 / 준비 중 / 부적합 / 자료 일부 부족 as words; search by PER and
-//    PBR; replace a factor; preview (before → after, computed n / original population, reasons, unscored never 0); save only
-//    after a matching preview; reload keeps it (this device); cancel; restore default; a bank change does not reach insurance;
-//    an invalid sum blocks the preview; a late answer to an older request is dropped; the official model is the 1.1 board.
-//  - Phone: no horizontal overflow, 44 px controls; keyboard: the preview runs from Enter on the focused button.
-//  - Boundaries: no request leaves the origin, no new data request, nothing stored but the one sector key, no console error, CSP 0.
-//    SQ_SHOTS=<dir> saves screenshots (deviceScaleFactor 2).
+// Sector QGV (feature 2.2) on #/qgv section 1.2 in a real browser at 1440×1000 and 390×844, with the development engine route:
+// the site answers POST sector-qgv-engine with Codex's common engine #505 (tools/sector_qgv_engine_bridge.py as a child process,
+// SYNTHETIC inputs only). Owner 2026-11-06 「섹터 QGV 실제 연결」: 설정 변경 → 공통 엔진 실행 → 결과 판독 → 전후 미리보기 → 저장·복원.
+//  - Nothing is sent when #/qgv opens; 「계산 엔진 연결」 asks for the context and the scope's factor list.
+//  - Badges as words (기본값 · 초기 설정 / 추천 / 선택됨 / 계산 기능 준비 중 / 산식 적용 부적합), PER / PBR search, replace.
+//  - A preview is an engine call: the rows and ranks shown are the engine's answer for that config (checked against a direct
+//    engine call), before → after, the original denominator; save only for the shown, current preview; reload keeps it.
+//  - Gate: 관문 통과 / 가치(V) 제외 / 판정 불가 (no final score, no rank); a refused input keeps the last good result.
+//  - Cancel, restore, a bank change that stays in banks, a late answer dropped, the published site without the route.
+//  - Phone: no horizontal overflow, 44 px controls. Boundaries: no request leaves the origin, the engine route is POST only,
+//    nothing stored but the one sector key, no console error, CSP 0. SQ_SHOTS=<dir> saves screenshots (deviceScaleFactor 2).
 const { chromium } = require('playwright');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -16,7 +17,7 @@ const path = require('node:path');
 const R = require('./web_app_reuse');
 const site = require('./web_app_test_site');
 const F = require('./qgv_v2_fixture.js');
-const X = require('./web_app_sector_qgv_fixture.js');
+const E = require('./web_app_sector_qgv_engine.js');
 const S = require('../src/investment_system/product/web_app/sector-qgv.js');
 
 const NOW = '2026-11-06T03:00:00.000Z';
@@ -24,13 +25,13 @@ const CLASS = JSON.parse(fs.readFileSync(path.join(R.ROOT, 'implementation/tests
 const UNPUBLISHED = ['sec-public-inputs.json', 'qgv-official.json', 'qgv-official-status.json'];
 const KEY = 'investment.web.v2.sector-qgv-user-config';
 const SHOTS = process.env.SQ_SHOTS || null;
-const BUNDLE = X.bundle();
 let phase = 'START', pass = 0;
 const ok = (name) => { pass++; console.log('PASS ' + name); };
 
 (async () => {
-  assert.equal(S.validate(BUNDLE).ok, true);
-  const s = await site.start({ fixtures: { 'sec-qgv2.json': { json: F.strictPayload() }, 'company-classification.json': { json: CLASS } } });
+  const eng = E.start();
+  const fixtures = { 'sec-qgv2.json': { json: F.strictPayload() }, 'company-classification.json': { json: CLASS } };
+  const s = await site.start({ fixtures, posts: { [E.ROUTE]: eng.route } });
   const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_EXECUTABLE_PATH || undefined });
   try {
     for (const width of [1440, 390]) {
@@ -40,137 +41,164 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       await ctx.clock.setFixedTime(new Date(NOW));
       await ctx.addInitScript(() => { window.__csp = 0; document.addEventListener('securitypolicyviolation', () => { window.__csp++; }); });
       const page = await ctx.newPage(), seen = site.watch(page, s.origin, { allow404: UNPUBLISHED });
+      const posts = []; page.on('request', (r) => { if (r.url().endsWith('/' + E.ROUTE)) posts.push(r.method()); });
       const B = '[data-sq-body]';
       const text = (sel) => page.locator(sel).first().evaluate((e) => e.innerText);
-      const go = async (hash, route) => { await page.evaluate((h) => { location.hash = h; }, hash); await page.locator('main[data-route=' + route + ']').waitFor(); };
-      const reopen = async () => { await go('#/macro', 'macro'); await go('#/qgv', 'qgv'); await page.locator(B + ' [data-sq-state], ' + B + ' [data-sq-data]').first().waitFor(); };
-      const swap = (payload, delayFirst = 0) => page.evaluate(([p, d]) => { const I = window.IS2; I.__realSq = I.__realSq || I.sectorQgv; let n = 0;
-        const preview = (...a) => { n++; const out = I.__realSq.preview(...a); return n === 1 && d ? new Promise((r) => setTimeout(() => r(out), d)) : out; };
-        I.sectorQgv = Object.freeze({ ...I.__realSq, preview, source: () => Promise.resolve({ state: 'OK', code: null, payload: p, text: '' }) }); }, [payload, delayFirst]);
       const tableRows = () => page.locator('[data-lb-table] tbody tr[data-row]').count();
       const factorIds = () => page.$$eval(B + ' [data-sq-factor]', (n) => n.map((x) => x.dataset.sqFactor));
-      const setAxis = async (a, value, sum) => { await page.fill(B + ' [data-k=sq-axis-' + a + ']', value); await page.locator(B + ' [data-k=sq-axis-' + a + ']').press('Tab');
-        await page.locator(B + ' [data-sq-axis-sum="' + sum + '"]').waitFor(); };
-      const preview = async () => { await page.locator(B + ' [data-k=sq-preview]').click(); await page.locator(B + ' [data-sq-preview]').waitFor(); };
+      const ready = () => page.locator(B + ' [data-sq-role]').first().waitFor();
+      const setAxis = async (a, value) => { await page.fill(B + ' [data-k=sq-axis-' + a + ']', value); await page.locator(B + ' [data-k=sq-axis-' + a + ']').press('Tab'); };
+      const preview = async () => { const before = eng.calls.length; await page.locator(B + ' [data-k=sq-preview]').click();
+        await page.waitForFunction((b) => { const p = document.querySelector(b + ' [data-sq-preview]'), m = document.querySelector(b + ' [data-sq-msg]'), btn = document.querySelector(b + ' [data-k=sq-preview]');
+          return btn && btn.textContent !== '계산 중…' && (p || m); }, B); return eng.calls.slice(before); };
+      const connect = async () => { await page.locator(B + ' [data-k=sq-connect]').click(); await ready(); };
+      const ranks = () => page.$$eval(B + ' [data-sq-row]', (n) => Object.fromEntries(n.map((x) => [x.dataset.sqRow, x.querySelector('[data-sq-rank]').innerText.split('→').pop().trim()])));
 
       await page.goto(s.base + '#/qgv'); await page.evaluate(() => window.IS2.ready);
       await page.locator('[data-lb-table] tbody tr[data-row]').first().waitFor();
       const boardRows = await tableRows();
+      await page.locator(B + ' [data-sq-state=IDLE]').waitFor();
+      assert.ok((await text(B)).includes('계산 엔진 연결 전')); assert.deepEqual(posts, [], 'nothing sent when the page opens');
+      ok(tag + ' opening sends nothing; 계산 엔진 연결 전; official board ' + boardRows + ' rows');
 
-      // ---------------- real source NONE
-      phase = tag + ' none';
-      await page.locator(B + ' [data-sq-state=NONE]').waitFor();
-      assert.ok((await text(B)).includes(S.TEXT.NONE));
-      ok(tag + ' real source NONE; official board untouched (' + boardRows + ' rows)');
-
-      // ---------------- synthetic bundle: badges, search, replace
-      phase = tag + ' bundle';
-      await swap(BUNDLE); await reopen(); await page.locator(B + ' [data-sq-data=SYNTHETIC]').waitFor();
+      // ---------------- connect: context + factor list from the engine; badges, search, replace
+      phase = tag + ' connect';
+      const c0 = eng.calls.length; await connect();
+      assert.deepEqual(eng.calls.slice(c0).map((c) => c.op), ['context', 'view']);
       const all = await text(B);
-      assert.ok(!/\b(null|undefined)\b/.test(all), 'no null / undefined text');
-      for (const w of [S.TEXT.SYNTHETIC, '연구 프리셋 sector-qgv-default/0.1.0 · 기본값 · 초기 설정', '이 기기(이 브라우저)에만 저장 · 다른 기기와 동기화 안 됨', '린치 유형 태그는 점수에 영향 없음'])
+      assert.ok(!/\b(null|undefined|NaN)\b/.test(all), 'no null / undefined text');
+      for (const w of ['모델 sector-qgv-default/0.1.0', '엔진 sector-qgv-engine/0.1.0', '계산 Codex 공통 엔진', '관문 official-q-percentile-required/1', '이 기기(이 브라우저)에만 저장', '린치 유형 태그는 점수에 영향 없음'])
         assert.ok(all.includes(w), w);
-      await page.selectOption('#sq-sector', 'ENERGY');
       await page.locator(B + ' [data-k=sq-tab-V]').click();
-      assert.deepEqual(await factorIds(), ['V_EARNINGS_YIELD', 'V_CFO_YIELD', 'V_EBITDA_TO_EV']);
-      const ep = B + ' [data-sq-factor=V_EARNINGS_YIELD]';
+      assert.deepEqual(await factorIds(), ['ep_ttm_diluted', 'cfo_mcap', 'sales_ev'], 'IT general V from the engine preset');
+      const ep = B + ' [data-sq-factor=ep_ttm_diluted]';
       assert.deepEqual(await page.$$eval(ep + ' [data-sq-badge]', (n) => n.map((x) => x.dataset.sqBadge)), ['BASE', 'RECOMMENDED', 'SELECTED']);
-      assert.ok((await text(ep)).includes('기본값 · 초기 설정') && (await text(ep)).includes('✓ 선택됨'), 'badges are words');
+      assert.ok((await text(ep)).includes('기본값 · 초기 설정') && (await text(ep)).includes('✓ 선택됨') && (await text(ep)).includes('추천'), 'badges are words');
       await page.fill('#sq-q', 'PER');
-      assert.equal(await page.locator(B + ' [data-sq-cand=V_EARNINGS_YIELD] button').isDisabled(), true, 'PER = E/P: already selected');
-      assert.ok((await text(B + ' [data-sq-cand=V_FWD_EARNINGS_YIELD]')).includes('계산 기능 준비 중'));
-      assert.equal(await page.locator(B + ' [data-sq-cand=V_FWD_EARNINGS_YIELD] button').isDisabled(), true, 'pending: not selectable');
-      await page.fill('#sq-q', 'P/TBV');
-      assert.ok((await text(B + ' [data-sq-cand=V_TBV_YIELD]')).includes('산식 적용 부적합'));
+      assert.equal(await page.locator(B + ' [data-sq-cand=ep_ttm_diluted] button').isDisabled(), true, 'PER = the selected E/P');
+      assert.ok((await text(B + ' [data-sq-cand=ep_fy1]')).includes('예상 PER'));
+      await page.fill('#sq-q', 'FCFF');
+      assert.ok((await text(B + ' [data-sq-cand=fcff_ev]')).includes('계산 기능 준비 중'));
+      assert.equal(await page.locator(B + ' [data-sq-cand=fcff_ev] button').isDisabled(), true, 'pending: not selectable');
       await page.fill('#sq-q', 'PBR');
-      assert.equal(await page.locator(B + ' [data-sq-cand=V_BOOK_YIELD] button').isDisabled(), false, 'not recommended but selectable');
-      await page.fill('#sq-q', '');
-      await page.selectOption(B + ' [data-k="sq-replace-V_EBITDA_TO_EV"]', 'V_BOOK_YIELD');
-      assert.deepEqual(await factorIds(), ['V_EARNINGS_YIELD', 'V_CFO_YIELD', 'V_BOOK_YIELD']);
-      assert.ok((await text(B + ' [data-sq-factor=V_BOOK_YIELD]')).includes('총점 실효 15.0%'), 'V 50 % × other 30 %');
-      ok(tag + ' badges as words, PER search = E/P, pending / unfit not selectable, PBR replaces EV/EBITDA in its role');
+      assert.equal(await page.locator(B + ' [data-sq-cand=common_bp] button').isDisabled(), false, 'PBR selectable');
+      await page.locator(B + ' [data-k=sq-tab-Q]').click(); await page.fill('#sq-q', '보통주 ROE');
+      assert.ok((await text(B + ' [data-sq-cand=roe_common_ttm]')).includes('산식 적용 부적합'));
+      await page.fill('#sq-q', ''); await page.locator(B + ' [data-k=sq-tab-V]').click();
+      await page.selectOption(B + ' [data-k="sq-replace-sales_ev"]', 'common_bp');
+      assert.deepEqual(await factorIds(), ['ep_ttm_diluted', 'cfo_mcap', 'common_bp']);
+      ok(tag + ' engine context and factor list; badges as words; PER / PBR search; pending and unfit not selectable; PBR replaces EV/Sales');
 
-      // ---------------- preview → save → reload
+      // ---------------- preview = engine recalculation; save; reload
       phase = tag + ' preview';
       assert.equal(await page.locator(B + ' [data-k=sq-save]').isDisabled(), true, 'no save before a preview');
-      if (phone) { await preview(); } else { await page.locator(B + ' [data-k=sq-preview]').focus(); await page.keyboard.press('Enter'); await page.locator(B + ' [data-sq-preview]').waitFor(); }
+      let calls;
+      if (phone) calls = await preview();
+      else { const before = eng.calls.length; await page.locator(B + ' [data-k=sq-preview]').focus(); await page.keyboard.press('Enter'); await page.locator(B + ' [data-sq-preview]').waitFor(); calls = eng.calls.slice(before); }
+      assert.deepEqual(calls.map((c) => [c.op, c.input_id, c.ok]), [['preview', 'NORMAL', true]], 'one engine preview call');
       const sum = await text(B + ' [data-sq-summary]');
-      assert.match(sum, /총점 산출 · 전 \d+ \/ 281 \([\d.]+%\) → 후 \d+ \/ 281/);
-      assert.match(sum, /미산출 사유\(후\) · .*입력 없음 \d+/); assert.match(sum, /섹터·회계모형 대응 미확인 3/);
-      const rows = await page.locator(B + ' [data-sq-row]').count(); assert.equal(rows, 25, 'the 25 ENERGY companies');
-      assert.ok(!/\b(null|undefined)\b/.test(await text(B)), 'no null / undefined text with a preview');
-      const naCells = await page.$$eval(B + ' [data-sq-row] .na', (n) => n.map((x) => x.innerText));
-      assert.ok(naCells.every((t) => t.startsWith('미산출 · ')), 'unscored shows its reason');
-      assert.ok(!(await page.$$eval(B + ' [data-sq-row]', (n) => n.map((x) => x.innerText).join('\n'))).match(/(^|\s)0\.0(\s|$)/), 'never 0 for unscored');
+      assert.match(sum, /미리보기 · 공통 엔진 재계산/);
+      // The synthetic input has no common B/P observation: the engine leaves V and the total unscored (strict), never 0.
+      assert.match(sum, /총점 산출 · 전 20 \/ 20 → 후 0 \/ 20 · 원래 모집단 전체 기준/); assert.match(sum, /V 0 \/ 20/); assert.match(sum, /필수 요소 결측 · 총점 미산출 20/);
+      assert.ok((await text(B + ' [data-sq-factor=common_bp]')).includes('자료 일부 부족 0/20 · 선택 가능'), 'availability from the engine coverage');
+      assert.ok((await text(B + ' [data-sq-row=company-000]')).includes('미산출 · PBR / 보통주 B/P 자료 없음'));
+      assert.equal(await page.locator(B + ' [data-k=sq-save]').isDisabled(), false, 'an unscored result can still be saved: it is the engine\'s answer');
+      await page.selectOption(B + ' [data-k="sq-replace-common_bp"]', 'ebitda_ev');
+      assert.deepEqual(await factorIds(), ['ep_ttm_diluted', 'cfo_mcap', 'ebitda_ev']);
+      assert.equal(await page.locator(B + ' [data-sq-stale]').count(), 1, 'the PBR preview is stale now');
+      calls = await preview();
+      assert.deepEqual(calls.map((c) => [c.op, c.input_id, c.ok]), [['preview', 'NORMAL', true]]);
+      assert.match(await text(B + ' [data-sq-summary]'), /총점 산출 · 전 20 \/ 20 → 후 20 \/ 20 · 원래 모집단 전체 기준/);
+      assert.equal(await page.locator(B + ' [data-sq-row]').count(), 20);
+      const shown = await ranks();
+      assert.ok(!/\b(null|undefined|NaN)\b/.test(await text(B)), 'no null / undefined text with a preview');
       assert.equal(await page.locator(B + ' [data-k=sq-save]').isDisabled(), false);
       await page.locator(B + ' [data-k=sq-save]').click();
-      assert.ok((await text(B + ' [data-sq-msg]')).startsWith('이 기기에 저장함'));
+      assert.ok((await text(B + ' [data-sq-msg]')).startsWith('이 기기에 저장함 · 엔진 저장 기록'));
       const stored = JSON.parse(await page.evaluate((k) => localStorage.getItem(k), KEY));
-      assert.equal(S.validateConfig(stored, S.validate(BUNDLE).value).ok, true);
-      assert.deepEqual(Object.keys(stored.overrides), ['ENERGY|GENERAL']);
+      assert.equal(S.validateSaved(stored).ok, true); assert.equal(stored.preview_id, await page.locator(B + ' [data-sq-preview]').getAttribute('data-sq-preview'));
+      assert.deepEqual(Object.keys(stored.config.scoped_overrides), ['INFORMATION_TECHNOLOGY|GENERAL']);
+      // The ranks on the screen are the engine's for this config (a direct call with the stored config gives the same).
+      const direct = await eng.call(S.request('preview', { config: stored.config, before_config: stored.config, input_id: 'NORMAL' }));
+      assert.deepEqual(shown, Object.fromEntries(direct.after.result_rows.map((r) => [r.company_id, String(r.rank)])), 'screen ranks = engine ranks');
+      assert.ok(Object.values(await page.$$eval(B + ' [data-sq-row] [data-sq-rank]', (n) => n.map((x) => x.innerText))).some((t) => { const [a, b] = t.split('→').map((x) => x.trim()); return a !== b; }), 'some rank moved before → after');
       assert.equal(await tableRows(), boardRows, 'official board unchanged');
-      await page.reload(); await page.evaluate(() => window.IS2.ready); await swap(BUNDLE); await reopen(); await page.locator(B + ' [data-sq-data]').waitFor();
-      await page.selectOption('#sq-sector', 'ENERGY'); await page.locator(B + ' [data-k=sq-tab-V]').click();
-      assert.deepEqual(await factorIds(), ['V_EARNINGS_YIELD', 'V_CFO_YIELD', 'V_BOOK_YIELD'], 'saved on this device');
-      ok(tag + ' preview (n / 281, reasons, never 0), save after a matching preview, kept after reload, official board unchanged');
-
-      // ---------------- cancel, restore, invalid sum
-      phase = tag + ' cancel';
-      await setAxis('Q', '50', '11500');
-      await page.locator(B + ' [data-sq-fault=AXIS_SUM]').waitFor();
-      assert.equal(await page.locator(B + ' [data-k=sq-preview]').isDisabled(), true, 'invalid sum: no preview');
-      await page.locator(B + ' [data-k=sq-cancel]').click();
-      assert.equal(await page.locator(B + ' [data-sq-fault]').count(), 0); assert.equal(await page.inputValue(B + ' [data-k=sq-axis-Q]'), '35');
+      await page.reload(); await page.evaluate(() => window.IS2.ready); await page.locator(B + ' [data-sq-state=IDLE]').waitFor(); await connect();
+      assert.ok((await text(B + ' [data-sq-saved=OK]')).includes(stored.preview_id.slice(0, 12)));
       await page.locator(B + ' [data-k=sq-tab-V]').click();
-      assert.deepEqual(await factorIds(), ['V_EARNINGS_YIELD', 'V_CFO_YIELD', 'V_BOOK_YIELD'], 'cancel = last saved');
-      await page.locator(B + ' [data-k=sq-restore]').click();
-      assert.deepEqual(await factorIds(), ['V_EARNINGS_YIELD', 'V_CFO_YIELD', 'V_EBITDA_TO_EV'], 'restore = base preset');
-      assert.ok((await text(B + ' [data-sq-msg]')).includes('기본값(sector-qgv-default/0.1.0)'));
-      assert.deepEqual(Object.keys(JSON.parse(await page.evaluate((k) => localStorage.getItem(k), KEY)).overrides), ['ENERGY|GENERAL'], 'not saved until the user saves');
-      ok(tag + ' invalid sum blocks preview; cancel = last saved; restore = base preset, saved only on save');
+      assert.deepEqual(await factorIds(), ['ep_ttm_diluted', 'cfo_mcap', 'ebitda_ev'], 'saved on this device');
+      ok(tag + ' preview is one engine call each (PBR: V 0 / 20 strict, never 0; EV/EBITDA: 20 / 20, ranks = engine), saved record of that preview, kept after reload');
+
+      // ---------------- stale, invalid sum, cancel, restore
+      phase = tag + ' cancel';
+      await preview();
+      await setAxis('Q', '31'); await page.locator(B + ' [data-sq-axis-sum="10100"]').waitFor();
+      await page.locator(B + ' [data-sq-fault=SUM]').waitFor();
+      assert.equal(await page.locator(B + ' [data-k=sq-preview]').isDisabled(), true, 'bad sum: no preview');
+      assert.equal(await page.locator(B + ' [data-sq-stale]').count(), 1, 'the older preview is hidden as stale');
+      assert.equal(await page.locator(B + ' [data-k=sq-save]').isDisabled(), true, 'no save of a stale preview');
+      await page.locator(B + ' [data-k=sq-cancel]').click(); await ready();
+      assert.equal(await page.inputValue(B + ' [data-k=sq-axis-Q]'), '30');
+      await page.locator(B + ' [data-k=sq-tab-V]').click();
+      assert.deepEqual(await factorIds(), ['ep_ttm_diluted', 'cfo_mcap', 'ebitda_ev'], 'cancel = last saved');
+      await page.locator(B + ' [data-k=sq-restore]').click(); await ready(); await page.locator(B + ' [data-k=sq-tab-V]').click();
+      assert.deepEqual(await factorIds(), ['ep_ttm_diluted', 'cfo_mcap', 'sales_ev'], 'restore = the engine default preset');
+      assert.ok((await text(B + ' [data-sq-msg]')).includes('엔진 기본값(sector-qgv-default/0.1.0)'));
+      assert.equal(JSON.parse(await page.evaluate((k) => localStorage.getItem(k), KEY)).preview_id, stored.preview_id, 'not saved until the user saves');
+      ok(tag + ' a changed config hides the stale preview and blocks save; bad sum blocks preview; cancel = saved; restore = engine default');
 
       // ---------------- a bank change stays in banks
       phase = tag + ' bank';
-      await page.selectOption('#sq-sector', 'FINANCIALS'); await page.selectOption('#sq-template', 'FINANCIALS|BANK'); await page.locator(B + ' [data-k=sq-tab-V]').click();
-      assert.ok((await text(B + ' [data-sq-factor=V_BOOK_YIELD]')).includes('추천'), 'bank: PBR recommended');
-      await page.selectOption(B + ' [data-k="sq-replace-V_BOOK_YIELD"]', 'V_TBV_YIELD');
-      await preview(); await page.locator(B + ' [data-k=sq-save]').click();
+      await page.selectOption('#sq-sector', 'FINANCIALS'); await ready(); await page.selectOption('#sq-template', 'BANK'); await ready();
+      await page.locator(B + ' [data-k=sq-tab-V]').click();
+      assert.deepEqual(await factorIds(), ['ep_ttm_diluted', 'common_bp']);
+      await page.selectOption(B + ' [data-k="sq-replace-common_bp"]', 'tangible_common_bp');
+      await preview();
+      assert.ok((await text(B + ' [data-sq-preview]')).includes('이 섹터·회계모형의 행 없음'), 'the synthetic input has no banks: said, not 0');
+      await page.locator(B + ' [data-k=sq-save]').click();
       const st2 = JSON.parse(await page.evaluate((k) => localStorage.getItem(k), KEY));
-      assert.deepEqual(Object.keys(st2.overrides).sort(), ['ENERGY|GENERAL', 'FINANCIALS|BANK'].sort());
-      await page.selectOption('#sq-template', 'FINANCIALS|INSURANCE'); await page.locator(B + ' [data-k=sq-tab-V]').click();
-      assert.deepEqual(await factorIds(), ['V_EARNINGS_YIELD', 'V_BOOK_YIELD'], 'insurance keeps its base preset');
-      await page.locator(B + ' [data-k=sq-preview]').click(); await page.locator(B + ' [data-sq-preview]').waitFor();
-      assert.ok((await text(B + ' [data-sq-preview]')).includes('비교집단 표본 부족'), 'small peer group named, not 0');
-      ok(tag + ' bank override saved; insurance keeps its base; small peer group named');
+      assert.deepEqual(Object.keys(st2.config.scoped_overrides), ['FINANCIALS|BANK']);
+      assert.deepEqual(st2.config.scoped_overrides['FINANCIALS|BANK'].axes.V.other_value.factors, { tangible_common_bp: 10000 });
+      await page.selectOption('#sq-template', 'INSURANCE'); await ready(); await page.locator(B + ' [data-k=sq-tab-V]').click();
+      assert.deepEqual(await factorIds(), ['ep_ttm_diluted', 'common_bp'], 'insurance keeps the engine default');
+      ok(tag + ' bank override saved alone; insurance keeps the engine default');
+
+      // ---------------- gate: pass / V excluded / unknown; a refused input keeps the last good result
+      phase = tag + ' gate';
+      await page.selectOption('#sq-sector', 'INFORMATION_TECHNOLOGY'); await ready(); await page.selectOption('#sq-template', 'GENERAL'); await ready();
+      await page.selectOption('#sq-input', 'GATE_UNKNOWN'); await preview();
+      const unk = B + ' [data-sq-row=company-000]';
+      assert.equal(await page.locator(unk).getAttribute('data-sq-status'), 'GATE_UNKNOWN');
+      assert.ok((await text(unk)).includes('관문 판정 불가 · 최종 점수·순위 없음'));
+      assert.equal((await text(unk + ' [data-sq-rank]')).split('→').pop().trim(), '없음', 'no rank');
+      assert.ok((await text(B + ' [data-sq-summary]')).includes('총점 산출 · 전 19 / 20 → 후 19 / 20'));
+      await page.selectOption('#sq-input', 'GATE_EXCLUDED'); await preview();
+      const ex = await text(B + ' [data-sq-row=company-000] [data-sq-gate]');
+      assert.ok(ex.startsWith('관문: 가치(V) 제외 · 남은 축 비례 재배분 · 적용 Q ') && !ex.includes(' V '), ex);
+      assert.equal(await page.locator(B + ' [data-sq-row=company-001] [data-sq-gate]').getAttribute('data-sq-gate'), 'PASS');
+      await page.selectOption('#sq-input', 'FAILED'); await preview();
+      assert.ok((await text(B + ' [data-sq-msg]')).includes('미리보기 거부 · 입력 거부 · 회사 ID 중복 · 이전 결과는 그대로'));
+      await page.selectOption('#sq-input', 'GATE_EXCLUDED');
+      assert.equal(await page.locator(B + ' [data-sq-preview]').count(), 1, 'the last good preview is still the shown one for its input');
+      ok(tag + ' gate pass / V excluded / unknown without score or rank; a refused input keeps the last good preview');
 
       // ---------------- a late answer to an older request never wins
       phase = tag + ' order';
-      await swap(BUNDLE, 400); await reopen(); await page.locator(B + ' [data-sq-data]').waitFor();
-      await page.selectOption('#sq-sector', 'ENERGY');
-      await page.locator(B + ' [data-k=sq-preview]').click();                          // request 1 (slow)
-      await setAxis('Q', '30', '9500'); await setAxis('V', '55', '10000');
-      await page.locator(B + ' [data-k=sq-preview]').click();                          // request 2 (fast)
-      await page.locator(B + ' [data-sq-preview]').waitFor();
-      const k2 = await page.locator(B + ' [data-sq-preview]').getAttribute('data-sq-preview');
-      await page.waitForTimeout(600);
-      assert.equal(await page.locator(B + ' [data-sq-preview]').getAttribute('data-sq-preview'), k2, 'the late answer to request 1 did not replace request 2');
-      assert.equal(await page.locator(B + ' [data-sq-dropped]').getAttribute('data-sq-dropped'), '1');
-      ok(tag + ' request order: the older, slower answer is dropped');
-
-      // ---------------- official model
-      phase = tag + ' official';
-      await page.locator(B + ' [data-k=sq-model-OFFICIAL]').click();
-      assert.ok((await text(B + ' [data-sq-state=OFFICIAL]')).includes('공식 QGV는 1.1 리더보드의 게시본 그대로'));
-      assert.equal(await tableRows(), boardRows);
-      await page.locator(B + ' [data-k=sq-model-DEFAULT]').click();
-      assert.equal(await page.locator(B + ' [data-k=sq-save]').count(), 0, 'the research preset is read only');
-      await page.locator(B + ' [data-k=sq-model-MINE]').click();
-      ok(tag + ' official model = the 1.1 board; research preset read only');
+      await page.selectOption('#sq-input', 'NORMAL');
+      const dropped = Number(await page.locator(B + ' [data-sq-dropped]').getAttribute('data-sq-dropped'));
+      eng.hold(1); await page.locator(B + ' [data-k=sq-preview]').click();
+      await page.waitForFunction(() => document.querySelector('[data-k=sq-preview]').textContent === '계산 중…');
+      await setAxis('Q', '31'); await setAxis('G', '24'); await page.locator(B + ' [data-sq-axis-sum="10000"]').waitFor();
+      eng.release();
+      await page.waitForFunction((d) => Number(document.querySelector('[data-sq-dropped]').dataset.sqDropped) === d + 1, dropped);
+      assert.equal(await page.locator(B + ' [data-sq-preview]').count(), 0, 'the answer to the older config is not shown');
+      assert.equal(await page.locator(B + ' [data-k=sq-preview]').isDisabled(), false, 'a new preview can be asked');
+      await preview(); assert.equal(await page.locator(B + ' [data-sq-preview]').count(), 1);
+      ok(tag + ' request order: the answer to the older config is dropped');
 
       // ---------------- phone
       if (phone) {
         phase = tag + ' phone';
-        await page.locator(B + ' [data-k=sq-preview]').click(); await page.locator(B + ' [data-sq-preview]').waitFor();
         assert.ok((await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)) <= 0, 'no horizontal overflow');
         const small = await page.$$eval(B + ' select, ' + B + ' input[type=number], ' + B + ' .btn', (els) => els.filter((e) => e.offsetParent && e.getBoundingClientRect().height < 44).map((e) => e.dataset.k || e.tagName));
         assert.deepEqual(small, [], '44 px');
@@ -178,25 +206,36 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       }
       if (SHOTS) await page.locator('[data-section="1-2"]').screenshot({ path: path.join(SHOTS, 'sq-' + tag + '.png') });
 
-      // ---------------- invalid bundle
-      phase = tag + ' invalid';
-      const bad = JSON.parse(JSON.stringify(BUNDLE)); bad.presets[0].axis_weights.Q += 1;
-      await swap(bad); await reopen(); await page.locator(B + ' [data-sq-state=INVALID]').waitFor();
-      assert.match(await text(B), /AXIS_SUM/); assert.equal(await tableRows(), boardRows);
-      ok(tag + ' invalid bundle refused whole; official board untouched');
-
       phase = tag + ' boundaries';
       assert.deepEqual(seen.outside, []); assert.deepEqual(seen.errors, []);
-      assert.deepEqual(seen.requests.filter((u) => /sector/i.test(u) && !/\/(sector-qgv|screen-sector-qgv-live)\.js$/.test(new URL(u).pathname)), [], 'no sector data request');
+      assert.ok(posts.length > 0 && posts.every((m) => m === 'POST'), 'the engine route is POST only');
+      assert.deepEqual(seen.requests.filter((u) => /sector/i.test(u) && !/\/(sector-qgv|screen-sector-qgv-live)\.js$|\/sector-qgv-engine$/.test(new URL(u).pathname)), [], 'no sector data file request');
       const st = await site.storage(page);
       assert.deepEqual(Object.keys(st.localItems).filter((k) => !/recent-search/.test(k)), [KEY], 'only the sector key is written by this screen');
       assert.equal(await page.evaluate(() => window.__csp), 0);
+      assert.deepEqual(eng.stderr, []);
       ok(tag + ' boundaries');
       await ctx.close();
     }
+
+    // ---------------- the published site has no engine route
+    phase = 'no route';
+    const bare = await site.start({ fixtures, out: s.out });
+    try {
+      const ctx = await browser.newContext({ viewport: { width: 1440, height: 1000 } }); const page = await ctx.newPage(); const errs = [];
+      page.on('pageerror', (e) => errs.push(String(e)));
+      await page.goto(bare.base + '#/qgv'); await page.evaluate(() => window.IS2.ready);
+      await page.locator('[data-sq-body] [data-k=sq-connect]').click();
+      await page.locator('[data-sq-body] [data-sq-state=ERROR]').waitFor();
+      assert.ok((await page.locator('[data-sq-body]').innerText()).includes('계산 실행 경로 연결 전'));
+      assert.equal(await page.locator('[data-sq-body]').getAttribute('data-sq-code'), 'ENGINE_NOT_CONNECTED');
+      assert.deepEqual(errs, []);
+      await ctx.close();
+    } finally { await bare.close(); }
+    ok('published site: no engine route → 계산 실행 경로 연결 전, never a guessed result');
     console.log(JSON.stringify({ passed: true, checks: pass }));
   } catch (e) {
     console.error('FAIL ' + phase + ': ' + (e && e.stack || e));
     process.exitCode = 1;
-  } finally { await browser.close(); await s.close(); }
+  } finally { await browser.close(); await s.close(); await eng.close(); }
 })();

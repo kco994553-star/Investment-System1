@@ -55,7 +55,7 @@ const NAMESPACES=Object.freeze({data:'data.js',prices:'prices.js',store:'store.j
 // parameter `event` → 'a', subscribe → 'sub', the rest 's', non-functions 'v'). The views and results the layer hands only to
 // old modules and engines.js (source rules) have no facade member.
 const API=Object.freeze({
- data:{FILES:'v',CORE:'v',LIST_FILES:'v',STATIC:'v',READERS:'v',MAX_BYTES:'v',EVENT:'v',strictFetch:'p',ready:'p',get:'s',screens:'s',state:'s',
+ data:{FILES:'v',CORE:'v',LIST_FILES:'v',STATIC:'v',READERS:'v',MAX_BYTES:'v',EVENT:'v',ENGINE_ROUTE:'v',strictFetch:'p',engine:'p',ready:'p',get:'s',screens:'s',state:'s',
   publication:'s',list:'p',shares:'p',financials:'p',refresh:'a',static:'p',peek:'p',subscribe:'sub',universe:'p',official:'p'},
  prices:{UNIVERSE_SOURCE_KEY:'v',WORKER_ORIGIN_KEY:'v',status:'s',subscribe:'sub',deviceSettings:'p',prepare:'a',login:'a',logout:'a',readUniverse:'a',
   universeView:{prices:'s',priceBasis:'s',readStatus:'s',ranks:'s'},universeRanks:'s',rankFor:'s',useTabs:'a',loadTabs:'a',syncSymbols:'a',
