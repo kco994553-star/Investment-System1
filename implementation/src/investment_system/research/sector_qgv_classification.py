@@ -80,7 +80,7 @@ SIC_RULES['3671']={'sector_id':'INFORMATION_TECHNOLOGY','accounting_template':'G
                    'reason':'Named electronic-tube/component production.', 'rule_id':RULE_VERSION+':3671'}
 
 
-def classify(evidence,*,as_of,expected_issuer,expected_sic,source_profile):
+def classify(evidence,*,as_of,expected_issuer,expected_sic,source_profile,reviewed_rules=None,rule_version=RULE_VERSION):
     out={'sector_id':None,'accounting_template':None,'mapping':None,
          'official_classification':None,'reasons':[]}
     def fail(reason):out['reasons']=[reason];return out
@@ -97,13 +97,13 @@ def classify(evidence,*,as_of,expected_issuer,expected_sic,source_profile):
     out['official_classification']={'system':'SEC_SIC','code':sic,'description':evidence['sic_description'],
         'observed_at':evidence['acquired_at'],'source_sha256':evidence['source_sha256'],'source_url':evidence['source_url']}
     if sic!=expected_sic:return fail('SIC_SOURCE_CONFLICT')
-    rule=SIC_RULES.get(sic)
+    rule=(SIC_RULES if reviewed_rules is None else reviewed_rules).get(sic)
     if rule is None:return fail(UNRESOLVED.get(sic,'EXACT_SIC_CORRESPONDENCE_NOT_REVIEWED'))
     financial=rule['accounting_template'] in ('BANK','INSURANCE','BROKER')
     if source_profile!=('FINANCIAL' if financial else 'GENERAL'):return fail('ACCOUNTING_PROFILE_CONFLICT')
     out.update(sector_id=rule['sector_id'],accounting_template=rule['accounting_template'])
     ref=evidence['member']+'#sha256='+evidence['source_sha256']
-    out['mapping']={'version':MAPPING,'classification_rule_version':RULE_VERSION,
+    out['mapping']={'version':MAPPING,'classification_rule_version':rule_version,
         'kind':'RESEARCH_CORRESPONDENCE','valid_from':evaluation.isoformat(),
         'valid_to':(evaluation+timedelta(days=1)).isoformat(),
         'effective_date_basis':'SINGLE_EVALUATION_APPLICATION_NOT_SOURCE_CHANGE_DATE',
@@ -233,3 +233,62 @@ def connect_held_classification(snapshot,sec,archives,source_sha256):
         'publication_status':'RESEARCH_REPLAY_NOT_OFFICIAL_PUBLICATION',
         'replayed_at':datetime.now(timezone.utc).isoformat()}
     return result,audit
+
+
+# Additive review only. Original 0.1.0 behavior remains reproducible.
+ADDENDUM_VERSION = 'held-sec-book-correspondence/0.2.0'
+ADDENDUM_ACTIVITIES = {
+    '2033': ('CONSUMER_STAPLES', 'Canned, Fruits, Veg, Preserves, Jams & Jellies'),
+    '2070': ('CONSUMER_STAPLES', 'Fats & Oils'),
+    '2842': ('CONSUMER_STAPLES', 'Specialty Cleaning, Polishing and Sanitation Preparations'),
+    '2851': ('MATERIALS', 'Paints, Varnishes, Lacquers, Enamels & Allied Prods'),
+    '3100': ('CONSUMER_DISCRETIONARY', 'Leather & Leather Products'),
+    '3480': ('INDUSTRIALS', 'Ordnance & Accessories, (No Vehicles/Guided Missiles)'),
+    '3490': ('INDUSTRIALS', 'Miscellaneous Fabricated Metal Products'),
+    '3822': ('INDUSTRIALS', 'Auto Controls For Regulating Residential & Comml Environments'),
+    '4991': ('UTILITIES', 'Cogeneration Services & Small Power Producers'),
+    '5013': ('CONSUMER_DISCRETIONARY', 'Wholesale-Motor Vehicle Supplies & New Parts'),
+    '5070': ('INDUSTRIALS', 'Wholesale-Hardware & Plumbing & Heating Equipment & Supplies'),
+    '5810': ('CONSUMER_DISCRETIONARY', 'Retail-Eating & Drinking Places'),
+    '7359': ('INDUSTRIALS', 'Services-Equipment Rental & Leasing, NEC'),
+}
+
+
+def extend_held_classification(snapshot, evidence_by_code):
+    """Connect reviewed exact SEC activities, retaining all prior rows and gates.
+
+    The SEC-assigned primary activity is business evidence at the source's level;
+    it does not establish segment weights, official GICS or security identity.
+    Mixed/REIT/end-market/accounting conflicts remain unresolved. No old mapping,
+    raw observation, financial input or official Q gate is recomputed/replaced.
+    """
+    result = copy.deepcopy(snapshot); changes = []
+    for row in result['rows']:
+        if row.get('mapping') or row.get('reasons') != ['EXACT_SIC_CORRESPONDENCE_NOT_REVIEWED']:
+            continue
+        sic = row.get('source_sic'); activity = ADDENDUM_ACTIVITIES.get(sic)
+        evidence = evidence_by_code.get(row['company_id'])
+        if not activity or not evidence:
+            continue
+        sector, expected_description = activity
+        if ' '.join(evidence.get('sic_description','').split()).casefold() != expected_description.casefold():
+            continue
+        rule = {sic: {'sector_id': sector, 'accounting_template': 'GENERAL',
+                      'rule_id': ADDENDUM_VERSION+':'+sic,
+                      'reason': 'Research book-sector correspondence for SEC primary activity: '+expected_description+'. Segment mix and official GICS not inferred.'}}
+        linked = classify(evidence, as_of=snapshot['as_of'],expected_issuer=row.get('issuer_id'),
+                          expected_sic=sic,source_profile=row.get('source_profile'),
+                          reviewed_rules=rule,rule_version=ADDENDUM_VERSION)
+        if not linked['mapping']:
+            continue
+        changes.append({'company_id': row['company_id'],'source_sic': sic,'source_description':expected_description,
+                        'before_reasons':row['reasons'],'after_sector':sector,'after_template':'GENERAL',
+                        'mapping':linked['mapping']})
+        row.update(linked)
+    result['classification_rule_version'] = ADDENDUM_VERSION
+    result['snapshot_id'] = snapshot['snapshot_id']+'-addendum-'+digest(changes)[:12]
+    result['input_version'] = 'held-sec-sector-classified/2'
+    return result, {'schema_version':'sector-classification-addendum/1','changes':changes,
+                    'original_denominator':len(snapshot['members']),'newly_mapped':len(changes),
+                    'raw_observations_recomputed':0,'gate_inputs_recomputed':0,
+                    'classification_rule_version':ADDENDUM_VERSION}

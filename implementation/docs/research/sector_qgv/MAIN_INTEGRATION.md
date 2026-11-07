@@ -80,3 +80,14 @@ Main CI request: add `tests/test_sector_qgv_classification.py` and
 `tests/test_sector_qgv_main.py` alongside the previously requested sector test
 when integrating #505. No dependency installation, workflow/Secret or permission
 change is needed. Main owns that CI list.
+
+## 2026-11-07 continuation
+
+New `axis-comparison.json` is documented in `PARTIAL_COMPARISON.md` with
+`partial-synthetic-{snapshot,config,comparison}.json`. It exposes separate Q/G
+common sets even if `diff.common_valid` for total is0. Existing Main response
+schema and exact engine-produced display are unchanged; no screen-local rescoring.
+Main #507 head remains unchanged, so actual server/reader connection is pending.
+The earlier #504 helper blocker now has Main #508
+`df1a9abb8c72ee57a7f7a50011bb0dbf9ffb116f`; #504 imports its pure `iex_values`
+module and retains that exact dependency. No November2 prices have arrived.
