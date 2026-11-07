@@ -25,7 +25,7 @@ const P = require('../src/investment_system/product/web_app/policy-impact.js');
 
 const NOW = '2026-11-07T03:00:00.000Z';
 const CLASS = JSON.parse(fs.readFileSync(path.join(R.ROOT, 'implementation/tests/fixtures/company_classification_v0_payloads.json'), 'utf8')).live;
-const UNPUBLISHED = ['sec-public-inputs.json', 'sec-universe-shares.json', 'forward-validation-ledger.json', 'qgv-official.json', 'qgv-official-status.json', 'macro-evidence.json', 'dart-financials.json', 'policy-impact-navigation.json', 'policy-impact-private.json', 'policy-impact-navigation-private.json'];
+const UNPUBLISHED = ['sec-public-inputs.json', 'sec-universe-shares.json', 'forward-validation-ledger.json', 'qgv-official.json', 'qgv-official-status.json', 'macro-evidence.json', 'macro-evidence-status.json', 'dart-financials.json', 'policy-impact-navigation.json', 'policy-impact-private.json', 'policy-impact-navigation-private.json'];
 const FILE = 'policy-impact.json', NAV_FILE = 'policy-impact-navigation.json', PRIV_FILE = 'policy-impact-private.json', PRIV_NAV = 'policy-impact-navigation-private.json';
 const SHOTS = process.env.POL_SHOTS || null;
 const VAR = X.variants();
