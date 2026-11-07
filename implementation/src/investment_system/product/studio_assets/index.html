@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#182e29" />
+    <meta
+      name="description"
+      content="QGV v2, 포트폴리오, 기술적 분석과 거시 환경을 함께 살펴보는 로컬 투자 시뮬레이션 스튜디오. 모든 수치는 예시입니다."
+    />
+    <title>Investment Studio · 투자 시뮬레이션</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23182e29'/%3E%3Cpath d='M15 45V31m16 14V21m17 24V12' stroke='%23d4e4a7' stroke-width='7'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="/studio.css" />
+    <script defer src="/studio.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">본문으로 이동</a>
+    <aside class="sidebar" aria-label="스튜디오 탐색">
+      <a class="brand" href="#home"
+        ><span class="brand-mark">i<span>↗</span></span
+        ><span>investment<span class="brand-sub">S T U D I O</span></span></a
+      >
+      <div class="workspace-label">
+        <span class="workspace-dot"></span> 나의 투자 워크스페이스
+      </div>
+      <nav id="desktop-nav" aria-label="주요 메뉴"></nav>
+      <div class="sidebar-bottom">
+        <div class="studio-note">
+          <span class="note-star">✳</span><b>생각을 검증하는 공간</b>
+          <p>
+            가정을 바꾸고, 결과를 비교하며<br />나만의 투자 관점을 만드세요.
+          </p>
+          <a href="#simulation">시뮬레이션 시작 <span>↗</span></a>
+        </div>
+        <a class="settings-nav" href="#settings"
+          ><span>⚙</span> 설정 <span class="shortcut">⌘ ,</span></a
+        >
+        <div class="sidebar-footer">
+          <span class="online-dot"></span> LOCAL DEMO <span>v2.0</span>
+        </div>
+      </div>
+    </aside>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="breadcrumb">
+          <button
+            id="mobile-menu-toggle"
+            class="icon-button"
+            aria-label="전체 메뉴 열기"
+            aria-controls="mobile-all-menu"
+            aria-expanded="false"
+          >
+            ☰</button
+          ><span class="workspace-crumb">워크스페이스</span> <span>/</span>
+          <b id="breadcrumb-current">오늘</b>
+        </div>
+        <div class="top-actions">
+          <div class="search-wrap">
+            <label for="global-search" class="sr-only">기업 검색</label
+            ><span aria-hidden="true">⌕</span
+            ><input
+              id="global-search"
+              type="search"
+              placeholder="기업명, 티커 검색"
+              autocomplete="off"
+              aria-controls="search-results"
+              aria-expanded="false"
+            /><kbd>/</kbd>
+            <div id="search-results" class="search-results" hidden></div>
+          </div>
+          <button
+            class="icon-button"
+            id="export-global"
+            aria-label="화면 데이터 CSV 내보내기"
+            title="화면 데이터 CSV 내보내기"
+          >
+            ↥</button
+          ><a href="#settings" class="avatar" aria-label="나의 설정">MY</a>
+        </div>
+      </header>
+      <nav
+        id="mobile-all-menu"
+        class="mobile-all-menu"
+        aria-label="모바일 전체 메뉴"
+        hidden
+      ></nav>
+      <div class="demo-banner" id="demo-banner">
+        <span class="demo-pill">DEMO</span
+        ><span
+          >예시 데이터로 탐색 중입니다. 모든 가격·재무·뉴스·성과는
+          가상입니다.</span
+        ><a href="#settings">데이터 안내 <span>↗</span></a>
+      </div>
+      <main id="main" tabindex="-1">
+        <div class="loading-state">
+          <span class="loading-dot"></span> 투자 워크스페이스를 준비하고
+          있습니다.
+        </div>
+      </main>
+      <footer class="page-footer">
+        <span>INVESTMENT STUDIO</span
+        ><span>예시 데이터 · QGV v2 · 매크로 참고용</span
+        ><span>내 판단의 근거를 더 선명하게.</span>
+      </footer>
+    </div>
+    <nav class="mobile-nav" id="mobile-nav" aria-label="모바일 메뉴"></nav>
+    <div id="dialog-root"></div>
+    <div id="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>
