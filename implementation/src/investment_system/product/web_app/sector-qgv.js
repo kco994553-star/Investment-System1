@@ -7,7 +7,7 @@
    Every number the screen shows comes from an engine answer (sector-qgv-engine-response/1, tools/sector_qgv_engine_bridge.py).
    What this file does:
    - request(op, fields) builds sector-qgv-engine-request/1 with a fresh request_id; check(op, req, res, ctx) refuses an answer
-     that is not exactly that request's (schema, op, request_id, the context's versions, the preview and comparison schemas), so
+     that is not exactly that request's (schema, op, request_id of both previews, the context's versions, the preview schema), so
      a late or foreign answer never replaces the current one;
    - edits of one preset in the engine's own shape (axis basis points, axes[axis][role] = {weight, factors: {variant: bp}}):
      axis / role / factor weights, add (a same-role addition splits that role's budget), remove, replace (same axis and role);
@@ -75,7 +75,7 @@ function check(op,req,res,ctx=null){
   if(res.input_id!==req.input_id||res.data_kind!=='SYNTHETIC'||!object(res.before)||!object(res.after)||!object(res.comparison))return bad('ENGINE_ANSWER_INVALID');
   for(const p of [res.before,res.after]){if(p.schema_version!==PREVIEW||!Array.isArray(p.result_rows)||!object(p.coverage))return bad('ENGINE_ANSWER_INVALID');
    for(const k of ['model_version','engine_version','normalization_version','mapping_version'])if(p[k]!==ctx.versions[k])return bad('ANSWER_MISMATCH');}
-  if(res.after.request_id!==req.request_id||res.comparison.comparison_id!==req.request_id)return bad('ANSWER_MISMATCH');
+  if(res.after.request_id!==req.request_id||res.before.request_id!==req.request_id+':before'||!Array.isArray(res.comparison.rows))return bad('ANSWER_MISMATCH');
   // saved: the engine's save_user_config record for exactly this preview, or {refused: code}.
   if(!object(res.saved))return bad('ENGINE_ANSWER_INVALID');
   if(!own(res.saved,'refused')){const r=validateSaved(res.saved);if(!r.ok)return r;if(res.saved.preview_id!==res.after.preview_id)return bad('ANSWER_MISMATCH');}

@@ -2,8 +2,9 @@
 """Development execution route of the sector QGV screen (Main, owner 2026-11-06 「섹터 QGV 실제 연결」).
 
 The screen's 1.2 「가중치 · QGV 구성」 sends one JSON request per click (IS2.data.engine, same origin, POST); this bridge answers it
-by calling Codex's common engine `investment_system.research.sector_qgv` (#505) unchanged: default_config, validate_config,
-preset, list_factors, preview_qgv, compare_previews and save_user_config. Nothing here scores, ranks, gates or fills a value:
+by calling Codex's common engine (#505) unchanged: `research.sector_qgv` default_config, validate_config, preset and
+list_factors, and Codex's Main transport `research.sector_qgv_main.run_preview_request` (before / after preview_qgv,
+compare_previews, save_user_config). Nothing here scores, ranks, gates or fills a value:
 every number in an answer is the engine's own output. Requests and answers are `sector-qgv-engine-request/1` /
 `sector-qgv-engine-response/1` (implementation/docs/frontend_v2/SECTOR_QGV_20261106.md §3).
 
@@ -30,10 +31,12 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'src'))
 from investment_system.qgv.qgv_v2 import GATE_PERCENTILE  # noqa: E402
 from investment_system.research import sector_qgv as engine  # noqa: E402
+from investment_system.research import sector_qgv_main as main_bridge  # noqa: E402
 from investment_system.research.sector_qgv_registry import (ENGINE, MAPPING, MODEL, NORMALIZATION, SECTORS,  # noqa: E402
                                                              TEMPLATES)
 
 REQUEST = 'sector-qgv-engine-request/1'
+MAIN_REQUEST = 'sector-qgv-main-request/1'
 RESPONSE = 'sector-qgv-engine-response/1'
 FIXTURES = ROOT / 'docs' / 'research' / 'sector_qgv'
 OPS = ('context', 'view', 'preview', 'save')
@@ -164,23 +167,19 @@ class Bridge:
         config, before_config = _config(req.get('config')), _config(req.get('before_config'))
         input_id = req.get('input_id')
         snapshot = synthetic_input(input_id)
+        # Codex's own Main transport (#505 sector_qgv_main.run_preview_request): before / after preview_qgv, compare_previews
+        # and save_user_config for exactly this preview. The screen's 저장 writes that record inside its click.
         try:
-            before = engine.preview_qgv(before_config, snapshot, rid + ':before')
-            after = engine.preview_qgv(config, snapshot, rid)
-            comparison = engine.compare_previews(before, after, rid)
+            out = main_bridge.run_preview_request(snapshot, {'schema_version': MAIN_REQUEST, 'request_id': rid,
+                                                             'before_config': before_config, 'after_config': config})
         except (ValueError, KeyError, TypeError, AttributeError) as exc:
             raise Refused(_code(exc)) from None
-        self.kept[after['preview_id']] = (copy.deepcopy(config), after)
+        after = out['after']
+        self.kept[after['preview_id']] = (copy.deepcopy(out['after_config']), after)
         while len(self.kept) > MAX_KEPT_PREVIEWS:
             self.kept.pop(next(iter(self.kept)))
-        # The record the screen may store for exactly this preview (the engine's own save check, run now): the device write
-        # happens inside the user's 저장 click, which cannot wait for another round trip.
-        try:
-            saved = engine.save_user_config(config, after, request_id=rid, expected_preview_id=after['preview_id'])
-        except (ValueError, KeyError, TypeError, AttributeError) as exc:
-            saved = {'refused': _code(exc)}
-        return {'input_id': input_id, 'data_kind': 'SYNTHETIC', 'before': before, 'after': after, 'comparison': comparison,
-                'saved': saved}
+        return {'input_id': input_id, 'data_kind': 'SYNTHETIC', 'bridge_version': out['bridge_version'], 'before': out['before'],
+                'after': after, 'comparison': out['diff'], 'saved': out['saved_config']}
 
     def _save(self, req, rid):
         config, preview_id = _config(req.get('config')), req.get('preview_id')
