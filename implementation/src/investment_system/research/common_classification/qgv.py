@@ -70,14 +70,14 @@ def gate_comparison(snapshot, view):
     for codes in issuers.values():
         candidates=codes if len(codes)==1 else [k for k in codes if rows[k].get('scoring_representative') is True and rows[k].get('representative_evidence')]
         if len(candidates)==1: representatives.add(candidates[0])
-    values={}; groups={}; pools=defaultdict(list); reasons={}
+    values={}; groups={}; pools=defaultdict(list); reasons={}; baseline_known={}
     for key in snapshot['members']:
         row=rows.get(key,{}); c=by_code[key]; gate=row.get('gate') or {}
         group=(c['sector']['id'],c['accounting']['id']); groups[key]=group
         reason=None
-        valid=(gate.get('calc_version')=='qgv2-calc/2026-10-23.1' and gate.get('as_of')==snapshot['valuation_date']
-               and gate.get('provenance') and finite(gate.get('source_q_score')) and 0<=gate['source_q_score']<=100
-               and finite(gate.get('q_industry_percentile')) and 0<=gate['q_industry_percentile']<=100)
+        baseline_known[key]=(gate.get('calc_version')=='qgv2-calc/2026-10-23.1' and gate.get('as_of')==snapshot['valuation_date']
+               and bool(gate.get('provenance')) and finite(gate.get('q_industry_percentile')) and 0<=gate['q_industry_percentile']<=100)
+        valid=baseline_known[key] and finite(gate.get('source_q_score')) and 0<=gate['source_q_score']<=100
         if not valid: reason='OFFICIAL_Q_INPUT_UNVERIFIED'
         elif c['sector']['status']!='CONFIRMED' or c['accounting']['status']!='CONFIRMED': reason='CLASSIFICATION_UNCONFIRMED'
         elif key not in representatives: reason='ISSUER_REPRESENTATIVE_UNRESOLVED'
@@ -90,7 +90,7 @@ def gate_comparison(snapshot, view):
         reason=reasons[key]
         if reason is None and len(pool)<20: reason='PEER_SAMPLE_SMALL'
         score=percentile(values[key],pool) if reason is None else None
-        old=gate.get('q_industry_percentile') if reasons[key]!='OFFICIAL_Q_INPUT_UNVERIFIED' else None
+        old=gate.get('q_industry_percentile') if baseline_known[key] else None
         status=lambda value:'UNKNOWN' if value is None else 'VALUE_EXCLUDED' if value<=GATE_PERCENTILE else 'PASS'
         out.append({'company_id':key,'group':list(group),'source_q_score':values.get(key),
                     'baseline_percentile':old,'baseline_status':status(old),

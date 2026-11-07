@@ -103,3 +103,12 @@ def test_missing_classification_keeps_original_issuer_and_does_not_abort_batch()
     row=next(r for r in projected['rows'] if r['company_id']==missing)
     assert row['issuer_id']==snapshot['rows'][0]['issuer_id'] and row['mapping'] is None
     assert len(projected['members'])==20
+
+
+def test_gate_diagnostic_keeps_verified_old_percentile_when_candidate_source_q_missing():
+    snapshot,_,view=inputs();key=snapshot['rows'][0]['company_id']
+    gate=snapshot['rows'][0]['gate'];gate['q_industry_percentile']=80
+    del gate['source_q_score']
+    row=next(r for r in gate_comparison(snapshot,view)['rows'] if r['company_id']==key)
+    assert row['baseline_percentile']==80 and row['baseline_status']=='PASS'
+    assert row['candidate_percentile'] is None and row['reason']=='OFFICIAL_Q_INPUT_UNVERIFIED'
