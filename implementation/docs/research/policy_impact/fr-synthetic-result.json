@@ -1,0 +1,268 @@
+{
+  "state": {
+    "schema_version": "policy-fr-replay/1",
+    "data_kind": "SYNTHETIC",
+    "scope_start": "2026-11-01",
+    "completed_through": "2026-11-07",
+    "reconcile_from": "2026-11-01",
+    "split_ranges": [],
+    "tracked_after": null,
+    "ranges": {
+      "2026-11-01/2026-11-07": {
+        "start": "2026-11-01",
+        "end": "2026-11-07",
+        "count": 2,
+        "total_pages": 2,
+        "pages": {
+          "1": [
+            "FR:2026-12345"
+          ],
+          "2": [
+            "FR:2026-12346"
+          ]
+        },
+        "next_page": 3,
+        "complete": true
+      }
+    },
+    "documents": {
+      "FR:2026-12345": {
+        "versions": {
+          "50dc1ef519a22ca496b03cec2f96955c4ac89fafc1de70fb5e06f0ef8984ae71": {
+            "document_id": "FR:2026-12345",
+            "document_number": "2026-12345",
+            "agencies": [
+              "Synthetic Agency"
+            ],
+            "title": "Synthetic rule",
+            "url": "https://www.federalregister.gov/documents/synthetic/2026-12345",
+            "published": {
+              "value": "2026-11-01",
+              "precision": "DATE",
+              "timezone": null
+            },
+            "type": "Rule",
+            "abstract": null,
+            "effective_on": "2026-12-01",
+            "content_sha256": "50dc1ef519a22ca496b03cec2f96955c4ac89fafc1de70fb5e06f0ef8984ae71",
+            "response_sha256": "7109bf979eaae535e8036175ddfe1e525ca67c8e3cc6d30e6f01c787c18414dc",
+            "acquired_at": "2026-11-07T02:00:00Z",
+            "first_seen_at": "2026-11-07T02:00:00Z",
+            "status": "UNREVIEWED",
+            "policy_id": null,
+            "policy_revision_id": null,
+            "policy_relation": "NOT_ESTABLISHED",
+            "lifecycle_status": "UNKNOWN",
+            "company_applicability": "UNKNOWN",
+            "hypothesis": null,
+            "automatic_publication": false,
+            "previous_content_sha256": null,
+            "change": "NEW_DOCUMENT"
+          }
+        },
+        "head_hash": "50dc1ef519a22ca496b03cec2f96955c4ac89fafc1de70fb5e06f0ef8984ae71",
+        "last_seen_at": "2026-11-07T02:00:00Z",
+        "changes": [
+          {
+            "from": null,
+            "to": "50dc1ef519a22ca496b03cec2f96955c4ac89fafc1de70fb5e06f0ef8984ae71",
+            "acquired_at": "2026-11-07T02:00:00Z",
+            "response_sha256": "7109bf979eaae535e8036175ddfe1e525ca67c8e3cc6d30e6f01c787c18414dc"
+          }
+        ]
+      },
+      "FR:2026-12346": {
+        "versions": {
+          "9e203a5d77dc74e51bbf85b75a6d593cd23604bb150a040992dfea1148878051": {
+            "document_id": "FR:2026-12346",
+            "document_number": "2026-12346",
+            "agencies": [
+              "Synthetic Agency"
+            ],
+            "title": "Synthetic correction requiring human review",
+            "url": "https://www.federalregister.gov/documents/synthetic/2026-12346",
+            "published": {
+              "value": "2026-11-02",
+              "precision": "DATE",
+              "timezone": null
+            },
+            "type": "Rule",
+            "abstract": null,
+            "effective_on": "2026-12-01",
+            "content_sha256": "9e203a5d77dc74e51bbf85b75a6d593cd23604bb150a040992dfea1148878051",
+            "response_sha256": "6e11a3485e943ce2e1d7f03215cd74f892bc1db951e9f7d55db9ce6a3addaad3",
+            "acquired_at": "2026-11-07T02:00:00Z",
+            "first_seen_at": "2026-11-07T02:00:00Z",
+            "status": "UNREVIEWED",
+            "policy_id": null,
+            "policy_revision_id": null,
+            "policy_relation": "NOT_ESTABLISHED",
+            "lifecycle_status": "UNKNOWN",
+            "company_applicability": "UNKNOWN",
+            "hypothesis": null,
+            "automatic_publication": false,
+            "previous_content_sha256": null,
+            "change": "NEW_DOCUMENT"
+          }
+        },
+        "head_hash": "9e203a5d77dc74e51bbf85b75a6d593cd23604bb150a040992dfea1148878051",
+        "last_seen_at": "2026-11-07T02:00:00Z",
+        "changes": [
+          {
+            "from": null,
+            "to": "9e203a5d77dc74e51bbf85b75a6d593cd23604bb150a040992dfea1148878051",
+            "acquired_at": "2026-11-07T02:00:00Z",
+            "response_sha256": "6e11a3485e943ce2e1d7f03215cd74f892bc1db951e9f7d55db9ce6a3addaad3"
+          }
+        ]
+      }
+    },
+    "candidates": {
+      "FR:2026-12345:50dc1ef519a22ca496b03cec2f96955c4ac89fafc1de70fb5e06f0ef8984ae71": {
+        "document_id": "FR:2026-12345",
+        "document_number": "2026-12345",
+        "agencies": [
+          "Synthetic Agency"
+        ],
+        "title": "Synthetic rule",
+        "url": "https://www.federalregister.gov/documents/synthetic/2026-12345",
+        "published": {
+          "value": "2026-11-01",
+          "precision": "DATE",
+          "timezone": null
+        },
+        "type": "Rule",
+        "abstract": null,
+        "effective_on": "2026-12-01",
+        "content_sha256": "50dc1ef519a22ca496b03cec2f96955c4ac89fafc1de70fb5e06f0ef8984ae71",
+        "response_sha256": "7109bf979eaae535e8036175ddfe1e525ca67c8e3cc6d30e6f01c787c18414dc",
+        "acquired_at": "2026-11-07T02:00:00Z",
+        "first_seen_at": "2026-11-07T02:00:00Z",
+        "status": "UNREVIEWED",
+        "policy_id": null,
+        "policy_revision_id": null,
+        "policy_relation": "NOT_ESTABLISHED",
+        "lifecycle_status": "UNKNOWN",
+        "company_applicability": "UNKNOWN",
+        "hypothesis": null,
+        "automatic_publication": false,
+        "previous_content_sha256": null,
+        "change": "NEW_DOCUMENT"
+      },
+      "FR:2026-12346:9e203a5d77dc74e51bbf85b75a6d593cd23604bb150a040992dfea1148878051": {
+        "document_id": "FR:2026-12346",
+        "document_number": "2026-12346",
+        "agencies": [
+          "Synthetic Agency"
+        ],
+        "title": "Synthetic correction requiring human review",
+        "url": "https://www.federalregister.gov/documents/synthetic/2026-12346",
+        "published": {
+          "value": "2026-11-02",
+          "precision": "DATE",
+          "timezone": null
+        },
+        "type": "Rule",
+        "abstract": null,
+        "effective_on": "2026-12-01",
+        "content_sha256": "9e203a5d77dc74e51bbf85b75a6d593cd23604bb150a040992dfea1148878051",
+        "response_sha256": "6e11a3485e943ce2e1d7f03215cd74f892bc1db951e9f7d55db9ce6a3addaad3",
+        "acquired_at": "2026-11-07T02:00:00Z",
+        "first_seen_at": "2026-11-07T02:00:00Z",
+        "status": "UNREVIEWED",
+        "policy_id": null,
+        "policy_revision_id": null,
+        "policy_relation": "NOT_ESTABLISHED",
+        "lifecycle_status": "UNKNOWN",
+        "company_applicability": "UNKNOWN",
+        "hypothesis": null,
+        "automatic_publication": false,
+        "previous_content_sha256": null,
+        "change": "NEW_DOCUMENT"
+      }
+    },
+    "last_attempt_at": "2026-11-07T03:00:00Z",
+    "last_success_at": "2026-11-07T02:00:00Z",
+    "result": "UPDATED",
+    "retry_at": null,
+    "attempts": [
+      {
+        "at": "2026-11-07T03:00:00Z",
+        "result": "UPDATED",
+        "response_count": 2,
+        "changes": {
+          "NEW_DOCUMENT": 2,
+          "CONTENT_CHANGED": 0,
+          "DUPLICATE": 0,
+          "OLDER_RESPONSE": 0
+        }
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "result": "INCOMPLETE",
+      "reason": "PAGE_OR_REQUEST_LIMIT",
+      "checkpoint_advance": false,
+      "incomplete_ranges": [
+        {
+          "start": "2026-11-01",
+          "end": "2026-11-07",
+          "page": 1,
+          "kind": "INCREMENTAL",
+          "url": "https://www.federalregister.gov/api/v1/documents.json?conditions%5Bpublication_date%5D%5Bgte%5D=2026-11-01&conditions%5Bpublication_date%5D%5Blte%5D=2026-11-07&order=oldest&per_page=1&page=1"
+        }
+      ]
+    },
+    {
+      "result": "UPDATED",
+      "reason": null,
+      "checkpoint_advance": true
+    }
+  ],
+  "changes": {
+    "NEW_DOCUMENT": 2,
+    "CONTENT_CHANGED": 0,
+    "DUPLICATE": 0,
+    "OLDER_RESPONSE": 0
+  },
+  "next_plan": {
+    "requests": [
+      {
+        "range_id": "2026-11-01/2026-11-07",
+        "start": "2026-11-01",
+        "end": "2026-11-07",
+        "page": 1,
+        "kind": "OVERLAP",
+        "url": "https://www.federalregister.gov/api/v1/documents.json?conditions%5Bpublication_date%5D%5Bgte%5D=2026-11-01&conditions%5Bpublication_date%5D%5Blte%5D=2026-11-07&order=oldest&per_page=1&page=1"
+      },
+      {
+        "document_number": "2026-12345",
+        "kind": "TRACKED_DOCUMENT",
+        "url": "https://www.federalregister.gov/api/v1/documents/2026-12345.json"
+      },
+      {
+        "document_number": "2026-12346",
+        "kind": "TRACKED_DOCUMENT",
+        "url": "https://www.federalregister.gov/api/v1/documents/2026-12346.json"
+      }
+    ],
+    "limits": {
+      "max_requests": 12,
+      "max_pages": 20,
+      "per_page": 1,
+      "overlap_days": 7,
+      "window_days": 7,
+      "max_body_bytes": 1048576,
+      "cooldown_seconds": 600
+    },
+    "through": "2026-11-07",
+    "scope_start": "2026-11-01",
+    "checkpoint_meaning": "COMPLETED_PUBLICATION_DATE_INTERVALS_NOT_POLICY_PIT_OR_ALL_REVISIONS",
+    "blocked_ranges": [],
+    "automatic_publication": false
+  },
+  "retained_good": null,
+  "actual_http_requests": 0,
+  "compatibility": "SYNTHETIC_ONLY"
+}

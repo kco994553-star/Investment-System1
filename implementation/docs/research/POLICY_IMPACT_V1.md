@@ -160,3 +160,60 @@ subsidy stage and scope are preserved. No public publication approval is implied
 Affected tests: 45 policy data cases passed; privacy static suite 28 passed.
 P20/P21 and browser safety rendering remain Main-owned. Canonical is unchanged;
 Draft code availability is distinct from Main contract acceptance/UI integration.
+
+## Federal Register offline update adapter (2026-11-07)
+
+`policy-fr-replay/1` adds `mode=fr-replay` to the existing policy CLI. See
+`policy_impact/fr-synthetic-job.json` and `fr-synthetic-result.json` for the public
+fixture. It reuses the existing news/DART CallBudget, Retry-After parsing and
+policy collection_outcome/retain_good. It does not add an HTTP client, scheduler,
+DB, policy identity resolver or automatic publication path.
+
+```sh
+python implementation/tools/policy_impact.py --job implementation/docs/research/policy_impact/fr-synthetic-job.json --output /tmp/fr-replay-result.json
+```
+
+Input: existing replay state, explicitly typed responses, observation `through`,
+replay `now`, optional versioned settings and previous published `last_good`.
+Each response retains its request URL/range/page, status, acquisition time and
+original JSON response text for RETAINED_API. Synthetic JSON objects are explicitly
+SYNTHETIC. HTML cannot validate API compatibility. Output: appended source versions,
+UNREVIEWED candidates, attempt outcomes, next_plan, incomplete/blocked ranges,
+last_attempt/last_success/retry_at and retained_good. No real request is executed.
+
+Default plan: publication-date windows7days, overlap7days, per_page100,
+max_pages20, max_requests12 per invocation, body limit1MiB. It also rotates tracked
+document refreshes and a bounded historical reconciliation sweep. No finite overlap
+guarantees discovery of all arbitrarily late corrections; only completed requested
+intervals as observed at acquisition are claimed. `completed_through` is not a
+policy-effective-date, current-status, full-text, or historical-PIT checkpoint.
+The first run needs an explicitly chosen scope_start/through; this is not an
+approval to collect data. Official API response compatibility/rights/limits need
+actual verification before Main enables collection; defaults are our client caps.
+
+URLs use only `/api/v1/documents.json` and tracked `/documents/{number}.json`.
+Content hashes cover normalized API metadata, **not fetched legal full text**;
+unchanged metadata cannot prove unchanged legal text. Full response hashes are
+retained. Same ID/content deduplicates; changed content appends immutable evidence;
+A→B→A records a review event while reusing version A. A new document/correction does
+not establish policy revision relationships, lifecycle, scope, corporate exposure
+or an impact hypothesis. Every candidate remains UNREVIEWED, policy IDs null,
+automatic_publication=false. Publication precision stays DATE when only a date exists.
+
+An unfinished interval resumes its next page without planning a concurrent page1.
+Page-count drift/duplicate IDs restart that interval from page1. Over-limit ranges
+split by date; an over-limit single day remains blocked for explicit scope refinement.
+Only fully reconciled pages advance the contiguous checkpoint. Partial candidates
+are retained for review, not marked as a complete source scan. 429 honors Retry-After
+(fallback600seconds); unrepresentably large waits saturate at year9999 without
+shortening the provider wait. No retry is performed here. Parse/HTTP/partial failures
+retain the previous good policy and original confirmation/last-success timestamps;
+FAILED/INCOMPLETE never become NO_NEW_ITEMS. Private mode is decided by replay state,
+not any unrelated legacy bundle field, and cannot write into a Git checkout.
+
+All replay validation here is synthetic. No retained Federal Register API response
+was supplied; the three previously reviewed government HTML documents are not reused
+as API fixtures. Actual API verification, scheduled execution and public UI are not
+claimed. Main must persist the returned checkpoint atomically, preserve the prior
+normal policy bundle, honor request/retry limits, and pass actual retained responses
+only after separately approved collection. No new Secret is requested by this code.
