@@ -28,13 +28,14 @@ index 774c0156..f8e1aff8 100644
        - name: Report published Q·G coverage of the final artifact (counts only)
 diff --git a/implementation/src/investment_system/product/policy_impact_public.py b/implementation/src/investment_system/product/policy_impact_public.py
 new file mode 100644
-index 00000000..82c3e3f6
+index 00000000..87f198bc
 --- /dev/null
 +++ b/implementation/src/investment_system/product/policy_impact_public.py
-@@ -0,0 +1,65 @@
+@@ -0,0 +1,68 @@
 +"""Public `policy-impact.json` boundary (4.5 정책·지정학; prepared 2026-11-07, applied only after owner approval).
 +
-+The file is Codex's `policy-impact-view/1` output of `build(..., public=True)`, published unchanged. This module decides
++The file is Codex's `policy-impact-view/2` output of `build(..., public=True)` (#509 c2ae92a0), published unchanged; a
++private view/1 or a retained public v1 file is refused. This module decides
 +nothing about policies: it re-runs Codex's own contract (`research.policy_impact.contract.validate`) on the displayed
 +bundle and adds the public-only conditions that a stand-in or a private build would break:
 +
@@ -42,6 +43,7 @@ index 00000000..82c3e3f6
 +- the public projection holds: no UNREVIEWED record, no CANDIDATE exposure, every source VERIFIED;
 +- company ids are the existing published universe (`universe_codes.source_codes()`), macro ids only the published
 +  `macro-evidence.json` series (the existing allowlist; availability alone is not permission);
++- watch items only as PUBLIC_REFERENCE (Codex keeps one only with an explicit ALLOWED permission);
 +- review records carry agent / role labels only (no spaces, no address);
 +- no score or gate effect, no point-in-time claim, and a size cap.
 +
@@ -57,7 +59,7 @@ index 00000000..82c3e3f6
 +from ..universe.universe_codes import source_codes
 +
 +FILENAME = 'policy-impact.json'
-+VIEW_SCHEMA = 'policy-impact-view/1'
++VIEW_SCHEMA = 'policy-impact-view/2'
 +VIEW_KEYS = frozenset({'as_of', 'bundle', 'current_policy_revisions', 'historical_pit_eligible', 'query_timezone',
 +                       'schema_version'})
 +MAX_BYTES = 1024 * 1024
@@ -92,6 +94,7 @@ index 00000000..82c3e3f6
 +    for group in ('policies', 'exposures', 'hypotheses'):
 +        _need(all(r['review_status'] != 'UNREVIEWED' for r in bundle[group]), 'POLICY_UNREVIEWED')
 +    _need(all(e['evidence_status'] != 'CANDIDATE' for e in bundle['exposures']), 'POLICY_CANDIDATE_EXPOSURE')
++    _need(all(w['availability'] == 'PUBLIC_REFERENCE' for h in bundle['hypotheses'] for w in h['watch_items']), 'POLICY_WATCH_NOT_PUBLIC')
 +    _need(all(LABEL.fullmatch(r[k]) for r in bundle['review_records'] for k in ('author', 'reviewer')), 'POLICY_REVIEW_LABEL')
 +    current = value['current_policy_revisions']
 +    shown = {(p['policy_id'], p['revision_id']) for p in bundle['policies']}
@@ -99,10 +102,10 @@ index 00000000..82c3e3f6
 +          and all((p, r) in shown for p, r in current.items()), 'POLICY_CURRENT_REVISIONS')
 diff --git a/implementation/tests/test_policy_impact_public.py b/implementation/tests/test_policy_impact_public.py
 new file mode 100644
-index 00000000..a405ebd6
+index 00000000..e0c542de
 --- /dev/null
 +++ b/implementation/tests/test_policy_impact_public.py
-@@ -0,0 +1,93 @@
+@@ -0,0 +1,100 @@
 +"""Public policy-impact.json boundary (prepared 2026-11-07; applied only after owner approval).
 +
 +Synthetic files are refused (never a stand-in for the real one). A REAL_REVIEWED-labelled Codex public build, made in
@@ -142,7 +145,9 @@ index 00000000..a405ebd6
 +def test_synthetic_files_are_refused():
 +    assert _code(json.loads((D / 'synthetic-view.json').read_text())) != 'ACCEPT'
 +    variants = json.loads((ROOT / 'tests/fixtures/policy_impact_view_main_variants.json').read_text())['variants']
-+    assert all(_code(v) != 'ACCEPT' for v in variants.values())
++    assert all(_code(v) != 'ACCEPT' for k, v in variants.items() if k != 'NAV')
++    assert _code(variants['NAV']['view']) != 'ACCEPT'
++    assert _code(json.loads((D / 'synthetic-public-v2.json').read_text())) != 'ACCEPT', 'synthetic view/2: refused (not REAL_REVIEWED)'
 +
 +
 +def test_real_reviewed_public_build_passes_and_each_rule_fails_closed():
@@ -155,12 +160,17 @@ index 00000000..a405ebd6
 +        edit(v)
 +        return _code(v)
 +
++    assert view['schema_version'] == 'policy-impact-view/2'
++    assert broken(lambda v: v.update(schema_version='policy-impact-view/1')) == 'POLICY_VIEW_SCHEMA', 'a private or retained v1 view is never published'
 +    assert broken(lambda v: v.update(extra=1)) == 'POLICY_VIEW_KEYS'
 +    assert broken(lambda v: v.update(historical_pit_eligible=True)) == 'POLICY_VIEW_PIT'
 +    assert broken(lambda v: v['bundle'].update(data_kind='SYNTHETIC')) in {'POLICY_CONTRACT', 'POLICY_NOT_REAL_REVIEWED'}
 +    assert broken(lambda v: v['bundle']['sources'][0].update(verification_status='SOURCE_UNVERIFIED')) == 'POLICY_UNVERIFIED_SOURCE'
 +    assert broken(lambda v: v['bundle']['policies'][0].update(review_status='UNREVIEWED')) == 'POLICY_UNREVIEWED'
 +    assert broken(lambda v: v['current_policy_revisions'].update(nope='1')) == 'POLICY_CURRENT_REVISIONS'
++    if view['bundle']['hypotheses']:
++        unknown = {'kind': 'POLICY_UPDATE', 'reference_id': view['bundle']['policies'][0]['policy_id'], 'rationale': 'r', 'availability': 'UNKNOWN'}
++        assert broken(lambda v: v['bundle']['hypotheses'][0]['watch_items'].append(unknown)) == 'POLICY_WATCH_NOT_PUBLIC'
 +    if view['bundle']['review_records']:
 +        for label in ('A Person', 'someone' + chr(64) + 'example.org', ''):
 +            assert broken(lambda v: v['bundle']['review_records'][0].update(reviewer=label)) in {'POLICY_REVIEW_LABEL', 'POLICY_CONTRACT'}
