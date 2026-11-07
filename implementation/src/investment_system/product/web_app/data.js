@@ -25,7 +25,9 @@ const OFFICIAL='qgv-official.json',OFFICIAL_STATUS='qgv-official-status.json',OF
 const CORE=Object.freeze(['macro-screen.json','sec-13f-changes.json','sec-filing-windows.json','sec-qg-factors.json','company-types-pricefree.json','company-classification.json',QGV2,REPORTED,FIN,EVIDENCE]);
 const LIST_FILES=Object.freeze(['sec-disclosures.json','news-signals.json','dart-disclosures.json']);
 // Read once per page, outside the generation (identity catalog, search names, the fixed 504-code Universe list, financial detail, ledger).
-const STATIC=Object.freeze(['actual-catalog.json','entities.json','company-names-ko.json',CODES,'sec-valuation-inputs.json','forward-validation-ledger.json']);
+// macro-evidence-status.json (owner 2026-11-07): the latest daily attempt record beside macro-evidence.json, read by the 4.1.3
+// block once (screen-macro-live.js validates it); absent = no record (older deploys), never a guess.
+const STATIC=Object.freeze(['actual-catalog.json','entities.json','company-names-ko.json',CODES,'sec-valuation-inputs.json','forward-validation-ledger.json','macro-evidence-status.json']);
 const FILES=Object.freeze([...CORE,...LIST_FILES,SHARES,...STATIC,...OFFICIAL_FILES]),FILE_SET=new Set(FILES),STATIC_SET=new Set(STATIC);
 // Without these the public path would silently change (light sec-qgv2 check, macro file rejected, cyclical V basis lost): READER_MISSING.
 const READERS=Object.freeze(['DataRefresh','SecQgv2','Qgv2Inputs','PublicScreens','MacroLights','PlaybookEngine','PlaybookConfigDefaults']);

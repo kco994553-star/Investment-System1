@@ -23,7 +23,7 @@ const T = require('../src/investment_system/product/web_app/tech-screen.js');
 
 const NOW = '2026-10-14T03:00:00.000Z';
 const CLASS = JSON.parse(fs.readFileSync(path.join(R.ROOT, 'implementation/tests/fixtures/company_classification_v0_payloads.json'), 'utf8')).live;
-const UNPUBLISHED = ['sec-public-inputs.json', 'qgv-official.json', 'qgv-official-status.json'];
+const UNPUBLISHED = ['sec-public-inputs.json', 'qgv-official.json', 'qgv-official-status.json', 'macro-evidence-status.json'];
 const SHOTS = process.env.TECH_SHOTS || null;
 const CODEX = X.codex();
 let phase = 'START', pass = 0;
@@ -201,7 +201,10 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
 
       phase = tag + ' boundaries';
       assert.deepEqual(seen.outside, []); assert.deepEqual(seen.errors, []);
-      assert.deepEqual(s.requests.slice(at).map((r) => r.name).filter((n) => n.endsWith('.json')), [], 'no data request');
+      // reopen() passes through #/macro, whose evidence block reads its attempt record (macro-evidence-status.json) once per page
+      // on the first open; nothing else.
+      assert.deepEqual(s.requests.slice(at).map((r) => r.name).filter((n) => n.endsWith('.json') && n !== 'macro-evidence-status.json'), [], 'no data request');
+      assert.ok(s.requests.slice(at).filter((r) => r.name === 'macro-evidence-status.json').length <= 1, 'the attempt record is read at most once');
       const st = await site.storage(page); assert.deepEqual([st.local, st.session], [0, 0]);
       assert.equal(await page.evaluate(() => window.__csp), 0);
       ok(tag + ' boundaries');

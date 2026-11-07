@@ -453,9 +453,11 @@ def test_build_emits_the_not_collected_placeholder(tmp_path):
     assert guard.scan_artifact(out)['pages_artifact_guard'] == 'PASS'
 
 
-def test_pipeline_hook_never_stops_the_sec_collection(monkeypatch, capsys):
+def test_pipeline_hook_never_stops_the_sec_collection(tmp_path, monkeypatch, capsys):
     import public_screens_pipeline as pipeline
+    import macro_evidence as tool
     seen = {}
+    tool.emit_empty(tmp_path, now=lambda: AT)
 
     def boom(root, manifest):
         seen['called'] = (Path(root).is_dir(), sorted(manifest))
@@ -465,8 +467,378 @@ def test_pipeline_hook_never_stops_the_sec_collection(monkeypatch, capsys):
         raise pipeline.CollectionFailure([], [], 0) if False else SystemExit('stop-after-hook')
     monkeypatch.setattr(pipeline, 'collect_public_inputs', stop)
     with pytest.raises(SystemExit):
-        pipeline.collect(Path('.'), macro_v0=lambda root: [], macro_curve=lambda root: [], macro_evidence=boom,
+        pipeline.collect(tmp_path, macro_v0=lambda root: [], macro_curve=lambda root: [], macro_evidence=boom,
                          client_factory=lambda agent: None)
     assert seen['called'] == (True, ['macro', 'macro_curve_v1', 'macro_v0', 'schema_version', 'sec', 'thirteen_f'])
     out = capsys.readouterr().out
-    assert 'MACRO_EVIDENCE BUILD_FAILED nothing_written' in out and 'source text' not in out
+    assert 'MACRO_EVIDENCE BUILD_FAILED stage=CALLER error=RuntimeError' in out and 'source text' not in out
+    # the caller handles the failure: the build-time placeholder is withheld, never published as a result
+    assert 'MACRO_EVIDENCE WITHHELD file=macro-evidence.json reason=NO_GOOD_COPY status=NONE' in out
+    assert not (tmp_path / el.FILENAME).exists()
+
+
+# ---------------------------------------------------------------- failed attempts (owner 2026-11-07, run 42326419126)
+
+def _site(tmp_path, name):
+    out = tmp_path / name
+    out.mkdir()
+    import macro_evidence as tool
+    tool.emit_empty(out, now=lambda: AT)          # the build-time placeholder, as build_pages_cockpit.py writes it
+    return out
+
+
+def _good_previous(tmp_path):
+    """A good copy (built from collected data), made by the generator itself."""
+    import macro_evidence as tool
+    root = tmp_path / 'prev-private'
+    root.mkdir()
+    out = _site(tmp_path, 'prev-site')
+    assert tool.run_from_capture(out, root, reused_root(root), environ={}, now=lambda: AT - timedelta(days=1),
+                                 transport=FakeTransport(responses()), previous=(None, 'NO_LIVE')) == 0
+    payload = el.require_macro_evidence(tool.parse_json((out / el.FILENAME).read_bytes()))
+    assert payload['generated_at'] is not None and sum(1 for r in payload['series'].values() if r['state'] == 'LIVE') > 0
+    return payload
+
+
+def _status(out):
+    import macro_evidence as tool
+    return el.require_status(tool.parse_json((out / el.STATUS_FILENAME).read_bytes()))
+
+
+@pytest.mark.parametrize('stage,patch', [
+    ('COLLECT', ('investment_system.providers.macro_evidence_collection', 'collect_macro_evidence')),
+    ('BUILD', ('investment_system.macro.evidence_lines', 'build')),
+])
+def test_a_failed_attempt_keeps_the_last_good_copy_unchanged_and_says_so(tmp_path, capsys, monkeypatch, stage, patch):
+    import importlib
+    import macro_evidence as tool
+    good = _good_previous(tmp_path)
+    good_body = el.encode(good)
+    out = _site(tmp_path, 'site')
+    root = tmp_path / 'private'
+    root.mkdir()
+
+    def boom(*a, **k):
+        raise KeyError('a provider text that must not be printed')
+    monkeypatch.setattr(importlib.import_module(patch[0]), patch[1], boom)
+    capsys.readouterr()
+    code = tool.run_from_capture(out, root, reused_root(root), environ={}, now=lambda: AT, previous=(good, 'LOADED'))
+    assert code == 0
+    assert (out / el.FILENAME).read_bytes() == good_body, 'the last good copy, byte for byte: never the placeholder'
+    kept = el.require_macro_evidence(tool.parse_json((out / el.FILENAME).read_bytes()))
+    assert kept['generated_at'] == good['generated_at'], 'its own build time, not re-stamped by the failed attempt'
+    status = _status(out)
+    assert status['attempt_result'] == 'FAILED' and status['failure_stage'] == stage and status['failure_class'] == 'KeyError'
+    assert status['published'] == 'PREVIOUS_KEPT' and status['data_generated_at'] == good['generated_at']
+    assert status['attempt_at'] == el.iso(AT) and status['attempt_at'] != status['data_generated_at']
+    import hashlib
+    assert status['data_sha256'] == hashlib.sha256(good_body).hexdigest()
+    printed = capsys.readouterr().out
+    assert f'MACRO_EVIDENCE BUILD_FAILED stage={stage} error=KeyError kept=PREVIOUS' in printed
+    assert 'provider text' not in printed and 'nothing_written' not in printed
+
+
+def test_invalid_output_is_never_written_and_the_good_copy_stays(tmp_path, capsys, monkeypatch):
+    import macro_evidence as tool
+    good = _good_previous(tmp_path)
+    good_body = el.encode(good)
+    out = _site(tmp_path, 'site')
+    root = tmp_path / 'private'
+    root.mkdir()
+    real_encode, calls = el.encode, []
+
+    def encode(payload):
+        calls.append(1)
+        if len(calls) > 1:                      # the first call encodes the kept copy; the new output is too large
+            raise ValueError('MACRO_EVIDENCE_TOO_LARGE')
+        return real_encode(payload)
+    monkeypatch.setattr(el, 'encode', encode)
+    code = tool.run_from_capture(out, root, reused_root(root), environ={}, now=lambda: AT,
+                                 transport=FakeTransport(responses()), previous=(good, 'LOADED'))
+    assert code == 0 and (out / el.FILENAME).read_bytes() == good_body
+    status = _status(out)
+    assert (status['failure_stage'], status['failure_class'], status['published']) == ('VALIDATE', 'ValueError', 'PREVIOUS_KEPT')
+
+
+def test_no_good_copy_is_never_published_as_a_normal_result(tmp_path, capsys, monkeypatch):
+    import macro_evidence as tool
+    out = _site(tmp_path, 'site')
+    placeholder = (out / el.FILENAME).read_bytes()
+    root = tmp_path / 'private'
+    root.mkdir()
+
+    def boom(*a, **k):
+        raise RuntimeError('x')
+    monkeypatch.setattr(el, 'build', boom)
+    code = tool.run_from_capture(out, root, reused_root(root), environ={}, now=lambda: AT,
+                                 transport=FakeTransport(responses()), previous=(el.empty_payload(AT), 'EMPTY_LIVE'))
+    assert code == 1
+    assert (out / el.FILENAME).read_bytes() == placeholder, 'only the placeholder (generated_at null), never re-stamped'
+    status = _status(out)
+    assert status['attempt_result'] == 'FAILED' and status['published'] == 'NO_GOOD_COPY'
+    assert status['data_generated_at'] is None and status['data_sha256'] is None and status['previous'] == 'EMPTY_LIVE'
+    assert 'kept=NONE no_good_copy' in capsys.readouterr().out
+
+
+def test_a_normal_partial_collection_replaces_the_copy_and_records_it(tmp_path, capsys):
+    import macro_evidence as tool
+    good = _good_previous(tmp_path)
+    out = _site(tmp_path, 'site')
+    root = tmp_path / 'private'
+    root.mkdir()
+    only_bls = {k: v for k, v in responses().items() if k[0] == mc.ENDPOINTS['BLS']}   # most sources fail: a partial run
+    code = tool.run_from_capture(out, root, reused_root(root), environ={}, now=lambda: AT,
+                                 transport=FakeTransport(only_bls), previous=(good, 'LOADED'))
+    assert code == 0
+    new = el.require_macro_evidence(tool.parse_json((out / el.FILENAME).read_bytes()))
+    assert new['generated_at'] == el.iso(AT) and new['state'] == 'PARTIAL' and new['continuity'] == 'CONTINUOUS'
+    status = _status(out)
+    assert status['attempt_result'] == 'BUILT' and status['published'] == 'NEW' and status['data_generated_at'] == new['generated_at']
+
+
+def test_a_placeholder_live_copy_is_not_a_previous_history(tmp_path):
+    """After this incident the live copy is the placeholder: the next build is a new baseline that says the earlier
+    history is not available, never CONTINUOUS and never a silent BASELINE."""
+    import macro_evidence as tool
+    out = _site(tmp_path, 'site')
+    root = tmp_path / 'private'
+    root.mkdir()
+
+    class Response(io.BytesIO):
+        status = 200
+
+        def geturl(self):
+            return tool.SOURCE
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+    placeholder = el.encode(el.empty_payload(AT - timedelta(days=1)))
+    good, good_body, read = tool.read_previous(lambda request, timeout: Response(placeholder))
+    assert (good, good_body, read) == (None, None, 'EMPTY_LIVE')
+    assert tool.run_from_capture(out, root, reused_root(root), environ={}, now=lambda: AT,
+                                 transport=FakeTransport(responses()), open_previous=lambda r, timeout: Response(placeholder)) == 0
+    new = el.require_macro_evidence(tool.parse_json((out / el.FILENAME).read_bytes()))
+    assert new['continuity'] == 'RESET_PREVIOUS_UNAVAILABLE' and new['previous'] == 'UNAVAILABLE'
+    assert _status(out)['previous'] == 'EMPTY_LIVE'
+
+
+def test_status_record_rules():
+    ok = dict(attempt_at=AT, result='FAILED', stage='BUILD', error_class='KeyError', published='PREVIOUS_KEPT',
+              data_generated_at=el.iso(AT), data_sha256='a' * 64, previous='LOADED')
+    el.status_record(**ok)
+    for bad in ({'result': 'BUILT'}, {'published': 'NEW'}, {'stage': 'ELSEWHERE'}, {'error_class': 'Key Error: x'},
+                {'published': 'NO_GOOD_COPY'}, {'data_sha256': 'x'}, {'previous': 'MAYBE'}):
+        with pytest.raises(ValueError):
+            el.status_record(**{**ok, **bad})
+    el.status_record(attempt_at=AT, result='BUILT', stage=None, error_class=None, published='NEW',
+                     data_generated_at=el.iso(AT), data_sha256='b' * 64, previous='NO_LIVE')
+    import pages_artifact_guard as guard
+    from collections import Counter
+    assert el.STATUS_FILENAME in guard.ALLOWED_NAMES
+    violations = Counter()
+    guard._check_payload(el.STATUS_FILENAME, el.encode_status(el.status_record(**ok)), violations)
+    assert not violations
+    guard._check_payload(el.STATUS_FILENAME, b'{"schema":"macro-evidence-status/1"}', violations)
+    assert violations['macro_evidence_status_boundary'] == 1
+
+
+def test_preserve_carries_the_live_attempt_record(tmp_path):
+    import macro_evidence as tool
+    good = _good_previous(tmp_path)
+    good_body = el.encode(good)
+    status = el.encode_status(el.status_record(attempt_at=AT, result='FAILED', stage='COLLECT', error_class='KeyError',
+                                               published='PREVIOUS_KEPT', data_generated_at=good['generated_at'],
+                                               data_sha256=__import__('hashlib').sha256(good_body).hexdigest(), previous='LOADED'))
+
+    class Response(io.BytesIO):
+        status = 200
+
+        def __init__(self, data, url):
+            super().__init__(data)
+            self.url = url
+
+        def geturl(self):
+            return self.url
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+    served = {tool.SOURCE: good_body, tool.STATUS_SOURCE: status}
+    out = tmp_path / 'ui'
+    out.mkdir()
+    assert tool.preserve(out, open_previous=lambda request, timeout: Response(served[request.full_url], request.full_url)) == 0
+    assert (out / el.FILENAME).read_bytes() == good_body and (out / el.STATUS_FILENAME).read_bytes() == status
+
+
+# ---------------------------------------------------------------- the daily path end to end, checked on the artifact itself
+# (owner 2026-11-07 2nd: the caller handles the failure; the deploy check reads the real artifact directory)
+
+def _artifact_checks(out, live):
+    """The two checks a deploy runs on this artifact: the Pages guard per file, and the freshness rule against `live`
+    (bytes or None). -> (kind, verdict, guard violations)."""
+    import pages_artifact_guard as guard
+    import pages_freshness_guard as fg
+    from collections import Counter
+    violations = Counter()
+    for f in sorted(out.iterdir()):
+        guard._check_payload(f.name, f.read_bytes(), violations)
+    live_state = ('NO_LIVE', None, None) if live is None else ('VALID', live, el.require_macro_evidence(fg.macro_tool.parse_json(live)))
+    r = fg.compare_macro(live_state, fg._artifact_file(out, el.FILENAME, el.MAX_BYTES, el.require_macro_evidence),
+                         fg._artifact_file(out, el.STATUS_FILENAME, el.MAX_BYTES, el.require_status))
+    return r['kind'], r['verdict'], dict(violations)
+
+
+def _daily(tmp_path, monkeypatch, name, *, previous, transport=None):
+    """build_pages_cockpit.py's placeholder, then public_screens_pipeline.collect with the real hook wiring (the generator
+    on the pipeline's private capture directory), stopped right after the hook."""
+    import public_screens_pipeline as pipeline
+    import macro_evidence as tool
+    out = _site(tmp_path, name)
+
+    def hook(root, manifest):
+        return tool.run_from_capture(out, root, reused_root(Path(root)), environ={}, now=lambda: AT,
+                                     transport=transport or FakeTransport(responses()), previous=previous)
+    monkeypatch.setattr(pipeline, 'collect_public_inputs', lambda *a, **k: (_ for _ in ()).throw(SystemExit('after-hook')))
+    with pytest.raises(SystemExit):
+        pipeline.collect(out, macro_v0=lambda root: [], macro_curve=lambda root: [], macro_evidence=hook,
+                         client_factory=lambda agent: None)
+    return out
+
+
+def test_daily_generation_failure_with_a_good_copy_publishes_it_unchanged(tmp_path, monkeypatch, capsys):
+    good = _good_previous(tmp_path)
+    live = el.encode(good)
+    monkeypatch.setattr(el, 'build', lambda *a, **k: (_ for _ in ()).throw(KeyError('x')))
+    out = _daily(tmp_path, monkeypatch, 'site', previous=(good, 'LOADED'))
+    assert (out / el.FILENAME).read_bytes() == live, 'values, base dates and check times of the good copy stay'
+    status = _status(out)
+    assert (status['attempt_result'], status['failure_stage'], status['failure_class'], status['published']) == ('FAILED', 'BUILD', 'KeyError', 'PREVIOUS_KEPT')
+    assert status['data_generated_at'] == good['generated_at'] and status['attempt_at'] == el.iso(AT)
+    assert _artifact_checks(out, live) == ('EQUAL', 'PASS', {})
+    printed = capsys.readouterr().out
+    assert 'WITHHELD' not in printed and "'x'" not in printed
+
+
+def test_daily_generation_failure_without_a_good_copy_withholds_the_file(tmp_path, monkeypatch, capsys):
+    placeholder = el.encode(el.empty_payload(AT))
+    good = el.encode(_good_previous(tmp_path))
+    monkeypatch.setattr(el, 'build', lambda *a, **k: (_ for _ in ()).throw(RuntimeError('x')))
+    out = _daily(tmp_path, monkeypatch, 'site', previous=(el.empty_payload(AT), 'EMPTY_LIVE'))
+    assert not (out / el.FILENAME).exists(), 'the placeholder is never published as a result'
+    assert _status(out)['published'] == 'NO_GOOD_COPY'
+    assert 'MACRO_EVIDENCE WITHHELD file=macro-evidence.json reason=NO_GOOD_COPY status=NO_GOOD_COPY' in capsys.readouterr().out
+    assert _artifact_checks(out, placeholder) == ('NO_GOOD_LIVE', 'NO_LIVE', {})
+    assert _artifact_checks(out, None) == ('NO_GOOD_LIVE', 'NO_LIVE', {})
+    # live good copy that this run could not read: this file is withheld, the rest of the deploy goes on (D-CV16 (a))
+    assert _artifact_checks(out, good) == ('MISSING', 'WITHHELD', {})
+
+
+def test_daily_write_failure(tmp_path, monkeypatch, capsys):
+    import macro_evidence as tool
+    good = _good_previous(tmp_path)
+    live = el.encode(good)
+    real, calls = tool.write_bytes, []
+
+    def first_write_fails(directory, body, name=el.FILENAME):
+        if name == el.FILENAME and json.loads(body)['generated_at'] is not None:   # not the build placeholder
+            calls.append(name)
+        if name == el.FILENAME and calls.count(el.FILENAME) == 1 and json.loads(body)['generated_at'] is not None:
+            raise OSError('disk')
+        return real(directory, body, name)
+    monkeypatch.setattr(tool, 'write_bytes', first_write_fails)
+    out = _daily(tmp_path, monkeypatch, 'once', previous=(good, 'LOADED'))
+    assert (out / el.FILENAME).read_bytes() == live and _status(out)['failure_stage'] == 'WRITE'
+    assert _artifact_checks(out, live) == ('EQUAL', 'PASS', {})
+
+    def macro_writes_fail(directory, body, name=el.FILENAME):
+        if name == el.FILENAME and json.loads(body)['generated_at'] is not None:   # the build placeholder was written before
+            raise OSError('disk')
+        return real(directory, body, name)
+    monkeypatch.setattr(tool, 'write_bytes', macro_writes_fail)
+    out = _daily(tmp_path, monkeypatch, 'always', previous=(good, 'LOADED'))
+    assert not (out / el.FILENAME).exists(), 'no good copy could be written: the placeholder is withheld, not published'
+    status = _status(out)
+    assert (status['failure_stage'], status['published'], status['previous']) == ('WRITE', 'NO_GOOD_COPY', 'LOADED')
+    assert _artifact_checks(out, live) == ('MISSING', 'WITHHELD', {})
+
+
+def test_daily_normal_partial_collection_is_published(tmp_path, monkeypatch):
+    good = _good_previous(tmp_path)
+    live = el.encode(good)
+    only_bls = {k: v for k, v in responses().items() if k[0] == mc.ENDPOINTS['BLS']}
+    out = _daily(tmp_path, monkeypatch, 'site', previous=(good, 'LOADED'), transport=FakeTransport(only_bls))
+    new = el.require_macro_evidence(json.loads((out / el.FILENAME).read_bytes()))
+    live_now = sum(1 for r in new['series'].values() if r['state'] == 'LIVE')
+    assert new['state'] == 'PARTIAL' and 0 < live_now < len(new['series']), 'a partial collection, whatever its count'
+    assert new['collection_started_at'] == good['collection_started_at'] and new['releases'][:len(good['releases'])] == good['releases']
+    assert _status(out)['published'] == 'NEW'
+    assert _artifact_checks(out, live) == ('NEWER', 'PASS', {})
+
+
+@pytest.mark.parametrize('field,value', [('continuity', 'BASELINE'), ('generated_at', '2026-10-01T00:00:00Z'),
+                                         ('collection_started_at', '2027-01-01T00:00:00Z'), ('previous', 'NO_LIVE'), ('state', 'LIVE')])
+def test_daily_inconsistent_output_never_replaces_the_good_copy(tmp_path, monkeypatch, field, value):
+    good = _good_previous(tmp_path)
+    live = el.encode(good)
+    real = el.build
+
+    def bent(*a, **k):
+        p = real(*a, **k)
+        p[field] = value
+        return p
+    monkeypatch.setattr(el, 'build', bent)
+    out = _daily(tmp_path, monkeypatch, 'site', previous=(good, 'LOADED'))
+    assert (out / el.FILENAME).read_bytes() == live
+    assert _status(out)['failure_stage'] == 'VALIDATE'
+    assert _artifact_checks(out, live) == ('EQUAL', 'PASS', {})
+
+
+def test_ui_deploy_preserve_never_publishes_the_placeholder_as_a_result(tmp_path):
+    import macro_evidence as tool
+    placeholder = el.encode(el.empty_payload(AT))
+    good = _good_previous(tmp_path)
+    no_good = el.encode_status(el.status_record(attempt_at=AT, result='FAILED', stage='BUILD', error_class='KeyError',
+                                                published='NO_GOOD_COPY', data_generated_at=None, data_sha256=None, previous='EMPTY_LIVE'))
+
+    class Response(io.BytesIO):
+        status = 200
+
+        def __init__(self, data, url):
+            super().__init__(data)
+            self.url = url
+
+        def geturl(self):
+            return self.url
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+
+    def site(files):
+        def opener(request, timeout):
+            if request.full_url not in files:
+                raise urllib.error.HTTPError(request.full_url, 404, 'nf', {}, None)
+            return Response(files[request.full_url], request.full_url)
+        return opener
+    for name, files in (('placeholder', {tool.SOURCE: placeholder, tool.STATUS_SOURCE: no_good}), ('none', {})):
+        out = _site(tmp_path, 'ui-' + name)
+        assert tool.preserve(out, open_previous=site(files)) == 0
+        assert not (out / el.FILENAME).exists()
+        assert (out / el.STATUS_FILENAME).exists() == (name == 'placeholder')
+        assert _artifact_checks(out, None)[:2] == ('NO_GOOD_LIVE', 'NO_LIVE')
+    # live unreadable: the build placeholder stays and the deploy check decides (refused when a good copy is live)
+    out = _site(tmp_path, 'ui-down')
+    assert tool.preserve(out, open_previous=lambda r, timeout: (_ for _ in ()).throw(OSError('down'))) == 0
+    assert (out / el.FILENAME).read_bytes() == placeholder or json.loads((out / el.FILENAME).read_bytes())['generated_at'] is None
+    assert _artifact_checks(out, el.encode(good))[:2] == ('EMPTIED', 'REFUSED')
+    # a live record that does not describe the live copy is not carried
+    out = _site(tmp_path, 'ui-good')
+    assert tool.preserve(out, open_previous=site({tool.SOURCE: el.encode(good), tool.STATUS_SOURCE: no_good})) == 0
+    assert (out / el.FILENAME).read_bytes() == el.encode(good) and not (out / el.STATUS_FILENAME).exists()

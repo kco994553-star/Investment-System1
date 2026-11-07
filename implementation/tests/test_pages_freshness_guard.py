@@ -11,6 +11,7 @@ from datetime import datetime, timedelta, timezone
 import importlib.util
 import itertools
 import json
+import sys
 from pathlib import Path
 import re
 import urllib.error
@@ -171,7 +172,8 @@ def test_guard_refuses_that_manual_artifact_and_passes_the_newer_daily_one(tmp_p
             'artifact_latest': '2026-10-13T22:30:00Z', 'live_latest': '2026-10-11T22:30:00Z'}
     assert f'PAGES_FRESHNESS file={fl.FILENAME} marker=as_of verdict=NEWER ' in out
     # 404 inputs and qgv-official.json (GSQ-024 publication check, no publication yet), no session yet
-    assert out.endswith('PAGES_FRESHNESS_PASS checks=11 refused=0 no_live=3 live_invalid=0 rows_compared=3 rows_regressed=0 '
+    # + macro-evidence.json (not served in this site: NO_GOOD_LIVE, counted as no_live)
+    assert out.endswith('PAGES_FRESHNESS_PASS checks=12 refused=0 no_live=4 live_invalid=0 rows_compared=3 rows_regressed=0 '
                         'records_compared=0 records_regressed=0\n')
     site.deploy(newer)
     live_before = dict(site.files)
@@ -184,7 +186,7 @@ def test_guard_refuses_that_manual_artifact_and_passes_the_newer_daily_one(tmp_p
                     'artifact=NONE live=2026-10-13T22:30:00Z\n') in out
     assert (f'PAGES_FRESHNESS file={fl.FILENAME} marker=as_of verdict=OLDER '
             'artifact=2026-10-11T22:30:00Z live=2026-10-13T22:30:00Z\n') in out
-    assert out.endswith('PAGES_FRESHNESS_REFUSED checks=11 refused=4 no_live=3 live_invalid=0 rows_compared=9 '
+    assert out.endswith('PAGES_FRESHNESS_REFUSED checks=12 refused=4 no_live=4 live_invalid=0 rows_compared=9 '
                         'rows_regressed=6 records_compared=0 records_regressed=0\n')
     # The same manual build made after the daily deploy carries the live data and is deployable (UI-only change).
     code, out = guard(manual_build(tmp_path / 'manual-2', site, MANUAL_LATE), site, capsys)
@@ -466,7 +468,7 @@ def test_regressed_codes_are_listed_up_to_a_fixed_number(tmp_path, capsys):
 def test_first_publication_and_live_rows_without_collection_records_pass(tmp_path, capsys):
     mine = {us.FILENAME: shares_payload({ROW_A: T17}), INPUTS.FILENAME: inputs_payload(tmp_path, {})}
     code, out = guard(write(tmp_path / 'first', mine), served({}), capsys)       # every live file 404
-    assert code == 0 and out.endswith('PAGES_FRESHNESS_PASS checks=11 refused=0 no_live=11 live_invalid=0 rows_compared=0 '
+    assert code == 0 and out.endswith('PAGES_FRESHNESS_PASS checks=12 refused=0 no_live=12 live_invalid=0 rows_compared=0 '
                                       'rows_regressed=0 records_compared=0 records_regressed=0\n')
     assert section_line(out, us.FILENAME, 'records')['new_record'] == '1'
     # A live file whose rows were never collected has nothing to lose, even against an artifact without that file.
@@ -584,7 +586,7 @@ def test_live_copy_served_but_invalid_refuses_the_deploy(tmp_path, capsys, body)
     code, out = guard(folder, served({us.FILENAME: body}), capsys)
     assert code == 1 and f'PAGES_FRESHNESS_LIVE_INVALID file={us.FILENAME} deploy=REFUSED\n' in out
     assert f'PAGES_FRESHNESS file={us.FILENAME} ' not in out                   # not compared
-    assert out.endswith('PAGES_FRESHNESS_REFUSED checks=10 refused=0 no_live=10 live_invalid=1 rows_compared=0 '
+    assert out.endswith('PAGES_FRESHNESS_REFUSED checks=11 refused=0 no_live=11 live_invalid=1 rows_compared=0 '
                         'rows_regressed=0 records_compared=0 records_regressed=0\n')
 
 
@@ -625,7 +627,8 @@ def test_live_reads_use_the_daily_reader_urls_with_a_per_run_query_and_print_no_
     inputs_tool = load_tool('preserve_public_sec_inputs')
     official_tool = load_tool('qgv_official_publish')
     sources = [shares_tool.SOURCE, shares_tool.QG_SOURCE, shares_tool.QGV2_SOURCE, inputs_tool.SOURCE, ledger_tool.SOURCE,
-               official_tool.LIVE_URL]                                  # + qgv-official.json (GSQ-024); never its status file
+               official_tool.LIVE_URL,                                  # + qgv-official.json (GSQ-024); never its status file
+               load_tool('macro_evidence').SOURCE]                      # + macro-evidence.json (owner 2026-11-07); never its status
     assert site.urls == [s + '?deploy-check=123-2' for s in sources]   # one read per file
     assert code == 0
 
@@ -745,3 +748,107 @@ def test_both_deploy_jobs_check_freshness_immediately_before_deploy(workflow):
     for phrase in ('row by row', 'acquired_at', 'append only', 'PAGES_FRESHNESS_LIVE_INVALID',
                    'separate, evidence-based procedure', 'never automatic', 'fail closed'):
         assert phrase in comment
+
+
+# ---------------------------------------------------------------- macro-evidence.json (owner 2026-11-07, run 42326419126)
+
+def _macro():
+    sys.path.insert(0, str(ROOT / 'tests'))
+    import macro_evidence_fixture as fx
+    from investment_system.macro import evidence_lines as el
+    return fx, el
+
+
+def _good(at_index=-1):
+    fx, el = _macro()
+    return el.encode(fx.runs()[at_index])
+
+
+def _placeholder():
+    fx, el = _macro()
+    return el.encode(el.empty_payload(datetime(2026, 11, 7, 1, 57, tzinfo=UTC)))
+
+
+def _status_for(body, published='PREVIOUS_KEPT', result='FAILED'):
+    import hashlib
+    fx, el = _macro()
+    payload = json.loads(body)
+    return el.encode_status(el.status_record(
+        attempt_at=datetime(2026, 11, 7, 1, 57, tzinfo=UTC), result=result, stage=None if result == 'BUILT' else 'BUILD',
+        error_class=None if result == 'BUILT' else 'KeyError', published=published,
+        data_generated_at=None if published == 'NO_GOOD_COPY' else payload['generated_at'],
+        data_sha256=None if published == 'NO_GOOD_COPY' else hashlib.sha256(body).hexdigest(), previous='LOADED'))
+
+
+def macro_line(out):
+    return next(l for l in out.splitlines() if l.startswith('PAGES_FRESHNESS file=macro-evidence.json '))
+
+
+def test_macro_incident_placeholder_replacing_a_good_copy_is_refused(tmp_path, capsys):
+    """Run 42326419126: the generator failed and the build-time placeholder (generated_at null, 0 collected) reached the
+    deploy artifact while the live copy held collected data. The deploy check on that artifact refuses it."""
+    _, el = _macro()
+    code, out = guard(write(tmp_path / 'a', {el.FILENAME: _placeholder()}), served({el.FILENAME: _good()}), capsys)
+    assert code == 1 and 'verdict=REFUSED kind=EMPTIED' in macro_line(out) and 'artifact_generated_at=NONE' in macro_line(out)
+    assert out.splitlines()[-1].startswith('PAGES_FRESHNESS_REFUSED ')
+
+
+@pytest.mark.parametrize('artifact,kind,code', [
+    ('missing', 'MISSING', 0),                       # withheld (D-CV16 (a)): this file only, the deploy goes on
+    ('withheld', 'MISSING', 0),                      # no good copy: placeholder withheld, NO_GOOD_COPY record beside nothing
+    ('withheld_placeholder', 'EMPTIED', 1),          # the placeholder beside a NO_GOOD_COPY record is never published
+    ('corrupt', 'ARTIFACT_INVALID', 1),
+    ('older', 'OLDER', 1),
+    ('kept', 'EQUAL', 0),
+    ('changed', 'CHANGED', 1),
+    ('newer_partial', 'NEWER', 0),
+])
+def test_macro_artifact_against_a_good_live_copy(tmp_path, capsys, artifact, kind, code):
+    fx, el = _macro()
+    runs = fx.runs()
+    live = el.encode(runs[-2])
+    files = {}
+    if artifact == 'withheld':
+        files[el.STATUS_FILENAME] = _status_for(live, 'NO_GOOD_COPY')
+    elif artifact == 'withheld_placeholder':
+        files[el.FILENAME], files[el.STATUS_FILENAME] = _placeholder(), _status_for(live, 'NO_GOOD_COPY')
+    elif artifact == 'corrupt':
+        files[el.FILENAME] = live[:-40]
+    elif artifact == 'older':
+        files[el.FILENAME] = el.encode(runs[-3])
+    elif artifact == 'kept':
+        files[el.FILENAME], files[el.STATUS_FILENAME] = live, _status_for(live)          # failed attempt kept the copy
+    elif artifact == 'changed':
+        p = json.loads(live)
+        p['catalog'] = p['catalog']                                                     # same generated_at, other bytes
+        files[el.FILENAME] = json.dumps(p, indent=1).encode()
+    elif artifact == 'newer_partial':
+        new = el.encode(runs[-1])
+        assert json.loads(new)['state'] in ('PARTIAL', 'LIVE'), 'a partial collection is a normal result'
+        files[el.FILENAME], files[el.STATUS_FILENAME] = new, _status_for(new, 'NEW', 'BUILT')
+    got, out = guard(write(tmp_path / 'a', files), served({el.FILENAME: live}), capsys)
+    assert got == code and f'kind={kind} ' in macro_line(out), macro_line(out)
+    withheld = f'PAGES_FRESHNESS_PUBLICATION_WITHHELD file={el.FILENAME} kind={kind} deploy=CONTINUES'
+    assert (withheld in out) == (kind == 'MISSING') and ('verdict=WITHHELD' in macro_line(out)) == (kind == 'MISSING')
+
+
+def test_macro_no_good_live_copy_passes_and_counts_as_no_live(tmp_path, capsys):
+    _, el = _macro()
+    for live in ({}, {el.FILENAME: _placeholder()}):                 # never published, or only the placeholder
+        for n, files in enumerate(({}, {el.STATUS_FILENAME: _status_for(_placeholder(), 'NO_GOOD_COPY')},
+                                   {el.FILENAME: _placeholder()}, {el.FILENAME: _good()})):
+            code, out = guard(write(tmp_path / ('a%d%d' % (len(live), n)), files), served(live), capsys)
+            assert code == 0 and 'verdict=NO_LIVE kind=NO_GOOD_LIVE' in macro_line(out)
+    # the placeholder beside a NO_GOOD_COPY record: the daily step withholds it, so an artifact carrying both is inconsistent
+    code, out = guard(write(tmp_path / 'ph', {el.FILENAME: _placeholder(), el.STATUS_FILENAME: _status_for(_placeholder(), 'NO_GOOD_COPY')}),
+                      served({}), capsys)
+    assert code == 1 and 'kind=STATUS_MISMATCH' in macro_line(out)
+
+
+def test_macro_status_must_describe_the_file_beside_it(tmp_path, capsys):
+    _, el = _macro()
+    live, other = _good(-2), _good(-1)
+    for status in (_status_for(other), _status_for(live, 'NO_GOOD_COPY'), b'{"schema": "x"}'):
+        code, out = guard(write(tmp_path / ('s%d' % len(status)), {el.FILENAME: live, el.STATUS_FILENAME: status}),
+                          served({el.FILENAME: live}), capsys)
+        assert code == 1 and 'kind=STATUS_MISMATCH' in macro_line(out)

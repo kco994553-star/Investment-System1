@@ -521,3 +521,60 @@ def _require(p) -> dict:
     for view in p["indicators"]:
         _need(view == indicator_view(es.BY_ID[view["id"]], series))
     return p
+
+
+# ---------------------------------------------------------------- attempt status (macro-evidence-status.json)
+# owner 2026-11-07 (run 42326419126: the build failed and the placeholder replaced the published copy). One record of the
+# latest daily attempt, published beside macro-evidence.json and never merged into it: whether this attempt built a new
+# file, kept the last good copy unchanged (its own generated_at, bytes and hash), or had no good copy to keep. The data
+# file's own times are never touched by a failed attempt; this record says the attempt failed and the data is delayed.
+
+STATUS_FILENAME = "macro-evidence-status.json"
+STATUS_SCHEMA = "macro-evidence-status/1"
+STATUS_KIND = "MACRO_EVIDENCE_ATTEMPT"
+ATTEMPT_RESULTS = ("BUILT", "FAILED")
+FAILURE_STAGES = ("PREVIOUS", "COLLECT", "BUILD", "VALIDATE", "WRITE")
+PUBLISHED = ("NEW", "PREVIOUS_KEPT", "NO_GOOD_COPY")
+PREVIOUS_READ = ("LOADED", "EMPTY_LIVE", "NO_LIVE", "UNAVAILABLE", "INVALID")
+STATUS_KEYS = ("schema", "kind", "attempt_at", "attempt_result", "failure_stage", "failure_class", "published",
+               "data_generated_at", "data_sha256", "previous")
+_CLASS = re.compile(r"[A-Za-z][A-Za-z0-9_]{0,63}")
+_HEX = re.compile(r"[0-9a-f]{64}")
+
+
+def status_record(*, attempt_at: datetime, result: str, stage, error_class, published: str, data_generated_at,
+                  data_sha256, previous: str) -> dict:
+    return require_status({"schema": STATUS_SCHEMA, "kind": STATUS_KIND, "attempt_at": iso(attempt_at),
+                           "attempt_result": result, "failure_stage": stage, "failure_class": error_class,
+                           "published": published, "data_generated_at": data_generated_at, "data_sha256": data_sha256,
+                           "previous": previous})
+
+
+def require_status(payload) -> dict:
+    """Strict macro-evidence-status/1. Raises ValueError (fixed code)."""
+    try:
+        p = payload
+        _keys(p, STATUS_KEYS)
+        _need(p["schema"] == STATUS_SCHEMA and p["kind"] == STATUS_KIND)
+        parse_iso(p["attempt_at"])
+        _need(p["attempt_result"] in ATTEMPT_RESULTS and p["published"] in PUBLISHED and p["previous"] in PREVIOUS_READ)
+        if p["attempt_result"] == "BUILT":
+            _need(p["failure_stage"] is None and p["failure_class"] is None and p["published"] == "NEW")
+        else:
+            _need(p["failure_stage"] in FAILURE_STAGES and p["published"] in ("PREVIOUS_KEPT", "NO_GOOD_COPY"))
+            _need(p["failure_class"] is None or (type(p["failure_class"]) is str and _CLASS.fullmatch(p["failure_class"])))
+        if p["published"] == "NO_GOOD_COPY":
+            _need(p["data_generated_at"] is None and p["data_sha256"] is None)
+        else:
+            parse_iso(p["data_generated_at"])
+            _need(type(p["data_sha256"]) is str and _HEX.fullmatch(p["data_sha256"]))
+        return p
+    except (KeyError, TypeError, IndexError, AttributeError):
+        raise ValueError("MACRO_EVIDENCE_STATUS_INVALID") from None
+    except ValueError:
+        raise ValueError("MACRO_EVIDENCE_STATUS_INVALID") from None
+
+
+def encode_status(payload: dict) -> bytes:
+    return json.dumps(require_status(payload), ensure_ascii=False, sort_keys=True, separators=(",", ":"),
+                      allow_nan=False).encode("utf-8")

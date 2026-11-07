@@ -97,6 +97,22 @@ Both sides are read through the strict reader `qgv_official.parse` (no duplicate
 - qgv-official-status.json is never compared (an attempt record, not data);
 - an unreachable live read is refused like every other file (fail closed).
 
+macro-evidence.json (owner 2026-11-07, run 42326419126: a failed build left the build-time placeholder in the artifact and
+the deploy replaced the collected copy): one file, compared as a whole by `generated_at` (the time it was built from
+collected data; the placeholder has null), never by a fixed count of collected series (a partial collection is normal).
+- live copy not served (404) or only the placeholder -> NO_GOOD_LIVE (counted as no_live): nothing good to lose, any
+  valid artifact passes;
+- live good copy and the artifact carries the placeholder -> EMPTIED, or a copy built earlier -> OLDER: refused;
+- live good copy, artifact without the file (the daily step had no good copy and withheld the placeholder) -> MISSING, or a
+  live copy served but invalid -> LIVE_INVALID: verdict WITHHELD as for qgv-official.json (D-CV16 (a)): this file is off the
+  site until the next good run, the rest of the deploy goes on (a macro failure never stops the SEC, news or V publication);
+- same generated_at: bytes equal -> EQUAL (the kept last good copy), else CHANGED: refused; built later -> NEWER: pass;
+- artifact present but rejected by require_macro_evidence -> ARTIFACT_INVALID, refused;
+- macro-evidence-status.json (the attempt record) is not data and is not compared with the live copy, but in the artifact it
+  must describe the macro file beside it: published NEW / PREVIOUS_KEPT with that file's generated_at and SHA-256, or
+  NO_GOOD_COPY with no macro file. Otherwise STATUS_MISMATCH, refused. An artifact without the record passes (UI-only
+  deploys before the first daily run with this rule).
+
 Live copy: 404 -> NO_LIVE (first publication, nothing to roll back: pass). Served (200) but oversized, not JSON or
 rejected by the file's strict validator (the same one its daily previous-copy reader applies) ->
 PAGES_FRESHNESS_LIVE_INVALID and the deploy is refused: nothing can be compared, and this guard never passes blind.
@@ -117,6 +133,7 @@ from __future__ import annotations
 
 import argparse
 from datetime import date, datetime, timezone
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -126,12 +143,14 @@ import time
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import forward_validation_ledger as ledger_tool
+import macro_evidence as macro_tool
 import preserve_public_sec_inputs as target_tool
 import qgv_official_publish as official_tool
 import sec_universe_shares as universe_tool
 from sec_universe_shares import _fetch_body  # the daily tools' live Pages reader (404 -> None, other failure -> OSError)
 
 fl = ledger_tool.fl
+el = macro_tool.el
 qo = official_tool.qo
 MAX_DETAIL = 20
 ROW_KINDS = ('newer', 'equal', 'older', 'missing', 'lost_record')
@@ -221,6 +240,12 @@ OFFICIAL_VERDICTS = {'NONE': 'NO_LIVE', 'NEW': 'NO_LIVE', 'EQUAL': 'PASS', 'NEWE
                      'LIVE_INVALID': 'WITHHELD'}
 
 
+# macro-evidence.json (module doc).
+MACRO_VERDICTS = {'NO_GOOD_LIVE': 'NO_LIVE', 'EQUAL': 'PASS', 'NEWER': 'PASS', 'MISSING': 'WITHHELD', 'EMPTIED': 'REFUSED',
+                  'OLDER': 'REFUSED', 'CHANGED': 'REFUSED', 'ARTIFACT_INVALID': 'REFUSED', 'LIVE_INVALID': 'WITHHELD',
+                  'STATUS_MISMATCH': 'REFUSED'}
+
+
 class LiveUnreachable(Exception):
     def __init__(self, name):
         super().__init__(name)
@@ -292,6 +317,69 @@ def _artifact_official(folder):
         return 'VALID', body, qo.parse(body)
     except Exception:
         return 'INVALID', None, None
+
+
+def _live_macro(nonce, open_response):
+    """-> ('VALID', bytes, payload) | ('NO_LIVE', None, None) | ('LIVE_INVALID', None, None). Raises LiveUnreachable.
+    Same URL as the daily previous-copy reader (tools/macro_evidence.py SOURCE), strict validator require_macro_evidence."""
+    try:
+        body = _fetch_body(f'{macro_tool.SOURCE}?deploy-check={nonce}', el.MAX_BYTES, open_response)
+    except OSError:
+        raise LiveUnreachable(el.FILENAME) from None
+    if body is None:
+        return 'NO_LIVE', None, None
+    try:
+        return 'VALID', body, el.require_macro_evidence(macro_tool.parse_json(body))
+    except Exception:
+        return 'LIVE_INVALID', None, None
+
+
+def _artifact_file(folder, name, limit, validate):
+    """-> ('VALID', bytes, payload) | ('ABSENT', None, None) | ('INVALID', None, None)."""
+    path = folder / name
+    if not path.exists() and not path.is_symlink():
+        return 'ABSENT', None, None
+    if path.is_symlink() or not path.is_file():
+        return 'INVALID', None, None
+    with path.open('rb') as handle:
+        body = handle.read(limit + 1)
+    try:
+        if len(body) > limit:
+            raise ValueError
+        return 'VALID', body, validate(macro_tool.parse_json(body))
+    except Exception:
+        return 'INVALID', None, None
+
+
+def compare_macro(live, artifact, status=('ABSENT', None, None)):
+    """`live` = _live_macro(...), `artifact` / `status` = _artifact_file(...) -> {kind, verdict, artifact_at, live_at}."""
+    live_state, live_body, theirs = live
+    art_state, art_body, mine = artifact
+    live_at = theirs['generated_at'] if live_state == 'VALID' else None
+    art_at = mine['generated_at'] if art_state == 'VALID' else None
+    if art_state == 'INVALID':
+        kind = 'ARTIFACT_INVALID'
+    elif live_state == 'LIVE_INVALID':
+        kind = 'LIVE_INVALID'
+    elif live_state == 'NO_LIVE' or live_at is None:
+        kind = 'NO_GOOD_LIVE'
+    elif art_state == 'ABSENT':
+        kind = 'MISSING'
+    elif art_at is None:
+        kind = 'EMPTIED'
+    else:
+        ours, live_time = el.parse_iso(art_at), el.parse_iso(live_at)
+        kind = 'OLDER' if ours < live_time else 'NEWER' if ours > live_time else ('EQUAL' if art_body == live_body else 'CHANGED')
+    status_state, _, record = status
+    if MACRO_VERDICTS[kind] != 'REFUSED' and status_state != 'ABSENT':
+        if status_state == 'INVALID':
+            kind = 'STATUS_MISMATCH'
+        elif record['published'] == 'NO_GOOD_COPY':
+            # no good copy: the macro file is withheld (the placeholder is never published beside this record)
+            kind = kind if art_state == 'ABSENT' else 'STATUS_MISMATCH'
+        elif art_state != 'VALID' or record['data_generated_at'] != art_at or record['data_sha256'] != hashlib.sha256(art_body).hexdigest():
+            kind = 'STATUS_MISMATCH'
+    return {'kind': kind, 'verdict': MACRO_VERDICTS[kind], 'artifact_at': art_at, 'live_at': live_at}
 
 
 def _official_basis(payload):
@@ -513,8 +601,11 @@ def compare(artifact_dir, *, open_response=None, environ=None):
     nonce = _run_nonce(environ)
     reads = [(entry, _live(*entry[:4], nonce, open_response)) for entry in ROW_FILES + (LEDGER_FILE,)]
     live_official = _live_official(nonce, open_response)
+    live_macro = _live_macro(nonce, open_response)
     out = {'rows': [], 'ledger_markers': [], 'ledger_lists': [], 'live_invalid': [], 'artifact_invalid': [],
-           'official': compare_official(live_official, _artifact_official(artifact_dir))}
+           'official': compare_official(live_official, _artifact_official(artifact_dir)),
+           'macro': compare_macro(live_macro, _artifact_file(artifact_dir, el.FILENAME, el.MAX_BYTES, el.require_macro_evidence),
+                                  _artifact_file(artifact_dir, el.STATUS_FILENAME, el.MAX_BYTES, el.require_status))}
     for (name, _, limit, *rest), (state, live) in reads:
         if state == 'LIVE_INVALID':
             out['live_invalid'].append(name)
@@ -603,6 +694,13 @@ def run(artifact_dir, *, open_response=None, environ=None):
         print(f"PAGES_FRESHNESS file={qo.FILENAME} section=publication verdict={official['verdict']} kind={official['kind']} "
               f"artifact_basis={_text(_day(official['artifact_basis']))} live_basis={_text(_day(official['live_basis']))}")
         verdicts.append(official['verdict'])
+    macro = result.get('macro')
+    if macro is not None:
+        if macro['verdict'] == 'WITHHELD':
+            print(f"PAGES_FRESHNESS_PUBLICATION_WITHHELD file={el.FILENAME} kind={macro['kind']} deploy=CONTINUES")
+        print(f"PAGES_FRESHNESS file={el.FILENAME} section=file verdict={macro['verdict']} kind={macro['kind']} "
+              f"artifact_generated_at={macro['artifact_at'] or 'NONE'} live_generated_at={macro['live_at'] or 'NONE'}")
+        verdicts.append(macro['verdict'])
     rows_compared = sum(r['counts']['compared'] for r in result['rows'])
     rows_regressed = sum(len(r['regressions']) for r in result['rows'])
     records_compared = sum(r['counts']['live_records'] for r in result['ledger_lists'])

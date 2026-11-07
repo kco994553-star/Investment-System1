@@ -37,7 +37,29 @@ const FAMILY={C:'금리곡선',LU:'실업·청구',LD:'노동 수요 선행',MO:
 const RULE_SOURCE={LITERATURE:'[문헌]',PROPOSAL:'[제안]',LITERATURE_UP_PROPOSAL_DOWN:'[문헌] 상향 · [제안] 하향',AGENCY_EVENT:'[기관 사건]'};
 const REASON={SOURCE_NOT_COLLECTED:'수집 전',SOURCE_NOT_AVAILABLE:'출처 응답 없음',SOURCE_KEY_NOT_CONFIGURED:'API 키 미설정',TERMS_UNVERIFIED:'약관 원문 미확인 · 공개 보류',
  SCHEMA_MISMATCH:'형식 불일치',SERIES_NOT_FOUND:'계열 없음',MISSING_SOURCE:'값 없음',PROVIDER_ERROR:'출처 오류 응답',INSUFFICIENT_HISTORY:'이력 부족'};
-const V={cycle:'economy',view:{economy:0,market:0},ev:null,group:'',ring:'economy',node:'data'};
+const V={cycle:'economy',view:{economy:0,market:0},ev:null,group:'',ring:'economy',node:'data',mevStatus:undefined};
+// macro-evidence-status/1 (Python macro/evidence_lines.py require_status, same rules): this attempt apart from the data. A
+// failed attempt keeps the last good copy with its own generated_at; the record says the attempt failed and the data is late.
+const MES='macro-evidence-status.json',MES_KEYS=['schema','kind','attempt_at','attempt_result','failure_stage','failure_class','published','data_generated_at','data_sha256','previous'];
+const MES_STAGE={PREVIOUS:'이전 공개본 읽기',COLLECT:'수집',BUILD:'자료 만들기',VALIDATE:'검사',WRITE:'쓰기'};
+const ISO=/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,6})?Z$/;
+function mesValid(p){const ok=(c)=>{if(!c)throw Error('MES');};try{ok(p&&typeof p==='object'&&!Array.isArray(p)&&Object.keys(p).length===MES_KEYS.length&&MES_KEYS.every(k=>Object.hasOwn(p,k)));
+ ok(p.schema==='macro-evidence-status/1'&&p.kind==='MACRO_EVIDENCE_ATTEMPT'&&ISO.test(p.attempt_at));
+ ok(['BUILT','FAILED'].includes(p.attempt_result)&&['NEW','PREVIOUS_KEPT','NO_GOOD_COPY'].includes(p.published)&&['LOADED','EMPTY_LIVE','NO_LIVE','UNAVAILABLE','INVALID'].includes(p.previous));
+ if(p.attempt_result==='BUILT')ok(p.failure_stage===null&&p.failure_class===null&&p.published==='NEW');
+ else ok(Object.hasOwn(MES_STAGE,p.failure_stage)&&p.published!=='NEW'&&(p.failure_class===null||(typeof p.failure_class==='string'&&/^[A-Za-z][A-Za-z0-9_]{0,63}$/.test(p.failure_class))));
+ if(p.published==='NO_GOOD_COPY')ok(p.data_generated_at===null&&p.data_sha256===null);else ok(ISO.test(p.data_generated_at)&&/^[0-9a-f]{64}$/.test(p.data_sha256));
+ return p;}catch(_){return null;}}
+// The attempt line: null when there is nothing to say (no record, or a built attempt of this very file). `p` is the
+// macro file, or null when it is not published: NO_GOOD_COPY means the daily step withheld it (never beside a file).
+function attemptLine(p){const st=V.mevStatus;if(!st)return null;
+ if(st.invalid)return h('p',{class:'reason',dataset:{mevAttempt:'INVALID'}},'갱신 기록 규격 불일치 · 기록 표시 안 함');
+ const matches=st.published==='NO_GOOD_COPY'?p===null:(p!==null&&st.data_generated_at===p.generated_at);
+ if(!matches)return h('p',{class:'reason',dataset:{mevAttempt:'MISMATCH'}},'갱신 기록이 이 자료와 맞지 않음 · 기록 표시 안 함');
+ if(st.attempt_result==='BUILT')return null;
+ return st.published==='PREVIOUS_KEPT'
+  ?h('p',{class:'hand err',role:'status',dataset:{mevAttempt:'PREVIOUS_KEPT'}},'이번 갱신 실패 (',utc(st.attempt_at),' · ',MES_STAGE[st.failure_stage],' 단계) · 아래는 마지막 정상본 그대로 (생성 ',utc(st.data_generated_at),') · 자료 지연')
+  :h('p',{class:'hand err',role:'status',dataset:{mevAttempt:'NO_GOOD_COPY'}},'이번 갱신 실패 (',utc(st.attempt_at),' · ',MES_STAGE[st.failure_stage],' 단계) · 정상본이 없어 근거 파일을 게시하지 않음 · 0건이 아니라 미수집');}
 const obj=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 // replaceChildren would write "null" for a part that is not there: core append skips null / false.
 const put=(box,...c)=>{box.replaceChildren();I.append(box,c);return box;};
@@ -133,10 +155,13 @@ const stateText=(s,r)=>s==='LIVE'?'수집됨':(s==='PARTIAL'?'일부 수집 · '
 let evidenceBox=null;
 function paintEvidence(){if(evidenceBox&&evidenceBox.isConnected&&evidenceBox.dataset.ready)evidenceBlock(evidenceBox);}
 function evidenceBlock(box){
+ if(V.mevStatus===undefined){V.mevStatus=null;
+  I.data.static(MES).then(v=>{V.mevStatus=v===null?null:(mesValid(v)||{invalid:true});if(V.mevStatus&&box.isConnected)evidenceBlock(box);},()=>{V.mevStatus=null;});}
  box.dataset.ready='1';const top=[sub('근거 세로선 · 근거 탐색','4.1.3','탐색 전용 · 공식 판정·확률·매크로 게이트에 쓰지 않음'),
   h('p',{class:'reason',dataset:{evScope:''}},'탐색 화면 전용 · 해석 후보 · 미승인 · v0 · 미검증')];
  const s=fileState(ME),p=s.state==='OK'?I.data.get(ME):null,ME_=window.MacroEvidence;
- if(!p||!ME_){put(box,...top,s.state==='OK'?failed('READER_MISSING','근거 지표를 읽는 모듈이 없습니다'):fileFail(ME,'근거'));return;}
+ if(!p||!ME_){put(box,...top,s.state==='OK'?failed('READER_MISSING','근거 지표를 읽는 모듈이 없습니다'):fileFail(ME,'근거'),
+  s.state!=='OK'&&V.mevStatus&&(V.mevStatus.invalid||V.mevStatus.published==='NO_GOOD_COPY')?attemptLine(null):null);return;}
  const tabsList=ME_.TABS.map(([c,l])=>[c,l]),cyc=V.ev||V.cycle,ci=Math.max(0,tabsList.findIndex(t=>t[0]===cyc));
  const sum=ME_.summary(p,tabsList[ci][0]),names=a=>a.map(f=>FAMILY[f]||f).join(', ')||'없음';
  const evs=ME_.events({cycle:tabsList[ci][0]},p),N=phone()?ME_.LIMIT.mobile:ME_.LIMIT.pc;
@@ -147,6 +172,7 @@ function evidenceBlock(box){
   h('ul',{class:'news-lines'},p.indicators.map(i=>h('li',{dataset:{catalogRow:i.id,catalogState:i.state}},h('b',null,i.id,' ',i.name),' · ',stateText(i.state,i.reason),
    held(i)?' · 약관 원문 미확인 · 이름과 상태만 표시':' · '+(FAMILY[i.family]||i.family)+' · '+i.cycles.map(c=>(tabsList.find(t=>t[0]===c)||[c,c])[1]).join('·')+' · '+(RULE_SOURCE[i.rule.source_class]||i.rule.source_class)+' '+i.rule.version+' · v0 · 미검증'))));
  put(box,...top,
+  attemptLine(p),
   p.generated_at===null?h('p',{class:'reason',dataset:{notCollected:''}},'아직 수집 전입니다 · 매일 실행에서 공식 통계를 모으면 표시됩니다')
    :h('p',{class:'reason',dataset:{collection:''}},'수집 시작 ',utc(p.collection_started_at),' · 최근 생성 ',utc(p.generated_at),p.state==='PARTIAL'?' · 일부 수집':''),
   tablist('근거 사이클',tabsList,ci,i=>{V.ev=tabsList[i][0];evidenceBlock(box);focusLater(box,'[data-ev-tab="'+V.ev+'"]');},'evTab'),
