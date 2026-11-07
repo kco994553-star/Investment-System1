@@ -1,0 +1,926 @@
+{
+  "data_kind": "SYNTHETIC",
+  "coverage": {
+    "denominator": {
+      "kind": "ORIGINAL_MEMBER_ROWS",
+      "count": 20,
+      "unique_issuers": 20,
+      "security_id_present": 20
+    },
+    "factors": {
+      "operating_margin_ttm": {
+        "raw_inputs": 20,
+        "verified_external": 0,
+        "raw_valid": 20,
+        "score_valid": 20,
+        "denominator": 20,
+        "raw_failures": {},
+        "score_failures": {},
+        "selected_coverage": {
+          "denominator": 20,
+          "raw_valid": 20,
+          "score_valid": 20
+        }
+      },
+      "accruals_assets_ttm": {
+        "raw_inputs": 20,
+        "verified_external": 0,
+        "raw_valid": 20,
+        "score_valid": 20,
+        "denominator": 20,
+        "raw_failures": {},
+        "score_failures": {},
+        "selected_coverage": {
+          "denominator": 20,
+          "raw_valid": 20,
+          "score_valid": 20
+        }
+      },
+      "debt_assets": {
+        "raw_inputs": 20,
+        "verified_external": 0,
+        "raw_valid": 20,
+        "score_valid": 20,
+        "denominator": 20,
+        "raw_failures": {},
+        "score_failures": {},
+        "selected_coverage": {
+          "denominator": 20,
+          "raw_valid": 20,
+          "score_valid": 20
+        }
+      },
+      "roa_ttm": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "roe_common_ttm": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "common_equity_assets": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "cfo_assets_ttm": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "interest_coverage_ttm": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "revenue_cagr_3y": {
+        "raw_inputs": 20,
+        "verified_external": 0,
+        "raw_valid": 20,
+        "score_valid": 20,
+        "denominator": 20,
+        "raw_failures": {},
+        "score_failures": {},
+        "selected_coverage": {
+          "denominator": 20,
+          "raw_valid": 20,
+          "score_valid": 20
+        }
+      },
+      "roa_improvement_3y": {
+        "raw_inputs": 20,
+        "verified_external": 0,
+        "raw_valid": 20,
+        "score_valid": 20,
+        "denominator": 20,
+        "raw_failures": {},
+        "score_failures": {},
+        "selected_coverage": {
+          "denominator": 20,
+          "raw_valid": 20,
+          "score_valid": 20
+        }
+      },
+      "common_bps_cagr_3y": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "cfo_assets_improvement_3y": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "ep_ttm_diluted": {
+        "raw_inputs": 20,
+        "verified_external": 0,
+        "raw_valid": 20,
+        "score_valid": 20,
+        "denominator": 20,
+        "raw_failures": {},
+        "score_failures": {},
+        "selected_coverage": {
+          "denominator": 20,
+          "raw_valid": 20,
+          "score_valid": 20
+        }
+      },
+      "ep_fy_diluted": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "ep_fy1": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "ep_ntm": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "net_income_mcap": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "common_bp": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "tangible_common_bp": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "sales_mcap": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "cfo_mcap": {
+        "raw_inputs": 20,
+        "verified_external": 0,
+        "raw_valid": 20,
+        "score_valid": 20,
+        "denominator": 20,
+        "raw_failures": {},
+        "score_failures": {},
+        "selected_coverage": {
+          "denominator": 20,
+          "raw_valid": 20,
+          "score_valid": 20
+        }
+      },
+      "ni_da_mcap": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "ebitda_ev": {
+        "raw_inputs": 20,
+        "verified_external": 0,
+        "raw_valid": 20,
+        "score_valid": 20,
+        "denominator": 20,
+        "raw_failures": {},
+        "score_failures": {},
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "ebit_ev": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "sales_ev": {
+        "raw_inputs": 20,
+        "verified_external": 0,
+        "raw_valid": 20,
+        "score_valid": 20,
+        "denominator": 20,
+        "raw_failures": {},
+        "score_failures": {},
+        "selected_coverage": {
+          "denominator": 20,
+          "raw_valid": 20,
+          "score_valid": 20
+        }
+      },
+      "fcf_mcap": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "fcf_ev": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "fcff_ev": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "dividend_yield_ttm": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "net_share_reduction": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "shareholder_yield": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "peg_historical": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "peg_forecast": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "nareit_ffo_mcap": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "affo_mcap": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "gross_profit_assets_ttm": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "net_debt_assets": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "roic_explicit": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "profit_stability_5y": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "noa_growth": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "depreciation_capex": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "revenue_growth_1y": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "revenue_cagr_5y": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "operating_income_cagr_3y": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "eps_diluted_cagr_3y": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "revenue_growth_consistency_3y": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "cfo_per_share_growth": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "fcf_per_share_growth": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "tangible_bps_growth": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "ffo_per_share_growth": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      },
+      "consensus_growth": {
+        "raw_inputs": 0,
+        "verified_external": 0,
+        "raw_valid": 0,
+        "score_valid": 0,
+        "denominator": 20,
+        "raw_failures": {
+          "MISSING_INPUT": 20
+        },
+        "score_failures": {
+          "MISSING_INPUT": 20
+        },
+        "selected_coverage": {
+          "denominator": 0,
+          "raw_valid": 0,
+          "score_valid": 0
+        }
+      }
+    },
+    "axes": {
+      "Q": {
+        "valid": 20,
+        "denominator": 20
+      },
+      "G": {
+        "valid": 20,
+        "denominator": 20
+      },
+      "V": {
+        "valid": 20,
+        "denominator": 20
+      }
+    },
+    "all_axes": {
+      "valid": 20,
+      "denominator": 20
+    },
+    "total": {
+      "valid": 20,
+      "denominator": 20
+    },
+    "row_failures": {}
+  },
+  "preview_id": "7ffed068dda48d1389ec988c6606ebc5514e599bc9da39f063db61929d94a373",
+  "full_preview_sha256": "608a1a6aa65a817308984d77bad2acd7a62b4add9c388e0c2e018cc27fcd1847",
+  "expected_first_raw": {
+    "ep_ttm_diluted": 0.1,
+    "cfo_mcap": 0.1,
+    "sales_ev": 0.8333333333333334
+  },
+  "performance": "NOT_MEASURED"
+}
