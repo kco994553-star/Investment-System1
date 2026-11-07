@@ -1,0 +1,481 @@
+"""U-A / U-B membership, class-sum issuer cap, representative choice and counts. Synthetic records; hand arithmetic."""
+import copy
+from datetime import date
+from decimal import Decimal as D
+
+import pytest
+
+from investment_system.research.exp_deciles import universe as uv
+
+
+S = '2018-02-16'                       # a frozen signal day; filing cutoff 2018-02-08
+
+
+def rec(sid, cik, *, shares='100000000', price='3', **kw):
+    out = {'security_id': sid, 'cik': cik, 'listed': True, 'security_type': 'COMMON',
+           'shares_outstanding': None if shares is None else D(shares), 'shares_filed': '2017-11-08',
+           'shares_period_end': '2017-09-30', 'share_price_basis': 'CONFIRMED',
+           'price': None if price is None else D(price)}
+    out.update(kw)
+    return out
+
+
+def build(records, **kw):
+    kw.setdefault('signal_day', S)
+    return uv.build_universes(records, **kw)
+
+
+def cap_record(sid, cik, usd):
+    """One listed class whose cap is exactly `usd` (shares 1,000,000 x price usd/1e6)."""
+    return rec(sid, cik, shares='1000000', price=str(D(usd) / D(1000000)))
+
+
+def test_class_sum_cap_uses_own_prices_and_representative_price_for_same_rights_unlisted_class():
+    records = [rec('A', '10', shares='100000000', price='2.00', median_dollar_volume=D('900'), security_type='COMMON_CLASS'),
+               rec('C', '10', shares='50000000', price='1.90', median_dollar_volume=D('500'), security_type='COMMON_CLASS'),
+               rec('B', '10', shares='10000000', price=None, listed=False, same_economic_rights=True,
+                   security_type='COMMON_CLASS'),
+               rec('P', '10', shares='999999999', price='25', security_type='PREFERRED')]
+    out = build(records)
+    issuer = out['issuers']['0000000010']
+    # 100,000,000 x 2.00 + 50,000,000 x 1.90 + 10,000,000 x 2.00 (B at A's price) = 315,000,000; preferred not counted
+    assert issuer['market_cap_usd'] == D('315000000.0000')
+    assert isinstance(issuer['market_cap_usd'], D)
+    assert issuer['representative'] == 'A' and issuer['representative_source'] == 'HIGHEST_MEDIAN_DOLLAR_VOLUME'
+    assert [(c['security_id'], c['price_basis']) for c in issuer['classes']] == [
+        ('A', 'OWN_PRICE'), ('B', 'REPRESENTATIVE_PRICE'), ('C', 'OWN_PRICE')]
+    assert out['U_A']['members'] == ('0000000010',) and out['U_A']['member_securities'] == ('A',)
+    assert out['securities']['B'] == {'security_id': 'B', 'cik': '0000000010', 'security_type': 'COMMON_CLASS',
+                                      'status': 'EXCLUDED', 'reasons': ['NOT_LISTED'], 'price_label': None}
+    assert out['securities']['P']['reasons'] == ['NOT_ELIGIBLE_SECURITY_TYPE']
+
+
+@pytest.mark.parametrize('rights, reason', [(None, 'UNLISTED_CLASS_RIGHTS_UNKNOWN'), (False, 'UNLISTED_CLASS_RIGHTS_DIFFER')])
+def test_unlisted_class_without_confirmed_same_rights_makes_the_cap_na(rights, reason):
+    records = [rec('A', '10', shares='900000000', price='50'),
+               rec('B', '10', shares='1000', listed=False, same_economic_rights=rights)]
+    out = build(records)
+    issuer = out['issuers']['0000000010']
+    assert issuer['market_cap_usd'] is None and issuer['market_cap_reasons'] == [reason]
+    assert issuer['U_A'] == {'status': 'UNKNOWN', 'reasons': [reason], 'basis': None}
+    assert issuer['U_B'] == {'status': 'UNKNOWN', 'reasons': [reason]}
+    assert out['U_A']['counts']['unknown'] == 1 and out['U_A']['counts']['excluded'] == 0
+
+
+def test_representative_supplied_flag_first_then_rule_then_lowest_id_unconfirmed():
+    flag = build([rec('A', '1', median_dollar_volume=D('9')), rec('B', '1', representative=True,
+                                                                               median_dollar_volume=D('1'))])
+    assert flag['issuers']['0000000001']['representative'] == 'B'
+    assert flag['issuers']['0000000001']['representative_source'] == 'SUPPLIED_FLAG'
+    tie = build([rec('B', '1', median_dollar_volume=D('5')), rec('A', '1', median_dollar_volume=D('5'))])
+    assert tie['issuers']['0000000001']['representative'] == 'A'
+    assert tie['issuers']['0000000001']['representative_flags'] == []
+    partial = build([rec('B', '1', median_dollar_volume=D('9')), rec('C', '1')])
+    issuer = partial['issuers']['0000000001']
+    assert (issuer['representative'], issuer['representative_source']) == ('B', 'LOWEST_SECURITY_ID')
+    assert issuer['representative_flags'] == ['REPRESENTATIVE_UNCONFIRMED']
+    conflict = build([rec('A', '1', representative=True, median_dollar_volume=D('1')),
+                                   rec('B', '1', representative=True, median_dollar_volume=D('2'))])
+    issuer = conflict['issuers']['0000000001']
+    assert issuer['representative'] == 'B' and issuer['representative_flags'] == ['REPRESENTATIVE_FLAG_CONFLICT']
+    only = build([rec('Z', '1'), rec('P', '1', security_type='PREFERRED', representative=True)])
+    issuer = only['issuers']['0000000001']
+    assert (issuer['representative'], issuer['representative_source']) == ('Z', 'ONLY_LISTED_ELIGIBLE_CLASS')
+    assert issuer['representative_flags'] == ['REPRESENTATIVE_FLAG_NOT_LISTED_ELIGIBLE']
+
+
+def test_u_a_first_build_uses_entry_and_boundaries_are_inclusive():
+    out = build([cap_record('A', '1', 250000000), cap_record('B', '2', 249999999),
+                              cap_record('C', '3', 260000000)])
+    assert out['first_build'] is True
+    assert out['U_A']['members'] == ('0000000001', '0000000003')
+    assert out['issuers']['0000000002']['U_A'] == {'status': 'EXCLUDED', 'reasons': ['BELOW_U_A_ENTRY_THRESHOLD'],
+                                                   'basis': 'FIRST_BUILD_ENTRY'}
+    assert out['U_A']['transitions'] == {'entered': (), 'stayed': (), 'left': ()}
+
+
+def test_u_a_hysteresis_enter_stay_leave_and_unknown_is_not_a_member():
+    previous = ['1', '3', '5', '6']
+    records = [cap_record('X', '1', 210000000),        # member, >= 200m: stays
+               cap_record('Y', '2', 240000000),        # not member, < 250m: stays out
+               cap_record('Z', '3', 190000000),        # member, < 200m: leaves
+               cap_record('W', '4', 260000000),        # not member, >= 250m: enters
+               rec('P', '6', price=None),              # member, price missing: unknown, leaves (not excluded)
+               cap_record('S', '7', 200000000)]        # not member, exactly 200m: no entry
+    out = build(records, previous_u_a=previous, previous_u_a_unknown=[])
+    assert out['U_A']['members'] == ('0000000001', '0000000004')
+    issuers = out['issuers']
+    assert issuers['0000000001']['U_A'] == {'status': 'ELIGIBLE', 'reasons': [], 'basis': 'STAY'}
+    assert issuers['0000000002']['U_A']['reasons'] == ['BELOW_U_A_ENTRY_THRESHOLD']
+    assert issuers['0000000003']['U_A'] == {'status': 'EXCLUDED', 'reasons': ['BELOW_U_A_STAY_THRESHOLD'], 'basis': 'STAY'}
+    assert issuers['0000000004']['U_A']['basis'] == 'ENTRY'
+    assert issuers['0000000006']['U_A'] == {'status': 'UNKNOWN', 'reasons': ['PRICE_MISSING'], 'basis': None}
+    assert issuers['0000000007']['U_A']['reasons'] == ['BELOW_U_A_ENTRY_THRESHOLD']
+    # A previous member with no record at S is an UNKNOWN candidate in both groups (review F3), not only 'left'.
+    assert issuers['0000000005']['U_A'] == {'status': 'UNKNOWN', 'reasons': ['NOT_IN_RECORDS_AT_S'], 'basis': None}
+    assert issuers['0000000005']['U_B'] == {'status': 'UNKNOWN', 'reasons': ['NOT_IN_RECORDS_AT_S']}
+    assert issuers['0000000005']['carried_from'] == 'PREVIOUS_U_A_MEMBER'
+    assert out['U_A']['transitions'] == {
+        'entered': ('0000000004',), 'stayed': ('0000000001',),
+        'left': ({'cik': '0000000003', 'reasons': ['BELOW_U_A_STAY_THRESHOLD']},
+                 {'cik': '0000000005', 'reasons': ['NOT_IN_RECORDS_AT_S']},
+                 {'cik': '0000000006', 'reasons': ['PRICE_MISSING']})}
+    counts = out['U_A']['counts']
+    assert counts == {'candidate': 7, 'eligible': 2, 'excluded': 3, 'unknown': 2,
+                      'excluded_by_reason': {'BELOW_U_A_ENTRY_THRESHOLD': 2, 'BELOW_U_A_STAY_THRESHOLD': 1},
+                      'unknown_by_reason': {'NOT_IN_RECORDS_AT_S': 1, 'PRICE_MISSING': 1}}
+    assert out['U_A']['unknown'] == ('0000000005', '0000000006')
+    # Next year the UNKNOWN status is carried: 220m lies between stay and entry, so it stays UNKNOWN (never EXCLUDED).
+    state = {'previous_u_a': out['U_A']['members'], 'previous_u_a_unknown': out['U_A']['unknown']}
+    nxt = build([cap_record('P', '6', 220000000), cap_record('Q', '5', 180000000)], **state)
+    assert nxt['issuers']['0000000006']['U_A'] == {'status': 'UNKNOWN', 'reasons': ['PREVIOUS_U_A_STATUS_UNKNOWN'],
+                                                   'basis': 'PREVIOUS_STATUS_UNKNOWN'}
+    assert nxt['issuers']['0000000005']['U_A']['status'] == 'EXCLUDED'          # < 200m: excluded either way
+    high = build([cap_record('P', '6', 250000000)], **state)['issuers']['0000000006']['U_A']
+    assert high == {'status': 'ELIGIBLE', 'reasons': [], 'basis': 'ENTRY'}
+
+
+def test_u_b_threshold_without_hysteresis_and_subset_of_u_a():
+    records = [cap_record('A', '1', D('10000000000')), cap_record('B', '2', D('9999999999.99')),
+               cap_record('C', '3', D('25000000000'))]
+    out = build(records, previous_u_a=['2'])
+    assert out['U_B']['members'] == ('0000000001', '0000000003')
+    assert out['issuers']['0000000002']['U_B'] == {'status': 'EXCLUDED', 'reasons': ['BELOW_U_B_THRESHOLD']}
+    assert set(out['U_B']['members']) <= set(out['U_A']['members'])
+    assert out['U_B']['member_securities'] == ('A', 'C')
+    assert 'transitions' not in out['U_B']
+
+
+def test_missing_inputs_are_unknown_never_excluded_and_counts_balance():
+    records = [cap_record('OK', '1', 300000000),
+               cap_record('SMALL', '2', 1000000),
+               rec('PREF', '3', security_type='PREFERRED'),                       # issuer with no common stock
+               rec('UNL', '4', listed=False),                                     # common, not listed
+               rec('LQ', '5', listed=None),                                        # listing unknown
+               rec('TQ', '6', security_type=None),                                 # type unknown
+               rec('NOCIK', None),                                                 # listed common, CIK unknown
+               rec('BADCIK', 'abc'),                                               # CIK not a number
+               rec('NOCIKPREF', None, security_type='WARRANT'),                    # definitively not common
+               rec('SH', '7', shares=None),                                        # shares missing
+               rec('PZ', '8', price='0'),                                          # unusable price
+               rec('MIXA', '9', shares='1000000000', price='5'), rec('MIXB', '9', security_type=None, listed=False)]
+    out = build(records)
+    sec = out['security_counts']
+    assert sec['candidate'] == 13 and sec['listed_eligible'] + sec['excluded'] + sec['unknown'] == 13
+    assert sec['excluded_by_reason'] == {'NOT_ELIGIBLE_SECURITY_TYPE': 2, 'NOT_LISTED': 2}
+    assert sec['unknown_by_reason'] == {'CIK_INVALID': 1, 'CIK_UNKNOWN': 1, 'LISTING_STATUS_UNKNOWN': 1,
+                                        'SECURITY_TYPE_UNKNOWN': 1}
+    ua = out['U_A']['counts']
+    assert ua['candidate'] == ua['eligible'] + ua['excluded'] + ua['unknown'] == 11   # 9 CIKs + 2 CIK-less units
+    assert ua['eligible'] == 1
+    assert ua['excluded_by_reason'] == {'BELOW_U_A_ENTRY_THRESHOLD': 1, 'NO_LISTED_ELIGIBLE_SECURITY': 2}
+    assert ua['unknown_by_reason'] == {'CIK_INVALID': 1, 'CIK_UNKNOWN': 1, 'LISTING_STATUS_UNKNOWN': 1,
+                                       'PRICE_INVALID': 1, 'SECURITY_TYPE_UNKNOWN': 2,
+                                       'SHARES_OUTSTANDING_MISSING': 1}
+    assert out['issuers']['SECURITY:NOCIK']['U_A'] == {'status': 'UNKNOWN', 'reasons': ['CIK_UNKNOWN'], 'basis': None}
+    assert 'SECURITY:NOCIKPREF' not in out['issuers']
+    ub = out['U_B']['counts']
+    assert (ub['candidate'], ub['eligible'], ub['unknown']) == (11, 0, 7)
+    assert ub['excluded_by_reason'] == {'BELOW_U_B_THRESHOLD': 2, 'NO_LISTED_ELIGIBLE_SECURITY': 2}
+
+
+def test_inputs_validated_decimal_only_and_duplicates_checked():
+    with pytest.raises(TypeError, match='PRICE_DECIMAL_REQUIRED'):
+        build([rec('A', '1', price=None) | {'price': 12.5}])
+    with pytest.raises(ValueError, match='PERMANENT_SECURITY_ID_REQUIRED'):
+        build([rec('', '1')])
+    with pytest.raises(ValueError, match='CONFLICTING_SECURITY_RECORDS'):
+        build([rec('A', '1'), rec('A', '1', price='4')])
+    with pytest.raises(TypeError, match='LISTED_MUST_BE_TRUE_FALSE_OR_NONE'):
+        build([rec('A', '1', listed=1)])
+    same = build([rec('A', '1'), rec('A', '1')])
+    assert same['security_counts']['candidate'] == 1
+    text = build([rec('A', '1', shares=None) | {'shares_outstanding': '100000000', 'price': '3'}])
+    assert text['issuers']['0000000001']['market_cap_usd'] == D('300000000')
+
+
+def test_pure_order_independent_and_price_label_carried():
+    records = [rec('B', '2', price='4', price_label='PROXY_LAST_TRADE'), rec('A', '1'), cap_record('C', '3', 1)]
+    original = copy.deepcopy(records)
+    a = build(records, signal_day='2018-02-16')
+    b = build(list(reversed(records)), signal_day='2018-02-16')
+    assert a == b and records == original
+    assert a['issuers']['0000000002']['price_label'] == 'PROXY_LAST_TRADE'
+    assert a['issuers']['0000000002']['classes'][0]['price_label'] == 'PROXY_LAST_TRADE'
+    assert a['signal_day'] == '2018-02-16'
+
+
+# ---- security types and the ADR rule (owner decision 2026-10-30, EXPANDED_DEFINITION_20261030.md section 1.2) ----
+def test_security_type_lists_cover_the_canonical_catalog_names_exactly():
+    from investment_system.research.exp_deciles import settings
+    from investment_system.universe.expanded_catalog import SECURITY_TYPES
+
+    assert settings.ELIGIBLE_SECURITY_TYPES == ('COMMON', 'COMMON_CLASS', 'ADR', 'REIT')
+    assert settings.EXCLUDED_SECURITY_TYPES == ('ETF', 'CLOSED_END_FUND', 'PREFERRED', 'WARRANT', 'RIGHT', 'UNIT')
+    assert set(settings.ELIGIBLE_SECURITY_TYPES) | set(settings.EXCLUDED_SECURITY_TYPES) == set(SECURITY_TYPES)
+    assert not set(settings.ELIGIBLE_SECURITY_TYPES) & set(settings.EXCLUDED_SECURITY_TYPES)
+    assert not hasattr(settings, 'COMMON_SECURITY_TYPES')
+
+
+@pytest.mark.parametrize('kind', ['ETF', 'CLOSED_END_FUND', 'PREFERRED', 'WARRANT', 'RIGHT', 'UNIT'])
+def test_excluded_security_types_are_rule_exclusions(kind):
+    out = build([rec('X', '1', security_type=kind, price='500')])
+    assert out['securities']['X']['status'] == 'EXCLUDED'
+    assert out['securities']['X']['reasons'] == ['NOT_ELIGIBLE_SECURITY_TYPE']
+    assert out['issuers']['0000000001']['U_A'] == {'status': 'EXCLUDED', 'reasons': ['NO_LISTED_ELIGIBLE_SECURITY'],
+                                                   'basis': None}
+
+
+def test_reit_is_eligible_and_valued_like_a_common_class():
+    out = build([rec('R', '1', security_type='REIT', shares='100000000', price='3.5')])
+    issuer = out['issuers']['0000000001']
+    assert out['securities']['R']['status'] == 'ELIGIBLE' and out['securities']['R']['security_type'] == 'REIT'
+    assert issuer['market_cap_usd'] == D('350000000.0') and issuer['representative'] == 'R'
+    assert issuer['classes'][0]['share_basis'] == 'CLASS_SHARES' and issuer['classes'][0]['adr_ratio'] is None
+    assert out['U_A']['members'] == ('0000000001',)
+
+
+def test_adr_cap_is_ordinary_shares_over_ratio_times_ads_price():
+    # 600,000,000 ordinary shares, 4 ordinary shares per ADS -> 150,000,000 ADS x 70.10 = 10,515,000,000
+    out = build([rec('ADS', '7', security_type='ADR', shares='600000000', price='70.10', adr_ratio='4')])
+    issuer = out['issuers']['0000000007']
+    assert issuer['market_cap_usd'] == D('10515000000.00') and isinstance(issuer['market_cap_usd'], D)
+    assert issuer['classes'][0] == {'security_id': 'ADS', 'security_type': 'ADR', 'shares_outstanding': D('600000000'),
+                                    'adr_ratio': D('4'), 'share_basis': 'ORDINARY_SHARES_DIV_ADR_RATIO',
+                                    'price': D('70.10'), 'price_basis': 'OWN_PRICE', 'price_label': None,
+                                    'value': D('10515000000.00')}
+    assert out['U_A']['members'] == ('0000000007',) and out['U_B']['members'] == ('0000000007',)
+    # A fractional ratio (one ordinary share = 2 ADS): 10 ordinary / 0.5 = 20 ADS x 15 = 300
+    half = build([rec('H', '8', security_type='ADR', shares='10', price='15', adr_ratio='0.5')])
+    assert half['issuers']['0000000008']['market_cap_usd'] == D('300')
+
+
+@pytest.mark.parametrize('ratio', [None, '0', '-2', 'two', 2.0, True, 'NaN'])
+def test_missing_or_unusable_adr_ratio_is_unknown_never_excluded(ratio):
+    record = rec('ADS', '7', security_type='ADR', shares='600000000', price='70.10')
+    if ratio is not None:
+        record['adr_ratio'] = ratio
+    out = build([record])
+    issuer = out['issuers']['0000000007']
+    assert out['securities']['ADS']['status'] == 'ELIGIBLE'          # the security itself is in scope
+    assert issuer['market_cap_usd'] is None and issuer['market_cap_reasons'] == ['ADR_RATIO_UNCONFIRMED']
+    assert issuer['U_A'] == {'status': 'UNKNOWN', 'reasons': ['ADR_RATIO_UNCONFIRMED'], 'basis': None}
+    assert issuer['U_B'] == {'status': 'UNKNOWN', 'reasons': ['ADR_RATIO_UNCONFIRMED']}
+    counts = out['U_A']['counts']
+    assert (counts['unknown'], counts['excluded']) == (1, 0)
+    assert counts['unknown_by_reason'] == {'ADR_RATIO_UNCONFIRMED': 1}
+
+
+def test_adr_next_to_another_eligible_class_of_the_issuer_is_unknown():
+    both = build([rec('ADS', '7', security_type='ADR', shares='600000000', price='70', adr_ratio='4'),
+                               rec('ORD', '7', listed=False, same_economic_rights=True, shares='600000000')])
+    issuer = both['issuers']['0000000007']
+    assert issuer['market_cap_usd'] is None and issuer['market_cap_reasons'] == ['ADR_CLASS_OVERLAP_UNCONFIRMED']
+    assert issuer['U_A']['status'] == 'UNKNOWN'
+    two = build([rec('A1', '7', security_type='ADR', shares='600000000', price='70', adr_ratio='4'),
+                              rec('A2', '7', security_type='ADR', shares='600000000', price='35', adr_ratio='2')])
+    assert two['issuers']['0000000007']['market_cap_reasons'] == ['ADR_CLASS_OVERLAP_UNCONFIRMED']
+    # A preferred line of the same issuer is out of scope and does not block the ADR cap.
+    pref = build([rec('ADS', '7', security_type='ADR', shares='600000000', price='70', adr_ratio='4'),
+                               rec('P', '7', security_type='PREFERRED', price='25')])
+    assert pref['issuers']['0000000007']['market_cap_usd'] == D('10500000000')
+
+
+def test_non_canonical_type_name_is_unknown_and_blocks_the_issuer_cap():
+    out = build([rec('LP1', '1', security_type='LP'), rec('C', '2'),
+                              rec('C2', '2', security_type='MLP_UNIT', listed=True)])
+    assert out['securities']['LP1'] == {'security_id': 'LP1', 'cik': '0000000001', 'security_type': 'LP',
+                                        'status': 'UNKNOWN', 'reasons': ['SECURITY_TYPE_NOT_CANONICAL'],
+                                        'price_label': None}
+    assert out['issuers']['0000000001']['U_A'] == {'status': 'UNKNOWN', 'reasons': ['SECURITY_TYPE_NOT_CANONICAL'],
+                                                   'basis': None}
+    assert out['issuers']['0000000002']['market_cap_reasons'] == ['SECURITY_TYPE_NOT_CANONICAL']
+    assert out['U_A']['counts']['unknown_by_reason'] == {'SECURITY_TYPE_NOT_CANONICAL': 2}
+
+
+
+# ---- review F2: SEC share counts must be usable at S and on the S price's split basis -----------------------------
+def test_share_count_filed_after_the_cutoff_is_unknown_and_its_filing_date_is_kept():
+    """Review d3: 26,000,000 shares from a cover filed 2018-02-14 (usable from 2018-02-23) would make the issuer
+    ELIGIBLE at 260m; it is UNKNOWN instead, never silently used."""
+    usable = build([rec('X1', '9000001', shares='24000000', price='10')])['issuers']['0009000001']
+    assert (usable['market_cap_usd'], usable['U_A']['status']) == (D('240000000'), 'EXCLUDED')
+    assert usable['share_provenance'] == [{'security_id': 'X1', 'shares_filed': date(2017, 11, 8),
+                                           'shares_period_end': date(2017, 9, 30),
+                                           'shares_usable_from': date(2017, 11, 16), 'usable_at_s': True,
+                                           'share_price_basis': 'CONFIRMED'}]
+    late = build([rec('X1', '9000001', shares='26000000', price='10', shares_filed='2018-02-14')])
+    issuer = late['issuers']['0009000001']
+    assert issuer['market_cap_usd'] is None and issuer['U_A'] == {
+        'status': 'UNKNOWN', 'reasons': ['SHARES_NOT_USABLE_AT_S'], 'basis': None}
+    assert issuer['share_provenance'][0]['shares_usable_from'] == date(2018, 2, 23)
+    assert uv.normalize_record(rec('X1', '1', shares_filed='2018-02-14'))['shares_filed'] == date(2018, 2, 14)
+    # PIT boundary: filed on the cutoff (2018-02-08) is usable at S, one day later is not.
+    on_cutoff = build([rec('B1', '1', shares='300000', price='1000', shares_filed='2018-02-08')])['issuers']
+    after = build([rec('B1', '1', shares='300000', price='1000', shares_filed='2018-02-09')])['issuers']
+    assert on_cutoff['0000000001']['U_A']['status'] == 'ELIGIBLE'
+    assert after['0000000001']['U_A']['reasons'] == ['SHARES_NOT_USABLE_AT_S']
+
+
+def test_unconfirmed_split_basis_is_unknown_never_a_threshold_exclusion():
+    """Review d3 split case: 3,000,000 pre-split shares x a post-split price would be EXCLUDED at 30m (true cap 300m)."""
+    split = build([rec('X2', '9000005', shares='3000000', price='10', share_price_basis='SPLIT_AFTER_SHARE_COUNT')])
+    issuer = split['issuers']['0009000005']
+    assert issuer['U_A'] == {'status': 'UNKNOWN', 'reasons': ['SHARE_PRICE_BASIS_UNCONFIRMED'], 'basis': None}
+    assert issuer['share_provenance'][0]['share_price_basis'] == 'SPLIT_AFTER_SHARE_COUNT'
+    for missing in ({'share_price_basis': None}, {'shares_filed': None}, {'shares_period_end': None},
+                    {'shares_period_end': '2018-03-01', 'shares_filed': '2018-01-05'}):
+        reasons = build([rec('X3', '3', price='0.01', **missing)])['issuers']['0000000003']['U_A']['reasons']
+        assert reasons[0] in ('SHARE_PRICE_BASIS_UNCONFIRMED', 'SHARES_FILED_MISSING', 'SHARES_PERIOD_END_MISSING',
+                              'SHARES_PERIOD_END_AFTER_FILED')
+    with pytest.raises(ValueError, match='SHARES_FILED_INVALID'):
+        build([rec('X4', '4', shares_filed='2018-02-30')])
+    with pytest.raises(ValueError, match='SIGNAL_DAY_REQUIRED'):
+        uv.build_universes([rec('X5', '5')])
+
+
+# ---- review F3: UNKNOWN is carried to the next S; no-record members are UNKNOWN candidates -------------------------
+def test_one_year_input_gap_never_turns_into_a_rule_exclusion_the_year_after():
+    """Review d6: 300m (2018) -> price missing (2019) -> 220m (2020) is UNKNOWN, not EXCLUDED."""
+    def h1(price):
+        return rec('H1', '9000003', shares='10000000', price=price, shares_filed=f'{year}-01-10',
+                   shares_period_end=f'{year - 1}-12-31')
+    year = 2018
+    y1 = build([h1('30')], signal_day='2018-02-16')
+    year = 2019
+    y2 = build([h1(None)], signal_day='2019-02-15', previous_u_a=y1['U_A']['members'],
+               previous_u_a_unknown=y1['U_A']['unknown'])
+    year = 2020
+    y3 = build([h1('22')], signal_day='2020-02-14', previous_u_a=y2['U_A']['members'],
+               previous_u_a_unknown=y2['U_A']['unknown'])
+    assert y1['issuers']['0009000003']['U_A']['status'] == 'ELIGIBLE'
+    assert y2['issuers']['0009000003']['U_A']['reasons'] == ['PRICE_MISSING'] and y2['U_A']['unknown'] == ('0009000003',)
+    assert y3['issuers']['0009000003']['U_A'] == {'status': 'UNKNOWN', 'reasons': ['PREVIOUS_U_A_STATUS_UNKNOWN'],
+                                                  'basis': 'PREVIOUS_STATUS_UNKNOWN'}
+
+
+def test_previous_member_without_record_is_an_unknown_candidate_unless_termination_is_evidenced():
+    """Review d6 second case: 2019 counts were candidate 1, eligible 1, unknown 0."""
+    other = rec('H2', '9000004', shares='10000000', price='30')
+    a = build([rec('H1', '9000003', shares='10000000', price='30'), other])
+    b = build([dict(other, shares_filed='2019-01-10', shares_period_end='2018-12-31')], signal_day='2019-02-15',
+              previous_u_a=a['U_A']['members'], previous_u_a_unknown=a['U_A']['unknown'])
+    counts = b['U_A']['counts']
+    assert (counts['candidate'], counts['eligible'], counts['unknown']) == (2, 1, 1)
+    assert counts['unknown_by_reason'] == {'NOT_IN_RECORDS_AT_S': 1} and b['U_A']['unknown'] == ('0009000003',)
+    evidence = [{'cik': '9000003', 'evidence': 'synthetic Form 25', 'filed': '2018-11-01',
+                 'effective_date': '2018-11-12'}]
+    c = build([dict(other, shares_filed='2019-01-10', shares_period_end='2018-12-31')], signal_day='2019-02-15',
+              previous_u_a=a['U_A']['members'], previous_u_a_unknown=[], terminations=evidence)
+    assert c['U_A']['counts']['candidate'] == 1 and c['U_A']['unknown'] == ()
+    assert c['U_A']['terminated'][0]['cik'] == '0009000003' and c['U_A']['terminated'][0]['reasons'] == [
+        'TERMINATION_EVIDENCED']
+    assert c['U_A']['transitions']['left'] == ({'cik': '0009000003', 'reasons': ['TERMINATION_EVIDENCED']},)
+    # Evidence filed too late to be usable at S does not count.
+    late = [dict(evidence[0], filed='2019-02-12')]
+    d = build([dict(other, shares_filed='2019-01-10', shares_period_end='2018-12-31')], signal_day='2019-02-15',
+              previous_u_a=a['U_A']['members'], previous_u_a_unknown=[], terminations=late)
+    assert d['U_A']['unknown'] == ('0009000003',) and d['terminations'][0]['usable_at_s'] is False
+    # A CIK-less UNKNOWN unit is carried by its security ID.
+    e = build([rec('NC', None)])
+    assert e['U_A']['unknown'] == ('SECURITY:NC',)
+    f = build([], signal_day='2019-02-15', previous_u_a=[], previous_u_a_unknown=e['U_A']['unknown'])
+    assert f['issuers']['SECURITY:NC']['U_A']['reasons'] == ['NOT_IN_RECORDS_AT_S']
+    with pytest.raises(ValueError, match='PREVIOUS_U_A_UNKNOWN_WITHOUT_MEMBERS'):
+        build([], previous_u_a_unknown=['1'])
+
+
+# -- review U1 / M1 / U2 / M2: carried class IDs, effective-date terminations, security-unit terminations --------
+def _chain(*years, terminations=None):
+    """Build consecutive years from (signal_day, records) pairs, passing the full U-A state each time."""
+    out, state = [], None
+    for i, (day, records) in enumerate(years):
+        kwargs = {} if state is None else dict(previous_u_a=state['members'], previous_u_a_unknown=state['unknown'],
+                                               previous_u_a_securities=state['securities'])
+        result = build(records, signal_day=day, terminations=(terminations or {}).get(i), **kwargs)
+        out.append(result)
+        state = {'members': result['U_A']['members'], 'unknown': result['U_A']['unknown'],
+                 'securities': result['U_A']['unit_securities']}
+    return out
+
+
+def _dated(record, year):
+    return dict(record, shares_filed=f'{year}-01-10', shares_period_end=f'{year - 1}-12-31')
+
+
+def test_class_of_a_previous_issuer_without_cik_at_s_makes_the_issuer_unknown_not_partially_summed():
+    """Review U1 (a): two 150m COMMON_CLASS lines; at 2019 class B's record has no CIK. Before: cap 150m, EXCLUDED
+    BELOW_U_A_STAY_THRESHOLD plus a separate SECURITY:B unknown unit."""
+    a = cap_record('A', '2', 150000000) | {'security_type': 'COMMON_CLASS'}
+    b = cap_record('B', '2', 150000000) | {'security_type': 'COMMON_CLASS'}
+    y1, y2 = _chain((S, [a, b]), ('2019-02-15', [_dated(a, 2019), _dated(dict(b, cik=None), 2019)]))
+    assert y1['U_A']['members'] == ('0000000002',) and y1['U_A']['unit_securities'] == {'0000000002': ('A', 'B')}
+    issuer = y2['issuers']['0000000002']
+    assert issuer['market_cap_usd'] is None and issuer['U_A'] == {'status': 'UNKNOWN', 'reasons': ['CIK_UNKNOWN'],
+                                                                   'basis': None}
+    assert issuer['U_B']['status'] == 'UNKNOWN' and 'SECURITY:B' not in y2['issuers']
+    assert (y2['U_A']['counts']['candidate'], y2['U_A']['counts']['unknown']) == (1, 1)
+    assert y2['U_A']['transitions']['left'] == ({'cik': '0000000002', 'reasons': ['CIK_UNKNOWN']},)
+    assert y2['U_A']['unit_securities'] == {'0000000002': ('A', 'B')}
+    # Class B's record simply missing at S: CLASS_RECORD_NOT_ATTACHED_AT_S, and B stays carried.
+    _, missing = _chain((S, [a, b]), ('2019-02-15', [_dated(a, 2019)]))
+    assert missing['issuers']['0000000002']['U_A']['reasons'][0] == 'CLASS_RECORD_NOT_ATTACHED_AT_S'
+    assert missing['U_A']['unit_securities'] == {'0000000002': ('A', 'B')}
+    # Under another CIK at S: not attached to the previous issuer either.
+    _, moved = _chain((S, [a, b]), ('2019-02-15', [_dated(a, 2019), _dated(dict(b, cik='77'), 2019)]))
+    assert moved['issuers']['0000000002']['U_A']['reasons'][0] == 'CLASS_RECORD_NOT_ATTACHED_AT_S'
+
+
+def test_previous_member_with_a_preferred_and_a_cik_less_common_is_unknown_not_no_listed_eligible():
+    """Review U1 (c): 2018 member CIK 1 has COMMON A 300m and a PREFERRED P; in 2019 A has no CIK. Before: EXCLUDED
+    NO_LISTED_ELIGIBLE_SECURITY, and SECURITY:A counted again."""
+    a, p = cap_record('A', '1', 300000000), cap_record('P', '1', 50000000) | {'security_type': 'PREFERRED'}
+    y1, y2 = _chain((S, [a, p]), ('2019-02-15', [_dated(dict(a, cik=None), 2019), _dated(p, 2019)]))
+    assert y1['U_A']['unit_securities'] == {'0000000001': ('A',)}          # the preferred is not a tracked class
+    assert y2['issuers']['0000000001']['U_A']['status'] == 'UNKNOWN' and 'SECURITY:A' not in y2['issuers']
+    assert y2['U_A']['counts']['excluded'] == 0 and y2['U_A']['counts']['unknown'] == 1
+
+
+def test_single_class_member_whose_cik_is_lost_at_s_is_one_unknown_unit_not_two():
+    """Review missed M1: the member's only record has no CIK at S. Before: candidate 2, unknown 2 (CIK unit
+    NOT_IN_RECORDS_AT_S and SECURITY:A CIK_UNKNOWN)."""
+    a = cap_record('A', '1', 300000000)
+    y1, y2, y3 = _chain((S, [a]), ('2019-02-15', [_dated(dict(a, cik=None), 2019)]),
+                        ('2020-02-14', [_dated(cap_record('A', '1', 220000000), 2020)]))
+    assert y2['U_A']['unknown'] == ('0000000001',) and y2['U_B']['counts']['candidate'] == 1
+    assert y2['issuers']['0000000001']['U_A']['reasons'] == ['CIK_UNKNOWN']
+    assert (y2['U_A']['counts']['candidate'], y2['U_A']['counts']['unknown']) == (1, 1)
+    # Carried as UNKNOWN: 220m in [stay, entry) stays UNKNOWN, never a rule exclusion.
+    assert y3['issuers']['0000000001']['U_A']['reasons'] == ['PREVIOUS_U_A_STATUS_UNKNOWN']
+
+
+def test_termination_counts_only_when_effective_at_s():
+    """Review U2: a merger agreement filed 2018-12-03, effective 2019-06-28, must not end the carry at S 2019-02-15."""
+    a = cap_record('A', '1', 300000000)
+    pending = {1: [{'cik': '1', 'evidence': 'merger agreement 8-K', 'filed': '2018-12-03',
+                    'effective_date': '2019-06-28'}]}
+    y1, y2, y3 = _chain((S, [a]), ('2019-02-15', []), ('2020-02-14', [_dated(cap_record('A', '1', 220000000), 2020)]),
+                        terminations=pending)
+    assert y2['U_A']['terminated'] == () and y2['U_A']['unknown'] == ('0000000001',)
+    assert y2['issuers']['0000000001']['U_A']['reasons'] == ['TERMINATION_NOT_EFFECTIVE_AT_S', 'NOT_IN_RECORDS_AT_S']
+    assert y2['terminations'][0]['status'] == 'TERMINATION_NOT_EFFECTIVE_AT_S'
+    assert y3['issuers']['0000000001']['U_A']['reasons'] == ['PREVIOUS_U_A_STATUS_UNKNOWN']   # not BELOW_U_A_ENTRY
+    no_date = {1: [{'cik': '1', 'evidence': 'Form 25', 'filed': '2018-12-03'}]}
+    _, y2b = _chain((S, [a]), ('2019-02-15', []), terminations=no_date)
+    assert y2b['issuers']['0000000001']['U_A']['reasons'][0] == 'TERMINATION_EFFECTIVE_DATE_MISSING'
+    effective = {1: [{'cik': '1', 'evidence': 'Form 25', 'filed': '2018-12-03', 'effective_date': '2018-12-13'}]}
+    _, y2c = _chain((S, [a]), ('2019-02-15', []), terminations=effective)
+    assert [t['unit'] for t in y2c['U_A']['terminated']] == ['0000000001'] and y2c['U_A']['unknown'] == ()
+
+
+def test_carried_security_unit_can_be_ended_by_termination_evidence_keyed_by_its_unit_id():
+    """Review missed M2: a CIK-less SECURITY:NC unit carried forever; a termination naming it raised
+    TERMINATION_RECORD_INVALID."""
+    a = cap_record('A', '1', 300000000)
+    evidence = {1: [{'cik': 'SECURITY:NC', 'evidence': 'Form 25', 'filed': '2018-06-01',
+                     'effective_date': '2018-06-11'}]}
+    y1, y2 = _chain((S, [cap_record('NC', None, 50000000), a]), ('2019-02-15', [_dated(a, 2019)]),
+                    terminations=evidence)
+    assert y1['U_A']['unknown'] == ('SECURITY:NC',) and y1['U_A']['unit_securities']['SECURITY:NC'] == ('NC',)
+    assert y2['U_A']['unknown'] == () and y2['U_A']['terminated'][0]['unit'] == 'SECURITY:NC'
+    assert y2['U_A']['terminated'][0]['cik'] is None and y2['U_B']['counts']['candidate'] == 1

@@ -1,0 +1,78 @@
+{
+  "schema": "exp-deciles-schedule/1",
+  "experiment_id": "EXP-STOCK-INDICATOR-DECILES-v1",
+  "calendar": "research.pit_filings.is_session (NYSE rule calendar 2009-2028)",
+  "rule": "third Monday of February -> T = first NYSE session on/after it; S = the session before T; filing_cutoff = 6th NYSE session before S (filing usable on the 6th session after its NY filing date)",
+  "rows": [
+    {
+      "year": 2017,
+      "third_monday": "2017-02-20",
+      "S": "2017-02-17",
+      "T": "2017-02-21",
+      "filing_cutoff": "2017-02-09"
+    },
+    {
+      "year": 2018,
+      "third_monday": "2018-02-19",
+      "S": "2018-02-16",
+      "T": "2018-02-20",
+      "filing_cutoff": "2018-02-08"
+    },
+    {
+      "year": 2019,
+      "third_monday": "2019-02-18",
+      "S": "2019-02-15",
+      "T": "2019-02-19",
+      "filing_cutoff": "2019-02-07"
+    },
+    {
+      "year": 2020,
+      "third_monday": "2020-02-17",
+      "S": "2020-02-14",
+      "T": "2020-02-18",
+      "filing_cutoff": "2020-02-06"
+    },
+    {
+      "year": 2021,
+      "third_monday": "2021-02-15",
+      "S": "2021-02-12",
+      "T": "2021-02-16",
+      "filing_cutoff": "2021-02-04"
+    },
+    {
+      "year": 2022,
+      "third_monday": "2022-02-21",
+      "S": "2022-02-18",
+      "T": "2022-02-22",
+      "filing_cutoff": "2022-02-10"
+    },
+    {
+      "year": 2023,
+      "third_monday": "2023-02-20",
+      "S": "2023-02-17",
+      "T": "2023-02-21",
+      "filing_cutoff": "2023-02-09"
+    },
+    {
+      "year": 2024,
+      "third_monday": "2024-02-19",
+      "S": "2024-02-16",
+      "T": "2024-02-20",
+      "filing_cutoff": "2024-02-08"
+    },
+    {
+      "year": 2025,
+      "third_monday": "2025-02-17",
+      "S": "2025-02-14",
+      "T": "2025-02-18",
+      "filing_cutoff": "2025-02-06"
+    },
+    {
+      "year": 2026,
+      "third_monday": "2026-02-16",
+      "S": "2026-02-13",
+      "T": "2026-02-17",
+      "filing_cutoff": "2026-02-05"
+    }
+  ]
+}
