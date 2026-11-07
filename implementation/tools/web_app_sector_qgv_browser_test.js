@@ -67,7 +67,7 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       assert.deepEqual(eng.calls.slice(c0).map((c) => c.op), ['context', 'view']);
       const all = await text(B);
       assert.ok(!/\b(null|undefined|NaN)\b/.test(all), 'no null / undefined text');
-      for (const w of ['모델 sector-qgv-default/0.1.0', '엔진 sector-qgv-engine/0.1.0', '계산 Codex 공통 엔진', '관문 official-q-percentile-required/1', '이 기기(이 브라우저)에만 저장', '린치 유형 태그는 점수에 영향 없음'])
+      for (const w of ['모델 sector-qgv-default/0.1.0', '엔진 sector-qgv-engine/0.1.0', '계산 Codex 공통 엔진', '관문 official-q-percentile-required/1', '이 기기(이 브라우저)에만 저장', '기업 유형 태그는 점수에 영향 없음'])
         assert.ok(all.includes(w), w);
       await page.locator(B + ' [data-k=sq-tab-V]').click();
       assert.deepEqual(await factorIds(), ['ep_ttm_diluted', 'cfo_mcap', 'sales_ev'], 'IT general V from the engine preset');
