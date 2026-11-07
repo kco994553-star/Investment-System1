@@ -3,6 +3,7 @@
 기준: canonical `claude/investment-system-top500-validation-alrugm` @ `81d7b58d`(#386 병합, 2026-10-23 12:44 UTC / 21:44 KST). 작성 2026-10-23 23:20 UTC / 2026-10-24 08:20 KST. 코드 읽기로 분류했고, 이 문서 작성 때 시험을 다시 돌리지 않았다.
 
 갱신 2026-11-06: 오너 지시 「의외의 기업」 — 2.1.8(리더보드 아래 목록·필터·정렬·기업 상세 연결)과 2.4.6(기업 상세 마크·선정 이유·확인 근거·재검토 상태)을 더했다. 원문 적용 원칙에 따른 추가 항목은 [FUNCTION_HIERARCHY_ADDITIONS](FUNCTION_HIERARCHY_ADDITIONS.md). 상태: **설계 완료 · 구현 완료(개발 빌드, 합성) · 병합 안 됨 · 배포 안 됨**(Draft PR, 아래 줄).
+갱신 2026-11-06(섹터 QGV): 오너 지시 「섹터별 QGV 요소 선택·재계산」 — 2.2.1~2.2.6을 새 앱 1.2 칸에 연결하고 2.2.7 요소 사전·검색·교체·추천을 더했다(명세 원칙: 기존 화면 3단계 아래). 2026-11-07 「섹터 QGV 실제 연결」: Codex #505 공통 엔진(`research/sector_qgv`)에 연결, 화면 합산·Main 기본값 삭제. 상태: **설계 완료 · 구현 완료(개발 빌드, 개발 환경 엔진 경로, 합성 입력) · 실자료 미연결 · 병합 안 됨 · 배포 안 됨**.
 
 갱신 2026-11-03: #456 병합(`fb0ffcab`, 중앙 V 기준일은 NYSE 거래일 파일만). 기능 줄 변화 없음(2.1.5 운영 수정). 실게시 복구는 병합 뒤 첫 정기 실행에서 확인(CURRENT_HANDOFF 4·6절). 포트폴리오 5.1 공개 층 #468은 개발 빌드 검증 완료, 병합·배포 전.
 
@@ -54,6 +55,7 @@
 | 2.1.7 후보 선정 연결 | 구현 | 실·기기 | `target-v1-builder.js`, `target-v1-screen.js`, `qgv-official.js` | 공식 V 판독(PR-D #405, 병합 10-29): 초안 만들기·확정 클릭 때 `qgv-official.json`을 읽어 유효·검증·같은 calc_version·기준일 뒤 마감된 뉴욕 거래일 2일 이내면 공식 V, 아니면 임시 V(결정 D8 (b)). **10-29 실사이트 확인: 처음 쓰는 기기에서 공식 V 초안(가격 기준일 10-28)**. 확정 차단 점검 #411 병합(10-29, 다음 배포에 반영) |
 | 2.1.8 의외의 기업 (화면 도장 1.1.9) · 2.1.8.1 목록 · 2.1.8.2 필터 · 2.1.8.3 정렬 · 2.1.8.4 기업 상세 연결 | 설계 완료 · 구현 완료(개발 빌드) · **병합 안 됨 · 배포 안 됨** | 합성 | 새 앱 `web_app/discovery.js`(판독기, Codex #503 `discovery-company/v1` 그대로), `screen-discovery-live.js`, `screen-qgv.js` 블록; 시험 `web_app_discovery_node_test.js`·`web_app_discovery_browser_test.js`; [DISCOVERY_COMPANY_20261106](../../implementation/docs/frontend_v2/DISCOVERY_COMPANY_20261106.md) | Codex #503 계약·합성 6상태 연결 완료(합성). 실제 선정 0(Codex 첫 실자료: 후보 1·선정 0, 비공개). 공개 연결은 기존 게시 승인 범위. 지금 원천 NONE(자료 연결 전) |
 | 2.2.1~2.2.6 가중치·프리셋·영향·설정 | 구현 | 실·기기 | `device-profiles.js`(2단계 가중치 #300, 프리셋 v0.1, 변경 전후 비교) | 설정 저장은 이 브라우저만 |
+| 2.2 새 앱 1.2 · 섹터 QGV(2.2.1~2.2.6 + 2.2.7 요소 사전·검색·교체·추천) | 설계 완료 · 구현 완료(개발 빌드) · **병합 안 됨 · 배포 안 됨** | 합성(Codex `synthetic-input.json`·상태 변형) | 새 앱 `web_app/sector-qgv.js`(엔진 요청·응답 확인·설정 편집, 계산 없음), `screen-sector-qgv-live.js`, `data.js` `engine`(클릭 때만 같은 출처 POST), `store.js` `sectorQgv`(엔진 저장 기록, 이 기기만); 개발 엔진 경로 `tools/sector_qgv_engine_bridge.py`(Codex #505 `research/sector_qgv` 호출만); [SECTOR_QGV_20261106](../../implementation/docs/frontend_v2/SECTOR_QGV_20261106.md) | 비공개 실자료 실행(인증 서버·비공개 전달, Main), 날짜 있는 책 섹터·회계모형 분류와 관문 원천 연결(Codex 판정), 기업 상세 진입 링크 |
 | 2.3.1 13F 보유 기록 | 부분 | 실 | `thirteenf-quarter.js`, `manager-styles-v0.js`, #381(2.3 흐름) | TARGET 중심. 운용사 범위 확대 |
 | 2.3.2 가중치 탐색 | 신규 | — | `docs/backtest/THIRTEENF_WEIGHT_RESEARCH_PREP_20261018.md` | 탐색 엔진. TRACKC-PORT 결정 대기 |
 | 2.3.3·2.3.4 백테스트 연결·채택 구분 | 신규 | — | 9.1에 의존 | 9.1 이후 |

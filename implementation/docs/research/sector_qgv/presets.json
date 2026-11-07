@@ -1,0 +1,4396 @@
+[
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "CONSUMER_DISCRETIONARY",
+    "accounting_template": "GENERAL",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3000,
+      "G": 2500,
+      "V": 4500
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 4000,
+          "factors": {
+            "operating_margin_ttm": 10000
+          }
+        },
+        "accounting_quality": {
+          "weight": 3000,
+          "factors": {
+            "accruals_assets_ttm": 10000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "debt_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "revenue_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 3500,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "cash": {
+          "weight": 4000,
+          "factors": {
+            "cfo_mcap": 10000
+          }
+        },
+        "other_value": {
+          "weight": 2500,
+          "factors": {
+            "fcf_mcap": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "CONSUMER_DISCRETIONARY",
+    "accounting_template": "BANK",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3000,
+      "G": 2500,
+      "V": 4500
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "CONSUMER_DISCRETIONARY",
+    "accounting_template": "INSURANCE",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3000,
+      "G": 2500,
+      "V": 4500
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "CONSUMER_DISCRETIONARY",
+    "accounting_template": "BROKER",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3000,
+      "G": 2500,
+      "V": 4500
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "CONSUMER_DISCRETIONARY",
+    "accounting_template": "MORTGAGE_REIT",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3000,
+      "G": 2500,
+      "V": 4500
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "CONSUMER_DISCRETIONARY",
+    "accounting_template": "ASSET_MANAGER",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3000,
+      "G": 2500,
+      "V": 4500
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 4000,
+          "factors": {
+            "operating_margin_ttm": 10000
+          }
+        },
+        "accounting_quality": {
+          "weight": 3000,
+          "factors": {
+            "accruals_assets_ttm": 10000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "debt_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "revenue_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "CONSUMER_DISCRETIONARY",
+    "accounting_template": "EQUITY_REIT",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3000,
+      "G": 2500,
+      "V": 4500
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 4000,
+          "factors": {
+            "cfo_assets_ttm": 10000
+          }
+        },
+        "interest_capacity": {
+          "weight": 3000,
+          "factors": {
+            "interest_coverage_ttm": 10000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "debt_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "revenue_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "cfo_assets_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 5000,
+          "factors": {
+            "nareit_ffo_mcap": 10000
+          }
+        },
+        "cash": {
+          "weight": 3000,
+          "factors": {
+            "cfo_mcap": 10000
+          }
+        },
+        "other_value": {
+          "weight": 2000,
+          "factors": {
+            "dividend_yield_ttm": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "CONSUMER_STAPLES",
+    "accounting_template": "GENERAL",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3500,
+      "G": 1500,
+      "V": 5000
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 4000,
+          "factors": {
+            "operating_margin_ttm": 10000
+          }
+        },
+        "accounting_quality": {
+          "weight": 3000,
+          "factors": {
+            "accruals_assets_ttm": 10000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "debt_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "revenue_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 3500,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "cash": {
+          "weight": 3500,
+          "factors": {
+            "cfo_mcap": 10000
+          }
+        },
+        "other_value": {
+          "weight": 3000,
+          "factors": {
+            "dividend_yield_ttm": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "CONSUMER_STAPLES",
+    "accounting_template": "BANK",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3500,
+      "G": 1500,
+      "V": 5000
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "CONSUMER_STAPLES",
+    "accounting_template": "INSURANCE",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3500,
+      "G": 1500,
+      "V": 5000
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "CONSUMER_STAPLES",
+    "accounting_template": "BROKER",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3500,
+      "G": 1500,
+      "V": 5000
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "CONSUMER_STAPLES",
+    "accounting_template": "MORTGAGE_REIT",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3500,
+      "G": 1500,
+      "V": 5000
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "CONSUMER_STAPLES",
+    "accounting_template": "ASSET_MANAGER",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3500,
+      "G": 1500,
+      "V": 5000
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 4000,
+          "factors": {
+            "operating_margin_ttm": 10000
+          }
+        },
+        "accounting_quality": {
+          "weight": 3000,
+          "factors": {
+            "accruals_assets_ttm": 10000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "debt_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "revenue_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "CONSUMER_STAPLES",
+    "accounting_template": "EQUITY_REIT",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3500,
+      "G": 1500,
+      "V": 5000
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 4000,
+          "factors": {
+            "cfo_assets_ttm": 10000
+          }
+        },
+        "interest_capacity": {
+          "weight": 3000,
+          "factors": {
+            "interest_coverage_ttm": 10000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "debt_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "revenue_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "cfo_assets_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 5000,
+          "factors": {
+            "nareit_ffo_mcap": 10000
+          }
+        },
+        "cash": {
+          "weight": 3000,
+          "factors": {
+            "cfo_mcap": 10000
+          }
+        },
+        "other_value": {
+          "weight": 2000,
+          "factors": {
+            "dividend_yield_ttm": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "ENERGY",
+    "accounting_template": "GENERAL",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3500,
+      "G": 1500,
+      "V": 5000
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 4000,
+          "factors": {
+            "operating_margin_ttm": 10000
+          }
+        },
+        "accounting_quality": {
+          "weight": 3000,
+          "factors": {
+            "accruals_assets_ttm": 10000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "debt_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "revenue_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 4000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "cash": {
+          "weight": 3000,
+          "factors": {
+            "cfo_mcap": 10000
+          }
+        },
+        "other_value": {
+          "weight": 3000,
+          "factors": {
+            "ebitda_ev": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "ENERGY",
+    "accounting_template": "BANK",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3500,
+      "G": 1500,
+      "V": 5000
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "ENERGY",
+    "accounting_template": "INSURANCE",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3500,
+      "G": 1500,
+      "V": 5000
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "ENERGY",
+    "accounting_template": "BROKER",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3500,
+      "G": 1500,
+      "V": 5000
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "ENERGY",
+    "accounting_template": "MORTGAGE_REIT",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3500,
+      "G": 1500,
+      "V": 5000
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "ENERGY",
+    "accounting_template": "ASSET_MANAGER",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3500,
+      "G": 1500,
+      "V": 5000
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 4000,
+          "factors": {
+            "operating_margin_ttm": 10000
+          }
+        },
+        "accounting_quality": {
+          "weight": 3000,
+          "factors": {
+            "accruals_assets_ttm": 10000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "debt_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "revenue_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "ENERGY",
+    "accounting_template": "EQUITY_REIT",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3500,
+      "G": 1500,
+      "V": 5000
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 4000,
+          "factors": {
+            "cfo_assets_ttm": 10000
+          }
+        },
+        "interest_capacity": {
+          "weight": 3000,
+          "factors": {
+            "interest_coverage_ttm": 10000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "debt_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "revenue_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "cfo_assets_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 5000,
+          "factors": {
+            "nareit_ffo_mcap": 10000
+          }
+        },
+        "cash": {
+          "weight": 3000,
+          "factors": {
+            "cfo_mcap": 10000
+          }
+        },
+        "other_value": {
+          "weight": 2000,
+          "factors": {
+            "dividend_yield_ttm": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "FINANCIALS",
+    "accounting_template": "GENERAL",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 4000,
+      "G": 1500,
+      "V": 4500
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 4000,
+          "factors": {
+            "operating_margin_ttm": 10000
+          }
+        },
+        "accounting_quality": {
+          "weight": 3000,
+          "factors": {
+            "accruals_assets_ttm": 10000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "debt_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "revenue_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "FINANCIALS",
+    "accounting_template": "BANK",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 4000,
+      "G": 1500,
+      "V": 4500
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "FINANCIALS",
+    "accounting_template": "INSURANCE",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 4000,
+      "G": 1500,
+      "V": 4500
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "FINANCIALS",
+    "accounting_template": "BROKER",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 4000,
+      "G": 1500,
+      "V": 4500
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "FINANCIALS",
+    "accounting_template": "MORTGAGE_REIT",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 4000,
+      "G": 1500,
+      "V": 4500
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "FINANCIALS",
+    "accounting_template": "ASSET_MANAGER",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 4000,
+      "G": 1500,
+      "V": 4500
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 4000,
+          "factors": {
+            "operating_margin_ttm": 10000
+          }
+        },
+        "accounting_quality": {
+          "weight": 3000,
+          "factors": {
+            "accruals_assets_ttm": 10000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "debt_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "revenue_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "FINANCIALS",
+    "accounting_template": "EQUITY_REIT",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 4000,
+      "G": 1500,
+      "V": 4500
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 4000,
+          "factors": {
+            "cfo_assets_ttm": 10000
+          }
+        },
+        "interest_capacity": {
+          "weight": 3000,
+          "factors": {
+            "interest_coverage_ttm": 10000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "debt_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "revenue_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "cfo_assets_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 5000,
+          "factors": {
+            "nareit_ffo_mcap": 10000
+          }
+        },
+        "cash": {
+          "weight": 3000,
+          "factors": {
+            "cfo_mcap": 10000
+          }
+        },
+        "other_value": {
+          "weight": 2000,
+          "factors": {
+            "dividend_yield_ttm": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "HEALTH_CARE",
+    "accounting_template": "GENERAL",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3500,
+      "G": 2500,
+      "V": 4000
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 4000,
+          "factors": {
+            "operating_margin_ttm": 10000
+          }
+        },
+        "accounting_quality": {
+          "weight": 3000,
+          "factors": {
+            "accruals_assets_ttm": 10000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "debt_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "revenue_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 4000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "cash": {
+          "weight": 4000,
+          "factors": {
+            "cfo_mcap": 10000
+          }
+        },
+        "other_value": {
+          "weight": 2000,
+          "factors": {
+            "sales_mcap": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "HEALTH_CARE",
+    "accounting_template": "BANK",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3500,
+      "G": 2500,
+      "V": 4000
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "HEALTH_CARE",
+    "accounting_template": "INSURANCE",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3500,
+      "G": 2500,
+      "V": 4000
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "HEALTH_CARE",
+    "accounting_template": "BROKER",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3500,
+      "G": 2500,
+      "V": 4000
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "HEALTH_CARE",
+    "accounting_template": "MORTGAGE_REIT",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3500,
+      "G": 2500,
+      "V": 4000
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "HEALTH_CARE",
+    "accounting_template": "ASSET_MANAGER",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3500,
+      "G": 2500,
+      "V": 4000
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 4000,
+          "factors": {
+            "operating_margin_ttm": 10000
+          }
+        },
+        "accounting_quality": {
+          "weight": 3000,
+          "factors": {
+            "accruals_assets_ttm": 10000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "debt_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "revenue_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "HEALTH_CARE",
+    "accounting_template": "EQUITY_REIT",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3500,
+      "G": 2500,
+      "V": 4000
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 4000,
+          "factors": {
+            "cfo_assets_ttm": 10000
+          }
+        },
+        "interest_capacity": {
+          "weight": 3000,
+          "factors": {
+            "interest_coverage_ttm": 10000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "debt_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "revenue_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "cfo_assets_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 5000,
+          "factors": {
+            "nareit_ffo_mcap": 10000
+          }
+        },
+        "cash": {
+          "weight": 3000,
+          "factors": {
+            "cfo_mcap": 10000
+          }
+        },
+        "other_value": {
+          "weight": 2000,
+          "factors": {
+            "dividend_yield_ttm": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "INDUSTRIALS",
+    "accounting_template": "GENERAL",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3500,
+      "G": 2000,
+      "V": 4500
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 4000,
+          "factors": {
+            "operating_margin_ttm": 10000
+          }
+        },
+        "accounting_quality": {
+          "weight": 3000,
+          "factors": {
+            "accruals_assets_ttm": 10000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "debt_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "revenue_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 3500,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "cash": {
+          "weight": 3500,
+          "factors": {
+            "cfo_mcap": 10000
+          }
+        },
+        "other_value": {
+          "weight": 3000,
+          "factors": {
+            "ebitda_ev": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "INDUSTRIALS",
+    "accounting_template": "BANK",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3500,
+      "G": 2000,
+      "V": 4500
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "INDUSTRIALS",
+    "accounting_template": "INSURANCE",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3500,
+      "G": 2000,
+      "V": 4500
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "INDUSTRIALS",
+    "accounting_template": "BROKER",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3500,
+      "G": 2000,
+      "V": 4500
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "INDUSTRIALS",
+    "accounting_template": "MORTGAGE_REIT",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3500,
+      "G": 2000,
+      "V": 4500
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "INDUSTRIALS",
+    "accounting_template": "ASSET_MANAGER",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3500,
+      "G": 2000,
+      "V": 4500
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 4000,
+          "factors": {
+            "operating_margin_ttm": 10000
+          }
+        },
+        "accounting_quality": {
+          "weight": 3000,
+          "factors": {
+            "accruals_assets_ttm": 10000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "debt_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "revenue_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "INDUSTRIALS",
+    "accounting_template": "EQUITY_REIT",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3500,
+      "G": 2000,
+      "V": 4500
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 4000,
+          "factors": {
+            "cfo_assets_ttm": 10000
+          }
+        },
+        "interest_capacity": {
+          "weight": 3000,
+          "factors": {
+            "interest_coverage_ttm": 10000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "debt_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "revenue_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "cfo_assets_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 5000,
+          "factors": {
+            "nareit_ffo_mcap": 10000
+          }
+        },
+        "cash": {
+          "weight": 3000,
+          "factors": {
+            "cfo_mcap": 10000
+          }
+        },
+        "other_value": {
+          "weight": 2000,
+          "factors": {
+            "dividend_yield_ttm": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "INFORMATION_TECHNOLOGY",
+    "accounting_template": "GENERAL",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3000,
+      "G": 2500,
+      "V": 4500
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 4000,
+          "factors": {
+            "operating_margin_ttm": 10000
+          }
+        },
+        "accounting_quality": {
+          "weight": 3000,
+          "factors": {
+            "accruals_assets_ttm": 10000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "debt_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "revenue_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 3000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "cash": {
+          "weight": 4000,
+          "factors": {
+            "cfo_mcap": 10000
+          }
+        },
+        "other_value": {
+          "weight": 3000,
+          "factors": {
+            "sales_ev": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "INFORMATION_TECHNOLOGY",
+    "accounting_template": "BANK",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3000,
+      "G": 2500,
+      "V": 4500
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "INFORMATION_TECHNOLOGY",
+    "accounting_template": "INSURANCE",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3000,
+      "G": 2500,
+      "V": 4500
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "INFORMATION_TECHNOLOGY",
+    "accounting_template": "BROKER",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3000,
+      "G": 2500,
+      "V": 4500
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "INFORMATION_TECHNOLOGY",
+    "accounting_template": "MORTGAGE_REIT",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3000,
+      "G": 2500,
+      "V": 4500
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "INFORMATION_TECHNOLOGY",
+    "accounting_template": "ASSET_MANAGER",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3000,
+      "G": 2500,
+      "V": 4500
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 4000,
+          "factors": {
+            "operating_margin_ttm": 10000
+          }
+        },
+        "accounting_quality": {
+          "weight": 3000,
+          "factors": {
+            "accruals_assets_ttm": 10000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "debt_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "revenue_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "INFORMATION_TECHNOLOGY",
+    "accounting_template": "EQUITY_REIT",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3000,
+      "G": 2500,
+      "V": 4500
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 4000,
+          "factors": {
+            "cfo_assets_ttm": 10000
+          }
+        },
+        "interest_capacity": {
+          "weight": 3000,
+          "factors": {
+            "interest_coverage_ttm": 10000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "debt_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "revenue_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "cfo_assets_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 5000,
+          "factors": {
+            "nareit_ffo_mcap": 10000
+          }
+        },
+        "cash": {
+          "weight": 3000,
+          "factors": {
+            "cfo_mcap": 10000
+          }
+        },
+        "other_value": {
+          "weight": 2000,
+          "factors": {
+            "dividend_yield_ttm": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "MATERIALS",
+    "accounting_template": "GENERAL",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3500,
+      "G": 1500,
+      "V": 5000
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 4000,
+          "factors": {
+            "operating_margin_ttm": 10000
+          }
+        },
+        "accounting_quality": {
+          "weight": 3000,
+          "factors": {
+            "accruals_assets_ttm": 10000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "debt_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "revenue_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 4000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "cash": {
+          "weight": 3000,
+          "factors": {
+            "cfo_mcap": 10000
+          }
+        },
+        "other_value": {
+          "weight": 3000,
+          "factors": {
+            "ebitda_ev": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "MATERIALS",
+    "accounting_template": "BANK",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3500,
+      "G": 1500,
+      "V": 5000
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "MATERIALS",
+    "accounting_template": "INSURANCE",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3500,
+      "G": 1500,
+      "V": 5000
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "MATERIALS",
+    "accounting_template": "BROKER",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3500,
+      "G": 1500,
+      "V": 5000
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "MATERIALS",
+    "accounting_template": "MORTGAGE_REIT",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3500,
+      "G": 1500,
+      "V": 5000
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "MATERIALS",
+    "accounting_template": "ASSET_MANAGER",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3500,
+      "G": 1500,
+      "V": 5000
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 4000,
+          "factors": {
+            "operating_margin_ttm": 10000
+          }
+        },
+        "accounting_quality": {
+          "weight": 3000,
+          "factors": {
+            "accruals_assets_ttm": 10000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "debt_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "revenue_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "MATERIALS",
+    "accounting_template": "EQUITY_REIT",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 3500,
+      "G": 1500,
+      "V": 5000
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 4000,
+          "factors": {
+            "cfo_assets_ttm": 10000
+          }
+        },
+        "interest_capacity": {
+          "weight": 3000,
+          "factors": {
+            "interest_coverage_ttm": 10000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "debt_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "revenue_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "cfo_assets_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 5000,
+          "factors": {
+            "nareit_ffo_mcap": 10000
+          }
+        },
+        "cash": {
+          "weight": 3000,
+          "factors": {
+            "cfo_mcap": 10000
+          }
+        },
+        "other_value": {
+          "weight": 2000,
+          "factors": {
+            "dividend_yield_ttm": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "TELECOMMUNICATIONS",
+    "accounting_template": "GENERAL",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 4000,
+      "G": 1500,
+      "V": 4500
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 4000,
+          "factors": {
+            "operating_margin_ttm": 10000
+          }
+        },
+        "accounting_quality": {
+          "weight": 3000,
+          "factors": {
+            "accruals_assets_ttm": 10000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "debt_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "revenue_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 4000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "cash": {
+          "weight": 4000,
+          "factors": {
+            "cfo_mcap": 10000
+          }
+        },
+        "other_value": {
+          "weight": 2000,
+          "factors": {
+            "ebitda_ev": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "TELECOMMUNICATIONS",
+    "accounting_template": "BANK",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 4000,
+      "G": 1500,
+      "V": 4500
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "TELECOMMUNICATIONS",
+    "accounting_template": "INSURANCE",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 4000,
+      "G": 1500,
+      "V": 4500
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "TELECOMMUNICATIONS",
+    "accounting_template": "BROKER",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 4000,
+      "G": 1500,
+      "V": 4500
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "TELECOMMUNICATIONS",
+    "accounting_template": "MORTGAGE_REIT",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 4000,
+      "G": 1500,
+      "V": 4500
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "TELECOMMUNICATIONS",
+    "accounting_template": "ASSET_MANAGER",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 4000,
+      "G": 1500,
+      "V": 4500
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 4000,
+          "factors": {
+            "operating_margin_ttm": 10000
+          }
+        },
+        "accounting_quality": {
+          "weight": 3000,
+          "factors": {
+            "accruals_assets_ttm": 10000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "debt_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "revenue_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "TELECOMMUNICATIONS",
+    "accounting_template": "EQUITY_REIT",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 4000,
+      "G": 1500,
+      "V": 4500
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 4000,
+          "factors": {
+            "cfo_assets_ttm": 10000
+          }
+        },
+        "interest_capacity": {
+          "weight": 3000,
+          "factors": {
+            "interest_coverage_ttm": 10000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "debt_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "revenue_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "cfo_assets_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 5000,
+          "factors": {
+            "nareit_ffo_mcap": 10000
+          }
+        },
+        "cash": {
+          "weight": 3000,
+          "factors": {
+            "cfo_mcap": 10000
+          }
+        },
+        "other_value": {
+          "weight": 2000,
+          "factors": {
+            "dividend_yield_ttm": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "UTILITIES",
+    "accounting_template": "GENERAL",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 4000,
+      "G": 1000,
+      "V": 5000
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 4000,
+          "factors": {
+            "operating_margin_ttm": 10000
+          }
+        },
+        "accounting_quality": {
+          "weight": 3000,
+          "factors": {
+            "accruals_assets_ttm": 10000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "debt_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "revenue_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 3000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "cash": {
+          "weight": 4000,
+          "factors": {
+            "cfo_mcap": 10000
+          }
+        },
+        "other_value": {
+          "weight": 3000,
+          "factors": {
+            "ebitda_ev": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "UTILITIES",
+    "accounting_template": "BANK",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 4000,
+      "G": 1000,
+      "V": 5000
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "UTILITIES",
+    "accounting_template": "INSURANCE",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 4000,
+      "G": 1000,
+      "V": 5000
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "UTILITIES",
+    "accounting_template": "BROKER",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 4000,
+      "G": 1000,
+      "V": 5000
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "UTILITIES",
+    "accounting_template": "MORTGAGE_REIT",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 4000,
+      "G": 1000,
+      "V": 5000
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 7000,
+          "factors": {
+            "roa_ttm": 5000,
+            "roe_common_ttm": 5000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "common_equity_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "common_bps_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "UTILITIES",
+    "accounting_template": "ASSET_MANAGER",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 4000,
+      "G": 1000,
+      "V": 5000
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 4000,
+          "factors": {
+            "operating_margin_ttm": 10000
+          }
+        },
+        "accounting_quality": {
+          "weight": 3000,
+          "factors": {
+            "accruals_assets_ttm": 10000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "debt_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "revenue_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "roa_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 6000,
+          "factors": {
+            "ep_ttm_diluted": 10000
+          }
+        },
+        "other_value": {
+          "weight": 4000,
+          "factors": {
+            "common_bp": 10000
+          }
+        }
+      }
+    }
+  },
+  {
+    "preset_id": "sector-qgv-default/0.1.0",
+    "version": "0.1.0",
+    "state": "draft",
+    "validation_state": "initial",
+    "sector_id": "UTILITIES",
+    "accounting_template": "EQUITY_REIT",
+    "sector_mapping_version": "book-sector-map/1",
+    "axis_weights": {
+      "Q": 4000,
+      "G": 1000,
+      "V": 5000
+    },
+    "axes": {
+      "Q": {
+        "profitability": {
+          "weight": 4000,
+          "factors": {
+            "cfo_assets_ttm": 10000
+          }
+        },
+        "interest_capacity": {
+          "weight": 3000,
+          "factors": {
+            "interest_coverage_ttm": 10000
+          }
+        },
+        "financial_capacity": {
+          "weight": 3000,
+          "factors": {
+            "debt_assets": 10000
+          }
+        }
+      },
+      "G": {
+        "growth": {
+          "weight": 6000,
+          "factors": {
+            "revenue_cagr_3y": 10000
+          }
+        },
+        "profitability_change": {
+          "weight": 4000,
+          "factors": {
+            "cfo_assets_improvement_3y": 10000
+          }
+        }
+      },
+      "V": {
+        "earnings": {
+          "weight": 5000,
+          "factors": {
+            "nareit_ffo_mcap": 10000
+          }
+        },
+        "cash": {
+          "weight": 3000,
+          "factors": {
+            "cfo_mcap": 10000
+          }
+        },
+        "other_value": {
+          "weight": 2000,
+          "factors": {
+            "dividend_yield_ttm": 10000
+          }
+        }
+      }
+    }
+  }
+]
