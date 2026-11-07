@@ -91,3 +91,21 @@ Main #507 head remains unchanged, so actual server/reader connection is pending.
 The earlier #504 helper blocker now has Main #508
 `df1a9abb8c72ee57a7f7a50011bb0dbf9ffb116f`; #504 imports its pure `iex_values`
 module and retains that exact dependency. No November2 prices have arrived.
+
+## V resume handoff, 2026-11-07
+
+New `V_RESUME.md` and `v-synthetic-{pack,market,job}.json` connect the existing CLI
+and result reader. No preview/save schema change, new pricing engine or UI sum.
+Add `tests/test_sector_qgv_v.py` to Main's CI test list when integrating; no new
+package/dependency/workflow is edited here.
+
+Latest repository evidence supersedes the earlier pending-screen note: #507
+`4f392207cdcbc8a096e05dae09c78034339dc876` reports the synthetic dev-screen →
+shared engine → preview/save path connected. This does not establish a private
+real-input/authenticated production path. #510
+`b2482e6506a2edf03c454f27dddb50fd98a80ae0` includes #505 only through
+`aa9c4484e65baced0dd06622eb64c71e33a9c2fd`; retain the newer partial-Q/G commit
+`7c2225a382aedf275749eb5c2f9f2385db7cdcf3` and the V-resume continuation when
+Main reconciles dependencies. #505 is not empty relative to that integration.
+#504 helper dependency is already connected; actual financial11 delivery is still
+pending and remains November2-only. No new helper/guard change is requested.

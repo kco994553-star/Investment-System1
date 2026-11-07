@@ -35,6 +35,40 @@ def run(job,output,synthetic=False):
         spec=job['sec_snapshot'];sec=json.loads(checked_bytes(spec))
         retained=json.loads(checked_bytes(job['snapshot']))
         snapshot,audit=connect_held_classification(retained,sec,job['archives'],spec['sha256'])
+    elif mode=='v-resume':
+        from investment_system.research.sector_qgv_v import resume
+        pack=json.loads(checked_bytes(job['v_pack']));market=json.loads(checked_bytes(job['market_inputs']))
+        expected_kind='SYNTHETIC' if synthetic else 'PRIVATE'
+        if any(x.get('data_kind')!=expected_kind for x in (job,pack,market)):raise ValueError('V_DATA_KIND_MISMATCH')
+        if config!=default_config():raise ValueError('V_RESUME_DEFAULT_CONFIG_REQUIRED')
+        if not synthetic:
+            evidence_hashes={spec['sha256'] for spec in job.get('market_evidence',[]) if checked_bytes(spec) is not None}
+            def verify_refs(value):
+                if isinstance(value,dict):
+                    for k,v in value.items():
+                        if k in ('evidence_refs','provenance','capital_scope_evidence'):
+                            if not isinstance(v,list) or not v:raise ValueError('V_MARKET_EVIDENCE_REQUIRED')
+                            for ref in v:
+                                match=re.search(r'#sha256=([0-9a-f]{64})(?:$|[&#/])',ref) if isinstance(ref,str) else None
+                                if not match or match[1] not in evidence_hashes:raise ValueError('V_MARKET_EVIDENCE_FILE_REQUIRED')
+                        else:verify_refs(v)
+                elif isinstance(value,list):
+                    for v in value:verify_refs(v)
+            verify_refs(market['records'])
+        snapshot,resumed_preview=resume(pack,market,job['request_id'])
+    elif mode=='v-prepare':
+        from investment_system.research.sector_qgv_v import prepare
+        if synthetic or job.get('data_kind')!='PRIVATE':raise ValueError('V_PREPARATION_PRIVATE_REQUIRED')
+        snapshot=json.loads(checked_bytes(job['snapshot']));sec=json.loads(checked_bytes(job['sec_snapshot']))
+        cache=json.loads(checked_bytes(job['financial_cache'])) if job.get('financial_cache') else {}
+        pack,report=prepare(snapshot,sec,job['archives'],cache)
+        output.mkdir(parents=True,mode=0o700)
+        manifest={'schema_version':'sector-qgv-v-preparation-run/1','files':[]}
+        for name,data in [('v-resume-input.json',pack),('readiness.json',report)]:
+            body=(json.dumps(data,ensure_ascii=False,indent=2,allow_nan=False)+'\n').encode();path=output/name;path.write_bytes(body);path.chmod(0o600)
+            manifest['files'].append({'path':name,'sha256':hashlib.sha256(body).hexdigest(),'size':len(body)})
+        p=output/'manifest.json';p.write_text(json.dumps(manifest,indent=2)+'\n');p.chmod(0o600)
+        return {k:v for k,v in report.items() if k!='rows'}
     else:raise ValueError('JOB_MODE_UNSUPPORTED')
     main_response=None
     if job.get('main_request'):
@@ -43,7 +77,7 @@ def run(job,output,synthetic=False):
         if request['request_id']!=job['request_id']:raise ValueError('MAIN_REQUEST_JOB_MISMATCH')
         main_response=run_preview_request(snapshot,request)
         preview=main_response['after'];config=main_response['after_config']
-    else:preview=preview_qgv(config,snapshot,job['request_id'])
+    else:preview=resumed_preview if mode=='v-resume' else preview_qgv(config,snapshot,job['request_id'])
     saved=save_user_config(config,preview,request_id=job['request_id'],expected_preview_id=preview['preview_id'])
     comparisons=[]
     if job.get('comparisons'):

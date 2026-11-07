@@ -53,6 +53,17 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       assert.equal(await page.locator(P + ' [data-sq-identity=input_hash][data-sq-diff=no]').count(), 1, 'same input');
       ok(tag + ' a preview carries the engine comparison: Q / G counts of the whole 20, versions, no rank / total, one engine call');
 
+      // ---------------- Codex V resume (synthetic pack + market delivery) through the same preview call: V is computed 20 / 20
+      phase = tag + ' v resume';
+      await page.selectOption('#sq-input', 'V_RESUMED');
+      const c2 = eng.calls.length;
+      await page.locator(B + ' [data-k=sq-preview]').click(); await page.waitForFunction((b) => { const p = document.querySelector(b + ' [data-sq-computed]'); return p && p.dataset.sqComputed === '20/20'; }, B);
+      assert.deepEqual(eng.calls.slice(c2).map((c) => [c.op, c.input_id]), [['preview', 'V_RESUMED']]);
+      assert.ok((await text(B + ' [data-sq-summary]')).includes('V 20 / 20'), 'V computed from the resumed synthetic delivery');
+      assert.ok((await text(B + ' [data-sq-summary]')).includes('합성 · V 재개(가격 전달 반영)'));
+      await page.selectOption('#sq-input', 'NORMAL');
+      ok(tag + ' V resume (Codex resume on the synthetic pack and market delivery): one preview call, V 20 / 20, labelled synthetic');
+
       // ---------------- comparison files (clicks): synthetic D1 and I1
       phase = tag + ' files';
       const c1 = eng.calls.length;

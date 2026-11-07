@@ -56,10 +56,11 @@ REQUEST_ID = re.compile(r'[A-Za-z0-9][A-Za-z0-9._:-]{0,79}')
 # GATE_EXCLUDED is the value-trap side of the gate (official Q percentile 20 <= GATE_PERCENTILE), as in Codex's
 # test_selection_gate_and_strict_missing, so the screen shows all three gate results.
 INPUTS = ('NORMAL', 'GATE_UNKNOWN', 'GATE_EXCLUDED', 'PARTIAL', 'STALE', 'MAPPING_UNKNOWN', 'PEER_SAMPLE_SMALL', 'EMPTY',
-          'FAILED')
+          'FAILED', 'V_RESUMED')
 INPUT_TEXT = {'NORMAL': '합성 · 정상', 'GATE_UNKNOWN': '합성 · 관문 판정 불가 1개', 'GATE_EXCLUDED': '합성 · 관문 V 제외 1개',
               'PARTIAL': '합성 · 필수 요소 결측', 'STALE': '합성 · 오래된 자료', 'MAPPING_UNKNOWN': '합성 · 분류 미확정',
-              'PEER_SAMPLE_SMALL': '합성 · 비교집단 19개', 'EMPTY': '합성 · 빈 모집단', 'FAILED': '합성 · 회사 ID 중복(거부)'}
+              'PEER_SAMPLE_SMALL': '합성 · 비교집단 19개', 'EMPTY': '합성 · 빈 모집단', 'FAILED': '합성 · 회사 ID 중복(거부)',
+              'V_RESUMED': '합성 · V 재개(가격 전달 반영)'}
 
 
 AXIS = 'sector-qgv-axis-comparison/1'
@@ -86,10 +87,32 @@ def _base_input():
     return data
 
 
+def _v_resumed():
+    """Codex #505 V resume (sector-qgv-v-resume/1) on its pinned synthetic pack and market delivery: research.sector_qgv_v.resume
+    builds the snapshot (Codex's code; nothing is filled here). Hashes are those pinned in v-synthetic-job.json."""
+    from investment_system.research.sector_qgv_v import resume
+    job = json.loads((FIXTURES / 'v-synthetic-job.json').read_text(encoding='utf-8'))
+    if job.get('data_kind') != 'SYNTHETIC':
+        raise Refused('SYNTHETIC_INPUT_NOT_SYNTHETIC')
+    parts = []
+    for key in ('v_pack', 'market_inputs'):
+        raw = (ROOT.parent / job[key]['path']).read_bytes()
+        if hashlib.sha256(raw).hexdigest() != job[key]['sha256']:
+            raise Refused('SYNTHETIC_INPUT_HASH_MISMATCH')
+        data = json.loads(raw)
+        if data.get('data_kind') != 'SYNTHETIC':
+            raise Refused('SYNTHETIC_INPUT_NOT_SYNTHETIC')
+        parts.append(data)
+    snapshot, _ = resume(parts[0], parts[1], job['request_id'])
+    return snapshot
+
+
 def synthetic_input(input_id):
     """The synthetic snapshot named input_id (the change each Codex state names, applied to a copy)."""
     if input_id not in INPUTS:
         raise Refused('INPUT_UNKNOWN')
+    if input_id == 'V_RESUMED':
+        return _v_resumed()
     s = copy.deepcopy(_base_input())
     first = next(iter(engine.CATALOG))  # the catalog's first variant: the 'first factor' of synthetic-states.json
     if input_id == 'EMPTY':

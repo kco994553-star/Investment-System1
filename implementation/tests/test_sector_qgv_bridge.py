@@ -204,3 +204,15 @@ def test_main_synthetic_i1_is_codex_compare_axes_output():
     one = ask(bridge.Bridge(env={}), req('comparison', name='MAIN_SYNTHETIC_I1'))['comparison']
     assert one['treatment'] == 'INPUT_CLASSIFICATION' and one['before_identity']['config_hash'] == one['after_identity']['config_hash']
     assert one['axes']['Q']['GAINED'] == 20 and one['rank'] is None
+
+
+def test_v_resumed_input_is_codex_resume_snapshot():
+    from investment_system.research.sector_qgv_v import resume
+    pack = json.loads((FIX / 'v-synthetic-pack.json').read_text()); market = json.loads((FIX / 'v-synthetic-market.json').read_text())
+    snap, _ = resume(pack, market, 'v-resume-synthetic-20')
+    assert bridge.synthetic_input('V_RESUMED') == snap
+    c = engine.default_config()
+    out = ask(bridge.Bridge(env={}), req('preview', 'v-1', config=c, before_config=c, input_id='V_RESUMED'))
+    assert out['ok'] and out['after'] == engine.preview_qgv(c, snap, 'v-1')
+    assert out['after']['coverage']['axes']['V'] == {'valid': 20, 'denominator': 20}
+    assert out['data_kind'] == 'SYNTHETIC'
