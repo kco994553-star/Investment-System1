@@ -1,0 +1,112 @@
+{
+  "schema_version": "policy-navigation-numeric-fixtures/1",
+  "data_kind": "SYNTHETIC",
+  "hash_algorithm": "SHA256_VIEW_UTF8_BYTES_V1",
+  "view_schema": "policy-impact-view/2",
+  "navigation_schema": "policy-impact-navigation/2",
+  "base_generator_commit": "f6223ba7b43060b5fdaf26e0570ed77a6a082cda",
+  "cases": [
+    {
+      "case": "zero",
+      "ratio_value": 0,
+      "view": "zero-view.json",
+      "job": "zero-job.json",
+      "navigation": "zero-navigation.json",
+      "view_bytes": 20250,
+      "view_sha256": "f080c04e5f1cc4791e870428a66010c3b037148c2bd58c5c806356bce08060d4",
+      "navigation_sha256": "9ce869a8c7536b7855eafa8a6807b760beb5247f183eba2301d6e0a3e89e5358",
+      "job_sha256": "977d4a4bb59e8b7f26c6b71c1bd5d3be55459b5578f62ab2fddcebca8c473231",
+      "expected": {
+        "titles": 1,
+        "news_links": 1,
+        "policy_evidence_effect": "NONE",
+        "legacy_reader": "NAV_HASH_NUMBER"
+      }
+    },
+    {
+      "case": "one",
+      "ratio_value": 1,
+      "view": "one-view.json",
+      "job": "one-job.json",
+      "navigation": "one-navigation.json",
+      "view_bytes": 20250,
+      "view_sha256": "06adbb82f708f6ff1405d1f3908292cfa2f7d262c34624e566f439a9473f5623",
+      "navigation_sha256": "b64dab668b8b75cc891987c11abc38a6382c4c29a5d0b2de4f8ee091bd61b2a2",
+      "job_sha256": "315d86f46fd5f79622fe638c6219ccbb3f6d8191f917ec7e9c2553de853a4098",
+      "expected": {
+        "titles": 1,
+        "news_links": 1,
+        "policy_evidence_effect": "NONE",
+        "legacy_reader": "NAV_HASH_NUMBER"
+      }
+    },
+    {
+      "case": "decimal",
+      "ratio_value": 0.125,
+      "view": "decimal-view.json",
+      "job": "decimal-job.json",
+      "navigation": "decimal-navigation.json",
+      "view_bytes": 20254,
+      "view_sha256": "bd1c1b38c3b42039b16cc64e876c5b54dcd9970d4ababa79da8babbc404ff6d3",
+      "navigation_sha256": "35b34c5c33b2d06d9c2836692e4fb38a7bf9816d83b5ecd0e7ace7ef9637716a",
+      "job_sha256": "acf9ba9cbacdb3175885102fee1dba22d959efe7965b87afa2ea716d8dd2092a",
+      "expected": {
+        "titles": 1,
+        "news_links": 1,
+        "policy_evidence_effect": "NONE",
+        "legacy_reader": "NAV_HASH_NUMBER"
+      }
+    },
+    {
+      "case": "small-exponent",
+      "ratio_value": 1e-07,
+      "view": "small-exponent-view.json",
+      "job": "small-exponent-job.json",
+      "navigation": "small-exponent-navigation.json",
+      "view_bytes": 20254,
+      "view_sha256": "b382b623721b133294321dd05965af2fcea9ec054589b6cecf3634f6726edd91",
+      "navigation_sha256": "a1d21d073cd1e9b92ddf25ac1e86aa43714867528f2b81df3b7d8b36f27a9901",
+      "job_sha256": "a8e5c190186211a1b4e1454ce9a4bf3a17e48eb8ddb6eaa7080b029e22c01768",
+      "expected": {
+        "titles": 1,
+        "news_links": 1,
+        "policy_evidence_effect": "NONE",
+        "legacy_reader": "NAV_HASH_NUMBER"
+      }
+    },
+    {
+      "case": "float-zero",
+      "ratio_value": 0.0,
+      "view": "float-zero-view.json",
+      "job": "float-zero-job.json",
+      "navigation": "float-zero-navigation.json",
+      "view_bytes": 20252,
+      "view_sha256": "c55903911dc0d8b41ad2c70bd2934c7f50785e994974c8c753cc796e0a4ca237",
+      "navigation_sha256": "76e9cdf3abef03febc83ce7f5731fc592d2e211b3eea04c983ada2cef54e4f61",
+      "job_sha256": "150f47a5612c6a6788763a87548bac951f0baea789eff16e599cf0c2f5f30e7e",
+      "expected": {
+        "titles": 1,
+        "news_links": 1,
+        "policy_evidence_effect": "NONE",
+        "legacy_reader": "NAV_HASH_NUMBER"
+      }
+    },
+    {
+      "case": "float-one",
+      "ratio_value": 1.0,
+      "view": "float-one-view.json",
+      "job": "float-one-job.json",
+      "navigation": "float-one-navigation.json",
+      "view_bytes": 20252,
+      "view_sha256": "527dbf9fe34068a1fc07a4f11357d9eba4c31bf944df0b1b7bff53c60aa736da",
+      "navigation_sha256": "4e2aa716f8c16c79ad04df4b6e79720f3e34aac6110ba690af079ecdfa9d42dc",
+      "job_sha256": "bf2b783dccd00dfbd0a62849e9c46f8f3c5bd561a2aac47edc1c3165200c0a5d",
+      "expected": {
+        "titles": 1,
+        "news_links": 1,
+        "policy_evidence_effect": "NONE",
+        "legacy_reader": "NAV_HASH_NUMBER"
+      }
+    }
+  ]
+}
