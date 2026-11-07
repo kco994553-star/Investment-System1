@@ -4,6 +4,97 @@
 
 읽기: [START_HERE](START_HERE.md) → [방향 전환 대장](docs/SPEC/DIRECTION_CHANGES.md) → [WORKING_RULES](WORKING_RULES.md) → [기능 현황](docs/SPEC/FUNCTION_STATUS.md) → [결정 원문](implementation/docs/USER_DECISIONS_PENDING.md). 11/01 이행은 오너 결정 네 묶음(DC-40 두 흐름·연구 인계 / 11/01 2차 15항목 / 보완 지시: NAV 정정·점수화 모집단 검토, DC-41 / **역할 확대·계산·자료 구현 인계, DC-42** / **2025년 실질가치 시총 문턱·점수화 기준 C2, DC-43**)이다. 원문은 결정 기록 2026-11-01 블록.
 
+## 11/07 갱신 (최신 — 11/05 절과 아래 표보다 우선)
+
+기준 **2026-11-07 12:20 UTC GitHub 조회**, canonical **`ab6a83c3`**(11/05 뒤 병합 없음). 열린 PR 59개. 아래 11/05 절의 일부는 틀렸거나 지났으며 이 절에서 바로잡는다.
+
+**11/05 절 정정:**
+- #456·#457·#470·#471은 병합됐다. 0절 "작업 중" 표의 승인 대기 표시는 지난 기록이다.
+- #267·#484는 Draft가 아니다(#484는 이 기록 PR).
+- 머리가 바뀐 PR(조회): #467 `ab630963` · #477 `a90a93f3` · #480 `de9d87e4` · #482 `b68725f4` · #483 `864c40ea` · #491 `b51d521d` · #492 `9dce17b7` · #493 `2a104798` · #494 `4a2b73b6`.
+
+**11/05 뒤 새 Main PR(모두 Draft, 병합·배포 없음, 머리는 13:50 UTC):**
+
+| PR | 내용 | 머리 |
+| --- | --- | --- |
+| #497 | 기술 경로 속성 시험 필수 CI + 1.1.8 화면 fixture | `d4ece8da` |
+| #501 | IEX 파서 전체 심벌 모드(실행 없음) | `f6a69a99` |
+| #502 | IEX 11/02 원본 단발 보존 준비(실행 안 함) | `06e63afb` |
+| #506 | 의외의 기업 2.1.8·2.4.6(Codex #503) | `439f397e` |
+| #507 | 섹터 QGV 1.2 / 2.2.7(Codex #505) | `f9101b73` |
+| #508 | 공용 가드: IEX 순수 값 규칙 분리(#504 가드 실패의 Main 몫) | `df1a9abb` |
+| #510 | #506 + #507 통합 가지 + 섹터 기본 흐름 "10섹터 기본값 → 내 설정" | `ef4c721b`(감사 기준점 `a932ffeb` + 1커밋) |
+| #511 | 4.5 정책·지정학(Codex #509 view/2·/1 + #512 navigation/2 받은 바이트) | `507d0d77` |
+| #513 | 매크로 근거 실패 처리·빈 기본값 게시 차단·이전본 미확인 구분·배포 시 연속성 검사 | `9d45f25c` |
+| #517 | 기술 조건 필터 3.5: 같은 평가일·같은 증권일 때만 QGV 결합(Codex #515 계약, 문자열 대체 없음) | `460d3870` |
+| #518 | 기능 ID 정렬(2.1.8·2.4.6·2.2.7·3.5·4.5.x.1) + 공통 분류 DC-48·Main 소비 명세 | `6a8ac9fb` |
+
+**11/05 뒤 새 Codex PR:** #498 · #499 · #500 · #503 · #504 · #505 · #509 · #512 · #514(섹터 저장 설정 보존·원래 문맥 재실행, base #505) · #515(기술 필터 날짜·증권 결합 검증).
+
+**정합성 감사(오너 11/07) 기준점:** #510 `a932ffeb`, #511 `af0fe8f3`, #512 `37cef584`, #513 `f70d68e0`. 이 SHA는 대조 기준점이고 현재 머리가 아니다.
+
+**겹침과 병합 순서 제안(오너 승인 뒤):**
+- 순서: #513 → #510 → #511.
+- 세 가지의 겹침은 모두 기계적이다. DC 행은 번호 순, USER_DECISIONS는 최신 먼저, 자료층 STATIC·loader·reuse 목록은 canonical 순서 뒤에 이어 붙인다.
+- 통합 가지에서 `macro-evidence-status.json`을 `web_app_discovery_browser_test.js`·`web_app_policy_impact_browser_test.js`의 UNPUBLISHED에 한 줄씩 더한다.
+
+**오래된 PR 분류:**
+
+| PR | 분류 |
+| --- | --- |
+| #433 | 오너 결정 대기(GSQ-026 가격 표시). 그대로 둔다 |
+| #392 | 옛 화면 코드는 새 앱(DC-07)으로 대체됨. `store.js` 키 이전은 새 앱에서 다시 해야 하고, TV0-* 결정은 열려 있음 |
+| #305 | 대체됨(DC-07·DC-25·DC-26 새 앱·양식). 닫기는 오너 판단 |
+| #468 | canonical `ab6a83c3`을 합친 머리 `d86f8d56`로 갱신(충돌은 기계적 해결, 전체 시험 통과) |
+
+**11/07 결정 기록:** 공통 분류체계(DC-48)는 #518에 있다. 책 10섹터 → 하위 산업 → 기업, 원천 SIC 따로. Codex `common-classification/1` 계약·fixture 대기.
+
+## 11/05 갱신 (최신 — 아래 표보다 우선)
+
+기준은 **2026-11-05 07:30 UTC**, canonical **`ab6a83c3`**(#481 병합)이다. 아래 0~8절의 PR 상태는 11/01~11/04 기록이며, 11/05 바뀐 것은 이 절에 적는다.
+
+**병합:**
+- #470(`620f57f2`, 11/04)
+- #471(`49d19ff4`, 11/04)
+- #481(`ab6a83c3`, 11/05): #475 CI 실패 원인이던 홈 검색 포커스 스크롤 경합 수정, 오너 승인
+
+**Main 열린 PR(모두 Draft·승인 대기, 배포 없음):**
+
+| PR | 내용 | 머리 | 비고 |
+| --- | --- | --- | --- |
+| #484 | 이 기록(#470·#471, 11/05 상태) | 이 가지 | KIS PR보다 먼저 병합 |
+| #485 | Lab 9.1 연구 범위·선정(Codex #474·#473) | `edcff4a5` | 합성 |
+| #487 | 운영 연결 준비 문서(실행 위치·주기·Secret·캐시·재개·정상본, 확장 명부 입력 3종, Census·DOL) | `65d062a4` | 문서 |
+| #488 | 4.1.3 매크로 관측 자료(Codex #477) | `01a0c23e` | 합성 |
+| #490 | 5.2.7 뉴스 원천별 갱신 기록(Codex #483 계약) | `77b875b0` | 합성 |
+| #491 | 기술 2-1 기업별 지표(Codex #478) | `adefca22` | 합성 |
+| #492 | 검색·계산 범위: Universe504와 확장 모집단(Codex #482) | `4052ccba` | 합성 |
+| #493 | 비공개 층: Worker `/kis/*` 7경로 + 기술·QGV·매크로·뉴스 비공개 펼치기 | `55de88b1` | 병합 순서 #484 → #488 → #490 → #493 |
+| #494 | 흐름 품질 점검(axe·키보드·200%·상태), 결함 5건 수정 | `b0ee283e` | Lighthouse·Impeccable은 기준선만 |
+| #495 | Tabulator 비교 시험 | `009a692b` | 결론: 기존 표 유지 |
+| #496 | 보안 검사 시험 문서(Betterleaks·Semgrep·Trivy·ZAP) | `a38607cd` | 문서 |
+
+**Codex 열린 PR(Codex 담당):**
+- #477 `efc8715f`
+- #480 `90eb8af0`: 의존 순서 #467 → #469 → #478 → #480
+- #482 `bbe62aed`
+- #483 `e3154ee3`
+
+11/05 기준 최신 canonical과 충돌은 없다(`git merge-tree`).
+
+**비공개 실자료:**
+- `investment-system1-kis-private`의 `data` 가지(`ad3c903`)에 보관본 6개를 바이트 그대로 두었다. 오너 승인 범위이며 새 KIS 호출은 없었다.
+- 실제 Worker 코드와 개발 화면으로 보관본을 재생해 확인했다. 대역은 Google 토큰 확인과 GitHub 전송뿐이다.
+- 배포된 경로는 Worker 읽기 토큰 등록과 배포(오너 승인 대상) 전까지 확인하지 못한다.
+
+**오너 승인 대기:**
+- 병합: 위 Main PR 전부
+- Worker: 토큰 발급·등록, 수동 배포
+- IEX: 전체 기호 파서 모드, 11/02 TOPS 1회 취득·보존
+- Census 키, DOL 조건 확인
+- 워크플로 연결: axe, Betterleaks, Trivy, action SHA 고정
+- wrangler 업그레이드, 경로별 지연 로딩
+
 ## 0. 역할·지금 관리할 흐름
 
 역할은 **DC-42(11/01 3차, 역할 확대 — DC-40의 "Main 엔진·입력 / Codex 실행·대사" 분담을 대체)**: **Main**은 기능 계층 1~9의 모든 프론트엔드·UI/UX·차트·화면 연결(9 Lab 화면 포함), 인증·권한·Secret·워크플로·운영 인프라·공용 가드, 결정 기록·DC 번호·최종 통합, 승인 범위의 병합·배포. **Codex**는 계산·데이터·연구 구현(수집·변환 로직, PIT·증권 신원·입력 연결, 백테스트·전진검증 계산·결과 산출, 책 조사·규칙표·연구 문서, Notion. 인수한 공통 계산 모듈은 직접 수정). 역할은 오너가 확정했다(두 메시지, 재승인 대기 없음). #454 엔진·입력 어댑터 [#464](https://github.com/kco994553-star/Investment-System1/pull/464)·#459/#460의 수집·변환·진단 코드는 [#437 인계 3](https://github.com/kco994553-star/Investment-System1/pull/437#issuecomment-6557255668)로 Codex에 넘겼다(11/01 11:19 UTC). 넘긴 파일은 Main이 병행 수정하지 않는다. 파일 담당표·공통 파일 규칙: [START_HERE 4절·4.1절](START_HERE.md). Codex PR이 DC 번호·결정 기록을 직접 바꾸면 Main이 번호를 다시 매겨 반영한다. Codex PR은 Main이 canonical 동기화·CI 녹색·담당 파일만 바뀜을 확인하고 오너 승인 뒤 병합한다. 이 역할 변경은 병합·배포·SEC/Alpaca 실행 승인이 아니다. 이전 분담(DC-40) 원문은 [방향 전환 대장](docs/SPEC/DIRECTION_CHANGES.md)에만 남고 현행 규칙이 아니다. **AUD-01**(레거시 플레이북 `target_v1.grades` GENERAL 4~5% ↔ 승인된 일반 6%)은 인계 3으로 Codex에 넘겼다(설정 수정 Codex, 생성 사본·가드 고정값·화면 영향 Main).
@@ -32,8 +123,8 @@
 | [#452](https://github.com/kco994553-star/Investment-System1/pull/452) 책 규칙 인수·종목 비교 경계·동결 French 보유기간 분석(Draft) | Codex | 11/01 01:04 | 연구 경로 새 3파일, CI 성공(조회). Main 요청 4개(담당표 두 흐름 갱신 = #453 반영됨, 인계, LOSS 구분, #443 대체 범위) |
 | [#437](https://github.com/kco994553-star/Investment-System1/pull/437) Lab 계약·EXP 연구 대사 창구(Draft, base #432) | Codex | 10/31 | 인계 3 수령, #464·#465·#467 갱신 회신(6574671761, 11/02). **9.Lab:** `lab-backtest-v1`을 재사용하고 필드 요청([6575853507](https://github.com/kco994553-star/Investment-System1/pull/437#issuecomment-6575853507): `result_kind`, `computation_status`+`not_computed_reason`, `sample`, `diagnostics`)으로 Codex와 합의한다. Codex는 같은 날 회신했다: [6600537423](https://github.com/kco994553-star/Investment-System1/pull/437#issuecomment-6600537423)(필드 합의, 09:56)·[6602595466](https://github.com/kco994553-star/Investment-System1/pull/437#issuecomment-6602595466)(보드는 평가일·그룹마다 하나, `lab-backtest-v2` 수령 확인, 11:27). 11/03의 '회신 없음·회신 대기' 기록은 Main이 회신을 놓친 것으로 틀렸다(11/04 정정 [6627839836](https://github.com/kco994553-star/Investment-System1/pull/437#issuecomment-6627839836)). Codex에 남은 질문 없음. 계약은 합의 뒤에 바꾼다. 비공개 표본의 실제 값은 공개 화면에 연결하지 않음(공개 연결은 `LAB-PUBLISH` 별도 승인) |
 | [#468](https://github.com/kco994553-star/Investment-System1/pull/468) 포트폴리오 5.1 공개 층(P2-6, 새 앱) | Main | 11/02 | 머리 `af318501e5a0fdb64758ccf0500596e6255c4604`, base `ddcb2925`. **개발 빌드 검증 완료, 병합·배포 전.** 전체 시험 통과(실행: Python 4,382·node·worker·저장소 가드·빌드·Pages 가드·브라우저). CI 7 성공·2 생략(deploy·replay_source는 PR에서 원래 생략), mergeable clean(조회). 이번 #456 승인은 #468에 적용되지 않음 |
-| [#470](https://github.com/kco994553-star/Investment-System1/pull/470) 1.1.8 기술 조건 필터(기능 3.5, Draft) | Main(화면) · Codex(계산) | 11/03 | 계약 기준은 Codex #469 `f1ca390a`의 `technical-leaderboard/1`(설정 `technical-leaderboard/2026-11-03.1`)과 보드 단위 회신 [6602595466](https://github.com/kco994553-star/Investment-System1/pull/437#issuecomment-6602595466). Codex에 남은 질문은 없다. 남은 일은 Main이 판독기를 #469 공개 합성 fixture에 맞추는 것(11/04 오너 지시). 병합·배포·비공개 값 공개는 별도 |
-| [#471](https://github.com/kco994553-star/Investment-System1/pull/471) 9.Lab `lab-backtest-v2`(Draft) | Main(화면·계약) · Codex(결과) | 11/03 | 11/04 canonical `3887c79b`(#457 병합)에 맞춤. 대조 기준 Codex 회신 [6600537423](https://github.com/kco994553-star/Investment-System1/pull/437#issuecomment-6600537423)과 v2 수령 확인 [6602595466](https://github.com/kco994553-star/Investment-System1/pull/437#issuecomment-6602595466): 미해결 없음. **오너 병합 승인 대기**(새 SHA 확인 뒤 별도 승인). 실결과·공개 연결·배포는 별도 |
+| [#470](https://github.com/kco994553-star/Investment-System1/pull/470) 1.1.8 기술 조건 필터(기능 3.5) | Main(화면) · Codex(계산) | 11/03 | **11/04 병합 `620f57f2`**(오너 승인 머리 `440ef86d` 한정). **합성 입력으로 연결을 검증한 상태**: Codex #469 `f1ca390a`의 공개 합성 fixture를 변환 없이 판독. 실자료 기술 리더보드 아님(원천 `NONE`). 비공개 값 공개·배포·P3 전환은 별도 |
+| [#471](https://github.com/kco994553-star/Investment-System1/pull/471) 9.Lab `lab-backtest-v2` | Main(화면·계약) · Codex(결과) | 11/03 | **11/04 병합 `49d19ff4`**(오너 승인 머리 `25645dbb` 한정). **합성 입력으로 연결을 검증한 상태**(합성 예시 4건). 실결과 연결·전략 백테스트 완료 아님. 공개 연결(`LAB-PUBLISH`)·배포는 별도 |
 | [#467](https://github.com/kco994553-star/Investment-System1/pull/467) 섹터 비교 기준선·6개월 거래대금 진단 | Codex | 11/02 | `3f2c8d28`(PR 보고). 리더보드용 필드 문서는 Codex 문서. 실제 값은 비공개, 공개 화면 연결 없음 |
 | [#417](https://github.com/kco994553-star/Investment-System1/pull/417) QGV 장기 백테스트(Draft) | Codex | 10/26 | 11/01 `c68af2c0`로 의존성 코드 보존(PR 보고 204 passed). mergeable `unstable`(조회). calc 17.1 보존본, Main 엔진 아님 |
 | [#458](https://github.com/kco994553-star/Investment-System1/pull/458) AI 탐색 범위 정리 `AGENTS.md`(Draft, 문서만) | GPT 문서 정리 세션(PR 본문 등록) | 11/01 07:18 | mergeable `unstable`(조회). Main 검토용. DC-40상 흐름은 Main·Codex 둘이라 담당 정리는 오너 확인 필요 |
@@ -60,6 +151,8 @@
 
 | PR | 내용 | UTC | merge SHA |
 | --- | --- | --- | --- |
+| [#470](https://github.com/kco994553-star/Investment-System1/pull/470) | 1.1.8 기술 조건 필터(기능 3.5): `technical-leaderboard/1` 판독기·화면, #469 합성 fixture. 11/04 오너 승인(머리 `440ef86d` 한정, #471 뒤 충돌 없음·합친 나무 node 79·web_app 브라우저 13개 통과). 합성 연결 검증만, 배포 없음 | 11-04 | `620f57f264896c1efa34ac8e6c19ccd28c10d7d3` |
+| [#471](https://github.com/kco994553-star/Investment-System1/pull/471) | 9.Lab `lab-backtest-v2` 판독·화면(결과 종류·계산 상태·표본·모집단·진단), 합성 예시 4건. 11/04 오너 승인(머리 `25645dbb` 한정). 합성 연결 검증만, 배포 없음 | 11-04 | `49d19ff47411a214d89666685d22abbf07f93c84` |
 | [#457](https://github.com/kco994553-star/Investment-System1/pull/457) | 결정 기록 11/01~11/04(DC-41·DC-42·DC-43, 11/03 지시, #456 운영 복구 기록). 11/04 오너 승인(머리 `9eaa071a` 한정, 문서 9개). 배포 없음 | 11-04 | `3887c79b` |
 | [#456](https://github.com/kco994553-star/Investment-System1/pull/456) | 중앙 V 기준일: IEX 목록의 비거래일(토요일·NYSE 휴장일) 파일 건너뛰기, `PUBLISHER_SOURCES`에 `forward_ledger.py`(`publisher_sha256` 값만 바뀜, 스키마 그대로). 11/03 오너 승인(머리 `a922d6eb` 한정). 병합 직전 머리·파일 3개 같음 확인. 병합 뒤 `private-boundary-push` 성공, 배포 없음. 실게시 복구는 첫 정기 실행에서 따로 확인 | 11-03 08:43 | `fb0ffcab` |
 | [#463](https://github.com/kco994553-star/Investment-System1/pull/463) | AUD-01: 레거시 플레이북 `target_v1.grades` 일반 6%(Codex `b8b2378f`) + 화면 사본·Pages 가드 고정값 동기화(Main `4f8ed7de`). 11/02 오너 승인(머리 `4f8ed7de` 한정). 병합 뒤 `private-boundary-push` 성공, 배포 없음 | 11-02 09:45 | `ddcb2925` |
