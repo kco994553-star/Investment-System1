@@ -55,3 +55,84 @@ All company observations/results remain private. Private resume directory: `/wor
 Main: dated book-sector/accounting mapping, evidenced duplicate-issuer representative, existing official gate observation linkage; authenticated CLI/job delivery, UI and CI-list integration. Codex: consume those existing input contracts and score the original group when available. Price/share/TTM EPS/financial-common-equity/REIT/forecast recipes remain individual data dependencies; no neutral fills or formula swaps. Pending catalog definitions remain visible but not executable selections.
 
 Owner: no new collection, merge, deployment or official replacement executed or requested by this PR. Performance validation is not a prerequisite for using the implemented initial default in development.
+
+## Classification / Main bridge continuation — 2026-11-07
+
+Original #505 head `dc11144b4052139a5784e41beb1b97d6ebbf6a78`: final CI
+7 successful / 2 skipped (deploy, replay_source), recorded without repeating
+those successful checks. This continuation adds only classification/transport
+paths; the original raw matrix and calculation formulas are unchanged.
+
+Evaluation 2026-11-04, financial snapshot as_of
+2026-11-04T02:29:35.166580Z, original **Universe504 code-row denominator 504**.
+The separate 2026-11-02 financial 11-code price request is not part of this run.
+
+| Stage | Before | After / 504 | New work |
+|---|---:|---:|---|
+| Held official SEC SIC source connected | not measured here | 503 | Verify pinned submissions members; official SIC kept separate |
+| Book-sector + accounting research correspondence | 0 | 351 | 153 unresolved retained |
+| Any valid raw observation | 501 | 501 | 14 variants / 5,439 observations reused; 0 rederived |
+| Any factor score | 0 | 291 | 3,526 code-variant scores from existing raw observations |
+| Q axis | 0 | 206 | Price-independent partial output |
+| G axis | 0 | 280 | Price-independent partial output |
+| V / all-three / model total | 0 / 0 / 0 | 0 / 0 / 0 | Strict inputs and date constraints unchanged |
+
+Official-Q-only replay connected 485 valid gate inputs, 19 unavailable. Among
+351 mapped rows: PASS 242, VALUE_EXCLUDED 100, UNKNOWN 9; 153 unclassified rows
+have no applied sector model. These are **gate counts, not final-score counts**.
+Replay uses existing official engine context (523 including TARGET query rows,
+498 representative pool); sector score denominator remains the original 504.
+The official Q >=8/fallback policy and new-model >=20/no-fallback policy are
+kept separate. No price was used by the Q replay and no new official publication
+was produced.
+
+Research classification unresolved reasons (mutually exclusive, sum 153): exact
+SIC correspondence not reviewed 54; REIT 27; mixed business services 16; low-capital
+fee business unproven 14; instrument end market 9; mixed finance 7; mixed retail
+7; media/telecom boundary 6; managed healthcare boundary 5; research end market
+3; semiconductor equipment boundary 2; source accounting-profile conflict 2;
+source not connected 1. They remain in the denominator. No post-result changes
+to correspondence rules or peer grouping were made to cross the minimum N.
+
+Selected-factor missing **events** (multiple per company, not a row partition):
+MISSING_INPUT 1,233; PEER_SAMPLE_SMALL 175; issuer scoring representative
+unresolved 5; PERIOD_MISMATCH 4. Price/identity/current-class/TTM EPS inputs are
+still absent where required. Financial templates additionally lack the common
+capital/BPS components; current mapped bank/insurance/broker groups are 17/18/7,
+so they cannot meet the new 20-valid-issuer rule even if those inputs arrive.
+Energy 14 and telecom 3 also remain small. No sector pooling or neutral fill.
+
+Actual affected synthetic tests: classification 13 passed; Main bridge/CLI 8
+passed. New tests cover unmodified raw reuse; partial Q/G without prices; 19-peer
+failure; future/mismatched source and gate date; exact editor→engine→projection
+values; role-budget mismatch; duplicate aliases; FY1/NTM ambiguity; mandatory gate;
+all original UI rows and common-valid ranks; existing CLI output/save/request hash.
+These are synthetic tests. The actual held-source run above is separately counted;
+performance, historical PIT and full-market coverage remain **not measured**.
+
+Read-only Node check of actual Main #507 `cd2fd62ed7793541d09f34d871d0ff24fef24135`:
+its own fixture accepted; required gate policy rejected (`GATE_POLICY_UNSUPPORTED`);
+common-engine response rejected (`KEY_MISSING`, `$.schema`). Python/CLI bridge
+works; Main browser/server invocation is still to be connected. See
+`MAIN_INTEGRATION.md` for exact Main-owned changes. Zero total rows means **0
+computed / 504**, not company scores of zero and not 0% whole-market coverage.
+
+Fresh independent review found and fixed two integration defects: identical
+verified source hashes selected the first archive rather than the earliest
+observed acquisition; gate replay inserted wall-clock time into input/cache
+identity. Source selection now orders by acquisition, archive hash and member;
+execution time is audit-only. Two minimized synthetic regressions passed. Only
+the affected classification/scoring run was finalized again after these fixes;
+no financial raw ratios were rederived. The newly connected official-engine import
+path passed the existing official guard suite: 138 tests (53.05 seconds). No
+shared guard was changed.
+
+The final affected-source run preserved the same result rows/counts after the
+reproducibility fix, and all original raw observations/members are exactly equal.
+The public/private static boundary suite passed 28 tests. This continuation's
+local checks comprise 21 new-path tests + 138 official guards + 28 privacy checks;
+the previously successful unchanged 26-test sector suite was not rerun.
+Private final resume location: `/workspace/private-sector-qgv-classified-20261107/run-final`;
+initial `run/` is superseded and excluded from remote handoff. Aggregate before/
+after counts, job, source references, raw-preservation audit and manifest are
+saved alongside it. Actual company inputs/results are not repository fixtures.
