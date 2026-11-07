@@ -20,6 +20,32 @@ MARKET={'price','issuer_mcap','enterprise_value'}
 FLOWS={'revenue':'revenue','cfo':'operating_cash_flow','capex':'capital_expenditure','ebit':'ebit','da':'depreciation_amortization'}
 
 
+def connect_held_cover(pack,company_id,symbol,body,share_record,record_reference):
+    """Attach historical cover facts; do not turn their dates into validity intervals."""
+    from investment_system.providers.sec_cover_shares import parse_cover,class_symbols
+    out=copy.deepcopy(pack);rows=[r for r in out['rows'] if r['company_id']==company_id]
+    if len(rows)!=1 or rows[0]['issuer_id']!=share_record.get('cik'):raise ValueError('V_COVER_ISSUER_MISMATCH')
+    sha=hashlib.sha256(body).hexdigest()
+    if sha!=share_record.get('source_sha256',{}).get('cover'):raise ValueError('V_COVER_HASH_MISMATCH')
+    if day(share_record['filed'])>day(pack['valuation_date']) or timestamp(share_record['acquired_at'])>timestamp(pack['as_of']):raise ValueError('V_COVER_NOT_AVAILABLE')
+    if b'<!DOCTYPE' in body.upper() or b'<!ENTITY' in body.upper():raise ValueError('V_COVER_XML_INVALID')
+    parsed=parse_cover(body);matches=[m for m,s in class_symbols(parsed).items() if s==symbol]
+    if len(matches)!=1:raise ValueError('V_COVER_CLASS_NOT_UNIQUE')
+    member=matches[0];titles=parsed['titles'].get(member,[])
+    if not titles:raise ValueError('V_COVER_TITLE_UNAVAILABLE')
+    evidence={'scope':'HISTORICAL_COVER_NOT_VALUATION_DATE_IDENTITY','symbol':symbol,'titles':titles,
+        'source_class_member':member,'share_observation_dates':[r['date'] for r in parsed['classes'] if r['member']==member],
+        'filed':share_record['filed'],'acquired_at':share_record['acquired_at'],'accession':share_record['accn'],
+        'source_sha256':sha,'record_reference':record_reference,'valid_from':None,'valid_to':None,
+        'valuation_date_identity':'UNCONFIRMED','corporate_action_continuity':'UNCONFIRMED'}
+    row=rows[0];prior=row.get('held_cover_evidence')
+    if prior and prior!=evidence:raise ValueError('V_COVER_HISTORY_MUTATION')
+    row['held_cover_evidence']=evidence
+    return out,{'company_id':company_id,'valuation_date':pack['valuation_date'],
+        'new_documentary_connections':int(prior is None),'new_valuation_date_identity':0,
+        'new_raw_ratios':0,'new_factor_scores':0,'new_V':0,'new_total':0}
+
+
 def selected(row):
     if not row.get('mapping'):return []
     p=preset(default_config(),row['sector_id'],row['accounting_template'])
