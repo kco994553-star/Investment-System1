@@ -79,3 +79,24 @@ financial override, reconciliation, and mixed public/private labels are rejected
 These are synthetic engine tests, not real V adoption or performance validation.
 Main uses the existing preview reader; collection/auth/UI/workflows stay Main-owned.
 #507's synthetic engine call is reported connected; private delivery remains pending.
+
+## Focused completion attempt: one retained common-book input
+
+2026-11-07 followup adds `connect_held_cover` to this module. It uses existing
+`sec_cover_shares.parse_cover/class_symbols`, pins the original cover hash and
+share-record CIK/availability, and appends historical cover evidence to the pack.
+It does not manufacture a security ID, an applicability interval or a quote.
+
+The private focus is one issuer/common_bp at valuation2026-11-04. Existing BPS,
+equity/share period/currency and numerator are reused. One new documentary
+connection carries literal common-stock title/symbol and the July27 share observation
+from its July31 filing. It does not prove security continuity or the absence of
+split/ADR/share-basis changes through November4. Thus newly complete non-price,
+raw ratio, factor score, V and total counts all remain0. Original504 and prior
+587/323,1053/365,135/59,unmapped139 counts are unchanged; the small-peer group is
+an independent scoring constraint. The updated private pack is readable by the
+same v-resume CLI once eligible evidence/price is delivered.
+
+A one-security synthetic test now explicitly produces three raw ratios while
+factor scores/V/total remain null for peer N1. Minimum20 is not a raw-ratio gate.
+No completed Q/G comparison or NVDA diagnostic was repeated.
