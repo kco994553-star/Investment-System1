@@ -69,7 +69,7 @@ Main은 Codex PR #515(`research/technical-filter-join-20261107`, `b6fd0112`)의 
 
 - QGV 행마다 근거가 있는 `signal_day`(QGV 계산 평가일)와 `security_id`. 지금은 어느 공개 파일에도 없다.
 - Universe504 전체에 대한 `CONFIRMED` 증권 링크 파일과 그 공개 경로. 원천은 지금 `NONE`(`security_links: null`)이다.
-- 보드 그룹이 Universe504 행 전부를 덮어야 한다. 행 하나라도 보드에 없으면 `SECURITY_ID_NOT_IN_BOARD`로 전체가 거부된다.
+- 공통 분류 기록으로 확정된 보드 그룹의 전체 구성원 행(6절 3번). 그룹 안 행 하나라도 보드에 없으면 `SECURITY_ID_NOT_IN_BOARD`로 전체가 거부된다.
 - 실자료 `data_kind`(`RETAINED_INPUT`) 표시.
 
 이것이 오기 전에는 아무것도 결합하지 않는다.
