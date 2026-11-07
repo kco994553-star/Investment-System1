@@ -216,3 +216,33 @@ def test_v_resumed_input_is_codex_resume_snapshot():
     assert out['ok'] and out['after'] == engine.preview_qgv(c, snap, 'v-1')
     assert out['after']['coverage']['axes']['V'] == {'valid': 20, 'denominator': 20}
     assert out['data_kind'] == 'SYNTHETIC'
+
+
+def test_replay_is_codex_replay_saved_config_on_the_retained_preview_and_snapshot():
+    """과거 입력으로 결과 재현 (owner 2026-11-07, Codex #514): the replay op answers Codex's replay_saved_config of the saved record
+    with the retained preview and its own snapshot; a record whose preview is not held, or that differs, is refused with a code."""
+    from investment_system.research.sector_qgv_restore import replay_saved_config
+    b = bridge.Bridge()
+    c = engine.default_config()
+    p = engine.preset(c, 'ENERGY', 'GENERAL')
+    p['axis_weights'] = {'Q': 3400, 'G': 3300, 'V': 3300}
+    mine = dict(copy.deepcopy(c), scoped_overrides={'ENERGY|GENERAL': p}, owner_scope='PRIVATE', config_id='device')
+    out = ask(b, req('preview', 'p-r', config=mine, before_config=c, input_id='NORMAL'))
+    saved, kept = copy.deepcopy(out['saved']), json.dumps(out['saved'], sort_keys=True)
+    r = ask(b, req('replay', 'r-1', saved=saved))
+    assert r['ok'] and r['retained_preview_id'] == out['after']['preview_id'] and r['data_kind'] == 'SYNTHETIC'
+    want = replay_saved_config(saved, out['after'], bridge.synthetic_input('NORMAL'), 'r-1')['preview']
+    assert r['preview'] == want and r['preview']['preview_id'] != out['after']['preview_id']
+    assert {k: v for k, v in r['preview'].items() if k not in ('preview_id', 'request_id')} == \
+        {k: v for k, v in out['after'].items() if k not in ('preview_id', 'request_id')}
+    assert json.dumps(saved, sort_keys=True) == kept, 'the saved record is not changed'
+    # Another input of the same record (a latest-input run) is the preview op, never a replay; a changed record is refused.
+    bad = dict(copy.deepcopy(saved), canonical_config_hash='0' * 64)
+    assert ask(b, req('replay', 'r-2', saved=bad))['code'] == 'SAVED_PREVIEW_MISMATCH'
+    assert ask(b, req('replay', 'r-3', saved=dict(copy.deepcopy(saved), preview_id='0' * 64)))['code'] == 'RETAINED_INPUT_NOT_FOUND'
+    assert ask(bridge.Bridge(), req('replay', 'r-4', saved=saved))['code'] == 'RETAINED_INPUT_NOT_FOUND', 'a new process holds nothing'
+    assert ask(b, req('replay', 'r-5', saved='x'))['code'] == 'SAVED_CONFIG_INVALID'
+    # The retained snapshot is the one the preview ran on (a STALE preview replays on STALE, not on NORMAL).
+    st = ask(b, req('preview', 'p-s', config=mine, before_config=c, input_id='STALE'))
+    rs = ask(b, req('replay', 'r-6', saved=st['saved']))
+    assert rs['ok'] and rs['preview']['result_rows'] == st['after']['result_rows'] and rs['preview']['input_hash'] == st['after']['input_hash']

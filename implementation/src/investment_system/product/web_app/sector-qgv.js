@@ -22,11 +22,21 @@
      / scope is not the base's (an id never gets other numbers here: the base presets are the engine's and are never written);
      legacy(read) lists the old leaderboard weight trees (DeviceProfiles v2: 공격형·균형형·수비형·사용자 설정 editor) as
      이전 설정 호환 only: read for existing saved settings (a tree has no start preset or calc / input versions, so it is
-     never shown as a replay of a past result), never offered as a new default. */
+     never shown as a replay of a past result), never offered as a new default.
+   - owner 2026-11-07 (2.2.7 「섹터 QGV 설정(요소·가중치)」, FEATURE): identity(saved) keeps the two identities apart — 원본 참조 =
+     the base preset id / version (never rewritten; every scoped override still names it) and 내 설정 = the record's own config_id,
+     schema, canonical_config_hash and the scopes it overrides (sector-qgv-config/1 has no user-config version field: the hash is
+     its identity); readSaved(read, versions) reads the stored record without changing it (no migration on load); two distinct runs
+     of a saved setting (RUN_TEXT): APPLY_LATEST = the ordinary preview op on the input chosen now (a new result) and REPRODUCE =
+     the replay op (Codex #514 replay_saved_config on the retained preview + original snapshot), told apart by replayState(chk):
+     REPRODUCED only when the engine confirmed the identical identity, otherwise the engine's refusal code as text or the distinct
+     재현 입력 연결 전 state; rowState / factorText: a factor score the engine did not make because fewer than 20 valid peers
+     (PEER_SAMPLE_SMALL, its valid_n) is its own state, never 결측, 관문 판정 불가 or 분류 미확정, never 0 or a rank. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else{const I=root.IS2=root.IS2||{};I.sectorQgv=api;}})(typeof globalThis==='object'?globalThis:this,function(){
 'use strict';
 const REQUEST='sector-qgv-engine-request/1',RESPONSE='sector-qgv-engine-response/1',PREVIEW='sector-qgv-preview/1',CONFIG='sector-qgv-config/1';
-const AXES=Object.freeze(['Q','G','V']),OPS=Object.freeze(['context','view','preview','save','comparisons','comparison']);
+const AXES=Object.freeze(['Q','G','V']),OPS=Object.freeze(['context','view','preview','save','comparisons','comparison','replay']);
+const FEATURE=Object.freeze({id:'2.2.7',name:'섹터 QGV 설정(요소·가중치)'});
 const SECTOR_TEXT=Object.freeze({CONSUMER_DISCRETIONARY:'경기소비재',CONSUMER_STAPLES:'필수소비재',ENERGY:'에너지',FINANCIALS:'금융',HEALTH_CARE:'헬스케어',
  INDUSTRIALS:'산업재',INFORMATION_TECHNOLOGY:'정보기술',MATERIALS:'소재',TELECOMMUNICATIONS:'통신',UTILITIES:'유틸리티'});
 const TEMPLATE_TEXT=Object.freeze({GENERAL:'일반',BANK:'은행',INSURANCE:'보험',BROKER:'증권',MORTGAGE_REIT:'모기지 REIT',ASSET_MANAGER:'자산운용',EQUITY_REIT:'지분형 REIT'});
@@ -40,7 +50,7 @@ const STATUS_TEXT=Object.freeze({VALID:'산출',GATE_UNKNOWN:'관문 판정 불�
 const GATE_TEXT=Object.freeze({PASS:'관문 통과',VALUE_EXCLUDED:'관문: 가치(V) 제외 · 남은 축 비례 재배분',UNKNOWN:'관문 판정 불가 · 공식 Q 업종 분위 없음'});
 // Factor raw_status / score_status codes of the engine.
 const FACTOR_TEXT=Object.freeze({VALID:'점수 있음',VALID_ZERO:'값 0 (유효)',VALID_NEGATIVE:'음수 (유효)',MISSING_INPUT:'자료 없음',STALE:'오래된 자료',
- PEER_SAMPLE_SMALL:'비교집단 20개 미만',MAPPING_UNRESOLVED:'분류 미확정',ISSUER_REPRESENTATIVE_UNRESOLVED:'대표 증권 미확정',NOT_APPLICABLE:'이 회계모형에 적용 안 함',
+ PEER_SAMPLE_SMALL:'요소 점수 미산출 · 유효 비교 기업 N<20',MAPPING_UNRESOLVED:'분류 미확정',ISSUER_REPRESENTATIVE_UNRESOLVED:'대표 증권 미확정',NOT_APPLICABLE:'이 회계모형에 적용 안 함',
  CALCULATOR_PENDING:'계산 기능 준비 중',DOMAIN_INVALID:'정의역 밖(분모 0 이하 등)',EVIDENCE_MISSING:'근거 없음',NOT_YET_AVAILABLE:'기준일 뒤 자료',PERIOD_MISMATCH:'기간 불일치',
  SCOPE_MISMATCH:'범위 불일치',UNIT_MISMATCH:'단위 불일치',CURRENCY_MISMATCH:'통화 불일치',INPUT_INVALID:'입력 오류',OBSERVATION_VERSION_MISMATCH:'관측 버전 불일치'});
 // Fixed refusal codes of the route, the bridge or the engine.
@@ -50,7 +60,11 @@ const ERROR_TEXT=Object.freeze({ENGINE_NOT_CONNECTED:'계산 실행 경로 연�
  FACTOR_ROLE_MISMATCH:'요소가 다른 역할에 들어감',CALCULATOR_PENDING:'계산 기능 준비 중인 요소에 비중이 있음',AXES_INVALID:'축 구성 오류',MAPPING_UNRESOLVED:'섹터·회계모형 분류 미확정',
  PREVIEW_CONFIG_OR_REQUEST_MISMATCH:'미리보기와 설정이 달라 저장 거부',PREVIEW_NOT_FOUND:'미리보기를 다시 실행하세요',INPUT_UNKNOWN:'알 수 없는 입력',CONFIG_INVALID:'설정 형식 오류',
  INPUT_VERSION_MISMATCH:'입력 버전 불일치',DUPLICATE_MEMBER:'모집단 중복',ROW_OUTSIDE_UNIVERSE:'모집단 밖 행',LAST_FACTOR_OF_AXIS:'축의 마지막 요소 · 빼려면 축 비중을 0으로',
- NOT_APPLICABLE:'이 회계모형에 적용 안 되는 요소'});
+ NOT_APPLICABLE:'이 회계모형에 적용 안 되는 요소',
+ // 과거 입력으로 결과 재현 (Codex #514 replay_saved_config / assert_retained_preview, and the bridge's missing retained input).
+ RETAINED_INPUT_NOT_FOUND:'재현 입력(원래 preview·snapshot) 연결 전',SAVED_CONFIG_INVALID:'저장 기록 형식 오류',SAVED_PREVIEW_MISMATCH:'저장 기록이 원래 미리보기와 다름',
+ RETAINED_PREVIEW_ID_MISMATCH:'보관 미리보기 ID 불일치',REFERENCE_PREVIEW_IDENTITY_MISMATCH:'원래 입력·모형 식별자와 다름',REFERENCE_PREVIEW_MEMBERS_MISMATCH:'원래 모집단과 다름',
+ REFERENCE_PREVIEW_SCHEMA_MISMATCH:'보관 미리보기 규격 불일치',SAVED_REPLAY_CONTEXT_OR_RESULT_MISMATCH:'재실행 결과·맥락이 원래와 다름'});
 const EVIDENCE_TEXT=Object.freeze({OWNER_INITIAL_DESIGN:'오너 초기 설계(성과 미검증)'});
 const text=(map,code)=>code===null||code===undefined?'':Object.prototype.hasOwnProperty.call(map,code)?map[code]:String(code);
 const errorText=code=>{const c=String(code||''),i=c.indexOf(':'),head=i<0?c:c.slice(0,i);return Object.prototype.hasOwnProperty.call(ERROR_TEXT,head)?ERROR_TEXT[head]+(i<0?'':' ('+c.slice(i+1)+')'):c;};
@@ -94,6 +108,13 @@ function check(op,req,res,ctx=null){
   for(const x of res.comparisons)if(!object(x)||typeof x.name!=='string'||!['SYNTHETIC','PRIVATE'].includes(x.data_kind)||typeof x.comparison_id!=='string'||typeof x.treatment!=='string')return bad('ENGINE_ANSWER_INVALID');
   return {ok:true};}
  if(op==='comparison'){if(res.name!==req.name||!['SYNTHETIC','PRIVATE'].includes(res.data_kind)||!object(res.comparison))return bad(res.name!==req.name?'ANSWER_MISMATCH':'ENGINE_ANSWER_INVALID');return {ok:true};}
+ // replay: Codex #514 replay_saved_config of exactly this saved record; the new preview must carry the record's identity.
+ if(op==='replay'){const p=res.preview,s=req.saved;
+  if(res.data_kind!=='SYNTHETIC'||!object(p)||p.schema_version!==PREVIEW||!Array.isArray(p.result_rows)||!object(p.coverage)||!object(s))return bad('ENGINE_ANSWER_INVALID');
+  if(p.request_id!==req.request_id||res.retained_preview_id!==s.preview_id||p.preview_id===s.preview_id||p.config_hash!==s.canonical_config_hash||
+   p.snapshot_id!==s.snapshot_id||p.universe_id!==s.universe_id||p.universe_version!==s.universe_version)return bad('ANSWER_MISMATCH');
+  for(const k of ['model_version','engine_version','normalization_version','mapping_version'])if(p[k]!==ctx.versions[k])return bad('ANSWER_MISMATCH');
+  return {ok:true};}
  if(op==='save'){const r=validateSaved(res.saved);if(!r.ok)return r;if(res.saved.preview_id!==req.preview_id)return bad('ANSWER_MISMATCH');return {ok:true};}
  return bad('OP_UNKNOWN');}
 
@@ -167,6 +188,39 @@ function legacy(read){if(!object(read))return {state:'UNKNOWN',profiles:[]};if(r
  const list=object(read.value)&&Array.isArray(read.value.profiles)?read.value.profiles:[];
  return {state:list.length?'OK':'EMPTY',profiles:list.filter(object).map(p=>({id:String(p.id),name:String(p.name),version:p.version,saved_at:String(p.saved_at),label:FLOW_TEXT.LEGACY}))};}
 
+// ---- 2.2.7 섹터 QGV 설정(요소·가중치): 원본 참조 vs 내 설정, two runs of a saved setting, the small-sample state (owner 2026-11-07)
+// The stored record as read (IS2.store.sectorQgv.read()): never changed, never migrated; another base is BASE_DIFFERS, not rewritten.
+function readSaved(read,versions){if(!object(read)||read.state!=='OK')return {state:object(read)&&read.state==='INVALID'?'INVALID':'EMPTY',saved:null};
+ const saved=copy(read.value);return {state:saved.config.base_preset_id===(object(versions)?versions.model_version:null)?'OK':'BASE_DIFFERS',saved};}
+// Identities of a saved record: origin = the base preset it names (and each override's preset id / version, which edits never
+// change); mine = the record's own config id, schema, canonical hash and scopes. version is null: sector-qgv-config/1 has none.
+function identity(saved){const c=saved.config,o=object(c.scoped_overrides)?c.scoped_overrides:{},scopes=Object.keys(o).sort();
+ return Object.freeze({origin:Object.freeze({base_preset_id:c.base_preset_id,presets:scopes.map(k=>Object.freeze({scope:k,preset_id:o[k].preset_id,version:o[k].version}))}),
+  mine:Object.freeze({config_id:typeof c.config_id==='string'?c.config_id:null,schema_version:c.schema_version,version:own(c,'config_version')?c.config_version:null,
+   canonical_config_hash:saved.canonical_config_hash,preview_id:saved.preview_id,snapshot_id:saved.snapshot_id,scopes})});}
+const scopeText=key=>{const[s,t]=String(key).split('|');return text(SECTOR_TEXT,s)+'·'+text(TEMPLATE_TEXT,t);};
+const RUN=Object.freeze(['APPLY_LATEST','REPRODUCE']);
+const RUN_TEXT=Object.freeze({APPLY_LATEST:'최신 입력에 설정 적용',REPRODUCE:'과거 입력으로 결과 재현'});
+const REPLAY_TEXT=Object.freeze({REPRODUCED:'과거 입력으로 결과 재현됨 · 엔진 확인: 원래 미리보기와 같은 입력·모형·설정·결과',
+ INPUT_MISSING:'재현 입력(원래 preview·snapshot) 연결 전 · 이 실행 경로에 원래 미리보기·스냅숏이 보관돼 있지 않음',
+ NOT_CONNECTED:'재현 입력(원래 preview·snapshot) 연결 전 · 재현 실행 경로 없음',REFUSED:'재현 거부'});
+// The outcome of a replay request: REPRODUCED only on the engine's confirmation; never a latest-input run under this name.
+function replayState(chk){if(object(chk)&&chk.ok===true)return {state:'REPRODUCED',code:null,text:REPLAY_TEXT.REPRODUCED};
+ const code=object(chk)&&typeof chk.code==='string'&&chk.code?chk.code:'ENGINE_FAILED',head=code.split(':')[0];
+ if(head==='RETAINED_INPUT_NOT_FOUND')return {state:'INPUT_MISSING',code,text:REPLAY_TEXT.INPUT_MISSING+' ('+code+')'};
+ if(['ENGINE_NOT_CONNECTED','ENGINE_UNREACHABLE','ENGINE_HTTP_FAILED','OP_UNKNOWN'].includes(head))return {state:'NOT_CONNECTED',code,text:REPLAY_TEXT.NOT_CONNECTED+' ('+code+')'};
+ return {state:'REFUSED',code,text:REPLAY_TEXT.REFUSED+' · '+errorText(code)+' · 엔진 코드 '+code};}
+// Fewer than 20 valid peers (the engine's PEER_SAMPLE_SMALL with its valid_n): its own words, no score, no rank.
+const peerText=n=>FACTOR_TEXT.PEER_SAMPLE_SMALL+(Number.isInteger(n)?' (N='+n+')':'');
+function factorText(f){if(!object(f))return '';return f.score_status==='PEER_SAMPLE_SMALL'?peerText(f.valid_n):text(FACTOR_TEXT,f.score_status);}
+// A result row's state words: STRICT_INCOMPLETE whose missing factors all lack a score for want of peers is PEER_SAMPLE_SMALL.
+function rowState(r){if(!object(r))return {code:null,text:''};
+ if(r.status==='STRICT_INCOMPLETE'&&object(r.missing_factors)&&object(r.factors)){const miss=AXES.flatMap(a=>r.missing_factors[a]||[]),fs=miss.map(v=>r.factors[v]).filter(object);
+  const small=fs.filter(f=>f.score_status==='PEER_SAMPLE_SMALL'),ns=small.map(f=>f.valid_n).filter(Number.isInteger),n=ns.length?Math.min(...ns):null;
+  if(small.length&&small.length===miss.length)return {code:'PEER_SAMPLE_SMALL',text:peerText(n)};
+  if(small.length)return {code:'STRICT_INCOMPLETE',text:STATUS_TEXT.STRICT_INCOMPLETE+' · '+peerText(n)};}
+ return {code:r.status,text:text(STATUS_TEXT,r.status)};}
+
 // ---- factor list words (facts from the engine's list_factors answer and the last preview's coverage)
 function badges(factor,coverage){const out=[];
  if(factor.is_default)out.push({code:'BASE',text:'기본값 · 초기 설정'});
@@ -181,5 +235,6 @@ function search(factors,q){const t=String(q||'').trim().toLowerCase();if(!t)retu
 
 return Object.freeze({REQUEST,RESPONSE,PREVIEW,CONFIG,AXES,OPS,SECTOR_TEXT,TEMPLATE_TEXT,AXIS_TEXT,ROLE_TEXT,STATUS_TEXT,GATE_TEXT,FACTOR_TEXT,ERROR_TEXT,EVIDENCE_TEXT,
  text,errorText,request,check,validateSaved,scopeKey,rescale,setAxis,setRole,setFactor,selectable,addFactor,removeFactor,replaceFactor,sums,withScope,withoutScope,applyAll,badges,search,
- FLOW,FLOW_TEXT,base,sameIdentity,restore,origin,legacy});
+ FLOW,FLOW_TEXT,base,sameIdentity,restore,origin,legacy,
+ FEATURE,readSaved,identity,scopeText,RUN,RUN_TEXT,REPLAY_TEXT,replayState,factorText,rowState});
 });

@@ -214,6 +214,102 @@ const copy = (v) => JSON.parse(JSON.stringify(v));
       assert.deepEqual(S.legacy({ state: 'INVALID', value: null }), { state: 'INVALID', profiles: [] });
       assert.deepEqual(S.legacy(null), { state: 'UNKNOWN', profiles: [] });
     });
+
+    // ---- owner 2026-11-07: 2.2.7 섹터 QGV 설정(요소·가중치); 원본 참조 vs 내 설정; 최신 입력에 설정 적용 vs 과거 입력으로 결과 재현;
+    // no auto-overwrite of a saved setting; fewer than 20 valid peers = 요소 점수 미산출 (its own state).
+    const saveOf = async (cfg, input = 'NORMAL') => { const r = await ask('preview', { config: cfg, before_config: ctx.default_config, input_id: input }, ctx); assert.equal(r.chk.ok, true, JSON.stringify(r.chk)); assert.equal(S.validateSaved(r.res.saved).ok, true); return r.res; };
+
+    await ok('2.2.7 is labelled 섹터 QGV 설정(요소·가중치) on the screen and in the docs', async () => {
+      assert.deepEqual({ ...S.FEATURE }, { id: '2.2.7', name: '섹터 QGV 설정(요소·가중치)' });
+      const live = fs.readFileSync(path.join(W, 'screen-sector-qgv-live.js'), 'utf8');
+      assert.match(live, /sqFeature:S\.FEATURE\.id\}\},S\.FEATURE\.id,' ',S\.FEATURE\.name/); assert.equal((live.match(/feature\(\),/g) || []).length, 3, 'idle, loading and connected bodies');
+      assert.match(fs.readFileSync(path.join(W, 'screen-qgv.js'), 'utf8'), /2\.2\.7 섹터 QGV 설정\(요소·가중치\)/);
+      const doc = fs.readFileSync(path.join(__dirname, '..', 'docs', 'frontend_v2', 'SECTOR_QGV_20261106.md'), 'utf8');
+      const status = fs.readFileSync(path.join(__dirname, '..', '..', 'docs', 'SPEC', 'FUNCTION_STATUS.md'), 'utf8');
+      for (const t of [doc, status]) { assert.match(t, /2\.2\.7 섹터 QGV 설정\(요소·가중치\)/); assert.doesNotMatch(t, /2\.2\.7 요소 사전/); }
+    });
+
+    await ok('원본 참조 (base preset id / version, never rewritten) vs 내 설정 (config id, schema, canonical hash, scopes); no invented version', async () => {
+      const it = await view(ctx.default_config, ...IT), bank = await view(ctx.default_config, 'FINANCIALS', 'BANK');
+      let cfg = S.withScope(ctx.default_config, S.setAxis(S.setAxis(it.preset, 'Q', 3100), 'V', 4400));
+      cfg = S.withScope(cfg, S.setAxis(S.setAxis(bank.preset, 'Q', 5000), 'V', 3500));
+      const res = await saveOf(cfg), id = S.identity(res.saved), b = S.base(it, ctx.versions);
+      assert.equal(id.origin.base_preset_id, ctx.versions.model_version);
+      assert.deepEqual(id.origin.presets.map((x) => ({ ...x })), [{ scope: 'FINANCIALS|BANK', preset_id: b.preset_id, version: b.version }, { scope: 'INFORMATION_TECHNOLOGY|GENERAL', preset_id: b.preset_id, version: b.version }], 'each override still names the base preset id / version');
+      assert.deepEqual({ ...id.mine, scopes: [...id.mine.scopes] }, { config_id: 'device', schema_version: S.CONFIG, version: null, canonical_config_hash: res.saved.canonical_config_hash,
+        preview_id: res.saved.preview_id, snapshot_id: res.saved.snapshot_id, scopes: ['FINANCIALS|BANK', 'INFORMATION_TECHNOLOGY|GENERAL'] });
+      assert.equal(S.scopeText('FINANCIALS|BANK'), '금융·은행');
+      const dflt = S.identity((await saveOf(ctx.default_config)).saved);
+      assert.equal(dflt.mine.config_id, 'default'); assert.deepEqual([...dflt.mine.scopes], []); assert.notEqual(dflt.mine.canonical_config_hash, id.mine.canonical_config_hash, 'my setting has its own identity');
+      assert.equal(dflt.origin.base_preset_id, id.origin.base_preset_id, 'the same original reference');
+      for (const q of PRESETS.filter((x) => ['INFORMATION_TECHNOLOGY|GENERAL', 'FINANCIALS|BANK'].includes(x.sector_id + '|' + x.accounting_template)))
+        assert.deepEqual((await view(res.saved.config, q.sector_id, q.accounting_template)).default_preset, q, 'the base preset is not rewritten');
+      assert.equal(S.identity({ ...res.saved, config: { ...res.saved.config, config_version: '7' } }).mine.version, '7', 'a version is shown only if the record carries one');
+    });
+
+    await ok('최신 입력에 설정 적용 (preview: a new result) and 과거 입력으로 결과 재현 (replay: engine-confirmed identity) are distinct; refusals are codes', async () => {
+      assert.deepEqual([...S.RUN], ['APPLY_LATEST', 'REPRODUCE']); assert.deepEqual({ ...S.RUN_TEXT }, { APPLY_LATEST: '최신 입력에 설정 적용', REPRODUCE: '과거 입력으로 결과 재현' });
+      const it = await view(ctx.default_config, ...IT), cfg = S.withScope(ctx.default_config, S.setAxis(S.setAxis(it.preset, 'Q', 3100), 'V', 4400));
+      const orig = await saveOf(cfg), saved = copy(orig.saved), bytes = JSON.stringify(saved);
+      const rep = await ask('replay', { saved }, ctx);
+      assert.deepEqual(rep.chk, { ok: true }); const st = S.replayState(rep.chk);
+      assert.equal(st.state, 'REPRODUCED'); assert.match(st.text, /^과거 입력으로 결과 재현됨 · 엔진 확인/);
+      assert.equal(rep.res.retained_preview_id, saved.preview_id); assert.notEqual(rep.res.preview.preview_id, saved.preview_id);
+      assert.deepEqual(rep.res.preview.result_rows, orig.after.result_rows); assert.equal(rep.res.preview.input_hash, orig.after.input_hash);
+      // apply to the latest input: the ordinary preview op on the input chosen now; a new preview, another input identity.
+      const late = await ask('preview', { config: saved.config, before_config: ctx.default_config, input_id: 'GATE_EXCLUDED' }, ctx);
+      assert.equal(late.chk.ok, true); assert.notEqual(late.res.after.preview_id, saved.preview_id); assert.notEqual(late.res.after.input_hash, orig.after.input_hash);
+      assert.equal(late.res.after.config_hash, saved.canonical_config_hash, 'the same setting'); assert.notDeepEqual(late.res.after.result_rows, orig.after.result_rows, 'a new result');
+      assert.equal(JSON.stringify(saved), bytes, 'neither run changes the saved record');
+      // the replay answer must be this record's; a foreign answer is dropped.
+      const other = S.request('replay', { saved });
+      assert.deepEqual(S.check('replay', other, rep.res, ctx), { ok: false, code: 'ANSWER_MISMATCH' });
+      const moved = copy(rep.res); moved.preview.config_hash = '0'.repeat(64); assert.deepEqual(S.check('replay', rep.req, moved, ctx), { ok: false, code: 'ANSWER_MISMATCH' });
+      const same = copy(rep.res); same.preview.preview_id = saved.preview_id; assert.deepEqual(S.check('replay', rep.req, same, ctx), { ok: false, code: 'ANSWER_MISMATCH' });
+      // refusals: the engine's code as text; a record the route does not hold = 재현 입력 연결 전; no replay route = 연결 전.
+      const bad = await ask('replay', { saved: { ...saved, canonical_config_hash: 'f'.repeat(64) } }, ctx);
+      assert.deepEqual(bad.chk, { ok: false, code: 'SAVED_PREVIEW_MISMATCH' });
+      assert.deepEqual({ ...S.replayState(bad.chk) }, { state: 'REFUSED', code: 'SAVED_PREVIEW_MISMATCH', text: '재현 거부 · 저장 기록이 원래 미리보기와 다름 · 엔진 코드 SAVED_PREVIEW_MISMATCH' });
+      const gone = await ask('replay', { saved: { ...saved, preview_id: 'a'.repeat(64) } }, ctx);
+      const g = S.replayState(gone.chk); assert.equal(g.state, 'INPUT_MISSING'); assert.ok(g.text.startsWith('재현 입력(원래 preview·snapshot) 연결 전') && g.text.endsWith('(RETAINED_INPUT_NOT_FOUND)'));
+      for (const code of ['OP_UNKNOWN', 'ENGINE_NOT_CONNECTED']) { const x = S.replayState({ ok: false, code }); assert.equal(x.state, 'NOT_CONNECTED'); assert.match(x.text, /^재현 입력\(원래 preview·snapshot\) 연결 전/); }
+      assert.equal(S.replayState({ ok: false, code: 'REFERENCE_PREVIEW_IDENTITY_MISMATCH' }).text, '재현 거부 · 원래 입력·모형 식별자와 다름 · 엔진 코드 REFERENCE_PREVIEW_IDENTITY_MISMATCH');
+      assert.notEqual(S.replayState(late.chk).state, undefined); assert.equal(S.replayState(late.chk).state, 'REPRODUCED', 'replayState is only ever given a replay answer: the screen keeps APPLY_LATEST apart');
+      const live = fs.readFileSync(path.join(W, 'screen-sector-qgv-live.js'), 'utf8');
+      assert.match(live, /kind==='REPRODUCE'\?'replay':'preview'/); assert.match(live, /sqRunState:'APPLIED_LATEST'/); assert.match(live, /sqRunState:'REPRODUCED'/);
+    });
+
+    await ok('no auto-overwrite: loading, a newer default and 기본값 복원 never change the stored record bytes', async () => {
+      const it = await view(ctx.default_config, ...IT), cfg = S.withScope(ctx.default_config, S.setAxis(S.setAxis(it.preset, 'Q', 3100), 'V', 4400));
+      const raw = JSON.stringify((await saveOf(cfg)).saved), read = Object.freeze({ state: 'OK', value: JSON.parse(raw) });
+      const r = S.readSaved(read, ctx.versions); assert.equal(r.state, 'OK'); assert.equal(JSON.stringify(r.saved), raw, 'read as stored: no migration');
+      const newer = S.readSaved(read, { ...ctx.versions, model_version: 'sector-qgv-default/0.2.0' });
+      assert.equal(newer.state, 'BASE_DIFFERS'); assert.equal(JSON.stringify(newer.saved), raw, 'a newer engine default does not rewrite it');
+      const edited = await view(r.saved.config, ...IT), back = S.restore(r.saved.config, edited, ctx.versions);
+      assert.deepEqual(Object.keys(back.config.scoped_overrides), [], 'restore acts on the edited config of this scope');
+      assert.equal(JSON.stringify(r.saved), raw); assert.equal(JSON.stringify(read.value), raw, 'the stored record is unchanged');
+      assert.equal(S.validateSaved(JSON.parse(raw)).ok, true, 'an existing 6-key record keeps validating');
+      assert.deepEqual(S.readSaved({ state: 'INVALID', value: null }, ctx.versions), { state: 'INVALID', saved: null }); assert.deepEqual(S.readSaved({ state: 'EMPTY', value: null }, ctx.versions), { state: 'EMPTY', saved: null });
+      const live = fs.readFileSync(path.join(W, 'screen-sector-qgv-live.js'), 'utf8');
+      assert.equal((live.match(/I\.store\.sectorQgv\.save\(/g) || []).length, 1, 'the one write is the 저장 click');
+    });
+
+    await ok('N<20: the engine\'s PEER_SAMPLE_SMALL is 요소 점수 미산출 · 유효 비교 기업 N<20 (N=19), apart from 관문 UNKNOWN, 결측 and 분류 미확인; no 0, no rank', async () => {
+      const row = async (k) => (await saveOf(ctx.default_config, k)).after.result_rows[0];
+      const small = await row('PEER_SAMPLE_SMALL');
+      assert.equal(small.total, null); assert.equal(small.rank, null); assert.equal(small.axes.Q, null);
+      assert.equal(small.factors.operating_margin_ttm.score, null); assert.equal(small.factors.operating_margin_ttm.score_status, 'PEER_SAMPLE_SMALL');
+      const want = '요소 점수 미산출 · 유효 비교 기업 N<20 (N=19)';
+      assert.deepEqual(S.rowState(small), { code: 'PEER_SAMPLE_SMALL', text: want }); assert.equal(S.factorText(small.factors.operating_margin_ttm), want);
+      const others = { GATE_UNKNOWN: await row('GATE_UNKNOWN'), PARTIAL: await row('PARTIAL'), MAPPING_UNKNOWN: await row('MAPPING_UNKNOWN') };
+      assert.deepEqual(Object.fromEntries(Object.entries(others).map(([k, r]) => [k, S.rowState(r).text])),
+        { GATE_UNKNOWN: '관문 판정 불가 · 최종 점수·순위 없음', PARTIAL: '필수 요소 결측 · 총점 미산출', MAPPING_UNKNOWN: '섹터·회계모형 분류 미확정 · 점수 계산 안 함' });
+      for (const r of Object.values(others)) assert.doesNotMatch(S.rowState(r).text, /N<20/);
+      const mixed = copy(small); mixed.factors.debt_assets = { ...mixed.factors.debt_assets, score_status: 'MISSING_INPUT', valid_n: 0 };
+      assert.deepEqual(S.rowState(mixed), { code: 'STRICT_INCOMPLETE', text: '필수 요소 결측 · 총점 미산출 · ' + want }, 'both told, neither hidden');
+      const live = fs.readFileSync(path.join(W, 'screen-sector-qgv-live.js'), 'utf8');
+      assert.match(live, /S\.rowState\(r\)/); assert.match(live, /S\.factorText\(/);
+    });
   } finally { await eng.close(); }
   assert.deepEqual(eng.stderr, [], 'nothing on the bridge stderr');
   console.log('ok ' + n + ' checks');

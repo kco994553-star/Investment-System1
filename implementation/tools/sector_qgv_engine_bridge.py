@@ -22,6 +22,13 @@ SECTOR_QGV_PRIVATE_COMPARISONS (absolute paths of retained private axis-comparis
 outside every Git checkout, owner-only, at most 8 MiB, of that schema), those files read unchanged. A request still cannot
 name a path: it names a listed comparison. Nothing is recomputed; no axis rank, total or market rank is made.
 
+과거 입력으로 결과 재현 (owner 2026-11-07; Codex #514 8a483471 `research.sector_qgv_restore.replay_saved_config`): every preview's
+after-preview is kept in this process with the exact snapshot it was computed on (bounded, in memory, never on disk). `replay`
+takes a device's saved record (the engine's six-key save_user_config answer, unchanged) and calls Codex's replay with that
+retained preview and original snapshot; the answer is the new preview only when Codex confirms every version / hash / result
+field is identical, otherwise Codex's refusal code. A record whose preview this process does not hold is
+RETAINED_INPUT_NOT_FOUND: nothing is recomputed on the current input under that name (that is the ordinary `preview` op).
+
 Transport: one JSON object per line on stdin -> one JSON object per line on stdout (tools/web_app_sector_qgv_engine.js runs it
 behind the development site's POST route `sector-qgv-engine`). Errors are fixed codes; no input value, company result or
 exception text is printed on stderr.
@@ -48,9 +55,9 @@ REQUEST = 'sector-qgv-engine-request/1'
 MAIN_REQUEST = 'sector-qgv-main-request/1'
 RESPONSE = 'sector-qgv-engine-response/1'
 FIXTURES = ROOT / 'docs' / 'research' / 'sector_qgv'
-OPS = ('context', 'view', 'preview', 'save', 'comparisons', 'comparison')
+OPS = ('context', 'view', 'preview', 'save', 'comparisons', 'comparison', 'replay')
 MAX_REQUEST_BYTES = 1 << 20
-MAX_KEPT_PREVIEWS = 8
+MAX_KEPT_PREVIEWS = 32
 REQUEST_ID = re.compile(r'[A-Za-z0-9][A-Za-z0-9._:-]{0,79}')
 # Codex synthetic-states.json cases, built from the synthetic input (FAILED: the engine's own refusal of a duplicate id).
 # GATE_EXCLUDED is the value-trap side of the gate (official Q percentile 20 <= GATE_PERCENTILE), as in Codex's
@@ -258,7 +265,8 @@ class Bridge:
         except (ValueError, KeyError, TypeError, AttributeError) as exc:
             raise Refused(_code(exc)) from None
         after = out['after']
-        self.kept[after['preview_id']] = (copy.deepcopy(out['after_config']), after)
+        # kept: the after-preview with the exact snapshot it was computed on (save checks it; replay uses both unchanged).
+        self.kept[after['preview_id']] = (copy.deepcopy(out['after_config']), copy.deepcopy(after), copy.deepcopy(snapshot))
         while len(self.kept) > MAX_KEPT_PREVIEWS:
             self.kept.pop(next(iter(self.kept)))
         return {'input_id': input_id, 'data_kind': 'SYNTHETIC', 'bridge_version': out['bridge_version'], 'before': out['before'],
@@ -286,12 +294,26 @@ class Bridge:
         config, preview_id = _config(req.get('config')), req.get('preview_id')
         if preview_id not in self.kept:
             raise Refused('PREVIEW_NOT_FOUND')
-        _, preview = self.kept[preview_id]
+        _, preview, _ = self.kept[preview_id]
         try:
             saved = engine.save_user_config(config, preview, request_id=preview['request_id'], expected_preview_id=preview_id)
         except (ValueError, KeyError, TypeError, AttributeError) as exc:
             raise Refused(_code(exc)) from None
         return {'saved': saved, 'data_kind': 'SYNTHETIC'}
+
+    def _replay(self, req, rid):
+        from investment_system.research.sector_qgv_restore import replay_saved_config
+        saved = req.get('saved')
+        if not isinstance(saved, dict) or not isinstance(saved.get('preview_id'), str):
+            raise Refused('SAVED_CONFIG_INVALID')
+        if saved['preview_id'] not in self.kept:
+            raise Refused('RETAINED_INPUT_NOT_FOUND')
+        _, retained, snapshot = self.kept[saved['preview_id']]
+        try:
+            out = replay_saved_config(copy.deepcopy(saved), copy.deepcopy(retained), copy.deepcopy(snapshot), rid)
+        except (ValueError, KeyError, TypeError, AttributeError) as exc:
+            raise Refused(_code(exc)) from None
+        return {'data_kind': 'SYNTHETIC', 'retained_preview_id': retained['preview_id'], 'preview': out['preview']}
 
 
 def answer(bridge, line):
