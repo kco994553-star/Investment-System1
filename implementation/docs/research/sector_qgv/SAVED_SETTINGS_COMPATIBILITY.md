@@ -122,5 +122,6 @@ PYTHONPATH=implementation/src python implementation/tools/sector_qgv.py \
 구 프로필과 섹터 저장 키도 분리해서 보존한다. 기존 구 프로필에 없는
 버전을 새 모델 버전으로 채우는 마이그레이션은 요청하지 않는다.
 
-Main CI 목록 추가 요청: `tests/research/test_sector_qgv_saved_restore.py`.
+기존 cockpit-pages의 Full Python unit suite가 `tests/` 아래 연구 시험을
+자동 발견하므로 CI 목록·공용 의존성 추가는 필요하지 않다.
 프론트엔드·워크플로·가드·CI 목록·결정 문서는 이 변경에 포함하지 않는다.
