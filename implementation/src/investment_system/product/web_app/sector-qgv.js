@@ -19,7 +19,7 @@
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else{const I=root.IS2=root.IS2||{};I.sectorQgv=api;}})(typeof globalThis==='object'?globalThis:this,function(){
 'use strict';
 const REQUEST='sector-qgv-engine-request/1',RESPONSE='sector-qgv-engine-response/1',PREVIEW='sector-qgv-preview/1',CONFIG='sector-qgv-config/1';
-const AXES=Object.freeze(['Q','G','V']),OPS=Object.freeze(['context','view','preview','save']);
+const AXES=Object.freeze(['Q','G','V']),OPS=Object.freeze(['context','view','preview','save','comparisons','comparison']);
 const SECTOR_TEXT=Object.freeze({CONSUMER_DISCRETIONARY:'경기소비재',CONSUMER_STAPLES:'필수소비재',ENERGY:'에너지',FINANCIALS:'금융',HEALTH_CARE:'헬스케어',
  INDUSTRIALS:'산업재',INFORMATION_TECHNOLOGY:'정보기술',MATERIALS:'소재',TELECOMMUNICATIONS:'통신',UTILITIES:'유틸리티'});
 const TEMPLATE_TEXT=Object.freeze({GENERAL:'일반',BANK:'은행',INSURANCE:'보험',BROKER:'증권',MORTGAGE_REIT:'모기지 REIT',ASSET_MANAGER:'자산운용',EQUITY_REIT:'지분형 REIT'});
@@ -76,10 +76,17 @@ function check(op,req,res,ctx=null){
   for(const p of [res.before,res.after]){if(p.schema_version!==PREVIEW||!Array.isArray(p.result_rows)||!object(p.coverage))return bad('ENGINE_ANSWER_INVALID');
    for(const k of ['model_version','engine_version','normalization_version','mapping_version'])if(p[k]!==ctx.versions[k])return bad('ANSWER_MISMATCH');}
   if(res.after.request_id!==req.request_id||res.before.request_id!==req.request_id+':before'||!Array.isArray(res.comparison.rows))return bad('ANSWER_MISMATCH');
+  // axis: Codex's Q/G partial comparison of these two previews (sector-qgv-axis-comparison/1; read by IS2.sectorQgvAxis).
+  if(!object(res.axis)||res.axis.comparison_id!==req.request_id||!object(res.axis.before_identity)||!object(res.axis.after_identity)||
+   res.axis.before_identity.config_hash!==res.before.config_hash||res.axis.after_identity.config_hash!==res.after.config_hash)return bad('ANSWER_MISMATCH');
   // saved: the engine's save_user_config record for exactly this preview, or {refused: code}.
   if(!object(res.saved))return bad('ENGINE_ANSWER_INVALID');
   if(!own(res.saved,'refused')){const r=validateSaved(res.saved);if(!r.ok)return r;if(res.saved.preview_id!==res.after.preview_id)return bad('ANSWER_MISMATCH');}
   return {ok:true};}
+ if(op==='comparisons'){if(!Array.isArray(res.comparisons)||!res.comparisons.length)return bad('ENGINE_ANSWER_INVALID');
+  for(const x of res.comparisons)if(!object(x)||typeof x.name!=='string'||!['SYNTHETIC','PRIVATE'].includes(x.data_kind)||typeof x.comparison_id!=='string'||typeof x.treatment!=='string')return bad('ENGINE_ANSWER_INVALID');
+  return {ok:true};}
+ if(op==='comparison'){if(res.name!==req.name||!['SYNTHETIC','PRIVATE'].includes(res.data_kind)||!object(res.comparison))return bad(res.name!==req.name?'ANSWER_MISMATCH':'ENGINE_ANSWER_INVALID');return {ok:true};}
  if(op==='save'){const r=validateSaved(res.saved);if(!r.ok)return r;if(res.saved.preview_id!==req.preview_id)return bad('ANSWER_MISMATCH');return {ok:true};}
  return bad('OP_UNKNOWN');}
 

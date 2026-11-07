@@ -14,6 +14,9 @@
    - 저장 stores the engine's save_user_config record of the shown, current preview on this device only (IS2.store.sectorQgv: no
      account sync, not in a backup). A newer engine default never rewrites it. 변경 취소 returns to the saved (or default)
      config; 기본값 복원 drops this scope's override (stored only after the next preview and 저장).
+   - Q/G 부분 비교 (#505 7c2225a3, sector-qgv-axis-comparison/1; screen-sector-qgv-axis-live.js): every preview answer carries
+     Codex's compare_axes of the same two previews, drawn under the preview; 「비교 파일 목록」 (a click) lists the engine's comparison
+     files (Codex's synthetic D1; retained private D1 / I1 only on a development process started with them) and one opens on a click.
    - Inputs are SYNTHETIC (Codex's synthetic fixture and its named states); the published site has no engine route and says so.
    View state lives in RAM for this page load. */
 (function(){
@@ -21,7 +24,7 @@
 const I=window.IS2,{h}=I;
 const X=()=>I.sectorQgv;
 const V={viewLoading:false,conn:'IDLE',code:null,ctx:null,sector:'INFORMATION_TECHNOLOGY',template:'GENERAL',input:'NORMAL',saved:null,savedState:'EMPTY',work:null,
- view:null,viewId:null,edit:null,axis:'Q',scope:'CONTEXT',adv:false,query:'',only:true,shown:null,pendingId:null,dropped:0,msg:null,err:null,coverage:null};
+ view:null,viewId:null,edit:null,cmp:{state:'IDLE',list:null,code:null,name:null,el:null,pending:null},axis:'Q',scope:'CONTEXT',adv:false,query:'',only:true,shown:null,pendingId:null,dropped:0,msg:null,err:null,coverage:null};
 let NF=null;const fmt=v=>(NF||(NF=new Intl.NumberFormat('ko-KR',{minimumFractionDigits:1,maximumFractionDigits:1}))).format(v);
 const pct=bp=>fmt(bp/100)+'%';
 const copy=v=>JSON.parse(JSON.stringify(v));
@@ -68,6 +71,22 @@ function fill(route,{body}){
    V.msg='이 기기에 저장함 · 엔진 저장 기록 · 미리보기 '+sh.res.saved.preview_id.slice(0,12)+' · 설정 '+sh.res.saved.canonical_config_hash.slice(0,12);}
   catch(err){V.err='저장하지 못함 · '+String(err&&err.message);}draw();}
  function keepEdit(){if(dirty())V.work=S.withScope(V.work,V.edit);}
+ // Comparison files (each step a click): the list, then one comparison by its listed name.
+ async function listComparisons(){V.cmp.state='LOADING';V.cmp.code=null;draw();const{res,chk}=await call('comparisons');if(signal.aborted)return;
+  if(!chk.ok){V.cmp.state='ERROR';V.cmp.code=chk.code;draw();return;}V.cmp.state='READY';V.cmp.list=res.comparisons;draw();}
+ async function openComparison(name){V.cmp.pending=name;V.cmp.code=null;draw();const{req,res,chk}=await call('comparison',{name});if(signal.aborted)return;
+  if(V.cmp.pending!==req.name){V.dropped++;draw();return;}V.cmp.pending=null;
+  if(!chk.ok){V.cmp.code=chk.code;draw();return;}V.cmp.code=null;V.cmp.name=name;V.cmp.el=I.sectorQgvAxisLive.render(res.comparison,{kind:res.data_kind,name});draw();}
+ function comparisonsBlock(){const C=V.cmp;
+  const intro=h('p',{class:'reason'},'저장된 Q/G 부분 비교 파일 · 엔진이 만든 비교를 그대로 읽음 · 합성 예시(D1) · 비공개 실자료(D1 요소·비중, I1 분류 보완)는 승인된 개발 환경에서만');
+  if(C.state==='IDLE'||C.state==='ERROR'||C.state==='LOADING')return h('section',{class:'sq-axis-files',dataset:{sqAxisFiles:C.state}},intro,
+   C.state==='ERROR'?h('p',{class:'hand err'},S.errorText(C.code)):null,
+   h('button',{type:'button',class:'btn',disabled:C.state==='LOADING',dataset:{k:'sq-axis-list'},onclick:()=>{void listComparisons();}},C.state==='LOADING'?'불러오는 중…':'비교 파일 목록'));
+  return h('section',{class:'sq-axis-files',dataset:{sqAxisFiles:'READY'}},intro,
+   h('div',{class:'links',role:'group','aria-label':'비교 파일'},...C.list.map(x=>h('button',{type:'button',class:'btn'+(C.name===x.name?' solid':''),'aria-pressed':String(C.name===x.name),
+    dataset:{k:'sq-axis-open-'+x.name,sqAxisFile:x.name,sqAxisFileKind:x.data_kind},onclick:()=>{void openComparison(x.name);}},
+    x.comparison_id,' · ',x.data_kind==='PRIVATE'?'비공개 실자료':'합성',' · ',I.sectorQgvAxis.text(I.sectorQgvAxis.TREATMENT_TEXT,x.treatment).split(' (')[0],' · ',x.valuation_date))),
+   C.pending?h('p',{class:'pending',role:'status'},'비교 불러오는 중'):null,C.code?h('p',{class:'hand err',dataset:{sqAxisFileCode:C.code}},S.errorText(C.code)):null,C.el);}
 
  function paint(){
   const k=focusKey();
@@ -148,7 +167,7 @@ function fill(route,{body}){
    h('span',{class:'reason',dataset:{sqSaveNeed:savable?'OK':fresh?'REFUSED':'PREVIEW'}},savable?'미리보기와 같은 설정 · 저장 가능':fresh?'엔진이 저장을 거부 · '+S.errorText(V.shown.res.saved.refused):'저장하려면 지금 설정으로 미리보기'));
   const msg=V.msg||V.err?h('p',{class:V.err?'hand err':'reason',role:'status',dataset:{sqMsg:''}},V.err||V.msg):null;
   const prev=fresh?previewView(V.shown):V.shown?h('p',{class:'reason',dataset:{sqStale:''}},'설정이나 입력이 바뀜 · 이전 미리보기는 지금과 맞지 않아 숨김 · 다시 미리보기'):null;
-  body.replaceChildren(...[status,gate,store,initial,...notes,ctxRow,valid,axes,tabs,roles,search,sumLine,scopeEl,actions,msg,prev,h('span',{hidden:true,dataset:{sqDropped:String(V.dropped)}})].filter(Boolean));
+  body.replaceChildren(...[status,gate,store,initial,...notes,ctxRow,valid,axes,tabs,roles,search,sumLine,scopeEl,actions,msg,prev,comparisonsBlock(),h('span',{hidden:true,dataset:{sqDropped:String(V.dropped)}})].filter(Boolean));
   refocus(k);}
 
  function previewView(shown){const {before,after,comparison}=shown.res,c=V.ctx;
@@ -187,7 +206,9 @@ function fill(route,{body}){
   const first=after.result_rows.find(r=>r.sector_id===V.sector&&r.accounting_template===V.template&&r.nominal_effective_weights);
   const weights=first?h('details',{class:'why',dataset:{sqWeights:''}},h('summary',null,'이 섹터·회계모형의 요소 실효비중(엔진) ▸'),
    h('ul',null,...Object.entries(first.nominal_effective_weights).filter(([,w])=>w>0).map(([v,w])=>h('li',null,name(v),' · ',fmt(w*100),'%')))):null;
-  return h('section',{class:'sq-preview','aria-label':'결과 미리보기',dataset:{sqPreview:after.preview_id}},summary,weights,filter,
+  // Codex's Q/G partial comparison of these two previews, drawn once per shown preview (its filters keep their state).
+  if(!shown.axisEl)shown.axisEl=I.sectorQgvAxisLive.render(shown.res.axis,{kind:'PREVIEW'});
+  return h('section',{class:'sq-preview','aria-label':'결과 미리보기',dataset:{sqPreview:after.preview_id}},summary,weights,shown.axisEl,filter,
    ordered.length?list:h('p',{class:'reason',dataset:{sqRows:'0'}},after.result_rows.length?'이 섹터·회계모형의 행 없음 · 필터를 끄면 전체':'모집단 0 · 계산할 행 없음'));}
 
  paint();

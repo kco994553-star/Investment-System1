@@ -14,8 +14,9 @@ const { ROOT } = require('./web_app_reuse');
 const BRIDGE = path.join(ROOT, 'implementation/tools/sector_qgv_engine_bridge.py');
 const ROUTE = 'sector-qgv-engine';
 
-function start({ python = 'python3' } = {}) {
-  const child = spawn(python, [BRIDGE], { stdio: ['pipe', 'pipe', 'pipe'], env: { ...process.env, PYTHONDONTWRITEBYTECODE: '1' } });
+// env: the bridge's environment (default: this process's). Tests pass {} so a private comparison setting never leaks in.
+function start({ python = 'python3', env = process.env } = {}) {
+  const child = spawn(python, [BRIDGE], { stdio: ['pipe', 'pipe', 'pipe'], env: { PATH: process.env.PATH, ...env, PYTHONDONTWRITEBYTECODE: '1' } });
   const waiting = [], calls = [], stderr = [];
   let buf = '', held = 0, holds = [], dead = null;
   child.stdout.setEncoding('utf8');

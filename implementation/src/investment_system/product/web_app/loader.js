@@ -30,7 +30,8 @@
 // (2026-10-31), then screen logic files (web_app; P1_DATA_LAYER.md §1.1). tech-screen.js is the reader of the 1.1.8 기술 조건 필터
 // (feature 3.5, owner 2026-11-03) that screen-tech-filter-live.js uses; it installs IS2.techScreen and reads nothing. sector-qgv.js
 // is the sector QGV request / answer check and settings editor on Codex's common engine (feature 2.2, owner 2026-11-06) that
-// screen-sector-qgv-live.js uses; it installs IS2.sectorQgv.
+// screen-sector-qgv-live.js uses; it installs IS2.sectorQgv. sector-qgv-axis.js is the pure reader of the engine's Q/G partial
+// comparison (IS2.sectorQgvAxis); screen-sector-qgv-axis-live.js draws one (IS2.sectorQgvAxisLive).
 const LOAD_ORDER=Object.freeze([
  'locale.js','entity-search.js','price-time.js','device-market.js','device-actual.js','profile-defaults.js','type-config-defaults.js',
  'device-profiles.js','engine-preview.js','dcf-parameters-defaults.js','device-valuation.js','playbook-config-defaults.js','playbook-engine.js',
@@ -46,7 +47,7 @@ const LOAD_ORDER=Object.freeze([
  'companies.js','private.js','lab.js',
  'search-part-live.js','screen-search-live.js','screen-qgv-live.js','screen-macro-live.js','screen-prompts-live.js','screen-tree-live.js',
  'screen-technical-live.js','screen-news-live.js','screen-lab-live.js','tech-screen.js','screen-tech-filter-live.js',
- 'sector-qgv.js','screen-sector-qgv-live.js',
+ 'sector-qgv.js','sector-qgv-axis.js','screen-sector-qgv-axis-live.js','screen-sector-qgv-live.js',
 ]);
 // A plain lowercase script name. tools/build_web_app.py holds this exact line (the build fails when the two differ).
 const NAME=/^[a-z0-9][a-z0-9-]*(?:\.[a-z0-9-]+)*\.js$/;
