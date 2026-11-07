@@ -1,0 +1,284 @@
+diff --git a/.github/workflows/cockpit-pages.yml b/.github/workflows/cockpit-pages.yml
+index 8d05ca35..a4ce730b 100644
+--- a/.github/workflows/cockpit-pages.yml
++++ b/.github/workflows/cockpit-pages.yml
+@@ -161,6 +161,7 @@ jobs:
+           python implementation/tools/company_logos_pipeline.py --preserve-only --out "$RUNNER_TEMP/public-cockpit"
+           python implementation/tools/sec_disclosures.py --preserve-only --out "$RUNNER_TEMP/public-cockpit"
+           python implementation/tools/news_signals.py --preserve-only --out "$RUNNER_TEMP/public-cockpit"
++          python implementation/tools/policy_impact_publish.py --out "$RUNNER_TEMP/public-cockpit"
+           python implementation/tools/macro_evidence.py --preserve-only --out "$RUNNER_TEMP/public-cockpit"
+           python implementation/tools/qgv_official_publish.py --preserve-only --out "$RUNNER_TEMP/public-cockpit"
+           python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
+diff --git a/.github/workflows/sec-daily-public-inputs.yml b/.github/workflows/sec-daily-public-inputs.yml
+index 774c0156..f8e1aff8 100644
+--- a/.github/workflows/sec-daily-public-inputs.yml
++++ b/.github/workflows/sec-daily-public-inputs.yml
+@@ -200,6 +200,11 @@ jobs:
+         run: |
+           python implementation/tools/news_signals.py --live --out "$RUNNER_TEMP/public-cockpit"
+           python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
++      # 4.5 정책·지정학: the owner-approved Codex public build, copied unchanged (no fetch). Absent -> not written.
++      - name: Publish the approved policy-impact file (no fetch; absent means not published)
++        run: |
++          python implementation/tools/policy_impact_publish.py --out "$RUNNER_TEMP/public-cockpit"
++          python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
+       # Last step before the upload so the line sits at the end of the job log (the log API returns the last 5000
+       # lines). Counts, dates and version of the FINAL artifact's sec-qgv2.json only; reporting never withholds upload.
+       - name: Report published Q·G coverage of the final artifact (counts only)
+diff --git a/implementation/src/investment_system/product/policy_impact_public.py b/implementation/src/investment_system/product/policy_impact_public.py
+new file mode 100644
+index 00000000..82c3e3f6
+--- /dev/null
++++ b/implementation/src/investment_system/product/policy_impact_public.py
+@@ -0,0 +1,65 @@
++"""Public `policy-impact.json` boundary (4.5 정책·지정학; prepared 2026-11-07, applied only after owner approval).
++
++The file is Codex's `policy-impact-view/1` output of `build(..., public=True)`, published unchanged. This module decides
++nothing about policies: it re-runs Codex's own contract (`research.policy_impact.contract.validate`) on the displayed
++bundle and adds the public-only conditions that a stand-in or a private build would break:
++
++- REAL_REVIEWED only (the bundle and every record): a synthetic file is never published in place of the real one;
++- the public projection holds: no UNREVIEWED record, no CANDIDATE exposure, every source VERIFIED;
++- company ids are the existing published universe (`universe_codes.source_codes()`), macro ids only the published
++  `macro-evidence.json` series (the existing allowlist; availability alone is not permission);
++- review records carry agent / role labels only (no spaces, no address);
++- no score or gate effect, no point-in-time claim, and a size cap.
++
++Only fixed codes leave this module (ValueError(code)); no value from the file is printed.
++"""
++from __future__ import annotations
++
++import json
++import re
++
++from ..macro import evidence_sources as macro_sources
++from ..research.policy_impact import contract as policy_contract
++from ..universe.universe_codes import source_codes
++
++FILENAME = 'policy-impact.json'
++VIEW_SCHEMA = 'policy-impact-view/1'
++VIEW_KEYS = frozenset({'as_of', 'bundle', 'current_policy_revisions', 'historical_pit_eligible', 'query_timezone',
++                       'schema_version'})
++MAX_BYTES = 1024 * 1024
++GROUPS = ('sources', 'policies', 'exposures', 'hypotheses')
++# Review records name an agent or role label (e.g. an AI reviewer id), never a person's name or address.
++LABEL = re.compile(r'[A-Za-z][A-Za-z0-9_-]{0,63}')
++
++
++def _need(ok, code):
++    if not ok:
++        raise ValueError(code)
++
++
++def require_policy_impact_public(value) -> None:
++    _need(type(value) is dict and set(value) == VIEW_KEYS, 'POLICY_VIEW_KEYS')
++    _need(value['schema_version'] == VIEW_SCHEMA, 'POLICY_VIEW_SCHEMA')
++    _need(value['historical_pit_eligible'] is False, 'POLICY_VIEW_PIT')
++    encoded = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(',', ':'), allow_nan=False).encode('utf-8')
++    _need(len(encoded) <= MAX_BYTES, 'POLICY_VIEW_TOO_LARGE')
++    bundle = value['bundle']
++    _need(type(bundle) is dict, 'POLICY_VIEW_BUNDLE')
++    try:
++        policy_contract.validate(bundle, frozenset(source_codes()), tuple(macro_sources.SERIES_IDS))
++    except ValueError as exc:
++        raise ValueError('POLICY_CONTRACT') from exc
++    _need(bundle['data_kind'] == 'REAL_REVIEWED', 'POLICY_NOT_REAL_REVIEWED')
++    _need(bundle['historical_pit_eligible'] is False, 'POLICY_VIEW_PIT')
++    _need(bundle['score_effect'] == 'NONE' and bundle['gate_effect'] == 'NONE', 'POLICY_EFFECT')
++    for group in GROUPS:
++        _need(all(r['data_kind'] == 'REAL_REVIEWED' for r in bundle[group]), 'POLICY_NOT_REAL_REVIEWED')
++    _need(all(s['verification_status'] == 'VERIFIED' for s in bundle['sources']), 'POLICY_UNVERIFIED_SOURCE')
++    for group in ('policies', 'exposures', 'hypotheses'):
++        _need(all(r['review_status'] != 'UNREVIEWED' for r in bundle[group]), 'POLICY_UNREVIEWED')
++    _need(all(e['evidence_status'] != 'CANDIDATE' for e in bundle['exposures']), 'POLICY_CANDIDATE_EXPOSURE')
++    _need(all(LABEL.fullmatch(r[k]) for r in bundle['review_records'] for k in ('author', 'reviewer')), 'POLICY_REVIEW_LABEL')
++    current = value['current_policy_revisions']
++    shown = {(p['policy_id'], p['revision_id']) for p in bundle['policies']}
++    _need(type(current) is dict and {p for p, _ in shown} == set(current)
++          and all((p, r) in shown for p, r in current.items()), 'POLICY_CURRENT_REVISIONS')
+diff --git a/implementation/tests/test_policy_impact_public.py b/implementation/tests/test_policy_impact_public.py
+new file mode 100644
+index 00000000..a405ebd6
+--- /dev/null
++++ b/implementation/tests/test_policy_impact_public.py
+@@ -0,0 +1,93 @@
++"""Public policy-impact.json boundary (prepared 2026-11-07; applied only after owner approval).
++
++Synthetic files are refused (never a stand-in for the real one). A REAL_REVIEWED-labelled Codex public build, made in
++memory from the synthetic job only to exercise the rules, passes; each public-only condition then fails closed."""
++import copy
++import json
++from pathlib import Path
++
++import pytest
++
++from investment_system.product.policy_impact_public import require_policy_impact_public as require
++from investment_system.research.policy_impact import build
++from investment_system.universe.universe_codes import source_codes
++
++ROOT = Path(__file__).resolve().parents[1]
++D = ROOT / 'docs/research/policy_impact'
++
++
++def _code(view):
++    try:
++        require(view)
++    except ValueError as exc:
++        return str(exc)
++    return 'ACCEPT'
++
++
++def _relabelled_view():
++    j = json.loads((D / 'synthetic-job.json').read_text())
++    text = json.dumps(j['bundle'])
++    codes = source_codes()
++    for i, cid in enumerate(sorted(j['company_ids'])):
++        text = text.replace(json.dumps(cid), json.dumps(codes[i]))
++    bundle = json.loads(text.replace('"SYNTHETIC"', '"REAL_REVIEWED"'))
++    return build(bundle, codes, j['as_of'], public=True, public_macro_ids=[])
++
++
++def test_synthetic_files_are_refused():
++    assert _code(json.loads((D / 'synthetic-view.json').read_text())) != 'ACCEPT'
++    variants = json.loads((ROOT / 'tests/fixtures/policy_impact_view_main_variants.json').read_text())['variants']
++    assert all(_code(v) != 'ACCEPT' for v in variants.values())
++
++
++def test_real_reviewed_public_build_passes_and_each_rule_fails_closed():
++    view = _relabelled_view()
++    assert view['bundle']['policies'], 'the test build keeps policies'
++    assert _code(view) == 'ACCEPT'
++
++    def broken(edit):
++        v = copy.deepcopy(view)
++        edit(v)
++        return _code(v)
++
++    assert broken(lambda v: v.update(extra=1)) == 'POLICY_VIEW_KEYS'
++    assert broken(lambda v: v.update(historical_pit_eligible=True)) == 'POLICY_VIEW_PIT'
++    assert broken(lambda v: v['bundle'].update(data_kind='SYNTHETIC')) in {'POLICY_CONTRACT', 'POLICY_NOT_REAL_REVIEWED'}
++    assert broken(lambda v: v['bundle']['sources'][0].update(verification_status='SOURCE_UNVERIFIED')) == 'POLICY_UNVERIFIED_SOURCE'
++    assert broken(lambda v: v['bundle']['policies'][0].update(review_status='UNREVIEWED')) == 'POLICY_UNREVIEWED'
++    assert broken(lambda v: v['current_policy_revisions'].update(nope='1')) == 'POLICY_CURRENT_REVISIONS'
++    if view['bundle']['review_records']:
++        for label in ('A Person', 'someone' + chr(64) + 'example.org', ''):
++            assert broken(lambda v: v['bundle']['review_records'][0].update(reviewer=label)) in {'POLICY_REVIEW_LABEL', 'POLICY_CONTRACT'}
++    assert broken(lambda v: v['bundle']['policies'][0].update(url='x')) == 'POLICY_CONTRACT'
++    if view['bundle']['exposures']:
++        assert broken(lambda v: v['bundle']['exposures'][0].update(company_id='NASDAQ:NOTLISTEDX')) == 'POLICY_CONTRACT'
++        assert broken(lambda v: v['bundle']['exposures'][0].update(evidence_status='CANDIDATE')) in {'POLICY_CONTRACT', 'POLICY_CANDIDATE_EXPOSURE'}
++    big = copy.deepcopy(view)
++    big['bundle']['policies'][0]['scope_description'] = 'x' * (1024 * 1024)
++    assert _code(big) in {'POLICY_VIEW_TOO_LARGE', 'POLICY_CONTRACT'}
++
++
++def test_module_prints_and_fetches_nothing():
++    src = (ROOT / 'src/investment_system/product/policy_impact_public.py').read_text()
++    for banned in ('print(', 'urllib', 'requests', 'open(', 'providers'):
++        assert banned not in src, banned
++
++
++def test_publish_step_copies_only_an_approved_file_unchanged(tmp_path, capsys):
++    import importlib.util
++    spec = importlib.util.spec_from_file_location('policy_impact_publish', ROOT / 'tools/policy_impact_publish.py')
++    tool = importlib.util.module_from_spec(spec)
++    spec.loader.exec_module(tool)
++    out = tmp_path / 'site'
++    assert tool.publish(out, source=tmp_path / 'absent.json') == 0 and not (out / 'policy-impact.json').exists()
++    synthetic = tmp_path / 'synthetic.json'
++    synthetic.write_bytes((D / 'synthetic-view.json').read_bytes())
++    assert tool.publish(out, source=synthetic) == 1 and not (out / 'policy-impact.json').exists()
++    approved = tmp_path / 'approved.json'
++    approved.write_text(json.dumps(_relabelled_view(), ensure_ascii=False))
++    assert tool.publish(out, source=approved) == 0
++    assert (out / 'policy-impact.json').read_bytes() == approved.read_bytes()
++    printed = capsys.readouterr().out
++    assert 'POLICY_IMPACT REFUSED' in printed and 'POLICY_IMPACT PUBLISHED' in printed and 'http' not in printed
++    assert not tool.SOURCE.exists(), 'no approved file is committed before the owner approves publication'
+diff --git a/implementation/tools/pages_artifact_guard.py b/implementation/tools/pages_artifact_guard.py
+index cc6b1b79..673ce951 100644
+--- a/implementation/tools/pages_artifact_guard.py
++++ b/implementation/tools/pages_artifact_guard.py
+@@ -35,6 +35,7 @@ from investment_system.public_price_boundary import require_public_bundle, requi
+ from investment_system.product.sec_m2_candidates import require_public_candidates
+ from investment_system.product.dart_public import FILENAMES as DART_FILENAMES, require_public as require_dart_public
+ from investment_system.product.news_signals import FILENAME as NEWS_SIGNALS_FILENAME, require_news_signals
++from investment_system.product.policy_impact_public import FILENAME as POLICY_IMPACT_FILENAME, require_policy_impact_public
+ from investment_system.product.sec_disclosures import FILENAME as DISCLOSURES_FILENAME, require_sec_disclosures
+ from investment_system.universe.sec_qgv2 import FILENAME as QGV2_FILENAME, require_qgv2
+ sys.path.insert(0, str(Path(__file__).resolve().parent))
+@@ -191,7 +192,7 @@ APPROVED_SHA256 = {
+ FONT_FILES = frozenset({"jua-regular-ksx1001.woff2", "gaegu-regular-ksx1001.woff2"})
+ FONT_MAX_BYTES = 256 * 1024  # pinned subsets are 187,292 and 83,968 bytes; tighter than MAX_FILE_BYTES on purpose
+ # The two central QGV files (GSQ-024) are optional: absent before the first publication, never in APPROVED_SHA256.
+-ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, COMPANY_NAMES_FILENAME, UNIVERSE_DOMAINS_FILENAME, COMPANY_LOGOS_FILENAME, QGV2_FILENAME, DISCLOSURES_FILENAME, NEWS_SIGNALS_FILENAME, MACRO_EVIDENCE_FILENAME, QGV_OFFICIAL_FILENAME, QGV_OFFICIAL_STATUS_FILENAME} | set(SCREEN_FILENAMES) | set(DART_FILENAMES)
++ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, COMPANY_NAMES_FILENAME, UNIVERSE_DOMAINS_FILENAME, COMPANY_LOGOS_FILENAME, QGV2_FILENAME, DISCLOSURES_FILENAME, NEWS_SIGNALS_FILENAME, POLICY_IMPACT_FILENAME, MACRO_EVIDENCE_FILENAME, QGV_OFFICIAL_FILENAME, QGV_OFFICIAL_STATUS_FILENAME} | set(SCREEN_FILENAMES) | set(DART_FILENAMES)
+ MAX_FILE_BYTES = 2 * 1024 * 1024
+ # 8 MiB (was 4 MiB, owner approval 2026-10-23): the price-free build alone reached about 4.0 MiB as a tar, so screen
+ # PRs hit the old ceiling. This limit only applies to the tar mode below (raw artifact.tar checks and tests); the deploy
+@@ -530,6 +531,9 @@ def _check_payload(name: str, payload: bytes, violations: Counter) -> None:
+         elif name == NEWS_SIGNALS_FILENAME:
+             try: require_news_signals(value)
+             except ValueError: violations['news_signals_boundary'] += 1
++        elif name == POLICY_IMPACT_FILENAME:
++            try: require_policy_impact_public(value)
++            except ValueError: violations['policy_impact_boundary'] += 1
+         elif name == MACRO_EVIDENCE_FILENAME:
+             try: require_macro_evidence(value)
+             except ValueError: violations['macro_evidence_boundary'] += 1
+diff --git a/implementation/tools/policy_impact_publish.py b/implementation/tools/policy_impact_publish.py
+new file mode 100644
+index 00000000..3f0eb116
+--- /dev/null
++++ b/implementation/tools/policy_impact_publish.py
+@@ -0,0 +1,49 @@
++#!/usr/bin/env python3
++"""Public `policy-impact.json` (4.5 정책·지정학): copy the owner-approved file into a Pages artifact, unchanged.
++
++The only source is `src/investment_system/product/policy_impact_public.json`, Codex's `build(..., public=True)` output
++committed after the owner approves it. Absent -> nothing is written (the screen shows 자료 없음; a synthetic file is
++never a stand-in). Present -> it must pass `require_policy_impact_public`, else the step fails and nothing is written.
++No fetch. Only fixed codes and counts are printed.
++"""
++from __future__ import annotations
++
++import argparse
++import json
++from pathlib import Path
++import sys
++
++sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
++from investment_system.product.policy_impact_public import FILENAME, require_policy_impact_public
++
++SOURCE = Path(__file__).resolve().parents[1] / 'src/investment_system/product/policy_impact_public.json'
++
++
++def publish(out: Path, *, source: Path = SOURCE) -> int:
++    if not source.is_file():
++        print('POLICY_IMPACT NOT_PUBLISHED no_approved_file')
++        return 0
++    body = source.read_bytes()
++    try:
++        value = json.loads(body.decode('utf-8'))
++        require_policy_impact_public(value)
++    except ValueError as exc:
++        code = str(exc) if str(exc).startswith('POLICY_') else 'NOT_JSON'
++        print('POLICY_IMPACT REFUSED ' + code)
++        return 1
++    out.mkdir(parents=True, exist_ok=True)
++    (out / FILENAME).write_bytes(body)
++    b = value['bundle']
++    print('POLICY_IMPACT PUBLISHED policies=%d exposures=%d hypotheses=%d sources=%d' % (
++        len(value['current_policy_revisions']), len(b['exposures']), len(b['hypotheses']), len(b['sources'])))
++    return 0
++
++
++def main(argv=None):
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument('--out', required=True, type=Path)
++    return publish(parser.parse_args(argv).out)
++
++
++if __name__ == '__main__':
++    raise SystemExit(main())
