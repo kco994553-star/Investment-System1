@@ -25,8 +25,8 @@ const P = require('../src/investment_system/product/web_app/policy-impact.js');
 
 const NOW = '2026-11-07T03:00:00.000Z';
 const CLASS = JSON.parse(fs.readFileSync(path.join(R.ROOT, 'implementation/tests/fixtures/company_classification_v0_payloads.json'), 'utf8')).live;
-const UNPUBLISHED = ['sec-public-inputs.json', 'sec-universe-shares.json', 'forward-validation-ledger.json', 'qgv-official.json', 'qgv-official-status.json', 'macro-evidence.json', 'dart-financials.json'];
-const FILE = 'policy-impact.json';
+const UNPUBLISHED = ['sec-public-inputs.json', 'sec-universe-shares.json', 'forward-validation-ledger.json', 'qgv-official.json', 'qgv-official-status.json', 'macro-evidence.json', 'dart-financials.json', 'policy-impact-navigation.json'];
+const FILE = 'policy-impact.json', NAV_FILE = 'policy-impact-navigation.json';
 const SHOTS = process.env.POL_SHOTS || null;
 const VAR = X.variants();
 let phase = 'START', pass = 0;
@@ -175,19 +175,36 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       ok(tag + ' historical shape: 역사 사례 · 현재 상태 미확인 on every policy, tariff / export readable with 연결 근거 미확인 (never 영향 없음), FINAL_AWARD ≠ 지급, review date 미정');
 
       phase = tag + ' news';
-      s.fixture(FILE, { json: X.linked(ids, VAR.NEWS) }); await page.goto(s.base + '#/news'); await page.reload(); await page.evaluate(() => window.IS2.ready);
+      // 5.2 -> 4.5 from the reviewed navigation sidecar only (Codex navigation/1, the NAV variant: Codex projection, the news
+      // fixture's link). The view and the sidecar are a pair bound by base_view_hash.
+      s.fixture(FILE, { json: VAR.NAV.view }); s.fixture(NAV_FILE, { json: VAR.NAV.navigation });
+      await page.goto(s.base + '#/news'); await page.reload(); await page.evaluate(() => window.IS2.ready);
       await page.locator('[data-policy-news] [data-k=pol-news]').waitFor();
       await page.locator('[data-file="news-signals.json"][data-file-state=OK]').first().waitFor({ state: 'attached' });
       await page.locator('[data-policy-news] [data-k=pol-news]').click(); await page.locator('[data-policy-news] [data-pol-news-hits]').waitFor();
       assert.equal(await page.locator('[data-policy-news] [data-pol-news-hits]').getAttribute('data-pol-news-hits'), '1');
+      const hit = await text(page, '[data-policy-news] [data-pol-news-link="p0"]');
+      assert.ok(hit.includes('Synthetic official policy title') && hit.includes('정책 검증 근거 아님') && hit.includes('시행·기업 적용 미평가'), hit);
       await page.locator('[data-policy-news] [data-pol-news-link="p0"] a[href="#/macro/policy/p0"]').click();
       await page.locator(B + ' [data-pol-detail="p0"]').waitFor();
+      assert.equal(await text(page, B + ' .pol-detail-title'), 'Synthetic official policy title', 'the official title from the sidecar');
+      assert.ok((await text(page, B + ' [data-pol-title-state=OFFICIAL]')).includes('공식 원문 제목'));
+      assert.ok((await text(page, B + ' [data-pol-title-ko]')).includes('합성 한국어 설명 제목') && (await text(page, B + ' [data-pol-title-ko]')).includes('공식 제목 아님'));
+      assert.ok((await text(page, B + ' [data-pol-identifier="p0"]')).includes('정책 식별자 p0'));
+      // the NEWS variant (a private view/1 citing a NEWS_REFERENCE source): a reference in the detail, never a 5.2 link
+      s.fixture(NAV_FILE, null); s.fixture(FILE, { json: X.linked(ids, VAR.NEWS) });
+      await page.goto(s.base + '#/macro/policy/p0'); await page.reload(); await page.evaluate(() => window.IS2.ready); await page.locator(B + ' [data-pol-detail="p0"]').waitFor();
+      await page.$$eval(B + ' details', (n) => n.forEach((d) => { d.open = true; }));
       assert.ok((await text(page, B + ' [data-pol-sources]')).includes('뉴스 참조') && (await text(page, B + ' [data-pol-sources]')).includes('처음 발견 2026-11-06 12:00:00 UTC (게시 시각 아님)'));
       assert.ok((await text(page, B + ' [data-pol-sources]')).includes('관련 기사(참조) · 정책 검증 근거 아님'));
-      s.fixture(FILE, { json: X.linked(ids, VAR.REVISED) }); await page.goto(s.base + '#/news'); await page.reload(); await page.evaluate(() => window.IS2.ready);
-      await page.locator('[data-policy-news] [data-k=pol-news]').click(); await page.locator('[data-policy-news] [data-pol-news-state=NO_LINK_DATA]').waitFor();
+      await go(page, '#/news', 'news'); await page.locator('[data-policy-news] [data-k=pol-news]').click(); await page.locator('[data-policy-news] [data-pol-news-state=NO_LINK_FILE]').waitFor();
       assert.ok((await text(page, '[data-policy-news]')).includes('연결 자료 없음') && (await text(page, '[data-policy-news]')).includes('연결 기능 자체는 합성 시험으로 확인됨'));
-      ok(tag + ' 5.2 관련 정책 연결 보기 → the policy citing the news link (a reference, not evidence); a file without links says 연결 자료 없음, apart from the tested function');
+      // a sidecar of another view is refused whole (hash), never joined
+      s.fixture(FILE, { json: X.linked(ids, VAR.REVISED) }); s.fixture(NAV_FILE, { json: VAR.NAV.navigation });
+      await page.goto(s.base + '#/news'); await page.reload(); await page.evaluate(() => window.IS2.ready);
+      await page.locator('[data-policy-news] [data-k=pol-news]').click(); await page.locator('[data-policy-news] [data-pol-news-state=NAV_INVALID]').waitFor();
+      s.fixture(NAV_FILE, null);
+      ok(tag + ' 5.2 관련 정책 연결 보기 → reviewed navigation link only (탐색 참조, not evidence) → official title / Korean explanation / identifier apart; a NEWS_REFERENCE stays a detail reference; no sidecar = 연결 자료 없음; another view\'s sidecar refused');
 
       phase = tag + ' boundaries';
       assert.deepEqual(seen.outside, []); assert.deepEqual(seen.errors, []);

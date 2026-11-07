@@ -1,5 +1,5 @@
 'use strict';
-// 4.5 정책·지정학 reader (web_app/policy-impact.js, owner 2026-11-07) against Codex's policy-impact-view/1 output (#509 e0bb68dd):
+// 4.5 정책·지정학 reader (web_app/policy-impact.js, owner 2026-11-07) against Codex's policy-impact-view/1 and /2 output (#509 c2ae92a0):
 // the shared synthetic view and state cases (SHA-256 pinned as handed over on #437) and the Main variants made by Codex's own
 // build (tools/policy_impact_main_variants.py). The reader must take the engine's current revision, order, REVIEW_REQUIRED and
 // review_due as delivered and never compute them; refusal cases name the code of the first fault.
@@ -16,10 +16,12 @@ const refused = (fn, code, pathPart = null, base) => { const r = P.validate(X.ed
 const VAR = X.variants();
 const AT = String.fromCharCode(64); // a credentials-in-URL case, built at run time (no address-like text in the file)
 
-ok('Codex files: the four pinned SHA-256 of #437; the contract names the same envelope, record keys and enums as the reader', () => {
+ok('Codex files: the seven pinned SHA-256 of #437; the contract names the same envelopes, record keys and enums as the reader', () => {
   for (const [name, [file, want]] of Object.entries(X.FILES)) assert.equal(X.sha(file), want, name);
   const c = X.contract();
-  assert.equal(c.view_schema, P.VIEW_SCHEMA); assert.equal(c.schema_version, P.SCHEMA);
+  assert.equal(c.view_schema, P.VIEW_SCHEMA); assert.equal(c.view_schema, P.PUBLIC_VIEW); assert.equal(c.private_view_schema, P.PRIVATE_VIEW); assert.equal(c.schema_version, P.SCHEMA);
+  assert.equal(c.navigation_sidecar, P.NAV_SCHEMA); assert.deepEqual(Object.keys(c.watch_availability).sort(), [...P.ENUMS.availability].sort());
+  assert.deepEqual([...c.watch_publication_permissions.allowed].sort(), [...P.ENUMS.publication_permission].sort());
   for (const [k, list] of Object.entries(c.enums)) { const mine = P.ENUMS[k === 'kind' ? 'kind' : k]; assert.deepEqual([...mine].sort(), [...list].sort(), k); }
   assert.deepEqual(c.effects, { score_effect: 'NONE', gate_effect: 'NONE' }); assert.equal(c.historical_pit_eligible, false);
 });
@@ -93,10 +95,21 @@ ok('sources by (source_id, revision); review records with method; news reference
 ok('titles, availability and related articles: an id-only title says so; unknown availability is not public; a news reference is not evidence', () => {
   const v = accept(X.codexView()), p = v.order[0].current;
   assert.deepEqual(P.titleState(p), { state: 'TITLE', text: null });
+  assert.equal(P.availability('UNKNOWN').known, false); assert.ok(P.availability('UNKNOWN').text.includes('공개 허가 아님'));
+  assert.ok(P.availability('PUBLIC_REFERENCE').text.includes('공개 허가와 별개'));
   assert.equal(P.titleState({ ...p, title: p.policy_id }).state, 'ID_ONLY');
   assert.ok(P.titleState({ ...p, title: p.policy_id }).text.includes('공식 정책 제목·한국어 설명 제목 미제공'));
   assert.equal(P.availability('PUBLIC_REFERENCE').known, true); assert.equal(P.availability('UNAVAILABLE').known, true);
   const u = P.availability('MAYBE'); assert.equal(u.known, false); assert.ok(u.text.includes('확인 안 된 이용 상태'));
+  // the contract's three values only (Codex contract.py WATCH_AVAILABILITY): another value refuses the file
+  refused((x) => { x.bundle.hypotheses[0].watch_items[0].availability = 'MAYBE'; }, 'ENUM', 'availability');
+  assert.equal(P.validate(X.edit((x) => { x.bundle.hypotheses[0].watch_items[0].availability = 'UNKNOWN'; })).ok, true, 'a private (v1) view keeps UNKNOWN');
+  // public view/2: a watch item is there only as PUBLIC_REFERENCE with an explicit permission (build-side); never UNKNOWN / UNAVAILABLE
+  const v2 = X.publicV2(); assert.equal(P.validate(v2).ok, true); assert.equal(accept(v2).public, true); assert.equal(accept(X.codexView()).public, false);
+  assert.ok(v2.bundle.hypotheses.every((h) => h.watch_items.length === 0), 'no permission given: no public watch item');
+  const leak = X.edit((x) => { x.bundle.hypotheses[0].watch_items = [{ kind: 'POLICY_UPDATE', reference_id: 'p0', rationale: 'r', availability: 'UNKNOWN' }]; }, v2);
+  assert.equal(P.validate(leak).code, 'WATCH_NOT_PUBLIC');
+  refused((x) => { x.schema_version = 'policy-impact-view/3'; }, 'VIEW_VERSION');
   assert.ok(P.text(P.KIND_TEXT, 'NEWS_REFERENCE').includes('정책 검증 근거 아님'));
   assert.ok(!/title|similar|levenshtein|includes\(\s*s\.title/i.test(String(P.newsLinks)), 'news links come from the file, never from title matching');
 });
@@ -110,7 +123,7 @@ ok('links: reserved test domains (RFC 2606 / 6761) are never links; real https w
 });
 ok('refusals: the whole file at its first fault, with Codex contract codes where Codex has them', () => {
   const C = [
-    [(x) => { x.schema_version = 'policy-impact-view/2'; }, 'VIEW_VERSION'], [(x) => { x.extra = 1; }, 'KEY_UNKNOWN'], [(x) => { delete x.as_of; }, 'KEY_MISSING'],
+    [(x) => { x.schema_version = 'policy-impact-view/0'; }, 'VIEW_VERSION'], [(x) => { x.extra = 1; }, 'KEY_UNKNOWN'], [(x) => { delete x.as_of; }, 'KEY_MISSING'],
     [(x) => { x.historical_pit_eligible = true; }, 'PIT_UNPROVEN'], [(x) => { x.bundle.historical_pit_eligible = true; }, 'PIT_UNPROVEN'],
     [(x) => { x.as_of = '2026-11-07T09:00:00+09:00'; }, 'UTC_REQUIRED'], [(x) => { x.query_timezone = '../etc'; }, 'TIMEZONE'],
     [(x) => { x.bundle.schema_version = 'policy-impact/2'; }, 'VERSION'], [(x) => { x.bundle.score_effect = 'RANK'; }, 'FORBIDDEN_EFFECT'], [(x) => { x.bundle.gate_effect = 'GATE'; }, 'FORBIDDEN_EFFECT'],
@@ -158,4 +171,33 @@ ok('the reader is pure and decides nothing: no request, storage, clock, sort by 
   const v = accept(X.codexView()); assert.ok(Object.isFrozen(P.validate(X.codexView()).value.bundle.policies[0]));
   assert.equal(v.order[0].current.lifecycle_status, 'ADOPTED', 'effective_from 2026-11-02 before as_of does not make it EFFECTIVE');
 });
-console.log('ok ' + n + ' checks');
+(async () => {
+  const job = X.navJob(), navv = X.navView();
+  let r = await P.validateNavigation(navv, job.view); assert.equal(r.ok, true, JSON.stringify(r));
+  const ix = P.navIndex(r.value), pol = job.view.bundle.policies[0];
+  const t = P.titleState(pol, ix); assert.equal(t.state, 'OFFICIAL'); assert.equal(t.official, navv.titles[0].official_title); assert.equal(t.ko, navv.titles[0].explanation_title_ko);
+  assert.ok(t.koText.includes('공식 제목 아님')); assert.equal(P.titleOf(pol, ix), navv.titles[0].official_title); assert.equal(P.titleOf(pol, null), pol.title, 'no sidecar: the file title, untouched');
+  assert.equal(ix.count, 1); assert.deepEqual([...ix.news.keys()], [navv.news_links[0].news_ref.link]);
+  // the Main NAV variant (Codex projection, the screen's news link) is bound to its view as well
+  const NAV = VAR.NAV; r = await P.validateNavigation(NAV.navigation, NAV.view); assert.equal(r.ok, true, JSON.stringify(r));
+  // bound to the exact view: another view, a changed view, a changed hash -> refused whole
+  const bad = async (nav, view, code) => { const q = await P.validateNavigation(nav, view); assert.equal(q.ok, false, code); assert.equal(q.code, code, JSON.stringify(q)); };
+  await bad(navv, X.publicV2(), 'TITLE_SOURCE');
+  const changed = JSON.parse(JSON.stringify(job.view)); changed.bundle.policies[0].scope_description += '.'; await bad(navv, changed, 'BASE_VIEW_HASH');
+  const e = (fn) => { const c = JSON.parse(JSON.stringify(navv)); fn(c); return c; };
+  await bad(e((c) => { c.base_view_hash = '0'.repeat(64); }), job.view, 'BASE_VIEW_HASH');
+  await bad(e((c) => { c.titles[0].explanation_origin = 'OFFICIAL'; }), job.view, 'EXPLANATION_ORIGIN');
+  await bad(e((c) => { c.titles[0].source_sha256 = 'a'.repeat(64); }), job.view, 'TITLE_SOURCE');
+  await bad(e((c) => { c.titles[0].publication_permission = 'PRIVATE_ONLY'; }), job.view, 'NAV_NOT_PUBLIC');
+  await bad(e((c) => { c.news_links[0].relation = 'POLICY_EVIDENCE'; }), job.view, 'NOT_POLICY_EVIDENCE');
+  await bad(e((c) => { c.news_links[0].evidence_effect = 'SUPPORTS'; }), job.view, 'NOT_POLICY_EVIDENCE');
+  await bad(e((c) => { c.news_links[0].news_ref.link = 'https://www.reuters.com/x'; }), job.view, 'SYNTHETIC_REAL_LINK');
+  await bad(e((c) => { c.automatic_publication = true; }), job.view, 'NAV_AUTO_PUBLICATION');
+  await bad(e((c) => { c.data_kind = 'REAL_REVIEWED'; }), job.view, 'MIXED_KIND');
+  await bad(e((c) => { c.extra = 1; }), job.view, 'KEY_UNKNOWN');
+  assert.throws(() => P.canon({ a: 1 }), (x) => x.code === 'NAV_HASH_NUMBER', 'a number is not reproduced: the sidecar is refused, never joined to a guess');
+  // the same text as Python json.dumps(sort_keys=True, ensure_ascii=False, separators=(',', ':')): {"a":{},"b":[true,null,"é\"\n"]}
+  assert.equal(P.canon({ b: [true, null, 'é"\n'], a: {} }), '{"a":{},"b":[true,null,"é\\"\\n"]}');
+  n++; console.log('PASS navigation sidecar: bound to the exact view by base_view_hash (JS digest = Codex digest), official / Korean titles apart, reviewed news links only, every fault refuses it whole');
+  console.log('ok ' + n + ' checks');
+})().catch((e) => { console.error(e); process.exitCode = 1; });

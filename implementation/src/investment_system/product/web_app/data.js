@@ -25,9 +25,9 @@ const OFFICIAL='qgv-official.json',OFFICIAL_STATUS='qgv-official-status.json',OF
 const CORE=Object.freeze(['macro-screen.json','sec-13f-changes.json','sec-filing-windows.json','sec-qg-factors.json','company-types-pricefree.json','company-classification.json',QGV2,REPORTED,FIN,EVIDENCE]);
 const LIST_FILES=Object.freeze(['sec-disclosures.json','news-signals.json','dart-disclosures.json']);
 // Read once per page, outside the generation (identity catalog, search names, the fixed 504-code Universe list, financial detail, ledger).
-// policy-impact.json (4.5 정책·지정학, owner 2026-11-07): read only when that screen asks (IS2.policyImpact validates it); not
+// policy-impact.json and policy-impact-navigation.json (4.5 정책·지정학, owner 2026-11-07): read only when that screen asks (IS2.policyImpact validates them); not
 // published yet, so a read answers NOT_PUBLISHED (자료 없음).
-const STATIC=Object.freeze(['actual-catalog.json','entities.json','company-names-ko.json',CODES,'sec-valuation-inputs.json','forward-validation-ledger.json','policy-impact.json']);
+const STATIC=Object.freeze(['actual-catalog.json','entities.json','company-names-ko.json',CODES,'sec-valuation-inputs.json','forward-validation-ledger.json','policy-impact.json','policy-impact-navigation.json']);
 const FILES=Object.freeze([...CORE,...LIST_FILES,SHARES,...STATIC,...OFFICIAL_FILES]),FILE_SET=new Set(FILES),STATIC_SET=new Set(STATIC);
 // Without these the public path would silently change (light sec-qgv2 check, macro file rejected, cyclical V basis lost): READER_MISSING.
 const READERS=Object.freeze(['DataRefresh','SecQgv2','Qgv2Inputs','PublicScreens','MacroLights','PlaybookEngine','PlaybookConfigDefaults']);

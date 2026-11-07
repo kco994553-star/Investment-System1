@@ -1,6 +1,7 @@
 /* 3.5 나비효과 · 정책·지정학 (features 4.5.1.1–4.5.4.1, owner 2026-11-07; contract docs/frontend_v2/POLICY_IMPACT_V1.md).
-   Reads the one public file policy-impact.json (Codex policy-impact-view/1, #509) through the layer (IS2.data.static, same
-   origin) and IS2.policyImpact.validate; nothing else. When the file is not published the screen says 자료 없음 (정책 파일
+   Reads policy-impact.json (Codex policy-impact-view/2 public or /1 private, #509 c2ae92a0) and, optionally, its title / news
+   navigation sidecar policy-impact-navigation.json (bound to that exact view by hash) through the layer (IS2.data.static, same
+   origin) and IS2.policyImpact.validate / validateNavigation; nothing else. When the file is not published the screen says 자료 없음 (정책 파일
    미게시); a synthetic file is never put in its place (tests inject it explicitly).
    - The engine decides: the current revision of a policy is the one current_policy_revisions names, the list order is the
      bundle's, REVIEW_REQUIRED (이전 분석 · 재검토 필요) and review_due are read as delivered. This screen never picks a
@@ -37,12 +38,26 @@ const chip=(txt,data,cls='chip')=>h('span',{class:cls,dataset:data||{}},txt);
 
 // The one read of the page (the layer keeps it; a failed read is tried again on the next call).
 // The company list is awaited with it (no new file: the search list's own), so company links resolve on a direct visit.
+// The navigation sidecar is optional: not published -> the file's own titles and no 5.2 links (NONE); refused -> the same, with
+// its code (INVALID); it never changes a policy fact, a status or an evidence list.
+async function readNav(viewJson){const name=P().NAV_FILE;let n=null;try{n=await I.data.static(name);}catch(_){n=null;}
+ if(n===null){let st=null;try{st=I.data.state(name);}catch(_){st=null;}return {state:st&&st.state==='NOT_PUBLISHED'?'NONE':'FAILED',index:P().navIndex(null)};}
+ const r=await P().validateNavigation(n,viewJson);return r.ok?{state:'OK',index:P().navIndex(r.value)}:{state:'INVALID',code:r.code,path:r.path,index:P().navIndex(null)};}
 async function load(){const name=P().FILE;let v=null;const ready=I.companies&&I.companies.ready?I.companies.ready().catch(()=>null):null;
  try{v=await I.data.static(name);}catch(_){v=null;}await ready;
  if(v===null){let st=null;try{st=I.data.state(name);}catch(_){st=null;}
   if(st&&st.state==='NOT_PUBLISHED')return {state:'NONE'};return {state:'FAILED',text:st&&st.text||'읽기 실패'};}
  const r=P().validate(v);if(!r.ok)return {state:'INVALID',code:r.code,path:r.path};
- return {state:'OK',view:P().view(r.value)};}
+ const nav=await readNav(r.value);const vw=P().view(r.value);vw.nav=nav.index;vw.navState=nav;
+ return {state:'OK',view:vw};}
+const titleOf=(vw,r)=>P().titleOf(r,vw.nav);
+// Official title, Korean explanation and identifier apart (Codex navigation/1); without the sidecar, the file's title as it is.
+function titleLines(vw,r){const t=P().titleState(r,vw.nav),out=[];
+ if(t.state==='OFFICIAL')out.push(h('p',{class:'reason',dataset:{polTitleState:'OFFICIAL'}},t.text),h('p',{dataset:{polTitleKo:''}},t.ko,h('span',{class:'reason'},' · ',t.koText)));
+ else if(t.text)out.push(h('p',{class:'reason',dataset:{polTitleState:t.state}},t.text));
+ out.push(h('p',{class:'reason',dataset:{polIdentifier:r.policy_id}},'정책 식별자 ',r.policy_id,' · 개정 ',r.revision_id));
+ if(vw.navState&&vw.navState.state==='INVALID')out.push(h('p',{class:'hand err',dataset:{polNavState:'INVALID'}},'제목·기사 연결 파일 규격 불일치 · 사용하지 않음 · ',vw.navState.code,' · ',vw.navState.path));
+ return out;}
 function stateCard(res,retry){
  if(res.state==='NONE')return card('NONE','자료 없음 · 정책 파일 미게시','policy-impact.json이 아직 게시되지 않았습니다 · 합성·지어낸 정책을 대신 보이지 않음');
  if(res.state==='INVALID')return card('INVALID','규격 불일치 · 파일 전체 거부',res.code+' · '+res.path,true);
@@ -87,7 +102,7 @@ function listView(vw,body,rerender){const P_=P(),fc=P_.facets(vw),F=V.filters;
  else if(!rows.length)content=h('div',{dataset:{polEmpty:'FILTER'}},h('p',{class:'reason'},'검색 결과 0건 · 조건은 그대로'),h('button',{type:'button',class:'btn',dataset:{k:'pol-clear'},onclick:()=>{for(const k of Object.keys(F))F[k]=null;rerender();}},'조건 모두 풀기'));
  else content=h('ul',{class:'pol-list'},...rows.map(p=>{const x=p.current;
   return h('li',{class:'sk pol-card',dataset:{polCard:p.policy_id}},
-   h('p',{class:'pol-card-head'},h('a',{href:href('macro','policy',p.policy_id),class:'pol-title',dataset:{k:'pol-open-'+p.policy_id},onclick:()=>{V.scroll=window.scrollY;}},x.title),' ',
+   h('p',{class:'pol-card-head'},h('a',{href:href('macro','policy',p.policy_id),class:'pol-title',dataset:{k:'pol-open-'+p.policy_id},onclick:()=>{V.scroll=window.scrollY;}},titleOf(vw,x)),' ',
     ...statusChips(vw,x),stale(p.hypotheses).length||stale(p.exposures).length?h('span',{class:'chip wait',dataset:{polStale:''}},'이전 분석 · 재검토 필요 있음'):null),
    h('p',{class:'reason'},'적용 범위 · ',x.scope_description),
    h('p',{class:'reason'},'발표 ',dated(x.published),' · 시행 ',dated(x.effective_from),' · 종료 ',dated(x.effective_to),p.parent?' · 상위 '+p.parent:'',p.older.length?' · 이전 개정 '+p.older.length+'개':''),
@@ -135,17 +150,17 @@ function detailView(vw,body,policyId,revisionId){const P_=P(),d=P_.get(vw,policy
  const allRefs=[...d.revisions.flatMap(r=>[...r.evidence_refs,...r.identity_basis.relation_evidence_refs]),...d.exposures.flatMap(e=>e.evidence_refs),...d.hypotheses.flatMap(y=>y.steps.flatMap(s=>s.evidence_refs))];
  const srcs=[];const seen=new Set();for(const r of allRefs){const s=P_.source(vw,r),k=r.source_id+'|'+r.source_revision_id;if(s&&!seen.has(k)){seen.add(k);srcs.push(s);}}
  body.replaceChildren(...[back,...band(vw),
-  h('h3',{class:'pol-detail-title',tabindex:'-1',dataset:{polDetail:policyId}},x.title),
-  P_.titleState(x).text?h('p',{class:'reason',dataset:{polTitleState:P_.titleState(x).state}},P_.titleState(x).text):null,
+  h('h3',{class:'pol-detail-title',tabindex:'-1',dataset:{polDetail:policyId}},titleOf(vw,x)),
+  ...titleLines(vw,x),
   older?h('p',{class:'hand err',dataset:{polOldRevision:x.revision_id}},'이전 개정을 보는 중 (현재 판단 아님) · 현재 개정 ',h('a',{href:href('macro','policy',policyId),class:'lk'},d.current.revision_id)):null,
   sec('①','무엇이 바뀌었나',h('p',null,...statusChips(vw,x)),
    h('p',null,'적용 범위 · ',x.scope_description),h('p',{class:'reason'},'대상 지역 · ',x.target_regions.join(', ')||'—',' · 발행 ',x.issuer,' · 관할 ',x.jurisdiction),
    h('p',{class:'reason'},'발표 ',dated(x.published),' · 시행 ',dated(x.effective_from),' · 종료 ',dated(x.effective_to),' (날짜가 상태를 바꾸지 않음)'),
    h('p',{class:'reason'},'개정 ',x.revision_id,x.supersedes_revision_id?' · 이전 개정 '+x.supersedes_revision_id+'을 대체':' · 최초 기록',' · 변경 기록 ',utc(x.change_recorded_at)),
    x.policy_type==='INDUSTRIAL_SUBSIDY'?h('p',{dataset:{polSubsidy:x.subsidy_stage}},'지원 단계 · ',h('b',null,P_.text(P_.STAGE_TEXT,x.subsidy_stage)),' (프로그램 상태와 따로 · 금액은 이 규격에 없음)'):null,
-   d.parent?h('p',{class:'reason'},'상위 정책 · ',h('a',{href:href('macro','policy',d.parent),class:'lk'},vw.policies.has(d.parent)?vw.policies.get(d.parent).current.title:d.parent)):null,
+   d.parent?h('p',{class:'reason'},'상위 정책 · ',h('a',{href:href('macro','policy',d.parent),class:'lk'},vw.policies.has(d.parent)?titleOf(vw,vw.policies.get(d.parent).current):d.parent)):null,
    d.children.length?h('div',{dataset:{polChildren:String(d.children.length)}},h('p',null,'적용 단위별 별도 상태(부분 유예·면제 등)'),h('ul',{class:'news-lines'},...d.children.map(c=>{const ch=vw.policies.get(c).current;
-    return h('li',null,h('a',{href:href('macro','policy',c),class:'lk'},ch.title),' · ',P_.status(vw,ch).text,' · ',ch.scope_description);}))):null,
+    return h('li',null,h('a',{href:href('macro','policy',c),class:'lk'},titleOf(vw,ch)),' · ',P_.status(vw,ch).text,' · ',ch.scope_description);}))):null,
    h('details',null,h('summary',{class:'lk'},'이 개정의 근거'),refs(vw,x.evidence_refs))),
   sec('②','관련 기업',h('p',{class:'reason'},'노출 근거와 정책 적용 여부는 따로 · 지역 매출 근거가 곧 정책 적용 대상이라는 뜻이 아님'),
    !d.exposures.length?h('p',{class:'hand',dataset:{polNoExposure:''}},'연결된 기업 노출 기록 없음 · 연결 근거 미확인 (영향 없음이라는 뜻이 아님)'):null,
@@ -181,19 +196,22 @@ function companyCard(route,{after,cid}){if(!after||!after.parentNode)return;cons
    const s=P().forCompany(res.view,cid);
    inner.replaceChildren(...(s?[h('p',{dataset:{polCompanySummary:String(s.policies.length)}},'관련 정책 ',String(s.policies.length),'건 · 노출·적용 근거 확인 ',String(s.documented),'건 · 확인 필요 ',String(s.confirm),'건',
       s.old?' · 이전 분석 · 재검토 필요 '+s.old+'건':'',' · 마지막 검토 ',utc(s.last_reviewed_at)),
-     h('ul',{class:'news-lines'},...s.policies.map(p=>h('li',null,h('a',{href:href('macro','policy',p.policy_id),class:'lk'},p.title),' · ',P().text(P().TYPE_TEXT,p.type))))]
+     h('ul',{class:'news-lines'},...s.policies.map(p=>h('li',null,h('a',{href:href('macro','policy',p.policy_id),class:'lk'},titleOf(res.view,res.view.policies.get(p.policy_id).current)),' · ',P().text(P().TYPE_TEXT,p.type))))]
     :[h('p',{class:'reason',dataset:{polCompanySummary:'0'}},'연결된 정책 없음 · 미분석 또는 연결 근거 미확인 · 영향 없음이라는 뜻이 아님')]),
     h('p',{class:'reason'},'정책 점수·수혜 순위는 만들지 않음'),h('p',{class:'reason',dataset:{polKind:res.view.data_kind}},P().text(P().KIND_DATA_TEXT,res.view.data_kind),res.view.historical?' · 역사 사례 · 현재 상태 미확인':''));});});
  after.parentNode.insertBefore(box,after.nextSibling);}
 
 function news(route,{body,links}){const signal=route.signal;
  const go=()=>{body.replaceChildren(h('p',{class:'pending'},'불러오는 중'));load().then(res=>{if(signal.aborted)return;if(res.state!=='OK'){body.replaceChildren(stateCard(res,go));return;}
-  const map=P().newsLinks(res.view),now=links(),hits=[...map].filter(([u])=>now.has(u));
-  // A related article is a reference, never a verified ground of a policy fact; links come only from the file (no title matching).
-  const none=!map.size?h('p',{class:'reason',dataset:{polNewsState:'NO_LINK_DATA'}},'연결 자료 없음 · 정책 파일에 관련 기사 연결이 0건 (연결 기능 자체는 합성 시험으로 확인됨 · 영향 없음이라는 뜻이 아님)')
-   :h('p',{class:'reason',dataset:{polNewsState:'NO_OVERLAP'}},'지금 목록의 뉴스와 겹치는 연결 없음 · 정책 파일의 관련 기사 ',String(map.size),'건은 다른 기사');
-  body.replaceChildren(h('p',{class:'reason',dataset:{polNewsHits:String(hits.length)}},'지금 목록의 뉴스와 연결된 정책 ',String(hits.length),'건 · 정책 파일의 관련 기사 ',String(map.size),'건'),
-   hits.length?h('ul',{class:'news-lines'},...hits.flatMap(([u,ids])=>ids.map(pid=>{const p=res.view.policies.get(pid);return h('li',{dataset:{polNewsLink:pid}},h('a',{href:href('macro','policy',pid),class:'lk'},p.current.title),' · 관련 기사 ',ext(u,'원문'),' (참조 · 정책 검증 근거 아님 · 원문 미확인)');})))
+  // 5.2 -> 4.5 comes only from reviewed navigation links (Codex navigation/1): the exact article link, a discovery reference,
+  // never policy evidence, never a title match. A NEWS_REFERENCE source inside the policy file stays a reference in the detail only.
+  const vw=res.view,ns=vw.navState,map=vw.nav.news,now=links(),hits=[...map].filter(([u])=>now.has(u));
+  const none=ns.state==='INVALID'?h('p',{class:'hand err',dataset:{polNewsState:'NAV_INVALID'}},'연결 파일 규격 불일치 · 사용하지 않음 · ',ns.code,' · ',ns.path)
+   :ns.state!=='OK'?h('p',{class:'reason',dataset:{polNewsState:'NO_LINK_FILE'}},'연결 자료 없음 · 정책–기사 연결 파일 미게시 (연결 기능 자체는 합성 시험으로 확인됨 · 영향 없음이라는 뜻이 아님)')
+   :!vw.nav.count?h('p',{class:'reason',dataset:{polNewsState:'NO_LINK_DATA'}},'연결 자료 없음 · 검토된 정책–기사 연결 0건 (연결 기능 자체는 합성 시험으로 확인됨 · 영향 없음이라는 뜻이 아님)')
+   :h('p',{class:'reason',dataset:{polNewsState:'NO_OVERLAP'}},'지금 목록의 뉴스와 겹치는 연결 없음 · 검토된 연결 ',String(vw.nav.count),'건은 다른 기사');
+  body.replaceChildren(h('p',{class:'reason',dataset:{polNewsHits:String(hits.length)}},'지금 목록의 뉴스와 연결된 정책 ',String(hits.length),'건 · 검토된 정책–기사 연결 ',String(vw.nav.count),'건'),
+   hits.length?h('ul',{class:'news-lines'},...hits.flatMap(([u,ls])=>ls.map(l=>{const p=vw.policies.get(l.policy_id);return h('li',{dataset:{polNewsLink:l.policy_id}},h('a',{href:href('macro','policy',l.policy_id),class:'lk'},titleOf(vw,p.current)),' · 관련 기사 ',ext(u,'원문'),' (탐색 참조 · 정책 검증 근거 아님 · 시행·기업 적용 미평가 · 연결 검토 ',utc(l.reviewed_at),')');})))
     :none,h('p',null,h('a',{href:href('macro'),class:'lk'},'→ 4.5 정책·지정학')));});};
  body.replaceChildren(h('p',{class:'hand'},'관련 정책 (4.5) · 누르면 정책 파일을 읽어 지금 목록의 뉴스와 이음'),h('button',{type:'button',class:'btn',dataset:{k:'pol-news'},onclick:go},'관련 정책 연결 보기'));}
 

@@ -11,6 +11,10 @@ availability or review states itself. The variants give the screen what the shar
               the subsidy at FINAL_AWARD with a project exposure whose ratio is null for its reasons; public build.
   NEWS        a #483-style news reference (Codex from_news_reference, so SOURCE_UNVERIFIED, first seen != published) cited by
               h0; a PRIVATE (public=False) build, because Codex's public projection drops unverified sources. Screen tests only.
+  NAV         {view, navigation}: Codex's navigation-synthetic-job (#509 c2ae92a0) projected by Codex navigation.project, with
+              only the article link set to the screen's news fixture link (its revision hash recomputed by Codex digest), so the
+              5.2 -> 4.5 join and the official / Korean titles can be shown. Public (view/2) as in the job.
+REVISED and HISTORICAL are public builds, so since c2ae92a0 they are policy-impact-view/2.
 Run: PYTHONPATH=implementation/src python implementation/tools/policy_impact_main_variants.py [--check]
 writes (or with --check compares) implementation/tests/fixtures/policy_impact_view_main_variants.json."""
 import argparse
@@ -22,9 +26,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'src'))
 from investment_system.research.policy_impact import build  # noqa: E402
-from investment_system.research.policy_impact.build import from_news_reference  # noqa: E402
+from investment_system.research.policy_impact.build import digest, from_news_reference  # noqa: E402
+from investment_system.research.policy_impact.navigation import project  # noqa: E402
 
 JOB = ROOT / 'docs/research/policy_impact/synthetic-job.json'
+NAV_JOB = ROOT / 'docs/research/policy_impact/navigation-synthetic-job.json'
 OUT = ROOT / 'tests/fixtures/policy_impact_view_main_variants.json'
 NEWS_LINK = 'https://wire.example.org/nvda-revenue'  # the first item of tools/web_app_news_fixture.js news()
 
@@ -89,10 +95,26 @@ def news():
     return build(b, j['company_ids'], j['as_of'], public=False)
 
 
+def nav():
+    j = json.loads(NAV_JOB.read_text()); n = copy.deepcopy(j['navigation'])
+    old = n['news_items'][0]['link']
+    for item in n['news_items']:
+        if item['link'] == old: item['link'] = NEWS_LINK
+    for link in n['links']:
+        if link['news_ref']['link'] == old:
+            link['news_ref']['link'] = NEWS_LINK
+            item = next(i for i in n['news_items'] if (i['group_id'], i['company_id'], i['link']) == tuple(link['news_ref'][k] for k in ('group_id', 'company_id', 'link')))
+            link['news_revision_hash'] = digest(item)
+    bodies = {}
+    for spec in j['title_sources']:
+        body = (NAV_JOB.parent / Path(spec['path']).name).read_bytes(); bodies[spec['sha256']] = body
+    return {'view': j['view'], 'navigation': project(j['view'], n, j['as_of'], public=j['public'], title_sources=bodies)}
+
+
 def variants():
     return {'schema_version': 'policy-impact-main-variants/1', 'made_by': 'investment_system.research.policy_impact.build',
             'from': 'implementation/docs/research/policy_impact/synthetic-job.json',
-            'variants': {'REVISED': revised(), 'HISTORICAL': historical(), 'NEWS': news()}}
+            'variants': {'REVISED': revised(), 'HISTORICAL': historical(), 'NEWS': news(), 'NAV': nav()}}
 
 
 def text(v):
@@ -105,7 +127,7 @@ def main():
     if ns.check:
         same = OUT.exists() and OUT.read_text() == want
         print(json.dumps({'status': 'SAME' if same else 'DIFFERENT'})); return 0 if same else 1
-    OUT.write_text(want); print(json.dumps({'status': 'WRITTEN', 'variants': 3})); return 0
+    OUT.write_text(want); print(json.dumps({'status': 'WRITTEN', 'variants': 4})); return 0
 
 
 if __name__ == '__main__':
