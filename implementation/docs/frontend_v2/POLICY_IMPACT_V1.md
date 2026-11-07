@@ -90,6 +90,20 @@ Main이 앞서 낸 초안 `policy-impact/1`(Main 필드 이름)은 **철회**한
 - 화면: 셋 다 "역사 사례 · 현재 상태 미확인". 관세·수출통제는 노출 없이 읽히고 "연결 근거 미확인 (영향 없음이라는 뜻이 아님)". 보조금은 "확정 지원 발표 · 실제 지급 아님(지급 미확인)".
 - 공개 게시 승인 없음(`public_publication_approved=false`). 저장소·Pages·로그에 넣지 않는다.
 
+## 3.6 제목 · 이용 상태 · 뉴스 연결 (owner 2026-11-07 3차)
+
+화면은 아래 표시만 정한다. 필드 추가·의미는 Codex 계약(`policy-impact/1`)이 정하고, 바뀌면 판독기를 그 계약에 맞춘다.
+
+| 항목 | 지금 파일 | 화면 표시 | Codex 제안(인계) |
+| --- | --- | --- | --- |
+| 정책 제목 | `title` 하나. 실자료는 정책 id와 같음 | `title`을 그대로 쓰고, id와 같으면 아래 줄에 "공식 정책 제목·한국어 설명 제목 미제공 · 정책 식별자 표시" (`data-pol-title-state=ID_ONLY`) | `official_title`(원문 문서 제목 그대로) + `title_ko`(한국어 설명, 공식 제목 아님)를 나눔. 둘 다 없으면 지금처럼 id |
+| `watch_items[].availability` | `PUBLIC_REFERENCE` · `UNAVAILABLE` | "이용 가능 · 공개 참조" / "이용 불가 · 숫자는 옮기지 않음". 그 밖의 값은 "확인 안 된 이용 상태 (코드) · 연결하지 않음" (링크·이동 없음) | 두 값을 `contract.json` enum으로 고정. 새 값은 계약 개정으로만 |
+| 이용 가능 ≠ 공개 허가 | — | `PUBLIC_REFERENCE`여도 화면이 수치를 옮기지 않는다. 공개 4.1 지표로 이동만 한다 | 공개 허가는 기존 허용 목록(`public_macro_ids` = 게시된 `macro-evidence.json` 계열)만 따른다. availability는 자료가 있는지만 뜻한다 |
+| 검증 근거 vs 관련 기사 | `NEWS_REFERENCE` 출처(늘 `SOURCE_UNVERIFIED`)가 `evidence_refs`에 섞일 수 있음 | "관련 기사(참조) · 정책 검증 근거 아님". 검증 근거 칸에 넣지 않는다 | `related_articles[]`(기사 링크, 검증 근거 아님)를 `evidence_refs`와 따로. 공개 투영에서 미검증 출처를 빼더라도 관련 기사 링크는 남길지 Codex가 정한다 |
+| 5.2 → 4.5 연결 | 공개 파일 연결 0건 | 연결 0건이면 "연결 자료 없음 · 정책 파일에 관련 기사 연결이 0건 (연결 기능 자체는 합성 시험으로 확인됨)" (`data-pol-news-state=NO_LINK_DATA`). 기사와 정책이 겹치지 않으면 `NO_OVERLAP` | 공개 뉴스(#483)와 확정 연결이 생기면 지금처럼 기사 URL이 정확히 같을 때만 잇는다(화면은 URL 일치만 본다). 기사 id 키가 계약에 생기면 그 키로 바꾼다 |
+
+- **화면이 하지 않는 것:** 제목 유사도로 기사·정책을 잇지 않는다. 미검증 기사를 근거로 올리지 않는다. 연결 자료가 없을 때 0을 유지하되 "연결 자료 없음"과 "연결 기능 검증 완료"를 한 문구로 합치지 않는다.
+
 ## 4. 화면 상태
 
 | 상태 | 화면 |
@@ -127,10 +141,10 @@ Main이 앞서 낸 초안 `policy-impact/1`(Main 필드 이름)은 **철회**한
 - 호환: `synthetic-view.json`과 `synthetic-states.json` 기대 4건이 모두 Codex `build()` 출력과 같고(pytest), Main 판독기가 모두 받는다(node). 실자료 `real-view-final.json`도 받는다(비공개 확인).
 - 화면 시험용 변형 3건(REVISED·HISTORICAL·NEWS)은 Codex `build()`로 만든다(`tools/policy_impact_main_variants.py`). Main이 손으로 쓴 view는 없다.
 
-**Codex에 부탁할 일**
-1. 사람이 읽을 정책 제목: 실자료 `title`이 정책 id와 같다. 뜻을 바꾸지 않는 한 `policy-impact/1` 안에서 고쳐 주면 된다.
-2. `watch_items[].availability` 값 목록을 `contract.json` enum으로 고정해 달라(지금 `PUBLIC_REFERENCE`·`UNAVAILABLE`).
-3. 공개 투영은 미검증 출처를 빼므로 뉴스 참조(#483 `from_news_reference`, 늘 `SOURCE_UNVERIFIED`)가 공개 파일에 남지 않는다. 그래서 5.2 → 4.5 연결은 공개 자료에서 0건이 정상이다. 공개에 남길지 결정이 필요하면 알려 달라.
+**Codex에 부탁할 일** (3.6 표의 오른쪽 칸, #437에 인계)
+1. 제목: `official_title`(원문 제목 그대로)과 `title_ko`(한국어 설명)를 나눔. 지금 실자료는 `title` = 정책 id라 화면이 그 사실을 표시한다.
+2. `watch_items[].availability`를 `contract.json` enum(`PUBLIC_REFERENCE`·`UNAVAILABLE`)으로 고정. 이용 상태와 공개 허가를 섞지 않음.
+3. 관련 기사 링크(`related_articles[]`)를 검증 근거(`evidence_refs`)와 분리. 공개 투영에서 남길지 결정.
 4. 필드 의미를 바꾸면 `policy-impact/2`·`policy-impact-view/2`로 알려 달라.
 
 **시험 담당**
@@ -146,9 +160,9 @@ Main이 앞서 낸 초안 `policy-impact/1`(Main 필드 이름)은 **철회**한
 | --- | --- |
 | `tests/research/test_policy_impact.py` (Codex, 45) | 데이터 사례. build 단계 `pytest tests`에 수집된다(이 가지에서 45개 수집 확인) |
 | `tests/test_policy_impact_main_variants.py` (4) | Codex synthetic-view·state 기대값 = Codex `build()` 출력; Main 변형 파일 = 생성기 출력; 철회한 초안 fixture 없음 |
-| `tools/web_app_policy_impact_node_test.js` (11) | #437 SHA-256 4개 고정; 계약 enum 일치; 합성 view·state 4건 통과; 현재 개정은 엔진 값만(파일을 바꾸면 따라감); REVIEW_REQUIRED 그대로; 역사 사례·노출 없는 관세/수출통제·FINAL_AWARD ≠ 지급; 목록·필터·기업 요약; 뉴스 참조; 링크; 거부 코드 50여 건; 판독기·화면 소스에 요청·저장·시계·시각 정렬·점수·순위 없음 |
-| `tools/web_app_policy_impact_browser_test.js` (16) | 미게시·규격 위반·봉투 없는 bundle·읽기 실패 → 다시 읽기; 1440·390 목록(엔진 순서)·상세 ①~⑤·기업 카드(키보드)·뒤로 ×3(필터·스크롤 복원)·이전 개정·잘못된 주소·역사 사례·5.2 연결·경계; 320 / 390 / 720(=1440 200%) / 1440 |
-| `tools/web_app_policy_impact_private.js check` (CI 밖) | 실자료로 1440·390·320: 엔진 순서, 실자료 띠, 역사 사례 3건, 노출 없는 2건의 "연결 근거 미확인", 보조금 지급 아님, 원문 링크 `noopener noreferrer`, 노출 → 기존 기업 화면 → 관련 정책 1건 → 뒤로, 출처 밖 요청 0 |
+| `tools/web_app_policy_impact_node_test.js` (12) | 제목 상태(ID_ONLY)·availability 두 값과 미확인 값·뉴스 연결 상태(NO_LINK_DATA·NO_OVERLAP);  #437 SHA-256 4개 고정; 계약 enum 일치; 합성 view·state 4건 통과; 현재 개정은 엔진 값만(파일을 바꾸면 따라감); REVIEW_REQUIRED 그대로; 역사 사례·노출 없는 관세/수출통제·FINAL_AWARD ≠ 지급; 목록·필터·기업 요약; 뉴스 참조; 링크; 거부 코드 50여 건; 판독기·화면 소스에 요청·저장·시계·시각 정렬·점수·순위 없음 |
+| `tools/web_app_policy_impact_browser_test.js` (16) | 미게시·규격 위반·봉투 없는 bundle·읽기 실패 → 다시 읽기; 1440·390 목록(엔진 순서)·상세 ①~⑤·기업 카드(키보드)·뒤로 ×3(필터·스크롤 복원)·이전 개정·잘못된 주소·역사 사례·5.2 연결·경계; 320 / 390 / 720(=1440 200%) / 1440에서 3.5 칸과 페이지 전체 넘침 0, `overflow-x` 숨김 없음, 3.1 고리 크기, 긴 끊기지 않는 제목 줄바꿈, 휴대폰 44 px |
+| `tools/web_app_policy_impact_private.js check` (CI 밖) | 실자료로 1440·390·320: 엔진 순서, 실자료 띠, 역사 사례 3건, 노출 없는 2건의 "연결 근거 미확인", 보조금 지급 아님, 원문 링크 `noopener noreferrer`, 노출 → 기존 기업 화면 → 관련 정책 1건 → 뒤로, 제목 상태 표시, 상세 페이지와 페이지 전체 넘침 0, 출처 밖 요청 0 |
 | 회귀 | 저장소 전체 시험(매크로·뉴스·기업·QGV 화면 시험 포함) |
 
-**320 px:** 정책 칸 안은 넘치지 않는다(긴 원문 링크는 줄바꿈). 다만 기존 3.1 국면 고리 때문에 페이지 전체가 40 px 넘친다. 이 기능 밖(#488·#493 영역)이라 바꾸지 않고 보고한다.
+**320 px (11/07 3차 수정):** 3.1 국면 고리는 SVG 폭 280 px 고정 + `figure` 기본 여백 40 px + `fieldset` 최소 폭 때문에 페이지를 40 px 밀었다. 고리를 카드 폭에 맞춰 줄이고(최대 280 px, 비율 유지) 여백·최소 폭을 풀었다. 실자료에서는 id 모양의 긴 정책 제목이 18 px를 더 밀어서 상세 제목에 줄바꿈을 넣었다. 페이지 `overflow`를 숨기지 않는다. 320·390·720(1440의 200 %)·1440에서 #/macro와 정책 상세의 넘침이 0이다(합성 브라우저 시험과 실자료 비공개 확인 둘 다).

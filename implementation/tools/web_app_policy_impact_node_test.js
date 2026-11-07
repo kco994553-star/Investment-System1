@@ -90,6 +90,16 @@ ok('sources by (source_id, revision); review records with method; news reference
   const rs = P.reviewsOf(v, 'policies', 'p0', '1'); assert.equal(rs.length, 1); assert.equal(rs[0].method, 'AI_INDEPENDENT_SOURCE_CHECK');
   assert.ok(P.text(P.METHOD_TEXT, 'AI_INDEPENDENT_SOURCE_CHECK').includes('사람 검토 아님'));
 });
+ok('titles, availability and related articles: an id-only title says so; unknown availability is not public; a news reference is not evidence', () => {
+  const v = accept(X.codexView()), p = v.order[0].current;
+  assert.deepEqual(P.titleState(p), { state: 'TITLE', text: null });
+  assert.equal(P.titleState({ ...p, title: p.policy_id }).state, 'ID_ONLY');
+  assert.ok(P.titleState({ ...p, title: p.policy_id }).text.includes('공식 정책 제목·한국어 설명 제목 미제공'));
+  assert.equal(P.availability('PUBLIC_REFERENCE').known, true); assert.equal(P.availability('UNAVAILABLE').known, true);
+  const u = P.availability('MAYBE'); assert.equal(u.known, false); assert.ok(u.text.includes('확인 안 된 이용 상태'));
+  assert.ok(P.text(P.KIND_TEXT, 'NEWS_REFERENCE').includes('정책 검증 근거 아님'));
+  assert.ok(!/title|similar|levenshtein|includes\(\s*s\.title/i.test(String(P.newsLinks)), 'news links come from the file, never from title matching');
+});
 ok('links: reserved test domains (RFC 2606 / 6761) are never links; real https without credentials is; a synthetic file with a real link is refused', () => {
   for (const u of ['https://example.invalid/s0', 'https://wire.example.org/a', 'https://news.example.com/b', 'https://x.test/c', 'https://localhost/d', 'http://www.federalregister.gov/x', 'javascript:alert(1)', 'https://u:p' + AT + 'www.nist.gov/'])
     assert.equal(P.linkable(u), false, u);

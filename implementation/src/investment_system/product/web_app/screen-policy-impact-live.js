@@ -111,10 +111,11 @@ function exposureLine(vw,e){const P_=P();
   h('details',null,h('summary',{class:'lk'},'노출 근거 · 검토 기록'),refs(vw,e.evidence_refs),reviewLines(vw,'exposures',e.exposure_id,e.exposure_revision_id)),
   h('p',{class:'reason'},'검토 ',utc(e.reviewed_at),' · ',P_.text(P_.REVIEW_TEXT,e.review_status)));}
 function watchLine(vw,w){const P_=P();let go=null;
+ const av=P_.availability(w.availability);
  if(w.kind==='MACRO_SERIES'&&w.availability==='PUBLIC_REFERENCE')go=h('a',{href:href('macro'),class:'lk',dataset:{polWatchLink:'MACRO'}},'→ 4.1 지표 보기');
  else if(w.kind==='COMPANY_DISCLOSURE'&&companyRow(w.reference_id))go=h('a',{href:href('company',companyRow(w.reference_id).id),class:'lk',dataset:{polWatchLink:'COMPANY'}},'→ 기업 화면');
  else if(w.kind==='POLICY_UPDATE'&&vw.policies.has(w.reference_id))go=h('a',{href:href('macro','policy',w.reference_id),class:'lk',dataset:{polWatchLink:'POLICY'}},'→ 정책');
- return h('li',{dataset:{polWatch:w.kind,polAvailability:w.availability}},P_.text(P_.WATCH_TEXT,w.kind),' · ',w.kind==='COMPANY_DISCLOSURE'?label(w.reference_id):w.reference_id,' · ',w.rationale,' · ',P_.text(P_.AVAIL_TEXT,w.availability),go?' ':null,go);}
+ return h('li',{dataset:{polWatch:w.kind,polAvailability:w.availability}},P_.text(P_.WATCH_TEXT,w.kind),' · ',w.kind==='COMPANY_DISCLOSURE'?label(w.reference_id):w.reference_id,' · ',w.rationale,' · ',h('span',{dataset:{polAvailabilityKnown:av.known?'yes':'no'}},av.text),go?' ':null,go);}
 function hypothesisBlock(vw,x){const P_=P(),old=x.review_status==='REVIEW_REQUIRED';
  return h('div',{class:'sk pol-hypothesis',dataset:{polHypothesis:x.hypothesis_id,polReview:x.review_status}},
   h('p',null,chip('조건부 영향 가설'),' ',old?chip('이전 분석 · 재검토 필요',null,'chip wait'):null,' ',h('b',null,x.claim)),
@@ -135,6 +136,7 @@ function detailView(vw,body,policyId,revisionId){const P_=P(),d=P_.get(vw,policy
  const srcs=[];const seen=new Set();for(const r of allRefs){const s=P_.source(vw,r),k=r.source_id+'|'+r.source_revision_id;if(s&&!seen.has(k)){seen.add(k);srcs.push(s);}}
  body.replaceChildren(...[back,...band(vw),
   h('h3',{class:'pol-detail-title',tabindex:'-1',dataset:{polDetail:policyId}},x.title),
+  P_.titleState(x).text?h('p',{class:'reason',dataset:{polTitleState:P_.titleState(x).state}},P_.titleState(x).text):null,
   older?h('p',{class:'hand err',dataset:{polOldRevision:x.revision_id}},'이전 개정을 보는 중 (현재 판단 아님) · 현재 개정 ',h('a',{href:href('macro','policy',policyId),class:'lk'},d.current.revision_id)):null,
   sec('①','무엇이 바뀌었나',h('p',null,...statusChips(vw,x)),
    h('p',null,'적용 범위 · ',x.scope_description),h('p',{class:'reason'},'대상 지역 · ',x.target_regions.join(', ')||'—',' · 발행 ',x.issuer,' · 관할 ',x.jurisdiction),
@@ -187,9 +189,12 @@ function companyCard(route,{after,cid}){if(!after||!after.parentNode)return;cons
 function news(route,{body,links}){const signal=route.signal;
  const go=()=>{body.replaceChildren(h('p',{class:'pending'},'불러오는 중'));load().then(res=>{if(signal.aborted)return;if(res.state!=='OK'){body.replaceChildren(stateCard(res,go));return;}
   const map=P().newsLinks(res.view),now=links(),hits=[...map].filter(([u])=>now.has(u));
-  body.replaceChildren(h('p',{class:'reason',dataset:{polNewsHits:String(hits.length)}},'지금 목록의 뉴스와 연결된 정책 ',String(hits.length),'건 · 정책 근거로 쓰인 뉴스 참조 ',String(map.size),'건'),
-   hits.length?h('ul',{class:'news-lines'},...hits.flatMap(([u,ids])=>ids.map(pid=>{const p=res.view.policies.get(pid);return h('li',{dataset:{polNewsLink:pid}},h('a',{href:href('macro','policy',pid),class:'lk'},p.current.title),' · 근거 뉴스 ',ext(u,'원문'),' (원문 미확인 참조)');})))
-    :h('p',{class:'reason'},'연결된 정책 없음 · 뉴스가 없는 공식 정책은 4.5에서 따로 읽을 수 있음'),h('p',null,h('a',{href:href('macro'),class:'lk'},'→ 4.5 정책·지정학')));});};
+  // A related article is a reference, never a verified ground of a policy fact; links come only from the file (no title matching).
+  const none=!map.size?h('p',{class:'reason',dataset:{polNewsState:'NO_LINK_DATA'}},'연결 자료 없음 · 정책 파일에 관련 기사 연결이 0건 (연결 기능 자체는 합성 시험으로 확인됨 · 영향 없음이라는 뜻이 아님)')
+   :h('p',{class:'reason',dataset:{polNewsState:'NO_OVERLAP'}},'지금 목록의 뉴스와 겹치는 연결 없음 · 정책 파일의 관련 기사 ',String(map.size),'건은 다른 기사');
+  body.replaceChildren(h('p',{class:'reason',dataset:{polNewsHits:String(hits.length)}},'지금 목록의 뉴스와 연결된 정책 ',String(hits.length),'건 · 정책 파일의 관련 기사 ',String(map.size),'건'),
+   hits.length?h('ul',{class:'news-lines'},...hits.flatMap(([u,ids])=>ids.map(pid=>{const p=res.view.policies.get(pid);return h('li',{dataset:{polNewsLink:pid}},h('a',{href:href('macro','policy',pid),class:'lk'},p.current.title),' · 관련 기사 ',ext(u,'원문'),' (참조 · 정책 검증 근거 아님 · 원문 미확인)');})))
+    :none,h('p',null,h('a',{href:href('macro'),class:'lk'},'→ 4.5 정책·지정학')));});};
  body.replaceChildren(h('p',{class:'hand'},'관련 정책 (4.5) · 누르면 정책 파일을 읽어 지금 목록의 뉴스와 이음'),h('button',{type:'button',class:'btn',dataset:{k:'pol-news'},onclick:go},'관련 정책 연결 보기'));}
 
 I.policyImpactLive=Object.freeze({macro,companyCard,news,load});

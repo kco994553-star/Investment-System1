@@ -55,10 +55,12 @@ async function check(json) {
         const all = await text(B);
         assert.ok(!/영향 없음(?!이라는 뜻이 아님)/.test(all), 'never 영향 없음'); assert.ok(!/\b(null|undefined|NaN)\b/.test(all));
         assert.ok(all.includes('AI 독립 원문 대조 · 사람 검토 아님'), 'review method shown');
+        if (p.current.title === p.policy_id) assert.equal(await page.locator(B + ' [data-pol-title-state=ID_ONLY]').count(), 1, 'id-only title said so');
         const links = await page.$$eval(B + ' a[data-pol-external]', (n) => n.map((a) => [a.protocol, a.target, a.rel]));
         assert.ok(links.length >= 1 && links.every(([pr, t, r]) => pr === 'https:' && t === '_blank' && r === 'noopener noreferrer'), 'source document links');
         const wide = await page.$$eval('[data-section="3-5"] *', (els) => els.filter((e) => { const r = e.getBoundingClientRect(); return r.width > 0 && r.right > window.innerWidth + 1 && !e.closest('.scroll'); }).length);
         assert.equal(wide, 0, width + ': nothing in 3.5 past the viewport');
+        assert.ok(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth) <= 0, width + ': detail page overflow');
         if (!p.exposures.length) assert.ok((await text(B + ' [data-pol-no-exposure]')).includes('연결 근거 미확인 (영향 없음이라는 뜻이 아님)'));
         if (p.current.policy_type === 'INDUSTRIAL_SUBSIDY') {
           assert.ok((await text(B + ' [data-pol-subsidy]')).includes('실제 지급 아님')); assert.ok(!all.includes('지급 확인'), 'a final award is not a disbursement');
@@ -76,6 +78,7 @@ async function check(json) {
         ok(width + ' exposure → existing company detail → 관련 정책 1건 → 뒤로');
       }
       const over = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      assert.ok(over <= 0, width + ': page overflow ' + over + ' px');
       assert.deepEqual(seen.outside, [], 'no request left the origin'); assert.deepEqual(seen.errors, []);
       ok(width + ' boundaries: origin only, no console error, page overflow ' + over + ' px');
       await ctx.close();

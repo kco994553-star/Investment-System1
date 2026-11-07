@@ -21,6 +21,7 @@ const site = require('./web_app_test_site');
 const F = require('./qgv_v2_fixture.js');
 const N = require('./web_app_news_fixture.js');
 const X = require('./web_app_policy_impact_fixture.js');
+const P = require('../src/investment_system/product/web_app/policy-impact.js');
 
 const NOW = '2026-11-07T03:00:00.000Z';
 const CLASS = JSON.parse(fs.readFileSync(path.join(R.ROOT, 'implementation/tests/fixtures/company_classification_v0_payloads.json'), 'utf8')).live;
@@ -182,7 +183,11 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       await page.locator('[data-policy-news] [data-pol-news-link="p0"] a[href="#/macro/policy/p0"]').click();
       await page.locator(B + ' [data-pol-detail="p0"]').waitFor();
       assert.ok((await text(page, B + ' [data-pol-sources]')).includes('뉴스 참조') && (await text(page, B + ' [data-pol-sources]')).includes('처음 발견 2026-11-06 12:00:00 UTC (게시 시각 아님)'));
-      ok(tag + ' 5.2 관련 정책 연결 보기 → the policy citing the news link; first seen is not publication');
+      assert.ok((await text(page, B + ' [data-pol-sources]')).includes('관련 기사(참조) · 정책 검증 근거 아님'));
+      s.fixture(FILE, { json: X.linked(ids, VAR.REVISED) }); await page.goto(s.base + '#/news'); await page.reload(); await page.evaluate(() => window.IS2.ready);
+      await page.locator('[data-policy-news] [data-k=pol-news]').click(); await page.locator('[data-policy-news] [data-pol-news-state=NO_LINK_DATA]').waitFor();
+      assert.ok((await text(page, '[data-policy-news]')).includes('연결 자료 없음') && (await text(page, '[data-policy-news]')).includes('연결 기능 자체는 합성 시험으로 확인됨'));
+      ok(tag + ' 5.2 관련 정책 연결 보기 → the policy citing the news link (a reference, not evidence); a file without links says 연결 자료 없음, apart from the tested function');
 
       phase = tag + ' boundaries';
       assert.deepEqual(seen.outside, []); assert.deepEqual(seen.errors, []);
@@ -196,19 +201,27 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
 
     // ---------------- widths: 320 / 390 / 720 (= 1440 at 200 %) / 1440
     phase = 'widths';
-    s.fixture(FILE, { json: VAR.REVISED });
+    // A long unbreakable official-style title (the real file had one: an identifier-shaped title ran 18 px past 320) wraps in place.
+    const LONG = JSON.parse(JSON.stringify(VAR.REVISED)), LONG_TITLE = 'SYNTHETIC:AGENCY20241210:LONG-UNBROKEN-IDENTIFIER-TITLE-0123456789';
+    LONG.bundle.policies.filter((p) => p.policy_id === 'p0').forEach((p) => { p.title = LONG_TITLE; });
+    assert.ok(P.validate(LONG).ok, 'the long-title variant is still a valid file');
+    s.fixture(FILE, { json: LONG });
     for (const width of [320, 390, 720, 1440]) {
       const { ctx, page } = await open(width, { allow404: [...UNPUBLISHED, FILE] });
       await page.goto(s.base + '#/macro/policy/p0'); await page.evaluate(() => window.IS2.ready); await page.locator(B + ' [data-pol-detail]').waitFor();
       await page.$$eval(B + ' details', (n) => n.forEach((d) => { d.open = true; }));
+      assert.equal(await page.locator(B + ' .pol-detail-title').innerText(), LONG_TITLE, 'the long title is shown whole');
       // The policy section itself never runs past the viewport (its chips wrap; scroll strips scroll inside themselves).
       const wide = await page.$$eval('[data-section="3-5"] *', (els) => els.filter((e) => { const r = e.getBoundingClientRect(); return r.width > 0 && r.right > window.innerWidth + 1 && !e.closest('.scroll'); }).map((e) => e.tagName + ' ' + (e.textContent || '').slice(0, 30)));
       assert.deepEqual(wide, [], width + ': nothing in 3.5 past the viewport');
-      // The whole page: no overflow from 390 up; at 320 the existing 3.1 cycle ring (outside this feature) is still wider,
-      // recorded and reported rather than changed here.
+      // The whole page, 320 included: the 3.1 cycle ring scales inside its card (owner 2026-11-07 3차; no overflow hiding).
       const over = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
-      if (width >= 390) assert.ok(over <= 0, width + ': no horizontal overflow');
-      else console.log('NOTE 320: page overflow ' + over + ' px from the existing 3.1 ring (not this feature)');
+      assert.ok(over <= 0, width + ': no horizontal overflow (' + over + ' px)');
+      assert.equal(await page.evaluate(() => getComputedStyle(document.documentElement).overflowX), 'visible', 'the page does not hide overflow');
+      await go(page, '#/macro', 'macro');
+      const ring = await page.locator('svg[data-ring]').first().evaluate((e) => { const r = e.getBoundingClientRect(); return { w: Math.round(r.width), right: r.right, vw: window.innerWidth }; });
+      assert.ok(ring.right <= ring.vw + 0.5 && ring.w >= Math.min(240, ring.vw - 80), width + ': the 3.1 ring fits and stays readable ' + JSON.stringify(ring));
+      assert.ok(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth) <= 0, width + ': #/macro no horizontal overflow');
       if (width < 720) {
         await go(page, '#/macro', 'macro'); await page.locator(B + ' [data-pol-card]').first().waitFor();
         const small = await page.$$eval(B + ' select, ' + B + ' .btn', (els) => els.filter((e) => e.offsetParent && e.getBoundingClientRect().height < 44).map((e) => e.dataset.k || e.tagName));
@@ -216,7 +229,7 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       }
       await ctx.close();
     }
-    ok('320 / 390 / 720 (1440 at 200 %) / 1440: nothing in 3.5 past the viewport, page overflow 0 from 390 (320: the existing 3.1 ring, noted); 44 px controls on phones');
+    ok('320 / 390 / 720 (1440 at 200 %) / 1440: nothing in 3.5 past the viewport (a long unbroken title wraps), page overflow 0 everywhere (the 3.1 ring scales), 44 px controls on phones');
     console.log(JSON.stringify({ passed: true, checks: pass }));
   } catch (e) {
     console.error('FAIL ' + phase + ': ' + (e && e.stack || e));

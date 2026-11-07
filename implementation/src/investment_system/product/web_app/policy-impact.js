@@ -54,10 +54,16 @@ const EXPOSURE_TEXT=Object.freeze({REVENUE_REGION:'지역 매출',PRODUCTION_SIT
 const EVIDENCE_TEXT=Object.freeze({DOCUMENTED:'노출 근거 확인',CANDIDATE:'후보',UNKNOWN:'노출 근거 없음 · 확인 필요'});
 const APPLY_TEXT=Object.freeze({DOCUMENTED:'정책 적용 근거 확인',UNCONFIRMED:'정책 적용 미확인',OUTSIDE_SCOPE:'정책 적용 범위 밖'});
 const EPI_TEXT=Object.freeze({SUPPORTED_FACT:'확인된 사실',HYPOTHESIS:'가설',UNKNOWN:'모름'});
-const KIND_TEXT=Object.freeze({OFFICIAL_RULE:'공식 규칙',OFFICIAL_RELEASE:'공식 발표',COMPANY_FILING:'기업 공시',NEWS_REFERENCE:'뉴스 참조'});
+const KIND_TEXT=Object.freeze({OFFICIAL_RULE:'공식 규칙',OFFICIAL_RELEASE:'공식 발표',COMPANY_FILING:'기업 공시',NEWS_REFERENCE:'관련 기사(참조) · 정책 검증 근거 아님'});
 const VERIFY_TEXT=Object.freeze({VERIFIED:'원문 확인',SOURCE_UNVERIFIED:'원문 미확인',CONFLICTING_EVIDENCE:'근거 충돌'});
 const WATCH_TEXT=Object.freeze({MACRO_SERIES:'4.1 공개 지표',COMPANY_DISCLOSURE:'기업 공시',POLICY_UPDATE:'정책 갱신'});
-const AVAIL_TEXT=Object.freeze({PUBLIC_REFERENCE:'공개 참조',UNAVAILABLE:'공개 불가 · 숫자는 옮기지 않음'});
+// watch_items[].availability: whether the referenced data can be used (not the publication permission, which the build's
+// allowlist decides: a MACRO_SERIES outside public_macro_ids must be UNAVAILABLE). Unknown values read 확인 안 된 상태 and link nowhere.
+const AVAIL_TEXT=Object.freeze({PUBLIC_REFERENCE:'이용 가능 · 공개 참조',UNAVAILABLE:'이용 불가 · 숫자는 옮기지 않음'});
+const availability=v=>Object.prototype.hasOwnProperty.call(AVAIL_TEXT,v)?{code:v,text:AVAIL_TEXT[v],known:true}:{code:v,text:'확인 안 된 이용 상태 ('+v+') · 연결하지 않음',known:false};
+// Titles: the contract carries one title per revision; when it is only the policy id, neither the official document title nor a
+// Korean descriptive title has been delivered (Codex request, #437), and the screen says so instead of making one up.
+const titleState=r=>r.title===r.policy_id?{state:'ID_ONLY',text:'공식 정책 제목·한국어 설명 제목 미제공 · 정책 식별자 표시'}:{state:'TITLE',text:null};
 const METHOD_TEXT=Object.freeze({AI_INDEPENDENT_SOURCE_CHECK:'AI 독립 원문 대조 · 사람 검토 아님',HUMAN_SOURCE_CHECK:'사람 원문 대조'});
 const KIND_DATA_TEXT=Object.freeze({SYNTHETIC:'합성 · 시험용',REAL_REVIEWED:'실자료 · 검토 기록 있음'});
 const REFRESH_TEXT=Object.freeze({UPDATED:'갱신됨',NO_NEW_ITEMS:'새 문서 없음',PARTIAL_FAILED:'일부 원천 갱신 실패 · 마지막 정상본 유지',FAILED:'갱신 실패 · 마지막 정상본 유지',NOT_RUN:'자동 갱신 실행 전',INCOMPLETE:'갱신 불완전 · 미조회 구간 있음'});
@@ -225,5 +231,5 @@ function newsLinks(vw){const out=new Map();
 
 return Object.freeze({VIEW_SCHEMA,SCHEMA,FILE,ENUMS:E,TYPE_TEXT,STATUS_TEXT,REVIEW_TEXT,STAGE_TEXT,EXPOSURE_TEXT,EVIDENCE_TEXT,APPLY_TEXT,EPI_TEXT,KIND_TEXT,VERIFY_TEXT,
  WATCH_TEXT,AVAIL_TEXT,METHOD_TEXT,KIND_DATA_TEXT,REFRESH_TEXT,REASON_TEXT,
- text:t,linkable,validate,view,source,reviewsOf,status,facets,list,get,forCompany,newsLinks});
+ text:t,availability,titleState,linkable,validate,view,source,reviewsOf,status,facets,list,get,forCompany,newsLinks});
 });
