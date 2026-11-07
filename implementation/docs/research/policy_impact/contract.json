@@ -1,6 +1,6 @@
 {
   "schema_version": "policy-impact/1",
-  "view_schema": "policy-impact-view/1",
+  "view_schema": "policy-impact-view/2",
   "required_top_fields": [
     "schema_version",
     "bundle_id",
@@ -201,5 +201,22 @@
     "source_revision_id",
     "locator",
     "claim"
-  ]
+  ],
+  "private_view_schema": "policy-impact-view/1",
+  "legacy_public_view_schema": "policy-impact-view/1 (retained only; not implicit publication permission)",
+  "watch_availability": {
+    "PUBLIC_REFERENCE": "Public-source reference is available; not publication permission",
+    "UNAVAILABLE": "Reference unavailable; not false or zero",
+    "UNKNOWN": "Availability not established; never grants publication"
+  },
+  "watch_publication_permissions": {
+    "key": "kind:reference_id",
+    "allowed": [
+      "ALLOWED",
+      "PRIVATE_ONLY",
+      "UNKNOWN"
+    ],
+    "missing": "UNKNOWN; excluded from public output"
+  },
+  "navigation_sidecar": "policy-impact-navigation/1"
 }

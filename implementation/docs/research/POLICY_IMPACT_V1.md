@@ -217,3 +217,84 @@ as API fixtures. Actual API verification, scheduled execution and public UI are 
 claimed. Main must persist the returned checkpoint atomically, preserve the prior
 normal policy bundle, honor request/retry limits, and pass actual retained responses
 only after separately approved collection. No new Secret is requested by this code.
+
+## CI boundary fix and Main contract followup (2026-11-07)
+
+The actual f086e3ca build run42333107495/job128283873663 failed P17,
+`test_p17_no_operating_modules_changed_or_imported`. Local reproduction confirmed
+that the FR adapter imported operational providers. The test remains intact.
+`request_limits.py` now owns the unchanged pure Retry-After parser and1MiB limit;
+Codex-owned #483 `providers/news_feeds.py` reexports the same function/constant.
+No duplicate parser exists. RSS retains its separate standard-library date import.
+The FR loop's existing bounded max_requests check/counter replaces the unnecessary
+DART class dependency; DART code is unchanged. No operating provider is imported
+by the policy package. Main was notified of these exact shared files in #437.
+
+### Availability and publication are independent
+
+`watch_items[].availability` is now an enum in contract.json:
+- PUBLIC_REFERENCE: an available public-source reference; not publication approval.
+- UNAVAILABLE: unavailable; never false/0.
+- UNKNOWN: availability unestablished; never public permission.
+Missing/invalid enum values fail validation. Private views preserve UNKNOWN.
+`build` additionally accepts `watch_publication_permissions`, a trusted caller map
+from `kind:reference_id` to ALLOWED/PRIVATE_ONLY/UNKNOWN. Missing permission means
+UNKNOWN. Public watch items require both PUBLIC_REFERENCE and explicit ALLOWED;
+unknown availability still fails even if permission is ALLOWED. This parameter
+controls projection, not permission to publish/enable a workflow.
+
+The changed public semantics are **policy-impact-view/2**, with the same factual
+bundle policy-impact/1. Private output stays policy-impact-view/1. Retained public
+v1 fixtures/history remain untouched; they are not automatically republished under
+v2. `synthetic-public-v2.json` is the new example. Main #511's strict v1 reader must
+explicitly support v2 and update expected hashes/variant generation. Its green CI
+at e0bb68dd does not validate this newer code.
+
+### Titles and reviewed news navigation
+
+Optional `policy-impact-navigation/1` is a separately versioned sidecar, bound to
+the exact base-view digest. It preserves existing policy/revision IDs. It contains
+`titles` (official_title, explanation_title_ko, RESEARCH_SUMMARY origin, original
+source ID/revision/hash, h1 locator and extraction time) and `news_links`.
+Original title-as-ID ledger rows are not overwritten and no fictional legal
+amendment is created for a presentation correction. Main joins by policy/revision
+and shows official title, Korean explanation and identifier separately.
+
+Existing news has group_id/company_id/link rather than a per-article ID; retain
+that exact existing reference tuple. Never reuse the news group as policy ID.
+A news link pins the article metadata revision hash, exact policy revision,
+independent reviewer, reviewed/recorded times, explanation and explicit article/link
+publication permission. Policy availability at review time is checked by the
+existing projection via reproject_view, including its source and review-record time closure. Public navigation requires view/2; unknown policy_as_of stays null during re-projection.
+Changed metadata/revision, self-review, future references or unknown permission
+cannot produce a public link. A source first-seen time never becomes publication.
+Links say DISCOVERY_REFERENCE_ONLY/evidence_effect=NONE/application NOT_ASSESSED.
+`from_news_reference` remains SOURCE_UNVERIFIED; policy sources still require
+VERIFIED. The sidecar never inserts news into policy evidence or hypotheses.
+
+CLI mode=navigation consumes view/navigation/as_of/public and hash-pinned
+`title_sources`. It recomputes each official title from the retained original bytes
+and exact h1 index. A legitimate source hash with fabricated title text is rejected.
+Output uses the existing atomic/private CLI writer. Main fixtures:
+`navigation-synthetic-{job,view}.json`, `navigation-synthetic-source.html`.
+
+```sh
+python implementation/tools/policy_impact.py --job implementation/docs/research/policy_impact/navigation-synthetic-job.json --output /tmp/policy-navigation.json
+```
+
+This run: synthetic1 title/1 news link; private retained3 official titles/0 news
+links. No new policy/exposure/hypothesis or source3 case review. The private sidecar
+is preserved separately and requires Main reader integration. No public posting.
+
+### Minimum actual API compatibility acquisition proposal (not executed)
+
+No retained API response is present in the identified handoff; only the already
+reviewed HTML sources exist. Propose **one free GET, one list-response file**:
+`https://www.federalregister.gov/api/v1/documents.json?conditions%5Bpublication_date%5D%5Bgte%5D=2024-09-18&conditions%5Bpublication_date%5D%5Blte%5D=2024-09-18&order=oldest&per_page=100&page=1`.
+Bound to one day, first page, at most100 metadata entries; expected bytes unknown,
+download cap1MiB. Stop on error/429/redirect/HTML/over-cap; no retries, next page,
+legal-text fetch or automatic policy promotion. Preserve raw response, request,
+status/headers/acquired_at/byte count/SHA in the existing private raw handoff.
+This tests actual list shape/normalization and partial-page handling only. It does
+not prove full pagination coverage, current policy state or historical PIT. Main
+owns execution after separate owner approval; no API request was made here.

@@ -14,9 +14,24 @@ def append_only(previous,current):
             need(now.get(tuple(old[k] for k in KEYS[group]))==old,'HISTORY_MUTATION',group)
     for r in previous['review_records']:need(r in current['review_records'],'REVIEW_HISTORY_MUTATION','review_records')
 
-def build(bundle,companies,as_of,*,public=False,public_macro_ids=(),previous=None,query_timezone='UTC'):
+def build(bundle,companies,as_of,*,public=False,public_macro_ids=(),previous=None,query_timezone='UTC',watch_publication_permissions=None):
+    permissions={} if watch_publication_permissions is None else watch_publication_permissions
+    need(isinstance(permissions,dict) and all(isinstance(k,str) and v in ('ALLOWED','PRIVATE_ONLY','UNKNOWN') for k,v in permissions.items()),'PUBLICATION_PERMISSION','watch_publication_permissions')
     index=validate(bundle,companies,public_macro_ids)
     if previous is not None:validate(previous,companies,public_macro_ids);append_only(previous,bundle)
+    return _project(bundle,index,as_of,public,permissions,query_timezone)
+
+
+def reproject_view(view,as_of,*,public=False):
+    """Reuse the projection for an already emitted view, preserving unknown check times."""
+    need(view.get('schema_version') in ('policy-impact-view/1','policy-impact-view/2'),'VERSION','view')
+    if public:need(view['schema_version']=='policy-impact-view/2','PUBLIC_VIEW_REQUIRED','view')
+    bundle=view['bundle']
+    index={g:{tuple(r[k] for k in KEYS[g]):r for r in bundle[g]} for g in FIELDS}
+    return _project(bundle,index,as_of,public,{},view['query_timezone'])
+
+
+def _project(bundle,index,as_of,public,permissions,query_timezone):
     at=time(as_of,'as_of');memo={};reviews=[]
     def source_times(refs):return [available('sources',(r['source_id'],r['source_revision_id'])) for r in refs]
     def available(group,key):
@@ -36,7 +51,7 @@ def build(bundle,companies,as_of,*,public=False,public_macro_ids=(),previous=Non
         if public and any(index['sources'][(r['source_id'],r['source_revision_id'])]['verification_status']!='VERIFIED' for r in review['evidence_refs']):continue
         if max([time(review['reviewed_at'],'reviewed_at'),time(review['recorded_at'],'recorded_at'),*source_times(review['evidence_refs'])])<=at:reviews.append(review)
     out={k:copy.deepcopy(v) for k,v in bundle.items() if k not in FIELDS}
-    out['policy_as_of']=bundle['policy_as_of'] if time(bundle['policy_as_of'],'policy_as_of')<=at else None;out['review_records']=copy.deepcopy(reviews)
+    out['policy_as_of']=bundle['policy_as_of'] if bundle['policy_as_of'] is not None and time(bundle['policy_as_of'],'policy_as_of')<=at else None;out['review_records']=copy.deepcopy(reviews)
     if out['policy_as_of'] is None:out['freshness']['reason_codes'].append('POLICY_CHECK_NOT_AVAILABLE_AT_QUERY')
     for group in FIELDS:
         rows=[]
@@ -57,6 +72,8 @@ def build(bundle,companies,as_of,*,public=False,public_macro_ids=(),previous=Non
         for group in ('policies','exposures','hypotheses'):
             out[group]=[r for r in out[group] if r['review_status']!='UNREVIEWED' and not (group=='exposures' and r['evidence_status']=='CANDIDATE')]
         out['sources']=[s for s in out['sources'] if s['verification_status']=='VERIFIED']
+        for h in out['hypotheses']:
+            h['watch_items']=[w for w in h['watch_items'] if w['availability']=='PUBLIC_REFERENCE' and permissions.get(w['kind']+':'+w['reference_id'])=='ALLOWED']
     # Dependency closure prevents dangling references after time/public filtering.
     while True:
         before=sum(len(out[g]) for g in FIELDS)
@@ -95,7 +112,7 @@ def build(bundle,companies,as_of,*,public=False,public_macro_ids=(),previous=Non
             out['freshness']['reason_codes'].append('REFRESH_HISTORY_UNAVAILABLE_AT_QUERY')
         for source in r['sources']:trim_refresh(source)
     trim_refresh(out['refresh'])
-    return {'query_timezone':query_timezone,'schema_version':'policy-impact-view/1','bundle':out,'current_policy_revisions':{k:p['revision_id'] for k,p in latest.items()},'as_of':as_of,'historical_pit_eligible':False}
+    return {'query_timezone':query_timezone,'schema_version':'policy-impact-view/2' if public else 'policy-impact-view/1','bundle':out,'current_policy_revisions':{k:p['revision_id'] for k,p in latest.items()},'as_of':as_of,'historical_pit_eligible':False}
 
 def collection_outcome(*,http_status,parsed,complete,truncated=False,new_items=0,incomplete_ranges=()):
     if http_status!=200 or not parsed:return {'result':'FAILED','reason':'SOURCE_FAILURE','checkpoint_advance':False}
