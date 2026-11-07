@@ -4,6 +4,7 @@ import math
 from urllib.parse import urlsplit
 
 SCHEMA='policy-impact/1'
+WATCH_AVAILABILITY={'PUBLIC_REFERENCE','UNAVAILABLE','UNKNOWN'}
 FIELDS={
 'sources': 'source_id source_revision_id kind publisher url title document_id published first_seen_at acquired_at revision_acquired_at verification_status evidence_locator content_sha256 data_kind',
 'policies': 'policy_id revision_id supersedes_revision_id policy_type title issuer jurisdiction target_regions scope_description lifecycle_status published effective_from effective_to evidence_refs recorded_at change_recorded_at reviewed_at review_status next_review_on identity_basis subsidy_stage parent_policy_id data_kind',
@@ -160,6 +161,7 @@ def validate(bundle,companies,public_macro_ids=()):
         for w in h['watch_items']:
             shape(w,['kind','reference_id','rationale','availability'],'hypotheses.watch_items')
             need(all(isinstance(v,str) for v in w.values()),'TEXT','hypotheses.watch_items')
+            need(w['availability'] in WATCH_AVAILABILITY,'WATCH_AVAILABILITY','hypotheses.watch_items.availability')
             need(w['kind'] in ('MACRO_SERIES','COMPANY_DISCLOSURE','POLICY_UPDATE'),'WATCH_KIND','hypotheses')
             if w['kind']=='MACRO_SERIES':need(w['reference_id'] in public_macro_ids or w['availability']=='UNAVAILABLE','PRIVATE_MACRO_REF','hypotheses')
     # Revision and parent links must be acyclic (all other dependencies are typed).
