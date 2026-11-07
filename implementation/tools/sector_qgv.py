@@ -24,6 +24,11 @@ def run(job,output,synthetic=False):
         raise ValueError('PRIVATE_OUTPUT_OUTSIDE_CHECKOUT_REQUIRED')
     if output.exists():raise ValueError('OUTPUT_ALREADY_EXISTS')
     mode=job.get('mode','normalized')
+    restoring='saved_config' in job or 'retained_preview' in job
+    if restoring and (not all(k in job for k in ('saved_config','retained_preview')) or
+                      mode!='normalized' or any(k in job for k in ('config','main_request')) or
+                      job.get('comparisons') or job.get('axis_comparison')):
+        raise ValueError('SAVED_REPLAY_JOB_CONFLICT')
     config=job.get('config',default_config());audit=None
     if mode=='held-sec':
         spec=job['sec_snapshot'];sec=json.loads(checked_bytes(spec))
@@ -71,7 +76,12 @@ def run(job,output,synthetic=False):
         return {k:v for k,v in report.items() if k!='rows'}
     else:raise ValueError('JOB_MODE_UNSUPPORTED')
     main_response=None
-    if job.get('main_request'):
+    if restoring:
+        from investment_system.research.sector_qgv_restore import replay_saved_config
+        restored=replay_saved_config(json.loads(checked_bytes(job['saved_config'])),
+            json.loads(checked_bytes(job['retained_preview'])),snapshot,job['request_id'])
+        config=restored['config'];preview=restored['preview']
+    elif job.get('main_request'):
         from investment_system.research.sector_qgv_main import run_preview_request
         request=json.loads(checked_bytes(job['main_request']))
         if request['request_id']!=job['request_id']:raise ValueError('MAIN_REQUEST_JOB_MISMATCH')
