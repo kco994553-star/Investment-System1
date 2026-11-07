@@ -152,7 +152,7 @@ APPROVED_SHA256 = {
     "theme-boot.js": "4aaf08ecd900e1216a95159a277f8a7c51c32e41784f1ac9530ecf1dc77a6f2c",
     "theme.css": "4cd7dc3f0c69a9f99cf946aa61f76f3cefa12e4d529b3d22b8fb7721f63b932c",
     "app-shell.js": "a14db1ca7b0db3039bf9b8daeb13d967ce6536a45e8db72b0a4f84a2a83bc1a2",
-    "home-screen.js": "8c9cb4eabbf7e834908c931e9fa306ab408b8384082de75a6dfe12e14c425f7e",
+    "home-screen.js": "aa1f67ee52b3a13566d218bb79c40b0f7cb41b3b89fedfaf5c7bc710631a7b79",
     "home-quotes.js": "46487b40e170c3291b023bebcb0fd01da19bb3beb53bfad3006be6377cfe3a96",
     "doodles.js": "413afcb07c5ef5f4edcb0ab544ba61a7d19954db0951ccdf85742c04cf5bb57e",
     "ia-screens.js": "d7e23a16dd220621a27a464c88b58665f2e3bc48c98e367fcdf45c507256d3cb",
