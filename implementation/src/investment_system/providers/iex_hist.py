@@ -64,10 +64,12 @@ import time
 import urllib.parse
 import urllib.request
 from pathlib import Path
-from zoneinfo import ZoneInfo
 
 from .. import public_price_boundary as boundary
 from ..validation.forward_ledger import NYSE_HOLIDAYS
+# Pure value rules shared with offline readers (re-exported unchanged: iex_hist.NY / SESSION / MAX_PRICE_E4 / valid_symbol / session_ns).
+from .iex_values import MAX_PRICE_E4, NY, SESSION, session_ns, valid_symbol  # noqa: F401
+from .iex_values import iso_day as _iso
 
 PROVIDER = 'IEX_HIST'
 FEED = ('TOPS', '1.6')
@@ -79,8 +81,6 @@ ATTRIBUTION = ('Data provided for free by IEX. By accessing or using IEX Histori
                'Terms of Use.')
 TERMS_URL = 'https://www.iex.io/legal/hist-data-terms'
 LABEL_KO = 'IEX 마지막 체결가 기준(공식 종가 아님)'
-NY = ZoneInfo('America/New_York')
-SESSION = (dt.time(9, 30), dt.time(16, 0))
 PARSER_STATUSES = ('ROUND', 'ODD_ONLY', 'NO_TRADE')
 CHUNK = 1 << 22
 # curl limits (2026-10-25): no curl --retry (a retry rewrites the file from byte 0 into stdout); a connect that takes over 30 s,
@@ -112,7 +112,6 @@ RATE_SAMPLE_MIN_BYTES = 1 << 28
 RATE_SAMPLE_MIN_S = 20
 REAP_TIMEOUT_S = 10      # bounded wait for a killed child on the STREAM_FAILED path
 _SIGPIPE = -int(getattr(signal, 'SIGPIPE', 13))   # Popen returncode of a child ended by SIGPIPE (default handler restored)
-MAX_PRICE_E4 = 10**11   # $10M per share: anything above is a parser/format fault, never a price
 
 SUPPLIED = 'SUPPLIED'
 STATUS_CODES = ('SUPPLIED', 'ODD_LOT_ONLY', 'NO_IEX_TRADE', 'PRICE_SYMBOL_UNMAPPED', 'ADR_RATIO_UNCONFIRMED',
@@ -193,10 +192,6 @@ def _stream_fail(code, got, flow_s, curl_rc=None):
 
 
 # ---- symbols ---------------------------------------------------------------------------------------------------------
-def _iso(day: str) -> str:
-    return day if '-' in day else f'{day[:4]}-{day[4:6]}-{day[6:]}'
-
-
 def iex_symbol(code: str, day: str, aliases=SYMBOL_ALIASES):
     """IEX symbol of a Universe code ('EXCH:TICKER') on day YYYYMMDD / YYYY-MM-DD; None = not traded on IEX (alias None)."""
     iso = _iso(day)
@@ -205,10 +200,6 @@ def iex_symbol(code: str, day: str, aliases=SYMBOL_ALIASES):
         if iso >= since:
             symbol = alias
     return symbol
-
-
-def valid_symbol(symbol) -> bool:
-    return isinstance(symbol, str) and re.fullmatch(r'[A-Z0-9][A-Z0-9.\-+=^]{0,7}', symbol) is not None
 
 
 def split_after(code: str, period_end, basis_day: str, splits=SPLITS) -> bool:
@@ -326,13 +317,6 @@ def file_checks(entry: dict, fetch=fetch_json) -> tuple[int, str]:
 
 
 # ---- streaming parse -------------------------------------------------------------------------------------------------
-def session_ns(day: str) -> tuple[int, int]:
-    d = dt.date.fromisoformat(_iso(day))
-    start = dt.datetime.combine(d, SESSION[0], NY)
-    end = dt.datetime.combine(d, SESSION[1], NY)
-    return int(start.timestamp()) * 10**9, int(end.timestamp()) * 10**9
-
-
 def parse_rows(text: str, symbols) -> dict:
     """Parser stdout -> {SYM: (status, price_e4 or None)} for exactly the requested symbols."""
     rows = {}
