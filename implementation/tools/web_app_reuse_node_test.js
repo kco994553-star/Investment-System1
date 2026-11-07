@@ -67,7 +67,7 @@ const P1 = ['action.js', 'data.js', 'prices.js', 'store.js', 'qgv.js', 'engines.
 // The common base (2026-10-31, docs/frontend_v2/COMMON_BASE_20261031.md): the one company list, the private area, the Lab reader.
 const COMMON = ['companies.js', 'private.js', 'lab.js'];
 // The screens' after-first-paint halves (web_app files, loaded after the layer; P1_DATA_LAYER.md §1.1 screen-file rule).
-const LIVE = ['search-part-live.js', 'screen-search-live.js', 'screen-qgv-live.js', 'screen-macro-live.js', 'screen-prompts-live.js', 'screen-tree-live.js', 'screen-technical-live.js', 'screen-news-live.js', 'screen-lab-live.js', 'tech-screen.js', 'screen-tech-filter-live.js'];
+const LIVE = ['search-part-live.js', 'screen-search-live.js', 'screen-qgv-live.js', 'screen-macro-live.js', 'screen-prompts-live.js', 'screen-tree-live.js', 'screen-technical-live.js', 'screen-news-live.js', 'screen-lab-live.js', 'tech-screen.js', 'screen-tech-filter-live.js', 'sector-qgv.js', 'sector-qgv-axis.js', 'screen-sector-qgv-axis-live.js', 'screen-sector-qgv-live.js'];
 const SKELETON_MAX_BYTES = { 'screen-search.js': 5 * 1024, 'screen-qgv.js': 5 * 1024, 'screen-macro.js': 5 * 1024, 'screen-prompts.js': 5 * 1024, 'screen-tree.js': 5 * 1024, 'screen-technical.js': 5 * 1024, 'screen-news.js': 5 * 1024, 'screen-lab.js': 5 * 1024 };
 const LANES = ['qgv', 'technical', 'macro', 'news', 'portfolio', 'prompts', 'tree', 'lab'].map((id) => 'screen-' + id + '.js');
 const P0_SCREENS = ['screen-search.js', 'screen-menus.js', 'screen-detail.js', 'boot.js'];
