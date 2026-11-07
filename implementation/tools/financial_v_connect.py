@@ -70,6 +70,27 @@ def run(manifest_path):
     if len(universe) != 504 or len(set(issuer_codes)) != len(issuer_codes) or set(issuer_codes) != set(financial):
         raise ValueError('FIXED_FINANCIAL_MEMBERSHIP_REQUIRED')
     prices = {}
+    iex_report = None
+    if manifest.get('prices') and manifest.get('iex_handoff'):
+        raise ValueError('AMBIGUOUS_PRICE_INPUT')
+    if manifest.get('iex_handoff'):
+        from investment_system.research.financial_v_iex import adapt
+        handoff = manifest['iex_handoff']
+        main_manifest, derived, requests = (read(handoff[k]) for k in ('manifest','derived','requests'))
+        basis_bytes = read(handoff['basis']) if handoff.get('basis') else b'{"records":{}}'
+        basis = json.loads(basis_bytes)
+        proof_hashes = set()
+        for spec in handoff.get('basis_evidence', []):
+            read(spec); proof_hashes.add(spec['sha256'])
+        for metrics in basis.get('records', {}).values():
+            for proof in metrics.values():
+                if any(ref['sha256'] not in proof_hashes for ref in proof.get('evidence_refs', [])):
+                    raise ValueError('PRICE_BASIS_EVIDENCE_FILE_REQUIRED')
+        iex_report = adapt(main_manifest, derived, requests, basis_bytes,
+                           valuation_date=manifest['valuation_date'], input_vintage=manifest['input_vintage'])
+        prices = iex_report['prices']['records']
+        _verify_price_sources(prices, {iex_report['trade_evidence_sha256']: iex_report['trade_evidence'],
+                                      iex_report['basis_sha256']: basis}, manifest['valuation_date'])
     if manifest.get('prices'):
         supplied = json.loads(read(manifest['prices']))
         if (supplied.get('schema_version') != 'financial-v-price-input/1'
@@ -88,9 +109,21 @@ def run(manifest_path):
                             cover_bytes=read(issuer['cover']) if issuer.get('cover') else None,
                             valuation_date=manifest['valuation_date'], input_vintage=manifest['input_vintage'],
                             prices=prices.get(code)))
-    return {'schema_version': VERSION, 'manifest_sha256': hashlib.sha256(body).hexdigest(),
+    report = {'schema_version': VERSION, 'manifest_sha256': hashlib.sha256(body).hexdigest(),
             'valuation_date': manifest['valuation_date'], 'input_vintage': manifest['input_vintage'],
             'source_receipts': receipts, 'summary': summarize(rows), 'rows': rows}
+    if iex_report is not None:
+        requested = {r['code'] for r in iex_report['rows']}
+        results = {r['code']: r['result'] for r in rows if r['code'] in requested}
+        for item in iex_report['rows']:
+            result = results[item['code']]
+            item['raw_ratio_value'] = result['metrics'][item['metric']]['value']
+            item['candidate_primary_adopted'] = result['primary_available']
+            item['candidate_reasons'] = result['metrics'][item['metric']]['reasons']
+        iex_report['summary']['raw_ratio_metrics'] = sum(i['raw_ratio_value'] is not None for i in iex_report['rows'])
+        iex_report['summary']['primary_adopted_codes'] = sum(r['primary_available'] for r in results.values())
+        report['iex_handoff'] = iex_report
+    return report
 
 
 def main():

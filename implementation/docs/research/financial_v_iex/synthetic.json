@@ -1,0 +1,215 @@
+{
+  "synthetic_only": true,
+  "main_manifest": {
+    "schema_version": "iex-day-preserve-once/2",
+    "state": "COMPLETE",
+    "day": "2026-11-02",
+    "manifest_name": "manifest-r1a1.json",
+    "release_tag": "current-iex-20261102",
+    "parser": {
+      "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "git_commit": "dddddddddddddddddddddddddddddddddddddddd"
+    },
+    "received": {
+      "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "md5": "cccccccccccccccccccccccccccccccc",
+      "bytes": 100,
+      "started_at_utc": "2026-11-03T00:50:00Z",
+      "completed_at_utc": "2026-11-03T01:00:00Z",
+      "exit_codes": [
+        0,
+        0,
+        0
+      ]
+    },
+    "reassembly": {
+      "mode": "STREAMING_NO_FILE",
+      "bytes": 100,
+      "chunks": 1,
+      "sha256_match": true,
+      "md5_match": true,
+      "gzip_test_ok": true,
+      "verified_at_utc": "2026-11-03T01:00:30Z"
+    },
+    "chunks": [
+      {
+        "name": "part-01",
+        "size": 100,
+        "sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+      }
+    ],
+    "completeness": {
+      "size_match": true,
+      "md5_match": true,
+      "gzip_exit_0": true,
+      "parser_exit_0": true,
+      "curl_exit_0": true,
+      "all_chunks_verified": true,
+      "reassembly_streaming_verified": true,
+      "derived_rows": 1,
+      "derived_rows_expected": 1
+    },
+    "input": {
+      "commit": "dddddddddddddddddddddddddddddddddddddddd",
+      "path": "synthetic/input.json",
+      "file_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "row_indexes": [
+        12
+      ]
+    },
+    "session_window_ns": [
+      1793629800000000000,
+      1793653200000000000
+    ],
+    "written_at_utc": "2026-11-03T01:02:00Z",
+    "derived": {
+      "name": "derived-r1a1.json",
+      "schema_version": "iex-day-financial11-last-trade/1",
+      "sha256": "33d2c5f64fcf163fc57bb05ff039e60f5b2569866c81126d292976c04dc8652d",
+      "bytes": 1524,
+      "rows": 1,
+      "states": {
+        "PRICE": 1,
+        "NO_TRADE": 0,
+        "NOT_IN_FILE": 0,
+        "PRICE_INVALID": 0
+      },
+      "generated_at_utc": "2026-11-03T01:01:00Z"
+    }
+  },
+  "derived_utf8": "{\"acquired_at_utc\": \"2026-11-03T01:00:00Z\", \"adjustment_basis\": \"AS_TRADED\", \"basis_date\": \"2026-11-02\", \"basis_kind\": \"IEX_LAST_REGULAR_SESSION_TRADE\", \"currency\": \"USD\", \"generated_at_utc\": \"2026-11-03T01:01:00Z\", \"input\": {\"commit\": \"dddddddddddddddddddddddddddddddddddddddd\", \"file_sha256\": \"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\", \"path\": \"synthetic/input.json\", \"row_indexes\": [12]}, \"manifest\": \"manifest-r1a1.json\", \"original\": {\"bytes\": 100, \"md5\": \"cccccccccccccccccccccccccccccccc\", \"sha256\": \"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\"}, \"parser_git_commit\": \"dddddddddddddddddddddddddddddddddddddddd\", \"parser_source_sha256\": \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\", \"release_tag\": \"current-iex-20261102\", \"rows\": [{\"basis_date\": \"2026-11-02\", \"code\": \"NYSE:TEST\", \"iex_symbol\": \"TEST\", \"last_trade_ns\": 1793653140123456789, \"last_trade_utc\": \"2026-11-02T20:59:00.123456789Z\", \"parser_source_sha256\": \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\", \"parser_status\": \"ROUND\", \"price\": \"40.0000\", \"reason\": \"REGULAR_SESSION_ROUND_LOT_LAST_TRADE\", \"row_index\": 12, \"source\": \"IEX_HIST TOPS 1.6 last regular-session trade\", \"state\": \"PRICE\"}], \"schema_version\": \"iex-day-financial11-last-trade/1\", \"session_window_ns\": [1793629800000000000, 1793653200000000000], \"source\": \"IEX_HIST TOPS 1.6 last regular-session trade\", \"states\": {\"NOT_IN_FILE\": 0, \"NO_TRADE\": 0, \"PRICE\": 1, \"PRICE_INVALID\": 0}, \"unit\": \"USD/share\"}",
+  "requests": {
+    "schema": "financial-v-pending-price-requests/1",
+    "records": [
+      {
+        "row_index": 12,
+        "code": "NYSE:TEST",
+        "cik": "0000000001",
+        "primary_metric": "earnings_yield",
+        "valuation_date": "2026-11-02",
+        "required_share_basis": "FY0:0000000001-26-000001:2026-02-01"
+      }
+    ]
+  },
+  "reviewed_basis": {
+    "records": {
+      "NYSE:TEST": {
+        "earnings_yield": {
+          "code": "NYSE:TEST",
+          "cik": "0000000001",
+          "iex_symbol": "TEST",
+          "currency": "USD",
+          "share_basis": "FY0:0000000001-26-000001:2026-02-01",
+          "identity_status": "DOCUMENT_LINKED",
+          "action_status": "MATCHED_TO_NUMERATOR",
+          "valid_from": "2026-11-02",
+          "valid_to": "2026-11-02",
+          "evidence_refs": [
+            {
+              "sha256": "9999999999999999999999999999999999999999999999999999999999999999",
+              "locator": "synthetic-reviewed-class-and-actions"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "normalized": {
+    "schema_version": "financial-v-iex-adapter/1",
+    "valuation_date": "2026-11-02",
+    "acquired_at": "2026-11-03T01:00:00Z",
+    "generated_at": "2026-11-03T01:01:00Z",
+    "manifest_sha256": "6cc43aaab8030e6df6c8c17601552c50f072c412e09bb303260e258f3d741365",
+    "derived_sha256": "33d2c5f64fcf163fc57bb05ff039e60f5b2569866c81126d292976c04dc8652d",
+    "requests_sha256": "f8fe3c63b5664a4015359309000e30a9685f0b8bb0ca20de24f9026935eb904c",
+    "original_integrity": "PINNED_MANIFEST_REASSEMBLY_ATTESTATION_NOT_LOCAL_RAW_REHASH",
+    "prices": {
+      "schema_version": "financial-v-price-input/1",
+      "valuation_date": "2026-11-02",
+      "records": {
+        "NYSE:TEST": {
+          "earnings_yield": {
+            "code": "NYSE:TEST",
+            "cik": "0000000001",
+            "value": 40.0,
+            "date": "2026-11-02",
+            "currency": "USD",
+            "unit": "USD/share",
+            "traded_at": "2026-11-02T20:59:00.123456789Z",
+            "acquired_at": "2026-11-03T01:00:00Z",
+            "price_type": "IEX_LAST_REGULAR_TRADE",
+            "price_basis": "RAW",
+            "trade_validation": "ELIGIBLE",
+            "share_basis": "FY0:0000000001-26-000001:2026-02-01",
+            "source": {
+              "sha256": "4b07029ffea1ebb8fa72163fbde6a3a714fb8de0b466211719beea192271d9d0",
+              "json_pointer": "/records/NYSE:TEST"
+            },
+            "basis_source": {
+              "sha256": "ff3556afa5dbf0a760dc7abc60a39ff2394c19ecc2abec3bc24daee2ddc55198",
+              "json_pointer": "/records/NYSE:TEST/earnings_yield"
+            }
+          }
+        }
+      }
+    },
+    "trade_evidence": {
+      "schema_version": "financial-v-normalized-trades/1",
+      "records": {
+        "NYSE:TEST": {
+          "code": "NYSE:TEST",
+          "cik": "0000000001",
+          "value": 40.0,
+          "date": "2026-11-02",
+          "currency": "USD",
+          "unit": "USD/share",
+          "traded_at": "2026-11-02T20:59:00.123456789Z",
+          "acquired_at": "2026-11-03T01:00:00Z",
+          "price_type": "IEX_LAST_REGULAR_TRADE",
+          "price_basis": "RAW",
+          "trade_validation": "ELIGIBLE",
+          "share_basis": "FY0:0000000001-26-000001:2026-02-01",
+          "original_price_text": "40.0000",
+          "original_trade_ns": 1793653140123456789,
+          "source_derived_sha256": "33d2c5f64fcf163fc57bb05ff039e60f5b2569866c81126d292976c04dc8652d",
+          "source_row_pointer": "/rows/0",
+          "original_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        }
+      }
+    },
+    "trade_evidence_sha256": "4b07029ffea1ebb8fa72163fbde6a3a714fb8de0b466211719beea192271d9d0",
+    "basis_sha256": "ff3556afa5dbf0a760dc7abc60a39ff2394c19ecc2abec3bc24daee2ddc55198",
+    "rows": [
+      {
+        "code": "NYSE:TEST",
+        "metric": "earnings_yield",
+        "source_state": "PRICE",
+        "source_reason": "REGULAR_SESSION_ROUND_LOT_LAST_TRADE",
+        "price_present": true,
+        "price_input_ready": true,
+        "reasons": []
+      }
+    ],
+    "summary": {
+      "requested_codes": 1,
+      "source_states": {
+        "PRICE": 1,
+        "NO_TRADE": 0,
+        "NOT_IN_FILE": 0,
+        "PRICE_INVALID": 0
+      },
+      "price_available_codes": 1,
+      "price_ready_codes": 1
+    }
+  },
+  "expected": {
+    "price_available_codes": 1,
+    "price_ready_codes": 1,
+    "source_state": "PRICE",
+    "value": 40,
+    "unknown_basis_price": null,
+    "three_clocks_distinct": true,
+    "official_qgv_change": false,
+    "source_requests": 0
+  }
+}
