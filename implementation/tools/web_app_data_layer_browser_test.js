@@ -62,7 +62,7 @@ const UNIVERSE_SOURCE_KEY = 'investment.web.v1.universe-source';
 // Stored device quotes seeded in C3 (made-up decimals, distinct from the Universe tab sentinels).
 const STORED_PRICE = '612.0761937', STORED_HIST = '401.0761953';
 // Live-only public files this test leaves unpublished: their 404 is intended (no console error is accepted for anything else).
-const UNPUBLISHED = ['sec-public-inputs.json', 'forward-validation-ledger.json', 'qgv-official.json', 'qgv-official-status.json'];
+const UNPUBLISHED = ['sec-public-inputs.json', 'forward-validation-ledger.json', 'qgv-official.json', 'qgv-official-status.json', 'macro-evidence-status.json'];
 const FRONTEND_SUFFIXES = ['.html', '.css', '.js', '.woff2', '.txt', '.png', '.svg'];
 // What a screen reads when it opens (P2-1 menu 0): the home's company index (static files only), the company page's public files.
 const HOME_READS = ['actual-catalog.json', 'company-names-ko.json', 'universe-codes.json'];
@@ -237,10 +237,13 @@ async function scores(page) {
     const QGV_READS = [...(await page.evaluate(() => window.IS2.data.CORE)), 'actual-catalog.json', 'company-names-ko.json', 'qgv-official.json', 'qgv-official-status.json'];
     // 3. 매크로 (feature 4, screen-macro.js): the screen only asks IS2.data.ready(), DataRefresh.load's page-open read of the core
     // files, which leaves dart-financials.json to its lazy reader; a route change reads nothing new (the layer keeps the generation).
-    const MACRO_READS = (await page.evaluate(() => window.IS2.data.CORE)).filter((n) => n !== 'dart-financials.json');
+    // The 4.1.3 evidence block also reads the daily attempt record beside macro-evidence.json once per page (IS2.data.static,
+    // macro-evidence-status.json; unpublished here, so a 404 = no record).
+    const CORE_OPEN = (await page.evaluate(() => window.IS2.data.CORE)).filter((n) => n !== 'dart-financials.json');
+    const MACRO_READS = [...CORE_OPEN, 'macro-evidence-status.json'];
     // 4. 뉴스 (feature 5, screen-news.js): the same core set, the three public lists (IS2.data.list) and the company list's two
     // static files (IS2.companies.ready()); a route change reads nothing new.
-    const NEWS_READS = [...MACRO_READS, ...(await page.evaluate(() => window.IS2.data.LIST_FILES)), 'universe-codes.json', 'company-names-ko.json'];
+    const NEWS_READS = [...CORE_OPEN, ...(await page.evaluate(() => window.IS2.data.LIST_FILES)), 'universe-codes.json', 'company-names-ko.json'];
     // n+1. Lab (feature 9.2, screen-lab.js): the price-free forward ledger through IS2.data.static on every open here (this test
     // leaves it unpublished, and a static read that failed is read again on the next call); 9.1 reads nothing (no public Lab file).
     const LAB_READS = ['forward-validation-ledger.json'];

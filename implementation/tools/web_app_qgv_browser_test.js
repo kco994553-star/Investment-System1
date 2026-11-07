@@ -50,7 +50,7 @@ const RB = R.requireOld('report-benchmarks.js');
 const NOW = '2026-10-14T03:00:00.000Z';
 const CLASS = JSON.parse(fs.readFileSync(path.join(R.ROOT, 'implementation/tests/fixtures/company_classification_v0_payloads.json'), 'utf8')).live;
 const CUSTOM = JSON.parse(fs.readFileSync(path.join(R.ROOT, 'implementation/tests/fixtures/qgv_v2_custom_vectors_v1.json'), 'utf8'));
-const UNPUBLISHED = ['sec-public-inputs.json', 'qgv-official.json', 'qgv-official-status.json'];
+const UNPUBLISHED = ['sec-public-inputs.json', 'qgv-official.json', 'qgv-official-status.json', 'macro-evidence-status.json'];
 // The synthetic central V publication (its input as_of = the fixture's) and a status file of a later failed attempt.
 const PUB_TEXT = JSON.parse(fs.readFileSync(path.join(R.ROOT, 'implementation/tests/fixtures/qgv_official_vectors_v1.json'), 'utf8')).base_text, PUB = JSON.parse(PUB_TEXT);
 const STATUS = { schema: 'qgv-official-status/1', kind: 'QGV_OFFICIAL_STATUS', last_attempt_at: '2026-10-14T01:50:00Z', attempt_state: 'SUPPLY_FAILED', reason_code: 'IEX_SUPPLY_BELOW_MINIMUM',
