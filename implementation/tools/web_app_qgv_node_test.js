@@ -333,7 +333,9 @@ test('data: fixed file list = the readers own names; strict request options; not
   assert.equal(win.requests.length, 0, 'creating the layer reads nothing');
   const D = mods.DataRefresh, expect = new Set([...Object.keys(mods.PublicScreens.FILES), mods.ClassificationScreens.FILE, mods.Qgv2Inputs.FILE, 'sec-public-inputs.json', 'dart-financials.json', mods.MacroEvidence.FILENAME,
     ...Object.values(D.LISTS), mods.SecUniverseShares.FILENAME, 'actual-catalog.json', 'entities.json', mods.EntitySearch.NAMES_FILE, mods.InvestmentAppConfig.universeCodeCatalogURL, mods.DeviceValuation.FILE, mods.ForwardValidation.FILENAME,
-    mods.QgvOfficial.FILENAME, 'qgv-official-status.json']);
+    mods.QgvOfficial.FILENAME, 'qgv-official-status.json',
+    // macro-evidence-status.json (owner 2026-11-07): the daily attempt record beside macro-evidence.json
+    'macro-evidence-status.json']);
   assert.deepEqual(new Set(data.FILES), expect); assert.equal(data.EVENT, D.EVENT); assert.equal(data.MAX_BYTES, 2 * 1024 * 1024);
   await assert.rejects(data.strictFetch('https://site.test/app/sec-qgv2.json'), /PUBLIC_FILE_UNKNOWN/);
   await assert.rejects(data.strictFetch('../sec-qgv2.json'), /PUBLIC_FILE_UNKNOWN/);

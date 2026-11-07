@@ -130,11 +130,20 @@ def collect(directory, *, environ=None, client_factory=None, macro_v0=None, macr
             manifest['macro_curve_v1'] = macro_curve(root)
         if macro_evidence is not None:
             # Macro evidence lines (exploration only, MEV-10): reuses the macro files above from this private directory
-            # and writes only macro-evidence.json. Any failure prints a fixed code and never stops the SEC collection.
+            # and writes only macro-evidence.json (+ its attempt record). Any failure prints a fixed code and never stops
+            # the SEC collection. Owner 2026-11-07 (run 42326419126): a failed attempt (non-zero or an exception) is
+            # handled here: without a good copy the build-time placeholder is withheld, never published as a result.
             try:
-                macro_evidence(root, manifest)
-            except Exception:
-                print('MACRO_EVIDENCE BUILD_FAILED nothing_written')
+                code = macro_evidence(root, manifest)
+            except Exception as error:
+                print('MACRO_EVIDENCE BUILD_FAILED stage=CALLER error=%s' % type(error).__name__)
+                code = 1
+            if code != 0:
+                try:
+                    import macro_evidence as evidence_tool
+                    evidence_tool.withhold(directory)
+                except Exception as error:
+                    print('MACRO_EVIDENCE WITHHOLD_FAILED error=%s' % type(error).__name__)
         class Capture:
             def __init__(self, agent):
                 self.client = client_factory(agent)
@@ -209,7 +218,7 @@ def main(argv=None):
                 import macro_evidence as evidence_tool
 
                 def macro_evidence(root, manifest):
-                    evidence_tool.run_from_capture(args.out, root, manifest, environ=os.environ)
+                    return evidence_tool.run_from_capture(args.out, root, manifest, environ=os.environ)
             previous, previous_state = load_previous_inputs()
             result = collect(args.out, macro_v0=macro_v0, macro_curve=macro_curve, previous=previous,
                              previous_state=previous_state, macro_evidence=macro_evidence)
