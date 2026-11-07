@@ -1,15 +1,19 @@
 /* 1.1.8 기술 조건 필터 (feature 3.5; owner 2026-11-03 and 2026-11-04), the part of the QGV leaderboard that runs after IS2.ready.
-   screen-qgv-live.js asks IS2.techFilterLive.create({signal, redraw}) once per route and calls on every draw: keep(rows) (the
-   leaderboard rows the filter lets through, or null when it does not apply), head() / cell(row) / sub(row) (the table's tech column
+   screen-qgv-live.js asks IS2.techFilterLive.create({signal, redraw}) once per route and calls on every draw: keep(rows, {universe})
+   (the leaderboard rows the filter lets through, or null when it does not apply; universe = the Universe504 rows the join is
+   checked against, every one of them), head() / cell(row) / sub(row) (the table's tech column
    and the phone line) and block() (this block's content).
    - Data: Codex's technical-leaderboard/1 boards (#469) through IS2.techScreen (validate, evaluate); today the source is NONE.
      One board per (signal_day, group_id). Ranks, N, medians and deciles are the board's and never change with the filters; the
      conditions are the board's own booleans (중앙값 이상 = ge_median, 중앙값 초과 = gt_median); a null condition is 판정 불가.
    - Flow (owner): ① 평가일·비교 그룹(보드) → ② 지표 원값·분위 → ③ 필터 → ④ 결과. The block's own board table lists the board's rows
      with their ORIGINAL rank of the chosen metric (the rank number is the board's, never renumbered after filtering). The
-     leaderboard table is filtered only for board rows that join a leaderboard row (security_id = the row's id or code; QGV join
-     key [signal_day, security_id]); its sort stays 1.1.2 (QGV high first by default). No join → the leaderboard is left as it is
-     and the block says why.
+     leaderboard table is filtered only when IS2.techScreen.joinRows (port of Codex #515 join_filtered_rows) verifies the same
+     evaluation date and the same security (owner audit 2026-11-07; key [signal_day, security_id]): each Universe row's own
+     signal_day and security_id (qgv.js rowRecord: null until evidenced, so no join today) and source().security_links (none
+     today). A security id, ticker, code or company id is never matched by itself. Its sort stays 1.1.2 (QGV high first by
+     default). No join → the leaderboard is left as it is (no technical condition applied) and the block says why (the code's
+     words: 평가일 불일치, 매핑 없음, 매핑 중복, 보드에 없는 증권 …).
    - States kept apart: 그룹 구성 미확인 (GROUP_MEMBERSHIP_UNCONFIRMED: no N, rank, median or decile), 유효 N < 10 (ranks and median,
      no decile), 계산 후 조건 충족 0건 (every condition decided, none passed), 판정 불가 (a condition the board cannot decide).
    - A null value is NA with its reason; raw_value is never shown and never fills it. Values are price-derived: text inside
@@ -24,9 +28,9 @@ const na=(code,words)=>h('span',{class:'reason',dataset:{na:code||''}},words);
 const STATE_WORDS={UNCONFIRMED:'그룹 구성 미확인 · 순위·중앙값·분위 없음',N_BELOW_10:null,OK:null};
 
 function create({signal,redraw}){
- const ctx={src:null,value:null,err:null,loading:false};
+ const ctx={src:null,value:null,links:null,err:null,loading:false};
  function load(){if(ctx.loading)return;ctx.loading=true;let p;try{p=T().source();}catch(e){p=Promise.reject(e);}
-  Promise.resolve(p).then(src=>{if(signal.aborted)return;ctx.loading=false;ctx.src=src||null;ctx.value=null;ctx.err=null;
+  Promise.resolve(p).then(src=>{if(signal.aborted)return;ctx.loading=false;ctx.src=src||null;ctx.value=null;ctx.err=null;ctx.links=src&&src.security_links!==undefined?src.security_links:null;
    if(src&&src.state==='OK'){const r=T().validate(src.payload);if(r.ok)ctx.value=r.value;else ctx.err=r.code;}
    if(ctx.value&&!ctx.value.boards.some(b=>b.id===V.board))V.board=ctx.value.boards[0].id;redraw();},
   ()=>{if(signal.aborted)return;ctx.loading=false;ctx.src={state:'ERROR',code:'TECH_SOURCE_FAILED'};ctx.value=null;redraw();});}
@@ -37,14 +41,13 @@ function create({signal,redraw}){
  function result(){const b=board();if(!b)return null;const key=V.board+'|'+JSON.stringify(conds());if(memo&&memo.key===key&&memo.b===b)return memo.r;
   memo={key,b,r:T().evaluate(b,conds())};return memo.r;}
  let secMemo=null;const secs=()=>{const b=board();if(!b)return new Map();if(secMemo&&secMemo.b===b)return secMemo.s;secMemo={b,s:T().securities(b)};return secMemo.s;};
- // Board rows joined to leaderboard rows (QGV join key: the security id equals the leaderboard row's id or code).
- function joinOf(rows){const by=new Map();for(const r of rows){by.set(r.id,r);if(r.code)by.set(r.code,r);}const out=new Map();
-  for(const[k,s]of secs())if(s.security_id&&by.has(s.security_id))out.set(by.get(s.security_id).id,k);return out;}
+ // Leaderboard rows joined only when verified (IS2.techScreen.joinRows: the row's signal_day + security_id, an active confirmed link).
  let joinMemo=null;
- function keep(rows){if(!V.on||!board())return null;const j=joinOf(rows);joinMemo=j;if(!j.size)return null;const r=result();
-  return{rows:rows.filter(x=>j.has(x.id)&&r.rows.get(j.get(x.id)).state==='PASS'),joined:j.size,result:r};}
- const on=()=>V.on&&!!board()&&!!joinMemo&&joinMemo.size>0;
- const secOfRow=row=>{const k=joinMemo&&joinMemo.get(row.id);return k?secs().get(k):null;};
+ function keep(rows,{universe=rows}={}){if(!V.on||!board())return null;const j=T().joinRows(board(),universe,{links:ctx.links,data_kind:ctx.value.data_kind});joinMemo=j;
+  if(!j.ok)return null;const r=result();
+  return{rows:rows.filter(x=>j.keys.has(x.security_id)&&r.rows.get(x.security_id).state==='PASS'),joined:j.keys.size,result:r};}
+ const on=()=>V.on&&!!board()&&!!joinMemo&&joinMemo.ok;
+ const secOfRow=row=>(on()&&joinMemo.keys.has(row.security_id)?secs().get(row.security_id):null);
 
  /* ---- one metric of one security: value + rank/decile (RAM text) or NA with its reason */
  function metricLine(s,m,{short=false}={}){const S=T(),r=s.rows[m],label=short?S.META[m].short:S.META[m].label;
@@ -118,7 +121,7 @@ function create({signal,redraw}){
   // ④ 결과
   const r=result(),cs=r.conditions,total=r.counts.PASS+r.counts.FAIL+r.counts.UNKNOWN,unknown=[...r.rows].filter(([,x])=>x.state==='UNKNOWN');
   const shown=cs.length?[...r.rows].filter(([,x])=>x.state==='PASS').map(([k])=>k):[...r.rows.keys()];
-  const j=joinMemo,joined=j?j.size:null;
+  const j=V.on?joinMemo:null,joined=j&&j.ok?j.keys.size:null;
   const step4=h('div',{class:'tf-step',dataset:{tfStep:'4'}},h('b',null,'④ 결과 · QGV 등으로 정렬'),
    h('p',{class:'sk status-line',role:'status',dataset:{tfCount:''}},b.group_id,' ',String(total),'개 중 · 통과 ',String(r.counts.PASS),' · 조건 미충족 ',String(r.counts.FAIL),' · 판정 불가 ',String(r.counts.UNKNOWN)),
    cs.length?h('p',{class:'reason',dataset:{tfConds:''}},'조건: ',cs.map(c=>S.condText(c.metric,c.condition)).join(' · ')):h('p',{class:'reason'},'조건 없음 · 보드 전체'),
@@ -128,9 +131,9 @@ function create({signal,redraw}){
     h('ul',null,...unknown.map(([k,x])=>h('li',{dataset:{unknownRow:k}},(secs().get(k).symbol||secs().get(k).security_id||k),' · ',
      ...x.unknown.flatMap((u,i)=>[i?' · ':'',S.META[u.metric].label,' ',na(u.reason,S.reasonText(u.reason))]))))):null,
    shown.length?boardTable(shown,phone):null,
-   h('p',{class:'reason',dataset:{tfJoin:joined===null?'OFF':String(joined)}},!V.on?'리더보드 표에 적용하려면 위 스위치를 켜세요 · 보드 표는 원래 순위 그대로':
-    joined?'리더보드 표: 결합된 '+joined+'개 중 통과한 종목만 · 정렬은 1.1.2 그대로(기본 QGV 높은 순) · 순위 번호·점수 그대로':
-    '리더보드 표에 적용할 수 없음 · 보드 행의 증권 ID가 리더보드 행과 결합되지 않음(QGV 결합 키 [평가일, 증권 ID]) · 리더보드는 그대로'));
+   h('p',{class:'reason',dataset:j&&!j.ok?{tfJoin:j.code,na:j.code}:{tfJoin:joined===null?'OFF':String(joined)}},!j?'리더보드 표에 적용하려면 위 스위치를 켜세요 · 보드 표는 원래 순위 그대로':
+    j.ok?'리더보드 표: 결합된 '+joined+'개 중 통과한 종목만 · 정렬은 1.1.2 그대로(기본 QGV 높은 순) · 순위 번호·점수 그대로':
+    '리더보드 표에 적용할 수 없음 · '+S.joinText(j)+' · 같은 평가일·같은 증권으로 확인된 행만 결합(QGV 결합 키 [평가일, 증권 ID]) · 리더보드는 기술 조건 없이 그대로'));
   return[status,step1,step2,step3,step4];}
  return Object.freeze({load,on,keep,head,cell,sub,block});}
 I.techFilterLive=Object.freeze({create});
