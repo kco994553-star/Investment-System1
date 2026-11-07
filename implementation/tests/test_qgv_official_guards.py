@@ -11,6 +11,7 @@
 
 Synthetic publications (tests/test_qgv_official.py builders: made-up prices), an in-memory live Pages copy, no network.
 """
+import ast
 import copy
 import datetime as dt
 import hashlib
@@ -27,7 +28,7 @@ from collections import Counter
 import pytest
 
 from investment_system import public_price_boundary as boundary
-from investment_system.providers import iex_hist, iex_monthend
+from investment_system.providers import iex_hist, iex_monthend, iex_values
 from investment_system.qgv import qgv_official as qo
 from investment_system.universe import sec_qgv2
 from tests.test_public_price_boundary import prohibit_network  # noqa: F401  (autouse: every test here is offline)
@@ -429,6 +430,23 @@ def test_only_the_adapters_and_the_route_reference_the_price_source():
     assert adapters == ADAPTER_FILES, adapters ^ ADAPTER_FILES
     assert set(boundary.ACTIONS_PRICE_ROUTES) <= ADAPTER_FILES
 
+
+def test_iex_values_stays_pure():
+    """providers/iex_values.py holds the pure value rules (session window, symbol shape, price ceiling) that offline readers
+    share with the price adapter (owner 11/06: a minimal split instead of listing a reader among the adapters). It must stay
+    outside the price-source lists: no host, no adapter name, only standard-library imports, no I/O or process call."""
+    rel = 'implementation/src/investment_system/providers/iex_values.py'
+    text = (REPO / rel).read_text(encoding='utf-8')
+    assert not IEX_HOSTS.search(text) and not ADAPTERS.search(text)
+    assert rel not in HOST_FILES | ADAPTER_FILES | set(boundary.ACTIONS_PRICE_ROUTES)
+    tree = ast.parse(text)
+    imported = {a.name.split('.')[0] for n in ast.walk(tree) if isinstance(n, ast.Import) for a in n.names}
+    imported |= {(n.module or '').split('.')[0] or '.' for n in ast.walk(tree) if isinstance(n, ast.ImportFrom)}
+    assert imported == {'__future__', 'datetime', 're', 'zoneinfo'}, imported
+    calls = {n.func.id for n in ast.walk(tree) if isinstance(n, ast.Call) and isinstance(n.func, ast.Name)}
+    assert not calls & {'open', 'exec', 'eval', '__import__'}, calls
+    for name in ('NY', 'SESSION', 'MAX_PRICE_E4', 'valid_symbol', 'session_ns'):
+        assert getattr(iex_hist, name) is getattr(iex_values, name), name
 
 def _steps(job):
     return ('\n' + job.split('\n    steps:\n', 1)[1]).split('\n      - ')[1:] if '\n    steps:\n' in job else []
