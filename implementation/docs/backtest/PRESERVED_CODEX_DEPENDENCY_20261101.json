@@ -1,0 +1,144 @@
+{
+  "purpose": "Preserve existing Codex dependency, not Main exp_deciles engine",
+  "original_commit": "ca310378ba4fe40a1a971da30b475d9812c68a15",
+  "original_package_tree": "4c8b99b3acdf9502a387c42f46552118f9a692b9",
+  "files": [
+    {
+      "path": "implementation/src/investment_system/research/qgv_backtest/annual.py",
+      "git_blob": "bbaaba0cdcfc112963dc97e846d29af1a1ce5928"
+    },
+    {
+      "path": "implementation/src/investment_system/research/qgv_backtest/cache.py",
+      "git_blob": "cbb3275eac77068ff81cdf6ae053add230880998"
+    },
+    {
+      "path": "implementation/src/investment_system/research/qgv_backtest/calendar_adapter.py",
+      "git_blob": "49fce25eabd816cc2dd833f67c367fc6a586e32e"
+    },
+    {
+      "path": "implementation/src/investment_system/research/qgv_backtest/config.py",
+      "git_blob": "ac87f70151b977b272a58d13fb698824c6e27650"
+    },
+    {
+      "path": "implementation/src/investment_system/research/qgv_backtest/extensions.py",
+      "git_blob": "32a3387850cc5ee26f2028e9895d93753a8d7f7d"
+    },
+    {
+      "path": "implementation/src/investment_system/research/qgv_backtest/ledger.py",
+      "git_blob": "39686deaa5fea044e721e6738f0ffbd78657e1ac"
+    },
+    {
+      "path": "implementation/src/investment_system/research/qgv_backtest/metrics.py",
+      "git_blob": "b72324f52514c2735c41adce010aac02ced5daeb"
+    },
+    {
+      "path": "implementation/src/investment_system/research/qgv_backtest/pit_adapter.py",
+      "git_blob": "7fbc9d60f1efc5743e7ad3443f3248892847a7ab"
+    },
+    {
+      "path": "implementation/src/investment_system/research/qgv_backtest/preparation.py",
+      "git_blob": "1e4fc1bdb32be02c04c408e04dec68d2218a6b30"
+    },
+    {
+      "path": "implementation/src/investment_system/research/qgv_backtest/reporting.py",
+      "git_blob": "04d70b837149c4c4fdfade87dc5b8fcee5382502"
+    },
+    {
+      "path": "implementation/src/investment_system/research/qgv_backtest/research_tables.py",
+      "git_blob": "04b018bcbad2df28db1b082da1771b29482f2331"
+    },
+    {
+      "path": "implementation/src/investment_system/research/qgv_backtest/runner.py",
+      "git_blob": "f93cdb0dd31d7f5b1e2b135f0822eb04e53ca28e"
+    },
+    {
+      "path": "implementation/src/investment_system/research/qgv_backtest/scoring_adapter.py",
+      "git_blob": "bd906d1f2c4568d20ba2c12b0aa3cb541d35ee02"
+    },
+    {
+      "path": "implementation/src/investment_system/research/qgv_backtest/universe.py",
+      "git_blob": "1fc93e14950100a9b14494fa454582ffcc7b4f66"
+    },
+    {
+      "path": "implementation/tests/research/test_qgv_backtest_adr_distributions.py",
+      "git_blob": "3b77b37c35918b2dcd7db95085c928f65244097a"
+    },
+    {
+      "path": "implementation/tests/research/test_qgv_backtest_annual.py",
+      "git_blob": "f6006920e6d1f323f02a5dbb7af1028c94dde92d"
+    },
+    {
+      "path": "implementation/tests/research/test_qgv_backtest_cache.py",
+      "git_blob": "7b01d319e0644afcaeac80f991351d3de31b66d4"
+    },
+    {
+      "path": "implementation/tests/research/test_qgv_backtest_cli.py",
+      "git_blob": "155a815cf53705d594f7c74558fcafaf0e3513b1"
+    },
+    {
+      "path": "implementation/tests/research/test_qgv_backtest_config.py",
+      "git_blob": "21a6c6914fdcd1d17d8d29f554fb258cfaedbd73"
+    },
+    {
+      "path": "implementation/tests/research/test_qgv_backtest_evidence_tables.py",
+      "git_blob": "af2ae3aae7a9f8d1934bcd055268d68977f0e557"
+    },
+    {
+      "path": "implementation/tests/research/test_qgv_backtest_extensions.py",
+      "git_blob": "3fed444efa11df1c43df9e73070fc2338717ceda"
+    },
+    {
+      "path": "implementation/tests/research/test_qgv_backtest_ledger.py",
+      "git_blob": "c893b93e5539fa17c6e8fa754deb25bc43bf7830"
+    },
+    {
+      "path": "implementation/tests/research/test_qgv_backtest_main_handoff.py",
+      "git_blob": "6958c434a639138e8ddcfcab5c68df992055bb2e"
+    },
+    {
+      "path": "implementation/tests/research/test_qgv_backtest_metrics.py",
+      "git_blob": "0e9aa1df32a23342c44b1c789694ca8a8d01ffe7"
+    },
+    {
+      "path": "implementation/tests/research/test_qgv_backtest_pit.py",
+      "git_blob": "40408fa523bcbef9b27ceb90719df80b9d8d775a"
+    },
+    {
+      "path": "implementation/tests/research/test_qgv_backtest_reporting.py",
+      "git_blob": "0e3ea77e343546e6c44431556793cafe9cc87c91"
+    },
+    {
+      "path": "implementation/tests/research/test_qgv_backtest_reuse_runner.py",
+      "git_blob": "abf517754d2ecf8253208eb601207ffac75cd9c0"
+    },
+    {
+      "path": "implementation/tests/research/test_qgv_backtest_runner.py",
+      "git_blob": "fbea5d7d84aef45c6c9b666ce4490bd23d81a852"
+    },
+    {
+      "path": "implementation/tests/research/test_qgv_backtest_scoring.py",
+      "git_blob": "c3b08c4a1d405c9a48bf35ff3bf960322410170b"
+    },
+    {
+      "path": "implementation/tests/research/test_qgv_backtest_universe.py",
+      "git_blob": "e0a095e37bd0ce0e4541864dc50b8a2a79a62a57"
+    },
+    {
+      "path": "implementation/tools/qgv_backtest_research.py",
+      "git_blob": "8c739045a74ee21872cf63b012047e0347a8b94a"
+    },
+    {
+      "path": "implementation/docs/backtest/QGV_BACKTEST_SPEC_V1_20261026.json",
+      "git_blob": "9508147de50a77bdbf03b454522b7ce61dd1a952"
+    }
+  ],
+  "excluded": "Pilot real-data audit outputs and reports, raw inputs, original unpublished commit history, workflow templates; original local commit preserved",
+  "byte_identical": true,
+  "Main_bundle_received": false,
+  "base_commit": "ec9788a6b134a6fd930b5214fef4e18509338052",
+  "preserved_calc_version": "qgv2-calc/2026-10-17.1",
+  "current_experiment_calc_version": "qgv2-calc/2026-10-23.1",
+  "compatibility": "Legacy dependency only. Current canonical with old frozen spec rejects SCORING_SOURCE_CHANGED; do not bypass guard or use as Main exp_deciles engine.",
+  "remote_target": "research/qgv-backtest-v1-20261026",
+  "original_commit_pushed": false
+}
