@@ -1,0 +1,205 @@
+{
+  "schema_version": "policy-impact/1",
+  "view_schema": "policy-impact-view/1",
+  "required_top_fields": [
+    "schema_version",
+    "bundle_id",
+    "generated_at",
+    "data_kind",
+    "policy_as_of",
+    "score_effect",
+    "gate_effect",
+    "scope",
+    "sources",
+    "policies",
+    "exposures",
+    "hypotheses",
+    "refresh",
+    "reason_codes",
+    "historical_pit_eligible",
+    "freshness",
+    "review_records"
+  ],
+  "required_record_fields": {
+    "sources": [
+      "source_id",
+      "source_revision_id",
+      "kind",
+      "publisher",
+      "url",
+      "title",
+      "document_id",
+      "published",
+      "first_seen_at",
+      "acquired_at",
+      "revision_acquired_at",
+      "verification_status",
+      "evidence_locator",
+      "content_sha256",
+      "data_kind"
+    ],
+    "policies": [
+      "policy_id",
+      "revision_id",
+      "supersedes_revision_id",
+      "policy_type",
+      "title",
+      "issuer",
+      "jurisdiction",
+      "target_regions",
+      "scope_description",
+      "lifecycle_status",
+      "published",
+      "effective_from",
+      "effective_to",
+      "evidence_refs",
+      "recorded_at",
+      "change_recorded_at",
+      "reviewed_at",
+      "review_status",
+      "next_review_on",
+      "identity_basis",
+      "subsidy_stage",
+      "parent_policy_id",
+      "data_kind"
+    ],
+    "exposures": [
+      "exposure_id",
+      "exposure_revision_id",
+      "company_id",
+      "policy_id",
+      "policy_revision_id",
+      "exposure_type",
+      "evidence_status",
+      "policy_applicability",
+      "description",
+      "period",
+      "evidence_refs",
+      "recorded_at",
+      "reviewed_at",
+      "review_status",
+      "ratio",
+      "reason_codes",
+      "data_kind"
+    ],
+    "hypotheses": [
+      "hypothesis_id",
+      "hypothesis_revision_id",
+      "policy_id",
+      "policy_revision_id",
+      "company_ids",
+      "exposure_refs",
+      "claim",
+      "steps",
+      "conditions",
+      "counter_conditions",
+      "watch_items",
+      "created_at",
+      "recorded_at",
+      "reviewed_at",
+      "review_status",
+      "data_kind"
+    ]
+  },
+  "record_keys": {
+    "sources": [
+      "source_id",
+      "source_revision_id"
+    ],
+    "policies": [
+      "policy_id",
+      "revision_id"
+    ],
+    "exposures": [
+      "exposure_id",
+      "exposure_revision_id"
+    ],
+    "hypotheses": [
+      "hypothesis_id",
+      "hypothesis_revision_id"
+    ]
+  },
+  "enums": {
+    "kind": [
+      "COMPANY_FILING",
+      "NEWS_REFERENCE",
+      "OFFICIAL_RELEASE",
+      "OFFICIAL_RULE"
+    ],
+    "policy_type": [
+      "EXPORT_CONTROL",
+      "INDUSTRIAL_SUBSIDY",
+      "TARIFF"
+    ],
+    "lifecycle_status": [
+      "ADOPTED",
+      "EFFECTIVE",
+      "EXPIRED",
+      "PROPOSED",
+      "STATEMENT",
+      "SUSPENDED",
+      "UNKNOWN",
+      "WITHDRAWN"
+    ],
+    "review_status": [
+      "REVIEWED",
+      "REVIEW_REQUIRED",
+      "UNREVIEWED"
+    ],
+    "verification_status": [
+      "CONFLICTING_EVIDENCE",
+      "SOURCE_UNVERIFIED",
+      "VERIFIED"
+    ],
+    "exposure_type": [
+      "CONTROLLED_PRODUCT",
+      "PROCUREMENT",
+      "PRODUCTION_SITE",
+      "REVENUE_REGION",
+      "SUBSIDY_PROJECT"
+    ],
+    "evidence_status": [
+      "CANDIDATE",
+      "DOCUMENTED",
+      "UNKNOWN"
+    ],
+    "policy_applicability": [
+      "DOCUMENTED",
+      "OUTSIDE_SCOPE",
+      "UNCONFIRMED"
+    ],
+    "subsidy_stage": [
+      "DISBURSEMENT_CONFIRMED",
+      "FINAL_AWARD",
+      "PRELIMINARY_TERMS",
+      "UNKNOWN"
+    ]
+  },
+  "effects": {
+    "score_effect": "NONE",
+    "gate_effect": "NONE"
+  },
+  "historical_pit_eligible": false,
+  "review_record_fields": [
+    "group",
+    "id",
+    "revision_id",
+    "reviewed_at",
+    "recorded_at",
+    "reviewer",
+    "author",
+    "method",
+    "evidence_refs"
+  ],
+  "temporal_fields": [
+    "value",
+    "precision",
+    "timezone"
+  ],
+  "evidence_ref_fields": [
+    "source_id",
+    "source_revision_id",
+    "locator",
+    "claim"
+  ]
+}
