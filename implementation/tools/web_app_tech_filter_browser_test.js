@@ -59,6 +59,9 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       const swap = (payload, links = null) => page.evaluate(([p, l]) => { const I = window.IS2; I.__realTech = I.__realTech || I.techScreen;
         I.techScreen = Object.freeze({ ...I.__realTech, source: () => Promise.resolve({ state: 'OK', code: null, payload: p, security_links: l, text: '' }) }); }, [payload, links]);
       // Synthetic evidenced join keys on the Universe rows (by row id), or null for the layer's own rows (signal_day / security_id null).
+      // The confirmed board group's full membership (IS2.classification.groupRows, the common classification record in the app):
+      // here a synthetic provider whose group is every Universe row, or none (BOARD_GROUP_ROWS_UNRESOLVED).
+      const group = (on) => page.evaluate((v) => { const I = window.IS2; if (v) I.classification = Object.freeze({ ...(I.classification || {}), groupRows: (b, u) => u }); else if (I.classification) I.classification = Object.freeze({ ...I.classification, groupRows: () => null }); }, on);
       const keys = (byId) => page.evaluate((k) => { const I = window.IS2; I.__realQ = I.__realQ || I.qgv; const R = I.__realQ;
         I.qgv = k ? Object.freeze({ ...R, rows: (pg, o) => R.rows(pg, o).map((r) => (Object.hasOwn(k, r.id) ? { ...r, ...k[r.id] } : r)) }) : R; }, byId);
       const cond = async (m, c) => { await page.selectOption('#tf-' + m, c); };
@@ -170,7 +173,7 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       const ids = uni.map((r) => r.id), SEC = ids.map((_, i) => 'SYNTHETIC:FIX' + String(i).padStart(3, '0')), rowOf = Object.fromEntries(SEC.map((k, i) => [k, ids[i]]));
       const bundle = (secs) => ({ data_kind: 'SYNTHETIC', cases: { joined: X.joined(secs, { signal_day: DAY }) } });
       const J = bundle(SEC), LINKS = X.links(uni.map((r, i) => ({ id: r.id, ticker: r.ticker, security_id: SEC[i] })));
-      const KEYS = (edit) => { const k = Object.fromEntries(uni.map((r, i) => [r.id, { signal_day: DAY, security_id: SEC[i] }])); if (edit) edit(k); return k; };
+      const KEYS = (edit) => { const k = Object.fromEntries(uni.map((r, i) => [r.id, { issuer_id: r.id, signal_day: DAY, security_id: SEC[i] }])); if (edit) edit(k); return k; };
       assert.equal(T.validate(J).ok, true);
       const g = uni.findIndex((r) => r.code === 'NASDAQ:GOOG'); assert.ok(g >= 0 && uni.some((r) => r.code === 'NASDAQ:GOOGL'));
       const refused = async (payload, links, byId, code, words) => {
@@ -183,13 +186,16 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
         const t = await text(B + ' [data-tf-join]');
         assert.ok(t.includes('리더보드 표에 적용할 수 없음 · ' + words) && t.includes('리더보드는 기술 조건 없이 그대로'), t);
         await page.locator('[data-k=tf-on]').uncheck(); };
+      await refused(J, LINKS, KEYS(), 'BOARD_GROUP_ROWS_UNRESOLVED', T.JOIN_TEXT.BOARD_GROUP_ROWS_UNRESOLVED);
+      await group(true);
       await refused(J, LINKS, null, 'INVALID_SESSION_DATE', T.JOIN_TEXT.INVALID_SESSION_DATE);
+      await refused(J, LINKS, KEYS((k) => { k[ids[4]].issuer_id = null; }), 'ISSUER_LINK_MISMATCH', T.JOIN_TEXT.ISSUER_LINK_MISMATCH);
       await refused(J, LINKS, KEYS((k) => { k[ids[5]].signal_day = '2026-10-14'; }), 'SIGNAL_DAY_MISMATCH', '평가일 불일치 · 보드 ' + DAY + ' · QGV 2026-10-14');
       await refused(J, LINKS, KEYS((k) => { k[ids[3]].security_id = 'SYNTHETIC:REUSED_TICKER_SECURITY'; }), 'SECURITY_ID_NOT_IN_BOARD', T.JOIN_TEXT.SECURITY_ID_NOT_IN_BOARD);
       await refused(bundle(SEC.filter((_, i) => i !== g)), LINKS, KEYS(), 'SECURITY_ID_NOT_IN_BOARD', T.JOIN_TEXT.SECURITY_ID_NOT_IN_BOARD);
       await refused(J, LINKS.filter((_, i) => i !== 7), KEYS(), 'FIXED_SECURITY_LINK_MISSING', T.JOIN_TEXT.FIXED_SECURITY_LINK_MISSING);
       await refused(J, [...LINKS, { ...LINKS[2] }], KEYS(), 'DUPLICATE_SECURITY_LINK', T.JOIN_TEXT.DUPLICATE_SECURITY_LINK);
-      ok(tag + ' no join (no signal_day, other date, same ticker other security, other share class, missing / duplicate link): table unchanged, reason shown');
+      ok(tag + ' no join (group membership unresolved, no signal_day, issuer null, other date, same ticker other security, other share class, missing / duplicate link): table unchanged, reason shown');
       await swap(J, LINKS); await keys(KEYS()); await reopen(); await page.locator(B + ' [data-tech-data]').waitFor();
       await clear();
       await cond('momentum_6m', 'top_decile'); await cond('volatility_6m', 'exclude_D10');

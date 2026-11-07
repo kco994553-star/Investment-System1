@@ -25,7 +25,10 @@
      one CONFIRMED security link {series_id, security_id, identifier_type, reference, valid_from, valid_to (inclusive), issuer_id,
      symbol, share_class, identity_status, identity_reference} active on that day ties it to the board series, the row's id
      (issuer) and ticker. No ticker / id / code fallback; one bad row or link refuses the whole join. Codex's codes, plus
-     SECURITY_LINKS_NOT_CONNECTED (Main: no links file); joinText words them.
+     SECURITY_LINKS_NOT_CONNECTED (Main: no links file); joinText words them. A row's issuer is its explicit issuer_id when the
+     field is present (Codex #516 extension: id = the company code row, issuer_id = the issuer; an explicit null never falls back),
+     else the legacy id. BOARD_GROUP_ROWS_UNRESOLVED (Main, screen-tech-filter-live keep): the confirmed board group's full QGV
+     rows are not known, so nothing is joined.
    - source() → Promise {state:'NONE', security_links:null}: no public file, no request. Private research values are never wired to a public screen.
    Values are price-derived: screens show them only as text inside [data-ram-price]; nothing is stored. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else{const I=root.IS2=root.IS2||{};I.techScreen=api;}})(typeof globalThis==='object'?globalThis:this,function(){
@@ -156,6 +159,7 @@ const condText=(m,c)=>META[m].label+' · '+COND_TEXT[c];
 const SECURITY_IDENTIFIER_TYPES=Object.freeze(['PERMNO','FIGI','ISIN','CUSIP','EXCHANGE_SECURITY_ID','PROVIDER_SECURITY_ID','SYNTHETIC_FIXED_SECURITY_ID']);
 const LINK_TEXT_FIELDS=['reference','identity_reference','series_id','issuer_id','symbol','share_class'];
 const JOIN_TEXT=Object.freeze({SECURITY_LINKS_NOT_CONNECTED:'고정 증권 매핑 자료 미연결 · 매핑이 오기 전에는 결합하지 않음',
+ BOARD_GROUP_ROWS_UNRESOLVED:'보드 그룹 전체 구성원 미확인(공통 분류 기록 미연결) · 그룹 전체 행 없이 결합하지 않음',
  JOIN_DATA_KIND_REQUIRED:'자료 종류 표시 없음(합성 또는 보관 입력)',TECHNICAL_BOARD_SCHEMA_MISMATCH:'기술 보드 스키마 불일치',
  INVALID_SESSION_DATE:'평가일 없음 또는 형식 오류 · QGV 행에 계산 평가일이 없음',GROUP_MEMBERSHIP_UNCONFIRMED:'비교 그룹 구성원 미확인',
  TECHNICAL_METRICS_MISMATCH:'기술 지표 목록 불일치',PERMANENT_SECURITY_ID_REQUIRED:'고정 증권 ID 없음',REQUEST_SERIES_ID_REQUIRED:'시리즈 ID 없음',
@@ -198,11 +202,11 @@ function joinRows(board,rows,{links=null,data_kind=null}={}){
    if(l.valid_from<=signal&&signal<=l.valid_to){if(activeSeries.has(l.series_id)||activeIds.has(sid))jno('DUPLICATE_SECURITY_LINK');activeSeries.add(l.series_id);activeIds.add(sid);}}
   const seen=new Set();
   for(const raw of rows){const r=jobj(raw),d=jday(r.signal_day);if(d!==signal)jno('SIGNAL_DAY_MISMATCH',{board_day:signal,qgv_day:d});
-   const sid=jtext(r.security_id,'PERMANENT_SECURITY_ID_REQUIRED');if(sid===r.id||sid===r.ticker||sid===r.code)jno('ISSUER_OR_TICKER_IS_NOT_SECURITY_ID');
+   const sid=jtext(r.security_id,'PERMANENT_SECURITY_ID_REQUIRED');if(sid===r.id||sid===r.issuer_id||sid===r.ticker||sid===r.code)jno('ISSUER_OR_TICKER_IS_NOT_SECURITY_ID');
    if(seen.has(sid))jno('DUPLICATE_QGV_KEY');seen.add(sid);if(!secs.has(sid))jno('SECURITY_ID_NOT_IN_BOARD');
    const cands=byId.get(sid)||[];if(!cands.length)jno('FIXED_SECURITY_LINK_MISSING');
    const active=cands.filter(l=>l.valid_from<=signal&&signal<=l.valid_to);if(!active.length)jno('SECURITY_LINK_OUTSIDE_SIGNAL_DAY');
-   const l=active[0],[series,symbol]=secs.get(sid);if(l.series_id!==series)jno('SERIES_LINK_MISMATCH');if(r.id!==l.issuer_id)jno('ISSUER_LINK_MISMATCH');
+   const l=active[0],[series,symbol]=secs.get(sid);if(l.series_id!==series)jno('SERIES_LINK_MISMATCH');if((own(r,'issuer_id')?r.issuer_id:r.id)!==l.issuer_id)jno('ISSUER_LINK_MISMATCH');
    if(r.ticker!==l.symbol||(symbol!==null&&symbol!==l.symbol))jno('SYMBOL_LINK_MISMATCH');}
   return Object.freeze({ok:true,keys:seen});}
  catch(e){if(e instanceof JoinRefusal)return Object.freeze({ok:false,code:e.code,...e.more});throw e;}}

@@ -1,7 +1,7 @@
 /* 1.1.8 기술 조건 필터 (feature 3.5; owner 2026-11-03 and 2026-11-04), the part of the QGV leaderboard that runs after IS2.ready.
    screen-qgv-live.js asks IS2.techFilterLive.create({signal, redraw}) once per route and calls on every draw: keep(rows, {universe})
-   (the leaderboard rows the filter lets through, or null when it does not apply; universe = the Universe504 rows the join is
-   checked against, every one of them), head() / cell(row) / sub(row) (the table's tech column
+   (the leaderboard rows the filter lets through, or null when it does not apply; universe = the Universe504 rows from which the
+   common classification (IS2.classification.groupRows) picks the confirmed board group's full membership for the join), head() / cell(row) / sub(row) (the table's tech column
    and the phone line) and block() (this block's content).
    - Data: Codex's technical-leaderboard/1 boards (#469) through IS2.techScreen (validate, evaluate); today the source is NONE.
      One board per (signal_day, group_id). Ranks, N, medians and deciles are the board's and never change with the filters; the
@@ -43,7 +43,13 @@ function create({signal,redraw}){
  let secMemo=null;const secs=()=>{const b=board();if(!b)return new Map();if(secMemo&&secMemo.b===b)return secMemo.s;secMemo={b,s:T().securities(b)};return secMemo.s;};
  // Leaderboard rows joined only when verified (IS2.techScreen.joinRows: the row's signal_day + security_id, an active confirmed link).
  let joinMemo=null;
- function keep(rows,{universe=rows}={}){if(!V.on||!board())return null;const j=T().joinRows(board(),universe,{links:ctx.links,data_kind:ctx.value.data_kind});joinMemo=j;
+ // The rows given to the join are the confirmed board group's FULL membership (owner 2026-11-07, Codex #516 answer 3): IS2.classification
+ // .groupRows(board, universe) from the common classification record, never the rows already present on the board (an intersection
+ // would hide missing members). No provider or an unresolved group → BOARD_GROUP_ROWS_UNRESOLVED (no join). No links file → Codex's
+ // order: SECURITY_LINKS_NOT_CONNECTED first.
+ const groupRows=universe=>{const C=I.classification;if(!C||typeof C.groupRows!=='function')return null;const g=C.groupRows(board(),universe);return Array.isArray(g)?g:null;};
+ function keep(rows,{universe=rows}={}){if(!V.on||!board())return null;const group=ctx.links===null||ctx.links===undefined?[]:groupRows(universe);
+  const j=group===null?Object.freeze({ok:false,code:'BOARD_GROUP_ROWS_UNRESOLVED'}):T().joinRows(board(),group,{links:ctx.links,data_kind:ctx.value.data_kind});joinMemo=j;
   if(!j.ok)return null;const r=result();
   return{rows:rows.filter(x=>j.keys.has(x.security_id)&&r.rows.get(x.security_id).state==='PASS'),joined:j.keys.size,result:r};}
  const on=()=>V.on&&!!board()&&!!joinMemo&&joinMemo.ok;

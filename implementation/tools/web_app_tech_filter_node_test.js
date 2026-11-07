@@ -177,5 +177,15 @@ ok('Main join boundaries: no links file, rows without signal_day / security_id (
   assert.equal(T.joinText(dm), '평가일 불일치 · 보드 2017-01-06 · QGV 2017-01-09');
   for (const code of Object.keys(T.JOIN_TEXT)) assert.ok(T.joinText({ ok: false, code }).length > 3, code);
 });
+ok('Codex #516 explicit issuer_id: id = company code row, issuer_id = issuer; explicit null never falls back to id', () => {
+  const c = JI.join_inputs.same_date_same_security;
+  const split = c.qgv_rows.map((r) => ({ ...r, issuer_id: r.id, id: 'COMPANY:' + r.id }));
+  const j = T.joinRows(JB, split, { links: c.security_links, data_kind: 'SYNTHETIC' }); assert.equal(j.ok, true, JSON.stringify(j));
+  assert.equal(T.joinRows(JB, split.map((r, i) => (i ? r : { ...r, issuer_id: null })), { links: c.security_links, data_kind: 'SYNTHETIC' }).code, 'ISSUER_LINK_MISMATCH');
+  assert.equal(T.joinRows(JB, split.map((r, i) => (i ? r : { ...r, security_id: r.issuer_id })), { links: c.security_links, data_kind: 'SYNTHETIC' }).code, 'ISSUER_OR_TICKER_IS_NOT_SECURITY_ID');
+  // legacy rows without the field keep the /1 rule (id = issuer)
+  assert.equal(joinOf(JB, c).ok, true);
+  assert.ok(T.joinText({ ok: false, code: 'BOARD_GROUP_ROWS_UNRESOLVED' }).includes('그룹 전체'));
+});
 ok('source() answers NONE with no security links and makes no request', () => T.source().then((s) => { assert.equal(s.state, 'NONE'); assert.equal(s.payload, null); assert.equal(s.security_links, null); }));
 console.log(JSON.stringify({ passed: true, checks: n }));

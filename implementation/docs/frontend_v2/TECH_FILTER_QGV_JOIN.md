@@ -73,3 +73,15 @@ Main은 Codex PR #515(`research/technical-filter-join-20261107`, `b6fd0112`)의 
 - 실자료 `data_kind`(`RETAINED_INPUT`) 표시.
 
 이것이 오기 전에는 아무것도 결합하지 않는다.
+
+## 6. Codex 답변 반영 (#437 댓글 6706590129, #516 `9343b5e6`)
+
+| Main 질문 | Codex 답 | Main 처리 |
+| --- | --- | --- |
+| 1. QGV 행의 `signal_day` | 새 섹터 생산자의 `snapshot/preview.valuation_date`. `as_of`·`price_basis_date`로 대신하지 않는다. 기존 공개 공식 생산자에 검증된 평가일 필드가 없으면 null | `rowRecord.signal_day`는 null 유지. 공통 분류 기록이 연결되면 그 `valuation_date`를 쓴다 |
+| 2. 증권 ID 공급 파일 | Universe504에서 검증된 고정 증권 ID 0건, 공개 파일 없음 | `security_id` null 유지 |
+| 3. 504행 전체를 넘기는가 | **확정된 보드 그룹 전체**의 QGV 행을 넘긴다. 보드에 이미 있는 증권과의 교집합으로 결손을 숨기지 않는다. 그룹 밖 행·순위는 그대로. 그룹 안 필수 연결이 빠지면 거부 | `keep()`은 `IS2.classification.groupRows(board, universe)`가 준 그룹 전체 행만 넘긴다. 공급자가 없거나 그룹을 정하지 못하면 `BOARD_GROUP_ROWS_UNRESOLVED`(결합 없음) |
+| 4. 행 `id`와 `issuer_id` | 상장 단위 `id`는 발행사가 아니다. 새 생산자는 `issuer_id`를 따로 준다. 필드가 없을 때만 예전 규칙, 명시적 null은 대체 없음 | `joinRows`는 `issuer_id` 필드가 있으면 그것을 발행사로 검사하고 증권 ID와 같으면 거부. `rowRecord.issuer_id`는 null(대체 없음) |
+| 5. 매핑 파일·`data_kind` | 승인된 비공개 증권 근거를 연결한 산출물이어야 하며 아직 적격 0건. 공개 links를 임의로 만들지 않는다 | `source().security_links` null 유지 |
+
+작은 표본은 기능마다 다르다. 기술은 N<10이면 분위·상하위 10%만 없고 순위·중앙값은 그대로("유효 종목 N < 10 · 순위·중앙값만 · 분위 없음"). 그룹 구성원·신원 미확인은 순위·중앙값·분위 모두 없음("그룹 구성 미확인 · 순위·중앙값·분위 없음"). 섹터 QGV의 N<20 요소 점수 미산출은 2.2.7 화면에서 따로 보인다.
