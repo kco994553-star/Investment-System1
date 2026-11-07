@@ -70,6 +70,7 @@
 | 3.3 차트 노트 | 구현 | 합성 | `chart-workbench.js`, #382(펜·수평선·지우개·되돌리기) | 계정·시트 저장(DRAW-STORE) |
 | 3.4 기술 구조 트리 | 구현 | — | `ia-screens.js` | — |
 | 3.5 기술 조건 리더보드 필터 (화면 도장 1.1.8) | 구현(개발 빌드) · **#470 병합** · 실자료 미연결 · Codex #515(증권 결합 검증)·#497(속성 시험 CI) Draft | 합성 | 새 앱 `web_app/tech-screen.js`, `screen-tech-filter-live.js`, `screen-qgv-live.js` | 11/03 오너 지시, 11/04 Codex 계약 `technical-leaderboard/1`(#469 `f1ca390a`) 연동. 평가일·그룹별 보드 → 지표 원값·분위 → 필터(중앙값 이상/초과 구분) → 원래 순위 유지 · 결합 행만 QGV 순. 그룹 구성 미확인·유효 N<10·조건 충족 0건 구분. 실자료 미연결(원천 NONE), 리더보드 결합은 증권 ID 매핑 뒤([TECH_FILTER_20261103](../../implementation/docs/frontend_v2/TECH_FILTER_20261103.md)). 비공개 연구값 공개·병합·배포는 별도 |
+| 공통 분류 (가로 기준, 기능 번호 없음 · DC-48) | 설계(Main 소비 명세) · **Codex `common-classification/1` 착수 · 계약·fixture 미전달 · 화면 연결 전** | — | [COMMON_CLASSIFICATION.md](../../implementation/docs/frontend_v2/COMMON_CLASSIFICATION.md), 추가 명세 "공통 분류" | 책 10섹터 → 하위 산업 → 기업, 원천 SIC 따로. 기업 검색·상세, 2.1.3, 2.2.7, 3.5, 4.2·4.3·4.5가 같은 분류 기록 ID·버전·평가일을 읽게 연결(fixture 수령 뒤). 하위 산업 정의·REIT·통신 경계 미확인. 화면 안 분류 추론 3곳(QGV 1.1.7 모델 묶음은 공식 모델이라 별도 변경) |
 | 4.1.1·4.1.2 국면 그래프·탐색 | 부분 | — | `macro-cycle-ring.js` | 국면 모델 없음 → 공식 위치 "미산출" |
 | 4.1.3 근거 세로선 | 부분 | 실 | `macro-evidence.js`, #351·#352 | 탐색 전용. P1 13개 중 일부 수집(PARTIAL) |
 | 4.1.4 기존 매크로 연결 | 구현 | 실 | `macro-lights.js` | 게이트 재가동 M-REENABLE 결정 대기 |
