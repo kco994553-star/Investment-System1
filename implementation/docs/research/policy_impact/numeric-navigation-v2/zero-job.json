@@ -1,0 +1,67 @@
+{
+  "mode": "navigation",
+  "view_source": {
+    "path": "implementation/docs/research/policy_impact/numeric-navigation-v2/zero-view.json",
+    "sha256": "f080c04e5f1cc4791e870428a66010c3b037148c2bd58c5c806356bce08060d4"
+  },
+  "navigation": {
+    "schema_version": "policy-impact-navigation-input/2",
+    "data_kind": "SYNTHETIC",
+    "base_view_hash": "f080c04e5f1cc4791e870428a66010c3b037148c2bd58c5c806356bce08060d4",
+    "titles": [
+      {
+        "policy_id": "p0",
+        "policy_revision_id": "1",
+        "source_id": "s0",
+        "source_revision_id": "1",
+        "official_title": "Synthetic official policy title",
+        "locator": "h1[0]",
+        "source_sha256": "4d98a7b6f684eb3c6d4032013bf8fc4b838c645f9c557663bb91556ea870792b",
+        "explanation_title_ko": "합성 한국어 설명 제목",
+        "explanation_origin": "RESEARCH_SUMMARY",
+        "extracted_at": "2026-11-07T22:00:00Z",
+        "publication_permission": "ALLOWED"
+      }
+    ],
+    "news_items": [
+      {
+        "group_id": "existing-synthetic-news-group",
+        "company_id": "synthetic-company",
+        "title": "Synthetic article",
+        "link": "https://example.org/synthetic-news",
+        "published_at": null,
+        "source_seen_at": "2026-11-06T00:00:00Z",
+        "acquired_at": "2026-11-06T01:00:00Z",
+        "publication_permission": "ALLOWED"
+      }
+    ],
+    "links": [
+      {
+        "news_ref": {
+          "group_id": "existing-synthetic-news-group",
+          "company_id": "synthetic-company",
+          "link": "https://example.org/synthetic-news"
+        },
+        "news_revision_hash": "23b968ae78635f7b4e9f51d1ba000455dff5d35b7eec0750da54c4a86a7dc03c",
+        "policy_id": "p0",
+        "policy_revision_id": "1",
+        "relation": "DISCOVERY_REFERENCE_ONLY",
+        "reviewed_at": "2026-11-07T22:00:00Z",
+        "recorded_at": "2026-11-07T22:00:00Z",
+        "reviewer": "reviewer",
+        "author": "author",
+        "reason": "Synthetic article-policy association checked; no applicability claim",
+        "publication_permission": "ALLOWED"
+      }
+    ],
+    "hash_algorithm": "SHA256_VIEW_UTF8_BYTES_V1"
+  },
+  "as_of": "2026-11-07T23:00:00Z",
+  "public": true,
+  "title_sources": [
+    {
+      "path": "implementation/docs/research/policy_impact/navigation-synthetic-source.html",
+      "sha256": "4d98a7b6f684eb3c6d4032013bf8fc4b838c645f9c557663bb91556ea870792b"
+    }
+  ]
+}

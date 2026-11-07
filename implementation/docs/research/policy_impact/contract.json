@@ -218,5 +218,16 @@
     ],
     "missing": "UNKNOWN; excluded from public output"
   },
-  "navigation_sidecar": "policy-impact-navigation/1"
+  "navigation_sidecar": "policy-impact-navigation/1",
+  "navigation_sidecar_bytes": {
+    "input_schema": "policy-impact-navigation-input/2",
+    "output_schema": "policy-impact-navigation/2",
+    "hash_algorithm": "SHA256_VIEW_UTF8_BYTES_V1",
+    "base_view_hash": "SHA-256 of the exact delivered view file UTF-8 bytes; no parse/reserialize",
+    "producer_encoding": "UTF-8, no BOM, indent 2, LF, final LF; finite JSON numbers stay numbers",
+    "cli_view_source": ["path", "sha256"],
+    "legacy": "navigation/1 canonical-object digest unchanged; explicit regeneration required for /2",
+    "publication_permission": "unchanged; unknown never grants public output",
+    "evidence_effect": "NONE"
+  }
 }

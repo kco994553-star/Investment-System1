@@ -1,12 +1,17 @@
 """Optional title/news navigation sidecar; never policy evidence or publication approval."""
 import hashlib
+import json
+import math
 import re
 from html.parser import HTMLParser
 from .build import digest,reproject_view
-from .contract import need,shape,time,url
+from .contract import Invalid,need,shape,time,url
 
 INPUT='policy-impact-navigation-input/1'
 OUTPUT='policy-impact-navigation/1'
+BYTES_INPUT='policy-impact-navigation-input/2'
+BYTES_OUTPUT='policy-impact-navigation/2'
+BYTES_HASH='SHA256_VIEW_UTF8_BYTES_V1'
 PERMISSIONS={'ALLOWED','PRIVATE_ONLY','UNKNOWN'}
 NEWS_KEYS='group_id company_id title link published_at source_seen_at acquired_at publication_permission'.split()
 LINK_KEYS='news_ref news_revision_hash policy_id policy_revision_id relation reviewed_at recorded_at reviewer author reason publication_permission'.split()
@@ -29,15 +34,52 @@ def title_receipt(body,expected_sha256,h1_index):
 
 
 def project(view,data,as_of,*,public=False,title_sources=None):
+    """Legacy /1 canonical-object hash; retained for existing artifacts."""
+    need(isinstance(data,dict) and data.get('schema_version')==INPUT,'VERSION','navigation')
     shape(data,['schema_version','data_kind','base_view_hash','titles','news_items','links'],'navigation')
-    need(data['schema_version']==INPUT and view.get('schema_version') in ('policy-impact-view/1','policy-impact-view/2'),'VERSION','navigation')
+    return _project(view,data,as_of,digest(view),OUTPUT,public=public,title_sources=title_sources)
+
+
+def encode_view(view):
+    """Existing CLI encoding: UTF-8, indent 2, LF and one final LF, no BOM."""
+    return (json.dumps(view,ensure_ascii=False,allow_nan=False,indent=2)+'\n').encode('utf-8')
+
+
+def project_bytes(body,data,as_of,*,public=False,title_sources=None):
+    """Bind /2 to the exact delivered view bytes; never JSON reserialization."""
+    need(isinstance(data,dict) and data.get('schema_version')==BYTES_INPUT,'VERSION','navigation')
+    shape(data,['schema_version','data_kind','base_view_hash','hash_algorithm','titles','news_items','links'],'navigation')
+    need(data['hash_algorithm']==BYTES_HASH,'HASH_ALGORITHM','navigation')
+    need(isinstance(body,bytes),'VIEW_BYTES_REQUIRED','view')
+    base_hash=hashlib.sha256(body).hexdigest()
+    need(data['base_view_hash']==base_hash,'BASE_VIEW_HASH','navigation')
+    def pairs(items):
+        result={}
+        for key,value in items:
+            need(key not in result,'VIEW_JSON','view');result[key]=value
+        return result
+    def number(value):
+        result=float(value);need(math.isfinite(result),'VIEW_JSON','view');return result
+    def constant(value):raise Invalid('VIEW_JSON','view')
+    try:
+        view=json.loads(body.decode('utf-8'),object_pairs_hook=pairs,
+                        parse_float=number,parse_constant=constant)
+    except (ValueError,UnicodeError,RecursionError):raise Invalid('VIEW_JSON','view') from None
+    need(isinstance(view,dict),'VIEW_JSON','view')
+    result=_project(view,data,as_of,base_hash,BYTES_OUTPUT,public=public,title_sources=title_sources)
+    result['hash_algorithm']=BYTES_HASH
+    return result
+
+
+def _project(view,data,as_of,base_hash,output_version,*,public,title_sources):
+    need(view.get('schema_version') in ('policy-impact-view/1','policy-impact-view/2'),'VERSION','navigation')
     if public:need(view['schema_version']=='policy-impact-view/2','PUBLIC_VIEW_REQUIRED','navigation')
-    need(data['base_view_hash']==digest(view),'BASE_VIEW_HASH','navigation')
+    need(data['base_view_hash']==base_hash,'BASE_VIEW_HASH','navigation')
     need(data['data_kind']==view['bundle']['data_kind'],'MIXED_KIND','navigation')
     at=time(as_of,'navigation.as_of');need(time(view['as_of'],'view.as_of')<=at,'FUTURE_VIEW','navigation')
     sources={(s['source_id'],s['source_revision_id']):s for s in view['bundle']['sources']}
     policies={(p['policy_id'],p['revision_id']):p for p in view['bundle']['policies']}
-    result={'schema_version':OUTPUT,'data_kind':data['data_kind'],'base_view_hash':digest(view),'as_of':as_of,
+    result={'schema_version':output_version,'data_kind':data['data_kind'],'base_view_hash':base_hash,'as_of':as_of,
             'titles':[],'news_links':[],'reasons':[],'policy_evidence_effect':'NONE','automatic_publication':False}
     def permission(row):need(row['publication_permission'] in PERMISSIONS,'PERMISSION','navigation')
     def text(value):need(isinstance(value,str) and bool(value) and len(value)<=20000,'TEXT','navigation')
