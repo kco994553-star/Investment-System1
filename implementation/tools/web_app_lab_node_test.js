@@ -186,3 +186,21 @@ test('screen-lab-live.js reads one public file and nothing private, sends and st
   assert.deepEqual(touched, [], 'nothing of the layer is read while the file loads');
   assert.deepEqual(Object.keys(IS2.labLive), ['screen']);
 });
+
+/* ---------------------------------------------------------------- lab-backtest-v2 (Codex agreement #437 6600537423) */
+test('v2: the diagnostic view for non-backtest or not-computed runs; facts and diagnostic rows from the validated file', () => {
+  const runs = L.validate(F.payloadV2()).value.runs;
+  assert.deepEqual(runs.map(M.diagnosticView), [true, true, true, false]);
+  assert.equal(M.diagnosticView(F.payload().runs[0]), false, 'a v1 run keeps the backtest view');
+  assert.deepEqual(plain(M.v2Facts(runs[0], L)), [['결과 종류', '표본 진단'], ['계산 상태', '미산출 · C2 분모 미확인'], ['평가일', '2018-02-16'],
+    ['표본', '요청 10개 중 0개 사용 (회사) · 합성 입력 점검 표본'], ['모집단', '전체 시장 · 완전성 미확인 · 전체 NA · 전체 후보 명부가 불완전함 · 기준일 2018-02-16']]);
+  assert.deepEqual(plain(M.diagnosticRows(runs[2], L)), [{ name: '6개월 모멘텀 계산 범위', unit: '비율', na: false, value: '80.0%', n: '8 / 10' },
+    { name: '6개월 거래대금 계산 범위', unit: '비율', na: true, value: '– · 유효 표본 10개 미만', n: '7 / NA' }]);
+  assert.deepEqual(plain(M.diagnosticRows(runs[1], L)), [{ name: '원시 지표 계산 회사 수', unit: '개수', na: false, value: '1', n: '1 / 1' }]);
+  assert.deepEqual(plain(M.diagnosticRows(runs[3], L)), []);
+  assert.equal(M.v2Facts(runs[3], L)[2][1], '—', 'a backtest without as_of');
+  assert.deepEqual(plain(M.v2Facts(F.payload().runs[0], L)), [], 'v1 runs have no v2 facts');
+  const plan = M.panelPlan(S.v2, L.validate);
+  assert.equal(plan.state, 'READY'); assert.equal(plan.value.schema_version, 'lab-backtest-v2');
+  for (const [, code, , make] of F.invalidV2) assert.deepEqual(plain(M.panelPlan({ state: 'OK', payload: make() }, L.validate)), { state: 'ERROR', code, value: null });
+});
