@@ -1,0 +1,95 @@
+{
+  "mode": "fr-replay",
+  "state": {
+    "schema_version": "policy-fr-replay/1",
+    "data_kind": "SYNTHETIC",
+    "scope_start": "2026-11-01",
+    "completed_through": null,
+    "reconcile_from": "2026-11-01",
+    "split_ranges": [],
+    "tracked_after": null,
+    "ranges": {},
+    "documents": {},
+    "candidates": {},
+    "last_attempt_at": null,
+    "last_success_at": null,
+    "result": "NOT_RUN",
+    "retry_at": null,
+    "attempts": []
+  },
+  "settings": {
+    "max_requests": 12,
+    "max_pages": 20,
+    "per_page": 1,
+    "overlap_days": 7,
+    "window_days": 7,
+    "max_body_bytes": 1048576,
+    "cooldown_seconds": 600
+  },
+  "responses": [
+    {
+      "data_kind": "SYNTHETIC",
+      "status": 200,
+      "acquired_at": "2026-11-07T02:00:00Z",
+      "request": {
+        "start": "2026-11-01",
+        "end": "2026-11-07",
+        "page": 1,
+        "kind": "INCREMENTAL",
+        "url": "https://www.federalregister.gov/api/v1/documents.json?conditions%5Bpublication_date%5D%5Bgte%5D=2026-11-01&conditions%5Bpublication_date%5D%5Blte%5D=2026-11-07&order=oldest&per_page=1&page=1"
+      },
+      "body": {
+        "count": 2,
+        "total_pages": 2,
+        "results": [
+          {
+            "document_number": "2026-12345",
+            "title": "Synthetic rule",
+            "publication_date": "2026-11-01",
+            "html_url": "https://www.federalregister.gov/documents/synthetic/2026-12345",
+            "agencies": [
+              {
+                "name": "Synthetic Agency"
+              }
+            ],
+            "type": "Rule",
+            "effective_on": "2026-12-01"
+          }
+        ]
+      }
+    },
+    {
+      "data_kind": "SYNTHETIC",
+      "status": 200,
+      "acquired_at": "2026-11-07T02:00:00Z",
+      "request": {
+        "start": "2026-11-01",
+        "end": "2026-11-07",
+        "page": 2,
+        "kind": "INCREMENTAL",
+        "url": "https://www.federalregister.gov/api/v1/documents.json?conditions%5Bpublication_date%5D%5Bgte%5D=2026-11-01&conditions%5Bpublication_date%5D%5Blte%5D=2026-11-07&order=oldest&per_page=1&page=2"
+      },
+      "body": {
+        "count": 2,
+        "total_pages": 2,
+        "results": [
+          {
+            "document_number": "2026-12346",
+            "title": "Synthetic correction requiring human review",
+            "publication_date": "2026-11-02",
+            "html_url": "https://www.federalregister.gov/documents/synthetic/2026-12346",
+            "agencies": [
+              {
+                "name": "Synthetic Agency"
+              }
+            ],
+            "type": "Rule",
+            "effective_on": "2026-12-01"
+          }
+        ]
+      }
+    }
+  ],
+  "through": "2026-11-07",
+  "now": "2026-11-07T03:00:00Z"
+}
