@@ -31,12 +31,25 @@ function answer(res, f) {
   res.end(body);
 }
 
-// start({fixtures, out}) -> {base, origin, out, requests, fixture(name, f|null), close()}
-async function start({ fixtures = {}, out = null } = {}) {
-  const dir = out || build(), owned = !out, table = new Map(Object.entries(fixtures)), requests = [];
+// start({fixtures, posts, out}) -> {base, origin, out, requests, fixture(name, f|null), close()}
+// posts: {name: async (bodyText) => {status, json}} — the only POST routes (the development engine route of the sector QGV
+// screen, tools/web_app_sector_qgv_engine.js); any other POST, PUT, DELETE ... is 405, as on the static site.
+const POST_MAX = 1 << 20;
+async function start({ fixtures = {}, posts = {}, out = null } = {}) {
+  const dir = out || build(), owned = !out, table = new Map(Object.entries(fixtures)), requests = [], routes = new Map(Object.entries(posts));
   const server = http.createServer((req, res) => {
     const url = new URL(req.url, 'http://x'), name = decodeURIComponent(url.pathname.slice(1)) || 'index.html';
     requests.push({ method: req.method, name, search: url.search });
+    if (req.method === 'POST' && routes.has(name)) {
+      const parts = []; let size = 0, over = false;
+      req.on('data', (c) => { size += c.length; if (size > POST_MAX) over = true; else parts.push(c); });
+      req.on('end', async () => {
+        if (over) { res.writeHead(413); res.end(); return; }
+        let f; try { f = await routes.get(name)(Buffer.concat(parts).toString('utf8'), req); } catch (_) { f = { status: 502, json: { ok: false, code: 'ROUTE_FAILED' } }; }
+        answer(res, f);
+      });
+      return;
+    }
     if (req.method !== 'GET' && req.method !== 'HEAD') { res.writeHead(405); res.end(); return; }
     if (table.has(name)) { const f = table.get(name); answer(res, typeof f === 'function' ? f(req, url) : f); return; }
     const file = path.join(dir, name);

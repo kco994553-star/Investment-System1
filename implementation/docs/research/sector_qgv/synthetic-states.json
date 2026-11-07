@@ -1,0 +1,91 @@
+[
+  {
+    "case": "EMPTY",
+    "input_change": "EMPTY",
+    "expected_total": {
+      "valid": 0,
+      "denominator": 0
+    },
+    "expected_first_status": null,
+    "expected_first_factor_status": null,
+    "null_meaning": "Not calculated, never zero; original denominator preserved."
+  },
+  {
+    "case": "PARTIAL",
+    "input_change": "PARTIAL",
+    "expected_total": {
+      "valid": 0,
+      "denominator": 20
+    },
+    "expected_first_status": "STRICT_INCOMPLETE",
+    "expected_first_factor_status": "MISSING_INPUT",
+    "null_meaning": "Not calculated, never zero; original denominator preserved."
+  },
+  {
+    "case": "STALE",
+    "input_change": "STALE",
+    "expected_total": {
+      "valid": 0,
+      "denominator": 20
+    },
+    "expected_first_status": "STRICT_INCOMPLETE",
+    "expected_first_factor_status": "STALE",
+    "null_meaning": "Not calculated, never zero; original denominator preserved."
+  },
+  {
+    "case": "GATE_UNKNOWN",
+    "input_change": "GATE_UNKNOWN",
+    "expected_total": {
+      "valid": 19,
+      "denominator": 20
+    },
+    "expected_first_status": "GATE_UNKNOWN",
+    "expected_first_factor_status": "VALID",
+    "null_meaning": "Not calculated, never zero; original denominator preserved."
+  },
+  {
+    "case": "MAPPING_UNKNOWN",
+    "input_change": "MAPPING_UNKNOWN",
+    "expected_total": {
+      "valid": 0,
+      "denominator": 20
+    },
+    "expected_first_status": "MAPPING_UNRESOLVED",
+    "expected_first_factor_status": "MAPPING_UNRESOLVED",
+    "null_meaning": "Not calculated, never zero; original denominator preserved."
+  },
+  {
+    "case": "PEER_SAMPLE_SMALL",
+    "input_change": "PEER_SAMPLE_SMALL",
+    "expected_total": {
+      "valid": 0,
+      "denominator": 19
+    },
+    "expected_first_status": "STRICT_INCOMPLETE",
+    "expected_first_factor_status": "PEER_SAMPLE_SMALL",
+    "null_meaning": "Not calculated, never zero; original denominator preserved."
+  },
+  {
+    "case": "FAILED",
+    "input_change": "duplicate company_id",
+    "expected_error": "DUPLICATE_COMPANY_ID",
+    "replace_previous_success": false
+  },
+  {
+    "case": "DISPLAY_FILTER",
+    "display_name": "매우 긴 한글 기업명: 가상 연구용 반도체 및 산업용 부품 회사",
+    "filter_company_ids": [
+      "company-005"
+    ],
+    "expected_rank": 12,
+    "expected_original_denominator": 20,
+    "recalculate_rank": false
+  },
+  {
+    "case": "TIES",
+    "input_change": "set every observation value to 1",
+    "expected_total_score": 50,
+    "expected_tie_order": "company_id ascending",
+    "expected_valid_n": 20
+  }
+]

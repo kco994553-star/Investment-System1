@@ -1,0 +1,656 @@
+[
+  {
+    "comparison_id": "SQGV-20261106-C1",
+    "common_valid": 20,
+    "gained": [],
+    "lost": [],
+    "before_coverage": {
+      "valid": 20,
+      "denominator": 20
+    },
+    "after_coverage": {
+      "valid": 20,
+      "denominator": 20
+    },
+    "performance": null,
+    "performance_reason": "PIT_EXECUTION_COST_INPUT_NOT_CONNECTED",
+    "rows": [
+      {
+        "company_id": "company-000",
+        "before": 18.0,
+        "after": 20.400000000000002,
+        "delta": 2.400000000000002,
+        "before_common_rank": 20,
+        "after_common_rank": 20,
+        "before_rank": 20,
+        "after_rank": 20
+      },
+      {
+        "company_id": "company-001",
+        "before": 27.052631578947366,
+        "after": 27.68421052631579,
+        "delta": 0.6315789473684248,
+        "before_common_rank": 18,
+        "after_common_rank": 19,
+        "before_rank": 18,
+        "after_rank": 19
+      },
+      {
+        "company_id": "company-002",
+        "before": 36.10526315789474,
+        "after": 34.968421052631584,
+        "delta": -1.136842105263156,
+        "before_common_rank": 15,
+        "after_common_rank": 17,
+        "before_rank": 15,
+        "after_rank": 17
+      },
+      {
+        "company_id": "company-003",
+        "before": 26.210526315789476,
+        "after": 28.357894736842105,
+        "delta": 2.1473684210526294,
+        "before_common_rank": 19,
+        "after_common_rank": 18,
+        "before_rank": 19,
+        "after_rank": 18
+      },
+      {
+        "company_id": "company-004",
+        "before": 35.26315789473685,
+        "after": 35.6421052631579,
+        "delta": 0.37894736842105203,
+        "before_common_rank": 16,
+        "after_common_rank": 16,
+        "before_rank": 16,
+        "after_rank": 16
+      },
+      {
+        "company_id": "company-005",
+        "before": 44.315789473684205,
+        "after": 42.92631578947369,
+        "delta": -1.3894736842105146,
+        "before_common_rank": 12,
+        "after_common_rank": 14,
+        "before_rank": 12,
+        "after_rank": 14
+      },
+      {
+        "company_id": "company-006",
+        "before": 34.421052631578945,
+        "after": 36.31578947368421,
+        "delta": 1.8947368421052673,
+        "before_common_rank": 17,
+        "after_common_rank": 15,
+        "before_rank": 17,
+        "after_rank": 15
+      },
+      {
+        "company_id": "company-007",
+        "before": 43.473684210526315,
+        "after": 43.6,
+        "delta": 0.12631578947368638,
+        "before_common_rank": 13,
+        "after_common_rank": 13,
+        "before_rank": 13,
+        "after_rank": 13
+      },
+      {
+        "company_id": "company-008",
+        "before": 52.52631578947369,
+        "after": 50.8842105263158,
+        "delta": -1.6421052631578945,
+        "before_common_rank": 9,
+        "after_common_rank": 11,
+        "before_rank": 9,
+        "after_rank": 11
+      },
+      {
+        "company_id": "company-009",
+        "before": 42.631578947368425,
+        "after": 44.273684210526326,
+        "delta": 1.6421052631579016,
+        "before_common_rank": 14,
+        "after_common_rank": 12,
+        "before_rank": 14,
+        "after_rank": 12
+      },
+      {
+        "company_id": "company-010",
+        "before": 51.68421052631578,
+        "after": 51.5578947368421,
+        "delta": -0.12631578947367927,
+        "before_common_rank": 10,
+        "after_common_rank": 10,
+        "before_rank": 10,
+        "after_rank": 10
+      },
+      {
+        "company_id": "company-011",
+        "before": 60.73684210526316,
+        "after": 58.84210526315789,
+        "delta": -1.8947368421052673,
+        "before_common_rank": 6,
+        "after_common_rank": 8,
+        "before_rank": 6,
+        "after_rank": 8
+      },
+      {
+        "company_id": "company-012",
+        "before": 50.84210526315789,
+        "after": 52.23157894736842,
+        "delta": 1.3894736842105289,
+        "before_common_rank": 11,
+        "after_common_rank": 9,
+        "before_rank": 11,
+        "after_rank": 9
+      },
+      {
+        "company_id": "company-013",
+        "before": 59.89473684210527,
+        "after": 59.515789473684215,
+        "delta": -0.37894736842105203,
+        "before_common_rank": 7,
+        "after_common_rank": 7,
+        "before_rank": 7,
+        "after_rank": 7
+      },
+      {
+        "company_id": "company-014",
+        "before": 68.94736842105264,
+        "after": 66.80000000000001,
+        "delta": -2.147368421052633,
+        "before_common_rank": 3,
+        "after_common_rank": 5,
+        "before_rank": 3,
+        "after_rank": 5
+      },
+      {
+        "company_id": "company-015",
+        "before": 59.05263157894737,
+        "after": 60.189473684210526,
+        "delta": 1.136842105263156,
+        "before_common_rank": 8,
+        "after_common_rank": 6,
+        "before_rank": 8,
+        "after_rank": 6
+      },
+      {
+        "company_id": "company-016",
+        "before": 68.10526315789474,
+        "after": 67.47368421052633,
+        "delta": -0.6315789473684106,
+        "before_common_rank": 4,
+        "after_common_rank": 4,
+        "before_rank": 4,
+        "after_rank": 4
+      },
+      {
+        "company_id": "company-017",
+        "before": 77.1578947368421,
+        "after": 74.7578947368421,
+        "delta": -2.3999999999999915,
+        "before_common_rank": 1,
+        "after_common_rank": 2,
+        "before_rank": 1,
+        "after_rank": 2
+      },
+      {
+        "company_id": "company-018",
+        "before": 67.26315789473685,
+        "after": 68.14736842105265,
+        "delta": 0.8842105263157976,
+        "before_common_rank": 5,
+        "after_common_rank": 3,
+        "before_rank": 5,
+        "after_rank": 3
+      },
+      {
+        "company_id": "company-019",
+        "before": 76.31578947368422,
+        "after": 75.43157894736842,
+        "delta": -0.8842105263157976,
+        "before_common_rank": 2,
+        "after_common_rank": 1,
+        "before_rank": 2,
+        "after_rank": 1
+      }
+    ]
+  },
+  {
+    "comparison_id": "SQGV-20261106-C2",
+    "common_valid": 20,
+    "gained": [],
+    "lost": [],
+    "before_coverage": {
+      "valid": 20,
+      "denominator": 20
+    },
+    "after_coverage": {
+      "valid": 20,
+      "denominator": 20
+    },
+    "performance": null,
+    "performance_reason": "PIT_EXECUTION_COST_INPUT_NOT_CONNECTED",
+    "rows": [
+      {
+        "company_id": "company-000",
+        "before": 18.0,
+        "after": 31.5,
+        "delta": 13.5,
+        "before_common_rank": 20,
+        "after_common_rank": 20,
+        "before_rank": 20,
+        "after_rank": 20
+      },
+      {
+        "company_id": "company-001",
+        "before": 27.052631578947366,
+        "after": 39.131578947368425,
+        "delta": 12.078947368421058,
+        "before_common_rank": 18,
+        "after_common_rank": 18,
+        "before_rank": 18,
+        "after_rank": 18
+      },
+      {
+        "company_id": "company-002",
+        "before": 36.10526315789474,
+        "after": 46.76315789473684,
+        "delta": 10.657894736842103,
+        "before_common_rank": 15,
+        "after_common_rank": 14,
+        "before_rank": 15,
+        "after_rank": 14
+      },
+      {
+        "company_id": "company-003",
+        "before": 26.210526315789476,
+        "after": 35.44736842105264,
+        "delta": 9.236842105263161,
+        "before_common_rank": 19,
+        "after_common_rank": 19,
+        "before_rank": 19,
+        "after_rank": 19
+      },
+      {
+        "company_id": "company-004",
+        "before": 35.26315789473685,
+        "after": 43.078947368421055,
+        "delta": 7.815789473684205,
+        "before_common_rank": 16,
+        "after_common_rank": 16,
+        "before_rank": 16,
+        "after_rank": 16
+      },
+      {
+        "company_id": "company-005",
+        "before": 44.315789473684205,
+        "after": 50.71052631578948,
+        "delta": 6.394736842105274,
+        "before_common_rank": 12,
+        "after_common_rank": 11,
+        "before_rank": 12,
+        "after_rank": 11
+      },
+      {
+        "company_id": "company-006",
+        "before": 34.421052631578945,
+        "after": 39.39473684210526,
+        "delta": 4.973684210526315,
+        "before_common_rank": 17,
+        "after_common_rank": 17,
+        "before_rank": 17,
+        "after_rank": 17
+      },
+      {
+        "company_id": "company-007",
+        "before": 43.473684210526315,
+        "after": 47.026315789473685,
+        "delta": 3.55263157894737,
+        "before_common_rank": 13,
+        "after_common_rank": 13,
+        "before_rank": 13,
+        "after_rank": 13
+      },
+      {
+        "company_id": "company-008",
+        "before": 52.52631578947369,
+        "after": 54.65789473684211,
+        "delta": 2.1315789473684177,
+        "before_common_rank": 9,
+        "after_common_rank": 8,
+        "before_rank": 9,
+        "after_rank": 8
+      },
+      {
+        "company_id": "company-009",
+        "before": 42.631578947368425,
+        "after": 43.3421052631579,
+        "delta": 0.7105263157894726,
+        "before_common_rank": 14,
+        "after_common_rank": 15,
+        "before_rank": 14,
+        "after_rank": 15
+      },
+      {
+        "company_id": "company-010",
+        "before": 51.68421052631578,
+        "after": 50.973684210526315,
+        "delta": -0.7105263157894655,
+        "before_common_rank": 10,
+        "after_common_rank": 10,
+        "before_rank": 10,
+        "after_rank": 10
+      },
+      {
+        "company_id": "company-011",
+        "before": 60.73684210526316,
+        "after": 58.60526315789474,
+        "delta": -2.1315789473684177,
+        "before_common_rank": 6,
+        "after_common_rank": 5,
+        "before_rank": 6,
+        "after_rank": 5
+      },
+      {
+        "company_id": "company-012",
+        "before": 50.84210526315789,
+        "after": 47.28947368421053,
+        "delta": -3.552631578947363,
+        "before_common_rank": 11,
+        "after_common_rank": 12,
+        "before_rank": 11,
+        "after_rank": 12
+      },
+      {
+        "company_id": "company-013",
+        "before": 59.89473684210527,
+        "after": 54.921052631578945,
+        "delta": -4.973684210526322,
+        "before_common_rank": 7,
+        "after_common_rank": 7,
+        "before_rank": 7,
+        "after_rank": 7
+      },
+      {
+        "company_id": "company-014",
+        "before": 68.94736842105264,
+        "after": 62.55263157894738,
+        "delta": -6.394736842105267,
+        "before_common_rank": 3,
+        "after_common_rank": 3,
+        "before_rank": 3,
+        "after_rank": 3
+      },
+      {
+        "company_id": "company-015",
+        "before": 59.05263157894737,
+        "after": 51.23684210526316,
+        "delta": -7.815789473684212,
+        "before_common_rank": 8,
+        "after_common_rank": 9,
+        "before_rank": 8,
+        "after_rank": 9
+      },
+      {
+        "company_id": "company-016",
+        "before": 68.10526315789474,
+        "after": 58.86842105263158,
+        "delta": -9.236842105263158,
+        "before_common_rank": 4,
+        "after_common_rank": 4,
+        "before_rank": 4,
+        "after_rank": 4
+      },
+      {
+        "company_id": "company-017",
+        "before": 77.1578947368421,
+        "after": 66.5,
+        "delta": -10.657894736842096,
+        "before_common_rank": 1,
+        "after_common_rank": 1,
+        "before_rank": 1,
+        "after_rank": 1
+      },
+      {
+        "company_id": "company-018",
+        "before": 67.26315789473685,
+        "after": 55.184210526315795,
+        "delta": -12.078947368421055,
+        "before_common_rank": 5,
+        "after_common_rank": 6,
+        "before_rank": 5,
+        "after_rank": 6
+      },
+      {
+        "company_id": "company-019",
+        "before": 76.31578947368422,
+        "after": 62.815789473684205,
+        "delta": -13.500000000000014,
+        "before_common_rank": 2,
+        "after_common_rank": 2,
+        "before_rank": 2,
+        "after_rank": 2
+      }
+    ]
+  },
+  {
+    "comparison_id": "SQGV-20261106-C3",
+    "common_valid": 20,
+    "gained": [],
+    "lost": [],
+    "before_coverage": {
+      "valid": 20,
+      "denominator": 20
+    },
+    "after_coverage": {
+      "valid": 20,
+      "denominator": 20
+    },
+    "performance": null,
+    "performance_reason": "PIT_EXECUTION_COST_INPUT_NOT_CONNECTED",
+    "rows": [
+      {
+        "company_id": "company-000",
+        "before": 18.0,
+        "after": 18.0,
+        "delta": 0.0,
+        "before_common_rank": 20,
+        "after_common_rank": 20,
+        "before_rank": 20,
+        "after_rank": 20
+      },
+      {
+        "company_id": "company-001",
+        "before": 27.052631578947366,
+        "after": 26.342105263157894,
+        "delta": -0.7105263157894726,
+        "before_common_rank": 18,
+        "after_common_rank": 19,
+        "before_rank": 18,
+        "after_rank": 19
+      },
+      {
+        "company_id": "company-002",
+        "before": 36.10526315789474,
+        "after": 34.684210526315795,
+        "delta": -1.4210526315789451,
+        "before_common_rank": 15,
+        "after_common_rank": 17,
+        "before_rank": 15,
+        "after_rank": 17
+      },
+      {
+        "company_id": "company-003",
+        "before": 26.210526315789476,
+        "after": 26.447368421052634,
+        "delta": 0.23684210526315752,
+        "before_common_rank": 19,
+        "after_common_rank": 18,
+        "before_rank": 19,
+        "after_rank": 18
+      },
+      {
+        "company_id": "company-004",
+        "before": 35.26315789473685,
+        "after": 34.78947368421053,
+        "delta": -0.47368421052632215,
+        "before_common_rank": 16,
+        "after_common_rank": 16,
+        "before_rank": 16,
+        "after_rank": 16
+      },
+      {
+        "company_id": "company-005",
+        "before": 44.315789473684205,
+        "after": 43.13157894736842,
+        "delta": -1.1842105263157876,
+        "before_common_rank": 12,
+        "after_common_rank": 14,
+        "before_rank": 12,
+        "after_rank": 14
+      },
+      {
+        "company_id": "company-006",
+        "before": 34.421052631578945,
+        "after": 34.89473684210526,
+        "delta": 0.47368421052631504,
+        "before_common_rank": 17,
+        "after_common_rank": 15,
+        "before_rank": 17,
+        "after_rank": 15
+      },
+      {
+        "company_id": "company-007",
+        "before": 43.473684210526315,
+        "after": 43.23684210526316,
+        "delta": -0.23684210526315752,
+        "before_common_rank": 13,
+        "after_common_rank": 13,
+        "before_rank": 13,
+        "after_rank": 13
+      },
+      {
+        "company_id": "company-008",
+        "before": 52.52631578947369,
+        "after": 51.578947368421055,
+        "delta": -0.9473684210526372,
+        "before_common_rank": 9,
+        "after_common_rank": 11,
+        "before_rank": 9,
+        "after_rank": 11
+      },
+      {
+        "company_id": "company-009",
+        "before": 42.631578947368425,
+        "after": 43.342105263157904,
+        "delta": 0.7105263157894797,
+        "before_common_rank": 14,
+        "after_common_rank": 12,
+        "before_rank": 14,
+        "after_rank": 12
+      },
+      {
+        "company_id": "company-010",
+        "before": 51.68421052631578,
+        "after": 51.68421052631578,
+        "delta": 0.0,
+        "before_common_rank": 10,
+        "after_common_rank": 10,
+        "before_rank": 10,
+        "after_rank": 10
+      },
+      {
+        "company_id": "company-011",
+        "before": 60.73684210526316,
+        "after": 60.026315789473685,
+        "delta": -0.7105263157894726,
+        "before_common_rank": 6,
+        "after_common_rank": 8,
+        "before_rank": 6,
+        "after_rank": 8
+      },
+      {
+        "company_id": "company-012",
+        "before": 50.84210526315789,
+        "after": 51.78947368421053,
+        "delta": 0.9473684210526372,
+        "before_common_rank": 11,
+        "after_common_rank": 9,
+        "before_rank": 11,
+        "after_rank": 9
+      },
+      {
+        "company_id": "company-013",
+        "before": 59.89473684210527,
+        "after": 60.131578947368425,
+        "delta": 0.23684210526315752,
+        "before_common_rank": 7,
+        "after_common_rank": 7,
+        "before_rank": 7,
+        "after_rank": 7
+      },
+      {
+        "company_id": "company-014",
+        "before": 68.94736842105264,
+        "after": 68.47368421052633,
+        "delta": -0.47368421052631504,
+        "before_common_rank": 3,
+        "after_common_rank": 5,
+        "before_rank": 3,
+        "after_rank": 5
+      },
+      {
+        "company_id": "company-015",
+        "before": 59.05263157894737,
+        "after": 60.23684210526316,
+        "delta": 1.1842105263157876,
+        "before_common_rank": 8,
+        "after_common_rank": 6,
+        "before_rank": 8,
+        "after_rank": 6
+      },
+      {
+        "company_id": "company-016",
+        "before": 68.10526315789474,
+        "after": 68.57894736842105,
+        "delta": 0.47368421052631504,
+        "before_common_rank": 4,
+        "after_common_rank": 4,
+        "before_rank": 4,
+        "after_rank": 4
+      },
+      {
+        "company_id": "company-017",
+        "before": 77.1578947368421,
+        "after": 76.92105263157895,
+        "delta": -0.23684210526315042,
+        "before_common_rank": 1,
+        "after_common_rank": 2,
+        "before_rank": 1,
+        "after_rank": 2
+      },
+      {
+        "company_id": "company-018",
+        "before": 67.26315789473685,
+        "after": 68.68421052631581,
+        "delta": 1.4210526315789593,
+        "before_common_rank": 5,
+        "after_common_rank": 3,
+        "before_rank": 5,
+        "after_rank": 3
+      },
+      {
+        "company_id": "company-019",
+        "before": 76.31578947368422,
+        "after": 77.02631578947368,
+        "delta": 0.7105263157894655,
+        "before_common_rank": 2,
+        "after_common_rank": 1,
+        "before_rank": 2,
+        "after_rank": 1
+      }
+    ]
+  }
+]

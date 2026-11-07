@@ -19,6 +19,7 @@
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else{const I=root.IS2=root.IS2||{};I.data=api.create({win:root,action:I.action});}})(typeof globalThis==='object'?globalThis:this,function(){
 'use strict';
 const MAX_BYTES=2*1024*1024,EVENT='public-data-updated',TICK=60000;
+const ENGINE_ROUTE='sector-qgv-engine',ENGINE_MAX_BYTES=8*1024*1024,ENGINE_MAX_REQUEST=1024*1024;
 const QGV2='sec-qgv2.json',REPORTED='sec-public-inputs.json',FIN='dart-financials.json',EVIDENCE='macro-evidence.json',SHARES='sec-universe-shares.json',CODES='universe-codes.json';
 const OFFICIAL='qgv-official.json',OFFICIAL_STATUS='qgv-official-status.json',OFFICIAL_FILES=Object.freeze([OFFICIAL,OFFICIAL_STATUS]);
 // DataRefresh's set: PublicScreens.FILES, classification, sec-qgv2, sec-public-inputs, dart-financials, macro-evidence; its lists; shares.
@@ -60,12 +61,12 @@ function create({win,action}){
  const DR=()=>win.DataRefresh,missing=()=>READERS.filter(n=>!win[n]);
  const seen=new Map();// file -> last HTTP status of a strict read (0 = no answer), for the static files' state
  // The body, or null when it is over MAX_BYTES (the rest is not read).
- async function capped(r){
-  const len=Number(r.headers.get('content-length'));if(Number.isFinite(len)&&len>MAX_BYTES){try{if(r.body)await r.body.cancel();}catch(_){}return null;}
+ async function capped(r,max=MAX_BYTES){
+  const len=Number(r.headers.get('content-length'));if(Number.isFinite(len)&&len>max){try{if(r.body)await r.body.cancel();}catch(_){}return null;}
   if(r.body&&typeof r.body.getReader==='function'){const reader=r.body.getReader(),parts=[];let size=0;
-   for(;;){const{done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>MAX_BYTES){try{await reader.cancel();}catch(_){}return null;}parts.push(value);}
+   for(;;){const{done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>max){try{await reader.cancel();}catch(_){}return null;}parts.push(value);}
    const out=new Uint8Array(size);let at=0;for(const p of parts){out.set(p,at);at+=p.byteLength;}return out;}
-  const out=new Uint8Array(await r.arrayBuffer());return out.byteLength>MAX_BYTES?null:out;
+  const out=new Uint8Array(await r.arrayBuffer());return out.byteLength>max?null:out;
  }
  // The one public request function of every view (public, price and score views). Cache: the reader's no-cache, else no-store.
  async function strictFetch(input,init){
@@ -77,6 +78,24 @@ function create({win,action}){
   seen.set(name,r.status);const body=await capped(r),none=r.status===204||r.status===205||r.status===304;
   // Over the cap: an empty body with the real status, which every reader judges an invalid file (JSON parse fails).
   return new win.Response(none||body===null?null:body,{status:r.status,statusText:r.statusText,headers:{'Content-Type':r.headers.get('content-type')||'application/json'}});
+ }
+ /* The sector QGV engine route (owner 2026-11-06 「섹터 QGV 실제 연결」): one same-origin POST of one JSON request to the fixed
+    ENGINE_ROUTE, sent only from a click on the 1.2 screen (screen-sector-qgv-live.js), never when a page opens. No credentials,
+    no cookie, no referrer, redirects refused, the answer capped at ENGINE_MAX_BYTES and parsed here. The request carries a
+    configuration and the name of a synthetic input (sector-qgv-engine-request/1): no price, no holding, no stored value. The
+    development site answers it with Codex's common engine (tools/sector_qgv_engine_bridge.py); the published site has no such
+    route, so 404 / 405 / 501 are ENGINE_NOT_CONNECTED (계산 실행 경로 연결 전), never a guessed result. */
+ async function engine(request,{signal}={}){
+  if(!object(request))throw Error('ENGINE_REQUEST_INVALID');
+  const body=JSON.stringify(request);if(body.length>ENGINE_MAX_REQUEST)throw Error('ENGINE_REQUEST_TOO_LARGE');
+  const opts={method:'POST',cache:'no-store',credentials:'omit',redirect:'error',referrerPolicy:'no-referrer',mode:'same-origin',headers:{'Content-Type':'application/json',Accept:'application/json'},body};
+  if(signal)opts.signal=signal;
+  let r;try{r=await win.fetch(ENGINE_ROUTE,opts);}catch(e){if(e&&e.name==='AbortError')throw e;throw Error('ENGINE_UNREACHABLE');}
+  if(r.status===404||r.status===405||r.status===501)throw Error('ENGINE_NOT_CONNECTED');
+  if(r.status!==200)throw Error('ENGINE_HTTP_FAILED');
+  const bytes=await capped(r,ENGINE_MAX_BYTES);if(bytes===null)throw Error('ENGINE_ANSWER_TOO_LARGE');
+  let out;try{out=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));}catch(_){throw Error('ENGINE_ANSWER_INVALID');}
+  if(!object(out))throw Error('ENGINE_ANSWER_INVALID');return out;
  }
  // ---- the public view: core readers that keep their results for the read in progress ----
  let sink=null,judged=null;const apis=new Map();
@@ -178,7 +197,7 @@ function create({win,action}){
   subs.add(fn);const off=()=>{subs.delete(fn);};if(signal)signal.addEventListener('abort',off,{once:true});return off;}
  // The fixed 504-code Universe list (universe-codes.json, GoogleSheetSetup.codes), or null.
  const universe=()=>staticFile(CODES);
- return Object.freeze({FILES,CORE,LIST_FILES,STATIC,READERS,MAX_BYTES,EVENT,strictFetch,ready,get,screens,state,publication,list,shares,financials,refresh,static:staticFile,peek,subscribe,universe,official});
+ return Object.freeze({FILES,CORE,LIST_FILES,STATIC,READERS,MAX_BYTES,EVENT,ENGINE_ROUTE,strictFetch,engine,ready,get,screens,state,publication,list,shares,financials,refresh,static:staticFile,peek,subscribe,universe,official});
 }
 return Object.freeze({create,FILES,READERS,MAX_BYTES,EVENT,requireStatus});
 });

@@ -1,0 +1,3838 @@
+{
+  "schema_version": "sector-qgv-axis-comparison/1",
+  "comparison_id": "SYNTHETIC-D1",
+  "treatment": "SAME_INPUT_CONFIGURATION",
+  "valuation_date": "2026-11-02",
+  "as_of": "2026-11-02T23:59:59Z",
+  "universe_id": "synthetic-20",
+  "universe_version": "1",
+  "denominator": 20,
+  "axes": {
+    "Q": {
+      "before_valid": 20,
+      "after_valid": 20,
+      "COMMON_VALID": 20,
+      "GAINED": 0,
+      "LOST": 0,
+      "BOTH_UNAVAILABLE": 0,
+      "changed_common": 20
+    },
+    "G": {
+      "before_valid": 20,
+      "after_valid": 20,
+      "COMMON_VALID": 20,
+      "GAINED": 0,
+      "LOST": 0,
+      "BOTH_UNAVAILABLE": 0,
+      "changed_common": 0
+    }
+  },
+  "rows": [
+    {
+      "company_id": "company-000",
+      "before_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "after_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "axes": {
+        "Q": {
+          "before": 60.0,
+          "after": 80.0,
+          "delta": 20.0,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "FACTOR_ALLOCATION_CHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "accruals_assets_ttm",
+              "before_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 100.0,
+              "after_score": 100.0,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "debt_assets",
+              "before_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 100.0,
+              "after_score": 100.0,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "operating_margin_ttm",
+              "before_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.12
+              },
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 0.0,
+              "after_score": 0.0,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_ttm",
+              "before_allocation": null,
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 100.0,
+              "after_score": 100.0,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            }
+          ]
+        },
+        "G": {
+          "before": 0.0,
+          "after": 0.0,
+          "delta": 0.0,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "UNCHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "revenue_cagr_3y",
+              "before_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "after_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "before_score": 0.0,
+              "after_score": 0.0,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_improvement_3y",
+              "before_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "after_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "before_score": 0.0,
+              "after_score": 0.0,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            }
+          ]
+        }
+      },
+      "V": {
+        "before": null,
+        "after": null
+      },
+      "total": {
+        "before": null,
+        "after": null
+      }
+    },
+    {
+      "company_id": "company-001",
+      "before_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "after_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "axes": {
+        "Q": {
+          "before": 58.94736842105263,
+          "after": 76.84210526315789,
+          "delta": 17.89473684210526,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "FACTOR_ALLOCATION_CHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "accruals_assets_ttm",
+              "before_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 94.73684210526315,
+              "after_score": 94.73684210526315,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "debt_assets",
+              "before_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 94.73684210526315,
+              "after_score": 94.73684210526315,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "operating_margin_ttm",
+              "before_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.12
+              },
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 5.2631578947368425,
+              "after_score": 5.2631578947368425,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_ttm",
+              "before_allocation": null,
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 94.73684210526316,
+              "after_score": 94.73684210526316,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            }
+          ]
+        },
+        "G": {
+          "before": 5.2631578947368425,
+          "after": 5.2631578947368425,
+          "delta": 0.0,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "UNCHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "revenue_cagr_3y",
+              "before_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "after_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "before_score": 5.2631578947368425,
+              "after_score": 5.2631578947368425,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_improvement_3y",
+              "before_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "after_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "before_score": 5.2631578947368425,
+              "after_score": 5.2631578947368425,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            }
+          ]
+        }
+      },
+      "V": {
+        "before": null,
+        "after": null
+      },
+      "total": {
+        "before": null,
+        "after": null
+      }
+    },
+    {
+      "company_id": "company-002",
+      "before_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "after_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "axes": {
+        "Q": {
+          "before": 57.89473684210526,
+          "after": 73.68421052631578,
+          "delta": 15.78947368421052,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "FACTOR_ALLOCATION_CHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "accruals_assets_ttm",
+              "before_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 89.47368421052632,
+              "after_score": 89.47368421052632,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "debt_assets",
+              "before_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 89.47368421052632,
+              "after_score": 89.47368421052632,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "operating_margin_ttm",
+              "before_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.12
+              },
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 10.526315789473685,
+              "after_score": 10.526315789473685,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_ttm",
+              "before_allocation": null,
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 89.47368421052632,
+              "after_score": 89.47368421052632,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            }
+          ]
+        },
+        "G": {
+          "before": 10.526315789473685,
+          "after": 10.526315789473685,
+          "delta": 0.0,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "UNCHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "revenue_cagr_3y",
+              "before_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "after_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "before_score": 10.526315789473685,
+              "after_score": 10.526315789473685,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_improvement_3y",
+              "before_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "after_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "before_score": 10.526315789473685,
+              "after_score": 10.526315789473685,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            }
+          ]
+        }
+      },
+      "V": {
+        "before": null,
+        "after": null
+      },
+      "total": {
+        "before": null,
+        "after": null
+      }
+    },
+    {
+      "company_id": "company-003",
+      "before_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "after_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "axes": {
+        "Q": {
+          "before": 56.8421052631579,
+          "after": 70.5263157894737,
+          "delta": 13.684210526315802,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "FACTOR_ALLOCATION_CHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "accruals_assets_ttm",
+              "before_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 84.21052631578948,
+              "after_score": 84.21052631578948,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "debt_assets",
+              "before_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 84.21052631578948,
+              "after_score": 84.21052631578948,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "operating_margin_ttm",
+              "before_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.12
+              },
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 15.789473684210526,
+              "after_score": 15.789473684210526,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_ttm",
+              "before_allocation": null,
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 84.21052631578948,
+              "after_score": 84.21052631578948,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            }
+          ]
+        },
+        "G": {
+          "before": 15.789473684210526,
+          "after": 15.789473684210526,
+          "delta": 0.0,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "UNCHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "revenue_cagr_3y",
+              "before_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "after_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "before_score": 15.789473684210526,
+              "after_score": 15.789473684210526,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_improvement_3y",
+              "before_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "after_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "before_score": 15.789473684210526,
+              "after_score": 15.789473684210526,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            }
+          ]
+        }
+      },
+      "V": {
+        "before": null,
+        "after": null
+      },
+      "total": {
+        "before": null,
+        "after": null
+      }
+    },
+    {
+      "company_id": "company-004",
+      "before_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "after_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "axes": {
+        "Q": {
+          "before": 55.78947368421053,
+          "after": 67.36842105263158,
+          "delta": 11.578947368421048,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "FACTOR_ALLOCATION_CHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "accruals_assets_ttm",
+              "before_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 78.94736842105263,
+              "after_score": 78.94736842105263,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "debt_assets",
+              "before_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 78.94736842105263,
+              "after_score": 78.94736842105263,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "operating_margin_ttm",
+              "before_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.12
+              },
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 21.05263157894737,
+              "after_score": 21.05263157894737,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_ttm",
+              "before_allocation": null,
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 78.94736842105263,
+              "after_score": 78.94736842105263,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            }
+          ]
+        },
+        "G": {
+          "before": 21.05263157894737,
+          "after": 21.05263157894737,
+          "delta": 0.0,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "UNCHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "revenue_cagr_3y",
+              "before_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "after_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "before_score": 21.05263157894737,
+              "after_score": 21.05263157894737,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_improvement_3y",
+              "before_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "after_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "before_score": 21.05263157894737,
+              "after_score": 21.05263157894737,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            }
+          ]
+        }
+      },
+      "V": {
+        "before": null,
+        "after": null
+      },
+      "total": {
+        "before": null,
+        "after": null
+      }
+    },
+    {
+      "company_id": "company-005",
+      "before_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "after_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "axes": {
+        "Q": {
+          "before": 54.736842105263165,
+          "after": 64.21052631578948,
+          "delta": 9.473684210526315,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "FACTOR_ALLOCATION_CHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "accruals_assets_ttm",
+              "before_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 73.6842105263158,
+              "after_score": 73.6842105263158,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "debt_assets",
+              "before_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 73.6842105263158,
+              "after_score": 73.6842105263158,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "operating_margin_ttm",
+              "before_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.12
+              },
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 26.31578947368421,
+              "after_score": 26.31578947368421,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_ttm",
+              "before_allocation": null,
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 73.6842105263158,
+              "after_score": 73.6842105263158,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            }
+          ]
+        },
+        "G": {
+          "before": 26.315789473684205,
+          "after": 26.315789473684205,
+          "delta": 0.0,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "UNCHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "revenue_cagr_3y",
+              "before_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "after_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "before_score": 26.31578947368421,
+              "after_score": 26.31578947368421,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_improvement_3y",
+              "before_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "after_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "before_score": 26.31578947368421,
+              "after_score": 26.31578947368421,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            }
+          ]
+        }
+      },
+      "V": {
+        "before": null,
+        "after": null
+      },
+      "total": {
+        "before": null,
+        "after": null
+      }
+    },
+    {
+      "company_id": "company-006",
+      "before_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "after_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "axes": {
+        "Q": {
+          "before": 53.684210526315795,
+          "after": 61.05263157894737,
+          "delta": 7.368421052631575,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "FACTOR_ALLOCATION_CHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "accruals_assets_ttm",
+              "before_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 68.42105263157895,
+              "after_score": 68.42105263157895,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "debt_assets",
+              "before_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 68.42105263157895,
+              "after_score": 68.42105263157895,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "operating_margin_ttm",
+              "before_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.12
+              },
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 31.57894736842105,
+              "after_score": 31.57894736842105,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_ttm",
+              "before_allocation": null,
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 68.42105263157895,
+              "after_score": 68.42105263157895,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            }
+          ]
+        },
+        "G": {
+          "before": 31.57894736842105,
+          "after": 31.57894736842105,
+          "delta": 0.0,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "UNCHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "revenue_cagr_3y",
+              "before_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "after_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "before_score": 31.57894736842105,
+              "after_score": 31.57894736842105,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_improvement_3y",
+              "before_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "after_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "before_score": 31.57894736842105,
+              "after_score": 31.57894736842105,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            }
+          ]
+        }
+      },
+      "V": {
+        "before": null,
+        "after": null
+      },
+      "total": {
+        "before": null,
+        "after": null
+      }
+    },
+    {
+      "company_id": "company-007",
+      "before_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "after_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "axes": {
+        "Q": {
+          "before": 52.63157894736842,
+          "after": 57.89473684210526,
+          "delta": 5.2631578947368425,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "FACTOR_ALLOCATION_CHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "accruals_assets_ttm",
+              "before_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 63.1578947368421,
+              "after_score": 63.1578947368421,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "debt_assets",
+              "before_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 63.1578947368421,
+              "after_score": 63.1578947368421,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "operating_margin_ttm",
+              "before_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.12
+              },
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 36.8421052631579,
+              "after_score": 36.8421052631579,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_ttm",
+              "before_allocation": null,
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 63.1578947368421,
+              "after_score": 63.1578947368421,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            }
+          ]
+        },
+        "G": {
+          "before": 36.8421052631579,
+          "after": 36.8421052631579,
+          "delta": 0.0,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "UNCHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "revenue_cagr_3y",
+              "before_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "after_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "before_score": 36.8421052631579,
+              "after_score": 36.8421052631579,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_improvement_3y",
+              "before_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "after_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "before_score": 36.8421052631579,
+              "after_score": 36.8421052631579,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            }
+          ]
+        }
+      },
+      "V": {
+        "before": null,
+        "after": null
+      },
+      "total": {
+        "before": null,
+        "after": null
+      }
+    },
+    {
+      "company_id": "company-008",
+      "before_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "after_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "axes": {
+        "Q": {
+          "before": 51.578947368421055,
+          "after": 54.73684210526315,
+          "delta": 3.1578947368420955,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "FACTOR_ALLOCATION_CHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "accruals_assets_ttm",
+              "before_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 57.89473684210526,
+              "after_score": 57.89473684210526,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "debt_assets",
+              "before_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 57.89473684210526,
+              "after_score": 57.89473684210526,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "operating_margin_ttm",
+              "before_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.12
+              },
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 42.10526315789474,
+              "after_score": 42.10526315789474,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_ttm",
+              "before_allocation": null,
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 57.89473684210526,
+              "after_score": 57.89473684210526,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            }
+          ]
+        },
+        "G": {
+          "before": 42.10526315789474,
+          "after": 42.10526315789474,
+          "delta": 0.0,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "UNCHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "revenue_cagr_3y",
+              "before_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "after_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "before_score": 42.10526315789474,
+              "after_score": 42.10526315789474,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_improvement_3y",
+              "before_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "after_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "before_score": 42.10526315789474,
+              "after_score": 42.10526315789474,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            }
+          ]
+        }
+      },
+      "V": {
+        "before": null,
+        "after": null
+      },
+      "total": {
+        "before": null,
+        "after": null
+      }
+    },
+    {
+      "company_id": "company-009",
+      "before_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "after_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "axes": {
+        "Q": {
+          "before": 50.526315789473685,
+          "after": 51.57894736842104,
+          "delta": 1.0526315789473557,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "FACTOR_ALLOCATION_CHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "accruals_assets_ttm",
+              "before_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 52.63157894736842,
+              "after_score": 52.63157894736842,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "debt_assets",
+              "before_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 52.63157894736842,
+              "after_score": 52.63157894736842,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "operating_margin_ttm",
+              "before_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.12
+              },
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 47.36842105263158,
+              "after_score": 47.36842105263158,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_ttm",
+              "before_allocation": null,
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 52.63157894736842,
+              "after_score": 52.63157894736842,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            }
+          ]
+        },
+        "G": {
+          "before": 47.36842105263159,
+          "after": 47.36842105263159,
+          "delta": 0.0,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "UNCHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "revenue_cagr_3y",
+              "before_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "after_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "before_score": 47.36842105263158,
+              "after_score": 47.36842105263158,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_improvement_3y",
+              "before_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "after_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "before_score": 47.36842105263158,
+              "after_score": 47.36842105263158,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            }
+          ]
+        }
+      },
+      "V": {
+        "before": null,
+        "after": null
+      },
+      "total": {
+        "before": null,
+        "after": null
+      }
+    },
+    {
+      "company_id": "company-010",
+      "before_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "after_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "axes": {
+        "Q": {
+          "before": 49.473684210526315,
+          "after": 48.42105263157896,
+          "delta": -1.0526315789473557,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "FACTOR_ALLOCATION_CHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "accruals_assets_ttm",
+              "before_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 47.36842105263158,
+              "after_score": 47.36842105263158,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "debt_assets",
+              "before_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 47.36842105263158,
+              "after_score": 47.36842105263158,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "operating_margin_ttm",
+              "before_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.12
+              },
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 52.63157894736842,
+              "after_score": 52.63157894736842,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_ttm",
+              "before_allocation": null,
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 47.36842105263158,
+              "after_score": 47.36842105263158,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            }
+          ]
+        },
+        "G": {
+          "before": 52.63157894736841,
+          "after": 52.63157894736841,
+          "delta": 0.0,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "UNCHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "revenue_cagr_3y",
+              "before_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "after_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "before_score": 52.63157894736842,
+              "after_score": 52.63157894736842,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_improvement_3y",
+              "before_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "after_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "before_score": 52.63157894736842,
+              "after_score": 52.63157894736842,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            }
+          ]
+        }
+      },
+      "V": {
+        "before": null,
+        "after": null
+      },
+      "total": {
+        "before": null,
+        "after": null
+      }
+    },
+    {
+      "company_id": "company-011",
+      "before_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "after_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "axes": {
+        "Q": {
+          "before": 48.421052631578945,
+          "after": 45.26315789473685,
+          "delta": -3.1578947368420955,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "FACTOR_ALLOCATION_CHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "accruals_assets_ttm",
+              "before_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 42.10526315789474,
+              "after_score": 42.10526315789474,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "debt_assets",
+              "before_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 42.10526315789474,
+              "after_score": 42.10526315789474,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "operating_margin_ttm",
+              "before_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.12
+              },
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 57.89473684210526,
+              "after_score": 57.89473684210526,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_ttm",
+              "before_allocation": null,
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 42.10526315789474,
+              "after_score": 42.10526315789474,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            }
+          ]
+        },
+        "G": {
+          "before": 57.89473684210526,
+          "after": 57.89473684210526,
+          "delta": 0.0,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "UNCHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "revenue_cagr_3y",
+              "before_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "after_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "before_score": 57.89473684210526,
+              "after_score": 57.89473684210526,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_improvement_3y",
+              "before_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "after_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "before_score": 57.89473684210526,
+              "after_score": 57.89473684210526,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            }
+          ]
+        }
+      },
+      "V": {
+        "before": null,
+        "after": null
+      },
+      "total": {
+        "before": null,
+        "after": null
+      }
+    },
+    {
+      "company_id": "company-012",
+      "before_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "after_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "axes": {
+        "Q": {
+          "before": 47.36842105263158,
+          "after": 42.10526315789474,
+          "delta": -5.2631578947368425,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "FACTOR_ALLOCATION_CHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "accruals_assets_ttm",
+              "before_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 36.8421052631579,
+              "after_score": 36.8421052631579,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "debt_assets",
+              "before_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 36.8421052631579,
+              "after_score": 36.8421052631579,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "operating_margin_ttm",
+              "before_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.12
+              },
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 63.1578947368421,
+              "after_score": 63.1578947368421,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_ttm",
+              "before_allocation": null,
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 36.8421052631579,
+              "after_score": 36.8421052631579,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            }
+          ]
+        },
+        "G": {
+          "before": 63.1578947368421,
+          "after": 63.1578947368421,
+          "delta": 0.0,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "UNCHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "revenue_cagr_3y",
+              "before_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "after_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "before_score": 63.1578947368421,
+              "after_score": 63.1578947368421,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_improvement_3y",
+              "before_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "after_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "before_score": 63.1578947368421,
+              "after_score": 63.1578947368421,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            }
+          ]
+        }
+      },
+      "V": {
+        "before": null,
+        "after": null
+      },
+      "total": {
+        "before": null,
+        "after": null
+      }
+    },
+    {
+      "company_id": "company-013",
+      "before_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "after_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "axes": {
+        "Q": {
+          "before": 46.31578947368421,
+          "after": 38.94736842105263,
+          "delta": -7.368421052631582,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "FACTOR_ALLOCATION_CHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "accruals_assets_ttm",
+              "before_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 31.578947368421055,
+              "after_score": 31.578947368421055,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "debt_assets",
+              "before_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 31.578947368421055,
+              "after_score": 31.578947368421055,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "operating_margin_ttm",
+              "before_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.12
+              },
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 68.42105263157895,
+              "after_score": 68.42105263157895,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_ttm",
+              "before_allocation": null,
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 31.57894736842105,
+              "after_score": 31.57894736842105,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            }
+          ]
+        },
+        "G": {
+          "before": 68.42105263157895,
+          "after": 68.42105263157895,
+          "delta": 0.0,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "UNCHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "revenue_cagr_3y",
+              "before_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "after_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "before_score": 68.42105263157895,
+              "after_score": 68.42105263157895,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_improvement_3y",
+              "before_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "after_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "before_score": 68.42105263157895,
+              "after_score": 68.42105263157895,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            }
+          ]
+        }
+      },
+      "V": {
+        "before": null,
+        "after": null
+      },
+      "total": {
+        "before": null,
+        "after": null
+      }
+    },
+    {
+      "company_id": "company-014",
+      "before_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "after_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "axes": {
+        "Q": {
+          "before": 45.26315789473684,
+          "after": 35.78947368421052,
+          "delta": -9.473684210526322,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "FACTOR_ALLOCATION_CHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "accruals_assets_ttm",
+              "before_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 26.315789473684205,
+              "after_score": 26.315789473684205,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "debt_assets",
+              "before_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 26.315789473684205,
+              "after_score": 26.315789473684205,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "operating_margin_ttm",
+              "before_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.12
+              },
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 73.6842105263158,
+              "after_score": 73.6842105263158,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_ttm",
+              "before_allocation": null,
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 26.31578947368421,
+              "after_score": 26.31578947368421,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            }
+          ]
+        },
+        "G": {
+          "before": 73.6842105263158,
+          "after": 73.6842105263158,
+          "delta": 0.0,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "UNCHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "revenue_cagr_3y",
+              "before_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "after_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "before_score": 73.6842105263158,
+              "after_score": 73.6842105263158,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_improvement_3y",
+              "before_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "after_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "before_score": 73.6842105263158,
+              "after_score": 73.6842105263158,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            }
+          ]
+        }
+      },
+      "V": {
+        "before": null,
+        "after": null
+      },
+      "total": {
+        "before": null,
+        "after": null
+      }
+    },
+    {
+      "company_id": "company-015",
+      "before_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "after_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "axes": {
+        "Q": {
+          "before": 44.21052631578948,
+          "after": 32.631578947368425,
+          "delta": -11.578947368421055,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "FACTOR_ALLOCATION_CHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "accruals_assets_ttm",
+              "before_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 21.05263157894737,
+              "after_score": 21.05263157894737,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "debt_assets",
+              "before_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 21.05263157894737,
+              "after_score": 21.05263157894737,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "operating_margin_ttm",
+              "before_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.12
+              },
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 78.94736842105263,
+              "after_score": 78.94736842105263,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_ttm",
+              "before_allocation": null,
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 21.05263157894737,
+              "after_score": 21.05263157894737,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            }
+          ]
+        },
+        "G": {
+          "before": 78.94736842105263,
+          "after": 78.94736842105263,
+          "delta": 0.0,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "UNCHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "revenue_cagr_3y",
+              "before_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "after_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "before_score": 78.94736842105263,
+              "after_score": 78.94736842105263,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_improvement_3y",
+              "before_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "after_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "before_score": 78.94736842105263,
+              "after_score": 78.94736842105263,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            }
+          ]
+        }
+      },
+      "V": {
+        "before": null,
+        "after": null
+      },
+      "total": {
+        "before": null,
+        "after": null
+      }
+    },
+    {
+      "company_id": "company-016",
+      "before_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "after_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "axes": {
+        "Q": {
+          "before": 43.15789473684211,
+          "after": 29.47368421052632,
+          "delta": -13.684210526315791,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "FACTOR_ALLOCATION_CHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "accruals_assets_ttm",
+              "before_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 15.78947368421052,
+              "after_score": 15.78947368421052,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "debt_assets",
+              "before_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 15.78947368421052,
+              "after_score": 15.78947368421052,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "operating_margin_ttm",
+              "before_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.12
+              },
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 84.21052631578948,
+              "after_score": 84.21052631578948,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_ttm",
+              "before_allocation": null,
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 15.789473684210526,
+              "after_score": 15.789473684210526,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            }
+          ]
+        },
+        "G": {
+          "before": 84.21052631578948,
+          "after": 84.21052631578948,
+          "delta": 0.0,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "UNCHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "revenue_cagr_3y",
+              "before_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "after_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "before_score": 84.21052631578948,
+              "after_score": 84.21052631578948,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_improvement_3y",
+              "before_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "after_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "before_score": 84.21052631578948,
+              "after_score": 84.21052631578948,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            }
+          ]
+        }
+      },
+      "V": {
+        "before": null,
+        "after": null
+      },
+      "total": {
+        "before": null,
+        "after": null
+      }
+    },
+    {
+      "company_id": "company-017",
+      "before_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "after_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "axes": {
+        "Q": {
+          "before": 42.10526315789473,
+          "after": 26.315789473684212,
+          "delta": -15.78947368421052,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "FACTOR_ALLOCATION_CHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "accruals_assets_ttm",
+              "before_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 10.526315789473685,
+              "after_score": 10.526315789473685,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "debt_assets",
+              "before_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 10.526315789473685,
+              "after_score": 10.526315789473685,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "operating_margin_ttm",
+              "before_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.12
+              },
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 89.47368421052632,
+              "after_score": 89.47368421052632,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_ttm",
+              "before_allocation": null,
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 10.526315789473685,
+              "after_score": 10.526315789473685,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            }
+          ]
+        },
+        "G": {
+          "before": 89.47368421052632,
+          "after": 89.47368421052632,
+          "delta": 0.0,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "UNCHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "revenue_cagr_3y",
+              "before_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "after_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "before_score": 89.47368421052632,
+              "after_score": 89.47368421052632,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_improvement_3y",
+              "before_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "after_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "before_score": 89.47368421052632,
+              "after_score": 89.47368421052632,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            }
+          ]
+        }
+      },
+      "V": {
+        "before": null,
+        "after": null
+      },
+      "total": {
+        "before": null,
+        "after": null
+      }
+    },
+    {
+      "company_id": "company-018",
+      "before_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "after_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "axes": {
+        "Q": {
+          "before": 41.05263157894736,
+          "after": 23.157894736842106,
+          "delta": -17.894736842105257,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "FACTOR_ALLOCATION_CHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "accruals_assets_ttm",
+              "before_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 5.263157894736835,
+              "after_score": 5.263157894736835,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "debt_assets",
+              "before_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 5.263157894736835,
+              "after_score": 5.263157894736835,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "operating_margin_ttm",
+              "before_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.12
+              },
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 94.73684210526316,
+              "after_score": 94.73684210526316,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_ttm",
+              "before_allocation": null,
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 5.2631578947368425,
+              "after_score": 5.2631578947368425,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            }
+          ]
+        },
+        "G": {
+          "before": 94.73684210526318,
+          "after": 94.73684210526318,
+          "delta": 0.0,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "UNCHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "revenue_cagr_3y",
+              "before_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "after_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "before_score": 94.73684210526316,
+              "after_score": 94.73684210526316,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_improvement_3y",
+              "before_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "after_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "before_score": 94.73684210526316,
+              "after_score": 94.73684210526316,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            }
+          ]
+        }
+      },
+      "V": {
+        "before": null,
+        "after": null
+      },
+      "total": {
+        "before": null,
+        "after": null
+      }
+    },
+    {
+      "company_id": "company-019",
+      "before_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "after_context": [
+        "INFORMATION_TECHNOLOGY",
+        "GENERAL"
+      ],
+      "axes": {
+        "Q": {
+          "before": 40.0,
+          "after": 20.0,
+          "delta": -20.0,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "FACTOR_ALLOCATION_CHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "accruals_assets_ttm",
+              "before_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "accounting_quality",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 0.0,
+              "after_score": 0.0,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "debt_assets",
+              "before_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "after_allocation": {
+                "role": "financial_capacity",
+                "role_weight_bp": 3000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.3,
+                "nominal_total_weight": 0.09
+              },
+              "before_score": 0.0,
+              "after_score": 0.0,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "operating_margin_ttm",
+              "before_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.12
+              },
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 100.0,
+              "after_score": 100.0,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_ttm",
+              "before_allocation": null,
+              "after_allocation": {
+                "role": "profitability",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 5000,
+                "axis_weight": 0.2,
+                "nominal_total_weight": 0.06
+              },
+              "before_score": 0.0,
+              "after_score": 0.0,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": true,
+              "score_changed": false
+            }
+          ]
+        },
+        "G": {
+          "before": 100.0,
+          "after": 100.0,
+          "delta": 0.0,
+          "common_valid": true,
+          "transition": "COMMON_VALID",
+          "change_reason": "UNCHANGED",
+          "before_reasons": [],
+          "after_reasons": [],
+          "factors": [
+            {
+              "variant_id": "revenue_cagr_3y",
+              "before_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "after_allocation": {
+                "role": "growth",
+                "role_weight_bp": 6000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.6,
+                "nominal_total_weight": 0.15
+              },
+              "before_score": 100.0,
+              "after_score": 100.0,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            },
+            {
+              "variant_id": "roa_improvement_3y",
+              "before_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "after_allocation": {
+                "role": "profitability_change",
+                "role_weight_bp": 4000,
+                "inner_weight_bp": 10000,
+                "axis_weight": 0.4,
+                "nominal_total_weight": 0.1
+              },
+              "before_score": 100.0,
+              "after_score": 100.0,
+              "before_valid_n": 20,
+              "after_valid_n": 20,
+              "before_status": "VALID",
+              "after_status": "VALID",
+              "allocation_changed": false,
+              "score_changed": false
+            }
+          ]
+        }
+      },
+      "V": {
+        "before": null,
+        "after": null
+      },
+      "total": {
+        "before": null,
+        "after": null
+      }
+    }
+  ],
+  "before_identity": {
+    "config_hash": "f13831e6ec23b090fa6df5ac20c58f05081c60c10d58677a40c7fc0775f7c455",
+    "input_hash": "7432ce60b6aa0ebcfd035c47bc59042cd634f3b415b6bc08fc37da16edf0e2de",
+    "cache_key": "12ec9a9d855af14093426196245c435efa665d4717b9530d589583c205f61f41",
+    "snapshot_id": "synthetic-snapshot/1",
+    "input_version": "synthetic-input/1",
+    "engine_version": "sector-qgv-engine/0.1.0",
+    "model_version": "sector-qgv-default/0.1.0",
+    "normalization_version": "sector-midrank-strict20/1",
+    "mapping_version": "book-sector-map/1"
+  },
+  "after_identity": {
+    "config_hash": "e25e01ba878ff3163cd2f57bc37a02b2ab38a4f8bcfb2a98cd4497c01b3b574a",
+    "input_hash": "7432ce60b6aa0ebcfd035c47bc59042cd634f3b415b6bc08fc37da16edf0e2de",
+    "cache_key": "70593591c871c24edf7eae41631bff6a60c886f96278c337a7f3b45a2d4e74bb",
+    "snapshot_id": "synthetic-snapshot/1",
+    "input_version": "synthetic-input/1",
+    "engine_version": "sector-qgv-engine/0.1.0",
+    "model_version": "sector-qgv-default/0.1.0",
+    "normalization_version": "sector-midrank-strict20/1",
+    "mapping_version": "book-sector-map/1"
+  },
+  "performance": null,
+  "performance_reason": "NOT_MEASURED_PARTIAL_QG_DIAGNOSTIC",
+  "rank": null,
+  "rank_reason": "AXIS_COMPARISON_DOES_NOT_CREATE_TOTAL_OR_MARKET_RANK"
+}
