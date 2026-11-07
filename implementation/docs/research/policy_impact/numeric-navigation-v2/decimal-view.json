@@ -1,0 +1,648 @@
+{
+  "query_timezone": "UTC",
+  "schema_version": "policy-impact-view/2",
+  "bundle": {
+    "schema_version": "policy-impact/1",
+    "bundle_id": "synthetic-1",
+    "generated_at": "2026-11-07T00:00:00Z",
+    "data_kind": "SYNTHETIC",
+    "policy_as_of": "2026-11-07T00:00:00Z",
+    "score_effect": "NONE",
+    "gate_effect": "NONE",
+    "scope": {
+      "policy_types": [
+        "TARIFF",
+        "EXPORT_CONTROL",
+        "INDUSTRIAL_SUBSIDY"
+      ],
+      "jurisdictions": [
+        "US_FEDERAL"
+      ],
+      "source_scope": [
+        "SYNTHETIC"
+      ],
+      "coverage_kind": "CURATED_SAMPLE"
+    },
+    "review_records": [
+      {
+        "group": "policies",
+        "id": "p0",
+        "revision_id": "1",
+        "reviewed_at": "2026-11-07T00:00:00Z",
+        "reviewer": "synthetic-independent-reviewer",
+        "author": "synthetic-author",
+        "method": "AI_INDEPENDENT_SOURCE_CHECK",
+        "evidence_refs": [
+          {
+            "source_id": "s0",
+            "source_revision_id": "1",
+            "locator": "synthetic section 1",
+            "claim": "합성 정책 범위 및 노출 확인용 근거"
+          }
+        ],
+        "recorded_at": "2026-11-07T00:00:00Z"
+      },
+      {
+        "group": "exposures",
+        "id": "e0",
+        "revision_id": "1",
+        "reviewed_at": "2026-11-07T00:00:00Z",
+        "reviewer": "synthetic-independent-reviewer",
+        "author": "synthetic-author",
+        "method": "AI_INDEPENDENT_SOURCE_CHECK",
+        "evidence_refs": [
+          {
+            "source_id": "s0",
+            "source_revision_id": "1",
+            "locator": "synthetic section 1",
+            "claim": "합성 정책 범위 및 노출 확인용 근거"
+          }
+        ],
+        "recorded_at": "2026-11-07T00:00:00Z"
+      },
+      {
+        "group": "hypotheses",
+        "id": "h0",
+        "revision_id": "1",
+        "reviewed_at": "2026-11-07T00:00:00Z",
+        "reviewer": "synthetic-independent-reviewer",
+        "author": "synthetic-author",
+        "method": "AI_INDEPENDENT_SOURCE_CHECK",
+        "evidence_refs": [
+          {
+            "source_id": "s0",
+            "source_revision_id": "1",
+            "locator": "synthetic section 1",
+            "claim": "합성 정책 범위 및 노출 확인용 근거"
+          }
+        ],
+        "recorded_at": "2026-11-07T00:00:00Z"
+      },
+      {
+        "group": "policies",
+        "id": "p1",
+        "revision_id": "1",
+        "reviewed_at": "2026-11-07T00:00:00Z",
+        "reviewer": "synthetic-independent-reviewer",
+        "author": "synthetic-author",
+        "method": "AI_INDEPENDENT_SOURCE_CHECK",
+        "evidence_refs": [
+          {
+            "source_id": "s1",
+            "source_revision_id": "1",
+            "locator": "synthetic section 1",
+            "claim": "합성 정책 범위 및 노출 확인용 근거"
+          }
+        ],
+        "recorded_at": "2026-11-07T00:00:00Z"
+      },
+      {
+        "group": "exposures",
+        "id": "e1",
+        "revision_id": "1",
+        "reviewed_at": "2026-11-07T00:00:00Z",
+        "reviewer": "synthetic-independent-reviewer",
+        "author": "synthetic-author",
+        "method": "AI_INDEPENDENT_SOURCE_CHECK",
+        "evidence_refs": [
+          {
+            "source_id": "s1",
+            "source_revision_id": "1",
+            "locator": "synthetic section 1",
+            "claim": "합성 정책 범위 및 노출 확인용 근거"
+          }
+        ],
+        "recorded_at": "2026-11-07T00:00:00Z"
+      },
+      {
+        "group": "hypotheses",
+        "id": "h1",
+        "revision_id": "1",
+        "reviewed_at": "2026-11-07T00:00:00Z",
+        "reviewer": "synthetic-independent-reviewer",
+        "author": "synthetic-author",
+        "method": "AI_INDEPENDENT_SOURCE_CHECK",
+        "evidence_refs": [
+          {
+            "source_id": "s1",
+            "source_revision_id": "1",
+            "locator": "synthetic section 1",
+            "claim": "합성 정책 범위 및 노출 확인용 근거"
+          }
+        ],
+        "recorded_at": "2026-11-07T00:00:00Z"
+      },
+      {
+        "group": "policies",
+        "id": "p2",
+        "revision_id": "1",
+        "reviewed_at": "2026-11-07T00:00:00Z",
+        "reviewer": "synthetic-independent-reviewer",
+        "author": "synthetic-author",
+        "method": "AI_INDEPENDENT_SOURCE_CHECK",
+        "evidence_refs": [
+          {
+            "source_id": "s2",
+            "source_revision_id": "1",
+            "locator": "synthetic section 1",
+            "claim": "합성 정책 범위 및 노출 확인용 근거"
+          }
+        ],
+        "recorded_at": "2026-11-07T00:00:00Z"
+      },
+      {
+        "group": "exposures",
+        "id": "e2",
+        "revision_id": "1",
+        "reviewed_at": "2026-11-07T00:00:00Z",
+        "reviewer": "synthetic-independent-reviewer",
+        "author": "synthetic-author",
+        "method": "AI_INDEPENDENT_SOURCE_CHECK",
+        "evidence_refs": [
+          {
+            "source_id": "s2",
+            "source_revision_id": "1",
+            "locator": "synthetic section 1",
+            "claim": "합성 정책 범위 및 노출 확인용 근거"
+          }
+        ],
+        "recorded_at": "2026-11-07T00:00:00Z"
+      },
+      {
+        "group": "hypotheses",
+        "id": "h2",
+        "revision_id": "1",
+        "reviewed_at": "2026-11-07T00:00:00Z",
+        "reviewer": "synthetic-independent-reviewer",
+        "author": "synthetic-author",
+        "method": "AI_INDEPENDENT_SOURCE_CHECK",
+        "evidence_refs": [
+          {
+            "source_id": "s2",
+            "source_revision_id": "1",
+            "locator": "synthetic section 1",
+            "claim": "합성 정책 범위 및 노출 확인용 근거"
+          }
+        ],
+        "recorded_at": "2026-11-07T00:00:00Z"
+      }
+    ],
+    "reason_codes": [],
+    "historical_pit_eligible": false,
+    "freshness": {
+      "last_source_check_at": null,
+      "last_reviewed_at": "2026-11-07T00:00:00Z",
+      "review_due": false,
+      "reason_codes": [
+        "MANUAL_REVIEW_ONLY"
+      ]
+    },
+    "refresh": {
+      "mode": "MANUAL_REVIEW",
+      "result": null,
+      "last_attempt_at": null,
+      "last_success_at": null,
+      "last_manual_review_at": "2026-11-07T00:00:00Z",
+      "retained_bundle_id": null,
+      "retained_policy_as_of": null,
+      "sources": [],
+      "incomplete_ranges": []
+    },
+    "sources": [
+      {
+        "source_id": "s0",
+        "source_revision_id": "1",
+        "kind": "OFFICIAL_RULE",
+        "publisher": "SYN-AGENCY-0",
+        "url": "https://example.invalid/s0",
+        "title": "합성 정책 원문",
+        "document_id": "SYN-DOC-0",
+        "published": {
+          "value": "2026-11-01",
+          "precision": "DATE",
+          "timezone": null
+        },
+        "first_seen_at": null,
+        "acquired_at": "2026-11-07T00:00:00Z",
+        "revision_acquired_at": "2026-11-07T00:00:00Z",
+        "verification_status": "VERIFIED",
+        "evidence_locator": "section 1",
+        "content_sha256": "4d98a7b6f684eb3c6d4032013bf8fc4b838c645f9c557663bb91556ea870792b",
+        "data_kind": "SYNTHETIC"
+      },
+      {
+        "source_id": "s1",
+        "source_revision_id": "1",
+        "kind": "OFFICIAL_RULE",
+        "publisher": "SYN-AGENCY-1",
+        "url": "https://example.invalid/s1",
+        "title": "합성 정책 원문",
+        "document_id": "SYN-DOC-1",
+        "published": {
+          "value": "2026-11-01",
+          "precision": "DATE",
+          "timezone": null
+        },
+        "first_seen_at": null,
+        "acquired_at": "2026-11-07T00:00:00Z",
+        "revision_acquired_at": "2026-11-07T00:00:00Z",
+        "verification_status": "VERIFIED",
+        "evidence_locator": "section 1",
+        "content_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+        "data_kind": "SYNTHETIC"
+      },
+      {
+        "source_id": "s2",
+        "source_revision_id": "1",
+        "kind": "OFFICIAL_RULE",
+        "publisher": "SYN-AGENCY-2",
+        "url": "https://example.invalid/s2",
+        "title": "합성 정책 원문",
+        "document_id": "SYN-DOC-2",
+        "published": {
+          "value": "2026-11-01",
+          "precision": "DATE",
+          "timezone": null
+        },
+        "first_seen_at": null,
+        "acquired_at": "2026-11-07T00:00:00Z",
+        "revision_acquired_at": "2026-11-07T00:00:00Z",
+        "verification_status": "VERIFIED",
+        "evidence_locator": "section 1",
+        "content_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+        "data_kind": "SYNTHETIC"
+      }
+    ],
+    "policies": [
+      {
+        "policy_id": "p0",
+        "revision_id": "1",
+        "supersedes_revision_id": null,
+        "policy_type": "TARIFF",
+        "title": "합성 TARIFF",
+        "issuer": "SYN-AGENCY-0",
+        "jurisdiction": "US_FEDERAL",
+        "target_regions": [
+          "SYN_REGION"
+        ],
+        "scope_description": "특정 제품에 한정, 예외 범위 미확인",
+        "lifecycle_status": "ADOPTED",
+        "published": {
+          "value": "2026-11-01",
+          "precision": "DATE",
+          "timezone": null
+        },
+        "effective_from": {
+          "value": "2026-11-02",
+          "precision": "DATE",
+          "timezone": null
+        },
+        "effective_to": {
+          "value": null,
+          "precision": "UNKNOWN",
+          "timezone": null
+        },
+        "evidence_refs": [
+          {
+            "source_id": "s0",
+            "source_revision_id": "1",
+            "locator": "synthetic section 1",
+            "claim": "합성 정책 범위 및 노출 확인용 근거"
+          }
+        ],
+        "recorded_at": "2026-11-07T00:00:00Z",
+        "change_recorded_at": "2026-11-07T00:00:00Z",
+        "reviewed_at": "2026-11-07T00:00:00Z",
+        "review_status": "REVIEWED",
+        "next_review_on": "2026-11-08",
+        "identity_basis": {
+          "method": "ISSUER_DOCUMENT_VERIFIED_RELATION",
+          "issuer": "SYN-AGENCY-0",
+          "document_id": "SYN-DOC-0",
+          "relation_evidence_refs": []
+        },
+        "subsidy_stage": null,
+        "parent_policy_id": null,
+        "data_kind": "SYNTHETIC"
+      },
+      {
+        "policy_id": "p1",
+        "revision_id": "1",
+        "supersedes_revision_id": null,
+        "policy_type": "EXPORT_CONTROL",
+        "title": "합성 EXPORT_CONTROL",
+        "issuer": "SYN-AGENCY-1",
+        "jurisdiction": "US_FEDERAL",
+        "target_regions": [
+          "SYN_REGION"
+        ],
+        "scope_description": "특정 제품에 한정, 예외 범위 미확인",
+        "lifecycle_status": "ADOPTED",
+        "published": {
+          "value": "2026-11-01",
+          "precision": "DATE",
+          "timezone": null
+        },
+        "effective_from": {
+          "value": "2026-11-02",
+          "precision": "DATE",
+          "timezone": null
+        },
+        "effective_to": {
+          "value": null,
+          "precision": "UNKNOWN",
+          "timezone": null
+        },
+        "evidence_refs": [
+          {
+            "source_id": "s1",
+            "source_revision_id": "1",
+            "locator": "synthetic section 1",
+            "claim": "합성 정책 범위 및 노출 확인용 근거"
+          }
+        ],
+        "recorded_at": "2026-11-07T00:00:00Z",
+        "change_recorded_at": "2026-11-07T00:00:00Z",
+        "reviewed_at": "2026-11-07T00:00:00Z",
+        "review_status": "REVIEWED",
+        "next_review_on": "2026-11-08",
+        "identity_basis": {
+          "method": "ISSUER_DOCUMENT_VERIFIED_RELATION",
+          "issuer": "SYN-AGENCY-1",
+          "document_id": "SYN-DOC-1",
+          "relation_evidence_refs": []
+        },
+        "subsidy_stage": null,
+        "parent_policy_id": null,
+        "data_kind": "SYNTHETIC"
+      },
+      {
+        "policy_id": "p2",
+        "revision_id": "1",
+        "supersedes_revision_id": null,
+        "policy_type": "INDUSTRIAL_SUBSIDY",
+        "title": "합성 INDUSTRIAL_SUBSIDY",
+        "issuer": "SYN-AGENCY-2",
+        "jurisdiction": "US_FEDERAL",
+        "target_regions": [
+          "SYN_REGION"
+        ],
+        "scope_description": "특정 제품에 한정, 예외 범위 미확인",
+        "lifecycle_status": "ADOPTED",
+        "published": {
+          "value": "2026-11-01",
+          "precision": "DATE",
+          "timezone": null
+        },
+        "effective_from": {
+          "value": "2026-11-02",
+          "precision": "DATE",
+          "timezone": null
+        },
+        "effective_to": {
+          "value": null,
+          "precision": "UNKNOWN",
+          "timezone": null
+        },
+        "evidence_refs": [
+          {
+            "source_id": "s2",
+            "source_revision_id": "1",
+            "locator": "synthetic section 1",
+            "claim": "합성 정책 범위 및 노출 확인용 근거"
+          }
+        ],
+        "recorded_at": "2026-11-07T00:00:00Z",
+        "change_recorded_at": "2026-11-07T00:00:00Z",
+        "reviewed_at": "2026-11-07T00:00:00Z",
+        "review_status": "REVIEWED",
+        "next_review_on": "2026-11-08",
+        "identity_basis": {
+          "method": "ISSUER_DOCUMENT_VERIFIED_RELATION",
+          "issuer": "SYN-AGENCY-2",
+          "document_id": "SYN-DOC-2",
+          "relation_evidence_refs": []
+        },
+        "subsidy_stage": "PRELIMINARY_TERMS",
+        "parent_policy_id": null,
+        "data_kind": "SYNTHETIC"
+      }
+    ],
+    "exposures": [
+      {
+        "exposure_id": "e0",
+        "exposure_revision_id": "1",
+        "company_id": "synthetic-company-0",
+        "policy_id": "p0",
+        "policy_revision_id": "1",
+        "exposure_type": "REVENUE_REGION",
+        "evidence_status": "DOCUMENTED",
+        "policy_applicability": "UNCONFIRMED",
+        "description": "합성 지역 매출 근거; 정책 대상 제품 비율은 미확인",
+        "period": {
+          "start": "2025-01-01",
+          "end": "2025-12-31"
+        },
+        "evidence_refs": [
+          {
+            "source_id": "s0",
+            "source_revision_id": "1",
+            "locator": "synthetic section 1",
+            "claim": "합성 정책 범위 및 노출 확인용 근거"
+          }
+        ],
+        "recorded_at": "2026-11-07T00:00:00Z",
+        "reviewed_at": "2026-11-07T00:00:00Z",
+        "review_status": "REVIEWED",
+        "ratio": {
+          "value": 0.125,
+          "unit": "fraction",
+          "period": {
+            "start": "2025-01-01",
+            "end": "2025-12-31"
+          },
+          "scope": "Synthetic disclosed product scope",
+          "denominator_description": "Synthetic annual revenue"
+        },
+        "reason_codes": [],
+        "data_kind": "SYNTHETIC"
+      },
+      {
+        "exposure_id": "e1",
+        "exposure_revision_id": "1",
+        "company_id": "synthetic-company-1",
+        "policy_id": "p1",
+        "policy_revision_id": "1",
+        "exposure_type": "REVENUE_REGION",
+        "evidence_status": "DOCUMENTED",
+        "policy_applicability": "UNCONFIRMED",
+        "description": "합성 지역 매출 근거; 정책 대상 제품 비율은 미확인",
+        "period": {
+          "start": "2025-01-01",
+          "end": "2025-12-31"
+        },
+        "evidence_refs": [
+          {
+            "source_id": "s1",
+            "source_revision_id": "1",
+            "locator": "synthetic section 1",
+            "claim": "합성 정책 범위 및 노출 확인용 근거"
+          }
+        ],
+        "recorded_at": "2026-11-07T00:00:00Z",
+        "reviewed_at": "2026-11-07T00:00:00Z",
+        "review_status": "REVIEWED",
+        "ratio": null,
+        "reason_codes": [
+          "RATIO_NOT_DISCLOSED"
+        ],
+        "data_kind": "SYNTHETIC"
+      },
+      {
+        "exposure_id": "e2",
+        "exposure_revision_id": "1",
+        "company_id": "synthetic-company-2",
+        "policy_id": "p2",
+        "policy_revision_id": "1",
+        "exposure_type": "REVENUE_REGION",
+        "evidence_status": "DOCUMENTED",
+        "policy_applicability": "UNCONFIRMED",
+        "description": "합성 지역 매출 근거; 정책 대상 제품 비율은 미확인",
+        "period": {
+          "start": "2025-01-01",
+          "end": "2025-12-31"
+        },
+        "evidence_refs": [
+          {
+            "source_id": "s2",
+            "source_revision_id": "1",
+            "locator": "synthetic section 1",
+            "claim": "합성 정책 범위 및 노출 확인용 근거"
+          }
+        ],
+        "recorded_at": "2026-11-07T00:00:00Z",
+        "reviewed_at": "2026-11-07T00:00:00Z",
+        "review_status": "REVIEWED",
+        "ratio": null,
+        "reason_codes": [
+          "RATIO_NOT_DISCLOSED"
+        ],
+        "data_kind": "SYNTHETIC"
+      }
+    ],
+    "hypotheses": [
+      {
+        "hypothesis_id": "h0",
+        "hypothesis_revision_id": "1",
+        "policy_id": "p0",
+        "policy_revision_id": "1",
+        "company_ids": [
+          "synthetic-company-0"
+        ],
+        "exposure_refs": [
+          {
+            "exposure_id": "e0",
+            "exposure_revision_id": "1"
+          }
+        ],
+        "claim": "적용 제품에 해당할 경우 비용이 달라질 수 있다는 가설",
+        "steps": [
+          {
+            "text": "추가 비용 또는 대체 수요 가능성",
+            "epistemic_status": "HYPOTHESIS",
+            "evidence_refs": []
+          }
+        ],
+        "conditions": [
+          "대상 제품·거래임이 확인됨"
+        ],
+        "counter_conditions": [
+          "예외·유예 또는 대체 조달이 적용됨"
+        ],
+        "watch_items": [],
+        "created_at": "2026-11-07T00:00:00Z",
+        "recorded_at": "2026-11-07T00:00:00Z",
+        "reviewed_at": "2026-11-07T00:00:00Z",
+        "review_status": "REVIEWED",
+        "data_kind": "SYNTHETIC"
+      },
+      {
+        "hypothesis_id": "h1",
+        "hypothesis_revision_id": "1",
+        "policy_id": "p1",
+        "policy_revision_id": "1",
+        "company_ids": [
+          "synthetic-company-1"
+        ],
+        "exposure_refs": [
+          {
+            "exposure_id": "e1",
+            "exposure_revision_id": "1"
+          }
+        ],
+        "claim": "적용 제품에 해당할 경우 비용이 달라질 수 있다는 가설",
+        "steps": [
+          {
+            "text": "추가 비용 또는 대체 수요 가능성",
+            "epistemic_status": "HYPOTHESIS",
+            "evidence_refs": []
+          }
+        ],
+        "conditions": [
+          "대상 제품·거래임이 확인됨"
+        ],
+        "counter_conditions": [
+          "예외·유예 또는 대체 조달이 적용됨"
+        ],
+        "watch_items": [],
+        "created_at": "2026-11-07T00:00:00Z",
+        "recorded_at": "2026-11-07T00:00:00Z",
+        "reviewed_at": "2026-11-07T00:00:00Z",
+        "review_status": "REVIEWED",
+        "data_kind": "SYNTHETIC"
+      },
+      {
+        "hypothesis_id": "h2",
+        "hypothesis_revision_id": "1",
+        "policy_id": "p2",
+        "policy_revision_id": "1",
+        "company_ids": [
+          "synthetic-company-2"
+        ],
+        "exposure_refs": [
+          {
+            "exposure_id": "e2",
+            "exposure_revision_id": "1"
+          }
+        ],
+        "claim": "적용 제품에 해당할 경우 비용이 달라질 수 있다는 가설",
+        "steps": [
+          {
+            "text": "추가 비용 또는 대체 수요 가능성",
+            "epistemic_status": "HYPOTHESIS",
+            "evidence_refs": []
+          }
+        ],
+        "conditions": [
+          "대상 제품·거래임이 확인됨"
+        ],
+        "counter_conditions": [
+          "예외·유예 또는 대체 조달이 적용됨"
+        ],
+        "watch_items": [],
+        "created_at": "2026-11-07T00:00:00Z",
+        "recorded_at": "2026-11-07T00:00:00Z",
+        "reviewed_at": "2026-11-07T00:00:00Z",
+        "review_status": "REVIEWED",
+        "data_kind": "SYNTHETIC"
+      }
+    ]
+  },
+  "current_policy_revisions": {
+    "p0": "1",
+    "p1": "1",
+    "p2": "1"
+  },
+  "as_of": "2026-11-07T00:00:00Z",
+  "historical_pit_eligible": false
+}

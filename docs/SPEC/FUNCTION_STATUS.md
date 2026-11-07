@@ -79,6 +79,7 @@
 | 4.3 SIC 산업 사이클 | 부분(4.3.1) · 신규(4.3.2·4.3.3) | — | 링 SIC 탭 | 산업 사이클 모델, 산업 어휘(IA 결정) |
 | 4.4 사용자 국면 판단 | 구현 | — | `macro-cycle-ring.js`(#358 보관 정책) | 계정 동기화 |
 | 4.5 나비효과(명세 원문 "연쇄 효과 분석") | 신규 · 결정 | — | 빈 틀(`ia-screens.js` g45, 화면 이름 "나비효과" #396) | 관계 자료원 REL-SOURCE. 이름은 "나비효과"로 결정(DC-17) |
+| 4.5.1.1~4.5.4.1 4.5 안 정책·지정학(관세·수출통제·산업 보조금, 미국 연방 소표본) | 설계 완료 · 구현 완료(개발 빌드) · 실자료는 **비공개 개발 경로에서만 확인** · **게시 안 됨 · 병합 안 됨 · 배포 안 됨** | 합성(Codex #509 `synthetic-view.json` 등, 엔진 출력) · 실자료 비공개(역사 정책 3, 현재 상태 미확인) | 새 앱 `web_app/policy-impact.js`(Codex `policy-impact-view/1` 판독기, 개정·재검토는 엔진 값), `screen-policy-impact-live.js`(3.5 정책 칸·기업 "관련 정책"·5.2 연결), `data.js` STATIC `policy-impact.json`(미게시 → 자료 없음); [POLICY_IMPACT_V1](../../implementation/docs/frontend_v2/POLICY_IMPACT_V1.md) | 게시 승인과 경로 등록(가드·워크플로), 사람이 읽을 제목·availability enum(Codex), 인증 서버·비공개 전달(Main), Federal Register 어댑터(후속) |
 | 4.6 매크로 구조 트리 | 구현 | 실 | `ia-screens.js` | — |
 | 5.1 관계망 | 부분 | 실 | `network-bridge.js` | 5.1.3 매크로 관심 기업 추천 |
 | 5.2.1 목록·개인화 | 구현 | 실 | `news-signals.js`, `sec-disclosures.js`, `dart-disclosures.js` | 8-K 수집 부분 실패(ASML 6-K), 공시 최소 보장 NEWS-CAP 결정 대기 |

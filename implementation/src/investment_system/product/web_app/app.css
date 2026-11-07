@@ -275,7 +275,28 @@ svg.ico{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stro
 /* ---------- 4. 뉴스 (feature 5): the filing / news rows without list markers; long titles and hosts wrap on a phone ---------- */
 .news-rows{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}.news-rows>li{padding:16px}.news-rows a,.news-rows p{overflow-wrap:anywhere}
 /* ---------- phone (draft: 390 px boards, bottom tabs) ---------- */
+/* 3.1 국면 고리 (owner 2026-11-07 3차): the 280 px ring scales down inside a narrow card instead of running past the viewport
+   (no page-level overflow hiding; the drawing keeps its 300×300 viewBox and aspect ratio) */
+figure:has(> svg[data-ring]){align-self:stretch;min-width:0;margin-inline:0}
+/* the 3.1 user-estimate fieldset may shrink like any card body (a fieldset defaults to its content width) */
+fieldset.card-body{min-inline-size:0}
+svg[data-ring]{width:100%;max-width:280px;height:auto}
+/* 4.5 정책·지정학 (owner 2026-11-07): no colour of its own (DC-26); words carry every state */
+.pol-filters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.pol-filters select{min-height:44px;max-width:100%;width:100%}
+.pol-list,.pol-exposures{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.pol-card,.pol-exposure,.pol-hypothesis{padding:12px 16px;display:flex;flex-direction:column;gap:6px;min-width:0;overflow-wrap:anywhere}
+.pol-card p,.pol-exposure p,.pol-hypothesis p{margin:0}
+.pol-title{font-family:var(--font-display);font-size:19px;color:var(--ink);overflow-wrap:anywhere}
+.pol-detail-title{overflow-wrap:anywhere;min-width:0}
+.pol-sec{margin-top:16px;display:flex;flex-direction:column;gap:8px;min-width:0;overflow-wrap:anywhere}
+.pol-conds{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.pol-steps{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:4px}
+.pol-company{margin-top:8px}
+.pol-sec a.lk,.pol-card a.lk,.pol-company a.lk{overflow-wrap:anywhere;max-width:100%}
 @media (max-width:720px){
+ .pol-filters,.pol-conds{grid-template-columns:minmax(0,1fr)}
+ .pol-title{font-size:17px}
  :root{--gutter:16px}
  .page{padding:20px var(--gutter) calc(var(--tabbar) + 24px);gap:20px}
  .top .menu{display:none}

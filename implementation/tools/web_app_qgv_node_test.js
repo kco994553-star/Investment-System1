@@ -335,7 +335,9 @@ test('data: fixed file list = the readers own names; strict request options; not
     ...Object.values(D.LISTS), mods.SecUniverseShares.FILENAME, 'actual-catalog.json', 'entities.json', mods.EntitySearch.NAMES_FILE, mods.InvestmentAppConfig.universeCodeCatalogURL, mods.DeviceValuation.FILE, mods.ForwardValidation.FILENAME,
     mods.QgvOfficial.FILENAME, 'qgv-official-status.json',
     // macro-evidence-status.json (owner 2026-11-07): the daily attempt record beside macro-evidence.json
-    'macro-evidence-status.json']);
+    'macro-evidence-status.json',
+    // 4.5 정책·지정학 (owner 2026-11-07): the policy reader's own file names (the view and its optional navigation sidecar)
+    ...Object.values(require('../src/investment_system/product/web_app/policy-impact.js').DELIVERY).flatMap((d) => [d.file, d.nav])]);
   assert.deepEqual(new Set(data.FILES), expect); assert.equal(data.EVENT, D.EVENT); assert.equal(data.MAX_BYTES, 2 * 1024 * 1024);
   await assert.rejects(data.strictFetch('https://site.test/app/sec-qgv2.json'), /PUBLIC_FILE_UNKNOWN/);
   await assert.rejects(data.strictFetch('../sec-qgv2.json'), /PUBLIC_FILE_UNKNOWN/);

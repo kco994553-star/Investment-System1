@@ -226,7 +226,9 @@ function company(route,{box,given,name,facts,star,bodies}){
   facts.replaceChildren(h('p',{class:'facts-line'},...bits.flatMap((b,i)=>[i?' · ':'',h('span',{class:'nobr'},b)]),extra),
    ended?h('p',{class:'reason',dataset:{listingEnded:ended}},'상장 종료 ',ended,' · 점수 없음'):'');star.replaceWith(starButton(cid));
   I.data.ready().then(settled(signal,()=>{const add=classOf(cid);if(add.length)extra.append(...add.map(t=>' · '+t));}),()=>{});
-  qgvCard(bodies.qgv,cid,signal);macroCard(bodies.macro,signal);newsCard(bodies.news,e,cid,signal);portfolioCard(bodies.portfolio,e,idx,signal);}),
+  qgvCard(bodies.qgv,cid,signal);macroCard(bodies.macro,signal);newsCard(bodies.news,e,cid,signal);portfolioCard(bodies.portfolio,e,idx,signal);
+  // 관련 정책 (4.5 정책·지정학, owner 2026-11-07): a folded card under 3. 매크로, read when opened (screen-policy-impact-live.js).
+  if(I.policyImpactLive)I.policyImpactLive.companyCard(route,{after:bodies.macro,cid});}),
  ()=>{if(!signal.aborted)facts.replaceChildren(na('기업 목록을 불러오지 못했습니다','INDEX_FAILED'));});
 }
 // SIC group and investment type, only from the published files (company-classification.json, company-types-pricefree.json).

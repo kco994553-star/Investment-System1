@@ -379,9 +379,13 @@ function screen(route,{legend,band,slots}){
     h('p',{class:'reason'},h('a',{class:'lk',href:href('search')},'기업 검색하기 →')))),
   block('5.1.4',sub('개인 설정','5.1.4','★ 관심 기업 · 이 기기'),mineBody)));
  const five=['무슨 일','Q 예상','G 예상','성격 · 단기/구조적 · 호재/악재','주가 반영'];
+ // 5.2 → 4.5 관련 정책 (owner 2026-11-07): screen-policy-impact-live.js, on a click; the links are those of the news file in view.
+ const polNews=h('div',{class:'card-body',dataset:{policyNews:''}});
+ if(I.policyImpactLive)I.policyImpactLive.news(route,{body:polNews,links:()=>{const n=S.lists&&S.lists.values?S.lists.values.news:null;return new Set((n&&Array.isArray(n.items)?n.items:[]).map(i=>i.link));}});
  put(slots['4-2'],col(h('p',{class:'hand'},'최신순 · 범위 · 관심 기업 · 공시와 뉴스를 한 목록으로'),
   block('5.2.1',sub('목록 · 개인화','5.2.1','공시·확정 + 뉴스·신호 · 최신 30행'),listBody),
   h('div',{class:'grid-2'},block('5.2.5',sub('신규 · 중복 · 변경','5.2.5'),occBody),block('5.2.7',sub('수집 상태','5.2.7'),statusBody)),
+  block('5.2→4.5',sub('관련 정책','4.5 정책·지정학'),polNews),
   h('p',{class:'reason'},'한 건마다 붙을 요약·영향 칸입니다 · 아직 계산하지 않아 모두 미산출 · 점수에 반영하지 않음'),
   h('div',{class:'grid-2'},
    block('5.2.2',sub('요약','5.2.2'),prep('5줄 요약 미산출 · 지금은 제목·링크·시각·분류만',['5줄 요약 방식 결정 (IA-14)','외부 모델 호출 승인']),

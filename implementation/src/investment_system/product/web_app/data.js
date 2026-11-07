@@ -28,7 +28,13 @@ const LIST_FILES=Object.freeze(['sec-disclosures.json','news-signals.json','dart
 // Read once per page, outside the generation (identity catalog, search names, the fixed 504-code Universe list, financial detail, ledger).
 // macro-evidence-status.json (owner 2026-11-07): the latest daily attempt record beside macro-evidence.json, read by the 4.1.3
 // block once (screen-macro-live.js validates it); absent = no record (older deploys), never a guess.
-const STATIC=Object.freeze(['actual-catalog.json','entities.json','company-names-ko.json',CODES,'sec-valuation-inputs.json','forward-validation-ledger.json','macro-evidence-status.json']);
+// policy-impact.json and policy-impact-navigation.json (4.5 정책·지정학, owner 2026-11-07; public delivery) and their development-only
+// private names policy-impact-private.json / policy-impact-navigation-private.json (never allowed by the Pages guard): read only
+// when that screen asks (IS2.policyImpact validates each as its own delivery path); not
+// published yet, so a read answers NOT_PUBLISHED (자료 없음).
+const STATIC=Object.freeze(['actual-catalog.json','entities.json','company-names-ko.json',CODES,'sec-valuation-inputs.json','forward-validation-ledger.json','macro-evidence-status.json',
+ 'policy-impact.json','policy-impact-navigation.json','policy-impact-private.json','policy-impact-navigation-private.json']);
+const BYTE_FILES=new Set(['policy-impact.json','policy-impact-private.json']);
 const FILES=Object.freeze([...CORE,...LIST_FILES,SHARES,...STATIC,...OFFICIAL_FILES]),FILE_SET=new Set(FILES),STATIC_SET=new Set(STATIC);
 // Without these the public path would silently change (light sec-qgv2 check, macro file rejected, cyclical V basis lost): READER_MISSING.
 const READERS=Object.freeze(['DataRefresh','SecQgv2','Qgv2Inputs','PublicScreens','MacroLights','PlaybookEngine','PlaybookConfigDefaults']);
@@ -176,6 +182,11 @@ function create({win,action}){
   if(name==='company-names-ko.json'){const x=await need('EntitySearch').loadNames(publicView);if(!x)throw Error('INVALID');return x;}
   if(name==='sec-valuation-inputs.json'){const x=await need('DeviceValuation').load(publicView);if(!x)throw Error('INVALID');return x;}
   if(name==='forward-validation-ledger.json'){const r=await need('ForwardValidation').load(publicView);if(r&&r.state==='LOADED')return r.ledger;throw Error(r&&r.reason?r.reason:'LEDGER_UNREACHABLE');}
+  // The two policy view files (4.5; Codex #512 navigation/2, owner 2026-11-07 3rd): the exact delivered bytes, never a parsed
+  // or re-serialized copy. IS2.policyImpact.decodeView checks those bytes (UTF-8, hash) and reads the same bytes; copy() hands
+  // out a fresh copy each time, so the kept bytes cannot be changed by a reader.
+  if(BYTE_FILES.has(name)){const r=await strictFetch(name,{cache:'no-store'});if(!r.ok)throw Error('HTTP');const buf=await r.arrayBuffer();
+   return Object.freeze({kind:'DELIVERED_BYTES',name,byteLength:buf.byteLength,copy:()=>new Uint8Array(buf.slice(0))});}
   const r=await strictFetch(name,{cache:'no-store'});if(!r.ok)throw Error('HTTP');let v;try{v=JSON.parse(await r.text());}catch(_){throw Error('INVALID');}
   if(name===CODES){const GS=need('GoogleSheetSetup');try{return Object.freeze(GS.codes(v));}catch(_){throw Error('INVALID');}}
   // actual-catalog.json and entities.json: the old app checks only the answer and the JSON (app.js deviceCatalog, boot); their

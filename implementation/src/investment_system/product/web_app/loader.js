@@ -33,6 +33,7 @@
 // sector-qgv.js is the sector QGV request / answer check and settings editor on Codex's common engine (feature 2.2, owner
 // 2026-11-06) that screen-sector-qgv-live.js uses; it installs IS2.sectorQgv. sector-qgv-axis.js is the pure reader of the engine's
 // Q/G partial comparison (IS2.sectorQgvAxis); screen-sector-qgv-axis-live.js draws one (IS2.sectorQgvAxisLive).
+// policy-impact.js is the policy-impact/1 reader of 4.5 정책·지정학 (owner 2026-11-07) that screen-policy-impact-live.js uses; it installs IS2.policyImpact.
 const LOAD_ORDER=Object.freeze([
  'locale.js','entity-search.js','price-time.js','device-market.js','device-actual.js','profile-defaults.js','type-config-defaults.js',
  'device-profiles.js','engine-preview.js','dcf-parameters-defaults.js','device-valuation.js','playbook-config-defaults.js','playbook-engine.js',
@@ -50,6 +51,7 @@ const LOAD_ORDER=Object.freeze([
  'screen-technical-live.js','screen-news-live.js','screen-lab-live.js','tech-screen.js','screen-tech-filter-live.js',
  'discovery.js','screen-discovery-live.js',
  'sector-qgv.js','sector-qgv-axis.js','screen-sector-qgv-axis-live.js','screen-sector-qgv-live.js',
+ 'policy-impact.js','screen-policy-impact-live.js',
 ]);
 // A plain lowercase script name. tools/build_web_app.py holds this exact line (the build fails when the two differ).
 const NAME=/^[a-z0-9][a-z0-9-]*(?:\.[a-z0-9-]+)*\.js$/;

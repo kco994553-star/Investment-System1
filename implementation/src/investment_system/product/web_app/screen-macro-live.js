@@ -374,6 +374,7 @@ function screen(route,{legend,band,slots}){
  evidenceBox=refs.evidence;
  // The public part never depends on a panel: a panel that cannot be built is left out (put skips null).
  const panel=(id,title)=>{try{return I.parts.privatePanel({id,title}).node;}catch(_){return null;}};
+ const polBody=h('div',{class:'pol-body',dataset:{policyBody:''}});
  put(slots['3-1'],h('p',{class:'hand'},'공식 국면은 아직 미산출 · 위치·확률을 임의로 찍지 않음 · 경고등 5개는 참고 모드 그대로'),refs.ring,refs.evidence,refs.lights,judgeBlock(),
   panel('macro-market-credit','시장·신용 근거 계열 (KIS 일봉)'));
  put(slots['3-2'],block('4.2',sub('순환매 · 위치 · 조건 · 확률','4.2.1 · 4.2.2 · 4.2.3','근거는 결정됨 · 계산·보정 방법 결정 대기 (IA-3)'),
@@ -387,7 +388,10 @@ function screen(route,{legend,band,slots}){
    h('p',null,h('b',null,'어디서 시작할까')),h('div',{class:'scroll'},['사건 (공시·뉴스)','매크로 동인','기술·제품','밸류체인 단계'].map(t=>h('button',{type:'button',class:'chip',disabled:true},t,' · 준비 중'))),
    h('ol',{class:'news-lines',dataset:{chain:'NOT_AVAILABLE'},'aria-label':'나비효과 틀 · 빈 칸'},['사건','원인 고리','영향받는 기업'].map(t=>h('li',null,h('b',null,t),' ',h('span',{dataset:{na:'NOT_AVAILABLE'}},'—')))),
    h('p',{class:'reason'},'걸음마다 사실 · 추론 · 가설을 나눔 · 한 고리라도 가설이면 경로 전체가 가설 · 호재·악재 · 크기 · 확률은 쓰지 않음 · 확신도 숫자는 검증 전에는 쓰지 않음'),
-   h('p',{class:'links'},h('a',{href:href('news'),class:'lk'},'→ 4.1 관계망'),' ',h('a',{href:href('news'),class:'lk'},'→ 4.2 공시 · 뉴스'))));
+   h('p',{class:'links'},h('a',{href:href('news'),class:'lk'},'→ 4.1 관계망'),' ',h('a',{href:href('news'),class:'lk'},'→ 4.2 공시 · 뉴스')),
+   // 4.5 정책·지정학 (owner 2026-11-07): screen-policy-impact-live.js fills it (#/macro/policy/<id> opens a policy)
+   h('h4',null,'정책 · 지정학'),polBody));
+ if(I.policyImpactLive)I.policyImpactLive.macro(route,{body:polBody,params:route.params});else put(polBody,failed('READER_MISSING','정책 모듈을 불러오지 못했습니다'));
  put(slots['3-6'],refs.tree);
  const paint=()=>{if(aborted())return;fileBand(refs);
   let merged=null;try{merged=lightsBlock(refs.lights);}catch(e){put(refs.lights,failed('LIGHTS_FAILED','경고등을 그리지 못했습니다'));}

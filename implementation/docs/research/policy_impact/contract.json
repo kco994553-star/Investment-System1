@@ -1,0 +1,233 @@
+{
+  "schema_version": "policy-impact/1",
+  "view_schema": "policy-impact-view/2",
+  "required_top_fields": [
+    "schema_version",
+    "bundle_id",
+    "generated_at",
+    "data_kind",
+    "policy_as_of",
+    "score_effect",
+    "gate_effect",
+    "scope",
+    "sources",
+    "policies",
+    "exposures",
+    "hypotheses",
+    "refresh",
+    "reason_codes",
+    "historical_pit_eligible",
+    "freshness",
+    "review_records"
+  ],
+  "required_record_fields": {
+    "sources": [
+      "source_id",
+      "source_revision_id",
+      "kind",
+      "publisher",
+      "url",
+      "title",
+      "document_id",
+      "published",
+      "first_seen_at",
+      "acquired_at",
+      "revision_acquired_at",
+      "verification_status",
+      "evidence_locator",
+      "content_sha256",
+      "data_kind"
+    ],
+    "policies": [
+      "policy_id",
+      "revision_id",
+      "supersedes_revision_id",
+      "policy_type",
+      "title",
+      "issuer",
+      "jurisdiction",
+      "target_regions",
+      "scope_description",
+      "lifecycle_status",
+      "published",
+      "effective_from",
+      "effective_to",
+      "evidence_refs",
+      "recorded_at",
+      "change_recorded_at",
+      "reviewed_at",
+      "review_status",
+      "next_review_on",
+      "identity_basis",
+      "subsidy_stage",
+      "parent_policy_id",
+      "data_kind"
+    ],
+    "exposures": [
+      "exposure_id",
+      "exposure_revision_id",
+      "company_id",
+      "policy_id",
+      "policy_revision_id",
+      "exposure_type",
+      "evidence_status",
+      "policy_applicability",
+      "description",
+      "period",
+      "evidence_refs",
+      "recorded_at",
+      "reviewed_at",
+      "review_status",
+      "ratio",
+      "reason_codes",
+      "data_kind"
+    ],
+    "hypotheses": [
+      "hypothesis_id",
+      "hypothesis_revision_id",
+      "policy_id",
+      "policy_revision_id",
+      "company_ids",
+      "exposure_refs",
+      "claim",
+      "steps",
+      "conditions",
+      "counter_conditions",
+      "watch_items",
+      "created_at",
+      "recorded_at",
+      "reviewed_at",
+      "review_status",
+      "data_kind"
+    ]
+  },
+  "record_keys": {
+    "sources": [
+      "source_id",
+      "source_revision_id"
+    ],
+    "policies": [
+      "policy_id",
+      "revision_id"
+    ],
+    "exposures": [
+      "exposure_id",
+      "exposure_revision_id"
+    ],
+    "hypotheses": [
+      "hypothesis_id",
+      "hypothesis_revision_id"
+    ]
+  },
+  "enums": {
+    "kind": [
+      "COMPANY_FILING",
+      "NEWS_REFERENCE",
+      "OFFICIAL_RELEASE",
+      "OFFICIAL_RULE"
+    ],
+    "policy_type": [
+      "EXPORT_CONTROL",
+      "INDUSTRIAL_SUBSIDY",
+      "TARIFF"
+    ],
+    "lifecycle_status": [
+      "ADOPTED",
+      "EFFECTIVE",
+      "EXPIRED",
+      "PROPOSED",
+      "STATEMENT",
+      "SUSPENDED",
+      "UNKNOWN",
+      "WITHDRAWN"
+    ],
+    "review_status": [
+      "REVIEWED",
+      "REVIEW_REQUIRED",
+      "UNREVIEWED"
+    ],
+    "verification_status": [
+      "CONFLICTING_EVIDENCE",
+      "SOURCE_UNVERIFIED",
+      "VERIFIED"
+    ],
+    "exposure_type": [
+      "CONTROLLED_PRODUCT",
+      "PROCUREMENT",
+      "PRODUCTION_SITE",
+      "REVENUE_REGION",
+      "SUBSIDY_PROJECT"
+    ],
+    "evidence_status": [
+      "CANDIDATE",
+      "DOCUMENTED",
+      "UNKNOWN"
+    ],
+    "policy_applicability": [
+      "DOCUMENTED",
+      "OUTSIDE_SCOPE",
+      "UNCONFIRMED"
+    ],
+    "subsidy_stage": [
+      "DISBURSEMENT_CONFIRMED",
+      "FINAL_AWARD",
+      "PRELIMINARY_TERMS",
+      "UNKNOWN"
+    ]
+  },
+  "effects": {
+    "score_effect": "NONE",
+    "gate_effect": "NONE"
+  },
+  "historical_pit_eligible": false,
+  "review_record_fields": [
+    "group",
+    "id",
+    "revision_id",
+    "reviewed_at",
+    "recorded_at",
+    "reviewer",
+    "author",
+    "method",
+    "evidence_refs"
+  ],
+  "temporal_fields": [
+    "value",
+    "precision",
+    "timezone"
+  ],
+  "evidence_ref_fields": [
+    "source_id",
+    "source_revision_id",
+    "locator",
+    "claim"
+  ],
+  "private_view_schema": "policy-impact-view/1",
+  "legacy_public_view_schema": "policy-impact-view/1 (retained only; not implicit publication permission)",
+  "watch_availability": {
+    "PUBLIC_REFERENCE": "Public-source reference is available; not publication permission",
+    "UNAVAILABLE": "Reference unavailable; not false or zero",
+    "UNKNOWN": "Availability not established; never grants publication"
+  },
+  "watch_publication_permissions": {
+    "key": "kind:reference_id",
+    "allowed": [
+      "ALLOWED",
+      "PRIVATE_ONLY",
+      "UNKNOWN"
+    ],
+    "missing": "UNKNOWN; excluded from public output"
+  },
+  "navigation_sidecar": "policy-impact-navigation/1",
+  "navigation_sidecar_bytes": {
+    "input_schema": "policy-impact-navigation-input/2",
+    "output_schema": "policy-impact-navigation/2",
+    "hash_algorithm": "SHA256_VIEW_UTF8_BYTES_V1",
+    "base_view_hash": "SHA-256 of the exact delivered view file UTF-8 bytes; no parse/reserialize",
+    "producer_encoding": "UTF-8, no BOM, indent 2, LF, final LF; finite JSON numbers stay numbers",
+    "cli_view_source": ["path", "sha256"],
+    "legacy": "navigation/1 canonical-object digest unchanged; explicit regeneration required for /2",
+    "publication_permission": "unchanged; unknown never grants public output",
+    "evidence_effect": "NONE"
+  }
+}
