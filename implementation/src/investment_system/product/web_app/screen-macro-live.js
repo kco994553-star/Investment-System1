@@ -42,24 +42,32 @@ const V={cycle:'economy',view:{economy:0,market:0},ev:null,group:'',ring:'econom
 // failed attempt keeps the last good copy with its own generated_at; the record says the attempt failed and the data is late.
 const MES='macro-evidence-status.json',MES_KEYS=['schema','kind','attempt_at','attempt_result','failure_stage','failure_class','published','data_generated_at','data_sha256','previous'];
 const MES_STAGE={PREVIOUS:'이전 공개본 읽기',COLLECT:'수집',BUILD:'자료 만들기',VALIDATE:'검사',WRITE:'쓰기'};
+// How the previous Pages copy read (macro/evidence_lines.py PREVIOUS_READ): UNAVAILABLE / INVALID are not absence.
+const MES_PREV={LOADED:'정상본 확인',NO_LIVE:'공개본 없음',EMPTY_LIVE:'빈 기본값만 있음',REMOVED:'공개본이 빠져 있음',UNAVAILABLE:'조회 실패',INVALID:'손상된 응답'};
 const ISO=/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,6})?Z$/;
 function mesValid(p){const ok=(c)=>{if(!c)throw Error('MES');};try{ok(p&&typeof p==='object'&&!Array.isArray(p)&&Object.keys(p).length===MES_KEYS.length&&MES_KEYS.every(k=>Object.hasOwn(p,k)));
  ok(p.schema==='macro-evidence-status/1'&&p.kind==='MACRO_EVIDENCE_ATTEMPT'&&ISO.test(p.attempt_at));
- ok(['BUILT','FAILED'].includes(p.attempt_result)&&['NEW','PREVIOUS_KEPT','NO_GOOD_COPY'].includes(p.published)&&['LOADED','EMPTY_LIVE','NO_LIVE','UNAVAILABLE','INVALID'].includes(p.previous));
- if(p.attempt_result==='BUILT')ok(p.failure_stage===null&&p.failure_class===null&&p.published==='NEW');
- else ok(Object.hasOwn(MES_STAGE,p.failure_stage)&&p.published!=='NEW'&&(p.failure_class===null||(typeof p.failure_class==='string'&&/^[A-Za-z][A-Za-z0-9_]{0,63}$/.test(p.failure_class))));
- if(p.published==='NO_GOOD_COPY')ok(p.data_generated_at===null&&p.data_sha256===null);else ok(ISO.test(p.data_generated_at)&&/^[0-9a-f]{64}$/.test(p.data_sha256));
+ ok(['BUILT','FAILED'].includes(p.attempt_result)&&['NEW','PREVIOUS_KEPT','WITHHELD'].includes(p.published)&&Object.hasOwn(MES_PREV,p.previous));
+ const unreadable=p.previous==='UNAVAILABLE'||p.previous==='INVALID';
+ if(p.attempt_result==='BUILT')ok(p.failure_stage===null&&p.failure_class===null&&p.published==='NEW'&&!unreadable);
+ else{ok(Object.hasOwn(MES_STAGE,p.failure_stage)&&p.published!=='NEW'&&(p.failure_class===null||(typeof p.failure_class==='string'&&/^[A-Za-z][A-Za-z0-9_]{0,63}$/.test(p.failure_class))));
+  if(p.published==='PREVIOUS_KEPT')ok(p.previous==='LOADED');else if(unreadable)ok(p.failure_stage==='PREVIOUS');else if(p.previous==='LOADED')ok(p.failure_stage==='WRITE');}
+ if(p.published==='WITHHELD')ok(p.data_generated_at===null&&p.data_sha256===null);else ok(ISO.test(p.data_generated_at)&&/^[0-9a-f]{64}$/.test(p.data_sha256));
  return p;}catch(_){return null;}}
 // The attempt line: null when there is nothing to say (no record, or a built attempt of this very file). `p` is the
-// macro file, or null when it is not published: NO_GOOD_COPY means the daily step withheld it (never beside a file).
+// macro file, or null when it is not published: WITHHELD means the daily step left it out (never beside a file).
 function attemptLine(p){const st=V.mevStatus;if(!st)return null;
  if(st.invalid)return h('p',{class:'reason',dataset:{mevAttempt:'INVALID'}},'갱신 기록 규격 불일치 · 기록 표시 안 함');
- const matches=st.published==='NO_GOOD_COPY'?p===null:(p!==null&&st.data_generated_at===p.generated_at);
+ const matches=st.published==='WITHHELD'?p===null:(p!==null&&st.data_generated_at===p.generated_at);
  if(!matches)return h('p',{class:'reason',dataset:{mevAttempt:'MISMATCH'}},'갱신 기록이 이 자료와 맞지 않음 · 기록 표시 안 함');
  if(st.attempt_result==='BUILT')return null;
  return st.published==='PREVIOUS_KEPT'
   ?h('p',{class:'hand err',role:'status',dataset:{mevAttempt:'PREVIOUS_KEPT'}},'이번 갱신 실패 (',utc(st.attempt_at),' · ',MES_STAGE[st.failure_stage],' 단계) · 아래는 마지막 정상본 그대로 (생성 ',utc(st.data_generated_at),') · 자료 지연')
-  :h('p',{class:'hand err',role:'status',dataset:{mevAttempt:'NO_GOOD_COPY'}},'이번 갱신 실패 (',utc(st.attempt_at),' · ',MES_STAGE[st.failure_stage],' 단계) · 정상본이 없어 근거 파일을 게시하지 않음 · 0건이 아니라 미수집');}
+  :st.previous==='UNAVAILABLE'||st.previous==='INVALID'
+   ?h('p',{class:'hand err',role:'status',dataset:{mevAttempt:'WITHHELD',mevPrevious:st.previous}},'이번 갱신 실패 (',utc(st.attempt_at),' · 이전 공개본 ',MES_PREV[st.previous],') · 이전 기록을 이어받지 못해 근거 파일을 게시하지 않음 · 이전 공개 파일도 이 배포에서 빠짐(보존 아님)')
+   :st.previous==='LOADED'
+   ?h('p',{class:'hand err',role:'status',dataset:{mevAttempt:'WITHHELD',mevPrevious:'LOADED'}},'이번 갱신 실패 (',utc(st.attempt_at),' · ',MES_STAGE[st.failure_stage],' 단계) · 근거 파일을 쓰지 못해 게시하지 않음 · 이전 공개 파일도 이 배포에서 빠짐(보존 아님)')
+   :h('p',{class:'hand err',role:'status',dataset:{mevAttempt:'WITHHELD',mevPrevious:st.previous}},'이번 갱신 실패 (',utc(st.attempt_at),' · ',MES_STAGE[st.failure_stage],' 단계) · 정상본이 없어 근거 파일을 게시하지 않음 (',MES_PREV[st.previous],') · 0건이 아니라 미수집');}
 const obj=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 // replaceChildren would write "null" for a part that is not there: core append skips null / false.
 const put=(box,...c)=>{box.replaceChildren();I.append(box,c);return box;};
@@ -161,7 +169,7 @@ function evidenceBlock(box){
   h('p',{class:'reason',dataset:{evScope:''}},'탐색 화면 전용 · 해석 후보 · 미승인 · v0 · 미검증')];
  const s=fileState(ME),p=s.state==='OK'?I.data.get(ME):null,ME_=window.MacroEvidence;
  if(!p||!ME_){put(box,...top,s.state==='OK'?failed('READER_MISSING','근거 지표를 읽는 모듈이 없습니다'):fileFail(ME,'근거'),
-  s.state!=='OK'&&V.mevStatus&&(V.mevStatus.invalid||V.mevStatus.published==='NO_GOOD_COPY')?attemptLine(null):null);return;}
+  s.state!=='OK'&&V.mevStatus&&(V.mevStatus.invalid||V.mevStatus.published==='WITHHELD')?attemptLine(null):null);return;}
  const tabsList=ME_.TABS.map(([c,l])=>[c,l]),cyc=V.ev||V.cycle,ci=Math.max(0,tabsList.findIndex(t=>t[0]===cyc));
  const sum=ME_.summary(p,tabsList[ci][0]),names=a=>a.map(f=>FAMILY[f]||f).join(', ')||'없음';
  const evs=ME_.events({cycle:tabsList[ci][0]},p),N=phone()?ME_.LIMIT.mobile:ME_.LIMIT.pc;

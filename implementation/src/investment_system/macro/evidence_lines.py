@@ -534,8 +534,14 @@ STATUS_SCHEMA = "macro-evidence-status/1"
 STATUS_KIND = "MACRO_EVIDENCE_ATTEMPT"
 ATTEMPT_RESULTS = ("BUILT", "FAILED")
 FAILURE_STAGES = ("PREVIOUS", "COLLECT", "BUILD", "VALIDATE", "WRITE")
-PUBLISHED = ("NEW", "PREVIOUS_KEPT", "NO_GOOD_COPY")
-PREVIOUS_READ = ("LOADED", "EMPTY_LIVE", "NO_LIVE", "UNAVAILABLE", "INVALID")
+# What the artifact carries after this attempt: a new file, the last good copy byte for byte, or no file (withheld).
+PUBLISHED = ("NEW", "PREVIOUS_KEPT", "WITHHELD")
+# How the previous Pages copy read (owner 2026-11-07 3rd): a verified good copy (LOADED); confirmed absent (NO_LIVE: 404
+# and no attempt record, EMPTY_LIVE: only the placeholder, REMOVED: 404 although an attempt record says a file was there);
+# a failed read (UNAVAILABLE); a served but damaged copy (INVALID). A failed or damaged read is never taken for absence.
+PREVIOUS_READ = ("LOADED", "EMPTY_LIVE", "NO_LIVE", "REMOVED", "UNAVAILABLE", "INVALID")
+PREVIOUS_ABSENT = ("NO_LIVE", "EMPTY_LIVE", "REMOVED")
+PREVIOUS_UNREADABLE = ("UNAVAILABLE", "INVALID")
 STATUS_KEYS = ("schema", "kind", "attempt_at", "attempt_result", "failure_stage", "failure_class", "published",
                "data_generated_at", "data_sha256", "previous")
 _CLASS = re.compile(r"[A-Za-z][A-Za-z0-9_]{0,63}")
@@ -559,11 +565,19 @@ def require_status(payload) -> dict:
         parse_iso(p["attempt_at"])
         _need(p["attempt_result"] in ATTEMPT_RESULTS and p["published"] in PUBLISHED and p["previous"] in PREVIOUS_READ)
         if p["attempt_result"] == "BUILT":
+            # built only from a verified good copy or a confirmed absence, never after a failed or damaged read
             _need(p["failure_stage"] is None and p["failure_class"] is None and p["published"] == "NEW")
+            _need(p["previous"] not in PREVIOUS_UNREADABLE)
         else:
-            _need(p["failure_stage"] in FAILURE_STAGES and p["published"] in ("PREVIOUS_KEPT", "NO_GOOD_COPY"))
+            _need(p["failure_stage"] in FAILURE_STAGES and p["published"] in ("PREVIOUS_KEPT", "WITHHELD"))
             _need(p["failure_class"] is None or (type(p["failure_class"]) is str and _CLASS.fullmatch(p["failure_class"])))
-        if p["published"] == "NO_GOOD_COPY":
+            if p["published"] == "PREVIOUS_KEPT":
+                _need(p["previous"] == "LOADED")
+            elif p["previous"] in PREVIOUS_UNREADABLE:
+                _need(p["failure_stage"] == "PREVIOUS")
+            elif p["previous"] == "LOADED":
+                _need(p["failure_stage"] == "WRITE")              # the good copy itself could not be written
+        if p["published"] == "WITHHELD":
             _need(p["data_generated_at"] is None and p["data_sha256"] is None)
         else:
             parse_iso(p["data_generated_at"])

@@ -769,15 +769,18 @@ def _placeholder():
     return el.encode(el.empty_payload(datetime(2026, 11, 7, 1, 57, tzinfo=UTC)))
 
 
-def _status_for(body, published='PREVIOUS_KEPT', result='FAILED'):
+def _status_for(body, published='PREVIOUS_KEPT', result='FAILED', previous=None):
     import hashlib
     fx, el = _macro()
     payload = json.loads(body)
+    withheld = published == 'WITHHELD'
+    previous = previous or ('EMPTY_LIVE' if withheld else 'LOADED')
+    stage = None if result == 'BUILT' else 'PREVIOUS' if previous in el.PREVIOUS_UNREADABLE else 'BUILD'
     return el.encode_status(el.status_record(
-        attempt_at=datetime(2026, 11, 7, 1, 57, tzinfo=UTC), result=result, stage=None if result == 'BUILT' else 'BUILD',
+        attempt_at=datetime(2026, 11, 7, 1, 57, tzinfo=UTC), result=result, stage=stage,
         error_class=None if result == 'BUILT' else 'KeyError', published=published,
-        data_generated_at=None if published == 'NO_GOOD_COPY' else payload['generated_at'],
-        data_sha256=None if published == 'NO_GOOD_COPY' else hashlib.sha256(body).hexdigest(), previous='LOADED'))
+        data_generated_at=None if withheld else payload['generated_at'],
+        data_sha256=None if withheld else hashlib.sha256(body).hexdigest(), previous=previous))
 
 
 def macro_line(out):
@@ -795,8 +798,12 @@ def test_macro_incident_placeholder_replacing_a_good_copy_is_refused(tmp_path, c
 
 @pytest.mark.parametrize('artifact,kind,code', [
     ('missing', 'MISSING', 0),                       # withheld (D-CV16 (a)): this file only, the deploy goes on
-    ('withheld', 'MISSING', 0),                      # no good copy: placeholder withheld, NO_GOOD_COPY record beside nothing
-    ('withheld_placeholder', 'EMPTIED', 1),          # the placeholder beside a NO_GOOD_COPY record is never published
+    ('withheld', 'MISSING', 0),                      # collect could not read the live copy; deploy can: still withheld,
+                                                     # and the line says the good copy leaves the site (not kept)
+    ('withheld_placeholder', 'EMPTIED', 1),          # the placeholder beside a WITHHELD record is never published
+    ('reset_over_good', 'DISCONTINUOUS', 1),         # a later file that does not continue the live good copy
+    ('lost_release', 'DISCONTINUOUS', 1),            # records missing from a later file
+    ('restamped', 'DISCONTINUOUS', 1),               # an original observation time stamped again
     ('corrupt', 'ARTIFACT_INVALID', 1),
     ('older', 'OLDER', 1),
     ('kept', 'EQUAL', 0),
@@ -809,9 +816,20 @@ def test_macro_artifact_against_a_good_live_copy(tmp_path, capsys, artifact, kin
     live = el.encode(runs[-2])
     files = {}
     if artifact == 'withheld':
-        files[el.STATUS_FILENAME] = _status_for(live, 'NO_GOOD_COPY')
+        files[el.STATUS_FILENAME] = _status_for(live, 'WITHHELD', previous='UNAVAILABLE')
     elif artifact == 'withheld_placeholder':
-        files[el.FILENAME], files[el.STATUS_FILENAME] = _placeholder(), _status_for(live, 'NO_GOOD_COPY')
+        files[el.FILENAME], files[el.STATUS_FILENAME] = _placeholder(), _status_for(live, 'WITHHELD')
+    elif artifact in ('reset_over_good', 'lost_release', 'restamped'):
+        p = copy.deepcopy(runs[-1])
+        if artifact == 'reset_over_good':
+            p['continuity'], p['previous'] = 'RESET_PREVIOUS_UNAVAILABLE', 'UNAVAILABLE'
+        elif artifact == 'lost_release':
+            assert len(runs[-2]['releases']) > 1
+            p['releases'] = p['releases'][1:]
+        else:
+            sid = next(k for k, r in p['series'].items() if r['baseline_at'] is not None)
+            p['series'][sid]['baseline_at'] = p['generated_at']
+        files[el.FILENAME] = el.encode(p)
     elif artifact == 'corrupt':
         files[el.FILENAME] = live[:-40]
     elif artifact == 'older':
@@ -828,27 +846,61 @@ def test_macro_artifact_against_a_good_live_copy(tmp_path, capsys, artifact, kin
         files[el.FILENAME], files[el.STATUS_FILENAME] = new, _status_for(new, 'NEW', 'BUILT')
     got, out = guard(write(tmp_path / 'a', files), served({el.FILENAME: live}), capsys)
     assert got == code and f'kind={kind} ' in macro_line(out), macro_line(out)
-    withheld = f'PAGES_FRESHNESS_PUBLICATION_WITHHELD file={el.FILENAME} kind={kind} deploy=CONTINUES'
+    withheld = f'PAGES_FRESHNESS_PUBLICATION_WITHHELD file={el.FILENAME} kind={kind} effect=LIVE_GOOD_COPY_REMOVED '
     assert (withheld in out) == (kind == 'MISSING') and ('verdict=WITHHELD' in macro_line(out)) == (kind == 'MISSING')
+    if artifact == 'withheld':
+        assert 'attempt_previous=UNAVAILABLE deploy=CONTINUES' in out
 
 
 def test_macro_no_good_live_copy_passes_and_counts_as_no_live(tmp_path, capsys):
     _, el = _macro()
     for live in ({}, {el.FILENAME: _placeholder()}):                 # never published, or only the placeholder
-        for n, files in enumerate(({}, {el.STATUS_FILENAME: _status_for(_placeholder(), 'NO_GOOD_COPY')},
-                                   {el.FILENAME: _placeholder()}, {el.FILENAME: _good()})):
+        for n, files in enumerate(({}, {el.STATUS_FILENAME: _status_for(_placeholder(), 'WITHHELD')}, {el.FILENAME: _good()})):
             code, out = guard(write(tmp_path / ('a%d%d' % (len(live), n)), files), served(live), capsys)
             assert code == 0 and 'verdict=NO_LIVE kind=NO_GOOD_LIVE' in macro_line(out)
-    # the placeholder beside a NO_GOOD_COPY record: the daily step withholds it, so an artifact carrying both is inconsistent
-    code, out = guard(write(tmp_path / 'ph', {el.FILENAME: _placeholder(), el.STATUS_FILENAME: _status_for(_placeholder(), 'NO_GOOD_COPY')}),
-                      served({}), capsys)
-    assert code == 1 and 'kind=STATUS_MISMATCH' in macro_line(out)
+        # the build placeholder is never published as a result, whatever the live state
+        for n, files in enumerate(({el.FILENAME: _placeholder()},
+                                   {el.FILENAME: _placeholder(), el.STATUS_FILENAME: _status_for(_placeholder(), 'WITHHELD')})):
+            code, out = guard(write(tmp_path / ('p%d%d' % (len(live), n)), files), served(live), capsys)
+            assert code == 1 and 'verdict=REFUSED kind=PLACEHOLDER' in macro_line(out)
 
 
 def test_macro_status_must_describe_the_file_beside_it(tmp_path, capsys):
     _, el = _macro()
     live, other = _good(-2), _good(-1)
-    for status in (_status_for(other), _status_for(live, 'NO_GOOD_COPY'), b'{"schema": "x"}'):
+    for status in (_status_for(other), _status_for(live, 'WITHHELD'), b'{"schema": "x"}'):
         code, out = guard(write(tmp_path / ('s%d' % len(status)), {el.FILENAME: live, el.STATUS_FILENAME: status}),
                           served({el.FILENAME: live}), capsys)
         assert code == 1 and 'kind=STATUS_MISMATCH' in macro_line(out)
+
+
+class _MacroDown(Site):
+    """The live site with only macro-evidence.json unreachable (a failed read, not a 404)."""
+
+    def __call__(self, request, **kw):
+        if el_name() in request.full_url:
+            raise urllib.error.URLError('down')
+        return super().__call__(request, **kw)
+
+
+def el_name():
+    return _macro()[1].FILENAME
+
+
+def test_macro_live_read_failing_right_before_deploy_refuses_the_deploy(tmp_path, capsys):
+    """Owner 2026-11-07 3rd: the file-level WITHHELD policy never passes a failed live read at deploy time."""
+    _, el = _macro()
+    for n, files in enumerate(({}, {el.STATUS_FILENAME: _status_for(_placeholder(), 'WITHHELD', previous='UNAVAILABLE')},
+                               {el.FILENAME: _good()})):
+        code, out = guard(write(tmp_path / ('d%d' % n), files), _MacroDown({el.FILENAME: _good(-2)}), capsys)
+        assert code == 1 and f'PAGES_FRESHNESS_LIVE_UNREACHABLE file={el.FILENAME} deploy=REFUSED' in out
+
+
+def test_macro_damaged_live_copy_is_withheld_not_kept(tmp_path, capsys):
+    """Served with HTTP 200 but not a valid file: nothing can be kept; the file is withheld and the line says what happens."""
+    _, el = _macro()
+    record = _status_for(_placeholder(), 'WITHHELD', previous='INVALID')
+    code, out = guard(write(tmp_path / 'a', {el.STATUS_FILENAME: record}), served({el.FILENAME: b'{"schema":'}), capsys)
+    assert code == 0 and 'verdict=WITHHELD kind=LIVE_INVALID' in macro_line(out)
+    assert (f'PAGES_FRESHNESS_PUBLICATION_WITHHELD file={el.FILENAME} kind=LIVE_INVALID effect=LIVE_INVALID_COPY_REPLACED '
+            'attempt_previous=INVALID deploy=CONTINUES') in out

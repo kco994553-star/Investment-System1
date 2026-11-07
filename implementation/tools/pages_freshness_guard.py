@@ -100,17 +100,26 @@ Both sides are read through the strict reader `qgv_official.parse` (no duplicate
 macro-evidence.json (owner 2026-11-07, run 42326419126: a failed build left the build-time placeholder in the artifact and
 the deploy replaced the collected copy): one file, compared as a whole by `generated_at` (the time it was built from
 collected data; the placeholder has null), never by a fixed count of collected series (a partial collection is normal).
+- the artifact carries the build-time placeholder (generated_at null) -> EMPTIED over a good live copy, else PLACEHOLDER:
+  refused either way (the placeholder is never published as a result; the daily and UI steps withhold it);
 - live copy not served (404) or only the placeholder -> NO_GOOD_LIVE (counted as no_live): nothing good to lose, any
-  valid artifact passes;
-- live good copy and the artifact carries the placeholder -> EMPTIED, or a copy built earlier -> OLDER: refused;
+  valid built artifact passes;
+- live good copy and the artifact carries a copy built earlier -> OLDER: refused;
 - live good copy, artifact without the file (the daily step had no good copy and withheld the placeholder) -> MISSING, or a
   live copy served but invalid -> LIVE_INVALID: verdict WITHHELD as for qgv-official.json (D-CV16 (a)): this file is off the
-  site until the next good run, the rest of the deploy goes on (a macro failure never stops the SEC, news or V publication);
-- same generated_at: bytes equal -> EQUAL (the kept last good copy), else CHANGED: refused; built later -> NEWER: pass;
+  site until the next good run, the rest of the deploy goes on (a macro failure never stops the SEC, news or V publication).
+  On this static site that removes the live file: the WITHHELD line says effect=LIVE_GOOD_COPY_REMOVED and this is never
+  reported as keeping a good copy (carrying the validated live bytes would need a new upload in the deploy job, an owner
+  decision, as for qgv-official.json AUDIT 10-6-3). An unreachable live read still refuses the whole deploy (below);
+- same generated_at: bytes equal -> EQUAL (the kept last good copy), else CHANGED: refused; built later and a continuation
+  of the live copy (macro_evidence.continues: CONTINUOUS, same collection start, release and event records only appended,
+  per series baseline and success times kept, history kept, an uncollected series carried unchanged) -> NEWER: pass;
+  built later but not a continuation (records lost, times restamped, a reset baseline over a good copy) -> DISCONTINUOUS:
+  refused (owner 2026-11-07 3rd);
 - artifact present but rejected by require_macro_evidence -> ARTIFACT_INVALID, refused;
 - macro-evidence-status.json (the attempt record) is not data and is not compared with the live copy, but in the artifact it
   must describe the macro file beside it: published NEW / PREVIOUS_KEPT with that file's generated_at and SHA-256, or
-  NO_GOOD_COPY with no macro file. Otherwise STATUS_MISMATCH, refused. An artifact without the record passes (UI-only
+  WITHHELD with no macro file. Otherwise STATUS_MISMATCH, refused. An artifact without the record passes (UI-only
   deploys before the first daily run with this rule).
 
 Live copy: 404 -> NO_LIVE (first publication, nothing to roll back: pass). Served (200) but oversized, not JSON or
@@ -242,6 +251,7 @@ OFFICIAL_VERDICTS = {'NONE': 'NO_LIVE', 'NEW': 'NO_LIVE', 'EQUAL': 'PASS', 'NEWE
 
 # macro-evidence.json (module doc).
 MACRO_VERDICTS = {'NO_GOOD_LIVE': 'NO_LIVE', 'EQUAL': 'PASS', 'NEWER': 'PASS', 'MISSING': 'WITHHELD', 'EMPTIED': 'REFUSED',
+                  'PLACEHOLDER': 'REFUSED', 'DISCONTINUOUS': 'REFUSED',
                   'OLDER': 'REFUSED', 'CHANGED': 'REFUSED', 'ARTIFACT_INVALID': 'REFUSED', 'LIVE_INVALID': 'WITHHELD',
                   'STATUS_MISMATCH': 'REFUSED'}
 
@@ -352,34 +362,43 @@ def _artifact_file(folder, name, limit, validate):
 
 
 def compare_macro(live, artifact, status=('ABSENT', None, None)):
-    """`live` = _live_macro(...), `artifact` / `status` = _artifact_file(...) -> {kind, verdict, artifact_at, live_at}."""
+    """`live` = _live_macro(...), `artifact` / `status` = _artifact_file(...) -> {kind, verdict, artifact_at, live_at,
+    live_good}. live_good: the live copy is a verified good copy (a withheld file then leaves the site: not kept)."""
     live_state, live_body, theirs = live
     art_state, art_body, mine = artifact
     live_at = theirs['generated_at'] if live_state == 'VALID' else None
     art_at = mine['generated_at'] if art_state == 'VALID' else None
+    live_good = live_at is not None
     if art_state == 'INVALID':
         kind = 'ARTIFACT_INVALID'
+    elif art_state == 'VALID' and art_at is None:
+        # the build-time placeholder is never published as a result (owner 2026-11-07): over a good copy EMPTIED
+        kind = 'EMPTIED' if live_good else 'PLACEHOLDER'
     elif live_state == 'LIVE_INVALID':
         kind = 'LIVE_INVALID'
-    elif live_state == 'NO_LIVE' or live_at is None:
+    elif not live_good:
         kind = 'NO_GOOD_LIVE'
     elif art_state == 'ABSENT':
         kind = 'MISSING'
-    elif art_at is None:
-        kind = 'EMPTIED'
     else:
         ours, live_time = el.parse_iso(art_at), el.parse_iso(live_at)
-        kind = 'OLDER' if ours < live_time else 'NEWER' if ours > live_time else ('EQUAL' if art_body == live_body else 'CHANGED')
+        if ours < live_time:
+            kind = 'OLDER'
+        elif ours == live_time:
+            kind = 'EQUAL' if art_body == live_body else 'CHANGED'
+        else:
+            # owner 2026-11-07 3rd: a later file must continue the live good copy (no record lost, no time restamped)
+            kind = 'NEWER' if macro_tool.continues(mine, theirs) else 'DISCONTINUOUS'
     status_state, _, record = status
     if MACRO_VERDICTS[kind] != 'REFUSED' and status_state != 'ABSENT':
         if status_state == 'INVALID':
             kind = 'STATUS_MISMATCH'
-        elif record['published'] == 'NO_GOOD_COPY':
-            # no good copy: the macro file is withheld (the placeholder is never published beside this record)
-            kind = kind if art_state == 'ABSENT' else 'STATUS_MISMATCH'
+        elif record['published'] == 'WITHHELD':
+            kind = kind if art_state == 'ABSENT' else 'STATUS_MISMATCH'      # withheld: no macro file beside it
         elif art_state != 'VALID' or record['data_generated_at'] != art_at or record['data_sha256'] != hashlib.sha256(art_body).hexdigest():
             kind = 'STATUS_MISMATCH'
-    return {'kind': kind, 'verdict': MACRO_VERDICTS[kind], 'artifact_at': art_at, 'live_at': live_at}
+    return {'kind': kind, 'verdict': MACRO_VERDICTS[kind], 'artifact_at': art_at, 'live_at': live_at, 'live_good': live_good,
+            'previous': record['previous'] if status_state == 'VALID' else None}
 
 
 def _official_basis(payload):
@@ -697,7 +716,11 @@ def run(artifact_dir, *, open_response=None, environ=None):
     macro = result.get('macro')
     if macro is not None:
         if macro['verdict'] == 'WITHHELD':
-            print(f"PAGES_FRESHNESS_PUBLICATION_WITHHELD file={el.FILENAME} kind={macro['kind']} deploy=CONTINUES")
+            # a static site: the deploy leaves out the live file; with a good live copy that copy leaves the site (not kept)
+            effect = ('LIVE_GOOD_COPY_REMOVED' if macro['live_good'] and macro['kind'] == 'MISSING' else
+                      'LIVE_INVALID_COPY_REPLACED' if macro['kind'] == 'LIVE_INVALID' else 'NOT_PUBLISHED')
+            print(f"PAGES_FRESHNESS_PUBLICATION_WITHHELD file={el.FILENAME} kind={macro['kind']} effect={effect} "
+                  f"attempt_previous={macro.get('previous') or 'NONE'} deploy=CONTINUES")
         print(f"PAGES_FRESHNESS file={el.FILENAME} section=file verdict={macro['verdict']} kind={macro['kind']} "
               f"artifact_generated_at={macro['artifact_at'] or 'NONE'} live_generated_at={macro['live_at'] or 'NONE'}")
         verdicts.append(macro['verdict'])

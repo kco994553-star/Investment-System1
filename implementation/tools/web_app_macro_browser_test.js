@@ -399,13 +399,25 @@ let phase = 'START', pass = 0;
       assert.equal(await count(page, '[data-mev-attempt]'), 0, phase + ': an unreadable record is no record');
       assert.equal(await count(page, '[data-collection]'), 1, phase + ': the evidence stays');
       // No good copy: the daily step withholds the file (404) and the record says why; 0 means not collected.
-      const noGood = mes({ published: 'NO_GOOD_COPY', data_generated_at: null, data_sha256: null, previous: 'EMPTY_LIVE', failure_stage: 'BUILD' });
+      const noGood = mes({ published: 'WITHHELD', data_generated_at: null, data_sha256: null, previous: 'EMPTY_LIVE', failure_stage: 'BUILD' });
       await attempt({ 'macro-evidence.json': { status: 404, body: 'not found' }, [MES]: { json: noGood } });
       assert.match(await text(page, '[data-block="4.1.3"] [data-na=NOT_PUBLISHED]'), /근거 파일이 아직 게시되지 않았습니다/);
-      assert.equal(await text(page, '[data-mev-attempt=NO_GOOD_COPY]'), '이번 갱신 실패 (2026-10-09 02:10 UTC · 자료 만들기 단계) · 정상본이 없어 근거 파일을 게시하지 않음 · 0건이 아니라 미수집');
+      assert.equal(await text(page, '[data-mev-attempt=WITHHELD][data-mev-previous=EMPTY_LIVE]'), '이번 갱신 실패 (2026-10-09 02:10 UTC · 자료 만들기 단계) · 정상본이 없어 근거 파일을 게시하지 않음 (빈 기본값만 있음) · 0건이 아니라 미수집');
       assert.equal(await count(page, '[data-macro-lights]'), 1, phase + ': the lights stay');
       await page.evaluate(() => document.querySelectorAll('main details').forEach((d) => { d.open = true; }));
       await boundaries(page, seen, phase + ' no good copy');
+      // The previous copy could not be read (or was damaged): withheld, and never called a kept copy.
+      for (const [previous, word] of [['UNAVAILABLE', '조회 실패'], ['INVALID', '손상된 응답']]) {
+        await attempt({ 'macro-evidence.json': { status: 404, body: 'not found' }, [MES]: { json: { ...noGood, previous, failure_stage: 'PREVIOUS', failure_class: 'OSError' } } });
+        assert.equal(await text(page, '[data-mev-attempt=WITHHELD][data-mev-previous=' + previous + ']'),
+          '이번 갱신 실패 (2026-10-09 02:10 UTC · 이전 공개본 ' + word + ') · 이전 기록을 이어받지 못해 근거 파일을 게시하지 않음 · 이전 공개 파일도 이 배포에서 빠짐(보존 아님)');
+      }
+      // A built attempt after a failed read, or a withheld record without its reason stage, breaks the schema.
+      for (const bad of [mes({ attempt_result: 'BUILT', failure_stage: null, failure_class: null, published: 'NEW', previous: 'UNAVAILABLE' }),
+        { ...noGood, previous: 'UNAVAILABLE', failure_stage: 'BUILD' }]) {
+        await attempt({ 'macro-evidence.json': { status: 404, body: 'not found' }, [MES]: { json: bad } });
+        assert.equal(await count(page, '[data-mev-attempt=INVALID]'), 1, phase + ': an inconsistent record is refused');
+      }
       // A placeholder beside any record is a mismatch (the placeholder is never published as a result).
       for (const st of [noGood, mes({})]) {
         await attempt({ 'macro-evidence.json': { json: M.emptyEvidence() }, [MES]: { json: st } });

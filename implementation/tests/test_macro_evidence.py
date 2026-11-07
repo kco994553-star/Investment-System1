@@ -473,7 +473,7 @@ def test_pipeline_hook_never_stops_the_sec_collection(tmp_path, monkeypatch, cap
     out = capsys.readouterr().out
     assert 'MACRO_EVIDENCE BUILD_FAILED stage=CALLER error=RuntimeError' in out and 'source text' not in out
     # the caller handles the failure: the build-time placeholder is withheld, never published as a result
-    assert 'MACRO_EVIDENCE WITHHELD file=macro-evidence.json reason=NO_GOOD_COPY status=NONE' in out
+    assert 'MACRO_EVIDENCE WITHHELD file=macro-evidence.json previous=- status=NONE' in out
     assert not (tmp_path / el.FILENAME).exists()
 
 
@@ -575,9 +575,9 @@ def test_no_good_copy_is_never_published_as_a_normal_result(tmp_path, capsys, mo
     assert code == 1
     assert (out / el.FILENAME).read_bytes() == placeholder, 'only the placeholder (generated_at null), never re-stamped'
     status = _status(out)
-    assert status['attempt_result'] == 'FAILED' and status['published'] == 'NO_GOOD_COPY'
+    assert status['attempt_result'] == 'FAILED' and status['published'] == 'WITHHELD'
     assert status['data_generated_at'] is None and status['data_sha256'] is None and status['previous'] == 'EMPTY_LIVE'
-    assert 'kept=NONE no_good_copy' in capsys.readouterr().out
+    assert 'kept=NONE previous=EMPTY_LIVE' in capsys.readouterr().out
 
 
 def test_a_normal_partial_collection_replaces_the_copy_and_records_it(tmp_path, capsys):
@@ -630,7 +630,7 @@ def test_status_record_rules():
               data_generated_at=el.iso(AT), data_sha256='a' * 64, previous='LOADED')
     el.status_record(**ok)
     for bad in ({'result': 'BUILT'}, {'published': 'NEW'}, {'stage': 'ELSEWHERE'}, {'error_class': 'Key Error: x'},
-                {'published': 'NO_GOOD_COPY'}, {'data_sha256': 'x'}, {'previous': 'MAYBE'}):
+                {'published': 'WITHHELD'}, {'data_sha256': 'x'}, {'previous': 'MAYBE'}):
         with pytest.raises(ValueError):
             el.status_record(**{**ok, **bad})
     el.status_record(attempt_at=AT, result='BUILT', stage=None, error_class=None, published='NEW',
@@ -730,8 +730,8 @@ def test_daily_generation_failure_without_a_good_copy_withholds_the_file(tmp_pat
     monkeypatch.setattr(el, 'build', lambda *a, **k: (_ for _ in ()).throw(RuntimeError('x')))
     out = _daily(tmp_path, monkeypatch, 'site', previous=(el.empty_payload(AT), 'EMPTY_LIVE'))
     assert not (out / el.FILENAME).exists(), 'the placeholder is never published as a result'
-    assert _status(out)['published'] == 'NO_GOOD_COPY'
-    assert 'MACRO_EVIDENCE WITHHELD file=macro-evidence.json reason=NO_GOOD_COPY status=NO_GOOD_COPY' in capsys.readouterr().out
+    assert _status(out)['published'] == 'WITHHELD'
+    assert 'MACRO_EVIDENCE WITHHELD file=macro-evidence.json previous=EMPTY_LIVE status=WITHHELD' in capsys.readouterr().out
     assert _artifact_checks(out, placeholder) == ('NO_GOOD_LIVE', 'NO_LIVE', {})
     assert _artifact_checks(out, None) == ('NO_GOOD_LIVE', 'NO_LIVE', {})
     # live good copy that this run could not read: this file is withheld, the rest of the deploy goes on (D-CV16 (a))
@@ -763,7 +763,7 @@ def test_daily_write_failure(tmp_path, monkeypatch, capsys):
     out = _daily(tmp_path, monkeypatch, 'always', previous=(good, 'LOADED'))
     assert not (out / el.FILENAME).exists(), 'no good copy could be written: the placeholder is withheld, not published'
     status = _status(out)
-    assert (status['failure_stage'], status['published'], status['previous']) == ('WRITE', 'NO_GOOD_COPY', 'LOADED')
+    assert (status['failure_stage'], status['published'], status['previous']) == ('WRITE', 'WITHHELD', 'LOADED')
     assert _artifact_checks(out, live) == ('MISSING', 'WITHHELD', {})
 
 
@@ -803,7 +803,7 @@ def test_ui_deploy_preserve_never_publishes_the_placeholder_as_a_result(tmp_path
     placeholder = el.encode(el.empty_payload(AT))
     good = _good_previous(tmp_path)
     no_good = el.encode_status(el.status_record(attempt_at=AT, result='FAILED', stage='BUILD', error_class='KeyError',
-                                                published='NO_GOOD_COPY', data_generated_at=None, data_sha256=None, previous='EMPTY_LIVE'))
+                                                published='WITHHELD', data_generated_at=None, data_sha256=None, previous='EMPTY_LIVE'))
 
     class Response(io.BytesIO):
         status = 200
@@ -842,3 +842,199 @@ def test_ui_deploy_preserve_never_publishes_the_placeholder_as_a_result(tmp_path
     out = _site(tmp_path, 'ui-good')
     assert tool.preserve(out, open_previous=site({tool.SOURCE: el.encode(good), tool.STATUS_SOURCE: no_good})) == 0
     assert (out / el.FILENAME).read_bytes() == el.encode(good) and not (out / el.STATUS_FILENAME).exists()
+
+
+# ---------------------------------------------------------------- the previous read, by state (owner 2026-11-07 3rd)
+
+@pytest.fixture(autouse=True)
+def _no_retry_wait(monkeypatch):
+    import macro_evidence as tool
+    monkeypatch.setattr(tool, '_sleep', lambda seconds: None)
+
+
+class _Live:
+    """A live Pages site: {url: bytes} answers 200, an exception instance is raised, anything else is a 404."""
+
+    def __init__(self, files, fail_first=0):
+        self.files, self.fail_first, self.calls = files, fail_first, []
+
+    def __call__(self, request, timeout):
+        import macro_evidence as tool
+        url = request.full_url
+        self.calls.append(url)
+        if url == tool.SOURCE and self.calls.count(url) <= self.fail_first:
+            raise urllib.error.URLError('down')
+        value = self.files.get(url)
+        if isinstance(value, Exception):
+            raise value
+        if value is None:
+            raise urllib.error.HTTPError(url, 404, 'nf', {}, None)
+
+        class Response(io.BytesIO):
+            status = 200
+
+            def geturl(self):
+                return url
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *a):
+                return False
+        return Response(value)
+
+
+def _record(previous='EMPTY_LIVE'):
+    return el.encode_status(el.status_record(attempt_at=AT - timedelta(days=1), result='FAILED', stage='BUILD',
+                                             error_class='KeyError', published='WITHHELD', data_generated_at=None,
+                                             data_sha256=None, previous=previous))
+
+
+def test_previous_read_states_are_told_apart(tmp_path):
+    import macro_evidence as tool
+    good = _good_previous(tmp_path)
+    body = el.encode(good)
+    down = urllib.error.URLError('down')
+    assert tool.read_previous_detail(_Live({tool.SOURCE: body}))[2:] == ('LOADED', None)
+    assert tool.read_previous_detail(_Live({}))[2:] == ('NO_LIVE', None)                         # confirmed absent
+    assert tool.read_previous_detail(_Live({tool.STATUS_SOURCE: _record()}))[2:] == ('REMOVED', None)
+    assert tool.read_previous_detail(_Live({tool.SOURCE: el.encode(el.empty_payload(AT))}))[2:] == ('EMPTY_LIVE', None)
+    assert tool.read_previous_detail(_Live({tool.SOURCE: down}))[2:] == ('UNAVAILABLE', 'OSError')  # failed read
+    assert tool.read_previous_detail(_Live({tool.SOURCE: b'{"schema":'}))[2:] == ('INVALID', 'JSONDecodeError')  # damaged
+    assert tool.read_previous_detail(_Live({tool.STATUS_SOURCE: down}))[2:] == ('UNAVAILABLE', 'OSError')
+    # a passing failure is tried again: two failures then the good copy
+    live = _Live({tool.SOURCE: body}, fail_first=2)
+    assert tool.read_previous_detail(live)[2] == 'LOADED' and live.calls.count(tool.SOURCE) == 3
+    live = _Live({tool.SOURCE: body}, fail_first=3)
+    assert tool.read_previous_detail(live)[2] == 'UNAVAILABLE' and live.calls.count(tool.SOURCE) == 3
+
+
+def _daily_live(tmp_path, monkeypatch, name, live):
+    """_daily with the real previous read against `live` (no injected previous)."""
+    import public_screens_pipeline as pipeline
+    import macro_evidence as tool
+    out = _site(tmp_path, name)
+
+    def hook(root, manifest):
+        return tool.run_from_capture(out, root, reused_root(Path(root)), environ={}, now=lambda: AT,
+                                     transport=FakeTransport(responses()), open_previous=live)
+    monkeypatch.setattr(pipeline, 'collect_public_inputs', lambda *a, **k: (_ for _ in ()).throw(SystemExit('after-hook')))
+    with pytest.raises(SystemExit):
+        pipeline.collect(out, macro_v0=lambda root: [], macro_curve=lambda root: [], macro_evidence=hook,
+                         client_factory=lambda agent: None)
+    return out
+
+
+@pytest.mark.parametrize('case', ['unavailable', 'damaged'])
+def test_a_failed_or_damaged_previous_read_never_publishes_a_new_baseline(tmp_path, monkeypatch, capsys, case):
+    """Collection would succeed, but without the history it must carry: the file is withheld, the record says why,
+    and a deploy that can read the good live copy says the copy leaves the site (it is not kept)."""
+    import macro_evidence as tool
+    good_body = el.encode(_good_previous(tmp_path))
+    capsys.readouterr()
+    served = {tool.SOURCE: urllib.error.URLError('down') if case == 'unavailable' else b'{"schema":'}
+    out = _daily_live(tmp_path, monkeypatch, 'site', _Live(served))
+    assert not (out / el.FILENAME).exists()
+    status = _status(out)
+    previous, error = ('UNAVAILABLE', 'OSError') if case == 'unavailable' else ('INVALID', 'JSONDecodeError')
+    assert (status['attempt_result'], status['failure_stage'], status['failure_class'], status['published'], status['previous']) == \
+        ('FAILED', 'PREVIOUS', error, 'WITHHELD', previous)
+    printed = capsys.readouterr().out
+    assert 'MACRO_EVIDENCE_STATUS result=FAILED stage=PREVIOUS' in printed and 'MACRO_EVIDENCE state=' not in printed
+    # deploy: the live copy reads fine now (collect-time failure only) -> this file withheld, the good copy removed
+    assert _artifact_checks(out, good_body) == ('MISSING', 'WITHHELD', {})
+
+
+def test_confirmed_absence_builds_and_says_whether_history_was_lost(tmp_path, monkeypatch):
+    import macro_evidence as tool
+    out = _daily_live(tmp_path, monkeypatch, 'first', _Live({}))
+    first = json.loads((out / el.FILENAME).read_bytes())
+    assert (first['continuity'], first['previous'], _status(out)['previous']) == ('BASELINE', 'NO_LIVE', 'NO_LIVE')
+    assert _artifact_checks(out, None) == ('NO_GOOD_LIVE', 'NO_LIVE', {})
+    # 404 although an attempt record is live: a file was there and is gone -> a reset, never a silent first baseline
+    out = _daily_live(tmp_path, monkeypatch, 'removed', _Live({tool.STATUS_SOURCE: _record()}))
+    again = json.loads((out / el.FILENAME).read_bytes())
+    assert (again['continuity'], again['previous'], _status(out)['previous']) == ('RESET_PREVIOUS_UNAVAILABLE', 'UNAVAILABLE', 'REMOVED')
+    assert _artifact_checks(out, None) == ('NO_GOOD_LIVE', 'NO_LIVE', {})
+
+
+def test_a_new_file_missing_records_never_replaces_the_good_copy(tmp_path, monkeypatch):
+    """A built file that drops records or stamps an original time again fails VALIDATE (kept good copy); the same file in
+    an artifact is refused by the deploy check (DISCONTINUOUS)."""
+    import macro_evidence as tool
+    good = _good_previous(tmp_path)
+    body = el.encode(good)
+    real = el.build
+
+    def lossy(*a, **k):
+        p = real(*a, **k)
+        sid = next(s for s, r in p['series'].items() if r['baseline_at'] is not None)
+        p['series'][sid]['baseline_at'] = '2026-10-21T00:00:00Z'      # original observation time stamped again
+        return p
+    monkeypatch.setattr(el, 'build', lossy)
+    out = _daily_live(tmp_path, monkeypatch, 'site', _Live({tool.SOURCE: body}))
+    assert (out / el.FILENAME).read_bytes() == body and _status(out)['failure_stage'] == 'VALIDATE'
+    # the same lossy file straight into an artifact
+    monkeypatch.setattr(el, 'build', real)
+    p = real({}, previous=good, previous_state='LOADED', now=AT)      # nothing collected: every series carried
+    assert tool.continues(p, good)
+    sid = next(s for s, r in p['series'].items() if r['baseline_at'] is not None)
+    p['series'][sid]['baseline_at'] = '2026-10-21T00:00:00Z'
+    art = tmp_path / 'art'
+    art.mkdir()
+    (art / el.FILENAME).write_bytes(el.encode(p))
+    assert _artifact_checks(art, body)[:2] == ('DISCONTINUOUS', 'REFUSED')
+
+
+# ---------------------------------------------------------------- Codex #513 review (comment 6705925939) on f70d68e0
+
+def _codex_capture(at, value):
+    return {'BLS:LNS14000000': {'rows': {'2026-08': value}, 'acquired_at': at, 'release': {'at': None, 'date': None}}}
+
+
+def _codex_prior():
+    t0 = datetime(2026, 10, 1, tzinfo=timezone.utc)
+    first = el.build(_codex_capture(t0, 4.0), previous=None, previous_state='NO_LIVE', now=t0)
+    return el.build(_codex_capture(t0 + timedelta(days=1), 4.2), previous=first, previous_state='LOADED', now=t0 + timedelta(days=1))
+
+
+def test_codex_review_fetch_failure_never_publishes_a_reset_over_a_good_live_copy(tmp_path, monkeypatch):
+    """Review finding 1: a failed previous read must not turn into a reset that replaces the good copy. The generator now
+    stops at PREVIOUS and withholds the file; a reset built anyway is refused at deploy (DISCONTINUOUS), never NEWER/PASS."""
+    import macro_evidence as tool
+    import pages_freshness_guard as guard
+    from investment_system.providers import macro_evidence_collection as collector
+    old, at = _codex_prior(), datetime(2026, 10, 3, tzinfo=timezone.utc)
+    monkeypatch.setattr(collector, 'collect_macro_evidence', lambda *a, **k: _codex_capture(at, 4.2))
+    tool.emit_empty(tmp_path, now=lambda: at)
+    down = lambda request, timeout: (_ for _ in ()).throw(OSError('SYNTHETIC_CONNECTION_FAILURE'))
+    assert tool.run_from_capture(tmp_path, tmp_path, {}, environ={}, now=lambda: at, open_previous=down) == 1
+    tool.withhold(tmp_path)                       # what public_screens_pipeline.collect does on a non-zero return
+    assert not (tmp_path / el.FILENAME).exists()
+    status = _status(tmp_path)
+    assert (status['failure_stage'], status['failure_class'], status['published'], status['previous']) == ('PREVIOUS', 'OSError', 'WITHHELD', 'UNAVAILABLE')
+    result = guard.compare_macro(('VALID', el.encode(old), old),
+                                 guard._artifact_file(tmp_path, el.FILENAME, el.MAX_BYTES, el.require_macro_evidence),
+                                 guard._artifact_file(tmp_path, el.STATUS_FILENAME, el.MAX_BYTES, el.require_status))
+    assert (result['kind'], result['verdict'], result['live_good']) == ('MISSING', 'WITHHELD', True)   # not kept: removed
+    reset = el.build(_codex_capture(at, 4.2), previous=None, previous_state='UNAVAILABLE', now=at)
+    art = tmp_path / 'reset'
+    art.mkdir()
+    (art / el.FILENAME).write_bytes(el.encode(reset))
+    result = guard.compare_macro(('VALID', el.encode(old), old), guard._artifact_file(art, el.FILENAME, el.MAX_BYTES, el.require_macro_evidence))
+    assert (result['kind'], result['verdict']) == ('DISCONTINUOUS', 'REFUSED')
+
+
+def test_codex_review_successor_keeps_every_history_version():
+    """Review finding 2: dropping one series' revision history (2 versions -> 0) fails require_successor and the deploy check."""
+    import macro_evidence as tool
+    old, at = _codex_prior(), datetime(2026, 10, 3, tzinfo=timezone.utc)
+    new = el.build({}, previous=old, previous_state='LOADED', now=at)
+    assert len(old['series']['BLS:LNS14000000']['history']['2026-08']) == 2 and tool.continues(new, old)
+    for cut in ({}, {'2026-08': old['series']['BLS:LNS14000000']['history']['2026-08'][:1]}):
+        bad = copy.deepcopy(new)
+        bad['series']['BLS:LNS14000000']['history'] = cut
+        el.require_macro_evidence(bad)
+        assert not tool.continues(bad, old)
+        with pytest.raises(ValueError):
+            tool.require_successor(bad, attempt_at=at, previous=old, read='LOADED')

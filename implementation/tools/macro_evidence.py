@@ -30,6 +30,7 @@ import json
 from pathlib import Path
 import sys
 import tempfile
+import time
 import urllib.error
 import urllib.request
 
@@ -126,25 +127,81 @@ def good_copy(payload) -> bool:
     return payload is not None and payload.get('generated_at') is not None
 
 
+# A failed read is tried again before it counts (owner 2026-11-07 3rd): a passing network error must not end the history.
+RETRY_DELAYS = (2, 5)
+_sleep = time.sleep
+
+
+def read_previous_detail(open_response=None):
+    """(good payload or None, good live bytes or None, previous read, error class or None).
+
+    read: LOADED (verified good copy) | NO_LIVE (404 and no attempt record: never published) | REMOVED (404 although a live
+    attempt record says an earlier attempt ran: a file was there and is gone) | EMPTY_LIVE (only the placeholder) |
+    UNAVAILABLE (the read failed after the retries) | INVALID (served but damaged: not JSON, too large or rejected by
+    require_macro_evidence). A failed or damaged read is never taken for absence."""
+    for attempt in range(len(RETRY_DELAYS) + 1):
+        try:
+            payload, body = previous_copy(open_response)
+            break
+        except ValueError as error:
+            print('MACRO_EVIDENCE PREVIOUS_DISCARDED')
+            return None, None, 'INVALID', type(error).__name__
+        except Exception as error:
+            if attempt == len(RETRY_DELAYS):
+                return None, None, 'UNAVAILABLE', type(error).__name__
+            _sleep(RETRY_DELAYS[attempt])
+    if payload is None:
+        try:
+            record = previous_status(open_response)
+        except Exception as error:
+            return None, None, 'UNAVAILABLE', type(error).__name__   # cannot tell never-published from removed
+        return None, None, ('REMOVED' if record is not None else 'NO_LIVE'), None
+    if not good_copy(payload):
+        return None, None, 'EMPTY_LIVE', None
+    return payload, body, 'LOADED', None
+
+
 def read_previous(open_response=None):
     """(good payload or None, good live bytes or None, previous read for the status record)."""
+    return read_previous_detail(open_response)[:3]
+
+
+# the evidence_lines `previous` value for each read that may build: a placeholder or a removed live copy means an earlier
+# history is lost (RESET_PREVIOUS_UNAVAILABLE), never a silent first BASELINE. UNAVAILABLE / INVALID never build.
+BUILD_PREVIOUS = {'LOADED': 'LOADED', 'NO_LIVE': 'NO_LIVE', 'EMPTY_LIVE': 'UNAVAILABLE', 'REMOVED': 'UNAVAILABLE'}
+
+
+def continues(new, previous) -> bool:
+    """`new` is a continuation of the good copy `previous` (owner 2026-11-07 3rd: no record lost, no time restamped):
+    CONTINUOUS, the same collection start, built later, release and event records only appended, and per series (held
+    ones aside) the baseline kept, a success time never earlier, history versions kept in order, and a series not
+    collected this time carried unchanged (observations and success time). The deploy check applies it to the artifact."""
     try:
-        payload, body = previous_copy(open_response)
-    except ValueError:
-        print('MACRO_EVIDENCE PREVIOUS_DISCARDED')
-        return None, None, 'INVALID'
-    except Exception:
-        return None, None, 'UNAVAILABLE'
-    if payload is None:
-        return None, None, 'NO_LIVE'
-    if not good_copy(payload):
-        return None, None, 'EMPTY_LIVE'
-    return payload, body, 'LOADED'
-
-
-# the evidence_lines `previous` value for each status read: a placeholder live copy means an earlier history is lost.
-BUILD_PREVIOUS = {'LOADED': 'LOADED', 'NO_LIVE': 'NO_LIVE', 'INVALID': 'NO_LIVE', 'UNAVAILABLE': 'UNAVAILABLE',
-                  'EMPTY_LIVE': 'UNAVAILABLE'}
+        if new['continuity'] != 'CONTINUOUS' or new['collection_started_at'] != previous['collection_started_at']:
+            return False
+        if el.parse_iso(new['generated_at']) <= el.parse_iso(previous['generated_at']):
+            return False
+        if new['releases'][:len(previous['releases'])] != previous['releases'] or new['events'][:len(previous['events'])] != previous['events']:
+            return False
+        for sid, old in previous['series'].items():
+            if el._held(sid):
+                continue
+            row = new['series'][sid]
+            if old['baseline_at'] is not None and row['baseline_at'] != old['baseline_at']:
+                return False
+            if old['last_success_at'] is not None and (row['last_success_at'] is None or
+                                                       el.parse_iso(row['last_success_at']) < el.parse_iso(old['last_success_at'])):
+                return False
+            for period, versions in old['history'].items():
+                if row['history'].get(period, [])[:len(versions)] != versions:
+                    return False
+            if row['state'] != 'LIVE' and (row['obs'] != old['obs'] or row['last_success_at'] != old['last_success_at']):
+                return False
+            if old['obs'] and not row['obs']:
+                return False
+        return True
+    except (KeyError, TypeError, ValueError, AttributeError):
+        return False
 
 
 def write_bytes(directory, body: bytes, name: str = el.FILENAME) -> bytes:
@@ -189,6 +246,12 @@ def _status(directory, **fields) -> dict:
     return record
 
 
+class PreviousUnreadable(Exception):
+    def __init__(self, error_class):
+        super().__init__(error_class)
+        self.error_class = error_class
+
+
 def _need(condition) -> None:
     if not condition:
         raise ValueError('MACRO_EVIDENCE_INCONSISTENT')
@@ -209,20 +272,15 @@ def require_successor(payload, *, attempt_at, previous, read) -> dict:
     if previous is None:
         _need(payload['continuity'] == ('RESET_PREVIOUS_UNAVAILABLE' if BUILD_PREVIOUS[read] == 'UNAVAILABLE' else 'BASELINE'))
         return payload
-    _need(payload['continuity'] == 'CONTINUOUS')
-    _need(el.parse_iso(payload['generated_at']) > el.parse_iso(previous['generated_at']))
-    _need(started == previous['collection_started_at'])
-    _need(payload['releases'][:len(previous['releases'])] == previous['releases'])
-    _need(payload['events'][:len(previous['events'])] == previous['events'])
-    for sid, row in previous['series'].items():
-        _need(not row['obs'] or el._held(sid) or bool(payload['series'][sid]['obs']))
+    _need(continues(payload, previous))
     return payload
 
 
 def withhold(directory) -> str:
     """After an attempt that left no good copy (owner 2026-11-07 item 2): the file in `directory` is published only when it
     is a validated good copy; the build-time placeholder (or anything else) is removed so it is never published as a
-    result. An attempt record beside it that does not say NO_GOOD_COPY is removed too. -> 'KEPT' | 'WITHHELD'."""
+    result. An attempt record beside it that does not say WITHHELD is removed too. On a static site a withheld file also
+    leaves the site at the next deploy: this never counts as keeping a good copy. -> 'KEPT' | 'WITHHELD'."""
     directory = Path(directory)
     path, status = directory / el.FILENAME, directory / el.STATUS_FILENAME
     try:
@@ -235,12 +293,13 @@ def withhold(directory) -> str:
     if path.exists() or path.is_symlink():
         path.unlink()
     try:
-        ok = status.is_file() and not status.is_symlink() and el.require_status(parse_json(status.read_bytes()))['published'] == 'NO_GOOD_COPY'
+        record = el.require_status(parse_json(status.read_bytes())) if status.is_file() and not status.is_symlink() else None
+        ok = record is not None and record['published'] == 'WITHHELD'
     except Exception:
         ok = False
     if not ok and (status.exists() or status.is_symlink()):
         status.unlink()
-    print('MACRO_EVIDENCE WITHHELD file=%s reason=NO_GOOD_COPY status=%s' % (el.FILENAME, 'NO_GOOD_COPY' if ok else 'NONE'))
+    print('MACRO_EVIDENCE WITHHELD file=%s previous=%s status=%s' % (el.FILENAME, record['previous'] if ok else '-', 'WITHHELD' if ok else 'NONE'))
     return 'WITHHELD'
 
 
@@ -254,15 +313,20 @@ def run_from_capture(directory, root, manifest, *, environ, now=_utc_now, open_p
     UNAVAILABLE) pair; a payload is kept on failure as its own canonical encoding."""
     attempt_at = now()
     stage = 'PREVIOUS'
-    good, good_body, read = None, None, 'UNAVAILABLE'
+    good, good_body, read, read_error = None, None, 'UNAVAILABLE', None
     try:
         if previous is not None:
             good, read = previous
             good = good if good_copy(good) else None
             read = 'LOADED' if good is not None else (read if read in el.PREVIOUS_READ and read != 'LOADED' else 'EMPTY_LIVE')
             good_body = el.encode(good) if good is not None else None
+            read_error = {'UNAVAILABLE': 'OSError', 'INVALID': 'ValueError'}.get(read)
         else:
-            good, good_body, read = read_previous(open_previous)
+            good, good_body, read, read_error = read_previous_detail(open_previous)
+        if read in el.PREVIOUS_UNREADABLE:
+            # owner 2026-11-07 3rd: a failed or damaged read is not absence; a build without the history it should carry
+            # is never published as a successor. Stop here: the file is withheld and the record says why.
+            raise PreviousUnreadable(read_error or 'PreviousUnreadable')
         stage = 'COLLECT'
         from investment_system.providers.macro_evidence_collection import collect_macro_evidence
         diagnostics = []
@@ -282,7 +346,7 @@ def run_from_capture(directory, root, manifest, *, environ, now=_utc_now, open_p
         stage = 'WRITE'
         write_bytes(directory, body)
     except Exception as error:
-        error_class = type(error).__name__
+        error_class = error.error_class if isinstance(error, PreviousUnreadable) else type(error).__name__
         if good_body is not None:
             try:
                 write_bytes(directory, good_body)
@@ -290,7 +354,7 @@ def run_from_capture(directory, root, manifest, *, environ, now=_utc_now, open_p
                 print('MACRO_EVIDENCE BUILD_FAILED stage=%s error=%s kept=NONE write_failed' % (stage, error_class))
                 try:
                     _status(directory, attempt_at=attempt_at, result='FAILED', stage='WRITE', error_class=error_class,
-                            published='NO_GOOD_COPY', data_generated_at=None, data_sha256=None, previous=read)
+                            published='WITHHELD', data_generated_at=None, data_sha256=None, previous=read)
                 except Exception:
                     print('MACRO_EVIDENCE STATUS_WRITE_FAILED')
                 return 1
@@ -302,10 +366,10 @@ def run_from_capture(directory, root, manifest, *, environ, now=_utc_now, open_p
             except Exception:
                 print('MACRO_EVIDENCE STATUS_WRITE_FAILED')
             return 0
-        print('MACRO_EVIDENCE BUILD_FAILED stage=%s error=%s kept=NONE no_good_copy' % (stage, error_class))
+        print('MACRO_EVIDENCE BUILD_FAILED stage=%s error=%s kept=NONE previous=%s' % (stage, error_class, read))
         try:
             _status(directory, attempt_at=attempt_at, result='FAILED', stage=stage, error_class=error_class,
-                    published='NO_GOOD_COPY', data_generated_at=None, data_sha256=None, previous=read)
+                    published='WITHHELD', data_generated_at=None, data_sha256=None, previous=read)
         except Exception:
             print('MACRO_EVIDENCE STATUS_WRITE_FAILED')
         return 1
@@ -323,7 +387,7 @@ def run_from_capture(directory, root, manifest, *, environ, now=_utc_now, open_p
 def preserve(out, *, open_previous=None) -> int:
     """UI-only deploy (cockpit-pages): carry the live good copy byte for byte, with its attempt record when the record
     describes it. No good copy live (404 or the placeholder): the build placeholder is withheld, not published as a result
-    (owner 2026-11-07), and a live NO_GOOD_COPY record goes with it. Live unreadable or invalid: the build placeholder stays
+    (owner 2026-11-07), and a live WITHHELD record goes with it. Live unreadable or invalid: the build placeholder stays
     and the deploy check decides (refused when a good copy is live: EMPTIED)."""
     good, body, read = read_previous(open_previous)
     try:
@@ -337,7 +401,7 @@ def preserve(out, *, open_previous=None) -> int:
             return 0
         print('MACRO_EVIDENCE PREVIOUS_NOT_AVAILABLE previous=%s' % read)
         try:
-            if record is not None and record['published'] == 'NO_GOOD_COPY':
+            if record is not None and record['published'] == 'WITHHELD':
                 write_bytes(out, status, el.STATUS_FILENAME)
                 print('MACRO_EVIDENCE STATUS_RESTORED')
             withhold(out)
@@ -352,7 +416,7 @@ def preserve(out, *, open_previous=None) -> int:
         return 1
     print('MACRO_EVIDENCE PREVIOUS_RESTORED state=%s events=%d' % (good['state'], len(good['events'])))
     # the live attempt record goes with it unchanged when it describes this very file (a UI-only deploy is not a new attempt)
-    if record is not None and record['published'] != 'NO_GOOD_COPY' and record['data_generated_at'] == good['generated_at'] \
+    if record is not None and record['published'] != 'WITHHELD' and record['data_generated_at'] == good['generated_at'] \
             and record['data_sha256'] == _sha(body):
         try:
             write_bytes(out, status, el.STATUS_FILENAME)
