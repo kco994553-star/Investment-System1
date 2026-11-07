@@ -52,4 +52,46 @@ Coverage exposes acquisition, raw validity and scoring separately for every cata
 
 `synthetic-input.json`, `synthetic-preview.json`, `synthetic-states.json`, `catalog.json`, `presets.json` are entirely artificial. All scenario expected counts/ranks are generated and tested by the calculation path. UI states include empty, partial, STALE, missing gate, mapping unknown, small peers and rejected input. A long Korean name is presentation-only and cannot enter scoring. Display default/recommendation/selected/calculator state/applicability/availability separately. `initial` must not look performance-validated.
 
-Main actions: wire the existing configuration UI and JSON reader; enforce active request/context checks and private authorization; supply an evidence-bearing dated book-sector/accounting mapping and gate source link; optionally add `tests/test_sector_qgv.py` to the owned CI list. No new shared dependency or workflow permission is requested. The current operating 504-code run does not manufacture these missing mappings.
+Main actions: wire the existing configuration UI and JSON reader; enforce active request/context checks and private authorization; add the sector tests to the owned CI list when integrating. Codex owns the dated book-sector/accounting evidence and gate source connection (see the continuation below). No new shared dependency or workflow permission is requested. The initial unclassified 504-code run is retained as the before-result.
+
+## 2026-11-07 classification and Main integration continuation
+
+Codex now supplies the held-source classification connection. `sector_qgv_classification.py`
+loads only the exact existing SEC submissions members pinned by the input job's
+archive/member SHA-256. SEC SIC code/description is source classification;
+`held-sec-book-correspondence/0.1.0` is a separately versioned **research**
+correspondence to book sectors/accounting templates. It is not GICS, a security
+identity history, or an inferred primary listing. Exact-code rules were fixed
+before scoring. Mixed SIC categories, conflicting accounting profiles and all
+REIT book-sector assignments stay unresolved. A one-day application interval
+(2026-11-04 inclusive, 11-05 exclusive) means this evaluation only, not a claim
+that the issuer changed classification on that day. Source observation time is
+retained separately. Future acquisitions and source/issuer/SIC conflicts fail closed.
+
+The `held-sec-classification` CLI mode consumes the hash-pinned retained raw
+snapshot and its matching SEC financial snapshot. It does **not** re-extract the
+5,439 observations or fetch sources. The existing official engine's `prepare`,
+`_published_axis` and `_cross` replay only the price-independent official Q
+industry percentile from that financial snapshot (calc 23.1). Official Q's
+existing representative pool and >=8/industry fallback remain unchanged; the new
+sector factors still use >=20 and no fallback. Replay status is explicitly
+`RESEARCH_REPLAY_NOT_OFFICIAL_PUBLICATION`. It is not a relabeling of the separate
+11-02 priced publication. Gate input available, gate applied on mapped rows and
+unknown classification are separate counts. The official scoring representative
+flag is evidence for issuer scoring only; it does not establish a representative
+security, class shares, market-cap eligibility or external security ID.
+
+Main remains owner of authentication, server invocation, `sector-qgv.js` and
+`screen-sector-qgv-live.js`. See `MAIN_INTEGRATION.md` for the observed #507
+contract differences and exact transport. `sector-qgv-editor-contract/1` supplies
+the canonical catalog, exact editing trees and policies. A request in
+`sector-qgv-main-request/1` goes through the existing CLI with `main_request`.
+`sector-qgv-main-response/1` contains the original common-engine before/after
+previews plus a display projection. Projection never scores, aggregates or
+reranks; common-valid ranks come from `compare_previews`. Display filtering must
+retain these ranks. Unprovided sector rank is null with an explicit reason.
+
+For duplicate retained copies of identical verified submissions bytes, the
+earliest acquired copy is selected, with archive hash/member as stable tie
+breakers. The classification is independent of archive enumeration order. Gate
+replay execution time belongs to the connection audit, never input/cache identity.

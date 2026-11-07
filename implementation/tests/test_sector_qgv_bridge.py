@@ -16,6 +16,7 @@ from pathlib import Path
 import pytest
 
 from investment_system.research import sector_qgv as engine
+from investment_system.research import sector_qgv_main as main_bridge
 
 ROOT = Path(__file__).resolve().parents[1]
 TOOL = ROOT / 'tools' / 'sector_qgv_engine_bridge.py'
@@ -78,9 +79,14 @@ def test_preview_is_the_engine_preview_compare_and_save():
     before = engine.preview_qgv(c, snap, 'p-1:before')
     after = engine.preview_qgv(edited, snap, 'p-1')
     assert out['ok'] and out['before'] == before and out['after'] == after
-    assert out['comparison'] == engine.compare_previews(before, after, 'p-1')
+    assert out['comparison'] == engine.compare_previews(before, after, 'MAIN_PREVIEW')
     assert out['saved'] == engine.save_user_config(edited, after, request_id='p-1', expected_preview_id=after['preview_id'])
     assert out['data_kind'] == 'SYNTHETIC'
+    # The route is Codex's Main transport itself, not a second composition of it.
+    main = main_bridge.run_preview_request(snap, {'schema_version': 'sector-qgv-main-request/1', 'request_id': 'p-1',
+                                                  'before_config': c, 'after_config': edited})
+    assert (out['before'], out['after'], out['comparison'], out['saved']) == (main['before'], main['after'], main['diff'], main['saved_config'])
+    assert out['bridge_version'] == main['bridge_version']
     # Codex's published synthetic preview is reproduced through the route (default config, request id synthetic-normal).
     again = ask(bridge.Bridge(), req('preview', 'synthetic-normal', config=c, before_config=c, input_id='NORMAL'))
     assert again['after'] == json.loads((FIX / 'synthetic-preview.json').read_text())

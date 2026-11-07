@@ -30,8 +30,20 @@ def run(job,output,synthetic=False):
         mappings=json.loads(checked_bytes(job['mapping'])) if job.get('mapping') else {}
         snapshot,audit=build_held_snapshot(sec,job['archives'],snapshot_hash=spec['sha256'],mapping_rows=mappings)
     elif mode=='normalized':snapshot=json.loads(checked_bytes(job['snapshot']))
+    elif mode=='held-sec-classification':
+        from investment_system.research.sector_qgv_classification import connect_held_classification
+        spec=job['sec_snapshot'];sec=json.loads(checked_bytes(spec))
+        retained=json.loads(checked_bytes(job['snapshot']))
+        snapshot,audit=connect_held_classification(retained,sec,job['archives'],spec['sha256'])
     else:raise ValueError('JOB_MODE_UNSUPPORTED')
-    preview=preview_qgv(config,snapshot,job['request_id'])
+    main_response=None
+    if job.get('main_request'):
+        from investment_system.research.sector_qgv_main import run_preview_request
+        request=json.loads(checked_bytes(job['main_request']))
+        if request['request_id']!=job['request_id']:raise ValueError('MAIN_REQUEST_JOB_MISMATCH')
+        main_response=run_preview_request(snapshot,request)
+        preview=main_response['after'];config=main_response['after_config']
+    else:preview=preview_qgv(config,snapshot,job['request_id'])
     saved=save_user_config(config,preview,request_id=job['request_id'],expected_preview_id=preview['preview_id'])
     comparisons=[]
     if job.get('comparisons'):
@@ -45,6 +57,7 @@ def run(job,output,synthetic=False):
         'catalog.json':list_factors(config,'INFORMATION_TECHNOLOGY','GENERAL'),
         'comparisons.json':comparisons,'connection-audit.json':audit,
         'official-baseline-reference.json':baseline}
+    if main_response:artifacts['main-response.json']=main_response
     output.mkdir(parents=True,mode=0o700)
     manifest={'schema_version':'sector-qgv-run/1','data_kind':job.get('data_kind','PRIVATE'),
               'request_id':job['request_id'],'input_job':job,'files':[]}

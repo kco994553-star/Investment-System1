@@ -124,14 +124,14 @@ const copy = (v) => JSON.parse(JSON.stringify(v));
       assert.deepEqual(f.chk, { ok: false, code: 'DUPLICATE_COMPANY_ID' }); assert.equal(S.errorText('DUPLICATE_COMPANY_ID'), '입력 거부 · 회사 ID 중복');
     });
 
-    await ok('answers of another request are refused: request id, op, engine versions, comparison id, saved record, data kind', async () => {
+    await ok('answers of another request are refused: request id (both previews), op, engine versions, saved record, data kind', async () => {
       const r = await ask('preview', { config: ctx.default_config, before_config: ctx.default_config, input_id: 'NORMAL' }, ctx);
       const other = S.request('preview', { config: ctx.default_config, before_config: ctx.default_config, input_id: 'NORMAL' });
       assert.deepEqual(S.check('preview', other, r.res, ctx), { ok: false, code: 'ANSWER_MISMATCH' });
       assert.deepEqual(S.check('view', r.req, r.res, ctx), { ok: false, code: 'ANSWER_MISMATCH' });
       const moved = copy(r.res); moved.after.engine_version = 'sector-qgv-engine/9.9.9';
       assert.deepEqual(S.check('preview', r.req, moved, ctx), { ok: false, code: 'ANSWER_MISMATCH' });
-      const cmp = copy(r.res); cmp.comparison.comparison_id = 'x'; assert.deepEqual(S.check('preview', r.req, cmp, ctx), { ok: false, code: 'ANSWER_MISMATCH' });
+      const cmp = copy(r.res); cmp.before.request_id = 'other:before'; assert.deepEqual(S.check('preview', r.req, cmp, ctx), { ok: false, code: 'ANSWER_MISMATCH' });
       const sv = copy(r.res); sv.saved.preview_id = '0'.repeat(64); assert.deepEqual(S.check('preview', r.req, sv, ctx), { ok: false, code: 'ANSWER_MISMATCH' });
       const kinds = copy(r.res); kinds.data_kind = 'PRIVATE'; assert.deepEqual(S.check('preview', r.req, kinds, ctx), { ok: false, code: 'ENGINE_ANSWER_INVALID' });
       assert.deepEqual(S.check('preview', r.req, { ...r.res, ok: false, code: 'ENGINE_FAILED' }, ctx), { ok: false, code: 'ENGINE_FAILED' });

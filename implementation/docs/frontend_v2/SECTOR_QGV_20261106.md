@@ -5,6 +5,7 @@
 **근거**
 - 오너 지시 「섹터별 QGV 요소 선택·재계산 화면 구현」과 첨부 설계서
 - Codex #505 `dc11144b`: `implementation/docs/research/sector_qgv/CONTRACT.md`, `catalog.json`, `presets.json`, `synthetic-input.json`, `synthetic-preview.json`, `synthetic-states.json`
+- Codex #505 갱신 `aa9c4484`: `MAIN_INTEGRATION.md`, Main 전달 함수 `research/sector_qgv_main.run_preview_request`(`sector-qgv-main-request/1`). 연결기의 미리보기는 이 함수를 그대로 부른다
 
 **범위**
 - 병합·배포·신규 수집 승인이 아니다.
@@ -47,13 +48,13 @@
 | --- | --- | --- |
 | `context` | `default_config`, 레지스트리 | 버전 4개, 기본 설정, 섹터·회계모형, 관문 정책·기준값(`GATE_PERCENTILE`), 합성 입력 목록 |
 | `view` | `validate_config`, `preset`, `list_factors` | 이 범위의 프리셋·기본 프리셋·요소 51개(배지 근거: `is_default`, `recommendation`, `calculator_status`, `accounting_applicability`), 검증 결과 |
-| `preview` | `preview_qgv`(편집 설정·저장 또는 기본 설정 둘), `compare_previews`, `save_user_config` | before·after 미리보기, 비교, 이 미리보기의 저장 기록(또는 거부 코드) |
+| `preview` | Codex `sector_qgv_main.run_preview_request` = `preview_qgv`(편집 설정·저장 또는 기본 설정 둘) + `compare_previews` + `save_user_config` | before·after 미리보기, 비교, 이 미리보기의 저장 기록 |
 | `save` | `save_user_config` | 보관한 미리보기로 다시 확인한 저장 기록 |
 
 - **화면이 하는 것:** 설정 편집뿐이다. 축·역할·요소 bp, 추가(같은 역할이면 그 역할 예산을 나눔)·빼기·교체, 적용 범위, 합계 표시를 한다. 합계의 최종 판단은 엔진 검증이다.
 - **화면이 하지 않는 것:** 요소 점수, 비교집단 정규화, 엄격 결측, 관문, 총점, 순위, 커버리지, 비교, 저장 확인. 이 값은 모두 엔진 응답 그대로 보인다.
   - 시험이 화면 파일에 엔진 상수(변형 ID·모델 버전·`GATE_PERCENTILE`)와 순위·백분위 계산이 없음을 확인한다.
-- **요청 순서:** 응답의 `request_id`·`op`·버전 4개·비교 ID·저장 기록의 `preview_id`가 요청과 다르면 버린다. 설정·입력이 그 사이 바뀌었어도 버린다(`data-sq-dropped`).
+- **요청 순서:** 응답의 `request_id`(두 미리보기 모두)·`op`·버전 4개·저장 기록의 `preview_id`가 요청과 다르면 버린다. 설정·입력이 그 사이 바뀌었어도 버린다(`data-sq-dropped`).
 - **거부된 미리보기:** 예를 들어 회사 ID가 중복되면 이전 성공 결과를 바꾸지 않는다.
 - **저장:** 미리보기 응답에 함께 온 엔진 저장 기록을, 보이는 미리보기가 지금 설정·입력과 같을 때만 `저장` 클릭 안에서 이 기기에 쓴다. 클릭 안에서 다시 왕복하지 않는다.
 - **열 때 요청 없음:** 페이지를 열 때 엔진 요청은 없다. `계산 엔진 연결`·범위 변경·`결과 미리보기`·`변경 취소`·`기본값 복원` 클릭 때만 나간다.
