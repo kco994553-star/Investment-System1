@@ -16,7 +16,8 @@ classification decision. This tool never writes a view, a technical or a macro p
   universe         the same Codex runs with only the company ids of their INPUTS renamed to Universe504 codes of the browser
                    tests' page (UNIVERSE_CODES; Codex then computes every record, hash and projection itself), so a screen row
                    (code = company_id) can meet them: record_cases (each case on its own), technical_normal (the normal technical
-                   case: view, technical, macro) and bundle (the CLI run).
+                   case: view, technical, macro), technical_nine_valid / technical_missing_security (small sample, unknown
+                   identity), technical_shared_issuer (normal case input with two companies of one issuer) and bundle (the CLI run).
   owner_cases      which entry above shows each owner case (normal, multi-business, partial unclassified, period change,
                    share class / ADR, other evaluation date, version mismatch, empty / small group, plus conflict, outside
                    interval, REIT / telecom unresolved).
@@ -137,6 +138,13 @@ def build():
                 'bundle': cli_bundle(one(['company-%03d' % i for i in range(20)]))}
     tc = renamed({k: v for k, v in fixtures['technical_cases']['normal'].items() if k != 'expected'}, one(fixtures['technical_cases']['normal']['view']['members']))
     universe['technical_normal'] = {'view': tc['view'], 'security_links': tc['security_links'], 'technical': technical_groups(**tc), 'macro': macro_projection(tc['view'])}
+    # The same renaming for the small-sample and unconfirmed-identity technical cases, and a shared-issuer input (the normal case
+    # with SYNTHETIC:ISSUER:1 renamed to SYNTHETIC:ISSUER:0 in its view and links: two code rows of one issuer, two securities).
+    for name in ('nine_valid', 'missing_security'):
+        t = renamed({k: v for k, v in fixtures['technical_cases'][name].items() if k != 'expected'}, one(fixtures['technical_cases'][name]['view']['members']))
+        universe['technical_' + name] = {'view': t['view'], 'security_links': t['security_links'], 'technical': technical_groups(**t), 'macro': None}
+    shared = renamed(tc, {'SYNTHETIC:ISSUER:1': 'SYNTHETIC:ISSUER:0'})
+    universe['technical_shared_issuer'] = {'view': shared['view'], 'security_links': shared['security_links'], 'technical': technical_groups(**shared), 'macro': None}
     return {'schema_version': 'main-common-classification-fixture/1', 'data_kind': 'SYNTHETIC',
             'made_by': 'implementation/tools/common_classification_main_fixture.py (Codex functions only)',
             'codex_handoff': {'path': 'implementation/docs/research/common_classification', 'sha256': PINS},

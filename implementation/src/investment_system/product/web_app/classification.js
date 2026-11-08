@@ -44,7 +44,7 @@ const STATE=Object.freeze({CONFIRMED:'CONFIRMED',SECTOR_ONLY:'SECTOR_ONLY',CONFL
  NO_DATA:'NO_DATA',UNRESOLVED:'UNRESOLVED',VERSION_MISMATCH:'VERSION_MISMATCH'});
 const WORDS=Object.freeze({CONFIRMED:'확인',SECTOR_ONLY:'섹터 확인 · 하위 산업 미확인',SECTOR_INDUSTRY_CONFLICT:'섹터 확인 · 하위 산업 근거 불일치',
  CONFLICT:'분류 충돌 · 근거 불일치',NO_DATA:'분류 자료 없음',VERSION_MISMATCH:'분류 버전 불일치',UNRESOLVED:'섹터 대응 미확인 · 근거 부족',
- SAMPLE_SMALL:'표본 부족 · 유효 N < 기준',GROUP_UNCONFIRMED:'구성원 미확인 · 순위·중앙값 없음',EMPTY_GROUP:'구성원 0 · 비교 대상 없음',
+ SAMPLE_SMALL:'표본 부족 · 기능별 규칙(섹터 QGV N<20 요소 점수 미산출 · 기술 N<10 분위 미산출, 순위·중앙값 유지)',GROUP_UNCONFIRMED:'구성원·신원 미확인 · 상대순위·중앙값도 미산출',EMPTY_GROUP:'구성원 0 · 비교 대상 없음',
  NONE:'공통 분류 자료 미연결 · 공개 파일 없음',NONE_WHY:'분류는 Codex(common-classification/1) · 합성 자료는 시험에서만 · 실자료 미연결',
  INVALID:'공통 분류 파일이 계약과 달라 쓰지 않습니다',SECURITY_NONE:'검증된 증권 ID 없음',ISSUER_NONE:'발행사 ID 미확인'});
 const dateWords=d=>'평가일 '+d+'에 적용되는 분류 없음';
@@ -276,7 +276,7 @@ const MIN=Object.freeze({TECH:10,SECTOR_QGV:20});
 function sample(kind,{n_valid=null,membership_status='CONFIRMED'}={}){const min=MIN[kind];if(!min)throw Error('SAMPLE_KIND_INVALID');
  if(membership_status!=='CONFIRMED'||n_valid===null)return Object.freeze({state:'GROUP_UNCONFIRMED',words:WORDS.GROUP_UNCONFIRMED,min,n_valid:null,rank:false,median:false,decile:false,score:false});
  if(n_valid===0)return Object.freeze({state:'EMPTY_GROUP',words:WORDS.EMPTY_GROUP,min,n_valid,rank:false,median:false,decile:false,score:false});
- if(n_valid<min)return Object.freeze({state:'SAMPLE_SMALL',words:'표본 부족 · 유효 N '+n_valid+' < '+min+(kind==='TECH'?' · 분위·상하위10% 없음 · 순위·중앙값 유지':' · 요소점수 미산출'),
+ if(n_valid<min)return Object.freeze({state:'SAMPLE_SMALL',words:'표본 부족 · 유효 N '+n_valid+' < '+min+(kind==='TECH'?' · 분위·상하위10% 미산출 · 순위·중앙값 유지':' · 요소 점수 미산출'),
   min,n_valid,rank:kind==='TECH',median:kind==='TECH',decile:false,score:false});
  return Object.freeze({state:'OK',words:null,min,n_valid,rank:true,median:true,decile:kind==='TECH',score:true});}
 

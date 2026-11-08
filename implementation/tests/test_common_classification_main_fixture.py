@@ -100,3 +100,13 @@ def test_universe_runs_differ_from_the_codex_runs_only_by_the_renamed_company_id
     t = u['technical_normal']['technical']; g = next(x for x in t['groups'] if x['sector_id'] == 'INFORMATION_TECHNOLOGY')
     assert g['membership_status'] == 'CONFIRMED' and g['counts']['company_members'] == 10
     assert {r['company_id'] for r in t['rows']} == set(codes[:10])
+
+
+def test_universe_technical_variants_small_unknown_and_shared_issuer():
+    u = load()['universe']
+    it = lambda k: next(g for g in u[k]['technical']['groups'] if g['sector_id'] == 'INFORMATION_TECHNOLOGY')
+    assert it('technical_nine_valid')['membership_status'] == 'CONFIRMED' and it('technical_nine_valid')['board']['metrics']['momentum_3m']['n_valid'] == 9
+    assert it('technical_missing_security')['membership_status'] == 'UNKNOWN'
+    shared = it('technical_shared_issuer'); rows = u['technical_shared_issuer']['technical']['rows']
+    assert shared['membership_status'] == 'CONFIRMED' and shared['counts']['company_members'] == 10
+    assert [r['company_id'] for r in rows if r['issuer_id'] == 'SYNTHETIC:ISSUER:0'] == ['NYSE:MMM', 'NYSE:AOS']

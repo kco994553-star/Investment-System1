@@ -56,7 +56,9 @@ function create({signal,redraw}){
  const groupRows=universe=>{const C=CL();if(!C||typeof C.groupRows!=='function')return{rows:null,code:null};const g=C.groupRows(board(),universe);
   if(Array.isArray(g))return{rows:g,code:null};return{rows:null,code:typeof C.groupRowsWhy==='function'?C.groupRowsWhy(board(),universe).code:null};};
  function keep(rows,{universe=rows}={}){if(!V.on||!board())return null;const group=ctx.links===null||ctx.links===undefined?{rows:[],code:null}:groupRows(universe);
-  const j=group.rows===null?Object.freeze({ok:false,code:'BOARD_GROUP_ROWS_UNRESOLVED',group_code:group.code}):T().joinRows(board(),group.rows,{links:ctx.links,data_kind:ctx.value.data_kind});joinMemo=j;
+  const jr=group.rows===null?Object.freeze({ok:false,code:'BOARD_GROUP_ROWS_UNRESOLVED',group_code:group.code}):T().joinRows(board(),group.rows,{links:ctx.links,data_kind:ctx.value.data_kind});
+  // Universe rows outside the board group are not the conditions' subject: never joined, never re-ranked (shown when off).
+  const j=jr.ok?Object.freeze({...jr,outside:Array.isArray(universe)?universe.length-group.rows.length:null}):jr;joinMemo=j;
   if(!j.ok)return null;const r=result();
   return{rows:rows.filter(x=>j.keys.has(x.security_id)&&r.rows.get(x.security_id).state==='PASS'),joined:j.keys.size,result:r};}
  const on=()=>V.on&&!!board()&&!!joinMemo&&joinMemo.ok;
@@ -157,7 +159,8 @@ function create({signal,redraw}){
      ...x.unknown.flatMap((u,i)=>[i?' · ':'',S.META[u.metric].label,' ',na(u.reason,S.reasonText(u.reason))]))))):null,
    shown.length?boardTable(shown,phone):null,
    h('p',{class:'reason',dataset:j&&!j.ok?{tfJoin:j.code,na:j.code,...(j.group_code?{tfGroup:j.group_code}:{})}:{tfJoin:joined===null?'OFF':String(joined)}},!j?'리더보드 표에 적용하려면 위 스위치를 켜세요 · 보드 표는 원래 순위 그대로':
-    j.ok?'리더보드 표: 결합된 '+joined+'개 중 통과한 종목만 · 정렬은 1.1.2 그대로(기본 QGV 높은 순) · 순위 번호·점수 그대로':
+    j.ok?['리더보드 표: 결합된 '+joined+'개 중 통과한 종목만 · 정렬은 1.1.2 그대로(기본 QGV 높은 순) · 순위 번호·점수 그대로',
+     Number.isInteger(j.outside)&&j.outside>0?h('span',{class:'tf-outside',dataset:{tfOutside:String(j.outside)}},' · 그룹 밖 '+j.outside+'행 · 조건 적용 대상 아님 · 원래 점수·순위 그대로 · 스위치를 끄면 표에 다시 보임'):null]:
     '리더보드 표에 적용할 수 없음 · '+S.joinText(j)+(j.group_code&&CL()&&CL().groupText?' · '+CL().groupText(j.group_code):'')+' · 같은 평가일·같은 증권으로 확인된 행만 결합(QGV 결합 키 [평가일, 증권 ID]) · 리더보드는 기술 조건 없이 그대로'));
   return[status,step1,step2,step3,step4];}
  return Object.freeze({load,on,keep,head,cell,sub,block});}

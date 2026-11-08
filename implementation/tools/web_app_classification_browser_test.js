@@ -14,6 +14,9 @@
 //  - Tech filter: the confirmed COMMON group's full rows from the record; Main rows without signal_day refuse the join; keyed
 //    rows join; 9 of 10 keyed still refuse (never an intersection); an empty confirmed group joins nothing; another run's
 //    technical part → 분류 버전 불일치.
+//  - Call site (owner 2026-11-08, Codex #437 6714613662): group smaller than the universe joins only its rows in QGV order, with
+//    the 그룹 밖 N행 line; filter off restores the identical table; wrong row issuer / missing member row / missing link /
+//    unconfirmed group refuse with the table unchanged; N<10 shows ranks + median without decile, unconfirmed shows neither.
 //  - 4.3 keeps its text and adds the SIC basis line; phone: no overflow, 44 px. (The 4.5 exposure line's 공통 섹터 context is wired
 //    in screen-policy-impact-live.js but not exercised here: this test serves no policy file.)
 //  - Boundaries: no request outside the origin, no data request on route changes, no storage, no console error, CSP 0.
@@ -189,8 +192,12 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       const LINKS = U.technical_normal.security_links;
       const swapTech = (boards, links) => page.evaluate(([b, l]) => { const I = window.IS2; I.__realTech = I.__realTech || I.techScreen;
         I.techScreen = Object.freeze({ ...I.__realTech, source: () => Promise.resolve({ state: 'OK', code: null, payload: { data_kind: 'SYNTHETIC', cases: b }, security_links: l, text: '' }) }); }, [boards, links]);
-      const keys = (n) => page.evaluate(([k, codes]) => { const I = window.IS2; I.__realQ = I.__realQ || I.qgv; const Rq = I.__realQ;
-        I.qgv = k === null ? Rq : Object.freeze({ ...Rq, rows: (pg, o) => Rq.rows(pg, o).map((r) => { const i = codes.indexOf(r.code); return i >= 0 && i < k ? { ...r, ticker: 'SYNTHETIC:TICKER:' + i, signal_day: '2017-01-06', security_id: 'SYNTHETIC:SECURITY:' + i } : r; }) }); }, [n, U.codes]);
+      // Synthetic evidenced join keys on the first n group rows (by code); opts.drop removes one code's row from the layer's rows,
+      // opts.issuer puts a row-level issuer_id on one code's row.
+      const keys = (n, opts = {}) => page.evaluate(([k, codes, o]) => { const I = window.IS2; I.__realQ = I.__realQ || I.qgv; const Rq = I.__realQ;
+        I.qgv = k === null ? Rq : Object.freeze({ ...Rq, rows: (pg, x) => Rq.rows(pg, x).filter((r) => r.code !== o.drop).map((r) => { const i = codes.indexOf(r.code);
+          const out = i >= 0 && i < k ? { ...r, ticker: 'SYNTHETIC:TICKER:' + i, signal_day: '2017-01-06', security_id: 'SYNTHETIC:SECURITY:' + i } : r;
+          return o.issuer && r.code === o.issuer[0] ? { ...out, issuer_id: o.issuer[1] } : out; }) }); }, [n, U.codes, opts]);
       const B35 = '[data-lb="3.5"]';
       const join = async (want, group) => { await page.locator('[data-k=tf-on]').check();
         await page.locator(B35 + ' [data-tf-join="' + want + '"]' + (group ? '[data-tf-group="' + group + '"]' : '')).waitFor(); const t = await text(B35 + ' [data-tf-join]'); await page.locator('[data-k=tf-on]').uncheck(); return t; };
@@ -220,6 +227,51 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       await keys(null);
       if (phone) assert.ok(await overflow() <= 0, 'tech block: no overflow');
       ok(tag + ' tech filter: full group rows from the record, no signal_day / 9 of 10 refuse, 10 join, empty group joins 0, other run 분류 버전 불일치');
+
+      // ---------------- the real call site (screen-qgv-live → techFilterLive.keep → classification.groupRows → joinRows), owner
+      // 2026-11-08 / Codex #437 6714613662: a group smaller than the universe, refusals leave the table as it was.
+      phase = tag + ' call site';
+      const full = () => page.$$eval('[data-lb-table] tbody tr[data-row]', (trs) => trs.map((t) => t.dataset.row + '|' + t.innerText.replace(/\s+/g, ' ')));
+      const refusedAt = async (code, group, words) => { const was = await full();
+        await page.locator('[data-k=tf-on]').check(); await page.locator(B35 + ' [data-tf-join="' + code + '"]' + (group ? '[data-tf-group="' + group + '"]' : '')).waitFor();
+        const t = await text(B35 + ' [data-tf-join]'); assert.ok(t.includes(words) && t.includes('리더보드는 기술 조건 없이 그대로'), t);
+        assert.deepEqual(await full(), was, code + ': table unchanged'); assert.equal(await page.locator('[data-lb-table] [data-cell=tech]').count(), 0); await page.locator('[data-k=tf-on]').uncheck(); };
+      await useCC(TC); await swapTech({ it: TB }, LINKS); await keys(10); await qgv();
+      await page.locator(B35 + ' [data-cc-tech=OK]').waitFor();
+      const off = await full();
+      const universeN = await page.evaluate(async () => { const Q = window.IS2.qgv, pg = await Q.page(); return Q.rows(pg, { scope: 'UNIVERSE' }).length; });
+      await page.locator('[data-k=tf-on]').check(); await page.locator(B35 + ' [data-tf-join="10"]').waitFor();
+      const wantOrder = await page.evaluate(async (codes) => { const I = window.IS2, Q = I.__realQ, pg = await Q.page();
+        return I.qgvLive.helpers.sortRows(Q.rows(pg, { scope: 'UNIVERSE' }).filter((r) => codes.includes(r.code)), 'qgv').map((r) => r.id); }, U.codes.slice(0, 10));
+      assert.deepEqual((await drawn()).map((r) => r.id), wantOrder, '(i) the group\'s PASS rows in QGV order');
+      const outLine = await text(B35 + ' [data-tf-outside]');
+      assert.equal(await attr(B35 + ' [data-tf-outside]', 'data-tf-outside'), String(universeN - 10));
+      assert.ok(outLine.includes('그룹 밖 ' + (universeN - 10) + '행 · 조건 적용 대상 아님 · 원래 점수·순위 그대로'), outLine);
+      await page.locator('[data-k=tf-on]').uncheck(); await page.waitForFunction((n) => document.querySelectorAll('[data-lb-table] tbody tr[data-row]').length === n, off.length);
+      assert.deepEqual(await full(), off, '(ii) filter off: the full table with identical scores and ranks');
+      // (iii) a row-level issuer that is not the record's: refused before the join; Main's own null issuer is filled from the record.
+      await keys(10, { issuer: [U.codes[2], 'SYNTHETIC:ISSUER:WRONG'] }); await qgv();
+      await refusedAt('BOARD_GROUP_ROWS_UNRESOLVED', 'ISSUER_MISMATCH', '행의 발행사 ID ≠ 분류 기록 발행사 ID');
+      // (iv) a group member missing: its row (MEMBER_NOT_MAPPED) or its link (Codex FIXED_SECURITY_LINK_MISSING); never the rest joined.
+      await keys(10, { drop: U.codes[3] }); await qgv();
+      await refusedAt('BOARD_GROUP_ROWS_UNRESOLVED', 'MEMBER_NOT_MAPPED', '그룹 구성원이 리더보드 행과 1:1로 대응되지 않음');
+      await keys(10); await swapTech({ it: TB }, LINKS.filter((l) => l.security_id !== 'SYNTHETIC:SECURITY:3')); await qgv();
+      await refusedAt('FIXED_SECURITY_LINK_MISSING', null, '매핑 없음');
+      // (v) small sample vs unconfirmed identity: different words, ranks / median only for the confirmed small group.
+      for (const [name, st, words] of [['nine_valid', 'N_BELOW_10', '유효 종목 9 < 10 · 순위·중앙값만 · 분위 없음'], ['missing_security', 'UNCONFIRMED', '그룹 구성 미확인 · 순위·중앙값·분위 없음']]) {
+        const P = X.uTech(name), PB = P.technical.groups.find((g) => g.sector_id === IT).board;
+        await useCC(P); await swapTech({ it: PB }, U['technical_' + name].security_links); await qgv();
+        const card = B35 + ' [data-metric-card=momentum_6m][data-tech-metric-state=' + st + ']'; await page.locator(card).waitFor();
+        const ct = await text(card); assert.ok(ct.includes(words), ct);
+        const ranks = await page.$$eval(B35 + ' [data-tf-row] [data-tf-rank]', (n) => n.map((x) => x.textContent));
+        if (st === 'N_BELOW_10') { assert.ok(ct.includes('중앙값 ') && !ct.includes('중앙값 없음') && ranks.some((r) => /^\d+$/.test(r)), 'N<10: ranks and median');
+          assert.ok(!/D\d/.test(await text(B35 + ' .tf-board')), 'N<10: no decile'); }
+        else { assert.ok(ct.includes('중앙값 없음') && ranks.every((r) => r === '—'), 'unconfirmed: no rank, no median');
+          await refusedAt('BOARD_GROUP_ROWS_UNRESOLVED', 'GROUP_MEMBERSHIP_UNCONFIRMED', '그룹 구성원 미확인'); }
+      }
+      await keys(null); await useCC(null);
+      if (phone) assert.ok(await overflow() <= 0, 'call site: no overflow');
+      ok(tag + ' call site: subset group joins in QGV order, 그룹 밖 N행 line, off restores the same table; wrong row issuer, missing member row / link, unconfirmed group refused with the table unchanged; N<10 ranks + median no decile vs unconfirmed none');
 
       // ---------------- an invalid payload is refused whole
       phase = tag + ' invalid';
