@@ -8,8 +8,8 @@
 //    (number · name · route) plus 세부 화면; under them every numbered line of docs/SPEC/FUNCTION_HIERARCHY_v1.0.md (levels 2–4,
 //    parsed here, same order, same names; 4.5 = 나비효과 by DC-17) under its own parent, each area's meta = its spec number and
 //    name; the numbered lines of docs/SPEC/FUNCTION_HIERARCHY_ADDITIONS.md (추가 명세: 2.1.8 · 2.2.7 · 2.4.6 · 3.5 · 4.5.x.1, the
-//    same ids as FUNCTION_STATUS) after their siblings under their own parent, marked 추가 명세, a Draft PR's feature 준비 중 with
-//    its PR, 3.5 routed to #/qgv (screen stamp 1.1.8); the detail screens = IS2.DETAILS with routes #/detail/<id>; aria-level / setsize / posinset / expanded / owns
+//    same ids as FUNCTION_STATUS) after their siblings under their own parent, marked 추가 명세, each with its FUNCTION_STATUS stage line (구현 · 검증 · 통합 · 배포 · 실환경,
+//    not 준비 중 · Draft), the common classification as one stage line beside the tree, 3.5 routed to #/qgv (screen stamp 1.1.8); the detail screens = IS2.DETAILS with routes #/detail/<id>; aria-level / setsize / posinset / expanded / owns
 //    consistent; every href parses (IS2.parse) to the route it belongs to (2.4 QGV 상세 → 기업 검색).
 //  - Status: each screen node's data-node-status and chip equal the registry at render time (IS2.screen / isPlaceholder,
 //    IS2.detail): 화면 있음 / 준비 중; no other node has a status; the counts line equals the chips; registering a detail screen
@@ -59,7 +59,8 @@ for (const [no, name] of ADDS) {
 }
 const ADDED = new Set(ADDS.map(([no]) => no));
 const ADD_ROUTE = { '3.5': 'qgv' };// 3.5 기술 조건 필터 lives on the QGV leaderboard (screen stamp 1.1.8)
-const ADD_NOTE = { '2.1.8': '준비 중 · Draft #506·#510', '2.4.6': '준비 중 · Draft #506·#510', '2.2.7': '준비 중 · Draft #507·#510', '4.5.1.1': '준비 중 · Draft #511' };
+// Stage lines (FUNCTION_STATUS words, checked against the doc by web_app_tree_status_node_test.js): which nodes carry one.
+const STAGED = ['2.1.8', '2.2.7', '2.4.6', '3.5', '4.5.1.1', '4.5.1.2', '4.5.2.1', '4.5.3.1', '4.5.4.1'];
 const NAME = (no, name) => (no === '4.5' ? '나비효과' : name);// DC-17 (CHAIN-NAME): 4.5 = 나비효과; the spec text is left as written
 const AREA_MENU = { 1: 'search', 2: 'qgv', 3: 'technical', 4: 'macro', 5: 'news', 6: 'portfolio', 7: 'prompts', 8: 'tree', 9: 'lab' };
 const TREE_READS = [];// #/tree reads no public file
@@ -222,9 +223,15 @@ let phase = 'START';
       assert.deepEqual(Object.fromEntries(reg.filter(([k]) => ['m:tree', 'm:search'].includes(k))), { 'm:search': 'ready', 'm:tree': 'ready' });
       const ready = reg.filter(([, st]) => st === 'ready').length;
       assert.equal(await page.locator('[data-tree-summary]').innerText(), '메뉴 · 기업 상세 · 세부 화면 기준: 화면 있음 ' + ready + ' · 준비 중 ' + (reg.length - ready));
-      for (const [no, words] of Object.entries(ADD_NOTE))
-        assert.equal(await page.locator('[data-tree-node="f:' + no + '"] [data-prep]').innerText(), ' · ' + words, phase + ': ' + no + ' says ' + words);
-      assert.equal(await page.locator('[data-tree-node="f:3.5"] [data-prep]').count(), 0, phase + ': 3.5 is merged (no 준비 중 note)');
+      const stages = await page.evaluate(() => [...document.querySelectorAll('[data-stage]')].map((e) => [e.dataset.stage, e.textContent]));
+      assert.deepEqual(stages.map(([k]) => k).sort(), [...STAGED, '공통 분류'].sort(), phase + ': stage lines on the added numbers and the common classification only');
+      // The words themselves are checked against FUNCTION_STATUS by web_app_tree_status_node_test.js; here: the five stage names in order.
+      for (const [k, t] of stages) assert.match(t, /^ · 구현 .+ · 검증 .+ · 통합 .+ · 배포 .+ · 실환경 .+$/, phase + ': stage ' + k);
+      for (const no of [...STAGED, '2.1.8.1', '2.4.6.1']) assert.equal(await page.locator('[data-tree-node="f:' + no + '"] [data-prep]').count(), 0, phase + ': no 준비 중 · Draft note on ' + no);
+      assert.match(stages.find(([k]) => k === '2.2.7')[1], /^ · 구현 완료\(개발 빌드, 개발 환경 엔진 경로\) · 검증 합성\(Codex synthetic-input\.json\) · 통합 #510 → #519 기준점 · 배포 안 됨 · 실환경 없음$/);
+      assert.match(await page.locator('[data-tree-common]').innerText(), /^공통 분류 \(가로 기준 · 기능 번호 없음 · DC-48\) · 투자시스템 공통 10섹터 → 하위 산업 → 기업/);
+      assert.equal(await page.locator('[data-tree-common] a').getAttribute('href'), '#/qgv');
+      assert.equal(await page.locator('[data-tree-node="f:9.1"] [data-prep]').innerText(), ' · 연구 범위 · 선정 방식(Draft, 개발 빌드·합성)');
       for (const [no, words] of [['4.1.1', '공식 국면 미산출'], ['4.2.1', '준비 중'], ['4.3.2', '준비 중'], ['4.5', '준비 중']])
         assert.match(await page.locator('[data-tree-node="f:' + no + '"] [data-prep]').innerText(), new RegExp(words), phase + ': ' + no + ' says ' + words);
       assert.match(await page.locator('[data-prep="8.1.3"]').innerText(), /준비 중[\s\S]*기능별 구현 분류[\s\S]*기능 상태 공개 자료/);

@@ -46,8 +46,8 @@ function selectionCard(r){const S=RS();
   note(v.general),note(v.official,{scopeOfficial:''}));}
 
 function block({signal}){
- const box=h('div',{class:'sk card',dataset:{block:'research-scope'}},sub('연구 범위 · 선정 방식','9.1','운영 커버리지 (#474) · 일반 연구 선정 (#473)'),
-  h('p',{class:'pending',role:'status',dataset:{state:'loading'}},'불러오는 중'));
+ const box=h('div',{class:'sk card',dataset:{block:'research-scope'}},sub('연구 범위 · 선정 방식','9.1','운영 커버리지 (#474) · 일반 연구 선정 (#473) · 결과 종류: 연구 범위 · 수익률 · 전략 성과 아님'),
+  h('p',{class:'pending',role:'status',dataset:{state:'loading'}},'불러오는 중 · 연구 범위 자료'));
  const paint=(...c)=>{box.replaceChildren(box.firstChild);I.append(box,c);};
  let p;try{p=RS().source();}catch(e){p=Promise.reject(e);}
  Promise.resolve(p).then(src=>{if(signal.aborted)return;

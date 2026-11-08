@@ -115,7 +115,7 @@ function fill(route,{body}){
   const intro=h('p',{class:'reason'},'저장된 Q/G 부분 비교 파일 · 엔진이 만든 비교를 그대로 읽음 · 합성 예시(D1) · 비공개 실자료(D1 요소·비중, I1 분류 보완)는 승인된 개발 환경에서만');
   if(C.state==='IDLE'||C.state==='ERROR'||C.state==='LOADING')return h('section',{class:'sq-axis-files',dataset:{sqAxisFiles:C.state}},intro,
    C.state==='ERROR'?h('p',{class:'hand err'},S.errorText(C.code)):null,
-   h('button',{type:'button',class:'btn',disabled:C.state==='LOADING',dataset:{k:'sq-axis-list'},onclick:()=>{void listComparisons();}},C.state==='LOADING'?'불러오는 중…':'비교 파일 목록'));
+   h('button',{type:'button',class:'btn',disabled:C.state==='LOADING',dataset:{k:'sq-axis-list'},onclick:()=>{void listComparisons();}},C.state==='LOADING'?'불러오는 중':'비교 파일 목록'));
   return h('section',{class:'sq-axis-files',dataset:{sqAxisFiles:'READY'}},intro,
    h('div',{class:'links',role:'group','aria-label':'비교 파일'},...C.list.map(x=>h('button',{type:'button',class:'btn'+(C.name===x.name?' solid':''),'aria-pressed':String(C.name===x.name),
     dataset:{k:'sq-axis-open-'+x.name,sqAxisFile:x.name,sqAxisFileKind:x.data_kind},onclick:()=>{void openComparison(x.name);}},

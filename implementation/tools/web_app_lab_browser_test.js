@@ -203,6 +203,12 @@ let phase = 'START', pass = 0;
     await source(page, S.v2); await reopen(page); await waitPanel(page, 'READY');
     assert.match(await text(page, '[data-lab-file]'), /^계약 lab-backtest-v2 판독 통과/);
     assert.deepEqual(await page.locator('[data-lab-run-tab]').evaluateAll((n) => n.map((x) => x.dataset.labRunTab)), ids);
+    // Each tab carries its run's kind (never a strategy word on a diagnostic or not-computed run).
+    const tabKinds = await page.locator('[data-lab-run-tab] [data-lab-tab-kind]').evaluateAll((n) => n.map((x) => [x.dataset.labTabKind, x.textContent]));
+    assert.deepEqual(tabKinds, p.runs.map((r) => [r.result_kind, ' · ' + (r.computation_status === 'NOT_COMPUTED' ? { BACKTEST: '전략 백테스트', SINGLE_COMPANY_METRIC: '1회사 지표', SAMPLE_DIAGNOSTIC: '표본 진단' }[r.result_kind] + ' · 미산출'
+      : r.result_kind === 'BACKTEST' ? '전략 백테스트' : { SINGLE_COMPANY_METRIC: '1회사 지표', SAMPLE_DIAGNOSTIC: '표본 진단' }[r.result_kind] + ' · 전략 성과 아님')]), label + ': tab kinds');
+    assert.deepEqual(await page.locator('[data-lab-kinds] [data-lab-kind]').evaluateAll((n) => n.map((x) => x.dataset.labKind)), ['BACKTEST', 'SINGLE_COMPANY_METRIC', 'SAMPLE_DIAGNOSTIC', 'RESEARCH_SCOPE', 'NOT_COMPUTED'], label + ': the kinds legend');
+    assert.equal((await page.locator('[data-lab-kinds]').innerText()).match(/전략 성과 아님/g).length, 3, label + ': three kinds are not a strategy result');
     const want = [['합성 데이터 · 시험용 · 미산출 · C2 분모 미확인 · 표본 진단', 1], ['합성 데이터 · 시험용 · 1회사 지표 계산 · 전략 성과 아님', 1], ['합성 데이터 · 시험용 · 표본 진단 · 전략 성과 아님', 2]];
     for (let i = 0; i < 3; i++) {
       await page.locator('[data-lab-run-tab="' + ids[i] + '"]').click(); const run = page.locator('[data-lab-run="' + ids[i] + '"]'); await run.waitFor();

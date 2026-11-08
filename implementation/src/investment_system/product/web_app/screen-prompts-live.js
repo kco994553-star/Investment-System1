@@ -20,6 +20,10 @@
      IS2.data.static (the one public file this screen reads, only while a company is selected; one read per page, usually already
      read by the company page). No price, holding, quantity or amount is ever put into a field. System results (QGV / technical /
      macro summaries) are not imported here yet (준비 중): the field names the screen that shows them.
+   - 7.1.2 화면 문맥 (owner 2026-11-08): a screen registers IS2.promptContext.provide(menu id, fn); opened from it (href('prompts',
+     id or '-', menu)) the 지금 맥락 card shows that screen's evaluation date, population and missing data (checkContext), with
+     비공개 결과 · 화면에만 보임 for a private result. Display only: never a field value, never in the copied text; '-' chooses no
+     prompt (one already open in RAM stays open; with none, a context card sits above the idle line).
    - 7.1.3: copy by click or keyboard through navigator.clipboard with a status line; when the clipboard refuses, the text is
      selected in a read-only box for a manual copy. Text the user typed that looks private (e-mail, phone, token / key / password,
      sheet link or long id, amount, account-like number, holding words) needs a 내용을 확인했음 tick before it is copied.
@@ -168,8 +172,29 @@ function todayKST(now){const parts=Object.fromEntries(new Intl.DateTimeFormat('e
  return parts.year+'-'+parts.month+'-'+parts.day;}
 
 /* ---------------------------------------------------------------- the screen */
+/* ---------------------------------------------------------------- 7.1.2 화면 문맥 (owner 2026-11-08 queue item 8): what the screen a
+   prompt was opened from hands over — its result's evaluation date, population and missing data — shown in 지금 맥락 only. It is
+   never put into a field or the copied text (KIS values and private research results are not copied into an external AI prompt
+   automatically); the user types what they want. A provider is a function the other screen registers (IS2.promptContext.provide),
+   asked when the card paints, so a dropped private bundle shows no context. Anything that is not this shape shows nothing. */
+const CTX_DATE=/^\d{4}-\d{2}-\d{2}$/;
+function checkContext(c){
+ const str=(v,n)=>typeof v==='string'&&v.length>0&&v.length<=n&&!/[\u0000-\u001f]/.test(v);
+ if(!c||typeof c!=='object'||Array.isArray(c))return null;
+ const keys=Object.keys(c).sort().join(',');if(keys!=='as_of,gaps,label,population,private')return null;
+ if(!str(c.label,80)||typeof c.private!=='boolean')return null;
+ if(!(c.as_of===null||(typeof c.as_of==='string'&&CTX_DATE.test(c.as_of))))return null;
+ if(!(c.population===null||str(c.population,120)))return null;
+ if(!Array.isArray(c.gaps)||c.gaps.length>8||!c.gaps.every(g=>str(g,80)))return null;
+ return Object.freeze({label:c.label,as_of:c.as_of,population:c.population,gaps:Object.freeze([...c.gaps]),private:c.private});
+}
 function install(win){
  const I=win.IS2,{h,href,MENU,parts:{mascot}}=I;
+ // Screen context providers (RAM, this page only): menu id → function returning the context above or null.
+ const PROVIDERS=new Map();
+ I.promptContext=Object.freeze({
+  provide(from,fn){if(typeof fn==='function'&&MENU.some(m=>m.id===from&&m.id!=='prompts'))PROVIDERS.set(from,fn);},
+  read(from){const fn=PROVIDERS.get(from);if(!fn)return null;try{return checkContext(fn());}catch(_){return null;}}});
  // RAM only (route changes keep it, a reload drops it): filters, the open prompt, typed values and unsaved edits of personal copies.
  const S={kw:'',domain:'',role:'',scope:'',starter:false,bundle:'',mine:false,fav:false,shown:0,cur:null,vals:Object.create(null),drafts:Object.create(null)};
  // This browser's ★ and saved copies (IS2.store, research-bridge.js keys); nothing when the store did not load.
@@ -199,6 +224,7 @@ function install(win){
  function clip(value){const c=win.navigator.clipboard;
   if(!win.isSecureContext||!c||typeof c.writeText!=='function')return Promise.reject(Error('CLIPBOARD_UNAVAILABLE'));
   try{return Promise.resolve(c.writeText(value));}catch(e){return Promise.reject(e);}}
+ const V_FROM=id=>MENU.some(m=>m.id===id&&m.id!=='prompts')?id:null;
  function origin(fromId,arg){
   if(fromId==='company'&&typeof arg==='string'&&TOKEN.test(arg))return{name:'기업 화면',href:href('company',arg)};
   const m=MENU.find(x=>x.id===fromId&&x.id!=='prompts');return m?{name:menuName(m.id)+' 화면',href:href(m.id)}:null;}
@@ -209,8 +235,8 @@ function install(win){
  // The skeleton filled in place: refs from screen-prompts.js (the screen root and the two section slots).
  function screen(route,{root,s1,s2}){
   const lib=library(),signal=route.signal,[pid,fromId,fromArg]=route.params;let linkError=false;
-  if(lib.ok&&pid!==undefined){if(lib.byId.has(pid))S.cur=pid;else linkError=true;}
-  const V={signal,lib,from:origin(fromId,fromArg),groups:{},toggles:{},touched:new Set(),confirmed:null,p:null};
+  if(lib.ok&&pid!==undefined&&pid!=='-'){if(lib.byId.has(pid))S.cur=pid;else linkError=true;}
+  const V={signal,lib,from:origin(fromId,fromArg),fromId:V_FROM(fromId),groups:{},toggles:{},touched:new Set(),confirmed:null,p:null};
   const back=V.from?h('a',{class:'crumb',href:V.from.href,dataset:{promptBack:''}},'← ',V.from.name,'으로 돌아가기'):null;
   const main=lib.ok?library61(V,linkError):[failCard(lib.code)];
   if(lib.ok){
@@ -304,7 +330,11 @@ function install(win){
  function paintDetail(V){
   const p=S.cur?V.lib.byId.get(S.cur):null;V.p=p;
   if(!p){for(const[b,t]of[[V.fillBody,'위 목록에서 프롬프트를 골라 [열어서 채우기]를 누르세요.'],[V.copyBody,'프롬프트를 고르면 채운 글을 여기서 확인하고 복사합니다.'],[V.mineBody,'프롬프트를 고르면 공식 원문과 내 사본을 여기서 봅니다.']])
-   b.replaceChildren(h('p',{class:'hand',dataset:{promptIdle:''}},t));return;}
+   b.replaceChildren(h('p',{class:'hand',dataset:{promptIdle:''}},t));
+   // Opened from a screen without a prompt (#/prompts/-/<menu>): its context is shown before a prompt is chosen.
+   if(V.fromId){V.ctx={screen:h('div',{dataset:{contextScreen:''}})};paintScreenContext(V);
+    V.fillBody.append(h('div',{class:'sk card',dataset:{promptContext:'screen'}},h('h3',{class:'card-title'},'지금 맥락 · ',V.from.name),h('div',{class:'card-body'},V.ctx.screen)));}
+   return;}
   V.fields=new Map();
   V.fillBody.replaceChildren(h('div',{class:'grid-2'},contextCard(V,p),fieldsCard(V,p)));
   V.copyBody.replaceChildren(...copyPart(V,p));
@@ -314,12 +344,13 @@ function install(win){
  function contextCard(V,p){
   V.ctx={company:h('span',{dataset:{contextValue:'company'}}),have:h('span',{dataset:{contextValue:'have'}}),lack:h('span',{dataset:{contextValue:'lack'}}),
    btn:h('button',{type:'button',class:'btn solid',dataset:{promptImport:''},onclick:()=>importCompany(V)},'선택 기업 가져오기'),
+   screen:h('div',{dataset:{contextScreen:''}}),
    status:h('p',{class:'reason',role:'status',dataset:{promptImportState:''}}),imported:false,host:h('div',{class:'links'})};
   const row=(key,name,...val)=>h('p',{dataset:{contextRow:key}},h('b',null,name),' · ',...val);
   return h('div',{class:'sk card',dataset:{promptContext:''}},h('h3',{class:'card-title'},'지금 맥락'),
    h('div',{class:'card-body'},row('from','열린 곳',...(V.from?[h('a',{href:V.from.href},V.from.name),'에서 열림']:['프롬프트 라이브러리에서 직접 엶'])),
     row('company','기업',V.ctx.company),row('period','보고 기간',PERIOD_TEXT,' ',h('span',{class:'dash'},'주간 보고 · 결정 대기')),
-    row('have','확보',V.ctx.have),row('lack','부족',V.ctx.lack)),
+    row('have','확보',V.ctx.have),row('lack','부족',V.ctx.lack),V.ctx.screen),
    V.ctx.host,V.ctx.status,h('p',{class:'note'},'빈 기업 칸만 채움 · 이미 쓴 값은 그대로 · 가격 · 보유 금액 · 수량은 넣지 않음'));
  }
  function companyNow(){const sel=I.selection.get();
@@ -336,6 +367,19 @@ function install(win){
   const lack=p.variables.filter(v=>v.owner).map(v=>V.lib.meta.guides[v.name].label+': 바로 가져오기 준비 중');
   const r=V.r;if(r&&r.missing.length)lack.push('필수 칸 '+r.missing.length+'개 비어 있음');
   c.lack.textContent=lack.length?lack.join(' · '):'없음';
+  paintScreenContext(V);
+ }
+ // The opening screen's own context (display only; see checkContext above).
+ function paintScreenContext(V){
+  const box=V.ctx.screen,x=V.fromId?I.promptContext.read(V.fromId):null;
+  const line=(key,name,...val)=>h('p',{dataset:{contextRow:key}},h('b',null,name),' · ',...val);
+  if(!x){box.dataset.contextScreen=V.fromId?'NONE':'DIRECT';
+   box.replaceChildren(line('screen','화면 문맥',V.fromId?'연 화면이 넘긴 평가일 · 모집단 · 자료 부족 없음 · 필요하면 직접 입력':'다른 화면에서 열지 않아 넘어온 문맥 없음'));return;}
+  box.dataset.contextScreen=x.private?'PRIVATE':'PUBLIC';
+  box.replaceChildren(line('screen','화면 문맥',x.label,x.private?h('span',{class:'chip wait',dataset:{contextPrivate:''}},'비공개 결과 · 화면에만 보임'):null),
+   line('asof','평가일',x.as_of||'표시 없음'),line('population','모집단',x.population||'표시 없음'),
+   line('gaps','자료 부족',x.gaps.length?x.gaps.join(' · '):'적힌 부족 없음'),
+   h('p',{class:'reason',dataset:{contextNotCopied:''}},'이 문맥은 칸 · 복사 글에 자동으로 넣지 않음 · 필요한 것만 직접 입력'));
  }
  function importCompany(V){
   const p=V.p,vals=valuesOf(p),{phase,company}=companyNow();if(importState(p,company,vals,phase)!=='AVAILABLE')return;
@@ -503,6 +547,7 @@ function install(win){
   const steps=[['① 이 기기(브라우저)에 저장된 값','즐겨찾기 · 가중치 · 노트 · 내 위치 · 프롬프트 사본 · 다른 기기와는 공유 안 됨',h('span',{class:'chip'},'프롬프트 ★ · 내 사본 · 이 브라우저에 저장')],
    ['② 저장된 값이 없으면 개발자 기본값','공식 가중치 · 기본 프롬프트 · 기본 화면',h('span',{class:'chip on'},'프롬프트는 저장된 사본이 없으면 이것 · 공식 원문')]];
   const rows=[['기업 화면 (0. 기업 검색에서 고른 기업)','선택 기업 (빈 기업 칸만 · 가격 없음)','연결됨',href('search')],
+   ['0. 기업 검색 · 공통 분류 보관 묶음 (섹터 QGV 원결과 집계)','평가일 · 모집단 · 자료 부족 (지금 맥락에만 · 칸 · 복사 글에 넣지 않음)','연결됨 · 비공개 결과는 표시만',href('prompts','-','search')],
    ['5.2 투자 일일보고서 · 보고 불가','사유 코드 · 최소 누락 입력 · 기준 거래일 (금액 · 수량 없음)','준비 중 · 포트폴리오 화면 연결 전',null],
    ['5.3 모의투자 일일보고서 · 보고 불가','세트 이름 · 가상 장부 · 실제 자금 아님','준비 중 · 포트폴리오 화면 연결 전',null],
    ['세부: 플레이북 기록','상황 · 판정','준비 중',null],
@@ -517,7 +562,7 @@ function install(win){
     h('div',{class:'tbl-wrap'},h('table',{class:'tbl',dataset:{promptLinks:''}},h('caption',null,'화면별로 넘기는 것과 연결 상태'),
      h('thead',null,h('tr',null,h('th',{scope:'col'},'화면'),h('th',{scope:'col'},'넘기는 것'),h('th',{scope:'col'},'상태'))),
      h('tbody',null,...rows.map(([s,what,st,link])=>h('tr',{dataset:{link:s}},h('td',null,link?h('a',{href:link},s):s),h('td',null,what),
-      h('td',null,h('span',{class:st==='연결됨'?'chip':'chip wait'},st))))))),
+      h('td',null,h('span',{class:st.startsWith('연결됨')?'chip':'chip wait'},st))))))),
     h('p',{class:'reason'},'보고 불가 프롬프트 틀은 옛 화면(5.2) 안에 따로 있습니다 · 라이브러리로 합치려면 새 카탈로그 판과 소유자 승인이 필요합니다'),
     h('p',{class:'note'},'다른 화면은 주소 #/prompts/<프롬프트 번호>/<돌아갈 메뉴>로 이 채우기를 엽니다 · 선택 기업은 화면을 옮겨도 이 기기 메모리에 남고 빈 칸만 채웁니다',
      sample?[' · ',h('a',{href:sample,dataset:{promptSample:''}},'1. QGV에서 연 모습 보기')]:null))];
@@ -599,5 +644,5 @@ function pack(){return{meta:{"content_version":"PLV1_CONTENT_V1.0","schema_versi
 {"prompt_id":"plv1.cross.016","prompt_code":"CROSS-016.v1.0","title":"시장과 시스템 판단 차이의 원인 찾기","purpose":"{{company}}({{ticker}})의 {{system_summary}}와 시장가격·Consensus가 다른 이유를 정보차이, Horizon, Positioning, Liquidity, Risk Premium, 모델 누락으로 분해한다.","domain":"CROSS_VALIDATION","role":"BLIND-SPOT","category":"CROSS_SYSTEM_VALIDATION","subcategory":"RED_TEAM_AND_BLIND_SPOT","tags":["cross_validation","blind-spot","red_team_and_blind_spot"],"keywords":["시장과","시스템","판단","차이의","원인","찾기"],"aliases":["시장이 시스템과 다르게 판단하는 이유 찾기"],"scopes":["COMPANY"],"system_overlap":"HIGH_CONTROLLED","body":"목적: 시장과 시스템 판단 차이의 원인 찾기\n\n분석 대상은 `{{company}}`(`{{ticker}}`)다. 정보 cutoff는 `{{as_of}}`다. `{{as_of}}` 시점에 공개·이용 가능했던 정보만 사용해.\n현재 Investment System 요약은 `{{system_summary}}`다. 이 요약과 QGV/Technical/Macro 결과를 다시 계산하거나 새 통합점수를 만들지 말고 충돌, 누락, Delta Evidence를 조사해.\n\n조사 초점: {{company}}({{ticker}})의 {{system_summary}}와 시장가격·Consensus가 다른 이유를 정보차이, Horizon, Positioning, Liquidity, Risk Premium, 모델 누락으로 분해한다.\n\n출력:\n1. 시스템 판단\n2. 시장 내재 판단\n3. 차이의 원인\n4. 누가 틀렸는지 확인할 Evidence\n5. 수렴/확대 조건\n\nEvidence 규칙:\n- 핵심 Claim마다 Source, 공개일/시간, 해당 정보가 이용 가능해진 시점, 원문 근거를 표시해.\n- Fact / Interpretation / Estimate / Scenario를 분리하고 Source 간 충돌은 양쪽을 보존해.\n- 확인할 수 없는 수치·관계·가격·지표·확률은 만들지 말고 `UNKNOWN` 또는 `INSUFFICIENT_DATA`로 표시해.\n- 기존 Investment System의 정형 분석을 외부 AI가 그대로 다시 계산하지 마.\n- BUY/SELL/HOLD나 최종 투자결정을 대신하지 말고 다음 Research 조건과 판단 변경 조건만 제시해.","variables":[{"name":"company","required":true,"kind":"TEXT","owner":null},{"name":"ticker","required":true,"kind":"TEXT","owner":null},{"name":"system_summary","required":true,"kind":"TEXT","owner":"INTEGRATED"},{"name":"as_of","required":true,"kind":"DATE","owner":null}]},
 ]};}
 
-return Object.freeze({NAMES,PAGE,MAX_CHARS,MAX_COPIES,DOMAINS,ABSENT_DOMAINS,ROLES,SCOPES,OWNERS,WORDS,IMPORT_TEXT,library,load,pack,check,reasonKey,filter,findPrivate,resolveCompany,importState,fillCompany,todayKST,install});
+return Object.freeze({NAMES,PAGE,MAX_CHARS,MAX_COPIES,checkContext,DOMAINS,ABSENT_DOMAINS,ROLES,SCOPES,OWNERS,WORDS,IMPORT_TEXT,library,load,pack,check,reasonKey,filter,findPrivate,resolveCompany,importState,fillCompany,todayKST,install});
 });

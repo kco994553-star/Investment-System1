@@ -171,6 +171,28 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       assert.match(await text(page, '[data-cc-expanded-gate=held_financial_subsample]'), /^공식 Q 관문 입력 연결 27\/177 · 보유 재무 하위표본 범위 · 관문 통과·새 섹터 Q 산출 아님/);
       assert.equal(await count(page, '[data-cc-population=OPERATING_504] [data-cc-expanded-gate]'), 0, phase + ': the gate input lines stay in the expanded block');
       assert.match(ex, /확장 발행사 행 단위 화면은 아직 없음 · 요약만 연결됨/);
+      // 7.1.2 화면 문맥 (queue item 8): the counts line links the prompt screen, which shows this bundle's date, population and
+      // missing counts as a private display only — no field gets a value and the copied text never carries them.
+      {
+        const op = BUNDLE.expanded_summary.calculation_counts.scopes.operating, N = op.counts.Q.denominator;
+        const gaps = [['Q', 'Q'], ['G', 'G'], ['V', 'V'], ['total', '총점']].filter(([k]) => op.counts[k].uncomputed > 0).map(([k, t]) => t + ' 미산출 ' + op.counts[k].uncomputed + '/' + N);
+        assert.equal(await page.locator('[data-cc-prompt-context]').getAttribute('href'), '#/prompts/-/search');
+        await page.locator('[data-cc-prompt-context]').click();
+        await page.locator('[data-context-screen=PRIVATE]').waitFor({ timeout: 20000 });
+        assert.equal(await count(page, '[data-prompt-error]'), 0, phase + ': "-" opens no prompt and no link error');
+        assert.match(await text(page, '[data-context-screen] [data-context-row=screen]'), /^화면 문맥 · 공통 분류 보관 묶음 · 섹터 QGV 원결과 집계 \(재계산 없음\)비공개 결과 · 화면에만 보임$/);
+        assert.equal(await text(page, '[data-context-screen] [data-context-row=asof]'), '평가일 · ' + op.valuation_date);
+        assert.equal(await text(page, '[data-context-screen] [data-context-row=population]'), '모집단 · ' + op.population.id + ' · 코드 행 ' + N);
+        assert.equal(await text(page, '[data-context-screen] [data-context-row=gaps]'), '자료 부족 · ' + gaps.join(' · '));
+        assert.match(await text(page, '[data-context-not-copied]'), /칸 · 복사 글에 자동으로 넣지 않음/);
+        await page.locator('[data-prompt-open]').first().click(); await page.locator('[data-prompt-fill]').waitFor();
+        assert.equal(await page.locator('[data-prompt-context] [data-context-row=asof]').innerText(), '평가일 · ' + op.valuation_date, phase + ': the open prompt keeps the screen context');
+        const vals = await page.evaluate(() => [...document.querySelectorAll('[data-prompt-fill] input, [data-prompt-fill] textarea, [data-prompt-fill] select')].map((e) => e.value));
+        assert.ok(vals.every((v) => !v.includes(op.valuation_date) && !v.includes(op.population.id)), phase + ': no field takes the context ' + JSON.stringify(vals));
+        const preview = await page.evaluate(() => document.querySelector('[data-prompt-block=copy]').textContent);
+        assert.ok(!preview.includes(op.population.id) && !gaps.some((g) => preview.includes(g)), phase + ': the copy part carries no context');
+        await page.goBack(); await page.locator('[data-cc-calc=operating]').waitFor({ timeout: 20000 });
+      }
       assert.equal(await page.locator('[data-cc-private-version]').getAttribute('data-cc-private-version'), 'common-industry-dictionary/1');
       assert.equal(await text(page, '[data-cc-count=rows]'), '기업 행 ' + BUNDLE.view.rows.length + '개(원래 분모 그대로)', phase + ': the 504 count never takes the expanded issuers');
       assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), phase + ': no horizontal overflow with the panel open (long producer codes wrap)');
@@ -196,6 +218,8 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       assert.equal(await count(page, '[data-cc-delivery=PRIVATE]'), 0);
       await go(page, '#/macro', 'main[data-route=macro]'); await go(page, '#/qgv', 'main[data-route=qgv]');
       await page.locator('[data-cc-filter=NONE]').first().waitFor({ timeout: 20000 });
+      await go(page, '#/prompts/-/search', 'main[data-route=prompts]'); await page.locator('[data-context-screen]').waitFor({ timeout: 20000 });
+      assert.equal(await page.locator('[data-context-screen]').getAttribute('data-context-screen'), 'NONE', phase + ': a dropped bundle hands no context to the prompt screen');
       await boundaries(page, seen, w, phase);
       ok(tag + ' 접기 drops the bundle: company block and QGV filter back to NONE; boundaries');
       await ctx.close();

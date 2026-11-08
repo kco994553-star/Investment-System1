@@ -141,7 +141,23 @@ function operatingCounts(k){
   k.state==='ERROR'?'연결 오류('+k.code+') · 쓰지 않음':'이 묶음에 없음 · 0으로 채우지 않음');
  const o=k.value.scopes.operating;
  return h('p',{class:'reason',dataset:{ccCalc:'operating',ccCalcState:'OK',ccCalcQ:countText(o.counts.Q),ccCalcG:countText(o.counts.G)}},
-  '섹터 QGV 원결과 · Q 산출 ',countText(o.counts.Q),' · G 산출 ',countText(o.counts.G),' · 평가일 ',o.valuation_date,' · 원결과 집계(재계산 없음) · 분모 ',o.population.id,' 코드 행');}
+  '섹터 QGV 원결과 · Q 산출 ',countText(o.counts.Q),' · G 산출 ',countText(o.counts.G),' · 평가일 ',o.valuation_date,' · 원결과 집계(재계산 없음) · 분모 ',o.population.id,' 코드 행 ',
+  h('a',{class:'lk',href:I.href('prompts','-','search'),dataset:{ccPromptContext:''}},'→ 프롬프트에서 이 문맥 보기'));}
+// 7.1.2 화면 문맥 for the prompt screen (owner 2026-11-08 queue item 8): the operating counts' evaluation date, population and
+// missing counts of the bundle in RAM now, asked when the prompt card paints (a dropped bundle gives none). Display only there:
+// the prompt screen never puts it into a field or the copied text. Names: Q · G · V · 총점, each 미산출 n/N or 미측정.
+const GAP_NAME={Q:'Q',G:'G',V:'V',total:'총점'};
+function promptContext(b){
+ if(!b||!b.view)return null;
+ const k=b.counts;
+ if(!k||k.state!=='OK')return{label:'공통 분류 보관 묶음 · 섹터 QGV 원결과 집계',as_of:b.view.valuation_date,population:null,
+  gaps:[k&&k.state==='ERROR'?'집계 연결 오류 · 쓰지 않음':'이 묶음에 집계 없음 · 0으로 채우지 않음'],private:true};
+ const o=k.value.scopes.operating,gaps=[];
+ for(const key of Object.keys(GAP_NAME)){const c=o.counts[key];if(!c)continue;
+  if(c.status==='NOT_MEASURED')gaps.push(GAP_NAME[key]+' 미측정');else if(c.uncomputed>0)gaps.push(GAP_NAME[key]+' 미산출 '+c.uncomputed+'/'+c.denominator);}
+ return{label:'공통 분류 보관 묶음 · 섹터 QGV 원결과 집계 (재계산 없음)',as_of:o.valuation_date,population:o.population.id+' · 코드 행 '+o.counts.Q.denominator,gaps,private:true};}
+if(I.promptContext&&typeof I.promptContext.provide==='function')
+ I.promptContext.provide('search',()=>{const C=I.classification;return C&&typeof C.value==='function'?promptContext(C.value()):null;});
 // The expanded held issuer sample: a separate population (owner 2026-11-08). Its own denominators and counts only; never added to
 // the 504 counts, never a company page, a QGV row or a technical security id (ISSUER:<CIK> is an analysis row id).
 function expandedBlock(e,k){

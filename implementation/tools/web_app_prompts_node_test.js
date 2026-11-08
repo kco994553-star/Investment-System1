@@ -201,3 +201,16 @@ test('todayKST: the date in Seoul (the old 오늘 날짜 button)', () => {
   assert.equal(M.todayKST(new Date('2026-10-14T03:00:00Z')), '2026-10-14');
   assert.equal(M.todayKST(new Date('2026-10-14T15:30:00Z')), '2026-10-15');
 });
+
+test('checkContext: a screen context is the exact display shape or nothing (never a field value)', () => {
+  const Mp = R.requireNew('screen-prompts-live.js');
+  const good = { label: '공통 분류 보관 묶음', as_of: '2026-11-04', population: 'U · 코드 행 10', gaps: ['Q 미산출 3/10'], private: true };
+  const got = Mp.checkContext(good);
+  assert.deepEqual(JSON.parse(JSON.stringify(got)), good);
+  assert.ok(Object.isFrozen(got) && Object.isFrozen(got.gaps));
+  assert.deepEqual(JSON.parse(JSON.stringify(Mp.checkContext({ ...good, as_of: null, population: null, gaps: [] }))), { ...good, as_of: null, population: null, gaps: [] });
+  const bad = [null, [], 'x', { ...good, extra: 1 }, (({ private: _, ...r }) => r)(good), { ...good, private: 'yes' }, { ...good, label: '' }, { ...good, label: 'x'.repeat(81) },
+    { ...good, as_of: '2026-11-4' }, { ...good, as_of: '2026-11-04T00:00:00Z' }, { ...good, population: 'x'.repeat(121) }, { ...good, gaps: 'Q' },
+    { ...good, gaps: Array(9).fill('g') }, { ...good, gaps: [''] }, { ...good, gaps: ['a\nb'] }, { ...good, label: 'a\u0000' }];
+  for (const b of bad) assert.equal(Mp.checkContext(b), null, JSON.stringify(b));
+});

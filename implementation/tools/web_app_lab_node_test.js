@@ -204,3 +204,14 @@ test('v2: the diagnostic view for non-backtest or not-computed runs; facts and d
   assert.equal(plan.state, 'READY'); assert.equal(plan.value.schema_version, 'lab-backtest-v2');
   for (const [, code, , make] of F.invalidV2) assert.deepEqual(plain(M.panelPlan({ state: 'OK', payload: make() }, L.validate)), { state: 'ERROR', code, value: null });
 });
+
+test('kindLabel: the tab says the run\'s kind with the agreement\'s words — strategy, not a strategy, or 미산출', () => {
+  const L = fresh('lab.js'), K = L.TEXT.V2.KIND;
+  assert.equal(M.kindLabel({}, L), K.BACKTEST, 'a v1 run is a strategy backtest');
+  assert.equal(M.kindLabel({ result_kind: 'BACKTEST', computation_status: 'COMPUTED' }, L), K.BACKTEST);
+  assert.equal(M.kindLabel({ result_kind: 'SINGLE_COMPANY_METRIC', computation_status: 'COMPUTED' }, L), K.SINGLE_COMPANY_METRIC + ' · 전략 성과 아님');
+  assert.equal(M.kindLabel({ result_kind: 'SAMPLE_DIAGNOSTIC', computation_status: 'COMPUTED' }, L), K.SAMPLE_DIAGNOSTIC + ' · 전략 성과 아님');
+  for (const k of L.ENUMS ? L.ENUMS.result_kind : ['BACKTEST', 'SINGLE_COMPANY_METRIC', 'SAMPLE_DIAGNOSTIC'])
+    assert.equal(M.kindLabel({ result_kind: k, computation_status: 'NOT_COMPUTED' }, L), K[k] + ' · ' + L.TEXT.V2.NOT_COMPUTED, k + ' not computed');
+  for (const r of F.payloadV2().runs) assert.ok(!/전략 성과 아님/.test(M.kindLabel(r, L)) === (r.result_kind === 'BACKTEST' || r.computation_status === 'NOT_COMPUTED'), r.id);
+});
