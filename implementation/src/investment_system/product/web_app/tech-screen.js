@@ -19,7 +19,17 @@
    - evaluate(board, conds) → {conditions, counts:{PASS, FAIL, UNKNOWN}, rows: Map(key → {state, fails, unknown})}: the file's own
      condition booleans only (never recomputed; ranks, N and medians are never rebuilt after filtering). A null condition is 판정 불가
      with the row's or the metric's reason; FAIL wins over UNKNOWN. key = security_id (series_id when the security id is null).
-   - source() → Promise {state:'NONE'}: no public file, no request. Private research values are never wired to a public screen.
+   - joinRows(board, rows, {links, data_kind}) → {ok:true, keys: Set(security id)} or {ok:false, code, …} (owner audit 2026-11-07;
+     Codex #515 b6fd0112 contract, docs/frontend_v2/TECH_FILTER_QGV_JOIN.md): a JS port of join_filtered_rows. Key (signal_day,
+     security_id): every QGV row carries its own signal_day (equal to the board's) and a fixed security_id in the board, and exactly
+     one CONFIRMED security link {series_id, security_id, identifier_type, reference, valid_from, valid_to (inclusive), issuer_id,
+     symbol, share_class, identity_status, identity_reference} active on that day ties it to the board series, the row's id
+     (issuer) and ticker. No ticker / id / code fallback; one bad row or link refuses the whole join. Codex's codes, plus
+     SECURITY_LINKS_NOT_CONNECTED (Main: no links file); joinText words them. A row's issuer is its explicit issuer_id when the
+     field is present (Codex #516 extension: id = the company code row, issuer_id = the issuer; an explicit null never falls back),
+     else the legacy id. BOARD_GROUP_ROWS_UNRESOLVED (Main, screen-tech-filter-live keep): the confirmed board group's full QGV
+     rows are not known, so nothing is joined.
+   - source() → Promise {state:'NONE', security_links:null}: no public file, no request. Private research values are never wired to a public screen.
    Values are price-derived: screens show them only as text inside [data-ram-price]; nothing is stored. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else{const I=root.IS2=root.IS2||{};I.techScreen=api;}})(typeof globalThis==='object'?globalThis:this,function(){
 'use strict';
@@ -144,7 +154,65 @@ const medianText=(m,median)=>(median===null?null:display(m,{value:median}));
 const decileText=d=>(Number.isInteger(d)?'D'+d:null);
 const reasonText=c=>(typeof c==='string'&&own(REASON,c)?REASON[c]:TEXT.UNKNOWN_REASON);
 const condText=(m,c)=>META[m].label+' · '+COND_TEXT[c];
+// The QGV join (header): a pure JS port of Codex #515 technical_filter_join.join_filtered_rows (b6fd0112), same checks in the
+// same order and the same reason codes; it returns the joined security ids instead of row copies (Main filters with evaluate).
+const SECURITY_IDENTIFIER_TYPES=Object.freeze(['PERMNO','FIGI','ISIN','CUSIP','EXCHANGE_SECURITY_ID','PROVIDER_SECURITY_ID','SYNTHETIC_FIXED_SECURITY_ID']);
+const LINK_TEXT_FIELDS=['reference','identity_reference','series_id','issuer_id','symbol','share_class'];
+const JOIN_TEXT=Object.freeze({SECURITY_LINKS_NOT_CONNECTED:'고정 증권 매핑 자료 미연결 · 매핑이 오기 전에는 결합하지 않음',
+ BOARD_GROUP_ROWS_UNRESOLVED:'보드 그룹 전체 구성원 미확인(공통 분류 기록 미연결) · 그룹 전체 행 없이 결합하지 않음',
+ JOIN_DATA_KIND_REQUIRED:'자료 종류 표시 없음(합성 또는 보관 입력)',TECHNICAL_BOARD_SCHEMA_MISMATCH:'기술 보드 스키마 불일치',
+ INVALID_SESSION_DATE:'평가일 없음 또는 형식 오류 · QGV 행에 계산 평가일이 없음',GROUP_MEMBERSHIP_UNCONFIRMED:'비교 그룹 구성원 미확인',
+ TECHNICAL_METRICS_MISMATCH:'기술 지표 목록 불일치',PERMANENT_SECURITY_ID_REQUIRED:'고정 증권 ID 없음',REQUEST_SERIES_ID_REQUIRED:'시리즈 ID 없음',
+ DUPLICATE_TECHNICAL_KEY:'기술 보드에 같은 증권이 두 번',TECHNICAL_IDENTITY_MISMATCH:'지표 사이 증권·시리즈 불일치',
+ FIXED_SECURITY_LINK_EVIDENCE_REQUIRED:'증권 매핑 근거 없음',FIXED_SECURITY_LINK_UNCONFIRMED:'증권 신원 미확인',
+ ISSUER_OR_TICKER_IS_NOT_SECURITY_ID:'발행사 ID·티커·코드는 증권 ID가 아님',SYNTHETIC_SECURITY_ID_ON_RETAINED_INPUT:'합성 증권 ID가 실자료에 섞임',
+ INVALID_SECURITY_LINK_RANGE:'매핑 유효기간 오류(시작이 끝보다 늦음)',DUPLICATE_SECURITY_LINK:'매핑 중복 · 평가일에 겹치는 매핑',
+ SIGNAL_DAY_MISMATCH:'평가일 불일치',DUPLICATE_QGV_KEY:'QGV 결합 키 중복(같은 평가일·같은 증권 두 행)',
+ SECURITY_ID_NOT_IN_BOARD:'보드에 없는 증권 · 같은 티커의 다른 증권 또는 다른 종류주',FIXED_SECURITY_LINK_MISSING:'매핑 없음',
+ SECURITY_LINK_OUTSIDE_SIGNAL_DAY:'매핑 유효기간 밖(만료 또는 아직 유효 전)',SERIES_LINK_MISMATCH:'매핑 시리즈 불일치',
+ ISSUER_LINK_MISMATCH:'발행사 불일치(QGV 행 id ≠ 매핑 발행사)',SYMBOL_LINK_MISMATCH:'티커 불일치(QGV 행·보드 ≠ 매핑 티커)'});
+function JoinRefusal(code,more){this.code=code;this.more=more||null;}
+const jno=(code,more)=>{throw new JoinRefusal(code,more);};
+const jtext=(v,code)=>(typeof v!=='string'||!v.trim()||v!==v.trim()?jno(code):v);
+function jday(v){const m=typeof v==='string'&&DAY.exec(v);if(!m)jno('INVALID_SESSION_DATE');const d=new Date(Date.UTC(+m[1],+m[2]-1,+m[3]));
+ if(d.getUTCMonth()!==+m[2]-1||d.getUTCDate()!==+m[3])jno('INVALID_SESSION_DATE');return v;}
+const jobj=v=>(isObj(v)?v:{});
+// _board_securities: security id → [series, symbol] per metric, the same in every metric.
+function boardSecurities(board){if(jobj(board).schema!==SCHEMA)jno('TECHNICAL_BOARD_SCHEMA_MISMATCH');jday(board.signal_day);
+ if(board.membership_status!=='CONFIRMED')jno('GROUP_MEMBERSHIP_UNCONFIRMED');const ms=Object.keys(jobj(board.metrics));
+ if(ms.length!==METRICS.length||!METRICS.every(m=>ms.includes(m)))jno('TECHNICAL_METRICS_MISMATCH');let out=null;
+ for(const m of METRICS){const seen=new Map();for(const r of board.metrics[m].rows){const sid=jtext(r.security_id,'PERMANENT_SECURITY_ID_REQUIRED'),series=jtext(r.series_id,'REQUEST_SERIES_ID_REQUIRED');
+   if(seen.has(sid))jno('DUPLICATE_TECHNICAL_KEY');seen.set(sid,[series,r.symbol===undefined?null:r.symbol]);}
+  if(out&&(out.size!==seen.size||[...seen].some(([k,v])=>!out.has(k)||out.get(k)[0]!==v[0]||out.get(k)[1]!==v[1])))jno('TECHNICAL_IDENTITY_MISMATCH');out=seen;}
+ return out;}
+// joinRows(board, rows, {links, data_kind}) → {ok:true, keys:Set(security id)} or {ok:false, code[, board_day, qgv_day]}. rows carry
+// Main's id/ticker/code plus signal_day and security_id, never derived from id, code or ticker; links = security_links (null: the
+// links file is not connected, a Main-only refusal checked first). One bad row or link refuses the whole join.
+function joinRows(board,rows,{links=null,data_kind=null}={}){
+ try{if(links===null||links===undefined)jno('SECURITY_LINKS_NOT_CONNECTED');
+  if(data_kind!=='SYNTHETIC'&&data_kind!=='RETAINED_INPUT')jno('JOIN_DATA_KIND_REQUIRED');
+  const secs=boardSecurities(board),signal=board.signal_day,byId=new Map(),activeSeries=new Set(),activeIds=new Set();
+  for(const raw of Array.isArray(links)?links:jno('FIXED_SECURITY_LINK_EVIDENCE_REQUIRED')){const l=jobj(raw),sid=jtext(l.security_id,'FIXED_SECURITY_LINK_EVIDENCE_REQUIRED');
+   if(typeof l.identifier_type!=='string'||!SECURITY_IDENTIFIER_TYPES.includes(l.identifier_type))jno('FIXED_SECURITY_LINK_EVIDENCE_REQUIRED');
+   for(const f of LINK_TEXT_FIELDS)jtext(l[f],'FIXED_SECURITY_LINK_EVIDENCE_REQUIRED');
+   if(l.identity_status!=='CONFIRMED')jno('FIXED_SECURITY_LINK_UNCONFIRMED');if(sid===l.issuer_id||sid===l.symbol)jno('ISSUER_OR_TICKER_IS_NOT_SECURITY_ID');
+   if((l.identifier_type==='SYNTHETIC_FIXED_SECURITY_ID'||sid.startsWith('SYNTHETIC:'))&&data_kind!=='SYNTHETIC')jno('SYNTHETIC_SECURITY_ID_ON_RETAINED_INPUT');
+   if(jday(l.valid_from)>jday(l.valid_to))jno('INVALID_SECURITY_LINK_RANGE');
+   if(!byId.has(sid))byId.set(sid,[]);byId.get(sid).push(l);
+   if(l.valid_from<=signal&&signal<=l.valid_to){if(activeSeries.has(l.series_id)||activeIds.has(sid))jno('DUPLICATE_SECURITY_LINK');activeSeries.add(l.series_id);activeIds.add(sid);}}
+  const seen=new Set();
+  for(const raw of rows){const r=jobj(raw),d=jday(r.signal_day);if(d!==signal)jno('SIGNAL_DAY_MISMATCH',{board_day:signal,qgv_day:d});
+   const sid=jtext(r.security_id,'PERMANENT_SECURITY_ID_REQUIRED');if(sid===r.id||sid===r.issuer_id||sid===r.ticker||sid===r.code)jno('ISSUER_OR_TICKER_IS_NOT_SECURITY_ID');
+   if(seen.has(sid))jno('DUPLICATE_QGV_KEY');seen.add(sid);if(!secs.has(sid))jno('SECURITY_ID_NOT_IN_BOARD');
+   const cands=byId.get(sid)||[];if(!cands.length)jno('FIXED_SECURITY_LINK_MISSING');
+   const active=cands.filter(l=>l.valid_from<=signal&&signal<=l.valid_to);if(!active.length)jno('SECURITY_LINK_OUTSIDE_SIGNAL_DAY');
+   const l=active[0],[series,symbol]=secs.get(sid);if(l.series_id!==series)jno('SERIES_LINK_MISMATCH');if((own(r,'issuer_id')?r.issuer_id:r.id)!==l.issuer_id)jno('ISSUER_LINK_MISMATCH');
+   if(r.ticker!==l.symbol||(symbol!==null&&symbol!==l.symbol))jno('SYMBOL_LINK_MISMATCH');}
+  return Object.freeze({ok:true,keys:seen});}
+ catch(e){if(e instanceof JoinRefusal)return Object.freeze({ok:false,code:e.code,...e.more});throw e;}}
+function joinText(j){if(!j||j.ok)return null;const w=own(JOIN_TEXT,j.code)?JOIN_TEXT[j.code]:TEXT.UNKNOWN_REASON;
+ return j.code==='SIGNAL_DAY_MISMATCH'?w+' · 보드 '+j.board_day+' · QGV '+j.qgv_day:w;}
 const status=v=>(!v?TEXT.NONE:v.data_kind==='SYNTHETIC'?TEXT.SYNTHETIC:v.data_kind?'실자료 · '+v.data_kind:'자료 종류 표시 없음');
-function source(){return Promise.resolve(Object.freeze({state:'NONE',code:'TECH_SCREEN_NOT_CONNECTED',payload:null,text:TEXT.NONE}));}
-return Object.freeze({SCHEMA,METRICS,CONDITIONS,CHOICES,META,COND_TEXT,REASON,TEXT,validate,evaluate,securities,metricState,display,medianText,decileText,reasonText,condText,status,cmp,source});
+function source(){return Promise.resolve(Object.freeze({state:'NONE',code:'TECH_SCREEN_NOT_CONNECTED',payload:null,security_links:null,text:TEXT.NONE}));}
+return Object.freeze({SCHEMA,SECURITY_IDENTIFIER_TYPES,METRICS,CONDITIONS,CHOICES,META,COND_TEXT,REASON,TEXT,JOIN_TEXT,validate,evaluate,securities,joinRows,joinText,metricState,display,medianText,decileText,reasonText,condText,status,cmp,source});
 });

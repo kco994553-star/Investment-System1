@@ -7,6 +7,10 @@
 //    (TECHNICAL_LEADERBOARD_V1.md): rank 1 = largest value, ties by security id ascending; k = floor(N×0.10); first k D10, last k D1;
 //    D9..D2 get (N−2k)//8 each, the first (N−2k)%8 bins one more; N < 10 no decile; median = middle value or mean of the middle pair.
 //    Market-down day: every 6-month momentum is negative. Two companies have no volatility (METRIC_NOT_AVAILABLE).
+//  - JOIN: Codex #515's public synthetic join fixture (research/technical-filter-join-20261107 b6fd0112,
+//    implementation/tests/research/fixtures/technical_filter_join_v1/), copied byte-for-byte (same git blobs) to
+//    implementation/tests/fixtures/technical_filter_join_v1/ with both sha256 pinned (JOIN_SHA256); never edited here.
+//  - links(rows, opts): CONFIRMED synthetic security links in #515's field names for rows that carry signal_day + security_id.
 // SYNTHETIC VALUES ONLY; nothing here is written to a public file.
 const fs = require('node:fs');
 const path = require('node:path');
@@ -61,4 +65,12 @@ function joined(ids, { signal_day = '2018-02-16', group_id = 'SYNTHETIC:LEADERBO
   return { schema: 'technical-leaderboard/1', signal_day, settings_version: 'technical-leaderboard/2026-11-03.1', settings_sha256: 'e'.repeat(64), group_id,
     membership_status: 'CONFIRMED', membership_source: 'SYNTHETIC:MEMBERSHIP', population_hash: 'f'.repeat(64), metrics };
 }
-module.exports = { CODEX_PATH, CODEX_SHA256, codex, codexText, codexSha, METRICS, deciles, joined };
+const JOIN_DIR = path.join(ROOT, 'implementation/tests/fixtures/technical_filter_join_v1');
+const JOIN_SHA256 = { 'inputs.json': '8411e823440b913f3a3e67cd44f0e7c8ce160f88e86fd6c0c844b32911788db6', 'expectations.json': 'f395414d926d2ea0cdcf6ce691f6b0d71236026af6356b68793ee70749cb2a40' };
+const joinSha = (name) => crypto.createHash('sha256').update(fs.readFileSync(path.join(JOIN_DIR, name))).digest('hex');
+const joinFile = (name) => JSON.parse(fs.readFileSync(path.join(JOIN_DIR, name), 'utf8'));
+// One link per row: row {id, ticker, security_id}; series = the joined() board's series id of that security.
+const links = (rows, { valid_from = '2026-01-01', valid_to = '2026-12-31' } = {}) => rows.map((r) => ({ series_id: 'SYNTHETIC:R-' + r.security_id, security_id: r.security_id,
+  identifier_type: 'SYNTHETIC_FIXED_SECURITY_ID', reference: 'SYNTHETIC:SECURITY:' + r.security_id, valid_from, valid_to, issuer_id: r.id, symbol: r.ticker,
+  share_class: 'SYNTHETIC:CLASS:A', identity_status: 'CONFIRMED', identity_reference: 'SYNTHETIC:IDENTITY:' + r.security_id }));
+module.exports = { CODEX_PATH, CODEX_SHA256, codex, codexText, codexSha, METRICS, deciles, joined, JOIN_DIR, JOIN_SHA256, joinSha, joinFile, links };

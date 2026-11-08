@@ -155,7 +155,10 @@ function create({win,data,prices,action}){
   const rank=personal?r.personal_rank:r.rank,qgr=personal?r.personal_qg_reference:r.qg_reference,placed=Number.isInteger(rank)?rank:null,qgOrder=object(qgr)&&Number.isInteger(qgr.order)?qgr.order:null;
   const rankReason=placed!==null?null:p.reference_only===true?'REFERENCE_ONLY':r.outside_universe===true?'OUTSIDE_UNIVERSE':qgOrder!==null?'QG_REFERENCE':score.total===null?totalReason:(personal?r.personal_rank_row:r.rank_row)?'ISSUER_RANKED_ONCE':'NOT_RANKED';
   const vf=TB.vFactors(p),src=cov&&object(cov.source)?cov.source:null;
-  return{id:r.company_id,ticker:r.ticker,code:str(r.universe_code),record:str(r.code),scope:r.outside_universe===true?'OUTSIDE_UNIVERSE':'UNIVERSE',target:targets.has(r.company_id),reference_only:p.reference_only===true,
+  // signal_day / security_id: the technical-filter join key (Codex #515); issuer_id: the issuer (Codex #516: id is the company code
+  // row, not the issuer). No retained evidence gives them yet, so all stay null (no join, no fallback to id); never derived from
+  // company_id, ticker, code, CIK text, as_of or a publication / price basis day.
+  return{id:r.company_id,ticker:r.ticker,code:str(r.universe_code),record:str(r.code),issuer_id:null,signal_day:null,security_id:null,scope:r.outside_universe===true?'OUTSIDE_UNIVERSE':'UNIVERSE',target:targets.has(r.company_id),reference_only:p.reference_only===true,
    source:vs.id,source_label:vs.ko,score,
    na_reason:{total:score.total===null?totalReason:null,q:score.q===null?axisReason('Q'):null,g:score.g===null?axisReason('G'):null,v:score.v===null?axisReason('V'):null,rank:rankReason},
    rank:{official:personal?null:placed,personal:personal?placed:null,qg_reference_order:qgOrder,group:personal?null:QS.exploreGroup(r),of,weights},
