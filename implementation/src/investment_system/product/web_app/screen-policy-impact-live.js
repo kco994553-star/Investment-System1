@@ -122,9 +122,14 @@ const refs=(vw,list)=>list.length?h('ul',{class:'news-lines'},...list.map(r=>ref
 function reviewLines(vw,group,idv,rev){const rs=P().reviewsOf(vw,group,idv,rev);
  return rs.length?h('ul',{class:'news-lines',dataset:{polReviews:String(rs.length)}},...rs.map(r=>h('li',{dataset:{polReviewMethod:r.method}},P().text(P().METHOD_TEXT,r.method),' · 검토 ',utc(r.reviewed_at),' · 기록 ',utc(r.recorded_at),' · 검토자와 작성자 분리')))
   :h('p',{class:'reason',dataset:{polReviews:'0'}},'검토 기록 없음');}
+// 공통 분류 (DC-48): the company's common sector next to its name as context only — the exposure, its evidence and its
+// applicability are the engine's and never follow from the sector (IS2.classification; nothing when no record set is loaded).
+function ccContext(cid){const C=I.classification,st=C&&typeof C.state==='function'?C.state():null;if(!st||st.state!=='OK')return null;
+ const row=companyRow(cid),r=C.recordFor(row&&typeof row.code==='string'?row.code:cid);// the record's company_id is the Universe504 code
+ return h('span',{class:'reason',dataset:{ccContext:r.state,ccRecord:r.record_id||''}},' · 공통 섹터 ',r.sector&&r.sector.status==='CONFIRMED'?C.sectorName(r.sector.id):r.words,' (문맥 · 노출 근거와 별개)');}
 function exposureLine(vw,e){const P_=P();
  return h('li',{class:'sk pol-exposure',dataset:{polExposure:e.exposure_id,polEvidence:e.evidence_status,polApplicability:e.policy_applicability}},
-  h('p',null,companyEl(e.company_id),' · ',P_.text(P_.EXPOSURE_TEXT,e.exposure_type),' · ',h('b',null,P_.text(P_.EVIDENCE_TEXT,e.evidence_status)),' · ',h('b',null,P_.text(P_.APPLY_TEXT,e.policy_applicability))),
+  h('p',null,companyEl(e.company_id),ccContext(e.company_id),' · ',P_.text(P_.EXPOSURE_TEXT,e.exposure_type),' · ',h('b',null,P_.text(P_.EVIDENCE_TEXT,e.evidence_status)),' · ',h('b',null,P_.text(P_.APPLY_TEXT,e.policy_applicability))),
   h('p',null,e.description),h('p',{class:'reason'},'기간 ',period(e.period),' · 정책 개정 ',e.policy_revision_id),
   e.ratio?h('p',{class:'reason',dataset:{polRatio:''}},'비율 ',String(Math.round(e.ratio.value*1000)/10),'% · 분모 ',e.ratio.denominator_description,' · ',e.ratio.scope)
    :h('p',{class:'reason',dataset:{polRatio:'NULL'}},'비율 없음 · ',reasons(e.reason_codes),' · 0%가 아님'),

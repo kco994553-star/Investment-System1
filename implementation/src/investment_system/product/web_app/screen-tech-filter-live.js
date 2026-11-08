@@ -16,6 +16,8 @@
      words: 평가일 불일치, 매핑 없음, 매핑 중복, 보드에 없는 증권 …).
    - States kept apart: 그룹 구성 미확인 (GROUP_MEMBERSHIP_UNCONFIRMED: no N, rank, median or decile), 유효 N < 10 (ranks and median,
      no decile), 계산 후 조건 충족 0건 (every condition decided, none passed), 판정 불가 (a condition the board cannot decide).
+   - 공통 분류 (DC-48): for a COMMON:<sector>:<basis> board, ① names the classification record set (hash, evaluation date) and the
+     board rows carry the company / record id of their verified security (IS2.classification; never computed here).
    - A null value is NA with its reason; raw_value is never shown and never fills it. Values are price-derived: text inside
      [data-ram-price] only; the view state lives in RAM (this page load); nothing is stored. */
 (function(){
@@ -47,9 +49,14 @@ function create({signal,redraw}){
  // .groupRows(board, universe) from the common classification record, never the rows already present on the board (an intersection
  // would hide missing members). No provider or an unresolved group → BOARD_GROUP_ROWS_UNRESOLVED (no join). No links file → Codex's
  // order: SECURITY_LINKS_NOT_CONNECTED first.
- const groupRows=universe=>{const C=I.classification;if(!C||typeof C.groupRows!=='function')return null;const g=C.groupRows(board(),universe);return Array.isArray(g)?g:null;};
- function keep(rows,{universe=rows}={}){if(!V.on||!board())return null;const group=ctx.links===null||ctx.links===undefined?[]:groupRows(universe);
-  const j=group===null?Object.freeze({ok:false,code:'BOARD_GROUP_ROWS_UNRESOLVED'}):T().joinRows(board(),group,{links:ctx.links,data_kind:ctx.value.data_kind});joinMemo=j;
+ // The common classification is read once per page (IS2.classification.load: source NONE today, no request); groupRowsWhy names
+ // why a group is unresolved (분류 버전 불일치, 구성원 미확인, …) next to BOARD_GROUP_ROWS_UNRESOLVED.
+ const CL=()=>I.classification;
+ if(CL()&&typeof CL().load==='function')Promise.resolve(CL().load()).then(()=>{if(!signal.aborted)redraw();},()=>{});
+ const groupRows=universe=>{const C=CL();if(!C||typeof C.groupRows!=='function')return{rows:null,code:null};const g=C.groupRows(board(),universe);
+  if(Array.isArray(g))return{rows:g,code:null};return{rows:null,code:typeof C.groupRowsWhy==='function'?C.groupRowsWhy(board(),universe).code:null};};
+ function keep(rows,{universe=rows}={}){if(!V.on||!board())return null;const group=ctx.links===null||ctx.links===undefined?{rows:[],code:null}:groupRows(universe);
+  const j=group.rows===null?Object.freeze({ok:false,code:'BOARD_GROUP_ROWS_UNRESOLVED',group_code:group.code}):T().joinRows(board(),group.rows,{links:ctx.links,data_kind:ctx.value.data_kind});joinMemo=j;
   if(!j.ok)return null;const r=result();
   return{rows:rows.filter(x=>j.keys.has(x.security_id)&&r.rows.get(x.security_id).state==='PASS'),joined:j.keys.size,result:r};}
  const on=()=>V.on&&!!board()&&!!joinMemo&&joinMemo.ok;
@@ -76,17 +83,29 @@ function create({signal,redraw}){
   const first=conds().map(c=>c.metric),show=first.length?[...new Set(first)].slice(0,3):['momentum_6m'];
   return[h('span',{class:'m-only sub-line tech-line'},...show.flatMap((m,i)=>[i?' · ':'',metricLine(s,m,{short:true})])),h('span',{class:'m-only'},detail(s))];}
 
+ /* ---- the common classification of a COMMON:<sector>:<basis> board (IS2.classification; DC-48): the record set it was built on
+    (classification hash, evaluation date) and, per board row, the company / record whose verified security it is. Read only. */
+ const ccTech=()=>{const C=CL(),v=C&&typeof C.value==='function'?C.value():null;return v&&v.technical?v:null;};
+ function ccLine(b){if(!/^COMMON:/.test(b.group_id))return null;const C=CL(),v=ccTech(),st=C&&typeof C.state==='function'?C.state():null;
+  const mm=st&&st.state==='OK'&&st.value.mismatch&&st.value.mismatch.technical;
+  if(!v)return h('p',{class:'reason',dataset:{ccTech:mm?'VERSION_MISMATCH':'NONE',na:mm?'CLASSIFICATION_VERSION_MISMATCH':'CLASSIFICATION_NOT_CONNECTED'}},'공통 분류 그룹 · ',mm?C.WORDS.VERSION_MISMATCH:C?C.WORDS.NONE:'공통 분류 판독기 없음');
+  const g=v.technical.groups.find(x=>x.board.group_id===b.group_id),same=g&&g.board.population_hash===b.population_hash&&g.board.membership_source===b.membership_source;
+  return h('p',{class:'reason',dataset:{ccTech:same?'OK':'VERSION_MISMATCH',ccHash:v.view.classification_hash}},'공통 분류 그룹 · 섹터 ',g?C.sectorName(g.sector_id):'NA',
+   ' · 분류 기록 ',C.shortHash(v.view.classification_hash),' · 분류 평가일 ',v.view.valuation_date,same?' · 구성원 '+g.counts.company_members+'개 기업(분류 기록 기준)':' · '+C.WORDS.VERSION_MISMATCH);}
+ function ccRow(s){const v=ccTech();if(!v||!s.security_id)return{};const r=v.technical.rows.find(x=>x.security_ids.includes(s.security_id));
+  return r&&r.classification_record_id?{ccCompany:r.company_id,ccRecord:r.classification_record_id}:{};}
+
  /* ---- the board table of ④: rows in the ORIGINAL rank of the chosen metric (null ranks last), never renumbered */
  function boardTable(keys,phone){const S=T(),list=[...keys].map(k=>secs().get(k)),by=V.by;
   const rk=s=>{const r=s.rows[by];return r&&r.rank!==null?r.rank:Infinity;};
   list.sort((a,b)=>rk(a)-rk(b)||(a.key<b.key?-1:a.key>b.key?1:0));
   const name=s=>s.symbol||s.security_id||s.series_id,rankCell=s=>{const r=s.rows[by];return r&&r.rank!==null?String(r.rank):'—';};
-  if(phone)return h('ol',{class:'news-lines tf-board',dataset:{tfBoard:String(list.length)}},...list.map(s=>h('li',{dataset:{tfRow:s.key}},
+  if(phone)return h('ol',{class:'news-lines tf-board',dataset:{tfBoard:String(list.length)}},...list.map(s=>h('li',{dataset:{tfRow:s.key,...ccRow(s)}},
    h('b',{dataset:{tfRank:''}},rankCell(s)),' ',name(s),h('span',{class:'sub-line tech-line'},...S.METRICS.flatMap((m,i)=>[i?' · ':'',metricLine(s,m,{short:true})])),detail(s))));
   return h('div',{class:'tbl-wrap'},h('table',{class:'tbl tf-board',dataset:{tfBoard:String(list.length)}},
    h('caption',null,'보드 행 · 원래 순위 = ',S.META[by].label,' 순위(보드 그대로, 필터 뒤 다시 매기지 않음)'),
    h('thead',null,h('tr',null,h('th',{scope:'col'},'원래 순위'),h('th',{scope:'col'},'종목'),...S.METRICS.map(m=>h('th',{scope:'col'},S.META[m].short)))),
-   h('tbody',null,...list.map(s=>h('tr',{dataset:{tfRow:s.key}},h('td',{dataset:{tfRank:''}},rankCell(s)),h('td',null,name(s)),
+   h('tbody',null,...list.map(s=>h('tr',{dataset:{tfRow:s.key,...ccRow(s)}},h('td',{dataset:{tfRank:''}},rankCell(s)),h('td',null,name(s)),
     ...S.METRICS.map(m=>h('td',{dataset:{metric:m}},metricLine(s,m,{short:true}))))))));}
 
  /* ---- the block */
@@ -104,7 +123,7 @@ function create({signal,redraw}){
   const sel=h('select',{id:'tf-board',dataset:{k:'tf-board'},onchange:e=>{V.board=e.target.value;redraw();}},...val.boards.map(x=>h('option',{value:x.id,selected:x.id===V.board},x.label)));
   const step1=h('div',{class:'tf-step',dataset:{tfStep:'1'}},h('b',null,'① 평가일 · 비교 그룹'),h('div',{class:'sort-row'},h('label',{for:'tf-board'},'보드'),sel),
    h('p',{class:'reason',dataset:{tfMembership:b.membership_status}},'평가일 ',b.signal_day,' · 그룹 ',b.group_id,' · 구성원 ',b.membership_status==='CONFIRMED'?'확인됨':'미확인',
-    ' · 순위·분위·중앙값·분모는 이 보드 그대로 · 필터를 더해도 다시 매기지 않음'));
+    ' · 순위·분위·중앙값·분모는 이 보드 그대로 · 필터를 더해도 다시 매기지 않음'),ccLine(b));
   // ② 지표 카드
   const cards=S.METRICS.map(m=>{const x=b.metrics[m],st=S.metricState(b,m);
    const words=st==='UNCONFIRMED'?STATE_WORDS.UNCONFIRMED:st==='N_BELOW_10'?'유효 종목 '+x.n_valid+' < 10 · 순위·중앙값만 · 분위 없음':'분위 매김 (D10·D1 각 '+x.k+'개)';
@@ -137,9 +156,9 @@ function create({signal,redraw}){
     h('ul',null,...unknown.map(([k,x])=>h('li',{dataset:{unknownRow:k}},(secs().get(k).symbol||secs().get(k).security_id||k),' · ',
      ...x.unknown.flatMap((u,i)=>[i?' · ':'',S.META[u.metric].label,' ',na(u.reason,S.reasonText(u.reason))]))))):null,
    shown.length?boardTable(shown,phone):null,
-   h('p',{class:'reason',dataset:j&&!j.ok?{tfJoin:j.code,na:j.code}:{tfJoin:joined===null?'OFF':String(joined)}},!j?'리더보드 표에 적용하려면 위 스위치를 켜세요 · 보드 표는 원래 순위 그대로':
+   h('p',{class:'reason',dataset:j&&!j.ok?{tfJoin:j.code,na:j.code,...(j.group_code?{tfGroup:j.group_code}:{})}:{tfJoin:joined===null?'OFF':String(joined)}},!j?'리더보드 표에 적용하려면 위 스위치를 켜세요 · 보드 표는 원래 순위 그대로':
     j.ok?'리더보드 표: 결합된 '+joined+'개 중 통과한 종목만 · 정렬은 1.1.2 그대로(기본 QGV 높은 순) · 순위 번호·점수 그대로':
-    '리더보드 표에 적용할 수 없음 · '+S.joinText(j)+' · 같은 평가일·같은 증권으로 확인된 행만 결합(QGV 결합 키 [평가일, 증권 ID]) · 리더보드는 기술 조건 없이 그대로'));
+    '리더보드 표에 적용할 수 없음 · '+S.joinText(j)+(j.group_code&&CL()&&CL().groupText?' · '+CL().groupText(j.group_code):'')+' · 같은 평가일·같은 증권으로 확인된 행만 결합(QGV 결합 키 [평가일, 증권 ID]) · 리더보드는 기술 조건 없이 그대로'));
   return[status,step1,step2,step3,step4];}
  return Object.freeze({load,on,keep,head,cell,sub,block});}
 I.techFilterLive=Object.freeze({create});

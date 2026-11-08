@@ -37,7 +37,7 @@ const FAMILY={C:'금리곡선',LU:'실업·청구',LD:'노동 수요 선행',MO:
 const RULE_SOURCE={LITERATURE:'[문헌]',PROPOSAL:'[제안]',LITERATURE_UP_PROPOSAL_DOWN:'[문헌] 상향 · [제안] 하향',AGENCY_EVENT:'[기관 사건]'};
 const REASON={SOURCE_NOT_COLLECTED:'수집 전',SOURCE_NOT_AVAILABLE:'출처 응답 없음',SOURCE_KEY_NOT_CONFIGURED:'API 키 미설정',TERMS_UNVERIFIED:'약관 원문 미확인 · 공개 보류',
  SCHEMA_MISMATCH:'형식 불일치',SERIES_NOT_FOUND:'계열 없음',MISSING_SOURCE:'값 없음',PROVIDER_ERROR:'출처 오류 응답',INSUFFICIENT_HISTORY:'이력 부족'};
-const V={cycle:'economy',view:{economy:0,market:0},ev:null,group:'',ring:'economy',node:'data',mevStatus:undefined};
+const V={cycle:'economy',view:{economy:0,market:0},ev:null,group:'',ring:'economy',node:'data',mevStatus:undefined,ccSector:'',ccIndustry:'',ccToken:null,ccTokenState:null};
 // macro-evidence-status/1 (Python macro/evidence_lines.py require_status, same rules): this attempt apart from the data. A
 // failed attempt keeps the last good copy with its own generated_at; the record says the attempt failed and the data is late.
 const MES='macro-evidence-status.json',MES_KEYS=['schema','kind','attempt_at','attempt_result','failure_stage','failure_class','published','data_generated_at','data_sha256','previous'];
@@ -282,7 +282,9 @@ function industryBlock(box,onChange){
    prep('미산출 · 산업 사이클 모델 없음',['산업 사이클 위치 모델','집계 계열','산업 어휘 결정 (PM-7)']),
    dl([['매출 증가율 중앙값','— · 집계 미구현',{dataset:{na:'NOT_IMPLEMENTED'}}],['재고/매출','— · 집계 미구현',{dataset:{na:'NOT_IMPLEMENTED'}}],['이익 증가 발행인 비율 (후행)','— · 집계 미구현',{dataset:{na:'NOT_IMPLEMENTED'}}],['기준일','— · 모델 없음']]),
    h('details',null,h('summary',{class:'lk'},'조건 · 반대 근거 · 확률'),conds(),h('p',{class:'reason'},'반대 근거: 엇갈림 · 합계 비율과 중앙값 방향이 다르면'),h('p',{class:'reason'},'반대 근거: 집중 · 한 발행인이 큰 몫이면 합계 비율 근거 제외'),prob()));}
- put(box,title,pick,body);}
+ // 공통 분류 (DC-48): 4.3 keeps its original text, path and key (industry:<group>); the header says which list it is.
+ const basis=h('p',{class:'reason',dataset:{ccBasis:'SIC'}},'SIC 업종군 기준(원천 분류) · 공통 산업 분류와 다름 · 공통 분류는 섹터 → 하위 산업(책 10섹터 아래) · SIC 업종군은 그 하위 코드가 아님');
+ put(box,title,basis,pick,body);}
 
 /* ---------------------------------------------------------------- 3.4 my position (4.4): kept on this device */
 // Words for a refused or failed write (the old ring's own words where it had them, macro-cycle-ring.js:21 / :352).
@@ -359,6 +361,30 @@ function treeBlock(box,merged){
    x.state==='NOT_AVAILABLE'?h('span',{dataset:{na:(x.reason_codes||[]).join(' ')}},'— · ',(x.reason_codes||[]).join(', ')):[x.period,' · ',h('span',{dataset:{rawValue:''}},v),' · 수집 상한 ',utc(x.acquired_at)]))):null,
   h('p',{class:'reason'},'정부 통계 · 가격 아님 · 발표 시각 미확인이라 수집 시각이 상한 · FX는 공개 가격 경계에 따라 제외'));}
 
+/* ---------------------------------------------------------------- 4.2 공통 섹터 → ETF 비교 가격계열 (DC-48) */
+// Sector selection (or a cc:… hash token from another screen) → the D22 SIC→ETF comparison series the macro projection gives the
+// sector's companies, on one line with "섹터 ETF는 비교 가격계열 · 구성 범위가 공통 섹터와 다를 수 있음". The projection's
+// own sector returns, rotation probabilities and statistical crosswalk stay null / unlinked; nothing here estimates them.
+function ccSectorBlock(box,route){const C=I.classification;if(!C){put(box,h('p',{class:'na',dataset:{na:'READER_MISSING'}},'공통 분류 판독기를 불러오지 못했습니다'));return;}
+ const st=C.state(),on=st.state==='OK',val=on?C.value():null,o=on?C.options():null,tok=route.params&&/^cc:/.test(route.params[0]||'')?route.params[0]:null;
+ if(on&&tok&&V.ccToken!==tok){V.ccToken=tok;V.ccTokenState=C.contextState(tok);if(V.ccTokenState==='OK'){const c=C.parseContext(tok);V.ccSector=c.sector||'';V.ccIndustry=c.industry||'';}}
+ const head=h('h4',null,'공통 섹터 → 섹터 ETF 대리');
+ if(!on){put(box,head,h('p',{class:'reason',dataset:{ccSector:'NONE',na:st.code||st.state}},'공통 섹터 선택 · ',st.state==='INVALID'?C.WORDS.INVALID:C.WORDS.NONE),h('p',{class:'reason'},'섹터 ETF는 비교 가격계열 · 구성 범위가 공통 섹터와 다를 수 있음'));return;}
+ const sel=h('select',{id:'macro-cc-sector',dataset:{ccSectorSelect:''},onchange:e=>{V.ccSector=e.target.value;V.ccIndustry='';ccSectorBlock(box,route);focusLater(box,'[data-cc-sector-select]');}},
+  h('option',{value:''},'선택 안 함'),o.sectors.map(x=>h('option',{value:x.id,selected:x.id===V.ccSector},C.sectorName(x.id)+' · '+x.n+'개 기업')));
+ const lines=[head,h('div',{class:'card-body'},h('label',{for:'macro-cc-sector'},'공통 섹터 (책 10섹터 · 분류 기록 ',C.shortHash(val.view.classification_hash),' · 평가일 ',val.view.valuation_date,')'),sel)];
+ if(V.ccTokenState&&V.ccTokenState!=='OK')lines.push(h('p',{class:'reason',dataset:{ccToken:V.ccTokenState,na:'CLASSIFICATION_CONTEXT_'+V.ccTokenState}},'주소의 분류 문맥을 적용하지 않음 · ',V.ccTokenState==='VERSION_MISMATCH'?C.WORDS.VERSION_MISMATCH:'분류 평가일 다름'));
+ const mm=val.mismatch.macro,m=val.macro;
+ if(V.ccSector){
+  if(mm||!m)lines.push(h('p',{class:'reason',dataset:{ccEtf:mm?'VERSION_MISMATCH':'NONE',na:mm?'CLASSIFICATION_VERSION_MISMATCH':'MACRO_PROJECTION_NOT_CONNECTED'}},'섹터 ETF 대리 · ',mm?C.WORDS.VERSION_MISMATCH+' · 쓰지 않음':'공통 분류 매크로 투영 미연결'));
+  else{const rows=m.rows.filter(r=>r.sector.status==='CONFIRMED'&&r.sector.id===V.ccSector),etf=new Map();for(const r of rows){const k=r.benchmark.etf||'ETF 대응 없음';etf.set(k,(etf.has(k)?etf.get(k):[]).concat(r.company_id));}
+   lines.push(h('p',{dataset:{ccEtf:[...etf.keys()].join(' '),ccHash:m.classification_hash}},'섹터 ETF 대리 · ',[...etf].map(([k,v])=>k+' ('+v.length+'개 기업)').join(' · '),' · 섹터 ETF는 비교 가격계열 · 구성 범위가 공통 섹터와 다를 수 있음'),
+    h('p',{class:'reason'},'ETF 기준 ',rows[0]?rows[0].benchmark.version:'—',' · 원천 SIC → ETF 대응(D22) · 공통 섹터와 같은 범위라는 뜻이 아님 (benchmark_is_common_sector: false)'),
+    h('p',{class:'reason',dataset:{ccStat:String(rows.filter(r=>r.statistic_mapping.status==='LINKED').length)}},'통계 산업 대응 ',String(rows.filter(r=>r.statistic_mapping.status==='LINKED').length),'건 · 자체 섹터 수익률 미산출 · 순환매 확률 미산출'));}
+  const token=C.context({sector:V.ccSector,industry:V.ccIndustry||null});
+  lines.push(h('p',{class:'links cc-links'},h('a',{class:'lk',href:href('qgv',token),dataset:{ccLink:'qgv'}},'→ QGV 리더보드 · 이 섹터 기업 · 3.5 기술 조건 필터')));}
+ put(box,...lines);}
+
 /* ---------------------------------------------------------------- screen */
 function fileBand(refs){
  const chip=(n,label)=>{const s=fileState(n),ok=s.state==='OK';return h('span',{class:'chip'+(ok?'':' err'),dataset:{file:n,fileState:s.state}},label,' · ',ok?'기준 '+utc(s.as_of):s.text||s.state);};
@@ -374,13 +400,13 @@ function screen(route,{legend,band,slots}){
  evidenceBox=refs.evidence;
  // The public part never depends on a panel: a panel that cannot be built is left out (put skips null).
  const panel=(id,title)=>{try{return I.parts.privatePanel({id,title}).node;}catch(_){return null;}};
- const polBody=h('div',{class:'pol-body',dataset:{policyBody:''}});
+ const polBody=h('div',{class:'pol-body',dataset:{policyBody:''}}),ccBox=h('div',{class:'cc-sector',dataset:{ccSectorBox:''}},loading('공통 섹터'));
  put(slots['3-1'],h('p',{class:'hand'},'공식 국면은 아직 미산출 · 위치·확률을 임의로 찍지 않음 · 경고등 5개는 참고 모드 그대로'),refs.ring,refs.evidence,refs.lights,judgeBlock(),
   panel('macro-market-credit','시장·신용 근거 계열 (KIS 일봉)'));
  put(slots['3-2'],block('4.2',sub('순환매 · 위치 · 조건 · 확률','4.2.1 · 4.2.2 · 4.2.3','근거는 결정됨 · 계산·보정 방법 결정 대기 (IA-3)'),
    prep('지금 위치 미산출 · 순환매 위치 모델 없음 · 점·구간을 그리지 않음',['순환매 위치 모델','3.1 공식 국면 (미산출)','검증된 전환 빈도','자산 자료·단위 결정']),
    h('p',null,'기준 국면 (3.1): 미산출 → 위치도 미산출 · 기준일 — · 모델 없음'),h('h4',null,'다음 조정 조건'),conds(),h('h4',null,'확률'),prob(),
-   h('p',{class:'reason'},'검증 상태: 연구 단계 → ',h('a',{href:href('lab'),class:'lk'},'n+1 Lab'))),
+   h('p',{class:'reason'},'검증 상태: 연구 단계 → ',h('a',{href:href('lab'),class:'lk'},'n+1 Lab')),ccBox),
   panel('macro-sector-rs','섹터 ETF 상대강도 (KIS, 탐색 전용)'));
  put(slots['3-3'],refs.industry);put(slots['3-4'],refs.mine);
  put(slots['3-5'],block('4.5',sub('나비효과 · 사건 → 원인 고리 → 영향받는 기업','4.5.1 · 4.5.2 · 4.5.3 · 4.5.4','고리마다 근거 · 시차 · 확신도'),
@@ -393,6 +419,7 @@ function screen(route,{legend,band,slots}){
    h('h4',null,'정책 · 지정학'),polBody));
  if(I.policyImpactLive)I.policyImpactLive.macro(route,{body:polBody,params:route.params});else put(polBody,failed('READER_MISSING','정책 모듈을 불러오지 못했습니다'));
  put(slots['3-6'],refs.tree);
+ const C=I.classification;if(C&&typeof C.load==='function')Promise.resolve(C.load()).then(()=>{if(!aborted())ccSectorBlock(ccBox,route);},()=>{});else ccSectorBlock(ccBox,route);
  const paint=()=>{if(aborted())return;fileBand(refs);
   let merged=null;try{merged=lightsBlock(refs.lights);}catch(e){put(refs.lights,failed('LIGHTS_FAILED','경고등을 그리지 못했습니다'));}
   const again=()=>{if(!aborted()){ringBlock(refs.ring);mineBlock(refs.mine,again2);}},again2=()=>{if(!aborted())ringBlock(refs.ring);};
