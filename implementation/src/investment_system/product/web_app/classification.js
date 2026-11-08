@@ -220,7 +220,10 @@ function checkExpanded(e,path){keys(e,['schema_version','valuation_date','catalo
 // not a sector Q result.
 const COUNTS_SCHEMA='common-classification-calculation-counts/1',COUNT_STATUS=['PARTIAL','COMPLETE','NOT_COMPUTED','EMPTY_POPULATION','NOT_MEASURED'],
  COUNT_SCOPES=Object.freeze({operating:'CODE_ROW',held_financial_subsample:'ISSUER',catalog:'ISSUER'}),COUNT_KEYS=['Q','G','V','joint','total'],
- GATE_MEANING='CONNECTED_INPUT_NOT_GATE_PASS_NOT_SECTOR_Q';
+ GATE_MEANING='CONNECTED_INPUT_NOT_GATE_PASS_NOT_SECTOR_Q',
+ // The producer's own lists (Codex #523 classification_counts.py VERSION_KEYS / result_identity / sources / gate sources).
+ COUNT_VERSION_KEYS=['model_version','engine_version','normalization_version','mapping_version','input_version','snapshot_id','universe_id','universe_version'],
+ COUNT_IDENTITY_KEYS=['preview_id','config_hash','input_hash','cache_key'],COUNT_SOURCE_KEYS=['snapshot','preview','view'],GATE_SOURCE_KEYS=['gate_linkage','held_cohort'];
 function checkCount(c,den,path){keys(c,['valid','denominator','uncomputed','status','reason'],path);
  if(c.denominator!==den)refuse('COUNT_DENOMINATOR',path+'.denominator');if(!COUNT_STATUS.includes(c.status))refuse('COUNT_STATUS',path+'.status');
  if(c.reason!==null&&(typeof c.reason!=='string'||!CODE.test(c.reason)))refuse('REASON_INVALID',path+'.reason');
@@ -238,21 +241,40 @@ function checkCounts(cc,e,path){keys(cc,['schema_version','data_kind','valuation
   keys(s,['population','scoring_population','valuation_date','input_as_of','versions','classification','result_identity','sources','counts','official_q_gate_input'],sp);
   const pop=s.population;keys(pop,['id','version','unit','denominator','unique_issuers','members_hash'],sp+'.population');text(pop.id,sp+'.population.id');text(pop.version,sp+'.population.version');
   if(pop.unit!==unit)refuse('COUNT_UNIT',sp+'.population.unit');int(pop.denominator,sp+'.population.denominator');int(pop.unique_issuers,sp+'.population.unique_issuers');hex(pop.members_hash,sp+'.population.members_hash');
+  if(pop.unique_issuers>pop.denominator||(unit==='ISSUER'&&pop.unique_issuers!==pop.denominator))refuse('COUNT_ISSUERS',sp+'.population.unique_issuers');
+  // The scoring population the result was ranked in: a whole object; the same population carries the same version, size and
+  // members; a wider one is at least as large.
+  const sc=s.scoring_population;keys(sc,['id','version','denominator','members_hash'],sp+'.scoring_population');text(sc.id,sp+'.scoring_population.id');
+  text(sc.version,sp+'.scoring_population.version');int(sc.denominator,sp+'.scoring_population.denominator');hex(sc.members_hash,sp+'.scoring_population.members_hash');
+  if(sc.id===pop.id?(sc.version!==pop.version||sc.denominator!==pop.denominator||sc.members_hash!==pop.members_hash):sc.denominator<pop.denominator)refuse('COUNT_SCORING_POPULATION',sp+'.scoring_population');
+  keys(s.versions,COUNT_VERSION_KEYS,sp+'.versions');for(const k of COUNT_VERSION_KEYS)text(s.versions[k],sp+'.versions.'+k);
+  if(s.versions.universe_id!==sc.id||s.versions.universe_version!==sc.version)refuse('COUNT_VERSIONS',sp+'.versions');
+  keys(s.result_identity,COUNT_IDENTITY_KEYS,sp+'.result_identity');for(const k of COUNT_IDENTITY_KEYS)hex(s.result_identity[k],sp+'.result_identity.'+k);
   if(s.valuation_date!==cc.valuation_date)refuse('COUNTS_DATE_MISMATCH',sp+'.valuation_date');stamp(s.input_as_of,sp+'.input_as_of');
-  keys(s.classification,['schema_version','classification_hash','dictionary_version','mapping_version'],sp+'.classification');hex(s.classification.classification_hash,sp+'.classification.classification_hash');
+  keys(s.classification,['schema_version','classification_hash','dictionary_version','mapping_version','knowledge_as_of'],sp+'.classification');hex(s.classification.classification_hash,sp+'.classification.classification_hash');
+  if(s.classification.schema_version!==SCHEMAS.view)refuse('SCHEMA_VERSION',sp+'.classification.schema_version');stamp(s.classification.knowledge_as_of,sp+'.classification.knowledge_as_of');
   if(!own(VERSION_PAIRS,s.classification.dictionary_version)||VERSION_PAIRS[s.classification.dictionary_version]!==s.classification.mapping_version)refuse('VERSION_PAIR_INVALID',sp+'.classification');
-  if(!isObj(s.sources)||!own(s.sources,'view'))refuse('COUNT_SOURCES',sp+'.sources');for(const[k,v]of Object.entries(s.sources))sourceRef(v,sp+'.sources.'+k);
+  keys(s.sources,COUNT_SOURCE_KEYS,sp+'.sources');for(const[k,v]of Object.entries(s.sources))sourceRef(v,sp+'.sources.'+k);
   keys(s.counts,COUNT_KEYS,sp+'.counts',[]);for(const k of COUNT_KEYS)checkCount(s.counts[k],pop.denominator,sp+'.counts.'+k);
   const g=s.official_q_gate_input;checkCount(g,pop.denominator,sp+'.official_q_gate_input');
-  if(g.status!=='NOT_MEASURED'&&g.meaning!==GATE_MEANING)refuse('GATE_MEANING',sp+'.official_q_gate_input.meaning');
+  // A measured gate input count names what it is and where it comes from (the gate linkage and the held cohort it was read in).
+  if(g.status!=='NOT_MEASURED'){if(g.meaning!==GATE_MEANING)refuse('GATE_MEANING',sp+'.official_q_gate_input.meaning');
+   text(g.calc_version,sp+'.official_q_gate_input.calc_version');text(g.basis,sp+'.official_q_gate_input.basis');
+   keys(g.sources,GATE_SOURCE_KEYS,sp+'.official_q_gate_input.sources');for(const k of GATE_SOURCE_KEYS)sourceRef(g.sources[k],sp+'.official_q_gate_input.sources.'+k);}
   // The expanded scopes are the summary's own groups: the same denominators and the same Q / G counts, never a re-scoring.
-  if(name!=='operating'){const t=e[name];if(pop.denominator!==t.issuers||s.counts.Q.valid!==t.Q||s.counts.G.valid!==t.G)refuse('COUNTS_SUMMARY_MISMATCH',sp);}}
+  if(name!=='operating'){const t=e[name];if(pop.denominator!==t.issuers||COUNT_KEYS.some(k=>s.counts[k].valid!==t[k]))refuse('COUNTS_SUMMARY_MISMATCH',sp);}}
  if(own(e,'official_gate_connected')&&cc.scopes.catalog.official_q_gate_input.valid!==e.official_gate_connected)refuse('COUNTS_SUMMARY_MISMATCH',path+'.scopes.catalog.official_q_gate_input');}
 // The operating scope against the delivered view: the same evaluation day, classification hash, versions, kind and rows.
-function countsMismatch(cc,view){const o=cc.scopes.operating;
+// The population is the view's universe: its id and version, its member count, its issuers and the producer's member hash
+// (sha256 of the sorted member ids as compact JSON, Codex sector_qgv.digest). Without the hash function nothing is shown as OK.
+function countsMismatch(cc,view){const o=cc.scopes.operating,p=o.population;
  if(o.valuation_date!==view.valuation_date)return'COUNTS_DATE_MISMATCH';if(o.classification.classification_hash!==view.classification_hash)return'COUNTS_HASH_MISMATCH';
  if(o.classification.dictionary_version!==view.dictionary_version||o.classification.mapping_version!==view.mapping_version)return'COUNTS_VERSION_MISMATCH';
- if(cc.data_kind!==view.data_kind)return'DATA_KIND_MISMATCH';if(o.population.denominator!==view.rows.length)return'COUNTS_POPULATION_MISMATCH';return null;}
+ if(cc.data_kind!==view.data_kind)return'DATA_KIND_MISMATCH';
+ if(p.id!==view.universe_id||p.version!==view.universe_version||p.denominator!==view.members.length||p.denominator!==view.rows.length
+  ||p.unique_issuers!==new Set(view.rows.map(r=>r.issuer_id)).size)return'COUNTS_POPULATION_MISMATCH';
+ const T=techReader();if(!T||typeof T.sha256!=='function')return'COUNTS_HASH_UNAVAILABLE';
+ if(p.members_hash!==T.sha256(JSON.stringify([...view.members].sort())))return'COUNTS_POPULATION_MISMATCH';return null;}
 const validateView=pass(checkView),validateExpanded=pass(checkExpanded),validateTechnical=pass(checkTechnical),validateMacro=pass(checkMacro),validateLinks=pass(checkLinks),validateDictionary=pass(checkDictionary);
 
 /* ---------------------------------------------------------------- the bundle: one view and the parts that read the same records */
