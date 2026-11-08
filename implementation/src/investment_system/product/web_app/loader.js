@@ -36,6 +36,13 @@
 // classification.js is the 공통 분류 reader of Codex common-classification/1 (DC-48, owner 2026-11-07) that the company page, the QGV
 // leaderboard filter, the tech filter's group rows and 매크로 4.2 / 4.3 / 4.5 read; it installs IS2.classification and requests nothing.
 // policy-impact.js is the policy-impact/1 reader of 4.5 정책·지정학 (owner 2026-11-07) that screen-policy-impact-live.js uses; it installs IS2.policyImpact.
+// (feature 3.5, owner 2026-11-03) that screen-tech-filter-live.js uses; it installs IS2.techScreen and reads nothing. kis-private.js
+// is the owner-private reader and client (IS2.kisPrivate, DC-44; network through prices.js) and private-expand-live.js its
+// 비공개 펼치기 glue on the technical and QGV private panels (IS2.privateExpand).
+// macro-observed.js is the reader of Codex's macro-current-query/1 (#477, owner 2026-11-05) that screen-macro-observed-live.js
+// draws in the 매크로 screen; it installs IS2.macroObserved and reads nothing.
+// news-refresh.js is the reader of the 5.2.7 원천별 갱신 기록 (owner 2026-11-05) that screen-news-live.js uses at paint time; it
+// installs IS2.newsRefresh and reads nothing.
 const LOAD_ORDER=Object.freeze([
  'locale.js','entity-search.js','price-time.js','device-market.js','device-actual.js','profile-defaults.js','type-config-defaults.js',
  'device-profiles.js','engine-preview.js','dcf-parameters-defaults.js','device-valuation.js','playbook-config-defaults.js','playbook-engine.js',
@@ -54,6 +61,7 @@ const LOAD_ORDER=Object.freeze([
  'discovery.js','screen-discovery-live.js',
  'sector-qgv.js','sector-qgv-axis.js','screen-sector-qgv-axis-live.js','screen-sector-qgv-live.js',
  'policy-impact.js','screen-policy-impact-live.js',
+ 'news-refresh.js','macro-observed.js','screen-macro-observed-live.js','kis-private.js','private-expand-live.js',
 ]);
 // A plain lowercase script name. tools/build_web_app.py holds this exact line (the build fails when the two differ).
 const NAME=/^[a-z0-9][a-z0-9-]*(?:\.[a-z0-9-]+)*\.js$/;
@@ -65,7 +73,7 @@ const NAMESPACES=Object.freeze({data:'data.js',prices:'prices.js',store:'store.j
 const API=Object.freeze({
  data:{FILES:'v',CORE:'v',LIST_FILES:'v',STATIC:'v',READERS:'v',MAX_BYTES:'v',EVENT:'v',ENGINE_ROUTE:'v',strictFetch:'p',engine:'p',ready:'p',get:'s',screens:'s',state:'s',
   publication:'s',list:'p',shares:'p',financials:'p',refresh:'a',static:'p',peek:'p',subscribe:'sub',universe:'p',official:'p'},
- prices:{UNIVERSE_SOURCE_KEY:'v',WORKER_ORIGIN_KEY:'v',status:'s',subscribe:'sub',deviceSettings:'p',prepare:'a',login:'a',logout:'a',readUniverse:'a',
+ prices:{UNIVERSE_SOURCE_KEY:'v',WORKER_ORIGIN_KEY:'v',status:'s',subscribe:'sub',kisState:'s',kisSubscribe:'sub',kisConnect:'a',kisDisconnect:'a',kisRead:'a',deviceSettings:'p',prepare:'a',login:'a',logout:'a',readUniverse:'a',
   universeView:{prices:'s',priceBasis:'s',readStatus:'s',ranks:'s'},universeRanks:'s',rankFor:'s',useTabs:'a',loadTabs:'a',syncSymbols:'a',
   syncUniverse:'a',history:'a',held:'s',quote:'p',periodReturns:'p'},
  store:{KEYS:'v',prefs:'s',savePrefs:'a',recent:'s',pushRecent:'a',clearRecent:'a',weights:'s',saveWeights:'a',holdings:'p',playbook:'s',saveThesis:'a',saveHold:'a',saveRecord:'a',
