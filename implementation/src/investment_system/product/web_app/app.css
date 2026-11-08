@@ -150,6 +150,8 @@ svg.ico{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stro
 .quote-en{font-style:italic;color:var(--muted)}
 .quote-who,.quote-src{font-size:15px;overflow-wrap:anywhere}
 .result-facts{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;font-size:20px;color:var(--muted);word-break:keep-all}
+/* 공통 분류 block + its private panel inside .result-facts: long producer codes (e.g. a summary basis code) break instead of widening the page at 390 */
+.cc-wrap{min-width:0;max-width:100%;overflow-wrap:anywhere}
 .result-facts p{margin:0}
 .not-found{font-family:var(--font-display);font-size:24px;color:var(--ink)}
 .star-wrap{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap}
