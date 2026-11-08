@@ -1,9 +1,50 @@
-# 공통 분류 — Main 소비 명세 (2026-11-07, 설계 · 화면 연결 전)
+# 공통 분류 — Main 소비 명세 (2026-11-07 설계 · 2026-11-08 Codex 계약 수령 · 합성 화면 연결)
 
 오너 2026-11-07 「공통 분류체계·QGV·기술·매크로 화면 통합」(DC-48)의 Main 쪽 정본이다.
-- 계산·분류 판정은 Codex `common-classification/1`(#437 댓글 6706590129, 착수만 됨)이 맡는다. 이 문서는 화면이 그 기록을 **어떻게 읽고 보이는지**만 정한다.
+- 계산·분류 판정은 Codex `common-classification/1`(#516 `9343b5e6`, #437 댓글 6706590129)이 맡는다. 이 문서는 화면이 그 기록을 **어떻게 읽고 보이는지**만 정한다.
 - 신규 수집·권한 확대·병합·배포·공개 게시 승인이 아니다. 공식 QGV 점수·순위·관문·가중치·TARGET은 바뀌지 않는다.
 - Notion의 "분류기준체계"는 따로 읽는 설명 주제다. 제품에 새 최상위 메뉴를 만들지 않는다.
+
+## 0. 수령과 연결 상태 (2026-11-08)
+
+**수령 완료.** Codex 인계 `implementation/docs/research/common_classification/`(manifest SHA-256 고정):
+`CONTRACT.md` `00bccc2c…258ea`, `fixtures.json` `526cbf85…6ebcf`(record_cases 13 · technical_cases 9, 기대값 포함),
+`dictionary.json` `9ae49c5f…d5776`. 코드 `research/common_classification/{records,qgv,technical_macro,catalog}.py`,
+CLI `tools/common_classification.py`(qgv-classification-links.json 등). Main은 이 파일들을 고치지 않고 읽기만 한다.
+
+**Codex 답(#437 6706590129) 반영:**
+- 세 ID를 따로 둔다: `company_id`(Universe504 증권 코드 행 = Main 행의 `code`), `issuer_id`(발행사/CIK, 증권 ID 아님),
+  `security_id`(검증된 고정 ID, 지금 0건 → 화면 "검증된 증권 ID 없음"). Main QGV 행 `id`는 TARGET 목록 기업이면
+  `amd`처럼 코드와 다를 수 있으므로 **기록은 행의 `code`로 찾는다**.
+- 분류 적용 `[valid_from, valid_to)`, #515 증권 링크는 `[valid_from, valid_to]`, EVALUATION_ONLY는 실제 시작/끝 null.
+- 같은 기록 확인: QGV links·기술·매크로 행의 `classification_record_id`와 상위 `classification_hash`. 다르면 결합·비교 거부(분류 버전 불일치).
+- 기술 결합에는 확정된 보드 그룹의 **전체** QGV 행. 교집합 금지. 증권 근거가 없으면 null + 거부 사유.
+- 작은 표본은 기능마다 다르다(섹터 QGV N<20 요소점수 없음, 기술 N<10 분위·상하위10% 없음·순위·중앙값 유지, 구성원 미확인은 순위·중앙값도 없음).
+- 새 섹터 생산자의 `signal_day` = snapshot/preview `valuation_date`. 기존 공식 생산자는 없음 → null 유지.
+- 매크로: 공통 산업 · 원천 SIC 업종군 · ETF 비교계열을 따로. `benchmark_is_common_sector:false`, 통계 대응 0, 자체 섹터 수익률·순환매 확률 null.
+
+**Main 합성 입력 (손으로 만든 view 없음).** `implementation/tools/common_classification_main_fixture.py`가 Codex 함수
+(`records.resolve`, `technical_groups`, `macro_projection`, CLI 합성 실행)를 Codex 사례에 돌려
+`implementation/tests/fixtures/common_classification_main/main_fixture.json`을 쓴다. `tests/test_common_classification_main_fixture.py`가
+바이트 단위로 같음, 인계 SHA, 사례별 Codex 기대값을 확인한다. 브라우저 시험용 `universe` 부분은 **입력의 기업 ID만**
+Universe504 코드(NYSE:MMM 등 20개)로 바꾼 뒤 Codex가 기록·해시·투영을 다시 계산한 것이다. 오너 8사례(정상, 다중 사업,
+부분 미분류, 기간 변경, 종류주/ADR, 다른 평가일, 버전 불일치, 빈·작은 집단) + 충돌·적용기간 밖·REIT/통신 미확인이 `owner_cases`에 있다.
+
+**브라우저 통합 (합성 입력으로만).** 화면 코드·시험은 이 PR(#518, 문서·트리)에 없고 `claude/common-classification-screens` 가지에 있다(통합 가지 `claude/integration-20261107` 위, Codex #516·#517 필요). 판독기 `web_app/classification.js`(`IS2.classification`, LOAD_ORDER `tech-screen.js` 다음):
+
+| 화면 | 연결된 것 | 시험 |
+| --- | --- | --- |
+| 기업 상세 | 섹터 · 하위 산업 · 원천 SIC(코드 · SEC 제출) 세 줄, 상태 문구, 분류 기록 ID · 해시 12자 · 평가일, 기업 ID / 발행사 ID / 증권 ID 따로, 같은 섹터 QGV · 4.2 문맥 링크 | node · browser |
+| QGV 2.1.3 | ⑥ 공통 섹터 → ⑦ 하위 산업 필터(원천 SIC 필터와 따로, 기존 ①은 "원천 SIC 업종군"), 행 숨김만, 원래 N · 분류 확인 N · 실제 비교 집합 · 분류 평가일, QGV links 미리보기 ID, 버전 불일치 표시 | browser |
+| 기술 3.5 | `groupRows` = 확정 그룹 전체 행(기록의 issuer_id, signal_day·security_id는 행 그대로 → 지금은 null이라 결합 거부), 거부 사유에 그룹 코드 문구, COMMON 보드의 분류 기록 줄, 보드 행의 기업·기록 ID | node · browser |
+| 매크로 4.2 | 공통 섹터 선택 → "섹터 ETF 대리 · XLK (n개 기업) · 섹터 ETF는 비교 가격계열 · 구성 범위가 공통 섹터와 다를 수 있음", 통계 대응 0 · 자체 수익률·확률 미산출 | browser |
+| 매크로 4.3 | 원문·경로·키(`industry:<group>`) 그대로 + "SIC 업종군 기준(원천 분류) · 공통 산업 분류와 다름" | browser |
+| 매크로 4.5 | 노출 줄 기업 옆 "공통 섹터 … (문맥 · 노출 근거와 별개)" | 연결만(브라우저 시험 없음) |
+| 주소 문맥 | `cc:<섹터>:<산업>:<평가일>:<해시12>` 토큰을 `#/qgv/…`·`#/macro/…`로 넘김, 뒤로가기로 같은 선택, 다른 기록 토큰은 적용 안 함(분류 버전 불일치) | browser |
+
+**아직 아닌 것.** 실자료 미연결(원천 `source()` = NONE, 요청 없음), 공개 파일 없음(새 Pages 파일 만들지 않음),
+검증된 증권 ID 0건이라 기술 결합은 실제로 일어나지 않음, 2.2.7 섹터 QGV 화면 행에 기록 ID 대조는 아직 안 붙임
+(QGV links는 2.1.3에서 읽기만), 6절의 화면 안 분류 추론 3곳은 그대로.
 
 ## 1. 목록은 서로 다르다 (지금 저장소에 있는 것)
 
@@ -59,7 +100,7 @@
 | 분류 충돌 | 섹터·산업을 비우고 "분류 충돌 · 근거 2건 불일치". 비교집단에 넣지 않는다 |
 | 적용 기간 밖 | "평가일 YYYY-MM-DD에 적용되는 분류 없음" |
 | 자료 없음 | "분류 자료 없음"(0이나 기타로 채우지 않음) |
-| 표본 부족 | 집단은 보이되 "표본 부족 · 유효 N < 기준"(순위·분위 없음) |
+| 표본 부족 (기능마다 다름, 하나로 합치지 않음) | 섹터 QGV N<20 → "요소 점수 미산출". 기술 N<10 → "분위 미산출 · 순위·중앙값 유지"(구성원·신원 확인된 그룹). 구성원·신원 미확인 → "상대순위·중앙값도 미산출". 빈 확정 그룹 → "구성원 0" |
 | 미확인 대응(REIT·통신 경계 등) | "섹터 대응 미확인 · 근거 부족"(Codex `UNRESOLVED` 사유 그대로) |
 | 버전 불일치 | 세 화면 중 다른 분류 버전을 읽으면 "분류 버전 불일치"로 결합·비교를 하지 않는다 |
 
@@ -91,7 +132,9 @@
 
 ## 8. 남은 차단
 
-- Codex `common-classification/1` 계약·상태별 fixture·SHA 미전달.
-- 하위 산업 정의 없음.
+- ~~Codex 계약·fixture·SHA 미전달~~ → 수령 완료(0절).
+- 실자료 공통 분류 기록의 공개·비공개 전달 경로 없음(원천 NONE). 공개 게시는 별도 승인.
+- 검증된 고정 증권 ID 0건 → 기술 그룹 결합 없음(그룹 구성원·신원 미확인 → 상대순위·중앙값 미산출).
+- 하위 산업은 Codex 사전의 7개(`sic_industry_groups/v0` 명시 하위)뿐. 보관 실행에서 연결 90행.
 - REIT·통신 경계 미확인(근거 부족, Codex `UNRESOLVED`).
 - 관문 비교집단 변경은 Codex 영향 분석 뒤 별도 모델 변경.
