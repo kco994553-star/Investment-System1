@@ -212,20 +212,16 @@ def test_a_passing_deploy_read_failure_is_tried_again(tmp_path, monkeypatch, cap
 
 # ---------------------------------------------------------------- LIVE_INVALID
 
-@pytest.mark.parametrize('case', ['corrupt', 'rejected', 'record_mismatch', 'record_withheld'])
+@pytest.mark.parametrize('case', ['corrupt', 'rejected'])
 def test_damaged_live_copy_is_never_carried(tmp_path, monkeypatch, capsys, case):
     good = tme._good_previous(tmp_path)
     live = el.encode(good)
     if case == 'corrupt':
         files = {el.FILENAME: live[:-40]}
-    elif case == 'rejected':
+    else:
         bad = json.loads(live)
         bad['scope']['probability'] = True
         files = {el.FILENAME: json.dumps(bad).encode()}
-    elif case == 'record_mismatch':                       # a live record describing another file
-        files = {el.FILENAME: live, el.STATUS_FILENAME: _built_record(el.encode(el.build({}, previous=good, previous_state='LOADED', now=AT)))}
-    else:
-        files = {el.FILENAME: live, el.STATUS_FILENAME: tme._record()}
     site = Site(files)
     out = _withheld_artifact(tmp_path, monkeypatch)
     before = _snapshot(out)
@@ -234,10 +230,46 @@ def test_damaged_live_copy_is_never_carried(tmp_path, monkeypatch, capsys, case)
     assert _snapshot(out) == before
     code, printed, line = _guard(out, site, capsys)
     assert code == 0 and 'verdict=WITHHELD' in line         # the existing WITHHELD path, said as it is
-    if case in ('corrupt', 'rejected'):
-        assert 'kind=LIVE_INVALID' in line and 'effect=LIVE_INVALID_COPY_REPLACED' in printed
-    else:
-        assert 'kind=MISSING' in line and 'effect=LIVE_GOOD_COPY_REMOVED' in printed
+    assert 'kind=LIVE_INVALID' in line and 'effect=LIVE_INVALID_COPY_REPLACED' in printed
+
+
+# ---------------------------------------------------------------- LIVE_RECORD_MISMATCH (Codex #437 6716049571)
+
+@pytest.mark.parametrize('case,error', [('record_mismatch', 'STATUS_MISMATCH'), ('record_withheld', 'STATUS_WITHHELD'),
+                                        ('record_damaged', 'JSONDecodeError')])
+def test_good_live_body_with_an_inconsistent_live_record_stops_the_deploy_and_keeps_the_site(tmp_path, monkeypatch, capsys,
+                                                                                             case, error):
+    """A verified good live body served with a live record that does not describe it: the pair is not adopted (the record
+    is not rewritten to fit) and the WITHHELD path is not taken (it would remove the good body): exit 1, the deploy stops
+    (no guard, no upload, no deploy step runs after a failed step), the live site keeps every byte."""
+    good = tme._good_previous(tmp_path)
+    live = el.encode(good)
+    if case == 'record_mismatch':                       # a live record describing another valid file
+        record = _built_record(el.encode(el.build({}, previous=good, previous_state='LOADED', now=AT)))
+    elif case == 'record_withheld':                     # a live WITHHELD record beside a live good body
+        record = tme._record()
+    else:                                               # a damaged live record
+        record = _built_record(live)[:-7]
+    site = Site({el.FILENAME: live, el.STATUS_FILENAME: record})
+    site_before = {k: bytes(v) for k, v in site.files.items()}
+    out = _withheld_artifact(tmp_path, monkeypatch)
+    before = _snapshot(out)
+    outcome, code, printed = _carry(out, site, capsys)
+    assert (outcome, code) == ('LIVE_RECORD_MISMATCH', 1), printed
+    assert (f'file={el.STATUS_FILENAME} error={error} carried=NONE deploy=REFUSED site=KEPT') in printed
+    assert 'attempt_stage=PREVIOUS' in printed, 'this attempt\'s own failure is still reported'
+    assert _snapshot(out) == before, 'nothing carried, the artifact record not rewritten'
+    assert site.files == site_before, 'the live site keeps every byte (the deploy never runs)'
+
+
+def test_a_consistent_live_record_still_carries(tmp_path, monkeypatch, capsys):
+    """The normal carry is unchanged: a live record that describes the live body (BUILT/NEW) carries, guard EQUAL."""
+    live = el.encode(tme._good_previous(tmp_path))
+    site = Site({el.FILENAME: live, el.STATUS_FILENAME: _built_record(live)})
+    out = _withheld_artifact(tmp_path, monkeypatch)
+    assert _carry(out, site, capsys)[:2] == ('CARRIED', 0) and (out / el.FILENAME).read_bytes() == live
+    code, printed, line = _guard(out, site, capsys)
+    assert code == 0 and 'verdict=PASS kind=EQUAL' in line, printed
 
 
 # ---------------------------------------------------------------- LIVE_ABSENT

@@ -13,8 +13,12 @@ guard changes: the carried bytes are the live bytes, so the guard sees EQUAL, an
   query as the guard, the daily tool's reader macro_evidence._live_bytes, no redirects, the daily retries):
   - read failed after the retries (data or its live record) -> LIVE_UNREADABLE: nothing carried, exit 1 (the deploy
     stops; the guard would refuse it as LIVE_UNREACHABLE anyway). A failed read is never taken for absence;
-  - HTTP 200 but rejected (not JSON, oversized, require_macro_evidence, or a live record that does not describe it)
-    -> LIVE_INVALID: nothing carried, the existing WITHHELD path (guard LIVE_INVALID or MISSING);
+  - HTTP 200 but the live body itself is rejected (not JSON, oversized, require_macro_evidence) -> LIVE_INVALID: nothing
+    carried, the existing WITHHELD path (guard LIVE_INVALID);
+  - the live body is a verified good copy but its live attempt record is damaged, says WITHHELD, describes another file,
+    or this attempt's record cannot describe it (Codex #437 6716049571: record_mismatch / record_withheld) ->
+    LIVE_RECORD_MISMATCH: nothing carried, the record is never rewritten to fit, exit 1 (deploy=REFUSED, site=KEPT): the
+    deploy stops so the live site, good body included, stays as it is;
   - 404, or only the build placeholder -> LIVE_ABSENT: nothing to carry, the file stays unpublished (NOT_PUBLISHED);
   - a verified good copy -> CARRIED: those bytes are written byte for byte (never re-serialized: generated_at and every
     observation, release and check time unchanged) and the attempt record becomes CARRIED_LIVE
@@ -100,8 +104,10 @@ def _read(source, name, open_response):
 def read_live(open_response=None, environ=None):
     """The live copy for a carry, read once (with retries) -> (read, body, payload, error class, file).
 
-    read: GOOD (verified good copy, its live record absent or describing it) | ABSENT_404 | PLACEHOLDER | INVALID |
-    UNREADABLE."""
+    read: GOOD (verified good copy, its live record absent or describing it) | ABSENT_404 | PLACEHOLDER | INVALID (the live
+    body itself is damaged) | RECORD_MISMATCH (the live body is a verified good copy but the live attempt record served
+    beside it is damaged, WITHHELD or describes another file: the pair is inconsistent, so it is neither carried nor
+    allowed to be replaced; owner / Codex #437 6716049571) | UNREADABLE."""
     environ = os.environ if environ is None else environ
     nonce = _nonce(environ)
     try:
@@ -124,15 +130,16 @@ def read_live(open_response=None, environ=None):
     except Unreadable as error:
         return 'UNREADABLE', None, None, error.error_class, el.STATUS_FILENAME
     except ValueError as error:
-        return 'INVALID', None, None, type(error).__name__, el.STATUS_FILENAME
+        return 'RECORD_MISMATCH', None, None, type(error).__name__, el.STATUS_FILENAME
     if record_body is not None:
         try:
             record = el.require_status(tool.parse_json(record_body))
         except Exception as error:
-            return 'INVALID', None, None, type(error).__name__, el.STATUS_FILENAME
-        if record['published'] == 'WITHHELD' or record['data_generated_at'] != payload['generated_at'] \
-                or record['data_sha256'] != _sha(body):
-            return 'INVALID', None, None, 'STATUS_MISMATCH', el.STATUS_FILENAME
+            return 'RECORD_MISMATCH', None, None, type(error).__name__, el.STATUS_FILENAME
+        if record['published'] == 'WITHHELD':
+            return 'RECORD_MISMATCH', None, None, 'STATUS_WITHHELD', el.STATUS_FILENAME
+        if record['data_generated_at'] != payload['generated_at'] or record['data_sha256'] != _sha(body):
+            return 'RECORD_MISMATCH', None, None, 'STATUS_MISMATCH', el.STATUS_FILENAME
     return 'GOOD', body, payload, None, el.FILENAME
 
 
@@ -160,6 +167,12 @@ def carry(artifact_dir, *, open_response=None, environ=None, now=_utc_now):
     if read == 'UNREADABLE':
         _say('LIVE_UNREADABLE', file=name, error=error_class, carried='NONE', deploy='REFUSED', **attempt)
         return 'LIVE_UNREADABLE', 1
+    if read == 'RECORD_MISMATCH':
+        # A verified good live body with an inconsistent live record: never adopted (the record is not rewritten to fit)
+        # and never left to the WITHHELD path, which would remove the good body from the site. Stop the deploy so the
+        # live site stays as it is.
+        _say('LIVE_RECORD_MISMATCH', file=name, error=error_class, carried='NONE', deploy='REFUSED', site='KEPT', **attempt)
+        return 'LIVE_RECORD_MISMATCH', 1
     if read == 'INVALID':
         _say('LIVE_INVALID', file=name, error=error_class, carried='NONE', effect='WITHHELD', **attempt)
         return 'LIVE_INVALID', 0
@@ -172,9 +185,11 @@ def carry(artifact_dir, *, open_response=None, environ=None, now=_utc_now):
         carried = el.encode_status(el.carried_status(record, carried_at=now(), generated_at=payload['generated_at'],
                                                      sha256=digest))
     except Exception as error:
-        # a live copy the record cannot describe (times out of order): never described as carried
-        _say('LIVE_INVALID', file=el.FILENAME, error=type(error).__name__, carried='NONE', effect='WITHHELD', **attempt)
-        return 'LIVE_INVALID', 0
+        # a verified good live copy this attempt's record cannot describe (times out of order): never described as
+        # carried, and never removed from the site either -> the deploy stops, the live site stays
+        _say('LIVE_RECORD_MISMATCH', file=el.STATUS_FILENAME, error=type(error).__name__, carried='NONE', deploy='REFUSED',
+             site='KEPT', **attempt)
+        return 'LIVE_RECORD_MISMATCH', 1
     try:
         tool.write_bytes(directory, body)
         tool.write_bytes(directory, carried, el.STATUS_FILENAME)
