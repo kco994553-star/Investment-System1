@@ -87,14 +87,23 @@ def normalize(raw):
     if not isinstance(number,str) or not re.fullmatch(r'(?:\d{4}-\d{4,6}|[A-Z]\d-\d+)',number):raise ValueError('FR_DOCUMENT_NUMBER_INVALID')
     date.fromisoformat(published)
     if not isinstance(agencies,list) or not agencies:raise ValueError('FR_AGENCY_MISSING')
-    names=[]
+    names=[];raw_names=[]
     for a in agencies:
-        if not isinstance(a,dict) or not isinstance(a.get('name'),str) or not a['name']:raise ValueError('FR_AGENCY_MISSING')
-        names.append(a['name'])
+        if not isinstance(a,dict):raise ValueError('FR_AGENCY_MISSING')
+        name=a.get('name')
+        if isinstance(name,str) and name.strip():names.append(name)
+        elif name is None and isinstance(a.get('raw_name'),str) and a['raw_name'].strip():
+            # FR can return an unmatched child agency label. It is received
+            # source text, not a canonical agency name/ID or policy authority.
+            raw_names.append(a['raw_name'])
+        else:raise ValueError('FR_AGENCY_MISSING')
     title=raw.get('title');link=raw.get('html_url')
     if not isinstance(title,str) or not title or len(title)>4096 or not isinstance(link,str) or not link.startswith('https://www.federalregister.gov/documents/'):raise ValueError('FR_TEXT_OR_URL_INVALID')
     out={'document_id':'FR:'+number,'document_number':number,'agencies':sorted(set(names)),
          'title':title,'url':link,'published':{'value':published,'precision':'DATE','timezone':None}}
+    if raw_names:
+        out['raw_agency_names']=sorted(set(raw_names))
+        out['agency_name_status']='PARTIAL_CANONICAL_NAMES' if names else 'RAW_LABEL_ONLY'
     for field in ('type','abstract','effective_on'):
         value=raw.get(field)
         if value is not None and (not isinstance(value,str) or len(value)>20000):raise ValueError('FR_METADATA_INVALID')

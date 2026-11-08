@@ -305,3 +305,21 @@ status/headers/acquired_at/byte count/SHA in the existing private raw handoff.
 This tests actual list shape/normalization and partial-page handling only. It does
 not prove full pagination coverage, current policy state or historical PIT. Main
 owns execution after separate owner approval; no API request was made here.
+
+### 2026-11-08 보관 Federal Register 첫 페이지 호환 검증
+
+Main의 기승인 취득본(공개일2024-09-18, 실제 취득2026-11-07T06:57:00.663275+00:00)을
+기존 `fr-replay` CLI에 처음 연결했다. 원응답160,752bytes와 receipt/manifest의 SHA를 대조했다.
+API가 `agencies[].name` 없이 `raw_name`만 주는 하위 기관1건에서 FR_AGENCY_MISSING으로
+첫 페이지 전체의 후보 생성이 막혔다. 원천의 raw label을 canonical 기관명으로 채우지 않고
+`raw_agency_names`와 `agency_name_status=PARTIAL_CANONICAL_NAMES|RAW_LABEL_ONLY`로 따로 보존한다.
+기존 이름이 모두 있는 응답의 normalized payload/내용 해시는 그대로다. 이름과 raw label 모두 없거나
+자료형이 잘못된 기관은 계속 거부한다. 후보는 모두 UNREVIEWED이고 정책/개정 ID·시행/기업 적용을 확정하지 않는다.
+
+변경 영향 시험 `test_policy_fr_replay.py` 및 P17 import/운영 경계: 23통과.
+수정 전 후보0→수정 후100; 기존 정상99건의 정규화 결과 불변, raw label 지원1건.
+동일 실제 응답의 새 상태 재생에서 DUPLICATE100/새 후보0/가짜 개정0을 확인했다.
+실제 pagination은 첫100건/전체130건/총2페이지다. completed_through는 null, 상태 INCOMPLETE,
+next_plan은2페이지이며 요청하지 않았다. 새 HTTP 요청0, 실제429/전기간 수집/현재 정책상태/PIT 완료는 미검증이다.
+원응답·실제 후보·실행 job/결과는 비공개로만 보존한다. 공개 회귀 입력은 축약한 합성 기관명이다.
+공개 policy-impact-view/2 및 navigation/2 계약과 이전 해시 산출은 이 변경의 대상이 아니다.

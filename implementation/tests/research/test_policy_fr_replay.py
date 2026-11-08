@@ -158,3 +158,34 @@ def test_cli_private_kind_comes_from_replay_state_not_legacy_bundle(tmp_path):
     cli=Path(__file__).parents[2]/'tools/policy_impact.py'
     result=__import__('subprocess').run([sys.executable,str(cli),'--job',str(path),'--output',str(out)],capture_output=True,text=True)
     assert result.returncode==2 and json.loads(result.stdout)['code']=='PRIVATE_OUTPUT_REQUIRED' and not out.exists()
+
+
+def test_raw_only_child_agency_remains_source_label_not_verified_agency():
+    from investment_system.research.policy_impact.federal_register import normalize
+    row=doc();row['agencies'].append({'raw_name':'SYNTHETIC Office label'})
+    n=normalize(row)
+    assert n['agencies']==['Synthetic Agency']
+    assert n['raw_agency_names']==['SYNTHETIC Office label']
+    assert n['agency_name_status']=='PARTIAL_CANONICAL_NAMES'
+    result=replay(initial('2026-11-01'),[response([row],end='2026-11-01')],through='2026-11-01',now=NOW)
+    assert result['changes']['NEW_DOCUMENT']==1
+    candidate=next(iter(result['state']['candidates'].values()))
+    assert candidate['status']=='UNREVIEWED' and candidate['policy_id'] is None
+    assert candidate['company_applicability']=='UNKNOWN' and not candidate['automatic_publication']
+
+
+def test_all_raw_agency_labels_keep_canonical_authority_unknown():
+    from investment_system.research.policy_impact.federal_register import normalize
+    row=doc();row['agencies']=[{'raw_name':'SYNTHETIC only raw label'}]
+    n=normalize(row)
+    assert n['agencies']==[] and n['agency_name_status']=='RAW_LABEL_ONLY'
+    # Normal responses retain their previous normalized bytes/content hash.
+    unchanged=normalize(doc())
+    assert 'raw_agency_names' not in unchanged and 'agency_name_status' not in unchanged
+
+
+@pytest.mark.parametrize('agency',[{}, {'raw_name':7}, {'name':7,'raw_name':'SYNTHETIC'}])
+def test_malformed_agency_is_still_rejected(agency):
+    from investment_system.research.policy_impact.federal_register import normalize
+    row=doc();row['agencies']=[agency]
+    with pytest.raises(ValueError,match='FR_AGENCY_MISSING'):normalize(row)
