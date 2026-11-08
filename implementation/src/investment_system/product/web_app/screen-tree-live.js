@@ -4,7 +4,8 @@
    paint). The tree reads no layer file, so the skeleton also hands over when IS2.ready rejected but this file ran.
    - The whole product structure as one tree: the menus 0 ~ n+1 from IS2.MENU (their order, numbers, names and routes), under each
      the feature numbers of docs/SPEC/FUNCTION_HIERARCHY_v1.0.md (levels 2 ~ 4, names as written there; 4.5 is "나비효과",
-     DC-17), and the detail screens IS2.DETAILS with where each is entered from (TreeCommon: proposals). The structure is static
+     DC-17), the numbers added under the spec's rule in docs/SPEC/FUNCTION_HIERARCHY_ADDITIONS.md (2.1.8 · 2.2.7 · 2.4.6 · 3.5 ·
+     4.5.x.1; the same ids as FUNCTION_STATUS, marked 추가 명세, a Draft PR's feature says 준비 중 with its PR), and the detail screens IS2.DETAILS with where each is entered from (TreeCommon: proposals). The structure is static
      and written here: the old app's tree (web_assets/ia-screens.js) builds HTML strings and reads AppShell, which this app does
      not load. Menu numbers are the draft's (core.js), feature numbers the spec's (FUNCTION_STATUS §0 maps them).
    - Every node is a link to its route (a feature goes to its menu's screen; 2.4 QGV 상세 opens from 기업 검색, a detail to
@@ -27,27 +28,35 @@ const I=window.IS2,{h,icon,parts:{mascot}}=I;
 // Spec v1.0 areas (level 1) per menu id: [feature number, spec name].
 const AREA={search:['1','홈 · 기업검색'],qgv:['2','QGV'],technical:['3','기술적 분석'],macro:['4','매크로'],news:['5','뉴스 · 공시 · 관계망'],
  portfolio:['6','포트폴리오'],prompts:['7','프롬프트 라이브러리'],tree:['8','투자시스템 전체 내용구성 트리'],lab:['9','Lab']};
-// Levels 2 ~ 4 per menu id: [number, name, menu number (FUNCTION_STATUS §0) or null, children, own screen id, note]. The notes are
-// the owner's fixed words for the unfinished models (공식 국면 미산출 · 준비 중), never a result.
+// Levels 2 ~ 4 per menu id: [number, name, menu number (FUNCTION_STATUS §0) or null, children, own screen id, note, added, at]. The
+// notes are the owner's fixed words for the unfinished models (공식 국면 미산출 · 준비 중), never a result. added: a number of
+// FUNCTION_HIERARCHY_ADDITIONS.md (추가 명세); at: the menu whose screen holds it when that is not its area's menu (3.5 → #/qgv 1.1.8).
 const L=(n,t,k,note)=>[n,t,null,k||[],null,note||null];
+const A=(n,t,k,note)=>[n,t,null,k||[],null,note||null,true];
+const DISC='준비 중 · Draft #506·#510',POLICY='준비 중 · Draft #511';
 const FEATURES={
  search:[['1.1','기업검색 및 기업 진입','0',[L('1.1.1','기업 검색'),L('1.1.2','기업 통합 진입'),L('1.1.3','검색 전 콘텐츠'),L('1.1.4','검색 전 개인화')]]],
- qgv:[['2.1','리더보드','1.1',[L('2.1.1','평가 대상과 목록'),L('2.1.2','순위와 정렬'),L('2.1.3','분류와 필터'),L('2.1.4','기간별 수익률'),L('2.1.5','산출 상태별 목록'),L('2.1.6','공식 결과와 개인 결과'),L('2.1.7','후보 선정 연결')]],
-  ['2.2','가중치 변화 · 사용자 설정','1.2',[L('2.2.1','축 가중치'),L('2.2.2','내부 요인 가중치'),L('2.2.3','프리셋'),L('2.2.4','변경 영향'),L('2.2.5','결측과 적용 비중'),L('2.2.6','설정 관리')]],
+ qgv:[['2.1','리더보드','1.1',[L('2.1.1','평가 대상과 목록'),L('2.1.2','순위와 정렬'),L('2.1.3','분류와 필터'),L('2.1.4','기간별 수익률'),L('2.1.5','산출 상태별 목록'),L('2.1.6','공식 결과와 개인 결과'),L('2.1.7','후보 선정 연결'),
+   A('2.1.8','의외의 기업',[A('2.1.8.1','의외의 기업 목록'),A('2.1.8.2','섹터·기업 유형·사업 강점 필터'),A('2.1.8.3','정렬'),A('2.1.8.4','기존 기업 상세 연결')],DISC)]],
+  ['2.2','가중치 변화 · 사용자 설정','1.2',[L('2.2.1','축 가중치'),L('2.2.2','내부 요인 가중치'),L('2.2.3','프리셋'),L('2.2.4','변경 영향'),L('2.2.5','결측과 적용 비중'),L('2.2.6','설정 관리'),A('2.2.7','섹터 QGV 설정(요소·가중치)',null,'준비 중 · Draft #507·#510')]],
   ['2.3','13F 기반 가중치 연구','1.3',[L('2.3.1','과거 보유 기록'),L('2.3.2','가중치 탐색'),L('2.3.3','백테스트 연결'),L('2.3.4','연구와 채택 구분')]],
   ['2.4','QGV 상세',null,[L('2.4.1','기업 설명과 분류'),L('2.4.2','점수와 원지표 상세'),L('2.4.3','자료 상태와 커버리지'),L('2.4.4','V의 입력 기준'),
-   L('2.4.5','기업 비교 레이더',[L('2.4.5.1','축 구성'),L('2.4.5.2','비교군'),L('2.4.5.3','결측 처리'),L('2.4.5.4','상세 확인')])],'company'],
+   L('2.4.5','기업 비교 레이더',[L('2.4.5.1','축 구성'),L('2.4.5.2','비교군'),L('2.4.5.3','결측 처리'),L('2.4.5.4','상세 확인')]),
+   A('2.4.6','의외의 기업 마크',[A('2.4.6.1','의외의 기업 마크'),A('2.4.6.2','선정 이유 펼침'),A('2.4.6.3','확인 근거 펼침'),A('2.4.6.4','재검토 상태 표시')],DISC)],'company'],
   ['2.5','QGV 내용구성 트리','1.4',[L('2.5.1','구조 탐색'),L('2.5.2','설명과 예시'),L('2.5.3','상세 연결')]]],
  technical:[['3.1','기술적 지표 · 시나리오','2.1',[L('3.1.1','차트 탐색'),L('3.1.2','지표와 정도 설정'),L('3.1.3','시나리오'),L('3.1.4','결과 구분')]],
   ['3.2','차트 패턴 · 시나리오','2.2',[L('3.2.1','패턴 탐색'),L('3.2.2','정도 설정'),L('3.2.3','확인·실패·무효화'),L('3.2.4','패턴 카드와 시나리오'),L('3.2.5','데이터 적합성')]],
   ['3.3','차트 노트','2.3',[L('3.3.1','직접 작성'),L('3.3.2','편집과 저장'),L('3.3.3','분석과 분리')]],
-  ['3.4','기술적 분석 내용구성 트리','2.4',[L('3.4.1','구조 탐색'),L('3.4.2','설명과 예시')]]],
+  ['3.4','기술적 분석 내용구성 트리','2.4',[L('3.4.1','구조 탐색'),L('3.4.2','설명과 예시')]],
+  ['3.5','기술 조건 리더보드 필터','1.1.8',[],null,null,true,'qgv']],
  macro:[['4.1','경기·주식시장 국면','3.1',[L('4.1.1','국면 그래프',null,'공식 국면 미산출'),L('4.1.2','국면 탐색'),L('4.1.3','근거 세로선',[L('4.1.3.1','근거 시점'),L('4.1.3.2','근거 설명'),L('4.1.3.3','근거 탐색')]),
    L('4.1.4','기존 매크로 연결'),L('4.1.5','판단 상태')]],
   ['4.2','순환매','3.2',[L('4.2.1','위치',null,'위치 모델 준비 중'),L('4.2.2','조정 조건'),L('4.2.3','확률')]],
   ['4.3','SIC 산업 사이클','3.3',[L('4.3.1','산업 선택'),L('4.3.2','현재 예상 위치',null,'사이클 위치 준비 중'),L('4.3.3','조정 조건과 확률')]],
   ['4.4','사용자 국면 판단','3.4',[L('4.4.1','위치 선택'),L('4.4.2','저장과 비교')]],
-  ['4.5','나비효과','3.5',[L('4.5.1','사건과 파급 경로'),L('4.5.2','투자 가설'),L('4.5.3','근거와 반증'),L('4.5.4','관계망 연결')],null,'준비 중'],
+  ['4.5','나비효과','3.5',[L('4.5.1','사건과 파급 경로',[A('4.5.1.1','정책 사건 목록',null,POLICY),A('4.5.1.2','정책 상세·변경 이력',null,POLICY)]),
+   L('4.5.2','투자 가설',[A('4.5.2.1','기업 노출과 영향 가설',null,POLICY)]),L('4.5.3','근거와 반증',[A('4.5.3.1','근거·반증·후속 확인',null,POLICY)]),
+   L('4.5.4','관계망 연결',[A('4.5.4.1','공통 화면 연결',null,POLICY)])],null,'준비 중'],
   ['4.6','매크로 내용구성 트리','3.6',[L('4.6.1','구조 탐색'),L('4.6.2','설명과 예시')]]],
  news:[['5.1','관계망','4.1',[L('5.1.1','기업 중심 관계'),L('5.1.2','연결 근거'),L('5.1.3','검색 전 추천'),L('5.1.4','개인 설정')]],
   ['5.2','공시 · 뉴스','4.2',[L('5.2.1','목록과 개인화'),L('5.2.2','요약'),L('5.2.3','영향 분석'),L('5.2.4','주가 반영 여부'),L('5.2.5','신규·중복·변경'),L('5.2.6','컨센서스 변화'),L('5.2.7','수집 상태')]],
@@ -75,10 +84,10 @@ function screenStatus(id){try{const R=window.IS2;if(typeof R.screen!=='function'
 function detailStatus(id){try{const R=window.IS2;if(typeof R.detail!=='function')return'unknown';return R.detail(id)?'ready':'pending';}catch(_){return'unknown';}}
 
 // Node model: {key, href, label: [nodes], status, current, kids}.
-function features(list,href){return list.map(([no,name,menuNo,kids,own,note])=>({key:'f:'+no,href:own==='company'?I.href('search'):href,status:own?screenStatus(own):null,
+function features(list,href){return list.map(([no,name,menuNo,kids,own,note,added,at])=>{const here=at?I.href(at):href;return{key:'f:'+no,href:own==='company'?I.href('search'):here,status:own?screenStatus(own):null,
  label:[h('b',null,no),' ',name,menuNo?h('span',{class:'meta'},' · 메뉴 ',menuNo):null,own==='company'?h('span',{class:'meta'},' · 기업 상세 · 검색에서 기업을 고르면 열림'):null,
-  note?h('span',{class:'meta',dataset:{prep:no}},' · ',note):null],
- kids:features(kids,href)}));}
+  added?h('span',{class:'meta',dataset:{added:no}},' · 추가 명세'):null,note?h('span',{class:'meta',dataset:{prep:no}},' · ',note):null],
+ kids:features(kids,here)};});}
 function model(){
  const R=window.IS2,menu=R.MENU,details=R.DETAILS;
  if(!Array.isArray(menu))throw Error('MENU_UNREADABLE');

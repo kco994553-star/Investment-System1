@@ -253,6 +253,12 @@ async function scores(page) {
     // lists; a route change only the company page's lists (the layer keeps the rest in memory). Only answers to requests of the
     // current document and route count (numbered after the last navigation), and none of its data requests may still be open.
     // Which files are read, and that nothing else is, stays the job of the checks below.
+    // A fresh load starts from about:blank once the current document has no data read in flight (quiet). It used to be a hash
+    // change on the old document and then a reload: the hash change started the route's reads, the reload dropped them, and a
+    // dropped read whose request event Playwright reported after the reload's navigation (intercepted requests are reported once
+    // both the request and its interception have arrived) was numbered in the new document and never finished. That was the
+    // CI time-out of 2026-11-01 (#451: READS_NOT_ANSWERED fresh #/qgv, one qgv-official.json read open 30 s, created at the moment
+    // the old document's reads were aborted, while every read of the new document had been answered).
     const expected = (hash, fresh) => (hash === '#/qgv' ? (fresh ? QGV_READS : []) : hash === '#/macro' ? (fresh ? MACRO_READS : []) : hash === '#/news' ? (fresh ? NEWS_READS : []) : hash === '#/lab' ? LAB_READS : hash === '#/' || hash === '#/nowhere/x' ? (fresh ? HOME_READS : [])
       // The layer keeps one read of each list per publication (DataRefresh.list): in the route-change pass 4. 뉴스 (before the
       // company page in MENU order, same document) has already read them, so the company page does not ask again.
@@ -266,6 +272,14 @@ async function scores(page) {
         await new Promise((r) => setTimeout(r, 25));
       }
     };
+    // No data read of the current document still open (the same 30 s limit and diagnostics as answers).
+    const quiet = async (what) => {
+      const busy = () => [...open.keys()].filter((r) => (number.get(r) || 0) > navAt && isData(r.url()));
+      for (const end = Date.now() + 30000; busy().length;) {
+        if (Date.now() > end) { diagnose(what + ' before leaving'); throw new Error('READS_STILL_OPEN ' + what + ' open=' + busy().length); }
+        await new Promise((r) => setTimeout(r, 25));
+      }
+    };
     const drawn = async (hash, fresh, from) => {
       if (hash === '#/qgv') await diagnosed('table wait', () => page.locator('[data-lb-table]').waitFor());
       await answers((fresh ? 'fresh ' : 'change ') + hash, expected(hash, fresh), from);
@@ -275,7 +289,7 @@ async function scores(page) {
     for (const hash of routes) {
       phase = 'A fresh ' + hash;
       const at0 = rec.log.length, an0 = answered.length;
-      await page.goto(s.base + hash); await page.reload(); await page.locator('main[data-route]').waitFor(); await loaded(); await drawn(hash, true, an0); await settle();
+      await quiet(phase); await page.goto('about:blank'); await page.goto(s.base + hash); await page.locator('main[data-route]').waitFor(); await loaded(); await drawn(hash, true, an0); await settle();
       assert.deepEqual(opens(hash, dataNames(since(at0))), [], hash + ': opening the route in a fresh load reads no data file its screen did not ask for');
     }
     for (const hash of routes) {
