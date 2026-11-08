@@ -69,4 +69,23 @@ ok('mixed pairs, unknown versions, a dropped policy and a changed hash are refus
   assert.equal(r.ok, true); assert.ok(r.value.mismatch.macro, 'a macro part of another hash is kept aside, never joined'); assert.equal(r.value.macro, null);
 });
 
+// Codex #523 6fc7a673 synthetic summary with calculation_counts (tests/fixtures/classification_counts/summary.json, SHA-256 pinned):
+// every structural check of Main's reader passes on Codex's own shape; it is then compared with the view it is read beside, and a
+// view of other records sets only the counts aside (the bundle still reads, nothing shown as 0).
+const COUNTS_PATH = path.join(ROOT, 'implementation/tests/fixtures/classification_counts/summary.json');
+ok('Codex #523 calculation_counts: Codex shape passes every structural check; against another view only the counts are set aside', () => {
+  assert.equal(crypto.createHash('sha256').update(fs.readFileSync(COUNTS_PATH)).digest('hex'), '555c2ef077ff3f071e71121a7193c493196e49ac4b1c2a5a17cff7846822ecc1');
+  const summary = JSON.parse(fs.readFileSync(COUNTS_PATH, 'utf8')), b = X.bundle();
+  const r = C.validate({ view: b.view, dictionary: b.dictionary, expanded: summary });
+  assert.equal(r.ok, true, JSON.stringify(r));
+  // The view comparison runs only after every structural check; the Main fixture view (2026-11-02) is not Codex's 2026-11-04 view.
+  assert.notEqual(b.view.valuation_date, summary.calculation_counts.valuation_date);
+  assert.deepEqual([r.value.counts.state, r.value.counts.code], ['ERROR', 'COUNTS_DATE_MISMATCH'], 'structure passed; the operating scope names another view');
+  assert.equal(r.value.expanded.catalog.issuers, summary.catalog.issuers, 'the summary itself still reads');
+  const old = JSON.parse(JSON.stringify(summary)); delete old.calculation_counts;
+  assert.equal(C.validate({ view: b.view, expanded: old }).value.counts.state, 'NOT_DELIVERED');
+  const broken = JSON.parse(JSON.stringify(summary)); broken.calculation_counts.scopes.catalog.official_q_gate_input.valid += 1;
+  assert.equal(C.validate({ view: b.view, expanded: broken }).value.counts.code, 'COUNT_ARITHMETIC', 'a changed Codex count is caught before the view comparison');
+});
+
 console.log(JSON.stringify({ passed: true, checks: n }));
