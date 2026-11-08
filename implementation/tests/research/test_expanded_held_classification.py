@@ -272,3 +272,14 @@ def test_refresh_does_not_confuse_raw_evidence_with_accounting_applicability():
     out,e,a=refresh_retained_financials(s,f,u,sec)
     assert a['statuses']=={'REFRESHED':1}
     assert out['rows'][0]['observations']['roa_ttm']['value']==0.1
+
+
+def test_refresh_preserves_missing_period_placeholder_without_inventing_provenance():
+    from investment_system.research.expanded_held_classification import refresh_retained_financials
+    s,f,u,sec=refresh_fixture();o=u['rows'][0]['observations']['roa_ttm']
+    o.update(value=None,status='MISSING_INPUT',raw_components_available=False,currency=None,
+             source_available_at=None,retrieved_at=None,provenance=[],fiscal_period={'kind':'TTM','end':None})
+    out,e,a=refresh_retained_financials(s,f,u,sec)
+    assert a['statuses']=={'REFRESHED':1} and out['rows'][0]['observations']['roa_ttm']==o
+    o['issuer_id']='OTHER'
+    assert refresh_retained_financials(s,f,u,sec)[2]['statuses']=={'UNAVAILABLE':1}

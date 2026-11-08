@@ -140,6 +140,18 @@ def refresh_retained_financials(snapshot, financials, upstream, sec):
                 reason='UPSTREAM_ACQUISITION_OLDER';break
             values={v:deepcopy(o) for v,o in up.get('observations',{}).items() if v in CATALOG and CATALOG[v]['axis'] in ('Q','G')}
             for variant,o in values.items():
+                # An explicit missing-period placeholder is a diagnostic, not
+                # an acquired observation. Preserve its nulls; do not require
+                # invented currency/time/period to transfer other valid factors.
+                if (o.get('status')=='MISSING_INPUT' and o.get('value') is None and
+                    o.get('raw_components_available') is False and o.get('issuer_id')==row['issuer_id'] and
+                    o.get('variant_id')==variant and o.get('formula_version')==CATALOG[variant]['formula_version'] and
+                    o.get('unit')==CATALOG[variant]['unit'] and o.get('validation_basis')=='VERIFIED_COMPONENTS' and
+                    o.get('security_id') is None and o.get('price_asof') is None and
+                    all(o.get(k) is None for k in ('currency','source_available_at','retrieved_at')) and
+                    o.get('fiscal_period',{}).get('kind')==CATALOG[variant]['period'] and
+                    o.get('fiscal_period',{}).get('end') is None and o.get('provenance')==[]):
+                    continue
                 if (o.get('issuer_id')!=row['issuer_id'] or o.get('security_id') is not None or o.get('price_asof') is not None or
                     o.get('validation_basis')!='VERIFIED_COMPONENTS' or
                     (o.get('currency')!=rec.get('currency') and (o.get('status') in VALID or o.get('currency') is not None)) or not o.get('source_available_at') or
