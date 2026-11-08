@@ -8,6 +8,7 @@ from pathlib import Path
 import sys
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'src'))
 from investment_system.research.expanded_held_classification import build
+from investment_system.research.classification_counts import summarize
 
 
 def run(job,output,*,synthetic=False):
@@ -16,7 +17,8 @@ def run(job,output,*,synthetic=False):
     if not synthetic and any((p/'.git').exists() for p in (out,*out.parents)):
         raise ValueError('PRIVATE_OUTPUT_OUTSIDE_CHECKOUT_REQUIRED')
     if out.exists():raise ValueError('OUTPUT_ALREADY_EXISTS')
-    files=build(job)
+    summary_only=job.get('mode')=='summary-only'
+    files={'summary.json':summarize(job)} if summary_only else build(job)
     out.mkdir(parents=True,mode=0o700)
     manifest={'schema_version':'held-expanded-classification-manifest/1','data_kind':kind,
         'source_files':{k:v for k,v in job.items() if isinstance(v,dict) and 'sha256' in v},'files':[]}
@@ -25,6 +27,12 @@ def run(job,output,*,synthetic=False):
         manifest['files'].append({'path':name,'sha256':hashlib.sha256(body).hexdigest(),'bytes':len(body)})
     files['replay-job.json']=job
     for name,value in files.items():write(name,(json.dumps(value,ensure_ascii=False,indent=2,allow_nan=False)+'\n').encode())
+    if summary_only:
+        manifest['source_job']='replay-job.json'
+        manifest['operation']='EXTRACT_EXISTING_RESULTS_NO_RECALCULATION'
+        (out/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
+        (out/'manifest.json').chmod(0o600)
+        return files['summary.json']
     # Readable without unpacking any archive; no company raw values in stdout.
     values={r['company_id']:r for r in files['preview.json']['result_rows']}
     import io
