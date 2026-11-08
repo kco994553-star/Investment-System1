@@ -300,7 +300,7 @@ function industryBlock(box,onChange){
    dl([['매출 증가율 중앙값','— · 집계 미구현',{dataset:{na:'NOT_IMPLEMENTED'}}],['재고/매출','— · 집계 미구현',{dataset:{na:'NOT_IMPLEMENTED'}}],['이익 증가 발행인 비율 (후행)','— · 집계 미구현',{dataset:{na:'NOT_IMPLEMENTED'}}],['기준일','— · 모델 없음']]),
    h('details',null,h('summary',{class:'lk'},'조건 · 반대 근거 · 확률'),conds(),h('p',{class:'reason'},'반대 근거: 엇갈림 · 합계 비율과 중앙값 방향이 다르면'),h('p',{class:'reason'},'반대 근거: 집중 · 한 발행인이 큰 몫이면 합계 비율 근거 제외'),prob()));}
  // 공통 분류 (DC-48): 4.3 keeps its original text, path and key (industry:<group>); the header says which list it is.
- const basis=h('p',{class:'reason',dataset:{ccBasis:'SIC'}},'SIC 업종군 기준(원천 분류) · 공통 산업 분류와 다름 · 공통 분류는 섹터 → 하위 산업(책 10섹터 아래) · SIC 업종군은 그 하위 코드가 아님');
+ const basis=h('p',{class:'reason',dataset:{ccBasis:'SIC'}},'SIC 업종군 기준(원천 분류) · 공통 산업 분류와 다름 · 공통 분류는 섹터 → 하위 산업(공통 10섹터 아래) · SIC 업종군은 그 하위 코드가 아님');
  put(box,title,basis,pick,body);}
 
 /* ---------------------------------------------------------------- 3.4 my position (4.4): kept on this device */
@@ -389,7 +389,7 @@ function ccSectorBlock(box,route){const C=I.classification;if(!C){put(box,h('p',
  if(!on){put(box,head,h('p',{class:'reason',dataset:{ccSector:'NONE',na:st.code||st.state}},'공통 섹터 선택 · ',st.state==='INVALID'?C.WORDS.INVALID:C.WORDS.NONE),h('p',{class:'reason'},'섹터 ETF는 비교 가격계열 · 구성 범위가 공통 섹터와 다를 수 있음'));return;}
  const sel=h('select',{id:'macro-cc-sector',dataset:{ccSectorSelect:''},onchange:e=>{V.ccSector=e.target.value;V.ccIndustry='';ccSectorBlock(box,route);focusLater(box,'[data-cc-sector-select]');}},
   h('option',{value:''},'선택 안 함'),o.sectors.map(x=>h('option',{value:x.id,selected:x.id===V.ccSector},C.sectorName(x.id)+' · '+x.n+'개 기업')));
- const lines=[head,h('div',{class:'card-body'},h('label',{for:'macro-cc-sector'},'공통 섹터 (책 10섹터 · 분류 기록 ',C.shortHash(val.view.classification_hash),' · 평가일 ',val.view.valuation_date,')'),sel)];
+ const lines=[head,h('div',{class:'card-body'},h('label',{for:'macro-cc-sector'},'공통 섹터 (투자시스템 공통 10섹터 · 분류 기록 ',C.shortHash(val.view.classification_hash),' · 평가일 ',val.view.valuation_date,')'),sel)];
  if(V.ccTokenState&&V.ccTokenState!=='OK')lines.push(h('p',{class:'reason',dataset:{ccToken:V.ccTokenState,na:'CLASSIFICATION_CONTEXT_'+V.ccTokenState}},'주소의 분류 문맥을 적용하지 않음 · ',V.ccTokenState==='VERSION_MISMATCH'?C.WORDS.VERSION_MISMATCH:'분류 평가일 다름'));
  const mm=val.mismatch.macro,m=val.macro;
  if(V.ccSector){
