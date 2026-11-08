@@ -110,4 +110,13 @@ ok('signal_day: a row without a producer evaluation day is refused with both day
     else assert.match(w, /· QGV \d{4}-\d{2}-\d{2}$/, id);
   }
 });
+ok('official QGV rows: a row without its own evaluation day stays null through groupInput (never the classification date)', () => {
+  // owner 2026-11-08 「#519 인수 반영」: the official leaderboard's signal_day is never filled with the classification valuation date.
+  const rows = page().map((r) => ({ ...r, signal_day: null })), gi = C.groupInput(GJ.board, rows, bundle());
+  assert.ok(Array.isArray(gi.rows) && gi.rows.length > 0, JSON.stringify(gi.code));
+  assert.ok(gi.rows.every((r) => r.signal_day === null), 'group rows keep null, not ' + GJ.view.valuation_date);
+  assert.ok(rows.every((r) => r.signal_day === null), 'the caller rows are untouched');
+  const j = T.joinGroupRows(GJ.board, { qgv_rows: gi.rows, security_links: GJ.security_links, conditions: GJ.conditions, data_kind: 'SYNTHETIC', group_manifest: gi.manifest, group_context: gi.context, connect_issuers: true });
+  assert.equal(j.ok, false); assert.equal(j.code, 'SIGNAL_DAY_MISMATCH'); assert.match(T.joinText(j), /QGV 행 평가일 미제공/);
+});
 console.log(JSON.stringify({ passed: true, checks: n }));

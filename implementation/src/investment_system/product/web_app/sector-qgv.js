@@ -179,7 +179,14 @@ function badges(factor,coverage){const out=[];
 function search(factors,q){const t=String(q||'').trim().toLowerCase();if(!t)return [];
  return factors.filter(f=>[f.display_name,f.factor_id,f.variant_id,...(f.aliases||[])].some(x=>String(x||'').toLowerCase().includes(t)));}
 
+// signalDay(preview): the evaluation day of every result row of a preview this reader accepted (check) = the producer's own
+// preview.valuation_date (= snapshot.valuation_date; Codex #437 6718082277, owner 2026-11-08). as_of (input cutoff),
+// source_available_at / retrieved_at, price_asof and generation times are never used. A malformed day gives null.
+function signalDay(preview){const d=preview&&typeof preview.valuation_date==='string'?preview.valuation_date:null,m=d&&/^(\d{4})-(\d{2})-(\d{2})$/.exec(d);
+ if(!m)return Object.freeze({signal_day:null,basis:null,reason:'PREVIEW_VALUATION_DATE_INVALID'});const t=new Date(Date.UTC(+m[1],+m[2]-1,+m[3]));
+ if(t.getUTCMonth()!==+m[2]-1||t.getUTCDate()!==+m[3])return Object.freeze({signal_day:null,basis:null,reason:'PREVIEW_VALUATION_DATE_INVALID'});
+ return Object.freeze({signal_day:d,basis:'PREVIEW_VALUATION_DATE',reason:null});}
 return Object.freeze({REQUEST,RESPONSE,PREVIEW,CONFIG,AXES,OPS,SECTOR_TEXT,TEMPLATE_TEXT,AXIS_TEXT,ROLE_TEXT,STATUS_TEXT,GATE_TEXT,FACTOR_TEXT,ERROR_TEXT,EVIDENCE_TEXT,
  text,errorText,request,check,validateSaved,scopeKey,rescale,setAxis,setRole,setFactor,selectable,addFactor,removeFactor,replaceFactor,sums,withScope,withoutScope,applyAll,badges,search,
- FLOW,FLOW_TEXT,base,sameIdentity,restore,origin,legacy});
+ FLOW,FLOW_TEXT,base,sameIdentity,restore,origin,legacy,signalDay});
 });

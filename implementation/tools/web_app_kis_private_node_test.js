@@ -218,7 +218,7 @@ const ok = async (name, fn) => { await fn(); n++; console.log('PASS ' + name); }
   });
   await ok('client: the eight routes — technical takes a symbol, classification a part, macro and news take no query', async () => {
     assert.deepEqual(Object.keys(KP.ROUTE).sort(), ['analysis', 'chart', 'classification', 'macro', 'news', 'qgv', 'status', 'technical']);
-    assert.deepEqual([...KP.CLASSIFICATION_PARTS], ['view', 'technical', 'macro', 'qgv_links', 'dictionary']);
+    assert.deepEqual([...KP.CLASSIFICATION_PARTS], ['view', 'technical', 'macro', 'qgv_links', 'dictionary', 'expanded_summary']);
     const h = harness({ answers: [{ status: 200, body: X.measures() }, { status: 200, body: { schema_version: 'macro-current-query/1' } }, { status: 200, body: { kind: 'NEWS_SIGNALS', schema_version: 2 } }] });
     await h.c.connect();
     await h.c.get('technical', 'NVDA'); await h.c.get('macro', 'NVDA'); await h.c.get('news', null);

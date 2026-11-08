@@ -268,7 +268,7 @@ function krxNumber(value) {
 // macro/current.json, news/current.json) and passes its bytes through. The body is parsed only to check that it is one JSON object
 // of this route's schema (the writers' spacing differs: "schema": "…" and "schema":"…" both occur); the app validates the rest.
 // Nothing is cached, logged or followed; the token, its expiry variable and every upstream body stay out of every response.
-// GET /kis/classification?part=<view|technical|macro|qgv_links|dictionary> (owner 2026-11-08): the held common classification
+// GET /kis/classification?part=<view|technical|macro|qgv_links|dictionary|expanded_summary> (owner 2026-11-08): the held common classification
 // bundle (Codex #516 outputs, staged byte for byte at classification/<part>.json), same owner check, same read token, same rules.
 const KIS_REPO = 'kco994553-star/investment-system1-kis-private';
 const KIS_BRANCH = 'data';
@@ -288,10 +288,12 @@ const KIS_FILES = Object.freeze({
 });
 // The classification parts and the schema each file must carry (Codex common-classification/1 output names).
 const CLASSIFICATION_PARTS = Object.freeze({ view: 'common-classification-view/1', technical: 'common-classification-technical/1',
-  macro: 'common-classification-macro/1', qgv_links: 'common-classification-qgv-links/1', dictionary: 'common-classification-dictionary/1' });
+  macro: 'common-classification-macro/1', qgv_links: 'common-classification-qgv-links/1', dictionary: 'common-classification-dictionary/1',
+  // The expanded held issuer sample's summary (Codex #520): a separate population, its counts only.
+  expanded_summary: 'held-expanded-classification-summary/1' });
 // /kis/classification?part=<part> only (no other parameter, no alternate encoding).
 export function kisClassificationPart(url) {
-  if (url.hash || !/^\?part=[a-z_]{1,16}$/.test(url.search)) throw new Failure('REQUEST_INVALID', 400);
+  if (url.hash || !/^\?part=[a-z_]{1,20}$/.test(url.search)) throw new Failure('REQUEST_INVALID', 400);
   const part = url.searchParams.get('part');
   if (!Object.hasOwn(CLASSIFICATION_PARTS, part)) throw new Failure('REQUEST_INVALID', 400);
   return part;

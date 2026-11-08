@@ -28,7 +28,7 @@ const ROUTE=Object.freeze({status:'/kis/status',chart:'/kis/chart',analysis:'/ki
 // Routes that take ?symbol=<SYM>; classification takes ?part=<one of CLASSIFICATION_PARTS> (owner 2026-11-08, the held common
 // classification bundle, Codex #516 outputs byte for byte); the others take no query.
 const BY_SYMBOL=Object.freeze(['chart','analysis','technical']);
-const CLASSIFICATION_PARTS=Object.freeze(['view','technical','macro','qgv_links','dictionary']);
+const CLASSIFICATION_PARTS=Object.freeze(['view','technical','macro','qgv_links','dictionary','expanded_summary']);
 const SCOPES=Object.freeze(['email','openid']);
 const SYMBOL=/^[A-Z][A-Z0-9-]{0,9}$/;
 const DAY=/^\d{4}-\d{2}-\d{2}$/;

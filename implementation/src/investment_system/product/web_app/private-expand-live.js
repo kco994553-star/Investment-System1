@@ -107,17 +107,20 @@ function renderQgv(body,[qRaw],{code,publicBasis}){const K=I.kisPrivate,q=K.vali
    :h('p',{class:'reason',dataset:{privateRow:'NONE'}},code?'이 기업은 비공개 계산 대상에 없습니다':'기업을 고르면 그 기업의 비공개 축을 보입니다')]);}
 
 // The held common classification bundle: Codex's five outputs as delivered (the reader checks them; nothing is recomputed here).
-const CC_PARTS=Object.freeze(['view','technical','macro','qgv_links','dictionary']);
+const CC_PARTS=Object.freeze(['view','technical','macro','qgv_links','dictionary','expanded_summary']);
+// read part → bundle key (the expanded sample's summary is its own population: key 'expanded').
+const CC_KEY=Object.freeze({expanded_summary:'expanded'});
 function ccSummary(C,b){const rows=b.view.rows,n=k=>rows.filter(r=>r[k].status==='CONFIRMED').length,states={};
  let peer=0;for(const r of rows){const x=C.recordFor(r.company_id,null,b);states[x.state]=(states[x.state]||0)+1;if(x.peer_complete)peer++;}
  return{rows:rows.length,sector:n('sector'),industry:n('industry'),accounting:n('accounting'),peer,states,
-  parts:CC_PARTS.filter(k=>k==='view'||b[k]||Object.prototype.hasOwnProperty.call(b.mismatch,k)),mismatch:Object.keys(b.mismatch)};}
+  parts:CC_PARTS.filter(k=>k==='view'||b[CC_KEY[k]||k]||Object.prototype.hasOwnProperty.call(b.mismatch,k)),mismatch:Object.keys(b.mismatch)};}
 function ccPaint(body,b){const C=I.classification,v=b.view,x=ccSummary(C,b);
  I.append(body,[h('p',{class:'hand',dataset:{privateLayer:'classification',privateSource:'PRIVATE_ARCHIVE'}},C.WORDS.PRIVATE,' · 같은 화면 같은 형식'),
   h('p',{class:'reason',dataset:{privateLayerNote:''}},I.kisPrivate.LAYER_NOTE),
   dl([['평가일',v.valuation_date,{ccPrivateDay:v.valuation_date}],['분류 해시',C.shortHash(v.classification_hash),{ccPrivateHash:v.classification_hash}],['자료 종류',v.data_kind==='SYNTHETIC'?'합성 데이터 · 시험용':'보관 입력(RETAINED_INPUT)',{ccPrivateKind:v.data_kind}],
    ['지식 기준 시각',v.knowledge_as_of],['받은 부분',x.parts.join(' · '),{ccPrivateParts:x.parts.join(',')}],
    x.mismatch.length?['분류 버전 불일치',x.mismatch.join(' · ')+' · 그 부분은 쓰지 않음',{ccPrivateMismatch:x.mismatch.join(',')}]:null],{privateMeta:'classification'}),
+  h('h4',{dataset:{ccPopulation:'OPERATING_504'}},'운영504 · 공식 모집단(Universe504) · 화면의 기업·QGV·기술·매크로가 읽는 기록'),
   h('ul',{dataset:{ccPrivateCounts:''}},
    h('li',{dataset:{ccCount:'rows'}},'기업 행 ',String(x.rows),'개(원래 분모 그대로)'),
    h('li',{dataset:{ccCount:'sector'}},'섹터 확인 ',String(x.sector),'개'),
@@ -125,9 +128,21 @@ function ccPaint(body,b){const C=I.classification,v=b.view,x=ccSummary(C,b);
    h('li',{dataset:{ccCount:'accounting'}},'회계모형 확인 ',String(x.accounting),'개 · 섹터와 따로 셈'),
    h('li',{dataset:{ccCount:'peer'}},'섹터·회계모형 둘 다 확인 ',String(x.peer),'개 · 나머지는 QGV 비교집단 완결 아님')),
   h('p',{class:'reason',dataset:{ccPrivateStates:Object.entries(x.states).map(([k,c])=>k+':'+c).join(',')}},'기록 상태 · ',Object.entries(x.states).map(([k,c])=>k+' '+c).join(' · ')),
-  h('p',{class:'reason'},'공식 QGV 순위·TARGET·공개 파일은 바뀌지 않음 · 분류를 화면에서 다시 추론하지 않음')]);}
+  h('p',{class:'reason'},'공식 QGV 순위·TARGET·공개 파일은 바뀌지 않음 · 분류를 화면에서 다시 추론하지 않음'),
+  expandedBlock(b.expanded)]);}
+// The expanded held issuer sample: a separate population (owner 2026-11-08). Its own denominators and counts only; never added to
+// the 504 counts, never a company page, a QGV row or a technical security id (ISSUER:<CIK> is an analysis row id).
+function expandedBlock(e){
+ if(!e)return h('div',{class:'sk card',dataset:{ccPopulation:'EXPANDED_SAMPLE',ccExpanded:'NONE'}},h('h4',null,'확장 발행사 표본 · 별도 모집단'),h('p',{class:'reason'},'받지 않음 · 운영504 화면은 그대로'));
+ const row=(g,label,k)=>h('li',{dataset:{ccExpandedCount:k}},label,' · 발행사 ',String(e[g].issuers),' · 티커 관측 ',String(e[g].ticker_observations),' · 섹터 ',String(e[g].sector),' · 회계모형 ',String(e[g].accounting),
+  ' · 하위 산업 ',String(e[g].industry),' · Q ',String(e[g].Q),' · G ',String(e[g].G),' · V ',String(e[g].V),' · 총점 ',String(e[g].total));
+ return h('div',{class:'sk card',dataset:{ccPopulation:'EXPANDED_SAMPLE',ccExpanded:e.valuation_date}},
+  h('h4',null,'확장 발행사 표본 · 별도 모집단 · 운영504와 합치지 않음'),
+  h('p',{class:'reason'},'관측 카탈로그 발행사 · 투자 적격 모집단 아님(',e.population_kind,') · 평가일 ',e.valuation_date,' · 카탈로그 관측 ',e.catalog_observed_at.slice(0,10),'(',String(e.catalog_age_days),'일 전 · 평가일 상장 명부 아님)'),
+  h('ul',null,row('catalog','관측 카탈로그 전체','catalog'),row('held_financial_subsample','보유 재무 하위표본','held_financial_subsample')),
+  h('p',{class:'reason',dataset:{ccExpandedMarket:'NONE'}},'전체시장 분모·커버리지 미산출 · 새 증권 ID ',String(e.new_security_ids),' · 순위 범위 ',e.rank_scope,' · 발행사 행 ID는 증권 ID가 아님 · 기술 결합·기업 화면에 쓰지 않음'));}
 function renderClassification(body,res){const C=I.classification,payload={};
- res.forEach((raw,i)=>{if(raw!==null&&raw!==undefined)payload[CC_PARTS[i]]=raw;});
+ res.forEach((raw,i)=>{if(raw!==null&&raw!==undefined)payload[CC_KEY[CC_PARTS[i]]||CC_PARTS[i]]=raw;});
  const r=C.connectPrivate(payload);if(!r.ok)throw Error(r.code);ccPaint(body,r.value);}
 const READS=Object.freeze({technical:t=>(t.symbol?[['analysis',t.symbol],['chart',t.symbol],['technical',t.symbol,'OPTIONAL']]:null),qgv:()=>[['qgv',null]],macro:()=>[['macro',null]],news:()=>[['news',null]],
  classification:()=>CC_PARTS.map(p=>['classification',p,p==='view'?undefined:'OPTIONAL'])});

@@ -9,6 +9,8 @@
 //    one after another 5 s apart, each with the Bearer header only; the panel shows 비공개 보관본 · 인증 경로 · 게시본 아님, the
 //    evaluation date, the hash, the data kind and the counts; the company block repaints from the delivered bundle (sector, the
 //    accounting line kept apart: 회계모형 미확인 · 섹터가 확인돼도 QGV 비교집단 완결 아님), with the delivery words.
+//  - Two populations apart: 운영504 (Universe504, the screens' records) and the expanded held issuer sample (its own denominators
+//    and counts, never added to the 504 counts, never a company page or a technical security id).
 //  - The same RAM bundle serves the QGV leaderboard's 공통 분류 filter without another read; another company page shows the
 //    panel open and reads nothing; 접기 drops the bundle (the page and the QGV filter are back to NONE).
 //  - 404 for the view → 자료 없음 and the source stays NONE; a view that breaks the contract → refused whole (ERROR), NONE;
@@ -33,12 +35,19 @@ const WORKER = 'https://private-investment-history.kco994553.workers.dev';
 const GIS_STUB = 'window.__gisCfg=[];window.google={accounts:{oauth2:{initTokenClient:function(cfg){window.__gisCfg.push({scope:cfg.scope,igs:cfg.include_granted_scopes});'
   + 'return{requestAccessToken:function(){cfg.callback({access_token:' + JSON.stringify(TOKEN) + ',expires_in:3600,token_type:"Bearer",'
   + 'scope:"openid https://www.googleapis.com/auth/userinfo.email"});}};},revoke:function(t,done){if(done)done({});}}}};';
-const PARTS = ['view', 'technical', 'macro', 'qgv_links', 'dictionary'];
+const PARTS = ['view', 'technical', 'macro', 'qgv_links', 'dictionary', 'expanded_summary'];
 const PANEL = 'common-classification-private';
 // The delivered bundle: the synthetic universe bundle, one fully confirmed company given an unknown accounting model (Codex #516
 // 4cf2e037: independent states) so the accounting line is seen apart from the sector line.
 const BUNDLE = (() => { const b = JSON.parse(JSON.stringify(X.uBundle())), r = b.view.rows.find((x) => x.company_id === 'NASDAQ:ADBE');
-  r.accounting = { id: null, status: 'UNKNOWN', reasons: ['ACCOUNTING_TEMPLATE_UNCONFIRMED'], evidence_refs: [] }; return b; })();
+  r.accounting = { id: null, status: 'UNKNOWN', reasons: ['ACCOUNTING_TEMPLATE_UNCONFIRMED'], evidence_refs: [] };
+  // The expanded held issuer sample's summary (Codex #520 shape, made-up counts with 7s so the page shows where they go).
+  b.expanded_summary = { schema_version: 'held-expanded-classification-summary/1', valuation_date: b.view.valuation_date, catalog_observed_at: '2026-09-25T08:20:49Z', catalog_age_days: 38,
+    population_kind: 'OBSERVED_CATALOG_ISSUERS_NOT_INVESTMENT_ELIGIBLE_UNIVERSE', rank_scope: 'HELD_ISSUER_FACTOR_PERCENTILES_ONLY', full_market_denominator: null, full_market_coverage: null,
+    new_security_ids: 0, official_universe_changed: false,
+    catalog: { issuers: 777, ticker_observations: 977, sector: 77, accounting: 76, industry: 17, raw: 57, factor_score: 47, Q: 37, G: 27, V: 0, joint: 0, total: 0 },
+    held_financial_subsample: { issuers: 177, ticker_observations: 277, sector: 75, accounting: 74, industry: 15, raw: 57, factor_score: 47, Q: 37, G: 27, V: 0, joint: 0, total: 0 } };
+  return b; })();
 const RECORD_IDS = BUNDLE.view.rows.map((r) => r.record_id).filter(Boolean);
 let phase = 'START', pass = 0;
 const ok = (name) => { pass++; console.log('PASS ' + name); };
@@ -133,7 +142,16 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       await page.locator('.cc-block[data-cc=CONFIRMED], .cc-block[data-cc=SECTOR_ONLY]').waitFor();
       assert.equal(await count(page, '[data-cc-delivery=PRIVATE]'), 1, phase + ': delivery words in the company block');
       assert.equal(await page.locator('[data-cc-line=accounting]').getAttribute('data-cc-peer-complete'), 'YES');
-      ok(tag + ' one click reads five parts 5 s apart; panel words, date, hash, counts; the company block repaints (PRIVATE)');
+      // Two populations apart.
+      assert.equal(await count(page, '[data-cc-population=OPERATING_504]'), 1);
+      assert.equal(await count(page, '[data-cc-population=EXPANDED_SAMPLE]'), 1);
+      const ex = await text(page, '[data-cc-population=EXPANDED_SAMPLE]');
+      assert.match(ex, /^확장 발행사 표본 · 별도 모집단 · 운영504와 합치지 않음/);
+      assert.match(ex, /관측 카탈로그 전체 · 발행사 777 · 티커 관측 977 · 섹터 77/); assert.match(ex, /보유 재무 하위표본 · 발행사 177/);
+      assert.match(ex, /전체시장 분모·커버리지 미산출 · 새 증권 ID 0/); assert.match(ex, /발행사 행 ID는 증권 ID가 아님/);
+      assert.match(ex, /38일 전 · 평가일 상장 명부 아님/);
+      assert.equal(await text(page, '[data-cc-count=rows]'), '기업 행 ' + BUNDLE.view.rows.length + '개(원래 분모 그대로)', phase + ': the 504 count never takes the expanded issuers');
+      ok(tag + ' one click reads six parts 5 s apart; panel words, date, hash, counts; 운영504 and the expanded sample apart; the company block repaints (PRIVATE)');
 
       phase = tag + ' same bundle';
       const before = w.log.length;

@@ -188,11 +188,21 @@ function checkDictionary(d,path){keys(d,['schema_version','version','sector_vers
  if(!isObj(d.sectors))refuse('TYPE',path+'.sectors');for(const k of Object.keys(d.sectors)){if(!SECTORS.includes(k))refuse('SECTOR_INVALID',path+'.sectors.'+k);text(d.sectors[k],path+'.sectors.'+k);}
  const ids=new Set();list(d.industries,path+'.industries').forEach((x,i)=>{const p=path+'.industries['+i+']';keys(x,['id','name','parent_sector'],p);text(x.id,p+'.id');text(x.name,p+'.name');
   if(!SECTORS.includes(x.parent_sector))refuse('SECTOR_INVALID',p+'.parent_sector');if(ids.has(x.id))refuse('ROW_DUPLICATE',p+'.id');ids.add(x.id);});}
-const validateView=pass(checkView),validateTechnical=pass(checkTechnical),validateMacro=pass(checkMacro),validateLinks=pass(checkLinks),validateDictionary=pass(checkDictionary);
+/* The expanded held issuer sample (Codex #520 4c8c9381, held-expanded-classification-summary/1): a separate population — observed
+   catalog issuers, not an investment-eligible universe, never Universe504. Only its own counts and denominators are read; its
+   rows (ISSUER:<CIK> analysis ids, never security ids) are not part of this file and never join any 504 screen. */
+const EXPANDED_SCHEMA='held-expanded-classification-summary/1',EXPANDED_COUNTS=['issuers','ticker_observations','sector','accounting','industry','raw','factor_score','Q','G','V','joint','total'];
+function checkExpanded(e,path){keys(e,['schema_version','valuation_date','catalog_observed_at','catalog_age_days','population_kind','catalog','held_financial_subsample','full_market_denominator','full_market_coverage','new_security_ids','official_universe_changed','rank_scope'],path);
+ if(e.schema_version!==EXPANDED_SCHEMA)refuse('SCHEMA_VERSION',path+'.schema_version');day(e.valuation_date,path+'.valuation_date');stamp(e.catalog_observed_at,path+'.catalog_observed_at');
+ int(e.catalog_age_days,path+'.catalog_age_days');text(e.population_kind,path+'.population_kind');text(e.rank_scope,path+'.rank_scope');
+ for(const g of['catalog','held_financial_subsample'])keys(e[g],EXPANDED_COUNTS,path+'.'+g),EXPANDED_COUNTS.forEach(k=>int(e[g][k],path+'.'+g+'.'+k));
+ if(e.full_market_denominator!==null||e.full_market_coverage!==null)refuse('FULL_MARKET_NOT_NULL',path+'.full_market_denominator');
+ int(e.new_security_ids,path+'.new_security_ids');if(e.official_universe_changed!==false)refuse('OFFICIAL_UNIVERSE_CHANGED',path+'.official_universe_changed');}
+const validateView=pass(checkView),validateExpanded=pass(checkExpanded),validateTechnical=pass(checkTechnical),validateMacro=pass(checkMacro),validateLinks=pass(checkLinks),validateDictionary=pass(checkDictionary);
 
 /* ---------------------------------------------------------------- the bundle: one view and the parts that read the same records */
 const PARTS=['technical','macro','qgv_links'];
-const CHECK={view:checkView,technical:checkTechnical,macro:checkMacro,qgv_links:checkLinks,dictionary:checkDictionary};
+const CHECK={view:checkView,technical:checkTechnical,macro:checkMacro,qgv_links:checkLinks,dictionary:checkDictionary,expanded:checkExpanded};
 // A part reads the view's records when it has the view's hash and date and, for every company it names, the view's record id
 // and issuer id (and names every member).
 function partMismatch(view,part,name){
@@ -204,9 +214,10 @@ function partMismatch(view,part,name){
 // validate({view, technical?, macro?, qgv_links?, dictionary?}) → {ok:true, value:{view, technical, macro, qgv_links, dictionary,
 // mismatch:{part: code}}} or {ok:false, code, path}. A part that is well formed but reads other records is kept in mismatch only.
 function validate(json){
- try{if(!isObj(json))refuse('TYPE','$');keys(json,['view'],'$',['view','dictionary',...PARTS]);const v=copy(json,'$',0);
+ try{if(!isObj(json))refuse('TYPE','$');keys(json,['view'],'$',['view','dictionary','expanded',...PARTS]);const v=copy(json,'$',0);
   for(const k of Object.keys(v))if(v[k]!==null)CHECK[k](v[k],'$.'+k);if(v.view===null)refuse('VIEW_REQUIRED','$.view');
-  const out={view:v.view,dictionary:v.dictionary||null,mismatch:{}};
+  // expanded: its own population; kept whole, never compared with the view's members (no partMismatch).
+  const out={view:v.view,dictionary:v.dictionary||null,expanded:v.expanded||null,mismatch:{}};
   for(const k of PARTS){out[k]=null;if(!v[k])continue;const why=partMismatch(v.view,v[k],k);if(why)out.mismatch[k]=why;else out[k]=v[k];}
   return{ok:true,value:deepFreeze(out)};}
  catch(e){if(e instanceof Refusal)return{ok:false,code:e.code,path:e.path};throw e;}}
@@ -380,7 +391,8 @@ function previewCheck(preview,bundle=null){const b=bundle||value(),st=(state,ext
   if(!x){missing++;rows.set(r.company_id,Object.freeze({record_id:null,reason:'CLASSIFICATION_LINK_MISSING'}));continue;}
   if(!v||x.classification_record_id!==v.record_id||(r.issuer_id!==undefined&&r.issuer_id!==null&&x.issuer_id!==null&&r.issuer_id!==x.issuer_id))return st('VERSION_MISMATCH',{reason:'ROW_RECORD_MISMATCH:'+r.company_id});
   rows.set(r.company_id,Object.freeze({record_id:x.classification_record_id,reason:x.classification_record_id?null:'CLASSIFICATION_RECORD_ABSENT'}));}
- return Object.freeze({state:'OK',words:PREVIEW_STATE.OK,rows,missing,classification_hash:l.classification_hash,valuation_date:l.valuation_date,preview_id:l.preview_identity.preview_id});}
+ // signal_day: the linked preview's own valuation_date (checked equal to the links' date above); never the view's date alone.
+ return Object.freeze({state:'OK',words:PREVIEW_STATE.OK,rows,missing,classification_hash:l.classification_hash,valuation_date:l.valuation_date,signal_day:preview.valuation_date,preview_id:l.preview_identity.preview_id});}
 
 /* ---------------------------------------------------------------- small samples, kept apart */
 // kind 'TECH' (minimum 10: no decile below, rank and median kept) or 'SECTOR_QGV' (minimum 20: no factor score below);
@@ -415,7 +427,7 @@ function matches(rec,{sector='',industry=''}={}){if(!sector)return true;if(!rec|
  if(!industry)return true;if(industry==='UNCLASSIFIED')return rec.industry.status!=='CONFIRMED';return rec.industry.status==='CONFIRMED'&&rec.industry.id===industry;}
 
 const self=Object.freeze({SCHEMAS,VERSIONS,SECTORS,STATE,WORDS,TEXT,GROUP_TEXT,DATE_REASONS,MIN,buildGroupManifest:(v,t,g)=>{try{return{ok:true,value:buildGroupManifest(v,t,g)};}catch(e){if(e instanceof GroupRefusal)return{ok:false,code:e.code};throw e;}},groupInput,previewCheck,PREVIEW_STATE,validate,validateView,validateTechnical,validateMacro,validateLinks,validateDictionary,
- source,load,state,value,connectPrivate,disconnectPrivate,subscribe,recordFor,partRecord,sameRecord,rowState,dateWords,sectorName,industryName,shortHash,groupRows,groupRowsWhy,groupText,sample,
+ EXPANDED_SCHEMA,validateExpanded,source,load,state,value,connectPrivate,disconnectPrivate,subscribe,recordFor,partRecord,sameRecord,rowState,dateWords,sectorName,industryName,shortHash,groupRows,groupRowsWhy,groupText,sample,
  context,parseContext,contextState,options,matches});
 return self;
 });

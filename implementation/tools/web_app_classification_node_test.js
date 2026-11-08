@@ -292,5 +292,33 @@ const uni = (ids, extra = []) => [...ids, ...extra].map((id, i) => ({ id, code: 
     assert.equal((await C.load()).state, 'NONE'); assert.equal(C.value(), null); assert.equal(C.recordFor(any.company_id).words, '분류 자료 없음');
     C.disconnectPrivate(); assert.equal(seen.length, 2, 'nothing to drop: no notice'); un();
   });
+  // owner 2026-11-08 「#519 인수 반영」: the expanded held issuer sample is its own population; a sector preview's rows take the
+  // checked preview.valuation_date; the official QGV rows' signal_day is never filled with a classification date.
+  const EXP = () => ({ schema_version: 'held-expanded-classification-summary/1', valuation_date: '2026-11-02', catalog_observed_at: '2026-09-25T08:20:49Z', catalog_age_days: 38,
+    population_kind: 'OBSERVED_CATALOG_ISSUERS_NOT_INVESTMENT_ELIGIBLE_UNIVERSE', rank_scope: 'HELD_ISSUER_FACTOR_PERCENTILES_ONLY', full_market_denominator: null, full_market_coverage: null,
+    new_security_ids: 0, official_universe_changed: false,
+    catalog: { issuers: 90, ticker_observations: 120, sector: 40, accounting: 38, industry: 9, raw: 30, factor_score: 20, Q: 11, G: 13, V: 0, joint: 0, total: 0 },
+    held_financial_subsample: { issuers: 30, ticker_observations: 44, sector: 25, accounting: 24, industry: 7, raw: 29, factor_score: 20, Q: 11, G: 13, V: 0, joint: 0, total: 0 } });
+  await ok('expanded issuer sample: its own population, read whole, never in the 504 counts; full-market denominator must stay null', () => {
+    const b = { ...clone(X.bundle()), expanded: EXP() }, v = valid(b);
+    assert.equal(v.expanded.catalog.issuers, 90); assert.equal(v.view.rows.length, X.bundle().view.rows.length, 'the view keeps its own rows');
+    assert.deepEqual(v.mismatch, {}, 'never compared with the view members');
+    for (const [k, bad, code] of [['full_market_denominator', 8004, 'FULL_MARKET_NOT_NULL'], ['official_universe_changed', true, 'OFFICIAL_UNIVERSE_CHANGED'],
+      ['schema_version', 'x', 'SCHEMA_VERSION'], ['catalog_observed_at', '2026-09-25', 'TIME_INVALID']]) {
+      const e = EXP(); e[k] = bad; const r = C.validate({ ...clone(X.bundle()), expanded: e }); assert.equal(r.ok, false, k); assert.equal(r.code, code, k);
+    }
+    const e = EXP(); e.held_financial_subsample.Q = -1; assert.equal(C.validate({ ...clone(X.bundle()), expanded: e }).ok, false, 'counts are non-negative integers');
+  });
+  await ok('signal_day: a linked sector preview gives its own valuation_date; another date is refused; official rows keep null', () => {
+    const U = X.uBundle(), b = valid(U), pv = clone(X.main().universe.bundle.qgv_preview);
+    const r = C.previewCheck(pv, b); assert.equal(r.state, 'OK'); assert.equal(r.signal_day, pv.valuation_date);
+    const other = C.previewCheck({ ...pv, valuation_date: '2026-11-01' }, b); assert.equal(other.state, 'DATE_MISMATCH'); assert.equal(other.signal_day, undefined);
+    const SQ = require('../src/investment_system/product/web_app/sector-qgv.js');
+    assert.deepEqual({ ...SQ.signalDay(pv) }, { signal_day: pv.valuation_date, basis: 'PREVIEW_VALUATION_DATE', reason: null }, 'the sector reader gives the preview day');
+    for (const bad of ['2026-02-30', '2026-11-04T00:00:00Z', null]) assert.equal(SQ.signalDay({ ...pv, valuation_date: bad }).signal_day, null, String(bad));
+    assert.equal(SQ.signalDay({ ...pv, valuation_date: undefined, as_of: '2026-11-04T02:29:35Z' }).signal_day, null, 'as_of is never the evaluation day');
+    const src = fs.readFileSync(path.join(__dirname, '../src/investment_system/product/web_app/qgv.js'), 'utf8');
+    assert.match(src, /issuer_id:null,signal_day:null,security_id:null/, 'qgv.js rowRecord still writes signal_day null');
+  });
   console.log(JSON.stringify({ passed: true, checks: n }));
 })().catch((e) => { console.error('FAIL ' + (e && e.stack || e)); process.exitCode = 1; });

@@ -1,4 +1,4 @@
-# 생산자별 평가일 계약 — signal_day (Main 제안, Codex 확인 대기)
+# 생산자별 평가일 계약 — signal_day (Codex 확인 #437 6718082277 · Main 연결)
 
 작성 2026-11-08 Main. 근거: 오너 2026-11-08 「통합 결과 수령」 2항.
 - "Codex와 생산자별 평가일 계약을 맞춰 signal_day 연결."
@@ -39,7 +39,24 @@
 - `qgv.js` `rowRecord`는 `signal_day: null`을 그대로 둔다. ②가 확정되기 전에는 다른 필드에서 채우지 않는다.
 - 시험: `web_app_group_join_node_test.js` "signal_day" 항목(두 경우, `undefined` 없음).
 
-## 4. Codex에 확인할 것
+## 3-1. Codex 확인과 오너 지시 반영 (2026-11-08, #437 6718082277)
+
+Codex가 생산자별 원천 필드를 확인했다. 위 표와 같고, 계약 변경은 없다.
+
+오너 지시: "새 섹터 결과는 검증된 preview.valuation_date를 사용하고, 기존 공식 QGV의 signal_day는 분류 날짜로 채우지 않는다."
+
+| 대상 | Main 처리 |
+| --- | --- |
+| 새 섹터 결과 (`sector-qgv-preview/1`) | `IS2.sectorQgv.signalDay(preview)` = 판독기가 받은 미리보기의 `valuation_date`. 날짜가 잘못되면 null. `as_of`는 쓰지 않는다. 화면 1.2 미리보기 요약에 "행 평가일(signal_day) …"으로 보이고, 행마다 `data-sq-signal-day`가 붙는다 |
+| 미리보기 ↔ 분류 연결 | `IS2.classification.previewCheck`는 preview identity·평가일·record/hash가 Q/G links와 맞을 때만 `signal_day: preview.valuation_date`를 준다. 날짜가 다르면 `DATE_MISMATCH`이고 평가일은 없다 |
+| 기존 공식 QGV 리더보드 | `qgv.js rowRecord.signal_day = null` 유지. `groupInput`도 원래 행의 null을 그대로 넘긴다. 결합은 "QGV 행 평가일 미제공"으로 거부된다 |
+| 실자료 확인 (로컬) | 보관 운영504 미리보기(504행)는 links와 같은 미리보기이고, 평가일 2026-11-04가 그대로 나온다. 다른 날짜로 바꾸면 `DATE_MISMATCH` |
+
+시험:
+- `web_app_classification_node_test.js` "signal_day"
+- `web_app_group_join_node_test.js` "official QGV rows"
+
+## 4. (해결됨) Codex에 확인했던 것
 
 1. **`sector-qgv-preview/1`**
    - `valuation_date`가 모든 `result_rows`의 평가일인가?
