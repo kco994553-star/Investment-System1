@@ -19,6 +19,13 @@
      given by the screen), under the source words 비공개 보관본 · 인증 경로 and the two-layer line. A refused file is refused whole.
    - kind 'qgv': the qgv route → Q / G / V / 세 축 coverage, the target().code row's axes (미산출 + reason, never 0), the total only
      when V exists, no rank (rank null + reason), and the line that the public official ranks and TARGET are unchanged.
+   - kind 'classification' (owner 2026-11-08 「통합 결과 수령」 2항): the held common classification bundle — five reads of one
+     click, the IS2.kisPrivate classification route with part view (required) · technical · macro · qgv_links · dictionary (each optional: a missing part is
+     left out, never stood in) — handed whole to IS2.classification.connectPrivate, which checks it as it checks any source. The
+     panel then shows where it came from (비공개 보관본 · 인증 경로 · 게시본 아님), the evaluation date, the hash, the data kind and
+     the counts (sector / sub-industry / accounting model confirmed, both confirmed = complete QGV peer group words, the record
+     states); every screen reads the same RAM bundle until 접기 / 연결 끊기 / a 403 drops it (disconnectPrivate). Re-attaching the
+     panel on another page keeps a delivered bundle (it is shown as open), only the owner's 접기 or a dropped token clears it.
    - Public vs private basis day: basisCompare says when they differ (직접 비교 제한).
    - The server checks the owner on every read: a 403 drops the token and the panel asks to sign in again; an expired token
      is dropped before a read; closing the panel or 연결 끊기 clears what was shown. Values are text inside [data-ram-price]
@@ -31,7 +38,7 @@ const dl=(rows,d)=>h('dl',{class:'card-body',dataset:d||{}},rows.filter(Boolean)
 const WORDS=Object.freeze({AUTH_FORBIDDEN:'서버가 오너 확인을 거부했습니다 · 다시 로그인하세요',AUTH_REQUIRED:'로그인이 끝났습니다(만료) · 다시 로그인하세요',
  AUTH_UNAVAILABLE:'로그인 확인 서버 응답 없음',LOGIN_CANCELED:'로그인을 취소했습니다',LOGIN_REFUSED:'로그인 범위가 맞지 않아 쓰지 않았습니다',LOGIN_UNAVAILABLE:'비공개 연결 설정이 없습니다',
  KIS_SERIES_NOT_FOUND:'이 기업의 비공개 자료가 아직 없습니다',TOKEN_UNSET:'비공개 저장소 읽기 설정 없음',TOKEN_EXPIRED:'비공개 저장소 읽기 토큰 만료',TOKEN_REJECTED:'비공개 저장소 읽기 토큰 거부',
- RATE_LIMITED:'요청이 많아 잠시 뒤 다시',UPSTREAM_UNAVAILABLE:'비공개 자료 서버 응답 없음'});
+ RATE_LIMITED:'요청이 많아 잠시 뒤 다시',UPSTREAM_UNAVAILABLE:'비공개 자료 서버 응답 없음',ROUTE_NOT_FOUND:'비공개 서버에 이 경로가 아직 없습니다(Worker 배포 전)'});
 const word=c=>Object.prototype.hasOwnProperty.call(WORDS,c)?WORDS[c]:'오류 · '+c;
 const CODE=/^[A-Z][A-Z0-9_]{1,63}$/;
 const codeOf=e=>{const m=e&&typeof e.message==='string'?e.message:'';return CODE.test(m)?m:'PRIVATE_READ_FAILED';};
@@ -99,11 +106,41 @@ function renderQgv(body,[qRaw],{code,publicBasis}){const K=I.kisPrivate,q=K.vali
    h('p',{dataset:{privateTotal:''}},ram(v.row.total)),v.row.price?h('p',{class:'reason'},v.row.price):null)
    :h('p',{class:'reason',dataset:{privateRow:'NONE'}},code?'이 기업은 비공개 계산 대상에 없습니다':'기업을 고르면 그 기업의 비공개 축을 보입니다')]);}
 
-const READS=Object.freeze({technical:t=>(t.symbol?[['analysis',t.symbol],['chart',t.symbol],['technical',t.symbol,'OPTIONAL']]:null),qgv:()=>[['qgv',null]],macro:()=>[['macro',null]],news:()=>[['news',null]]});
-const RENDER=Object.freeze({technical:renderTechnical,qgv:renderQgv,macro:renderShared,news:renderShared});
-const EMPTY_WORD=Object.freeze({macro:'비공개 보관 관측 자료가 아직 없습니다',news:'비공개 보관 재생 결과가 아직 없습니다'});
+// The held common classification bundle: Codex's five outputs as delivered (the reader checks them; nothing is recomputed here).
+const CC_PARTS=Object.freeze(['view','technical','macro','qgv_links','dictionary']);
+function ccSummary(C,b){const rows=b.view.rows,n=k=>rows.filter(r=>r[k].status==='CONFIRMED').length,states={};
+ let peer=0;for(const r of rows){const x=C.recordFor(r.company_id,null,b);states[x.state]=(states[x.state]||0)+1;if(x.peer_complete)peer++;}
+ return{rows:rows.length,sector:n('sector'),industry:n('industry'),accounting:n('accounting'),peer,states,
+  parts:CC_PARTS.filter(k=>k==='view'||b[k]||Object.prototype.hasOwnProperty.call(b.mismatch,k)),mismatch:Object.keys(b.mismatch)};}
+function ccPaint(body,b){const C=I.classification,v=b.view,x=ccSummary(C,b);
+ I.append(body,[h('p',{class:'hand',dataset:{privateLayer:'classification',privateSource:'PRIVATE_ARCHIVE'}},C.WORDS.PRIVATE,' · 같은 화면 같은 형식'),
+  h('p',{class:'reason',dataset:{privateLayerNote:''}},I.kisPrivate.LAYER_NOTE),
+  dl([['평가일',v.valuation_date,{ccPrivateDay:v.valuation_date}],['분류 해시',C.shortHash(v.classification_hash),{ccPrivateHash:v.classification_hash}],['자료 종류',v.data_kind==='SYNTHETIC'?'합성 데이터 · 시험용':'보관 입력(RETAINED_INPUT)',{ccPrivateKind:v.data_kind}],
+   ['지식 기준 시각',v.knowledge_as_of],['받은 부분',x.parts.join(' · '),{ccPrivateParts:x.parts.join(',')}],
+   x.mismatch.length?['분류 버전 불일치',x.mismatch.join(' · ')+' · 그 부분은 쓰지 않음',{ccPrivateMismatch:x.mismatch.join(',')}]:null],{privateMeta:'classification'}),
+  h('ul',{dataset:{ccPrivateCounts:''}},
+   h('li',{dataset:{ccCount:'rows'}},'기업 행 ',String(x.rows),'개(원래 분모 그대로)'),
+   h('li',{dataset:{ccCount:'sector'}},'섹터 확인 ',String(x.sector),'개'),
+   h('li',{dataset:{ccCount:'industry'}},'하위 산업 확인 ',String(x.industry),'개'),
+   h('li',{dataset:{ccCount:'accounting'}},'회계모형 확인 ',String(x.accounting),'개 · 섹터와 따로 셈'),
+   h('li',{dataset:{ccCount:'peer'}},'섹터·회계모형 둘 다 확인 ',String(x.peer),'개 · 나머지는 QGV 비교집단 완결 아님')),
+  h('p',{class:'reason',dataset:{ccPrivateStates:Object.entries(x.states).map(([k,c])=>k+':'+c).join(',')}},'기록 상태 · ',Object.entries(x.states).map(([k,c])=>k+' '+c).join(' · ')),
+  h('p',{class:'reason'},'공식 QGV 순위·TARGET·공개 파일은 바뀌지 않음 · 분류를 화면에서 다시 추론하지 않음')]);}
+function renderClassification(body,res){const C=I.classification,payload={};
+ res.forEach((raw,i)=>{if(raw!==null&&raw!==undefined)payload[CC_PARTS[i]]=raw;});
+ const r=C.connectPrivate(payload);if(!r.ok)throw Error(r.code);ccPaint(body,r.value);}
+const READS=Object.freeze({technical:t=>(t.symbol?[['analysis',t.symbol],['chart',t.symbol],['technical',t.symbol,'OPTIONAL']]:null),qgv:()=>[['qgv',null]],macro:()=>[['macro',null]],news:()=>[['news',null]],
+ classification:()=>CC_PARTS.map(p=>['classification',p,p==='view'?undefined:'OPTIONAL'])});
+const RENDER=Object.freeze({technical:renderTechnical,qgv:renderQgv,macro:renderShared,news:renderShared,classification:renderClassification});
+const EMPTY_WORD=Object.freeze({macro:'비공개 보관 관측 자료가 아직 없습니다',news:'비공개 보관 재생 결과가 아직 없습니다',classification:'비공개 보관 분류 묶음이 아직 없습니다(전달 위치에 파일 없음)'});
 
+// A delivered classification bundle lives as long as the owner's token: one watch (set once) drops it when the token goes, whatever
+// screen is open (expiry, a 403, 연결 끊기 on any panel).
+let ccWatch=false;
+function watchClassification(){if(ccWatch)return;ccWatch=true;
+ try{I.prices.kisSubscribe(()=>{let on=false;try{on=I.prices.kisState().connected;}catch(_){on=false;}if(!on&&I.classification)I.classification.disconnectPrivate();});}catch(_){ccWatch=false;}}
 function attach(panel,{signal,kind,target=()=>({}),publicBasis=()=>null,draw}){
+ if(kind==='classification')watchClassification();
  if(!Object.prototype.hasOwnProperty.call(READS,kind)||((kind==='macro'||kind==='news')&&typeof draw!=='function'))throw Error('PRIVATE_EXPAND_KIND');
  const P=()=>I.prices;
  const btn=h('button',{type:'button',class:'chip',dataset:{privateExpand:kind},'aria-expanded':'false'},'비공개 펼치기');
@@ -113,7 +150,7 @@ function attach(panel,{signal,kind,target=()=>({}),publicBasis=()=>null,draw}){
  panel.node.insertBefore(bar,panel.node.querySelector('.private-body'));
  let open=false,seq=0;
  const st=()=>{try{return P().kisState();}catch(_){return{ready:false,connected:false,gis:false};}};
- function closed(msg){const s=st();open=false;seq++;btn.textContent='비공개 펼치기';btn.setAttribute('aria-expanded','false');off.hidden=!s.connected;
+ function closed(msg,{keep=false}={}){const s=st();if(kind==='classification'&&!keep&&I.classification)I.classification.disconnectPrivate();open=false;seq++;btn.textContent='비공개 펼치기';btn.setAttribute('aria-expanded','false');off.hidden=!s.connected;
   if(!s.ready)panel.set('NOT_READY');else if(!s.connected)panel.set('LOGIN_REQUIRED');
   else panel.set('READY',{render:b=>I.append(b,[h('p',{class:'reason',dataset:{privateClosed:''}},'비공개 접힘 · 펼치면 서버에서 다시 확인하고 불러옵니다')])});
   note.textContent=msg||'';}
@@ -140,7 +177,11 @@ function attach(panel,{signal,kind,target=()=>({}),publicBasis=()=>null,draw}){
  // A dropped token (expiry, 403, 연결 끊기 elsewhere) closes the panel and clears what it showed.
  const un=(()=>{try{return P().kisSubscribe(()=>{if(signal.aborted)return;if(!st().connected&&open)closed(word('AUTH_REQUIRED'));});}catch(_){return()=>{};}})();
  signal.addEventListener('abort',()=>{seq++;un();},{once:true});
- closed();
+ // A bundle already delivered (another page's panel) is shown as open; otherwise the panel starts closed without dropping anything.
+ const C=I.classification,cs=kind==='classification'&&C?C.state():null;
+ if(cs&&cs.state==='OK'&&cs.delivery==='PRIVATE'&&st().connected){open=true;btn.textContent='비공개 접기';btn.setAttribute('aria-expanded','true');off.hidden=false;
+  panel.set('READY',{render:b=>ccPaint(b,cs.value)});}
+ else closed(undefined,{keep:true});
  return Object.freeze({reset:()=>closed()});}
 I.privateExpand=Object.freeze({attach});
 })();

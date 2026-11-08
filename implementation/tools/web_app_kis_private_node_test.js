@@ -216,13 +216,22 @@ const ok = async (name, fn) => { await fn(); n++; console.log('PASS ' + name); }
     await assert.rejects(h.c.get('analysis', '../x'), /REQUEST_INVALID/); await assert.rejects(h.c.get('orders', null), /ROUTE_UNKNOWN/);
     await assert.rejects(h.c.get('technical', null), /REQUEST_INVALID/, 'technical needs a symbol');
   });
-  await ok('client: the seven routes — technical takes a symbol, macro and news take no query', async () => {
-    assert.deepEqual(Object.keys(KP.ROUTE).sort(), ['analysis', 'chart', 'macro', 'news', 'qgv', 'status', 'technical']);
+  await ok('client: the eight routes — technical takes a symbol, classification a part, macro and news take no query', async () => {
+    assert.deepEqual(Object.keys(KP.ROUTE).sort(), ['analysis', 'chart', 'classification', 'macro', 'news', 'qgv', 'status', 'technical']);
+    assert.deepEqual([...KP.CLASSIFICATION_PARTS], ['view', 'technical', 'macro', 'qgv_links', 'dictionary']);
     const h = harness({ answers: [{ status: 200, body: X.measures() }, { status: 200, body: { schema_version: 'macro-current-query/1' } }, { status: 200, body: { kind: 'NEWS_SIGNALS', schema_version: 2 } }] });
     await h.c.connect();
     await h.c.get('technical', 'NVDA'); await h.c.get('macro', 'NVDA'); await h.c.get('news', null);
     assert.deepEqual(h.sent.map((x) => x.url), [ORIGIN + KP.ROUTE.technical + '?symbol=NVDA', ORIGIN + KP.ROUTE.macro, ORIGIN + KP.ROUTE.news]);
     for (const x of h.sent) { assert.deepEqual(x.init.headers, { Authorization: 'Bearer synthetic-token' }); assert.equal(x.init.redirect, 'error'); assert.equal(x.init.credentials, 'omit'); }
+    // classification (owner 2026-11-08): ?part= one of the five parts only, the same request rules; a bad part never leaves the page.
+    const c = harness({ answers: KP.CLASSIFICATION_PARTS.map(() => ({ status: 200, body: { schema_version: 'synthetic' } })) });
+    await c.c.connect();
+    for (const part of KP.CLASSIFICATION_PARTS) await c.c.get('classification', part);
+    assert.deepEqual(c.sent.map((x) => x.url), KP.CLASSIFICATION_PARTS.map((p) => ORIGIN + KP.ROUTE.classification + '?part=' + p));
+    for (const x of c.sent) { assert.deepEqual(x.init.headers, { Authorization: 'Bearer synthetic-token' }); assert.equal(x.init.redirect, 'error'); assert.equal(x.init.cache, 'no-store'); }
+    for (const bad of [null, '', 'store', 'View', '../view', 'view&x=1']) await assert.rejects(c.c.get('classification', bad), /REQUEST_INVALID/, String(bad));
+    assert.equal(c.sent.length, KP.CLASSIFICATION_PARTS.length);
   });
   await ok('client: a wider scope is refused; a server 403 drops the token; expiry drops it; disconnect drops it', async () => {
     let h = harness({ scope: 'openid email https://www.googleapis.com/auth/drive.file' });

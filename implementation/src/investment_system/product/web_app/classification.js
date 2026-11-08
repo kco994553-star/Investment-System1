@@ -27,8 +27,13 @@
      (tech N < 10: no decile, rank and median kept; sector QGV N < 20: no factor score), OK.
    - context: the hash token cc:<sector|->:<industry|->:<valuation date>:<hash 12> carried between screens; contextState says
      whether it is this record set (OK), another version (VERSION_MISMATCH) or another date (DATE_MISMATCH).
-   - source() → Promise {state:'NONE'}: no public file, no request. load() reads the current source once (again only when the
-     source function changes) and keeps the checked bundle in RAM; nothing is stored or sent. */
+   - source() → Promise {state:'NONE'} (no public file, no request) until the owner's private delivery: connectPrivate(payload)
+     from the 비공개 펼치기 click (delivery PRIVATE, 비공개 보관본 · 인증 경로 · 게시본 아님) until disconnectPrivate(). load()
+     reads the current source once (again only when the source function or the private delivery changes) and keeps the checked
+     bundle in RAM; nothing is stored or sent. A public classification file is not a precondition of the private delivery.
+   - The accounting model is its own state (Codex #516 4cf2e037): recordFor gives accounting_state and peer_complete (sector AND
+     accounting confirmed); a confirmed sector with an unknown accounting model is shown, never as a complete QGV peer group.
+   - evidence_refs are opaque locators (never shown): their own length bound (MAX.ref), apart from the words' MAX.text. */
 (function(root,factory){const api=factory(root);if(typeof module==='object'&&module.exports)module.exports=api;else{const I=root.IS2=root.IS2||{};I.classification=api;}})(typeof globalThis==='object'?globalThis:this,function(root){
 'use strict';
 const SCHEMAS=Object.freeze({view:'common-classification-view/1',technical:'common-classification-technical/1',macro:'common-classification-macro/1',
@@ -46,7 +51,9 @@ const WORDS=Object.freeze({CONFIRMED:'확인',SECTOR_ONLY:'섹터 확인 · 하�
  CONFLICT:'분류 충돌 · 근거 불일치',NO_DATA:'분류 자료 없음',VERSION_MISMATCH:'분류 버전 불일치',UNRESOLVED:'섹터 대응 미확인 · 근거 부족',
  SAMPLE_SMALL:'표본 부족 · 기능별 규칙(섹터 QGV N<20 요소 점수 미산출 · 기술 N<10 분위 미산출, 순위·중앙값 유지)',GROUP_UNCONFIRMED:'구성원·신원 미확인 · 상대순위·중앙값도 미산출',EMPTY_GROUP:'구성원 0 · 비교 대상 없음',
  NONE:'공통 분류 실자료 묶음 보존됨 · 인증된 화면 전달 경로 미연결',NONE_WHY:'분류는 Codex(common-classification/1) · 실자료 묶음은 Codex 비공개 보존 · 이 화면에는 합성 자료만 시험에서',
- INVALID:'공통 분류 파일이 계약과 달라 쓰지 않습니다',SECURITY_NONE:'검증된 증권 ID 없음',ISSUER_NONE:'발행사 ID 미확인'});
+ INVALID:'공통 분류 파일이 계약과 달라 쓰지 않습니다',PRIVATE:'비공개 보관본 · 인증 경로 · 게시본 아님',
+ ACCOUNTING_UNKNOWN:'회계모형 미확인 · 섹터가 확인돼도 QGV 비교집단 완결 아님',ACCOUNTING_CONFLICT:'회계모형 근거 불일치 · QGV 비교집단 완결 아님',
+ ACCOUNTING_WITHOUT_SECTOR:'회계모형만 확인 · 섹터 미확인',SECURITY_NONE:'검증된 증권 ID 없음',ISSUER_NONE:'발행사 ID 미확인'});
 const dateWords=d=>'평가일 '+d+'에 적용되는 분류 없음';
 // Why a tech board group's full rows are not known (groupRowsWhy codes) — words for the tech filter block.
 const GROUP_TEXT=Object.freeze({NO_BOARD:'보드 없음',CLASSIFICATION_NOT_CONNECTED:'공통 분류 기록 미연결',TECHNICAL_PROJECTION_NOT_CONNECTED:'공통 분류 기술 투영 미연결',
@@ -56,7 +63,9 @@ const GROUP_TEXT=Object.freeze({NO_BOARD:'보드 없음',CLASSIFICATION_NOT_CONN
  GROUP_UNIVERSE_CONTEXT_REQUIRED:'분류 기록에 모집단 문맥(universe) 없음 · 그룹 명부를 만들 수 없음',GROUP_PROJECTION_RECORD_MISMATCH:'기술 투영과 분류 기록 불일치',
  GROUP_PROJECTION_MEMBERS_MISMATCH:'기술 투영 구성원 ≠ 분류 기록 구성원',GROUP_PROJECTION_GROUP_MISMATCH:'기술 투영에서 그룹을 하나로 찾지 못함',MEMBER_NOT_MAPPED:'그룹 구성원이 리더보드 행과 1:1로 대응되지 않음',
  ISSUER_MISMATCH:'행의 발행사 ID ≠ 분류 기록 발행사 ID'});
-const MAX=Object.freeze({rows:20000,text:300,depth:14});
+// text: words a screen may show; ref: an opaque evidence locator (never shown). Codex #516 4cf2e037 held-review refs reach 330 characters
+// (source id + ':metadata:' + hash, HELD_REVIEW.md); the contract sets no length, so a ref has its own bound and is never shortened.
+const MAX=Object.freeze({rows:20000,text:300,ref:4096,depth:14});
 const DAY=/^(\d{4})-(\d{2})-(\d{2})$/,HEX64=/^[0-9a-f]{64}$/,CODE=/^[A-Z][A-Z0-9_:]{0,95}$/,TS=/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/;
 const own=(o,k)=>Object.prototype.hasOwnProperty.call(o,k);
 const isObj=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
@@ -73,6 +82,8 @@ const hex=(v,path)=>{if(typeof v!=='string'||!HEX64.test(v))refuse('HASH_INVALID
 const list=(v,path)=>{if(!Array.isArray(v))refuse('TYPE',path);if(v.length>MAX.rows)refuse('TOO_LARGE',path);return v;};
 const codes=(v,path)=>list(v,path).forEach((c,i)=>{if(typeof c!=='string'||!CODE.test(c))refuse('REASON_INVALID',path+'['+i+']');});
 const texts=(v,path)=>list(v,path).forEach((c,i)=>text(c,path+'['+i+']'));
+const ref=(v,path)=>{if(typeof v!=='string'||!v.trim()||v!==v.trim())refuse('TYPE',path);if(v.length>MAX.ref)refuse('TOO_LARGE',path);return v;};
+const refs=(v,path)=>list(v,path).forEach((c,i)=>ref(c,path+'['+i+']'));
 const int=(v,path)=>{if(!Number.isInteger(v)||v<0)refuse('TYPE',path);};
 function copy(v,path,depth){if(depth>MAX.depth)refuse('TOO_DEEP',path);
  if(v===null||typeof v==='string'||typeof v==='boolean')return v;if(typeof v==='number'){if(!Number.isFinite(v))refuse('NUMBER_NOT_FINITE',path);return v;}
@@ -87,7 +98,7 @@ const pass=fn=>json=>{try{const v=copy(json,'$',0);fn(v,'$');return{ok:true,valu
 /* ---------------------------------------------------------------- parts */
 // One classified part. CONFIRMED: an id from the allowed list, evidence, no reason. UNKNOWN / CONFLICT: id null and a reason.
 function component(c,path,allowed){if(!isObj(c))refuse('TYPE',path);if(!STATUS.includes(c.status))refuse('STATUS_INVALID',path+'.status');
- codes(c.reasons,path+'.reasons');texts(c.evidence_refs,path+'.evidence_refs');
+ codes(c.reasons,path+'.reasons');refs(c.evidence_refs,path+'.evidence_refs');
  if(c.status==='CONFIRMED'){text(c.id,path+'.id');if(allowed&&!allowed.includes(c.id))refuse('ID_UNKNOWN',path+'.id');
   if(!c.evidence_refs.length||c.reasons.length)refuse('CONFIRMED_COMPONENT_INVALID',path);}
  else if(c.id!==null||!c.reasons.length)refuse('UNKNOWN_COMPONENT_REQUIRES_NULL_AND_REASON',path);}
@@ -202,17 +213,29 @@ function validate(json){
 
 /* ---------------------------------------------------------------- source and the loaded state (RAM) */
 const TEXT=WORDS;
-function source(){return Promise.resolve(Object.freeze({state:'NONE',code:'CLASSIFICATION_NOT_CONNECTED',payload:null,text:WORDS.NONE}));}
+/* Private delivery (owner 2026-11-08 「통합 결과 수령」 2항): the held bundle comes only through the owner-checked private Worker
+   (IS2.privateExpand kind 'classification' → the IS2.kisPrivate classification route, one click). connectPrivate(payload) checks it
+   whole and keeps it in RAM as the current source (delivery PRIVATE: 비공개 보관본 · 인증 경로 · 게시본 아님); disconnectPrivate()
+   drops it (접기 / 연결 끊기 / 403). Nothing is stored or sent. No public classification file is a precondition: without the
+   private delivery the source stays NONE. subscribe(fn) tells open screens that the source changed. */
+let privatePayload=null,generation=0;const listeners=new Set();
+const notify=()=>{for(const f of[...listeners]){try{f();}catch(_){}}};
+function connectPrivate(payload){const r=validate(payload);if(!r.ok)return Object.freeze({ok:false,code:r.code,path:r.path});
+ privatePayload=payload;generation++;notify();return Object.freeze({ok:true,value:r.value});}
+function disconnectPrivate(){if(privatePayload===null)return;privatePayload=null;generation++;notify();}
+const subscribe=fn=>{listeners.add(fn);return()=>listeners.delete(fn);};
+function source(){if(privatePayload!==null)return Promise.resolve(Object.freeze({state:'OK',code:null,payload:privatePayload,delivery:'PRIVATE',text:WORDS.PRIVATE}));
+ return Promise.resolve(Object.freeze({state:'NONE',code:'CLASSIFICATION_NOT_CONNECTED',payload:null,text:WORDS.NONE}));}
 const api=()=>{const I=root&&root.IS2;return I&&I.classification&&typeof I.classification.source==='function'?I.classification:self;};
-let current=Object.freeze({state:'NOT_LOADED',code:null,value:null}),loadP=null,loadFn=null;
-function load(){const fn=api().source;if(loadP&&loadFn===fn)return loadP;loadFn=fn;current=Object.freeze({state:'LOADING',code:null,value:null});
+let current=Object.freeze({state:'NOT_LOADED',code:null,value:null}),loadP=null,loadFn=null,loadGen=-1;
+function load(){const fn=api().source;if(loadP&&loadFn===fn&&loadGen===generation)return loadP;loadFn=fn;loadGen=generation;current=Object.freeze({state:'LOADING',code:null,value:null});
  let p;try{p=Promise.resolve(fn());}catch(e){p=Promise.reject(e);}
  const mine=loadP=p.then(src=>{if(!src||src.state!=='OK')return Object.freeze({state:src&&src.state==='NONE'?'NONE':'ERROR',code:src&&src.code||'CLASSIFICATION_SOURCE_FAILED',value:null});
-   const r=validate(src.payload);return r.ok?Object.freeze({state:'OK',code:null,value:r.value}):Object.freeze({state:'INVALID',code:r.code,path:r.path,value:null});},
+   const r=validate(src.payload);return r.ok?Object.freeze({state:'OK',code:null,value:r.value,delivery:src.delivery==='PRIVATE'?'PRIVATE':'PUBLIC'}):Object.freeze({state:'INVALID',code:r.code,path:r.path,value:null});},
   ()=>Object.freeze({state:'ERROR',code:'CLASSIFICATION_SOURCE_FAILED',value:null})).then(st=>{if(loadP===mine)current=st;return st;});
  return mine;}
 // The loaded state; a source swapped since the last load (tests) counts as not loaded until load() runs again.
-const state=()=>(loadFn===api().source?current:Object.freeze({state:'NOT_LOADED',code:null,value:null}));
+const state=()=>(loadFn===api().source&&loadGen===generation?current:Object.freeze({state:'NOT_LOADED',code:null,value:null}));
 const value=()=>{const s=state();return s.state==='OK'?s.value:null;};
 
 /* ---------------------------------------------------------------- words and records */
@@ -228,18 +251,25 @@ function rowState(row,valuation_date){const s=row.sector,i=row.industry,first=s.
  if(s.reasons.some(r=>DATE_REASONS.includes(r)))return{state:STATE.NOT_APPLICABLE_ON_DATE,words:dateWords(valuation_date),reason:s.reasons.find(r=>DATE_REASONS.includes(r))};
  return{state:STATE.NO_DATA,words:WORDS.NO_DATA,reason:first};}
 const part=c=>Object.freeze({id:c.id,status:c.status,reasons:Object.freeze([...c.reasons])});
+// The accounting model (회계모형 = 계산 규칙, DC-48) is its own state (Codex #516 4cf2e037 HELD_REVIEW.md): a confirmed sector with an
+// unknown accounting model shows its sector but is never a complete QGV peer group; an accounting model may be confirmed while the
+// sector is not. peer_complete = both confirmed (the words only; the QGV engine still decides its own comparison group).
+function accountingOf(row){const a=row.accounting,s=row.sector;
+ if(a.status==='CONFIRMED')return{accounting_state:'CONFIRMED',peer_complete:s.status==='CONFIRMED',accounting_words:s.status==='CONFIRMED'?null:WORDS.ACCOUNTING_WITHOUT_SECTOR};
+ return{accounting_state:a.status,peer_complete:false,accounting_words:a.status==='CONFLICT'?WORDS.ACCOUNTING_CONFLICT:WORDS.ACCOUNTING_UNKNOWN};}
 // recordFor(company_id, valuation_date = the view's) → a frozen record answer, always with state + words.
 function recordFor(company_id,valuation_date=null,bundle=null){const b=bundle||value(),s=state();
  const base={company_id:typeof company_id==='string'?company_id:null,issuer_id:null,security_id:null,record_id:null,classification_hash:null,
-  dictionary_version:null,mapping_version:null,valuation_date:valuation_date||null,knowledge_as_of:null,data_kind:null,sector:null,industry:null,accounting:null,source_sic:null,applicability:null};
+  dictionary_version:null,mapping_version:null,valuation_date:valuation_date||null,knowledge_as_of:null,data_kind:null,sector:null,industry:null,accounting:null,source_sic:null,applicability:null,
+  accounting_state:null,peer_complete:false,accounting_words:null,delivery:null};
  if(!b)return Object.freeze({...base,state:STATE.NO_DATA,words:WORDS.NO_DATA,reason:s.state==='INVALID'?s.code:'CLASSIFICATION_NOT_CONNECTED'});
  const v=b.view,when=valuation_date||v.valuation_date,head={...base,classification_hash:v.classification_hash,dictionary_version:v.dictionary_version,mapping_version:v.mapping_version,
-  valuation_date:when,knowledge_as_of:v.knowledge_as_of,data_kind:v.data_kind};
+  valuation_date:when,knowledge_as_of:v.knowledge_as_of,data_kind:v.data_kind,delivery:s.delivery||null};
  if(when!==v.valuation_date)return Object.freeze({...head,state:STATE.NOT_APPLICABLE_ON_DATE,words:dateWords(when),reason:'VALUATION_DATE_MISMATCH'});
  const row=v.rows.find(r=>r.company_id===company_id);
  if(!row)return Object.freeze({...head,state:STATE.NO_DATA,words:WORDS.NO_DATA,reason:'CLASSIFICATION_RECORD_MISSING'});
  const st=rowState(row,when);
- return Object.freeze({...head,...st,issuer_id:row.issuer_id,record_id:row.record_id,sector:part(row.sector),industry:part(row.industry),accounting:part(row.accounting),
+ return Object.freeze({...head,...st,...accountingOf(row),issuer_id:row.issuer_id,record_id:row.record_id,sector:part(row.sector),industry:part(row.industry),accounting:part(row.accounting),
   source_sic:row.source_sic?Object.freeze({system:row.source_sic.system,code:row.source_sic.code||null}):null,applicability:row.applicability?deepFreeze(copy(row.applicability,'$',0)):null});}
 // The record id a part (technical / macro / qgv_links) gives one company, or null; a part in mismatch gives VERSION_MISMATCH.
 function partRecord(name,company_id,bundle=null){const b=bundle||value();if(!b||!PARTS.includes(name))return null;
@@ -385,7 +415,7 @@ function matches(rec,{sector='',industry=''}={}){if(!sector)return true;if(!rec|
  if(!industry)return true;if(industry==='UNCLASSIFIED')return rec.industry.status!=='CONFIRMED';return rec.industry.status==='CONFIRMED'&&rec.industry.id===industry;}
 
 const self=Object.freeze({SCHEMAS,VERSIONS,SECTORS,STATE,WORDS,TEXT,GROUP_TEXT,DATE_REASONS,MIN,buildGroupManifest:(v,t,g)=>{try{return{ok:true,value:buildGroupManifest(v,t,g)};}catch(e){if(e instanceof GroupRefusal)return{ok:false,code:e.code};throw e;}},groupInput,previewCheck,PREVIEW_STATE,validate,validateView,validateTechnical,validateMacro,validateLinks,validateDictionary,
- source,load,state,value,recordFor,partRecord,sameRecord,rowState,dateWords,sectorName,industryName,shortHash,groupRows,groupRowsWhy,groupText,sample,
+ source,load,state,value,connectPrivate,disconnectPrivate,subscribe,recordFor,partRecord,sameRecord,rowState,dateWords,sectorName,industryName,shortHash,groupRows,groupRowsWhy,groupText,sample,
  context,parseContext,contextState,options,matches});
 return self;
 });

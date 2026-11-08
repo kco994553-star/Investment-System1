@@ -272,7 +272,9 @@ function create({win,action,data}){
  function kisDisconnect(event){return action.run(event,'LOGIN',()=>{kisC().disconnect();});}
  // One click = one action: the reads of one panel ([[route, symbol, part], …], 1 to 3) together. A part marked 'OPTIONAL' whose
  // file is missing (KIS_SERIES_NOT_FOUND) answers null, so that part alone is 자료 없음; every other failure fails the click.
- function kisRead(event,list){return action.run(event,'PRIVATE_READ',signal=>{if(!Array.isArray(list)||!list.length||list.length>3)throw Error('REQUEST_INVALID');
+ // The classification click is the one five-read click (its five parts, every one a 'classification' read); any other list is 1 to 3.
+ function kisRead(event,list){return action.run(event,'PRIVATE_READ',signal=>{const five=Array.isArray(list)&&list.length===5&&list.every(x=>Array.isArray(x)&&x[0]==='classification');
+  if(!Array.isArray(list)||!list.length||(list.length>3&&!five))throw Error('REQUEST_INVALID');
   return(async()=>{const out=[];
    for(let i=0;i<list.length;i++){const[route,symbol,part]=list[i];if(i)await kisPause(signal);
     let r;try{r=await kisOne(route,symbol,signal);}catch(e){if(part==='OPTIONAL'&&e&&e.message==='KIS_SERIES_NOT_FOUND')r=null;else throw e;}out.push(r);}

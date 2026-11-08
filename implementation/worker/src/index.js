@@ -268,6 +268,8 @@ function krxNumber(value) {
 // macro/current.json, news/current.json) and passes its bytes through. The body is parsed only to check that it is one JSON object
 // of this route's schema (the writers' spacing differs: "schema": "…" and "schema":"…" both occur); the app validates the rest.
 // Nothing is cached, logged or followed; the token, its expiry variable and every upstream body stay out of every response.
+// GET /kis/classification?part=<view|technical|macro|qgv_links|dictionary> (owner 2026-11-08): the held common classification
+// bundle (Codex #516 outputs, staged byte for byte at classification/<part>.json), same owner check, same read token, same rules.
 const KIS_REPO = 'kco994553-star/investment-system1-kis-private';
 const KIS_BRANCH = 'data';
 const GITHUB_API = 'https://api.github.com';
@@ -282,7 +284,18 @@ const KIS_FILES = Object.freeze({
   '/kis/qgv': [() => 'qgv/latest.json', (o) => o.schema === 'kis-qgv/1'],
   '/kis/macro': [() => 'macro/current.json', (o) => o.schema_version === 'macro-current-query/1'],
   '/kis/news': [() => 'news/current.json', (o) => o.kind === 'NEWS_SIGNALS' && o.schema_version === 2],
+  '/kis/classification': [(part) => 'classification/' + part + '.json', (o, part) => o.schema_version === CLASSIFICATION_PARTS[part]],
 });
+// The classification parts and the schema each file must carry (Codex common-classification/1 output names).
+const CLASSIFICATION_PARTS = Object.freeze({ view: 'common-classification-view/1', technical: 'common-classification-technical/1',
+  macro: 'common-classification-macro/1', qgv_links: 'common-classification-qgv-links/1', dictionary: 'common-classification-dictionary/1' });
+// /kis/classification?part=<part> only (no other parameter, no alternate encoding).
+export function kisClassificationPart(url) {
+  if (url.hash || !/^\?part=[a-z_]{1,16}$/.test(url.search)) throw new Failure('REQUEST_INVALID', 400);
+  const part = url.searchParams.get('part');
+  if (!Object.hasOwn(CLASSIFICATION_PARTS, part)) throw new Failure('REQUEST_INVALID', 400);
+  return part;
+}
 // Routes that take no query string at all.
 const KIS_PLAIN = new Set(['/kis/status', '/kis/qgv', '/kis/macro', '/kis/news']);
 const DAY_MS = 86_400_000;
@@ -521,7 +534,7 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
     // file is never served; the app validates the rest.
     let parsed;
     try { parsed = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes)); } catch { throw new Failure('KIS_SERIES_INVALID', 502); }
-    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed) || !isSchema(parsed)) throw new Failure('KIS_SERIES_INVALID', 502);
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed) || !isSchema(parsed, symbol)) throw new Failure('KIS_SERIES_INVALID', 502);
     const responseHeaders = headers(origin);
     if (date.state === 'EXPIRING') { responseHeaders.set('X-Private-Token-Expires-On', date.expires_on); responseHeaders.set('Access-Control-Expose-Headers', 'X-Private-Token-Expires-On'); }
     return new Response(bytes, { status: 200, headers: responseHeaders });
@@ -537,6 +550,7 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
       if (!['GET', 'OPTIONS'].includes(request.method)) throw new Failure('METHOD_NOT_ALLOWED', 405);
       let symbol = null, range = null;
       if (KIS_PLAIN.has(url.pathname)) { if (url.search || url.hash) throw new Failure('REQUEST_INVALID', 400); }
+      else if (url.pathname === '/kis/classification') symbol = kisClassificationPart(url);
       else if (kis) symbol = kisChartSymbol(url);
       else ({ symbol, range } = validateQuery(url));
       if (request.method === 'OPTIONS') {

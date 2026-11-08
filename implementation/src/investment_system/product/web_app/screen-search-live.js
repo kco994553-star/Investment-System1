@@ -235,7 +235,12 @@ function company(route,{box,given,name,facts,star,bodies}){
    (code · SEC 제출), the record's state words, its record id / hash / evaluation date, and the three ids apart (company_id = this
    company's Universe504 code, which a TARGET catalog id such as 'amd' is not; issuer_id = the record's issuer, security_id = none: a classification record carries no verified security id). The
    reader decides nothing here; no public file today (source NONE → 공통 분류 실자료 묶음 보존됨 · 인증된 화면 전달 경로 미연결). With a confirmed sector, links carry the
-   classification context (cc:… token) to the QGV filter and 매크로 4.2. */
+   classification context (cc:… token) to the QGV filter and 매크로 4.2.
+   A fourth line shows the accounting model apart (Codex #516 4cf2e037): 확인 / 미확인 · 섹터가 확인돼도 QGV 비교집단 완결 아님 /
+   근거 불일치 / 회계모형만 확인 · 섹터 미확인 — the sector line never says the QGV peer group is complete by itself.
+   Under it, one IS2.parts.privatePanel (common-classification-private, owner 2026-11-08): 비공개 펼치기 reads the held bundle from
+   the owner-checked private Worker (IS2.privateExpand kind 'classification') into IS2.classification; the block repaints from it
+   with the words 비공개 보관본 · 인증 경로 · 게시본 아님. The public part never waits for the panel. */
 function ccBlock(cid,signal){
  const C=I.classification,box=h('div',{class:'cc-block',dataset:{cc:'LOADING'}},h('p',{class:'reason'},'공통 분류 · 불러오는 중'));
  if(!C){box.dataset.cc='LOADER_FAILED';box.replaceChildren(na('공통 분류 판독기를 불러오지 못했습니다','LOADER_FAILED'));return box;}
@@ -244,10 +249,13 @@ function ccBlock(cid,signal){
   const sec=r.sector&&r.sector.status==='CONFIRMED'?C.sectorName(r.sector.id):none?C.WORDS.NO_DATA:w;
   const ind=r.industry&&r.industry.status==='CONFIRMED'?C.industryName(r.industry.id):r.sector&&r.sector.status==='CONFIRMED'?(r.industry.status==='CONFLICT'?'하위 산업 근거 불일치':'하위 산업 미확인'):C.WORDS.NO_DATA;
   const sic=r.source_sic&&r.source_sic.code?[r.source_sic.code,' · ',r.source_sic.system==='SEC_SIC'?'SEC 제출':r.source_sic.system]:['원천 SIC 기록 없음'];
+  const acc=none||!r.accounting?C.WORDS.NO_DATA:r.accounting.status==='CONFIRMED'?[r.accounting.id,' · 계산 규칙',r.accounting_words?' · '+r.accounting_words:'']:r.accounting_words;
   const token=r.sector&&r.sector.status==='CONFIRMED'?C.context({sector:r.sector.id,industry:r.industry.status==='CONFIRMED'?r.industry.id:null}):null;
   box.dataset.cc=none?st.state:r.state;
   box.replaceChildren(h('p',{class:'hand cc-head'},'공통 분류 · 섹터 → 하위 산업 → 기업 · 원천 SIC는 따로'),
    line('sector','섹터',sec),line('industry','하위 산업',ind),line('sic','원천 SIC',...sic),
+   h('p',{class:'cc-line',dataset:{ccLine:'accounting',ccAccounting:none?'NONE':r.accounting_state||'',ccPeerComplete:!none&&r.peer_complete?'YES':'NO'}},h('b',null,'회계모형'),' ',...[].concat(acc)),
+   !none&&st.delivery==='PRIVATE'?h('p',{class:'reason',dataset:{ccDelivery:'PRIVATE'}},C.WORDS.PRIVATE):null,
    h('p',{class:none?'reason':'cc-state',dataset:{ccState:none?st.state:r.state,na:none?st.code||st.state:r.reason||''}},'분류 상태 · ',none?(st.state==='INVALID'?C.WORDS.INVALID:C.WORDS.NONE):w,
     !none&&r.reason?h('span',{class:'reason'},' · 사유 ',r.reason):null),
    none?h('p',{class:'reason'},C.WORDS.NONE_WHY):h('p',{class:'reason',dataset:{ccRecord:r.record_id||'',ccHash:r.classification_hash||''}},'분류 기록 ',r.record_id||'없음',' · 분류 해시 ',C.shortHash(r.classification_hash),' · 평가일 ',r.valuation_date,
@@ -255,7 +263,12 @@ function ccBlock(cid,signal){
    h('p',{class:'reason cc-ids',dataset:{ccCompany:cid,ccIssuer:r.issuer_id||'',ccSecurity:''}},'기업 ID ',h('span',{class:'nobr'},cid),' · 발행사 ID ',h('span',{class:'nobr'},r.issuer_id||C.WORDS.ISSUER_NONE),' · 증권 ID ',C.WORDS.SECURITY_NONE),
    token?h('p',{class:'links cc-links'},h('a',{class:'lk',href:href('qgv',token),dataset:{ccLink:'qgv'}},'→ 같은 섹터 QGV 리더보드'),' ',h('a',{class:'lk',href:href('macro',token),dataset:{ccLink:'macro'}},'→ 4.2 섹터 비교 가격계열')):null);}
  paint();Promise.resolve(C.load()).then(settled(signal,paint),()=>{});
- return box;}
+ // The source changes when the owner's private delivery comes or goes: load again and repaint (this page only while it is open).
+ const un=typeof C.subscribe==='function'?C.subscribe(()=>{if(signal.aborted)return;paint();Promise.resolve(C.load()).then(settled(signal,paint),()=>{});}):null;
+ if(un)signal.addEventListener('abort',un,{once:true});
+ const priv=(()=>{if(!I.privateExpand||!I.parts||typeof I.parts.privatePanel!=='function')return null;
+  try{const p=I.parts.privatePanel({id:'common-classification-private',title:'공통 분류 보관 묶음'});I.privateExpand.attach(p,{signal,kind:'classification'});return p.node;}catch(_){return null;}})();
+ return priv?h('div',{class:'cc-wrap'},box,priv):box;}
 // SIC group and investment type, only from the published files (company-classification.json, company-types-pricefree.json).
 function classOf(id){
  const out=[],CS=window.ClassificationScreens,cls=CS?I.data.get(CS.FILE):null,rec=cls&&CS.record?CS.record(cls,id):null,ind=rec?rec.industry:null;

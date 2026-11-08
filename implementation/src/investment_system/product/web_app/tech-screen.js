@@ -266,7 +266,7 @@ function groupCheck(board,rows,manifest,context,data_kind){
  const seen=new Set();
  for(const row of rows){if(!isObj(row))jno('COMPANY_CODE_REQUIRED');const code=jtext(row.code,'COMPANY_CODE_REQUIRED');
   if(seen.has(code))jno('DUPLICATE_GROUP_ROW');seen.add(code);if(!byCode.has(code))jno('ROW_OUTSIDE_GROUP');const m=byCode.get(code);
-  if(row.signal_day!==bound.signal_day)jno('SIGNAL_DAY_MISMATCH');
+  if(row.signal_day!==bound.signal_day)jno('SIGNAL_DAY_MISMATCH',{board_day:bound.signal_day,qgv_day:typeof row.signal_day==='string'?row.signal_day:null});
   if(own(row,'classification_hash')&&row.classification_hash!==bound.classification_hash)jno('ROW_CLASSIFICATION_MISMATCH');
   if(own(row,'classification_record_id')&&row.classification_record_id!==m.classification_record_id)jno('ROW_CLASSIFICATION_MISMATCH');
   if(row.security_id!==m.security_id)jno('SECURITY_CLASSIFICATION_MISMATCH');
@@ -294,7 +294,10 @@ function joinGroupRows(board,{qgv_rows=[],security_links=null,conditions=[],data
    original_group_count:members.size,selected_count:picked.length,issuer_connections:Object.freeze(audit),keys:j.keys,rows:Object.freeze(picked)});}
  catch(e){if(e instanceof JoinRefusal)return Object.freeze({ok:false,code:e.code,...e.more});throw e;}}
 function joinText(j){if(!j||j.ok)return null;const base=typeof j.code==='string'?j.code.split(':')[0]:j.code,w=own(JOIN_TEXT,j.code)?JOIN_TEXT[j.code]:own(JOIN_TEXT,base)?JOIN_TEXT[base]+' · '+j.code.slice(base.length+1):TEXT.UNKNOWN_REASON;
- return j.code==='SIGNAL_DAY_MISMATCH'?w+' · 보드 '+j.board_day+' · QGV '+j.qgv_day:w;}
+ // A QGV row without a producer evaluation day (signal_day null: no producer field today, never made from a price, as_of or
+ // generation day — SIGNAL_DAY_CONTRACT.md) is said as such, apart from two different days.
+ return j.code==='SIGNAL_DAY_MISMATCH'?(j.qgv_day===null||j.qgv_day===undefined?w+' · 보드 '+j.board_day+' · QGV 행 평가일 미제공(생산자 평가일 필드 없음 · 가격일·생성일로 추정 안 함)'
+  :w+' · 보드 '+j.board_day+' · QGV '+j.qgv_day):w;}
 const status=v=>(!v?TEXT.NONE:v.data_kind==='SYNTHETIC'?TEXT.SYNTHETIC:v.data_kind?'실자료 · '+v.data_kind:'자료 종류 표시 없음');
 function source(){return Promise.resolve(Object.freeze({state:'NONE',code:'TECH_SCREEN_NOT_CONNECTED',payload:null,security_links:null,text:TEXT.NONE}));}
 return Object.freeze({SCHEMA,SECURITY_IDENTIFIER_TYPES,METRICS,CONDITIONS,CHOICES,META,COND_TEXT,REASON,TEXT,JOIN_TEXT,validate,evaluate,securities,joinRows,joinGroupRows,groupCheck:(b,r,m,c,k)=>{try{groupCheck(b,r,m,c,k);return{ok:true};}catch(e){if(e instanceof JoinRefusal)return{ok:false,code:e.code};throw e;}},sha256,populationHash,GROUP_CONTEXT_FIELDS,joinText,metricState,display,medianText,decileText,reasonText,condText,status,cmp,source});

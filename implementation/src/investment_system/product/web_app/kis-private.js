@@ -23,9 +23,12 @@
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else{const I=root.IS2=root.IS2||{};I.kisPrivate=api;}})(typeof globalThis==='object'?globalThis:this,function(){
 'use strict';
 const SCHEMA=Object.freeze({BARS:'kis-bars/1',ANALYSIS:'kis-bars/1/analysis',MEASURES:'kis-technical-measures/1',QGV:'kis-qgv/1',STATUS:'kis-status/1'});
-const ROUTE=Object.freeze({status:'/kis/status',chart:'/kis/chart',analysis:'/kis/analysis',technical:'/kis/technical',qgv:'/kis/qgv',macro:'/kis/macro',news:'/kis/news'});
-// Routes that take ?symbol=<SYM>; the others take no query.
+const ROUTE=Object.freeze({status:'/kis/status',chart:'/kis/chart',analysis:'/kis/analysis',technical:'/kis/technical',qgv:'/kis/qgv',macro:'/kis/macro',news:'/kis/news',
+ classification:'/kis/classification'});
+// Routes that take ?symbol=<SYM>; classification takes ?part=<one of CLASSIFICATION_PARTS> (owner 2026-11-08, the held common
+// classification bundle, Codex #516 outputs byte for byte); the others take no query.
 const BY_SYMBOL=Object.freeze(['chart','analysis','technical']);
+const CLASSIFICATION_PARTS=Object.freeze(['view','technical','macro','qgv_links','dictionary']);
 const SCOPES=Object.freeze(['email','openid']);
 const SYMBOL=/^[A-Z][A-Z0-9-]{0,9}$/;
 const DAY=/^\d{4}-\d{2}-\d{2}$/;
@@ -250,9 +253,10 @@ function createClient({win,clientId,origin,send,now=()=>Date.now()}={}){
   client.requestAccessToken();});}
  function disconnect(){drop();}
  async function get(route,symbol,signal){
-  if(!own(ROUTE,route))throw Error('ROUTE_UNKNOWN');const bySym=BY_SYMBOL.includes(route);if(bySym&&(typeof symbol!=='string'||!SYMBOL.test(symbol)))throw Error('REQUEST_INVALID');
+  if(!own(ROUTE,route))throw Error('ROUTE_UNKNOWN');const bySym=BY_SYMBOL.includes(route),byPart=route==='classification';
+  if(bySym&&(typeof symbol!=='string'||!SYMBOL.test(symbol)))throw Error('REQUEST_INVALID');if(byPart&&!CLASSIFICATION_PARTS.includes(symbol))throw Error('REQUEST_INVALID');
   if(!connected())throw Error('AUTH_REQUIRED');const mine=epoch;
-  const url=origin+ROUTE[route]+(bySym?'?symbol='+symbol:'');
+  const url=origin+ROUTE[route]+(bySym?'?symbol='+symbol:byPart?'?part='+symbol:'');
   let res;try{res=await send(url,{method:'GET',headers:{Authorization:'Bearer '+token},credentials:'omit',cache:'no-store',referrerPolicy:'no-referrer',redirect:'error',signal});}
   catch(e){if(signal&&signal.aborted)throw Error('CANCELED');throw Error('UPSTREAM_UNAVAILABLE');}
   if(mine!==epoch)throw Error('CANCELED');
@@ -263,5 +267,5 @@ function createClient({win,clientId,origin,send,now=()=>Date.now()}={}){
   if(!isObj(body))throw Error('KIS_SERIES_INVALID');return body;}
  return Object.freeze({state,connect,disconnect,get,subscribe:f=>{listeners.add(f);return()=>listeners.delete(f);}});}
 
-return Object.freeze({SCHEMA,ROUTE,LAYER_NOTE,ADJUSTED_NOTE,BASIS_TEXT,SETTINGS_BY_BASIS,SOURCE_WORDS:'비공개 보관본 · 인증 경로',validateBars,validateAnalysis,validateMeasures,validateQgv,basisCompare,basisAgreement,barsMeta,analysisView,measuresView,qgvView,reasonText,createClient});
+return Object.freeze({SCHEMA,ROUTE,CLASSIFICATION_PARTS,LAYER_NOTE,ADJUSTED_NOTE,BASIS_TEXT,SETTINGS_BY_BASIS,SOURCE_WORDS:'비공개 보관본 · 인증 경로',validateBars,validateAnalysis,validateMeasures,validateQgv,basisCompare,basisAgreement,barsMeta,analysisView,measuresView,qgvView,reasonText,createClient});
 });

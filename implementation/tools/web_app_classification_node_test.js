@@ -11,6 +11,8 @@
 //  - The same company / date reads the same classification_record_id and classification_hash in detail (view), QGV (qgv links),
 //    technical and macro.
 //  - source() NONE, no request; hash context token round trip.
+//  - Accounting model apart from the sector (Codex #516 4cf2e037); evidence refs read whole (MAX.ref); the owner's private delivery
+//    (connectPrivate / disconnectPrivate / subscribe, owner 2026-11-08).
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -252,6 +254,43 @@ const uni = (ids, extra = []) => [...ids, ...extra].map((id, i) => ({ id, code: 
     assert.equal(C.recordFor('NYSE:MMM').words, '분류 자료 없음');
     const src = fs.readFileSync(path.join(__dirname, '../src/investment_system/product/web_app/classification.js'), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
     assert.doesNotMatch(src, /\bfetch\s*\(|XMLHttpRequest|localStorage|sessionStorage|indexedDB|sendBeacon/);
+  });
+  // Codex #516 4cf2e037 HELD_REVIEW.md: sector and accounting model are independent states; evidence refs are opaque locators.
+  await ok('accounting model kept apart: confirmed sector + unknown accounting is never a complete QGV peer group; accounting alone is told', () => {
+    const b = clone(X.bundle()), rows = b.view.rows, conf = rows.find((r) => r.sector.status === 'CONFIRMED' && r.accounting.status === 'CONFIRMED');
+    assert.ok(conf, 'the fixture has a fully confirmed row');
+    const both = C.recordFor(conf.company_id, null, valid(clone(X.bundle())));
+    assert.equal(both.accounting_state, 'CONFIRMED'); assert.equal(both.peer_complete, true); assert.equal(both.accounting_words, null);
+    conf.accounting = { id: null, status: 'UNKNOWN', reasons: ['ACCOUNTING_TEMPLATE_UNCONFIRMED'], evidence_refs: [] };
+    const v = valid(b), r = C.recordFor(conf.company_id, null, v);
+    assert.equal(r.sector.status, 'CONFIRMED'); assert.equal(r.accounting_state, 'UNKNOWN'); assert.equal(r.peer_complete, false);
+    assert.equal(r.accounting_words, '회계모형 미확인 · 섹터가 확인돼도 QGV 비교집단 완결 아님');
+    assert.equal(r.state, both.state, 'the sector state words do not change: the accounting line says the rest');
+    const b2 = clone(X.bundle()), row2 = b2.view.rows.find((x) => x.company_id === conf.company_id), acc = clone(row2.accounting);
+    row2.sector = { id: null, status: 'UNKNOWN', reasons: ['SECTOR_UNCONFIRMED'], evidence_refs: [] }; row2.industry = { id: null, status: 'UNKNOWN', reasons: ['SECTOR_UNCONFIRMED'], evidence_refs: [] }; row2.accounting = acc;
+    const r2 = C.recordFor(conf.company_id, null, valid(b2));
+    assert.equal(r2.accounting_state, 'CONFIRMED'); assert.equal(r2.peer_complete, false); assert.equal(r2.accounting_words, '회계모형만 확인 · 섹터 미확인');
+  });
+  await ok('evidence refs: a 330-character locator (the held review) is read whole; one past MAX.ref is refused; words keep 300', () => {
+    const b = clone(X.bundle()), row = b.view.rows.find((r) => r.sector.status === 'CONFIRMED');
+    row.sector.evidence_refs = ['synthetic:source:' + 'a'.repeat(313)]; assert.equal(row.sector.evidence_refs[0].length, 330);
+    assert.equal(C.validate(b).ok, true);
+    row.sector.evidence_refs = ['x'.repeat(4097)]; const r = C.validate(b); assert.equal(r.ok, false); assert.equal(r.code, 'TOO_LARGE');
+    const w = clone(X.bundle()), sic = w.view.rows.find((r) => r.source_sic && typeof r.source_sic.system === 'string');
+    assert.ok(sic, 'the fixture has a source SIC'); sic.source_sic.system = 'S'.repeat(301);
+    assert.equal(C.validate(w).code, 'TOO_LARGE', 'a shown word keeps the 300 bound');
+  });
+  await ok('private delivery: connectPrivate checks the bundle whole, makes it the RAM source (PRIVATE), disconnectPrivate drops it', async () => {
+    const seen = []; const un = C.subscribe(() => seen.push(C.state().state));
+    const bad = clone(X.bundle()); bad.view.schema_version = 'x';
+    const r0 = C.connectPrivate(bad); assert.equal(r0.ok, false); assert.equal((await C.source()).state, 'NONE'); assert.equal(seen.length, 0, 'a refused bundle changes nothing');
+    const r1 = C.connectPrivate(clone(X.bundle())); assert.equal(r1.ok, true); assert.equal(seen.length, 1);
+    const s = await C.source(); assert.equal(s.state, 'OK'); assert.equal(s.delivery, 'PRIVATE'); assert.equal(s.text, '비공개 보관본 · 인증 경로 · 게시본 아님');
+    const st = await C.load(); assert.equal(st.state, 'OK'); assert.equal(st.delivery, 'PRIVATE'); assert.equal(C.state().delivery, 'PRIVATE');
+    const any = C.value().view.rows[0]; assert.equal(C.recordFor(any.company_id).delivery, 'PRIVATE');
+    C.disconnectPrivate(); assert.equal(seen.length, 2); assert.equal(C.state().state, 'NOT_LOADED', 'a dropped delivery is not the loaded state');
+    assert.equal((await C.load()).state, 'NONE'); assert.equal(C.value(), null); assert.equal(C.recordFor(any.company_id).words, '분류 자료 없음');
+    C.disconnectPrivate(); assert.equal(seen.length, 2, 'nothing to drop: no notice'); un();
   });
   console.log(JSON.stringify({ passed: true, checks: n }));
 })().catch((e) => { console.error('FAIL ' + (e && e.stack || e)); process.exitCode = 1; });

@@ -222,6 +222,41 @@ test('technical, macro and news routes: own path and schema only; macro and news
   }
 });
 
+// The held common classification bundle (owner 2026-11-08): one route, five parts, each its own file and Codex schema.
+test('classification: ?part= reads classification/<part>.json byte for byte; each part only accepts its own schema', async () => {
+  const PARTS = { view: 'common-classification-view/1', technical: 'common-classification-technical/1', macro: 'common-classification-macro/1',
+    qgv_links: 'common-classification-qgv-links/1', dictionary: 'common-classification-dictionary/1' };
+  for (const [part, schema] of Object.entries(PARTS)) {
+    // the writer's spacing, kept as received
+    const text = '{"schema_version": "' + schema + '", "rows": []}', s = setup({ github: () => new Response(text, { status: 200 }) });
+    const r = await s.run('/kis/classification?part=' + part);
+    assert.equal(r.status, 200, part); assert.equal(await body(r), text); noStore(r);
+    assert.equal(githubCalls(s).length, 1);
+    assert.equal(githubCalls(s)[0].url, 'https://api.github.com' + REPO + '/contents/classification/' + part + '.json?ref=data');
+    // another part's file under this part's name is refused (502), never served
+    const other = Object.values(PARTS).find((x) => x !== schema);
+    const w = await setup({ github: () => new Response(JSON.stringify({ schema_version: other }), { status: 200 }) }).run('/kis/classification?part=' + part);
+    assert.equal(w.status, 502, part + ' with ' + other);
+  }
+  // missing file → 404 (the screen's 자료 없음); not one JSON object → 502
+  assert.equal((await setup({ github: () => new Response('{}', { status: 404 }) }).run('/kis/classification?part=view')).status, 404);
+  assert.equal((await setup({ github: () => new Response('[1]', { status: 200 }) }).run('/kis/classification?part=view')).status, 502);
+});
+
+test('classification: the part is checked before any read; no owner proof is refused before any read', async () => {
+  for (const route of ['/kis/classification', '/kis/classification?part=', '/kis/classification?part=View', '/kis/classification?part=../view',
+    '/kis/classification?part=view&x=1', '/kis/classification?symbol=NVDA', '/kis/classification?part=store', '/kis/classification?part=qgv-links',
+    '/kis/classification?part=view#x', '/kis/classification/view']) {
+    const s = setup(), r = await s.run(route);
+    assert.ok([400, 404].includes(r.status), route + ' ' + r.status); assert.equal(githubCalls(s).length, 0, route);
+  }
+  const s = setup({ authStatus: 400 }), r = await s.run('/kis/classification?part=view');
+  assert.equal(r.status, 403); assert.equal(githubCalls(s).length, 0);
+  const u = setup({ env: { PRIVATE_REPO_READ_TOKEN: undefined } }), t = await u.run('/kis/classification?part=view');
+  assert.equal(t.status, 503); assert.equal(githubCalls(u).length, 0);
+  assert.match(await body(t), /TOKEN_UNSET/);
+});
+
 test('preflight: GET with the authorization header only, no read and no Google call', async () => {
   const s = setup();
   const r = await s.run('/kis/chart?symbol=NVDA', { 'Access-Control-Request-Method': 'GET', 'Access-Control-Request-Headers': 'authorization', Authorization: '' }, 'OPTIONS');

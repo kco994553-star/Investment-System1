@@ -13,8 +13,10 @@ is checked before it is committed; a plain walk if git is unavailable), `.gz` me
 - no public workflow references secrets.KIS_*, the KIS Secret names, a KIS host or TR id, the collector module, or runs
   anything from the private_area package;
 - the public web app and web_assets sources request no private Worker path (/kis/, /lab/, /private/). One narrow exception
-  (owner 2026-11-05, answer "좁은 예외 승인"; three reader routes added the same day, same rules): web_app/kis-private.js may
-  name exactly the seven owner-checked routes below, each once as a single-quoted literal; any other private path there, or any private path in any other web file, still fails.
+  (owner 2026-11-05, answer "좁은 예외 승인"; three reader routes added the same day, same rules; the held common classification
+  route added 2026-11-08 by the owner's 「통합 결과 수령」 2항 "기존 인증 구조를 이용한 보존 분류 묶음의 비공개 전달 연결",
+  same rules): web_app/kis-private.js may name exactly the eight owner-checked routes below, each once as a single-quoted
+  literal; any other private path there, or any private path in any other web file, still fails.
 - the two KIS Secret names (any spelling, GUARD.KIS_SECRET_NAME) appear in no public code, config, workflow or data file:
   the KIS keys live only in the private repository investment-system1-kis-private (owner 2026-10-31); only Markdown
   documentation may name them.
@@ -232,11 +234,12 @@ def workflow_findings(pairs) -> list:
 
 
 PRIVATE_READER_FILE = "implementation/src/investment_system/product/web_app/kis-private.js"
-PRIVATE_READER_ROUTES = tuple("'/" + "k" + "is/" + r + "'" for r in ("status", "chart", "analysis", "qgv", "technical", "macro", "news"))
+PRIVATE_READER_ROUTES = tuple("'/" + "k" + "is/" + r + "'" for r in ("status", "chart", "analysis", "qgv", "technical", "macro", "news",
+                                                                    "classification"))
 
 
 def private_reader_rest(text: str) -> str:
-    """The reader's text without its seven allowed route literals; each must be there exactly once."""
+    """The reader's text without its eight allowed route literals; each must be there exactly once."""
     for literal in PRIVATE_READER_ROUTES:
         if text.count(literal) != 1:
             return text                          # missing or repeated: nothing is excused
@@ -326,7 +329,7 @@ def test_push_workflow_runs_only_this_test_with_no_secret():
 
 
 def test_private_reader_exception_is_exact():
-    assert len(PRIVATE_READER_ROUTES) == len(set(PRIVATE_READER_ROUTES)) == 7, "exactly seven routes, each distinct"
+    assert len(PRIVATE_READER_ROUTES) == len(set(PRIVATE_READER_ROUTES)) == 8, "exactly eight routes, each distinct"
     ok = "const R={a:" + ",b:".join(PRIVATE_READER_ROUTES) + "};"
     assert web_private_path_files([(PRIVATE_READER_FILE, ok)]) == []
     extra = ok + "f('/" + "k" + "is/other')"
