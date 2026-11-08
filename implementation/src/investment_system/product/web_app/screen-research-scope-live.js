@@ -40,8 +40,9 @@ function selectionCard(r){const S=RS();
  if(!r.ok)return h('div',{class:'sk state-card',dataset:{state:'error',na:r.code,scopeRefused:'selection'}},h('p',{class:'err'},'선정 결과가 계약과 달라 전부 읽지 않았습니다 · ',r.code,' · ',r.path));
  const v=S.selectionView(r.value);
  return h('div',{class:'sk card',dataset:{block:'scope-selection',scopeMode:v.mode}},sub('일반 연구 선정 방식','9.1','조건 충족 전부 · 상위 N · 상위 %'),
-  h('dl',{class:'card-body'},[['선정 방식',v.label,{scopeLabel:''}],['선정 수',v.count,{scopeCount:''}],['비중',v.weight,{scopeWeight:''}]]
+  h('dl',{class:'card-body'},[['선정 방식',v.label,{scopeLabel:''}],['선정 수',v.count,{scopeCount:''}],['선정 규칙',v.rule,{scopeRule:''}],['비중',v.weight,{scopeWeight:''}]]
    .map(([k,x,d])=>[h('dt',null,h('b',null,k)),h('dd',{dataset:d},x)])),
+  v.shortfall?note(v.shortfall,{scopeShortfall:''}):null,note(v.scope,{scopeScope:''}),note(v.absent,{scopeAbsent:''}),
   note(v.general),note(v.official,{scopeOfficial:''}));}
 
 function block({signal}){
