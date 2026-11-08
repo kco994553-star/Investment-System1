@@ -4,11 +4,18 @@ This pure adapter consumes evidence; it does not discover identities, create IDs
 calculate indicators, rank rows, or publish data. Main owns the screen consumer.
 """
 from copy import deepcopy
+import hashlib
+import json
+import re
 
 from .exp_deciles.technical_leaderboard import filter_board
 from .exp_deciles.technical_measures import METRIC_IDS
 from .kis_price_bridge import _day
 from .private_technical_board import SECURITY_IDENTIFIER_TYPES
+
+GROUP_CONTEXT_FIELDS = ('signal_day', 'group_id', 'classification_hash', 'population_hash',
+    'universe_id', 'universe_version', 'universe_members_hash', 'dictionary_version',
+    'mapping_version', 'knowledge_as_of', 'price_basis')
 
 
 def _text(value, error):
@@ -41,7 +48,123 @@ def _board_securities(board):
     return securities
 
 
-def join_filtered_rows(board, *, qgv_rows, security_links, conditions, data_kind):
+def _group_rows(board, rows, manifest, context, data_kind):
+    """Check a trusted producer roster against independently pinned request context.
+
+    Neither input rows nor measurement availability can establish membership.
+    Hash equality binds supplied records; it does not authenticate an arbitrary
+    object. The caller must load the manifest from its verified source bundle.
+    """
+    if not isinstance(manifest, dict) or not isinstance(context, dict):
+        raise ValueError('GROUP_MEMBERSHIP_REQUIRED')
+    if manifest.get('schema_version') != 'technical-filter-membership/1':
+        raise ValueError('GROUP_MEMBERSHIP_SCHEMA_MISMATCH')
+    if manifest.get('data_kind') != data_kind:
+        raise ValueError('GROUP_DATA_KIND_MISMATCH')
+    if manifest.get('membership_status') != 'CONFIRMED':
+        raise ValueError('GROUP_MEMBERSHIP_UNCONFIRMED')
+    bound = manifest.get('context')
+    if not isinstance(bound, dict):
+        raise ValueError('GROUP_CONTEXT_REQUIRED')
+    for key in GROUP_CONTEXT_FIELDS:
+        _text(bound.get(key), 'GROUP_CONTEXT_REQUIRED')
+        if context.get(key) != bound[key]:
+            raise ValueError('GROUP_CONTEXT_MISMATCH:' + key)
+    for key in ('classification_hash', 'population_hash', 'universe_members_hash'):
+        if re.fullmatch('[0-9a-f]{64}', bound[key]) is None:
+            raise ValueError('GROUP_CONTEXT_HASH_INVALID')
+    for key in ('signal_day', 'group_id', 'population_hash'):
+        if board.get(key) != bound[key]:
+            raise ValueError('GROUP_CONTEXT_MISMATCH:' + key)
+    _day(bound['signal_day'])
+    if board.get('membership_source') != 'common-classification:' + bound['classification_hash']:
+        raise ValueError('GROUP_CONTEXT_MISMATCH:classification_hash')
+    if bound['price_basis'] not in ('RAW', 'SPLIT_ADJUSTED') or not bound['group_id'].endswith(':' + bound['price_basis']):
+        raise ValueError('GROUP_CONTEXT_MISMATCH:price_basis')
+    members = manifest.get('members')
+    if not isinstance(members, list):
+        raise ValueError('GROUP_MEMBERSHIP_REQUIRED')
+    by_code, security_ids = {}, set()
+    for member in members:
+        if not isinstance(member, dict):
+            raise ValueError('GROUP_MEMBER_INVALID')
+        code = _text(member.get('company_id'), 'GROUP_MEMBER_INVALID')
+        sid = _text(member.get('security_id'), 'GROUP_MEMBER_INVALID')
+        if code in by_code or sid in security_ids:
+            raise ValueError('DUPLICATE_GROUP_MEMBER')
+        _text(member.get('classification_record_id'), 'GROUP_MEMBER_INVALID')
+        _text(member.get('issuer_id'), 'GROUP_MEMBER_INVALID')
+        by_code[code] = member
+        security_ids.add(sid)
+    population = dict(group_id=bound['group_id'], signal_day=bound['signal_day'], members=sorted(security_ids))
+    if (hashlib.sha256(json.dumps(population, sort_keys=True).encode()).hexdigest() != bound['population_hash']
+            or set(_board_securities(board)) != security_ids):
+        raise ValueError('BOARD_MEMBERSHIP_MISMATCH')
+    seen = set()
+    for row in rows:
+        if not isinstance(row, dict):
+            raise ValueError('COMPANY_CODE_REQUIRED')
+        code = _text(row.get('code'), 'COMPANY_CODE_REQUIRED')
+        if code in seen:
+            raise ValueError('DUPLICATE_GROUP_ROW')
+        seen.add(code)
+        if code not in by_code:
+            raise ValueError('ROW_OUTSIDE_GROUP')
+        member = by_code[code]
+        if row.get('signal_day') != bound['signal_day']:
+            raise ValueError('SIGNAL_DAY_MISMATCH')
+        for key, expected in (('classification_hash', bound['classification_hash']),
+                              ('classification_record_id', member['classification_record_id'])):
+            if key in row and row[key] != expected:
+                raise ValueError('ROW_CLASSIFICATION_MISMATCH')
+        if row.get('security_id') != member['security_id']:
+            raise ValueError('SECURITY_CLASSIFICATION_MISMATCH')
+        if row.get('issuer_id') is not None and row['issuer_id'] != member['issuer_id']:
+            raise ValueError('ISSUER_CLASSIFICATION_MISMATCH')
+    if seen != set(by_code):
+        raise ValueError('GROUP_MEMBER_MISSING')
+    return by_code
+
+
+def join_group_rows(board, *, qgv_rows, security_links, conditions, data_kind,
+                    group_manifest=None, group_context=None, connect_issuers=False):
+    """Strict /2 envelope, preserving original rows and explicit connection audit.
+
+    Issuer connection is opt-in evidence enrichment, before the unchanged identity
+    checks. Null is never silently replaced by the legacy id/ticker. A missing
+    roster cannot receive VERIFIED; legacy join_filtered_rows remains identity-only.
+    """
+    if data_kind not in ('SYNTHETIC', 'RETAINED_INPUT'):
+        raise ValueError('JOIN_DATA_KIND_REQUIRED')
+    if type(connect_issuers) is not bool:
+        raise ValueError('ISSUER_CONNECTION_OPTION_INVALID')
+    rows = list(qgv_rows)
+    members = _group_rows(board, rows, group_manifest, group_context, data_kind)
+    connected, audit = deepcopy(rows), []
+    if connect_issuers:
+        for row in connected:
+            if row.get('issuer_id') is not None:
+                continue
+            member = members[row['code']]
+            refs = member.get('evidence_refs')
+            if not isinstance(refs, list) or not refs or any(not isinstance(v, str) or not v.strip() for v in refs):
+                raise ValueError('ISSUER_CONNECTION_EVIDENCE_REQUIRED')
+            audit.append(dict(company_id=row['code'], previous_field_present='issuer_id' in row,
+                previous_issuer_id=row.get('issuer_id'), issuer_id=member['issuer_id'],
+                classification_record_id=member['classification_record_id'],
+                classification_hash=group_context['classification_hash'], signal_day=group_context['signal_day'],
+                knowledge_as_of=group_context['knowledge_as_of'], evidence_refs=deepcopy(refs),
+                basis='VERIFIED_CLASSIFICATION_RECORD'))
+            row['issuer_id'] = member['issuer_id']
+    selected = join_filtered_rows(board, qgv_rows=connected, security_links=security_links,
+        conditions=conditions, data_kind=data_kind, group_manifest=group_manifest, group_context=group_context)
+    return dict(schema_version='technical-filter-join/2', data_kind=data_kind,
+        membership_validation='VERIFIED' if members else 'VERIFIED_EMPTY', context=deepcopy(group_context),
+        original_group_count=len(members), selected_count=len(selected), issuer_connections=audit, rows=selected)
+
+
+def join_filtered_rows(board, *, qgv_rows, security_links, conditions, data_kind,
+                       group_manifest=None, group_context=None):
     """Return selected QGV rows, unchanged and in their original input order.
 
     Precondition: ``board`` passed the existing ``techScreen.validate`` reader
@@ -56,12 +179,16 @@ def join_filtered_rows(board, *, qgv_rows, security_links, conditions, data_kind
     issuer and ticker. Different securities never join via a common issuer.
     A bad row rejects the entire requested batch, including rows a filter would
     exclude. Caller must report the refusal, not silently apply another join.
+    With group_manifest + group_context it also validates the complete group.
+    Without both it is legacy identity validation only (completeness NOT_CHECKED).
     """
     if data_kind not in ('SYNTHETIC', 'RETAINED_INPUT'):
         raise ValueError('JOIN_DATA_KIND_REQUIRED')
     securities = _board_securities(board)
     signal = board['signal_day']
     rows = list(qgv_rows)
+    if group_manifest is not None or group_context is not None:
+        _group_rows(board, rows, group_manifest, group_context, data_kind)
     links_by_id = {}
     active_series = set()
     active_ids = set()

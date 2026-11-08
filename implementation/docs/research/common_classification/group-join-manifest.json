@@ -1,0 +1,22 @@
+{
+  "schema_version": "technical-filter-group-handoff/1",
+  "data_kind": "SYNTHETIC",
+  "inspected_consumer_sha": "23dd5dc515e241c035bc48c9ebc6e1365d3ce513",
+  "files": [
+    {
+      "path": "GROUP_JOIN.md",
+      "size": 9960,
+      "sha256": "9fd4fabbbb0c4b3ac58fad52c03aba579aef33730afacd1c90c21cafb3f6de2c"
+    },
+    {
+      "path": "group-join-fixtures.json",
+      "size": 85715,
+      "sha256": "8c8ca6dcff7776aa3e29749ba266839930069f54ff5c9a19fd61589d0a721658"
+    },
+    {
+      "path": "consumer-probe.cjs",
+      "size": 3991,
+      "sha256": "f74694a1bc334aa7b48c52ce90e4bc205cc961f22b0b2980239eef93f0061054"
+    }
+  ]
+}
