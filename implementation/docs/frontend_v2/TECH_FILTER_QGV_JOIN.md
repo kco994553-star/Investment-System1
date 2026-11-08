@@ -74,6 +74,19 @@ Main은 Codex PR #515(`research/technical-filter-join-20261107`, `b6fd0112`)의 
 
 이것이 오기 전에는 아무것도 결합하지 않는다.
 
+## 5a. 결합 반례 (오너 2026-11-08, Codex #437 6714613662)
+
+`tools/technical_filter_join_main_cases.py`가 Codex 고정 입력(`original_board`, `same_date_same_security`)에서 행·링크만 바꾼 11사례를
+Codex `join_filtered_rows`로 돌려 `tests/fixtures/technical_filter_join_main/cases.json`에 기대 결과로 남긴다(pytest가 재생성과 바이트 비교).
+`tools/web_app_tech_join_cases_node_test.js`는 Main `joinRows` + `evaluate`(화면 `keep()`과 같은 순서)가 모든 사례에서 Codex와 같은 행·순위 또는
+같은 코드임을 확인한다. `web_app_classification_browser_test.js`는 실제 호출 경로(`screen-qgv-live` → `keep` → `groupRows` → `joinRows`)에서
+그룹이 전체보다 작을 때 그룹 행만 QGV 순, "그룹 밖 N행 · 조건 적용 대상 아님 · 원래 점수·순위 그대로" 줄, 끄면 같은 표, 거부 시 표 불변을 본다.
+
+Codex 함수는 넘겨받은 행만 본다. 그룹 구성원 행이 빠지면(사례 g2) 나머지로 결합한다. 그래서 Main은 결합 전에 `groupRows`가
+그룹 전체 행을 1:1로 찾지 못하면 `MEMBER_NOT_MAPPED`로 결합 자체를 하지 않는다. Main 행의 `issuer_id`는 지금 모두 null이고
+`groupRows`가 분류 기록의 발행사로 채운다(행에 다른 발행사가 있으면 `ISSUER_MISMATCH`). 명시적 null 발행사가 `joinRows`까지 가는 경로는
+Codex 투영에서는 생기지 않아(확정 그룹은 발행사 확인 필요) node 사례 b에서만 확인한다.
+
 ## 6. Codex 답변 반영 (#437 댓글 6706590129, #516 `9343b5e6`)
 
 | Main 질문 | Codex 답 | Main 처리 |
