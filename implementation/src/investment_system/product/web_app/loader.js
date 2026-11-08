@@ -43,6 +43,9 @@
 // draws in the 매크로 screen; it installs IS2.macroObserved and reads nothing.
 // news-refresh.js is the reader of the 5.2.7 원천별 갱신 기록 (owner 2026-11-05) that screen-news-live.js uses at paint time; it
 // installs IS2.newsRefresh and reads nothing.
+// research-scope.js
+// reads Codex's operational coverage (#474) and research selection (#473) for Lab 9.1 (screen-research-scope-live.js); it installs
+// IS2.researchScope and reads nothing (owner 2026-11-04 third).
 const LOAD_ORDER=Object.freeze([
  'locale.js','entity-search.js','price-time.js','device-market.js','device-actual.js','profile-defaults.js','type-config-defaults.js',
  'device-profiles.js','engine-preview.js','dcf-parameters-defaults.js','device-valuation.js','playbook-config-defaults.js','playbook-engine.js',
@@ -57,7 +60,7 @@ const LOAD_ORDER=Object.freeze([
  'action.js','data.js','prices.js','store.js','qgv.js','engines.js',
  'companies.js','private.js','lab.js',
  'search-part-live.js','screen-search-live.js','screen-qgv-live.js','screen-macro-live.js','screen-prompts-live.js','screen-tree-live.js',
- 'screen-technical-live.js','screen-news-live.js','screen-lab-live.js','tech-screen.js','classification.js','screen-tech-filter-live.js',
+ 'screen-technical-live.js','screen-news-live.js','screen-lab-live.js','tech-screen.js','classification.js','screen-tech-filter-live.js','research-scope.js','screen-research-scope-live.js',
  'discovery.js','screen-discovery-live.js',
  'sector-qgv.js','sector-qgv-axis.js','screen-sector-qgv-axis-live.js','screen-sector-qgv-live.js',
  'policy-impact.js','screen-policy-impact-live.js',
