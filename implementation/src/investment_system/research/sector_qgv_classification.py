@@ -268,9 +268,9 @@ def extend_held_classification(snapshot, evidence_by_code, *, rule_version=ADDEN
     Mixed/REIT/end-market/accounting conflicts remain unresolved. No old mapping,
     raw observation, financial input or official Q gate is recomputed/replaced.
     """
-    if rule_version == 'held-sec-book-correspondence/0.3.0':
+    if rule_version in ('held-sec-book-correspondence/0.3.0','held-sec-book-correspondence/0.4.0','held-sec-book-correspondence/0.5.0'):
         from .sector_qgv_classification_review import extend_review
-        return extend_review(snapshot,evidence_by_code,business_reviews or [])
+        return extend_review(snapshot,evidence_by_code,business_reviews or [],version=rule_version)
     if rule_version != ADDENDUM_VERSION or business_reviews:
         raise ValueError('CLASSIFICATION_REVIEW_VERSION_INVALID')
     result = copy.deepcopy(snapshot); changes = []
