@@ -392,14 +392,23 @@ let phase = 'START';
       await go('#/prompts/plv1.macro.001', '[data-prompt-fill="plv1.macro.001"]');
       assert.equal(await importState(page), 'NOT_APPLICABLE');
       assert.equal(await page.locator('[data-prompt-import]').count(), 0, 'no import button without company fields');
+      assert.equal(await page.locator('[data-context-screen]').getAttribute('data-context-screen'), 'DIRECT', 'opened directly: no screen context');
+      // 7.1.2 화면 문맥: '-' chooses no prompt (the one open in this page's RAM stays open); a menu that registered no context
+      // says so (nothing invented).
+      await go('#/prompts/-/qgv', '[data-prompt-back]');
+      assert.equal(await page.locator('[data-prompt-fill="plv1.macro.001"]').count(), 1, "'-' keeps the open prompt");
+      assert.equal(await page.locator('[data-prompt-error]').count(), 0, "'-' is not an unknown prompt");
+      assert.equal(await page.locator('[data-context-screen]').getAttribute('data-context-screen'), 'NONE');
+      assert.match(await text(page, '[data-context-screen]'), /^화면 문맥 · 연 화면이 넘긴 평가일 · 모집단 · 자료 부족 없음/);
       await common();
       assert.deepEqual(reads(at1), [NAMES], 'one read of the public names table, only once a company is selected');
       await page.evaluate(() => window.IS2.selection.set(null));
 
       // ---------------------------------------------------------------- 6.2
       tag('6.2');
-      assert.equal(await page.locator('[data-prompt-links] tbody tr').count(), 6);
-      assert.deepEqual(await page.locator('[data-prompt-links] tbody .chip:not(.wait)').allTextContents(), ['연결됨']);
+      assert.equal(await page.locator('[data-prompt-links] tbody tr').count(), 7);
+      assert.deepEqual(await page.locator('[data-prompt-links] tbody .chip:not(.wait)').allTextContents(), ['연결됨', '연결됨 · 비공개 결과는 표시만']);
+      assert.equal(await page.locator('[data-prompt-links] tbody tr:nth-child(2) a').getAttribute('href'), '#/prompts/-/search');
       assert.deepEqual(await page.locator('[data-prompt-block="personal"] .grid-2 > .card .card-title').allTextContents(), ['① 이 기기(브라우저)에 저장된 값', '② 저장된 값이 없으면 개발자 기본값'],
         'this browser\'s saved value, then the developer default');
       assert.match(await text(page, '[data-prompt-personal-now]'), /이 브라우저에 저장한 내 사본이 있으면 그것을, 없으면 개발자 기본값/);

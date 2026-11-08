@@ -2,7 +2,7 @@
 (function(){
 'use strict';
 const I=window.IS2,{h,register,parts:{head,section,pending}}=I;
-const later=(route,k,x,fail)=>{const a=()=>route.signal.aborted;(I.ready||Promise.reject()).then(()=>{const L=I.qgvLive;if(L&&!a())L[k](route,x);},()=>{if(fail&&!a())fail();});};
+const later=(route,k,x,fail,live='qgvLive')=>{const a=()=>route.signal.aborted;(I.ready||Promise.reject()).then(()=>{const L=I[live];if(L&&!a())L[k](route,x);},()=>{if(fail&&!a())fail();});};
 // Board add/QGVLeaderboard: stamp (menu numbers), feature number, hand line, what the block shows once connected.
 const LB=[['1.1.1 평가 대상과 목록','2.1.1','무엇을 줄 세웠는지 먼저 말함','보기 범위 · 평가 대상 · 리더보드 표'],
  ['1.1.2 순위와 정렬','2.1.2','정렬은 줄 순서 · 순위는 번호','정렬 · 방향 · 모집단 구분'],
@@ -12,6 +12,7 @@ const LB=[['1.1.1 평가 대상과 목록','2.1.1','무엇을 줄 세웠는지 �
  ['1.1.6 공식 결과와 개인 결과','2.1.6','누가 계산했고 어떤 V로 계산했는지 배지로','공식 가중치 결과 · 내 설정 미리보기'],
  ['1.1.7 후보 선정 연결','2.1.7','짧게만 · 자세한 그림은 5.1 모델 후보','모델 후보 · 선정 · 제외 근거'],
  ['1.1.8 기술 조건 필터','3.5','기술 조건으로 거른 뒤 QGV 순 · 분위·분모는 고른 그룹 기준','평가일 · 비교 그룹 · 지표 원값·분위 · 필터 · 결과']];
+const lf=t=>h('p',{class:'na',dataset:{na:'LOADER_FAILED'}},'층을 불러오지 못해 '+t+' 그리지 못했습니다');
 const off=(mine,...c)=>h('button',{type:'button',class:mine?'btn mine':'btn',disabled:true},...c);
 function render(route){
  const bodies={},blocks=LB.map(([stamp,fn,hand,what])=>{const body=bodies[fn]=h('div',{class:'lb-body'},pending(what));
@@ -26,10 +27,14 @@ function render(route){
  const band=h('div',{class:'sk band',dataset:{qgvBand:''}},chips,
   h('div',{class:'conn'},conn,buttons[0],h('span',{'aria-hidden':'true'},'→'),buttons[1],h('span',{'aria-hidden':'true'},'→'),buttons[2],
    h('span',{class:'hand'},'준비되기 전에는 세 버튼 모두 꺼짐 · 누를 때만 가격을 부름 · V는 중앙 게시본만')),status,nav);
- later(route,'leaderboard',{band,chips,conn,buttons,status,nav,bodies},()=>{for(const b of Object.values(bodies))b.replaceChildren(h('p',{class:'na',dataset:{na:'LOADER_FAILED'}},'층을 불러오지 못해 리더보드를 그리지 못했습니다'));});
+ later(route,'leaderboard',{band,chips,conn,buttons,status,nav,bodies},()=>{for(const b of Object.values(bodies))b.replaceChildren(lf('리더보드를'));});
+ // 1.1.9 (2.1.8), 1.2 (2.2): own bodies, outside the QGV state cards
+ const disc=h('div',{class:'lb-body',dataset:{discBody:''}},pending('선정 기업 · 하는 일 · 발견 이유 · 기존 QGV')),sq=h('div',{dataset:{sqBody:''}},pending('섹터 QGV 설정(요소·가중치) · 미리보기'));
+ later(route,'list',{body:disc},()=>disc.replaceChildren(lf('의외의 기업 목록을')),'discoveryLive');later(route,'fill',{body:sq},null,'sectorQgvLive');
  return h('div',{class:'screen lb-screen'},head('1','QGV','기업의 질(Q) · 성장(G) · 가치(V)를 한 장으로'),band,
-  section('1-1','1.1 리더보드',null,...blocks),
-  section('1-2','1.2 가중치',null,pending('다음 단계에서 연결')),
+  section('1-1','1.1 리더보드',null,...blocks,h('div',{class:'lb',dataset:{lb:'2.1.8'}},h('div',{class:'lb-head'},h('h3',{class:'stamp sub',tabindex:'-1'},'1.1.9 의외의 기업'),
+   h('span',{class:'meta'},'기능 2.1.8'),h('span',{class:'hand'},'확인된 사업 특성으로 찾은 기업 · 누르면 기업 상세')),disc)),
+  section('1-2','1.2 가중치 · QGV 구성',null,sq),
   section('1-3','1.3 13F (연구 단계)',null,pending('다음 단계에서 연결')),
   section('1-4','1.4 구조 트리',null,pending('다음 단계에서 연결')));
 }

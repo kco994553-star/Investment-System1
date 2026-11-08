@@ -1,0 +1,3267 @@
+{
+ "base": {
+  "bundle": {
+   "technical": {
+    "cache_key": "2442dcfd990e3bf7a1e4783247e9b20b79ce3665432293708ebfdd777e81df54",
+    "classification_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "counts": {
+     "original_companies": 3,
+     "requested_measurements": 3,
+     "unclassified_companies": 0
+    },
+    "data_kind": "SYNTHETIC",
+    "diagnostics": [
+     {
+      "measurement": {
+       "adr_ratio": null,
+       "metrics": {
+        "dollar_volume_6m": {
+         "null_reasons": [],
+         "value": "1"
+        },
+        "momentum_12m": {
+         "null_reasons": [],
+         "value": "1"
+        },
+        "momentum_3m": {
+         "null_reasons": [],
+         "value": "1"
+        },
+        "momentum_6m": {
+         "null_reasons": [],
+         "value": "1"
+        },
+        "volatility_6m": {
+         "null_reasons": [],
+         "value": "1"
+        }
+       },
+       "price_basis": "RAW",
+       "security_id": "SYNTHETIC:SECURITY:0",
+       "security_type": "COMMON",
+       "series_id": "SYNTHETIC:SERIES:0",
+       "share_class": "A",
+       "signal_day": "2017-01-06",
+       "symbol": "SYNTHETIC:TICKER:0"
+      },
+      "reasons": []
+     },
+     {
+      "measurement": {
+       "adr_ratio": null,
+       "metrics": {
+        "dollar_volume_6m": {
+         "null_reasons": [],
+         "value": "2"
+        },
+        "momentum_12m": {
+         "null_reasons": [],
+         "value": "2"
+        },
+        "momentum_3m": {
+         "null_reasons": [],
+         "value": "2"
+        },
+        "momentum_6m": {
+         "null_reasons": [],
+         "value": "2"
+        },
+        "volatility_6m": {
+         "null_reasons": [],
+         "value": "2"
+        }
+       },
+       "price_basis": "RAW",
+       "security_id": "SYNTHETIC:SECURITY:1",
+       "security_type": "COMMON",
+       "series_id": "SYNTHETIC:SERIES:1",
+       "share_class": "A",
+       "signal_day": "2017-01-06",
+       "symbol": "SYNTHETIC:TICKER:1"
+      },
+      "reasons": []
+     },
+     {
+      "measurement": {
+       "adr_ratio": null,
+       "metrics": {
+        "dollar_volume_6m": {
+         "null_reasons": [],
+         "value": "3"
+        },
+        "momentum_12m": {
+         "null_reasons": [],
+         "value": "3"
+        },
+        "momentum_3m": {
+         "null_reasons": [],
+         "value": "3"
+        },
+        "momentum_6m": {
+         "null_reasons": [],
+         "value": "3"
+        },
+        "volatility_6m": {
+         "null_reasons": [],
+         "value": "3"
+        }
+       },
+       "price_basis": "RAW",
+       "security_id": "SYNTHETIC:SECURITY:2",
+       "security_type": "COMMON",
+       "series_id": "SYNTHETIC:SERIES:2",
+       "share_class": "A",
+       "signal_day": "2017-01-06",
+       "symbol": "SYNTHETIC:TICKER:2"
+      },
+      "reasons": []
+     }
+    ],
+    "groups": [
+     {
+      "board": {
+       "group_id": "COMMON:CONSUMER_DISCRETIONARY:RAW",
+       "membership_source": "common-classification:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+       "membership_status": "CONFIRMED",
+       "metrics": {
+        "dollar_volume_6m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "momentum_12m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "momentum_3m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "momentum_6m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "volatility_6m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        }
+       },
+       "population_hash": "07c1983c25f0afe60578240b4b88f123ca782e2d7eedca0fd0e4a48362b195e4",
+       "schema": "technical-leaderboard/1",
+       "settings_sha256": "837689c35f98825bc0be36b4e3ced9a197e153cdcbaf297c1b6eb75e372273cc",
+       "settings_version": "technical-leaderboard/2026-11-03.1",
+       "signal_day": "2017-01-06"
+      },
+      "counts": {
+       "company_members": 0,
+       "confirmed_companies": 0,
+       "unclassified_companies": 0,
+       "verified_security_count": 0
+      },
+      "membership_reasons": [],
+      "membership_status": "CONFIRMED",
+      "sector_id": "CONSUMER_DISCRETIONARY"
+     },
+     {
+      "board": {
+       "group_id": "COMMON:CONSUMER_STAPLES:RAW",
+       "membership_source": "common-classification:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+       "membership_status": "CONFIRMED",
+       "metrics": {
+        "dollar_volume_6m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "momentum_12m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "momentum_3m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "momentum_6m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "volatility_6m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        }
+       },
+       "population_hash": "5c4d7a8460d73d1ca8ed7492567e57d7a4f4ec7cc02818a1c4ed62fdc33d619d",
+       "schema": "technical-leaderboard/1",
+       "settings_sha256": "837689c35f98825bc0be36b4e3ced9a197e153cdcbaf297c1b6eb75e372273cc",
+       "settings_version": "technical-leaderboard/2026-11-03.1",
+       "signal_day": "2017-01-06"
+      },
+      "counts": {
+       "company_members": 0,
+       "confirmed_companies": 0,
+       "unclassified_companies": 0,
+       "verified_security_count": 0
+      },
+      "membership_reasons": [],
+      "membership_status": "CONFIRMED",
+      "sector_id": "CONSUMER_STAPLES"
+     },
+     {
+      "board": {
+       "group_id": "COMMON:ENERGY:RAW",
+       "membership_source": "common-classification:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+       "membership_status": "CONFIRMED",
+       "metrics": {
+        "dollar_volume_6m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "momentum_12m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "momentum_3m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "momentum_6m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "volatility_6m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        }
+       },
+       "population_hash": "f04611e46f646bdabd402fb3be8d55fe5e0d19aa38d57ba30c6b59ba012d953d",
+       "schema": "technical-leaderboard/1",
+       "settings_sha256": "837689c35f98825bc0be36b4e3ced9a197e153cdcbaf297c1b6eb75e372273cc",
+       "settings_version": "technical-leaderboard/2026-11-03.1",
+       "signal_day": "2017-01-06"
+      },
+      "counts": {
+       "company_members": 0,
+       "confirmed_companies": 0,
+       "unclassified_companies": 0,
+       "verified_security_count": 0
+      },
+      "membership_reasons": [],
+      "membership_status": "CONFIRMED",
+      "sector_id": "ENERGY"
+     },
+     {
+      "board": {
+       "group_id": "COMMON:FINANCIALS:RAW",
+       "membership_source": "common-classification:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+       "membership_status": "CONFIRMED",
+       "metrics": {
+        "dollar_volume_6m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "momentum_12m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "momentum_3m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "momentum_6m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "volatility_6m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        }
+       },
+       "population_hash": "0926a610ac8c44f9cef03067362b7dce1267a470822868891a0438419c3654a7",
+       "schema": "technical-leaderboard/1",
+       "settings_sha256": "837689c35f98825bc0be36b4e3ced9a197e153cdcbaf297c1b6eb75e372273cc",
+       "settings_version": "technical-leaderboard/2026-11-03.1",
+       "signal_day": "2017-01-06"
+      },
+      "counts": {
+       "company_members": 0,
+       "confirmed_companies": 0,
+       "unclassified_companies": 0,
+       "verified_security_count": 0
+      },
+      "membership_reasons": [],
+      "membership_status": "CONFIRMED",
+      "sector_id": "FINANCIALS"
+     },
+     {
+      "board": {
+       "group_id": "COMMON:HEALTH_CARE:RAW",
+       "membership_source": "common-classification:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+       "membership_status": "CONFIRMED",
+       "metrics": {
+        "dollar_volume_6m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "momentum_12m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "momentum_3m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "momentum_6m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "volatility_6m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        }
+       },
+       "population_hash": "50a1ebe8c076cddd93747a174f033014efc48b2411e7475015333d718bfe8912",
+       "schema": "technical-leaderboard/1",
+       "settings_sha256": "837689c35f98825bc0be36b4e3ced9a197e153cdcbaf297c1b6eb75e372273cc",
+       "settings_version": "technical-leaderboard/2026-11-03.1",
+       "signal_day": "2017-01-06"
+      },
+      "counts": {
+       "company_members": 0,
+       "confirmed_companies": 0,
+       "unclassified_companies": 0,
+       "verified_security_count": 0
+      },
+      "membership_reasons": [],
+      "membership_status": "CONFIRMED",
+      "sector_id": "HEALTH_CARE"
+     },
+     {
+      "board": {
+       "group_id": "COMMON:INDUSTRIALS:RAW",
+       "membership_source": "common-classification:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+       "membership_status": "CONFIRMED",
+       "metrics": {
+        "dollar_volume_6m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "momentum_12m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "momentum_3m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "momentum_6m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "volatility_6m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        }
+       },
+       "population_hash": "be3c210a1218c0e96e9c4c1272f7dcffee24220612efc8dac227be1cd58d1755",
+       "schema": "technical-leaderboard/1",
+       "settings_sha256": "837689c35f98825bc0be36b4e3ced9a197e153cdcbaf297c1b6eb75e372273cc",
+       "settings_version": "technical-leaderboard/2026-11-03.1",
+       "signal_day": "2017-01-06"
+      },
+      "counts": {
+       "company_members": 0,
+       "confirmed_companies": 0,
+       "unclassified_companies": 0,
+       "verified_security_count": 0
+      },
+      "membership_reasons": [],
+      "membership_status": "CONFIRMED",
+      "sector_id": "INDUSTRIALS"
+     },
+     {
+      "board": {
+       "group_id": "COMMON:INFORMATION_TECHNOLOGY:RAW",
+       "membership_source": "common-classification:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+       "membership_status": "CONFIRMED",
+       "metrics": {
+        "dollar_volume_6m": {
+         "k": null,
+         "median": "2",
+         "n_members": 3,
+         "n_valid": 3,
+         "null_reason": null,
+         "rows": [
+          {
+           "conditions": {
+            "bottom_decile": null,
+            "exclude_D10": null,
+            "ge_median": true,
+            "gt_median": true,
+            "gt_zero": true,
+            "top_decile": null
+           },
+           "decile": null,
+           "null_reasons": [
+            "N_BELOW_10"
+           ],
+           "rank": 1,
+           "security_id": "SYNTHETIC:SECURITY:2",
+           "series_id": "SYNTHETIC:SERIES:2",
+           "value": "3"
+          },
+          {
+           "conditions": {
+            "bottom_decile": null,
+            "exclude_D10": null,
+            "ge_median": true,
+            "gt_median": false,
+            "gt_zero": true,
+            "top_decile": null
+           },
+           "decile": null,
+           "null_reasons": [
+            "N_BELOW_10"
+           ],
+           "rank": 2,
+           "security_id": "SYNTHETIC:SECURITY:1",
+           "series_id": "SYNTHETIC:SERIES:1",
+           "value": "2"
+          },
+          {
+           "conditions": {
+            "bottom_decile": null,
+            "exclude_D10": null,
+            "ge_median": false,
+            "gt_median": false,
+            "gt_zero": true,
+            "top_decile": null
+           },
+           "decile": null,
+           "null_reasons": [
+            "N_BELOW_10"
+           ],
+           "rank": 3,
+           "security_id": "SYNTHETIC:SECURITY:0",
+           "series_id": "SYNTHETIC:SERIES:0",
+           "value": "1"
+          }
+         ]
+        },
+        "momentum_12m": {
+         "k": null,
+         "median": "2",
+         "n_members": 3,
+         "n_valid": 3,
+         "null_reason": null,
+         "rows": [
+          {
+           "conditions": {
+            "bottom_decile": null,
+            "exclude_D10": null,
+            "ge_median": true,
+            "gt_median": true,
+            "gt_zero": true,
+            "top_decile": null
+           },
+           "decile": null,
+           "null_reasons": [
+            "N_BELOW_10"
+           ],
+           "rank": 1,
+           "security_id": "SYNTHETIC:SECURITY:2",
+           "series_id": "SYNTHETIC:SERIES:2",
+           "value": "3"
+          },
+          {
+           "conditions": {
+            "bottom_decile": null,
+            "exclude_D10": null,
+            "ge_median": true,
+            "gt_median": false,
+            "gt_zero": true,
+            "top_decile": null
+           },
+           "decile": null,
+           "null_reasons": [
+            "N_BELOW_10"
+           ],
+           "rank": 2,
+           "security_id": "SYNTHETIC:SECURITY:1",
+           "series_id": "SYNTHETIC:SERIES:1",
+           "value": "2"
+          },
+          {
+           "conditions": {
+            "bottom_decile": null,
+            "exclude_D10": null,
+            "ge_median": false,
+            "gt_median": false,
+            "gt_zero": true,
+            "top_decile": null
+           },
+           "decile": null,
+           "null_reasons": [
+            "N_BELOW_10"
+           ],
+           "rank": 3,
+           "security_id": "SYNTHETIC:SECURITY:0",
+           "series_id": "SYNTHETIC:SERIES:0",
+           "value": "1"
+          }
+         ]
+        },
+        "momentum_3m": {
+         "k": null,
+         "median": "2",
+         "n_members": 3,
+         "n_valid": 3,
+         "null_reason": null,
+         "rows": [
+          {
+           "conditions": {
+            "bottom_decile": null,
+            "exclude_D10": null,
+            "ge_median": true,
+            "gt_median": true,
+            "gt_zero": true,
+            "top_decile": null
+           },
+           "decile": null,
+           "null_reasons": [
+            "N_BELOW_10"
+           ],
+           "rank": 1,
+           "security_id": "SYNTHETIC:SECURITY:2",
+           "series_id": "SYNTHETIC:SERIES:2",
+           "value": "3"
+          },
+          {
+           "conditions": {
+            "bottom_decile": null,
+            "exclude_D10": null,
+            "ge_median": true,
+            "gt_median": false,
+            "gt_zero": true,
+            "top_decile": null
+           },
+           "decile": null,
+           "null_reasons": [
+            "N_BELOW_10"
+           ],
+           "rank": 2,
+           "security_id": "SYNTHETIC:SECURITY:1",
+           "series_id": "SYNTHETIC:SERIES:1",
+           "value": "2"
+          },
+          {
+           "conditions": {
+            "bottom_decile": null,
+            "exclude_D10": null,
+            "ge_median": false,
+            "gt_median": false,
+            "gt_zero": true,
+            "top_decile": null
+           },
+           "decile": null,
+           "null_reasons": [
+            "N_BELOW_10"
+           ],
+           "rank": 3,
+           "security_id": "SYNTHETIC:SECURITY:0",
+           "series_id": "SYNTHETIC:SERIES:0",
+           "value": "1"
+          }
+         ]
+        },
+        "momentum_6m": {
+         "k": null,
+         "median": "2",
+         "n_members": 3,
+         "n_valid": 3,
+         "null_reason": null,
+         "rows": [
+          {
+           "conditions": {
+            "bottom_decile": null,
+            "exclude_D10": null,
+            "ge_median": true,
+            "gt_median": true,
+            "gt_zero": true,
+            "top_decile": null
+           },
+           "decile": null,
+           "null_reasons": [
+            "N_BELOW_10"
+           ],
+           "rank": 1,
+           "security_id": "SYNTHETIC:SECURITY:2",
+           "series_id": "SYNTHETIC:SERIES:2",
+           "value": "3"
+          },
+          {
+           "conditions": {
+            "bottom_decile": null,
+            "exclude_D10": null,
+            "ge_median": true,
+            "gt_median": false,
+            "gt_zero": true,
+            "top_decile": null
+           },
+           "decile": null,
+           "null_reasons": [
+            "N_BELOW_10"
+           ],
+           "rank": 2,
+           "security_id": "SYNTHETIC:SECURITY:1",
+           "series_id": "SYNTHETIC:SERIES:1",
+           "value": "2"
+          },
+          {
+           "conditions": {
+            "bottom_decile": null,
+            "exclude_D10": null,
+            "ge_median": false,
+            "gt_median": false,
+            "gt_zero": true,
+            "top_decile": null
+           },
+           "decile": null,
+           "null_reasons": [
+            "N_BELOW_10"
+           ],
+           "rank": 3,
+           "security_id": "SYNTHETIC:SECURITY:0",
+           "series_id": "SYNTHETIC:SERIES:0",
+           "value": "1"
+          }
+         ]
+        },
+        "volatility_6m": {
+         "k": null,
+         "median": "2",
+         "n_members": 3,
+         "n_valid": 3,
+         "null_reason": null,
+         "rows": [
+          {
+           "conditions": {
+            "bottom_decile": null,
+            "exclude_D10": null,
+            "ge_median": true,
+            "gt_median": true,
+            "gt_zero": true,
+            "top_decile": null
+           },
+           "decile": null,
+           "null_reasons": [
+            "N_BELOW_10"
+           ],
+           "rank": 1,
+           "security_id": "SYNTHETIC:SECURITY:2",
+           "series_id": "SYNTHETIC:SERIES:2",
+           "value": "3"
+          },
+          {
+           "conditions": {
+            "bottom_decile": null,
+            "exclude_D10": null,
+            "ge_median": true,
+            "gt_median": false,
+            "gt_zero": true,
+            "top_decile": null
+           },
+           "decile": null,
+           "null_reasons": [
+            "N_BELOW_10"
+           ],
+           "rank": 2,
+           "security_id": "SYNTHETIC:SECURITY:1",
+           "series_id": "SYNTHETIC:SERIES:1",
+           "value": "2"
+          },
+          {
+           "conditions": {
+            "bottom_decile": null,
+            "exclude_D10": null,
+            "ge_median": false,
+            "gt_median": false,
+            "gt_zero": true,
+            "top_decile": null
+           },
+           "decile": null,
+           "null_reasons": [
+            "N_BELOW_10"
+           ],
+           "rank": 3,
+           "security_id": "SYNTHETIC:SECURITY:0",
+           "series_id": "SYNTHETIC:SERIES:0",
+           "value": "1"
+          }
+         ]
+        }
+       },
+       "population_hash": "6695bd0706db7c8fbdf66fb7e9174a2127007b646f083ab6fd2ee52acd01c9a4",
+       "schema": "technical-leaderboard/1",
+       "settings_sha256": "837689c35f98825bc0be36b4e3ced9a197e153cdcbaf297c1b6eb75e372273cc",
+       "settings_version": "technical-leaderboard/2026-11-03.1",
+       "signal_day": "2017-01-06"
+      },
+      "counts": {
+       "company_members": 3,
+       "confirmed_companies": 3,
+       "unclassified_companies": 0,
+       "verified_security_count": 3
+      },
+      "membership_reasons": [],
+      "membership_status": "CONFIRMED",
+      "sector_id": "INFORMATION_TECHNOLOGY"
+     },
+     {
+      "board": {
+       "group_id": "COMMON:MATERIALS:RAW",
+       "membership_source": "common-classification:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+       "membership_status": "CONFIRMED",
+       "metrics": {
+        "dollar_volume_6m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "momentum_12m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "momentum_3m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "momentum_6m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "volatility_6m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        }
+       },
+       "population_hash": "5318b6c71b8d0b43344d8f12b2b517a240c06b31038e6f81a23e996162461403",
+       "schema": "technical-leaderboard/1",
+       "settings_sha256": "837689c35f98825bc0be36b4e3ced9a197e153cdcbaf297c1b6eb75e372273cc",
+       "settings_version": "technical-leaderboard/2026-11-03.1",
+       "signal_day": "2017-01-06"
+      },
+      "counts": {
+       "company_members": 0,
+       "confirmed_companies": 0,
+       "unclassified_companies": 0,
+       "verified_security_count": 0
+      },
+      "membership_reasons": [],
+      "membership_status": "CONFIRMED",
+      "sector_id": "MATERIALS"
+     },
+     {
+      "board": {
+       "group_id": "COMMON:TELECOMMUNICATIONS:RAW",
+       "membership_source": "common-classification:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+       "membership_status": "CONFIRMED",
+       "metrics": {
+        "dollar_volume_6m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "momentum_12m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "momentum_3m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "momentum_6m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "volatility_6m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        }
+       },
+       "population_hash": "a829be1cc23faa8f50bd26b803689507dbdd3a0e69b3aadff83dac6324b1111d",
+       "schema": "technical-leaderboard/1",
+       "settings_sha256": "837689c35f98825bc0be36b4e3ced9a197e153cdcbaf297c1b6eb75e372273cc",
+       "settings_version": "technical-leaderboard/2026-11-03.1",
+       "signal_day": "2017-01-06"
+      },
+      "counts": {
+       "company_members": 0,
+       "confirmed_companies": 0,
+       "unclassified_companies": 0,
+       "verified_security_count": 0
+      },
+      "membership_reasons": [],
+      "membership_status": "CONFIRMED",
+      "sector_id": "TELECOMMUNICATIONS"
+     },
+     {
+      "board": {
+       "group_id": "COMMON:UTILITIES:RAW",
+       "membership_source": "common-classification:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+       "membership_status": "CONFIRMED",
+       "metrics": {
+        "dollar_volume_6m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "momentum_12m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "momentum_3m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "momentum_6m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "volatility_6m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        }
+       },
+       "population_hash": "3d0d0041f2951f9fb6feed15fa17fb75c608b99f57e6eee54066ed462f6940ff",
+       "schema": "technical-leaderboard/1",
+       "settings_sha256": "837689c35f98825bc0be36b4e3ced9a197e153cdcbaf297c1b6eb75e372273cc",
+       "settings_version": "technical-leaderboard/2026-11-03.1",
+       "signal_day": "2017-01-06"
+      },
+      "counts": {
+       "company_members": 0,
+       "confirmed_companies": 0,
+       "unclassified_companies": 0,
+       "verified_security_count": 0
+      },
+      "membership_reasons": [],
+      "membership_status": "CONFIRMED",
+      "sector_id": "UTILITIES"
+     }
+    ],
+    "input_hash": "2442dcfd990e3bf7a1e4783247e9b20b79ce3665432293708ebfdd777e81df54",
+    "price_basis": "RAW",
+    "rows": [
+     {
+      "classification_record_id": "SYNTHETIC:RECORD:0",
+      "company_id": "SYNTHETIC:COMPANY:0",
+      "issuer_id": "SYNTHETIC:ISSUER:0",
+      "measurement_status": "COMPLETE",
+      "reasons": [],
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "security_ids": [
+       "SYNTHETIC:SECURITY:0"
+      ],
+      "status": "CONFIRMED"
+     },
+     {
+      "classification_record_id": "SYNTHETIC:RECORD:1",
+      "company_id": "SYNTHETIC:COMPANY:1",
+      "issuer_id": "SYNTHETIC:ISSUER:1",
+      "measurement_status": "COMPLETE",
+      "reasons": [],
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "security_ids": [
+       "SYNTHETIC:SECURITY:1"
+      ],
+      "status": "CONFIRMED"
+     },
+     {
+      "classification_record_id": "SYNTHETIC:RECORD:2",
+      "company_id": "SYNTHETIC:COMPANY:2",
+      "issuer_id": "SYNTHETIC:ISSUER:2",
+      "measurement_status": "COMPLETE",
+      "reasons": [],
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "security_ids": [
+       "SYNTHETIC:SECURITY:2"
+      ],
+      "status": "CONFIRMED"
+     }
+    ],
+    "schema_version": "common-classification-technical/1",
+    "security_link_diagnostics": [],
+    "settings_version": "technical-leaderboard/2026-11-03.1",
+    "valuation_date": "2017-01-06"
+   },
+   "view": {
+    "classification_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "data_kind": "SYNTHETIC",
+    "dictionary_version": "common-industry-dictionary/1",
+    "knowledge_as_of": "2017-01-06T23:00:00Z",
+    "mapping_version": "common-classification-map/1",
+    "members": [
+     "SYNTHETIC:COMPANY:0",
+     "SYNTHETIC:COMPANY:1",
+     "SYNTHETIC:COMPANY:2"
+    ],
+    "rows": [
+     {
+      "accounting": {
+       "evidence_refs": [
+        "SYNTHETIC:SOURCE"
+       ],
+       "id": "GENERAL",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "applicability": {
+       "evaluation_date": "2017-01-06",
+       "kind": "EVALUATION_ONLY",
+       "valid_from": null,
+       "valid_to": null
+      },
+      "company_id": "SYNTHETIC:COMPANY:0",
+      "industry": {
+       "evidence_refs": [
+        "SYNTHETIC:SOURCE"
+       ],
+       "id": "semiconductors",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "issuer_id": "SYNTHETIC:ISSUER:0",
+      "record_id": "SYNTHETIC:RECORD:0",
+      "sector": {
+       "evidence_refs": [
+        "SYNTHETIC:SOURCE"
+       ],
+       "id": "INFORMATION_TECHNOLOGY",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "source_sic": {
+       "code": "3674",
+       "observed_at": "2017-01-06T00:00:00Z",
+       "system": "SEC_SIC"
+      },
+      "tags": {}
+     },
+     {
+      "accounting": {
+       "evidence_refs": [
+        "SYNTHETIC:SOURCE"
+       ],
+       "id": "GENERAL",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "applicability": {
+       "evaluation_date": "2017-01-06",
+       "kind": "EVALUATION_ONLY",
+       "valid_from": null,
+       "valid_to": null
+      },
+      "company_id": "SYNTHETIC:COMPANY:1",
+      "industry": {
+       "evidence_refs": [
+        "SYNTHETIC:SOURCE"
+       ],
+       "id": "semiconductors",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "issuer_id": "SYNTHETIC:ISSUER:1",
+      "record_id": "SYNTHETIC:RECORD:1",
+      "sector": {
+       "evidence_refs": [
+        "SYNTHETIC:SOURCE"
+       ],
+       "id": "INFORMATION_TECHNOLOGY",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "source_sic": {
+       "code": "3674",
+       "observed_at": "2017-01-06T00:00:00Z",
+       "system": "SEC_SIC"
+      },
+      "tags": {}
+     },
+     {
+      "accounting": {
+       "evidence_refs": [
+        "SYNTHETIC:SOURCE"
+       ],
+       "id": "GENERAL",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "applicability": {
+       "evaluation_date": "2017-01-06",
+       "kind": "EVALUATION_ONLY",
+       "valid_from": null,
+       "valid_to": null
+      },
+      "company_id": "SYNTHETIC:COMPANY:2",
+      "industry": {
+       "evidence_refs": [
+        "SYNTHETIC:SOURCE"
+       ],
+       "id": "semiconductors",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "issuer_id": "SYNTHETIC:ISSUER:2",
+      "record_id": "SYNTHETIC:RECORD:2",
+      "sector": {
+       "evidence_refs": [
+        "SYNTHETIC:SOURCE"
+       ],
+       "id": "INFORMATION_TECHNOLOGY",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "source_sic": {
+       "code": "3674",
+       "observed_at": "2017-01-06T00:00:00Z",
+       "system": "SEC_SIC"
+      },
+      "tags": {}
+     }
+    ],
+    "schema_version": "common-classification-view/1",
+    "universe_id": "SYNTHETIC:UNIVERSE",
+    "universe_version": "SYNTHETIC:VERSION:1",
+    "valuation_date": "2017-01-06"
+   }
+  },
+  "join": {
+   "board": {
+    "group_id": "COMMON:INFORMATION_TECHNOLOGY:RAW",
+    "membership_source": "common-classification:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "membership_status": "CONFIRMED",
+    "metrics": {
+     "dollar_volume_6m": {
+      "k": null,
+      "median": "2",
+      "n_members": 3,
+      "n_valid": 3,
+      "null_reason": null,
+      "rows": [
+       {
+        "conditions": {
+         "bottom_decile": null,
+         "exclude_D10": null,
+         "ge_median": true,
+         "gt_median": true,
+         "gt_zero": true,
+         "top_decile": null
+        },
+        "decile": null,
+        "null_reasons": [
+         "N_BELOW_10"
+        ],
+        "rank": 1,
+        "security_id": "SYNTHETIC:SECURITY:2",
+        "series_id": "SYNTHETIC:SERIES:2",
+        "value": "3"
+       },
+       {
+        "conditions": {
+         "bottom_decile": null,
+         "exclude_D10": null,
+         "ge_median": true,
+         "gt_median": false,
+         "gt_zero": true,
+         "top_decile": null
+        },
+        "decile": null,
+        "null_reasons": [
+         "N_BELOW_10"
+        ],
+        "rank": 2,
+        "security_id": "SYNTHETIC:SECURITY:1",
+        "series_id": "SYNTHETIC:SERIES:1",
+        "value": "2"
+       },
+       {
+        "conditions": {
+         "bottom_decile": null,
+         "exclude_D10": null,
+         "ge_median": false,
+         "gt_median": false,
+         "gt_zero": true,
+         "top_decile": null
+        },
+        "decile": null,
+        "null_reasons": [
+         "N_BELOW_10"
+        ],
+        "rank": 3,
+        "security_id": "SYNTHETIC:SECURITY:0",
+        "series_id": "SYNTHETIC:SERIES:0",
+        "value": "1"
+       }
+      ]
+     },
+     "momentum_12m": {
+      "k": null,
+      "median": "2",
+      "n_members": 3,
+      "n_valid": 3,
+      "null_reason": null,
+      "rows": [
+       {
+        "conditions": {
+         "bottom_decile": null,
+         "exclude_D10": null,
+         "ge_median": true,
+         "gt_median": true,
+         "gt_zero": true,
+         "top_decile": null
+        },
+        "decile": null,
+        "null_reasons": [
+         "N_BELOW_10"
+        ],
+        "rank": 1,
+        "security_id": "SYNTHETIC:SECURITY:2",
+        "series_id": "SYNTHETIC:SERIES:2",
+        "value": "3"
+       },
+       {
+        "conditions": {
+         "bottom_decile": null,
+         "exclude_D10": null,
+         "ge_median": true,
+         "gt_median": false,
+         "gt_zero": true,
+         "top_decile": null
+        },
+        "decile": null,
+        "null_reasons": [
+         "N_BELOW_10"
+        ],
+        "rank": 2,
+        "security_id": "SYNTHETIC:SECURITY:1",
+        "series_id": "SYNTHETIC:SERIES:1",
+        "value": "2"
+       },
+       {
+        "conditions": {
+         "bottom_decile": null,
+         "exclude_D10": null,
+         "ge_median": false,
+         "gt_median": false,
+         "gt_zero": true,
+         "top_decile": null
+        },
+        "decile": null,
+        "null_reasons": [
+         "N_BELOW_10"
+        ],
+        "rank": 3,
+        "security_id": "SYNTHETIC:SECURITY:0",
+        "series_id": "SYNTHETIC:SERIES:0",
+        "value": "1"
+       }
+      ]
+     },
+     "momentum_3m": {
+      "k": null,
+      "median": "2",
+      "n_members": 3,
+      "n_valid": 3,
+      "null_reason": null,
+      "rows": [
+       {
+        "conditions": {
+         "bottom_decile": null,
+         "exclude_D10": null,
+         "ge_median": true,
+         "gt_median": true,
+         "gt_zero": true,
+         "top_decile": null
+        },
+        "decile": null,
+        "null_reasons": [
+         "N_BELOW_10"
+        ],
+        "rank": 1,
+        "security_id": "SYNTHETIC:SECURITY:2",
+        "series_id": "SYNTHETIC:SERIES:2",
+        "value": "3"
+       },
+       {
+        "conditions": {
+         "bottom_decile": null,
+         "exclude_D10": null,
+         "ge_median": true,
+         "gt_median": false,
+         "gt_zero": true,
+         "top_decile": null
+        },
+        "decile": null,
+        "null_reasons": [
+         "N_BELOW_10"
+        ],
+        "rank": 2,
+        "security_id": "SYNTHETIC:SECURITY:1",
+        "series_id": "SYNTHETIC:SERIES:1",
+        "value": "2"
+       },
+       {
+        "conditions": {
+         "bottom_decile": null,
+         "exclude_D10": null,
+         "ge_median": false,
+         "gt_median": false,
+         "gt_zero": true,
+         "top_decile": null
+        },
+        "decile": null,
+        "null_reasons": [
+         "N_BELOW_10"
+        ],
+        "rank": 3,
+        "security_id": "SYNTHETIC:SECURITY:0",
+        "series_id": "SYNTHETIC:SERIES:0",
+        "value": "1"
+       }
+      ]
+     },
+     "momentum_6m": {
+      "k": null,
+      "median": "2",
+      "n_members": 3,
+      "n_valid": 3,
+      "null_reason": null,
+      "rows": [
+       {
+        "conditions": {
+         "bottom_decile": null,
+         "exclude_D10": null,
+         "ge_median": true,
+         "gt_median": true,
+         "gt_zero": true,
+         "top_decile": null
+        },
+        "decile": null,
+        "null_reasons": [
+         "N_BELOW_10"
+        ],
+        "rank": 1,
+        "security_id": "SYNTHETIC:SECURITY:2",
+        "series_id": "SYNTHETIC:SERIES:2",
+        "value": "3"
+       },
+       {
+        "conditions": {
+         "bottom_decile": null,
+         "exclude_D10": null,
+         "ge_median": true,
+         "gt_median": false,
+         "gt_zero": true,
+         "top_decile": null
+        },
+        "decile": null,
+        "null_reasons": [
+         "N_BELOW_10"
+        ],
+        "rank": 2,
+        "security_id": "SYNTHETIC:SECURITY:1",
+        "series_id": "SYNTHETIC:SERIES:1",
+        "value": "2"
+       },
+       {
+        "conditions": {
+         "bottom_decile": null,
+         "exclude_D10": null,
+         "ge_median": false,
+         "gt_median": false,
+         "gt_zero": true,
+         "top_decile": null
+        },
+        "decile": null,
+        "null_reasons": [
+         "N_BELOW_10"
+        ],
+        "rank": 3,
+        "security_id": "SYNTHETIC:SECURITY:0",
+        "series_id": "SYNTHETIC:SERIES:0",
+        "value": "1"
+       }
+      ]
+     },
+     "volatility_6m": {
+      "k": null,
+      "median": "2",
+      "n_members": 3,
+      "n_valid": 3,
+      "null_reason": null,
+      "rows": [
+       {
+        "conditions": {
+         "bottom_decile": null,
+         "exclude_D10": null,
+         "ge_median": true,
+         "gt_median": true,
+         "gt_zero": true,
+         "top_decile": null
+        },
+        "decile": null,
+        "null_reasons": [
+         "N_BELOW_10"
+        ],
+        "rank": 1,
+        "security_id": "SYNTHETIC:SECURITY:2",
+        "series_id": "SYNTHETIC:SERIES:2",
+        "value": "3"
+       },
+       {
+        "conditions": {
+         "bottom_decile": null,
+         "exclude_D10": null,
+         "ge_median": true,
+         "gt_median": false,
+         "gt_zero": true,
+         "top_decile": null
+        },
+        "decile": null,
+        "null_reasons": [
+         "N_BELOW_10"
+        ],
+        "rank": 2,
+        "security_id": "SYNTHETIC:SECURITY:1",
+        "series_id": "SYNTHETIC:SERIES:1",
+        "value": "2"
+       },
+       {
+        "conditions": {
+         "bottom_decile": null,
+         "exclude_D10": null,
+         "ge_median": false,
+         "gt_median": false,
+         "gt_zero": true,
+         "top_decile": null
+        },
+        "decile": null,
+        "null_reasons": [
+         "N_BELOW_10"
+        ],
+        "rank": 3,
+        "security_id": "SYNTHETIC:SECURITY:0",
+        "series_id": "SYNTHETIC:SERIES:0",
+        "value": "1"
+       }
+      ]
+     }
+    },
+    "population_hash": "6695bd0706db7c8fbdf66fb7e9174a2127007b646f083ab6fd2ee52acd01c9a4",
+    "schema": "technical-leaderboard/1",
+    "settings_sha256": "837689c35f98825bc0be36b4e3ced9a197e153cdcbaf297c1b6eb75e372273cc",
+    "settings_version": "technical-leaderboard/2026-11-03.1",
+    "signal_day": "2017-01-06"
+   },
+   "conditions": [
+    {
+     "condition": "gt_zero",
+     "metric": "momentum_3m"
+    }
+   ],
+   "data_kind": "SYNTHETIC",
+   "group_context": {
+    "classification_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "dictionary_version": "common-industry-dictionary/1",
+    "group_id": "COMMON:INFORMATION_TECHNOLOGY:RAW",
+    "knowledge_as_of": "2017-01-06T23:00:00Z",
+    "mapping_version": "common-classification-map/1",
+    "population_hash": "6695bd0706db7c8fbdf66fb7e9174a2127007b646f083ab6fd2ee52acd01c9a4",
+    "price_basis": "RAW",
+    "signal_day": "2017-01-06",
+    "universe_id": "SYNTHETIC:UNIVERSE",
+    "universe_members_hash": "ea54cf0b1b4f3012ca923d1e207ac27f301faa12f6aa02d81f9135ca5e756aeb",
+    "universe_version": "SYNTHETIC:VERSION:1"
+   },
+   "group_manifest": {
+    "context": {
+     "classification_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "dictionary_version": "common-industry-dictionary/1",
+     "group_id": "COMMON:INFORMATION_TECHNOLOGY:RAW",
+     "knowledge_as_of": "2017-01-06T23:00:00Z",
+     "mapping_version": "common-classification-map/1",
+     "population_hash": "6695bd0706db7c8fbdf66fb7e9174a2127007b646f083ab6fd2ee52acd01c9a4",
+     "price_basis": "RAW",
+     "signal_day": "2017-01-06",
+     "universe_id": "SYNTHETIC:UNIVERSE",
+     "universe_members_hash": "ea54cf0b1b4f3012ca923d1e207ac27f301faa12f6aa02d81f9135ca5e756aeb",
+     "universe_version": "SYNTHETIC:VERSION:1"
+    },
+    "data_kind": "SYNTHETIC",
+    "members": [
+     {
+      "classification_record_id": "SYNTHETIC:RECORD:0",
+      "company_id": "SYNTHETIC:COMPANY:0",
+      "evidence_refs": [
+       "SYNTHETIC:SOURCE"
+      ],
+      "issuer_id": "SYNTHETIC:ISSUER:0",
+      "security_id": "SYNTHETIC:SECURITY:0"
+     },
+     {
+      "classification_record_id": "SYNTHETIC:RECORD:1",
+      "company_id": "SYNTHETIC:COMPANY:1",
+      "evidence_refs": [
+       "SYNTHETIC:SOURCE"
+      ],
+      "issuer_id": "SYNTHETIC:ISSUER:1",
+      "security_id": "SYNTHETIC:SECURITY:1"
+     },
+     {
+      "classification_record_id": "SYNTHETIC:RECORD:2",
+      "company_id": "SYNTHETIC:COMPANY:2",
+      "evidence_refs": [
+       "SYNTHETIC:SOURCE"
+      ],
+      "issuer_id": "SYNTHETIC:ISSUER:2",
+      "security_id": "SYNTHETIC:SECURITY:2"
+     }
+    ],
+    "membership_status": "CONFIRMED",
+    "reasons": [],
+    "schema_version": "technical-filter-membership/1"
+   },
+   "qgv_rows": [
+    {
+     "code": "SYNTHETIC:COMPANY:0",
+     "id": "SYNTHETIC:DISPLAY:0",
+     "issuer_id": "SYNTHETIC:ISSUER:0",
+     "rank": {
+      "of": 504,
+      "official": 20
+     },
+     "score": {
+      "total": 80
+     },
+     "security_id": "SYNTHETIC:SECURITY:0",
+     "signal_day": "2017-01-06",
+     "ticker": "SYNTHETIC:TICKER:0"
+    },
+    {
+     "code": "SYNTHETIC:COMPANY:1",
+     "id": "SYNTHETIC:DISPLAY:1",
+     "issuer_id": "SYNTHETIC:ISSUER:1",
+     "rank": {
+      "of": 504,
+      "official": 19
+     },
+     "score": {
+      "total": 79
+     },
+     "security_id": "SYNTHETIC:SECURITY:1",
+     "signal_day": "2017-01-06",
+     "ticker": "SYNTHETIC:TICKER:1"
+    },
+    {
+     "code": "SYNTHETIC:COMPANY:2",
+     "id": "SYNTHETIC:DISPLAY:2",
+     "issuer_id": "SYNTHETIC:ISSUER:2",
+     "rank": {
+      "of": 504,
+      "official": 18
+     },
+     "score": {
+      "total": 78
+     },
+     "security_id": "SYNTHETIC:SECURITY:2",
+     "signal_day": "2017-01-06",
+     "ticker": "SYNTHETIC:TICKER:2"
+    }
+   ],
+   "security_links": [
+    {
+     "acquired_at": "2017-01-06T19:00:00Z",
+     "adr_ratio": null,
+     "company_id": "SYNTHETIC:COMPANY:0",
+     "identifier_type": "SYNTHETIC_FIXED_SECURITY_ID",
+     "identity_reference": "SYNTHETIC:IDENTITY",
+     "identity_status": "CONFIRMED",
+     "issuer_id": "SYNTHETIC:ISSUER:0",
+     "recorded_at": "2017-01-06T20:00:00Z",
+     "reference": "SYNTHETIC:FIXED_LINK",
+     "security_id": "SYNTHETIC:SECURITY:0",
+     "security_type": "COMMON",
+     "series_id": "SYNTHETIC:SERIES:0",
+     "share_class": "A",
+     "symbol": "SYNTHETIC:TICKER:0",
+     "valid_from": "2017-01-06",
+     "valid_to": "2017-01-06"
+    },
+    {
+     "acquired_at": "2017-01-06T19:00:00Z",
+     "adr_ratio": null,
+     "company_id": "SYNTHETIC:COMPANY:1",
+     "identifier_type": "SYNTHETIC_FIXED_SECURITY_ID",
+     "identity_reference": "SYNTHETIC:IDENTITY",
+     "identity_status": "CONFIRMED",
+     "issuer_id": "SYNTHETIC:ISSUER:1",
+     "recorded_at": "2017-01-06T20:00:00Z",
+     "reference": "SYNTHETIC:FIXED_LINK",
+     "security_id": "SYNTHETIC:SECURITY:1",
+     "security_type": "COMMON",
+     "series_id": "SYNTHETIC:SERIES:1",
+     "share_class": "A",
+     "symbol": "SYNTHETIC:TICKER:1",
+     "valid_from": "2017-01-06",
+     "valid_to": "2017-01-06"
+    },
+    {
+     "acquired_at": "2017-01-06T19:00:00Z",
+     "adr_ratio": null,
+     "company_id": "SYNTHETIC:COMPANY:2",
+     "identifier_type": "SYNTHETIC_FIXED_SECURITY_ID",
+     "identity_reference": "SYNTHETIC:IDENTITY",
+     "identity_status": "CONFIRMED",
+     "issuer_id": "SYNTHETIC:ISSUER:2",
+     "recorded_at": "2017-01-06T20:00:00Z",
+     "reference": "SYNTHETIC:FIXED_LINK",
+     "security_id": "SYNTHETIC:SECURITY:2",
+     "security_type": "COMMON",
+     "series_id": "SYNTHETIC:SERIES:2",
+     "share_class": "A",
+     "symbol": "SYNTHETIC:TICKER:2",
+     "valid_from": "2017-01-06",
+     "valid_to": "2017-01-06"
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "expected": {
+    "issuer_connections": 0,
+    "membership_validation": "VERIFIED",
+    "ok": true,
+    "original_group_count": 3,
+    "selected_count": 3
+   },
+   "id": "normal_distinct_code_display_issuer_security",
+   "removes": [],
+   "sets": []
+  },
+  {
+   "expected": {
+    "code": "GROUP_MEMBER_MISSING",
+    "ok": false
+   },
+   "id": "member_row_missing",
+   "removes": [],
+   "sets": [
+    [
+     [
+      "join",
+      "qgv_rows"
+     ],
+     [
+      {
+       "code": "SYNTHETIC:COMPANY:1",
+       "id": "SYNTHETIC:DISPLAY:1",
+       "issuer_id": "SYNTHETIC:ISSUER:1",
+       "rank": {
+        "of": 504,
+        "official": 19
+       },
+       "score": {
+        "total": 79
+       },
+       "security_id": "SYNTHETIC:SECURITY:1",
+       "signal_day": "2017-01-06",
+       "ticker": "SYNTHETIC:TICKER:1"
+      },
+      {
+       "code": "SYNTHETIC:COMPANY:2",
+       "id": "SYNTHETIC:DISPLAY:2",
+       "issuer_id": "SYNTHETIC:ISSUER:2",
+       "rank": {
+        "of": 504,
+        "official": 18
+       },
+       "score": {
+        "total": 78
+       },
+       "security_id": "SYNTHETIC:SECURITY:2",
+       "signal_day": "2017-01-06",
+       "ticker": "SYNTHETIC:TICKER:2"
+      }
+     ]
+    ]
+   ]
+  },
+  {
+   "expected": {
+    "code": "DUPLICATE_GROUP_ROW",
+    "ok": false
+   },
+   "id": "duplicate_row",
+   "removes": [],
+   "sets": [
+    [
+     [
+      "join",
+      "qgv_rows"
+     ],
+     [
+      {
+       "code": "SYNTHETIC:COMPANY:0",
+       "id": "SYNTHETIC:DISPLAY:0",
+       "issuer_id": "SYNTHETIC:ISSUER:0",
+       "rank": {
+        "of": 504,
+        "official": 20
+       },
+       "score": {
+        "total": 80
+       },
+       "security_id": "SYNTHETIC:SECURITY:0",
+       "signal_day": "2017-01-06",
+       "ticker": "SYNTHETIC:TICKER:0"
+      },
+      {
+       "code": "SYNTHETIC:COMPANY:1",
+       "id": "SYNTHETIC:DISPLAY:1",
+       "issuer_id": "SYNTHETIC:ISSUER:1",
+       "rank": {
+        "of": 504,
+        "official": 19
+       },
+       "score": {
+        "total": 79
+       },
+       "security_id": "SYNTHETIC:SECURITY:1",
+       "signal_day": "2017-01-06",
+       "ticker": "SYNTHETIC:TICKER:1"
+      },
+      {
+       "code": "SYNTHETIC:COMPANY:2",
+       "id": "SYNTHETIC:DISPLAY:2",
+       "issuer_id": "SYNTHETIC:ISSUER:2",
+       "rank": {
+        "of": 504,
+        "official": 18
+       },
+       "score": {
+        "total": 78
+       },
+       "security_id": "SYNTHETIC:SECURITY:2",
+       "signal_day": "2017-01-06",
+       "ticker": "SYNTHETIC:TICKER:2"
+      },
+      {
+       "code": "SYNTHETIC:COMPANY:0",
+       "id": "SYNTHETIC:DISPLAY:0",
+       "issuer_id": "SYNTHETIC:ISSUER:0",
+       "rank": {
+        "of": 504,
+        "official": 20
+       },
+       "score": {
+        "total": 80
+       },
+       "security_id": "SYNTHETIC:SECURITY:0",
+       "signal_day": "2017-01-06",
+       "ticker": "SYNTHETIC:TICKER:0"
+      }
+     ]
+    ]
+   ]
+  },
+  {
+   "expected": {
+    "code": "ROW_OUTSIDE_GROUP",
+    "ok": false
+   },
+   "id": "outside_group_row",
+   "removes": [],
+   "sets": [
+    [
+     [
+      "join",
+      "qgv_rows"
+     ],
+     [
+      {
+       "code": "SYNTHETIC:COMPANY:0",
+       "id": "SYNTHETIC:DISPLAY:0",
+       "issuer_id": "SYNTHETIC:ISSUER:0",
+       "rank": {
+        "of": 504,
+        "official": 20
+       },
+       "score": {
+        "total": 80
+       },
+       "security_id": "SYNTHETIC:SECURITY:0",
+       "signal_day": "2017-01-06",
+       "ticker": "SYNTHETIC:TICKER:0"
+      },
+      {
+       "code": "SYNTHETIC:COMPANY:1",
+       "id": "SYNTHETIC:DISPLAY:1",
+       "issuer_id": "SYNTHETIC:ISSUER:1",
+       "rank": {
+        "of": 504,
+        "official": 19
+       },
+       "score": {
+        "total": 79
+       },
+       "security_id": "SYNTHETIC:SECURITY:1",
+       "signal_day": "2017-01-06",
+       "ticker": "SYNTHETIC:TICKER:1"
+      },
+      {
+       "code": "SYNTHETIC:COMPANY:2",
+       "id": "SYNTHETIC:DISPLAY:2",
+       "issuer_id": "SYNTHETIC:ISSUER:2",
+       "rank": {
+        "of": 504,
+        "official": 18
+       },
+       "score": {
+        "total": 78
+       },
+       "security_id": "SYNTHETIC:SECURITY:2",
+       "signal_day": "2017-01-06",
+       "ticker": "SYNTHETIC:TICKER:2"
+      },
+      {
+       "code": "SYNTHETIC:OUTSIDE",
+       "id": "SYNTHETIC:DISPLAY:0",
+       "issuer_id": "SYNTHETIC:ISSUER:0",
+       "rank": {
+        "of": 504,
+        "official": 20
+       },
+       "score": {
+        "total": 80
+       },
+       "security_id": "SYNTHETIC:SECURITY:0",
+       "signal_day": "2017-01-06",
+       "ticker": "SYNTHETIC:TICKER:0"
+      }
+     ]
+    ]
+   ]
+  },
+  {
+   "expected": {
+    "code": "GROUP_MEMBERSHIP_UNCONFIRMED",
+    "ok": false
+   },
+   "id": "roster_unknown",
+   "removes": [],
+   "sets": [
+    [
+     [
+      "join",
+      "group_manifest",
+      "membership_status"
+     ],
+     "UNKNOWN"
+    ]
+   ]
+  },
+  {
+   "expected": {
+    "code": "GROUP_MEMBERSHIP_REQUIRED",
+    "ok": false
+   },
+   "id": "roster_absent",
+   "removes": [],
+   "sets": [
+    [
+     [
+      "join",
+      "group_manifest"
+     ],
+     null
+    ]
+   ]
+  },
+  {
+   "expected": {
+    "issuer_connections": 0,
+    "membership_validation": "VERIFIED_EMPTY",
+    "ok": true,
+    "original_group_count": 0,
+    "selected_count": 0
+   },
+   "id": "confirmed_empty",
+   "removes": [],
+   "sets": [
+    [
+     [
+      "join"
+     ],
+     {
+      "board": {
+       "group_id": "COMMON:INFORMATION_TECHNOLOGY:RAW",
+       "membership_source": "common-classification:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+       "membership_status": "CONFIRMED",
+       "metrics": {
+        "dollar_volume_6m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "momentum_12m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "momentum_3m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "momentum_6m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        },
+        "volatility_6m": {
+         "k": null,
+         "median": null,
+         "n_members": 0,
+         "n_valid": 0,
+         "null_reason": "NO_VALID_VALUES",
+         "rows": []
+        }
+       },
+       "population_hash": "df7687492ddf32e4c9192856ae9c9e1435216170c6cd32cd7f7db69c898647b4",
+       "schema": "technical-leaderboard/1",
+       "settings_sha256": "837689c35f98825bc0be36b4e3ced9a197e153cdcbaf297c1b6eb75e372273cc",
+       "settings_version": "technical-leaderboard/2026-11-03.1",
+       "signal_day": "2017-01-06"
+      },
+      "conditions": [
+       {
+        "condition": "gt_zero",
+        "metric": "momentum_3m"
+       }
+      ],
+      "data_kind": "SYNTHETIC",
+      "group_context": {
+       "classification_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+       "dictionary_version": "common-industry-dictionary/1",
+       "group_id": "COMMON:INFORMATION_TECHNOLOGY:RAW",
+       "knowledge_as_of": "2017-01-06T23:00:00Z",
+       "mapping_version": "common-classification-map/1",
+       "population_hash": "df7687492ddf32e4c9192856ae9c9e1435216170c6cd32cd7f7db69c898647b4",
+       "price_basis": "RAW",
+       "signal_day": "2017-01-06",
+       "universe_id": "SYNTHETIC:UNIVERSE",
+       "universe_members_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+       "universe_version": "SYNTHETIC:VERSION:1"
+      },
+      "group_manifest": {
+       "context": {
+        "classification_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "dictionary_version": "common-industry-dictionary/1",
+        "group_id": "COMMON:INFORMATION_TECHNOLOGY:RAW",
+        "knowledge_as_of": "2017-01-06T23:00:00Z",
+        "mapping_version": "common-classification-map/1",
+        "population_hash": "df7687492ddf32e4c9192856ae9c9e1435216170c6cd32cd7f7db69c898647b4",
+        "price_basis": "RAW",
+        "signal_day": "2017-01-06",
+        "universe_id": "SYNTHETIC:UNIVERSE",
+        "universe_members_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "universe_version": "SYNTHETIC:VERSION:1"
+       },
+       "data_kind": "SYNTHETIC",
+       "members": [],
+       "membership_status": "CONFIRMED",
+       "reasons": [],
+       "schema_version": "technical-filter-membership/1"
+      },
+      "qgv_rows": [],
+      "security_links": []
+     }
+    ],
+    [
+     [
+      "bundle"
+     ],
+     {
+      "technical": {
+       "cache_key": "a59e35b820360245269f841b12ee26fe8dcc52289ffe058d5fc772b0c1fd0ce9",
+       "classification_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+       "counts": {
+        "original_companies": 0,
+        "requested_measurements": 0,
+        "unclassified_companies": 0
+       },
+       "data_kind": "SYNTHETIC",
+       "diagnostics": [],
+       "groups": [
+        {
+         "board": {
+          "group_id": "COMMON:CONSUMER_DISCRETIONARY:RAW",
+          "membership_source": "common-classification:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "membership_status": "CONFIRMED",
+          "metrics": {
+           "dollar_volume_6m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "momentum_12m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "momentum_3m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "momentum_6m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "volatility_6m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           }
+          },
+          "population_hash": "07c1983c25f0afe60578240b4b88f123ca782e2d7eedca0fd0e4a48362b195e4",
+          "schema": "technical-leaderboard/1",
+          "settings_sha256": "837689c35f98825bc0be36b4e3ced9a197e153cdcbaf297c1b6eb75e372273cc",
+          "settings_version": "technical-leaderboard/2026-11-03.1",
+          "signal_day": "2017-01-06"
+         },
+         "counts": {
+          "company_members": 0,
+          "confirmed_companies": 0,
+          "unclassified_companies": 0,
+          "verified_security_count": 0
+         },
+         "membership_reasons": [],
+         "membership_status": "CONFIRMED",
+         "sector_id": "CONSUMER_DISCRETIONARY"
+        },
+        {
+         "board": {
+          "group_id": "COMMON:CONSUMER_STAPLES:RAW",
+          "membership_source": "common-classification:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "membership_status": "CONFIRMED",
+          "metrics": {
+           "dollar_volume_6m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "momentum_12m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "momentum_3m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "momentum_6m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "volatility_6m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           }
+          },
+          "population_hash": "5c4d7a8460d73d1ca8ed7492567e57d7a4f4ec7cc02818a1c4ed62fdc33d619d",
+          "schema": "technical-leaderboard/1",
+          "settings_sha256": "837689c35f98825bc0be36b4e3ced9a197e153cdcbaf297c1b6eb75e372273cc",
+          "settings_version": "technical-leaderboard/2026-11-03.1",
+          "signal_day": "2017-01-06"
+         },
+         "counts": {
+          "company_members": 0,
+          "confirmed_companies": 0,
+          "unclassified_companies": 0,
+          "verified_security_count": 0
+         },
+         "membership_reasons": [],
+         "membership_status": "CONFIRMED",
+         "sector_id": "CONSUMER_STAPLES"
+        },
+        {
+         "board": {
+          "group_id": "COMMON:ENERGY:RAW",
+          "membership_source": "common-classification:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "membership_status": "CONFIRMED",
+          "metrics": {
+           "dollar_volume_6m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "momentum_12m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "momentum_3m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "momentum_6m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "volatility_6m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           }
+          },
+          "population_hash": "f04611e46f646bdabd402fb3be8d55fe5e0d19aa38d57ba30c6b59ba012d953d",
+          "schema": "technical-leaderboard/1",
+          "settings_sha256": "837689c35f98825bc0be36b4e3ced9a197e153cdcbaf297c1b6eb75e372273cc",
+          "settings_version": "technical-leaderboard/2026-11-03.1",
+          "signal_day": "2017-01-06"
+         },
+         "counts": {
+          "company_members": 0,
+          "confirmed_companies": 0,
+          "unclassified_companies": 0,
+          "verified_security_count": 0
+         },
+         "membership_reasons": [],
+         "membership_status": "CONFIRMED",
+         "sector_id": "ENERGY"
+        },
+        {
+         "board": {
+          "group_id": "COMMON:FINANCIALS:RAW",
+          "membership_source": "common-classification:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "membership_status": "CONFIRMED",
+          "metrics": {
+           "dollar_volume_6m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "momentum_12m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "momentum_3m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "momentum_6m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "volatility_6m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           }
+          },
+          "population_hash": "0926a610ac8c44f9cef03067362b7dce1267a470822868891a0438419c3654a7",
+          "schema": "technical-leaderboard/1",
+          "settings_sha256": "837689c35f98825bc0be36b4e3ced9a197e153cdcbaf297c1b6eb75e372273cc",
+          "settings_version": "technical-leaderboard/2026-11-03.1",
+          "signal_day": "2017-01-06"
+         },
+         "counts": {
+          "company_members": 0,
+          "confirmed_companies": 0,
+          "unclassified_companies": 0,
+          "verified_security_count": 0
+         },
+         "membership_reasons": [],
+         "membership_status": "CONFIRMED",
+         "sector_id": "FINANCIALS"
+        },
+        {
+         "board": {
+          "group_id": "COMMON:HEALTH_CARE:RAW",
+          "membership_source": "common-classification:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "membership_status": "CONFIRMED",
+          "metrics": {
+           "dollar_volume_6m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "momentum_12m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "momentum_3m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "momentum_6m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "volatility_6m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           }
+          },
+          "population_hash": "50a1ebe8c076cddd93747a174f033014efc48b2411e7475015333d718bfe8912",
+          "schema": "technical-leaderboard/1",
+          "settings_sha256": "837689c35f98825bc0be36b4e3ced9a197e153cdcbaf297c1b6eb75e372273cc",
+          "settings_version": "technical-leaderboard/2026-11-03.1",
+          "signal_day": "2017-01-06"
+         },
+         "counts": {
+          "company_members": 0,
+          "confirmed_companies": 0,
+          "unclassified_companies": 0,
+          "verified_security_count": 0
+         },
+         "membership_reasons": [],
+         "membership_status": "CONFIRMED",
+         "sector_id": "HEALTH_CARE"
+        },
+        {
+         "board": {
+          "group_id": "COMMON:INDUSTRIALS:RAW",
+          "membership_source": "common-classification:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "membership_status": "CONFIRMED",
+          "metrics": {
+           "dollar_volume_6m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "momentum_12m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "momentum_3m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "momentum_6m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "volatility_6m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           }
+          },
+          "population_hash": "be3c210a1218c0e96e9c4c1272f7dcffee24220612efc8dac227be1cd58d1755",
+          "schema": "technical-leaderboard/1",
+          "settings_sha256": "837689c35f98825bc0be36b4e3ced9a197e153cdcbaf297c1b6eb75e372273cc",
+          "settings_version": "technical-leaderboard/2026-11-03.1",
+          "signal_day": "2017-01-06"
+         },
+         "counts": {
+          "company_members": 0,
+          "confirmed_companies": 0,
+          "unclassified_companies": 0,
+          "verified_security_count": 0
+         },
+         "membership_reasons": [],
+         "membership_status": "CONFIRMED",
+         "sector_id": "INDUSTRIALS"
+        },
+        {
+         "board": {
+          "group_id": "COMMON:INFORMATION_TECHNOLOGY:RAW",
+          "membership_source": "common-classification:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "membership_status": "CONFIRMED",
+          "metrics": {
+           "dollar_volume_6m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "momentum_12m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "momentum_3m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "momentum_6m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "volatility_6m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           }
+          },
+          "population_hash": "df7687492ddf32e4c9192856ae9c9e1435216170c6cd32cd7f7db69c898647b4",
+          "schema": "technical-leaderboard/1",
+          "settings_sha256": "837689c35f98825bc0be36b4e3ced9a197e153cdcbaf297c1b6eb75e372273cc",
+          "settings_version": "technical-leaderboard/2026-11-03.1",
+          "signal_day": "2017-01-06"
+         },
+         "counts": {
+          "company_members": 0,
+          "confirmed_companies": 0,
+          "unclassified_companies": 0,
+          "verified_security_count": 0
+         },
+         "membership_reasons": [],
+         "membership_status": "CONFIRMED",
+         "sector_id": "INFORMATION_TECHNOLOGY"
+        },
+        {
+         "board": {
+          "group_id": "COMMON:MATERIALS:RAW",
+          "membership_source": "common-classification:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "membership_status": "CONFIRMED",
+          "metrics": {
+           "dollar_volume_6m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "momentum_12m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "momentum_3m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "momentum_6m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "volatility_6m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           }
+          },
+          "population_hash": "5318b6c71b8d0b43344d8f12b2b517a240c06b31038e6f81a23e996162461403",
+          "schema": "technical-leaderboard/1",
+          "settings_sha256": "837689c35f98825bc0be36b4e3ced9a197e153cdcbaf297c1b6eb75e372273cc",
+          "settings_version": "technical-leaderboard/2026-11-03.1",
+          "signal_day": "2017-01-06"
+         },
+         "counts": {
+          "company_members": 0,
+          "confirmed_companies": 0,
+          "unclassified_companies": 0,
+          "verified_security_count": 0
+         },
+         "membership_reasons": [],
+         "membership_status": "CONFIRMED",
+         "sector_id": "MATERIALS"
+        },
+        {
+         "board": {
+          "group_id": "COMMON:TELECOMMUNICATIONS:RAW",
+          "membership_source": "common-classification:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "membership_status": "CONFIRMED",
+          "metrics": {
+           "dollar_volume_6m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "momentum_12m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "momentum_3m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "momentum_6m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "volatility_6m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           }
+          },
+          "population_hash": "a829be1cc23faa8f50bd26b803689507dbdd3a0e69b3aadff83dac6324b1111d",
+          "schema": "technical-leaderboard/1",
+          "settings_sha256": "837689c35f98825bc0be36b4e3ced9a197e153cdcbaf297c1b6eb75e372273cc",
+          "settings_version": "technical-leaderboard/2026-11-03.1",
+          "signal_day": "2017-01-06"
+         },
+         "counts": {
+          "company_members": 0,
+          "confirmed_companies": 0,
+          "unclassified_companies": 0,
+          "verified_security_count": 0
+         },
+         "membership_reasons": [],
+         "membership_status": "CONFIRMED",
+         "sector_id": "TELECOMMUNICATIONS"
+        },
+        {
+         "board": {
+          "group_id": "COMMON:UTILITIES:RAW",
+          "membership_source": "common-classification:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "membership_status": "CONFIRMED",
+          "metrics": {
+           "dollar_volume_6m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "momentum_12m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "momentum_3m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "momentum_6m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           },
+           "volatility_6m": {
+            "k": null,
+            "median": null,
+            "n_members": 0,
+            "n_valid": 0,
+            "null_reason": "NO_VALID_VALUES",
+            "rows": []
+           }
+          },
+          "population_hash": "3d0d0041f2951f9fb6feed15fa17fb75c608b99f57e6eee54066ed462f6940ff",
+          "schema": "technical-leaderboard/1",
+          "settings_sha256": "837689c35f98825bc0be36b4e3ced9a197e153cdcbaf297c1b6eb75e372273cc",
+          "settings_version": "technical-leaderboard/2026-11-03.1",
+          "signal_day": "2017-01-06"
+         },
+         "counts": {
+          "company_members": 0,
+          "confirmed_companies": 0,
+          "unclassified_companies": 0,
+          "verified_security_count": 0
+         },
+         "membership_reasons": [],
+         "membership_status": "CONFIRMED",
+         "sector_id": "UTILITIES"
+        }
+       ],
+       "input_hash": "a59e35b820360245269f841b12ee26fe8dcc52289ffe058d5fc772b0c1fd0ce9",
+       "price_basis": "RAW",
+       "rows": [],
+       "schema_version": "common-classification-technical/1",
+       "security_link_diagnostics": [],
+       "settings_version": "technical-leaderboard/2026-11-03.1",
+       "valuation_date": "2017-01-06"
+      },
+      "view": {
+       "classification_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+       "data_kind": "SYNTHETIC",
+       "dictionary_version": "common-industry-dictionary/1",
+       "knowledge_as_of": "2017-01-06T23:00:00Z",
+       "mapping_version": "common-classification-map/1",
+       "members": [],
+       "rows": [],
+       "schema_version": "common-classification-view/1",
+       "universe_id": "SYNTHETIC:UNIVERSE",
+       "universe_version": "SYNTHETIC:VERSION:1",
+       "valuation_date": "2017-01-06"
+      }
+     }
+    ]
+   ]
+  },
+  {
+   "expected": {
+    "issuer_connections": 0,
+    "membership_validation": "VERIFIED",
+    "ok": true,
+    "original_group_count": 3,
+    "selected_count": 3
+   },
+   "id": "two_codes_one_issuer",
+   "removes": [],
+   "sets": [
+    [
+     [
+      "join",
+      "qgv_rows",
+      0,
+      "issuer_id"
+     ],
+     "SYNTHETIC:SHARED_ISSUER"
+    ],
+    [
+     [
+      "join",
+      "security_links",
+      0,
+      "issuer_id"
+     ],
+     "SYNTHETIC:SHARED_ISSUER"
+    ],
+    [
+     [
+      "join",
+      "group_manifest",
+      "members",
+      0,
+      "issuer_id"
+     ],
+     "SYNTHETIC:SHARED_ISSUER"
+    ],
+    [
+     [
+      "bundle",
+      "view",
+      "rows",
+      0,
+      "issuer_id"
+     ],
+     "SYNTHETIC:SHARED_ISSUER"
+    ],
+    [
+     [
+      "bundle",
+      "technical",
+      "rows",
+      0,
+      "issuer_id"
+     ],
+     "SYNTHETIC:SHARED_ISSUER"
+    ],
+    [
+     [
+      "join",
+      "qgv_rows",
+      1,
+      "issuer_id"
+     ],
+     "SYNTHETIC:SHARED_ISSUER"
+    ],
+    [
+     [
+      "join",
+      "security_links",
+      1,
+      "issuer_id"
+     ],
+     "SYNTHETIC:SHARED_ISSUER"
+    ],
+    [
+     [
+      "join",
+      "group_manifest",
+      "members",
+      1,
+      "issuer_id"
+     ],
+     "SYNTHETIC:SHARED_ISSUER"
+    ],
+    [
+     [
+      "bundle",
+      "view",
+      "rows",
+      1,
+      "issuer_id"
+     ],
+     "SYNTHETIC:SHARED_ISSUER"
+    ],
+    [
+     [
+      "bundle",
+      "technical",
+      "rows",
+      1,
+      "issuer_id"
+     ],
+     "SYNTHETIC:SHARED_ISSUER"
+    ]
+   ]
+  },
+  {
+   "expected": {
+    "code": "SIGNAL_DAY_MISMATCH",
+    "ok": false
+   },
+   "id": "row_date_mismatch",
+   "removes": [],
+   "sets": [
+    [
+     [
+      "join",
+      "qgv_rows",
+      0,
+      "signal_day"
+     ],
+     "2017-01-07"
+    ]
+   ]
+  },
+  {
+   "expected": {
+    "code": "GROUP_CONTEXT_MISMATCH:signal_day",
+    "ok": false
+   },
+   "id": "requested_date_mismatch",
+   "removes": [],
+   "sets": [
+    [
+     [
+      "join",
+      "group_context",
+      "signal_day"
+     ],
+     "2017-01-07"
+    ]
+   ]
+  },
+  {
+   "expected": {
+    "code": "GROUP_CONTEXT_MISMATCH:classification_hash",
+    "ok": false
+   },
+   "id": "requested_hash_mismatch",
+   "removes": [],
+   "sets": [
+    [
+     [
+      "join",
+      "group_context",
+      "classification_hash"
+     ],
+     "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    ]
+   ]
+  },
+  {
+   "expected": {
+    "code": "GROUP_CONTEXT_MISMATCH:population_hash",
+    "ok": false
+   },
+   "id": "requested_population_mismatch",
+   "removes": [],
+   "sets": [
+    [
+     [
+      "join",
+      "group_context",
+      "population_hash"
+     ],
+     "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    ]
+   ]
+  },
+  {
+   "expected": {
+    "code": "ROW_CLASSIFICATION_MISMATCH",
+    "ok": false
+   },
+   "id": "row_hash_mismatch",
+   "removes": [],
+   "sets": [
+    [
+     [
+      "join",
+      "qgv_rows",
+      0,
+      "classification_hash"
+     ],
+     "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    ]
+   ]
+  },
+  {
+   "expected": {
+    "code": "ROW_CLASSIFICATION_MISMATCH",
+    "ok": false
+   },
+   "id": "row_record_mismatch",
+   "removes": [],
+   "sets": [
+    [
+     [
+      "join",
+      "qgv_rows",
+      0,
+      "classification_record_id"
+     ],
+     "SYNTHETIC:WRONG"
+    ]
+   ]
+  },
+  {
+   "expected": {
+    "code": "ISSUER_LINK_MISMATCH",
+    "ok": false
+   },
+   "id": "issuer_explicit_null",
+   "removes": [],
+   "sets": [
+    [
+     [
+      "join",
+      "qgv_rows",
+      0,
+      "issuer_id"
+     ],
+     null
+    ]
+   ]
+  },
+  {
+   "expected": {
+    "issuer_connections": 1,
+    "membership_validation": "VERIFIED",
+    "ok": true,
+    "original_group_count": 3,
+    "selected_count": 3
+   },
+   "id": "issuer_evidence_connection",
+   "removes": [],
+   "sets": [
+    [
+     [
+      "join",
+      "qgv_rows",
+      0,
+      "issuer_id"
+     ],
+     null
+    ],
+    [
+     [
+      "join",
+      "connect_issuers"
+     ],
+     true
+    ]
+   ]
+  },
+  {
+   "expected": {
+    "code": "ISSUER_CONNECTION_EVIDENCE_REQUIRED",
+    "ok": false
+   },
+   "id": "issuer_connection_without_evidence",
+   "removes": [],
+   "sets": [
+    [
+     [
+      "join",
+      "qgv_rows",
+      0,
+      "issuer_id"
+     ],
+     null
+    ],
+    [
+     [
+      "join",
+      "connect_issuers"
+     ],
+     true
+    ],
+    [
+     [
+      "join",
+      "group_manifest",
+      "members",
+      0,
+      "evidence_refs"
+     ],
+     []
+    ]
+   ]
+  },
+  {
+   "expected": {
+    "code": "GROUP_MEMBERSHIP_UNCONFIRMED",
+    "ok": false
+   },
+   "id": "classification_not_applicable_on_day",
+   "removes": [],
+   "sets": [
+    [
+     [
+      "join",
+      "qgv_rows",
+      0,
+      "issuer_id"
+     ],
+     null
+    ],
+    [
+     [
+      "join",
+      "connect_issuers"
+     ],
+     true
+    ],
+    [
+     [
+      "join",
+      "group_manifest",
+      "membership_status"
+     ],
+     "UNKNOWN"
+    ],
+    [
+     [
+      "join",
+      "group_manifest",
+      "reasons"
+     ],
+     [
+      "CLASSIFICATION_APPLICABILITY_UNCONFIRMED"
+     ]
+    ],
+    [
+     [
+      "bundle",
+      "view",
+      "rows",
+      0,
+      "applicability",
+      "evaluation_date"
+     ],
+     "2017-01-07"
+    ]
+   ]
+  },
+  {
+   "expected": {
+    "code": "ISSUER_CLASSIFICATION_MISMATCH",
+    "ok": false
+   },
+   "id": "issuer_connection_conflict",
+   "removes": [],
+   "sets": [
+    [
+     [
+      "join",
+      "qgv_rows",
+      0,
+      "issuer_id"
+     ],
+     "SYNTHETIC:WRONG"
+    ],
+    [
+     [
+      "join",
+      "connect_issuers"
+     ],
+     true
+    ]
+   ]
+  },
+  {
+   "expected": {
+    "code": "ROW_OUTSIDE_GROUP",
+    "ok": false
+   },
+   "id": "case_changed_company_code",
+   "removes": [],
+   "sets": [
+    [
+     [
+      "join",
+      "qgv_rows",
+      0,
+      "code"
+     ],
+     "synthetic:company:0"
+    ]
+   ]
+  },
+  {
+   "expected": {
+    "code": "COMPANY_CODE_REQUIRED",
+    "ok": false
+   },
+   "id": "company_code_missing",
+   "removes": [
+    [
+     "join",
+     "qgv_rows",
+     0,
+     "code"
+    ]
+   ],
+   "sets": []
+  },
+  {
+   "expected": {
+    "issuer_connections": 0,
+    "membership_validation": "VERIFIED",
+    "ok": true,
+    "original_group_count": 3,
+    "selected_count": 3
+   },
+   "id": "original_order_and_ranks",
+   "removes": [],
+   "sets": [
+    [
+     [
+      "join",
+      "qgv_rows"
+     ],
+     [
+      {
+       "code": "SYNTHETIC:COMPANY:2",
+       "id": "SYNTHETIC:DISPLAY:2",
+       "issuer_id": "SYNTHETIC:ISSUER:2",
+       "rank": {
+        "of": 504,
+        "official": 18
+       },
+       "score": {
+        "total": 78
+       },
+       "security_id": "SYNTHETIC:SECURITY:2",
+       "signal_day": "2017-01-06",
+       "ticker": "SYNTHETIC:TICKER:2"
+      },
+      {
+       "code": "SYNTHETIC:COMPANY:1",
+       "id": "SYNTHETIC:DISPLAY:1",
+       "issuer_id": "SYNTHETIC:ISSUER:1",
+       "rank": {
+        "of": 504,
+        "official": 19
+       },
+       "score": {
+        "total": 79
+       },
+       "security_id": "SYNTHETIC:SECURITY:1",
+       "signal_day": "2017-01-06",
+       "ticker": "SYNTHETIC:TICKER:1"
+      },
+      {
+       "code": "SYNTHETIC:COMPANY:0",
+       "id": "SYNTHETIC:DISPLAY:0",
+       "issuer_id": "SYNTHETIC:ISSUER:0",
+       "rank": {
+        "of": 504,
+        "official": 20
+       },
+       "score": {
+        "total": 80
+       },
+       "security_id": "SYNTHETIC:SECURITY:0",
+       "signal_day": "2017-01-06",
+       "ticker": "SYNTHETIC:TICKER:0"
+      }
+     ]
+    ]
+   ]
+  },
+  {
+   "expected": {
+    "issuer_connections": 0,
+    "membership_validation": "VERIFIED",
+    "ok": true,
+    "original_group_count": 3,
+    "selected_count": 2
+   },
+   "id": "median_filter_keeps_original_ranks",
+   "removes": [],
+   "sets": [
+    [
+     [
+      "join",
+      "conditions"
+     ],
+     [
+      {
+       "condition": "ge_median",
+       "metric": "momentum_3m"
+      }
+     ]
+    ]
+   ]
+  }
+ ],
+ "consumer_contract": "join is the complete group, not the entire outer population; connect_issuers is explicit",
+ "data_kind": "SYNTHETIC",
+ "preservation": "Input objects and original score/rank fields must remain unchanged; no rank recalculation.",
+ "schema_version": "technical-filter-group-fixtures/1"
+}

@@ -1,0 +1,1482 @@
+{
+  "data_kind": "SYNTHETIC",
+  "publication_scope": "OWNER_PRIVATE_ONLY",
+  "cases": {
+    "original_board": {
+      "schema": "technical-leaderboard/1",
+      "signal_day": "2017-01-06",
+      "settings_version": "technical-leaderboard/2026-11-03.1",
+      "settings_sha256": "837689c35f98825bc0be36b4e3ced9a197e153cdcbaf297c1b6eb75e372273cc",
+      "group_id": "SYNTHETIC:JOIN",
+      "membership_status": "CONFIRMED",
+      "membership_source": "AUTHOR_CREATED",
+      "population_hash": "3382751e778f8483a37925afe74dc459061e16b6c106d4a2a6bf146f9d6dbe90",
+      "metrics": {
+        "momentum_3m": {
+          "n_valid": 3,
+          "n_members": 3,
+          "median": "2",
+          "k": null,
+          "null_reason": null,
+          "rows": [
+            {
+              "value": "3",
+              "null_reasons": [
+                "N_BELOW_10"
+              ],
+              "security_id": "SYNTHETIC:001",
+              "series_id": "REQUEST:1",
+              "rank": 1,
+              "decile": null,
+              "conditions": {
+                "gt_zero": true,
+                "ge_median": true,
+                "gt_median": true,
+                "top_decile": null,
+                "bottom_decile": null,
+                "exclude_D10": null
+              }
+            },
+            {
+              "value": "2",
+              "null_reasons": [
+                "N_BELOW_10"
+              ],
+              "security_id": "SYNTHETIC:003",
+              "series_id": "REQUEST:3",
+              "rank": 2,
+              "decile": null,
+              "conditions": {
+                "gt_zero": true,
+                "ge_median": true,
+                "gt_median": false,
+                "top_decile": null,
+                "bottom_decile": null,
+                "exclude_D10": null
+              }
+            },
+            {
+              "value": "-1",
+              "null_reasons": [
+                "N_BELOW_10"
+              ],
+              "security_id": "SYNTHETIC:002",
+              "series_id": "REQUEST:2",
+              "rank": 3,
+              "decile": null,
+              "conditions": {
+                "gt_zero": false,
+                "ge_median": false,
+                "gt_median": false,
+                "top_decile": null,
+                "bottom_decile": null,
+                "exclude_D10": null
+              }
+            }
+          ]
+        },
+        "momentum_6m": {
+          "n_valid": 3,
+          "n_members": 3,
+          "median": "2",
+          "k": null,
+          "null_reason": null,
+          "rows": [
+            {
+              "value": "3",
+              "null_reasons": [
+                "N_BELOW_10"
+              ],
+              "security_id": "SYNTHETIC:001",
+              "series_id": "REQUEST:1",
+              "rank": 1,
+              "decile": null,
+              "conditions": {
+                "gt_zero": true,
+                "ge_median": true,
+                "gt_median": true,
+                "top_decile": null,
+                "bottom_decile": null,
+                "exclude_D10": null
+              }
+            },
+            {
+              "value": "2",
+              "null_reasons": [
+                "N_BELOW_10"
+              ],
+              "security_id": "SYNTHETIC:003",
+              "series_id": "REQUEST:3",
+              "rank": 2,
+              "decile": null,
+              "conditions": {
+                "gt_zero": true,
+                "ge_median": true,
+                "gt_median": false,
+                "top_decile": null,
+                "bottom_decile": null,
+                "exclude_D10": null
+              }
+            },
+            {
+              "value": "-1",
+              "null_reasons": [
+                "N_BELOW_10"
+              ],
+              "security_id": "SYNTHETIC:002",
+              "series_id": "REQUEST:2",
+              "rank": 3,
+              "decile": null,
+              "conditions": {
+                "gt_zero": false,
+                "ge_median": false,
+                "gt_median": false,
+                "top_decile": null,
+                "bottom_decile": null,
+                "exclude_D10": null
+              }
+            }
+          ]
+        },
+        "momentum_12m": {
+          "n_valid": 3,
+          "n_members": 3,
+          "median": "2",
+          "k": null,
+          "null_reason": null,
+          "rows": [
+            {
+              "value": "3",
+              "null_reasons": [
+                "N_BELOW_10"
+              ],
+              "security_id": "SYNTHETIC:001",
+              "series_id": "REQUEST:1",
+              "rank": 1,
+              "decile": null,
+              "conditions": {
+                "gt_zero": true,
+                "ge_median": true,
+                "gt_median": true,
+                "top_decile": null,
+                "bottom_decile": null,
+                "exclude_D10": null
+              }
+            },
+            {
+              "value": "2",
+              "null_reasons": [
+                "N_BELOW_10"
+              ],
+              "security_id": "SYNTHETIC:003",
+              "series_id": "REQUEST:3",
+              "rank": 2,
+              "decile": null,
+              "conditions": {
+                "gt_zero": true,
+                "ge_median": true,
+                "gt_median": false,
+                "top_decile": null,
+                "bottom_decile": null,
+                "exclude_D10": null
+              }
+            },
+            {
+              "value": "-1",
+              "null_reasons": [
+                "N_BELOW_10"
+              ],
+              "security_id": "SYNTHETIC:002",
+              "series_id": "REQUEST:2",
+              "rank": 3,
+              "decile": null,
+              "conditions": {
+                "gt_zero": false,
+                "ge_median": false,
+                "gt_median": false,
+                "top_decile": null,
+                "bottom_decile": null,
+                "exclude_D10": null
+              }
+            }
+          ]
+        },
+        "volatility_6m": {
+          "n_valid": 3,
+          "n_members": 3,
+          "median": "2",
+          "k": null,
+          "null_reason": null,
+          "rows": [
+            {
+              "value": "3",
+              "null_reasons": [
+                "N_BELOW_10"
+              ],
+              "security_id": "SYNTHETIC:003",
+              "series_id": "REQUEST:3",
+              "rank": 1,
+              "decile": null,
+              "conditions": {
+                "gt_zero": true,
+                "ge_median": true,
+                "gt_median": true,
+                "top_decile": null,
+                "bottom_decile": null,
+                "exclude_D10": null
+              }
+            },
+            {
+              "value": "2",
+              "null_reasons": [
+                "N_BELOW_10"
+              ],
+              "security_id": "SYNTHETIC:002",
+              "series_id": "REQUEST:2",
+              "rank": 2,
+              "decile": null,
+              "conditions": {
+                "gt_zero": true,
+                "ge_median": true,
+                "gt_median": false,
+                "top_decile": null,
+                "bottom_decile": null,
+                "exclude_D10": null
+              }
+            },
+            {
+              "value": "1",
+              "null_reasons": [
+                "N_BELOW_10"
+              ],
+              "security_id": "SYNTHETIC:001",
+              "series_id": "REQUEST:1",
+              "rank": 3,
+              "decile": null,
+              "conditions": {
+                "gt_zero": true,
+                "ge_median": false,
+                "gt_median": false,
+                "top_decile": null,
+                "bottom_decile": null,
+                "exclude_D10": null
+              }
+            }
+          ]
+        },
+        "dollar_volume_6m": {
+          "n_valid": 3,
+          "n_members": 3,
+          "median": "2",
+          "k": null,
+          "null_reason": null,
+          "rows": [
+            {
+              "value": "3",
+              "null_reasons": [
+                "N_BELOW_10"
+              ],
+              "security_id": "SYNTHETIC:003",
+              "series_id": "REQUEST:3",
+              "rank": 1,
+              "decile": null,
+              "conditions": {
+                "gt_zero": true,
+                "ge_median": true,
+                "gt_median": true,
+                "top_decile": null,
+                "bottom_decile": null,
+                "exclude_D10": null
+              }
+            },
+            {
+              "value": "2",
+              "null_reasons": [
+                "N_BELOW_10"
+              ],
+              "security_id": "SYNTHETIC:002",
+              "series_id": "REQUEST:2",
+              "rank": 2,
+              "decile": null,
+              "conditions": {
+                "gt_zero": true,
+                "ge_median": true,
+                "gt_median": false,
+                "top_decile": null,
+                "bottom_decile": null,
+                "exclude_D10": null
+              }
+            },
+            {
+              "value": "1",
+              "null_reasons": [
+                "N_BELOW_10"
+              ],
+              "security_id": "SYNTHETIC:001",
+              "series_id": "REQUEST:1",
+              "rank": 3,
+              "decile": null,
+              "conditions": {
+                "gt_zero": true,
+                "ge_median": false,
+                "gt_median": false,
+                "top_decile": null,
+                "bottom_decile": null,
+                "exclude_D10": null
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "fixture_kind": "SYNTHETIC_NOT_A_COMPANY",
+  "join_inputs": {
+    "same_date_same_security": {
+      "qgv_rows": [
+        {
+          "id": "SYNTHETIC:ISSUER:2",
+          "ticker": "SYNTHETIC:SYMBOL:2",
+          "code": "SYNTHETIC:CODE:2",
+          "signal_day": "2017-01-06",
+          "security_id": "SYNTHETIC:002",
+          "score": {
+            "total": 90,
+            "q": 90,
+            "g": 90,
+            "v": 90
+          },
+          "rank": {
+            "official": 1,
+            "personal": null,
+            "of": 10
+          }
+        },
+        {
+          "id": "SYNTHETIC:ISSUER:1",
+          "ticker": "SYNTHETIC:SYMBOL:1",
+          "code": "SYNTHETIC:CODE:1",
+          "signal_day": "2017-01-06",
+          "security_id": "SYNTHETIC:001",
+          "score": {
+            "total": 80,
+            "q": 80,
+            "g": 80,
+            "v": 80
+          },
+          "rank": {
+            "official": 4,
+            "personal": null,
+            "of": 10
+          }
+        },
+        {
+          "id": "SYNTHETIC:ISSUER:3",
+          "ticker": "SYNTHETIC:SYMBOL:3",
+          "code": "SYNTHETIC:CODE:3",
+          "signal_day": "2017-01-06",
+          "security_id": "SYNTHETIC:003",
+          "score": {
+            "total": 70,
+            "q": 70,
+            "g": 70,
+            "v": 70
+          },
+          "rank": {
+            "official": 9,
+            "personal": null,
+            "of": 10
+          }
+        }
+      ],
+      "security_links": [
+        {
+          "series_id": "REQUEST:2",
+          "security_id": "SYNTHETIC:002",
+          "identifier_type": "SYNTHETIC_FIXED_SECURITY_ID",
+          "reference": "AUTHOR_CREATED:SECURITY:2",
+          "valid_from": "2017-01-05",
+          "valid_to": "2017-01-09",
+          "issuer_id": "SYNTHETIC:ISSUER:2",
+          "symbol": "SYNTHETIC:SYMBOL:2",
+          "share_class": "SYNTHETIC:CLASS:A",
+          "identity_status": "CONFIRMED",
+          "identity_reference": "AUTHOR_CREATED:IDENTITY:2"
+        },
+        {
+          "series_id": "REQUEST:1",
+          "security_id": "SYNTHETIC:001",
+          "identifier_type": "SYNTHETIC_FIXED_SECURITY_ID",
+          "reference": "AUTHOR_CREATED:SECURITY:1",
+          "valid_from": "2017-01-05",
+          "valid_to": "2017-01-09",
+          "issuer_id": "SYNTHETIC:ISSUER:1",
+          "symbol": "SYNTHETIC:SYMBOL:1",
+          "share_class": "SYNTHETIC:CLASS:A",
+          "identity_status": "CONFIRMED",
+          "identity_reference": "AUTHOR_CREATED:IDENTITY:1"
+        },
+        {
+          "series_id": "REQUEST:3",
+          "security_id": "SYNTHETIC:003",
+          "identifier_type": "SYNTHETIC_FIXED_SECURITY_ID",
+          "reference": "AUTHOR_CREATED:SECURITY:3",
+          "valid_from": "2017-01-05",
+          "valid_to": "2017-01-09",
+          "issuer_id": "SYNTHETIC:ISSUER:3",
+          "symbol": "SYNTHETIC:SYMBOL:3",
+          "share_class": "SYNTHETIC:CLASS:A",
+          "identity_status": "CONFIRMED",
+          "identity_reference": "AUTHOR_CREATED:IDENTITY:3"
+        }
+      ],
+      "conditions": [
+        {
+          "metric": "momentum_3m",
+          "condition": "gt_zero"
+        }
+      ]
+    },
+    "different_date": {
+      "qgv_rows": [
+        {
+          "id": "SYNTHETIC:ISSUER:2",
+          "ticker": "SYNTHETIC:SYMBOL:2",
+          "code": "SYNTHETIC:CODE:2",
+          "signal_day": "2017-01-09",
+          "security_id": "SYNTHETIC:002",
+          "score": {
+            "total": 90,
+            "q": 90,
+            "g": 90,
+            "v": 90
+          },
+          "rank": {
+            "official": 1,
+            "personal": null,
+            "of": 10
+          }
+        },
+        {
+          "id": "SYNTHETIC:ISSUER:1",
+          "ticker": "SYNTHETIC:SYMBOL:1",
+          "code": "SYNTHETIC:CODE:1",
+          "signal_day": "2017-01-06",
+          "security_id": "SYNTHETIC:001",
+          "score": {
+            "total": 80,
+            "q": 80,
+            "g": 80,
+            "v": 80
+          },
+          "rank": {
+            "official": 4,
+            "personal": null,
+            "of": 10
+          }
+        },
+        {
+          "id": "SYNTHETIC:ISSUER:3",
+          "ticker": "SYNTHETIC:SYMBOL:3",
+          "code": "SYNTHETIC:CODE:3",
+          "signal_day": "2017-01-06",
+          "security_id": "SYNTHETIC:003",
+          "score": {
+            "total": 70,
+            "q": 70,
+            "g": 70,
+            "v": 70
+          },
+          "rank": {
+            "official": 9,
+            "personal": null,
+            "of": 10
+          }
+        }
+      ],
+      "security_links": [
+        {
+          "series_id": "REQUEST:2",
+          "security_id": "SYNTHETIC:002",
+          "identifier_type": "SYNTHETIC_FIXED_SECURITY_ID",
+          "reference": "AUTHOR_CREATED:SECURITY:2",
+          "valid_from": "2017-01-05",
+          "valid_to": "2017-01-09",
+          "issuer_id": "SYNTHETIC:ISSUER:2",
+          "symbol": "SYNTHETIC:SYMBOL:2",
+          "share_class": "SYNTHETIC:CLASS:A",
+          "identity_status": "CONFIRMED",
+          "identity_reference": "AUTHOR_CREATED:IDENTITY:2"
+        },
+        {
+          "series_id": "REQUEST:1",
+          "security_id": "SYNTHETIC:001",
+          "identifier_type": "SYNTHETIC_FIXED_SECURITY_ID",
+          "reference": "AUTHOR_CREATED:SECURITY:1",
+          "valid_from": "2017-01-05",
+          "valid_to": "2017-01-09",
+          "issuer_id": "SYNTHETIC:ISSUER:1",
+          "symbol": "SYNTHETIC:SYMBOL:1",
+          "share_class": "SYNTHETIC:CLASS:A",
+          "identity_status": "CONFIRMED",
+          "identity_reference": "AUTHOR_CREATED:IDENTITY:1"
+        },
+        {
+          "series_id": "REQUEST:3",
+          "security_id": "SYNTHETIC:003",
+          "identifier_type": "SYNTHETIC_FIXED_SECURITY_ID",
+          "reference": "AUTHOR_CREATED:SECURITY:3",
+          "valid_from": "2017-01-05",
+          "valid_to": "2017-01-09",
+          "issuer_id": "SYNTHETIC:ISSUER:3",
+          "symbol": "SYNTHETIC:SYMBOL:3",
+          "share_class": "SYNTHETIC:CLASS:A",
+          "identity_status": "CONFIRMED",
+          "identity_reference": "AUTHOR_CREATED:IDENTITY:3"
+        }
+      ],
+      "conditions": [
+        {
+          "metric": "momentum_3m",
+          "condition": "gt_zero"
+        }
+      ]
+    },
+    "same_ticker_different_security": {
+      "qgv_rows": [
+        {
+          "id": "SYNTHETIC:ISSUER:2",
+          "ticker": "SYNTHETIC:SYMBOL:2",
+          "code": "SYNTHETIC:CODE:2",
+          "signal_day": "2017-01-06",
+          "security_id": "SYNTHETIC:REUSED_TICKER_SECURITY",
+          "score": {
+            "total": 90,
+            "q": 90,
+            "g": 90,
+            "v": 90
+          },
+          "rank": {
+            "official": 1,
+            "personal": null,
+            "of": 10
+          }
+        },
+        {
+          "id": "SYNTHETIC:ISSUER:1",
+          "ticker": "SYNTHETIC:SYMBOL:1",
+          "code": "SYNTHETIC:CODE:1",
+          "signal_day": "2017-01-06",
+          "security_id": "SYNTHETIC:001",
+          "score": {
+            "total": 80,
+            "q": 80,
+            "g": 80,
+            "v": 80
+          },
+          "rank": {
+            "official": 4,
+            "personal": null,
+            "of": 10
+          }
+        },
+        {
+          "id": "SYNTHETIC:ISSUER:3",
+          "ticker": "SYNTHETIC:SYMBOL:3",
+          "code": "SYNTHETIC:CODE:3",
+          "signal_day": "2017-01-06",
+          "security_id": "SYNTHETIC:003",
+          "score": {
+            "total": 70,
+            "q": 70,
+            "g": 70,
+            "v": 70
+          },
+          "rank": {
+            "official": 9,
+            "personal": null,
+            "of": 10
+          }
+        }
+      ],
+      "security_links": [
+        {
+          "series_id": "REQUEST:2",
+          "security_id": "SYNTHETIC:002",
+          "identifier_type": "SYNTHETIC_FIXED_SECURITY_ID",
+          "reference": "AUTHOR_CREATED:SECURITY:2",
+          "valid_from": "2017-01-05",
+          "valid_to": "2017-01-09",
+          "issuer_id": "SYNTHETIC:ISSUER:2",
+          "symbol": "SYNTHETIC:SYMBOL:2",
+          "share_class": "SYNTHETIC:CLASS:A",
+          "identity_status": "CONFIRMED",
+          "identity_reference": "AUTHOR_CREATED:IDENTITY:2"
+        },
+        {
+          "series_id": "REQUEST:1",
+          "security_id": "SYNTHETIC:001",
+          "identifier_type": "SYNTHETIC_FIXED_SECURITY_ID",
+          "reference": "AUTHOR_CREATED:SECURITY:1",
+          "valid_from": "2017-01-05",
+          "valid_to": "2017-01-09",
+          "issuer_id": "SYNTHETIC:ISSUER:1",
+          "symbol": "SYNTHETIC:SYMBOL:1",
+          "share_class": "SYNTHETIC:CLASS:A",
+          "identity_status": "CONFIRMED",
+          "identity_reference": "AUTHOR_CREATED:IDENTITY:1"
+        },
+        {
+          "series_id": "REQUEST:3",
+          "security_id": "SYNTHETIC:003",
+          "identifier_type": "SYNTHETIC_FIXED_SECURITY_ID",
+          "reference": "AUTHOR_CREATED:SECURITY:3",
+          "valid_from": "2017-01-05",
+          "valid_to": "2017-01-09",
+          "issuer_id": "SYNTHETIC:ISSUER:3",
+          "symbol": "SYNTHETIC:SYMBOL:3",
+          "share_class": "SYNTHETIC:CLASS:A",
+          "identity_status": "CONFIRMED",
+          "identity_reference": "AUTHOR_CREATED:IDENTITY:3"
+        }
+      ],
+      "conditions": [
+        {
+          "metric": "momentum_3m",
+          "condition": "gt_zero"
+        }
+      ]
+    },
+    "different_share_class_without_map": {
+      "qgv_rows": [
+        {
+          "id": "SYNTHETIC:ISSUER:2",
+          "ticker": "SYNTHETIC:SYMBOL:2:B",
+          "code": "SYNTHETIC:CODE:2:B",
+          "signal_day": "2017-01-06",
+          "security_id": "SYNTHETIC:CLASS_B_SECURITY",
+          "score": {
+            "total": 90,
+            "q": 90,
+            "g": 90,
+            "v": 90
+          },
+          "rank": {
+            "official": 1,
+            "personal": null,
+            "of": 10
+          }
+        },
+        {
+          "id": "SYNTHETIC:ISSUER:1",
+          "ticker": "SYNTHETIC:SYMBOL:1",
+          "code": "SYNTHETIC:CODE:1",
+          "signal_day": "2017-01-06",
+          "security_id": "SYNTHETIC:001",
+          "score": {
+            "total": 80,
+            "q": 80,
+            "g": 80,
+            "v": 80
+          },
+          "rank": {
+            "official": 4,
+            "personal": null,
+            "of": 10
+          }
+        },
+        {
+          "id": "SYNTHETIC:ISSUER:3",
+          "ticker": "SYNTHETIC:SYMBOL:3",
+          "code": "SYNTHETIC:CODE:3",
+          "signal_day": "2017-01-06",
+          "security_id": "SYNTHETIC:003",
+          "score": {
+            "total": 70,
+            "q": 70,
+            "g": 70,
+            "v": 70
+          },
+          "rank": {
+            "official": 9,
+            "personal": null,
+            "of": 10
+          }
+        }
+      ],
+      "security_links": [
+        {
+          "series_id": "REQUEST:2",
+          "security_id": "SYNTHETIC:002",
+          "identifier_type": "SYNTHETIC_FIXED_SECURITY_ID",
+          "reference": "AUTHOR_CREATED:SECURITY:2",
+          "valid_from": "2017-01-05",
+          "valid_to": "2017-01-09",
+          "issuer_id": "SYNTHETIC:ISSUER:2",
+          "symbol": "SYNTHETIC:SYMBOL:2",
+          "share_class": "SYNTHETIC:CLASS:A",
+          "identity_status": "CONFIRMED",
+          "identity_reference": "AUTHOR_CREATED:IDENTITY:2"
+        },
+        {
+          "series_id": "REQUEST:1",
+          "security_id": "SYNTHETIC:001",
+          "identifier_type": "SYNTHETIC_FIXED_SECURITY_ID",
+          "reference": "AUTHOR_CREATED:SECURITY:1",
+          "valid_from": "2017-01-05",
+          "valid_to": "2017-01-09",
+          "issuer_id": "SYNTHETIC:ISSUER:1",
+          "symbol": "SYNTHETIC:SYMBOL:1",
+          "share_class": "SYNTHETIC:CLASS:A",
+          "identity_status": "CONFIRMED",
+          "identity_reference": "AUTHOR_CREATED:IDENTITY:1"
+        },
+        {
+          "series_id": "REQUEST:3",
+          "security_id": "SYNTHETIC:003",
+          "identifier_type": "SYNTHETIC_FIXED_SECURITY_ID",
+          "reference": "AUTHOR_CREATED:SECURITY:3",
+          "valid_from": "2017-01-05",
+          "valid_to": "2017-01-09",
+          "issuer_id": "SYNTHETIC:ISSUER:3",
+          "symbol": "SYNTHETIC:SYMBOL:3",
+          "share_class": "SYNTHETIC:CLASS:A",
+          "identity_status": "CONFIRMED",
+          "identity_reference": "AUTHOR_CREATED:IDENTITY:3"
+        }
+      ],
+      "conditions": [
+        {
+          "metric": "momentum_3m",
+          "condition": "gt_zero"
+        }
+      ]
+    },
+    "missing_mapping": {
+      "qgv_rows": [
+        {
+          "id": "SYNTHETIC:ISSUER:2",
+          "ticker": "SYNTHETIC:SYMBOL:2",
+          "code": "SYNTHETIC:CODE:2",
+          "signal_day": "2017-01-06",
+          "security_id": "SYNTHETIC:002",
+          "score": {
+            "total": 90,
+            "q": 90,
+            "g": 90,
+            "v": 90
+          },
+          "rank": {
+            "official": 1,
+            "personal": null,
+            "of": 10
+          }
+        },
+        {
+          "id": "SYNTHETIC:ISSUER:1",
+          "ticker": "SYNTHETIC:SYMBOL:1",
+          "code": "SYNTHETIC:CODE:1",
+          "signal_day": "2017-01-06",
+          "security_id": "SYNTHETIC:001",
+          "score": {
+            "total": 80,
+            "q": 80,
+            "g": 80,
+            "v": 80
+          },
+          "rank": {
+            "official": 4,
+            "personal": null,
+            "of": 10
+          }
+        },
+        {
+          "id": "SYNTHETIC:ISSUER:3",
+          "ticker": "SYNTHETIC:SYMBOL:3",
+          "code": "SYNTHETIC:CODE:3",
+          "signal_day": "2017-01-06",
+          "security_id": "SYNTHETIC:003",
+          "score": {
+            "total": 70,
+            "q": 70,
+            "g": 70,
+            "v": 70
+          },
+          "rank": {
+            "official": 9,
+            "personal": null,
+            "of": 10
+          }
+        }
+      ],
+      "security_links": [],
+      "conditions": [
+        {
+          "metric": "momentum_3m",
+          "condition": "gt_zero"
+        }
+      ]
+    },
+    "duplicate_qgv_key": {
+      "qgv_rows": [
+        {
+          "id": "SYNTHETIC:ISSUER:2",
+          "ticker": "SYNTHETIC:SYMBOL:2",
+          "code": "SYNTHETIC:CODE:2",
+          "signal_day": "2017-01-06",
+          "security_id": "SYNTHETIC:002",
+          "score": {
+            "total": 90,
+            "q": 90,
+            "g": 90,
+            "v": 90
+          },
+          "rank": {
+            "official": 1,
+            "personal": null,
+            "of": 10
+          }
+        },
+        {
+          "id": "SYNTHETIC:ISSUER:1",
+          "ticker": "SYNTHETIC:SYMBOL:1",
+          "code": "SYNTHETIC:CODE:1",
+          "signal_day": "2017-01-06",
+          "security_id": "SYNTHETIC:001",
+          "score": {
+            "total": 80,
+            "q": 80,
+            "g": 80,
+            "v": 80
+          },
+          "rank": {
+            "official": 4,
+            "personal": null,
+            "of": 10
+          }
+        },
+        {
+          "id": "SYNTHETIC:ISSUER:3",
+          "ticker": "SYNTHETIC:SYMBOL:3",
+          "code": "SYNTHETIC:CODE:3",
+          "signal_day": "2017-01-06",
+          "security_id": "SYNTHETIC:003",
+          "score": {
+            "total": 70,
+            "q": 70,
+            "g": 70,
+            "v": 70
+          },
+          "rank": {
+            "official": 9,
+            "personal": null,
+            "of": 10
+          }
+        },
+        {
+          "id": "SYNTHETIC:ISSUER:2",
+          "ticker": "SYNTHETIC:SYMBOL:2",
+          "code": "SYNTHETIC:CODE:2",
+          "signal_day": "2017-01-06",
+          "security_id": "SYNTHETIC:002",
+          "score": {
+            "total": 90,
+            "q": 90,
+            "g": 90,
+            "v": 90
+          },
+          "rank": {
+            "official": 1,
+            "personal": null,
+            "of": 10
+          }
+        }
+      ],
+      "security_links": [
+        {
+          "series_id": "REQUEST:2",
+          "security_id": "SYNTHETIC:002",
+          "identifier_type": "SYNTHETIC_FIXED_SECURITY_ID",
+          "reference": "AUTHOR_CREATED:SECURITY:2",
+          "valid_from": "2017-01-05",
+          "valid_to": "2017-01-09",
+          "issuer_id": "SYNTHETIC:ISSUER:2",
+          "symbol": "SYNTHETIC:SYMBOL:2",
+          "share_class": "SYNTHETIC:CLASS:A",
+          "identity_status": "CONFIRMED",
+          "identity_reference": "AUTHOR_CREATED:IDENTITY:2"
+        },
+        {
+          "series_id": "REQUEST:1",
+          "security_id": "SYNTHETIC:001",
+          "identifier_type": "SYNTHETIC_FIXED_SECURITY_ID",
+          "reference": "AUTHOR_CREATED:SECURITY:1",
+          "valid_from": "2017-01-05",
+          "valid_to": "2017-01-09",
+          "issuer_id": "SYNTHETIC:ISSUER:1",
+          "symbol": "SYNTHETIC:SYMBOL:1",
+          "share_class": "SYNTHETIC:CLASS:A",
+          "identity_status": "CONFIRMED",
+          "identity_reference": "AUTHOR_CREATED:IDENTITY:1"
+        },
+        {
+          "series_id": "REQUEST:3",
+          "security_id": "SYNTHETIC:003",
+          "identifier_type": "SYNTHETIC_FIXED_SECURITY_ID",
+          "reference": "AUTHOR_CREATED:SECURITY:3",
+          "valid_from": "2017-01-05",
+          "valid_to": "2017-01-09",
+          "issuer_id": "SYNTHETIC:ISSUER:3",
+          "symbol": "SYNTHETIC:SYMBOL:3",
+          "share_class": "SYNTHETIC:CLASS:A",
+          "identity_status": "CONFIRMED",
+          "identity_reference": "AUTHOR_CREATED:IDENTITY:3"
+        }
+      ],
+      "conditions": [
+        {
+          "metric": "momentum_3m",
+          "condition": "gt_zero"
+        }
+      ]
+    },
+    "duplicate_mapping": {
+      "qgv_rows": [
+        {
+          "id": "SYNTHETIC:ISSUER:2",
+          "ticker": "SYNTHETIC:SYMBOL:2",
+          "code": "SYNTHETIC:CODE:2",
+          "signal_day": "2017-01-06",
+          "security_id": "SYNTHETIC:002",
+          "score": {
+            "total": 90,
+            "q": 90,
+            "g": 90,
+            "v": 90
+          },
+          "rank": {
+            "official": 1,
+            "personal": null,
+            "of": 10
+          }
+        },
+        {
+          "id": "SYNTHETIC:ISSUER:1",
+          "ticker": "SYNTHETIC:SYMBOL:1",
+          "code": "SYNTHETIC:CODE:1",
+          "signal_day": "2017-01-06",
+          "security_id": "SYNTHETIC:001",
+          "score": {
+            "total": 80,
+            "q": 80,
+            "g": 80,
+            "v": 80
+          },
+          "rank": {
+            "official": 4,
+            "personal": null,
+            "of": 10
+          }
+        },
+        {
+          "id": "SYNTHETIC:ISSUER:3",
+          "ticker": "SYNTHETIC:SYMBOL:3",
+          "code": "SYNTHETIC:CODE:3",
+          "signal_day": "2017-01-06",
+          "security_id": "SYNTHETIC:003",
+          "score": {
+            "total": 70,
+            "q": 70,
+            "g": 70,
+            "v": 70
+          },
+          "rank": {
+            "official": 9,
+            "personal": null,
+            "of": 10
+          }
+        }
+      ],
+      "security_links": [
+        {
+          "series_id": "REQUEST:2",
+          "security_id": "SYNTHETIC:002",
+          "identifier_type": "SYNTHETIC_FIXED_SECURITY_ID",
+          "reference": "AUTHOR_CREATED:SECURITY:2",
+          "valid_from": "2017-01-05",
+          "valid_to": "2017-01-09",
+          "issuer_id": "SYNTHETIC:ISSUER:2",
+          "symbol": "SYNTHETIC:SYMBOL:2",
+          "share_class": "SYNTHETIC:CLASS:A",
+          "identity_status": "CONFIRMED",
+          "identity_reference": "AUTHOR_CREATED:IDENTITY:2"
+        },
+        {
+          "series_id": "REQUEST:1",
+          "security_id": "SYNTHETIC:001",
+          "identifier_type": "SYNTHETIC_FIXED_SECURITY_ID",
+          "reference": "AUTHOR_CREATED:SECURITY:1",
+          "valid_from": "2017-01-05",
+          "valid_to": "2017-01-09",
+          "issuer_id": "SYNTHETIC:ISSUER:1",
+          "symbol": "SYNTHETIC:SYMBOL:1",
+          "share_class": "SYNTHETIC:CLASS:A",
+          "identity_status": "CONFIRMED",
+          "identity_reference": "AUTHOR_CREATED:IDENTITY:1"
+        },
+        {
+          "series_id": "REQUEST:3",
+          "security_id": "SYNTHETIC:003",
+          "identifier_type": "SYNTHETIC_FIXED_SECURITY_ID",
+          "reference": "AUTHOR_CREATED:SECURITY:3",
+          "valid_from": "2017-01-05",
+          "valid_to": "2017-01-09",
+          "issuer_id": "SYNTHETIC:ISSUER:3",
+          "symbol": "SYNTHETIC:SYMBOL:3",
+          "share_class": "SYNTHETIC:CLASS:A",
+          "identity_status": "CONFIRMED",
+          "identity_reference": "AUTHOR_CREATED:IDENTITY:3"
+        },
+        {
+          "series_id": "REQUEST:2",
+          "security_id": "SYNTHETIC:002",
+          "identifier_type": "SYNTHETIC_FIXED_SECURITY_ID",
+          "reference": "AUTHOR_CREATED:SECURITY:2",
+          "valid_from": "2017-01-05",
+          "valid_to": "2017-01-09",
+          "issuer_id": "SYNTHETIC:ISSUER:2",
+          "symbol": "SYNTHETIC:SYMBOL:2",
+          "share_class": "SYNTHETIC:CLASS:A",
+          "identity_status": "CONFIRMED",
+          "identity_reference": "AUTHOR_CREATED:IDENTITY:2"
+        }
+      ],
+      "conditions": [
+        {
+          "metric": "momentum_3m",
+          "condition": "gt_zero"
+        }
+      ]
+    },
+    "expired_mapping": {
+      "qgv_rows": [
+        {
+          "id": "SYNTHETIC:ISSUER:2",
+          "ticker": "SYNTHETIC:SYMBOL:2",
+          "code": "SYNTHETIC:CODE:2",
+          "signal_day": "2017-01-06",
+          "security_id": "SYNTHETIC:002",
+          "score": {
+            "total": 90,
+            "q": 90,
+            "g": 90,
+            "v": 90
+          },
+          "rank": {
+            "official": 1,
+            "personal": null,
+            "of": 10
+          }
+        },
+        {
+          "id": "SYNTHETIC:ISSUER:1",
+          "ticker": "SYNTHETIC:SYMBOL:1",
+          "code": "SYNTHETIC:CODE:1",
+          "signal_day": "2017-01-06",
+          "security_id": "SYNTHETIC:001",
+          "score": {
+            "total": 80,
+            "q": 80,
+            "g": 80,
+            "v": 80
+          },
+          "rank": {
+            "official": 4,
+            "personal": null,
+            "of": 10
+          }
+        },
+        {
+          "id": "SYNTHETIC:ISSUER:3",
+          "ticker": "SYNTHETIC:SYMBOL:3",
+          "code": "SYNTHETIC:CODE:3",
+          "signal_day": "2017-01-06",
+          "security_id": "SYNTHETIC:003",
+          "score": {
+            "total": 70,
+            "q": 70,
+            "g": 70,
+            "v": 70
+          },
+          "rank": {
+            "official": 9,
+            "personal": null,
+            "of": 10
+          }
+        }
+      ],
+      "security_links": [
+        {
+          "series_id": "REQUEST:2",
+          "security_id": "SYNTHETIC:002",
+          "identifier_type": "SYNTHETIC_FIXED_SECURITY_ID",
+          "reference": "AUTHOR_CREATED:SECURITY:2",
+          "valid_from": "2017-01-05",
+          "valid_to": "2017-01-05",
+          "issuer_id": "SYNTHETIC:ISSUER:2",
+          "symbol": "SYNTHETIC:SYMBOL:2",
+          "share_class": "SYNTHETIC:CLASS:A",
+          "identity_status": "CONFIRMED",
+          "identity_reference": "AUTHOR_CREATED:IDENTITY:2"
+        },
+        {
+          "series_id": "REQUEST:1",
+          "security_id": "SYNTHETIC:001",
+          "identifier_type": "SYNTHETIC_FIXED_SECURITY_ID",
+          "reference": "AUTHOR_CREATED:SECURITY:1",
+          "valid_from": "2017-01-05",
+          "valid_to": "2017-01-09",
+          "issuer_id": "SYNTHETIC:ISSUER:1",
+          "symbol": "SYNTHETIC:SYMBOL:1",
+          "share_class": "SYNTHETIC:CLASS:A",
+          "identity_status": "CONFIRMED",
+          "identity_reference": "AUTHOR_CREATED:IDENTITY:1"
+        },
+        {
+          "series_id": "REQUEST:3",
+          "security_id": "SYNTHETIC:003",
+          "identifier_type": "SYNTHETIC_FIXED_SECURITY_ID",
+          "reference": "AUTHOR_CREATED:SECURITY:3",
+          "valid_from": "2017-01-05",
+          "valid_to": "2017-01-09",
+          "issuer_id": "SYNTHETIC:ISSUER:3",
+          "symbol": "SYNTHETIC:SYMBOL:3",
+          "share_class": "SYNTHETIC:CLASS:A",
+          "identity_status": "CONFIRMED",
+          "identity_reference": "AUTHOR_CREATED:IDENTITY:3"
+        }
+      ],
+      "conditions": [
+        {
+          "metric": "momentum_3m",
+          "condition": "gt_zero"
+        }
+      ]
+    },
+    "future_mapping": {
+      "qgv_rows": [
+        {
+          "id": "SYNTHETIC:ISSUER:2",
+          "ticker": "SYNTHETIC:SYMBOL:2",
+          "code": "SYNTHETIC:CODE:2",
+          "signal_day": "2017-01-06",
+          "security_id": "SYNTHETIC:002",
+          "score": {
+            "total": 90,
+            "q": 90,
+            "g": 90,
+            "v": 90
+          },
+          "rank": {
+            "official": 1,
+            "personal": null,
+            "of": 10
+          }
+        },
+        {
+          "id": "SYNTHETIC:ISSUER:1",
+          "ticker": "SYNTHETIC:SYMBOL:1",
+          "code": "SYNTHETIC:CODE:1",
+          "signal_day": "2017-01-06",
+          "security_id": "SYNTHETIC:001",
+          "score": {
+            "total": 80,
+            "q": 80,
+            "g": 80,
+            "v": 80
+          },
+          "rank": {
+            "official": 4,
+            "personal": null,
+            "of": 10
+          }
+        },
+        {
+          "id": "SYNTHETIC:ISSUER:3",
+          "ticker": "SYNTHETIC:SYMBOL:3",
+          "code": "SYNTHETIC:CODE:3",
+          "signal_day": "2017-01-06",
+          "security_id": "SYNTHETIC:003",
+          "score": {
+            "total": 70,
+            "q": 70,
+            "g": 70,
+            "v": 70
+          },
+          "rank": {
+            "official": 9,
+            "personal": null,
+            "of": 10
+          }
+        }
+      ],
+      "security_links": [
+        {
+          "series_id": "REQUEST:2",
+          "security_id": "SYNTHETIC:002",
+          "identifier_type": "SYNTHETIC_FIXED_SECURITY_ID",
+          "reference": "AUTHOR_CREATED:SECURITY:2",
+          "valid_from": "2017-01-09",
+          "valid_to": "2017-01-09",
+          "issuer_id": "SYNTHETIC:ISSUER:2",
+          "symbol": "SYNTHETIC:SYMBOL:2",
+          "share_class": "SYNTHETIC:CLASS:A",
+          "identity_status": "CONFIRMED",
+          "identity_reference": "AUTHOR_CREATED:IDENTITY:2"
+        },
+        {
+          "series_id": "REQUEST:1",
+          "security_id": "SYNTHETIC:001",
+          "identifier_type": "SYNTHETIC_FIXED_SECURITY_ID",
+          "reference": "AUTHOR_CREATED:SECURITY:1",
+          "valid_from": "2017-01-05",
+          "valid_to": "2017-01-09",
+          "issuer_id": "SYNTHETIC:ISSUER:1",
+          "symbol": "SYNTHETIC:SYMBOL:1",
+          "share_class": "SYNTHETIC:CLASS:A",
+          "identity_status": "CONFIRMED",
+          "identity_reference": "AUTHOR_CREATED:IDENTITY:1"
+        },
+        {
+          "series_id": "REQUEST:3",
+          "security_id": "SYNTHETIC:003",
+          "identifier_type": "SYNTHETIC_FIXED_SECURITY_ID",
+          "reference": "AUTHOR_CREATED:SECURITY:3",
+          "valid_from": "2017-01-05",
+          "valid_to": "2017-01-09",
+          "issuer_id": "SYNTHETIC:ISSUER:3",
+          "symbol": "SYNTHETIC:SYMBOL:3",
+          "share_class": "SYNTHETIC:CLASS:A",
+          "identity_status": "CONFIRMED",
+          "identity_reference": "AUTHOR_CREATED:IDENTITY:3"
+        }
+      ],
+      "conditions": [
+        {
+          "metric": "momentum_3m",
+          "condition": "gt_zero"
+        }
+      ]
+    },
+    "inclusive_mapping_endpoints": {
+      "qgv_rows": [
+        {
+          "id": "SYNTHETIC:ISSUER:2",
+          "ticker": "SYNTHETIC:SYMBOL:2",
+          "code": "SYNTHETIC:CODE:2",
+          "signal_day": "2017-01-06",
+          "security_id": "SYNTHETIC:002",
+          "score": {
+            "total": 90,
+            "q": 90,
+            "g": 90,
+            "v": 90
+          },
+          "rank": {
+            "official": 1,
+            "personal": null,
+            "of": 10
+          }
+        },
+        {
+          "id": "SYNTHETIC:ISSUER:1",
+          "ticker": "SYNTHETIC:SYMBOL:1",
+          "code": "SYNTHETIC:CODE:1",
+          "signal_day": "2017-01-06",
+          "security_id": "SYNTHETIC:001",
+          "score": {
+            "total": 80,
+            "q": 80,
+            "g": 80,
+            "v": 80
+          },
+          "rank": {
+            "official": 4,
+            "personal": null,
+            "of": 10
+          }
+        },
+        {
+          "id": "SYNTHETIC:ISSUER:3",
+          "ticker": "SYNTHETIC:SYMBOL:3",
+          "code": "SYNTHETIC:CODE:3",
+          "signal_day": "2017-01-06",
+          "security_id": "SYNTHETIC:003",
+          "score": {
+            "total": 70,
+            "q": 70,
+            "g": 70,
+            "v": 70
+          },
+          "rank": {
+            "official": 9,
+            "personal": null,
+            "of": 10
+          }
+        }
+      ],
+      "security_links": [
+        {
+          "series_id": "REQUEST:2",
+          "security_id": "SYNTHETIC:002",
+          "identifier_type": "SYNTHETIC_FIXED_SECURITY_ID",
+          "reference": "AUTHOR_CREATED:SECURITY:2",
+          "valid_from": "2017-01-06",
+          "valid_to": "2017-01-06",
+          "issuer_id": "SYNTHETIC:ISSUER:2",
+          "symbol": "SYNTHETIC:SYMBOL:2",
+          "share_class": "SYNTHETIC:CLASS:A",
+          "identity_status": "CONFIRMED",
+          "identity_reference": "AUTHOR_CREATED:IDENTITY:2"
+        },
+        {
+          "series_id": "REQUEST:1",
+          "security_id": "SYNTHETIC:001",
+          "identifier_type": "SYNTHETIC_FIXED_SECURITY_ID",
+          "reference": "AUTHOR_CREATED:SECURITY:1",
+          "valid_from": "2017-01-06",
+          "valid_to": "2017-01-06",
+          "issuer_id": "SYNTHETIC:ISSUER:1",
+          "symbol": "SYNTHETIC:SYMBOL:1",
+          "share_class": "SYNTHETIC:CLASS:A",
+          "identity_status": "CONFIRMED",
+          "identity_reference": "AUTHOR_CREATED:IDENTITY:1"
+        },
+        {
+          "series_id": "REQUEST:3",
+          "security_id": "SYNTHETIC:003",
+          "identifier_type": "SYNTHETIC_FIXED_SECURITY_ID",
+          "reference": "AUTHOR_CREATED:SECURITY:3",
+          "valid_from": "2017-01-06",
+          "valid_to": "2017-01-06",
+          "issuer_id": "SYNTHETIC:ISSUER:3",
+          "symbol": "SYNTHETIC:SYMBOL:3",
+          "share_class": "SYNTHETIC:CLASS:A",
+          "identity_status": "CONFIRMED",
+          "identity_reference": "AUTHOR_CREATED:IDENTITY:3"
+        }
+      ],
+      "conditions": [
+        {
+          "metric": "momentum_3m",
+          "condition": "gt_zero"
+        }
+      ]
+    },
+    "missing_fixed_security_id": {
+      "qgv_rows": [
+        {
+          "id": "SYNTHETIC:ISSUER:2",
+          "ticker": "SYNTHETIC:SYMBOL:2",
+          "code": "SYNTHETIC:CODE:2",
+          "signal_day": "2017-01-06",
+          "security_id": null,
+          "score": {
+            "total": 90,
+            "q": 90,
+            "g": 90,
+            "v": 90
+          },
+          "rank": {
+            "official": 1,
+            "personal": null,
+            "of": 10
+          }
+        },
+        {
+          "id": "SYNTHETIC:ISSUER:1",
+          "ticker": "SYNTHETIC:SYMBOL:1",
+          "code": "SYNTHETIC:CODE:1",
+          "signal_day": "2017-01-06",
+          "security_id": "SYNTHETIC:001",
+          "score": {
+            "total": 80,
+            "q": 80,
+            "g": 80,
+            "v": 80
+          },
+          "rank": {
+            "official": 4,
+            "personal": null,
+            "of": 10
+          }
+        },
+        {
+          "id": "SYNTHETIC:ISSUER:3",
+          "ticker": "SYNTHETIC:SYMBOL:3",
+          "code": "SYNTHETIC:CODE:3",
+          "signal_day": "2017-01-06",
+          "security_id": "SYNTHETIC:003",
+          "score": {
+            "total": 70,
+            "q": 70,
+            "g": 70,
+            "v": 70
+          },
+          "rank": {
+            "official": 9,
+            "personal": null,
+            "of": 10
+          }
+        }
+      ],
+      "security_links": [
+        {
+          "series_id": "REQUEST:2",
+          "security_id": "SYNTHETIC:002",
+          "identifier_type": "SYNTHETIC_FIXED_SECURITY_ID",
+          "reference": "AUTHOR_CREATED:SECURITY:2",
+          "valid_from": "2017-01-05",
+          "valid_to": "2017-01-09",
+          "issuer_id": "SYNTHETIC:ISSUER:2",
+          "symbol": "SYNTHETIC:SYMBOL:2",
+          "share_class": "SYNTHETIC:CLASS:A",
+          "identity_status": "CONFIRMED",
+          "identity_reference": "AUTHOR_CREATED:IDENTITY:2"
+        },
+        {
+          "series_id": "REQUEST:1",
+          "security_id": "SYNTHETIC:001",
+          "identifier_type": "SYNTHETIC_FIXED_SECURITY_ID",
+          "reference": "AUTHOR_CREATED:SECURITY:1",
+          "valid_from": "2017-01-05",
+          "valid_to": "2017-01-09",
+          "issuer_id": "SYNTHETIC:ISSUER:1",
+          "symbol": "SYNTHETIC:SYMBOL:1",
+          "share_class": "SYNTHETIC:CLASS:A",
+          "identity_status": "CONFIRMED",
+          "identity_reference": "AUTHOR_CREATED:IDENTITY:1"
+        },
+        {
+          "series_id": "REQUEST:3",
+          "security_id": "SYNTHETIC:003",
+          "identifier_type": "SYNTHETIC_FIXED_SECURITY_ID",
+          "reference": "AUTHOR_CREATED:SECURITY:3",
+          "valid_from": "2017-01-05",
+          "valid_to": "2017-01-09",
+          "issuer_id": "SYNTHETIC:ISSUER:3",
+          "symbol": "SYNTHETIC:SYMBOL:3",
+          "share_class": "SYNTHETIC:CLASS:A",
+          "identity_status": "CONFIRMED",
+          "identity_reference": "AUTHOR_CREATED:IDENTITY:3"
+        }
+      ],
+      "conditions": [
+        {
+          "metric": "momentum_3m",
+          "condition": "gt_zero"
+        }
+      ]
+    }
+  }
+}

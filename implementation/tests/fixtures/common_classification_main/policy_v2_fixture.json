@@ -1,0 +1,1251 @@
+{
+ "cases": [
+  {
+   "case_id": "reit-sector-only",
+   "expected": {
+    "accounting_template": null,
+    "score_or_gate_changed": false,
+    "sector_id": "FINANCIALS",
+    "valuation_date": "2026-11-04"
+   },
+   "macro": {
+    "benchmark_is_common_sector": false,
+    "classification_hash": "ad4cf28b9cf2e27cbe1da5530b6e3717057c06bb37de0eef5e95ec206a0ebbf2",
+    "data_kind": "SYNTHETIC",
+    "probabilities": null,
+    "rows": [
+     {
+      "benchmark": {
+       "etf": "XLRE",
+       "reason": null,
+       "rule": 11,
+       "system": "SEC_SIC",
+       "version": "sector_etf_map/v1"
+      },
+      "classification_record_id": "retained:dd4e8d232cd1a84c6d5ef75955cfa083",
+      "company_id": "ROW:A",
+      "industry": {
+       "evidence_refs": [],
+       "id": null,
+       "reasons": [
+        "SUBINDUSTRY_NOT_CONFIRMED"
+       ],
+       "status": "UNKNOWN"
+      },
+      "issuer_id": "0000000001",
+      "probabilities": null,
+      "sector": {
+       "evidence_refs": [
+        "synthetic/submissions.json#sha256=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "https://example.invalid/source",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "id": "FINANCIALS",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "sector_returns": null,
+      "source_classification": {
+       "code": "6798",
+       "description": "Real Estate Investment Trusts",
+       "observed_at": "2026-11-03T00:00:00Z",
+       "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+       "source_url": "https://example.invalid/source",
+       "system": "SEC_SIC"
+      },
+      "source_industry": {
+       "cyclical_defensive_candidate": null,
+       "group": "finance_real_estate",
+       "reason_code": null,
+       "sic": "6798",
+       "subgroup": null,
+       "system": "SEC_SIC",
+       "version": "sic_industry_groups/v0"
+      },
+      "statistic_mapping": {
+       "reasons": [
+        "EXPLICIT_MACRO_SOURCE_LINK_MISSING"
+       ],
+       "source_links": [],
+       "status": "UNKNOWN"
+      }
+     }
+    ],
+    "schema_version": "common-classification-macro/1",
+    "sector_returns": null,
+    "source_industry_is_common_sector": false,
+    "source_link_diagnostics": [],
+    "valuation_date": "2026-11-04"
+   },
+   "view": {
+    "boundary_policy": {
+     "approved_date": "2026-11-08",
+     "recorded_at": "2026-11-08T09:00:00Z",
+     "recorded_at_basis": "RESEARCH_APPLICATION_NOT_ORIGINAL_COMPANY_CLASSIFICATION_DATE",
+     "source": "owner:2026-11-08:common-classification-boundaries",
+     "version": "common-sector-boundaries/2026-11-08.1"
+    },
+    "classification_hash": "ad4cf28b9cf2e27cbe1da5530b6e3717057c06bb37de0eef5e95ec206a0ebbf2",
+    "coverage": {
+     "accounting_confirmed": 0,
+     "industry_confirmed": 0,
+     "member_codes": 1,
+     "sector_confirmed": 1,
+     "sector_confirmed_issuers": 1,
+     "source_sic_available": 1,
+     "unique_issuers": 1
+    },
+    "data_kind": "SYNTHETIC",
+    "dictionary_hash": "2ad03d247c30ce335612b69e70d69bab26959273b1e893cc8f71c8991634d861",
+    "dictionary_version": "common-industry-dictionary/2",
+    "display_hash": "4842fb9fc47a7db8e59786a5e2b32626a53edd34a94cf68c97a897e9e7ab742f",
+    "history_hash": "fbbc15025770caa7e49f4c307a2b70b69c7755af42e45014ab64f47208e3ae73",
+    "knowledge_as_of": "2026-11-08T09:00:00Z",
+    "mapping_version": "common-classification-map/2",
+    "members": [
+     "ROW:A"
+    ],
+    "review_scope": "RETAINED_EVALUATION_REVIEW_NOT_HISTORICAL_PIT_CERTIFICATION",
+    "rows": [
+     {
+      "accounting": {
+       "evidence_refs": [],
+       "id": null,
+       "reasons": [
+        "ACCOUNTING_TEMPLATE_UNCONFIRMED"
+       ],
+       "status": "UNKNOWN"
+      },
+      "applicability": {
+       "evaluation_date": "2026-11-04",
+       "kind": "EVALUATION_ONLY",
+       "valid_from": null,
+       "valid_to": null
+      },
+      "basis": "RESEARCH_CORRESPONDENCE",
+      "company_id": "ROW:A",
+      "industry": {
+       "evidence_refs": [],
+       "id": null,
+       "reasons": [
+        "SUBINDUSTRY_NOT_CONFIRMED"
+       ],
+       "status": "UNKNOWN"
+      },
+      "issuer_id": "0000000001",
+      "legacy_mapping": null,
+      "original_reviewed_at": null,
+      "record_id": "retained:dd4e8d232cd1a84c6d5ef75955cfa083",
+      "recorded_at": "2026-11-08T09:00:00Z",
+      "recorded_at_basis": "CURRENT_IMPORT_REVIEW_NOT_ORIGINAL_DECISION_TIME",
+      "retained_snapshot_sha256": "e82a248886f9b6bb89f681e3beed69931b9faf737aa4bc73853a7346abd689d9",
+      "rule_version": "held-sec-book-correspondence/0.5.0",
+      "sector": {
+       "evidence_refs": [
+        "synthetic/submissions.json#sha256=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "https://example.invalid/source",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "id": "FINANCIALS",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "source_refs": [
+       "source:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ],
+      "source_sic": {
+       "code": "6798",
+       "description": "Real Estate Investment Trusts",
+       "observed_at": "2026-11-03T00:00:00Z",
+       "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+       "source_url": "https://example.invalid/source",
+       "system": "SEC_SIC"
+      },
+      "supersedes": null,
+      "tags": {}
+     }
+    ],
+    "schema_version": "common-classification-view/1",
+    "sources": [
+     {
+      "acquired_at": "2026-11-03T00:00:00Z",
+      "archive_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "availability_basis": "OBSERVED_BY_ACQUISITION_NOT_FIRST_PUBLICATION",
+      "locator": "synthetic/submissions.json",
+      "publication_reason": "ORIGINAL_RELEASE_TIME_NOT_RETAINED",
+      "published_at": null,
+      "published_date": null,
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "source_id": "source:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "url": "https://example.invalid/source"
+     }
+    ],
+    "universe_id": "SYNTHETIC",
+    "universe_version": "1",
+    "unresolved_reasons": {},
+    "valuation_date": "2026-11-04"
+   }
+  },
+  {
+   "case_id": "managed-care-sector-only",
+   "expected": {
+    "accounting_template": null,
+    "score_or_gate_changed": false,
+    "sector_id": "HEALTH_CARE",
+    "valuation_date": "2026-11-04"
+   },
+   "macro": {
+    "benchmark_is_common_sector": false,
+    "classification_hash": "2141ad344fade7ba58ead6979daa48abd8a40729e7f8718ce206df475ab5ffde",
+    "data_kind": "SYNTHETIC",
+    "probabilities": null,
+    "rows": [
+     {
+      "benchmark": {
+       "etf": "XLF",
+       "reason": null,
+       "rule": 12,
+       "system": "SEC_SIC",
+       "version": "sector_etf_map/v1"
+      },
+      "classification_record_id": "retained:dd4e8d232cd1a84c6d5ef75955cfa083",
+      "company_id": "ROW:A",
+      "industry": {
+       "evidence_refs": [],
+       "id": null,
+       "reasons": [
+        "SUBINDUSTRY_NOT_CONFIRMED"
+       ],
+       "status": "UNKNOWN"
+      },
+      "issuer_id": "0000000001",
+      "probabilities": null,
+      "sector": {
+       "evidence_refs": [
+        "synthetic/submissions.json#sha256=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "https://example.invalid/source",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "id": "HEALTH_CARE",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "sector_returns": null,
+      "source_classification": {
+       "code": "6324",
+       "description": "Hospital & Medical Service Plans",
+       "observed_at": "2026-11-03T00:00:00Z",
+       "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+       "source_url": "https://example.invalid/source",
+       "system": "SEC_SIC"
+      },
+      "source_industry": {
+       "cyclical_defensive_candidate": null,
+       "group": "finance_real_estate",
+       "reason_code": null,
+       "sic": "6324",
+       "subgroup": null,
+       "system": "SEC_SIC",
+       "version": "sic_industry_groups/v0"
+      },
+      "statistic_mapping": {
+       "reasons": [
+        "EXPLICIT_MACRO_SOURCE_LINK_MISSING"
+       ],
+       "source_links": [],
+       "status": "UNKNOWN"
+      }
+     }
+    ],
+    "schema_version": "common-classification-macro/1",
+    "sector_returns": null,
+    "source_industry_is_common_sector": false,
+    "source_link_diagnostics": [],
+    "valuation_date": "2026-11-04"
+   },
+   "view": {
+    "boundary_policy": {
+     "approved_date": "2026-11-08",
+     "recorded_at": "2026-11-08T09:00:00Z",
+     "recorded_at_basis": "RESEARCH_APPLICATION_NOT_ORIGINAL_COMPANY_CLASSIFICATION_DATE",
+     "source": "owner:2026-11-08:common-classification-boundaries",
+     "version": "common-sector-boundaries/2026-11-08.1"
+    },
+    "classification_hash": "2141ad344fade7ba58ead6979daa48abd8a40729e7f8718ce206df475ab5ffde",
+    "coverage": {
+     "accounting_confirmed": 0,
+     "industry_confirmed": 0,
+     "member_codes": 1,
+     "sector_confirmed": 1,
+     "sector_confirmed_issuers": 1,
+     "source_sic_available": 1,
+     "unique_issuers": 1
+    },
+    "data_kind": "SYNTHETIC",
+    "dictionary_hash": "2ad03d247c30ce335612b69e70d69bab26959273b1e893cc8f71c8991634d861",
+    "dictionary_version": "common-industry-dictionary/2",
+    "display_hash": "e129e8b755af655140cc20b42fbc21ec674f46f5b0a7ad233887faef3892b81c",
+    "history_hash": "ae83d9a11c60e3b0876e18993a8e4abe1d0e1fc346426cb6dbcefb36a0ea3425",
+    "knowledge_as_of": "2026-11-08T09:00:00Z",
+    "mapping_version": "common-classification-map/2",
+    "members": [
+     "ROW:A"
+    ],
+    "review_scope": "RETAINED_EVALUATION_REVIEW_NOT_HISTORICAL_PIT_CERTIFICATION",
+    "rows": [
+     {
+      "accounting": {
+       "evidence_refs": [],
+       "id": null,
+       "reasons": [
+        "ACCOUNTING_TEMPLATE_UNCONFIRMED"
+       ],
+       "status": "UNKNOWN"
+      },
+      "applicability": {
+       "evaluation_date": "2026-11-04",
+       "kind": "EVALUATION_ONLY",
+       "valid_from": null,
+       "valid_to": null
+      },
+      "basis": "RESEARCH_CORRESPONDENCE",
+      "company_id": "ROW:A",
+      "industry": {
+       "evidence_refs": [],
+       "id": null,
+       "reasons": [
+        "SUBINDUSTRY_NOT_CONFIRMED"
+       ],
+       "status": "UNKNOWN"
+      },
+      "issuer_id": "0000000001",
+      "legacy_mapping": null,
+      "original_reviewed_at": null,
+      "record_id": "retained:dd4e8d232cd1a84c6d5ef75955cfa083",
+      "recorded_at": "2026-11-08T09:00:00Z",
+      "recorded_at_basis": "CURRENT_IMPORT_REVIEW_NOT_ORIGINAL_DECISION_TIME",
+      "retained_snapshot_sha256": "e82a248886f9b6bb89f681e3beed69931b9faf737aa4bc73853a7346abd689d9",
+      "rule_version": "held-sec-book-correspondence/0.5.0",
+      "sector": {
+       "evidence_refs": [
+        "synthetic/submissions.json#sha256=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "https://example.invalid/source",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "id": "HEALTH_CARE",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "source_refs": [
+       "source:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ],
+      "source_sic": {
+       "code": "6324",
+       "description": "Hospital & Medical Service Plans",
+       "observed_at": "2026-11-03T00:00:00Z",
+       "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+       "source_url": "https://example.invalid/source",
+       "system": "SEC_SIC"
+      },
+      "supersedes": null,
+      "tags": {}
+     }
+    ],
+    "schema_version": "common-classification-view/1",
+    "sources": [
+     {
+      "acquired_at": "2026-11-03T00:00:00Z",
+      "archive_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "availability_basis": "OBSERVED_BY_ACQUISITION_NOT_FIRST_PUBLICATION",
+      "locator": "synthetic/submissions.json",
+      "publication_reason": "ORIGINAL_RELEASE_TIME_NOT_RETAINED",
+      "published_at": null,
+      "published_date": null,
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "source_id": "source:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "url": "https://example.invalid/source"
+     }
+    ],
+    "universe_id": "SYNTHETIC",
+    "universe_version": "1",
+    "unresolved_reasons": {},
+    "valuation_date": "2026-11-04"
+   }
+  },
+  {
+   "case_id": "broadcast-primary",
+   "expected": {
+    "accounting_template": "GENERAL",
+    "score_or_gate_changed": false,
+    "sector_id": "CONSUMER_DISCRETIONARY",
+    "valuation_date": "2026-11-04"
+   },
+   "macro": {
+    "benchmark_is_common_sector": false,
+    "classification_hash": "36b1626489f8df5806a591f9555d1cf82ff2eecc562545471e979c4539ec6eb1",
+    "data_kind": "SYNTHETIC",
+    "probabilities": null,
+    "rows": [
+     {
+      "benchmark": {
+       "etf": "XLC",
+       "reason": null,
+       "rule": 9,
+       "system": "SEC_SIC",
+       "version": "sector_etf_map/v1"
+      },
+      "classification_record_id": "retained:dd4e8d232cd1a84c6d5ef75955cfa083",
+      "company_id": "ROW:A",
+      "industry": {
+       "evidence_refs": [],
+       "id": null,
+       "reasons": [
+        "SUBINDUSTRY_NOT_CONFIRMED"
+       ],
+       "status": "UNKNOWN"
+      },
+      "issuer_id": "0000000001",
+      "probabilities": null,
+      "sector": {
+       "evidence_refs": [
+        "synthetic/submissions.json#sha256=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "https://example.invalid/source",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "id": "CONSUMER_DISCRETIONARY",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "sector_returns": null,
+      "source_classification": {
+       "code": "4833",
+       "description": "Television Broadcasting Stations",
+       "observed_at": "2026-11-03T00:00:00Z",
+       "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+       "source_url": "https://example.invalid/source",
+       "system": "SEC_SIC"
+      },
+      "source_industry": {
+       "cyclical_defensive_candidate": null,
+       "group": "telecommunications",
+       "reason_code": null,
+       "sic": "4833",
+       "subgroup": null,
+       "system": "SEC_SIC",
+       "version": "sic_industry_groups/v0"
+      },
+      "statistic_mapping": {
+       "reasons": [
+        "EXPLICIT_MACRO_SOURCE_LINK_MISSING"
+       ],
+       "source_links": [],
+       "status": "UNKNOWN"
+      }
+     }
+    ],
+    "schema_version": "common-classification-macro/1",
+    "sector_returns": null,
+    "source_industry_is_common_sector": false,
+    "source_link_diagnostics": [],
+    "valuation_date": "2026-11-04"
+   },
+   "view": {
+    "boundary_policy": {
+     "approved_date": "2026-11-08",
+     "recorded_at": "2026-11-08T09:00:00Z",
+     "recorded_at_basis": "RESEARCH_APPLICATION_NOT_ORIGINAL_COMPANY_CLASSIFICATION_DATE",
+     "source": "owner:2026-11-08:common-classification-boundaries",
+     "version": "common-sector-boundaries/2026-11-08.1"
+    },
+    "classification_hash": "36b1626489f8df5806a591f9555d1cf82ff2eecc562545471e979c4539ec6eb1",
+    "coverage": {
+     "accounting_confirmed": 1,
+     "industry_confirmed": 0,
+     "member_codes": 1,
+     "sector_confirmed": 1,
+     "sector_confirmed_issuers": 1,
+     "source_sic_available": 1,
+     "unique_issuers": 1
+    },
+    "data_kind": "SYNTHETIC",
+    "dictionary_hash": "2ad03d247c30ce335612b69e70d69bab26959273b1e893cc8f71c8991634d861",
+    "dictionary_version": "common-industry-dictionary/2",
+    "display_hash": "17c6f7c28060be5e86a7aeb91f3886b6e1f0277beffb8f7735441218f97c51d5",
+    "history_hash": "89feefd1cce9dd9622207ce9245c191b7fb881c1494092952af7417e04eeb1e9",
+    "knowledge_as_of": "2026-11-08T09:00:00Z",
+    "mapping_version": "common-classification-map/2",
+    "members": [
+     "ROW:A"
+    ],
+    "review_scope": "RETAINED_EVALUATION_REVIEW_NOT_HISTORICAL_PIT_CERTIFICATION",
+    "rows": [
+     {
+      "accounting": {
+       "evidence_refs": [
+        "synthetic/submissions.json#sha256=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "https://example.invalid/source"
+       ],
+       "id": "GENERAL",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "applicability": {
+       "evaluation_date": "2026-11-04",
+       "kind": "EVALUATION_ONLY",
+       "valid_from": null,
+       "valid_to": null
+      },
+      "basis": "RESEARCH_CORRESPONDENCE",
+      "company_id": "ROW:A",
+      "industry": {
+       "evidence_refs": [],
+       "id": null,
+       "reasons": [
+        "SUBINDUSTRY_NOT_CONFIRMED"
+       ],
+       "status": "UNKNOWN"
+      },
+      "issuer_id": "0000000001",
+      "legacy_mapping": {
+       "classification_rule_version": "held-sec-book-correspondence/0.5.0",
+       "effective_date_basis": "SINGLE_EVALUATION_APPLICATION_NOT_SOURCE_CHANGE_DATE",
+       "evidence_refs": [
+        "synthetic/submissions.json#sha256=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "https://example.invalid/source"
+       ],
+       "kind": "RESEARCH_CORRESPONDENCE",
+       "official_code": "4833",
+       "official_system": "SEC_SIC",
+       "reason": "Reviewed named SEC primary activity: Television Broadcasting Stations. No segment mix or accounting model inferred.",
+       "rule_id": "held-sec-book-correspondence/0.5.0:4833",
+       "source_archive_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+       "source_observed_at": "2026-11-03T00:00:00Z",
+       "valid_from": "2026-11-04",
+       "valid_to": "2026-11-05",
+       "version": "book-sector-map/1"
+      },
+      "original_reviewed_at": null,
+      "record_id": "retained:dd4e8d232cd1a84c6d5ef75955cfa083",
+      "recorded_at": "2026-11-08T09:00:00Z",
+      "recorded_at_basis": "CURRENT_IMPORT_REVIEW_NOT_ORIGINAL_DECISION_TIME",
+      "retained_snapshot_sha256": "e82a248886f9b6bb89f681e3beed69931b9faf737aa4bc73853a7346abd689d9",
+      "rule_version": "held-sec-book-correspondence/0.5.0",
+      "sector": {
+       "evidence_refs": [
+        "synthetic/submissions.json#sha256=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "https://example.invalid/source",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "id": "CONSUMER_DISCRETIONARY",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "source_refs": [
+       "source:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ],
+      "source_sic": {
+       "code": "4833",
+       "description": "Television Broadcasting Stations",
+       "observed_at": "2026-11-03T00:00:00Z",
+       "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+       "source_url": "https://example.invalid/source",
+       "system": "SEC_SIC"
+      },
+      "supersedes": null,
+      "tags": {}
+     }
+    ],
+    "schema_version": "common-classification-view/1",
+    "sources": [
+     {
+      "acquired_at": "2026-11-03T00:00:00Z",
+      "archive_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "availability_basis": "OBSERVED_BY_ACQUISITION_NOT_FIRST_PUBLICATION",
+      "locator": "synthetic/submissions.json",
+      "publication_reason": "ORIGINAL_RELEASE_TIME_NOT_RETAINED",
+      "published_at": null,
+      "published_date": null,
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "source_id": "source:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "url": "https://example.invalid/source"
+     }
+    ],
+    "universe_id": "SYNTHETIC",
+    "universe_version": "1",
+    "unresolved_reasons": {},
+    "valuation_date": "2026-11-04"
+   }
+  },
+  {
+   "case_id": "newspaper-primary",
+   "expected": {
+    "accounting_template": "GENERAL",
+    "score_or_gate_changed": false,
+    "sector_id": "CONSUMER_DISCRETIONARY",
+    "valuation_date": "2026-11-04"
+   },
+   "macro": {
+    "benchmark_is_common_sector": false,
+    "classification_hash": "763dfb02f9b52df85b65d185a70cc3509acd5a22d28c14f0116d9493b6ab755f",
+    "data_kind": "SYNTHETIC",
+    "probabilities": null,
+    "rows": [
+     {
+      "benchmark": {
+       "etf": "XLI",
+       "reason": null,
+       "rule": 13,
+       "system": "SEC_SIC",
+       "version": "sector_etf_map/v1"
+      },
+      "classification_record_id": "retained:dd4e8d232cd1a84c6d5ef75955cfa083",
+      "company_id": "ROW:A",
+      "industry": {
+       "evidence_refs": [],
+       "id": null,
+       "reasons": [
+        "SUBINDUSTRY_NOT_CONFIRMED"
+       ],
+       "status": "UNKNOWN"
+      },
+      "issuer_id": "0000000001",
+      "probabilities": null,
+      "sector": {
+       "evidence_refs": [
+        "synthetic/submissions.json#sha256=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "https://example.invalid/source",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "id": "CONSUMER_DISCRETIONARY",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "sector_returns": null,
+      "source_classification": {
+       "code": "2711",
+       "description": "Newspapers: Publishing or  Publishing & Printing",
+       "observed_at": "2026-11-03T00:00:00Z",
+       "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+       "source_url": "https://example.invalid/source",
+       "system": "SEC_SIC"
+      },
+      "source_industry": {
+       "cyclical_defensive_candidate": null,
+       "group": "manufacturing_industrial_tech",
+       "reason_code": null,
+       "sic": "2711",
+       "subgroup": null,
+       "system": "SEC_SIC",
+       "version": "sic_industry_groups/v0"
+      },
+      "statistic_mapping": {
+       "reasons": [
+        "EXPLICIT_MACRO_SOURCE_LINK_MISSING"
+       ],
+       "source_links": [],
+       "status": "UNKNOWN"
+      }
+     }
+    ],
+    "schema_version": "common-classification-macro/1",
+    "sector_returns": null,
+    "source_industry_is_common_sector": false,
+    "source_link_diagnostics": [],
+    "valuation_date": "2026-11-04"
+   },
+   "view": {
+    "boundary_policy": {
+     "approved_date": "2026-11-08",
+     "recorded_at": "2026-11-08T09:00:00Z",
+     "recorded_at_basis": "RESEARCH_APPLICATION_NOT_ORIGINAL_COMPANY_CLASSIFICATION_DATE",
+     "source": "owner:2026-11-08:common-classification-boundaries",
+     "version": "common-sector-boundaries/2026-11-08.1"
+    },
+    "classification_hash": "763dfb02f9b52df85b65d185a70cc3509acd5a22d28c14f0116d9493b6ab755f",
+    "coverage": {
+     "accounting_confirmed": 1,
+     "industry_confirmed": 0,
+     "member_codes": 1,
+     "sector_confirmed": 1,
+     "sector_confirmed_issuers": 1,
+     "source_sic_available": 1,
+     "unique_issuers": 1
+    },
+    "data_kind": "SYNTHETIC",
+    "dictionary_hash": "2ad03d247c30ce335612b69e70d69bab26959273b1e893cc8f71c8991634d861",
+    "dictionary_version": "common-industry-dictionary/2",
+    "display_hash": "f1d4e76226fbc7e05498da1a30675c0c6a33e5803dfb5d11da536f29274017de",
+    "history_hash": "b1dc78161af49e48a97433589fe19365bc452440d5ce1bc898e9cea87360bbce",
+    "knowledge_as_of": "2026-11-08T09:00:00Z",
+    "mapping_version": "common-classification-map/2",
+    "members": [
+     "ROW:A"
+    ],
+    "review_scope": "RETAINED_EVALUATION_REVIEW_NOT_HISTORICAL_PIT_CERTIFICATION",
+    "rows": [
+     {
+      "accounting": {
+       "evidence_refs": [
+        "synthetic/submissions.json#sha256=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "https://example.invalid/source"
+       ],
+       "id": "GENERAL",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "applicability": {
+       "evaluation_date": "2026-11-04",
+       "kind": "EVALUATION_ONLY",
+       "valid_from": null,
+       "valid_to": null
+      },
+      "basis": "RESEARCH_CORRESPONDENCE",
+      "company_id": "ROW:A",
+      "industry": {
+       "evidence_refs": [],
+       "id": null,
+       "reasons": [
+        "SUBINDUSTRY_NOT_CONFIRMED"
+       ],
+       "status": "UNKNOWN"
+      },
+      "issuer_id": "0000000001",
+      "legacy_mapping": {
+       "classification_rule_version": "held-sec-book-correspondence/0.5.0",
+       "effective_date_basis": "SINGLE_EVALUATION_APPLICATION_NOT_SOURCE_CHANGE_DATE",
+       "evidence_refs": [
+        "synthetic/submissions.json#sha256=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "https://example.invalid/source"
+       ],
+       "kind": "RESEARCH_CORRESPONDENCE",
+       "official_code": "2711",
+       "official_system": "SEC_SIC",
+       "reason": "Reviewed named SEC primary activity: Newspapers: Publishing or  Publishing & Printing. No segment mix or accounting model inferred.",
+       "rule_id": "held-sec-book-correspondence/0.5.0:2711",
+       "source_archive_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+       "source_observed_at": "2026-11-03T00:00:00Z",
+       "valid_from": "2026-11-04",
+       "valid_to": "2026-11-05",
+       "version": "book-sector-map/1"
+      },
+      "original_reviewed_at": null,
+      "record_id": "retained:dd4e8d232cd1a84c6d5ef75955cfa083",
+      "recorded_at": "2026-11-08T09:00:00Z",
+      "recorded_at_basis": "CURRENT_IMPORT_REVIEW_NOT_ORIGINAL_DECISION_TIME",
+      "retained_snapshot_sha256": "e82a248886f9b6bb89f681e3beed69931b9faf737aa4bc73853a7346abd689d9",
+      "rule_version": "held-sec-book-correspondence/0.5.0",
+      "sector": {
+       "evidence_refs": [
+        "synthetic/submissions.json#sha256=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "https://example.invalid/source",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "id": "CONSUMER_DISCRETIONARY",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "source_refs": [
+       "source:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ],
+      "source_sic": {
+       "code": "2711",
+       "description": "Newspapers: Publishing or  Publishing & Printing",
+       "observed_at": "2026-11-03T00:00:00Z",
+       "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+       "source_url": "https://example.invalid/source",
+       "system": "SEC_SIC"
+      },
+      "supersedes": null,
+      "tags": {}
+     }
+    ],
+    "schema_version": "common-classification-view/1",
+    "sources": [
+     {
+      "acquired_at": "2026-11-03T00:00:00Z",
+      "archive_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "availability_basis": "OBSERVED_BY_ACQUISITION_NOT_FIRST_PUBLICATION",
+      "locator": "synthetic/submissions.json",
+      "publication_reason": "ORIGINAL_RELEASE_TIME_NOT_RETAINED",
+      "published_at": null,
+      "published_date": null,
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "source_id": "source:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "url": "https://example.invalid/source"
+     }
+    ],
+    "universe_id": "SYNTHETIC",
+    "universe_version": "1",
+    "unresolved_reasons": {},
+    "valuation_date": "2026-11-04"
+   }
+  },
+  {
+   "case_id": "real-estate-not-reit",
+   "expected": {
+    "accounting_template": null,
+    "score_or_gate_changed": false,
+    "sector_id": null,
+    "valuation_date": "2026-11-04"
+   },
+   "macro": {
+    "benchmark_is_common_sector": false,
+    "classification_hash": "d1883a8a6e5c6dac6e84b745f1a46af349830035518627f30eda87665b068711",
+    "data_kind": "SYNTHETIC",
+    "probabilities": null,
+    "rows": [
+     {
+      "benchmark": {
+       "etf": "XLRE",
+       "reason": null,
+       "rule": 11,
+       "system": "SEC_SIC",
+       "version": "sector_etf_map/v1"
+      },
+      "classification_record_id": "retained:dd4e8d232cd1a84c6d5ef75955cfa083",
+      "company_id": "ROW:A",
+      "industry": {
+       "evidence_refs": [],
+       "id": null,
+       "reasons": [
+        "SUBINDUSTRY_NOT_CONFIRMED"
+       ],
+       "status": "UNKNOWN"
+      },
+      "issuer_id": "0000000001",
+      "probabilities": null,
+      "sector": {
+       "evidence_refs": [],
+       "id": null,
+       "reasons": [
+        "EXACT_SIC_CORRESPONDENCE_NOT_REVIEWED"
+       ],
+       "status": "UNKNOWN"
+      },
+      "sector_returns": null,
+      "source_classification": {
+       "code": "6531",
+       "observed_at": "2026-11-03T00:00:00Z",
+       "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+       "source_url": "https://example.invalid/source",
+       "system": "SEC_SIC"
+      },
+      "source_industry": {
+       "cyclical_defensive_candidate": null,
+       "group": "finance_real_estate",
+       "reason_code": null,
+       "sic": "6531",
+       "subgroup": null,
+       "system": "SEC_SIC",
+       "version": "sic_industry_groups/v0"
+      },
+      "statistic_mapping": {
+       "reasons": [
+        "EXPLICIT_MACRO_SOURCE_LINK_MISSING"
+       ],
+       "source_links": [],
+       "status": "UNKNOWN"
+      }
+     }
+    ],
+    "schema_version": "common-classification-macro/1",
+    "sector_returns": null,
+    "source_industry_is_common_sector": false,
+    "source_link_diagnostics": [],
+    "valuation_date": "2026-11-04"
+   },
+   "view": {
+    "boundary_policy": {
+     "approved_date": "2026-11-08",
+     "recorded_at": "2026-11-08T09:00:00Z",
+     "recorded_at_basis": "RESEARCH_APPLICATION_NOT_ORIGINAL_COMPANY_CLASSIFICATION_DATE",
+     "source": "owner:2026-11-08:common-classification-boundaries",
+     "version": "common-sector-boundaries/2026-11-08.1"
+    },
+    "classification_hash": "d1883a8a6e5c6dac6e84b745f1a46af349830035518627f30eda87665b068711",
+    "coverage": {
+     "accounting_confirmed": 0,
+     "industry_confirmed": 0,
+     "member_codes": 1,
+     "sector_confirmed": 0,
+     "sector_confirmed_issuers": 0,
+     "source_sic_available": 1,
+     "unique_issuers": 1
+    },
+    "data_kind": "SYNTHETIC",
+    "dictionary_hash": "2ad03d247c30ce335612b69e70d69bab26959273b1e893cc8f71c8991634d861",
+    "dictionary_version": "common-industry-dictionary/2",
+    "display_hash": "e94c8958b869923dae44eb1b67e188caaf3309cc8e2a6a85670c99a777432e43",
+    "history_hash": "8b658b7ac54cca7f416e0a2a3f9089a4034350ea3ed18e8e46abdef7aa62316c",
+    "knowledge_as_of": "2026-11-08T09:00:00Z",
+    "mapping_version": "common-classification-map/2",
+    "members": [
+     "ROW:A"
+    ],
+    "review_scope": "RETAINED_EVALUATION_REVIEW_NOT_HISTORICAL_PIT_CERTIFICATION",
+    "rows": [
+     {
+      "accounting": {
+       "evidence_refs": [],
+       "id": null,
+       "reasons": [
+        "ACCOUNTING_TEMPLATE_UNCONFIRMED"
+       ],
+       "status": "UNKNOWN"
+      },
+      "applicability": {
+       "evaluation_date": "2026-11-04",
+       "kind": "EVALUATION_ONLY",
+       "valid_from": null,
+       "valid_to": null
+      },
+      "basis": "RESEARCH_CORRESPONDENCE",
+      "company_id": "ROW:A",
+      "industry": {
+       "evidence_refs": [],
+       "id": null,
+       "reasons": [
+        "SUBINDUSTRY_NOT_CONFIRMED"
+       ],
+       "status": "UNKNOWN"
+      },
+      "issuer_id": "0000000001",
+      "legacy_mapping": null,
+      "original_reviewed_at": null,
+      "record_id": "retained:dd4e8d232cd1a84c6d5ef75955cfa083",
+      "recorded_at": "2026-11-08T09:00:00Z",
+      "recorded_at_basis": "CURRENT_IMPORT_REVIEW_NOT_ORIGINAL_DECISION_TIME",
+      "retained_snapshot_sha256": "e82a248886f9b6bb89f681e3beed69931b9faf737aa4bc73853a7346abd689d9",
+      "rule_version": "held-sec-book-correspondence/0.5.0",
+      "sector": {
+       "evidence_refs": [],
+       "id": null,
+       "reasons": [
+        "EXACT_SIC_CORRESPONDENCE_NOT_REVIEWED"
+       ],
+       "status": "UNKNOWN"
+      },
+      "source_refs": [
+       "source:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ],
+      "source_sic": {
+       "code": "6531",
+       "observed_at": "2026-11-03T00:00:00Z",
+       "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+       "source_url": "https://example.invalid/source",
+       "system": "SEC_SIC"
+      },
+      "supersedes": null,
+      "tags": {}
+     }
+    ],
+    "schema_version": "common-classification-view/1",
+    "sources": [
+     {
+      "acquired_at": "2026-11-03T00:00:00Z",
+      "archive_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "availability_basis": "OBSERVED_BY_ACQUISITION_NOT_FIRST_PUBLICATION",
+      "locator": "synthetic/submissions.json",
+      "publication_reason": "ORIGINAL_RELEASE_TIME_NOT_RETAINED",
+      "published_at": null,
+      "published_date": null,
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "source_id": "source:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "url": "https://example.invalid/source"
+     }
+    ],
+    "universe_id": "SYNTHETIC",
+    "universe_version": "1",
+    "unresolved_reasons": {
+     "EXACT_SIC_CORRESPONDENCE_NOT_REVIEWED": 1
+    },
+    "valuation_date": "2026-11-04"
+   }
+  },
+  {
+   "case_id": "mixed-cable-needs-business",
+   "expected": {
+    "accounting_template": null,
+    "score_or_gate_changed": false,
+    "sector_id": null,
+    "valuation_date": "2026-11-04"
+   },
+   "macro": {
+    "benchmark_is_common_sector": false,
+    "classification_hash": "ae4bb4e9b7c8d549190ae4e23a1cccc770622fa1d1a3e464912642a5431a0fda",
+    "data_kind": "SYNTHETIC",
+    "probabilities": null,
+    "rows": [
+     {
+      "benchmark": {
+       "etf": "XLC",
+       "reason": null,
+       "rule": 9,
+       "system": "SEC_SIC",
+       "version": "sector_etf_map/v1"
+      },
+      "classification_record_id": "retained:dd4e8d232cd1a84c6d5ef75955cfa083",
+      "company_id": "ROW:A",
+      "industry": {
+       "evidence_refs": [],
+       "id": null,
+       "reasons": [
+        "SUBINDUSTRY_NOT_CONFIRMED"
+       ],
+       "status": "UNKNOWN"
+      },
+      "issuer_id": "0000000001",
+      "probabilities": null,
+      "sector": {
+       "evidence_refs": [],
+       "id": null,
+       "reasons": [
+        "EXACT_SIC_CORRESPONDENCE_NOT_REVIEWED"
+       ],
+       "status": "UNKNOWN"
+      },
+      "sector_returns": null,
+      "source_classification": {
+       "code": "4841",
+       "observed_at": "2026-11-03T00:00:00Z",
+       "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+       "source_url": "https://example.invalid/source",
+       "system": "SEC_SIC"
+      },
+      "source_industry": {
+       "cyclical_defensive_candidate": null,
+       "group": "telecommunications",
+       "reason_code": null,
+       "sic": "4841",
+       "subgroup": null,
+       "system": "SEC_SIC",
+       "version": "sic_industry_groups/v0"
+      },
+      "statistic_mapping": {
+       "reasons": [
+        "EXPLICIT_MACRO_SOURCE_LINK_MISSING"
+       ],
+       "source_links": [],
+       "status": "UNKNOWN"
+      }
+     }
+    ],
+    "schema_version": "common-classification-macro/1",
+    "sector_returns": null,
+    "source_industry_is_common_sector": false,
+    "source_link_diagnostics": [],
+    "valuation_date": "2026-11-04"
+   },
+   "view": {
+    "boundary_policy": {
+     "approved_date": "2026-11-08",
+     "recorded_at": "2026-11-08T09:00:00Z",
+     "recorded_at_basis": "RESEARCH_APPLICATION_NOT_ORIGINAL_COMPANY_CLASSIFICATION_DATE",
+     "source": "owner:2026-11-08:common-classification-boundaries",
+     "version": "common-sector-boundaries/2026-11-08.1"
+    },
+    "classification_hash": "ae4bb4e9b7c8d549190ae4e23a1cccc770622fa1d1a3e464912642a5431a0fda",
+    "coverage": {
+     "accounting_confirmed": 0,
+     "industry_confirmed": 0,
+     "member_codes": 1,
+     "sector_confirmed": 0,
+     "sector_confirmed_issuers": 0,
+     "source_sic_available": 1,
+     "unique_issuers": 1
+    },
+    "data_kind": "SYNTHETIC",
+    "dictionary_hash": "2ad03d247c30ce335612b69e70d69bab26959273b1e893cc8f71c8991634d861",
+    "dictionary_version": "common-industry-dictionary/2",
+    "display_hash": "da96691cfd876061e1eb9f6e9e9c3baf2a19f17b7298fad8cc86d1e30900a0c3",
+    "history_hash": "1f3d47c8a0a0596c892194b0339d99fd512a75ea0e0dc05e58af03146f32561b",
+    "knowledge_as_of": "2026-11-08T09:00:00Z",
+    "mapping_version": "common-classification-map/2",
+    "members": [
+     "ROW:A"
+    ],
+    "review_scope": "RETAINED_EVALUATION_REVIEW_NOT_HISTORICAL_PIT_CERTIFICATION",
+    "rows": [
+     {
+      "accounting": {
+       "evidence_refs": [],
+       "id": null,
+       "reasons": [
+        "ACCOUNTING_TEMPLATE_UNCONFIRMED"
+       ],
+       "status": "UNKNOWN"
+      },
+      "applicability": {
+       "evaluation_date": "2026-11-04",
+       "kind": "EVALUATION_ONLY",
+       "valid_from": null,
+       "valid_to": null
+      },
+      "basis": "RESEARCH_CORRESPONDENCE",
+      "company_id": "ROW:A",
+      "industry": {
+       "evidence_refs": [],
+       "id": null,
+       "reasons": [
+        "SUBINDUSTRY_NOT_CONFIRMED"
+       ],
+       "status": "UNKNOWN"
+      },
+      "issuer_id": "0000000001",
+      "legacy_mapping": null,
+      "original_reviewed_at": null,
+      "record_id": "retained:dd4e8d232cd1a84c6d5ef75955cfa083",
+      "recorded_at": "2026-11-08T09:00:00Z",
+      "recorded_at_basis": "CURRENT_IMPORT_REVIEW_NOT_ORIGINAL_DECISION_TIME",
+      "retained_snapshot_sha256": "e82a248886f9b6bb89f681e3beed69931b9faf737aa4bc73853a7346abd689d9",
+      "rule_version": "held-sec-book-correspondence/0.5.0",
+      "sector": {
+       "evidence_refs": [],
+       "id": null,
+       "reasons": [
+        "EXACT_SIC_CORRESPONDENCE_NOT_REVIEWED"
+       ],
+       "status": "UNKNOWN"
+      },
+      "source_refs": [
+       "source:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ],
+      "source_sic": {
+       "code": "4841",
+       "observed_at": "2026-11-03T00:00:00Z",
+       "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+       "source_url": "https://example.invalid/source",
+       "system": "SEC_SIC"
+      },
+      "supersedes": null,
+      "tags": {}
+     }
+    ],
+    "schema_version": "common-classification-view/1",
+    "sources": [
+     {
+      "acquired_at": "2026-11-03T00:00:00Z",
+      "archive_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "availability_basis": "OBSERVED_BY_ACQUISITION_NOT_FIRST_PUBLICATION",
+      "locator": "synthetic/submissions.json",
+      "publication_reason": "ORIGINAL_RELEASE_TIME_NOT_RETAINED",
+      "published_at": null,
+      "published_date": null,
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "source_id": "source:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "url": "https://example.invalid/source"
+     }
+    ],
+    "universe_id": "SYNTHETIC",
+    "universe_version": "1",
+    "unresolved_reasons": {
+     "EXACT_SIC_CORRESPONDENCE_NOT_REVIEWED": 1
+    },
+    "valuation_date": "2026-11-04"
+   }
+  }
+ ],
+ "codex_cases_sha256": "e82a248886f9b6bb89f681e3beed69931b9faf737aa4bc73853a7346abd689d9",
+ "data_kind": "SYNTHETIC",
+ "dictionary": {
+  "etf_reference_version": "sector_etf_map/v1",
+  "exceptions": {
+   "COMMUNICATION_SERVICES": "NOT_AN_ALIAS_OF_TELECOMMUNICATIONS",
+   "MANAGED_CARE": "HEALTH_CARE_UPPER_SECTOR_ACCOUNTING_INDEPENDENT",
+   "MULTI_BUSINESS": "PRIMARY_ACTIVITY_EVIDENCE_REQUIRED",
+   "REIT": "FINANCIALS_UPPER_SECTOR_ACCOUNTING_INDEPENDENT_NOT_ALL_REAL_ESTATE",
+   "TELECOM_MEDIA": "NETWORK_SERVICES_TELECOM_MEDIA_ENTERTAINMENT_DISCRETIONARY_PRIMARY_ACTIVITY_REQUIRED"
+  },
+  "industries": [
+   {
+    "id": "beverages",
+    "name": "음료",
+    "parent_sector": "CONSUMER_STAPLES",
+    "source_dictionary": "sic_industry_groups/v0",
+    "source_id": "beverages",
+    "source_parent": "food_tobacco",
+    "status": "RESEARCH_CORRESPONDENCE"
+   },
+   {
+    "id": "computers",
+    "name": "컴퓨터",
+    "parent_sector": "INFORMATION_TECHNOLOGY",
+    "source_dictionary": "sic_industry_groups/v0",
+    "source_id": "computers",
+    "source_parent": "manufacturing_industrial_tech",
+    "status": "RESEARCH_CORRESPONDENCE"
+   },
+   {
+    "id": "food_retail",
+    "name": "식품 소매",
+    "parent_sector": "CONSUMER_STAPLES",
+    "source_dictionary": "sic_industry_groups/v0",
+    "source_id": "food_retail",
+    "source_parent": "wholesale_retail",
+    "status": "RESEARCH_CORRESPONDENCE"
+   },
+   {
+    "id": "health_services",
+    "name": "의료 서비스",
+    "parent_sector": "HEALTH_CARE",
+    "source_dictionary": "sic_industry_groups/v0",
+    "source_id": "health_services",
+    "source_parent": "services_software_health",
+    "status": "RESEARCH_CORRESPONDENCE"
+   },
+   {
+    "id": "medical_devices",
+    "name": "의료기기",
+    "parent_sector": "HEALTH_CARE",
+    "source_dictionary": "sic_industry_groups/v0",
+    "source_id": "medical_devices",
+    "source_parent": "manufacturing_industrial_tech",
+    "status": "RESEARCH_CORRESPONDENCE"
+   },
+   {
+    "id": "semiconductors",
+    "name": "반도체",
+    "parent_sector": "INFORMATION_TECHNOLOGY",
+    "source_dictionary": "sic_industry_groups/v0",
+    "source_id": "semiconductors",
+    "source_parent": "manufacturing_industrial_tech",
+    "status": "RESEARCH_CORRESPONDENCE"
+   },
+   {
+    "id": "software",
+    "name": "소프트웨어",
+    "parent_sector": "INFORMATION_TECHNOLOGY",
+    "source_dictionary": "sic_industry_groups/v0",
+    "source_id": "software",
+    "source_parent": "services_software_health",
+    "status": "RESEARCH_CORRESPONDENCE"
+   }
+  ],
+  "policy": {
+   "approved_date": "2026-11-08",
+   "automatic_company_assignment": false,
+   "book_direct_claim": false,
+   "source": "owner:2026-11-08:common-classification-boundaries",
+   "version": "common-sector-boundaries/2026-11-08.1"
+  },
+  "schema_version": "common-classification-dictionary/1",
+  "sector_version": "book-sector-map/1",
+  "sectors": {
+   "CONSUMER_DISCRETIONARY": "경기소비재",
+   "CONSUMER_STAPLES": "필수소비재",
+   "ENERGY": "에너지",
+   "FINANCIALS": "금융",
+   "HEALTH_CARE": "헬스케어",
+   "INDUSTRIALS": "산업재",
+   "INFORMATION_TECHNOLOGY": "정보기술",
+   "MATERIALS": "소재",
+   "TELECOMMUNICATIONS": "통신",
+   "UTILITIES": "유틸리티"
+  },
+  "source_classification_version": "sic_industry_groups/v0",
+  "version": "common-industry-dictionary/2"
+ },
+ "knowledge_as_of": "2026-11-08T09:00:00Z",
+ "rule_version": "held-sec-book-correspondence/0.5.0",
+ "schema_version": "common-classification-policy-main-fixture/1"
+}

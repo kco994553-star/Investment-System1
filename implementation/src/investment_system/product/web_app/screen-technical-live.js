@@ -146,7 +146,7 @@ const noteWords=c=>NOTE_WORDS[c]||'저장하지 못했습니다';
 /* ---------------------------------------------------------------- the screen */
 function screen(route,{root,box,chosen,slots}){
  const signal=route.signal,layer=typeof I.loadState==='function'&&I.loadState()==='READY';
- const S={row:null,dev:{busy:false,code:null,data:null},repaints:new Set()};
+ const S={row:null,dev:{busy:false,code:null,data:null},repaints:new Set()};let xp=null;
  const onChange=fn=>{S.repaints.add(fn);return fn;};
  const changed=()=>{for(const fn of[...S.repaints]){try{fn();}catch(_){}}};
  // ---- notes store (read at every draw; the facade refuses before / after a failed layer)
@@ -167,7 +167,7 @@ function screen(route,{root,box,chosen,slots}){
    h('span',{class:'meta'},r.code,' · ',I.companies.scope().label,r.name_ko?' · '+r.name_ko:'')),
    r.status==='WITHDRAWN'?h('p',{class:'reason',dataset:{listingEnded:r.withdrawn_on}},'상장 종료 ',r.withdrawn_on,' · 점수 없음 · 일봉을 묻지 않습니다'):null,
    h('a',{class:'more',href:href('company',r.id)},'→ 기업 화면'));}
- function choose(row){if(S.row===row)return;S.row=row;S.dev={busy:false,code:null,data:null};paintChosen();changed();}
+ function choose(row){if(S.row===row)return;S.row=row;if(xp)xp.reset();S.dev={busy:false,code:null,data:null};paintChosen();changed();}
  function attachBox(){
   if(!layer){box.input.disabled=true;return;}
   let done=false;
@@ -242,6 +242,8 @@ function screen(route,{root,box,chosen,slots}){
    if(m.kind==='RANGE')return h('svg:rect',{x:m.x,y:m.y,width:m.w,height:m.h,...line,dataset:{noteMark:m.id,noteKind:m.kind}},title);
    return h('svg:path',{d:m.d,...line,dataset:{noteMark:m.id,noteKind:m.kind}},title);});}
  const panelChart=I.parts.privatePanel({id:'tech-kis-chart',title:'실가격 차트 · 지표 (KIS 통합 일봉)'});
+ // 비공개 펼치기 (owner 2026-11-05, DC-44): the same panel, filled after the owner signs in; the public part above is unchanged.
+ if(I.privateExpand)xp=I.privateExpand.attach(panelChart,{signal,kind:'technical',target:()=>({symbol:S.row&&typeof S.row.ticker==='string'?S.row.ticker.replace('.','-'):null}),publicBasis:()=>null});
  const b311=block('3.1.1',sub('차트 탐색','3.1.1','공개 · 이 기기 · 비공개 세 층'),
   h('p',{dataset:{publicChart:'NONE',na:HOLD.code}},h('b',null,'공개 차트 없음'),' · ',HOLD.text,' (',code(HOLD.code),')'),
   h('p',{class:'reason',dataset:{na:IEX.code}},IEX.text,' (',code(IEX.code),') · 합성 시험 봉은 화면에 싣지 않음'),

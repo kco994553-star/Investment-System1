@@ -1,0 +1,116 @@
+{
+  "schema_version": "sector-qgv-main-request/1",
+  "request_id": "synthetic-main-bridge",
+  "before_config": {
+    "schema": "sector-qgv-user-config/1",
+    "preset_set": "sector-qgv-default",
+    "version": "0.1.0",
+    "overrides": {}
+  },
+  "after_config": {
+    "schema": "sector-qgv-user-config/1",
+    "preset_set": "sector-qgv-default",
+    "version": "0.1.0",
+    "overrides": {
+      "INFORMATION_TECHNOLOGY|GENERAL": {
+        "axis_weights": {
+          "Q": 3000,
+          "G": 2500,
+          "V": 4500
+        },
+        "roles": {
+          "Q": [
+            {
+              "role": "profitability",
+              "weight_bp": 4000,
+              "factors": [
+                {
+                  "factor_id": "operating_margin_ttm",
+                  "weight_bp": 10000
+                }
+              ]
+            },
+            {
+              "role": "accounting_quality",
+              "weight_bp": 3000,
+              "factors": [
+                {
+                  "factor_id": "accruals_assets_ttm",
+                  "weight_bp": 10000
+                }
+              ]
+            },
+            {
+              "role": "financial_capacity",
+              "weight_bp": 3000,
+              "factors": [
+                {
+                  "factor_id": "debt_assets",
+                  "weight_bp": 10000
+                }
+              ]
+            }
+          ],
+          "G": [
+            {
+              "role": "growth",
+              "weight_bp": 6000,
+              "factors": [
+                {
+                  "factor_id": "revenue_cagr_3y",
+                  "weight_bp": 6000
+                },
+                {
+                  "factor_id": "revenue_cagr_5y",
+                  "weight_bp": 4000
+                }
+              ]
+            },
+            {
+              "role": "profitability_change",
+              "weight_bp": 4000,
+              "factors": [
+                {
+                  "factor_id": "roa_improvement_3y",
+                  "weight_bp": 10000
+                }
+              ]
+            }
+          ],
+          "V": [
+            {
+              "role": "earnings",
+              "weight_bp": 3000,
+              "factors": [
+                {
+                  "factor_id": "ep_ttm_diluted",
+                  "weight_bp": 10000
+                }
+              ]
+            },
+            {
+              "role": "cash",
+              "weight_bp": 4000,
+              "factors": [
+                {
+                  "factor_id": "cfo_mcap",
+                  "weight_bp": 10000
+                }
+              ]
+            },
+            {
+              "role": "other_value",
+              "weight_bp": 3000,
+              "factors": [
+                {
+                  "factor_id": "sales_ev",
+                  "weight_bp": 10000
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+}

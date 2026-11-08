@@ -1,0 +1,387 @@
+{
+  "schema_version": "common-classification-policy-fixtures/1",
+  "data_kind": "SYNTHETIC",
+  "dictionary_version": "common-industry-dictionary/2",
+  "mapping_version": "common-classification-map/2",
+  "rule_version": "held-sec-book-correspondence/0.5.0",
+  "cases": [
+    {
+      "case_id": "reit-sector-only",
+      "snapshot": {
+        "as_of": "2026-11-04T02:00:00Z",
+        "valuation_date": "2026-11-04",
+        "snapshot_id": "synthetic",
+        "mapping_version": "book-sector-map/1",
+        "classification_rule_version": "old/1",
+        "universe_id": "SYNTHETIC",
+        "universe_version": "1",
+        "members": [
+          "ROW:A"
+        ],
+        "rows": [
+          {
+            "company_id": "ROW:A",
+            "issuer_id": "0000000001",
+            "source_sic": "6798",
+            "source_profile": "GENERAL",
+            "sector_id": null,
+            "accounting_template": null,
+            "mapping": null,
+            "official_classification": {
+              "system": "SEC_SIC",
+              "code": "6798",
+              "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "source_url": "https://example.invalid/source",
+              "observed_at": "2026-11-03T00:00:00Z"
+            },
+            "reasons": [
+              "EXACT_SIC_CORRESPONDENCE_NOT_REVIEWED"
+            ],
+            "observations": {
+              "kept": {
+                "value": null
+              }
+            },
+            "gate": {
+              "kept": true
+            }
+          }
+        ]
+      },
+      "evidence": {
+        "ROW:A": {
+          "issuer_id": "0000000001",
+          "sic": "6798",
+          "sic_description": "Real Estate Investment Trusts",
+          "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "archive_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "member": "synthetic/submissions.json",
+          "source_url": "https://example.invalid/source",
+          "source_kind": "SEC_SUBMISSIONS",
+          "acquired_at": "2026-11-03T00:00:00Z"
+        }
+      },
+      "expected": {
+        "sector_id": "FINANCIALS",
+        "accounting_template": null,
+        "valuation_date": "2026-11-04",
+        "score_or_gate_changed": false
+      }
+    },
+    {
+      "case_id": "managed-care-sector-only",
+      "snapshot": {
+        "as_of": "2026-11-04T02:00:00Z",
+        "valuation_date": "2026-11-04",
+        "snapshot_id": "synthetic",
+        "mapping_version": "book-sector-map/1",
+        "classification_rule_version": "old/1",
+        "universe_id": "SYNTHETIC",
+        "universe_version": "1",
+        "members": [
+          "ROW:A"
+        ],
+        "rows": [
+          {
+            "company_id": "ROW:A",
+            "issuer_id": "0000000001",
+            "source_sic": "6324",
+            "source_profile": "FINANCIAL",
+            "sector_id": null,
+            "accounting_template": null,
+            "mapping": null,
+            "official_classification": {
+              "system": "SEC_SIC",
+              "code": "6324",
+              "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "source_url": "https://example.invalid/source",
+              "observed_at": "2026-11-03T00:00:00Z"
+            },
+            "reasons": [
+              "EXACT_SIC_CORRESPONDENCE_NOT_REVIEWED"
+            ],
+            "observations": {
+              "kept": {
+                "value": null
+              }
+            },
+            "gate": {
+              "kept": true
+            }
+          }
+        ]
+      },
+      "evidence": {
+        "ROW:A": {
+          "issuer_id": "0000000001",
+          "sic": "6324",
+          "sic_description": "Hospital & Medical Service Plans",
+          "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "archive_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "member": "synthetic/submissions.json",
+          "source_url": "https://example.invalid/source",
+          "source_kind": "SEC_SUBMISSIONS",
+          "acquired_at": "2026-11-03T00:00:00Z"
+        }
+      },
+      "expected": {
+        "sector_id": "HEALTH_CARE",
+        "accounting_template": null,
+        "valuation_date": "2026-11-04",
+        "score_or_gate_changed": false
+      }
+    },
+    {
+      "case_id": "broadcast-primary",
+      "snapshot": {
+        "as_of": "2026-11-04T02:00:00Z",
+        "valuation_date": "2026-11-04",
+        "snapshot_id": "synthetic",
+        "mapping_version": "book-sector-map/1",
+        "classification_rule_version": "old/1",
+        "universe_id": "SYNTHETIC",
+        "universe_version": "1",
+        "members": [
+          "ROW:A"
+        ],
+        "rows": [
+          {
+            "company_id": "ROW:A",
+            "issuer_id": "0000000001",
+            "source_sic": "4833",
+            "source_profile": "GENERAL",
+            "sector_id": null,
+            "accounting_template": null,
+            "mapping": null,
+            "official_classification": {
+              "system": "SEC_SIC",
+              "code": "4833",
+              "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "source_url": "https://example.invalid/source",
+              "observed_at": "2026-11-03T00:00:00Z"
+            },
+            "reasons": [
+              "EXACT_SIC_CORRESPONDENCE_NOT_REVIEWED"
+            ],
+            "observations": {
+              "kept": {
+                "value": null
+              }
+            },
+            "gate": {
+              "kept": true
+            }
+          }
+        ]
+      },
+      "evidence": {
+        "ROW:A": {
+          "issuer_id": "0000000001",
+          "sic": "4833",
+          "sic_description": "Television Broadcasting Stations",
+          "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "archive_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "member": "synthetic/submissions.json",
+          "source_url": "https://example.invalid/source",
+          "source_kind": "SEC_SUBMISSIONS",
+          "acquired_at": "2026-11-03T00:00:00Z"
+        }
+      },
+      "expected": {
+        "sector_id": "CONSUMER_DISCRETIONARY",
+        "accounting_template": "GENERAL",
+        "valuation_date": "2026-11-04",
+        "score_or_gate_changed": false
+      }
+    },
+    {
+      "case_id": "newspaper-primary",
+      "snapshot": {
+        "as_of": "2026-11-04T02:00:00Z",
+        "valuation_date": "2026-11-04",
+        "snapshot_id": "synthetic",
+        "mapping_version": "book-sector-map/1",
+        "classification_rule_version": "old/1",
+        "universe_id": "SYNTHETIC",
+        "universe_version": "1",
+        "members": [
+          "ROW:A"
+        ],
+        "rows": [
+          {
+            "company_id": "ROW:A",
+            "issuer_id": "0000000001",
+            "source_sic": "2711",
+            "source_profile": "GENERAL",
+            "sector_id": null,
+            "accounting_template": null,
+            "mapping": null,
+            "official_classification": {
+              "system": "SEC_SIC",
+              "code": "2711",
+              "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "source_url": "https://example.invalid/source",
+              "observed_at": "2026-11-03T00:00:00Z"
+            },
+            "reasons": [
+              "EXACT_SIC_CORRESPONDENCE_NOT_REVIEWED"
+            ],
+            "observations": {
+              "kept": {
+                "value": null
+              }
+            },
+            "gate": {
+              "kept": true
+            }
+          }
+        ]
+      },
+      "evidence": {
+        "ROW:A": {
+          "issuer_id": "0000000001",
+          "sic": "2711",
+          "sic_description": "Newspapers: Publishing or  Publishing & Printing",
+          "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "archive_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "member": "synthetic/submissions.json",
+          "source_url": "https://example.invalid/source",
+          "source_kind": "SEC_SUBMISSIONS",
+          "acquired_at": "2026-11-03T00:00:00Z"
+        }
+      },
+      "expected": {
+        "sector_id": "CONSUMER_DISCRETIONARY",
+        "accounting_template": "GENERAL",
+        "valuation_date": "2026-11-04",
+        "score_or_gate_changed": false
+      }
+    },
+    {
+      "case_id": "real-estate-not-reit",
+      "snapshot": {
+        "as_of": "2026-11-04T02:00:00Z",
+        "valuation_date": "2026-11-04",
+        "snapshot_id": "synthetic",
+        "mapping_version": "book-sector-map/1",
+        "classification_rule_version": "old/1",
+        "universe_id": "SYNTHETIC",
+        "universe_version": "1",
+        "members": [
+          "ROW:A"
+        ],
+        "rows": [
+          {
+            "company_id": "ROW:A",
+            "issuer_id": "0000000001",
+            "source_sic": "6531",
+            "source_profile": "GENERAL",
+            "sector_id": null,
+            "accounting_template": null,
+            "mapping": null,
+            "official_classification": {
+              "system": "SEC_SIC",
+              "code": "6531",
+              "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "source_url": "https://example.invalid/source",
+              "observed_at": "2026-11-03T00:00:00Z"
+            },
+            "reasons": [
+              "EXACT_SIC_CORRESPONDENCE_NOT_REVIEWED"
+            ],
+            "observations": {
+              "kept": {
+                "value": null
+              }
+            },
+            "gate": {
+              "kept": true
+            }
+          }
+        ]
+      },
+      "evidence": {
+        "ROW:A": {
+          "issuer_id": "0000000001",
+          "sic": "6531",
+          "sic_description": "Real Estate Agents & Managers (For Others)",
+          "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "archive_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "member": "synthetic/submissions.json",
+          "source_url": "https://example.invalid/source",
+          "source_kind": "SEC_SUBMISSIONS",
+          "acquired_at": "2026-11-03T00:00:00Z"
+        }
+      },
+      "expected": {
+        "sector_id": null,
+        "accounting_template": null,
+        "valuation_date": "2026-11-04",
+        "score_or_gate_changed": false
+      }
+    },
+    {
+      "case_id": "mixed-cable-needs-business",
+      "snapshot": {
+        "as_of": "2026-11-04T02:00:00Z",
+        "valuation_date": "2026-11-04",
+        "snapshot_id": "synthetic",
+        "mapping_version": "book-sector-map/1",
+        "classification_rule_version": "old/1",
+        "universe_id": "SYNTHETIC",
+        "universe_version": "1",
+        "members": [
+          "ROW:A"
+        ],
+        "rows": [
+          {
+            "company_id": "ROW:A",
+            "issuer_id": "0000000001",
+            "source_sic": "4841",
+            "source_profile": "GENERAL",
+            "sector_id": null,
+            "accounting_template": null,
+            "mapping": null,
+            "official_classification": {
+              "system": "SEC_SIC",
+              "code": "4841",
+              "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "source_url": "https://example.invalid/source",
+              "observed_at": "2026-11-03T00:00:00Z"
+            },
+            "reasons": [
+              "EXACT_SIC_CORRESPONDENCE_NOT_REVIEWED"
+            ],
+            "observations": {
+              "kept": {
+                "value": null
+              }
+            },
+            "gate": {
+              "kept": true
+            }
+          }
+        ]
+      },
+      "evidence": {
+        "ROW:A": {
+          "issuer_id": "0000000001",
+          "sic": "4841",
+          "sic_description": "Cable & Other Pay Television Services",
+          "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "archive_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "member": "synthetic/submissions.json",
+          "source_url": "https://example.invalid/source",
+          "source_kind": "SEC_SUBMISSIONS",
+          "acquired_at": "2026-11-03T00:00:00Z"
+        }
+      },
+      "expected": {
+        "sector_id": null,
+        "accounting_template": null,
+        "valuation_date": "2026-11-04",
+        "score_or_gate_changed": false
+      }
+    }
+  ]
+}

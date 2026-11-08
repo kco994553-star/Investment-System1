@@ -521,3 +521,103 @@ def _require(p) -> dict:
     for view in p["indicators"]:
         _need(view == indicator_view(es.BY_ID[view["id"]], series))
     return p
+
+
+# ---------------------------------------------------------------- attempt status (macro-evidence-status.json)
+# owner 2026-11-07 (run 42326419126: the build failed and the placeholder replaced the published copy). One record of the
+# latest daily attempt, published beside macro-evidence.json and never merged into it: whether this attempt built a new
+# file, kept the last good copy unchanged (its own generated_at, bytes and hash), or had no good copy to keep. The data
+# file's own times are never touched by a failed attempt; this record says the attempt failed and the data is delayed.
+
+STATUS_FILENAME = "macro-evidence-status.json"
+STATUS_SCHEMA = "macro-evidence-status/1"
+STATUS_KIND = "MACRO_EVIDENCE_ATTEMPT"
+ATTEMPT_RESULTS = ("BUILT", "FAILED")
+FAILURE_STAGES = ("PREVIOUS", "COLLECT", "BUILD", "VALIDATE", "WRITE")
+# What the artifact carries after this attempt: a new file, the last good copy byte for byte (kept by the daily step),
+# the verified live copy byte for byte carried at deploy (CARRIED_LIVE, below), or no file (withheld).
+PUBLISHED = ("NEW", "PREVIOUS_KEPT", "CARRIED_LIVE", "WITHHELD")
+# How the previous Pages copy read (owner 2026-11-07 3rd): a verified good copy (LOADED); confirmed absent (NO_LIVE: 404
+# and no attempt record, EMPTY_LIVE: only the placeholder, REMOVED: 404 although an attempt record says a file was there);
+# a failed read (UNAVAILABLE); a served but damaged copy (INVALID). A failed or damaged read is never taken for absence.
+PREVIOUS_READ = ("LOADED", "EMPTY_LIVE", "NO_LIVE", "REMOVED", "UNAVAILABLE", "INVALID")
+PREVIOUS_ABSENT = ("NO_LIVE", "EMPTY_LIVE", "REMOVED")
+PREVIOUS_UNREADABLE = ("UNAVAILABLE", "INVALID")
+STATUS_KEYS = ("schema", "kind", "attempt_at", "attempt_result", "failure_stage", "failure_class", "published",
+               "data_generated_at", "data_sha256", "previous")
+# Deploy-time carry (owner 2026-11-07 4th, tools/macro_evidence_carry.py): the daily attempt withheld the file (its own
+# record says WITHHELD, stage and exception class), and the deploy job read the live copy, verified it (HTTP 200,
+# require_macro_evidence, built from collected data, its live record consistent) and put those very bytes in the
+# artifact. The record keeps every field of the attempt as it was (attempt_at, FAILED, stage, class, previous read) and
+# says CARRIED_LIVE with the carried file's own generated_at and SHA-256, plus a `carry` block (only with CARRIED_LIVE):
+# when the deploy read it and that it came from the deploy's live read (after the attempt, of a file built by then).
+STATUS_CARRY_KEYS = ("at", "basis", "generated_at", "sha256")
+CARRY_BASIS = "DEPLOY_LIVE_READ"
+_CLASS = re.compile(r"[A-Za-z][A-Za-z0-9_]{0,63}")
+_HEX = re.compile(r"[0-9a-f]{64}")
+
+
+def status_record(*, attempt_at: datetime, result: str, stage, error_class, published: str, data_generated_at,
+                  data_sha256, previous: str) -> dict:
+    return require_status({"schema": STATUS_SCHEMA, "kind": STATUS_KIND, "attempt_at": iso(attempt_at),
+                           "attempt_result": result, "failure_stage": stage, "failure_class": error_class,
+                           "published": published, "data_generated_at": data_generated_at, "data_sha256": data_sha256,
+                           "previous": previous})
+
+
+def carried_status(withheld: dict, *, carried_at: datetime, generated_at: str, sha256: str) -> dict:
+    """The record of a WITHHELD attempt whose file the deploy carried from the verified live copy: every attempt field
+    unchanged (time, FAILED, stage, class, previous read), published CARRIED_LIVE with the carried file's own times."""
+    record = require_status(dict(withheld))
+    if record["published"] != "WITHHELD":
+        raise ValueError("MACRO_EVIDENCE_STATUS_INVALID")
+    return require_status(dict(record, published="CARRIED_LIVE", data_generated_at=generated_at, data_sha256=sha256,
+                               carry={"at": iso(carried_at), "basis": CARRY_BASIS, "generated_at": generated_at,
+                                      "sha256": sha256}))
+
+
+def require_status(payload) -> dict:
+    """Strict macro-evidence-status/1. Raises ValueError (fixed code)."""
+    try:
+        p = payload
+        carried = type(p) is dict and p.get("published") == "CARRIED_LIVE"
+        _keys(p, STATUS_KEYS + (("carry",) if carried else ()))
+        _need(p["schema"] == STATUS_SCHEMA and p["kind"] == STATUS_KIND)
+        parse_iso(p["attempt_at"])
+        _need(p["attempt_result"] in ATTEMPT_RESULTS and p["published"] in PUBLISHED and p["previous"] in PREVIOUS_READ)
+        if p["attempt_result"] == "BUILT":
+            # built only from a verified good copy or a confirmed absence, never after a failed or damaged read
+            _need(p["failure_stage"] is None and p["failure_class"] is None and p["published"] == "NEW")
+            _need(p["previous"] not in PREVIOUS_UNREADABLE)
+        else:
+            _need(p["failure_stage"] in FAILURE_STAGES and p["published"] in ("PREVIOUS_KEPT", "CARRIED_LIVE", "WITHHELD"))
+            _need(p["failure_class"] is None or (type(p["failure_class"]) is str and _CLASS.fullmatch(p["failure_class"])))
+            if p["published"] == "PREVIOUS_KEPT":
+                _need(p["previous"] == "LOADED")
+            elif p["previous"] in PREVIOUS_UNREADABLE:
+                _need(p["failure_stage"] == "PREVIOUS")
+            elif p["previous"] == "LOADED":
+                _need(p["failure_stage"] == "WRITE")              # the good copy itself could not be written
+        # CARRIED_LIVE keeps the WITHHELD attempt's own fields, so the rules above (a failed or damaged read stops at
+        # PREVIOUS, a LOADED read failed only at WRITE) hold for it unchanged.
+        if p["published"] == "WITHHELD":
+            _need(p["data_generated_at"] is None and p["data_sha256"] is None)
+        else:
+            parse_iso(p["data_generated_at"])
+            _need(type(p["data_sha256"]) is str and _HEX.fullmatch(p["data_sha256"]))
+        if carried:
+            c = p["carry"]
+            _keys(c, STATUS_CARRY_KEYS)
+            _need(c["basis"] == CARRY_BASIS and c["generated_at"] == p["data_generated_at"] and c["sha256"] == p["data_sha256"])
+            # read at deploy, after this attempt, from a file already built and published by then
+            _need(parse_iso(p["attempt_at"]) <= parse_iso(c["at"]) and parse_iso(p["data_generated_at"]) <= parse_iso(c["at"]))
+        return p
+    except (KeyError, TypeError, IndexError, AttributeError):
+        raise ValueError("MACRO_EVIDENCE_STATUS_INVALID") from None
+    except ValueError:
+        raise ValueError("MACRO_EVIDENCE_STATUS_INVALID") from None
+
+
+def encode_status(payload: dict) -> bytes:
+    return json.dumps(require_status(payload), ensure_ascii=False, sort_keys=True, separators=(",", ":"),
+                      allow_nan=False).encode("utf-8")

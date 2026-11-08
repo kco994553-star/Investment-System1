@@ -129,6 +129,11 @@ function evidenceView(e,FV){
  return Object.freeze({days:Object.freeze(days),total:e.session_count,versions:Object.freeze(versions),latest:e.latest,missing,missingCount:e.missing.length,as_of:e.as_of});}
 
 // v2: true when a run shows the diagnostic view (not a BACKTEST, or NOT_COMPUTED) instead of the metrics and the curve.
+// The kind words on a run's tab: the agreement's kind names (IS2.lab TEXT.V2.KIND), then 미산출 or whether it is a strategy
+// result. A v1 run (no result_kind) is a strategy backtest. The tab never says more than the validated run says.
+const NOT_STRATEGY='전략 성과 아님';
+const kindLabel=(run,L)=>{const k=isObj(run)&&Object.hasOwn(run,'result_kind')?run.result_kind:'BACKTEST',t=L.TEXT.V2.KIND[k]||k;
+ return isObj(run)&&run.computation_status==='NOT_COMPUTED'?t+' · '+L.TEXT.V2.NOT_COMPUTED:k==='BACKTEST'?t:t+' · '+NOT_STRATEGY;};
 const diagnosticView=run=>isObj(run)&&Object.hasOwn(run,'result_kind')&&(run.result_kind!=='BACKTEST'||run.computation_status==='NOT_COMPUTED');
 // v2 facts of a validated run: [label, text] rows (lab = IS2.lab for TEXT and reasonText). v1 runs have none.
 function v2Facts(run,lab){
@@ -178,6 +183,13 @@ function install(win){
    block('9.1-rows',sub('백테스트 구성','9.1.1 ~ 9.1.6','결과가 생기면 채울 자리'),
     h('ol',{class:'news-lines',dataset:{labRows:''}},ROWS91.map(([n,name,s,t])=>h('li',{dataset:{labRow:n,labRowState:s}},h('b',null,n,' ',name),' ',chip(s),' ',t,
      n==='9.1.3'?[' ',h('a',{href:href('qgv'),class:'lk'},'→ 1. QGV 가중치')]:null)))),
+   block('9.1-kinds',sub('결과 종류 · 섞지 않음','9.1','같은 실행 목록에 있어도 서로 다른 것 · 탭마다 종류가 적힘'),
+    h('ul',{class:'news-lines',dataset:{labKinds:''}},
+     h('li',{dataset:{labKind:'BACKTEST'}},h('b',null,L.TEXT.V2.KIND.BACKTEST),' · 전략 성과 · 지표 ',String(labels.length),'개와 자산 곡선 (계산된 실행만)'),
+     h('li',{dataset:{labKind:'SINGLE_COMPANY_METRIC'}},h('b',null,L.TEXT.V2.KIND.SINGLE_COMPANY_METRIC),' · 한 회사에 대해 계산한 값 · ',NOT_STRATEGY,' · 진단 표만 · 지표 ',String(labels.length),'개와 자산 곡선 없음'),
+     h('li',{dataset:{labKind:'SAMPLE_DIAGNOSTIC'}},h('b',null,L.TEXT.V2.KIND.SAMPLE_DIAGNOSTIC),' · 표본 · 모집단 집계 (회사별 값 없음) · ',NOT_STRATEGY,' · 진단 표만'),
+     h('li',{dataset:{labKind:'RESEARCH_SCOPE'}},h('b',null,'연구 범위 · 선정 방식'),' · 아래 칸 · 운영 커버리지 (계산 가능 / 분모)와 모의 선정 · 수익률 · ',NOT_STRATEGY),
+     h('li',{dataset:{labKind:'NOT_COMPUTED'}},h('b',null,L.TEXT.V2.NOT_COMPUTED),' · 어느 종류든 계산하지 못하면 사유만 · 0으로 채우지 않음'))),
    block('9.1-contract',sub('결과가 생기면 보이는 것','lab-backtest-v1','비공개 칸에서만'),
     h('ul',{class:'news-lines',dataset:{labRules:''}},
      h('li',null,'실행 목록 · 실행마다 상태 문구 (실데이터 파일럿 · 미검증 / 합성 데이터 · 시험용 / 혼합 / 모집단 시점 정합성 미확인)'),
@@ -243,7 +255,7 @@ function install(win){
   const box=h('div',{class:'card-body',dataset:{labRuns:String(v.runs.length)}});let cur=0;
   const draw=focus=>{
    const n=v.runs.length,tabs=h('div',{role:'tablist','aria-label':'실행 고르기',class:'scroll'},v.runs.map((r,i)=>h('button',{type:'button',role:'tab',id:'lab-run-tab-'+i,class:'chip'+(i===cur?' on':''),
-    'aria-selected':String(i===cur),'aria-controls':'lab-run-panel',tabindex:i===cur?'0':'-1',dataset:{labRunTab:r.id},onclick:()=>{cur=i;draw(true);}},r.name)));
+    'aria-selected':String(i===cur),'aria-controls':'lab-run-panel',tabindex:i===cur?'0':'-1',dataset:{labRunTab:r.id},onclick:()=>{cur=i;draw(true);}},r.name,h('span',{class:'meta',dataset:{labTabKind:Object.hasOwn(r,'result_kind')?r.result_kind:'BACKTEST'}},' · ',kindLabel(r,I.lab)))));
    tabs.addEventListener('keydown',e=>{let j=null;if(e.key==='ArrowRight'||e.key==='ArrowDown')j=(cur+1)%n;else if(e.key==='ArrowLeft'||e.key==='ArrowUp')j=(cur+n-1)%n;else if(e.key==='Home')j=0;else if(e.key==='End')j=n-1;
     if(j!==null){e.preventDefault();cur=j;draw(true);}});
    box.replaceChildren(tabs,runDetail(v.runs[cur],cur));
@@ -314,7 +326,8 @@ function install(win){
  function screen(route,{slots}){
   const aborted=()=>route.signal.aborted;
   const p91=panel('lab-backtest','연구 결과','lab'),p92=panel('lab-forward-kis','이후 수익률 (KIS)');
-  put(slots['lab-1'],...public91(),p91?p91.node:null);
+  // 연구 범위 · 선정 방식 (#473 · #474, owner 2026-11-04 third): screen-research-scope-live.js, its own source (NONE today).
+  put(slots['lab-1'],...public91(),p91?p91.node:null,I.researchScopeLive?I.researchScopeLive.block({signal:route.signal}):null);
   const refs={ledger:block('9.2.1',sub('관측 기록','9.2.1','그날의 Q·G를 가격 없이 추가만 하는 원장'),loading('전진검증 원장')),
    outcome:block('9.2.2',sub('이후 성과','9.2.2','기록 이후의 결과'),
     prep('이후 성과 미산출 · D+5 · D+20 · D+63 · D+252',['가격 (공개 원장에 없음)','이 화면의 클릭 계산 연결 (기기 시세 · 메모리 전용)','S&P 500 비교 계열']),
@@ -330,5 +343,5 @@ function install(win){
   Promise.all([fw,raw]).then(([f,p])=>{if(!aborted())paint92(refs,f,p);},()=>{if(!aborted())paint92(refs,null,null);});}
  I.labLive=Object.freeze({screen});
 }
-return Object.freeze({LEDGER,CHECKLIST,ROWS91,METRIC_LABEL,DIAG_NAME,panelPlan,metricRows,curveGeometry,statusKind,evaluationLabel,ledgerTable,evidenceView,diagnosticView,v2Facts,diagnosticRows,install});
+return Object.freeze({LEDGER,CHECKLIST,ROWS91,METRIC_LABEL,DIAG_NAME,kindLabel,panelPlan,metricRows,curveGeometry,statusKind,evaluationLabel,ledgerTable,evidenceView,diagnosticView,v2Facts,diagnosticRows,install});
 });

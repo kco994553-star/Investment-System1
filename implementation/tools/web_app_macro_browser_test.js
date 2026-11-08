@@ -26,6 +26,12 @@
 //    lights unchanged; a reload shows 누르기 전 again.
 //  - Partial failure: macro-screen.json HTTP 500 (lights and raw values say 읽기 실패, the evidence and ring stay), macro-evidence.json
 //    404 (근거 파일이 아직 게시되지 않았습니다, the lights stay), sec-qgv2.json invalid (3.3 says 읽기 실패, 3.4 offers two rings).
+//  - Attempt record (macro-evidence-status.json, read once per page): a failed attempt that kept the last good copy says so with
+//    the attempt time and stage beside the good copy's own times (자료 지연); a built attempt adds nothing; a record that does not
+//    describe the file beside it (MISMATCH, a placeholder beside any record included) or breaks the schema (INVALID) is not shown
+//    as an attempt; no good copy (file withheld, 404) says so beside 근거 파일 미게시 and that 0 means not collected; an
+//    unreadable or absent record is no record; a file the deploy carried from the verified live copy (CARRIED_LIVE) is said
+//    to be the copy published before with its own times, never this attempt's data.
 //  - Empty: the offline build's NOT_AVAILABLE files: 매크로 확인 불가, 아직 수집 전, no events, no group values, no public observation.
 //  - Error: data.js answering 404 (LOADER_FAILED), and screen-macro-live.js answering 404: every section slot shows the failure
 //    with the alarm mascot, the shell notice, nothing read, no uncaught error.
@@ -40,13 +46,21 @@ const M = require('./web_app_macro_fixture.js');
 
 const NOW = '2026-10-14T03:00:00.000Z';
 // Files the offline build does not publish (answered 404 by the server when no fixture is set).
-const UNPUBLISHED = ['sec-public-inputs.json', 'sec-qgv2.json', 'macro-evidence.json', 'dart-financials.json', 'qgv-official.json', 'qgv-official-status.json'];
+const UNPUBLISHED = ['sec-public-inputs.json', 'sec-qgv2.json', 'macro-evidence.json', 'macro-evidence-status.json', 'dart-financials.json', 'qgv-official.json', 'qgv-official-status.json'];
+// The daily attempt record beside macro-evidence.json (macro-evidence-status/1, macro/evidence_lines.py status_record): the offline
+// build writes none, so a fresh open reads it once and finds it 404 (no record) unless a phase sets one.
+const MES = 'macro-evidence-status.json';
+const mes = (o) => ({ schema: 'macro-evidence-status/1', kind: 'MACRO_EVIDENCE_ATTEMPT', attempt_at: '2026-10-09T02:10:00Z', attempt_result: 'FAILED', failure_stage: 'COLLECT',
+  failure_class: 'KeyError', published: 'PREVIOUS_KEPT', data_generated_at: M.evidence().generated_at, data_sha256: 'a'.repeat(64), previous: 'LOADED', ...o });
 // The boards' example numbers and words (never shown on a public screen).
 const DRAFT = /\(예상\)|강세 중반|스타벅스|브라질|커피|(?<![\d.])(?:35|50|15|40)%|3674|4512|5812|\+0\.35%p|21\.5만|20번 중|7번 \/ 20번|예시기업|반도체 \(16곳\)/;
 const FULL = { 'macro-screen.json': { json: M.macroScreen() }, 'macro-evidence.json': { json: M.evidence() }, 'sec-qgv2.json': { json: M.qgv() }, 'company-classification.json': { json: M.classification() } };
 // The one device key 3.4 writes (MacroCycleRing USER_KEY, IS2.store.KEYS.MACRO_USER_ESTIMATES).
 const MACRO_KEY = 'investment.web.v1.macro-cycle-user-estimate';
-const PANELS = [['macro-market-credit', '시장·신용 근거 계열 (KIS 일봉)', '3-1'], ['macro-sector-rs', '섹터 ETF 상대강도 (KIS, 탐색 전용)', '3-2']];
+// macro-observed-private carries 비공개 펼치기 (owner 2026-11-05, DC-44; tools/web_app_kis_private_browser_test.js): with the approved
+// Worker in the site settings it waits for a sign-in (LOGIN_REQUIRED); the other two have no private path yet (NOT_READY).
+const PANELS = [['macro-observed-private', '보관 관측 자료', '3-1', 'LOGIN_REQUIRED', '로그인 필요'], ['macro-market-credit', '시장·신용 근거 계열 (KIS 일봉)', '3-1', 'NOT_READY', '비공개 기능 준비 중'],
+  ['macro-sector-rs', '섹터 ETF 상대강도 (KIS, 탐색 전용)', '3-2', 'NOT_READY', '비공개 기능 준비 중']];
 // Google stand-ins for the device quote after a sign-in (as web_app_qgv_browser_test.js): the GIS script, the user's Universe tab
 // with three ETF rows priced with sentinel decimals (made-up values, never real prices).
 const SHEET_ID = ['synthetic', 'macro', 'quote', 'universe', 'sheet'].join('_');
@@ -63,7 +77,7 @@ let phase = 'START', pass = 0;
 (async () => {
   const s = await site.start({ fixtures: FULL });
   const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_EXECUTABLE_PATH || undefined });
-  const set = (fx) => { for (const n of Object.keys(FULL)) s.fixture(n, Object.hasOwn(fx, n) ? fx[n] : null); };
+  const set = (fx) => { for (const n of [...Object.keys(FULL), MES]) s.fixture(n, Object.hasOwn(fx, n) ? fx[n] : null); };
   async function context(width, { allow404 = UNPUBLISHED } = {}) {
     const ctx = await browser.newContext({ viewport: { width, height: width < 720 ? 844 : 1000 } });
     await ctx.clock.setFixedTime(new Date(NOW));
@@ -96,7 +110,7 @@ let phase = 'START', pass = 0;
   async function panels(page, label) {
     const got = await page.locator('[data-private-panel]').evaluateAll((n) => n.map((x) => [x.dataset.privatePanel, x.dataset.privateState, x.querySelector('[data-private-status]').textContent,
       x.querySelector('.card-title').textContent, x.closest('[data-section]').dataset.section, x.querySelectorAll('[data-mascot]').length, x.querySelector('.private-body').textContent]));
-    assert.deepEqual(got, PANELS.map(([id, title, sec]) => [id, 'NOT_READY', '비공개 기능 준비 중', '비공개 ' + title, sec, 0, '']), label + ': two private panels, NOT_READY');
+    assert.deepEqual(got, PANELS.map(([id, title, sec, st, word]) => [id, st, word, '비공개 ' + title, sec, 0, '']), label + ': three private panels (4.1.3 waits for a sign-in, the two others not ready)');
   }
   // Every focusable control of main is reached by Tab (roving tablists: the selected tab), with a visible focus ring.
   async function keyboard(page, label) {
@@ -148,7 +162,7 @@ let phase = 'START', pass = 0;
       assert.equal(await count(page, '[data-judge]'), 2, phase + ': the judgement state');
       await panels(page, phase);
       if (!CORE) CORE = await page.evaluate(() => window.IS2.data.CORE);
-      const MACRO_READS = CORE.filter((n) => n !== 'dart-financials.json').sort();
+      const MACRO_READS = [...CORE.filter((n) => n !== 'dart-financials.json'), MES].sort();
       await page.evaluate(() => new Promise((r) => setTimeout(r, 150)));
       tag('reads');
       assert.deepEqual(reads(at), MACRO_READS, phase + ': a fresh open reads exactly the page-open core set');
@@ -360,6 +374,75 @@ let phase = 'START', pass = 0;
       await boundaries(page, seen, phase + ' sec-qgv2 invalid');
       await ctx.close(); pass++;
     }
+    // ================================================================ the daily attempt record (macro-evidence-status/1), phone
+    {
+      phase = 'attempt 390';
+      const { ctx, page, seen } = await context(390);
+      const attempt = async (fx) => { set({ ...FULL, ...fx }); await page.reload(); await drawn(page);
+        await page.locator('[data-block="4.1.3"] [data-collection], [data-block="4.1.3"] [data-not-collected], [data-block="4.1.3"] [data-na]').first().waitFor();
+        await page.evaluate(() => new Promise((r) => setTimeout(r, 150))); };
+      await open(page);
+      // A failed attempt that kept the last good copy: the line says so, the good copy is shown with its own times.
+      await attempt({ [MES]: { json: mes({}) } });
+      assert.equal(await text(page, '[data-mev-attempt=PREVIOUS_KEPT]'), '이번 갱신 실패 (2026-10-09 02:10 UTC · 수집 단계) · 아래는 마지막 정상본 그대로 (생성 2026-10-08 10:00 UTC) · 자료 지연');
+      assert.equal(await text(page, '[data-collection]'), '수집 시작 2026-10-01 10:00 UTC · 최근 생성 2026-10-08 10:00 UTC · 일부 수집', phase + ': the good copy keeps its own times');
+      assert.equal(await count(page, '[data-events=economy] > li'), 5, phase + ': the kept events are shown');
+      assert.equal(await page.locator('[data-mev-attempt]').getAttribute('role'), 'status');
+      await boundaries(page, seen, phase + ' previous kept');
+      // The attempt withheld the file and the deploy carried the verified live copy byte for byte (CARRIED_LIVE): the line says
+      // it is the copy published before, with its own times, and never this attempt's data.
+      const carried = mes({ published: 'CARRIED_LIVE', failure_stage: 'PREVIOUS', failure_class: 'OSError', previous: 'UNAVAILABLE',
+        carry: { at: '2026-10-09T03:00:00Z', basis: 'DEPLOY_LIVE_READ', generated_at: M.evidence().generated_at, sha256: 'a'.repeat(64) } });
+      await attempt({ [MES]: { json: carried } });
+      assert.equal(await text(page, '[data-mev-attempt=CARRIED_LIVE]'), '이번 갱신 실패 (2026-10-09 02:10 UTC · 이전 공개본 조회 실패) · 아래는 이전에 게시된 검증본을 배포 때 그대로 옮긴 것 · 원래 기준 시각 그대로 (생성 2026-10-08 10:00 UTC, 배포 확인 2026-10-09 03:00 UTC) · 이번 시도의 자료 아님 · 자료 지연');
+      assert.equal(await text(page, '[data-collection]'), '수집 시작 2026-10-01 10:00 UTC · 최근 생성 2026-10-08 10:00 UTC · 일부 수집', phase + ': the carried copy keeps its own times');
+      for (const bad of [{ ...carried, carry: undefined }, { ...carried, published: 'PREVIOUS_KEPT' }, { ...carried, carry: { ...carried.carry, sha256: 'b'.repeat(64) } }]) {
+        await attempt({ [MES]: { json: JSON.parse(JSON.stringify(bad)) } });
+        assert.equal(await count(page, '[data-mev-attempt=INVALID]'), 1, phase + ': a carry record that does not hold together is refused');
+      }
+      // A built attempt of this very file: nothing extra to say.
+      await attempt({ [MES]: { json: mes({ attempt_result: 'BUILT', failure_stage: null, failure_class: null, published: 'NEW' }) } });
+      assert.equal(await count(page, '[data-mev-attempt]'), 0, phase + ': a built attempt adds no line');
+      // A record that does not describe the file beside it, or breaks the schema, is not shown as an attempt.
+      await attempt({ [MES]: { json: mes({ data_generated_at: '2026-10-07T10:00:00Z' }) } });
+      assert.equal(await text(page, '[data-mev-attempt=MISMATCH]'), '갱신 기록이 이 자료와 맞지 않음 · 기록 표시 안 함');
+      await attempt({ [MES]: { json: { ...mes({}), extra: 1 } } });
+      assert.equal(await text(page, '[data-mev-attempt=INVALID]'), '갱신 기록 규격 불일치 · 기록 표시 안 함');
+      await attempt({ [MES]: { json: mes({ published: 'NEW' }) } });
+      assert.equal(await count(page, '[data-mev-attempt=INVALID]'), 1, phase + ': FAILED with NEW is refused');
+      await attempt({ [MES]: { body: '{', type: 'application/json' } });
+      assert.equal(await count(page, '[data-mev-attempt]'), 0, phase + ': an unreadable record is no record');
+      assert.equal(await count(page, '[data-collection]'), 1, phase + ': the evidence stays');
+      // No good copy: the daily step withholds the file (404) and the record says why; 0 means not collected.
+      const noGood = mes({ published: 'WITHHELD', data_generated_at: null, data_sha256: null, previous: 'EMPTY_LIVE', failure_stage: 'BUILD' });
+      await attempt({ 'macro-evidence.json': { status: 404, body: 'not found' }, [MES]: { json: noGood } });
+      assert.match(await text(page, '[data-block="4.1.3"] [data-na=NOT_PUBLISHED]'), /근거 파일이 아직 게시되지 않았습니다/);
+      assert.equal(await text(page, '[data-mev-attempt=WITHHELD][data-mev-previous=EMPTY_LIVE]'), '이번 갱신 실패 (2026-10-09 02:10 UTC · 자료 만들기 단계) · 정상본이 없어 근거 파일을 게시하지 않음 (빈 기본값만 있음) · 0건이 아니라 미수집');
+      assert.equal(await count(page, '[data-macro-lights]'), 1, phase + ': the lights stay');
+      await page.evaluate(() => document.querySelectorAll('main details').forEach((d) => { d.open = true; }));
+      await boundaries(page, seen, phase + ' no good copy');
+      // The previous copy could not be read (or was damaged): withheld, and never called a kept copy.
+      for (const [previous, word] of [['UNAVAILABLE', '조회 실패'], ['INVALID', '손상된 응답']]) {
+        await attempt({ 'macro-evidence.json': { status: 404, body: 'not found' }, [MES]: { json: { ...noGood, previous, failure_stage: 'PREVIOUS', failure_class: 'OSError' } } });
+        assert.equal(await text(page, '[data-mev-attempt=WITHHELD][data-mev-previous=' + previous + ']'),
+          '이번 갱신 실패 (2026-10-09 02:10 UTC · 이전 공개본 ' + word + ') · 이전 기록을 이어받지 못해 근거 파일을 게시하지 않음 · 이전 공개 파일도 이 배포에서 빠짐(보존 아님)');
+      }
+      // A built attempt after a failed read, or a withheld record without its reason stage, breaks the schema.
+      for (const bad of [mes({ attempt_result: 'BUILT', failure_stage: null, failure_class: null, published: 'NEW', previous: 'UNAVAILABLE' }),
+        { ...noGood, previous: 'UNAVAILABLE', failure_stage: 'BUILD' }]) {
+        await attempt({ 'macro-evidence.json': { status: 404, body: 'not found' }, [MES]: { json: bad } });
+        assert.equal(await count(page, '[data-mev-attempt=INVALID]'), 1, phase + ': an inconsistent record is refused');
+      }
+      // A placeholder beside any record is a mismatch (the placeholder is never published as a result).
+      for (const st of [noGood, mes({})]) {
+        await attempt({ 'macro-evidence.json': { json: M.emptyEvidence() }, [MES]: { json: st } });
+        assert.equal(await count(page, '[data-mev-attempt=MISMATCH]'), 1, phase + ': a placeholder beside a record is a mismatch');
+        assert.equal(await count(page, '[data-not-collected=""]'), 1);
+      }
+      await boundaries(page, seen, phase + ' placeholder mismatch');
+      set(FULL);
+      await ctx.close(); pass++;
+    }
     // ================================================================ empty public files (offline build), phone
     {
       phase = 'empty 390';
@@ -379,7 +462,8 @@ let phase = 'START', pass = 0;
       assert.equal(await count(page, '[data-raw-axis][data-raw-state=NOT_AVAILABLE]'), 8);
       assert.match(await text(page, '[data-facts]'), /자료 있는 경고등 0\/5/);
       await page.evaluate(() => new Promise((r) => setTimeout(r, 150)));
-      assert.deepEqual(reads(at), CORE.filter((n) => n !== 'dart-financials.json').sort());
+      assert.deepEqual(reads(at), [...CORE.filter((n) => n !== 'dart-financials.json'), MES].sort());
+      assert.equal(await count(page, '[data-mev-attempt]'), 0, phase + ': no attempt record, no attempt line');
       await page.evaluate(() => document.querySelectorAll('main details').forEach((d) => { d.open = true; }));
       await keyboard(page, phase);
       await boundaries(page, seen, phase);
@@ -483,7 +567,7 @@ let phase = 'START', pass = 0;
       assert.equal(await count(page, '[data-ram-price]'), 0);
       await ctx.close(); pass++;
     }
-    console.log('web_app_macro_browser_test: PASS (' + pass + ' contexts: full 1440, full 390, partial failure, empty, error, live-file error, device quote)');
+    console.log('web_app_macro_browser_test: PASS (' + pass + ' contexts: full 1440, full 390, partial failure, attempt record, empty, error, live-file error, device quote)');
   } catch (e) {
     console.error('web_app_macro_browser_test: FAIL at ' + phase);
     throw e;

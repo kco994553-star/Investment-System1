@@ -255,7 +255,8 @@ test('action nesting: a nested step reaches only what its parent may (same kind,
   const nested = (parentKind, kind) => { const e = win.trusted('click'); return A.run(e, parentKind, (s) => { try { return A.run(e, kind, () => 'OK', { parent: s }); } catch (err) { return err.message; } }); };
   const kinds = Object.keys(A.KINDS), seen = {};
   for (const p of kinds) seen[p] = kinds.filter((k) => nested(p, k) === 'OK');
-  assert.deepEqual(seen, { PUBLIC_REFRESH: [], LOGIN: ['LOGIN', 'WRITE'], UNIVERSE_READ: ['UNIVERSE_READ', 'WRITE'], HISTORY: ['HISTORY', 'WRITE'], SYNC: ['SYNC', 'WRITE'], WRITE: ['WRITE'] });
+  assert.deepEqual(seen, { PUBLIC_REFRESH: [], LOGIN: ['LOGIN', 'WRITE'], UNIVERSE_READ: ['UNIVERSE_READ', 'WRITE'], HISTORY: ['HISTORY', 'WRITE'], SYNC: ['SYNC', 'WRITE'], WRITE: ['WRITE'], PRIVATE_READ: ['PRIVATE_READ'] });
+  assert.equal(nested('PRIVATE_READ', 'WRITE'), 'ACTION_KIND_NOT_COVERED', 'a private read click (owner 2026-11-05) writes nothing on the device, nested or not');
   assert.equal(nested('WRITE', 'SYNC'), 'ACTION_KIND_NOT_COVERED', 'a WRITE click never opens the Worker or Sheets through a nested SYNC');
   assert.equal(nested('PUBLIC_REFRESH', 'WRITE'), 'ACTION_KIND_NOT_COVERED', 'the public refresh writes nothing, nested or not');
   // The review case: inside the public refresh the Worker stays closed, nested SYNC or not.
@@ -333,7 +334,11 @@ test('data: fixed file list = the readers own names; strict request options; not
   assert.equal(win.requests.length, 0, 'creating the layer reads nothing');
   const D = mods.DataRefresh, expect = new Set([...Object.keys(mods.PublicScreens.FILES), mods.ClassificationScreens.FILE, mods.Qgv2Inputs.FILE, 'sec-public-inputs.json', 'dart-financials.json', mods.MacroEvidence.FILENAME,
     ...Object.values(D.LISTS), mods.SecUniverseShares.FILENAME, 'actual-catalog.json', 'entities.json', mods.EntitySearch.NAMES_FILE, mods.InvestmentAppConfig.universeCodeCatalogURL, mods.DeviceValuation.FILE, mods.ForwardValidation.FILENAME,
-    mods.QgvOfficial.FILENAME, 'qgv-official-status.json']);
+    mods.QgvOfficial.FILENAME, 'qgv-official-status.json',
+    // macro-evidence-status.json (owner 2026-11-07): the daily attempt record beside macro-evidence.json
+    'macro-evidence-status.json',
+    // 4.5 정책·지정학 (owner 2026-11-07): the policy reader's own file names (the view and its optional navigation sidecar)
+    ...Object.values(require('../src/investment_system/product/web_app/policy-impact.js').DELIVERY).flatMap((d) => [d.file, d.nav])]);
   assert.deepEqual(new Set(data.FILES), expect); assert.equal(data.EVENT, D.EVENT); assert.equal(data.MAX_BYTES, 2 * 1024 * 1024);
   await assert.rejects(data.strictFetch('https://site.test/app/sec-qgv2.json'), /PUBLIC_FILE_UNKNOWN/);
   await assert.rejects(data.strictFetch('../sec-qgv2.json'), /PUBLIC_FILE_UNKNOWN/);
