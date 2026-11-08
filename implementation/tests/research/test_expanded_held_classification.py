@@ -134,3 +134,70 @@ def test_changed_classification_reuses_pinned_raw_transform_without_reopening_ar
     assert result['preview.json']['result_rows']==json.loads((out/'preview.json').read_text())['result_rows']
     job['archive']['sha256']='0'*64
     with pytest.raises(ValueError,match='TRANSFORM_SOURCE_MISMATCH'):module.build(job)
+
+
+def gate_fixture():
+    s={'as_of':AT,'valuation_date':AT[:10],'rows':[{'company_id':'ISSUER:0000000001','issuer_id':'0000000001','gate':None}]}
+    raw={'cik':'0000000001','source_sha256':{'companyfacts':'c'*64},'metrics':{'roa':0.1},
+         'acquired_at':'2026-11-03T00:00:00Z','profile':'GENERAL','sic':'3571','currency':'USD',
+         'fiscal_year_end':'2025-12-31','calc_version':'qgv2-calc/2026-10-23.1'}
+    gate={'q_industry_percentile':42.0,'calc_version':raw['calc_version'],'as_of':AT[:10],'source_as_of':AT,
+          'derivation':'OFFICIAL_Q_ONLY_REPLAY','provenance':['sec-qgv2.json#sha256='+'a'*64]}
+    up={**deepcopy(s),'universe_id':'Universe504','universe_version':'fixed','rows':[{'company_id':'ROW:A','issuer_id':raw['cik'],'gate':gate}]}
+    sec={'as_of':AT,'calc_version':raw['calc_version'],'records':{'ROW:A':deepcopy(raw)}}
+    sec['records']['ROW:A']['metrics']['revenue_volatility_5y_rank_pct']=75.0
+    return s,{raw['cik']:raw},up,sec
+
+
+def test_gate_reuses_same_raw_period_and_original_population_without_rescoring():
+    from investment_system.research.expanded_held_classification import reuse_official_gates
+    s,f,u,sec=gate_fixture();before=deepcopy(s)
+    out,a=reuse_official_gates(s,f,u,sec,source_sha256='a'*64)
+    assert out['rows'][0]['gate']==u['rows'][0]['gate'] and a['connected']==1 and s==before
+    assert a['rows'][0]['gate_universe_id']=='Universe504'
+    u['rows'].append(dict(u['rows'][0],company_id='ROW:B'));sec['records']['ROW:B']=deepcopy(sec['records']['ROW:A'])
+    out,a=reuse_official_gates(s,f,u,sec,source_sha256='a'*64)
+    assert a['connected']==1 and a['rows'][0]['upstream_codes']==['ROW:A','ROW:B']
+    u['rows'][1]['gate']={**u['rows'][1]['gate'],'q_industry_percentile':5.0}
+    assert reuse_official_gates(s,f,u,sec,source_sha256='a'*64)[1]['connected']==0
+
+
+@pytest.mark.parametrize('change',['hash','period','metric','gate_date','gate_source','new_sector_q','null','future','issuer','industry_group'])
+def test_gate_rejects_source_context_mismatch_and_never_uses_new_q(change):
+    from investment_system.research.expanded_held_classification import reuse_official_gates
+    s,f,u,sec=gate_fixture();r=f['0000000001'];g=u['rows'][0]['gate']
+    if change=='hash':r['source_sha256']['companyfacts']='b'*64
+    if change=='period':r['fiscal_year_end']='2024-12-31'
+    if change=='metric':r['metrics']['roa']=0.2
+    if change=='gate_date':g['as_of']='2026-11-02'
+    if change=='gate_source':g['provenance']=[]
+    if change=='new_sector_q':g['derivation']='SECTOR_Q_SCORE'
+    if change=='null':g['q_industry_percentile']=None
+    if change=='future':r['acquired_at']='2026-11-05T00:00:00Z'
+    if change=='issuer':sec['records']['ROW:A']['cik']='0000000002'
+    if change=='industry_group':r['industry_group']='DIFFERENT'
+    out,a=reuse_official_gates(s,f,u,sec,source_sha256='a'*64)
+    assert a['connected']==0 and out['rows'][0]['gate'] is None and a['rows'][0]['reason']
+
+
+def test_gap_contract_separates_missing_connection_from_absent_data(tmp_path):
+    from investment_system.research.expanded_held_classification import build
+    result=build(synthetic_job(tmp_path));gaps=result['input-gaps.json']['rows']
+    assert len(gaps)==22
+    connected=next(r for r in gaps if r['classification']['sector']['status']=='CONFIRMED')
+    assert connected['financial_period_inputs'] and connected['price']['status']=='NOT_CONNECTED'
+    assert connected['evaluation_security']['status']=='UNCONFIRMED'
+    assert connected['official_q_gate']['status']=='UNAVAILABLE' and not connected['official_q_gate']['new_sector_q_substituted']
+    assert connected['ev_components']['missing_components_are_zero'] is False
+    missing=next(r for r in gaps if r['classification']['sector']['status']=='UNKNOWN')
+    assert missing['price']['status']=='VARIANT_SCOPE_UNRESOLVED'
+    assert 'NOT_HELD' not in missing['price']['status']
+
+
+def test_rejected_relink_cannot_retain_previously_connected_gate():
+    from investment_system.research.expanded_held_classification import reuse_official_gates
+    s,f,u,sec=gate_fixture();s['rows'][0]['gate']=deepcopy(u['rows'][0]['gate'])
+    f['0000000001']['source_sha256']['companyfacts']='b'*64
+    result,a=reuse_official_gates(s,f,u,sec,source_sha256='a'*64)
+    assert a['connected']==0 and result['rows'][0]['gate'] is None
+    assert s['rows'][0]['gate'] is not None

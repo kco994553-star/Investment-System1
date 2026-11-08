@@ -59,3 +59,41 @@ Main은 `analysis_row_id`와 `issuer_id`를 구분하고 원래 티커 관측 �
 `tests/research/test_expanded_held_classification.py`에 있다. 기존 `pytest tests`
 자동 수집을 사용하고 CI 목록·공용 의존성·워크플로 변경은 요청하지 않는다.
 실제 브라우저·인증된 자료 전달·정기 실행·배포는 Main의 별도 단계다.
+
+## 2026-11-08 추가 연결 (기존 결과와 구분)
+
+- job의 선택 필드 `classification_rule_version=held-sec-book-correspondence/0.4.0`은
+  27개 명확한 SEC 주 활동 대응을 추가한다. 생략하면 기존 /0.3 결과를 재현한다.
+  **기업별 보류 판정은 새로운 일반 SIC 규칙으로 덮지 않는다.** `project_qgv`는
+  현재 분류 기록 ID·구성요소별 결손 사유를 전달한다. 예전 입력의 미검토 사유가
+  남아 완료된 기업별 예외를 다시 일반 대응하는 결함을 수정했다.
+- `official_gate_source: {path,sha256}`는 같은 평가일의 보존 `sec-qgv2.json`을
+  선택적으로 연결한다. 회사 원문 해시·원재무 지표·회계기간·SIC·회계모형·통화·
+  calc 버전이 모두 같고, 기존 공식 Q 재생 근거가 맞는 발행사만 연결한다.
+  유일한 원지표 비교 제외 필드는 이미 계산된 **G** 비교집단 백분위
+  `revenue_volatility_5y_rank_pct`다. 복수 코드의 관문이 다르면 거부한다.
+- 관문은 **기존 Universe504 공식 Q 재생값**이다. 확장 집단 Q나 공식 게시값으로
+  바꾸어 표시하지 않는다. `official-gate-linkage.json`은 원래 모집단·버전·코드·
+  원문 해시·연결 실패 사유를 보존한다. 새 섹터 Q를 관문에 넣지 않는다.
+- `input-gaps.json`은 분류/회계/하위산업, Q/G 기간별 원지표 상태,
+  평가일 증권·주식 기준·가격·선택 요소에 필요한 EV 구성, 공식 Q 관문을 분리한다.
+  NOT_CONNECTED는 어댑터 미연결이며 원자료가 세상에 없다는 뜻이 아니다.
+  최소 표본 부족은 입력 결손과 별도다.
+
+같은 2026-11-04·원래 분모·원재무 입력에서 운영504 섹터 416→417,
+회계 407→414, Q230→231·G317→318. 확장 보유1057발행사는
+섹터815→852·회계792→828·하위산업185→188, Q470→493·G633→661.
+확장 관문 연결은0→243이며 V·동시·총점과 검증된 증권 ID는 계속0이다.
+원재무 지표 재계산은0건; 상대점수 변화는 비교집단 변경 효과이며 성과 개선이 아니다.
+원래 미검토40코드는 섹터확정18·미확정22로 유지된다. 확장 미검토85는
+36개 연결 뒤49개 남는다. REIT 상위 배치·미디어 경계·관리의료 정책은 바꾸지 않았다.
+
+이번 시험: `test_classification_held_review.py`, `test_expanded_held_classification.py`,
+`test_common_classification_qgv.py`, `test_common_classification_cli.py`의 변경 경로.
+기존 CI의 `pytest tests` 자동 발견 범위여서 CI 목록 추가는 필요 없다.
+Main의 #519 계약 인수·브라우저 실행·배포는 이번 자료 계산과 별개이며 재시험하지 않았다.
+
+비공개 증분 보존 위치: `investment-system1-raw`,
+`handoff/input-recovery-20261103`,
+`handoffs/classification-expansion-followup-20261108`.
+회사별 JSON/CSV·manifest·재개 명령은 그 위치를 사용한다.

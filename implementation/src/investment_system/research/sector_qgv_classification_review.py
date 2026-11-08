@@ -15,6 +15,7 @@ from .sector_qgv_classification import classify, SIC_RULES
 from .common_classification.catalog import PARENTS
 
 VERSION='held-sec-book-correspondence/0.3.0'
+FOLLOWUP_VERSION='held-sec-book-correspondence/0.4.0'
 # Named activities only. SEC SIC remains the source code, not an official book sector.
 ACTIVITIES={
  '1520':('CONSUMER_DISCRETIONARY','GENERAL','General Bldg Contractors - Residential Bldgs'),
@@ -27,6 +28,38 @@ ACTIVITIES={
  '6200':('FINANCIALS',None,'Security & Commodity Brokers, Dealers, Exchanges & Services'),
  '6282':('FINANCIALS',None,'Investment Advice'),
  '6411':('FINANCIALS',None,'Insurance Agents, Brokers & Service'),
+}
+
+# Additional exact primary activities; broad/mixed SICs remain unassigned.
+# These are research correspondences, not changes to the ten-sector policy.
+FOLLOWUP_ACTIVITIES={
+ '2273':('CONSUMER_DISCRETIONARY','GENERAL','Carpets & Rugs'),
+ '2430':('MATERIALS','GENERAL','Millwood, Veneer, Plywood, & Structural Wood Members'),
+ '2673':('MATERIALS','GENERAL','Plastics, Foil & Coated Paper Bags'),
+ '3290':('MATERIALS','GENERAL','Abrasive, Asbestos & Misc Nonmetallic Mineral Prods'),
+ '3317':('MATERIALS','GENERAL','Steel Pipe & Tubes'),
+ '3440':('INDUSTRIALS','GENERAL','Fabricated Structural Metal Products'),
+ '3524':('CONSUMER_DISCRETIONARY','GENERAL','Lawn & Garden Tractors & Home Lawn & Gardens Equip'),
+ '3578':('INFORMATION_TECHNOLOGY','GENERAL','Calculating & Accounting Machines (No Electronic Computers)'),
+ '3716':('CONSUMER_DISCRETIONARY','GENERAL','Motor Homes'),
+ '3824':('INDUSTRIALS','GENERAL','Totalizing Fluid Meters & Counting Devices'),
+ '4610':('ENERGY','GENERAL','Pipe Lines (No Natural Gas)'),
+ '4955':('INDUSTRIALS','GENERAL','Hazardous Waste Management'),
+ '5010':('CONSUMER_DISCRETIONARY','GENERAL','Wholesale-Motor Vehicles & Motor Vehicle Parts & Supplies'),
+ '5045':('INFORMATION_TECHNOLOGY','GENERAL','Wholesale-Computers & Peripheral Equipment & Software'),
+ '5051':('MATERIALS','GENERAL','Wholesale-Metals Service Centers & of fices'),
+ '5063':('INDUSTRIALS','GENERAL','Wholesale-Electrical Apparatus & Equipment, Wiring Supplies'),
+ '5160':('MATERIALS','GENERAL','Wholesale-Chemicals & Allied Products'),
+ '6099':('FINANCIALS',None,'Functions Related To Depository Banking, NEC'),
+ '6141':('FINANCIALS',None,'Personal Credit Institutions'),
+ '6162':('FINANCIALS',None,'Mortgage Bankers & Loan Correspondents'),
+ '7200':('CONSUMER_DISCRETIONARY','GENERAL','Services-Personal Services'),
+ '7381':('INDUSTRIALS','GENERAL','Services-Detective, Guard & Armored Car Services'),
+ '7500':('CONSUMER_DISCRETIONARY','GENERAL','Services-Automotive Repair, Services & Parking'),
+ '7830':('CONSUMER_DISCRETIONARY','GENERAL','Services-Motion Picture Theaters'),
+ '8093':('HEALTH_CARE','GENERAL','Services-Specialty Outpatient Facilities, NEC'),
+ '8200':('CONSUMER_DISCRETIONARY','GENERAL','Services-Educational Services'),
+ '8351':('CONSUMER_DISCRETIONARY','GENERAL','Services-Child Day Care Services'),
 }
 
 
@@ -67,7 +100,7 @@ def _sources(review, row, snapshot, evidence):
     return docs,refs
 
 
-def _business(review,row,snapshot,evidence):
+def _business(review,row,snapshot,evidence,version=VERSION):
     docs,refs=_sources(review,row,snapshot,evidence)
     claims=review['claims']
     if set(claims)-{'sector','accounting','industry'}:raise ValueError('BUSINESS_REVIEW_COMPONENT_INVALID')
@@ -84,7 +117,7 @@ def _business(review,row,snapshot,evidence):
             expected='FINANCIAL' if claim['id'] in ('BANK','INSURANCE','BROKER','ASSET_MANAGER') else 'GENERAL'
             if row.get('source_profile')!=expected:raise ValueError('BUSINESS_REVIEW_ACCOUNTING_PROFILE_CONFLICT')
         row[fields[field]]=claim['id']
-        mapping[field]={'classification_rule_version':VERSION,'rule_id':VERSION+':business:'+digest(identity)[:16],
+        mapping[field]={'classification_rule_version':version,'rule_id':version+':business:'+digest(identity)[:16],
             'reason':claim['rationale'],'evidence_refs':[refs[i] for i in ids]}
     if row.get('reviewed_industry_id') and PARENTS[row['reviewed_industry_id']]!=row.get('sector_id'):
         raise ValueError('BUSINESS_REVIEW_INDUSTRY_PARENT_CONFLICT')
@@ -96,7 +129,8 @@ def _business(review,row,snapshot,evidence):
     else:row['reasons']=['ACCOUNTING_TEMPLATE_UNCONFIRMED']
 
 
-def extend_review(snapshot,evidence_by_code,business_reviews):
+def extend_review(snapshot,evidence_by_code,business_reviews,*,version=VERSION):
+    if version not in (VERSION,FOLLOWUP_VERSION):raise ValueError('CLASSIFICATION_REVIEW_VERSION_INVALID')
     result=deepcopy(snapshot);changes=[]
     reviews={x['company_id']:x for x in business_reviews}
     if len(reviews)!=len(business_reviews) or not set(reviews)<=set(snapshot['members']):
@@ -107,30 +141,32 @@ def extend_review(snapshot,evidence_by_code,business_reviews):
             continue
         old=deepcopy(row);sic=row.get('source_sic');e=evidence_by_code.get(row['company_id'])
         rule=None;activity=ACTIVITIES.get(sic)
+        if version==FOLLOWUP_VERSION and old.get('reasons')==['EXACT_SIC_CORRESPONDENCE_NOT_REVIEWED']:
+            activity=FOLLOWUP_ACTIVITIES.get(sic,activity)
         if activity and e and ' '.join(e.get('sic_description','').split()).casefold()==' '.join(activity[2].split()).casefold():
-            rule={'sector_id':activity[0],'accounting_template':activity[1],'rule_id':VERSION+':'+sic,
+            rule={'sector_id':activity[0],'accounting_template':activity[1],'rule_id':version+':'+sic,
                   'reason':'Reviewed named SEC primary activity: '+activity[2]+'. No segment mix or accounting model inferred.'}
         elif old.get('reasons')==['ACCOUNTING_PROFILE_CONFLICT']:
             rule=SIC_RULES.get(sic)
         linked=classify(e,as_of=snapshot['as_of'],expected_issuer=row['issuer_id'],expected_sic=sic,
                         source_profile=row.get('source_profile'),reviewed_rules={sic:rule} if rule else {},
-                        rule_version=VERSION,independent_components=True)
+                        rule_version=version,independent_components=True)
         source_valid=linked['official_classification'] is not None and linked['reasons']!=['SIC_SOURCE_CONFLICT']
         if rule:row.update(linked)
         review=reviews.get(row['company_id'])
         if review:
             if not source_valid:raise ValueError('BUSINESS_REVIEW_SUBMISSIONS_INVALID')
             row['official_classification']=linked['official_classification']
-            _business(review,row,snapshot,e)
+            _business(review,row,snapshot,e,version)
         if row!=old:
             changes.append({'company_id':row['company_id'],'issuer_id':row['issuer_id'],
                 'before_sector':old.get('sector_id'),'after_sector':row.get('sector_id'),
                 'before_accounting':old.get('accounting_template'),'after_accounting':row.get('accounting_template'),
                 'before_reasons':old.get('reasons'),'after_reasons':row.get('reasons'),
                 'component_mappings':row.get('component_mappings',{})})
-    result.update(classification_rule_version=VERSION,input_version='held-sec-sector-classified/3',
+    result.update(classification_rule_version=version,input_version='held-sec-sector-classified/'+('4' if version==FOLLOWUP_VERSION else '3'),
                   snapshot_id=snapshot['snapshot_id']+'-review-'+digest(changes)[:12])
-    return result,{'schema_version':'sector-classification-review/1','classification_rule_version':VERSION,
+    return result,{'schema_version':'sector-classification-review/1','classification_rule_version':version,
         'changes':changes,'original_denominator':len(snapshot['members']),
         'new_sector':sum(x['before_sector'] is None and x['after_sector'] is not None for x in changes),
         'new_accounting':sum(x['before_accounting'] is None and x['after_accounting'] is not None for x in changes),

@@ -41,6 +41,12 @@ def project_qgv(snapshot, view):
             raise ValueError('PROJECTION_ISSUER_MISMATCH')
         row['sector_id']=c['sector']['id'] if c['sector']['status']=='CONFIRMED' else None
         row['accounting_template']=c['accounting']['id'] if c['accounting']['status']=='CONFIRMED' else None
+        # A reviewed company exception must not become an unreviewed SIC again
+        # when this projection is reused as the next classification input.
+        row['classification_record_id']=c['record_id']
+        row['classification_component_reasons']={k:deepcopy(c[k]['reasons']) for k in ('sector','accounting','industry')}
+        row['reasons']=deepcopy(c['sector']['reasons'] if row['sector_id'] is None else
+                               c['accounting']['reasons'] if row['accounting_template'] is None else [])
         row['mapping']=None
         if row['sector_id'] and row['accounting_template']:
             a=c['applicability']

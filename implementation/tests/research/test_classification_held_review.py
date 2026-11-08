@@ -132,3 +132,42 @@ def test_old_confirmed_rows_and_duplicate_reviews_are_not_silently_overwritten(t
     s['rows'][0]['mapping']={'existing':True}
     with pytest.raises(ValueError,match='REPLACEMENT_NOT_SUPPORTED'):
         extend_held_classification(s,e,rule_version=VERSION,business_reviews=[r])
+
+
+def test_followup_exact_activities_do_not_override_prior_company_review():
+    from investment_system.research.sector_qgv_classification_review import FOLLOWUP_VERSION, FOLLOWUP_ACTIVITIES
+    for sic,(sector,accounting,description) in FOLLOWUP_ACTIVITIES.items():
+        s,e=fixture(sic,description,'FINANCIAL' if sector=='FINANCIALS' else 'GENERAL')
+        out,a=extend_held_classification(s,e,rule_version=FOLLOWUP_VERSION)
+        assert out['rows'][0]['sector_id']==sector and out['rows'][0]['accounting_template']==accounting
+        assert out['rows'][0]['observations']==s['rows'][0]['observations'] and out['rows'][0]['gate']==s['rows'][0]['gate']
+        old,_=extend_held_classification(s,e,rule_version=VERSION)
+        assert old['rows'][0]['sector_id'] is None
+        s['rows'][0]['reasons']=['COMPANY_BUSINESS_MIX_UNRESOLVED']
+        out,_=extend_held_classification(s,e,rule_version=FOLLOWUP_VERSION)
+        assert out['rows'][0]['sector_id'] is None
+
+
+@pytest.mark.parametrize('change',['description','future','issuer','hash'])
+def test_followup_source_boundary(change):
+    s,e=fixture('4610','Pipe Lines (No Natural Gas)','GENERAL');r=e['ROW:A']
+    if change=='description':r['sic_description']='Not reviewed'
+    if change=='future':r['acquired_at']='2026-11-05T00:00:00Z'
+    if change=='issuer':r['issuer_id']='0000000002'
+    if change=='hash':r['source_sha256']='bad'
+    out,_=extend_held_classification(s,e,rule_version='held-sec-book-correspondence/0.4.0')
+    assert out['rows'][0]['sector_id'] is None
+
+
+def test_projection_keeps_reviewed_unknown_instead_of_reactivating_exact_sic():
+    from investment_system.research.common_classification.qgv import project_qgv
+    s,e=fixture('7381','Services-Detective, Guard & Armored Car Services','GENERAL')
+    store=from_sector_snapshot(s,e,source_sha256='c'*64,recorded_at='2026-11-08T00:00:00Z',data_kind='SYNTHETIC')
+    store['records'][0]['sector']['reasons']=['PRODUCT_DESCRIPTION_NOT_IN_RETAINED_BLOCK']
+    view=resolve(store,valuation_date=s['valuation_date'],knowledge_as_of='2026-11-08T01:00:00Z')
+    projected=project_qgv(s,view)
+    assert projected['rows'][0]['reasons']==['PRODUCT_DESCRIPTION_NOT_IN_RETAINED_BLOCK']
+    assert projected['rows'][0]['classification_record_id']==view['rows'][0]['record_id']
+    out,_=extend_held_classification(projected,e,rule_version='held-sec-book-correspondence/0.4.0')
+    assert out['rows'][0]['sector_id'] is None
+    assert projected['rows'][0]['observations']==s['rows'][0]['observations']

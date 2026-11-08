@@ -7,17 +7,104 @@ from collections import Counter, defaultdict
 from copy import deepcopy
 import hashlib
 import json
+import math
 import re
 import zipfile
 
 from .sector_qgv import digest, timestamp, day, preview_qgv
-from .sector_qgv_registry import MAPPING
+from .sector_qgv_registry import MAPPING, CATALOG
 from .sector_qgv_held import checked_bytes, held_observations
 from .sector_qgv_classification import link_classification, extend_held_classification
 from .common_classification.records import from_sector_snapshot, resolve, validate, unknown
 from .common_classification.qgv import project_qgv
 
 VERSION='held-expanded-issuer-adapter/1'
+
+
+def input_gap_rows(snapshot, preview, view):
+    """Describe connected inputs, never infer source nonexistence from null outputs."""
+    inputs={r['company_id']:r for r in snapshot['rows']}
+    classes={r['company_id']:r for r in view['rows']};out=[]
+    for result in preview['result_rows']:
+        row=inputs[result['company_id']];c=classes[row['company_id']]
+        selected=result.get('selected_variants',[])
+        required=sorted({i['field'] for v in selected if CATALOG[v]['axis']=='V' for i in CATALOG[v]['inputs']})
+        needs_price=any(x in required for x in ('price','issuer_mcap','enterprise_value'))
+        out.append({'company_id':row['company_id'],'issuer_id':row['issuer_id'],'valuation_date':snapshot['valuation_date'],
+            'classification':{k:{'status':c[k]['status'],'reasons':c[k]['reasons']} for k in ('sector','accounting','industry')},
+            'financial_period_inputs':{v:{'status':f['raw_status'],'period':row['observations'].get(v,{}).get('fiscal_period'),
+                'source_available_at':row['observations'].get(v,{}).get('source_available_at')}
+                for v,f in result['factors'].items() if CATALOG[v]['axis'] in ('Q','G')},
+            'raw_input_diagnostics':row.get('input_diagnostics',{}),
+            'v_required_fields':required,
+            'evaluation_security':{'status':'UNCONFIRMED','reason':'CATALOG_ISSUER_IS_NOT_VERIFIED_SECURITY'},
+            'share_basis':{'status':'NOT_CONNECTED' if required else 'VARIANT_SCOPE_UNRESOLVED',
+                           'reason':'CLASS_SHARES_ADR_CORPORATE_ACTION_EVIDENCE_NOT_CONNECTED'},
+            'price':{'status':'NOT_CONNECTED' if needs_price else 'VARIANT_SCOPE_UNRESOLVED',
+                     'evaluation_date':snapshot['valuation_date'],'observed_catalog_date_is_price_date':False},
+            'ev_components':{'status':'NOT_CONNECTED' if 'enterprise_value' in required else 'NOT_REQUIRED_BY_SELECTED_VARIANTS' if required else 'VARIANT_SCOPE_UNRESOLVED',
+                             'missing_components_are_zero':False},
+            'official_q_gate':{'status':'CONNECTED' if row.get('gate') else 'UNAVAILABLE',
+                'decision':result['gate_status'],'source':row.get('gate'),
+                'new_sector_q_substituted':False},
+            'peer_sample_small_variants':[v for v,f in result['factors'].items() if f['score_status']=='PEER_SAMPLE_SMALL']})
+    return out
+
+
+def reuse_official_gates(snapshot, financials, upstream, sec, *, source_sha256):
+    """Retain the original Universe504 official-Q replay, only for identical inputs.
+
+    This is an issuer diagnostic dependency, not an expanded-population Q rank.
+    The sole ignored raw-cache field is a derived G cross-sectional percentile.
+    Class-row duplicates must agree; no representative security is invented.
+    """
+    if (snapshot['as_of']!=upstream['as_of'] or snapshot['as_of']!=sec['as_of'] or
+        snapshot['valuation_date']!=snapshot['as_of'][:10] or upstream.get('universe_id')!='Universe504' or
+        snapshot['valuation_date']!=upstream['valuation_date'] or
+        sec['calc_version']!='qgv2-calc/2026-10-23.1'):
+        raise ValueError('OFFICIAL_GATE_SOURCE_CONTEXT_MISMATCH')
+    if not re.fullmatch('[0-9a-f]{64}',source_sha256):raise ValueError('OFFICIAL_GATE_CONTENT_HASH_INVALID')
+    codes=defaultdict(list)
+    for row in upstream['rows']:
+        if row.get('issuer_id'):codes[row['issuer_id']].append(row)
+    out=deepcopy(snapshot);audit=[]
+    for row in out['rows']:
+        row['gate']=None  # A failed re-link must not leave an earlier accepted gate.
+        rec=financials.get(row['issuer_id']); candidates=codes.get(row['issuer_id'],[])
+        reason='OFFICIAL_GATE_ISSUER_NOT_IN_RETAINED_UNIVERSE' if not candidates else None
+        accepted=[]
+        for up in candidates:
+            raw=sec['records'].get(up['company_id']);gate=up.get('gate')
+            if not raw or raw.get('cik')!=row['issuer_id'] or not rec:
+                reason='OFFICIAL_GATE_FINANCIAL_INPUT_NOT_LINKED';break
+            if (not rec.get('source_sha256',{}).get('companyfacts') or
+                rec['source_sha256']['companyfacts']!=raw.get('source_sha256',{}).get('companyfacts')):
+                reason='OFFICIAL_GATE_FINANCIAL_SOURCE_CHANGED';break
+            fields=('fiscal_year_end','profile','sic','industry_group','calc_version','currency')
+            metrics=lambda x:{k:v for k,v in x.get('metrics',{}).items() if k!='revenue_volatility_5y_rank_pct'}
+            if (any(rec.get(k)!=raw.get(k) for k in fields) or not rec.get('metrics') or metrics(rec)!=metrics(raw) or
+                not rec.get('acquired_at') or timestamp(rec['acquired_at'])>timestamp(snapshot['as_of'])):
+                reason='OFFICIAL_GATE_FINANCIAL_CONTEXT_CHANGED';break
+            if not gate or gate.get('q_industry_percentile') is None:
+                reason='OFFICIAL_GATE_UPSTREAM_UNAVAILABLE';break
+            q=gate['q_industry_percentile']
+            if (type(q) not in (int,float) or not math.isfinite(q) or not 0<=q<=100 or
+                gate.get('calc_version')!=sec['calc_version'] or gate.get('as_of')!=snapshot['valuation_date'] or
+                gate.get('source_as_of')!=snapshot['as_of'] or gate.get('derivation')!='OFFICIAL_Q_ONLY_REPLAY' or
+                'sec-qgv2.json#sha256='+source_sha256 not in gate.get('provenance',[])):
+                reason='OFFICIAL_GATE_PROVENANCE_MISMATCH';break
+            accepted.append(gate)
+        if reason is None and len({digest(g) for g in accepted})!=1:reason='OFFICIAL_GATE_CLASS_ROWS_DISAGREE'
+        if reason is None:
+            row['gate']=deepcopy(accepted[0])
+        audit.append({'company_id':row['company_id'],'issuer_id':row['issuer_id'],
+            'status':'CONNECTED' if reason is None else 'UNAVAILABLE','reason':reason,
+            'upstream_codes':sorted(r['company_id'] for r in candidates),
+            'gate_universe_id':upstream['universe_id'],'gate_universe_version':upstream['universe_version'],
+            'gate_source_sha256':source_sha256,
+            'scope':'RETAINED_UNIVERSE504_OFFICIAL_Q_REPLAY_NOT_EXPANDED_Q'})
+    return out,{'rows':audit,'connected':sum(r['status']=='CONNECTED' for r in audit),
+                'reasons':dict(Counter(r['reason'] for r in audit if r['reason']))}
 
 
 def issuer_members(candidates):
@@ -179,7 +266,7 @@ def build(job):
         'members':members,'rows':rows,'analysis_unit':'ISSUER_NOT_SECURITY','data_kind':job['data_kind']}
     classified,_=link_classification(snapshot,evidence)
     classified,_=extend_held_classification(classified,evidence)
-    classified,_=extend_held_classification(classified,evidence,rule_version='held-sec-book-correspondence/0.3.0')
+    classified,_=extend_held_classification(classified,evidence,rule_version=job.get('classification_rule_version','held-sec-book-correspondence/0.3.0'))
     # Invalid classification evidence is not promoted by passing it as an import source.
     import_evidence={r['company_id']:evidence[r['company_id']] for r in classified['rows'] if r.get('official_classification')}
     store=from_sector_snapshot(classified,import_evidence,source_sha256=digest(classified),recorded_at=recorded,data_kind=job['data_kind'])
@@ -187,6 +274,10 @@ def build(job):
     store,reuse=reuse_issuer_reviews(store,upstream,up_snapshot,held['financials'],as_of=as_of)
     view=resolve(store,valuation_date=as_of[:10],knowledge_as_of=recorded)
     projected=project_qgv(snapshot,view)
+    gate_audit={'connected':0,'reasons':{'OFFICIAL_GATE_SOURCE_NOT_LINKED':len(members)},'rows':[]}
+    if 'official_gate_source' in job:
+        sec=read('official_gate_source')
+        projected,gate_audit=reuse_official_gates(projected,held['financials'],up_snapshot,sec,source_sha256=job['official_gate_source']['sha256'])
     preview=preview_qgv(config,projected,job['request_id'])
     financial_ids={c for c,r in held['financials'].items() if r.get('state')!='NOT_AVAILABLE'}
     def count_scope(issuers):
@@ -209,8 +300,11 @@ def build(job):
         'classification_failures':view['unresolved_reasons'],'reuse':{k:v for k,v in reuse.items() if k!='rows'},
         'raw_observations':sum(c['raw_valid'] for c in preview['coverage']['factors'].values()),
         'full_market_denominator':None,'full_market_coverage':None,'rank_scope':'HELD_ISSUER_FACTOR_PERCENTILES_ONLY',
-        'new_security_ids':0,'investment_eligibility_confirmed':0,'official_gate_connected':0,
+        'new_security_ids':0,'investment_eligibility_confirmed':0,'official_gate_connected':gate_audit['connected'],
+        'official_gate_unavailable_reasons':gate_audit['reasons'],
         'performance':None,'historical_pit_certified':False,'official_universe_changed':False,'network_requests':0,'audit':audit}
     return {'snapshot.json':projected,'preview.json':preview,'classification-store.json':store,
             'classification-view.json':view,'source-evidence.json':evidence,'review-reuse.json':reuse,
-            'catalog-crosswalk.json':links,'summary.json':summary,'config.json':config}
+            'catalog-crosswalk.json':links,'summary.json':summary,'config.json':config,'official-gate-linkage.json':gate_audit,
+            'input-gaps.json':{'schema_version':'held-expanded-input-gaps/1','scope':'CONNECTED_ADAPTER_INPUTS_NOT_SOURCE_INVENTORY',
+                              'rows':input_gap_rows(projected,preview,view)}}
