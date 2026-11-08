@@ -217,6 +217,8 @@ svg.ico{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stro
 .tech-cell{display:flex;flex-direction:column;gap:2px;font-size:13px;min-width:12em}
 .tech-cell .tm,.tech-line .tm{overflow-wrap:anywhere}
 .tech-why ul{margin:4px 0 0;padding-left:18px;font-size:13px}
+/* Lab 9.1 연구 범위 · 선정 방식 (PR 473 · 474): long ids break anywhere, never widen the column. */
+.wrap-any,[data-block="research-scope"] [data-scope-head]{overflow-wrap:anywhere}
 .tech-defs{display:flex;flex-direction:column;gap:4px}
 /* ---------- common base (2026-10-31): 준비 중 line, Lab status line, Lab table numbers and equity curve. Line art only (DC-25);
    unverified = dashed, checked = solid; the strategy is the ink line and the benchmark a dashed gray line, no new colour (DC-26). */

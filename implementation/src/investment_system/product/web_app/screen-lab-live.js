@@ -314,7 +314,8 @@ function install(win){
  function screen(route,{slots}){
   const aborted=()=>route.signal.aborted;
   const p91=panel('lab-backtest','연구 결과','lab'),p92=panel('lab-forward-kis','이후 수익률 (KIS)');
-  put(slots['lab-1'],...public91(),p91?p91.node:null);
+  // 연구 범위 · 선정 방식 (#473 · #474, owner 2026-11-04 third): screen-research-scope-live.js, its own source (NONE today).
+  put(slots['lab-1'],...public91(),p91?p91.node:null,I.researchScopeLive?I.researchScopeLive.block({signal:route.signal}):null);
   const refs={ledger:block('9.2.1',sub('관측 기록','9.2.1','그날의 Q·G를 가격 없이 추가만 하는 원장'),loading('전진검증 원장')),
    outcome:block('9.2.2',sub('이후 성과','9.2.2','기록 이후의 결과'),
     prep('이후 성과 미산출 · D+5 · D+20 · D+63 · D+252',['가격 (공개 원장에 없음)','이 화면의 클릭 계산 연결 (기기 시세 · 메모리 전용)','S&P 500 비교 계열']),
