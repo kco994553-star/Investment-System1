@@ -1,0 +1,85 @@
+{
+  "classification_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "data_kind": "SYNTHETIC",
+  "dictionary_version": "common-industry-dictionary/1",
+  "knowledge_as_of": "2017-01-06T23:00:00Z",
+  "mapping_version": "common-classification-map/1",
+  "members": [
+    "SYNTHETIC:COMPANY:0",
+    "SYNTHETIC:COMPANY:1"
+  ],
+  "rows": [
+    {
+      "accounting": {
+        "evidence_refs": [
+          "SYNTHETIC:SOURCE"
+        ],
+        "id": "GENERAL",
+        "reasons": [],
+        "status": "CONFIRMED"
+      },
+      "company_id": "SYNTHETIC:COMPANY:0",
+      "industry": {
+        "evidence_refs": [
+          "SYNTHETIC:SOURCE"
+        ],
+        "id": "semiconductors",
+        "reasons": [],
+        "status": "CONFIRMED"
+      },
+      "issuer_id": "SYNTHETIC:ISSUER:0",
+      "record_id": "SYNTHETIC:RECORD:0",
+      "sector": {
+        "evidence_refs": [
+          "SYNTHETIC:SOURCE"
+        ],
+        "id": "INFORMATION_TECHNOLOGY",
+        "reasons": [],
+        "status": "CONFIRMED"
+      },
+      "source_sic": {
+        "code": "3674",
+        "observed_at": "2017-01-06T00:00:00Z",
+        "system": "SEC_SIC"
+      },
+      "tags": {}
+    },
+    {
+      "accounting": {
+        "evidence_refs": [
+          "SYNTHETIC:SOURCE"
+        ],
+        "id": "GENERAL",
+        "reasons": [],
+        "status": "CONFIRMED"
+      },
+      "company_id": "SYNTHETIC:COMPANY:1",
+      "industry": {
+        "evidence_refs": [
+          "SYNTHETIC:SOURCE"
+        ],
+        "id": "software",
+        "reasons": [],
+        "status": "CONFIRMED"
+      },
+      "issuer_id": "SYNTHETIC:ISSUER:1",
+      "record_id": "SYNTHETIC:RECORD:1",
+      "sector": {
+        "evidence_refs": [
+          "SYNTHETIC:SOURCE"
+        ],
+        "id": "INFORMATION_TECHNOLOGY",
+        "reasons": [],
+        "status": "CONFIRMED"
+      },
+      "source_sic": {
+        "code": "3674",
+        "observed_at": "2017-01-06T00:00:00Z",
+        "system": "SEC_SIC"
+      },
+      "tags": {}
+    }
+  ],
+  "schema_version": "common-classification-view/1",
+  "valuation_date": "2017-01-06"
+}

@@ -1,0 +1,77 @@
+{
+  "classification_context": {
+    "classification_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "dictionary_version": "common-industry-dictionary/1",
+    "mapping_version": "common-classification-map/1",
+    "valuation_date": "2017-01-06"
+  },
+  "data_kind": "SYNTHETIC",
+  "evidence": [
+    {
+      "acquired_at": "2017-01-05T13:00:00Z",
+      "available_at": "2017-01-05T12:00:00Z",
+      "evidence_id": "SYN:DEFINITION",
+      "locator": "table 1",
+      "published_at": "2017-01-04",
+      "ref": "https://example.invalid/source-definition",
+      "series_ids": [
+        "SYN:SERIES"
+      ],
+      "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "source_definition": {
+        "code": "S01",
+        "name": "Synthetic source industry",
+        "system": "SYN_STAT",
+        "version": "2017"
+      },
+      "status": "VERIFIED"
+    }
+  ],
+  "mappings": [
+    {
+      "acquired_at": "2017-01-05T13:00:00Z",
+      "allocation_weights": null,
+      "available_at": "2017-01-05T12:00:00Z",
+      "evidence_refs": [
+        "SYN:DEFINITION"
+      ],
+      "excludes": [
+        "Other source activities"
+      ],
+      "includes": [
+        "Published source scope"
+      ],
+      "mapping_id": "SYN:MAP",
+      "relation": "MULTIPLE",
+      "reviewed_at": "2017-01-06T20:00:00Z",
+      "revision_id": "1",
+      "series_ids": [
+        "SYN:SERIES"
+      ],
+      "source": {
+        "code": "S01",
+        "name": "Synthetic source industry",
+        "system": "SYN_STAT",
+        "version": "2017"
+      },
+      "status": "CONFIRMED",
+      "supersedes": null,
+      "targets": [
+        {
+          "industry_id": "semiconductors",
+          "scope_relation": "OVERLAP",
+          "sector_id": "INFORMATION_TECHNOLOGY"
+        },
+        {
+          "industry_id": "software",
+          "scope_relation": "OVERLAP",
+          "sector_id": "INFORMATION_TECHNOLOGY"
+        }
+      ],
+      "unknown_reasons": [],
+      "valid_from": "2017-01-01",
+      "valid_to": "2018-01-01"
+    }
+  ],
+  "schema_version": "macro-industry-evidence/1"
+}
