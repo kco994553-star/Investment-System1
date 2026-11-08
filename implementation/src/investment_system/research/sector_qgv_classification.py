@@ -80,7 +80,7 @@ SIC_RULES['3671']={'sector_id':'INFORMATION_TECHNOLOGY','accounting_template':'G
                    'reason':'Named electronic-tube/component production.', 'rule_id':RULE_VERSION+':3671'}
 
 
-def classify(evidence,*,as_of,expected_issuer,expected_sic,source_profile,reviewed_rules=None,rule_version=RULE_VERSION):
+def classify(evidence,*,as_of,expected_issuer,expected_sic,source_profile,reviewed_rules=None,rule_version=RULE_VERSION,independent_components=False):
     out={'sector_id':None,'accounting_template':None,'mapping':None,
          'official_classification':None,'reasons':[]}
     def fail(reason):out['reasons']=[reason];return out
@@ -100,16 +100,22 @@ def classify(evidence,*,as_of,expected_issuer,expected_sic,source_profile,review
     rule=(SIC_RULES if reviewed_rules is None else reviewed_rules).get(sic)
     if rule is None:return fail(UNRESOLVED.get(sic,'EXACT_SIC_CORRESPONDENCE_NOT_REVIEWED'))
     financial=rule['accounting_template'] in ('BANK','INSURANCE','BROKER')
-    if source_profile!=('FINANCIAL' if financial else 'GENERAL'):return fail('ACCOUNTING_PROFILE_CONFLICT')
-    out.update(sector_id=rule['sector_id'],accounting_template=rule['accounting_template'])
+    accounting_ok=rule['accounting_template'] is not None and source_profile==('FINANCIAL' if financial else 'GENERAL')
+    if not accounting_ok and not independent_components:return fail('ACCOUNTING_PROFILE_CONFLICT')
+    out.update(sector_id=rule['sector_id'],accounting_template=rule['accounting_template'] if accounting_ok else None)
     ref=evidence['member']+'#sha256='+evidence['source_sha256']
-    out['mapping']={'version':MAPPING,'classification_rule_version':rule_version,
+    mapping={'version':MAPPING,'classification_rule_version':rule_version,
         'kind':'RESEARCH_CORRESPONDENCE','valid_from':evaluation.isoformat(),
         'valid_to':(evaluation+timedelta(days=1)).isoformat(),
         'effective_date_basis':'SINGLE_EVALUATION_APPLICATION_NOT_SOURCE_CHANGE_DATE',
         'source_observed_at':evidence['acquired_at'],'rule_id':rule['rule_id'],
         'reason':rule['reason'],'evidence_refs':[ref,evidence['source_url']],
         'official_system':'SEC_SIC','official_code':sic,'source_archive_sha256':evidence['archive_sha256']}
+    if accounting_ok:out['mapping']=mapping
+    if independent_components:
+        out['component_mappings']={'sector':copy.deepcopy(mapping)}
+        if accounting_ok:out['component_mappings']['accounting']=copy.deepcopy(mapping)
+        else:out['reasons']=['ACCOUNTING_TEMPLATE_UNCONFIRMED' if rule['accounting_template'] is None else 'ACCOUNTING_PROFILE_CONFLICT']
     return out
 
 
@@ -254,7 +260,7 @@ ADDENDUM_ACTIVITIES = {
 }
 
 
-def extend_held_classification(snapshot, evidence_by_code):
+def extend_held_classification(snapshot, evidence_by_code, *, rule_version=ADDENDUM_VERSION, business_reviews=None):
     """Connect reviewed exact SEC activities, retaining all prior rows and gates.
 
     The SEC-assigned primary activity is business evidence at the source's level;
@@ -262,6 +268,11 @@ def extend_held_classification(snapshot, evidence_by_code):
     Mixed/REIT/end-market/accounting conflicts remain unresolved. No old mapping,
     raw observation, financial input or official Q gate is recomputed/replaced.
     """
+    if rule_version == 'held-sec-book-correspondence/0.3.0':
+        from .sector_qgv_classification_review import extend_review
+        return extend_review(snapshot,evidence_by_code,business_reviews or [])
+    if rule_version != ADDENDUM_VERSION or business_reviews:
+        raise ValueError('CLASSIFICATION_REVIEW_VERSION_INVALID')
     result = copy.deepcopy(snapshot); changes = []
     for row in result['rows']:
         if row.get('mapping') or row.get('reasons') != ['EXACT_SIC_CORRESPONDENCE_NOT_REVIEWED']:
