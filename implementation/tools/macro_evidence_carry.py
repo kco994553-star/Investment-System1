@@ -45,7 +45,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import macro_evidence as tool
 
 el = tool.el
-OUTCOMES = ('CARRIED', 'LIVE_UNREADABLE', 'LIVE_INVALID', 'LIVE_ABSENT', 'NOT_NEEDED', 'NOT_ELIGIBLE', 'CARRY_FAILED')
+OUTCOMES = ('CARRIED', 'LIVE_UNREADABLE', 'LIVE_INVALID', 'LIVE_RECORD_MISMATCH', 'LIVE_ABSENT', 'NOT_NEEDED', 'NOT_ELIGIBLE',
+            'CARRY_FAILED')
 
 
 def _utc_now():

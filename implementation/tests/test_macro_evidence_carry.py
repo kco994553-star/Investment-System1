@@ -400,3 +400,15 @@ def test_screen_mirror_accepts_the_carried_record_and_refuses_broken_ones(tmp_pa
         ok.pop('carry', None)
         script = source[start:end] + '\nprocess.stdout.write(String(mesValid(' + json.dumps(ok) + ')!==null));\n'
         assert subprocess.run([node, '-e', script], capture_output=True, text=True, timeout=60, check=True).stdout == 'true'
+
+
+def test_declared_outcomes_are_exactly_the_outcomes_carry_returns():
+    """OUTCOMES is the public list of carry() results (Codex #437: LIVE_RECORD_MISMATCH was returned but undeclared)."""
+    import ast
+    _, carry, _ = _tools()
+    tree = ast.parse(Path(carry.__file__).read_text(encoding='utf-8'))
+    function = next(node for node in tree.body if isinstance(node, ast.FunctionDef) and node.name == 'carry')
+    returned = {node.value.elts[0].value for node in ast.walk(function)
+                if isinstance(node, ast.Return) and isinstance(node.value, ast.Tuple)}
+    assert len(carry.OUTCOMES) == len(set(carry.OUTCOMES))
+    assert set(carry.OUTCOMES) == returned
