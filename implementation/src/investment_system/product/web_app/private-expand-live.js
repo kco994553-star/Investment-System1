@@ -111,7 +111,7 @@ const CC_PARTS=Object.freeze(['view','technical','macro','qgv_links','dictionary
 // read part → bundle key (the expanded sample's summary is its own population: key 'expanded').
 const CC_KEY=Object.freeze({expanded_summary:'expanded'});
 function ccSummary(C,b){const rows=b.view.rows,n=k=>rows.filter(r=>r[k].status==='CONFIRMED').length,states={};
- let peer=0;for(const r of rows){const x=C.recordFor(r.company_id,null,b);states[x.state]=(states[x.state]||0)+1;if(x.peer_complete)peer++;}
+ let peer=0;for(const r of rows){const x=C.recordFor(r.company_id,null,b);states[x.state]=Object.prototype.hasOwnProperty.call(states,x.state)?states[x.state]+1:1;if(x.peer_complete)peer++;}
  return{rows:rows.length,sector:n('sector'),industry:n('industry'),accounting:n('accounting'),peer,states,
   parts:CC_PARTS.filter(k=>k==='view'||b[CC_KEY[k]||k]||Object.prototype.hasOwnProperty.call(b.mismatch,k)),mismatch:Object.keys(b.mismatch)};}
 function ccPaint(body,b){const C=I.classification,v=b.view,x=ccSummary(C,b);
