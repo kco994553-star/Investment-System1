@@ -45,7 +45,9 @@ const TEXT=Object.freeze({
  SCOPE:'선택한 운영 게시본 하나 기준 · 과거 전체 시장 커버리지 아님 · 신호일 기준 시점 검증 안 됨',
  PRESET_BASIS:'보관된 축 점수에서 도출한 계산 가능 수 · 저장된 프리셋 총점이나 과거 시점 재구성이 아님',
  OFFICIAL:'공식 모델은 기존 N15 구간·TARGET 규칙 그대로 · 이 선정 방식을 따르지 않음',
- GENERAL:'일반 연구(임시) 선정 · 조건 = Q·G 계산됨 · 같은 비중'});
+ GENERAL:'일반 연구(임시) 선정 · 조건 = Q·G 계산됨 · 같은 비중',
+ SELECTION_SCOPE:'선정 모집단 = 엔진이 받은 조건 충족 기업 전부 · 화면 필터는 선정 모집단을 바꾸지 않음 · 모의 구성이며 실제 보유·공식 모델 결과와 섞지 않음',
+ ABSENT:'제외 사유(기업별)·중복 발행사·현금 처리는 이 엔진 계약에 없음 · 화면에서 만들지 않음'});
 
 const own=(o,k)=>Object.prototype.hasOwnProperty.call(o,k);
 const isObj=v=>!!v&&typeof v==='object'&&!Array.isArray(v);
@@ -167,8 +169,16 @@ function validateSelection(res){
  }catch(e){if(e instanceof Refusal)return{ok:false,code:e.code,path:e.path};return{ok:false,code:'INVALID',path:'$'};}}
 const pct=x=>(Math.round(x*10000)/100).toString().replace(/\.0+$/,'')+'%';
 function modeText(v){if(v.mode==='top_n')return'상위 '+v.value+'개';if(v.mode==='top_percent')return'상위 '+v.value+'% (소수점 아래 버림)';return v.legacy?'조건 충족 전부 (선정 방식 지정 없음)':'조건 충족 전부';}
+// The engine's own rules (Codex #473 vertical_slice.select_provisional), shown as words; nothing here re-ranks or fills.
+function ruleText(v){
+ if(v.mode==='all')return v.legacy?'조건 충족 전부 · 엔진 원래 순서 그대로':'조건 충족 전부 · 순위로 자르지 않음';
+ const order='순서: Q → G → V(없으면 뒤) → 회사 ID(동점은 회사 ID 순)';
+ if(v.mode==='top_n')return order+' · 앞에서 '+v.value+'개';
+ return order+' · 조건 충족 '+v.n_eligible+'개 × '+v.value+'% → 내림 '+v.n_selected+'개';}
+function shortText(v){return v.mode==='top_n'&&v.value>v.n_eligible?'요청 '+v.value+'개 · 조건 충족 '+v.n_eligible+'개뿐 · '+v.n_selected+'개만 선정(종목 부족 · 채우지 않음)':null;}
 function selectionView(v){return Object.freeze({mode:v.mode,label:modeText(v),
- count:'조건 충족 '+v.n_eligible+'개 중 '+v.n_selected+'개 선정',weight:v.n_selected?'같은 비중 · 각 '+pct(v.weight):'선정 0개 · 비중 없음',general:TEXT.GENERAL,official:TEXT.OFFICIAL});}
+ count:'조건 충족 '+v.n_eligible+'개 중 '+v.n_selected+'개 선정',weight:v.n_selected?'같은 비중 · 각 '+pct(v.weight):'선정 0개 · 비중 없음',general:TEXT.GENERAL,official:TEXT.OFFICIAL,
+ rule:ruleText(v),shortfall:shortText(v),scope:TEXT.SELECTION_SCOPE,absent:TEXT.ABSENT});}
 
 function source(){return Promise.resolve(Object.freeze({state:'NONE',code:'RESEARCH_SCOPE_NOT_CONNECTED',coverage:null,selection:null,text:TEXT.NONE}));}
 return Object.freeze({COVERAGE_SCHEMA,UNIVERSE_N,FACTORS,AXES,PRESETS,MODES,TEXT,validateCoverage,coverageView,basisText,validateSelection,selectionView,reasonText,source});

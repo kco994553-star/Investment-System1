@@ -84,6 +84,17 @@ ok('selection: all · top N · top % follow Codex counts; weights equal; outcome
   assert.equal(view(sel({ mode: 'top_n', value: 20 }, 12, 12)).count, '조건 충족 12개 중 12개 선정', 'top N bounded by eligible names');
   assert.equal(view(sel({ mode: 'top_percent', value: 10 }, 137, 13)).label, '상위 10% (소수점 아래 버림)');
   assert.equal(view(sel({ mode: 'top_percent', value: 0.5 }, 137, 0)).weight, '선정 0개 · 비중 없음');
+  // The engine's rules as words (Codex #473 select_provisional): order and ties, the percent arithmetic, a top N above the eligible
+  // count selects only what is there (never filled), and what the contract does not carry is said, not made up.
+  const p10 = view(sel({ mode: 'top_percent', value: 10 }, 137, 13));
+  assert.equal(p10.rule, '순서: Q → G → V(없으면 뒤) → 회사 ID(동점은 회사 ID 순) · 조건 충족 137개 × 10% → 내림 13개');
+  assert.equal(p10.shortfall, null);
+  const n20 = view(sel({ mode: 'top_n', value: 20 }, 13, 13));
+  assert.equal(n20.shortfall, '요청 20개 · 조건 충족 13개뿐 · 13개만 선정(종목 부족 · 채우지 않음)');
+  assert.equal(view(sel({ mode: 'top_n', value: 20 }, 137, 20)).shortfall, null);
+  assert.equal(view(sel({ mode: 'all', value: null }, 137, 137)).rule, '조건 충족 전부 · 순위로 자르지 않음');
+  assert.match(n20.absent, /제외 사유\(기업별\)·중복 발행사·현금 처리는 이 엔진 계약에 없음/);
+  assert.match(n20.scope, /화면 필터는 선정 모집단을 바꾸지 않음/);
   const v = view(sel({ mode: 'top_n', value: 3 }, 10, 3));
   assert.match(v.official, /공식 모델은 기존 N15 구간·TARGET 규칙 그대로/);
   assert.doesNotMatch(JSON.stringify(v), /0\.123|0\.0456|secret/, 'outcomes and realised returns are not in the view');
