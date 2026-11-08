@@ -1,0 +1,19 @@
+{
+  "schema": "exp-sector-liquidity-config/1",
+  "experiment_id": "EXP-SECTOR-QGV-LIQUIDITY-DIAGNOSTIC-v1",
+  "calc_version": "qgv2-calc/2026-10-23.1",
+  "baseline": "balanced",
+  "variants": {"A": "BASELINE", "B": "INNER_ONLY", "C": "AXIS_ONLY"},
+  "active_sector_candidates": [],
+  "candidate_status": "BLOCKED_ON_BOOK_AND_HISTORICAL_SECTOR_MAPPING",
+  "fallback": "BASELINE_BALANCED",
+  "type_weights": true,
+  "gate": true,
+  "market_cap_version": "cpi-2025-v1",
+  "signal_day": "2018-02-16",
+  "liquidity_window": "(S_MINUS_6_CALENDAR_MONTHS,S]",
+  "liquidity_methods": ["PROVIDER_VWAP_TIMES_VOLUME", "CLOSE_TIMES_VOLUME_PROXY"],
+  "book_exact_status": "BOOK_EXACT_UNCONFIRMED",
+  "market_percentile": null,
+  "performance_enabled": false
+}

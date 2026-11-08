@@ -219,14 +219,43 @@ function company(route,{box,given,name,facts,star,bodies}){
    return;}
   const cid=e.canonical_id;I.selection.set(cid);
   const title=idx.title(e);name.textContent=title;
+  // 2.4.6 의외의 기업 mark (screen-discovery-live.js): the same reader and status as the 2.1.8 list, by the existing company key.
+  if(I.discoveryLive)I.discoveryLive.mark({name,cid,signal});
   const bits=[e.ticker&&!title.includes(e.ticker)?e.ticker:null,idx.code(e),idx.member(e)].filter(Boolean),extra=h('span',{class:'facts-more'});
   const row=I.companies.get(idx.code(e)),ended=row&&row.status==='WITHDRAWN'?row.withdrawn_on:null;// display only (LISTING-ENDED-CODE pending)
   facts.replaceChildren(h('p',{class:'facts-line'},...bits.flatMap((b,i)=>[i?' · ':'',h('span',{class:'nobr'},b)]),extra),
-   ended?h('p',{class:'reason',dataset:{listingEnded:ended}},'상장 종료 ',ended,' · 점수 없음'):'');star.replaceWith(starButton(cid));
+   ended?h('p',{class:'reason',dataset:{listingEnded:ended}},'상장 종료 ',ended,' · 점수 없음'):'',ccBlock(idx.code(e)||cid,signal));star.replaceWith(starButton(cid));
   I.data.ready().then(settled(signal,()=>{const add=classOf(cid);if(add.length)extra.append(...add.map(t=>' · '+t));}),()=>{});
-  qgvCard(bodies.qgv,cid,signal);macroCard(bodies.macro,signal);newsCard(bodies.news,e,cid,signal);portfolioCard(bodies.portfolio,e,idx,signal);}),
+  qgvCard(bodies.qgv,cid,signal);macroCard(bodies.macro,signal);newsCard(bodies.news,e,cid,signal);portfolioCard(bodies.portfolio,e,idx,signal);
+  // 관련 정책 (4.5 정책·지정학, owner 2026-11-07): a folded card under 3. 매크로, read when opened (screen-policy-impact-live.js).
+  if(I.policyImpactLive)I.policyImpactLive.companyCard(route,{after:bodies.macro,cid});}),
  ()=>{if(!signal.aborted)facts.replaceChildren(na('기업 목록을 불러오지 못했습니다','INDEX_FAILED'));});
 }
+/* 공통 분류 (DC-48, owner 2026-11-07; IS2.classification, Codex common-classification/1): three lines 섹터 · 하위 산업 · 원천 SIC
+   (code · SEC 제출), the record's state words, its record id / hash / evaluation date, and the three ids apart (company_id = this
+   company's Universe504 code, which a TARGET catalog id such as 'amd' is not; issuer_id = the record's issuer, security_id = none: a classification record carries no verified security id). The
+   reader decides nothing here; no public file today (source NONE → 공통 분류 실자료 묶음 보존됨 · 인증된 화면 전달 경로 미연결). With a confirmed sector, links carry the
+   classification context (cc:… token) to the QGV filter and 매크로 4.2. */
+function ccBlock(cid,signal){
+ const C=I.classification,box=h('div',{class:'cc-block',dataset:{cc:'LOADING'}},h('p',{class:'reason'},'공통 분류 · 불러오는 중'));
+ if(!C){box.dataset.cc='LOADER_FAILED';box.replaceChildren(na('공통 분류 판독기를 불러오지 못했습니다','LOADER_FAILED'));return box;}
+ const line=(k,label,...v)=>h('p',{class:'cc-line',dataset:{ccLine:k}},h('b',null,label),' ',...v);
+ function paint(){const st=C.state(),r=C.recordFor(cid),none=st.state!=='OK',w=r.words;
+  const sec=r.sector&&r.sector.status==='CONFIRMED'?C.sectorName(r.sector.id):none?C.WORDS.NO_DATA:w;
+  const ind=r.industry&&r.industry.status==='CONFIRMED'?C.industryName(r.industry.id):r.sector&&r.sector.status==='CONFIRMED'?(r.industry.status==='CONFLICT'?'하위 산업 근거 불일치':'하위 산업 미확인'):C.WORDS.NO_DATA;
+  const sic=r.source_sic&&r.source_sic.code?[r.source_sic.code,' · ',r.source_sic.system==='SEC_SIC'?'SEC 제출':r.source_sic.system]:['원천 SIC 기록 없음'];
+  const token=r.sector&&r.sector.status==='CONFIRMED'?C.context({sector:r.sector.id,industry:r.industry.status==='CONFIRMED'?r.industry.id:null}):null;
+  box.dataset.cc=none?st.state:r.state;
+  box.replaceChildren(h('p',{class:'hand cc-head'},'공통 분류 · 섹터 → 하위 산업 → 기업 · 원천 SIC는 따로'),
+   line('sector','섹터',sec),line('industry','하위 산업',ind),line('sic','원천 SIC',...sic),
+   h('p',{class:none?'reason':'cc-state',dataset:{ccState:none?st.state:r.state,na:none?st.code||st.state:r.reason||''}},'분류 상태 · ',none?(st.state==='INVALID'?C.WORDS.INVALID:C.WORDS.NONE):w,
+    !none&&r.reason?h('span',{class:'reason'},' · 사유 ',r.reason):null),
+   none?h('p',{class:'reason'},C.WORDS.NONE_WHY):h('p',{class:'reason',dataset:{ccRecord:r.record_id||'',ccHash:r.classification_hash||''}},'분류 기록 ',r.record_id||'없음',' · 분류 해시 ',C.shortHash(r.classification_hash),' · 평가일 ',r.valuation_date,
+    ' · ',r.dictionary_version,r.data_kind==='SYNTHETIC'?' · 합성 데이터 · 시험용':''),
+   h('p',{class:'reason cc-ids',dataset:{ccCompany:cid,ccIssuer:r.issuer_id||'',ccSecurity:''}},'기업 ID ',h('span',{class:'nobr'},cid),' · 발행사 ID ',h('span',{class:'nobr'},r.issuer_id||C.WORDS.ISSUER_NONE),' · 증권 ID ',C.WORDS.SECURITY_NONE),
+   token?h('p',{class:'links cc-links'},h('a',{class:'lk',href:href('qgv',token),dataset:{ccLink:'qgv'}},'→ 같은 섹터 QGV 리더보드'),' ',h('a',{class:'lk',href:href('macro',token),dataset:{ccLink:'macro'}},'→ 4.2 섹터 비교 가격계열')):null);}
+ paint();Promise.resolve(C.load()).then(settled(signal,paint),()=>{});
+ return box;}
 // SIC group and investment type, only from the published files (company-classification.json, company-types-pricefree.json).
 function classOf(id){
  const out=[],CS=window.ClassificationScreens,cls=CS?I.data.get(CS.FILE):null,rec=cls&&CS.record?CS.record(cls,id):null,ind=rec?rec.industry:null;

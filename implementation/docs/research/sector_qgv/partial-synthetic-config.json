@@ -1,0 +1,84 @@
+{
+  "schema_version": "sector-qgv-config/1",
+  "config_id": "default",
+  "base_preset_id": "sector-qgv-default/0.1.0",
+  "scoped_overrides": {
+    "INFORMATION_TECHNOLOGY|GENERAL": {
+      "preset_id": "sector-qgv-default/0.1.0",
+      "version": "0.1.0",
+      "state": "draft",
+      "validation_state": "initial",
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "accounting_template": "GENERAL",
+      "sector_mapping_version": "book-sector-map/1",
+      "axis_weights": {
+        "Q": 3000,
+        "G": 2500,
+        "V": 4500
+      },
+      "axes": {
+        "Q": {
+          "profitability": {
+            "weight": 4000,
+            "factors": {
+              "operating_margin_ttm": 5000,
+              "roa_ttm": 5000
+            }
+          },
+          "accounting_quality": {
+            "weight": 3000,
+            "factors": {
+              "accruals_assets_ttm": 10000
+            }
+          },
+          "financial_capacity": {
+            "weight": 3000,
+            "factors": {
+              "debt_assets": 10000
+            }
+          }
+        },
+        "G": {
+          "growth": {
+            "weight": 6000,
+            "factors": {
+              "revenue_cagr_3y": 10000
+            }
+          },
+          "profitability_change": {
+            "weight": 4000,
+            "factors": {
+              "roa_improvement_3y": 10000
+            }
+          }
+        },
+        "V": {
+          "earnings": {
+            "weight": 3000,
+            "factors": {
+              "ep_ttm_diluted": 10000
+            }
+          },
+          "cash": {
+            "weight": 4000,
+            "factors": {
+              "cfo_mcap": 10000
+            }
+          },
+          "other_value": {
+            "weight": 3000,
+            "factors": {
+              "sales_ev": 10000
+            }
+          }
+        }
+      }
+    }
+  },
+  "display_preferences": {},
+  "owner_scope": "RESEARCH",
+  "normalization_policy": "sector-midrank-strict20/1",
+  "missing_policy": "strict/1",
+  "gate_policy": "official-q-percentile-required/1",
+  "sector_mapping_version": "book-sector-map/1"
+}

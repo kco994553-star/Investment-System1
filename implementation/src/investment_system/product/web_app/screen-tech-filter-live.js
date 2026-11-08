@@ -1,17 +1,26 @@
 /* 1.1.8 기술 조건 필터 (feature 3.5; owner 2026-11-03 and 2026-11-04), the part of the QGV leaderboard that runs after IS2.ready.
-   screen-qgv-live.js asks IS2.techFilterLive.create({signal, redraw}) once per route and calls on every draw: keep(rows) (the
-   leaderboard rows the filter lets through, or null when it does not apply), head() / cell(row) / sub(row) (the table's tech column
+   screen-qgv-live.js asks IS2.techFilterLive.create({signal, redraw}) once per route and calls on every draw: keep(rows, {universe})
+   (the leaderboard rows the filter lets through, or null when it does not apply; universe = the Universe504 rows from which the
+   common classification (IS2.classification.groupRows) picks the confirmed board group's full membership for the join), head() / cell(row) / sub(row) (the table's tech column
    and the phone line) and block() (this block's content).
    - Data: Codex's technical-leaderboard/1 boards (#469) through IS2.techScreen (validate, evaluate); today the source is NONE.
      One board per (signal_day, group_id). Ranks, N, medians and deciles are the board's and never change with the filters; the
      conditions are the board's own booleans (중앙값 이상 = ge_median, 중앙값 초과 = gt_median); a null condition is 판정 불가.
    - Flow (owner): ① 평가일·비교 그룹(보드) → ② 지표 원값·분위 → ③ 필터 → ④ 결과. The block's own board table lists the board's rows
      with their ORIGINAL rank of the chosen metric (the rank number is the board's, never renumbered after filtering). The
-     leaderboard table is filtered only for board rows that join a leaderboard row (security_id = the row's id or code; QGV join
-     key [signal_day, security_id]); its sort stays 1.1.2 (QGV high first by default). No join → the leaderboard is left as it is
-     and the block says why.
+     leaderboard table is filtered only when IS2.techScreen.joinRows (port of Codex #515 join_filtered_rows) verifies the same
+     evaluation date and the same security (owner audit 2026-11-07; key [signal_day, security_id]): each Universe row's own
+     signal_day and security_id (qgv.js rowRecord: null until evidenced, so no join today) and source().security_links (none
+     today). A security id, ticker, code or company id is never matched by itself. Its sort stays 1.1.2 (QGV high first by
+     default). No join → the leaderboard is left as it is (no technical condition applied) and the block says why (the code's
+     words: 평가일 불일치, 매핑 없음, 매핑 중복, 보드에 없는 증권 …).
    - States kept apart: 그룹 구성 미확인 (GROUP_MEMBERSHIP_UNCONFIRMED: no N, rank, median or decile), 유효 N < 10 (ranks and median,
      no decile), 계산 후 조건 충족 0건 (every condition decided, none passed), 판정 불가 (a condition the board cannot decide).
+   - Join /2 (owner 2026-11-08, Codex #516 5b0ec88a GROUP_JOIN.md): a COMMON board joins through techScreen.joinGroupRows with
+     the roster / context of IS2.classification.groupInput; missing / duplicate / out-of-group rows, unconfirmed roster, row
+     classification hash / record mismatch, issuer conflict refuse the whole join; a confirmed empty group is VERIFIED_EMPTY.
+   - 공통 분류 (DC-48): for a COMMON:<sector>:<basis> board, ① names the classification record set (hash, evaluation date) and the
+     board rows carry the company / record id of their verified security (IS2.classification; never computed here).
    - A null value is NA with its reason; raw_value is never shown and never fills it. Values are price-derived: text inside
      [data-ram-price] only; the view state lives in RAM (this page load); nothing is stored. */
 (function(){
@@ -24,9 +33,9 @@ const na=(code,words)=>h('span',{class:'reason',dataset:{na:code||''}},words);
 const STATE_WORDS={UNCONFIRMED:'그룹 구성 미확인 · 순위·중앙값·분위 없음',N_BELOW_10:null,OK:null};
 
 function create({signal,redraw}){
- const ctx={src:null,value:null,err:null,loading:false};
+ const ctx={src:null,value:null,links:null,err:null,loading:false};
  function load(){if(ctx.loading)return;ctx.loading=true;let p;try{p=T().source();}catch(e){p=Promise.reject(e);}
-  Promise.resolve(p).then(src=>{if(signal.aborted)return;ctx.loading=false;ctx.src=src||null;ctx.value=null;ctx.err=null;
+  Promise.resolve(p).then(src=>{if(signal.aborted)return;ctx.loading=false;ctx.src=src||null;ctx.value=null;ctx.err=null;ctx.links=src&&src.security_links!==undefined?src.security_links:null;
    if(src&&src.state==='OK'){const r=T().validate(src.payload);if(r.ok)ctx.value=r.value;else ctx.err=r.code;}
    if(ctx.value&&!ctx.value.boards.some(b=>b.id===V.board))V.board=ctx.value.boards[0].id;redraw();},
   ()=>{if(signal.aborted)return;ctx.loading=false;ctx.src={state:'ERROR',code:'TECH_SOURCE_FAILED'};ctx.value=null;redraw();});}
@@ -37,14 +46,39 @@ function create({signal,redraw}){
  function result(){const b=board();if(!b)return null;const key=V.board+'|'+JSON.stringify(conds());if(memo&&memo.key===key&&memo.b===b)return memo.r;
   memo={key,b,r:T().evaluate(b,conds())};return memo.r;}
  let secMemo=null;const secs=()=>{const b=board();if(!b)return new Map();if(secMemo&&secMemo.b===b)return secMemo.s;secMemo={b,s:T().securities(b)};return secMemo.s;};
- // Board rows joined to leaderboard rows (QGV join key: the security id equals the leaderboard row's id or code).
- function joinOf(rows){const by=new Map();for(const r of rows){by.set(r.id,r);if(r.code)by.set(r.code,r);}const out=new Map();
-  for(const[k,s]of secs())if(s.security_id&&by.has(s.security_id))out.set(by.get(s.security_id).id,k);return out;}
+ // Leaderboard rows joined only when verified (IS2.techScreen.joinRows: the row's signal_day + security_id, an active confirmed link).
  let joinMemo=null;
- function keep(rows){if(!V.on||!board())return null;const j=joinOf(rows);joinMemo=j;if(!j.size)return null;const r=result();
-  return{rows:rows.filter(x=>j.has(x.id)&&r.rows.get(j.get(x.id)).state==='PASS'),joined:j.size,result:r};}
- const on=()=>V.on&&!!board()&&!!joinMemo&&joinMemo.size>0;
- const secOfRow=row=>{const k=joinMemo&&joinMemo.get(row.id);return k?secs().get(k):null;};
+ // The rows given to the join are the confirmed board group's FULL membership (owner 2026-11-07, Codex #516 answer 3): IS2.classification
+ // .groupRows(board, universe) from the common classification record, never the rows already present on the board (an intersection
+ // would hide missing members). No provider or an unresolved group → BOARD_GROUP_ROWS_UNRESOLVED (no join). No links file → Codex's
+ // order: SECURITY_LINKS_NOT_CONNECTED first.
+ // The common classification is read once per page (IS2.classification.load: source NONE today, no request); groupRowsWhy names
+ // why a group is unresolved (분류 버전 불일치, 구성원 미확인, …) next to BOARD_GROUP_ROWS_UNRESOLVED.
+ const CL=()=>I.classification;
+ if(CL()&&typeof CL().load==='function')Promise.resolve(CL().load()).then(()=>{if(!signal.aborted)redraw();},()=>{});
+ const groupRows=universe=>{const C=CL();if(!C||typeof C.groupRows!=='function')return{rows:null,code:null};const g=C.groupRows(board(),universe);
+  if(Array.isArray(g))return{rows:g,code:null};return{rows:null,code:typeof C.groupRowsWhy==='function'?C.groupRowsWhy(board(),universe).code:null};};
+ // A COMMON:<sector>:<basis> board: technical-filter-join/2 (Codex #516 5b0ec88a) — the trusted roster and pinned context from
+ // IS2.classification.groupInput, the universe rows the roster names (all of them; out-of-group rows never passed, never changed),
+ // issuers connected only from the roster's record evidence (connect_issuers, recorded). Any other board: the /1 identity join,
+ // group completeness NOT_CHECKED.
+ function keep(rows,{universe=rows}={}){if(!V.on||!board())return null;const C=CL(),gi=C&&typeof C.groupInput==='function'?C.groupInput(board(),universe):{mode:'NONE'};
+  let j;
+  if(gi.mode==='V2'){
+   if(gi.code)j=Object.freeze({ok:false,code:'BOARD_GROUP_ROWS_UNRESOLVED',group_code:gi.code,v2:true});
+   else if(ctx.links===null||ctx.links===undefined)j=T().joinRows(board(),[],{links:null});
+   else{const g=T().joinGroupRows(board(),{qgv_rows:gi.rows,security_links:ctx.links,conditions:conds(),data_kind:ctx.value.data_kind,group_manifest:gi.manifest,group_context:gi.context,connect_issuers:true});
+    j=g.ok?Object.freeze({ok:true,v2:true,keys:g.keys,membership_validation:g.membership_validation,original_group_count:g.original_group_count,issuer_connections:g.issuer_connections.length,
+     outside:Array.isArray(universe)?universe.length-gi.rows.length:null}):Object.freeze({ok:false,code:g.code,v2:true});}}
+  else{const group=ctx.links===null||ctx.links===undefined?{rows:[],code:null}:groupRows(universe);
+   const jr=group.rows===null?Object.freeze({ok:false,code:'BOARD_GROUP_ROWS_UNRESOLVED',group_code:group.code}):T().joinRows(board(),group.rows,{links:ctx.links,data_kind:ctx.value.data_kind});
+   // Universe rows outside the board group are not the conditions' subject: never joined, never re-ranked (shown when off).
+   j=jr.ok?Object.freeze({...jr,completeness:'NOT_CHECKED',outside:Array.isArray(universe)?universe.length-group.rows.length:null}):jr;}
+  joinMemo=j;
+  if(!j.ok)return null;const r=result();
+  return{rows:rows.filter(x=>j.keys.has(x.security_id)&&r.rows.get(x.security_id).state==='PASS'),joined:j.keys.size,result:r};}
+ const on=()=>V.on&&!!board()&&!!joinMemo&&joinMemo.ok;
+ const secOfRow=row=>(on()&&joinMemo.keys.has(row.security_id)?secs().get(row.security_id):null);
 
  /* ---- one metric of one security: value + rank/decile (RAM text) or NA with its reason */
  function metricLine(s,m,{short=false}={}){const S=T(),r=s.rows[m],label=short?S.META[m].short:S.META[m].label;
@@ -67,17 +101,29 @@ function create({signal,redraw}){
   const first=conds().map(c=>c.metric),show=first.length?[...new Set(first)].slice(0,3):['momentum_6m'];
   return[h('span',{class:'m-only sub-line tech-line'},...show.flatMap((m,i)=>[i?' · ':'',metricLine(s,m,{short:true})])),h('span',{class:'m-only'},detail(s))];}
 
+ /* ---- the common classification of a COMMON:<sector>:<basis> board (IS2.classification; DC-48): the record set it was built on
+    (classification hash, evaluation date) and, per board row, the company / record whose verified security it is. Read only. */
+ const ccTech=()=>{const C=CL(),v=C&&typeof C.value==='function'?C.value():null;return v&&v.technical?v:null;};
+ function ccLine(b){if(!/^COMMON:/.test(b.group_id))return null;const C=CL(),v=ccTech(),st=C&&typeof C.state==='function'?C.state():null;
+  const mm=st&&st.state==='OK'&&st.value.mismatch&&st.value.mismatch.technical;
+  if(!v)return h('p',{class:'reason',dataset:{ccTech:mm?'VERSION_MISMATCH':'NONE',na:mm?'CLASSIFICATION_VERSION_MISMATCH':'CLASSIFICATION_NOT_CONNECTED'}},'공통 분류 그룹 · ',mm?C.WORDS.VERSION_MISMATCH:C?C.WORDS.NONE:'공통 분류 판독기 없음');
+  const g=v.technical.groups.find(x=>x.board.group_id===b.group_id),same=g&&g.board.population_hash===b.population_hash&&g.board.membership_source===b.membership_source;
+  return h('p',{class:'reason',dataset:{ccTech:same?'OK':'VERSION_MISMATCH',ccHash:v.view.classification_hash}},'공통 분류 그룹 · 섹터 ',g?C.sectorName(g.sector_id):'NA',
+   ' · 분류 기록 ',C.shortHash(v.view.classification_hash),' · 분류 평가일 ',v.view.valuation_date,same?' · 구성원 '+g.counts.company_members+'개 기업(분류 기록 기준)':' · '+C.WORDS.VERSION_MISMATCH);}
+ function ccRow(s){const v=ccTech();if(!v||!s.security_id)return{};const r=v.technical.rows.find(x=>x.security_ids.includes(s.security_id));
+  return r&&r.classification_record_id?{ccCompany:r.company_id,ccRecord:r.classification_record_id}:{};}
+
  /* ---- the board table of ④: rows in the ORIGINAL rank of the chosen metric (null ranks last), never renumbered */
  function boardTable(keys,phone){const S=T(),list=[...keys].map(k=>secs().get(k)),by=V.by;
   const rk=s=>{const r=s.rows[by];return r&&r.rank!==null?r.rank:Infinity;};
   list.sort((a,b)=>rk(a)-rk(b)||(a.key<b.key?-1:a.key>b.key?1:0));
   const name=s=>s.symbol||s.security_id||s.series_id,rankCell=s=>{const r=s.rows[by];return r&&r.rank!==null?String(r.rank):'—';};
-  if(phone)return h('ol',{class:'news-lines tf-board',dataset:{tfBoard:String(list.length)}},...list.map(s=>h('li',{dataset:{tfRow:s.key}},
+  if(phone)return h('ol',{class:'news-lines tf-board',dataset:{tfBoard:String(list.length)}},...list.map(s=>h('li',{dataset:{tfRow:s.key,...ccRow(s)}},
    h('b',{dataset:{tfRank:''}},rankCell(s)),' ',name(s),h('span',{class:'sub-line tech-line'},...S.METRICS.flatMap((m,i)=>[i?' · ':'',metricLine(s,m,{short:true})])),detail(s))));
   return h('div',{class:'tbl-wrap'},h('table',{class:'tbl tf-board',dataset:{tfBoard:String(list.length)}},
    h('caption',null,'보드 행 · 원래 순위 = ',S.META[by].label,' 순위(보드 그대로, 필터 뒤 다시 매기지 않음)'),
    h('thead',null,h('tr',null,h('th',{scope:'col'},'원래 순위'),h('th',{scope:'col'},'종목'),...S.METRICS.map(m=>h('th',{scope:'col'},S.META[m].short)))),
-   h('tbody',null,...list.map(s=>h('tr',{dataset:{tfRow:s.key}},h('td',{dataset:{tfRank:''}},rankCell(s)),h('td',null,name(s)),
+   h('tbody',null,...list.map(s=>h('tr',{dataset:{tfRow:s.key,...ccRow(s)}},h('td',{dataset:{tfRank:''}},rankCell(s)),h('td',null,name(s)),
     ...S.METRICS.map(m=>h('td',{dataset:{metric:m}},metricLine(s,m,{short:true}))))))));}
 
  /* ---- the block */
@@ -95,7 +141,7 @@ function create({signal,redraw}){
   const sel=h('select',{id:'tf-board',dataset:{k:'tf-board'},onchange:e=>{V.board=e.target.value;redraw();}},...val.boards.map(x=>h('option',{value:x.id,selected:x.id===V.board},x.label)));
   const step1=h('div',{class:'tf-step',dataset:{tfStep:'1'}},h('b',null,'① 평가일 · 비교 그룹'),h('div',{class:'sort-row'},h('label',{for:'tf-board'},'보드'),sel),
    h('p',{class:'reason',dataset:{tfMembership:b.membership_status}},'평가일 ',b.signal_day,' · 그룹 ',b.group_id,' · 구성원 ',b.membership_status==='CONFIRMED'?'확인됨':'미확인',
-    ' · 순위·분위·중앙값·분모는 이 보드 그대로 · 필터를 더해도 다시 매기지 않음'));
+    ' · 순위·분위·중앙값·분모는 이 보드 그대로 · 필터를 더해도 다시 매기지 않음'),ccLine(b));
   // ② 지표 카드
   const cards=S.METRICS.map(m=>{const x=b.metrics[m],st=S.metricState(b,m);
    const words=st==='UNCONFIRMED'?STATE_WORDS.UNCONFIRMED:st==='N_BELOW_10'?'유효 종목 '+x.n_valid+' < 10 · 순위·중앙값만 · 분위 없음':'분위 매김 (D10·D1 각 '+x.k+'개)';
@@ -118,7 +164,7 @@ function create({signal,redraw}){
   // ④ 결과
   const r=result(),cs=r.conditions,total=r.counts.PASS+r.counts.FAIL+r.counts.UNKNOWN,unknown=[...r.rows].filter(([,x])=>x.state==='UNKNOWN');
   const shown=cs.length?[...r.rows].filter(([,x])=>x.state==='PASS').map(([k])=>k):[...r.rows.keys()];
-  const j=joinMemo,joined=j?j.size:null;
+  const j=V.on?joinMemo:null,joined=j&&j.ok?j.keys.size:null;
   const step4=h('div',{class:'tf-step',dataset:{tfStep:'4'}},h('b',null,'④ 결과 · QGV 등으로 정렬'),
    h('p',{class:'sk status-line',role:'status',dataset:{tfCount:''}},b.group_id,' ',String(total),'개 중 · 통과 ',String(r.counts.PASS),' · 조건 미충족 ',String(r.counts.FAIL),' · 판정 불가 ',String(r.counts.UNKNOWN)),
    cs.length?h('p',{class:'reason',dataset:{tfConds:''}},'조건: ',cs.map(c=>S.condText(c.metric,c.condition)).join(' · ')):h('p',{class:'reason'},'조건 없음 · 보드 전체'),
@@ -128,9 +174,12 @@ function create({signal,redraw}){
     h('ul',null,...unknown.map(([k,x])=>h('li',{dataset:{unknownRow:k}},(secs().get(k).symbol||secs().get(k).security_id||k),' · ',
      ...x.unknown.flatMap((u,i)=>[i?' · ':'',S.META[u.metric].label,' ',na(u.reason,S.reasonText(u.reason))]))))):null,
    shown.length?boardTable(shown,phone):null,
-   h('p',{class:'reason',dataset:{tfJoin:joined===null?'OFF':String(joined)}},!V.on?'리더보드 표에 적용하려면 위 스위치를 켜세요 · 보드 표는 원래 순위 그대로':
-    joined?'리더보드 표: 결합된 '+joined+'개 중 통과한 종목만 · 정렬은 1.1.2 그대로(기본 QGV 높은 순) · 순위 번호·점수 그대로':
-    '리더보드 표에 적용할 수 없음 · 보드 행의 증권 ID가 리더보드 행과 결합되지 않음(QGV 결합 키 [평가일, 증권 ID]) · 리더보드는 그대로'));
+   h('p',{class:'reason',dataset:j&&!j.ok?{tfJoin:j.code,na:j.code,...(j.group_code?{tfGroup:j.group_code}:{})}:{tfJoin:joined===null?'OFF':String(joined)}},!j?'리더보드 표에 적용하려면 위 스위치를 켜세요 · 보드 표는 원래 순위 그대로':
+    j.ok?['리더보드 표: 결합된 '+joined+'개 중 통과한 종목만 · 정렬은 1.1.2 그대로(기본 QGV 높은 순) · 순위 번호·점수 그대로',
+     Number.isInteger(j.outside)&&j.outside>0?h('span',{class:'tf-outside',dataset:{tfOutside:String(j.outside)}},' · 그룹 밖 '+j.outside+'행 · 조건 적용 대상 아님 · 원래 점수·순위 그대로 · 스위치를 끄면 표에 다시 보임'):null,
+     j.v2?h('span',{class:'tf-v2',dataset:{tfValidation:j.membership_validation,tfIssuerConnections:String(j.issuer_connections)}},' · 결합 /2 · 그룹 명부 ',j.membership_validation==='VERIFIED_EMPTY'?'확인 · 빈 그룹 0행':'확인 '+j.original_group_count+'행',
+      j.issuer_connections?' · 발행사 연결 '+j.issuer_connections+'행(같은 기록·해시·평가일의 분류 근거, 원래 행은 그대로)':''):h('span',{class:'tf-v1',dataset:{tfValidation:'NOT_CHECKED'}},' · 결합 /1 · 그룹 완전성 미확인(명부 없음)')]:
+    '리더보드 표에 적용할 수 없음 · '+S.joinText(j)+(j.group_code&&CL()&&CL().groupText?' · '+CL().groupText(j.group_code):'')+' · 같은 평가일·같은 증권으로 확인된 행만 결합(QGV 결합 키 [평가일, 증권 ID]) · 리더보드는 기술 조건 없이 그대로'));
   return[status,step1,step2,step3,step4];}
  return Object.freeze({load,on,keep,head,cell,sub,block});}
 I.techFilterLive=Object.freeze({create});

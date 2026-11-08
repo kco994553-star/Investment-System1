@@ -77,7 +77,7 @@ function returnOrder(rows,value){return rows.map(r=>({r,v:value(r)})).sort((a,b)
 const helpers=Object.freeze({SORTS,sortSpec,oppositeSort,sortRows,sicOf,industryOf,filterClassified,populationOf,listOf,returnOrder});
 
 /* ---------------------------------------------------------------- view state (RAM, this page load only) */
-const V={list:'ALL',sort:'qgv',f:{industry:'',sic2:'',sic4:'',type:'',state:''},fav:false,period:'1D',ret:false,
+const V={list:'ALL',sort:'qgv',f:{industry:'',sic2:'',sic4:'',type:'',state:'',cc:'',ccSub:''},fav:false,period:'1D',ret:false,
  preview:false,profile:null,gate:true,shown:STEP,panel:false,n:15};
 const LISTS=[['ALL','전체'],['RANKED','QGV 종합 순위'],['QG_REFERENCE',null],['PARTIAL_AXES','일부 축만 가능'],['CHECK_DATA','자료 확인 필요']];
 const PERIODS=['1D','5D','20D'],WAIT_PERIODS=['60D','120D','YTD','1Y'];
@@ -192,6 +192,20 @@ function leaderboard(route,refs){
   let p;try{p=P.periodReturns(V.period,pg.rows.map(r=>({id:r.id,ticker:r.ticker,code:r.code})));}catch(e){p=Promise.reject(e);}
   Promise.resolve(p).then(r=>{if(signal.aborted||my!==ctx.retGen)return;ctx.ret=r;later();},()=>{if(signal.aborted||my!==ctx.retGen)return;ctx.ret=null;later();});}
 
+ /* ---- 공통 분류 (DC-48; IS2.classification, Codex common-classification/1): the 공통 섹터 → 하위 산업 filter, apart from the
+    원천 SIC filters. It reads each row's record by its Universe504 code (= the record's company_id) and only hides rows: scores,
+    ranks, denominators and the sort stay the layer's. A hash token (#/qgv/cc:…) brings a sector / industry from another screen;
+    a token of another record set is not applied (분류 버전 불일치). The record set is read once (source NONE today). */
+ const CC=()=>I.classification;
+ const ccOn=()=>{const C=CC();return!!C&&typeof C.state==='function'&&C.state().state==='OK';};
+ const ccMemo=new Map();let ccKey=null;
+ const ccRec=r=>{const C=CC(),v=C.value();if(ccKey!==v){ccKey=v;ccMemo.clear();}if(!ccMemo.has(r.code))ccMemo.set(r.code,C.recordFor(r.code));return ccMemo.get(r.code);};
+ const ccToken=route.params&&route.params[0]&&/^cc:/.test(route.params[0])?route.params[0]:null;
+ ctx.ccToken={token:ccToken,state:null};
+ function ccApplyToken(){const C=CC();if(!ccToken||!C||ctx.ccToken.state)return;if(!ccOn())return;const st=C.contextState(ccToken);ctx.ccToken.state=st;
+  if(st==='OK'){const c=C.parseContext(ccToken);V.f={...V.f,cc:c.sector||'',ccSub:c.industry||''};V.shown=STEP;}}
+ if(CC()&&typeof CC().load==='function')Promise.resolve(CC().load()).then(()=>{if(!signal.aborted){ccApplyToken();later();}},()=>{});
+
  /* ---- the view: Universe504 → list → filters → order → first rows */
  function previewOf(pg){
   const list=profiles(),p=list.find(x=>x.id===V.profile)||list[0];if(!V.preview||!p||pg.state!=='READY')return null;
@@ -204,11 +218,11 @@ function leaderboard(route,refs){
   const pg=ctx.pg,pv=previewOf(pg),base=pv?pv.out.rows:null,cls=ps();
   const scoped=base?base.filter(r=>r.scope==='UNIVERSE'):Q.rows(pg,{scope:'UNIVERSE'});
   const list=pv?'ALL':V.list,listed=list==='ALL'?scoped:scoped.filter(r=>listOf(r)===list);
-  const fav=interests(),f=V.f,any=!!(f.industry||f.sic2||f.sic4||f.type||f.state||V.fav);
+  const fav=interests(),f=V.f,any=!!(f.industry||f.sic2||f.sic4||f.type||f.state||f.cc||V.fav),cc=ccOn();
   const byId=new Map(filterClassified(listed.map(r=>({company_id:r.id,row:r})),cls,f).map(x=>[x.company_id,x.row]));
   const filtered=listed.filter(r=>byId.has(r.id)&&(!f.type||(f.type==='UNCLASSIFIED'?!r.types.selected.length&&r.types.reason==='NO_RECOGNIZED_TYPE':f.type==='NOT_AVAILABLE'?!r.types.selected.length&&r.types.reason!=='NO_RECOGNIZED_TYPE':r.types.selected.includes(f.type)))
-   &&(!f.state||r.coverage.states.includes(f.state))&&(!V.fav||fav.ids.includes(r.id)));
-  const tech=TF?TF.keep(filtered):null,kept=tech?tech.rows:filtered;
+   &&(!f.state||r.coverage.states.includes(f.state))&&(!V.fav||fav.ids.includes(r.id))&&(!cc||!f.cc||CC().matches(ccRec(r),{sector:f.cc,industry:f.ccSub})));
+  const tech=TF?TF.keep(filtered,{universe:scoped}):null,kept=tech?tech.rows:filtered;
   const ur=ranks(),m3=new Map(),cap=r=>{if(!ur)return null;if(!m3.has(r.id))m3.set(r.id,P.rankFor({company_id:r.id,ticker:r.ticker}));const e=m3.get(r.id);return e&&Number.isInteger(e.rank)?e.rank:null;};
   if(sortSpec(V.sort)[1]==='cap'&&!ur||V.sort==='favorites'&&!fav.ids.length||!SORTS.some(s=>s[0]===V.sort))V.sort='qgv';
   const ret=ctx.ret&&ctx.ret.state==='READY'?ctx.ret:null,byRet=V.ret&&!!ret;
@@ -296,7 +310,7 @@ function leaderboard(route,refs){
   const p=Math.round(x.value*1000)/10,cls=p>0?'ret up':p<0?'ret down':'ret',s=(p>0?'+':p<0?'−':'')+fmt(Math.abs(p))+'%';
   return[h('span',{class:cls,dataset:{ramPrice:''}},s),' ',h('small',{class:'note',dataset:{reason:'PRICE_BASIS_CONTINUITY_UNCONFIRMED'}},'분할 미확인')];}
  function row(r,v,active){
-  const sic=sicOf({company_id:r.id},v.cls),ty=types(r),on=c=>(c===active?'on':''),pc=c=>'pc-col '+on(c);
+  const sic=sicOf({company_id:r.id},v.cls),ty=types(r),on=c=>(c===active?'on':''),pc=c=>'pc-col '+on(c),cc=ccOn()?ccRec(r):null;
   const sub=[['Q','q'],['G','g'],['V','v']].map(([a,k])=>h(k===active?'b':'span',{class:k===active?k+'-text':''},a,' ',ok(r.score[k])?fmt(r.score[k]):'NA'));
   // Owner decision 2026-10-31: a shown V names its IEX last-trade time when the layer says so (r.v_last_trade.text; >= 30 minutes
   // before the session close). Nothing otherwise; the V and its sort value are unchanged.
@@ -305,14 +319,14 @@ function leaderboard(route,refs){
   const company=h('td',{class:on('name')},h('a',{href:href('company',r.id),class:'co'},title(r)),title(r).includes(r.ticker)?null:h('span',{class:'reason'},' ',r.ticker),
    h('span',{class:'m-only sub-line'},sic||'SIC NA',' · ',typeof ty==='string'?ty:'유형 NA'),
    h('span',{class:'m-only sub-line'},...sub.flatMap((x,i)=>[i?' · ':'',x]),lt?[' ',ltNote('note')]:null,' · ',m3(r,v)),
-   why.length?h('details',{class:'m-only why'},h('summary',null,'사유 ▸'),h('ul',null,...why)):null,v.tech?TF.sub(r):null);
+   why.length?h('details',{class:'m-only why'},h('summary',null,'사유 ▸'),h('ul',null,...why)):null,v.tech?TF.sub(r):null,cc?ccLineOf(cc):null);
   let qgvCell=score(r,'total'),vCell=score(r,'v');
   if(v.list==='QG_REFERENCE'&&!ok(r.score.v))vCell=h('span',{class:'reason'},'— 근거: ',text(r.na_reason.v));
   if(v.list==='CHECK_DATA'&&!ok(r.score.total))qgvCell=h('span',{class:'reason'},'어느 축도 산출 안 됨 → 근거: ',text(r.na_reason.total));
   if(v.list==='PARTIAL_AXES'&&!ok(r.score.total))qgvCell=h('span',{class:'reason'},'종합 없음 · 순위 없음 · ',text(r.na_reason.total));
   if(lt)vCell=[vCell,ltNote('note sub')];
   const vf=r.coverage.v_factors,miss=(vf.missing||[]).map(f=>{const L=window.DeviceProfiles&&window.DeviceProfiles.FACTOR_LABELS;return L&&L[f]?L[f][0]:'이름 없는 요인';});
-  return h('tr',{dataset:{row:r.id}},h('td',{class:'rk',dataset:{cell:'rank'}},rankCell(r,v)),company,
+  return h('tr',{dataset:{row:r.id,...(cc?{ccState:cc.state,ccCompany:r.code||'',ccRecord:cc.record_id||'',ccHash:cc.classification_hash||''}:{})}},h('td',{class:'rk',dataset:{cell:'rank'}},rankCell(r,v)),company,
    h('td',{class:'pc-col',dataset:{cell:'sic'}},sic||naBox('분류 자료 없음','SIC_NOT_AVAILABLE')),h('td',{class:'pc-col',dataset:{cell:'type'}},ty),
    h('td',{class:'num qgv '+on('qgv'),dataset:{cell:'qgv'}},qgvCell),h('td',{class:'num ax-q '+pc('q'),dataset:{cell:'q'}},score(r,'q')),h('td',{class:'num ax-g '+pc('g'),dataset:{cell:'g'}},score(r,'g')),
    h('td',{class:'num ax-v '+pc('v'),dataset:{cell:'v'}},vCell),h('td',{class:pc('cap'),dataset:{cell:'m3'}},m3(r,v)),h('td',{class:on('ret'),dataset:{cell:'ret'}},ret(r,v)),
@@ -344,7 +358,7 @@ function leaderboard(route,refs){
    h('div',{class:'hand rules'},h('p',null,'· NA는 오름·내림 모두 맨 뒤'),h('p',null,'· 동점: QGV는 티커 순(순위 순서), 시총은 기업 ID 순'),h('p',null,'· 정렬은 줄 순서만 바꿈 · 순위 번호는 그대로')),toTable('sort')];}
 
  /* ---- 2.1.3 분류와 필터 */
- function clearFilters(){V.f={industry:'',sic2:'',sic4:'',type:'',state:''};V.fav=false;}
+ function clearFilters(){V.f={industry:'',sic2:'',sic4:'',type:'',state:'',cc:'',ccSub:''};V.fav=false;}
  function block3(v){
   const cls=v.cls,cfg=get(cls[CLS],'data','industry_config','groups'),groups=Array.isArray(cfg)?cfg:null,ids=v.pg.rows.map(r=>({company_id:r.id}));
   const sics=digits=>[...new Set(ids.map(c=>sicOf(c,cls)).filter(Boolean).map(s=>s.slice(0,digits)))].sort();
@@ -356,10 +370,10 @@ function leaderboard(route,refs){
     ...opts.map(([val,name,gone])=>h('option',{value:val,selected:val===chosen,disabled:!!gone},name))),
     key==='sic4'?h('span',{class:'hand'},'SIC 이름은 공개 자료에 없어 코드만'):null,key==='industry'&&!groups?h('p',{class:'reason',dataset:{na:'INDUSTRY_CONFIG_NOT_AVAILABLE'}},'업종군 설정을 공개 파일에서 읽지 못해 고를 수 없습니다'):null);};
   const unresolved=t=>t.rule&&t.rule.kind==='unresolved';
-  const cards=[select('industry','① 산업 (SIC 업종군 v0)',[...(groups||[]).map(g=>[g.id,g.name]),['NOT_AVAILABLE','업종군 자료 없음']],!groups),
+  const cards=[select('industry','① 원천 SIC 업종군 (v0)',[...(groups||[]).map(g=>[g.id,g.name]),['NOT_AVAILABLE','업종군 자료 없음']],!groups),
    select('sic2','② SIC 2자리',[...sics(2).map(c=>[c,c]),['NOT_AVAILABLE','분류 자료 없음']]),select('sic4','③ SIC 4자리',[...sics(4).map(c=>[c,c]),['NOT_AVAILABLE','분류 자료 없음']]),
    select('type','④ 기업 유형',[...typeOrder().map(t=>[t.id,t.name+(unresolved(t)?' · 규칙 결정 대기':'')]),['UNCLASSIFIED','미분류'],['NOT_AVAILABLE','유형 자료 없음']]),
-   select('state','⑤ 자료 상태',STATES.map(s=>[s,QS().stateText(s)+(s==='NOT_APPLICABLE'?' · 결정 대기 (FIN-NA-CODE)':'')]))];
+   select('state','⑤ 자료 상태',STATES.map(s=>[s,QS().stateText(s)+(s==='NOT_APPLICABLE'?' · 결정 대기 (FIN-NA-CODE)':'')])),...ccCards(v)];
   const fav=v.fav,favOff=!fav.ids.length,favWhy=fav.state==='INVALID'?'저장된 관심 기업 자료를 읽을 수 없습니다 · 원본은 그대로 둠':'관심 기업 없음 · ★는 기업 화면에서';
   if(favOff&&V.fav)V.fav=false;
   const check=(k,label,on,disabled,onchange)=>h('label',{class:'check'},h('input',{type:'checkbox',checked:on,disabled,dataset:{k},onchange}),label);
@@ -368,9 +382,35 @@ function leaderboard(route,refs){
     wait('산업 단위 · 결정 대기 (IA-5)')),
    h('div',{id:'lb-filters',class:'lb-filters'+(panelOpen?' open':'')},...cards),...lines,
    h('div',{class:'checks'},check('fav','관심만',V.fav,favOff,e=>{V.fav=e.target.checked;draw();}),favOff?h('span',{class:'reason',dataset:{favorites:fav.state}},favWhy):null),
-   h('p',{class:'sk status-line',role:'status',dataset:{filterCount:''}},'표시 ',String(v.drawn.length),'개 · 순위 기준 ',Number.isInteger(v.of)?String(v.of):'NA','개 중'),
+   h('p',{class:'sk status-line',role:'status',dataset:{filterCount:''}},'표시 ',String(v.drawn.length),'개 · 순위 기준 ',Number.isInteger(v.of)?String(v.of):'NA','개 중'),ccStatus(v),
    hand('필터는 줄만 숨김 · 순위·점수·후보 그대로'),hand('분류 자료 없음은 0이나 다른 분류로 채우지 않음'),
    v.any?h('button',{type:'button',class:'btn',dataset:{k:'clear-filters-2'},onclick:set(clearFilters)},'필터 모두 풀기'):null,toTable('filters')];}
+
+ // One row's common classification in words (the record's own state; unknown is never 0 or 기타).
+ function ccLineOf(x){const C=CC(),sec=x.sector&&x.sector.status==='CONFIRMED';
+  return h('span',{class:'sub-line reason cc-row',dataset:{ccRow:x.state}},'공통 · ',sec?C.sectorName(x.sector.id)+' · '+(x.industry.status==='CONFIRMED'?C.industryName(x.industry.id):'하위 산업 미확인'):x.words);}
+ // ⑥ 공통 섹터 · ⑦ 하위 산업 (the records' own confirmed ids; 공통 분류 미확인 = the record's sector is not CONFIRMED).
+ function ccCards(v){const C=CC();if(!C)return[];const on=ccOn(),o=on?C.options():null,f=V.f;
+  const pick=(key,label,opts,disabled,why)=>{const id='lb-f-'+key,chosen=f[key==='cc-sector'?'cc':'ccSub'];
+   return h('div',{class:'sk fcard',dataset:{filter:key}},h('label',{for:id},label),h('select',{id,disabled,dataset:{k:'f-'+key},
+    onchange:e=>{V.f=key==='cc-sector'?{...V.f,cc:e.target.value,ccSub:''}:{...V.f,ccSub:e.target.value};V.shown=STEP;draw();}},
+    ...[['','전체'],...opts].map(([val,name])=>h('option',{value:val,selected:val===chosen},name))),why?h('p',{class:'reason',dataset:{na:why[0]}},why[1]):null);};
+  const st=C.state(),why=on?null:[st.code||st.state,st.state==='INVALID'?C.WORDS.INVALID:C.WORDS.NONE];
+  const secs=on?o.sectors.map(x=>[x.id,C.sectorName(x.id)+' · '+x.n+'개']):[],inds=on&&f.cc&&f.cc!=='UNCLASSIFIED'?o.industries.filter(x=>x.sector===f.cc).map(x=>[x.id,C.industryName(x.id)+' · '+x.n+'개']):[];
+  return[pick('cc-sector','⑥ 공통 섹터 (책 10섹터)',[...secs,['UNCLASSIFIED','공통 분류 미확인 · 사유별 상태']],!on,why),
+   pick('cc-industry','⑦ 하위 산업 (공통 분류)',[...inds,['UNCLASSIFIED','하위 산업 미확인']],!on||!f.cc||f.cc==='UNCLASSIFIED',null)];}
+ // The filtered view's counts: original N (Universe504 rows on the page), valid N (rows whose record has a confirmed sector), the
+ // actual comparison set (the rows shown after every filter), the records' evaluation date; ranks are the layer's.
+ function ccStatus(v){const C=CC();if(!C)return null;if(!ccOn())return h('p',{class:'reason',dataset:{ccFilter:'NONE'}},'공통 분류 필터 · ',C.WORDS.NONE,' · 원천 SIC 필터와 별개');
+  const val=C.value(),valid=v.scoped.filter(r=>{const x=ccRec(r);return x.sector&&x.sector.status==='CONFIRMED';}).length,t=ctx.ccToken;
+  const mm=Object.keys(val.mismatch),links=val.qgv_links;
+  return[h('p',{class:'sk status-line',dataset:{ccFilter:V.f.cc||'ALL',ccHash:val.view.classification_hash}},'공통 분류 · 원래 ',String(v.scoped.length),'개 · 분류 확인 ',String(valid),'개 · 실제 비교 집합 ',String(v.filtered.length),'개',
+    ' · 분류 평가일 ',val.view.valuation_date,' · 분류 기록 ',C.shortHash(val.view.classification_hash),' · 순위·점수·분모 그대로'),
+   links?h('p',{class:'reason',dataset:{ccQgvLinks:links.preview_identity.preview_id}},'섹터 QGV 연결 기록 · 미리보기 ',C.shortHash(links.preview_identity.preview_id),' · 같은 분류 기록'):null,
+   mm.length?h('p',{class:'reason',dataset:{ccMismatch:mm.join(' '),na:'CLASSIFICATION_VERSION_MISMATCH'}},C.WORDS.VERSION_MISMATCH,' · ',mm.join(' · '),' · 결합·비교에 쓰지 않음'):null,
+   t&&t.state&&t.state!=='OK'?h('p',{class:'reason',dataset:{ccToken:t.state,na:'CLASSIFICATION_CONTEXT_'+t.state}},'주소의 분류 문맥을 적용하지 않음 · ',t.state==='VERSION_MISMATCH'?C.WORDS.VERSION_MISMATCH:t.state==='DATE_MISMATCH'?'분류 평가일 다름':'문맥 형식 오류'):null,
+   V.f.cc&&V.f.cc!=='UNCLASSIFIED'?h('p',{class:'links cc-links'},h('a',{class:'lk',href:href('macro',C.context({sector:V.f.cc,industry:V.f.ccSub&&V.f.ccSub!=='UNCLASSIFIED'?V.f.ccSub:null})),dataset:{ccLink:'macro'}},'→ 4.2 이 섹터 비교 가격계열(매크로)'),' ',
+    h('button',{type:'button',class:'linkish',dataset:{ccLink:'tech',k:'cc-to-tech'},onclick:()=>{const b=document.querySelector('[data-lb="3.5"]');if(b){b.scrollIntoView({block:'start'});const c=b.querySelector('select');if(c)c.focus({preventScroll:true});}}},'→ 3.5 기술 조건 필터')):null];}
 
  /* ---- 2.1.4 기간별 수익률 (prices only after a click, RAM only) */
  function block4(v){
@@ -401,7 +441,9 @@ function leaderboard(route,refs){
    v.pv?h('p',{class:'reason',dataset:{listLock:'PREVIEW'}},'산출 상태별 목록은 공식 가중치 결과 기준'):null,
    hand('후보 자격 없는 결과는 순위에 섞지 않음 · 0점 아님 · 순위 번호 없음'),toTable('lists')];}
 
- /* ---- 2.1.6 공식 결과와 개인 결과 */
+ /* ---- 2.1.6 공식 결과와 개인 결과. The saved trees here (IS2.store.weights(), DeviceProfiles v2) come from the old weight editor
+    (공격형·균형형·수비형·사용자 설정): owner 2026-11-07 keeps them only as 이전 설정 호환 (read for saved settings, labelled so;
+    a tree has no start preset or calc / input versions, so its preview is today's data, not a replay of a past result); the new default flow is 1.2 섹터 QGV 10섹터 기본값 → 내 설정. */
  function block6(v){
   const S=QS(),pg=v.pg,list=profiles(),canPreview=list.length>0&&pg.state==='READY';if(!canPreview&&V.preview)V.preview=false;
   const pv=v.pv,p=pv?pv.p:null;
@@ -410,10 +452,11 @@ function leaderboard(route,refs){
   const turn=on=>set(()=>{if(on===V.preview)return;V.preview=on;ctx.preview=null;if(on){const q=list.find(y=>y.id===V.profile)||list[0];V.profile=q.id;V.gate=q.gate===false?false:true;}});
   const badge=(k,label,word)=>h('div',{class:'sk badge',dataset:{badge:k}},h('b',null,label),h('span',{class:'hl'},word));
   const b=pg.price_basis,time=['가격 기준일 ',b.price_basis_date||'NA',' · 게시 ',stamp(b.generated_at)||'NA',b.stale===true?' · STALE':b.publication_id&&b.stale===null?' · STALE 판정 불가':''];
-  return[group('결과 보기',chip('공식 가중치 결과',!V.preview,{dataset:{k:'mode-official'},onclick:turn(false)}),chip('내 설정 결과(미리보기)',V.preview,{disabled:!canPreview,dataset:{k:'mode-preview'},onclick:turn(true)})),
-   canPreview?null:h('p',{class:'reason',dataset:{previewOff:''}},'저장된 내 설정이 없습니다 · 1.2 가중치 화면에서 만듭니다(다음 단계)'),
-   V.preview&&list.length>1?h('div',{class:'sort-row'},h('label',{for:'lb-profile'},'내 설정'),h('select',{id:'lb-profile',dataset:{k:'profile'},onchange:e=>{const q=list.find(y=>y.id===e.target.value);if(q){V.profile=q.id;V.gate=q.gate===false?false:true;ctx.preview=null;}draw();}},
-    ...list.map(q=>h('option',{value:q.id,selected:p&&q.id===p.id},q.name)))):null,
+  return[group('결과 보기',chip('공식 가중치 결과',!V.preview,{dataset:{k:'mode-official'},onclick:turn(false)}),chip('이전 설정 결과(미리보기 · 호환)',V.preview,{disabled:!canPreview,dataset:{k:'mode-preview'},onclick:turn(true)})),
+   canPreview?null:h('p',{class:'reason',dataset:{previewOff:''}},'저장된 이전 설정이 없습니다 · 새 설정은 1.2 섹터 QGV에서(10섹터 기본값 → 내 설정)'),
+   canPreview?h('p',{class:'reason',dataset:{legacyProfiles:String(list.length)}},'이전 설정 호환 · 옛 가중치 편집기(공격형·균형형·수비형·사용자 설정)에서 저장한 리더보드 가중치 ',String(list.length),'개 · 새 기본 선택이 아님 · 지금 자료로 계산(과거 결과 재현 아님) · 새 설정은 1.2 섹터 QGV(10섹터 기본값 → 내 설정)'):null,
+   V.preview&&list.length>1?h('div',{class:'sort-row'},h('label',{for:'lb-profile'},'이전 설정 호환'),h('select',{id:'lb-profile',dataset:{k:'profile'},onchange:e=>{const q=list.find(y=>y.id===e.target.value);if(q){V.profile=q.id;V.gate=q.gate===false?false:true;ctx.preview=null;}draw();}},
+    ...list.map(q=>h('option',{value:q.id,selected:p&&q.id===p.id},q.name,' · v',String(q.version),' · 이전 설정 호환')))):null,
    h('label',{class:'check'},h('input',{type:'checkbox',checked:V.preview?V.gate:true,disabled:!V.preview,dataset:{k:'gate'},onchange:e=>{V.gate=e.target.checked;ctx.preview=null;draw();}}),'가치 함정 관문 (기본 켬)'),
    V.preview?null:h('p',{class:'reason'},'공식 결과는 관문 켬 고정'),
    h('div',{class:'badges',dataset:{badges:''},...S.provenanceAttrs(x)},badge('weights','가중치',weightWord),badge('prices','가격',pv?'가격 없음 · 게시 요인 점수':b.label||pg.v_source.ko),badge('where','계산 장소',where),badge('vsource','V 출처',pg.v_source.ko)),
@@ -421,7 +464,7 @@ function leaderboard(route,refs){
    V.preview&&pv?h('p',{class:'reason',dataset:{na:pv.out.weight_stages.reason}},text(pv.out.weight_stages.reason)):null,
    V.preview&&pv&&pv.out.state==='INVALID'?h('p',{class:'na',dataset:{na:pv.out.reason||''}},say(pv.out.reason,'내 설정으로 계산하지 못했습니다')):null,
    h('div',{class:'cards'},h('div',{class:'sk card-now'},h('b',null,'지금'),h('span',null,pg.v_source.ko,' · ',where),h('span',{class:'boxed'},Q.rankLabel(pg)),h('span',null,...time)),
-    h('div',{class:'sk'},h('b',null,'내 설정 결과(미리보기)를 켜면'),h('span',{class:'boxed'},S.PERSONAL_LABEL[0]),h('span',null,'V 비중 0이면 → ',S.PERSONAL_V0_LABEL[0]))),
+    h('div',{class:'sk'},h('b',null,'이전 설정 결과(미리보기)를 켜면'),h('span',{class:'boxed'},S.PERSONAL_LABEL[0]),h('span',null,'V 비중 0이면 → ',S.PERSONAL_V0_LABEL[0]))),
    hand('개인 결과는 공식 점수·순위를 덮어쓰지 않음 · 계산값은 저장 안 함(RAM)'),toTable('results')];}
 
  /* ---- 2.1.7 후보 선정 연결 (the official default profile; filters and personal settings change nothing) */

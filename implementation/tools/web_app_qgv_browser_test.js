@@ -2,7 +2,7 @@
 // New frontend P2-2a · menu 1 QGV · 1.1 리더보드 (feature 2.1.1–2.1.7; board add/QGVLeaderboard · add/m/MQGVLeaderboard, owner draft
 // QGV / MQGV columns) in a real browser, at 1440×1000 and 390×844. Builds the development site (tools/web_app_test_site.js), serves the
 // live-only score inputs and a classification file as synthetic fixtures, answers Google with stand-ins, and checks #/qgv:
-//  - Before IS2.ready (screen-qgv-live.js held back): main[data-route=qgv], sections exactly 1-1..1-4, eight [data-lb] blocks (1.1.8 기술 조건 필터, feature 3.5, has its own test),
+//  - Before IS2.ready (screen-qgv-live.js held back): main[data-route=qgv], sections exactly 1-1..1-4, nine [data-lb] blocks (1.1.8 기술 조건 필터, feature 3.5, and 1.1.9 의외의 기업, feature 2.1.8, have their own tests),
 //    pending text without digits, every button disabled, no data request; after leaving and returning, the current render's
 //    block nodes fill in place once the file is released.
 //  - Every case first proves a non-empty table (> 1 drawn rows; > 1 distinct keys for a sort or filter case). Default state =
@@ -50,7 +50,7 @@ const RB = R.requireOld('report-benchmarks.js');
 const NOW = '2026-10-14T03:00:00.000Z';
 const CLASS = JSON.parse(fs.readFileSync(path.join(R.ROOT, 'implementation/tests/fixtures/company_classification_v0_payloads.json'), 'utf8')).live;
 const CUSTOM = JSON.parse(fs.readFileSync(path.join(R.ROOT, 'implementation/tests/fixtures/qgv_v2_custom_vectors_v1.json'), 'utf8'));
-const UNPUBLISHED = ['sec-public-inputs.json', 'qgv-official.json', 'qgv-official-status.json'];
+const UNPUBLISHED = ['sec-public-inputs.json', 'qgv-official.json', 'qgv-official-status.json', 'macro-evidence-status.json'];
 // The synthetic central V publication (its input as_of = the fixture's) and a status file of a later failed attempt.
 const PUB_TEXT = JSON.parse(fs.readFileSync(path.join(R.ROOT, 'implementation/tests/fixtures/qgv_official_vectors_v1.json'), 'utf8')).base_text, PUB = JSON.parse(PUB_TEXT);
 const STATUS = { schema: 'qgv-official-status/1', kind: 'QGV_OFFICIAL_STATUS', last_attempt_at: '2026-10-14T01:50:00Z', attempt_state: 'SUPPLY_FAILED', reason_code: 'IEX_SUPPLY_BELOW_MINIMUM',
@@ -216,7 +216,7 @@ const testClick = async (page, name) => { await page.locator('[data-test-action=
         await page.route('**/screen-qgv-live.js', async (route) => { await gate; await route.continue(); });
         await page.goto(s.base + '#/qgv', { waitUntil: 'domcontentloaded' }); await page.locator('main[data-route=qgv]').waitFor();
         assert.deepEqual(await page.locator('[data-section]').evaluateAll((n) => n.map((x) => x.dataset.section)), ['1-1', '1-2', '1-3', '1-4']);
-        assert.deepEqual(await page.locator('[data-lb]').evaluateAll((n) => n.map((x) => x.dataset.lb)), ['2.1.1', '2.1.2', '2.1.3', '2.1.4', '2.1.5', '2.1.6', '2.1.7', '3.5']);
+        assert.deepEqual(await page.locator('[data-lb]').evaluateAll((n) => n.map((x) => x.dataset.lb)), ['2.1.1', '2.1.2', '2.1.3', '2.1.4', '2.1.5', '2.1.6', '2.1.7', '3.5', '2.1.8']);
         assert.equal(await page.locator('[data-qgv-band]').count(), 1); assert.equal(await page.locator('[data-qgv-band] [data-section]').count(), 0, 'the band is outside every section');
         assert.equal(await page.locator('nav[aria-label="QGV 하위 화면"]').count(), 1);
         const enabled = await page.locator('main button:not([disabled])').count(); assert.equal(enabled, 0, 'every button disabled before IS2.ready');
@@ -227,8 +227,8 @@ const testClick = async (page, name) => { await page.locator('[data-test-action=
         await page.evaluate(() => { location.hash = '#/qgv'; }); await page.locator('main[data-route=qgv]').waitFor();
         await page.evaluate(() => { for (const b of document.querySelectorAll('[data-lb] .lb-body')) b.__mark = 1; });
         release(); assert.equal(await ready(page), 'READY'); await tableReady(page);
-        assert.deepEqual(await page.evaluate(() => [...document.querySelectorAll('[data-lb] .lb-body')].map((b) => b.__mark === 1 && b.isConnected && !b.querySelector('[data-pending]'))), [true, true, true, true, true, true, true, true],
-          'the current render\'s eight block bodies filled in place');
+        assert.deepEqual(await page.evaluate(() => [...document.querySelectorAll('[data-lb] .lb-body')].map((b) => b.__mark === 1 && b.isConnected && !b.querySelector('[data-pending]'))), Array(9).fill(true),
+          'the current render\'s nine block bodies filled in place');
         await common(page, phase + ' after release');
         await ctx.context.close();
       }
@@ -683,7 +683,7 @@ const testClick = async (page, name) => { await page.locator('[data-test-action=
       const r = await page.evaluate(() => ({ state: window.IS2.loadState(), lines: [...document.querySelectorAll('[data-lb] [data-na=LOADER_FAILED]')].map((x) => x.textContent), notices: document.querySelectorAll('[data-load-failed]').length,
         enabled: document.querySelectorAll('main button:not([disabled])').length }));
       assert.equal(r.state, 'FAILED'); assert.equal(r.notices, 1, 'exactly one shell notice'); assert.equal(r.enabled, 0, 'buttons stay disabled');
-      assert.deepEqual(r.lines, Array(8).fill('층을 불러오지 못해 리더보드를 그리지 못했습니다'));
+      assert.deepEqual(r.lines, [...Array(8).fill('층을 불러오지 못해 리더보드를 그리지 못했습니다'), '층을 불러오지 못해 의외의 기업 목록을 그리지 못했습니다']);
       assert.deepEqual(errors, [], 'no pageerror');
       await context.close();
     }

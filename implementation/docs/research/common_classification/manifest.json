@@ -1,0 +1,21 @@
+{
+  "schema_version": "common-classification-handoff-manifest/1",
+  "data_kind": "SYNTHETIC",
+  "files": [
+    {
+      "path": "CONTRACT.md",
+      "size": 12314,
+      "sha256": "00bccc2c38ae03e037ff820d6010a251b87f35983dadf1986217d0a1989258ea"
+    },
+    {
+      "path": "fixtures.json",
+      "size": 257573,
+      "sha256": "526cbf85defddbc4b255ea8dc5194ccab034c5eb9b317ef94142b5338c26ebcf"
+    },
+    {
+      "path": "dictionary.json",
+      "size": 2917,
+      "sha256": "9ae49c5f849535d325aaa64689da9fa61147347a9c8f8dafcf4055c0ef6d5776"
+    }
+  ]
+}
