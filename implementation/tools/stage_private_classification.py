@@ -12,6 +12,10 @@ computes nothing, re-serializes nothing and fetches nothing.
 With --expanded-source / --expanded-manifest it also stages the expanded held issuer sample's summary (Codex #520, a separate
 population) as classification/expanded_summary.json, checked the same way.
 
+The current classification/ is replaced whole or not at all (owner 2026-11-08): the view's dictionary + mapping pair must be one of
+VERSION_PAIRS, the dictionary must be that version (and a /2 pair must name one boundary policy), every part must share the view's
+classification hash and evaluation date; on any failure the existing connection stays as it was.
+
 Refuses (exit 1, nothing written) when a file is missing, its size or SHA-256 differs from the manifest, it is not one JSON object
 of its part's schema, every part does not name the same classification_hash and valuation_date as the view, or --data-dir is
 inside this public repository. Output: one line per part with its size and SHA-256 (no file content), and a README table row.
@@ -35,6 +39,10 @@ PARTS = {
 }
 # The expanded held issuer sample (Codex #520): a separate population; its summary only (its view / preview exceed the Worker bound).
 EXPANDED_PARTS = {'expanded_summary': ('final/summary.json', 'held-expanded-classification-summary/1')}
+# The exact dictionary + mapping pairs the screen reads (classification.js VERSION_PAIRS; Codex #520 41f2a25b).
+VERSION_PAIRS = {'common-industry-dictionary/1': 'common-classification-map/1',
+                 'common-industry-dictionary/2': 'common-classification-map/2'}
+POLICY_DICTIONARY = 'common-industry-dictionary/2'
 MAX_BYTES = 2 * 1024 * 1024          # the Worker's per-file bound (MAX_CHART_BYTES)
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
@@ -93,6 +101,19 @@ def check(source: Path, manifest: dict, parts: dict = PARTS) -> list:
             head = (value.get('classification_hash'), value.get('valuation_date'))
             if not all(isinstance(x, str) and x for x in head):
                 raise StageError('VIEW_IDENTITY_MISSING')
+            version = value.get('dictionary_version')
+            if VERSION_PAIRS.get(version) != value.get('mapping_version') or version is None:
+                raise StageError('VERSION_PAIR_INVALID')
+            policy = value.get('boundary_policy')
+            if (version == POLICY_DICTIONARY) != isinstance(policy, dict):
+                raise StageError('POLICY_VERSION_MISMATCH')
+        elif part == 'dictionary':
+            if value.get('version') != version:
+                raise StageError('PART_OTHER_VERSION:dictionary')
+            if version == POLICY_DICTIONARY:
+                p = value.get('policy') or {}
+                if (p.get('version'), p.get('source'), p.get('approved_date')) != (policy.get('version'), policy.get('source'), policy.get('approved_date')):
+                    raise StageError('POLICY_VERSION_MISMATCH')
         elif part in ('technical', 'macro', 'qgv_links') and (value.get('classification_hash'), value.get('valuation_date')) != head:
             raise StageError('PART_OTHER_RECORDS:' + part)
         staged.append((part, path, len(data), digest))
@@ -114,13 +135,32 @@ def stage(source: Path, manifest_path: Path, data_dir: Path, expanded: tuple | N
     staged = check(source, _manifest(manifest_path))          # everything is checked before anything is written
     if expanded is not None:
         staged += check(expanded[0], _manifest(expanded[1]), EXPANDED_PARTS)
-    target = data_dir / 'classification'
-    target.mkdir(exist_ok=True)
-    for part, path, _, digest in staged:
-        out = target / (part + '.json')
-        shutil.copyfile(path, out)
-        if hashlib.sha256(out.read_bytes()).hexdigest() != digest:
-            raise StageError('COPY_MISMATCH:' + part)
+    # The current connection is replaced whole or not at all: the new set is written and re-hashed beside it, then swapped in;
+    # on any failure the staging copy is removed and the existing classification/ stays as it was.
+    target, fresh, old = data_dir / 'classification', data_dir / 'classification.staging', data_dir / 'classification.previous'
+    for leftover in (fresh, old):
+        if leftover.exists():
+            shutil.rmtree(leftover)
+    try:
+        fresh.mkdir()
+        if expanded is None and (target / 'expanded_summary.json').is_file():
+            raise StageError('EXPANDED_SUMMARY_REQUIRED')     # never keep a summary of another delivery beside a new set
+        for part, path, _, digest in staged:
+            out = fresh / (part + '.json')
+            shutil.copyfile(path, out)
+            if hashlib.sha256(out.read_bytes()).hexdigest() != digest:
+                raise StageError('COPY_MISMATCH:' + part)
+        if target.exists():
+            target.rename(old)
+        fresh.rename(target)
+    except BaseException:
+        if fresh.exists():
+            shutil.rmtree(fresh)
+        if old.exists() and not target.exists():
+            old.rename(target)
+        raise
+    if old.exists():
+        shutil.rmtree(old)
     return staged
 
 

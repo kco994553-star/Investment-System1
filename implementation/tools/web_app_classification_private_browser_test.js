@@ -13,6 +13,8 @@
 //    and counts, never added to the 504 counts, never a company page or a technical security id).
 //  - The same RAM bundle serves the QGV leaderboard's 공통 분류 filter without another read; another company page shows the
 //    panel open and reads nothing; 접기 drops the bundle (the page and the QGV filter are back to NONE).
+//  - Version pairs (Codex #520 41f2a25b): /1 + /1 and /2 + /2 read (policy words), a mixed pair refused whole; the expanded block
+//    shows the official Q gate linkage for the catalog scope only and says the row-level screen is not built.
 //  - 404 for the view → 자료 없음 and the source stays NONE; a view that breaks the contract → refused whole (ERROR), NONE;
 //    a 403 drops the token (sign in again) and the bundle.
 //  - Boundaries: no token or record id in storage, the address or another request; no style attribute, no CSP violation, no
@@ -46,7 +48,8 @@ const BUNDLE = (() => { const b = JSON.parse(JSON.stringify(X.uBundle())), r = b
     population_kind: 'OBSERVED_CATALOG_ISSUERS_NOT_INVESTMENT_ELIGIBLE_UNIVERSE', rank_scope: 'HELD_ISSUER_FACTOR_PERCENTILES_ONLY', full_market_denominator: null, full_market_coverage: null,
     new_security_ids: 0, official_universe_changed: false,
     catalog: { issuers: 777, ticker_observations: 977, sector: 77, accounting: 76, industry: 17, raw: 57, factor_score: 47, Q: 37, G: 27, V: 0, joint: 0, total: 0 },
-    held_financial_subsample: { issuers: 177, ticker_observations: 277, sector: 75, accounting: 74, industry: 15, raw: 57, factor_score: 47, Q: 37, G: 27, V: 0, joint: 0, total: 0 } };
+    held_financial_subsample: { issuers: 177, ticker_observations: 277, sector: 75, accounting: 74, industry: 15, raw: 57, factor_score: 47, Q: 37, G: 27, V: 0, joint: 0, total: 0 },
+    official_gate_connected: 47 };
   return b; })();
 const RECORD_IDS = BUNDLE.view.rows.map((r) => r.record_id).filter(Boolean);
 let phase = 'START', pass = 0;
@@ -126,12 +129,13 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       await signIn(page);
       assert.equal(w.log.length, 0, phase + ': signing in reads nothing');
       await read(page); await page.locator('[data-private-layer=classification]').waitFor({ timeout: 45000 });
-      assert.deepEqual(w.log.map((l) => l.path), PARTS.map((p) => '/kis/classification?part=' + p), phase + ': exactly the five parts, in order');
+      assert.deepEqual(w.log.map((l) => l.path), PARTS.map((p) => '/kis/classification?part=' + p), phase + ': exactly the six parts, in order');
       assert.equal(w.refused || 0, 0, phase + ': no read refused by the one-at-a-time limiter');
       assert.ok(w.log.slice(1).every((l, i) => l.at - w.log[i].at >= 5000), phase + ': one after another, 5 s apart');
       assert.match(await text(page, '[data-private-layer=classification]'), /^비공개 보관본 · 인증 경로 · 게시본 아님 · 같은 화면 같은 형식/);
       const dd = await page.locator('[data-private-meta=classification] dd').allTextContents();
-      assert.deepEqual(dd.slice(0, 3), [BUNDLE.view.valuation_date, BUNDLE.view.classification_hash.slice(0, 12), '합성 데이터 · 시험용'], phase + ': date, hash, data kind');
+      assert.deepEqual(dd.slice(0, 4), [BUNDLE.view.valuation_date, BUNDLE.view.dictionary_version + ' + ' + BUNDLE.view.mapping_version, BUNDLE.view.classification_hash.slice(0, 12), '합성 데이터 · 시험용'], phase + ': date, version pair, hash, data kind (no policy row on /1)');
+      assert.equal(await count(page, '[data-cc-private-policy]'), 0, phase + ': a /1 bundle shows no boundary policy row');
       assert.equal(await page.locator('[data-cc-private-parts]').getAttribute('data-cc-private-parts'), PARTS.join(','));
       const n = (k) => BUNDLE.view.rows.filter((r) => r[k].status === 'CONFIRMED').length;
       assert.equal(await text(page, '[data-cc-count=rows]'), '기업 행 ' + BUNDLE.view.rows.length + '개(원래 분모 그대로)');
@@ -150,6 +154,9 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       assert.match(ex, /관측 카탈로그 전체 · 발행사 777 · 티커 관측 977 · 섹터 77/); assert.match(ex, /보유 재무 하위표본 · 발행사 177/);
       assert.match(ex, /전체시장 분모·커버리지 미산출 · 새 증권 ID 0/); assert.match(ex, /발행사 행 ID는 증권 ID가 아님/);
       assert.match(ex, /38일 전 · 평가일 상장 명부 아님/);
+      assert.match(ex, /공식 Q 관문 연결 47 · 관측 카탈로그 범위 · 기존 Universe504 공식 Q 재생값\(확장 표본 Q 아님\) · 보유 재무 하위표본 범위의 수는 이 요약에 없음/);
+      assert.match(ex, /확장 발행사 행 단위 화면은 아직 없음 · 요약만 연결됨/);
+      assert.equal(await page.locator('[data-cc-private-version]').getAttribute('data-cc-private-version'), 'common-industry-dictionary/1');
       assert.equal(await text(page, '[data-cc-count=rows]'), '기업 행 ' + BUNDLE.view.rows.length + '개(원래 분모 그대로)', phase + ': the 504 count never takes the expanded issuers');
       ok(tag + ' one click reads six parts 5 s apart; panel words, date, hash, counts; 운영504 and the expanded sample apart; the company block repaints (PRIVATE)');
 
@@ -197,9 +204,24 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       await read(page); await page.locator('[data-private-panel="' + PANEL + '"][data-private-state=ERROR]').waitFor({ timeout: 45000 });
       assert.equal(await page.locator('.cc-block').getAttribute('data-cc'), 'NONE', phase + ': a refused bundle is never used');
       ok('a view that breaks the contract is refused whole (ERROR), NONE kept');
-      delete w.answers.view; await page.waitForTimeout(5300);
+      // The policy version pair (dictionary /2 + map /2, Codex #520 41f2a25b): read, the policy line shown; a mixed pair refused whole.
+      const POL = { version: 'common-sector-boundaries/2026-11-08.1', source: 'owner:2026-11-08:common-classification-boundaries', approved_date: '2026-11-08', recorded_at: '2026-11-08T08:05:49Z' };
+      const v2view = { ...JSON.parse(JSON.stringify(BUNDLE.view)), dictionary_version: 'common-industry-dictionary/2', mapping_version: 'common-classification-map/2', boundary_policy: POL };
+      const v2dict = { ...JSON.parse(JSON.stringify(BUNDLE.dictionary)), version: 'common-industry-dictionary/2', exceptions: { REIT: 'FINANCIALS_UPPER_SECTOR_ACCOUNTING_INDEPENDENT_NOT_ALL_REAL_ESTATE' },
+        policy: { version: POL.version, approved_date: POL.approved_date, source: POL.source, book_direct_claim: false, automatic_company_assignment: false } };
+      w.answers.view = () => ({ status: 200, body: v2view }); w.answers.dictionary = () => ({ status: 200, body: BUNDLE.dictionary });
+      await page.waitForTimeout(5300);
+      await read(page); await page.locator('[data-private-panel="' + PANEL + '"][data-private-state=ERROR]').waitFor({ timeout: 45000 });
+      assert.equal(await page.locator('.cc-block').getAttribute('data-cc'), 'NONE', phase + ': a /2 view with a /1 dictionary is never used');
+      ok('a mixed version pair (/2 view, /1 dictionary) is refused whole, NONE kept');
+      w.answers.dictionary = () => ({ status: 200, body: v2dict }); await page.waitForTimeout(5300);
       await read(page); await page.locator('[data-private-layer=classification]').waitFor({ timeout: 45000 });
       await page.locator('[data-cc-delivery=PRIVATE]').waitFor();
+      assert.equal(await page.locator('[data-cc-private-version]').getAttribute('data-cc-private-version'), 'common-industry-dictionary/2');
+      assert.match(await text(page, '[data-cc-private-policy]'), /common-sector-boundaries\/2026-11-08\.1 · 시스템 대응 정책\(책의 직접 명시 아님\)/);
+      assert.match(await text(page, '[data-cc-policy]'), /경계 정책판 · 시스템 대응 정책\(책의 직접 명시 아님\) · 회사별 분류는 근거 확인분만 · common-sector-boundaries\/2026-11-08\.1 · 승인 2026-11-08/);
+      ok('the /2 + /2 policy pair reads: version and policy words in the panel and the company block');
+      delete w.answers.view; delete w.answers.dictionary;
       w.answers.view = () => ({ status: 403, body: { error: { code: 'AUTH_FORBIDDEN' } } });
       await page.locator('[data-private-expand=classification]').click();          // 접기
       await page.locator('.cc-block[data-cc=NONE]').waitFor();

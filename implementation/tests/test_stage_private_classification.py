@@ -16,24 +16,36 @@ import stage_private_classification as stage_tool  # noqa: E402
 HASH = 'a' * 64
 
 
-def _bundle(tmp_path, *, view_extra=None):
-    src = tmp_path / 'held'
+POLICY = {'version': 'common-sector-boundaries/2026-11-08.1', 'source': 'owner:2026-11-08:common-classification-boundaries',
+          'approved_date': '2026-11-08', 'recorded_at': '2026-11-08T08:05:49Z'}
+
+
+def _bundle(tmp_path, *, view_extra=None, version=1, name='held'):
+    src = tmp_path / name
     (src / 'result').mkdir(parents=True)
     files = []
     for part, (rel, schema) in stage_tool.PARTS.items():
         value = {'schema_version': schema, 'note': 'SYNTHETIC'}
         if part != 'dictionary':
             value.update(classification_hash=HASH, valuation_date='2026-11-02')
+        if part == 'view':
+            value.update(dictionary_version='common-industry-dictionary/%d' % version, mapping_version='common-classification-map/%d' % version)
+            if version == 2:
+                value['boundary_policy'] = dict(POLICY)
+        if part == 'dictionary':
+            value['version'] = 'common-industry-dictionary/%d' % version
+            if version == 2:
+                value['policy'] = {k: POLICY[k] for k in ('version', 'source', 'approved_date')}
         if part == 'view' and view_extra:
             value.update(view_extra)
         # the writer's own spacing; the copy must keep it
         data = json.dumps(value, indent=1, sort_keys=True).encode('utf-8')
         (src / rel).write_bytes(data)
         files.append({'path': rel, 'size': len(data), 'sha256': hashlib.sha256(data).hexdigest()})
-    manifest = tmp_path / 'handoff-manifest.json'
+    manifest = src / 'handoff-manifest.json'
     manifest.write_text(json.dumps({'schema_version': 'held-classification-private-handoff/1', 'files': files}), encoding='utf-8')
     data_dir = tmp_path / 'data'
-    data_dir.mkdir()
+    data_dir.mkdir(exist_ok=True)
     return src, manifest, data_dir
 
 
@@ -86,3 +98,41 @@ def test_refuses_a_data_dir_inside_the_public_repository(tmp_path, capsys):
     assert stage_tool.main(['--source', str(src), '--manifest', str(manifest), '--data-dir', str(inside)]) == 1
     assert 'DATA_DIR_INSIDE_PUBLIC_REPOSITORY' in capsys.readouterr().out
     assert not (inside / 'classification').exists()
+
+
+def test_a_policy_version_pair_stages_and_replaces_the_previous_set_whole(tmp_path, capsys):
+    src, manifest, data_dir = _bundle(tmp_path)
+    assert stage_tool.main(['--source', str(src), '--manifest', str(manifest), '--data-dir', str(data_dir)]) == 0
+    src2, manifest2, _ = _bundle(tmp_path, version=2, name='held2')
+    assert stage_tool.main(['--source', str(src2), '--manifest', str(manifest2), '--data-dir', str(data_dir)]) == 0
+    for part, (rel, _) in stage_tool.PARTS.items():
+        assert (data_dir / 'classification' / (part + '.json')).read_bytes() == (src2 / rel).read_bytes()
+    assert sorted(p.name for p in data_dir.iterdir()) == ['classification'], 'no staging or previous copy left'
+
+
+@pytest.mark.parametrize('edit, code', [
+    (lambda v, d: v.update(mapping_version='common-classification-map/1'), 'VERSION_PAIR_INVALID'),
+    (lambda v, d: v.update(dictionary_version='common-industry-dictionary/3', mapping_version='common-classification-map/3'), 'VERSION_PAIR_INVALID'),
+    (lambda v, d: v.pop('boundary_policy'), 'POLICY_VERSION_MISMATCH'),
+    (lambda v, d: d.update(version='common-industry-dictionary/1'), 'PART_OTHER_VERSION:dictionary'),
+    (lambda v, d: d['policy'].update(version='common-sector-boundaries/2026-11-09.1'), 'POLICY_VERSION_MISMATCH'),
+])
+def test_a_broken_new_set_keeps_the_existing_connection(tmp_path, capsys, edit, code):
+    src, manifest, data_dir = _bundle(tmp_path)
+    assert stage_tool.main(['--source', str(src), '--manifest', str(manifest), '--data-dir', str(data_dir)]) == 0
+    before = {p.name: p.read_bytes() for p in (data_dir / 'classification').iterdir()}
+    capsys.readouterr()
+    src2, _, _ = _bundle(tmp_path, version=2, name='held2')
+    v, d = (json.loads((src2 / stage_tool.PARTS[k][0]).read_text()) for k in ('view', 'dictionary'))
+    edit(v, d)
+    files = []
+    for k, value in (('view', v), ('dictionary', d)):
+        (src2 / stage_tool.PARTS[k][0]).write_bytes(json.dumps(value).encode())
+    for part, (rel, _) in stage_tool.PARTS.items():
+        data = (src2 / rel).read_bytes()
+        files.append({'path': rel, 'bytes': len(data), 'sha256': hashlib.sha256(data).hexdigest()})
+    (src2 / 'm.json').write_text(json.dumps({'files': files}))
+    assert stage_tool.main(['--source', str(src2), '--manifest', str(src2 / 'm.json'), '--data-dir', str(data_dir)]) == 1
+    assert capsys.readouterr().out.strip() == 'STAGE_PRIVATE_CLASSIFICATION refused=' + code
+    assert {p.name: p.read_bytes() for p in (data_dir / 'classification').iterdir()} == before, 'the existing connection is untouched'
+    assert sorted(p.name for p in data_dir.iterdir()) == ['classification']
