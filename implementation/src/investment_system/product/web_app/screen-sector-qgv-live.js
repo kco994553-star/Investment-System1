@@ -125,7 +125,7 @@ function fill(route,{body}){
   if(V.savedState==='OK')notes.push(h('p',{class:'reason',dataset:{sqSaved:'OK'}},'저장된 내 설정 · 미리보기 ',V.saved.preview_id.slice(0,12),' · 스냅숏 ',V.saved.snapshot_id,' · 설정 ',V.saved.canonical_config_hash.slice(0,12)));
   const sel=(idk,label,opts,cur,on)=>h('div',{class:'sort-row'},h('label',{for:idk},label),h('select',{id:idk,dataset:{k:idk},onchange:on},...opts.map(([val,t])=>h('option',{value:val,selected:val===cur},t))));
   const ctxRow=h('div',{class:'sq-ctx'},
-   sel('sq-sector','섹터(책 10섹터)',c.sectors.map(s=>[s.sector_id,S.text(S.SECTOR_TEXT,s.sector_id)]),V.sector,e=>{keepEdit();V.sector=e.target.value;V.view=null;V.edit=null;draw();void loadView();}),
+   sel('sq-sector','섹터(투자시스템 공통 10섹터)',c.sectors.map(s=>[s.sector_id,S.text(S.SECTOR_TEXT,s.sector_id)]),V.sector,e=>{keepEdit();V.sector=e.target.value;V.view=null;V.edit=null;draw();void loadView();}),
    sel('sq-template','회계모형',c.templates.map(t=>[t,S.text(S.TEMPLATE_TEXT,t)]),V.template,e=>{keepEdit();V.template=e.target.value;V.view=null;V.edit=null;draw();void loadView();}),
    sel('sq-input','입력(합성)',c.inputs.map(x=>[x.input_id,x.label]),V.input,e=>{V.input=e.target.value;draw();}));
   if(!V.view||!V.edit){body.replaceChildren(...[status,gate,store,initial,...notes,ctxRow,V.err?h('p',{class:'hand err',role:'alert',dataset:{sqErr:''}},V.err):V.viewLoading?h('p',{class:'pending',role:'status',dataset:{sqState:'VIEW_LOADING'}},'요소 목록 불러오는 중'):null,

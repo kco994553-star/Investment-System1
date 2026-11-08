@@ -402,7 +402,7 @@ function leaderboard(route,refs){
     ...[['','전체'],...opts].map(([val,name])=>h('option',{value:val,selected:val===chosen},name))),why?h('p',{class:'reason',dataset:{na:why[0]}},why[1]):null);};
   const st=C.state(),why=on?null:[st.code||st.state,st.state==='INVALID'?C.WORDS.INVALID:C.WORDS.NONE];
   const secs=on?o.sectors.map(x=>[x.id,C.sectorName(x.id)+' · '+x.n+'개']):[],inds=on&&f.cc&&f.cc!=='UNCLASSIFIED'?o.industries.filter(x=>x.sector===f.cc).map(x=>[x.id,C.industryName(x.id)+' · '+x.n+'개']):[];
-  return[pick('cc-sector','⑥ 공통 섹터 (책 10섹터)',[...secs,['UNCLASSIFIED','공통 분류 미확인 · 사유별 상태']],!on,why),
+  return[pick('cc-sector','⑥ 공통 섹터 (투자시스템 공통 10섹터)',[...secs,['UNCLASSIFIED','공통 분류 미확인 · 사유별 상태']],!on,why),
    pick('cc-industry','⑦ 하위 산업 (공통 분류)',[...inds,['UNCLASSIFIED','하위 산업 미확인']],!on||!f.cc||f.cc==='UNCLASSIFIED',null)];}
  // The filtered view's counts: original N (Universe504 rows on the page), valid N (rows whose record has a confirmed sector), the
  // actual comparison set (the rows shown after every filter), the records' evaluation date; ranks are the layer's.
