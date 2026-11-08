@@ -24,6 +24,11 @@
      a write outside a click), so a record survives a reload.
    - Private additions (table 1-3, proposals): one IS2.parts.privatePanel each for 4.1 (macro-market-credit) and 4.2
      (macro-sector-rs); they stay NOT_READY and send or store nothing; the public part never waits for them.
+   - 4.1.3 관측 자료 · 갱신 상태 (owner 2026-11-05, Codex #477): a block after the evidence lines filled by
+     IS2.macroObservedLive.draw (screen-macro-observed-live.js; reader IS2.macroObserved, macro-current-query/1). Its source is
+     its own (today NONE: no request); it shows times, states and counts, never an observed value, and never an official regime.
+     Under it, one IS2.parts.privatePanel (macro-observed-private, owner 2026-11-05, DC-44): 비공개 펼치기 reads the owner's
+     private copy through IS2.privateExpand (kind 'macro') and draws it with the same block function (macroObservedLive.nodes).
    - View state (cycle, viewed cell, evidence tab, chosen group, chosen ring) lives in this module; quotes live in the render. */
 (function(){
 'use strict';
@@ -37,7 +42,37 @@ const FAMILY={C:'금리곡선',LU:'실업·청구',LD:'노동 수요 선행',MO:
 const RULE_SOURCE={LITERATURE:'[문헌]',PROPOSAL:'[제안]',LITERATURE_UP_PROPOSAL_DOWN:'[문헌] 상향 · [제안] 하향',AGENCY_EVENT:'[기관 사건]'};
 const REASON={SOURCE_NOT_COLLECTED:'수집 전',SOURCE_NOT_AVAILABLE:'출처 응답 없음',SOURCE_KEY_NOT_CONFIGURED:'API 키 미설정',TERMS_UNVERIFIED:'약관 원문 미확인 · 공개 보류',
  SCHEMA_MISMATCH:'형식 불일치',SERIES_NOT_FOUND:'계열 없음',MISSING_SOURCE:'값 없음',PROVIDER_ERROR:'출처 오류 응답',INSUFFICIENT_HISTORY:'이력 부족'};
-const V={cycle:'economy',view:{economy:0,market:0},ev:null,group:'',ring:'economy',node:'data'};
+const V={cycle:'economy',view:{economy:0,market:0},ev:null,group:'',ring:'economy',node:'data',mevStatus:undefined,ccSector:'',ccIndustry:'',ccToken:null,ccTokenState:null};
+// macro-evidence-status/1 (Python macro/evidence_lines.py require_status, same rules): this attempt apart from the data. A
+// failed attempt keeps the last good copy with its own generated_at; the record says the attempt failed and the data is late.
+const MES='macro-evidence-status.json',MES_KEYS=['schema','kind','attempt_at','attempt_result','failure_stage','failure_class','published','data_generated_at','data_sha256','previous'];
+const MES_STAGE={PREVIOUS:'이전 공개본 읽기',COLLECT:'수집',BUILD:'자료 만들기',VALIDATE:'검사',WRITE:'쓰기'};
+// How the previous Pages copy read (macro/evidence_lines.py PREVIOUS_READ): UNAVAILABLE / INVALID are not absence.
+const MES_PREV={LOADED:'정상본 확인',NO_LIVE:'공개본 없음',EMPTY_LIVE:'빈 기본값만 있음',REMOVED:'공개본이 빠져 있음',UNAVAILABLE:'조회 실패',INVALID:'손상된 응답'};
+const ISO=/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,6})?Z$/;
+function mesValid(p){const ok=(c)=>{if(!c)throw Error('MES');};try{ok(p&&typeof p==='object'&&!Array.isArray(p)&&Object.keys(p).length===MES_KEYS.length&&MES_KEYS.every(k=>Object.hasOwn(p,k)));
+ ok(p.schema==='macro-evidence-status/1'&&p.kind==='MACRO_EVIDENCE_ATTEMPT'&&ISO.test(p.attempt_at));
+ ok(['BUILT','FAILED'].includes(p.attempt_result)&&['NEW','PREVIOUS_KEPT','WITHHELD'].includes(p.published)&&Object.hasOwn(MES_PREV,p.previous));
+ const unreadable=p.previous==='UNAVAILABLE'||p.previous==='INVALID';
+ if(p.attempt_result==='BUILT')ok(p.failure_stage===null&&p.failure_class===null&&p.published==='NEW'&&!unreadable);
+ else{ok(Object.hasOwn(MES_STAGE,p.failure_stage)&&p.published!=='NEW'&&(p.failure_class===null||(typeof p.failure_class==='string'&&/^[A-Za-z][A-Za-z0-9_]{0,63}$/.test(p.failure_class))));
+  if(p.published==='PREVIOUS_KEPT')ok(p.previous==='LOADED');else if(unreadable)ok(p.failure_stage==='PREVIOUS');else if(p.previous==='LOADED')ok(p.failure_stage==='WRITE');}
+ if(p.published==='WITHHELD')ok(p.data_generated_at===null&&p.data_sha256===null);else ok(ISO.test(p.data_generated_at)&&/^[0-9a-f]{64}$/.test(p.data_sha256));
+ return p;}catch(_){return null;}}
+// The attempt line: null when there is nothing to say (no record, or a built attempt of this very file). `p` is the
+// macro file, or null when it is not published: WITHHELD means the daily step left it out (never beside a file).
+function attemptLine(p){const st=V.mevStatus;if(!st)return null;
+ if(st.invalid)return h('p',{class:'reason',dataset:{mevAttempt:'INVALID'}},'갱신 기록 규격 불일치 · 기록 표시 안 함');
+ const matches=st.published==='WITHHELD'?p===null:(p!==null&&st.data_generated_at===p.generated_at);
+ if(!matches)return h('p',{class:'reason',dataset:{mevAttempt:'MISMATCH'}},'갱신 기록이 이 자료와 맞지 않음 · 기록 표시 안 함');
+ if(st.attempt_result==='BUILT')return null;
+ return st.published==='PREVIOUS_KEPT'
+  ?h('p',{class:'hand err',role:'status',dataset:{mevAttempt:'PREVIOUS_KEPT'}},'이번 갱신 실패 (',utc(st.attempt_at),' · ',MES_STAGE[st.failure_stage],' 단계) · 아래는 마지막 정상본 그대로 (생성 ',utc(st.data_generated_at),') · 자료 지연')
+  :st.previous==='UNAVAILABLE'||st.previous==='INVALID'
+   ?h('p',{class:'hand err',role:'status',dataset:{mevAttempt:'WITHHELD',mevPrevious:st.previous}},'이번 갱신 실패 (',utc(st.attempt_at),' · 이전 공개본 ',MES_PREV[st.previous],') · 이전 기록을 이어받지 못해 근거 파일을 게시하지 않음 · 이전 공개 파일도 이 배포에서 빠짐(보존 아님)')
+   :st.previous==='LOADED'
+   ?h('p',{class:'hand err',role:'status',dataset:{mevAttempt:'WITHHELD',mevPrevious:'LOADED'}},'이번 갱신 실패 (',utc(st.attempt_at),' · ',MES_STAGE[st.failure_stage],' 단계) · 근거 파일을 쓰지 못해 게시하지 않음 · 이전 공개 파일도 이 배포에서 빠짐(보존 아님)')
+   :h('p',{class:'hand err',role:'status',dataset:{mevAttempt:'WITHHELD',mevPrevious:st.previous}},'이번 갱신 실패 (',utc(st.attempt_at),' · ',MES_STAGE[st.failure_stage],' 단계) · 정상본이 없어 근거 파일을 게시하지 않음 (',MES_PREV[st.previous],') · 0건이 아니라 미수집');}
 const obj=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 // replaceChildren would write "null" for a part that is not there: core append skips null / false.
 const put=(box,...c)=>{box.replaceChildren();I.append(box,c);return box;};
@@ -133,10 +168,13 @@ const stateText=(s,r)=>s==='LIVE'?'수집됨':(s==='PARTIAL'?'일부 수집 · '
 let evidenceBox=null;
 function paintEvidence(){if(evidenceBox&&evidenceBox.isConnected&&evidenceBox.dataset.ready)evidenceBlock(evidenceBox);}
 function evidenceBlock(box){
+ if(V.mevStatus===undefined){V.mevStatus=null;
+  I.data.static(MES).then(v=>{V.mevStatus=v===null?null:(mesValid(v)||{invalid:true});if(V.mevStatus&&box.isConnected)evidenceBlock(box);},()=>{V.mevStatus=null;});}
  box.dataset.ready='1';const top=[sub('근거 세로선 · 근거 탐색','4.1.3','탐색 전용 · 공식 판정·확률·매크로 게이트에 쓰지 않음'),
   h('p',{class:'reason',dataset:{evScope:''}},'탐색 화면 전용 · 해석 후보 · 미승인 · v0 · 미검증')];
  const s=fileState(ME),p=s.state==='OK'?I.data.get(ME):null,ME_=window.MacroEvidence;
- if(!p||!ME_){put(box,...top,s.state==='OK'?failed('READER_MISSING','근거 지표를 읽는 모듈이 없습니다'):fileFail(ME,'근거'));return;}
+ if(!p||!ME_){put(box,...top,s.state==='OK'?failed('READER_MISSING','근거 지표를 읽는 모듈이 없습니다'):fileFail(ME,'근거'),
+  s.state!=='OK'&&V.mevStatus&&(V.mevStatus.invalid||V.mevStatus.published==='WITHHELD')?attemptLine(null):null);return;}
  const tabsList=ME_.TABS.map(([c,l])=>[c,l]),cyc=V.ev||V.cycle,ci=Math.max(0,tabsList.findIndex(t=>t[0]===cyc));
  const sum=ME_.summary(p,tabsList[ci][0]),names=a=>a.map(f=>FAMILY[f]||f).join(', ')||'없음';
  const evs=ME_.events({cycle:tabsList[ci][0]},p),N=phone()?ME_.LIMIT.mobile:ME_.LIMIT.pc;
@@ -147,6 +185,7 @@ function evidenceBlock(box){
   h('ul',{class:'news-lines'},p.indicators.map(i=>h('li',{dataset:{catalogRow:i.id,catalogState:i.state}},h('b',null,i.id,' ',i.name),' · ',stateText(i.state,i.reason),
    held(i)?' · 약관 원문 미확인 · 이름과 상태만 표시':' · '+(FAMILY[i.family]||i.family)+' · '+i.cycles.map(c=>(tabsList.find(t=>t[0]===c)||[c,c])[1]).join('·')+' · '+(RULE_SOURCE[i.rule.source_class]||i.rule.source_class)+' '+i.rule.version+' · v0 · 미검증'))));
  put(box,...top,
+  attemptLine(p),
   p.generated_at===null?h('p',{class:'reason',dataset:{notCollected:''}},'아직 수집 전입니다 · 매일 실행에서 공식 통계를 모으면 표시됩니다')
    :h('p',{class:'reason',dataset:{collection:''}},'수집 시작 ',utc(p.collection_started_at),' · 최근 생성 ',utc(p.generated_at),p.state==='PARTIAL'?' · 일부 수집':''),
   tablist('근거 사이클',tabsList,ci,i=>{V.ev=tabsList[i][0];evidenceBlock(box);focusLater(box,'[data-ev-tab="'+V.ev+'"]');},'evTab'),
@@ -248,7 +287,9 @@ function industryBlock(box,onChange){
    prep('미산출 · 산업 사이클 모델 없음',['산업 사이클 위치 모델','집계 계열','산업 어휘 결정 (PM-7)']),
    dl([['매출 증가율 중앙값','— · 집계 미구현',{dataset:{na:'NOT_IMPLEMENTED'}}],['재고/매출','— · 집계 미구현',{dataset:{na:'NOT_IMPLEMENTED'}}],['이익 증가 발행인 비율 (후행)','— · 집계 미구현',{dataset:{na:'NOT_IMPLEMENTED'}}],['기준일','— · 모델 없음']]),
    h('details',null,h('summary',{class:'lk'},'조건 · 반대 근거 · 확률'),conds(),h('p',{class:'reason'},'반대 근거: 엇갈림 · 합계 비율과 중앙값 방향이 다르면'),h('p',{class:'reason'},'반대 근거: 집중 · 한 발행인이 큰 몫이면 합계 비율 근거 제외'),prob()));}
- put(box,title,pick,body);}
+ // 공통 분류 (DC-48): 4.3 keeps its original text, path and key (industry:<group>); the header says which list it is.
+ const basis=h('p',{class:'reason',dataset:{ccBasis:'SIC'}},'SIC 업종군 기준(원천 분류) · 공통 산업 분류와 다름 · 공통 분류는 섹터 → 하위 산업(공통 10섹터 아래) · SIC 업종군은 그 하위 코드가 아님');
+ put(box,title,basis,pick,body);}
 
 /* ---------------------------------------------------------------- 3.4 my position (4.4): kept on this device */
 // Words for a refused or failed write (the old ring's own words where it had them, macro-cycle-ring.js:21 / :352).
@@ -325,6 +366,30 @@ function treeBlock(box,merged){
    x.state==='NOT_AVAILABLE'?h('span',{dataset:{na:(x.reason_codes||[]).join(' ')}},'— · ',(x.reason_codes||[]).join(', ')):[x.period,' · ',h('span',{dataset:{rawValue:''}},v),' · 수집 상한 ',utc(x.acquired_at)]))):null,
   h('p',{class:'reason'},'정부 통계 · 가격 아님 · 발표 시각 미확인이라 수집 시각이 상한 · FX는 공개 가격 경계에 따라 제외'));}
 
+/* ---------------------------------------------------------------- 4.2 공통 섹터 → ETF 비교 가격계열 (DC-48) */
+// Sector selection (or a cc:… hash token from another screen) → the D22 SIC→ETF comparison series the macro projection gives the
+// sector's companies, on one line with "섹터 ETF는 비교 가격계열 · 구성 범위가 공통 섹터와 다를 수 있음". The projection's
+// own sector returns, rotation probabilities and statistical crosswalk stay null / unlinked; nothing here estimates them.
+function ccSectorBlock(box,route){const C=I.classification;if(!C){put(box,h('p',{class:'na',dataset:{na:'READER_MISSING'}},'공통 분류 판독기를 불러오지 못했습니다'));return;}
+ const st=C.state(),on=st.state==='OK',val=on?C.value():null,o=on?C.options():null,tok=route.params&&/^cc:/.test(route.params[0]||'')?route.params[0]:null;
+ if(on&&tok&&V.ccToken!==tok){V.ccToken=tok;V.ccTokenState=C.contextState(tok);if(V.ccTokenState==='OK'){const c=C.parseContext(tok);V.ccSector=c.sector||'';V.ccIndustry=c.industry||'';}}
+ const head=h('h4',null,'공통 섹터 → 섹터 ETF 대리');
+ if(!on){put(box,head,h('p',{class:'reason',dataset:{ccSector:'NONE',na:st.code||st.state}},'공통 섹터 선택 · ',st.state==='INVALID'?C.WORDS.INVALID:C.WORDS.NONE),h('p',{class:'reason'},'섹터 ETF는 비교 가격계열 · 구성 범위가 공통 섹터와 다를 수 있음'));return;}
+ const sel=h('select',{id:'macro-cc-sector',dataset:{ccSectorSelect:''},onchange:e=>{V.ccSector=e.target.value;V.ccIndustry='';ccSectorBlock(box,route);focusLater(box,'[data-cc-sector-select]');}},
+  h('option',{value:''},'선택 안 함'),o.sectors.map(x=>h('option',{value:x.id,selected:x.id===V.ccSector},C.sectorName(x.id)+' · '+x.n+'개 기업')));
+ const lines=[head,h('div',{class:'card-body'},h('label',{for:'macro-cc-sector'},'공통 섹터 (투자시스템 공통 10섹터 · 분류 기록 ',C.shortHash(val.view.classification_hash),' · 평가일 ',val.view.valuation_date,')'),sel)];
+ if(V.ccTokenState&&V.ccTokenState!=='OK')lines.push(h('p',{class:'reason',dataset:{ccToken:V.ccTokenState,na:'CLASSIFICATION_CONTEXT_'+V.ccTokenState}},'주소의 분류 문맥을 적용하지 않음 · ',V.ccTokenState==='VERSION_MISMATCH'?C.WORDS.VERSION_MISMATCH:'분류 평가일 다름'));
+ const mm=val.mismatch.macro,m=val.macro;
+ if(V.ccSector){
+  if(mm||!m)lines.push(h('p',{class:'reason',dataset:{ccEtf:mm?'VERSION_MISMATCH':'NONE',na:mm?'CLASSIFICATION_VERSION_MISMATCH':'MACRO_PROJECTION_NOT_CONNECTED'}},'섹터 ETF 대리 · ',mm?C.WORDS.VERSION_MISMATCH+' · 쓰지 않음':'공통 분류 매크로 투영 미연결'));
+  else{const rows=m.rows.filter(r=>r.sector.status==='CONFIRMED'&&r.sector.id===V.ccSector),etf=new Map();for(const r of rows){const k=r.benchmark.etf||'ETF 대응 없음';etf.set(k,(etf.has(k)?etf.get(k):[]).concat(r.company_id));}
+   lines.push(h('p',{dataset:{ccEtf:[...etf.keys()].join(' '),ccHash:m.classification_hash}},'섹터 ETF 대리 · ',[...etf].map(([k,v])=>k+' ('+v.length+'개 기업)').join(' · '),' · 섹터 ETF는 비교 가격계열 · 구성 범위가 공통 섹터와 다를 수 있음'),
+    h('p',{class:'reason'},'ETF 기준 ',rows[0]?rows[0].benchmark.version:'—',' · 원천 SIC → ETF 대응(D22) · 공통 섹터와 같은 범위라는 뜻이 아님 (benchmark_is_common_sector: false)'),
+    h('p',{class:'reason',dataset:{ccStat:String(rows.filter(r=>r.statistic_mapping.status==='LINKED').length)}},'통계 산업 대응 ',String(rows.filter(r=>r.statistic_mapping.status==='LINKED').length),'건 · 자체 섹터 수익률 미산출 · 순환매 확률 미산출'));}
+  const token=C.context({sector:V.ccSector,industry:V.ccIndustry||null});
+  lines.push(h('p',{class:'links cc-links'},h('a',{class:'lk',href:href('qgv',token),dataset:{ccLink:'qgv'}},'→ QGV 리더보드 · 이 섹터 기업 · 3.5 기술 조건 필터')));}
+ put(box,...lines);}
+
 /* ---------------------------------------------------------------- screen */
 function fileBand(refs){
  const chip=(n,label)=>{const s=fileState(n),ok=s.state==='OK';return h('span',{class:'chip'+(ok?'':' err'),dataset:{file:n,fileState:s.state}},label,' · ',ok?'기준 '+utc(s.as_of):s.text||s.state);};
@@ -338,14 +403,22 @@ function screen(route,{legend,band,slots}){
   lights:block('4.1.4',sub('기존 경고등 · 상태판 (참고 모드)','4.1.4'),loading('경고등')),industry:block('4.3',sub('산업 사이클 상태','4.3.1 · 4.3.2 · 4.3.3'),loading('업종 그룹')),
   mine:block('4.4',sub('내 국면 판단 기록','4.4.1 · 4.4.2'),loading('기록 칸')),tree:block('4.6',sub('매크로 구조 트리','4.6.1 · 4.6.2'),loading('구조 트리'))};
  evidenceBox=refs.evidence;
+ // 4.1.3 관측 자료 · 갱신 상태 (screen-macro-observed-live.js, Codex #477 macro-current-query/1): its own source, drawn at once.
+ const observed=block('4.1.3-observed',sub('관측 자료 · 갱신 상태','4.1.3','관측 자료 전용 · 국면 판단 아님'),loading('관측 자료'));
+ if(I.macroObservedLive&&I.macroObserved)I.macroObservedLive.draw(observed,{signal:route.signal});
+ else put(observed,observed.firstChild,failed('READER_MISSING','관측 자료를 읽는 모듈이 없습니다'));
  // The public part never depends on a panel: a panel that cannot be built is left out (put skips null).
  const panel=(id,title)=>{try{return I.parts.privatePanel({id,title}).node;}catch(_){return null;}};
- put(slots['3-1'],h('p',{class:'hand'},'공식 국면은 아직 미산출 · 위치·확률을 임의로 찍지 않음 · 경고등 5개는 참고 모드 그대로'),refs.ring,refs.evidence,refs.lights,judgeBlock(),
+ const polBody=h('div',{class:'pol-body',dataset:{policyBody:''}}),ccBox=h('div',{class:'cc-sector',dataset:{ccSectorBox:''}},loading('공통 섹터'));
+ // 비공개 · 보관 관측 자료: the private copy of the same file, drawn by the same block function; the public block never waits for it.
+ const observedPrivate=(()=>{if(!I.privateExpand||!I.macroObservedLive)return null;try{const p=I.parts.privatePanel({id:'macro-observed-private',title:'보관 관측 자료'});
+  I.privateExpand.attach(p,{signal:route.signal,kind:'macro',draw:value=>I.macroObservedLive.nodes({state:'OK',payload:value,data_kind:null})});return p.node;}catch(_){return null;}})();
+ put(slots['3-1'],h('p',{class:'hand'},'공식 국면은 아직 미산출 · 위치·확률을 임의로 찍지 않음 · 경고등 5개는 참고 모드 그대로'),refs.ring,refs.evidence,observed,observedPrivate,refs.lights,judgeBlock(),
   panel('macro-market-credit','시장·신용 근거 계열 (KIS 일봉)'));
  put(slots['3-2'],block('4.2',sub('순환매 · 위치 · 조건 · 확률','4.2.1 · 4.2.2 · 4.2.3','근거는 결정됨 · 계산·보정 방법 결정 대기 (IA-3)'),
    prep('지금 위치 미산출 · 순환매 위치 모델 없음 · 점·구간을 그리지 않음',['순환매 위치 모델','3.1 공식 국면 (미산출)','검증된 전환 빈도','자산 자료·단위 결정']),
    h('p',null,'기준 국면 (3.1): 미산출 → 위치도 미산출 · 기준일 — · 모델 없음'),h('h4',null,'다음 조정 조건'),conds(),h('h4',null,'확률'),prob(),
-   h('p',{class:'reason'},'검증 상태: 연구 단계 → ',h('a',{href:href('lab'),class:'lk'},'n+1 Lab'))),
+   h('p',{class:'reason'},'검증 상태: 연구 단계 → ',h('a',{href:href('lab'),class:'lk'},'n+1 Lab')),ccBox),
   panel('macro-sector-rs','섹터 ETF 상대강도 (KIS, 탐색 전용)'));
  put(slots['3-3'],refs.industry);put(slots['3-4'],refs.mine);
  put(slots['3-5'],block('4.5',sub('나비효과 · 사건 → 원인 고리 → 영향받는 기업','4.5.1 · 4.5.2 · 4.5.3 · 4.5.4','고리마다 근거 · 시차 · 확신도'),
@@ -353,8 +426,12 @@ function screen(route,{legend,band,slots}){
    h('p',null,h('b',null,'어디서 시작할까')),h('div',{class:'scroll'},['사건 (공시·뉴스)','매크로 동인','기술·제품','밸류체인 단계'].map(t=>h('button',{type:'button',class:'chip',disabled:true},t,' · 준비 중'))),
    h('ol',{class:'news-lines',dataset:{chain:'NOT_AVAILABLE'},'aria-label':'나비효과 틀 · 빈 칸'},['사건','원인 고리','영향받는 기업'].map(t=>h('li',null,h('b',null,t),' ',h('span',{dataset:{na:'NOT_AVAILABLE'}},'—')))),
    h('p',{class:'reason'},'걸음마다 사실 · 추론 · 가설을 나눔 · 한 고리라도 가설이면 경로 전체가 가설 · 호재·악재 · 크기 · 확률은 쓰지 않음 · 확신도 숫자는 검증 전에는 쓰지 않음'),
-   h('p',{class:'links'},h('a',{href:href('news'),class:'lk'},'→ 4.1 관계망'),' ',h('a',{href:href('news'),class:'lk'},'→ 4.2 공시 · 뉴스'))));
+   h('p',{class:'links'},h('a',{href:href('news'),class:'lk'},'→ 4.1 관계망'),' ',h('a',{href:href('news'),class:'lk'},'→ 4.2 공시 · 뉴스')),
+   // 4.5 정책·지정학 (owner 2026-11-07): screen-policy-impact-live.js fills it (#/macro/policy/<id> opens a policy)
+   h('h4',null,'정책 · 지정학'),polBody));
+ if(I.policyImpactLive)I.policyImpactLive.macro(route,{body:polBody,params:route.params});else put(polBody,failed('READER_MISSING','정책 모듈을 불러오지 못했습니다'));
  put(slots['3-6'],refs.tree);
+ const C=I.classification;if(C&&typeof C.load==='function')Promise.resolve(C.load()).then(()=>{if(!aborted())ccSectorBlock(ccBox,route);},()=>{});else ccSectorBlock(ccBox,route);
  const paint=()=>{if(aborted())return;fileBand(refs);
   let merged=null;try{merged=lightsBlock(refs.lights);}catch(e){put(refs.lights,failed('LIGHTS_FAILED','경고등을 그리지 못했습니다'));}
   const again=()=>{if(!aborted()){ringBlock(refs.ring);mineBlock(refs.mine,again2);}},again2=()=>{if(!aborted())ringBlock(refs.ring);};

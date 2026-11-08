@@ -41,6 +41,7 @@ h1,h2,h3,h4{font-family:var(--font-display);font-weight:400;margin:0;line-height
 .hand{font-family:var(--font-body);color:var(--muted)}
 .chip{display:inline-flex;align-items:center;gap:6px;border:2px solid var(--line);border-radius:999px;padding:6px 14px;min-height:32px;font-size:15px;background:var(--paper);text-decoration:none}
 button.chip{cursor:pointer}
+.chip[hidden]{display:none}
 button.chip:disabled{cursor:not-allowed}
 .chip.on,.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
 .bar{height:12px;border:2px solid var(--line);border-radius:8px;position:relative;overflow:hidden;background:var(--paper)}
@@ -149,6 +150,8 @@ svg.ico{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stro
 .quote-en{font-style:italic;color:var(--muted)}
 .quote-who,.quote-src{font-size:15px;overflow-wrap:anywhere}
 .result-facts{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;font-size:20px;color:var(--muted);word-break:keep-all}
+/* 공통 분류 block + its private panel inside .result-facts: long producer codes (e.g. a summary basis code) break instead of widening the page at 390 */
+.cc-wrap{min-width:0;max-width:100%;overflow-wrap:anywhere}
 .result-facts p{margin:0}
 .not-found{font-family:var(--font-display);font-size:24px;color:var(--ink)}
 .star-wrap{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap}
@@ -162,6 +165,7 @@ svg.ico{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stro
 .qbar.q .qbar-fill{fill:var(--q)}.qbar.g .qbar-fill{fill:var(--g)}.qbar.v .qbar-fill{fill:var(--v)}
 .qval{text-align:right;font-variant-numeric:tabular-nums}
 .news-lines{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px;word-break:keep-all;overflow-wrap:break-word}
+.obs-rows>li{min-width:0;overflow-wrap:anywhere}.obs-line{display:block}.obs-url{overflow-wrap:anywhere;word-break:break-all}
 
 /* ---------- 1. QGV · 1.1 리더보드 (add/QGVLeaderboard) ---------- */
 .band{padding:16px 20px;display:flex;flex-direction:column;gap:12px}
@@ -214,6 +218,48 @@ svg.ico{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stro
 .tcards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
 .tcard{padding:12px 16px;display:flex;flex-direction:column;gap:4px;min-width:0;overflow-wrap:anywhere}
 .tf-filters{grid-template-columns:repeat(5,minmax(0,1fr))}
+/* 의외의 기업 (2.1.8 list, 2.4.6 mark; owner 2026-11-06): no colour of its own (DC-26); the review state takes the problem tint */
+.disc-filters{grid-template-columns:repeat(3,minmax(0,1fr))}
+.disc-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.disc-row{padding:12px 16px;display:flex;flex-direction:column;gap:6px;min-width:0;overflow-wrap:anywhere}
+.disc-row p{margin:0}
+.disc-row-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 12px}
+.disc-name{font-family:var(--font-display);font-size:20px;color:var(--ink);overflow-wrap:anywhere}
+.disc-ticker{font-size:15px;color:var(--muted)}
+.disc-badges{display:inline-flex;flex-wrap:wrap;gap:6px}
+.disc-group{font-family:var(--font-display);font-size:17px;margin-top:6px}
+.chip.disc-review,.disc-review-line{border-color:var(--problem);background:var(--problem-tint)}
+.disc-review-line{border:2px solid var(--problem);border-radius:10px;padding:8px 12px}
+.disc-name-row{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 14px;min-width:0}
+.disc-mark{min-height:44px;font-weight:700}
+.disc-panel{padding:14px 18px;display:flex;flex-direction:column;gap:12px;overflow-wrap:anywhere}
+.disc-panel[hidden]{display:none}
+.disc-panel p,.disc-sec-title{margin:0}
+.disc-sec{display:flex;flex-direction:column;gap:6px}
+.disc-sec-title{font-size:18px;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.disc-items,.disc-sources{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:4px}
+.disc-facet{display:flex;flex-wrap:wrap;gap:6px}
+/* 1.2 섹터 QGV 구성 (2.2; owner 2026-11-06): badges are words (no colour of their own, DC-26); errors take the problem tint */
+.sq-ctx,.sq-axes,.sq-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px}
+.sq-ax input,.sq-role input{width:6.5em;min-height:44px}
+.sq-roles{display:flex;flex-direction:column;gap:12px}
+.sq-role{padding:12px 16px;display:flex;flex-direction:column;gap:8px;min-width:0;overflow-wrap:anywhere}
+.sq-role-head{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+/* Q/G 부분 비교 (owner 2026-11-07): words carry every state; long ids wrap */
+.sq-axis,.sq-axis-files{margin-top:16px;display:flex;flex-direction:column;gap:8px;min-width:0;overflow-wrap:anywhere}
+.sq-axis p,.sq-axis h4{margin:0}
+.sq-axis-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.sq-axis-filters select{min-height:44px;width:100%;max-width:100%}
+.sq-axis-rows summary{cursor:pointer;min-height:44px;overflow-wrap:anywhere}
+.sq-factors,.sq-found{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.sq-factors li,.sq-found li{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;min-width:0}
+.sq-fname{font-weight:700}
+.sq-acts{display:inline-flex;flex-wrap:wrap;gap:6px}
+.sq-acts select,.sq-search input,.sq-ctx select{min-height:44px}
+.sq-search{display:flex;flex-direction:column;gap:8px}
+.sq-summary{padding:12px 16px;display:flex;flex-direction:column;gap:6px}
+.sq-summary p,.sq-preview p{margin:0}
+.sq-preview{display:flex;flex-direction:column;gap:12px;min-width:0}
 .tech-cell{display:flex;flex-direction:column;gap:2px;font-size:13px;min-width:12em}
 .tech-cell .tm,.tech-line .tm{overflow-wrap:anywhere}
 .tech-why ul{margin:4px 0 0;padding-left:18px;font-size:13px}
@@ -233,7 +279,28 @@ svg.ico{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stro
 /* ---------- 4. 뉴스 (feature 5): the filing / news rows without list markers; long titles and hosts wrap on a phone ---------- */
 .news-rows{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}.news-rows>li{padding:16px}.news-rows a,.news-rows p{overflow-wrap:anywhere}
 /* ---------- phone (draft: 390 px boards, bottom tabs) ---------- */
+/* 3.1 국면 고리 (owner 2026-11-07 3차): the 280 px ring scales down inside a narrow card instead of running past the viewport
+   (no page-level overflow hiding; the drawing keeps its 300×300 viewBox and aspect ratio) */
+figure:has(> svg[data-ring]){align-self:stretch;min-width:0;margin-inline:0}
+/* the 3.1 user-estimate fieldset may shrink like any card body (a fieldset defaults to its content width) */
+fieldset.card-body{min-inline-size:0}
+svg[data-ring]{width:100%;max-width:280px;height:auto}
+/* 4.5 정책·지정학 (owner 2026-11-07): no colour of its own (DC-26); words carry every state */
+.pol-filters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.pol-filters select{min-height:44px;max-width:100%;width:100%}
+.pol-list,.pol-exposures{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.pol-card,.pol-exposure,.pol-hypothesis{padding:12px 16px;display:flex;flex-direction:column;gap:6px;min-width:0;overflow-wrap:anywhere}
+.pol-card p,.pol-exposure p,.pol-hypothesis p{margin:0}
+.pol-title{font-family:var(--font-display);font-size:19px;color:var(--ink);overflow-wrap:anywhere}
+.pol-detail-title{overflow-wrap:anywhere;min-width:0}
+.pol-sec{margin-top:16px;display:flex;flex-direction:column;gap:8px;min-width:0;overflow-wrap:anywhere}
+.pol-conds{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.pol-steps{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:4px}
+.pol-company{margin-top:8px}
+.pol-sec a.lk,.pol-card a.lk,.pol-company a.lk{overflow-wrap:anywhere;max-width:100%}
 @media (max-width:720px){
+ .pol-filters,.pol-conds{grid-template-columns:minmax(0,1fr)}
+ .pol-title{font-size:17px}
  :root{--gutter:16px}
  .page{padding:20px var(--gutter) calc(var(--tabbar) + 24px);gap:20px}
  .top .menu{display:none}
@@ -269,6 +336,11 @@ svg.ico{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stro
  .lb-filters:not(.open){display:none}
  .tcards{grid-template-columns:minmax(0,1fr)}
  .tf-filters{grid-template-columns:minmax(0,1fr)}
+ .disc-filters{grid-template-columns:minmax(0,1fr)}
+ .disc-name{font-size:18px}
+ .disc-mark{width:100%;justify-content:center}
+ .sq-actions .btn{flex:1 1 100%;min-height:48px}
+ .sq-ax{flex:1 1 100%}
  .tf-step .sort-row{flex-wrap:wrap}
  [data-filter=industry],[data-filter=type],[data-filter=state]{grid-column:1/-1}
  .btn.reset{width:100%}

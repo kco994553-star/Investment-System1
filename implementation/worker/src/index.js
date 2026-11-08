@@ -259,6 +259,89 @@ function krxNumber(value) {
   return result;
 }
 
+// ---------- Private KIS area (design PRIVATE_AREA_KIS_DESIGN_20261031.md §5.5 / §17.2, PRIVATE_AREA_NO_ZT_ACCESS_20261031.md §4) ----------
+// Routes, all behind the same Google owner check as /history: GET /kis/status, GET /kis/chart?symbol=<SYM> (kis-bars/1),
+// GET /kis/analysis?symbol=<SYM> (kis-bars/1/analysis), GET /kis/technical?symbol=<SYM> (kis-technical-measures/1),
+// GET /kis/qgv (kis-qgv/1), GET /kis/macro (macro-current-query/1) and GET /kis/news (news-signals schema 2, the private replay).
+// Each data route reads one file from the data branch of the private repository with a read-only token (chart/<first>/<SYM>.json,
+// technical/<first>/<SYM>.json — Codex #480's staged analysis name —, measures/<first>/<SYM>.json, qgv/latest.json,
+// macro/current.json, news/current.json) and passes its bytes through. The body is parsed only to check that it is one JSON object
+// of this route's schema (the writers' spacing differs: "schema": "…" and "schema":"…" both occur); the app validates the rest.
+// Nothing is cached, logged or followed; the token, its expiry variable and every upstream body stay out of every response.
+// GET /kis/classification?part=<view|technical|macro|qgv_links|dictionary|expanded_summary> (owner 2026-11-08): the held common classification
+// bundle (Codex #516 outputs, staged byte for byte at classification/<part>.json), same owner check, same read token, same rules.
+const KIS_REPO = 'kco994553-star/investment-system1-kis-private';
+const KIS_BRANCH = 'data';
+const GITHUB_API = 'https://api.github.com';
+const MAX_CHART_BYTES = 2 * 1024 * 1024;
+const KIS_SYMBOLS = new Set(US_SYMBOLS);
+const bySymbol = (dir) => (s) => dir + '/' + s[0] + '/' + s + '.json';
+// Route → [file path for a symbol (or none), does the parsed object carry this route's schema].
+const KIS_FILES = Object.freeze({
+  '/kis/chart': [bySymbol('chart'), (o) => o.schema === 'kis-bars/1'],
+  '/kis/analysis': [bySymbol('technical'), (o) => o.schema === 'kis-bars/1/analysis'],
+  '/kis/technical': [bySymbol('measures'), (o) => o.schema === 'kis-technical-measures/1'],
+  '/kis/qgv': [() => 'qgv/latest.json', (o) => o.schema === 'kis-qgv/1'],
+  '/kis/macro': [() => 'macro/current.json', (o) => o.schema_version === 'macro-current-query/1'],
+  '/kis/news': [() => 'news/current.json', (o) => o.kind === 'NEWS_SIGNALS' && o.schema_version === 2],
+  '/kis/classification': [(part) => 'classification/' + part + '.json', (o, part) => o.schema_version === CLASSIFICATION_PARTS[part]],
+});
+// The classification parts and the schema each file must carry (Codex common-classification/1 output names).
+const CLASSIFICATION_PARTS = Object.freeze({ view: 'common-classification-view/1', technical: 'common-classification-technical/1',
+  macro: 'common-classification-macro/1', qgv_links: 'common-classification-qgv-links/1', dictionary: 'common-classification-dictionary/1',
+  // The expanded held issuer sample's summary (Codex #520): a separate population, its counts only.
+  expanded_summary: 'held-expanded-classification-summary/1' });
+// /kis/classification?part=<part> only (no other parameter, no alternate encoding).
+export function kisClassificationPart(url) {
+  if (url.hash || !/^\?part=[a-z_]{1,20}$/.test(url.search)) throw new Failure('REQUEST_INVALID', 400);
+  const part = url.searchParams.get('part');
+  if (!Object.hasOwn(CLASSIFICATION_PARTS, part)) throw new Failure('REQUEST_INVALID', 400);
+  return part;
+}
+// Routes that take no query string at all.
+const KIS_PLAIN = new Set(['/kis/status', '/kis/qgv', '/kis/macro', '/kis/news']);
+const DAY_MS = 86_400_000;
+
+// Today as an Asia/Seoul calendar date (UTC+9, no daylight saving), 'YYYY-MM-DD'.
+export function seoulToday(nowMs) { return new Date(nowMs + 9 * 3_600_000).toISOString().slice(0, 10); }
+
+// The read token's recorded expiry (§4.4 rows 1–2 and the OK / EXPIRING tail). The date is rebuilt by the Worker; the raw
+// variable is never echoed. Order: unset → invalid → looks like a token → expired → days left.
+export function kisTokenDate(env, nowMs) {
+  const token = env.PRIVATE_REPO_READ_TOKEN;
+  if (typeof token !== 'string' || !/^[\x21-\x7e]{1,4096}$/.test(token)) return { state: 'UNSET', code: 'TOKEN_UNSET', expires_on: null, days_left: null };
+  const raw = env.PRIVATE_REPO_READ_TOKEN_EXPIRES_ON;
+  if (typeof raw === 'string' && /^(?:github_pat_|ghp_|gho_|ghu_|ghs_|ghr_)/.test(raw.trim())) return { state: 'UNSET', code: 'TOKEN_DATE_IS_TOKEN', expires_on: null, days_left: null };
+  const m = typeof raw === 'string' ? /^(\d{4})-(\d{2})-(\d{2})$/.exec(raw) : null;
+  const date = m ? new Date(Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3]))) : null;
+  const today = seoulToday(nowMs), todayMs = Date.parse(today + 'T00:00:00Z');
+  if (!date || date.toISOString().slice(0, 10) !== raw || date.getTime() > todayMs + 367 * DAY_MS) return { state: 'UNSET', code: 'TOKEN_DATE_INVALID', expires_on: null, days_left: null };
+  const expiresOn = date.toISOString().slice(0, 10), daysLeft = Math.round((date.getTime() - todayMs) / DAY_MS);
+  if (daysLeft <= 0) return { state: 'EXPIRED', code: 'TOKEN_EXPIRED', expires_on: expiresOn, days_left: daysLeft };
+  return { state: daysLeft <= 14 ? 'EXPIRING' : 'OK', code: null, expires_on: expiresOn, days_left: daysLeft };
+}
+
+// One GitHub answer to the read token's state (§4.4 rows 3–7). null means "fine, use the body".
+export function kisUpstreamState(response, tokenDate) {
+  const s = response.status;
+  if (s >= 200 && s <= 299) return null;
+  if (response.type === 'opaqueredirect' || s === 0 || (s >= 300 && s <= 399)) return { state: 'ERROR', code: 'REPO_MOVED', http: 502 };
+  if (s === 401) return tokenDate.days_left !== null && tokenDate.days_left <= 2 ? { state: 'EXPIRED', code: 'TOKEN_EXPIRED', http: 503 } : { state: 'REJECTED', code: 'TOKEN_REJECTED', http: 503 };
+  if (s === 403 || s === 429) {
+    const limited = response.headers.get('x-ratelimit-remaining') === '0' || response.headers.has('retry-after');
+    return limited ? { state: 'RATE_LIMITED', code: 'UPSTREAM_RATE_LIMITED', http: 503 } : { state: 'REJECTED', code: 'TOKEN_REJECTED', http: 503 };
+  }
+  return { state: 'ERROR', code: 'UPSTREAM_UNAVAILABLE', http: 503 };
+}
+
+// /kis/chart?symbol=<SYM> only (no other parameter, no alternate encoding); the symbol is one of the Worker's Universe list.
+export function kisChartSymbol(url) {
+  if (url.hash || !/^\?symbol=[A-Z][A-Z0-9-]{0,9}$/.test(url.search)) throw new Failure('REQUEST_INVALID', 400);
+  const symbol = url.searchParams.get('symbol');
+  if (!KIS_SYMBOLS.has(symbol)) throw new Failure('REQUEST_INVALID', 400);
+  return symbol;
+}
+
 export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.now, setTimeout: schedule = globalThis.setTimeout, clearTimeout: cancel = globalThis.clearTimeout } = {}) {
   async function timed(milliseconds, code, status, operation) {
     const controller = new AbortController();
@@ -398,14 +481,80 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
     }
   }
 
+  // One GET to the private repository with the read token. Redirects are never followed (upstreamFetch keeps redirect
+  // 'manual' and turns a 3xx into REPO_MOVED below); network failures and time-outs are UPSTREAM_UNAVAILABLE.
+  async function github(path, env, accept) {
+    try {
+      return await timed(8000, 'UPSTREAM_UNAVAILABLE', 503, (signal) => fetchImpl(GITHUB_API + path, {
+        method: 'GET', signal, ...NO_CACHE,
+        headers: { Accept: accept, Authorization: 'Bearer ' + env.PRIVATE_REPO_READ_TOKEN, 'User-Agent': 'investment-system1-private-worker', 'X-GitHub-Api-Version': '2022-11-28' },
+      }));
+    } catch { return null; }
+  }
+  const kisFailure = (state) => new Failure(state.code, state.http);
+  const json200 = (value, origin) => new Response(JSON.stringify(value), { status: 200, headers: headers(origin) });
+
+  async function kisStatus(env, origin) {
+    const date = kisTokenDate(env, now());
+    if (date.state === 'UNSET' || date.state === 'EXPIRED') return json200({ schema: 'kis-status/1', ...date }, origin);
+    const response = await github('/repos/' + KIS_REPO, env, 'application/vnd.github+json');
+    if (!response) return json200({ schema: 'kis-status/1', ...date, state: 'ERROR', code: 'UPSTREAM_UNAVAILABLE' }, origin);
+    try { await response.body?.cancel(); } catch { /* The body is never read. */ }
+    if (response.status === 404) return json200({ schema: 'kis-status/1', ...date, state: 'REJECTED', code: 'TOKEN_NO_ACCESS' }, origin);
+    const bad = kisUpstreamState(response, date);
+    return json200({ schema: 'kis-status/1', ...date, ...(bad ? { state: bad.state, code: bad.code } : {}) }, origin);
+  }
+
+  async function kisFile(route, symbol, env, origin) {
+    const date = kisTokenDate(env, now());
+    if (date.state === 'UNSET' || date.state === 'EXPIRED') throw new Failure(date.code, 503);
+    const [pathOf, isSchema] = KIS_FILES[route];
+    const path = '/repos/' + KIS_REPO + '/contents/' + pathOf(symbol) + '?ref=' + KIS_BRANCH;
+    const response = await github(path, env, 'application/vnd.github.raw+json');
+    if (!response) throw new Failure('UPSTREAM_UNAVAILABLE', 503);
+    if (response.status === 404) return closeAndFail(response, 'KIS_SERIES_NOT_FOUND', 404);
+    const bad = kisUpstreamState(response, date);
+    if (bad) return closeAndFail(response, bad.code, bad.http);
+    const advertised = response.headers.get('Content-Length');
+    if (advertised && /^\d+$/.test(advertised) && Number(advertised) > MAX_CHART_BYTES) return closeAndFail(response, 'KIS_SERIES_TOO_LARGE', 502);
+    if (!response.body) throw new Failure('KIS_SERIES_INVALID', 502);
+    const reader = response.body.getReader(), chunks = [];
+    let length = 0;
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        length += value.byteLength;
+        if (length > MAX_CHART_BYTES) { await reader.cancel(); throw new Failure('KIS_SERIES_TOO_LARGE', 502); }
+        chunks.push(value);
+      }
+    } finally { reader.releaseLock(); }
+    const bytes = new Uint8Array(length);
+    let offset = 0;
+    for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength; }
+    // Passed through as received. The bytes must be UTF-8 text of one JSON object that carries this route's schema, so a wrong
+    // file is never served; the app validates the rest.
+    let parsed;
+    try { parsed = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes)); } catch { throw new Failure('KIS_SERIES_INVALID', 502); }
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed) || !isSchema(parsed, symbol)) throw new Failure('KIS_SERIES_INVALID', 502);
+    const responseHeaders = headers(origin);
+    if (date.state === 'EXPIRING') { responseHeaders.set('X-Private-Token-Expires-On', date.expires_on); responseHeaders.set('Access-Control-Expose-Headers', 'X-Private-Token-Expires-On'); }
+    return new Response(bytes, { status: 200, headers: responseHeaders });
+  }
+
   return async function handle(request, env) {
     const origin = request.headers.get('Origin');
     if (origin !== ORIGIN) return failureResponse(new Failure('ORIGIN_FORBIDDEN', 403));
     try {
       const url = new URL(request.url);
-      if (url.pathname !== '/history') throw new Failure('ROUTE_NOT_FOUND', 404);
+      const kis = url.pathname === '/kis/status' || Object.hasOwn(KIS_FILES, url.pathname);
+      if (url.pathname !== '/history' && !kis) throw new Failure('ROUTE_NOT_FOUND', 404);
       if (!['GET', 'OPTIONS'].includes(request.method)) throw new Failure('METHOD_NOT_ALLOWED', 405);
-      const { symbol, range } = validateQuery(url);
+      let symbol = null, range = null;
+      if (KIS_PLAIN.has(url.pathname)) { if (url.search || url.hash) throw new Failure('REQUEST_INVALID', 400); }
+      else if (url.pathname === '/kis/classification') symbol = kisClassificationPart(url);
+      else if (kis) symbol = kisChartSymbol(url);
+      else ({ symbol, range } = validateQuery(url));
       if (request.method === 'OPTIONS') {
         if (request.headers.get('Access-Control-Request-Method') !== 'GET'
           || request.headers.get('Access-Control-Request-Headers')?.trim().toLowerCase() !== 'authorization') throw new Failure('REQUEST_INVALID', 400);
@@ -421,11 +570,15 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
       if (admission.denied) return failureResponse(new Failure('RATE_LIMITED', 429), origin, { 'Retry-After': String(admission.retryAfter) });
       let response;
       try {
-        let result;
-        try { result = await history(symbol, range); }
-        catch (error) { result = await fallbackHistory(symbol, range, env, error); }
-        response = new Response(JSON.stringify(result), { status: 200, headers: headers(origin) });
-      } catch (error) { response = failureResponse(error instanceof Failure ? error : new Failure('YAHOO_UNAVAILABLE', 503), origin); }
+        if (url.pathname === '/kis/status') response = await kisStatus(env, origin);
+        else if (kis) response = await kisFile(url.pathname, symbol, env, origin);
+        else {
+          let result;
+          try { result = await history(symbol, range); }
+          catch (error) { result = await fallbackHistory(symbol, range, env, error); }
+          response = new Response(JSON.stringify(result), { status: 200, headers: headers(origin) });
+        }
+      } catch (error) { response = failureResponse(error instanceof Failure ? error : new Failure(kis ? 'UPSTREAM_UNAVAILABLE' : 'YAHOO_UNAVAILABLE', 503), origin); }
       finally {
         try {
           await timed(2000, 'RATE_LIMIT_UNAVAILABLE', 503, async (signal) => {

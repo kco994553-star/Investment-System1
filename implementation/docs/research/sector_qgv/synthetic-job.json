@@ -1,0 +1,9 @@
+{
+  "data_kind": "SYNTHETIC",
+  "snapshot": {
+    "path": "implementation/docs/research/sector_qgv/synthetic-input.json",
+    "sha256": "db630581776933d3fbd464ff555028dc88644725649fa20b3b952ae423d7e84e"
+  },
+  "request_id": "synthetic-normal",
+  "comparisons": true
+}

@@ -19,13 +19,22 @@
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else{const I=root.IS2=root.IS2||{};I.data=api.create({win:root,action:I.action});}})(typeof globalThis==='object'?globalThis:this,function(){
 'use strict';
 const MAX_BYTES=2*1024*1024,EVENT='public-data-updated',TICK=60000;
+const ENGINE_ROUTE='sector-qgv-engine',ENGINE_MAX_BYTES=8*1024*1024,ENGINE_MAX_REQUEST=1024*1024;
 const QGV2='sec-qgv2.json',REPORTED='sec-public-inputs.json',FIN='dart-financials.json',EVIDENCE='macro-evidence.json',SHARES='sec-universe-shares.json',CODES='universe-codes.json';
 const OFFICIAL='qgv-official.json',OFFICIAL_STATUS='qgv-official-status.json',OFFICIAL_FILES=Object.freeze([OFFICIAL,OFFICIAL_STATUS]);
 // DataRefresh's set: PublicScreens.FILES, classification, sec-qgv2, sec-public-inputs, dart-financials, macro-evidence; its lists; shares.
 const CORE=Object.freeze(['macro-screen.json','sec-13f-changes.json','sec-filing-windows.json','sec-qg-factors.json','company-types-pricefree.json','company-classification.json',QGV2,REPORTED,FIN,EVIDENCE]);
 const LIST_FILES=Object.freeze(['sec-disclosures.json','news-signals.json','dart-disclosures.json']);
 // Read once per page, outside the generation (identity catalog, search names, the fixed 504-code Universe list, financial detail, ledger).
-const STATIC=Object.freeze(['actual-catalog.json','entities.json','company-names-ko.json',CODES,'sec-valuation-inputs.json','forward-validation-ledger.json']);
+// macro-evidence-status.json (owner 2026-11-07): the latest daily attempt record beside macro-evidence.json, read by the 4.1.3
+// block once (screen-macro-live.js validates it); absent = no record (older deploys), never a guess.
+// policy-impact.json and policy-impact-navigation.json (4.5 정책·지정학, owner 2026-11-07; public delivery) and their development-only
+// private names policy-impact-private.json / policy-impact-navigation-private.json (never allowed by the Pages guard): read only
+// when that screen asks (IS2.policyImpact validates each as its own delivery path); not
+// published yet, so a read answers NOT_PUBLISHED (자료 없음).
+const STATIC=Object.freeze(['actual-catalog.json','entities.json','company-names-ko.json',CODES,'sec-valuation-inputs.json','forward-validation-ledger.json','macro-evidence-status.json',
+ 'policy-impact.json','policy-impact-navigation.json','policy-impact-private.json','policy-impact-navigation-private.json']);
+const BYTE_FILES=new Set(['policy-impact.json','policy-impact-private.json']);
 const FILES=Object.freeze([...CORE,...LIST_FILES,SHARES,...STATIC,...OFFICIAL_FILES]),FILE_SET=new Set(FILES),STATIC_SET=new Set(STATIC);
 // Without these the public path would silently change (light sec-qgv2 check, macro file rejected, cyclical V basis lost): READER_MISSING.
 const READERS=Object.freeze(['DataRefresh','SecQgv2','Qgv2Inputs','PublicScreens','MacroLights','PlaybookEngine','PlaybookConfigDefaults']);
@@ -58,12 +67,12 @@ function create({win,action}){
  const DR=()=>win.DataRefresh,missing=()=>READERS.filter(n=>!win[n]);
  const seen=new Map();// file -> last HTTP status of a strict read (0 = no answer), for the static files' state
  // The body, or null when it is over MAX_BYTES (the rest is not read).
- async function capped(r){
-  const len=Number(r.headers.get('content-length'));if(Number.isFinite(len)&&len>MAX_BYTES){try{if(r.body)await r.body.cancel();}catch(_){}return null;}
+ async function capped(r,max=MAX_BYTES){
+  const len=Number(r.headers.get('content-length'));if(Number.isFinite(len)&&len>max){try{if(r.body)await r.body.cancel();}catch(_){}return null;}
   if(r.body&&typeof r.body.getReader==='function'){const reader=r.body.getReader(),parts=[];let size=0;
-   for(;;){const{done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>MAX_BYTES){try{await reader.cancel();}catch(_){}return null;}parts.push(value);}
+   for(;;){const{done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>max){try{await reader.cancel();}catch(_){}return null;}parts.push(value);}
    const out=new Uint8Array(size);let at=0;for(const p of parts){out.set(p,at);at+=p.byteLength;}return out;}
-  const out=new Uint8Array(await r.arrayBuffer());return out.byteLength>MAX_BYTES?null:out;
+  const out=new Uint8Array(await r.arrayBuffer());return out.byteLength>max?null:out;
  }
  // The one public request function of every view (public, price and score views). Cache: the reader's no-cache, else no-store.
  async function strictFetch(input,init){
@@ -75,6 +84,24 @@ function create({win,action}){
   seen.set(name,r.status);const body=await capped(r),none=r.status===204||r.status===205||r.status===304;
   // Over the cap: an empty body with the real status, which every reader judges an invalid file (JSON parse fails).
   return new win.Response(none||body===null?null:body,{status:r.status,statusText:r.statusText,headers:{'Content-Type':r.headers.get('content-type')||'application/json'}});
+ }
+ /* The sector QGV engine route (owner 2026-11-06 「섹터 QGV 실제 연결」): one same-origin POST of one JSON request to the fixed
+    ENGINE_ROUTE, sent only from a click on the 1.2 screen (screen-sector-qgv-live.js), never when a page opens. No credentials,
+    no cookie, no referrer, redirects refused, the answer capped at ENGINE_MAX_BYTES and parsed here. The request carries a
+    configuration and the name of a synthetic input (sector-qgv-engine-request/1): no price, no holding, no stored value. The
+    development site answers it with Codex's common engine (tools/sector_qgv_engine_bridge.py); the published site has no such
+    route, so 404 / 405 / 501 are ENGINE_NOT_CONNECTED (계산 실행 경로 연결 전), never a guessed result. */
+ async function engine(request,{signal}={}){
+  if(!object(request))throw Error('ENGINE_REQUEST_INVALID');
+  const body=JSON.stringify(request);if(body.length>ENGINE_MAX_REQUEST)throw Error('ENGINE_REQUEST_TOO_LARGE');
+  const opts={method:'POST',cache:'no-store',credentials:'omit',redirect:'error',referrerPolicy:'no-referrer',mode:'same-origin',headers:{'Content-Type':'application/json',Accept:'application/json'},body};
+  if(signal)opts.signal=signal;
+  let r;try{r=await win.fetch(ENGINE_ROUTE,opts);}catch(e){if(e&&e.name==='AbortError')throw e;throw Error('ENGINE_UNREACHABLE');}
+  if(r.status===404||r.status===405||r.status===501)throw Error('ENGINE_NOT_CONNECTED');
+  if(r.status!==200)throw Error('ENGINE_HTTP_FAILED');
+  const bytes=await capped(r,ENGINE_MAX_BYTES);if(bytes===null)throw Error('ENGINE_ANSWER_TOO_LARGE');
+  let out;try{out=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));}catch(_){throw Error('ENGINE_ANSWER_INVALID');}
+  if(!object(out))throw Error('ENGINE_ANSWER_INVALID');return out;
  }
  // ---- the public view: core readers that keep their results for the read in progress ----
  let sink=null,judged=null;const apis=new Map();
@@ -155,6 +182,11 @@ function create({win,action}){
   if(name==='company-names-ko.json'){const x=await need('EntitySearch').loadNames(publicView);if(!x)throw Error('INVALID');return x;}
   if(name==='sec-valuation-inputs.json'){const x=await need('DeviceValuation').load(publicView);if(!x)throw Error('INVALID');return x;}
   if(name==='forward-validation-ledger.json'){const r=await need('ForwardValidation').load(publicView);if(r&&r.state==='LOADED')return r.ledger;throw Error(r&&r.reason?r.reason:'LEDGER_UNREACHABLE');}
+  // The two policy view files (4.5; Codex #512 navigation/2, owner 2026-11-07 3rd): the exact delivered bytes, never a parsed
+  // or re-serialized copy. IS2.policyImpact.decodeView checks those bytes (UTF-8, hash) and reads the same bytes; copy() hands
+  // out a fresh copy each time, so the kept bytes cannot be changed by a reader.
+  if(BYTE_FILES.has(name)){const r=await strictFetch(name,{cache:'no-store'});if(!r.ok)throw Error('HTTP');const buf=await r.arrayBuffer();
+   return Object.freeze({kind:'DELIVERED_BYTES',name,byteLength:buf.byteLength,copy:()=>new Uint8Array(buf.slice(0))});}
   const r=await strictFetch(name,{cache:'no-store'});if(!r.ok)throw Error('HTTP');let v;try{v=JSON.parse(await r.text());}catch(_){throw Error('INVALID');}
   if(name===CODES){const GS=need('GoogleSheetSetup');try{return Object.freeze(GS.codes(v));}catch(_){throw Error('INVALID');}}
   // actual-catalog.json and entities.json: the old app checks only the answer and the JSON (app.js deviceCatalog, boot); their
@@ -176,7 +208,7 @@ function create({win,action}){
   subs.add(fn);const off=()=>{subs.delete(fn);};if(signal)signal.addEventListener('abort',off,{once:true});return off;}
  // The fixed 504-code Universe list (universe-codes.json, GoogleSheetSetup.codes), or null.
  const universe=()=>staticFile(CODES);
- return Object.freeze({FILES,CORE,LIST_FILES,STATIC,READERS,MAX_BYTES,EVENT,strictFetch,ready,get,screens,state,publication,list,shares,financials,refresh,static:staticFile,peek,subscribe,universe,official});
+ return Object.freeze({FILES,CORE,LIST_FILES,STATIC,READERS,MAX_BYTES,EVENT,ENGINE_ROUTE,strictFetch,engine,ready,get,screens,state,publication,list,shares,financials,refresh,static:staticFile,peek,subscribe,universe,official});
 }
 return Object.freeze({create,FILES,READERS,MAX_BYTES,EVENT,requireStatus});
 });

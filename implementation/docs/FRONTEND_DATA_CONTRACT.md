@@ -98,6 +98,7 @@
 | dart-disclosures.json / dart-financials.json | :90 | 일일 실행 | 한국 공시 | 파일 as_of |
 | macro-screen.json | :83 (`--macro-v0`) | 일일 실행, 값은 발표 기준 | 새 발표가 있는 계열만 | 관측 기간, 수집 상한 시각(available_at), 파일 as_of |
 | macro-evidence.json | 일일 P1 근거 수집 (#352) | 일일 실행, 재취득은 규칙 R | 정부통계 관측·발표/수정 기록·현재 빈티지 재생(서로 구분) | generated_at, 계열 acquired_at/last_success_at, NOT_AVAILABLE 사유·자료 지연. 공식 국면/확률/게이트 아님 |
+| macro-evidence-status.json | 같은 근거 수집 단계 (2026-11-07) | 일일 실행, 시도마다 | 이번 시도 기록만(값 없음) | attempt_at, BUILT/FAILED·실패 단계, 게시 결과 NEW/PREVIOUS_KEPT/WITHHELD, 이전 공개본 읽기(LOADED·NO_LIVE·EMPTY_LIVE·REMOVED·UNAVAILABLE·INVALID), 옆 근거 파일의 generated_at·SHA-256. 실패 시 근거 파일은 마지막 정상본 그대로(자료 지연), 정상본이 없거나 이전 공개본을 읽지 못하면 근거 파일을 게시하지 않음(404, 기록에 WITHHELD와 사유. 보류는 보존이 아님). `docs/macro/MACRO_EVIDENCE_INCIDENT_20261107.md` |
 | sec-13f-changes.json | :135 | 일일 실행, 내용은 분기 | 최근 두 분기 | 분기말, 제출일, 수집 시각 |
 | forward-validation-ledger.json | :114 | 일일 실행, 추가만 | 새 기록 행만 | 기록 세션 날짜 |
 | company-classification.json | :122 | 일일 실행 | 분류 | 파일 as_of |

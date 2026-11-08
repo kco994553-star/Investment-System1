@@ -62,7 +62,7 @@ const UNIVERSE_SOURCE_KEY = 'investment.web.v1.universe-source';
 // Stored device quotes seeded in C3 (made-up decimals, distinct from the Universe tab sentinels).
 const STORED_PRICE = '612.0761937', STORED_HIST = '401.0761953';
 // Live-only public files this test leaves unpublished: their 404 is intended (no console error is accepted for anything else).
-const UNPUBLISHED = ['sec-public-inputs.json', 'forward-validation-ledger.json', 'qgv-official.json', 'qgv-official-status.json'];
+const UNPUBLISHED = ['sec-public-inputs.json', 'forward-validation-ledger.json', 'qgv-official.json', 'qgv-official-status.json', 'macro-evidence-status.json'];
 const FRONTEND_SUFFIXES = ['.html', '.css', '.js', '.woff2', '.txt', '.png', '.svg'];
 // What a screen reads when it opens (P2-1 menu 0): the home's company index (static files only), the company page's public files.
 const HOME_READS = ['actual-catalog.json', 'company-names-ko.json', 'universe-codes.json'];
@@ -237,10 +237,13 @@ async function scores(page) {
     const QGV_READS = [...(await page.evaluate(() => window.IS2.data.CORE)), 'actual-catalog.json', 'company-names-ko.json', 'qgv-official.json', 'qgv-official-status.json'];
     // 3. 매크로 (feature 4, screen-macro.js): the screen only asks IS2.data.ready(), DataRefresh.load's page-open read of the core
     // files, which leaves dart-financials.json to its lazy reader; a route change reads nothing new (the layer keeps the generation).
-    const MACRO_READS = (await page.evaluate(() => window.IS2.data.CORE)).filter((n) => n !== 'dart-financials.json');
+    // The 4.1.3 evidence block also reads the daily attempt record beside macro-evidence.json once per page (IS2.data.static,
+    // macro-evidence-status.json; unpublished here, so a 404 = no record).
+    const CORE_OPEN = (await page.evaluate(() => window.IS2.data.CORE)).filter((n) => n !== 'dart-financials.json');
+    const MACRO_READS = [...CORE_OPEN, 'macro-evidence-status.json'];
     // 4. 뉴스 (feature 5, screen-news.js): the same core set, the three public lists (IS2.data.list) and the company list's two
     // static files (IS2.companies.ready()); a route change reads nothing new.
-    const NEWS_READS = [...MACRO_READS, ...(await page.evaluate(() => window.IS2.data.LIST_FILES)), 'universe-codes.json', 'company-names-ko.json'];
+    const NEWS_READS = [...CORE_OPEN, ...(await page.evaluate(() => window.IS2.data.LIST_FILES)), 'universe-codes.json', 'company-names-ko.json'];
     // n+1. Lab (feature 9.2, screen-lab.js): the price-free forward ledger through IS2.data.static on every open here (this test
     // leaves it unpublished, and a static read that failed is read again on the next call); 9.1 reads nothing (no public Lab file).
     const LAB_READS = ['forward-validation-ledger.json'];
@@ -253,6 +256,12 @@ async function scores(page) {
     // lists; a route change only the company page's lists (the layer keeps the rest in memory). Only answers to requests of the
     // current document and route count (numbered after the last navigation), and none of its data requests may still be open.
     // Which files are read, and that nothing else is, stays the job of the checks below.
+    // A fresh load starts from about:blank once the current document has no data read in flight (quiet). It used to be a hash
+    // change on the old document and then a reload: the hash change started the route's reads, the reload dropped them, and a
+    // dropped read whose request event Playwright reported after the reload's navigation (intercepted requests are reported once
+    // both the request and its interception have arrived) was numbered in the new document and never finished. That was the
+    // CI time-out of 2026-11-01 (#451: READS_NOT_ANSWERED fresh #/qgv, one qgv-official.json read open 30 s, created at the moment
+    // the old document's reads were aborted, while every read of the new document had been answered).
     const expected = (hash, fresh) => (hash === '#/qgv' ? (fresh ? QGV_READS : []) : hash === '#/macro' ? (fresh ? MACRO_READS : []) : hash === '#/news' ? (fresh ? NEWS_READS : []) : hash === '#/lab' ? LAB_READS : hash === '#/' || hash === '#/nowhere/x' ? (fresh ? HOME_READS : [])
       // The layer keeps one read of each list per publication (DataRefresh.list): in the route-change pass 4. 뉴스 (before the
       // company page in MENU order, same document) has already read them, so the company page does not ask again.
@@ -266,6 +275,14 @@ async function scores(page) {
         await new Promise((r) => setTimeout(r, 25));
       }
     };
+    // No data read of the current document still open (the same 30 s limit and diagnostics as answers).
+    const quiet = async (what) => {
+      const busy = () => [...open.keys()].filter((r) => (number.get(r) || 0) > navAt && isData(r.url()));
+      for (const end = Date.now() + 30000; busy().length;) {
+        if (Date.now() > end) { diagnose(what + ' before leaving'); throw new Error('READS_STILL_OPEN ' + what + ' open=' + busy().length); }
+        await new Promise((r) => setTimeout(r, 25));
+      }
+    };
     const drawn = async (hash, fresh, from) => {
       if (hash === '#/qgv') await diagnosed('table wait', () => page.locator('[data-lb-table]').waitFor());
       await answers((fresh ? 'fresh ' : 'change ') + hash, expected(hash, fresh), from);
@@ -275,7 +292,7 @@ async function scores(page) {
     for (const hash of routes) {
       phase = 'A fresh ' + hash;
       const at0 = rec.log.length, an0 = answered.length;
-      await page.goto(s.base + hash); await page.reload(); await page.locator('main[data-route]').waitFor(); await loaded(); await drawn(hash, true, an0); await settle();
+      await quiet(phase); await page.goto('about:blank'); await page.goto(s.base + hash); await page.locator('main[data-route]').waitFor(); await loaded(); await drawn(hash, true, an0); await settle();
       assert.deepEqual(opens(hash, dataNames(since(at0))), [], hash + ': opening the route in a fresh load reads no data file its screen did not ask for');
     }
     for (const hash of routes) {

@@ -1,0 +1,228 @@
+/* "비공개 펼치기" on the existing private panels (owner 2026-11-05, DC-44: one screen, the public part by default, the private
+   result in the same format after the owner signs in). IS2.privateExpand.attach(panel, {signal, kind, target, publicBasis})
+   puts a 펼치기 / 접기 button and a 연결 끊기 button on a panel from IS2.parts.privatePanel and fills it from IS2.kisPrivate's
+   readers through the layer (IS2.prices.kisConnect / kisRead / kisDisconnect, each inside the click that asks for it).
+   - kind 'technical': the analysis, chart and technical routes for target().symbol (one click, three reads) → source, price basis
+     day, capture time, basis (원주가 / 확인된 분할 반영), correction, status 정상 / 갱신 지연 / 자료 없음, the close line
+     (TechnicalChart geometry), adopted indicators only (raw diagnostics are a count, never a value) and each held indicator's
+     미산출 reasons; then the five measures (kis-technical-measures/1): 채택값 only when adopted, 진단값 as a count, 미산출 with
+     its reasons, each window, signal day, data_asof, capture time, no rank. The measures file is its own part: a missing file
+     (404) is that part's 자료 없음 and a refused one that part's refusal; the analysis and the chart stay.
+     Price basis (Codex #498, owner 11/05): the chart's basis, the analysis' indicator basis / result kind / evidence / per-indicator
+     split state, and the measures' basis and settings version are each shown with the evaluation day. When a result's basis
+     differs from the chart file's (IS2.kisPrivate.basisAgreement) its indicators are not attached to the chart: the part says
+     가격 기준 불일치 · 지표를 이 차트에 붙이지 않음 ([data-private-basis-agreement=BASIS_MISMATCH]) and shows no value or count.
+     An adjusted result carries the fixed line 실제 분할 사건 검증 미완료 · 분할 없는 구간의 조정 경로 확인. Counts read
+     채택값 N개 (이 기업·이 평가일); two evaluation days are never merged into one count.
+   - kind 'macro' / 'news' (owner 2026-11-05): the macro / news route → the private copy in the public file's format, validated by
+     the public reader (IS2.macroObserved; NewsSignals + IS2.newsRefresh) and drawn by the public block's own function (opts.draw,
+     given by the screen), under the source words 비공개 보관본 · 인증 경로 and the two-layer line. A refused file is refused whole.
+   - kind 'qgv': the qgv route → Q / G / V / 세 축 coverage, the target().code row's axes (미산출 + reason, never 0), the total only
+     when V exists, no rank (rank null + reason), and the line that the public official ranks and TARGET are unchanged.
+   - kind 'classification' (owner 2026-11-08 「통합 결과 수령」 2항): the held common classification bundle — five reads of one
+     click, the IS2.kisPrivate classification route with part view (required) · technical · macro · qgv_links · dictionary (each optional: a missing part is
+     left out, never stood in) — handed whole to IS2.classification.connectPrivate, which checks it as it checks any source. The
+     panel then shows where it came from (비공개 보관본 · 인증 경로 · 게시본 아님), the evaluation date, the hash, the data kind and
+     the counts (sector / sub-industry / accounting model confirmed, both confirmed = complete QGV peer group words, the record
+     states); every screen reads the same RAM bundle until 접기 / 연결 끊기 / a 403 drops it (disconnectPrivate). Re-attaching the
+     panel on another page keeps a delivered bundle (it is shown as open), only the owner's 접기 or a dropped token clears it.
+   - Public vs private basis day: basisCompare says when they differ (직접 비교 제한).
+   - The server checks the owner on every read: a 403 drops the token and the panel asks to sign in again; an expired token
+     is dropped before a read; closing the panel or 연결 끊기 clears what was shown. Values are text inside [data-ram-price]
+     only (never an attribute, storage or log); nothing here makes a request outside a click. */
+(function(){
+'use strict';
+const I=window.IS2,{h}=I;
+const ram=(...t)=>h('span',{dataset:{ramPrice:''}},...t);
+const dl=(rows,d)=>h('dl',{class:'card-body',dataset:d||{}},rows.filter(Boolean).map(([k,v,data])=>[h('dt',null,h('b',null,k)),h('dd',data?{dataset:data}:null,v)]));
+const WORDS=Object.freeze({AUTH_FORBIDDEN:'서버가 오너 확인을 거부했습니다 · 다시 로그인하세요',AUTH_REQUIRED:'로그인이 끝났습니다(만료) · 다시 로그인하세요',
+ AUTH_UNAVAILABLE:'로그인 확인 서버 응답 없음',LOGIN_CANCELED:'로그인을 취소했습니다',LOGIN_REFUSED:'로그인 범위가 맞지 않아 쓰지 않았습니다',LOGIN_UNAVAILABLE:'비공개 연결 설정이 없습니다',
+ KIS_SERIES_NOT_FOUND:'이 기업의 비공개 자료가 아직 없습니다',TOKEN_UNSET:'비공개 저장소 읽기 설정 없음',TOKEN_EXPIRED:'비공개 저장소 읽기 토큰 만료',TOKEN_REJECTED:'비공개 저장소 읽기 토큰 거부',
+ RATE_LIMITED:'요청이 많아 잠시 뒤 다시',UPSTREAM_UNAVAILABLE:'비공개 자료 서버 응답 없음',ROUTE_NOT_FOUND:'비공개 서버에 이 경로가 아직 없습니다(Worker 배포 전)'});
+const word=c=>Object.prototype.hasOwnProperty.call(WORDS,c)?WORDS[c]:'오류 · '+c;
+const CODE=/^[A-Z][A-Z0-9_]{1,63}$/;
+const codeOf=e=>{const m=e&&typeof e.message==='string'?e.message:'';return CODE.test(m)?m:'PRIVATE_READ_FAILED';};
+
+function chart(bars,symbol){const TC=window.TechnicalChart;const nums=bars.map(b=>({close:b.close===null?null:Number(b.close)}));
+ const g=TC&&typeof TC.geometry==='function'?TC.geometry(nums,[]):null;
+ if(!g)return h('p',{class:'reason',dataset:{privateChart:'NONE'}},'그릴 종가가 없습니다');
+ return h('svg:svg',{class:'curve tech-chart',viewBox:'0 0 640 240',role:'img',focusable:'false',dataset:{privateChart:symbol},'aria-label':'비공개 · KIS 보관 일봉 종가 선 · '+symbol+' · '+bars.length+'봉'},
+  h('svg:path',{d:'M20,220 L620,220',class:'curve-base'}),TC.paths(nums.map(b=>b.close),g).map(p=>h('svg:path',{d:p,class:'curve-s',dataset:{privateCloseLine:''}})));}
+
+const agreeLine=(g,part)=>h('p',{class:g.same?'sub':'reason',dataset:{privateBasisAgreement:g.code,privateBasisPart:part}},g.text);
+const noteLine=(t,part)=>t?h('p',{class:'reason',dataset:{privateAdjustedNote:part}},t):null;
+// The five measures part: EMPTY (no file), REFUSED (the file breaks its contract: nothing of it shown), BASIS_MISMATCH (its basis
+// is not the chart's: basis words only, no value or count) or READY.
+function measuresPart(K,raw,symbol,chartBasis,analysisDay){
+ const part=(st,...c)=>h('div',{class:'sk card',dataset:{privateMeasures:st}},h('h4',null,'다섯 측정값 · 공통 엔진 (#469 설정)'),...c);
+ if(raw===null)return part('EMPTY',h('p',{class:'reason'},'자료 없음 · 이 기업의 비공개 측정 파일이 아직 없습니다'));
+ const r=K.validateMeasures(raw);
+ if(!r.ok||r.value.symbol!==symbol){const code=r.ok?'SYMBOL_MISMATCH':r.code;return part('REFUSED',h('p',{class:'reason',dataset:{na:code}},'측정 파일이 형식과 달라 보이지 않습니다 · ',code,r.ok?'':' '+r.path));}
+ const v=K.measuresView(r.value),g=K.basisAgreement(chartBasis,r.value);
+ const meta=dl([['신호일',v.signal_day],['자료 기준일',v.data_asof||'없음'],['수집 시각',v.collected_at],['상태',v.statusText,{privateMeasuresStatus:v.status}],['순위',v.rank,{privateMeasuresRank:'NONE'}],
+  ['평가일',v.evaluation_day,{privateEvaluationDay:'measures'}],['측정 가격 기준',v.basisText,{privateMeasuresBasis:v.basis}],['설정 판',v.settings_version,{privateSettingsVersion:''}],['분할 증거',v.evidence]],{privateMeta:'measures'});
+ const days=analysisDay&&analysisDay!==v.evaluation_day?h('p',{class:'reason',dataset:{privateEvaluationDays:'DIFFERENT'}},'분석 평가일 '+analysisDay+' · 측정 평가일 '+v.evaluation_day+' · 평가일이 달라 개수를 합치지 않음'):null;
+ if(!g.same)return part('BASIS_MISMATCH',meta,agreeLine(g,'measures'),noteLine(v.note,'measures'),days);
+ return part('READY',meta,agreeLine(g,'measures'),noteLine(v.note,'measures'),days,
+  h('p',{dataset:{privateMeasuresCounts:''}},v.summary),
+  h('ul',null,v.rows.map(x=>h('li',{dataset:{privateMeasure:x.id,privateMeasureKind:x.kind}},h('b',null,x.label),' · ',x.kind==='VALUE'?['채택값 ',ram(x.value)]:x.text,h('span',{class:'sub'},' · ',x.window)))));}
+
+function renderTechnical(body,[aRaw,bRaw,mRaw],{symbol,publicBasis}){const K=I.kisPrivate,a=K.validateAnalysis(aRaw),b=K.validateBars(bRaw);
+ if(!a.ok||!b.ok){const r=a.ok?b:a;throw Error(r.code);}
+ const v=K.analysisView(a.value),m=K.barsMeta(b.value),cmp=K.basisCompare(publicBasis,m.price_basis_date),last=b.value.bars[b.value.bars.length-1];
+ const g=K.basisAgreement(m.basisCode,a.value);
+ // Indicators only on a chart of the same basis; otherwise the mismatch words and nothing of the indicators (no value, no count).
+ const indicators=g.same?[h('p',{dataset:{privateCounts:''}},v.summary),
+  v.adopted.length?h('ul',{dataset:{privateAdopted:String(v.adopted.length)}},v.adopted.map(x=>h('li',{dataset:{privateIndicator:x.id}},x.id,' · ',ram(x.value))))
+   :h('p',{class:'reason',dataset:{privateAdopted:'0'}},'채택된 기술 지표 없음 · 원시 계산값은 채택값으로 보이지 않습니다'),
+  v.held.length?h('details',{class:'why'},h('summary',null,'미산출 지표 ',String(v.held.length),'개 · 사유 ▸'),h('ul',null,v.held.map(x=>h('li',{dataset:{privateHeld:x.id}},x.id,' · ',x.text)))):null]:[];
+ I.append(body,[h('p',{class:'hand',dataset:{privateLayer:'technical'}},'비공개 · 같은 화면 같은 형식 · 공개 화면의 판정 보류는 그대로'),h('p',{class:'reason',dataset:{privateLayerNote:''}},K.LAYER_NOTE),
+  dl([['공급처',m.source],['차트 가격 기준',m.basis,{privateChartBasis:m.basisCode}],['가격 기준일',m.price_basis_date||'없음'],['수집 시각',m.collected_at],['정정',m.corrected],
+   ['상태',v.statusText+' (평가일 '+v.evaluation_day+')',{privateStatusWord:v.status}],['기준일 비교',cmp.text,{privateBasisCompare:cmp.same?'SAME':'DIFFERENT'}],
+   last?['마지막 종가',ram(last.date,' · ',last.close===null?'NA':last.close)]:null,
+   ['평가일',v.evaluation_day,{privateEvaluationDay:'analysis'}],v.signal_day?['신호일',v.signal_day]:null,
+   ['지표 가격 기준',v.basisText,{privateIndicatorBasis:v.basis}],['분할 증거',v.evidence],v.adjustment?['분할 상태',v.adjustment,{privateAdjustmentStates:''}]:null],{privateMeta:'technical'}),
+  noteLine(m.note||v.note,'technical'),
+  chart(b.value.bars,symbol),
+  agreeLine(g,'analysis'),
+  ...indicators,
+  measuresPart(K,mRaw===undefined?null:mRaw,symbol,m.basisCode,v.evaluation_day)]);}
+
+// Macro and news: the public file format, the public reader, the public block's own drawing (DC-44: one component, one format).
+function renderShared(body,[raw],{kind,draw}){const K=I.kisPrivate;let value;
+ if(kind==='macro'){const r=I.macroObserved.validate(raw);if(!r.ok)throw Error(r.code);value=r.value;}
+ else{const NS=window.NewsSignals;if(NS&&typeof NS.validate==='function'){try{NS.validate(raw);}catch(_){throw Error('NEWS_SIGNALS_INVALID');}}
+  const r=I.newsRefresh.validate(raw);if(!r.ok)throw Error(r.code);value=raw;}
+ const nodes=draw(value);
+ I.append(body,[h('p',{class:'hand',dataset:{privateLayer:kind,privateSource:'PRIVATE_ARCHIVE'}},K.SOURCE_WORDS,' · 같은 화면 같은 형식 · 공개 블록은 그대로'),h('p',{class:'reason',dataset:{privateLayerNote:''}},K.LAYER_NOTE),...nodes]);}
+
+function renderQgv(body,[qRaw],{code,publicBasis}){const K=I.kisPrivate,q=K.validateQgv(qRaw);if(!q.ok)throw Error(q.code);
+ const v=K.qgvView(q.value,code),cmp=K.basisCompare(publicBasis,v.price_basis_date);
+ I.append(body,[h('p',{class:'hand',dataset:{privateLayer:'qgv'}},'비공개 · 공통 엔진 · 같은 형식 · ',v.official),h('p',{class:'reason',dataset:{privateLayerNote:''}},K.LAYER_NOTE),
+  dl([['계산 판',v.calc_version],['가격 기준일',v.price_basis_date],['재무 입력 기준',q.value.financial_input_as_of||'없음'],['계산 시각',q.value.calculated_at],
+   ['기준일 비교',cmp.text,{privateBasisCompare:cmp.same?'SAME':'DIFFERENT'}],['순위',v.rank,{privateRank:'NONE'}]],{privateMeta:'qgv'}),
+  h('ul',{dataset:{privateCoverage:''}},v.coverage.map(t=>h('li',null,t))),
+  v.row?h('div',{class:'sk card',dataset:{privateRow:v.row.code}},h('p',null,h('b',null,v.row.code)),h('ul',null,v.row.axes.map(t=>h('li',{dataset:{privateAxis:t.slice(0,1)}},ram(t)))),
+   h('p',{dataset:{privateTotal:''}},ram(v.row.total)),v.row.price?h('p',{class:'reason'},v.row.price):null)
+   :h('p',{class:'reason',dataset:{privateRow:'NONE'}},code?'이 기업은 비공개 계산 대상에 없습니다':'기업을 고르면 그 기업의 비공개 축을 보입니다')]);}
+
+// The held common classification bundle: Codex's five outputs as delivered (the reader checks them; nothing is recomputed here).
+const CC_PARTS=Object.freeze(['view','technical','macro','qgv_links','dictionary','expanded_summary']);
+// read part → bundle key (the expanded sample's summary is its own population: key 'expanded').
+const CC_KEY=Object.freeze({expanded_summary:'expanded'});
+function ccSummary(C,b){const rows=b.view.rows,n=k=>rows.filter(r=>r[k].status==='CONFIRMED').length,states={};
+ let peer=0;for(const r of rows){const x=C.recordFor(r.company_id,null,b);states[x.state]=Object.prototype.hasOwnProperty.call(states,x.state)?states[x.state]+1:1;if(x.peer_complete)peer++;}
+ return{rows:rows.length,sector:n('sector'),industry:n('industry'),accounting:n('accounting'),peer,states,
+  parts:CC_PARTS.filter(k=>k==='view'||b[CC_KEY[k]||k]||Object.prototype.hasOwnProperty.call(b.mismatch,k)),mismatch:Object.keys(b.mismatch)};}
+function ccPaint(body,b){const C=I.classification,v=b.view,x=ccSummary(C,b);
+ I.append(body,[h('p',{class:'hand',dataset:{privateLayer:'classification',privateSource:'PRIVATE_ARCHIVE'}},C.WORDS.PRIVATE,' · 같은 화면 같은 형식'),
+  h('p',{class:'reason',dataset:{privateLayerNote:''}},I.kisPrivate.LAYER_NOTE),
+  dl([['평가일',v.valuation_date,{ccPrivateDay:v.valuation_date}],['분류 사전·대응 판',v.dictionary_version+' + '+v.mapping_version,{ccPrivateVersion:v.dictionary_version}],
+   v.boundary_policy?['경계 정책판',v.boundary_policy.version+' · 시스템 대응 정책(책의 직접 명시 아님)',{ccPrivatePolicy:v.boundary_policy.version}]:null,['분류 해시',C.shortHash(v.classification_hash),{ccPrivateHash:v.classification_hash}],['자료 종류',v.data_kind==='SYNTHETIC'?'합성 데이터 · 시험용':'보관 입력(RETAINED_INPUT)',{ccPrivateKind:v.data_kind}],
+   ['지식 기준 시각',v.knowledge_as_of],['받은 부분',x.parts.join(' · '),{ccPrivateParts:x.parts.join(',')}],
+   x.mismatch.length?['분류 버전 불일치',x.mismatch.join(' · ')+' · 그 부분은 쓰지 않음',{ccPrivateMismatch:x.mismatch.join(',')}]:null],{privateMeta:'classification'}),
+  h('h4',{dataset:{ccPopulation:'OPERATING_504'}},'운영504 · 공식 모집단(Universe504) · 화면의 기업·QGV·기술·매크로가 읽는 기록'),
+  h('ul',{dataset:{ccPrivateCounts:''}},
+   h('li',{dataset:{ccCount:'rows'}},'기업 행 ',String(x.rows),'개(원래 분모 그대로)'),
+   h('li',{dataset:{ccCount:'sector'}},'섹터 확인 ',String(x.sector),'개'),
+   h('li',{dataset:{ccCount:'industry'}},'하위 산업 확인 ',String(x.industry),'개'),
+   h('li',{dataset:{ccCount:'accounting'}},'회계모형 확인 ',String(x.accounting),'개 · 섹터와 따로 셈'),
+   h('li',{dataset:{ccCount:'peer'}},'섹터·회계모형 둘 다 확인 ',String(x.peer),'개 · 나머지는 QGV 비교집단 완결 아님')),
+  h('p',{class:'reason',dataset:{ccPrivateStates:Object.entries(x.states).map(([k,c])=>k+':'+c).join(',')}},'기록 상태 · ',Object.entries(x.states).map(([k,c])=>k+' '+c).join(' · ')),
+  operatingCounts(b.counts),
+  h('p',{class:'reason'},'공식 QGV 순위·TARGET·공개 파일은 바뀌지 않음 · 분류를 화면에서 다시 추론하지 않음'),
+  expandedBlock(b.expanded,b.counts)]);}
+// Counts of the retained sector QGV results (Codex #523 calculation_counts, checked by IS2.classification against the view and the
+// summary). Shown as valid / denominator with the result's own date; NOT_MEASURED stays 미측정, a missing field stays "없음" and a
+// failed check says so; never 0 for a missing count, never a recalculation.
+const countText=c=>c.status==='NOT_MEASURED'?'미측정':String(c.valid)+'/'+String(c.denominator);
+function operatingCounts(k){
+ if(k.state!=='OK')return h('p',{class:'reason',dataset:{ccCalc:'operating',ccCalcState:k.state}},'섹터 QGV 원결과의 Q·G 산출 수 · ',
+  k.state==='ERROR'?'연결 오류('+k.code+') · 쓰지 않음':'이 묶음에 없음 · 0으로 채우지 않음');
+ const o=k.value.scopes.operating;
+ return h('p',{class:'reason',dataset:{ccCalc:'operating',ccCalcState:'OK',ccCalcQ:countText(o.counts.Q),ccCalcG:countText(o.counts.G)}},
+  '섹터 QGV 원결과 · Q 산출 ',countText(o.counts.Q),' · G 산출 ',countText(o.counts.G),' · 평가일 ',o.valuation_date,' · 원결과 집계(재계산 없음) · 분모 ',o.population.id,' 코드 행');}
+// The expanded held issuer sample: a separate population (owner 2026-11-08). Its own denominators and counts only; never added to
+// the 504 counts, never a company page, a QGV row or a technical security id (ISSUER:<CIK> is an analysis row id).
+function expandedBlock(e,k){
+ if(!e)return h('div',{class:'sk card',dataset:{ccPopulation:'EXPANDED_SAMPLE',ccExpanded:'NONE'}},h('h4',null,'확장 발행사 표본 · 별도 모집단'),h('p',{class:'reason'},'받지 않음 · 운영504 화면은 그대로'));
+ const row=(g,label,k)=>h('li',{dataset:{ccExpandedCount:k}},label,' · 발행사 ',String(e[g].issuers),' · 티커 관측 ',String(e[g].ticker_observations),' · 섹터 ',String(e[g].sector),' · 회계모형 ',String(e[g].accounting),
+  ' · 하위 산업 ',String(e[g].industry),' · Q ',String(e[g].Q),' · G ',String(e[g].G),' · V ',String(e[g].V),' · 총점 ',String(e[g].total));
+ return h('div',{class:'sk card',dataset:{ccPopulation:'EXPANDED_SAMPLE',ccExpanded:e.valuation_date}},
+  h('h4',null,'확장 발행사 표본 · 별도 모집단 · 운영504와 합치지 않음'),
+  h('p',{class:'reason'},'관측 카탈로그 발행사 · 투자 적격 모집단 아님(',e.population_kind,') · 평가일 ',e.valuation_date,' · 카탈로그 관측 ',e.catalog_observed_at.slice(0,10),'(',String(e.catalog_age_days),'일 전 · 평가일 상장 명부 아님)'),
+  h('ul',null,row('catalog','관측 카탈로그 전체','catalog'),row('held_financial_subsample','보유 재무 하위표본','held_financial_subsample')),
+  // The official Q gate INPUT connection per scope from the checked calculation_counts (catalog and held subsample, each its own
+  // denominator). Without checked counts only the catalog figure of the old summary is shown and the held figure is "없음". It is the
+  // existing Universe504 official Q replay: not a gate pass, not a sector Q result, not an expanded-sample Q.
+  ...gateLines(e,k),
+  h('p',{class:'reason',dataset:{ccExpandedRows:'NOT_BUILT'}},'확장 발행사 행 단위 화면은 아직 없음 · 요약만 연결됨'),
+  h('p',{class:'reason',dataset:{ccExpandedMarket:'NONE'}},'전체시장 분모·커버리지 미산출 · 새 증권 ID ',String(e.new_security_ids),' · 순위 범위 ',e.rank_scope,' · 발행사 행 ID는 증권 ID가 아님 · 기술 결합·기업 화면에 쓰지 않음'));}
+const GATE_WORDS=' · 관문 통과·새 섹터 Q 산출 아님 · 기존 Universe504 공식 Q 재생값(확장 표본 Q 아님)';
+function gateLines(e,k){
+ if(k&&k.state==='OK')return[['catalog','관측 카탈로그 범위'],['held_financial_subsample','보유 재무 하위표본 범위']].map(([g,label])=>{const c=k.value.scopes[g].official_q_gate_input;
+  return h('p',{class:'reason',dataset:{ccExpandedGate:g,ccExpandedGateValue:countText(c)}},'공식 Q 관문 입력 연결 ',countText(c),' · ',label,GATE_WORDS);});
+ const out=[];if(Number.isInteger(e.official_gate_connected))out.push(h('p',{class:'reason',dataset:{ccExpandedGate:'catalog',ccExpandedGateValue:String(e.official_gate_connected)}},
+  '공식 Q 관문 입력 연결 ',String(e.official_gate_connected),' · 관측 카탈로그 범위',GATE_WORDS));
+ out.push(h('p',{class:'reason',dataset:{ccExpandedGate:'held_financial_subsample',ccExpandedGateValue:'NONE'}},'보유 재무 하위표본 범위의 공식 Q 관문 입력 연결 · ',
+  k&&k.state==='ERROR'?'연결 오류('+k.code+') · 쓰지 않음':'이 요약에 없음'));
+ return out;}
+function renderClassification(body,res){const C=I.classification,payload={};
+ res.forEach((raw,i)=>{if(raw!==null&&raw!==undefined)payload[CC_KEY[CC_PARTS[i]]||CC_PARTS[i]]=raw;});
+ const r=C.connectPrivate(payload);if(!r.ok)throw Error(r.code);ccPaint(body,r.value);}
+const READS=Object.freeze({technical:t=>(t.symbol?[['analysis',t.symbol],['chart',t.symbol],['technical',t.symbol,'OPTIONAL']]:null),qgv:()=>[['qgv',null]],macro:()=>[['macro',null]],news:()=>[['news',null]],
+ classification:()=>CC_PARTS.map(p=>['classification',p,p==='view'?undefined:'OPTIONAL'])});
+const RENDER=Object.freeze({technical:renderTechnical,qgv:renderQgv,macro:renderShared,news:renderShared,classification:renderClassification});
+const EMPTY_WORD=Object.freeze({macro:'비공개 보관 관측 자료가 아직 없습니다',news:'비공개 보관 재생 결과가 아직 없습니다',classification:'비공개 보관 분류 묶음이 아직 없습니다(전달 위치에 파일 없음)'});
+
+// A delivered classification bundle lives as long as the owner's token: one watch (set once) drops it when the token goes, whatever
+// screen is open (expiry, a 403, 연결 끊기 on any panel).
+let ccWatch=false;
+function watchClassification(){if(ccWatch)return;ccWatch=true;
+ try{I.prices.kisSubscribe(()=>{let on=false;try{on=I.prices.kisState().connected;}catch(_){on=false;}if(!on&&I.classification)I.classification.disconnectPrivate();});}catch(_){ccWatch=false;}}
+function attach(panel,{signal,kind,target=()=>({}),publicBasis=()=>null,draw}){
+ if(kind==='classification')watchClassification();
+ if(!Object.prototype.hasOwnProperty.call(READS,kind)||((kind==='macro'||kind==='news')&&typeof draw!=='function'))throw Error('PRIVATE_EXPAND_KIND');
+ const P=()=>I.prices;
+ const btn=h('button',{type:'button',class:'chip',dataset:{privateExpand:kind},'aria-expanded':'false'},'비공개 펼치기');
+ const off=h('button',{type:'button',class:'chip',dataset:{privateDisconnect:kind},hidden:true},'비공개 연결 끊기');
+ const note=h('p',{class:'reason',role:'status',dataset:{privateNote:kind}});
+ const bar=h('div',{class:'load-row',dataset:{privateControls:kind}},btn,off,note);
+ panel.node.insertBefore(bar,panel.node.querySelector('.private-body'));
+ let open=false,seq=0;
+ const st=()=>{try{return P().kisState();}catch(_){return{ready:false,connected:false,gis:false};}};
+ function closed(msg,{keep=false}={}){const s=st();if(kind==='classification'&&!keep&&I.classification)I.classification.disconnectPrivate();open=false;seq++;btn.textContent='비공개 펼치기';btn.setAttribute('aria-expanded','false');off.hidden=!s.connected;
+  if(!s.ready)panel.set('NOT_READY');else if(!s.connected)panel.set('LOGIN_REQUIRED');
+  else panel.set('READY',{render:b=>I.append(b,[h('p',{class:'reason',dataset:{privateClosed:''}},'비공개 접힘 · 펼치면 서버에서 다시 확인하고 불러옵니다')])});
+  note.textContent=msg||'';}
+ function read(e){const t=target()||{},my=++seq;
+  const req=READS[kind](t);
+  if(!req){note.textContent='기업을 먼저 고르세요';return;}
+  panel.set('LOADING');note.textContent=req.length>1?'비공개 자료 '+req.length+'개를 차례로 불러옵니다 · 서버 요청 간격 5초':'';
+  let p;try{p=P().kisRead(e,req);}catch(err){p=Promise.reject(err);}
+  Promise.resolve(p).then(res=>{if(my!==seq||signal.aborted)return;
+   try{panel.set('READY',{render:b=>RENDER[kind](b,res,{kind,draw,symbol:t.symbol,code:t.code,publicBasis:publicBasis()})});}
+   catch(err){panel.set('ERROR',{code:codeOf(err)});note.textContent='비공개 자료가 형식과 달라 보이지 않습니다';return;}
+   open=true;btn.textContent='비공개 접기';btn.setAttribute('aria-expanded','true');off.hidden=false;},
+  err=>{if(my!==seq||signal.aborted)return;const c=codeOf(err);if(c==='CANCELED')return;
+   if(c==='AUTH_FORBIDDEN'||c==='AUTH_REQUIRED'){closed(word(c));return;}
+   if(c==='KIS_SERIES_NOT_FOUND'){panel.set('EMPTY');note.textContent=EMPTY_WORD[kind]||word(c);return;}
+   panel.set('ERROR',{code:c});note.textContent=word(c);});}
+ btn.addEventListener('click',e=>{if(open){closed();return;}const s=st();
+  if(!s.ready){closed(word('LOGIN_UNAVAILABLE'));return;}
+  if(s.connected){read(e);return;}
+  let p;try{p=P().kisConnect(e);}catch(err){p=Promise.reject(err);}
+  Promise.resolve(p).then(r=>{if(signal.aborted)return;closed(r&&r.prepared?'Google 로그인 준비됨 · 비공개 펼치기를 한 번 더 누르세요':'로그인됨 · 비공개 펼치기를 한 번 더 누르면 서버에서 확인하고 불러옵니다');},
+   err=>{if(!signal.aborted)closed(word(codeOf(err)));});},{signal});
+ off.addEventListener('click',e=>{let p;try{p=P().kisDisconnect(e);}catch(err){p=Promise.reject(err);}Promise.resolve(p).then(()=>closed('비공개 연결을 끊었습니다'),()=>closed('비공개 연결을 끊었습니다'));},{signal});
+ // A dropped token (expiry, 403, 연결 끊기 elsewhere) closes the panel and clears what it showed.
+ const un=(()=>{try{return P().kisSubscribe(()=>{if(signal.aborted)return;if(!st().connected&&open)closed(word('AUTH_REQUIRED'));});}catch(_){return()=>{};}})();
+ signal.addEventListener('abort',()=>{seq++;un();},{once:true});
+ // A bundle already delivered (another page's panel) is shown as open; otherwise the panel starts closed without dropping anything.
+ const C=I.classification,cs=kind==='classification'&&C?C.state():null;
+ if(cs&&cs.state==='OK'&&cs.delivery==='PRIVATE'&&st().connected){open=true;btn.textContent='비공개 접기';btn.setAttribute('aria-expanded','true');off.hidden=false;
+  panel.set('READY',{render:b=>ccPaint(b,cs.value)});}
+ else closed(undefined,{keep:true});
+ return Object.freeze({reset:()=>closed()});}
+I.privateExpand=Object.freeze({attach});
+})();
