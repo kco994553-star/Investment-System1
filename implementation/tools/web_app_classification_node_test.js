@@ -313,7 +313,7 @@ const uni = (ids, extra = []) => [...ids, ...extra].map((id, i) => ({ id, code: 
       assert.equal(r.ok, true, label + ': the bundle still reads'); assert.deepEqual([r.value.counts.state, r.value.counts.code], ['ERROR', code], label); assert.deepEqual(r.value.mismatch, {}, label); };
     bad('other view hash', 'COUNTS_HASH_MISMATCH', (c) => { c.scopes.operating.classification.classification_hash = 'f'.repeat(64); });
     bad('other day', 'COUNTS_DATE_MISMATCH', (c) => { c.scopes.operating.valuation_date = '2026-01-02'; });
-    bad('other rows', 'COUNT_DENOMINATOR', (c) => { c.scopes.operating.population.denominator += 1; });
+    bad('other rows', 'COUNT_SCORING_POPULATION', (c) => { c.scopes.operating.population.denominator += 1; });
     bad('valid + uncomputed', 'COUNT_ARITHMETIC', (c) => { c.scopes.operating.counts.Q.uncomputed += 1; });
     bad('status not the counts', 'COUNT_STATUS', (c) => { c.scopes.operating.counts.Q.status = 'COMPLETE'; });
     bad('NOT_MEASURED with a value', 'COUNT_NOT_MEASURED', (c) => { c.scopes.operating.official_q_gate_input.valid = 0; });
@@ -325,6 +325,27 @@ const uni = (ids, extra = []) => [...ids, ...extra].map((id, i) => ({ id, code: 
     bad('mixed version pair', 'VERSION_PAIR_INVALID', (c) => { c.scopes.operating.classification.mapping_version = 'common-classification-map/2'; });
     bad('other schema', 'SCHEMA_VERSION', (c) => { c.schema_version = 'common-classification-calculation-counts/2'; });
     bad('a scope missing', 'KEY_MISSING', (c) => { delete c.scopes.held_financial_subsample; });
+    // Codex intake counterexamples (raw handoff/input-recovery-20261103 @ cbb9e67 handoffs/classification-counts-intake-20261108,
+    // node-results.json: 11 inputs that passed as OK on #522 11bdab57). Each now sets only the counts aside.
+    bad('population id', 'COUNTS_POPULATION_MISMATCH', (c) => { c.scopes.operating.population.id = 'OTHER_UNIVERSE'; c.scopes.operating.scoring_population.id = 'OTHER_UNIVERSE'; c.scopes.operating.versions.universe_id = 'OTHER_UNIVERSE'; });
+    bad('population id alone', 'COUNTS_POPULATION_MISMATCH', (c) => { c.scopes.operating.population.id = 'OTHER_UNIVERSE'; });
+    bad('population version', 'COUNTS_POPULATION_MISMATCH', (c) => { const o = c.scopes.operating; o.population.version = o.scoring_population.version = o.versions.universe_version = 'other/9'; });
+    bad('population members hash', 'COUNTS_POPULATION_MISMATCH', (c) => { const o = c.scopes.operating; o.population.members_hash = o.scoring_population.members_hash = 'e'.repeat(64); });
+    bad('issuer count over the denominator', 'COUNT_ISSUERS', (c) => { c.scopes.catalog.population.unique_issuers += 10; });
+    bad('operating issuers not the view', 'COUNTS_POPULATION_MISMATCH', (c) => { c.scopes.operating.population.unique_issuers -= 1; });
+    bad('versions null', 'TYPE', (c) => { c.scopes.operating.versions = null; });
+    bad('versions not the scoring universe', 'COUNT_VERSIONS', (c) => { c.scopes.catalog.versions.universe_version = 'other/9'; });
+    bad('scoring population null', 'TYPE', (c) => { c.scopes.operating.scoring_population = null; });
+    bad('result identity null', 'TYPE', (c) => { c.scopes.operating.result_identity = null; });
+    bad('result identity not a hash', 'HASH_INVALID', (c) => { c.scopes.held_financial_subsample.result_identity.cache_key = 'x'; });
+    bad('preview reference missing', 'KEY_MISSING', (c) => { delete c.scopes.operating.sources.preview; });
+    bad('snapshot reference missing', 'KEY_MISSING', (c) => { delete c.scopes.operating.sources.snapshot; });
+    bad('V disagrees with the summary', 'COUNTS_SUMMARY_MISMATCH', (c) => { const v = c.scopes.catalog.counts.V; v.valid = 1; v.uncomputed -= 1; v.status = 'PARTIAL'; });
+    bad('gate reference missing', 'TYPE', (c) => { delete c.scopes.held_financial_subsample.official_q_gate_input.sources; });
+    bad('gate version missing', 'TYPE', (c) => { delete c.scopes.catalog.official_q_gate_input.calc_version; });
+    bad('classification time missing', 'KEY_MISSING', (c) => { delete c.scopes.operating.classification.knowledge_as_of; });
+    // The null a contract allows stays a state, never an error: the operating gate is NOT_MEASURED with null counts.
+    assert.equal(valid({ ...base, expanded: e }).counts.value.scopes.operating.official_q_gate_input.valid, null);
   });
   await ok('expanded issuer sample: its own population, read whole, never in the 504 counts; full-market denominator must stay null', () => {
     const b = { ...clone(X.bundle()), expanded: EXP() }, v = valid(b);
