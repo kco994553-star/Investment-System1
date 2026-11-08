@@ -37,7 +37,13 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       const page = await ctx.newPage(), seen = site.watch(page, s.origin, { allow404: UNPUBLISHED });
       const B = '[data-sq-body]';
       const text = (sel) => page.locator(sel).first().evaluate((e) => e.innerText);
-      await page.goto(s.base + '#/qgv'); await page.evaluate(() => window.IS2.ready);
+      // The loader's own state, polled: a waitForFunction re-binds when the page's execution context is replaced right after
+      // load, where a single page.evaluate(IS2.ready) bound to the replaced context failed with "Execution context was destroyed"
+      // (CI #521 build 128696968965 at 1440; reproduced locally 1 in 6 under parallel load, no second frame navigation logged).
+      // Interval polling: the fixed clock (ctx.clock) replaces performance and animation frames, so marks and rAF polling never fire.
+      await page.goto(s.base + '#/qgv');
+      await page.waitForFunction(() => window.IS2 && typeof window.IS2.loadState === 'function' && ['READY', 'FAILED'].includes(window.IS2.loadState()), null, { polling: 100 });
+      assert.equal(await page.evaluate(() => window.IS2.loadState()), 'READY', phase + ': the layer loaded');
       await page.locator(B + ' [data-k=sq-connect]').click(); await page.locator(B + ' [data-sq-role]').first().waitFor();
       for (const [a, v] of [['Q', '34'], ['G', '33'], ['V', '33']]) { await page.fill(B + ' [data-k=sq-axis-' + a + ']', v); await page.locator(B + ' [data-k=sq-axis-' + a + ']').press('Tab'); }
       const c0 = eng.calls.length;
