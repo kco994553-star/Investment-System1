@@ -188,7 +188,8 @@
 | --- | --- | --- | --- |
 | 공개 정상본을 실어 나름 | `MACRO_EVIDENCE_CARRY outcome=CARRIED generated_at=… sha256=… status=CARRIED_LIVE attempt_stage=… attempt_error=… attempt_previous=…` | 바이트 그대로 + `CARRIED_LIVE` 기록 | `EQUAL` 통과 |
 | 공개본 조회 실패(재시도 뒤) | `outcome=LIVE_UNREADABLE file=… error=… carried=NONE deploy=REFUSED` | 아무것도 싣지 않음, 종료 코드 1(배포 중단) | (데이터 파일이면) `LIVE_UNREACHABLE`로 배포 전체 거부, 지금과 같음 |
-| 공개본 손상(200이지만 규격 오류, 공개 기록 불일치 포함) | `outcome=LIVE_INVALID file=… error=… carried=NONE effect=WITHHELD` | 싣지 않음 | 기존 `WITHHELD` 경로(`LIVE_INVALID` 또는 `MISSING`) 그대로, 로그에 실제 효과 |
+| 공개 본문 손상(200이지만 본문이 JSON·규격 오류) | `outcome=LIVE_INVALID file=… error=… carried=NONE effect=WITHHELD` | 싣지 않음 | 기존 `WITHHELD` 경로(`LIVE_INVALID`) 그대로, 로그에 실제 효과 |
+| 공개 본문은 정상인데 공개 시도 기록이 불일치(다른 파일을 가리킴 · `WITHHELD` · 손상 · 이번 기록으로 설명 불가) — Codex 반례 `record_mismatch`·`record_withheld` (#437 6716049571) | `outcome=LIVE_RECORD_MISMATCH file=macro-evidence-status.json error=STATUS_MISMATCH\|STATUS_WITHHELD\|… carried=NONE deploy=REFUSED site=KEPT` | 싣지 않음, 기록을 맞춰 고치지 않음, **종료 코드 1(배포 중단)** | 배포 검사·업로드·배포 단계가 실행되지 않음 → 기존 사이트(정상 본문 포함) 그대로 |
 | 확인된 부재(404, 또는 빈 기본값만) | `outcome=LIVE_ABSENT read=NO_LIVE\|EMPTY_LIVE carried=NONE effect=NOT_PUBLISHED` | 실을 것 없음 | `NO_GOOD_LIVE` 통과, 파일 미게시 |
 | 산출물에 새 파일(또는 유지본) 있음 | `outcome=NOT_NEEDED artifact_generated_at=… artifact_published=…` | 읽지도 바꾸지도 않음 | 기존 판정 |
 | 그 밖(빈 기본값·손상 파일·기록 없음 등) | `outcome=NOT_ELIGIBLE artifact=…` | 손대지 않음 | 기존 판정(거부 등) |
@@ -196,7 +197,7 @@
 - 상태 규격: `macro-evidence-status/1`에 게시 결과 `CARRIED_LIVE`를 더했다. `carry` 키는 `CARRIED_LIVE`에서만, 반드시 있어야 한다. `carry`의 `generated_at`·`sha256` = 옆 파일 값, `basis` = `DEPLOY_LIVE_READ`, 시도 시각 ≤ `carry.at`, 파일 생성 ≤ `carry.at`. 시도 쪽 규칙(조회 실패·손상이면 단계 `PREVIOUS`, `LOADED`면 `WRITE`)도 그대로 적용된다. Python `require_status`와 화면 `mesValid`가 같은 규칙이다. 파일 이름은 새로 늘지 않았다(Pages 가드 허용 목록 변경 없음).
 - 화면 4.1.3: "이번 갱신 실패 (시각 · 단계 또는 이전 공개본 조회 실패) · 아래는 이전에 게시된 검증본을 배포 때 그대로 옮긴 것 · 원래 기준 시각 그대로 (생성 …, 배포 확인 …) · 이번 시도의 자료 아님 · 자료 지연". 이번 수집 자료처럼 보이지 않는다.
 - 다음 날: 실어 나른 파일은 공개본 바이트 그대로라 다음 수집이 `LOADED`로 읽고 `CONTINUOUS`로 이어 만든다(배포 검사 `NEWER` 통과).
-- 시험 `tests/test_macro_evidence_carry.py`(16건, 실제 수집 경로가 만든 산출물 + 실제 배포 검사·Pages 가드):
+- 시험 `tests/test_macro_evidence_carry.py`(19건, 11/08 기록 불일치 3건·정상 기록 carry 1건 추가, 실제 수집 경로가 만든 산출물 + 실제 배포 검사·Pages 가드):
   - 수집 때 조회 실패 + 배포 때 조회 성공 → `CARRIED`, 바이트 동일, 배포 검사 `EQUAL` 통과(보완 전에는 `MISSING effect=LIVE_GOOD_COPY_REMOVED`), 다음 날 `LOADED`·`CONTINUOUS`·`NEWER`
   - 배포 때 조회 실패(데이터·기록 각각, 3번 시도) → 싣지 않음, 종료 1, 배포 검사도 거부
   - 공개본 손상·규격 위반·기록 불일치 → 싣지 않음, 기존 `WITHHELD`
