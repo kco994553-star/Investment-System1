@@ -97,4 +97,26 @@ ok('/1 without a roster: identity only, completeness NOT_CHECKED (no membership_
   assert.equal(j.ok, true); assert.equal(j.membership_validation, undefined);
   assert.ok(T.joinText({ ok: false, code: 'GROUP_CONTEXT_MISMATCH:signal_day' }).includes('요청 문맥 ≠ 그룹 명부 문맥 · signal_day'));
 });
+ok('signal_day: a row without a producer evaluation day is refused with both days named (no "undefined"), never guessed', () => {
+  // owner 2026-11-08 「통합 결과 수령」 2항: the QGV row's evaluation day comes only from its producer's field (SIGNAL_DAY_CONTRACT.md).
+  for (const [id, day] of [['row_date_mismatch', undefined], ['normal_distinct_code_display_issuer_security', null]]) {
+    const v = X.applyCase(F.base, F.cases.find((c) => c.id === id)), a = v.join;
+    if (day === null) a.qgv_rows[0].signal_day = null;
+    const r = T.joinGroupRows(a.board, a), w = T.joinText(r);
+    assert.equal(r.ok, false); assert.equal(r.code, 'SIGNAL_DAY_MISMATCH', id);
+    assert.equal(r.board_day, a.group_context.signal_day, id + ': the board day');
+    assert.doesNotMatch(w, /undefined/, id);
+    if (day === null) assert.match(w, /QGV 행 평가일 미제공\(생산자 평가일 필드 없음 · 가격일·생성일로 추정 안 함\)$/, id);
+    else assert.match(w, /· QGV \d{4}-\d{2}-\d{2}$/, id);
+  }
+});
+ok('official QGV rows: a row without its own evaluation day stays null through groupInput (never the classification date)', () => {
+  // owner 2026-11-08 「#519 인수 반영」: the official leaderboard's signal_day is never filled with the classification valuation date.
+  const rows = page().map((r) => ({ ...r, signal_day: null })), gi = C.groupInput(GJ.board, rows, bundle());
+  assert.ok(Array.isArray(gi.rows) && gi.rows.length > 0, JSON.stringify(gi.code));
+  assert.ok(gi.rows.every((r) => r.signal_day === null), 'group rows keep null, not ' + GJ.view.valuation_date);
+  assert.ok(rows.every((r) => r.signal_day === null), 'the caller rows are untouched');
+  const j = T.joinGroupRows(GJ.board, { qgv_rows: gi.rows, security_links: GJ.security_links, conditions: GJ.conditions, data_kind: 'SYNTHETIC', group_manifest: gi.manifest, group_context: gi.context, connect_issuers: true });
+  assert.equal(j.ok, false); assert.equal(j.code, 'SIGNAL_DAY_MISMATCH'); assert.match(T.joinText(j), /QGV 행 평가일 미제공/);
+});
 console.log(JSON.stringify({ passed: true, checks: n }));

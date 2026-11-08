@@ -101,7 +101,7 @@ COMMON 보드는 `techScreen.joinGroupRows`(`technical-filter-join/2`)로 결합
 
 | Main 질문 | Codex 답 | Main 처리 |
 | --- | --- | --- |
-| 1. QGV 행의 `signal_day` | 새 섹터 생산자의 `snapshot/preview.valuation_date`. `as_of`·`price_basis_date`로 대신하지 않는다. 기존 공개 공식 생산자에 검증된 평가일 필드가 없으면 null | `rowRecord.signal_day`는 null 유지. 공통 분류 기록이 연결되면 그 `valuation_date`를 쓴다 |
+| 1. QGV 행의 `signal_day` | 새 섹터 생산자의 `snapshot/preview.valuation_date`. `as_of`·`price_basis_date`로 대신하지 않는다. 기존 공개 공식 생산자에 검증된 평가일 필드가 없으면 null | 기존 공개 공식 `rowRecord.signal_day`는 근거가 없으므로 null 유지. 새 섹터 preview를 소비하는 경우에만 검증된 `preview.valuation_date`를 쓴다(`IS2.sectorQgv.signalDay`). 공통 분류 links의 preview identity·record/hash·평가일과 대조한다(`previewCheck`). 분류 기록 연결만으로 기존 공식 행의 평가일을 보완하지 않는다 (Codex #437 6718082277, 오너 2026-11-08) |
 | 2. 증권 ID 공급 파일 | Universe504에서 검증된 고정 증권 ID 0건, 공개 파일 없음 | `security_id` null 유지 |
 | 3. 504행 전체를 넘기는가 | **확정된 보드 그룹 전체**의 QGV 행을 넘긴다. 보드에 이미 있는 증권과의 교집합으로 결손을 숨기지 않는다. 그룹 밖 행·순위는 그대로. 그룹 안 필수 연결이 빠지면 거부 | `keep()`은 `IS2.classification.groupRows(board, universe)`가 준 그룹 전체 행만 넘긴다. 공급자가 없거나 그룹을 정하지 못하면 `BOARD_GROUP_ROWS_UNRESOLVED`(결합 없음). 2026-11-08: 공급자 `web_app/classification.js` 연결(원천 NONE이라 오늘은 null), 그룹을 못 정한 사유(`groupRowsWhy`: 분류 버전 불일치·구성원 미확인 등)를 같은 줄에 보임 |
 | 4. 행 `id`와 `issuer_id` | 상장 단위 `id`는 발행사가 아니다. 새 생산자는 `issuer_id`를 따로 준다. 필드가 없을 때만 예전 규칙, 명시적 null은 대체 없음 | `joinRows`는 `issuer_id` 필드가 있으면 그것을 발행사로 검사하고 증권 ID와 같으면 거부. `rowRecord.issuer_id`는 null(대체 없음) |

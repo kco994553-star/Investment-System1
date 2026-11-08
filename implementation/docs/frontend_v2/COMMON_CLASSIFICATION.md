@@ -7,6 +7,15 @@
 
 ## 0. 수령과 연결 상태 (2026-11-08)
 
+**비공개 전달 (2026-11-08 오너 「통합 결과 수령」 2항, [CLASSIFICATION_PRIVATE_DELIVERY](CLASSIFICATION_PRIVATE_DELIVERY.md)):**
+- 보관 묶음은 오너 인증 Worker를 거쳐 화면 RAM으로만 들어온다(`/kis/classification?part=…`, DC-44 구조).
+- Codex 11/08 보관 검토 결과(#516 `4cf2e037`)를 비공개 저장소 `data` 가지에 바이트 그대로 배치했다.
+- 공개 분류 파일은 선행 조건이 아니며, 만들지 않았다. Worker 배포 전에는 화면에 오지 않는다.
+- 판독기 차이 두 건을 고쳤다.
+  - 근거 참조 길이: 화면에 보이지 않는 위치 문자열이므로 `MAX.ref`를 따로 두었다.
+  - 회계모형 독립 상태: 기업 상세에 넷째 줄 "회계모형"을 두었다. 섹터가 확인돼도 회계모형이 미확인이면 "QGV 비교집단 완결 아님"으로 보인다.
+- 평가일 계약: [SIGNAL_DAY_CONTRACT](SIGNAL_DAY_CONTRACT.md).
+
 **수령 완료.** Codex 인계 `implementation/docs/research/common_classification/`(manifest SHA-256 고정):
 `CONTRACT.md` `00bccc2c…258ea`, `fixtures.json` `526cbf85…6ebcf`(record_cases 13 · technical_cases 9, 기대값 포함),
 `dictionary.json` `9ae49c5f…d5776`. 코드 `research/common_classification/{records,qgv,technical_macro,catalog}.py`,

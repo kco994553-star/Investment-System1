@@ -266,9 +266,13 @@ function fill(route,{body}){
    failures.length?h('p',{class:'reason',dataset:{sqReasons:''}},'미산출 사유(후) · ',failures.map(([t,n])=>t+' '+n).join(' · ')):null,
    shown.skipped.length?h('p',{class:'hand err',dataset:{sqSkipped:String(shown.skipped.length)}},'전체 적용에서 제외(요소 적용 부적합) ',String(shown.skipped.length),'곳 · ',shown.skipped.slice(0,8).map(k=>{const[s,t]=k.split('|');return S.text(S.SECTOR_TEXT,s)+'·'+S.text(S.TEMPLATE_TEXT,t);}).join(', '),shown.skipped.length>8?' 외':''):null,
    h('p',{class:'reason'},'섹터 기준 상대 점수 · 순위는 이 모델의 원래 모집단 순위(공식 순위 아님) · 성과 ',after.performance_state,' · ',after.validation_state));
-  const cc=ccOf(after),ccRow=r=>(cc&&cc.state==='OK'&&cc.rows.has(r.company_id)?{sqCcRecord:cc.rows.get(r.company_id).record_id||''}:{});
+  const sd=typeof S.signalDay==='function'?S.signalDay(after):{signal_day:null,reason:'READER_MISSING'};
+  const cc=ccOf(after),ccRow=r=>({sqSignalDay:sd.signal_day||'',...(cc&&cc.state==='OK'&&cc.rows.has(r.company_id)?{sqCcRecord:cc.rows.get(r.company_id).record_id||''}:{})});
   summary.append(cc?h('p',{class:cc.state==='OK'?'':'reason',dataset:{sqCc:cc.state,...(cc.state==='OK'?{sqCcHash:cc.classification_hash}:{na:'CLASSIFICATION_'+cc.state})}},'공통 분류 · ',cc.words,
    cc.state==='OK'?' · 분류 기록 '+cc.classification_hash.slice(0,12)+' · 평가일 '+cc.valuation_date+(cc.missing?' · 기록 없는 행 '+cc.missing+'개(사유와 함께 그대로)':''):cc.differs?' · 다른 항목 '+cc.differs.join(', '):''):null);
+  // The rows' evaluation day = this checked preview's valuation_date (never as_of, a price day or a generation time); the official
+  // QGV leaderboard rows keep signal_day null — this day is never written onto them (owner 2026-11-08).
+  summary.append(h('p',{class:sd.signal_day?'':'reason',dataset:{sqSignalDayLine:sd.signal_day||'NONE'}},sd.signal_day?'행 평가일(signal_day) '+sd.signal_day+' · 이 미리보기의 평가일 그대로 · 공식 QGV 행에는 쓰지 않음':'행 평가일 없음 · '+sd.reason));
   const cmp=new Map(comparison.rows.map(r=>[r.company_id,r])),b=new Map(before.result_rows.map(r=>[r.company_id,r]));
   const rows=after.result_rows.filter(r=>!V.only||(r.sector_id===V.sector&&r.accounting_template===V.template));
   const rk=r=>r.rank===null?Infinity:r.rank,ordered=[...rows].sort((x,y)=>rk(x)-rk(y)||(x.company_id<y.company_id?-1:1));

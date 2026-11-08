@@ -255,7 +255,8 @@ test('action nesting: a nested step reaches only what its parent may (same kind,
   const nested = (parentKind, kind) => { const e = win.trusted('click'); return A.run(e, parentKind, (s) => { try { return A.run(e, kind, () => 'OK', { parent: s }); } catch (err) { return err.message; } }); };
   const kinds = Object.keys(A.KINDS), seen = {};
   for (const p of kinds) seen[p] = kinds.filter((k) => nested(p, k) === 'OK');
-  assert.deepEqual(seen, { PUBLIC_REFRESH: [], LOGIN: ['LOGIN', 'WRITE'], UNIVERSE_READ: ['UNIVERSE_READ', 'WRITE'], HISTORY: ['HISTORY', 'WRITE'], SYNC: ['SYNC', 'WRITE'], WRITE: ['WRITE'] });
+  assert.deepEqual(seen, { PUBLIC_REFRESH: [], LOGIN: ['LOGIN', 'WRITE'], UNIVERSE_READ: ['UNIVERSE_READ', 'WRITE'], HISTORY: ['HISTORY', 'WRITE'], SYNC: ['SYNC', 'WRITE'], WRITE: ['WRITE'], PRIVATE_READ: ['PRIVATE_READ'] });
+  assert.equal(nested('PRIVATE_READ', 'WRITE'), 'ACTION_KIND_NOT_COVERED', 'a private read click (owner 2026-11-05) writes nothing on the device, nested or not');
   assert.equal(nested('WRITE', 'SYNC'), 'ACTION_KIND_NOT_COVERED', 'a WRITE click never opens the Worker or Sheets through a nested SYNC');
   assert.equal(nested('PUBLIC_REFRESH', 'WRITE'), 'ACTION_KIND_NOT_COVERED', 'the public refresh writes nothing, nested or not');
   // The review case: inside the public refresh the Worker stays closed, nested SYNC or not.
