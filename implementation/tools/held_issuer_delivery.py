@@ -9,6 +9,8 @@ import tempfile
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
 from investment_system.research.held_issuer_delivery import project_delivery, verify_delivery
+from investment_system.research.held_issuer_shards import shard_delivery, verify_shards
+from investment_system.research.classification_counts import load
 
 
 def run(job, output, *, synthetic=False):
@@ -20,17 +22,23 @@ def run(job, output, *, synthetic=False):
     if out.exists():
         raise ValueError('OUTPUT_ALREADY_EXISTS')
     files = project_delivery(job, index_bytes=job.get('index_byte_budget', 2 * 1024 * 1024))
+    verify=verify_delivery
+    if job.get('layout')=='SHARDS':
+        files=shard_delivery(files,load(job['delivery_summary']),job['delivery_summary'],producer_sha=job['producer_sha'])
+        verify=verify_shards
+    elif job.get('layout') not in (None,'ISSUER_FILES'):
+        raise ValueError('LAYOUT_INVALID')
     out.parent.mkdir(parents=True, exist_ok=True)
     temp = Path(tempfile.mkdtemp(prefix='.' + out.name + '-', dir=out.parent))
     try:
         for name, body in files.items():
             p = temp / name;p.parent.mkdir(parents=True, exist_ok=True);p.write_bytes(body);p.chmod(0o600)
-        manifest = verify_delivery({name: (temp / name).read_bytes() for name in files})
+        manifest = verify({name: (temp / name).read_bytes() for name in files})
         temp.rename(out)
     finally:
         if temp.exists():shutil.rmtree(temp)
-    return {'status': 'VERIFIED', 'issuers': manifest['detail_rows'], 'files': len(files),
-            'indexes': len(manifest['indexes']), 'max_bytes': max(map(len, files.values())), 'new_calculations': 0}
+    return {'status': 'VERIFIED', 'issuers': manifest.get('detail_rows',manifest.get('issuer_count')), 'files': len(files),
+            'indexes': len(manifest.get('indexes',[manifest.get('index')])), 'max_bytes': max(map(len, files.values())), 'new_calculations': 0}
 
 
 if __name__ == '__main__':

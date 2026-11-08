@@ -165,3 +165,47 @@ def test_cli_uses_projection_and_writes_verified_private_files(tmp_path, monkeyp
     assert result['issuers'] == 2 and result['new_calculations'] == 0
     assert (out / 'manifest.json').exists()
     with pytest.raises(ValueError, match='OUTPUT_ALREADY_EXISTS'):cli.run(job, out, synthetic=True)
+
+
+def test_sharded_projection_has_fixed_route_keys_and_same_summary_identity(tmp_path):
+    from investment_system.research.held_issuer_shards import shard_delivery,verify_shards
+    job=job_fixture(tmp_path);files=project(job)
+    from investment_system.research.classification_counts import load,project_scope,checked_scope
+    ex=checked_scope(job['expanded'],job['valuation_date'])
+    summary={'calculation_counts':{'scopes':{'held_financial_subsample':project_scope(job['expanded'],ex,members=['ISSUER:A','ISSUER:B'],unit='ISSUER',population_id=ex[0]['universe_id']+':retained-financials',population_version='source-sha256:'+job['held']['sha256'])}}}
+    ref=pin(tmp_path,'summary-for-shards.json',summary)
+    out=shard_delivery(files,load(ref),ref,producer_sha='a'*40)
+    m=verify_shards(out);idx=decode(out,'expanded-index.json')
+    assert len(idx['rows'])==2 and m['identity']['summary']['sha256']==ref['sha256']
+    assert len(m['shards'])==2 and all(len(k)==2 for k in m['shards'])
+    for r in idx['rows']:
+        shard=decode(out,r['detail']['path']);d=next(x for x in shard['issuers'] if x['issuer_id']==r['issuer_id'])
+        assert d==decode(files,'issuers/'+r['issuer_id']+'.json')
+    before=deepcopy(out);p=idx['rows'][0]['detail']['path'];d=decode(out,p);d['identity']['valuation_date']='2026-11-03';out[p]=json.dumps(d).encode()
+    with pytest.raises(ValueError):verify_shards(out)
+    assert verify_shards(before)['issuer_count']==2
+
+
+def test_cause_counts_do_not_turn_unassessed_into_zero(tmp_path):
+    from investment_system.research.retained_coverage import coverage_scope
+    job=job_fixture(tmp_path);p=json.loads(Path(job['expanded']['preview']['path']).read_text());v=json.loads(Path(job['expanded']['view']['path']).read_text())
+    result=coverage_scope(p['result_rows'],v['rows'])
+    assert result['code_rows']['any_raw']['valid']==3
+    assert result['causes']['code_rows']['classification']['count']==2
+    assert result['causes']['code_rows']['share_basis']['count'] is None
+    assert result['causes']['code_rows']['share_basis']['unassessed']==3
+    assert result['causes']['code_rows']['period']['count'] is None
+    assert result['causes']['code_rows']['period']['known_affected']==0
+
+
+def test_v_readiness_is_bound_to_original_snapshot_and_selected_rows(tmp_path):
+    job=job_fixture(tmp_path);snapshot=json.loads(Path(job['operating']['snapshot']['path']).read_text())
+    rows=[{'company_id':r['company_id'],'variant_id':'cfo_mcap','nonprice_missing':['DATED_SPLIT_ADR_SHARE_BASIS_EVIDENCE'],
+           'price_inputs_pending':['issuer_mcap'],'peer_sample_status':'FACTOR_VALID_N_PENDING_PRICE'} for r in snapshot['rows']]
+    job['operating_v_readiness']=pin(tmp_path,'readiness.json',{'valuation_date':job['valuation_date'],'denominator':len(rows),'mapped_companies':len(rows),'rows':rows})
+    job['operating_v_resume']=pin(tmp_path,'resume.json',{'snapshot':snapshot})
+    coverage=decode(project(job),'coverage.json')['scopes']['operating']
+    assert coverage['causes']['code_rows']['share_basis']['count']==len(rows)
+    assert coverage['causes']['code_rows']['price']['count']==len(rows)
+    rewrite(job,tmp_path,None,'operating_v_resume',lambda d:d['snapshot'].update(as_of='2026-11-03T00:00:00Z'))
+    with pytest.raises(ValueError,match='READINESS_CONTEXT_MISMATCH'):project(job)

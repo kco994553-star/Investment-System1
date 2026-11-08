@@ -65,3 +65,33 @@ Main 요청: 기존 인증 경로의 별도 허용 prefix에 manifest→index→
 manifest와 개별 바이트 SHA/size/context를 검사하고, URI의 issuer_id는 이미 있는 발행사 ID 그대로 사용한다.
 기존 Worker 경로 허용·판독기·화면은 Main 변경 사항이며 이 PR은 수정하지 않는다.
 브라우저 통합/인증/배포/외부 API/성과 검증은 수행하지 않았다.
+
+## Main 고정 경로 협의 반영 — SHARDS
+
+#437 6721372088의 제한된 Worker 경로에 맞춰 `layout=SHARDS`를 추가했다.
+기존 개별 issuer 출력은 재현 가능하게 남기며 새 `held-issuer-sharded/1`은 표시 투영만 바꾼다.
+`expanded-index.json` → `expanded-detail/{sha256(issuer_id UTF8)[:2]}.json`.
+저장 조각 키는 신원 ID가 아니다. 실제 issuer_id/analysis_row_id는 기존 값 그대로다.
+각 파일에 요약 ref/SHA, 평가일, 원래 모집단·점수 비교집단·입력/분류/모델 버전 및 해시,
+생산자 전체 SHA를 같은 identity/hash로 묶는다. 지정 shard가 상한을 넘으면 실패하며 임의 재분할 규칙을 만들지 않는다.
+Worker의 `part=expanded_index|expanded_detail`, `shard=^[0-9a-f]{2}$` 외 경로 허용은 요청하지 않는다.
+Main은 인증된 manifest SHA와 각 파일·현재 요약의 identity를 확인해야 한다. 자체 해시만으로 진위를 입증하지 않는다.
+
+`delivery_summary`는 기존 #523 요약의 path/ref/SHA, `producer_sha`는 이 투영 코드를 실행한40자리 SHA다.
+source snapshot·분류/모델/모집단·원결과 identity가 요약과 다르면 생성하지 않는다.
+`verify_shards`는 전체 파일·중복·누락·조각 소속·색인/상세 상태와 identity·크기·해시를 검사한다.
+합성 1색인/2조각: `implementation/tests/fixtures/held_issuer_shards/` (정상·미확인·다중 티커 및 거부 기대 설명 포함).
+이전 ISSUER_FILES 검증13건에 새 조각/미측정/원래 snapshot에 묶인 readiness 검사3건을 더해16통과했다.
+
+## 95% 원인 분해
+
+coverage는 원래 모집단별 context와 source refs를 붙이고, any_raw/any_factor_scores 및
+모든 기본 선택 원지표/요소점수를 분리한다. `any_*`는95% 달성 기준이 아니다.
+원인 분류: 분류/회계/기간/주식 기준/가격/산식 적용/관문/표본/증권/EV.
+`count`는 정확 집계 가능할 때만 수치다. `known_affected`, `known_not_affected`, `unassessed`는 분모와 대사하며
+미측정이 남으면 count:null이다. 여러 원인은 겹치므로 합쳐 전체 미산출 수로 쓰지 않는다.
+MISSING_INPUT만으로 기간 불일치나 산식 부적합을 확정하지 않는다. 관문 UNKNOWN과 VALUE_EXCLUDED는 별도 원래 counts도 보존한다.
+`operating_v_readiness`와 `operating_v_resume`를 지정하면 보존 snapshot의 완전 일치·평가일·선택 요소·구성원 검사를 거쳐
+기존 비가격/가격 대기 진단을 재집계한다. 원시 비율이나 점수 계산을 다시 하지 않는다.
+확장은 기존 input-gaps를 재사용하며 unknown/범위 미확인을 가격 결손 확정으로 바꾸지 않는다.
+예상 최종총점 증가 수는 추가 증거 전 null이다. 가격만 확보하면 해결된다는 의미가 아니다.

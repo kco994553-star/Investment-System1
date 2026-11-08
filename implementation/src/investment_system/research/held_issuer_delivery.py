@@ -63,6 +63,16 @@ def _project(job, *, index_bytes):
     gr = {r['company_id']: r for r in gaps['rows']} if gaps else {}
     if gaps:
         require(len(gr) == len(gaps['rows']) and set(gr) == set(ex[0]['members']), 'GAP_MEMBERS_MISMATCH')
+    vr = defaultdict(list)
+    if 'operating_v_readiness' in job:
+        readiness=load(job['operating_v_readiness']);resume=load(job['operating_v_resume'])
+        require(resume['snapshot']==op[0] and readiness['valuation_date']==job['valuation_date'] and readiness['denominator']==len(op[0]['members']), 'READINESS_CONTEXT_MISMATCH')
+        seen_readiness=set()
+        for row in readiness['rows']:
+            key=(row['company_id'],row['variant_id'])
+            require(key not in seen_readiness and key[0] in op[4] and key[1] in op[4][key[0]].get('selected_variants',[]), 'READINESS_SELECTION_MISMATCH')
+            seen_readiness.add(key);vr[key[0]].append(row)
+        require(len(vr)==readiness['mapped_companies']==sum(bool(r.get('selected_variants')) for r in op[4].values()), 'READINESS_MEMBER_MISMATCH')
     files, index = {}, []
     for member in members:
         row, cls = result_rows[member], classes[member]
@@ -116,12 +126,17 @@ def _project(job, *, index_bytes):
     coverage = {'schema_version': 'retained-default-coverage/1', 'data_kind': job['data_kind'],
         'valuation_date': job['valuation_date'], 'context_hash': context_hash,
         'operation': 'AGGREGATE_RETAINED_RESULTS_NOT_RECALCULATION',
-        'scopes': {'operating': coverage_scope(op[1]['result_rows'], op[2]['rows']),
-                   'catalog': coverage_scope(ex[1]['result_rows'], ex[2]['rows']),
-                   'held_financial_subsample': coverage_scope([result_rows[k] for k in members], [classes[k] for k in members])},
+        'scopes': {'operating': coverage_scope(op[1]['result_rows'], op[2]['rows'],v_readiness=vr),
+                   'catalog': coverage_scope(ex[1]['result_rows'], ex[2]['rows'],input_gaps=gr),
+                   'held_financial_subsample': coverage_scope([result_rows[k] for k in members], [classes[k] for k in members],input_gaps=gr)},
         'source_refs': {'operating': {k: reference(job['operating'][k]) for k in ('snapshot', 'preview', 'view')},
                         'expanded': {k: reference(job['expanded'][k]) for k in ('snapshot', 'preview', 'view')}},
         'full_market': {'denominator': None, 'coverage': None, 'state': 'NOT_MEASURED', 'reason': 'DATED_MARKET_MEMBERSHIP_UNCONFIRMED'}}
+    for key,spec,data,selected,unit in [('operating',job['operating'],op,op[0]['members'],'CODE_ROW'),('catalog',job['expanded'],ex,ex[0]['members'],'ISSUER')]:
+        c=project_scope(spec,data,members=selected,unit=unit,population_id=data[0]['universe_id'],population_version=data[0]['universe_version'])
+        coverage['scopes'][key]['context']={k:v for k,v in c.items() if k!='counts'}
+    coverage['scopes']['held_financial_subsample']['context']=context
+    coverage['cause_source_refs']={k:reference(job[k]) for k in ('input_gaps','operating_v_readiness','operating_v_resume') if k in job}
     files['coverage.json'] = encode(coverage)
     manifest = {'schema_version': 'held-issuer-delivery/1', 'data_kind': job['data_kind'],
         'context': context, 'context_hash': context_hash, 'indexes': indexes, 'coverage_path': 'coverage.json',
