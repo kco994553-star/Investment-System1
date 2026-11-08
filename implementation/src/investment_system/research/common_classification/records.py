@@ -197,6 +197,7 @@ def resolve(store, *, valuation_date, knowledge_as_of):
                 'source_sic_available':sum(bool(r.get('source_sic')) for r in rows)}
     coverage['sector_confirmed_issuers']=len({r['issuer_id'] for r in rows if r['sector']['status']=='CONFIRMED'})
     return {'schema_version':'common-classification-view/1', 'data_kind':store['data_kind'],
+            **({'boundary_policy':deepcopy(store['boundary_policy'])} if store.get('boundary_policy') else {}),
             'valuation_date':valuation_date,'knowledge_as_of':knowledge_as_of,
             'universe_id':store['universe_id'],'universe_version':store['universe_version'],
             'dictionary_version':store['dictionary_version'],'mapping_version':store['mapping_version'],'members':sorted(store['members']),

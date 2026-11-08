@@ -53,6 +53,7 @@ def test_reit_accounting_evidence_survives_sector_policy_and_versioned_history()
  combined=append_review(upgraded,imported,company_ids=s['members'])
  view=resolve(combined,valuation_date=s['valuation_date'],knowledge_as_of=AT)
  assert view['dictionary_version']==DICT and view['mapping_version']=='common-classification-map/2'
+ assert view['boundary_policy']==combined['boundary_policy']
  assert view['rows'][0]['accounting']['evidence_refs']==['retained-reit-accounting-proof']
  assert view['rows'][0]['sector']['id']=='FINANCIALS' and len(combined['records'])==2
  assert resolve(old,valuation_date=s['valuation_date'],knowledge_as_of=AT)['rows'][0]['sector']['id'] is None
