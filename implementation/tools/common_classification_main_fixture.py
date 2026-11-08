@@ -25,6 +25,7 @@ SYNTHETIC only. Run from the repository root:
   python implementation/tools/common_classification_main_fixture.py [--check]
 writes (or with --check compares byte-for-byte) implementation/tests/fixtures/common_classification_main/main_fixture.json."""
 import argparse
+import copy
 import hashlib
 import importlib.util
 import json
@@ -37,6 +38,8 @@ sys.path[:0] = [str(ROOT / 'src'), str(ROOT / 'tests/research')]
 from investment_system.research.common_classification.catalog import dictionary  # noqa: E402
 from investment_system.research.common_classification.records import resolve  # noqa: E402
 from investment_system.research.common_classification.technical_macro import technical_groups, macro_projection  # noqa: E402
+from investment_system.research.common_classification.group_join import build_group_manifest  # noqa: E402
+from investment_system.research.technical_filter_join import join_group_rows  # noqa: E402
 
 HANDOFF = ROOT / 'docs/research/common_classification'
 OUT = ROOT / 'tests/fixtures/common_classification_main/main_fixture.json'
@@ -110,8 +113,49 @@ def cli_bundle(names=None):
             job = codex_cli_test.job(tmp)
         cli.run(job, tmp / 'out', synthetic=True)
         read = lambda name: json.loads((tmp / 'out' / name).read_text())
+        preview = read('qgv-preview.json')
+        # The run's sector QGV preview, identity and per-row fields the 2.2.7 cross-check reads (a field subset, values unchanged).
+        subset = {k: preview[k] for k in ('schema_version', 'preview_id', 'input_hash', 'config_hash', 'cache_key', 'engine_version', 'valuation_date',
+                                          'snapshot_id', 'universe_id', 'universe_version')}
+        subset['result_rows'] = [{k: r[k] for k in ('company_id', 'issuer_id', 'sector_id', 'accounting_template', 'status', 'rank', 'total')} for r in preview['result_rows']]
         return {'view': read('classification-view.json'), 'qgv_links': read('qgv-classification-links.json'),
-                'technical': read('technical.json'), 'macro': read('macro.json')}
+                'technical': read('technical.json'), 'macro': read('macro.json'), 'qgv_preview': subset}
+
+
+def group_join_universe(one):
+    """Codex #516 5b0ec88a group-join base (group-join-fixtures.json) with its company ids renamed to page codes; the roster
+    is rebuilt by Codex build_group_manifest and each call-site case's expected result is Codex join_group_rows' output on rows
+    shaped as the call site passes them (issuer null, connect_issuers=True)."""
+    fx = json.loads((HANDOFF / 'group-join-fixtures.json').read_text())
+    base = fx['base']; names = one(base['bundle']['view']['members'])
+    view, technical = renamed(base['bundle']['view'], names), renamed(base['bundle']['technical'], names)
+    join = renamed(base['join'], names); gid = join['group_context']['group_id']
+    def roster(v):
+        m = build_group_manifest(v, technical, gid); return m, copy.deepcopy(m['context'])
+    manifest, context = roster(view)
+    off_day = copy.deepcopy(view); off_day['rows'][0]['applicability']['evaluation_date'] = '2017-01-07'
+    off_manifest, off_context = roster(off_day)
+    rows = [dict(r, issuer_id=None) for r in join['qgv_rows']]
+    def run(qgv_rows, m=manifest, c=context):
+        args = dict(board=join['board'], qgv_rows=qgv_rows, security_links=join['security_links'], conditions=join['conditions'],
+                    data_kind=join['data_kind'], group_manifest=m, group_context=c, connect_issuers=True)
+        try:
+            out = join_group_rows(**args)
+            return {'ok': True, 'selected_count': out['selected_count'], 'original_group_count': out['original_group_count'],
+                    'membership_validation': out['membership_validation'], 'issuer_connections': len(out['issuer_connections'])}
+        except ValueError as exc:
+            return {'ok': False, 'code': str(exc)}
+    cases = {'normal_issuer_connected': run(rows),
+             'row_hash_mismatch': run([dict(rows[0], classification_hash='b' * 64)] + rows[1:]),
+             'row_record_mismatch': run([dict(rows[0], classification_record_id='SYNTHETIC:WRONG')] + rows[1:]),
+             'classification_not_applicable_on_day': run(rows, off_manifest, off_context),
+             'member_row_missing': run(rows[1:]),
+             'duplicate_row': run(rows + [rows[0]])}
+    return {'source': 'docs/research/common_classification/group-join-fixtures.json base (ids renamed)',
+            'view': view, 'technical': technical, 'view_not_applicable_on_day': off_day,
+            'board': join['board'], 'security_links': join['security_links'], 'conditions': join['conditions'],
+            'qgv_rows': join['qgv_rows'], 'group_manifest': manifest, 'group_context': context, 'group_manifest_not_applicable_on_day': off_manifest,
+            'codes': [names[k] for k in sorted(names)], 'cases': cases}
 
 
 def build():
@@ -144,6 +188,7 @@ def build():
         t = renamed({k: v for k, v in fixtures['technical_cases'][name].items() if k != 'expected'}, one(fixtures['technical_cases'][name]['view']['members']))
         universe['technical_' + name] = {'view': t['view'], 'security_links': t['security_links'], 'technical': technical_groups(**t), 'macro': None}
     shared = renamed(tc, {'SYNTHETIC:ISSUER:1': 'SYNTHETIC:ISSUER:0'})
+    universe['group_join'] = group_join_universe(one)
     universe['technical_shared_issuer'] = {'view': shared['view'], 'security_links': shared['security_links'], 'technical': technical_groups(**shared), 'macro': None}
     return {'schema_version': 'main-common-classification-fixture/1', 'data_kind': 'SYNTHETIC',
             'made_by': 'implementation/tools/common_classification_main_fixture.py (Codex functions only)',

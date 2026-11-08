@@ -42,9 +42,28 @@ Universe504 코드(NYSE:MMM 등 20개)로 바꾼 뒤 Codex가 기록·해시·�
 | 매크로 4.5 | 노출 줄 기업 옆 "공통 섹터 … (문맥 · 노출 근거와 별개)" | 연결만(브라우저 시험 없음) |
 | 주소 문맥 | `cc:<섹터>:<산업>:<평가일>:<해시12>` 토큰을 `#/qgv/…`·`#/macro/…`로 넘김, 뒤로가기로 같은 선택, 다른 기록 토큰은 적용 안 함(분류 버전 불일치) | browser |
 
-**아직 아닌 것.** 실자료 미연결(원천 `source()` = NONE, 요청 없음), 공개 파일 없음(새 Pages 파일 만들지 않음),
-검증된 증권 ID 0건이라 기술 결합은 실제로 일어나지 않음, 2.2.7 섹터 QGV 화면 행에 기록 ID 대조는 아직 안 붙임
-(QGV links는 2.1.3에서 읽기만), 6절의 화면 안 분류 추론 3곳은 그대로.
+**그룹 결합 /2 수령·인수 (2026-11-08, Codex #516 `5b0ec88a`).** 인계 `GROUP_JOIN.md`, `group-join-fixtures.json`(23사례 + 기대),
+`consumer-probe.cjs`, 핀 파일 `group-join-manifest.json`(SHA-256 `bee3740c…e2e1`; 안의 핀: GROUP_JOIN.md `9fd4fabb…de2c`,
+group-join-fixtures.json `8c8ca6dc…1658`, consumer-probe.cjs `f74694a1…1054`). Main 처리:
+- `tech-screen.js` `joinGroupRows` = `join_group_rows`/`_group_rows` 이식(같은 검사·순서·코드, 기존 board population_hash 산식은 Python
+  `json.dumps` 그대로 + 동기 SHA-256). 명부 없는 `joinRows`는 /1(신원만, 완전성 NOT_CHECKED)로 남는다.
+- `classification.js` `buildGroupManifest` = `build_group_manifest` 이식(픽스처 묶음에서 Codex 명부와 같음), `groupInput`이 신뢰된 명부·
+  요청 문맥·명부가 가리키는 행(코드 = `row.code`, 그룹 밖 행은 넘기지 않음)을 3.5 `keep()`에 준다. `keep()`은 `connect_issuers:true`로 /2를
+  부르고(Main 행 issuer는 null), 발행사 연결 수·`VERIFIED`/`VERIFIED_EMPTY`를 보인다.
+- Codex가 Main 23dd5dc5에서 찾은 반례 3개 수정: 행 `classification_hash` 다름, 행 `classification_record_id` 다름(덮어쓰지 않음),
+  평가일과 다른 기록으로 발행사 채움(명부 UNKNOWN) → 모두 거부. `groupRowsWhy`도 같은 규칙(덮어쓰기 없음, 연결은 `issuer_connection` 출처 기록).
+- 결과: 23사례 Main `joinGroupRows` 23/23 Codex 기대와 같음(node). Codex probe(옛 `groupRowsWhy → joinRows` 경로)는 12/23 → 15/23
+  (남은 8 = /2 요청 입력·선택 7 + 전체 모집단/strict 범위 1, Codex 설명과 같음). 실제 호출부 브라우저(1440·390): 정상 3행 결합,
+  세 반례·누락·중복·발행사 충돌·링크 누락 거부 + 표 그대로 + 사유 문구, 확인된 빈 그룹 `VERIFIED_EMPTY`.
+- Codex 기술 사례 view(`technical_cases`)는 `universe_id`·적용일이 없어 /2 명부를 만들지 않는다(`GROUP_UNIVERSE_CONTEXT_REQUIRED`).
+
+**2.2.7 미리보기 × 분류 연결 기록.** `previewCheck`: `common-classification-qgv-links/1`의 preview_identity 다섯 값과 평가일이 보이는
+미리보기와 같을 때만 행마다 company_id로 기록 ID를 찾는다(기록 없는 행은 사유와 함께 유지). 연결 기록 없음 · 다른 미리보기 · 다른
+기준일 · 분류 버전 불일치는 각자 문구로 보이고 행을 섞지 않는다. node: 같은 미리보기 일치·각 다름 거부. 브라우저(개발 엔진 경로):
+미연결·다른 미리보기 문구, 행 대조 0(같은 미리보기는 개발 경로 미리보기가 Codex CLI 미리보기와 달라 node에서만).
+
+**아직 아닌 것.** 실자료 묶음 보존됨 · 인증된 화면 전달 경로 미연결(Codex 비공개 보존본 `common-classification-private.tar.gz` SHA256 `b2987c24…08ec`; 화면 원천 `source()` = NONE, 요청 없음, 새 Pages 파일 만들지 않음),
+검증된 증권 ID 0건이라 기술 결합은 실제로 일어나지 않음, 6절의 화면 안 분류 추론 3곳은 그대로.
 
 ## 1. 목록은 서로 다르다 (지금 저장소에 있는 것)
 
@@ -133,7 +152,7 @@ Universe504 코드(NYSE:MMM 등 20개)로 바꾼 뒤 Codex가 기록·해시·�
 ## 8. 남은 차단
 
 - ~~Codex 계약·fixture·SHA 미전달~~ → 수령 완료(0절).
-- 실자료 공통 분류 기록의 공개·비공개 전달 경로 없음(원천 NONE). 공개 게시는 별도 승인.
+- 실자료 묶음 보존됨 · 인증된 화면 전달 경로 미연결(화면 원천 NONE). 공개 게시는 별도 승인.
 - 검증된 고정 증권 ID 0건 → 기술 그룹 결합 없음(그룹 구성원·신원 미확인 → 상대순위·중앙값 미산출).
 - 하위 산업은 Codex 사전의 7개(`sic_industry_groups/v0` 명시 하위)뿐. 보관 실행에서 연결 90행.
 - REIT·통신 경계 미확인(근거 부족, Codex `UNRESOLVED`).

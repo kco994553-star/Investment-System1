@@ -234,7 +234,7 @@ function company(route,{box,given,name,facts,star,bodies}){
 /* 공통 분류 (DC-48, owner 2026-11-07; IS2.classification, Codex common-classification/1): three lines 섹터 · 하위 산업 · 원천 SIC
    (code · SEC 제출), the record's state words, its record id / hash / evaluation date, and the three ids apart (company_id = this
    company's Universe504 code, which a TARGET catalog id such as 'amd' is not; issuer_id = the record's issuer, security_id = none: a classification record carries no verified security id). The
-   reader decides nothing here; no public file today (source NONE → 공통 분류 자료 미연결). With a confirmed sector, links carry the
+   reader decides nothing here; no public file today (source NONE → 공통 분류 실자료 묶음 보존됨 · 인증된 화면 전달 경로 미연결). With a confirmed sector, links carry the
    classification context (cc:… token) to the QGV filter and 매크로 4.2. */
 function ccBlock(cid,signal){
  const C=I.classification,box=h('div',{class:'cc-block',dataset:{cc:'LOADING'}},h('p',{class:'reason'},'공통 분류 · 불러오는 중'));

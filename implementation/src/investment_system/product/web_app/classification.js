@@ -45,13 +45,16 @@ const STATE=Object.freeze({CONFIRMED:'CONFIRMED',SECTOR_ONLY:'SECTOR_ONLY',CONFL
 const WORDS=Object.freeze({CONFIRMED:'확인',SECTOR_ONLY:'섹터 확인 · 하위 산업 미확인',SECTOR_INDUSTRY_CONFLICT:'섹터 확인 · 하위 산업 근거 불일치',
  CONFLICT:'분류 충돌 · 근거 불일치',NO_DATA:'분류 자료 없음',VERSION_MISMATCH:'분류 버전 불일치',UNRESOLVED:'섹터 대응 미확인 · 근거 부족',
  SAMPLE_SMALL:'표본 부족 · 기능별 규칙(섹터 QGV N<20 요소 점수 미산출 · 기술 N<10 분위 미산출, 순위·중앙값 유지)',GROUP_UNCONFIRMED:'구성원·신원 미확인 · 상대순위·중앙값도 미산출',EMPTY_GROUP:'구성원 0 · 비교 대상 없음',
- NONE:'공통 분류 자료 미연결 · 공개 파일 없음',NONE_WHY:'분류는 Codex(common-classification/1) · 합성 자료는 시험에서만 · 실자료 미연결',
+ NONE:'공통 분류 실자료 묶음 보존됨 · 인증된 화면 전달 경로 미연결',NONE_WHY:'분류는 Codex(common-classification/1) · 실자료 묶음은 Codex 비공개 보존 · 이 화면에는 합성 자료만 시험에서',
  INVALID:'공통 분류 파일이 계약과 달라 쓰지 않습니다',SECURITY_NONE:'검증된 증권 ID 없음',ISSUER_NONE:'발행사 ID 미확인'});
 const dateWords=d=>'평가일 '+d+'에 적용되는 분류 없음';
 // Why a tech board group's full rows are not known (groupRowsWhy codes) — words for the tech filter block.
 const GROUP_TEXT=Object.freeze({NO_BOARD:'보드 없음',CLASSIFICATION_NOT_CONNECTED:'공통 분류 기록 미연결',TECHNICAL_PROJECTION_NOT_CONNECTED:'공통 분류 기술 투영 미연결',
  CLASSIFICATION_VERSION_MISMATCH:'분류 버전 불일치',BOARD_GROUP_NOT_COMMON:'보드 그룹이 공통 분류 그룹이 아님',BOARD_GROUP_NOT_IN_PROJECTION:'공통 분류 투영에 없는 보드 그룹',
- BOARD_DATE_MISMATCH:'보드 평가일 ≠ 분류 평가일',GROUP_MEMBERSHIP_UNCONFIRMED:'그룹 구성원 미확인',MEMBER_NOT_MAPPED:'그룹 구성원이 리더보드 행과 1:1로 대응되지 않음',
+ BOARD_DATE_MISMATCH:'보드 평가일 ≠ 분류 평가일',GROUP_MEMBERSHIP_UNCONFIRMED:'그룹 구성원 미확인',
+ ROW_CLASSIFICATION_MISMATCH:'행의 분류 해시·기록 ID ≠ 분류 기록 · 덮어쓰지 않음',ISSUER_CONNECTION_EVIDENCE_REQUIRED:'발행사 연결 근거 없음',
+ GROUP_UNIVERSE_CONTEXT_REQUIRED:'분류 기록에 모집단 문맥(universe) 없음 · 그룹 명부를 만들 수 없음',GROUP_PROJECTION_RECORD_MISMATCH:'기술 투영과 분류 기록 불일치',
+ GROUP_PROJECTION_MEMBERS_MISMATCH:'기술 투영 구성원 ≠ 분류 기록 구성원',GROUP_PROJECTION_GROUP_MISMATCH:'기술 투영에서 그룹을 하나로 찾지 못함',MEMBER_NOT_MAPPED:'그룹 구성원이 리더보드 행과 1:1로 대응되지 않음',
  ISSUER_MISMATCH:'행의 발행사 ID ≠ 분류 기록 발행사 ID'});
 const MAX=Object.freeze({rows:20000,text:300,depth:14});
 const DAY=/^(\d{4})-(\d{2})-(\d{2})$/,HEX64=/^[0-9a-f]{64}$/,CODE=/^[A-Z][A-Z0-9_:]{0,95}$/,TS=/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/;
@@ -251,23 +254,103 @@ const shortHash=h=>(typeof h==='string'?h.slice(0,12):null);
 
 /* ---------------------------------------------------------------- the tech filter: the confirmed board group's full rows */
 const GROUP=/^COMMON:([A-Z_]+):(RAW|SPLIT_ADJUSTED)$/;
+/* technical-filter-membership/1 (Codex #516 5b0ec88a common_classification.group_join.build_group_manifest; GROUP_JOIN.md): the
+   dated group roster from the checked view and technical projection only — never from requested rows, measurements, filter or
+   join results. Same checks, order and codes; universe_members_hash = sector_qgv.digest(sorted(members)) (compact JSON). */
+function GroupRefusal(code){this.code=code;}
+const gno=code=>{throw new GroupRefusal(code);};
+const sectorOf=row=>(row.sector&&row.sector.status==='CONFIRMED'&&SECTORS.includes(row.sector.id)?row.sector.id:null);
+function applies(row,d){const a=isObj(row.applicability)?row.applicability:{};
+ if(a.kind==='EVALUATION_ONLY')return a.evaluation_date===d&&(a.valid_from===null||a.valid_from===undefined)&&(a.valid_to===null||a.valid_to===undefined);
+ if(a.kind==='INTERVAL'&&a.valid_from)return a.valid_from<=d&&(a.valid_to===null||a.valid_to===undefined||d<a.valid_to);return false;}
+function buildGroupManifest(view,technical,group_id){
+ const TS_=techReader();if(!TS_)gno('TECH_READER_MISSING');const companies=new Map(view.rows.map(r=>[r.company_id,r]));
+ if(['universe_id','universe_version'].some(k=>typeof view[k]!=='string'||!view[k]))gno('GROUP_UNIVERSE_CONTEXT_REQUIRED');
+ if(technical.schema_version!==SCHEMAS.technical)gno('GROUP_PROJECTION_SCHEMA_MISMATCH');
+ for(const k of['valuation_date','classification_hash','data_kind'])if(technical[k]!==view[k])gno('GROUP_PROJECTION_CONTEXT_MISMATCH:'+k);
+ const projected=technical.rows||[],ids=new Set(projected.map(r=>r.company_id));
+ if(projected.length!==companies.size||ids.size!==companies.size||[...ids].some(k=>!companies.has(k)))gno('GROUP_PROJECTION_MEMBERS_MISMATCH');
+ const byCode=new Map(projected.map(r=>[r.company_id,r]));
+ for(const[code,row]of companies){const p=byCode.get(code);if(p.issuer_id!==row.issuer_id||p.classification_record_id!==row.record_id||p.sector_id!==sectorOf(row))gno('GROUP_PROJECTION_RECORD_MISMATCH');}
+ const found=(technical.groups||[]).filter(g=>g.board.group_id===group_id);if(found.length!==1)gno('GROUP_PROJECTION_GROUP_MISMATCH');
+ const group=found[0],board=group.board,basis=technical.price_basis;
+ if(group_id!=='COMMON:'+group.sector_id+':'+basis||board.signal_day!==view.valuation_date||board.membership_status!==group.membership_status)gno('GROUP_PROJECTION_CONTEXT_MISMATCH:board');
+ if(board.membership_source!==(group.membership_status==='CONFIRMED'?'common-classification:'+view.classification_hash:null))gno('GROUP_PROJECTION_CONTEXT_MISMATCH:classification_hash');
+ const relevant=view.rows.filter(r=>sectorOf(r)===group.sector_id);if(group.counts.company_members!==relevant.length)gno('GROUP_PROJECTION_MEMBERS_MISMATCH');
+ const reasons=[...(group.membership_reasons||[])];if([...companies.values()].some(r=>sectorOf(r)===null))reasons.push('CLASSIFICATION_POPULATION_INCOMPLETE');
+ const members=[];
+ for(const row of relevant){const p=byCode.get(row.company_id),sids=p.security_ids||[];
+  if(p.status!=='CONFIRMED'||sids.length!==1)reasons.push('GROUP_MEMBER_SECURITY_UNCONFIRMED');
+  if(!applies(row,view.valuation_date))reasons.push('CLASSIFICATION_APPLICABILITY_UNCONFIRMED');
+  if(!row.record_id||!row.issuer_id)reasons.push('GROUP_MEMBER_EVIDENCE_UNCONFIRMED');
+  const refs=Array.isArray(row.source_refs)&&row.source_refs.length?row.source_refs:row.sector.evidence_refs||[];
+  members.push({company_id:row.company_id,issuer_id:row.issuer_id,classification_record_id:row.record_id,security_id:sids.length===1?sids[0]:null,evidence_refs:[...refs]});}
+ if(group.membership_status!=='CONFIRMED'&&!reasons.length)reasons.push('GROUP_MEMBERSHIP_UNCONFIRMED');
+ const context={signal_day:view.valuation_date,group_id,classification_hash:view.classification_hash,population_hash:board.population_hash,
+  universe_id:view.universe_id,universe_version:view.universe_version,universe_members_hash:TS_.sha256(JSON.stringify([...view.members].sort())),
+  dictionary_version:view.dictionary_version,mapping_version:view.mapping_version,knowledge_as_of:view.knowledge_as_of,price_basis:basis};
+ return deepFreeze({schema_version:'technical-filter-membership/1',data_kind:view.data_kind,context,membership_status:reasons.length?'UNKNOWN':'CONFIRMED',
+  reasons:[...new Set(reasons)].sort(),members});}
+// The /2 call-site input for a COMMON:<sector>:<basis> board (screen-tech-filter-live keep): the trusted roster, the request
+// context pinned from the loaded record set and the requested board group, and the universe rows whose code is a roster member
+// (every such row, duplicates included, unchanged; out-of-group rows are never passed). {mode:'NONE'} for any other board (the
+// /1 identity-only path, completeness NOT_CHECKED). code = why no roster could be made (no join).
+function groupInput(board,universe,bundle=null){
+ if(!isObj(board)||!GROUP.test(typeof board.group_id==='string'?board.group_id:''))return Object.freeze({mode:'NONE'});
+ const no=code=>Object.freeze({mode:'V2',code,rows:null,manifest:null,context:null}),b=bundle||value();
+ if(!b)return no('CLASSIFICATION_NOT_CONNECTED');if(own(b.mismatch,'technical'))return no('CLASSIFICATION_VERSION_MISMATCH');
+ const t=b.technical;if(!t)return no('TECHNICAL_PROJECTION_NOT_CONNECTED');
+ if(!t.groups.some(g=>g.board.group_id===board.group_id))return no('BOARD_GROUP_NOT_IN_PROJECTION');
+ let manifest;try{manifest=buildGroupManifest(b.view,t,board.group_id);}catch(e){if(e instanceof GroupRefusal)return no(e.code);throw e;}
+ const v=b.view,g=t.groups.find(x=>x.board.group_id===board.group_id);
+ const context=Object.freeze({signal_day:v.valuation_date,group_id:board.group_id,classification_hash:v.classification_hash,population_hash:g.board.population_hash,
+  universe_id:v.universe_id,universe_version:v.universe_version,universe_members_hash:manifest.context.universe_members_hash,dictionary_version:v.dictionary_version,
+  mapping_version:v.mapping_version,knowledge_as_of:v.knowledge_as_of,price_basis:t.price_basis});
+ const codes=new Set(manifest.members.map(m=>m.company_id)),rows=(Array.isArray(universe)?universe:[]).filter(r=>isObj(r)&&codes.has(r.code));
+ return Object.freeze({mode:'V2',code:null,manifest,context,rows:Object.freeze(rows)});}
+// groupRowsWhy (identity-only consumers, e.g. Codex's consumer probe): the confirmed roster's rows, each exactly once, checked like
+// the /2 roster check — a row classification_hash / classification_record_id that differs is refused (never overwritten); a
+// non-null issuer that differs is refused; a null / absent issuer is connected from the roster member of the same code, record,
+// hash and date with evidence, on a copy carrying issuer_connection (the original row is unchanged).
 function groupRowsWhy(board,universe,bundle=null){const no=code=>Object.freeze({rows:null,code});
- if(!isObj(board))return no('NO_BOARD');const b=bundle||value();if(!b)return no('CLASSIFICATION_NOT_CONNECTED');
- if(own(b.mismatch,'technical'))return no('CLASSIFICATION_VERSION_MISMATCH');const t=b.technical;if(!t)return no('TECHNICAL_PROJECTION_NOT_CONNECTED');
- const m=GROUP.exec(typeof board.group_id==='string'?board.group_id:'');if(!m)return no('BOARD_GROUP_NOT_COMMON');
- const g=t.groups.find(x=>x.board.group_id===board.group_id);if(!g)return no('BOARD_GROUP_NOT_IN_PROJECTION');
+ if(!isObj(board))return no('NO_BOARD');if(!GROUP.test(typeof board.group_id==='string'?board.group_id:''))return no(bundle||value()?'BOARD_GROUP_NOT_COMMON':'CLASSIFICATION_NOT_CONNECTED');
+ const gi=groupInput(board,universe,bundle);if(gi.code)return no(gi.code);const b=bundle||value(),t=b.technical,g=t.groups.find(x=>x.board.group_id===board.group_id);
  if(board.signal_day!==t.valuation_date)return no('BOARD_DATE_MISMATCH');
  if(board.membership_source!==g.board.membership_source||board.population_hash!==g.board.population_hash)return no('CLASSIFICATION_VERSION_MISMATCH');
- if(g.membership_status!=='CONFIRMED'||board.membership_status!=='CONFIRMED')return no('GROUP_MEMBERSHIP_UNCONFIRMED');
- const members=t.rows.filter(r=>r.sector_id===g.sector_id);if(members.some(r=>r.status!=='CONFIRMED'))return no('GROUP_MEMBERSHIP_UNCONFIRMED');
- const views=new Map(b.view.rows.map(r=>[r.company_id,r])),rows=Array.isArray(universe)?universe:[],out=[];
- for(const x of members){const v=views.get(x.company_id);if(!v||v.record_id!==x.classification_record_id||v.issuer_id!==x.issuer_id)return no('CLASSIFICATION_VERSION_MISMATCH');
-  const hit=rows.filter(r=>isObj(r)&&r.code===x.company_id);if(hit.length!==1)return no('MEMBER_NOT_MAPPED');const r=hit[0];
-  if(own(r,'issuer_id')&&r.issuer_id!==null&&r.issuer_id!==v.issuer_id)return no('ISSUER_MISMATCH');
-  out.push(Object.freeze({...r,issuer_id:v.issuer_id,classification_record_id:v.record_id}));}
+ if(gi.manifest.membership_status!=='CONFIRMED'||board.membership_status!=='CONFIRMED')return no('GROUP_MEMBERSHIP_UNCONFIRMED');
+ const out=[],c=gi.context;
+ for(const m of gi.manifest.members){const hit=gi.rows.filter(r=>r.code===m.company_id);if(hit.length!==1)return no('MEMBER_NOT_MAPPED');const r=hit[0];
+  if(own(r,'classification_hash')&&r.classification_hash!==c.classification_hash)return no('ROW_CLASSIFICATION_MISMATCH');
+  if(own(r,'classification_record_id')&&r.classification_record_id!==m.classification_record_id)return no('ROW_CLASSIFICATION_MISMATCH');
+  if(r.issuer_id!==null&&r.issuer_id!==undefined){if(r.issuer_id!==m.issuer_id)return no('ISSUER_MISMATCH');out.push(Object.freeze({...r}));continue;}
+  if(!m.evidence_refs.length)return no('ISSUER_CONNECTION_EVIDENCE_REQUIRED');
+  out.push(Object.freeze({...r,issuer_id:m.issuer_id,issuer_connection:Object.freeze({previous_field_present:own(r,'issuer_id'),previous_issuer_id:own(r,'issuer_id')?r.issuer_id:null,
+   classification_record_id:m.classification_record_id,classification_hash:c.classification_hash,signal_day:c.signal_day,knowledge_as_of:c.knowledge_as_of,
+   evidence_refs:m.evidence_refs,basis:'VERIFIED_CLASSIFICATION_RECORD'})}));}
  return Object.freeze({rows:Object.freeze(out),code:null});}
 function groupRows(board,universe){return groupRowsWhy(board,universe).rows;}
 const groupText=code=>(own(GROUP_TEXT,code)?GROUP_TEXT[code]:'사유 코드 미등록');
+
+/* ---------------------------------------------------------------- 2.2.7 섹터 QGV preview × 분류 연결 기록 (Codex GROUP_JOIN.md
+   "2.2.7 인계"): a sector-qgv preview is read against the record set only when common-classification-qgv-links/1 names exactly
+   that preview (preview_id, input_hash, config_hash, cache_key, engine_version) on the same valuation date; then each result row
+   finds its classification_record_id by company_id (rows without one stay, with their reason). Anything else is its own state
+   and no row is matched (never a silent mix). */
+const PREVIEW_STATE=Object.freeze({OK:'분류 기록 대조 · 같은 미리보기 · 같은 분류 기록',NONE:'공통 분류 기록 미연결 · 분류 대조 안 함',LINKS_NONE:'섹터 QGV 분류 연결 기록 없음 · 분류 대조 안 함',
+ VERSION_MISMATCH:'분류 버전 불일치 · 분류 연결 기록을 쓰지 않음',PREVIEW_NOT_LINKED:'이 미리보기는 분류 연결 기록의 미리보기와 다름 · 분류 기록과 섞지 않음',
+ DATE_MISMATCH:'미리보기 기준일 ≠ 분류 평가일 · 분류 기록과 섞지 않음',PREVIEW_INVALID:'미리보기 형식 오류 · 분류 대조 안 함'});
+const PREVIEW_IDENTITY=Object.freeze(['preview_id','input_hash','config_hash','cache_key','engine_version']);
+function previewCheck(preview,bundle=null){const b=bundle||value(),st=(state,extra={})=>Object.freeze({state,words:PREVIEW_STATE[state],rows:null,...extra});
+ if(!isObj(preview)||!Array.isArray(preview.result_rows))return st('PREVIEW_INVALID');if(!b)return st('NONE');
+ if(own(b.mismatch,'qgv_links'))return st('VERSION_MISMATCH',{reason:b.mismatch.qgv_links});const l=b.qgv_links;if(!l)return st('LINKS_NONE');
+ const differs=PREVIEW_IDENTITY.filter(k=>preview[k]!==l.preview_identity[k]);if(differs.length)return st('PREVIEW_NOT_LINKED',{differs:Object.freeze(differs)});
+ if(preview.valuation_date!==l.valuation_date)return st('DATE_MISMATCH');
+ const links=new Map(l.rows.map(r=>[r.company_id,r])),views=new Map(b.view.rows.map(r=>[r.company_id,r])),rows=new Map();let missing=0;
+ for(const r of preview.result_rows){const x=links.get(r.company_id),v=views.get(r.company_id);
+  if(!x){missing++;rows.set(r.company_id,Object.freeze({record_id:null,reason:'CLASSIFICATION_LINK_MISSING'}));continue;}
+  if(!v||x.classification_record_id!==v.record_id||(r.issuer_id!==undefined&&r.issuer_id!==null&&x.issuer_id!==null&&r.issuer_id!==x.issuer_id))return st('VERSION_MISMATCH',{reason:'ROW_RECORD_MISMATCH:'+r.company_id});
+  rows.set(r.company_id,Object.freeze({record_id:x.classification_record_id,reason:x.classification_record_id?null:'CLASSIFICATION_RECORD_ABSENT'}));}
+ return Object.freeze({state:'OK',words:PREVIEW_STATE.OK,rows,missing,classification_hash:l.classification_hash,valuation_date:l.valuation_date,preview_id:l.preview_identity.preview_id});}
 
 /* ---------------------------------------------------------------- small samples, kept apart */
 // kind 'TECH' (minimum 10: no decile below, rank and median kept) or 'SECTOR_QGV' (minimum 20: no factor score below);
@@ -301,7 +384,7 @@ function matches(rec,{sector='',industry=''}={}){if(!sector)return true;if(!rec|
  if(sector==='UNCLASSIFIED')return rec.sector.status!=='CONFIRMED';if(rec.sector.status!=='CONFIRMED'||rec.sector.id!==sector)return false;
  if(!industry)return true;if(industry==='UNCLASSIFIED')return rec.industry.status!=='CONFIRMED';return rec.industry.status==='CONFIRMED'&&rec.industry.id===industry;}
 
-const self=Object.freeze({SCHEMAS,VERSIONS,SECTORS,STATE,WORDS,TEXT,GROUP_TEXT,DATE_REASONS,MIN,validate,validateView,validateTechnical,validateMacro,validateLinks,validateDictionary,
+const self=Object.freeze({SCHEMAS,VERSIONS,SECTORS,STATE,WORDS,TEXT,GROUP_TEXT,DATE_REASONS,MIN,buildGroupManifest:(v,t,g)=>{try{return{ok:true,value:buildGroupManifest(v,t,g)};}catch(e){if(e instanceof GroupRefusal)return{ok:false,code:e.code};throw e;}},groupInput,previewCheck,PREVIEW_STATE,validate,validateView,validateTechnical,validateMacro,validateLinks,validateDictionary,
  source,load,state,value,recordFor,partRecord,sameRecord,rowState,dateWords,sectorName,industryName,shortHash,groupRows,groupRowsWhy,groupText,sample,
  context,parseContext,contextState,options,matches});
 return self;

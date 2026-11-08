@@ -12,7 +12,7 @@ const crypto = require('node:crypto');
 const { ROOT } = require('./web_app_reuse');
 
 const MAIN_PATH = path.join(ROOT, 'implementation/tests/fixtures/common_classification_main/main_fixture.json');
-const MAIN_SHA256 = '839577ff2f18c0c2968d3a09a29bad4f0530f18d60460c40fc05baa703bf880e';
+const MAIN_SHA256 = '31c71cddaafcbd896c228e5677e32a2584e32a3e1a95851aceaaa398087465fe';
 const HANDOFF_DIR = path.join(ROOT, 'implementation/docs/research/common_classification');
 const HANDOFF_SHA256 = { 'CONTRACT.md': '00bccc2c38ae03e037ff820d6010a251b87f35983dadf1986217d0a1989258ea',
   'fixtures.json': '526cbf85defddbc4b255ea8dc5194ccab034c5eb9b317ef94142b5338c26ebcf', 'dictionary.json': '9ae49c5f849535d325aaa64689da9fa61147347a9c8f8dafcf4055c0ef6d5776' };
@@ -28,7 +28,7 @@ const technicalCase = (name, M = main()) => { const c = M.technical_cases[name];
 const recordCase = (name, M = main()) => { const c = M.record_cases[name]; return { view: c.view, macro: c.macro, dictionary: M.dictionary }; };
 // The same Codex runs on the browser page's Universe504 codes (only the input company ids renamed; Codex computed the rest).
 const universe = (M = main()) => M.universe;
-const uBundle = (M = main()) => ({ ...M.universe.bundle, dictionary: M.dictionary });
+const uBundle = (M = main()) => { const { qgv_preview, ...b } = M.universe.bundle; return { ...b, dictionary: M.dictionary }; };
 const uTechnical = (M = main()) => { const t = M.universe.technical_normal; return { view: t.view, technical: t.technical, macro: t.macro, dictionary: M.dictionary }; };
 const uRecord = (name, M = main()) => { const c = M.universe.record_cases[name]; return { view: c.view, macro: c.macro, dictionary: M.dictionary }; };
 // Another technical run on the page codes: 'nine_valid', 'missing_security' or 'shared_issuer' (view + technical; no macro).
@@ -37,4 +37,14 @@ const uTech = (name, M = main()) => { const t = M.universe['technical_' + name];
 const JOIN_CASES_PATH = path.join(ROOT, 'implementation/tests/fixtures/technical_filter_join_main/cases.json');
 const JOIN_CASES_SHA256 = 'a527c51062c038cea8e0ca6e047476ad3ee48732e0c49cec2d720f10d999a3a1';
 const joinCases = () => JSON.parse(fs.readFileSync(JOIN_CASES_PATH, 'utf8'));
-module.exports = { uTech, JOIN_CASES_PATH, JOIN_CASES_SHA256, joinCases, universe, uBundle, uTechnical, uRecord, MAIN_PATH, MAIN_SHA256, HANDOFF_DIR, HANDOFF_SHA256, sha, main, mainSha, handoffSha, codexFixtures, bundle, technicalCase, recordCase };
+// Codex #516 5b0ec88a group join handoff: group-join-manifest.json (its own SHA-256 pinned here) pins GROUP_JOIN.md,
+// group-join-fixtures.json (23 cases + expected) and consumer-probe.cjs.
+const GROUP_MANIFEST_SHA256 = 'bee3740c437ce07c60895f3093e19d106122c95143150cacf52f9faf7d27e2e1';
+const groupManifest = () => JSON.parse(fs.readFileSync(path.join(HANDOFF_DIR, 'group-join-manifest.json'), 'utf8'));
+const groupFixtures = () => JSON.parse(fs.readFileSync(path.join(HANDOFF_DIR, 'group-join-fixtures.json'), 'utf8'));
+// Codex's case application (consumer-probe.cjs / technical_membership_cases.apply_case): sets, then removes, on a deep copy.
+function applyCase(base, c) { const v = structuredClone(base);
+  for (const [keys, value] of c.sets) { let p = v; for (const k of keys.slice(0, -1)) p = p[k]; p[keys.at(-1)] = structuredClone(value); }
+  for (const keys of c.removes) { let p = v; for (const k of keys.slice(0, -1)) p = p[k]; delete p[keys.at(-1)]; }
+  return v; }
+module.exports = { GROUP_MANIFEST_SHA256, groupManifest, groupFixtures, applyCase, uTech, JOIN_CASES_PATH, JOIN_CASES_SHA256, joinCases, universe, uBundle, uTechnical, uRecord, MAIN_PATH, MAIN_SHA256, HANDOFF_DIR, HANDOFF_SHA256, sha, main, mainSha, handoffSha, codexFixtures, bundle, technicalCase, recordCase };

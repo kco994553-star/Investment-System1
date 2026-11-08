@@ -3,8 +3,9 @@
 //  - tests/fixtures/technical_filter_join_main/cases.json: each case's expected result is Codex join_filtered_rows' OUTPUT
 //    (tools/technical_filter_join_main_cases.py; pytest checks it), SHA-256 pinned. Main techScreen.joinRows + evaluate, kept the
 //    way screen-tech-filter-live keep() keeps rows (input order, joined and PASS), gives exactly Codex's kept rows / ranks or code.
-//  - IS2.classification.groupRows on Codex technical output whose confirmed group is SMALLER than the universe: exactly the
-//    group's members (both code rows of a shared issuer kept), issuer_id from the record, signal_day / security_id untouched;
+//  - IS2.classification.groupRows on Codex's roster (technical-filter-membership/1, #516 5b0ec88a) SMALLER than the universe: exactly
+//    the group's members (both code rows of a shared issuer kept), issuer connected from the record with provenance, signal_day /
+//    security_id untouched;
 //    MEMBER_NOT_MAPPED when a member's row is missing; never the intersection with securities already keyed for the board;
 //    out-of-group universe rows unchanged.
 const assert = require('node:assert/strict');
@@ -50,29 +51,33 @@ ok('f: out-of-group population rows keep their own scores and ranks; only the gr
 const IT = 'INFORMATION_TECHNOLOGY', M = X.main(), codes = M.universe.codes;
 const valid = (p) => { const r = C.validate(p); assert.equal(r.ok, true, JSON.stringify(r)); return r.value; };
 const uni = (list) => list.map((code, i) => ({ id: code === 'NASDAQ:AMD' ? 'amd' : code, code, ticker: 'T' + i, issuer_id: null, signal_day: null, security_id: null, rank: { official: i + 1, of: list.length }, score: { total: 100 - i } }));
-ok('groupRows: the confirmed group (10) smaller than the universe (20): exactly its members, issuer from the record, keys untouched, universe unchanged', () => {
-  const b = valid(X.uTechnical()), bd = b.technical.groups.find((g) => g.sector_id === IT).board, u = uni(codes), before = deep(u);
+// The roster now comes from Codex technical-filter-membership/1 (#516 5b0ec88a): the group-join base renamed to page codes.
+const GJ = M.universe.group_join;
+ok('groupRows: the confirmed roster (3) smaller than the universe (20): exactly its members, issuer connected with provenance, keys untouched, universe unchanged', () => {
+  const b = valid({ view: GJ.view, technical: GJ.technical }), bd = GJ.board, u = uni(codes), before = deep(u);
   const g = C.groupRowsWhy(bd, u, b);
-  assert.equal(g.code, null); assert.deepEqual(g.rows.map((r) => r.code), codes.slice(0, 10));
-  for (const r of g.rows) { const v = b.view.rows.find((x) => x.company_id === r.code); assert.equal(r.issuer_id, v.issuer_id); assert.equal(r.signal_day, null); assert.equal(r.security_id, null); }
-  assert.deepEqual(u, before, 'universe rows (including the 10 outside the group) unchanged');
-  // Rows already keyed for the board (5 of 10) do not shrink the group.
-  const keyed = u.map((r, i) => (i < 5 ? { ...r, signal_day: bd.signal_day, security_id: 'SYNTHETIC:SECURITY:' + i } : r));
-  assert.equal(C.groupRowsWhy(bd, keyed, b).rows.length, 10, 'never the intersection');
-  assert.equal(C.groupRowsWhy(bd, u.filter((r) => r.code !== codes[3]), b).code, 'MEMBER_NOT_MAPPED', 'a member\'s row missing');
+  assert.equal(g.code, null); assert.deepEqual(g.rows.map((r) => r.code), GJ.codes);
+  for (const r of g.rows) { const m = GJ.group_manifest.members.find((x) => x.company_id === r.code); assert.equal(r.issuer_id, m.issuer_id); assert.equal(r.issuer_connection.basis, 'VERIFIED_CLASSIFICATION_RECORD');
+    assert.equal(r.signal_day, null); assert.equal(r.security_id, null); }
+  assert.deepEqual(u, before, 'universe rows (including the 17 outside the group) unchanged');
+  const keyed = u.map((r, i) => (i < 1 ? { ...r, signal_day: bd.signal_day, security_id: 'SYNTHETIC:SECURITY:' + i } : r));
+  assert.equal(C.groupRowsWhy(bd, keyed, b).rows.length, 3, 'never the intersection');
+  assert.equal(C.groupRowsWhy(bd, u.filter((r) => r.code !== GJ.codes[1]), b).code, 'MEMBER_NOT_MAPPED', 'a member\'s row missing');
   assert.equal(C.groupRows(bd, u), null, 'no loaded record set: null');
 });
-ok('groupRows: two code rows of one issuer both kept (never merged)', () => {
-  const b = valid(X.uTech('shared_issuer')), bd = b.technical.groups.find((g) => g.sector_id === IT).board;
-  const g = C.groupRowsWhy(bd, uni(codes), b);
-  assert.equal(g.code, null); assert.equal(g.rows.length, 10);
-  assert.deepEqual(g.rows.filter((r) => r.issuer_id === 'SYNTHETIC:ISSUER:0').map((r) => r.code), ['NYSE:MMM', 'NYSE:AOS']);
+ok('groupRows: two code rows of one issuer both kept (never merged) — Codex case two_codes_one_issuer', () => {
+  const F = require('../docs/research/common_classification/group-join-fixtures.json'), c = F.cases.find((x) => x.id === 'two_codes_one_issuer'), v = structuredClone(F.base);
+  for (const [k, x] of c.sets) { let p = v; for (const q of k.slice(0, -1)) p = p[q]; p[k.at(-1)] = structuredClone(x); }
+  const b = valid(v.bundle), g = C.groupRowsWhy(v.join.board, v.join.qgv_rows, b);
+  assert.equal(g.code, null); assert.equal(g.rows.length, 3);
+  assert.deepEqual(g.rows.filter((r) => r.issuer_id === 'SYNTHETIC:SHARED_ISSUER').map((r) => r.code), ['SYNTHETIC:COMPANY:0', 'SYNTHETIC:COMPANY:1']);
 });
 ok('groupRows: unknown identity / small sample kept apart', () => {
   const miss = valid(X.uTech('missing_security')), nine = valid(X.uTech('nine_valid'));
   const bm = miss.technical.groups.find((g) => g.sector_id === IT).board, b9 = nine.technical.groups.find((g) => g.sector_id === IT).board;
-  assert.equal(C.groupRowsWhy(bm, uni(codes), miss).code, 'GROUP_MEMBERSHIP_UNCONFIRMED');
-  assert.equal(C.groupRowsWhy(b9, uni(codes), nine).rows.length, 10, 'N < 10 is still a known group');
+  // These Codex technical-case views have no universe context, so no /2 roster is made from them (the board states stay apart).
+  assert.equal(C.groupRowsWhy(bm, uni(codes), miss).code, 'GROUP_UNIVERSE_CONTEXT_REQUIRED');
+  assert.equal(C.groupRowsWhy(b9, uni(codes), nine).code, 'GROUP_UNIVERSE_CONTEXT_REQUIRED');
   assert.equal(T.metricState(bm, 'momentum_6m'), 'UNCONFIRMED'); assert.equal(T.metricState(b9, 'momentum_6m'), 'N_BELOW_10');
   const r9 = b9.metrics.momentum_6m;
   assert.ok(r9.median !== null && r9.rows.some((r) => r.rank !== null) && r9.rows.every((r) => r.decile === null), 'N<10: ranks and median, no decile');

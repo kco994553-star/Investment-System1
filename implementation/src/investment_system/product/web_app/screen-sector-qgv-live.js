@@ -48,6 +48,11 @@ function fill(route,{body}){
  const refocus=k=>{if(!k)return;const el=body.querySelector('[data-k="'+CSS.escape(k)+'"]');if(el&&!el.disabled)el.focus({preventScroll:true});};
  const card=(state,words,why,alert,...more)=>h('div',{class:'sk state-card',role:alert?'alert':null,dataset:{sqState:state}},I.parts.mascot(alert?'alarm':'plain'),h('b',null,words),why?h('span',{class:'reason'},why):null,...more);
  const draw=()=>{if(!signal.aborted)paint();};
+ // 2.2.7 × 공통 분류 (owner 2026-11-08, Codex GROUP_JOIN.md 2.2.7 인계): the record set is read once (source NONE today, no request);
+ // a shown preview is matched to classification records only through common-classification-qgv-links/1 naming that same preview.
+ const CC=()=>I.classification;
+ if(CC()&&typeof CC().load==='function')Promise.resolve(CC().load()).then(draw,()=>{});
+ const ccOf=after=>{const C=CC();if(!C||typeof C.previewCheck!=='function'||C.state().state==='NOT_LOADED'||C.state().state==='LOADING')return null;return C.previewCheck(after);};
  // One engine request; never throws: {req, res, chk}.
  async function call(op,fields){const req=S.request(op,fields);let res=null;
   try{res=await I.data.engine(req,{signal});}catch(e){return {req,res:null,chk:{ok:false,code:e&&e.name==='AbortError'?'ABORTED':String(e&&e.message||'ENGINE_UNREACHABLE')}};}
@@ -261,6 +266,9 @@ function fill(route,{body}){
    failures.length?h('p',{class:'reason',dataset:{sqReasons:''}},'미산출 사유(후) · ',failures.map(([t,n])=>t+' '+n).join(' · ')):null,
    shown.skipped.length?h('p',{class:'hand err',dataset:{sqSkipped:String(shown.skipped.length)}},'전체 적용에서 제외(요소 적용 부적합) ',String(shown.skipped.length),'곳 · ',shown.skipped.slice(0,8).map(k=>{const[s,t]=k.split('|');return S.text(S.SECTOR_TEXT,s)+'·'+S.text(S.TEMPLATE_TEXT,t);}).join(', '),shown.skipped.length>8?' 외':''):null,
    h('p',{class:'reason'},'섹터 기준 상대 점수 · 순위는 이 모델의 원래 모집단 순위(공식 순위 아님) · 성과 ',after.performance_state,' · ',after.validation_state));
+  const cc=ccOf(after),ccRow=r=>(cc&&cc.state==='OK'&&cc.rows.has(r.company_id)?{sqCcRecord:cc.rows.get(r.company_id).record_id||''}:{});
+  summary.append(cc?h('p',{class:cc.state==='OK'?'':'reason',dataset:{sqCc:cc.state,...(cc.state==='OK'?{sqCcHash:cc.classification_hash}:{na:'CLASSIFICATION_'+cc.state})}},'공통 분류 · ',cc.words,
+   cc.state==='OK'?' · 분류 기록 '+cc.classification_hash.slice(0,12)+' · 평가일 '+cc.valuation_date+(cc.missing?' · 기록 없는 행 '+cc.missing+'개(사유와 함께 그대로)':''):cc.differs?' · 다른 항목 '+cc.differs.join(', '):''):null);
   const cmp=new Map(comparison.rows.map(r=>[r.company_id,r])),b=new Map(before.result_rows.map(r=>[r.company_id,r]));
   const rows=after.result_rows.filter(r=>!V.only||(r.sector_id===V.sector&&r.accounting_template===V.template));
   const rk=r=>r.rank===null?Infinity:r.rank,ordered=[...rows].sort((x,y)=>rk(x)-rk(y)||(x.company_id<y.company_id?-1:1));
@@ -276,13 +284,13 @@ function fill(route,{body}){
   const phone=window.matchMedia&&window.matchMedia('(max-width:720px)').matches;
   const filter=h('label',{class:'check'},h('input',{type:'checkbox',checked:V.only,dataset:{k:'sq-only'},onchange:e=>{V.only=e.target.checked;draw();}}),'이 섹터·회계모형만 보기 (순위는 그대로)');
   const list=phone?h('ol',{class:'news-lines sq-rows',dataset:{sqRows:String(ordered.length)}},...ordered.map(r=>{const x=cmp.get(r.company_id),o=b.get(r.company_id);
-    return h('li',{dataset:{sqRow:r.company_id,sqStatus:r.status}},h('b',null,r.company_id),' · ',S.rowState(r).text,h('br'),gateCell(r),h('br'),'총점 ',totalCell(o),' → ',totalCell(r),' · 순위 ',rankTxt(o&&o.rank),' → ',h('span',{dataset:{sqRank:''}},rankTxt(r.rank)),
+    return h('li',{dataset:{sqRow:r.company_id,sqStatus:r.status,...ccRow(r)}},h('b',null,r.company_id),' · ',S.rowState(r).text,h('br'),gateCell(r),h('br'),'총점 ',totalCell(o),' → ',totalCell(r),' · 순위 ',rankTxt(o&&o.rank),' → ',h('span',{dataset:{sqRank:''}},rankTxt(r.rank)),
      h('br'),h('span',{class:'reason'},...S.AXES.flatMap(a=>[a,' ',axisCell(o,a),' → ',axisCell(r,a),' · ']),'공통 순위 ',rankTxt(x&&x.before_common_rank),' → ',rankTxt(x&&x.after_common_rank)));}))
    :h('div',{class:'tbl-wrap'},h('table',{class:'tbl sq-rows',dataset:{sqRows:String(ordered.length)}},
     h('caption',null,'전→후 · 엔진 결과 그대로 · 이 표는 순위를 다시 매기지 않음'),
     h('thead',null,h('tr',null,...['기업(합성)','상태','관문','Q','G','V','총점','순위','공통 순위'].map(t=>h('th',{scope:'col'},t)))),
     h('tbody',null,...ordered.map(r=>{const x=cmp.get(r.company_id),o=b.get(r.company_id);
-     return h('tr',{dataset:{sqRow:r.company_id,sqStatus:r.status}},h('td',null,r.company_id),h('td',{dataset:{sqRowState:S.rowState(r).code}},S.rowState(r).text),h('td',null,gateCell(r)),
+     return h('tr',{dataset:{sqRow:r.company_id,sqStatus:r.status,...ccRow(r)}},h('td',null,r.company_id),h('td',{dataset:{sqRowState:S.rowState(r).code}},S.rowState(r).text),h('td',null,gateCell(r)),
       ...S.AXES.map(a=>h('td',{dataset:{sqCell:a}},axisCell(o,a),' → ',axisCell(r,a))),h('td',{dataset:{sqCell:'total'}},totalCell(o),' → ',totalCell(r)),
       h('td',{dataset:{sqRank:''}},rankTxt(o&&o.rank),' → ',rankTxt(r.rank)),h('td',null,rankTxt(x&&x.before_common_rank),' → ',rankTxt(x&&x.after_common_rank)));}))));
   const first=after.result_rows.find(r=>r.sector_id===V.sector&&r.accounting_template===V.template&&r.nominal_effective_weights);

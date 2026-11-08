@@ -170,7 +170,14 @@ const JOIN_TEXT=Object.freeze({SECURITY_LINKS_NOT_CONNECTED:'고정 증권 매�
  SIGNAL_DAY_MISMATCH:'평가일 불일치',DUPLICATE_QGV_KEY:'QGV 결합 키 중복(같은 평가일·같은 증권 두 행)',
  SECURITY_ID_NOT_IN_BOARD:'보드에 없는 증권 · 같은 티커의 다른 증권 또는 다른 종류주',FIXED_SECURITY_LINK_MISSING:'매핑 없음',
  SECURITY_LINK_OUTSIDE_SIGNAL_DAY:'매핑 유효기간 밖(만료 또는 아직 유효 전)',SERIES_LINK_MISMATCH:'매핑 시리즈 불일치',
- ISSUER_LINK_MISMATCH:'발행사 불일치(QGV 행 id ≠ 매핑 발행사)',SYMBOL_LINK_MISMATCH:'티커 불일치(QGV 행·보드 ≠ 매핑 티커)'});
+ ISSUER_LINK_MISMATCH:'발행사 불일치(QGV 행 id ≠ 매핑 발행사)',SYMBOL_LINK_MISMATCH:'티커 불일치(QGV 행·보드 ≠ 매핑 티커)',
+ // technical-filter-join/2 (Codex #516 5b0ec88a)
+ GROUP_MEMBERSHIP_REQUIRED:'그룹 명부 없음 · 완전성을 확인할 수 없어 결합하지 않음',GROUP_MEMBERSHIP_SCHEMA_MISMATCH:'그룹 명부 형식 불일치',GROUP_DATA_KIND_MISMATCH:'그룹 명부 자료 종류 불일치',
+ GROUP_CONTEXT_REQUIRED:'그룹 명부 문맥 없음',GROUP_CONTEXT_MISMATCH:'요청 문맥 ≠ 그룹 명부 문맥',GROUP_CONTEXT_HASH_INVALID:'그룹 명부 해시 형식 오류',GROUP_MEMBER_INVALID:'그룹 명부 구성원 형식 오류',
+ DUPLICATE_GROUP_MEMBER:'그룹 명부 구성원 중복',BOARD_MEMBERSHIP_MISMATCH:'보드 구성 ≠ 그룹 명부',COMPANY_CODE_REQUIRED:'행의 기업 코드 없음',DUPLICATE_GROUP_ROW:'같은 기업 코드 행 중복',
+ ROW_OUTSIDE_GROUP:'그룹 밖 행이 결합 입력에 섞임',ROW_CLASSIFICATION_MISMATCH:'행의 분류 해시·기록 ID ≠ 그룹 명부 · 덮어쓰지 않음',SECURITY_CLASSIFICATION_MISMATCH:'행의 증권 ID ≠ 그룹 명부 증권',
+ ISSUER_CLASSIFICATION_MISMATCH:'행의 발행사 ≠ 그룹 명부 발행사 · 바꾸지 않음',GROUP_MEMBER_MISSING:'그룹 구성원 행 누락 · 나머지만으로 결합하지 않음',
+ ISSUER_CONNECTION_EVIDENCE_REQUIRED:'발행사 연결 근거 없음',ISSUER_CONNECTION_OPTION_INVALID:'발행사 연결 선택값 오류'});
 function JoinRefusal(code,more){this.code=code;this.more=more||null;}
 const jno=(code,more)=>{throw new JoinRefusal(code,more);};
 const jtext=(v,code)=>(typeof v!=='string'||!v.trim()||v!==v.trim()?jno(code):v);
@@ -188,10 +195,11 @@ function boardSecurities(board){if(jobj(board).schema!==SCHEMA)jno('TECHNICAL_BO
 // joinRows(board, rows, {links, data_kind}) → {ok:true, keys:Set(security id)} or {ok:false, code[, board_day, qgv_day]}. rows carry
 // Main's id/ticker/code plus signal_day and security_id, never derived from id, code or ticker; links = security_links (null: the
 // links file is not connected, a Main-only refusal checked first). One bad row or link refuses the whole join.
-function joinRows(board,rows,{links=null,data_kind=null}={}){
+function joinRows(board,rows,{links=null,data_kind=null,group=null}={}){
  try{if(links===null||links===undefined)jno('SECURITY_LINKS_NOT_CONNECTED');
   if(data_kind!=='SYNTHETIC'&&data_kind!=='RETAINED_INPUT')jno('JOIN_DATA_KIND_REQUIRED');
   const secs=boardSecurities(board),signal=board.signal_day,byId=new Map(),activeSeries=new Set(),activeIds=new Set();
+  if(group)groupCheck(board,rows,group.manifest,group.context,data_kind);
   for(const raw of Array.isArray(links)?links:jno('FIXED_SECURITY_LINK_EVIDENCE_REQUIRED')){const l=jobj(raw),sid=jtext(l.security_id,'FIXED_SECURITY_LINK_EVIDENCE_REQUIRED');
    if(typeof l.identifier_type!=='string'||!SECURITY_IDENTIFIER_TYPES.includes(l.identifier_type))jno('FIXED_SECURITY_LINK_EVIDENCE_REQUIRED');
    for(const f of LINK_TEXT_FIELDS)jtext(l[f],'FIXED_SECURITY_LINK_EVIDENCE_REQUIRED');
@@ -210,9 +218,84 @@ function joinRows(board,rows,{links=null,data_kind=null}={}){
    if(r.ticker!==l.symbol||(symbol!==null&&symbol!==l.symbol))jno('SYMBOL_LINK_MISMATCH');}
   return Object.freeze({ok:true,keys:seen});}
  catch(e){if(e instanceof JoinRefusal)return Object.freeze({ok:false,code:e.code,...e.more});throw e;}}
-function joinText(j){if(!j||j.ok)return null;const w=own(JOIN_TEXT,j.code)?JOIN_TEXT[j.code]:TEXT.UNKNOWN_REASON;
+/* ---- technical-filter-join/2 (Codex #516 5b0ec88a research.technical_filter_join._group_rows / join_group_rows; GROUP_JOIN.md):
+   the complete board group checked against a trusted technical-filter-membership/1 roster and an independently pinned request
+   context, before the /1 identity join. Same checks, same order, same codes. Without a roster joinRows stays /1: identity only,
+   group completeness NOT_CHECKED (never reported as VERIFIED). */
+// SHA-256 of a string's UTF-8 bytes (hex), synchronous, for the existing board population_hash formula only.
+const K256=new Uint32Array([0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,
+ 0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,
+ 0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,
+ 0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,
+ 0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2]);
+function sha256(str){const b=new TextEncoder().encode(String(str)),n=b.length,len=((n+9+63)>>6)<<6,m=new Uint8Array(len);m.set(b);m[n]=0x80;
+ const bits=n*8;for(let i=0;i<8;i++)m[len-1-i]=i<4?(bits>>>(8*i))&255:Math.floor(bits/2**(8*i))&255;
+ const H=new Uint32Array([0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19]),W=new Uint32Array(64),r=(x,k)=>(x>>>k)|(x<<(32-k));
+ for(let o=0;o<len;o+=64){for(let i=0;i<16;i++)W[i]=(m[o+4*i]<<24)|(m[o+4*i+1]<<16)|(m[o+4*i+2]<<8)|m[o+4*i+3];
+  for(let i=16;i<64;i++){const s0=r(W[i-15],7)^r(W[i-15],18)^(W[i-15]>>>3),s1=r(W[i-2],17)^r(W[i-2],19)^(W[i-2]>>>10);W[i]=(W[i-16]+s0+W[i-7]+s1)>>>0;}
+  let[a,bb,c,d,e,f,g,h]=H;
+  for(let i=0;i<64;i++){const t1=(h+(r(e,6)^r(e,11)^r(e,25))+((e&f)^(~e&g))+K256[i]+W[i])>>>0,t2=((r(a,2)^r(a,13)^r(a,22))+((a&bb)^(a&c)^(bb&c)))>>>0;
+   h=g;g=f;f=e;e=(d+t1)>>>0;d=c;c=bb;bb=a;a=(t1+t2)>>>0;}
+  H[0]+=a;H[1]+=bb;H[2]+=c;H[3]+=d;H[4]+=e;H[5]+=f;H[6]+=g;H[7]+=h;}
+ return[...H].map(x=>x.toString(16).padStart(8,'0')).join('');}
+// Python json.dumps(value) of a string with its defaults (ensure_ascii=True): JSON escapes, every non-ASCII code unit as \uXXXX.
+const pyStr=v=>JSON.stringify(v).replace(/[\u0080-\uffff]/g,c=>'\\u'+c.charCodeAt(0).toString(16).padStart(4,'0'));
+// The existing board population_hash: sha256(json.dumps({group_id, signal_day, members: sorted(security_ids)}, sort_keys=True)).
+const populationHash=(group_id,signal_day,ids)=>sha256('{"group_id": '+pyStr(group_id)+', "members": ['+[...ids].sort().map(pyStr).join(', ')+'], "signal_day": '+pyStr(signal_day)+'}');
+const GROUP_CONTEXT_FIELDS=Object.freeze(['signal_day','group_id','classification_hash','population_hash','universe_id','universe_version','universe_members_hash','dictionary_version','mapping_version','knowledge_as_of','price_basis']);
+const HEX=/^[0-9a-f]{64}$/;
+function groupCheck(board,rows,manifest,context,data_kind){
+ if(!isObj(manifest)||!isObj(context))jno('GROUP_MEMBERSHIP_REQUIRED');
+ if(manifest.schema_version!=='technical-filter-membership/1')jno('GROUP_MEMBERSHIP_SCHEMA_MISMATCH');
+ if(manifest.data_kind!==data_kind)jno('GROUP_DATA_KIND_MISMATCH');
+ if(manifest.membership_status!=='CONFIRMED')jno('GROUP_MEMBERSHIP_UNCONFIRMED');
+ const bound=manifest.context;if(!isObj(bound))jno('GROUP_CONTEXT_REQUIRED');
+ for(const k of GROUP_CONTEXT_FIELDS){jtext(bound[k],'GROUP_CONTEXT_REQUIRED');if(context[k]!==bound[k])jno('GROUP_CONTEXT_MISMATCH:'+k);}
+ for(const k of['classification_hash','population_hash','universe_members_hash'])if(!HEX.test(bound[k]))jno('GROUP_CONTEXT_HASH_INVALID');
+ for(const k of['signal_day','group_id','population_hash'])if(jobj(board)[k]!==bound[k])jno('GROUP_CONTEXT_MISMATCH:'+k);
+ jday(bound.signal_day);
+ if(board.membership_source!=='common-classification:'+bound.classification_hash)jno('GROUP_CONTEXT_MISMATCH:classification_hash');
+ if(!['RAW','SPLIT_ADJUSTED'].includes(bound.price_basis)||!bound.group_id.endsWith(':'+bound.price_basis))jno('GROUP_CONTEXT_MISMATCH:price_basis');
+ const members=manifest.members;if(!Array.isArray(members))jno('GROUP_MEMBERSHIP_REQUIRED');
+ const byCode=new Map(),ids=new Set();
+ for(const m of members){if(!isObj(m))jno('GROUP_MEMBER_INVALID');const code=jtext(m.company_id,'GROUP_MEMBER_INVALID'),sid=jtext(m.security_id,'GROUP_MEMBER_INVALID');
+  if(byCode.has(code)||ids.has(sid))jno('DUPLICATE_GROUP_MEMBER');jtext(m.classification_record_id,'GROUP_MEMBER_INVALID');jtext(m.issuer_id,'GROUP_MEMBER_INVALID');
+  byCode.set(code,m);ids.add(sid);}
+ if(populationHash(bound.group_id,bound.signal_day,ids)!==bound.population_hash)jno('BOARD_MEMBERSHIP_MISMATCH');
+ const secs=boardSecurities(board);if(secs.size!==ids.size||[...secs.keys()].some(k=>!ids.has(k)))jno('BOARD_MEMBERSHIP_MISMATCH');
+ const seen=new Set();
+ for(const row of rows){if(!isObj(row))jno('COMPANY_CODE_REQUIRED');const code=jtext(row.code,'COMPANY_CODE_REQUIRED');
+  if(seen.has(code))jno('DUPLICATE_GROUP_ROW');seen.add(code);if(!byCode.has(code))jno('ROW_OUTSIDE_GROUP');const m=byCode.get(code);
+  if(row.signal_day!==bound.signal_day)jno('SIGNAL_DAY_MISMATCH');
+  if(own(row,'classification_hash')&&row.classification_hash!==bound.classification_hash)jno('ROW_CLASSIFICATION_MISMATCH');
+  if(own(row,'classification_record_id')&&row.classification_record_id!==m.classification_record_id)jno('ROW_CLASSIFICATION_MISMATCH');
+  if(row.security_id!==m.security_id)jno('SECURITY_CLASSIFICATION_MISMATCH');
+  if(row.issuer_id!==null&&row.issuer_id!==undefined&&row.issuer_id!==m.issuer_id)jno('ISSUER_CLASSIFICATION_MISMATCH');}
+ if(seen.size!==byCode.size)jno('GROUP_MEMBER_MISSING');
+ return byCode;}
+const deepCopy=v=>(v===undefined?v:JSON.parse(JSON.stringify(v)));
+// joinGroupRows(board, {qgv_rows, security_links, conditions, data_kind, group_manifest, group_context, connect_issuers=false})
+// → {ok:true, schema_version:'technical-filter-join/2', membership_validation VERIFIED|VERIFIED_EMPTY, original_group_count,
+// selected_count, issuer_connections, keys, rows} or {ok:false, code}. rows = deep copies of the selected input rows (with a
+// connected issuer when connect_issuers), in input order; the inputs are never changed. An issuer is connected only for a null /
+// absent row issuer, from the roster member of the same code (same record, hash, signal day) with evidence, and recorded.
+function joinGroupRows(board,{qgv_rows=[],security_links=null,conditions=[],data_kind=null,group_manifest=null,group_context=null,connect_issuers=false}={}){
+ try{if(data_kind!=='SYNTHETIC'&&data_kind!=='RETAINED_INPUT')jno('JOIN_DATA_KIND_REQUIRED');
+  if(typeof connect_issuers!=='boolean')jno('ISSUER_CONNECTION_OPTION_INVALID');
+  const rows=[...qgv_rows],members=groupCheck(board,rows,group_manifest,group_context,data_kind),connected=deepCopy(rows),audit=[];
+  if(connect_issuers)for(const row of connected){if(row.issuer_id!==null&&row.issuer_id!==undefined)continue;const m=members.get(row.code),refs=m.evidence_refs;
+   if(!Array.isArray(refs)||!refs.length||refs.some(v=>typeof v!=='string'||!v.trim()))jno('ISSUER_CONNECTION_EVIDENCE_REQUIRED');
+   audit.push(Object.freeze({company_id:row.code,previous_field_present:own(row,'issuer_id'),previous_issuer_id:own(row,'issuer_id')?row.issuer_id:null,issuer_id:m.issuer_id,
+    classification_record_id:m.classification_record_id,classification_hash:group_context.classification_hash,signal_day:group_context.signal_day,
+    knowledge_as_of:group_context.knowledge_as_of,evidence_refs:Object.freeze([...refs]),basis:'VERIFIED_CLASSIFICATION_RECORD'}));row.issuer_id=m.issuer_id;}
+  const j=joinRows(board,connected,{links:security_links,data_kind,group:{manifest:group_manifest,context:group_context}});if(!j.ok)return j;
+  const r=evaluate(board,conditions),picked=connected.filter(x=>j.keys.has(x.security_id)&&r.rows.get(x.security_id)&&r.rows.get(x.security_id).state==='PASS');
+  return Object.freeze({ok:true,schema_version:'technical-filter-join/2',data_kind,membership_validation:members.size?'VERIFIED':'VERIFIED_EMPTY',context:deepCopy(group_context),
+   original_group_count:members.size,selected_count:picked.length,issuer_connections:Object.freeze(audit),keys:j.keys,rows:Object.freeze(picked)});}
+ catch(e){if(e instanceof JoinRefusal)return Object.freeze({ok:false,code:e.code,...e.more});throw e;}}
+function joinText(j){if(!j||j.ok)return null;const base=typeof j.code==='string'?j.code.split(':')[0]:j.code,w=own(JOIN_TEXT,j.code)?JOIN_TEXT[j.code]:own(JOIN_TEXT,base)?JOIN_TEXT[base]+' · '+j.code.slice(base.length+1):TEXT.UNKNOWN_REASON;
  return j.code==='SIGNAL_DAY_MISMATCH'?w+' · 보드 '+j.board_day+' · QGV '+j.qgv_day:w;}
 const status=v=>(!v?TEXT.NONE:v.data_kind==='SYNTHETIC'?TEXT.SYNTHETIC:v.data_kind?'실자료 · '+v.data_kind:'자료 종류 표시 없음');
 function source(){return Promise.resolve(Object.freeze({state:'NONE',code:'TECH_SCREEN_NOT_CONNECTED',payload:null,security_links:null,text:TEXT.NONE}));}
-return Object.freeze({SCHEMA,SECURITY_IDENTIFIER_TYPES,METRICS,CONDITIONS,CHOICES,META,COND_TEXT,REASON,TEXT,JOIN_TEXT,validate,evaluate,securities,joinRows,joinText,metricState,display,medianText,decileText,reasonText,condText,status,cmp,source});
+return Object.freeze({SCHEMA,SECURITY_IDENTIFIER_TYPES,METRICS,CONDITIONS,CHOICES,META,COND_TEXT,REASON,TEXT,JOIN_TEXT,validate,evaluate,securities,joinRows,joinGroupRows,groupCheck:(b,r,m,c,k)=>{try{groupCheck(b,r,m,c,k);return{ok:true};}catch(e){if(e instanceof JoinRefusal)return{ok:false,code:e.code};throw e;}},sha256,populationHash,GROUP_CONTEXT_FIELDS,joinText,metricState,display,medianText,decileText,reasonText,condText,status,cmp,source});
 });

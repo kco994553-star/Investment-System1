@@ -16,6 +16,9 @@
      words: 평가일 불일치, 매핑 없음, 매핑 중복, 보드에 없는 증권 …).
    - States kept apart: 그룹 구성 미확인 (GROUP_MEMBERSHIP_UNCONFIRMED: no N, rank, median or decile), 유효 N < 10 (ranks and median,
      no decile), 계산 후 조건 충족 0건 (every condition decided, none passed), 판정 불가 (a condition the board cannot decide).
+   - Join /2 (owner 2026-11-08, Codex #516 5b0ec88a GROUP_JOIN.md): a COMMON board joins through techScreen.joinGroupRows with
+     the roster / context of IS2.classification.groupInput; missing / duplicate / out-of-group rows, unconfirmed roster, row
+     classification hash / record mismatch, issuer conflict refuse the whole join; a confirmed empty group is VERIFIED_EMPTY.
    - 공통 분류 (DC-48): for a COMMON:<sector>:<basis> board, ① names the classification record set (hash, evaluation date) and the
      board rows carry the company / record id of their verified security (IS2.classification; never computed here).
    - A null value is NA with its reason; raw_value is never shown and never fills it. Values are price-derived: text inside
@@ -55,10 +58,23 @@ function create({signal,redraw}){
  if(CL()&&typeof CL().load==='function')Promise.resolve(CL().load()).then(()=>{if(!signal.aborted)redraw();},()=>{});
  const groupRows=universe=>{const C=CL();if(!C||typeof C.groupRows!=='function')return{rows:null,code:null};const g=C.groupRows(board(),universe);
   if(Array.isArray(g))return{rows:g,code:null};return{rows:null,code:typeof C.groupRowsWhy==='function'?C.groupRowsWhy(board(),universe).code:null};};
- function keep(rows,{universe=rows}={}){if(!V.on||!board())return null;const group=ctx.links===null||ctx.links===undefined?{rows:[],code:null}:groupRows(universe);
-  const jr=group.rows===null?Object.freeze({ok:false,code:'BOARD_GROUP_ROWS_UNRESOLVED',group_code:group.code}):T().joinRows(board(),group.rows,{links:ctx.links,data_kind:ctx.value.data_kind});
-  // Universe rows outside the board group are not the conditions' subject: never joined, never re-ranked (shown when off).
-  const j=jr.ok?Object.freeze({...jr,outside:Array.isArray(universe)?universe.length-group.rows.length:null}):jr;joinMemo=j;
+ // A COMMON:<sector>:<basis> board: technical-filter-join/2 (Codex #516 5b0ec88a) — the trusted roster and pinned context from
+ // IS2.classification.groupInput, the universe rows the roster names (all of them; out-of-group rows never passed, never changed),
+ // issuers connected only from the roster's record evidence (connect_issuers, recorded). Any other board: the /1 identity join,
+ // group completeness NOT_CHECKED.
+ function keep(rows,{universe=rows}={}){if(!V.on||!board())return null;const C=CL(),gi=C&&typeof C.groupInput==='function'?C.groupInput(board(),universe):{mode:'NONE'};
+  let j;
+  if(gi.mode==='V2'){
+   if(gi.code)j=Object.freeze({ok:false,code:'BOARD_GROUP_ROWS_UNRESOLVED',group_code:gi.code,v2:true});
+   else if(ctx.links===null||ctx.links===undefined)j=T().joinRows(board(),[],{links:null});
+   else{const g=T().joinGroupRows(board(),{qgv_rows:gi.rows,security_links:ctx.links,conditions:conds(),data_kind:ctx.value.data_kind,group_manifest:gi.manifest,group_context:gi.context,connect_issuers:true});
+    j=g.ok?Object.freeze({ok:true,v2:true,keys:g.keys,membership_validation:g.membership_validation,original_group_count:g.original_group_count,issuer_connections:g.issuer_connections.length,
+     outside:Array.isArray(universe)?universe.length-gi.rows.length:null}):Object.freeze({ok:false,code:g.code,v2:true});}}
+  else{const group=ctx.links===null||ctx.links===undefined?{rows:[],code:null}:groupRows(universe);
+   const jr=group.rows===null?Object.freeze({ok:false,code:'BOARD_GROUP_ROWS_UNRESOLVED',group_code:group.code}):T().joinRows(board(),group.rows,{links:ctx.links,data_kind:ctx.value.data_kind});
+   // Universe rows outside the board group are not the conditions' subject: never joined, never re-ranked (shown when off).
+   j=jr.ok?Object.freeze({...jr,completeness:'NOT_CHECKED',outside:Array.isArray(universe)?universe.length-group.rows.length:null}):jr;}
+  joinMemo=j;
   if(!j.ok)return null;const r=result();
   return{rows:rows.filter(x=>j.keys.has(x.security_id)&&r.rows.get(x.security_id).state==='PASS'),joined:j.keys.size,result:r};}
  const on=()=>V.on&&!!board()&&!!joinMemo&&joinMemo.ok;
@@ -160,7 +176,9 @@ function create({signal,redraw}){
    shown.length?boardTable(shown,phone):null,
    h('p',{class:'reason',dataset:j&&!j.ok?{tfJoin:j.code,na:j.code,...(j.group_code?{tfGroup:j.group_code}:{})}:{tfJoin:joined===null?'OFF':String(joined)}},!j?'리더보드 표에 적용하려면 위 스위치를 켜세요 · 보드 표는 원래 순위 그대로':
     j.ok?['리더보드 표: 결합된 '+joined+'개 중 통과한 종목만 · 정렬은 1.1.2 그대로(기본 QGV 높은 순) · 순위 번호·점수 그대로',
-     Number.isInteger(j.outside)&&j.outside>0?h('span',{class:'tf-outside',dataset:{tfOutside:String(j.outside)}},' · 그룹 밖 '+j.outside+'행 · 조건 적용 대상 아님 · 원래 점수·순위 그대로 · 스위치를 끄면 표에 다시 보임'):null]:
+     Number.isInteger(j.outside)&&j.outside>0?h('span',{class:'tf-outside',dataset:{tfOutside:String(j.outside)}},' · 그룹 밖 '+j.outside+'행 · 조건 적용 대상 아님 · 원래 점수·순위 그대로 · 스위치를 끄면 표에 다시 보임'):null,
+     j.v2?h('span',{class:'tf-v2',dataset:{tfValidation:j.membership_validation,tfIssuerConnections:String(j.issuer_connections)}},' · 결합 /2 · 그룹 명부 ',j.membership_validation==='VERIFIED_EMPTY'?'확인 · 빈 그룹 0행':'확인 '+j.original_group_count+'행',
+      j.issuer_connections?' · 발행사 연결 '+j.issuer_connections+'행(같은 기록·해시·평가일의 분류 근거, 원래 행은 그대로)':''):h('span',{class:'tf-v1',dataset:{tfValidation:'NOT_CHECKED'}},' · 결합 /1 · 그룹 완전성 미확인(명부 없음)')]:
     '리더보드 표에 적용할 수 없음 · '+S.joinText(j)+(j.group_code&&CL()&&CL().groupText?' · '+CL().groupText(j.group_code):'')+' · 같은 평가일·같은 증권으로 확인된 행만 결합(QGV 결합 키 [평가일, 증권 ID]) · 리더보드는 기술 조건 없이 그대로'));
   return[status,step1,step2,step3,step4];}
  return Object.freeze({load,on,keep,head,cell,sub,block});}

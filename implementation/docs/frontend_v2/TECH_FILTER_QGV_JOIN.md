@@ -87,6 +87,16 @@ Codex 함수는 넘겨받은 행만 본다. 그룹 구성원 행이 빠지면(�
 `groupRows`가 분류 기록의 발행사로 채운다(행에 다른 발행사가 있으면 `ISSUER_MISMATCH`). 명시적 null 발행사가 `joinRows`까지 가는 경로는
 Codex 투영에서는 생기지 않아(확정 그룹은 발행사 확인 필요) node 사례 b에서만 확인한다.
 
+## 5b. 결합 /2 (오너 2026-11-08 「공통 분류 최신 계약 반영 및 소비자 반례 마무리」, Codex #516 `5b0ec88a`)
+
+COMMON 보드는 `techScreen.joinGroupRows`(`technical-filter-join/2`)로 결합한다. 입력: `IS2.classification.groupInput`의 신뢰된 명부
+(`technical-filter-membership/1`, 분류 view·기술 투영에서만 만들고 화면 필터·결합 성공 행에서 만들지 않음), 요청 문맥, 명부가 가리키는 행 전부.
+누락 `GROUP_MEMBER_MISSING`, 중복 `DUPLICATE_GROUP_ROW`, 그룹 밖 `ROW_OUTSIDE_GROUP`, 명부 미확인 `GROUP_MEMBERSHIP_UNCONFIRMED`,
+행 분류 해시·기록 불일치 `ROW_CLASSIFICATION_MISMATCH`, 발행사 충돌 `ISSUER_CLASSIFICATION_MISMATCH`, 문맥 불일치 `GROUP_CONTEXT_MISMATCH:<필드>`는
+전체 거부(표 그대로, 사유 문구). 확인된 빈 그룹은 `VERIFIED_EMPTY / 0`. 발행사 null은 같은 코드·기록·해시·평가일의 명부 근거로만 연결하고
+`issuer_connections`에 남긴다(원래 행은 그대로). 다른 보드는 /1(완전성 NOT_CHECKED). 5a의 g2(행 누락을 Codex /1이 못 봄)는 /2에서 Codex가 거부한다.
+시험: `tools/web_app_group_join_node_test.js`(Codex 23사례 직접 + 호출부 6사례), `web_app_classification_browser_test.js`.
+
 ## 6. Codex 답변 반영 (#437 댓글 6706590129, #516 `9343b5e6`)
 
 | Main 질문 | Codex 답 | Main 처리 |
