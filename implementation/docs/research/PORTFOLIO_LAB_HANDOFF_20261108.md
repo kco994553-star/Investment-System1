@@ -32,3 +32,23 @@ Main은 숫자를 임의 반올림하지 말고, 생산자가 지원하는 Decim
 재현: fixture.cases[].expected를 require('research-scope.js').validateSelection에 전달한다.
 기존 시험 진입점: `implementation/tests/test_vertical_slice.py`, `test_vertical_slice_from_store.py`.
 새 엔진 결함은 확인되지 않았으므로 엔진 코드/성공 회귀시험/공식 포트폴리오를 변경·반복하지 않는다.
+
+## Main 6721478474 회신 반영 — 실제 API 부가 계약
+
+`run_vertical_slice` / `run_vertical_slice_from_store` / walk-forward의 각 step에
+`selection_details: research-selection-details/1`을 제공한다. 기존 5개 판독 필드와 선정·비중은 그대로다.
+새 helper는 순위/선정/비중을 계산하지 않고 이미 나온 결과를 설명한다.
+
+- original_population: 실제 요청한 기업 ID·분모와 원래 universe/가용시각/source_vintage.
+- rows: Q_MISSING, G_MISSING, OUTSIDE_SELECTION_LIMIT; 원래 순위·선정 여부·발행사 ID(선언된 CIK).
+- portfolio: 기존 weights/cash_weight/weight_sum, 0종목은 NOT_FORMED/cash null. 전액 현금으로 새 포트폴리오를 만들지 않는다.
+- issuers: 미연결 ID·동일 발행사 그룹. 기존 규칙에는 발행사 통합/상한이 없어 별도 회사 ID를 유지하고 그 상태를 명시한다.
+  이 결과는 증권 신원·대표 증권 확인이 아니다. 추가 발행사 상한/집계 규칙이 필요할 때만 별도 결정한다.
+- reproduction: 설정·원래 선택 입력·결과 hash 및 실제 엔진/비중/부가 계약 소스 SHA256.
+  원래 Q/G 축 입력에서의 선정/비중 재현이며 QGV·PIT·성과 재현이 아니다.
+  QGV 계산 버전이 원결과에 없으면 null/NOT_SUPPLIED_BY_SOURCE_RESULT. 최신 입력은 새 계산이다.
+
+새 API 계약3건과 변경 영향을 받는 기존 vertical/store 경로 합계22통과.
+같은 보관 universe ID/가용시각·설정·입력은 같은 식별자를 재현하고, 입력 변경은 input/result hash만 바꾼다.
+새 실자료 포트폴리오 계산·전략 성과는0. Main #522 cbd1da52의 판독에서도 소수% 경계1차이는 그대로 재현된다.
+Main은 기존 validateSelection의 허용 정밀도를 맞추고, sample.selection.selection_details를 선택 부가 필드로 판독하면 된다.

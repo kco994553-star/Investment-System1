@@ -24,6 +24,7 @@ from ..universe.engine import UniverseEngine
 from .file_store import FileTrackRecordStore
 from .historical import attach_name_outcomes, run_as_of
 from .records import ScopedTrackStore
+from ..research.selection_details import describe_selection
 
 # Development canaries. 17-name regression stays separate.
 CANARY_IDS = ("nvda", "msft", "amzn", "avgo", "amd", "qcom", "lrcx", "intc")
@@ -172,6 +173,8 @@ def run_vertical_slice(
         "selection_policy": asdict(selection_policy) if selection_policy else None,
         "portfolio_role": None if book is None else book.role,
         "weights": None if book is None else {h.company_id: h.target_weight for h in book.holdings},
+        "selection_details": describe_selection(quality=quality, members=company_ids, ranked=ranked, selected=selected,
+            policy=selection_policy, as_of=as_of, universe=uni, portfolio=book, rule_id=RULE_ID, qgv_version=row.get("calc_version")),
         "outcomes": links,
         "equal_weight_realized": book_ret,
         "store": str(path),
@@ -209,6 +212,7 @@ def run_walk_forward(
             "n_selected": res["n_selected"],
             "selection_policy": res["selection_policy"],
             "weights": res["weights"],
+            "selection_details": res["selection_details"],
             "equal_weight_realized": res["equal_weight_realized"],
             "n_linked": sum(1 for v in res["outcomes"].values() if v.get("status") == "LINKED"),
             "name_errors": res["name_errors"],
