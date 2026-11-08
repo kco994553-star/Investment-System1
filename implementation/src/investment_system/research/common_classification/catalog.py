@@ -4,6 +4,10 @@ from ..sector_qgv_registry import SECTORS, MAPPING
 
 VERSION = 'common-industry-dictionary/1'
 MAPPING_VERSION = 'common-classification-map/1'
+POLICY_DICTIONARY_VERSION = 'common-industry-dictionary/2'
+POLICY_MAPPING_VERSION = 'common-classification-map/2'
+BOUNDARY_POLICY_VERSION = 'common-sector-boundaries/2026-11-08.1'
+BOUNDARY_SOURCE = 'owner:2026-11-08:common-classification-boundaries'
 # Reuse the seven explicit adopted subgroup definitions; broad source groups
 # such as manufacturing_industrial_tech have no one-to-one sector parent.
 PARENTS = {
@@ -15,12 +19,13 @@ PARENTS = {
 LABELS = ('경기소비재','필수소비재','에너지','금융','헬스케어','산업재','정보기술','소재','통신','유틸리티')
 
 
-def dictionary():
+def dictionary(version=VERSION):
+    if version not in (VERSION,POLICY_DICTIONARY_VERSION):raise ValueError('CLASSIFICATION_DICTIONARY_VERSION_INVALID')
     source = load_sic_config()
     by_id = {row['id']: row for row in source['subgroups']}
     if set(PARENTS) != set(by_id) or not set(PARENTS.values()) <= set(SECTORS):
         raise ValueError('INDUSTRY_DICTIONARY_SOURCE_CHANGED')
-    return {'schema_version':'common-classification-dictionary/1', 'version':VERSION,
+    result={'schema_version':'common-classification-dictionary/1', 'version':version,
             'sector_version':MAPPING, 'sectors':dict(zip(SECTORS, LABELS)),
             'industries':[{'id':key, 'name':by_id[key]['name'], 'parent_sector':parent,
                           'source_dictionary':source['config_version'], 'source_id':key,
@@ -31,6 +36,16 @@ def dictionary():
                           'MULTI_BUSINESS':'PRIMARY_ACTIVITY_EVIDENCE_REQUIRED'},
             'etf_reference_version':'sector_etf_map/v1',
             'source_classification_version':source['config_version']}
+    if version==POLICY_DICTIONARY_VERSION:
+        result['exceptions']={
+            'REIT':'FINANCIALS_UPPER_SECTOR_ACCOUNTING_INDEPENDENT_NOT_ALL_REAL_ESTATE',
+            'COMMUNICATION_SERVICES':'NOT_AN_ALIAS_OF_TELECOMMUNICATIONS',
+            'TELECOM_MEDIA':'NETWORK_SERVICES_TELECOM_MEDIA_ENTERTAINMENT_DISCRETIONARY_PRIMARY_ACTIVITY_REQUIRED',
+            'MANAGED_CARE':'HEALTH_CARE_UPPER_SECTOR_ACCOUNTING_INDEPENDENT',
+            'MULTI_BUSINESS':'PRIMARY_ACTIVITY_EVIDENCE_REQUIRED'}
+        result['policy']={'version':BOUNDARY_POLICY_VERSION,'approved_date':'2026-11-08',
+                          'source':BOUNDARY_SOURCE,'book_direct_claim':False,'automatic_company_assignment':False}
+    return result
 
 
 def industry_for_sic(sic, sector_id):

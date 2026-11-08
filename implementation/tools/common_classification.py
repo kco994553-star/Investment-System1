@@ -83,7 +83,7 @@ def run(job, output, *, synthetic=False):
             'own_sector_returns':None,'rotation_probability':None},
         'gate_alternative':{'id':gate['comparison_id'],'transitions':gate['transitions'],'reasons':gate['reasons'],'applied':False},
         'performance':None,'historical_pit_certified':False,'deployment_state':'NOT_DEPLOYED'}
-    files={'dictionary.json':dictionary(),'classification-store.json':store,'classification-view.json':view,
+    files={'dictionary.json':dictionary(view['dictionary_version']),'classification-store.json':store,'classification-view.json':view,
         'qgv-input.json':projected,'qgv-preview.json':after,'qgv-classification-links.json':qgv_links,'qg-comparison.json':compared,
         'classification-comparison.json':rows,'technical.json':technical,'macro.json':macro,
         'gate-comparison.json':gate,'summary.json':summary,'reference-saved-config.json':saved,

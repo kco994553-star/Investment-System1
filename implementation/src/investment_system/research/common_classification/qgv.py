@@ -30,6 +30,7 @@ def project_qgv(snapshot, view):
     for this replay; it does not assert an effective historical start date.
     """
     by_code = _context(snapshot,view)
+    source_by_id={s['source_id']:s for s in view['sources']}
     result=deepcopy(snapshot)
     result['input_version']='common-classification-qgv/1'
     result['snapshot_id']=snapshot['snapshot_id']+':common:'+view['classification_hash'][:16]
@@ -41,6 +42,19 @@ def project_qgv(snapshot, view):
             raise ValueError('PROJECTION_ISSUER_MISMATCH')
         row['sector_id']=c['sector']['id'] if c['sector']['status']=='CONFIRMED' else None
         row['accounting_template']=c['accounting']['id'] if c['accounting']['status']=='CONFIRMED' else None
+        # A reviewed company exception must not become an unreviewed SIC again
+        # when this projection is reused as the next classification input.
+        row['classification_record_id']=c['record_id']
+        row['official_classification']=deepcopy(c.get('source_sic'))
+        row['classification_component_reasons']={k:deepcopy(c[k]['reasons']) for k in ('sector','accounting','industry')}
+        row['component_mappings']={k:{'classification_rule_version':c['rule_version'],
+            'rule_id':c['record_id'],'evidence_refs':deepcopy(c[k]['evidence_refs'])}
+            for k in ('sector','accounting','industry') if c[k]['status']=='CONFIRMED'}
+        if c['industry']['status']=='CONFIRMED':row['reviewed_industry_id']=c['industry']['id']
+        primary='source:'+(row.get('official_classification') or {}).get('source_sha256','')
+        row['review_sources']=[deepcopy(source_by_id[ref]) for ref in c['source_refs'] if ref!=primary]
+        row['reasons']=deepcopy(c['sector']['reasons'] if row['sector_id'] is None else
+                               c['accounting']['reasons'] if row['accounting_template'] is None else [])
         row['mapping']=None
         if row['sector_id'] and row['accounting_template']:
             a=c['applicability']
