@@ -1,0 +1,99 @@
+{
+  "cases": [
+    {
+      "changes": [],
+      "expected": {
+        "aggregate_value": null,
+        "linked_companies": 2,
+        "unique_series": 1,
+        "value": 0
+      },
+      "id": "multiple"
+    },
+    {
+      "changes": [
+        {
+          "path": "mappings.mappings[0].relation",
+          "value": "PARTIAL"
+        },
+        {
+          "operation": "keep_first",
+          "path": "mappings.mappings[0].targets"
+        }
+      ],
+      "expected": {
+        "linked_companies": 1,
+        "relation": "PARTIAL"
+      },
+      "id": "partial"
+    },
+    {
+      "changes": [
+        {
+          "path": "mappings.evidence[0].acquired_at",
+          "value": "2017-01-07T00:00:00Z"
+        }
+      ],
+      "expected": {
+        "linked_companies": 0,
+        "reason": "EVIDENCE_NOT_AVAILABLE"
+      },
+      "id": "evidence_future"
+    },
+    {
+      "changes": [
+        {
+          "path": "mappings.evidence[0].available_at",
+          "value": "2017-01-06"
+        }
+      ],
+      "expected": {
+        "linked_companies": 0,
+        "reason": "EVIDENCE_TIME_UNKNOWN"
+      },
+      "id": "date_precision"
+    },
+    {
+      "changes": [
+        {
+          "path": "mappings.mappings[0].source.version",
+          "value": "2018"
+        }
+      ],
+      "expected": {
+        "error": "SOURCE_SERIES_DEFINITION_MISMATCH"
+      },
+      "id": "wrong_source_version"
+    },
+    {
+      "changes": [
+        {
+          "path": "cache.series.SYN:SERIES.available_at",
+          "value": "2017-01-07T00:00:00Z"
+        }
+      ],
+      "expected": {
+        "linked_companies": 2,
+        "query_usable_companies": 0,
+        "value": null
+      },
+      "id": "future_value"
+    },
+    {
+      "changes": [
+        {
+          "operation": "set_unknown_with_no_targets",
+          "path": "mappings.mappings[0]",
+          "reason": "OFFICIAL_DEFINITION_NOT_HELD"
+        }
+      ],
+      "expected": {
+        "current_cache_unchanged": true,
+        "linked_companies": 0
+      },
+      "id": "unknown"
+    }
+  ],
+  "data_kind": "SYNTHETIC",
+  "schema_version": "macro-industry-fixture-cases/1"
+}
