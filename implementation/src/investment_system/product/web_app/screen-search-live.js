@@ -260,6 +260,7 @@ function ccBlock(cid,signal){
     !none&&r.reason?h('span',{class:'reason'},' · 사유 ',r.reason):null),
    none?h('p',{class:'reason'},C.WORDS.NONE_WHY):h('p',{class:'reason',dataset:{ccRecord:r.record_id||'',ccHash:r.classification_hash||''}},'분류 기록 ',r.record_id||'없음',' · 분류 해시 ',C.shortHash(r.classification_hash),' · 평가일 ',r.valuation_date,
     ' · ',r.dictionary_version,r.data_kind==='SYNTHETIC'?' · 합성 데이터 · 시험용':''),
+   !none&&r.boundary_policy?h('p',{class:'reason',dataset:{ccPolicy:r.boundary_policy.version}},C.WORDS.POLICY,' · ',r.boundary_policy.version,' · 승인 ',r.boundary_policy.approved_date):null,
    h('p',{class:'reason cc-ids',dataset:{ccCompany:cid,ccIssuer:r.issuer_id||'',ccSecurity:''}},'기업 ID ',h('span',{class:'nobr'},cid),' · 발행사 ID ',h('span',{class:'nobr'},r.issuer_id||C.WORDS.ISSUER_NONE),' · 증권 ID ',C.WORDS.SECURITY_NONE),
    token?h('p',{class:'links cc-links'},h('a',{class:'lk',href:href('qgv',token),dataset:{ccLink:'qgv'}},'→ 같은 섹터 QGV 리더보드'),' ',h('a',{class:'lk',href:href('macro',token),dataset:{ccLink:'macro'}},'→ 4.2 섹터 비교 가격계열')):null);}
  paint();Promise.resolve(C.load()).then(settled(signal,paint),()=>{});

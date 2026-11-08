@@ -117,7 +117,8 @@ function ccSummary(C,b){const rows=b.view.rows,n=k=>rows.filter(r=>r[k].status==
 function ccPaint(body,b){const C=I.classification,v=b.view,x=ccSummary(C,b);
  I.append(body,[h('p',{class:'hand',dataset:{privateLayer:'classification',privateSource:'PRIVATE_ARCHIVE'}},C.WORDS.PRIVATE,' · 같은 화면 같은 형식'),
   h('p',{class:'reason',dataset:{privateLayerNote:''}},I.kisPrivate.LAYER_NOTE),
-  dl([['평가일',v.valuation_date,{ccPrivateDay:v.valuation_date}],['분류 해시',C.shortHash(v.classification_hash),{ccPrivateHash:v.classification_hash}],['자료 종류',v.data_kind==='SYNTHETIC'?'합성 데이터 · 시험용':'보관 입력(RETAINED_INPUT)',{ccPrivateKind:v.data_kind}],
+  dl([['평가일',v.valuation_date,{ccPrivateDay:v.valuation_date}],['분류 사전·대응 판',v.dictionary_version+' + '+v.mapping_version,{ccPrivateVersion:v.dictionary_version}],
+   v.boundary_policy?['경계 정책판',v.boundary_policy.version+' · 시스템 대응 정책(책의 직접 명시 아님)',{ccPrivatePolicy:v.boundary_policy.version}]:null,['분류 해시',C.shortHash(v.classification_hash),{ccPrivateHash:v.classification_hash}],['자료 종류',v.data_kind==='SYNTHETIC'?'합성 데이터 · 시험용':'보관 입력(RETAINED_INPUT)',{ccPrivateKind:v.data_kind}],
    ['지식 기준 시각',v.knowledge_as_of],['받은 부분',x.parts.join(' · '),{ccPrivateParts:x.parts.join(',')}],
    x.mismatch.length?['분류 버전 불일치',x.mismatch.join(' · ')+' · 그 부분은 쓰지 않음',{ccPrivateMismatch:x.mismatch.join(',')}]:null],{privateMeta:'classification'}),
   h('h4',{dataset:{ccPopulation:'OPERATING_504'}},'운영504 · 공식 모집단(Universe504) · 화면의 기업·QGV·기술·매크로가 읽는 기록'),
@@ -140,6 +141,11 @@ function expandedBlock(e){
   h('h4',null,'확장 발행사 표본 · 별도 모집단 · 운영504와 합치지 않음'),
   h('p',{class:'reason'},'관측 카탈로그 발행사 · 투자 적격 모집단 아님(',e.population_kind,') · 평가일 ',e.valuation_date,' · 카탈로그 관측 ',e.catalog_observed_at.slice(0,10),'(',String(e.catalog_age_days),'일 전 · 평가일 상장 명부 아님)'),
   h('ul',null,row('catalog','관측 카탈로그 전체','catalog'),row('held_financial_subsample','보유 재무 하위표본','held_financial_subsample')),
+  // The official Q gate linkage is reported for the catalog scope only (official_gate_connected); a held-subsample figure is not in
+  // this summary and is never derived here. The gate is the existing Universe504 official Q replay, not an expanded-sample Q.
+  Number.isInteger(e.official_gate_connected)?h('p',{class:'reason',dataset:{ccExpandedGate:String(e.official_gate_connected)}},'공식 Q 관문 연결 ',String(e.official_gate_connected),
+   ' · 관측 카탈로그 범위 · 기존 Universe504 공식 Q 재생값(확장 표본 Q 아님) · 보유 재무 하위표본 범위의 수는 이 요약에 없음'):null,
+  h('p',{class:'reason',dataset:{ccExpandedRows:'NOT_BUILT'}},'확장 발행사 행 단위 화면은 아직 없음 · 요약만 연결됨'),
   h('p',{class:'reason',dataset:{ccExpandedMarket:'NONE'}},'전체시장 분모·커버리지 미산출 · 새 증권 ID ',String(e.new_security_ids),' · 순위 범위 ',e.rank_scope,' · 발행사 행 ID는 증권 ID가 아님 · 기술 결합·기업 화면에 쓰지 않음'));}
 function renderClassification(body,res){const C=I.classification,payload={};
  res.forEach((raw,i)=>{if(raw!==null&&raw!==undefined)payload[CC_KEY[CC_PARTS[i]]||CC_PARTS[i]]=raw;});

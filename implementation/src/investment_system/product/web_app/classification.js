@@ -39,6 +39,13 @@
 const SCHEMAS=Object.freeze({view:'common-classification-view/1',technical:'common-classification-technical/1',macro:'common-classification-macro/1',
  qgv_links:'common-classification-qgv-links/1',dictionary:'common-classification-dictionary/1'});
 const VERSIONS=Object.freeze({dictionary:'common-industry-dictionary/1',mapping:'common-classification-map/1'});
+// The exact dictionary + mapping version pairs (Codex #520 41f2a25b records.validate / technical_macro._rows): /1 + /1, and the
+// owner's 2026-11-08 boundary policy version /2 + /2 (common-sector-boundaries/2026-11-08.1). store / view schemas stay /1. A
+// mixed pair, an unknown version, a policy on a /1 view or a /2 view without its policy is refused whole.
+const VERSION_PAIRS=Object.freeze({'common-industry-dictionary/1':'common-classification-map/1','common-industry-dictionary/2':'common-classification-map/2'});
+const POLICY_DICTIONARY='common-industry-dictionary/2';
+function checkPolicy(p,path){keys(p,['version','source','approved_date','recorded_at'],path);text(p.version,path+'.version');text(p.source,path+'.source');
+ day(p.approved_date,path+'.approved_date');stamp(p.recorded_at,path+'.recorded_at');if(p.recorded_at.slice(0,10)<p.approved_date)refuse('POLICY_RECORDED_BEFORE_APPROVAL',path+'.recorded_at');}
 // book-sector-map/1 (Codex sector_qgv_registry.SECTORS): the ids a confirmed sector may carry. Names come from the dictionary part.
 const SECTORS=Object.freeze(['CONSUMER_DISCRETIONARY','CONSUMER_STAPLES','ENERGY','FINANCIALS','HEALTH_CARE','INDUSTRIALS','INFORMATION_TECHNOLOGY','MATERIALS','TELECOMMUNICATIONS','UTILITIES']);
 const STATUS=Object.freeze(['CONFIRMED','UNKNOWN','CONFLICT']);
@@ -51,7 +58,7 @@ const WORDS=Object.freeze({CONFIRMED:'확인',SECTOR_ONLY:'섹터 확인 · 하�
  CONFLICT:'분류 충돌 · 근거 불일치',NO_DATA:'분류 자료 없음',VERSION_MISMATCH:'분류 버전 불일치',UNRESOLVED:'섹터 대응 미확인 · 근거 부족',
  SAMPLE_SMALL:'표본 부족 · 기능별 규칙(섹터 QGV N<20 요소 점수 미산출 · 기술 N<10 분위 미산출, 순위·중앙값 유지)',GROUP_UNCONFIRMED:'구성원·신원 미확인 · 상대순위·중앙값도 미산출',EMPTY_GROUP:'구성원 0 · 비교 대상 없음',
  NONE:'공통 분류 실자료 묶음 보존됨 · 인증된 화면 전달 경로 미연결',NONE_WHY:'분류는 Codex(common-classification/1) · 실자료 묶음은 Codex 비공개 보존 · 이 화면에는 합성 자료만 시험에서',
- INVALID:'공통 분류 파일이 계약과 달라 쓰지 않습니다',PRIVATE:'비공개 보관본 · 인증 경로 · 게시본 아님',
+ INVALID:'공통 분류 파일이 계약과 달라 쓰지 않습니다',POLICY:'경계 정책판 · 시스템 대응 정책(책의 직접 명시 아님) · 회사별 분류는 근거 확인분만',PRIVATE:'비공개 보관본 · 인증 경로 · 게시본 아님',
  ACCOUNTING_UNKNOWN:'회계모형 미확인 · 섹터가 확인돼도 QGV 비교집단 완결 아님',ACCOUNTING_CONFLICT:'회계모형 근거 불일치 · QGV 비교집단 완결 아님',
  ACCOUNTING_WITHOUT_SECTOR:'회계모형만 확인 · 섹터 미확인',SECURITY_NONE:'검증된 증권 ID 없음',ISSUER_NONE:'발행사 ID 미확인'});
 const dateWords=d=>'평가일 '+d+'에 적용되는 분류 없음';
@@ -110,7 +117,9 @@ function applicability(a,path){if(!isObj(a))refuse('TYPE',path);
  else refuse('APPLICABILITY_INVALID',path+'.kind');}
 const VIEW_KEYS=['schema_version','valuation_date','knowledge_as_of','data_kind','members','rows','classification_hash','dictionary_version','mapping_version'];
 function checkView(v,path){keys(v,VIEW_KEYS,path);if(v.schema_version!==SCHEMAS.view)refuse('SCHEMA_VERSION',path+'.schema_version');
- if(v.dictionary_version!==VERSIONS.dictionary||v.mapping_version!==VERSIONS.mapping)refuse('CLASSIFICATION_VERSION_INVALID',path+'.dictionary_version');
+ if(!own(VERSION_PAIRS,v.dictionary_version)||v.mapping_version!==VERSION_PAIRS[v.dictionary_version])refuse('CLASSIFICATION_VERSION_INVALID',path+'.dictionary_version');
+ if(v.dictionary_version===POLICY_DICTIONARY){if(!own(v,'boundary_policy'))refuse('POLICY_REQUIRED',path+'.boundary_policy');checkPolicy(v.boundary_policy,path+'.boundary_policy');}
+ else if(own(v,'boundary_policy'))refuse('CLASSIFICATION_VERSION_INVALID',path+'.boundary_policy');
  day(v.valuation_date,path+'.valuation_date');stamp(v.knowledge_as_of,path+'.knowledge_as_of');
  if(v.valuation_date>v.knowledge_as_of.slice(0,10))refuse('VALUATION_AFTER_KNOWLEDGE',path+'.valuation_date');
  if(!DATA_KINDS.includes(v.data_kind))refuse('DATA_KIND_REQUIRED',path+'.data_kind');hex(v.classification_hash,path+'.classification_hash');
@@ -184,7 +193,12 @@ function checkLinks(l,path){keys(l,['schema_version','classification_hash','valu
  list(l.rows,path+'.rows').forEach((r,i)=>{const p=path+'.rows['+i+']';keys(r,['company_id','issuer_id','classification_record_id'],p,[]);text(r.company_id,p+'.company_id');
   if(ids.has(r.company_id))refuse('ROW_DUPLICATE',p+'.company_id');ids.add(r.company_id);textOrNull(r.issuer_id,p+'.issuer_id');textOrNull(r.classification_record_id,p+'.classification_record_id');});}
 function checkDictionary(d,path){keys(d,['schema_version','version','sector_version','sectors','industries'],path);
- if(d.schema_version!==SCHEMAS.dictionary)refuse('SCHEMA_VERSION',path+'.schema_version');if(d.version!==VERSIONS.dictionary)refuse('CLASSIFICATION_VERSION_INVALID',path+'.version');
+ if(d.schema_version!==SCHEMAS.dictionary)refuse('SCHEMA_VERSION',path+'.schema_version');if(!own(VERSION_PAIRS,d.version))refuse('CLASSIFICATION_VERSION_INVALID',path+'.version');
+ // The /2 dictionary names its policy: a system correspondence, never a book claim, never an automatic company assignment.
+ if(d.version===POLICY_DICTIONARY){keys(d.policy,['version','approved_date','source','book_direct_claim','automatic_company_assignment'],path+'.policy');
+  text(d.policy.version,path+'.policy.version');text(d.policy.source,path+'.policy.source');day(d.policy.approved_date,path+'.policy.approved_date');
+  if(d.policy.book_direct_claim!==false||d.policy.automatic_company_assignment!==false)refuse('POLICY_CLAIM_INVALID',path+'.policy');if(!isObj(d.exceptions))refuse('TYPE',path+'.exceptions');}
+ else if(own(d,'policy'))refuse('CLASSIFICATION_VERSION_INVALID',path+'.policy');
  if(!isObj(d.sectors))refuse('TYPE',path+'.sectors');for(const k of Object.keys(d.sectors)){if(!SECTORS.includes(k))refuse('SECTOR_INVALID',path+'.sectors.'+k);text(d.sectors[k],path+'.sectors.'+k);}
  const ids=new Set();list(d.industries,path+'.industries').forEach((x,i)=>{const p=path+'.industries['+i+']';keys(x,['id','name','parent_sector'],p);text(x.id,p+'.id');text(x.name,p+'.name');
   if(!SECTORS.includes(x.parent_sector))refuse('SECTOR_INVALID',p+'.parent_sector');if(ids.has(x.id))refuse('ROW_DUPLICATE',p+'.id');ids.add(x.id);});}
@@ -197,7 +211,8 @@ function checkExpanded(e,path){keys(e,['schema_version','valuation_date','catalo
  int(e.catalog_age_days,path+'.catalog_age_days');text(e.population_kind,path+'.population_kind');text(e.rank_scope,path+'.rank_scope');
  for(const g of['catalog','held_financial_subsample'])keys(e[g],EXPANDED_COUNTS,path+'.'+g),EXPANDED_COUNTS.forEach(k=>int(e[g][k],path+'.'+g+'.'+k));
  if(e.full_market_denominator!==null||e.full_market_coverage!==null)refuse('FULL_MARKET_NOT_NULL',path+'.full_market_denominator');
- int(e.new_security_ids,path+'.new_security_ids');if(e.official_universe_changed!==false)refuse('OFFICIAL_UNIVERSE_CHANGED',path+'.official_universe_changed');}
+ int(e.new_security_ids,path+'.new_security_ids');if(e.official_universe_changed!==false)refuse('OFFICIAL_UNIVERSE_CHANGED',path+'.official_universe_changed');
+ if(own(e,'official_gate_connected'))int(e.official_gate_connected,path+'.official_gate_connected');}
 const validateView=pass(checkView),validateExpanded=pass(checkExpanded),validateTechnical=pass(checkTechnical),validateMacro=pass(checkMacro),validateLinks=pass(checkLinks),validateDictionary=pass(checkDictionary);
 
 /* ---------------------------------------------------------------- the bundle: one view and the parts that read the same records */
@@ -216,6 +231,10 @@ function partMismatch(view,part,name){
 function validate(json){
  try{if(!isObj(json))refuse('TYPE','$');keys(json,['view'],'$',['view','dictionary','expanded',...PARTS]);const v=copy(json,'$',0);
   for(const k of Object.keys(v))if(v[k]!==null)CHECK[k](v[k],'$.'+k);if(v.view===null)refuse('VIEW_REQUIRED','$.view');
+  // The dictionary is the view's own version (no /1 view read with a /2 dictionary, or the reverse), and a /2 pair names one policy.
+  if(v.dictionary){if(v.dictionary.version!==v.view.dictionary_version)refuse('CLASSIFICATION_VERSION_MISMATCH','$.dictionary.version');
+   if(v.dictionary.version===POLICY_DICTIONARY&&(v.dictionary.policy.version!==v.view.boundary_policy.version||v.dictionary.policy.source!==v.view.boundary_policy.source
+    ||v.dictionary.policy.approved_date!==v.view.boundary_policy.approved_date))refuse('CLASSIFICATION_POLICY_MISMATCH','$.dictionary.policy');}
   // expanded: its own population; kept whole, never compared with the view's members (no partMismatch).
   const out={view:v.view,dictionary:v.dictionary||null,expanded:v.expanded||null,mismatch:{}};
   for(const k of PARTS){out[k]=null;if(!v[k])continue;const why=partMismatch(v.view,v[k],k);if(why)out.mismatch[k]=why;else out[k]=v[k];}
@@ -272,10 +291,11 @@ function accountingOf(row){const a=row.accounting,s=row.sector;
 function recordFor(company_id,valuation_date=null,bundle=null){const b=bundle||value(),s=state();
  const base={company_id:typeof company_id==='string'?company_id:null,issuer_id:null,security_id:null,record_id:null,classification_hash:null,
   dictionary_version:null,mapping_version:null,valuation_date:valuation_date||null,knowledge_as_of:null,data_kind:null,sector:null,industry:null,accounting:null,source_sic:null,applicability:null,
-  accounting_state:null,peer_complete:false,accounting_words:null,delivery:null};
+  accounting_state:null,peer_complete:false,accounting_words:null,delivery:null,boundary_policy:null};
  if(!b)return Object.freeze({...base,state:STATE.NO_DATA,words:WORDS.NO_DATA,reason:s.state==='INVALID'?s.code:'CLASSIFICATION_NOT_CONNECTED'});
  const v=b.view,when=valuation_date||v.valuation_date,head={...base,classification_hash:v.classification_hash,dictionary_version:v.dictionary_version,mapping_version:v.mapping_version,
-  valuation_date:when,knowledge_as_of:v.knowledge_as_of,data_kind:v.data_kind,delivery:s.delivery||null};
+  valuation_date:when,knowledge_as_of:v.knowledge_as_of,data_kind:v.data_kind,delivery:s.delivery||null,
+  boundary_policy:v.boundary_policy?Object.freeze({version:v.boundary_policy.version,approved_date:v.boundary_policy.approved_date}):null};
  if(when!==v.valuation_date)return Object.freeze({...head,state:STATE.NOT_APPLICABLE_ON_DATE,words:dateWords(when),reason:'VALUATION_DATE_MISMATCH'});
  const row=v.rows.find(r=>r.company_id===company_id);
  if(!row)return Object.freeze({...head,state:STATE.NO_DATA,words:WORDS.NO_DATA,reason:'CLASSIFICATION_RECORD_MISSING'});
@@ -426,7 +446,7 @@ function matches(rec,{sector='',industry=''}={}){if(!sector)return true;if(!rec|
  if(sector==='UNCLASSIFIED')return rec.sector.status!=='CONFIRMED';if(rec.sector.status!=='CONFIRMED'||rec.sector.id!==sector)return false;
  if(!industry)return true;if(industry==='UNCLASSIFIED')return rec.industry.status!=='CONFIRMED';return rec.industry.status==='CONFIRMED'&&rec.industry.id===industry;}
 
-const self=Object.freeze({SCHEMAS,VERSIONS,SECTORS,STATE,WORDS,TEXT,GROUP_TEXT,DATE_REASONS,MIN,buildGroupManifest:(v,t,g)=>{try{return{ok:true,value:buildGroupManifest(v,t,g)};}catch(e){if(e instanceof GroupRefusal)return{ok:false,code:e.code};throw e;}},groupInput,previewCheck,PREVIEW_STATE,validate,validateView,validateTechnical,validateMacro,validateLinks,validateDictionary,
+const self=Object.freeze({SCHEMAS,VERSIONS,VERSION_PAIRS,SECTORS,STATE,WORDS,TEXT,GROUP_TEXT,DATE_REASONS,MIN,buildGroupManifest:(v,t,g)=>{try{return{ok:true,value:buildGroupManifest(v,t,g)};}catch(e){if(e instanceof GroupRefusal)return{ok:false,code:e.code};throw e;}},groupInput,previewCheck,PREVIEW_STATE,validate,validateView,validateTechnical,validateMacro,validateLinks,validateDictionary,
  EXPANDED_SCHEMA,validateExpanded,source,load,state,value,connectPrivate,disconnectPrivate,subscribe,recordFor,partRecord,sameRecord,rowState,dateWords,sectorName,industryName,shortHash,groupRows,groupRowsWhy,groupText,sample,
  context,parseContext,contextState,options,matches});
 return self;

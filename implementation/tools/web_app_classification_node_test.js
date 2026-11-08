@@ -320,5 +320,38 @@ const uni = (ids, extra = []) => [...ids, ...extra].map((id, i) => ({ id, code: 
     const src = fs.readFileSync(path.join(__dirname, '../src/investment_system/product/web_app/qgv.js'), 'utf8');
     assert.match(src, /issuer_id:null,signal_day:null,security_id:null/, 'qgv.js rowRecord still writes signal_day null');
   });
+  // owner 2026-11-08 「새 분류 버전 대기 종료」: exactly the pairs dictionary /1 + map /1 and dictionary /2 + map /2 (Codex #520
+  // 41f2a25b); store / view schema /1 unchanged; mixed pairs, unknown versions and policy mismatches refused.
+  const POL = { version: 'common-sector-boundaries/2026-11-08.1', source: 'owner:2026-11-08:common-classification-boundaries', approved_date: '2026-11-08',
+    recorded_at: '2026-11-08T08:05:49Z', recorded_at_basis: 'RESEARCH_APPLICATION_NOT_ORIGINAL_COMPANY_CLASSIFICATION_DATE' };
+  const v2 = () => { const b = clone(X.bundle()); b.view.dictionary_version = 'common-industry-dictionary/2'; b.view.mapping_version = 'common-classification-map/2'; b.view.boundary_policy = clone(POL);
+    b.dictionary.version = 'common-industry-dictionary/2'; b.dictionary.exceptions = { REIT: 'FINANCIALS_UPPER_SECTOR_ACCOUNTING_INDEPENDENT_NOT_ALL_REAL_ESTATE' };
+    b.dictionary.policy = { version: POL.version, approved_date: POL.approved_date, source: POL.source, book_direct_claim: false, automatic_company_assignment: false }; return b; };
+  await ok('version pairs: /1 + /1 and /2 + /2 read; the /2 policy reaches the record words; the schema stays /1', () => {
+    assert.deepEqual({ ...C.VERSION_PAIRS }, { 'common-industry-dictionary/1': 'common-classification-map/1', 'common-industry-dictionary/2': 'common-classification-map/2' });
+    const one = valid(clone(X.bundle())); assert.equal(one.view.dictionary_version, 'common-industry-dictionary/1');
+    const two = valid(v2()); assert.equal(two.view.schema_version, 'common-classification-view/1'); assert.deepEqual(two.mismatch, {});
+    const r = C.recordFor(two.view.rows[0].company_id, null, two);
+    assert.deepEqual({ ...r.boundary_policy }, { version: POL.version, approved_date: '2026-11-08' }); assert.equal(C.recordFor(one.view.rows[0].company_id, null, one).boundary_policy, null);
+    assert.match(C.WORDS.POLICY, /시스템 대응 정책\(책의 직접 명시 아님\)/);
+  });
+  await ok('version pairs refused: mixed view pair, /1 view + /2 dictionary, unknown version, missing / stray / mismatched policy, a book claim', () => {
+    const cases = [
+      ['view /2 + map /1', (b) => { b.view.mapping_version = 'common-classification-map/1'; }, 'CLASSIFICATION_VERSION_INVALID'],
+      ['view /1 + map /2', (b) => { b.view.dictionary_version = 'common-industry-dictionary/1'; delete b.view.boundary_policy; }, 'CLASSIFICATION_VERSION_INVALID'],
+      ['unknown /3', (b) => { b.view.dictionary_version = 'common-industry-dictionary/3'; b.view.mapping_version = 'common-classification-map/3'; }, 'CLASSIFICATION_VERSION_INVALID'],
+      ['/2 view without its policy', (b) => { delete b.view.boundary_policy; }, 'POLICY_REQUIRED'],
+      ['/1 view with a policy', (b) => { b.view.dictionary_version = 'common-industry-dictionary/1'; b.view.mapping_version = 'common-classification-map/1'; b.dictionary.version = 'common-industry-dictionary/1'; delete b.dictionary.policy; }, 'CLASSIFICATION_VERSION_INVALID'],
+      ['/1 view with a /2 dictionary', (b) => { b.view.dictionary_version = 'common-industry-dictionary/1'; b.view.mapping_version = 'common-classification-map/1'; delete b.view.boundary_policy; }, 'CLASSIFICATION_VERSION_MISMATCH'],
+      ['/2 view with a /1 dictionary', (b) => { b.dictionary.version = 'common-industry-dictionary/1'; delete b.dictionary.policy; delete b.dictionary.exceptions; }, 'CLASSIFICATION_VERSION_MISMATCH'],
+      ['policy versions differ', (b) => { b.dictionary.policy.version = 'common-sector-boundaries/2026-11-09.1'; }, 'CLASSIFICATION_POLICY_MISMATCH'],
+      ['policy recorded before approval', (b) => { b.view.boundary_policy.recorded_at = '2026-11-07T23:00:00Z'; }, 'POLICY_RECORDED_BEFORE_APPROVAL'],
+      ['a book claim', (b) => { b.dictionary.policy.book_direct_claim = true; }, 'POLICY_CLAIM_INVALID'],
+      ['automatic company assignment', (b) => { b.dictionary.policy.automatic_company_assignment = true; }, 'POLICY_CLAIM_INVALID'],
+    ];
+    for (const [name, edit, code] of cases) { const b = v2(); edit(b); const r = C.validate(b); assert.equal(r.ok, false, name); assert.equal(r.code, code, name + ' ' + JSON.stringify(r)); }
+    // a part of another classification hash is kept aside (never joined), as for /1
+    const h = v2(); h.macro.classification_hash = 'f'.repeat(64); assert.equal(valid(h).mismatch.macro, 'CLASSIFICATION_HASH_MISMATCH');
+  });
   console.log(JSON.stringify({ passed: true, checks: n }));
 })().catch((e) => { console.error('FAIL ' + (e && e.stack || e)); process.exitCode = 1; });
