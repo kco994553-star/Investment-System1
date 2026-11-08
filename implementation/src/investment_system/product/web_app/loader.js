@@ -33,6 +33,8 @@
 // sector-qgv.js is the sector QGV request / answer check and settings editor on Codex's common engine (feature 2.2, owner
 // 2026-11-06) that screen-sector-qgv-live.js uses; it installs IS2.sectorQgv. sector-qgv-axis.js is the pure reader of the engine's
 // Q/G partial comparison (IS2.sectorQgvAxis); screen-sector-qgv-axis-live.js draws one (IS2.sectorQgvAxisLive).
+// classification.js is the 공통 분류 reader of Codex common-classification/1 (DC-48, owner 2026-11-07) that the company page, the QGV
+// leaderboard filter, the tech filter's group rows and 매크로 4.2 / 4.3 / 4.5 read; it installs IS2.classification and requests nothing.
 // policy-impact.js is the policy-impact/1 reader of 4.5 정책·지정학 (owner 2026-11-07) that screen-policy-impact-live.js uses; it installs IS2.policyImpact.
 const LOAD_ORDER=Object.freeze([
  'locale.js','entity-search.js','price-time.js','device-market.js','device-actual.js','profile-defaults.js','type-config-defaults.js',
@@ -48,7 +50,7 @@ const LOAD_ORDER=Object.freeze([
  'action.js','data.js','prices.js','store.js','qgv.js','engines.js',
  'companies.js','private.js','lab.js',
  'search-part-live.js','screen-search-live.js','screen-qgv-live.js','screen-macro-live.js','screen-prompts-live.js','screen-tree-live.js',
- 'screen-technical-live.js','screen-news-live.js','screen-lab-live.js','tech-screen.js','screen-tech-filter-live.js',
+ 'screen-technical-live.js','screen-news-live.js','screen-lab-live.js','tech-screen.js','classification.js','screen-tech-filter-live.js',
  'discovery.js','screen-discovery-live.js',
  'sector-qgv.js','sector-qgv-axis.js','screen-sector-qgv-axis-live.js','screen-sector-qgv-live.js',
  'policy-impact.js','screen-policy-impact-live.js',
