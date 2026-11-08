@@ -110,6 +110,14 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       [TOKEN, ...RECORD_IDS]), [], label + ': no token or record id in storage, the address, the console or another request');
   }
 
+  // The policy version pair (dictionary /2 + map /2, Codex #520 41f2a25b) on the same synthetic records.
+  const POL = { version: 'common-sector-boundaries/2026-11-08.1', source: 'owner:2026-11-08:common-classification-boundaries', approved_date: '2026-11-08', recorded_at: '2026-11-08T08:05:49Z' };
+  const v2view = { ...JSON.parse(JSON.stringify(BUNDLE.view)), dictionary_version: 'common-industry-dictionary/2', mapping_version: 'common-classification-map/2', boundary_policy: POL };
+  const v2dict = { ...JSON.parse(JSON.stringify(BUNDLE.dictionary)), version: 'common-industry-dictionary/2', exceptions: { REIT: 'FINANCIALS_UPPER_SECTOR_ACCOUNTING_INDEPENDENT_NOT_ALL_REAL_ESTATE' },
+    policy: { version: POL.version, approved_date: POL.approved_date, source: POL.source, book_direct_claim: false, automatic_company_assignment: false } };
+  const POLICY_PANEL = /common-sector-boundaries\/2026-11-08\.1 · 시스템 대응 정책\(책의 직접 명시 아님\)/;
+  const POLICY_LINE = /경계 정책판 · 시스템 대응 정책\(책의 직접 명시 아님\) · 회사별 분류는 근거 확인분만 · common-sector-boundaries\/2026-11-08\.1 · 승인 2026-11-08/;
+
   try {
     for (const width of [1440, 390]) {
       const tag = width < 720 ? '390' : '1440';
@@ -158,6 +166,7 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       assert.match(ex, /확장 발행사 행 단위 화면은 아직 없음 · 요약만 연결됨/);
       assert.equal(await page.locator('[data-cc-private-version]').getAttribute('data-cc-private-version'), 'common-industry-dictionary/1');
       assert.equal(await text(page, '[data-cc-count=rows]'), '기업 행 ' + BUNDLE.view.rows.length + '개(원래 분모 그대로)', phase + ': the 504 count never takes the expanded issuers');
+      assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), phase + ': no horizontal overflow with the panel open (long producer codes wrap)');
       ok(tag + ' one click reads six parts 5 s apart; panel words, date, hash, counts; 운영504 and the expanded sample apart; the company block repaints (PRIVATE)');
 
       phase = tag + ' same bundle';
@@ -185,6 +194,25 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       await ctx.close();
     }
 
+    // ---------------- the /2 policy pair at 390 (mobile): panel rows, the company block's policy line, no overflow
+    {
+      phase = '390 policy pair';
+      const { ctx, page, seen, w } = await context(390);
+      await page.goto(s.base + '#/company/NYSE%3AMMM'); await page.evaluate(() => window.IS2.ready);
+      await page.locator(DONE).waitFor(); await page.locator('[data-private-expand=classification]').waitFor();
+      await signIn(page);
+      w.answers.view = () => ({ status: 200, body: v2view }); w.answers.dictionary = () => ({ status: 200, body: v2dict });
+      await read(page); await page.locator('[data-private-layer=classification]').waitFor({ timeout: 45000 });
+      await page.locator('[data-cc-delivery=PRIVATE]').waitFor();
+      const dd = await page.locator('[data-private-meta=classification] dd').allTextContents();
+      assert.deepEqual(dd.slice(0, 3), [v2view.valuation_date, 'common-industry-dictionary/2 + common-classification-map/2', POL.version + ' · 시스템 대응 정책(책의 직접 명시 아님)'], phase + ': date, version pair, policy');
+      assert.match(await text(page, '[data-cc-policy]'), POLICY_LINE);
+      assert.equal(await count(page, '[data-cc-line=accounting]'), 1, phase + ': the accounting line stays its own line');
+      await boundaries(page, seen, w, phase);
+      ok('390: the /2 policy pair reads (version pair, policy rows, the company block policy line), no overflow; boundaries');
+      await ctx.close();
+    }
+
     // ---------------- refusals (1440)
     {
       phase = 'refusals';
@@ -205,10 +233,6 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       assert.equal(await page.locator('.cc-block').getAttribute('data-cc'), 'NONE', phase + ': a refused bundle is never used');
       ok('a view that breaks the contract is refused whole (ERROR), NONE kept');
       // The policy version pair (dictionary /2 + map /2, Codex #520 41f2a25b): read, the policy line shown; a mixed pair refused whole.
-      const POL = { version: 'common-sector-boundaries/2026-11-08.1', source: 'owner:2026-11-08:common-classification-boundaries', approved_date: '2026-11-08', recorded_at: '2026-11-08T08:05:49Z' };
-      const v2view = { ...JSON.parse(JSON.stringify(BUNDLE.view)), dictionary_version: 'common-industry-dictionary/2', mapping_version: 'common-classification-map/2', boundary_policy: POL };
-      const v2dict = { ...JSON.parse(JSON.stringify(BUNDLE.dictionary)), version: 'common-industry-dictionary/2', exceptions: { REIT: 'FINANCIALS_UPPER_SECTOR_ACCOUNTING_INDEPENDENT_NOT_ALL_REAL_ESTATE' },
-        policy: { version: POL.version, approved_date: POL.approved_date, source: POL.source, book_direct_claim: false, automatic_company_assignment: false } };
       w.answers.view = () => ({ status: 200, body: v2view }); w.answers.dictionary = () => ({ status: 200, body: BUNDLE.dictionary });
       await page.waitForTimeout(5300);
       await read(page); await page.locator('[data-private-panel="' + PANEL + '"][data-private-state=ERROR]').waitFor({ timeout: 45000 });
@@ -218,8 +242,8 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       await read(page); await page.locator('[data-private-layer=classification]').waitFor({ timeout: 45000 });
       await page.locator('[data-cc-delivery=PRIVATE]').waitFor();
       assert.equal(await page.locator('[data-cc-private-version]').getAttribute('data-cc-private-version'), 'common-industry-dictionary/2');
-      assert.match(await text(page, '[data-cc-private-policy]'), /common-sector-boundaries\/2026-11-08\.1 · 시스템 대응 정책\(책의 직접 명시 아님\)/);
-      assert.match(await text(page, '[data-cc-policy]'), /경계 정책판 · 시스템 대응 정책\(책의 직접 명시 아님\) · 회사별 분류는 근거 확인분만 · common-sector-boundaries\/2026-11-08\.1 · 승인 2026-11-08/);
+      assert.match(await text(page, '[data-cc-private-policy]'), POLICY_PANEL);
+      assert.match(await text(page, '[data-cc-policy]'), POLICY_LINE);
       ok('the /2 + /2 policy pair reads: version and policy words in the panel and the company block');
       delete w.answers.view; delete w.answers.dictionary;
       w.answers.view = () => ({ status: 403, body: { error: { code: 'AUTH_FORBIDDEN' } } });
