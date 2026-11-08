@@ -299,7 +299,11 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
     s.fixture(FILE, { json: LONG });
     for (const width of [320, 390, 720, 1440]) {
       const { ctx, page } = await open(width, { allow404: [...UNPUBLISHED, FILE] });
-      await page.goto(s.base + '#/macro/policy/p0'); await page.evaluate(() => window.IS2.ready); await page.locator(B + ' [data-pol-detail]').waitFor();
+      // Wait on the rendered detail (a locator retries when the page's execution context is replaced) instead of a bare
+      // page.evaluate(IS2.ready): on the integration tree that evaluate was intermittently answered 'Execution context was
+      // destroyed' ~0.3 s after load with no navigation, crash or page error recorded (CI #519 23dd5dc5; INTEGRATION_20261107.md).
+      // What the phase checks is unchanged: the detail renders, the long title wraps, nothing runs past the viewport.
+      await page.goto(s.base + '#/macro/policy/p0'); await page.locator(B + ' [data-pol-detail]').waitFor();
       await page.$$eval(B + ' details', (n) => n.forEach((d) => { d.open = true; }));
       assert.equal(await page.locator(B + ' .pol-detail-title').innerText(), LONG_TITLE, 'the long title is shown whole');
       // The policy section itself never runs past the viewport (its chips wrap; scroll strips scroll inside themselves).
