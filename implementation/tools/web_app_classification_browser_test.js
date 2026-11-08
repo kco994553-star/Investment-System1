@@ -1,6 +1,6 @@
 'use strict';
 // 공통 분류 (DC-48, owner 2026-11-07) in a real browser at 1440×1000 and 390×844 on Codex common-classification/1 output.
-//  - Real source (IS2.classification.source → NONE): the company page says 공통 분류 자료 미연결 with its three lines and the three
+//  - Real source (IS2.classification.source → NONE): the company page says 공통 분류 실자료 묶음 보존됨 · 인증된 화면 전달 경로 미연결 with its three lines and the three
 //    ids apart (검증된 증권 ID 없음); the QGV filter is off with the same words; no new request on open.
 //  - Codex output (tests/fixtures/common_classification_main/main_fixture.json, pinned; the Universe504-code runs) put in place
 //    of source() unchanged: every record state on the company page in its own words (확인 / 섹터 확인 · 하위 산업 미확인 / 분류
@@ -11,12 +11,12 @@
 //    the comparison set and the evaluation date; keyboard reachable.
 //  - Hash context: QGV filter → 4.2 (#/macro/cc:…) → QGV (#/qgv/cc:…) → company page → back, back, back returns to the same
 //    selection; a token of another record set is not applied (분류 버전 불일치).
-//  - Tech filter: the confirmed COMMON group's full rows from the record; Main rows without signal_day refuse the join; keyed
-//    rows join; 9 of 10 keyed still refuse (never an intersection); an empty confirmed group joins nothing; another run's
-//    technical part → 분류 버전 불일치.
-//  - Call site (owner 2026-11-08, Codex #437 6714613662): group smaller than the universe joins only its rows in QGV order, with
-//    the 그룹 밖 N행 line; filter off restores the identical table; wrong row issuer / missing member row / missing link /
-//    unconfirmed group refuse with the table unchanged; N<10 shows ranks + median without decile, unconfirmed shows neither.
+//  - Tech filter at the real call site, technical-filter-join/2 (owner 2026-11-08, Codex #516 5b0ec88a) on Codex's group-join
+//    base renamed to page codes: Main rows without signal_day refused; keyed rows of the roster join in QGV order (VERIFIED,
+//    issuers connected from the record), 그룹 밖 N행 line, filter off restores the identical table; Codex's three
+//    counterexamples (row hash, row record id, other-day record) and missing / duplicate row, issuer conflict, missing link
+//    refused with the table unchanged and the reason shown; confirmed empty group VERIFIED_EMPTY; views without universe context
+//    and another run's projection refused; N<10 shows ranks + median without decile, unconfirmed shows neither.
 //  - 4.3 keeps its text and adds the SIC basis line; phone: no overflow, 44 px. (The 4.5 exposure line's 공통 섹터 context is wired
 //    in screen-policy-impact-live.js but not exercised here: this test serves no policy file.)
 //  - Boundaries: no request outside the origin, no data request on route changes, no storage, no console error, CSP 0.
@@ -70,10 +70,10 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       phase = tag + ' none';
       assert.equal(await attr('[data-cc]', 'data-cc'), 'NONE');
       const none = await text('[data-cc]');
-      for (const w of ['섹터 분류 자료 없음', '하위 산업 분류 자료 없음', '원천 SIC 원천 SIC 기록 없음', '공통 분류 자료 미연결 · 공개 파일 없음', '기업 ID NYSE:MMM', '발행사 ID 발행사 ID 미확인', '증권 ID 검증된 증권 ID 없음']) assert.ok(none.includes(w), 'NONE has ' + w + ': ' + none);
+      for (const w of ['섹터 분류 자료 없음', '하위 산업 분류 자료 없음', '원천 SIC 원천 SIC 기록 없음', '공통 분류 실자료 묶음 보존됨 · 인증된 화면 전달 경로 미연결', '기업 ID NYSE:MMM', '발행사 ID 발행사 ID 미확인', '증권 ID 검증된 증권 ID 없음']) assert.ok(none.includes(w), 'NONE has ' + w + ': ' + none);
       assert.equal(await page.locator('[data-cc-link]').count(), 0, 'no context link without a record');
       await qgv();
-      assert.ok((await text('[data-cc-filter=NONE]')).includes('공통 분류 자료 미연결'));
+      assert.ok((await text('[data-cc-filter=NONE]')).includes('공통 분류 실자료 묶음 보존됨 · 인증된 화면 전달 경로 미연결'));
       assert.equal(await page.locator('#lb-f-cc-sector').isDisabled(), true);
       assert.ok((await text('[data-filter=industry] label')).includes('원천 SIC'), 'the old filter is named 원천 SIC');
       ok(tag + ' real source NONE: words, three lines, three ids apart, filter off, 원천 SIC label');
@@ -186,92 +186,99 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       assert.ok((await text('[data-cc-token]')).includes('분류 버전 불일치')); assert.equal(await page.locator('#lb-f-cc-sector').inputValue(), '');
       ok(tag + ' hash context QGV → 4.2 → QGV → company, back ×3 to the same selections; another version not applied; 4.3 basis line');
 
-      // ---------------- the tech filter: full confirmed group rows from the record
+      // ---------------- the tech filter at the real call site (screen-qgv-live → techFilterLive.keep → classification.groupInput →
+      // techScreen.joinGroupRows, technical-filter-join/2 of Codex #516 5b0ec88a), on Codex's group-join base renamed to page codes.
       phase = tag + ' tech';
-      const TC = X.uTechnical(), TB = TC.technical.groups.find((g) => g.sector_id === IT).board, EB = TC.technical.groups.find((g) => g.sector_id === 'ENERGY').board;
-      const LINKS = U.technical_normal.security_links;
+      const GJ = U.group_join, GB = GJ.board, EB = GJ.technical.groups.find((g) => g.sector_id === 'ENERGY').board;
+      const gjPayload = (view = GJ.view) => ({ view, technical: GJ.technical, dictionary: M.dictionary });
       const swapTech = (boards, links) => page.evaluate(([b, l]) => { const I = window.IS2; I.__realTech = I.__realTech || I.techScreen;
         I.techScreen = Object.freeze({ ...I.__realTech, source: () => Promise.resolve({ state: 'OK', code: null, payload: { data_kind: 'SYNTHETIC', cases: b }, security_links: l, text: '' }) }); }, [boards, links]);
-      // Synthetic evidenced join keys on the first n group rows (by code); opts.drop removes one code's row from the layer's rows,
-      // opts.issuer puts a row-level issuer_id on one code's row.
+      // Evidenced join keys on the first n page codes (the run's securities); opts.drop removes one code's row, opts.issuer / opts.set
+      // put a field on one code's row, opts.dup appends a second copy of one code's row.
       const keys = (n, opts = {}) => page.evaluate(([k, codes, o]) => { const I = window.IS2; I.__realQ = I.__realQ || I.qgv; const Rq = I.__realQ;
-        I.qgv = k === null ? Rq : Object.freeze({ ...Rq, rows: (pg, x) => Rq.rows(pg, x).filter((r) => r.code !== o.drop).map((r) => { const i = codes.indexOf(r.code);
-          const out = i >= 0 && i < k ? { ...r, ticker: 'SYNTHETIC:TICKER:' + i, signal_day: '2017-01-06', security_id: 'SYNTHETIC:SECURITY:' + i } : r;
-          return o.issuer && r.code === o.issuer[0] ? { ...out, issuer_id: o.issuer[1] } : out; }) }); }, [n, U.codes, opts]);
+        I.qgv = k === null ? Rq : Object.freeze({ ...Rq, rows: (pg, x) => { const out = Rq.rows(pg, x).filter((r) => r.code !== o.drop).map((r) => { const i = codes.indexOf(r.code);
+          let y = i >= 0 && i < k ? { ...r, ticker: 'SYNTHETIC:TICKER:' + i, signal_day: '2017-01-06', security_id: 'SYNTHETIC:SECURITY:' + i } : r;
+          if (o.issuer && r.code === o.issuer[0]) y = { ...y, issuer_id: o.issuer[1] };
+          if (o.set && r.code === o.set[0]) y = { ...y, [o.set[1]]: o.set[2] };
+          return y; }); return o.dup ? [...out, out.find((r) => r.code === o.dup)] : out; } }); }, [n, U.codes, opts]);
       const B35 = '[data-lb="3.5"]';
-      const join = async (want, group) => { await page.locator('[data-k=tf-on]').check();
-        await page.locator(B35 + ' [data-tf-join="' + want + '"]' + (group ? '[data-tf-group="' + group + '"]' : '')).waitFor(); const t = await text(B35 + ' [data-tf-join]'); await page.locator('[data-k=tf-on]').uncheck(); return t; };
-      await useCC(TC); await swapTech({ it: TB, energy: EB }, LINKS); await keys(null); await qgv();
-      await page.locator(B35 + ' [data-cc-tech=OK]').waitFor();
-      assert.ok((await text(B35 + ' [data-cc-tech]')).includes('공통 분류 그룹 · 섹터 정보기술') && (await text(B35 + ' [data-cc-tech]')).includes('구성원 10개 기업'));
-      const brows = await page.$$eval(B35 + ' [data-tf-row]', (n) => n.map((x) => ({ sec: x.dataset.tfRow, company: x.dataset.ccCompany, rec: x.dataset.ccRecord })));
-      assert.equal(brows.length, 10);
-      for (const r of brows) { const v = TC.view.rows.find((x) => x.company_id === r.company); assert.ok(v, r.sec); assert.equal(r.rec, v.record_id, 'board row record = view record'); }
-      await company(brows[0].company); assert.equal(await attr('[data-cc-record]', 'data-cc-record'), brows[0].rec, 'company page reads the same record');
-      await qgv();
-      let t = await join('INVALID_SESSION_DATE'); assert.ok(t.includes('평가일 없음'), 'Main rows have no signal_day: the full group is refused, nothing made up');
-      await keys(9); await qgv(); t = await join('INVALID_SESSION_DATE'); assert.ok(t.includes('리더보드는 기술 조건 없이 그대로'), '9 of 10 keyed: still refused (never an intersection)');
-      await keys(10); await qgv(); await join('10');
-      await page.locator('[data-k=tf-on]').check(); await page.locator(B35 + ' [data-tf-join="10"]').waitFor();
-      const joined = await drawn(); assert.ok(joined.length === 10 && joined.every((r) => U.codes.slice(0, 10).includes(r.code)), 'the joined group in QGV order');
-      await page.locator('[data-k=tf-on]').uncheck();
-      await page.selectOption('#tf-board', 'energy'); await page.locator(B35 + ' [data-metric-card=momentum_6m] [data-valid-count]').waitFor();
-      assert.equal(await text(B35 + ' [data-metric-card=momentum_6m] [data-valid-count]'), '유효 종목 0 / 0');
-      await page.locator('[data-k=tf-on]').check(); await page.locator(B35 + ' [data-tf-join="0"]').waitFor(); await page.locator('[data-k=tf-on]').uncheck();
-      await page.selectOption('#tf-board', 'it');
-      // Another run's technical part: 분류 버전 불일치, no join.
-      await useCC({ ...X.uBundle(), technical: TC.technical }); await qgv();
-      await page.locator('[data-cc-mismatch=technical]').waitFor(); assert.ok((await text('[data-cc-mismatch]')).includes('분류 버전 불일치'));
-      t = await join('BOARD_GROUP_ROWS_UNRESOLVED', 'CLASSIFICATION_VERSION_MISMATCH'); assert.ok(t.includes('분류 버전 불일치'), t);
-      assert.equal(await attr(B35 + ' [data-cc-tech]', 'data-cc-tech'), 'VERSION_MISMATCH');
-      await keys(null);
-      if (phone) assert.ok(await overflow() <= 0, 'tech block: no overflow');
-      ok(tag + ' tech filter: full group rows from the record, no signal_day / 9 of 10 refuse, 10 join, empty group joins 0, other run 분류 버전 불일치');
-
-      // ---------------- the real call site (screen-qgv-live → techFilterLive.keep → classification.groupRows → joinRows), owner
-      // 2026-11-08 / Codex #437 6714613662: a group smaller than the universe, refusals leave the table as it was.
-      phase = tag + ' call site';
       const full = () => page.$$eval('[data-lb-table] tbody tr[data-row]', (trs) => trs.map((t) => t.dataset.row + '|' + t.innerText.replace(/\s+/g, ' ')));
       const refusedAt = async (code, group, words) => { const was = await full();
         await page.locator('[data-k=tf-on]').check(); await page.locator(B35 + ' [data-tf-join="' + code + '"]' + (group ? '[data-tf-group="' + group + '"]' : '')).waitFor();
-        const t = await text(B35 + ' [data-tf-join]'); assert.ok(t.includes(words) && t.includes('리더보드는 기술 조건 없이 그대로'), t);
-        assert.deepEqual(await full(), was, code + ': table unchanged'); assert.equal(await page.locator('[data-lb-table] [data-cell=tech]').count(), 0); await page.locator('[data-k=tf-on]').uncheck(); };
-      await useCC(TC); await swapTech({ it: TB }, LINKS); await keys(10); await qgv();
+        const t = await text(B35 + ' [data-tf-join]'); assert.ok(t.includes(words) && t.includes('리더보드는 기술 조건 없이 그대로'), code + ': ' + t);
+        assert.deepEqual(await full(), was, code + ': table unchanged'); assert.equal(await page.locator('[data-lb-table] [data-cell=tech]').count(), 0); await page.locator('[data-k=tf-on]').uncheck(); return t; };
+      const setup = async (payload, n, opts, boards = { it: GB }, links = GJ.security_links) => { await useCC(payload); await swapTech(boards, links); await keys(n, opts); await qgv(); };
+
+      await setup(gjPayload(), null);
       await page.locator(B35 + ' [data-cc-tech=OK]').waitFor();
+      assert.ok((await text(B35 + ' [data-cc-tech]')).includes('공통 분류 그룹 · 섹터 정보기술') && (await text(B35 + ' [data-cc-tech]')).includes('구성원 3개 기업'));
+      const brows = await page.$$eval(B35 + ' [data-tf-row]', (n) => n.map((x) => ({ sec: x.dataset.tfRow, company: x.dataset.ccCompany, rec: x.dataset.ccRecord })));
+      assert.equal(brows.length, 3);
+      for (const r of brows) assert.equal(r.rec, GJ.view.rows.find((x) => x.company_id === r.company).record_id, 'board row record = view record');
+      await company(brows[0].company); assert.equal(await attr('[data-cc-record]', 'data-cc-record'), brows[0].rec, 'company page reads the same record');
+      await qgv();
+      // Main rows carry no signal_day: the /2 join refuses (Codex code), nothing is made up.
+      await refusedAt('SIGNAL_DAY_MISMATCH', null, '평가일 불일치');
+      // (i) evidenced keys: the roster's 3 rows join (VERIFIED, issuers connected from the record) and show in QGV order.
+      await keys(3); await qgv();
       const off = await full();
       const universeN = await page.evaluate(async () => { const Q = window.IS2.qgv, pg = await Q.page(); return Q.rows(pg, { scope: 'UNIVERSE' }).length; });
-      await page.locator('[data-k=tf-on]').check(); await page.locator(B35 + ' [data-tf-join="10"]').waitFor();
+      await page.locator('[data-k=tf-on]').check(); await page.locator(B35 + ' [data-tf-join="3"]').waitFor();
+      assert.equal(await attr(B35 + ' [data-tf-validation]', 'data-tf-validation'), 'VERIFIED'); assert.equal(await attr(B35 + ' [data-tf-validation]', 'data-tf-issuer-connections'), '3');
+      assert.ok((await text(B35 + ' [data-tf-join]')).includes('결합 /2 · 그룹 명부 확인 3행 · 발행사 연결 3행'));
       const wantOrder = await page.evaluate(async (codes) => { const I = window.IS2, Q = I.__realQ, pg = await Q.page();
-        return I.qgvLive.helpers.sortRows(Q.rows(pg, { scope: 'UNIVERSE' }).filter((r) => codes.includes(r.code)), 'qgv').map((r) => r.id); }, U.codes.slice(0, 10));
+        return I.qgvLive.helpers.sortRows(Q.rows(pg, { scope: 'UNIVERSE' }).filter((r) => codes.includes(r.code)), 'qgv').map((r) => r.id); }, GJ.codes);
       assert.deepEqual((await drawn()).map((r) => r.id), wantOrder, '(i) the group\'s PASS rows in QGV order');
-      const outLine = await text(B35 + ' [data-tf-outside]');
-      assert.equal(await attr(B35 + ' [data-tf-outside]', 'data-tf-outside'), String(universeN - 10));
-      assert.ok(outLine.includes('그룹 밖 ' + (universeN - 10) + '행 · 조건 적용 대상 아님 · 원래 점수·순위 그대로'), outLine);
+      // (ii) the rows outside the group are untouched; off restores the identical table.
+      assert.equal(await attr(B35 + ' [data-tf-outside]', 'data-tf-outside'), String(universeN - 3));
+      assert.ok((await text(B35 + ' [data-tf-outside]')).includes('그룹 밖 ' + (universeN - 3) + '행 · 조건 적용 대상 아님 · 원래 점수·순위 그대로'));
       await page.locator('[data-k=tf-on]').uncheck(); await page.waitForFunction((n) => document.querySelectorAll('[data-lb-table] tbody tr[data-row]').length === n, off.length);
       assert.deepEqual(await full(), off, '(ii) filter off: the full table with identical scores and ranks');
-      // (iii) a row-level issuer that is not the record's: refused before the join; Main's own null issuer is filled from the record.
-      await keys(10, { issuer: [U.codes[2], 'SYNTHETIC:ISSUER:WRONG'] }); await qgv();
-      await refusedAt('BOARD_GROUP_ROWS_UNRESOLVED', 'ISSUER_MISMATCH', '행의 발행사 ID ≠ 분류 기록 발행사 ID');
-      // (iv) a group member missing: its row (MEMBER_NOT_MAPPED) or its link (Codex FIXED_SECURITY_LINK_MISSING); never the rest joined.
-      await keys(10, { drop: U.codes[3] }); await qgv();
-      await refusedAt('BOARD_GROUP_ROWS_UNRESOLVED', 'MEMBER_NOT_MAPPED', '그룹 구성원이 리더보드 행과 1:1로 대응되지 않음');
-      await keys(10); await swapTech({ it: TB }, LINKS.filter((l) => l.security_id !== 'SYNTHETIC:SECURITY:3')); await qgv();
+      // The three counterexamples Codex found in Main 23dd5dc5, then the other contract refusals; each leaves the table unchanged.
+      await keys(3, { set: [U.codes[0], 'classification_hash', 'b'.repeat(64)] }); await qgv();
+      await refusedAt('ROW_CLASSIFICATION_MISMATCH', null, '행의 분류 해시·기록 ID ≠ 그룹 명부 · 덮어쓰지 않음');
+      await keys(3, { set: [U.codes[0], 'classification_record_id', 'SYNTHETIC:WRONG'] }); await qgv();
+      await refusedAt('ROW_CLASSIFICATION_MISMATCH', null, '행의 분류 해시·기록 ID ≠ 그룹 명부 · 덮어쓰지 않음');
+      await setup(gjPayload(GJ.view_not_applicable_on_day), 3);
+      await refusedAt('GROUP_MEMBERSHIP_UNCONFIRMED', null, '비교 그룹 구성원 미확인');
+      await setup(gjPayload(), 3, { drop: U.codes[1] });
+      await refusedAt('GROUP_MEMBER_MISSING', null, '그룹 구성원 행 누락 · 나머지만으로 결합하지 않음');
+      await keys(3, { dup: U.codes[2] }); await qgv();
+      await refusedAt('DUPLICATE_GROUP_ROW', null, '같은 기업 코드 행 중복');
+      await keys(3, { issuer: [U.codes[2], 'SYNTHETIC:ISSUER:WRONG'] }); await qgv();
+      await refusedAt('ISSUER_CLASSIFICATION_MISMATCH', null, '행의 발행사 ≠ 그룹 명부 발행사 · 바꾸지 않음');
+      await setup(gjPayload(), 3, {}, { it: GB }, GJ.security_links.filter((l) => l.security_id !== 'SYNTHETIC:SECURITY:1'));
       await refusedAt('FIXED_SECURITY_LINK_MISSING', null, '매핑 없음');
-      // (v) small sample vs unconfirmed identity: different words, ranks / median only for the confirmed small group.
+      // A confirmed empty group: VERIFIED_EMPTY, 0 rows (a known empty group, not an unknown one).
+      await setup(gjPayload(), 3, {}, { it: GB, energy: EB });
+      await page.selectOption('#tf-board', 'energy'); await page.locator(B35 + ' [data-metric-card=momentum_6m] [data-valid-count]').waitFor();
+      assert.equal(await text(B35 + ' [data-metric-card=momentum_6m] [data-valid-count]'), '유효 종목 0 / 0');
+      await page.locator('[data-k=tf-on]').check(); await page.locator(B35 + ' [data-tf-join="0"]').waitFor();
+      assert.equal(await attr(B35 + ' [data-tf-validation]', 'data-tf-validation'), 'VERIFIED_EMPTY'); await page.locator('[data-k=tf-on]').uncheck();
+      await page.selectOption('#tf-board', 'it');
+      // Codex technical-case views carry no universe context: no roster, no join.
+      const TC = X.uTechnical(), TB = TC.technical.groups.find((g) => g.sector_id === IT).board;
+      await setup(TC, 10, {}, { it: TB }, U.technical_normal.security_links);
+      await refusedAt('BOARD_GROUP_ROWS_UNRESOLVED', 'GROUP_UNIVERSE_CONTEXT_REQUIRED', '분류 기록에 모집단 문맥(universe) 없음');
+      // Another run's technical part: 분류 버전 불일치, no join.
+      await setup({ ...X.uBundle(), technical: GJ.technical }, 3);
+      await page.locator('[data-cc-mismatch=technical]').waitFor(); assert.ok((await text('[data-cc-mismatch]')).includes('분류 버전 불일치'));
+      await refusedAt('BOARD_GROUP_ROWS_UNRESOLVED', 'CLASSIFICATION_VERSION_MISMATCH', '분류 버전 불일치');
+      assert.equal(await attr(B35 + ' [data-cc-tech]', 'data-cc-tech'), 'VERSION_MISMATCH');
+      // (v) small sample vs unconfirmed identity: different words; ranks / median only for the confirmed small group.
       for (const [name, st, words] of [['nine_valid', 'N_BELOW_10', '유효 종목 9 < 10 · 순위·중앙값만 · 분위 없음'], ['missing_security', 'UNCONFIRMED', '그룹 구성 미확인 · 순위·중앙값·분위 없음']]) {
         const P = X.uTech(name), PB = P.technical.groups.find((g) => g.sector_id === IT).board;
-        await useCC(P); await swapTech({ it: PB }, U['technical_' + name].security_links); await qgv();
+        await setup(P, 10, {}, { it: PB }, U['technical_' + name].security_links);
         const card = B35 + ' [data-metric-card=momentum_6m][data-tech-metric-state=' + st + ']'; await page.locator(card).waitFor();
         const ct = await text(card); assert.ok(ct.includes(words), ct);
         const ranks = await page.$$eval(B35 + ' [data-tf-row] [data-tf-rank]', (n) => n.map((x) => x.textContent));
         if (st === 'N_BELOW_10') { assert.ok(ct.includes('중앙값 ') && !ct.includes('중앙값 없음') && ranks.some((r) => /^\d+$/.test(r)), 'N<10: ranks and median');
           assert.ok(!/D\d/.test(await text(B35 + ' .tf-board')), 'N<10: no decile'); }
-        else { assert.ok(ct.includes('중앙값 없음') && ranks.every((r) => r === '—'), 'unconfirmed: no rank, no median');
-          await refusedAt('BOARD_GROUP_ROWS_UNRESOLVED', 'GROUP_MEMBERSHIP_UNCONFIRMED', '그룹 구성원 미확인'); }
+        else assert.ok(ct.includes('중앙값 없음') && ranks.every((r) => r === '—'), 'unconfirmed: no rank, no median');
       }
       await keys(null); await useCC(null);
-      if (phone) assert.ok(await overflow() <= 0, 'call site: no overflow');
-      ok(tag + ' call site: subset group joins in QGV order, 그룹 밖 N행 line, off restores the same table; wrong row issuer, missing member row / link, unconfirmed group refused with the table unchanged; N<10 ranks + median no decile vs unconfirmed none');
+      if (phone) assert.ok(await overflow() <= 0, 'tech block: no overflow');
+      ok(tag + ' tech filter /2 at the call site: no signal_day refused; 3-row roster joins in QGV order (VERIFIED, 3 issuers connected), 그룹 밖 N행, off restores; row hash / row record / other-day record (Codex counterexamples), missing / duplicate row, issuer conflict, missing link refused with the table unchanged; empty group VERIFIED_EMPTY; no universe context / other run refused; N<10 vs unconfirmed');
 
       // ---------------- an invalid payload is refused whole
       phase = tag + ' invalid';

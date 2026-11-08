@@ -97,44 +97,52 @@ const uni = (ids, extra = []) => [...ids, ...extra].map((id, i) => ({ id, code: 
     }
   });
 
-  await ok('groupRows: the confirmed group\'s FULL rows from the record (all members, issuer from the record, no made-up key), never an intersection', () => {
-    const b = valid(X.technicalCase('normal')), board = itBoard(b.technical), members = b.view.rows.map((r) => r.company_id);
-    const universe = uni(members, ['NYSE:OTHER1', 'NYSE:OTHER2']);
+  // The group roster is Codex technical-filter-membership/1 (GROUP_JOIN.md, #516 5b0ec88a): a view needs its universe context and
+  // each member's applicability on the evaluation date. Codex's technical-case views carry neither, so they make no roster.
+  const GJ = X.universe().group_join, gjBundle = (view = GJ.view) => valid({ view, technical: GJ.technical, dictionary: M.dictionary });
+  const gjUni = (extra = []) => uni(GJ.codes, extra);
+  await ok('groupRows: the roster\'s FULL rows (each once, issuer connected from the record with provenance, keys untouched), never an intersection', () => {
+    const b = gjBundle(), board = GJ.board, universe = gjUni(['NYSE:OTHER1', 'NYSE:OTHER2']), before = clone(universe);
     const got = C.groupRowsWhy(board, universe, b);
-    assert.equal(got.code, null); assert.deepEqual(got.rows.map((r) => r.code), members, 'every member, only members');
-    for (const r of got.rows) { const v = b.view.rows.find((x) => x.company_id === r.code); assert.equal(r.issuer_id, v.issuer_id); assert.equal(r.classification_record_id, v.record_id);
-      assert.equal(r.signal_day, null); assert.equal(r.security_id, null); assert.notEqual(r.issuer_id, r.id); }
-    // Only 9 of the 10 members carry a board key (the rows "already on the board"): the group is still all 10, so the join is
-    // refused instead of joining the 9.
-    const links = M.technical_cases.normal.security_links, keyed = universe.map((r, i) => (i < 9 ? { ...r, signal_day: board.signal_day, security_id: 'SYNTHETIC:SECURITY:' + i, ticker: 'SYNTHETIC:TICKER:' + i } : r));
-    const g9 = C.groupRowsWhy(board, keyed, b).rows; assert.equal(g9.length, 10);
-    assert.equal(T.joinRows(board, g9, { links, data_kind: 'SYNTHETIC' }).code, 'INVALID_SESSION_DATE');
-    assert.equal(T.joinRows(board, g9.slice(0, 9), { links, data_kind: 'SYNTHETIC' }).ok, true, 'the 9-row intersection would have joined (hiding the missing member)');
-    const all = universe.map((r, i) => (i < 10 ? { ...r, signal_day: board.signal_day, security_id: 'SYNTHETIC:SECURITY:' + i, ticker: 'SYNTHETIC:TICKER:' + i } : r));
-    const j = T.joinRows(board, C.groupRowsWhy(board, all, b).rows, { links, data_kind: 'SYNTHETIC' });
-    assert.equal(j.ok, true, JSON.stringify(j)); assert.equal(j.keys.size, 10);
-    // Out-of-group rows keep their place: groupRows never returns them and never reorders the universe.
-    assert.deepEqual(all.slice(10).map((r) => r.code), ['NYSE:OTHER1', 'NYSE:OTHER2']);
+    assert.equal(got.code, null); assert.deepEqual(got.rows.map((r) => r.code), GJ.codes, 'every member, only members');
+    for (const r of got.rows) { const m = GJ.group_manifest.members.find((x) => x.company_id === r.code);
+      assert.equal(r.issuer_id, m.issuer_id); assert.equal(r.issuer_connection.basis, 'VERIFIED_CLASSIFICATION_RECORD'); assert.equal(r.issuer_connection.previous_issuer_id, null);
+      assert.equal(r.issuer_connection.classification_record_id, m.classification_record_id); assert.equal(r.issuer_connection.signal_day, b.view.valuation_date);
+      assert.equal(Object.hasOwn(r, 'classification_record_id'), false, 'record id never written onto the row'); assert.equal(r.signal_day, null); assert.equal(r.security_id, null); }
+    assert.deepEqual(universe, before, 'universe rows unchanged');
+    const gi = C.groupInput(board, universe, b);
+    assert.equal(gi.mode, 'V2'); assert.equal(gi.code, null); assert.deepEqual(gi.rows.map((r) => r.code), GJ.codes); assert.ok(gi.rows.every((r, i) => r === universe[i]), 'the original row objects, not copies');
+    assert.deepEqual(clone(gi.manifest), GJ.group_manifest, 'roster = Codex build_group_manifest'); assert.deepEqual(clone(gi.context), GJ.group_context, 'context = the pinned request context');
+    const nineKeyed = universe.map((r, i) => (i < 2 ? { ...r, signal_day: board.signal_day, security_id: 'SYNTHETIC:SECURITY:' + i } : r));
+    assert.equal(C.groupInput(board, nineKeyed, b).rows.length, 3, 'rows keyed for the board do not shrink the group');
+    assert.equal(C.groupInput({ ...board, group_id: 'SYNTHETIC:LEADERBOARD' }, universe, b).mode, 'NONE', 'another board: the /1 path');
+  });
+  await ok('counterexamples (Codex #516 consumer probe of Main 23dd5dc5): row hash / row record id / other-day record refused, never overwritten or filled', () => {
+    const b = gjBundle(), board = GJ.board, u = gjUni();
+    const hash = u.map((r, i) => (i ? r : { ...r, classification_hash: 'b'.repeat(64) })), rec = u.map((r, i) => (i ? r : { ...r, classification_record_id: 'SYNTHETIC:WRONG' }));
+    assert.equal(C.groupRowsWhy(board, hash, b).code, 'ROW_CLASSIFICATION_MISMATCH');
+    assert.equal(C.groupRowsWhy(board, rec, b).code, 'ROW_CLASSIFICATION_MISMATCH'); assert.equal(rec[0].classification_record_id, 'SYNTHETIC:WRONG', 'not overwritten');
+    const off = gjBundle(GJ.view_not_applicable_on_day), gi = C.groupInput(board, u, off);
+    assert.equal(gi.manifest.membership_status, 'UNKNOWN'); assert.deepEqual([...gi.manifest.reasons], ['CLASSIFICATION_APPLICABILITY_UNCONFIRMED']);
+    assert.equal(C.groupRowsWhy(board, u, off).code, 'GROUP_MEMBERSHIP_UNCONFIRMED', 'no issuer from another day\'s record');
+    assert.equal(C.groupRowsWhy(board, u.map((r, i) => (i ? r : { ...r, issuer_id: 'SYNTHETIC:WRONG' })), b).code, 'ISSUER_MISMATCH', 'a conflicting issuer is not replaced');
   });
 
   await ok('groupRows null (with its code) whenever the group is not known', () => {
-    const b = valid(X.technicalCase('normal')), board = itBoard(b.technical), universe = uni(b.view.rows.map((r) => r.company_id));
+    const b = gjBundle(), board = GJ.board, universe = gjUni();
     const why = (bd, u, bb = b) => C.groupRowsWhy(bd, u, bb).code;
     assert.equal(why(board, universe.slice(1)), 'MEMBER_NOT_MAPPED', 'a member without its row');
     assert.equal(why(board, [...universe, universe[0]]), 'MEMBER_NOT_MAPPED', 'a member with two rows');
-    assert.equal(why(board, universe.map((r, i) => (i ? r : { ...r, issuer_id: 'ISSUER:OTHER' }))), 'ISSUER_MISMATCH');
     assert.equal(why({ ...board, group_id: 'SYNTHETIC:LEADERBOARD' }, universe), 'BOARD_GROUP_NOT_COMMON');
     assert.equal(why({ ...board, group_id: 'COMMON:ENERGY:SPLIT_ADJUSTED' }, universe), 'BOARD_GROUP_NOT_IN_PROJECTION');
     assert.equal(why({ ...board, signal_day: '2017-01-09' }, universe), 'BOARD_DATE_MISMATCH');
     assert.equal(why({ ...board, membership_source: 'common-classification:' + 'b'.repeat(64) }, universe), 'CLASSIFICATION_VERSION_MISMATCH');
-    assert.equal(why(board, universe, null), C.state().state === 'OK' ? null : 'CLASSIFICATION_NOT_CONNECTED');
+    assert.equal(why(board, universe, null), 'CLASSIFICATION_NOT_CONNECTED');
     assert.equal(C.groupRows(board, universe), null, 'no loaded source today: null');
-    const miss = valid(X.technicalCase('missing_security'));
-    assert.equal(why(itBoard(miss.technical), uni(miss.view.rows.map((r) => r.company_id)), miss), 'GROUP_MEMBERSHIP_UNCONFIRMED');
-    const empty = valid(X.technicalCase('empty_group')), eg = C.groupRowsWhy(itBoard(empty.technical), [], empty);
-    assert.equal(eg.code, null); assert.deepEqual(eg.rows, [], 'a confirmed empty group is known and empty, not unknown');
+    const tc = valid(X.technicalCase('normal'));
+    assert.equal(why(itBoard(tc.technical), uni(tc.view.rows.map((r) => r.company_id)), tc), 'GROUP_UNIVERSE_CONTEXT_REQUIRED', 'Codex technical-case views carry no universe context: no roster');
     const view = valid({ view: M.technical_cases.normal.view });
-    assert.equal(why(board, universe, view), 'TECHNICAL_PROJECTION_NOT_CONNECTED');
+    assert.equal(why(itBoard(M.technical_cases.normal.technical), universe, view), 'TECHNICAL_PROJECTION_NOT_CONNECTED');
   });
 
   await ok('version mismatch: a part of another run or a tampered record is kept aside and refuses joins (분류 버전 불일치)', () => {
@@ -217,6 +225,25 @@ const uni = (ids, extra = []) => [...ids, ...extra].map((id, i) => ({ id, code: 
     assert.equal(C.contextState(t.replace(/:[0-9a-f]{12}$/, ':' + '0'.repeat(12)), b), 'VERSION_MISMATCH');
     assert.equal(C.contextState(t.replace('2026-11-02', '2026-11-01'), b), 'DATE_MISMATCH');
     assert.equal(C.parseContext('cc:x'), null); assert.equal(C.context({ sector: 'COMMUNICATION_SERVICES' }, b), null);
+  });
+
+  await ok('2.2.7: a sector QGV preview is matched to records only through qgv links naming that preview on the same date', () => {
+    const b = valid(X.bundle()), p = M.bundle.qgv_preview, r = C.previewCheck(p, b);
+    assert.equal(r.state, 'OK'); assert.equal(r.rows.size, p.result_rows.length); assert.equal(r.missing, 0);
+    for (const row of p.result_rows) assert.equal(r.rows.get(row.company_id).record_id, b.view.rows.find((x) => x.company_id === row.company_id).record_id);
+    for (const k of ['preview_id', 'input_hash', 'config_hash', 'cache_key', 'engine_version']) {
+      const x = C.previewCheck({ ...p, [k]: k === 'engine_version' ? 'sector-qgv-engine/9' : 'c'.repeat(64) }, b);
+      assert.equal(x.state, 'PREVIEW_NOT_LINKED', k); assert.deepEqual([...x.differs], [k]); assert.equal(x.rows, null, 'no row matched');
+    }
+    assert.equal(C.previewCheck({ ...p, valuation_date: '2026-11-01' }, b).state, 'DATE_MISMATCH');
+    assert.equal(C.previewCheck(p, valid(X.uBundle())).state, 'PREVIEW_NOT_LINKED', 'another run\'s links');
+    assert.equal(C.previewCheck(p, valid({ ...X.bundle(), qgv_links: null })).state, 'LINKS_NONE');
+    const t = clone(X.bundle()); t.qgv_links.rows[0].classification_record_id = 'record:other';
+    assert.equal(C.previewCheck(p, valid(t)).state, 'VERSION_MISMATCH');
+    const extra = { ...p, result_rows: [...p.result_rows, { company_id: 'company-999', status: 'MAPPING_UNRESOLVED', rank: null }] }, e = C.previewCheck(extra, b);
+    assert.equal(e.state, 'OK'); assert.equal(e.missing, 1); assert.equal(e.rows.get('company-999').reason, 'CLASSIFICATION_LINK_MISSING');
+    assert.equal(C.previewCheck(p, null).state, C.state().state === 'OK' ? 'OK' : 'NONE');
+    assert.equal(new Set(Object.values(C.PREVIEW_STATE)).size, Object.keys(C.PREVIEW_STATE).length, 'each state its own words');
   });
 
   await ok('source() answers NONE; load() reads it once and makes no request; the file has no request code', async () => {

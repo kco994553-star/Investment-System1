@@ -21,6 +21,7 @@ const R = require('./web_app_reuse');
 const site = require('./web_app_test_site');
 const F = require('./qgv_v2_fixture.js');
 const E = require('./web_app_sector_qgv_engine.js');
+const CCX = require('./web_app_classification_fixture.js');
 const S = require('../src/investment_system/product/web_app/sector-qgv.js');
 
 const NOW = '2026-11-06T03:00:00.000Z';
@@ -113,6 +114,19 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       assert.deepEqual(calls.map((c) => [c.op, c.input_id, c.ok]), [['preview', 'NORMAL', true]], 'one engine preview call');
       const sum = await text(B + ' [data-sq-summary]');
       assert.match(sum, /미리보기 · 공통 엔진 재계산/);
+      // 2.2.7 × 공통 분류 (owner 2026-11-08, Codex GROUP_JOIN.md): no record set → its own words, no row matched; Codex's CLI run
+      // (main fixture bundle: qgv links of ANOTHER preview) → 미리보기 다름, never mixed into these rows. (Matching = node test.)
+      await page.locator(B + ' [data-sq-cc=NONE]').waitFor();
+      assert.ok((await text(B + ' [data-sq-cc]')).includes('공통 분류 · 공통 분류 기록 미연결 · 분류 대조 안 함'));
+      await page.evaluate((p) => { const I = window.IS2; I.__realCC = I.__realCC || I.classification;
+        I.classification = Object.freeze({ ...I.__realCC, source: () => Promise.resolve({ state: 'OK', code: null, payload: p }) }); return I.classification.load(); }, CCX.bundle());
+      await page.locator(B + ' [data-k=sq-only]').click(); await page.locator(B + ' [data-sq-cc=PREVIEW_NOT_LINKED]').waitFor();
+      const cc = await text(B + ' [data-sq-cc]');
+      assert.ok(cc.includes('이 미리보기는 분류 연결 기록의 미리보기와 다름 · 분류 기록과 섞지 않음') && cc.includes('preview_id'), cc);
+      assert.equal(await page.locator(B + ' [data-sq-cc-record]').count(), 0, 'no row matched to a record');
+      await page.locator(B + ' [data-k=sq-only]').click();
+      await page.evaluate(() => { const I = window.IS2; I.classification = I.__realCC; return I.classification.load(); });
+      ok(tag + ' 2.2.7 preview × 공통 분류: 미연결 and 다른 미리보기 each in their own words, no row mixed');
       // The synthetic input has no common B/P observation: the engine leaves V and the total unscored (strict), never 0.
       assert.match(sum, /총점 산출 · 전 20 \/ 20 → 후 0 \/ 20 · 원래 모집단 전체 기준/); assert.match(sum, /V 0 \/ 20/); assert.match(sum, /필수 요소 결측 · 총점 미산출 20/);
       assert.ok((await text(B + ' [data-sq-factor=common_bp]')).includes('자료 일부 부족 0/20 · 선택 가능'), 'availability from the engine coverage');
