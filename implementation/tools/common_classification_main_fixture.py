@@ -13,6 +13,10 @@ classification decision. This tool never writes a view, a technical or a macro p
                    test job (tests/research/test_common_classification_cli.job): classification-view.json,
                    qgv-classification-links.json, technical.json and macro.json of ONE run, so the same company/date carries
                    the same classification_record_id and classification_hash in detail, QGV, technical and macro.
+  universe         the same Codex runs with only the company ids of their INPUTS renamed to Universe504 codes of the browser
+                   tests' page (UNIVERSE_CODES; Codex then computes every record, hash and projection itself), so a screen row
+                   (code = company_id) can meet them: record_cases (each case on its own), technical_normal (the normal technical
+                   case: view, technical, macro) and bundle (the CLI run).
   owner_cases      which entry above shows each owner case (normal, multi-business, partial unclassified, period change,
                    share class / ADR, other evaluation date, version mismatch, empty / small group, plus conflict, outside
                    interval, REIT / telecom unresolved).
@@ -38,6 +42,9 @@ OUT = ROOT / 'tests/fixtures/common_classification_main/main_fixture.json'
 PINS = {'CONTRACT.md': '00bccc2c38ae03e037ff820d6010a251b87f35983dadf1986217d0a1989258ea',
         'fixtures.json': '526cbf85defddbc4b255ea8dc5194ccab034c5eb9b317ef94142b5338c26ebcf',
         'dictionary.json': '9ae49c5f849535d325aaa64689da9fa61147347a9c8f8dafcf4055c0ef6d5776'}
+# Universe504 codes of the browser tests' QGV page (tools/qgv_v2_fixture.js strictPayload, in its order).
+UNIVERSE_CODES = ['NYSE:MMM', 'NYSE:AOS', 'NYSE:ABT', 'NYSE:ABBV', 'NYSE:ACN', 'NASDAQ:ADBE', 'NASDAQ:AMD', 'NYSE:AES', 'NYSE:AFL', 'NYSE:A',
+                  'NYSE:APD', 'NASDAQ:ABNB', 'NASDAQ:AKAM', 'NYSE:ALB', 'NYSE:ARE', 'NASDAQ:ALGN', 'NYSE:ALLE', 'NASDAQ:LNT', 'NYSE:ALL', 'NASDAQ:GOOGL']
 OWNER_CASES = {
     'normal': ['record_cases.normal', 'technical_cases.normal'],
     'multi_business': ['record_cases.multiple_business_tags'],
@@ -75,12 +82,32 @@ def resolved(store, valuation_date, knowledge_as_of):
     return {'valuation_date': valuation_date, 'knowledge_as_of': knowledge_as_of, 'error': None, 'view': view, 'macro': macro_projection(view)}
 
 
-def cli_bundle():
+def renamed(value, names):
+    """An input with only exact company-id strings renamed (keys, record ids and every other value unchanged)."""
+    if isinstance(value, dict):
+        return {k: renamed(v, names) for k, v in value.items()}
+    if isinstance(value, list):
+        return [renamed(v, names) for v in value]
+    return names.get(value, value) if isinstance(value, str) else value
+
+
+def cli_bundle(names=None):
     spec = importlib.util.spec_from_file_location('common_classification_cli', ROOT / 'tools/common_classification.py')
     cli = importlib.util.module_from_spec(spec); spec.loader.exec_module(cli)
     import test_common_classification_cli as codex_cli_test  # Codex's own synthetic CLI job (consumed, not edited)
     with tempfile.TemporaryDirectory() as tmp:
-        tmp = Path(tmp); job = codex_cli_test.job(tmp); cli.run(job, tmp / 'out', synthetic=True)
+        tmp = Path(tmp)
+        if names:  # Codex's job() with its snapshot and store company ids renamed before anything is computed
+            snapshot, store, view = codex_cli_test.inputs()  # view: only its knowledge_as_of is read by job()
+            original = codex_cli_test.inputs
+            codex_cli_test.inputs = lambda: (renamed(snapshot, names), renamed(store, names), view)
+            try:
+                job = codex_cli_test.job(tmp)
+            finally:
+                codex_cli_test.inputs = original
+        else:
+            job = codex_cli_test.job(tmp)
+        cli.run(job, tmp / 'out', synthetic=True)
         read = lambda name: json.loads((tmp / 'out' / name).read_text())
         return {'view': read('classification-view.json'), 'qgv_links': read('qgv-classification-links.json'),
                 'technical': read('technical.json'), 'macro': read('macro.json')}
@@ -103,11 +130,18 @@ def build():
                                  'macro': macro_projection(c['view']) if name == 'normal' else None}
     normal = fixtures['record_cases']['normal']
     variants = {'normal_other_date': resolved(normal['store'], '2026-11-05', '2026-11-05T23:00:00Z')}
+    one = lambda ids: dict(zip(ids, UNIVERSE_CODES))
+    universe = {'codes': UNIVERSE_CODES,
+                'record_cases': {name: resolved(renamed(c['store'], one(c['store']['members'])), c['valuation_date'], c['knowledge_as_of'])
+                                 for name, c in fixtures['record_cases'].items()},
+                'bundle': cli_bundle(one(['company-%03d' % i for i in range(20)]))}
+    tc = renamed({k: v for k, v in fixtures['technical_cases']['normal'].items() if k != 'expected'}, one(fixtures['technical_cases']['normal']['view']['members']))
+    universe['technical_normal'] = {'view': tc['view'], 'security_links': tc['security_links'], 'technical': technical_groups(**tc), 'macro': macro_projection(tc['view'])}
     return {'schema_version': 'main-common-classification-fixture/1', 'data_kind': 'SYNTHETIC',
             'made_by': 'implementation/tools/common_classification_main_fixture.py (Codex functions only)',
             'codex_handoff': {'path': 'implementation/docs/research/common_classification', 'sha256': PINS},
             'dictionary': dictionary(), 'record_cases': record_cases, 'technical_cases': technical_cases,
-            'variants': variants, 'bundle': cli_bundle(), 'owner_cases': OWNER_CASES}
+            'variants': variants, 'bundle': cli_bundle(), 'universe': universe, 'owner_cases': OWNER_CASES}
 
 
 def main():

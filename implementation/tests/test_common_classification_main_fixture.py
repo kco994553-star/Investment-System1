@@ -80,3 +80,23 @@ def test_bundle_is_one_run_with_one_record_per_company():
     # Today's Codex state: no verified security id, so no confirmed technical group with members and no rank.
     assert all(r['security_ids'] == [] for r in b['technical']['rows'])
     assert b['macro']['benchmark_is_common_sector'] is False and b['macro']['probabilities'] is None
+
+
+def test_universe_runs_differ_from_the_codex_runs_only_by_the_renamed_company_ids():
+    main = load(); u = main['universe']; codes = u['codes']
+    strip = lambda rows: [{k: r[k] for k in ('issuer_id', 'record_id', 'sector', 'industry', 'accounting')} for r in rows]
+    for name, case in main['record_cases'].items():
+        got = u['record_cases'][name]
+        if case['error']:
+            assert got['error'] == case['error']; continue
+        assert sorted(strip(got['view']['rows']), key=json.dumps) == sorted(strip(case['view']['rows']), key=json.dumps), name
+        assert set(got['view']['members']) <= set(codes)
+    b = u['bundle']; h = b['view']['classification_hash']
+    assert sorted(r['company_id'] for r in b['view']['rows']) == sorted(codes)
+    assert b['qgv_links']['classification_hash'] == h == b['technical']['classification_hash'] == b['macro']['classification_hash']
+    ids = {r['company_id']: r['record_id'] for r in b['view']['rows']}
+    for part in (b['qgv_links']['rows'], b['technical']['rows'], b['macro']['rows']):
+        assert {r['company_id']: r['classification_record_id'] for r in part} == ids
+    t = u['technical_normal']['technical']; g = next(x for x in t['groups'] if x['sector_id'] == 'INFORMATION_TECHNOLOGY')
+    assert g['membership_status'] == 'CONFIRMED' and g['counts']['company_members'] == 10
+    assert {r['company_id'] for r in t['rows']} == set(codes[:10])
