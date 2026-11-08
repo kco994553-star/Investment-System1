@@ -1,0 +1,205 @@
+name: wrb-sec-acquisition-once
+# Owner 2026-11-07 approval A (WRB 0000011544-26-000046): accession body + the one Exhibit 99.1 the body names and links,
+# at most 2 SEC GETs, 0 USD, 2 MiB per file, 4 MiB total, no retry, no redirect. Codex request: raw
+# handoff/input-recovery-20261103 handoffs/v-first-execution-20261108/minimum-input-plan.json rank1.
+# One run only. It fires only on a push to claude/wrb-sec-once-run (the owner's go on the run, owner 2026-11-08); pushing the
+# proposal branch claude/wrb-sec-once runs nothing. No checkout: no repository file runs with a secret in its environment.
+# SEC_USER_AGENT is used in step 1 only; RAW_REPO_TOKEN in step 2 only. The log shows fixed lines only (status, sizes,
+# SHA-256 of public SEC documents); never the User-Agent, the token or document text. Bytes go only to the private raw
+# repository (handoffs/main-acquisition-20261107/wrb/), never to Pages, artifacts or this repository.
+on:
+  push:
+    branches: [claude/wrb-sec-once-run]
+permissions:
+  contents: read
+concurrency:
+  group: wrb-sec-acquisition-once
+  cancel-in-progress: false
+jobs:
+  acquire:
+    if: github.repository == 'kco994553-star/Investment-System1' && github.ref == 'refs/heads/claude/wrb-sec-once-run'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: SEC GET (body, then the one directly named Exhibit 99.1), bounded, inline
+        env:
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+        run: |
+          python3 -I - "$RUNNER_TEMP/wrb" <<'PY'
+          import hashlib
+          import html
+          import json
+          import os
+          import re
+          import sys
+          import time
+          import urllib.error
+          import urllib.parse
+          import urllib.request
+          from datetime import datetime, timezone
+
+          # Owner 2026-11-07 approval A (WRB), Codex v-first-execution-20261108/minimum-input-plan.json rank1. Fixed, not inputs.
+          ACCESSION = '0000011544-26-000046'
+          FOLDER = 'https://www.sec.gov/Archives/edgar/data/11544/000001154426000046/'
+          BODY_URL = FOLDER + 'wrb-20261019.htm'
+          MAX_REQUESTS = 2
+          MAX_FILE = 2 * 1024 * 1024
+          MAX_TOTAL = 4 * 1024 * 1024
+          TIMEOUT = 20
+          EXHIBIT_NAME = re.compile(r'(?i)^[a-z0-9_.-]*(?:ex|exhibit)[-_]?99[-_.]?0?1(?:[^0-9][a-z0-9_.-]*)?\.(?:htm|html|txt)$')
+          HREF = re.compile(r'''(?i)href\s*=\s*["']([^"'#]+)["']''')
+
+
+          class NoRedirect(urllib.request.HTTPRedirectHandler):
+              def redirect_request(self, *args, **kwargs):
+                  return None
+
+
+          OPEN = urllib.request.build_opener(NoRedirect).open
+          state = {'sent': 0, 'total': 0}
+
+
+          def now():
+              return datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+
+
+          def get(url, agent):
+              """One GET, no retry, no redirect; → (receipt, bytes or None)."""
+              if state['sent'] >= MAX_REQUESTS:
+                  raise SystemExit('STOP request_cap')
+              if not url.startswith(FOLDER):
+                  raise SystemExit('STOP url_outside_accession')
+              state['sent'] += 1
+              receipt = {'url': url, 'method': 'GET', 'request_started_at': now(), 'retries': 0, 'redirects_followed': 0,
+                         'user_agent': 'SEC_USER_AGENT Actions Secret (value not recorded)'}
+              body, status, ctype = None, None, None
+              try:
+                  with OPEN(urllib.request.Request(url, headers={'User-Agent': agent, 'Accept': 'text/html'}), timeout=TIMEOUT) as r:
+                      status, ctype = r.status, r.headers.get('Content-Type')
+                      body = r.read(MAX_FILE + 1)
+              except urllib.error.HTTPError as error:
+                  status = error.code
+              except Exception as error:
+                  receipt.update(outcome='NETWORK_' + type(error).__name__, acquired_at=None)
+                  return receipt, None
+              receipt.update(http_status=status, content_type=ctype if isinstance(ctype, str) and len(ctype) < 100 else None)
+              if status != 200 or body is None:
+                  receipt.update(outcome='HTTP_STATUS', acquired_at=None)
+                  return receipt, None
+              if len(body) > MAX_FILE or state['total'] + len(body) > MAX_TOTAL:
+                  receipt.update(outcome='OVER_CAP', acquired_at=None)
+                  return receipt, None
+              state['total'] += len(body)
+              receipt.update(outcome='OK', acquired_at=now(), bytes=len(body), sha256=hashlib.sha256(body).hexdigest())
+              return receipt, body
+
+
+          def exhibit_url(body):
+              """The one Exhibit 99.1 the body itself names and links inside this accession, or (None, reason)."""
+              text = body.decode('utf-8', 'replace')
+              plain = html.unescape(re.sub(r'<[^>]+>', ' ', text))
+              if not re.search(r'(?i)exhibit\s*(?:no\.?\s*)?99\.1\b|\b99\.1\b', plain):
+                  return None, 'BODY_NAMES_NO_EXHIBIT_99_1'
+              found = set()
+              for href in HREF.findall(text):
+                  url = urllib.parse.urljoin(BODY_URL, href.strip())
+                  if url.startswith(FOLDER) and EXHIBIT_NAME.match(url[len(FOLDER):]):
+                      found.add(url)
+              if not found:
+                  return None, 'NO_LINKED_EXHIBIT_99_1_IN_ACCESSION'
+              if len(found) > 1:
+                  return None, 'AMBIGUOUS_EXHIBIT_99_1'
+              return found.pop(), 'BODY_NAMES_AND_LINKS_EXHIBIT_99_1'
+
+
+          def main(out):
+              agent = os.environ.get('SEC_USER_AGENT', '')
+              print('SECRET_NAMES SEC_USER_AGENT=%s' % ('present' if agent else 'missing'))
+              if not agent:
+                  print('STOP secrets_missing')
+                  return 2
+              os.makedirs(out, exist_ok=True)
+              files, receipts = [], []
+              r, body = get(BODY_URL, agent)
+              receipts.append(r)
+              print('SEC_GET n=1 part=body http=%s outcome=%s bytes=%s sha256=%s' % (r.get('http_status', '-'), r['outcome'], r.get('bytes', '-'), r.get('sha256', '-')))
+              decision = 'NOT_EVALUATED_BODY_FAILED'
+              if body is not None:
+                  files.append(('wrb-20261019.htm', body))
+                  url, decision = exhibit_url(body)
+                  print('EXHIBIT decision=%s' % decision)
+                  if url:
+                      time.sleep(0.5)
+                      r2, body2 = get(url, agent)
+                      receipts.append(r2)
+                      print('SEC_GET n=2 part=exhibit_99_1 http=%s outcome=%s bytes=%s sha256=%s' % (r2.get('http_status', '-'), r2['outcome'], r2.get('bytes', '-'), r2.get('sha256', '-')))
+                      if body2 is not None:
+                          files.append((url[len(FOLDER):], body2))
+              agent = None
+              entries = []
+              for name, data in files:
+                  with open(os.path.join(out, name), 'wb') as f:
+                      f.write(data)
+                  entries.append({'path': 'wrb/' + name, 'size': len(data), 'sha256': hashlib.sha256(data).hexdigest()})
+              receipt = {'schema_version': 'main-acquisition-receipt/1', 'source': 'SEC EDGAR Archives', 'accession': ACCESSION,
+                         'approval': 'owner 2026-11-07 A (WRB): accession body + directly related exhibit, max 2 requests, 0 USD, '
+                                     'response bodies total <= 4 MiB, no retry on failure or over cap; re-run not approved',
+                         'codex_request': 'raw handoff/input-recovery-20261103 handoffs/v-first-execution-20261108/minimum-input-plan.json rank1_existing_WRB_document',
+                         'limits': {'max_requests': MAX_REQUESTS, 'max_bytes_per_file': MAX_FILE, 'max_bytes_total': MAX_TOTAL,
+                                    'timeout_s': TIMEOUT, 'retries': 0, 'redirects': 'refused'},
+                         'requests_sent': state['sent'], 'exhibit_decision': decision, 'requests': receipts,
+                         'run': {'repository': os.environ.get('GITHUB_REPOSITORY'), 'run_id': os.environ.get('GITHUB_RUN_ID'),
+                                 'commit': os.environ.get('GITHUB_SHA')}, 'files': entries}
+              with open(os.path.join(out, 'receipt.json'), 'w', encoding='utf-8') as f:
+                  json.dump(receipt, f, ensure_ascii=False, indent=1, sort_keys=True)
+                  f.write('\n')
+              print('WRB_DONE requests_sent=%d files=%d total_bytes=%d' % (state['sent'], len(entries), state['total']))
+              return 0 if files else 1
+
+
+          if __name__ == '__main__':
+              sys.exit(main(sys.argv[1]))
+          PY
+      - name: Preserve in the private raw repository (bytes unchanged, receipt + manifest)
+        env:
+          RAW_REPO_TOKEN: ${{ secrets.RAW_REPO_TOKEN }}
+        run: |
+          if [ -z "$RAW_REPO_TOKEN" ]; then echo 'STOP RAW_REPO_TOKEN_MISSING'; exit 1; fi
+          auth=$(printf 'x-access-token:%s' "$RAW_REPO_TOKEN" | base64 -w0)
+          git -c http.extraheader="AUTHORIZATION: basic $auth" clone -q --depth 1 --branch handoff/input-recovery-20261103 \
+            https://github.com/kco994553-star/investment-system1-raw.git "$RUNNER_TEMP/raw"
+          python3 -I - "$RUNNER_TEMP/raw" "$RUNNER_TEMP/wrb" <<'PY'
+          import hashlib, json, os, sys
+          root, src = sys.argv[1], sys.argv[2]
+          D = os.path.join(root, 'handoffs/main-acquisition-20261107')
+          dest = os.path.join(D, 'wrb')
+          if os.path.exists(dest):
+              print('STOP already_preserved'); sys.exit(1)
+          os.makedirs(dest)
+          rec = json.load(open(os.path.join(src, 'receipt.json')))
+          for name in sorted(os.listdir(src)):
+              data = open(os.path.join(src, name), 'rb').read()
+              open(os.path.join(dest, name), 'wb').write(data)
+          mpath = os.path.join(D, 'manifest.json')
+          m = json.load(open(mpath))
+          names = {f['path'] for f in m['files']}
+          for name in sorted(os.listdir(dest)):
+              data = open(os.path.join(dest, name), 'rb').read()
+              entry = {'path': 'wrb/' + name, 'size': len(data), 'sha256': hashlib.sha256(data).hexdigest()}
+              if entry['path'] in names:
+                  print('STOP manifest_path_exists'); sys.exit(1)
+              m['files'].append(entry)
+          m['items']['wrb_0000011544-26-000046'] = ('DONE: %d GET(s), exhibit decision %s, files %d (see wrb/receipt.json)'
+                                                   % (rec['requests_sent'], rec['exhibit_decision'], len(rec['files'])))
+          with open(mpath, 'w', encoding='utf-8') as f:
+              json.dump(m, f, ensure_ascii=False, indent=1, sort_keys=True); f.write('\n')
+          for f in m['files']:
+              if f['path'].startswith('wrb/'):
+                  print('PRESERVED path=%s bytes=%d sha256=%s' % (f['path'], f['size'], f['sha256']))
+          PY
+          cd "$RUNNER_TEMP/raw"
+          git add handoffs/main-acquisition-20261107
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+            commit -q -m "Main acquisition: WRB 0000011544-26-000046 (owner 2026-11-07 A), bytes unchanged, receipt + manifest (run $GITHUB_RUN_ID)"
+          git -c http.extraheader="AUTHORIZATION: basic $auth" push -q origin HEAD:handoff/input-recovery-20261103
+          echo "RAW_PUSHED commit=$(git rev-parse HEAD)"
