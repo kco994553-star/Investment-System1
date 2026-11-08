@@ -209,3 +209,12 @@ def test_v_readiness_is_bound_to_original_snapshot_and_selected_rows(tmp_path):
     assert coverage['causes']['code_rows']['price']['count']==len(rows)
     rewrite(job,tmp_path,None,'operating_v_resume',lambda d:d['snapshot'].update(as_of='2026-11-03T00:00:00Z'))
     with pytest.raises(ValueError,match='READINESS_CONTEXT_MISMATCH'):project(job)
+
+
+def test_published_shard_fixture_source_bytes_match_identity():
+    import hashlib
+    from investment_system.research.held_issuer_shards import verify_shards
+    root=Path(__file__).parents[1]/'fixtures/held_issuer_shards'
+    m=json.loads((root/'manifest.json').read_text())
+    verify_shards({n:(root/n).read_bytes() for n in [r['path'] for r in m['files']]+['manifest.json']})
+    assert hashlib.sha256((root/'source-summary.json').read_bytes()).hexdigest()==m['identity']['summary']['sha256']
