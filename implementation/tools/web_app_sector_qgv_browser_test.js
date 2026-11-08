@@ -11,6 +11,8 @@
 //  - Owner 2026-11-07: the flow is ① 10섹터 기본값 (base preset id / version of the scope) → ② 내 설정; 공격형·균형형·수비형 are
 //    not offered; 기본값 복원 names and shows the base preset id / version; an old leaderboard weight tree (DeviceProfiles v2)
 //    on the device is listed as 이전 설정 호환, still loads in 1.1.6 (today's data, not a past-result replay), never rewritten.
+//  - Owner 2026-11-07: 2.2.7 「섹터 QGV 설정(요소·가중치)」 on the body; 원본 참조 / 내 설정; N<20 = 요소 점수 미산출; 「최신 입력에 설정 적용」
+//    (a new result) vs 「과거 입력으로 결과 재현」 (the engine's replay); a record the route does not hold = 재현 입력 연결 전; bytes kept.
 //  - Phone: no horizontal overflow, 44 px controls. Boundaries: no request leaves the origin, the engine route is POST only,
 //    nothing stored but the one sector key, no console error, CSP 0. SQ_SHOTS=<dir> saves screenshots (deviceScaleFactor 2).
 const { chromium } = require('playwright');
@@ -213,6 +215,45 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       assert.equal(await page.locator(B + ' [data-k=sq-preview]').isDisabled(), false, 'a new preview can be asked');
       await preview(); assert.equal(await page.locator(B + ' [data-sq-preview]').count(), 1);
       ok(tag + ' request order: the answer to the older config is dropped');
+
+      // ---------------- owner 2026-11-07: 2.2.7 label; 원본 참조 vs 내 설정; N<20; 최신 입력에 설정 적용 vs 과거 입력으로 결과 재현; no overwrite
+      phase = tag + ' 2.2.7';
+      assert.equal(await text(B + ' [data-sq-feature]'), '2.2.7 섹터 QGV 설정(요소·가중치)');
+      const raw = await page.evaluate((k) => localStorage.getItem(k), KEY), rec = JSON.parse(raw);
+      assert.equal(await text(B + ' [data-sq-origin]'), '원본 참조 · ' + BASE + ' v0.1.0 · 정보기술·일반 기본값 · 바꾸지 않음');
+      assert.equal(await page.locator(B + ' [data-sq-mine]').getAttribute('data-sq-mine'), rec.canonical_config_hash);
+      assert.equal(await text(B + ' [data-sq-mine]'), '내 설정 · 설정 ID device · sector-qgv-config/1 · 설정 해시 ' + rec.canonical_config_hash.slice(0, 12) + ' (설정 버전 필드 없음 · 해시로 식별) · 기준 ' + BASE + ' · 적용 범위 1곳: 금융·은행');
+      await page.selectOption('#sq-input', 'PEER_SAMPLE_SMALL'); await preview();
+      const small = B + ' [data-sq-preview] [data-sq-row=company-000]', N20 = '요소 점수 미산출 · 유효 비교 기업 N<20 (N=19)';
+      assert.ok((await text(small)).includes(N20)); assert.ok(!(await text(small)).includes('필수 요소 결측'), 'not told as missing');
+      assert.equal((await text(small + ' [data-sq-rank]')).split('→').pop().trim(), '없음', 'no rank');
+      assert.ok((await text(B + ' [data-sq-reasons]')).includes(N20 + ' 19'));
+      assert.doesNotMatch(await text(small), /\b0\.0\b/, 'never a 0 score');
+      // 과거 입력으로 결과 재현: the replay op on the saved record (its original NORMAL input), engine-confirmed.
+      let c1 = eng.calls.length; await page.locator(B + ' [data-k=sq-run-reproduce]').click(); await page.locator(B + ' [data-sq-run-state=REPRODUCED]').waitFor();
+      assert.deepEqual(eng.calls.slice(c1).map((c) => [c.op, c.ok]), [['replay', true]]);
+      const rp = await text(B + ' [data-sq-run-state=REPRODUCED]');
+      assert.ok(rp.startsWith('과거 입력으로 결과 재현됨 · 엔진 확인') && rp.includes('원래 미리보기 ' + rec.preview_id.slice(0, 12)) && rp.includes('스냅숏 ' + rec.snapshot_id), rp);
+      assert.equal(await page.locator(B + ' [data-sq-applied]').count(), 0);
+      // 최신 입력에 설정 적용: the preview op on the input chosen now (PEER_SAMPLE_SMALL): a new result, said so.
+      c1 = eng.calls.length; await page.locator(B + ' [data-k=sq-run-latest]').click(); await page.locator(B + ' [data-sq-run-state=APPLIED_LATEST]').waitFor();
+      assert.deepEqual(eng.calls.slice(c1).map((c) => [c.op, c.input_id, c.ok]), [['preview', 'PEER_SAMPLE_SMALL', true]]);
+      const lt = await text(B + ' [data-sq-run-label]');
+      assert.ok(lt.startsWith('최신 입력에 설정 적용 · 새 결과 · 입력 합성 · 비교집단 19개') && lt.includes('과거 결과 재현 아님') && lt.includes('저장 기록은 그대로'), lt);
+      assert.equal(await page.locator(B + ' [data-sq-run-state=REPRODUCED]').count(), 0, 'one run state at a time');
+      assert.equal(await page.evaluate((k) => localStorage.getItem(k), KEY), raw, 'neither run writes the device record');
+      // A record whose original preview / snapshot this route does not hold: 재현 입력 연결 전, nothing else computed;
+      // loading it and 기본값 복원 leave its bytes as they were.
+      const foreign = JSON.stringify({ ...rec, preview_id: 'a'.repeat(64) });
+      await page.evaluate(([k, v]) => localStorage.setItem(k, v), [KEY, foreign]);
+      await page.reload(); await page.evaluate(() => window.IS2.ready); await page.locator(B + ' [data-sq-state=IDLE]').waitFor(); await connect();
+      c1 = eng.calls.length; await page.locator(B + ' [data-k=sq-run-reproduce]').click(); await page.locator(B + ' [data-sq-run-state=INPUT_MISSING]').waitFor();
+      assert.deepEqual(eng.calls.slice(c1).map((c) => [c.op, c.code]), [['replay', 'RETAINED_INPUT_NOT_FOUND']], 'no latest-input run in its place');
+      assert.ok((await text(B + ' [data-sq-run-state=INPUT_MISSING]')).startsWith('재현 입력(원래 preview·snapshot) 연결 전'));
+      await page.locator(B + ' [data-k=sq-restore]').click(); await ready();
+      assert.equal(await page.evaluate((k) => localStorage.getItem(k), KEY), foreign, 'load and restore never rewrite the stored record');
+      await page.evaluate(([k, v]) => localStorage.setItem(k, v), [KEY, raw]);
+      ok(tag + ' 2.2.7 섹터 QGV 설정(요소·가중치): 원본 참조 / 내 설정 identities; N<20 = 요소 점수 미산출 (N=19), no rank; reproduce = engine replay; apply-latest = new result; missing retained input = 연결 전; stored bytes unchanged');
 
       // ---------------- phone
       if (phone) {

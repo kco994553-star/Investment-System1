@@ -29,7 +29,7 @@ function render(route){
    h('span',{class:'hand'},'준비되기 전에는 세 버튼 모두 꺼짐 · 누를 때만 가격을 부름 · V는 중앙 게시본만')),status,nav);
  later(route,'leaderboard',{band,chips,conn,buttons,status,nav,bodies},()=>{for(const b of Object.values(bodies))b.replaceChildren(lf('리더보드를'));});
  // 1.1.9 (2.1.8), 1.2 (2.2): own bodies, outside the QGV state cards
- const disc=h('div',{class:'lb-body',dataset:{discBody:''}},pending('선정 기업 · 하는 일 · 발견 이유 · 기존 QGV')),sq=h('div',{dataset:{sqBody:''}},pending('섹터 QGV 구성 · 요소 · 미리보기'));
+ const disc=h('div',{class:'lb-body',dataset:{discBody:''}},pending('선정 기업 · 하는 일 · 발견 이유 · 기존 QGV')),sq=h('div',{dataset:{sqBody:''}},pending('2.2.7 섹터 QGV 설정(요소·가중치) · 미리보기'));
  later(route,'list',{body:disc},()=>disc.replaceChildren(lf('의외의 기업 목록을')),'discoveryLive');later(route,'fill',{body:sq},null,'sectorQgvLive');
  return h('div',{class:'screen lb-screen'},head('1','QGV','기업의 질(Q) · 성장(G) · 가치(V)를 한 장으로'),band,
   section('1-1','1.1 리더보드',null,...blocks,h('div',{class:'lb',dataset:{lb:'2.1.8'}},h('div',{class:'lb-head'},h('h3',{class:'stamp sub',tabindex:'-1'},'1.1.9 의외의 기업'),
