@@ -78,6 +78,23 @@ def _components(payload,record,reference):
     return fields,reasons
 
 
+def held_observations(payload, record, reference, *, as_of, valuation_date):
+    """One verified issuer through the existing SEC period and factor engines.
+
+    Shared by the original operating snapshot and held expanded issuer sample.
+    No annual/TTM alias, price reconstruction, representative-security inference.
+    """
+    fields,reasons=_components(payload,record,reference)
+    ctx=dict(as_of=as_of,valuation_date=valuation_date,issuer_id=record['cik'],security_id=None,
+             accounting_template='GENERAL')
+    allowed={'roa_ttm','roa_improvement_3y'} if record.get('profile')=='FINANCIAL' else {
+        'operating_margin_ttm','accruals_assets_ttm','debt_assets','roa_ttm','cfo_assets_ttm',
+        'interest_coverage_ttm','gross_profit_assets_ttm','net_debt_assets','revenue_cagr_3y',
+        'revenue_cagr_5y','revenue_growth_1y','operating_income_cagr_3y',
+        'revenue_growth_consistency_3y','roa_improvement_3y'}
+    return {v:calculate_factor(v,fields,ctx) for v in sorted(allowed)},reasons
+
+
 def build_held_snapshot(sec,archive_specs,*,snapshot_hash,mapping_rows=None,as_of=None):
     if sec.get('calc_version')!='qgv2-calc/2026-10-23.1':raise ValueError('HELD_INPUT_VERSION_MISMATCH')
     mapping_rows=mapping_rows or {};as_of=as_of or sec['as_of']
@@ -116,18 +133,7 @@ def build_held_snapshot(sec,archive_specs,*,snapshot_hash,mapping_rows=None,as_o
                 rows.append(row)
                 continue
             if sec.get('state')=='STALE':record=dict(record,state='STALE')
-            fields,reasons=_components(source[0],record,source[1])
-            row['input_diagnostics']=reasons
-            ctx=dict(as_of=as_of,valuation_date=valuation,issuer_id=record['cik'],security_id=None,
-                     accounting_template='GENERAL')
-            # These raw ratios do not resolve the company's sector/template identity.
-            # Financial issuers are limited to ROA and historical ROA change diagnostics.
-            allowed={'roa_ttm','roa_improvement_3y'} if record.get('profile')=='FINANCIAL' else {
-                'operating_margin_ttm','accruals_assets_ttm','debt_assets','roa_ttm','cfo_assets_ttm',
-                'interest_coverage_ttm','gross_profit_assets_ttm','net_debt_assets','revenue_cagr_3y',
-                'revenue_cagr_5y','revenue_growth_1y','operating_income_cagr_3y',
-                'revenue_growth_consistency_3y','roa_improvement_3y'}
-            for variant in sorted(allowed):row['observations'][variant]=calculate_factor(variant,fields,ctx)
+            row['observations'],row['input_diagnostics']=held_observations(source[0],record,source[1],as_of=as_of,valuation_date=valuation)
         else:row['input_diagnostics']={'source':'EXACT_SOURCE_HASH_NOT_IN_HELD_ARCHIVES'}
         rows.append(row)
     snapshot=dict(schema_version='sector-qgv-input/1',snapshot_id='held-sec-'+snapshot_hash[:16],
