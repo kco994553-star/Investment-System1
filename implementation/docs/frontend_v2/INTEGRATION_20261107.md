@@ -12,10 +12,10 @@
 | 4 | #511 | `507d0d77` | 4.5 정책·지정학(Codex #509·#512 포함) |
 | 5 | #517 | `9736db69` | 기술 조건 필터 3.5 엄격 결합(#515), 명시적 `issuer_id`, 그룹 전체 행 |
 | 6 | #518 | `88949a5f` → `6661ade6` | 기능 ID 정렬, DC-48 공통 분류 기록, 2.2.7 이름 |
-| 7 | Codex #516 | `9343b5e6` | `common-classification/1`(base #514 `8a483471` + #515 `b6fd0112`) |
-| 8 | 공통 분류 화면 | `828be663` | `claude/common-classification-screens`: 판독기·화면·시험·문서, 기술 결합 반례(Codex 기대값 = Node = 실제 호출부 브라우저) |
+| 7 | Codex #516 | `9343b5e6` → `5b0ec88a` | `common-classification/1` + `technical-filter-join/2`·`technical-filter-membership/1`(그룹 완전성, 23 사례), base #514 `8a483471` + #515 `b6fd0112` |
+| 8 | 공통 분류 화면 | `05d69ffb` | `claude/common-classification-screens`: 판독기·화면·시험·문서, 기술 결합 반례(Codex 기대값 = Node = 실제 호출부 브라우저) |
 
-Codex 파일은 바꾸지 않았다. #516이 canonical 뒤로 바꾼 파일 161개가 이 가지에서 `9343b5e6`과 바이트가 같다.
+Codex 파일은 바꾸지 않았다. #516이 canonical 뒤로 바꾼 파일 170개가 이 가지에서 `5b0ec88a`와 바이트가 같다.
 
 ## 2. 충돌과 해결 (모두 기계적)
 
@@ -46,5 +46,6 @@ Codex 파일은 바꾸지 않았다. #516이 canonical 뒤로 바꾼 파일 161�
 - #510 `95db4e73`의 첫 전체 시험에서 실제 결함 1건이 나왔다. 대기 문구에 기능 번호 숫자가 들어가 `web_app_qgv_browser_test.js`가 실패했다. `69bef7b4`·`934dd96a`로 고쳤고, 이 가지에도 들어 있다.
 - CI #519 `23dd5dc5`의 build는 `web_app_policy_impact_browser_test.js`의 widths 단계에서 "Execution context was destroyed"로 실패했다.
   - 로컬 통합 트리에서 부하가 있을 때 대략 3번에 1번 재현했다. #511 단독에서는 한 번도 나지 않았다.
-  - 추적 결과: 상세를 연 지 약 0.3초 뒤 `page.evaluate(IS2.ready)`의 문맥만 사라졌다. 탐색·탐색 요청·충돌·페이지 오류는 기록되지 않았다. **원인은 특정하지 못했다.**
+  - 추적 결과: 상세를 연 지 약 0.3초 뒤 `page.evaluate(IS2.ready)`의 문맥만 사라졌다. 탐색·탐색 요청·충돌·페이지 오류는 기록되지 않았다. **원인 미확정 · 반복 검증 통과.**
   - `828be663`에서 그 단계를 locator 대기로 바꿨다. 확인 항목은 그대로이고, 고친 뒤 부하 속 8번 중 8번 통과했다.
+- 공통 분류 화면 `05d69ffb` 병합 때 `screen-sector-qgv-live.js` 충돌 1건: 결과 행은 #510의 행 상태 문구(N<20 상태)를 그대로 두고, 화면 가지의 `ccRow(r)` 분류 dataset을 더했다.
