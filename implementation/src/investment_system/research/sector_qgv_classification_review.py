@@ -12,10 +12,11 @@ from .sector_qgv import digest, day, timestamp
 from .sector_qgv_held import checked_bytes
 from .sector_qgv_registry import SECTORS, TEMPLATES
 from .sector_qgv_classification import classify, SIC_RULES
-from .common_classification.catalog import PARENTS
+from .common_classification.catalog import PARENTS, BOUNDARY_POLICY_VERSION, BOUNDARY_SOURCE
 
 VERSION='held-sec-book-correspondence/0.3.0'
 FOLLOWUP_VERSION='held-sec-book-correspondence/0.4.0'
+BOUNDARY_VERSION='held-sec-book-correspondence/0.5.0'
 # Named activities only. SEC SIC remains the source code, not an official book sector.
 ACTIVITIES={
  '1520':('CONSUMER_DISCRETIONARY','GENERAL','General Bldg Contractors - Residential Bldgs'),
@@ -60,6 +61,24 @@ FOLLOWUP_ACTIVITIES={
  '8093':('HEALTH_CARE','GENERAL','Services-Specialty Outpatient Facilities, NEC'),
  '8200':('CONSUMER_DISCRETIONARY','GENERAL','Services-Educational Services'),
  '8351':('CONSUMER_DISCRETIONARY','GENERAL','Services-Child Day Care Services'),
+}
+
+# Owner-approved system correspondence, not a direct claim from the book.
+# Cable/communications NEC, advertising, platforms and mixed groups need a
+# company-level review. REIT and health-plan sector rules infer no template.
+BOUNDARY_ACTIVITIES={
+ '6798':('FINANCIALS',None,'Real Estate Investment Trusts'),
+ '6324':('HEALTH_CARE',None,'Hospital & Medical Service Plans'),
+ '4832':('CONSUMER_DISCRETIONARY','GENERAL','Radio Broadcasting Stations'),
+ '4833':('CONSUMER_DISCRETIONARY','GENERAL','Television Broadcasting Stations'),
+ '2711':('CONSUMER_DISCRETIONARY','GENERAL','Newspapers: Publishing or  Publishing & Printing'),
+ '5065':('INFORMATION_TECHNOLOGY','GENERAL','Wholesale-Electronic Parts & Equipment, NEC'),
+}
+BOUNDARY_REASONS={
+ '6798':{'REIT_ACCOUNTING_AND_BOOK_SECTOR_UNRESOLVED','REIT_BOOK_SECTOR_POLICY_UNRESOLVED'},
+ '6324':{'MANAGED_CARE_BOOK_SECTOR_UNRESOLVED'},
+ '4832':{'BOOK_TELECOM_MEDIA_BOUNDARY_UNRESOLVED'},
+ '4833':{'BOOK_TELECOM_MEDIA_BOUNDARY_UNRESOLVED'},
 }
 
 
@@ -122,7 +141,13 @@ def _business(review,row,snapshot,evidence,version=VERSION):
     if row.get('reviewed_industry_id') and PARENTS[row['reviewed_industry_id']]!=row.get('sector_id'):
         raise ValueError('BUSINESS_REVIEW_INDUSTRY_PARENT_CONFLICT')
     row.setdefault('component_mappings',{}).update(mapping)
-    row['review_sources']=docs
+    if version==BOUNDARY_VERSION:
+        sources={s['source_id']:s for s in row.get('review_sources',[])}
+        for d in docs:
+            if d['source_id'] in sources and sources[d['source_id']]!=d:raise ValueError('BUSINESS_REVIEW_SOURCE_CONFLICT')
+            sources[d['source_id']]=d
+        row['review_sources']=[sources[k] for k in sorted(sources)]
+    else:row['review_sources']=docs
     if not row.get('sector_id'):
         row['reasons']=[review.get('sector_unresolved_reason') or (row.get('reasons') or ['SECTOR_UNCONFIRMED'])[0]]
     elif row.get('accounting_template'):row['reasons']=[]
@@ -130,7 +155,7 @@ def _business(review,row,snapshot,evidence,version=VERSION):
 
 
 def extend_review(snapshot,evidence_by_code,business_reviews,*,version=VERSION):
-    if version not in (VERSION,FOLLOWUP_VERSION):raise ValueError('CLASSIFICATION_REVIEW_VERSION_INVALID')
+    if version not in (VERSION,FOLLOWUP_VERSION,BOUNDARY_VERSION):raise ValueError('CLASSIFICATION_REVIEW_VERSION_INVALID')
     result=deepcopy(snapshot);changes=[]
     reviews={x['company_id']:x for x in business_reviews}
     if len(reviews)!=len(business_reviews) or not set(reviews)<=set(snapshot['members']):
@@ -141,18 +166,44 @@ def extend_review(snapshot,evidence_by_code,business_reviews,*,version=VERSION):
             continue
         old=deepcopy(row);sic=row.get('source_sic');e=evidence_by_code.get(row['company_id'])
         rule=None;activity=ACTIVITIES.get(sic)
-        if version==FOLLOWUP_VERSION and old.get('reasons')==['EXACT_SIC_CORRESPONDENCE_NOT_REVIEWED']:
+        if version in (FOLLOWUP_VERSION,BOUNDARY_VERSION) and old.get('reasons')==['EXACT_SIC_CORRESPONDENCE_NOT_REVIEWED']:
             activity=FOLLOWUP_ACTIVITIES.get(sic,activity)
+        policy_rule=False
+        if version==BOUNDARY_VERSION and sic in BOUNDARY_ACTIVITIES and set(old.get('reasons',[]))<=({
+            'EXACT_SIC_CORRESPONDENCE_NOT_REVIEWED'}|BOUNDARY_REASONS.get(sic,set())):
+            activity=BOUNDARY_ACTIVITIES[sic];policy_rule=True
         if activity and e and ' '.join(e.get('sic_description','').split()).casefold()==' '.join(activity[2].split()).casefold():
             rule={'sector_id':activity[0],'accounting_template':activity[1],'rule_id':version+':'+sic,
                   'reason':'Reviewed named SEC primary activity: '+activity[2]+'. No segment mix or accounting model inferred.'}
         elif old.get('reasons')==['ACCOUNTING_PROFILE_CONFLICT']:
             rule=SIC_RULES.get(sic)
+        if (version==BOUNDARY_VERSION and not rule and old.get('sector_id') is None and
+            old.get('accounting_template') in ('EQUITY_REIT','MORTGAGE_REIT') and
+            old.get('component_mappings',{}).get('accounting',{}).get('evidence_refs')):
+            rule={'sector_id':'FINANCIALS','accounting_template':None,'rule_id':version+':retained-reit-accounting',
+                  'reason':'Owner system correspondence using independently retained REIT accounting evidence.'}
+            policy_rule=True
         linked=classify(e,as_of=snapshot['as_of'],expected_issuer=row['issuer_id'],expected_sic=sic,
                         source_profile=row.get('source_profile'),reviewed_rules={sic:rule} if rule else {},
                         rule_version=version,independent_components=True)
         source_valid=linked['official_classification'] is not None and linked['reasons']!=['SIC_SOURCE_CONFLICT']
-        if rule:row.update(linked)
+        if rule:
+            if version==BOUNDARY_VERSION and source_valid:
+                # Sector-only decisions must retain a separately confirmed
+                # accounting component and its original evidence.
+                components=deepcopy(row.get('component_mappings',{}))
+                accounting=row.get('accounting_template')
+                row.update(linked)
+                if rule['accounting_template'] is None and accounting:
+                    row['accounting_template']=accounting
+                    row['reasons']=[] if row.get('sector_id') else row['reasons']
+                components.update(row.get('component_mappings',{}));row['component_mappings']=components
+                if policy_rule and row.get('sector_id'):
+                    m=row['component_mappings']['sector']
+                    m['boundary_policy_version']=BOUNDARY_POLICY_VERSION
+                    m['reason']='Owner system correspondence; not a direct book claim. '+m['reason']
+                    m['evidence_refs']+=([BOUNDARY_SOURCE]+(components.get('accounting',{}).get('evidence_refs',[]) if accounting in ('EQUITY_REIT','MORTGAGE_REIT') else []))
+            else:row.update(linked)
         review=reviews.get(row['company_id'])
         if review:
             if not source_valid:raise ValueError('BUSINESS_REVIEW_SUBMISSIONS_INVALID')
@@ -164,7 +215,7 @@ def extend_review(snapshot,evidence_by_code,business_reviews,*,version=VERSION):
                 'before_accounting':old.get('accounting_template'),'after_accounting':row.get('accounting_template'),
                 'before_reasons':old.get('reasons'),'after_reasons':row.get('reasons'),
                 'component_mappings':row.get('component_mappings',{})})
-    result.update(classification_rule_version=version,input_version='held-sec-sector-classified/'+('4' if version==FOLLOWUP_VERSION else '3'),
+    result.update(classification_rule_version=version,input_version='held-sec-sector-classified/'+('5' if version==BOUNDARY_VERSION else '4' if version==FOLLOWUP_VERSION else '3'),
                   snapshot_id=snapshot['snapshot_id']+'-review-'+digest(changes)[:12])
     return result,{'schema_version':'sector-classification-review/1','classification_rule_version':version,
         'changes':changes,'original_denominator':len(snapshot['members']),

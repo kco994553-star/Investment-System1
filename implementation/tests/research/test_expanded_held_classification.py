@@ -201,3 +201,74 @@ def test_rejected_relink_cannot_retain_previously_connected_gate():
     result,a=reuse_official_gates(s,f,u,sec,source_sha256='a'*64)
     assert a['connected']==0 and result['rows'][0]['gate'] is None
     assert s['rows'][0]['gate'] is not None
+
+
+def refresh_fixture():
+    s,f,u,sec=gate_fixture()
+    old=f['0000000001'];old['source_sha256']['companyfacts']='b'*64
+    s['rows'][0]['observations']={'roa_ttm':{'old':True},'earnings_yield_ttm':{'retained_v':True}}
+    s['rows'][0]['gate']={'retained_gate':True}
+    obs={'issuer_id':old['cik'],'security_id':None,'price_asof':None,
+         'validation_basis':'VERIFIED_COMPONENTS','raw_components_available':True,'currency':'USD',
+         'source_available_at':'2026-11-03T00:00:00Z','provenance':['facts#sha256='+'c'*64],
+         'fiscal_period':{'kind':'TTM','end':'2025-12-31'},'value':0.1,
+         'variant_id':'roa_ttm','formula_version':'1','status':'VALID','unit':'decimal',
+         'scope':'CONSOLIDATED','retrieved_at':'2026-11-03T00:00:00Z'}
+    u['rows'][0]['observations']={'roa_ttm':obs,'earnings_yield_ttm':{'must_not_copy':True}}
+    return s,f,u,sec
+
+
+def test_refresh_uses_retained_raw_only_without_mutating_old_input():
+    from investment_system.research.expanded_held_classification import refresh_retained_financials
+    s,f,u,sec=refresh_fixture();old=deepcopy((s,f,u,sec))
+    out,e,a=refresh_retained_financials(s,f,u,sec)
+    assert a['statuses']=={'REFRESHED':1}
+    assert out['rows'][0]['observations']['roa_ttm']==u['rows'][0]['observations']['roa_ttm']
+    assert out['rows'][0]['observations']['earnings_yield_ttm']=={'retained_v':True}
+    assert out['rows'][0]['gate']=={'retained_gate':True}
+    assert (s,f,u,sec)==old and e['0000000001']['source_sha256']['companyfacts']=='c'*64
+    assert refresh_retained_financials(out,e,u,sec)[2]['statuses']=={'UNCHANGED':1}
+
+
+@pytest.mark.parametrize('change',['currency','future','period','hash','issuer','security','price','class_conflict'])
+def test_refresh_keeps_old_inputs_when_new_evidence_is_ineligible(change):
+    from investment_system.research.expanded_held_classification import refresh_retained_financials
+    s,f,u,sec=refresh_fixture();o=u['rows'][0]['observations']['roa_ttm']
+    if change=='currency':o['currency']='KRW'
+    if change=='future':o['source_available_at']='2026-11-05T00:00:00Z'
+    if change=='period':o['fiscal_period']['end']='2026-12-31'
+    if change=='hash':o['provenance']=[]
+    if change=='issuer':o['issuer_id']='OTHER'
+    if change=='security':o['security_id']='invented'
+    if change=='price':o['price_asof']='2026-11-04'
+    if change=='class_conflict':
+        r=deepcopy(u['rows'][0]);r['company_id']='ROW:B';r['observations']['roa_ttm']['value']=0.2;u['rows'].append(r)
+        sec['records']['ROW:B']=deepcopy(sec['records']['ROW:A'])
+    out,e,a=refresh_retained_financials(s,f,u,sec)
+    assert out==s and e==f and a['statuses']=={'UNAVAILABLE':1} and a['rows'][0]['reason']
+
+
+def test_refresh_identical_class_rows_is_deterministic():
+    from investment_system.research.expanded_held_classification import refresh_retained_financials
+    s,f,u,sec=refresh_fixture();r=deepcopy(u['rows'][0]);r['company_id']='ROW:B';u['rows'].append(r)
+    sec['records']['ROW:B']=deepcopy(sec['records']['ROW:A'])
+    first=refresh_retained_financials(s,f,u,sec);u['rows'].reverse()
+    assert refresh_retained_financials(s,f,u,sec)==first
+
+
+def test_refresh_keeps_documented_missing_value_null_without_blocking_valid_factors():
+    from investment_system.research.expanded_held_classification import refresh_retained_financials
+    s,f,u,sec=refresh_fixture();o=u['rows'][0]['observations']['roa_ttm']
+    o.update(value=None,status='MISSING_INPUT',raw_components_available=False,currency=None)
+    out,e,a=refresh_retained_financials(s,f,u,sec)
+    assert a['statuses']=={'REFRESHED':1} and out['rows'][0]['observations']['roa_ttm']==o
+    o['value']=0
+    assert refresh_retained_financials(s,f,u,sec)[2]['statuses']=={'UNAVAILABLE':1}
+
+
+def test_refresh_does_not_confuse_raw_evidence_with_accounting_applicability():
+    from investment_system.research.expanded_held_classification import refresh_retained_financials
+    s,f,u,sec=refresh_fixture();u['rows'][0]['accounting_template']='EQUITY_REIT'
+    out,e,a=refresh_retained_financials(s,f,u,sec)
+    assert a['statuses']=={'REFRESHED':1}
+    assert out['rows'][0]['observations']['roa_ttm']['value']==0.1

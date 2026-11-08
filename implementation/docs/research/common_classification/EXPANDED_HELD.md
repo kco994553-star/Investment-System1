@@ -97,3 +97,43 @@ Main의 #519 계약 인수·브라우저 실행·배포는 이번 자료 계산�
 `handoff/input-recovery-20261103`,
 `handoffs/classification-expansion-followup-20261108`.
 회사별 JSON/CSV·manifest·재개 명령은 그 위치를 사용한다.
+
+## 승인 경계 정책 적용 — 2026-11-08
+
+새 실행은 `classification_rule_version=held-sec-book-correspondence/0.5.0`,
+`dictionary_version=common-industry-dictionary/2`를 명시한다. 공통 store/view의
+스키마 /1은 유지하고 `mapping_version=common-classification-map/2`,
+`boundary_policy=common-sector-boundaries/2026-11-08.1`로 정책과 캐시를 분리한다.
+기존 /1 사전과 /0.3·/0.4 실행, 저장 설정·과거 결과를 자동 변환하지 않는다.
+
+- REIT 상위는 금융이다. 지분형·모기지형 회계는 별도 근거로만 확인한다.
+  은행·보험 비교집단으로 합치지 않으며 개발·중개·자산운용업에 일괄 적용하지 않는다.
+- 통신망 서비스는 통신, 주 사업이 확인된 미디어·오락은 경기소비재다.
+  케이블·광고·플랫폼·복합기업은 회사별 검토를 유지한다. 현대 XLC 범위를 복사하지 않는다.
+- 관리의료·건강보험은 헬스케어이며 GENERAL 회계를 자동 입력하지 않는다.
+  약국·보험·서비스 복합기업은 보관 사업부문·매출 근거로 별도 판단한다.
+
+이는 책의 직접 주장 아닌 **오너 승인 시스템 대응**이다. 정책 승인일과 기업 근거
+관측일·검토 시각을 분리하며, 이번 기업 판정은 2026-11-04 평가에만 적용한다.
+`upgrade_policy_store`는 정책 메타데이터만 올리고 회사 기록은 바꾸지 않는다.
+새 근거 판정은 `append_review`로 이전 record를 보존한다. 새 정책 기록 시각보다
+이른 knowledge 조회는 거부한다. 이전 시점 재현에는 이전 store/사전을 사용한다.
+
+`financial_refresh=retained-upstream-qg/1`은 선택 기능이다. 같은 평가일의 보관
+Universe504 원관측만 연결하며 회사·통화·기간·원문 해시·가용 시각과 복수 코드의
+일치를 검사한다. Q/G 점수·가격·증권·V·관문을 복사하지 않는다. 상대점수는 원래
+확장 집단 전체에서 재산출한다. `financial-refresh.json`에 전후 해시·회계기간·
+갱신/유지/거부 사유를 남긴다. 공식 관문은 그 뒤 기존 동일 원재무 검증을 별도로
+통과한 경우만 연결한다. 원래1057 하위표본과8004 관측 카탈로그 분모는 고정한다.
+분류만 변경한 결과와 재무 연결까지 변경한 결과는 각각 보존한다.
+
+Main 인수 합성 입력: `implementation/tests/fixtures/common_classification/boundary-policy-v2.json`.
+섹터만 확인된 REIT·관리의료는 회계 UNKNOWN과 함께 표시한다. 승인 정책은
+모든 회사 판정·공식 모델 교체 승인이 아니다. common-classification view/1,
+QGV record 연결, group/2 구조와 점수·순위 보존 규칙은 유지한다.
+소비자가 사전/매핑 버전을 검사한다면 /2의 정확한 쌍과 새 사전 해시를 함께
+허용해야 한다. Main이 결정 기록·화면·인증된 전달 경로를 반영한다.
+
+추가 검증은 `test_classification_boundary_policy.py`와 기존 확장·공통 분류
+시험의 변경 경로다. CI는 기존 pytest 자동 발견을 사용한다. 원문/회사별 결과는
+비공개, 공개 fixture는 합성 자료다. 운영 적용·브라우저 인수는 별도 단계다.

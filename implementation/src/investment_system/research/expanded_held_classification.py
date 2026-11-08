@@ -11,12 +11,13 @@ import math
 import re
 import zipfile
 
-from .sector_qgv import digest, timestamp, day, preview_qgv
+from .sector_qgv import digest, timestamp, day, preview_qgv, VALID, _validated_observation
 from .sector_qgv_registry import MAPPING, CATALOG
 from .sector_qgv_held import checked_bytes, held_observations
 from .sector_qgv_classification import link_classification, extend_held_classification
 from .common_classification.records import from_sector_snapshot, resolve, validate, unknown
 from .common_classification.qgv import project_qgv
+from .common_classification.catalog import VERSION as DICTIONARY_VERSION
 
 VERSION='held-expanded-issuer-adapter/1'
 
@@ -107,6 +108,78 @@ def reuse_official_gates(snapshot, financials, upstream, sec, *, source_sha256):
                 'reasons':dict(Counter(r['reason'] for r in audit if r['reason']))}
 
 
+def refresh_retained_financials(snapshot, financials, upstream, sec):
+    """Use the same evaluation's previously verified issuer Q/G observations.
+
+    Never copies relative scores, securities, prices, gates or inferred V inputs.
+    The old cache is immutable. Every replacement carries before/after source and
+    period evidence; a newer but unsupported row is reported, not filled with 0.
+    """
+    if (snapshot['as_of']!=upstream['as_of'] or snapshot['as_of']!=sec['as_of'] or
+        snapshot['valuation_date']!=upstream['valuation_date'] or upstream['universe_id']!='Universe504' or
+        sec['calc_version']!='qgv2-calc/2026-10-23.1'):
+        raise ValueError('FINANCIAL_REFRESH_CONTEXT_MISMATCH')
+    out=deepcopy(snapshot);effective=deepcopy(financials);by_issuer=defaultdict(list);audit=[]
+    for up in upstream['rows']:
+        if up.get('issuer_id'):by_issuer[up['issuer_id']].append(up)
+    signature_fields=('fiscal_year_end','profile','sic','industry_group','currency','calc_version')
+    def raw_signature(rec):
+        return {**{k:rec.get(k) for k in signature_fields},'companyfacts':rec.get('source_sha256',{}).get('companyfacts'),
+                'metrics':{k:v for k,v in (rec.get('metrics') or {}).items() if k!='revenue_volatility_5y_rank_pct'}}
+    for row in out['rows']:
+        candidates=sorted(by_issuer.get(row['issuer_id'],[]),key=lambda r:r['company_id'])
+        if not candidates:continue
+        reason=None;recs=[];observations=[];old=financials.get(row['issuer_id'],{})
+        for up in candidates:
+            rec=sec['records'].get(up['company_id'],{})
+            if (rec.get('cik')!=row['issuer_id'] or rec.get('state')=='NOT_AVAILABLE' or
+                not rec.get('source_sha256',{}).get('companyfacts') or not rec.get('acquired_at') or
+                timestamp(rec['acquired_at'])>timestamp(snapshot['as_of']) or rec.get('calc_version')!=sec['calc_version']):
+                reason='UPSTREAM_FINANCIAL_SOURCE_UNAVAILABLE';break
+            if old.get('acquired_at') and timestamp(rec['acquired_at'])<timestamp(old['acquired_at']):
+                reason='UPSTREAM_ACQUISITION_OLDER';break
+            values={v:deepcopy(o) for v,o in up.get('observations',{}).items() if v in CATALOG and CATALOG[v]['axis'] in ('Q','G')}
+            for variant,o in values.items():
+                if (o.get('issuer_id')!=row['issuer_id'] or o.get('security_id') is not None or o.get('price_asof') is not None or
+                    o.get('validation_basis')!='VERIFIED_COMPONENTS' or
+                    (o.get('currency')!=rec.get('currency') and (o.get('status') in VALID or o.get('currency') is not None)) or not o.get('source_available_at') or
+                    timestamp(o['source_available_at'])>timestamp(snapshot['as_of']) or
+                    not any('#sha256='+rec['source_sha256']['companyfacts'] in p for p in o.get('provenance',[]))):
+                    reason='UPSTREAM_QG_OBSERVATION_PROVENANCE_INVALID';break
+                if o.get('status') in VALID:
+                    # Validate raw evidence before the independently chosen
+                    # accounting scope decides whether it is score-applicable.
+                    raw_context={**up,'accounting_template':None}
+                    if not o.get('raw_components_available') or _validated_observation(raw_context,variant,upstream)[1] not in VALID:
+                        reason='UPSTREAM_QG_OBSERVATION_INVALID';break
+                elif o.get('status') not in ('MISSING_INPUT','PERIOD_MISMATCH','DOMAIN_INVALID') or o.get('value') is not None:
+                    reason='UPSTREAM_QG_NULL_STATUS_INVALID';break
+                period=o.get('fiscal_period',{})
+                if not period.get('end') or day(period['end'])>day(snapshot['valuation_date']):
+                    reason='UPSTREAM_FINANCIAL_PERIOD_INVALID';break
+            if reason:break
+            recs.append(rec);observations.append(values)
+        if reason is None and (len({digest(raw_signature(r)) for r in recs})!=1 or
+                               len({digest(o) for o in observations})!=1):
+            reason='UPSTREAM_ISSUER_FINANCIAL_ROWS_DISAGREE'
+        if reason is None and raw_signature(old)==raw_signature(recs[0]):status='UNCHANGED'
+        elif reason is None:
+            status='REFRESHED';rec=recs[0]
+            row['observations']={**{v:o for v,o in row['observations'].items() if v not in CATALOG or CATALOG[v]['axis'] not in ('Q','G')},**observations[0]}
+            row['input_diagnostics']=deepcopy(sorted(candidates,key=lambda r:r['company_id'])[0].get('input_diagnostics',{}))
+            row['source_sic']=rec.get('sic');row['source_profile']=rec.get('profile')
+            effective[row['issuer_id']]=deepcopy(rec)
+        else:status='UNAVAILABLE'
+        audit.append({'company_id':row['company_id'],'issuer_id':row['issuer_id'],'status':status,'reason':reason,
+            'upstream_codes':sorted(r['company_id'] for r in candidates),
+            'before_source_sha256':old.get('source_sha256',{}).get('companyfacts'),
+            'after_source_sha256':effective.get(row['issuer_id'],{}).get('source_sha256',{}).get('companyfacts'),
+            'before_fiscal_year_end':old.get('fiscal_year_end'),'after_fiscal_year_end':effective.get(row['issuer_id'],{}).get('fiscal_year_end'),
+            'scope':'ISSUER_QG_RAW_ONLY_RELATIVE_SCORES_RECOMPUTED'})
+    return out,effective,{'rows':audit,'statuses':dict(Counter(r['status'] for r in audit)),
+                         'reasons':dict(Counter(r['reason'] for r in audit if r['reason']))}
+
+
 def issuer_members(candidates):
     links=[]
     for r in candidates:
@@ -128,6 +201,8 @@ def reuse_issuer_reviews(store,view,upstream_snapshot,financials,*,as_of):
     explicit conflicts. Sources retain their dates and upstream record IDs.
     """
     date=as_of[:10]
+    if any(store[k]!=view[k] for k in ('dictionary_version','mapping_version')):
+        raise ValueError('REVIEW_REUSE_CLASSIFICATION_POLICY_MISMATCH')
     if view['valuation_date']!=date or upstream_snapshot['valuation_date']!=date:
         raise ValueError('REVIEW_REUSE_VALUATION_MISMATCH')
     by_issuer=defaultdict(list);by_code={r['company_id']:r for r in upstream_snapshot['rows']}
@@ -136,7 +211,7 @@ def reuse_issuer_reviews(store,view,upstream_snapshot,financials,*,as_of):
     sources={s['source_id']:s for s in view['sources']};out=deepcopy(store)
     dest={s['source_id']:s for s in out['sources']};audit={'reused_issuers':0,'reasons':{},'rows':[]}
     for row in out['records']:
-        candidates=by_issuer.get(row['issuer_id'],[])
+        candidates=sorted(by_issuer.get(row['issuer_id'],[]),key=lambda r:r['company_id'])
         if not candidates:continue
         rec=financials.get(row['issuer_id'],{});reason=None
         signatures={digest({k:r[k] for k in ('sector','accounting','industry')}) for r in candidates}
@@ -264,20 +339,26 @@ def build(job):
         'universe_id':'HELD_SEC_CATALOG_ISSUER_DIAGNOSTIC','universe_version':'1@'+held['source']['sha256'],
         'mapping_version':MAPPING,'input_version':VERSION,'as_of':as_of,'valuation_date':as_of[:10],
         'members':members,'rows':rows,'analysis_unit':'ISSUER_NOT_SECURITY','data_kind':job['data_kind']}
+    effective_financials=held['financials'];refresh_audit={'rows':[],'statuses':{},'reasons':{}}
+    if 'financial_refresh' in job:
+        if job['financial_refresh']!='retained-upstream-qg/1' or 'official_gate_source' not in job:
+            raise ValueError('FINANCIAL_REFRESH_JOB_INVALID')
+        snapshot,effective_financials,refresh_audit=refresh_retained_financials(snapshot,held['financials'],up_snapshot,read('official_gate_source'))
     classified,_=link_classification(snapshot,evidence)
     classified,_=extend_held_classification(classified,evidence)
     classified,_=extend_held_classification(classified,evidence,rule_version=job.get('classification_rule_version','held-sec-book-correspondence/0.3.0'))
     # Invalid classification evidence is not promoted by passing it as an import source.
     import_evidence={r['company_id']:evidence[r['company_id']] for r in classified['rows'] if r.get('official_classification')}
-    store=from_sector_snapshot(classified,import_evidence,source_sha256=digest(classified),recorded_at=recorded,data_kind=job['data_kind'])
+    store=from_sector_snapshot(classified,import_evidence,source_sha256=digest(classified),recorded_at=recorded,data_kind=job['data_kind'],
+                               dictionary_version=job.get('dictionary_version',DICTIONARY_VERSION))
     upstream=resolve(up_store,valuation_date=as_of[:10],knowledge_as_of=recorded)
-    store,reuse=reuse_issuer_reviews(store,upstream,up_snapshot,held['financials'],as_of=as_of)
+    store,reuse=reuse_issuer_reviews(store,upstream,up_snapshot,effective_financials,as_of=as_of)
     view=resolve(store,valuation_date=as_of[:10],knowledge_as_of=recorded)
     projected=project_qgv(snapshot,view)
     gate_audit={'connected':0,'reasons':{'OFFICIAL_GATE_SOURCE_NOT_LINKED':len(members)},'rows':[]}
     if 'official_gate_source' in job:
         sec=read('official_gate_source')
-        projected,gate_audit=reuse_official_gates(projected,held['financials'],up_snapshot,sec,source_sha256=job['official_gate_source']['sha256'])
+        projected,gate_audit=reuse_official_gates(projected,effective_financials,up_snapshot,sec,source_sha256=job['official_gate_source']['sha256'])
     preview=preview_qgv(config,projected,job['request_id'])
     financial_ids={c for c,r in held['financials'].items() if r.get('state')!='NOT_AVAILABLE'}
     def count_scope(issuers):
@@ -302,9 +383,11 @@ def build(job):
         'full_market_denominator':None,'full_market_coverage':None,'rank_scope':'HELD_ISSUER_FACTOR_PERCENTILES_ONLY',
         'new_security_ids':0,'investment_eligibility_confirmed':0,'official_gate_connected':gate_audit['connected'],
         'official_gate_unavailable_reasons':gate_audit['reasons'],
+        'retained_financial_refresh':{k:v for k,v in refresh_audit.items() if k!='rows'},
         'performance':None,'historical_pit_certified':False,'official_universe_changed':False,'network_requests':0,'audit':audit}
     return {'snapshot.json':projected,'preview.json':preview,'classification-store.json':store,
             'classification-view.json':view,'source-evidence.json':evidence,'review-reuse.json':reuse,
             'catalog-crosswalk.json':links,'summary.json':summary,'config.json':config,'official-gate-linkage.json':gate_audit,
+            'financial-refresh.json':refresh_audit,
             'input-gaps.json':{'schema_version':'held-expanded-input-gaps/1','scope':'CONNECTED_ADAPTER_INPUTS_NOT_SOURCE_INVENTORY',
                               'rows':input_gap_rows(projected,preview,view)}}

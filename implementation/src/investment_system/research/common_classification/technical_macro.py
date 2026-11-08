@@ -14,7 +14,7 @@ from ..kis_price_bridge import _day
 from ..private_technical_board import SECURITY_IDENTIFIER_TYPES
 from ..sector_qgv import digest, timestamp
 from ..sector_qgv_registry import SECTORS
-from .catalog import MAPPING_VERSION, VERSION, dictionary
+from .catalog import MAPPING_VERSION, VERSION, POLICY_DICTIONARY_VERSION, POLICY_MAPPING_VERSION, dictionary
 from .records import _available
 
 
@@ -25,7 +25,9 @@ def _text(value):
 def _rows(view):
     if view.get('schema_version') != 'common-classification-view/1':
         raise ValueError('COMMON_VIEW_SCHEMA_MISMATCH')
-    if view.get('dictionary_version') != VERSION or view.get('mapping_version') != MAPPING_VERSION:
+    versions={VERSION:MAPPING_VERSION,POLICY_DICTIONARY_VERSION:POLICY_MAPPING_VERSION}
+    if (view.get('dictionary_version') not in versions or
+            view.get('mapping_version') != versions[view['dictionary_version']]):
         raise ValueError('COMMON_VIEW_VERSION_MISMATCH')
     _day(view.get('valuation_date'))
     try:
@@ -247,7 +249,7 @@ def macro_projection(view, source_links=()):
     signal = view['valuation_date']
     active = []
     unavailable = []
-    industries = {row['id'] for row in dictionary()['industries']}
+    industries = {row['id'] for row in dictionary(view['dictionary_version'])['industries']}
     seen = set()
     for link in source_links:
         if ('valid_to' not in link

@@ -6,7 +6,8 @@ import re
 
 from ..sector_qgv import digest, day, timestamp
 from ..sector_qgv_registry import SECTORS, TEMPLATES, MAPPING
-from .catalog import dictionary, industry_for_sic, VERSION, MAPPING_VERSION, PARENTS
+from .catalog import (dictionary, industry_for_sic, VERSION, MAPPING_VERSION, PARENTS,
+                      POLICY_DICTIONARY_VERSION, POLICY_MAPPING_VERSION, BOUNDARY_POLICY_VERSION, BOUNDARY_SOURCE)
 
 SCHEMA = 'common-classification/1'
 
@@ -53,10 +54,17 @@ def _component(value, allowed):
 
 
 def validate(store):
-    if (store.get('schema_version') != SCHEMA or store.get('dictionary_version') != VERSION or
-        store.get('mapping_version') != MAPPING_VERSION or store.get('data_kind') not in ('SYNTHETIC','RETAINED_INPUT')):
+    versions={VERSION:MAPPING_VERSION,POLICY_DICTIONARY_VERSION:POLICY_MAPPING_VERSION}
+    if (store.get('schema_version') != SCHEMA or store.get('dictionary_version') not in versions or
+        store.get('mapping_version') != versions[store['dictionary_version']] or store.get('data_kind') not in ('SYNTHETIC','RETAINED_INPUT')):
         raise ValueError('CLASSIFICATION_VERSION_INVALID')
-    dictionary()  # Detect drift in referenced source definitions.
+    dictionary(store['dictionary_version'])  # Detect drift in referenced source definitions.
+    if store['dictionary_version']==POLICY_DICTIONARY_VERSION:
+        p=store.get('boundary_policy',{})
+        if (p.get('version')!=BOUNDARY_POLICY_VERSION or p.get('approved_date')!='2026-11-08' or
+            p.get('source')!=BOUNDARY_SOURCE or not p.get('recorded_at') or
+            timestamp(p['recorded_at']).date()<day(p['approved_date'])):
+            raise ValueError('CLASSIFICATION_POLICY_INVALID')
     members = store['members']
     if not isinstance(members, list) or any(not _text(x) for x in members) or len(set(members)) != len(members):
         raise ValueError('CLASSIFICATION_MEMBERS_INVALID')
@@ -134,6 +142,8 @@ def _eligibility(r, sources, valuation_date, knowledge_as_of):
 
 def resolve(store, *, valuation_date, knowledge_as_of):
     validate(store); day(valuation_date); timestamp(knowledge_as_of)
+    if store.get('boundary_policy') and timestamp(knowledge_as_of)<timestamp(store['boundary_policy']['recorded_at']):
+        raise ValueError('POLICY_NOT_AVAILABLE')
     if day(valuation_date) > timestamp(knowledge_as_of).astimezone(timezone.utc).date(): raise ValueError('VALUATION_AFTER_KNOWLEDGE')
     sources = {s['source_id']:s for s in store['sources']}; rows = []
     for member in sorted(store['members']):
@@ -174,10 +184,11 @@ def resolve(store, *, valuation_date, knowledge_as_of):
     resolved_sources=[deepcopy(sources[key]) for key in sorted(selected_sources)]
     identity = {'rows':[{k:r[k] for k in identity_fields if k in r} for r in rows],
                 'members':sorted(store['members']),'universe_id':store['universe_id'],
-                'universe_version':store['universe_version'],'dictionary_version':VERSION,
-                'mapping_version':MAPPING_VERSION,'valuation_date':valuation_date,
-                'knowledge_as_of':knowledge_as_of,'dictionary_hash':digest(dictionary()),
+                'universe_version':store['universe_version'],'dictionary_version':store['dictionary_version'],
+                'mapping_version':store['mapping_version'],'valuation_date':valuation_date,
+                'knowledge_as_of':knowledge_as_of,'dictionary_hash':digest(dictionary(store['dictionary_version'])),
                 'sources':resolved_sources}
+    if store.get('boundary_policy'):identity['boundary_policy']=deepcopy(store['boundary_policy'])
     history={**store,'members':sorted(store['members']),
              'sources':sorted(store['sources'],key=lambda s:s['source_id']),
              'records':sorted(store['records'],key=lambda r:r['record_id'])}
@@ -188,16 +199,16 @@ def resolve(store, *, valuation_date, knowledge_as_of):
     return {'schema_version':'common-classification-view/1', 'data_kind':store['data_kind'],
             'valuation_date':valuation_date,'knowledge_as_of':knowledge_as_of,
             'universe_id':store['universe_id'],'universe_version':store['universe_version'],
-            'dictionary_version':VERSION,'mapping_version':MAPPING_VERSION,'members':sorted(store['members']),
+            'dictionary_version':store['dictionary_version'],'mapping_version':store['mapping_version'],'members':sorted(store['members']),
             'rows':rows, 'sources':resolved_sources, 'classification_hash':digest(identity),
             'history_hash':digest(history),
-            'dictionary_hash':digest(dictionary()),
+            'dictionary_hash':digest(dictionary(store['dictionary_version'])),
             'display_hash':digest({'identity':identity,'rows':rows}), 'coverage':coverage,
             'review_scope':'RETAINED_EVALUATION_REVIEW_NOT_HISTORICAL_PIT_CERTIFICATION',
             'unresolved_reasons':dict(Counter(x for r in rows for x in r['sector']['reasons']))}
 
 
-def from_sector_snapshot(snapshot, evidence_by_code, *, source_sha256, recorded_at, data_kind):
+def from_sector_snapshot(snapshot, evidence_by_code, *, source_sha256, recorded_at, data_kind, dictionary_version=VERSION):
     """Import retained classifications without reclassifying financials or inventing dates."""
     timestamp(recorded_at)
     if snapshot['mapping_version'] != MAPPING: raise ValueError('RETAINED_MAPPING_VERSION_INVALID')
@@ -255,7 +266,21 @@ def from_sector_snapshot(snapshot, evidence_by_code, *, source_sha256, recorded_
             'data_kind':data_kind,'members':list(snapshot['members']),
             'universe_id':snapshot['universe_id'],'universe_version':snapshot['universe_version'],
             'sources':[sources[k] for k in sorted(sources)],'records':records}
+    if dictionary_version==POLICY_DICTIONARY_VERSION:return upgrade_policy_store(result,recorded_at=recorded_at)
+    if dictionary_version!=VERSION:raise ValueError('CLASSIFICATION_DICTIONARY_VERSION_INVALID')
     return validate(result)
+
+
+def upgrade_policy_store(store, *, recorded_at):
+    """Version the correspondence policy without changing any company record."""
+    validate(store);timestamp(recorded_at)
+    out=deepcopy(store)
+    if out['dictionary_version']==POLICY_DICTIONARY_VERSION:return out
+    out.update(dictionary_version=POLICY_DICTIONARY_VERSION,mapping_version=POLICY_MAPPING_VERSION,
+               boundary_policy={'version':BOUNDARY_POLICY_VERSION,'source':BOUNDARY_SOURCE,
+                                'approved_date':'2026-11-08','recorded_at':recorded_at,
+                                'recorded_at_basis':'RESEARCH_APPLICATION_NOT_ORIGINAL_COMPANY_CLASSIFICATION_DATE'})
+    return validate(out)
 
 
 def append_review(store, imported, *, company_ids):
