@@ -41,9 +41,11 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       // load, where a single page.evaluate(IS2.ready) bound to the replaced context failed with "Execution context was destroyed"
       // (CI #521 build 128696968965 at 1440; reproduced locally 1 in 6 under parallel load, no second frame navigation logged).
       // Interval polling: the fixed clock (ctx.clock) replaces performance and animation frames, so marks and rAF polling never fire.
+      let navs = 0; page.on('framenavigated', (f) => { if (f === page.mainFrame()) navs++; });
       await page.goto(s.base + '#/qgv');
       await page.waitForFunction(() => window.IS2 && typeof window.IS2.loadState === 'function' && ['READY', 'FAILED'].includes(window.IS2.loadState()), null, { polling: 100 });
       assert.equal(await page.evaluate(() => window.IS2.loadState()), 'READY', phase + ': the layer loaded');
+      assert.equal(navs, 1, phase + ': one main-frame navigation by the time the layer is ready (an app reload would fail here, not be waited out)');
       await page.locator(B + ' [data-k=sq-connect]').click(); await page.locator(B + ' [data-sq-role]').first().waitFor();
       for (const [a, v] of [['Q', '34'], ['G', '33'], ['V', '33']]) { await page.fill(B + ' [data-k=sq-axis-' + a + ']', v); await page.locator(B + ' [data-k=sq-axis-' + a + ']').press('Tab'); }
       const c0 = eng.calls.length;

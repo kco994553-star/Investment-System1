@@ -120,6 +120,27 @@ def check(source: Path, manifest: dict, parts: dict = PARTS) -> list:
     return staged
 
 
+def _check_counts(summary_path: Path, staged: list) -> None:
+    """A summary carrying calculation_counts (Codex #523) must name, in its operating scope, the very view bytes staged with it,
+    and that view's classification hash, evaluation day and row count; otherwise the whole new set is refused."""
+    value = json.loads(summary_path.read_bytes().decode('utf-8'))
+    counts = value.get('calculation_counts')
+    if counts is None:
+        return
+    view_path, view_digest = next((p, d) for part, p, _, d in staged if part == 'view')
+    view = json.loads(view_path.read_bytes().decode('utf-8'))
+    try:
+        operating = counts['scopes']['operating']
+        cited = operating['sources']['view']['sha256']
+        same = (cited == view_digest and operating['classification']['classification_hash'] == view.get('classification_hash')
+                and operating['valuation_date'] == view.get('valuation_date') == counts['valuation_date'] == value.get('valuation_date')
+                and operating['population']['denominator'] == len(view.get('rows') or []))
+    except (KeyError, TypeError) as error:
+        raise StageError('COUNTS_SHAPE_INVALID:expanded_summary') from error
+    if not same:
+        raise StageError('COUNTS_VIEW_MISMATCH:expanded_summary')
+
+
 def _manifest(path: Path) -> dict:
     try:
         return json.loads(path.read_text(encoding='utf-8'))
@@ -134,7 +155,9 @@ def stage(source: Path, manifest_path: Path, data_dir: Path, expanded: tuple | N
         raise StageError('DATA_DIR_MISSING')
     staged = check(source, _manifest(manifest_path))          # everything is checked before anything is written
     if expanded is not None:
-        staged += check(expanded[0], _manifest(expanded[1]), EXPANDED_PARTS)
+        extra = check(expanded[0], _manifest(expanded[1]), EXPANDED_PARTS)
+        _check_counts(extra[0][1], staged)
+        staged += extra
     # The current connection is replaced whole or not at all: the new set is written and re-hashed beside it, then swapped in;
     # on any failure the staging copy is removed and the existing classification/ stays as it was.
     target, fresh, old = data_dir / 'classification', data_dir / 'classification.staging', data_dir / 'classification.previous'

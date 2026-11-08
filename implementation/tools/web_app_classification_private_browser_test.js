@@ -50,6 +50,8 @@ const BUNDLE = (() => { const b = JSON.parse(JSON.stringify(X.uBundle())), r = b
     catalog: { issuers: 777, ticker_observations: 977, sector: 77, accounting: 76, industry: 17, raw: 57, factor_score: 47, Q: 37, G: 27, V: 0, joint: 0, total: 0 },
     held_financial_subsample: { issuers: 177, ticker_observations: 277, sector: 75, accounting: 74, industry: 15, raw: 57, factor_score: 47, Q: 37, G: 27, V: 0, joint: 0, total: 0 },
     official_gate_connected: 47 };
+  // Codex #523 calculation_counts on the same test view and summary (made-up counts; the page must show these, not fixed numbers).
+  b.expanded_summary.calculation_counts = X.syntheticCounts(b.view, b.expanded_summary, { opQ: 7, opG: 17, heldGate: 27, catGate: 47 });
   return b; })();
 const RECORD_IDS = BUNDLE.view.rows.map((r) => r.record_id).filter(Boolean);
 let phase = 'START', pass = 0;
@@ -162,7 +164,12 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       assert.match(ex, /관측 카탈로그 전체 · 발행사 777 · 티커 관측 977 · 섹터 77/); assert.match(ex, /보유 재무 하위표본 · 발행사 177/);
       assert.match(ex, /전체시장 분모·커버리지 미산출 · 새 증권 ID 0/); assert.match(ex, /발행사 행 ID는 증권 ID가 아님/);
       assert.match(ex, /38일 전 · 평가일 상장 명부 아님/);
-      assert.match(ex, /공식 Q 관문 연결 47 · 관측 카탈로그 범위 · 기존 Universe504 공식 Q 재생값\(확장 표본 Q 아님\) · 보유 재무 하위표본 범위의 수는 이 요약에 없음/);
+      const rowsN = BUNDLE.view.rows.length;
+      assert.equal(await page.locator('[data-cc-calc=operating]').getAttribute('data-cc-calc-state'), 'OK');
+      assert.match(await text(page, '[data-cc-calc=operating]'), new RegExp('Q 산출 7/' + rowsN + ' · G 산출 17/' + rowsN + ' · 평가일 ' + BUNDLE.view.valuation_date + ' · 원결과 집계\\(재계산 없음\\)'), phase + ': the 504 Q / G counts from the delivered summary');
+      assert.match(await text(page, '[data-cc-expanded-gate=catalog]'), /^공식 Q 관문 입력 연결 47\/777 · 관측 카탈로그 범위 · 관문 통과·새 섹터 Q 산출 아님 · 기존 Universe504 공식 Q 재생값\(확장 표본 Q 아님\)$/);
+      assert.match(await text(page, '[data-cc-expanded-gate=held_financial_subsample]'), /^공식 Q 관문 입력 연결 27\/177 · 보유 재무 하위표본 범위 · 관문 통과·새 섹터 Q 산출 아님/);
+      assert.equal(await count(page, '[data-cc-population=OPERATING_504] [data-cc-expanded-gate]'), 0, phase + ': the gate input lines stay in the expanded block');
       assert.match(ex, /확장 발행사 행 단위 화면은 아직 없음 · 요약만 연결됨/);
       assert.equal(await page.locator('[data-cc-private-version]').getAttribute('data-cc-private-version'), 'common-industry-dictionary/1');
       assert.equal(await text(page, '[data-cc-count=rows]'), '기업 행 ' + BUNDLE.view.rows.length + '개(원래 분모 그대로)', phase + ': the 504 count never takes the expanded issuers');
@@ -208,6 +215,8 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       assert.deepEqual(dd.slice(0, 3), [v2view.valuation_date, 'common-industry-dictionary/2 + common-classification-map/2', POL.version + ' · 시스템 대응 정책(책의 직접 명시 아님)'], phase + ': date, version pair, policy');
       assert.match(await text(page, '[data-cc-policy]'), POLICY_LINE);
       assert.equal(await count(page, '[data-cc-line=accounting]'), 1, phase + ': the accounting line stays its own line');
+      assert.match(await text(page, '[data-cc-calc=operating]'), /연결 오류\(COUNTS_VERSION_MISMATCH\) · 쓰지 않음/, phase + ': counts of the /1 view are set aside for a /2 view');
+      assert.match(await text(page, '[data-cc-expanded-gate=held_financial_subsample]'), /연결 오류\(COUNTS_VERSION_MISMATCH\)/);
       await boundaries(page, seen, w, phase);
       ok('390: the /2 policy pair reads (version pair, policy rows, the company block policy line), no overflow; boundaries');
       await ctx.close();
