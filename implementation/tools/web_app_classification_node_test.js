@@ -299,6 +299,33 @@ const uni = (ids, extra = []) => [...ids, ...extra].map((id, i) => ({ id, code: 
     new_security_ids: 0, official_universe_changed: false,
     catalog: { issuers: 90, ticker_observations: 120, sector: 40, accounting: 38, industry: 9, raw: 30, factor_score: 20, Q: 11, G: 13, V: 0, joint: 0, total: 0 },
     held_financial_subsample: { issuers: 30, ticker_observations: 44, sector: 25, accounting: 24, industry: 7, raw: 29, factor_score: 20, Q: 11, G: 13, V: 0, joint: 0, total: 0 } });
+  // Codex #523 calculation_counts: checked whole and against the view and the summary; a failure sets only the counts aside.
+  await ok('calculation_counts: read from the payload (not fixed), checked against the view and summary; failures set the counts aside, the bundle stays', () => {
+    const base = clone(X.bundle()), e = { ...EXP(), valuation_date: base.view.valuation_date, official_gate_connected: 7 };
+    e.calculation_counts = X.syntheticCounts(base.view, e, { opQ: 3, opG: 5, heldGate: 6, catGate: 7 });
+    const v = valid({ ...base, expanded: e }), k = v.counts;
+    assert.equal(k.state, 'OK'); assert.deepEqual([k.value.scopes.operating.counts.Q.valid, k.value.scopes.operating.counts.G.valid, k.value.scopes.held_financial_subsample.official_q_gate_input.valid,
+      k.value.scopes.catalog.official_q_gate_input.valid], [3, 5, 6, 7]);
+    assert.equal(k.value.scopes.operating.official_q_gate_input.status, 'NOT_MEASURED', 'the operating gate stays 미측정, not 0');
+    assert.equal(k.value.full_market_denominator, null);
+    assert.equal(valid({ ...base, expanded: EXP() }).counts.state, 'NOT_DELIVERED', 'an old summary has no counts, never zero counts');
+    const bad = (label, code, f) => { const x = clone(e); f(x.calculation_counts, x); const r = C.validate({ ...base, expanded: x });
+      assert.equal(r.ok, true, label + ': the bundle still reads'); assert.deepEqual([r.value.counts.state, r.value.counts.code], ['ERROR', code], label); assert.deepEqual(r.value.mismatch, {}, label); };
+    bad('other view hash', 'COUNTS_HASH_MISMATCH', (c) => { c.scopes.operating.classification.classification_hash = 'f'.repeat(64); });
+    bad('other day', 'COUNTS_DATE_MISMATCH', (c) => { c.scopes.operating.valuation_date = '2026-01-02'; });
+    bad('other rows', 'COUNT_DENOMINATOR', (c) => { c.scopes.operating.population.denominator += 1; });
+    bad('valid + uncomputed', 'COUNT_ARITHMETIC', (c) => { c.scopes.operating.counts.Q.uncomputed += 1; });
+    bad('status not the counts', 'COUNT_STATUS', (c) => { c.scopes.operating.counts.Q.status = 'COMPLETE'; });
+    bad('NOT_MEASURED with a value', 'COUNT_NOT_MEASURED', (c) => { c.scopes.operating.official_q_gate_input.valid = 0; });
+    bad('unit', 'COUNT_UNIT', (c) => { c.scopes.catalog.population.unit = 'CODE_ROW'; });
+    bad('full market', 'FULL_MARKET_NOT_NULL', (c) => { c.full_market_coverage = 0.5; });
+    bad('catalog gate vs summary', 'COUNTS_SUMMARY_MISMATCH', (c) => { const g = c.scopes.catalog.official_q_gate_input; g.valid += 1; g.uncomputed -= 1; });
+    bad('held Q vs summary', 'COUNTS_SUMMARY_MISMATCH', (c) => { const q = c.scopes.held_financial_subsample.counts.Q; q.valid += 1; q.uncomputed -= 1; });
+    bad('gate meaning', 'GATE_MEANING', (c) => { c.scopes.held_financial_subsample.official_q_gate_input.meaning = 'GATE_PASS'; });
+    bad('mixed version pair', 'VERSION_PAIR_INVALID', (c) => { c.scopes.operating.classification.mapping_version = 'common-classification-map/2'; });
+    bad('other schema', 'SCHEMA_VERSION', (c) => { c.schema_version = 'common-classification-calculation-counts/2'; });
+    bad('a scope missing', 'KEY_MISSING', (c) => { delete c.scopes.held_financial_subsample; });
+  });
   await ok('expanded issuer sample: its own population, read whole, never in the 504 counts; full-market denominator must stay null', () => {
     const b = { ...clone(X.bundle()), expanded: EXP() }, v = valid(b);
     assert.equal(v.expanded.catalog.issuers, 90); assert.equal(v.view.rows.length, X.bundle().view.rows.length, 'the view keeps its own rows');

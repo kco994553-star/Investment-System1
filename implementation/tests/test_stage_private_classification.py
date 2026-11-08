@@ -136,3 +136,35 @@ def test_a_broken_new_set_keeps_the_existing_connection(tmp_path, capsys, edit, 
     assert capsys.readouterr().out.strip() == 'STAGE_PRIVATE_CLASSIFICATION refused=' + code
     assert {p.name: p.read_bytes() for p in (data_dir / 'classification').iterdir()} == before, 'the existing connection is untouched'
     assert sorted(p.name for p in data_dir.iterdir()) == ['classification']
+
+
+def _expanded(tmp_path, view_bytes, *, cite=None, name='expanded'):
+    """A synthetic expanded summary carrying calculation_counts that cites the staged view (Codex #523 shape, trimmed)."""
+    src = tmp_path / name
+    (src / 'final').mkdir(parents=True)
+    view = json.loads(view_bytes)
+    value = {'schema_version': 'held-expanded-classification-summary/1', 'valuation_date': view['valuation_date'],
+             'calculation_counts': {'valuation_date': view['valuation_date'], 'scopes': {'operating': {
+                 'valuation_date': view['valuation_date'], 'population': {'denominator': len(view.get('rows') or [])},
+                 'classification': {'classification_hash': view['classification_hash']},
+                 'sources': {'view': {'ref': 'synthetic://view', 'sha256': cite or hashlib.sha256(view_bytes).hexdigest()}}}}}}
+    data = json.dumps(value).encode()
+    (src / 'final/summary.json').write_bytes(data)
+    (src / 'm.json').write_text(json.dumps({'files': [{'path': 'final/summary.json', 'bytes': len(data), 'sha256': hashlib.sha256(data).hexdigest()}]}))
+    return src, src / 'm.json'
+
+
+def test_a_counts_summary_must_cite_the_staged_view_bytes(tmp_path, capsys):
+    src, manifest, data_dir = _bundle(tmp_path)
+    view_bytes = (src / stage_tool.PARTS['view'][0]).read_bytes()
+    exp, exp_m = _expanded(tmp_path, view_bytes)
+    args = ['--source', str(src), '--manifest', str(manifest), '--data-dir', str(data_dir), '--expanded-source', str(exp), '--expanded-manifest', str(exp_m)]
+    assert stage_tool.main(args) == 0
+    before = {p.name: p.read_bytes() for p in (data_dir / 'classification').iterdir()}
+    capsys.readouterr()
+    bad, bad_m = _expanded(tmp_path, view_bytes, cite='e' * 64, name='expanded-bad')
+    args = ['--source', str(src), '--manifest', str(manifest), '--data-dir', str(data_dir), '--expanded-source', str(bad), '--expanded-manifest', str(bad_m)]
+    assert stage_tool.main(args) == 1
+    assert capsys.readouterr().out.strip() == 'STAGE_PRIVATE_CLASSIFICATION refused=COUNTS_VIEW_MISMATCH:expanded_summary'
+    assert {p.name: p.read_bytes() for p in (data_dir / 'classification').iterdir()} == before, 'the existing good set stays'
+    assert sorted(p.name for p in data_dir.iterdir()) == ['classification']

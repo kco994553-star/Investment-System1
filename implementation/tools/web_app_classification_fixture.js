@@ -47,4 +47,24 @@ function applyCase(base, c) { const v = structuredClone(base);
   for (const [keys, value] of c.sets) { let p = v; for (const k of keys.slice(0, -1)) p = p[k]; p[keys.at(-1)] = structuredClone(value); }
   for (const keys of c.removes) { let p = v; for (const k of keys.slice(0, -1)) p = p[k]; delete p[keys.at(-1)]; }
   return v; }
-module.exports = { GROUP_MANIFEST_SHA256, groupManifest, groupFixtures, applyCase, uTech, JOIN_CASES_PATH, JOIN_CASES_SHA256, joinCases, universe, uBundle, uTechnical, uRecord, MAIN_PATH, MAIN_SHA256, HANDOFF_DIR, HANDOFF_SHA256, sha, main, mainSha, handoffSha, codexFixtures, bundle, technicalCase, recordCase };
+// Synthetic calculation_counts (Codex #523 common-classification-calculation-counts/1 shape) tied to a test view and summary:
+// the operating scope names the view's hash, day, versions and rows; the expanded scopes repeat the summary's denominators and Q / G.
+// Test numbers only (they show where each value lands on the page); the real counts come from Codex's retained results.
+function syntheticCounts(view, summary, { opQ, opG, heldGate, catGate }) {
+  const H = (c) => c.repeat(64), count = (valid, den, reason = 'NULL_IN_RETAINED_RESULT') => ({ valid, denominator: den, uncomputed: den - valid,
+    status: den === 0 ? 'EMPTY_POPULATION' : valid === 0 ? 'NOT_COMPUTED' : valid === den ? 'COMPLETE' : 'PARTIAL', reason: valid === den ? null : reason });
+  const gate = (valid, den) => ({ ...count(valid, den), reason: null, meaning: 'CONNECTED_INPUT_NOT_GATE_PASS_NOT_SECTOR_Q', basis: 'RETAINED_UNIVERSE504_OFFICIAL_Q_REPLAY_NOT_EXPANDED_Q' });
+  const scope = (id, unit, den, q, g, gateCount, cls) => ({ population: { id, version: 'synthetic/1', unit, denominator: den, unique_issuers: den, members_hash: H('1') },
+    scoring_population: { id, version: 'synthetic/1', denominator: den, members_hash: H('1') }, valuation_date: summary.valuation_date, input_as_of: summary.valuation_date + 'T02:00:00Z',
+    versions: { model_version: 'sector-qgv-default/0.1.0' }, classification: cls, result_identity: { preview_id: H('2') },
+    sources: { view: { ref: 'synthetic://view.json', sha256: H('3') }, preview: { ref: 'synthetic://preview.json', sha256: H('4') } },
+    counts: { Q: count(q, den), G: count(g, den), V: count(0, den), joint: count(0, den), total: count(0, den) }, official_q_gate_input: gateCount });
+  const opCls = { schema_version: 'common-classification-view/1', classification_hash: view.classification_hash, dictionary_version: view.dictionary_version, mapping_version: view.mapping_version };
+  const exCls = { ...opCls, classification_hash: H('5') }, n = view.rows.length;
+  return { schema_version: 'common-classification-calculation-counts/1', data_kind: view.data_kind, valuation_date: summary.valuation_date,
+    operation: 'EXTRACT_EXISTING_RESULTS_NO_RECALCULATION', source_summary: { ref: 'synthetic://summary.json', sha256: H('6') }, full_market_denominator: null, full_market_coverage: null,
+    scopes: { operating: scope('Universe504', 'CODE_ROW', n, opQ, opG, { valid: null, denominator: n, uncomputed: null, status: 'NOT_MEASURED', reason: 'NO_OPERATING_GATE_AUDIT_REQUESTED' }, opCls),
+      held_financial_subsample: scope('held', 'ISSUER', summary.held_financial_subsample.issuers, summary.held_financial_subsample.Q, summary.held_financial_subsample.G, gate(heldGate, summary.held_financial_subsample.issuers), exCls),
+      catalog: scope('catalog', 'ISSUER', summary.catalog.issuers, summary.catalog.Q, summary.catalog.G, gate(catGate, summary.catalog.issuers), exCls) } };
+}
+module.exports = { syntheticCounts, GROUP_MANIFEST_SHA256, groupManifest, groupFixtures, applyCase, uTech, JOIN_CASES_PATH, JOIN_CASES_SHA256, joinCases, universe, uBundle, uTechnical, uRecord, MAIN_PATH, MAIN_SHA256, HANDOFF_DIR, HANDOFF_SHA256, sha, main, mainSha, handoffSha, codexFixtures, bundle, technicalCase, recordCase };

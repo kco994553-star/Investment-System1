@@ -213,6 +213,46 @@ function checkExpanded(e,path){keys(e,['schema_version','valuation_date','catalo
  if(e.full_market_denominator!==null||e.full_market_coverage!==null)refuse('FULL_MARKET_NOT_NULL',path+'.full_market_denominator');
  int(e.new_security_ids,path+'.new_security_ids');if(e.official_universe_changed!==false)refuse('OFFICIAL_UNIVERSE_CHANGED',path+'.official_universe_changed');
  if(own(e,'official_gate_connected'))int(e.official_gate_connected,path+'.official_gate_connected');}
+// calculation_counts (Codex #523 6fc7a673, common-classification-calculation-counts/1): counts read from the retained results, no
+// recalculation. Checked whole here and against the summary; checked against the view in validate(). A failure sets the counts
+// aside as a connection error (never shown, never 0); the rest of the bundle reads as before. An old summary without the field
+// has no counts (NOT_DELIVERED), never zero counts. The gate count is an official Q gate INPUT connection, not a gate pass and
+// not a sector Q result.
+const COUNTS_SCHEMA='common-classification-calculation-counts/1',COUNT_STATUS=['PARTIAL','COMPLETE','NOT_COMPUTED','EMPTY_POPULATION','NOT_MEASURED'],
+ COUNT_SCOPES=Object.freeze({operating:'CODE_ROW',held_financial_subsample:'ISSUER',catalog:'ISSUER'}),COUNT_KEYS=['Q','G','V','joint','total'],
+ GATE_MEANING='CONNECTED_INPUT_NOT_GATE_PASS_NOT_SECTOR_Q';
+function checkCount(c,den,path){keys(c,['valid','denominator','uncomputed','status','reason'],path);
+ if(c.denominator!==den)refuse('COUNT_DENOMINATOR',path+'.denominator');if(!COUNT_STATUS.includes(c.status))refuse('COUNT_STATUS',path+'.status');
+ if(c.reason!==null&&(typeof c.reason!=='string'||!CODE.test(c.reason)))refuse('REASON_INVALID',path+'.reason');
+ if(c.status==='NOT_MEASURED'){if(c.valid!==null||c.uncomputed!==null)refuse('COUNT_NOT_MEASURED',path);return;}
+ int(c.valid,path+'.valid');int(c.uncomputed,path+'.uncomputed');if(c.valid+c.uncomputed!==den)refuse('COUNT_ARITHMETIC',path);
+ if(c.status!==(den===0?'EMPTY_POPULATION':c.valid===0?'NOT_COMPUTED':c.valid===den?'COMPLETE':'PARTIAL'))refuse('COUNT_STATUS',path+'.status');}
+const sourceRef=(v,path)=>{keys(v,['ref','sha256'],path);ref(v.ref,path+'.ref');hex(v.sha256,path+'.sha256');};
+function checkCounts(cc,e,path){keys(cc,['schema_version','data_kind','valuation_date','operation','source_summary','full_market_denominator','full_market_coverage','scopes'],path);
+ if(cc.schema_version!==COUNTS_SCHEMA)refuse('SCHEMA_VERSION',path+'.schema_version');if(!DATA_KINDS.includes(cc.data_kind))refuse('DATA_KIND',path+'.data_kind');
+ if(cc.valuation_date!==e.valuation_date)refuse('COUNTS_DATE_MISMATCH',path+'.valuation_date');
+ if(cc.operation!=='EXTRACT_EXISTING_RESULTS_NO_RECALCULATION')refuse('COUNTS_OPERATION',path+'.operation');
+ if(cc.full_market_denominator!==null||cc.full_market_coverage!==null)refuse('FULL_MARKET_NOT_NULL',path+'.full_market_denominator');
+ sourceRef(cc.source_summary,path+'.source_summary');keys(cc.scopes,Object.keys(COUNT_SCOPES),path+'.scopes',[]);
+ for(const[name,unit]of Object.entries(COUNT_SCOPES)){const s=cc.scopes[name],sp=path+'.scopes.'+name;
+  keys(s,['population','scoring_population','valuation_date','input_as_of','versions','classification','result_identity','sources','counts','official_q_gate_input'],sp);
+  const pop=s.population;keys(pop,['id','version','unit','denominator','unique_issuers','members_hash'],sp+'.population');text(pop.id,sp+'.population.id');text(pop.version,sp+'.population.version');
+  if(pop.unit!==unit)refuse('COUNT_UNIT',sp+'.population.unit');int(pop.denominator,sp+'.population.denominator');int(pop.unique_issuers,sp+'.population.unique_issuers');hex(pop.members_hash,sp+'.population.members_hash');
+  if(s.valuation_date!==cc.valuation_date)refuse('COUNTS_DATE_MISMATCH',sp+'.valuation_date');stamp(s.input_as_of,sp+'.input_as_of');
+  keys(s.classification,['schema_version','classification_hash','dictionary_version','mapping_version'],sp+'.classification');hex(s.classification.classification_hash,sp+'.classification.classification_hash');
+  if(!own(VERSION_PAIRS,s.classification.dictionary_version)||VERSION_PAIRS[s.classification.dictionary_version]!==s.classification.mapping_version)refuse('VERSION_PAIR_INVALID',sp+'.classification');
+  if(!isObj(s.sources)||!own(s.sources,'view'))refuse('COUNT_SOURCES',sp+'.sources');for(const[k,v]of Object.entries(s.sources))sourceRef(v,sp+'.sources.'+k);
+  keys(s.counts,COUNT_KEYS,sp+'.counts',[]);for(const k of COUNT_KEYS)checkCount(s.counts[k],pop.denominator,sp+'.counts.'+k);
+  const g=s.official_q_gate_input;checkCount(g,pop.denominator,sp+'.official_q_gate_input');
+  if(g.status!=='NOT_MEASURED'&&g.meaning!==GATE_MEANING)refuse('GATE_MEANING',sp+'.official_q_gate_input.meaning');
+  // The expanded scopes are the summary's own groups: the same denominators and the same Q / G counts, never a re-scoring.
+  if(name!=='operating'){const t=e[name];if(pop.denominator!==t.issuers||s.counts.Q.valid!==t.Q||s.counts.G.valid!==t.G)refuse('COUNTS_SUMMARY_MISMATCH',sp);}}
+ if(own(e,'official_gate_connected')&&cc.scopes.catalog.official_q_gate_input.valid!==e.official_gate_connected)refuse('COUNTS_SUMMARY_MISMATCH',path+'.scopes.catalog.official_q_gate_input');}
+// The operating scope against the delivered view: the same evaluation day, classification hash, versions, kind and rows.
+function countsMismatch(cc,view){const o=cc.scopes.operating;
+ if(o.valuation_date!==view.valuation_date)return'COUNTS_DATE_MISMATCH';if(o.classification.classification_hash!==view.classification_hash)return'COUNTS_HASH_MISMATCH';
+ if(o.classification.dictionary_version!==view.dictionary_version||o.classification.mapping_version!==view.mapping_version)return'COUNTS_VERSION_MISMATCH';
+ if(cc.data_kind!==view.data_kind)return'DATA_KIND_MISMATCH';if(o.population.denominator!==view.rows.length)return'COUNTS_POPULATION_MISMATCH';return null;}
 const validateView=pass(checkView),validateExpanded=pass(checkExpanded),validateTechnical=pass(checkTechnical),validateMacro=pass(checkMacro),validateLinks=pass(checkLinks),validateDictionary=pass(checkDictionary);
 
 /* ---------------------------------------------------------------- the bundle: one view and the parts that read the same records */
@@ -237,6 +277,11 @@ function validate(json){
     ||v.dictionary.policy.approved_date!==v.view.boundary_policy.approved_date))refuse('CLASSIFICATION_POLICY_MISMATCH','$.dictionary.policy');}
   // expanded: its own population; kept whole, never compared with the view's members (no partMismatch).
   const out={view:v.view,dictionary:v.dictionary||null,expanded:v.expanded||null,mismatch:{}};
+  // counts: {state:'OK', value} / {state:'NOT_DELIVERED'} / {state:'ERROR', code}; never part of the bundle's refusal.
+  out.counts={state:'NOT_DELIVERED',code:null,value:null};
+  if(v.expanded&&own(v.expanded,'calculation_counts')){try{checkCounts(v.expanded.calculation_counts,v.expanded,'$.expanded.calculation_counts');
+    const why=countsMismatch(v.expanded.calculation_counts,v.view);out.counts=why?{state:'ERROR',code:why,value:null}:{state:'OK',code:null,value:v.expanded.calculation_counts};}
+   catch(e){if(!(e instanceof Refusal))throw e;out.counts={state:'ERROR',code:e.code,value:null};}}
   for(const k of PARTS){out[k]=null;if(!v[k])continue;const why=partMismatch(v.view,v[k],k);if(why)out.mismatch[k]=why;else out[k]=v[k];}
   return{ok:true,value:deepFreeze(out)};}
  catch(e){if(e instanceof Refusal)return{ok:false,code:e.code,path:e.path};throw e;}}
