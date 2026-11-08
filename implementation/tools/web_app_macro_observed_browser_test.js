@@ -20,7 +20,9 @@ const MF = require('./web_app_macro_fixture.js');
 const X = require('./web_app_macro_observed_fixture.js');
 
 const NOW = '2026-10-14T03:00:00.000Z';
-const UNPUBLISHED = ['sec-public-inputs.json', 'dart-financials.json', 'qgv-official.json', 'qgv-official-status.json'];
+// macro-evidence-status.json (#513's attempt record beside macro-evidence.json) is read by the macro screen and is not published in
+// this test site (the same line #519 added to the discovery and policy tests).
+const UNPUBLISHED = ['sec-public-inputs.json', 'dart-financials.json', 'qgv-official.json', 'qgv-official-status.json', 'macro-evidence-status.json'];
 const FULL = { 'macro-screen.json': { json: MF.macroScreen() }, 'macro-evidence.json': { json: MF.evidence() }, 'sec-qgv2.json': { json: MF.qgv() }, 'company-classification.json': { json: MF.classification() } };
 const B = '[data-block="4.1.3-observed"]';
 const C = X.cases();
