@@ -228,10 +228,18 @@ def from_sector_snapshot(snapshot, evidence_by_code, *, source_sha256, recorded_
                          'availability_basis':'OBSERVED_BY_ACQUISITION_NOT_FIRST_PUBLICATION'}
             if key in sources and sources[key] != candidate: raise ValueError('SOURCE_METADATA_CONFLICT')
             sources[key]=candidate
-        sector = confirmed(r['sector_id'],m['evidence_refs']) if m else unknown((r.get('reasons') or ['SECTOR_UNCONFIRMED'])[0])
-        accounting = confirmed(r['accounting_template'],m['evidence_refs']) if m else unknown('ACCOUNTING_TEMPLATE_UNCONFIRMED')
+        components=r.get('component_mappings',{})
+        sm=components.get('sector') or m; am=components.get('accounting') or m
+        for source in r.get('review_sources',[]):
+            key=source['source_id']
+            if key in sources and sources[key]!=source:raise ValueError('SOURCE_METADATA_CONFLICT')
+            sources[key]=deepcopy(source);refs.append(key)
+        sector = confirmed(r['sector_id'],sm['evidence_refs']) if sm else unknown((r.get('reasons') or ['SECTOR_UNCONFIRMED'])[0])
+        accounting = confirmed(r['accounting_template'],am['evidence_refs']) if am else unknown('ACCOUNTING_TEMPLATE_UNCONFIRMED')
         sic = official.get('code') if official and official.get('system')=='SEC_SIC' else None
         industry = industry_for_sic(sic, sector['id'])
+        if components.get('industry'):
+            industry=confirmed(r['reviewed_industry_id'],components['industry']['evidence_refs'])
         records.append({'record_id':'retained:'+digest({'company_id':code,'snapshot':source_sha256})[:32],
                         'company_id':code,'issuer_id':r['issuer_id'], 'recorded_at':recorded_at,
                         'recorded_at_basis':'CURRENT_IMPORT_REVIEW_NOT_ORIGINAL_DECISION_TIME',
@@ -240,7 +248,7 @@ def from_sector_snapshot(snapshot, evidence_by_code, *, source_sha256, recorded_
                                          'valid_from':None,'valid_to':None},
                         'sector':sector,'industry':industry,'accounting':accounting,
                         'source_sic':official,'source_refs':refs,'tags':{},
-                        'rule_version':m['classification_rule_version'] if m else snapshot['classification_rule_version'],
+                        'rule_version':(sm or am or {}).get('classification_rule_version',snapshot['classification_rule_version']),
                         'basis':'RESEARCH_CORRESPONDENCE','legacy_mapping':deepcopy(m),
                         'retained_snapshot_sha256':source_sha256})
     result={'schema_version':SCHEMA,'dictionary_version':VERSION,'mapping_version':MAPPING_VERSION,
@@ -248,3 +256,34 @@ def from_sector_snapshot(snapshot, evidence_by_code, *, source_sha256, recorded_
             'universe_id':snapshot['universe_id'],'universe_version':snapshot['universe_version'],
             'sources':[sources[k] for k in sorted(sources)],'records':records}
     return validate(result)
+
+
+def append_review(store, imported, *, company_ids):
+    """Append reviewed rows and provenance; no previous decision/source is overwritten."""
+    validate(store);validate(imported)
+    for field in ('members','universe_id','universe_version','data_kind','dictionary_version','mapping_version'):
+        if store[field]!=imported[field]:raise ValueError('REVIEW_STORE_CONTEXT_MISMATCH:'+field)
+    ids=set(company_ids)
+    if len(ids)!=len(company_ids) or not ids<=set(store['members']):raise ValueError('REVIEW_MEMBERS_INVALID')
+    out=deepcopy(store);sources={s['source_id']:s for s in out['sources']}
+    new_sources={s['source_id']:s for s in imported['sources']}
+    for candidate in imported['records']:
+        if candidate['company_id'] not in ids:continue
+        r=deepcopy(candidate)
+        old=[x for x in store['records'] if x['company_id']==r['company_id'] and x['applicability']==r['applicability']]
+        superseded={x['supersedes'] for x in old if x.get('supersedes')}
+        heads=[x for x in old if x['record_id'] not in superseded]
+        if len(heads)!=1 or heads[0]['issuer_id']!=r['issuer_id']:raise ValueError('REVIEW_PREDECESSOR_UNCONFIRMED')
+        if timestamp(r['recorded_at'])<=timestamp(heads[0]['recorded_at']):raise ValueError('REVIEW_TIME_NOT_LATER')
+        r['supersedes']=heads[0]['record_id'];r['tags']=deepcopy(heads[0]['tags'])
+        refs=[]
+        for key in r['source_refs']:
+            source=deepcopy(new_sources[key])
+            if key in sources and sources[key]!=source:
+                key=key+':metadata:'+digest(source)[:16];source['source_id']=key
+            if key not in sources:out['sources'].append(source);sources[key]=source
+            elif sources[key]!=source:raise ValueError('REVIEW_SOURCE_ID_CONFLICT')
+            refs.append(key)
+        r['source_refs']=refs;out['records'].append(r)
+    if sum(x['company_id'] in ids for x in imported['records'])!=len(ids):raise ValueError('REVIEW_ROWS_INCOMPLETE')
+    return validate(out)

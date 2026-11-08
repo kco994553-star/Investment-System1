@@ -43,7 +43,7 @@ def run(job, output, *, synthetic=False):
         'preview_identity':{k:after[k] for k in ('preview_id','input_hash','config_hash','cache_key','engine_version')},
         'rows':[{'company_id':r['company_id'],'issuer_id':r['issuer_id'],
                  'classification_record_id':r['record_id']} for r in view['rows']]}
-    compared=compare_axes(before,after,config,config,'CC-CLASSIFICATION-20261107-C1',input_treatment=True)
+    compared=compare_axes(before,after,config,config,job.get('comparison_id','CC-CLASSIFICATION-20261107-C1'),input_treatment=True)
     link_input=read('technical_input') if 'technical_input' in job else {'measurements':[],'security_links':[],'price_basis':'RAW'}
     technical=technical_groups(view,link_input['measurements'],link_input['security_links'],price_basis=link_input['price_basis'])
     macro=macro_projection(view,read('macro_source_links') if 'macro_source_links' in job else [])
