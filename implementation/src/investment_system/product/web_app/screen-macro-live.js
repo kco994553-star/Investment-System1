@@ -40,19 +40,26 @@ const REASON={SOURCE_NOT_COLLECTED:'수집 전',SOURCE_NOT_AVAILABLE:'출처 응
 const V={cycle:'economy',view:{economy:0,market:0},ev:null,group:'',ring:'economy',node:'data',mevStatus:undefined};
 // macro-evidence-status/1 (Python macro/evidence_lines.py require_status, same rules): this attempt apart from the data. A
 // failed attempt keeps the last good copy with its own generated_at; the record says the attempt failed and the data is late.
+// CARRIED_LIVE (tools/macro_evidence_carry.py): the attempt withheld the file and the deploy carried the verified live copy
+// byte for byte; the record keeps the attempt's own failure and adds `carry` {at, basis, generated_at, sha256}.
 const MES='macro-evidence-status.json',MES_KEYS=['schema','kind','attempt_at','attempt_result','failure_stage','failure_class','published','data_generated_at','data_sha256','previous'];
+const MES_CARRY_KEYS=['at','basis','generated_at','sha256'];
 const MES_STAGE={PREVIOUS:'이전 공개본 읽기',COLLECT:'수집',BUILD:'자료 만들기',VALIDATE:'검사',WRITE:'쓰기'};
 // How the previous Pages copy read (macro/evidence_lines.py PREVIOUS_READ): UNAVAILABLE / INVALID are not absence.
 const MES_PREV={LOADED:'정상본 확인',NO_LIVE:'공개본 없음',EMPTY_LIVE:'빈 기본값만 있음',REMOVED:'공개본이 빠져 있음',UNAVAILABLE:'조회 실패',INVALID:'손상된 응답'};
 const ISO=/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,6})?Z$/;
-function mesValid(p){const ok=(c)=>{if(!c)throw Error('MES');};try{ok(p&&typeof p==='object'&&!Array.isArray(p)&&Object.keys(p).length===MES_KEYS.length&&MES_KEYS.every(k=>Object.hasOwn(p,k)));
+const exact=(o,keys)=>o!==null&&typeof o==='object'&&!Array.isArray(o)&&Object.keys(o).length===keys.length&&keys.every(k=>Object.hasOwn(o,k));
+function mesValid(p){const ok=(c)=>{if(!c)throw Error('MES');};try{const carried=p!==null&&typeof p==='object'&&p.published==='CARRIED_LIVE';
+ ok(exact(p,carried?[...MES_KEYS,'carry']:MES_KEYS));
  ok(p.schema==='macro-evidence-status/1'&&p.kind==='MACRO_EVIDENCE_ATTEMPT'&&ISO.test(p.attempt_at));
- ok(['BUILT','FAILED'].includes(p.attempt_result)&&['NEW','PREVIOUS_KEPT','WITHHELD'].includes(p.published)&&Object.hasOwn(MES_PREV,p.previous));
+ ok(['BUILT','FAILED'].includes(p.attempt_result)&&['NEW','PREVIOUS_KEPT','CARRIED_LIVE','WITHHELD'].includes(p.published)&&Object.hasOwn(MES_PREV,p.previous));
  const unreadable=p.previous==='UNAVAILABLE'||p.previous==='INVALID';
  if(p.attempt_result==='BUILT')ok(p.failure_stage===null&&p.failure_class===null&&p.published==='NEW'&&!unreadable);
  else{ok(Object.hasOwn(MES_STAGE,p.failure_stage)&&p.published!=='NEW'&&(p.failure_class===null||(typeof p.failure_class==='string'&&/^[A-Za-z][A-Za-z0-9_]{0,63}$/.test(p.failure_class))));
   if(p.published==='PREVIOUS_KEPT')ok(p.previous==='LOADED');else if(unreadable)ok(p.failure_stage==='PREVIOUS');else if(p.previous==='LOADED')ok(p.failure_stage==='WRITE');}
  if(p.published==='WITHHELD')ok(p.data_generated_at===null&&p.data_sha256===null);else ok(ISO.test(p.data_generated_at)&&/^[0-9a-f]{64}$/.test(p.data_sha256));
+ if(carried){const c=p.carry;ok(exact(c,MES_CARRY_KEYS)&&c.basis==='DEPLOY_LIVE_READ'&&ISO.test(c.at)&&c.generated_at===p.data_generated_at&&c.sha256===p.data_sha256);
+  const t=Date.parse(c.at);ok(Date.parse(p.attempt_at)<=t&&Date.parse(p.data_generated_at)<=t);}
  return p;}catch(_){return null;}}
 // The attempt line: null when there is nothing to say (no record, or a built attempt of this very file). `p` is the
 // macro file, or null when it is not published: WITHHELD means the daily step left it out (never beside a file).
@@ -61,6 +68,11 @@ function attemptLine(p){const st=V.mevStatus;if(!st)return null;
  const matches=st.published==='WITHHELD'?p===null:(p!==null&&st.data_generated_at===p.generated_at);
  if(!matches)return h('p',{class:'reason',dataset:{mevAttempt:'MISMATCH'}},'갱신 기록이 이 자료와 맞지 않음 · 기록 표시 안 함');
  if(st.attempt_result==='BUILT')return null;
+ const unreadable=st.previous==='UNAVAILABLE'||st.previous==='INVALID';
+ // carried at deploy: the shown file is the copy published before, verified and carried byte for byte, never this attempt's data
+ if(st.published==='CARRIED_LIVE')return h('p',{class:'hand err',role:'status',dataset:{mevAttempt:'CARRIED_LIVE',mevPrevious:st.previous}},
+  '이번 갱신 실패 (',utc(st.attempt_at),' · ',unreadable?'이전 공개본 '+MES_PREV[st.previous]:MES_STAGE[st.failure_stage]+' 단계',
+  ') · 아래는 이전에 게시된 검증본을 배포 때 그대로 옮긴 것 · 원래 기준 시각 그대로 (생성 ',utc(st.data_generated_at),', 배포 확인 ',utc(st.carry.at),') · 이번 시도의 자료 아님 · 자료 지연');
  return st.published==='PREVIOUS_KEPT'
   ?h('p',{class:'hand err',role:'status',dataset:{mevAttempt:'PREVIOUS_KEPT'}},'이번 갱신 실패 (',utc(st.attempt_at),' · ',MES_STAGE[st.failure_stage],' 단계) · 아래는 마지막 정상본 그대로 (생성 ',utc(st.data_generated_at),') · 자료 지연')
   :st.previous==='UNAVAILABLE'||st.previous==='INVALID'
