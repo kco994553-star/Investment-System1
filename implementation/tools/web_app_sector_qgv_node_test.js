@@ -223,7 +223,8 @@ const copy = (v) => JSON.parse(JSON.stringify(v));
       assert.deepEqual({ ...S.FEATURE }, { id: '2.2.7', name: '섹터 QGV 설정(요소·가중치)' });
       const live = fs.readFileSync(path.join(W, 'screen-sector-qgv-live.js'), 'utf8');
       assert.match(live, /sqFeature:S\.FEATURE\.id\}\},S\.FEATURE\.id,' ',S\.FEATURE\.name/); assert.equal((live.match(/feature\(\),/g) || []).length, 3, 'idle, loading and connected bodies');
-      assert.match(fs.readFileSync(path.join(W, 'screen-qgv.js'), 'utf8'), /2\.2\.7 섹터 QGV 설정\(요소·가중치\)/);
+      // the first-paint placeholder names the feature without its number (pending text carries no digit, web_app_qgv_browser_test)
+      assert.match(fs.readFileSync(path.join(W, 'screen-qgv.js'), 'utf8'), /pending\('섹터 QGV 설정\(요소·가중치\) · 미리보기'\)/);
       const doc = fs.readFileSync(path.join(__dirname, '..', 'docs', 'frontend_v2', 'SECTOR_QGV_20261106.md'), 'utf8');
       const status = fs.readFileSync(path.join(__dirname, '..', '..', 'docs', 'SPEC', 'FUNCTION_STATUS.md'), 'utf8');
       for (const t of [doc, status]) { assert.match(t, /2\.2\.7 섹터 QGV 설정\(요소·가중치\)/); assert.doesNotMatch(t, /2\.2\.7 요소 사전/); }
