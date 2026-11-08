@@ -1,8 +1,8 @@
 # 일반 연구 선정·비중의 Lab 인수 입력
 
-#473의 `validation.vertical_slice`와 #485 판독기 계약을 재사용한다. 엔진·공식 산식 변경 없음.
-생산자 계산 기준 f14262a6a9f1583e81c53f642c4384141f2bb1af, 소비자 #485 edcff4a5505d2b7bbe16c296573b31a14657b509.
-기존 137개 전부/N20/%10 시험은 반복하지 않았다. 새 공개 합성 인수 파일만 추가했다.
+#473의 `validation.vertical_slice`와 #485 판독기 계약을 재사용한다. 선정·비중·공식 산식은 유지하고 API 설명 필드를 추가했다.
+선정 계산 기준 f14262a6a9f1583e81c53f642c4384141f2bb1af, 최신 직접 대조 소비자는 #522 cbd1da52e4c6d5da9c6fed080412daeaf5df456b다.
+초기 합성 인계 이후 Main의 누락 필드 요청을 실제 API 부가 계약으로 연결했다. 아래 마지막 절의 22개 검사는 이 변경의 영향을 검증한 것이다.
 
 `implementation/tests/fixtures/research_selection_handoff_v1_synthetic.json`의 cases[].expected는
 기존 `researchScope.validateSelection` 입력이다. 정상·빈 결과·동점·상위% 경계 위/아래·종목 부족·부분결측 7사례.
@@ -17,7 +17,8 @@
 - 빈 선정은 portfolio/weights null, 실제 0종목. 부족종목은 임의 보충하지 않는다.
 - 일반 연구는 균등 비중·기본 cash0, 별도 종목 상한 없음. TARGET/N10/N15/N20·책 고정 규칙과 별도다.
 - 입력 키 company_id는 기존 발행사/기업 집합이어야 한다. 서로 다른 증권 코드가 같은 발행사인지 이 엔진이 발견하지 않는다.
-  복수 코드의 발행사 집계·대표 증권·상한 규칙이 없는 입력은 완료로 표시하지 않는다. 합성 해당 사례는 POLICY_INPUT_REQUIRED/미실행으로 둔다.
+  확인된 동일 발행사의 복수 회사 ID는 현행 엔진대로 각각 유지하며 selection_details에 중복 관계를 명시한다.
+  이는 발행사 통합·대표 증권·추가 상한 정책의 검증 완료를 뜻하지 않는다.
 
 ## 새 소비자 차이 — Main 수정
 
@@ -27,11 +28,11 @@
 수정 위치: #485 `product/web_app/research-scope.js` validateSelection의 expect 계산.
 Main은 숫자를 임의 반올림하지 말고, 생산자가 지원하는 Decimal(str(percent))의 floor 의미와 맞춰야 한다.
 이 수정 때문에 Codex 선정 규칙이나 저장 설정을 축소하지 않는다. 동일 fixture로 소비자 수정본만 재검증한다.
-현재 #522 11bdab57에는 해당 판독기 파일이 없어 이 결과를 통합 화면의 실행 완료로 간주하지 않는다.
+최신 #522 cbd1da52에는 판독기가 포함됐으며 같은 경계 오류가 직접 Node 대조에서 재현된다. 실제 브라우저 통합은 Main 확인 범위다.
 
 재현: fixture.cases[].expected를 require('research-scope.js').validateSelection에 전달한다.
 기존 시험 진입점: `implementation/tests/test_vertical_slice.py`, `test_vertical_slice_from_store.py`.
-새 엔진 결함은 확인되지 않았으므로 엔진 코드/성공 회귀시험/공식 포트폴리오를 변경·반복하지 않는다.
+생산자 선정 산식의 결함은 확인되지 않았다. 부가 계약 연결과 관련 검사 외의 공식 포트폴리오·전략 성과는 실행하지 않았다.
 
 ## Main 6721478474 회신 반영 — 실제 API 부가 계약
 
