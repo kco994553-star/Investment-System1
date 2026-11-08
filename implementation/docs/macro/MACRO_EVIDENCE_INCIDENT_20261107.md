@@ -4,6 +4,7 @@
 - 「매크로 근거 자료 운영 복구를 최우선으로 진행하라」
 - 2차 「매크로 장애 원인 구분 및 복구·재발 방지 진행」
 - 3차 「매크로 기록 초기화 위험 보완 및 정책 /2 연결」
+- 4차 「배포 때 읽히는 공개 정상본은 검증 바이트·원래 시각 그대로 실어 나르는 보완안을 구현·검증하라. 보류(WITHHELD)를 정상본 보존으로 보고하지 마라」 (7절)
 
 이 문서는 사실·원인·수정 범위만 적고, 값은 적지 않는다.
 
@@ -116,7 +117,8 @@
 - **보류는 보존이 아니다.** GitHub Pages는 산출물 전체로 사이트를 바꾼다. 그래서 공개 정상본이 있을 때 보류하면 그 파일이 사이트에서 빠진다.
   - 로그 줄에 `effect=LIVE_GOOD_COPY_REMOVED`로 적고, 화면에도 "이전 공개 파일도 이 배포에서 빠짐(보존 아님)"으로 보인다.
   - 다음 실행은 그 상태를 `REMOVED`로 읽고 기록 단절을 밝힌 새 기준으로 시작한다(손실을 숨기지 않음).
-  - 수집 때만 읽기가 실패하고 배포 때는 읽히는 경우(일시 장애)가 여기에 해당한다. 배포 job이 공개본 바이트를 실어 나르게 하려면 배포 job에 새 업로드 단계가 필요하다. 중앙 V의 AUDIT 10-6-3과 같은 오너 결정 사항이라 이 PR에는 넣지 않았다(제안만).
+  - 수집 때만 읽기가 실패하고 배포 때는 읽히는 경우(일시 장애)가 여기에 해당한다. **#513의 이 경로는 "정상본 보존 완료"가 아니다.** 공개 정상본이 사이트에서 빠진다.
+  - 배포 때 검증본을 실어 나르는 보완 단계는 7절에 구현·검증했다. 배포 job에 새 업로드 단계가 필요해 워크플로 연결은 오너 승인 전이며 적용하지 않았다(패치만).
 
 **새 화면 (`screen-macro-live.js` 4.1.3)**
 - 상태 파일을 페이지당 한 번 읽는다.
@@ -126,9 +128,9 @@
 - 기록이 옆 자료와 맞지 않거나 규격이 틀리면 시도 줄로 쓰지 않는다.
 - 옛 화면(`web_assets`)은 바꾸지 않았다. 파일이 없으면 기존처럼 "미게시"로 보인다.
 
-**남은 위험**
+**남은 위험** (7절에서 보완, 워크플로 적용 전)
 - 수집 때만 공개본 읽기가 실패하면(재시도 뒤에도) 파일은 보류되고 공개 정상본은 사이트에서 빠진다. 기록은 다음 실행에서 단절로 드러난다.
-- 막으려면 배포 job에서 검증된 공개본 바이트를 실어 나르는 단계가 필요하다(오너 결정). 그 전까지 이 경우는 "정상본 보존"이 아니다.
+- 막는 단계(`tools/macro_evidence_carry.py`)는 구현·검증했지만 배포 job에 연결되기 전까지는 동작하지 않는다. 그 전까지 이 경우는 "정상본 보존"이 아니다.
 
 ## 5. 시험 (실패 조건, 모두 실제 산출물 기준)
 
@@ -140,7 +142,7 @@
 | 정상 부분 수집 | `test_daily_normal_partial_collection_is_published` | `PARTIAL`, 기록 이어 붙음, `NEWER` 통과 |
 | 일관성 오류 출력 | `test_daily_inconsistent_output_never_replaces_the_good_copy` (5가지) | `VALIDATE` 실패, 정상본 유지 |
 | 이전본 상태 4갈래 + 재시도 | `test_previous_read_states_are_told_apart` | LOADED / NO_LIVE / REMOVED / EMPTY_LIVE / UNAVAILABLE(3번 시도) / INVALID |
-| 수집 때 조회 실패, 배포 때 조회 성공 | `test_a_failed_or_damaged_previous_read_never_publishes_a_new_baseline[unavailable]`, 배포 검사 `withheld` | 새 기준 만들지 않음, `PREVIOUS`/`OSError`, 배포 검사 `WITHHELD effect=LIVE_GOOD_COPY_REMOVED` |
+| 수집 때 조회 실패, 배포 때 조회 성공 | `test_a_failed_or_damaged_previous_read_never_publishes_a_new_baseline[unavailable]`, 배포 검사 `withheld` | 새 기준 만들지 않음, `PREVIOUS`/`OSError`, 배포 검사 `WITHHELD effect=LIVE_GOOD_COPY_REMOVED`(보존 아님, 정상본이 빠짐). 보완 단계를 거치면 `CARRIED` → `EQUAL` 통과(7절) |
 | 배포 직전 조회도 실패 | `test_macro_live_read_failing_right_before_deploy_refuses_the_deploy` | 배포 전체 거부 |
 | HTTP 200 + 손상된 JSON | `…[damaged]`, `test_macro_damaged_live_copy_is_withheld_not_kept` | 수집: `INVALID`/`JSONDecodeError` 보류. 배포: `LIVE_INVALID` 보류 |
 | 확인된 부재 | `test_confirmed_absence_builds_and_says_whether_history_was_lost` | 처음: BASELINE. 빠진 뒤: RESET + `REMOVED` |
@@ -158,3 +160,64 @@
 - 공개 `qgv-official-status.json`: `SUPPLY_FAILED`, 시도 11/07 02:01Z.
   - 공식본은 11/06 검증, 가격 기준일 11/04 그대로다.
 - 마지막 정상본이 유지됐다. 이 수정은 중앙 V 보존 동작을 바꾸지 않는다.
+
+## 7. 배포 시 검증본 이어 싣기 (오너 11/07 4차)
+
+**과거 단절 (복구 불가, 새 기준 시작)**
+- 11/06까지의 정상본과 그 발표·수정 기록은 보존되지 않았다(3절). 공개본은 빈 기본값으로 덮였고, 산출물은 만료됐고, 다른 사본도 없다.
+- 그래서 **복구할 수 없다.** 다시 만들거나 확인 시각을 새로 찍어 이어 붙이지 않는다.
+- 다음 정상 실행이 `RESET_PREVIOUS_UNAVAILABLE`(기록 단절을 밝힌 새 기준)으로 시작하고, 그 시점부터가 새 기준이다.
+
+**재발 위험 (#513만으로 남는 것)**
+- 수집 때만 공개본 읽기가 실패(`UNAVAILABLE`, 3번 시도 뒤)하면 수집 단계는 파일을 보류(`WITHHELD`)한다.
+- 배포 때 배포 검사는 `MISSING` → `WITHHELD`로 판정하고, 정적 사이트라 공개 정상본이 **사이트에서 빠진다**(`effect=LIVE_GOOD_COPY_REMOVED`).
+- 이것은 보존이 아니다. 다음 실행은 `REMOVED`로 읽고 단절을 밝힌 새 기준으로 시작한다. #513의 이 경로를 "정상본 보존 완료"로 보고하지 않는다.
+
+**보완안 (구현·검증 완료, 워크플로 적용 전)**
+- 도구: `tools/macro_evidence_carry.py --artifact-dir <배포 산출물>`. 배포 job에서 산출물을 푼 뒤, 배포 검사 **앞**에 돈다.
+- 배포 검사(`pages_freshness_guard.py`) 규칙은 하나도 바꾸지 않았다. 실어 나른 파일이 공개본과 같은 바이트라 검사는 `EQUAL`로 통과한다.
+- 동작:
+  - 산출물에 수집 자료로 만든 파일이 있으면 아무것도 읽지 않고 그대로 둔다(`NOT_NEEDED`).
+  - 산출물에 파일이 없고 산출물의 시도 기록이 `WITHHELD`일 때만, 공개본을 한 번 읽는다(수집과 같은 읽기 함수·재시도, 배포 검사와 같은 캐시 우회 쿼리, 리다이렉트 불허).
+  - HTTP 200 + `require_macro_evidence` 통과 + 수집 자료로 만든 정상본 + 공개 시도 기록이 있으면 그 파일을 설명할 때만, 그 **바이트를 그대로** 산출물에 쓴다. 다시 직렬화하지 않으므로 `generated_at`과 모든 관측·발표·확인 시각이 원래 그대로다.
+  - 시도 기록은 `CARRIED_LIVE`로 바꾼다. 이번 시도의 실패(시각, `FAILED`, 단계, 예외 종류 이름, 이전 공개본 읽기 값)는 그대로 두고, 옮긴 파일의 `generated_at`·SHA-256과 `carry` 블록 `{at(배포 때 읽은 시각), basis: DEPLOY_LIVE_READ, generated_at, sha256}`을 더한다.
+  - 쓴 뒤 다시 읽어 바이트를 대조한다. 쓰기가 실패하면 산출물을 원래대로 되돌리고 배포를 멈춘다(`CARRY_FAILED`).
+- 결과는 서로 다른 코드로 한 줄만 찍는다(값·URL·메시지 없음):
+
+| 결과 | 로그 | 처리 | 배포 검사 |
+| --- | --- | --- | --- |
+| 공개 정상본을 실어 나름 | `MACRO_EVIDENCE_CARRY outcome=CARRIED generated_at=… sha256=… status=CARRIED_LIVE attempt_stage=… attempt_error=… attempt_previous=…` | 바이트 그대로 + `CARRIED_LIVE` 기록 | `EQUAL` 통과 |
+| 공개본 조회 실패(재시도 뒤) | `outcome=LIVE_UNREADABLE file=… error=… carried=NONE deploy=REFUSED` | 아무것도 싣지 않음, 종료 코드 1(배포 중단) | (데이터 파일이면) `LIVE_UNREACHABLE`로 배포 전체 거부, 지금과 같음 |
+| 공개본 손상(200이지만 규격 오류, 공개 기록 불일치 포함) | `outcome=LIVE_INVALID file=… error=… carried=NONE effect=WITHHELD` | 싣지 않음 | 기존 `WITHHELD` 경로(`LIVE_INVALID` 또는 `MISSING`) 그대로, 로그에 실제 효과 |
+| 확인된 부재(404, 또는 빈 기본값만) | `outcome=LIVE_ABSENT read=NO_LIVE\|EMPTY_LIVE carried=NONE effect=NOT_PUBLISHED` | 실을 것 없음 | `NO_GOOD_LIVE` 통과, 파일 미게시 |
+| 산출물에 새 파일(또는 유지본) 있음 | `outcome=NOT_NEEDED artifact_generated_at=… artifact_published=…` | 읽지도 바꾸지도 않음 | 기존 판정 |
+| 그 밖(빈 기본값·손상 파일·기록 없음 등) | `outcome=NOT_ELIGIBLE artifact=…` | 손대지 않음 | 기존 판정(거부 등) |
+
+- 상태 규격: `macro-evidence-status/1`에 게시 결과 `CARRIED_LIVE`를 더했다. `carry` 키는 `CARRIED_LIVE`에서만, 반드시 있어야 한다. `carry`의 `generated_at`·`sha256` = 옆 파일 값, `basis` = `DEPLOY_LIVE_READ`, 시도 시각 ≤ `carry.at`, 파일 생성 ≤ `carry.at`. 시도 쪽 규칙(조회 실패·손상이면 단계 `PREVIOUS`, `LOADED`면 `WRITE`)도 그대로 적용된다. Python `require_status`와 화면 `mesValid`가 같은 규칙이다. 파일 이름은 새로 늘지 않았다(Pages 가드 허용 목록 변경 없음).
+- 화면 4.1.3: "이번 갱신 실패 (시각 · 단계 또는 이전 공개본 조회 실패) · 아래는 이전에 게시된 검증본을 배포 때 그대로 옮긴 것 · 원래 기준 시각 그대로 (생성 …, 배포 확인 …) · 이번 시도의 자료 아님 · 자료 지연". 이번 수집 자료처럼 보이지 않는다.
+- 다음 날: 실어 나른 파일은 공개본 바이트 그대로라 다음 수집이 `LOADED`로 읽고 `CONTINUOUS`로 이어 만든다(배포 검사 `NEWER` 통과).
+- 시험 `tests/test_macro_evidence_carry.py`(16건, 실제 수집 경로가 만든 산출물 + 실제 배포 검사·Pages 가드):
+  - 수집 때 조회 실패 + 배포 때 조회 성공 → `CARRIED`, 바이트 동일, 배포 검사 `EQUAL` 통과(보완 전에는 `MISSING effect=LIVE_GOOD_COPY_REMOVED`), 다음 날 `LOADED`·`CONTINUOUS`·`NEWER`
+  - 배포 때 조회 실패(데이터·기록 각각, 3번 시도) → 싣지 않음, 종료 1, 배포 검사도 거부
+  - 공개본 손상·규격 위반·기록 불일치 → 싣지 않음, 기존 `WITHHELD`
+  - 404·빈 기본값 → 싣지 않음, `NO_LIVE`
+  - 산출물 `NEW`·`PREVIOUS_KEPT` → `NOT_NEEDED`, 읽기 0회, 바이트 그대로
+  - 쓰기 실패 → 원래대로 복구, 종료 1
+  - `CARRIED_LIVE` 기록 규칙 10가지 위반 거부, 화면 `mesValid`(node)도 같은 결과
+- 화면 브라우저 시험 `tools/web_app_macro_browser_test.js`에 `CARRIED_LIVE` 문구·규격 위반 3가지를 더했다.
+
+**필요한 워크플로 변경 (적용 안 함, `docs/macro/macro_evidence_carry_workflow.patch`)**
+- `sec-daily-public-inputs.yml` deploy job만 바꾼다:
+  1. 산출물 풀기 → `macro_evidence_carry.py` → `pages_artifact_guard.py`(실어 나른 뒤 산출물 재검사)
+  2. `pages_freshness_guard.py`(규칙 변경 없음)
+  3. 검사한 `deploy-check` 디렉터리를 `actions/upload-pages-artifact`(collect와 같은 고정 SHA)로 `github-pages-deploy` 이름으로 올림
+  4. `actions/deploy-pages`가 `artifact_name: github-pages-deploy`를 배포
+- 지금은 배포 job이 검사한 디렉터리가 아니라 collect가 올린 원래 산출물을 배포한다. 바뀐 뒤에는 **검사한 그 디렉터리**를 배포한다.
+- 같은 패치에 이 구조를 고정한 정적 시험 3개의 갱신이 들어 있다(`test_pages_freshness_guard.py` 배포 단계 구조, `test_public_price_boundary.py`·`test_public_sec_inputs.py`의 업로드 1회 → 2회).
+- `cockpit-pages.yml`은 바꾸지 않는다. 화면 배포는 이미 빌드 단계(`--preserve-only`)에서 공개 정상본을 바이트 그대로 옮긴다.
+
+**실제 배포 승인 범위 (오너 결정 필요)**
+- 승인 대상: 위 패치의 워크플로 변경 1건. 배포 job에 Pages 산출물 업로드가 하나 늘고(publication sink 1개 추가: 검사한 디렉터리를 같은 run 안에서 다시 올림), 배포 대상이 collect 산출물에서 검사한 디렉터리로 바뀐다.
+- 권한·비밀값 변경 없음(`contents: read`, `pages: write`, `id-token: write` 그대로, `secrets.` 없음). 새 네트워크 대상은 공개 Pages 두 파일 읽기뿐이다(배포 검사가 이미 읽는 주소).
+- 실어 나르면 배포본은 verify job이 화면 시험한 산출물과 매크로 두 파일만 다르다. 근거 파일은 이전 배포에서 이미 검증·게시된 바이트이고, 시도 기록만 새로 쓴다(Pages 가드 재검사).
+- 이 PR(#513 브랜치)의 코드·시험은 워크플로 없이도 동작에 영향이 없다. 패치를 적용하기 전까지 "수집 때만 조회 실패" 경우는 여전히 공개 정상본이 빠진다(보존 아님).

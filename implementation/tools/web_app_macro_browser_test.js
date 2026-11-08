@@ -30,7 +30,8 @@
 //    the attempt time and stage beside the good copy's own times (자료 지연); a built attempt adds nothing; a record that does not
 //    describe the file beside it (MISMATCH, a placeholder beside any record included) or breaks the schema (INVALID) is not shown
 //    as an attempt; no good copy (file withheld, 404) says so beside 근거 파일 미게시 and that 0 means not collected; an
-//    unreadable or absent record is no record.
+//    unreadable or absent record is no record; a file the deploy carried from the verified live copy (CARRIED_LIVE) is said
+//    to be the copy published before with its own times, never this attempt's data.
 //  - Empty: the offline build's NOT_AVAILABLE files: 매크로 확인 불가, 아직 수집 전, no events, no group values, no public observation.
 //  - Error: data.js answering 404 (LOADER_FAILED), and screen-macro-live.js answering 404: every section slot shows the failure
 //    with the alarm mascot, the shell notice, nothing read, no uncaught error.
@@ -385,6 +386,17 @@ let phase = 'START', pass = 0;
       assert.equal(await count(page, '[data-events=economy] > li'), 5, phase + ': the kept events are shown');
       assert.equal(await page.locator('[data-mev-attempt]').getAttribute('role'), 'status');
       await boundaries(page, seen, phase + ' previous kept');
+      // The attempt withheld the file and the deploy carried the verified live copy byte for byte (CARRIED_LIVE): the line says
+      // it is the copy published before, with its own times, and never this attempt's data.
+      const carried = mes({ published: 'CARRIED_LIVE', failure_stage: 'PREVIOUS', failure_class: 'OSError', previous: 'UNAVAILABLE',
+        carry: { at: '2026-10-09T03:00:00Z', basis: 'DEPLOY_LIVE_READ', generated_at: M.evidence().generated_at, sha256: 'a'.repeat(64) } });
+      await attempt({ [MES]: { json: carried } });
+      assert.equal(await text(page, '[data-mev-attempt=CARRIED_LIVE]'), '이번 갱신 실패 (2026-10-09 02:10 UTC · 이전 공개본 조회 실패) · 아래는 이전에 게시된 검증본을 배포 때 그대로 옮긴 것 · 원래 기준 시각 그대로 (생성 2026-10-08 10:00 UTC, 배포 확인 2026-10-09 03:00 UTC) · 이번 시도의 자료 아님 · 자료 지연');
+      assert.equal(await text(page, '[data-collection]'), '수집 시작 2026-10-01 10:00 UTC · 최근 생성 2026-10-08 10:00 UTC · 일부 수집', phase + ': the carried copy keeps its own times');
+      for (const bad of [{ ...carried, carry: undefined }, { ...carried, published: 'PREVIOUS_KEPT' }, { ...carried, carry: { ...carried.carry, sha256: 'b'.repeat(64) } }]) {
+        await attempt({ [MES]: { json: JSON.parse(JSON.stringify(bad)) } });
+        assert.equal(await count(page, '[data-mev-attempt=INVALID]'), 1, phase + ': a carry record that does not hold together is refused');
+      }
       // A built attempt of this very file: nothing extra to say.
       await attempt({ [MES]: { json: mes({ attempt_result: 'BUILT', failure_stage: null, failure_class: null, published: 'NEW' }) } });
       assert.equal(await count(page, '[data-mev-attempt]'), 0, phase + ': a built attempt adds no line');

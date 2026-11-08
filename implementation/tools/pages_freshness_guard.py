@@ -109,8 +109,10 @@ collected data; the placeholder has null), never by a fixed count of collected s
   live copy served but invalid -> LIVE_INVALID: verdict WITHHELD as for qgv-official.json (D-CV16 (a)): this file is off the
   site until the next good run, the rest of the deploy goes on (a macro failure never stops the SEC, news or V publication).
   On this static site that removes the live file: the WITHHELD line says effect=LIVE_GOOD_COPY_REMOVED and this is never
-  reported as keeping a good copy (carrying the validated live bytes would need a new upload in the deploy job, an owner
-  decision, as for qgv-official.json AUDIT 10-6-3). An unreachable live read still refuses the whole deploy (below);
+  reported as keeping a good copy. The carry step tools/macro_evidence_carry.py, run on the deploy artifact before this
+  guard, puts the verified live bytes back (record CARRIED_LIVE) so this guard then sees EQUAL; it needs a new upload in
+  the deploy job (owner decision, docs/macro/macro_evidence_carry_workflow.patch, not applied). No rule here changes for
+  it. An unreachable live read still refuses the whole deploy (below);
 - same generated_at: bytes equal -> EQUAL (the kept last good copy), else CHANGED: refused; built later and a continuation
   of the live copy (macro_evidence.continues: CONTINUOUS, same collection start, release and event records only appended,
   per series baseline and success times kept, history kept, an uncollected series carried unchanged) -> NEWER: pass;
@@ -118,7 +120,7 @@ collected data; the placeholder has null), never by a fixed count of collected s
   refused (owner 2026-11-07 3rd);
 - artifact present but rejected by require_macro_evidence -> ARTIFACT_INVALID, refused;
 - macro-evidence-status.json (the attempt record) is not data and is not compared with the live copy, but in the artifact it
-  must describe the macro file beside it: published NEW / PREVIOUS_KEPT with that file's generated_at and SHA-256, or
+  must describe the macro file beside it: published NEW / PREVIOUS_KEPT / CARRIED_LIVE with that file's generated_at and SHA-256, or
   WITHHELD with no macro file. Otherwise STATUS_MISMATCH, refused. An artifact without the record passes (UI-only
   deploys before the first daily run with this rule).
 

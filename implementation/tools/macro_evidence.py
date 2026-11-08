@@ -280,7 +280,8 @@ def withhold(directory) -> str:
     """After an attempt that left no good copy (owner 2026-11-07 item 2): the file in `directory` is published only when it
     is a validated good copy; the build-time placeholder (or anything else) is removed so it is never published as a
     result. An attempt record beside it that does not say WITHHELD is removed too. On a static site a withheld file also
-    leaves the site at the next deploy: this never counts as keeping a good copy. -> 'KEPT' | 'WITHHELD'."""
+    leaves the site at the next deploy: this never counts as keeping a good copy (only the deploy-time carry,
+    tools/macro_evidence_carry.py, can put the verified live bytes back). -> 'KEPT' | 'WITHHELD'."""
     directory = Path(directory)
     path, status = directory / el.FILENAME, directory / el.STATUS_FILENAME
     try:

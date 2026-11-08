@@ -1,0 +1,125 @@
+diff --git a/.github/workflows/sec-daily-public-inputs.yml b/.github/workflows/sec-daily-public-inputs.yml
+index 774c015..dc0069b 100644
+--- a/.github/workflows/sec-daily-public-inputs.yml
++++ b/.github/workflows/sec-daily-public-inputs.yml
+@@ -316,11 +316,27 @@ jobs:
+       # earlier inputs_as_of, is OLDER (refused); an artifact copy failing the strict reader is refused. A live publication
+       # that is invalid or missing from the artifact withholds the publication only (PAGES_FRESHNESS_PUBLICATION_WITHHELD,
+       # D-CV16 (a)) and the rest of the deploy goes on. qgv-official-status.json is never compared.
+-      - name: Refuse to deploy public data older than the live Pages copy
++      # macro-evidence.json (owner 2026-11-07 4th): when the daily step withheld the file (its record says WITHHELD, e.g. only
++      # the collect-time read of the live copy failed), the verified live copy is carried into the artifact byte for byte
++      # with a CARRIED_LIVE record (tools/macro_evidence_carry.py), so the guard sees EQUAL instead of removing the live
++      # good copy. A failed live read carries nothing and stops the deploy; a damaged live copy or a confirmed absence
++      # carries nothing (WITHHELD / NOT_PUBLISHED as before). The guard rules are unchanged; the checked directory is then
++      # uploaded once and deployed, so what is deployed is exactly what was checked.
++      - name: Carry the verified live macro evidence copy into a withheld deploy artifact (byte for byte)
+         run: |
+           mkdir "$RUNNER_TEMP/deploy-check"
+           tar -xf "$RUNNER_TEMP/pages-artifact/artifact.tar" -C "$RUNNER_TEMP/deploy-check"
+-          python implementation/tools/pages_freshness_guard.py --artifact-dir "$RUNNER_TEMP/deploy-check"
++          python implementation/tools/macro_evidence_carry.py --artifact-dir "$RUNNER_TEMP/deploy-check"
++          python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/deploy-check"
++      - name: Refuse to deploy public data older than the live Pages copy
++        run: python implementation/tools/pages_freshness_guard.py --artifact-dir "$RUNNER_TEMP/deploy-check"
++      - name: Upload exactly the checked deploy directory as the Pages artifact this job deploys
++        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
++        with:
++          path: ${{ runner.temp }}/deploy-check
++          name: github-pages-deploy
+       - name: Deploy checked Pages artifact
+         id: deployment
+         uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
++        with:
++          artifact_name: github-pages-deploy
+diff --git a/implementation/tests/test_pages_freshness_guard.py b/implementation/tests/test_pages_freshness_guard.py
+index 4409abf..f9ffc19 100644
+--- a/implementation/tests/test_pages_freshness_guard.py
++++ b/implementation/tests/test_pages_freshness_guard.py
+@@ -721,12 +721,29 @@ def test_both_deploy_jobs_check_freshness_immediately_before_deploy(workflow):
+     assert steps[2].startswith('name: Download the Pages artifact this job deploys\n')
+     assert 'uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0' in steps[2]
+     assert 'name: github-pages\n' in steps[2] and 'path: ${{ runner.temp }}/pages-artifact' in steps[2]
+-    check, deploy = steps[3], steps[-1]
+-    assert check.startswith('name: Refuse to deploy public data older than the live Pages copy\n')
+-    assert [line.strip() for line in check.split('run: |\n', 1)[1].strip().splitlines()] == [
+-        'mkdir "$RUNNER_TEMP/deploy-check"',
+-        'tar -xf "$RUNNER_TEMP/pages-artifact/artifact.tar" -C "$RUNNER_TEMP/deploy-check"',
+-        'python implementation/tools/pages_freshness_guard.py --artifact-dir "$RUNNER_TEMP/deploy-check"']
++    unpack = ['mkdir "$RUNNER_TEMP/deploy-check"',
++              'tar -xf "$RUNNER_TEMP/pages-artifact/artifact.tar" -C "$RUNNER_TEMP/deploy-check"']
++    guard_line = 'python implementation/tools/pages_freshness_guard.py --artifact-dir "$RUNNER_TEMP/deploy-check"'
++    deploy = steps[-1]
++    if workflow == 'cockpit-pages.yml':
++        check = steps[3]
++        assert check.startswith('name: Refuse to deploy public data older than the live Pages copy\n')
++        assert [line.strip() for line in check.split('run: |\n', 1)[1].strip().splitlines()] == unpack + [guard_line]
++    else:
++        # owner 2026-11-07 4th (macro evidence carry): unpack, carry the verified live macro copy into a withheld artifact
++        # and re-inspect it, then the unchanged freshness guard, then upload exactly that checked directory and deploy it.
++        carry, check, upload = steps[3], steps[4], steps[5]
++        assert carry.startswith('name: Carry the verified live macro evidence copy into a withheld deploy artifact (byte for byte)\n')
++        assert [line.strip() for line in carry.split('run: |\n', 1)[1].strip().splitlines()] == unpack + [
++            'python implementation/tools/macro_evidence_carry.py --artifact-dir "$RUNNER_TEMP/deploy-check"',
++            'python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/deploy-check"']
++        assert check.strip() == 'name: Refuse to deploy public data older than the live Pages copy\n        run: ' + guard_line
++        assert upload.strip() == (
++            'name: Upload exactly the checked deploy directory as the Pages artifact this job deploys\n'
++            '        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3\n'
++            '        with:\n          path: ${{ runner.temp }}/deploy-check\n          name: github-pages-deploy')
++        assert deploy.rstrip('\n').endswith('        with:\n          artifact_name: github-pages-deploy')
++        assert text.count('python implementation/tools/macro_evidence_carry.py') == 1
+     # The SEC/ledger gate remains unconditional. The approved one-off recovery
+     # adds exactly one further read-only 25-file check, under this same lock.
+     assert 'continue-on-error' not in job and 'secrets.' not in job
+@@ -738,7 +755,7 @@ def test_both_deploy_jobs_check_freshness_immediately_before_deploy(workflow):
+             '        if: inputs.replay_20261020\n'
+             '        run: python implementation/tools/replay_pages_20261020.py --check-deploy --out "$RUNNER_TEMP/deploy-check"')
+     else:
+-        assert len(steps) == 5 and conditions == []
++        assert len(steps) == 7 and conditions == []
+     assert deploy.startswith('name: Deploy checked Pages artifact\n        id: deployment\n'
+                              '        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4')
+     assert text.count('pages_freshness_guard.py') == 1 and text.count('actions/deploy-pages@') == 1
+diff --git a/implementation/tests/test_public_price_boundary.py b/implementation/tests/test_public_price_boundary.py
+index d5f80b4..9d28fb5 100644
+--- a/implementation/tests/test_public_price_boundary.py
++++ b/implementation/tests/test_public_price_boundary.py
+@@ -150,7 +150,8 @@ def test_affected_workflows_have_no_publication_sinks(name):
+         # no push, and every checkout drops its credentials. The V step itself never holds RAW_REPO_TOKEN.
+         collect = source.split('\n  collect:\n', 1)[1].split('\n  verify:\n', 1)[0]
+         verify, deploy = source.split('\n  verify:\n', 1)[1].split('\n  deploy:\n', 1)
+-        assert source.count('actions/upload') == 1 and source.count('actions/deploy-pages') == 1
++        # owner 2026-11-07 4th (macro evidence carry): a second upload in deploy, of exactly the checked deploy directory
++        assert source.count('actions/upload') == 2 and source.count('actions/deploy-pages') == 1
+         assert 'GITHUB_STEP_SUMMARY' not in source and 'actions/download-artifact' not in collect
+         assert source.count('actions/checkout@') == source.count('persist-credentials: false') == 4
+         steps = workflow_steps(collect)
+@@ -169,8 +170,10 @@ def test_affected_workflows_have_no_publication_sinks(name):
+         history = next(step for step in steps if 'qgv_official_history.py' in step)
+         assert history.endswith('run: python implementation/tools/qgv_official_history.py --artifact-dir "$RUNNER_TEMP/public-cockpit"')
+         assert 'continue-on-error: true' in history and 'qgv_official_publish.py' not in history and 'secrets.QGV' not in history
+-        assert 'secrets.' not in verify and 'secrets.' not in deploy and 'actions/upload' not in verify + deploy
+-        assert deploy.index('pages_freshness_guard.py') < deploy.index('uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e')
++        assert 'secrets.' not in verify and 'secrets.' not in deploy and 'actions/upload' not in verify
++        assert deploy.count('actions/upload') == 1 and 'path: ${{ runner.temp }}/deploy-check\n' in deploy
++        assert deploy.index('pages_freshness_guard.py') < deploy.index('uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3') \
++            < deploy.index('uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e')
+         assert workflow_steps(deploy)[-1].startswith('name: Deploy checked Pages artifact\n')
+     elif name != 'cockpit-pages':
+         assert 'actions/upload' not in source and 'actions/deploy-pages' not in source
+diff --git a/implementation/tests/test_public_sec_inputs.py b/implementation/tests/test_public_sec_inputs.py
+index d98a9eb..e2231a6 100644
+--- a/implementation/tests/test_public_sec_inputs.py
++++ b/implementation/tests/test_public_sec_inputs.py
+@@ -157,7 +157,9 @@ def test_daily_workflow_separates_collection_from_verification_and_deploy():
+                  'project_dart_qgv2.py', 'forward_validation_ledger.py', 'sec_disclosures.py --live', 'news_signals.py --live']:
+         step = 'python implementation/tools/' + tool
+         assert source.count(step) == 1 and step in collect, tool
+-    assert source.count('actions/upload-pages-artifact@') == 1 and 'actions/upload-pages-artifact@' in collect
++    # one collect upload; the deploy job re-uploads only the directory it checked (macro evidence carry, owner 2026-11-07 4th)
++    assert source.count('actions/upload-pages-artifact@') == 2 and collect.count('actions/upload-pages-artifact@') == 1
++    assert deploy.count('actions/upload-pages-artifact@') == 1 and 'path: ${{ runner.temp }}/deploy-check' in deploy
+     assert collect.index('forward_validation_ledger.py') < collect.index('actions/upload-pages-artifact')
+     assert 'RAW_REPO_TOKEN: ${{ secrets.RAW_REPO_TOKEN }}' in collect[collect.index('Append forward validation ledger'):]
+     assert 'ci_browser_tests.txt' not in collect and 'ci_node_tests.txt' not in collect and 'permissions:' not in collect
