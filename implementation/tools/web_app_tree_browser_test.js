@@ -48,7 +48,7 @@ const NAME = (no, name) => (no === '4.5' ? '나비효과' : name);// DC-17 (CHAI
 const AREA_MENU = { 1: 'search', 2: 'qgv', 3: 'technical', 4: 'macro', 5: 'news', 6: 'portfolio', 7: 'prompts', 8: 'tree', 9: 'lab' };
 const TREE_READS = [];// #/tree reads no public file
 // Live-only files other routes read in this offline build (their 404 is the NOT_PUBLISHED state; the tree never asks them).
-const LIVE_ONLY = ['sec-qgv2.json', 'sec-public-inputs.json', 'qgv-official.json', 'qgv-official-status.json'];
+const LIVE_ONLY = ['sec-qgv2.json', 'sec-public-inputs.json', 'qgv-official.json', 'qgv-official-status.json', 'macro-evidence-status.json'];
 // Board example values and words that must never show (SystemTree / MTree / TreeCommon).
 const EXAMPLES = ['23위', '498', '수치 미정', '8축', '비교군 3', '상승 추세', '0.81', '메모 3개', '회복 후반', '확인 4', '77건', '10/19', '7회', 'QGV 72', '431', '504',
   '10/24', '2026-10-24', '상승 초입', '예시기업', '예시 값은'];
