@@ -22,6 +22,9 @@ No total-equity/NCI/preferred par fallback. Conflicting common values cannot fal
 back to parent equity. TTM common income uses the existing same-concept monetary
 flow parser; this is not an EPS reconstruction. BPS components without documented
 class/ADR/action continuity remain ineligible in the existing common kernel.
+The regression also rejects an older accepted common-equity value when the newer
+filing contains conflicting values. Conflict anchors remain part of latest-filing
+selection; they do not become valid observations.
 
 ## Reproduction and Main boundary
 
@@ -101,9 +104,23 @@ Directly read Drive copies:
 (modified06:09:05.765Z; Main/partial comparison sections), and
 [Nov2 95% planning note](https://docs.google.com/document/d/1UxICmVrVKHp7gGq-U6It9yL1ONNCnij7LvPfe8z3NLw/edit)
 (modified10:34:55.540Z; B/C sections). These dated copies do not supersede newer
-GitHub #520/#524 and owner decisions. Exact standalone Nov6 implementation/catalog
-MD files were not located in the accessible Drive search/project folders; no
-claim that their original bytes were read here. Their existing GitHub contracts,
-registry and approved owner definitions remain the implementation basis.
+GitHub #520/#524 and owner decisions. The standalone MD files' Drive locations
+remain unconfirmed; repeated searches stopped. The owner subsequently attached
+both Nov6 source documents, whose actual text was read and compared here:
+
+| Attached document | SHA-256 | Sections compared |
+|---|---|---|
+| `Sector_QGV_Custom_Factors_Implementation_20261106 _1_.md` | `719e68b2297ab2bf4a4834c4ce6b33441494ec1c2615f7ed5a205ffa4b3faf6a` | §5.1–5.3 defaults/periods, §7.1–7.3 contracts/scoring, §8 missingness |
+| `Sector_QGV_Factor_Catalog_20261106 _2_.md` | `d3c865e8545ec5f2820f4647748714715f5814d6c3e676d687dda7a85fdbb586` | §3 Q01–Q13, §4 G01–G12, §5 V01–V15, §8 coverage |
+
+Both declare Nov6 document dates; attachment receipt is Nov9, not an inferred
+author modification time or historical system availability. Catalog candidate
+IDs are connected by the existing registry crosswalk, not treated as operating
+factor IDs. The implementation §5 and owner approval take precedence over the
+catalog's earlier provisional-ratio wording. G06 is the approved three-year ROA
+change. Q09→`roe_common_ttm`, Q14→`common_equity_assets`,
+G13→`common_bps_cagr_3y`, G14→`cfo_assets_improvement_3y` match the repaired
+bridge. Catalog G10 tangible-book growth remains distinct from G13 common-book
+growth. No formula/default/gate/minimum-sample change is required by this check.
 The current name is **투자시스템 공통 10섹터**; legacy stable IDs and historical
 dictionary versions are not renamed or substituted with SIC/GICS/ETF taxonomies.

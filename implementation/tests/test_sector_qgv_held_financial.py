@@ -87,6 +87,13 @@ def test_conflicting_common_equity_cannot_fall_back_to_parent():
     assert run(p,r,'BANK')[0]['common_equity_assets']['value'] is None
 
 
+def test_newer_conflict_does_not_resurrect_older_common_equity():
+    p,r=source();rows=p['facts']['us-gaap']['CommonStockholdersEquity']['units']['USD']
+    old=deepcopy(rows[-1]);old['filed']='2026-01-30';old['accn']='older'
+    rows.append(old);rows.append(dict(rows[-2],val=101))
+    assert run(p,r,'BANK')[0]['common_equity_assets']['value'] is None
+
+
 def test_repair_pins_source_and_preserves_non_qg_context(tmp_path):
     import json, hashlib, zipfile
     from investment_system.research.sector_qgv import digest

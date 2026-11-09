@@ -47,6 +47,13 @@ def _common_components(payload, record, reference, facts, company, fields, reaso
               for k,(tags,unit) in specs.items()}
     def common_at(end):
         keys=set(observed['direct'][0])|set(observed['parent'][0])
+        # Conflict rows passed date/unit/form checks but were removed by the
+        # balance parser. Retain their filing anchors when choosing the latest
+        # observation so an older accepted value cannot hide a newer conflict.
+        for kind in ('direct','parent'):
+            for rejected in observed[kind][1]:
+                key=rejected.get('balance_key')
+                if key:keys.add((date.fromisoformat(key[0]),date.fromisoformat(key[1]),key[2]))
         keys=[k for k in keys if k[0]==end]
         # Invalid newer direct observations must not fall back to an older filing.
         if not keys:return None,None,None
