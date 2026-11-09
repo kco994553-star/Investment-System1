@@ -130,6 +130,8 @@ function ccPaint(body,b){const C=I.classification,v=b.view,x=ccSummary(C,b);
    h('li',{dataset:{ccCount:'peer'}},'섹터·회계모형 둘 다 확인 ',String(x.peer),'개 · 나머지는 QGV 비교집단 완결 아님')),
   h('p',{class:'reason',dataset:{ccPrivateStates:Object.entries(x.states).map(([k,c])=>k+':'+c).join(',')}},'기록 상태 · ',Object.entries(x.states).map(([k,c])=>k+' '+c).join(' · ')),
   operatingCounts(b.counts),
+  // 공통 산업 → 매크로 근거 (Codex #525): its own click and read; the old block when the file did not load.
+  I.industryMacroLive&&I.industryMacro?I.industryMacroLive.block({view:v}):null,
   h('p',{class:'reason'},'공식 QGV 순위·TARGET·공개 파일은 바뀌지 않음 · 분류를 화면에서 다시 추론하지 않음'),
   expandedBlock(b.expanded,b.counts)]);}
 // Counts of the retained sector QGV results (Codex #523 calculation_counts, checked by IS2.classification against the view and the

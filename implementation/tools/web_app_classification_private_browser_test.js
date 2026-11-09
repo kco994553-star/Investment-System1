@@ -261,6 +261,40 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       }
       ok(tag + ' held browse: index (3 reads) checked against the summary; search → one shard per issuer; a cached shard is not read again; a changed shard is that detail only');
 
+      // 공통 산업 → 매크로 근거 (owner 2026-11-09, Codex #525): one click, one read; refused when made from another classification.
+      phase = tag + ' industry macro';
+      {
+        const IM = JSON.parse(require('node:fs').readFileSync(require('node:path').join(R.ROOT, 'implementation/tests/fixtures/industry_macro_main/outputs.json'), 'utf8'));
+        const base = IM.cases.find((c) => c.id === 'base').output;
+        if (tag === '1440') {
+          w.answers.industry_macro = () => ({ status: 200, body: base });
+          await page.locator('[data-im-open]').click();
+          await page.locator('[data-im-state=ERROR]').waitFor({ timeout: 20000 });
+          assert.match(await text(page, '[data-im-state]'), /다른 분류로 만든 조회입니다 · CLASSIFICATION_CONTEXT_MISMATCH/);
+          await page.waitForTimeout(5200);
+        }
+        const sel = await page.evaluate(() => { const x = window.IS2.selection.get(); return x && x.id; });
+        const q = JSON.parse(JSON.stringify(base));
+        q.classification_context = { valuation_date: BUNDLE.view.valuation_date, classification_hash: BUNDLE.view.classification_hash,
+          dictionary_version: BUNDLE.view.dictionary_version, mapping_version: BUNDLE.view.mapping_version };
+        q.companies[0].company_id = sel;
+        w.answers.industry_macro = () => ({ status: 200, body: q });
+        const r0 = w.log.length;
+        await page.locator('[data-im-open]').click();
+        await page.locator('[data-im-state=READY]').waitFor({ timeout: 20000 });
+        assert.deepEqual(w.log.slice(r0).map((x) => x.path), ['/kis/classification?part=industry_macro']);
+        assert.match(await text(page, '[data-im-state]'), /^기업 행 2 · 산업 연결 2 · 활성 대응 1 · 계열 1 · 합성 자료 · 시험용$/);
+        assert.match(await text(page, '[data-im-not]'), /산업 연결·국면 판정 아님/);
+        assert.match(await text(page, '[data-im-keeps]'), /기존 매크로 현재 조회는 그대로/);
+        assert.equal(await page.locator('[data-im-company]').getAttribute('data-im-status'), 'LINKED');
+        assert.match(await text(page, '[data-im-series]'), /SYN:SERIES · 0 hours/, phase + ': 0 stays 0');
+        assert.match(await text(page, '[data-im-mappings]'), /복수 산업 대응\(비중 없음 · 나누거나 합치지 않음\)/);
+        assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), phase + ': no horizontal overflow');
+        delete w.answers.industry_macro;
+        await page.waitForTimeout(5200);
+      }
+      ok(tag + ' industry macro: one read; another classification refused; summary, the selected company\'s link, series 0 kept, not a regime');
+
       phase = tag + ' same bundle';
       const before = w.log.length;
       await company(page, 'NASDAQ:ADBE');

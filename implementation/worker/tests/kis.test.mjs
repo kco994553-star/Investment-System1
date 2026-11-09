@@ -225,7 +225,8 @@ test('technical, macro and news routes: own path and schema only; macro and news
 // The held common classification bundle (owner 2026-11-08): one route, five parts, each its own file and Codex schema.
 test('classification: ?part= reads classification/<part>.json byte for byte; each part only accepts its own schema', async () => {
   const PARTS = { view: 'common-classification-view/1', technical: 'common-classification-technical/1', macro: 'common-classification-macro/1',
-    qgv_links: 'common-classification-qgv-links/1', dictionary: 'common-classification-dictionary/1', expanded_summary: 'held-expanded-classification-summary/1' };
+    qgv_links: 'common-classification-qgv-links/1', dictionary: 'common-classification-dictionary/1', expanded_summary: 'held-expanded-classification-summary/1',
+    industry_macro: 'company-industry-macro-query/1' };
   for (const [part, schema] of Object.entries(PARTS)) {
     // the writer's spacing, kept as received
     const text = '{"schema_version": "' + schema + '", "rows": []}', s = setup({ github: () => new Response(text, { status: 200 }) });

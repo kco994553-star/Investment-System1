@@ -296,7 +296,9 @@ const CLASSIFICATION_PARTS = Object.freeze({ view: 'common-classification-view/1
   // The held issuer delivery (Codex #524 held-issuer-sharded/1, owner 2026-11-09): its manifest, search index and coverage, and one
   // detail shard at a time (?part=expanded_detail&shard=<2 hex>), staged byte for byte under classification/expanded/.
   expanded_manifest: 'held-issuer-sharded/1', expanded_index: 'held-issuer-search/1', expanded_coverage: 'retained-default-coverage/1',
-  expanded_detail: 'held-issuer-shard/1' });
+  expanded_detail: 'held-issuer-shard/1',
+  // The common industry → macro evidence query (Codex #525 company-industry-macro-query/1, owner 2026-11-09), one file.
+  industry_macro: 'company-industry-macro-query/1' });
 const EXPANDED_FILES = Object.freeze({ expanded_manifest: 'manifest.json', expanded_index: 'expanded-index.json', expanded_coverage: 'coverage.json' });
 // /kis/classification?part=<part> only (no other parameter, no alternate encoding); the detail part takes exactly one shard key, two
 // lowercase hex digits (Codex's fixed pattern ^[0-9a-f]{2}$), and no other part takes one. The answer is the part, or

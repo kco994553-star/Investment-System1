@@ -29,6 +29,8 @@ const ROUTE=Object.freeze({status:'/kis/status',chart:'/kis/chart',analysis:'/ki
 // classification bundle, Codex #516 outputs byte for byte); the others take no query.
 const BY_SYMBOL=Object.freeze(['chart','analysis','technical']);
 const CLASSIFICATION_PARTS=Object.freeze(['view','technical','macro','qgv_links','dictionary','expanded_summary']);
+// Read on its own click, never in the bundle's six-part read: the common industry → macro evidence query (Codex #525).
+const OTHER_PARTS=Object.freeze(['industry_macro']);
 // The held issuer delivery (Codex #524, owner 2026-11-09): manifest, index, coverage and one detail shard ('expanded_detail/<2 hex>').
 // These answer {bytes, body}: the reader checks each file's own bytes against the manifest (SHA-256 and size), not a re-encoding.
 const EXPANDED_PARTS=Object.freeze(['expanded_manifest','expanded_index','expanded_coverage']);
@@ -260,7 +262,7 @@ function createClient({win,clientId,origin,send,now=()=>Date.now()}={}){
  function disconnect(){drop();}
  async function get(route,symbol,signal){
   if(!own(ROUTE,route))throw Error('ROUTE_UNKNOWN');const bySym=BY_SYMBOL.includes(route),byPart=route==='classification';
-  if(bySym&&(typeof symbol!=='string'||!SYMBOL.test(symbol)))throw Error('REQUEST_INVALID');if(byPart&&!CLASSIFICATION_PARTS.includes(symbol)&&!expandedPart(symbol))throw Error('REQUEST_INVALID');const raw=byPart&&expandedPart(symbol);
+  if(bySym&&(typeof symbol!=='string'||!SYMBOL.test(symbol)))throw Error('REQUEST_INVALID');if(byPart&&!CLASSIFICATION_PARTS.includes(symbol)&&!OTHER_PARTS.includes(symbol)&&!expandedPart(symbol))throw Error('REQUEST_INVALID');const raw=byPart&&expandedPart(symbol);
   if(!connected())throw Error('AUTH_REQUIRED');const mine=epoch;
   const shard=byPart?EXPANDED_DETAIL.exec(symbol):null;
   const url=origin+ROUTE[route]+(bySym?'?symbol='+symbol:shard?'?part=expanded_detail&shard='+shard[1]:byPart?'?part='+symbol:'');

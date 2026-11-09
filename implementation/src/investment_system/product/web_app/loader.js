@@ -60,11 +60,11 @@ const LOAD_ORDER=Object.freeze([
  'action.js','data.js','prices.js','store.js','qgv.js','engines.js',
  'companies.js','private.js','lab.js',
  'search-part-live.js','screen-search-live.js','screen-qgv-live.js','screen-macro-live.js','screen-prompts-live.js','screen-tree-live.js',
- 'screen-technical-live.js','screen-news-live.js','screen-lab-live.js','tech-screen.js','classification.js','screen-tech-filter-live.js','research-scope.js','screen-research-scope-live.js',
+ 'screen-technical-live.js','screen-news-live.js','screen-lab-live.js','tech-screen.js','common-taxonomy.js','classification.js','screen-tech-filter-live.js','research-scope.js','screen-research-scope-live.js',
  'discovery.js','screen-discovery-live.js',
  'sector-qgv.js','sector-qgv-axis.js','screen-sector-qgv-axis-live.js','screen-sector-qgv-live.js',
  'policy-impact.js','screen-policy-impact-live.js',
- 'news-refresh.js','macro-observed.js','screen-macro-observed-live.js','kis-private.js','expanded-issuers.js','screen-expanded-browse-live.js','private-expand-live.js',
+ 'news-refresh.js','macro-observed.js','screen-macro-observed-live.js','kis-private.js','expanded-issuers.js','screen-expanded-browse-live.js','industry-macro.js','screen-industry-macro-live.js','private-expand-live.js',
 ]);
 // A plain lowercase script name. tools/build_web_app.py holds this exact line (the build fails when the two differ).
 const NAME=/^[a-z0-9][a-z0-9-]*(?:\.[a-z0-9-]+)*\.js$/;

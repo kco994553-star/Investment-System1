@@ -37,8 +37,10 @@
 const REQUEST='sector-qgv-engine-request/1',RESPONSE='sector-qgv-engine-response/1',PREVIEW='sector-qgv-preview/1',CONFIG='sector-qgv-config/1';
 const AXES=Object.freeze(['Q','G','V']),OPS=Object.freeze(['context','view','preview','save','comparisons','comparison','replay']);
 const FEATURE=Object.freeze({id:'2.2.7',name:'섹터 QGV 설정(요소·가중치)'});
-const SECTOR_TEXT=Object.freeze({CONSUMER_DISCRETIONARY:'경기소비재',CONSUMER_STAPLES:'필수소비재',ENERGY:'에너지',FINANCIALS:'금융',HEALTH_CARE:'헬스케어',
- INDUSTRIALS:'산업재',INFORMATION_TECHNOLOGY:'정보기술',MATERIALS:'소재',TELECOMMUNICATIONS:'통신',UTILITIES:'유틸리티'});
+// Sector names: the one current definition (IS2.taxonomy, Codex #525 current_taxonomy(); 통신서비스), not a table of this file.
+const TAXONOMY=(()=>{const I=typeof globalThis==='object'&&globalThis.IS2;if(I&&I.taxonomy&&I.taxonomy.DATA)return I.taxonomy;
+ try{return typeof require==='function'?require('./common-taxonomy.js'):null;}catch(_){return null;}})();
+const SECTOR_TEXT=Object.freeze(TAXONOMY?Object.fromEntries(TAXONOMY.DATA.sectors.map(x=>[x.id,x.name])):{});
 const TEMPLATE_TEXT=Object.freeze({GENERAL:'일반',BANK:'은행',INSURANCE:'보험',BROKER:'증권',MORTGAGE_REIT:'모기지 REIT',ASSET_MANAGER:'자산운용',EQUITY_REIT:'지분형 REIT'});
 const AXIS_TEXT=Object.freeze({Q:'Q · 질',G:'G · 성장',V:'V · 가치'});
 const ROLE_TEXT=Object.freeze({profitability:'수익성',accounting_quality:'회계 품질',financial_capacity:'재무 여력',interest_capacity:'이자 지급 능력',stability:'안정성',

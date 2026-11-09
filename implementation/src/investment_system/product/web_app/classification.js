@@ -336,8 +336,13 @@ const state=()=>(loadFn===api().source&&loadGen===generation?current:Object.free
 const value=()=>{const s=state();return s.state==='OK'?s.value:null;};
 
 /* ---------------------------------------------------------------- words and records */
-const sectorName=(id,dict)=>{const d=dict||(value()&&value().dictionary);return id&&d&&d.sectors&&own(d.sectors,id)?d.sectors[id]:id;};
-const industryName=(id,dict)=>{const d=dict||(value()&&value().dictionary),x=id&&d?d.industries.find(i=>i.id===id):null;return x?x.name:id;};
+// Display names come from the one current definition (IS2.taxonomy = Codex #525 current_taxonomy(): 투자시스템 공통 10섹터, 통신서비스);
+// the bundle's dictionary is the fallback for an id the definition does not know. A record's own dictionary / mapping versions and
+// hash are never changed by a name (owner 2026-11-09).
+const taxonomy=()=>{const I=root&&root.IS2;if(I&&I.taxonomy&&typeof I.taxonomy.sectorName==='function')return I.taxonomy;
+ try{return typeof require==='function'?require('./common-taxonomy.js'):null;}catch(_){return null;}};
+const sectorName=(id,dict)=>{const T=taxonomy();if(T&&id&&T.sector(id))return T.sectorName(id);const d=dict||(value()&&value().dictionary);return id&&d&&d.sectors&&own(d.sectors,id)?d.sectors[id]:id;};
+const industryName=(id,dict)=>{const T=taxonomy();if(T&&id&&T.industryName(id)!==id)return T.industryName(id);const d=dict||(value()&&value().dictionary),x=id&&d?d.industries.find(i=>i.id===id):null;return x?x.name:id;};
 const unresolved=reasons=>reasons.find(r=>/UNRESOLVED/.test(r))||null;
 // The state of one view row (Codex's statuses and reasons, worded; nothing inferred).
 function rowState(row,valuation_date){const s=row.sector,i=row.industry,first=s.reasons[0]||null;
