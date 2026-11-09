@@ -112,4 +112,62 @@ ok('selection refusals: count rule, policy values, unknown mode, weights', () =>
   for (const [code, at, x] of badSel) { const r = R.validateSelection(x); assert.deepEqual({ ok: r.ok, code: r.code, path: r.path }, { ok: false, code, path: at }, code); }
 });
 ok('source() answers NONE and makes no request', () => R.source().then((s) => { assert.equal(s.state, 'NONE'); assert.equal(s.coverage, null); assert.equal(s.selection, null); }));
+// Codex #473 70672bc0 handoff (PORTFOLIO_LAB_HANDOFF_20261108.md): the seven public synthetic cases, read as the producer wrote them.
+const H = require('../tests/fixtures/research_selection_handoff_v1_synthetic.json');
+const hcase = (id) => copy(H.cases.find((c) => c.id === id).expected);
+ok('#473 handoff: all seven synthetic cases are accepted with the producer\'s counts; 33.3333334 % of 3 → 1, 33.3333333 % → 0', () => {
+  assert.equal(H.cases.length, 7);
+  for (const c of H.cases) {
+    const r = R.validateSelection(copy(c.expected));
+    assert.equal(r.ok, true, c.id + ' ' + JSON.stringify(r));
+    assert.equal(r.value.n_selected, c.expected.n_selected, c.id);
+    assert.ok(r.value.details, c.id + ': selection_details read');
+  }
+  assert.equal(R.validateSelection(hcase('percent_boundary')).value.n_selected, 1);
+  assert.equal(R.validateSelection(hcase('below_boundary')).value.n_selected, 0);
+  // The same numbers through the rule itself: the stored percent's own decimal digits, no fixed precision.
+  assert.deepEqual([R.floorPercent(3, 33.3333334), R.floorPercent(3, 33.3333333), R.floorPercent(3, 100), R.floorPercent(137, 10), R.floorPercent(1e9, 1e-7), R.floorPercent(7, 14.2857143)], [1, 0, 3, 13, 1, 1]);
+  // The old consumer rounding (6 decimals) gave 0 for the boundary case: kept here as the counterexample it was.
+  assert.equal(Math.floor(3 * Math.round(33.3333334 * 1e6) / 1e8), 0);
+  // A count that does not follow the rule is still refused (the precision fix widens nothing).
+  const bad = hcase('percent_boundary'); bad.n_selected = 0; bad.selected = []; bad.weights = null;
+  assert.equal(R.validateSelection(bad).code, 'SELECTED_COUNT_MISMATCH');
+  const bad2 = hcase('below_boundary'); bad2.n_selected = 1; bad2.selected = ['SYN:A']; bad2.weights = { 'SYN:A': 1 };
+  assert.equal(R.validateSelection(bad2).code, 'SELECTED_COUNT_MISMATCH');
+});
+ok('#473 selection_details: exclusion reasons, cash, issuers and replay ids shown as written; the old "not in the contract" line goes', () => {
+  const v = (id) => R.selectionView(R.validateSelection(hcase(id)).value);
+  const m = v('missing');
+  assert.equal(m.details.population, '원래 모집단 2개 · 조건 충족 1개 · 선정 1개');
+  assert.match(m.details.excluded, /^제외 사유 · Q 없음 1 · G 없음 0 · 선정 한도 밖 0/);
+  assert.equal(m.details.cash, '현금 비중 0%');
+  assert.match(m.details.issuers, /^발행사 미연결 2개 · 같은 발행사 묶음 0개 · 같은 발행사의 여러 회사 ID는 현행 엔진대로 각각 유지/);
+  assert.match(m.details.replay, /QGV 계산·시점\(PIT\)·성과 재현 아님/);
+  assert.equal(m.absent, null);
+  assert.match(v('empty').details.cash, /^선정 0개 · 포트폴리오 미형성 · 현금 비중 없음/);
+  assert.match(v('percent_boundary').details.excluded, /선정 한도 밖 2/);
+  // Without the sidecar the old line stays (nothing is made up on the screen).
+  const plain = hcase('normal'); delete plain.selection_details;
+  const pv = R.selectionView(R.validateSelection(plain).value);
+  assert.equal(pv.details, null); assert.match(pv.absent, /이 엔진 계약에 없음/);
+});
+ok('#473 selection_details refusals: a sidecar that does not describe its own result refuses the whole input', () => {
+  const at = '$.selection_details';
+  const cases = [
+    ['SCHEMA', at + '.schema_version', (d) => { d.schema_version = 'research-selection-details/2'; }],
+    ['DETAILS_POLICY_MISMATCH', at + '.selection_policy', (d) => { d.selection_policy = { mode: 'top_percent', value: 33.3333333 }; }],
+    ['DETAILS_RULE_UNKNOWN', at + '.percent_rule', (d) => { d.percent_rule = 'ROUND_6'; }],
+    ['DETAILS_ROWS_MISMATCH', at + '.rows', (d) => { d.rows.pop(); }],
+    ['DETAILS_SELECTED_MISMATCH', at + '.rows', (d) => { d.rows[1].selected = true; d.rows[1].exclusion_reasons = []; }],
+    ['DETAILS_INVALID', at + '.rows[1].exclusion_reasons', (d) => { d.rows[1].exclusion_reasons = []; }],
+    ['DETAILS_INVALID', at + '.rows[0].selected', (d) => { d.rows[0].exclusion_reasons = ['Q_MISSING']; }],
+    ['DETAILS_PORTFOLIO_MISMATCH', at + '.portfolio.weights', (d) => { d.portfolio.weights['SYN:A'] = 0.9; }],
+    ['DETAILS_INVALID', at + '.issuers', (d) => { d.issuers.security_identity_verified = true; }],
+    ['DETAILS_INVALID', at + '.reproduction', (d) => { d.reproduction.result_hash = 'x'; }],
+    ['DETAILS_INVALID', at + '.performance_verified', (d) => { d.performance_verified = true; }],
+    ['KEY_UNKNOWN', at + '.outcomes', (d) => { d.outcomes = {}; }],
+  ];
+  for (const [code, path, f] of cases) { const x = hcase('percent_boundary'); f(x.selection_details); const r = R.validateSelection(x); assert.deepEqual({ code: r.code, path: r.path }, { code, path }, code + ' ' + path); }
+  const e = hcase('empty'); e.selection_details.portfolio.cash_weight = 1; assert.equal(R.validateSelection(e).code, 'DETAILS_PORTFOLIO_MISMATCH', 'no all-cash portfolio is made for 0 selected');
+});
 console.log(JSON.stringify({ passed: true, checks: n }));
