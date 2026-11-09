@@ -65,7 +65,7 @@ test('words: Q 0 is a value, null is 미산출; gate input ≠ actual gate; no t
   assert.deepEqual(a.tickers, ['SYN_A', 'SYN_A.B']); assert.deepEqual(a.codeRows, ['ROW:A', 'ROW:A.B']);
   assert.match(a.gate, /^공식 Q 관문 입력 연결 · 관문 통과·새 Q 점수 아님 · 기존 Universe504 공식 Q 재생값 · 연결됨$/);
   assert.match(x.gate, /연결 안 됨 · 사유 MISSING_INPUT$/);
-  assert.match(a.status, /실제 관문 UNKNOWN/); assert.match(a.status, /총점 없음 · 0으로 채우지 않음/);
+  assert.match(a.status, /실제 관문: 관문 판정 불가\(UNKNOWN\)/); assert.match(a.status, /필수 축·요소 미산출\(strict\) \(STRICT_INCOMPLETE\)/); assert.match(a.status, /총점 없음 · 0으로 채우지 않음/);
   assert.match(a.rank, /^순위 없음 · 비교집단 = 보관 카탈로그 점수 모집단\(전체시장 아님\)$/);
   assert.equal(a.peer, '점수의 비교집단 expanded 3개 · 발행사 모집단 2개와 다름');
   assert.match(x.sector, /^미확인 · 사유 SYNTHETIC_MISSING$/);
@@ -73,7 +73,7 @@ test('words: Q 0 is a value, null is 미산출; gate input ≠ actual gate; no t
   const op = a.factors.find((y) => y.id === 'operating_margin_ttm'); assert.equal(op.score, '0'); assert.equal(op.raw, '값 0 (유효)');
   assert.equal(x.factors.find((y) => y.id === 'operating_margin_ttm').score, '미산출 · 비교 표본 부족');
   const cov = E.coverageView(b.coverage), held = cov.find((c) => c.scope === 'held_financial_subsample');
-  assert.equal(held.target, '95% 목표 · QGV+최종 총점 · 필요 2/2 · 현재 0 · 목표 미달');
+  assert.equal(held.target, '95% 목표(이 표본 참고 · 원래 모집단 목표 아님) · 기준 Q·G·V 세 축 동시 + 최종 총점 · 보유 발행사 · 필요 2/2 · 현재 0 · 추가 필요 2 · 목표 미달 · 발행사는 원래 행 하나가 단계를 모두 채울 때만 셈 · 여러 행의 축을 합치지 않음');
   assert.ok(held.causes.some((c) => /^가격 미측정/.test(c)), 'a cause not measured stays 미측정, never 0');
   assert.equal(E.marketText(b.coverage), '전체시장 분모·커버리지 미측정');
 });
@@ -158,4 +158,45 @@ test('detail refusals are that detail only: bytes, shard, identity, membership, 
     assert.equal((await E.checkDetail(gb.byId.get('B'), g.df, gb)).ok, true, code + ': the other issuer still reads');
   }
   assert.equal((await E.checkDetail({ ...A }, f['55'], b)).code, 'ROW_UNKNOWN', 'only a row of this checked bundle');
+});
+
+// Coverage by stage (owner 2026-11-09): every stage its own count in pipeline order; code rows apart from issuers; the 95 % target is
+// the producer's all-axes-and-total stage; the gate decisions split; VALUE_EXCLUDED is V-weight exclusion, never a loss cause; causes
+// are not summed and an unmeasured one stays 미측정; 0 stays 0 and a missing stage is 전달 안 됨, never 0.
+test('coverage stages: pipeline order, units apart, 95% target on all axes + total, gate split, causes not summed', async () => {
+  const f = files(), b = (await bundleOf(f)).value, cov = clone(b.coverage);
+  const op = E.coverageView(cov).find((c) => c.scope === 'operating');
+  assert.deepEqual(op.units.map((u) => [u.unit, u.denominator]), [['issuers', 1], ['code_rows', 2]], '운영504: issuers and code rows are two units');
+  assert.deepEqual(op.units[0].stages.map((s) => s.key), ['sector', 'accounting', 'required_components_present', 'any_raw', 'all_default_raw', 'any_factor_scores',
+    'all_default_factor_scores', 'Q', 'G', 'V', 'joint', 'pre_gate_total', 'total', 'all_axes_and_total']);
+  const st = Object.fromEntries(op.units[1].stages.map((s) => [s.key, s.text]));
+  assert.equal(st.sector, '1/2'); assert.equal(st.G, '2/2'); assert.equal(st.V, '0/2', 'a real 0 is 0'); assert.equal(st.all_axes_and_total, '0/2');
+  assert.match(op.target, /^95% 목표\(원래 모집단\) · 기준 Q·G·V 세 축 동시 \+ 최종 총점 · 운영504 고유 발행사 · 필요 1\/1 · 현재 0/);
+  assert.ok(!/섹터|원지표/.test(op.target), 'the target names no classification or raw-input share');
+  assert.deepEqual(op.gate.map((g) => g.key), ['UNKNOWN']); assert.equal(op.gate[0].text, '관문 판정 불가(UNKNOWN) · 최종 총점·순위 없음 2/2');
+  assert.ok(op.causes.every((c) => !/^관문/.test(c)), 'the merged gate cause is not a loss cause');
+  // A held sample: the code rows are the same unit as issuers → one unit.
+  assert.equal(E.coverageView(cov).find((c) => c.scope === 'held_financial_subsample').units.length, 1);
+  // Gate decisions with VALUE_EXCLUDED and PASS; a missing stage; an unmeasured cause; factor failures stay per factor.
+  const o = cov.scopes.operating;
+  o.gate_decisions = { VALUE_EXCLUDED: 1, PASS: 1 }; delete o.issuers.pre_gate_total;
+  o.causes.issuers.price = { count: null, known_affected: 1, known_not_affected: 0, unassessed: 0, denominator: 1, status: 'PARTIAL_EVIDENCE', reason: 'SPECIFIC_CAUSE_NOT_PROVEN_BY_RETAINED_FIELDS' };
+  o.total_failure_reasons = { GATE_UNKNOWN: 1, STRICT_INCOMPLETE: 1 };
+  const v = E.coverageView(cov).find((c) => c.scope === 'operating');
+  assert.deepEqual(v.gate.map((g) => g.text), ['관문 통과 1/2', 'V 총점 반영 제외(VALUE_EXCLUDED) · 기업 탈락·자료 미수집 아님 1/2']);
+  assert.equal(v.units[0].stages.find((s) => s.key === 'pre_gate_total').text, '전달 안 됨', 'a missing stage is not 0');
+  assert.ok(v.causes.includes('가격 미측정(확인 1 · 미평가 0)'));
+  assert.deepEqual(v.totalFailures, ['관문 미확정 (GATE_UNKNOWN) 1', '필수 축·요소 미산출(strict) (STRICT_INCOMPLETE) 1']);
+  const fac = v.factors.find((x) => x.id === 'operating_margin_ttm');
+  assert.deepEqual(fac.score, ['표본 부족 · 비교 표본 최소 미달 (PEER_SAMPLE_SMALL) 1']);
+  assert.deepEqual(v.factors.find((x) => x.id === 'cfo_mcap').raw, ['입력 관측 없음(자료 미보유·변환 미연결을 생산자가 나누지 않음) (MISSING_INPUT) 2']);
+  assert.ok(v.factors.every((x) => !/합계/.test(x.text)), 'no sum across factors');
+  // Input gaps in words: NOT_CONNECTED is 변환 미연결 (the producer's status, not a guess).
+  const A = b.byId.get('A'), d = clone((await E.checkDetail(A, f[A.shard_key], b)).value);
+  d.input_gaps = { company_id: 'X', price: { status: 'NOT_CONNECTED', evaluation_date: '2026-11-04' }, share_basis: { status: 'UNCONFIRMED', reason: 'R1' },
+    peer_sample_small_variants: [], v_required_fields: ['price'], financial_period_inputs: { a: 1, b: 2 } };
+  assert.deepEqual(E.detailView(d, b).gaps, ['가격 (price) · 변환 미연결 (NOT_CONNECTED)', '주식 기준 (share_basis) · 미확인 (UNCONFIRMED) · 사유 R1',
+    '표본 부족 요소 (peer_sample_small_variants) · 없음', 'V 필요 입력 (v_required_fields) · price', '재무 기간 입력 (financial_period_inputs) · 항목 2개']);
+  d.calculation = { ...d.calculation, gate_status: 'VALUE_EXCLUDED' };
+  assert.match(E.detailView(d, b).status, /실제 관문: V 총점 반영 제외\(VALUE_EXCLUDED\) · 기업 탈락·자료 미수집 아님/);
 });

@@ -272,6 +272,7 @@ function krxNumber(value) {
 // bundle (Codex #516 outputs, staged byte for byte at classification/<part>.json), same owner check, same read token, same rules.
 // …?part=<expanded_manifest|expanded_index|expanded_coverage> and ?part=expanded_detail&shard=<2 hex> (owner 2026-11-09): the held
 // issuer delivery (Codex #524) at classification/expanded/; the same 2 MiB limit, nothing widened.
+// …?part=input_repair (owner 2026-11-09): Codex #527's input connection repair comparison, classification/expanded/input-repair-comparison.json.
 const KIS_REPO = 'kco994553-star/investment-system1-kis-private';
 const KIS_BRANCH = 'data';
 const GITHUB_API = 'https://api.github.com';
@@ -298,8 +299,12 @@ const CLASSIFICATION_PARTS = Object.freeze({ view: 'common-classification-view/1
   expanded_manifest: 'held-issuer-sharded/1', expanded_index: 'held-issuer-search/1', expanded_coverage: 'retained-default-coverage/1',
   expanded_detail: 'held-issuer-shard/1',
   // The common industry → macro evidence query (Codex #525 company-industry-macro-query/1, owner 2026-11-09), one file.
-  industry_macro: 'company-industry-macro-query/1' });
-const EXPANDED_FILES = Object.freeze({ expanded_manifest: 'manifest.json', expanded_index: 'expanded-index.json', expanded_coverage: 'coverage.json' });
+  industry_macro: 'company-industry-macro-query/1',
+  // The input connection repair before/after comparison (Codex #527 sector-qgv-input-repair-comparison/1, owner 2026-11-09), one
+  // file next to the held issuer delivery it compares; the same 2 MiB limit.
+  input_repair: 'sector-qgv-input-repair-comparison/1' });
+const EXPANDED_FILES = Object.freeze({ expanded_manifest: 'manifest.json', expanded_index: 'expanded-index.json', expanded_coverage: 'coverage.json',
+  input_repair: 'input-repair-comparison.json' });
 // /kis/classification?part=<part> only (no other parameter, no alternate encoding); the detail part takes exactly one shard key, two
 // lowercase hex digits (Codex's fixed pattern ^[0-9a-f]{2}$), and no other part takes one. The answer is the part, or
 // 'expanded_detail/<shard>'.

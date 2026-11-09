@@ -51,18 +51,67 @@ function block(anchor){
     h('button',{type:'button',class:'lk',onclick:e=>show(e,r,detail)},r.issuer_id),' · ',r.observed_tickers.join(', ')||'관측 티커 없음',
     ' · 섹터 ',r.classification.sector&&r.classification.sector.status||'—',' · ',r.calculation_status)));};
   q.addEventListener('input',run);run();
-  const cov=E().coverageView(b.coverage);
   area.replaceChildren(
    dl([['모집단',ctx.population.id+' · 발행사 '+ctx.population.denominator+'개 · 운영504와 합치지 않음',{heldPopulation:String(ctx.population.denominator)}],
     ['점수의 비교집단',ctx.scoring_population.id+' · '+ctx.scoring_population.denominator+'개(보유 표본으로 다시 점수화하지 않음)'],
     ['분류',ctx.classification.dictionary_version+' + '+ctx.classification.mapping_version+' · 해시 '+ctx.classification.classification_hash.slice(0,12)+'…'],
     ['원결과',ctx.result_identity.preview_id.slice(0,12)+'… · 입력 '+ctx.input_as_of],
     ['생산자',b.identity.producer_sha.slice(0,12)+'… · 요약 '+b.identity.summary.sha256.slice(0,12)+'…']],{heldMeta:''}),
-   h('details',{class:'why',dataset:{heldCoverage:''}},h('summary',null,'커버리지 · 95% 목표 · 미산출 원인 ▸'),
-    ...cov.map(c=>h('div',{dataset:{heldScope:c.scope}},h('p',null,h('b',null,c.label),' · ',c.stages.join(' · ')),h('p',{class:'reason',dataset:{heldTarget:c.scope}},c.target),
-     c.rows?h('p',{class:'reason'},c.rows):null,h('p',{class:'reason'},'원인(겹칠 수 있음 · 합쳐 세지 않음) · ',c.causes.join(' · ')))),
-    h('p',{class:'reason',dataset:{heldMarket:''}},E().marketText(b.coverage))),
+   coverageBlock(b.coverage),
+   I.inputRepair?repairBlock():null,
    h('label',{for:'held-q',class:'meta'},'확장 발행사 찾기'),q,count,results,detail);}
+
+ // Coverage by stage (IS2.expandedIssuers.coverageView): one list per unit in pipeline order, then the gate decisions, the total
+ // failure reasons, the causes (overlapping, never summed) and each factor's own counts. Words and counts only; nothing derived.
+ function coverageBlock(cov){const v=E().coverageView(cov);
+  // Stages up to 세 축 동시, then the gate decisions, then the totals: the pipeline order on screen.
+  const stageList=(u,late)=>h('ol',{class:'news-lines',dataset:{heldStages:u.unit+(late?':total':':axes'),heldStagesDen:String(u.denominator)}},
+   u.stages.filter(s=>(s.group==='총점')===late).map(s=>h('li',{dataset:{heldStage:s.key,heldStageValue:s.text}},h('span',{class:'meta'},s.group,' · '),s.label,' ',h('b',null,s.text))));
+  return h('details',{class:'why',dataset:{heldCoverage:''}},h('summary',null,'커버리지 단계 · 95% 목표 · 관문 · 미산출 사유 ▸'),
+   h('p',{class:'reason'},'단계마다 따로 셉니다 · 분류 확인 수나 원지표 수는 QGV 계산 완료율이 아님 · 95% 목표는 세 축 동시 + 최종 총점 기준'),
+   ...v.map(c=>h('div',{class:'cc-wrap',dataset:{heldScope:c.scope}},h('h4',null,c.label),
+    ...c.units.map(u=>h('div',null,h('p',null,h('b',null,u.label),' · 분모 ',String(u.denominator)),stageList(u,false))),
+    h('p',{class:'meta'},'관문 판정 · ',c.gateUnit,' 기준'),
+    c.gate.length?h('ul',{class:'news-lines',dataset:{heldGate:c.scope}},c.gate.map(g=>h('li',{dataset:{heldGateDecision:g.key}},g.text))):h('p',{class:'reason'},'관문 판정 수 전달 안 됨'),
+    ...c.units.map(u=>h('div',null,h('p',{class:'meta'},u.label,' · 총점 단계'),stageList(u,true))),
+    h('p',{class:'reason',dataset:{heldTarget:c.scope}},c.target),
+    h('p',{class:'meta'},'최종 총점이 없는 행의 사유(행마다 하나)'),
+    c.totalFailures.length?h('ul',{class:'news-lines',dataset:{heldTotalFail:c.scope}},c.totalFailures.map(t=>h('li',null,t))):h('p',{class:'reason'},'전달 안 됨'),
+    c.unresolved?h('p',{class:'reason',dataset:{heldUnresolved:c.scope}},c.unresolved):null,
+    h('p',{class:'meta'},'원인 · 발행사 기준 · 겹칠 수 있음 · 더하지 않음 · 관문은 위 판정별 수로만'),
+    h('ul',{class:'news-lines',dataset:{heldCauses:c.scope}},c.causes.map(t=>h('li',null,t))),
+    c.factors.length?h('details',{class:'why',dataset:{heldFactorCounts:c.scope}},h('summary',null,'요소별 수 · 실패 사유 (요소마다 따로 · 요소끼리 더하지 않음) ▸'),
+     h('ul',{class:'news-lines'},c.factors.map(f=>h('li',{dataset:{heldFactorCount:f.id}},h('b',null,f.id),' · ',f.text,
+      f.raw.length?[' · 원지표 없음: ',f.raw.join(', ')]:null,f.score.length?[' · 점수 없음: ',f.score.join(', ')]:null)))):null)),
+   h('p',{class:'reason',dataset:{heldMarket:''}},E().marketText(cov)));}
+
+ // 입력 연결 수정 전후 비교 (Codex #527, IS2.inputRepair): its own click and one read, accepted only for the result of this checked
+ // bundle (a coverage scope with the same date, input hash and denominator). A refusal or a failed read is this block's error; the
+ // bundle, coverage and details stay. Counts and the producer's rows as written; nothing recalculated.
+ function repairBlock(){const R=I.inputRepair;
+  const rs=h('p',{class:'reason',role:'status',dataset:{repairState:'IDLE'}},'입력 연결 수정(INPUT_CONNECTION_REPAIR) 결과가 오면 전후를 비교합니다 · 요소·비중·분류 변경과 구분');
+  const slot=h('div',{dataset:{repairArea:''}});
+  const btn=h('button',{type:'button',class:'btn',dataset:{repairOpen:''}},'입력 연결 수정 전후 비교 불러오기');
+  const set=(c,t)=>{rs.dataset.repairState=c;rs.textContent=t;};let busy=false;
+  btn.addEventListener('click',e=>{if(busy||st.busy)return;busy=true;btn.disabled=true;set('LOADING','불러오는 중 · 비교 파일 1개');
+   let p;try{p=I.prices.kisRead(e,[['classification','input_repair']]);}catch(err){p=Promise.reject(err);}
+   Promise.resolve(p).then(([x])=>{const r=R.validate(x,R.anchorOf(st.bundle));
+    if(!r.ok){set('ERROR','비교를 쓰지 않음 · '+(r.code==='COMPARISON_RESULT_MISMATCH'?'지금 받은 결과와 다른 결과의 비교입니다':r.code==='COMPARISON_DATE_MISMATCH'?'평가일이 다릅니다':'형식 오류')+' · '+r.code+' · '+r.path+' · 위 묶음은 그대로');btn.disabled=false;return;}
+    btn.hidden=true;paintRepair(R.view(r.value.comparison,r.value.scope,{sectorName:id=>I.taxonomy?I.taxonomy.sectorName(id):id}));},
+   err=>{const c=codeOf(err);set('ERROR',(c==='KIS_SERIES_NOT_FOUND'?'전달 위치에 입력 연결 수정 비교가 없습니다(생산자 인계 전)':say(c))+' · 위 묶음은 그대로');btn.disabled=false;})
+   .finally(()=>{busy=false;});});
+  function paintRepair(v){set('READY',v.head);
+   slot.replaceChildren(h('p',{class:'hand',dataset:{repairNot:''}},v.not),h('p',{class:'reason'},v.limits,' · ',v.inputs),
+    v.same?h('p',{class:'reason',dataset:{repairSame:''}},v.same):null,
+    h('ul',{class:'news-lines',dataset:{repairAxes:''}},v.axes.map(a=>h('li',{dataset:{repairAxis:a.key}},a.text))),
+    v.shift?h('p',{class:'hand',dataset:{repairShift:''}},v.shift):null,
+    h('details',{class:'why',dataset:{repairFactors:String(v.factors.length)}},h('summary',null,'바뀐 요소 수 ',String(v.factors.length),' · 그대로 ',String(v.unchangedFactors),' ▸'),
+     list(v.factors.map(f=>f.text),{},'바뀐 요소 없음')),
+    h('details',{class:'why',dataset:{repairShortfall:String(v.shortfall.length)}},h('summary',null,'구조적 표본 부족 그룹 ',String(v.shortfall.length),'/',String(v.groups),' ▸'),
+     h('p',{class:'reason'},v.shortfallWord),list(v.shortfall,{},'없음')),
+    h('details',{class:'why',dataset:{repairRows:String(v.rows.length)}},h('summary',null,'값이 바뀐 행 ',String(v.rows.length),' ▸'),
+     list(v.rows.map(r=>r.text),{},'없음')));}
+  return h('div',{class:'sk card',dataset:{repairBlock:''}},h('h4',null,'입력 연결 수정 전후 비교'),btn,rs,slot);}
 
  function show(e,row,slot){if(st.busy)return;const key=row.shard_key;
   const paint=async p=>{const d=await E().checkDetail(row,p,st.bundle);

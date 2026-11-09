@@ -88,3 +88,39 @@ def test_oversize_file_and_public_data_dir_are_refused(tmp_path):
         tool.stage(delivery, PIN, data)
     with pytest.raises(tool.StageError, match='DATA_DIR_INSIDE_PUBLIC_REPOSITORY'):
         tool.stage(delivery, PIN, ROOT / 'tests')
+
+
+# The input connection repair comparison (Codex #527): pinned, its schema and treatment, and it names this delivery's result.
+REPAIR = json.loads((ROOT / 'tests' / 'fixtures' / 'input_repair_comparison' / 'outputs.json').read_text())
+
+
+def _repair(tmp_path, delivery, *, match=True, treatment='INPUT_CONNECTION_REPAIR'):
+    x = next(c['output'] for c in REPAIR['cases'] if c['id'] == 'peer_minimum')
+    x = dict(x, treatment=treatment)
+    if match:
+        cov = json.loads((delivery / 'coverage.json').read_bytes())['scopes']['operating']['context']
+        x = dict(x, after_input_hash=cov['result_identity']['input_hash'], denominator=cov['population']['denominator'], valuation_date=cov['valuation_date'])
+    path = tmp_path / 'repair.json'
+    path.write_bytes(json.dumps(x).encode())
+    return path, hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def test_input_repair_comparison_is_staged_beside_the_delivery_byte_for_byte(tmp_path, capsys):
+    delivery, data = _setup(tmp_path)
+    path, pin = _repair(tmp_path, delivery)
+    assert tool.main(['--delivery', str(delivery), '--manifest-sha256', PIN, '--data-dir', str(data), '--input-repair', str(path), '--input-repair-sha256', pin]) == 0
+    assert 'input_repair sha256=' + pin in capsys.readouterr().out
+    assert (data / 'classification' / 'expanded' / 'input-repair-comparison.json').read_bytes() == path.read_bytes()
+
+
+@pytest.mark.parametrize('kind, code', [('other_result', 'REPAIR_RESULT_MISMATCH'), ('treatment', 'REPAIR_SCHEMA'), ('pin', 'REPAIR_PIN_MISMATCH'), ('no_pin', 'REPAIR_PIN_REQUIRED')])
+def test_input_repair_comparison_refusals_keep_the_existing_copy(tmp_path, kind, code):
+    delivery, data = _setup(tmp_path)
+    assert tool.main(['--delivery', str(delivery), '--manifest-sha256', PIN, '--data-dir', str(data)]) == 0
+    before = sorted(p.relative_to(data).as_posix() for p in (data / 'classification' / 'expanded').rglob('*') if p.is_file())
+    path, pin = _repair(tmp_path, delivery, match=kind != 'other_result', treatment='FACTOR_WEIGHT_CHANGE' if kind == 'treatment' else 'INPUT_CONNECTION_REPAIR')
+    if kind == 'treatment':
+        pin = hashlib.sha256(path.read_bytes()).hexdigest()
+    with pytest.raises(tool.StageError, match=code):
+        tool.stage(delivery, PIN, data, path, None if kind == 'no_pin' else ('c' * 64 if kind == 'pin' else pin))
+    assert sorted(p.relative_to(data).as_posix() for p in (data / 'classification' / 'expanded').rglob('*') if p.is_file()) == before

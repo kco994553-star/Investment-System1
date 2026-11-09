@@ -6,7 +6,7 @@
 //  - Badges as words (기본값 · 초기 설정 / 추천 / 선택됨 / 계산 기능 준비 중 / 산식 적용 부적합), PER / PBR search, replace.
 //  - A preview is an engine call: the rows and ranks shown are the engine's answer for that config (checked against a direct
 //    engine call), before → after, the original denominator; save only for the shown, current preview; reload keeps it.
-//  - Gate: 관문 통과 / 가치(V) 제외 / 판정 불가 (no final score, no rank); a refused input keeps the last good result.
+//  - Gate: 관문 통과 / V 총점 반영 제외 / 판정 불가 (no final score, no rank); a refused input keeps the last good result.
 //  - Cancel, restore, a bank change that stays in banks, a late answer dropped, the published site without the route.
 //  - Owner 2026-11-07: the flow is ① 10섹터 기본값 (base preset id / version of the scope) → ② 내 설정; 공격형·균형형·수비형 are
 //    not offered; 기본값 복원 names and shows the base preset id / version; an old leaderboard weight tree (DeviceProfiles v2)
@@ -208,7 +208,7 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       assert.ok((await text(B + ' [data-sq-summary]')).includes('총점 산출 · 전 19 / 20 → 후 19 / 20'));
       await page.selectOption('#sq-input', 'GATE_EXCLUDED'); await preview();
       const ex = await text(B + ' [data-sq-row=company-000] [data-sq-gate]');
-      assert.ok(ex.startsWith('관문: 가치(V) 제외 · 남은 축 비례 재배분 · 적용 Q ') && !ex.includes(' V '), ex);
+      assert.ok(ex.startsWith('관문: V 총점 반영 제외 · 남은 축 비례 재배분 · 기업 탈락·자료 미수집 아님 · 적용 Q ') && !/\bV\b/.test(ex.split(' · 적용 ')[1]), ex); // the applied weights name no V
       assert.equal(await page.locator(B + ' [data-sq-row=company-001] [data-sq-gate]').getAttribute('data-sq-gate'), 'PASS');
       await page.selectOption('#sq-input', 'FAILED'); await preview();
       assert.ok((await text(B + ' [data-sq-msg]')).includes('미리보기 거부 · 입력 거부 · 회사 ID 중복 · 이전 결과는 그대로'));

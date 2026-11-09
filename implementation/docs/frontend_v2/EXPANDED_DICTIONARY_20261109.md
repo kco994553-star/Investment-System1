@@ -60,3 +60,105 @@
 - Worker 배포(새 part 6개), 병합 — 별도 승인.
 - 산업 대응 3계열의 공식 series→industry 정의·버전·범위·유효기간 문서 — 신규 취득이라 실행하지 않음.
 - 분류 묶음을 다시 배치하면(`stage_private_classification.py`) `classification/` 전체가 바뀌므로, 확장 전달본·산업 조회도 다시 배치해야 한다(다른 요약 옆에 남지 않게 하는 의도된 동작).
+
+## 7. QGV 커버리지 단계 분리 · 입력 연결 수정 비교 (오너 2026-11-09 2차)
+
+### 7.1 확인한 자료
+
+| 자료 | 위치·ID | 확인한 곳 | 쓰임 |
+| --- | --- | --- | --- |
+| Codex #527 `HELD_INPUT_REPAIR.md` | `ab585a7c`, `e76d402b` | 전체 | 입력 연결 수정 경계·비교 계약 |
+| Codex `retained_coverage.py` | #524 `fb80b67b` | `coverage_scope`·`cause_counts` | 단계 이름·관문·원인 (화면 단계의 근거) |
+| Codex `sector_qgv_held_repair.py` | #527 `ab585a7c` | `comparison()` | `sector-qgv-input-repair-comparison/1` |
+| Drive「ARGON_04 우선작업계획 … QGV95」 | `1UxICmVrVKHp7gGq-U6It9yL1ONNCnij7LvPfe8z3NLw` (2026-11-02) | 후속과제 B·C | 모집단 구분 원칙만. 옛 수치·상태는 옮기지 않음 |
+| Drive EPUB『What Works on Wall Street 4판』 | `1ZmzhcJONp4Wi2UDiMVLg5deBt7fiozaC` | 파일 정보만(본문은 Codex가 14·19·24장 확인) | 책 분류·규칙을 화면 체계로 쓰지 않음 |
+| `Sector_QGV_Custom_Factors_Implementation_20261106.md`, `Sector_QGV_Factor_Catalog_20261106.md` | Drive 제목·본문 검색과 저장소 전 가지에서 못 찾음 | Main은 원문을 읽지 못함 | Codex가 오너 첨부본을 읽고 SHA-256과 대조 절을 `e76d402b`에 기록함(구현 §5.1–5.3·§7.1–7.3·§8, 목록 §3–5·§8). 공식·기본값·관문·최소 표본 변경 없음 |
+
+화면의 섹터 이름은 `common-taxonomy.js`(Codex `current_taxonomy()` 그대로)만 쓴다. 책·SIC·GICS·ETF 분류는 같은 체계로 보이지 않는다.
+
+### 7.2 커버리지 단계 (`expanded-issuers.js` `coverageView`)
+
+생산자 `retained-default-coverage/1`의 단계별 수를 순서대로 그대로 보인다. 화면에서 다시 세지 않는다.
+
+| 순서 | 단계 | 생산자 키 |
+| --- | --- | --- |
+| 1 | 섹터 확인 | `sector` |
+| 2 | 회계모형 확인 | `accounting` |
+| 3 | 기본 요소 구성요소 선언 있음(유효성·관문 통과 아님) | `required_components_present` |
+| 4 | 원지표 1개 이상 / 기본 원지표 전부 | `any_raw` / `all_default_raw` |
+| 5 | 요소 점수 1개 이상 / 기본 요소 점수 전부 | `any_factor_scores` / `all_default_factor_scores` |
+| 6 | Q 산출 · G 산출 · V 산출 | `Q` · `G` · `V` |
+| 7 | Q·G·V 세 축 동시 | `joint` |
+| 8 | 관문 판정 (코드 행): 관문 통과 / 관문 판정 불가(UNKNOWN) / V 총점 반영 제외(VALUE_EXCLUDED) | `gate_decisions` |
+| 9 | 관문 전 총점 · 최종 총점 | `pre_gate_total` · `total` |
+| 10 | 세 축 + 최종 총점 (95% 기준 단계) | `all_axes_and_total` |
+
+- **단위**: 운영504는 코드 행 504와 고유 발행사 501을 두 줄로 나눈다. 보유1057·카탈로그8004는 자기 분모만 쓴다. 섞지 않는다.
+- **95% 목표**: 생산자 `target`(stage `all_axes_and_total`)을 그대로 쓴다. 원래 모집단(운영504)만 "원래 모집단", 보유·카탈로그는 "참고"라고 쓴다. 분류 확인 수나 원지표 수는 QGV 계산 완료율로 보이지 않는다.
+- **관문**: 생산자의 원인 `gate`는 UNKNOWN과 VALUE_EXCLUDED를 합친 수다. 그래서 결손 원인 목록에서 뺐다. 관문은 판정별 수로만 보인다. VALUE_EXCLUDED는 "V 총점 반영 제외 · 기업 탈락·자료 미수집 아님"이라고 쓴다. 섹터 QGV 화면(`sector-qgv.js` `GATE_TEXT`)도 같은 말로 바꿨다.
+- **사유**: 생산자 코드를 낱말로 바꾸기만 한다.
+  - 입력 부적격: NOT_APPLICABLE·DOMAIN_INVALID·PERIOD_MISMATCH 등.
+  - 표본 부족: PEER_SAMPLE_SMALL.
+  - 관문 미확정: GATE_UNKNOWN.
+  - 변환 미연결: 상세 입력 결손의 NOT_CONNECTED.
+  - 분류·회계모형 대응 미확정: MAPPING_UNRESOLVED.
+  - MISSING_INPUT은 생산자가 자료 미보유와 변환 미연결을 나누지 않는다. 그래서 화면도 나누지 않고 그 사실을 적는다. 원인을 추정하지 않는다.
+- **겹침**: 원인은 겹친다. 더하지 않는다. 요소별 실패 수(행×요소)는 요소끼리 더하지 않는다. 미측정 원인은 "미측정(확인 n · 미평가 m)"으로 쓴다. 0은 0으로 두고, 빠진 단계는 "전달 안 됨"으로 쓴다.
+- **기업 공통 분류 패널**: Q·G만 보이던 운영 집계(#523)에 V·세 축 동시·최종 총점과 고유 발행사 수를 더했다. "분류 확인 수는 QGV 계산 완료율이 아님" 문구도 붙였다. 확장 표본 줄은 분류 단계와 계산 단계로 나눴다.
+
+보관 실자료(raw `198acb40`, 로컬 판독, 수만 보임):
+
+| 모집단 | 섹터 | 회계모형 | 원지표 1+ | 요소 점수 1+ | Q | G | V | 세 축 | 최종 총점 | 95% 필요 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 운영504 발행사 | 454/501 | 422/501 | 498/501 | 357/501 | 232 | 320 | 0 | 0 | 0 | 476 |
+| 보유1057 | 929 | 844 | 1054 | 823 | 494 | 670 | 0 | 0 | 0 | 1005 |
+| 카탈로그8004 | 935 | 847 | 1059 | 826 | 495 | 671 | 0 | 0 | 0 | 7604 |
+
+운영504 코드 행 기준 관문 판정은 다음과 같다.
+- 통과 290
+- 판정 불가 93
+- V 총점 반영 제외 121
+
+전체시장 분모·커버리지는 미측정이다.
+
+### 7.3 입력 연결 수정 전후 비교 (`input-repair.js`, Codex #527)
+
+- **계약**: `sector-qgv-input-repair-comparison/1`, treatment `INPUT_CONNECTION_REPAIR`.
+  - 설정·평가일·모집단·분류·관문이 다르면 생산자가 비교를 쓰지 않는다(`REPAIR_CONFIG_CHANGED` 등).
+  - 그래서 화면은 "요소·비중 변경 아님 · 분류 변경 아님 · 설정 변경 아님"으로만 쓴다.
+- **신뢰 고리**: 지금 받은 확장 발행사 묶음의 커버리지 범위 하나와 맞아야 받는다. 평가일, `result_identity.input_hash` = `after_input_hash`, 분모가 모두 같아야 한다. 다르면 이 칸만 오류가 되고, 묶음·커버리지·상세는 그대로 둔다.
+- **산술 검사**: 생산자 수를 그대로 검사한다.
+  - 후 = 전 + 새로 산출 − 사라짐
+  - 분모 이하
+  - 기존 값 바뀜 ≤ 전 − 사라짐
+  - 기본 선택 행 ≤ 전체 행
+  - 구조적 표본 부족 = 구성원 < 최소
+  - 같은 입력이면 바뀐 것 없음
+- **낱말**: "기존 값 바뀜"은 새 원지표가 비교집단에 들어와 상대점수가 달라진 것이다. 실적 개선·전략 성과가 아니다. 성과·전체시장은 미측정이다. 점수·순위·비중은 다시 계산하지 않는다.
+- **전달**: Worker `?part=input_repair` → `classification/expanded/input-repair-comparison.json`(2 MiB 그대로, 배포 안 됨).
+  - `stage_private_held_issuers.py --input-repair <file> --input-repair-sha256 <pin>`으로 확장 전달본과 함께 통째로 배치한다.
+  - 고정 해시와 결과 고리가 다르면 배치하지 않고, 기존 묶음을 둔다.
+- **합성 검증**: `tools/input_repair_comparison_fixture.py`(`--check`)가 Codex `preview_qgv`(기본 설정)와 `comparison()`을 Codex 합성 입력에 그대로 돌린다. 5사례:
+  - 최소 표본 넘김
+  - 상대점수 이동
+  - 3행 그룹 구조적 부족
+  - 변화 없음
+  - 설정 변경 → 생산자 거부
+- **실자료**: Codex 후속 인계(manifest·repo·ref·path·대사) 전이다. Codex가 적은 실자료 증분(REIT 23 → G 운영 320→343 등)은 이 화면으로 아직 판독하지 않았다.
+
+### 7.4 검증
+
+- **node**:
+  - `web_app_expanded_issuers_node_test` 7 (단계·단위·관문·사유·변환 미연결)
+  - `web_app_input_repair_node_test` 4
+  - `web_app_sector_qgv_node_test`
+  - reuse 26
+- **Worker**: `kis.test.mjs`에 `input_repair` 경로·스키마 추가.
+- **Python**:
+  - `test_main_generated_classification_fixtures`(+비교 고정본)
+  - `test_stage_private_held_issuers` 15
+- **브라우저** `web_app_classification_private_browser_test` 1440·390:
+  - 단계 순서와 운영504 두 단위
+  - 관문 판정 3종 (VALUE_EXCLUDED 낱말, 0은 0)
+  - 비교 칸: 키보드로 열기, 다른 결과는 거부하고 묶음 유지, 맞는 결과 표시
+  - 저장소 키 불변, 가로 넘침 없음

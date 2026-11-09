@@ -49,7 +49,7 @@ const ROLE_TEXT=Object.freeze({profitability:'수익성',accounting_quality:'회
 const STATUS_TEXT=Object.freeze({VALID:'산출',GATE_UNKNOWN:'관문 판정 불가 · 최종 점수·순위 없음',STRICT_INCOMPLETE:'필수 요소 결측 · 총점 미산출',
  MAPPING_UNRESOLVED:'섹터·회계모형 분류 미확정 · 점수 계산 안 함',NO_WEIGHT_AFTER_GATE:'관문 뒤 남은 비중 없음 · 총점 미산출'});
 // gate_status of the engine (official-q-percentile-required/1): three results, told apart in words.
-const GATE_TEXT=Object.freeze({PASS:'관문 통과',VALUE_EXCLUDED:'관문: 가치(V) 제외 · 남은 축 비례 재배분',UNKNOWN:'관문 판정 불가 · 공식 Q 업종 분위 없음'});
+const GATE_TEXT=Object.freeze({PASS:'관문 통과',VALUE_EXCLUDED:'관문: V 총점 반영 제외 · 남은 축 비례 재배분 · 기업 탈락·자료 미수집 아님',UNKNOWN:'관문 판정 불가 · 공식 Q 업종 분위 없음'});
 // Factor raw_status / score_status codes of the engine.
 const FACTOR_TEXT=Object.freeze({VALID:'점수 있음',VALID_ZERO:'값 0 (유효)',VALID_NEGATIVE:'음수 (유효)',MISSING_INPUT:'자료 없음',STALE:'오래된 자료',
  PEER_SAMPLE_SMALL:'요소 점수 미산출 · 유효 비교 기업 N<20',MAPPING_UNRESOLVED:'분류 미확정',ISSUER_REPRESENTATIVE_UNRESOLVED:'대표 증권 미확정',NOT_APPLICABLE:'이 회계모형에 적용 안 함',

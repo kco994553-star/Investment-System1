@@ -19,3 +19,7 @@ def test_common_taxonomy_js_is_codex_current_taxonomy():
 
 def test_industry_macro_main_outputs_are_codex_query_outputs():
     _check('industry_macro_main_fixture.py')
+
+
+def test_input_repair_comparison_outputs_are_codex_comparison_outputs():
+    _check('input_repair_comparison_fixture.py')

@@ -87,7 +87,8 @@ function syntheticCounts(view, summary, { opQ, opG, heldGate, catGate }) {
 // served to the page (its SHA-256) and its held_financial_subsample scope. Built from Codex's two synthetic issuers (A: Q 0, two
 // observed tickers, gate input connected; B: unclassified), repeated to the scope's issuer denominator with made-up ids, sharded by
 // sha256(issuer_id)[:2], with identity / context hashes and descriptors as Codex's producer writes them. Test data only.
-function heldDelivery(summaryText, held, { firstCodes = null } = {}) {
+// coverageEdit(coverage) may change the synthetic coverage before it is sealed (a test's gate decisions or comparison anchor).
+function heldDelivery(summaryText, held, { firstCodes = null, coverageEdit = null } = {}) {
   const E = require('../src/investment_system/product/web_app/expanded-issuers.js');
   const D = path.join(ROOT, 'implementation/tests/fixtures/held_issuer_shards');
   const read = (n) => JSON.parse(fs.readFileSync(path.join(D, n), 'utf8'));
@@ -120,7 +121,8 @@ function heldDelivery(summaryText, held, { firstCodes = null } = {}) {
   const index = rows.map(({ id, key, t }) => ({ ...JSON.parse(JSON.stringify(ix0.rows[t.classification.sector.status === 'CONFIRMED' ? 0 : 1])), issuer_id: id, analysis_row_id: t.analysis_row_id,
     observed_tickers: [...new Set(t.catalog_observations.map((o) => o.observed_ticker))].sort(), operating_code_rows: t.operating_code_rows, shard_key: key, detail: desc('expanded-detail/' + key + '.json') }));
   files['expanded-index.json'] = enc({ schema_version: 'held-issuer-search/1', data_kind: 'SYNTHETIC', identity, identity_hash: ih, rows: index });
-  files['coverage.json'] = enc({ ...cov0, identity, identity_hash: ih });
+  const cov = JSON.parse(JSON.stringify(cov0)); if (coverageEdit) coverageEdit(cov);
+  files['coverage.json'] = enc({ ...cov, identity, identity_hash: ih });
   const manifest = { ...m0, identity, identity_hash: ih, issuer_count: n, shards: [...shards.keys()].sort(), files: Object.keys(files).sort().map(desc) };
   files['manifest.json'] = enc(manifest);
   return { files, ids: rows.map((r) => r.id), shardOf: (id) => sha(id).slice(0, 2) };

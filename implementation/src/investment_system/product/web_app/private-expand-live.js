@@ -142,8 +142,10 @@ function operatingCounts(k){
  if(k.state!=='OK')return h('p',{class:'reason',dataset:{ccCalc:'operating',ccCalcState:k.state}},'섹터 QGV 원결과의 Q·G 산출 수 · ',
   k.state==='ERROR'?'연결 오류('+k.code+') · 쓰지 않음':'이 묶음에 없음 · 0으로 채우지 않음');
  const o=k.value.scopes.operating;
- return h('p',{class:'reason',dataset:{ccCalc:'operating',ccCalcState:'OK',ccCalcQ:countText(o.counts.Q),ccCalcG:countText(o.counts.G)}},
-  '섹터 QGV 원결과 · Q 산출 ',countText(o.counts.Q),' · G 산출 ',countText(o.counts.G),' · 평가일 ',o.valuation_date,' · 원결과 집계(재계산 없음) · 분모 ',o.population.id,' 코드 행 ',
+ return h('p',{class:'reason',dataset:{ccCalc:'operating',ccCalcState:'OK',ccCalcQ:countText(o.counts.Q),ccCalcG:countText(o.counts.G),ccCalcV:countText(o.counts.V),ccCalcJoint:countText(o.counts.joint),ccCalcTotal:countText(o.counts.total)}},
+  '섹터 QGV 원결과 · Q 산출 ',countText(o.counts.Q),' · G 산출 ',countText(o.counts.G),' · V 산출 ',countText(o.counts.V),' · 세 축 동시 ',countText(o.counts.joint),
+  ' · 최종 총점 ',countText(o.counts.total),' · 평가일 ',o.valuation_date,' · 원결과 집계(재계산 없음) · 분모 ',o.population.id,' 코드 행 ',String(o.population.denominator),
+  '(고유 발행사 ',String(o.population.unique_issuers),') · 위 분류 확인 수는 QGV 계산 완료율이 아님 · 95% 목표는 세 축 동시 + 최종 총점 기준 ',
   h('a',{class:'lk',href:I.href('prompts','-','search'),dataset:{ccPromptContext:''}},'→ 프롬프트에서 이 문맥 보기'));}
 // 7.1.2 화면 문맥 for the prompt screen (owner 2026-11-08 queue item 8): the operating counts' evaluation date, population and
 // missing counts of the bundle in RAM now, asked when the prompt card paints (a dropped bundle gives none). Display only there:
@@ -164,8 +166,8 @@ if(I.promptContext&&typeof I.promptContext.provide==='function')
 // the 504 counts, never a company page, a QGV row or a technical security id (ISSUER:<CIK> is an analysis row id).
 function expandedBlock(e,k){
  if(!e)return h('div',{class:'sk card',dataset:{ccPopulation:'EXPANDED_SAMPLE',ccExpanded:'NONE'}},h('h4',null,'확장 발행사 표본 · 별도 모집단'),h('p',{class:'reason'},'받지 않음 · 운영504 화면은 그대로'));
- const row=(g,label,k)=>h('li',{dataset:{ccExpandedCount:k}},label,' · 발행사 ',String(e[g].issuers),' · 티커 관측 ',String(e[g].ticker_observations),' · 섹터 ',String(e[g].sector),' · 회계모형 ',String(e[g].accounting),
-  ' · 하위 산업 ',String(e[g].industry),' · Q ',String(e[g].Q),' · G ',String(e[g].G),' · V ',String(e[g].V),' · 총점 ',String(e[g].total));
+ const row=(g,label,k)=>h('li',{dataset:{ccExpandedCount:k}},label,' · 발행사 ',String(e[g].issuers),' · 티커 관측 ',String(e[g].ticker_observations),' · 분류 단계: 섹터 ',String(e[g].sector),' · 회계모형 ',String(e[g].accounting),
+  ' · 하위 산업 ',String(e[g].industry),' · 계산 단계: Q ',String(e[g].Q),' · G ',String(e[g].G),' · V ',String(e[g].V),' · 총점 ',String(e[g].total),' (분류 수는 계산 완료 수가 아님)');
  return h('div',{class:'sk card',dataset:{ccPopulation:'EXPANDED_SAMPLE',ccExpanded:e.valuation_date}},
   h('h4',null,'확장 발행사 표본 · 별도 모집단 · 운영504와 합치지 않음'),
   h('p',{class:'reason'},'관측 카탈로그 발행사 · 투자 적격 모집단 아님(',e.population_kind,') · 평가일 ',e.valuation_date,' · 카탈로그 관측 ',e.catalog_observed_at.slice(0,10),'(',String(e.catalog_age_days),'일 전 · 평가일 상장 명부 아님)'),

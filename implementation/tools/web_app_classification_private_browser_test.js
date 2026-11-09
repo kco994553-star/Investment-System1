@@ -58,7 +58,15 @@ const RECORD_IDS = BUNDLE.view.rows.map((r) => r.record_id).filter(Boolean);
 const SUMMARY_TEXT = JSON.stringify(BUNDLE.expanded_summary);
 // The first issuer names one Universe504 company of the public list (its code row links the company page) and one unknown id.
 const LINKED_CODE = BUNDLE.view.rows[0].company_id;
-const DELIVERY = X.heldDelivery(SUMMARY_TEXT, BUNDLE.expanded_summary.calculation_counts.scopes.held_financial_subsample, { firstCodes: [LINKED_CODE, 'ROW:NOT-IN-LIST'] });
+// Codex #527 comparison outputs (Codex's comparison() on Codex's synthetic input). The synthetic coverage's operating scope is set to
+// name the peer_shift result (its input hash and row count) and to carry all three gate decisions: a synthetic pairing for the screen.
+const REPAIR = JSON.parse(require('node:fs').readFileSync(require('node:path').join(R.ROOT, 'implementation/tests/fixtures/input_repair_comparison/outputs.json'), 'utf8'));
+const repairCase = (id) => JSON.parse(JSON.stringify(REPAIR.cases.find((c) => c.id === id).output));
+const DELIVERY = X.heldDelivery(SUMMARY_TEXT, BUNDLE.expanded_summary.calculation_counts.scopes.held_financial_subsample, { firstCodes: [LINKED_CODE, 'ROW:NOT-IN-LIST'],
+  coverageEdit: (c) => { const o = c.scopes.operating, x = repairCase('peer_shift');
+    o.gate_decisions = { PASS: 1, UNKNOWN: 0, VALUE_EXCLUDED: 1 };
+    o.context = { ...(o.context || {}), valuation_date: x.valuation_date, population: { ...((o.context || {}).population || {}), denominator: x.denominator },
+      result_identity: { ...((o.context || {}).result_identity || {}), input_hash: x.after_input_hash } }; } });
 const EXF = { expanded_manifest: 'manifest.json', expanded_index: 'expanded-index.json', expanded_coverage: 'coverage.json' };
 let phase = 'START', pass = 0;
 const ok = (name) => { pass++; console.log('PASS ' + name); };
@@ -170,12 +178,12 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       assert.equal(await count(page, '[data-cc-population=EXPANDED_SAMPLE]'), 1);
       const ex = await text(page, '[data-cc-population=EXPANDED_SAMPLE]');
       assert.match(ex, /^확장 발행사 표본 · 별도 모집단 · 운영504와 합치지 않음/);
-      assert.match(ex, /관측 카탈로그 전체 · 발행사 777 · 티커 관측 977 · 섹터 77/); assert.match(ex, /보유 재무 하위표본 · 발행사 177/);
+      assert.match(ex, /관측 카탈로그 전체 · 발행사 777 · 티커 관측 977 · 분류 단계: 섹터 77.* · 계산 단계: Q .*\(분류 수는 계산 완료 수가 아님\)/); assert.match(ex, /보유 재무 하위표본 · 발행사 177/);
       assert.match(ex, /전체시장 분모·커버리지 미산출 · 새 증권 ID 0/); assert.match(ex, /발행사 행 ID는 증권 ID가 아님/);
       assert.match(ex, /38일 전 · 평가일 상장 명부 아님/);
       const rowsN = BUNDLE.view.rows.length;
       assert.equal(await page.locator('[data-cc-calc=operating]').getAttribute('data-cc-calc-state'), 'OK');
-      assert.match(await text(page, '[data-cc-calc=operating]'), new RegExp('Q 산출 7/' + rowsN + ' · G 산출 17/' + rowsN + ' · 평가일 ' + BUNDLE.view.valuation_date + ' · 원결과 집계\\(재계산 없음\\)'), phase + ': the 504 Q / G counts from the delivered summary');
+      assert.match(await text(page, '[data-cc-calc=operating]'), new RegExp('Q 산출 7/' + rowsN + ' · G 산출 17/' + rowsN + ' · V 산출 \\S+ · 세 축 동시 \\S+ · 최종 총점 \\S+ · 평가일 ' + BUNDLE.view.valuation_date + ' · 원결과 집계\\(재계산 없음\\).* 위 분류 확인 수는 QGV 계산 완료율이 아님 · 95% 목표는 세 축 동시 \\+ 최종 총점 기준'), phase + ': the 504 Q / G counts from the delivered summary');
       assert.match(await text(page, '[data-cc-expanded-gate=catalog]'), /^공식 Q 관문 입력 연결 47\/777 · 관측 카탈로그 범위 · 관문 통과·새 섹터 Q 산출 아님 · 기존 Universe504 공식 Q 재생값\(확장 표본 Q 아님\)$/);
       assert.match(await text(page, '[data-cc-expanded-gate=held_financial_subsample]'), /^공식 Q 관문 입력 연결 27\/177 · 보유 재무 하위표본 범위 · 관문 통과·새 섹터 Q 산출 아님/);
       assert.equal(await count(page, '[data-cc-population=OPERATING_504] [data-cc-expanded-gate]'), 0, phase + ': the gate input lines stay in the expanded block');
@@ -267,6 +275,40 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
         assert.equal(await count(page, '[data-held-result="' + other + '"]'), 1, phase + ': the search stays');
         delete w.answers['expanded_detail/' + DELIVERY.shardOf(other)];
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), phase + ': no horizontal overflow with a detail open');
+        // Coverage by stage (owner 2026-11-09): pipeline order, two units for 운영504, gate decisions apart, VALUE_EXCLUDED is not a loss.
+        await page.locator('[data-held-coverage] > summary').click();
+        const opStages = await page.locator('[data-held-scope=operating] [data-held-stages="issuers:axes"] [data-held-stage]').evaluateAll((n) => n.map((x) => x.dataset.heldStage));
+        assert.deepEqual(opStages, ['sector', 'accounting', 'required_components_present', 'any_raw', 'all_default_raw', 'any_factor_scores', 'all_default_factor_scores', 'Q', 'G', 'V', 'joint'], phase + ': stages in order up to 세 축 동시');
+        assert.deepEqual(await page.locator('[data-held-scope=operating] [data-held-stages="issuers:total"] [data-held-stage]').evaluateAll((n) => n.map((x) => x.dataset.heldStage)), ['pre_gate_total', 'total', 'all_axes_and_total']);
+        assert.equal(await count(page, '[data-held-scope=operating] [data-held-stages="code_rows:axes"]'), 1, phase + ': code rows are their own unit');
+        assert.deepEqual(await page.locator('[data-held-gate=operating] [data-held-gate-decision]').evaluateAll((n) => n.map((x) => x.dataset.heldGateDecision)), ['PASS', 'UNKNOWN', 'VALUE_EXCLUDED']);
+        assert.match(await text(page, '[data-held-gate=operating] [data-held-gate-decision=VALUE_EXCLUDED]'), /^V 총점 반영 제외\(VALUE_EXCLUDED\) · 기업 탈락·자료 미수집 아님 1\/2$/);
+        assert.match(await text(page, '[data-held-gate=operating] [data-held-gate-decision=UNKNOWN]'), /^관문 판정 불가\(UNKNOWN\) · 최종 총점·순위 없음 0\/2$/, phase + ': 0 stays 0');
+        assert.ok(!/^관문/m.test((await page.locator('[data-held-causes=operating] li').allTextContents()).join('\n')), phase + ': the merged gate cause is not a loss cause');
+        assert.match(await text(page, '[data-held-target=operating]'), /^95% 목표\(원래 모집단\) · 기준 Q·G·V 세 축 동시 \+ 최종 총점 · 운영504 고유 발행사/);
+        assert.match(await text(page, '[data-held-coverage]'), /분류 확인 수나 원지표 수는 QGV 계산 완료율이 아님/);
+        // 입력 연결 수정 전후 비교 (Codex #527): keyboard; a comparison for another result is refused and the bundle stays; then the
+        // comparison for this result; nothing stored.
+        const store0 = await page.evaluate(() => [Object.keys(localStorage).sort(), Object.keys(sessionStorage).sort()]);
+        w.answers.input_repair = () => ({ status: 200, body: repairCase('peer_minimum') });
+        const q0 = w.log.length; await page.locator('[data-repair-open]').focus(); await page.keyboard.press('Enter');
+        await page.locator('[data-repair-state=ERROR]').waitFor({ timeout: 20000 });
+        assert.deepEqual(w.log.slice(q0).map((x) => x.path), ['/kis/classification?part=input_repair']);
+        assert.match(await text(page, '[data-repair-state]'), /지금 받은 결과와 다른 결과의 비교입니다 · COMPARISON_RESULT_MISMATCH .* 위 묶음은 그대로$/);
+        assert.equal(await count(page, '[data-held-query]'), 1, phase + ': the bundle and search stay');
+        assert.equal(await count(page, '[data-repair-axis]'), 0);
+        await page.waitForTimeout(5200);
+        w.answers.input_repair = () => ({ status: 200, body: repairCase('peer_shift') });
+        await page.locator('[data-repair-open]').focus(); await page.keyboard.press('Enter');
+        await page.locator('[data-repair-state=READY]').waitFor({ timeout: 20000 });
+        assert.match(await text(page, '[data-repair-state]'), /^입력 연결 수정 전후 비교 \(INPUT_CONNECTION_REPAIR\) · 평가일 .* · 분모 24 · 운영504 코드 행$/);
+        assert.match(await text(page, '[data-repair-not]'), /요소·비중 변경 아님 · 분류 변경 아님 · 설정 변경 아님/);
+        assert.equal(await text(page, '[data-repair-axis=Q]'), 'Q · 전 21 → 후 24 · 새로 산출 +3 · 산출 사라짐 0 · 기존 값 바뀜 20 / 24');
+        assert.match(await text(page, '[data-repair-shift]'), /기업 실적 개선·전략 성과 아님$/);
+        assert.deepEqual(await page.evaluate(() => [Object.keys(localStorage).sort(), Object.keys(sessionStorage).sort()]), store0, phase + ': nothing stored');
+        assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), phase + ': no horizontal overflow with coverage and comparison open');
+        delete w.answers.input_repair;
+        await page.waitForTimeout(5200);
         await page.waitForTimeout(5200);
         assert.ok(w.log.length > logAt);
       }
