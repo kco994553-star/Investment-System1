@@ -130,11 +130,11 @@
             "scope": "SELECTION_AND_WEIGHTS_FROM_RETAINED_AXES_NOT_QGV_OR_PERFORMANCE_REPLAY",
             "setting_hash": "55ce1f33f8ae671e129a0af25103add8abd23bdedbae1642e14d21e17dfb41d8",
             "input_hash": "aa7329450527576b4d306bed207202a92d48ee3c0e5ead75cfde565c6281d213",
-            "result_hash": "e5ee5418d04dfdaac82320e1918461cf9ab90b015e84df16eca7de56fc603de5",
+            "result_hash": "d886857e9be27f9f71801a78f7f52f10a8e9ee652a6fe1c1891948a2f8e99fb9",
             "engine_source_sha256": {
-              "validation/vertical_slice.py": "3adfa1ea30ab48ed42a925aecca0f551fbb3ce790cfc7f7b20cc7c6a5ee5bdd3",
+              "validation/vertical_slice.py": "7611be871a98a7192078773b5f72b7baed8b348e3ad8b31c0e8e7226a511476e",
               "contracts/portfolio_input.py": "22c955afd86ecabe161b27a61a66db5c288862247263b94250edb93a5e10708f",
-              "research/selection_details.py": "567c14fe749bee05908e23b0016431ae3fe0e8f368d3c602425308f9399d8da1"
+              "validation/selection_details.py": "01761921c2ba8a34b92dadb5612b67eef8633fba9fa52cb41f602d69fe5e8d34"
             },
             "status": "REPLAY_IDENTIFIED",
             "requires_original_input": true,
@@ -222,11 +222,11 @@
             "scope": "SELECTION_AND_WEIGHTS_FROM_RETAINED_AXES_NOT_QGV_OR_PERFORMANCE_REPLAY",
             "setting_hash": "55ce1f33f8ae671e129a0af25103add8abd23bdedbae1642e14d21e17dfb41d8",
             "input_hash": "8df84da408608056cf1ebb9a9a73189a17f7c5b9591d36a1cbe2054f5b039586",
-            "result_hash": "56baad12f68dd524869a1dda98ca1390ad1dbba9d8a3b03bec00eb950e28f6b9",
+            "result_hash": "51eefd1a2ca8bdb61a6cc846e89a76b69d22f6dba72b012f8e7ea8173d693124",
             "engine_source_sha256": {
-              "validation/vertical_slice.py": "3adfa1ea30ab48ed42a925aecca0f551fbb3ce790cfc7f7b20cc7c6a5ee5bdd3",
+              "validation/vertical_slice.py": "7611be871a98a7192078773b5f72b7baed8b348e3ad8b31c0e8e7226a511476e",
               "contracts/portfolio_input.py": "22c955afd86ecabe161b27a61a66db5c288862247263b94250edb93a5e10708f",
-              "research/selection_details.py": "567c14fe749bee05908e23b0016431ae3fe0e8f368d3c602425308f9399d8da1"
+              "validation/selection_details.py": "01761921c2ba8a34b92dadb5612b67eef8633fba9fa52cb41f602d69fe5e8d34"
             },
             "status": "REPLAY_IDENTIFIED",
             "requires_original_input": true,
@@ -374,11 +374,11 @@
             "scope": "SELECTION_AND_WEIGHTS_FROM_RETAINED_AXES_NOT_QGV_OR_PERFORMANCE_REPLAY",
             "setting_hash": "46a32221cb3ba23205ea6905dfc793978633714590596e43f0dc5ccc53a148db",
             "input_hash": "86b7e4b6ecc07b6c2a3d9dc787fe4daeb36c187fe14fafd7d58e44f271cebf64",
-            "result_hash": "e942fe606ba095f1fab70929bb711f0ed0afbcc5cc642cab90f6100b1546f4b3",
+            "result_hash": "ce832c76097f5e7f1e28377ec849485e611d2d20827e56d4e6cb8a5dc41e0bce",
             "engine_source_sha256": {
-              "validation/vertical_slice.py": "3adfa1ea30ab48ed42a925aecca0f551fbb3ce790cfc7f7b20cc7c6a5ee5bdd3",
+              "validation/vertical_slice.py": "7611be871a98a7192078773b5f72b7baed8b348e3ad8b31c0e8e7226a511476e",
               "contracts/portfolio_input.py": "22c955afd86ecabe161b27a61a66db5c288862247263b94250edb93a5e10708f",
-              "research/selection_details.py": "567c14fe749bee05908e23b0016431ae3fe0e8f368d3c602425308f9399d8da1"
+              "validation/selection_details.py": "01761921c2ba8a34b92dadb5612b67eef8633fba9fa52cb41f602d69fe5e8d34"
             },
             "status": "REPLAY_IDENTIFIED",
             "requires_original_input": true,
@@ -555,11 +555,11 @@
             "scope": "SELECTION_AND_WEIGHTS_FROM_RETAINED_AXES_NOT_QGV_OR_PERFORMANCE_REPLAY",
             "setting_hash": "42436db3cb1e88727b22086c5b3bfa80a2745bc1e4c09de62675b01ade32fa5e",
             "input_hash": "4de3c4a6a013d079ec35176c1a3079d2db4da449df975689a0be3da26a13e53a",
-            "result_hash": "e9a86c8be1cd9404b3c63758687417ecd0bfa15a7c172734b859316b35386998",
+            "result_hash": "d60cd3947e57e80c4ea2aa624c648707d74ae8f3be22bd4ad647f7eb06b8d793",
             "engine_source_sha256": {
-              "validation/vertical_slice.py": "3adfa1ea30ab48ed42a925aecca0f551fbb3ce790cfc7f7b20cc7c6a5ee5bdd3",
+              "validation/vertical_slice.py": "7611be871a98a7192078773b5f72b7baed8b348e3ad8b31c0e8e7226a511476e",
               "contracts/portfolio_input.py": "22c955afd86ecabe161b27a61a66db5c288862247263b94250edb93a5e10708f",
-              "research/selection_details.py": "567c14fe749bee05908e23b0016431ae3fe0e8f368d3c602425308f9399d8da1"
+              "validation/selection_details.py": "01761921c2ba8a34b92dadb5612b67eef8633fba9fa52cb41f602d69fe5e8d34"
             },
             "status": "REPLAY_IDENTIFIED",
             "requires_original_input": true,
@@ -733,11 +733,11 @@
             "scope": "SELECTION_AND_WEIGHTS_FROM_RETAINED_AXES_NOT_QGV_OR_PERFORMANCE_REPLAY",
             "setting_hash": "c07ca31b4910fe8d2779f52b85971b956cd7b36b778f6b340a37ba2221d80d2b",
             "input_hash": "52a4bcba74a38cecb8cac1eba0fe7a50d63f4ed1b912cde00f69518b08d9c1fe",
-            "result_hash": "aa2e8822c41c1694568bc527737ba4b28d1ca1c981bd9109b37e7715491bcf4f",
+            "result_hash": "f1454be3775d9f02198090499ace74291ea5b5a232b56bb86b770d1accdf53a1",
             "engine_source_sha256": {
-              "validation/vertical_slice.py": "3adfa1ea30ab48ed42a925aecca0f551fbb3ce790cfc7f7b20cc7c6a5ee5bdd3",
+              "validation/vertical_slice.py": "7611be871a98a7192078773b5f72b7baed8b348e3ad8b31c0e8e7226a511476e",
               "contracts/portfolio_input.py": "22c955afd86ecabe161b27a61a66db5c288862247263b94250edb93a5e10708f",
-              "research/selection_details.py": "567c14fe749bee05908e23b0016431ae3fe0e8f368d3c602425308f9399d8da1"
+              "validation/selection_details.py": "01761921c2ba8a34b92dadb5612b67eef8633fba9fa52cb41f602d69fe5e8d34"
             },
             "status": "REPLAY_IDENTIFIED",
             "requires_original_input": true,
@@ -863,11 +863,11 @@
             "scope": "SELECTION_AND_WEIGHTS_FROM_RETAINED_AXES_NOT_QGV_OR_PERFORMANCE_REPLAY",
             "setting_hash": "35686e08a95aa66e7d43c35cecba1ee7b7c695b1551be28206bd42ecddda455b",
             "input_hash": "4e3b14cf953efb2e888b281328996ed2f4584d386bf093e56ea91fcd2995d156",
-            "result_hash": "c29a0ad580fb1ff3c74734c1b504566fc422088ab866d9d4cdde9424840fdca8",
+            "result_hash": "002b2cc73926a7ac160e85f42ea2fa44ada968b41b55b4a90fccad15fa10f1d9",
             "engine_source_sha256": {
-              "validation/vertical_slice.py": "3adfa1ea30ab48ed42a925aecca0f551fbb3ce790cfc7f7b20cc7c6a5ee5bdd3",
+              "validation/vertical_slice.py": "7611be871a98a7192078773b5f72b7baed8b348e3ad8b31c0e8e7226a511476e",
               "contracts/portfolio_input.py": "22c955afd86ecabe161b27a61a66db5c288862247263b94250edb93a5e10708f",
-              "research/selection_details.py": "567c14fe749bee05908e23b0016431ae3fe0e8f368d3c602425308f9399d8da1"
+              "validation/selection_details.py": "01761921c2ba8a34b92dadb5612b67eef8633fba9fa52cb41f602d69fe5e8d34"
             },
             "status": "REPLAY_IDENTIFIED",
             "requires_original_input": true,
@@ -1017,11 +1017,11 @@
             "scope": "SELECTION_AND_WEIGHTS_FROM_RETAINED_AXES_NOT_QGV_OR_PERFORMANCE_REPLAY",
             "setting_hash": "55ce1f33f8ae671e129a0af25103add8abd23bdedbae1642e14d21e17dfb41d8",
             "input_hash": "7aa3a36a4b2396fec66f8811dade7c5c1ad901028c7925b3a727ad1b252cb7f9",
-            "result_hash": "b02f8fdf93e268702f77c7ab18b5b70f3fd10f25296dbab51610416411109241",
+            "result_hash": "eda017bb4b1b40534656421816919931d6cd07635d468ad743b666defdb2bb4d",
             "engine_source_sha256": {
-              "validation/vertical_slice.py": "3adfa1ea30ab48ed42a925aecca0f551fbb3ce790cfc7f7b20cc7c6a5ee5bdd3",
+              "validation/vertical_slice.py": "7611be871a98a7192078773b5f72b7baed8b348e3ad8b31c0e8e7226a511476e",
               "contracts/portfolio_input.py": "22c955afd86ecabe161b27a61a66db5c288862247263b94250edb93a5e10708f",
-              "research/selection_details.py": "567c14fe749bee05908e23b0016431ae3fe0e8f368d3c602425308f9399d8da1"
+              "validation/selection_details.py": "01761921c2ba8a34b92dadb5612b67eef8633fba9fa52cb41f602d69fe5e8d34"
             },
             "status": "REPLAY_IDENTIFIED",
             "requires_original_input": true,
